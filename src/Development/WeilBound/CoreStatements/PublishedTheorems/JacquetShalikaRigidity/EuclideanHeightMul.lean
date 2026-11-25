@@ -52,13 +52,10 @@ open GlobalTheory.CuspGeneric GlobalTheory.CuspRep GlobalTheory.UnitaryBC Global
 open GroundTheory.Automorphic GroundTheory.Automorphic.FourierWhittaker GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.Spherical
 open scoped ENNReal ComplexConjugate
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.AdelicQuotientData
 
 namespace EuclideanHeightMul
 
-open GroundTheory.Automorphic
 
 variable {E : Type} [Field E] [NumberField E] {k : ℕ}
 
@@ -133,7 +130,6 @@ end EuclideanHeightMul
 
 namespace EuclideanHeightMul
 
-open GroundTheory.Automorphic
 
 variable {E : Type} [Field E] [NumberField E] {k : ℕ}
 

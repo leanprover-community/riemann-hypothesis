@@ -49,8 +49,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits
@@ -354,10 +352,6 @@ variable (X) in
 theorem isVB_freeModule (ι : Type) [Fintype ι] : IsVB (freeModule X ι) (Fintype.card ι) :=
   (isFrame_freeFrame X ι).isVB
 
-
-variable (X) in
-theorem isVB_freeModule_fin (r : ℕ) : IsVB (freeModule X (Fin r)) r := by
-  simpa using isVB_freeModule X (Fin r)
 
 
 variable (X) in

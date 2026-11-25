@@ -17,8 +17,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Glob
 
 variable {D : D7}

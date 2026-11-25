@@ -168,7 +168,6 @@ theorem TwSecLoc_of (hZ : ZarPow) : LateralTheory.E.H2CurveOrder.TwLocGenPfSec.T
   exact map_nsmul _ _ _
 
 end LateralTheory.E.H2CurveOrder.TwLocGenPfSec
-open CategoryTheory Limits AlgebraicGeometry Opposite TensorProduct GlobalTheory.EtC
 
 namespace LateralTheory.E.H2CurveOrder.TwLocGenPfSec
 

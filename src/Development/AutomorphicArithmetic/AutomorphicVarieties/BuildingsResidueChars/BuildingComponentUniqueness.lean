@@ -47,7 +47,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open NumberField IsDedekindDomain
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.DefiniteBC
 open UpperTheory.V.Af UpperTheory.V.Af.Gu
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.building_component_uniqueness :
     CompUnique := by

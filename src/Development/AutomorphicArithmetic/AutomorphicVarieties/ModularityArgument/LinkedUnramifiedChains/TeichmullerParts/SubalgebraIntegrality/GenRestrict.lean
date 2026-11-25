@@ -47,8 +47,6 @@ open UpperTheory.V.Z.J.D UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N GlobalTheory.SmGL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 
 namespace UpperTheory.V.Z.J.D

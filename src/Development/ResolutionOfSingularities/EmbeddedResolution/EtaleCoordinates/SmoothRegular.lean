@@ -332,7 +332,7 @@ private theorem eq_closure_of_mem_irreducibleComponents {α : Type*} [Topologica
 
 private theorem exists_isOpen_isIrreducible_of_unique_irreducibleComponent {α : Type*} [TopologicalSpace α]
     (hfin : (irreducibleComponents α).Finite) {T₀ : Set α} (hT₀ : IsIrreducible T₀) {z : α}
-    (_hz : z ∈ T₀) (huniq : ∀ T ∈ irreducibleComponents α, z ∈ T → T = T₀) :
+    (huniq : ∀ T ∈ irreducibleComponents α, z ∈ T → T = T₀) :
     ∃ W : Set α, IsOpen W ∧ IsIrreducible W ∧ z ∈ W := by
   have hSfin : Set.Finite {T : Set α | T ∈ irreducibleComponents α ∧ z ∉ T} :=
     Set.Finite.subset hfin (fun T hT => hT.1)
@@ -372,9 +372,6 @@ private theorem exists_isOpen_isIrreducible_of_unique_minimal_prime_le {A : Type
     rw [PrimeSpectrum.isIrreducible_iff_vanishingIdeal_isPrime,
       PrimeSpectrum.vanishingIdeal_zeroLocus_eq_radical, hK.radical]
     exact hK
-  have hPT₀ : P ∈ PrimeSpectrum.zeroLocus (K : Set A) := by
-    rw [PrimeSpectrum.mem_zeroLocus]
-    exact fun a ha => hmin P.asIdeal P.isPrime le_rfl ha
   have hcomp : ∀ T ∈ irreducibleComponents (PrimeSpectrum A), P ∈ T →
       T = PrimeSpectrum.zeroLocus (K : Set A) := by
     intro T hT hPmem
@@ -393,7 +390,7 @@ private theorem exists_isOpen_isIrreducible_of_unique_minimal_prime_le {A : Type
     exact le_antisymm hTsub (hT.2 hT₀irr hTsub)
   have hfin : (irreducibleComponents (PrimeSpectrum A)).Finite :=
     TopologicalSpace.NoetherianSpace.finite_irreducibleComponents
-  exact exists_isOpen_isIrreducible_of_unique_irreducibleComponent hfin hT₀irr hPT₀ hcomp
+  exact exists_isOpen_isIrreducible_of_unique_irreducibleComponent hfin hT₀irr hcomp
 
 private theorem finiteType_appTop_of_isAffineOpen_of_smooth {X : Scheme.{u}} {k : Type u} [Field k]
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (V : X.Opens)

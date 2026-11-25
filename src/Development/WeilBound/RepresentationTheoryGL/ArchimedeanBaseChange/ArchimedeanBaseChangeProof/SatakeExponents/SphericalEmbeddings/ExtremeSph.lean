@@ -88,8 +88,6 @@ section Global
 
 variable {E : Type} [Field E] [NumberField E] {c n : ℕ} {N : Fin c → ℕ}
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def N3 : Prop := ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (c n : ℕ) (N : Fin c → ℕ)
   (h : ∑ i, N i = n) (σ : ∀ i, SmIrr (GL (Fin (N i)) (w.adicCompletion E))) (P : SmIrr (GL (Fin n) (w.adicCompletion E)))
   (ξ : Fin n → ℂˣ), IsSubquotient P.ρ (locProd h w σ) → IsExpN P.ρ ξ → Mono ξ →

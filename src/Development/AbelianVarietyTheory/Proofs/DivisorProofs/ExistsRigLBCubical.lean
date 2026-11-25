@@ -107,8 +107,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
@@ -192,8 +190,6 @@ open scoped CategoryTheory.Obj TensorProduct
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PolRoot
 open GlobalTheory.LBDescent GlobalTheory.DescNorm
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -327,8 +323,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.TwoTors
-
-set_option autoImplicit false
 
 namespace GlobalTheory.CharKer
 
@@ -672,7 +666,6 @@ open scoped CategoryTheory.Obj TensorProduct
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PolRoot
 open GlobalTheory.CharKer
-set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.SymCob
@@ -901,7 +894,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
@@ -1021,7 +1013,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
@@ -1250,8 +1241,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
@@ -1263,12 +1252,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.PolBundleLoc
 
 open GlobalTheory.PolRoot GlobalTheory.CechPic GlobalTheory.LamOfDouble
-
-theorem exists_rigLB_cubical (R : Type) [CommRing R] [IsLocalRing R] (B : Over (Sp R)) [GrpObj B] [IsCommMonObj B]
-    (hB : IsAbelianScheme B) (L : LB B.left) (hL : L.IsLB) : ∃ M : RigLB B, M.L = L ∧ Nonempty (CubicalStr B M) := by
-  have hR : Out.Rigidified B L := GlobalTheory.LB.exists_isGen_of_isLocalRing (R := R) (pull_isLB hL _)
-  exact GlobalTheory.Moduli.cubicalStr_of_triv_theta GlobalTheory.abelianSchemeLaws_all.1 _ B hB L hL hR
-    (GlobalTheory.HodgeWeil.triv_theta _root_.GlobalTheory.SpreadingModels.cubeTheorem_holds hB hL)
 
 theorem exists_descent_two {K : Type} [Field K] [IsAlgClosed K] (A : Over (Sp K)) [GrpObj A] [IsCommMonObj A]
     (hA : IsAbelianScheme A) {M : LB A.left} (hM : M.IsLB)
@@ -1380,26 +1363,6 @@ theorem exists_ample_root {K : Type} [Field K] [IsAlgClosed K] (A : Over (Sp K))
   rw [relAmple_iff_isAmpleLB_of_isAffine A hL, ← isAmpleLB_pow_iff hL (k := 2) (by norm_num),
     isAmpleLB_congr hL2 hM ((cls_eq_iff hL2 hM).1 c₅), ← relAmple_iff_isAmpleLB_of_isAffine A hM]
   exact ha
-
-section Siegel
-
-variable {o : Type} [CommRing o] {ζ : o} {g n : ℕ} (F : SFam g n ζ)
-
-theorem root_of_siegPB {S' : Scheme.{0}} {s' : S' ⟶ Sp o} (c : SiegPre g n ζ s') (x : S' ⟶ F.X)
-    (h : SiegPB c F.univ x) (L : LB c.A.left) (hL : L.IsLB) (e : LBIso (abelian₂ c.A L) c.P) :
-    Root F.univ.A F.univ.P x := by
-  obtain ⟨φ, φ₂, pb, sq, iso, -⟩ := h
-  have hΛ : (abelian₂ c.A L).IsLB := LB.isLB_linComb hL _ _
-  exact ⟨c.A, inferInstance, inferInstance, φ, φ₂, pb, sq, L, hL,
-    LBIso.trans hΛ c.isLB (pull_isLB F.univ.isLB _) e iso⟩
-
-theorem root_geom (K : Type) [Field K] [IsAlgClosed K] (x : Sp K ⟶ F.X) : Root F.univ.A F.univ.P x := by
-  obtain ⟨⟨c, hc⟩, hpr⟩ := GlobalTheory.siegPre_pullback g n o ζ F.X (Sp K) F.s (x ≫ F.s) x F.univ rfl
-  have hcp := hpr c hc F.princ
-  obtain ⟨L, hL, e, -⟩ := exists_ample_root c.A c.ab c.isLB c.rig₁ c.rig₂ c.symm hcp.1
-  exact root_of_siegPB F c x hc L hL e
-
-end Siegel
 
 end GlobalTheory.PolBundleLoc
 end -- clump:auto

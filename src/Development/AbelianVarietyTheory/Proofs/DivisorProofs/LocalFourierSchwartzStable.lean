@@ -57,8 +57,6 @@ noncomputable section
 
 namespace GlobalTheory.WeylFour
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F : Type} [Field F] [NumberField F]
 
 theorem exists_circle_conductor (ψ : AddChar (AF F) ℂ) (hψ : Continuous ψ) (v : Pl (F := F)) (h1 : ∃ x, psiLoc ψ v x ≠ 1) :

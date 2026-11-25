@@ -51,8 +51,6 @@ namespace GlobalTheory.Mem.SJ
 open Formalism.BasicNotions Formalism.L2.Indef Formalism.L2.DIV Formalism.IndefR.Cx Formalism.IndefR.Links NumberField
 open scoped InnerProductSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {Bs : DefBase D.what₂.LL} {A : DefAmb Bs}
 
 structure Read (D : D7) {Bs : DefBase D.what₂.LL} {A : DefAmb Bs} (X : CxData A) (fc : DefSub A → DefFace Bs) (s : Bool) where

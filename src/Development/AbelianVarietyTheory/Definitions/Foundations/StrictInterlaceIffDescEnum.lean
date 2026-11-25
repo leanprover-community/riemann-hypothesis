@@ -397,19 +397,10 @@ inductive Letter
 
   | circMinus
 
-def hePairs : List (Letter × Letter) :=
-  [(.circPlus, .plus), (.plus, .circPlus), (.minus, .circMinus), (.circMinus, .minus),
-    (.plus, .minus), (.minus, .plus), (.circPlus, .circMinus), (.circMinus, .circPlus)]
-
-def HePair (a b : Letter) : Prop := (a, b) ∈ hePairs
-
 def letter (S T : SPar) (x : ℚ) : Letter :=
   if x ∈ entries S then (if sign S x then .plus else .minus) else (if sign T x then .circPlus else .circMinus)
 
 def word (S T : SPar) : List Letter := (descList (entries S ∪ entries T)).map (letter S T)
-
-def HeInterlace (S T : SPar) : Prop :=
-  IsRegular S ∧ IsRegular T ∧ Disjoint (entries S) (entries T) ∧ (word S T).IsChain HePair
 
 def StrictInterlace (A B : Finset ℚ) : Prop :=
   ∃ (n : ℕ) (a : Fin (n + 1) → ℚ) (b : Fin n → ℚ), A = univ.image a ∧ B = univ.image b ∧

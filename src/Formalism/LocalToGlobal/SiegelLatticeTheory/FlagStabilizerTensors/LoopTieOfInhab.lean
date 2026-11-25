@@ -13,8 +13,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopTieOf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y}

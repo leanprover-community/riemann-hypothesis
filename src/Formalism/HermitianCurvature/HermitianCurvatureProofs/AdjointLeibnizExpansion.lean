@@ -66,7 +66,7 @@ namespace Formalism.FourierDecayAlt.P.JFxI
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section hsadj
 
@@ -376,7 +376,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem adjoint_leibniz_expansion : Formalism.FourierDecayAlt.P.JFxI.AdjLeibniz := by
   intro k r Wp Wq _ _ _ _ _ _ D Θ hS

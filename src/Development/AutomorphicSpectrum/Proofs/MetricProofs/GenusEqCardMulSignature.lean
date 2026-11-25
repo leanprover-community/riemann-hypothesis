@@ -85,10 +85,8 @@ theorem conj_conj_comp {E : Type} [Field E] [NumberField E] (s : 𝓞 E →+* �
 
 theorem both_bijective {E Ψ : Type} [Field E] [NumberField E] [IsCMField E] [Fintype Ψ] {σ : Ψ → (𝓞 E →+* ℂ)}
     (h : IsCMFam σ) : Function.Bijective (both σ) := by
-  have hconj : Function.Injective fun s : 𝓞 E →+* ℂ => (starRingEnd ℂ).comp s := by
-    intro s t hst
-    have := congrArg (fun u : 𝓞 E →+* ℂ => (starRingEnd ℂ).comp u) hst
-    simpa only [conj_conj_comp] using this
+  have hconj : Function.Injective fun s : 𝓞 E →+* ℂ => (starRingEnd ℂ).comp s :=
+    Function.Involutive.injective (conj_conj_comp (E := E))
   have hcross : ∀ τ τ', σ τ ≠ (starRingEnd ℂ).comp (σ τ') := by
     intro τ τ' e
     exact ((h.2 (σ τ')).1 ⟨τ', rfl⟩) ⟨τ, e⟩

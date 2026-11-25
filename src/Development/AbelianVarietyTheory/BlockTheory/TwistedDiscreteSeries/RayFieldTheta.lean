@@ -46,8 +46,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.RayFieldTheta
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def ContainsRayField {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] (φ : K →+* L) (M : ℕ) : Prop :=
   ∀ 𝔓 : HeightOneSpectrum (𝓞 L), ((M : ℕ) : 𝓞 L) ∉ 𝔓.asIdeal →
     ∃ (f : ℕ) (α : 𝓞 K),

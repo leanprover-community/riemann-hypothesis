@@ -72,8 +72,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothSectionsMonoR
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory GlobalTheory.CxCoh
@@ -429,8 +427,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry
@@ -612,8 +608,6 @@ section -- clump:auto
 
 open CategoryTheory GlobalTheory.CxCoh GlobalTheory.CatCoh
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CxCoh.AlgDict
 
 universe u
@@ -737,8 +731,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
@@ -854,8 +846,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.CxCoh GlobalTheory.PDA GlobalTheory.PDForm GlobalTheory.SmoothLift
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CatCoh.Desc
@@ -964,8 +954,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.CxCoh GlobalTheory.PDA GlobalTheory.PDForm GlobalTheory.SmoothLift
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.PDForm.AffPair
@@ -1071,8 +1059,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory GlobalTheory.CxCoh
@@ -1100,27 +1086,10 @@ theorem exists_primitive_of_h1_injective (m : CxMap K K') (hm : Function.Injecti
 
 theorem exists_cocycle_of_h1_surjective (m : CxMap K K') (hm : Function.Surjective m.h1) (z' : K'.T1)
     (hz : z' ∈ K'.Z1) : ∃ z ∈ K.Z1, ∃ g, z' = m.p1 z + K'.D0 g := by
-  obtain ⟨x, hx⟩ := hm (QuotientAddGroup.mk ⟨z', hz⟩)
-  obtain ⟨⟨z, hz1⟩, rfl⟩ := QuotientAddGroup.mk_surjective x
-  change (QuotientAddGroup.mk (m.z1 ⟨z, hz1⟩) : K'.H1) = _ at hx
-  rw [QuotientAddGroup.eq] at hx
-  obtain ⟨g, hg⟩ := hx
-  refine ⟨z, hz1, g, ?_⟩
-  have e : K'.D0 g = -m.p1 z + z' := hg
-  rw [e]; abel
+  apply _root_.GlobalTheory.CxTowerTwo.surj1 <;> assumption
 
 theorem cx_D1_D0_eq_zero (K : Cx C) (g : K.M0.c0) : K.D1 (K.D0 g) = 0 := by
-  refine Prod.ext ?_ (Prod.ext ?_ ?_)
-  · funext T T' T'' φ ψ
-    simp only [Cx.D1, Cx.D0, AddMonoidHom.coe_mk, ZeroHom.coe_mk, map_sub, K.M0.map_comp,
-      Prod.fst_zero, Pi.zero_apply]
-    abel
-  · funext T T' φ
-    simp only [Cx.D1, Cx.D0, AddMonoidHom.coe_mk, ZeroHom.coe_mk, map_sub, K.diffZero_natural,
-      Prod.snd_zero, Prod.fst_zero, Pi.zero_apply]
-    abel
-  · funext T
-    simp only [Cx.D1, Cx.D0, AddMonoidHom.coe_mk, ZeroHom.coe_mk, K.diffOne_diffZero, Prod.snd_zero, Pi.zero_apply]
+  apply _root_.GlobalTheory.CxTowerTwo.cx_D1_D0_eq_zero <;> assumption
 
 end GlobalTheory.CxCoh.TowerOne
 
@@ -1382,8 +1351,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.CxCoh GlobalTheory.PDA GlobalTheory.PDForm GlobalTheory.SmoothLift
@@ -1453,8 +1420,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.CxCoh GlobalTheory.PDA GlobalTheory.PDForm GlobalTheory.SmoothLift
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -371,7 +371,7 @@ theorem relIndex_Lc (Z : SubM k n) {m m' : ℕ} (hm : 1 ≤ m) (hmm : m ≤ m') 
     (fun h hh _ hx => mul_mem_Lat Z (by simpa using one_add_mem_Lat0 Z ((mem_Lc_iff Z hm h).1 hh)) hx)
     (fun h => mem_Lc_iff Z (hm.trans hmm) h)
 
-theorem relIndex_Lc_conj (Z : SubM k n) (g : GLn k n) (_hg : g ∈ Gz Z)
+theorem relIndex_Lc_conj (Z : SubM k n) (g : GLn k n)
     (c : ℕ) (hc : ∀ j : ℕ, ∀ x ∈ Lat Z (j + c), conjA g x ∈ Lat Z j ∧ conjA g⁻¹ x ∈ Lat Z j)
     {m m' : ℕ} (hm : 1 ≤ m) (hcm : c ≤ m) (hmm : m ≤ m') :
     (Lc Z m').relIndex ((Lc Z m).map (MulAut.conj g).toMonoidHom) =
@@ -393,7 +393,7 @@ theorem relIndex_Lc_conj (Z : SubM k n) (g : GLn k n) (_hg : g ∈ Gz Z)
         mul_sub, sub_mul, mul_one, Units.mul_inv]; abel] at hy
     exact mul_mem_Lat Z hy hx
 
-theorem Lc_le (Z : SubM k n) (g : GLn k n) (_hg : g ∈ Gz Z)
+theorem Lc_le (Z : SubM k n) (g : GLn k n)
     (c : ℕ) (hc : ∀ j : ℕ, ∀ x ∈ Lat Z (j + c), conjA g x ∈ Lat Z j ∧ conjA g⁻¹ x ∈ Lat Z j)
     {m m' : ℕ} (hm : 1 ≤ m) (hmm : m + c ≤ m') :
     Lc Z m' ≤ Lc Z m ⊓ (Lc Z m).map (MulAut.conj g).toMonoidHom := fun h hh => by
@@ -445,8 +445,8 @@ theorem indexSym [CharZero k] : IndexSym (k := k) := by
   obtain ⟨c1, hc1⟩ := core Z hZ g hg
   refine ⟨c0 + c1, fun m hm m' hm' => ?_⟩
   obtain ⟨r, rfl⟩ : ∃ r, m' = m + r := ⟨m' - m, by omega⟩
-  exact ⟨Lc_le Z g hg c0 hc0 (by omega) (by omega),
-    by rw [relIndex_Lc_conj Z g hg c0 hc0 (by omega) (by omega) (by omega), relIndex_Lc Z (by omega) (by omega),
+  exact ⟨Lc_le Z g c0 hc0 (by omega) (by omega),
+    by rw [relIndex_Lc_conj Z g c0 hc0 (by omega) (by omega) (by omega), relIndex_Lc Z (by omega) (by omega),
       Bi.relIndex_lat_conj, Bi.relIndex_lat]; exact (hc1 r (by omega)).1,
     by rw [relIndex_Lc Z (by omega) (by omega), Bi.relIndex_lat]; exact (hc1 r (by omega)).2⟩
 

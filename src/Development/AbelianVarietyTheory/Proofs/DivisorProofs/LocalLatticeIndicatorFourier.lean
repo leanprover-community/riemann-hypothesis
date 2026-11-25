@@ -58,7 +58,6 @@ noncomputable section
 namespace GlobalTheory.WeylFour.IndOSelf
 
 open ValuativeRel
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {F : Type} [Field F] [NumberField F]
 

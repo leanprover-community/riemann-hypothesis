@@ -48,7 +48,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Mum
 
@@ -173,11 +172,6 @@ attribute [instance] LabCover.grp LabCover.comm
 section Inhabitants
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
-
-theorem base_powerSeries : Base (PowerSeries ℚ) := by
-  have hc : IsAdicComplete (maximalIdeal (PowerSeries ℚ)) (PowerSeries ℚ) := by
-    rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance
-  exact ⟨⟨inferInstance, inferInstance, inferInstance, hc⟩, algebraRat.charZero _⟩
 
 end Inhabitants
 

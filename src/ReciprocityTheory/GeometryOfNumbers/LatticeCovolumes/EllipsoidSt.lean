@@ -23,25 +23,6 @@ noncomputable def qC {r : ℕ} (G : Matrix (Fin r) (Fin r) ℂ) (y : Fin r → �
 noncomputable def qR {r : ℕ} (G : Matrix (Fin r) (Fin r) ℝ) (y : Fin r → ℝ) : ℝ :=
   ∑ i, ∑ j, y i * G i j * y j
 
-private lemma exists_factor_C {r : ℕ} {G : Matrix (Fin r) (Fin r) ℂ} (hG : G.PosDef) :
-    ∃ B : Matrix (Fin r) (Fin r) ℂ, G = Bᴴ * B := by
-  first
-  | (refine ⟨CFC.sqrt G, ?_⟩
-     have h0 : 0 ≤ G := hG.posSemidef.nonneg
-     have hs : (CFC.sqrt G)ᴴ = CFC.sqrt G := (CFC.sqrt_nonneg G).isSelfAdjoint.star_eq
-     rw [hs, CFC.sqrt_mul_sqrt_self G h0])
-
-private lemma exists_factor_R {r : ℕ} {G : Matrix (Fin r) (Fin r) ℝ} (hG : G.PosDef) :
-    ∃ B : Matrix (Fin r) (Fin r) ℝ, G = Bᵀ * B := by
-  have hC : ∃ B : Matrix (Fin r) (Fin r) ℝ, G = Bᴴ * B := by
-    first
-    | (refine ⟨CFC.sqrt G, ?_⟩
-       have h0 : 0 ≤ G := hG.posSemidef.nonneg
-       have hs : (CFC.sqrt G)ᴴ = CFC.sqrt G := (CFC.sqrt_nonneg G).isSelfAdjoint.star_eq
-       rw [hs, CFC.sqrt_mul_sqrt_self G h0])
-  obtain ⟨B, hB⟩ := hC
-  exact ⟨B, by rw [hB, Matrix.conjTranspose_eq_transpose_of_trivial]⟩
-
 private lemma qC_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) (y : Fin r → ℂ) :
     qC (Bᴴ * B) y = ∑ k, ‖(B *ᵥ y) k‖ ^ 2 := by
   have h1 : (∑ i, ∑ j, starRingEnd ℂ (y i) * (Bᴴ * B) i j * y j) =
@@ -71,11 +52,6 @@ private lemma setR_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (R : ℝ) :
   ext y
   simp only [Set.mem_setOf_eq, Set.mem_preimage, qR_eq, Matrix.toLin'_apply, sqBall]
 
-private lemma detC_eq {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) :
-    (Bᴴ * B).det = (Complex.normSq B.det : ℂ) := by
-  rw [Matrix.det_mul, Matrix.det_conjTranspose, Complex.normSq_eq_conj_mul_self]
-  rfl
-
 private theorem isBounded_preimage_sqBall_complex_of_det_ne_zero {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) (hdet : B.det ≠ 0) (R : ℝ) :
     Bornology.IsBounded (((Matrix.toLin' B).restrictScalars ℝ) ⁻¹' sqBall r ℂ R) := by
   have hS : IsCompact (sqBall r ℂ R) :=
@@ -89,41 +65,19 @@ private theorem isBounded_preimage_sqBall_complex_of_det_ne_zero {r : ℕ} (B : 
   rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.2 hdet),
     Matrix.one_mulVec]
 
-private theorem convex_preimage_sqBall_complex {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) (R : ℝ) :
-    Convex ℝ (((Matrix.toLin' B).restrictScalars ℝ) ⁻¹' sqBall r ℂ R) :=
-  Convex.linear_preimage (sqBall_convex (E := ℂ) r R) ((Matrix.toLin' B).restrictScalars ℝ)
-
-private theorem neg_mem_preimage_sqBall_complex {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) (R : ℝ) :
-    ∀ y ∈ ((Matrix.toLin' B).restrictScalars ℝ) ⁻¹' sqBall r ℂ R,
-      -y ∈ ((Matrix.toLin' B).restrictScalars ℝ) ⁻¹' sqBall r ℂ R := by
-  intro y hy
-  rw [Set.mem_preimage, map_neg]
-  exact sqBall_neg (E := ℂ) r R _ hy
-
-private theorem measurableSet_preimage_sqBall_complex {r : ℕ} (B : Matrix (Fin r) (Fin r) ℂ) (R : ℝ) :
-    MeasurableSet (((Matrix.toLin' B).restrictScalars ℝ) ⁻¹' sqBall r ℂ R) := by
-  have hc : Continuous ((Matrix.toLin' B).restrictScalars ℝ) :=
-    LinearMap.continuous_of_finiteDimensional _
-  exact ((sqBall_isClosed r R).preimage hc).measurableSet
-
-private lemma hermitianEllipsoid_props_of_eq {r : ℕ} {G : Matrix (Fin r) (Fin r) ℂ} (hG : G.PosDef) (B : Matrix (Fin r) (Fin r) ℂ)
-    (hB : G = Bᴴ * B) (R : ℝ) :
-    Convex ℝ {y | qC G y ≤ R ^ 2} ∧ (∀ y ∈ {y | qC G y ≤ R ^ 2}, -y ∈ {y | qC G y ≤ R ^ 2}) ∧
-      Bornology.IsBounded {y | qC G y ≤ R ^ 2} ∧ MeasurableSet {y | qC G y ≤ R ^ 2} := by
-  subst hB
-  have hdet : B.det ≠ 0 := by
-    intro h0
-    have h1 := hG.det_pos
-    rw [detC_eq, h0] at h1
-    simp at h1
-  rw [setC_eq]
-  exact ⟨convex_preimage_sqBall_complex B R, neg_mem_preimage_sqBall_complex B R, isBounded_preimage_sqBall_complex_of_det_ne_zero B hdet R, measurableSet_preimage_sqBall_complex B R⟩
-
 theorem ellipsoidC_props {r : ℕ} {G : Matrix (Fin r) (Fin r) ℂ} (hG : G.PosDef) (R : ℝ) :
     Convex ℝ {y | qC G y ≤ R ^ 2} ∧ (∀ y ∈ {y | qC G y ≤ R ^ 2}, -y ∈ {y | qC G y ≤ R ^ 2}) ∧
       Bornology.IsBounded {y | qC G y ≤ R ^ 2} ∧ MeasurableSet {y | qC G y ≤ R ^ 2} := by
-  obtain ⟨B, hB⟩ := exists_factor_C hG
-  exact hermitianEllipsoid_props_of_eq hG B hB R
+  obtain ⟨B, hBu, hB⟩ :=
+    CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.mp hG.isStrictlyPositive
+  rw [hB, Matrix.star_eq_conjTranspose, setC_eq]
+  let T := (Matrix.toLin' B).restrictScalars ℝ
+  have hc : Continuous T := LinearMap.continuous_of_finiteDimensional _
+  exact ⟨(sqBall_convex (E := ℂ) r R).linear_preimage T,
+    fun y hy => by simpa only [Set.mem_preimage, map_neg] using sqBall_neg (E := ℂ) r R _ hy,
+    isBounded_preimage_sqBall_complex_of_det_ne_zero B
+      ((Matrix.isUnit_iff_isUnit_det B).mp hBu).ne_zero R,
+    ((sqBall_isClosed r R).preimage hc).measurableSet⟩
 
 private theorem isBounded_preimage_sqBall_real_of_det_ne_zero {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (hdet : B.det ≠ 0) (R : ℝ) :
     Bornology.IsBounded ((Matrix.toLin' B) ⁻¹' sqBall r ℝ R) := by
@@ -137,38 +91,18 @@ private theorem isBounded_preimage_sqBall_real_of_det_ne_zero {r : ℕ} (B : Mat
   rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.2 hdet),
     Matrix.one_mulVec]
 
-private theorem convex_preimage_sqBall_real {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (R : ℝ) :
-    Convex ℝ ((Matrix.toLin' B) ⁻¹' sqBall r ℝ R) :=
-  Convex.linear_preimage (sqBall_convex (E := ℝ) r R) (Matrix.toLin' B)
-
-private theorem neg_mem_preimage_sqBall_real {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (R : ℝ) :
-    ∀ y ∈ (Matrix.toLin' B) ⁻¹' sqBall r ℝ R, -y ∈ (Matrix.toLin' B) ⁻¹' sqBall r ℝ R := by
-  intro y hy
-  rw [Set.mem_preimage, map_neg]
-  exact sqBall_neg (E := ℝ) r R _ hy
-
-private theorem measurableSet_preimage_sqBall_real {r : ℕ} (B : Matrix (Fin r) (Fin r) ℝ) (R : ℝ) :
-    MeasurableSet ((Matrix.toLin' B) ⁻¹' sqBall r ℝ R) := by
-  have hc : Continuous (Matrix.toLin' B) := LinearMap.continuous_of_finiteDimensional _
-  exact ((sqBall_isClosed r R).preimage hc).measurableSet
-
-private lemma realEllipsoid_props_of_eq {r : ℕ} {G : Matrix (Fin r) (Fin r) ℝ} (hG : G.PosDef) (B : Matrix (Fin r) (Fin r) ℝ)
-    (hB : G = Bᵀ * B) (R : ℝ) :
-    Convex ℝ {y | qR G y ≤ R ^ 2} ∧ (∀ y ∈ {y | qR G y ≤ R ^ 2}, -y ∈ {y | qR G y ≤ R ^ 2}) ∧
-      Bornology.IsBounded {y | qR G y ≤ R ^ 2} ∧ MeasurableSet {y | qR G y ≤ R ^ 2} := by
-  subst hB
-  have hdet : B.det ≠ 0 := by
-    intro h0
-    have h1 := hG.det_pos
-    rw [Matrix.det_mul, Matrix.det_transpose, h0, mul_zero] at h1
-    exact lt_irrefl _ h1
-  rw [setR_eq]
-  exact ⟨convex_preimage_sqBall_real B R, neg_mem_preimage_sqBall_real B R, isBounded_preimage_sqBall_real_of_det_ne_zero B hdet R, measurableSet_preimage_sqBall_real B R⟩
-
 theorem ellipsoidR_props {r : ℕ} {G : Matrix (Fin r) (Fin r) ℝ} (hG : G.PosDef) (R : ℝ) :
     Convex ℝ {y | qR G y ≤ R ^ 2} ∧ (∀ y ∈ {y | qR G y ≤ R ^ 2}, -y ∈ {y | qR G y ≤ R ^ 2}) ∧
       Bornology.IsBounded {y | qR G y ≤ R ^ 2} ∧ MeasurableSet {y | qR G y ≤ R ^ 2} := by
-  obtain ⟨B, hB⟩ := exists_factor_R hG
-  exact realEllipsoid_props_of_eq hG B hB R
+  obtain ⟨B, hBu, hB⟩ :=
+    CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.mp hG.isStrictlyPositive
+  rw [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_eq_transpose_of_trivial] at hB
+  rw [hB, setR_eq]
+  have hc : Continuous (Matrix.toLin' B) := LinearMap.continuous_of_finiteDimensional _
+  exact ⟨(sqBall_convex (E := ℝ) r R).linear_preimage (Matrix.toLin' B),
+    fun y hy => by simpa only [Set.mem_preimage, map_neg] using sqBall_neg (E := ℝ) r R _ hy,
+    isBounded_preimage_sqBall_real_of_det_ne_zero B
+      ((Matrix.isUnit_iff_isUnit_det B).mp hBu).ne_zero R,
+    ((sqBall_isClosed r R).preimage hc).measurableSet⟩
 
 end ReciprocityTheory.GeometryOfNumbersTheory

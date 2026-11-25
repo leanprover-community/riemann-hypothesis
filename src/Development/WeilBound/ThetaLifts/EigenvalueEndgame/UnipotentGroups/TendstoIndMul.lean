@@ -235,26 +235,12 @@ theorem level_sch (hL : PositivityTheory.ThKEst.Level) {n : ℕ} {X : Spc F E n}
 
 theorem decomp_of (hL : PositivityTheory.ThKEst.Level) : Decomp := by
   intro F E _ _ _ _ _ σ B a a' G X om om' t k hk Φ hΦ Φ' hΦ'
-  have hecke_div {χ χ' : Chr F E} (h : IsHecke F E χ) (h' : IsHecke F E χ') : IsHecke F E (χ / χ') :=
-    ⟨h.1.div' h'.1, fun x => by rw [MonoidHom.div_apply, h.2, h'.2, div_one]⟩
-  have res_div {K : Subgroup (AF F)ˣ} {χ χ' : Chr F E} {m n k : ℕ} (h : ResEtaPow K χ m)
-      (h' : ResEtaPow K χ' n) (e : k = m + n) : ResEtaPow K (χ / χ') k := fun x => by
-    rw [MonoidHom.div_apply, Circle.coe_div, h, h', e]
-    split_ifs
-    · simp
-    · rw [pow_add, div_eq_mul_inv, ← inv_pow, inv_neg, inv_one]
-  have pairV {G : Geo σ a a'} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (h : IsTriple B G X om om') :
-      IsPair B G.M X.β (X.β / X.α) om (a - G.p) G.p (a + a' - (G.p + G.q)) (G.p + G.q) :=
-    ⟨h.base, h.geo.hV, h.geo.hW, h.geo.hM, h.chars.heckeβ, hecke_div h.chars.heckeβ h.chars.heckeα, h.chars.resβ,
-      res_div h.chars.resβ h.chars.resα rfl, h.weil⟩
-  have pairV' {G : Geo σ a a'} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (h : IsTriple B G X om om') :
-      IsPair B G.M' X.α (X.α / X.β) om' G.q (a' - G.q) (a + a' - (G.p + G.q)) (G.p + G.q) :=
-    ⟨h.base, h.geo.hV', h.geo.hW, h.geo.hM', h.chars.heckeα, hecke_div h.chars.heckeα h.chars.heckeβ, h.chars.resα,
-      res_div h.chars.resα h.chars.resβ (add_comm _ _), h.weil'⟩
   have h1 : Tendsto (fun S : Finset (Pl F) => (piece (eps S) (eps_sq S) k)⁻¹ * k) atTop (𝓝 1) := by
     rw [← inv_mul_cancel k]
     exact (tendsto_piece k).inv.mul_const k
-  obtain ⟨S, h2, h3⟩ := (h1.eventually ((level_sch hL (pairV t) hΦ).and (level_sch hL (pairV' t) hΦ'))).exists
+  obtain ⟨S, h2, h3⟩ := (h1.eventually
+    ((level_sch hL (PositivityTheory.ThKG.pairV t) hΦ).and
+      (level_sch hL (PositivityTheory.ThKG.pairV' t) hΦ'))).exists
   have h4 : ∀ w, (mat ((piece (eps S) (eps_sq S) k)⁻¹ * k)).map (piInf (B.emb w)) = 1 := fun w => by
     rw [mat_mul, Matrix.map_mul, ← piInf_piece S k, ← Matrix.map_mul, mat_inv_mul, Matrix.map_one _ (map_zero _) (map_one _)]
   obtain ⟨l, l1, l2⟩ := piece_prod k S
@@ -323,27 +309,13 @@ variable {a a' : ℕ} {B : Base F E} {G : Geo σ a a'} {X : Chars F E} {om : Rep
 theorem match_inf (hA : PositivityTheory.ThKF.ArchOp) (hm : IsMatched B G X om om' R Rf) {k : UA σ G.W.J} (hk : k ∈ KInf σ G.W B.emb) {Φ Φ'}
     (H : PolMatch B G X R Rf Φ Φ') : PolMatch B G X R Rf (om (1, k) Φ) (om' (1, k) Φ') := by
   have t := hm.triple
-  have hecke_div {χ χ' : Chr F E} (h : IsHecke F E χ) (h' : IsHecke F E χ') : IsHecke F E (χ / χ') :=
-    ⟨h.1.div' h'.1, fun x => by rw [MonoidHom.div_apply, h.2, h'.2, div_one]⟩
-  have res_div {K : Subgroup (AF F)ˣ} {χ χ' : Chr F E} {m n k : ℕ} (h : ResEtaPow K χ m)
-      (h' : ResEtaPow K χ' n) (e : k = m + n) : ResEtaPow K (χ / χ') k := fun x => by
-    rw [MonoidHom.div_apply, Circle.coe_div, h, h', e]
-    split_ifs
-    · simp
-    · rw [pow_add, div_eq_mul_inv, ← inv_pow, inv_neg, inv_one]
-  have pairV {G : Geo σ a a'} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (h : IsTriple B G X om om') :
-      IsPair B G.M X.β (X.β / X.α) om (a - G.p) G.p (a + a' - (G.p + G.q)) (G.p + G.q) :=
-    ⟨h.base, h.geo.hV, h.geo.hW, h.geo.hM, h.chars.heckeβ, hecke_div h.chars.heckeβ h.chars.heckeα, h.chars.resβ,
-      res_div h.chars.resβ h.chars.resα rfl, h.weil⟩
-  have pairV' {G : Geo σ a a'} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (h : IsTriple B G X om om') :
-      IsPair B G.M' X.α (X.α / X.β) om' G.q (a' - G.q) (a + a' - (G.p + G.q)) (G.p + G.q) :=
-    ⟨h.base, h.geo.hV', h.geo.hW, h.geo.hM', h.chars.heckeα, hecke_div h.chars.heckeα h.chars.heckeβ, h.chars.resα,
-      res_div h.chars.resα h.chars.resβ (add_comm _ _), h.weil'⟩
   have one : ∀ {n : ℕ} (Y : Spc F E n), (1 : UA σ Y.J) ∈ KInf σ Y B.emb := fun Y =>
     ⟨fun u _ => by rw [mat_one, sub_self, smul_zero], fun w => by
       rw [mat_one, Matrix.map_one _ (map_zero _) (map_one _)]; exact Commute.one_left _⟩
-  obtain ⟨A, a1, a2⟩ := hA F E σ B _ _ _ _ _ _ _ _ _ _ _ _ (pairV t) 1 (one _).1 k hk.1
-  obtain ⟨A', b1, b2⟩ := hA F E σ B _ _ _ _ _ _ _ _ _ _ _ _ (pairV' t) 1 (one _).1 k hk.1
+  obtain ⟨A, a1, a2⟩ :=
+    hA F E σ B _ _ _ _ _ _ _ _ _ _ _ _ (PositivityTheory.ThKG.pairV t) 1 (one _).1 k hk.1
+  obtain ⟨A', b1, b2⟩ :=
+    hA F E σ B _ _ _ _ _ _ _ _ _ _ _ _ (PositivityTheory.ThKG.pairV' t) 1 (one _).1 k hk.1
   obtain ⟨Op, o1, o2⟩ := common_op (S' := G.M'.Pol B.ψ B.emb) hm.real.quot.onto (A : _ →ₗ[ℂ] _) (A' : _ →ₗ[ℂ] _) fun x hx x' hx' e =>
     hm.real.cpt k hk _ hx _ hx' _ _ (a1.2 _) (b1.2 _) e
   obtain ⟨T, hT, m, m', f, φ, f', φ', h1, h2, rfl, rfl, e⟩ := H
@@ -420,23 +392,7 @@ theorem match_fin (hP : PositivityTheory.ThKF.PureAct) (hm : IsMatched B G X om 
 theorem matchStab_of (hA : PositivityTheory.ThKF.ArchOp) (hPA : PositivityTheory.ThKF.PureAct) (hL : PositivityTheory.ThKEst.Level) (hS : PositivityTheory.ThKCT.SoStab) : MatchStab := by
   intro F E _ _ _ _ _ σ B a a' G X om om' R Rf hm k hk Φ Φ' hΦ' hP
   have t := hm.triple
-  have hecke_div {χ χ' : Chr F E} (h : IsHecke F E χ) (h' : IsHecke F E χ') : IsHecke F E (χ / χ') :=
-    ⟨h.1.div' h'.1, fun x => by rw [MonoidHom.div_apply, h.2, h'.2, div_one]⟩
-  have res_div {K : Subgroup (AF F)ˣ} {χ χ' : Chr F E} {m n k : ℕ} (h : ResEtaPow K χ m)
-      (h' : ResEtaPow K χ' n) (e : k = m + n) : ResEtaPow K (χ / χ') k := fun x => by
-    rw [MonoidHom.div_apply, Circle.coe_div, h, h', e]
-    split_ifs
-    · simp
-    · rw [pow_add, div_eq_mul_inv, ← inv_pow, inv_neg, inv_one]
-  have pairV {G : Geo σ a a'} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (h : IsTriple B G X om om') :
-      IsPair B G.M X.β (X.β / X.α) om (a - G.p) G.p (a + a' - (G.p + G.q)) (G.p + G.q) :=
-    ⟨h.base, h.geo.hV, h.geo.hW, h.geo.hM, h.chars.heckeβ, hecke_div h.chars.heckeβ h.chars.heckeα, h.chars.resβ,
-      res_div h.chars.resβ h.chars.resα rfl, h.weil⟩
-  have pairV' {G : Geo σ a a'} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (h : IsTriple B G X om om') :
-      IsPair B G.M' X.α (X.α / X.β) om' G.q (a' - G.q) (a + a' - (G.p + G.q)) (G.p + G.q) :=
-    ⟨h.base, h.geo.hV', h.geo.hW, h.geo.hM', h.chars.heckeα, hecke_div h.chars.heckeα h.chars.heckeβ, h.chars.resα,
-      res_div h.chars.resα h.chars.resβ (add_comm _ _), h.weil'⟩
-  refine ⟨hS F E σ B _ _ _ _ _ _ _ _ _ _ _ _ (pairV' t) _ _ hΦ', ?_⟩
+  refine ⟨hS F E σ B _ _ _ _ _ _ _ _ _ _ _ _ (PositivityTheory.ThKG.pairV' t) _ _ hΦ', ?_⟩
   have hp : Φ ∈ PolData B G.M ∧ Φ' ∈ PolData B G.M' := PositivityTheory.ThKG.polMatch_mem hP
   obtain ⟨p1, p2⟩ := hp
   obtain ⟨k₀, h0, l, r, h1, rfl, h2, h3⟩ := decomp_of hL F E σ B a a' G X om om' t k hk Φ (PositivityTheory.ThKG.polData_le t.geo.hM p1) Φ'

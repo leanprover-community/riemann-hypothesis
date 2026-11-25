@@ -242,42 +242,24 @@ private theorem clause2 [IsGalois F E] {σ : E ≃ₐ[F] E} (hσ : ∀ τ, τ �
     rightRegularRep (rationalGLOne (K := E) (n := n)) μ (MultiplicityOne.finProj E n _) (θ.U v)
   rw [(UpperTheory.ConvolutionTheory.Dp.twUnitary E n μ θ).2.2, e_finProj hσ hθ (gal_place p D w hw i g)]
 
-open scoped TensorProduct in
-private theorem galOf_mul {A B : Type*} [CommRing A] [Algebra F A] [CommRing B] [Algebra E B] (e : E ⊗[F] A ≃ₐ[E] B)
-    (σ τ : E ≃ₐ[F] E) (b : B) : galOf e σ (galOf e τ b) = galOf e (σ * τ) b := by
-  have h : ∀ x : E ⊗[F] A, Algebra.TensorProduct.map (σ : E →ₐ[F] E) (AlgHom.id F A)
-      (Algebra.TensorProduct.map (τ : E →ₐ[F] E) (AlgHom.id F A) x) =
-      Algebra.TensorProduct.map ((σ * τ : E ≃ₐ[F] E) : E →ₐ[F] E) (AlgHom.id F A) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a c => simp
-    | add a c ha hc => simp only [map_add (f := _), ha, hc]
-  simp [galOf, h]
-
-open scoped TensorProduct in
-private theorem galOf_one {A B : Type*} [CommRing A] [Algebra F A] [CommRing B] [Algebra E B] (e : E ⊗[F] A ≃ₐ[E] B)
-    (b : B) : galOf e (1 : E ≃ₐ[F] E) b = b := by
-  have h : ∀ x : E ⊗[F] A, Algebra.TensorProduct.map ((1 : E ≃ₐ[F] E) : E →ₐ[F] E) (AlgHom.id F A) x = x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a c => simp
-    | add a c ha hc => simp only [map_add (f := _), ha, hc]
-  simp [galOf, h]
-
 private theorem mapGL_iter (σ : E ≃ₐ[F] E) (v : Pl F) {n : ℕ} (k : ℕ) (Y : GL (Fin n) (CompletionsOver E v)) :
     (mapGL n (galFin σ v))^[k] Y = mapGL n (galFin (σ ^ k) v) Y := by
   induction k with
   | zero =>
+    rw [pow_zero]
     refine Units.ext (Matrix.ext fun a b => ?_)
-    exact (galOf_one (tensorEquiv' E v) _).symm
+    change _ = galFin 1 v _
+    have h1 : ((1 : E ≃ₐ[F] E) : E →ₐ[F] E) = AlgHom.id F E := AlgHom.ext fun _ => rfl
+    simp [galFin, galOf, h1]
   | succ k ih =>
-    rw [Function.iterate_succ_apply', ih]
+    rw [Function.iterate_succ_apply', ih, pow_succ']
     refine Units.ext (Matrix.ext fun a b => ?_)
-    change galFin σ v (galFin (σ ^ k) v _) = galFin (σ ^ (k + 1)) v _
-    rw [pow_succ']
-    exact galOf_mul (tensorEquiv' E v) _ _ _
+    change galFin σ v (galFin (σ ^ k) v _) = galFin (σ * σ ^ k) v _
+    simp [galFin, galOf]
+    rw [← AlgHom.comp_apply, ← Algebra.TensorProduct.map_comp, AlgHom.comp_id]
+    exact congrArg (fun f : E →ₐ[F] E =>
+      Algebra.TensorProduct.map f (AlgHom.id F (v.adicCompletion F)) _)
+      (AlgHom.ext fun _ => rfl)
 
 private def lp {n : ℕ} {v : Pl F} (Z : GL (Fin n) (CompletionsOver E v)) (l : List (PlacesOver E v)) :
     AdelicGLn.FiniteAdelicGL E n :=
@@ -430,7 +412,9 @@ private theorem exists_pre [FiniteDimensional F E] (T : Ty σ n q w₀) {v : Pl 
   rw [← Function.iterate_succ_apply' (mapGL n (galFin σ v)), mapGL_iter, ← hk,
     pow_orderOf_eq_one]
   refine Units.ext (Matrix.ext fun a b => ?_)
-  exact galOf_one (tensorEquiv' E v) _
+  change galFin 1 v _ = _
+  have h1 : ((1 : E ≃ₐ[F] E) : E →ₐ[F] E) = AlgHom.id F E := AlgHom.ext fun _ => rfl
+  simp [galFin, galOf, h1]
 
 private theorem under_eq {v : Pl F} (u : PlacesOver E v) : u.1.under (𝓞 F) = v :=
   HeightOneSpectrum.ext u.2.over.symm

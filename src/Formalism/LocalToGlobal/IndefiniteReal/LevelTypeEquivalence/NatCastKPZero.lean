@@ -17,8 +17,6 @@ open scoped TensorProduct Matrix
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D}
 
 theorem lamAf_eq_hatL (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) :

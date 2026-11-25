@@ -33,9 +33,9 @@ name: batch queue
 # that pull request, so it goes back in the inbox within a minute or so. Without the label there
 # is nothing to take off, and `ready` does nothing.
 #
-# A pull request that is closed, merged or not, loses `batch queue`, `building`, `batch-building`
-# and `frozen`. Reopened, it gets `batch queue` back if this workflow took the labels off and
-# nobody commented `-batch` on it meanwhile. A label a person took off stays off.
+# A pull request that is closed, merged or not, loses `batch queue`, `building`, `batch-building`,
+# `frozen` and `changed after frozen`. Reopened, it gets `batch queue` back if this workflow took
+# the labels off and nobody commented `-batch` on it meanwhile. A label a person took off stays off.
 #
 # A batch assembled by hand is a `batch/...` branch of this repository under another name than
 # the sync's own, such as `batch/b10b-on-1410`. It is never added to and its text is not
@@ -48,7 +48,9 @@ name: batch queue
 # When it is closed without being merged, what it contained loses its labels too, and the ones
 # that were queued go back to `batch queue`. The sync job runs when that pull request is opened,
 # edited, pushed to, closed or reopened. When a `frozen` pull request is pushed to, the `pushed`
-# job tells it, if a batch took an earlier commit of it, without a whole sync. A pull
+# job tells it, if a batch took an earlier commit of it, without a whole sync. It labels the pull
+# request `changed after frozen` when its head has moved on from the commit its batch or the queue
+# took, and takes that label off when it was pushed back to that commit. A pull
 # request labelled `batch queue` that holds a batch like this waits in the queue like any other.
 # `verification/BATCHES.md` says how to assemble such a batch, and `scripts/batch-labels.py`
 # names the labels; the `if:` of the sync job below names some of them too.
@@ -134,6 +136,7 @@ jobs:
           # The names of scripts/batch-labels.py.
           LABEL: batch queue
           FROZEN: frozen
+          CHANGED: changed after frozen
           MEMBER: batch-building
           PRIORITY: priority
           WAITING: awaiting-author
@@ -248,6 +251,11 @@ jobs:
             if grep -qxF -- "$FROZEN" <<< "$present" && ! grep -qxF -- "$MEMBER" <<< "$present"; then
               gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$FROZEN" '$label | @uri')" --silent
               echo "Removed '$FROZEN' from pull request $PR."
+              # No longer frozen, so not changed after it either.
+              if grep -qxF -- "$CHANGED" <<< "$present"; then
+                gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$CHANGED" '$label | @uri')" --silent
+                echo "Removed '$CHANGED' from pull request $PR."
+              fi
             fi
             echo "unqueued=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -462,7 +470,10 @@ jobs:
       cancel-in-progress: false
     # `contents: write` to remove the branch of a batch the sync started once its pull request is
     # merged or closed, and, with `ASSEMBLE` on, to create batch branches and merge into them.
+    # `actions: write` to start the conflict-labels workflow when a batch assembled by hand is
+    # first labelled `building`.
     permissions:
+      actions: write
       contents: write
       issues: write
       pull-requests: write
@@ -480,4 +491,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          # `on` once the conflict-labels workflow is switched on (see conflict-labels.yml): the
+          # sync then leaves entries under a heading about conflicts to it, and starts it.
+          CONFLICT_LABELS: ${{ vars.CONFLICT_LABELS }}
         run: python3 scripts/batch-queue-sync.py --repo "$REPO" --summary "$GITHUB_STEP_SUMMARY"

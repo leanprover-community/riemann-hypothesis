@@ -626,8 +626,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MeasureTheory Matrix GlobalTheory.PRep GlobalTheory.SmGL

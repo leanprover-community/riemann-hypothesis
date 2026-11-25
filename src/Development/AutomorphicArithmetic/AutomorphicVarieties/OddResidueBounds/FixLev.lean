@@ -61,10 +61,6 @@ private theorem pow_cyc_char_iff_toZModPow_eq {Ω : Type} [Field Ω] (l : ℕ) [
   · rintro h t ht
     rw [cyclotomicCharacter.spec l g t ht, h]
 
-private theorem pow_mod_eq_pow_of_pow_eq_one {Ω : Type} [Field Ω] (t : Ω) (n a : ℕ) (ht : t ^ n = 1) :
-    t ^ (a % n) = t ^ a := by
-  conv_rhs => rw [← Nat.mod_add_div a n, pow_add, pow_mul, ht, one_pow, mul_one]
-
 theorem UpperTheory.V.Odd.fixLev :
     ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (l : ℕ) [Fact l.Prime] (N m : ℕ) [NeZero N], fixMu E Ω (l ^ m) = Un E Ω l m ∧ Uinf E Ω l ⊓ fixMu E Ω N ≤ fixMu E Ω (N * l ^ m) ∧ ∀ (M : ℕ) [NeZero M] (b : (ZMod M)ˣ) (σ : Ω ≃+* Ω), l ^ m ∣ M → CycLift M b σ → (l : ℤ_[l]) ^ m ∣ ((cyclotomicCharacter Ω l σ : ℤ_[l]ˣ) : ℤ_[l]) - (((b : ZMod M).val : ℕ) : ℤ_[l]) := by
   intro E Ω _ _ _ _ _ l _ N m _
@@ -77,7 +73,7 @@ theorem UpperTheory.V.Odd.fixLev :
     intro g k
     rw [← pow_cyc_char_iff_toZModPow_eq l _ k 1]
     refine forall_congr' fun t => imp_congr_right fun ht => ?_
-    rw [ZMod.val_one_eq_one_mod, pow_mod_eq_pow_of_pow_eq_one t _ 1 ht, pow_one]
+    rw [ZMod.val_one_eq_one_mod, ← pow_eq_pow_mod 1 ht, pow_one]
     rfl
   refine ⟨?_, ?_, ?_⟩
   · ext g
@@ -122,7 +118,7 @@ theorem UpperTheory.V.Odd.fixLev :
   · intro M _ b σ hdvd hσ
     have hc := (pow_cyc_char_iff_toZModPow_eq l σ m (((b : ZMod M).val : ℕ) : ZMod (l ^ m))).1 (by
       intro t ht
-      rw [ZMod.val_natCast, pow_mod_eq_pow_of_pow_eq_one t _ _ ht]
+      rw [ZMod.val_natCast, ← pow_eq_pow_mod _ ht]
       apply hσ
       obtain ⟨q, rfl⟩ := hdvd
       rw [pow_mul, ht, one_pow])

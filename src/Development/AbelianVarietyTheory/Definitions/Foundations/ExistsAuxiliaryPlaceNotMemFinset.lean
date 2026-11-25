@@ -595,8 +595,6 @@ def ujRep {X : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X] {m : ℕ} 
     {ρ : Matrix (Fin m) (Fin m) ℂ → (X →L[ℂ] X)} (h : IsURepOn (UJset ε) ρ) : Formalism.REAL.UJ ε →* (X →L[ℂ] X) :=
   repVia h (ujMat ε) fun g => g.2
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (V : HSp D)
 
 theorem isHermND_gram : IsHermND D.sp.cm.sig V.gram :=

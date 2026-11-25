@@ -151,7 +151,6 @@ structure IsHypFrame (h : V →ₗ⋆[K] V →ₗ[K] K) (e f : Fin r → V) : Pr
   ef : ∀ a b, h (e a) (f b) = if a = b then 1 else 0
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 theorem hypFrame (D : D7) : IsHypFrame (hS D).hT D.sp.hypE D.sp.hypF :=
   ⟨(hS D).herm, D.sp.hyp_ee, D.sp.hyp_ff, D.sp.hyp_ef⟩
 
@@ -276,8 +275,6 @@ theorem IsHypFrame.isLattice (H : IsHypFrame h e f) (hA : ∀ a, A a ≠ 0) (hB 
 end Space
 
 section Record
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 

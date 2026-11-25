@@ -480,9 +480,7 @@ private theorem cont_gal (σ : E ≃ₐ[F] E) (n : ℕ) :
   have h : Continuous (galAd σ) := by
     rw [show (galAd σ : 𝔸[E] → 𝔸[E]) = fun y => σ • y from funext (galAd_apply σ)]
     exact continuous_const_smul σ
-  refine Units.continuous_iff.2 ⟨?_, ?_⟩
-  · exact Units.continuous_val.matrix_map h
-  · exact Units.continuous_coe_inv.matrix_map h
+  exact Continuous.units_map _ (continuous_id.matrix_map h)
 
 private theorem gal_diag (σ : E ≃ₐ[F] E) (n : ℕ) (h : GL (Fin n) E) :
     mapGL n (galAd σ) (AdelicGLn.diagonal E n h) = AdelicGLn.diagonal E n (sigmaGL σ h) := by

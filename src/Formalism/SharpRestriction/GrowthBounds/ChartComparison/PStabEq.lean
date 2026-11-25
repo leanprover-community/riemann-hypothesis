@@ -289,8 +289,6 @@ end Gen
 
 section LocJ
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem reGL_symm_mem_UJ {a b : ℕ} (h : a = b) {R : Type} [CommRing R] (σ : R →+* R) (J : Matrix (Fin a) (Fin a) R)
     (J' : Matrix (Fin b) (Fin b) R) (hJ : ∀ x y, J' x y = J (Fin.cast h.symm x) (Fin.cast h.symm y)) (g : GL (Fin b) R)
     (hg : g ∈ UJ σ J') : (reGL h R).symm g ∈ UJ σ J := by

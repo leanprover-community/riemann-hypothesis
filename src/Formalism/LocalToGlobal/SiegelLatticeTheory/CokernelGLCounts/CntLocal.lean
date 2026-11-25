@@ -14,8 +14,6 @@ open Classical ValuativeRel
 
 set_option linter.dupNamespace false
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : Formalism.BasicNotions.D7)
 
 structure LocSp (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) : Type 1 where

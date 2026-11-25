@@ -1473,9 +1473,6 @@ theorem heisO_smul (S T : HSp D) (w₀ : WO S T) (c : ℂ) (f : WO S T → ℂ) 
   simp only [heisO, Pi.smul_apply, smul_eq_mul]
   ring
 
-theorem mt_one' (S : HSp D) : Formalism.L2.Theta.mt S 1 = 1 := by
-  simp [Formalism.L2.Theta.mt]
-
 alias mt_mul' := _root_.GlobalTheory.BesselCompare.mt_mul
 
 theorem actO_one_mul (S T : HSp D) (h k : GA D T) (x : WO S T) :

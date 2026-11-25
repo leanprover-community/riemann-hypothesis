@@ -83,17 +83,10 @@ private theorem dc_compact (hJc : IsCompact (J : Set G)) (x : G) :
     IsCompact ((J : Set G) * {x} * (J : Set G)) :=
   (hJc.mul isCompact_singleton).mul hJc
 
-omit [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] [MeasurableSpace G]
-  [BorelSpace G] in
-private theorem dc_open (hJo : IsOpen (J : Set G)) (x : G) :
-    IsOpen ((J : Set G) * {x} * (J : Set G)) :=
-  hJo.mul_left
-
-
 variable (ν) in
 private noncomputable def dcF (hJc : IsCompact (J : Set G)) (hJo : IsOpen (J : Set G)) (x : G) : HeckeAlgebra ν :=
   HeckeAlgebra.mk ν (((J : Set G) * {x} * (J : Set G)).indicator fun _ => (1 : ℂ))
-    (indicator_mem_locallyConstantCompactSupport (dc_compact hJc x) (dc_open hJo x) _)
+    (indicator_mem_locallyConstantCompactSupport (dc_compact hJc x) hJo.mul_left _)
 
 private theorem dcF_apply (hJc : IsCompact (J : Set G)) (hJo : IsOpen (J : Set G)) (x y : G) :
     dcF ν hJc hJo x y = ((J : Set G) * {x} * (J : Set G)).indicator (fun _ => (1 : ℂ)) y := rfl

@@ -473,10 +473,6 @@ private theorem twisted_matrix_mulVec_base_change {G O LL : Type} [Group G] [Com
     rw [map_mul, Algebra.smul_def]
   rw [this, Matrix.smul_mulVec]
 
-private theorem mulVec_smul_scalar {O LL : Type} [CommRing O] [Field LL] [Algebra O LL] {n : ℕ}
-    (M : Matrix (Fin n) (Fin n) LL) (s : O) (v : Fin n → LL) : M.mulVec (s • v) = s • M.mulVec v := by
-  rw [Matrix.mulVec_smul]
-
 theorem _root_.UpperTheory.KN.exists_admissible_extension_latticeTensor :
     ∀ {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
       [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -562,10 +558,10 @@ theorem _root_.UpperTheory.KN.exists_admissible_extension_latticeTensor :
           (s * ((χ g : Oˣ) : O)) • (((N (x k) g).map (algebraMap O LL)).mulVec (E k) - E k) +
           (((χ g : Oˣ) : O) * s) • E k =
         ((χ g : Oˣ) : O) • ((N (x k) g).map (algebraMap O LL)).mulVec ((y : Fin a → Fin n → LL) k + s • E k)
-      rw [Matrix.mulVec_add, mulVec_smul_scalar, smul_add, smul_smul, mul_comm s, smul_sub]
+      rw [Matrix.mulVec_add, Matrix.mulVec_smul, smul_add, smul_smul, mul_comm s, smul_sub]
       abel
     · change (((χ g : Oˣ) : O) * s) • e = ((χ g : Oˣ) : O) • ((N p g).map (algebraMap O LL)).mulVec (s • e)
-      rw [mulVec_smul_scalar, hfix, smul_smul]
+      rw [Matrix.mulVec_smul, hfix, smul_smul]
     · exact hρ g (t : V)
   · refine (Submodule.mkQ_surjective _).comp ?_
     rintro ⟨m, s⟩

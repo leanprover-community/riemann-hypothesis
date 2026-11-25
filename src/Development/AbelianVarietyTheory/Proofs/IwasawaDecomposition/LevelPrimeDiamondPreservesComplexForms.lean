@@ -89,8 +89,8 @@ end General
 
 theorem lawDiaStable : ∀ {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K]
     [Fintype ι] {R : Ranks} (I : ChainIn E K ι R) (J : AtIn I) (emb : ι → E →+* K) (σ : K →+* ℂ) (hc : ι → HCParam R),
-    FOk emb σ → ∀ (_hI : I.Ok), J.Ok → J.LawDiaStable emb σ hc := by
-  intro E K ι _ _ _ _ _ _ _ R I J emb σ hc _ _ h
+    J.Ok → J.LawDiaStable emb σ hc := by
+  intro E K ι _ _ _ _ _ _ _ R I J emb σ hc h
   rintro P a _ ⟨φ, hφ, rfl⟩
   exact mem_Fi _ emb σ _ h.free0 _ fun c => tr_mem _ emb σ _ _ _ (hφ _).1
 

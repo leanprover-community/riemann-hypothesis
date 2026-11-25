@@ -59,33 +59,12 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.IndefR.Lev Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.DIV GlobalTheory.IndefiniteRowSideFullHecke.IsometryCarriesCharacter
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinAdIdent
 
 section Generic
 
 variable {A : Type} [CommRing A] {n : ℕ}
-
-private theorem cT_add_twisted_operators {A : Type} [CommRing A] {m k : Type} (σ : A →+* A) (X Y : Matrix m k A) :
-    Formalism.UG.cT σ (X + Y) = Formalism.UG.cT σ X + Formalism.UG.cT σ Y := by
-  ext i j; simp [Formalism.UG.cT]
-
-private theorem cT_smul_twisted_operators {A : Type} [CommRing A] {m k : Type} (σ : A →+* A) (c : A) (X : Matrix m k A) :
-    Formalism.UG.cT σ (c • X) = σ c • Formalism.UG.cT σ X := by
-  ext i j; simp [Formalism.UG.cT]
-
-private theorem cT_cT_of_involutive' {A : Type} [CommRing A] {m k : Type} (σ : A →+* A) (hσ : ∀ x, σ (σ x) = x)
-    (X : Matrix m k A) : Formalism.UG.cT σ (Formalism.UG.cT σ X) = X := by
-  ext i j; simp [Formalism.UG.cT, hσ]
-
-private theorem cT_mul_twisted_operators {A : Type} [CommRing A] {m k l : Type} [Fintype k] (σ : A →+* A) (X : Matrix m k A)
-    (Y : Matrix k l A) : Formalism.UG.cT σ (X * Y) = Formalism.UG.cT σ Y * Formalism.UG.cT σ X := by
-  simp [Formalism.UG.cT, Matrix.map_mul, Matrix.transpose_mul]
-
-private theorem cT_one_twisted_operators {A : Type} [CommRing A] {m : Type} [DecidableEq m] (σ : A →+* A) :
-    Formalism.UG.cT σ (1 : Matrix m m A) = 1 := by
-  simp [Formalism.UG.cT, Matrix.map_one]
 
 private theorem orthogonal_idempotent_combination_mul {A : Type} [CommRing A] {m : Type} [Fintype m] {e f g : A} (he : e * e = e) (hf : f * f = f)
     (hg : g * g = g) (hef : e * f = 0) (heg : e * g = 0) (hfg : f * g = 0) (X Y Z X' Y' Z' : Matrix m m A) :
@@ -110,9 +89,12 @@ private theorem cT_mul_self_eq_one_and_smul_eq_of_idempotent {A : Type} [CommRin
   refine ⟨?_, ?_⟩
   · have hc : Formalism.UG.cT τ (p • a.val + τ p • Formalism.UG.cT τ (a⁻¹).val + (1 - p - τ p) • 1) =
         p • (a⁻¹).val + τ p • Formalism.UG.cT τ a.val + (1 - p - τ p) • 1 := by
-      rw [cT_add_twisted_operators, cT_add_twisted_operators, cT_smul_twisted_operators, cT_smul_twisted_operators, cT_smul_twisted_operators, cT_cT_of_involutive' τ hτ, cT_one_twisted_operators, hτ, hτr]
+      rw [Formalism.L2.DIV.cT_add, Formalism.L2.DIV.cT_add, Formalism.L2.DIV.cT_smul,
+        Formalism.L2.DIV.cT_smul, Formalism.L2.DIV.cT_smul, Formalism.L2.DIV.cT_cT τ hτ,
+        Formalism.UG.cT_one, hτ, hτr]
       abel
-    rw [hc, orthogonal_idempotent_combination_mul hp hqq hrr hq hpr hqr, ← cT_mul_twisted_operators, Units.inv_mul, cT_one_twisted_operators, Matrix.mul_one,
+    rw [hc, orthogonal_idempotent_combination_mul hp hqq hrr hq hpr hqr, ← Formalism.UG.cT_mul,
+      Units.inv_mul, Formalism.UG.cT_one, Matrix.mul_one,
       ← add_smul, ← add_smul, show p + τ p + (1 - p - τ p) = 1 by ring, one_smul]
   · simp only [smul_add, smul_smul, hp, hq, hpr, zero_smul, add_zero]
 
@@ -194,9 +176,9 @@ theorem exists_isom (S : Subring A) (σ : A →+* A) (hσ : ∀ x, σ (σ x) = x
   have hVmap : VS.map S.subtype = V0 := by ext i k; rfl
   have hJ : J = Formalism.UG.cT σ (b⁻¹).val * (b⁻¹).val := by
     calc J = Formalism.UG.cT σ (b.val * (b⁻¹).val) * J * (b.val * (b⁻¹).val) := by
-          rw [Units.mul_inv, cT_one_twisted_operators, Matrix.one_mul, Matrix.mul_one]
+          rw [Units.mul_inv, Formalism.UG.cT_one, Matrix.one_mul, Matrix.mul_one]
       _ = Formalism.UG.cT σ (b⁻¹).val * (Formalism.UG.cT σ b.val * J * b.val) * (b⁻¹).val := by
-          rw [cT_mul_twisted_operators]; simp only [Matrix.mul_assoc]
+          rw [Formalism.UG.cT_mul]; simp only [Matrix.mul_assoc]
       _ = _ := by rw [hu, Matrix.mul_one]
   have hu2 : ∀ X : Matrix (Fin n) (Fin n) A, Formalism.UG.cT σ b'.val * (J' * (b'.val * X)) = X := fun X => by
     rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hu', Matrix.one_mul]
@@ -216,7 +198,7 @@ theorem exists_isom (S : Subring A) (σ : A →+* A) (hσ : ∀ x, σ (σ x) = x
       rwa [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, h2, Matrix.one_mulVec, Matrix.one_mulVec] at this
     · intro x'
       exact ⟨j'.mulVec x', by rw [Matrix.mulVec_mulVec, h1, Matrix.one_mulVec]⟩
-  · rw [hJ, hj, cT_mul_twisted_operators, cT_mul_twisted_operators]
+  · rw [hJ, hj, Formalism.UG.cT_mul, Formalism.UG.cT_mul]
     simp only [Matrix.mul_assoc]
     rw [hu2, hy2]
   · ext x'

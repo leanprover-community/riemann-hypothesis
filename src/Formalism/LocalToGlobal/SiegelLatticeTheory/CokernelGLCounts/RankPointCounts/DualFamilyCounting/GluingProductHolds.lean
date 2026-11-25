@@ -929,14 +929,6 @@ theorem hermitian_coefficient_identity_two {A B D α β : K} (hA : A ≠ 0) (hD 
       = D⁻¹ * (A * (star β * (B * A⁻¹) * β + α * star α)) := by ring
     _ = 1 := by rw [e, inv_mul_cancel₀ hD]
 
-private theorem isUnitIn_mul_dual_family_counting {a c : K} (ha : IsUnitIn S a) (hc : IsUnitIn S c) :
-    IsUnitIn S (a * c) :=
-  And.intro (mul_ne_zero ha.1 hc.1)
-    (And.intro (S.mul_mem ha.2.1 hc.2.1) (by rw [mul_inv]; exact S.mul_mem ha.2.2 hc.2.2))
-
-private theorem isUnitIn_inv {a : K} (ha : IsUnitIn S a) : IsUnitIn S a⁻¹ :=
-  And.intro (inv_ne_zero ha.1) (And.intro ha.2.2 (by rw [inv_inv]; exact ha.2.1))
-
 theorem rot2 (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm) {ι : Type} [Fintype ι]
     [DecidableEq ι] {b : ι → V} {e : ι → ℕ} (ho : ∀ i j, i ≠ j → h (b i) (b j) = 0)
     (hu : ∀ i, IsUnitIn S (h (b i) (b i) * (π ^ e i)⁻¹)) {i₀ j : ι} (hij : i₀ ≠ j)
@@ -1001,7 +993,9 @@ theorem rot2 (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm) {ι : 
       rw [hZZ]
       field_simp
     rw [eqZ]
-    exact isUnitIn_mul_dual_family_counting (isUnitIn_mul_dual_family_counting (hu j) hY) (isUnitIn_inv (hu i₀))
+    exact _root_.Formalism.HermitianLattices.Ext.L3.U0.unit_mul
+      (_root_.Formalism.HermitianLattices.Ext.L3.U0.unit_mul (hu j) hY)
+      (_root_.Formalism.HermitianLattices.Ext.L3.U0.unit_inv (hu i₀))
   obtain ⟨c, hc0, hcj, hck⟩ : ∃ c : ι → V, c i₀ = Y ∧ c j = Z ∧ ∀ k, k ≠ i₀ → k ≠ j → c k = b k :=
     ⟨Function.update (Function.update b i₀ Y) j Z, by simp [hij],
       by simp, fun k h1 h2 => by simp [h1, h2]⟩
@@ -1127,11 +1121,6 @@ section
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
 variable {S : Subring K} {π : K} {h : V →ₗ⋆[K] V →ₗ[K] K}
 
-private theorem unit_mul_lemma {a c : K} (ha : IsUnitIn S a) (hc : IsUnitIn S c) :
-    IsUnitIn S (a * c) :=
-  And.intro (mul_ne_zero ha.1 hc.1)
-    (And.intro (S.mul_mem ha.2.1 hc.2.1) (by rw [mul_inv]; exact S.mul_mem ha.2.2 hc.2.2))
-
 theorem absorb (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm) {ι : Type} [Fintype ι]
     [DecidableEq ι] {e : ι → ℕ} {i₀ : ι} (x : ι → K) (hx : ∀ i, x i ∈ S) :
     ∀ T : Finset ι, i₀ ∉ T → (∀ j ∈ T, e i₀ < e j) → ∀ b : ι → V,
@@ -1173,7 +1162,7 @@ theorem absorb (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm) {ι 
         field_simp
         ring
       rw [eq]
-      exact unit_mul_lemma (hu' i₀) (hπ.rad _ hs0)
+      exact _root_.Formalism.HermitianLattices.Ext.L3.U0.unit_mul (hu' i₀) (hπ.rad _ hs0)
     obtain ⟨c, ho2, hu2, hc0, hck, hsp2, hiff2⟩ :=
       rot2 hS hπ hs ho' hu' hai₀ hlta.le S.one_mem (hx a) hY
     refine ⟨c, ho2, hu2, ?_, ?_, hsp2.trans hsp', fun v => (hiff2 v).trans (hiff' v)⟩
@@ -1260,14 +1249,6 @@ theorem sum_filter_smul {J : Type} [Fintype J] (p : J → Prop) [DecidablePred p
     ∑ i ∈ Finset.univ.filter p, x i • b i = ∑ i, (if p i then x i else 0) • b i := by
   simp only [Finset.sum_filter, ite_smul, zero_smul]
 
-private theorem unit_mul_lemma {a b : K} (ha : IsUnitIn S a) (hb : IsUnitIn S b) :
-    IsUnitIn S (a * b) := by
-  obtain ⟨ha0, haS, haI⟩ := ha
-  obtain ⟨hb0, hbS, hbI⟩ := hb
-  refine (⟨mul_ne_zero ha0 hb0, S.mul_mem haS hbS, ?_⟩ : a * b ≠ 0 ∧ a * b ∈ S ∧ (a * b)⁻¹ ∈ S)
-  rw [mul_inv]
-  exact S.mul_mem haI hbI
-
 private theorem unit_add_dv_lemma_2 (hπ : IsUnif S π) {u d : K} (hu : IsUnitIn S u) (hd : Dv S π d) :
     IsUnitIn S (u + d) := by
   have hu' : u ≠ 0 ∧ u ∈ S ∧ u⁻¹ ∈ S := hu
@@ -1276,7 +1257,7 @@ private theorem unit_add_dv_lemma_2 (hπ : IsUnif S π) {u d : K} (hu : IsUnitIn
     rw [mul_add, mul_one, mul_left_comm u π, mul_inv_cancel_left₀ hu'.1, mul_left_comm π d,
       mul_inv_cancel₀ hπ.3, mul_one]
   rw [← e]
-  exact unit_mul_lemma hu (hπ.5 _ (S.mul_mem hu'.2.2 hd'))
+  exact _root_.Formalism.HermitianLattices.Ext.L3.U0.unit_mul hu (hπ.5 _ (S.mul_mem hu'.2.2 hd'))
 
 theorem rebaseAt_of (hS : IsHermSemilocal S) (hπ : IsUnif S π)
     (hUP : ∀ (J : Type) [Fintype J] [DecidableEq J] (b : J → V) (e : J → ℕ) (i₀ : J),

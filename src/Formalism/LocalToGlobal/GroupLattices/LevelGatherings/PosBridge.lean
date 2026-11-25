@@ -11,8 +11,6 @@ open Formalism.BasicNotions NumberField Formalism.MainNotions.G Formalism.Froben
 
 namespace Formalism.L2.G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem cc_sq (e : Formalism.HC.Frame) : e.cc * e.cc = 1 := by
   simp [Formalism.HC.Frame.cc, Formalism.FrobeniusOrbits.c0, Prod.ext_iff]
 

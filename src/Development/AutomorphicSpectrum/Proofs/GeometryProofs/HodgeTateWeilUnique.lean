@@ -128,25 +128,12 @@ theorem le_of_field {k B : Type} [Field k] [CommRing B] [Nontrivial B] (φ : k �
 theorem spec_fst_surj (R : Type) [CommRing R] :
     Function.Surjective (Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom)) := by
   intro p
-  refine ⟨PrimeSpectrum.comap (algebraMap R (DualNumber R)) p, ?_⟩
-  apply PrimeSpectrum.ext
-  ext a
-  change (algebraMap R (DualNumber R)) a.fst ∈ p.asIdeal ↔ a ∈ p.asIdeal
-  have hsq : ∀ b : R, (TrivSqZeroExt.inr b : DualNumber R) ∈ p.asIdeal := fun b =>
-    p.2.mem_of_pow_mem 2 (by
-      rw [pow_two, TrivSqZeroExt.inr_mul_inr]
-      exact p.asIdeal.zero_mem)
-  have ha : a = algebraMap R (DualNumber R) a.fst + TrivSqZeroExt.inr a.snd := by
-    rw [TrivSqZeroExt.algebraMap_eq_inl, TrivSqZeroExt.inl_fst_add_inr_snd_eq]
-  constructor
-  · intro h
-    rw [ha]
-    exact p.asIdeal.add_mem h (hsq _)
-  · intro h
-    have : algebraMap R (DualNumber R) a.fst = a - TrivSqZeroExt.inr a.snd := by
-      nth_rw 2 [ha]; ring
-    rw [this]
-    exact p.asIdeal.sub_mem h (hsq _)
+  show p ∈ Set.range (PrimeSpectrum.comap (TrivSqZeroExt.fstHom R R R).toRingHom)
+  rw [_root_.range_comap_of_surjective _ _ TrivSqZeroExt.fst_surjective]
+  intro a ha
+  have ha' : a.fst = 0 := ha
+  have h2 : a ^ 2 = 0 := by ext <;> simp [pow_two, ha']
+  exact p.2.mem_of_pow_mem 2 (h2 ▸ Ideal.zero_mem _)
 
 section
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : Spec (CommRingCat.of Ω) ⟶ X}

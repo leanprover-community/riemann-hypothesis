@@ -420,12 +420,6 @@ namespace GKConjScale
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
-theorem v_eq_ofAdd_ordL {x : L} (hx : x ≠ 0) :
-    Valued.v x = ((Multiplicative.ofAdd (-ordL x) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
-  have h : Valued.v x ≠ 0 := by simpa using hx
-  unfold ordL
-  rw [dite_eq_right h, neg_neg, ofAdd_toAdd, WithZero.coe_unzero]
-
 theorem coe_mul_le_iff (g h : Multiplicative ℤ) (x : WithZero (Multiplicative ℤ)) :
     (g : WithZero (Multiplicative ℤ)) * x ≤ h ↔ x ≤ ((g⁻¹ * h : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
   constructor
@@ -683,7 +677,7 @@ theorem conjScale' : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicativ
     · simp
   have ha0 : T a a ≠ 0 := right_ne_zero_of_mul_eq_one hprod
   have hva : Valued.v (T a a) = ((Multiplicative.ofAdd (-r) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) :=
-    v_eq_ofAdd_ordL ha0
+    Formalism.UG.P.fSatake_v_eq ha0
   have hva' : Valued.v (T a.rev a.rev) = ((Multiplicative.ofAdd r : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
     have h := congrArg Valued.v hprod
     rw [map_mul, hσv, map_one, hva] at h

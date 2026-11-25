@@ -22,8 +22,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.RowsConc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Num
 
 variable {D : D7} (X : HidaSetting D) (Y : Full X)

@@ -1,7 +1,8 @@
 module
 
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.ExistsIsomFrame
-public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.AlgebraMapNeZeroOfMemHcompl
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapNeZeroOfMemHcompl
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 public import Formalism.HermitianLattices.HermitianLatticesProofs.TraceReal
 import Mathlib.Algebra.Order.Floor.Extended
@@ -49,6 +50,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.GmapLocEqOfFrame
 
 @[expose] public section
 
@@ -57,25 +59,10 @@ open NumberField Module
 noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.L3.WA
+open Formalism.HermitianLattices.Ext.L3.WA (smul_mem_loc)
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
-theorem smul_mem_loc {L : Submodule (𝓞 K) V} {p : Ideal (𝓞 K)} (hp : p.IsPrime) {a : K}
-    (ha : a ∈ Formalism.HermitianLatticesTheory.locR (K := K) p) {m : V} (hm : m ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L) :
-    a • m ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L := by
-  obtain ⟨s, hs, hsa⟩ := (Formalism.HermitianLatticesTheory.locDual_mem_locR p a).mp ha
-  obtain ⟨r, hr⟩ := Submodule.mem_one.mp hsa
-  obtain ⟨t, ht, htm⟩ := hm
-  show ∃ u ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) p, u • (a • m) ∈ L
-  refine ⟨s * t, (Formalism.HermitianLatticesTheory.hcompl (K := K) p).mul_mem hs ht, ?_⟩
-  have key : (s * t) • (a • m) = r • (t • m) := by
-    rw [← algebraMap_smul K (s * t) (a • m), ← algebraMap_smul K r (t • m),
-      ← algebraMap_smul K t m, smul_smul, smul_smul, hr, map_mul]
-    congr 1
-    ring
-  rw [key]
-  exact L.smul_mem r htm
 
 private theorem mem_locR_of_unimod_lemma {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V}
     {p : Ideal (𝓞 K)} (hu : Formalism.HermitianLatticesTheory.IsUnimodularAt h p L) {x y : V}
@@ -93,29 +80,6 @@ private theorem mem_loc_of_mem_lemma_3 {L : Submodule (𝓞 K) V} (p : Ideal (�
     (hx : x ∈ L) : x ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L := by
   show ∃ u ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) p, u • x ∈ L
   exact ⟨1, (Formalism.HermitianLatticesTheory.hcompl (K := K) p).one_mem, by rw [one_smul]; exact hx⟩
-
-theorem isSelfDualMod_loc {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V}
-    (hL : Submodule.IsFullLattice K L) {p : Ideal (𝓞 K)} (hp : p.IsPrime)
-    (hu : Formalism.HermitianLatticesTheory.IsUnimodularAt h p L) :
-    IsSelfDualMod (locRing p) h (Formalism.HermitianLatticesTheory.loc (K := K) p L).toAddSubgroup := by
-  have hu' : ∀ x, x ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L ↔
-      ∀ y ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L, h y x ∈ Formalism.HermitianLatticesTheory.locR (K := K) p := by
-    intro x
-    rw [← Formalism.HermitianLatticesTheory.locDual_mem_dualAt]
-    unfold Formalism.HermitianLatticesTheory.IsUnimodularAt at hu
-    rw [hu]
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · intro a ha m hm
-    exact smul_mem_loc hp ha hm
-  · intro x hx y hy
-    exact (hu' y).mp hy x hx
-  · intro x hx
-    exact (hu' x).mpr hx
-  · intro x
-    obtain ⟨n, hn, hnx⟩ := _root_.Bl.general_b_fact_second'''''.goal1 L hL x
-    refine ⟨(n : K), by exact_mod_cast hn, ?_⟩
-    rw [Int.cast_smul_eq_zsmul]
-    exact Formalism.HermitianLatticesTheory.locBasic_le_locS _ L hnx
 
 private theorem mem_loc_of_smul_lemma_2 {L : Submodule (𝓞 K) V} {p : Ideal (𝓞 K)} {s : 𝓞 K}
     (hs : s ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) p) {y : V}

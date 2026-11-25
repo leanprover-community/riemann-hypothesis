@@ -102,17 +102,10 @@ theorem piTensor_rep_isIrreducible (hA : GlobalTheory.Published.IrreducibleAdmis
     · rw [Units.isEmbedding_embedProduct.isInducing.isCompact_iff]
       let S : Set (Matrix (Fin N) (Fin N) k) := {A | ∀ i j, A i j ∈ O}
       have hS : IsCompact S := by
-        have h := isCompact_univ_pi (fun _ : Fin N => isCompact_univ_pi (fun _ : Fin N => hOc))
-        have hSe : S = Set.univ.pi (fun _ : Fin N => Set.univ.pi fun _ : Fin N => (O : Set k)) := by
+        rw [show S = Set.univ.pi fun _ : Fin N => Set.univ.pi fun _ => (O : Set k) by
           ext A
-          show (∀ i j, A i j ∈ O) ↔ ∀ i ∈ (Set.univ : Set (Fin N)), ∀ j ∈ (Set.univ : Set (Fin N)), A i j ∈ (O : Set k)
-          constructor
-          · intro hA i _ j _
-            exact hA i j
-          · intro hA i j
-            exact hA i (Set.mem_univ i) j (Set.mem_univ j)
-        rw [hSe]
-        exact h
+          exact ⟨fun h _ _ _ _ => h _ _, fun h i j => h i trivial j trivial⟩]
+        exact isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => hOc
       have hsub : Units.embedProduct (Matrix (Fin N) (Fin N) k) '' (K : Set (GL (Fin N) k)) =
           (S ×ˢ (MulOpposite.op '' S)) ∩
             {p | p.1 * MulOpposite.unop p.2 = 1 ∧ MulOpposite.unop p.2 * p.1 = 1} := by

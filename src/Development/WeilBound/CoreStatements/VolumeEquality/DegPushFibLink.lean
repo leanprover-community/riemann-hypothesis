@@ -138,21 +138,6 @@ private theorem sub_diag_smul_mem_flag_of_triangular (X Y : Fin r → V) (S : Ma
     rw [hS hmj, zero_smul]
     exact zero_mem _
 
-private theorem prod_Iic_eq_prod_castLE' {M : Type} [CommMonoid M] (m : Fin r) (f : Fin r → M) :
-    ∏ x ∈ Finset.Iic m, f x = ∏ b : Fin ((m : ℕ) + 1), f (Fin.castLE m.2 b) := by
-  have himg : Finset.Iic m = Finset.univ.image (Fin.castLE m.2) := by
-    ext x
-    simp only [Finset.mem_Iic, Finset.mem_image, Finset.mem_univ, true_and]
-    constructor
-    · intro hx
-      exact ⟨⟨x, by rw [Fin.le_def] at hx; omega⟩, Fin.ext rfl⟩
-    · rintro ⟨b, rfl⟩
-      rw [Fin.le_def, Fin.coe_castLE]
-      omega
-  rw [himg, Finset.prod_image]
-  intro a _ b _ hab
-  exact Fin.castLE_injective _ hab
-
 private theorem det_submatrix_mul_triangular_eq (u W : Matrix (Fin r) (Fin r) Ω) (hW : W.BlockTriangular id) (m : Fin r)
     (I : Fin ((m : ℕ) + 1) → Fin r) :
     (Matrix.of fun a b : Fin ((m : ℕ) + 1) => (u * W) (I a) (Fin.castLE m.2 b)).det =
@@ -401,11 +386,13 @@ theorem flag_val (fn : Ω₀ →+* Ω) (i : Ω →+* Ω₃) (c b₀ : Fin r → 
     rw [this]
     rfl
   rw [hpull] at hsup
-  have e1 := prod_Iic_eq_prod_castLE' m (fun x => O.valuation (i (S x x)))
-  have e2 := prod_Iic_eq_prod_castLE' m (fun x => (T' x x)⁻¹)
-  simp only at e1 e2 ⊢
-  rw [e1, e2]
-  simp only [hWdiag, map_prod, map_mul, Finset.prod_mul_distrib, map_inv₀, Finset.prod_inv_distrib] at hsup ⊢
+  have himg : Finset.univ.map (Fin.castLEEmb m.2) = Finset.Iic m := by
+    rw [show (Finset.univ : Finset (Fin ((m : ℕ) + 1))) = Finset.Iic (Fin.last m) by
+      ext x; simp [Fin.le_last], Fin.map_castLEEmb_Iic]
+    exact congrArg Finset.Iic (Fin.ext rfl)
+  rw [← himg, Finset.prod_map, Finset.prod_map]
+  simp only [hWdiag, Fin.coe_castLEEmb, map_prod, map_mul, Finset.prod_mul_distrib,
+    map_inv₀, Finset.prod_inv_distrib] at hsup ⊢
   refine eq_inv_of_mul_eq_one_left ?_
   rw [← hsup]
   ac_rfl

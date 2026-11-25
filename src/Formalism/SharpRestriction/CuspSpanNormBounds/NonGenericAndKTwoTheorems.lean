@@ -50,8 +50,6 @@ namespace Formalism.MainNotions.NonGenericAndKTwoTheorems
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Module
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def NonGenericLocalBound (k r : ℕ) (C : ℝ) : Prop :=
   ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
     (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]

@@ -44,7 +44,6 @@ import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

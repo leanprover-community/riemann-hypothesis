@@ -69,8 +69,6 @@ scoped instance invTwo : Invertible (2 : AF F) :=
 
 scoped instance modTop : IsModuleTopology (AF F) (AE F E) := ⟨rfl⟩
 
-attribute [local instance] GlobalTheory.LocalData.complRel
-
 local instance locField (v : Pl F) : IsNonarchimedeanLocalField (Fv F v) := GlobalTheory.LocalData.isLocalField v
 
 local instance measFv (v : Pl F) : MeasurableSpace (Fv F v) := borel _

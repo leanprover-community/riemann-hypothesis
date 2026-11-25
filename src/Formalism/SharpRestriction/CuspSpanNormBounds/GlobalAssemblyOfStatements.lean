@@ -48,8 +48,6 @@ export Formalism.MainNotions.S.UnitaryVolumeMass (DefiniteComplementRank Lem1 Le
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S.Lat Module
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def adm1 (D : D7) : Prop :=
   S.UnitaryVolumeMass.stGlue D
 

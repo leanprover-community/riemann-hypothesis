@@ -67,8 +67,6 @@ end Core
 
 section RO
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem ratLink_mul {x y : X.B.I.GA} {m n : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hx : RatLink X x m)
@@ -161,8 +159,6 @@ end RO
 
 section Indep
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
 private theorem norm_exp_sum_conj_lemma {ι : Type*} (s : Finset ι) (w : ι → ℂ) (gg : ℕ) :
@@ -247,8 +243,6 @@ end Indep
 
 section Amp
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
 variable {D : D7} (X : HidaSetting D)
@@ -313,8 +307,6 @@ theorem rankOneInnerOperator_smul_smul {V V' : Type*} [NormedAddCommGroup V] [In
 end Amp
 
 section AmpC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
@@ -430,8 +422,6 @@ theorem ampWellDefC_of (hR : RatPt) (hN : NLamNinf) (hNf : NLamNfin) (hC : ChiTr
 end AmpC
 
 section LemV
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
@@ -576,8 +566,6 @@ theorem lemmaVC_of (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTri
 end LemV
 
 section Chi
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 

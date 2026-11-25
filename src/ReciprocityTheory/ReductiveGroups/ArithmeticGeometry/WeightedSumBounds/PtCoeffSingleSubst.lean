@@ -147,10 +147,6 @@ private theorem vmul_lemma {ρ K : Type*} [CommRing K] {P Q : MvPowerSeries ρ K
   · rw [hP _ h1, zero_mul]
   · rw [hQ _ (by omega), mul_zero]
 
-private theorem vzero_lemma_2 {ρ : Type*} {e : ρ →₀ ℕ} (h : e.degree = 0) : e = 0 := by
-  first
-  | exact (Finsupp.degree_eq_zero_iff _).mp h
-
 private theorem vpow_lemma_3 {ρ K : Type*} [CommRing K] {A : MvPowerSeries ρ K}
     (hA : constantCoeff A = 0) (k : ℕ) :
     ∀ e : ρ →₀ ℕ, e.degree < k → coeff e (A ^ k) = 0 := by
@@ -160,7 +156,7 @@ private theorem vpow_lemma_3 {ρ K : Type*} [CommRing K] {A : MvPowerSeries ρ K
     rw [pow_succ]
     refine vmul_lemma ih ?_
     intro e he
-    have h0 : e = 0 := vzero_lemma_2 (by omega)
+    have h0 : e = 0 := (Finsupp.degree_eq_zero_iff e).mp (by omega)
     rw [h0, coeff_zero_eq_constantCoeff_apply, hA]
 
 private theorem vprod_lemma_4 {ι ρ K : Type*} [CommRing K] {A : ι → MvPowerSeries ρ K}
@@ -192,7 +188,7 @@ theorem pt_coeff_single_subst {σ τ : Type*} [Fintype σ]
     · rw [hd0, coeff_zero_eq_constantCoeff_apply, hf, zero_smul]
     · have hdeg : 2 ≤ d.degree := by
         by_contra hlt
-        have hne : d.degree ≠ 0 := fun h0 => hd0 (vzero_lemma_2 h0)
+        have hne : d.degree ≠ 0 := fun h0 => hd0 ((Finsupp.degree_eq_zero_iff d).mp h0)
         have h1 : d.degree = 1 := by omega
         obtain ⟨s, hs⟩ := pt_degree_eq_one h1
         apply hns

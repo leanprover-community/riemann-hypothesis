@@ -245,10 +245,6 @@ open Formalism.BasicNotions (Ranks)
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (hc : Formalism.BasicNotions.CMData X.F X.E) (Ch : Chars X Pr R.m)
 
-theorem colLevS_of_lt {j : ℕ} (hj : j + 1 < R.m) : colLevS Ch j = colLev Ch j := by
-  funext w
-  simp only [colLevS, if_pos hj]
-
 end Sharp
 
 end Formalism.L2.Col

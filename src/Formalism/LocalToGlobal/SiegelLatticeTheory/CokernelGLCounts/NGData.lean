@@ -12,8 +12,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGData
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Def
 
 variable {D : D7}

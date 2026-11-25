@@ -98,16 +98,7 @@ theorem measurePreserving_shear {k : Type} [AddCommGroup k] [MeasurableSpace k] 
 theorem integral_shear : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k), ν.IsAddHaarMeasure → ∀ (J : Type) [Fintype J] [DecidableEq J] (S : Finset J) (g : (J → k) → (J → k)), Continuous g → (∀ y y' : J → k, (∀ j, j ∉ S → y j = y' j) → g y = g y') → (∀ (y : J → k) j, j ∉ S → g y j = 0) → ∀ F : (J → k) → ℂ, ∫ y, F (y + g y) ∂(Measure.pi fun _ => ν) = ∫ y, F y ∂(Measure.pi fun _ => ν) := by
   intro k _ _ _ _ _ _ ν hν J _ _ S g hg h1 h2 F
 
-  have : SecondCountableTopology k := by
-    let := IsTopologicalAddGroup.rightUniformSpace k
-    have := isUniformAddGroup_of_addCommGroup (G := k)
-    let : (Valued.v (R := k)).RankOne :=
-      { hom' := IsRankLeOne.nonempty.some.emb (R := k).comp MonoidWithZeroHom.ValueGroup₀.embedding
-        strictMono' := IsRankLeOne.nonempty.some.strictMono.comp
-          MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
-    let : NontriviallyNormedField k := Valued.toNontriviallyNormedField k (ValueGroupWithZero k)
-    have : ProperSpace k := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace k
-    exact secondCountable_of_proper
+  have : SecondCountableTopology k := GlobalTheory.SplitWeil.secondCountable k
   have := hν
   have hgm : Measurable g := hg.measurable
   have hmp := measurePreserving_shear ν S g hgm h1 h2

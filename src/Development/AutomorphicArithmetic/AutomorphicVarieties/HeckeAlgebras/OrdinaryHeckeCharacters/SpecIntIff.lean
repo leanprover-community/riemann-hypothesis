@@ -47,7 +47,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private alias spec_intIff := _root_.GlobalTheory.isIntegral_padicInt_iff_norm_le_one
 
@@ -122,8 +121,6 @@ private theorem spec_cl {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Alge
     intro v i y
     rw [← hφ, ← Units.val_inv_eq_inv_val]
     exact h5 _
-
-attribute [local instance 2000] UpperTheory.V.W.coefLocal
 
 theorem UpperTheory.V.Hi.spec :
     ∀ (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (c : Coef l) (H : HSet L Ω l n c), H.Ax →

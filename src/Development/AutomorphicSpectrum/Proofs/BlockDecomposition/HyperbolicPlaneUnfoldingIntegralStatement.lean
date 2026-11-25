@@ -241,16 +241,8 @@ namespace GlobalTheory.CompanionTheory.WeilSiegel.HypStep.Unf
 theorem linearIndependent_mulVec_unit {E : Type} [Field E] {M n : ℕ} (A : GL (Fin M) E)
     {X : Fin n → Fin M → E} (hX : LinearIndependent E X) :
     LinearIndependent E (fun a => (A : Matrix (Fin M) (Fin M) E) *ᵥ X a) := by
-  have hinj : Function.Injective (Matrix.mulVecLin (A : Matrix (Fin M) (Fin M) E)) := by
-    intro x y hxy
-    have h : ∀ z : Fin M → E,
-        ((A⁻¹ : GL (Fin M) E) : Matrix (Fin M) (Fin M) E) *ᵥ ((A : Matrix (Fin M) (Fin M) E) *ᵥ z) = z := by
-      intro z
-      rw [Matrix.mulVec_mulVec, ← Units.val_mul]
-      simp
-    have hxy' : (A : Matrix (Fin M) (Fin M) E) *ᵥ x = (A : Matrix (Fin M) (Fin M) E) *ᵥ y := hxy
-    rw [← h x, ← h y, hxy']
-  exact hX.map' (Matrix.mulVecLin (A : Matrix (Fin M) (Fin M) E)) (LinearMap.ker_eq_bot.2 hinj)
+  exact hX.map' (Matrix.mulVecLin (A : Matrix (Fin M) (Fin M) E))
+    (LinearMap.ker_eq_bot.2 (Matrix.mulVec_injective_of_isUnit A.isUnit))
 
 theorem linearIndependent_gact_unitary {F E : Type} [Field F] [Field E] [Algebra F E]
     (σ : E →ₐ[F] E) {M n : ℕ} {J : Matrix (Fin M) (Fin M) E}
@@ -530,15 +522,8 @@ open GlobalTheory.CompanionTheory.SW.ThetaStage
 theorem linearIndependent_mulVec_GL {E : Type} [Field E] {M n : ℕ} (A : GL (Fin M) E)
     {X : Fin n → Fin M → E} (hX : LinearIndependent E X) :
     LinearIndependent E (fun a => (A : Matrix (Fin M) (Fin M) E) *ᵥ X a) := by
-  have hinj : Function.Injective (Matrix.mulVecLin (A : Matrix (Fin M) (Fin M) E)) := by
-    intro x y hxy
-    have h : ∀ v : Fin M → E, ((A⁻¹ : GL (Fin M) E) : Matrix (Fin M) (Fin M) E) *ᵥ
-        ((A : Matrix (Fin M) (Fin M) E) *ᵥ v) = v := by
-      intro v
-      rw [Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec]
-    have hxy' : (A : Matrix (Fin M) (Fin M) E) *ᵥ x = (A : Matrix (Fin M) (Fin M) E) *ᵥ y := hxy
-    rw [← h x, ← h y, hxy']
-  exact hX.map' (Matrix.mulVecLin (A : Matrix (Fin M) (Fin M) E)) (LinearMap.ker_eq_bot.2 hinj)
+  exact hX.map' (Matrix.mulVecLin (A : Matrix (Fin M) (Fin M) E))
+    (LinearMap.ker_eq_bot.2 (Matrix.mulVec_injective_of_isUnit A.isUnit))
 
 theorem gact_mem_framesE {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {M n : ℕ}
     {J : Matrix (Fin M) (Fin M) E} (g : UJ (σ : E →+* E) J) {T : Matrix (Fin n) (Fin n) E}

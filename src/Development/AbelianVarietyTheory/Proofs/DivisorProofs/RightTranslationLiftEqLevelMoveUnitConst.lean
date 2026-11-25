@@ -334,8 +334,6 @@ open NumberField IsDedekindDomain AlgebraicGeometry CategoryTheory ReciprocityTh
 open GlobalTheory.Dict (castFr)
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H}
 
 def Induces (V : HSp D) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H)
@@ -430,8 +428,6 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism
   Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.FWT Formalism.IndefR
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)}
   {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} {L : LevDat D.host.E ℂ V.rank}
 
@@ -508,7 +504,6 @@ end Lifts
 
 open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.FWT Formalism.IndefR
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 

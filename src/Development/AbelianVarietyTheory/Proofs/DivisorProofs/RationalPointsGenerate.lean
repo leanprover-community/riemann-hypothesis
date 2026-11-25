@@ -185,7 +185,6 @@ theorem map_det_one_add_ne_zero {R : Type} [CommRing R] (σ : R →+* R) (θ : R
     Matrix.map_one _ (map_zero θ) (map_one θ)]
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem preconnected_infAdele (F : Type) [Field F] [NumberField F] : PreconnectedSpace (Ainf F) := by
   haveI : ∀ w : InfinitePlace F, PreconnectedSpace w.Completion := fun w => by

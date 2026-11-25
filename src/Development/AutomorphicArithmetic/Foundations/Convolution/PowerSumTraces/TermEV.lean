@@ -735,12 +735,6 @@ private lemma prj_mem' {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (x : H)
   have h2 : prj M x ∈ M.topologicalClosure := Submodule.starProjection_apply_mem M.topologicalClosure x
   rwa [h] at h2
 
-private lemma prj_orth' (M : Submodule ℂ H) (x : H) {y : H} (hy : y ∈ M) :
-    ⟪x - prj M x, y⟫_ℂ = 0 :=
-  (Submodule.mem_orthogonal' _ _).1
-    (Submodule.sub_starProjection_mem_orthogonal (K := M.topologicalClosure) x) y
-    (M.le_topologicalClosure hy)
-
 private lemma prj_eq' {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) {u v : H} (hv : v ∈ M)
     (ho : ∀ y ∈ M, ⟪u - v, y⟫_ℂ = 0) : prj M u = v := by
   have h : M.topologicalClosure = M := hM.submodule_topologicalClosure_eq
@@ -758,7 +752,7 @@ private lemma comm_of_stable {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (
   show B (prj M x) = prj M (B x)
   refine (prj_eq' hM (h1 _ (prj_mem' hM x)) fun y hy => ?_).symm
   rw [← map_sub, hadj]
-  exact prj_orth' M x (h2 y hy)
+  exact Submodule.starProjection_inner_eq_zero x _ (M.le_topologicalClosure (h2 y hy))
 
 private lemma hs_prj (W : Submodule ℂ H) [FiniteDimensional ℂ W] : IsHilbertSchmidt (prj W) := by
   have hcl := Submodule.closed_of_finiteDimensional W
@@ -826,7 +820,8 @@ private lemma pr_props (Z : Submodule ℂ H) : ∀ (r : ℕ) (E : Fin r → Subm
           (u - (List.ofFn fun i : Fin r => prj (E i.succ)).prod u) +
           ((List.ofFn fun i : Fin r => prj (E i.succ)).prod u -
             prj (E 0) ((List.ofFn fun i : Fin r => prj (E i.succ)).prod u)) := by abel
-      rw [e, inner_add_left, i3 u y hys, prj_orth' _ _ hy0, add_zero]
+      rw [e, inner_add_left, i3 u y hys, zero_add]
+      exact Submodule.starProjection_inner_eq_zero _ _ ((E 0).le_topologicalClosure hy0)
 
 private lemma tr_main {Z X Y : Submodule ℂ H} (Pr R : H →L[ℂ] H) [FiniteDimensional ℂ X] (hYX : Y ≤ X)
     (hXZ : X ≤ Z) (hR : ∀ v ∈ Z, R v ∈ Z) (h1 : ∀ u ∈ Z, Pr u ∈ Y)

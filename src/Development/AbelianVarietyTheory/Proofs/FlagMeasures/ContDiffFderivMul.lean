@@ -111,7 +111,7 @@ theorem hasDerivAt_orbit {G : Type*} [Group G] [TopologicalSpace G] [IsTopologic
   rw [hform]
   exact key.2
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {ε : Fin n → Bool}
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]

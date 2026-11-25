@@ -91,7 +91,6 @@ theorem isFinite_sigmaDesc : ∀ (n : ℕ) (Z : Fin n → Scheme.{0}) {X : Schem
 end LateralTheory.E.E4.GeomPf
 
 namespace LateralTheory.E.E4
-open Topology TopologicalSpace
 
 theorem leafCompGeom : LeafCompGeom := by
   intro k _ X p _

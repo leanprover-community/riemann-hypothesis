@@ -56,8 +56,6 @@ open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheo
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.TangentOrigin
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.VertCoeffRing

@@ -23,8 +23,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.Pf.Vanish2
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Transfer
 
 theorem tr_span {E R M₁ M₂ : Type*} [Field E] [CommRing R] [AddCommGroup M₁] [Module E M₁] [AddCommGroup M₂]
@@ -296,8 +294,6 @@ end Coords
 end Formalism.L2.SG.Pf.Vanish2
 
 namespace Formalism.L2.SG.Pf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Vanish2
 

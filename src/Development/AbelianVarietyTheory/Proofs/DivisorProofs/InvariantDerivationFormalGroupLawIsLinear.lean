@@ -49,8 +49,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.LawDer
 
-set_option autoImplicit false
-
 namespace GlobalTheory.LawDer.Linear
 
 variable {R : Type} [CommRing R] {d : ℕ}

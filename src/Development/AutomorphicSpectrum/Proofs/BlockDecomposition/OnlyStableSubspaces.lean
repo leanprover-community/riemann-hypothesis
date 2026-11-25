@@ -137,13 +137,10 @@ section Global
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 theorem finrank_img (g : GL (Fin n) E) (W : Submodule E (Fin n → E)) :
-    Module.finrank E (img g W) = Module.finrank E W := by
-  have hinj : Function.Injective (Matrix.toLin' g.val) := by
-    intro a b hab
-    have h : (g⁻¹ : GL (Fin n) E).val *ᵥ (g.val *ᵥ a) = (g⁻¹ : GL (Fin n) E).val *ᵥ (g.val *ᵥ b) := by
-      simpa [Matrix.toLin'_apply] using congrArg (fun y => (g⁻¹ : GL (Fin n) E).val *ᵥ y) hab
-    simpa [Matrix.mulVec_mulVec, ← Units.val_mul] using h
-  exact LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ hinj W).symm
+    Module.finrank E (img g W) = Module.finrank E W :=
+  LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ (by
+    simpa [Function.Injective, Matrix.toLin'_apply] using
+      Matrix.mulVec_injective_iff_isUnit.mpr g.isUnit) W).symm
 
 theorem conjSrc_invol (v : HeightOneSpectrum (𝓞 E)) :
     conjSrc (IsCMField.complexConj E).toRingEquiv (conjSrc (IsCMField.complexConj E).toRingEquiv v) = v :=

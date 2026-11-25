@@ -49,7 +49,7 @@ open scoped ComplexConjugate ENNReal
 
 namespace Formalism.FourierDecayAlt.P.Topx2
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 
 section helpers

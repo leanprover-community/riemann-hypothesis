@@ -52,8 +52,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.FG
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def ConjFix : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ),
   (∀ (w u : Pl E) (G : H E a b → ℂ), IsSplitAt w → ConjPl w u → G ∈ fixed (pairRtT a b w) (K2 a b w) →
     G ∈ fixed (pairRt a b u) (K2 a b u)) ∧

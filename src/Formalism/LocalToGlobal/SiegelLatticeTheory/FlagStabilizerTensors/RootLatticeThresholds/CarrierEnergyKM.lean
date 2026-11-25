@@ -93,7 +93,7 @@ theorem exp_eq (r k : ℕ) (hk : 1 ≤ k) :
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 theorem kMatch_holds (P : Parts X u u') : EnergyPlace.KMatch P := by
   intro hg hrd hr hk hgpos hk1

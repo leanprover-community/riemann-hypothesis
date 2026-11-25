@@ -165,9 +165,6 @@ theorem eq_of_proj {g h : GA hc V} (h1 : IndefiniteRowSideFullHecke.AdelicUnitar
 theorem ofFin_projFin {g : GA hc V} (h : g ∈ finPts hc V) : ofFin hc V (IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projFin hc V g) = g :=
   eq_of_proj hc V ((projInf_ofFin hc V _).trans (Eq.symm h)) (projFin_ofFin hc V _)
 
-theorem ofInf_projInf {g : GA hc V} (h : g ∈ realPts hc V) : ofInf hc V (IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projInf hc V g) = g :=
-  eq_of_proj hc V (projInf_ofInf hc V _) ((projFin_ofInf hc V _).trans (Eq.symm h))
-
 theorem continuous_ofFin : Continuous (ofFin hc V) :=
   continuous_extH _ _ _ _ (continuous_const.prodMk continuous_id)
 

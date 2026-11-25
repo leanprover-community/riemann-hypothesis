@@ -131,7 +131,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain GlobalTheory.Mem
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.RayOnto
@@ -217,7 +216,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.FinalJoin2 GlobalTheory.AtMember GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.Plug GlobalTheory.PlugPt
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-set_option autoImplicit false
 
 noncomputable section
 
@@ -413,15 +411,25 @@ theorem eMtTheta_of_pack {D : D7} {nch : NChoice D} {X0 : BaseLevelRowSide D} {G
     (hW : HEq Y.mj.eW Y'.mj.eW) {S S' : RatDat D.ntw} (hS : S = S')
     (E : NExpRealS R cG S) (E' : NExpRealS R' cG' S') (hF : HEq E.eF E'.eF) (hi : HEq E.fi E'.fi)
     (h : GlobalTheory.HeightCounting.EMtTheta Y' E' nch) : GlobalTheory.HeightCounting.EMtTheta Y E nch := by
-  cases pack
   cases hS
-  intro w i hw x hx n a f hs
-  have e1 : E.eF = E'.eF := eq_of_heq hF
-  have e2 : E.fi = E'.fi := eq_of_heq hi
-  have e3 : Y.mj.eW = Y'.mj.eW := eq_of_heq hW
-  rw [e2, e3] at hs
-  rw [e1]
-  exact h w i hw x hx n a f hs
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T0 D.R.m) (C : CoreJ D)
+      (_ : Algebra C.Q.c.F D.what₂.LL) (R : RealDat3 D A3 C.Q.c.F) (_ : Face3 D A3),
+      G0 R.Pg D.R.r ≃* G0g D.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, A3₁, _, _, R₁, F₁, cG₁⟩ =>
+      ∀ (Y₁ : R3.Read (A3 := A3₁) R₁.toRealDat F₁.lv2 X0) (E₁ : NExpRealS R₁ cG₁ S),
+        HEq Y₁.mj.eW Y'.mj.eW → HEq E₁.eF E'.eF → HEq E₁.fi E'.fi →
+        GlobalTheory.HeightCounting.EMtTheta Y₁ E₁ nch
+  have hP : P ⟨G, g, fi, Pl0, I0, T, A3, C, al, R, F, cG⟩ := by
+    rw [pack]
+    intro Y₁ E₁ hW₁ hF₁ hi₁ w i hw x hx n a f hs
+    have e1 : E₁.eF = E'.eF := eq_of_heq hF₁
+    have e2 : E₁.fi = E'.fi := eq_of_heq hi₁
+    have e3 : Y₁.mj.eW = Y'.mj.eW := eq_of_heq hW₁
+    rw [e2, e3] at hs
+    rw [e1]
+    exact h w i hw x hx n a f hs
+  exact hP Y E hW hF hi
 
 
 end GlobalTheory.ClassSumPinLink
@@ -663,7 +671,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.FinalJoin2 GlobalTheory.AtMember GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.Plug GlobalTheory.PlugPt
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -955,10 +962,23 @@ theorem side_eq_upd {D : D7} {O : Obj D} (x : R3.TwIn O.ex) (s : Side D O.ex.nch
     (hP : F.P0 = s.P0) (hψ : HEq F.ψ0 s.ψ0) (hv : HEq x.geo.v₀ s.v₀) (hS : HEq Sx s.S) (hfi : HEq YS.fi s.YS.fi)
     (heF : HEq YS.eF s.YS.eF) (hcf : s.R.C = s.cf) (htp : HEq Tp s.tp) :
     ({ G := x.G, Pl0 := x.Pl0, I0 := x.I0, T := x.T, A3 := x.A3, J := x.core, R := x.R, P0 := x.F.P0, ψ0 := x.F.ψ0, cG := x.cG, v₀ := x.geo.v₀, S := Sx, YS := YS, cf := x.R.C, tp := Tp } : Side D O.ex.nch) = s.upd kap lam err := by
-  obtain ⟨G, Pl0, I0, T, A3, J, R, P0, ψ0, cG, v₀, S, Y, cf, tp⟩ := s
-  obtain ⟨G', Pl0', I0', T', A3', core, R', F', cG', geo⟩ := x
-  cases pack
-  exact side_mk_eq_upd R kap lam err _ _ _ _ cG _ _ _ _ _ _ _ _ _ hP hψ hv hS hfi heF hcf htp
+  let Q : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T0 D.R.m) (C : Formalism.L2.Pj.CoreJ D)
+      (_ : Algebra C.Q.c.F D.what₂.LL) (R : RealDat3 D A3 C.Q.c.F) (_ : Face3 D A3),
+      G0 R.Pg D.R.r ≃* G0g D.nd) → Prop :=
+    fun ⟨G', g', fi', Pl0', I0', T', A3', J', al', R', F', cG'⟩ =>
+      ∀ (v₀' : (i : Fin D.R.m) → (σ : D.what₂.LL →+* ℂ) → (R'.MW i σ).Vec) (YS' : Formalism.IndefR.NX.NExpRealS R' cG' Sx)
+        (Tp' : Formalism.L2.Host.TupTied D R'.C O.ex.nch),
+        HEq v₀' s.v₀ → HEq YS'.fi s.YS.fi → HEq YS'.eF s.YS.eF → HEq Tp' s.tp →
+        ({ G := G', grp := g', fin := fi', Pl0 := Pl0', I0 := I0', T := T', A3 := A3', J := J', alg := al',
+           R := R', P0 := F'.P0, ψ0 := F'.ψ0, cG := cG', v₀ := v₀', S := Sx, YS := YS', cf := R'.C, tp := Tp' } : Side D O.ex.nch) =
+          s.upd kap lam err
+  have hQ : Q ⟨x.G, x.grp, x.fin, x.Pl0, x.I0, x.T, x.A3, x.core, x.alg, x.R, x.F, x.cG⟩ := by
+    rw [pack]
+    intro v₀' YS' Tp' hv' hfi' heF' htp'
+    obtain ⟨G, Pl0, I0, T, A3, J, R, P0, ψ0, cG, v₀, S, Y, cf, tp⟩ := s
+    exact side_mk_eq_upd R kap lam err _ _ _ _ cG _ _ _ _ _ _ _ _ _ hP hψ hv' hS hfi' heF' hcf htp'
+  exact hQ x.geo.v₀ YS Tp hv hfi heF htp
 
 
 end GlobalTheory.PlugPt

@@ -47,8 +47,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.In
 open MvPolynomial GlobalTheory.FlagBundle GlobalTheory.GoodMetric GlobalTheory.GoodMetric.ChernSpan GlobalTheory.GoodMetric.PolyRep
 open scoped Matrix
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GoodMetric.PolyRep

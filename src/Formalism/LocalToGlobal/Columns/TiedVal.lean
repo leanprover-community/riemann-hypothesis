@@ -14,8 +14,6 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.UG Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def RatSpanG {K : Type} [Field K] (s : K →+* ℂ) {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n) :
     AddSubgroup (MvPolynomial (ι × Fin n × Fin n) ℂ) :=
   AddSubgroup.closure {p | ∃ (r : K) (f : ι → MvPolynomial (Fin n × Fin n) ℤ),

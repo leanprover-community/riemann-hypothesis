@@ -47,8 +47,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 
 namespace GlobalTheory.ChainOnto
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def ParBoundW (D : D7) : Prop := ForStage D fun c _ s => ∀ (u : s.CC c) B, IsPar u B →
   GlobalTheory.LFun.Bounded (GlobalTheory.LFun.above D.host.E (c.S : Set (HeightOneSpectrum (𝓞 D.host.F)))) B s.V.rank ((s.V.rank : ℝ) / 2)
 

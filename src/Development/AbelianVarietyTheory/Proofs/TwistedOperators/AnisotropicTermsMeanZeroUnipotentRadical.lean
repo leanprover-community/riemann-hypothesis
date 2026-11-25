@@ -62,7 +62,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.AdjointIsotropicDecomposition
 open scoped Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AnisoMean
 variable {D : D7}
@@ -193,11 +192,6 @@ alias mt_mul := _root_.GlobalTheory.BesselCompare.mt_mul
 
 alias mt_one := _root_.GlobalTheory.BesselCompare.mt_one
 
-theorem actO_mul_mt (S T : HSp D) (g : GA D S) (w : WO S T) :
-    actO S T g 1 (HMul.hMul (w : Matrix (Fin T.rank) (Fin S.rank) (AE D)) (Formalism.L2.Theta.mt S g)) = w := by
-  unfold actO
-  rw [mt_one, Matrix.one_mul, Matrix.mul_assoc, ← mt_mul, mul_inv_cancel, mt_one, Matrix.mul_one]
-
 theorem ni_fix {V : HSp D} {r : ℕ} {C : Matrix (Fin V.rank) (Fin r) D.host.E} {g : GA D V} (hg : g ∈ NI V C) :
     Formalism.L2.Theta.mt V g * C.map (incA D) = C.map (incA D) ∧
       (adj D C * V.gram).map (incA D) * Formalism.L2.Theta.mt V g = (adj D C * V.gram).map (incA D) := by
@@ -241,7 +235,7 @@ theorem res_om_heis (hs : IsIsoSplit V V' C B) {ψ : AddChar (AF D.host.F) ℂ} 
         (Formalism.L2.Theta.mt V (n : GA D V))) g) := by
   have hth : IsThetaFunO ψ V W (heisO ψ V W (HMul.hMul (w : Matrix (Fin W.rank) (Fin V.rank) (AE D))
       (Formalism.L2.Theta.mt V (n : GA D V))) g) := isTheta_heisO hω.std hg _
-  conv_lhs => rw [← actO_mul_mt V W (n : GA D V) w, ← hω.om_heis (n : GA D V) 1 _ g hg]
+  conv_lhs => rw [← GlobalTheory.LeviRes.actO_mul_mt V W (n : GA D V) w, ← hω.om_heis (n : GA D V) 1 _ g hg]
   exact GlobalTheory.T.wittTower_restriction_unipotentRadical_invariant D V V' W r C B hs ψ χS χT ω hω μ 𝓨 hμ n _ hth
 
 theorem mean_rat_shift (hs : IsIsoSplit V V' C B) {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))

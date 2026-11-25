@@ -50,8 +50,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.CuspRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Tail.PExp.DlB
 
 theorem pair_sum (N : ℕ) (x : Fin N → ℤ) :

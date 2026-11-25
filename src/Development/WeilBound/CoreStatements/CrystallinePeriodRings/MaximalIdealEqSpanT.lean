@@ -77,16 +77,6 @@ theorem untilt_ε_root_ne_one (AI : LocAinf l P) :
   rw [untilt_ε_root]
   exact fun h => AI.ζ_one ((Per6.intEquiv l).injective (h.trans (map_one _).symm))
 
-theorem ιB_algebraMap_K0 (P : LocPrime l) (K : FinExt l) (c : ↥(K0 K)) :
-    P.ιB (algebraMap ↥(K0 K) P.R.B c) = algebraMap (Om l) P.R.BdR (c : Om l) :=
-  (P.PD_ι K _).symm.trans ((P.PD K).ι.commutes c)
-
-theorem ιB_algebraMap (P : LocPrime l) (c : ↥(MaximalUnramifiedExtension l)) :
-    P.ιB (algebraMap ↥(MaximalUnramifiedExtension l) P.R.B c) = algebraMap (Om l) P.R.BdR (c : Om l) :=
-  ιB_algebraMap_K0 P ⟨IntermediateField.adjoin ℚ_[l] {(c : Om l)},
-    IntermediateField.adjoin.finiteDimensional (Algebra.IsIntegral.isIntegral _)⟩
-    ⟨c, IntermediateField.subset_adjoin _ _ (Set.mem_singleton _), c.2⟩
-
 variable (T : LocTied6 l P AI)
 
 theorem tie_ι (b : P.R.B) : T.eD (P.ιB b) = ιCD l (T.eB b) := by
@@ -119,12 +109,6 @@ theorem tie_o (x : Om l) : T.eD (algebraMap (Om l) P.R.BdR x) = oD l x := by
   have hf : f = algClToBdR l := eq_algClToBdR l f hθ
   rw [hy, frob_oD_apply, ← hf]
   rfl
-
-theorem tie_u (c : ↥(MaximalUnramifiedExtension l)) : T.eB (algebraMap ↥(MaximalUnramifiedExtension l) P.R.B c) = uB l c :=
-  ιCD_injective (by rw [← tie_ι, ιB_algebraMap, tie_o, ιCD_uB])
-
-theorem tie_q (q : ℚ_[l]) : T.eB (algebraMap ℚ_[l] P.R.B q) = qB l q := by
-  rw [IsScalarTower.algebraMap_apply ℚ_[l] ↥(MaximalUnramifiedExtension l) P.R.B, tie_u, uB_algebraMap]
 
 theorem tie_t : T.eD (P.ιB P.tB) =
     algebraMap (Per6.BdRp l) (Per6.BdR l) (fontaineT (Per6.tiltMap l AI.ε) (untilt_ε AI)) := by

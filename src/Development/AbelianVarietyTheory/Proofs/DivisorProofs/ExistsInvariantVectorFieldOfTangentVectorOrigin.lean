@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBasisRaynaudTangentInvariantFields
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualNumberSectionsUniqueDecomposition
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLinearHomPull
@@ -84,17 +85,7 @@ theorem existsUnique_affine {R : Type} [CommRing R] {Z P : Scheme.{0}} (h : Z �
     (p₂ : P ⟶ Z) (H : IsPullback p₂ p₁ h (spMap (algebraMap R (DualNumber R))))
     {V : Z.Opens} (hV : IsAffineOpen V) (F : Γ(P, p₂ ⁻¹ᵁ V)) : ∃! ab : Γ(Z, V) × Γ(Z, V),
       F = (p₂.app V).hom ab.1 + constFn p₁ _ DualNumber.eps * (p₂.app V).hom ab.2 := by
-  refine existsUnique_of_isPushout (K := R) (constHom h V) (p₂.app V) (constHom p₁ (p₂ ⁻¹ᵁ V)) ?_ F
-  have po := (isIso_pushoutSection_iff H (US := ⊤) (UT := ⊤) (UX := V) (UY := p₂ ⁻¹ᵁ V) le_top le_top
-    (by simp)).mp (isIso_pushoutSection_of_isAffineOpen H _ _ _ (isAffineOpen_top _)
-      (isAffineOpen_top _) hV)
-  refine po.of_iso (Scheme.ΓSpecIso (.of R)) (Iso.refl _) (Scheme.ΓSpecIso (.of (DualNumber R))) (Iso.refl _)
-    ?_ ?_ ?_ ?_
-  · ext x; simp [RelConstThickening.constHom]
-  · rw [← Scheme.ΓSpecIso_naturality, Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
-    simp
-  · simp [Scheme.Hom.app_eq_appLE]
-  · ext x; simp [RelConstThickening.constHom]
+  apply _root_.GlobalTheory.RayBasis.decompR <;> assumption
 
 theorem existsUnique_decomp : ∀ (R : Type) [CommRing R] {Z P : Scheme.{0}} (h : Z ⟶ Sp R) (p₁ : P ⟶ Sp (DualNumber R)) (p₂ : P ⟶ Z), IsPullback p₂ p₁ h (spMap (algebraMap R (DualNumber R))) → ∀ (O : Z.Opens) (F : Γ(P, p₂ ⁻¹ᵁ O)), ∃! ab : Γ(Z, O) × Γ(Z, O), F = (p₂.app O).hom ab.1 + constFn p₁ _ DualNumber.eps * (p₂.app O).hom ab.2 :=
   fun _ _ _ _ h p₁ p₂ H O F =>
@@ -325,66 +316,7 @@ end Group2
 
 theorem exists_isInv : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G]
     (v : TanM (𝟙 (Sp R)) G), ∃ dd : Fld G.left, IsInv G v dd := by
-  intro R _ G _ _ v
-  have hd := fun (O : G.left.Opens) (f : Γ(G.left, O)) =>
-    GlobalTheory.T.existsUnique_dualNumberThickening_open_decomp R G.hom _ _ (isPullback_thick G) O
-      (((transl G v).left.appLE O _ (preimage_transl G v O).ge).hom f)
-  choose ab hab huq using hd
-  have huniq : ∀ O f (a b : Γ(G.left, O)),
-      ((transl G v).left.appLE O _ (preimage_transl G v O).ge).hom f =
-        ((snd (tEpsG (𝟙 (Sp R))) G).left.app O).hom a + constFn (fst (tEpsG (𝟙 (Sp R))) G).left _ DualNumber.eps *
-          ((snd (tEpsG (𝟙 (Sp R))) G).left.app O).hom b → (ab O f).2 = b :=
-    fun O f a b h => congrArg Prod.snd (huq O f (a, b) h).symm
-  have hre : ∀ O f, (ab O f).1 = f := fun O f => real_part G v O f _ _ (hab O f)
-  have hee := fun O : G.left.Opens => constFn_eps_sq' (fst (tEpsG (𝟙 (Sp R))) G).left
-    ((snd (tEpsG (𝟙 (Sp R))) G).left ⁻¹ᵁ O)
-  refine ⟨fun O f => (ab O f).2, ⟨?_, ?_, ?_⟩, ?_⟩
-  · intro W _ f f'
-    refine huniq W _ (f + f') _ ?_
-    rw [map_add (f := _), hab W f, hab W f', hre, hre]
-    simp only [map_add (f := _)]
-    ring
-  · intro W _ f f'
-    refine huniq W _ (f * f') _ ?_
-    rw [map_mul, hab W f, hab W f', hre, hre]
-    simp only [map_add (f := _), map_mul]
-    linear_combination (((snd (tEpsG (𝟙 (Sp R))) G).left.app W).hom (ab W f).2 *
-      ((snd (tEpsG (𝟙 (Sp R))) G).left.app W).hom (ab W f').2) * hee W
-  · intro W W' h _ f
-    refine huniq W' _ (resG _ h f) _ ?_
-    have h' : (snd (tEpsG (𝟙 (Sp R))) G).left ⁻¹ᵁ W' ≤ (snd (tEpsG (𝟙 (Sp R))) G).left ⁻¹ᵁ W :=
-      (snd (tEpsG (𝟙 (Sp R))) G).left.preimage_mono h
-    rw [_root_.GlobalTheory.TorsionCut.appLE_resG _ h h' (preimage_transl G v W).ge, hab W f, hre, map_add (f := _), map_mul, res_app' _ h h',
-      res_app' _ h h', _root_.GlobalTheory.LocDerExt.res_const]
-  · intro S _ φ g w O f hg hgO htr
-    symm
-    obtain ⟨g', v', hg', hv', rfl⟩ := htr
-    have e : (dualMap φ).comp (algebraMap R (DualNumber R)) = (algebraMap S (DualNumber S)).comp φ := by
-      ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-    let kA : tEpsG (g ≫ G.hom) ⟶ tEpsG (𝟙 (Sp R)) := Over.homMk (spMap (dualMap φ)) (by
-      change spMap (dualMap φ) ≫ spMap (algebraMap _ _) ≫ 𝟙 _ = spMap (algebraMap S (DualNumber S)) ≫ g ≫ G.hom
-      rw [hg, Category.comp_id, ← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp,
-        ← CommRingCat.ofHom_comp, e])
-    have hk : lift kA g' ≫ transl G v = g' * v' := by
-      unfold transl
-      rw [MonObj.comp_mul, lift_snd, ← Category.assoc, lift_fst]
-      congr 1
-      exact Over.OverMorphism.ext hv'.symm
-    have hk2 : (lift kA g').left ≫ (snd (tEpsG (𝟙 (Sp R))) G).left = spMap (algebraMap S (DualNumber S)) ≫ g := by
-      rw [← Over.comp_left, lift_snd, hg']
-    have hk1 : (lift kA g').left ≫ (fst (tEpsG (𝟙 (Sp R))) G).left = spMap (dualMap φ) := by
-      rw [← Over.comp_left, lift_fst]
-      rfl
-    have hT : (g' * v').left = (lift kA g').left ≫ (transl G v).left := by rw [← hk, Over.comp_left]
-    have hx : ⊤ ≤ (lift kA g').left ⁻¹ᵁ ((snd (tEpsG (𝟙 (Sp R))) G).left ⁻¹ᵁ O) := by
-      intro y _
-      show ((lift kA g').left ≫ (snd (tEpsG (𝟙 (Sp R))) G).left).base y ∈ O
-      rw [hk2]
-      exact hgO (Set.mem_univ _)
-    rw [hT, ← valR_appLE' _ _ O _ (preimage_transl G v O).ge hx, hab O f, hre, _root_.GlobalTheory.Points.valR_add _ _ hx, _root_.GlobalTheory.Points.valR_mul _ _ hx,
-      valR_constFn' _ _ _ hk1 _ hx, Scheme.Hom.app_eq_appLE, valR_appLE' _ _ _ _ _ hx, valR_appLE' _ _ _ _ _ hx, hk2,
-      _root_.GlobalTheory.Points.valR_spMap_comp _ _ _ hgO, _root_.GlobalTheory.Points.valR_spMap_comp _ _ _ hgO]
-    simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  apply _root_.GlobalTheory.RayBasis.exists_isInv <;> assumption
 
 end GlobalTheory.InvFieldBase
 end -- clump:auto

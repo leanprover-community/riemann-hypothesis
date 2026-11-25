@@ -208,13 +208,6 @@ variable {X : Fields} {Pr : Primes X} (sel : HeightOneSpectrum (𝓞 X.F) → He
   (mu : Tup X.F X.E X.K S)
 
 
-open Classical in
-def locChr {n : ℕ} (Λ : LevFam X.E X.K n Pr.vGs) (Θ : LevQFam X.E X.K n (QE sel (mu : Chr X.F X.E X.K))) (g : FrmG Λ Θ)
-    (w : rowSG Pr sel mu) : X.K :=
-  if hw : w.1 ∈ Pr.vGs then (((Λ ⟨w.1, hw⟩).lam ⟨(g.2.1 : GLG (E := X.E) (n := n) (SG := Pr.vGs)) ⟨w.1, hw⟩, g.2.1.2 _ (Set.mem_univ _)⟩ : X.Kˣ) : X.K)
-  else (((Θ ⟨w.1, (Finset.mem_union.mp w.2).resolve_left hw⟩).lam
-    ⟨(g.2.2 : GLQ X.E n (QE sel (mu : Chr X.F X.E X.K))) ⟨w.1, (Finset.mem_union.mp w.2).resolve_left hw⟩, g.2.2.2 _ (Set.mem_univ _)⟩ : X.Kˣ) : X.K)
-
 
 
 end Scal

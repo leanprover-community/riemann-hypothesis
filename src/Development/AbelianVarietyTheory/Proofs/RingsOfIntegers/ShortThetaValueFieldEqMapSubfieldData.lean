@@ -56,8 +56,6 @@ open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PlaceInt
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ShortAtField

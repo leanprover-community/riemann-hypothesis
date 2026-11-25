@@ -212,38 +212,6 @@ theorem exists_eq_mul {m : ℕ} (hm : 0 < m) (hl : ¬ l ∣ m) {y : Om l} (hy : 
   rw [sub_zero] at hz
   exact ⟨(l : Om l)⁻¹ * y, hz, (mul_inv_cancel_left₀ hl0 y).symm⟩
 
-theorem norm_rootRing {m : ℕ} (hm : 0 < m) (hl : ¬ l ∣ m) {y : Om l} (hy : y ∈ rootRing l m)
-    (h0 : y ≠ 0) : ∃ n : ℤ, ‖y‖ = (l : ℝ) ^ n := by
-  have hp : l.Prime := Fact.out
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast hp.one_lt
-  have hl0 : (0 : ℝ) < l := by linarith
-  have key : ∀ k : ℕ, ∀ y ∈ rootRing l m, y ≠ 0 → (l : ℝ) ^ (-(k : ℤ)) ≤ ‖y‖ →
-      ∃ n : ℤ, ‖y‖ = (l : ℝ) ^ n := by
-    intro k
-    induction k with
-    | zero =>
-      intro y hy _ hle
-      refine ⟨0, ?_⟩
-      simp only [Nat.cast_zero, neg_zero, zpow_zero] at hle ⊢
-      exact le_antisymm (norm_le_one hm hy) hle
-    | succ k ih =>
-      intro y hy hy0 hle
-      rcases (norm_le_one hm hy).lt_or_eq with hlt | heq
-      · obtain ⟨z, hz, rfl⟩ := exists_eq_mul hm hl hy hlt
-        have hz0 : z ≠ 0 := by rintro rfl; simp at hy0
-        rw [norm_mul, norm_l] at hle ⊢
-        rw [show (-((k + 1 : ℕ) : ℤ)) = -(k : ℤ) - 1 by push_cast; ring,
-          zpow_sub_one₀ hl0.ne'] at hle
-        have hk : (l : ℝ) ^ (-(k : ℤ)) ≤ ‖z‖ :=
-          le_of_mul_le_mul_left (by rwa [mul_comm] at hle) (inv_pos.2 hl0)
-        obtain ⟨n, hn⟩ := ih z hz hz0 hk
-        exact ⟨n - 1, by rw [hn, zpow_sub_one₀ hl0.ne', mul_comm]⟩
-      · exact ⟨0, by simp [heq]⟩
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, (l : ℝ) ^ (-(k : ℤ)) ≤ ‖y‖ := by
-    obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one (norm_pos_iff.2 h0) (inv_lt_one_of_one_lt₀ hl1)
-    exact ⟨k, by rw [zpow_neg, zpow_natCast, ← inv_pow]; exact hk.le⟩
-  exact key k y hy h0 hk
-
 theorem exists_mul_mem {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) :
     ∃ m : ℕ, 0 < m ∧ ¬ l ∣ m ∧ ∃ c : ℤ_[l], c ≠ 0 ∧ algebraMap ℤ_[l] (Om l) c * x ∈ rootRing l m := by
   have hp : l.Prime := Fact.out

@@ -339,7 +339,6 @@ open GlobalTheory.AdForm
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdForm.StabTrans
-open Formalism.L2.Theta
 
 theorem rTrans_mul {G : Type} [Monoid G] (a b : G) (F : G → ℂ) : rTrans (a * b) F = rTrans a (rTrans b F) := by
   funext x

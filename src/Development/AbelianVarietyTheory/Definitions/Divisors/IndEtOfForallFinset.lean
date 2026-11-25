@@ -151,15 +151,8 @@ def EtFF : MorphismProperty CommRingCat.{0} := fun _ _ g => g.hom.Etale ∧ g.ho
 def IndEt (A O : Type) [CommRing A] [CommRing O] [Algebra A O] : Prop :=
   GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveSpaceOverSpec.IsIndEtale (algebraMap A O)
 
-def IndFEt (A O : Type) [CommRing A] [CommRing O] [Algebra A O] : Prop :=
-  MorphismProperty.ind.{0} (RingHom.toMorphismProperty fun f => f.Etale ∧ f.Finite) (CommRingCat.ofHom (algebraMap A O))
-
 theorem indEt_of_etale (A O : Type) [CommRing A] [CommRing O] [Algebra A O] [Algebra.Etale A O] : IndEt A O :=
   MorphismProperty.le_ind _ _ (RingHom.etale_algebraMap.2 inferInstance)
-
-theorem indFEt_of_finite_etale (A O : Type) [CommRing A] [CommRing O] [Algebra A O] [Algebra.Etale A O] [Module.Finite A O] :
-    IndFEt A O :=
-  MorphismProperty.le_ind _ _ ⟨RingHom.etale_algebraMap.2 inferInstance, RingHom.finite_algebraMap.2 inferInstance⟩
 
 set_option synthInstance.maxHeartbeats 200000 in
 def bc {E : Spc} {S : Scheme.{0}} (p : E ⟶ sch.obj S) : Over S ⥤ Spc where

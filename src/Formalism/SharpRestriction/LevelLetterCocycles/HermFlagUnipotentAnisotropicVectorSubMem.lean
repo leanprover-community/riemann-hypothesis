@@ -233,7 +233,6 @@ theorem tTool1_of [NeZero n] (hinj : Function.Injective (algebraMap O LL))
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
@@ -834,7 +833,6 @@ theorem uniformizer_dvd_of_frobenius_power [NeZero n] [IsDomain O] (hinj : Funct
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
@@ -1123,7 +1121,6 @@ theorem bound2 (hπ : W.π₀ ∈ W.AΔ)
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
@@ -1170,7 +1167,6 @@ theorem trunc_ex [NeZero n] [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximal
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
@@ -1207,7 +1203,6 @@ theorem span_gen [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMap 
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 

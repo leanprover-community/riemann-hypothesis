@@ -15,8 +15,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGCut.NormalVectorPairings
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Grp
 
 variable {D : D7} {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)

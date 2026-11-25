@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ClassF
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory Formalism.L2.Theta Formalism.IndefR GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral Topology
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.DefiniteClassAvg
 
 theorem measurePreserving_mul_right_of_mem {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]

@@ -617,10 +617,6 @@ theorem lieMap_comp (f : G ⟶ H) (g : H ⟶ K) :
     lieMap G K (f ≫ g) = lieMap H K g ∘ₗ lieMap G H f :=
   LinearMap.ext fun x => LinearMap.ext fun w => by simp [omegaMap_comp]
 
-theorem lieMap_smul (φ : ℤ_[p] →+* O) (a : ℤ_[p]) (f : G ⟶ H) :
-    lieMap G H (a • f) = φ a • lieMap G H f :=
-  LinearMap.ext fun x => LinearMap.ext fun w => by simp [omegaMap_smul φ]
-
 
 variable (G) in
 def lieEnd : End G →+* Module.End O G.Lie where

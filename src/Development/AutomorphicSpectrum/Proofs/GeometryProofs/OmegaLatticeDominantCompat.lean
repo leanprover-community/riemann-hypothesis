@@ -137,57 +137,6 @@ variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] [Al
   {ξ : Sp Ω ⟶ X} {ξ' : Sp Ω' ⟶ X'} {V V' : Type} [AddCommGroup V] [Module Ω V] [AddCommGroup V'] [Module Ω' V']
   {M : LieModel G ξ V} {M' : LieModel G' ξ' V'} {j : V →+ V'}
 
-theorem backward [IsIntegrallyClosed R] [IsNoetherianRing R] (hs : Function.Injective (algebraMap R R'))
-    (hx : x' ≫ f = Spec.map (CommRingCat.ofHom (algebraMap R R')) ≫ x)
-    (hφ : IsGrpPullback G' G f φ) (hsm : Smooth G.hom)
-    (hk : ∀ r, k' (algebraMap R R' r) = i (k r)) (hξ : ξ = Spec.map (CommRingCat.ofHom k) ≫ x)
-    (hξ' : ξ' = Spec.map (CommRingCat.ofHom k') ≫ x')
-    (hj : ∀ e, (M'.pt (j e)).left ≫ φ = Spec.map (CommRingCat.ofHom (GlobalTheory.CompanionTheory.Ar.dualMap i)) ≫ (M.pt e).left)
-    {N : ℕ} (hN : 0 < N) (hN0 : (N : R') ≠ 0) {z : R} (hz : IsPrimitiveRoot z N)
-    (h0 : M.IsHTFormOver N x k 0)
-    (jd : Module.Dual Ω V →+ Module.Dual Ω' V') (hjd : ∀ w e, jd w (j e) = i (w e))
-    {w' : Module.Dual Ω' V'} (H : M'.IsHTFormOver N x' k' w') :
-    ∃ w, M.IsHTFormOver N x k w ∧ ∃ u' : Module.Dual Ω' V', w' = jd w + N • u' ∧
-      ∀ (e : V') (v : epsAt x' ⟶ G'), IsTanAt G' x' v →
-        (M'.pt e).left = Spec.map (CommRingCat.ofHom (dualMap k')) ≫ v.left → u' e ∈ k'.range := by
-  have hsm' : Smooth G'.hom := MorphismProperty.of_isPullback hφ.1 hsm
-  obtain ⟨_, T, _, Γ, i₀, L, _, _, M₀, -, -, -, tor, -, -, -⟩ := h0
-  haveI := _root_.GlobalTheory.CompanionTheory.Ar.BT.QFGroup.finite_of_qfGroup R T Γ
-  obtain ⟨_, T₂, _, Γ₂, i₂, L₂, _, _, M₂, j₂, χ₂, w₂, tor₂, hj₂, hHT₂, hw₂⟩ := H
-  obtain ⟨L', _, _, ⟨M₀'⟩⟩ := lieModel_exists X' G' R' x'
-  obtain ⟨Γ', i', β, tor', hβ, hsp, hext, hcore⟩ := GlobalTheory.CompanionTheory.Ar.HTPullK.core hs x x' f hx φ hφ hsm Γ N i₀ tor M₀ M₀'
-  obtain ⟨b, hb⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.TorIso.exists_mulEquiv_isHT R' T₂ T Γ₂ Γ' X' G' x' N i₂ i' tor₂ tor'
-  have H₁ := hb L₂ M₂ χ₂ w₂ hHT₂
-  obtain ⟨g, hg, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_existsUnique_equiv X' G' R' x' L' L₂ M₀' M₂
-  have H₂ := GlobalTheory.CompanionTheory.Ar.HTPullK.isHT_lie Γ' g hg H₁
-  obtain ⟨χ, hχ⟩ := GlobalTheory.CompanionTheory.Ar.HTPullK.char_descends (algebraMap R R') hs hN hz (_root_.GlobalTheory.CompanionTheory.Ar.BT.TorsionKilled.pow_eq_one R T Γ X G x N i₀ tor)
-    (χ₂.comp b.symm.toMonoidHom)
-  obtain ⟨w₀, hw₀⟩ := _root_.GlobalTheory.CompanionTheory.Relay.exists_hodge_tate_functional R T Γ X G x N i₀ tor hsm L M₀ χ
-  obtain ⟨j₁, hj₁, -, -, hj₁ext⟩ := lieBC k x ξ hξ hsm M₀ M
-  obtain ⟨w, hw⟩ := hj₁ext w₀
-  obtain ⟨w₀', hw₀'⟩ := hext w₀
-  have H₃ := hcore χ w₀ w₀' hw₀' hw₀
-  rw [hχ] at H₃
-  obtain ⟨u, hu⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.BT.HT.isHT_iff R' T Γ' X' G' x' N i' tor' hsm' hN0 L' M₀' _ w₀' _ H₃).1 H₂
-  obtain ⟨j', hj', hjs, hjsp, hjext⟩ := lieBC k' x' ξ' hξ' hsm' M₀' M'
-  obtain ⟨u', hu'⟩ := hjext u
-  refine ⟨w, ⟨inferInstance, T, _, Γ, i₀, L, _, _, M₀, j₁, χ, w₀, tor, hj₁, hw₀, hw⟩, u', ?_, ?_⟩
-  · have hd := GlobalTheory.CompanionTheory.Ar.HTPullK.form_eq (w := w) (w' := jd w) hk hsp hjs (GlobalTheory.CompanionTheory.Ar.HTPullK.j_comm hφ hk hj hβ hj₁ hj') (hjd w) hw hw₀'
-    refine LinearMap.ext_on hjsp ?_
-    rintro _ ⟨e, rfl⟩
-    have a1 : j₂ (g e) = j' e := M'.inj (Over.OverMorphism.ext (by rw [hj₂, hg, hj']))
-    have a2 := hw₂ (g e)
-    have a3 := LinearMap.congr_fun hu e
-    simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearMap.add_apply, LinearMap.smul_apply] at a3
-    rw [a1, a3] at a2
-    simp only [LinearMap.add_apply, LinearMap.smul_apply]
-    rw [a2, hd, hu', map_add (f := _), map_nsmul]
-  · intro e v hv he
-    obtain ⟨l, rfl⟩ := M₀'.onto v hv
-    have : e = j' l := M'.inj (Over.OverMorphism.ext (he.trans (hj' l).symm))
-    subst this
-    exact ⟨u l, (hu' l).symm⟩
-
 end Back
 
 end GlobalTheory.CompanionTheory.Ar.HTPull

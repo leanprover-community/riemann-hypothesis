@@ -142,14 +142,8 @@ theorem levi_split {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e 
 
 private theorem levi_sub_const' {ι : Type} [Fintype ι] (g : (ι → ℂ) → ℝ) (a : ℝ) (y w : ι → ℂ) :
     levi (fun z => g z - a) y w = levi g y w := by
-  have h : fderiv ℝ (fun z => g z - a) = fderiv ℝ g := by
-    funext z
-    by_cases hg : DifferentiableAt ℝ g z
-    · exact (hg.hasFDerivAt.sub_const a).fderiv
-    · have hg' : ¬ DifferentiableAt ℝ (fun z => g z - a) z := fun h => hg (by simpa using h.add_const a)
-      rw [fderiv_zero_of_not_differentiableAt hg, fderiv_zero_of_not_differentiableAt hg']
   unfold levi
-  rw [h]
+  rw [show fderiv ℝ (fun z => g z - a) = fderiv ℝ g from funext fun _ => fderiv_sub_const a]
 
 private theorem levi_zero' {ι : Type} [Fintype ι] (g : (ι → ℂ) → ℝ) (y : ι → ℂ) : levi g y 0 = 0 := by
   unfold levi

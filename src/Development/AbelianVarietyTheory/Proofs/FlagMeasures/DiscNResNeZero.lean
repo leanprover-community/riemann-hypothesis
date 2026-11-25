@@ -436,22 +436,7 @@ theorem sub_count [_root_.NumberField.IsTotallyComplex K] (N : Submodule (𝓞 K
 omit [FiniteDimensional K V] in
 theorem isLattice_of_idx {L M : Submodule (𝓞 K) V} (hL : Submodule.IsFullLattice K L) (hM : M ≤ L)
     (h : idx L M ≠ 0) : Submodule.IsFullLattice K M := by
-  haveI : Submodule.IsFullLattice K L := hL
-  haveI : Submodule.IsLattice K M := Submodule.IsLattice.mono K hM
-  refine ⟨?_⟩
-  rw [← Submodule.IsFullLattice.span_eq_top (A := K) (M := L)]
-  refine le_antisymm (Submodule.span_mono hM) ?_
-  rw [Submodule.span_le]
-  intro m hm
-  have hn : (M.toAddSubgroup.relIndex L.toAddSubgroup) • m ∈ M :=
-    AddSubgroup.nsmul_relIndex_mem M.toAddSubgroup (K := L.toAddSubgroup) hm
-  have hnK : ((M.toAddSubgroup.relIndex L.toAddSubgroup : ℕ) : K) ≠ 0 :=
-    Nat.cast_ne_zero.mpr h
-  have hm' : m = ((M.toAddSubgroup.relIndex L.toAddSubgroup : ℕ) : K)⁻¹ •
-      (M.toAddSubgroup.relIndex L.toAddSubgroup • m) := by
-    rw [← Nat.cast_smul_eq_nsmul K, smul_smul, inv_mul_cancel₀ hnK, one_smul]
-  rw [SetLike.mem_coe, hm']
-  exact Submodule.smul_mem _ _ (Submodule.subset_span hn)
+  apply _root_.GlobalTheory.DegCnt.FixDisc.lattice_of_idx <;> assumption
 
 
 omit [FiniteDimensional K V] [NumberField K] in

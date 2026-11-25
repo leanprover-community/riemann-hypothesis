@@ -12,8 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Herm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 
 structure TwChTied (D : D7) (inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop) where

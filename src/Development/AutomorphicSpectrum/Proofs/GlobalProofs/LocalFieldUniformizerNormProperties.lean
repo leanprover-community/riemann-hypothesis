@@ -82,19 +82,15 @@ theorem one_lt_q (h : LF O ϖ nrm q) : 1 < q := by
     exact not_subsingleton (IsLocalRing.ResidueField ↥(ValuativeRel.valuation F).integer) hs
   omega
 
-private theorem isUnit_iff_valuation_eq_one' (y : 𝒪[F]) : IsUnit y ↔ ValuativeRel.valuation F (y : F) = 1 := by
-  first
-    | exact (Valuation.integer.integers _).isUnit_iff_valuation_eq_one
-
 theorem irreducible_pi (h : LF O ϖ nrm q) :
     Irreducible (⟨ϖ, (Valuation.mem_integer_iff _ _).2 (val_pi_lt_one h).le⟩ : 𝒪[F]) := by
   refine ⟨?_, ?_⟩
-  · rw [isUnit_iff_valuation_eq_one']
+  · rw [(Valuation.integer.integers _).isUnit_iff_valuation_eq_one]
     exact (val_pi_lt_one h).ne
   · intro a b hab
     by_cases ha : ValuativeRel.valuation F (a : F) = 1
     · left
-      exact (isUnit_iff_valuation_eq_one' a).2 ha
+      exact (Valuation.integer.integers _).isUnit_iff_valuation_eq_one.2 ha
     · right
       have ha1 : ValuativeRel.valuation F (a : F) < 1 :=
         lt_of_le_of_ne ((Valuation.mem_integer_iff _ _).1 a.2) ha
@@ -121,7 +117,8 @@ theorem val_eq_pow_of_int (h : LF O ϖ nrm q) {x : F} (hx : x ≠ 0)
   obtain ⟨n, u, hu⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hx' (irreducible_pi h)
   refine ⟨n, ?_⟩
   have hv := congrArg (fun y : 𝒪[F] => ValuativeRel.valuation F (y : F)) hu
-  have hu1 : ValuativeRel.valuation F ((u : 𝒪[F]) : F) = 1 := (isUnit_iff_valuation_eq_one' _).1 u.isUnit
+  have hu1 : ValuativeRel.valuation F ((u : 𝒪[F]) : F) = 1 :=
+    (Valuation.integer.integers _).isUnit_iff_valuation_eq_one.1 u.isUnit
   simp only [MulMemClass.coe_mul, SubmonoidClass.coe_pow, map_mul, map_pow, hu1, one_mul] at hv
   exact hv
 

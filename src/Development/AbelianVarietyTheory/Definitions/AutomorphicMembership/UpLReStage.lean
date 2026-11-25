@@ -45,8 +45,6 @@ namespace GlobalTheory.Mem.SRe
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.L2.DIV
   Formalism.MainNotions Formalism.L2.Forms NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.R3.Tr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in

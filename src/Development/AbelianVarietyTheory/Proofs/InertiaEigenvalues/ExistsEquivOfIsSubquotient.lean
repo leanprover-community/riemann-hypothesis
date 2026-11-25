@@ -147,8 +147,6 @@ theorem isCompAlong_of_equiv {π : Submodule ℂ (UA E n → ℂ)} {Gv : Subgrou
 
 end CM
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem main : GlobalTheory.Published.BaseChangeIsobaric → GlobalTheory.Published.BernsteinUnitaryProductIrreducible →
     GlobalTheory.Published.BaseChangeDefiniteUnitary := by
   intro hBC hB E _ _ _ hun n hn π hπ

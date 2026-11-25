@@ -241,11 +241,7 @@ theorem nF_ne_zero_iff (hM : MulF) [IsUltrametricDist K] [Fintype ι] [Decidable
     refine LinearIndependent.of_comp (LinearMap.funLeft K K s) ?_
     exact hli
   · intro h h0
-    have hinj : Function.Injective A.mulVecLin := by
-      have := (Matrix.vecMul_injective_iff (M := Aᵀ)).2 h
-      intro x y hxy
-      apply this
-      simpa [vecMul_transpose] using hxy
+    have hinj : Function.Injective A.mulVecLin := Matrix.mulVec_injective_iff.2 h
     obtain ⟨g, hg⟩ := A.mulVecLin.exists_leftInverse_of_injective (LinearMap.ker_eq_bot.2 hinj)
     have hL : LinearMap.toMatrix' g * A = 1 := by
       have : LinearMap.toMatrix' (g ∘ₗ A.mulVecLin) = 1 := by

@@ -51,8 +51,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.
 
 noncomputable section
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 namespace GlobalTheory.LvT.TrueStep0
 
 open GlobalTheory.LvT.StartTie GlobalTheory.Mem.Col2.ClsZero

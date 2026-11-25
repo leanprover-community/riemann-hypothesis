@@ -3,7 +3,6 @@ module
 public import Formalism.EllipticTorsion.ChangeIntegral
 public import Mathlib.Analysis.Normed.Ring.Ultra
 public import Formalism.EllipticTorsion.Statement
-public import Formalism.EllipticTorsion.EllipticTorsionWeights
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Mathlib.Topology.Algebra.Polynomial
 public import Formalism.EllipticTorsion.IsoExpand
@@ -17,14 +16,11 @@ public import Formalism.EllipticTorsion.EllipticTorsionProofs.LegendreInvariant
 public import Formalism.EllipticTorsion.UnitCancel
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.HomPsSubstMvSubst
-public import Formalism.EllipticTorsion.EllipticTorsionProofs.IntegralPSBserSubOne
 public import Formalism.EllipticTorsion.VeluIntegralModel
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.FormalGroupPointsParamDef
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.WPoint
 public import Formalism.EllipticTorsion.CoeffRing
-public import Formalism.EllipticTorsion.CompExpWeight
 public import Formalism.EllipticTorsion.FormalGroupPointsParametrisation
-public import Formalism.EllipticTorsion.EllipticTorsionProofs.CoefficientWeightsLemmaTwo
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.CubeTwo
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.FormalGroupPointsSubgroupHolds
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.TorInt
@@ -83,7 +79,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Order.Star.Int
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.LocalProperties.Reduced
-import Formalism.EllipticTorsion.EllipticTorsionProofs.CompExp
 import Formalism.EllipticTorsion.EllipticTorsionProofs.CubeThree
 import Formalism.EllipticTorsion.EllipticTorsionProofs.Deuring
 import Formalism.EllipticTorsion.EllipticTorsionProofs.ExistsUnitFactor
@@ -535,77 +530,6 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.ConstantCoeffLogOnePlus =====
 
--- ===== clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.ExistsSumPowPrimePow =====
--- clump-header: {"m": "Formalism.EllipticTorsion.EllipticTorsionProofs.ExistsSumPowPrimePow", "h": "module\n\npublic import Formalism.EllipticTorsion.EllipticTorsionWeights\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-universe u
-
-noncomputable section
-
-namespace Formalism.ELL
-
-open Formalism.G
-
-namespace FrobeniusExpansion
-
-theorem exists_sum_pow_prime_pow {A : Type*} [CommRing A] {ι : Type*} [DecidableEq ι]
-    {p : ℕ} (hp : p.Prime) (s : Finset ι) (f : ι → A) (n : ℕ) :
-    ∃ r : A, (∑ i ∈ s, f i) ^ (p ^ n) = ∑ i ∈ s, f i ^ (p ^ n) + (p : A) * r := by
-  induction s using Finset.induction_on with
-  | empty =>
-    refine ⟨0, ?_⟩
-    simp [zero_pow (pow_ne_zero n hp.ne_zero)]
-  | insert a s ha ih =>
-    obtain ⟨r, hr⟩ := ih
-    obtain ⟨r', hr'⟩ := exists_add_pow_prime_pow_eq hp (f a) (∑ i ∈ s, f i) n
-    refine ⟨f a * (∑ i ∈ s, f i) * r' + r, ?_⟩
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, hr', hr]
-    ring
-
-end FrobeniusExpansion
-
-open MvPolynomial in
-theorem frobenius_expansion : FrobExpand := by
-  intro K _ _ p hp _hp1 m j a b ha hab α
-  classical
-  set R := unitBall K
-  let a' : Fin m → R := fun e => ⟨a e, ha e⟩
-  obtain ⟨r, hr⟩ := FrobeniusExpansion.exists_sum_pow_prime_pow (A := MvPolynomial (Fin m) R) hp
-    Finset.univ (fun e => C (a' e) * X e) j
-  have hmap : (∑ e, C (a e) * X e : MvPolynomial (Fin m) K)
-      = map R.subtype (∑ e, C (a' e) * X e) := by
-    simp [a']
-  have key : (∑ e, C (a e) * X e : MvPolynomial (Fin m) K) ^ (p ^ j)
-        - ∑ e, C (b e) * X e ^ (p ^ j)
-      = ∑ e, C (a e ^ (p ^ j) - b e) * X e ^ (p ^ j)
-        + C (p : K) * map R.subtype r := by
-
-    rw [hmap, ← map_pow, hr, map_add (f := _), map_sum, map_mul, map_natCast]
-    simp only [map_pow, map_mul, map_C, map_X, mul_pow, map_sub, sub_mul,
-      Finset.sum_sub_distrib, map_natCast]
-    simp [a']
-    ring
-  rw [key, AddMonoidAlgebra.coeff_add, Finsupp.add_apply, coeff_sum, coeff_C_mul, coeff_map]
-  refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
-  · refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun e _ => ?_
-    rw [coeff_C_mul, coeff_X_pow, norm_mul]
-    split_ifs
-    · simpa using hab e
-    · simp
-  · rw [norm_mul]
-    have h1 : ‖(r.coeff α : K)‖ ≤ 1 := (r.coeff α).2
-    calc ‖(p : K)‖ * ‖(r.coeff α : K)‖ ≤ ‖(p : K)‖ * 1 :=
-          mul_le_mul_of_nonneg_left h1 (norm_nonneg _)
-      _ = ‖(p : K)‖ := mul_one _
-
-end Formalism.ELL
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.ExistsSumPowPrimePow =====
-
 -- ===== clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.IntVal =====
 -- clump-header: {"m": "Formalism.EllipticTorsion.EllipticTorsionProofs.IntVal", "h": "module\n\npublic import Formalism.EllipticTorsion.Statement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\npublic import Mathlib.NumberTheory.Padics.RingHoms\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Topology.Algebra.Polynomial\n\n"}
 section -- clump:auto
@@ -826,88 +750,6 @@ theorem norm_one_add {K : Type*} [NormedField K] [IsUltrametricDist K] {t : K} (
   simpa using this
 
 end LegendreModelEllipticTorsion
-
-open LegendreModelEllipticTorsion Polynomial in
-theorem legendre_model : ModelLegendre := by
-  intro K _ _ _ h2 j hj
-  have h16 : ‖(16 : K)‖ = 1 := by
-    have : (16 : K) = 2 ^ 4 := by norm_num
-    rw [this, norm_pow, h2, one_pow]
-  have h256 : ‖(256 : K)‖ = 1 := by
-    have : (256 : K) = 2 ^ 8 := by norm_num
-    rw [this, norm_pow, h2, one_pow]
-  have h256ne : (256 : K) ≠ 0 := by
-    intro h; rw [h, norm_zero] at h256; exact zero_ne_one h256
-  have hdeg : (legPoly j).degree ≠ 0 := by
-    rw [degree_eq_natDegree, legPoly_natDegree h256ne]
-    · decide
-    · intro h0
-      have := legPoly_natDegree h256ne j
-      rw [h0, natDegree_zero] at this
-      exact absurd this (by decide)
-  obtain ⟨l, hl⟩ := IsAlgClosed.exists_root _ hdeg
-  have hroot : (256 : K) * (l ^ 2 - l + 1) ^ 3 = j * (l * (l - 1)) ^ 2 := by
-    have := hl.eq_zero
-    simp only [legPoly, eval_sub, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one] at this
-    exact sub_eq_zero.mp this
-  set t := l * (l - 1) with ht
-  have hu : l ^ 2 - l + 1 = 1 + t := by rw [ht]; ring
-  rw [hu] at hroot
-  have hnorm := congrArg norm hroot
-  simp only [norm_mul, norm_pow, h256, one_mul] at hnorm
-
-  have htn : ‖t‖ = 1 := by
-    by_contra hne
-    have e := norm_one_add hne
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · rw [e, max_eq_left hlt.le, one_pow] at hnorm
-      have : ‖j‖ * ‖t‖ ^ 2 < 1 := by
-        calc ‖j‖ * ‖t‖ ^ 2 ≤ 1 * ‖t‖ ^ 2 := by gcongr
-          _ < 1 := by rw [one_mul]; exact pow_lt_one₀ (norm_nonneg _) hlt (by norm_num)
-      linarith
-    · rw [e, max_eq_right hgt.le] at hnorm
-      have hpos : 0 < ‖t‖ ^ 2 := by positivity
-      have : ‖t‖ ^ 3 ≤ ‖t‖ ^ 2 := by
-        rw [hnorm]; calc ‖j‖ * ‖t‖ ^ 2 ≤ 1 * ‖t‖ ^ 2 := by gcongr
-          _ = ‖t‖ ^ 2 := one_mul _
-      have : ‖t‖ ^ 2 * ‖t‖ ≤ ‖t‖ ^ 2 * 1 := by nlinarith
-      have := le_of_mul_le_mul_left this hpos
-      linarith
-  have hprod : ‖l‖ * ‖l - 1‖ = 1 := by rw [← norm_mul, ← ht, htn]
-  have hle1 : ‖l - 1‖ ≤ max ‖l‖ 1 := by
-    have := IsUltrametricDist.norm_add_le_max l (-1 : K)
-    simpa [← sub_eq_add_neg] using this
-  have hle2 : ‖l‖ ≤ max ‖l - 1‖ 1 := by
-    have := IsUltrametricDist.norm_add_le_max (l - 1) (1 : K)
-    simpa using this
-  have hl1 : ‖l‖ = 1 := by
-    rcases lt_trichotomy ‖l‖ 1 with h | h | h
-    · exfalso
-      rw [max_eq_right h.le] at hle1
-      have : ‖l‖ * ‖l - 1‖ < 1 := by
-        calc ‖l‖ * ‖l - 1‖ ≤ ‖l‖ * 1 := by gcongr
-          _ < 1 := by rw [mul_one]; exact h
-      linarith
-    · exact h
-    · exfalso
-      have hpos : 0 < ‖l‖ := by linarith
-      have hlt : ‖l - 1‖ < 1 := by
-        by_contra hc
-        rw [not_lt] at hc
-        nlinarith
-      rw [max_eq_right hlt.le] at hle2
-      linarith
-  have hl2 : ‖l - 1‖ = 1 := by rw [hl1, one_mul] at hprod; exact hprod
-  obtain ⟨hΔ, hc4⟩ := legendre_invariant K l
-  refine ⟨l, hl1, hl2, ?_, ?_⟩
-  · rw [hΔ, hc4]
-    have : (l ^ 2 - l + 1) = 1 + t := hu
-    rw [this]
-    have e2 : (16 : K) * l ^ 2 * (l - 1) ^ 2 = 16 * t ^ 2 := by rw [ht]; ring
-    rw [e2]
-    linear_combination 16 * hroot
-  · rw [hΔ, norm_mul, norm_mul, h16, norm_pow, norm_pow, hl1, hl2]
-    norm_num
 
 end Formalism.ELL
 end -- clump:auto
@@ -1177,62 +1019,9 @@ lemma of_model {K : Type u} [NormedField K] (W : WeierstrassCurve K) (j : K)
   field_simp
 
 end Formalism.ELL.unitAtAlt
-
-namespace Formalism.ELL
-
-open Formalism.ELL.unitAtAlt
-
-theorem modelUnit_of (hL : Formalism.ELL.ModelLegendre.{u}) (hD : Formalism.ELL.ModelDeuring.{u}) :
-    Formalism.ELL.ModelUnit.{u} := by
-  intro K _ _ _ j hj
-  rcases two_or_three (K := K) with h2 | h3
-  · obtain ⟨l, hl, _hl1, hc, hΔ⟩ := hL K h2 j hj
-    refine of_model (legendre l) j ?_ hc hΔ
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> simp only [legendre]
-    · simp
-    · rw [norm_neg]
-      refine (IsUltrametricDist.norm_add_le_max _ _).trans ?_
-      simp [hl]
-    · simp
-    · exact hl.le
-    · simp
-  · obtain ⟨a, ha, hc, hΔ⟩ := hD K h3 j hj
-    refine of_model (deuring a) j ?_ hc hΔ
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> simp only [deuring]
-    · exact ha
-    all_goals simp
-
-end Formalism.ELL
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.ModelUnitOf =====
-
--- ===== clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.UnitCancel =====
--- clump-header: {"m": "Formalism.EllipticTorsion.EllipticTorsionProofs.UnitCancel", "h": "module\n\npublic import Formalism.EllipticTorsion.UnitCancel\npublic import Formalism.EllipticTorsion.EllipticTorsionProofs.IntegralPSBserSubOne\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-universe u
-
-noncomputable section
-
-namespace Formalism.ELL
-
-open Formalism.G
-
-theorem unit_cancellation : Formalism.ELL.UnitCancel.{u} := by
-  intro p _ K _ _ _ _ σ G b hb h
-  obtain ⟨u, rfl⟩ := hb
-  have := Formalism.ELL.N_padic_integer_smul p K σ _ h ((u⁻¹ : (ℤ_[p])ˣ) : ℤ_[p])
-  convert this using 1
-  rw [smul_smul, ← map_mul, ← PadicInt.coe_mul, ← Units.val_mul, inv_mul_cancel]
-  simp
-
-end Formalism.ELL
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.UnitCancel =====
 
 -- ===== clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.VeluInt =====
 -- clump-header: {"m": "Formalism.EllipticTorsion.EllipticTorsionProofs.VeluInt", "h": "module\n\npublic import Formalism.EllipticTorsion.VeluIntegralModel\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
@@ -1602,15 +1391,10 @@ universe u
 
 namespace Formalism.ELL
 
-theorem legendreInv : LegendreInv.{u} := legendre_invariant
 theorem deuringInv : DeuringInv.{u} := deuring_invariant
-theorem modelLegendre : ModelLegendre.{u} := legendre_model
 theorem modelDeuring : ModelDeuring.{u} := deuring_model
-theorem modelUnit : ModelUnit.{u} := by
-  apply modelUnit_of <;> first | exact modelLegendre | exact modelDeuring
 theorem intValuedZp : IntValuedZp.{u} := integer_valued_padic_integers
 theorem nAddSubgroup : NAddSubgroup.{u} := N_additive_subgroup
-theorem nZpSmul : NZpSmul.{u} := N_padic_integer_smul
 theorem nPderiv : NPderiv.{u} := N_partial_derivative
 
 theorem formal_group_points_subgroup : FormalGroupPointsSubgroup'.{u} := formal_group_points_subgroup_holds
@@ -1623,12 +1407,8 @@ theorem isoVanish : IsoVanish.{u} := isogeny_vanishing
 theorem changeIntegral : ChangeIntegral.{u} := change_of_variables_integral
 
 theorem lwP₂ : LogWeight.{u} := logarithm_coeff_weight
-theorem unitCancel : UnitCancel.{u} := unit_cancellation
 
-theorem compExpWeight : CompExpWeight.{u} := comp_exp_coeff_weight
 
-theorem lemma2Weights : EllipticTorsionWeights.{u} := coefficient_weights_lemma_two
-theorem frobExpand : FrobExpand.{u} := frobenius_expansion
 
 alias wSeriesUnique := _root_.Formalism.ELL.wSeriesExistsUnique_holds
 alias wSeriesLead := _root_.Formalism.ELL.wSeriesLeadingTerm_holds
@@ -1639,10 +1419,7 @@ theorem wChordSubst : WChordSubst.{u} := wChordSubst_of wSeriesSubstUnique_holds
 theorem wFormalGroup : WFormalGroup.{u} := by
   apply wFormalGroup_of <;> first | exact wChordSeries | exact wChordSubst | exact wPoint
 
-theorem formal_group_points_param : FormalGroupPointsParametrisation.{u} := by
-  apply formal_group_points_param_of <;> first | exact intValuedZp | exact nAddSubgroup | exact nZpSmul | exact nPderiv | exact lwP₂ | exact unitCancel | exact compExpWeight | exact lemma2Weights | exact frobExpand | exact wFormalGroup | exact formal_group_points_subgroup | exact formal_group_points_no_torsion | exact isoExpand | exact isoVanish | exact changeIntegral | exact wPoint | exact wSubstUnique
-theorem formal_group_points_hom : FormalGroupPointsHomomorphism.{u} := by
-  apply formal_group_points_hom_of <;> first | exact wSubstUnique | exact wChordSubst | exact _root_.Formalism.ELL.formal_group_points_param_holds | exact wFormalGroup
+theorem formal_group_points_param : FormalGroupPointsParametrisation.{u} := _root_.Formalism.ELL.formal_group_points_param_holds
 
 theorem veluIntegralModel : VeluIntegralModel.{u} := velu_integral_model
 theorem veluUSeries : VeluUSeries.{u} := velu_u_series

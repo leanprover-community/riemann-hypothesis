@@ -47,7 +47,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
 
-attribute [-instance] UpperTheory.V.UnitaryThreeInertia.Coef.isLocalRing in
 theorem UpperTheory.V.Ws.auCont :
     ∀ {l : ℕ} [Fact l.Prime] (c : Coef l) {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] (κ : Γ →* c.Oˣ), AdicCont (maximalIdeal c.O) (fun g => (κ g : c.O)) → Continuous (W.pushCh (algebraMap c.O (PadicAlgCl l)) κ) := by
   intro l _ c Γ _ _ _ κ h

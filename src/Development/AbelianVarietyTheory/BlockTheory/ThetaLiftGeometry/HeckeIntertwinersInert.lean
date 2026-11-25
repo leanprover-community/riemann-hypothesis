@@ -48,8 +48,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.HeckeIntertwinersInert
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev plF (PP : Pl D.host.E) : HeightOneSpectrum (𝓞 D.host.F) := (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP)

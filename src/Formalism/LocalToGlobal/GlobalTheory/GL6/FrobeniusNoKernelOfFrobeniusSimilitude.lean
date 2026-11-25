@@ -15,8 +15,6 @@ namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG Formalism.L2.DIV
 open Formalism.GradedWeylDivisibility (blockAct)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

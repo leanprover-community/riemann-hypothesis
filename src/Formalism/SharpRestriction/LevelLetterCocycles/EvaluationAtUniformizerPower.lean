@@ -1245,7 +1245,6 @@ theorem lev_Q_pow (hs : W.s = 1) (i : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot �
   exact ⟨u ^ k, by rw [hQq, map_pow, hu, mul_pow]⟩
 
 theorem lead_F (hR : BT.Ring9 W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (T : LocLat G Qp LL O) (i : ZMod n) (ζ : LL)
-    (_hζ : IsPrimitiveRoot ζ PD.p)
     (hA1 : ∀ (x : ↥(W.N T)) (k : ℕ) (hk : W.Q ^ k • W.φD T x ∈ W.N T) (j : ℤ),
       W.levN T i ζ ⟨_, hk⟩ j ∈ Formalism.MainNotions.DeltaInvariantLattices.ιDi W T i ∧ (j < k → W.levN T i ζ ⟨_, hk⟩ j = 0))
     {r : ℕ} (e' : Fin r → W.DD T) (he' : ∀ k, e' k ∈ W.N T) (M : ℕ)
@@ -1328,7 +1327,7 @@ theorem lead_F_span (hR : BT.Ring9 W) (hA : Formalism.MainNotions.LiftingTheory.
   have hrhs : ∑ k, cv (W.lev i ζ (W.Q ^ k' * W.φA (β k))) (W.levN T i ζ ⟨_, hmem k⟩) ((k' : ℤ) + M) ∈ Sp := by
     refine Submodule.sum_mem _ fun k _ => ?_
     obtain ⟨u', hu'⟩ := lev_Q_pow W hs i ζ hζ k'
-    rw [add_comm, cv_lead _ _ (M : ℤ) (fun j hj => (lead_F W hR hA T i ζ hζ hA1 e' (fun k => (he'.1 k).1)
+    rw [add_comm, cv_lead _ _ (M : ℤ) (fun j hj => (lead_F W hR hA T i ζ hA1 e' (fun k => (he'.1 k).1)
       M hmem k j).1 hj) k' (fun j hj => by rw [map_mul, hu', mul_assoc]; exact coeff_X_pow_mul_lt k' j hj _)]
     exact Sp.smul_mem _ (Submodule.subset_span ⟨k, rfl⟩)
   rw [← c4] at hrhs
@@ -1485,7 +1484,7 @@ theorem exponent (hR : BT.Ring9 W) (hA : Formalism.MainNotions.LiftingTheory.Cas
     simp only [hFn, hEn]
     rw [hsub, levN_sum_smul]
     simp_rw [hlevA]
-  have hFlead := fun k j => lead_F W hR hA T i ζ hζ hA1 e' (fun k => (he'.1 k).1) M hmem k j
+  have hFlead := fun k j => lead_F W hR hA T i ζ hA1 e' (fun k => (he'.1 k).1) M hmem k j
 
   let Em : Matrix (Fin r) (Fin r) (PowerSeries LL) := Matrix.of fun ℓ m => ser (κ ℓ) s₀ (En m)
   let E0 : Matrix (Fin r) (Fin r) (PowerSeries LL) :=

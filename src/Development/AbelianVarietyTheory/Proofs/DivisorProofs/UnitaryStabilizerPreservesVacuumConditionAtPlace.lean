@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilOperatorLatticeStabiliserRightPreservesVacuu
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMemKAt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComplementaryAdelicSchwartzOfNonzeroLocalStatement
 import Mathlib.Algebra.Order.Floor.Extended
@@ -82,19 +83,7 @@ variable {σ : E →ₐ[F] E}
 theorem vecMulVec_mem_latAtV {n d : ℕ} (X : Spc F E n) (W : Spc F E d) (v : Pl (F := F)) {x : Fin n → E} (hx : x ∈ X.L)
     {w : Fin d → AE F E} (hw : w ∈ latAt W v) :
     Matrix.vecMulVec (fun i => inclR (F := F) (AF F) (x i)) w ∈ latAtV X W v := by
-  let f : (Fin d → AE F E) →+ Matrix (Fin n) (Fin d) (AE F E) :=
-    { toFun := fun w => Matrix.vecMulVec (fun i => inclR (F := F) (AF F) (x i)) w
-      map_zero' := by ext i j; simp [Matrix.vecMulVec_apply]
-      map_add' := fun w w' => by ext i j; simp [Matrix.vecMulVec_apply, mul_add] }
-  have : latAt W v ≤ (latAtV X W v).comap f := by
-    refine (AddSubgroup.closure_le _).2 ?_
-    rintro z ⟨a, ha, hai, y, hy, rfl⟩
-    refine AddSubgroup.subset_closure ⟨a, ha, hai, x, hx, y, hy, ?_⟩
-    ext i j
-    simp only [f, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Matrix.vecMulVec_apply, Matrix.smul_apply, incM,
-      Matrix.map_apply, map_mul, Algebra.smul_def, Pi.mul_apply, Pi.algebraMap_apply]
-    ring
-  exact this hw
+  apply _root_.GlobalTheory.VacTransport.vecMulVec_mem <;> assumption
 
 theorem mul_transpose_inv_mem_latAtV {n d : ℕ} (X : Spc F E n) (W : Spc F E d) (v : Pl (F := F)) {h : UA σ W.J}
     (hh : h ∈ KAt σ W v) {γ : Matrix (Fin n) (Fin d) (AE F E)} (hγ : γ ∈ latAtV X W v) :

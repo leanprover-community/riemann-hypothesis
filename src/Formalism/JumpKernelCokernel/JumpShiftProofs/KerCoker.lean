@@ -81,7 +81,3 @@ theorem main (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M]
     exact h
 
 end Formalism.KernelCokernelLengths.KernelCokernelLemmas
-
-theorem Formalism.KernelCokernelLengths.kernel_cokernel_lengths : Formalism.KernelCokernelLengths.KerCoker := by
-  intro O _ M _ _ hM f N hN
-  exact Formalism.KernelCokernelLengths.KernelCokernelLemmas.main O M hM f N hN

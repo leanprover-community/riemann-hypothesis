@@ -69,7 +69,7 @@ open Formalism.REAL GlobalTheory.UnitaryDerived GlobalTheory.UnitaryHighestWeigh
 
 section Smooth
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem inUJ_mul {n : ℕ} {ε : Fin n → Bool} {g h : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) (hh : inUJ ε h) :
     inUJ ε (g * h) := by

@@ -14,8 +14,6 @@ open Matrix
 
 namespace Formalism.L2.SG.SplitPrimeNormLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 abbrev gD : ℕ := D.host.g 0 * D.host.g 1

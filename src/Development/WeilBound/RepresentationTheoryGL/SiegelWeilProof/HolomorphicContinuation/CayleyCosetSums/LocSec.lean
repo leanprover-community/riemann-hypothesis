@@ -51,7 +51,7 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def zOfE (x : M2 n) : Matrix (Fin n) (Fin n) ℂ := (Complex.I • x.toBlocks₁₁ + x.toBlocks₁₂) * (u1 x)⁻¹
 

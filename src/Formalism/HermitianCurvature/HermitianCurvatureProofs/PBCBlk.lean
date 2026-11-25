@@ -352,7 +352,7 @@ theorem mfac_le_one (K : ℕ) (L a : ℝ) : crystallineComparison.mfac K L a ≤
   · exact le_rfl
   · exact min_le_left _ _
 
-theorem min_scale (c y : ℝ) (hc : 1 ≤ c) (_hy : 0 ≤ y) : min 1 (c * y) ≤ c * min 1 y := by
+theorem min_scale (c y : ℝ) (hc : 1 ≤ c) : min 1 (c * y) ≤ c * min 1 y := by
   rcases le_total y 1 with h | h
   · rw [min_eq_right h]
     exact min_le_right _ _
@@ -376,9 +376,7 @@ theorem mL_le_prof (S : C.HidaSetting E Wp Wq) (K : ℕ) (Λ : Fin S.f → ℝ) 
     rfl
   unfold crystallineComparison.mfac
   rw [ha, if_neg hpos.ne']
-  have hy : 0 ≤ (Λ v / 3 / (S.pl v) l) ^ K :=
-    pow_nonneg (div_nonneg (div_nonneg (hΛ v) (by norm_num)) hpos.le) K
-  have key := min_scale ((3 : ℝ) ^ K) ((Λ v / 3 / (S.pl v) l) ^ K) (one_le_pow₀ (by norm_num)) hy
+  have key := min_scale ((3 : ℝ) ^ K) ((Λ v / 3 / (S.pl v) l) ^ K) (one_le_pow₀ (by norm_num))
   calc min 1 ((Λ v / (S.pl v) l) ^ K) = min 1 ((3 : ℝ) ^ K * (Λ v / 3 / (S.pl v) l) ^ K) := by
         rw [← mul_pow]
         congr 2

@@ -102,6 +102,4 @@ theorem e_spehLoc (T : WDTie N A) (p : Part A.CG) (w : PlE H) :
     | cons j l ih => rw [List.foldr_cons, List.foldr_cons, T.sum, T.tw, ih]
   exact key _
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 end GlobalTheory.SplitPairLift

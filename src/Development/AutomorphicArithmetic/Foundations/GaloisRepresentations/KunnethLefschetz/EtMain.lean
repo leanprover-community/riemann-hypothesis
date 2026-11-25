@@ -1746,16 +1746,14 @@ private theorem pb_id (l : ℕ) [Fact l.Prime] (X : Scheme.{0}) (n : ℤ) : pb l
   unfold pullHQ
   rw [pullHl_id, LinearMap.baseChange_id]
 
-private theorem lift_square {A B C : Scheme.{0}} (i : A ⟶ C) [IsOpenImmersion i] (y : B ⟶ C) (y' : B ⟶ A)
-    (h : y' ≫ i = y) : IsPullback y' (𝟙 B) i y := (IsPullback.of_horiz_isIso_mono ⟨by simp [h]⟩ : IsPullback (𝟙 B) y' y i).flip
-
 private theorem pt_restrict {k : Type} [Field k] {l : ℕ} [Fact l.Prime] (G : GysQ k l) (d : ℕ) {X : Scheme.{0}} {p : X ⟶ S k}
     (U : X.Opens) (y : Pt p) (y' : Pt (U.ι ≫ p)) (hy : y'.1 ≫ U.ι = y.1)
     (h : IsPair d 0 p y.1) (h' : IsPair d 0 (U.ι ≫ p) y'.1) :
     pb l U.ι _ (G.pt d y) = G.pt d y' := by
   show pb l U.ι _ (G.cls d 0 p y.1) = G.cls d 0 (U.ι ≫ p) y'.1
   unfold GysQ.cls
-  rw [dite_eq_left h, dite_eq_left h', G.nat h' h U.ι (𝟙 _) rfl (lift_square U.ι y.1 y'.1 hy), pb_id]
+  rw [dite_eq_left h, dite_eq_left h', G.nat h' h U.ι (𝟙 _) rfl
+    (IsPullback.of_horiz_isIso_mono ⟨by simp [hy]⟩).flip, pb_id]
   rfl
 
 theorem trComp_holds : TrComp := by

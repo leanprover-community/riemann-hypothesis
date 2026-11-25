@@ -8,8 +8,7 @@ public import Mathlib.Analysis.Normed.Group.Real
 
 @[expose] public section
 
-open MeasureTheory Topology
-open scoped ENNReal NNReal Matrix
+open scoped Topology
 
 namespace GlobalTheory.CompanionTheory.SW.TailCut
 
@@ -30,20 +29,13 @@ theorem tprod_tail_cut : ∀ (ι : Type) [DecidableEq ι] (a : ι → ℝ) (S S'
     tprod_subtype {v | v ∉ S} a
   have e2 : (∏' v : {v // v ∉ S'}, a v.1) = ∏' v, Set.mulIndicator {v | v ∉ S'} a v :=
     tprod_subtype {v | v ∉ S'} a
-  have hsplit : (∏' v, Set.mulIndicator {v | v ∉ S} a v) =
-      ∏' v, (Set.mulIndicator (↑(S' \ S) : Set ι) a v * Set.mulIndicator {v | v ∉ S'} a v) := by
-    refine tprod_congr fun v => ?_
-    by_cases h1 : v ∈ S
-    · have h2 : v ∈ S' := hSS' h1
-      simp [Set.mulIndicator, h1, h2]
-    · by_cases h2 : v ∈ S'
-      · simp [Set.mulIndicator, h1, h2]
-      · simp [Set.mulIndicator, h1, h2]
-  have hfin : (∏' v, Set.mulIndicator (↑(S' \ S) : Set ι) a v) = ∏ v ∈ S' \ S, a v := by
-    rw [tprod_eq_prod (s := S' \ S)]
-    · exact Finset.prod_congr rfl fun v hv => Set.mulIndicator_of_mem (Finset.mem_coe.mpr hv) a
-    · intro v hv
-      exact Set.mulIndicator_of_notMem (by rwa [Finset.mem_coe]) a
-  rw [e1, e2, hsplit, Multipliable.tprod_mul (hmul _) (hmul _), hfin]
+  have hdis : Disjoint (↑(S' \ S) : Set ι) {v | v ∉ S'} :=
+    Set.disjoint_left.mpr fun v hv hv' => hv' (Finset.mem_sdiff.mp hv).1
+  have hunion : (↑(S' \ S) : Set ι) ∪ {v | v ∉ S'} = {v | v ∉ S} := by
+    ext v
+    simp only [Set.mem_union, Finset.mem_coe, Finset.mem_sdiff, Set.mem_ofPred_eq]
+    grind
+  rw [e1, e2, ← hunion, Set.mulIndicator_union_of_disjoint hdis,
+    Multipliable.tprod_mul (hmul _) (hmul _), ← prod_eq_tprod_mulIndicator]
 
 end GlobalTheory.CompanionTheory.SW.TailCut

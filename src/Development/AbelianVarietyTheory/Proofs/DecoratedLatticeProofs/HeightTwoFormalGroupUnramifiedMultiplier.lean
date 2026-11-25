@@ -220,12 +220,7 @@ theorem coefLe_mv_of_ps {K : Type} [NormedField K] {r : ℝ} {A : K⟦X⟧} (h :
 
 theorem norm_ringHom_pow_apply {K : Type} [NormedField K] (σ : K →+* K) (hσ : ∀ x, ‖σ x‖ = ‖x‖) :
     ∀ (j : ℕ) (x : K), ‖(σ ^ j) x‖ = ‖x‖ := by
-  intro j x
-  induction j generalizing x with
-  | zero => simp
-  | succ k ih =>
-    rw [pow_succ]
-    exact (ih (σ x)).trans (hσ x)
+  apply _root_.GlobalTheory.Honda.twistLog_norm_iterate <;> assumption
 
 private theorem norm_coeff_pow_le_one {K : Type} [NormedField K] [IsUltrametricDist K] {s : Type}
     (M : MvPowerSeries s K) (hM : ∀ m, ‖MvPowerSeries.coeff m M‖ ≤ 1) :

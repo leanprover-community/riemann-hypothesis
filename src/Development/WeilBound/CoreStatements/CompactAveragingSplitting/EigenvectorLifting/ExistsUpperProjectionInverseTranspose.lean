@@ -69,7 +69,6 @@ namespace PositivityTheory.ThK.SplitLoc
 open GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.GLDoubling
 open GlobalTheory.IwahoriInj (Deep)
 
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 attribute [local instance 10000] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 section Group

@@ -324,7 +324,7 @@ theorem hasDerivAt_exp_integral_dsigW (k r : ℕ) (H : Type) [NormedAddCommGroup
     rcases List.mem_cons.1 hY with h | h
     · rw [h]; exact hX
     · exact hD Y h
-  have hexp := Formalism.MainNotions.LowestKTypeMultiplicity.exp_mem_UH hX
+  have hexp := PI.WUN.exp_mem_UH hX
   have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ) (𝕜 := ℝ) (x₀ := (0 : ℝ))
     (F := fun (t : ℝ) g => σ (NormedSpace.exp ((t : ℂ) • X))
       (φ g • Formalism.MainNotions.S.dsigW (k := k) (r := r) σ D (σ g v)))

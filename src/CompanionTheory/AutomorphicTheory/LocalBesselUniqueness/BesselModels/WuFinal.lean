@@ -24,6 +24,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.ProdSe
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.SiegelMeasureDefinition
 import Formalism.RealPlaceAnalysis.FinalF
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocScalarPf
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyDoubleCosetBesselBoundOfGap
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.HaarWN
@@ -35,7 +36,7 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.Exi
 -- Members: CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.LocScalar, CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.DoubleCosetBesselBoundOfGap, CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.LocalUniquenessReduction, CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.WuFinal
 
 -- ===== clump member: CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.LocScalar =====
--- clump-header: {"m": "CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.LocScalar", "h": "module\n\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuDecayAll\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.HaarExist\npublic import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.CoefWeightedLocHolds\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.QuotRaw\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WFLStepsLocHNProps\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeSquareIntegrable.Closed\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.BruhatDecomposition\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.ConjugationInvariantMeasure\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.HaarMeasureUniqueness\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.LocalWeilRepresentation\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.ProdSetIsClosed\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.SiegelMeasureDefinition\nimport Formalism.RealPlaceAnalysis.FinalF\nimport Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.LocScalar", "h": "module\n\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuDecayAll\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.HaarExist\npublic import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.CoefWeightedLocHolds\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.QuotRaw\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WFLStepsLocHNProps\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeSquareIntegrable.Closed\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.BruhatDecomposition\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.ConjugationInvariantMeasure\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.HaarMeasureUniqueness\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.LocalWeilRepresentation\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.ProdSetIsClosed\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.SiegelMeasureDefinition\nimport Formalism.RealPlaceAnalysis.FinalF\nimport Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocScalarPf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -55,48 +56,6 @@ open Classical Formalism.L2.SG.Pf.WFL
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-def Hfix (v : InfinitePlace X.B.I.F) : Set (Formalism.REAL.UJ (X.B.I.ε v)) :=
-  {g | (∀ a, uMat g *ᵥ rv X.B.I v (X.eR a) = rv X.B.I v (X.eR a)) ∧
-    (∀ a, uMat g *ᵥ rv X.B.I v (X.fR a) = rv X.B.I v (X.fR a)) ∧ uMat g *ᵥ rv X.B.I v (X.zR u) = rv X.B.I v (X.zR u)}
-
-theorem NHloc_eq (v : InfinitePlace X.B.I.F) : NHloc X u v = QPK.prodSet (Nloc X u v) (Hfix X u v) := by
-  change QPK.prodSet (Nloc X u v) (Hloc X u v) = QPK.prodSet (Nloc X u v) (Hfix X u v)
-  exact congrArg (QPK.prodSet (Nloc X u v)) (Hloc_eq X u v)
-
-theorem place_facts (v : InfinitePlace X.B.I.F) :
-    IsClosed (Nloc X u v) ∧ IsCompact (Hfix X u v) ∧ QPK.IsGrp (Nloc X u v) ∧ QPK.IsGrp (Hfix X u v) ∧
-    (∀ h ∈ Hfix X u v, ∀ m ∈ Nloc X u v, h * m * h⁻¹ ∈ Nloc X u v) ∧
-    (∀ μ : Measure (Formalism.REAL.UJ (X.B.I.ε v)), SigmaFinite μ → μ ≠ 0 → μ (Nloc X u v)ᶜ = 0 →
-      (∀ s ∈ Nloc X u v, μ.map (fun x => s * x) = μ) → ∀ s ∈ Nloc X u v, μ.map (fun x => x * s) = μ) := by
-  have hT : (0 : ℝ) < ((D.mem u).A.T : ℝ) := by exact_mod_cast (D.mem u).A.T_prime.pos
-  have R := fun p q => Formalism.L2.SG.PoincareInHH.Cut.hJ_crd X v p q
-  have hee : ∀ a b, hJ (X.B.I.ε v) (rv X.B.I v (X.eR a)) (rv X.B.I v (X.eR b)) = 0 := fun a b => by
-    have := R (X.eX a) (X.eX b); rw [X.ee, map_zero] at this; exact this
-  have hff : ∀ a b, hJ (X.B.I.ε v) (rv X.B.I v (X.fR a)) (rv X.B.I v (X.fR b)) = 0 := fun a b => by
-    have := R (X.fY a) (X.fY b); rw [X.ff, map_zero] at this; exact this
-  have hef : ∀ a b, hJ (X.B.I.ε v) (rv X.B.I v (X.eR a)) (rv X.B.I v (X.fR b)) = if a = b then 1 else 0 :=
-    fun a b => by
-      have := R (X.eX a) (X.fY b); rw [X.ef] at this; rw [show X.eR a = X.crd (X.eX a) from rfl,
-        show X.fR b = X.crd (X.fY b) from rfl, this]; split_ifs <;> simp
-  have hez : ∀ a, hJ (X.B.I.ε v) (rv X.B.I v (X.eR a)) (rv X.B.I v (X.zR u)) = 0 := fun a => by
-    have := R (X.eX a) (X.zu u); rw [(X.zu_orth u a).1, map_zero] at this; exact this
-  have hfz : ∀ a, hJ (X.B.I.ε v) (rv X.B.I v (X.fR a)) (rv X.B.I v (X.zR u)) = 0 := fun a => by
-    have := R (X.fY a) (X.zu u); rw [(X.zu_orth u a).2, map_zero] at this; exact this
-  have hzz : hJ (X.B.I.ε v) (rv X.B.I v (X.zR u)) (rv X.B.I v (X.zR u)) = -(((D.mem u).A.T : ℝ) : ℂ) := by
-    have := R (X.zu u) (X.zu u); rw [X.zu_norm, map_neg, map_natCast] at this
-    rw [show X.zR u = X.crd (X.zu u) from rfl, this]; push_cast; rfl
-  have hew : ∀ c a, hJ (X.B.I.ε v) (rv X.B.I v (X.eR c)) (X.wfr u v a) = 0 := fun c a => ((X.wfr_perp u v a).1 c).1
-  have hfw : ∀ c a, hJ (X.B.I.ε v) (rv X.B.I v (X.fR c)) (X.wfr u v a) = 0 := fun c a => ((X.wfr_perp u v a).1 c).2
-  have hzw : ∀ a, hJ (X.B.I.ε v) (rv X.B.I v (X.zR u)) (X.wfr u v a) = 0 := fun a => (X.wfr_perp u v a).2
-  have hP := locHN_cast Formalism.L2.SG.Pf.WFL.locHNProps_holds (hdim X) (X.B.I.ε v) (fun a => rv X.B.I v (X.eR a))
-    (fun a => rv X.B.I v (X.fR a)) (rv X.B.I v (X.zR u)) (X.wfr u v) hT hee hff hef hez hfz hzz (X.wfr_on u v)
-    hew hfw hzw
-  have hU := nUnimod_cast Formalism.L2.SG.Closed.BM.NUnimodLoc_holds (hdim X) (X.B.I.ε v) (fun a => rv X.B.I v (X.eR a))
-    (fun a => rv X.B.I v (X.fR a)) (rv X.B.I v (X.zR u)) (X.wfr u v) hT hee hff hef hez hfz hzz (X.wfr_on u v)
-    hew hfw hzw
-  exact ⟨hP.1, hP.2.1, hP.2.2.1, ⟨fix_one, fun a ha b hb => fix_mul ha hb, fun a ha => fix_inv ha⟩,
-    fun h hh m hm => hP.2.2.2 h hh m hm, hU⟩
-
 end Facts
 
 section K1
@@ -105,96 +64,6 @@ open Classical Formalism.L2.SG.Pf.WFL
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-theorem quot_rightInv {μS νl : ∀ v, Measure (Formalism.REAL.UJ (X.B.I.ε v))} {C : ℝ≥0∞} (hQ : QuotWit X u μS νl C)
-    (v : InfinitePlace X.B.I.F) (F : Formalism.REAL.UJ (X.B.I.ε v) → ℝ≥0∞) (hF : Measurable F)
-    (hinv : ∀ s ∈ NHloc X u v, ∀ x, F (s * x) = F x) (g : Formalism.REAL.UJ (X.B.I.ε v)) :
-    ∫⁻ x, F (x * g) ∂(νl v) = ∫⁻ x, F x ∂(νl v) := by
-  obtain ⟨hNc, hHc, hNg, hHg, hnorm, hunim⟩ := place_facts X u v
-  obtain ⟨-, -, hloc, -⟩ := hQ
-  obtain ⟨hSv, hW⟩ := hloc v
-  obtain ⟨μN, μH, β, -, -, hM, hβm, hβ1, -⟩ := QPK.locPack_of QPK.haar_measure_existence QPK.conjugation_invariant_measure QPK.siegel_measure_definition
-    QPK.bruhat_decomposition' QPK.local_weil_representation (Formalism.REAL.UJ (X.B.I.ε v)) (Formalism.REAL.muG (X.B.I.ε v)) (Nloc X u v)
-    (Hfix X u v) hNc hHc hNg hHg hnorm hunim
-  have hK := QPK.prodSet_isClosed hNc hHc
-  have hKg := QPK.prodSet_isGrp hNg hHg hnorm
-  have hSv' : QPK.InvOn (μS v) (QPK.prodSet (Nloc X u v) (Hfix X u v)) := by
-    rw [← NHloc_eq]; exact hSv
-  obtain ⟨c, hc0, hct, hμS⟩ := QPK.haar_measure_uniqueness (Formalism.REAL.UJ (X.B.I.ε v)) _ hK hKg (μS v) _ hSv' hM
-  set β' : Formalism.REAL.UJ (X.B.I.ε v) → ℝ≥0∞ := fun x => c⁻¹ * β x with hβ'
-  have hβ'm : Measurable β' := measurable_const.mul hβm
-  have hβ'1 : ∀ x, ∫⁻ s, β' (s * x) ∂(μS v) = 1 := by
-    intro x
-    rw [hμS, lintegral_smul_measure, hβ', lintegral_const_mul' _ _ (ENNReal.inv_ne_top.2 hc0), hβ1 x, mul_one,
-      smul_eq_mul, ENNReal.mul_inv_cancel hc0 hct]
-  have hinv' : ∀ s ∈ NHloc X u v, ∀ x, F (s * x * g) = F (x * g) := fun s hs x => by
-    rw [mul_assoc]; exact hinv s hs (x * g)
-  have hae : ∀ x, ∀ᵐ s ∂(μS v), F (s * x * g) = F (x * g) := by
-    intro x
-    have h0 : (μS v) (NHloc X u v)ᶜ = 0 := hSv.2.2.1
-    filter_upwards [measure_eq_zero_iff_ae_notMem.1 h0] with s hs
-    exact hinv' s (by simpa using hs) x
-  have hae2 : ∀ x, ∀ᵐ s ∂(μS v), F (s * x) = F x := by
-    intro x
-    have h0 : (μS v) (NHloc X u v)ᶜ = 0 := hSv.2.2.1
-    filter_upwards [measure_eq_zero_iff_ae_notMem.1 h0] with s hs
-    exact hinv s (by simpa using hs) x
-  have hR := Formalism.REAL.unimodular _ (X.B.I.ε v) g
-  have hmg : Measurable fun y : Formalism.REAL.UJ (X.B.I.ε v) => y * g := measurable_mul_const g
-  have hmgi : Measurable fun y : Formalism.REAL.UJ (X.B.I.ε v) => y * g⁻¹ := measurable_mul_const g⁻¹
-  calc ∫⁻ x, F (x * g) ∂(νl v)
-      = ∫⁻ x, ∫⁻ s, F (s * x * g) * β' (s * x) ∂(μS v) ∂(νl v) := by
-        refine lintegral_congr fun x => ?_
-        rw [lintegral_congr_ae ((hae x).mono fun s hs => by rw [hs]),
-          lintegral_const_mul (f := fun s => β' (s * x)) _ (hβ'm.comp (measurable_mul_const x)), hβ'1 x, mul_one]
-    _ = ∫⁻ y, F (y * g) * β' y ∂(Formalism.REAL.muG (X.B.I.ε v)) :=
-        (hW (fun y => F (y * g) * β' y) ((hF.comp hmg).mul hβ'm)).symm
-    _ = ∫⁻ y, F y * β' (y * g⁻¹) ∂(Formalism.REAL.muG (X.B.I.ε v)) := by
-        conv_rhs => rw [← hR]
-        have hm2 : Measurable fun y : Formalism.REAL.UJ (X.B.I.ε v) => F y * β' (y * g⁻¹) := hF.mul (hβ'm.comp hmgi)
-        rw [lintegral_map hm2 hmg]
-        simp only [mul_inv_cancel_right]
-    _ = ∫⁻ x, ∫⁻ s, F (s * x) * β' (s * x * g⁻¹) ∂(μS v) ∂(νl v) :=
-        hW (fun y => F y * β' (y * g⁻¹)) (hF.mul (hβ'm.comp hmgi))
-    _ = ∫⁻ x, F x ∂(νl v) := by
-        refine lintegral_congr fun x => ?_
-        rw [lintegral_congr_ae ((hae2 x).mono fun s hs => by rw [hs]),
-          lintegral_const_mul (f := fun s => β' (s * x * g⁻¹)) _ (hβ'm.comp ((measurable_mul_const x).mul_const g⁻¹))]
-        simp only [mul_assoc]; rw [hβ'1 (x * g⁻¹), mul_one]
-
-theorem quot_bruhat {μS νl : ∀ v, Measure (Formalism.REAL.UJ (X.B.I.ε v))} {C : ℝ≥0∞} (hQ : QuotWit X u μS νl C)
-    (v : InfinitePlace X.B.I.F) : ∃ β : Formalism.REAL.UJ (X.B.I.ε v) → ℝ≥0∞, Measurable β ∧
-      ∀ F : Formalism.REAL.UJ (X.B.I.ε v) → ℝ≥0∞, Measurable F → (∀ s ∈ NHloc X u v, ∀ x, F (s * x) = F x) →
-        ∫⁻ x, F x ∂(νl v) = ∫⁻ x, F x * β x ∂(Formalism.REAL.muG (X.B.I.ε v)) := by
-  obtain ⟨hNc, hHc, hNg, hHg, hnorm, hunim⟩ := place_facts X u v
-  obtain ⟨-, -, hloc, -⟩ := hQ
-  obtain ⟨hSv, hW⟩ := hloc v
-  obtain ⟨μN, μH, β, -, -, hM, hβm, hβ1, -⟩ := QPK.locPack_of QPK.haar_measure_existence QPK.conjugation_invariant_measure QPK.siegel_measure_definition
-    QPK.bruhat_decomposition' QPK.local_weil_representation (Formalism.REAL.UJ (X.B.I.ε v)) (Formalism.REAL.muG (X.B.I.ε v)) (Nloc X u v)
-    (Hfix X u v) hNc hHc hNg hHg hnorm hunim
-  have hK := QPK.prodSet_isClosed hNc hHc
-  have hKg := QPK.prodSet_isGrp hNg hHg hnorm
-  have hSv' : QPK.InvOn (μS v) (QPK.prodSet (Nloc X u v) (Hfix X u v)) := by
-    rw [← NHloc_eq]; exact hSv
-  obtain ⟨c, hc0, hct, hμS⟩ := QPK.haar_measure_uniqueness (Formalism.REAL.UJ (X.B.I.ε v)) _ hK hKg (μS v) _ hSv' hM
-  refine ⟨fun x => c⁻¹ * β x, measurable_const.mul hβm, fun F hF hinv => ?_⟩
-  have hβ'1 : ∀ x, ∫⁻ s, c⁻¹ * β (s * x) ∂(μS v) = 1 := by
-    intro x
-    rw [hμS, lintegral_smul_measure, lintegral_const_mul' _ _ (ENNReal.inv_ne_top.2 hc0), hβ1 x, mul_one,
-      smul_eq_mul, ENNReal.mul_inv_cancel hc0 hct]
-  have hae : ∀ x, ∀ᵐ s ∂(μS v), F (s * x) = F x := by
-    intro x
-    have h0 : (μS v) (NHloc X u v)ᶜ = 0 := hSv.2.2.1
-    filter_upwards [measure_eq_zero_iff_ae_notMem.1 h0] with s hs
-    exact hinv s (by simpa using hs) x
-  calc ∫⁻ x, F x ∂(νl v)
-      = ∫⁻ x, ∫⁻ s, F (s * x) * (c⁻¹ * β (s * x)) ∂(μS v) ∂(νl v) := by
-        refine lintegral_congr fun x => ?_
-        rw [lintegral_congr_ae ((hae x).mono fun s hs => by rw [hs]),
-          lintegral_const_mul (f := fun s => c⁻¹ * β (s * x)) _
-            (measurable_const.mul (hβm.comp (measurable_mul_const x))), hβ'1 x, mul_one]
-    _ = ∫⁻ x, F x * (c⁻¹ * β x) ∂(Formalism.REAL.muG (X.B.I.ε v)) :=
-        (hW (fun y => F y * (c⁻¹ * β y)) (hF.mul (measurable_const.mul hβm))).symm
-
 end K1
 
 section Schur
@@ -202,35 +71,6 @@ section Schur
 open Classical
 
 variable {D : D7} (X : HidaSetting D)
-
-theorem pv_conv (v : InfinitePlace X.B.I.F) (y : Formalism.REAL.UJ (X.B.I.ε v)) :
-    Integrable (fun g => Pv X v g * Pv X v (g⁻¹ * y)) (Formalism.REAL.muG (X.B.I.ε v)) ∧
-      ∫ g, Pv X v g * Pv X v (g⁻¹ * y) ∂(Formalism.REAL.muG (X.B.I.ε v)) = Pv X v y := by
-  haveI : (Formalism.REAL.muG (X.B.I.ε v)).IsInvInvariant := ⟨Formalism.REAL.invInvariant _ (X.B.I.ε v)⟩
-  have hds := X.ds v
-  have hU := hds.2.2.1
-  have hURep : Formalism.L2.SG.ProjRows.IsURep (fun g : Formalism.REAL.UJ (X.B.I.ε v) => X.B.σ v (uMat g)) := by
-    refine ⟨?_, fun a b => ?_, fun g w => hU.2.1 _ g.2 w, fun w => ?_⟩
-    · show X.B.σ v (uMat 1) = 1
-      rw [uMat_one']; exact hU.1.1
-    · show X.B.σ v (uMat (a * b)) = (X.B.σ v (uMat a)).comp (X.B.σ v (uMat b))
-      rw [Formalism.L2.SG.WuDecayPf.uMat_mul']; exact hU.1.2 _ a.2 _ b.2
-    · exact (hU.2.2 w).comp_continuous Formalism.L2.SG.WuDecayPf.continuous_uMat (fun g => g.2)
-  haveI : Nontrivial (X.B.H v) := hds.2.1
-  obtain ⟨d', hd'⟩ := PIW.HCFdeg.formal_degree_abstract_form _ (X.B.I.ε v) (X.B.H v) (X.B.σ v) hds.2.2.1 hds.2.2.2.1 hds.2.2.2.2.1
-  have hw1 : ‖X.B.w v‖ = 1 := (X.low v).1
-  have hw0 : X.B.w v ≠ 0 := by intro h; rw [h, norm_zero] at hw1; exact zero_ne_one hw1
-  have hdd : X.dv v = d' := Formalism.MainNotions.DiscreteSeriesInnerProducts.fdegOf_eq hd' hw0
-  have hF : Formalism.L2.SG.ProjRows.IsFdegG (Formalism.REAL.muG (X.B.I.ε v)) (fun g : Formalism.REAL.UJ (X.B.I.ε v) => X.B.σ v (uMat g))
-      (X.dv v) := by
-    rw [hdd]; exact ⟨hd'.1, fun a b a' b' => hd'.2 a b a' b'⟩
-  obtain ⟨hPC, -⟩ := Formalism.L2.SG.Closed.SchurConv_holds (Formalism.REAL.UJ (X.B.I.ε v)) (Formalism.REAL.muG (X.B.I.ε v)) (X.B.H v)
-    (fun g => X.B.σ v (uMat g)) (X.dv v) (X.B.w v) hURep hF hw1
-  obtain ⟨h1, -, h3⟩ := hPC
-  obtain ⟨hi, he⟩ := h3 1 y
-  simp only [inv_one, one_mul] at hi he
-  rw [h1, one_mul] at he
-  exact ⟨hi, he⟩
 
 end Schur
 
@@ -250,15 +90,6 @@ theorem pv_integrable (hG : Formalism.L2.SG.ConcreteSettingExists.GapHyp D) (v :
   rw [e]
   simp only [norm_mul, norm_star, Complex.norm_real, Real.norm_eq_abs]
 
-theorem ennreal_mul_le_sq (a b : ℝ≥0∞) : a * b ≤ a ^ 2 + b ^ 2 := by
-  rcases le_total a b with h | h
-  · calc a * b ≤ b * b := by gcongr
-      _ = b ^ 2 := (sq b).symm
-      _ ≤ a ^ 2 + b ^ 2 := le_add_self
-  · calc a * b ≤ a * a := by gcongr
-      _ = a ^ 2 := (sq a).symm
-      _ ≤ a ^ 2 + b ^ 2 := le_self_add
-
 theorem local_scalar_reduction : LocScalarStep := by
   intro D hG X u μS νl C hQ v c hc0 hc
   set μ := Formalism.REAL.muG (X.B.I.ε v) with hμ
@@ -268,7 +99,7 @@ theorem local_scalar_reduction : LocScalarStep := by
   have hpc : Continuous ph := continuous_Pv X v
   have hpI : Integrable ph μ := pv_integrable X hG v
   obtain ⟨hL0, hLt⟩ := localRepresentationL2 X u hQ v
-  obtain ⟨β, hβm, hβ⟩ := quot_bruhat X u hQ v
+  obtain ⟨β, hβm, hβ⟩ := Formalism.L2.SG.Pf.WuDec.quot_bruhat X u hQ v
   set ν' := μ.withDensity β with hν'
   have htr : ∀ F : Formalism.REAL.UJ (X.B.I.ε v) → ℝ≥0∞, Measurable F → (∀ s ∈ NHloc X u v, ∀ x, F (s * x) = F x) →
       ∫⁻ x, F x ∂(νl v) = ∫⁻ x, F x ∂ν' := by
@@ -285,12 +116,12 @@ theorem local_scalar_reduction : LocScalarStep := by
   have hK1 : ∀ y, ∫⁻ x, ‖f (x * y)‖ₑ ^ 2 ∂ν' = L := fun y => by
     rw [← htr (fun x => ‖f (x * y)‖ₑ ^ 2) ((hfc.comp (continuous_id.mul continuous_const)).eNorm.measurable.pow_const 2)
       (fun s hs x => by simp only [mul_assoc]; exact hinvN s hs (x * y))]
-    exact quot_rightInv X u hQ v (fun x => ‖f x‖ₑ ^ 2) (hfc.eNorm.measurable.pow_const 2) hinvN y
+    exact Formalism.L2.SG.Pf.WuDec.quot_rightInv X u hQ v (fun x => ‖f x‖ₑ ^ 2) (hfc.eNorm.measurable.pow_const 2) hinvN y
   have hL' : ∫⁻ y, ‖f y‖ₑ ^ 2 ∂ν' = L := (htr _ (hfc.eNorm.measurable.pow_const 2) hinvN).symm
   have hin : ∀ y, ∫⁻ x, ‖f x‖ₑ * ‖f (x * y)‖ₑ ∂ν' ≤ 2 * L := by
     intro y
     calc ∫⁻ x, ‖f x‖ₑ * ‖f (x * y)‖ₑ ∂ν' ≤ ∫⁻ x, (‖f x‖ₑ ^ 2 + ‖f (x * y)‖ₑ ^ 2) ∂ν' :=
-          lintegral_mono fun x => ennreal_mul_le_sq _ _
+          lintegral_mono fun x => Formalism.L2.SG.Pf.WuDec.ennreal_mul_le_sq _ _
       _ = L + L := by
           rw [lintegral_add_left (hfc.eNorm.measurable.pow_const 2), hK1 y, hL']
       _ = 2 * L := (two_mul L).symm
@@ -400,7 +231,7 @@ theorem local_scalar_reduction : LocScalarStep := by
     rw [integral_prod_symm _ hΨi]
     have e4 : ∀ y, ∫ g, Ψ (g, y) ∂μ = ph y • f (x * y) := fun y => by
       simp only [hΨ, smul_smul]
-      rw [integral_smul_const, (pv_conv X v y).2]
+      rw [integral_smul_const, (Formalism.L2.SG.Pf.WuDec.pv_conv X v y).2]
     simp only [e4]
     exact (hc x).2
   have hΦΨ : ∫ p, Φ p ∂(μ.prod μ) = ∫ p, Ψ p ∂(μ.prod μ) := by

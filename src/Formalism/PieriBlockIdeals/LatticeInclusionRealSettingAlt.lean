@@ -297,11 +297,6 @@ def PlacesReal : Prop :=
   ∀ P : Par, P.Hyp → P.Large → ∀ (ι : Type) (W : Wts ι), W.Ok P → ∀ J : ℕ → ℕ,
     Nonempty (Places (W.sizeData₂ P J) P) ∧ (W.sizeData₂ P J).NoWindow P
 
-def BeyondH : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι),
-    W.Ok P → ∀ l : ℕ, l.Prime → P.lJ < (l : ℝ) → P.h < (l : ℝ) →
-    (∀ τ, W.ex P τ l = 0) ∧ W.JA P l = 0 ∧ W.JW P l = 0
-
 def TopInputsReal : Prop :=
   ∀ P : Par, P.Hyp → P.Large → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P →
     ∀ (l : ℕ) (X : HidaSetting ι P.Nr W.lam), l.Prime → ¬ IsUnit ((l : ℕ) : X.O) → P.lJ < (l : ℝ) →
@@ -408,18 +403,6 @@ def RecIncl7 : Prop :=
     ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
     (∀ l : ℕ, l.Prime → W.WRange P l → (X l).WInputs l (kc P) W.j W.T2 (W.iW P l)) →
     ∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Jmin l ≤ W.Jrec7 P l
-
-def InputsRec7 : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P → Fintype.card ι = P.f →
-    W.Sp.card ≤ 5 → (W.sizeData₂ P (W.Jrec7 P)).Inputs P
-
-def RecSum7 : Prop :=
-  LA.LemmaAZ → PrimeCountingBound → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P → Fintype.card ι = P.f →
-    W.Sp.card ≤ 5 → ∀ Q : Finset ℕ, (∀ l ∈ Q, l.Prime) →
-      ∑ l ∈ Q, (W.Jrec7 P l : ℝ) * Real.log (l : ℝ) ≤
-        totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2)
 
 def CorollaryOfRecord7 : Prop :=
   LA.LemmaAZ → LemmaDGraded → PrimeCountingBound → ∀ P : Par, P.Hyp → P.Large →

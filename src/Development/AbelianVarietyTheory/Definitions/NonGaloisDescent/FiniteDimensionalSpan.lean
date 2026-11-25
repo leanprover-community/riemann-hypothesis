@@ -58,8 +58,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SeriesTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lin
 
 variable {R : Type} [CommRing R] [IsDomain R]

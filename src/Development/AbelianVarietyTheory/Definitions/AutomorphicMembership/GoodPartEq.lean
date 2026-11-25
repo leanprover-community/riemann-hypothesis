@@ -46,8 +46,6 @@ open Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Lev Formalism
 
 namespace GlobalTheory.Mem.R3.Tr
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {B : Base} {C : Cols B} {a : Late B C} (b : Late B C) {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
 variable {Ks : Type} [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]
 set_option linter.style.haveILetI false

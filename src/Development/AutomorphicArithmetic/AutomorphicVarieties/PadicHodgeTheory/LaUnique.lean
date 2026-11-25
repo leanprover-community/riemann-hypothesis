@@ -197,7 +197,6 @@ private theorem indep {ι k L Γ : Type} [Fintype ι] [Field k] [Field L] [CharZ
     · exact absurd h hπ
   simpa using this
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 theorem UpperTheory.V.Loc.laUnique :
     ∀ {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {A : ValuationSubring Ω} {w : Plc F} (h : IsPlaceOver A w), (∃ a, IsLocalArtin h a) → ∀ (κ : ↥(Dec (F := F) A) →* (Qbar l)ˣ) (wt wt' : Emb l w → ℤ), IsLocAlg h κ wt → IsLocAlg h κ wt' → wt = wt' := by
   intro F Ω _ _ _ _ _ l _ A w h ha0 κ wt wt' hw hw'

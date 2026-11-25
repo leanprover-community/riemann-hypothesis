@@ -100,59 +100,6 @@ theorem toCForm_injective (L : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)
     Function.Injective (toCForm σ lam L Λ) := fun _ _ h =>
   Subtype.ext (funext fun d => Subtype.ext (MvPolynomial.map_injective σ σ.injective (congrFun (congrArg Subtype.val h) d)))
 
-theorem tr_mem_cForms (Λ : LevFam X.E X.K n SG) (a : GLG (E := X.E) (n := n) (SG := SG)) (ha : ∀ w, (Λ w).NormBy (a w))
-    {F : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG) → Pol ℂ X.Tau n} (hF : F ∈ cForms ST σ lam Λ) :
-    (fun d => F (((1 : UF X.E n), a⁻¹) • d)) ∈ cForms ST σ lam Λ := by
-  rw [mem_cForms] at hF ⊢
-  refine fun d => ⟨(hF _).1, fun γ h => ?_⟩
-  obtain ⟨h', e1, e2⟩ := Λ.normBy a ha h
-  have h1 := (hF (((1 : UF X.E n), a⁻¹) • d)).2 γ h'
-  rw [smul_smul, Prod.mk_mul_mk, mul_one] at h1
-  rw [smul_smul, Prod.mk_mul_mk, one_mul, e1, h1, e2]
-
-
-variable (ST) in
-def cTr (Λ : LevFam X.E X.K n SG) {A : Type} [Group A] (ι : A →* GLG (E := X.E) (n := n) (SG := SG)) (hι : ∀ a w, (Λ w).NormBy (ι a w)) :
-    Representation ℂ A (cForms ST σ lam Λ) where
-  toFun a :=
-    { toFun := fun F => ⟨_, tr_mem_cForms σ lam Λ (ι a) (hι a) F.2⟩
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  map_one' := by
-    refine LinearMap.ext fun F => Subtype.ext (funext fun d => ?_)
-    show F.1 (((1 : UF X.E n), (ι 1)⁻¹) • d) = F.1 d
-    rw [map_one, inv_one, ← Prod.one_eq_mk, one_smul]
-  map_mul' a b := by
-    refine LinearMap.ext fun F => Subtype.ext (funext fun d => ?_)
-    show F.1 (((1 : UF X.E n), (ι (a * b))⁻¹) • d) = F.1 (((1 : UF X.E n), (ι b)⁻¹) • ((1 : UF X.E n), (ι a)⁻¹) • d)
-    rw [smul_smul, Prod.mk_mul_mk, one_mul, map_mul, mul_inv_rev]
-
-theorem mem_cForms_split {r : ℕ} {SG0 : Finset (HeightOneSpectrum (𝓞 X.E))} {ι : GLG (E := X.E) (n := r) (SG := SG0) →* GLG (E := X.E) (n := n) (SG := SG)}
-    {ΛP ΛK : LevFam X.E X.K n SG} {Λ0 : LevFam X.E X.K r SG0} (H : LevFam.Split ι ΛP ΛK Λ0)
-    (F : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG) → Pol ℂ X.Tau n) :
-    F ∈ cForms ST σ lam ΛP ↔ F ∈ cForms ST σ lam ΛK ∧
-      ∀ (a : Λ0.grp) d, F (((1 : UF X.E n), (ι a.1)⁻¹) • d) = σ ((Λ0.chr a)⁻¹ : X.Kˣ) • F d := by
-  rw [mem_cForms, mem_cForms]
-  constructor
-  · intro hφ
-    refine ⟨fun d => ⟨(hφ d).1, fun γ k => ?_⟩, fun a d => ?_⟩
-    · obtain ⟨hm, e⟩ := H.sub k
-      rw [← e]
-      exact (hφ d).2 γ ⟨k.1, hm⟩
-    · obtain ⟨hm, e⟩ := H.emb a⁻¹
-      have h1 := (hφ d).2 1 ⟨_, hm⟩
-      rw [e, map_one, map_inv] at h1
-      rw [← map_inv]
-      exact h1
-  · rintro ⟨h1, h2⟩ d
-    refine ⟨(h1 d).1, fun γ h => ?_⟩
-    obtain ⟨a, k, e1, e2⟩ := H.fac h
-    have h3 := h2 a⁻¹ ((γ, (k.1 : GLG (E := X.E) (n := n) (SG := SG))) • d)
-    rw [(h1 d).2 γ k, smul_smul, Prod.mk_mul_mk, one_mul, map_inv Λ0.chr, inv_inv] at h3
-    have e3 : (ι ((a⁻¹ : ↥Λ0.grp) : GLG (E := X.E) (n := r) (SG := SG0)))⁻¹ = ι a.1 := by
-      rw [Subgroup.coe_inv, map_inv, inv_inv]
-    rw [e3] at h3
-    rw [e1, h3, e2, smul_smul, Units.val_mul, map_mul]
 
 def FrLaw (Λ : LevFam X.E X.K n SG) (Θ : LevQFam X.E X.K n Q) (H : Subgroup (FrmG Λ Θ))
     (F : DecoF X.E n ST SG Q → Pol ℂ X.Tau n) : Prop :=
@@ -220,31 +167,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
   (P : LevFam X.E X.K R.r Pr.vGs) (σ : X.K →+* ℂ)
 
-theorem lamT_eq (u : Pr.Word) (j : ℕ) : lamT (W.hc u) j = W.lamTrue u j := rfl
-
-def MtC : Submodule ℂ (RowPt Pr R sel mu → Pol ℂ X.Tau (R.N R.m - 1)) := cForms ∅ σ W.sgTrue (rowTyKK Ch sel mu).inv
-
 def MtP : Submodule ℂ (RowPt Pr R sel mu → Pol ℂ X.Tau (R.N R.m - 1)) := cForms ∅ σ W.sgTrue (rowTy Ch sel mu P).inv
-
-def rightTranslationAction : Representation ℂ (G0 X.E Pr.vGs R.r) (MtC W Ch sel mu σ) :=
-  cTr ∅ σ W.sgTrue _ (unipotentGroupBlockEmbedding Pr sel mu (r_le_X' R)) (rowTyKK_inv_normBy_g0Hat Ch sel mu)
-
-theorem mem_MtP_iff (F : RowPt Pr R sel mu → Pol ℂ X.Tau (R.N R.m - 1)) : F ∈ MtP W Ch sel mu P σ ↔
-    ∃ h : F ∈ MtC W Ch sel mu σ, ∀ a : P.grp,
-      rightTranslationAction W Ch sel mu σ a.1 ⟨F, h⟩ = σ (P.chr a : X.Kˣ) • (⟨F, h⟩ : MtC W Ch sel mu σ) := by
-  refine (mem_cForms_split σ W.sgTrue (rowTy_split Ch sel mu P).inv F).trans ⟨?_, ?_⟩
-  · rintro ⟨h1, h2⟩
-    refine ⟨h1, fun a => Subtype.ext (funext fun d => ?_)⟩
-    have := h2 ⟨a.1, a.2⟩ d
-    rw [P.inv_chr a, inv_inv] at this
-    exact this
-  · rintro ⟨h1, h2⟩
-    refine ⟨h1, fun a d => ?_⟩
-    have := congrFun (congrArg Subtype.val (h2 ⟨a.1, a.2⟩)) d
-    rw [P.inv_chr ⟨a.1, a.2⟩, inv_inv]
-    exact this
-
-theorem MtP_le_MtC : MtP W Ch sel mu P σ ≤ MtC W Ch sel mu σ := fun F h => ((mem_MtP_iff W Ch sel mu P σ F).1 h).1
 
 def toMtP : MtildeV W Ch sel mu P →ₛₗ[σ] MtP W Ch sel mu P σ := toCForm σ W.sgTrue _ _
 
@@ -282,19 +205,6 @@ variable (u : Pr.Word)
   (rho' : ∀ i (b : Idx sel mu L (i + 1)), (stepAt sel mu cst L (topLev Ch sel mu cst P) u (i + 1)).D b → ℂ) (cD : X.Tau → ℂ)
   (Th : ∀ i (b : Idx sel mu L i) (b' : Idx sel mu L (i + 1)), (stepAt sel mu cst L (topLev Ch sel mu cst P) u i).D b →
     (stepAt sel mu cst L (topLev Ch sel mu cst P) u (i + 1)).D b' → Formalism.L2.Ker.VCx X.Tau (R.N i) (R.N (i + 1)) → ℂ)
-
-def perAtH (H : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu))) :
-    PerIn (chainAt sel mu cst L (topLev Ch sel mu cst P) u rho rho' cD Th) where
-  S' := stepX Ch sel mu P
-  b0 := idxTop sel mu L
-  til _ p := topPt sel mu cst u (tilF sel mu u p.1.1)
-  ext _ := extTop Ch sel mu cst P
-  sg := W.sgW
-  tz := star ((Pr.piT u : 𝓞 X.E) : X.E)
-  H _ := H
-
-def perAt : PerIn (chainAt sel mu cst L (topLev Ch sel mu cst P) u rho rho' cD Th) :=
-  perAtH W Ch sel mu cst L P u rho rho' cD Th ⊤
 
 section Gen
 

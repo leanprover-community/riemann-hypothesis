@@ -495,11 +495,7 @@ theorem fixed_of_killed (hs : L.s = 0) (hQ : L.Q = ∅) {x : X} (hx : x ∈ kill
   simpa [h2, sub_eq_zero] using this
 
 theorem isTopologicalGroup_GA (V : HSp D) : IsTopologicalGroup (GA D V) := by
-  have : IsModuleTopology (AF D.host.F) (AF D.host.F ⊗[D.host.F] D.host.E) := ⟨rfl⟩
-  have : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
-  have : IsTopologicalRing (AF D.host.F ⊗[D.host.F] D.host.E) :=
-    IsModuleTopology.isTopologicalRing (AF D.host.F) _
-  exact inferInstanceAs (IsTopologicalGroup (HR (AF D.host.F) D.sp.cm.sig V.gram))
+  apply _root_.GlobalTheory.FiniteRingMultiplication.isTopGroup <;> assumption
 
 alias isOpen_stab := _root_.GlobalTheory.FiniteRingMultiplication.isOpen_stabiliser
 

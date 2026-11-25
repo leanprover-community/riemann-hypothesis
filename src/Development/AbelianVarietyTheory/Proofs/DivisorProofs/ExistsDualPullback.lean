@@ -45,8 +45,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.VB
 
-set_option autoImplicit false
-
 noncomputable section
 
 open GlobalTheory.LB (resG_resG resG_self homOfLinear)

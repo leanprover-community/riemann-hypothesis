@@ -78,7 +78,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.RealMult GlobalTheory.CMVal GlobalTheory.LatVal GlobalTheory.LatJet
 open GlobalTheory.IndefiniteRowSideFullHecke.LatticeNormTransport (upIdele IsLatOf)
 attribute [local instance] Over.cartesianMonoidalCategory
-set_option autoImplicit false
 open GlobalTheory.WeierstrassCurve (scheme toSpec mapHom)
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (finiteAdeleMap finiteCompletionMap finiteCompletionMap_coe finiteCompletionMap_mapsTo)
@@ -209,8 +208,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.HilbFam GlobalTheory.WpFam GlobalTheory.QFam ReciprocityTheory.ChartRestriction.L1
 open scoped UpperHalfPlane nonZeroDivisors Matrix
-
-set_option autoImplicit false
 
 namespace GlobalTheory.RoadE.ConjLat
 

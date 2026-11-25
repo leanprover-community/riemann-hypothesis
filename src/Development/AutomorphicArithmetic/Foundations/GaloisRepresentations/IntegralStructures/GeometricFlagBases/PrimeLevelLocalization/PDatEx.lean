@@ -446,14 +446,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-private theorem int_of_rat {K : Type} [Field K] [CharZero K] (r : ℚ)
-    (h : IsIntegral ℤ (r : K)) : ∃ a : ℤ, (a : ℚ) = r := by
-  have h1 : IsIntegral ℤ r := by
-    have h2 : IsIntegral ℤ (algebraMap ℚ K r) := by simpa using h
-    exact (isIntegral_algebraMap_iff ).mp h2
-  obtain ⟨a, ha⟩ := IsIntegrallyClosed.isIntegral_iff.mp h1
-  exact ⟨a, by simpa using ha⟩
-
 theorem UpperTheory.discriminant_mul_integral_mem :
     ∀ (K : Type) [Field K] [CharZero K] (σ : K →+* K) (w y : K) (t n : ℤ), w + σ w = (t : K) → w * σ w = (n : K) → IsIntegral ℤ y → y ∈ IntermediateField.adjoin ℚ {w} → ∃ a b : ℤ, ((t ^ 2 - 4 * n : ℤ) : K) * y = (a : K) + (b : K) * w := by
   intro K _ _ σ w y t n ht hn hy hmem
@@ -495,11 +487,16 @@ theorem UpperTheory.discriminant_mul_integral_mem :
     rw [hσy, hpq]; push_cast; ring
   have hB : w * y + σ (w * y) = ((p * t + q * (t ^ 2 - 2 * n) : ℚ) : K) := by
     rw [map_mul, hσy, hσw, hpq]; push_cast; linear_combination 2 * (q : K) * hsq
-  obtain ⟨A, hA'⟩ := int_of_rat _ (hA ▸ hσ y hy)
-  obtain ⟨B, hB'⟩ := int_of_rat _ (hB ▸ hσ _ (hw.mul hy))
-  have hAK : (A : K) = 2 * p + q * t := by exact_mod_cast congrArg (Rat.cast : ℚ → K) hA'
+  obtain ⟨A, hA'⟩ := IsIntegrallyClosed.isIntegral_iff.mp
+    (isIntegral_algebraMap_iff.mp (by simpa using hA ▸ hσ y hy) : IsIntegral ℤ (2 * p + q * t))
+  obtain ⟨B, hB'⟩ := IsIntegrallyClosed.isIntegral_iff.mp
+    (isIntegral_algebraMap_iff.mp (by simpa using hB ▸ hσ _ (hw.mul hy)) :
+      IsIntegral ℤ (p * t + q * (t ^ 2 - 2 * n)))
+  have hAK : (A : K) = 2 * p + q * t := by
+    exact_mod_cast congrArg (Rat.cast : ℚ → K) (by simpa using hA' : (A : ℚ) = 2 * p + q * t)
   have hBK : (B : K) = p * t + q * (t ^ 2 - 2 * n) := by
-    exact_mod_cast congrArg (Rat.cast : ℚ → K) hB'
+    exact_mod_cast congrArg (Rat.cast : ℚ → K)
+      (by simpa using hB' : (B : ℚ) = p * t + q * (t ^ 2 - 2 * n))
   refine ⟨(t ^ 2 - 2 * n) * A - t * B, 2 * B - t * A, ?_⟩
   push_cast
   rw [hAK, hBK, hpq]

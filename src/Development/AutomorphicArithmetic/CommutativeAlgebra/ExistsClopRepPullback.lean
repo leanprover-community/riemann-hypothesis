@@ -154,40 +154,27 @@ end UpperTheory.ClopPullback
 
 open UpperTheory.ClopPullback
 
-private theorem UpperTheory.preimage_comp_scheme_opens_of_pullback {X Y Z : Scheme.{0}} (f : X ⟶ Y) (g : Y ⟶ Z) (W : Z.Opens) :
-    (f ≫ g) ⁻¹ᵁ W = f ⁻¹ᵁ (g ⁻¹ᵁ W) := by
-  simp
-
-private theorem UpperTheory.isClosed_preimage_opens_of_isClosed {X Y : Scheme.{0}} (f : X ⟶ Y) {W : Y.Opens}
-    (hW : IsClosed (W : Set Y)) : IsClosed ((f ⁻¹ᵁ W : X.Opens) : Set X) :=
-  hW.preimage f.continuous
-
-private theorem UpperTheory.preimage_preimage_eq_of_section {X Y : Scheme.{0}} (f : X ⟶ Y) (g : Y ⟶ X) (h : f ≫ g = 𝟙 X)
-    (W : X.Opens) : f ⁻¹ᵁ (g ⁻¹ᵁ W) = W := by
-  rw [← UpperTheory.preimage_comp_scheme_opens_of_pullback, h]
-  simp
-
 theorem UpperTheory.exists_clopRep_pullback :
     ∀ {S S' : Scheme.{0}} (t : S' ⟶ S) (G Y : Over S) (U : (Y ⊗ G).left.Opens), UpperTheory.RepresentationRank.Rep G Y U → ∃ U' : ((Over.pullback t).obj Y ⊗ (Over.pullback t).obj G).left.Opens, UpperTheory.RepresentationRank.Rep ((Over.pullback t).obj G) ((Over.pullback t).obj Y) U' := by
   intro S S' t G Y U hU
-  refine ⟨cmp t G Y ⁻¹ᵁ U, UpperTheory.isClosed_preimage_opens_of_isClosed _ hU.1, ?_⟩
+  refine ⟨cmp t G Y ⁻¹ᵁ U, hU.1.preimage (cmp t G Y).continuous, ?_⟩
   intro T' V' hV'
   obtain ⟨y, hy, huniq⟩ := hU.2 ((Over.map t).obj T') (bwd t G T' ⁻¹ᵁ V')
-    (UpperTheory.isClosed_preimage_opens_of_isClosed _ hV')
+    (hV'.preimage (bwd t G T').continuous)
   have hpre : ∀ y' : T' ⟶ (Over.pullback t).obj Y,
       (y' ▷ (Over.pullback t).obj G).left ⁻¹ᵁ (cmp t G Y ⁻¹ᵁ U) =
         fwd t G T' ⁻¹ᵁ ((((Over.mapPullbackAdj t).homEquiv _ _).symm y' ▷ G).left ⁻¹ᵁ U) := by
     intro y'
-    rw [← UpperTheory.preimage_comp_scheme_opens_of_pullback, key, UpperTheory.preimage_comp_scheme_opens_of_pullback]
+    rw [← Scheme.Hom.comp_preimage, key, Scheme.Hom.comp_preimage]
   refine ⟨(Over.mapPullbackAdj t).homEquiv _ _ y, ?_, ?_⟩
   · show (((Over.mapPullbackAdj t).homEquiv _ _ y) ▷ (Over.pullback t).obj G).left ⁻¹ᵁ
         (cmp t G Y ⁻¹ᵁ U) = V'
-    rw [hpre, Equiv.symm_apply_apply, hy]
-    exact UpperTheory.preimage_preimage_eq_of_section _ _ (fwd_bwd t G T') V'
+    rw [hpre, Equiv.symm_apply_apply, hy, ← Scheme.Hom.comp_preimage, fwd_bwd,
+      Scheme.Hom.id_preimage]
   · intro y'' hy''
     have hy2 : (y'' ▷ (Over.pullback t).obj G).left ⁻¹ᵁ (cmp t G Y ⁻¹ᵁ U) = V' := hy''
     have h1 : ((((Over.mapPullbackAdj t).homEquiv _ _).symm y'' ▷ G).left ⁻¹ᵁ U) =
         bwd t G T' ⁻¹ᵁ V' := by
-      rw [← hy2, hpre, UpperTheory.preimage_preimage_eq_of_section _ _ (bwd_fwd t G T')]
+      rw [← hy2, hpre, ← Scheme.Hom.comp_preimage, bwd_fwd, Scheme.Hom.id_preimage]
     have h2 := huniq _ h1
     rw [← h2, Equiv.apply_symm_apply]

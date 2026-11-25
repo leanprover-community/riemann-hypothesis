@@ -47,8 +47,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.St.G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def Mq (wt : (VS D).V ≃ₗ[D.host.E] (VS D).V) : Submodule (𝓞 D.host.E) (Fin (D.R.N 0) → D.host.E) :=

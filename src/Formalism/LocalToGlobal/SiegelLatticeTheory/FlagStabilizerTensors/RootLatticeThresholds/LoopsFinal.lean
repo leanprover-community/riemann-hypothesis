@@ -14,8 +14,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopsFinal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section admitted
 
 variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)

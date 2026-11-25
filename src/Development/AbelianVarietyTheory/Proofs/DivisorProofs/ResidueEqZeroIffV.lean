@@ -44,8 +44,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.Pt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.PrimePart

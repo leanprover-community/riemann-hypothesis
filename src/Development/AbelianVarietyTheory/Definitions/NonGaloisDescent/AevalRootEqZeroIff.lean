@@ -74,20 +74,10 @@ theorem IsCsr.mul {P Q : B[X]} (hP : IsCsr s P) (hQ : IsCsr s Q) : IsCsr s (P * 
     mul_coeff_zero, map_mul, C_mul]
   ring
 
-theorem IsCsr.map {P : B[X]} (hP : IsCsr s P) (φ : B →+* B') (hφ : ∀ b, φ (s b) = s' (φ b)) :
-    IsCsr s' (P.map φ) := by
-  refine ⟨hP.1.map φ, ?_⟩
-  nontriviality B'
-  have e : s'.comp φ = φ.comp s := RingHom.ext fun b => (hφ b).symm
-  rw [hP.1.natDegree_map, Polynomial.map_map, e, ← Polynomial.map_map, reflect_map, ← hP.2, Polynomial.map_mul, map_C, coeff_map, hφ]
-
-
 variable (s) in
 abbrev Csr (s : B →+* B) : Type := {P : B[X] // IsCsr s P}
 
 def Csr.mul (P Q : Csr s) : Csr s := ⟨P.1 * Q.1, P.2.mul Q.2⟩
-
-def Csr.map (P : Csr s) (φ : B →+* B') (hφ : ∀ b, φ (s b) = s' (φ b)) : Csr s' := ⟨P.1.map φ, P.2.map φ hφ⟩
 
 abbrev Csr.Factorisation (P : Csr s) : Type := {p : Csr s × Csr s // p.1.1 * p.2.1 = P.1}
 
@@ -258,13 +248,6 @@ include hφ
 end Map
 
 
-
-
-open Classical in
-variable (s) in
-def normSign (d : B) : ℤˣ := by
-  classical
-  exact if ∃ u : Bˣ, d = u * s u then 1 else -1
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 

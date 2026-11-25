@@ -50,8 +50,6 @@ open Formalism.MainNotions.S Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.S
 
 namespace GlobalTheory.St
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def WittX (X : HidaSetting D) (u : D.what₂.Word) (wt : (VS D).V ≃ₗ[D.host.E] (VS D).V) : Prop :=

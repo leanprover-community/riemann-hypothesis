@@ -186,13 +186,6 @@ section
 variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C] {v : Valuation C NNReal}
   {F : Type} [Field F]
 
-theorem mem_x_ideal_iff (M : Submodule R (F → C)) (χ : MulChar F R) (r : R) :
-    r ∈ xIdeal M χ ↔ (fun a => algebraMap R C (r * χ a)) ∈ M := by
-  have : LinearMap.toSpanSingleton R (F → C) (fun a => algebraMap R C (χ a)) r =
-      fun a => algebraMap R C (r * χ a) := by
-    funext a; simp [Algebra.smul_def]
-  rw [xIdeal, Submodule.mem_comap, this]
-
 theorem mem_aug (M : Submodule R (F → C)) (g : F → C) :
     g ∈ augIdeal M ↔ g ∈ M ∧ g 0 = 0 := Iff.rfl
 
@@ -245,7 +238,7 @@ theorem pow_mem_sq (AA : HopfOrder (C := C) R F) (χ : MulChar F R) {c : R}
     (fun a => algebraMap R C (c ^ k * (χ ^ k) a)) ∈ sqIdeal (augIdeal AA.carrier) := by
   obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 + 1 := ⟨k - 2, by omega⟩
   have hg : (fun a => algebraMap R C (c * χ a)) ∈ augIdeal AA.carrier :=
-    (mem_aug _ _).2 ⟨(mem_x_ideal_iff _ _ _).1 hc, by simp [MulChar.map_zero]⟩
+    (mem_aug _ _).2 ⟨(PositivityTheory.HtPt.Pmono.mem_xIdeal _ _ _).1 hc, by simp [MulChar.map_zero]⟩
   refine Submodule.subset_span ⟨_, pow_mem_aug AA hg j, _, hg, ?_⟩
   funext a
   rw [← pow_succ, Pi.pow_apply, MulChar.pow_apply' _ (by omega), ← mul_pow, map_pow]
@@ -299,7 +292,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.fundamental_ideal_frobenius_pr
     have := pow_mem_sq AA (σ ^ p ^ n) (hc n ▸ Ideal.mem_span_singleton_self (c n)) hp2
     rwa [← pow_mul, ← pow_succ] at this
   have hdvd : ∀ n, c n ^ p ∈ Ideal.span {c (n + 1)} := fun n => by
-    rw [← hc, mem_x_ideal_iff]
+    rw [← hc, PositivityTheory.HtPt.Pmono.mem_xIdeal]
     exact sq_le AA (hsq n)
   have hper : ∀ n, σ ^ p ^ (n + f) = σ ^ p ^ n := fun n => by
     rw [pow_eq_pow_iff_modEq, hord, pow_add]

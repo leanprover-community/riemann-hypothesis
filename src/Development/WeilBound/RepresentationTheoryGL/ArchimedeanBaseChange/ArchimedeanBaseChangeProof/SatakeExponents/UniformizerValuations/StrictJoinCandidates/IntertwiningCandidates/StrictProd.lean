@@ -48,8 +48,6 @@ open scoped Classical
 
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS

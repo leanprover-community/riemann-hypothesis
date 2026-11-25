@@ -49,8 +49,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.Hk3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
 
 structure InertJunk {K : Type} [Field K] [NumberField K] [StarRing K] {m : ℕ} (A3 : FamIn3 K G Pl0 I0 (List ℕ) T m) : Prop where

@@ -103,7 +103,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SphericalEisen
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RegularisedSiegelWeilFirstTerm
 import Development.AutomorphicArithmetic.ThetaCorrespondence.RallisInnerProduct.ExistsCommonLevelSobolevBoundWeilCompact
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsCommonLevelSobolevBoundWeilCompact
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSobolevBoundThetaPointwise
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaSobolevSeminormSubTendstoZeroOfWordsUnif
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
@@ -471,7 +470,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AbsThetaIntegralLeSobolevSeminormStatement =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaAutomorphicOfConvergence =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaAutomorphicOfConvergence", "h": "module\n\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.CoefDataExists\npublic import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.WeilThetaConvergence\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SiegelWeilAnisotropicUnitary\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AbsThetaIntegralLeSobolevSeminormStatement\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousStandardUnitaryChartAndSymm\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsCommonLevelSobolevBoundWeilCompact\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSobolevBoundThetaPointwise\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsWeilDatumDoubledOfSchrodingerFormulasStatement\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchrodingerThetaEqSchwartzBruhat\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StandardUnitaryChartMemRationalIffStatement\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaKernelEqTsumSchrodingerFunctionStatement\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaKernelMulConjCuspFormIntegrableOn\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaSobolevSeminormSubTendstoZeroOfWordsUnif\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableThetaKernelWeilRange\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.DRhoSumAndSobOLe\nimport Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Compactness.Paracompact\npublic import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SobContId\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaAutomorphicOfConvergence", "h": "module\n\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.CoefDataExists\npublic import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.WeilThetaConvergence\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SiegelWeilAnisotropicUnitary\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AbsThetaIntegralLeSobolevSeminormStatement\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousStandardUnitaryChartAndSymm\nimport Development.AutomorphicArithmetic.ThetaCorrespondence.RallisInnerProduct.ExistsCommonLevelSobolevBoundWeilCompact\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSobolevBoundThetaPointwise\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsWeilDatumDoubledOfSchrodingerFormulasStatement\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchrodingerThetaEqSchwartzBruhat\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StandardUnitaryChartMemRationalIffStatement\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaKernelEqTsumSchrodingerFunctionStatement\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaKernelMulConjCuspFormIntegrableOn\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaSobolevSeminormSubTendstoZeroOfWordsUnif\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableThetaKernelWeilRange\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.DRhoSumAndSobOLe\nimport Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Compactness.Paracompact\npublic import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SobContId\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -493,7 +492,7 @@ theorem exists_bound (hom : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam θ) 
     (hf : IsThetaFunO ψ S T f) :
     ∃ M : ℝ≥0∞, M ≠ ⊤ ∧ ∀ x ∈ K, ∀ w, ‖om (x, 1) f w‖ₑ ≤ M := by
   obtain ⟨U, hU, hl⟩ := isTheta_iff_level.1 hf
-  obtain ⟨U', hU', hlev, hsob⟩ := GlobalTheory.ThetaDens.om_compact_sobCont D ψ S T χS χT om hom θ hθ μ 𝓕 hμ
+  obtain ⟨U', hU', hlev, hsob⟩ := UpperTheory.Lit.Rallis.ThetaDens.om_compact_sobCont D ψ S T χS χT om hom θ hθ μ 𝓕 hμ
     (K ×ˢ ({1} : Set (GA D T))) (hK.prod isCompact_singleton) U hU
   obtain ⟨d, C, hC⟩ := GlobalTheory.ThetaDensSup.sup_le_sobO D ψ hom.std θ hθ S T μ 𝓕 hμ U' hU'
   obtain ⟨d', C', hC'⟩ := hsob d
@@ -587,10 +586,10 @@ theorem l2_word_tendsto (hom : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam �
     intro f hf
     obtain ⟨K, hK, hK1⟩ := exists_compact_mem_nhds (1 : GA D S)
     have hKK : IsCompact (K ×ˢ ({1} : Set (GA D T))) := hK.prod isCompact_singleton
-    obtain ⟨B0, hB0⟩ := hKK.bddAbove_image (GlobalTheory.ThetaDens.WeilCompact.continuous_dirSize hθ S T).continuousOn
-    have hB : ∀ x ∈ K ×ˢ ({1} : Set (GA D T)), GlobalTheory.ThetaDens.WeilCompact.dirSize θ S T x ≤ (B0.toNNReal : ℝ) :=
+    obtain ⟨B0, hB0⟩ := hKK.bddAbove_image (UpperTheory.Lit.Rallis.ThetaDens.WeilCompact.continuous_dirSize hθ S T).continuousOn
+    have hB : ∀ x ∈ K ×ˢ ({1} : Set (GA D T)), UpperTheory.Lit.Rallis.ThetaDens.WeilCompact.dirSize θ S T x ≤ (B0.toNNReal : ℝ) :=
       fun x hx => (hB0 ⟨x, hx, rfl⟩).trans (Real.le_coe_toNNReal B0)
-    obtain ⟨C, hC⟩ := GlobalTheory.ThetaDens.WeilCompact.word_om_le hom hθ hμ _ hB l.length
+    obtain ⟨C, hC⟩ := UpperTheory.Lit.Rallis.ThetaDens.WeilCompact.word_om_le hom hθ hμ _ hB l.length
     set z : Matrix (Fin T.rank) (Fin S.rank) ℂ := Matrix.single a.2.1 a.2.2.1 (if a.2.2.2 then Complex.I else 1) with hz
     set zx : GA D S → Matrix (Fin T.rank) (Fin S.rank) ℂ := fun x =>
       compAt θ a.1 (Formalism.L2.Theta.mt T (1 : GA D T)⁻¹) * z * compAt θ a.1 (Formalism.L2.Theta.mt S x) with hzx
@@ -607,7 +606,7 @@ theorem l2_word_tendsto (hom : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam �
       have e1 : heisDer ψ θ a (om (x, 1) f) =
           om (x, 1) (heisDer ψ θ a f) + om (x, 1) (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ a.1 (zx x - z) f) := by
         rw [← map_add (f := _)]
-        have := GlobalTheory.ThetaDens.WeilCompact.dRho_om hom hθ x 1 a.1 z hf
+        have := UpperTheory.Lit.Rallis.ThetaDens.WeilCompact.dRho_om hom hθ x 1 a.1 z hf
         refine this.trans (congrArg _ ?_)
         exact dRho_dir_split hψ hθ hf a.1 _ z
       have e2 : heisDer ψ θ a (om (x, 1) f - f) = heisDer ψ θ a (om (x, 1) f) - heisDer ψ θ a f :=
@@ -617,7 +616,7 @@ theorem l2_word_tendsto (hom : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam �
           simpa [sub_eq_add_neg] using h) hor]
     have hM : sobO ψ θ μ 𝓕 (l.length + 1) f ≠ ⊤ := sobO_ne_top hψ hθ hμ.1 hμ.2.1 hf _
     have hzc : Continuous zx := (continuous_const.matrix_mul continuous_const).matrix_mul
-      ((GlobalTheory.RealWeil.continuous_compAt hθ a.1 _ _).comp (GlobalTheory.ThetaDens.WeilCompact.continuous_mt_eq S))
+      ((GlobalTheory.RealWeil.continuous_compAt hθ a.1 _ _).comp (UpperTheory.Lit.Rallis.ThetaDens.WeilCompact.continuous_mt_eq S))
     have hz1 : zx 1 = z := by
       simp only [hzx, inv_one, GlobalTheory.WeilVacMove.mt_one, GlobalTheory.WeilVacMove.compAt_one, Matrix.one_mul, Matrix.mul_one]
     set c : GA D S → ℝ := fun x => ∑ i, ∑ j, (|((zx x - z) i j).re| + |((zx x - z) i j).im|) with hc
@@ -693,7 +692,7 @@ theorem continuous_thetaMean (hP : GlobalTheory.Published.WeilThetaConvergence) 
   intro g₀
   obtain ⟨K, hK, hK1⟩ := exists_compact_mem_nhds (1 : GA D (dblSp A))
   obtain ⟨U, hU, hl⟩ := isTheta_iff_level.1 hf
-  obtain ⟨U', hU', hlev, -⟩ := GlobalTheory.ThetaDens.om_compact_sobCont D ψ (dblSp A) B 1 χ om hW θ hθ μ 𝓕 hμ
+  obtain ⟨U', hU', hlev, -⟩ := UpperTheory.Lit.Rallis.ThetaDens.om_compact_sobCont D ψ (dblSp A) B 1 χ om hW θ hθ μ 𝓕 hμ
     (K ×ˢ ({1} : Set (GA D B))) (hK.prod isCompact_singleton) U hU
   have hlx : ∀ x ∈ K, om (x, 1) f ∈ GlobalTheory.Size.thetaLevel ψ (dblSp A) B U' := fun x hx => hlev f hl _ ⟨hx, rfl⟩
   have hl1 : f ∈ GlobalTheory.Size.thetaLevel ψ (dblSp A) B U' := by
@@ -1177,19 +1176,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.SwEisTop
 
-theorem ext_mul_eq {G : Type} [Group G] (K P : Subgroup G) (f : G → ℝ)
-    (hadd : ∀ p ∈ P, ∀ q ∈ P, f (p * q) = f p + f q) (hK : ∀ p ∈ P, p ∈ K → f p = 0)
-    {p k : G} (hp : p ∈ P) (hk : k ∈ K) : ext K P f (p * k) = f p := by
-  unfold ext
-  have h : ∃ k' : K, p * k * (k' : G)⁻¹ ∈ P := ⟨⟨k, hk⟩, by simpa using hp⟩
-  rw [dite_eq_left h]
-  have h1 := h.choose_spec
-  have hm : k * (h.choose : G)⁻¹ ∈ P := by
-    have := P.mul_mem (P.inv_mem hp) h1
-    simpa [mul_assoc] using this
-  have hmK : k * (h.choose : G)⁻¹ ∈ K := K.mul_mem hk (K.inv_mem h.choose.2)
-  rw [mul_assoc, hadd p hp _ hm, hK _ hm hmK, add_zero]
-
 theorem absA_pos' {D : D7} (u : (AE D)ˣ) : 0 < absA D u := by
   have h : absA D u * absA D u⁻¹ = 1 := by rw [← map_mul, mul_inv_cancel, map_one]
   exact pos_iff_ne_zero.mpr fun h0 => by simp [h0] at h
@@ -1204,7 +1190,7 @@ theorem uH_mul (hmul : ∀ p ∈ stab R ((Sum.inl '' S : Set (ι ⊕ ι))), ∀ 
     (hk0 : ∀ p ∈ stab R ((Sum.inl '' S : Set (ι ⊕ ι))), p ∈ A.kGL (ι ⊕ ι) → A.lg (bdet ((Sum.inl '' S : Set (ι ⊕ ι))) p) = 0)
     {p k : A.U ε ι} (hp : p ∈ A.uQ ε S) (hk : k ∈ A.uK ε ι) :
     A.uH ε S (p * k) = A.lg (bdet ((Sum.inl '' S : Set (ι ⊕ ι))) p.1) :=
-  ext_mul_eq (A.uK ε ι) (A.uQ ε S) (fun p => A.lg (bdet ((Sum.inl '' S : Set (ι ⊕ ι))) p.1))
+  GlobalTheory.CompanionTheory.SiegelFrame.ext_mul (A.uK ε ι) (A.uQ ε S) (fun p => A.lg (bdet ((Sum.inl '' S : Set (ι ⊕ ι))) p.1))
     (fun p hp q hq => by
       show A.lg (bdet _ (p.1 * q.1)) = _
       exact (congrArg A.lg (hmul p.1 hp q.1 hq)).trans (hlg _ _))

@@ -550,15 +550,15 @@ theorem exists_lam (hφ : φ.Flat) {N N' : NumD F} (ν : NumOf D F N) (ν' : Num
       have e := key _ (𝟙 _) x J I hJ hI
       rwa [Category.id_comp, GenSecField.cst_zero', zero_mul, zero_mul] at e
     refine ⟨1, fun x => ?_⟩
-    have e := key (Sp F) x.left z ν.J ν'.J (good ν z) (good ν' z)
-    rw [IndivisibleSection.sval_of_secIsMul h₀ _ z (good ν' z), GenSecField.cst_zero', zero_mul, zero_mul] at e
-    have e' := IndivisibleSection.sval_of_secIsMul h₀ (show Sp F ⟶ _ from x.left) z (good ν' z)
+    have e := key (Sp F) x.left z ν.J ν'.J (GlobalTheory.ValuesPullIso.good ν z) (GlobalTheory.ValuesPullIso.good ν' z)
+    rw [IndivisibleSection.sval_of_secIsMul h₀ _ z (GlobalTheory.ValuesPullIso.good ν' z), GenSecField.cst_zero', zero_mul, zero_mul] at e
+    have e' := IndivisibleSection.sval_of_secIsMul h₀ (show Sp F ⟶ _ from x.left) z (GlobalTheory.ValuesPullIso.good ν' z)
     rw [GenSecField.cst_zero', zero_mul] at e'
     exact e.trans ((congrArg _ e').trans (mul_zero _)).symm
   · let u : (FractionRing R')ˣ := Units.mk0 (algebraMap R' _ c) fun e =>
       h (IsFractionRing.injective R' (FractionRing R') (e.trans (map_zero _).symm))
     refine ⟨TauTwist.unitAt (Z := Sp F) (jFK (R := R') F) z u, fun x => ?_⟩
-    refine (key (Sp F) x.left z ν.J ν'.J (good ν z) (good ν' z)).trans (congrArg₂ (· * ·) ?_ rfl)
+    refine (key (Sp F) x.left z ν.J ν'.J (GlobalTheory.ValuesPullIso.good ν z) (GlobalTheory.ValuesPullIso.good ν' z)).trans (congrArg₂ (· * ·) ?_ rfl)
     rw [Units.val_mul, TauTwist.unitAt_val]
     refine congrArg₂ (· * ·) ?_ rfl
     exact (congrArg (fun q => cst (Z := Sp F) q z c) (Over.w x)).trans
@@ -572,8 +572,8 @@ theorem exists_iso_om (hG : GlobalFnsSt) (hφ : φ.Flat) (hF : ArcPull.Compat φ
       ∀ (g : GtPtF D F) (g' : GtPtF D' F) (c : N.Gt) (c' : N'.Gt), ν.Pt g c → ν'.Pt g' c' →
         IsPullGtF φ hD F g g' → I.Rel c' c := by
   obtain ⟨lam, hth⟩ := exists_lam hD hφ ν ν' z
-  have hJ := good ν z
-  have hJ' := good ν' z
+  have hJ := GlobalTheory.ValuesPullIso.good ν z
+  have hJ' := GlobalTheory.ValuesPullIso.good ν' z
   let Ω : (TF (R := R') F ⟶ D'.P.A) → ((Sp F).presheaf.stalk z)ˣ := fun x => om hD.w z ν.J ν'.J x.left
   obtain ⟨h, hh⟩ : ∃ h : N'.A → Fˣ, ∀ x, stalkUnits z (h x) = Ω (ν'.eA x) * (Ω 1)⁻¹ :=
     ⟨fun x => (stalkUnits z).symm _, fun x => (stalkUnits z).apply_symm_apply _⟩
@@ -687,10 +687,10 @@ theorem exists_geoIso_rel : Laws → ∀ (V : Type) [CommRing V] [IsDomain V] [I
           ((whiskerLeftIso (TF (R := V) F) Ψ).hom ≫ snd (TF (R := V) F) D'.P.A).left = (ν'.eA (I.φ.symm x)).left := by
         rw [← Over.comp_left, ← Category.assoc, hl, lift_snd]
       have m₁ : ((lift (𝟙 (TF (R := V) F)) (ν.eA x)).left ≫ (snd (TF (R := V) F) D.P.A).left) z ∈
-        D.P.L.U (ν.J (ν.eA x).left) := by rw [l₁]; exact good ν z _
+        D.P.L.U (ν.J (ν.eA x).left) := by rw [l₁]; exact GlobalTheory.ValuesPullIso.good ν z _
       have m₂ : ((lift (𝟙 (TF (R := V) F)) (ν.eA x)).left ≫
           ((whiskerLeftIso (TF (R := V) F) Ψ).hom ≫ snd (TF (R := V) F) D'.P.A).left) z ∈
-        D'.P.L.U (ν'.J (ν'.eA (I.φ.symm x)).left) := by rw [l₂]; exact good ν' z _
+        D'.P.L.U (ν'.J (ν'.eA (I.φ.symm x)).left) := by rw [l₂]; exact GlobalTheory.ValuesPullIso.good ν' z _
       refine (toStk_valF (lift (𝟙 (TF (R := V) F)) (ν.eA x)).left
         ((D'.P.L.pull ((whiskerLeftIso (TF (R := V) F) Ψ).hom ≫ snd (TF (R := V) F) D'.P.A).left).U
           (fun _ => ν'.J (ν'.eA (I.φ.symm x)).left) ⊓
@@ -751,7 +751,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsoPolarisedAbelianSchemesDvrOfFieldExtensStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPullbackDegenerationOfValuesIsoDvr =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPullbackDegenerationOfValuesIsoDvr", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.CMModuli.ThetaTowerRecognition\npublic import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsFib\npublic import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TraceFormTwistIsoOfPullback\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsPullCubicalOfIso\npublic import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationDataIsoOfTwoWitnesses\npublic import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFiniteCubeInduction\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AdmissibleBasePowerSeries\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.GenCalc\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPullbackDegenerationOfValuesIsoDvr", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.CMModuli.ThetaTowerRecognition\npublic import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsFib\npublic import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TraceFormTwistIsoOfPullback\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsPullCubicalOfIso\npublic import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationDataIsoOfTwoWitnesses\npublic import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFiniteCubeInduction\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AdmissibleBasePowerSeries\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.GenCalc\nimport Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPowerSectionOfChartFunctions\nimport Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsDegenerationValuesIsoFieldPullback\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -835,12 +835,6 @@ section Values
 variable {R : Type} [CommRing R] [IsDomain R] {D D' : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
   {N N' : NumD F}
 
-theorem good (ν : NumOf D F N) (z : Sp F) : Good D.P.L z ν.J := fun ψ => ν.good ψ trivial
-
-theorem toStk_vF {X Y : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
-    (t : LB.Gen (LB.LinComb L φ ε)) (r : Sp F ⟶ Y) {z : Sp F} {J : (Sp F ⟶ X) → L.ι} (hJ : Good L z J) :
-    toStk z (vF t r J) = (val t r z J).val := toStk_valF r _ z (hJ.mem φ r) _
-
 theorem exists_const (hG : GlobalFnsSt) {Φ : D'.P.A.left ⟶ D.P.A.left} {wD : LB.Iso D'.P.L (D.P.L.pull Φ)} (gD : PGen wD)
     (ν : NumOf D F N) (ν' : NumOf D' F N') {φ : TF (R := R) F ⊗ D.P.A ≅ TF (R := R) F ⊗ D'.P.A} (w : AbPartIso.BunIso φ)
     (hw : w.IsGen) (hq : (φ.hom ≫ snd _ _).left ≫ Φ = (snd (TF (R := R) F) D.P.A).left) (f : N.A → N'.A)
@@ -858,9 +852,9 @@ theorem exists_const (hG : GlobalFnsSt) {Φ : D'.P.A.left ⟶ D.P.A.left} {wD : 
     congrArg Over.Hom.left ((Category.assoc _ _ _).symm.trans ((congrArg (· ≫ snd _ _) (hc x)).trans (lift_snd _ _)))
   have r₃ : (ν'.eA (f x)).left ≫ Φ = (ν.eA x).left := by rw [← r₂, Category.assoc, hq, r₁]
   have m₁ : (snd (TF (R := R) F) D.P.A).left (r z) ∈ D.P.L.U (ν.J (ν.eA x).left) :=
-    (congrArg (fun q => q z ∈ D.P.L.U (ν.J (ν.eA x).left)) r₁).mpr (good ν z _)
+    (congrArg (fun q => q z ∈ D.P.L.U (ν.J (ν.eA x).left)) r₁).mpr (GlobalTheory.ValuesPullIso.good ν z _)
   have m₂ : (φ.hom ≫ snd _ _).left (r z) ∈ D'.P.L.U (ν'.J (ν'.eA (f x)).left) :=
-    (congrArg (fun q => q z ∈ D'.P.L.U (ν'.J (ν'.eA (f x)).left)) r₂).mpr (good ν' z _)
+    (congrArg (fun q => q z ∈ D'.P.L.U (ν'.J (ν'.eA (f x)).left)) r₂).mpr (GlobalTheory.ValuesPullIso.good ν' z _)
   have m₃ : Φ ((φ.hom ≫ snd _ _).left (r z)) ∈ D.P.L.U (ν.J (ν.eA x).left) :=
     (congrArg (fun q => q (r z) ∈ D.P.L.U (ν.J (ν.eA x).left)) hq).mpr m₁
   have e := (T _ r z _ _ (fun _ => ν.J (ν.eA x).left) m₃ m₂ (mem_pull.2 m₁)).symm.trans (hu _ r z _ m₁)
@@ -922,13 +916,13 @@ theorem exists_isPullDeg_of_values : Laws → ∀ (V : Type) [CommRing V] [IsDom
     have u : IsUnit (toStk z (AbPartIso.wVal ν ν' w I.φ 1)) :=
       ⟨_, (toStk_valF _ ((D'.P.L.pull _).U (fun _ => ν'.J (ν'.eA (I.φ 1)).left) ⊓
         (D.P.L.pull _).U (fun _ => ν.J (ν.eA 1).left)) z ⟨mem_pull.2 ((congrArg (fun q => q z ∈ D'.P.L.U (ν'.J (ν'.eA (I.φ 1)).left)) r₃).mpr
-        (good ν' z _)), mem_pull.2 ((congrArg (fun q => q z ∈ D.P.L.U (ν.J (ν.eA 1).left)) r₁).mpr (good ν z _))⟩ _).symm⟩
+        (GlobalTheory.ValuesPullIso.good ν' z _)), mem_pull.2 ((congrArg (fun q => q z ∈ D.P.L.U (ν.J (ν.eA 1).left)) r₁).mpr (GlobalTheory.ValuesPullIso.good ν z _))⟩ _).symm⟩
     rw [← _root_.mul_assoc] at a
     exact Units.ext ((mul_comm _ _).trans (u.mul_right_cancel a))
   have rig : ∀ z : Sp F, val (Z := Sp F) (L := D.P.L) (φ := fun _ : PUnit => eSec D.P.A) (ε := fun _ => 1) D.rig (TF (R := V) F).hom z ν.J =
       Ω z 1 * val (Z := Sp F) (L := D'.P.L) (φ := fun _ : PUnit => eSec D'.P.A) (ε := fun _ => 1) D'.rig (TF (R := V) F).hom z ν'.J :=
     fun z => by
-      have a := pmaps_om (Z := Sp F) (fun _ => hE) rD (TF (R := V) F).hom z (good ν z) (good ν' z)
+      have a := pmaps_om (Z := Sp F) (fun _ => hE) rD (TF (R := V) F).hom z (GlobalTheory.ValuesPullIso.good ν z) (GlobalTheory.ValuesPullIso.good ν' z)
       rw [Fintype.prod_unique, zpow_one, hs] at a
       exact (congrArg (fun q => val (Z := Sp F) (L := D.P.L) (φ := fun _ : PUnit => eSec D.P.A) (ε := fun _ => 1) D.rig q z ν.J)
         (Category.comp_id _).symm).trans a
@@ -948,12 +942,12 @@ theorem exists_isPullDeg_of_values : Laws → ∀ (V : Type) [CommRing V] [IsDom
       (Category.assoc _ _ _).trans (congrArg (jK V ≫ ·) (hc y))
     refine WitnessData.exists_psi_pull wD ψW hg hx F fun z p q hp hq => ?_
     have v := chart_of_om gD (K := PUnit) (ε := fun _ => -1) (fun _ => hx) (D'.psi_gen _) (D.psi_gen _) (jFK (R := V) F) z
-      (good ν z) (good ν' z) ?_ (fun _ => p) (fun _ => q) (fun _ => hp) (fun _ => hq)
+      (GlobalTheory.ValuesPullIso.good ν z) (GlobalTheory.ValuesPullIso.good ν' z) ?_ (fun _ => p) (fun _ => q) (fun _ => hp) (fun _ => hq)
     · rwa [Fintype.prod_unique] at v
     have a : tu z (N.ψ y) = _ * _ := Units.ext ((congrArg (toStk z) (ν.ψ_eq y)).trans ((map_mul _ _ _).trans
-      (congrArg₂ (· * ·) (toStk_vF _ _ (good ν z)) (toStk_vF _ _ (good ν z)))))
+      (congrArg₂ (· * ·) (GlobalTheory.ThetaInValues.toStk_vF _ _ (GlobalTheory.ValuesPullIso.good ν z)) (GlobalTheory.ThetaInValues.toStk_vF _ _ (GlobalTheory.ValuesPullIso.good ν z)))))
     have a' : tu z (N'.ψ (I.e y)) = _ * _ := Units.ext ((congrArg (toStk z) (ν'.ψ_eq (I.e y))).trans
-      ((map_mul _ _ _).trans (congrArg₂ (· * ·) (toStk_vF _ _ (good ν' z)) (toStk_vF _ _ (good ν' z)))))
+      ((map_mul _ _ _).trans (congrArg₂ (· * ·) (GlobalTheory.ThetaInValues.toStk_vF _ _ (GlobalTheory.ValuesPullIso.good ν' z)) (GlobalTheory.ThetaInValues.toStk_vF _ _ (GlobalTheory.ValuesPullIso.good ν' z)))))
     have b := congrArg (tu z) (I.ψ_eq y)
     have c := hΩ z (N.c y)
     rw [map_mul, a, a', rig z] at b
@@ -993,13 +987,13 @@ theorem exists_isPullDeg_of_values : Laws → ∀ (V : Type) [CommRing V] [IsDom
       fin_cases i
       exacts [f₁, f₂, f₃, f₄]
     refine (genRel_iff wD _ _ 1 z).2 ⟨hψ, fun j j₀ h₀ h₁ => ?_⟩
-    have v := chart_of_om gD hψ (p'.g.isGen _) (p.g.isGen _) (𝟙 (Sp F)) z (good ν z) (good ν' z) ?_ j₀ j h₀ h₁
+    have v := chart_of_om gD hψ (p'.g.isGen _) (p.g.isGen _) (𝟙 (Sp F)) z (GlobalTheory.ValuesPullIso.good ν z) (GlobalTheory.ValuesPullIso.good ν' z) ?_ j₀ j h₀ h₁
     · simp only [Category.id_comp] at v
       rw [map_one, _root_.one_mul]
       exact congrArg Units.val v.symm
-    have a : tu z (q.1.2.s y) = _ := Units.ext ((congrArg (toStk z) (hp.2.2 y)).trans (toStk_vF _ _ (good ν z)))
+    have a : tu z (q.1.2.s y) = _ := Units.ext ((congrArg (toStk z) (hp.2.2 y)).trans (GlobalTheory.ThetaInValues.toStk_vF _ _ (GlobalTheory.ValuesPullIso.good ν z)))
     have a' : tu z (q'.1.2.s (I.e y)) = _ :=
-      Units.ext ((congrArg (toStk z) (hp'.2.2 (I.e y))).trans (toStk_vF _ _ (good ν' z)))
+      Units.ext ((congrArg (toStk z) (hp'.2.2 (I.e y))).trans (GlobalTheory.ThetaInValues.toStk_vF _ _ (GlobalTheory.ValuesPullIso.good ν' z)))
     have b := congrArg (tu z) (hr.2 y)
     rw [map_mul, map_mul, map_mul, a, a'] at b
     have d : ∏ i, om wD z ν.J ν'.J (𝟙 (Sp F) ≫ DegPre.gtφ D' F p'.g.b (ν'.eX (I.e y)) i) ^ DegPre.gtε i =

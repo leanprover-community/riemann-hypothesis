@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorObjectExtendsOverDvrOfAbelianModel
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FormalAlgebraisation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrpHomAlgebraisationOfReductions
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
@@ -216,38 +217,7 @@ theorem isPullback_square {S S' : Scheme.{0}} {G : Over S} {A : Over S'} {f : S'
     {a : A.left ⟶ G.left} (hA : IsPullback a A.hom G.hom f)
     {φ₂ : (A ⊗ A).left ⟶ (G ⊗ G).left} (h : Geo.Tor.IsSquare a φ₂) :
     IsPullback φ₂ (A ⊗ A).hom (G ⊗ G).hom f := by
-  have w₁ : (fst G G).left ≫ G.hom = (G ⊗ G).hom := Over.w _
-  have w₂ : (snd G G).left ≫ G.hom = (G ⊗ G).hom := Over.w _
-  have v₁ : (fst A A).left ≫ A.hom = (A ⊗ A).hom := Over.w _
-  have v₂ : (snd A A).left ≫ A.hom = (A ⊗ A).hom := Over.w _
-  have h₁ := h.1
-  have h₂ := h.2
-  refine ⟨⟨by rw [← w₁, reassoc_of% h₁, hA.w, reassoc_of% v₁]⟩, ⟨PullbackCone.IsLimit.mk _
-    (fun s => pullback.lift
-      (hA.lift (s.fst ≫ (fst G G).left) s.snd (by rw [Category.assoc, w₁, s.condition]))
-      (hA.lift (s.fst ≫ (snd G G).left) s.snd (by rw [Category.assoc, w₂, s.condition]))
-      (by rw [IsPullback.lift_snd, IsPullback.lift_snd])) (fun s => ?_) (fun s => ?_)
-    (fun s m h1 h2 => ?_)⟩⟩
-  · apply pullback.hom_ext
-    · change _ ≫ (fst G G).left = _ ≫ (fst G G).left
-      rw [Category.assoc, h₁, ← Category.assoc]
-      exact (congrArg (· ≫ a) (pullback.lift_fst _ _ _)).trans (IsPullback.lift_fst _ _ _ _)
-    · change _ ≫ (snd G G).left = _ ≫ (snd G G).left
-      rw [Category.assoc, h₂, ← Category.assoc]
-      exact (congrArg (· ≫ a) (pullback.lift_snd _ _ _)).trans (IsPullback.lift_fst _ _ _ _)
-  · rw [← v₁, ← Category.assoc]
-    exact (congrArg (· ≫ A.hom) (pullback.lift_fst _ _ _)).trans (IsPullback.lift_snd _ _ _ _)
-  · apply pullback.hom_ext
-    · refine Eq.trans ?_ (pullback.lift_fst _ _ _).symm
-      change _ ≫ (fst A A).left = _
-      apply hA.hom_ext
-      · rw [IsPullback.lift_fst, ← h1, Category.assoc, Category.assoc, h₁]
-      · rw [IsPullback.lift_snd, ← h2, Category.assoc, v₁]
-    · refine Eq.trans ?_ (pullback.lift_snd _ _ _).symm
-      change _ ≫ (snd A A).left = _
-      apply hA.hom_ext
-      · rw [IsPullback.lift_fst, ← h1, Category.assoc, Category.assoc, h₂]
-      · rw [IsPullback.lift_snd, ← h2, Category.assoc, v₂]
+  apply _root_.GlobalTheory.PullIsoExt.isPullback_sq <;> assumption
 
 theorem lbIso_pull_comp {X Y Z : Scheme.{0}} {L : LB X} (hL : L.IsLB) (a : Y ⟶ X) (b : Z ⟶ Y)
     (c : Z ⟶ X) (e : b ≫ a = c) : LBIso (L.pull c) ((L.pull a).pull b) := by

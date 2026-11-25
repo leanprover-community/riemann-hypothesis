@@ -1142,7 +1142,7 @@ private theorem exists_lift_of_derivation_on_ideal {Ω : Type} [Field Ω] [CharZ
   obtain ⟨g₂, hg₂⟩ := hne 1 0
   have hu : (M.ent g₁ 0 1).1 ∈ M.sPart (1, 0) := M.entry_mem g₁ 0 1
   have hv : (M.ent g₂ 1 0).1 ∈ M.sPart (-1, 0) := M.entry_mem g₂ 1 0
-  obtain ⟨a₀, -, ha₀⟩ := hsur 0 (M.ent g₁ 0 1 * M.ent g₂ 1 0) (SetLike.GradedMul.mul_mem hu hv)
+  obtain ⟨a₀, -, ha₀⟩ := hsur 0 (M.ent g₁ 0 1 * M.ent g₂ 1 0) (SetLike.GradedMul.mul_mem hu hv :)
   have hxa : x a₀ ≠ 0 := by
     rw [← hξ₀, AlgHom.comp_apply, ha₀, map_mul]
     exact mul_ne_zero hg₁ hg₂

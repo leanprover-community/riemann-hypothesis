@@ -53,8 +53,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open GlobalTheory.Vanishing.H0
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HSApp

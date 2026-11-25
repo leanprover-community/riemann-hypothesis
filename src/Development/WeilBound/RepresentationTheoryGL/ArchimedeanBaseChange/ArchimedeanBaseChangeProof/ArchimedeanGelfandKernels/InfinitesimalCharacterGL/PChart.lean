@@ -53,7 +53,7 @@ open scoped ContDiff
 
 namespace PositivityTheory.RgBcC.Bridge
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 

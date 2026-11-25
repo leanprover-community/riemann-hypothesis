@@ -61,7 +61,7 @@ namespace CompanionTheory.D.gk.HC
 
 open Formalism.BasicNotions.TH (GrpData URep GKMod)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section UJ
 

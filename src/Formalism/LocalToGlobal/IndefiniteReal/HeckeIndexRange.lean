@@ -24,8 +24,6 @@ section Tie3
 
 open Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : Formalism.BasicNotions.D7) {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
 
 def heckeIndexRange {P Q : Type} (n : ℕ) (tyOk : ℕ → Ty → Prop) : (P × ℕ) ⊕ (Q × Ty) → Prop :=

@@ -82,9 +82,6 @@ theorem hpk_mulVec (x : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
       rw [this, zero_mul]
     · intro h'; exact absurd (Finset.mem_univ _) h'
 
-theorem hpk_symm' : (Hpk k r)ᵀ = Hpk k r := by
-  apply GlobalTheory.DualFRep.gram_transpose
-
 theorem herm_eq (x y : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) x y = ∑ i, star (y i) * (Hpk k r *ᵥ x) i := rfl
 

@@ -112,12 +112,6 @@ private theorem appLE_top_top_eq_appTop {X Y : Scheme.{u}} (f : X ⟶ Y)
   simp only [Scheme.Hom.appLE, h2]
   rfl
 
-private theorem appLE_comp {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) (U : Z.Opens)
-    (V : Y.Opens) (V' : X.Opens) (e₁ : V ≤ g ⁻¹ᵁ U) (e₂ : V' ≤ f ⁻¹ᵁ V)
-    (e : V' ≤ (f ≫ g) ⁻¹ᵁ U) :
-    (f ≫ g).appLE U V' e = g.appLE U V e₁ ≫ f.appLE V V' e₂ := by
-  rw [Scheme.Hom.appLE_comp_appLE]
-
 private theorem isIso_ι_appLE {W : Scheme.{u}} (U : W.Opens)
     (hle : (⊤ : U.toScheme.Opens) ≤ U.ι ⁻¹ᵁ U) : IsIso (U.ι.appLE U ⊤ hle) := by
   have h1 : U.ι ''ᵁ (⊤ : U.toScheme.Opens) = U := by simp
@@ -132,7 +126,7 @@ private theorem appTop_ι_comp_eq_appLE_comp {R : Type u} [CommRing R] {W : Sche
     (hle' : U ≤ g ⁻¹ᵁ (⊤ : (Spec (CommRingCat.of R)).Opens)) :
     (U.ι ≫ g).appTop = g.appLE ⊤ U hle' ≫ U.ι.appLE U ⊤ hle := by
   rw [← appLE_top_top_eq_appTop (U.ι ≫ g) (by simp)]
-  exact appLE_comp U.ι g ⊤ U ⊤ hle' hle (by simp)
+  rw [Scheme.Hom.appLE_comp_appLE]
 
 private theorem exists_sections_iso_globalSectionsRingHom {R : Type u} [CommRing R] {W : Scheme.{u}} (U : W.Opens)
     (g : W ⟶ Spec (CommRingCat.of R)) :

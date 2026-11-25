@@ -12,8 +12,6 @@ open MeasureTheory NumberField IsDedekindDomain Matrix Formalism.BasicNotions Fo
 
 namespace Formalism.L2.SG.Pf.ColDictPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev unitaryGroupFiniteAdeles (D : D7) : Subgroup (GL (Fin (D.R.N 0)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)) :=
   Formalism.UG.UPts (Formalism.L2.Forms.sigD D) (Formalism.L2.Forms.gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)
 

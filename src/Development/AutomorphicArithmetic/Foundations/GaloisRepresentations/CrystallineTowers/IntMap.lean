@@ -138,15 +138,12 @@ private theorem le_one_of_mem (hA : IsPlaceOver A w) {x : E} (hx : algebraMap E 
 
 end Place
 
-private theorem mem_OK_iff {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (x : ↥K) :
-    x ∈ OK l K ↔ ‖(x : PadicAlgCl l)‖ ≤ 1 :=
-  GroundTheory.PAdicHodge.mem_normInteger
-
 private theorem isUnit_OK_iff {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (y : ↥(OK l K)) :
     IsUnit y ↔ ‖((y : ↥K) : PadicAlgCl l)‖ = 1 := by
   have hmul : ∀ a b : ↥(OK l K), ‖(((a * b : ↥(OK l K)) : ↥K) : PadicAlgCl l)‖ =
       ‖((a : ↥K) : PadicAlgCl l)‖ * ‖((b : ↥K) : PadicAlgCl l)‖ := fun a b => norm_mul _ _
-  have hle : ∀ a : ↥(OK l K), ‖((a : ↥K) : PadicAlgCl l)‖ ≤ 1 := fun a => (mem_OK_iff _).1 a.2
+  have hle : ∀ a : ↥(OK l K), ‖((a : ↥K) : PadicAlgCl l)‖ ≤ 1 :=
+    fun a => GroundTheory.PAdicHodge.mem_normInteger.1 a.2
   constructor
   · rintro ⟨u, rfl⟩
     have h := hmul u (↑u⁻¹ : ↥(OK l K))
@@ -161,8 +158,7 @@ private theorem isUnit_OK_iff {l : ℕ} [Fact l.Prime] {K : IntermediateField �
     have hy0 : (y : ↥K) ≠ 0 := fun h0 => by
       rw [h0] at h
       simp at h
-    have hinv : (y : ↥K)⁻¹ ∈ OK l K := by
-      rw [mem_OK_iff]
+    have hinv : (y : ↥K)⁻¹ ∈ OK l K := GroundTheory.PAdicHodge.mem_normInteger.2 <| by
       change ‖((y : ↥K) : PadicAlgCl l)⁻¹‖ ≤ 1
       rw [norm_inv, h, inv_one]
     exact IsUnit.of_mul_eq_one ⟨_, hinv⟩ (Subtype.ext (mul_inv_cancel₀ hy0))
@@ -173,7 +169,7 @@ theorem intMap : IntMap := by
   have hmem : ∀ x : Ow w, algebraMap E Ω (algebraMap (Ow w) E x) ∈ A := fun x =>
     mem_of_le_one hA ((Valuation.mem_valuationSubring_iff _ _).1 x.2)
   have hφ : ∀ x : Ow w, ((kOf Bw).comp (algebraMap (Ow w) E)) x ∈ OK l Bw.Kw.1 := fun x =>
-    (mem_OK_iff _).2 ((hj _).1 (hmem x))
+    GroundTheory.PAdicHodge.mem_normInteger.2 ((hj _).1 (hmem x))
   refine ⟨((kOf Bw).comp (algebraMap (Ow w) E)).codRestrict (OK l Bw.Kw.1) hφ, fun x => rfl, fun ϖ hϖ => ?_⟩
   let ν : Ow w → ℝ := fun x => ‖Bw.j (algebraMap E Ω (algebraMap (Ow w) E x))‖
   let M : ↥(OK l Bw.Kw.1) → ℝ := fun y => ‖((y : ↥Bw.Kw.1) : PadicAlgCl l)‖
@@ -230,7 +226,7 @@ theorem intMap : IntMap := by
   set φ := ((kOf Bw).comp (algebraMap (Ow w) E)).codRestrict (OK l Bw.Kw.1) hφ with hφdef
   have hMϖ : M (φ ϖ) = ν ϖ := rfl
   have hMmul : ∀ a b, M (a * b) = M a * M b := fun a b => norm_mul _ _
-  have hMle : ∀ a, M a ≤ 1 := fun a => (mem_OK_iff _).1 a.2
+  have hMle : ∀ a, M a ≤ 1 := fun a => GroundTheory.PAdicHodge.mem_normInteger.1 a.2
   rw [irreducible_iff]
   refine ⟨fun h => ?_, fun a b hab => ?_⟩
   · have := (isUnit_OK_iff _).1 h

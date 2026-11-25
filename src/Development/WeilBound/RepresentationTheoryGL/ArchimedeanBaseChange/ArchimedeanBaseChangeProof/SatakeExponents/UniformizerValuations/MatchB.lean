@@ -45,12 +45,9 @@ open NumberField IsDedekindDomain Matrix Polynomial
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT GlobalTheory.LFun PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcN.F2 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.Bc.ArchbcB.B PositivityTheory.Rg.BcB.F
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.MB
 
 open PositivityTheory.Rg.BcB.F.U (lpow lone)
-open PositivityTheory.Rg.BcN.F2 (mconv)
 open PositivityTheory.Rg.BcB.F.MT (MatchLin)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

@@ -57,8 +57,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential GlobalTheory GlobalTheory.PD ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.PD.XCover
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.PD.XCover

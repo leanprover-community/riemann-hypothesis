@@ -59,22 +59,6 @@ namespace GlobalTheory.CompanionTheory.ExpandKer
 
 variable {l : ℕ} [Fact l.Prime] (A : PAlg l)
 
-theorem dxi_mul (i j : ℕ) :
-    A.dxi 1 i * A.dxi 1 j = ((i + j).choose i : A.Acr 1) * A.dxi 1 (i + j) := by
-  obtain ⟨-, hmul, -⟩ := _root_.GlobalTheory.CompanionTheory.FilMul.main A
-  change A.mkAcr 1 (A.dxi0 i) * A.mkAcr 1 (A.dxi0 j)
-    = ((i + j).choose i : A.Acr 1) * A.mkAcr 1 (A.dxi0 (i + j))
-  rw [← map_mul, hmul, map_mul, map_natCast]
-
-theorem aTo1_pi : A.aTo1 A.pi = -A.dxi 1 1 := by
-  obtain ⟨-, -, hfac, -⟩ := _root_.GlobalTheory.CompanionTheory.FilMul.main A
-  have h1 : A.dxi0 1 = algebraMap A.W A.Acr0 A.xi := by
-    simpa using hfac 1
-  have h2 : A.dxi 1 1 = A.toAcr 1 A.xi := by
-    change A.mkAcr 1 (A.dxi0 1) = A.mkAcr 1 (algebraMap A.W A.Acr0 A.xi)
-    rw [h1]
-  rw [h2, ← A.aTo1_coeff, A.xi_coeff_zero, map_neg, neg_neg]
-
 theorem toAcr_teichmuller (b : A.A) : A.toAcr 1 (WittVector.teichmuller l b) = A.aTo1 b := by
   rw [← A.aTo1_coeff, WittVector.teichmuller_coeff_zero]
 

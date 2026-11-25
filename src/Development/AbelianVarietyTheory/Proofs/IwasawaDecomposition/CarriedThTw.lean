@@ -42,8 +42,6 @@ noncomputable section
 
 namespace GlobalTheory.HeightCounting.Up
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev thTw (D : D7) (th : NTh D.R D.host D.what₂ D.LL0 D.nd D.ntw D.nexp) : TwNew D :=
   ⟨D.ntw, D.nexp, D.nStage_trivialCharacter_coeff_eq, th, D.ntwbr, D.ntwbr_ind⟩
 

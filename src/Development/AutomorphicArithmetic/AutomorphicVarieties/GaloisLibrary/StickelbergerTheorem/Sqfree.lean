@@ -92,21 +92,7 @@ theorem UpperTheory.V.Stick.sqfree :
   · intro hi
     exact Finset.dvd_prod_of_mem P hi
   · intro hd
-    have hex : ∀ t : Finset ι, P i ∣ ∏ j ∈ t, P j → ∃ j ∈ t, P i ∣ P j := by
-      intro t
-      induction t using Finset.induction_on with
-      | empty =>
-        simp only [Finset.prod_empty]
-        intro h
-        exact False.elim ((hP i).not_unit (isUnit_iff_dvd_one.mpr h))
-      | @insert a t ha ih =>
-        rw [Finset.prod_insert ha]
-        intro h
-        rcases (hP i).dvd_or_dvd h with h | h
-        · exact ⟨a, Finset.mem_insert_self _ _, h⟩
-        · obtain ⟨j, hj, hjd⟩ := ih h
-          exact ⟨j, Finset.mem_insert_of_mem hj, hjd⟩
-    obtain ⟨j, hj, hij⟩ := hex u hd
+    obtain ⟨j, hj, hij⟩ := (hP i).exists_mem_finset_dvd hd
     have e := ((hP i).dvd_prime_iff_associated (hP j)).1 hij
     rw [associated_iff_eq] at e
     rwa [hinj e]

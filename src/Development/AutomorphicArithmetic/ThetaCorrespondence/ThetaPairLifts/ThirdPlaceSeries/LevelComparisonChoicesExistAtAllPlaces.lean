@@ -1173,7 +1173,7 @@ theorem cellWt_of_sideRead_of_admTw : _root_.GlobalTheory.HeightCounting.Up.Publ
   have hj1 : 1 ≤ j.1 + 1 := by omega
   have hj2 : j.1 + 1 ≤ (Dof x).R.m := by omega
   choose lam0 hlam0 using fun t => l.b.Bs.exp.rhoW_hw i (j.1 + 1) b t hj1 hj2
-  obtain ⟨lamK, hlamK, TK, hTK⟩ := GlobalTheory.T.irreducible_weight_descends_to_polynomial_module (Dof x).host.E (Dof x).R.nV (Dof x).what₂.Tau
+  obtain ⟨lamK, hlamK, TK, hTK⟩ := _root_.GlobalTheory.WtDescent.weight_descends (Dof x).host.E (Dof x).R.nV (Dof x).what₂.Tau
     (FractionRing ((Dof x).ntw.O i)) (e.comp (NX.toKk (Dof x) i (T.k v))) (NX.kEmb (Dof x) i b)
     (by intro t t' h; beta_reduce at h; rw [hke, hke] at h; exact hinj h)
     (by intro t t'; beta_reduce; rw [hke, hke]; exact hcm t t')
@@ -1558,7 +1558,7 @@ theorem exists_level_comparison_choice_alt (hP : _root_.GlobalTheory.HeightCount
   refine ⟨C, tp, t1, t2, rfl, rfl, ⟨⟨fun a => hE.elim a, fun a => hE.elim a, fun a => hE.elim a,
     ⟨ψ₀, c4, hp, fun a => hE.elim a⟩, fun v x y z _ hx => (ρ v).emb_side x y z hx⟩,
     ⟨c1, fun v _ => (_root_.GlobalTheory.LevCmp.reading_sidePl_emb D _ _ _ _ (ρ v)).1, fun v _ x => (_root_.GlobalTheory.LevCmp.reading_sidePl_emb D _ _ _ _ (ρ v)).2.2 _ x, fun v _ => hb v,
-      fun v v' _ _ e => ?_, fun v _ => hc v⟩, h4, fun v _ => GlobalTheory.MtRead.admissible_twist_of_twisting_character (hok v), ?_, ?_⟩, hok, rfl⟩
+      fun v v' _ _ e => ?_, fun v _ => hc v⟩, h4, fun v _ => GlobalTheory.MtRead.admissible_twist_of_twisting_character (hok v), ?_⟩, hok, rfl⟩
   · have e' : s v' = s v := e
     have key : k v' = k v ∧ χ v' = χ v := by
       have a1 := (_root_.GlobalTheory.LevCmp.reading_sidePl_emb D _ _ _ _ (ρ v)).1
@@ -1579,10 +1579,6 @@ theorem exists_level_comparison_choice_alt (hP : _root_.GlobalTheory.HeightCount
     have a2 : y = (ψ₀ v σ : D.what₂.LLˣ) := D.what₂.embLL.injective (by rw [hy, t2, a1, inv_inv]; rfl)
     rw [a2]
     exact hp v σ
-  · intro v j j1 j2 hv hA
-    obtain ⟨j, rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
-    obtain ⟨⟨a1, a2⟩, -⟩ := hlev v hA ⟨j, j2⟩ hv
-    exact ⟨ι v, hι v, a1, fun κ h h' => congrArg Units.val (a2 κ h h')⟩
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {P : Pre2 K w}
 theorem stageCExists_of_harishChandra_serN : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.HarishChandraModules → _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → SerN → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.ThirdStageExists hL := by
   intro hCo hCW hHM hP hS hL

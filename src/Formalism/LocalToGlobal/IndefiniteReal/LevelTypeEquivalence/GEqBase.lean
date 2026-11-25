@@ -11,8 +11,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Eqv.Act
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Comm
 
 variable {D : D7} {V : HSp D}

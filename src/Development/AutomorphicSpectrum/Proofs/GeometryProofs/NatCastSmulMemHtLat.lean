@@ -268,25 +268,13 @@ theorem tan_mem {R : Type} [CommRing R] [IsLocalRing R] (x : Spec (CommRingCat.o
   intro z _
   have hσ : Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom) ≫ v.left = x ≫ (η[G]).left :=
     hv.trans one_left
-  have hs : Function.Surjective (TrivSqZeroExt.fstHom R R R).toRingHom := fun r => ⟨TrivSqZeroExt.inl r, rfl⟩
-  obtain ⟨z', hz'⟩ : ∃ z' : PrimeSpectrum R,
-      PrimeSpectrum.comap (TrivSqZeroExt.fstHom R R R).toRingHom z' = (z : PrimeSpectrum (DualNumber R)) := by
-    have hp : (z : PrimeSpectrum (DualNumber R)).asIdeal.IsPrime := PrimeSpectrum.isPrime _
-    have key : ∀ a : DualNumber R, a - TrivSqZeroExt.inl a.fst ∈ (z : PrimeSpectrum (DualNumber R)).asIdeal := by
-      intro a
-      have h2 : (a - TrivSqZeroExt.inl a.fst) ^ 2 = 0 := by
-        ext <;> simp [pow_two]
-      exact hp.mem_of_pow_mem 2 (by rw [h2]; exact Ideal.zero_mem _)
-    refine ⟨PrimeSpectrum.comap (TrivSqZeroExt.inlHom R R) z, ?_⟩
-    apply PrimeSpectrum.ext
-    ext a
-    constructor
-    · intro h
-      have h' : TrivSqZeroExt.inl a.fst ∈ (z : PrimeSpectrum (DualNumber R)).asIdeal := h
-      simpa using Ideal.add_mem _ (key a) h'
-    · intro h
-      show TrivSqZeroExt.inl a.fst ∈ (z : PrimeSpectrum (DualNumber R)).asIdeal
-      simpa using Ideal.sub_mem _ h (key a)
+  obtain ⟨z', hz'⟩ : (z : PrimeSpectrum (DualNumber R)) ∈
+      Set.range (PrimeSpectrum.comap (TrivSqZeroExt.fstHom R R R).toRingHom) := by
+    rw [_root_.range_comap_of_surjective _ _ TrivSqZeroExt.fst_surjective]
+    intro a ha
+    have ha' : a.fst = 0 := ha
+    have h2 : a ^ 2 = 0 := by ext <;> simp [pow_two, ha']
+    exact (PrimeSpectrum.isPrime _).mem_of_pow_mem 2 (h2 ▸ Ideal.zero_mem _)
   have e1 : v.left z = (x ≫ (η[G]).left) z' := by
     rw [← hσ, ← hz']
     rfl

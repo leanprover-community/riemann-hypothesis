@@ -83,13 +83,6 @@ private theorem norm_coc (α : G ℚ Ω →* Oˣ) (δ : G ℚ Ω) (hδ : IsUnit 
       rw [hu, sub_smul, one_smul]
     rw [e, smul_smul, Units.mul_inv, one_smul, sub_self]
 
-private theorem unit_kill {x : O} (hx : IsUnit x) {a : O} {w : W} (h : a • x • w = 0) : a • w = 0 := by
-  obtain ⟨u, rfl⟩ := hx
-  calc a • w = ((u⁻¹ : Oˣ) : O) • (a • (u : O) • w) := by
-        rw [smul_comm _ a]
-        simp [smul_smul]
-    _ = 0 := by rw [h, smul_zero]
-
 private theorem conj_cob (α : G ℚ Ω →* Oˣ) {c : G ℚ Ω → W} (hc : IsCoc α c) (σ x : G ℚ Ω) (m : W)
     (h : c (σ⁻¹ * x * σ) = (α (σ⁻¹ * x * σ) : O) • m - m) :
     c x = (α x : O) • ((α σ : O) • m - c σ) - ((α σ : O) • m - c σ) := by
@@ -158,7 +151,7 @@ private theorem mem_shT (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
       obtain ⟨m, hm⟩ := hs (Ine A) (Or.inr ⟨A, rfl⟩)
       refine ⟨m, ?_, fun d hd => ?_⟩
       · have e : ((α g0 : O) - 1) • m = c g0 := by rw [hm g0 hg0, sub_smul, one_smul]
-        exact unit_kill hu (by rw [e, killc])
+        exact hu.smul_eq_zero.mp (by rw [smul_comm, e, killc])
       · have hdA : d • A = A := mem_Dec.mp hd
         have hg' : d⁻¹ * g0 * d ∈ Ine A := by
           have hh := ((placeBasic Ω).2.2.2.2.2.2.2.2.2 A d).2.1 g0

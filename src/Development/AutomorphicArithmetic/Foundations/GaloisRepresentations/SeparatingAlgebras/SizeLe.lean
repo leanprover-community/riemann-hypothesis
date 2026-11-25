@@ -88,17 +88,11 @@ private noncomputable def emb : InfinitePlace E ⊕ InfinitePlace E → (E →+*
   | .inl v => v.embedding
   | .inr v => ComplexEmbedding.conjugate v.embedding
 
-private theorem mk_emb_inl (v : InfinitePlace E) : InfinitePlace.mk (emb (.inl v)) = v :=
-  InfinitePlace.mk_embedding v
-
-private theorem mk_emb_inr (v : InfinitePlace E) : InfinitePlace.mk (emb (.inr v)) = v := by
-  simp [emb]
-
 private theorem emb_injective : Function.Injective (emb (E := E)) := by
   intro x y h
   have hm : InfinitePlace.mk (emb x) = InfinitePlace.mk (emb y) := by rw [h]
   rcases x with v | v <;> rcases y with w | w <;>
-    simp only [mk_emb_inl, mk_emb_inr] at hm <;> subst hm
+    simp only [emb, InfinitePlace.mk_embedding, InfinitePlace.mk_conjugate_eq] at hm <;> subst hm
   · rfl
   · simp only [emb] at h
     exact absurd h.symm (conjugate_ne _)

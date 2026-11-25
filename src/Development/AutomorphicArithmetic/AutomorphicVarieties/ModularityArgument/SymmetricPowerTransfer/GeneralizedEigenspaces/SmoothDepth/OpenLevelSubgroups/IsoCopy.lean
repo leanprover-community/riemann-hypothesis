@@ -62,7 +62,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 private theorem isoCopy_struct {H T M : Type} [Group H] [AddCommGroup T] [Module ℂ T] [AddCommGroup M] [Module ℂ M]

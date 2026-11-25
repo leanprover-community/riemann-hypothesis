@@ -28,10 +28,12 @@ def dualMapS {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra S A
     DualNumber A →ₐ[S] DualNumber A' := Bl.ThirdBlockLemmaB.goal1 ι
 
 theorem dualMapS_fst {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra S A'] (ι : A →ₐ[S] A')
-    (x : DualNumber A) : (dualMapS ι x).fst = ι x.fst := by simp [dualMapS, Bl.ThirdBlockLemmaB.goal1, TrivSqZeroExt.lift_def]
+    (x : DualNumber A) : (dualMapS ι x).fst = ι x.fst := by
+  simp [dualMapS, Bl.ThirdBlockLemmaB.goal1, DualNumber.lift_apply_apply]
 
 theorem dualMapS_snd {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra S A'] (ι : A →ₐ[S] A')
-    (x : DualNumber A) : (dualMapS ι x).snd = ι x.snd := by simp [dualMapS, Bl.ThirdBlockLemmaB.goal1, TrivSqZeroExt.lift_def]
+    (x : DualNumber A) : (dualMapS ι x).snd = ι x.snd := by
+  simp [dualMapS, Bl.ThirdBlockLemmaB.goal1, DualNumber.lift_apply_apply]
 
 def scaleS {A : Type} [CommRing A] [Algebra S A] (c : A) : DualNumber A →ₐ[S] DualNumber A :=
   (scaleD c).restrictScalars S

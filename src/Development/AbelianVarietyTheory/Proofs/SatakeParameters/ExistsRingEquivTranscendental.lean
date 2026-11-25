@@ -182,12 +182,6 @@ section Gen
 
 variable {p : ℕ} [Fact p.Prime]
 
-theorem mem_Wp_of_kur {x : ℂ_[p]} (hx : x ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (h1 : ‖x‖ ≤ 1) : x ∈ Wp p := by
-  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.mem_Wp_of_kur <;> assumption
-
-theorem logF_eq : logF p = Formalism.L2.Th1.CM.ltLog ℂ_[p] p := by
-  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.logF_eq
-
 theorem datum_of_short (h5 : 5 ≤ p) (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
     (C : WeierstrassCurve.VariableChange ℂ_[p]) (g2 g3 : ℂ_[p])
     (hW : C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ = Formalism.L2.Th1.A.shortW g2 g3)

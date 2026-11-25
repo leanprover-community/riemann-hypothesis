@@ -43,8 +43,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
@@ -154,10 +152,6 @@ theorem toRat_ne_zero {ω : Forms E.const n} (hω : IsFreeGen E.ring ω) : E.toR
   fun h => one_ne_zero ((E.isFreeGen_toRat hω).1 (a₁ := 1) (a₂ := 0) (by simp [h]))
 
 variable {E}
-
-theorem IsFormOrd.ne_zero {η : Forms c n} {a : ℤ} (h : E.IsFormOrd η a) : η ≠ 0 := by
-  obtain ⟨ω, hω, f, rfl, -⟩ := h
-  exact smul_ne_zero f.ne_zero (E.toRat_ne_zero hω)
 
 theorem IsFormOrd.unique {η : Forms c n} {a b : ℤ} (h : E.IsFormOrd η a)
     (h' : E.IsFormOrd η b) : a = b := by

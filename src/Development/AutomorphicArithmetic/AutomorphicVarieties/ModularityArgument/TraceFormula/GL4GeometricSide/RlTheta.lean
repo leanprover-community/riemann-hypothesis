@@ -52,6 +52,24 @@ open scoped InnerProductSpace ComplexConjugate
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
+open Matrix in
+private theorem map_thetaR {n : ℕ} {R S : Type} [CommRing R] [CommRing S] (p : R →+* S)
+    (c : R →+* R) (c' : S →+* S) (h : ∀ x, p (c x) = c' (p x)) (g : GL (Fin n) R) :
+    GeneralLinearGroup.map p (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map p g) := by
+  ext i j
+  change p (c ((g⁻¹ : GL (Fin n) R).val j i)) =
+    c' (((GeneralLinearGroup.map p g)⁻¹ : GL (Fin n) S).val j i)
+  rw [h, ← map_inv]
+  rfl
+
+private theorem thetaA_infGL {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
+    (y : GL (Fin n) (Cinf E)) :
+    thetaA E n (infGL E n y) = infGL E n (thetaR (starRingEnd (Cinf E)) n y) :=
+  ga_ext
+    (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_infGL, pInf_infGL])
+    (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pFin_conjAd,
+      pFin_infGL, pFin_infGL, map_one])
+
 section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
@@ -79,42 +97,6 @@ private theorem eop_theta (w : InfinitePlace E) (a b : Fin n) {φ φ' : Sm E n}
           rw [show Matrix.of (t • X) = t • Matrix.of X from rfl, Matrix.conjTranspose_smul, star_trivial]; rfl }
 
   have adjH_apply (X : Lie E n) (i j : Fin n) : adjH X i j = star (X j i) := rfl
-
-  have map_thetaR {R S : Type} [CommRing R] [CommRing S] (p : R →+* S) (c : R →+* R) (c' : S →+* S)
-      (h : ∀ x, p (c x) = c' (p x)) (g : GL (Fin n) R) :
-      GeneralLinearGroup.map p (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map p g) := by
-    ext i j
-    change p (c ((g⁻¹ : GL (Fin n) R).val j i)) = c' (((GeneralLinearGroup.map p g)⁻¹ : GL (Fin n) S).val j i)
-    rw [h, ← map_inv]
-    rfl
-
-  have thetaA_infGL (y : GL (Fin n) (Cinf E)) :
-      thetaA E n (infGL E n y) = infGL E n (thetaR (starRingEnd (Cinf E)) n y) :=
-    ga_ext (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_infGL, pInf_infGL])
-      (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pFin_conjAd, pFin_infGL, pFin_infGL, map_one])
-
-  have thetaA_finGL (k : GL (Fin n) (Af E)) : thetaA E n (finGL E n k) = finGL E n (thetaF E n k) :=
-    ga_ext (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_finGL, pInf_finGL, map_one])
-      (by rw [pFin_finGL]; rfl)
-
-  have thetaA_kAt (w : InfinitePlace E) (c : UU n) : thetaA E n (kAt w c) = kAt w c := by
-    classical
-    have e : kAt w c = infGL E n (locInf w (Unitary.toUnits c)) := rfl
-    rw [e, thetaA_infGL]
-    congr 1
-    refine Units.ext ?_
-    ext i j v
-    rw [thetaR_val, ← map_inv, ← map_inv]
-    change star ((locInf w (Unitary.toUnits c)⁻¹ : GL (Fin n) (Cinf E)).val j i v) = _
-    rw [locInf_apply, locInf_apply]
-    by_cases hv : v = w
-    · simp only [hv, if_true]
-      change star ((star c.1 : Matrix (Fin n) (Fin n) ℂ) j i) = c.1 i j
-      simp [Matrix.star_apply]
-    · simp only [hv, if_false]
-      by_cases hij : i = j
-      · subst hij; simp
-      · simp [Matrix.one_apply_ne hij, Matrix.one_apply_ne (Ne.symm hij)]
 
   have toL_thetaR (y : GL (Fin n) (Cinf E)) :
       toL (thetaR (starRingEnd (Cinf E)) n y).val = adjH (GlobalTheory.ThetaPull.invL (toL y.val)) := by
@@ -193,24 +175,6 @@ end
 
 theorem rlTheta : RlTheta := by
   intro E _ _ _ n _ π _ K _ _ _ _ _ μf _ D
-  open Matrix in
-  have map_thetaR {R S : Type} [CommRing R] [CommRing S] (p : R →+* S) (c : R →+* R) (c' : S →+* S)
-      (h : ∀ x, p (c x) = c' (p x)) (g : GL (Fin n) R) :
-      GeneralLinearGroup.map p (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map p g) := by
-    ext i j
-    change p (c ((g⁻¹ : GL (Fin n) R).val j i)) = c' (((GeneralLinearGroup.map p g)⁻¹ : GL (Fin n) S).val j i)
-    rw [h, ← map_inv]
-    rfl
-
-  have thetaA_infGL (y : GL (Fin n) (Cinf E)) :
-      thetaA E n (infGL E n y) = infGL E n (thetaR (starRingEnd (Cinf E)) n y) :=
-    ga_ext (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_infGL, pInf_infGL])
-      (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pFin_conjAd, pFin_infGL, pFin_infGL, map_one])
-
-  have thetaA_finGL (k : GL (Fin n) (Af E)) : thetaA E n (finGL E n k) = finGL E n (thetaF E n k) :=
-    ga_ext (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_finGL, pInf_finGL, map_one])
-      (by rw [pFin_finGL]; rfl)
-
   have thetaA_kAt (w : InfinitePlace E) (c : UU n) : thetaA E n (kAt w c) = kAt w c := by
     classical
     have e : kAt w c = infGL E n (locInf w (Unitary.toUnits c)) := rfl

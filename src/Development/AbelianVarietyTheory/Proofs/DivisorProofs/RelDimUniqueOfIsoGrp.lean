@@ -46,7 +46,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsAdditive
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual

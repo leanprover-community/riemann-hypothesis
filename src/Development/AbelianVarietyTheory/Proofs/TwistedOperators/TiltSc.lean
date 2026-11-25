@@ -51,8 +51,6 @@ noncomputable section
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.RowShape
 
 variable {D : D7}

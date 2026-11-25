@@ -1784,7 +1784,7 @@ theorem abs_limNum_sub_le {D : ℕ} {σ : Type} {S : AnSys D σ} {K : Type} [Fin
 theorem coefficients : Coefficients := by
   intro hI D N Ψ _ S thH hth
   obtain ⟨C₂', hC⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.abs_num_sub_num_le hI D (Option (Ψ × Fin N)) S thH hth
-  obtain ⟨Cst, hW, hWS⟩ := GlobalTheory.T.weighted_polynomial_homogeneous_coeff_bound Ψ N (D + 1)
+  obtain ⟨Cst, hW, hWS⟩ := PositivityTheory.Xgp.t_poly_towt_bound Ψ N (D + 1)
   have ht : 0 < S.t₀ := (S.reg none).1
   refine ⟨Cst * ((Fintype.card (Option (Ψ × Fin N)) : ℝ) ^ (D + 1)) * C₂',
     fun II hII K _ ι _ P Re => ?_⟩

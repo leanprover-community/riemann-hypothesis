@@ -67,7 +67,7 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SumWCompare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters.factPrime
+attribute [local instance] GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters.factPrime
 
 section Places
 

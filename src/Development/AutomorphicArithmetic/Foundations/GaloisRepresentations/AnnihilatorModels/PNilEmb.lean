@@ -85,17 +85,6 @@ open TensorProduct Module
 
 namespace UpperTheory.Gal.crystallineComparison
 
-section Comm
-variable {L M N : Type} [Field L] [AddCommGroup M] [Module L M] [AddCommGroup N] [Module L N]
-
-private theorem pow_comm (φ : M →ₗ[L] N) (A : End L M) (A' : End L N) (h : ∀ y, φ (A y) = A' (φ y)) (n : ℕ) (y : M) :
-    φ ((A ^ n) y) = (A' ^ n) (φ y) := by
-  induction n generalizing y with
-  | zero => simp
-  | succ n ih => rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ih, h]
-
-end Comm
-
 section
 variable {F G B : Type} [Field F] [Group G] [AddCommGroup B] [Module F B] (σ : G → End F B) (ψ : End F B)
   {L : Type} [Field L] [Algebra F L] {V W : Type} [AddCommGroup V] [Module L V] [Module F V] [IsScalarTower F L V]
@@ -145,8 +134,9 @@ theorem nilEmb_of : NilEmb := by
   have hzero : ∀ i, ext1 B (f i) ((A ^ ∑ i, N i) x) = 0 := by
     intro i
     have hle : N i ≤ ∑ i, N i := Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
-    rw [pow_comm (ext1 B (f i)) A (Polynomial.aeval (onPer ψ L (W i)) Q)
-      (_root_.UpperTheory.Reformulated.B.Qk66.aeval_comm _ _ _ (scalar_extension_period_action ψ (f i)) Q), ← Nat.sub_add_cancel hle, pow_add, Module.End.mul_apply,
+    rw [hA, ← map_pow, _root_.UpperTheory.Reformulated.B.Qk66.aeval_comm _ _ _
+        (scalar_extension_period_action ψ (f i)) (Q ^ ∑ i, N i),
+      map_pow, ← Nat.sub_add_cancel hle, pow_add, Module.End.mul_apply,
       hN i _ (typeCharacterExtension_mem_range_coefficientRing σ (hI i) hx), map_zero]
   apply (TensorProduct.equivFinsuppOfBasisRight (Basis.ofVectorSpace F B)).injective
   ext k

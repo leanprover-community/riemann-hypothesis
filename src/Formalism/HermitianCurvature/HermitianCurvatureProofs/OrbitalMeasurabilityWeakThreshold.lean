@@ -68,7 +68,7 @@ namespace Formalism.FourierDecayAlt.P.WeakThresholdClauses
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def WeakDominationThreshold (k r : ℕ) (A : ℝ) (m : ℕ) : Prop :=
   0 < A - 6 * (r : ℝ) * (m : ℝ) ∧
@@ -123,7 +123,7 @@ namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Asm
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 open Formalism.FourierDecayAlt.P.WeakDominationMajorants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem scalar_majorant_weak_threshold : Formalism.FourierDecayAlt.P.WeakThresholdClauses.NNMajW := by
   intro k r Wp Wq _ _ _ _ D A m hThr K hK hKO
@@ -266,7 +266,7 @@ namespace Formalism.FourierDecayAlt.P.JFxDs2
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem domination_of_scalar_majorant : Formalism.FourierDecayAlt.P.WeakThresholdClauses.NNMajW → Formalism.FourierDecayAlt.P.WeakThresholdClauses.JDomBoundW := by
   intro hN k r Wp Wq _ _ _ _ _ _ D A m F hThr hF K hK hKO
@@ -300,7 +300,7 @@ namespace Formalism.FourierDecayAlt.P.JFxDs3
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {k r : ℕ}
 
@@ -400,7 +400,7 @@ namespace Formalism.FourierDecayAlt.P.WeakDominationWordBounds
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.B4 Formalism.FourierDecayAlt.P.SandwichRhoAction Formalism.FourierDecayAlt.P.ChartIntegralLocal Formalism.FourierDecayAlt.P.SmoothnessOnGoodSet
   Formalism.FourierDecayAlt.P.LetterPairRecursion
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem orbital_derivative_words_weak : Formalism.FourierDecayAlt.P.WeakThresholdClauses.JWordsW := by
   intro k r Wp Wq _ _ _ _ _ _ D A m F hThr hCC
@@ -427,7 +427,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem orbital_commutes_on_open_set : ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]

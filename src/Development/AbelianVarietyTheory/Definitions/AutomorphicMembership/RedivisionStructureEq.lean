@@ -52,8 +52,6 @@ open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PackageTie2
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict Formalism.L2.Forms Formalism.L2.SG.TermOp Formalism.L2.SG.Full
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure New (D : D7) : Type 1 where
   Z : SNew D
   N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V
@@ -70,10 +68,7 @@ variable {D : D7} (Z : New D)
 
 def wd (u : D.what₂.Word) : (reD D Z).what₂.Word := u
 
-def New.self (D : D7) : New D := ⟨SNew.self D, fun u => (D.div.Nu u).L, D.div.h⟩
-
 def New.ofDiv (D : D7) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ) : New D := ⟨SNew.self D, N, h⟩
-
 
 
 def reX (X : HidaSetting D) : HidaSetting (reD D Z) := { X with }

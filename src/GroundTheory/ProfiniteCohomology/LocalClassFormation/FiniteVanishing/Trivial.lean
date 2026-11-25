@@ -27,7 +27,7 @@ open CategoryTheory Limits
 theorem zmod_lift_zmultiplesHom_injective {X : Type*} [AddCommGroup X] {p : ℕ} [Fact p.Prime] {c : X}
     (hc : c ≠ 0) (hpc : p • c = 0) :
     Function.Injective (ZMod.lift p ⟨zmultiplesHom X c, by simp [hpc]⟩) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   have hord : addOrderOf c = p := addOrderOf_eq_prime hpc hc
   rw [← ZMod.intCast_zmod_cast x, ZMod.lift_coe, zmultiplesHom_apply] at hx

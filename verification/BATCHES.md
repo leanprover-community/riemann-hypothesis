@@ -9,8 +9,7 @@ the batch follows the rules below. This page is for whoever assembles one.
 
 ## Labels at a glance
 
-The sections below give the details. A row marked *(planned)* describes a label that a pull
-request still under review adds. Until it lands, the label exists but nothing puts it on.
+The sections below give the details.
 
 | Label | On | Put on when | Taken off when |
 |---|---|---|---|
@@ -18,20 +17,20 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `latest batch` | the pull request of the outermost batch of a stack, the one no other batch is stacked on | it is `building` and nothing is stacked on it | a batch is stacked on it; it is merged or closed |
 | `batch-building` | each pull request in that batch, or in the lowest batch of a stack that holds it | the batch takes its head commit | it leaves every batch being built; its batch is merged or closed; it is closed |
 | `frozen` | each pull request in that batch, and each queued pull request | with `batch-building`, or with `batch queue` on a `batch` comment | it is neither queued nor in a batch being built: `-batch`, it leaves the batch, the batch is merged or closed, it is closed |
-| `changed after frozen` *(planned, #1697)* | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
+| `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
-| `main-conflict` *(planned, #1700)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
-| `batch-conflict` *(planned, #1700)* | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is put on it; a batch it builds on is rebuilt without a pull request it carries | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
+| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
+| `batch-conflict` | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
-`batch queue`, `building`, `batch-building`, `frozen` and `awaiting-author` keep a pull request
-out of the inbox (`inbox`, see `.github/workflows/inbox.yml`), and so will `batch-conflict`
-*(planned, #1700)*. The names are in `scripts/batch-labels.py`.
+`batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
+keep a pull request out of the inbox (`inbox`, see `.github/workflows/inbox.yml`). The names are in `scripts/batch-labels.py`.
 
-Also planned *(#1707)*: a check of each batch's description against its branch, posted on the
-batch's pull request. It reports pull requests listed as included that aren't in the branch, members the
-description doesn't mention, and pull requests reverted in the branch.
+Besides the labels, the workflow checks each batch's description against its branch, in a
+comment on the batch's pull request: pull requests listed as included that aren't in the branch,
+members the description doesn't mention, and pull requests reverted in the branch (see "What
+the workflow does").
 
 ## Rules
 
@@ -54,8 +53,9 @@ description doesn't mention, and pull requests reverted in the branch.
    head commits of the pull requests in it reach `main`.
 5. **To take a pull request out, rebuild the branch without it and force-push.** Don't revert
    it: the reverted pull request's head commit would still be in the branch, so GitHub would mark
-   it merged when the batch lands, although its changes did not land. After a force-push, the
-   workflow looks through the branch again. A pull request that is no longer in it loses its
+   it merged when the batch lands, although its changes did not land. The workflow notices a
+   revert, says so on the batch's pull request, and tells the reverted pull request what will
+   happen. After a force-push, the workflow looks through the branch again. A pull request that is no longer in it loses its
    labels, goes back to `batch queue` if it was queued, and is told that it can push again.
    - A force-push does not stop a build of the old head: `build-pr.yml` gives each head commit
      a concurrency group of its own and does not cancel runs in progress.
@@ -65,11 +65,21 @@ description doesn't mention, and pull requests reverted in the branch.
      the modules that depend on what was taken out. That is the same cost as reverting it.
 6. **To add a pull request, merge its head commit in and push.** The workflow looks through the
    branch again on every push.
-7. **List what is left out, and why, in the description.** People read the description to see
-   which pull requests a batch contains. The workflow reads it only for what it leaves out:
+7. **List what is included, and what is left out and why, in the description.** People read the
+   description to see which pull requests a batch contains. The workflow reads what the batch
+   contains from the branch, and reads the description for what it leaves out and to check it
+   against the branch (see below):
    - A heading is a line of its own, not part of a list, that ends with a colon. Pull requests
      listed under a heading that contains "left out" or "not included" (in any letter case) are
-     left out. For example: `Left out because they conflict with a PR earlier in the batch:`.
+     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts,
+     such as `Left out because they conflict with a PR earlier in the batch:`, are not told
+     anything from the description: the conflict-labels workflow finds conflicts from the
+     branches and tells them itself (see below). Those listed under any other heading, such as
+     `Included:`, are included: the batch carries their changes. A pull request listed as
+     included is never told it conflicts with the batch or with `main`, even when its own head
+     is not in the branch, as when `main` was merged into it for the batch and the push to its
+     branch was refused. The description check still names it, since GitHub will not mark it
+     merged.
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.
@@ -105,6 +115,36 @@ closed. The workflow lists them in a comment of its own on the batch's pull requ
 of batches, what the branch shares with a batch it is stacked on belongs to that batch instead
 (see [Several batches at once](#several-batches-at-once)).
 
+The workflow also compares the description with the branch, and says where they disagree in a
+comment of its own on the batch's pull request. It names:
+
+- pull requests listed as included that are closed, and which of them are still in the branch.
+  The changes of those land with the batch, but GitHub does not mark a closed pull request
+  merged;
+- pull requests listed as included whose head commit is not in the branch. That includes one
+  pushed to after it was merged in but before the workflow first looked through the batch: the
+  workflow cannot count its old commit as in the batch. Merge its new head in. To leave it out
+  instead, rebuild the branch without it, since its old commit would still land, and take it off
+  the list; one that is not in the branch at all only needs to come off the list;
+- pull requests in the branch that the description does not list at all. This is left out when
+  the description lists nothing as included, so a batch that does not follow this format is not
+  flooded;
+- pull requests in the branch that the description lists as left out;
+- pull requests whose merge into the branch was reverted. The workflow knows a revert by the
+  line git writes in its message, `This reverts commit <commit>`, naming the merge commit that
+  brought in the commit of the pull request that the batch holds, whatever the revert's first line
+  says. A revert of the revert puts the pull request back. A pull request merged in again at a new
+  head is in the batch at that head, and a revert of its earlier merge no longer counts. Each pull
+  request reverted is also told, once, that the batch would land it although its changes did not
+  (rule 5).
+
+What is in the branch is what the workflow found there, at the commit it found, so a pull request
+pushed to after it was merged in is not named. In a stack, the description of a batch need list
+only its own pull requests: what a batch under it contains is never named as not listed, and is
+in the branch if the description lists it as well. The comment is posted once there is something to
+say. After that it is edited in place, also to say that all is well again, and only when what it
+says changes.
+
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
 labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
@@ -127,9 +167,94 @@ queue stays `frozen`. After every run the workflow puts `frozen` back on a queue
 that has lost it, and takes `frozen` and `batch-building` off one that is neither queued nor in a
 batch being built.
 
+A frozen pull request whose head has moved on from the commit that was taken, by its own batch
+or by the queue, is labelled `changed after frozen` as soon as the push comes in: what was pushed
+since is not part of what is built. In a stack, its own batch is the lowest that holds it, even
+when a batch on top of it has merged in the new head. The label comes off when the head is the
+commit that was taken again, and when the pull request is no longer frozen. On a queued pull
+request, another `batch` comment does that: the queue takes the new head. On a pull request in a
+batch, a `batch` comment changes nothing; the label comes off once its own batch merges in the
+new head, or when the pull request is pushed back to the commit its batch took.
+
 "Labels at a glance" lists the labels that keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
-of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.
+of the sync job in `.github/workflows/batch-queue.yml` and of `.github/workflows/conflict-labels.yml`
+name some of them as well.
+
+## Conflicts with main and with the batch
+
+*Switched off until a maintainer switches it on:* the workflow below runs only when the
+repository variable `CONFLICT_LABELS` is `on`. Until then, it writes nothing, and the batch queue
+tells pull requests listed under a heading about conflicts what the description says, as it does
+for any other heading. To switch it on, start the workflow by hand (Actions → conflict labels →
+Run workflow) with `dry_run` ticked, as it is by default, and no pull request number. Its summary
+lists every label and comment a real run would add. If that looks right, set the variable to `on`
+(Settings → Secrets and variables → Actions → Variables). A dry run can be started whether or not
+the variable is set.
+
+Another workflow (`.github/workflows/conflict-labels.yml`, which runs
+`scripts/conflict-labels.py`) labels the open pull requests into `main` that are not drafts and
+not batches:
+
+- `main-conflict`: GitHub says the pull request conflicts with `main`. There is no comment,
+  because GitHub shows the conflict too. A pull request that depends on an open batch does not
+  get it (see below).
+- `batch-conflict`: the pull request conflicts with the head of a batch being built, one labelled
+  `building`. Of a stack of batches, only the outermost one, labelled `latest batch`, is compared
+  with: its branch holds the batches under it, and the stack lands as a whole, so that is the
+  batch to merge and to depend on. git cannot merge a file that both change since they left
+  `main`, or one of the two deletes a Lean file that the other starts to import. The pull requests
+  in the batch, labelled `batch-building`, never get it. Each time a pull request gets it, the
+  first time or again after it was fixed, it is also labelled `awaiting-author` and told in a
+  comment which files conflict and what to do. While it keeps the label, it is told about each
+  batch it conflicts with once.
+
+Both labels come off by themselves once the reason has gone: the conflict was resolved, the pull
+request was closed or joined the batch, or the batch was merged or closed. `awaiting-author` stays
+until the author comments `ready`. `batch-conflict` keeps a pull request out of the inbox;
+`main-conflict` does not, since a pull request that conflicts with `main` still needs a first look.
+
+The workflow finds these conflicts from the branches alone, whatever the batch's description says.
+A pull request that the description leaves out because it conflicts is told only by this
+workflow, and only if it still conflicts: the batch queue does not repeat entries under a
+heading about conflicts.
+
+### If your pull request is labelled `batch-conflict`
+
+1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, rather than
+   rebasing onto it, and resolve the conflicts. If the batch's branch is rebuilt before it lands,
+   which is how a pull request is taken out of a batch (rule 5), your branch still carries the
+   pull request that was taken out. Then make a new branch from the new batch branch, copy only
+   your own commits onto it with `git cherry-pick`, and push that to your pull request.
+2. Add this line at the end of the description, under a line `---`, as the template in
+   [AGENTS.md](../AGENTS.md#pull-requests) has it, where #123 is the batch's pull request:
+
+   ```
+   - [ ] depends on: #123
+   ```
+
+   Your pull request now carries the batch's changes, and may conflict with `main`, until the
+   batch lands. The line says that this is expected, and keeps `main-conflict` off it.
+3. Comment `ready`.
+
+Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
+there and comment `ready`.
+
+A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
+optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
+address.
+
+### If the batch you build on is rebuilt
+
+A pull request that merged a batch's branch carries the batch's commits. If the batch is then
+rebuilt without one of its pull requests, your branch still carries that one's commits: when
+your pull request lands, they land too, and GitHub marks the pull request that was taken out
+merged. Every sweep of the workflow looks for this in the pull requests that depend on an open
+batch, or share commits with a batch's branch. Your pull request is then labelled
+`awaiting-author` and told, once for each head of the batch, which pull requests it carries. Make a
+new branch from the batch's current branch, copy only your own commits onto it with
+`git cherry-pick`, push that to your pull request and comment `ready`. From then on, merge the
+batch's branch into yours; never rebase onto it.
 
 A batch that was already being built before the workflow first told anyone (its record on the
 pull request is older than these notices) is not announced afresh: its pull requests are

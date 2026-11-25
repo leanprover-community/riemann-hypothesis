@@ -94,11 +94,6 @@ theorem mem_Km_of_entries {N : ℕ} (m : ℕ) (g : GL (Fin N) k)
   rw [key]
   by_cases h : i = j <;> simp [Matrix.one_apply, h]
 
-theorem unif_pow_ne_zero (m : ℕ) : (((Zls.unif k ^ m : 𝒪[k])) : k) ≠ 0 := by
-  have h : Zls.unif k ≠ 0 := Zls.irreducible_unif.ne_zero
-  have := pow_ne_zero m h
-  simpa using this
-
 theorem isOpen_Km (N m : ℕ) : IsOpen (Zls.Km k N m : Set (GL (Fin N) k)) := by
   apply GlobalTheory.CompanionTheory.KmTop.isOpen_Km
 

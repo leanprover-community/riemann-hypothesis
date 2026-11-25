@@ -45,8 +45,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LevelEquivCompare
@@ -55,8 +53,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.
 open Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links
   Formalism.L2.Pj Formalism.IndefR.Datum
 open GlobalTheory.FieldBC GlobalTheory.IndefiniteRowSideFullHecke.ColumnDataLaws
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Field
 

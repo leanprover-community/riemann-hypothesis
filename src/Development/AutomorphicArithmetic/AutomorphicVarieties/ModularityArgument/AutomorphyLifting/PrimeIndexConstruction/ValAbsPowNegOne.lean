@@ -70,7 +70,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.CuspRep GroundTheory.Global.SemiLocal UpperTheory.V.Z.Gam
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.Win.Birth
 
@@ -136,7 +135,6 @@ open GroundTheory.Global.SemiLocal
 open scoped Classical
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 private theorem unr_one {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] :
     IsUnram (1 : kˣ →* ℂˣ) := by

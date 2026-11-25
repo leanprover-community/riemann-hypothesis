@@ -57,7 +57,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Chain.StepVac
 
@@ -215,20 +214,7 @@ theorem placeModel_wave (ψ : AddChar (AF D.host.F) ℂ) {e : AE D} (Λ : AddSub
     ∀ x ∈ half S T e, ∀ y ∈ half S T (cA D e),
       Tm (wave (fun x y : WO S T => ψ (symplO S T x y)) (Λ ⊓ half S T e) x y) = heisL S T ψ x (heisL S T ψ y f₀) := by
   intro x hx y hy
-  have hb : IsBichar (fun x y : WO S T => ψ (symplO S T x y)) := by
-    refine ⟨?_, ?_, ?_, ?_⟩
-    · intro a b y
-      rw [symplO_add_left, AddChar.map_add_eq_mul]
-    · intro a b y
-      rw [symplO_add_right, AddChar.map_add_eq_mul]
-    · intro y
-      have h := symplO_add_left S T 0 0 y
-      have hz : symplO S T 0 y = 0 := by simpa using h
-      rw [hz, AddChar.map_zero_eq_one]
-    · intro x
-      have h := symplO_add_right S T x 0 0
-      have hz : symplO S T x 0 = 0 := by simpa using h
-      rw [hz, AddChar.map_zero_eq_one]
+  have hb := isBichar_symplO S T ψ
   have s0 := GlobalTheory.isSBHalf_halfInd e Λ
   have s1 : IsSBHalf e Λ fun t => ψ (symplO S T t y) * halfInd e Λ t := by
     obtain ⟨k, hk, hk'⟩ := hden y hy
@@ -294,20 +280,7 @@ theorem placeModel_span_ne {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D �
   have tf : ∀ k : ℕ, 0 < k → Function.Injective fun t : WO S T => k • t := fun k hk a b hab => by
     rw [← inv_smul_nsmul S T hk a, ← inv_smul_nsmul S T hk b]
     exact congrArg _ hab
-  have hb : IsBichar (fun x y : WO S T => ψ (symplO S T x y)) := by
-    refine ⟨?_, ?_, ?_, ?_⟩
-    · intro a b y
-      rw [symplO_add_left, AddChar.map_add_eq_mul]
-    · intro a b y
-      rw [symplO_add_right, AddChar.map_add_eq_mul]
-    · intro y
-      have h := symplO_add_left S T 0 0 y
-      have hz : symplO S T 0 y = 0 := by simpa using h
-      rw [hz, AddChar.map_zero_eq_one]
-    · intro x
-      have h := symplO_add_right S T x 0 0
-      have hz : symplO S T x 0 = 0 := by simpa using h
-      rw [hz, AddChar.map_zero_eq_one]
+  have hb := isBichar_symplO S T ψ
   have hw := placeModel_wave ψ Λ hLL' (fun y hy => hden0 y (fY y hy)) hTm
   obtain ⟨h1, k, hk, h2, h3⟩ := hΦ
   have h1' : ∀ t, Φ t ≠ 0 → t ∈ half S T e := fun t ht => (isHalf_iff S T).1 (h1 t ht)

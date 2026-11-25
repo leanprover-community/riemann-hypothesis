@@ -56,7 +56,6 @@ import Mathlib.RingTheory.PicardGroup
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.SmGL UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.W (Plc)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.V.Hi.JEx
 

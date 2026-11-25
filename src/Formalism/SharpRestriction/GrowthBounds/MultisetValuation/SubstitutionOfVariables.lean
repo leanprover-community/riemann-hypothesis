@@ -114,14 +114,9 @@ theorem th_tOf_const {K' σ τ : Type} [Field K'] (vp : K') (μ : PowerSeries K'
   refine cc_subst_lemma_2 (hL0 i) ?_
   rw [map_mul, h0, mul_zero]
 
-private theorem hasSubst_of_constantCoeff_eq_zero' {κ τ S : Type} [CommRing S] [Finite κ] {a : κ → MvPowerSeries τ S}
-    (h : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) : MvPowerSeries.HasSubst a := by
-  first
-  | exact MvPowerSeries.hasSubst_of_constantCoeff_zero h
-
 theorem th_hasSubst_lX {σ : Type} [Finite σ] : MvPowerSeries.HasSubst
     (fun i : σ => PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries σ (K0 p)) (logF p)) := by
-  refine hasSubst_of_constantCoeff_eq_zero' fun i => ?_
+  refine MvPowerSeries.hasSubst_of_constantCoeff_zero fun i => ?_
   exact cc_subst_lemma_2 (MvPowerSeries.constantCoeff_X i) (constantCoeff_logF_eq_zero p)
 
 private theorem constantCoeff_subst_eq_zero' {κ τ S : Type} [CommRing S] [Finite κ] {a : κ → MvPowerSeries τ S}
@@ -143,7 +138,7 @@ private theorem constantCoeff_subst_eq_zero' {κ τ S : Type} [CommRing S] [Fini
         rw [Finsupp.prod, map_prod]
         exact Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by rw [map_pow, h s, zero_pow hs])
       rw [h0, smul_zero]
-  rw [MvPowerSeries.constantCoeff_subst (hasSubst_of_constantCoeff_eq_zero' h)]
+  rw [MvPowerSeries.constantCoeff_subst (MvPowerSeries.hasSubst_of_constantCoeff_zero h)]
   simp only [key, finsum_zero]
 
 theorem th_inParam_const {σ : Type} [Finite σ] {f : MvPowerSeries σ (K0 p)}
@@ -172,7 +167,7 @@ theorem th_inParam_sum {σ α : Type} [Finite σ] (s : Finset α) (f : α → Mv
 
 theorem th_ren_hasSubst {κ σ R : Type} [Finite κ] [CommRing R] (φ : κ → σ) :
     MvPowerSeries.HasSubst (fun k => (MvPowerSeries.X (φ k) : MvPowerSeries σ R)) :=
-  hasSubst_of_constantCoeff_eq_zero' fun k => MvPowerSeries.constantCoeff_X (φ k)
+  MvPowerSeries.hasSubst_of_constantCoeff_zero fun k => MvPowerSeries.constantCoeff_X (φ k)
 
 theorem th_ren_sub {κ σ R : Type} [Finite κ] [CommRing R] (φ : κ → σ) (f g : MvPowerSeries κ R) :
     ren φ (f - g) = ren φ f - ren φ g := by

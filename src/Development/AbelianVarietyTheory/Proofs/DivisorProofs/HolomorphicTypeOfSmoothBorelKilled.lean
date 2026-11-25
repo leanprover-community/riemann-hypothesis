@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothVectorsSubspaceStableSobolevFormDeriv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmFnAndKilledFnOfHolFn
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjInvol
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegativeFrameDomainProductOpenPreconnectedStable
@@ -355,31 +357,12 @@ lemma uh_inv {H g : Mt n} (hu : IsUnit H.det) (hg : g ∈ Formalism.QuantumDeter
 
 lemma exp_mem {J X : Mt n} (hJ : IsUnit J.det) (hX : X ∈ lieH J) (t : ℝ) :
     NormedSpace.exp (t • X) ∈ Formalism.QuantumDeterminants.UH J := by
-  have hX' : (t • X)ᴴ * J + J * (t • X) = 0 := by
-    have h0 : Xᴴ * J + J * X = 0 := hX
-    rw [conjTranspose_smul, star_trivial, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, h0, smul_zero]
-  generalize t • X = Y at hX'
-  have h1 : Yᴴ = J * (-Y) * J⁻¹ := by
-    rw [mul_neg, ← eq_neg_of_add_eq_zero_left hX', mul_nonsing_inv_cancel_right _ _ hJ]
-  change (NormedSpace.exp Y)ᴴ * J * NormedSpace.exp Y = J
-  rw [← Matrix.exp_conjTranspose, h1, Matrix.exp_conj _ _ ((isUnit_iff_isUnit_det J).2 hJ),
-    nonsing_inv_mul_cancel_right _ _ hJ, mul_assoc, ← Matrix.exp_add_of_commute _ _ (Commute.refl Y).neg_left,
-    neg_add_cancel, NormedSpace.exp_zero, mul_one]
+  intros
+  apply _root_.GlobalTheory.UnitarySmVec.exp_mem <;> assumption
 
 lemma hasDerivAt_exp_entry (X : Mt n) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => NormedSpace.exp (t • X) i j) (X i j) 0 := by
-  open scoped Matrix.Norms.Operator in
-  have h1 := hasDerivAt_exp_smul_const (𝕂 := ℝ) X (0 : ℝ)
-  open scoped Matrix.Norms.Operator in
-  have h2 : HasDerivAt (fun u : ℝ => NormedSpace.exp (u • X) i j) (X i j) 0 := by
-    let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] ℂ :=
-      LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ i j)
-    have := L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) h1
-    have e : NormedSpace.exp ((0 : ℝ) • X) * X = X := by simp
-    have e2 : X i j = (NormedSpace.exp ((0 : ℝ) • X) * X) i j := by rw [e]
-    rw [e2]
-    exact this
-  exact h2
+  apply _root_.GlobalTheory.HolDict.HolTo.hasDerivAt_exp_entry <;> assumption
 
 lemma upT_tri {b : Mt n} (hb : UpT b) : b.BlockTriangular id := fun _ _ h => hb.2 _ _ h
 

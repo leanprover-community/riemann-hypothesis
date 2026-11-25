@@ -449,7 +449,7 @@ theorem hermBox_eq
     VolUHm.hermBox σ v g r c =
       {Y | (fun p => Y p - ctr v r θ c p) ∈ {Y : Fin (r + 1) × Fin (r + 1) → Fv F v ⊗[F] E |
         ∀ p, Y p ∈ pSet σ v r g p}} := by
-  have hgO : sc (E := E) v (g : Fv F v) ∈ OEv (E := E) v := VolUTr.TrW.alg_mem v (VolTU.natCast_memO v g)
+  have hgO : sc (E := E) v (g : Fv F v) ∈ OEv (E := E) v := Formalism.L2.SG.Pf.NcVal.TrW.alg_mem v (VolTU.natCast_memO v g)
   ext Y
   simp only [VolUHm.hermBox, Set.mem_setOf_eq]
   constructor
@@ -461,7 +461,7 @@ theorem hermBox_eq
       exact hup hij
     · subst hij
       simp only [ctr, pSet, lt_irrefl, if_false, if_true, Set.mem_setOf_eq]
-      refine ⟨Submodule.sub_mem _ hO (VolUTr.TrW.mul_mem v (hc.2 i i) hθO), ?_⟩
+      refine ⟨Submodule.sub_mem _ hO (Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v (hc.2 i i) hθO), ?_⟩
       rw [diag_key σ v htr hθ _ _ (hc.1 i i).symm]
       exact hdg rfl
     · have h1 : ¬ i < j := not_lt.2 hij.le
@@ -478,13 +478,13 @@ theorem hermBox_eq
           rw [mul_comm, mul_assoc, ← VolTU.sc_mul, inv_mul_cancel₀ (VolTU.natCast_ne_zero v hg0), VolTU.sc_one,
             mul_one, sub_add_cancel]
         rw [e]
-        exact Submodule.add_mem _ (VolUTr.TrW.mul_mem v hgO hp) (hc.2 i j)
+        exact Submodule.add_mem _ (Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v hgO hp) (hc.2 i j)
       exact ⟨hO, fun _ => hp, fun h => absurd h hij.ne⟩
     · subst hij
       simp only [ctr, pSet, lt_irrefl, if_false, if_true, Set.mem_setOf_eq] at hp
       have hO : Y (i, i) ∈ OEv (E := E) v := by
         rw [← sub_add_cancel (Y (i, i)) (c i i * θ)]
-        exact Submodule.add_mem _ hp.1 (VolUTr.TrW.mul_mem v (hc.2 i i) hθO)
+        exact Submodule.add_mem _ hp.1 (Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v (hc.2 i i) hθO)
       refine ⟨hO, fun h => absurd h (lt_irrefl _), fun _ => ?_⟩
       rw [← diag_key σ v htr hθ _ _ (hc.1 i i).symm]
       exact hp.2
@@ -516,11 +516,11 @@ theorem theta_exists (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x) (hf
   have hst : σ (t : E) = a := by rw [← ht, hinv]
   have hTa : Algebra.trace F E ((a : E) - t) = 0 := by
     apply (algebraMap F E).injective
-    rw [VolUTr.TrW.trace_eq_add σ hinv hnt hfin, map_sub, ht, hst, map_zero]
+    rw [Formalism.L2.SG.Pf.NcVal.TrW.trace_eq_add σ hinv hnt hfin, map_sub, ht, hst, map_zero]
     ring
   have hTb : Algebra.trace F E ((a : E) * ((a : E) - t)) = e := by
     apply (algebraMap F E).injective
-    rw [VolUTr.TrW.trace_eq_add σ hinv hnt hfin, map_mul, map_sub, ht, hst, ← he]
+    rw [Formalism.L2.SG.Pf.NcVal.TrW.trace_eq_add σ hinv hnt hfin, map_mul, map_sub, ht, hst, ← he]
     ring
   set ev := algebraMap F (Fv F v) (e : F) with hevdef
   have hval : Valued.v ev = 1 := by
@@ -535,14 +535,14 @@ theorem theta_exists (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x) (hf
     rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, hval, inv_one]
   have hθ1 : Algebra.trace (Fv F v) (Fv F v ⊗[F] E)
       (sc (E := E) v ev⁻¹ * inclR (F := F) (Fv F v) ((a : E) * ((a : E) - t))) = 1 := by
-    rw [VolUTr.TrW.sc_eq, ← Algebra.smul_def, map_smul, PI.UnitaryGroupMassFormula.LocJacTyp.Sd.trace_inclR, hTb, smul_eq_mul,
+    rw [Formalism.L2.SG.Pf.NcVal.TrW.sc_eq, ← Algebra.smul_def, map_smul, PI.UnitaryGroupMassFormula.LocJacTyp.Sd.trace_inclR, hTb, smul_eq_mul,
       inv_mul_cancel₀ he0]
   refine ⟨sc (E := E) v ev⁻¹ * inclR (F := F) (Fv F v) ((a : E) * ((a : E) - t)),
     inclR (F := F) (Fv F v) ((a : E) - t), ?_, hθ1, ?_, ?_⟩
-  · refine VolUTr.TrW.mul_mem v (VolUTr.TrW.alg_mem v hinvm) ?_
+  · refine Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v (Formalism.L2.SG.Pf.NcVal.TrW.alg_mem v hinvm) ?_
     have e1 : (((a * (a - t) : 𝓞 E)) : E) = (a : E) * ((a : E) - t) := by push_cast; ring
     rw [← e1]
-    exact VolUTr.TrW.inclR_mem' (E := E) v (a * (a - t))
+    exact Formalism.L2.SG.Pf.NcVal.TrW.inclR_mem' (E := E) v (a * (a - t))
   · rw [PI.UnitaryGroupMassFormula.LocJacTyp.Sd.trace_inclR, hTa, map_zero]
   · intro h0
     rw [show inclR (F := F) (Fv F v) ((a : E) * ((a : E) - t)) =
@@ -622,7 +622,7 @@ theorem volUHermBox_holds {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F
     rw [heq] at hm'
     exact hnot (hPmax.isPrime.mem_of_pow_mem 2 hm')
   obtain ⟨θ0, Δ, hθO, hθ, hΔ, hΔ0⟩ := VolV.theta_exists σ v hinv hnt hfin θ t ht e he2 hev
-  have htr := VolUTr.TrW.trace_v v σ hinv hnt hfin
+  have htr := Formalism.L2.SG.Pf.NcVal.TrW.trace_v v σ hinv hnt hfin
   intro c hc
   exact VolV.hermBox_meas σ v _ hfin htr (gAt_prime X v).ne_zero hg hθO hθ hΔ hΔ0 _ hO c hc
 

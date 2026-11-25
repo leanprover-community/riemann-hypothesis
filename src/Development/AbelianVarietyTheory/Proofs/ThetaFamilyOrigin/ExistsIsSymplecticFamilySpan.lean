@@ -55,8 +55,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.LevelExist
 
 theorem exists_isSymplecticFamily_span {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V] [IsArtinian R V]

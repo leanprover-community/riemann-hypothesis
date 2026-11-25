@@ -52,7 +52,6 @@ public import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Module

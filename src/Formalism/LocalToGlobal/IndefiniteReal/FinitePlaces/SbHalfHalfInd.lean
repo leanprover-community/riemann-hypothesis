@@ -16,8 +16,6 @@ open Formalism.IndefR.Datum
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def SplitOrInert (D : D7) : Prop :=

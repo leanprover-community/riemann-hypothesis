@@ -50,10 +50,6 @@ open UpperTheory.V UpperTheory.V.Af.Smo
 open UpperTheory.V.TR (Rinf Lie chart infGL pInf sInf toL lmul oneL invSet CuspSub)
 open scoped SchwartzMap FourierTransform RealInnerProductSpace ContDiff Topology
 
-private theorem scalar_comm' {K : Type} [Field K] {n : ℕ} (y : Kˣ) (g : GL (Fin n) K) :
-    GeneralLinearGroup.scalar (Fin n) y * g = g * GeneralLinearGroup.scalar (Fin n) y :=
-  Units.ext (Matrix.scalar_commute (y : K) (fun _ => Commute.all _ _) g.val).eq
-
 private theorem finsum_top {K : Type} [Field K] {n : ℕ} (O : Subring K) (ϖ : Kˣ) (W : GL (Fin n) K → ℂ)
     (hW : ∀ g, ∀ k ∈ Formalism.UG.GLint (Fin n) O, W (g * k) = W g) (g : GL (Fin n) K) :
     ∑ᶠ c : GL (Fin n) K ⧸ Formalism.UG.GLint (Fin n) O, Formalism.UG.Tj ℂ n O (ϖ : K) n c.out * W (g * c.out) =
@@ -70,7 +66,7 @@ private theorem finsum_top {K : Type} [Field K] {n : ℕ} (O : Subring K) (ϖ : 
     rintro ⟨a, ha, b, hb, e⟩
     refine hc ?_
     have e' : c.out = z * (a * b) := by
-      rw [← mul_assoc, hz, scalar_comm', ← hz]
+      rw [← mul_assoc, hz, GeneralLinearGroup.scalar_commute, ← hz]
       exact Units.ext (by rw [e, hd]; rfl)
     rw [← QuotientGroup.out_eq' c, e']
     exact QuotientGroup.mk_mul_of_mem _ (mul_mem ha hb)

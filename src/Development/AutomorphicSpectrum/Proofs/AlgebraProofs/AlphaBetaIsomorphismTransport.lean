@@ -89,11 +89,9 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsoPowOneLawFormula =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaBetaIsomorphismTransport =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaBetaIsomorphismTransport", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinearTermProduct\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalIsomorphismTransport\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalLinearTermComposition\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsoPowOneLawFormula\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultiplicationByPFactorsFrobenius\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOneSeriesPFormula\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowerSeriesPowPFrobenius\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaBetaIsomorphismTransport", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinearTermProduct\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalIsomorphismTransport\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalLinearTermComposition\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsoPowOneLawFormula\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultiplicationByPFactorsFrobenius\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOneSeriesPFormula\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowerSeriesPowPFrobenius\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ConstantCoeffEv\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -103,48 +101,28 @@ namespace GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha
 
 variable {R : Type} [CommRing R] {d : ℕ}
 
-theorem hs {m n : ℕ} (b : Fin m → Pt R n d) (hb : ∀ j i, constantCoeff (b j i) = 0) :
-    HasSubst (fun p : Fin m × Fin d => b p.1 p.2) :=
-  hasSubst_of_constantCoeff_zero fun p => hb p.1 p.2
-
 theorem cc_ev {m n : ℕ} (b : Fin m → Pt R n d) (hb : ∀ j i, constantCoeff (b j i) = 0) (f : PS R m d)
     (hf : constantCoeff f = 0) : constantCoeff (ev b f) = 0 :=
-  constantCoeff_subst_eq_zero (a := fun p : Fin m × Fin d => b p.1 p.2) (hs b hb) (fun p => hb p.1 p.2) hf
-
-theorem hb1 {n : ℕ} {a : Pt R n d} (ha : ∀ i, constantCoeff (a i) = 0) :
-    ∀ (j : Fin 1) (i : Fin d), constantCoeff ((![a] : Fin 1 → Pt R n d) j i) = 0 := by
-  intro j i
-  rw [Matrix.cons_val_fin_one]
-  exact ha i
-
-theorem hb2 {n : ℕ} {a b : Pt R n d} (ha : ∀ i, constantCoeff (a i) = 0) (hb : ∀ i, constantCoeff (b i) = 0) :
-    ∀ (j : Fin 2) (i : Fin d), constantCoeff ((![a, b] : Fin 2 → Pt R n d) j i) = 0 := by
-  intro j i
-  fin_cases j
-  · exact ha i
-  · exact hb i
+  constantCoeff_subst_eq_zero (a := fun p : Fin m × Fin d => b p.1 p.2) (ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.hasSubst_ev b hb) (fun p => hb p.1 p.2) hf
 
 theorem cc_comp1 {n : ℕ} {φ : Pt R 1 d} {a : Pt R n d} (hφ : ∀ i, constantCoeff (φ i) = 0)
     (ha : ∀ i, constantCoeff (a i) = 0) (i : Fin d) : constantCoeff (comp1 φ a i) = 0 :=
-  cc_ev _ (hb1 ha) _ (hφ i)
-
-theorem cc_pt {n : ℕ} (j : Fin n) (i : Fin d) : constantCoeff (pt R d j i) = 0 := by
-  simp [pt]
+  cc_ev _ (GlobalTheory.GaugeAdjoint.const_one ha) _ (hφ i)
 
 theorem ev_ev {l m n : ℕ} (b : Fin m → Pt R n d) (hb : ∀ j i, constantCoeff (b j i) = 0)
     (a : Fin l → Pt R m d) (ha : ∀ j i, constantCoeff (a j i) = 0) (f : PS R l d) :
     ev b (ev a f) = ev (fun j i => ev b (a j i)) f :=
-  subst_comp_subst_apply (hs a ha) (hs b hb) f
+  subst_comp_subst_apply (ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.hasSubst_ev a ha) (ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.hasSubst_ev b hb) f
 
 theorem ev_pt {m n : ℕ} (b : Fin m → Pt R n d) (hb : ∀ j i, constantCoeff (b j i) = 0) (j : Fin m) (l : Fin d) :
     ev b (pt R d j l) = b j l :=
-  subst_X (hs b hb) (j, l)
+  subst_X (ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.hasSubst_ev b hb) (j, l)
 
 theorem ev_comp1 {m n : ℕ} (b : Fin m → Pt R n d) (hb : ∀ j i, constantCoeff (b j i) = 0) (C : Pt R 1 d)
     (a : Pt R m d) (ha : ∀ i, constantCoeff (a i) = 0) (i : Fin d) :
     ev b (comp1 C a i) = comp1 C (fun l => ev b (a l)) i := by
   change ev b (ev ![a] (C i)) = ev ![fun l => ev b (a l)] (C i)
-  rw [ev_ev b hb _ (hb1 ha)]
+  rw [ev_ev b hb _ (GlobalTheory.GaugeAdjoint.const_one ha)]
   congr 1
   funext j l
   fin_cases j
@@ -154,7 +132,7 @@ theorem composition_assoc_no_constant {n : ℕ} (C A : Pt R 1 d) (a : Pt R n d) 
     (ha : ∀ i, constantCoeff (a i) = 0) : comp1 (comp1 C A) a = comp1 C (comp1 A a) := by
   funext i
   change ev ![a] (ev ![A] (C i)) = ev ![comp1 A a] (C i)
-  rw [ev_ev _ (hb1 ha) _ (hb1 hA)]
+  rw [ev_ev _ (GlobalTheory.GaugeAdjoint.const_one ha) _ (GlobalTheory.GaugeAdjoint.const_one hA)]
   congr 1
   funext j l
   fin_cases j
@@ -172,7 +150,7 @@ theorem comp1_point_power_expand {n : ℕ} (p : ℕ) (a : Pt R n d) (ha : ∀ i,
   funext i
   change ev ![a] ((X ((0 : Fin 1), i) : PS R 1 d) ^ p) = _
   unfold ev
-  rw [← coe_substAlgHom (hs _ (hb1 ha)), map_pow, coe_substAlgHom, subst_X (hs _ (hb1 ha))]
+  rw [← coe_substAlgHom (ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.hasSubst_ev _ (GlobalTheory.GaugeAdjoint.const_one ha)), map_pow, coe_substAlgHom, subst_X (ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.hasSubst_ev _ (GlobalTheory.GaugeAdjoint.const_one ha))]
   rfl
 
 def frobPt (p : ℕ) [Fact p.Prime] [CharP R p] (φ : Pt R 1 d) : Pt R 1 d :=
@@ -211,11 +189,11 @@ def E (A B : Pt R 1 d) (f : PS R 2 d) : PS R 2 d :=
 theorem E_E {A B C D : Pt R 1 d} (hA : ∀ i, constantCoeff (A i) = 0) (hB : ∀ i, constantCoeff (B i) = 0)
     (hC : ∀ i, constantCoeff (C i) = 0) (hD : ∀ i, constantCoeff (D i) = 0) (f : PS R 2 d) :
     E A B (E C D f) = E (comp1 C A) (comp1 D B) f := by
-  have h0 : ∀ i, constantCoeff ((pt R d 0 : Pt R 2 d) i) = 0 := cc_pt 0
-  have h1 : ∀ i, constantCoeff ((pt R d 1 : Pt R 2 d) i) = 0 := cc_pt 1
-  have hb := hb2 (cc_comp1 hA h0) (cc_comp1 hB h1)
+  have h0 : ∀ i, constantCoeff ((pt R d 0 : Pt R 2 d) i) = 0 := GlobalTheory.GaugeAdjoint.const_pt 0
+  have h1 : ∀ i, constantCoeff ((pt R d 1 : Pt R 2 d) i) = 0 := GlobalTheory.GaugeAdjoint.const_pt 1
+  have hb := GlobalTheory.GaugeAdjoint.const_two (cc_comp1 hA h0) (cc_comp1 hB h1)
   unfold E
-  rw [ev_ev _ hb _ (hb2 (cc_comp1 hC h0) (cc_comp1 hD h1))]
+  rw [ev_ev _ hb _ (GlobalTheory.GaugeAdjoint.const_two (cc_comp1 hC h0) (cc_comp1 hD h1))]
   congr 1
   funext j l
   fin_cases j
@@ -234,13 +212,13 @@ theorem E_eq_ptPow (p : ℕ) (f : PS R 2 d) :
     E (ptPow R d p (0 : Fin 1)) (pt R d 0) f = ev (n := 2) ![ptPow R d p 0, ptPow R d 1 1] f := by
   have e : (pt R d 1 : Pt R 2 d) = ptPow R d 1 1 := funext fun i => (pow_one _).symm
   unfold E
-  rw [comp1_point_power_expand p _ (cc_pt 0), germ_comp1_zero_point_left _ (cc_pt 1), e]
+  rw [comp1_point_power_expand p _ (GlobalTheory.GaugeAdjoint.const_pt 0), germ_comp1_zero_point_left _ (GlobalTheory.GaugeAdjoint.const_pt 1), e]
   rfl
 
 theorem E_eq_ptPow' (p : ℕ) (f : PS R 2 d) :
     E (ptPow R d p (0 : Fin 1)) (pt R d 0) f = ev (n := 2) ![ptPow R d p 0, pt R d 1] f := by
   unfold E
-  rw [comp1_point_power_expand p _ (cc_pt 0), germ_comp1_zero_point_left _ (cc_pt 1)]
+  rw [comp1_point_power_expand p _ (GlobalTheory.GaugeAdjoint.const_pt 0), germ_comp1_zero_point_left _ (GlobalTheory.GaugeAdjoint.const_pt 1)]
   rfl
 
 theorem axOne_E {A B : Pt R 1 d} (hA : ∀ i, constantCoeff (A i) = 0) (hB : ∀ i, constantCoeff (B i) = 0)
@@ -253,29 +231,22 @@ theorem bil_E {A B : Pt R 1 d} (hA : ∀ i, constantCoeff (A i) = 0) (hB : ∀ i
 
 theorem bil_E_ptPow {p : ℕ} (hp : 1 ≤ p) {f : PS R 2 d} (hf : AxOne f) :
     bil (E (ptPow R d p (0 : Fin 1)) (pt R d 0) f) p 1 = bil f 1 1 := by
-  have hc : ∀ i, constantCoeff ((pt R d 0 : Pt R 1 d) i) = 0 := cc_pt 0
+  have hc : ∀ i, constantCoeff ((pt R d 0 : Pt R 1 d) i) = 0 := GlobalTheory.GaugeAdjoint.const_pt 0
   rw [E_eq_ptPow]
   exact (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f f _ _ hf hf hc hc).2.2.2.2.2.2 p 1 hp le_rfl
-
-theorem axOne_mul {f g : PS R 2 d} (hf : AxOne f) (hg : AxOne g) : AxOne (f * g) :=
-  (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f g _ _ hf hg (cc_pt 0) (cc_pt 0)).1
-
-theorem bil_mul {f g : PS R 2 d} (hf : AxOne f) (hg : AxOne g) (m : ℕ) :
-    bil (f * g) m 1 = bil f m 1 + bil g m 1 :=
-  (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f g _ _ hf hg (cc_pt 0) (cc_pt 0)).2.1 m
 
 theorem axOne_one : AxOne (1 : PS R 2 d) := ⟨ev_one _, ev_one _⟩
 
 theorem axOne_pow {f : PS R 2 d} (hf : AxOne f) (n : ℕ) : AxOne (f ^ n) := by
   induction n with
   | zero => simpa using axOne_one
-  | succ n ih => rw [pow_succ]; exact axOne_mul ih hf
+  | succ n ih => rw [pow_succ]; exact PositivityTheory.HtPt.Ca.axOne_mul ih hf
 
 theorem bil_pow {f : PS R 2 d} (hf : AxOne f) {m : ℕ} (hm : m ≠ 0) (n : ℕ) :
     bil (f ^ n) m 1 = n • bil f m 1 := by
   induction n with
   | zero => simp [bil_one_eq_zero hm]
-  | succ n ih => rw [pow_succ, bil_mul (axOne_pow hf n) hf, ih, succ_nsmul]
+  | succ n ih => rw [pow_succ, PositivityTheory.HtPt.Ca.bil_mul_left (axOne_pow hf n) hf, ih, succ_nsmul]
 
 section Main
 
@@ -302,7 +273,7 @@ theorem am_rel (h : IsIso B B₂ φ ψ lam) :
   have hp : p ≠ 0 := (Fact.out : p.Prime).ne_zero
   have hp1 : 1 ≤ p := Nat.one_le_iff_ne_zero.2 hp
   have cPw : ∀ i, constantCoeff (ptPow R d p (0 : Fin 1) i) = 0 := cc_ptPow hp 0
-  have cI : ∀ i, constantCoeff ((pt R d 0 : Pt R 1 d) i) = 0 := cc_pt 0
+  have cI : ∀ i, constantCoeff ((pt R d 0 : Pt R 1 d) i) = 0 := GlobalTheory.GaugeAdjoint.const_pt 0
   have cF : ∀ i, constantCoeff (frobPt p φ i) = 0 := cc_frobPt p h.c₁
   have key := _root_.GlobalTheory.CompanionTheory.Ar.Conj.iso_pow_one_law R d O B B₂ φ ψ lam p h
   have r1 : pow1 B₂ p = E (ptPow R d p (0 : Fin 1)) (pt R d 0) g₂ := by rw [e₂, E_eq_ptPow']
@@ -310,7 +281,7 @@ theorem am_rel (h : IsIso B B₂ φ ψ lam) :
       E (ptPow R d p (0 : Fin 1)) (pt R d 0) (E V₂ (pt R d 0) lam) := by
     rw [E_E cPw cI cV₂ cI, composition_identity_point_right, ← eV₂]
     unfold E
-    rw [germ_comp1_zero_point_left _ (cc_pt 1)]
+    rw [germ_comp1_zero_point_left _ (GlobalTheory.GaugeAdjoint.const_pt 1)]
   have r3 : ev (n := 2) ![comp1 φ (pt R d 0), comp1 φ (pt R d 1)] (pow1 B p) =
       E (ptPow R d p (0 : Fin 1)) (pt R d 0) (E (frobPt p φ) φ g) := by
     change E φ φ (pow1 B p) = _
@@ -327,7 +298,7 @@ theorem am_rel (h : IsIso B B₂ φ ψ lam) :
     ext i j
     simp [nsmul_eq_mul]
   beta_reduce at k
-  rw [bil_mul a1 a2, bil_mul (axOne_pow h.ax p) a3, bil_E_ptPow hp1 ax₂, bil_E_ptPow hp1 aL,
+  rw [PositivityTheory.HtPt.Ca.bil_mul_left a1 a2, PositivityTheory.HtPt.Ca.bil_mul_left (axOne_pow h.ax p) a3, bil_E_ptPow hp1 ax₂, bil_E_ptPow hp1 aL,
     bil_E_ptPow hp1 aG, bil_pow h.ax hp, z, zero_add, bil_E cV₂ cI h.ax, bil_E cF h.c₁ ax, lV₂, b₂, b,
     lin_frobPt, lin_pt_eq_one, mul_one] at k
   exact k

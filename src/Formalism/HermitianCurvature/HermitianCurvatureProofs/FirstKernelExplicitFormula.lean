@@ -1966,6 +1966,4 @@ end Formalism.FourierDecayAlt.P.A5x8
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem first_kernel_explicit_formula : Formalism.FourierDecayAlt.A5.SingleBlockFormula := A5x8.first_kernel_formula_proof
-
 end Formalism.FourierDecayAlt.P

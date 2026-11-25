@@ -191,13 +191,13 @@ theorem Pr_E (hZ : CR Z) (h : Hyp Z) (u : Fin (d Z) → k) : Pr Z (E Z u) = E Z 
 theorem D_sub_Pr (hZ : CR Z) (h : Hyp Z) (x : Mat k n) : D Z (x - Pr Z x) = 0 := by rw [D_sub, D_Pr hZ h, sub_self]
 theorem Pr_add (x y : Mat k n) : Pr Z (x + y) = Pr Z x + Pr Z y := by simp [Pr, D_add, mulVec_add, E_add]
 theorem Pr_smul (c : k) (x : Mat k n) : Pr Z (c • x) = c • Pr Z x := by simp [Pr, D_smul, mulVec_smul, E_smul]
-theorem Pr_of_D (_hZ : CR Z) (_h : Hyp Z) {x : Mat k n} (hx : D Z x = 0) : Pr Z x = 0 := by simp [Pr, hx, E]
+theorem Pr_of_D {x : Mat k n} (hx : D Z x = 0) : Pr Z x = 0 := by simp [Pr, hx, E]
 
 theorem piZ_eq_sub (hZ : CR Z) (h : Hyp Z) {x : Mat k n} (hx : x ∈ Bz Z) : piZ Z x = x - Pr Z x := by
   obtain ⟨v, hv⟩ := exists_E Z (sub_pi_mem hZ h hx)
   have hP : Pr Z x = x - piZ Z x := by
     conv_lhs => rw [← sub_add_cancel x (piZ Z x)]
-    rw [Pr_add, ← hv, Pr_E hZ h, Pr_of_D hZ h (D_Z Z (h.pi_mem x)), add_zero, hv]
+    rw [Pr_add, ← hv, Pr_E hZ h, Pr_of_D (D_Z Z (h.pi_mem x)), add_zero, hv]
   rw [hP, sub_sub_cancel]
 
 end AlgPhi2
@@ -220,7 +220,7 @@ def Hb : Sp k n ≃ₜ TT Z × (Fin (d Z) → k) where
   invFun q := (q.1.1.1 + E Z ((G Z)⁻¹ *ᵥ q.2), q.1.2)
   left_inv p := Prod.ext (by show p.1 - Pr Z p.1 + Pr Z p.1 = p.1; exact sub_add_cancel _ _) rfl
   right_inv := fun ⟨⟨⟨y, hy⟩, v⟩, w⟩ => Prod.ext (Prod.ext (Subtype.ext (by
-    show _ - Pr Z _ = y; rw [Pr_add, Pr_of_D hZ h hy, Pr_E hZ h, zero_add, add_sub_cancel_right])) rfl) (by
+    show _ - Pr Z _ = y; rw [Pr_add, Pr_of_D hy, Pr_E hZ h, zero_add, add_sub_cancel_right])) rfl) (by
     show D Z (y + E Z ((G Z)⁻¹ *ᵥ w)) = w
     rw [D_add, show D Z y = 0 from hy, zero_add, D_E, mulVec_mulVec, mul_nonsing_inv _ (Ne.isUnit (G_det hZ h)),
       one_mulVec])
@@ -529,7 +529,7 @@ theorem fourier_transform_scaling (t : kˣ) (f : Sp k n → ℂ) {p : Sp k n} (h
       ((((nabs k t)⁻¹ ^ d Z : ℝ)) : ℂ) * phi0 ψ ν hZ h (fun q => f (sig Z t⁻¹ q)) p := by
   obtain ⟨x, v⟩ := p
   have hDy : D Z (x - Pr Z x) = 0 := D_sub_Pr hZ h x
-  have hPy : Pr Z (x - Pr Z x) = 0 := Pr_of_D hZ h hDy
+  have hPy : Pr Z (x - Pr Z x) = 0 := Pr_of_D hDy
   have hsig : sig Z t (x, v) = (x - Pr Z x + (t : k) • Pr Z x, v) := by
     simp only [sig, piZ_eq_sub hZ h hp.1, sub_sub_cancel]
   rw [hsig, characteristic_function_integral_apply, characteristic_function_integral_apply]

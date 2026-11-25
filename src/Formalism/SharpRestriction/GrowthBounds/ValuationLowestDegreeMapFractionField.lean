@@ -1378,18 +1378,6 @@ theorem li_allDeg (O : Type) [CommRing O] (N n : ℕ) (LL : Letters (Fin N))
     rw [e]
     exact h3
 
-theorem li_sum_inl {R σ τ : Type} [CommRing R] (p : MvPolynomial σ R) :
-    sumAlgEquiv R σ τ (rename Sum.inl p) = MvPolynomial.map C p :=
-  DFunLike.congr_fun (sumAlgEquiv_comp_rename_inl R σ τ) p
-
-theorem li_sum_inr {R σ τ : Type} [CommRing R] (q : MvPolynomial τ R) :
-    sumAlgEquiv R σ τ (rename Sum.inr q) = C q :=
-  DFunLike.congr_fun (sumAlgEquiv_comp_rename_inr R σ τ) q
-
-theorem li_key {R σ τ : Type} [CommRing R] (p : MvPolynomial σ R) (q : MvPolynomial τ R) (m : σ →₀ ℕ) :
-    AddMonoidAlgebra.coeff (sumAlgEquiv R σ τ (rename Sum.inl p * rename Sum.inr q)) m = AddMonoidAlgebra.coeff p m • q := by
-  rw [map_mul, li_sum_inl, li_sum_inr, mul_comm, coeff_C_mul, coeff_map, mul_comm, ← smul_eq_C_mul]
-
 theorem li_ext {R : Type} [CommRing R] {σ τ α β : Type} (u : α → MvPolynomial σ R) (v : β → MvPolynomial τ R)
     (hu : LinearIndependent R u) (hv : LinearIndependent R v) :
     LinearIndependent R
@@ -1412,10 +1400,6 @@ theorem li_ext {R : Type} [CommRing R] {σ τ α β : Type} (u : α → MvPolyno
     (LinearMap.ker_eq_bot.mpr e.injective)
   change LinearIndependent R (fun i : α × β => e (TensorProduct.tmul R (u i.1) (v i.2))) at h
   simpa only [hprod] using h
-
-open Formalism.MainNotions.SelectionLemmas in
-theorem li_segE_injective {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ) : Function.Injective (segE F j) :=
-  fun _ _ h => (OrderIso.injective _) (Subtype.ext h)
 
 
 open Formalism.MainNotions.SelectionLemmas in

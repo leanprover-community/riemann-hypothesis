@@ -61,7 +61,6 @@ open UpperTheory.V.HV (Coef)
 open UpperTheory.V.Z.Mult (Cp)
 open UpperTheory.V.Z.J.D
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 
 section Alg

@@ -549,10 +549,6 @@ theorem exists_nsmul_mem {K : Type} [Field K] [NumberField K] (I : FractionalIde
   rw [← map_natCast (algebraMap (𝓞 K) K), ← hzd, map_mul, map_mul, hb, Algebra.smul_def]
   ring
 
-private theorem selfDual_full (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (hΛ : IsSelfDualC V Λ) : Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 
 theorem nsmul_tmul (N : ℕ) (α : AF D.host.F) (x : D.host.E) :
     (N • (α ⊗ₜ[D.host.F] x) : AE D) = α ⊗ₜ[D.host.F] ((N : D.host.E) * x) := by
@@ -622,7 +618,7 @@ theorem exists_nsmul_latBig_mem_latRow : OnStd fun {D} _ _ {sc} {G} _ _ => ∀ i
   rw [mul_smul]
   refine ⟨nsmul_mem k2 N₂, fun e he => ?_⟩
   have hprops := GlobalTheory.IdemSumIdeal.isIdemSum_props e G.pl.W0 (fun _ => 0) he
-  exact smul_mem_hatMx (selfDual_full _ _ hsd.1) (selfDual_full _ _ hsd.2) G.modul hprops.1 hprops.2.1
+  exact smul_mem_hatMx (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice _ _ hsd.1) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice _ _ hsd.2) G.modul hprops.1 hprops.2.1
     (nsmul_mem_hatMx hsd.1 h₂ _ k2)
 
 end GlobalTheory.BigRow

@@ -84,18 +84,6 @@ theorem orderAtLeastLocus_subset_preimage_of_isBlowupAlongIdealSheaf (hgeom : Or
     have h3 : (c : ℕ∞) ≤ orderAt J' x' := (mem_orderAtLeastLocus_iff J' c x').1 hx'
     exact le_trans h3 (le_trans le_add_self h2)
 
-private theorem transitionMap_refl_apply {X : Scheme.{u}} (s : SequenceOfBlowups X) {i : ℕ} (h : i ≤ i)
-    (x : ↥(s.schemeAt i)) : s.transitionMap h x = x :=
-  congrFun (congrArg (fun f : s.schemeAt i ⟶ s.schemeAt i => (f : ↥(s.schemeAt i) → ↥(s.schemeAt i)))
-    (s.transitionMap_self h)) x
-
-private theorem transitionMap_comp_apply {X : Scheme.{u}} (s : SequenceOfBlowups X) {i j l : ℕ} (hij : i ≤ j)
-    (hjl : j ≤ l) (x : ↥(s.schemeAt l)) :
-    s.transitionMap hij (s.transitionMap hjl x) = s.transitionMap (hij.trans hjl) x := by
-  have h := s.transitionMap_trans hij hjl
-  calc s.transitionMap hij (s.transitionMap hjl x) = (s.transitionMap hjl ≫ s.transitionMap hij) x := rfl
-    _ = s.transitionMap (hij.trans hjl) x := by rw [h]
-
 namespace MarkedSequenceOfBlowups
 
 theorem orderAtLeastLocus_succ_subset_preimage_blowupMorphism (hgeom : OrderAtComapOffExceptionalLocus.{u})
@@ -119,7 +107,7 @@ theorem orderAtLeastLocus_subset_preimage_transitionMap (hgeom : OrderAtComapOff
   induction j, hij using Nat.le_induction with
   | base =>
       intro _ x hx
-      rw [Set.mem_preimage, transitionMap_refl_apply]
+      rw [Set.mem_preimage, s.toSequenceOfBlowups.transitionMap_self]
       exact hx
   | succ j hij ih =>
       intro hj1
@@ -131,7 +119,8 @@ theorem orderAtLeastLocus_subset_preimage_transitionMap (hgeom : OrderAtComapOff
       have h1 : s.toSequenceOfBlowups.transitionMapSucc j x ∈ orderAtLeastLocus (s.ideal j) c := hstep hx
       have h2 : s.toSequenceOfBlowups.transitionMap hij (s.toSequenceOfBlowups.transitionMapSucc j x) ∈
           orderAtLeastLocus (s.ideal i) c := hih h1
-      rw [s.toSequenceOfBlowups.blowupMorphism_eq_transitionMap j, transitionMap_comp_apply] at h2
+      rw [s.toSequenceOfBlowups.blowupMorphism_eq_transitionMap j, ← Scheme.Hom.comp_apply,
+        s.toSequenceOfBlowups.transitionMap_trans] at h2
       exact h2
 
 end MarkedSequenceOfBlowups

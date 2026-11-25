@@ -352,6 +352,16 @@ theorem MhlUnif.nonempty {Pb : Pl E} (hsp : conjPrime₂ Pb ≠ Pb) : Nonempty (
   obtain ⟨π, h1, h2, h3, c, h4, h5⟩ := mhl_exists_unif (Q := Pb) (P := conjPrime₂ Pb) (Ne.symm hsp)
   exact ⟨⟨π, c, h1, h2, h3, h4, h5⟩⟩
 
+private theorem bc_mul_rll_put_of_not_isOver {n : ℕ} [NeZero n] {v : HeightOneSpectrum (𝓞 F)}
+    (X : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))
+    (g : GL (Fin n) (E ⊗[F] v.adicCompletion F)) {Q : Pl E} (hQ : ¬ IsOver v Q) :
+    bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) (X * rll_put n v g) =
+      bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) X := by
+  have hne : Formalism.L2.DIV.underPl F Q ≠ v := by
+    rintro rfl
+    exact hQ rfl
+  rw [map_mul, rll_put_ne n v _ hne, mul_one]
+
 variable (hc : Formalism.BasicNotions.CMData F E) {n : ℕ} [NeZero n] {v : HeightOneSpectrum (𝓞 F)} {Pb : Pl E} (U : MhlUnif Pb) (k : ℕ)
 
 theorem mhlA_inv (U : MhlUnif Pb) :
@@ -446,16 +456,13 @@ theorem mhl_smul_locP_P (hov : IsOver v Pb) (x : GL (Fin n) (E ⊗[F] Formalism.
   · rw [inv_one, map_one, one_mul] at hzi
     exact mhl_intAt_mul_int p hzi
 
-theorem localization_globalLattice_mul_of_not_isOver (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) {Q : Pl E} (hQ : ¬ IsOver v Q) :
+theorem localization_globalLattice_mul_of_not_isOver
+    (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) {Q : Pl E} (hQ : ¬ IsOver v Q) :
     localization₂ Q.asIdeal (Formalism.UG.CS.globLat (x * ((mhlEta hc n v U.hπ0 k : UAd hc n) :
-      GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))) (stdLat E n)) = localization₂ Q.asIdeal (Formalism.UG.CS.globLat x (stdLat E n)) := by
-  have hne : Formalism.L2.DIV.underPl F Q ≠ v := by
-    rintro rfl
-    exact hQ rfl
-  refine updn_mem_loc (v := Formalism.L2.DIV.underPl F Q) rfl ?_
-  rw [map_mul]
-  show bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) x * bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) (rll_put n v _) = _
-  rw [rll_put_ne n v _ hne, mul_one]
+        GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))) (stdLat E n)) =
+      localization₂ Q.asIdeal (Formalism.UG.CS.globLat x (stdLat E n)) :=
+  updn_mem_loc (v := Formalism.L2.DIV.underPl F Q) rfl
+    (bc_mul_rll_put_of_not_isOver x _ hQ)
 
 end MhlNbr
 
@@ -500,6 +507,33 @@ theorem mhlPhi_surj (x : UAd hc n) (Pb : Pl E) {k : ℕ} (hk : k ≤ n) :
   simp only [decoRaw, if_pos hloc, dif_pos i.2] at h1
   exact h1
 
+theorem mhl_ker_phi (hov : IsOver v Pb) (hov2 : ∀ Q : Pl E, IsOver v Q → Q = Pb ∨ Q = conjPrime₂ Pb)
+    (hk : k ≤ n) (X : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) :
+    LinearMap.ker (mhlPhi X Pb hk) =
+      (Formalism.UG.CS.globLat
+          (X * ((mhlEta hc n v U.hπ0 k : UAd hc n) : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)))
+          (stdLat E n) ⊓ Formalism.UG.CS.globLat X (stdLat E n)).comap
+        (Formalism.UG.CS.globLat X (stdLat E n)).subtype := by
+  ext ⟨z, hz⟩
+  rw [LinearMap.mem_ker, Submodule.mem_comap, Submodule.subtype_apply, Submodule.mem_inf]
+  constructor
+  · intro h0
+    refine ⟨?_, hz⟩
+    rw [← Formalism.L2.DIV.lc_iInf_locP (Formalism.UG.CS.globLat
+      (X * ((mhlEta hc n v U.hπ0 k : UAd hc n) : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)))
+      (stdLat E n)), Submodule.mem_iInf]
+    intro Q
+    by_cases hQ : IsOver v Q
+    · rcases hov2 Q hQ with rfl | rfl
+      · refine (mhl_locP_Pb hc U k hov X z).2 ⟨le_locP _ _ hz, fun i hi => ?_⟩
+        exact congrFun h0 ⟨i.1, hi⟩
+      · exact mem_localization_globalLattice_mul_of_mem hc U k hov X (le_locP _ _ hz)
+    · rw [localization_globalLattice_mul_of_not_isOver hc U k X hQ]
+      exact le_locP _ _ hz
+  · rintro ⟨h1, -⟩
+    funext i
+    exact ((mhl_locP_Pb hc U k hov X z).1 (le_locP _ _ h1)).2 ⟨i.1, lt_of_lt_of_le i.2 hk⟩ i.2
+
 theorem mhl_isHeckeNbr (hov : IsOver v Pb) (hov2 : ∀ Q : Pl E, IsOver v Q → Q = Pb ∨ Q = conjPrime₂ Pb) (hk : k ≤ n)
     (x : UAd hc n) :
     IsHeckeNbr (conjPrime₂ Pb).asIdeal k (Formalism.UG.CS.globLat (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (stdLat E n))
@@ -532,25 +566,7 @@ theorem mhl_isHeckeNbr (hov : IsOver v Pb) (hov2 : ∀ Q : Pl E, IsOver v Q → 
       · exact mem_localization_globalLattice_mul_of_mem hc U k hov X (Submodule.smul_mem _ p (le_locP _ _ hz))
     · rw [localization_globalLattice_mul_of_not_isOver hc U k X hQ]
       exact Submodule.smul_mem _ p (le_locP _ _ hz)
-  · have hker : LinearMap.ker (mhlPhi X Pb hk) = (N' ⊓ N).comap N.subtype := by
-      ext ⟨z, hz⟩
-      rw [LinearMap.mem_ker, Submodule.mem_comap, Submodule.subtype_apply, Submodule.mem_inf]
-      constructor
-      · intro h0
-        refine ⟨?_, hz⟩
-        rw [← Formalism.L2.DIV.lc_iInf_locP N', Submodule.mem_iInf]
-        intro Q
-        by_cases hQ : IsOver v Q
-        · rcases hov2 Q hQ with rfl | rfl
-          · refine (mhl_locP_Pb hc U k hov X z).2 ⟨le_locP _ _ hz, fun i hi => ?_⟩
-            exact congrFun h0 ⟨i.1, hi⟩
-          · exact mem_localization_globalLattice_mul_of_mem hc U k hov X (le_locP _ _ hz)
-        · rw [localization_globalLattice_mul_of_not_isOver hc U k X hQ]
-          exact le_locP _ _ hz
-      · rintro ⟨h1, -⟩
-        funext i
-        exact ((mhl_locP_Pb hc U k hov X z).1 (le_locP _ _ h1)).2 ⟨i.1, lt_of_lt_of_le i.2 hk⟩ i.2
-    exact ⟨(Submodule.quotEquivOfEq _ _ hker.symm).trans
+  · exact ⟨(Submodule.quotEquivOfEq _ _ (mhl_ker_phi hc U k hov hov2 hk X).symm).trans
       ((mhlPhi X Pb hk).quotKerEquivOfSurjective (mhlPhi_surj hc x Pb hk))⟩
 
 theorem mhl_mem_heckeSet (ST SG : Finset (Pl E)) (hov : IsOver v Pb)
@@ -560,16 +576,13 @@ theorem mhl_mem_heckeSet (ST SG : Finset (Pl E)) (hov : IsOver v Pb)
       (decoOf ST SG (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))).heckeSet (conjPrime₂ Pb).asIdeal k := by
   have e1 := rlc_decoOf_val hc n ST SG (x * mhlEta hc n v U.hπ0 k).2
   have e2 := rlc_decoOf_val hc n ST SG x.2
-  have hoff : ∀ Q : Pl E, ¬ IsOver v Q →
+  have hoff (Q : Pl E) (hQ : ¬ IsOver v Q) :
       bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) ((x * mhlEta hc n v U.hπ0 k : UAd hc n) :
-        GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) = bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) := by
-    intro Q hQ
-    have hne : Formalism.L2.DIV.underPl F Q ≠ v := by
-      rintro rfl
-      exact hQ rfl
-    rw [Subgroup.coe_mul, map_mul]
-    show _ * bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) (rll_put n v _) = _
-    rw [rll_put_ne n v _ hne, mul_one]
+        GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) =
+      bc (prV (E := E) (Formalism.L2.DIV.underPl F Q))
+        (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) := by
+    rw [Subgroup.coe_mul]
+    exact bc_mul_rll_put_of_not_isOver _ _ hQ
   refine ⟨?_, ?_, ?_⟩
   · rw [e1, e2]
     show IsHeckeNbr _ k (Formalism.UG.CS.globLat _ (stdLat E n)) (Formalism.UG.CS.globLat _ (stdLat E n))
@@ -657,53 +670,24 @@ section MhlSurj2
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 variable (hc : Formalism.BasicNotions.CMData F E) {n : ℕ} [NeZero n] {v : HeightOneSpectrum (𝓞 F)} {Pb : Pl E} (U : MhlUnif Pb) (k : ℕ)
 
-theorem mhl_ker_phi (hov : IsOver v Pb) (hov2 : ∀ Q : Pl E, IsOver v Q → Q = Pb ∨ Q = conjPrime₂ Pb) (hk : k ≤ n)
-    (X : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) :
-    LinearMap.ker (mhlPhi X Pb hk) =
-      (Formalism.UG.CS.globLat (X * ((mhlEta hc n v U.hπ0 k : UAd hc n) : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))) (stdLat E n) ⊓
-        Formalism.UG.CS.globLat X (stdLat E n)).comap (Formalism.UG.CS.globLat X (stdLat E n)).subtype := by
-  ext ⟨z, hz⟩
-  rw [LinearMap.mem_ker, Submodule.mem_comap, Submodule.subtype_apply, Submodule.mem_inf]
-  constructor
-  · intro h0
-    refine ⟨?_, hz⟩
-    rw [← Formalism.L2.DIV.lc_iInf_locP (Formalism.UG.CS.globLat (X * ((mhlEta hc n v U.hπ0 k : UAd hc n) :
-      GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))) (stdLat E n)), Submodule.mem_iInf]
-    intro Q
-    by_cases hQ : IsOver v Q
-    · rcases hov2 Q hQ with rfl | rfl
-      · refine (mhl_locP_Pb hc U k hov X z).2 ⟨le_locP _ _ hz, fun i hi => ?_⟩
-        exact congrFun h0 ⟨i.1, hi⟩
-      · exact mem_localization_globalLattice_mul_of_mem hc U k hov X (le_locP _ _ hz)
-    · rw [localization_globalLattice_mul_of_not_isOver hc U k X hQ]
-      exact le_locP _ _ hz
-  · rintro ⟨h1, -⟩
-    funext i
-    exact ((mhl_locP_Pb hc U k hov X z).1 (le_locP _ _ h1)).2 ⟨i.1, lt_of_lt_of_le i.2 hk⟩ i.2
-
 theorem mhl_decoRaw_loc (ST SG : Finset (Pl E)) (hST : ∀ Q ∈ ST, ¬ IsOver v Q) (hSG : ∀ Q ∈ SG, ¬ IsOver v Q)
     (X : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) {k' : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)}
     (hk' : k' ∈ St (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))) :
     decoRaw ST SG (X * rll_put n v (bc (prV (E := E) v) k'⁻¹)) = decoRaw ST SG X := by
   have hv : bc (prV (E := E) v) (X * rll_put n v (bc (prV (E := E) v) k'⁻¹)) = bc (prV (E := E) v) (X * k'⁻¹) := by
     rw [map_mul, rll_put_self, ← map_mul]
-  have hoff : ∀ Q : Pl E, ¬ IsOver v Q →
-      bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) (X * rll_put n v (bc (prV (E := E) v) k'⁻¹)) =
-        bc (prV (E := E) (Formalism.L2.DIV.underPl F Q)) X := by
-    intro Q hQ
-    have hne : Formalism.L2.DIV.underPl F Q ≠ v := by
-      rintro rfl
-      exact hQ rfl
-    rw [map_mul, rll_put_ne n v _ hne, mul_one]
   ext1
   · refine Formalism.L2.DIV.eq_of_forall_localized_eq fun Q => ?_
     by_cases hQ : IsOver v Q
     · exact (updn_mem_loc hQ hv).trans (by rw [globLat_mul_St n X hk']; rfl)
-    · exact updn_mem_loc (v := Formalism.L2.DIV.underPl F Q) rfl (hoff Q hQ)
+    · exact updn_mem_loc (v := Formalism.L2.DIV.underPl F Q) rfl
+        (bc_mul_rll_put_of_not_isOver X _ hQ)
   · funext Q
-    exact updn_f_loc ST SG (v := Formalism.L2.DIV.underPl F Q.1) Q rfl (hoff Q.1 (hST Q.1 Q.2))
+    exact updn_f_loc ST SG (v := Formalism.L2.DIV.underPl F Q.1) Q rfl
+      (bc_mul_rll_put_of_not_isOver X _ (hST Q.1 Q.2))
   · funext w
-    exact updn_be_loc ST SG (v := Formalism.L2.DIV.underPl F w.1) w rfl (hoff w.1 (hSG w.1 w.2))
+    exact updn_be_loc ST SG (v := Formalism.L2.DIV.underPl F w.1) w rfl
+      (bc_mul_rll_put_of_not_isOver X _ (hSG w.1 w.2))
 
 theorem mhl_loc_mem_St {k' : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)} (hk' : k' ∈ St (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))) :
     rll_put n v (bc (prV (E := E) v) k') ∈ St (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) := by

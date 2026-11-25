@@ -443,25 +443,6 @@ def cubeLowerProj (A : Cube.{v} ι R) : cubeComplex A ⟶ cubeComplex (Cube.lowe
     rw [cubeComplex_d, cubeComplex_d]
     exact ModuleCat.hom_ext (LinearMap.ext fun x => (Cube.termLower_d A x).symm)
 
-theorem isIso_cubeLowerProj (he : Function.Surjective e) (A : Cube.{v} ι R) :
-    IsIso (cubeLowerProj (e := e) A) := by
-  have : ∀ p, IsIso ((cubeLowerProj (e := e) A).f p) := fun p => by
-    rw [ConcreteCategory.isIso_iff_bijective]
-    change Function.Bijective (Cube.termLower (e := e) A p)
-    have hb : Function.Bijective (fun s : {s : Finset κ // s.card = p} =>
-        (⟨s.1.map e.toEmbedding, (Finset.card_map _).trans s.2⟩ : {t : Finset ι // t.card = p})) := by
-      refine ⟨fun s s' h => Subtype.ext (Finset.map_injective _ (congrArg Subtype.val h)), ?_⟩
-      rintro ⟨t, ht⟩
-      have h : (t.preimage e e.injective.injOn).map e.toEmbedding = t := by
-        ext j
-        obtain ⟨k, rfl⟩ := he j
-        simp
-      exact ⟨⟨t.preimage e e.injective.injOn, by rw [← ht, ← h, Finset.card_map, h]⟩,
-        Subtype.ext h⟩
-    exact (Equiv.piCongrLeft (fun t : {t : Finset ι // t.card = p} => A.obj t.1)
-      (Equiv.ofBijective _ hb)).symm.bijective
-  exact HomologicalComplex.Hom.isIso_of_components _
-
 
 variable (e i) in
 noncomputable def cubeInclX (A : Cube.{v} ι R) (p : ℕ) :
@@ -682,11 +663,6 @@ end Corollaries
 section DegreeZero
 
 variable {ι : Type} [LinearOrder ι] {R : Type u} [Ring R]
-
-theorem cubeComplex_acyclic_of_bijective (A : Cube.{v} ι R) (i : ι)
-    (hA : ∀ s : Finset ι, i ∉ s → Function.Bijective (Cube.res A (Finset.subset_insert i s))) :
-    (cubeComplex A).Acyclic :=
-  cubeComplex_exactAt_of_bijective A i hA
 
 end DegreeZero
 

@@ -1,51 +1,8 @@
 module
 
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MeanSquareHypWIff
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -57,13 +14,10 @@ namespace Formalism.HermitianLattices.Ext.LogarithmicIntegralBounds
 
 namespace Pairs
 
-private lemma factorization_prime_pow_self (p k : ℕ) (hp : p.Prime) : (p ^ k).factorization p = k := by
-  simp [Nat.factorization_pow, hp.factorization_self]
-
 theorem soutPart_prime_pow (m₀ p k : ℕ) (hp : p.Prime) (hk : k ≠ 0) :
     soutPart m₀ (p ^ k) = if Odd k ∧ ¬ p ∣ m₀ then p else 1 := by
   unfold soutPart
-  rw [Nat.primeFactors_prime_pow hk hp, Finset.filter_singleton, factorization_prime_pow_self p k hp]
+  rw [Nat.primeFactors_prime_pow hk hp, Finset.filter_singleton, Nat.factorization_pow_self hp]
   split_ifs <;> simp
 
 theorem soutPart_mul_of_coprime (m₀ a b : ℕ) (h : a.Coprime b) :
@@ -94,7 +48,7 @@ theorem primePow_data {n : ℕ} (h : IsPrimePow n) :
   obtain ⟨p, k, hp, hk, rfl⟩ := (isPrimePow_nat_iff _).1 h
   have hm : (p ^ k).minFac = p := hp.pow_minFac hk.ne'
   refine ⟨p, k, hp, hk.ne', rfl, hm, ?_⟩
-  rw [hm, factorization_prime_pow_self p k hp]
+  rw [hm, Nat.factorization_pow_self hp]
 
 def tPart (m₀ n : ℕ) : ℕ :=
   if Even (n.factorization n.minFac) ∨ n.minFac ∣ m₀ then 1 else n.minFac
@@ -112,7 +66,7 @@ private lemma tPart_prime_pow_eq_soutPart (m₀ p k : ℕ) (hp : p.Prime) (hk : 
     tPart m₀ (p ^ k) = soutPart m₀ (p ^ k) := by
   rw [soutPart_prime_pow m₀ p k hp hk]
   unfold tPart
-  rw [hp.pow_minFac hk, factorization_prime_pow_self p k hp]
+  rw [hp.pow_minFac hk, Nat.factorization_pow_self hp]
   rcases Nat.even_or_odd k with h1 | h1
   · have h1' : ¬ Odd k := Nat.not_odd_iff_even.2 h1
     simp [h1, h1']

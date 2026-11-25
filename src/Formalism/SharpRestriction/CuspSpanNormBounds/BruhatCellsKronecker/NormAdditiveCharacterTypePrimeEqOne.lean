@@ -53,8 +53,6 @@ namespace Formalism.MainNotions.BridgeLemma
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Schur
 
 theorem Jm_allPos (k : ℕ) : Formalism.REAL.Jm (allPos k) = 1 := by

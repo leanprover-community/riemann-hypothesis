@@ -61,7 +61,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.BC
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 theorem gelfand_value_fin_zero {k : ℕ} (hk : k = 0) (x y : Fin k → ℂ) (m : ℕ) : GlobalTheory.Dec.gelfVal x m = GlobalTheory.Dec.gelfVal y m := by
   subst hk; simp [GlobalTheory.Dec.gelfVal]

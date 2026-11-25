@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmFnAndKilledFnOfHolFn
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultiplicityMapExtremalVectorHolomorphicType
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegativeFrameDomainProductOpenPreconnectedStable
@@ -85,26 +86,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.HolDict
 
 theorem flowInv_herm {n : ℕ} {Hm x₀ : Mt n} {q : ℕ} (h : OrthFr Hm q x₀) : Hmᴴ = Hm := by
-  obtain ⟨-, hD⟩ := h
-  have hdet : x₀.det ≠ 0 := by
-    intro h0
-    have hd := congrArg Matrix.det hD
-    rw [det_mul, det_mul, h0, mul_zero, det_diagonal] at hd
-    refine (Finset.prod_ne_zero_iff.mpr fun a _ => ?_) hd.symm
-    unfold ReciprocityTheory.ChartRestriction.G.FD.sgn
-    split_ifs <;> norm_num
-  have hu : IsUnit x₀ := (Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hdet)
-  have huH : IsUnit x₀ᴴ := by
-    refine (Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr ?_)
-    rw [det_conjTranspose]
-    exact (star_ne_zero).mpr hdet
-  have hself : (x₀ᴴ * Hm * x₀)ᴴ = x₀ᴴ * Hm * x₀ := by
-    rw [hD, diagonal_conjTranspose]
-    congr 1
-    funext a
-    simp [Complex.conj_ofReal]
-  rw [conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose, ← Matrix.mul_assoc] at hself
-  exact huH.mul_right_injective (hu.mul_left_injective hself)
+  apply _root_.GlobalTheory.HolDict.HolTo.herm_of_orth <;> assumption
 
 theorem flowInv_sq {n : ℕ} {Hm : Mt n} {e : Fin n → ℂ} (he : star e ⬝ᵥ Hm.mulVec e = 0) :
     vecMulVec e (star e ᵥ* Hm) * vecMulVec e (star e ᵥ* Hm) = 0 := by

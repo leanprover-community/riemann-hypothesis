@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenSubgroupsSchroedingerFixContinuousChar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsContOnOfLocal
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNhdsTransportedActionFinitePointPreimage
@@ -156,25 +157,7 @@ def fixTrans {M : Type} [AddCommGroup M] (g : M → ℂ) : AddSubgroup M where
 
 theorem isOpen_fixTrans {M : Type} [AddCommGroup M] [TopologicalSpace M] [IsTopologicalAddGroup M] {g : M → ℂ}
     (h1 : IsLocallyConstant g) (h2 : HasCompactSupport g) : IsOpen (fixTrans g : Set M) := by
-  have h : ∀ᶠ u in nhds (0 : M), ∀ x ∈ tsupport g, g (x + u) = g x ∧ g (x - u) = g x := by
-    apply h2.isCompact.eventually_forall_of_forall_eventually
-    intro x _
-    have a1 := (h1.comp_continuous (show Continuous fun z : M × M => z.2 + z.1 by fun_prop)).eventually_eq (0, x)
-    have a2 := (h1.comp_continuous (show Continuous fun z : M × M => z.2 - z.1 by fun_prop)).eventually_eq (0, x)
-    have a3 := (h1.comp_continuous (show Continuous fun z : M × M => z.2 by fun_prop)).eventually_eq (0, x)
-    filter_upwards [a1, a2, a3] with z b1 b2 b3
-    simp only [Function.comp, add_zero, sub_zero] at b1 b2 b3
-    exact ⟨b1.trans b3.symm, b2.trans b3.symm⟩
-  have key : ∀ᶠ u in nhds (0 : M), ∀ x, g (x + u) = g x := by
-    filter_upwards [h] with u hu x
-    by_cases hx : x ∈ tsupport g
-    · exact (hu x hx).1
-    · by_cases hx' : x + u ∈ tsupport g
-      · have := (hu _ hx').2
-        rw [add_sub_cancel_right] at this
-        exact this.symm
-      · rw [image_eq_zero_of_notMem_tsupport hx, image_eq_zero_of_notMem_tsupport hx']
-  exact AddSubgroup.isOpen_of_mem_nhds _ key
+  apply _root_.GlobalTheory.SchrFixFin.isOpen_transFix <;> assumption
 
 theorem exists_dot_ker {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
     (χ : AddChar K ℂ) (hχ : IsLocallyConstant χ) (κ : Type) [Fintype κ] [NonarchimedeanAddGroup (κ → K)]
@@ -210,23 +193,7 @@ theorem adeleJoin_zero_apply {κ : Type} (y : κ → FiniteAdeleRing (𝓞 F) F)
 theorem dotProduct_adeleJoin_zero {κ : Type} [Fintype κ] (v : κ → AdeleRing (𝓞 F) F)
     (y : κ → FiniteAdeleRing (𝓞 F) F) :
     v ⬝ᵥ GlobalTheory.WeilCont.adeleJoin F 0 y = ((0 : InfiniteAdeleRing F), (fun i => (v i).2) ⬝ᵥ y) := by
-  let q1 : AdeleRing (𝓞 F) F →+* InfiniteAdeleRing F := RingHom.fst _ _
-  let q2 : AdeleRing (𝓞 F) F →+* FiniteAdeleRing (𝓞 F) F := RingHom.snd _ _
-  have e1 : ∀ s : AdeleRing (𝓞 F) F, s.1 = q1 s := fun _ => rfl
-  have e2 : ∀ s : AdeleRing (𝓞 F) F, s.2 = q2 s := fun _ => rfl
-  refine Prod.ext ?_ ?_
-  · set_option synthInstance.maxHeartbeats 100000 in
-    rw [e1, dotProduct, map_sum]
-    change ∑ i, q1 (v i * GlobalTheory.WeilCont.adeleJoin F 0 y i) = 0
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [map_mul, adeleJoin_zero_apply]
-    exact mul_zero _
-  · set_option synthInstance.maxHeartbeats 100000 in
-    rw [e2, dotProduct, map_sum]
-    change ∑ i, q2 (v i * GlobalTheory.WeilCont.adeleJoin F 0 y i) = ∑ i, (v i).2 * y i
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [map_mul, adeleJoin_zero_apply]
-    rfl
+  apply _root_.GlobalTheory.SchrFixFin.dot_adeleJoin_zero <;> assumption
 
 theorem exists_fix_pure [Invertible (2 : AdeleRing (𝓞 F) F)] (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) (hψ : Continuous ψ)
     (κ : Type) [Fintype κ] (f : SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ)

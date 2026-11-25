@@ -74,8 +74,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.Toroidal GlobalTheory.LocM G
 open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Desc.GaussPt
 
 section Top
@@ -559,8 +557,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.Toroidal GlobalTheory.LocM G
 open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Desc.GaussComp
 
 theorem exists_indep {T M I : Type} [CommRing T] [IsDomain T] [IsPrincipalIdealRing T] [AddCommGroup M] [Module T M]
@@ -885,8 +881,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef
 open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
-
-set_option autoImplicit false
 
 namespace GlobalTheory.Desc.GaussPt
 

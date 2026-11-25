@@ -58,7 +58,6 @@ open scoped TensorProduct
 
 
 namespace GlobalTheory.TwInputs
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 structure GalSideAlt (D : D7) : Type 1 where
   wd : GlobalTheory.RowTie.WDTie D.nd D.naut

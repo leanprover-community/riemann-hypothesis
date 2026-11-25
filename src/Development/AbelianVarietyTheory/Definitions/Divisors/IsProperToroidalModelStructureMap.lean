@@ -371,48 +371,6 @@ variable {Y : Model Xo c β} (T : TorModel Y)
 
 end TorModel
 
-theorem smooth_of_surjective (Y : Model Xo c β) (h : Function.Surjective Y.jQ) :
-    SmoothOfRelativeDimension D.dim (genStr Y) := by
-  have := Y.jQ_open
-  have : Surjective Y.jQ := ⟨h⟩
-  have : IsIso Y.jQ := isIso_of_isOpenImmersion_of_opensRange_eq_top _ (by
-    ext x; simpa using h x)
-  have := Xo.smooth
-  have e : genStr Y = inv Y.jQ ≫ pullback.snd _ _ := by rw [IsIso.eq_inv_comp, Y.jQ_over]
-  have hs : SmoothOfRelativeDimension D.dim
-      (pullback.snd Xo.s (spMap (IntermediateField.inclusion c.le).toRingHom)) :=
-    (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback (IsPullback.of_hasPullback _ _) Xo.smooth
-  rw [e]
-  have := smoothOfRelativeDimension_comp 0 D.dim (inv Y.jQ)
-    (pullback.snd Xo.s (spMap (IntermediateField.inclusion c.le).toRingHom))
-  rwa [Nat.zero_add] at this
-
-def TorModel.ofNoBoundary (Y : Model Xo c β) (h : Function.Surjective Y.jQ) : TorModel Y where
-  Z := Y
-  b := 𝟙 _
-  b_s := Category.id_comp _
-  j_b := Category.comp_id _
-  pull := ObjComp.sabMapId Y.t
-  pull_univ T g₁ g₂ h₁ h₂ := by
-    obtain rfl : g₁ = g₂ := Y.m0.cart.1.hom_ext h₁ h₂
-    exact congrArg (g₁ ≫ ·) (Category.comp_id _)
-  smooth := smooth_of_surjective Y h
-  snc x := by
-    have := smooth_of_surjective Y h
-    have : Smooth (genStr Y) := SmoothOfRelativeDimension.smooth D.dim _
-    have hr := ExtendRig.isRegularRing_stalk isRegularRing_of_smooth c.F (genStr Y) x
-    exact sncAt_of_not_mem _ x (fun hx => hx (h x)) (IsRegularLocalRing.of_isRegularRing_of_isLocalRing _)
-  toric x hx := (hx (h x)).elim
-  lifts _ _ _ _ _ _ _ χ _ _ := ⟨χ, Category.comp_id _⟩
-  BD := EffCartierData.zero _
-  BD_supp x hx := by
-    refine (((EffCartierData.zero Y.X).mem_support_iff PUnit.unit (x := x) trivial).1 hx ?_).elim
-    change x ∈ Y.X.basicOpen (1 : Γ(Y.X, ⊤))
-    simp
-  BD_pos x hx := (hx (h x)).elim
-  m0 := 1
-  torModel_multiplicity_pos := one_pos
-
 end Model
 
 end GlobalTheory.Toroidal

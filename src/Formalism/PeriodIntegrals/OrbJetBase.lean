@@ -4,43 +4,7 @@ public import Formalism.LocalRingCardinality.DataForced
 public import Formalism.LocalRingCardinality.DataDIVDefs
 public import Mathlib.Combinatorics.Young.YoungDiagram
 public import Mathlib.RingTheory.PowerSeries.Exp
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalRingCardinality.DataDIV
 
 @[expose] public section
@@ -294,14 +258,6 @@ structure OrbOK (D : D7) (p : ℕ) : Prop where
 def logPl (D : D7) (p : ℕ) [Fact p.Prime] {β : Type} (v : Pl D × β) : MvPowerSeries (Pl D × β) ℂ_[p] :=
   fun m => ∑ e ∈ Finset.range (JetTdeg m + 1),
     if m = Finsupp.single (backPl D p v.1 (2 * e), v.2) ((p ^ 2) ^ e) then (((p : ℂ_[p]) ^ e)⁻¹) else 0
-
-def restr (D : D7) (p : ℕ) [Fact p.Prime] {N0 N1 : ℕ} (z : Pl D) (Th : MvPowerSeries (Pl D × Fin N0 × Fin N1) ℂ_[p]) :
-    MvPowerSeries (ZMod (nP D p) × Fin N0 × Fin N1) ℂ_[p] :=
-  fun m => MvPowerSeries.coeff (m.mapDomain fun v => (orbMap D p z v.1, v.2)) Th
-
-def restr1 (D : D7) (p : ℕ) [Fact p.Prime] {N0 N1 : ℕ} (z : Pl D) (Th : MvPowerSeries (Pl D × Fin N0 × Fin N1) ℂ_[p]) :
-    MvPowerSeries (ZMod 1 × Fin N0 × Fin N1) ℂ_[p] :=
-  fun m => MvPowerSeries.coeff (m.mapDomain fun v => (z, v.2)) Th
 
 def orbLoc (E : Ent D) (p : ℕ) [Fact p.Prime] (h : OrbOK D p) (u : D.what₂.Word) (i : ℕ) (z : Pl D)
     (Th : MvPowerSeries (ZMod (nP D p) × Fin (D.R.N i) × Fin (D.R.N (i + 1))) ℂ_[p]) : OJ.Loc where

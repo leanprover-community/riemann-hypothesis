@@ -63,7 +63,6 @@ open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotion
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 open ReciprocityTheory.ChartRestriction.G.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun GlobalTheory.FrameBiextId
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.LinkRel
 

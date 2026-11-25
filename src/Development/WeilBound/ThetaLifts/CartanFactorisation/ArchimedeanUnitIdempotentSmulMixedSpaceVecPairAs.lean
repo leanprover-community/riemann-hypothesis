@@ -101,15 +101,6 @@ def schrInf (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) {κ : Type} [Fintype κ]
 
 variable {F}
 
-theorem dot_infE {κ : Type} [Fintype κ] (x : κ → AdeleRing (𝓞 F) F) (z : κ → mixedEmbedding.mixedSpace F) :
-    x ⬝ᵥ infE F z = infE F (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1) ⬝ᵥ infE F z := by
-  refine Finset.sum_congr rfl fun i _ => ?_
-  refine Prod.ext ?_ ?_
-  · show (x i).1 * (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (z i) = (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1) * (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (z i)
-    rw [RingEquiv.symm_apply_apply]
-  · show (x i).2 * 0 = 0 * 0
-    rw [mul_zero, mul_zero]
-
 theorem pureA_schrInf (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) {κ : Type} [Fintype κ]
     (v : (κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F))
     (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) :

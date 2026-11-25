@@ -51,8 +51,6 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.Conju
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil
 open scoped Pointwise
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.Zero.LLC
 
 private theorem restrict_mem_ine {E E' Ω : Type} [Field E] [NumberField E] [Field E'] [NumberField E'] [Field Ω]

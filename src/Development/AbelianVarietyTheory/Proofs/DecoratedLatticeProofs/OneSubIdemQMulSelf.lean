@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceHermitianFrameProperties
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentTwistedGroupEndomorphism
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlaceIdempotentActsOnSupportedAndOff
@@ -50,7 +51,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -181,19 +181,7 @@ theorem one_sub_idemQ_mul_self (Q : Finset (Pl D)) :
 
 theorem mem_congGrp_iff (V : HSp D) (I : Ideal (AE D)) (g : GA D V) :
     g ∈ congGrp V I ↔ ∀ i j, (Formalism.L2.Theta.mt V g - 1) i j ∈ I := by
-  rw [congGrp, MonoidHom.mem_ker, MonoidHom.comp_apply, Units.ext_iff]
-  simp only [Matrix.GeneralLinearGroup.map, Units.coe_map, Units.val_one]
-  rw [← Matrix.ext_iff]
-  refine forall_congr' fun i => forall_congr' fun j => ?_
-  rw [Matrix.sub_apply, ← Ideal.Quotient.eq]
-  change ((matHom V g).1.map (Ideal.Quotient.mk I)) i j = (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D ⧸ I)) i j ↔ _
-  rw [Matrix.map_apply]
-  by_cases hij : i = j
-  · subst hij
-    simp only [Matrix.one_apply_eq, map_one]
-    rfl
-  · simp only [Matrix.one_apply_ne hij, map_zero]
-    rfl
+  apply _root_.GlobalTheory.FrameAt.mem_congGrp <;> assumption
 
 def cutG (V : HSp D) (ε : AF D.host.F) (hε : ε * ε = ε) : GA D V →* GA D V :=
   GlobalTheory.UnitaryIdemCut.cutUJ (sigR (AF D.host.F) D.sp.cm.sig) (JR (AF D.host.F) V.gram)

@@ -70,6 +70,10 @@ def PeterssonBoundAtEmbedding (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.shar
 
 def PeterssonBoundAllEmbeddings (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.sharp D)) : Prop := ∀ s, PeterssonBoundAtEmbedding D Z A s
 
+/-- For each admissible column and each row in both the integral row lattice
+and `V0`, the period lies in the image of the number field. A nonzero period
+has additive valuation at least the floor of the ramification-scaled forced
+order. -/
 def adm2 (D : D7) (L : SizeData₂ D) : Prop :=
   ∀ u (w : D.what₂.places.Pl) (φ : (D.div.Nu u).V), φ ∈ L.NuLat u →
     ∀ F ∈ (D.what₂.Mtilde (D.what₂.muAt w)).carrier, F ∈ D.what₂.V0 (D.what₂.muAt w) →

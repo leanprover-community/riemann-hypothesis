@@ -866,7 +866,7 @@ theorem commU_lem (gen : Γ → Prod' H d) (u : EuclideanSpace ℂ (Fin d) →L[
 theorem comm_lem (gen : Γ → Prod' H d) (β : ∀ s, H s →L[ℂ] H s)
     (hb : ∀ s x, Commute (β s) ((gen x).1 s) ∧ Commute (β s) (star ((gen x).1 s))) (s : ι) (g : Alg gen) :
     Commute (β s) (Rb gen s g) :=
-  commute_of_adjoin (evB s) (β s) _ (by rintro _ ⟨x, rfl⟩; exact hb s x) _ g.2
+  (commute_of_adjoin (evB s) (β s) _ (by rintro _ ⟨x, rfl⟩; exact hb s x) _ g.2 :)
 
 end Build
 

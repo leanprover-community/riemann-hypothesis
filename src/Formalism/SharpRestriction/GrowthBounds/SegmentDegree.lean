@@ -25,56 +25,12 @@ public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.Coarse
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.RestCountOf
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeight
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeightAlt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.PsiCutSupported
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DplusLeBeS
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumPosOfPer
 import Mathlib.Algebra.Order.Star.Int
 
@@ -296,7 +252,7 @@ theorem beta_ratio_bound : BetaRatioBound 1088 := by
         2 * X.a / (p : ℝ) ^ X.Rj p K j * (1 / (p : ℝ) ^ X.F.dist j x) := by
       intro x hx
       obtain ⟨hx1, hx2⟩ := Finset.mem_filter.mp hx
-      have b1 := (TE.Bdeg_bounds hX hk h41 j b hA x hx1 hx2).2
+      have b1 := (TE.Bdeg_bounds hX j b hA x hx1 hx2).2
       have b2 := (TE.c_bounds hX h41 j x hx1).2.2
       refine le_trans b1 ?_
       rw [pow_add]
@@ -671,7 +627,7 @@ theorem m0_le_Bw_of_isW (hX : X.Hyp p K) (hLa : 1088 ≤ X.CLa) (hk : 1088 ≤ X
   have hV := hX.valid
   have h41 := (top_count_lower_bounds 1088 (by norm_num) p n' r K X hX hLa hk).1
   have hlt : x < X.F.fr j 0 := lt_of_le_of_lt (hW : x ≤ X.F.fr (j - 1) (r - 1)) (TE.fr_prev_lt hV j)
-  have hB := (TE.Bdeg_bounds hX hk h41 j b hA x hx hlt).1
+  have hB := (TE.Bdeg_bounds hX j b hA x hx hlt).1
   have hc := (TE.c_bounds hX h41 j x hx).1
   have B := basics hX
   have hp0 : (0 : ℝ) < p := by linarith [B.p1]

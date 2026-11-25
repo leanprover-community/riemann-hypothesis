@@ -98,8 +98,6 @@ section -- clump:auto
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.AlgConn
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.AlgConn

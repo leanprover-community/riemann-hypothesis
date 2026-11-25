@@ -46,8 +46,6 @@ open GlobalTheory.Mem GlobalTheory.Mem.Col2
 
 namespace GlobalTheory.Mem.R3.Rw
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem isIdG_unique (X : Stages) {px : PreX X.B.toPre} {Pg : Finset (Pl X.toD7.host.E)} (hPg : Pg = (X.B.primes px).vGs)
     {eG eG' : Gc X.B px ≃* G0 Pg X.toD7.R.r} (h : IsPlacewiseIdentity X (px := px) eG) (h' : IsPlacewiseIdentity X (px := px) eG') : eG = eG' := by
   subst hPg

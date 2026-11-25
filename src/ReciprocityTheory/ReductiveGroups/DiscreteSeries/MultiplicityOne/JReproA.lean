@@ -148,7 +148,6 @@ theorem AB_le_half (k r : ℕ) {a : ℝ} (ha : aM k r ≤ a) : AB k r ≤ a / 2 
 
 open ReciprocityTheory.ChartRestriction.DS.Mult1
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 ReciprocityTheory.ChartRestriction.DS.Mult1
 
 section rep
 

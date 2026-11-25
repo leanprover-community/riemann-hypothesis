@@ -70,6 +70,12 @@ removes, renames or moves.>
 
 Drop the part from `---` on if the pull request depends on no other.
 
+## Batches
+
+If you assemble a batch of pull requests, leave out every pull request labelled `deferred`: it
+should not be merged for now. If a batch already contains one, take it out before the batch is
+merged, by rebuilding the batch without it or by reverting the merge commit that brought it in.
+
 ## Do not
 
 - change the Comparator challenge files: `src/Challenge.lean`, `comparator.json`,
@@ -83,6 +89,10 @@ Drop the part from `---` on if the pull request depends on no other.
 - report the results of your own builds or Comparator runs in a pull request. Check that your
   change compiles, but don't write that it builds on your machine; maintainers build pull
   requests themselves.
+- add references to the literature, in docstrings or in `docs/references.bib`. Many of the
+  references agents have added were wrong: the wrong title, no theorem number in a long book, or
+  a result credited to a paper that doesn't prove it. A wrong reference is worse than none. We
+  will say here when we have a way to check them.
 
 ## Mistakes we keep seeing
 
@@ -150,3 +160,23 @@ Each one still needs a review from someone who knows the CI, and the time it sav
 a build that takes hours, so please don't open these. Changes to the CI are welcome when they fix
 a bug, close a gap in what is checked, or save time someone will notice, measured on the data the
 step really handles rather than on a small fixture.
+
+## Assembling a batch
+
+If you assemble a batch of pull requests by hand, follow
+[verification/BATCHES.md](verification/BATCHES.md). The batch workflows read the batch's branch
+and description, and label and tell pull requests by what they find there. In short:
+
+- Name the branch `batch/<name>-on-<N>` when the batch is stacked on batch #N, and add
+  `- [ ] depends on: #N` to its description.
+- Merge each pull request's own head commit into the branch with a merge commit. A pull request
+  is in the batch when its head commit is.
+- In the description, list pull requests under headings that end with a colon. Under `Included:`,
+  or any heading that doesn't say "left out" or "not included", list only pull requests whose
+  changes the batch carries. If you merged `main` into one for the batch and could not push that
+  to its branch, list it as included all the same: its author is then not told that it conflicts
+  with the batch, and the workflow's check of the description reminds you that GitHub will not
+  mark it merged.
+- List what you leave out under a heading that says "Left out", with the reason after the pull
+  request's link. Its author is sent that entry, so write it for them.
+- To take a pull request out, rebuild the branch without it and force-push. Never revert it.

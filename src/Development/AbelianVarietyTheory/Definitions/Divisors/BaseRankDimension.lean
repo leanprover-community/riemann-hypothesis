@@ -47,8 +47,6 @@ open GlobalTheory.EX GlobalTheory.EX.OB
 
 namespace GlobalTheory.Fc.Ind
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 protected abbrev zsc {D : D7} {O : Obj D} (P : RowSideFamily O.ex) (Del h0 : ℕ) (c : ℝ) :
     DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3 :=
   GlobalTheory.Fc.zsc P Del h0 c

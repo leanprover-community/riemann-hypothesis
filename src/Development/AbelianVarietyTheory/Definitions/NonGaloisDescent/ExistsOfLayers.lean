@@ -56,6 +56,8 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
     [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WGam (PD : PeriodData G Qp K₀ K B BdR) (LL O : Type) [Field LL] [Algebra Qp LL]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] (v : AddValuation LL (WithTop ℚ)) (n s : ℕ) where
   emb : ZMod n → (K₀ →ₐ[Qp] LL)
@@ -93,6 +95,8 @@ attribute [instance] WGam.gamGrp
 variable {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n s : ℕ}
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WSer (Γ : WGam PD LL O v n s) where
   φ₀ : PowerSeries O →ₐ[O] PowerSeries O
   q₀ : PowerSeries O
@@ -141,6 +145,8 @@ variable {Γ : WGam PD LL O v n s}
 
 def WSer.Q (R : WSer Γ) : LetA O n := (letφ (n := n) R.φ₀ ^ (s - 1)) (fun _ => R.q₀)
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WIo (R : WSer Γ) (RA RW : Type) [CommRing RA] [CommRing RW] [Algebra O RA]
     [Algebra O RW] (inclR : RA →ₐ[O] RW) (φR : RW →ₐ[O] RW) (gR : G → (RW →ₐ[O] RW)) (πA : RA) where
   io : LetA O n →ₐ[O] RA
@@ -159,6 +165,8 @@ variable {RA RW : Type} [CommRing RA] [CommRing RW] [Algebra O RA]
 
 
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WEt (I : WIo R RA RW inclR φR gR πA) where
   DD : LocLat G Qp LL O → Type
   [ddAcg : ∀ T, AddCommGroup (DD T)]
@@ -199,6 +207,8 @@ variable {I : WIo R RA RW inclR φR gR πA}
 
 
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WN (E : WEt I) {Zl : Type} [CommRing Zl] (zl : PowerSeries Zl →+* LetA O n) where
   N : ∀ T, Submodule (LetA O n) (E.DD T)
   N_base : ∀ T, IsCrys PD T.ρ → IsBaseChange R.EE ((N T).subtype)
@@ -218,6 +228,8 @@ structure WN (E : WEt I) {Zl : Type} [CommRing Zl] (zl : PowerSeries Zl →+* Le
 
 
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WCl (E : WEt I) where
   cl : ∀ T, ↥(herrCocycles (E.γD T Γ.gam) (E.φD T)) →ₗ[O]
     LatticeCohomology (resLat T Γ.GKs)
@@ -250,6 +262,8 @@ variable {Zl Ai : Type} [CommRing Zl] [CommRing Ai] [Algebra Zl O] [Algebra Zl A
 
 
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure WCmp (Mo : WN E zl) (ιdR : Ai →+* BdR) (p1 : Ai) (tS zS : BdR) where
   cmp : ∀ T : LocLat G Qp LL O, ↥(Mo.N T) →+ T.V ⊗[Qp] B
   cmp_smul : ∀ (T : LocLat G Qp LL O) (c : O) (x : ↥(Mo.N T)), cmp T (c • x) = algebraMap O LL c • cmp T x
@@ -359,6 +373,8 @@ abbrev CmpS {AI : LocAinf l P} {R : WSer Γ} {I : IoS AI R} {E : WEt I} (Mo : NS
   WCmp Mo (P.ιB.toRingHom.comp AI.ιA) AI.π₁
     ((((l : ℚ_[l]) ^ s)⁻¹) • P.ιB P.tB) (algebraMap (Om l) P.R.BdR (P.ζQ s))
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure Layers (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l) where
   Γ : GamS P K s LL
   R : WSer Γ

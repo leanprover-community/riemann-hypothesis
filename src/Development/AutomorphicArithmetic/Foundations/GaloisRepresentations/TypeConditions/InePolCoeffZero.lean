@@ -54,8 +54,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.
 open GlobalTheory GlobalTheory.WeilDeligne GlobalTheory.CuspRep GlobalTheory.LocLanglands GlobalTheory.HeightCounting GlobalTheory.SmGL GlobalTheory.SatakeFlip GlobalTheory.LocGL
 open GlobalTheory.Mem.Chr hiding HChar
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.GalS
 
 section

@@ -154,7 +154,6 @@ namespace Idx
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section Comm
 
@@ -168,7 +167,6 @@ namespace Idx
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section BaseChange
 
@@ -193,7 +191,6 @@ namespace Idx
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section Transfer
 
@@ -211,7 +208,6 @@ namespace Idx
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section More
 

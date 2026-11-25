@@ -55,7 +55,7 @@ namespace Formalism.FourierDecayAlt.Qr
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def eps {t : ℕ} (i q : Fin t) : ℤ := if i.val < q.val then 1 else -1
 

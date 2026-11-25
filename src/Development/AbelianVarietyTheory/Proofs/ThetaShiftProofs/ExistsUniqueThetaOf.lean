@@ -54,8 +54,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLi
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits NumberField

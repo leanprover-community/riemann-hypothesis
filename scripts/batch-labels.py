@@ -1,13 +1,14 @@
-"""The labels the batch-queue and inbox workflows give pull requests, and which pull requests hold a
-batch, in one place.
+"""The labels the batch-queue, conflict-labels and inbox workflows give pull requests, and which
+pull requests hold a batch, in one place.
 
-`batch-queue-sync.py`, `batch-queue-conflicts.py` and `inbox-sync.py` read the names from here,
-and use `holds_batch`.
+`batch-queue-sync.py`, `batch-queue-conflicts.py`, `conflict-labels.py` and `inbox-sync.py` read
+the names from here, and use `holds_batch`.
 A workflow's `if:` cannot read this file, so the workflows in `.github/workflows` name some of them
 too, in `if:` and `env:`: rename a label there as well, and on GitHub before either change lands.
 `tests/test_label_names.py` checks that every label name a workflow writes is one of these or
 another label the workflows know, and that `verification/BATCHES.md` lists these.
 """
+import os
 
 # Wanted in an upcoming batch: a maintainer commented `batch` on the pull request.
 QUEUED = "batch queue"
@@ -23,8 +24,29 @@ MEMBER = "batch-building"
 # On the same pull requests: the batch builds the commit it took, so their authors should not
 # push until it has landed or been closed.
 FROZEN = "frozen"
+# On a frozen pull request whose head has moved on from the commit a batch or the queue took:
+# the commits after it are not part of what is built.
+CHANGED = "changed after frozen"
 # Handed back to the pull request's author.
 WAITING = "awaiting-author"
+# Conflicts with main, as GitHub sees it. `conflict-labels.py` keeps it up to date.
+MAIN_CONFLICT = "main-conflict"
+# Conflicts with a batch that is being built. `conflict-labels.py` keeps it up to date.
+BATCH_CONFLICT = "batch-conflict"
+# Whether `conflict-labels.py` keeps those two labels up to date, and so whether the batch queue
+# leaves to it the pull requests a batch's description lists under a heading about conflicts.
+# It needs the description check's reading of which pull requests a batch says it includes (see
+# `included_in` there), so that it never tells the author of a pull request whose changes a batch
+# carries to merge that batch's branch.
+CONFLICT_LABELS_ON = True
+
+
+def conflict_labels_on():
+    """Whether the conflict-labels workflow keeps `main-conflict` and `batch-conflict` up to date:
+    `CONFLICT_LABELS_ON` is set, and so is the repository variable `CONFLICT_LABELS`, to `on`.
+    The variable lets a maintainer look at a dry run before the workflow writes anything; the
+    workflows pass it to the scripts in the environment variable of the same name."""
+    return CONFLICT_LABELS_ON and os.environ.get("CONFLICT_LABELS") == "on"
 
 # What a pull request in a batch assembled by hand carries, `building` from before the batch's
 # pull request and its members were labelled differently included.

@@ -56,8 +56,6 @@ open scoped InnerProductSpace
 
 namespace GlobalTheory.TiedUnif
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Schur
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {μ : Measure (GA D V)} {𝓕 : Set (GA D V)}

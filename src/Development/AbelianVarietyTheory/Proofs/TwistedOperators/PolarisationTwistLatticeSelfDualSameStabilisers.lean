@@ -48,7 +48,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.Grow
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.SepRows GlobalTheory.CoreOnto
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct nonZeroDivisors
 
 noncomputable section
@@ -242,8 +241,6 @@ namespace GlobalTheory.ScaleSelfDual
 
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Dual
 
 theorem mem_span_of {E : Type} [Field E] [NumberField E] {n : ℕ} {𝔟 : FractionalIdeal (𝓞 E)⁰ E} (h𝔟 : 𝔟 ≠ 0)
@@ -351,8 +348,6 @@ noncomputable section
 namespace GlobalTheory.ScaleSelfDual
 
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem conjFI_twist (D : D7) (i : ℕ) :
     GlobalTheory.SeeSaw.conjFI D ((D.host.AAbar * D.host.AA⁻¹) ^ i) = ((D.host.AAbar * D.host.AA⁻¹) ^ i)⁻¹ := by

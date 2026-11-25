@@ -50,8 +50,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Core.Rk.Top.Model
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {u : D.what₂.Word}
 
 theorem unit_transfer {A B m n : Type} [CommRing A] [CommRing B] [Fintype m] [Fintype n] (e : m ≃ n) (s : A →+* B) (σ : A →+* A)

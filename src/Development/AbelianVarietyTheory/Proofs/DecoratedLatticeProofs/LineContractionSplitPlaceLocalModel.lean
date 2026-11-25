@@ -570,11 +570,7 @@ variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
   (p : Place D k)
 
 theorem incA_mul_ι (b : D.host.E) (x : k) : incA D b * p.ι x = p.ι (p.pr b * x) := by
-  have hm : ∀ x y, p.ι (x * y) = p.ι x * p.ι y := fun x y => by
-    conv_lhs => rw [← p.π_ι x, ← p.π_ι y, ← RingHom.map_mul, p.ι_π, ← mul_assoc, Witness.e_ι]
-  rw [hm]
-  change _ = p.ι (p.π (incA D b)) * p.ι x
-  rw [p.ι_π, mul_assoc, mul_left_comm, Witness.e_ι]
+  apply _root_.GlobalTheory.LineRowFrame.incA_mul_ι <;> assumption
 
 theorem map_rat_mul_ι {a b c : Type} [Fintype b] (N : Matrix a b D.host.E) (M : Matrix b c k) :
     N.map (incA D) * M.map p.ι = (N.map p.pr * M).map p.ι := by
@@ -595,31 +591,7 @@ theorem core_β {ρ : ℕ} (B : BesLev D ρ) {s : k} (FA : Frame k B.A.rank n') 
 theorem core_qA {ρ : ℕ} (B : BesLev D ρ) {s : k} (FA : Frame k B.A.rank n') (F₀ : Frame k B.V₀.rank (n' ⊕ Unit))
     (h : p.IsCoreFrame B s FA F₀) :
     FA.γ * B.o.qA.map p.pr * F₀.β = fromCols (1 : Matrix n' n' k) (0 : Matrix n' Unit k) := by
-  have hA : FA.γ * B.o.qA.map p.pr * (B.o.iA.map p.pr * FA.β) = 1 := by
-    rw [map_pr_eq, map_pr_eq, Matrix.mul_assoc, ← Matrix.mul_assoc (B.o.qA.map _), ← Matrix.map_mul, B.o.qA_iA,
-      Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mul, FA.γβ]
-  have hB : FA.γ * B.o.qA.map p.pr * B.o.iB.map p.pr = 0 := by
-    rw [map_pr_eq, map_pr_eq, Matrix.mul_assoc, ← Matrix.map_mul, B.o.qA_iB, Matrix.map_zero _ (map_zero _),
-      Matrix.mul_zero]
-  have hc : ∀ r, F₀.β r (Sum.inr ()) = s * ((B.o.iB.map p.pr) *ᵥ (fun c => p.pr (B.ζ c))) r := by
-    intro r
-    rw [h.2 r, vecB, map_pr_eq]
-    congr 1
-    exact (RingHom.map_mulVec (Witness.prH p) B.o.iB B.ζ r)
-  have hv : (FA.γ * B.o.qA.map p.pr) *ᵥ ((B.o.iB.map p.pr) *ᵥ (fun c => p.pr (B.ζ c))) = 0 := by
-    rw [Matrix.mulVec_mulVec, hB, Matrix.zero_mulVec]
-  generalize (B.o.iB.map p.pr) *ᵥ (fun c => p.pr (B.ζ c)) = v at hc hv
-  generalize FA.γ * B.o.qA.map p.pr = X at hA hv ⊢
-  ext i (a | u)
-  · have := congrFun (congrFun hA i) a
-    rw [Matrix.mul_apply] at this
-    rw [Matrix.mul_apply, fromCols_apply_inl, ← this]
-    simp only [h.1]
-  · rw [Matrix.mul_apply, fromCols_apply_inr, Matrix.zero_apply]
-    simp only [hc, mul_left_comm _ s, ← Finset.mul_sum]
-    have h2 := congrFun hv i
-    simp only [Matrix.mulVec, dotProduct, Pi.zero_apply] at h2
-    rw [h2, mul_zero]
+  first | exact _root_.GlobalTheory.ContrModL.core_qA | exact @_root_.GlobalTheory.ContrModL.core_qA | apply _root_.GlobalTheory.ContrModL.core_qA <;> assumption
 
 end SlopeTestRemainingChoices
 

@@ -14,8 +14,6 @@ namespace Formalism.L2.SG.Pf
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.PairVal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def CellPointUniq : Prop :=
   ∀ (K : Type) [Field K] (N : ℕ) (p p' : Point K N) (L U L' U' : Matrix (Fin N) (Fin N) K),
     IsLoUni L → IsUpUni U → IsLoUni L' → IsUpUni U' → L * ptMat p * U = L' * ptMat p' * U' → p = p'

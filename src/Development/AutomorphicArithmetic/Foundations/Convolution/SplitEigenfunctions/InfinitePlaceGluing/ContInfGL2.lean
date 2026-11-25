@@ -254,18 +254,9 @@ private theorem cont_infGL2 : Continuous (TR.infGL ℚ 2) :=
     ((TR.continuous_infEq ℚ).prodMk continuous_const :
     Continuous fun x : TR.Rinf ℚ => ((TR.infEq ℚ x, 0) : InfiniteAdeleRing ℚ × Af ℚ))))
 
-private theorem cont_toGL {f : ℝ → Matrix.SpecialLinearGroup (Fin 2) (TR.Rinf ℚ)} (hf : ∀ i j, Continuous fun t => (f t).1 i j) :
-    Continuous fun t => Matrix.SpecialLinearGroup.toGL (f t) := by
-  have e : ∀ g : Matrix.SpecialLinearGroup (Fin 2) (TR.Rinf ℚ),
-      (((Matrix.SpecialLinearGroup.toGL g)⁻¹ : GL (Fin 2) (TR.Rinf ℚ)) : Matrix (Fin 2) (Fin 2) (TR.Rinf ℚ)) = (g⁻¹).1 := fun g => by
-    rw [← map_inv]; rfl
-  refine Units.continuous_iff.2 ⟨continuous_matrix hf, continuous_matrix fun i j => ?_⟩
-  refine (?_ : Continuous fun t => ((f t)⁻¹).1 i j).congr fun t => (congrFun (congrFun (e (f t)) i) j).symm
-  simp only [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
-  fin_cases i <;> fin_cases j <;> simp <;> first | exact hf _ _
-
 private theorem cont_rot : Continuous rot := by
-  refine cont_infGL2.comp (cont_toGL fun i j => ?_)
+  refine cont_infGL2.comp (Matrix.SpecialLinearGroup.continuous_toGL.comp
+    (Continuous.subtype_mk (continuous_matrix fun i j => ?_) _))
   fin_cases i <;> fin_cases j <;> simp <;> fun_prop
 
 private theorem cont_iy : ContinuousOn iy {0}ᶜ := by

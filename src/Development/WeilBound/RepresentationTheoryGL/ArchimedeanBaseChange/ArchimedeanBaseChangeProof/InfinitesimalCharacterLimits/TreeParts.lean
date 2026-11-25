@@ -46,8 +46,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory
 open scoped TensorProduct
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB.E
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.SpectralAccumulation
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

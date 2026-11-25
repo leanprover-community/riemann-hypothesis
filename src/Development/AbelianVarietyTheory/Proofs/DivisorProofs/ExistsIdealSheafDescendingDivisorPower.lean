@@ -622,21 +622,7 @@ theorem be_pos (T : UTrait Xo c) (x : T.P.D.toPre.X) (hx : x ≠ 0) : 0 < T.be x
 
 theorem sc_pos {C : UCompact Xo c} {X₁ : USetup C} {p : ℕ} [Fact p.Prime] {z₁ : X₁.M.Z} (t : UCTrait X₁ p z₁) :
     0 < t.sc := by
-  have hϖ0 : algebraMap t.T.V (FractionRing t.T.V) t.T.ϖ ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective _ _)).2 t.T.irr.ne_zero
-  have h0 : t.ι (algebraMap t.T.V (FractionRing t.T.V) t.T.ϖ) ≠ 0 := (map_ne_zero _).2 hϖ0
-  have hlt : ‖t.ι (algebraMap t.T.V (FractionRing t.T.V) t.T.ϖ)‖ < 1 := by
-    by_contra hge
-    have hinv : ‖t.ι (algebraMap t.T.V (FractionRing t.T.V) t.T.ϖ)⁻¹‖ ≤ 1 := by
-      rw [map_inv₀, norm_inv]
-      exact inv_le_one_of_one_le₀ (not_lt.1 hge)
-    obtain ⟨w, hw⟩ := (t.int _).1 hinv
-    apply t.T.irr.not_isUnit
-    refine isUnit_iff_exists_inv.2 ⟨w, IsFractionRing.injective t.T.V (FractionRing t.T.V) ?_⟩
-    rw [map_mul, hw, map_one, mul_inv_cancel₀ hϖ0]
-  unfold UCTrait.sc
-  have := Real.log_neg (norm_pos_iff.2 h0) hlt
-  linarith
+  apply _root_.GlobalTheory.UPoinc.USum.sc_pos <;> assumption
 
 theorem one_le_of_ne_zero (T : UTrait Xo c) {x : T.P.D.toPre.X} (hx : x ≠ 0) : 1 ≤ Dw.p + Dw.q := by
   haveI : Module.Projective (𝓞 E) T.P.D.toPre.X := GlobalTheory.Forms.projective_of_int (𝓞 E) _
@@ -1327,12 +1313,8 @@ namespace GlobalTheory.UPoinc
 theorem USetup.isNoetherianRing_stalk {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
     {l : Geo.Tor.Level H} {Xo : Moduli D l} {c : Coeff l} {C : UCompact Xo c} (X₁ : USetup C) (z₁ : X₁.M.Z) :
     IsNoetherianRing (X₁.M.Z.presheaf.stalk z₁) := by
-  have : IsDedekindDomain X₁.o₁ := X₁.ar.ded
-  have := X₁.M.lft
-  have : IsLocallyNoetherian (Sp X₁.o₁) :=
-    inferInstanceAs (IsLocallyNoetherian (Spec (CommRingCat.of X₁.o₁)))
-  have : IsLocallyNoetherian X₁.M.Z := LocallyOfFiniteType.isLocallyNoetherian X₁.M.s
-  infer_instance
+  intros
+  refine (@_root_.GlobalTheory.UPoinc.ustalk_isNoetherian_normal_fractionRing ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_).2.2.2 <;> first | assumption | infer_instance
 
 theorem posW_one_one : PosW (!![1] : Matrix (Fin 1) (Fin 1) ℤ) := by
   unfold PosW

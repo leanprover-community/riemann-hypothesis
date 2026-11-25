@@ -38,8 +38,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ExpFrame
@@ -82,8 +80,6 @@ end GlobalTheory.ExpFrame
 
 end
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain TensorProduct
@@ -93,8 +89,6 @@ open Formalism.CohomologicalDescent.ShortWeightBounds (Wts HidaSetting WInputsLi
 open GlobalTheory.ExpFrame
 
 namespace GlobalTheory.ExpTie
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 abbrev presJ {G Γ : Type} [Group G] [Group Γ] {ι : Γ →* G} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] {K : Type} [Field K]
     [NumberField K] [StarRing K] {S : CSD K} {σ : K →+* ℂ} {ρ : Γ →* Module.End ℂ W} {J : Subgroup G} {χ : J →* ℂˣ}

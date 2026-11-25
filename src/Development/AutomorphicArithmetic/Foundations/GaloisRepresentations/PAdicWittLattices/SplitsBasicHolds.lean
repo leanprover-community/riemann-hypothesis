@@ -319,7 +319,7 @@ theorem bcSplits_holds : BcSplits := @pBcSplits @splitsBasic_holds
 
 theorem bcGal_holds : BcGal := pBcGal bcSplits_holds
 
-theorem ordEx_holds : OrdEx := pOrdEx _root_.UpperTheory.Gal.G3.pOrdStep
+theorem ordEx_holds : OrdEx := pOrdEx
 
 theorem galClosD_holds : GalClosD := pGalClosD splitsPts_holds ordEx_holds
 

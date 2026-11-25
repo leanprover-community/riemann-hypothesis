@@ -57,8 +57,6 @@ open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH Glo
 open GlobalTheory.W1.Lef
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace UpperTheory.Gal.productCup_of_system.RCT
 
 private theorem wd_one {ι E : Type} [LinearOrder ι] [AddCommGroup E] [Module ℂ E] (c : Finset ι → E) (s : Finset ι) :

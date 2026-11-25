@@ -18,8 +18,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.IotaDictPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} (TR : TypedRed X)
 
 theorem levi_one_iff {δ : X.B.I.Gf} (gδ : Good X δ) :
@@ -133,8 +131,6 @@ end Formalism.L2.SG.Pf.IotaDictPf
 namespace Formalism.L2.SG.Pf
 
 open Formalism.L2.SG.Pf.IotaDictPf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def AdTriv {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (δ : X.B.I.Gf) : Prop :=
   ∀ j, (X.B.I.fmat δ - 1) *ᵥ X.bw j ∈ Mo X.B.I X.B.g (Set.range X.e0)

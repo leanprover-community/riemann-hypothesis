@@ -241,31 +241,8 @@ theorem truncatedSeries_one (σ : R →+* S) (D : Derivation A R R) (β : S) (N 
 private theorem sum_range_sum_range_succ_eq_sum_sum_Ico {T : Type*} [AddCommMonoid T] (N : ℕ) (h : ℕ → ℕ → T) :
     ∑ j ∈ Finset.range N, ∑ i ∈ Finset.range (j + 1), h i j
       = ∑ i ∈ Finset.range N, ∑ j ∈ Finset.Ico i N, h i j := by
-  induction N with
-  | zero => simp
-  | succ N ih =>
-    have hL : ∑ j ∈ Finset.range (N + 1), ∑ i ∈ Finset.range (j + 1), h i j
-        = (∑ j ∈ Finset.range N, ∑ i ∈ Finset.range (j + 1), h i j)
-          + ∑ i ∈ Finset.range (N + 1), h i N :=
-      Finset.sum_range_succ (fun j => ∑ i ∈ Finset.range (j + 1), h i j) N
-    have hR1 : ∑ i ∈ Finset.range (N + 1), ∑ j ∈ Finset.Ico i (N + 1), h i j
-        = (∑ i ∈ Finset.range N, ∑ j ∈ Finset.Ico i (N + 1), h i j)
-          + ∑ j ∈ Finset.Ico N (N + 1), h N j :=
-      Finset.sum_range_succ (fun i => ∑ j ∈ Finset.Ico i (N + 1), h i j) N
-    have hR2 : ∑ i ∈ Finset.range N, ∑ j ∈ Finset.Ico i (N + 1), h i j
-        = (∑ i ∈ Finset.range N, ∑ j ∈ Finset.Ico i N, h i j)
-          + ∑ i ∈ Finset.range N, h i N := by
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun i hi => ?_
-      have hiN : i ≤ N := le_of_lt (Finset.mem_range.mp hi)
-      exact Finset.sum_Ico_succ_top hiN (fun j => h i j)
-    have hR3 : ∑ j ∈ Finset.Ico N (N + 1), h N j = h N N := by
-      rw [Finset.sum_Ico_succ_top (le_refl N) (fun j => h N j), Finset.Ico_self,
-        Finset.sum_empty, zero_add]
-    have hlast : ∑ i ∈ Finset.range (N + 1), h i N
-        = (∑ i ∈ Finset.range N, h i N) + h N N :=
-      Finset.sum_range_succ (fun i => h i N) N
-    rw [hL, hR1, hR2, hR3, ih, hlast, add_assoc]
+  simp only [Finset.range_eq_Ico]
+  exact (Finset.sum_Ico_Ico_comm 0 N h).symm
 
 private theorem sum_Ico_mul_pow_eq_sum_range {T : Type*} [CommRing T] (a b : ℕ → T) (β : T) (N i : ℕ) :
     ∑ j ∈ Finset.Ico i N, a i * b (j - i) * β ^ j

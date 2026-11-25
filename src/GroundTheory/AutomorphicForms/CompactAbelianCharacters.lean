@@ -62,19 +62,11 @@ def charAlgebra : StarSubalgebra ℂ C(C, ℂ) :=
   { (Submodule.span ℂ (Set.range (charCM (C := C)))).toSubalgebra
       (Submodule.subset_span ⟨1, charCM_one⟩)
       (fun a b ha hb => by
-        induction ha using Submodule.span_induction with
-        | mem x hx =>
-          induction hb using Submodule.span_induction with
-          | mem y hy =>
-            obtain ⟨χ, rfl⟩ := hx
-            obtain ⟨χ', rfl⟩ := hy
-            exact Submodule.subset_span ⟨χ * χ', charCM_mul χ χ'⟩
-          | zero => rw [mul_zero]; exact Submodule.zero_mem _
-          | add y z _ _ hy hz => rw [mul_add]; exact Submodule.add_mem _ hy hz
-          | smul c y _ hy => rw [mul_smul_comm]; exact Submodule.smul_mem _ c hy
-        | zero => rw [zero_mul]; exact Submodule.zero_mem _
-        | add x y _ _ hx hy => rw [add_mul]; exact Submodule.add_mem _ hx hy
-        | smul c x _ hx => rw [smul_mul_assoc]; exact Submodule.smul_mem _ c hx) with
+        have h := Submodule.mul_mem_mul ha hb
+        rw [Submodule.span_mul_span] at h
+        refine Submodule.span_mono ?_ h
+        rintro _ ⟨x, ⟨χ, rfl⟩, y, ⟨χ', rfl⟩, rfl⟩
+        exact ⟨χ * χ', charCM_mul χ χ'⟩) with
     star_mem' := fun {a} ha => by
       change a ∈ Submodule.span ℂ (Set.range (charCM (C := C))) at ha
       change star a ∈ Submodule.span ℂ (Set.range (charCM (C := C)))

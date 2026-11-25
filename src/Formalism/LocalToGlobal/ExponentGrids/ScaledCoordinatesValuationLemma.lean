@@ -81,23 +81,6 @@ def SlopeInequalityDenominators : Prop :=
       muMaxDef b X A ≤
         muMaxDef b' X' B + (htMap b X b' X' φ + 2 * ∑ w ∈ T, lw w * (a w : ℝ))
 
-def LargestSlopeLatticeFrames : Prop :=
-  ∀ (K W κ : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K]
-    [AddCommGroup W] [Module K W] [Module (𝓞 K) W] [IsScalarTower (𝓞 K) K W]
-    [Fintype κ] [DecidableEq κ] (D : ℕ), 0 < D →
-    ∀ (XE : InfinitePlace K → Matrix (Fin D) (Fin D) ℂ) (kap : InfinitePlace K → ℝ)
-      (b' : Basis κ K W) (X' : InfinitePlace K → Matrix κ κ ℂ),
-    (∀ v, IsUnit (XE v).det) → (∀ v, 0 < kap v) → (∀ v, IsUnit (X' v).det) →
-    ∀ (R : Submodule (𝓞 K) (Fin D → K)) (M : Submodule (𝓞 K) W) (Ψ : (Fin D → K) →ₗ[K] W)
-      (T : Finset (Pl K)) (a : Pl K → ℤ) (r : Pl K → K) (dF : Pl K → ℝ) (EM hInf Gr BF : ℝ),
-    Submodule.IsFullLattice K R → M.FG → M ≠ ⊥ → Function.Injective Ψ →
-    R.map (Ψ.restrictScalars (𝓞 K)) ≤ Formalism.HermitianLatticesTheory.idealSmul (denIdeal T a : Submodule (𝓞 K) K) M →
-    (∀ w ∈ T, (a w : ℝ) ≤ (vw w (r w) : ℝ) + dF w) →
-    muMaxDef b' X' M ≤ EM →
-    htMap (Pi.basisFun K (Fin D)) (Formalism.DivisionValues.scaleFrame (fun v => (kap v)⁻¹) XE) b' X' Ψ ≤ hInf →
-    ∑ w ∈ T, lw w * (vw w (r w) : ℝ) ≤ Gr → ∑ w ∈ T, lw w * dF w ≤ BF →
-    muMaxDef (Pi.basisFun K (Fin D)) XE R ≤ -meanLog kap + (EM + hInf + 2 * (Gr + BF))
-
 def FinitePlaceLiesOverPrime : Prop :=
   ∀ (K : Type) [Field K] [NumberField K], ∃ ell : Pl K → ℕ, ∀ w, (ell w).Prime ∧ PlOver (ell w) w
 

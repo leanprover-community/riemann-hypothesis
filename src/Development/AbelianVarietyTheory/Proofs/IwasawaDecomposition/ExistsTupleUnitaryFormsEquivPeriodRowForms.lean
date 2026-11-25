@@ -41,7 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Df
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 open GlobalTheory.TopStep Formalism.HermitianLatticesTheory
 noncomputable section
 

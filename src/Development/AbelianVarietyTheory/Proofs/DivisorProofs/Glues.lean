@@ -46,8 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory AlgebraicGeometry
 
-set_option autoImplicit false
-
 namespace GlobalTheory.PinchLift
 
 def Glues {X X' Z Z' : Scheme.{0}} (p : X' ⟶ X) (i : Z ⟶ X) (i' : Z' ⟶ X') (p' : Z' ⟶ Z) : Prop :=

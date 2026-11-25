@@ -1917,7 +1917,7 @@ theorem UpperTheory.Et.purAll : LateralTheory.CohomologicalPurity.LeafTube ∧ L
   have h_EPur_TubeCut_LeafDiscPb : LateralTheory.CohomologicalPurity.TubeCut.LeafDiscPb := by apply LateralTheory.CohomologicalPurity.TubeCut.leafDiscPb
   have h_universal_sum : LateralTheory.CohomologicalPurity.TubeCut.LeafUnivSum := by apply LateralTheory.CohomologicalPurity.TubeCut.leafUnivSum
   have h_EPur_TubeCut_LeafFstHoc : LateralTheory.CohomologicalPurity.TubeCut.LeafFstHoc := by apply LateralTheory.CohomologicalPurity.TubeCut.LeafFstHoc_of <;> assumption
-  have h_augmentation_injective_at : LateralTheory.CohomologicalPurity.TubeCut.EtaleAugInjAt := by apply UpperTheory.Cb.hocolimAugmentation_injective_of_purity_inputs <;> assumption
+  have h_augmentation_injective_at : LateralTheory.CohomologicalPurity.TubeCut.EtaleAugInjAt := UpperTheory.Cb.ConeDifferentials.main
   have h_augmentation_injective : LateralTheory.CohomologicalPurity.TubeCut.LeafAugInj := by apply LateralTheory.CohomologicalPurity.TubeCut.EtaleAugInj_of_augInjAt <;> assumption
   have h_augmentation_surjective : LateralTheory.CohomologicalPurity.TubeCut.LeafAugSurj := by apply LateralTheory.CohomologicalPurity.TubeCut.LeafAugSurj_of
   have h_EPur_TubeCut_LeafHomLoc : LateralTheory.CohomologicalPurity.TubeCut.LeafHomLoc := by apply LateralTheory.CohomologicalPurity.TubeCut.LeafHomLoc_of

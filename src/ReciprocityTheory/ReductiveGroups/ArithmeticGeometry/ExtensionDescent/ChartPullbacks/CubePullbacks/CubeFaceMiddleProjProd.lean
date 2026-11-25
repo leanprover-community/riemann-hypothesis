@@ -5,8 +5,6 @@ import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj

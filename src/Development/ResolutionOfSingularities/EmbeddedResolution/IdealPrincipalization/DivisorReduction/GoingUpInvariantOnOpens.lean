@@ -824,30 +824,6 @@ theorem exists_pow_mul_eq_comap_controlledTransform {hres : FunctorialResolution
   simp only [Nat.sub_zero] at hB
   rw [hB, h0]
 
-private theorem comap_comap_of_commSq {X A A' B : Scheme.{u}} (ι : A' ⟶ A) (p : A ⟶ X)
-    (q : A' ⟶ B) (e : B ⟶ X) (I : X.IdealSheafData) (hsq : ι ≫ p = q ≫ e) :
-    (I.comap p).comap ι = (I.comap e).comap q := by
-  rw [← Scheme.IdealSheafData.comap_comp, hsq, Scheme.IdealSheafData.comap_comp]
-
-private theorem comap_eq_of_pow_mul_comap_eq {A A' B B' : Scheme.{u}} (m : ℕ)
-    (π : B ⟶ A) (ιA : A' ⟶ A) (ιB : B' ⟶ B) (ρ : B' ⟶ A')
-    (C J : A.IdealSheafData) (J' : B.IdealSheafData)
-    (c jt : A'.IdealSheafData) (jt' : B'.IdealSheafData)
-    (hsq : ιB ≫ π = ρ ≫ ιA)
-    (hcen : C.comap ιA = c)
-    (hprev : J.comap ιA = jt)
-    (hpow : Blowup.exceptionalIdeal π C ^ m * J' = J.comap π)
-    (hsucc : Blowup.exceptionalIdeal ρ c ^ m * jt' = jt.comap ρ)
-    (hcart : Blowup.IsLocallyGeneratedByNonZeroDivisor (Blowup.exceptionalIdeal ρ c)) :
-    J'.comap ιB = jt' := by
-  have hexc : (Blowup.exceptionalIdeal π C).comap ιB = Blowup.exceptionalIdeal ρ c := by
-    rw [Blowup.exceptionalIdeal_eq_comap, Blowup.exceptionalIdeal_eq_comap, ← Scheme.IdealSheafData.comap_comp, hsq,
-      Scheme.IdealSheafData.comap_comp, hcen]
-  have hkey : Blowup.exceptionalIdeal ρ c ^ m * J'.comap ιB = Blowup.exceptionalIdeal ρ c ^ m * jt' := by
-    rw [hsucc, ← hexc, ← Scheme.IdealSheafData.comap_pow, ← Scheme.IdealSheafData.comap_mul,
-      hpow, ← Scheme.IdealSheafData.comap_comp, hsq, Scheme.IdealSheafData.comap_comp, hprev]
-  exact (hcart.pow m).eq_of_mul_eq_mul hkey
-
 theorem comap_controlledTransform {hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u}}
     {hno : BlowupPreservesNoetherian.{u}} {T : MarkedIdealWithBoundary.{u}}
     [AlgebraicGeometry.IsNoetherian T.scheme] [AlgebraicGeometry.Smooth T.structMap]

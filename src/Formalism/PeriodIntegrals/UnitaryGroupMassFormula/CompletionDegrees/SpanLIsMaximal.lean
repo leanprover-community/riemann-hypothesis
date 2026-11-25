@@ -42,6 +42,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Mathlib.RingTheory.Ideal.Int
 
 @[expose] public section
 
@@ -49,17 +50,11 @@ namespace PI.CompDegEF
 
 open IsDedekindDomain NumberField Module Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-theorem span_l_isMaximal (l : ℕ) [hl : Fact l.Prime] : (Ideal.span {((l : ℕ) : ℤ)}).IsMaximal := by
-  refine Ideal.IsPrime.isMaximal ?_ ?_
-  · exact (Ideal.span_singleton_prime (by exact_mod_cast hl.out.ne_zero)).mpr
-      (Nat.prime_iff_prime_int.mp hl.out)
-  · simp [hl.out.ne_zero]
-
 theorem liesOver_of_mem {l : ℕ} [hl : Fact l.Prime] {E : Type} [Field E] [NumberField E]
     {v : HeightOneSpectrum (𝓞 E)} (hv : v ∈ placesOver E l) :
     v.asIdeal.LiesOver (Ideal.span {((l : ℕ) : ℤ)}) := by
   constructor
-  refine (span_l_isMaximal l).eq_of_le ?_ ?_
+  refine (Int.ideal_span_isMaximal_of_prime l).eq_of_le ?_ ?_
   · intro h
     rw [Ideal.comap_eq_top_iff] at h
     exact v.isPrime.ne_top h
@@ -73,7 +68,7 @@ theorem liesOver_of_mem {l : ℕ} [hl : Fact l.Prime] {E : Type} [Field E] [Numb
 theorem normCard : NormCard := by
   intro l _ E _ _ v hv
   have := liesOver_of_mem hv
-  have hmax := span_l_isMaximal l
+  have hmax := Int.ideal_span_isMaximal_of_prime l
   have hvmax : v.asIdeal.IsMaximal := v.isPrime.isMaximal v.ne_bot
   have h1 : Nat.card (𝓞 E ⧸ v.asIdeal ^ v.asIdeal.ramificationIdx ℤ) =
       Ideal.absNorm (v.asIdeal ^ v.asIdeal.ramificationIdx ℤ) := by

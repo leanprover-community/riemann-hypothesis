@@ -430,8 +430,6 @@ section -- clump:auto
 open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
 open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
 
-set_option autoImplicit false
-
 namespace GlobalTheory.HSShort.ChooseCols
 
 theorem avoid : ∀ (E : Type) [Field E] [Infinite E] (N δ : ℕ) (y : Fin δ → Fin N → E), (∀ p, y p ≠ 0) →

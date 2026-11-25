@@ -121,8 +121,6 @@ def HasTuple (D : D7) (π : Formalism.L2.NG.FinTyp D.host.E D.R.r) (t : Tup2 D) 
 def TypeLab (D : D7) (rep : D.what₂.FT → Formalism.L2.NG.FinTyp D.host.E D.R.r) : Prop :=
   ∀ σ, HasTuple D (rep σ) fun k => D.nd.lab k σ
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def FrameRed {D : D7} (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D) (t : Formalism.L2.Theta.GA D (D.sp.Y 0))
     (PY : Formalism.IndefR.principalLevelFrame.RowPsi (Formalism.IndefR.Links.Yc D 0) D.R.r) (c : GAf D.host.E D.R.r) (red : X.B.I.Gf → G0g D.nd) : Prop :=
   Formalism.L2.SG.RowLevelMatch.IsRedHom X red ∧

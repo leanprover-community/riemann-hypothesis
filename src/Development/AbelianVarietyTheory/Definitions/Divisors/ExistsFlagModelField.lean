@@ -55,19 +55,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Reg
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv mkT tanM_ext tv_mem actR)
 
-section Alg
-
-theorem initSpan_low {R N : Type} [CommRing R] [AddCommGroup N] [Module R N] {m : ℕ} (hm : m ≤ 1) {v v' : Fin m → N}
-    (h : initSpan R v m = initSpan R v' m) (i : ℕ) : initSpan R v i = initSpan R v' i := by
-  rcases i with _ | i
-  · simp [initSpan]
-  · have e : {j : Fin m | (j : ℕ) < i + 1} = {j : Fin m | (j : ℕ) < m} := by
-      ext j; have := j.2; simp only [Set.mem_ofPred_eq]; omega
-    unfold initSpan at h ⊢
-    rw [e, h]
-
-end Alg
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
@@ -98,30 +85,6 @@ theorem initSpan_frVec_top {S : Type} [CommRing S] [Algebra c.F S] (P : FrPt Xo 
 
     rw [← (hco w (htan cv w hw)).unique h4 hw, map_sum]
     simp only [map_smul, LinearEquiv.apply_symm_apply]
-
-def ofFrames (hm : ∀ σ, Dw.mult σ ≤ 1) (F : Frames Y (𝟙 Y.X)) (hF : F.TopEigen) : FlagModel Y where
-  YY := Y.X
-  π := 𝟙 _
-  proper := inferInstance
-  normal := Y.normal
-  flat := by rw [Category.id_comp]; exact Y.flat
-  F := F
-  dense := by
-    have : IsIso (genMap (Y := Y) (𝟙 Y.X)) :=
-      ⟨pullback.lift (pullback.fst _ _) (pullback.snd _ _) (by rw [Category.id_comp, pullback.condition]),
-        by apply pullback.hom_ext <;> simp only [genMap, Category.assoc, pullback.lift_fst, pullback.lift_snd,
-          Category.comp_id, Category.id_comp],
-        by apply pullback.hom_ext <;> simp only [genMap, Category.assoc, pullback.lift_fst, pullback.lift_snd,
-          Category.comp_id, Category.id_comp]⟩
-    exact Y.jQ_dense.preimage (genMap (Y := Y) (𝟙 Y.X)).homeomorph.isOpenMap
-  top := hF
-  rep S _ _ P := by
-    refine ⟨frX P ≫ Y.j, ⟨Category.comp_id _, fun S' _ _ ψ P' hP k z' ez hz hx σ i => ?_⟩,
-      fun z hz => (Category.comp_id _).symm.trans hz.1⟩
-    refine initSpan_low (hm σ) ?_ i
-    rw [hF S' _ (frX_snd P') z' hx k hz σ]
-    exact initSpan_frVec_top P' _ (F.inM hz hx) σ
-  fin K _ _ z := (Set.finite_singleton z).subset fun z' ⟨hx, _⟩ => by simpa using hx
 
 end Red
 

@@ -52,8 +52,6 @@ public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel

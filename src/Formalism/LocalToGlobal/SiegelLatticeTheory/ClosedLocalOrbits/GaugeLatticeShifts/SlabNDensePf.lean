@@ -449,11 +449,11 @@ open Formalism.L2.SG Formalism.L2.SG.PoincareInHH Formalism.L2.SG.Pf.Unip Formal
 
 theorem mf_gA {D : D7} (X : HidaSetting D) {Y : Matrix (Kap X) (Kap X) X.B.I.E} (hY : InPat (lvk X) 1 Y)
     (hYs : Yᴴ * JB X = -(JB X * Y)) : Mf X (gA X le_rfl hY hYs).2 = cay (2 * D.R.rS + 2) (Y.map (ic X)) := by
-  have hf : X.B.I.fmat (gA X le_rfl hY hYs).2 = (gE X Y).map (ic X) := rfl
+  have hf : X.B.I.fmat (gA X le_rfl hY hYs).2 = (UnipB.gE X Y).map (ic X) := rfl
   have h1 : (Bm' X).map (ic X) * (Bm X).map (ic X) = 1 := by
     rw [← Matrix.map_mul, Bm'_mul_Bm, Matrix.map_one _ (map_zero _) (map_one _)]
   unfold Mf Bf Bf'
-  rw [hf, gE, Matrix.map_mul, Matrix.map_mul, cay_map]
+  rw [hf, UnipB.gE, Matrix.map_mul, Matrix.map_mul, cay_map]
   simp only [← Matrix.mul_assoc]
   rw [h1, Matrix.one_mul, Matrix.mul_assoc, h1, Matrix.mul_one]
 

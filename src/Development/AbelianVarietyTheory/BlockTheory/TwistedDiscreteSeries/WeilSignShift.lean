@@ -48,8 +48,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.WeilSignShift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def NcGapGt (S : SPar) (h : ℝ) : Prop :=
   ∀ x ∈ S, ∀ y ∈ S, x.2 ≠ y.2 → h < |((x.1 - y.1 : ℚ) : ℝ)|
 

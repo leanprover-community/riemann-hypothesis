@@ -107,46 +107,18 @@ theorem strictTransformMapOfLE_strictTransformι {a b : ℕ} (h : a ≤ b) :
       rw [e1, e2, Category.assoc, ih, ← Category.assoc, e3]
       simp only [Category.assoc]
 
-private theorem exists_iso_coprod_of_isInitial {A B : Scheme.{u}} (hB : IsInitial B) :
-    ∃ u : A ≅ A ⨿ B, u.hom = (coprod.inl : A ⟶ A ⨿ B) := by
-  refine ⟨⟨(coprod.inl : A ⟶ A ⨿ B), coprod.desc (𝟙 A) (hB.to A),
-    coprod.inl_desc (𝟙 A) (hB.to A), ?_⟩, rfl⟩
-  refine coprod.hom_ext ?_ (hB.hom_ext _ _)
-  calc (coprod.inl : A ⟶ A ⨿ B) ≫ coprod.desc (𝟙 A) (hB.to A) ≫ (coprod.inl : A ⟶ A ⨿ B)
-      = ((coprod.inl : A ⟶ A ⨿ B) ≫ coprod.desc (𝟙 A) (hB.to A)) ≫
-          (coprod.inl : A ⟶ A ⨿ B) := (Category.assoc _ _ _).symm
-    _ = 𝟙 A ≫ (coprod.inl : A ⟶ A ⨿ B) :=
-        congrArg (fun t => t ≫ (coprod.inl : A ⟶ A ⨿ B)) (coprod.inl_desc (𝟙 A) (hB.to A))
-    _ = (coprod.inl : A ⟶ A ⨿ B) := Category.id_comp _
-    _ = (coprod.inl : A ⟶ A ⨿ B) ≫ 𝟙 (A ⨿ B) := (Category.comp_id _).symm
-
-private theorem exists_iso_of_coprodIso_of_isInitial {A B Z : Scheme.{u}} (hB : IsInitial B)
-    (w : A ⨿ B ≅ Z) :
-    ∃ e : A ≅ Z, e.hom = (coprod.inl : A ⟶ A ⨿ B) ≫ w.hom := by
-  obtain ⟨u, hu⟩ := exists_iso_coprod_of_isInitial (A := A) (B := B) hB
-  refine ⟨u ≪≫ w, ?_⟩
-  show u.hom ≫ w.hom = (coprod.inl : A ⟶ A ⨿ B) ≫ w.hom
-  exact congrArg (fun t => t ≫ w.hom) hu
-
-private theorem comp_inv_comp_hom_cancel {A B C D E : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C)
-    (h : C ⟶ E) (i : D ≅ E) :
-    (f ≫ g ≫ (h ≫ i.inv)) ≫ i.hom = (f ≫ g) ≫ h := by
-  simp only [Category.assoc, Iso.inv_hom_id, Category.comp_id]
-
 theorem exists_strictTransformZeroIso :
     ∃ e : S.strictTransform 0 ≅ Y, e.hom ≫ S.emb = S.strictTransformι 0 ≫ S.ambientSeq.isoZero.hom := by
-  obtain ⟨e, he⟩ := exists_iso_of_coprodIso_of_isInitial (A := S.strictTransform 0)
-    (B := S.detachedCoprod 0) (Z := Y) initialIsInitial S.totalSpaceZeroIso
-  refine ⟨e, ?_⟩
-  calc e.hom ≫ S.emb
-      = ((coprod.inl : S.strictTransform 0 ⟶ S.totalSpace 0) ≫ S.totalSpaceZeroIso.hom) ≫ S.emb :=
-        congrArg (fun t => t ≫ S.emb) he
-    _ = ((coprod.inl : S.strictTransform 0 ⟶ S.totalSpace 0) ≫ S.totalSpaceZeroIso.hom ≫
-          (S.emb ≫ S.ambientSeq.isoZero.inv)) ≫ S.ambientSeq.isoZero.hom :=
-        (comp_inv_comp_hom_cancel (coprod.inl : S.strictTransform 0 ⟶ S.totalSpace 0)
-          S.totalSpaceZeroIso.hom S.emb S.ambientSeq.isoZero).symm
-    _ = S.strictTransformι 0 ≫ S.ambientSeq.isoZero.hom :=
-        congrArg (fun t => t ≫ S.ambientSeq.isoZero.hom) S.totalSpaceZeroIso_spec
+  let h0 : IsInitial (S.detachedCoprod 0) := initialIsInitial
+  let e : S.strictTransform 0 ≅ S.totalSpace 0 :=
+    ⟨(coprod.inl : S.strictTransform 0 ⟶ S.totalSpace 0), coprod.desc (𝟙 _) (h0.to _),
+      coprod.inl_desc _ _, coprod.hom_ext
+        (by rw [← Category.assoc, coprod.inl_desc, Category.id_comp, Category.comp_id])
+        (h0.hom_ext _ _)⟩
+  refine ⟨e ≪≫ S.totalSpaceZeroIso, ?_⟩
+  have h := congrArg (· ≫ S.ambientSeq.isoZero.hom) S.totalSpaceZeroIso_spec
+  rw [Category.assoc, Category.assoc, Category.assoc, Iso.inv_hom_id, Category.comp_id] at h
+  exact (Category.assoc e.hom S.totalSpaceZeroIso.hom S.emb).trans h
 
 def strictTransformZeroIso : S.strictTransform 0 ≅ Y := S.exists_strictTransformZeroIso.choose
 
@@ -201,14 +173,7 @@ theorem detachedCoprodInl_inr_totalTransition_assoc (i : ℕ) {T : Scheme.{u}}
     S.detachedCoprodInl i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
         S.totalTransition i ≫ g =
       (coprod.inr : S.detachedCoprod i ⟶ S.totalSpace i) ≫ g := by
-  have h : S.detachedCoprodInl i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
-      S.totalTransition i = (coprod.inr : S.detachedCoprod i ⟶ S.totalSpace i) :=
-    S.detachedCoprodInl_inr_totalTransition i
-  calc S.detachedCoprodInl i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
-        S.totalTransition i ≫ g
-      = (S.detachedCoprodInl i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
-          S.totalTransition i) ≫ g := by simp only [Category.assoc]
-    _ = (coprod.inr : S.detachedCoprod i ⟶ S.totalSpace i) ≫ g := by rw [h]
+  simpa only [Category.assoc] using congrArg (· ≫ g) (S.detachedCoprodInl_inr_totalTransition i)
 
 def detachedCoprodInr (i : ℕ) : S.detachedScheme i ⟶ S.detachedCoprod (i + 1) :=
   (coprod.inr : S.detachedScheme i ⟶ S.detachedCoprod i ⨿ S.detachedScheme i)
@@ -228,16 +193,7 @@ theorem detachedCoprodInr_inr_totalTransition_assoc (i : ℕ) {T : Scheme.{u}}
     S.detachedCoprodInr i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
         S.totalTransition i ≫ g =
       S.detachedι i ≫ (coprod.inl : S.strictTransform i ⟶ S.totalSpace i) ≫ g := by
-  have h : S.detachedCoprodInr i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
-      S.totalTransition i = S.detachedι i ≫ (coprod.inl : S.strictTransform i ⟶ S.totalSpace i) :=
-    S.detachedCoprodInr_inr_totalTransition i
-  calc S.detachedCoprodInr i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
-        S.totalTransition i ≫ g
-      = (S.detachedCoprodInr i ≫ (coprod.inr : S.detachedCoprod (i + 1) ⟶ S.totalSpace (i + 1)) ≫
-          S.totalTransition i) ≫ g := by simp only [Category.assoc]
-    _ = (S.detachedι i ≫ (coprod.inl : S.strictTransform i ⟶ S.totalSpace i)) ≫ g := by rw [h]
-    _ = S.detachedι i ≫ (coprod.inl : S.strictTransform i ⟶ S.totalSpace i) ≫ g :=
-        Category.assoc _ _ _
+  simpa only [Category.assoc] using congrArg (· ≫ g) (S.detachedCoprodInr_inr_totalTransition i)
 
 theorem detachedCoprod_succ_hom_ext (i : ℕ) {T : Scheme.{u}}
     {f g : S.detachedCoprod (i + 1) ⟶ T}
@@ -257,31 +213,16 @@ theorem detachedToCoprod_self (i : ℕ) :
   set_option backward.isDefEq.respectTransparency false in
     simp [detachedToCoprod, detachedCoprodInr_eq]
 
-private theorem detachedCoprod_hom_ext_forall (W : EmbeddedBlowupSequence k Y pY) :
-    ∀ (i : ℕ) (Z : Scheme.{u}) (f g : W.detachedCoprod i ⟶ Z),
-      (∀ s (hs : s < i), W.detachedToCoprod s i hs ≫ f = W.detachedToCoprod s i hs ≫ g) → f = g := by
-  intro i
-  induction i with
-  | zero =>
-      intro Z f g _
-      have hI : IsInitial (W.detachedCoprod 0) := initialIsInitial
-      exact hI.hom_ext f g
-  | succ i ih =>
-      intro Z f g hf
-      refine W.detachedCoprod_succ_hom_ext i ?_ ?_
-      · refine ih Z (W.detachedCoprodInl i ≫ f) (W.detachedCoprodInl i ≫ g) ?_
-        intro s hs
-        have h := hf s (Nat.lt_succ_of_lt hs)
-        rw [W.detachedToCoprod_succ_of_lt s i hs] at h
-        simp only [Category.assoc] at h
-        exact h
-      · have h := hf i (Nat.lt_succ_self i)
-        rw [W.detachedToCoprod_self i] at h
-        exact h
-
 theorem detachedCoprod_hom_ext (i : ℕ) {T : Scheme.{u}} {f g : S.detachedCoprod i ⟶ T}
-    (hf : ∀ s (hs : s < i), S.detachedToCoprod s i hs ≫ f = S.detachedToCoprod s i hs ≫ g) : f = g :=
-  detachedCoprod_hom_ext_forall S i T f g hf
+    (hf : ∀ s (hs : s < i), S.detachedToCoprod s i hs ≫ f = S.detachedToCoprod s i hs ≫ g) :
+    f = g := by
+  induction i with
+  | zero => exact (initialIsInitial : IsInitial (S.detachedCoprod 0)).hom_ext f g
+  | succ i ih =>
+      refine S.detachedCoprod_succ_hom_ext i (ih fun s hs => ?_) ?_
+      · simpa only [S.detachedToCoprod_succ_of_lt s i hs, Category.assoc] using
+          hf s (Nat.lt_succ_of_lt hs)
+      · simpa only [S.detachedToCoprod_self i] using hf i (Nat.lt_succ_self i)
 
 alias inl_totalTransition := _root_.FunctorialResolution.EmbeddedResolution.EmbeddedBlowupSequence.inl_totalTransition_eq_strictTransformMap_inl
 

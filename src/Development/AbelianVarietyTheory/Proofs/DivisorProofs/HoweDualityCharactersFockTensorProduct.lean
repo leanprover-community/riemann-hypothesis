@@ -291,12 +291,7 @@ variable {T : Type} [Fintype T] [DecidableEq T] {V : T → Type} [∀ w, AddComm
 
 theorem atPl_tprod (w : T) (L : Module.End ℂ (V w)) (f : ∀ i, V i) :
     atPl w L (PiTensorProduct.tprod ℂ f) = PiTensorProduct.tprod ℂ (Function.update f w (L (f w))) := by
-  rw [atPl, PiTensorProduct.map_tprod]
-  congr 1
-  funext i
-  by_cases h : i = w
-  · subst h; simp
-  · simp [Function.update_of_ne h]
+  apply _root_.GlobalTheory.HoweR.TensQuad.atPl_tprod <;> assumption
 
 theorem dual_contr (f : ∀ i, Module.Dual ℂ (V i)) (w : T) (ν : Module.Dual ℂ (V w)) (y : ⨂[ℂ] i, V i) :
     ν (GlobalTheory.TensorFactorUnique.contr f w y) =

@@ -698,8 +698,8 @@ theorem variableChangePoint_latticePoint {X : WeierstrassCurve ℂ} {L : PeriodP
       ring
 
 theorem isAnalyticUniformization_of_isAnalyticIso {K : Type} [Field K] [NumberField K]
-    [IsTotallyComplex K] [Algebra K ℂ] (_h2 : Module.finrank ℚ K = 2) (X : WeierstrassCurve ℂ)
-    [X.IsElliptic] (𝔞 : FractionalIdeal (𝓞 K)⁰ K) (_h𝔞 : 𝔞 ≠ 0)
+    [IsTotallyComplex K] [Algebra K ℂ] (X : WeierstrassCurve ℂ)
+    [X.IsElliptic] (𝔞 : FractionalIdeal (𝓞 K)⁰ K)
     (ξ : (ℂ ⧸ GlobalTheory.EllipticCM.idealSub 𝔞) ≃+ X.toAffine.Point)
     (hξ : GlobalTheory.EllipticCM.IsAnalyticIso ξ) :
     GroundTheory.Global.Elliptic.IsAnalyticUniformization
@@ -996,7 +996,7 @@ theorem ellipticMainTheoremCM : GlobalTheory.Published.EllipticMainTheoremCM := 
   subst hEq
   have hfound := hlink σ s hs
   let 𝔞u : (FractionalIdeal (𝓞 K)⁰ K)ˣ := Units.mk0 𝔞 h𝔞
-  have hf := GlobalTheory.CompanionTheory.EllipticCM.isAnalyticUniformization_of_isAnalyticIso h2 X 𝔞 h𝔞 ξ hξ
+  have hf := GlobalTheory.CompanionTheory.EllipticCM.isAnalyticUniformization_of_isAnalyticIso X 𝔞 ξ hξ
   obtain ⟨f', ⟨hf', hrel⟩, -⟩ :=
     GroundTheory.Global.Elliptic.main_theorem_complexMultiplication h2 σ s hfound 𝔞u hf
   have hid : ((s⁻¹ • 𝔞u : (FractionalIdeal (𝓞 K)⁰ K)ˣ) : FractionalIdeal (𝓞 K)⁰ K) =

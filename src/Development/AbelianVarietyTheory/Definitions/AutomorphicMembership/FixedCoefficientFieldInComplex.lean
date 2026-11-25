@@ -75,9 +75,6 @@ section Defs
 
 variable {E : Type} [Field E] [NumberField E]
 
-def IsRanks [IsCMField E] (r : ℕ) (rk : (E ≃ₐ[ℚ] E) → ℕ) : Prop :=
-  ∀ σ : E ≃ₐ[ℚ] E, rk σ + rk ((IsCMField.complexConj E).restrictScalars ℚ * σ) = r
-
 
 variable (E) in
 structure ClassBasis where

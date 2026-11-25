@@ -52,14 +52,9 @@ open UpperTheory.V.Af.Fin (emb e1 e2 blk Bdd)
 open GlobalTheory.PRep (fixed)
 open scoped TensorProduct
 
-private theorem es_zero (A : Multiset ℂ) : A.esymm 0 = 1 := by simp [Multiset.esymm]
-
 private theorem es_cons (a : ℂ) (A : Multiset ℂ) (k : ℕ) :
     (a ::ₘ A).esymm (k + 1) = A.esymm (k + 1) + a * A.esymm k := by
   simp [Multiset.esymm, Multiset.powersetCard_cons, Multiset.sum_map_mul_left]
-
-private theorem es_big (A : Multiset ℂ) {k : ℕ} (h : A.card < k) : A.esymm k = 0 := by
-  simp [Multiset.esymm, Multiset.powersetCard_eq_empty k h]
 
 private theorem es_add (A C : Multiset ℂ) (j : ℕ) :
     (A + C).esymm j = ∑ p ∈ Finset.HasAntidiagonal.antidiagonal j, A.esymm p.1 * C.esymm p.2 := by
@@ -72,14 +67,15 @@ private theorem es_add (A C : Multiset ℂ) (j : ℕ) :
         rcases Nat.eq_zero_or_pos i with rfl | h
         · simp at hp; simp [hp] at hne
         · exact h
-      rw [es_big 0 (by simpa using this), zero_mul]
+      rw [Multiset.esymm_of_card_lt (s := 0) (by simpa using this), zero_mul]
     · simp
   | cons a A ih =>
     cases j with
     | zero => simp
     | succ j =>
       rw [Multiset.cons_add, es_cons, ih, ih, Finset.Nat.sum_antidiagonal_succ, Finset.Nat.sum_antidiagonal_succ]
-      simp only [es_cons, es_zero, add_mul, Finset.sum_add_distrib, Finset.mul_sum, mul_assoc, add_assoc]
+      simp only [es_cons, Multiset.esymm_zero, add_mul, Finset.sum_add_distrib,
+        Finset.mul_sum, mul_assoc, add_assoc]
 
 private theorem es_add_fin (A C : Multiset ℂ) {r s : ℕ} (hA : A.card = r) (hC : C.card = s) (j : ℕ) :
     (A + C).esymm j =
@@ -94,9 +90,9 @@ private theorem es_add_fin (A C : Multiset ℂ) {r s : ℕ} (hA : A.card = r) (h
     simpa using hp
   · rintro ⟨i, k⟩ hp hn
     by_cases hi : r < i
-    · rw [es_big A (hA ▸ hi), zero_mul]
+    · rw [Multiset.esymm_of_card_lt (s := A) (hA ▸ hi), zero_mul]
     by_cases hk : s < k
-    · rw [es_big C (hC ▸ hk), mul_zero]
+    · rw [Multiset.esymm_of_card_lt (s := C) (hC ▸ hk), mul_zero]
     exact absurd ⟨(⟨i, by omega⟩, ⟨k, by omega⟩), by simpa using hp, rfl⟩ hn
 
 private theorem es_scale (A : Multiset ℂˣ) (c : ℂˣ) (k : ℕ) :

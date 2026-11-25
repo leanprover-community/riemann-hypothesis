@@ -54,7 +54,6 @@ import Mathlib.Tactic.TypeStar
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 open scoped TensorProduct
 
@@ -131,8 +130,6 @@ theorem idem_mul_iff {L : Type} [Field L] [NumberField L] [IsCMField L] (v : Hei
     · subst hu
       rw [h1, ← Algebra.TensorProduct.one_def, one_mul, sub_self]
     · rw [h u hu, mul_zero, sub_zero]
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 

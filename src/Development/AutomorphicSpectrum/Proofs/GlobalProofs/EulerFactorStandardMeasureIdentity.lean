@@ -56,27 +56,6 @@ open scoped TensorProduct ENNReal
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.TailProduct
 
-private theorem abs_finset_prod_sub_one_le {κ : Type} (f : κ → ℝ) (s : Finset κ) :
-    |(∏ v ∈ s, f v) - 1| ≤ (∏ v ∈ s, (1 + |f v - 1|)) - 1 := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp
-  · intro a s ha ih
-    rw [Finset.prod_insert ha, Finset.prod_insert ha]
-    have h1 : |f a| ≤ 1 + |f a - 1| := by
-      have := abs_sub_abs_le_abs_sub (f a) 1
-      rw [abs_one] at this
-      linarith
-    have hfa : f a * (∏ v ∈ s, f v) - 1 = f a * ((∏ v ∈ s, f v) - 1) + (f a - 1) := by ring
-    rw [hfa]
-    calc |f a * ((∏ v ∈ s, f v) - 1) + (f a - 1)|
-        ≤ |f a| * |(∏ v ∈ s, f v) - 1| + |f a - 1| := by
-          rw [← abs_mul]
-          exact abs_add_le _ _
-      _ ≤ (1 + |f a - 1|) * ((∏ v ∈ s, (1 + |f v - 1|)) - 1) + |f a - 1| := by
-          gcongr
-      _ = (1 + |f a - 1|) * (∏ v ∈ s, (1 + |f v - 1|)) - 1 := by ring
-
 theorem abs_tprod_sub_one_le {κ : Type} (f : κ → ℝ)
     (hs : Summable (fun v => |f v - 1|)) :
     |(∏' v, f v) - 1| ≤ Real.exp (∑' v, |f v - 1|) - 1 := by
@@ -88,18 +67,10 @@ theorem abs_tprod_sub_one_le {κ : Type} (f : κ → ℝ)
       (nhds (∏' v, f v)) := hm.hasProd
   have hb : ∀ s : Finset κ, |(∏ v ∈ s, f v) - 1| ≤ Real.exp (∑' v, |f v - 1|) - 1 := by
     intro s
-    refine (abs_finset_prod_sub_one_le f s).trans ?_
-    gcongr ?_ - 1
-    calc ∏ v ∈ s, (1 + |f v - 1|) ≤ ∏ v ∈ s, Real.exp (|f v - 1|) := by
-          apply Finset.prod_le_prod₀
-          · intro i _
-            positivity
-          · intro i _
-            have := Real.add_one_le_exp (|f i - 1|)
-            linarith
-      _ = Real.exp (∑ v ∈ s, |f v - 1|) := (Real.exp_sum s _).symm
-      _ ≤ Real.exp (∑' v, |f v - 1|) :=
-          Real.exp_le_exp.mpr (hs.sum_le_tsum s (fun i _ => abs_nonneg _))
+    have h1 := s.norm_prod_one_add_sub_one_le (fun v => f v - 1)
+    simp only [add_sub_cancel, Real.norm_eq_abs] at h1
+    exact h1.trans (sub_le_sub_right
+      (Real.exp_le_exp.mpr (hs.sum_le_tsum s fun i _ => abs_nonneg _)) 1)
   exact le_of_tendsto' ((continuous_abs.tendsto _).comp (ht.sub_const 1)) hb
 
 theorem tendsto_tprod_compl_one {ι : Type} (f : ι → ℝ)

@@ -283,8 +283,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open IsDedekindDomain
@@ -577,7 +575,6 @@ open ReciprocityTheory.DiscreteGroups.LocalClassField
 open scoped TensorProduct
 open scoped TensorProduct
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.LKGeo.CommBC

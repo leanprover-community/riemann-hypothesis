@@ -52,7 +52,6 @@ open GlobalTheory.SymChain (SymData)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (CharUnramAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastPair)
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedLocalFrameSequences
 

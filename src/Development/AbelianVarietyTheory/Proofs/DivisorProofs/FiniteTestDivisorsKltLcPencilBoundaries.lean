@@ -89,8 +89,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 open GlobalTheory.Discrepancy GlobalTheory.EtaleKlt
 
-set_option autoImplicit false
-
 namespace GlobalTheory.BirOrd
 
 theorem ord_and_formOrd_of_over : ∀ {X Y : Scheme.{0}} [IsIntegral X] [IsIntegral Y] (p : X ⟶ Sp ℂ) [LocallyOfFiniteType p] (n : ℕ),
@@ -117,8 +115,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 open GlobalTheory.Discrepancy GlobalTheory.EtaleKlt
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -160,8 +156,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -191,7 +185,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 open GlobalTheory.Discrepancy GlobalTheory.EtaleKlt
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.Discrepancy
@@ -217,7 +210,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 open GlobalTheory.Discrepancy GlobalTheory.EtaleKlt
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.ResPairSupp
@@ -388,8 +380,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 open GlobalTheory.Discrepancy GlobalTheory.EtaleKlt
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.Discrepancy.MonoOrd
@@ -499,8 +489,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 open GlobalTheory.Discrepancy GlobalTheory.EtaleKlt
-
-set_option autoImplicit false
 
 noncomputable section
 

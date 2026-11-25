@@ -1227,7 +1227,7 @@ theorem familyNorms_of (hT : FamilyTie) (hM : ∃ C : ℝ, 0 ≤ C ∧ ∀ D : D
   refine ⟨C, fun D cc δ B χ h1 h2 hcc hδ hχ hY => ?_⟩
   have ht := hT D cc δ B χ h1 h2 hcc hδ hχ hY
   have hc : StandardLatticesGL3.Crv D cc δ := ⟨hcc, hδ⟩
-  have h14 := theta_link_holds D cc hcc δ hδ B (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.stdOK B hcc hδ) χ hχ
+  have h14 := theta_link_holds D cc hcc δ hδ B (GlobalTheory.FourthRootStd.stdOK B hcc hδ) χ hχ
   exact ⟨h14.1, mean_le_of (hC D) B χ hc ht, conj_indep B χ hc ht, h14.2⟩
 
 theorem familyNorms : FamilyNorms := familyNorms_of _root_.GlobalTheory.FamilyTieProof.familyTie _root_.GlobalTheory.Theta0MeanLeC.theta0MeanLeC

@@ -61,8 +61,6 @@ end Local
 def SurjSt : Prop := ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n d : ℕ)
   (ν α : kˣ →* ℂˣ), USm ν → ν ≠ 1 → ∀ Φ ∈ SB (Matrix (Fin n) (Fin d) k), ∃ Φ₀, Full Φ₀ ∧ Φ - Φ₀ ∈ aug n d ν α
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 section Dict
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}

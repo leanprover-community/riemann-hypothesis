@@ -659,22 +659,6 @@ theorem _root_.GlobalTheory.SmGL.val_emb₂ (e : a ⊕ b ≃ n) (g : GL a R × G
       (_root_.GlobalTheory.SmGL.leviTwo R a b g) true s t
 
 
-open Matrix in
-variable (R : Type) [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
-  [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
-variable {R} in
-variable (R) in
-variable {R} in
-variable (R) in
-variable {a b : Type} in
-variable [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] in
-theorem _root_.GlobalTheory.SmGL.det_emb₂ (e : a ⊕ b ≃ n) (g : GL a R × GL b R) :
-    GeneralLinearGroup.det (_root_.GlobalTheory.SmGL.emb₂ R e g) =
-      GeneralLinearGroup.det g.1 * GeneralLinearGroup.det g.2 := by
-  rw [_root_.GlobalTheory.SmGL.emb₂, MonoidHom.comp_apply, _root_.GlobalTheory.SmGL.det_leviEmb,
-    Fintype.prod_bool, mul_comm]
-  rfl
-
 
 open Matrix in
 variable (R : Type) [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]

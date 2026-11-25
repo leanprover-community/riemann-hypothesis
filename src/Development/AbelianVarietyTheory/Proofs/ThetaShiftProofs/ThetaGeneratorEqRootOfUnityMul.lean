@@ -62,8 +62,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLi
 @[expose] public section
 
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.AutFin

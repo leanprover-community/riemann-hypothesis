@@ -48,8 +48,6 @@ open MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.Ma
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Eis GlobalTheory.Cusp
 open GlobalTheory.Mem.Th (InfF CptF)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.RallisIP
 
 variable {D : D7} {A B : HSp D} (ω : GA D A × GA D B →* Module.End ℂ (WO A B → ℂ)) (m : Measure (GA D A))

@@ -84,8 +84,6 @@ theorem PtLaw.reRep {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K
 
 section Form
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (θ : InfF D) (V : HSp D) {n : ℕ} [NeZero n] (hn : V.rank = n) {ι : Type} [Fintype ι] (t : ι ≃ D.what₂.Tau)
   {K : Type} [Field K] [NumberField K] [StarRing K] (emb : ι → D.host.E →+* K) (σ : K →+* ℂ)
   {ST SG Q : Finset (HeightOneSpectrum (𝓞 D.host.E))} (S : GStep D.host.E K n) (b : S.β)

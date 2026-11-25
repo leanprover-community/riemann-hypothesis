@@ -367,7 +367,6 @@ end
 end GlobalTheory.RowLevel.Std
 
 namespace GlobalTheory.RowLevel.Std
-open GlobalTheory.LocMod GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain ValuativeRel
 
 theorem loc_tgt {D : D7} {c : Comm D} {v : VCom c} (G : GLoc v) (hc : IsStdChar D c.ψ (-1)) (hv : v.Is) {j : ℕ}
     {χS χT : (AE D)ˣ →* Circle} {om : Om (c.V j) (c.V (j + 1))} (hom : IsWeilDatumO c.ψ _ _ χS χT om)
@@ -406,7 +405,6 @@ theorem isolate {D : D7} {c : Comm D} {v : VCom c} {n : ℕ} (G : Fin n → GLoc
 end GlobalTheory.RowLevel.Std
 
 namespace GlobalTheory.RowLevel.Std
-open GlobalTheory.LocMod GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain ValuativeRel
 
 theorem tgt_law {D : D7} {c : Comm D} {v : VCom c} {n : ℕ} (G : Fin n → GLoc v) (hc : IsStdChar D c.ψ (-1)) (hv : v.Is) (hG : GPin G)
     {j : ℕ} (hj : j + 1 < D.R.m) {χS χT : (AE D)ˣ →* Circle} {om : Om (c.V j) (c.V (j + 1))}

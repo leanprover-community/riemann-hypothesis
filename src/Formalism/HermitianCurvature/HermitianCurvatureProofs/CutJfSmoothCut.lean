@@ -53,7 +53,7 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JfS
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section ellreg
 

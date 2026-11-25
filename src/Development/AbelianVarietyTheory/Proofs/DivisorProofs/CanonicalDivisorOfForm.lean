@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsLogCanon
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)

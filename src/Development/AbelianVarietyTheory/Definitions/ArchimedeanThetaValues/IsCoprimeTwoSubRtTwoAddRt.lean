@@ -169,23 +169,6 @@ def level (H : Host E) (A : ℕ) (hA : 0 < A) : Level H where
 
 @[simp] theorem level_A (H : Host E) (A : ℕ) (hA : 0 < A) : (level H A hA).A = A := rfl
 
-theorem Mb_ne_top {H : Host E} (l : Level H) : l.Mb ≠ ⊤ := by
-  intro h
-  have hp := l.prod
-  rw [h, Ideal.map_top, Ideal.top_mul, eq_comm, Ideal.span_singleton_eq_top] at hp
-  have h1 : IsUnit ((l.M : ℤ)) := by
-    have hint : Algebra.IsIntegral ℤ (𝓞 E) := inferInstance
-    have := (isUnit_map_iff (algebraMap ℤ (𝓞 E)) (l.M : ℤ)).mp (by simpa using hp)
-    exact this
-  have h3 := l.three_le
-  rcases Int.isUnit_iff.mp h1 with h2 | h2 <;> omega
-
-theorem level_goodAt (H : Host E) (A : ℕ) (hA : 0 < A) {p : ℕ} (hp : ¬ p ∣ H.d + 4) :
-    (level H A hA).GoodAt p := by
-  unfold Level.GoodAt
-  rw [level_M, Nat.factorization_eq_zero_of_not_dvd hp]
-  simp
-
 instance instNonemptyLevel (H : Host E) : Nonempty (Level H) := ⟨level H 1 one_pos⟩
 
 end GlobalTheory.HostModel

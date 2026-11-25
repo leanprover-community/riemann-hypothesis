@@ -86,8 +86,6 @@ def ContraUnit : Prop :=
   ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) k) V), IsSmooth ρ → ρ.IsIrreducible →
     IsUnitarisable ρ → IsUnitarisable (contra ρ) ∧ ∃ C : V ≃ₗ⋆[ℂ] smoothPart ρ.dual, ∀ g x, C (ρ g x) = contra ρ g (C x)
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def SatContra : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion K)) V),
     IsSmooth ρ → ρ.IsIrreducible → IsUnitarisable ρ → ∀ B : Multiset ℂˣ, GlobalTheory.LFun.HasSatGL w ρ B →

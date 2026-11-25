@@ -44,8 +44,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.DI
 
 variable {ι : Type} [LinearOrder ι] {E : Type} [AddCommGroup E]

@@ -59,8 +59,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option autoImplicit false
-
 universe u
 
 noncomputable section
@@ -568,19 +566,6 @@ theorem exists_eq_torusMap [ConnectedSpace S] (f : splitTorus S X ⟶ splitTorus
   refine ⟨AddMonoidHom.mk' φ fun a b => chi_injective (S := S) ?_, hom_ext fun b => ?_⟩
   · rw [← hφ, val_add, hφ, hφ, ← val_id, ← val_id, ← val_id, val_add]
   · rw [val_torusMap, hφ]; rfl
-
-variable (X) in
-def uliftMultiples : X ≃ (ULift.{u} ℤ →+ X) where
-  toFun a := (zmultiplesHom X a).comp (AddEquiv.ulift : ULift.{u} ℤ ≃+ ℤ).toAddMonoidHom
-  invFun φ := φ (ULift.up 1)
-  left_inv a := one_zsmul a
-  right_inv φ := by
-    ext ⟨n⟩
-    change n • φ (ULift.up 1) = _
-    rw [← map_zsmul]
-    congr 1
-    ext
-    simp
 
 
 end Characters

@@ -260,7 +260,7 @@ end Torus
 
 
 open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out in
-theorem trace_of_unif {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
+theorem trace_of_unif {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     {D : DegData R (maximalIdeal R)} {P : PolAV (Sp (FractionRing R))} {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
     (U : UnifPre (maximalIdeal R) D P G) {O : Type} [CommRing O] [StarRing O] [Module O D.toPre.X] {oD : D.OAct O}
     {oP : P.OAct O} {aG : OAct O G} (hl : U.OLinear O oD oP aG.toRingAct) [IsCommMonObj D.toPre.P.A]

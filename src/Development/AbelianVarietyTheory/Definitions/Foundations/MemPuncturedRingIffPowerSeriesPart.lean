@@ -309,64 +309,6 @@ def evalZero : convSeries →ₐ[ℂ] ℂ where
 @[simp] theorem evalZero_apply (f : convSeries) :
     evalZero f = PowerSeries.constantCoeff (f : ℂ⟦X⟧) := rfl
 
-theorem eventually_sum_eval (P : Polynomial convSeries) (a : convSeries) :
-    ∀ᶠ v in 𝓝 (0 : ℂ), sum (P.eval a : convSeries) v =
-      ∑ i ∈ Finset.range (P.natDegree + 1), sum (P.coeff i : convSeries) v * sum a v ^ i := by
-  have h : germ (P.eval a) = ((fun v => ∑ i ∈ Finset.range (P.natDegree + 1),
-      sum (P.coeff i : convSeries) v * sum a v ^ i : ℂ → ℂ) : Germ (𝓝 (0 : ℂ)) ℂ) := by
-
-    rw [Polynomial.eval_eq_sum_range, map_sum]
-    simp only [map_mul, map_pow, germ_apply]
-    have := map_sum (Germ.coeRingHom (R := ℂ) (𝓝 (0 : ℂ)))
-      (fun i => sum (P.coeff i : convSeries) * sum a ^ i) (Finset.range (P.natDegree + 1))
-    simp only [map_mul, map_pow, Germ.coe_coeRingHom] at this
-    rw [← this]
-    apply Germ.coe_eq.2
-    filter_upwards [] with v
-    simp
-  exact Germ.coe_eq.1 h
-
-theorem exists_isRoot (P : Polynomial convSeries) (z₀ : ℂ)
-    (h₀ : (P.map (evalZero : convSeries →+* ℂ)).eval z₀ = 0)
-    (h₁ : (P.map (evalZero : convSeries →+* ℂ)).derivative.eval z₀ ≠ 0) :
-    ∃ a : convSeries, P.IsRoot a ∧ evalZero a = z₀ := by
-  set F : ℂ × ℂ → ℂ := fun p =>
-    ∑ i ∈ Finset.range (P.natDegree + 1), sum (P.coeff i : convSeries) p.1 * p.2 ^ i with hF
-  have hFa : AnalyticAt ℂ F (0, z₀) := by
-    refine Finset.analyticAt_fun_sum _ fun i _ => AnalyticAt.mul ?_ (analyticAt_snd.pow i)
-    exact AnalyticAt.comp (g := sum (P.coeff i : convSeries)) (f := Prod.fst)
-      (analyticAt_sum (P.coeff i).2) analyticAt_fst
-  have hF0 : ∀ z, F (0, z) = (P.map (evalZero : convSeries →+* ℂ)).eval z := by
-    intro z
-    rw [Polynomial.eval_map, Polynomial.eval₂_eq_sum_range]
-    simp [hF]
-  have hc : ContDiffAt ℂ ω F (0, z₀) := hFa.contDiffAt
-  have hinv : (fderiv ℂ F (0, z₀) ∘L .inr ℂ ℂ ℂ).IsInvertible := by
-    refine ⟨ContinuousLinearEquiv.unitsEquivAut ℂ (Units.mk0 _ h₁), ?_⟩
-    have h2 : HasFDerivAt (fun z : ℂ => F (0, z)) (fderiv ℂ F (0, z₀) ∘L .inr ℂ ℂ ℂ) z₀ :=
-      HasFDerivAt.comp (g := F) (f := fun z : ℂ => ((0 : ℂ), z)) z₀
-        hFa.differentiableAt.hasFDerivAt (hasFDerivAt_prodMk_right (0 : ℂ) z₀)
-    have h3 := ((P.map (evalZero : convSeries →+* ℂ)).hasDerivAt z₀).hasFDerivAt
-    simp only [hF0] at h2
-    rw [h2.unique h3]
-    ext
-    simp
-  have hω : (ω : WithTop ℕ∞) ≠ 0 := by simp
-  have hg : AnalyticAt ℂ (hc.implicitFunction hω hinv) 0 :=
-    (hc.contDiffAt_implicitFunction hω hinv).analyticAt
-  have hg0 : hc.implicitFunction hω hinv 0 = z₀ := hc.implicitFunction_apply_self hω hinv
-  have hge := hc.eventually_apply_implicitFunction hω hinv
-  obtain ⟨ha, hsum⟩ := taylor_spec hg
-  refine ⟨⟨_, ha⟩, germ_injective ?_, ?_⟩
-  · rw [map_zero, germ_apply, ← Germ.coe_zero, Germ.coe_eq]
-    filter_upwards [eventually_sum_eval P ⟨_, ha⟩, hsum, hge] with v h1 h2 h3
-    rw [h1]
-    simp only [h2]
-    rw [hF0, h₀] at h3
-    exact h3
-  · rw [evalZero_apply, ← sum_zero_right]
-    exact hsum.self_of_nhds.trans hg0
-
 def puncturedDisc (ε : ℝ) : Set ℂ := ball 0 ε \ {0}
 
 theorem mem_puncturedDisc {ε : ℝ} {v : ℂ} : v ∈ puncturedDisc ε ↔ v ≠ 0 ∧ ‖v‖ < ε := by

@@ -46,8 +46,6 @@ noncomputable section
 open NumberField IsDedekindDomain ValuativeRel
 open GlobalTheory.LocGL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.FunExt
 
 def lbc : BCRel := fun K L _ _ _ _ _ v u x X =>

@@ -59,8 +59,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeOnMemGo
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -71,8 +69,6 @@ namespace GlobalTheory.HeckeSup
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Arith Formalism.IndefR.Mult
   Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Lev Formalism.L2.NTheta
 open GlobalTheory.IndefiniteRowSideFullHecke.LatticesOverBalls
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
 

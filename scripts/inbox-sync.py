@@ -7,10 +7,10 @@ and for every open pull request every fifteen minutes. Nothing from a pull reque
 Everything is read from GitHub's API, and the only thing written is the label.
 
 A pull request can be in the inbox when it is open, is not a draft, is not a batch, and carries
-none of `batch queue`, `building`, `batch-building`, `frozen` and `awaiting-author` (named in
-`batch-labels.py`). A batch is a pull request from a branch of this repository named `batch/...`.
-One from a `batch/...` branch of a fork is not a batch, and can be in the inbox like any other pull
-request (see `holds_batch` in `batch-labels.py`).
+none of `batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and
+`batch-conflict` (named in `batch-labels.py`). A batch is a pull request from a branch of this
+repository named `batch/...`. One from a `batch/...` branch of a fork is not a batch, and can be in
+the inbox like any other pull request (see `holds_batch` in `batch-labels.py`).
 
 A pull request enters review when it is opened, reopened or marked ready, and again when
 `awaiting-author` comes off it: its author commented `ready` (see batch-queue.yml), or a
@@ -49,7 +49,10 @@ INBOX = "inbox"
 # Handed back to the author. Taking it off hands the pull request back to the maintainers.
 WAITING = _labels.WAITING
 # Labels that mean a maintainer has already decided what happens next.
-DECIDED = (_labels.QUEUED, _labels.BUILDING, _labels.MEMBER, _labels.FROZEN, WAITING)
+# `batch-conflict` is one of them: the pull request was handed back to its author to resolve the
+# conflict. `main-conflict` is not, because a pull request that conflicts with main still needs a
+# first look.
+DECIDED = (_labels.QUEUED, _labels.BUILDING, _labels.MEMBER, _labels.FROZEN, WAITING, _labels.BATCH_CONFLICT)
 # Labels that label-pr.yml keeps up to date from the files a pull request changes and its size.
 # Someone adding or removing one of these by hand has not responded to the pull request: they were
 # all put on by hand once, before that workflow existed.

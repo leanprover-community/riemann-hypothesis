@@ -101,7 +101,7 @@ theorem kMod_irred : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCo
     rintro a b _ ⟨x, hx, rfl⟩
     rw [hcomm]
     exact ⟨_, hN a b x hx, rfl⟩
-  rcases GlobalTheory.HcPort.uIrr n ε H σ hσ hirr N' hN'K hN'st with h | h
+  rcases CompanionTheory.D.gk.HC.uIrr n ε H σ hσ hirr N' hN'K hN'st with h | h
   · left
     rw [eq_bot_iff]
     intro x hx

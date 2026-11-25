@@ -226,7 +226,7 @@ theorem exists_periodT_eq_mu_mul_unit {ε : 𝒪♭} (hε : PreTilt.untilt ε = 
   obtain ⟨u, hu⟩ := exists_isAdicSum (I := 𝔭)
     (a := fun n => algebraMap (ACrisZero K p) (ACris K p) (U n)) hsmall
   have hMc : algebraMap (ACrisZero K p) (ACris K p) M =
-      algebraMap (AInf K p) (ACris K p) (AInf.mu ε) := (AdicCompletion.algebraMap_apply _ _).symm
+      algebraMap (AInf K p) (ACris K p) (AInf.mu ε) := (IsScalarTower.algebraMap_apply (AInf K p) (ACrisZero K p) (ACris K p) _).symm
   have ht : periodT hε = algebraMap (AInf K p) (ACris K p) (AInf.mu ε) * u := by
     refine log_eq_of_isAdicSum ((hu.mul_left (algebraMap (ACrisZero K p) (ACris K p) M)).congr
       fun n => ?_) |>.trans ?_

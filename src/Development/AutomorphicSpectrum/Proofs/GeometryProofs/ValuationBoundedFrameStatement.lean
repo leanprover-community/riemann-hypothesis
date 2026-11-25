@@ -609,23 +609,9 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat.DegCurve
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-private theorem valuation_natCast_le_one_algebra {K : Type} [Field K] (v : Valuation K (WithZero (Multiplicative ℤ)))
-    (n : ℕ) : v (n : K) ≤ 1 := by
-  induction n with
-  | zero => simp
-  | succ m ih =>
-    push_cast
-    exact (v.map_add _ _).trans (max_le ih (le_of_eq v.map_one))
-
 theorem v_intCast_le_one {K : Type} [Field K] (v : Valuation K (WithZero (Multiplicative ℤ)))
-    (n : ℤ) : v (n : K) ≤ 1 := by
-  cases n with
-  | ofNat m =>
-    rw [Int.ofNat_eq_natCast, Int.cast_natCast]
-    exact valuation_natCast_le_one_algebra v m
-  | negSucc m =>
-    rw [Int.cast_negSucc, Valuation.map_neg]
-    exact_mod_cast valuation_natCast_le_one_algebra v (m + 1)
+    (n : ℤ) : v (n : K) ≤ 1 :=
+  (Valuation.mem_integer_iff v _).1 (intCast_mem v.integer n)
 
 theorem freeAt_of_basis_lattice (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V) (O ι k : Type) [CommRing O]

@@ -60,8 +60,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
 
 open scoped ComplexOrder
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.DefConv
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (M : Vol G)

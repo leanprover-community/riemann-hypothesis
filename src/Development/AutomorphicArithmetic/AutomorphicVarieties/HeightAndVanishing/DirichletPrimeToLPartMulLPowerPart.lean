@@ -57,6 +57,12 @@ structure Coef (l : ℕ) [Fact l.Prime] where
 
 attribute [instance] Coef.dvr Coef.fin
 
+/-- `IsDiscreteValuationRing.toIsLocalRing` applied to `Coef.dvr`. Without it, the search on the
+subalgebra `c.O` first tries the `HenselianLocalRing` and `IsRegularLocalRing` routes, which look
+for a `Field` or `IsSimpleRing` structure on `c.O` and fail. -/
+instance Coef.isLocalRing {l : ℕ} [Fact l.Prime] (c : Coef l) : IsLocalRing c.O :=
+  c.dvr.toIsLocalRing
+
 instance factPrimes (p : Nat.Primes) : Fact (p : ℕ).Prime := ⟨p.2⟩
 
 section Parts

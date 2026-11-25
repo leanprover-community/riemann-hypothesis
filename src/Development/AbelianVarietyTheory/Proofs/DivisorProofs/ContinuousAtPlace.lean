@@ -60,9 +60,6 @@ def psiV (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) : AddChar (F
 theorem psiV_apply (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (t : Fv F v) :
     psiV ψ v t = ψ (GlobalTheory.EmbChart.atPlace v t) := rfl
 
-theorem psiV_eq_psiLoc (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (t : Fv F v) :
-    psiV ψ v t = GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.psiLoc ψ v t := rfl
-
 theorem continuous_atPlace (v : HeightOneSpectrum (𝓞 F)) : Continuous (GlobalTheory.EmbChart.atPlace v) := by
   have h : (GlobalTheory.EmbChart.atPlace v : Fv F v → AF F) = fun t => (0, GlobalTheory.AdelicU.singleFin v t) := rfl
   rw [h]

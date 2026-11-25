@@ -44,8 +44,6 @@ import Mathlib.Tactic.Polynomial.Basic
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.VarFlagSpec

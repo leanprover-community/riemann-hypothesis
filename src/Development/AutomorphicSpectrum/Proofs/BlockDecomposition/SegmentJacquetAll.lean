@@ -134,19 +134,6 @@ namespace GlobalTheory.CompanionTheory.SegCoarse
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem fineJac_all (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation) :
-    ∀ Δ : Segment k, FineJac Δ := by
-  intro Δ
-  induction h : Δ.len using Nat.strong_induction_on generalizing Δ with
-  | _ n ih =>
-    have hp := Δ.len_pos
-    rcases Nat.lt_or_ge n 3 with h3 | h3
-    · interval_cases n
-      · omega
-      · exact @GlobalTheory.T.fine_jacquet_length_one k _ _ _ _ hA Δ h
-      · exact @_root_.GlobalTheory.CompanionTheory.SegFine2.fineJac_of_len_eq_two k _ _ _ _ hA hZ Δ h
-    · exact @GlobalTheory.T.fine_jacquet_segment_induction k _ _ _ _ hA Δ (h ▸ h3) fun Δ' hlt => ih _ (h ▸ hlt) Δ' rfl
-
 theorem occurs_topCut (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation)
     (Δ : Segment k) {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V)
     (hπ : IsLSeg Δ π) {s : ℕ} (y : Fin s → IrrGL (k := k)) (hd : ∑ a, (y a).1 = N) (hpos : ∀ a, 0 < (y a).1)

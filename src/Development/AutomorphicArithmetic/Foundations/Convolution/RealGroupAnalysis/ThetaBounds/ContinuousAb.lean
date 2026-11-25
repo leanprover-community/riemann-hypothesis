@@ -52,13 +52,6 @@ private theorem wt_nonneg' {K : Type} [Field K] [NumberField K]
   · positivity
   · exact le_rfl
 
-private theorem continuous_ab {K : Type} [Field K] [NumberField K] :
-    Continuous (ab : (A K)ˣ → ℝ) :=
-  continuous_subtype_val.comp (IdeleGroup.continuous_ideleModule (K := K))
-
-private theorem ab_pos {K : Type} [Field K] [NumberField K] (a : (A K)ˣ) : 0 < ab a :=
-  (IdeleGroup.ideleModule K a).2
-
 theorem UpperTheory.ConvolutionTheory.R2.Ff.lDom :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (W : Weil D), LDom W := by
   intro F E _ _ _ _ _ _ _ D W ι s Φ hΦ C hC

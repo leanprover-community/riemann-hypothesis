@@ -312,9 +312,6 @@ section Tilde
 
 variable {R : CommRingCat.{u}}
 
-def tildeTopEquiv (M : ModuleCat.{u} R) : M ≃ₗ[R] Γ(tilde M, ⊤) :=
-  (tilde.isoTop M).toLinearEquiv
-
 theorem algebraMap_Spec_top_bijective : Function.Bijective (algebraMap R Γ(Spec R, ⊤)) := by
   have : ⇑(algebraMap R Γ(Spec R, ⊤)) = (Scheme.ΓSpecIso R).inv := rfl
   rw [this]
@@ -327,24 +324,6 @@ theorem isFiniteQC_Spec_iff (M : (Spec R).Modules) [M.IsQuasicoherent] :
   have : Module.Finite R Γ(Spec R, ⊤) :=
     .of_surjective (Algebra.linearMap R _) algebraMap_Spec_top_bijective.2
   exact .trans Γ(Spec R, ⊤) _
-
-theorem isFiniteQC_tilde_iff (M : ModuleCat.{u} R) : IsFiniteQC (tilde M) ↔ Module.Finite R M := by
-  rw [isFiniteQC_Spec_iff]
-  exact (Module.Finite.equiv_iff (tildeTopEquiv M)).symm
-
-theorem not_isFiniteQC_tilde_rat :
-    ¬ IsFiniteQC (tilde (R := CommRingCat.of ℤ) (ModuleCat.of ℤ ℚ)) := by
-  rw [isFiniteQC_tilde_iff]
-  intro h
-  have h : Module.Finite ℤ ℚ := h
-  obtain ⟨n, hn⟩ := IsIntegrallyClosed.isIntegral_iff (R := ℤ) (K := ℚ) (x := 1 / 2) |>.1
-    (Algebra.IsIntegral.isIntegral _)
-  have : ((2 * n : ℤ) : ℚ) = (1 : ℤ) := by
-    have hn : (n : ℚ) = 1 / 2 := hn
-    push_cast
-    rw [hn]; norm_num
-  have := Int.cast_injective this
-  omega
 
 end Tilde
 
@@ -831,31 +810,6 @@ theorem isSMulRegular_stalk_iff [F.IsQuasicoherent] (f : Γ(X, U)) :
       (hV.primeIdealOf x).asIdeal.primeCompl (germLinear F x) hreg
 
 
-omit [IsLocallyNoetherian X] in
-theorem assPoints_tilde {R : CommRingCat.{u}} [IsNoetherianRing R] (M : ModuleCat.{u} R) :
-    assPoints (tilde M) = PrimeSpectrum.asIdeal ⁻¹' associatedPrimes R M := by
-  refine Set.ext fun x : Spec R ↦ ?_
-  have hb := algebraMap_Spec_top_bijective (R := R)
-  have : IsLocalization (Submonoid.powers (1 : R)) Γ(Spec R, ⊤) :=
-    IsLocalization.away_of_isUnit_of_bijective _ isUnit_one hb
-  have : IsLocalizedModule (Submonoid.powers (1 : R)) (tildeTopEquiv M).toLinearMap :=
-    IsLocalizedModule.Away.mk_of_addCommGroup (by rw [map_one]; exact isUnit_one)
-      (fun s ↦ ⟨0, (tildeTopEquiv M).symm s, by simp⟩) fun t ht ↦ ⟨0, by simpa using ht⟩
-  refine (mem_assPoints_iff_primeIdealOf (isAffineOpen_top (Spec R)) ⟨x, trivial⟩).trans ?_
-  rw [← Module.associatedPrimes.preimage_comap_associatedPrimes_eq_associatedPrimes_of_isLocalizedModule
-    (Submonoid.powers (1 : R)) _ (tildeTopEquiv M).toLinearMap]
-  have e : ((isAffineOpen_top (Spec R)).primeIdealOf ⟨x, trivial⟩).asIdeal.comap
-      (algebraMap R Γ(Spec R, ⊤)) = x.asIdeal := by
-    ext r
-    rw [Ideal.mem_comap, ← not_iff_not]
-    refine (mem_primeCompl_primeIdealOf_iff (isAffineOpen_top (Spec R)) ⟨x, trivial⟩ _).trans ?_
-    have : (Spec R).basicOpen (algebraMap R Γ(Spec R, ⊤) r) = PrimeSpectrum.basicOpen r :=
-      basicOpen_eq_of_affine r
-    rw [this]
-    rfl
-  rw [Set.mem_preimage, e]
-  rfl
-
 end Associated
 
 section Fibre
@@ -871,11 +825,6 @@ abbrev fibre (x : X) : Type u := X.residueField x ⊗[X.presheaf.stalk x] (F.pre
 
 
 
-
-def structureModuleFibreEquiv (x : X) :
-    fibre (structureModule X) x ≃ₗ[X.residueField x] X.residueField x :=
-  ((structureModuleStalkEquiv x).baseChange _ (X.residueField x) _ _).trans
-    (AlgebraTensorModule.rid _ _ _)
 
 end Fibre
 
@@ -997,22 +946,9 @@ theorem IsFlatOver.of_sum_eq_id {ι : Type*} [Fintype ι] {A : ι → X.Modules}
   ext s
   simpa [sectionsBaseLinear] using sum_app_app p q h s
 
-theorem isFlatOver_Spec_iff {R : CommRingCat.{u}} (M : (Spec R).Modules) [M.IsQuasicoherent] :
-    IsFlatOver M (Scheme.ΓSpecIso R).inv.hom ↔ Module.Flat R Γ(M, ⊤) :=
-  ⟨fun h ↦ h ⊤ (isAffineOpen_top _),
-    fun h ↦ .of_forall_exists_affine fun _ ↦ ⟨⊤, isAffineOpen_top _, trivial, h⟩⟩
-
-theorem isFlatOver_tilde_iff {R : CommRingCat.{u}} (M : ModuleCat.{u} R) :
-    IsFlatOver (tilde M) (Scheme.ΓSpecIso R).inv.hom ↔ Module.Flat R M := by
-  rw [isFlatOver_Spec_iff]
-  exact (Module.Flat.equiv_iff (tildeTopEquiv M)).symm
-
 end Flat
 
 section Examples
-
-abbrev tildeIntQuotient (I : Ideal ℤ) : (Spec (CommRingCat.of ℤ)).Modules :=
-  tilde (R := CommRingCat.of ℤ) (ModuleCat.of ℤ (ℤ ⧸ I))
 
 end Examples
 

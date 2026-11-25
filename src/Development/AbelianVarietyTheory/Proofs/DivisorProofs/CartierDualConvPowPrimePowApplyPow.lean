@@ -46,8 +46,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobTwistBas
 
 open TensorProduct Coalgebra Bialgebra WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-set_option autoImplicit false
-
 namespace GlobalTheory
 
 namespace PDivGroup

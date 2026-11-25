@@ -118,27 +118,6 @@ theorem derivOp_integral (hπ : ∀ g, ‖π g‖ ≤ 1) {f : G → ℂ} (hf : h
   rw [e1, e2] at key
   exact (h.hasDerivAt_derivOp π hz X).unique key.2
 
-theorem wordOp_integrated (hπ : ∀ g, ‖π g‖ ≤ 1) {w : E} (hw : h.IsSmoothVector π w)
-    {f : G → ℂ} (hf : h.IsTestFunction f) :
-    ∀ {k : ℕ} (Y : Fin k → 𝔤),
-      h.wordOp π Y (π.integrated μ f w) = ∫ g, f g • h.wordOp π Y (π g w) ∂μ := by
-  intro k
-  induction k with
-  | zero =>
-    intro Y
-    rfl
-  | succ k ih =>
-    intro Y
-    rw [wordOp_succ, ih (Fin.tail Y)]
-    have hus : ∀ g, h.IsSmoothVector π (h.wordOp π (Fin.tail Y) (π g w)) := fun g =>
-      h.isSmoothVector_wordOp π (h.isSmoothVector_map π hw g) _
-    have hz : h.IsSmoothVector π (∫ g, f g • h.wordOp π (Fin.tail Y) (π g w) ∂μ) := by
-      rw [← ih (Fin.tail Y)]
-      exact h.isSmoothVector_wordOp π (h.isSmoothVector_integrated π μ hf w) _
-    simpa only [wordOp_succ] using
-      h.derivOp_integral π μ hπ hf (h.continuous_wordOp_map π hπ hw (Fin.tail Y)) hus (Y 0)
-        (by simpa only [wordOp_succ] using h.continuous_wordOp_map π hπ hw Y) hz
-
 end IsExpLieAlgebra
 
 end GroundTheory.Automorphic

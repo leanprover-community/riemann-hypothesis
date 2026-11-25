@@ -50,8 +50,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SmGL.DepthZero GlobalTheory.LocLanglands.SphFac
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.F5
 
 namespace LevelFixedParabolic

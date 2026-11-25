@@ -49,8 +49,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace UpperTheory.Gal.productCup_of_system

@@ -61,7 +61,7 @@ attribute [local instance] MvPolynomial.gradedAlgebra
 namespace LateralTheory.EtaleTrace.Cov
 
 theorem homog_div_mem {k : Type} [Field k] {K : Type} [Field K] (κ : k →+* K) {N : ℕ} (w : Fin (N + 1) → K)
-    (i : Fin (N + 1)) (_hi : w i ≠ 0) (R : Subring K) (hκ : ∀ c, κ c ∈ R) (hw : ∀ j, w j / w i ∈ R)
+    (i : Fin (N + 1)) (R : Subring K) (hκ : ∀ c, κ c ∈ R) (hw : ∀ j, w j / w i ∈ R)
     (m : ℕ) (g : MvPolynomial (Fin (N + 1)) k) (hg : g.IsHomogeneous m) : eval₂ κ w g / w i ^ m ∈ R := by
   rw [eval₂_eq, Finset.sum_div]
   refine Subring.sum_mem _ fun d hd => ?_
@@ -110,7 +110,7 @@ theorem ChartRing_of (h : SectOfLoc) : ChartRing := by
     rw [chartVal_mk]
     have hg' : g.IsHomogeneous m := by
       simpa using (mem_homogeneousSubmodule _ _).1 hg
-    exact homog_div_mem (kHom p) w i hi (loc X y) (fun c => kHom_mem_loc p y c) (fun j => hU y hy j) m g hg'
+    exact homog_div_mem (kHom p) w i (loc X y) (fun c => kHom_mem_loc p y c) (fun j => hU y hy j) m g hg'
   obtain ⟨φ, hφ⟩ := h X U ψ.range hR
   refine ⟨φ.comp ψ.rangeRestrict, fun y hy m g hg => ?_⟩
   rw [RingHom.comp_apply, hφ]

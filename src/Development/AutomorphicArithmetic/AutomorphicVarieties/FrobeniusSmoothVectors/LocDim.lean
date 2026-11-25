@@ -638,6 +638,7 @@ theorem UpperTheory.V.Fr.loc_dim :
   intro l _ O _ _ _ _ F C₀ n hOk hn S x L
   obtain ⟨hco, hmB⟩ := co_B hOk hn S
   haveI := hco
+  haveI : IsLocalRing S.B := UpperTheory.V.Alg.IsCO.toIsLocalRing O
   haveI : IsAdicComplete (maximalIdeal O) O := UpperTheory.V.Fr.IsCoef.complete (l := l)
   have hB : UpperTheory.V.CA.IsCL O S.B := UpperTheory.V.CA.IsCL.of_isCO O S.B
   obtain ⟨-, -, -, -, hFT, -, -⟩ := gr_A hOk hn S
