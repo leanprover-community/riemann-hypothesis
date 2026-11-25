@@ -54,7 +54,10 @@ read instead: `batch/<anything>-on-<number>`, such as `batch/b11-on-1739`, is st
 number if it is such a batch. A batch can be stacked on more than one. Batches that say they are
 stacked on each other in a circle are taken to be stacked on none. Only git checks the claim:
 when a batch's branch shares no commit beyond main with the branch of a batch it says it is
-stacked on, the run warns about it.
+stacked on, the run warns about it. Batches whose branches are at the same commit contain the
+same pull requests, so whatever they say about each other, each is taken to be stacked on the one
+with the next lower number: the lowest holds what they contain, and the highest is the
+outermost. The run warns about them every time it sees them.
 
 What a batch contains of its own, its members, is every open pull request whose head commit is
 in its branch, queued or not, into main or into another branch, unless a batch it is stacked on,
@@ -84,7 +87,9 @@ line or branch name to match.
 
 A pull request that is pushed to after the batch took its commit is still in the batch, at that
 commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`, as
-soon as the push comes in (see `pushed`) or else by the next sync. When
+soon as the push comes in (see `pushed`) or else by the next sync. If the batch then takes its
+new head, or it is pushed back to the commit the batch took, `awaiting-author` comes off again,
+but only if this workflow put it on along with that comment: a label a person put on stays. When
 the batch is merged, GitHub marks merged each pull request whose head commit is in it and whose
 base is main. One whose head has moved on stays open: it is told what landed and what did not,
 and keeps `awaiting-author`. One whose head landed but whose base is another branch is closed,
@@ -97,7 +102,9 @@ stays on them. The quote puts the pull requests it names in code spans, so that 
 mention each of them. A pull request this batch told before, whatever its entry and heading say
 now, or another batch told it is left out under the same heading, is not told again: that comment
 is brought up to date instead, which notifies nobody.
-One whose entry is removed from the description is told that too. A pull request that a batch
+One whose entry is removed from the description is told that too, unless three or more leave the
+left-out lists at once while the description still lists them: a heading was most likely
+reworded, and the run only logs it. A pull request that a batch
 being built contains, this one or another, is never told it is left out: the lower batch of a
 stack usually lists as left out what the batch on top of it takes.
 
@@ -226,6 +233,9 @@ BY_HAND = re.compile(r"<!-- batch-queue-by-hand (\{.*\}) -->")
 FROZEN_NOTE = "<!-- batch-queue-frozen {number} {sha} -->"
 # `sha` is the commit the batch took, so that a member is told this once for each commit.
 PUSHED = "<!-- batch-queue-pushed-while-frozen {number} {sha} -->"
+# On the line after `PUSHED` when the workflow put `awaiting-author` on along with that comment, so
+# that it takes off only a label it put on itself (see `handed_back`).
+HANDED_BACK = "<!-- batch-queue-handed-back -->"
 DROPPED = "<!-- batch-queue-dropped {number} {sha} -->"
 UNFROZEN = "<!-- batch-queue-unfrozen {number} -->"
 LANDED_BEFORE_PUSH = "<!-- batch-queue-landed-before-push {number} {sha} -->"
@@ -234,6 +244,10 @@ LEFT_OUT = re.compile(r"<!-- batch-queue-left-out (\{.*?\}) -->")
 NO_LONGER_LEFT_OUT = "<!-- batch-queue-no-longer-left-out {number} -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
+# When this many pull requests leave the left-out lists of a batch's description at once and the
+# description still lists them, a heading was most likely reworded: they are not told that they
+# are no longer left out (see `tell_left_out`).
+REWORDED = 3
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -619,6 +633,10 @@ def read_record(gh, number):
 #   told      {number: commit}: the members told that they are frozen, at that commit.
 #   pushed    {number: commit}: the members told that they were pushed to after the batch took
 #             that commit, and labelled `awaiting-author`.
+#   waiting   the members that this batch labelled `awaiting-author` when it told them they were
+#             pushed to, and that still carry it. It comes off once the batch holds their head
+#             again (see `unwait`). One that lost the label meanwhile leaves the list: a label put
+#             on later is a person's.
 #   left      {number: digest}: the pull requests told that the description leaves them out, with
 #             a digest of the entry they were told about (see `tell_left_out`).
 #   telling   true from just before the first comment of a round of telling (`tell_members` and
@@ -631,8 +649,9 @@ def read_record(gh, number):
 # JSON and keeps only the entries that count, as lists of numbers. `queued`, `labelled` and `told`
 # are each kept as that list or as the list of the members it leaves out (`unqueued`,
 # `unlabelled`, `untold`), whichever is shorter: a batch usually labels and tells nearly all of its
-# members. `below` is kept as it is in memory, and only when it is not empty. What is left is
-# about 50 characters for each member, nearly all of it `members` with its full commit ids.
+# members. `below` is kept as it is in memory, and `waiting` as a list of numbers, each only when
+# it is not empty. What is left is about 50 characters for each member, nearly all of it `members`
+# with its full commit ids.
 # `load_note` also reads the notes written before `dump_note`, which kept every key as it is in
 # memory.
 
@@ -663,6 +682,8 @@ def dump_note(note):
         shorter("told", counting(note["told"]))
     if "pushed" in note:
         kept["pushed"] = sorted(int(key) for key in counting(note["pushed"]))
+    if note.get("waiting"):
+        kept["waiting"] = sorted(int(key) for key in note["waiting"] if key in found)
     if note.get("telling"):
         kept["telling"] = True
     return json.dumps(kept, sort_keys=True, separators=(",", ":"))
@@ -707,6 +728,8 @@ def load_note(text):
         note["pushed"] = {key: found[key] for key in sorted(numbers("pushed"), key=int) if key in found}
     elif isinstance(kept.get("pushed"), dict):
         note["pushed"] = mapping("pushed")
+    if numbers("waiting"):
+        note["waiting"] = sorted(numbers("waiting"), key=int)
     if kept.get("telling") is True:
         note["telling"] = True
     return note
@@ -819,18 +842,66 @@ def named_below(gh, ref, body, note):
     return named
 
 
+def twins(hand, log):
+    """Stack batches whose branches are at the same commit on one another, in number order.
+
+    Two such batches contain the same pull requests, and so does a branch that contains another's
+    head while the other contains its head: the two heads are one commit. Whatever they say about
+    each other, each is taken to be stacked on the one with the next lower number, which holds
+    what they share, and the one with the highest number is the outermost. What they say about
+    other batches still counts. Sets `same` on each batch, the batch it is stacked on for that
+    reason, and warns on every run that sees such batches.
+    """
+    for batch in hand:
+        batch["same"] = set()
+    heads = {}
+    for batch in hand:
+        heads.setdefault(batch["sha"], []).append(batch)
+    for head, group in sorted(heads.items(), key=lambda item: min(batch["number"] for batch in item[1])):
+        if len(group) < 2:
+            continue
+        group.sort(key=lambda batch: batch["number"])
+        numbers = {batch["number"] for batch in group}
+        for lower, upper in zip(group, group[1:]):
+            upper["same"] = {lower["number"]}
+        for batch in group:
+            batch["under"] = (batch["under"] - numbers) | batch["same"]
+            if not batch["under"] - batch["same"]:
+                batch["how"] = None
+        names = ", ".join(f"#{batch['number']}" for batch in group)
+        order = ", ".join(f"#{upper['number']} on #{lower['number']}" for lower, upper in zip(group, group[1:]))
+        log.append(f"warning: the batches {names} are at the same commit `{head[:10]}`: whatever they say about "
+                   f"each other, each is taken to be stacked on the one with the next lower number ({order})")
+
+
+def stacking(batch):
+    """Which batches a batch is stacked on directly, and why, in words, or "" when it is stacked on
+    none: "#1018, as its branch name says"."""
+    same = batch.get("same", set())
+    claimed = sorted(set(batch.get("under", ())) - same)
+    parts = []
+    if claimed:
+        parts.append(", ".join(f"#{number}" for number in claimed) + f", as {batch['how']} says")
+    if same:
+        parts.append(", ".join(f"#{number}" for number in sorted(same))
+                     + ", whose branch is at the same commit and whose number is lower")
+    return ", and on ".join(parts)
+
+
 def stack(gh, hand, pulls, log):
     """Put the open batches assembled by hand that are being built in order, the lowest first.
 
-    Sets on each `under`, the batches it is stacked on directly, `how`, where it says so, and
-    `below`, every batch under it, directly or not, all as numbers of batches in `hand`. Batches
-    that say they are stacked on each other in a circle are taken to be stacked on none, and the
-    run says so. Each batch comes after every batch under it.
+    Sets on each `under`, the batches it is stacked on directly, `how`, where it says so, `same`,
+    those of them it is stacked on because their branches are at the same commit (see `twins`),
+    and `below`, every batch under it, directly or not, all as numbers of batches in `hand`.
+    Batches that say they are stacked on each other in a circle are taken to be stacked on none,
+    except for `same`, and the run says so. Each batch comes after every batch under it.
     """
     numbers = {batch["number"] for batch in hand}
     by = {batch["number"]: batch for batch in hand}
     for batch in hand:
         batch["under"], batch["how"] = stacked_on(gh, pulls[batch["number"]], numbers)
+    twins(hand, log)
 
     def close():
         for batch in hand:
@@ -845,10 +916,12 @@ def stack(gh, hand, pulls, log):
     close()
     circle = sorted(batch["number"] for batch in hand if batch["number"] in batch["below"])
     if circle:
+        # What `twins` stacks never makes a circle by itself, so none is left once the rest goes.
         log.append("the batches " + ", ".join(f"#{number}" for number in circle) + " say they are stacked on "
-                   "each other in a circle: none of them is taken to be stacked on another batch")
+                   "each other in a circle: none of them is taken to be stacked on another batch"
+                   + (", except one at the same commit" if any(by[number]["same"] for number in circle) else ""))
         for number in circle:
-            by[number]["under"], by[number]["how"] = set(), None
+            by[number]["under"], by[number]["how"] = set(by[number]["same"]), None
         close()
     # A batch has more batches under it than any batch under it has.
     return sorted(hand, key=lambda batch: (len(batch["below"]), batch["number"]))
@@ -918,7 +991,7 @@ def kept(note, name):
 def save(gh, batch):
     """Write the note of a batch assembled by hand to this script's comment on its pull request,
     if it has changed. A note that cannot be written stops the run: everything else relies on it."""
-    text, comment = describe_by_hand(batch["note"], batch.get("under", ()), batch.get("how")), batch["comment"]
+    text, comment = describe_by_hand(batch["note"], stacking(batch)), batch["comment"]
     if comment is None:
         status, data = gh.write("POST", f"issues/{batch['number']}/comments", {"body": text})
         if status in (0, 201):
@@ -979,10 +1052,9 @@ def look_through(gh, batch, by, pulls, before, gone, log):
                 now.setdefault(key, commit)
         found = now
         if set(below) != set(note.get("below", {})):
-            log.append(f"#{number} is stacked on " + ", ".join(f"#{other}" for other in sorted(batch["under"]))
-                       + f", as {batch['how']} says" if batch["under"] else
+            log.append(f"#{number} is stacked on {stacking(batch)}" if batch["under"] else
                        f"#{number} is no longer stacked on another batch")
-        for other in sorted(batch["under"]):
+        for other in sorted(batch["under"] - batch.get("same", set())):
             if not shares(gh, batch, by[other], by, commits):
                 log.append(f"warning: #{number} says in {batch['how']} that it is stacked on #{other}, but its branch "
                            f"shares no commit with that of #{other} beyond `main`")
@@ -1010,7 +1082,8 @@ def keep_in_step(gh, batch, pulls, held, main, log):
     The note is written first, so that whatever carries `batch-building` because of this batch
     is in it when the batch is finished with. It then remembers what was done as it is done:
     which members were labelled (`labelled`), and who was told that they are frozen (`told`),
-    that they were pushed to afterwards (`pushed`, which also labels them `awaiting-author`), or
+    that they were pushed to afterwards (`pushed`, which also labels them `awaiting-author`, and
+    `waiting` when that label was this workflow's, see `unwait`), or
     what the description says about them being left out (`left`, see `tell_left_out`). Only what
     GitHub took counts as done, so what was refused or cut short is tried again by the next run,
     and nothing is done twice: a round of telling is marked in the note before its first comment
@@ -1062,7 +1135,7 @@ def keep_in_step(gh, batch, pulls, held, main, log):
         told = dict(found)
         log.append(f"the record of the batch #{number} is older than the notices that a pull request is frozen: "
                    f"its {len(told)} pull request(s) are labelled but not told")
-    note.update(labelled=labelled, told=told, left=left,
+    note.update(labelled=labelled, told=told, left=left, waiting=unwait(gh, batch, pulls, log),
                 pushed={key: commit for key, commit in kept(old, "pushed").items() if found.get(key) == commit})
     if batch["resumed"]:
         note["telling"] = True
@@ -1095,7 +1168,7 @@ def tell_members(gh, batch, pulls, main, log):
     it was pushed to after the batch took it, if it was. The note remembers it. Returns whether
     everything was told, False when the run is cut short."""
     note, number, since = batch["note"], batch["number"], 0
-    told, pushed = note["told"], note["pushed"]
+    told, pushed, waiting = note["told"], note["pushed"], note["waiting"]
     for key, commit in sorted(note["members"].items(), key=lambda entry: int(entry[0])):
         pr = pulls.get(int(key))
         if pr is None or by_hand(pr) or (told.get(key) == commit and (pr["sha"] == commit or pushed.get(key) == commit)):
@@ -1108,8 +1181,13 @@ def tell_members(gh, batch, pulls, main, log):
                                                  frozen_text(number, commit, pr, main)):
             told[key], since = commit, since + 1
             log.append(f"told #{key} that it is frozen while the batch #{number} is built")
-        if pr["sha"] != commit and pushed.get(key) != commit and tell_pushed(gh, number, commit, pr, main, log):
-            pushed[key], since = commit, since + 1
+        if pr["sha"] != commit and pushed.get(key) != commit:
+            done, handed = tell_pushed(gh, number, commit, pr, main, log)
+            if done:
+                pushed[key], since = commit, since + 1
+            if done and handed and key not in waiting:
+                waiting.append(key)
+                waiting.sort(key=int)
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
@@ -1137,20 +1215,62 @@ def tell_pushed(gh, number, commit, pr, main, log):
     first, so that a run cut short between the two leaves the label rather than the comment
     without it. Its comments are read to look for an earlier one: `pushed` tells it as soon as the
     push comes in, without writing the batch's note, and the sync takes that into its note.
-    Returns whether it has been told."""
+    Returns whether it has been told, and whether the workflow put `awaiting-author` on along with
+    the comment, which then says so (`HANDED_BACK`)."""
     marker = PUSHED.format(number=number, sha=commit)
-    if any((comment.get("body") or "").startswith(marker)
-           for comment in gh.pages(f"issues/{pr['number']}/comments") if by_workflow(comment)):
-        return True
-    relabel(gh, pr, add=WAITING)
-    if not say(gh, pr["number"], marker,
+    for comment in gh.pages(f"issues/{pr['number']}/comments"):
+        body = comment.get("body") or ""
+        if by_workflow(comment) and body.startswith(marker):
+            return True, HANDED_BACK in body
+    handed = WAITING not in pr["labels"] and relabel(gh, pr, add=WAITING)
+    if not say(gh, pr["number"], marker, (f"{HANDED_BACK}\n" if handed else "") +
                f"This pull request was pushed to after batch #{number} took its commit `{commit[:10]}`. The batch "
                f"builds and lands `{commit[:10]}` only, not `{pr['sha'][:10]}`, so when it lands this pull request "
                f"stays open with what came after `{commit[:10]}`. Once the batch has landed, merge `{main}` into "
                "this branch and comment `ready`, or close this pull request if nothing is left to change."):
-        return False
+        return False, False
     log.append(f"told #{pr['number']} that it was pushed to after the batch #{number} took it: now `{WAITING}`")
-    return True
+    return True, handed
+
+
+def handed_back(gh, number, key, commits):
+    """Whether the workflow put `awaiting-author` on the pull request `key` when it told it that it
+    was pushed to after the batch `number` took one of `commits`: that comment says so. A request."""
+    markers = tuple(PUSHED.format(number=number, sha=commit) for commit in commits)
+    return any(by_workflow(comment) and (comment.get("body") or "").startswith(markers)
+               and HANDED_BACK in comment["body"] for comment in gh.pages(f"issues/{key}/comments"))
+
+
+def unwait(gh, batch, pulls, log):
+    """Take `awaiting-author` off each member of a batch assembled by hand whose head is the commit
+    the batch holds again, if this workflow put it on when it told the member that it was pushed
+    to after the batch took it: the batch has taken its new head, or it was pushed back. A label a
+    person put on stays. Returns the note's new `waiting` (see `dump_note`).
+
+    The note's `waiting` says which labels were the workflow's. When `pushed` told a member, the
+    note does not know of it yet, so in the run where the batch takes a new head of a member that
+    the note says nothing about, the member's comments are read instead (see `handed_back`).
+    """
+    old, number, waiting = batch["old"], batch["number"], []
+    found, before, told = batch["note"]["members"], members(batch["old"]), kept(batch["old"], "pushed")
+    for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
+        pr = pulls.get(int(key))
+        if pr is None or WAITING not in pr["labels"]:
+            continue
+        ours = key in (old.get("waiting") or ())
+        if pr["sha"] != commit:
+            if ours:
+                waiting.append(key)
+            continue
+        if not ours and key not in told and before.get(key) not in (None, commit):
+            ours = handed_back(gh, number, key, [before[key]])
+        if not ours:
+            continue
+        if relabel(gh, pr, remove=WAITING):
+            log.append(f"#{key} is in the batch #{number} at its head again: `{WAITING}` removed")
+        else:
+            waiting.append(key)
+    return waiting
 
 
 def frozen_text(number, commit, pr, main):
@@ -1172,18 +1292,28 @@ def left_out(body, repo):
     URL. Those under a heading that says "left out" or "not included" are the ones left out,
     up to the next heading or paragraph. A pull request listed twice keeps its first entry.
     """
+    found = {}
+    for heading, number, text in entries(body, repo):
+        if heading and LEFT_OUT_HEADING.search(heading):
+            found.setdefault(number, (heading, text))
+    return found
+
+
+def entries(body, repo):
+    """The list entries of a batch's description that start with a link to a pull request, as
+    (heading or None, number, entry) in order: what `left_out` reads, under any heading or none."""
     link = re.compile(rf"[-*]\s+(?:https://github\.com/{re.escape(repo)}/pull/|#)(\d+)\b", re.IGNORECASE)
-    found, heading = {}, None
+    found, heading = [], None
     for line in body.splitlines():
         text = line.strip()
         if not text or line[0].isspace():
             continue
         if line.startswith(("- ", "* ")):
             match = link.match(line)
-            if heading and match:
-                found.setdefault(int(match.group(1)), (heading, text[1:].strip()))
+            if match:
+                found.append((heading, int(match.group(1)), text[1:].strip()))
             continue
-        heading = text if text.endswith(":") and LEFT_OUT_HEADING.search(text) else None
+        heading = text if text.endswith(":") else None
     return found
 
 
@@ -1229,7 +1359,9 @@ def tell_left_out(gh, batch, pulls, held, log):
     there. Only a different batch leaving it out for a different kind of reason tells it again.
     The quote names pull requests and issues of this repository in code spans (see `unlinked`).
     One whose entry has gone from the description since it was told is told that, if this
-    batch's comment told it. What a batch being built contains, this one or another, as `held`
+    batch's comment told it, unless `REWORDED` or more leave the left-out lists at once while the
+    description still lists them: a heading was most likely reworded, and they are only logged
+    and taken off the note. What a batch being built contains, this one or another, as `held`
     says, is never told it is left out: the lower batch of a stack usually lists as left out what
     the batch on top of it takes. The note's `left` remembers, for each pull request, a digest of
     the entry it was last told about for this batch, and is brought up to date as each is told.
@@ -1239,9 +1371,18 @@ def tell_left_out(gh, batch, pulls, held, log):
     note, number, since = batch["note"], batch["number"], 0
     found, left = note["members"], note["left"]
     listed = left_out(pulls[number]["body"], gh.repo)
+    # No longer left out, but still in the description, as when a heading no longer says so.
+    anywhere = {other for _, other, _ in entries(pulls[number]["body"], gh.repo)}
+    moved = sorted((key for key in left if int(key) not in listed and int(key) in anywhere and int(key) in pulls
+                    and key not in found and not held.get(key) and not pulls[int(key)]["batch"]), key=int)
+    if len(moved) >= REWORDED:
+        log.append(f"the description of the batch #{number} no longer lists " + ", ".join(f"#{key}" for key in moved)
+                   + " as left out, but still lists them: was a heading reworded? They were not told")
+    else:
+        moved = []
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
-        if pr is None or key in found or held.get(key) or pr["batch"]:
+        if pr is None or key in found or held.get(key) or pr["batch"] or key in moved:
             left.pop(key, None)
             continue
         entry = listed.get(int(key))
@@ -1300,14 +1441,13 @@ def tell_left_out(gh, batch, pulls, held, log):
     return True
 
 
-def describe_by_hand(note, under=(), how=None):
-    """The comment that records what a batch assembled by hand contains. `under` is the batches
-    it is stacked on directly, and `how` where it says so."""
+def describe_by_hand(note, under=""):
+    """The comment that records what a batch assembled by hand contains. `under` says which
+    batches it is stacked on directly, and why, as `stacking` puts it."""
     listed = ", ".join(f"#{key}" for key in sorted(note["members"], key=int)) or "nothing yet"
     stacked = ""
     if under:
-        names = ", ".join(f"#{number}" for number in sorted(under))
-        stacked = (f"This batch is stacked on {names}, as {how} says. A pull request that a batch under this one "
+        stacked = (f"This batch is stacked on {under}. A pull request that a batch under this one "
                    "contains is listed there, not here.\n\n")
     return (f"<!-- batch-queue-by-hand {dump_note(note)} -->\n"
             "While this pull request is open, the batch-queue workflow takes it to be a batch that is being built. "
@@ -1715,11 +1855,12 @@ def pushed(gh, number):
     built. The pull request's own batch is the lowest of them, in the order `stack` puts them in,
     whose record holds it: a record written before batches were stacked may hold it too, and
     otherwise one record does. If that batch holds it at another commit than its head, it is told
-    so and labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). Its labels are then
-    brought in step, as `reconcile` does for every open pull request: one whose head has moved on
-    from the commit its batch or the queue took is labelled `changed after frozen`. The batches'
-    notes are left alone, so that this can run alongside a sync: the next sync finds the comment
-    and notes it.
+    so and labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If it was pushed
+    back to that commit instead, `awaiting-author` comes off, if the workflow put it on when it told
+    it so, as `unwait` does. Its labels are then brought in step, as `reconcile` does for every open
+    pull request: one whose head has moved on from the commit its batch or the queue took is
+    labelled `changed after frozen`. The batches' notes are left alone, so that this can run
+    alongside a sync: the next sync finds the comment and notes it.
     Returns lines saying what was done."""
     log = []
     main = gh.get("")["default_branch"]
@@ -1729,7 +1870,7 @@ def pushed(gh, number):
         return [f"#{number} is not open: nothing to do"]
     if pr["batch"]:
         return [f"#{number} holds a batch: the sync looks after it"]
-    hand = [{"number": other["number"], "note": read_record(gh, other["number"])[1]}
+    hand = [{"number": other["number"], "sha": other["sha"], "note": read_record(gh, other["number"])[1]}
             for other in sorted(pulls.values(), key=lambda other: other["number"])
             if by_hand(other) and BUILDING in other["labels"]]
     key = str(number)
@@ -1740,6 +1881,12 @@ def pushed(gh, number):
             continue
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
             tell_pushed(gh, batch["number"], commit, pr, main, log)
+        elif commit == pr["sha"] and WAITING in pr["labels"] and (
+                key in (batch["note"].get("waiting") or ()) or key not in kept(batch["note"], "pushed")
+                and handed_back(gh, batch["number"], key, [commit])):
+            # Pushed back to the commit the batch took, as `unwait` does in a sync.
+            if relabel(gh, pr, remove=WAITING):
+                log.append(f"#{key} is in the batch #{batch['number']} at its head again: `{WAITING}` removed")
         break
     approved = {}
     approvals(gh, {number: pr}, main, approved, log, every=True)

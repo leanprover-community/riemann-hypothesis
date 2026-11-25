@@ -1289,6 +1289,61 @@ class Members(unittest.TestCase):
         sync(gh)
         self.assertEqual(len(gh.said(23)), 2)
 
+    def no_longer(self, gh, number):
+        return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-no-longer-left-out")]
+
+    def reworded(self, body):
+        """The description with both left-out headings reworded so that they no longer say so."""
+        return (body.replace("Left out because they conflict with a PR earlier in the batch:",
+                             "Conflicting with a PR earlier in the batch:")
+                .replace("Left out for other reasons:", "Waiting for other reasons:"))
+
+    def test_a_reworded_heading_tells_no_one_they_are_no_longer_left_out(self):
+        gh = self.built()
+        sync(gh)
+        gh.pulls[1018]["body"] = self.reworded(DESCRIPTION)
+        gh.touch(1018)
+        gh.writes = []
+        log = sync(gh)
+        self.assertIn("the description of the batch #1018 no longer lists #21, #22, #23 as left out, but still lists "
+                      "them: was a heading reworded? They were not told", log)
+        self.assertEqual([self.no_longer(gh, n) for n in (21, 22, 23)], [[], [], []])
+        self.assertEqual([path for method, path, _ in gh.writes if path.startswith(("issues/21/", "issues/22/",
+                                                                                     "issues/23/"))], [])
+        self.assertEqual(note(gh.said(1018)[0])["left"], {})
+        gh.writes = []
+        self.assertEqual(sync(gh), ["nothing to do"])
+        # Worded back, their comments are brought up to date: nobody is told again.
+        gh.label(23, remove=WAITING)  # the author commented `ready`
+        gh.pulls[1018]["body"] = DESCRIPTION
+        gh.touch(1018)
+        sync(gh)
+        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
+        self.assertNotIn(WAITING, gh.pulls[23]["labels"])
+
+    def test_a_few_entries_moved_out_of_the_left_out_lists_are_told(self):
+        gh = self.built()
+        sync(gh)
+        gh.pulls[1018]["body"] = DESCRIPTION.replace("Left out because they conflict with a PR earlier in the batch:",
+                                                     "Conflicting with a PR earlier in the batch:")
+        gh.touch(1018)
+        log = sync(gh)
+        self.assertEqual([len(self.no_longer(gh, n)) for n in (21, 22, 23)], [1, 1, 0])
+        self.assertIn("told #22 that the batch #1018 no longer lists it as left out", log)
+
+    def test_an_entry_removed_along_with_a_reworded_heading_is_still_told(self):
+        gh = self.built()
+        gh.add_pull(25, "head25")
+        gh.pulls[1018]["body"] = DESCRIPTION.replace(
+            "Left out for other reasons:\n\n", f"Left out for other reasons:\n\n- {URL}25 Too big (@grace): split it.\n")
+        sync(gh)
+        self.assertEqual(len(self.left(gh, 25)), 1)
+        gh.pulls[1018]["body"] = self.reworded(DESCRIPTION)
+        gh.touch(1018)
+        log = sync(gh)
+        self.assertEqual([len(self.no_longer(gh, n)) for n in (21, 22, 23, 25)], [0, 0, 0, 1])
+        self.assertIn("told #25 that the batch #1018 no longer lists it as left out", log)
+
     def test_dropped_from_the_branch_it_is_told_it_can_push_again(self):
         gh = self.built()
         sync(gh)
@@ -1662,12 +1717,143 @@ class Pushed(unittest.TestCase):
         [said] = self.pushes(gh, 12)
         self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1018 {sha('head12')} -->"))
 
+    def test_of_two_batches_at_the_same_commit_the_lower_number_tells_it(self):
+        gh = self.built()
+        by_hand(gh, 11, 12, 14, number=1100, ref="batch/copy", name="kim")
+        sync(gh)
+        gh.push(12, "head12-later")
+        log = batch.pushed(gh, 12)
+        self.assertIn("told #12 that it was pushed to after the batch #1018 took it: now `awaiting-author`", log)
+        self.assertEqual(len(self.pushes(gh, 12)), 1)
+
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
         self.assertEqual(batch.pushed(gh, 1018), ["#1018 holds a batch: the sync looks after it"])
         gh.close(14)
         self.assertEqual(batch.pushed(gh, 14), ["#14 is not open: nothing to do"])
         self.assertEqual(gh.writes, [])
+
+
+class BackAtItsHead(unittest.TestCase):
+    """A member pushed to after its batch took it gets `awaiting-author`. Once the batch holds its
+    head again, the label comes off, if the workflow put it on."""
+
+    def built(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        by_hand(gh, 11, 12)
+        sync(gh)
+        return gh
+
+    def taken(self, gh):
+        """The new head of #12 is merged into the batch."""
+        by_hand(gh, 11, 12, name="kim-with-12-later")
+
+    def stored(self, gh):
+        return note(gh.said(1018)[0])
+
+    def test_when_the_batch_takes_the_new_head_the_label_comes_off(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
+        self.assertEqual((self.stored(gh)["pushed"], self.stored(gh)["waiting"]), ({"12": sha("head12")}, ["12"]))
+        self.taken(gh)
+        log = sync(gh)
+        self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        self.assertNotIn("waiting", self.stored(gh))
+        self.assertNotIn('"waiting"', gh.said(1018)[0])
+        gh.writes = []
+        self.assertEqual(sync(gh), ["nothing to do"])
+
+    def test_a_label_a_person_put_on_stays(self):
+        gh = self.built()
+        gh.label(12, add=WAITING, login="maintainer")  # `aa`
+        gh.push(12, "head12-later")
+        sync(gh)
+        [said] = [body for body in gh.said(12) if body.startswith("<!-- batch-queue-pushed-while-frozen")]
+        self.assertNotIn(batch.HANDED_BACK, said)
+        self.assertNotIn("waiting", self.stored(gh))
+        self.taken(gh)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+
+    def test_a_label_put_back_by_a_person_after_ready_stays(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        sync(gh)
+        gh.label(12, remove=WAITING, login="author")  # `ready`
+        sync(gh)
+        self.assertNotIn("waiting", self.stored(gh))
+        gh.label(12, add=WAITING, login="maintainer")  # `aa`
+        self.taken(gh)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+
+    def test_told_by_pushed_before_the_sync_noted_it(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        [said] = [body for body in gh.said(12) if body.startswith("<!-- batch-queue-pushed-while-frozen")]
+        self.assertIn(batch.HANDED_BACK, said)
+        # The batch takes the new head before any sync has read that comment.
+        self.taken(gh)
+        log = sync(gh)
+        self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+
+    def test_noted_by_a_sync_after_pushed_told_it(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        sync(gh)
+        self.assertEqual(self.stored(gh)["waiting"], ["12"])
+        self.taken(gh)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+
+    def test_pushed_back_to_the_commit_the_batch_took(self):
+        for noted in (True, False):
+            with self.subTest(noted=noted):
+                gh = self.built()
+                gh.push(12, "head12-later")
+                batch.pushed(gh, 12)
+                if noted:
+                    sync(gh)
+                gh.push(12, "head12")  # force-pushed back
+                log = batch.pushed(gh, 12)
+                self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+                self.assertEqual(gh.pulls[12]["labels"], IN)
+                sync(gh)
+                self.assertEqual(gh.pulls[12]["labels"], IN)
+                self.assertNotIn("waiting", self.stored(gh))
+
+    def test_pushed_back_with_a_label_a_person_put_on_it_stays(self):
+        gh = self.built()
+        gh.label(12, add=WAITING, login="maintainer")
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        gh.push(12, "head12")
+        self.assertEqual(batch.pushed(gh, 12),
+                         [f"#12 is at `{short('head12')}`, the commit that was taken: `{CHANGED}` removed"])
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+
+    def test_taken_at_an_older_head_than_the_latest_push_it_waits_for_that_one(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        gh.inside[sha("head12-later")] = {sha("head12")}
+        sync(gh)
+        self.taken(gh)
+        gh.push(12, "head12-latest")
+        gh.inside[sha("head12-latest")] = {sha("head12-later"), sha("head12")}
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
+        self.assertEqual(self.stored(gh)["waiting"], ["12"])
+        by_hand(gh, 11, 12, name="kim-with-12-latest")
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
 
 
 class LeftOutDigests(unittest.TestCase):
@@ -1882,6 +2068,13 @@ class Notes(unittest.TestCase):
         self.assertEqual(json.loads(batch.dump_note(stacked))["below"], {"1018": sha("kim")})
         self.assertEqual(batch.load_note(batch.dump_note(stacked)), stacked)
         self.assertNotIn("below", json.loads(batch.dump_note(dict(self.OLD, below={}))))
+
+    def test_the_labels_the_workflow_handed_back_are_kept(self):
+        kept = batch.load_note(batch.dump_note(self.OLD))
+        waiting = dict(kept, waiting=["12", "99"])  # #99 is not a member
+        self.assertEqual(json.loads(batch.dump_note(waiting))["waiting"], [12])
+        self.assertEqual(batch.load_note(batch.dump_note(waiting)), dict(kept, waiting=["12"]))
+        self.assertNotIn("waiting", json.loads(batch.dump_note(dict(kept, waiting=[]))))
 
     def test_a_key_the_note_lacks_stays_missing(self):
         # A note from before `queued` was recorded holds only queued pull requests.
@@ -2327,6 +2520,103 @@ class StackedBatches(unittest.TestCase):
         self.assertIn("the batches #1018, #1050 say they are stacked on each other in a circle: none of them is "
                       "taken to be stacked on another batch", log)
         self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING, LATEST}, {BUILDING, LATEST}])
+
+    def twins(self, lower="Assembled by hand.", upper="Assembled by hand.", ref="batch/copy"):
+        """#1018 and #1050 are two batches at the same commit, holding #11 and #12."""
+        gh = Fake()
+        queue(gh, 11, 12, 13)
+        by_hand(gh, 11, 12, body=lower)
+        by_hand(gh, 11, 12, number=1050, ref=ref, name="kim", body=upper)
+        return gh
+
+    TWINS = (f"warning: the batches #1018, #1050 are at the same commit `{short('kim')}`: whatever they say about "
+             "each other, each is taken to be stacked on the one with the next lower number (#1050 on #1018)")
+
+    def test_two_batches_at_the_same_commit_are_stacked_in_number_order(self):
+        gh = self.twins()
+        log = sync(gh)
+        self.assertIn(self.TWINS, log)
+        # Nothing is held twice: the lower number holds it all, and the higher one is the outermost.
+        self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, set()))
+        self.assertEqual(self.labels(gh, 11, 12, 13, 1018, 1050),
+                         [IN, IN, QF, {BUILDING}, {BUILDING, LATEST}])
+        # Each member is told once, by the batch that holds it.
+        self.assertEqual([self.frozen(gh, number) for number in (11, 12)], [[1018], [1018]])
+        self.assertIn("This batch is stacked on #1018, whose branch is at the same commit and whose number is lower.",
+                      self.record(gh, 1050))
+        self.assertEqual(note(self.record(gh, 1050))["below"], {"1018": sha("kim")})
+        # Every run warns again, and changes nothing.
+        for _ in range(2):
+            gh.writes = []
+            self.assertEqual(sync(gh), [self.TWINS])
+            self.assertEqual(gh.writes, [])
+
+    def test_what_they_say_about_each_other_does_not_change_the_order(self):
+        for lower, upper, ref in (("- [ ] depends on: #1050\n", "- [ ] depends on: #1018\n", "batch/copy"),
+                                  ("- [ ] depends on: #1050\n", "Assembled by hand.", "batch/copy"),
+                                  ("Assembled by hand.", "Assembled by hand.", UPPER)):
+            with self.subTest(lower=lower, upper=upper, ref=ref):
+                gh = self.twins(lower, upper, ref)
+                log = sync(gh)
+                self.assertIn(self.TWINS, log)
+                self.assertFalse([line for line in log if "circle" in line])
+                self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, set()))
+                self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING}, {BUILDING, LATEST}])
+
+    def test_a_batch_that_was_alone_takes_nothing_from_its_twin_and_no_label_changes(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        by_hand(gh, 11, 12, number=1050, ref="batch/copy", name="kim")
+        sync(gh)
+        self.assertEqual(self.own(gh, 1050), {"11", "12"})
+        # A second batch with a lower number appears at the same commit: what is held moves down
+        # to it, and keeps its labels, as when it moves down a stack.
+        by_hand(gh, 11, 12)
+        gh.writes = []
+        log = sync(gh)
+        self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, set()))
+        self.assertFalse([path for method, path, _ in gh.writes if "labels" in path
+                          and path.startswith(("issues/11/", "issues/12/"))])
+        self.assertEqual(self.labels(gh, 11, 12), [IN, IN])
+        self.assertFalse([body for body in gh.said(11) if body.startswith("<!-- batch-queue-dropped")])
+        # The one that was there first stays the outermost.
+        self.assertFalse([line for line in log if LATEST in line])
+        self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING}, {BUILDING, LATEST}])
+
+    def test_once_one_moves_on_what_it_says_counts_again(self):
+        gh = self.twins(ref=UPPER)
+        sync(gh)
+        by_hand(gh, 1018, 13, number=1050, ref=UPPER, name="b5")
+        log = sync(gh)
+        self.assertFalse([line for line in log if line.startswith("warning")])
+        self.assertEqual((self.own(gh, 1018), self.own(gh, 1050)), ({"11", "12"}, {"13"}))
+        self.assertIn("This batch is stacked on #1018, as its branch name says.", self.record(gh, 1050))
+        self.assertEqual(self.labels(gh, 11, 12, 13, 1018, 1050), [IN, IN, IN, {BUILDING}, {BUILDING, LATEST}])
+
+    def test_what_they_say_about_other_batches_still_counts(self):
+        gh = Fake()
+        queue(gh, 11, 13)
+        by_hand(gh, 11)
+        body = "- [ ] depends on: #1018\n"
+        by_hand(gh, 1018, 13, number=1050, ref="batch/b5", name="b5", body=body)
+        by_hand(gh, 1018, 13, number=1060, ref="batch/b5-copy", name="b5", body=body)
+        sync(gh)
+        self.assertEqual([self.own(gh, number) for number in (1018, 1050, 1060)], [{"11"}, {"13"}, set()])
+        self.assertEqual(self.labels(gh, 1018, 1050, 1060), [{BUILDING}, {BUILDING}, {BUILDING, LATEST}])
+        self.assertIn("This batch is stacked on #1018, as a `depends on` line says, and on #1050, whose branch is at "
+                      "the same commit and whose number is lower.", self.record(gh, 1060))
+
+    def test_a_circle_through_another_batch_keeps_the_order_of_twins(self):
+        gh = Fake()
+        queue(gh, 11, 21)
+        by_hand(gh, 11, body="- [ ] depends on: #2000\n")
+        by_hand(gh, 11, number=1050, ref="batch/copy", name="kim")
+        by_hand(gh, 21, number=2000, ref="batch/other", name="other", body="- [ ] depends on: #1050\n")
+        log = sync(gh)
+        self.assertIn("the batches #1018, #1050, #2000 say they are stacked on each other in a circle: none of them "
+                      "is taken to be stacked on another batch, except one at the same commit", log)
+        self.assertEqual([self.own(gh, number) for number in (1018, 1050, 2000)], [{"11"}, set(), {"21"}])
+        self.assertEqual(self.labels(gh, 1018, 1050, 2000), [{BUILDING}, {BUILDING, LATEST}, {BUILDING, LATEST}])
 
     def legacy(self):
         """A stack whose records were written before batches were stacked, and before members
