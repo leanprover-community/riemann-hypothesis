@@ -16,12 +16,6 @@ noncomputable section
 
 def dot {n : ℕ} (u w : Fin n → ℂ) : ℂ := ∑ i, u i * conj (w i)
 
-lemma norm_dot_le {n : ℕ} (u w : Fin n → ℂ) : ‖dot u w‖ ≤ en u * en w := by
-  have h : dot u w = inner ℂ (WithLp.toLp 2 w : EuclideanSpace ℂ (Fin n)) (WithLp.toLp 2 u) := by
-    simp only [dot, PiLp.inner_apply, RCLike.inner_apply]
-  rw [h, en, en, mul_comm]
-  exact norm_inner_le_norm _ _
-
 section Frames
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)

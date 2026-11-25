@@ -33,7 +33,6 @@ def pOfB (ε : Fin n → Bool) (B : Pt ε → Qt ε → ℂ) : Matrix (Fin n) (F
     if ha : ε a = true then (if hb : ε b = false then B ⟨a, ha⟩ ⟨b, hb⟩ else 0)
     else (if hb : ε b = true then star (B ⟨b, hb⟩ ⟨a, by simpa using ha⟩) else 0)
 
-
 open Classical in
 def toUJ (ε : Fin n → Bool) (m : Matrix (Fin n) (Fin n) ℂ) : UJ ε :=
   if h : inUJ ε m then
@@ -45,25 +44,6 @@ theorem toUJ_toM (ε : Fin n → Bool) (g : UJ ε) : toUJ ε (toM g) = g := by
   split_ifs with h
   · exact Subtype.ext (Units.ext rfl)
   · exact absurd g.2 h
-
-theorem measurable_comp_toUJ (ε : Fin n → Bool) {f : UJ ε → ℝ≥0∞} (hf : Measurable f) :
-    Measurable (fun m : Fin n → Fin n → ℂ => f (toUJ ε m)) := by
-  have hc : Topology.IsClosedEmbedding (intMuCD_eM ε) := isClosedEmbedding_toM ε
-  have he : MeasurableEmbedding (intMuCD_eM ε) := hc.measurableEmbedding
-  have hinj : Function.Injective (intMuCD_eM ε) := hc.injective
-  have heq : (fun m : Fin n → Fin n → ℂ => f (toUJ ε m)) =
-      Function.extend (intMuCD_eM ε) f (fun _ => f 1) := by
-    funext m
-    by_cases h : inUJ ε m
-    · obtain ⟨g, rfl⟩ : m ∈ Set.range (fun g : UJ ε => toM g) := by rw [range_toM]; exact h
-      show f (toUJ ε (toM g)) = Function.extend (intMuCD_eM ε) f (fun _ => f 1) (intMuCD_eM ε g)
-      rw [toUJ_toM, hinj.extend_apply]
-    · rw [Function.extend_apply']
-      · simp [toUJ, h]
-      · rintro ⟨g, hg⟩
-        exact h (hg ▸ g.2)
-  rw [heq]
-  exact he.measurable_extend hf measurable_const
 
 def phiF (ε : Fin n → Bool) (B : Pt ε → Qt ε → ℂ) : PCoord ε → ℂ := fun ab => pOfB ε B ab.1.1 ab.1.2
 

@@ -156,11 +156,4 @@ theorem herm_of_LZ {g : ℕ} {b : X.Ψ → Fin 2 → Fin 2 → ℂ} (hb : b ∈ 
   simp only [Data.embH]
   rw [← hβ i k, cc, IsCMField.complexEmbedding_complexConj]
 
-theorem herm_sum {n : ℕ} (ω : Fin n → X.Ψ → Fin 2 → Fin 2 → ℂ) (hω : ∀ j, IsHermFam (ω j))
-    (t : Fin n → ℝ) : IsHermFam (∑ j, (t j : ℂ) • ω j) := by
-  intro τ i k
-
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Complex.conj_ofReal]
-  exact Finset.sum_congr rfl fun j _ => by rw [hω j τ i k]
-
 end ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds

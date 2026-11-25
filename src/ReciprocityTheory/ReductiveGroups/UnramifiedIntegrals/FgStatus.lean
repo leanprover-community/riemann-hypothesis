@@ -25,12 +25,6 @@ namespace ReciprocityTheory.ChartRestriction.L1
 
 open PowerSeries Formalism.G Formalism.LT Formalism.L2.Th1.CM
 
-theorem integral_of_map_kur {l : ℕ} [Fact l.Prime] {f : PowerSeries (MaximalUnramifiedExtension l)}
-    (h : IntegralPS (PowerSeries.map (MaximalUnramifiedExtension l).subtype f)) : IntegralPS f := fun n => by
-  have := h n
-  rw [PowerSeries.coeff_map] at this
-  exact this
-
 theorem cm3 : CM3 :=
   GlobalTheory.HondaCM3.cm3
 

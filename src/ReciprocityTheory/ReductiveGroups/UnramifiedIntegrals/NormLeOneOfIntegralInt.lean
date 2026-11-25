@@ -50,34 +50,6 @@ theorem norm_le_one_of_integral_int {K : Type*} [NormedField K] [IsUltrametricDi
     (h : IsIntegral ℤ δ) : ‖δ‖ ≤ 1 :=
   norm_le_one_of_integral norm_int_le_one δ h
 
-theorem norm_pow_sub_pow_le {K : Type*} [NormedField K] [IsUltrametricDist K] {x y : K}
-    (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) (i : ℕ) : ‖x ^ i - y ^ i‖ ≤ ‖x - y‖ := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-    have : x ^ (i + 1) - y ^ (i + 1) = x * (x ^ i - y ^ i) + (x - y) * y ^ i := by ring
-    rw [this]
-    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
-    · rw [norm_mul]
-      calc ‖x‖ * ‖x ^ i - y ^ i‖ ≤ 1 * ‖x - y‖ := by gcongr
-        _ = _ := one_mul _
-    · rw [norm_mul, norm_pow]
-      calc ‖x - y‖ * ‖y‖ ^ i ≤ ‖x - y‖ * 1 := by
-            gcongr; exact pow_le_one₀ (norm_nonneg _) hy
-        _ = _ := mul_one _
-
-theorem norm_eval_sub_eval_le {K : Type*} [NormedField K] [IsUltrametricDist K] (P : Polynomial K)
-    (hP : ∀ i, ‖P.coeff i‖ ≤ 1) {x y : K} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) :
-    ‖P.eval x - P.eval y‖ ≤ ‖x - y‖ := by
-  rw [Polynomial.eval_eq_sum_range, Polynomial.eval_eq_sum_range, ← Finset.sum_sub_distrib]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun i _ => ?_
-  rw [← mul_sub, norm_mul]
-  calc ‖P.coeff i‖ * ‖x ^ i - y ^ i‖ ≤ 1 * ‖x - y‖ := by
-        gcongr
-        · exact hP i
-        · exact norm_pow_sub_pow_le hx hy i
-    _ = _ := one_mul _
-
 theorem finite_domain_frob (R : Type*) [CommRing R] [IsDomain R] [Finite R] (l : ℕ) (hl : l.Prime)
     (h0 : (l : R) = 0) : ∃ f : ℕ, 0 < f ∧ ∀ x : R, x ^ (l ^ f) = x := by
   classical
@@ -153,10 +125,5 @@ theorem isIntegral_int_of_rmu (δ : ℂ_[l]) (hδ : IsIntegral (Rmu l) δ) :
     exact (isIntegral_algebraMap_iff (A := Rmu l) (B := ℂ_[l]) ).mp this⟩
   have h : IsIntegral ℤ δ := isIntegral_trans δ hδ
   exact (Subsingleton.elim (algebraMap ℤ ℂ_[l]) (Int.castRingHom ℂ_[l])) ▸ h
-
-theorem tch_mem_rmu {x : ℂ_[l]} (hx : x ∈ Tch l) : x ∈ Rmu l := by
-  rcases hx with rfl | hx
-  · exact (Rmu l).zero_mem
-  · exact Subring.subset_closure hx
 
 end ReciprocityTheory.ChartRestriction.L1.KE

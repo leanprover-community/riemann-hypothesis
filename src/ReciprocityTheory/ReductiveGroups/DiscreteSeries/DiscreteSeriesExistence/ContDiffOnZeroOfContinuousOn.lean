@@ -185,8 +185,6 @@ def slmEnt (k b : Fin n) :=
   (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℂ) b).comp
     (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => Fin n → ℂ) k)
 
-theorem slmEnt_apply (k b : Fin n) (W : Fin n → Fin n → ℂ) : slmEnt k b W = W k b := rfl
-
 def slmC (i : Fin n × Fin n × Fin n × Bool) :=
   if i.2.2.2 then Complex.reCLM.comp (slmEnt i.2.2.1 i.2.1) else Complex.imCLM.comp (slmEnt i.2.2.1 i.2.1)
 

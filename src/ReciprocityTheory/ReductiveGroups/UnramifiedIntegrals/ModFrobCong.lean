@@ -66,10 +66,6 @@ theorem CoeffIn.ksNeg {R : Subring ℂ} {f : PowerSeries ℂ} (hf : CoeffIn R f)
 theorem ks_one_sub_zetaC_mem (p : ℕ) : 1 - zetaC p ∈ Rm p := by
   exact (Rm p).sub_mem (Rm p).one_mem (zetaC_mem p)
 
-theorem Cg.left {p : ℕ} {f g : PowerSeries ℂ} (h : Cg p f g) : CoeffIn (Rm p) f := by
-  obtain ⟨hg, w, hw, rfl⟩ := h
-  exact hg.add ((CoeffIn.ksC (ks_one_sub_zetaC_mem p)).mul hw)
-
 theorem Cg.refl {p : ℕ} {f : PowerSeries ℂ} (hf : CoeffIn (Rm p) f) : Cg p f f := by
   exact ⟨hf, 0, CoeffIn.ksZero _, by simp⟩
 

@@ -38,23 +38,6 @@ theorem tch_norm_le {ξ : ℂ_[l]} (hξ : ξ ∈ Tch l) : ‖ξ‖ ≤ 1 := by
   · simp
   · exact (muP_norm l h).le
 
-theorem tch_mul {ξ ξ' : ℂ_[l]} (h : ξ ∈ Tch l) (h' : ξ' ∈ Tch l) : ξ * ξ' ∈ Tch l := by
-  rcases h with rfl | ⟨n, hn, hln, hζ⟩
-  · rw [zero_mul]; exact Set.mem_insert _ _
-  rcases h' with rfl | ⟨m, hm, hlm, hζ'⟩
-  · rw [mul_zero]; exact Set.mem_insert _ _
-  refine Set.mem_insert_of_mem _ ⟨n * m, Nat.mul_pos hn hm, ?_, ?_⟩
-  · intro hd
-    rcases ((Fact.out : l.Prime).dvd_mul).1 hd with h1 | h1
-    · exact hln h1
-    · exact hlm h1
-  · rw [mul_pow, pow_mul, hζ, one_pow, one_mul, mul_comm n m, pow_mul, hζ', one_pow]
-
-theorem tch_inv {ξ : ℂ_[l]} (h : ξ ∈ Tch l) : ξ⁻¹ ∈ Tch l := by
-  rcases h with rfl | ⟨n, hn, hln, hζ⟩
-  · rw [inv_zero]; exact Set.mem_insert _ _
-  · exact Set.mem_insert_of_mem _ ⟨n, hn, hln, by rw [inv_pow, hζ, inv_one]⟩
-
 theorem tch_near (x : ℂ_[l]) (hx : ‖x‖ ≤ 1) (f : ℕ) (hf : 0 < f) (r : ℝ) (hr : r < 1)
     (h : ‖x ^ (l ^ f) - x‖ ≤ r) : ∃ ξ ∈ Tch l, ‖x - ξ‖ ≤ r := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le

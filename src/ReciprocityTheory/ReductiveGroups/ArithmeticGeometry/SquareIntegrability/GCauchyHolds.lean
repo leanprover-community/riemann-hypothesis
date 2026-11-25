@@ -126,7 +126,6 @@ variable {E : Type} [Field E] [NumberField E]
 
 namespace ChA
 
-
 lemma one_char [IsCMField E] (hNP : Ext.NearestPlane) {dim : (E →+* ℂ) → ℕ}
     (L I : Submodule ℤ (Vsp dim))
     (hLs : ∀ (α : 𝓞 E) x, x ∈ L → act α x ∈ L) (hIs : ∀ (α : 𝓞 E) x, x ∈ I → act α x ∈ I)
@@ -371,7 +370,6 @@ def Inv {dim : (E →+* ℂ) → ℕ} (L I : Submodule ℤ (Vsp dim)) (σ : E �
   (∀ s < k, 1 ≤ μ s ∧ ∀ y ∈ Xg L I, |2 * inner ℝ (χ s) y| ≤ ‖y‖ ^ 2 ∨ μ s ≤ ‖y‖) ∧
   (∀ s < k, χ s ∈ Zs L I (μ s) ∧ ∀ y ∈ Xg L I, prj σ y ∉ Wk σ χ s → μ s ≤ ‖y‖) ∧
   (∀ s < k, μ s ^ 2 ≤ Bu)
-
 
 private lemma inv_step_lemma {dim : (E →+* ℂ) → ℕ} {L I : Submodule ℤ (Vsp dim)}
     (hsep : ∀ g ∈ Xg L I, g ≠ 0 → 1 ≤ ‖g‖) (σ : E →+* ℂ) (W : Submodule ℂ (Vsp dim)) (y0 : Vsp dim)
@@ -695,7 +693,6 @@ lemma omega_fin {E : Type} [Field E] [NumberField E] [IsCMField E] :
   let e : Fin (Module.finrank ℚ E) ≃ κ := (Fintype.equivFinOfCardEq hcard).symm
   exact ⟨fun j => ω (a (e j)), hli.comp e e.injective, fun j τ => hωB _ τ⟩
 
-
 theorem char_main (hx : Ext.All) : CharStatement := by
   intro E _ _ _ X DF P I hI σ ρ hρ
   classical
@@ -938,19 +935,9 @@ namespace ReciprocityTheory.ChartRestriction.G.I2
 
 theorem gSup_holds : GSupStatement := gSup Ext.all.1
 
-theorem propA_holds : PropAStatement := propA Ext.all.1 Ext.all.2.1
-
 theorem split_holds : SplitStatement := split Ext.all
 
 theorem char_holds : CharStatement := char Ext.all
-
-theorem J_holds : JStatement :=
-  jOf Ext.all split_holds char_holds (colTorus Ext.all propA_holds gSup_holds)
-    (colAbel Ext.all propA_holds gSup_holds) (colEmpty Ext.all propA_holds gSup_holds)
-
-theorem N_holds : NStatement := lemmaN _root_.ReciprocityTheory.ChartRestriction.G.I2.dim
-
-theorem I_holds : IStatement := iOf J_holds N_holds
 
 theorem T_holds : TStatement := tOf Ext.all split_holds gSup_holds _root_.ReciprocityTheory.ChartRestriction.G.I2.dim
 

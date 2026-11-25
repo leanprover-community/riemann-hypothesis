@@ -451,56 +451,6 @@ theorem gauss_bound {α : Type} (S : Finset α) (x : α → K) (A : PowerSeries 
   rw [← hl.2.2.2]
   exact hG _
 
-theorem gauss_unit {α : Type} (S : Finset α) (x : α → K) (A : PowerSeries K) (hA : IntegralPS A)
-    (hA0 : constantCoeff A = 1) (c : K) (hc : ‖c‖ * ∏ P ∈ S, max 1 ‖x P‖ = 1) :
-    ∃ i, i ≤ 2 * S.card ∧ ‖coeff i (C c * ∏ P ∈ S, (A - C (x P) * X ^ 2))‖ = 1 := by
-  have hc0 : c ≠ 0 := by
-    rintro rfl
-    simp at hc
-  obtain ⟨i, hi, h⟩ := leadAt_prod S x hA hA0
-  have hl := (leadAt_C hc0).mul h
-  exact ⟨0 + i, by omega, hl.2.2.2.trans hc⟩
-
-theorem leadAt_first_unit {g : PowerSeries K} (hg : IntegralPS g) (h : ∃ i, ‖coeff i g‖ = 1) :
-    ∃ i₀, (∀ i, ‖coeff i g‖ = 1 → i₀ ≤ i) ∧ LeadAt g 1 i₀ := by
-  classical
-  refine ⟨Nat.find h, fun i hi => Nat.find_min' h hi, one_pos, hg,
-    fun n hn => lt_of_le_of_ne (hg n) (Nat.find_min h hn), Nat.find_spec h⟩
-
-theorem unit_coeff_mul {f g : PowerSeries K} (hf : IntegralPS f) (hg : IntegralPS g)
-    (hf0 : ‖constantCoeff f‖ = 1) (N : ℕ) (h : ∃ i, i ≤ N ∧ ‖coeff i g‖ = 1) :
-    ∃ i, i ≤ N ∧ ‖coeff i (f * g)‖ = 1 := by
-  obtain ⟨i, hiN, hi⟩ := h
-  obtain ⟨i₀, hmin, hl⟩ := leadAt_first_unit hg ⟨i, hi⟩
-  have hf' : LeadAt f 1 0 := ⟨one_pos, hf, fun n hn => absurd hn (Nat.not_lt_zero _),
-    by rw [coeff_zero_eq_constantCoeff_apply, hf0]⟩
-  have hm := hf'.mul hl
-  refine ⟨0 + i₀, by have := hmin i hi; omega, ?_⟩
-  rw [hm.2.2.2, one_mul]
-
-theorem unit_coeff_of_sq {e : PowerSeries K} (he : IntegralPS e) (N : ℕ)
-    (h : ∃ i, i ≤ 2 * N ∧ ‖coeff i (e ^ 2)‖ = 1) : ∃ i, i ≤ N ∧ ‖coeff i e‖ = 1 := by
-  obtain ⟨i, hiN, hi⟩ := h
-  have hex : ∃ j, ‖coeff j e‖ = 1 := by
-    by_contra hno
-    push Not at hno
-    have hlt : ∀ n, ‖coeff n e‖ < 1 := fun n => lt_of_le_of_ne (he n) (hno n)
-    have : ‖coeff i (e ^ 2)‖ < 1 := by
-      rw [sq, coeff_mul]
-      refine gauss_norm_sum_lt _ _ one_pos fun x _ => ?_
-      rw [norm_mul]
-      calc ‖coeff x.1 e‖ * ‖coeff x.2 e‖ ≤ ‖coeff x.1 e‖ * 1 :=
-            mul_le_mul_of_nonneg_left (he _) (norm_nonneg _)
-        _ < 1 := by rw [mul_one]; exact hlt _
-    exact this.ne hi
-  obtain ⟨j, -, hl⟩ := leadAt_first_unit he hex
-  have hm := hl.mul hl
-  rw [one_mul, ← sq] at hm
-  refine ⟨j, ?_, hl.2.2.2⟩
-  by_contra hc
-  push Not at hc
-  exact (hm.2.2.1 i (by omega)).ne hi
-
 theorem integral_of_sq_eq {e U G : PowerSeries K} (he : IntegralPS e) (he0 : constantCoeff e = 0)
     (hU : IntegralPS U) (hU0 : constantCoeff U = 1) (h : e ^ 2 = X ^ 2 * U * G) : IntegralPS G := by
   obtain ⟨e', rfl⟩ := (PowerSeries.X_dvd_iff).mpr he0

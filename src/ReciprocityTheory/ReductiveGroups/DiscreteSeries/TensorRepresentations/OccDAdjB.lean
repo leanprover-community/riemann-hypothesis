@@ -165,19 +165,6 @@ theorem adjB_sgn {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) (dual : B
   · rw [adjB_block hk h]
     cases dual <;> simp
 
-theorem adjB_star_Kset {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) : kᴴ ∈ Kset ε := by
-  refine ⟨?_, ?_⟩
-  · simpa [Matrix.star_eq_conjTranspose] using Unitary.star_mem hk.1
-  · have h := congrArg Matrix.conjTranspose hk.2
-    simp only [Matrix.conjTranspose_mul] at h
-    have hJ : (Jm ε)ᴴ = Jm ε := by
-      rw [Jm, Matrix.diagonal_conjTranspose]
-      congr 1
-      funext c
-      exact adjSg_conj ε c
-    rw [hJ] at h
-    exact h.symm
-
 theorem adjB_inner (hσ : IsURepOn (UJset ε) σ) {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) (v w : H) :
     inner ℂ (σ k v) w = inner ℂ v (σ kᴴ w) := by
   have hkU : k ∈ UJset ε := smd_inUJ_of_Kset hk

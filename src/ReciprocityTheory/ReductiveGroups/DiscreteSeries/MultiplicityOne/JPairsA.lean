@@ -55,10 +55,6 @@ theorem Hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
 theorem Hpk_mulVec_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Hpk k r *ᵥ (Hpk k r *ᵥ v) = v :=
   ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec_mulVec k r v
 
-theorem mat_eq_of_mulVec' {A B : Mat k r} (h : ∀ v, A *ᵥ v = B *ᵥ v) : A = B := by
-  ext i j
-  simpa [Matrix.mulVec_single_one] using congrFun (h (Pi.single j 1)) i
-
 theorem Hpk_sq : Hpk k r * Hpk k r = 1 :=
   ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_sq k r
 

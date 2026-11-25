@@ -178,44 +178,6 @@ def tatePre : DegPre R where
   psi := fun n => cg _ _ (pi0 ^ (n ^ 2))
   psi_gen := fun _ => cg_isGen _ _ _
 
-theorem psi_isConst (n : ℤ) : IsConst (tatePre.psi n) (pi0 ^ (n ^ 2)) := by
-  first
-    | exact fun _ => rfl
-
-theorem rigK_isConst : IsConst tatePre.rigK 1 := by
-  first
-    | exact (isConst_pullGen (cg_isConst _ _ 1) _).of_eq (map_one _)
-
-theorem tau_isConst (a b : ℤ) : IsConst (tatePre.tau a b) (pi0 ^ (2 * a * b)) := by
-  have h := isConst_mulGen (isConst_mulGen (isConst_mulGen (psi_isConst (a + b))
-    (isConst_invGen (psi_isConst a))) (isConst_invGen (psi_isConst b)))
-    (isConst_invGen rigK_isConst)
-  refine h.of_eq ?_
-  first
-    | (rw [inv_one, _root_.mul_one, ← zpow_neg, ← zpow_neg, ← zpow_add, ← zpow_add]; congr 1; ring)
-
-theorem psiEven : tatePre.PsiEven := by
-  intro χ
-  have h1 : IsConst tatePre.sym 1 := cg_isConst _ _ 1
-  have h2 := (isConst_pullGen h1 (tatePre.xK χ)).of_eq (map_one _)
-  have h3 := isConst_mulGen (psi_isConst (-χ)) h2
-  have key : ∀ z : ℤ, pi0 ^ ((-z) ^ 2) * 1 = pi0 ^ (z ^ 2) := fun z => by
-    rw [_root_.mul_one, neg_sq]
-  exact corr_of_isConst (h3.of_eq (key χ)) (psi_isConst χ)
-
-theorem tauBimult : tatePre.TauBimult := by
-  intro a a' b
-  have h1 : IsConst tatePre.cub.t 1 := cg_isConst _ _ 1
-  have h2 := (isConst_pullGen h1 (tatePre.pt3 a a' b)).of_eq (map_one _)
-  have h3 := isConst_mulGen (tau_isConst (a + a') b) h2
-  have h4 := isConst_mulGen (tau_isConst a b) (tau_isConst a' b)
-  have key : ∀ x y z : ℤ,
-      pi0 ^ (2 * (x + y) * z) * 1 = pi0 ^ (2 * x * z) * pi0 ^ (2 * y * z) := fun x y z => by
-    rw [_root_.mul_one, ← zpow_add]
-    congr 1
-    ring
-  exact corr_of_isConst (h3.of_eq (key a a' b)) h4
-
 theorem jK_toOpen (V : S.Opens) (x : R) :
     ((jK R).app V).hom (DegPre.toOpen V x) =
       ((TK R).left.presheaf.map (homOfLE le_top).op).hom

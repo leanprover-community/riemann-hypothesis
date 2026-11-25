@@ -44,9 +44,6 @@ theorem gN_nonneg {k r : ℕ} (A : Mat k r) : 0 ≤ gN A := Real.sqrt_nonneg _
 section hpk
 variable (k r : ℕ)
 
-theorem Hpk_sq : Hpk k r * Hpk k r = 1 :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_sq k r
-
 theorem UH_left_inv {g : Mat k r} (hg : g ∈ GV k r) : Hpk k r * gᴴ * Hpk k r * g = 1 :=
   ReciprocityTheory.ChartRestriction.DS.Xi.StepA.UH_left_inv k r hg
 
@@ -127,7 +124,6 @@ theorem AB_le_half (k r : ℕ) {a : ℝ} (ha : aM k r ≤ a) : AB k r ≤ a / 2 
   linarith
 
 open ReciprocityTheory.ChartRestriction.DS.Mult1
-
 
 section rep
 

@@ -343,8 +343,6 @@ section Fac
 variable {K : Type} [Field K] {Ω : Type} [Field Ω] [Algebra K Ω] {D N : ℕ}
   (v : AddValuation Ω (WithTop ℤ))
 
-theorem sub_apply (y : vRing v) : (vRing v).subtype y = (y : Ω) := rfl
-
 theorem sHom_factor (hv : IsTrivOn K v) (jc j0 : Fin (N + 1)) (x : Fin N → Ω)
     (a : Fin (N + 1) → Ω) (ha : ∀ j, a j ∈ vRing v) (ha0 : a j0 = 1)
     (hrel : ∀ i : Fin (D + 1), i ≠ 0 →

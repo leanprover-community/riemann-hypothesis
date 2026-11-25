@@ -20,9 +20,6 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
 
-lemma fdph_muK_univ_ne_zero (ε : Fin n → Bool) : muK ε Set.univ ≠ 0 := by
-  exact isOpen_univ.measure_ne_zero (muK ε) Set.univ_nonempty
-
 lemma fdph_muK_univ_ne_top (ε : Fin n → Bool) : muK ε Set.univ ≠ ⊤ := by
   exact (isCompact_univ.measure_lt_top (μ := muK ε)).ne
 
