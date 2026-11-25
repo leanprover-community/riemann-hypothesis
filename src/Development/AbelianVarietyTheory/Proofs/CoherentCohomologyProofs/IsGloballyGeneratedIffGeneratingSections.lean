@@ -211,7 +211,6 @@ namespace QCoh
 
 variable {X : Scheme.{0}} {F G : X.Modules} {ι : Type}
 
-
 variable (F) in
 def IsGloballyGenerated : Prop :=
   ∃ (ι : Type) (_ : Finite ι) (φ : freeModule X ι ⟶ F), Epi φ
@@ -232,11 +231,9 @@ theorem sectionHom_app (s : Γ(F, ⊤)) (V : X.Opens) (a : Γ(structureModule X,
 def sectionsHom (s : ι → Γ(F, ⊤)) : freeModule X ι ⟶ F :=
   Sigma.desc (f := fun _ : ι => structureModule X) fun i => sectionHom (s i)
 
-
 variable (X) in
 def freeι (i : ι) : structureModule X ⟶ freeModule X ι :=
   Sigma.ι (fun _ : ι => structureModule X) i
-
 
 variable (X) in
 def freeBasis (i : ι) : Γ(freeModule X ι, ⊤) :=
@@ -423,26 +420,6 @@ theorem IsAmpleLB.eventually_isGloballyGenerated_twistZ (h : IsAmpleLB L) (F : X
 theorem IsAmpleLB.eventually_isGloballyGenerated_twist (h : IsAmpleLB L) (F : X.Modules)
     [IsFiniteQC F] : ∀ᶠ n : ℕ in atTop, IsGloballyGenerated (twist F (lbPow L n)) :=
   tendsto_natCast_atTop_atTop.eventually (h.eventually_isGloballyGenerated_twistZ F)
-
-theorem QCoh.IsGloballyGenerated.exists_epi_sigma (hL : L.IsLB) {n : ℤ}
-    (h : IsGloballyGenerated (twistZ F L n)) :
-    ∃ (k : ℕ) (φ : (∐ fun _ : Fin k => toMod (lbZPow L (-n))) ⟶ F), Epi φ := by
-  obtain ⟨k, s, hs⟩ := isGloballyGenerated_iff_spanStalks.1 h
-  have := (epi_sectionsHom_iff s).2 hs
-  have hL' := isLB_lbZPow hL (-n)
-  have := (epi_map_iff hL' (sectionsHom s)).2 this
-  have := preservesColimits_twistFunctor hL'
-  let e : (∐ fun _ : Fin k => toMod (lbZPow L (-n))) ≅
-      GlobalTheory.twist (freeModule X (Fin k)) (lbZPow L (-n)) :=
-    Sigma.mapIso (fun _ => (unitTwistIso (lbZPow L (-n))).symm) ≪≫
-      (PreservesCoproduct.iso (twistFunctor (lbZPow L (-n))) fun _ : Fin k => structureModule X).symm
-  exact ⟨k, e.hom ≫ Twist.map _ (sectionsHom s) ≫ (twistZAddIso F hL (add_neg_cancel n)).hom ≫
-    (twistZZeroIso F hL).inv, inferInstance⟩
-
-theorem IsAmpleLB.eventually_exists_epi_sigma (h : IsAmpleLB L) (F : X.Modules) [IsFiniteQC F] :
-    ∀ᶠ n : ℤ in atTop,
-      ∃ (k : ℕ) (φ : (∐ fun _ : Fin k => toMod (lbZPow L (-n))) ⟶ F), Epi φ :=
-  (h.eventually_isGloballyGenerated_twistZ F).mono fun _ hn => hn.exists_epi_sigma h.isLB
 
 end Ample
 

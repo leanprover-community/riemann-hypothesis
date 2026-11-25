@@ -171,7 +171,6 @@ private theorem mem_lat_basis_map_iff {J K : Type} [Fintype J] (b : Module.Basis
   rw [hr, ← LinearEquiv.coe_coe, Submodule.span_image, Submodule.mem_map_equiv]
   rfl
 
-
 open TorusAtAssembly in
 theorem exists_torusOf_rows : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (Pm : D.La →+ (Fin g → ℂ)) (t : ℝ) (row : Fin g → ℕ), 0 < t → IsTypeFn H D.p D.q ty → IsPeriod D ty Pm → (∀ a b, (hermForm (Matrix.diagonal fun _ => (t : ℂ)) (Pm a) (Pm b)).im = D.EF a b) → (∀ j, row j < D.mult (ty j)) → (∀ j j', ty j = ty j' → row j = row j' → j = j') → ∃ (T : I2.PT E) (ψ : (Fin g → ℂ) ≃ₗ[ℂ] I2.Vsp T.dim), IsTorusOf D ty Pm (Matrix.diagonal fun _ => (t : ℂ)) T ψ ∧ ∀ j, ∃ h : row j < T.dim (ty j), ψ (Pi.single j 1) = open Classical in (Real.sqrt t : ℂ) • EuclideanSpace.single (⟨ty j, ⟨row j, h⟩⟩ : I2.Idx T.dim) (1 : ℂ) := by
   classical
@@ -1192,61 +1191,6 @@ section -- clump:auto
 
 open NumberField Complex ReciprocityTheory.ChartRestriction.G.I2
 
-namespace GlobalTheory
-
-
-open ReciprocityTheory.ChartRestriction.G.FD in
-theorem exists_short_integers_span :
-    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], ∃ (n : ℕ) (ω : Fin n → 𝓞 E),
-      (∀ j (σ : E →+* ℂ), ‖σ (ω j)‖ ≤ omStar (E := E)) ∧
-        ∀ α : 𝓞 E, (α : E) ∈ Submodule.span ℚ (Set.range fun j => (ω j : E)) := by
-  intro E _ _ _
-  let Λ : Submodule (𝓞 E) (Fin 1 → E) := Submodule.span (𝓞 E) {fun _ => 1}
-  have hΛ : ∀ x, x ∈ Λ ↔ IsIntegral ℤ (x 0) := by
-    intro x
-    rw [Submodule.mem_span_singleton]
-    constructor
-    · rintro ⟨a, rfl⟩
-      have : (a • (fun _ => 1 : Fin 1 → E)) 0 = (a : E) := by
-        simp [Algebra.smul_def]
-      rw [this]
-      exact a.isIntegral_coe
-    · intro h
-      refine ⟨⟨x 0, h⟩, ?_⟩
-      funext k
-      rw [Subsingleton.elim k 0]
-      exact mul_one (x 0)
-  have hh : ∀ x y : Fin 1 → E, herm 1 x y = x 0 * cc (y 0) := by
-    intro x y
-    simp [herm]
-  have hc : ∀ x : E, IsIntegral ℤ x → IsIntegral ℤ (cc x) := fun x hx =>
-    hx.map (IsCMField.complexConj E).toRingEquiv.toRingHom.toIntAlgHom
-  obtain ⟨v, hv, -, hsp, hle⟩ := exists_short_vectors Λ (Submodule.fg_span_singleton _)
-    (fun x hx y hy => by
-      rw [hh]
-      exact ((hΛ x).1 hx).mul (hc _ ((hΛ y).1 hy)))
-    (fun x hx => by
-      have := hx (fun _ => 1) (Submodule.mem_span_singleton_self _)
-      rw [hh] at this
-      rw [hΛ]
-      simpa [cc] using this)
-  refine ⟨_, fun j => ⟨v j 0, (hΛ _).1 (hv j)⟩, fun j σ => ?_, fun α => ?_⟩
-  · have h := hle j σ
-    have he : 2 * (fdeg E : ℝ) ^ ((3 : ℝ) / 2) * ((1 : ℕ) : ℝ) ^ 2 * rdE E = omStar (E := E) := by
-      simp only [omStar, Nat.cast_one, one_pow, mul_one]
-      rfl
-    have h0 : 0 ≤ omStar (E := E) := by
-      unfold omStar PT.rd
-      positivity
-    rw [he, Fin.sum_univ_one] at h
-    exact (pow_le_pow_iff_left₀ (norm_nonneg _) h0 two_ne_zero).1 h
-  · have h : (fun _ => (α : E) : Fin 1 → E) ∈ Submodule.span ℚ (Set.range v) :=
-      hsp ▸ Submodule.mem_top
-    have h2 := Submodule.mem_map_of_mem (f := LinearMap.proj (R := ℚ) (φ := fun _ : Fin 1 => E) 0) h
-    rw [Submodule.map_span, ← Set.range_comp] at h2
-    exact h2
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsShortIntegersSpan =====
@@ -1469,7 +1413,6 @@ theorem theta_law {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H} {Xo : Moduli
   obtain ⟨h1, h2⟩ := gen (U.un k x).x W.pt (U.un k x).s Wu.c7
   refine ⟨h1, fun a z => ?_⟩
   rw [h2, GlobalTheory.semichar_unit_frame Xo c σ r U hU k x W Wu hu a, Int.cast_negOnePow]
-
 
 open Classical in
 theorem value_torus {H : Host E} {Dw : Datum H} (T : I2.PT E) {g n : ℕ} (e : Fin g ≃ Lt1 Dw)

@@ -82,7 +82,6 @@ theorem translT_mul (a b : T ⟶ A) : translT A (a * b) = translT A b ≫ transl
 
 alias translT_one := _root_.GlobalTheory.MulSplit.translT_one
 
-
 variable (A) in
 def transKer {Z : Scheme.{0}} (Ψ : (T ⊗ A).left ⟶ Z) : Subgroup (T ⟶ A) where
   carrier := {c | (translT A c).left ≫ Ψ = Ψ}
@@ -176,13 +175,8 @@ theorem isCarried_of_val (h : ∀ z J, Good L.L z J →
     sv A L t (𝟙 _) z J = sv A L s' (𝟙 _ ≫ Ψ) z J * (val β (𝟙 _) z J).val) : IsCarried A L Ψ k β s' t :=
   (secRel_iff L.isLB _ _ t _ _ s' Ψ _ _ β).2 h
 
-
 omit [GrpObj A] in
 alias sec_ext := _root_.ReciprocityTheory.ChartRestriction.G.DVR.SecOps.sec_ext
-
-theorem IsCarried.unique (h : IsCarried A L Ψ k β s' t) (h' : IsCarried A L Ψ k β s' t') : t = t' :=
-  sec_ext (sec_ext_val (L := L.L) (φ := fun _ : Fin 1 => (snd (Over.mk x) A).left) L.isLB fun z _ hJ =>
-    (h.val _ z hJ).trans (h'.val _ z hJ).symm)
 
 theorem exists_isCarried (hβ : β.IsGen) (s' : LB.Sec (LPow A L.L 1 (Over.mk x'))) :
     ∃ t, IsCarried A L Ψ k β s' t := by
@@ -221,10 +215,6 @@ theorem exists_isDescLift (hβ : β.IsGen) {c : Over.mk x ⟶ A} (hc : c ∈ tra
     (LB.mulGen L.L _ _ _ _ β (LB.invGen L.L _ _ (LB.pullGen L.L _ _ β (translT A c).left)))
     (mulGen_isGen _ _ _ _ _ _ _ hβ (invGen_isGen _ _ _ _ (pullGen_isGen _ _ _ _ hβ _)))
   exact ⟨⟨c, u, hu⟩, rfl, hc, corr_of_val L.isLB fun z J hJ => hv _ _ z J hJ⟩
-
-theorem IsDescLift.unique {U' : ThetaGrp A L.L k (Over.mk x)} (h : IsDescLift A L Ψ k β U)
-    (h' : IsDescLift A L Ψ k β U') (e : U.pt = U'.pt) : LB.Gen.Corr L.L _ _ _ _ U.φ U'.φ :=
-  corr_of_val L.isLB fun z J hJ => (h.val _ z hJ).trans (by rw [e]; exact (h'.val _ z hJ).symm)
 
 theorem act_val {T : Over S} {U : ThetaGrp A L.L k T} {a b : LB.Sec (LPow A L.L k T)} (h : IsActOf A L.L k U a b)
     {Z : Scheme.{0}} (r : Z ⟶ (T ⊗ A).left) (z : Z) {J} (hJ : Good L.L z J) :

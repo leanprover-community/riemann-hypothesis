@@ -304,26 +304,6 @@ theorem IsPole.le_log_orbit (h : IsPole X G x0 κ ε C δ ψ) (hG : ∀ γ ∈ G
   rw [← h.lact (G.inv_mem hγ) hx]
   exact h.2.2.2.1 _ (MajInv.lact_mem_dom X hγ' hx) hle
 
-theorem IsPole.centre (h : IsPole X G x0 κ ε C δ ψ) (h0 : IsOrth X x0) (hε : 0 ≤ ε) :
-    ψ x0 ≤ dimX X * Real.log δ + C := by
-  have := h.2.2.2.1 x0 (IW.orth_mem_dom X x0 h0) (by rwa [rhX_self h0])
-  rwa [rhX_self h0, zero_add] at this
-
-theorem isPole_zero (h0 : IsOrth X x0) (hκ : 0 ≤ κ) (hδ : 0 < δ) (hC : 0 ≤ C)
-    (hC' : -(dimX X * Real.log δ) ≤ C) : IsPole X G x0 κ ε C δ fun _ => 0 := by
-  refine ⟨fun _ _ _ _ _ _ => rfl, fun _ _ => le_rfl, fun x1 hx1 => ⟨contDiffOn_const, fun z hz ξ => ?_⟩,
-    fun x hx _ => ?_, fun _ _ _ _ => by linarith⟩
-  · have e : leviO X x1 (fun _ => 0) z ξ = 0 := by
-      have e1 : ∀ k, wdb (nd X) k (fun _ => (0 : ℂ)) = fun _ => 0 := fun k => by
-        funext y; simp [wdb]
-      simp [leviO, leviM, leviV, e1, wd]
-    rw [e]
-    exact neg_nonpos.2 (mul_nonneg hκ (leviRh_nonneg hx1 hz ξ))
-  · have h1 : Real.log δ ≤ Real.log (rhX X x0 x + δ) :=
-      Real.log_le_log hδ (by linarith [rhX_nonneg h0 hx])
-    have h2 := mul_le_mul_of_nonneg_left h1 (Nat.cast_nonneg (α := ℝ) (dimX X))
-    linarith
-
 end Pole
 
 section Block

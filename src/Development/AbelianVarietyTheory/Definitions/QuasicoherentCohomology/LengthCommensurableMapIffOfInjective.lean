@@ -80,11 +80,6 @@ theorem relLength_eq_length_range {P : Type*} [AddCommGroup P] [Module R P]
   rw [relLength_def, ← hg]
   exact g.quotKerEquivRange.length_eq
 
-theorem relLength_eq_length_of_surjective {P : Type*} [AddCommGroup P] [Module R P]
-    {A B : Submodule R V} (g : A →ₗ[R] P) (hg : LinearMap.ker g = B.submoduleOf A)
-    (hs : Function.Surjective g) : relLength A B = Module.length R P := by
-  rw [relLength_eq_length_range g hg, LinearMap.range_eq_top.mpr hs, Module.length_top]
-
 theorem relLength_eq_length_map_mkQ (A B : Submodule R V) :
     relLength A B = Module.length R (A.map B.mkQ) := by
   rw [relLength_eq_length_range (B.mkQ ∘ₗ A.subtype)
@@ -103,13 +98,6 @@ theorem relLength_congr_right {A B B' : Submodule R V} (h : A ⊓ B = A ⊓ B') 
     simpa [Submodule.submoduleOf, x.2] using this
   rw [relLength_def, relLength_def, this]
 
-theorem relLength_congr_left {A A' B : Submodule R V} (h : A ⊔ B = A' ⊔ B) :
-    relLength A B = relLength A' B := by
-  have : A.map B.mkQ = A'.map B.mkQ := by
-    have := congrArg (Submodule.map B.mkQ) h
-    simpa [Submodule.map_sup] using this
-  rw [relLength_eq_length_map_mkQ, relLength_eq_length_map_mkQ, this]
-
 @[simp] theorem relLength_inf_right (A B : Submodule R V) :
     relLength A (A ⊓ B) = relLength A B :=
   relLength_congr_right (by rw [← inf_assoc, inf_idem])
@@ -117,14 +105,6 @@ theorem relLength_congr_left {A A' B : Submodule R V} (h : A ⊔ B = A' ⊔ B) :
 @[simp] theorem relLength_inf_right' (A B : Submodule R V) :
     relLength A (B ⊓ A) = relLength A B := by
   rw [inf_comm, relLength_inf_right]
-
-@[simp] theorem relLength_sup_left (A B : Submodule R V) :
-    relLength (A ⊔ B) B = relLength A B :=
-  relLength_congr_left (by rw [sup_assoc, sup_idem])
-
-@[simp] theorem relLength_sup_left' (A B : Submodule R V) :
-    relLength (B ⊔ A) B = relLength A B := by
-  rw [sup_comm, relLength_sup_left]
 
 @[simp] theorem relLength_eq_zero_iff {A B : Submodule R V} : relLength A B = 0 ↔ A ≤ B := by
   rw [relLength_def, Module.length_eq_zero_iff, Submodule.Quotient.subsingleton_iff,
@@ -134,15 +114,6 @@ theorem relLength_eq_zero_of_le {A B : Submodule R V} (h : A ≤ B) : relLength 
   relLength_eq_zero_iff.mpr h
 
 theorem relLength_self (A : Submodule R V) : relLength A A = 0 := by simp
-
-@[simp] theorem relLength_bot_right (A : Submodule R V) :
-    relLength A ⊥ = Module.length R A :=
-  relLength_eq_length_of_surjective (LinearMap.id : A →ₗ[R] A)
-    (by simp [Submodule.submoduleOf]) Function.surjective_id
-
-@[simp] theorem relLength_top_left (B : Submodule R V) :
-    relLength ⊤ B = Module.length R (V ⧸ B) := by
-  rw [relLength_eq_length_map_mkQ, Submodule.map_top, Submodule.range_mkQ, Module.length_top]
 
 theorem relLength_mono_left {A A' : Submodule R V} (h : A ≤ A') (B : Submodule R V) :
     relLength A B ≤ relLength A' B := by
@@ -203,16 +174,6 @@ theorem relLength_comap_of_le_range (f : V →ₛₗ[σ] V') {A' : Submodule S V
     relLength (A'.comap f) (B'.comap f) = relLength A' B' := by
   rw [relLength_comap_comap, inf_eq_right.mpr hA]
 
-theorem lengthCommensurable_map_iff_of_injective (f : V →ₛₗ[σ] V') (hf : Function.Injective f)
-    {A B : Submodule R V} :
-    LengthCommensurable (A.map f) (B.map f) ↔ LengthCommensurable A B := by
-  simp only [LengthCommensurable, relLength_map_of_injective f hf]
-
-theorem LengthCommensurable.signedLength_map_of_injective {A B : Submodule R V}
-    (_h : LengthCommensurable A B) (f : V →ₛₗ[σ] V') (hf : Function.Injective f) :
-    signedLength (A.map f) (B.map f) = signedLength A B := by
-  simp only [signedLength, relLength_map_of_injective f hf]
-
 end Map
 
 section Equiv
@@ -233,22 +194,6 @@ theorem relLength_submoduleOf {A W : Submodule R V} (h : A ≤ W) (B : Submodule
     relLength (A.submoduleOf W) (B.submoduleOf W) = relLength A B :=
   relLength_comap_of_le_range W.subtype (by rwa [Submodule.range_subtype]) B
 
-
-
-open Pointwise in
-theorem lengthCommensurable_smul_smul_iff {G : Type*} [Monoid G] [DistribMulAction G V]
-    [SMulCommClass G R V] {a : G} (ha : IsSMulRegular V a) {A B : Submodule R V} :
-    LengthCommensurable (a • A) (a • B) ↔ LengthCommensurable A B :=
-  lengthCommensurable_map_iff_of_injective (DistribSMul.toLinearMap R V a) ha
-
-
-open Pointwise in
-theorem LengthCommensurable.signedLength_smul_smul {G : Type*} [Monoid G] [DistribMulAction G V]
-    [SMulCommClass G R V] {a : G} {A B : Submodule R V} (h : LengthCommensurable A B)
-    (ha : IsSMulRegular V a) : signedLength (a • A) (a • B) = signedLength A B :=
-  h.signedLength_map_of_injective (DistribSMul.toLinearMap R V a) ha
-
-
 end Ambient
 
 section Signed
@@ -265,23 +210,11 @@ theorem lengthCommensurable_iff_of_ge (h : B ≤ A) :
     LengthCommensurable A B ↔ relLength A B ≠ ⊤ := by
   simp [LengthCommensurable, relLength_eq_zero_of_le h]
 
-theorem signedLength_eq_of_relLength_eq {m n : ℕ} (hm : relLength A B = m)
-    (hn : relLength B A = n) : signedLength A B = (m : ℤ) - n := by
-  simp [signedLength, hm, hn]
-
 namespace LengthCommensurable
-
-theorem signedLength_swap (_h : LengthCommensurable A B) :
-    signedLength B A = -signedLength A B := by
-  simp [signedLength]
 
 theorem signedLength_of_ge (_h : LengthCommensurable A B) (hBA : B ≤ A) :
     signedLength A B = (relLength A B).toNat := by
   simp [signedLength, relLength_eq_zero_of_le hBA]
-
-theorem signedLength_eq_natCast_iff_of_ge (h : LengthCommensurable A B) (hBA : B ≤ A) {n : ℕ} :
-    signedLength A B = n ↔ relLength A B = n := by
-  rw [h.signedLength_of_ge hBA, Nat.cast_inj, ← ENat.natCast_inj, ENat.natCast_toNat h.1]
 
 theorem signedLength_nonneg (h : LengthCommensurable A B) (hBA : B ≤ A) :
     0 ≤ signedLength A B := by
@@ -291,14 +224,5 @@ theorem signedLength_nonneg (h : LengthCommensurable A B) (hBA : B ≤ A) :
 end LengthCommensurable
 
 end Signed
-
-section Examples
-
-theorem relLength_top_of_isMaximal {R : Type*} [CommRing R] (I : Ideal R) [hI : I.IsMaximal] :
-    relLength (⊤ : Ideal R) I = 1 := by
-  rw [relLength_top_left, Module.length_eq_one_iff, isSimpleModule_iff_isCoatom]
-  exact hI.out
-
-end Examples
 
 end GlobalTheory

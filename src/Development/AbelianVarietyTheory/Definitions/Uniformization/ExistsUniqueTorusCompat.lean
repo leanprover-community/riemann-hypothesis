@@ -113,13 +113,6 @@ theorem torusCompat_iff {f : S' ⟶ S} {F : G'.left ⟶ G.left} {i' : splitTorus
 theorem TorusCompat.refl (i : splitTorus S X ⟶ G) : TorusCompat (𝟙 S) (𝟙 G.left) i i := by
   rw [torusCompat_iff, bcMap_id, Category.id_comp, Category.comp_id]
 
-theorem TorusCompat.trans {f' : S'' ⟶ S'} {f : S' ⟶ S} {F' : G''.left ⟶ G'.left}
-    {F : G'.left ⟶ G.left} {i'' : splitTorus S'' X ⟶ G''} {i' : splitTorus S' X ⟶ G'}
-    {i : splitTorus S X ⟶ G} (h' : TorusCompat f' F' i'' i') (h : TorusCompat f F i' i) :
-    TorusCompat (f' ≫ f) (F' ≫ F) i'' i := by
-  rw [torusCompat_iff] at h' h ⊢
-  rw [bcMap_comp, Category.assoc, h, ← Category.assoc, h', Category.assoc]
-
 theorem TorusCompat.of_comp {H : Over S} (i : splitTorus S X ⟶ G) (φ : G ⟶ H) :
     TorusCompat (𝟙 S) φ.left i (i ≫ φ) := by
   rw [torusCompat_iff, bcMap_id, Category.id_comp, Over.comp_left]

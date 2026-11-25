@@ -61,7 +61,6 @@ open GlobalTheory.LB
 
 variable {M : LB X} {V W : X.Opens}
 
-
 variable (M) in
 def resBasicOpen (a : Γ(X, V)) : SecOn M V →ₗ[Γ(X, V)] SecOn M (X.basicOpen a) :=
   QCoh.resBasicOpen (toMod M) a
@@ -168,9 +167,6 @@ namespace SecOnR
 
 variable (f : X ⟶ Spec (CommRingCat.of R)) {M : LB X} {V W : X.Opens}
 
-theorem invertible (hM : M.IsLB) (hV : IsAffineOpen V) :
-    Module.Invertible Γ(X, V) (SecOnR f M V) := SecOn.invertible hM hV
-
 theorem flat_of_flat_cst (hM : M.IsLB) (hV : IsAffineOpen V) (hf : (cst f V).Flat) :
     Module.Flat R (SecOnR f M V) :=
   letI := cstAlgebra f V
@@ -215,7 +211,6 @@ theorem isBaseChange_pull (hM : M.IsLB)
     ((Algebra.IsPushout.cancelBaseChange R R' Γ(X, V) Γ(X', V') (SecOnR f M V)).symm ≪≫ₗ
       E.restrictScalars R') fun s => ?_
   simp [hl, hE]
-
 
 variable (M) in
 def baseChangeHom (w : π ≫ f = f' ≫ Spec.map (CommRingCat.ofHom (algebraMap R R')))
@@ -275,7 +270,6 @@ section Cech
 variable {κ : Type} {f : X ⟶ Spec (CommRingCat.of R)} {f' : X' ⟶ Spec (CommRingCat.of R')}
   {π : X' ⟶ X} (M : LB X) (D : κ → X.Opens)
 
-
 variable {M D} in
 theorem flat_cechLB_X [LinearOrder κ] [Finite κ] (f : X ⟶ Spec (CommRingCat.of R)) [Flat f]
     (hM : M.IsLB) (hD : ∀ s : Finset κ, s.Nonempty → IsAffineOpen (⨅ i ∈ s, D i)) (p : ℕ) :
@@ -298,7 +292,6 @@ theorem secCubeBaseChange_app_tmul
     (w : π ≫ f = f' ≫ Spec.map (CommRingCat.ofHom (algebraMap R R'))) (s : Finset κ) (c : R')
     (x : (secCube f M D).obj s) :
     ((secCubeBaseChange M D w).app s).hom (c ⊗ₜ[R] x) = c • secCubePull M D w s x := rfl
-
 
 variable {M} in
 theorem secCubeBaseChange_app_bijective (hM : M.IsLB)
@@ -325,7 +318,6 @@ theorem d_secTermBaseChange [LinearOrder κ]
     (congrArg (GlobalTheory.Cube.termMap (secCubeBaseChange M D w) (p + 1))
       (GlobalTheory.Cube.d_termBaseChange R' (secCube f M D) p x))
 
-
 variable {M D} in
 theorem secTermBaseChange_bijective [Finite κ] (hM : M.IsLB)
     (H : IsPullback π f' f (Spec.map (CommRingCat.ofHom (algebraMap R R')))) (p : ℕ)
@@ -349,7 +341,6 @@ def cechLBBaseChange [LinearOrder κ] (w : π ≫ f = f' ≫ Spec.map (CommRingC
       cechLB f' (M.pull π) fun i => π ⁻¹ᵁ D i :=
   cechComparison (ModuleCat.extendScalars g) (secCube f M D) ≫
     cechComplexMap (secCubeExtendScalars M D w)
-
 
 variable {M D}
 

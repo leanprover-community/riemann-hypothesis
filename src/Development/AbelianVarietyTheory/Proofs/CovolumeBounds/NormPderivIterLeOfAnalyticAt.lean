@@ -107,25 +107,6 @@ theorem pderivIter_single (k : ι) (n : ℕ) (F : (ι → 𝕜) → V) (z : ι �
   rw [← List.perm_replicate, ← Multiset.coe_eq_coe, Multiset.coe_toList,
     Multiset.nsmul_singleton, Multiset.coe_replicate]
 
-theorem polyDeriv_eq_sum_of_subset (P : MvPolynomial ι 𝕜) {s : Finset (ι →₀ ℕ)}
-    (hs : P.support ⊆ s) (F : (ι → 𝕜) → V) (a : ι → 𝕜) :
-    polyDeriv P F a = ∑ α ∈ s, P.coeff α • pderivIter α F a := by
-  refine Finset.sum_subset hs fun α _ hα => ?_
-  rw [MvPolynomial.notMem_support_iff.1 hα, zero_smul]
-
-@[simp] theorem polyDeriv_monomial (α : ι →₀ ℕ) (c : 𝕜) (F : (ι → 𝕜) → V) (a : ι → 𝕜) :
-    polyDeriv (MvPolynomial.monomial α c) F a = c • pderivIter α F a := by
-  rw [polyDeriv_eq_sum_of_subset _ (s := {α}) MvPolynomial.support_monomial_subset]
-  simp
-
-@[simp] theorem polyDeriv_C (c : 𝕜) (F : (ι → 𝕜) → V) (a : ι → 𝕜) :
-    polyDeriv (MvPolynomial.C c) F a = c • F a := by
-  rw [← MvPolynomial.monomial_zero', polyDeriv_monomial, pderivIter_zero]
-
-@[simp] theorem polyDeriv_one (F : (ι → 𝕜) → V) (a : ι → 𝕜) :
-    polyDeriv (1 : MvPolynomial ι 𝕜) F a = F a := by
-  rw [← MvPolynomial.C_1, polyDeriv_C, one_smul]
-
 end Def
 
 section Analytic

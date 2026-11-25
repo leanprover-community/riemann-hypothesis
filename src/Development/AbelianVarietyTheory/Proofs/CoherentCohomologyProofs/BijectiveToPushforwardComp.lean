@@ -247,9 +247,6 @@ def pullbackIso (hL : L.IsLB) (f : Y ⟶ X) :
   haveI := isIso_pullbackHom hL f
   asIso (pullbackHom L f)
 
-@[simp] theorem pullbackIso_hom (hL : L.IsLB) (f : Y ⟶ X) :
-    (pullbackIso hL f).hom = pullbackHom L f := rfl
-
 theorem unit_comp_pullbackHom (L : LB X) (f : Y ⟶ X) :
     (Scheme.Modules.pullbackPushforwardAdjunction f).unit.app (toMod L) ≫
       (Scheme.Modules.pushforward f).map (pullbackHom L f) = toPushforward L f :=

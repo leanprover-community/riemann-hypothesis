@@ -98,16 +98,6 @@ def intGrp (D : D7) (v : Pl D) : AddSubgroup (AE D) where
   zero_mem' := ⟨zero_mem _, by rw [map_zero]; exact zero_mem _⟩
   neg_mem' ha := ⟨neg_mem ha.1, by rw [RingHom.map_neg]; exact neg_mem ha.2⟩
 
-theorem exists_idem (v : Pl D) :
-    ∃ ε : AE D, cA D ε = ε ∧ ε ∈ intAt D (· = v) ∧ ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a := by
-  have h := GlobalTheory.LatAlmostStd.tmul_mem_intAt (D := D)
-    (GlobalTheory.LatAlmostStd.intSupp_single_mul v (α := 1) fun w => by rw [map_one]; exact one_mem _) 1
-  rw [mul_one] at h
-  refine ⟨algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 (singleV D.host.F v 1)), GlobalTheory.IdemSupport.cA_algebraMap _, h,
-    fun a => ⟨fun ha => ?_, fun ha => ha ▸ Ideal.mul_mem_right _ _ h.1⟩⟩
-  rw [← Algebra.smul_def]
-  exact GlobalTheory.LatAlmostStd.smul_eq_of_mem_idAt ha
-
 def Std (S : HSp D) (L : Lat S) (v : Pl D) : Prop := ∀ y, y ∈ latV S L (· = v) ↔ ∀ i, y i ∈ intGrp D v
 
 section Split
@@ -189,19 +179,6 @@ theorem finLat_of {m n : ℕ} {A : AddSubgroup (Mx D m n)} (fin : ∀ a ∈ A, M
   · show idem D (fun _ => True) • a ∈ A
     rwa [mxAt_iff.1 (fin a ha)]
   · exact (show e a = a from hb) ▸ ha
-
-theorem finLat_comap {k l m n : ℕ} {Γ : AddSubgroup (Mx D m n)} (h : FinLat Γ) (f : Mx D k l →+ Mx D m n) {A : Mx D m k} {B : Mx D l n}
-    {A' : Mx D k m} {B' : Mx D n l} (hf : ∀ a, f a = A ⬝ a ⬝ B) (hA : A' ⬝ A = 1) (hB : B ⬝ B' = 1) : FinLat (Γ.comap f) := by
-  have e : ∀ a, A' ⬝ f a ⬝ B' = a := fun a => by
-    rw [hf, Matrix.mul_assoc, Matrix.mul_assoc, hB, Matrix.mul_one, ← Matrix.mul_assoc, hA, Matrix.one_mul]
-  obtain ⟨U, h1, h2, h3⟩ := h.opn
-  have hc : Continuous f := by
-    rw [show (f : _ → _) = _ from funext hf]
-    exact (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
-  refine finLat_of (fun a ha => e a ▸ mxAt_mul' (mxAt_mul _ (h.fin _ ha)) _)
-    ⟨f ⁻¹' U, h1.preimage hc, by rwa [Set.mem_preimage, map_zero], fun a ha hb => h3 _ ha (hf a ▸ mxAt_mul' (mxAt_mul _ hb) _)⟩
-    (h.cpt.image (continuous_sandwich A' B'))
-    fun a ha => ⟨_, ha, e a⟩
 
 theorem sec_fin {s : (Af D.host.F ⊗[D.host.F] D.host.E) →+ AE D} (s2 : ∀ a, finPart D (s a) = a) (s3 : ∀ a, infPart D (s a) = 0)
     {a : AE D} (ha : a ∈ idAt D P) (c : AE D) : s (finPart D (c * a)) = c * a := by
@@ -303,10 +280,6 @@ section Sympl
 
 variable {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (T : HSp D)
 
-theorem symplO_extY (a : Mx D T.rank ρ) (u : WO S T) : symplO S T (d.extY T a) u = symplO S T (d.extY T a) (d.extX T (u ⬝ d.jX)) := by
-  simp only [symplO_eq, d.hO_coordS, HypDec.extX_apply, HypDec.extY_apply, Matrix.mul_assoc, d.pX_jX, d.pX_j0, d.pX_jY, d.pY_jX,
-    d.pY_j0, d.pY_jY, Matrix.mul_zero, Matrix.mul_one, hO_eq_trace S₀, pairS, trace_zero]
-
 theorem symplO_incX (a : Mx D ρ T.rank) (u : WO T S) : symplO T S (d.incX T a) u = symplO T S (d.incX T a) (d.incY T (d.pY ⬝ u)) := by
   simp only [symplO_eq, d.hO_coordT, HypDec.incX_apply, HypDec.incY_apply, cancel₂ d.pX_jX, cancel₂ d.p0_jX, cancel₂ d.pX_jY,
     cancel₂ d.pY_jX, cancel₂ d.p0_jY, cancel₂ d.pY_jY, Matrix.zero_mul, Matrix.mul_zero, Matrix.one_mul, hO_eq_trace T S₀, pairT, trace_zero]
@@ -316,25 +289,6 @@ theorem symplO_incY (a : Mx D ρ T.rank) (u : WO T S) : symplO T S (d.incY T a) 
     cancel₂ d.pY_jX, cancel₂ d.p0_jY, cancel₂ d.pY_jY, Matrix.zero_mul, Matrix.mul_zero, Matrix.one_mul, hO_eq_trace T S₀, pairT, trace_zero]
 
 end Sympl
-
-section Parts
-
-variable {S S₀ T : HSp D} {ρ : ℕ} {d : HypDec S S₀ ρ} {L₀ : Lat S₀} {𝔟 : ℕ → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E} {LT : Lat T}
-  (hS : IsSelfDualC S (splitL d L₀ 𝔟)) (h₀ : IsSelfDualC S₀ L₀) (hT : IsSelfDualC T LT)
-
-theorem projX_mem (x : Fin S.rank → D.host.E) (hx : x ∈ splitL d L₀ 𝔟) : (d.e * d.qX) *ᵥ x ∈ splitL d L₀ 𝔟 := by
-  rw [← mulVec_mulVec]
-  exact e_mem ((mem_splitL d L₀ 𝔟 x).1 hx).1
-
-theorem projY_mem (x : Fin S.rank → D.host.E) (hx : x ∈ splitL d L₀ 𝔟) : (d.e' * d.qY) *ᵥ x ∈ splitL d L₀ 𝔟 := by
-  rw [← mulVec_mulVec]
-  exact e'_mem ((mem_splitL d L₀ 𝔟 x).1 hx).2.2
-
-include hS hT
-
-include h₀
-
-end Parts
 
 section Pcs
 
@@ -356,7 +310,6 @@ variable (hx : idem D (fun _ => True) • dV.extX W x ∈ homL dV dW LV₀ LW₀
 
 include hx hy
 
-
 end Pcs
 
 section Stair
@@ -365,9 +318,7 @@ variable {V V₀ W W₀ : HSp D} {ρ : ℕ} {dV : HypDec V V₀ ρ} {dW : HypDec
   {𝔟 𝔠 : ℕ → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E} (hψ : IsStdChar D ψ (-1)) (hV : IsSelfDualC V (splitL dV LV₀ 𝔟))
   (hW : IsSelfDualC W (splitL dW LW₀ 𝔠)) {α : D.host.E} (hα : α ∈ D.host.AA) (α0 : α ≠ 0)
 
-
 include hV hW hα α0
-
 
 end Stair
 

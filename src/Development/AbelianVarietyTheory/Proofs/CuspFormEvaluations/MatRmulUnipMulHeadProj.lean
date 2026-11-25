@@ -100,9 +100,6 @@ def omegaCx (g : ℕ) : LinearMap.BilinForm ℂ (Fin g ⊕ Fin g → ℂ) :=
     (fun c a b => by
       rw [smul_eq_mul, Finset.mul_sum]; exact Finset.sum_congr rfl fun i _ => by simp; ring)
 
-theorem omegaCx_apply (a b : Fin g ⊕ Fin g → ℂ) :
-    omegaCx g a b = ∑ i, (a (.inl i) * b (.inr i) - a (.inr i) * b (.inl i)) := rfl
-
 theorem omegaCx_eq_dot (a b : Fin g ⊕ Fin g → ℂ) :
     omegaCx g a b = (a ∘ Sum.inl) ⬝ᵥ (b ∘ Sum.inr) - (a ∘ Sum.inr) ⬝ᵥ (b ∘ Sum.inl) := by
   simp [omegaCx_apply, dotProduct, Finset.sum_sub_distrib]
@@ -342,7 +339,6 @@ theorem hermC_eq_sum_col (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {A : 
   rw [Finset.sum_congr rfl fun _ _ => Finset.sum_comm, Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ =>
     Finset.sum_congr rfl fun _ _ => by ring
-
 
 variable {X} in
 theorem EF_eq_coper {y : Frame X.Ψ r} (hy : ∀ τ, (mat y τ).det ≠ 0) (u v : Fin r → E) :

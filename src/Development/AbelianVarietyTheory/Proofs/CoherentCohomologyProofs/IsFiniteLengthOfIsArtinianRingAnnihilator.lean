@@ -305,9 +305,6 @@ def QCoh.annihilatorSheaf : X.IdealSheafData where
     map_annihilator_of_isLocalizedModule (B := Γ(X, X.basicOpen f)) (N := Γ(F, X.basicOpen f))
       (.powers f) (resBasicOpen F f)
 
-@[simp] theorem QCoh.annihilatorSheaf_ideal (U : X.affineOpens) :
-    (annihilatorSheaf F).ideal U = Module.annihilator Γ(X, U) Γ(F, U) := rfl
-
 theorem QCoh.coe_support_annihilatorSheaf :
     ((annihilatorSheaf F).support : Set X) = support F := by
   ext x
@@ -532,7 +529,6 @@ theorem residueDegree_eq_finrank (x : X) :
   exact Scheme.Γevaluation_naturality_apply f x _
 
 variable [LocallyOfFiniteType f] [CompactSpace X] {F : X.Modules} [IsFiniteQC F]
-
 
 include f in
 theorem isNoetherian_of_locallyOfFiniteType_field : AlgebraicGeometry.IsNoetherian X :=

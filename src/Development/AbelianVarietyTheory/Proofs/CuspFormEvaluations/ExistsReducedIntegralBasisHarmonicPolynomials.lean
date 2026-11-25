@@ -236,7 +236,6 @@ theorem exists_short_basis_adapted_of_subset_span (L : Submodule ℤ E) [Discret
   · simpa only [hc] using hflag
   · simpa only [hc] using hn
 
-
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem norm_sq_add_sum_Iio_le {n : ℕ} {v : Fin n → E} {i : Fin n} {r : ℝ}
     (h : ∀ j ≤ i, ‖v j‖ ≤ r) :
@@ -348,9 +347,6 @@ variable {K σ : Type*} [Field K]
 def integralPart (W : Submodule K (MvPolynomial σ K)) : Submodule ℤ (MvPolynomial σ K) :=
   W.restrictScalars ℤ ⊓ coeffsIn σ (integralClosure ℤ K).toSubmodule
 
-theorem mem_integralPart {W : Submodule K (MvPolynomial σ K)} {P : MvPolynomial σ K} :
-    P ∈ integralPart W ↔ P ∈ W ∧ ∀ α, IsIntegral ℤ (P.coeff α) := Iff.rfl
-
 theorem smul_mem_integralPart {W : Submodule K (MvPolynomial σ K)} (c : 𝓞 K)
     {P : MvPolynomial σ K} (hP : P ∈ integralPart W) : c • P ∈ integralPart W :=
   ⟨W.smul_mem (c : K) hP.1, fun α => by
@@ -390,7 +386,6 @@ theorem norm_conjCoeffs_sq [DecidableEq σ] {D : ℕ} {P : MvPolynomial σ K}
     ((support_map_subset s P).trans (support_subset_monomialsLE.2 hP)),
     Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _), ← Finset.sum_coe_sort (monomialsLE σ D)]
   simp only [conjCoeffs, coeff_map, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
-
 
 omit [NumberField K] in
 theorem finrank_le_one_add_pow {W : Submodule K (MvPolynomial σ K)} {D : ℕ}

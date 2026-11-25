@@ -356,14 +356,6 @@ variable (E : Type) [Field E] [CharZero E] [StarRing E]
 
 abbrev sgnM {N : ℕ} (neg : Fin N → Bool) : Matrix (Fin N) (Fin N) E := Matrix.diagonal fun i => Examples₂.sgn (neg i)
 
-omit [CharZero E] in
-theorem col_gram {N : ℕ} (neg : Fin N → Bool) (a b : Matrix (Fin N) (Fin 1) E) (c : Matrix (Fin 1) (Fin 1) E)
-    (h : ∑ k, star (a k 0) * Examples₂.sgn (neg k) * b k 0 = c 0 0) : aᴴ * sgnM E neg * b = c := by
-  ext i j
-  rw [Subsingleton.elim i 0, Subsingleton.elim j 0, ← h, Matrix.mul_apply]
-  simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply]
-
-
 end Field
 
 theorem pairS_plus (S₀ T : HSp D) {ρ : ℕ} (x : Mx D T.rank ρ) (b b' : Mx D ρ S₀.rank) :

@@ -81,7 +81,6 @@ section Points
 
 variable {k : Type} [CommRing k] {d : ℕ}
 
-
 variable (k d) in
 def Q (n : ℕ) : AddSubgroup (Pt k n d) where
   carrier := {p | ∀ i, constantCoeff (p i) = 0}
@@ -453,29 +452,6 @@ theorem exists_series [IsCommMonObj G] {O : Type} [CommRing O] (a : Geo.Tor.OAct
       ptJ_inj hx fun m => by rw [hA0, a.one, Category.comp_id]
     exact congrArg Subtype.val E
 
-private theorem prod_ofFn_eq_one_of_forall_eq_one {M : Type*} [Monoid M] (n : ℕ) :
-    ∀ g : Fin n → M, (∀ j, g j = 1) → (List.ofFn g).prod = 1 := by
-  induction n with
-  | zero => intro g _; simp
-  | succ n ih =>
-    intro g h
-    rw [List.ofFn_succ, List.prod_cons, h 0, _root_.one_mul]
-    exact ih _ fun j => h _
-
-private theorem prod_ofFn_eq_apply_of_forall_ne_eq_one {M : Type*} [Monoid M] (n : ℕ) :
-    ∀ (f : Fin n → M) (i : Fin n), (∀ j, j ≠ i → f j = 1) → (List.ofFn f).prod = f i := by
-  induction n with
-  | zero => intro f i; exact i.elim0
-  | succ n ih =>
-    intro f i h
-    rw [List.ofFn_succ, List.prod_cons]
-    cases i using Fin.cases with
-    | zero =>
-      rw [prod_ofFn_eq_one_of_forall_eq_one hx n _ fun j => h _ (Fin.succ_ne_zero j), _root_.mul_one]
-    | succ i =>
-      rw [h 0 (Fin.succ_ne_zero i).symm, _root_.one_mul]
-      exact ih (fun j => f j.succ) i fun j hj => h _ fun e => hj (Fin.succ_injective _ e)
-
 theorem comb_single {v : Fin d → (Geo.Tor.epsR R ⟶ G)} (hv : ∀ j, v j = spMap (dualLift (Pi.single j 1)) ≫ x 1) (i : Fin d) :
     Geo.Tor.IsLieComb (Pi.single i 1) v (v i) := by
   apply ReciprocityTheory.ChartRestriction.G.Chart.comb_single <;> assumption
@@ -642,10 +618,6 @@ variable {R : Type} [CommRing R]
 
 theorem jetTruncR_surjective (κ : Type) (m : ℕ) : Function.Surjective (jetTruncR R κ m) :=
   jetTruncate_surjective (R := R) κ (Nat.le_succ m)
-
-theorem jetAug_comp_jetTruncR (κ : Type) (m : ℕ) :
-    (jetAug R κ m).comp (jetTruncR R κ m) = jetAug R κ (m + 1) :=
-  jetAug_comp_jetTruncate (R := R) κ (Nat.le_succ m)
 
 theorem ker_jetTruncR_isNilpotent (κ : Type) (m : ℕ) :
     IsNilpotent (RingHom.ker (jetTruncR R κ m)) :=
@@ -893,8 +865,6 @@ theorem subst_zR {S : Type} [CommRing S] {d n : ℕ} (m : ℕ) (p : Q S d n) (s 
 theorem copy_zR {S : Type} [CommRing S] {d n : ℕ} (m : ℕ) (i : Fin n) (s : Fin 1 × Fin d) :
     jetCopy (S := S) d m i (Chart.zR m s) = ChartJet.pj m ((gen i : Q S d n).1 s.2) :=
   (jetMap_zR m _ _ s).trans (ChartJet.pj_X m (i, s.2)).symm
-
-
 
 theorem exists_isChartG_of_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X0 : Scheme.{0}) (t : SAB H X0) (S : Type) [CommRing S] (x0 : Sp S ⟶ X0) (κ : Type) [Fintype κ] (tg : κ → (Sp (DualNumber S) ⟶ t.G.left)), (∀ ℓ, IsTanAtG t x0 (tg ℓ)) → (∀ w, IsTanAtG t x0 w → ∃! a : κ → S, IsCombAtG t x0 (m := Fintype.card κ) (fun i => tg ((Fintype.equivFin κ).symm i)) (fun i => a ((Fintype.equivFin κ).symm i)) w) → ∃ (d : ℕ) (G : FGLaw S d) (A : Germ.OAct (𝓞 E) G) (uvec : κ → Fin d → S) (x : ∀ m, jOG x0 d m 1 ⟶ t.G), d = Fintype.card κ ∧ (∀ ℓ (j : Fin d), uvec ℓ j = if (j : ℕ) = (Fintype.equivFin κ ℓ : ℕ) then 1 else 0) ∧ IsChartG t x0 d G.F A.act tg uvec x := by
   classical

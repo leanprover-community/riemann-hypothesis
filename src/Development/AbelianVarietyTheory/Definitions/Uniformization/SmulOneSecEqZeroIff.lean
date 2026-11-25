@@ -100,9 +100,6 @@ instance : Module F (SecMod p N) where
 @[simp] theorem coord_smul (c : F) (s : SecMod p N) (j : N.ι) :
     (c • s).sec.f j = resTop (N.U j) (scal p c) * s.sec.f j := rfl
 
-@[simp] theorem coord_mk (s : LB.Sec N) (j : N.ι) : (mk p s).sec.f j = s.f j := rfl
-
-
 theorem eq_zero_iff_coord (s : SecMod p N) : s = 0 ↔ ∀ j, s.sec.f j = 0 := by
   constructor
   · rintro rfl j

@@ -307,7 +307,6 @@ private lemma exists_bruhat_function_of_positive_on_cosets {G : Type*} [Group G]
     rw [integral_div]
     exact div_self (hFpos x).ne'
 
-
 open MeasureTheory Pointwise in
 theorem _root_.GlobalTheory.bruhatFunctionExists_closedSubgroup : _root_.HeckeCharacterZeroLocus.BruhatFunctionExistsVariant.{u} := by
   unfold _root_.HeckeCharacterZeroLocus.BruhatFunctionExistsVariant
@@ -350,28 +349,11 @@ def quotInt {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (T : Subgroup 
     (F : G → E) : E :=
   ∫ c, F (Quotient.out c) ∂quotMeas T μ μT
 
-
-omit [MeasurableSpace G] in
-theorem apply_out_mk {T : Subgroup G} {α : Type} {F : G → α} (hF : ∀ t ∈ T, ∀ x, F (t * x) = F x) (x : G) :
-    F (Quotient.out (Quotient.mk (QuotientGroup.rightRel T) x)) = F x := by
-  have h := Quotient.mk_out (s := QuotientGroup.rightRel T) x
-  rw [QuotientGroup.rightRel_apply] at h
-  have := hF _ h (Quotient.out (Quotient.mk (QuotientGroup.rightRel T) x))
-  rw [inv_mul_cancel_right] at this
-  exact this.symm
-
-theorem measurable_comp_out {T : Subgroup G} {α : Type} [MeasurableSpace α] {F : G → α} (hm : Measurable F)
-    (hF : ∀ t ∈ T, ∀ x, F (t * x) = F x) : Measurable fun c : RCoset T => F (Quotient.out c) := by
-  refine measurable_from_quotient.2 ?_
-  have : (fun c : RCoset T => F (Quotient.out c)) ∘ Quotient.mk'' = F := funext (apply_out_mk hF)
-  rwa [this]
-
 end Defs
 
 section Exist
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
   [MeasurableSpace G] [BorelSpace G] {T : Subgroup G} {μ : Measure G} {μT : Measure T}
-
 
 omit [SecondCountableTopology G] in
 theorem exists_isCosetCutoff [LocallyCompactSpace G] [T2Space G] (hT : IsClosed (T : Set G)) [μT.IsHaarMeasure]
@@ -388,40 +370,6 @@ theorem exists_isCosetCutoff [LocallyCompactSpace G] [T2Space G] (hT : IsClosed 
   rw [h1, ENNReal.ofReal_one, ← lintegral_inv_eq_self] at h2
   rw [h2]
   simp [ENNReal.ofReal]
-
-theorem IsCosetCutoff.isQuotMeasure [SFinite μ] [μ.IsMulLeftInvariant] [SFinite μT] [μT.IsMulLeftInvariant]
-    [μT.IsInvInvariant] {β : G → NNReal} (hβ : IsCosetCutoff T μT β) :
-    IsQuotMeasure T μ μT ((μ.withDensity fun x => β x).map (Quotient.mk (QuotientGroup.rightRel T))) := by
-  intro f hf
-  have hb : Measurable fun x => (β x : ℝ≥0∞) := hβ.1.coe_nnreal_ennreal
-  have hmul : Measurable fun p : G × T => (p.2 : G) * p.1 :=
-    (measurable_subtype_coe.comp measurable_snd).mul measurable_fst
-  have hmul' : Measurable fun p : G × T => ((p.2⁻¹ : T) : G) * p.1 :=
-    (measurable_subtype_coe.comp measurable_snd.inv).mul measurable_fst
-  have : μT.IsMulRightInvariant := by
-    rw [← Measure.inv_eq_self μT]; infer_instance
-  have hF : Measurable fun x => ∫⁻ t : T, f (t * x) ∂μT := (hf.comp hmul).lintegral_prod_right'
-  have hinv : ∀ s ∈ T, ∀ x, ∫⁻ t : T, f (t * (s * x)) ∂μT = ∫⁻ t : T, f (t * x) ∂μT := fun s hs x => by
-    rw [← lintegral_mul_right_eq_self (μ := μT) (fun t : T => f (t * x)) ⟨s, hs⟩]
-    simp [mul_assoc]
-  have hmk : Measurable (Quotient.mk (QuotientGroup.rightRel T)) := measurable_quotient_mk''
-  rw [lintegral_map (measurable_comp_out hF hinv) hmk,
-    lintegral_withDensity_eq_lintegral_mul _ hb (g := fun a => ∫⁻ t : T,
-      f (t * Quotient.out (Quotient.mk (QuotientGroup.rightRel T) a)) ∂μT) ((measurable_comp_out hF hinv).comp hmk)]
-  have e1 : ∀ x, ((fun x => (β x : ℝ≥0∞)) * fun a => ∫⁻ t : T,
-      f (t * Quotient.out (Quotient.mk (QuotientGroup.rightRel T) a)) ∂μT) x = ∫⁻ t : T, β x * f (t * x) ∂μT := fun x => by
-    rw [Pi.mul_apply, apply_out_mk (F := fun x => ∫⁻ t : T, f (t * x) ∂μT) hinv, lintegral_const_mul' _ _ ENNReal.coe_ne_top]
-  rw [lintegral_congr e1, lintegral_lintegral_swap ((hb.comp measurable_fst).mul (hf.comp hmul)).aemeasurable]
-  have e2 : ∀ t : T, ∫⁻ x, β x * f (t * x) ∂μ = ∫⁻ x, β ((t⁻¹ : T) * x) * f x ∂μ := fun t => by
-    rw [← lintegral_mul_left_eq_self (μ := μ) (fun x => β ((t⁻¹ : T) * x) * f x) t]
-    simp
-  rw [lintegral_congr e2,
-    ← lintegral_lintegral_swap (f := fun x (t : T) => β ((t⁻¹ : T) * x) * f x)
-      ((hb.comp hmul').mul (hf.comp measurable_fst)).aemeasurable]
-  refine lintegral_congr fun x => ?_
-  rw [lintegral_mul_const _ (f := fun t : T => (β ((t⁻¹ : T) * x) : ℝ≥0∞)) (hb.comp (hmul'.comp (measurable_prodMk_left))),
-    lintegral_inv_eq_self (μ := μT) (fun t : T => (β (t * x) : ℝ≥0∞)), hβ.2, one_mul]
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [BorelSpace G] in
 theorem IsQuotMeasure.eq_map {ν : Measure (RCoset T)} (hν : IsQuotMeasure T μ μT ν) {β : G → NNReal}
@@ -442,12 +390,6 @@ theorem IsQuotMeasure.eq_map {ν : Measure (RCoset T)} (hν : IsQuotMeasure T μ
   · simp [Set.indicator, hq, hc]
 
 variable [LocallyCompactSpace G] [T2Space G] [SFinite μ] [μ.IsMulLeftInvariant] [μT.IsHaarMeasure] [μT.IsInvInvariant]
-
-theorem isQuotMeasure_quotMeas (hT : IsClosed (T : Set G)) : IsQuotMeasure T μ μT (quotMeas T μ μT) := by
-  obtain ⟨β, -, hβ⟩ := exists_isCosetCutoff (μT := μT) hT
-  have : LocallyCompactSpace T := hT.locallyCompactSpace
-  have : SecondCountableTopology T := TopologicalSpace.Subtype.secondCountableTopology (T : Set G)
-  exact Classical.epsilon_spec ⟨_, hβ.isQuotMeasure⟩
 
 end Exist
 
@@ -659,7 +601,6 @@ theorem integrable_of_lintegral_eq_one {α : Type} [MeasurableSpace α] {μ : Me
 
 variable [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [BorelSpace G]
 
-
 open GlobalTheory.Tw in
 theorem IsQuotIntL1.cutoff [SFinite μG] [μG.IsMulLeftInvariant] [SFinite μR] [μR.IsInvInvariant]
     (h : IsQuotIntL1 μR μG f z) {β : G → ℝ≥0} (hβ : IsCosetCutoff R μR β) :
@@ -705,7 +646,6 @@ theorem IsQuotIntL1.unique (hR : IsClosed (R : Set G)) (h : IsQuotIntL1 μR μG 
   have : LocallyCompactSpace R := hR.locallyCompactSpace
   have : SecondCountableTopology R := TopologicalSpace.Subtype.secondCountableTopology (R : Set G)
   rw [(h.cutoff hβ).2, (h'.cutoff hβ).2]
-
 
 end Quot
 
@@ -796,29 +736,8 @@ def UnifModGrowth (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E 
 
 variable {V W}
 
-theorem modGrowth_iff_exp {f : GA D V → X} : ModGrowth V f ↔ ∃ A, ModGrowthExp V A f := exists_comm
-
 theorem nonneg_of_growth {f : GA D V → X} {C : ℝ} {A : ℕ} (h : ∀ g, ‖f g‖ ≤ C * height V g ^ A) : 0 ≤ C := by
   simpa using (norm_nonneg _).trans (h 1)
-
-theorem ModGrowthExp.mono {f : GA D V → X} {A B : ℕ} (h : ModGrowthExp V A f) (hAB : A ≤ B) : ModGrowthExp V B f := by
-  obtain ⟨C, hC⟩ := h
-  exact ⟨C, fun g => (hC g).trans
-    (mul_le_mul_of_nonneg_left (pow_le_pow_right₀ (one_le_height V g) hAB) (nonneg_of_growth hC))⟩
-
-theorem ModGrowthExp.add {f f' : GA D V → X} {A : ℕ} (h : ModGrowthExp V A f) (h' : ModGrowthExp V A f') :
-    ModGrowthExp V A (f + f') := by
-  obtain ⟨C, hC⟩ := h
-  obtain ⟨C', hC'⟩ := h'
-  exact ⟨C + C', fun g => (norm_add_le _ _).trans (by rw [add_mul]; exact add_le_add (hC g) (hC' g))⟩
-
-theorem ModGrowthExp.mul {f f' : GA D V → ℂ} {A B : ℕ} (h : ModGrowthExp V A f) (h' : ModGrowthExp V B f') :
-    ModGrowthExp V (A + B) (f * f') := by
-  obtain ⟨C, hC⟩ := h
-  obtain ⟨C', hC'⟩ := h'
-  refine ⟨C * C', fun g => ?_⟩
-  rw [Pi.mul_apply, norm_mul, pow_add, mul_mul_mul_comm]
-  exact mul_le_mul (hC g) (hC' g) (norm_nonneg _) ((norm_nonneg _).trans (hC g))
 
 theorem norm_le_quotHeight_pow {f : GA D V → X} (hf : ∀ γ ∈ GQ V, ∀ g, f (γ * g) = f g) {C : ℝ} {A : ℕ}
     (h : ∀ g, ‖f g‖ ≤ C * height V g ^ A) (g : GA D V) : ‖f g‖ ≤ C * 2 ^ A * quotHeight V g ^ A := by
@@ -833,16 +752,6 @@ theorem ModGrowth.of_le {Y : Type} [NormedAddCommGroup Y] {f : GA D V → X} {f'
     (hle : ∀ g, ‖f' g‖ ≤ ‖f g‖) : ModGrowth V f' := by
   obtain ⟨C, A, hC⟩ := h
   exact ⟨C, A, fun g => (hle g).trans (hC g)⟩
-
-theorem ModGrowth.add {f f' : GA D V → X} (h : ModGrowth V f) (h' : ModGrowth V f') : ModGrowth V (f + f') := by
-  obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
-  obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
-  exact modGrowth_iff_exp.2 ⟨max A B, (hA.mono (le_max_left _ _)).add (hB.mono (le_max_right _ _))⟩
-
-theorem ModGrowth.mul {f f' : GA D V → ℂ} (h : ModGrowth V f) (h' : ModGrowth V f') : ModGrowth V (f * f') := by
-  obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
-  obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
-  exact modGrowth_iff_exp.2 ⟨A + B, hA.mul hB⟩
 
 theorem ModGrowth₂.right {f : GA D V → GA D W → X} (h : ModGrowth₂ V W f) (g : GA D V) : ModGrowth W (f g) := by
   obtain ⟨C, A, hC⟩ := h
@@ -947,17 +856,6 @@ theorem RapidDec.integrableOn {Φ : GA D V → ℂ} (h : RapidDec V Φ) {μ : Me
   exact Measure.integrableOn_of_bounded hS h.continuous.aestronglyMeasurable (Eventually.of_forall hC)
 
 end Unitary
-
-theorem isQuotIntL1_bot {G : Type} [Group G] [MeasurableSpace G] {μG : Measure G} {f : G → ℂ} {z : ℂ} :
-    IsQuotIntL1 (R := ⊥) (Measure.dirac 1) μG f z ↔ Integrable f μG ∧ z = ∫ g, f g ∂μG := by
-  have e : ∀ (F : G → ℂ) (h : G), (fun r : (⊥ : Subgroup G) => F (r * h)) = fun _ => F h := fun F h =>
-    funext fun r => by rw [Subsingleton.elim r 1]; simp
-  constructor
-  · rintro ⟨F, h1, -, h3, h4⟩
-    obtain rfl : f = F := funext fun h => by simp [h3, e]
-    exact ⟨h1, h4⟩
-  · rintro ⟨h1, h2⟩
-    exact ⟨f, h1, fun h => by rw [e]; exact integrable_const _, fun h => by simp [e], h2⟩
 
 end GlobalTheory.Grow
 

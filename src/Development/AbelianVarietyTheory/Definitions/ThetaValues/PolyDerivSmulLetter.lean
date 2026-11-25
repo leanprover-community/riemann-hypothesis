@@ -104,55 +104,6 @@ theorem cc_ii : cc ii = -ii := by
   rw [emb_cc, map_neg]
   rcases emb_ii τ with h | h <;> simp [h]
 
-theorem exists_int_of_isIntegral {x : E4} (hx : IsIntegral ℤ x) :
-    ∃ m n : ℤ, x = m + n * ii := by
-  have hcl := IsCyclotomicExtension.Rat.isIntegralClosure_adjoin_singleton ii_prim
-  obtain ⟨⟨y, hy⟩, rfl⟩ := (hcl.isIntegral_iff).1 hx
-  change ∃ m n : ℤ, y = m + n * ii
-  clear hx
-  induction hy using Algebra.adjoin_induction with
-  | mem z hz => exact ⟨0, 1, by simpa using hz⟩
-  | algebraMap r => exact ⟨r, 0, by simp⟩
-  | add a b _ _ ha hb =>
-    obtain ⟨m, n, rfl⟩ := ha
-    obtain ⟨m', n', rfl⟩ := hb
-    exact ⟨m + m', n + n', by push_cast; ring⟩
-  | mul a b _ _ ha hb =>
-    obtain ⟨m, n, rfl⟩ := ha
-    obtain ⟨m', n', rfl⟩ := hb
-    exact ⟨m * m' - n * n', m * n' + n * m', by
-      push_cast; linear_combination (n * n' : E4) * ii_mul_ii⟩
-
-theorem exists_rat (x : E4) : ∃ p q : ℚ, x = p + q * ii := by
-  have halg : IsAlgebraic ℤ x :=
-    (IsFractionRing.isAlgebraic_iff ℤ ℚ E4).2 (Algebra.IsAlgebraic.isAlgebraic _)
-  obtain ⟨k, hk, hki⟩ := halg.exists_integral_multiple
-  obtain ⟨m, n, h⟩ := exists_int_of_isIntegral hki
-  have hk' : (k : E4) ≠ 0 := Int.cast_ne_zero.2 hk
-  refine ⟨m / k, n / k, ?_⟩
-  rw [zsmul_eq_mul] at h
-  push_cast
-  field_simp
-  linear_combination h
-
-theorem trace_ii : Algebra.trace ℚ E4 ii = 0 := by
-  have h := trace_cc ii
-  rw [cc_ii, map_neg] at h
-  linarith
-
-theorem finrank_eq : Module.finrank ℚ E4 = 2 := by
-  rw [IsCyclotomicExtension.Rat.finrank 4 E4]
-  decide
-
-theorem trace_eq (p q : ℚ) : Algebra.trace ℚ E4 (-(ii / 2) * (p + q * ii)) = q := by
-  have e : -(ii / 2) * ((p : E4) + q * ii) = algebraMap ℚ E4 (q / 2) + algebraMap ℚ E4 (-(p / 2)) * ii := by
-    simp only [eq_ratCast]
-    push_cast
-    linear_combination (-(q : E4) / 2) * ii_mul_ii
-  rw [e, map_add (f := _), ← Algebra.smul_def, map_smul, trace_ii, Algebra.trace_algebraMap, finrank_eq]
-  simp
-  ring
-
 def gm : Matrix (Fin 2) (Fin 2) E4 := !![1, 0; 0, -1]
 
 theorem herm_gm (x y : Fin 2 → E4) : herm gm x y = x 0 * cc (y 0) - x 1 * cc (y 1) := by
@@ -240,15 +191,6 @@ theorem exists_flagData : ∃ X : Data E4 2, X.Ψ = cmt ∧ X.Gm = gm ∧ X.p0 =
     exact ii_isIntegral.neg.mul (lat_int hx hy)
 
 def flagData : Data E4 2 := exists_flagData.choose
-
-theorem flagData_Ψ : flagData.Ψ = cmt := exists_flagData.choose_spec.1
-theorem flagData_Gm : flagData.Gm = gm := exists_flagData.choose_spec.2.1
-theorem hyperbolicFlagData_base_point : flagData.p0 = 1 := exists_flagData.choose_spec.2.2.1
-theorem flagData_Λ : flagData.Λ = lat := exists_flagData.choose_spec.2.2.2.1
-theorem flagData_κ0 : flagData.κ0 = -ii := exists_flagData.choose_spec.2.2.2.2.2.1
-
-theorem emb_ii_eq (τ : flagData.Ψ) : τ.1 ii = Complex.I :=
-  mem_cmt.1 (flagData_Ψ ▸ τ.2)
 
 end
 
@@ -445,9 +387,6 @@ variable {q0 : ℕ} (hr : X.p0 + q0 = r)
 
 def rowOf : X.Ψ × (Fin q0 ⊕ Fin X.p0) ≃ X.Ψ × Fin r := Equiv.prodCongr (Equiv.refl _) (rowIdx hr)
 
-@[simp] theorem rowOf_apply (τ : X.Ψ) (ρ : Fin q0 ⊕ Fin X.p0) :
-    rowOf X hr (τ, ρ) = (τ, rowIdx hr ρ) := rfl
-
 theorem rowType_rowOf_inl (τ : X.Ψ) (i : Fin q0) : rowType X (rowOf X hr (τ, Sum.inl i)) = τ.1 :=
   rowType_of_le X τ (by simp)
 
@@ -519,7 +458,6 @@ theorem rowFac_ne_zero (p : X.Ψ × Fin r) : rowFac X d p ≠ 0 := by
 
 variable (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (x : Frame X.Ψ r)
 
-
 omit hd in
 theorem polyDeriv_smul_letter {σ W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
     (P : MvPolynomial σ ℂ) (s : σ → ℂ) (t : ℂ) (h : ∀ m ∈ P.support, (m.prod fun l e => s l ^ e) = t)
@@ -548,54 +486,11 @@ open ReciprocityTheory.ChartRestriction.G.I2.TiledBoundaries (E4)
 def vec (m : Fin 2 ⊕ Fin 2 → ℤ) : Fin 2 → E4 :=
   ![m (Sum.inl 0) - m (Sum.inr 0) * ii, m (Sum.inl 1) + m (Sum.inr 1) * ii]
 
-theorem vec_mem (m : Fin 2 ⊕ Fin 2 → ℤ) : vec m ∈ flagData.Λ := by
-  rw [flagData_Λ]
-  intro a
-  fin_cases a
-  · exact (isIntegral_intCast _).sub ((isIntegral_intCast _).mul ii_isIntegral)
-  · exact (isIntegral_intCast _).add ((isIntegral_intCast _).mul ii_isIntegral)
-
-theorem EF_vec (m m' : Fin 2 ⊕ Fin 2 → ℤ) :
-    EF flagData (vec m) (vec m') = -(omegaStd m m' : ℤ) := by
-  have hc (a : ℤ) : cc (a : E4) = a := map_intCast (IsCMField.complexConj E4) a
-  have hadd (u v : E4) : cc (u + v) = cc u + cc v := map_add (IsCMField.complexConj E4) u v
-  have h := trace_eq (-(m (.inl 0) * m' (.inl 0) + m (.inr 0) * m' (.inr 0) -
-    m (.inl 1) * m' (.inl 1) - m (.inr 1) * m' (.inr 1) : ℤ)) (-(omegaStd m m' : ℤ))
-  rw [← h, EF_def, flagData_κ0, flagData_Gm, herm_gm]
-  congr 1
-  simp only [vec, cons_val_zero, cons_val_one, cc_sub, hadd, cc_mul, hc, cc_ii, omegaStd,
-    Fin.sum_univ_two]
-  push_cast
-  linear_combination (ii / 2 * (-(m (.inr 0) * m' (.inr 0) : E4) + m (.inr 1) * m' (.inr 1))) *
-    ii_mul_ii
-
 def vecLin : (Fin 2 ⊕ Fin 2 → ℤ) →ₗ[ℤ] flagData.Λ :=
   AddMonoidHom.toIntLinearMap
     { toFun := fun m => ⟨vec m, vec_mem m⟩
       map_zero' := by ext a; fin_cases a <;> simp [vec]
       map_add' := fun m m' => by ext a; fin_cases a <;> simp [vec] <;> ring }
-
-theorem vecLin_bijective : Function.Bijective vecLin := by
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro m hm
-    have h0 : vec m = 0 := congrArg Subtype.val hm
-    have h (m' : Fin 2 ⊕ Fin 2 → ℤ) : omegaStd m m' = 0 := by
-      have := EF_vec m m'
-      rw [h0, EF_def] at this
-      simpa [herm] using this
-    funext j
-    rcases j with j | j
-    · simpa [omegaStd, Pi.single_apply] using h (Pi.single (Sum.inr j) 1)
-    · simpa [omegaStd, Pi.single_apply] using h (Pi.single (Sum.inl j) 1)
-  · rintro ⟨v, hv⟩
-    have hv' : v ∈ lat := flagData_Λ ▸ hv
-    obtain ⟨m₀, n₀, h₀⟩ := exists_int_of_isIntegral (hv' 0)
-    obtain ⟨m₁, n₁, h₁⟩ := exists_int_of_isIntegral (hv' 1)
-    refine ⟨Sum.elim ![m₀, m₁] ![-n₀, n₁], Subtype.ext ?_⟩
-    change vec _ = v
-    funext a
-    fin_cases a <;> simp [vec, h₀, h₁]
 
 def bas : (Fin 2 ⊕ Fin 2 → ℤ) ≃ₗ[ℤ] flagData.Λ := LinearEquiv.ofBijective vecLin vecLin_bijective
 
@@ -612,19 +507,7 @@ instance : Unique flagData.Ψ :=
 
 def idx : Fin 2 ≃ flagData.Ψ × Fin 2 := (Equiv.uniqueProd _ _).symm
 
-theorem hr : flagData.p0 + 1 = 2 := by rw [hyperbolicFlagData_base_point]
-
 def one : Frame flagData.Ψ 2 := fun _ => (1 : Matrix (Fin 2) (Fin 2) ℂ)
-
-theorem one_mem : one ∈ flagData.dom := fun τ => by
-  have hm : mat one τ = 1 := rfl
-  refine ⟨by rw [hm]; simp, fun i => ?_⟩
-  unfold dmin
-  rw [hm, flagData_Gm, hyperbolicFlagData_base_point, gram_one]
-  fin_cases i
-  · simp [lminor, psgn]
-  · simp [lminor, psgn, sgn]
-  · simp [lminor, psgn, sgn, Finset.prod_range_succ]
 
 end Gauss
 

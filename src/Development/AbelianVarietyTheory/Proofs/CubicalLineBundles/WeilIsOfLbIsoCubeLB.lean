@@ -131,54 +131,6 @@ theorem val_ratio {X X' Y Y₀ B : Scheme.{0}} {L : LB X} {N : LB X'} (hL : L.Is
 
 variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj B] [IsCommMonObj B]
 
-theorem exists_gen_lam (hG : GlobalFnsSt) (hA : IsAbelianScheme A) {N : RigLB A} (cb : CubicalStr A N)
-    {T : Over S} (p₀ : T.left) (hT : ∀ p : T.left, p = p₀) (a g : B ⟶ A) [IsMonHom g] (n : ℕ) (y : T ⟶ B)
-    (hy : (y ≫ a) ^ n = 1) :
-    ∃ t : LB.Gen (LB.LinComb N.L (fun I : ULift.{0} (Finset (Fin 2)) => (lift (fst T B ≫ y) (snd T B ^ n)).left ≫
-        (psum A ![fst B B ≫ a, snd B B ≫ g] I.down).left) (fun I => (-1) ^ (2 - I.down.card))),
-      t.IsGen ∧ ∀ (z : T ⟶ B) (e : Γ(T.left, ⊤)ˣ), z ^ n = 1 → WeilIs A N.L n (y ≫ a) (z ≫ g) e →
-        ∀ (p : T.left) (J), Good N.L p J →
-          val t (lift (𝟙 T) z).left p J = val t (lift (𝟙 T) (1 : T ⟶ B)).left p J * gm (𝟙 T.left) p ⊤ e := by
-  obtain ⟨u₀, hu₀, v₀⟩ := exists_gen_pairing hG hA cb p₀ hT n (y ≫ a) hy
-  obtain ⟨σ, hσ⟩ := exists_frame N.isLB (K := Fin 2) ![(y ≫ a).left, (1 : T ⟶ A).left] ![-1, 1] p₀ hT
-  obtain ⟨u, hu, v⟩ := exists_gen N.isLB
-    (φ' := fun I : ULift.{0} (Finset (Fin 2)) => (lift (fst T B ≫ y) (snd T B ^ n)).left ≫
-        (psum A ![fst B B ≫ a, snd B B ≫ g] I.down).left) (ε' := fun I => (-1) ^ (2 - I.down.card))
-    (fun U _ h => by
-      have e : ∀ I, (lift (fst T B ≫ y) (snd T B ^ n)).left ≫ (psum A ![fst B B ≫ a, snd B B ≫ g] I).left =
-          (psum A ![fst T B ≫ y ≫ a, (snd T B ≫ g) ^ n] I).left := fun I => by
-        refine congrArg CommaMorphism.left ((psum_hom (preHom (lift (fst T B ≫ y) (snd T B ^ n))) _ I).trans ?_)
-        congr 1
-        funext i
-        fin_cases i
-        · show lift _ _ ≫ fst B B ≫ a = fst T B ≫ y ≫ a
-          rw [lift_fst_assoc, Category.assoc]
-        · show lift _ _ ≫ snd B B ≫ g = (snd T B ≫ g) ^ n
-          rw [lift_snd_assoc, MonObj.pow_comp]
-      have f : ∏ i : Fin 2, h ((fst T B).left ≫ ![(y ≫ a).left, (1 : T ⟶ A).left] i) ^ ![(-1 : ℤ), 1] i =
-          (h (fst T B ≫ y ≫ a).left)⁻¹ * h (fst T B ≫ (1 : T ⟶ A)).left := by
-        rw [Fin.prod_univ_two]
-        exact congrArg₂ (· * ·) (zpow_neg_one _) (zpow_one _)
-      refine (DVR.prod_sum₂ (K := Fin 2) (K' := Fin 2) (U := U) _
-        (prod_mulT n (y ≫ a) (fst T B) (snd T B ≫ g) h) f).trans ?_
-      simp only [e]
-      rw [NormRos.prod_square, MonObj.comp_one]
-      apply Additive.ofMul.injective
-      simp only [ofMul_mul, ofMul_inv]
-      abel)
-    (LB.mulGen N.L _ _ _ _ (LB.pullGen N.L _ _ u₀ (lift (fst T B) (snd T B ≫ g)).left)
-      (LB.pullGen N.L _ _ σ (fst T B).left))
-    (DVR.mulGen_isGen _ _ _ _ _ _ _ (DVR.pullGen_isGen _ _ _ _ hu₀ _) (DVR.pullGen_isGen _ _ _ _ hσ _))
-  refine ⟨u, hu, fun z e hz he p J hJ => ?_⟩
-  have w : ∀ b : T ⟶ B, val u (lift (𝟙 T) b).left p J =
-      val u₀ (lift (𝟙 T) (b ≫ g)).left p J * val σ (𝟙 T :).left p J := fun b => by
-    rw [v _ _ p J hJ, val_mul hJ, val_pull hJ, val_pull hJ, ← Over.comp_left, ← Over.comp_left, comp_lift,
-      lift_fst, lift_snd_assoc]
-  have w₀ := v₀ (z ≫ g) e (by rw [← MonObj.pow_comp, hz, MonObj.one_comp]) he T (𝟙 T) 1 p J hJ
-  rw [Category.id_comp, _root_.mul_one] at w₀
-  rw [w, w, w₀, MonObj.one_comp, mul_right_comm]
-  rfl
-
 end GlobalTheory.PairingOfLam
 
 namespace GlobalTheory

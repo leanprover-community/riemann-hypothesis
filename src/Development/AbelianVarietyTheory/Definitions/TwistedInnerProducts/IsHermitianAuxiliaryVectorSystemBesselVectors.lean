@@ -69,7 +69,6 @@ end Generic
 
 section Coef
 
-
 variable (D v) in
 def locIdeal : Ideal (AE D) where
   carrier := {z | tensAt D.host.E v (compFin D.host.F D.host.E v z) = z}
@@ -147,7 +146,6 @@ variable (V X : HSp D) (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v)
 
 def IsScaled (t : ℕ → Fv D.host.F v) : Prop :=
   (∀ r, vec β (.inl r) = jX.map τ *ᵥ vec γ r) ∧ ∀ i : Fin c, vec β (.inr i) = t i • (τ ∘ a i)
-
 
 variable (c) in
 structure IsHermitianAuxiliaryVectorSystem (κ : ℕ → D.host.E) : Prop where
@@ -227,53 +225,6 @@ theorem hQ_0Y {i : ℕ} (hi : i < ρ) (z) : hQ V (d.i₀ *ᵥ z) (colN d.e' i) =
 
 theorem hQ_vecB : hQ V (d.i₀ *ᵥ vecB o ζ) (d.i₀ *ᵥ vecB o ζ) = hQ L ζ ζ := by
   rw [hQ_mulVec, d.iso, ← hQ, vecB, hQ_mulVec, o.isoB, hQ]
-
-variable {ζ} in
-theorem isHermitianAuxiliaryVectorSystem_besselVectors (hζ : IsLineVec L ζ) : IsHermitianAuxiliaryVectorSystem (2 * ρ + 1) V A (d.i₀ * o.iA) (besselAuxiliaryVectors d (vecB o ζ))
-    (fun i => if i = ρ then hQ L ζ ζ else 1) := by
-  refine { iso := ?iso, perp := ?perp, pair := ?pair, ne := ?ne, card := ?card }
-  case iso =>
-    rw [conjTranspose_mul, Matrix.mul_assoc o.iAᴴ, Matrix.mul_assoc o.iAᴴ, ← Matrix.mul_assoc _ d.i₀, d.iso,
-      ← Matrix.mul_assoc, o.isoA]
-  case perp =>
-    intro i hi
-    unfold besselAuxiliaryVectors
-    split_ifs with h1 h2
-    · rw [colN_eq_mulVec _ h1, ← vecMul_vecMul, perp_of_gram d.i₀e, zero_vecMul]
-    · rw [vecB, mulVec_mulVec]
-      refine perp_of_gram ?_ _
-      rw [conjTranspose_mul, Matrix.mul_assoc o.iAᴴ, Matrix.mul_assoc o.iAᴴ, ← Matrix.mul_assoc _ d.i₀, d.iso,
-        ← Matrix.mul_assoc, o.orth']
-    · rw [colN_eq_mulVec _ (show 2 * ρ - i < ρ by omega), ← vecMul_vecMul, perp_of_gram d.i₀e', zero_vecMul]
-  case pair =>
-    intro i hi l hl
-    unfold besselAuxiliaryVectors
-    rcases lt_trichotomy l ρ with h | h | h <;> rcases lt_trichotomy i ρ with h' | h' | h'
-    · rw [if_pos h, if_neg (by omega), if_neg (by omega), hQ_XY d h (by omega), if_neg h'.ne]
-      exact if_congr (by omega) rfl rfl
-    · rw [if_pos h, if_neg (by omega), if_pos (by omega), wittDecomposition_hermitian_e_anisotropicPart d h, if_neg (by omega)]
-    · rw [if_pos h, if_pos (by omega), hQ_XX d h (by omega), if_neg (by omega)]
-    · rw [if_neg (by omega), if_pos h, if_neg (by omega), if_neg (by omega), hQ_0Y d (by omega), if_neg (by omega)]
-    · rw [if_neg (by omega), if_pos h, if_neg (by omega), if_pos (by omega), hQ_vecB, if_pos (by omega), if_pos h']
-    · rw [if_neg (by omega), if_pos h, if_pos (by omega), hQ_0X d (by omega), if_neg (by omega)]
-    · rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega), hQ_YY d (by omega) (by omega),
-        if_neg (by omega)]
-    · rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos (by omega), wittDecomposition_hermitian_dual_anisotropicPart d (by omega),
-        if_neg (by omega)]
-    · rw [if_neg (by omega), if_neg (by omega), if_pos (by omega), hQ_YX d (by omega) (by omega), if_neg h'.ne']
-      exact if_congr (by omega) rfl rfl
-  case ne =>
-    intro i _
-    split_ifs
-    exacts [hζ.2, one_ne_zero]
-  case card =>
-    have := d.rank_add
-    have := o.rank_add
-    have := hζ.1
-    omega
-
-variable {β}
-
 
 end Global
 

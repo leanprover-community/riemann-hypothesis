@@ -150,7 +150,6 @@ theorem coeff_taylorDir (f : W → ℂ) (m : σ →₀ ℕ) :
     MvPowerSeries.coeff m (taylorDir u f) = ((∏ i, (m i).factorial : ℕ) : ℂ)⁻¹ *
       ReciprocityTheory.ChartRestriction.G.I2.polyDeriv (MvPolynomial.monomial m 1) u f 0 := rfl
 
-
 omit [NormedAddCommGroup W] [NormedSpace ℂ W] in
 theorem cast_prod_factorial_ne_zero (m : σ →₀ ℕ) : ((∏ i, (m i).factorial : ℕ) : ℂ) ≠ 0 :=
   Nat.cast_ne_zero.2 (Finset.prod_ne_zero_iff.2 fun i _ => (m i).factorial_ne_zero)
@@ -322,14 +321,12 @@ theorem taylorDir_eq_zero_iff (hu : Submodule.span ℂ (Set.range u) = ⊤)
   simp only [h1, ContinuousMultilinearMap.zero_apply, smul_zero, zero_add] at h2
   exact h2.unique hasSum_zero
 
-
 variable (W) in
 def analyticAtZero : Subalgebra ℂ (W → ℂ) where
   carrier := {f | AnalyticAt ℂ f 0}
   mul_mem' hf hg := hf.mul hg
   add_mem' hf hg := hf.add hg
   algebraMap_mem' _ := analyticAt_const
-
 
 noncomputable def taylorDirAlgHom : analyticAtZero W →ₐ[ℂ] MvPowerSeries σ ℂ where
   toFun f := taylorDir u f
@@ -429,11 +426,6 @@ theorem dirPolyDeriv_eq_sum_coeff_taylor (P : MvPolynomial σ ℂ) (f : (σ → 
 
 @[simp] theorem constantCoeff_taylor (f : (σ → ℂ) → ℂ) :
     MvPowerSeries.constantCoeff (taylor f) = f 0 := constantCoeff_taylorDir _ f
-
-@[simp] theorem taylor_const (c : ℂ) :
-    taylor (fun _ : σ → ℂ => c) = MvPowerSeries.C c := taylorDir_const _ c
-
-@[simp] theorem taylor_zero : taylor (0 : (σ → ℂ) → ℂ) = 0 := taylorDir_zero _
 
 theorem taylor_mul (hf : AnalyticAt ℂ f 0) (hg : AnalyticAt ℂ g 0) :
     taylor (f * g) = taylor f * taylor g := taylorDir_mul _ hf hg

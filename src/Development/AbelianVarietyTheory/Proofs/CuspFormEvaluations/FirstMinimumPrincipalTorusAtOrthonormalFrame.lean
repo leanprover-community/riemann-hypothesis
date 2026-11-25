@@ -81,7 +81,6 @@ noncomputable section
 
 variable {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
 
-
 variable (τ) in
 def realPt : (Fin g ⊕ Fin g → ℝ) →ₗ[ℝ] (Fin g → ℂ) where
   toFun p := (fun i => (p (.inl i) : ℂ)) + τ *ᵥ fun i => (p (.inr i) : ℂ)
@@ -193,7 +192,6 @@ theorem mem_lat_perBasis (y : EuclideanSpace ℂ (Fin g)) :
     exact ⟨m, by rw [hsum, hm]⟩
 
 variable (hφ : ∀ v w, Hf v w = hermForm (imInv τ) (φ v) (φ w))
-
 
 include hφ in
 theorem im_Hf_realCoord (p q : Fin g ⊕ Fin g → ℝ) :
@@ -433,7 +431,6 @@ theorem pnorm_thFr_rmul (hs : IsSympl X bas) (hP : P ∈ Harm.rowHighest ℂ c c
 
 section Torus
 
-
 variable (X) in
 def scaleUp : (Fin g → ℂ) ≃ₗ[ℂ] EuclideanSpace ℂ (Fin g) where
   toFun z := WithLp.toLp 2 fun i => (√(X.c (idx i).1) : ℂ) * z i
@@ -447,9 +444,6 @@ def scaleUp : (Fin g → ℂ) ≃ₗ[ℂ] EuclideanSpace ℂ (Fin g) where
     ext i
     exact mul_div_cancel₀ _ (ofReal_ne_zero.2 (Real.sqrt_pos.2 (c_pos X _)).ne')
 
-theorem scaleUp_apply (z : Fin g → ℂ) (i : Fin g) :
-    scaleUp X idx z i = (√(X.c (idx i).1) : ℂ) * z i := rfl
-
 theorem Hf_scaleUp (z w : Fin g → ℂ) : Hf (scaleUp X idx z) (scaleUp X idx w) =
     hermForm (Matrix.diagonal fun i => (X.c (idx i).1 : ℂ)) z w := by
   simp only [Hf, hermForm, dotProduct, mulVec_diagonal, scaleUp_apply, map_mul, conj_ofReal,
@@ -459,7 +453,6 @@ theorem Hf_scaleUp (z w : Fin g → ℂ) : Hf (scaleUp X idx z) (scaleUp X idx w
     rw [← ofReal_mul, Real.mul_self_sqrt (c_pos X _).le]
   rw [← h]
   ring
-
 
 variable (X bas) in
 def canSec (a b : Fin g → ℝ) (x : Frame X.Ψ r) (v : EuclideanSpace ℂ (Fin g)) : ℂ :=
@@ -544,7 +537,6 @@ theorem l2_canSec_pos : 0 < (frameTorus idx hs ho a b).l2 1 (canSec X bas idx a 
   rw [l2_canSec_eq_inv_sqrt_two_pow_mul_det_im]
   positivity
 
-
 include ho in
 theorem norm_scaleUp_per (v : Fin r → E) : ‖scaleUp X idx (per X x v ∘ idx)‖ =
     √(∑ τ, X.c τ * X.maj x τ (Data.emb τ.1 v)) := by
@@ -554,7 +546,6 @@ theorem norm_scaleUp_per (v : Fin r → E) : ‖scaleUp X idx (per X x v ∘ idx
   rw [← Real.sqrt_sq (norm_nonneg _)]
   congr 1
   exact ofReal_injective (by rw [← h, ofReal_pow]; rfl)
-
 
 include hs ho in
 theorem per_ne_zero {v : Fin r → E} (hv : v ∈ X.Λ) (h0 : v ≠ 0) : per X x v ∘ idx ≠ 0 := by
@@ -594,11 +585,9 @@ theorem firstMinimum_principalTorusAtOrthonormalFrame : (frameTorus idx hs ho a 
 
 end Torus
 
-
 variable (X) in
 def orthoDir (l : Harm.Var X.Ψ q0 X.p0 (Fin n)) : Fin n → EuclideanSpace ℂ (Fin g) :=
   Pi.single l.2.2 (EuclideanSpace.single (idx.symm (rowOf X hr (l.1, l.2.1))) 1)
-
 
 variable (X bas) in
 def orthoJet (P : Harm.Poly ℂ X.Ψ q0 X.p0 (Fin n)) (x : Frame X.Ψ r) : ℂ :=

@@ -148,8 +148,6 @@ theorem mulVec_idAt {m n : ℕ} (M : Mx D m n) {z : Fin n → AE D} (hz : ∀ j,
   simp only [Matrix.mulVec, dotProduct]
   exact Ideal.sum_mem _ fun j _ => Ideal.mul_mem_left _ _ (hz j)
 
-theorem inK_one : InK S LS P 1 := ⟨one_mem _, fun z _ => by rw [mt_one, one_mulVec]⟩
-
 theorem inK_mul {κ κ' : GA D S} (h : InK S LS P κ) (h' : InK S LS P κ') : InK S LS P (κ * κ') :=
   ⟨mul_mem h.1 h'.1, fun z hz => by rw [mt_mul, ← mulVec_mulVec, h'.2 z hz, h.2 _ (mulVec_idAt _ hz)]⟩
 
@@ -167,12 +165,10 @@ def idLat {n : ℕ} (I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) (Λ : Subm
     Submodule (𝓞 D.host.E) (Fin n → D.host.E) :=
   Submodule.span (𝓞 D.host.E) {z | ∃ s ∈ I, ∃ y ∈ Λ, z = s • y}
 
-
 variable (G) in
 def shiftId : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
   ((G.modul : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) *
     ((G.pl.modulBar sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)⁻¹
-
 
 variable (G) in
 def latBig (i : ℕ) : AddSubgroup (WO (G.V (.grid (i + 1) 0)) (G.V (.grid i 0))) :=

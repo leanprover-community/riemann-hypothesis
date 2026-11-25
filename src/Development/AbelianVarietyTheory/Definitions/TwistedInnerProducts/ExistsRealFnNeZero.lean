@@ -96,9 +96,6 @@ theorem realFr_fin {g : GA D V} (hg : g ∈ GfC V) : realFr θ V B g = 1 := by
     rw [show infHom V g = 1 from hg, map_one]
   rw [realFr_apply, this, mul_one, inv_mul_cancel]
 
-theorem rhoFr_fin {g : GA D V} (hg : g ∈ GfC V) : rhoFr θ V lam B g = 1 := by
-  rw [rhoFr_apply, realFr_fin θ B hg, map_one, map_one]
-
 theorem realFr_toInf (g : GA D V) : realFr θ V B (toInf V g) = realFr θ V B g := by
   conv_rhs => rw [← GlobalTheory.AutMult.toInf_mul_toFin g, map_mul, realFr_fin θ B (toFin V g).2, mul_one]
 
@@ -148,8 +145,6 @@ theorem rhoVr_rhoAt (g : GA D (G.V X)) (v : VV ℂ (wt G X)) : rhoVr (tauE D) (w
 
 variable {X}
 
-@[simp] theorem rhoAt_fin (y : FinPt G X) : rhoAt θ N X y = 1 := rhoFr_fin θ _ _ y.2
-
 theorem frC_on (hX : DefNode D.R.m X) (τ : D.what₂.Tau) :
     (N.frC X τ)ᴴ * (G.V X).gram.map (tauE D τ) * N.frC X τ = 1 := by
   have h := congrArg (·.map (tauE D τ)) (N.fr_on X hX)
@@ -160,31 +155,6 @@ theorem frC_on (hX : DefNode D.R.m X) (τ : D.what₂.Tau) :
   exact (D.sp.cm.cmUnram.2.1 (tauE D τ) _).symm
 
 variable (Λ : Module.Dual ℂ (VV ℂ (wt G X))) (V : FinPt G X → VV ℂ (wt G X))
-
-theorem realFn_apply (g : GA D (G.V X)) : realFn θ N X Λ V g = Λ (rhoAt θ N X g⁻¹ (V (toFin _ g))) := rfl
-
-@[simp] theorem realFn_fin (y : FinPt G X) : realFn θ N X Λ V y = Λ (V y) := by
-  rw [realFn_apply, ← Subgroup.coe_inv, rhoAt_fin, GlobalTheory.AutMult.toFin_coe]; rfl
-
-theorem realFn_one : realFn θ N X Λ V 1 = Λ (V 1) := realFn_fin θ N Λ V 1
-
-theorem realFn_mul (g h : GA D (G.V X)) :
-    realFn θ N X Λ V (g * h) = realFn θ N X (Λ ∘ₗ rhoAt θ N X h⁻¹) (fun y => V (y * toFin _ h)) g := by
-  rw [realFn_apply, mul_inv_rev, map_mul, map_mul]; rfl
-
-theorem realFn_mul_fin (g : GA D (G.V X)) (k : FinPt G X) :
-    realFn θ N X Λ V (g * k) = realFn θ N X Λ (fun y => V (y * k)) g := by
-  rw [realFn_mul, ← Subgroup.coe_inv, rhoAt_fin, GlobalTheory.AutMult.toFin_coe]; rfl
-
-
-variable (X) in
-theorem exists_realFn_ne_zero : ∃ (Λ : Module.Dual ℂ (VV ℂ (wt G X))) (v : VV ℂ (wt G X)),
-    realFn θ N X Λ (fun _ => v) 1 ≠ 0 := by
-  haveI : Nontrivial (VV ℂ (wt G X)) :=
-    GlobalTheory.CoefModel.nontrivial_Hilb (wt G X) (G := fun _ => 1) fun _ => Matrix.PosDef.one
-  obtain ⟨v, hv⟩ := exists_ne (0 : VV ℂ (wt G X))
-  obtain ⟨Λ, h⟩ := not_forall.1 (mt (Module.forall_dual_apply_eq_zero_iff ℂ v).1 hv)
-  exact ⟨Λ, v, by rwa [realFn_one]⟩
 
 variable {θ} (hθ : IsInfFam θ)
 include hθ

@@ -168,7 +168,6 @@ structure RapidDecSm (φ : GA D V → ℂ) : Prop extends IsAutFun V φ where
   smooth : φ ∈ SmFun θ V
   decay : ∀ l, IsLieWord V l → RapidDec V (rWord θ V l φ)
 
-
 def posSp (D : D7) (n : ℕ) : HSp D := Examples₂.posSpace Examples₂.star_isIntegral n
 
 theorem gramAt_posSp (n : ℕ) (τ : D.what₂.Tau) : gramAt D (posSp D n) τ = 1 := by
@@ -180,7 +179,6 @@ theorem gramAt_posSp (n : ℕ) (τ : D.what₂.Tau) : gramAt D (posSp D n) τ = 
   unfold gramAt
   rw [hg]
   exact Matrix.map_one _ (map_zero _) (map_one _)
-
 
 variable {θ V} {φ φ' : GA D V → ℂ} {N : ℕ}
 
@@ -244,7 +242,6 @@ theorem growthSob_add_le (h : φ ∈ SmFun θ V) (h' : φ' ∈ SmFun θ V) (d N 
 theorem growthSob_smul (c : ℂ) (d N : ℕ) : growthSob θ V d N (c • φ) = ‖c‖ₑ * growthSob θ V d N φ :=
   wordSum_eq_mul fun l => by rw [(linOnSm_glWord l).smul, growthSize_smul]
 
-
 variable (θ V) in
 def allDer (M : Submodule ℂ (GA D V → ℂ)) : Submodule ℂ (GA D V → ℂ) where
   carrier := {φ | φ ∈ SmFun θ V ∧ ∀ l, IsLieWord V l → rWord θ V l φ ∈ M}
@@ -280,7 +277,6 @@ theorem exists_growthSob_ne_top (hs : φ ∈ SmFun θ V) (h : UnifModGrowth V θ
   refine ⟨N, fun d => wordSum_ne_top_iff.2 fun l _ => ?_⟩
   exact (wordAct_rel (A := glDer θ V) (B := glDer θ V) (R := fun f _ => f ∈ allDer θ V M) l
     (fun a _ _ _ hf => RderC_mem_allDer hf a.1 _) (y := φ) ⟨hs, hN⟩).2 [] (fun _ h => by simp at h)
-
 
 variable (V) in
 def rapidSub : Submodule ℂ (GA D V → ℂ) where
@@ -320,22 +316,6 @@ theorem RapidDecSm.rder (h : RapidDecSm θ V φ) {τ : D.what₂.Tau} {X : Matri
   have e : rTr V k φ = φ := funext (hk k h1 h2)
   exact (congrFun (Rder_rTr_fin h2 τ X φ) g).symm.trans (by rw [e])
 
-theorem RapidDecSm.rTr_fin (h : RapidDecSm θ V φ) {k : GA D V} (hk : k ∈ GfC V) : RapidDecSm θ V (rTr V k φ) := by
-  obtain ⟨a, U, hU, hl⟩ := rapidDecSm_iff.1 h
-  refine rapidDecSm_iff.2 ⟨⟨fun n τs Xs hX g => ?_, fun l hl => ?_⟩, U.comap (MulAut.conj k⁻¹).toMonoidHom,
-    hU.preimage (f := fun u => k⁻¹ * u * k⁻¹⁻¹) (by fun_prop), fun u h1 h2 g => ?_⟩
-  · have hm : ∀ t : Fin n → ℝ, (List.ofFn fun i => oneP θ V (τs i) (Xs i) (t i)).prod ∈ GinfC V := fun t =>
-      list_prod_mem fun x hx => by
-        obtain ⟨i, rfl⟩ := List.mem_ofFn.1 hx
-        exact GlobalTheory.PointAtPlaceHom.atTau_mem V _ _
-    simpa only [rTr, mul_assoc, GlobalTheory.PointAtPlaceHom.comm_of_mem V (hm _) hk] using a.1 n τs Xs hX (g * k)
-  · have e : rWord θ V l (rTr V k φ) = rTr V k (rWord θ V l φ) :=
-      wordAct_rel (R := fun f f' => f = rTr V k f') l (fun p _ _ _ e => e ▸ Rder_rTr_fin hk p.1 p.2 _) rfl
-    rw [e]
-    exact RapidDec.mul_right (a.2 l hl) k
-  · have := hl (k⁻¹ * u * k⁻¹⁻¹) h1 (mul_mem (mul_mem (inv_mem hk) h2) (inv_mem (inv_mem hk))) (g * k)
-    simpa [rTr, mul_assoc] using this
-
 end Group
 
 section Theta
@@ -351,7 +331,6 @@ def heisDer (a : D.what₂.Tau × Fin W.rank × Fin V.rank × Bool) (f : WO V W 
   Formalism.IndefR.Datum.dRho (heisO ψ V W) θ a.1 (Matrix.single a.2.1 a.2.2.1 (if a.2.2.2 then Complex.I else 1)) f
 
 def sobO (d : ℕ) (f : WO V W → ℂ) : ℝ≥0∞ := wordSum (heisDer ψ θ) (l2O μ 𝓕) d f
-
 
 variable (V W) in
 def thetaLevel (U : AddSubgroup (WO V W)) : Submodule ℂ (WO V W → ℂ) where
@@ -389,7 +368,6 @@ theorem ipO_self (f : WO V W → ℂ) : ipO μ 𝓕 f f = nrm2 μ 𝓕 f := by
 theorem sqNormIntegralFundamentalDomain_eq_l2Norm_sq {f : WO V W → ℂ} (h : Continuous f) : nrm2 μ 𝓕 f = (l2O μ 𝓕 f).toReal ^ 2 := by
   have : BorelSpace (WO V W) := ⟨rfl⟩
   rw [← ENNReal.toReal_pow, l2O_sq_eq_lintegral μ 𝓕 f h, nrm2, GlobalTheory.Ker.ScalarProduct.integral_normSq_eq _ h.measurable]
-
 
 variable (V W) in
 theorem exists_isCovolOne : ∃ (μ : Measure (WO V W)) (𝓕 : Set (WO V W)), IsCovolOne (ratL W V) μ 𝓕 := by
@@ -566,7 +544,6 @@ end Sob
 section Examples
 
 variable {D : D7}
-
 
 end Examples
 
