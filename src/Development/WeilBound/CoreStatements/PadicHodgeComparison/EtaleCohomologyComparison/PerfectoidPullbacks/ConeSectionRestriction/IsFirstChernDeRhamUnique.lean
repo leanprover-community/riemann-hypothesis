@@ -551,7 +551,6 @@ omit [CharZero K] in
 theorem ks_pd (𝒱 : Set X.Opens) (s : ℕ) (c : (KS q s 𝒱).FullSubcategory) : ((KS q s 𝒱).ι.obj c).pdPow s = ⊥ :=
   c.property.1.1
 
-
 def clsK (D : E.LineData X) (s : ℕ) (Λ : CLiftK (KS q s (𝒱D D)).ι D) :
     CH.H ((KS q s (𝒱D D)).ι ⋙ O (smFun X q)) 2 :=
   (CH.cx ((KS q s (𝒱D D)).ι ⋙ O (smFun X q))).cls (zK Λ s) (_root_.GlobalTheory.CompanionTheory.ConeZcoc.main Λ s (ks_pd q _ s))
@@ -659,9 +658,6 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris
 namespace CrystallineSemistableComparison.Pb
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-theorem isO1At_exists {R : Type} [CommRing R] {X : Scheme.{0}} (N : ℕ) (i : X ⟶ PSpace R N) :
-    ∃ D : E.LineData X, IsTautologicalLineAt D N i := _root_.GlobalTheory.CompanionTheory.ConeTwistingSheafMap.main N i
 
 theorem isO1_exists {R : Type} [CommRing R] {X : Scheme.{0}} (p : X ⟶ Sp R) (hp : IsProjOver p) :
     ∃ D : E.LineData X, IsTautologicalLine p D := by

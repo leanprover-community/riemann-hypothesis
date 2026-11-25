@@ -494,8 +494,6 @@ theorem regularAt_of_baseChange : ∀ (R : Type) [CommRing R] [IsDomain R] (T : 
 
 end PositivityTheory.HtPt.Htat.StalkDivisibility
 
-theorem PositivityTheory.HtPt.Htat.bt_reg_descent : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (R' : Type) [CommRing R'] [IsDomain R'] [Algebra R R'] (Γ' : QFGroup R' T) (F : Γ'.G.left ⟶ Γ.G.left), Γ'.IsBaseChange Γ (algebraMap R R') F → Module.Flat R R' → ∀ κ : FractionRing R →+* FractionRing R', κ.comp (algebraMap R _) = (algebraMap R' _).comp (algebraMap R R') → ∀ (f : T → FractionRing R) (g' : Γ'.G.left), Γ'.RegularAt (fun t => κ (f t)) g' → Γ.RegularAt f (F g') :=
-  @PositivityTheory.HtPt.Htat.StalkDivisibility.regularAt_of_baseChange
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -549,8 +547,6 @@ theorem btOrder_eq_top (hHenselian : type_of% @_root_.GlobalTheory.CompanionTheo
 
 end PositivityTheory.HtPt.Htat.HopfOrderEqTop
 
-theorem PositivityTheory.HtPt.Htat.bt_sub_eq_top_of (hHenselian : type_of% @_root_.GlobalTheory.CompanionTheory.CommAlg.exists_flat_henselian_normal_over_prime) (hBaseChange : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.BT.QFGroup.exists_isBaseChange_of_injective) (hRegular : type_of% @GlobalTheory.T.regular_at_base_change) : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (U : Γ.G.left.Opens), Γ.IsFinOpenSub U → Γ.btOrder U = Γ.btOrder ⊤ :=
-  @PositivityTheory.HtPt.Htat.HopfOrderEqTop.btOrder_eq_top hHenselian hBaseChange hRegular
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfTop =====

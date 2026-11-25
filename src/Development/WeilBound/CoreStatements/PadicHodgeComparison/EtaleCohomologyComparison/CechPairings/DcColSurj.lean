@@ -338,8 +338,6 @@ theorem CrystallineSemistableComparison.P.dc_col_inj : ∀ {R : Type} [CommRing 
     rw [map_smul, pow_two, mul_smul, h2, smul_smul, smul_smul]
     congr 1; ring
 
-theorem CrystallineSemistableComparison.P.dc_flip : ∀ {R : Type} [CommRing R] (K : DCx.{w} R), ∃ φ : Cx.Hom K.tot K.flip.tot (RingHom.id R), (∀ n, Function.Bijective (φ.f n)) ∧ ∀ n (x : K.tot.X n) p q, (φ.f n x).1 q p = (-1 : ℤ) ^ (p * q) • x.1 p q := _root_.GlobalTheory.CompanionTheory.DCFlip.flip_tot
-
 theorem CrystallineSemistableComparison.P.dc_col : ∀ {R : Type} [CommRing R] {A : Cx.{w'} R} {K : DCx.{w} R} (e : DCx.AugCol A K) (s : R), (∀ p, (K.col p).ResUpTo s (e.η p)) → ∀ n, UpTo (s ^ (n + 2)) (e.edge.mapH n) := by
   intro R _ A K e s hres n
   exact ⟨P.dc_col_inj e s n (fun p q _ => (hres p).2.2.2 q) (fun m _ => (hres m).2.2.1) (hres n).2.1,
@@ -370,7 +368,6 @@ theorem CrystallineSemistableComparison.P.dc_row : ∀ {R : Type} [CommRing R] {
   have := (P.upTo_alg (e.edge.mapH n) (φ.mapH n) 1 (s ^ (n + 2))).2.2.1 hg (hcomp ▸ hc)
   rwa [one_mul] at this
 
-theorem CrystallineSemistableComparison.P.coef_upTo : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {F F' : C ⥤ ModuleCat.{w} R} (α : F ⟶ F') (s : R), (∀ T, UpTo s (α.app T).hom) → ∀ n, UpTo (s ^ 2) ((Mor.ofNatTrans α).pull n) := _root_.GlobalTheory.CompanionTheory.CoefUpTo.coef_upTo
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.DcColSurj =====

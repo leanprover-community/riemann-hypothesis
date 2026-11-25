@@ -725,7 +725,6 @@ open CategoryTheory AlgebraicGeometry
 
 namespace CrystallineSemistableComparison.Pb.EtaleIntegralityFacts
 
-
 theorem exists_integral_nbhd {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K))
     [Smooth q]
     (hE : ∀ (A : Type) [CommRing A] [Algebra K A] [Algebra.Smooth K A] (p : Ideal A) [p.IsPrime],
@@ -959,8 +958,6 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison.Pb
 attribute [local instance] MvPolynomial.gradedAlgebra
 
-theorem _root_.GlobalTheory.T.basic_open_eval_surjective : ∀ {K : Type} [Field K] {X : Scheme.{0}} {N : ℕ} (i : X ⟶ PSpace K N), IsClosedImmersion i → ∀ {g : MvPolynomial (Fin (N + 1)) K} {e : ℕ} (hg : g ∈ grK K N e), 0 < e → Function.Surjective (evV i g (i ⁻¹ᵁ Proj.basicOpen (grK K N) g) le_rfl) := by
-  first | exact @GlobalTheory.CompanionTheory.Geo.evV_surjective
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BasicOpenEvalSurjectiveStatement =====
@@ -1165,12 +1162,6 @@ theorem isAffineOpen_preimage (hci : IsClosedImmersion i) {g : MvPolynomial (Fin
     (hg : g ∈ grK K N e) (he : 0 < e) : IsAffineOpen (i ⁻¹ᵁ Proj.basicOpen (grK K N) g) := by
   haveI := hci
   exact (Proj.isAffineOpen_basicOpen (grK K N) g hg he).preimage i
-
-theorem evV_surjective (hci : IsClosedImmersion i) {g : MvPolynomial (Fin (N + 1)) K} {e : ℕ}
-    (hg : g ∈ grK K N e) (he : 0 < e) :
-    Function.Surjective (evV i g (i ⁻¹ᵁ Proj.basicOpen (grK K N) g) le_rfl) := by
-  first
-    | (intros; apply GlobalTheory.T.basic_open_eval_surjective <;> assumption)
 
 theorem range_resO_eq (hci : IsClosedImmersion i) {g : MvPolynomial (Fin (N + 1)) K} {e : ℕ}
     (hg : g ∈ grK K N e) (he : 0 < e) {V W : X.Opens} (hW : W = i ⁻¹ᵁ Proj.basicOpen (grK K N) g) (h : V ≤ W)

@@ -662,15 +662,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris
 
-namespace CrystallineSemistableComparison.Pb
-
-theorem oneK_ne_zero : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)), Nonempty X →
-    oneK q ≠ 0 := _root_.GlobalTheory.CompanionTheory.ConeOne.oneK_ne_zero
-
-theorem cupPowC_smul : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] (A : C ⥤ CommAlgCat.{0} R)
-    (z : CH.Cn (CH.modF A) 2) (a : R) (k : ℕ), cupPowC A (a • z) k = a ^ k • cupPowC A z k := _root_.GlobalTheory.CompanionTheory.ConePow.cupPowC_smul
-
-end CrystallineSemistableComparison.Pb
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -925,7 +916,6 @@ theorem g_rel {K : Type} [Field K] {X : Scheme.{0}} {N n e : ℕ} (i : X ⟶ PSp
   · rw [dite_eq_right hk]
     have e1 : (⟨(k : ℕ) - 1, by omega⟩ : Fin (n + 1)).succ = k.castSucc := Fin.ext (by simp; omega)
     rw [htA, e1, ← hinv k, hA]
-
 
 theorem powK_ne_zero_of (hG : LocalCohomologySetup.GeoSetupP) (hR : LocalCohomologySetup.ResidAlgP) (hL : LocalCohomologySetup.LocExactP)
     {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [ConnectedSpace X] (d : ℕ) [SmoothOfRelativeDimension d q] (D : E.LineData X) (hD : IsTautologicalLine q D) (c : HdR q 2)

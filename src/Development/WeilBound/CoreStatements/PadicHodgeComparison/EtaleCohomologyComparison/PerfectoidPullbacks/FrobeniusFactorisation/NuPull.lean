@@ -500,7 +500,6 @@ section -- clump:auto
 
 set_option backward.isDefEq.respectTransparency false
 
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry TensorProduct GroundTheory.PAdicHodge GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison.PAlg
@@ -508,24 +507,6 @@ open CategoryTheory Limits AlgebraicGeometry TensorProduct GroundTheory.PAdicHod
 namespace CrystallineSemistableComparison.Pb
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
-
-theorem bW_gal (r : Res l K) (M : Model l K) (σ : Gal(PadicAlgCl l/K)) (hσ : ∀ w, ACris.galCris σ (r.w w) = r.w w) (n j : ℕ)
-    (y : (HSW r M j).M n) : galM r M σ hσ n j (bW r M n j y) = bW r M n j y := by apply _root_.GlobalTheory.CompanionTheory.BWGal.bW_gal
-
-theorem nu_red (r : Res l K) {N : ℕ} (hT : Mid.TeichmullerCongruence r N) (M : Model l K) (n j : ℕ)
-    (x : B.Hc (B.schFn M.p) (okToOC l K) true (n + 1) j) :
-    (redT r M (Nat.le_succ n)).pull j (Mid.nu r M (n + 1) j hT x) =
-      Mid.nu r M n j hT (B.redHc (B.schFn M.p) (okToOC l K) true (Nat.le_succ n) j x) := by apply _root_.GlobalTheory.CompanionTheory.NuRed.nu_red
-
-theorem nu_gal (r : Res l K) {N : ℕ} (hT : Mid.TeichmullerCongruence r N) (M : Model l K) (σ : Gal(PadicAlgCl l/K))
-    (hσ : ∀ w, ACris.galCris σ (r.w w) = r.w w) (n j : ℕ) (x : B.Hc (B.schFn M.p) (okToOC l K) true n j) :
-    Mid.nu r M n j hT (B.galHc (B.schFn M.p) (okToOC l K) σ (galOC_okToOC σ) true n j x) =
-      galM r M σ hσ n j (Mid.nu r M n j hT x) := by apply _root_.GlobalTheory.CompanionTheory.NuGalSquare.nu_gal
-
-theorem mu_gal (r : Res l K) {N : ℕ} (hT : Mid.TeichmullerCongruence r N) (M : Model l K) (σ : Gal(PadicAlgCl l/K))
-    (hσ : ∀ w, ACris.galCris σ (r.w w) = r.w w) (n j : ℕ) (t : Mid.HM r M n j) :
-    B.galHc (B.schFn M.p) (okToOC l K) σ (galOC_okToOC σ) true n j (Mid.mu r M n j hT t) =
-      Mid.mu r M n j hT (galM r M σ hσ n j t) := by apply _root_.GlobalTheory.CompanionTheory.MuGal.mu_gal
 
 theorem flatW (r : Res l K) : Module.Flat (WittVector l r.k) (AW r) := by apply _root_.GlobalTheory.CompanionTheory.FlatW.flat_AW
 

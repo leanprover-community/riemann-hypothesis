@@ -250,19 +250,6 @@ theorem d2 {x y : Pt R n d} (hx : Z x) (hy : Z y) (f : PS R 2 d) (v : Fin n × F
   rw [hchain, Fintype.sum_prod_type, Fin.sum_univ_two]
   rfl
 
-theorem d3 {x y z : Pt R n d} (hx : Z x) (hy : Z y) (hz : Z z) (f : PS R 3 d) (v : Fin n × Fin d) :
-    pderiv v (ev ![x, y, z] f) = ∑ c, ev ![x, y, z] (pderiv ((0 : Fin 3), c) f) * pderiv v (x c) +
-      ∑ c, ev ![x, y, z] (pderiv ((1 : Fin 3), c) f) * pderiv v (y c) +
-      ∑ c, ev ![x, y, z] (pderiv ((2 : Fin 3), c) f) * pderiv v (z c) := by
-  let b : Fin 3 → Pt R n d := ![x, y, z]
-  have hb : ZZ b := ZZ_cons hx (ZZ_cons hy (ZZ_cons hz ZZ_nil))
-  have hchain : pderiv v (ev b f) =
-      ∑ p : Fin 3 × Fin d, ev b (pderiv p f) * pderiv v (b p.1 p.2) :=
-    prove_cb_ev_chain_rule R b hb f v
-  change pderiv v (ev b f) = _
-  rw [hchain, Fintype.sum_prod_type, Fin.sum_univ_three]
-  rfl
-
 end ChainRule
 
 theorem dmul (v : Fin n × Fin d) (f g : PS R n d) :

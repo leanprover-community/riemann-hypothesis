@@ -115,8 +115,6 @@ theorem tv_mem {m p r : ℕ} (s : ComposableArrows (inU q V).FullSubcategory m) 
 theorem InF.lev0 {n : ℕ} (x : Cn (modF (AF q V)) n) : InF q V 0 x := fun s => by
   rw [Thick.pdPow_zero]; trivial
 
-theorem InF.zero {n r : ℕ} : InF q V r (0 : Cn (modF (AF q V)) n) := fun s => Submodule.zero_mem _
-
 theorem InF.add {n r : ℕ} {x y : Cn (modF (AF q V)) n} (hx : InF q V r x) (hy : InF q V r y) : InF q V r (x + y) :=
   fun s => Submodule.add_mem _ (hx s) (hy s)
 
@@ -334,7 +332,6 @@ theorem mkC_cocycle {a : ℕ} (z : Cn (modF (AF q V)) a) (hz : InF q V a z) (hd 
   rw [d_mkC]
   exact mkC_eq_zero _ _ hd
 
-
 variable (q V) in
 abbrev FL (Λ : Lifts q V) {a : ℕ} (g₀ : Sec q V) (g : Fin a → Sec q V) : Cn (modF (AF q V)) a :=
   Fm (AF q V) (cz fun T => Λ.v T g₀) a fun j => cz fun T => Λ.v T (g j)
@@ -347,7 +344,6 @@ theorem FL_mem (Λ : Lifts q V) {a : ℕ} (g₀ : Sec q V) (g : Fin a → Sec q 
 theorem FL_dmem (Λ : Lifts q V) {a : ℕ} (g₀ : Sec q V) (g : Fin a → Sec q V) :
     InF q V (a + 1) (d _ a (FL q V Λ g₀ g)) :=
   dFm_mem _ (dcz_mem (isL Λ g₀)) a _ fun j => dcz_mem (isL Λ (g j))
-
 
 variable (q V) in
 def clsL (Λ : Lifts q V) {a : ℕ} (g₀ : Sec q V) (g : Fin a → Sec q V) : CH.H (SqF q V a) a :=

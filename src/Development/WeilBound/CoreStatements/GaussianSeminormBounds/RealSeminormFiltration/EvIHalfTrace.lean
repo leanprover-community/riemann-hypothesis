@@ -116,7 +116,6 @@ theorem hasDerivAt_hl (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (x : V) :
   apply GlobalTheory.ThK.Dbl.Dense.hasDerivAt_hl
 end Line
 
-
 open Complex in
 alias temperate_exp := _root_.GlobalTheory.CompanionTheory.OM.SchDiff.temperate_exp
 
@@ -129,18 +128,6 @@ theorem chirp_tg (c : ℝ) {q : V → ℝ} (hq : q.HasTemperateGrowth) : (chirp 
   have h1 : (fun x => -(2 * Real.pi) * c * q x).HasTemperateGrowth :=
     (Function.HasTemperateGrowth.const _).mul hq
   exact temperate_exp.comp h1
-
-theorem chirp_mul (q : V → ℝ) (x y : V) :
-    chirp 1 q y * chirp (-1) q x =
-      Complex.exp (-(2 * Real.pi * Complex.I) * ((q y - q x : ℝ) : ℂ)) := by
-  rw [chirp, chirp, ← Complex.exp_add]
-  congr 1
-  push_cast
-  ring
-
-theorem chirp_one (q : V → ℝ) (x : V) : chirp (-1) q x * chirp 1 q x = 1 := by
-  rw [mul_comm, chirp_mul]
-  simp
 
 theorem hl_schwartz (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (t : ℝ) : ∃ G : 𝓢(V, ℂ), ∀ x, G x = hl a L t f x :=
   _root_.GlobalTheory.ThK.Dbl.Dense.hl_schwartz a L f t
@@ -245,7 +232,6 @@ theorem linForm_apply (B y : κ → mixedEmbedding.mixedSpace F) :
   set_option synthInstance.maxHeartbeats 100000 in
     simp [linForm, map_sum]
 
-
 open scoped Classical in
 theorem phase_line (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (a b x : κ → AF F) (hb : At (evI F) b) (t : ℝ) :
     ψ (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) =
@@ -260,7 +246,6 @@ theorem evI_half_trace (S : mixedEmbedding.mixedSpace F) :
 
 theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0 :=
   _root_.GlobalTheory.ThK.Dbl.Dense.snd_eq_zero hz i
-
 
 open scoped Classical in
 theorem schr_pure {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {a b : κ → AF F} (ha : At (evI F) a) (hb : At (evI F) b)

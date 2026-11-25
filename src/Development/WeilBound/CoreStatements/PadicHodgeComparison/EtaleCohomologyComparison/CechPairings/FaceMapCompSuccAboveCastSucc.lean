@@ -272,7 +272,6 @@ def ch {n k : ℕ} (s : ComposableArrows C' n) {a : Fin (k+1) → Fin (n+1)} {b 
     (ha : Monotone a) (hb : Monotone b) : ComposableArrows (C' × Fin 2) k :=
   Functor.prod' (ha.functor ⋙ s) hb.functor
 
-
 open Classical in
 def tm (m' : Mor F F' σ) {G : C' ⥤ C} (η : G ⟶ m'.G) {n k : ℕ} (s : ComposableArrows C' n) (f : Cn F k)
     (a : Fin (k+1) → Fin (n+1)) (b : Fin (k+1) → Fin 2) : F'.obj (s.obj (Fin.last n)) :=
@@ -610,7 +609,6 @@ theorem CrystallineSemistableComparison.P.adj_mor : ∀ {R R' : Type} [CommRing 
 
 theorem CrystallineSemistableComparison.P.initial : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ ModuleCat.{w} R) (T₀ : C) (h : Limits.IsInitial T₀), (cx F).ResUpTo 1 (aug F fun T => (F.map (h.to T)).hom) := GlobalTheory.T.initial_object_augmented_resolution
 
-theorem CrystallineSemistableComparison.P.el_iso : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {E' E : C ⥤ Type t} (p : E' ⟶ E) (F : C ⥤ ModuleCat.{w} R), (∀ T, Function.Bijective (p.app T)) → ∀ n, Function.Bijective ((elMor p F).hom.f n) := _root_.GlobalTheory.CompanionTheory.Cech.elMor_bijective_of_bijective
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.FaceMapCompSuccAboveCastSucc =====

@@ -89,11 +89,6 @@ namespace PositivityTheory.HtPt.Mb.LCentreUnique.Centre.Sep
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
-theorem isLocalRing_regAt {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (p : Cpt ξ) :
-    IsLocalRing (regAt ξ p) := by
-  show IsLocalRing (genMap ξ p).range
-  exact IsLocalRing.of_surjective' (genMap ξ p).rangeRestrict (genMap ξ p).rangeRestrict_surjective
-
 theorem eq_of_dominated_of_inChart {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ]
     {x : κ → Ω} (M : PModel o x) {X' : Scheme.{0}} {Ω' : Type} [Field Ω'] {ξ' : Spec (CommRingCat.of Ω') ⟶ X'}
     {i : Ω →+* Ω'} {p' : Cpt ξ'} {c : κ} {q r : Cpt M.ξ} (hq : InChart M.ξ x c q) (hr : InChart M.ξ x c r)
@@ -114,7 +109,6 @@ theorem eq_of_dominated : ∀ {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Al
   exact e₁.trans e₂.symm
 
 end PositivityTheory.HtPt.Mb.LCentreUnique.Centre.Sep
-
 
 end -- clump:auto
 end -- clump:auto
@@ -255,7 +249,6 @@ theorem finite_integralClosure_chRing {o : Type} [CommRing o] [Algebra.EssFinite
 
 end PositivityTheory.HtPt.Mb.LFiniteExt.ChartFinite
 
-
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField in
 theorem PositivityTheory.HtPt.Mb.finite_ext : ∀ {o : Type} [CommRing o] [Algebra.EssFiniteType ℤ o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω} (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [FiniteDimensional Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω'] (c : κ), x c ≠ 0 → Module.Finite (chRing o (fun k => algebraMap Ω Ω' (x k)) c) (integralClosure (chRing o (fun k => algebraMap Ω Ω' (x k)) c) Ω') :=
   @PositivityTheory.HtPt.Mb.LFiniteExt.ChartFinite.finite_integralClosure_chRing
@@ -333,7 +326,6 @@ theorem exists_integral_div : ∀ {o : Type} [CommRing o] {Ω : Type} [Field Ω]
   rw [e, mul_div_cancel_left₀ _ hv]
 
 end PositivityTheory.HtPt.Mb.LFracExt.FracExt
-
 
 end -- clump:auto
 end -- clump:auto
@@ -489,7 +481,6 @@ theorem join_chart_normalisation : ∀ (o : Type) [CommRing o] (Ω : Type) [Fiel
 
 end PositivityTheory.HtPt.Mb.LNormChart.ChNorm
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.HodgeTatePoints.MbLNormChart =====
@@ -623,7 +614,6 @@ section Sit
 variable {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω}
   (M : PModel o x) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [Algebra o Ω'] [IsScalarTower o Ω Ω']
   {κ' : Type} [Finite κ'] {y : κ' → Ω'} (M' : PModel o y) (f : M'.X ⟶ M.X) (e : κ → κ')
-
 
 variable {M Ω' M' f} in
 theorem dom_of_eq (hD : Dominates M'.ξ M.ξ f (algebraMap Ω Ω')) {p : Cpt M.ξ} {p' : Cpt M'.ξ} (h : f p'.1 = p.1) :
@@ -855,7 +845,6 @@ theorem exists_normalisation : ∀ (o : Type) [CommRing o] [Algebra.EssFiniteTyp
   · exact normAt_of_charts M Ω' M' f (fun c => (c, Sum.inl c)) hf hyne hB hC hN p
 
 end PositivityTheory.HtPt.Mb.LNormExists.NormEx
-
 
 end -- clump:auto
 end -- clump:auto

@@ -646,7 +646,6 @@ theorem ratio_eq {g x f : MvPolynomial (Fin (N + 1)) K} {e s : ℕ} (hg : g ∈ 
 
 end GlobalTheory.CompanionTheory.GeoVanish
 
-
 open GlobalTheory.CompanionTheory.GeoVanish in
 theorem GlobalTheory.CompanionTheory.GeoVanish.homIdeal_vanish : ∀ {K : Type} [Field K] {X : Scheme.{0}} {N : ℕ} (i : X ⟶ PSpace K N), ∀ {g : MvPolynomial (Fin (N + 1)) K} {e : ℕ} (he : 0 < e) (hg : g ∈ grK K N e) {s : ℕ} {f : MvPolynomial (Fin (N + 1)) K} (hf : f ∈ grK K N (s • e)), f ∈ homIdeal i → ∀ (V : X.Opens) (hV : V ≤ i ⁻¹ᵁ Proj.basicOpen (grK K N) g), evV i g V hV (HomogeneousLocalization.Away.mk (grK K N) hg s f hf) = 0 := by
   intro K _ X N i g e he hg s f hf hfI V hV
@@ -1088,8 +1087,6 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison.Pb
 attribute [local instance] MvPolynomial.gradedAlgebra
 
-theorem _root_.GlobalTheory.T.noether_normalization_finite : ∀ {K : Type} [Field K] {X : Scheme.{0}} {N d e : ℕ} (i : X ⟶ PSpace K N) (y : Fin (d + 1) → MvPolynomial (Fin (N + 1)) K) (hy : ∀ k, (y k).IsHomogeneous e) {V : X.Opens} (hV : V ≤ ⨅ k, i ⁻¹ᵁ Proj.basicOpen (grK K N) (y k)), 0 < e → ∀ (q : X ⟶ Spec (CommRingCat.of K)), i ≫ PSpace.str K N = q → Module.Finite (Algebra.adjoin K (Set.range fun k => Ideal.Quotient.mk (homIdeal i) (y k))) (MvPolynomial (Fin (N + 1)) K ⧸ homIdeal i) → ∀ (S : Finset (Fin (d + 1))) (hS : V ≤ i ⁻¹ᵁ Proj.basicOpen (grK K N) (yS y S)) (ht : ∀ k, IsUnit (tV i y hy V hV k)), letI := (strV q V).toAlgebra; ∀ a, IsIntegral (torusS K (fun k => (ht k).unit) S) (evV i (yS y S) V hS a) := by
-  first | exact @GlobalTheory.CompanionTheory.GeoInteg.isIntegral_torusS
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NoetherNormalizationFiniteStatement =====
@@ -1309,8 +1306,6 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor CrystallineSemistableComparison.Pb
 attribute [local instance] MvPolynomial.gradedAlgebra
 
-theorem _root_.GlobalTheory.T.torus_monomial_mem_range : ∀ {K : Type} [Field K] {X : Scheme.{0}} {N d e : ℕ} (i : X ⟶ PSpace K N) (y : Fin (d + 1) → MvPolynomial (Fin (N + 1)) K) (hy : ∀ k, (y k).IsHomogeneous e) {V : X.Opens} (hV : V ≤ ⨅ k, i ⁻¹ᵁ Proj.basicOpen (grK K N) (y k)), 0 < e → ∀ (S : Finset (Fin (d + 1))) (hS : V ≤ i ⁻¹ᵁ Proj.basicOpen (grK K N) (yS y S)) (ht : ∀ k, IsUnit (tV i y hy V hV k)), ∀ m ∈ expS S, tpow (fun k => (ht k).unit) m ∈ Set.range (evV i (yS y S) V hS) := by
-  first | exact @GlobalTheory.CompanionTheory.GeoTpow.tpow_mem_range
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorusMonomialMemRangeStatement =====
@@ -1333,26 +1328,6 @@ attribute [local instance] MvPolynomial.gradedAlgebra
 variable {K : Type} [Field K] {X : Scheme.{0}} {N d e : ℕ} (i : X ⟶ PSpace K N)
   (y : Fin (d + 1) → MvPolynomial (Fin (N + 1)) K) (hy : ∀ k, (y k).IsHomogeneous e) {V : X.Opens}
   (hV : V ≤ ⨅ k, i ⁻¹ᵁ Proj.basicOpen (grK K N) (y k))
-
-theorem tV_isUnit (k : Fin d) : IsUnit (tV i y hy V hV k) := by
-  first
-    | exact GlobalTheory.T.torus_coordinate_isUnit ..
-
-theorem tpow_mem_range (he : 0 < e) (S : Finset (Fin (d + 1)))
-    (hS : V ≤ i ⁻¹ᵁ Proj.basicOpen (grK K N) (yS y S)) (ht : ∀ k, IsUnit (tV i y hy V hV k)) :
-    ∀ m ∈ expS S, tpow (fun k => (ht k).unit) m ∈ Set.range (evV i (yS y S) V hS) := by
-  first
-    | (intros; apply GlobalTheory.T.torus_monomial_mem_range <;> assumption)
-
-theorem isIntegral_torusS (he : 0 < e) (q : X ⟶ Spec (CommRingCat.of K)) (hiq : i ≫ PSpace.str K N = q)
-    (hfin : Module.Finite (Algebra.adjoin K (Set.range fun k => Ideal.Quotient.mk (homIdeal i) (y k)))
-      (MvPolynomial (Fin (N + 1)) K ⧸ homIdeal i))
-    (S : Finset (Fin (d + 1))) (hS : V ≤ i ⁻¹ᵁ Proj.basicOpen (grK K N) (yS y S))
-    (ht : ∀ k, IsUnit (tV i y hy V hV k)) :
-    letI := (strV q V).toAlgebra
-    ∀ a, IsIntegral (torusS K (fun k => (ht k).unit) S) (evV i (yS y S) V hS a) := by
-  first
-    | (intros; apply GlobalTheory.T.noether_normalization_finite <;> assumption)
 
 theorem algebraicIndependent_tV [IsIntegral X] (he : 0 < e) (q : X ⟶ Spec (CommRingCat.of K))
     (hiq : i ≫ PSpace.str K N = q)

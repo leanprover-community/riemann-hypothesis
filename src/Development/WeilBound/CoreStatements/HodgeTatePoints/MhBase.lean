@@ -139,16 +139,6 @@ end pb
 
 variable {R : Type} [CommRing R] [IsDomain R] {T : Type} [CommGroup T] [Finite T]
 
-theorem sec_ext (Γ : QFGroup R T) {s s' : Γ(Γ.G.left, ⊤)} (h : ∀ t, val (Γ.pt t).left s = val (Γ.pt t).left s') :
-    s = s' := by
-  rw [← sub_eq_zero]
-  refine Twhopf.sec_inj R T Γ ⊤ _ fun t ht => ?_
-  rw [valAt_top, map_sub, h, sub_self]
-
-theorem hom_ext_pt (Γ : QFGroup R T) {A : Type} [CommRing A] {j j' : Γ.G.left ⟶ Spec (CommRingCat.of A)}
-    (h : ∀ t, (Γ.pt t).left ≫ j = (Γ.pt t).left ≫ j') : j = j' :=
-  pb_ext fun a => sec_ext Γ fun t => by rw [val_pb_comp, h, ← val_pb_comp]
-
 theorem mem_top_iff (Γ : QFGroup R T) (f : T → R) : f ∈ Γ.btOrder ⊤ ↔
     ∀ t, ∃ s : Γ(Γ.G.left, ⊤), ∀ h, val (Γ.pt h).left s = algebraMap R (FractionRing R) (f (t * h)) := by
   have hsub : ∀ {B : Type} [CommRing B] {X : Scheme} (x : Spec (CommRingCat.of B) ⟶ X) (U : X.Opens)
@@ -196,37 +186,5 @@ omit [Finite T] in
 theorem val_const (Γ : QFGroup R T) (t : T) (r : R) :
     val (Γ.pt t).left (pb Γ.G.hom r) = algebraMap R (FractionRing R) r :=
   val_pb (Over.w (Γ.pt t)) r
-
-omit [Finite T] in
-theorem val_emb {Γ : QFGroup R T} {A : Subalgebra R (T → R)} {j : Γ.G.left ⟶ Spec (CommRingCat.of A)}
-    (hj : Γ.IsEmb A j) (t : T) (a : A) :
-    val (Γ.pt t).left (pb j a) = algebraMap R (FractionRing R) (a.1 t) :=
-  val_pb (hj.pt t) a
-
-theorem exists_emb (Γ : QFGroup R T) (A : Subalgebra R (T → R))
-    (hA : ∀ a : A, ∃ s : Γ(Γ.G.left, ⊤), ∀ t, val (Γ.pt t).left s = algebraMap R (FractionRing R) (a.1 t)) :
-    ∃! j : Γ.G.left ⟶ Spec (CommRingCat.of A), Γ.IsEmb A j := by
-  choose s hs using hA
-  let φ : A →+* Γ(Γ.G.left, ⊤) :=
-    { toFun := s
-      map_one' := sec_ext Γ fun t => by rw [hs, map_one]; simp
-      map_mul' := fun a b => sec_ext Γ fun t => by rw [hs, map_mul, hs, hs]; simp
-      map_zero' := sec_ext Γ fun t => by rw [hs, map_zero]; simp
-      map_add' := fun a b => sec_ext Γ fun t => by rw [hs, map_add (f := _), hs, hs]; simp }
-  obtain ⟨j, hj⟩ := exists_pb φ
-  have hpt : ∀ t, (Γ.pt t).left ≫ j = Spec.map (CommRingCat.ofHom
-      ((algebraMap R (FractionRing R)).comp
-        ((Pi.evalRingHom (fun _ : T => R) t).comp A.val.toRingHom))) := by
-    intro t
-    apply comp_eq_spec
-    intro a
-    rw [hj]
-    exact hs a t
-  refine ⟨j, ⟨?_, hpt⟩, fun j' hj' => hom_ext_pt Γ fun t => by rw [hj'.pt, hpt]⟩
-  apply hom_ext_pt Γ
-  intro t
-  rw [← Category.assoc, hpt, spec_comp, Over.w (Γ.pt t)]
-  show _ = Spec.map (CommRingCat.ofHom (algebraMap R (FractionRing R)))
-  congr 2
 
 end PositivityTheory.HtPt.Mh

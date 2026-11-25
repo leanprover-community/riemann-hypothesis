@@ -50,21 +50,6 @@ theorem pureA_pt (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ →
     (y : κ → Af F) : pureA F f g (pt a y) = f a * g y := by
   simp only [pureA, pt, RingEquiv.apply_symm_apply]
 
-theorem slice_mem {Φ : (κ → AF F) → ℂ} (h : Φ ∈ schA F κ) (a : κ → mixedEmbedding.mixedSpace F) :
-    (fun y => Φ (pt a y)) ∈ SB (κ → Af F) := by
-  induction h using Submodule.span_induction with
-  | mem Φ hΦ =>
-    obtain ⟨f, g, hg, rfl⟩ := hΦ
-    have : (fun y => pureA F f g (pt a y)) = f a • g := by
-      funext y
-      rw [pureA_pt]
-      rfl
-    rw [this]
-    exact Submodule.smul_mem _ _ hg
-  | zero => exact Submodule.zero_mem _
-  | add Φ Ψ _ _ h₁ h₂ => exact Submodule.add_mem _ h₁ h₂
-  | smul c Φ _ h₁ => exact Submodule.smul_mem _ c h₁
-
 omit [Fintype κ] in
 theorem at_iff (z : κ → AF F) : At (evI F) z ↔ ∀ i, (z i).2 = 0 := by
   constructor
@@ -93,10 +78,6 @@ theorem eq_of_pureA {f₁ f₂ : SInf F κ} (h : ∀ g ∈ SB (κ → Af F), ∀
   ext a
   have := h g hg (pt a y)
   rwa [pureA_pt, pureA_pt, hy, mul_one, mul_one] at this
-
-theorem pureA_zero (g : (κ → Af F) → ℂ) : pureA F (0 : SInf F κ) g = 0 := by
-  funext x
-  exact zero_mul _
 
 end PositivityTheory.RL.SeminormBoundRestriction
 

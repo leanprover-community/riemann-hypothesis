@@ -191,24 +191,6 @@ noncomputable section
 
 open TensorProduct
 
-namespace CrystallineSemistableComparison.Pb.Psi
-
-variable {W A C₀ : Type} [CommRing W] [CommRing A] [CommRing C₀] [Algebra W A]
-  {K₀ : Type} [Field K₀] [Algebra W K₀] {L : Type 1} [AddCommGroup L] [Module W L]
-  (c : A →+* C₀) (k : K₀ →+* C₀) (hk : ∀ w : W, k (algebraMap W K₀ w) = c (algebraMap W A w))
-
-theorem T_fac {B : Type} [Field B] (ι : C₀ →+* B) (i : A →+* B) (hι : ∀ a, ι (c a) = i a) (h : L →+ B)
-    (hh : ∀ (w : W) y, h (w • y) = i (algebraMap W A w) * h y) {m : ℕ} (b : Module.Basis (Fin m) K₀ (K₀ ⊗[W] L)) :
-    ∃ E : K₀ ⊗[W] L →+ B, (∀ x y, E (x ⊗ₜ y) = ι (k x) * h y) ∧
-      ∀ G : A ⊗[W] L →+ B, (∀ a y, G (a ⊗ₜ y) = i a * h y) → ∀ z, G z = ∑ s, ι (T c k hk (b.coord s) z) * E (b s) :=
-  _root_.GlobalTheory.CompanionTheory.FrobFac.T_fac c k hk ι i hι h hh b
-
-theorem E_fix {B : Type} [Field B] [IsFractionRing W K₀] (ι : C₀ →+* B) (σB : B →+* B) (h : L →+ B)
-    (E : K₀ ⊗[W] L →+ B) (hE : ∀ x y, E (x ⊗ₜ y) = ι (k x) * h y)
-    (hσ : ∀ w, σB (ι (k (algebraMap W K₀ w))) = ι (k (algebraMap W K₀ w))) (hy : ∀ y, σB (h y) = h y) (v : K₀ ⊗[W] L) :
-    σB (E v) = E v := _root_.GlobalTheory.CompanionTheory.FrobFix.extension_fixed k ι σB h E hE hσ hy v
-
-end CrystallineSemistableComparison.Pb.Psi
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -220,7 +202,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-
 
 noncomputable section
 
@@ -267,7 +248,6 @@ theorem tmul_eq_smul (r : Res l K) (M : Model l K) (j : ℕ) (a : AW r) (y : LW 
 
 theorem inv_aux {R : Type} [CommRing R] {v L X Y : R} (hv : v * L = 1) (e : ℕ) (h1 : Y = L ^ e * X) : X = v ^ e * Y := by
   rw [h1, ← mul_assoc, ← mul_pow, hv, one_pow, one_mul]
-
 
 theorem psiF_fac (r : Res l K) {N : ℕ} (F : Fac r N) {C₀ : Type} [CommRing C₀] (c : Acris l →+* C₀) (k : Wc.K₀ l r.k →+* C₀)
     (hk : ∀ w, k (algebraMap (WittVector l r.k) (Wc.K₀ l r.k) w) = c (r.w w)) (hl : IsUnit (c l)) (ι : C₀ →+* (per l K).B) (hιc : ∀ a, ι (c a) = (per l K).i a) (hR : (per l K).Facts)
@@ -442,8 +422,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry TensorProduct Limits GlobalTheory.LogCris GroundTheory.PAdicHodge
 
 namespace CrystallineSemistableComparison.Pb
-
-
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 

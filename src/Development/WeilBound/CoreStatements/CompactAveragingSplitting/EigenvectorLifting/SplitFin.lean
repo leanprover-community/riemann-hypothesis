@@ -55,7 +55,6 @@ local instance measFv (v : Pl F) : MeasurableSpace (Fv F v) := borel _
 
 local instance borelFv (v : Pl F) : BorelSpace (Fv F v) := ⟨rfl⟩
 
-
 open Classical in
 def oneMaps (v : Pl F) (P : Type) [AddCommGroup P] [Module ℂ P]
     (p : ((Fin a × Fin (a + a') → Fv F v) → ℂ) →ₗ[ℂ] P) (p' : ((Fin a' × Fin (a + a') → Fv F v) → ℂ) →ₗ[ℂ] P) :
@@ -161,47 +160,6 @@ theorem core (hAU : ActsUniq) (v : Pl F) (G : Geo σ a a') (om : Rep σ G.V G.W)
       have : (y : GL (Fin (a + a')) (Fv F v) → ℂ) ∈ N.map I.subtype := by rw [h1]; exact y.2
       obtain ⟨z, hz, e⟩ := this
       exact (Subtype.ext e : z = y) ▸ hz
-
-theorem finRam_of (hR : RamMaps) (hRN : RamNonzero) (hI : IndIrred) (hD : Dict) (hAU : ActsUniq) (hC : ChrFacts) :
-    FinRam := by
-  intro F E _ _ _ _ _ σ B a a' G X om om' hT v hv
-  have hP : v ∈ B.P := hT.chars.sub hv
-  obtain ⟨hα, hβ, hν, hcond, hram, -⟩ := hC F E B X a a' v (B.τ ⟨v, hP⟩) hT.chars
-  have hS : HidaSetting a a' (unifAt v) (chrW X.α (B.τ ⟨v, hP⟩)) (chrW X.β (B.τ ⟨v, hP⟩)) (chrW X.ν (B.τ ⟨v, hP⟩)) :=
-    ⟨GlobalTheory.SplitFlip.exists_isUnif.choose_spec, hα, hβ, hν, hT.geo.lt, hT.geo.even, hcond⟩
-  obtain ⟨hlin, hlin', hmem, hmem', hinv, hinv', heq, heq', hon, hon'⟩ := hR (Fv F v) a a' _ _ _ _ hS (hram hv)
-  obtain ⟨Φ0, hΦ0, hnz⟩ := hRN (Fv F v) a a' _ _ _ _ hS (hram hv)
-  obtain ⟨b, b', c, ι, ι', gl, gl', hl, hW, hB, hbas, hvac, hvac', hRg, hRh, hRg', hRh', hhl⟩ :=
-    hD F E σ B a a' G X om om' hT v (B.τ ⟨v, hP⟩)
-  obtain ⟨rfl, rfl, rfl⟩ := hbas hP rfl
-  obtain ⟨p, p', hp, hp', hon1, hon1', hinv1, hinv1', heq1, hnt, hirr1⟩ := core hAU v G om om' _ _ _ (indSp a a' _ _)
-    (pRam a a' (unifAt v) (chrW X.ν (B.τ ⟨v, hP⟩)) (chrW X.β (B.τ ⟨v, hP⟩)))
-    (pRam' a a' (chrW X.ν (B.τ ⟨v, hP⟩)) (chrW X.α (B.τ ⟨v, hP⟩)))
-    (fun Φ h Φ₁ h₁ => hlin Φ h Φ₁ h₁) (fun Φ h Φ₁ h₁ => hlin' Φ h Φ₁ h₁)
-    (fun Φ h => hmem Φ h) (fun Φ h => hmem' Φ h) (fun Φ h => hinv Φ h)
-    (fun Φ h => hinv' Φ h) (fun Φ h => heq Φ h) (fun Φ h => heq' Φ h)
-    (fun y hy => by obtain ⟨Φ, h, r⟩ := hon y hy; exact ⟨Φ, h, r⟩)
-    (fun y hy => by obtain ⟨Φ, h, r⟩ := hon' y hy; exact ⟨Φ, h, r⟩) ⟨Φ0, hΦ0, hnz⟩
-    (fun N hN hst => hI (Fv F v) a a' _ _ hα hβ N hN hst) ι ι' hW.bij hB.bij gl gl' hl hRg hRh hRg' hRh' hhl
-  refine ⟨oneMaps v _ p p', ?_⟩
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [oneMaps_p]; exact hon1
-  · rw [oneMaps_p']; exact hon1'
-  · rw [oneMaps_p]; exact hinv1
-  · rw [oneMaps_p']; exact hinv1'
-  · rw [oneMaps_p, oneMaps_p']; exact heq1
-  · exact hnt
-  · rw [oneMaps_p]; exact hirr1
-  · intro hv'; exact absurd hv hv'
-  · intro hv' _
-    refine ⟨ι, ι', hW, hB, hvac, hvac', fun φ hφ φ' hφ' => ?_⟩
-    rw [oneMaps_p, oneMaps_p']
-    refine ⟨fun h => ?_, fun h => Subtype.ext ?_⟩
-    · have := congrArg Subtype.val h
-      erw [hp φ hφ, hp' φ' hφ'] at this
-      exact this
-    · erw [hp φ hφ, hp' φ' hφ']
-      exact h
 
 def IntEq : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (v : Pl F) (x : Fv F v), x ∈ 𝒪[Fv F v] ↔ x ∈ v.adicCompletionIntegers F
