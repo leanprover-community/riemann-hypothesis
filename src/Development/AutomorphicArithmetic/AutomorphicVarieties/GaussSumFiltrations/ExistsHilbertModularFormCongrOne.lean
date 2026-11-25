@@ -329,11 +329,6 @@ theorem coefAt_of_genD {y : Af F} {𝔪 : Ideal (𝓞 F)} (h : GenD y 𝔪) (a :
   have h' : ∃ 𝔪, GenD y 𝔪 := ⟨𝔪, h⟩
   rw [coefAt, dite_eq_left h', genD_eq h'.choose_spec h]
 
-theorem ordI_eventually {I : Ideal (𝓞 F)} (hI : I ≠ ⊥) :
-    ∀ᶠ w : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ordI w I = 0 := by
-  have := Associates.finite_factors (R := 𝓞 F) hI
-  filter_upwards [this] with w hw
-  exact_mod_cast hw
 
 theorem exists_unit_genD {𝔪 : Ideal (𝓞 F)} (h : 𝔪 ≠ ⊥) : ∃ y : (Af F)ˣ, GenD (y : Af F) 𝔪 := by
   apply _root_.UpperTheory.V.Sd.exists_genD <;> assumption
