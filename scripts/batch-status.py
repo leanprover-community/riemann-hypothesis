@@ -33,7 +33,8 @@ What it says:
 - What each batch leaves out: the pull requests its description lists under a heading that says
   "left out" or "not included" (`left_out` in the sync), by heading, without the reasons. What the
   batch contains is never listed as left out, as in the sync.
-- Links to the same searches on GitHub, which are live where the issue is a snapshot.
+- Links to the same searches on GitHub for the batches and the queue, which are live where the
+  issue is a snapshot. No label marks what a batch leaves out, so that section has none.
 
 The top of the description holds a hidden block for agents and scripts to read instead of the
 tables: `<!-- batch-status {...} -->`, with compact JSON (see `data`, and
@@ -458,13 +459,14 @@ class Writer:
         return lines
 
     def left(self, found):
-        lines = ["## Left out", "",
-                 f"Live: [`{WAITING}`]({search(self.repo, label(WAITING))}), which also holds the pull requests "
-                 "handed back for other reasons", ""]
+        # No label marks what a batch leaves out (the notice to each only informs), so there is no
+        # live search for it.
+        lines = ["## Left out", ""]
         if not found["left"] and not found["gone"]:
             return lines + ["No batch being built leaves anything out.", ""]
         lines += ["What each batch's description lists as left out, by heading. The full reason is in the "
-                  "batch's description and in the comment on the pull request.", ""]
+                  "batch's description and in the comment on the pull request, unless it is labelled `deferred`.",
+                  ""]
         for number in (batch["number"] for batch in found["batches"]):
             if number not in found["left"] and number not in found["gone"]:
                 continue

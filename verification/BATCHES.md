@@ -353,7 +353,8 @@ workflow opened.
   (see rule 7), by heading. The reasons are not repeated: they are in the batch's description and
   in the comment on each pull request.
 
-Each section links to the same search on GitHub, which is live where the issue is a snapshot.
+The batches and the queue link to the same searches on GitHub, which are live where the issue is a
+snapshot. No label marks what a batch leaves out, so that section has no such link.
 When the description would be longer than GitHub allows, it is shortened, and says so at the top:
 first badges become plain label names, then titles are cut shorter, then tables become lists of
 numbers, and last the end is cut off.
