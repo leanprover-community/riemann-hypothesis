@@ -58,9 +58,6 @@ lemma map_mul_apply (g h : G) (v : H) : π (g * h) v = π g (π h v) := by
 @[simp] lemma adjoint_map (g : G) : adjoint (π g) = π g⁻¹ := by
   rw [← star_eq_adjoint, star_map]
 
-@[simp] lemma map_inv_apply_map (g : G) (v : H) : π g⁻¹ (π g v) = v := by
-  rw [← map_mul_apply, inv_mul_cancel, map_one_apply]
-
 @[simp] lemma map_apply_map_inv (g : G) (v : H) : π g (π g⁻¹ v) = v := by
   rw [← map_mul_apply, mul_inv_cancel, map_one_apply]
 
@@ -88,7 +85,6 @@ theorem IsInvariant.topologicalClosure {V : Submodule ℂ H} (hV : π.IsInvarian
     rwa [← Submodule.topologicalClosure_coe]
   have := hsub.closure (π g).continuous hv'
   rwa [V.isClosed_topologicalClosure.closure_eq] at this
-
 
 variable (π) in
 def intertwiners (σ : UnitaryRep G K) : Submodule ℂ (H →L[ℂ] K) where
@@ -128,14 +124,12 @@ lemma isInvariant_range {T : H →L[ℂ] K} (hT : T ∈ π.intertwiners σ) :
   rintro g _ ⟨v, rfl⟩
   exact ⟨π g v, hT g v⟩
 
-
 variable (π σ) in
 structure Equiv (π : UnitaryRep G H) (σ : UnitaryRep G K) where
 
   toLinearIsometryEquiv : H ≃ₗᵢ[ℂ] K
 
   map_apply' : ∀ (g : G) (v : H), toLinearIsometryEquiv (π g v) = σ g (toLinearIsometryEquiv v)
-
 
 variable (π σ) in
 def IsEquivalent (π : UnitaryRep G H) (σ : UnitaryRep G K) : Prop := Nonempty (Equiv π σ)
@@ -151,7 +145,6 @@ def symm (e : π.Equiv σ) : σ.Equiv π where
 end Equiv
 
 lemma IsEquivalent.symm (h : π.IsEquivalent σ) : σ.IsEquivalent π := ⟨h.some.symm⟩
-
 
 variable (π) in
 def IsIrreducible : Prop :=

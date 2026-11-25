@@ -123,7 +123,6 @@ theorem kronGL_det {p q r s : ℕ} (g : GL (Ix p q) ℂ) (h : GL (Ix r s) ℂ) :
 
 end FockEmb
 
-
 open FockEmb in
 theorem exists_cover_tensor_hom :
     ∀ (p q r s : ℕ) (T0 : GrpData (p * r + q * s) (p * s + q * r)) (T1 : GrpData p q) (T2 : GrpData r s), ∃ emb : T1.G × T2.G →* T0.G, (∀ g h, ((T0.cov (emb (g, h)) : GL _ ℂ) : Mat (p * r + q * s) (p * s + q * r)) = Matrix.reindex (lineEquiv p q r s) (lineEquiv p q r s) (Matrix.kroneckerMap (· * ·) ((T1.cov g : GL _ ℂ) : Mat p q) ((T2.cov h : GL _ ℂ) : Mat r s))) ∧ ∀ g h, T0.sq (emb (g, h)) = T1.sq g ^ (r + s) * T2.sq h ^ (p + q) := by
@@ -193,12 +192,6 @@ def oscAct (P Q : ℕ) : Mat P Q →ₗ[ℂ] Module.End ℂ (OscPol P Q) :=
 theorem oscAct_apply (Z : Mat P Q) : oscAct P Q Z = ∑ l, ∑ l', Z l l' • unitOp l l' := by
   simp [oscAct, LinearMap.sum_apply]
 
-theorem oscAct_single (a b : Ix P Q) (c : ℂ) : oscAct P Q (Matrix.single a b c) = c • unitOp a b := by
-  simp [oscAct_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, ite_smul]
-
-theorem oscAct_Eab (a b : Ix P Q) : oscAct P Q (Eab a b) = unitOp a b := by
-  rw [Eab, oscAct_single, one_smul]
-
 theorem unitOp_inl_inl (i j : Fin P) (f : OscPol P Q) :
     unitOp (.inl i) (.inl j) f = X (.inl i) * pderiv (.inl j) f + if i = j then (1 / 2 : ℂ) • f else 0 := by
   by_cases h : i = j <;> simp [unitOp, rai, low, h]
@@ -239,7 +232,6 @@ section Adjoint
 
 variable {σ H : Type} [DecidableEq σ] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {ι : MvPolynomial σ ℂ →ₗ[ℂ] H}
-
 
 omit [DecidableEq σ] in
 theorem mfact_add_single (α : σ →₀ ℕ) (l : σ) :
@@ -523,8 +515,6 @@ section Bridge
 open MvPolynomial GlobalTheory.Oscillator
 
 variable {P Q : ℕ} {T0 : GrpData P Q}
-
-theorem matrixUnitOperator_eq (l l' : Ix P Q) : oscillatorMatrixUnit l l' = unitOp l l' := rfl
 
 theorem omAct0_eq (P Q : ℕ) : omAct0 P Q = oscAct P Q := rfl
 

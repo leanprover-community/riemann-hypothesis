@@ -128,7 +128,6 @@ def ptFun (X : Scheme.{0}) (q : X ⟶ Spec (CommRingCat.of O)) {k : Type} [CommR
     · rfl
     · simp
 
-
 set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
@@ -151,7 +150,6 @@ private theorem gammaSpecIso_hom_appLE_spec_map {A C : CommRingCat.{0}} (χ : A 
     rfl
   rw [h1, ← CommRingCat.comp_apply, Scheme.ΓSpecIso_naturality, CommRingCat.comp_apply]
 
-
 set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
@@ -163,7 +161,6 @@ theorem _root_.GlobalTheory.LogCris.evalAt_map {B B' : CommRingCat.{0}} {X : Sch
   simp only [_root_.GlobalTheory.Cris.evalAt, RingHom.comp_apply]
   rw [← Scheme.Hom.appLE_comp_appLE (Spec.map φ) y U ⊤ ⊤ h le_top, CommRingCat.comp_apply]
   exact gammaSpecIso_hom_appLE_spec_map φ _ _
-
 
 set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry in
@@ -186,7 +183,6 @@ theorem _root_.GlobalTheory.LogCris.evalAt_base {B : Type} [CommRing B] {X : Sch
     simp
   exact key _ hy _
 
-
 set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
@@ -194,10 +190,6 @@ theorem _root_.GlobalTheory.LogCris.le_preimage_inf {B : Type} [CommRing B] {X :
     (y : Spec (CommRingCat.of B) ⟶ X) {U V : X.Opens}
     (h : ⊤ ≤ y ⁻¹ᵁ U) (h' : ⊤ ≤ y ⁻¹ᵁ V) : ⊤ ≤ y ⁻¹ᵁ (U ⊓ V) :=
   le_inf h h'
-
-theorem le_preimage_map {B B' : CommRingCat.{0}} {X : Scheme.{0}} (φ : B ⟶ B') (y : Spec B ⟶ X) {U : X.Opens}
-    (h : ⊤ ≤ y ⁻¹ᵁ U) : ⊤ ≤ (Spec.map φ ≫ y) ⁻¹ᵁ U :=
-  fun p _ => h (Set.mem_univ ((Spec.map φ) p))
 
 structure SSAtlas (ϖ : O) (X : Scheme.{0}) (q : X ⟶ Spec (CommRingCat.of O)) (ι A : Type) [Fintype ι] where
 
@@ -252,7 +244,6 @@ end SSAtlas
 section Model
 
 variable (ϖ : O)
-
 
 set_option autoImplicit false in
 variable {O : Type} [CommRing O] (ϖ : O) in

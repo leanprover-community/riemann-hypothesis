@@ -120,24 +120,6 @@ namespace RetractionModules
 
 variable {X : Fields} {n : ℕ}
 
-theorem star_det_mul {E : Type} [Field E] [StarRing E] (γ : UF E n) :
-    star ((LinearEquiv.det γ.1 : Eˣ) : E) * ((LinearEquiv.det γ.1 : Eˣ) : E) = 1 := by
-  set M : Matrix (Fin n) (Fin n) E := LinearMap.toMatrix' (γ.1 : Sp E n →ₗ[E] Sp E n) with hM
-  have hd : ((LinearEquiv.det γ.1 : Eˣ) : E) = M.det := by
-    rw [LinearEquiv.coe_det, hM, LinearMap.det_toMatrix']
-  have hu : M.conjTranspose * M = 1 := by
-    ext i j
-    have h := γ.2 (Pi.single i 1) (Pi.single j 1)
-    simp only [hStd, LinearMap.mk₂'ₛₗ_apply] at h
-    rw [Matrix.mul_apply]
-    simp only [Matrix.conjTranspose_apply, hM, LinearMap.toMatrix'_apply, LinearEquiv.coe_coe]
-    refine h.trans ?_
-    rw [Matrix.one_apply]
-    by_cases hij : i = j
-    · subst hij; simp [Pi.single_apply]
-    · simp [Pi.single_apply, hij, Ne.symm hij]
-  rw [hd, ← Matrix.det_conjTranspose, ← Matrix.det_mul, hu, Matrix.det_one]
-
 variable {P : Places p O Kf}
 
 theorem sigma_pow_mem (v : Fin P.nV) (s : ℕ) (x : P.W v) :
@@ -199,32 +181,6 @@ theorem prod_mem (T : PlTie X P) {δ : X.E} (hδ : star δ * δ = 1) :
   rw [hprod, hsum, zpow_zero, mul_one]
   exact ⟨_, rfl⟩
 
-theorem detTw_mem (T : PlTie X P) (c : ℤ) (γ : UF X.E n) : T.detTw c γ ∈ (algebraMap O Kf).range := by
-  have h := star_det_mul γ
-  have h1 := prod_mem T h
-  set δ := ((LinearEquiv.det γ.1 : X.Eˣ) : X.E)
-  have h' : star δ⁻¹ * δ⁻¹ = 1 := by rw [star_inv₀, ← mul_inv, h, inv_one]
-  have h2 := prod_mem T h'
-  simp only [map_inv₀, Finset.prod_inv_distrib] at h2
-  unfold PlTie.detTw
-  obtain ⟨k, rfl | rfl⟩ := Int.eq_nat_or_neg c
-  · rw [zpow_natCast]; exact Subring.pow_mem _ h1 k
-  · rw [zpow_neg, zpow_natCast, ← inv_pow]; exact Subring.pow_mem _ h2 k
-
-theorem nV_pos (T : PlTie X P) (hp : p.Prime) : 0 < P.nV := by
-  have hnu : ¬ IsUnit ((p : ℕ) : 𝓞 X.E) := by
-    intro h
-    have h1 := h.map (Algebra.norm ℤ)
-    have h2 : Algebra.norm ℤ ((p : ℕ) : 𝓞 X.E) = (p : ℤ) ^ Module.finrank ℤ (𝓞 X.E) := by
-      have := Algebra.norm_algebraMap (R := ℤ) (S := 𝓞 X.E) (p : ℤ)
-      simpa using this
-    rw [h2, isUnit_pow_iff Module.finrank_pos.ne', Int.ofNat_isUnit] at h1
-    exact hp.not_isUnit h1
-  have hp0 : ((p : ℕ) : 𝓞 X.E) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
-  obtain ⟨M, hM, hpM⟩ := exists_max_ideal_of_mem_nonunits hnu
-  obtain ⟨v, -⟩ := (T.pr_all ⟨M, hM.isPrime, fun h => hp0 (by simpa [h] using hpM)⟩).1 hpM
-  exact v.pos
-
 end RetractionModules
 
 namespace PSys
@@ -261,8 +217,6 @@ def lev {c : ℤ} (x : Y.ChiLift T c) (a : Y.Comp) : Level P where
   Γ := Y.Gam (Y.rep a)
   act v := ((T.act hn v).comp Y.u).comp (Y.Gam (Y.rep a)).subtype
   χ := x.χ (Y.rep a)
-
-
 
 end PSys
 

@@ -54,13 +54,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
 
-
-
-
-
-
-
-
 section Supp
 
 omit [NumberField E] in
@@ -128,12 +121,6 @@ theorem suppF_iff {D : D7} (V : HSp D) {v : HeightOneSpectrum (𝓞 D.host.F)} {
     Formalism.IndefR.Mult.SuppF V (algebraMap (AF D.host.F) (AE D) ε) g ↔ g ∈ (emb D.sp.cm.sig V.gram v).range := by
   obtain ⟨α, rfl, h1, h2⟩ := h
   exact idem_supp_iff _ _ v _ (fun _ => rfl) h1 h2 g
-
-theorem emb_mem_KsphC_iff {D : D7} (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F))
-    (x : GLoc D.sp.cm.sig V.gram v) :
-    emb D.sp.cm.sig V.gram v x ∈ KsphC V ∅ ↔ x ∈ stabLoc D.sp.cm.sig V.gram (frameLat V) v := by
-  rw [KsphC_eq]
-  exact ⟨fun h => by simpa using (mem_levelOff.1 h).2.2 v (by simp), emb_mem_levelOff (by simp)⟩
 
 end Supp
 
