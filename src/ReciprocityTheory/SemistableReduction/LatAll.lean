@@ -23,6 +23,7 @@ public import ReciprocityTheory.SemistableReduction.LatSemiSt
 public import ReciprocityTheory.L2DbarEstimates.NormFibrations.MvBlowup
 public import ReciprocityTheory.SemistableReduction.DegAddHolds
 public import ReciprocityTheory.SemistableReduction.LemmaH
+import ReciprocityTheory.SemistableReduction.SemiDegAA
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
@@ -139,7 +140,7 @@ end
 -- Members: ReciprocityTheory.SemistableReduction.ApproxBasisB, ReciprocityTheory.SemistableReduction.ApproxBasis, ReciprocityTheory.SemistableReduction.ApproxGraphC, ReciprocityTheory.SemistableReduction.ApproxGraph, ReciprocityTheory.SemistableReduction.BWPolyB, ReciprocityTheory.SemistableReduction.BWPolyC, ReciprocityTheory.SemistableReduction.BWPoly, ReciprocityTheory.SemistableReduction.OnePolyGrowth, ReciprocityTheory.SemistableReduction.LatAll
 
 -- ===== clump member: ReciprocityTheory.SemistableReduction.ApproxBasisB =====
--- clump-header: {"m": "ReciprocityTheory.SemistableReduction.ApproxBasisB", "h": "module\n\npublic import ReciprocityTheory.SemistableReduction.ApproxBasisA\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "ReciprocityTheory.SemistableReduction.ApproxBasisB", "h": "module\n\npublic import ReciprocityTheory.SemistableReduction.ApproxBasisA\nimport ReciprocityTheory.SemistableReduction.SemiDegAA\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -154,39 +155,10 @@ theorem approxB_h_add_right {K : Type} [Field K] [NumberField K] {r : ℕ} (S : 
   unfold ReciprocityTheory.MultiplicativeHeights.HermForm.h
   simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
 
-theorem approxB_h_smul_right {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
-    (x y : Fin r → K) (a : K) : S.h x (a • y) = a * S.h x y := by
-  unfold ReciprocityTheory.MultiplicativeHeights.HermForm.h
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Pi.smul_apply, smul_eq_mul]
-  ring
-
-theorem approxB_h_sub_right {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
-    (x y z : Fin r → K) : S.h x (y - z) = S.h x y - S.h x z := by
-  unfold ReciprocityTheory.MultiplicativeHeights.HermForm.h
-  simp only [Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
-
-theorem approxB_h_zero_right {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
-    (x : Fin r → K) : S.h x 0 = 0 := by
-  simp [ReciprocityTheory.MultiplicativeHeights.HermForm.h]
-
 theorem approxB_h_sum_right {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
     {α : Type*} (s : Finset α) (x : Fin r → K) (f : α → Fin r → K) :
     S.h x (∑ j ∈ s, f j) = ∑ j ∈ s, S.h x (f j) := by
   exact map_sum (AddMonoidHom.mk' (S.h x) ((approxB_h_add_right S) x)) f s
-
-theorem approxB_h_smul_left {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r)
-    (x y : Fin r → K) (a : K) : S.h (a • x) y = S.c a * S.h x y := by
-  unfold ReciprocityTheory.MultiplicativeHeights.HermForm.h
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Pi.smul_apply, smul_eq_mul, map_mul]
-  ring
 
 private theorem hermForm_h_add_left {K : Type} [Field K] [NumberField K] {r : ℕ}
     (S : HermForm K r) (x y z : Fin r → K) : S.h (x + y) z = S.h x z + S.h y z := by
@@ -243,7 +215,7 @@ theorem approxB_split {K : Type} [Field K] [NumberField K] {r p : ℕ} (hp : p �
     have := congrFun hg k
     simp only [mulVec, dotProduct, hM, Matrix.of_apply, Pi.zero_apply] at this
     rw [approxB_h_sum_right]
-    simpa [approxB_h_smul_right, mul_comm] using this
+    simpa [wa_smul_right, mul_comm] using this
   have hΔ : Δ ≠ 0 := by
     intro h0
     obtain ⟨g, hg0, hg⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr h0
@@ -255,7 +227,7 @@ theorem approxB_split {K : Type} [Field K] [NumberField K] {r p : ℕ} (hp : p �
       simp only [coef, mulVec_mulVec, mul_adjugate, smul_mulVec, one_mulVec, hΔdef]
     have hk := congrFun hMc k
     simp only [mulVec, dotProduct, hM, Matrix.of_apply, Pi.smul_apply, smul_eq_mul] at hk
-    simp only [T, approxB_h_sub_right, approxB_h_smul_right, approxB_h_sum_right]
+    simp only [T, wa_sub_right, wa_smul_right, approxB_h_sum_right]
     rw [← hk]
     simp [bv, mul_comm]
 
@@ -284,7 +256,7 @@ theorem approxB_split {K : Type} [Field K] [NumberField K] {r p : ℕ} (hp : p �
   have hbadd : ∀ x y, bv (x + y) = bv x + bv y :=
     fun x y => funext fun k => approxB_h_add_right S _ x y
   have hbsmul : ∀ (c : K) x, bv (c • x) = c • bv x :=
-    fun c x => funext fun k => by simp [bv, approxB_h_smul_right]
+    fun c x => funext fun k => by simp [bv, wa_smul_right]
   let Tl : (Fin r → K) →ₗ[K] (Fin r → K) :=
     { toFun := T
       map_add' := fun x y => by
@@ -338,11 +310,11 @@ theorem approxB_split {K : Type} [Field K] [NumberField K] {r p : ℕ} (hp : p �
       S.h (l k'.1) (∑ k : {j : Fin r // ¬ (j : ℕ) < p}, g k.1 • T (v (a0 (e k)))) = 0 := by
     intro k'
     rw [approxB_h_sum_right]
-    exact Finset.sum_eq_zero fun k _ => by rw [approxB_h_smul_right, horth, mul_zero]
+    exact Finset.sum_eq_zero fun k _ => by rw [wa_smul_right, horth, mul_zero]
   have hApos : ∀ k' : ApproxPosIdx r p, S.h (l k'.1) (∑ k : ApproxPosIdx r p, g k.1 • l k.1) = 0 := by
     intro k'
     have := congrArg (S.h (l k'.1)) hsplit
-    rw [approxB_h_add_right, hBorth, add_zero, approxB_h_zero_right] at this
+    rw [approxB_h_add_right, hBorth, add_zero, wa_zero_right] at this
     exact this
   have hg1 := hinj (fun k => g k.1) hApos
   have hA0 : ∑ k : ApproxPosIdx r p, g k.1 • l k.1 = 0 :=
@@ -361,7 +333,7 @@ end -- clump:auto
 -- ===== end clump member: ReciprocityTheory.SemistableReduction.ApproxBasisB =====
 
 -- ===== clump member: ReciprocityTheory.SemistableReduction.ApproxBasis =====
--- clump-header: {"m": "ReciprocityTheory.SemistableReduction.ApproxBasis", "h": "module\n\npublic import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import ReciprocityTheory.SemistableReduction.ApproxBasisB\npublic import ReciprocityTheory.SemistableReduction.ApproxBasisA\n\n"}
+-- clump-header: {"m": "ReciprocityTheory.SemistableReduction.ApproxBasis", "h": "module\n\npublic import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.HopfAlgebra.Basic\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import ReciprocityTheory.SemistableReduction.ApproxBasisB\nimport ReciprocityTheory.SemistableReduction.SemiDegAA\npublic import ReciprocityTheory.SemistableReduction.ApproxBasisA\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -425,7 +397,7 @@ theorem approxBasis_holds (hG : ApproxGraphStatement) : ApproxStatement := by
     obtain ⟨i⟩ := ‹Nonempty ι›
     have hzz : S.h (∑ j : ApproxPosIdx r p, g j • l0 j.1) (∑ j : ApproxPosIdx r p, g j • l0 j.1) = 0 := by
       rw [approxB_h_sum_left]
-      exact Finset.sum_eq_zero fun j _ => by rw [approxB_h_smul_left, hg j, mul_zero]
+      exact Finset.sum_eq_zero fun j _ => by rw [wa_smul_left, hg j, mul_zero]
     have h1 := hS i (∑ j : ApproxPosIdx r p, g j • l0 j.1) (∑ j : ApproxPosIdx r p, g j • l0 j.1)
     rw [hzz, map_zero, mulVec_embVec_sum_smul] at h1
     have hx : (fun k : ApproxPosIdx r p => σ i (g k)) ≠ 0 := by
