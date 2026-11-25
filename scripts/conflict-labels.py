@@ -43,9 +43,11 @@ fixed or closed, it joined the batch, or the batch was merged or closed. `awaiti
 comes off here. Its author takes it off by commenting `ready`, or a maintainer does.
 
 A pull request that merged a batch's branch carries the batch's commits. When the batch is then
-rebuilt without one of its pull requests, which is how a pull request is taken out of a batch,
-the dependent pull request still carries that one's commits: landing it would land them too, and
-GitHub would mark the pull request that was taken out merged. A sweep looks for this in each pull
+rebuilt without one of its pull requests, as `verification/BATCHES.md` asks for taking a pull
+request out of a batch, the dependent pull request still carries that one's commits: landing it
+would land them too, and GitHub would mark the pull request that was taken out merged. A pull
+request taken out by reverting its merge instead gets no notice here, and needs none: the batch's
+branch is not rewritten, so the dependent carries nothing the batch does not. A sweep looks for this in each pull
 request that depends on an open batch, or shares commits beyond main with a batch it is compared
 with (see `stale_in`). Its branch must hold a batch's merge commit for another open pull request,
 `Merge PR #123 into batch` or `Merge #123 head (...) into batch/...` as batches are assembled,
@@ -565,7 +567,10 @@ def compare_all(repo, main, building, candidates, log, *, origin=None, watch=Non
         # Which forks to measure from, for each pull request and batch. A pull request that holds
         # commits of the batch that are not on main yet (it merged an earlier head of the batch,
         # say) is measured from where the two parted, so that the batch's own changes are not
-        # counted as its.
+        # counted as its. The two can have several best common ancestors, as when the pull request
+        # merged a batch since rebuilt from the same pull requests: the main commit both were built
+        # on, and the head of each pull request the batch took again. They share commits beyond
+        # main if any of those is not on main, whichever one `git merge-base` alone would print.
         pairs, sharing = {}, {}
         for number in sorted(candidates):
             head = heads.get(number)
@@ -574,7 +579,10 @@ def compare_all(repo, main, building, candidates, log, *, origin=None, watch=Non
                 if not fork or not sides[batch]:
                     results[number][batch] = _conflicts.Comparison("unknown", note="no common ancestor with main")
                     continue
-                base = merge_base(work, head, sides[batch][1])
+                bases = merge_bases(work, head, sides[batch][1])
+                beyond = [base for base in bases
+                          if git(work, "merge-base", "--is-ancestor", base, trunk, ok=(0, 1))[0] != 0]
+                base = (beyond or bases or [None])[0]
                 if base is None:
                     results[number][batch] = _conflicts.Comparison("unknown", note="no common ancestor")
                 elif base == head:
@@ -583,7 +591,7 @@ def compare_all(repo, main, building, candidates, log, *, origin=None, watch=Non
                 elif base == sides[batch][1]:
                     results[number][batch] = _conflicts.Comparison("clean", note="it holds the batch's head")
                     sharing.setdefault(number, set()).add(batch)
-                elif git(work, "merge-base", "--is-ancestor", base, trunk, ok=(0, 1))[0] == 0:
+                elif not beyond:
                     pairs[number, batch] = (base, (fork, head), sides[batch])
                 else:
                     pairs[number, batch] = (base, (base, head), (base, sides[batch][1]))
@@ -617,6 +625,13 @@ def compare_all(repo, main, building, candidates, log, *, origin=None, watch=Non
                    f"({len(candidates) * len(building) - len(pairs)} more needed no comparison), {merged} by a "
                    f"trial merge, in {time.monotonic() - started:.0f} s; {size / 1e6:.0f} MB of git objects in all")
     return results
+
+
+def merge_bases(work, ours, theirs):
+    """Every best common ancestor of two commits that have been fetched (`git merge-base --all`),
+    in git's order, or none if they have none."""
+    code, out = _conflicts.git(work, "merge-base", "--all", ours, theirs, ok=(0, 1))
+    return out.decode().split() if code == 0 else []
 
 
 def stale_in(work, trunk, heads, candidates, watch, sharing, carried, log):

@@ -192,8 +192,8 @@ batch being built.
 A frozen pull request whose head has moved on from the commit that was taken, by its own batch
 or by the queue, is labelled `changed after frozen` as soon as the push comes in, or by the next
 sync if that was missed: what was pushed since is not part of what is built. A new head that its
-own batch's branch has already, such as the merge of `main` that the batch was built from, counts
-as the commit taken. In a stack, its own batch is the lowest that holds it, even
+own batch's branch has already, with the commit taken in it, such as the merge of `main` that the
+batch was built from, counts as the commit taken. In a stack, its own batch is the lowest that holds it, even
 when a batch on top of it has merged in the new head. The label comes off when the head is the
 commit that was taken again, and when the pull request is no longer frozen. On a queued pull
 request, another `batch` comment does that: the queue takes the new head. On a pull request in a
@@ -246,10 +246,12 @@ heading about conflicts with the batch.
 ### If your pull request is labelled `batch-conflict`
 
 1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, rather than
-   rebasing onto it, and resolve the conflicts. If the batch's branch is rebuilt before it lands,
-   which is how a pull request is taken out of a batch (rule 5), your branch still carries the
-   pull request that was taken out. Then make a new branch from the new batch branch, copy only
-   your own commits onto it with `git cherry-pick`, and push that to your pull request.
+   rebasing onto it, and resolve the conflicts. If the batch's branch is rebuilt without a pull
+   request before it lands, as rule 5 asks for taking one out, your branch still carries the
+   pull request that was taken out, and the workflow tells you so. Then make a new branch from
+   the new batch branch, copy only your own commits onto it with `git cherry-pick`, and push that
+   to your pull request. If a pull request is taken out by reverting its merge instead, you are
+   not told, and need do nothing: the batch's branch is not rewritten.
 2. Add this line at the end of the description, under a line `---`, as the template in
    [AGENTS.md](../AGENTS.md#pull-requests) has it, where #123 is the batch's pull request:
 

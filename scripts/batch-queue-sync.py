@@ -128,7 +128,8 @@ After every run, `frozen` is put on each open pull request a maintainer's `batch
 A frozen pull request whose head has moved on from the commit that was taken, by its own batch or
 by the queue, is labelled `changed after frozen` until its head is that commit again or it is no
 longer frozen; `pushed` adds the label as soon as the push comes in, and every sync looks again.
-A new head that its batch's branch has already counts as the commit taken (see `has_head`).
+A new head that its batch's branch has already, with the commit taken in it, counts as the
+commit taken (see `takes`).
 Which pull requests a batch contains is read from its branch, never from its description. The names of the labels are in
 `batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
 should do for all this to work.
@@ -281,9 +282,9 @@ CHECK, CONFLICT_HEADING = _description.CHECK, _description.CONFLICT_HEADING
 left_out, entry_digest, left_out_digest = _description.left_out, _description.entry_digest, _description.left_out_digest
 reverts, description_check = _description.reverts, _description.description_check
 absorbed = _description.absorbed
-# The workflow that labels conflicts, started when a batch is first labelled `building` or
-# `latest batch`: those labels are put on with the workflow's token, which starts no run of it by
-# itself.
+# The workflow that labels conflicts, started once at the end of a run in which a batch is first
+# labelled `building` or `latest batch`: those labels are put on with the workflow's token, which
+# starts no run of it by itself.
 CONFLICT_WORKFLOW = "conflict-labels.yml"
 # When this many pull requests leave the left-out lists of a batch's description at once and the
 # description still lists them, a heading was most likely reworded: they are not told that they
