@@ -61,33 +61,6 @@ section Generic
 variable {R : Type} [CommRing R] {m n : ℕ} {J : Matrix (Fin m) (Fin n) R} {J' : Matrix (Fin n) (Fin m) R}
   {M : Matrix (Fin n) (Fin n) R} {M' : Matrix (Fin m) (Fin m) R}
 
-theorem stab_pred (h1 : J * J' = 1) (hc : M' * J = J * M) {p : (Fin n → R) → Prop} {p' : (Fin m → R) → Prop}
-    (hL : ∀ y, p y ↔ p' (J.mulVec y)) : (∀ y, p y ↔ p (M.mulVec y)) ↔ ∀ y, p' y ↔ p' (M'.mulVec y) := by
-  constructor
-  · intro h y
-    have := h (J'.mulVec y)
-    rwa [hL, hL, Matrix.mulVec_mulVec, h1, Matrix.one_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec,
-      ← GlobalTheory.HeckeTrans.conj_eq h1 hc] at this
-  · intro h y
-    rw [hL, hL, h, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hc]
-
-theorem stab_part {f : R} {L : AddSubgroup (Fin n → R)} (loc : ∀ y ∈ L, f • y ∈ L) (hs : f • (M - 1) = M - 1) :
-    (∀ y, y ∈ L ↔ M.mulVec y ∈ L) ↔ ∀ y, f • y ∈ L ↔ f • M.mulVec y ∈ L := by
-  constructor
-  · intro h y
-    rw [h, Matrix.mulVec_smul]
-  · intro h y
-    have e : f • M.mulVec y - f • y = M.mulVec y - y := by
-      have := congrArg (fun X => Matrix.mulVec X y) hs
-      simpa only [Matrix.smul_mulVec, Matrix.sub_mulVec, Matrix.one_mulVec, smul_sub] using this
-    constructor
-    · intro hy
-      rw [← sub_add_cancel (M.mulVec y) y, ← e]
-      exact add_mem (sub_mem ((h y).1 (loc y hy)) (loc y hy)) hy
-    · intro hy
-      rw [← sub_sub_cancel (M.mulVec y) y, ← e]
-      exact sub_mem hy (sub_mem (loc _ hy) ((h y).2 (loc _ hy)))
-
 def HasDiv (f : R) (I : AddSubgroup R) (w : ℕ → R) (L : AddSubgroup (Fin n → R)) (M : Matrix (Fin n) (Fin n) R) : Prop :=
   ∃ B : Matrix (Fin n) (Fin n) R,
     (∀ z : Fin n → R, (∀ i, z i ∈ I) → f • B.mulVec z ∈ L) ∧
@@ -235,111 +208,11 @@ theorem Good.pow {N N' : ℕ} {f : Af D.host.F ⊗[D.host.F] D.host.E} (h : Good
   obtain ⟨h1, u, hu⟩ := h
   exact ⟨h1, exists_idempotent_mul_natPow_of_mul _ c (by rw [← RingHom.map_mul, h1]) u hu⟩
 
-theorem good_of_tie {P : Pl D.host.E} {e : Formalism.L2.Theta.AE D} (he : e * e = e) (ht : GlobalTheory.IdemSupport.Comparison₂ P e) {N : ℕ}
-    (hN : (N : 𝓞 D.host.E) ∉ P.asIdeal) : Good N (finPart D e) := by
-  have x0 : (N : 𝓞 D.host.E) ≠ 0 := fun h0 => hN (h0 ▸ P.asIdeal.zero_mem)
-  refine ⟨by rw [← RingHom.map_mul, he], ⟨_, GlobalTheory.LevSplit.swapAE_int (not_not.1 fun hn => hN ((ht _ x0).2 hn))⟩, ?_⟩
-  have e1 : (N : EAf D) = GlobalTheory.LevSplit.finSw D (incA D ((N : 𝓞 D.host.E) : D.host.E)) := by
-    rw [← map_natCast (GlobalTheory.LevSplit.finSw D), ← map_natCast (incA D)]; rfl
-  show GlobalTheory.LevSplit.finSw D (e * incA D (((N : 𝓞 D.host.E) : D.host.E)⁻¹)) * _ = GlobalTheory.LevSplit.finSw D e
-  have : ((N : 𝓞 D.host.E) : D.host.E) ≠ 0 := fun h => x0 (RingOfIntegers.coe_eq_zero_iff.1 h)
-  rw [e1, ← RingHom.map_mul, mul_assoc, ← RingHom.map_mul, inv_mul_cancel₀ this, RingHom.map_one, mul_one]
-
-theorem good_of_primeIdem {P : Pl D.host.E} {e f : Formalism.L2.Theta.AE D} (h : IsPrimeIdem P e f) {N : ℕ}
-    (hN : (N : 𝓞 D.host.E) ∉ P.asIdeal) : Good N (finPart D e) ∧ Good N (finPart D f) ∧ infPart D f = 0 := by
-  obtain ⟨Φ, hΦ⟩ := GlobalTheory.IdemSupport.exists_comp D
-  obtain ⟨hd, ε, hε, hf⟩ := GlobalTheory.IdemSupport.of_isPrimeIdem hΦ h
-  have ht : GlobalTheory.IdemSupport.Comparison₂ P e := h.elim (fun a => a.1.2) fun a => a.2.2
-  refine ⟨good_of_tie (GlobalTheory.IdemSupport.delta_idem hΦ hd) ht hN, ⟨?_, ?_⟩, ?_⟩
-  · rw [← RingHom.map_mul, hf, GlobalTheory.IdemSupport.place_idem hΦ hε]
-  · obtain ⟨u, hu⟩ := GlobalTheory.LevSplit.idem_div_int h N N (by simp) hN hN
-    refine ⟨u, Eq.trans ?_ hu⟩
-    rw [map_natCast]; rfl
-  · rw [hf]; exact (GlobalTheory.IdemSupport.place_comp hΦ hε).1
-
 section Away
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem inv_nat_mem (v : HeightOneSpectrum (𝓞 F)) {N : ℕ} (hN : (N : 𝓞 F) ∉ v.asIdeal) :
-    (N : v.adicCompletion F) ≠ 0 ∧ (N : v.adicCompletion F)⁻¹ ∈ v.adicCompletionIntegers F := by
-  have h1 : Valued.v (N : v.adicCompletion F) = 1 := by
-    rw [← map_natCast (algebraMap F (v.adicCompletion F)), Formalism.UG.P.levelaf_valued_algebraMap,
-      ← map_natCast (algebraMap (𝓞 F) F)]
-    refine le_antisymm (v.valuation_le_one _) (not_lt.1 fun h => hN ?_)
-    exact (HeightOneSpectrum.valuation_lt_one_iff_mem (K := F) v _).1 h
-  refine ⟨fun h => ?_, ?_⟩
-  · rw [h, map_zero] at h1
-    exact zero_ne_one h1
-  · rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, h1, inv_one]
-
-theorem exists_away (S : Finset (HeightOneSpectrum (𝓞 F))) (N : ℕ) (hS : ∀ v : HeightOneSpectrum (𝓞 F), (N : 𝓞 F) ∈ v.asIdeal → v ∈ S) :
-    ∃ f u : Af F, u ∈ Formalism.MainNotions.StandardLattice.intAf F ∧ u * N = f ∧ f * f = f ∧ ∀ v ∉ S, evalV F v f = 1 := by
-  classical
-  have hi : ∀ v : HeightOneSpectrum (𝓞 F),
-      (if v ∈ S then 0 else (N : v.adicCompletion F)⁻¹) ∈ v.adicCompletionIntegers F := by
-    intro v
-    split_ifs with hv
-    · exact zero_mem _
-    · exact (inv_nat_mem v fun h => hv (hS v h)).2
-  obtain ⟨u, hu⟩ : ∃ u : Af F, ∀ v, evalV F v u = if v ∈ S then 0 else (N : v.adicCompletion F)⁻¹ :=
-    ⟨⟨fun v => if v ∈ S then 0 else (N : v.adicCompletion F)⁻¹, Filter.Eventually.of_forall hi⟩, fun _ => rfl⟩
-  have e : ∀ v ∉ S, evalV F v (u * N) = 1 := fun v hv => by
-    rw [map_mul, hu, if_neg hv, map_natCast, inv_mul_cancel₀ (inv_nat_mem v fun h => hv (hS v h)).1]
-  refine ⟨u * N, u, fun v => by rw [hu]; exact hi v, rfl, FiniteAdeleRing.ext _ fun v => ?_, e⟩
-  show evalV F v (u * N * (u * N)) = evalV F v (u * N)
-  rw [map_mul]
-  by_cases hv : v ∈ S
-  · rw [map_mul, hu, if_pos hv, zero_mul, zero_mul]
-  · rw [e v hv, one_mul]
-
-theorem tens_ext (z : Af F ⊗[F] E) (h : ∀ v, Algebra.TensorProduct.map (evalV F v) (AlgHom.id F E) z = 0) : z = 0 := by
-  have e : ∀ (v) (z : Af F ⊗[F] E), Formalism.UG.prV (E := E) v (GlobalTheory.LevSplit.swp F E z) =
-      Algebra.TensorProduct.comm F _ _ (Algebra.TensorProduct.map (evalV F v) (AlgHom.id F E) z) := by
-    intro v z
-    induction z using TensorProduct.induction_on with
-    | zero => simp only [map_zero]
-    | tmul a x => rfl
-    | add a b ha hb => simp only [map_add (f := _), ha, hb]
-  refine GlobalTheory.LevSplit.swp_bij.1 ?_
-  rw [map_zero]
-  exact Formalism.UG.P.afsplit_inj _ fun v => by rw [e, h, map_zero]
-
-theorem supp_away {n : ℕ} (S : Finset (HeightOneSpectrum (𝓞 F))) {f : Af F} (hf : ∀ v ∉ S, evalV F v f = 1)
-    (M : Matrix (Fin n) (Fin n) (Af F ⊗[F] E))
-    (hM : ∀ v ∈ S, M.map (Algebra.TensorProduct.map (evalV F v) (AlgHom.id F E)) = 1) :
-    (f ⊗ₜ[F] (1 : E)) • (M - 1) = M - 1 := by
-  ext i j
-  rw [← sub_eq_zero]
-  refine tens_ext _ fun v => ?_
-  rw [Matrix.smul_apply, smul_eq_mul, map_sub, map_mul, Algebra.TensorProduct.map_tmul]
-  by_cases hv : v ∈ S
-  · have : Algebra.TensorProduct.map (evalV F v) (AlgHom.id F E) ((M - 1) i j) = 0 := by
-      have e := congrFun (congrFun (hM v hv) i) j
-      rw [Matrix.map_apply] at e
-      rw [Matrix.sub_apply, map_sub, e, Matrix.one_apply, Matrix.one_apply]
-      split_ifs
-      · rw [map_one, sub_self]
-      · rw [map_zero, sub_self]
-    rw [this, mul_zero, sub_self]
-  · rw [hf v hv, map_one, ← Algebra.TensorProduct.one_def, one_mul, sub_self]
-
 end Away
-
-theorem good_away (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) (N : ℕ)
-    (hS : ∀ v : HeightOneSpectrum (𝓞 D.host.F), (N : 𝓞 D.host.F) ∈ v.asIdeal → v ∈ S) :
-    ∃ f : Af D.host.F, Good N (f ⊗ₜ[D.host.F] (1 : D.host.E)) ∧ ∀ v ∉ S, evalV D.host.F v f = 1 := by
-  obtain ⟨f, u, hu, h1, h2, h3⟩ := exists_away S N hS
-  refine ⟨f, ⟨by rw [Algebra.TensorProduct.tmul_mul_tmul, h2, one_mul], ⟨_, GlobalTheory.LevSplit.one_tmul_mem hu⟩, ?_⟩, h3⟩
-  show swapAE D (u ⊗ₜ[D.host.F] (1 : D.host.E)) * _ = _
-  rw [← map_natCast (swapAE D), ← RingHom.map_mul, ← h1]
-  congr 1
-  rw [← map_natCast (Algebra.TensorProduct.includeLeftRingHom :
-    Af D.host.F →+* Af D.host.F ⊗[D.host.F] D.host.E)]
-  exact (RingHom.map_mul (Algebra.TensorProduct.includeLeftRingHom :
-    Af D.host.F →+* Af D.host.F ⊗[D.host.F] D.host.E) u N).symm
-
-
 
 theorem lamHat_good {V : HSp D} {β : GL (Fin V.rank) (EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} {N : ℕ}
     (hB : IsBaseFrame V β Λ N) {f : Af D.host.F ⊗[D.host.F] D.host.E} (hf : Good N f) :
