@@ -133,7 +133,7 @@ theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
     unfold omDir
     by_cases h : τ = τ'
     · subst h
-      simp only [if_true, cplxO_unitMap (ht τ), Matrix.mul_smul, Matrix.trace_smul, trace_unitMap (hB τ) (hB' τ),
+      simp only [ite_true, cplxO_unitMap (ht τ), Matrix.mul_smul, Matrix.trace_smul, trace_unitMap (hB τ) (hB' τ),
         Prod.mk.injEq, true_and]
       have hre := GlobalTheory.RealSymplForm.realPlace_imaginaryGenerator_re_eq_zero D τ
       split_ifs <;> simp [Complex.mul_re, hre]

@@ -405,7 +405,7 @@ theorem point_coords (K : Type) [Field K] [CharZero K] (D : ℕ) (Y : Scheme.{0}
     have hwU : w ∈ U.1 := Y.basicOpen_le s hw
     have h1 : w ∉ Y.basicOpen (∏ j ∈ J, f j) := (hset.subset ⟨hwU, hwT⟩).2
     rw [mem_basicOpen_prod] at h1
-    push_neg at h1
+    push Not at h1
     obtain ⟨j, hj, hwj⟩ := h1 hwU
     refine ⟨hw, σ.symm (e j), (hσ _).2 (by rw [Equiv.apply_symm_apply]; exact Finset.mem_map_of_mem e hj), ?_⟩
     rw [Equiv.apply_symm_apply, hr _ _ hw, hxe]; exact hwj

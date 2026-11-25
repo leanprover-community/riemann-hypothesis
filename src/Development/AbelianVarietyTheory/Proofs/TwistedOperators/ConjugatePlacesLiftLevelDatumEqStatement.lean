@@ -169,7 +169,7 @@ theorem rowRed_smul_add : ∀ (D : D7) (T : HSp D) (βT : GL (Fin T.rank) (EAf D
     exact Subring.add_mem _ (Subring.mul_mem _ hzi (hu 0 j)) (hv 0 j)
   refine ⟨hint, ?_⟩
   funext j
-  simp only [GlobalTheory.LiftDat.rowRed, redM, dif_pos (hint 0 j), dif_pos (hu 0 j), dif_pos (hv 0 j)]
+  simp only [GlobalTheory.LiftDat.rowRed, redM, dite_eq_left (hint 0 j), dite_eq_left (hu 0 j), dite_eq_left (hv 0 j)]
   have hsub : (⟨GlobalTheory.LiftDat.rowAdj T βT a e ((c : D.host.E) • u + v) 0 j, hint 0 j⟩ :
       Formalism.L2.Herm.intAf D.host.F D.host.E) =
       Formalism.L2.DIV.oToS D.host.F D.host.E (GlobalTheory.SW.Lev.bar c) * ⟨_, hu 0 j⟩ + ⟨_, hv 0 j⟩ := by
@@ -213,7 +213,7 @@ theorem partAt_finW_off_mem_hatA : ∀ (D : D7) (S T : HSp D) (Pg Q : Finset (Fo
     by_cases hw : ∃ PP ∈ Pg ∪ Q, HeightOneSpectrum.under (𝓞 D.host.F) PP = w
     · obtain ⟨PP, hPP, rfl⟩ := hw
       rw [hσ1 PP hPP, sub_self]; exact zero_mem _
-    · push_neg at hw
+    · push Not at hw
       rw [hσ0 w hw, sub_zero]; exact GlobalTheory.LatVac.one_mem_intAf _ w
   refine GlobalTheory.HatPoint.mem_hatA_of_div D S T _ hO _ hγ _ fun w => ?_
   by_cases hw : ∃ PP ∈ Pg ∪ Q, HeightOneSpectrum.under (𝓞 D.host.F) PP = w
@@ -221,7 +221,7 @@ theorem partAt_finW_off_mem_hatA : ∀ (D : D7) (S T : HSp D) (Pg Q : Finset (Fo
     obtain ⟨PP, hPP, rfl⟩ := hw
     rw [map_sub, map_one, hσ1 PP hPP, sub_self]
   · right
-    push_neg at hw
+    push Not at hw
     have hex : ∀ PP ∈ Pg ∪ Q, ∃ s : 𝓞 D.host.F,
         algebraMap (𝓞 D.host.F) (𝓞 D.host.E) s ∈ PP.asIdeal ∧ s ∉ w.asIdeal := by
       intro PP hPP
@@ -328,7 +328,7 @@ theorem rowRed_eq_zero_iff : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.ra
   let i0 : Fin S.rank := ⟨0, lt_of_lt_of_le hpos hn⟩
   let y : Matrix (Fin S.rank) (Fin T.rank) D.host.E := Matrix.of fun i => if i = i0 then v else 0
   have hyrow : ∀ i, y i = if i = i0 then v else 0 := fun i => rfl
-  have hy0 : y i0 = v := by rw [hyrow, if_pos rfl]
+  have hy0 : y i0 = v := by rw [hyrow, ite_eq_left rfl]
   have hy : ∀ L : Lt D.host.E T.rank, v ∈ L → y ∈ tens (stdL D.host.E S.rank) L := fun L hvL =>
     (GlobalTheory.SW.TensLat.mem_tens_stdL L y).2 fun k => by
       rw [hyrow]
@@ -787,7 +787,7 @@ theorem dat_mkLevel_eq : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.rank �
         exact (Units.isUnit _).map _⟩
     have hK : omegaK Pg Y = 1 := by
       unfold omegaK
-      rw [if_pos]
+      rw [ite_eq_left]
       intro PP hPP
       exact ⟨hLow PP (Finset.mem_union_left _ hPP), by rw [hTop PP (Finset.mem_union_left _ hPP)]; exact hJ PP hPP⟩
     rw [hK, one_mul]
@@ -810,7 +810,7 @@ theorem dat_mkLevel_eq : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.rank �
     have hQ : omegaQ Q T.rank ξ (-1) Y ≠ 0 := right_ne_zero_of_mul hne
     have hKc : ∀ PP ∈ Pg, LowZero T.rank (Y PP) ∧ topL T.rank (Y PP) = 1 := by
       by_contra hc
-      exact hK (by unfold omegaK; rw [if_neg hc])
+      exact hK (by unfold omegaK; rw [ite_eq_right hc])
     have hQc : ∀ PP ∈ Q, LowZero T.rank (Y PP) ∧ IsUnit (topL T.rank (Y PP)).det := by
       by_contra hc
       exact hQ (by unfold omegaQ; rw [dite_eq_right hc])
@@ -1069,9 +1069,9 @@ theorem exists_row {S T : HSp D} (Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)) 
     intro PP hPP PP' hPP'
     by_cases hq : PP' = PP
     · subst hq
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact (GlobalTheory.IdemRes.resS_idem_eq_one D _ _ (hes1 PP' hPP')).2
-    · rw [if_neg hq]
+    · rw [ite_eq_right hq]
       have hne : PP ≠ PP' := fun h => hq h.symm
       have horth : es PP * es PP' = 0 :=
         (GlobalTheory.PlaceModelSum.eq_or_mul_eq_zero (hes1 PP hPP).1 (hes1 PP' hPP').1).resolve_left fun h => by
@@ -1094,11 +1094,11 @@ theorem exists_row {S T : HSp D} (Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)) 
     intro i j
     show toEAf D e * (r0 i j : EAf D) = (r0 i j : EAf D)
     by_cases h : i = i0
-    · simp only [r0, if_pos h]
+    · simp only [r0, ite_eq_left h]
       rw [Subring.coe_mul, ← mul_assoc]
       change toEAf D e * toEAf D e * _ = toEAf D e * _
       rw [← map_mul, he2]
-    · simp only [r0, if_neg h, ZeroMemClass.coe_zero, mul_zero]
+    · simp only [r0, ite_eq_right h, ZeroMemClass.coe_zero, mul_zero]
   have hRred : ∀ PP ∈ Pg ∪ Q, ∀ j, redM PP R i0 j = t PP j := by
     intro PP hPP j
     show (if h : R i0 j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E then
@@ -1106,14 +1106,14 @@ theorem exists_row {S T : HSp D} (Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)) 
     rw [dite_eq_left (hRint i0 j)]
     have hr : (⟨R i0 j, hRint i0 j⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) = r0 i0 j := rfl
     rw [hr]
-    simp only [r0, if_pos rfl]
+    simp only [r0, ite_eq_left rfl]
 
     rw [map_mul, hres PP hPP, one_mul, map_sum]
     simp_rw [map_mul, Formalism.L2.DIV.resS_oToS]
     rw [Finset.sum_eq_single ⟨PP, hPP⟩]
-    · rw [hdel PP hPP PP hPP, if_pos rfl, one_mul, hc]
+    · rw [hdel PP hPP PP hPP, ite_eq_left rfl, one_mul, hc]
     · intro b' _ hb'
-      rw [hdel PP hPP b'.1 b'.2, if_neg (fun h => hb' (Subtype.ext h)), zero_mul]
+      rw [hdel PP hPP b'.1 b'.2, ite_eq_right (fun h => hb' (Subtype.ext h)), zero_mul]
     · intro h; exact absurd (Finset.mem_attach _ _) h
   exact ⟨R, hRint, hRe, hRred⟩
 
@@ -1225,7 +1225,7 @@ theorem level_datum_eq : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.rank �
     intro PP hPP c w hw l
     rw [hsum PP Finset.univ c β w hβΛ hw]
     simp only [hβred _ PP hPP, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true]
+      ite_true]
   have hsp : C.X.Λ ≤ Submodule.span (𝓞 D.host.E) (Set.range β) ⊔ GlobalTheory.LiftLevel.liftI Pg Q • C.X.Λ := by
     intro v hv
     choose c hc using fun j => GlobalTheory.T.exists_integer_conj_prescribed_residues_places D (Pg ∪ Q) (fun PP => R PP v j)

@@ -182,11 +182,11 @@ theorem integral_ann_eq (lam : Measure R) [lam.IsAddHaarMeasure] (L P : AddSubgr
     ∫ t in (P : Set R), ψ (s * t) ∂lam = if s ∈ L then (lam.real (P : Set R) : ℂ) else 0 := by
   simp_rw [mul_comm s]
   by_cases h : s ∈ L
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     exact integral_subgroup_eq_real lam _ hPm s fun x hx => by
       rw [mul_comm]
       exact hLP s h x hx
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     have : ∃ a ∈ P, ψ (a * s) ≠ 1 := by
       by_contra! hcon
       exact h (hPL s hcon)

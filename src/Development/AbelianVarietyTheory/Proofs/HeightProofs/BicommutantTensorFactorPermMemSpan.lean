@@ -138,7 +138,7 @@ theorem bicomm_permMat : ∀ (n d : ℕ) (M : Matrix (Fin d → Fin n) (Fin d �
     ext I K
     simp only [permMat, Matrix.mul_apply, Matrix.of_apply]
     rw [Finset.sum_eq_single (K ∘ h)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
       rfl
     · intro J _ hJ
       simp [hJ]

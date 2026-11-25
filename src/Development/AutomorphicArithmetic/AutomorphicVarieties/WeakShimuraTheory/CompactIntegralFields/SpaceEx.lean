@@ -772,7 +772,7 @@ theorem UpperTheory.V.Ws.sxGradD :
   let e : S → R := Sum.elim (fun x => D.r x.1 x.2.1 x.2.2 - algebraMap Λ R (c x.1 x.2.1 x.2.2))
     (fun x => D.ψ x.1 x.2.1 x.2.2 - algebraMap Λ R (a (Φ.χ x.2.1 x.2.2)))
   let w : S → ℤ × ℤ := Sum.elim (fun x => wt x.2.1 x.2.2) (fun _ => 0)
-  have hc : ∀ g i j, i ≠ j → c g i j = 0 := fun g i j h => if_neg h
+  have hc : ∀ g i j, i ≠ j → c g i j = 0 := fun g i j h => ite_eq_right h
   refine (coord_grading Λ (ℤ × ℤ) R S e w ?_ ?_ ?_).elim fun W ⟨u, hu, hW⟩ => ?_
   rotate_right
   · refine ⟨W, fun s => ?_, fun g i j => ?_, fun v i s => ?_, fun s => ?_⟩

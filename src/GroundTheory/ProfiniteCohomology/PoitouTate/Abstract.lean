@@ -16,8 +16,6 @@ open CategoryTheory MonoidalCategory
 
 universe u
 
-attribute [local instance 2000] Rep.hV2
-
 section ExactTransport
 
 variable {A B X Y C : Type*} [AddCommGroup A] [AddCommGroup B] [AddCommGroup X] [AddCommGroup Y]

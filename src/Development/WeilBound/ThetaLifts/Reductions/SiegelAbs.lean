@@ -60,7 +60,7 @@ theorem absE_rIdU [IsTotallyReal F] (h2 : Module.finrank F E = 2) (c : ℝ) :
       rw [evFin, AlgHom.comp_apply, show sndA F (rId F c) = 1 from rId_snd c, map_one]
     rw [e, one_pow, nnnorm_one]
   have hm : ∀ w : InfinitePlace F, w.mult = 1 := fun w => by
-    rw [InfinitePlace.mult, if_pos (IsTotallyReal.isReal w)]
+    rw [InfinitePlace.mult, ite_eq_left (IsTotallyReal.isReal w)]
   have hw : ∀ w : InfinitePlace F,
       (GlobalTheory.Doubling.absEw F E w (GlobalTheory.Doubling.unitInf F E w (rIdU F E c)) : ℝ) = Real.exp (2 * c) := fun w => by
     rw [GlobalTheory.Doubling.absEw_unitInf, hn, map_pow, hm, pow_one, coe_nnnorm, norm_pow, norm_evInf_rId, ← Real.exp_nat_mul]

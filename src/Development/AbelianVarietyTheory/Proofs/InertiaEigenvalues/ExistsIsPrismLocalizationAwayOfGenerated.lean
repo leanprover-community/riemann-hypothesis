@@ -241,7 +241,7 @@ theorem pow_mul_eq_zero_of_invertible {A : Type} [CommRing A] (I : Ideal A) (hI 
   obtain ⟨S, hS⟩ := hfg
   let k : A → ℕ := fun x => if hx : x ∈ I then (h x hx).choose else 0
   have hk : ∀ x ∈ I, f ^ k x * (c * x) = 0 := fun x hx => by
-    simp only [k, dif_pos hx]; exact (h x hx).choose_spec
+    simp only [k, dite_eq_left hx]; exact (h x hx).choose_spec
   refine ⟨S.sup k, ?_⟩
   have hle : I ≤ LinearMap.ker (LinearMap.mulLeft A (f ^ S.sup k * c)) := by
     rw [← hS, Submodule.span_le]

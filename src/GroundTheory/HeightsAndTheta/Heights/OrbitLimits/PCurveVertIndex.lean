@@ -69,7 +69,7 @@ theorem CurveVertIndex.of_single
           (locLen (curvePtIdeal y W) (curveSectionQuot y (fun k => (d k : ℤ)) (aeval y s)) : ℝ) *
             Real.log (Nat.card (curveRing y ⧸ curvePtIdeal y W)) := by
         refine finsum_mem_congr rfl fun W hW => ?_
-        rw [if_neg (IndefiniteRowSideFullHecke.HeightsSet.CurveDivVertical.full K ι _ s d hP hs hsP W hW),
+        rw [ite_eq_right (IndefiniteRowSideFullHecke.HeightsSet.CurveDivVertical.full K ι _ s d hP hs hsP W hW),
           hmult W hW, ← hR W hW]
         congr 3
     _ = ∑ᶠ m ∈ {m : Ideal (curveRing y) |

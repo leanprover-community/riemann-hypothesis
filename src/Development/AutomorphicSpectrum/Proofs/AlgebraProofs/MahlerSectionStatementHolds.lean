@@ -421,7 +421,7 @@ theorem ModelDimension.chow_form_product_formula :
     rw [h, map_zero] at hR1
     exact hR0 hR1
   · rw [← eval_sectionPoly, hR, hR1, map_mul, eval_C, map_prod, mul_comm]
-    simp only [eval_linForm, coeff_C, if_true]
+    simp only [eval_linForm, coeff_C, ite_true]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.CommonZeroEvaluation.EvalEqZeroOfCommonZero =====

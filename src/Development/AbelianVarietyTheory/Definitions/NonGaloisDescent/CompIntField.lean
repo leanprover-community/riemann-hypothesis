@@ -26,16 +26,6 @@ def IsLevN (E : ExpSet D) (N : ℕ) : Prop :=
 
 def LevN (E : ExpSet D) : Type := {N : ℕ // IsLevN E N}
 
-section Fields
-
-variable (E : ExpSet D) {O : Type} [CommRing O] (C : CoefLat E O) (Base : Set (GA D E.W → ℂ))
-  (LQ : LevN E → Subfield ℂ) (Rat : ∀ N : LevN E, Submodule (LQ N) (GA D E.W → ℂ))
-  (Λ : Subring ℂ) (BaseInt : Submodule Λ (GA D E.W → ℂ)) (Int : LevN E → Submodule Λ (GA D E.W → ℂ))
-
-variable {E C Base LQ Rat Λ BaseInt Int}
-
-end Fields
-
 section Covers
 
 open Formalism.L2.Pj Formalism.IndefR.FWT GlobalTheory.CoverRead

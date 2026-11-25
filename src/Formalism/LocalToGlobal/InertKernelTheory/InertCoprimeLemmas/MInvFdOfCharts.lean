@@ -55,22 +55,6 @@ theorem lamC_zpow_mem {s : ℂ} (hs : s ∈ TaylorLogMetric.Qbar) (n : ℤ) : Ta
 
 end lamC
 
-section minv
-
-variable {p : ℕ} [Fact p.Prime] {X : Sys p} {D : D7}
-
-end minv
-
-section scal
-
-variable {p : ℕ} [Fact p.Prime] {D : D7} (X : Sys p) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (fd : FData X D)
-  (χ : TaylorLogMetric.IdE D → ℂ) (muT : ℕ → (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)ˣ → ℂ)
-  (lam : TaylorLogMetric.Qbar →+* ℂ_[p])
-
-variable {X hfin fd χ muT lam}
-
-end scal
-
 end Formalism.L2.KerInert.ScalM
 
 namespace Formalism.L2.KerInert.ScalM

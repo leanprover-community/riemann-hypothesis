@@ -1059,7 +1059,7 @@ theorem isDIntegral_dictLattice {d : ℤ} (hd0 : d ≠ 0)
         by_cases hij : i = j
         · subst hij
           simp [Algebra.TensorProduct.one_def]
-        · rw [if_neg hij, if_neg (Ne.symm hij), TensorProduct.tmul_zero]
+        · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), TensorProduct.tmul_zero]
       rw [e1, map_zsmul, e2, ← Int.cast_smul_eq_zsmul F]
       exact hn
     have hvi : v i = ((d * n : ℤ) : E)⁻¹ • ((d * n) • v i) := by

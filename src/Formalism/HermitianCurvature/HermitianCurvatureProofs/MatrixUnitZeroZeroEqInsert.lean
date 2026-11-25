@@ -85,7 +85,7 @@ theorem column_first_insert_matrix_unit {a : S} (X G : SlopeTestRemainingChoices
   · simp [Wd.eU, Wd.e1]
   · intro y _ hy
     simp only [Wd.eU, Matrix.of_apply]
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     rintro ⟨h1, _, h3⟩
     apply hy
     funext b

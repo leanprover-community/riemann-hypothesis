@@ -87,7 +87,7 @@ theorem rho_inf_mem (t c : ℕ) (D : ℝ) :
   intro e he
   by_cases hle : Xs ≤ 0
   · exact ⟨0, by simpa using hle, Or.inl rfl⟩
-  push_neg at hle
+  push Not at hle
   have hceil : (⌈Xs⌉₊ : ℝ) - 1 < Xs := by linarith [Nat.ceil_lt_add_one hle.le]
   have hδ : 0 < (Xs - ((⌈Xs⌉₊ : ℝ) - 1)) / dL R lam0 := div_pos (sub_pos.mpr hceil) hpos
   obtain ⟨κ, hκS, hκlt⟩ := exists_lt_of_csInf_lt ⟨1, h1⟩
@@ -153,15 +153,15 @@ theorem topW_base {n' m : ℕ} {TT : Finset (Fin n')} {aw bw : Fin n' → ℤ} {
     IsBaseWeight TT aw bw c (topW TT lam0) := by
   intro s
   refine ⟨fun hs => ?_, fun hs i => ?_⟩
-  · simpa only [topW, if_pos hs] using (h s).1 hs
+  · simpa only [topW, ite_eq_left hs] using (h s).1 hs
   · simp [topW, hs]
 
 theorem topW_dom {n' m : ℕ} {TT : Finset (Fin n')} {lam0 : Fin n' → Fin (m + 1) → ℤ} (h : IsDominant lam0) :
     IsDominant (topW TT lam0) := by
   intro s
   by_cases hs : s ∈ TT
-  · simpa only [topW, if_pos hs] using h s
-  · simp only [topW, if_neg hs]
+  · simpa only [topW, ite_eq_left hs] using h s
+  · simp only [topW, ite_eq_right hs]
     exact antitone_const
 
 theorem topW_zero {n' m : ℕ} {TT : Finset (Fin n')} (lam0 : Fin n' → Fin (m + 1) → ℤ) (s : Fin n') (hs : s ∉ TT) :
@@ -175,17 +175,17 @@ theorem midLP_of (h60c : RhoLowerBoundLargeConductor) (h62 : CloudWeightLowerBou
   have hcst := hF.cst
   by_cases h1 : 1 ≤ X.kText K R (fun s => aw s) (fun s => bw s)
   · exact lpprime_of_one_le R 1 lam0 t X.Dp _ X.cStar (by omega) h1
-  push_neg at h1
+  push Not at h1
   have heps : 0 ≤ 12 * (X.N : ℝ) * X.k * X.ccl / X.b' :=
     div_nonneg (by unfold Dat.k; positivity) hF.bpos.le
 
   have hins : X.Inside (fun s => aw s) (fun s => bw s) := by
     by_contra hn
     apply absurd h1
-    push_neg
+    push Not
     have := kF_nonneg' X K R (fun s => ((fun s : X.TT => aw s) s + X.ccl).toNat)
       (fun s => ((fun s : X.TT => bw s) s + X.ccl).toNat)
-    simp only [Dat.kText, if_neg hn]
+    simp only [Dat.kText, ite_eq_right hn]
     linarith
   have hAs : ∀ s : X.TT, (((aw s - X.ccl).toNat : ℕ) : ℤ) = aw s - X.ccl := fun s =>
     Int.toNat_of_nonneg (by have h3 : (X.a : ℤ) ≤ aw s - X.ccl := (hins s).1; omega)
@@ -260,7 +260,7 @@ theorem midLP_of (h60c : RhoLowerBoundLargeConductor) (h62 : CloudWeightLowerBou
       X.kF K R (fun s : X.TT => (aw s - X.ccl).toNat) (fun s : X.TT => (bw s - X.ccl).toNat) +
         2 * X.kF K R (fun s : X.TT => (aw s + X.ccl).toNat) (fun s : X.TT => (bw s + X.ccl).toNat) +
         12 * (X.TT.card : ℝ) * ((X.m : ℝ) + 1) * X.ccl / X.b' := by
-    simp only [Dat.kText, if_pos hins]
+    simp only [Dat.kText, ite_eq_left hins]
     rfl
   rw [hκ]
   exact RhoL_mono R lam0 htt hF.dle le_rfl r63

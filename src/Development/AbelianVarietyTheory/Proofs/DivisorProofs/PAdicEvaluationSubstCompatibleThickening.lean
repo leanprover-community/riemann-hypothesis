@@ -157,7 +157,7 @@ theorem eval_trunc'_eq_sum {R σ : Type} [CommRing R] [Fintype σ] [DecidableEq 
     · exact absurd rfl hm
   rw [MvPolynomial.eval_eq, Finset.sum_subset hsub]
   · refine Finset.sum_congr rfl fun m hm => ?_
-    rw [coeff_trunc', if_pos (Finset.mem_Iic.mp hm)]
+    rw [coeff_trunc', ite_eq_left (Finset.mem_Iic.mp hm)]
   · intro m _ hm
     rw [MvPolynomial.notMem_support_iff.mp hm, zero_mul]
 

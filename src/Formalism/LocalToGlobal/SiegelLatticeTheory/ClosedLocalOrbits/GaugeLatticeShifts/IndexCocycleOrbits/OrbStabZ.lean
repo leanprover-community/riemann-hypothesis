@@ -29,13 +29,6 @@ def IdxCocycle : Prop :=
   ∀ (G : Type) [Group G] (A B C : Subgroup G), B ≤ C → B.relIndex C ≠ 0 →
     IdxRatio A B = (B.relIndex C : ℝ) * IdxRatio A C
 
-section Data
-
-variable {D : D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
-  {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
-
-end Data
-
 variable (D : D7) (u u' : D.what₂.Word)
   (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V))
 

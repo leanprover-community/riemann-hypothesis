@@ -48,16 +48,16 @@ lemma emb_out_col (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   unfold embWb
   rw [dite_eq_right (fun h => hj h.2)]
   by_cases h : q = j
-  · subst h; rw [if_pos ⟨rfl, hj⟩, if_pos rfl]
-  · rw [if_neg (fun h' => h h'.1), if_neg h]
+  · subst h; rw [ite_eq_left ⟨rfl, hj⟩, ite_eq_left rfl]
+  · rw [ite_eq_right (fun h' => h h'.1), ite_eq_right h]
 
 lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : ¬ mid k r q) :
     embWb k r μ q j = if q = j then 1 else 0 := by
   unfold embWb
   rw [dite_eq_right (fun h => hq h.1)]
   by_cases h : q = j
-  · rw [if_pos ⟨h, hq⟩, if_pos h]
-  · rw [if_neg (fun h' => h h'.1), if_neg h]
+  · rw [ite_eq_left ⟨h, hq⟩, ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h h'.1), ite_eq_right h]
 
 lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : mid k r q) (hj : mid k r j) :
     embWb k r μ q j = μ (midx hq) (midx hj) := by
@@ -70,9 +70,9 @@ def Em (k r : ℕ) : Matrix (Fin (2 * r + k + 1)) (Fin (k + 1)) ℂ := fun i m =
 lemma Em_mul_mid {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + k + 1)) (x : X) (hi : mid k r i) :
     (Em k r * A) i x = A (midx hi) x := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (midx hi)]
-  · rw [Em, if_pos (wI_midx hi).symm, one_mul]
+  · rw [Em, ite_eq_left (wI_midx hi).symm, one_mul]
   · intro b _ hb
-    rw [Em, if_neg, zero_mul]
+    rw [Em, ite_eq_right, zero_mul]
     intro h
     apply hb
     apply wI_inj (r := r)
@@ -84,16 +84,16 @@ lemma Em_mul_out {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + 
   rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro b _
-  rw [Em, if_neg, zero_mul]
+  rw [Em, ite_eq_right, zero_mul]
   intro h
   exact hi (h ▸ mid_wI b)
 
 lemma mul_EmT_mid {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : mid k r j) :
     (A * (Em k r)ᵀ) x j = A x (midx hj) := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (midx hj)]
-  · rw [Matrix.transpose_apply, Em, if_pos (wI_midx hj).symm, mul_one]
+  · rw [Matrix.transpose_apply, Em, ite_eq_left (wI_midx hj).symm, mul_one]
   · intro b _ hb
-    rw [Matrix.transpose_apply, Em, if_neg, mul_zero]
+    rw [Matrix.transpose_apply, Em, ite_eq_right, mul_zero]
     intro h
     apply hb
     apply wI_inj (r := r)
@@ -105,20 +105,20 @@ lemma mul_EmT_out {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : 
   rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro b _
-  rw [Matrix.transpose_apply, Em, if_neg, mul_zero]
+  rw [Matrix.transpose_apply, Em, ite_eq_right, mul_zero]
   intro h
   exact hj (h ▸ mid_wI b)
 
 lemma EmT_Em : (Em k r)ᵀ * Em k r = 1 := by
   ext a b
   rw [Matrix.mul_apply, Finset.sum_eq_single (wI k r a)]
-  · simp only [Matrix.transpose_apply, Em, if_true, Matrix.one_apply]
+  · simp only [Matrix.transpose_apply, Em, ite_true, Matrix.one_apply]
     by_cases hab : a = b
     · subst hab; simp
-    · rw [if_neg (fun h => hab (wI_inj h)), if_neg hab, mul_zero]
+    · rw [ite_eq_right (fun h => hab (wI_inj h)), ite_eq_right hab, mul_zero]
   · intro i _ hi
     simp only [Matrix.transpose_apply, Em]
-    rw [if_neg hi (c := i = wI k r a), zero_mul]
+    rw [ite_eq_right hi (c := i = wI k r a), zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 lemma emb_eq (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
@@ -133,7 +133,7 @@ lemma emb_eq (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
       rw [this, sub_self, add_zero]
     · rw [Em_mul_out _ i _ hi, emb_out_row μ i j hi]
       have : Em k r i (midx hj) = if i = j then 1 else 0 := by rw [Em, wI_midx hj]
-      rw [this, sub_self, add_zero, if_neg (fun h => hi (by rw [h]; exact hj))]
+      rw [this, sub_self, add_zero, ite_eq_right (fun h => hi (by rw [h]; exact hj))]
   · rw [mul_EmT_out _ j i hj, mul_EmT_out _ j i hj, emb_out_col μ i j hj]
     ring
 
@@ -285,7 +285,7 @@ lemma emb_mud_off (d : ℂ) (i j : Fin (2 * r + k + 1))
     · rw [emb_mid _ i j hi hj, mud_off]
       · by_cases e : i = j
         · subst e; simp
-        · rw [if_neg e, if_neg (fun h' => e (by rw [← wI_midx hi, ← wI_midx hj, h']))]
+        · rw [ite_eq_right e, ite_eq_right (fun h' => e (by rw [← wI_midx hi, ← wI_midx hj, h']))]
       · rcases h with ⟨h1, h2⟩ | ⟨h1, h2⟩
         · left
           exact ⟨fun h' => h1 (by rw [← wI_midx hi, h']), fun h' => h2 (by rw [← wI_midx hi, h'])⟩
@@ -323,19 +323,19 @@ lemma comm_mud (hk : 1 ≤ k) {R : Mat k r} (hR : R ∈ UH (Hpk k r))
     rw [Matrix.mul_apply, Fintype.sum_eq_add a b hne (fun l hl => by rw [hP l j (Or.inl hl), mul_zero]),
       c0, cL]
     by_cases ha : i = a
-    · subst ha; rw [if_pos rfl, if_neg hne, one_mul, zero_mul, add_zero]
+    · subst ha; rw [ite_eq_left rfl, ite_eq_right hne, one_mul, zero_mul, add_zero]
     · by_cases hb : i = b
-      · subst hb; rw [if_neg (Ne.symm hne), if_pos rfl, one_mul, zero_mul, zero_add]
-      · rw [if_neg ha, if_neg hb, zero_mul, zero_mul, add_zero, hP i j (Or.inl ⟨ha, hb⟩)]
+      · subst hb; rw [ite_eq_right (Ne.symm hne), ite_eq_left rfl, one_mul, zero_mul, zero_add]
+      · rw [ite_eq_right ha, ite_eq_right hb, zero_mul, zero_mul, add_zero, hP i j (Or.inl ⟨ha, hb⟩)]
   have PR : P * R = P := by
     ext i j
     rw [Matrix.mul_apply, Fintype.sum_eq_add a b hne (fun l hl => by rw [hP i l (Or.inr hl), zero_mul]),
       r0, rL]
     by_cases ha : j = a
-    · subst ha; rw [if_pos rfl, if_neg (Ne.symm hne), mul_one, mul_zero, add_zero]
+    · subst ha; rw [ite_eq_left rfl, ite_eq_right (Ne.symm hne), mul_one, mul_zero, add_zero]
     · by_cases hb : j = b
-      · subst hb; rw [if_neg hne, if_pos rfl, mul_one, mul_zero, zero_add]
-      · rw [if_neg (Ne.symm ha), if_neg (Ne.symm hb), mul_zero, mul_zero, add_zero, hP i j (Or.inr ⟨ha, hb⟩)]
+      · subst hb; rw [ite_eq_right hne, ite_eq_left rfl, mul_one, mul_zero, zero_add]
+      · rw [ite_eq_right (Ne.symm ha), ite_eq_right (Ne.symm hb), mul_zero, mul_zero, add_zero, hP i j (Or.inr ⟨ha, hb⟩)]
   rw [hM, Matrix.mul_add, Matrix.add_mul, Matrix.mul_one, Matrix.one_mul, RP, PR]
 
 lemma big_cell_commute_frame_element (hBCF : BigCellFactor) (hUWb : UWbFacts) (hk : 1 ≤ k) {z : Fin (2 * r + k + 1) → ℂ}

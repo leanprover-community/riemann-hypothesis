@@ -36,9 +36,9 @@ theorem lastRow_eq {k : ℕ} (hk : 1 ≤ k) (g : GA E k) (c : Fin k) :
     lastRow g c = g.val ⟨k - 1, by omega⟩ c := by
   unfold lastRow
   rw [Finset.sum_eq_single ⟨k - 1, by omega⟩]
-  · rw [if_pos (by simp only; omega)]
+  · rw [ite_eq_left (by simp only; omega)]
   · intro j _ hj
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h; apply hj; ext; simp only; omega
   · intro h; exact absurd (Finset.mem_univ _) h
 

@@ -144,20 +144,6 @@ theorem theta_entire {W : UnfAt U k x} (Wu : UnitAt W) : Differentiable ℂ Wu.�
 
 end Pins
 
-section Bound
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Z : FD.Data E r} {x : FD.Frame Z.Ψ r}
-
-end Bound
-
-section Record
-
-open Formalism.BasicNotions Formalism.MainNotions
-
-variable {D : D7} {T : Top D}
-
-end Record
-
 end GlobalTheory.EtaPinnedCompare
 end -- clump:auto
 end -- clump:auto
@@ -573,7 +559,7 @@ theorem hecke_lift_reps : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
           have : Formalism.L2.PjFree.toC (cf τ m j) = 0 := by rw [h0j]; rfl
           simp [this, not_lt.2 hj.le, hj.ne']
       rw [Finset.sum_congr rfl (fun j _ => key j), Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ m,
-        if_pos (Finset.mem_univ _), add_sub_cancel_right, ← Finset.sum_filter]
+        ite_eq_left (Finset.mem_univ _), add_sub_cancel_right, ← Finset.sum_filter]
       refine Submodule.sum_mem _ fun j hj => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, ?_, rfl⟩)
       simpa using hj
     · intro τ m

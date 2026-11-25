@@ -258,8 +258,8 @@ theorem psiK_eq_chi : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (wt 
     · exact congruence_fixed_term X.B.I X.B.g _ _ (nxt_Z X.B.I X.B.g X.e0 X.f0 X.z0 hfe hfz a)
         (mL_Qs X.B.I X.B.g (hf0 a) (hnxt a))
     · by_cases hi : i.1 + 1 < D.R.k
-      · simp only [dif_pos hi]; exact hterm i hi
-      · simp only [dif_neg hi, map_zero, sub_self]; exact Z_zero X.B.I X.B.g
+      · simp only [dite_eq_left hi]; exact hterm i hi
+      · simp only [dite_eq_right hi, map_zero, sub_self]; exact Z_zero X.B.I X.B.g
   have h0 : X.psiEf (divN X.B.I X.B.g 0) = 1 := by
     rw [divN, mul_zero]; exact X.psiEf_int 0 (zero_mem _)
   calc ((psiK X u hK ⟨h, hk⟩ : ℂˣ) : ℂ)

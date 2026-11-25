@@ -110,7 +110,7 @@ theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux12.{u_1} :
     ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
@@ -269,7 +269,7 @@ theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux12.{u_1} :
     ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
@@ -335,7 +335,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux2.{u_1} :
   intro R _ m
   ext i j
   simp only [UpperTheory.Reformulated.B.SignActionTheta.Jmat, Matrix.mul_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, Fin.rev_rev, Matrix.one_apply]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_rev, Matrix.one_apply]
   simp only [eq_comm]
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.Jgl.{u_1} :
@@ -421,7 +421,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux12.{u_1} :
     ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
@@ -434,7 +434,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux12.{u_1} :
   · simp
   · simp
   · simp
-  · rw [if_pos (by simp), if_neg hne]
+  · rw [ite_eq_left (by simp), ite_eq_right hne]
     ext1 g
     exact (UpperTheory.Reformulated.B.SignActionTheta.aux8 g).symm
 
@@ -477,9 +477,9 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.sign_action_map_comm.{u_1, u_
   · ext1 g
     simp
   · have h1 : UpperTheory.Reformulated.B.SignActionTheta.sgnAct m R (-1) = UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R :=
-      if_neg (t := (1 : MulAut (GL (Fin m) R))) hne
+      ite_eq_right (t := (1 : MulAut (GL (Fin m) R))) hne
     have h2 : UpperTheory.Reformulated.B.SignActionTheta.sgnAct m S (-1) = UpperTheory.Reformulated.B.SignActionTheta.thetaAut m S :=
-      if_neg (t := (1 : MulAut (GL (Fin m) S))) hne
+      ite_eq_right (t := (1 : MulAut (GL (Fin m) S))) hne
     rw [MonoidHom.id_apply, h1, h2]
     refine MonoidHom.ext fun g => ?_
     exact UpperTheory.Reformulated.B.SignActionTheta.map_theta f g

@@ -113,7 +113,7 @@ theorem posDef_of_points {E : Type} [Field E] (φ : E →+* ℂ) {k : ℕ} (N : 
       rw [hv] at e
       rw [e]
       exact add_nonneg (hreal' _) (hreal' _)
-    · push_neg at hreal
+    · push Not at hreal
       obtain ⟨t, ht⟩ := hreal
       refine re_nonneg_of_rat N (φ t) ht (fun α β => ?_)
       have h1 := hpt (fun i => (α i : E) + (β i : E) * t)

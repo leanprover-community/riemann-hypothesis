@@ -71,13 +71,4 @@ variable (R l)
 
 end Rings
 
-section Points
-variable {k : Type} [CommRing k]
-
-variable {B : Over (Spec (CommRingCat.of k))}
-
-variable {R : Type} [CommRing R] [Algebra k R]
-
-end Points
-
 end GlobalTheory.AddCurve

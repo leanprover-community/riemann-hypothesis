@@ -1351,7 +1351,7 @@ theorem prodC_holds : ProdC := by
         unfold GlobalTheory.Amp.sgV
         refine (Finset.le_fold_max _).2 (Or.inr ⟨⟨l, hlr⟩, Finset.mem_univ _, le_of_eq ?_⟩)
         rw [← hDm, hgram τ ⟨l, hlr⟩]
-        simp only [labT, if_pos hlj]
+        simp only [labT, ite_eq_left hlj]
   have hA : 0 ≤ (16 * Real.pi * Real.exp 1 / D.R.k) ^ (jT t * (D.R.k - 1 - jT t) * D.R.f) * (P ^ (D.R.k - 1 - jT t))⁻¹ *
       (8 * D.R.rS * H1C large₂ CH) ^ (80 * D.R.rS ^ 4 * D.R.f) := by
     have := hP.le

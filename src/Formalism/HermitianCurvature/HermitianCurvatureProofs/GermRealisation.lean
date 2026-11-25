@@ -54,18 +54,18 @@ theorem blockPSD_gramL {ι : Type} (μ : Measure ℂ) (Y : Finset ι) (U A : ι 
   rcases x with p | q <;> rcases y with p' | q'
   · have h1 := (hmem p (Finset.inl_mem_disjSum.mp hx)).1
     have h2 := (hmem p' (Finset.inl_mem_disjSum.mp hy)).1
-    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inl, dif_pos h1, dif_pos h2, inner_toLp h1 h2, gramL]
+    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inl, dite_eq_left h1, dite_eq_left h2, inner_toLp h1 h2, gramL]
   · have h1 := (hmem p (Finset.inl_mem_disjSum.mp hx)).1
     have h2 := (hmem q' (Finset.inr_mem_disjSum.mp hy)).2
-    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inl, Sum.elim_inr, dif_pos h1, dif_pos h2,
+    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inl, Sum.elim_inr, dite_eq_left h1, dite_eq_left h2,
       inner_toLp h1 h2, gramL]
   · have h1 := (hmem q (Finset.inr_mem_disjSum.mp hx)).2
     have h2 := (hmem p' (Finset.inl_mem_disjSum.mp hy)).1
-    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inl, Sum.elim_inr, dif_pos h1, dif_pos h2, gramL]
+    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inl, Sum.elim_inr, dite_eq_left h1, dite_eq_left h2, gramL]
     rw [← inner_conj_symm, inner_toLp h2 h1]
   · have h1 := (hmem q (Finset.inr_mem_disjSum.mp hx)).2
     have h2 := (hmem q' (Finset.inr_mem_disjSum.mp hy)).2
-    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inr, dif_pos h1, dif_pos h2, inner_toLp h1 h2, gramL]
+    simp only [Matrix.of_apply, Matrix.gram, v, Sum.elim_inr, dite_eq_left h1, dite_eq_left h2, inner_toLp h1 h2, gramL]
 
 end L2
 

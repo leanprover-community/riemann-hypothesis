@@ -96,7 +96,7 @@ theorem tsum_eq_exp_tsum_neg_log_of_primes {α ι : Type*} [CommMonoidWithZero �
       have e2 : ∑' a, (if p i ∣ a then g S a else 0) = f (p i) * ∑' a, g S a := by
         rw [← hinj.tsum_eq, ← tsum_mul_left]
         · refine tsum_congr fun b => ?_
-          rw [if_pos (dvd_mul_right _ _)]
+          rw [ite_eq_left (dvd_mul_right _ _)]
           have : (∀ j ∈ S, ¬ p j ∣ p i * b) ↔ ∀ j ∈ S, ¬ p j ∣ b := by
             refine forall₂_congr fun j hj => not_congr ?_
             rw [(hp j).dvd_mul]
@@ -120,16 +120,16 @@ theorem tsum_eq_exp_tsum_neg_log_of_primes {α ι : Type*} [CommMonoidWithZero �
     · subst ha
       have : ∀ S, g S 1 = 1 := fun S => by
         simp only [hg]
-        rw [if_pos fun i _ => (hp i).not_dvd_one, h1]
+        rw [ite_eq_left fun i _ => (hp i).not_dvd_one, h1]
       simp [this]
-    · rw [if_neg ha]
+    · rw [ite_eq_right ha]
       by_cases hf : f a = 0
       · simp [hg, hf]
       · obtain ⟨i, hi⟩ := hex a ha hf
         refine tendsto_const_nhds.congr' ?_
         filter_upwards [eventually_ge_atTop ({i} : Finset ι)] with S hS
         simp only [hg]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact h i (hS (Finset.mem_singleton_self i)) hi
   rw [tsum_ite_eq] at lim1

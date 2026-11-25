@@ -62,12 +62,6 @@ theorem unimodular_mem_genus (hU : LocUnimod) (hc : Formalism.BasicNotions.CMDat
 
 end Conj
 
-section Rows
-
-open Formalism.BasicNotions Formalism.MainNotions.BridgeLemma₂
-
-end Rows
-
 end Formalism.MainNotions.BridgeRowsGenus
 
 end

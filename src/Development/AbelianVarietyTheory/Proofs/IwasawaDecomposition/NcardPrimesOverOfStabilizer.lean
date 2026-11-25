@@ -150,6 +150,6 @@ theorem split_of_one_mod : ∀ (R : Ranks) (H : Host R) (p : ℕ), p.Prime → p
     obtain ⟨k, ρ, hρ, rfl⟩ := Formalism.FrobeniusOrbits.Decomp.stab_eq_inertia_mul p P 1 σ h1 hσ
     rw [(hI ρ).1 hρ, one_pow, mul_one]
   · unfold Host.cls primeClass
-    rw [if_neg hp2, if_neg hpq, if_neg hpd, if_pos jd]
+    rw [ite_eq_right hp2, ite_eq_right hpq, ite_eq_right hpd, ite_eq_left jd]
 
 end GlobalTheory.HostSplit

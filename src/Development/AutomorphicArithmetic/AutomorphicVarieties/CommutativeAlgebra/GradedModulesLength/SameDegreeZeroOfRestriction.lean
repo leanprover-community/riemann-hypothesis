@@ -703,8 +703,8 @@ private theorem zm_f {B A : Type} [CommRing B] [CommRing A] [Algebra B A] {k : �
     ext m
     rw [MvPolynomial.coeff_monomial]
     by_cases hm : Finsupp.single i 1 = m
-    · rw [if_pos hm, hm]
-    · rw [if_neg hm]
+    · rw [ite_eq_left hm, hm]
+    · rw [ite_eq_right hm]
       apply hs'
       intro h
       exact hm (toDeg_injective (hdeg.trans h.symm))

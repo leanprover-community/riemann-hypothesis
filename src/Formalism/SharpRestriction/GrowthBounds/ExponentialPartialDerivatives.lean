@@ -387,18 +387,18 @@ theorem ex_lin (Y : FBChart C V O dd) (i m : Fin dd) :
     intro k
     rw [Y.lg_lin m _ (by simp), coeff_X]
     by_cases hk : k = m
-    · rw [if_pos hk, if_pos (by rw [hk])]
-    · rw [if_neg hk, if_neg]
+    · rw [ite_eq_left hk, ite_eq_left (by rw [hk])]
+    · rw [ite_eq_right hk, ite_eq_right]
       intro e
       exact hk (Prod.mk.inj (Finsupp.single_left_injective one_ne_zero e)).2
-  simp only [hl, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+  simp only [hl, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
   rw [← constantCoeff_pderiv] at h
   change constantCoeff (pderiv (R := C) ((0 : Fin 1), i) (Y.ex m)) =
     coeff (Finsupp.single ((0 : Fin 1), i) 1) (X ((0 : Fin 1), m) : PS C 1 dd) at h
   rw [h, coeff_X]
   by_cases him : i = m
-  · rw [if_pos him, if_pos (by rw [him])]
-  · rw [if_neg him, if_neg]
+  · rw [ite_eq_left him, ite_eq_left (by rw [him])]
+  · rw [ite_eq_right him, ite_eq_right]
     intro e
     exact him (Prod.mk.inj (Finsupp.single_left_injective one_ne_zero e)).2
 
@@ -570,14 +570,14 @@ theorem exDer_holds {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [Com
     rw [ev_sum hQ]
     simp only [ev_mul hQ, eAB, eB, ex_lin]
     rw [Finset.sum_eq_single i]
-    · rw [if_pos rfl, map_one, mul_one, ev_ev (z0_p0 _ (z0_pt 0)) hZex]
+    · rw [ite_eq_left rfl, map_one, mul_one, ev_ev (z0_p0 _ (z0_pt 0)) hZex]
       congr 1
       funext k m
       fin_cases k
       · exact (ev_X hZex 0 m).symm
       · exact (ev_zero hZex).symm
     · intro m _ hm
-      rw [if_neg (Ne.symm hm), map_zero, mul_zero]
+      rw [ite_eq_right (Ne.symm hm), map_zero, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ i) h
   have key : ∀ i, pderiv (R := C) ((0 : Fin 1), i) (Y.ex j) =
@@ -683,9 +683,9 @@ theorem derAt_rawU (hu : ∀ g c i, V.Ge 0 (u g c i)) : DerAt V (rawU Y d u) := 
           (MvPowerSeries.pderiv (R := C) ((1 - g : Fin 2), j) Y.h) *
         MvPowerSeries.subst ((rawU Y d u).expPt (1 - g)) (un1 (Y.dF ((rawU Y d u).u (1 - g) k) j)) := by
     rw [Formalism.G.LogCR.pderiv_subst hE0, Fintype.sum_prod_type, Finset.sum_eq_single (1 - g)]
-    · simp only [hd, if_true]
+    · simp only [hd, ite_true]
     · intro g' _ hg'
-      simp only [hd, if_neg hg', mul_zero, Finset.sum_const_zero]
+      simp only [hd, ite_eq_right hg', mul_zero, Finset.sum_const_zero]
     · intro h
       exact absurd (Finset.mem_univ _) h
   set J : PS C 2 dd := (∑ j, ev (n := 2) ![pt C dd (1 - g)] (Y.dF ((rawU Y d u).u (1 - g) k) j) *

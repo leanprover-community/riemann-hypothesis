@@ -120,13 +120,13 @@ theorem expo_le (D : D7) {a d : ℕ} {n : D.what₂.Tau → ℕ} (T : Tup D a d 
           rw [Finset.sum_eq_single c]
           · rw [Finsupp.single_apply]; split_ifs <;> simp
           · intro i _ hi
-            rw [Finsupp.single_apply, if_neg]
+            rw [Finsupp.single_apply, ite_eq_right]
             simp [hi]
           · simp
       _ = n τ0 := by simp
   · intro τ _ hτ
     refine Finset.sum_eq_zero fun j _ => Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     simp [hτ]
   · simp
 

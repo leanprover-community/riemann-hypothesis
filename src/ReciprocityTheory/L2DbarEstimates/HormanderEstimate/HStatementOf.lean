@@ -765,7 +765,7 @@ private theorem wdb_sum_mul_conj_eq_coord (n : ℕ) (k : Fin n) (p : V n) :
   rw [hF.fderiv]
   simp [bas, PiLp.single_apply]
   simp only [apply_ite (starRingEnd ℂ), map_zero, mul_ite, mul_zero, Complex.conj_I,
-    Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   linear_combination ((starRingEnd ℂ (p.ofLp k) - p.ofLp k) / 2) * Complex.I_sq
 
 theorem leviNormSq (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
@@ -1676,14 +1676,14 @@ theorem shell (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
         simp only [hg]
         gcongr
         linarith [hχ0 (e x)]
-      · push_neg at hx
+      · push Not at hx
         have hxS : x ∈ S ⌈e x - a - 2⌉₊ := shell_mem a (e x) hx
         refine le_trans ?_ (le_add_left (ENNReal.le_tsum ⌈e x - a - 2⌉₊))
         rw [Set.indicator_of_mem hxS, ← ENNReal.ofReal_mul (Real.exp_pos _).le]
         apply ENNReal.ofReal_le_ofReal
         have hRx : Real.log (1 + C ⌈e x - a - 2⌉₊) + ⌈e x - a - 2⌉₊ ≤ χ (e x) := by
           have := hχR (e x) hx.le
-          simp only [hR, if_pos hx] at this
+          simp only [hR, ite_eq_left hx] at this
           exact this
         simp only [hg]
         rw [show -(ph x + χ (e x) - ψ x) = -(χ (e x)) + (-ph x + ψ x) by ring, Real.exp_add]

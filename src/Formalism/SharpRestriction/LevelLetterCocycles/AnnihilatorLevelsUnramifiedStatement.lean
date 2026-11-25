@@ -91,7 +91,7 @@ theorem taylor_two_var (f : PowerSeries O) :
       ext i; fin_cases i <;> simp [h]
     have hn : ¬ Finsupp.single (1 : Fin 2) 1 ≤ e := by
       intro hle; have := hle 1; simp [h] at this
-    rw [if_pos he0, if_neg hn, h]
+    rw [ite_eq_left he0, ite_eq_right hn, h]
     simp
   · have hne : ¬ e = Finsupp.single 0 (e 0) := by
       intro h'; have := congrArg (fun x => x 1) h'; simp [h] at this
@@ -99,7 +99,7 @@ theorem taylor_two_var (f : PowerSeries O) :
       intro i; fin_cases i <;> simp [h]
     have hsub : e - Finsupp.single 1 1 = Finsupp.single 0 (e 0) := by
       ext i; fin_cases i <;> simp [h]
-    rw [if_neg hne, if_pos hle, hsub, coeff_subst_single, if_pos (by simp), h]
+    rw [ite_eq_right hne, ite_eq_left hle, hsub, coeff_subst_single, ite_eq_left (by simp), h]
     simp only [Finsupp.single_eq_same, coeff_derivative, Nat.choose_succ_self_right]
     push_cast
     ring
@@ -339,7 +339,7 @@ theorem aut_eq_bs (c : R) (h1 : coeff 1 (τ X) = algebraMap R O c) : 1 + τ X = 
   apply func_unique φ₀ l hl hφ
   · rw [map_add (f := _), map_one, h0, add_zero]
   · exact binomialSeries_constantCoeff c
-  · rw [map_add (f := _), h1, coeff_bs, Ring.choose_one_right, coeff_one, if_neg (by omega), zero_add]
+  · rw [map_add (f := _), h1, coeff_bs, Ring.choose_one_right, coeff_one, ite_eq_right (by omega), zero_add]
   · rw [map_add (f := _), map_one, hcomm, hφ, map_sub, map_pow, map_add (f := _), map_one]; ring
   · rw [phi_bs φ₀ l hl hφ, bs_natMul]
 
@@ -360,7 +360,7 @@ theorem aut_core (c m : R) (k : ℕ) (hc : c = 1 + (l : R) ^ k * m)
     rcases j with _ | _ | j
     · simp [hM]
     · show coeff 1 (binomialSeries O m - 1 - M * X) = 0
-      rw [map_sub, map_sub, coeff_bs, Ring.choose_one_right, coeff_one, if_neg one_ne_zero, hM,
+      rw [map_sub, map_sub, coeff_bs, Ring.choose_one_right, coeff_one, ite_eq_right one_ne_zero, hM,
         ← Algebra.smul_def, map_smul, coeff_one_X, smul_eq_mul, mul_one]
       ring
     · omega

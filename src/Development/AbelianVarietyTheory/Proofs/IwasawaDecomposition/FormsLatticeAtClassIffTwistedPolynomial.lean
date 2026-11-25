@@ -985,7 +985,7 @@ theorem keyCoord {L K : Type} [Field L] [Field K] [Module.Flat ℤ K] (ψ : L �
     have := congrArg Subtype.val (b.sum_repr ⟨g, hg⟩)
     rw [Submodule.coe_sum] at this
     simp only [SetLike.val_smul] at this
-    simp only [crd, dif_pos hg, e]
+    simp only [crd, dite_eq_left hg, e]
     exact this.symm
   have mapExp : ∀ (K' : Type) [CommRing K'], ∀ g ∈ N,
       map (Int.castRingHom K') g = ∑ k, (crd g k : K') • map (Int.castRingHom K') (e k) := by
@@ -1188,7 +1188,7 @@ theorem basis_change : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (lam : TaylorLogMet
   have hm : ∀ x, TaylorLogMetric.embT D τ x ∈ TaylorLogMetric.Qbar := fun x =>
     mem_algebraicClosure_iff.2 ((Algebra.IsAlgebraic.isAlgebraic (R := ℚ) x).algHom (TaylorLogMetric.embT D τ).toRatAlgHom)
   set ρ : D.host.E →+* ℂ_[p] := lam.comp ((TaylorLogMetric.embT D τ).codRestrict TaylorLogMetric.Qbar hm) with hρ
-  have hρe : ∀ x, TaylorLogMetric.tauEmb D lam τ x = ρ x := fun x => dif_pos (hm x)
+  have hρe : ∀ x, TaylorLogMetric.tauEmb D lam τ x = ρ x := fun x => dite_eq_left (hm x)
   have hint : ∀ y : 𝓞 D.host.E, ‖ρ (y : D.host.E)‖ ≤ 1 := fun y =>
     _root_.GlobalTheory.UnUnitCmp.norm_le_one_of_isIntegral (map_isIntegral_int ρ y.isIntegral_coe)
   have hunit : ∀ s : ℕ, ¬ p ∣ s → ‖ρ (s : D.host.E)‖ = 1 := fun s hs => by
@@ -1399,7 +1399,7 @@ theorem eq_of_eval_invertible {LL ι : Type} [Field LL] [Fintype ι] {n : ℕ} (
     rw [eval_mul, eval_mul, hd]
     by_cases hy : ∀ τ, (y τ).det ≠ 0
     · rw [h _ hy]
-    · push_neg at hy
+    · push Not at hy
       obtain ⟨τ, hτ⟩ := hy
       rw [Finset.prod_eq_zero (Finset.mem_univ τ) hτ, zero_mul, zero_mul]
   exact MvPolynomial.map_injective e e.injective (mul_left_cancel₀ hd0 hm)

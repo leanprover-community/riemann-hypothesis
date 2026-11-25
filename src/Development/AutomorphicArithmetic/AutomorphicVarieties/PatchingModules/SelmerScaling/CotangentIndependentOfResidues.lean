@@ -91,7 +91,7 @@ theorem UpperTheory.V.AlgebraTools.dim_relIdeal_le :
       have h1 : z.mulVec m i ∈ q := hrel (Ideal.subset_span ⟨i, rfl⟩)
       have h2 : m i * m i = z.mulVec m i - ∑ j, g (i, j) * m j := by
         simp only [g, Matrix.mulVec, dotProduct, sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul,
-          Finset.sum_ite_eq, Finset.mem_univ, if_true]
+          Finset.sum_ite_eq, Finset.mem_univ, ite_true]
         ring
       have h3 : m i * m i ∈ q := by
         rw [h2]
@@ -263,10 +263,10 @@ private theorem UpperTheory.V.AlgebraTools.generic_kernel_monotone
     intro hall
     by_cases hcd : c = d
     · have h0 := hall 0
-      rw [show lam P d c = 1 from if_pos hcd, MvPolynomial.coeff_zero_one] at h0
+      rw [show lam P d c = 1 from ite_eq_left hcd, MvPolynomial.coeff_zero_one] at h0
       exact (IsLocalRing.maximalIdeal.isMaximal P).ne_top ((Ideal.eq_top_iff_one _).2 h0)
     · have h0 := hall (Finsupp.single c 1)
-      rw [show lam P d c = MvPolynomial.X c from if_neg hcd, MvPolynomial.coeff_X, if_pos rfl] at h0
+      rw [show lam P d c = MvPolynomial.X c from ite_eq_right hcd, MvPolynomial.coeff_X, ite_eq_left rfl] at h0
       exact (IsLocalRing.maximalIdeal.isMaximal P).ne_top ((Ideal.eq_top_iff_one _).2 h0)
   have hunitL : IsUnit (algebraMap (MvPolynomial ι P) L (lam P d c)) :=
     IsLocalization.map_units L (⟨lam P d c, hlamc⟩ : Q.primeCompl)

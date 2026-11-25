@@ -481,7 +481,7 @@ theorem UpperTheory.jacquet_borel_nontrivial_of_character_support :
       intro r d e hm hJ
       by_cases hd : ∀ a, d a ≤ 1
       · exact UpperTheory.jacquet_borel_nontrivial_of_blocks_le_one k N V π r d e hd hJ
-      push_neg at hd
+      push Not at hd
       obtain ⟨j, hj⟩ := hd
       obtain ⟨t, c, f, hf, hmono, p, q, hpq, hnpq⟩ :=
         UpperTheory.jacquet_finer_parabolic_of_character_support hG hZ k N V π s hs h1 r d e j (by omega) hJ

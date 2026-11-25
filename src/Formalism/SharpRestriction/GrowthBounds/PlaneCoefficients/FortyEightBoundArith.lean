@@ -380,7 +380,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
     have hG2 : G2d F (flatDeg lam0) E' (posOf n' (posTL F (⟨jj - 1, Sum.inr m'⟩ : TL J Dt.nL r))) ≤
         flatDeg lam0 (posOf n' (posTL F (⟨jj - 1, Sum.inr m'⟩ : TL J Dt.nL r))) := by
       unfold G2d
-      rw [if_pos htop]
+      rw [ite_eq_left htop]
       exact Nat.sub_le _ _
     have hfd := (flatDeg_bounds (by have := hB.m_ge; omega) ha0 h5 _ (hTT ▸ htop)).2
     have s1 := hs (r - 1)

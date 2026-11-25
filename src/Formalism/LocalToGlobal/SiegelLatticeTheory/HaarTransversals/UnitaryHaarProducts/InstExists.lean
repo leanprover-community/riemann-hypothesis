@@ -174,7 +174,7 @@ theorem Jpq_sub (p q : ℕ) {n : Type} [DecidableEq n] (e : n ≃ Fin p ⊕ Fin 
   · subst hab
     have ha := he a
     rcases hea : e a with x | x <;> simp_all
-  · rw [if_neg hab]
+  · rw [ite_eq_right hab]
     have hne : e a ≠ e b := fun h => hab (e.injective h)
     rcases hea : e a with x | x <;> rcases heb : e b with y | y <;> simp_all
 

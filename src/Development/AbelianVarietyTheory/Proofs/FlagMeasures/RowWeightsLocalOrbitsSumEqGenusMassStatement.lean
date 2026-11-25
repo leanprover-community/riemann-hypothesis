@@ -1218,7 +1218,7 @@ theorem weights_add_up_to_mass_of
   rw [← ENNReal.tsum_fiberwise _ φ]
   refine tsum_congr fun o => ?_
   by_cases ho : InGen d o.out
-  · rw [if_pos ho]
+  · rw [ite_eq_left ho]
     have hIG01 : InGen y₀ o.out := inGen_symm_of (hRelEqv D Z FP) hIG₀ ho
     obtain ⟨Λ₁, hLO₁, hloc⟩ := GlobalTheory.T.genusFamily_carried_by_lattice_in_localOrbits D X Y u u' F F' w hw hG Z FP hB hR Λ₀ y₀ o.out hLO₀ hIG01
     obtain ⟨t₁, hTG₁⟩ := GlobalTheory.T.exists_rowTerm_of_local_completions_terms D X Y u u' F F' w hw hG Z FP hB hR Λ₁ o.out hLO₁
@@ -1256,7 +1256,7 @@ theorem weights_add_up_to_mass_of
       obtain ⟨t, hTG, hkey⟩ := hcarry _ hb
       rw [hω b.1 t hkey, hwt t Λ₁ hTG hRefl]
     rw [tsum_congr hconst, ENNReal.tsum_set_const, ← Subtype.val_injective.encard_image, hfib, hmass, hStab]
-  · rw [if_neg ho]
+  · rw [ite_eq_right ho]
     refine ENNReal.tsum_eq_zero.2 fun b => (ho ?_).elim
     have hb : φ b.1 = o := b.2
     rw [← hb]

@@ -98,7 +98,7 @@ theorem oneHalf_of_is {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what
   classical
   choose P h1 h2 using fun (p : ℕ) (hp : p = D.host.pde ∨ p = D.host.pde') => exists_half_of_is hL hp
   refine ⟨fun p => if hp : p = D.host.pde ∨ p = D.host.pde' then P p hp else R.C.P.pb 0, fun v => ?_⟩
-  simp only [dif_pos (ownAt_special v)]
+  simp only [dite_eq_left (ownAt_special v)]
   refine ⟨h1 _ _, fun PP hPP => ?_⟩
   have h3 := Finset.mem_filter.1 hPP
   exact h2 _ _ _ PP h3.1 h3.2

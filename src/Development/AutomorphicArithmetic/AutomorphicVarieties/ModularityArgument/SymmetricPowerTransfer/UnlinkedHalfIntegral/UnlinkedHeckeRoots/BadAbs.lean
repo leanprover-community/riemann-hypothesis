@@ -115,11 +115,6 @@ theorem lowT_mem {a d : Fˣ} {z : F} (ha : (a : F) ∈ 𝒪[F]) (ha' : ((a⁻¹ 
     · exact mul_mem (mul_mem (neg_mem hz) ha') hd'
     · exact hd'
 
-private theorem mem_integers_iff_ord_nonneg' {x : F} (hx : x ≠ 0) : x ∈ 𝒪[F] ↔ 0 ≤ ord x := by
-  rw [← normalizedValuation_le_one_iff, normalizedValuation_eq_exp_ord hx, ← WithZero.exp_zero,
-    WithZero.exp_le_exp]
-  omega
-
 theorem le_ord_sub_one {n : ℕ} (hn : 1 ≤ n) {u : Fˣ} (hu : u ∈ unitFiltrationUnits F (n - 1))
     (h1 : (u : F) - 1 ≠ 0) : (n : ℤ) - 1 ≤ ord ((u : F) - 1) := by
   obtain ⟨v, hv, rfl⟩ := Subgroup.mem_map.mp hu
@@ -145,13 +140,13 @@ theorem le_ord_sub_one {n : ℕ} (hn : 1 ≤ n) {u : Fˣ} (hu : u ∈ unitFiltra
       rw [pow_succ, ord_mul (pow_ne_zero _ hϖ0) hϖ0, ih, ord_uniformizer hϖ]
       push_cast
       ring
-  have ha' : 0 ≤ ord (a : F) := (mem_integers_iff_ord_nonneg' ha0).mp a.2
+  have ha' : 0 ≤ ord (a : F) := (GlobalTheory.CompanionTheory.RSEigen.mem_integer_iff_ord ha0).mp a.2
   rw [hF, ord_mul (pow_ne_zero _ hϖ0) ha0, hpow]
   push_cast [Nat.cast_sub hn]
   linarith
 
 theorem unit_mem_integers {u : Fˣ} (hu : ord (u : F) = 0) : (u : F) ∈ 𝒪[F] := by
-  exact (mem_integers_iff_ord_nonneg' u.ne_zero).mpr hu.ge
+  exact (GlobalTheory.CompanionTheory.RSEigen.mem_integer_iff_ord u.ne_zero).mpr hu.ge
 
 theorem ne_zero_of_ord {y : F} (hy : ord y = -1) : y ≠ 0 := by
   rintro rfl
@@ -173,9 +168,9 @@ theorem entry_mem {n : ℕ} (hn : 1 ≤ n) {u : Fˣ} (hu : u ∈ unitFiltrationU
     ring
   have hn0 : (0 : ℤ) ≤ n := by positivity
   constructor
-  · rw [mem_integers_iff_ord_nonneg' (mul_ne_zero (Units.ne_zero _) h0), ord_mul (Units.ne_zero _) h0, hpi]
+  · rw [GlobalTheory.CompanionTheory.RSEigen.mem_integer_iff_ord (mul_ne_zero (Units.ne_zero _) h0), ord_mul (Units.ne_zero _) h0, hpi]
     linarith
-  · rw [mem_integers_iff_ord_nonneg' h0]
+  · rw [GlobalTheory.CompanionTheory.RSEigen.mem_integer_iff_ord h0]
     linarith
 
 theorem lower_torus_conjugate_unipotent {u : Fˣ} {y : F} (hy : y ≠ 0) :

@@ -132,7 +132,7 @@ theorem hLf_leaf (g : Fin 2) (a a' : ZMod d) (μ : WV I →₀ ℕ)
   by_contra hn
   apply h
   show (if ∀ w ∈ μ.support, X.OnLf g a a' w then MvPowerSeries.coeff μ X.hRow else 0) = 0
-  rw [if_neg hn]
+  rw [ite_eq_right hn]
 
 structure RankHyp : Prop where
   big_compl : ∀ g a, X.big (1 - g) a ↔ ¬ X.big g a

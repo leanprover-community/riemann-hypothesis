@@ -88,8 +88,8 @@ theorem constMul_change_generator : ∀ (E : Type) [Field E] [NumberField E] [Is
     funext k
     simp only [tyPart, Finset.sum_apply, Pi.smul_apply, _root_.smul_eq_mul]
     by_cases hk : ty k = σ
-    · simp only [if_pos hk]
-    · simp only [if_neg hk, MulZeroClass.mul_zero, Finset.sum_const_zero]
+    · simp only [ite_eq_left hk]
+    · simp only [ite_eq_right hk, MulZeroClass.mul_zero, Finset.sum_const_zero]
   have hinj : ∀ (M : Matrix (Fin D.p ⊕ Fin D.q) (Fin D.p ⊕ Fin D.q) ℂ), M.det ≠ 0 →
       ∀ u : Fin D.p ⊕ Fin D.q → Fin g → ℂ, (∀ m, ∑ l, M m l • u l = 0) → u = 0 := by
     intro M hM u hu
@@ -129,9 +129,9 @@ theorem constMul_change_generator : ∀ (E : Type) [Field E] [NumberField E] [Is
     funext k
     simp only [tyPart, Finset.sum_apply, Pi.smul_apply, _root_.smul_eq_mul]
     by_cases hk : ty k = σ
-    · simp only [if_pos hk]
+    · simp only [ite_eq_left hk]
       rw [hP m k, hk]
-    · simp only [if_neg hk, MulZeroClass.mul_zero, Finset.sum_const_zero]
+    · simp only [ite_eq_right hk, MulZeroClass.mul_zero, Finset.sum_const_zero]
   have hBmat : B = Fm * T.map τ * (gramE (FU.Di i) e).map τ * (T.map (ComplexEmbedding.conjugate τ))ᵀ := by
     have h1 : B = Fm * (gramE (FU.Di i) x).map τ := by
       ext j m

@@ -82,10 +82,4 @@ theorem subst_mem {ι : Type} {a : ι → MvPowerSeries κ K} (ha : HasSubst a) 
   rw [smul_eq_mul]
   refine A.mul_mem (hE d) (((intS A κ).prod_mem fun i _ => (intS A κ).pow_mem (hA i) _) n)
 
-section Frob
-
-variable {p : ℕ} {hp : p ≠ 0} {σ : K →+* K}
-
-end Frob
-
 end GlobalTheory.SubringSeries

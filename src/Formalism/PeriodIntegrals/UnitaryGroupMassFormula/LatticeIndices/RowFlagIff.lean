@@ -122,7 +122,7 @@ theorem rowFlag_iff (m : Matrix (Idx r k) (Idx r k) K) : RowFlag m ↔ RowC m :=
       · simpa [b32] using congrFun (congrFun h32 (Fin.rev j)) x
       · rcases lt_trichotomy j' (Fin.rev j) with h | h | h
         · have h0 : m (Sum.inr (Sum.inr (Fin.rev j))) (Sum.inr (Sum.inr j')) = 0 := hup h
-          rw [h0, if_neg]
+          rw [h0, ite_eq_right]
           simp [h.ne]
         · subst h
           simpa [b33] using hdiag (Fin.rev j)

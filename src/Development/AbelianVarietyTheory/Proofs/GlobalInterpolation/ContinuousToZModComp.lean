@@ -410,7 +410,7 @@ theorem riemann_sums : ∀ (p r : ℕ) [Fact p.Prime] (μ : C(Fin r → ℤ_[p],
 
       rw [map_sum]
       refine Finset.sum_congr rfl fun a ha => ?_
-      rw [if_pos ha, map_smul, smul_eq_mul, mul_comm]
+      rw [ite_eq_left ha, map_smul, smul_eq_mul, mul_comm]
     beta_reduce
     rw [h1, ← map_sub]
     refine (hμ' _).trans_lt (lt_of_le_of_lt ?_ (half_lt_self hε))
@@ -683,7 +683,7 @@ theorem exists_cont {r : ℕ} (f : (Fin r → ℕ) → ℂ_[p]) (hf : ∀ a c : 
 
 variable (lam : TaylorLogMetric.Qbar →+* ℂ_[p])
 
-theorem lamC_coe (x : TaylorLogMetric.Qbar) : TaylorLogMetric.lamC lam (x : ℂ) = lam x := dif_pos x.2
+theorem lamC_coe (x : TaylorLogMetric.Qbar) : TaylorLogMetric.lamC lam (x : ℂ) = lam x := dite_eq_left x.2
 
 theorem lamC_mul {x y : ℂ} (hx : x ∈ TaylorLogMetric.Qbar) (hy : y ∈ TaylorLogMetric.Qbar) :
     TaylorLogMetric.lamC lam (x * y) = TaylorLogMetric.lamC lam x * TaylorLogMetric.lamC lam y := by
@@ -695,7 +695,7 @@ def lamHom {E : Type} [Field E] [NumberField E] (σ : E →+* ℂ) : E →+* ℂ
   lam.comp (σ.codRestrict TaylorLogMetric.Qbar (_root_.GlobalTheory.MonoJet.emb_mem σ))
 
 theorem lamHom_apply {E : Type} [Field E] [NumberField E] (σ : E →+* ℂ) (x : E) :
-    TaylorLogMetric.lamC lam (σ x) = lamHom lam σ x := dif_pos (_root_.GlobalTheory.MonoJet.emb_mem σ x)
+    TaylorLogMetric.lamC lam (σ x) = lamHom lam σ x := dite_eq_left (_root_.GlobalTheory.MonoJet.emb_mem σ x)
 
 theorem norm_int_le {E : Type} [Field E] [NumberField E] (ψ : E →+* ℂ_[p]) (a : 𝓞 E) : ‖ψ (a : E)‖ ≤ 1 := by
   have hx : IsIntegral ℤ (ψ (a : E)) := by convert map_isIntegral_int ψ a.isIntegral_coe using 1; exact Subsingleton.elim _ _
@@ -737,7 +737,7 @@ theorem zc_nat (n : ℕ) : TaylorLogMetric.zc (p := p) (n : ℤ_[p]) = n := by s
 theorem wPh_eq {D : D7} (T : TaylorLogMetric.Tor D) {N N' : ℕ} (hp : p ≠ 2) (x : TaylorLogMetric.VC D N N') (n : ℤ) (hn : TaylorLogMetric.qH D T x = n) :
     TaylorLogMetric.wPh D T p x = Complex.exp ((Real.pi : ℂ) * Complex.I * ((n : ℝ) : ℂ)) := by
   have hodd : Odd p := (Fact.out : p.Prime).odd_of_ne_two hp
-  rw [TaylorLogMetric.wPh, if_neg hp]
+  rw [TaylorLogMetric.wPh, ite_eq_right hp]
   obtain ⟨k, m, h1, h2⟩ := Classical.epsilon_spec (p := fun s : ℂ =>
     ∃ (k : ℕ) (m : ℤ), (p : ℝ) ^ k * TaylorLogMetric.qH D T x = (m : ℝ) ∧ s = (-1 : ℂ) ^ m) ⟨_, 0, n, by simp [hn], rfl⟩
   rw [h2]

@@ -412,12 +412,12 @@ theorem exists_conjugates : ∀ (D : D7) (Q : Par D) (χ₀ : (AE D)ˣ →* Circ
     exact hψ ⟨x, hx.2⟩ y ((congrArg _ h1).trans hy)
   choose χ hχ using key
   classical
-  refine ⟨fun σ => if σ = Q.c.F.val.toRingHom then χ₀ else χ σ, if_pos rfl, fun σ => ?_⟩
+  refine ⟨fun σ => if σ = Q.c.F.val.toRingHom then χ₀ else χ σ, ite_eq_left rfl, fun σ => ?_⟩
   by_cases h : σ = Q.c.F.val.toRingHom
   · subst h
-    simp only [if_true]
+    simp only [ite_true]
     exact ⟨hH, hF, fun x hx => (hy x hx).imp fun y h => ⟨h, h⟩⟩
-  · simp only [if_neg h]
+  · simp only [ite_eq_right h]
     exact hχ σ
 
 end GlobalTheory.HeckeConj

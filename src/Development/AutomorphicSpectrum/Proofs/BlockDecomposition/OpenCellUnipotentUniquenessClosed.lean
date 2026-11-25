@@ -97,7 +97,7 @@ theorem inv_conj_mem_unipU {x : GL (Fin N) k} (hx : x ∈ unipRadLower k (stdBlo
       rcases lt_trichotomy (blk (stdBlocks d hd) (wOpen d hd i)) (blk (stdBlocks d hd) (wOpen d hd j))
         with hlt | heq | hgt
       · exact (lower_entries hx _ _).1 hlt
-      · rw [(lower_entries hx _ _).2 heq, Matrix.one_apply, if_neg]
+      · rw [(lower_entries hx _ _).2 heq, Matrix.one_apply, ite_eq_right]
         intro h
         exact hji.ne' ((wOpen d hd).injective h)
       · exact absurd (lt_of_blk_lt d hd hgt) (not_lt.mpr hji.le)

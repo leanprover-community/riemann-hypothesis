@@ -151,7 +151,7 @@ theorem exists_eigBasis_at (TF : TorFlag Xo c) (p : TF.Y.X) :
         by_cases h : τ' = τ
         · subst h; rwa [Pi.single_eq_same]
         · rw [Pi.single_eq_of_ne h]; intro a; simp) τ
-      rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_same] at this
+      rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_same] at this
     have htm : ∀ (a : 𝓞 E) (cc : Fin n → L), rho hx' a (ψ ∘ cc) = ψ ∘ rho hx a cc :=
       fun a cc => vec_inj hx' (by
         show vec TF.Y.t _ xc' (ReciprocityTheory.ChartRestriction.G.Chart.tmap hx' _ _) = vec TF.Y.t _ xc' (_ ∘ ReciprocityTheory.ChartRestriction.G.Chart.tmap hx _ _)

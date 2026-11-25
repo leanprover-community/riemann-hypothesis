@@ -271,7 +271,7 @@ theorem UpperTheory.ConvolutionTheory.BW.funKill :
   refine killComp E S n C φ w F G hC hφ hSφ hw hF hG hsum k d ?_
   by_cases hfar : ∃ τ i, B < ‖d.lam τ i‖
   · exact Or.inr fun ψ hψ hSψ => hB S d ψ hψ hSψ hfar
-  · push_neg at hfar
+  · push Not at hfar
     obtain ⟨d', hd', hl, hk⟩ := hD₀ d hd hfar
     exact Or.inl (hk F hF (hD d' ⟨hd', hl ▸ hlen⟩))
 end -- clump:auto

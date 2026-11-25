@@ -166,7 +166,7 @@ theorem finTriple_term (s x : ℂ) (hs : s ≠ 0) (hx : x ≠ 0) (n k : ℕ) (hk
       finCoeff (s ^ 2) n ((k : ℤ) - n) * (x ^ ((k : ℤ) - n) * s ^ (((k : ℤ) - n) ^ 2)) := by
   have hc : finCoeff (s ^ 2) n ((k : ℤ) - n) = qBinom (s ^ 2) (2 * n) k := by
     unfold finCoeff
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
     congr 1
     omega
   rw [hc]

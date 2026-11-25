@@ -122,7 +122,7 @@ theorem UpperTheory.V.AlgebraTools.monomialOfComm :
     by_contra hij
     have h1 := congrArg (fun v => b.repr v j) (h.symm.trans ha')
     simp only [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, hij,
-      if_true, if_false, smul_eq_mul, mul_one, mul_zero] at h1
+      ite_true, ite_false, smul_eq_mul, mul_one, mul_zero] at h1
     apply hne g i
     rw [h, h1, zero_smul]
   let F : G →* Function.End (Fin n) :=

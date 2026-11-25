@@ -92,14 +92,14 @@ theorem setCS_of_wordsAT {l : ℕ} [Fact l.Prime] {P : LocPrime l} {K LL : FinEx
     by_cases hpar : (a.val + d) % 2 = 1
     · have h0 : ¬ (a.val + d) % 2 = 0 := by omega
       have hu1 : Wd.up a = true := by simpa [hpar] using hua
-      simp only [hu1, if_true, Set.mem_setOf_eq, abs_le] at hw
-      simp only [h0, if_false, Set.mem_union, Set.mem_Icc]
+      simp only [hu1, ite_true, Set.mem_setOf_eq, abs_le] at hw
+      simp only [h0, ite_false, Set.mem_union, Set.mem_Icc]
       push_cast
       omega
     · have h0 : (a.val + d) % 2 = 0 := by omega
       have hu1 : Wd.up a = false := by simpa [hpar] using hua
-      simp only [hu1, Bool.false_eq_true, if_false, Set.mem_setOf_eq, abs_le] at hw
-      simp only [h0, if_true, Set.mem_union, Set.mem_Icc]
+      simp only [hu1, Bool.false_eq_true, ite_false, Set.mem_setOf_eq, abs_le] at hw
+      simp only [h0, ite_true, Set.mem_union, Set.mem_Icc]
       push_cast
       omega
   · intro a τ hτ

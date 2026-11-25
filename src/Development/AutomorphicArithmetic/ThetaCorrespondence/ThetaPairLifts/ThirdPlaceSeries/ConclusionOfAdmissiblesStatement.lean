@@ -679,11 +679,11 @@ theorem main_alt_alt : ∀ (D : D7) (P : Pend D), GlobalTheory.TypeLeaf.SerLoc D
       rw [P.eSer_eq k, atPlace_sum, onMt_sum _ _ _ _ hc, LinearMap.sum_apply] at h1
       obtain ⟨τ, -, hτ⟩ := Finset.exists_ne_zero_of_sum_ne_zero h1
       by_cases hlab : (P.lz k).lab τ = s ⟨k, v⟩
-      · rw [if_pos hlab] at hτ
+      · rw [ite_eq_left hlab] at hτ
         exact ⟨τ, (P.kty_spec i PI k v τ).2 ⟨F, hF, hτ⟩, hlab⟩
       · exfalso
         apply hτ
-        rw [if_neg hlab, atPlace_zero]
+        rw [ite_eq_right hlab, atPlace_zero]
         unfold NTypes.onMt
         rw [dite_eq_left (Subalgebra.zero_mem _)]
         have e0 : (⟨0, Subalgebra.zero_mem _⟩ : ↥(Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd)))) = 0 := rfl

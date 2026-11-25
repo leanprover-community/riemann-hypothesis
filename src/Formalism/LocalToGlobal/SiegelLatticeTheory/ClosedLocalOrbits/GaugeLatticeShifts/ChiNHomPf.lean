@@ -24,7 +24,7 @@ theorem hfe : ∀ a b : Fin D.R.rS, a ≠ b → ZMod' X.B.I X.B.g (hA X.B.I (X.f
   intro a b hab
   rw [hA_symm]
   exact Z_sig X.B.I X.B.g (by
-    simpa only [if_neg (Ne.symm hab), sub_zero] using (X.gramIntegral b a).2.2)
+    simpa only [ite_eq_right (Ne.symm hab), sub_zero] using (X.gramIntegral b a).2.2)
 
 theorem hfz : ∀ a, ZMod' X.B.I X.B.g (hA X.B.I (X.f0 a) X.z0) := fun a => ((X.formsAtZero).2 a).2
 

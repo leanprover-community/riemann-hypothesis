@@ -954,7 +954,7 @@ theorem partUnits : PartUnits := by
     exact hN
   have hP : P (Ideal.span {x}) := ⟨x, rfl, hstar, hx0⟩
   obtain ⟨hyI, hys, hy0⟩ := hP.choose_spec
-  have hrep : rep (Ideal.span {x}) = algebraMap (𝓞 E) E hP.choose := dif_pos hP
+  have hrep : rep (Ideal.span {x}) = algebraMap (𝓞 E) E hP.choose := dite_eq_left hP
   obtain ⟨w, hw⟩ : Associated hP.choose x := Ideal.span_singleton_eq_span_singleton.mp hyI.symm
   have hyE : algebraMap (𝓞 E) E hP.choose ≠ 0 := fun h => hy0 (hinj (h.trans (map_zero _).symm))
   have h1 : algebraMap (𝓞 E) E x =
@@ -1529,9 +1529,9 @@ theorem successive_vector_majorant_e : SvMajE := by
   have hcc : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate φ) = φ := star_star φ
   by_cases hp : ι φ < ι (ComplexEmbedding.conjugate φ)
   · have hp' : ¬ ι (ComplexEmbedding.conjugate φ) < ι φ := lt_asymm hp
-    simp only [if_pos hp]
+    simp only [ite_eq_left hp]
     refine ⟨(hH0 φ).1, (hH0 φ).2.1, (hH0 φ).2.2, ?_⟩
-    rw [hcc, if_neg hp']
+    rw [hcc, ite_eq_right hp']
   · set ψ := ComplexEmbedding.conjugate φ with hψ
     have hψφ : ι ψ < ι (ComplexEmbedding.conjugate ψ) := by
       rw [hψ, hcc]
@@ -1540,7 +1540,7 @@ theorem successive_vector_majorant_e : SvMajE := by
       ext i j
       simp [hψ, ComplexEmbedding.conjugate_coe_eq]
     have hM := hH0 ψ
-    simp only [if_neg hp, if_pos hψφ, ← hψ]
+    simp only [ite_eq_right hp, ite_eq_left hψφ, ← hψ]
     refine ⟨?_, ?_, ?_, ?_⟩
     · rw [hmapT _ hM.1.1]
       exact hM.1.transpose
@@ -1634,7 +1634,7 @@ theorem svBig_block [DecidableEq (E →+* ℂ)] {m N : ℕ} (e : Fin N → Fin m
   rw [svR_entry, Matrix.sum_apply]
   simp_rw [svR_entry]
   simp only [svBig, svP, Matrix.of_apply, Matrix.blockDiagonal_apply, Fintype.sum_prod_type,
-    mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_comm]
 
 theorem svR_hform (hst : ∀ (φ : E →+* ℂ) (a : E), φ (star a) = starRingEnd ℂ (φ a)) {m : ℕ}

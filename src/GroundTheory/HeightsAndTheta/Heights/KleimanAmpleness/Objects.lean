@@ -384,7 +384,7 @@ theorem coneGen_homogeneousComponent {σ : Type*} (y : σ → Ω) {g : MvPolynom
         coneGen_of_isHomogeneous y (homogeneousComponent_isHomogeneous i g)
     have hc := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p d) hsum
     simp only [hg, Polynomial.coeff_zero, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow,
-      Finset.sum_ite_eq, Finset.mem_range, hd, if_true] at hc
+      Finset.sum_ite_eq, Finset.mem_range, hd, ite_true] at hc
     rw [← hc, map_zero, zero_mul]
   · rw [homogeneousComponent_eq_zero d g (by omega), map_zero, map_zero, zero_mul]
 
@@ -410,7 +410,7 @@ theorem mem_primeOf_of_isHomogeneous {f : Poly S N} {d : ℕ} (hf : f.IsHomogene
   constructor
   · intro h
     have := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p d) h
-    simpa only [Polynomial.coeff_C_mul_X_pow, if_true, Polynomial.coeff_zero] using this
+    simpa only [Polynomial.coeff_C_mul_X_pow, ite_true, Polynomial.coeff_zero] using this
   · intro h; rw [h, map_zero, zero_mul]
 
 theorem homogeneousComponent_mem_primeOf {f : Poly S N} (hf : f ∈ primeOf x) (d : ℕ) :
@@ -880,18 +880,6 @@ theorem mem_secs_twistBundle_one (j : Fin (N + 1)) : x j ∈ (twistBundle S x 1)
   exact mem_twistMod_one I j
 
 end Inhabitants
-
-section Line
-
-variable (k : Type u) [Field k]
-
-end Line
-
-section Generic
-
-variable (k : Type u) [Field k] (N : ℕ)
-
-end Generic
 
 section AmpleExample
 

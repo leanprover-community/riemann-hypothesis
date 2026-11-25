@@ -244,33 +244,4 @@ theorem pf_bijOn (m : Measure k) [m.IsAddHaarMeasure] (h : HasConductor ψ c) :
 
 end Partial
 
-section Matrices
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-variable [MeasurableSpace k] [BorelSpace k]
-
-end Matrices
-
-section Homeos
-
-variable (k : Type) [TopologicalSpace k] (ρ v τ w W : Type)
-
-end Homeos
-
-section Main
-
-variable {k : Type} [Field k]
-
-variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [MeasurableSpace k] [BorelSpace k]
-
-variable (ψ : AddChar k Circle) (m : Measure k) [m.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (s₁ s₂ : ℤˣ)
-variable {ρ v τ w W : Type} [Fintype ρ] [DecidableEq ρ] [Fintype v] [DecidableEq v]
-  [Fintype τ] [DecidableEq τ] [Fintype w] [DecidableEq w] [Fintype W] [DecidableEq W]
-
-
-
-end Main
-
 end GlobalTheory.SplitDict

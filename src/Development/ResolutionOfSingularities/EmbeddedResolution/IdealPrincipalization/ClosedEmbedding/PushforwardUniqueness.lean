@@ -135,11 +135,11 @@ theorem isomorphic {S X : Scheme.{u}} {j : S ⟶ X} [IsClosedImmersion j]
               eqToIso (congrArg B'.schemeAt (by omega : n + 1 = i)), ?_, ?_, ?_⟩
         · intro i hi h1 h2
           by_cases hin : i ≤ n
-          · simp only [dif_pos hin]
+          · simp only [dite_eq_left hin]
             exact hσ i hin h1 h2
           · have hie : i = n + 1 := by omega
             subst hie
-            simp only [dif_neg hin, Iso.trans_hom, eqToIso.hom, eqToHom_refl,
+            simp only [dite_eq_right hin, Iso.trans_hom, eqToIso.hom, eqToHom_refl,
               Category.id_comp, Category.comp_id]
             have hBcen : (B'.center n).comap (d'.σ n hnB'.le) = BS.center n := by
               have := d'.isClosedImmersion n hnB'.le
@@ -157,17 +157,17 @@ theorem isomorphic {S X : Scheme.{u}} {j : S ⟶ X} [IsClosedImmersion j]
             exact ((B'.isBlowupAlongIdealSheaf_blowupMorphism n hnB').2 _
               (BS.transitionMapSucc n ≫ d'.σ n hnB'.le) hcart).unique hstep (d'.square n hnB')
         · have hzz : (0 : ℕ) ≤ n := Nat.zero_le n
-          simp only [dif_pos hzz]
+          simp only [dite_eq_left hzz]
           exact h0
         · intro i hi
           by_cases hin : i + 1 ≤ n
           · have hin' : i ≤ n := Nat.le_of_succ_le hin
-            simp only [dif_pos hin, dif_pos hin']
+            simp only [dite_eq_left hin, dite_eq_left hin']
             exact hsq i hin
           · have hien : i = n := by omega
             have hile : i ≤ n := le_of_eq hien
             subst hien
-            simp only [dif_neg hin, dif_pos hile, Iso.trans_hom, eqToIso.hom, eqToHom_refl,
+            simp only [dite_eq_right hin, dite_eq_left hile, Iso.trans_hom, eqToIso.hom, eqToHom_refl,
               Category.id_comp, Category.comp_id]
             exact hg
   obtain ⟨e, hσ, h0, hsq⟩ := key B.length le_rfl

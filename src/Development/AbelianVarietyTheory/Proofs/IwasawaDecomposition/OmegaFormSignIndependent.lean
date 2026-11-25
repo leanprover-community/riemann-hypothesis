@@ -75,13 +75,6 @@ open scoped TensorProduct ComplexConjugate Real Classical
 
 namespace GlobalTheory.Ker.LevEig
 
-section Alg
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r n : ℕ} {X : Data E r} (L : SW.Level X)
-
-
-end Alg
-
 section Hat
 
 variable {D : D7} {k : ℕ}
@@ -132,18 +125,6 @@ theorem actO_sub (h : GA D S) (g : GA D T) (w w' : WO S T) :
   simp only [actO, Matrix.mul_sub, Matrix.sub_mul]
 
 end Hat
-
-section Mov
-
-variable {D : D7} {S T : HSp D}
-
-end Mov
-
-section Main
-
-variable {D : D7} {S T : HSp D} (C : Ctx S T) (Lv : SW.Level C.X)
-
-end Main
 
 end GlobalTheory.Ker.LevEig
 end -- clump:auto

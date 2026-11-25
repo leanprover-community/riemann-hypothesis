@@ -44,7 +44,7 @@ theorem ea_lg (p x : ℕ) : Formalism.InvariantFactorPaths.G7.lgN p x = lgp p (x
   unfold Formalism.InvariantFactorPaths.G7.lgN lgp
   rcases Nat.eq_zero_or_pos x with rfl | hx
   · simp
-  · rw [if_neg (by omega), if_neg (by omega)]
+  · rw [ite_eq_right (by omega), ite_eq_right (by omega)]
     simp
 
 section Num
@@ -73,12 +73,12 @@ theorem ea_alG (s : ZMod (2 * ν)) :
       al TT lam0 ((ea_eS hn).symm s) := by
   unfold Formalism.InvariantFactorPaths.G7.alG al
   by_cases hs : (ea_eS hn).symm s ∈ TT
-  · rw [if_pos ((ea_mem_tT hn s).2 hs), if_pos hs]
+  · rw [ite_eq_left ((ea_mem_tT hn s).2 hs), ite_eq_left hs]
     have e := ea_card_fin (ea_cN hn t lam0 w J s) (fun x => ea_colH t lam0 w J ((ea_eS hn).symm s) x = 1)
     unfold ea_hT
     rw [e]
     exact ea_card_one h hJ1 hJ _
-  · rw [if_neg (fun h' => hs ((ea_mem_tT hn s).1 h')), if_neg hs]
+  · rw [ite_eq_right (fun h' => hs ((ea_mem_tT hn s).1 h')), ite_eq_right hs]
     rfl
 
 theorem ea_cN_cast (s : ZMod (2 * ν)) :
@@ -91,7 +91,7 @@ theorem ea_al_eq (s : Fin n') (hs : s ∈ TT) : al TT lam0 s = nu t lam0 w J s 1
     have := h.r_pos
     omega
   unfold al
-  rw [if_pos hs, ea_nu_head J s le_rfl (by omega), ea_nu_head J s (by omega : 1 ≤ 2) hk]
+  rw [ite_eq_left hs, ea_nu_head J s le_rfl (by omega), ea_nu_head J s (by omega : 1 ≤ 2) hk]
   ring
 
 theorem ea_capG (s : ZMod (2 * ν)) :
@@ -101,7 +101,7 @@ theorem ea_capG (s : ZMod (2 * ν)) :
   have hC := ea_cN_cast hn h hJ1 hJ s
   unfold Formalism.InvariantFactorPaths.G7.capG cap
   by_cases hs : (ea_eS hn).symm s ∈ TT
-  · rw [if_pos hs]
+  · rw [ite_eq_left hs]
     have hal := ea_al_eq h hJ1 hJ _ hs
     have h2 := ea_nu_nonneg h hJ1 hJ ((ea_eS hn).symm s) 2
     have hle : Formalism.InvariantFactorPaths.G7.alG (ea_tT hn TT) (ea_cN hn t lam0 w J) (ea_hT hn t lam0 w J) s ≤
@@ -111,10 +111,10 @@ theorem ea_capG (s : ZMod (2 * ν)) :
       exact_mod_cast this
     rw [Nat.cast_sub hle, hA, hC, hal]
     ring
-  · rw [if_neg hs]
+  · rw [ite_eq_right hs]
     have h0 : Formalism.InvariantFactorPaths.G7.alG (ea_tT hn TT) (ea_cN hn t lam0 w J) (ea_hT hn t lam0 w J) s = 0 := by
       unfold Formalism.InvariantFactorPaths.G7.alG
-      rw [if_neg (mt (ea_mem_tT hn s).1 hs)]
+      rw [ite_eq_right (mt (ea_mem_tT hn s).1 hs)]
     rw [h0, Nat.sub_zero, hC]
 
 theorem ea_lsG (s : ZMod (2 * ν)) :

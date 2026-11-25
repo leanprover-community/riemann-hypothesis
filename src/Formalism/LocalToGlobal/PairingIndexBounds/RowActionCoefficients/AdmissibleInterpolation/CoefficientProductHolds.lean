@@ -94,11 +94,11 @@ theorem fock_product_holds : FockProd := by
   simp_rw [fockR_monomial]
   by_cases h : p = q
   · subst h
-    simp only [if_true, dGlue_fact em hem, Finset.prod_mul_distrib, Nat.cast_prod]
+    simp only [ite_true, dGlue_fact em hem, Finset.prod_mul_distrib, Nat.cast_prod]
   · have h' : dGlue em p ≠ dGlue em q := fun e => h (dGlue_injective em hem e)
-    rw [if_neg h']
+    rw [ite_eq_right h']
     obtain ⟨s, hs⟩ := Function.ne_iff.mp h
-    exact (Finset.prod_eq_zero (Finset.mem_univ s) (if_neg hs)).symm
+    exact (Finset.prod_eq_zero (Finset.mem_univ s) (ite_eq_right hs)).symm
 
 theorem coefficient_product_holds : CoefProd := by
   intro R B σ τ _ _ xm hxm H p
@@ -106,9 +106,9 @@ theorem coefficient_product_holds : CoefProd := by
   rw [show (∑ b, (p b).mapDomain (xm b)) = dGlue xm p from rfl, rename_prod_expand xm H, coeff_sum]
   by_cases hp : p ∈ Fintype.piFinset fun b => (H b).support
   · rw [Finset.sum_eq_single p]
-    · rw [coeff_monomial, if_pos rfl]
+    · rw [coeff_monomial, ite_eq_left rfl]
     · intro q _ hq
-      rw [coeff_monomial, if_neg (fun e => hq (dGlue_injective xm hxm e))]
+      rw [coeff_monomial, ite_eq_right (fun e => hq (dGlue_injective xm hxm e))]
     · intro h; exact absurd hp h
   · rw [Finset.sum_eq_zero]
     · rw [Fintype.mem_piFinset] at hp
@@ -116,7 +116,7 @@ theorem coefficient_product_holds : CoefProd := by
       obtain ⟨b, hb⟩ := hp
       exact (Finset.prod_eq_zero (Finset.mem_univ b) (notMem_support_iff.mp hb)).symm
     · intro q hq
-      rw [coeff_monomial, if_neg]
+      rw [coeff_monomial, ite_eq_right]
       intro e
       exact hp (dGlue_injective xm hxm e ▸ hq)
 

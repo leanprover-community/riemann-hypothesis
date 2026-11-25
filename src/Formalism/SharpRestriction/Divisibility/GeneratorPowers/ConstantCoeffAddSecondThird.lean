@@ -170,10 +170,10 @@ theorem mk_X_psJet {n : ℕ} (m : ℕ) (q : Fin n × Fin d) :
     have ht : psTrunc m (pt S d q.1 q.2) = X q := by
       unfold psTrunc
       rw [Finset.sum_eq_single (Finsupp.single q 1)]
-      · rw [hc, if_pos rfl]
+      · rw [hc, ite_eq_left rfl]
         rfl
       · intro b _ hb
-        rw [hc, if_neg hb, map_zero]
+        rw [hc, ite_eq_right hb, map_zero]
       · intro h
         exact absurd hmem h
     rw [ht, sub_self]

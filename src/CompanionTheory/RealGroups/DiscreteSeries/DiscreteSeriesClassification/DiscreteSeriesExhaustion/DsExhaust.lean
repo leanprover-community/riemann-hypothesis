@@ -475,17 +475,17 @@ theorem intWt_tens (X : GMod n) (h : IntWt X) : IntWt (tens X) := by
     have hb : X.E b b (u i) + (if i = b then u b else 0) = (μ b : ℂ) • u i := congrFun (hw b) i
     by_cases hbi : b = i
     · subst hbi
-      simp only [if_true] at hb ⊢
+      simp only [ite_true] at hb ⊢
       rw [Complex.ofReal_sub, Complex.ofReal_one, sub_smul, one_smul, ← hb]
       exact (add_sub_cancel_right _ _).symm
-    · simp only [if_neg hbi, if_neg (Ne.symm hbi), add_zero] at hb ⊢
+    · simp only [ite_eq_right hbi, ite_eq_right (Ne.symm hbi), add_zero] at hb ⊢
       exact hb
   obtain ⟨m, hm⟩ := h _ (u i) hi hw' a
   by_cases hai : a = i
   · subst hai
-    simp only [if_true] at hm
+    simp only [ite_true] at hm
     exact ⟨m + 1, by push_cast; linarith⟩
-  · simp only [if_neg hai] at hm
+  · simp only [ite_eq_right hai] at hm
     exact ⟨m, hm⟩
 
 theorem intWt_sub (X : GMod n) (S : Submodule ℂ X.V) (h : ∀ a b, ∀ x ∈ S, X.E a b x ∈ S)

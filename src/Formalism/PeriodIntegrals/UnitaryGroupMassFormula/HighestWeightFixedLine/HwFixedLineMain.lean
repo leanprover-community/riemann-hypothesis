@@ -58,12 +58,12 @@ theorem spec_ten (τ : ι) (y : ι × Fin n × Fin n → ℂ) (f : ι → MvPoly
     ∃ c : ℂ, spec τ y (ten f) = c • f τ := by
   refine ⟨∏ σ ∈ Finset.univ.erase τ, eval (fun w => y (σ, w)) (f σ), ?_⟩
   unfold ten
-  rw [map_prod, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ τ), spec_blockEmb, if_pos rfl]
+  rw [map_prod, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ τ), spec_blockEmb, ite_eq_left rfl]
   have : ∏ σ ∈ Finset.univ.erase τ, spec τ y (Formalism.GradedWeylDivisibility.blockEmb ℂ σ (f σ)) =
       C (∏ σ ∈ Finset.univ.erase τ, eval (fun w => y (σ, w)) (f σ)) := by
     rw [map_prod]
     refine Finset.prod_congr rfl fun σ hσ => ?_
-    rw [spec_blockEmb, if_neg (Finset.ne_of_mem_erase hσ)]
+    rw [spec_blockEmb, ite_eq_right (Finset.ne_of_mem_erase hσ)]
   rw [this, MvPolynomial.smul_eq_C_mul, mul_comm]
 
 theorem spec_mem (lam : ι → DomWeight n) (τ : ι) (y : ι × Fin n × Fin n → ℂ) (v : VV ℂ lam) :

@@ -46,7 +46,7 @@ theorem unfoldGenStep_of (hM : MassUnfoldGen) (hH : MassDataMassesW.HinfCompact)
         (X.measW u).μH := ⟨𝓕, h𝓕⟩
   have hcov : covol (X.measW u).μH = ((X.measW u).μH hex.choose).toReal := by
     unfold covol
-    exact dif_pos hex
+    exact dite_eq_left hex
   obtain ⟨-, hHi, hHf, -⟩ := hN
   haveI := hHi
   haveI := hHf

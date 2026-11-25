@@ -34,8 +34,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory IntermediateField
 
-attribute [local instance 2000] Rep.hV2
-
 attribute [local irreducible] localClassFormationOfIsSepClosure
 
 section Pairings
@@ -483,8 +481,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory IntermediateField
 
-attribute [local instance 2000] Rep.hV2
-
 attribute [local irreducible] localClassFormationOfIsSepClosure
 
 variable {K Ksep : Type} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
@@ -613,8 +609,6 @@ namespace GroundTheory.ProfCoh
 open CategoryTheory MonoidalCategory IntermediateField GroundTheory.LocalField
 
 universe u
-
-attribute [local instance 2000] Rep.hV2
 
 section Top
 

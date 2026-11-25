@@ -541,7 +541,7 @@ theorem core (hconj : ∀ τ x, X.embC A.σ₀ τ (star x) = starRingEnd ℂ (X.
     rw [← map_add (f := _)]
     refine (onV_emb A hδ Ξ _).trans ((hΞ x y ⟨(c : X.E)⁻¹ • y, fun P hP => per_loc A (hAA P hP) ?_, ?_⟩).trans (onV_emb A hδ Ξ x).symm)
     · have := (mem_tw _ _ _ _).1 hy P
-      rwa [expS, if_pos hP, zpow_one] at this
+      rwa [expS, ite_eq_left hP, zpow_one] at this
     · change (c : 𝓞 X.E) • (c : X.E)⁻¹ • y = y
       rw [← algebraMap_smul X.E (c : 𝓞 X.E), map_natCast, smul_smul, mul_inv_cancel₀ hcE, one_smul]
 

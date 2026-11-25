@@ -48,7 +48,7 @@ theorem position_perp (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW �
       have hPm := (slt_mem_ncV_iff.1 hP) ((slRest i).symm (ι 0, r))
       have hcoord : ((slRest i).symm (ι 0, r)) j.1 = r j := by
         simp [slRest, Equiv.funSplitAt_symm_apply, j.2]
-      rw [if_neg] at hPm
+      rw [ite_eq_right] at hPm
       · simpa [slt] using hPm
       · intro hall
         exact hall j.1 (by rw [hcoord]; exact hj)
@@ -65,7 +65,7 @@ theorem position_perp (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW �
     · subst h1
       ext ι
       simp only [slt, hFapp]
-      simp only [Equiv.apply_symm_apply, if_true]
+      simp only [Equiv.apply_symm_apply, ite_true]
       rw [show (fun _ : Fin 1 => ι 0) = ι from funext fun j => by rw [Fin.fin_one_eq_zero j]]
     · ext ι
       simp [slt, hFapp, h1]
@@ -74,26 +74,26 @@ theorem position_perp (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW �
     intro κ'
     rw [hFapp]
     by_cases hrest : (slRest i κ').2 = r
-    · rw [if_pos hrest]
+    · rw [ite_eq_left hrest]
       have hι := hxm1 (fun _ => (slRest i κ').1)
       by_cases hc : ∀ j, ε (κ' j).1 ≠ ε (κ' j).2
-      · rw [if_pos hc]
+      · rw [ite_eq_left hc]
         split_ifs at hι
         · exact hι
         · rw [(Submodule.mem_bot ℂ).1 hι]
           exact zero_mem _
-      · rw [if_neg hc]
-        push_neg at hc
+      · rw [ite_eq_right hc]
+        push Not at hc
         obtain ⟨j, hj⟩ := hc
         by_cases hji : j = i
         · subst hji
-          rw [if_neg] at hι
+          rw [ite_eq_right] at hι
           · exact hι
           · intro hall
             exact hall 0 (by simpa [slRest] using hj)
         · rw [hbad ⟨⟨j, hji⟩, by rw [← hrest]; simpa [slRest] using hj⟩]
           simp
-    · rw [if_neg hrest]
+    · rw [ite_eq_right hrest]
       exact zero_mem _
   have hinner : inner ℂ F P = inner ℂ xm (slt i r P) := by
     rw [slt_inner_eq_sum i F P]

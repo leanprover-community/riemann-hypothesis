@@ -359,11 +359,11 @@ theorem smT_zero_jetTan {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) {κ : Type} [
       Algebra.ofId S (DualNumber S) ((jetAug : Jet S κ (m + 1) →ₐ[S] S) (Ideal.Quotient.mk _ (MvPolynomial.X i)))
     rw [h1, h2, map_zero]
     by_cases h : i = ℓ
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       show TrivSqZeroExt.map _ (TrivSqZeroExt.inr 1) = 0
       rw [TrivSqZeroExt.map_inr]
       simp
-    · rw [if_neg h, map_zero]
+    · rw [ite_eq_right h, map_zero]
   unfold smT
   rw [← Category.assoc, homAt_comp, e, ← homAt_comp, Category.assoc, hx, MonObj.comp_one]
 

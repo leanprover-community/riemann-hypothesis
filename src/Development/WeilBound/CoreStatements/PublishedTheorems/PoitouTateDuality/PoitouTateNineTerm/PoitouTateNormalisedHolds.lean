@@ -132,8 +132,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 theorem foundData_nonempty (Kf : FiniteSubfield) [NumberField Kf.1]
     [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)] (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ}
     [Fact l.Prime] (hr : 0 < r) (ζ : AlgebraicClosure ℚ) (hζ : IsPrimitiveRoot ζ (l ^ r))
@@ -603,8 +601,6 @@ def ShaDictFS : Prop :=
 
 section FoundSide
 
-attribute [local instance 2000] Rep.hV2
-
 theorem perfectQZ_of_found {X Y : Type} [AddCommGroup X] [AddCommGroup Y]
     (h : ∃ (K' : FiniteSubfield) (S' : Set (HeightOneSpectrum (𝓞 K'.1))) (_ : Fintype S')
       (ιs : ∀ v : S', AlgebraicClosure ℚ →ₐ[K'.1]
@@ -652,8 +648,6 @@ noncomputable section
 open CategoryTheory GroundTheory.ProfCoh
 
 namespace PositivityTheory.Lit1.PTN
-
-attribute [local instance 2000] Rep.hV2
 
 theorem bidualCmp {G : Type} [Group G] (D A : Rep.{0} (ULift.{0} ℤ) G) (N : ℕ) [NeZero N]
     (hD : Nonempty (D ≃+ ZMod N)) [Finite A] (hA : ∀ m : A, N • m = 0) :
@@ -778,8 +772,6 @@ namespace PositivityTheory.Lit1.PTN
 
 section FoundSide
 
-attribute [local instance 2000] Rep.hV2
-
 theorem mem_ptSha_iff' {G ι : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     {Hv : ι → Type} [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)]
     [∀ v, IsTopologicalGroup (Hv v)] (φ : ∀ v, Hv v →ₜ* G) (A : Rep.{0} (ULift.{0} ℤ) G)
@@ -859,7 +851,6 @@ abbrev toFS (K : IntermediateField ℚ (AlgebraicClosure ℚ)) [FiniteDimensiona
   ⟨K, inferInstance⟩
 
 section
-attribute [local instance 2000] Rep.hV2
 theorem finite_dualRep' {G : Type} [Group G] (D A : Rep.{0} (ULift.{0} ℤ) G) [Finite D] [Finite A] :
     Finite (dualRep D A) := inferInstance
 end
@@ -965,8 +956,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
   GlobalTheory.Published GlobalTheory.Published.PoitouTate PositivityTheory.PoitouTateConclusion
 
 namespace PositivityTheory.Lit1.PTN
-
-attribute [local instance 2000] Rep.hV2
 
 theorem nineAddFS_V : NineAddFS := by
   intro K _ _ l _ r hl hr ζ hζ inv hinv S hS Av hAv μ hμ M _ _ _ _ _ ρ hρ

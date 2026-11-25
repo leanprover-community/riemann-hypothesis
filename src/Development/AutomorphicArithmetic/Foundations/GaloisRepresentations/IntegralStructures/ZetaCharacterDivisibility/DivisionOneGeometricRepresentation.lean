@@ -557,7 +557,7 @@ theorem UpperTheory.Gal.Int.Div.divSet_of :
     if h : ∃ Q, T g Q then h.choose else 1
   have hP : ∀ s ∈ {g : G E Ω | ∃ Q, T g Q}, T s (P s) := by
     intro s hs
-    have e : P s = (show ∃ Q, T s Q from hs).choose := dif_pos hs
+    have e : P s = (show ∃ Q, T s Q from hs).choose := dite_eq_left hs
     rw [e]
     exact (show ∃ Q, T s Q from hs).choose_spec
   have hss' : IsSSMat ρ := by

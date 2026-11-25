@@ -85,7 +85,7 @@ theorem iwf_theta_apply {K : Type} [Field K] (n : ℕ) (c : K →+* K) (g : GL (
   show (GlobalTheory.Tw.Phi n K * ((Matrix.GeneralLinearGroup.map c g)⁻¹ : GL (Fin n) K).valᵀ * (GlobalTheory.Tw.Phi n K)ᵀ) i j = _
   rw [hinv]
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, iwf_Phi_apply, ite_mul, zero_mul,
-    mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem iwf_v_sign {w : Pl E} (i j : ℕ) (x : w.adicCompletion E) :
@@ -155,7 +155,7 @@ theorem iw_facts_pf (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) (t : GLw a w) :
     (∀ k ∈ GlobalTheory.LFun.KGL w (n := a), thL a w k ∈ GlobalTheory.LFun.KGL w (n := a)) ∧ IsLevel (thL a w) (GlobalTheory.LFun.KGL w (n := a)) (iwGL a w) ∧
     IsLevel (MonoidHom.id _) (GlobalTheory.LFun.KGL w (n := a)) (iwGL a w) ∧ (iwGL a w).relIndex (GlobalTheory.LFun.KGL w (n := a)) ≠ 0 ∧
     IsCompact {g : GLw a w | dcos a w t g ≠ 0} := by
-  have hθ : thL a w = GlobalTheory.CuspRep.thetaGL a (cj w) := if_neg hw
+  have hθ : thL a w = GlobalTheory.CuspRep.thetaGL a (cj w) := ite_eq_right hw
   have hKo := iwf_isOpen_KGL w a
   have hKc := iwf_isCompact_KGL w a
   have hIo := iwf_isOpen_iwGL w a
@@ -175,11 +175,11 @@ theorem iw_facts_pf (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) (t : GLw a w) :
     constructor
     · intro h
       by_contra hn
-      refine h (if_neg ?_)
+      refine h (ite_eq_right ?_)
       rintro ⟨x, hx, z, hz, e⟩
       exact hn ⟨(x, z), ⟨hx, hz⟩, e.symm⟩
     · rintro ⟨⟨x, z⟩, ⟨hx, hz⟩, e⟩
-      rw [if_pos ⟨x, hx, z, hz, e.symm⟩]
+      rw [ite_eq_left ⟨x, hx, z, hz, e.symm⟩]
       exact one_ne_zero
 
 theorem iwU_facts_pf (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n w) (hb : IsWitt n w b)
@@ -221,11 +221,11 @@ theorem iwU_facts_pf (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n w) (h
     constructor
     · intro h
       by_contra hn
-      refine h (if_neg ?_)
+      refine h (ite_eq_right ?_)
       rintro ⟨x, hx, z, hz, e⟩
       exact hn ⟨(x, z), ⟨hx, hz⟩, e.symm⟩
     · rintro ⟨⟨x, z⟩, ⟨hx, hz⟩, e⟩
-      rw [if_pos ⟨x, hx, z, hz, e.symm⟩]
+      rw [ite_eq_left ⟨x, hx, z, hz, e.symm⟩]
       exact one_ne_zero
   rw [e]
   exact (iwf_isClosed_UL hw n).isClosedEmbedding_subtypeVal.isCompact_preimage hS

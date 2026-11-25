@@ -100,7 +100,7 @@ theorem admissibleBasePoint_chart_mul_twist : ∀ {B : Base} {X : PreX B.toPre} 
         adAt B.host.F P.1 (((k0 (g β))⁻¹ : GA B (B.R.N i)).1 r j) := by
 
       rw [_root_.mul_inv_rev, Units.val_mul, Matrix.mul_apply, map_sum]
-      simp only [map_mul, hent, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [map_mul, hent, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [key]
     exact hR.k_T (g β) P r j hr
 

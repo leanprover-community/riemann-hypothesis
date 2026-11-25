@@ -48,10 +48,4 @@ theorem limJ_tt_eq_iff {σ : Type} [Finite σ] (k : ℕ) (f g : MvPowerSeries σ
 
 end Jets
 
-section Limits
-
-variable {O : Type} [CommRing O] (p : ℕ) [IsAdicComplete (Ideal.span {(p : O)}) O]
-
-end Limits
-
 end ReciprocityTheory.ChartRestriction.G.Pdiv.TL

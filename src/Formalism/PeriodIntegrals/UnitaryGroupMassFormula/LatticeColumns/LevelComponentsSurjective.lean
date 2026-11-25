@@ -82,18 +82,18 @@ theorem level_components_surjective : SurjH := by
         show PI.MassDataKppVolLemmas.piV X.B.I p.1 h * _ = _
         by_cases hpq : p = q
         · subst hpq
-          rw [if_neg hq, if_pos (Finset.mem_insert_self p S), mul_one, hq1]
+          rw [ite_eq_right hq, ite_eq_left (Finset.mem_insert_self p S), mul_one, hq1]
         · have hp1 : p.1 ≠ q.1 := fun e => hpq (Subtype.ext e)
           rw [hq2 p.1 hp1, one_mul]
           by_cases hpS : p ∈ S
-          · rw [if_pos hpS, if_pos (Finset.mem_insert_of_mem hpS)]
-          · rw [if_neg hpS, if_neg]
+          · rw [ite_eq_left hpS, ite_eq_left (Finset.mem_insert_of_mem hpS)]
+          · rw [ite_eq_right hpS, ite_eq_right]
             intro hm
             rcases Finset.mem_insert.1 hm with e | e
             · exact hpq e
             · exact hpS e
   obtain ⟨z, hzK, hz⟩ := key Finset.univ
   refine ⟨z, hzK, fun p => Subtype.ext (Subtype.ext ?_)⟩
-  rw [hz p, if_pos (Finset.mem_univ p)]
+  rw [hz p, ite_eq_left (Finset.mem_univ p)]
 
 end PIW.MassDataColumns

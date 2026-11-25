@@ -243,16 +243,16 @@ theorem per_apply (x : Frame X.Ψ r) (v : Fin r → E) (p : X.Ψ × Fin r) :
       else ((mat x p.1)⁻¹ *ᵥ Data.emb p.1.1 v) p.2 := rfl
 
 theorem per_of_lt (x : Frame X.Ψ r) (v : Fin r → E) (τ : X.Ψ) {a : Fin r} (h : (a : ℕ) < X.p0) :
-    per X x v (τ, a) = hermC τ.1 X.Gm (FD.col (mat x τ) a) (Data.emb τ.1 v) := if_pos h
+    per X x v (τ, a) = hermC τ.1 X.Gm (FD.col (mat x τ) a) (Data.emb τ.1 v) := ite_eq_left h
 
 theorem per_of_le (x : Frame X.Ψ r) (v : Fin r → E) (τ : X.Ψ) {a : Fin r} (h : X.p0 ≤ (a : ℕ)) :
-    per X x v (τ, a) = ((mat x τ)⁻¹ *ᵥ Data.emb τ.1 v) a := if_neg (not_lt.2 h)
+    per X x v (τ, a) = ((mat x τ)⁻¹ *ᵥ Data.emb τ.1 v) a := ite_eq_right (not_lt.2 h)
 
 theorem rowType_of_lt (τ : X.Ψ) {a : Fin r} (h : (a : ℕ) < X.p0) :
-    rowType X (τ, a) = ComplexEmbedding.conjugate τ.1 := if_pos h
+    rowType X (τ, a) = ComplexEmbedding.conjugate τ.1 := ite_eq_left h
 
 theorem rowType_of_le (τ : X.Ψ) {a : Fin r} (h : X.p0 ≤ (a : ℕ)) : rowType X (τ, a) = τ.1 :=
-  if_neg (not_lt.2 h)
+  ite_eq_right (not_lt.2 h)
 
 theorem per_add (x : Frame X.Ψ r) (u v : Fin r → E) :
     per X x (u + v) = per X x u + per X x v := by

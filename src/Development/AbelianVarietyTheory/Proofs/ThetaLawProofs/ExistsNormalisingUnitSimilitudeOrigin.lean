@@ -153,7 +153,7 @@ theorem pow_eq_one_of_similitude {A I : Type} [CommGroup A] [Fintype I] [Decidab
         mul_ite, _root_.mul_one, mul_zero] at this
       rw [← this]
       exact (map_prod (zpowersHom A (ξ r')) (fun c => Multiplicative.ofAdd (al r' c * al r c)) Finset.univ).symm
-    simp only [this, pow_ite, zpow_zero, Finset.prod_ite_eq', Finset.mem_univ, if_true, zpow_natCast]
+    simp only [this, pow_ite, zpow_zero, Finset.prod_ite_eq', Finset.mem_univ, ite_true, zpow_natCast]
   rw [← e]
   simp only [hk, one_zpow, Finset.prod_const_one]
 

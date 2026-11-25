@@ -197,14 +197,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 
 variable {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)]
 
-section Local
-
-variable {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io}
-
-variable {la : HeightOneSpectrum (𝓞 c.F)} {e : ℕ}
-
-end Local
-
 variable (Xo c)
 
 end GlobalTheory.LocalDepthCompare

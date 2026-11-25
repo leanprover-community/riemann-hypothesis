@@ -871,7 +871,7 @@ def sec (σ₀ : Mat n → Mat n) (hσ : ∀ P : Mat n, P.PosDef → σ₀ P * (
 
 theorem sec_val (σ₀ : Mat n → Mat n) (hσ : ∀ P : Mat n, P.PosDef → σ₀ P * (σ₀ P)ᴴ = P)
     {v : Fin n × Fin n → ℝ} (h : v ∈ cone n) : (sec σ₀ hσ v).val = σ₀ (hOf v) := by
-  simp only [sec, dif_pos h]
+  simp only [sec, dite_eq_left h]
   rfl
 
 theorem measurable_sec (σ₀ : Mat n → Mat n) (hc : ContinuousOn σ₀ {P | P.PosDef})

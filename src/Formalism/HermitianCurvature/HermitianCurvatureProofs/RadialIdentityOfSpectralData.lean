@@ -164,12 +164,6 @@ namespace Formalism.FourierDecayAlt.P.CutSE
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
 open scoped ComplexConjugate
 
-section PairSub
-
-variable {V : Type*} [AddCommGroup V] [Module ℂ V]
-
-end PairSub
-
 theorem radial_wave_radial : RDWaveRad := by
   intro Wp Wq _ _ _ _ _ _ P z z' π π' X μ L st l0 hr s hD Wv Wv' hW hW'
   obtain ⟨-, -, hL, hQ, -⟩ := hD

@@ -197,7 +197,7 @@ theorem mem_range_linPart (I : Ideal A) {M : ℕ} (y : Fin M → A) (i₀ : Fin 
   classical
   refine ⟨fun i => if i = i₀ then ⟨b * w, I.mul_mem_left b hwI⟩ else 0, ?_⟩
   rw [linPart_apply, Finset.sum_eq_single i₀]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     show σ (y i₀) * (b * w) + σ (b * w) * y i₀ = w
     rw [map_mul, hσw]
     linear_combination w * hb

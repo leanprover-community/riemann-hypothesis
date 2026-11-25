@@ -225,6 +225,6 @@ theorem rapid_decay_of_one_parabolic_bounds : ∀ (K : Type) [Field K] [NumberFi
     have h1 := Finset.single_le_sum (f := fun r : Fin n =>
       if h : 0 < (r : ℕ) then max (D r h r.2) 0 else 0)
       (fun r _ => by split_ifs <;> simp) (Finset.mem_univ ⟨r, hrn⟩)
-    simpa only [hr, dif_pos] using h1
+    simpa only [hr, dite_eq_left] using h1
 
 end GlobalTheory.CompanionTheory.SiegelDecay

@@ -130,7 +130,7 @@ private lemma exists_norm_coeff_pow_le_mul_pow_sub (u : K⟦X⟧) {r : ℝ} (hr 
             _ = _ := by ring
         · have : coeff k (w ^ i) = 0 := by
             obtain ⟨w', hw'⟩ := (PowerSeries.X_dvd_iff).mpr hw0
-            rw [hw', mul_pow, coeff_X_pow_mul', if_neg (by omega)]
+            rw [hw', mul_pow, coeff_X_pow_mul', ite_eq_right (by omega)]
           simp [this]
     _ ≤ ∑ i ∈ Finset.range (k + 1), ‖coeff k (w ^ i)‖ * r ^ (j - k) := by
         rw [← Finset.sum_filter]
@@ -224,10 +224,10 @@ private lemma ex_mul_of_bounded_coeff {u f g e e' : K⟦X⟧} (hu : ‖constantC
           (if x.2 < m then coeff x.2 g else 0) = coeff x.1 f * coeff x.2 g := by
         intro x hx
         rw [Finset.HasAntidiagonal.mem_antidiagonal] at hx
-        rw [if_pos (by omega), if_pos (by omega)]
-      rw [if_pos hjm, Finset.sum_congr rfl hx, ← coeff_mul, sub_self, norm_zero, zero_mul]
+        rw [ite_eq_left (by omega), ite_eq_left (by omega)]
+      rw [ite_eq_left hjm, Finset.sum_congr rfl hx, ← coeff_mul, sub_self, norm_zero, zero_mul]
       positivity
-    · rw [if_neg (by omega), zero_sub, norm_neg]
+    · rw [ite_eq_right (by omega), zero_sub, norm_neg]
       have hs : ‖∑ x ∈ Finset.HasAntidiagonal.antidiagonal j, (if x.1 < m then coeff x.1 f else 0) *
           (if x.2 < m then coeff x.2 g else 0)‖ ≤ M * M := by
         apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity)
@@ -282,7 +282,7 @@ variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma coeff_pow_eq_zero_of_constantCoeff_eq_zero_of_lt {Y : K⟦X⟧} (h0 : constantCoeff Y = 0) {j d : ℕ} (h : j < d) :
     coeff j (Y ^ d) = 0 := by
   obtain ⟨Y', hY'⟩ := (PowerSeries.X_dvd_iff).mpr h0
-  rw [hY', mul_pow, coeff_X_pow_mul', if_neg (by omega)]
+  rw [hY', mul_pow, coeff_X_pow_mul', ite_eq_right (by omega)]
 
 open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
@@ -467,9 +467,9 @@ theorem prim_one : ∃ k : ℕ, IsPrimitiveRoot (1 : ↥LL.1) (l ^ k) := prim_of
 open Classical in
 def pt (ζ : ↥LL.1) : ↥LL.1 := if ∃ j : ℕ, IsPrimitiveRoot ζ (l ^ j) then ζ else 1
 
-theorem pt_of {ζ : ↥LL.1} (h : ∃ j : ℕ, IsPrimitiveRoot ζ (l ^ j)) : pt ζ = ζ := if_pos h
+theorem pt_of {ζ : ↥LL.1} (h : ∃ j : ℕ, IsPrimitiveRoot ζ (l ^ j)) : pt ζ = ζ := ite_eq_left h
 
-theorem pt_of_not {ζ : ↥LL.1} (h : ¬ ∃ j : ℕ, IsPrimitiveRoot ζ (l ^ j)) : pt ζ = 1 := if_neg h
+theorem pt_of_not {ζ : ↥LL.1} (h : ¬ ∃ j : ℕ, IsPrimitiveRoot ζ (l ^ j)) : pt ζ = 1 := ite_eq_right h
 
 theorem prim_pt (ζ : ↥LL.1) : ∃ j : ℕ, IsPrimitiveRoot (pt ζ) (l ^ j) := by
   by_cases h : ∃ j : ℕ, IsPrimitiveRoot ζ (l ^ j)

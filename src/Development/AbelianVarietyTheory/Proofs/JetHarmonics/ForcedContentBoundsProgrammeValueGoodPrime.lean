@@ -139,16 +139,16 @@ theorem main : ∀ (N : NumDatum) (j l : ℕ), l.Prime → l ∉ N.H.small → l
   have hS : 0 ≤ ∑ z, N.w j z := Finset.sum_nonneg fun z _ => hw z
   have hcls : Inert N l ∨ N.cls l = PrimeClass.splitK := by
     unfold Inert NumDatum.cls primeClass
-    rw [if_neg h2, if_neg hq, if_neg hd]
+    rw [ite_eq_right h2, ite_eq_right hq, ite_eq_right hd]
     split_ifs <;> simp
   have hnd : N.cls l ≠ PrimeClass.ramD := by
     rcases hcls with (h | h) | h <;> rw [h] <;> simp
   have hF : N.FjP j l = if Inert N l ∧ (l : ℝ) ≤ N.sc.X'' N.R.n then N.FInert j l else 0 := by
     unfold NumDatum.FjP
-    rw [if_neg (by tauto), if_neg hnd]
+    rw [ite_eq_right (by tauto), ite_eq_right hnd]
     by_cases h : Inert N l ∧ (l : ℝ) ≤ N.sc.X'' N.R.n
-    · rw [if_pos h]; exact if_pos h
-    · rw [if_neg h]; exact if_neg h
+    · rw [ite_eq_left h]; exact ite_eq_left h
+    · rw [ite_eq_right h]; exact ite_eq_right h
   have hD : ∀ z, 0 ≤ ((N.R.k : ℝ) - 1) * N.w j z := fun z => mul_nonneg (by linarith) (hw z)
   have hI : 0 ≤ N.FInert j l := by
     unfold NumDatum.FInert
@@ -178,17 +178,17 @@ theorem main : ∀ (N : NumDatum) (j l : ℕ), l.Prime → l ∉ N.H.small → l
   · intro hc
     have hi : Inert N l := Or.inl hc.1
     by_cases hX : (l : ℝ) ≤ N.sc.X'' N.R.n
-    · rw [hF, if_pos ⟨hi, hX⟩, if_neg (not_lt.2 hX), add_zero]
+    · rw [hF, ite_eq_left ⟨hi, hX⟩, ite_eq_right (not_lt.2 hX), add_zero]
       unfold NumDatum.FInert
-      rw [if_pos (show N.cls l = PrimeClass.inertClass ∧ N.hP l = 0 from hc), ← Finset.sum_div, ← Finset.mul_sum]
-    · rw [hF, if_neg (fun h => hX h.2), if_pos (not_le.1 hX), zero_add]
+      rw [ite_eq_left (show N.cls l = PrimeClass.inertClass ∧ N.hP l = 0 from hc), ← Finset.sum_div, ← Finset.mul_sum]
+    · rw [hF, ite_eq_right (fun h => hX h.2), ite_eq_left (not_le.1 hX), zero_add]
       exact hb
   · intro hi hc Z hZ
     have hZ' : Formalism.L2.FormalSeriesBounds.IsReps N l Z := hZ
     by_cases hX : (l : ℝ) ≤ N.sc.X'' N.R.n
-    · rw [hF, if_pos ⟨hi, hX⟩, if_neg (not_lt.2 hX), add_zero]
+    · rw [hF, ite_eq_left ⟨hi, hX⟩, ite_eq_right (not_lt.2 hX), add_zero]
       exact (GlobalTheory.LevelsOrbits.fInertReps N j l Z hZ' hi hc).1.ge
-    · rw [hF, if_neg (fun h => hX h.2), if_pos (not_le.1 hX), zero_add]
+    · rw [hF, ite_eq_right (fun h => hX h.2), ite_eq_left (not_le.1 hX), zero_add]
       refine le_trans (le_of_eq ?_) hb
       have ho2 := two_le_ordP N l hi hc
       have hl3 : 3 ≤ l := by

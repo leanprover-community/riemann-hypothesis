@@ -84,8 +84,6 @@ def selDH : SelDH 𝒜 (sel σ) := fun Fm hc x hx _ i => (σ Fm hc x hx i).DH
 
 def selC : ColumnCompatibleSelection 𝒜 (sel σ) (selP σ) := fun Fm hc x hx _ i => (σ Fm hc x hx i).C
 
-def selB : SelB 𝒜 (sel σ) (selS σ) (selP σ) (selDH σ) (selC σ) := fun Fm hc x hx _ i => (σ Fm hc x hx i).B
-
 end GlobalTheory.Fc
 
 end

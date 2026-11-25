@@ -161,7 +161,7 @@ namespace GlobalTheory.FlagCell2
 
 theorem det_upU {K : Type} [Field K] {s : ℕ} (y : Low s → K) : (upU y).det = 1 := by
   have hb : (upU y).BlockTriangular id := fun a b (hab : b < a) => by
-    simp only [upU, Matrix.of_apply, dif_neg (not_lt.2 hab.le), if_neg (ne_of_gt hab)]
+    simp only [upU, Matrix.of_apply, dite_eq_right (not_lt.2 hab.le), ite_eq_right (ne_of_gt hab)]
   rw [Matrix.det_of_upperTriangular hb]
   exact Finset.prod_eq_one fun a _ => by simp [upU]
 

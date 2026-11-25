@@ -480,16 +480,4 @@ theorem eventually_lsum_ne_zero {f : ℂ⸨X⸩} (hf : f ∈ convLaurent) (h0 : 
   obtain ⟨ε, hε, hf⟩ := hf
   exact not_frequently.1 fun h => h0 (eq_zero_of_frequently_lsum_eq_zero hε hf h)
 
-section Expand
-
-variable (k : ℕ) (hk : k ≠ 0)
-
-end Expand
-
-section Scheme
-
-open CategoryTheory AlgebraicGeometry
-
-end Scheme
-
 end GlobalTheory.Conv

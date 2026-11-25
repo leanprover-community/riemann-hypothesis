@@ -24,19 +24,6 @@ def IsEmbHom (ι : A.V →ₗ[D.host.E] B.V) (s : GA D A →* GA D B) : Prop :=
 
 end Scalar
 
-section Vec
-
-variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
-
-variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
-  {Vt : D.what₂.Tau → Type} [∀ τ, NormedAddCommGroup (Vt τ)] [∀ τ, InnerProductSpace ℂ (Vt τ)]
-  {S : D.what₂.Tau → SPar}
-
-
-
-
-end Vec
-
 end Formalism.IndefR.Mi
 
 end

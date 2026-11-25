@@ -724,10 +724,10 @@ theorem upper_sub (b : Module.Basis (Fin n) ℝ (EuclideanSpace ℂ ι)) (x y : 
     · simp [h, lt_asymm h]
     · subst h
       have := imForm_swap (b i) (b i)
-      simp only [lt_irrefl, if_false, sub_zero]
+      simp only [lt_irrefl, ite_false, sub_zero]
       linarith
     · have := imForm_swap (b j) (b i)
-      simp only [h, lt_asymm h, if_true, if_false, zero_sub]
+      simp only [h, lt_asymm h, ite_true, ite_false, zero_sub]
       linarith
   rw [key]
   simp only [LinearMap.sub_apply, LinearMap.flip_apply]

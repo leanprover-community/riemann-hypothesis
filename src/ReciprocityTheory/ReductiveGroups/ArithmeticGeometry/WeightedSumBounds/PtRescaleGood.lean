@@ -131,8 +131,8 @@ theorem ptAdd_lin (G : LogFGL v d) {τ : Type*} {x y : Fin d → MvPowerSeries �
   show coeff (Finsupp.single t 1) (subst (Sum.elim x y) (G.F a)) = _
   rw [pt_coeff_single_subst hs h0 (G.F_const a) t, Fintype.sum_sum_type]
   simp only [pt_F_lin, Sum.elim_inl, Sum.elim_inr, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq,
-    if_false, add_zero, zero_add, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    ite_false, add_zero, zero_add, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
+    Finset.mem_univ, ite_true]
 
 theorem ptSumL_const (G : LogFGL v d) {τ : Type*} :
     ∀ l : List (Fin d → MvPowerSeries τ C), (∀ x ∈ l, ∀ a, constantCoeff (x a) = 0) →

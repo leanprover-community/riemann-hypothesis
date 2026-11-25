@@ -295,7 +295,7 @@ theorem latPair_hasVal_residue_of_transvections : ∀ (k : Type) [Field k] [Valu
     rw [hcoef]
     by_cases h : j = b
     · subst h; simp only [Pi.single_eq_same]; exact one_mem _
-    · simp only [Pi.single_apply, h, if_false]; exact zero_mem _)
+    · simp only [Pi.single_apply, h, ite_false]; exact zero_mem _)
   let v : n → 𝓀[k] := fun b => P.fn ⟨e b, hmem b⟩
   have hv : ∀ b, P.HasVal (e b) (v b) := fun b => P.hasVal_fn ⟨e b, hmem b⟩
   have hzero : ∀ a, a ≠ i → v a = 0 := by

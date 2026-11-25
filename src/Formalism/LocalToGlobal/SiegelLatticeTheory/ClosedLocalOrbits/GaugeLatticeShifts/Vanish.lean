@@ -504,7 +504,7 @@ theorem ooVanish_of (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTr
   haveI := hU X.B.I
   by_cases hex : ∃ Ω, Formalism.L2.SG.HidaSetting.IsSFund X.B.I (ROinf t) Ω
   swap
-  · simp only [OOt, OO, FundOf, dif_neg hex, Measure.restrict_empty, integral_zero_measure]
+  · simp only [OOt, OO, FundOf, dite_eq_right hex, Measure.restrict_empty, integral_zero_measure]
   have hΩ : IsSF (ROsub X (X.Fu u) (X.Fu u') t.lam t.lam' t.lin : Set X.B.I.Ginf) (FundOf t) := by
     unfold FundOf
     rw [dite_eq_left hex]
@@ -564,17 +564,5 @@ theorem lemmaVC_of (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTri
   simp [aTerm, aTermL, hb]
 
 end LemV
-
-section Chi
-
-open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
-
-end Chi
-
-section Leaf
-
-open Formalism.L2.SG.Full
-
-end Leaf
 
 end Formalism.L2.SG.TermOp.Vanish

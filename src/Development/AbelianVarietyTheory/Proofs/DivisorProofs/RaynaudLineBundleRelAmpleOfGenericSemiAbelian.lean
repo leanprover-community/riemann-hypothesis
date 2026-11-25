@@ -991,7 +991,7 @@ theorem coeff_prod_X_sub_C_mem {R : Type} [CommRing R] (P : Ideal R) [P.IsPrime]
     intro a ha
     simp [Ideal.Quotient.eq_zero_iff_mem.mpr (hs a ha)]
   rw [Multiset.map_congr rfl hX, Multiset.map_const', Multiset.prod_replicate, coeff_X_pow,
-    if_neg hi.ne]
+    ite_eq_right hi.ne]
 
 end Algebra
 

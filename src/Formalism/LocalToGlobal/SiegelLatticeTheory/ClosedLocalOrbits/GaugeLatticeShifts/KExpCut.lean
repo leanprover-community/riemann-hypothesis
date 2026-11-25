@@ -484,8 +484,8 @@ theorem kform_unfold (hK : X.LevelSubgroupCharacter) (hR : FoldReadyX X)
     (Ω₀ ∪ Ω₀') hΩ (Or.inl h10) a a' (Ph X u hK T) (Ph X u' hK T')
     ((hT T).1 _ hΩ Set.subset_union_left) ((hT' T').1 _ hΩ Set.subset_union_right) F F' hF hF'
     ((hT T).2 _ hΩ F hF) ((hT' T').2 _ hΩ F' hF') Dt Dt' hD hD' R hRt Fs hFs X.B.fund hFB
-  have e1 : PuFun X u hK Dt T = hm.toLp _ := dif_pos hm
-  have e2 : PuFun X u' hK Dt' T' = hm'.toLp _ := dif_pos hm'
+  have e1 : PuFun X u hK Dt T = hm.toLp _ := dite_eq_left hm
+  have e2 : PuFun X u' hK Dt' T' = hm'.toLp _ := dite_eq_left hm'
   unfold Kform scl
   rw [e1, e2, MeasureTheory.L2.inner_def]
   congr 1

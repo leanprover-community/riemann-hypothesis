@@ -100,14 +100,14 @@ theorem thmBc_iff {Ct : ℝ} (hC : 1 ≤ Ct) : ThmBc Ct ↔ ThmBcFree := by
       have h1 : y ≤ y ^ Ct := Real.self_le_rpow_of_one_le (by linarith) hC
       have h2 : y ≤ y ^ (2 : ℝ) := Real.self_le_rpow_of_one_le (by linarith) (by norm_num)
       by_cases hyx : y = x
-      · simp only [if_pos hyx]
+      · simp only [ite_eq_left hyx]
         exact ⟨he, le_trans (hyx ▸ le_max_left _ _) h2, ht, le_trans (hyx ▸ le_max_right _ _) h1⟩
-      · simp only [if_neg hyx]
+      · simp only [ite_eq_right hyx]
         refine ⟨le_rfl, ?_, le_rfl, by push_cast; linarith⟩
         rw [Real.rpow_two]
         gcongr
-    have := H M 2 _ _ hA x hx2 q d hp E (by simpa only [if_true] using hE)
-    simpa only [if_true] using this
+    have := H M 2 _ _ hA x hx2 q d hp E (by simpa only [ite_true] using hE)
+    simpa only [ite_true] using this
   · rintro ⟨C, H⟩
     exact ⟨C, fun M A1 e t ha x hx q d hp E _ _ _ hE => H M _ _ q d (ha x hx).1 (ha x hx).2.2.1 hp E hE⟩
 

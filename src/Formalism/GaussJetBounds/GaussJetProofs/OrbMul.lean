@@ -40,27 +40,9 @@ lemma jetPairPoly_monomial (κ : ι →₀ ℕ) (c : MvPolynomial σ K) (Th : Mv
       c * MvPolynomial.C (((mfact κ : ℕ) : K) * MvPowerSeries.coeff κ Th) := by
   classical
   rw [jetPairPoly_eq_sum _ Th {κ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 end Pair
-
-section Exps
-
-variable {ι₁ ι₂ : Type}
-
-end Exps
-
-section Along
-
-variable {K : Type} [Field K] {ι₁ ι₂ σ₁ σ₂ : Type} [Finite ι₁] [Finite ι₂]
-
-end Along
-
-section Trunc
-
-variable {K : Type} [Field K] {σ ι : Type} [Finite ι]
-
-end Trunc
 
 section Norm
 

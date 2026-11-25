@@ -147,7 +147,7 @@ lemma mem_spanLt_iff {a : ℕ} (ha : a ≤ r) (v : Fin (2 * r + k + 1) → ℂ) 
       have hb' : b.val < a := hb
       have hfb : e b = fcol k r e f wf z0 ⟨b.val, by omega⟩ := by simp [fcol, b.isLt]
       show (Qm k r ε e f wf z0 *ᵥ e b) i = 0
-      rw [hfb, qm_mulVec_fcol hF, Pi.single_apply, if_neg]
+      rw [hfb, qm_mulVec_fcol hF, Pi.single_apply, ite_eq_right]
       intro h
       rw [Fin.ext_iff] at h
       simp only at h

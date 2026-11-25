@@ -50,15 +50,6 @@ private theorem mapMatrix_eval_generic_eq {R : Type*} [CommRing R] {k : ℕ} (A 
   ext i j
   simp
 
-private theorem det_generic_int_ne_zero (k : ℕ) :
-    (Matrix.of fun i j => (X (i, j) : MvPolynomial (Fin k × Fin k) ℤ)).det ≠ 0 := by
-  intro h
-  have h1 := congrArg
-    (MvPolynomial.eval₂Hom (Int.castRingHom ℤ)
-      fun p : Fin k × Fin k => (1 : Matrix (Fin k) (Fin k) ℤ) p.1 p.2) h
-  rw [RingHom.map_det, mapMatrix_eval_generic_eq (1 : Matrix (Fin k) (Fin k) ℤ), det_one, map_zero] at h1
-  exact one_ne_zero h1
-
 private theorem det_toBlocks22_adjugate_submatrix_of_det_ne_zero {R : Type*} [CommRing R] [IsDomain R]
     {k : ℕ} {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n] [Nonempty n]
     (eI eJ : m ⊕ n ≃ Fin k) (A : Matrix (Fin k) (Fin k) R) (hA : A.det ≠ 0) :
@@ -91,7 +82,7 @@ theorem jacobi {R : Type*} [CommRing R] {k : ℕ} {m n : Type*} [Fintype m] [Fin
         (A.submatrix eI eJ).toBlocks₁₁.det := by
   obtain ⟨G, hG0, φ, hφG⟩ : ∃ G : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) ℤ),
       G.det ≠ 0 ∧ ∃ φ : MvPolynomial (Fin k × Fin k) ℤ →+* R, φ.mapMatrix G = A :=
-    ⟨_, det_generic_int_ne_zero k, _, mapMatrix_eval_generic_eq A⟩
+    ⟨_, Matrix.det_mvPolynomialX_ne_zero (Fin k) ℤ, _, mapMatrix_eval_generic_eq A⟩
   have hcore := det_toBlocks22_adjugate_submatrix_of_det_ne_zero eI eJ G hG0
   have hadj : φ.mapMatrix (adjugate G) = adjugate A := by
     rw [RingHom.map_adjugate, hφG]

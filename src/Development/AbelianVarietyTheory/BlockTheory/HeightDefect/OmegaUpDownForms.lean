@@ -95,11 +95,6 @@ variable {X : ThetaX D} {T : ThetaTied D X} (C : Core T)
 
 end Core
 
-section
-variable {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D} {χA χB : (AE D)ˣ →* Circle} {om : Rep ψ A B}
-
-end
-
 end GlobalTheory.IndefiniteRowSideFullHecke.SplittingKernelQuotients
 
 end

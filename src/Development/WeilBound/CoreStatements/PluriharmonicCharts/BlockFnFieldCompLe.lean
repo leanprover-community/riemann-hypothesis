@@ -448,12 +448,12 @@ theorem stepCols_ne {N j : ℕ} (i : Fin N) (hj : j ≤ N) : stepCols N j i ≠ 
   by_cases c : (i : ℕ) + 1 ≤ j
   · have hlt : N - j < N := by omega
     have hm : (⟨N - j, hlt⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos c]
+      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left c]
       omega
     rw [e] at hm
     simp at hm
   · have hm : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg c]
+      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right c]
       omega
     rw [e] at hm
     simp at hm
@@ -469,10 +469,10 @@ theorem read_minor {κ : Type} [Fintype κ] {N : ℕ} (P : Finset (Fin N) → Pr
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun I _ => Finset.sum_congr rfl fun m _ => by ring
   rw [e, Finset.sum_eq_single I']
-  · rw [hAB I' I' hI' hI', if_pos rfl, one_mul]
+  · rw [hAB I' I' hI' hI', ite_eq_left rfl, one_mul]
   · intro I _ hne
     by_cases hI : P I
-    · rw [hAB I' I hI' hI, if_neg hne.symm, zero_mul]
+    · rw [hAB I' I hI' hI, ite_eq_right hne.symm, zero_mul]
     · rw [hμ I hI, mul_zero]
   · simp
 
@@ -702,7 +702,7 @@ def ptOf (M : FlagModel y Ψ N j) (ψ : M.Ω →+* L) (G : Ψ → Matrix (Fin N)
   else ∑ I, ψ (M.coef q I) * minorIJ (G (stepOf M q.1 h).1) I (stepCols N j (stepOf M q.1 h).2)
 
 theorem ptOf_base (M : FlagModel y Ψ N j) (ψ : M.Ω →+* L) (G : Ψ → Matrix (Fin N) (Fin N) L)
-    (q : Σ k, baseIdx ι M.blk k) : ptOf M ψ G ⟨q.1.1, q.2⟩ = ψ (M.x q) := dif_pos q.1.2
+    (q : Σ k, baseIdx ι M.blk k) : ptOf M ψ G ⟨q.1.1, q.2⟩ = ψ (M.x q) := dite_eq_left q.1.2
 
 theorem ptOf_step (M : FlagModel y Ψ N j) (ψ : M.Ω →+* L) (G : Ψ → Matrix (Fin N) (Fin N) L)
     (p : Ψ × Fin N) (k : K) (hp : M.blk p = some k) (m : ι k) :
@@ -828,7 +828,7 @@ theorem wCo_v₀ (M : FlagModel y Ψ N j) (p : Ψ × Fin N) (k₀ : K) (ca cb : 
   by_cases hk : ∀ p, M.blk p ≠ some k
   · exact (congrArg _ (M.y_base ⟨⟨k, hk⟩, m⟩)).trans
       (ptOf_base M ((algebraMap Φ (RatFunc Φ)).comp (algebraMap M.Ω Φ)) (flag₀ M.g) ⟨⟨k, hk⟩, m⟩).symm
-  · push_neg at hk
+  · push Not at hk
     obtain ⟨p, hp⟩ := hk
 
     rw [ptOf_step M _ _ p k hp, M.y_step p k hp, map_sum]
@@ -849,7 +849,7 @@ theorem Sw.wCo_v₁ (S : Sw M τ a b k₀ ca cb) :
     refine (congrFun (wCo_v₀ M (τ, a) k₀ ca cb) ⟨k, m⟩).trans ?_
     by_cases hk : ∀ p, M.blk p ≠ some k
     · exact (ptOf_base M _ _ ⟨⟨k, hk⟩, m⟩).trans (ptOf_base M _ _ ⟨⟨k, hk⟩, m⟩).symm
-    · push_neg at hk
+    · push Not at hk
       obtain ⟨⟨τ', i⟩, hp⟩ := hk
       rw [ptOf_step M _ _ _ k hp, ptOf_step M _ _ _ k hp]
       by_cases e' : τ' = τ

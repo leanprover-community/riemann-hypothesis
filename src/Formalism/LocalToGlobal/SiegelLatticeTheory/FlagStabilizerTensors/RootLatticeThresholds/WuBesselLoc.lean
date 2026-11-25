@@ -72,7 +72,7 @@ variable {D : D7} {X : HidaSetting D} {θ : ℝ}
 
 theorem theta_pos (C : Choice X θ) (u : D.what₂.Word) (τ : D.what₂.Tau) : 0 < θ := by
   by_contra hθ
-  push_neg at hθ
+  push Not at hθ
   have hv := _root_.Formalism.L2.SG.Pf.Choice.host_v_pos D
   have hq := C.nuS_q u τ
   unfold muNB kapN haarLie muS at hq

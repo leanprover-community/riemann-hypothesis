@@ -316,7 +316,7 @@ theorem exists_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (�
       conv_rhs => rw [← b.sum_repr X]
 
       simp only [map_sum, map_smul, ht, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     funext τ
     ext k l
     let L : CM Ψ N N →ₗ[ℂ] ℂ :=
@@ -837,7 +837,7 @@ theorem coef_psd (hX : ∀ x τ, (X x τ).IsHermitian) (hT : ccT T = T) (hη : 0
     simp only [Matrix.mul_add, trace_add, add_re, Finset.sum_add_distrib]
     congr 1
     rw [Finset.sum_eq_single τ]
-    · rw [if_pos rfl, Matrix.mul_smul, trace_smul, trace_vecMulVec, smul_eq_mul, re_ofReal_mul,
+    · rw [ite_eq_left rfl, Matrix.mul_smul, trace_smul, trace_vecMulVec, smul_eq_mul, re_ofReal_mul,
         mul_comm]
     · intro σ _ h; simp [h]
     · simp
@@ -1004,7 +1004,7 @@ theorem exists_fourier (hΨ : IsType Ψ) (N R : ℕ) (hR : 0 < R) :
     have h1 := hpr ν (Φ (Pi.single j 1))
     rw [h, hpr, hcoΦ] at h1
     simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true] at h1
+      ite_true] at h1
     exact_mod_cast h1.symm
   · have := hIntM (fun i => (c : E) • T i) ν hD
     simpa only [Den, hTT, Finset.smul_sum, smul_comm (c : E)] using this

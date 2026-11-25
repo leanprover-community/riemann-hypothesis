@@ -77,7 +77,7 @@ theorem diag_commute (hg : Formalism.REAL.GlRel G) (i j : Fin n) : Commute (G i 
   · subst hij
     exact Commute.refl _
   · have h' : ¬ j = i := fun h => hij h.symm
-    rw [if_neg hij, if_neg h', sub_zero] at h
+    rw [ite_eq_right hij, ite_eq_right h', sub_zero] at h
     exact sub_eq_zero.1 h
 
 theorem diagOn_commute (hg : Formalism.REAL.GlRel G) (hst : ∀ a b, ∀ w ∈ N, G a b w ∈ N) (i j : Fin n) :

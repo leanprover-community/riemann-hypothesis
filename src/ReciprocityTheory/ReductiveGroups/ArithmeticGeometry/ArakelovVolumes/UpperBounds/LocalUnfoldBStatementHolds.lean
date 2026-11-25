@@ -362,7 +362,7 @@ theorem Gf_le_off (Xa : ArchInM X) (Fl : FlatM X Xa) (g : Frame X.Ψ r → ℂ) 
       ENNReal.ofReal (X.pnorm (Xa.Fp + Xa.T • Xa.L) g x ^ 2 *
         (∑ k, X.pnorm Xa.L (Xa.w k) x ^ 2) ^ (-(Xa.T : ℝ))) := by
   unfold Gf WSk
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
   have hnn : 0 < X.nfac (Xa.Fp + Xa.T • Xa.L) x := nfac_pos_of_mem_dom hx _
   have hexp : Real.exp (-phla X (Xa.Fp + Xa.T • Xa.L) x) = X.nfac (Xa.Fp + Xa.T • Xa.L) x ^ 2 := by
     unfold phla
@@ -735,7 +735,7 @@ theorem pow_step {p : ℕ} (g : Fin p → ℂ) (α : Fin p → ℕ) (k : Fin p) 
   congr 1
   have h : ∀ i, g i ^ (if i = k then 1 else 0) = if i = k then g i else 1 := by
     intro i; split_ifs <;> simp
-  simp only [h, Finset.prod_ite_eq', Finset.mem_univ, if_true]
+  simp only [h, Finset.prod_ite_eq', Finset.mem_univ, ite_true]
 
 theorem iter_div (hU : IsOpen U) (S : EtaleStein n U) (hz : S.z = Subtype.val) {p : ℕ}
     (g : Fin p → V n → ℂ) (ph0 : V n → ℝ) (hp : 2 ≤ p)
@@ -798,8 +798,8 @@ theorem iter_div (hU : IsOpen U) (S : EtaleStein n U) (hz : S.z = Subtype.val) {
           DifferentiableOn ℂ (fun y => if stp α k = β then hh α k y else 0) U := by
         intro α hα k _
         by_cases hk : stp α k = β
-        · simp only [hk, if_true]; exact hhd α hα k
-        · simp only [hk, if_false]; exact differentiableOn_const (c := (0 : ℂ))
+        · simp only [hk, ite_true]; exact hhd α hα k
+        · simp only [hk, ite_false]; exact differentiableOn_const (c := (0 : ℂ))
       have hα : ∀ α ∈ A, DifferentiableOn ℂ
           (fun y => ∑ k, if stp α k = β then hh α k y else 0) U := fun α hα =>
         (DifferentiableOn.sum (u := Finset.univ) (A := fun k y => if stp α k = β then hh α k y else 0)
@@ -867,7 +867,7 @@ theorem iter_div (hU : IsOpen U) (S : EtaleStein n U) (hz : S.z = Subtype.val) {
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun k _ => ?_
       simp only [mul_ite, mul_zero]
-      rw [Finset.sum_ite_eq, if_pos (mem_step hα k)]
+      rw [Finset.sum_ite_eq, ite_eq_left (mem_step hα k)]
 
 end UpDivB
 
@@ -1238,9 +1238,9 @@ private theorem volume_ball_inter_zeroSet_eq_zero_of_ne_zero {U : Set (V n)} {g 
       volume (Prod.mk t ⁻¹' A) := by
     intro t
     by_cases ht : t ∈ Ioo (R' / R) 1
-    · rw [Set.indicator_apply, if_pos ht]
+    · rw [Set.indicator_apply, ite_eq_left ht]
       exact hlow t ht
-    · rw [Set.indicator_apply, if_neg ht]
+    · rw [Set.indicator_apply, ite_eq_right ht]
       positivity
   have hle : ∫⁻ t, (Ioo (R' / R) 1).indicator (fun _ => volume (ball z0 R' ∩ {z | g z = 0})) t ≤
       ∫⁻ t, volume (Prod.mk t ⁻¹' A) := lintegral_mono hind
@@ -1442,7 +1442,7 @@ theorem upDiv_holds : UpDivStatement (E := E) := by
       have hwp : 0 < ∑ k, X.pnorm Xa.L (Xa.w k) (cpt X x0 z) ^ 2 := by
         rw [sumL_eq X Xa x0 hz]; exact mul_pos (Real.exp_pos _) (Sw_pos X Xa x0 hz)
       unfold WSk
-      rw [if_pos hp, hs0, zero_div, ENNReal.ofReal_zero, ENNReal.zero_rpow_of_neg (by
+      rw [ite_eq_left hp, hs0, zero_div, ENNReal.ofReal_zero, ENNReal.zero_rpow_of_neg (by
         have : (1 : ℝ) ≤ Xa.T := by exact_mod_cast (show 1 ≤ Xa.T by omega)
         linarith)]
       refine ENNReal.mul_top ?_

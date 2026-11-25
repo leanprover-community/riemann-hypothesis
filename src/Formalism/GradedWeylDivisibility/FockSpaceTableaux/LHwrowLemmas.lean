@@ -33,9 +33,9 @@ theorem hwrow_sum_single_castLE {r s : ℕ} (hr : s ≤ r) (σ : Equiv.Perm (Fin
   simp only [Pi.single_apply]
   split_ifs with h
   · rw [Finset.sum_eq_single ⟨a.val, h⟩]
-    · exact if_pos (Fin.ext rfl)
+    · exact ite_eq_left (Fin.ext rfl)
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hab
       subst hab
       exact hb (Fin.ext rfl)
@@ -43,7 +43,7 @@ theorem hwrow_sum_single_castLE {r s : ℕ} (hr : s ≤ r) (σ : Equiv.Perm (Fin
       exact absurd (Finset.mem_univ _) hn
   · apply Finset.sum_eq_zero
     intro b _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hab
     subst hab
     exact h b.isLt

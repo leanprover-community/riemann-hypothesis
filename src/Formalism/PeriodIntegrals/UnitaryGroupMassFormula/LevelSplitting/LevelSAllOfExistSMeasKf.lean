@@ -59,7 +59,7 @@ theorem stab_of (hJ : IsHermND σ J) (hinv : ∀ x, σ (σ x) = x) {r : ℕ} (P 
       rw [covR_ratV, hP.2.2.1 b a]
       by_cases hab : a = b
       · subst hab; simp
-      · rw [if_neg (Ne.symm hab), if_neg hab, map_zero]
+      · rw [ite_eq_right (Ne.symm hab), ite_eq_right hab, map_zero]
     · intro a b
       rw [covR_ratV, hE_swap hJ hinv, hP.2.2.1 a b]
       split_ifs <;> simp

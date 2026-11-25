@@ -462,18 +462,18 @@ theorem psi_bound (G : HTGroup p) (B : GlobalTheory.LKDef.DForm G) : ∃ K : ℝ
     intro w
     apply _root_.GlobalTheory.LowerTriangularEntryBound.entry_bound
     · by_cases h : sigPosH (G.gram_herm w) = 1
-      · simp only [f, h, if_true]; fun_prop
-      · simp only [f, h, if_false]; fun_prop
+      · simp only [f, h, ite_true]; fun_prop
+      · simp only [f, h, ite_false]; fun_prop
     · intro t x
       by_cases h : sigPosH (G.gram_herm w) = 1
-      · simp only [f, h, if_true]; rw [GlobalTheory.LKCx.PsiBound.form_smul, Complex.re_ofReal_mul]
-      · simp only [f, h, if_false]; rw [GlobalTheory.LKCx.PsiBound.form_smul, Complex.re_ofReal_mul]; ring
+      · simp only [f, h, ite_true]; rw [GlobalTheory.LKCx.PsiBound.form_smul, Complex.re_ofReal_mul]
+      · simp only [f, h, ite_false]; rw [GlobalTheory.LKCx.PsiBound.form_smul, Complex.re_ofReal_mul]; ring
     · intro x hx
       have hp := B.posR w x hx
       by_cases h : sigPosH (G.gram_herm w) = 1
-      · simp only [f, h, if_true]; exact hp.1 h
+      · simp only [f, h, ite_true]; exact hp.1 h
       · have h2 : (star x ⬝ᵥ GlobalTheory.LKCx.herm G w B.β *ᵥ x).re < 0 := hp.2 h
-        simp only [f, h, if_false]; linarith
+        simp only [f, h, ite_false]; linarith
   choose K hK using hK
   refine ⟨∑ w, |K w|, fun y w a b => ?_⟩
   set s : ℝ := ((((y : G.Cˣ × ℚˣ).2 : ℚˣ) : ℚ) : ℝ) with hs
@@ -489,8 +489,8 @@ theorem psi_bound (G : HTGroup p) (B : GlobalTheory.LKDef.DForm G) : ∃ K : ℝ
   have hinv : ∀ x, f w (A *ᵥ x) = s * f w x := by
     intro x
     by_cases h : sigPosH (G.gram_herm w) = 1
-    · simp only [f, h, if_true]; rw [hsim, Complex.re_ofReal_mul]
-    · simp only [f, h, if_false]; rw [hsim, Complex.re_ofReal_mul]; ring
+    · simp only [f, h, ite_true]; rw [hsim, Complex.re_ofReal_mul]
+    · simp only [f, h, ite_false]; rw [hsim, Complex.re_ofReal_mul]; ring
   calc ‖A a b‖ ≤ K w * Real.sqrt s := hK w A s hs0.le hinv a b
     _ ≤ |K w| * Real.sqrt s := mul_le_mul_of_nonneg_right (le_abs_self _) (Real.sqrt_nonneg _)
     _ ≤ (∑ u, |K u|) * Real.sqrt s := mul_le_mul_of_nonneg_right

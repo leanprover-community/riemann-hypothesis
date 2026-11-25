@@ -54,17 +54,17 @@ theorem symK_X (i j : Fin n) (v : (Fin m × Fin n × Bool) ⊕ (Fin m × Fin n �
   rw [mkDerivation_X]
   rcases v with ⟨a, b, e⟩ | ⟨a, b, e⟩ <;> simp only [Sum.elim_inl, Sum.elim_inr]
   · by_cases ha : ε a = true
-    · rw [if_pos ha]; split_ifs with h
+    · rw [ite_eq_left ha]; split_ifs with h
       · exact Or.inr ⟨Sum.inl (a, i, false), 1, by simp, by simp [inF1, ha]⟩
       · exact Or.inl rfl
-    · rw [if_neg ha]; split_ifs with h
+    · rw [ite_eq_right ha]; split_ifs with h
       · exact Or.inr ⟨Sum.inl (a, j, true), -1, by simp, by simp [inF1]; simpa using ha⟩
       · exact Or.inl rfl
   · by_cases ha : ε a = true
-    · rw [if_pos ha]; split_ifs with h
+    · rw [ite_eq_left ha]; split_ifs with h
       · exact Or.inr ⟨Sum.inr (a, j, false), -1, by simp, by simp [inF1, ha]⟩
       · exact Or.inl rfl
-    · rw [if_neg ha]; split_ifs with h
+    · rw [ite_eq_right ha]; split_ifs with h
       · exact Or.inr ⟨Sum.inr (a, i, true), 1, by simp, by simp [inF1]; simpa using ha⟩
       · exact Or.inl rfl
 

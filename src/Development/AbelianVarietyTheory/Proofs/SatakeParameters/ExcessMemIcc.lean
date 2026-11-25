@@ -73,10 +73,10 @@ theorem excess_sum (f : ℕ → ℝ) (k M : ℕ) (w N S η W : ℝ) (hk : 2 ≤ 
     obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
     rw [Finset.sum_range_succ']
     have h0 := (hlong 0 (by omega)).2
-    rw [if_pos rfl] at h0
+    rw [ite_eq_left rfl] at h0
     have h1 := Finset.sum_le_card_nsmul (Finset.range k') (fun r => f (r + 1)) (w + S) fun r hr => by
       have := (hlong (r + 1) (by have := Finset.mem_range.1 hr; omega)).2
-      rw [if_neg (by omega)] at this
+      rw [ite_eq_right (by omega)] at this
       exact this.le
     simp only [Finset.card_range, nsmul_eq_mul] at h1
     push_cast

@@ -625,7 +625,7 @@ theorem invNL_outside (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (h5 : 
     exact univNN W hCA h5 A hA c hc T hT d b sol hb (Pi.single k 1) (hupO k hk') _ (hgnn k hk')
   · by_cases hk : k ∈ Rst
     · simp [hk, g]
-    · simp only [hk, if_false, g]
+    · simp only [hk, ite_false, g]
       rw [← mul_assoc, mul_comm (ιE W.π₀) πi, hinv, one_mul]
 
 end W
@@ -733,8 +733,8 @@ theorem univCore_of (PD : PeriodData G Qp K₀ K B BdR) [Fintype (K →ₐ[Qp] L
   convert this using 1
   funext k
   by_cases hk : k ∈ Rst
-  · simp only [Pi.sub_apply, if_pos hk, sub_zero]; rfl
-  · simp only [Pi.sub_apply, if_neg hk, sub_self]
+  · simp only [Pi.sub_apply, ite_eq_left hk, sub_zero]; rfl
+  · simp only [Pi.sub_apply, ite_eq_right hk, sub_self]
 
 end Core
 

@@ -76,7 +76,7 @@ def pTerm (P : B.Mat k r → ℂ) (w : List (B.Mat k r)) : B.DTerm k r Wp Wq whe
 theorem pTerm_word {P : B.Mat k r → ℂ} {w : List (B.Mat k r)} (hw : ∀ X ∈ w, B.inLie k r X) :
     (pTerm (Wp := Wp) (Wq := Wq) P w).word = w := by
   simp only [pTerm]
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
 
 theorem pTerm_word_le (P : B.Mat k r → ℂ) (w : List (B.Mat k r)) :
     (pTerm (Wp := Wp) (Wq := Wq) P w).word.length ≤ w.length := by

@@ -46,13 +46,6 @@ open Formalism.DivisionValues (vw lw)
 
 namespace GlobalTheory.SumSize
 
-section Claims
-
-variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} (ch : Choice R) (C b : ℝ)
-
-end Claims
-
 theorem BigC.and {Q Q' : ChQ} (h : BigC Q) (h' : BigC Q') : BigC fun F ch C b => Q F ch C b ∧ Q' F ch C b := by
   obtain ⟨CF0, h⟩ := h
   obtain ⟨CF0', h'⟩ := h'

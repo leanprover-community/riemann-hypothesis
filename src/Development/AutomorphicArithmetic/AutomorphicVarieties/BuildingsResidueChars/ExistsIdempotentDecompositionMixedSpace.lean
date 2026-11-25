@@ -143,7 +143,7 @@ private theorem idem_lemma_2 (A B : Type) [Fintype A] [DecidableEq A] [Fintype B
         simp only [hgmul, hc2]
         simp only [mul_one, one_mul, Complex.I_mul_I, map_neg, TensorProduct.tmul_neg]
         cases s <;> cases s' <;> simp only [ne_eq, not_true_eq_false, Bool.false_eq_true,
-          not_false_eq_true, Bool.true_eq_false] at hs <;> simp only [σ, if_true, Bool.false_eq_true, if_false] <;>
+          not_false_eq_true, Bool.true_eq_false] at hs <;> simp only [σ, ite_true, Bool.false_eq_true, ite_false] <;>
           match_scalars <;>
           first
           | ring1
@@ -156,7 +156,7 @@ private theorem idem_lemma_2 (A B : Type) [Fintype A] [DecidableEq A] [Fintype B
         (1 : ℂ) ⊗ₜ[ℝ] g b 1 := by
       intro b
       rw [hc (σ true * Complex.I), hc (σ false * Complex.I)]
-      simp only [σ, if_true, Bool.false_eq_true, if_false]
+      simp only [σ, ite_true, Bool.false_eq_true, ite_false]
       module
     simp only [hb]
     rw [← TensorProduct.tmul_sum, ← TensorProduct.tmul_sum, ← TensorProduct.tmul_add,

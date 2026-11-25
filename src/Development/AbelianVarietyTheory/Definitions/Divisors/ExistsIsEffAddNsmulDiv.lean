@@ -35,26 +35,6 @@ namespace GlobalTheory.Models
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-section Amp
-
-variable {D : Datum H} {Xo : ∀ l : Level H, Moduli D l}
-
-end Amp
-
-section Refl
-
-variable {U : Scheme.{0}} {F O : Type} [Field F] [CommRing O] {c : U ⟶ Sp F} {t₀ : SAB H U} {β : O →+* F}
-
-end Refl
-
-section Abelian
-
-variable {O F : Type} [CommRing O] [Field F] (β : O →+* F) {X : Scheme.{0}} (s : X ⟶ Sp O) (t : SAB H X)
-
-variable (A : Over X) [GrpObj A] [IsCommMonObj A] (hA : IsAbelianScheme A)
-
-end Abelian
-
 theorem flat_projSpace (R : Type) [CommRing R] (N : ℕ) : Flat (PSpace.str R N) :=
   haveI : IsZariskiLocalAtSource @Flat.{0} := HasRingHomProperty.instIsZariskiLocalAtSource
   IsZariskiLocalAtSource.of_openCover (P := @Flat) (ProjSpace.chartCover R N) fun (i : Fin (N + 1)) => by

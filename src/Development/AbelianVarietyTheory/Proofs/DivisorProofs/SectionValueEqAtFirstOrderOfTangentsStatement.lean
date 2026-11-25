@@ -75,7 +75,7 @@ theorem valR_spMap {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) {X : S
     valR (spMap f ≫ x) U s = f (valR x U s) := by
   have hU' : ⊤ ≤ (spMap f ≫ x) ⁻¹ᵁ U := fun q _ => hU (Set.mem_univ _)
   unfold valR
-  rw [dif_pos hU, dif_pos hU']
+  rw [dite_eq_left hU, dite_eq_left hU']
   have e : (spMap f ≫ x).appLE U ⊤ hU' = x.appLE U ⊤ hU ≫ (spMap f).appTop := by
     rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
     exact (Scheme.Hom.appLE_comp_appLE _ _ _ _ _ _ _).symm

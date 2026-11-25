@@ -1065,8 +1065,8 @@ theorem LelongWeightDiff.proof (hM : ChartMassCompact.Statement) : LelongWeightD
   have hcs : ∃ i, HasCompactSupport (vecCons g φ i) := ⟨0, by simpa using hgc⟩
   by_cases hA : ∃ A : Matrix (Fin (d + 1)) (Fin n) ℂ, IsFiniteProjection J A
   swap
-  · simp only [varInt, dif_neg hA, sub_self]; exact tendsto_const_nhds
-  simp only [varInt, dif_pos hA]
+  · simp only [varInt, dite_eq_right hA, sub_self]; exact tendsto_const_nhds
+  simp only [varInt, dite_eq_left hA]
   set A := hA.choose
   have hAf : IsFiniteProjection J A := hA.choose_spec
   have hfin : ∀ y, (fibre J A y).Finite := fun y => (FibreBound.proof n (d + 1) J A hJ hdim hAf y).2.1
@@ -1119,8 +1119,8 @@ theorem LelongWeightDiff.proof (hM : ChartMassCompact.Statement) : LelongWeightD
     rw [Set.Finite.mem_toFinset] at hx
     by_cases hs : ∃ s, IsSheetAt J A x s
     swap
-    · simp only [dif_neg hs]; exact tendsto_const_nhds
-    simp only [dif_pos hs]
+    · simp only [dite_eq_right hs]; exact tendsto_const_nhds
+    simp only [dite_eq_left hs]
     have hux : linEval u x ≠ 0 := fun h0 => hy (by rw [← hx.2]; exact hPu x hx.1 h0)
     have ha : 0 < ‖linEval u x‖ ^ 2 := pow_pos (norm_pos_iff.mpr hux) 2
     have hc : ContinuousAt (fun ε : ℝ => D ε x) 0 := by

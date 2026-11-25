@@ -402,7 +402,7 @@ theorem sa_sat {O : Type} [CommRing O] [IsDomain O] (ϖ : O) [(Ideal.span {ϖ}).
   have hC0 : (C ϖ : PowerSeries O) ≠ 0 := by
     intro h0
     have := congrArg (coeff 0) h0
-    rw [coeff_C, if_pos rfl, map_zero] at this
+    rw [coeff_C, ite_eq_left rfl, map_zero] at this
     exact hϖ0 this
   induction N with
   | zero => intro z hz; simpa using hz
@@ -702,7 +702,7 @@ theorem hh_main {u₁ : O} (hE : B.GammaXUnitShape u₁) (h9 : L.P9) (c : ZMod n
       by_cases hr : r = k + 1
       · subst hr
         simpa using hρ'
-      · simp only [if_neg hr]
+      · simp only [ite_eq_right hr]
         obtain ⟨h3, h4⟩ := hbd r h1 (by omega)
         refine ⟨?_, h4⟩
         rw [hhA]
@@ -719,7 +719,7 @@ theorem hh_main {u₁ : O} (hE : B.GammaXUnitShape u₁) (h9 : L.P9) (c : ZMod n
           have hne : r ≠ k + 1 := by
             have := Finset.mem_Ico.1 hr
             omega
-          simp only [if_neg hne]
+          simp only [ite_eq_right hne]
           rw [smul_smul]
           congr 1
           ring

@@ -64,13 +64,6 @@ theorem cycN_eq_iff (g : G F Ω) (b : (ZMod N)ˣ) :
 
 end Cyc
 
-section Coord
-
-variable (n q d : ℕ) [Fact q.Prime] [Fact d.Prime]
-
-
-end Coord
-
 end B1
 
 namespace AbF

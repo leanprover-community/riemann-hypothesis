@@ -184,7 +184,7 @@ theorem isPtOf_noFr {p : DecoF E n ST SG Q} (h : IsPtOf hc g p) : IsPtOf hc g (n
       show p.fr (rightOf w hw) ((p.fr (rightOf w hw)).symm x) ∈ _
       rw [LinearEquiv.apply_symm_apply]
       exact le_locP _ _ hx
-    have e : frBe w.1 (p.fr (rightOf w hw)) x = redV w.1 ((p.fr (rightOf w hw)).symm x) := if_pos hs
+    have e : frBe w.1 (p.fr (rightOf w hw)) x = redV w.1 ((p.fr (rightOf w hw)).symm x) := ite_eq_left hs
     rw [forgetDeco_be_of_not p w hw, e, adAt_pull h (rightOf w hw) x i]
     exact hasRes_red (mem_stdAt.1 hs i)
 
@@ -343,7 +343,7 @@ theorem neg_lam_rev_eq : ∀ (D : D7) (u : D.what₂.Word) (M : DSModel D.sp.X' 
     have hmem : (q (Fin.rev x), M.ε τ (Fin.rev x)) ∈ parB (Ptw D) D.R.m τ := by
       rw [hS]; exact Finset.mem_image_of_mem _ (Finset.mem_univ _)
     have hodd : ¬ Odd D.R.m := Nat.not_odd_iff_even.mpr D.R.m_even
-    simp only [parB, dualPar, TPar.Dpar, Finset.mem_image, hodd, if_false, add_zero] at hmem
+    simp only [parB, dualPar, TPar.Dpar, Finset.mem_image, hodd, ite_false, add_zero] at hmem
     obtain ⟨⟨y1, y2⟩, ⟨⟨z1, z2⟩, hz, hzy⟩, hy⟩ := hmem
     simp only [Prod.mk.injEq] at hzy hy
     obtain ⟨rfl, rfl⟩ := hzy
@@ -1240,7 +1240,7 @@ theorem isRes_chiC (h : I.Ok) (j : Fin B.R.m) (PP : Pl (I.rec7 l Z).host.E) (hw 
       Formalism.L2.Col.chiP I.Ch P j = I.Ch.chi j ⟨P, hw⟩ := by
     intro j P hw
     unfold Formalism.L2.Col.chiP
-    rw [dif_pos hw]
+    rw [dite_eq_left hw]
     simp [Formalism.L2.Col.chiAt, Formalism.L2.Col.extChi]
   refine Units.ext (Eq.trans ?_ ht.symm)
   have e2 := (chiC_apply I j PP u).trans (congrArg (fun f : _ →* B.LLˣ => B.embLL ((f u : B.LLˣ) : B.LL)) (e j PP hw))
@@ -1278,7 +1278,7 @@ theorem topLev_datY (ok : I.Ok) (pins : TC.Pins B X) (v : B.Word) {Ch : ℕ → 
     (Formalism.L2.Col.t_pos B.R) (Formalism.L2.Col.rank_X'_eq B.R) (B.primes X).vGs I.Ps (Formalism.L2.Col.chiAt I.Ch) B.embLL hR
     P' (fun i => chiC I (i - 1)) (fun PP => (ξ PP)⁻¹) hH hchi
     (fun i PP a => by
-      have e : Formalism.L2.Col.chiP I.Ch PP.1 = Formalism.L2.Col.chiAt I.Ch PP := dif_pos PP.2
+      have e : Formalism.L2.Col.chiP I.Ch PP.1 = Formalism.L2.Col.chiAt I.Ch PP := dite_eq_left PP.2
       show B.embLL ((Formalism.L2.Col.chiP I.Ch PP.1 i a : B.LLˣ) : B.LL) = _
       rw [e])
   have hc : ∀ c, c < B.R.m → ∀ PP ∈ (B.primes X).vGs, cg (c + 1) PP = chiC I (c + 1 - 1) PP := fun c hc PP hPP =>

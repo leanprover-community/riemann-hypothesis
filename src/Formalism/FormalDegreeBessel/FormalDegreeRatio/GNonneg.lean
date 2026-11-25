@@ -202,21 +202,21 @@ lemma gn_gram_ff (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ)
     rw [gn_herm_bvec_right, gn_Hpk_mulVec_lo k r _ (eI k r ⟨a.val, ha⟩) ha]
     split_ifs with hb
     · simp only [bvec, Pi.single_apply, eI]
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       first | (have e' := Fin.val_eq_of_eq e; simp at e'; omega)
     · exact hz _ (Or.inr (by simp only [eI]; omega))
   have hA := a.isLt
   have hB := b.isLt
   by_cases ha : a.val < r
-  · rw [hlo a b ha, if_neg (by omega)]
+  · rw [hlo a b ha, ite_eq_right (by omega)]
   · by_cases hb : b.val < r
     · have e := congrFun (congrFun (gn_gramM_herm k r z z' g) (Sum.inl a)) (Sum.inl b)
       rw [Matrix.conjTranspose_apply, hlo b a hb, star_zero] at e
-      rw [← e, if_neg (by omega)]
+      rw [← e, ite_eq_right (by omega)]
     · have ha' : a.val = r := by omega
       have hb' : b.val = r := by omega
-      rw [if_pos ⟨ha', hb'⟩]
+      rw [ite_eq_left ⟨ha', hb'⟩]
       simp only [gramM, gramVec, fvec, ha, hb, ↓reduceDIte]
 
 lemma gn_quad_inl (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ)
@@ -230,9 +230,9 @@ lemma gn_quad_inl (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ)
       Finset.sum_const_zero, add_zero, Pi.star_apply]
     rw [Finset.sum_eq_single (Fin.last r)]
     · rw [Finset.sum_eq_single (Fin.last r)]
-      · rw [gn_gram_ff k r z z' g hz, if_pos ⟨rfl, rfl⟩]
+      · rw [gn_gram_ff k r z z' g hz, ite_eq_left ⟨rfl, rfl⟩]
       · intro b _ hb
-        rw [gn_gram_ff k r z z' g hz, if_neg, zero_mul]
+        rw [gn_gram_ff k r z z' g hz, ite_eq_right, zero_mul]
         rintro ⟨_, h2⟩
         exact hb (Fin.ext h2)
       · intro h
@@ -240,7 +240,7 @@ lemma gn_quad_inl (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ)
     · intro a _ ha
       rw [Finset.sum_eq_zero, mul_zero]
       intro b _
-      rw [gn_gram_ff k r z z' g hz, if_neg, zero_mul]
+      rw [gn_gram_ff k r z z' g hz, ite_eq_right, zero_mul]
       rintro ⟨h1, _⟩
       exact ha (Fin.ext h1)
     · intro h

@@ -63,21 +63,6 @@ open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Reciprocity
 
 namespace GlobalTheory.FourierChainCompare
 
-section Duality
-
-variable {A B K : Type} [AddCommGroup A] [AddCommGroup B] [Field K]
-
-variable [Fintype A] [Fintype B]
-
-
-end Duality
-
-section Fourier
-
-variable {A B K : Type} [AddCommGroup A] [AddCommGroup B] [Field K] [Fintype A] [Fintype B]
-
-end Fourier
-
 section Chain
 
 variable {R : Type} [CommRing R] {d : ℕ}

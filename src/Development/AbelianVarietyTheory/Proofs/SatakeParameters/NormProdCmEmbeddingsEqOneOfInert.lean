@@ -270,7 +270,7 @@ def NormUnitK (D : D7) (p : ℕ) [Fact p.Prime] (lam : TaylorLogMetric.Qbar →+
   ∀ z : D.host.E, z * D.host.conj z = 1 → ‖TaylorLogMetric.lamC lam (∏ τ : D.what₂.Tau, TaylorLogMetric.embT D τ z)‖ = 1
 
 theorem lamC_of_mem {p : ℕ} [Fact p.Prime] (lam : TaylorLogMetric.Qbar →+* ℂ_[p]) {x : ℂ} (h : x ∈ TaylorLogMetric.Qbar) :
-    TaylorLogMetric.lamC lam x = lam ⟨x, h⟩ := dif_pos h
+    TaylorLogMetric.lamC lam x = lam ⟨x, h⟩ := dite_eq_left h
 
 def FrobOut (D : D7) (p : ℕ) : Prop :=
   ∃ g : D.R.GG, g ∉ D.R.Psi ∧ ∀ P : Ideal (𝓞 D.host.E), P.IsPrime → P ≠ ⊥ → ((p : ℕ) : 𝓞 D.host.E) ∈ P →

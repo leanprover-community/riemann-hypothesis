@@ -211,7 +211,7 @@ theorem monic_relations_along_block : ∀ (W Q : Type) [AddCommGroup W] [Module 
     · refine GlobalTheory.CompanionTheory.CTFin.CapComm.commute_qdet_of (fun a b => ?_) u
       have := hX (GlobalTheory.SmGL.stdBlocks n h ⟨j, p⟩) (GlobalTheory.SmGL.stdBlocks n h ⟨j, q⟩)
         (GlobalTheory.SmGL.stdBlocks n h ⟨i, a⟩) (GlobalTheory.SmGL.stdBlocks n h ⟨i, b⟩)
-      rw [if_neg (hne _ _ _ _ hji), if_neg (hne _ _ _ _ (Ne.symm hji)), sub_self] at this
+      rw [ite_eq_right (hne _ _ _ _ hji), ite_eq_right (hne _ _ _ _ (Ne.symm hji)), sub_self] at this
       exact sub_eq_zero.1 this
   have hSR : ∀ x ∈ Sm, ∀ i u, Commute x (Rr i u) := fun x hx i u =>
     commute_of_mem_adjoin (hTR i u) hx

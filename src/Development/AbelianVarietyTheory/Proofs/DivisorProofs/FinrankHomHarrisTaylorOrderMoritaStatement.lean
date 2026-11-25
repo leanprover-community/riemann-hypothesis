@@ -720,7 +720,7 @@ theorem unit_mul (i j l p : Fin (n+1)) (x : X) :
   · rw [single_mul_single_of_ne (h := h), map_zero, LinearMap.zero_apply]
 
 theorem recon (x : X) : ∑ i, ρ (single i 0 1) (ρ (single 0 i 1) x) = x := by
-  simp only [unit_mul, if_true]
+  simp only [unit_mul, ite_true]
 
   rw [← LinearMap.sum_apply, ← map_sum, sum_single_one, map_one, Module.End.one_apply]
 
@@ -758,7 +758,7 @@ def piEquiv : X ≃ₗ[k] (Fin (n+1) → corner ρ) :=
 
       simp only [LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.sum_apply, map_sum,
       Submodule.subtype_apply, LinearMap.proj_apply, cut_unit, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true, cut_corner, LinearMap.id_apply])
+      ite_true, cut_corner, LinearMap.id_apply])
     (by
       refine LinearMap.ext fun x => ?_
       simp only [LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.sum_apply,
@@ -805,8 +805,8 @@ theorem ext_unit (S : corner ρX →ₗ[k] corner ρY) (l p : Fin (n+1)) (x : X)
   rw [ext_apply, ext_apply, map_sum]
   simp only [cut_unit, unit_mul]
   rw [Finset.sum_ite_eq]
-  simp only [Finset.mem_univ, if_true]
-  rw [Finset.sum_eq_single l (fun b _ hb => by rw [if_neg hb, map_zero, Submodule.coe_zero, map_zero])
+  simp only [Finset.mem_univ, ite_true]
+  rw [Finset.sum_eq_single l (fun b _ hb => by rw [ite_eq_right hb, map_zero, Submodule.coe_zero, map_zero])
     (by simp)]
   simp
 
@@ -840,7 +840,7 @@ theorem restr_bij : Function.Bijective (restr ρX ρY) := by
     change ext ρX ρY S v = _
     rw [ext_apply]
     simp only [cut_corner]
-    rw [Finset.sum_eq_single 0 (fun b _ hb => by rw [if_neg hb, map_zero, Submodule.coe_zero, map_zero])
+    rw [Finset.sum_eq_single 0 (fun b _ hb => by rw [ite_eq_right hb, map_zero, Submodule.coe_zero, map_zero])
       (by simp)]
     simp [unit_corner]
 

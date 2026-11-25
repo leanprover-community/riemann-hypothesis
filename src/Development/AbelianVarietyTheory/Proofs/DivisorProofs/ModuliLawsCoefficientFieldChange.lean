@@ -61,8 +61,8 @@ theorem goodOf_comp (σ' : c'.F →+* ℂ) :
   have h : GoodEmb c' σ' ↔ GoodEmb c (σ'.comp (incF c c' hle)) := Iff.rfl
   unfold goodOf
   by_cases hg : GoodEmb c' σ'
-  · rw [if_pos hg, if_pos (h.1 hg)]
-  · rw [if_neg hg, if_neg (fun h' => hg (h.2 h'))]
+  · rw [ite_eq_left hg, ite_eq_left (h.1 hg)]
+  · rw [ite_eq_right hg, ite_eq_right (fun h' => hg (h.2 h'))]
     rfl
 
 variable {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)

@@ -537,7 +537,7 @@ theorem inner_eq (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ}
     ring
   simp only [hpt]
   rw [integral_const_mul, integral_sub (integrableOn_thetaC_mul hF ω _)
-    ((integrableOn_char ω).const_mul _), integral_const_mul, thetaCFun, dif_pos t.2]
+    ((integrableOn_char ω).const_mul _), integral_const_mul, thetaCFun, dite_eq_left t.2]
   simp only [thetaCInt, thetaCConst, volChar]
   ring
 
@@ -600,7 +600,7 @@ theorem mellin_eq_zero_of_isEmpty [IsEmpty ι] (w : InfinitePlace k) (F : (ι �
       (thetaCFun w F ω t - thetaCConst F ω) = ∫ t in Set.Ioi (0 : ℝ), (0 : ℂ) := by
     refine setIntegral_congr_fun measurableSet_Ioi fun x hx ↦ ?_
     have hx' : (0 : ℝ) < x := hx
-    simp only [thetaCFun, dif_pos hx', thetaCInt, hθ, thetaCConst, volChar]
+    simp only [thetaCFun, dite_eq_left hx', thetaCInt, hθ, thetaCConst, volChar]
     rw [integral_const_mul, sub_self, smul_zero]
   rw [h0]
   simp

@@ -641,7 +641,7 @@ theorem tors_two {Λ : AddSubgroup ℂ} {s : ℂ} (hs : ∃ n : ℕ, 0 < n ∧ N
 
 theorem logc_eq_of_norm {g : GL3Theta.G1 p} {s t : ℂ} (hs : s ∉ g.abelian₂) (ht : t ∉ g.abelian₂)
     (h : ‖cval g s‖ = ‖cval g t‖) : logc g s = logc g t := by
-  simp only [logc, if_neg hs, if_neg ht, h]
+  simp only [logc, ite_eq_right hs, ite_eq_right ht, h]
 
 theorem thetaTranslateValueAtZero_neg {Λ : AddSubgroup ℂ} (hlat : IsLat Λ) (t : ℂ) :
     U1 Λ (-t) (sgStar Λ) 0 = -U1 Λ t (sgStar Λ) 0 := by
@@ -694,7 +694,7 @@ theorem generic (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.G
   have hl := congrArg Real.log hn
   rw [Real.log_mul nS.ne' nD.ne', Real.log_mul (pow_pos nP 2).ne' (pow_pos nQ 2).ne', Real.log_pow,
     Real.log_pow] at hl
-  simp only [logc, if_neg h1, if_neg h2, if_neg hP.1, if_neg hQ.1]
+  simp only [logc, ite_eq_right h1, ite_eq_right h2, ite_eq_right hP.1, ite_eq_right hQ.1]
   push_cast at hl
   linarith
 
@@ -718,7 +718,7 @@ theorem doubling (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.
   simp only [norm_mul, norm_neg, norm_pow, hone, one_mul] at hn
   change ‖cval g (2 * P)‖ = ‖cval g P‖ ^ 4 at hn
   have nP := norm_pos_iff.2 (cval_ne_zero hlat hP.1 cP)
-  simp only [logc, if_neg h2, if_neg hP.1, hn, Real.log_pow]
+  simp only [logc, ite_eq_right h2, ite_eq_right hP.1, hn, Real.log_pow]
   push_cast; ring
 
 theorem logc_per (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.G1 p) (hg : GL3Theta.At D cc δ g)
@@ -741,7 +741,7 @@ theorem half (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.G1 p
     by_contra hc
     have hp : p = 2 := by
       have := (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).not.1 hc
-      push_neg at this
+      push Not at this
       exact ((Nat.prime_dvd_prime_iff_eq Nat.prime_two (Fact.out : p.Prime)).1 this).symm
     subst hp
     have hodd : ¬ 2 ∣ n := fun hd => by
@@ -798,7 +798,7 @@ theorem par_holds : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.ho
     have hQn : -Q ∉ g.abelian₂ := fun h => hQ.1 (by simpa using neg_mem h)
     rw [h1, h2, logc_per D cc δ g hg lQ hQ.1 hPl, logc_per D cc δ g hg (tors_laq (tors_neg hQ.2)) hQn hPl,
       logc_neg D cc δ g hg lQ hQ.1]
-    simp only [logc, if_pos hPl]
+    simp only [logc, ite_eq_left hPl]
     ring
   have tP : GL3Theta.Tors1 p g.abelian₂ P := ⟨hPl, hP⟩
   by_cases hS : P + Q ∈ g.abelian₂ <;> by_cases hD : P - Q ∈ g.abelian₂
@@ -892,7 +892,7 @@ theorem intSer_of_pow {N : ℕ} (hN : ‖(N : K)‖ = 1) {s : PowerSeries K}
   set G : PowerSeries K := ∑ i ∈ Finset.range N, s ^ i * a ^ (N - 1 - i) with hG
   have hGN : G * (s - a) = s ^ N - a ^ N := geom_sum₂_mul s a N
   have ha0 : PowerSeries.constantCoeff a = 1 := by
-    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, hca, if_pos hn,
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, hca, ite_eq_left hn,
       PowerSeries.coeff_zero_eq_constantCoeff_apply, hs0]
   have hG0 : PowerSeries.coeff 0 G = N := by
 
@@ -900,7 +900,7 @@ theorem intSer_of_pow {N : ℕ} (hN : ‖(N : K)‖ = 1) {s : PowerSeries K}
     simp [hs0, ha0]
   have key : PowerSeries.coeff n (G * (s - a)) = (N : K) * PowerSeries.coeff n s := by
     rw [PowerSeries.coeff_mul, Finset.sum_eq_single (0, n)]
-    · rw [hG0, hcb, if_neg (lt_irrefl n)]
+    · rw [hG0, hcb, ite_eq_right (lt_irrefl n)]
     · rintro ⟨i, j⟩ hij hne
       rw [Finset.HasAntidiagonal.mem_antidiagonal] at hij
       have hj : j < n := by
@@ -908,7 +908,7 @@ theorem intSer_of_pow {N : ℕ} (hN : ‖(N : K)‖ = 1) {s : PowerSeries K}
         · exact absurd (by simp at hij; simp [hij]) hne
         · omega
       simp only
-      rw [hcb, if_pos hj, mul_zero]
+      rw [hcb, ite_eq_left hj, mul_zero]
     · intro h; exact absurd (by simp) h
   have h1 : ‖(N : K) * PowerSeries.coeff n s‖ ≤ 1 := by
     rw [← key, hGN, map_sub]
@@ -1158,7 +1158,7 @@ theorem transl_holds : ∀ D : D7, GL3Theta.transl D := by
       by_cases h1 : s ∈ g.abelian₂
       · simp [logc, h1, add_mem h1 hω]
       · have h2 : s + ω ∉ g.abelian₂ := fun h => h1 (by simpa using sub_mem h hω)
-        simp only [logc, h1, h2, if_false]
+        simp only [logc, h1, h2, ite_false]
         rw [_root_.GlobalTheory.ThetaTransl.cval_norm_periodic D p cc δ g hg s ω ⟨n, hn, hs⟩ hω]
     · intro P Q hP hQ hQ'
       exact _root_.GlobalTheory.ThetaPar.par_holds D p cc δ g hg hred hun P Q ⟨n, hn, hnp, hP⟩ ⟨hQ', n, hn, hnp, hQ⟩
@@ -1175,7 +1175,7 @@ theorem transl_holds : ∀ D : D7, GL3Theta.transl D := by
     rw [dite_eq_left hq]
     exact (map_ne_zero g.lam).2 fun h => hne (congrArg Subtype.val h)
   have hc1 : ‖cval g t‖ = 1 := by
-    simp only [logc, ht.1, if_false] at hM
+    simp only [logc, ht.1, ite_false] at hM
     rcases Real.log_eq_zero.1 hM with h | h | h
     · exact absurd (norm_eq_zero.1 h) hcne
     · exact h

@@ -63,12 +63,12 @@ theorem formalDegreeShiftRatio_holds : FdegRatio := by
     intro a b hab
     by_cases has : a = s
     · have hbs : b ≠ s := has ▸ hab.ne'
-      rw [if_pos has, if_neg hbs, mul_one, has, es, eo b hbs]
+      rw [ite_eq_left has, ite_eq_right hbs, mul_one, has, es, eo b hbs]
       exact hsign b hbs
     · by_cases hbs : b = s
-      · rw [if_neg has, if_pos hbs, one_mul, hbs, es, eo a has, abs_sub_comm (μ a), abs_sub_comm (μ a)]
+      · rw [ite_eq_right has, ite_eq_left hbs, one_mul, hbs, es, eo a has, abs_sub_comm (μ a), abs_sub_comm (μ a)]
         exact hsign a has
-      · rw [if_neg has, if_neg hbs, mul_one, eo a has, eo b hbs]
+      · rw [ite_eq_right has, ite_eq_right hbs, mul_one, eo a has, eo b hbs]
         exact div_self (hN a b hab)
   unfold fdegHC
   rw [div_div_div_cancel_right₀ hD, ← Finset.prod_div_distrib]
@@ -87,7 +87,7 @@ theorem formalDegreeShiftRatio_holds : FdegRatio := by
           · rw [Finset.prod_filter]
             exact Finset.prod_congr rfl fun t _ => by simp
           · intro a _ has
-            exact Finset.prod_eq_one fun b _ => if_neg has
+            exact Finset.prod_eq_one fun b _ => ite_eq_right has
           · intro h'; exact absurd (Finset.mem_univ s) h'
         · refine Finset.prod_congr rfl fun a _ => ?_
           rw [Finset.prod_ite_eq']

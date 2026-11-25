@@ -62,7 +62,7 @@ theorem exists_multiset_esymm_eq (n : ℕ) (e : ℕ → ℂ) (h0 : e 0 = 1) (hn 
   have hc : ∀ k, p.coeff k = if k ≤ n then (-1) ^ (n - k) * e (n - k) else 0 := fun k => by
     rw [hp, finsetSum_coeff]
     simp only [coeff_monomial_apply, Finset.sum_ite_eq', Finset.mem_range, Nat.lt_succ_iff]
-  have hle : p.natDegree ≤ n := natDegree_le_iff_coeff_eq_zero.2 fun k hk => by rw [hc, if_neg (by omega)]
+  have hle : p.natDegree ≤ n := natDegree_le_iff_coeff_eq_zero.2 fun k hk => by rw [hc, ite_eq_right (by omega)]
   have hcn : p.coeff n = 1 := by simp [hc, h0]
   have hd : p.natDegree = n := natDegree_eq_of_le_of_coeff_ne_zero hle (by simp [hcn])
   have hl : p.leadingCoeff = 1 := by rw [leadingCoeff, hd, hcn]
@@ -72,7 +72,7 @@ theorem exists_multiset_esymm_eq (n : ℕ) (e : ℕ → ℂ) (h0 : e 0 = 1) (hn 
     rw [IsRoot, ← coeff_zero_eq_eval_zero, hc] at this
     simp [hn] at this
   · have := coeff_eq_esymm_roots_of_card hr (k := n - j) (by omega)
-    rw [hc, if_pos (by omega), hl, hd, one_mul, Nat.sub_sub_self hj] at this
+    rw [hc, ite_eq_left (by omega), hl, hd, one_mul, Nat.sub_sub_self hj] at this
     exact (mul_left_cancel₀ (pow_ne_zero _ (by norm_num)) this).symm
 
 theorem exists_satEig_eq : ∀ (q n : ℕ), q ≠ 0 → ∀ c : ℕ → ℂ, c 0 = 1 → c n ≠ 0 →

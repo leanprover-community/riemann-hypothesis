@@ -38,7 +38,7 @@ theorem lre_lowerTri {r n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n
   refine Finset.sum_eq_zero fun k _ => ?_
   rw [Finsupp.finsetSum_apply]
   refine Finset.sum_eq_zero fun p _ => ?_
-  rw [Finsupp.single_apply, if_neg]
+  rw [Finsupp.single_apply, ite_eq_right]
   intro h
   have h1 : (I k p).val = a.val := congrArg Fin.val (congrArg Prod.fst h)
   have h2 : p.val = s.val := by simpa using congrArg (fun x : Fin r × Fin n => x.2.val) h

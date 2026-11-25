@@ -200,7 +200,7 @@ theorem lastPos_of_kapIs {D : D7} {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D (
     push_cast
     rfl
   rw [h4, h6] at h3
-  simp only [aPl, if_pos k.2]
+  simp only [aPl, ite_eq_left k.2]
   rw [Int.le_toNat (Int.floor_nonneg.2 (by linarith)), Int.le_floor]
   push_cast
   linarith

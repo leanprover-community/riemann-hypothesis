@@ -393,7 +393,7 @@ theorem exists_isWeightedHomogeneous_of_dvd (w : τ → M) {f : MvPolynomial τ 
   have hne : weightedHomogeneousComponent w (Finsupp.weight w d) f ≠ 0 := by
     intro h0
     have := coeff_weightedHomogeneousComponent (w := w) (Finsupp.weight w d) f d
-    rw [h0, if_pos rfl, AddMonoidAlgebra.coeff_zero] at this
+    rw [h0, ite_eq_left rfl, AddMonoidAlgebra.coeff_zero] at this
     exact hd this.symm
   have hle : (weightedHomogeneousComponent w (Finsupp.weight w d) f).totalDegree ≤
       f.totalDegree := by

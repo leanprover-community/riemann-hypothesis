@@ -261,12 +261,12 @@ theorem finiteFourier_mul_eq_finprod_localEpsilon {δ : (FiniteAdeleRing (𝓞 K
   set c : HeightOneSpectrum (𝓞 K) → ℂ := fun v ↦ if v ∈ S then s v * I v else 1 with hcdef
   have hc : (Function.mulSupport c).Finite := S.finite_toSet.subset fun v hv ↦ by
     by_contra h
-    exact hv (if_neg h)
+    exact hv (ite_eq_right h)
   have hcS : ∏ᶠ v, c v = ∏ v ∈ S, s v * I v := by
     rw [finprod_eq_prod_of_mulSupport_subset c (s := S) fun v hv ↦ by
       by_contra h
-      exact hv (if_neg h)]
-    exact Finset.prod_congr rfl fun v hv ↦ if_pos hv
+      exact hv (ite_eq_right h)]
+    exact Finset.prod_congr rfl fun v hv ↦ ite_eq_left hv
   rw [finprod_congr (χ.localEpsilon_half_eq hδ),
     finprod_mul_distrib (χ.finite_mulSupport_localComponent δ) hc, ← χ.toIdele_ofFinite_eq_finprod δ,
     hcS, χ.finiteFourier_finiteTestFun_inv_eq hδ]

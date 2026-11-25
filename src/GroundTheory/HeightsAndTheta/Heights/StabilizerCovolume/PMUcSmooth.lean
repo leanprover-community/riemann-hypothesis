@@ -34,15 +34,6 @@ def MUcSmooth.Statement : Prop :=
     (w : ((Σ k, ι k) → ℂ) → ℝ) (S : BoundedRegularisationSetting M D.Xo H.aMu w) (B p q : ℕ) (t : ℝ),
     M.atlas.Smooth (S.bregWeight t) → IsSmoothHerm (MUc H S B p q t)
 
-section Inhabitants
-
-variable {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ] {K : Type} [Fintype K] {ι : K → Type}
-  [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [Algebra ℚ Ω] {E : Ψ → Type} [∀ τ, AddCommGroup (E τ)]
-  [∀ τ, Module Ω (E τ)] {D : ComponentData II Ψ K ι Ω E} {H : HodgeData D} {M : XModel D}
-  {w : ((Σ k, ι k) → ℂ) → ℝ}
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.NineStatements
 end -- clump:auto
 end -- clump:auto

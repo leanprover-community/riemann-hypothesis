@@ -282,8 +282,8 @@ theorem isotropic_of_sig {r p : ℕ} (G : Matrix (Fin r) (Fin r) E) (hG : ∀ a 
   let d : Fin r → E := fun a => if a = m then G.det * π else ε a
   have hdet : (diagonal d).det = G.det := by
     rw [det_diagonal, ← Finset.mul_prod_erase _ _ (Finset.mem_univ m), Finset.prod_congr rfl
-      (g := fun a => (ε a : E)) fun a ha => if_neg (Finset.ne_of_mem_erase ha)]
-    simp only [d, if_true]
+      (g := fun a => (ε a : E)) fun a ha => ite_eq_right (Finset.ne_of_mem_erase ha)]
+    simp only [d, ite_true]
     rw [← Int.cast_prod, mul_assoc, ← Int.cast_mul, hπ, Int.cast_one, mul_one]
   have hcd : ∀ a, cc (d a) = d a := fun a => by
     have := GlobalTheory.Published.cc_det_of_herm hG
@@ -316,7 +316,7 @@ theorem isotropic_of_sig {r p : ℕ} (G : Matrix (Fin r) (Fin r) E) (hG : ∀ a 
         by_cases h : a = m
         · subst h
           have hπ' : (π : ℂ) * π = 1 := by exact_mod_cast hπ
-          simp only [d, if_true, map_mul, map_intCast]
+          simp only [d, ite_true, map_mul, map_intCast]
           linear_combination (π : ℂ) * h2 + (ε m : ℂ) * hπ'
         · simp [d, h]⟩)
     ⟨1, by rw [hdet, div_self hd]; simp [cc]⟩

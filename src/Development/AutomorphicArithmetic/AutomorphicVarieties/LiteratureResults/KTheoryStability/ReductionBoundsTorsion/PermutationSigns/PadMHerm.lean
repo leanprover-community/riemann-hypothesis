@@ -52,7 +52,7 @@ theorem padM_herm {n M : ℕ} {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.IsHermiti
   intro i j
   by_cases h : (i : ℕ) < n ∧ (j : ℕ) < n
   · have h' : (j : ℕ) < n ∧ (i : ℕ) < n := ⟨h.2, h.1⟩
-    simp only [padM, Matrix.of_apply, dif_pos h, dif_pos h']
+    simp only [padM, Matrix.of_apply, dite_eq_left h, dite_eq_left h']
     exact hA.apply _ _
   · have h' : ¬((j : ℕ) < n ∧ (i : ℕ) < n) := fun h' => h ⟨h'.2, h'.1⟩
     simp [padM, h, h']

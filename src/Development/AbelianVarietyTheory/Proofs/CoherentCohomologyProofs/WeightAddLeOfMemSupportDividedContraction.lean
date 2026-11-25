@@ -123,10 +123,10 @@ theorem coeff_dividedDeriv (β m : σ →₀ ℕ) (P : MvPolynomial σ R) :
     rw [dividedDeriv_monomial, AddMonoidAlgebra.coeff_smul_apply, coeff_monomial, coeff_monomial]
     by_cases h : n = m + β
     · subst h; simp
-    · rw [if_neg h, smul_zero]
+    · rw [ite_eq_right h, smul_zero]
       by_cases h0 : multiChoose n β = 0
       · rw [h0, zero_smul]
-      · rw [if_neg, smul_zero]
+      · rw [ite_eq_right, smul_zero]
         rintro rfl
         exact h (tsub_add_cancel_of_le (le_of_multiChoose_ne_zero h0)).symm
   | add P Q hP hQ =>
@@ -156,34 +156,5 @@ variable [Fintype ι]
 
 
 end Contraction
-
-section Integrality
-
-variable {R : Type*} [CommSemiring R] {ι κ : Type*}
-
-variable [Fintype ι] [Fintype κ]
-
-variable {A : Type*} [CommSemiring A] [Algebra A R]
-
-end Integrality
-
-section Fractional
-
-open scoped nonZeroDivisors
-
-variable {A K : Type*} [CommRing A] [CommRing K] [Algebra A K] {ι κ : Type*} [Fintype ι] [Fintype κ]
-
-end Fractional
-
-section Formula
-
-variable {k A M : Type*} [CommRing k] [Ring A] [Algebra k A] [AddCommGroup M] [Module A M]
-  {ι κ : Type*}
-
-variable [Fintype κ]
-
-variable [Fintype ι] {a b : ι → A} {a' b' : κ → A} {γ : ι → κ → k} {v : M}
-
-end Formula
 
 end GlobalTheory.Wick

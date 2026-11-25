@@ -455,7 +455,7 @@ theorem pullC_holds : GlobalTheory.TypeAsm.PullC := by
     · intro p hp
       have hp' : Rq p ∉ Formalism.L2.SG.TermOp.Vanish.Rset t := hp
       rw [rset_iff C t] at hp'
-      push_neg at hp'
+      push Not at hp'
       obtain ⟨τ, hτ⟩ := hp'
       rw [hRq_apply] at hτ
       exact Set.mem_iUnion.2 ⟨τ, hτ⟩

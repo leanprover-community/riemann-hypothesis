@@ -84,8 +84,6 @@ theorem main {R α β : Type} [AddCommMonoid R] [Fintype α] [Fintype β]
         refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun e _ => ?_
         exact Finset.sum_comm
 
-alias target := _root_.GlobalTheory.TargetEquivalence.main
-
 end GlobalTheory.TargetEquivalence
 end -- clump:auto
 end -- clump:auto

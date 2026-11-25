@@ -406,7 +406,7 @@ theorem bounded_of_moderate_nonneg (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.
       by_contra hf
       apply hne
       unfold Data.fj
-      rw [if_neg hf]
+      rw [ite_eq_right hf]
     refine ⟨⟨h0, hfreq⟩, ?_⟩
     have hgt : 0 < ∑ τ, ν τ := by
       refine lt_of_le_of_ne (Finset.sum_nonneg fun τ _ => h0 τ) fun hz => hne ?_

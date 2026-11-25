@@ -988,16 +988,6 @@ open GlobalTheory.BK PowerSeries
 
 namespace GlobalTheory.BK.PhiMod
 
-section
-
-variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
-  [IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
-  [NormedAlgebra ℚ_[l] K] [NeZero e] (P : PhiMod O K l e a ι)
-
-variable [CompleteSpace K]
-
-end
-
 open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
@@ -1288,7 +1278,7 @@ private lemma exists_eq_prime_mul_of_eisenstein_mul {g h : PowerSeries K}
   · ext m
     have key := congrArg (coeff (m + e)) hgh
     simp only [_root_.GlobalTheory.BK.E, add_mul, map_add (f := _),
-      coeff_X_pow_mul', le_add_iff_nonneg_left, zero_le, if_true, Nat.add_sub_cancel] at key
+      coeff_X_pow_mul', le_add_iff_nonneg_left, zero_le, ite_true, Nat.add_sub_cancel] at key
     rw [← map_natCast (PowerSeries.C (R := K)), coeff_C_mul, coeff_C_mul] at key
     rw [← map_natCast (PowerSeries.C (R := K)), coeff_C_mul, coeff_mk]
     linear_combination key

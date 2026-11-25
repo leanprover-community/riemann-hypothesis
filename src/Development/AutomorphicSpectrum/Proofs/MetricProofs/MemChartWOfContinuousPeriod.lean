@@ -81,7 +81,7 @@ theorem lower_at_centre (h : IsChart L bas A T0 B c ρ) (v : Fin g → ℝ)
 theorem exp_cast (ha : a ≤ n) (w : Fin n → ℂ) (j : Fin a) :
     Complex.exp (w (Fin.castLE ha j)) = expCover a w (Fin.castLE ha j) := by
   have hj : (Fin.castLE ha j).val < a := j.2
-  simp only [expCover, if_pos hj]
+  simp only [expCover, ite_eq_left hj]
 
 theorem extend_mem (h : IsChart L bas A T0 B c ρ) (x : Λ) (t : (Fin n → ℂ) → Fin g → ℂ)
     (ht : ContinuousAt t 0) (hP : ∀ w ∈ logCover L.a_le, L.P w x = t (expCover a w)) :
@@ -108,14 +108,14 @@ theorem extend_mem (h : IsChart L bas A T0 B c ρ) (x : Λ) (t : (Fin n → ℂ)
   have hws_cast : ∀ m (j : Fin a), ws m (Fin.castLE L.a_le j) = -(r m : ℂ) := by
     intro m j
     have hj : (Fin.castLE L.a_le j).val < a := j.2
-    simp only [hws, if_pos hj]
+    simp only [hws, ite_eq_left hj]
   have hws_mem : ∀ m, ws m ∈ logCover L.a_le := by
     intro m
     refine ⟨fun i => ?_, fun k hk => ?_⟩
     · rw [hws_cast]
       simp [hrpos m]
     · have hk' : ¬ k.val < a := not_lt.2 hk
-      simp only [hws, if_neg hk']
+      simp only [hws, ite_eq_right hk']
       simp
   set zs : ℕ → Fin n → ℂ := fun m => expCover a (ws m) with hzs
   have hzs_k : ∀ m k, zs m k = if k.val < a then ((Real.exp (-(r m)) : ℝ) : ℂ) else 0 := by
@@ -139,12 +139,12 @@ theorem extend_mem (h : IsChart L bas A T0 B c ρ) (x : Λ) (t : (Fin n → ℂ)
     intro k
     simp only [hzs_k]
     by_cases hk : k.val < a
-    · simp only [hk, if_true]
+    · simp only [hk, ite_true]
       have h1 : Tendsto (fun m => Real.exp (-(r m))) atTop (𝓝 0) :=
         Real.tendsto_exp_atBot.comp (tendsto_neg_atTop_atBot.comp hrtop)
       have h2 := (Complex.continuous_ofReal.tendsto 0).comp h1
       simpa only [Function.comp_def, Complex.ofReal_zero, Pi.zero_apply] using h2
-    · simp only [hk, if_false]
+    · simp only [hk, ite_false]
       exact tendsto_const_nhds
   have hdiv : ∀ m, (-(r m : ℂ)) / (2 * Real.pi * Complex.I) = tm m := by
     intro m

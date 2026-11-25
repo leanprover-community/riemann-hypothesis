@@ -344,23 +344,6 @@ open Polynomial MvPolynomial Ideal Nat RingHom List
 
 namespace GenericNoetherNormalisation
 
-section Nagata
-
-variable {A : Type*} [CommRing A] [IsDomain A] {n : ℕ} (f : MvPolynomial (Fin (n + 1)) A)
-variable (v w : Fin (n + 1) →₀ ℕ)
-
-
-
-end Nagata
-
-section Combination
-
-variable {A D : Type*} [CommRing A] [CommRing D] [Algebra A D] {m : ℕ}
-
-variable {c : A} {z : Fin m → D} {s : Finset D}
-
-end Combination
-
 universe u
 
 alias proof := _root_.UpperTheory.Reformulated.B.GenericNoetherNormalisationCapelliIdentities.proof

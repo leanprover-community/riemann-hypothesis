@@ -87,7 +87,7 @@ theorem exists_family (N : ℕ) [NeZero N] (k : ℤ) (f : ℍ → ℂ)
   have hF : ∀ γ : SL(2, ℤ), F (redGL N γ) = f ∣[k] γ := by
     intro γ
     have h : ∃ δ : SL(2, ℤ), redGL N γ = redGL N δ := ⟨γ, rfl⟩
-    simp only [F, dif_pos h]
+    simp only [F, dite_eq_left h]
     exact slash_eq_of_redGL_eq N k f hf h.choose_spec.symm
   refine ⟨F, ?_, hF, ?_⟩
   · intro α γ
@@ -101,11 +101,11 @@ theorem exists_family (N : ℕ) [NeZero N] (k : ℤ) (f : ℍ → ℂ)
         refine ⟨δ * γ⁻¹, ?_⟩
         rw [redGL_mul, ← hδ, mul_assoc, ← redGL_mul, mul_inv_cancel]
         simp [redGL]
-      simp only [F, dif_neg h, dif_neg h']
+      simp only [F, dite_eq_right h, dite_eq_right h']
       exact SlashAction.zero_slash _ _
   · intro α
     by_cases h : ∃ γ : SL(2, ℤ), α = redGL N γ
     · exact Or.inl h
-    · right; simp only [F, dif_neg h]
+    · right; simp only [F, dite_eq_right h]
 
 end GlobalTheory.FamOfLevel

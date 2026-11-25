@@ -386,7 +386,7 @@ theorem UnrAt.locChar_eq_val (h : UnrAt χ w) {x : (w.adicCompletion E)ˣ} (hx :
   have := h _ h1
   rwa [map_mul, map_inv, mul_inv_eq_one] at this
 
-theorem charFam_of_unrAt (h : UnrAt χ w) : charFam χ w = {val χ w} := if_pos h
+theorem charFam_of_unrAt (h : UnrAt χ w) : charFam χ w = {val χ w} := ite_eq_left h
 
 theorem bounded_charFam (T : Set (HeightOneSpectrum (𝓞 E))) (χ : (AF F ⊗[F] E)ˣ →* Circle) :
     Bounded T (charFam χ) 1 0 := fun w _ => by

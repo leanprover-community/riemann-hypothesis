@@ -327,8 +327,8 @@ private theorem exists_sum_X_mul (p : MvPowerSeries σ O) (hp : MvPowerSeries.co
     rw [map_sum]
     simp only [hq]
     by_cases h : n ≠ 0
-    · simp [dif_pos h]
-    · simp only [dif_neg h, Finset.sum_const_zero]
+    · simp [dite_eq_left h]
+    · simp only [dite_eq_right h, Finset.sum_const_zero]
       push Not at h
       subst h
       simpa using hp
@@ -718,13 +718,13 @@ private theorem wtPart_decomp {O σ : Type} [CommRing O] (wt : σ → ℤ) (j : 
       intro n i
       rw [MvPowerSeries.X_def, MvPowerSeries.coeff_monomial_mul]
       by_cases hle : Finsupp.single i 1 ≤ n
-      · rw [if_pos hle, one_mul, hg, tsub_add_cancel_of_le hle]
+      · rw [ite_eq_left hle, one_mul, hg, tsub_add_cancel_of_le hle]
       · have hP : ¬ P n i := by
           rintro ⟨h, hc⟩
           apply hle
           rw [Finsupp.single_le_iff, ← hc]
           exact Nat.one_le_iff_ne_zero.mpr h.choose_spec.2
-        rw [if_neg hle, if_neg hP]
+        rw [ite_eq_right hle, ite_eq_right hP]
     ext n
 
     rw [map_sum]
@@ -732,10 +732,10 @@ private theorem wtPart_decomp {O σ : Type} [CommRing O] (wt : σ → ℤ) (j : 
     by_cases h : ∃ k ∈ s, n k ≠ 0
     · have hP : ∀ i, P n i ↔ h.choose = i := fun i => ⟨fun ⟨_, e⟩ => e, fun e => ⟨h, e⟩⟩
       simp_rw [hP]
-      rw [Finset.sum_ite_eq, if_pos h.choose_spec.1]
+      rw [Finset.sum_ite_eq, ite_eq_left h.choose_spec.1]
     · have hP : ∀ i, ¬ P n i := fun i ⟨h', _⟩ => h h'
-      simp only [hP, if_false, Finset.sum_const_zero]
-      push_neg at h
+      simp only [hP, ite_false, Finset.sum_const_zero]
+      push Not at h
       exact hs n h
 
 private theorem vanish_of_entries {O : Type} [CommRing O] [IsLocalRing O] {G Γ ι : Type} [Group G] [Group Γ]
@@ -1134,19 +1134,19 @@ theorem UpperTheory.V.UnitaryThreeInertia.eq_rz_of_vanE :
         decide)
     (fun e => by
       obtain ⟨Z, hZ⟩ := (htri F.vl (Set.mem_insert _ _)).2
-      refine ⟨Matrix.of fun a b => if wt a b = j then Z a b else 0, fun a b hab => if_neg hab, fun g hg => ?_⟩
+      refine ⟨Matrix.of fun a b => if wt a b = j then Z a b else 0, fun a b hab => ite_eq_right hab, fun g hg => ?_⟩
       ext a b
       have hg' : F.η (F.loc _ g) = 1 := hg
-      rw [cob, Matrix.sub_apply, adRep_baseLift_apply, if_pos hg', Matrix.of_apply]
+      rw [cob, Matrix.sub_apply, adRep_baseLift_apply, ite_eq_left hg', Matrix.of_apply]
       by_cases hab : wt a b = j
-      · simp only [if_pos hab]
+      · simp only [ite_eq_left hab]
         have h1 := hZ g hg a b (hab ▸ e)
         rw [hs] at h1
         have h2 : ((F.Ψ (F.loc _ g) ^ wt a b : Oˣ) : O) * psi F.Ψ b (F.loc _ g) = psi F.Ψ a (F.loc _ g) := by
           rw [psi, psi, ← Units.val_mul, ← _root_.zpow_add, wt, sub_add_cancel]
         refine (hpu b (F.loc _ g)).mul_right_cancel ?_
         linear_combination h1 + Z a b * h2
-      · simp only [if_neg hab]
+      · simp only [ite_eq_right hab]
         rw [hgw _ a b hab]; simp)
   have hcob : cob (r0 F.η F.Ψ) X = fun g => t • γ g := funext fun g => (hX g).symm
   have hzv : zvar F.c g₁ (r0 F.η F.Ψ) (fun g => t • γ g) = t • (ms (r g₁).mat - ms (r (gstar F.c g₁)).mat) := by
@@ -1288,7 +1288,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.tangent_coord_eq_zero_of_nonpos_weight
     rw [WPres.z, hτ, tangent_point_snd, Finset.sum_eq_single i]
     · simp [MvPowerSeries.coeff_X]
     · intro k _ hk
-      rw [MvPowerSeries.coeff_X, if_neg, zero_mul]
+      rw [MvPowerSeries.coeff_X, ite_eq_right, zero_mul]
       intro e
       exact hk (Finsupp.single_left_injective one_ne_zero e)
     · simp

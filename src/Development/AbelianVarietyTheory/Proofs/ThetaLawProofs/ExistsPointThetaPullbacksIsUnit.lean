@@ -144,7 +144,7 @@ theorem exists_pt_isUnit : Out.Laws → ∀ (K : Type) [Field K] [IsAlgClosed K]
         rw [Fin.sum_univ_four] at h
         rw [Fin.prod_univ_four, ← zpow_add, ← zpow_add, ← zpow_add, h]
         split_ifs <;> simp
-      simp only [e₃, Finset.prod_ite_eq', Finset.mem_univ, if_true]
+      simp only [e₃, Finset.prod_ite_eq', Finset.mem_univ, ite_true]
     rw [e₁, e₂, hu, inv_mul_cancel_right]
   refine ⟨y, fun p J hJ r => ?_⟩
   refine isUnit_gs_of_mem x.th _ p (hJ _) ?_

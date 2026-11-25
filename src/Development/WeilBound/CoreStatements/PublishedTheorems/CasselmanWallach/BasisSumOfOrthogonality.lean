@@ -111,7 +111,7 @@ lemma key {κ c x₀ R : ℝ} {s : ℕ}
     linarith
   have hn : 0 ≤ ‖h‖ ^ 2 := by positivity
   by_cases hx : ν < x₀
-  · rw [if_pos hx]
+  · rw [ite_eq_left hx]
     have hp0 := phi_nonneg s R ν
     have hp1 := phi_le_one (s := s) hR hν
     have hbd : phiR s R ν * (ν - κ + c) ≤ x₀ + |κ| + c := by
@@ -120,7 +120,7 @@ lemma key {κ c x₀ R : ℝ} {s : ℕ}
       · nlinarith [abs_nonneg κ, mul_nonpos_of_nonneg_of_nonpos hp0 h0]
     have := mul_le_mul_of_nonneg_right hbd hn
     linarith [hN h]
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     have hA := hA12 ν h (not_lt.mp hx) hh
     by_cases hνR : ν < R
     · rw [phi_eq hν hνR]

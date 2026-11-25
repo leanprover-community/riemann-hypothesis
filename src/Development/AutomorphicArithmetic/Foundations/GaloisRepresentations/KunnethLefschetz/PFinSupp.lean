@@ -68,7 +68,7 @@ private theorem step {l : ℕ} [Fact l.Prime] {k : Type} [Field k] (hP : Pairs) 
   have hnat := G.nat hpt hpy U'.ι (𝟙 _) rfl hpb (zero_add _) (oneV l (S k))
   rw [pbi] at hnat
   have hpt' : G.pt d y = G.g hpy (zero_add _) (oneV l (S k)) := by
-    simp only [GysQ.cls, dif_pos hpy]
+    simp only [GysQ.cls, dite_eq_left hpy]
   rw [map_sub, map_smul, hpt', hnat, ← map_smul, ← hra, ha, sub_self]
 
 end UpperTheory.Gal.KunnethLefschetz

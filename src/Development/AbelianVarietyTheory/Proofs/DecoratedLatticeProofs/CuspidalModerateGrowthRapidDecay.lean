@@ -406,7 +406,7 @@ theorem cuspDecayBound : GlobalTheory.Published.CuspDecayBound := by
     by_cases hδ : δ₀ ≤ δ
     · exact Or.inl hδ
     right
-    push_neg at hδ
+    push Not at hδ
     have hδn' : ¬ δn ≤ δ := fun h => absurd (hδ.trans_le (min_le_left _ _)) (not_lt.2 h)
     obtain ⟨r, C₀, hC₀, hN⟩ := hcase.resolve_left hδn'
     have hsmall : Cn' * δ ≤ δ₁ := by

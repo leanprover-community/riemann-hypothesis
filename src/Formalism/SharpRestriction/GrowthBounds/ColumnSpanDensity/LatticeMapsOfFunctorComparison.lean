@@ -57,29 +57,29 @@ theorem Ar_le_AHH {n' : ℕ} (m : ℕ) (hm : 1 ≤ m) (TT : Finset (Fin n')) (A 
     intro s
     rw [h0, Finset.sum_singleton]
     by_cases hs : s ∈ TT
-    · have hA : ex A s = A ⟨s, hs⟩ := dif_pos hs
-      have hB : ex B s = B ⟨s, hs⟩ := dif_pos hs
+    · have hA : ex A s = A ⟨s, hs⟩ := dite_eq_left hs
+      have hB : ex B s = B ⟨s, hs⟩ := dite_eq_left hs
       have f0 : flatW m (fun s => A s - j s) (fun s => B s - j s) s 0 = ((A ⟨s, hs⟩ - j ⟨s, hs⟩ : ℕ) : ℤ) := by
         simp [flatW, hs]
       have fl : flatW m (fun s => A s - j s) (fun s => B s - j s) s (Fin.last m) =
           -((B ⟨s, hs⟩ - j ⟨s, hs⟩ : ℕ) : ℤ) := by
         simp [flatW, hs, hl]
-      rw [if_pos hs]
+      rw [ite_eq_left hs]
       unfold lamAt hhDeg
-      rw [if_pos rfl, hA, hB]
+      rw [ite_eq_left rfl, hA, hB]
       by_cases he : Even s.val
-      · rw [if_pos he, if_pos he, f0]
+      · rw [ite_eq_left he, ite_eq_left he, f0]
         exact_mod_cast Nat.sub_le _ _
-      · rw [if_neg he, if_neg he]
+      · rw [ite_eq_right he, ite_eq_right he]
         rw [Fin.rev_zero, fl, neg_neg]
         exact_mod_cast Nat.sub_le _ _
     · have hz : ∀ i, flatW m (fun s => A s - j s) (fun s => B s - j s) s i = 0 := fun i => by
         simp [flatW, hs]
-      rw [if_neg hs]
+      rw [ite_eq_right hs]
       unfold lamAt
       by_cases he : Even s.val
-      · rw [if_pos he, hz]
-      · rw [if_neg he]
+      · rw [ite_eq_left he, hz]
+      · rw [ite_eq_right he]
         rw [hz, neg_zero]
   unfold Ar AHH
   calc _ ≤ ∑ s : Fin n', (if s ∈ TT then (hhDeg (ex A) (ex B) s true : ℤ) else 0) :=

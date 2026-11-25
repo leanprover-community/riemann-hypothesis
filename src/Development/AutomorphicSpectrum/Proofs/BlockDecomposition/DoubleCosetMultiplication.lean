@@ -71,9 +71,9 @@ theorem hint_coset {K I : Subgroup G} (hIK : I ≤ K) {u : G → ℂ} (z₀ : G)
     constructor
     · rintro ⟨h, -⟩
       have h' : u (z₀ * g) = u z₀ := h z₀
-      rw [hu, hu, inv_mul_cancel, if_pos (one_mem _), inv_mul_cancel_left] at h'
+      rw [hu, hu, inv_mul_cancel, ite_eq_left (one_mem _), inv_mul_cancel_left] at h'
       by_contra hg
-      rw [if_neg hg] at h'
+      rw [ite_eq_right hg] at h'
       exact zero_ne_one h'
     · intro hg
       refine ⟨fun x => ?_, hIK hg⟩
@@ -83,9 +83,9 @@ theorem hint_coset {K I : Subgroup G} (hIK : I ≤ K) {u : G → ℂ} (z₀ : G)
       simp only [this]
   unfold hint
   rw [hR, finsum_eq_single _ (z₀ : G ⧸ I)]
-  · rw [hu, if_pos (QuotientGroup.eq.1 (QuotientGroup.out_eq' _).symm), mul_one]
+  · rw [hu, ite_eq_left (QuotientGroup.eq.1 (QuotientGroup.out_eq' _).symm), mul_one]
   · intro q hq
-    rw [hu, if_neg]
+    rw [hu, ite_eq_right]
     intro h
     apply hq
     rw [← QuotientGroup.out_eq' q]
@@ -101,15 +101,15 @@ theorem hint_conv {K I : Subgroup G} (hIK : I ≤ K) {t t' : G}
     hint K (fun z => (if z ∈ dc I t then (1 : ℂ) else 0) * (if z⁻¹ * m ∈ dc I t' then 1 else 0)) =
       ((I.relIndex K : ℕ) : ℂ)⁻¹ * (if m ∈ dc I (t * t') then 1 else 0) := by
   by_cases hm : m ∈ dc I (t * t')
-  · rw [if_pos hm, mul_one]
+  · rw [ite_eq_left hm, mul_one]
     obtain ⟨i, hi, i', hi', rfl⟩ := hm
     refine hint_coset hIK (i * t) fun z => ?_
     by_cases hz : (i * t)⁻¹ * z ∈ I
     · have h1 : z ∈ dc I t := ⟨i, hi, _, hz, by group⟩
       have h2 : z⁻¹ * (i * (t * t') * i') ∈ dc I t' :=
         ⟨((i * t)⁻¹ * z)⁻¹, inv_mem hz, i', hi', by group⟩
-      rw [if_pos h1, if_pos h2, if_pos hz, one_mul]
-    · rw [if_neg hz]
+      rw [ite_eq_left h1, ite_eq_left h2, ite_eq_left hz, one_mul]
+    · rw [ite_eq_right hz]
       by_cases h1 : z ∈ dc I t
       · by_cases h2 : z⁻¹ * (i * (t * t') * i') ∈ dc I t'
         · exfalso
@@ -125,15 +125,15 @@ theorem hint_conv {K I : Subgroup G} (hIK : I ≤ K) {t t' : G}
           have := inv_mul_mem_of_dc hf hc h1' h2'
           have e : (i * t)⁻¹ * z = t⁻¹ * (i⁻¹ * z) := by group
           rwa [e]
-        · rw [if_neg h2, mul_zero]
-      · rw [if_neg h1, zero_mul]
-  · rw [if_neg hm, mul_zero]
+        · rw [ite_eq_right h2, mul_zero]
+      · rw [ite_eq_right h1, zero_mul]
+  · rw [ite_eq_right hm, mul_zero]
     refine hint_zero K fun z => ?_
     by_cases h1 : z ∈ dc I t
     · by_cases h2 : z⁻¹ * m ∈ dc I t'
       · exact absurd (mem_dc_mul hf h1 h2) hm
-      · rw [if_neg h2, mul_zero]
-    · rw [if_neg h1, zero_mul]
+      · rw [ite_eq_right h2, mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
 
 end Abstract
 
@@ -264,9 +264,9 @@ theorem dcos_mul_eq {a b : ℕ} (w : Pl E) (t : GLw a w) (s : GLw b w) (y : GLw 
   unfold dcos
   by_cases h1 : ∃ x ∈ iwGL a w, ∃ z ∈ iwGL a w, y.1 = x * t * z
   · by_cases h2 : ∃ x ∈ iwGL b w, ∃ z ∈ iwGL b w, y.2 = x * s * z
-    · rw [if_pos h1, if_pos h2, if_pos (key.2 ⟨h1, h2⟩), one_mul]
-    · rw [if_neg h2, if_neg fun h => h2 (key.1 h).2, mul_zero]
-  · rw [if_neg h1, if_neg fun h => h1 (key.1 h).1, zero_mul]
+    · rw [ite_eq_left h1, ite_eq_left h2, ite_eq_left (key.2 ⟨h1, h2⟩), one_mul]
+    · rw [ite_eq_right h2, ite_eq_right fun h => h2 (key.1 h).2, mul_zero]
+  · rw [ite_eq_right h1, ite_eq_right fun h => h1 (key.1 h).1, zero_mul]
 
 theorem dcosMul : DcosMul := by
   intro E _ _ _ w ϖ hϖ a b x x' y y' hx hx' hy hy'

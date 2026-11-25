@@ -262,7 +262,7 @@ lemma exists_entire : ∃ B : ℝ, 0 < B ∧ ∀ (q : ℕ) [NeZero q] (χ : Diri
       have h2 : LFunction (1 : DirichletCharacter ℂ q) s ≠ 0 :=
         LFunction_ne_zero_of_one_le_re _ (Or.inr h1) hs.le
       have h3 := sub_ne_zero.2 h1
-      rw [deriv_LFunctionTrivChar₁_apply_of_ne_one q h1, hF s h1, if_pos rfl, LFunctionTrivChar]
+      rw [deriv_LFunctionTrivChar₁_apply_of_ne_one q h1, hF s h1, ite_eq_left rfl, LFunctionTrivChar]
       field_simp
   · refine ⟨LFunction χ, differentiable_LFunction hχ, fun z hz => ?_, fun _ _ => le_rfl,
       fun z => by simp [hχ], fun _ _ => rfl, fun s _ => by simp [hχ]⟩

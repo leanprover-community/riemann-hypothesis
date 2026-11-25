@@ -83,8 +83,8 @@ theorem Deep.ext {n M : ℕ} (hM : M = n + 1) {P : HeightOneSpectrum (𝓞 E)} {
   · rw [extGL_val]
     refine Fin.lastCases ?_ (fun i => ?_) a <;> refine Fin.lastCases ?_ (fun j => ?_) b
     · simp [extM_last_last]
-    · rw [extM_last_castSucc, if_neg (Fin.castSucc_lt_last j).ne', map_zero]
-    · rw [extM_castSucc_last, if_neg (Fin.castSucc_lt_last i).ne, map_zero]
+    · rw [extM_last_castSucc, ite_eq_right (Fin.castSucc_lt_last j).ne', map_zero]
+    · rw [extM_castSucc_last, ite_eq_right (Fin.castSucc_lt_last i).ne, map_zero]
     · rw [extM_castSucc, hw.1 P' h1 h2]
       simp [Fin.castSucc_inj]
   · rw [extGL_val]
@@ -358,10 +358,10 @@ theorem isExt_iff (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I
     refine ⟨TwP.extM_mul_incl hN g' _ fun b j => ?_, TwP.extM_mulVec_fix hN g' _ fun b hb => ?_⟩
     · refine (congrArg φ (TilX.iXm_apply hiX hN b j)).trans ?_
       by_cases h : b = Br.iC hN j
-      · rw [if_pos h]
-        exact (congrArg φ (if_pos h)).trans φ.map_one
-      · rw [if_neg h]
-        exact (congrArg φ (if_neg h)).trans φ.map_zero
+      · rw [ite_eq_left h]
+        exact (congrArg φ (ite_eq_left h)).trans φ.map_one
+      · rw [ite_eq_right h]
+        exact (congrArg φ (ite_eq_right h)).trans φ.map_zero
     · show φ (TC.z0 X u b) = 0
       rw [e, lastCoordinateUniformizerVector_eq_single, Pi.single_eq_of_ne hb]
       exact φ.map_zero

@@ -238,13 +238,6 @@ theorem ext_real_cast (hV : X.R.models_cV) (A : GlobalTheory.NJoin.Agree X M rep
 
 end Forms
 
-section Canon
-
-variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} (X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp)
-
-
-end Canon
-
 end GlobalTheory.ThetaRead
 
 end

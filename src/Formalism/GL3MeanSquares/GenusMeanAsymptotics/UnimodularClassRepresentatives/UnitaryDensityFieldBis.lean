@@ -167,9 +167,9 @@ theorem cnt_unit (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFi
       exact hP.isPrime
     have heta : etaF K F (P.comap ι) = -1 := by
       unfold etaF
-      rw [if_pos hpr]
+      rw [ite_eq_left hpr]
     unfold Formalism.HermitianLatticesTheory.eulerFac
-    rw [if_pos hc, inv_inv, heta, ← hN]
+    rw [ite_eq_left hc, inv_inv, heta, ← hN]
     push_cast
     rw [Real.sqrt_sq (by positivity)]
   · have hsplit := extP_split hK hF hP hc
@@ -206,7 +206,7 @@ theorem cnt_unit (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFi
         exact hr
     have heta : etaF K F (P.comap ι) = 1 := by
       unfold etaF
-      rw [if_neg hpr]
+      rw [ite_eq_right hpr]
     have hx : 0 < 1 - (Ideal.absNorm (P.comap ι) : ℝ) ^ (-(M : ℤ)) := by
       have hlt : (Ideal.absNorm (P.comap ι) : ℝ) ^ (-(M : ℤ)) < 1 := by
         rw [zpow_neg, zpow_natCast]
@@ -214,7 +214,7 @@ theorem cnt_unit (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFi
       linarith
     have hh : (-(1 : ℝ) / 2 + -(1 : ℝ) / 2) = -1 := by norm_num
     unfold Formalism.HermitianLatticesTheory.eulerFac
-    rw [if_neg hc, if_neg hc2, hNc, ← hN, heta, ← Real.rpow_add hx, hh, Real.rpow_neg_one, inv_inv,
+    rw [ite_eq_right hc, ite_eq_right hc2, hNc, ← hN, heta, ← Real.rpow_add hx, hh, Real.rpow_neg_one, inv_inv,
       one_pow, one_mul]
 
 theorem exists_norm (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)}

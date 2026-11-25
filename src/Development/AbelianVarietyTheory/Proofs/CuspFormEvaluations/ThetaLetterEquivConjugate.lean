@@ -68,13 +68,13 @@ variable {ι : Type} {σ : ι → ι} {Ψ : ι → Prop} {dim : ι → ℕ} {p q
 theorem halfRowEquiv_of_mem {τ : ι} (h : Ψ τ) (i : Fin (dim τ)) :
     halfRowEquiv hσ hΨ hp hq ⟨τ, i⟩ = (⟨τ, h⟩, Sum.inl (i.cast (hp _ h))) := by
   unfold halfRowEquiv
-  simp only [Equiv.coe_fn_mk, dif_pos h]
+  simp only [Equiv.coe_fn_mk, dite_eq_left h]
 
 theorem halfRowEquiv_invol {τ : ι} (h : Ψ τ) (i : Fin (dim (σ τ))) :
     halfRowEquiv hσ hΨ hp hq ⟨σ τ, i⟩ = (⟨τ, h⟩, Sum.inr (i.cast (hq _ h))) := by
   have hn : ¬ Ψ (σ τ) := fun h' => (hΨ τ).2 h' h
   unfold halfRowEquiv
-  simp only [Equiv.coe_fn_mk, dif_neg hn]
+  simp only [Equiv.coe_fn_mk, dite_eq_right hn]
   exact Prod.ext (Subtype.ext (hσ τ)) rfl
 
 noncomputable def typeLetterEquiv : Formalism.L2.Pj.Letter ι dim n ≃ Var {τ // Ψ τ} p q (Fin n) :=
@@ -111,7 +111,7 @@ theorem rename_lap_one {τ : ι} (h : Ψ τ) (i : Fin (dim τ)) (j : Fin (dim (�
     fun b => typeLetterEquiv_apply hσ hΨ hp hq (halfRowEquiv_invol hσ hΨ hp hq h j) b
   rw [laplacian_apply]
   simp only [Formalism.L2.Pj.lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
   simp only [LinearMap.sum_apply, LinearMap.comp_apply, Derivation.coeFn_coe, map_sum]
   refine Finset.sum_congr rfl fun b _ => ?_
@@ -322,13 +322,13 @@ theorem HHa_eq_zero_or_rowHighest [CharZero K] [Fintype ι] [Fintype {τ // Ψ �
           rw [Finset.sum_eq_single b]
           · simp
           · intro k _ hk
-            rw [if_neg]
+            rw [ite_eq_right]
             intro h
             exact hk (congrArg (fun x : Formalism.L2.Pj.Letter ι dim n => x.2.2) h).symm
           · simp
         · rw [Finset.sum_eq_zero, add_zero]
           intro k _
-          rw [if_neg]
+          rw [ite_eq_right]
           intro h
           exact hl ⟨k, h⟩
       have hall : ∀ t : K, bind₁ (fun s => X s + ∑ k : Fin n,

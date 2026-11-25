@@ -148,7 +148,7 @@ theorem isIntB_of_trace_mem :
 
     simp only [map_smul, Finsupp.smul_apply, smul_eq_mul, map_sum, Finset.sum_apply', Module.Basis.repr_self, Finsupp.single_apply, hdet] at h1
     rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk]) (by simp)] at h1
-    simp only [if_true, mul_one] at h1
+    simp only [ite_true, mul_one] at h1
     have hne : algebraMap ℚ Q (Algebra.discr ℚ bL) ≠ 0 := (map_ne_zero _).2 hd
     rw [← h1, ← mul_assoc, inv_mul_cancel₀ hne, one_mul]
   show B.repr E j ∈ v.adicCompletionIntegers ℚ
@@ -667,7 +667,7 @@ theorem finiteRing_sq_sub_mul_sq_eq_of_card (n : ℕ) : ∀ (S : Type) [CommRing
 
   obtain ⟨x, hx0, hx2⟩ : ∃ x : S, x ≠ 0 ∧ x ^ 2 = 0 := by
     rw [isReduced_iff] at hred
-    push_neg at hred
+    push Not at hred
     obtain ⟨y, ⟨k, hk⟩, hy⟩ := hred
     classical
     have hex : ∃ m, y ^ m = 0 := ⟨k, hk⟩

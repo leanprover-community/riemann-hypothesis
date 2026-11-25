@@ -81,7 +81,7 @@ theorem hchar_eq_one (H : GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne) (�
           · rw [norm_one]; exact Real.exp_le_one_iff.2 (by linarith [x0 w])
       · push Not at hw
         have hl := h w (by simpa using hw.2) (not_not.1 hw.1)
-        rw [Set.indicator_of_notMem hw.1, Set.indicator_of_notMem hw.2, eulerFactor, if_pos (show χ.UnrAt w from fun y _ => hl y),
+        rw [Set.indicator_of_notMem hw.1, Set.indicator_of_notMem hw.2, eulerFactor, ite_eq_left (show χ.UnrAt w from fun y _ => hl y),
           show χ.val w = 1 from hl _, xc]
         simpa using exp_le_inv (x1 w)
     refine le_trans (Real.exp_le_exp.2 ?_) (le_of_tendsto_of_tendsto' s1.rexp (hP s hs).norm fun T =>

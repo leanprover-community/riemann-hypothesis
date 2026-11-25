@@ -9,24 +9,6 @@ namespace Formalism.FourierDecayAlt.P.Wd2
 
 open Matrix Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.W Formalism.FourierDecayAlt.Wd
 
-section Units
-
-variable {A S : Type} [Ring A] [Fintype S] [DecidableEq S]
-
-end Units
-
-section Entries
-
-variable {K B : Type} [CommRing K] [Ring B] [Algebra K B]
-
-end Entries
-
-section Slots
-
-variable {K A S : Type} [Field K] [Ring A] [Algebra K A] [Fintype S] [DecidableEq S]
-
-end Slots
-
 section Start
 
 variable {K A S : Type} [Field K] [Ring A] [Algebra K A] [Fintype S] [DecidableEq S]

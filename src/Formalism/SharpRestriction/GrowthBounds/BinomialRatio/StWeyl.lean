@@ -72,7 +72,7 @@ theorem numBranch_of {D : Formalism.BasicNotions.D7} (h2 : adm2 D) (h3 : adm3 D)
     rw [hF, Finset.mem_filter] at hnu
     have hnu2 := hnu.2
     have hA : Antitone nu := antitone_of_interlace hanti nu hnu2
-    rw [if_pos, wdim_shift, wdim_nat, h3 ℚ r nu hA]
+    rw [ite_eq_left, wdim_shift, wdim_nat, h3 ℚ r nu hA]
     intro i
     show mu i.succ ≤ (nu i : ℤ) + c ∧ (nu i : ℤ) + c ≤ mu i.castSucc
     have h1 := hnu2 i
@@ -83,7 +83,7 @@ theorem numBranch_of {D : Formalism.BasicNotions.D7} (h2 : adm2 D) (h3 : adm3 D)
     rw [Function.mem_support] at hlam
     have hcond : ∀ i : Fin r, mu i.succ ≤ lam i ∧ lam i ≤ mu i.castSucc := by
       by_contra hn
-      exact hlam (if_neg hn)
+      exact hlam (ite_eq_right hn)
     rw [Finset.coe_image]
     refine ⟨fun i => (lam i - c).toNat, ?_, ?_⟩
     · rw [Finset.mem_coe, hF, Finset.mem_filter, Fintype.mem_piFinset]

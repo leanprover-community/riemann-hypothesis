@@ -170,10 +170,10 @@ theorem linMon_aeval_monomial {ι : Type} [Fintype ι] [DecidableEq ι] (cp : ι
   rw [hS, hP, one_mul]
   by_cases hEq : a = α
   · subst hEq
-    rw [tsub_self, if_pos rfl, if_pos rfl, Finsupp.prod_fintype _ _ (fun _ => Nat.factorial_zero)]
+    rw [tsub_self, ite_eq_left rfl, ite_eq_left rfl, Finsupp.prod_fintype _ _ (fun _ => Nat.factorial_zero)]
     push_cast
     exact Finset.prod_congr rfl fun l _ => by rw [Nat.descFactorial_self]
-  · rw [if_neg hEq]
+  · rw [ite_eq_right hEq]
     split_ifs with h0
     · have hle : α ≤ a := tsub_eq_zero_iff_le.mp h0
       obtain ⟨l, hl⟩ : ∃ l, α l < a l := by
@@ -299,7 +299,7 @@ theorem cro_coeff_lin (G : FGLaw k d) (i j : Fin d) :
       if i = j then 1 else 0 := by
     by_cases hij : i = j
     · simp [hij]
-    · rw [if_neg hij, if_neg]
+    · rw [ite_eq_right hij, ite_eq_right]
       intro hs
       apply hij
       have h2 := congrArg (fun D : Fin 1 × Fin d →₀ ℕ => D ((0 : Fin 1), i)) hs
@@ -334,7 +334,7 @@ theorem cro_coeff_lin (G : FGLaw k d) (i j : Fin d) :
         subst hs0
         simp [zero_pow (Finsupp.mem_support_iff.mp hs)]
       rw [hz, map_zero]
-    · push_neg at hx
+    · push Not at hx
       have hprod : (D.prod fun s m =>
           (fun p : Fin 2 × Fin d => (![0, pt k d 0] : Fin 2 → Pt k 1 d) p.1 p.2) s ^ m) =
           monomial (∑ s ∈ D.support, Finsupp.single ((0 : Fin 1), s.2) (D s)) (1 : k) := by
@@ -349,7 +349,7 @@ theorem cro_coeff_lin (G : FGLaw k d) (i j : Fin d) :
         subst h1
         first
           | simp [pt, MvPowerSeries.X_pow_eq]
-      rw [hprod, MvPowerSeries.coeff_monomial, if_neg]
+      rw [hprod, MvPowerSeries.coeff_monomial, ite_eq_right]
       intro heq
       apply hD
       ext ⟨s1, s2⟩
@@ -364,7 +364,7 @@ theorem cro_coeff_lin (G : FGLaw k d) (i j : Fin d) :
         · simp [Finsupp.single_apply] at hev ⊢
           split_ifs at hev ⊢ <;> omega
       · intro s hs hne
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h2
         apply hne
         obtain ⟨t1, t2⟩ := s
@@ -699,25 +699,25 @@ theorem crude_val {T : CDVR} {d : ℕ} {O : Type} [CommRing O] [StarRing O] (B :
     simp only [φ]
     dsimp only at hi ⊢
     by_cases hg : ∃ i'', colP Dw hn ⟨τ', i''⟩ = b'
-    · rw [if_pos hg, Crude.Lin_linForm]
+    · rw [ite_eq_left hg, Crude.Lin_linForm]
       congr 1
       by_cases hbb : b = b'
       · subst hbb
         obtain ⟨i'', hi''⟩ := hg
         have hp : (⟨τ, i⟩ : Lt1 Dw) = ⟨τ', i''⟩ := hβ (hi.trans hi''.symm)
         obtain ⟨rfl, -⟩ := Sigma.mk.inj_iff.1 hp
-        rw [if_pos rfl, hW τ i' i0]
+        rw [ite_eq_left rfl, hW τ i' i0]
         by_cases h : i0 = i'
         · subst h; simp
-        · rw [if_neg h, if_neg]
+        · rw [ite_eq_right h, ite_eq_right]
           intro hl
           cases hl
           exact h rfl
-      · rw [if_neg hbb, if_neg]
+      · rw [ite_eq_right hbb, ite_eq_right]
         intro hl
         cases hl
         exact hbb rfl
-    · rw [if_neg hg, if_neg]
+    · rw [ite_eq_right hg, ite_eq_right]
       · simpa using Crude.div_Lin_C (n := n) b (uvec ⟨τ, i0⟩) (0 : T.Fr)
       · intro hl
         cases hl
@@ -744,11 +744,11 @@ theorem crude_val {T : CDVR} {d : ℕ} {O : Type} [CommRing O] [StarRing O] (B :
   rw [Crude.nabValN_eq_lin B h hg w0 k f (fun ℓ : LtN Dw n => ℓ.2.2) (fun ℓ => uvec ⟨ℓ.1, ℓ.2.1⟩)
     (P1 Dw T a hn) (DF Dw a) hPdeg hOrd, Finset.sum_eq_single α]
   · rw [hfdef, Crude.linMon_aeval_monomial _ _ φ hφ0 _ hdual α α
-      (fun l hl => Crude.Pmin_good (m := α) (hm := hαmem) (ℓ := l) (hℓ := hl)), if_pos rfl, hcoeff, one_mul]
+      (fun l hl => Crude.Pmin_good (m := α) (hm := hαmem) (ℓ := l) (hℓ := hl)), ite_eq_left rfl, hcoeff, one_mul]
     rfl
   · intro m hm hne
     rw [hfdef, Crude.linMon_aeval_monomial _ _ φ hφ0 _ hdual m α
-      (fun l hl => Crude.Pmin_good (m := m) (hm := hm) (ℓ := l) (hℓ := hl)), if_neg hne, mul_zero]
+      (fun l hl => Crude.Pmin_good (m := m) (hm := hm) (ℓ := l) (hℓ := hl)), ite_eq_right hne, mul_zero]
   · intro hα
     exact absurd hαmem hα
 

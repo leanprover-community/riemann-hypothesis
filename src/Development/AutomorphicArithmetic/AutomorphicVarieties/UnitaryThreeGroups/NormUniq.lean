@@ -27,7 +27,7 @@ theorem aux2 {R : Type u_1} [CommRing R] (m : ℕ) :
     Jmat R m * Jmat R m = (1 : Matrix (Fin m) (Fin m) R) := by
   ext i j
   simp only [Matrix.mul_apply, Jmat, Matrix.one_apply]
-  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Fin.rev_rev]
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_rev]
   by_cases h : i = j
   · simp [h]
   · simp [h, Ne.symm h]
@@ -116,7 +116,7 @@ private theorem thetaAut_sq (m : ℕ) (R : Type u_1) [CommRing R] :
 theorem aux11 (m : ℕ) (R : Type u_1) [CommRing R] :
     (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else thetaAut m R) =
       (1 : MulAut (GL (Fin m) R)) :=
-  if_pos rfl
+  ite_eq_left rfl
 
 theorem aux12 (m : ℕ) (R : Type u_1) [CommRing R] (s t : ℤˣ) :
     (if s * t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else thetaAut m R) =
@@ -166,7 +166,7 @@ theorem UpperTheory.Reformulated.B.TransposeInverseTheta.aux2.{u_1} :
   intro R _ m
   ext i j
   simp only [Matrix.mul_apply, UpperTheory.Reformulated.B.TransposeInverseTheta.Jmat, Matrix.one_apply]
-  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Fin.rev_rev]
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_rev]
   simp only [eq_comm]
 
 noncomputable def UpperTheory.Reformulated.B.TransposeInverseTheta.Jgl.{u_1} :
@@ -258,7 +258,7 @@ theorem UpperTheory.Reformulated.B.TransposeInverseTheta.aux11.{u_1} :
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.TransposeInverseTheta.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 private theorem UpperTheory.Reformulated.B.TransposeInverseTheta.thetaAut_mul_self (m : ℕ) (R : Type*) [CommRing R] :
     UpperTheory.Reformulated.B.TransposeInverseTheta.thetaAut m R * UpperTheory.Reformulated.B.TransposeInverseTheta.thetaAut m R = 1 := by

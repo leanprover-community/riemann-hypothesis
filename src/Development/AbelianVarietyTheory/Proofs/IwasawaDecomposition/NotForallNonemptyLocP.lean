@@ -163,12 +163,6 @@ end Restricted
 
 variable {D : D7} {X : ThetaX D}
 
-section Collapse
-
-open MeasureTheory
-
-end Collapse
-
 end GlobalTheory.SmallThetaModules
 
 end

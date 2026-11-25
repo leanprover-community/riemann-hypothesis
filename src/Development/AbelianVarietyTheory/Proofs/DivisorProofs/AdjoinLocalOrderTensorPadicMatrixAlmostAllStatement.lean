@@ -988,7 +988,7 @@ theorem basisLoc : ∀ (F B : Type) [Field F] [NumberField F] [Ring B] [Algebra 
     have h' := congrArg π h
 
     rw [hsum, map_sum, hπ1] at h'
-    simp only [hπ2, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h'
+    simp only [hπ2, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h'
     exact h'
   have hli : LinearIndependent (cenOrder ℓ F) v := by
     rw [Fintype.linearIndependent_iff]

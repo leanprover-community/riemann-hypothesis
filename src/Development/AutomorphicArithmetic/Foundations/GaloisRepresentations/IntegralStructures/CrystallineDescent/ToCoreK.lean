@@ -976,7 +976,7 @@ theorem wtId_holds : WtId := by
       congr 1
       funext k
       have h1 := hL (Fin.castAdd t k)
-      simp only [Fin.coe_castAdd, k.2, dif_pos, Fin.eta] at h1
+      simp only [Fin.coe_castAdd, k.2, dite_eq_left, Fin.eta] at h1
       simp only [Function.comp_apply, Fin.coe_castAdd]
       omega
     · rw [multiset_map_fin_rev_eq (fun i : Fin t => -p i)]
@@ -997,7 +997,7 @@ theorem wtId_holds : WtId := by
       congr 1
       funext k
       have h1 := hL (Fin.castAdd t k)
-      simp only [Fin.coe_castAdd, k.2, dif_pos, Fin.eta] at h1
+      simp only [Fin.coe_castAdd, k.2, dite_eq_left, Fin.eta] at h1
       simp only [Function.comp_apply, Fin.coe_castAdd]
       have hk := k.2
       omega
@@ -1218,8 +1218,8 @@ theorem UpperTheory.Gal.TP.Sub.upOf_holds :
       ∃ w, τ = ComplexEmbedding.conjugate (Bs.emb w).1 ∧ lam' τ = (l' w).dual := by
     intro τ
     rcases hw₀ τ with h | h
-    · exact Or.inl ⟨w₀ τ, h, if_pos h⟩
-    · exact Or.inr ⟨w₀ τ, h, if_neg fun h' => hne (w₀ τ) (w₀ τ) (h'.symm.trans h)⟩
+    · exact Or.inl ⟨w₀ τ, h, ite_eq_left h⟩
+    · exact Or.inr ⟨w₀ τ, h, ite_eq_right fun h' => hne (w₀ τ) (w₀ τ) (h'.symm.trans h)⟩
   refine ⟨lam', hL.aut, fun τ => ?_, hD.alg, fun τ => ?_, ?_⟩
   · rcases key τ with ⟨w, rfl, h⟩ | ⟨w, rfl, h⟩
     · rw [h]

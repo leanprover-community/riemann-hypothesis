@@ -99,12 +99,6 @@ variable {w : LB.Iso A B} {K K' : Type} [Fintype K] [Fintype K']
 
 end General
 
-section Group
-
-variable {S S' : Scheme.{0}}
-
-end Group
-
 end GlobalTheory.GtCubeCompare
 
 end

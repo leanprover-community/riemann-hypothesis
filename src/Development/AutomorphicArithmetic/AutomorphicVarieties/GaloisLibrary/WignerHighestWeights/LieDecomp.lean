@@ -17,7 +17,7 @@ private theorem scalarDecomp {E : Type} [Field E] [NumberField E] [_root_.Number
     conv_lhs => rw [← Finset.univ_sum_single x]
     refine Finset.sum_congr rfl fun w _ => ?_
     unfold atEmb
-    rw [if_pos (by rw [InfinitePlace.mk_embedding])]
+    rw [ite_eq_left (by rw [InfinitePlace.mk_embedding])]
     congr 1 <;> simp
   rw [← Finset.sum_fiberwise Finset.univ InfinitePlace.mk]
 

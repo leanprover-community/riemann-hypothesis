@@ -81,7 +81,7 @@ theorem hc_isChar : ∀ (F : Type) [Field F] [Finite F], ∀ (a b n : ℕ), n = 
   rw [gal_id_apply]
   unfold ext0
   by_cases hy : y⁻¹ * x * y ∈ H
-  · rw [dite_eq_left hy, if_pos ((hH _).1 hy), Pi.mul_apply, hπ]
-  · rw [dite_eq_right hy, if_neg (fun e => hy ((hH _).2 e))]
+  · rw [dite_eq_left hy, ite_eq_left ((hH _).1 hy), Pi.mul_apply, hπ]
+  · rw [dite_eq_right hy, ite_eq_right (fun e => hy ((hH _).2 e))]
 
 end GlobalTheory.Shin.HCChar

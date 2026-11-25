@@ -726,9 +726,9 @@ theorem exists_hermLine_of_local_smooth : ∀ (K : Type) [Fintype K] (ι : K →
       Real.contDiff_exp.comp_contDiffOn
         (hg.comp_contDiffOn GlobalTheory.CompanionTheory.Ar.Flat.PlaceWeightSmooth.prMap_contDiffOn)
     refine h1.congr fun z hz => ?_
-    exact if_pos hz
+    exact ite_eq_left hz
   · have h2 : (CExt.expLine ι g).h z = Real.exp (g (GlobalTheory.CompanionTheory.Ar.Flat.PlaceWeightSmooth.prMap z)) :=
-      if_pos hz.1
+      ite_eq_left hz.1
     rw [h2, Real.log_exp, hgu z hz]
 
 end GlobalTheory.CompanionTheory.Ar.PB

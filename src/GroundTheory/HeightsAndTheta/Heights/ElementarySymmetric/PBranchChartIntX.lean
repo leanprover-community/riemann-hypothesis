@@ -179,7 +179,7 @@ theorem BranchChartInt.proof (hA : HolomorphicFibreSumInt.Statement) (hS : Branc
   have hae : ∀ᵐ t ∂(volume.restrict Δ), (g ∘ γ.toFun) t * ReciprocityTheory.AnForm.maDens (fun k => φ k ∘ γ.toFun) t =
       Complex.normSq (jacC τ t).det * H t := by
     filter_upwards [hS n d J A p γ hJ hdim hfin, ae_restrict_mem measurableSet_ball] with t hts htΔ
-    simp only [hH, dif_pos hts, Function.comp_apply]
+    simp only [hH, dite_eq_left hts, Function.comp_apply]
     rw [maDens_branch_eq γ hφ htΔ hts.choose_spec]
     ring
   have hint : IntegrableOn (fun t => Complex.normSq (jacC τ t).det * H t) Δ :=

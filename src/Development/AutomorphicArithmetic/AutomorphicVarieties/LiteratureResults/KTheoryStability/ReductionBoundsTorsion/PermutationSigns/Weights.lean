@@ -19,12 +19,12 @@ variable {L : Type} [Field L] [NumberField L]
 theorem tmC_pos {N q : ℕ} {σ : Equiv.Perm (Fin q)} {w : Fin q → InfinitePlace L}
     (hw : ∀ i, w (σ i) = w i) (Y : Fin q → HS L N) :
     tmC σ w Y = ∑ a : Fin q → Fin N, ∏ i, mat (Y i) (w i) (a i) (a (σ i)) := by
-  rw [tmC, if_pos hw]
+  rw [tmC, ite_eq_left hw]
   simp [ent]
 
 theorem tmC_neg {N q : ℕ} {σ : Equiv.Perm (Fin q)} {w : Fin q → InfinitePlace L}
     (hw : ¬ ∀ i, w (σ i) = w i) (Y : Fin q → HS L N) : tmC σ w Y = 0 := by
-  rw [tmC, if_neg hw]; rfl
+  rw [tmC, ite_eq_right hw]; rfl
 
 theorem alt_apply {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {q : ℕ}
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin q => E) ℝ) (v : Fin q → E) :

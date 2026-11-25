@@ -41,7 +41,7 @@ theorem stepGap_eq_of_base_block : ∀ (K : Type) [Fintype K] (ι : K → Type) 
           · exfalso
             apply h0
             unfold GlobalTheory.CompanionTheory.Ar.PB.FlagModel.dy
-            rw [dite_eq_right hb, if_neg hk]
+            rw [dite_eq_right hb, ite_eq_right hk]
       simp only [hcoord]
   have hh : Real.log ((BM.hom p).h z) = Real.log ((BM.hom p).h z') := by
     cases hp : M.blk p with

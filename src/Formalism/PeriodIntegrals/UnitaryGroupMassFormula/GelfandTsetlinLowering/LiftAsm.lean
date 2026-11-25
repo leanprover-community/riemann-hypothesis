@@ -83,8 +83,8 @@ theorem lm_last_of_row {N : ℕ} (hN : 0 < N) (f : MvPolynomial (Fin N × Fin N)
   refine Finset.sum_congr rfl fun v _ => ?_
   simp only [lastW, rowW, Pi.smul_apply, Pi.single_apply, smul_eq_mul, Fin.ext_iff]
   by_cases hv : v.1.1 + 1 = N
-  · rw [if_pos hv, if_pos (by omega)]
-  · rw [if_neg hv, if_neg (by omega)]
+  · rw [ite_eq_left hv, ite_eq_left (by omega)]
+  · rw [ite_eq_right hv, ite_eq_right (by omega)]
 
 theorem lm_liftWt_last {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (mu : DomWeight n) (ω : Fin n → ℕ) :
     liftWt h lam mu ω ⟨N - 1, by omega⟩ = dLast lam mu := by
@@ -96,7 +96,7 @@ theorem lm_liftWt_inj {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (mu : DomW
   funext a
   have := congrFun he (eRow h a)
   have ha : (eRow h a).1 < n := a.isLt
-  simp only [liftWt, ha, dif_pos] at this
+  simp only [liftWt, ha, dite_eq_left] at this
   simpa [eRow] using this
 
 theorem lm_map_initMinor {r m s : ℕ} (I : Fin s → Fin r) (hs : s ≤ m) :

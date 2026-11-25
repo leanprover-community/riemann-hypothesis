@@ -500,10 +500,10 @@ theorem orth_of_dual (H : Host E) {f : ℕ} (B : Module.Basis (Fin f) (Kf H) E) 
       rfl
   constructor
   · intro e
-    rw [if_pos (heq.2 e)] at hs
+    rw [ite_eq_left (heq.2 e)] at hs
     exact hem (hs.trans (map_one em).symm)
   · intro e
-    rw [if_neg (fun x => e (heq.1 x))] at hs
+    rw [ite_eq_right (fun x => e (heq.1 x))] at hs
     exact hem (hs.trans (map_zero em).symm)
 
 theorem trace_dual_mem (H : Host E) {f : ℕ} (B : Module.Basis (Fin f) (Kf H) E) (b : Fin f → 𝓞 E)
@@ -667,8 +667,8 @@ theorem eigProj_eq_sum [CharZero K] (hcard : Nat.card (E →+* K) = Module.finra
     rw [← Finset.sum_smul]
     by_cases h : τ = σ
     · subst h
-      rw [(hb τ rfl).1 rfl, one_smul, if_pos rfl]
-    · rw [if_neg h]
+      rw [(hb τ rfl).1 rfl, one_smul, ite_eq_left rfl]
+    · rw [ite_eq_right h]
       by_cases hr : σ (r : E) = τ (r : E)
       · rw [(hb τ hr).2 (Ne.symm h), zero_smul]
       · rw [eigProj_eq_zero ρ τ r (σ (r : E)) hr hu, smul_zero]

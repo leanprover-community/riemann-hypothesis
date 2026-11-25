@@ -91,7 +91,7 @@ variable {V : ℕ → HSp D} {Mo : ℕ → Type} [∀ n, AddCommGroup (Mo n)] [�
   (comp : ∀ n, GfC (V n) → GfC (V (n + 1)) → Mo n →ₗ[ℂ] Mo (n + 1)) (v : GfC (V 0) → Mo 0)
 
 theorem ext_lt {P : ℕ → Type} [∀ j, One (P j)] {n : ℕ} (x : ∀ j : Fin n, P j) {j : ℕ} (h : j < n) : ext n x j = x ⟨j, h⟩ :=
-  dif_pos h
+  dite_eq_left h
 
 theorem ext_update {P : ℕ → Type} [∀ j, One (P j)] {n : ℕ} (x : ∀ j : Fin n, P j) (j : Fin n) (z : P j) :
     ext n (Function.update (β := fun j : Fin n => P j) x j z) = Function.update (β := P) (ext n x) (j : ℕ) z := by
@@ -120,11 +120,11 @@ theorem sum_last {A : ℕ → Type} (o : ∀ n, A n → GfC (V n)) (w : ∀ n, A
   refine Finset.sum_congr rfl fun c _ => ?_
   have e1 : ext (P := fun j => GfC (V j)) (n + 1)
       (fun j => o j (Fin.snoc (α := fun j : Fin (n + 1) => A j) c a j)) n = o n a := by
-    rw [ext, dif_pos (Nat.lt_succ_self n)]
+    rw [ext, dite_eq_left (Nat.lt_succ_self n)]
     exact congrArg (o n) (Fin.snoc_last (α := fun j : Fin (n + 1) => A j) a c)
   have e2 : ptV comp v (ext (n + 1) fun j => o j (Fin.snoc (α := fun j : Fin (n + 1) => A j) c a j)) n =
       ptV comp v (ext n fun j => o j (c j)) n := ptV_congr comp v n fun j hj => by
-    rw [ext, ext, dif_pos (Nat.lt_succ_of_lt hj), dif_pos hj]
+    rw [ext, ext, dite_eq_left (Nat.lt_succ_of_lt hj), dite_eq_left hj]
     exact congrArg (o j) (Fin.snoc_castSucc (α := fun j : Fin (n + 1) => A j) a c ⟨j, hj⟩)
   have e3 : ∏ j : Fin (n + 1), w j (Fin.snoc (α := fun j : Fin (n + 1) => A j) c a j) = w n a * ∏ j : Fin n, w j (c j) := by
     rw [Fin.prod_univ_castSucc, mul_comm]

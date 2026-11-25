@@ -842,8 +842,8 @@ theorem bcParam_eq_ubc_of_satU_eq : ∀ (L : Type) [Field L] [Valued L (WithZero
   rw [← hβ]
   congr 1
   rcases Nat.mod_two_eq_zero_or_one n with h2 | h2
-  · rw [h2, if_neg (Nat.not_odd_iff.2 h2)]; rfl
-  · rw [h2, if_pos (Nat.odd_iff.2 h2)]; rfl
+  · rw [h2, ite_eq_right (Nat.not_odd_iff.2 h2)]; rfl
+  · rw [h2, ite_eq_left (Nat.odd_iff.2 h2)]; rfl
 
 end Local
 
@@ -1141,7 +1141,7 @@ theorem sum_reps_eq {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
       show (γ : GAf L n ⧸ Umax L n) = c
       rw [← e]
       exact QuotientGroup.eq.2 hγx.1
-    · exact absurd (dif_neg hc) hc0
+    · exact absurd (dite_eq_right hc) hc0
 
 section Frame
 
@@ -1758,7 +1758,7 @@ theorem GlobalTheory.EigStr.eigString_all_of_aux41_adm7_tieLab : GlobalTheory.Pu
       (GlobalTheory.LPositivity.split_or_inert D Pp).elim
         (fun h1 => _root_.GlobalTheory.EigSplit.main_alt_alt hAF hL D P X hA h41 h7 htl i hμ j hj x hx f hf y hy hy0 hh hops Pp hG h1 d hLab)
         (fun h1 => _root_.GlobalTheory.EigInert.eigen_at_inert_alt hAF hL D P X hA h41 h7 htl i hμ j hj x hx f hf y hy hy0 hh hops Pp hG h1 d hLab)
-    simp only [s, dif_pos hc]
+    simp only [s, dite_eq_left hc]
     exact hc.choose_spec
   let B : GlobalTheory.LFun.Fam D.host.E := fun w =>
     if hB : ∃ Bw, GlobalTheory.LFun.IsSysParam D.sp.cm.sig (Formalism.IndefR.Links.Vc D j).rank
@@ -1773,7 +1773,7 @@ theorem GlobalTheory.EigStr.eigString_all_of_aux41_adm7_tieLab : GlobalTheory.Pu
       · exact _root_.GlobalTheory.EigStr.sysParam_split_alt hAF hL D P X hA h41 h7 htl i hμ j hj x hx f hf y hy hy0 hh hops s hs w hv h1
       · exact _root_.GlobalTheory.T.theta_eigen_compatibility_fourth_alt hAF hL D P X hA h41 h7 htl i hμ j hj x hx f hf y hy hy0 hh hops s hs w hv h1
     show GlobalTheory.LFun.IsSysParam D.sp.cm.sig _ _ (s w) (B w)
-    simp only [B, dif_pos hex]
+    simp only [B, dite_eq_left hex]
     exact hex.choose_spec
   refine ⟨s, ⟨B, hB, fun w hw => ?_⟩, hs⟩
   rcases GlobalTheory.LPositivity.split_or_inert D w with h1 | h1

@@ -122,8 +122,8 @@ theorem sgD_fams : ∀ (N l : ℕ), 0 < N → l.Prime → ¬ l ∣ N → (∀ d 
   intro N l hN hl hlN
   refine ⟨fun d hd => isDiamondMatrixAtLevel_of_gamma1Gamma0 hl hlN (Betti.isDiam_sgD hN.ne' hl.ne_zero hd), fun q => ?_, ?_, fun d => ?_⟩
   · rw [Fin.sum_univ_castSucc]
-    simp only [opL, Finset.sum_range, GlobalTheory.HeckeFamilyMatrices.tqFam, Fin.coe_castSucc, Fin.is_lt, if_true, Fin.val_last,
-      lt_irrefl, if_false, GlobalTheory.HeckeFamilyMatrices.dg, GlobalTheory.HeckeFamilyMatrices.mat]
+    simp only [opL, Finset.sum_range, GlobalTheory.HeckeFamilyMatrices.tqFam, Fin.coe_castSucc, Fin.is_lt, ite_true, Fin.val_last,
+      lt_irrefl, ite_false, GlobalTheory.HeckeFamilyMatrices.dg, GlobalTheory.HeckeFamilyMatrices.mat]
   · simp only [opL, Finset.sum_range, GlobalTheory.HeckeFamilyMatrices.ulFam]
   · simp [opL, GlobalTheory.HeckeFamilyMatrices.mat]
 
@@ -473,7 +473,7 @@ theorem hasSum_uOp (q : ℕ) (f : ℍ → ℂ) (a : ℕ → ℂ) (hq0 : 0 < q)
   rw [← hinj.hasSum_iff fun n hn => by simp [hrange n hn]] at hC
   have hD := hC.mul_left (q : ℂ)⁻¹
   refine cast (congrArg (HasSum · (uOp q f τ)) (funext fun n => ?_)) hD
-  simp only [Function.comp, dvd_mul_right, if_true, pow_mul, hxq, smul_eq_mul]
+  simp only [Function.comp, dvd_mul_right, ite_true, pow_mul, hxq, smul_eq_mul]
   field_simp
 
 end GlobalTheory.Hk
@@ -516,7 +516,7 @@ theorem vOp_hasSum (q : ℕ) (f : ℍ → ℂ) (a : ℕ → ℂ) (hq : 0 < q)
     simp [this]
   · convert h1 using 1
     funext m
-    simp only [Function.comp, dvd_mul_right, if_true, Nat.mul_div_cancel_left _ hq, hqp, ← pow_mul]
+    simp only [Function.comp, dvd_mul_right, ite_true, Nat.mul_div_cancel_left _ hq, hqp, ← pow_mul]
 
 end GlobalTheory.Hk
 end -- clump:auto
@@ -702,21 +702,21 @@ lemma heckeT_coeff_formula_comm_distinct_primes {q r : ℕ} (hq : q.Prime) (hr :
     have d2 : r * n / q = r * (n / q) := Nat.mul_div_assoc r hqn
     have d3 : n / r / q = n / q / r := by
       rw [Nat.div_div_eq_div_mul, Nat.div_div_eq_div_mul, mul_comm]
-    simp only [hqn, hrn, i3, i4, if_true, d1, d2, d3]
+    simp only [hqn, hrn, i3, i4, ite_true, d1, d2, d3]
     ring
   · have i3 : ¬ r ∣ n / q := by
       intro h
       exact hrn (h.trans (Nat.div_dvd_of_dvd hqn))
     have d2 : r * n / q = r * (n / q) := Nat.mul_div_assoc r hqn
-    simp only [hqn, hrn, i3, if_true, if_false, d2]
+    simp only [hqn, hrn, i3, ite_true, ite_false, d2]
     ring
   · have i4 : ¬ q ∣ n / r := by
       intro h
       exact hqn (h.trans (Nat.div_dvd_of_dvd hrn))
     have d1 : q * n / r = q * (n / r) := Nat.mul_div_assoc q hrn
-    simp only [hqn, hrn, i4, if_true, if_false, d1]
+    simp only [hqn, hrn, i4, ite_true, ite_false, d1]
     ring
-  · simp only [hqn, hrn, if_false]
+  · simp only [hqn, hrn, ite_false]
     ring
 
 theorem heckeT_comm : ∀ (N l q r : ℕ) (k : ℤ) (σ τ : SL(2, ℤ)), 0 < N → q.Prime → r.Prime →
@@ -1215,7 +1215,7 @@ theorem dict_hk : ∀ (N l w : ℕ) (α : Matrix (Fin 2) (Fin 2) ℤ) (ι : Type
     exact ⟨_, fun z hz => incr hdet hF ⟨γ, hγ⟩ π g hg z hz⟩
   · funext γ
     have hex := exists_perm hδ γ
-    simp only [GlobalTheory.HeckeFamilyMatrices.hk, LinearMap.pi_apply, dif_pos hex, LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply]
+    simp only [GlobalTheory.HeckeFamilyMatrices.hk, LinearMap.pi_apply, dite_eq_left hex, LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.proj_apply]
 
     rw [cocP, incr hdet hF γ hex.choose (fun i => (hex.choose_spec i).choose)
     (fun i => (hex.choose_spec i).choose_spec) _ hI, map_sum]
@@ -1502,7 +1502,7 @@ theorem ssPotB_at_newform : ∀ (k : ℕ) (g : UpperTheory.V.Af.Newform k) (N l 
     | D d =>
       have hd : Nat.Coprime d N := ht
       refine (key (fun u => if (u : ZMod N) = (d : ZMod N) then d else (u : ZMod N).val) ?_ ?_ z hz n hgen).2.2
-        (ZMod.unitOfCoprime d hd) d (if_pos (ZMod.coe_unitOfCoprime d hd))
+        (ZMod.unitOfCoprime d hd) d (ite_eq_left (ZMod.coe_unitOfCoprime d hd))
       · intro u; split_ifs
         · exact hd
         · exact hval1 u

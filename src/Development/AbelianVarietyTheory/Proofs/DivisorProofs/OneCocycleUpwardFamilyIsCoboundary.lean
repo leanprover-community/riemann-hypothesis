@@ -66,7 +66,7 @@ theorem oneCocycle_upwardFamily_isCoboundary : ∀ {R : Type} [CommRing R] {C : 
   have hyb : ∀ t t' (u : t₀ ⟶ t) (a : t ⟶ t'), Sg t u → y t t' u a = yb t t' := by
     intro t t' u a hu
     have h : Q t ∧ Nonempty (t ⟶ t') := ⟨⟨u, hu⟩, ⟨a⟩⟩
-    simp only [yb, dif_pos h]
+    simp only [yb, dite_eq_left h]
     exact congrArg₂ (y t t') (Subsingleton.elim _ _) (Subsingleton.elim _ _)
   have hyc : ∀ t t' t'', Q t → ∀ (a : t ⟶ t') (b : t' ⟶ t''),
       yb t t'' = mp F (G.map b) (yb t t') + yb t' t'' := by
@@ -142,7 +142,7 @@ theorem oneCocycle_upwardFamily_isCoboundary : ∀ {R : Type} [CommRing R] {C : 
     have hσ : ∀ S ψ i, IsUnit (mp F (u ≫ ψ) (b i)) → σ S ψ = X i t ht S - e i S (u ≫ ψ) := by
       intro S ψ i hi
       have h : ∃ i, IsUnit (mp F (u ≫ ψ) (b i)) := ⟨i, hi⟩
-      simp only [σ, dif_pos h]
+      simp only [σ, dite_eq_left h]
       exact indep t ht u S ψ _ i h.choose_spec hi
     obtain ⟨x, hx⟩ := glue_std H (span_map_eq_top F u hb) σ fun S S' ψ χ ⟨i, hi⟩ ↦ by
       have hi' : IsUnit (mp F (u ≫ ψ) (b i)) := by rw [mp_comp]; exact hi
@@ -158,7 +158,7 @@ theorem oneCocycle_upwardFamily_isCoboundary : ∀ {R : Type} [CommRing R] {C : 
   have ht : Q t := ⟨u, hu⟩
   have ht' : Q t' := ⟨u ≫ a, hu'⟩
   dsimp only
-  rw [dif_pos hu', dif_pos hu, G.map_comp]
+  rw [dite_eq_left hu', dite_eq_left hu, G.map_comp]
   change g t' ht' (G.map u ≫ G.map a) - mp F (G.map a) (g t ht (G.map u)) = y t t' u a
   rw [hyb t t' u a hu]
   refine sub_eq_zero.1 (sep_std H (span_map_eq_top F (G.map u ≫ G.map a) hb) _ fun S χ ⟨i, hi⟩ ↦ ?_)

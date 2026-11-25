@@ -62,7 +62,7 @@ theorem tri_zero {n : ℕ} {g : GL (Fin n) κ} (hg : g ∈ blockTri (blk2 r)) (i
     g.val i j = 0 := by
   rw [Formalism.L2.DIV.mem_blockTri] at hg
   apply hg
-  simp only [Formalism.L2.DIV.blk2, if_pos hj, if_neg (not_lt.mpr hi)]
+  simp only [Formalism.L2.DIV.blk2, ite_eq_left hj, ite_eq_right (not_lt.mpr hi)]
   exact Nat.zero_lt_one
 
 theorem lowZero_mul {c : ℕ} {x : Matrix (Fin c) (Fin b) κ} {y : Matrix (Fin b) (Fin a) κ}
@@ -80,7 +80,7 @@ theorem topL_eq (ha : r ≤ a) (hb : r ≤ b) (y : Matrix (Fin b) (Fin a) κ) :
     topL r y = y.submatrix (Fin.castLE hb) (Fin.castLE ha) := by
   ext i j
   have hij : i.val < b ∧ j.val < a := ⟨lt_of_lt_of_le i.isLt hb, lt_of_lt_of_le j.isLt ha⟩
-  simp only [topL, dif_pos hij, Matrix.submatrix_apply]
+  simp only [topL, dite_eq_left hij, Matrix.submatrix_apply]
   rfl
 
 theorem topL_mul {c : ℕ} (ha : r ≤ a) (hb : r ≤ b) (hc : r ≤ c) (x : Matrix (Fin c) (Fin b) κ)

@@ -143,7 +143,7 @@ theorem hHom_transpose (V W : HSp D) (hne : V.rank ≠ W.rank) (x y : WA V W) :
   unfold hHom
   simp only [Matrix.transpose_apply]
   rcases Nat.lt_or_gt_of_ne hne with hlt | hlt
-  · rw [if_neg (show ¬ W.rank ≤ V.rank by omega), if_pos (show V.rank ≤ W.rank by omega)]
+  · rw [ite_eq_right (show ¬ W.rank ≤ V.rank by omega), ite_eq_left (show V.rank ≤ W.rank by omega)]
     have e1 := sum_eq_trace (cA D) ((HSpace.gram W).map (incA D))ᵀ ((HSpace.gram V).map (incA D))ᵀ xᵀ yᵀ
     have e2 := sum_eq_trace (cA D) ((HSpace.gram V).map (incA D)) ((HSpace.gram W).map (incA D)) x y
     simp only [Matrix.transpose_apply, Matrix.map_apply] at e1 e2
@@ -151,7 +151,7 @@ theorem hHom_transpose (V W : HSp D) (hne : V.rank ≠ W.rank) (x y : WA V W) :
     simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.transpose_map, Matrix.mul_assoc]
     conv_rhs => rw [Matrix.trace_mul_comm]
     simp only [Matrix.mul_assoc]
-  · rw [if_pos (show W.rank ≤ V.rank by omega), if_neg (show ¬ V.rank ≤ W.rank by omega)]
+  · rw [ite_eq_left (show W.rank ≤ V.rank by omega), ite_eq_right (show ¬ V.rank ≤ W.rank by omega)]
     have e1 := sum_eq_trace (cA D) ((HSpace.gram W).map (incA D)) ((HSpace.gram V).map (incA D)) xᵀ yᵀ
     have e2 := sum_eq_trace (cA D) ((HSpace.gram V).map (incA D))ᵀ ((HSpace.gram W).map (incA D))ᵀ x y
     simp only [Matrix.transpose_apply, Matrix.map_apply] at e1 e2
@@ -164,17 +164,17 @@ theorem actHom_swap (V W : HSp D) (hne : V.rank ≠ W.rank) (g : GA D V) (h : GA
     actHom W V h g x.transpose = (actHom V W g h x).transpose := by
   unfold actHom
   rcases Nat.lt_or_gt_of_ne hne with hlt | hlt
-  · rw [if_neg (show ¬ W.rank ≤ V.rank by omega), if_pos (show V.rank ≤ W.rank by omega)]
+  · rw [ite_eq_right (show ¬ W.rank ≤ V.rank by omega), ite_eq_left (show V.rank ≤ W.rank by omega)]
     simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
-  · rw [if_pos (show W.rank ≤ V.rank by omega), if_neg (show ¬ V.rank ≤ W.rank by omega)]
+  · rw [ite_eq_left (show W.rank ≤ V.rank by omega), ite_eq_right (show ¬ V.rank ≤ W.rank by omega)]
     simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
 
 theorem splitFac_swap (V W : HSp D) (hne : V.rank ≠ W.rank) (c c' : (AE D)ˣ →* Circle) (x y : (AE D)ˣ) :
     splitFac W V c' c y x = splitFac V W c c' x y := by
   unfold splitFac
   rcases Nat.lt_or_gt_of_ne hne with hlt | hlt
-  · rw [if_neg (show ¬ W.rank ≤ V.rank by omega), if_pos (show V.rank ≤ W.rank by omega), mul_comm]
-  · rw [if_pos (show W.rank ≤ V.rank by omega), if_neg (show ¬ V.rank ≤ W.rank by omega), mul_comm]
+  · rw [ite_eq_right (show ¬ W.rank ≤ V.rank by omega), ite_eq_left (show V.rank ≤ W.rank by omega), mul_comm]
+  · rw [ite_eq_left (show W.rank ≤ V.rank by omega), ite_eq_right (show ¬ V.rank ≤ W.rank by omega), mul_comm]
 
 theorem gram_det_ne (V : HSp D) : V.gram.det ≠ 0 := by
   apply GlobalTheory.SplitOnto.gram_det_ne

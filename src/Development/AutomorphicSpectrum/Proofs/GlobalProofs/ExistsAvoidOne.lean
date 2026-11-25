@@ -419,9 +419,9 @@ lemma glue_differentiableAt {E E' W W' : ℂ → ℂ} (hE : Differentiable ℂ E
     filter_upwards [hev] with t ht
     rw [Pi.div_apply]
     by_cases h0 : E t ≠ 0
-    · rw [if_pos h0, div_eq_div_iff h0 ht]
+    · rw [ite_eq_left h0, div_eq_div_iff h0 ht]
       exact hcross t
-    · rw [if_neg h0]
+    · rw [ite_eq_right h0]
 
 lemma mult_at_neg {l k : ℕ} : mult l (1 - (k : ℂ)) = ((l ^ k : ℕ) : ℂ) := by
   simp [mult]
@@ -472,7 +472,7 @@ theorem continuation_of_two_relations :
   · intro c s hs
     have h0 := efac_ne_zero hl hh hs
     show (if efac l (orderOf τ) s ≠ 0 then _ else _) = _
-    rw [if_pos h0, ← hED c s hs, mul_div_cancel_left₀ _ h0]
+    rw [ite_eq_left h0, ← hED c s hs, mul_div_cancel_left₀ _ h0]
   · intro k hk hq c
     choose q hq using hq
     have hm : mult l (1 - (k : ℂ)) = ((l ^ k : ℕ) : ℂ) := mult_at_neg
@@ -497,7 +497,7 @@ theorem continuation_of_two_relations :
     refine ⟨(∑ e ∈ Finset.range (orderOf τ), (((l ^ k : ℕ) : ℚ)) ^ e * q ((τ ^ e) c)) /
       ((((l ^ k) ^ orderOf τ : ℕ) : ℚ) - 1), ?_⟩
     show (if efac l (orderOf τ) (1 - (k : ℂ)) ≠ 0 then _ else _) = _
-    rw [if_pos h0, hW, hE, Rat.cast_div]
+    rw [ite_eq_left h0, hW, hE, Rat.cast_div]
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.TwoRelations
 end -- clump:auto
@@ -552,14 +552,14 @@ theorem classWeight_relation (F : Type) [Field F] [NumberField F] (𝔣 𝔠 A B
       fun I : {I : Ideal (𝓞 F) // (CoprimeTo F 𝔣 I ∧ RayRel F 𝔣 I B) ∧ I ≤ 𝔠} =>
       ((Ideal.absNorm I.1 : ℕ) : ℂ) ^ (-s) := by
     funext I
-    simp only [Function.comp_apply, if_pos I.2.2]
+    simp only [Function.comp_apply, ite_eq_left I.2.2]
   have h3 : HasSum (fun I : {I : Ideal (𝓞 F) // CoprimeTo F 𝔣 I ∧ RayRel F 𝔣 I B} =>
       if I.1 ≤ 𝔠 then ((Ideal.absNorm I.1 : ℕ) : ℂ) ^ (-s) else 0)
       (((Ideal.absNorm 𝔠 : ℕ) : ℂ) ^ (-s) *
         ∑' I : {I : Ideal (𝓞 F) // CoprimeTo F 𝔣 I ∧ RayRel F 𝔣 I A}, ((Ideal.absNorm I.1 : ℕ) : ℂ) ^ (-s)) := by
     refine (hι.hasSum_iff ?_).mp ?_
     · intro x hx
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hle
       exact hx ⟨⟨x.1, x.2, hle⟩, rfl⟩
     · rw [hf3]

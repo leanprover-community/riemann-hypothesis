@@ -34,9 +34,9 @@ theorem analyticAt_flagPt {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] 
     (hh : ∀ τ r s, AnalyticAt ℂ (fun u => h τ u r s) w) (q : Σ k, ι k) :
     AnalyticAt ℂ (fun u => FC.flagPt M F (b u) (fun τ => h τ u) q) w := by
   by_cases hk : ∀ p, M.blk p ≠ some q.1
-  · simp only [FC.flagPt, dif_pos hk]
+  · simp only [FC.flagPt, dite_eq_left hk]
     exact hb _
-  · simp only [FC.flagPt, dif_neg hk]
+  · simp only [FC.flagPt, dite_eq_right hk]
     exact Finset.analyticAt_fun_sum _ fun I _ => (hv q I).mul
       (Fib.analyticAt_minorIJ_of_entries _ w (hh _) _ _)
 
@@ -61,9 +61,9 @@ theorem step_of_orbit {F : FrameData ι Ψ N M.Ω M.blk} {b : (Σ k, baseIdx ι 
   exact ⟨c k, hc k, fun m => by rw [← FC.flagPt_step M F b h hk m]⟩
 
 theorem lowMat_props (c : LowIdx Ψ N j → ℂ) (τ : Ψ) : IsBlockDiag j (lowMat c τ) ∧ IsLowerUni (lowMat c τ) :=
-  ⟨fun a b h => (dif_neg fun e => h e.2).trans (if_neg fun e => h (by rw [e])),
-    fun _ => (dif_neg fun e => lt_irrefl _ e.1).trans (if_pos rfl),
-    fun _ _ h => (dif_neg fun e => lt_asymm h e.1).trans (if_neg h.ne)⟩
+  ⟨fun a b h => (dite_eq_right fun e => h e.2).trans (ite_eq_right fun e => h (by rw [e])),
+    fun _ => (dite_eq_right fun e => lt_irrefl _ e.1).trans (ite_eq_left rfl),
+    fun _ _ h => (dite_eq_right fun e => lt_asymm h e.1).trans (ite_eq_right h.ne)⟩
 
 theorem lowMat_eq {c : LowIdx Ψ N j → ℂ} {τ : Ψ} {L : Matrix (Fin N) (Fin N) ℂ} (hb : IsBlockDiag j L)
     (hL : IsLowerUni L) (h : ∀ (a b : Fin N) (e : b < a ∧ ((a : ℕ) < N - j ↔ (b : ℕ) < N - j)), c ⟨(τ, a, b), e⟩ = L a b) :
@@ -117,13 +117,13 @@ theorem exists_holo_flags (hp : HoloMap A BM.Rb.A pr) {W : Set X} (hW : IsOpen W
     rw [e, Matrix.nonsing_inv_mul _ (hh₀ _).2.isUnit, CPts.minorIJ_one, mul_one]
     exact hα
   · by_cases h1 : b < a ∧ ((a : ℕ) < N - j ↔ (b : ℕ) < N - j)
-    · simp only [lowMat, dif_pos h1, lowRead]
+    · simp only [lowMat, dite_eq_left h1, lowRead]
       rcases hk : M.blk (τ, stepOf N j b) with _ | k
       · exact fun _ => analyticOnNhd_const
       · intro m t ht
         exact AnalyticAt.div (htw (stepOf N j b) k τ _ m t ⟨ht.1, ht.2.1⟩) (htw (stepOf N j b) k τ _ m t ⟨ht.1, ht.2.1⟩)
           (ht.2.2 ⟨((τ, stepOf N j b), k), hk⟩)
-    · simp only [lowMat, dif_neg h1]
+    · simp only [lowMat, dite_eq_right h1]
       exact fun _ => analyticOnNhd_const
   · obtain ⟨h', hh', ho⟩ := hex x hx.1
     have hLU : ∀ τ, ∃ L U : Matrix (Fin N) (Fin N) ℂ, IsBlockDiag j L ∧ IsLowerUni L ∧ IsBlockDiag j U ∧

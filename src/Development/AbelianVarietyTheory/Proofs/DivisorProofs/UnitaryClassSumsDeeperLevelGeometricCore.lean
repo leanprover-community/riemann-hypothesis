@@ -1589,7 +1589,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
       exact mul_mem (Subalgebra.algebraMap_mem _ _) (mul_mem (root_mem_O D.X z' hk' hu) ((div_deep D hpq hx₀ hz').2 b))
     · simp only [hf₀ _ _ he]
       exact zero_mem _
-  · simp only [dif_pos hl]
+  · simp only [dite_eq_left hl]
     exact (key ct yy₁ hl).choose_spec
 
 end GlobalTheory.UPoinc.USum
@@ -1657,7 +1657,7 @@ theorem classSums_core : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     intro y a x hax
     by_cases h : y = y₀
     · subst h; simpa [hk0] using hax
-    · simp only [k, dif_neg h, LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
+    · simp only [k, dite_eq_right h, LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
       exact hd y a _ hax
   have hsurj := (GlobalTheory.UPoinc.uIsLab_onto_and_ker E H Dw hpq l Xo cf C D.X p z₂ (ct₂ y₀) (yy y₀) (hyy₂ y₀).uIsLab).1
   choose A hA using fun x : (ct y₀).T.P.D.toPre.X =>

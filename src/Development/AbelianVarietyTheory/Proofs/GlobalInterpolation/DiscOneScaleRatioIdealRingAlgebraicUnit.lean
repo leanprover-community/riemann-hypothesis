@@ -133,7 +133,7 @@ lemma order_sub (L : PeriodPair) {a : ℂ} (ha : a ∉ L.lattice) (z₀ : ℂ) :
   rw [meromorphicOrderAt_congr heq, meromorphicOrderAt_mul (((MeromorphicAt.const c z₀).mul (m a)).mul (m (-a)))
     ((m 0).pow 2).inv, meromorphicOrderAt_mul ((MeromorphicAt.const c z₀).mul (m a)) (m (-a)),
     meromorphicOrderAt_mul (MeromorphicAt.const c z₀) (m a), meromorphicOrderAt_inv,
-    meromorphicOrderAt_pow (m 0), meromorphicOrderAt_const, if_neg hc, order_sigma, order_sigma, order_sigma]
+    meromorphicOrderAt_pow (m 0), meromorphicOrderAt_const, ite_eq_right hc, order_sigma, order_sigma, order_sigma]
   rw [show ((2 : ℕ) : WithTop ℤ) * ((ind L (z₀ + 0) : ℤ) : WithTop ℤ) = ((2 * ind L (z₀ + 0) : ℤ) : WithTop ℤ) by
     norm_cast, zero_add, ← WithTop.LinearOrderedAddCommGroup.coe_neg, ← WithTop.coe_add, ← WithTop.coe_add]
   congr 1

@@ -37,9 +37,9 @@ private theorem tele {ι G : Type} [LinearOrder ι] [AddCommGroup G] (f : Finset
       refine Finset.sum_congr rfl fun j hj => ?_
       have hj' := hm j hj
       have a1 : (insert m t).filter (· < j) = t.filter (· < j) := by
-        rw [Finset.filter_insert, if_neg (not_lt.2 hj'.le)]
+        rw [Finset.filter_insert, ite_eq_right (not_lt.2 hj'.le)]
       have a2 : (insert m t).filter (· ≤ j) = t.filter (· ≤ j) := by
-        rw [Finset.filter_insert, if_neg (not_le.2 hj')]
+        rw [Finset.filter_insert, ite_eq_right (not_le.2 hj')]
       simp only [GlobalTheory.cubeSign, a1, a2]
     rw [Finset.sum_insert hnot, h1, h2, h3, h4, ih, Finset.card_insert_of_notMem hnot, pow_succ]
     simp only [mul_neg, mul_one, neg_smul, smul_add]

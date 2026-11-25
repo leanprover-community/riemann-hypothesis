@@ -324,9 +324,9 @@ theorem core (A : ValuationSubring Ω) (c : Ω) (hnil : ∀ x ∈ A.nonunits, �
     intro r hr
     rw [hEe, HahnSeries.coeff_sub, HahnSeries.coeff_sub, hN, HahnSeries.coeff_one]
     rcases hr.lt_or_eq with h | h
-    · rw [if_pos h, if_neg h.ne]; ring
+    · rw [ite_eq_left h, ite_eq_right h.ne]; ring
     · subst h
-      rw [if_neg (lt_irrefl _), if_pos rfl, hP1, zero_add, inv_mul_cancel₀ hu0]; ring
+      rw [ite_eq_right (lt_irrefl _), ite_eq_left rfl, hP1, zero_add, inv_mul_cancel₀ hu0]; ring
   have hEpos : 0 < (-E).orderTop := pos_orderTop _ (fun r hr => by simp [hE0 r hr])
   have hEI : IntS A E := by rw [hEe]; exact intS_sub (intS_sub hP1I intS_one) hNI
   have hEL : LatS L E := by rw [hEe]; exact latS_sub (latS_sub hP1L latS_one) hNL

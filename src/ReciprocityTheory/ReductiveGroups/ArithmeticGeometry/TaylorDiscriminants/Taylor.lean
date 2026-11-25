@@ -38,7 +38,7 @@ theorem cml_perm {l l' : List V} (p : l.Perm l') :
       simp only [F]
       by_cases hk : (l₀ ++ y :: x :: k).length = n
       · have hk' : (l₀ ++ x :: y :: k).length = n := by simpa using hk
-        rw [dif_pos hk, dif_pos hk']
+        rw [dite_eq_left hk, dite_eq_left hk']
         have hlt : l₀.length + 1 < n := by simp at hk; omega
         rw [← hM _ (Equiv.swap (⟨l₀.length, by omega⟩ : Fin n) ⟨l₀.length + 1, hlt⟩)]
         congr 1
@@ -59,7 +59,7 @@ theorem cml_perm {l l' : List V} (p : l.Perm l') :
     | trans _ _ ih₁ ih₂ => intro l₀; exact (ih₁ l₀).trans (ih₂ l₀)
   intro h h'
   have e := key []
-  simp only [F, List.nil_append, dif_pos h, dif_pos h'] at e
+  simp only [F, List.nil_append, dite_eq_left h, dite_eq_left h'] at e
   exact e
 
 def lD (φ : V → ℂ) (x : V) (l : List V) : ℂ := iteratedFDeriv ℂ l.length φ x (fun i => l.get i)

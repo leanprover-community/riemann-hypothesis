@@ -239,27 +239,27 @@ theorem fiBPi (S : StepIn M i hi G) (β : S.Ch) : FiBPi S β := by
       have hq := mk_eq_of S β hγ hx
       by_cases hxc : (Quotient.mk'' x : Cls (S.K β).lev) = Quotient.mk'' ((S.K β).y c)
       · have hxc' : (Quotient.mk'' x' : Cls (S.K β).lev) = Quotient.mk'' ((S.K β).y c) := hq.trans hxc
-        simp only [g, if_pos hxc, if_pos hxc']
+        simp only [g, ite_eq_left hxc, ite_eq_left hxc']
         exact h1
       · have hxc' : ¬ (Quotient.mk'' x' : Cls (S.K β).lev) = Quotient.mk'' ((S.K β).y c) := fun h => hxc (hq.symm.trans h)
-        simp only [g, if_neg hxc, if_neg hxc', Pi.zero_apply, mul_zero]
+        simp only [g, ite_eq_right hxc, ite_eq_right hxc', Pi.zero_apply, mul_zero]
     · refine Submodule.mem_pi.2 fun x _ => ?_
       by_cases hxc : (Quotient.mk'' x : Cls (S.K β).lev) = Quotient.mk'' ((S.K β).y c)
-      · simp only [g, if_pos hxc]
+      · simp only [g, ite_eq_left hxc]
         exact Submodule.mem_pi.1 hV x (Set.mem_univ x)
-      · simp only [g, if_neg hxc]
+      · simp only [g, ite_eq_right hxc]
         exact Submodule.zero_mem _
   have hsum : f = ∑ c, res (embT D) (S.K β).y (g c) := by
     funext c' z
     rw [Finset.sum_apply, Finset.sum_apply, Finset.sum_eq_single c']
     · show f c' z = g c' ((S.K β).y c') z
-      simp only [g, if_pos rfl]
+      simp only [g, ite_eq_left rfl]
       rw [hφy]
     · intro c _ hc
       show g c ((S.K β).y c') z = 0
       have hne : ¬ (Quotient.mk'' ((S.K β).y c') : Cls (S.K β).lev) = Quotient.mk'' ((S.K β).y c) :=
         fun h => hc ((S.K β).y_bij.1 h).symm
-      simp only [g, if_neg hne, Pi.zero_apply]
+      simp only [g, ite_eq_right hne, Pi.zero_apply]
     · intro h
       exact absurd (Finset.mem_univ c') h
   rw [hsum]
@@ -276,14 +276,5 @@ theorem chartRankGe_of [IsFractionRing G.O G.Kf] (S : StepIn M i hi G) (e : D.wh
     _ ≤ finrank ℂ (FiB S β) := sum_le_finrank_FiB S β (fiBPi S β)
 
 end Forms
-
-section LocJ
-
-variable {D : D7} {X : Formalism.L2.Herm.Herm0 D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
-  {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w hg)} {Lv : Levels Fl} {i : ℕ}
-  (hi : i + 1 ≤ D.R.m) {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C} {P : PeriodMap D.R C}
-  {M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) C A P}
-
-end LocJ
 
 end Formalism.MainNotions.G.CmpJ.PRankGe

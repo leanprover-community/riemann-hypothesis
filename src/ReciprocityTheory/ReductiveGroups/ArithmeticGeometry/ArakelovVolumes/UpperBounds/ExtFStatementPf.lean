@@ -193,7 +193,7 @@ theorem extF_of (hLU : LUStatement (E := E)) (hM : FrameMeasStatement (E := E)) 
   have hPcell : ∀ y ∈ cell D, P y = P0 D la F y := by
     intro y hy
     rw [hP]
-    simp only [dif_pos hy.1]
+    simp only [dite_eq_left hy.1]
     exact hUeq y hy.1 y (mem_ball_self (hρ y hy.1)) hy.2
 
   have hPd : DifferentiableOn ℂ P X.dom := by
@@ -204,7 +204,7 @@ theorem extF_of (hLU : LUStatement (E := E)) (hM : FrameMeasStatement (E := E)) 
       filter_upwards [hO] with y hy
       have hyd : y ∈ X.dom := hsub x hx y (ball_subset_closedBall hy)
       rw [hP]
-      simp only [dif_pos hyd]
+      simp only [dite_eq_left hyd]
       exact (hagree x hx y hyd (chartE X y) hy (mem_ball_self (hρ y hyd))).symm
     have hd : DifferentiableAt ℂ (fun y => U x hx (chartE X y)) x :=
       ((hU x hx).differentiableAt (isOpen_ball.mem_nhds (mem_ball_self (hρ x hx)))).comp x

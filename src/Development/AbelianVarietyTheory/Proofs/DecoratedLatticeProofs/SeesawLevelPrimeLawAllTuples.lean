@@ -168,8 +168,8 @@ theorem vertexExact (D : D7) : VertexExact D := by
   let ε : 𝓀[k]ˣ := if e = 1 then 1 else -1
   have hεe : (e = 1 ∧ ε = 1) ∨ (e = -1 ∧ ε = -1) := by
     by_cases h1 : e = 1
-    · exact Or.inl ⟨h1, if_pos h1⟩
-    · exact Or.inr ⟨he.resolve_left h1, if_neg h1⟩
+    · exact Or.inl ⟨h1, ite_eq_left h1⟩
+    · exact Or.inr ⟨he.resolve_left h1, ite_eq_right h1⟩
   refine ⟨ε, ?_, ?_⟩
   · rcases hεe with ⟨-, h⟩ | ⟨-, h⟩
     · exact Or.inl h
@@ -693,34 +693,34 @@ theorem gen (hstd : IsStdChar D ψ (-1)) {I : List ι} {P : Pl D → Prop} (hPl 
     let BT : ι → Submodule 𝒪[k] (n → k) := fun j => if j ∈ l then A'T j else AT j
     have hBS : ∀ j, (BS j).IsLattice k := fun j => by
       by_cases hj : j ∈ l
-      · simp only [BS, if_pos hj]; exact (hL j).2.1
-      · simp only [BS, if_neg hj]; exact (hL j).1
+      · simp only [BS, ite_eq_left hj]; exact (hL j).2.1
+      · simp only [BS, ite_eq_right hj]; exact (hL j).1
     have hBT : ∀ j, (BT j).IsLattice k := fun j => by
       by_cases hj : j ∈ l
-      · simp only [BT, if_pos hj]; exact (hL j).2.2.2
-      · simp only [BT, if_neg hj]; exact (hL j).2.2.1
+      · simp only [BT, ite_eq_left hj]; exact (hL j).2.2.2
+      · simp only [BT, ite_eq_right hj]; exact (hL j).2.2.1
     have hBSfull : ∀ j, (BS j).IsFullLattice k := fun j => by
       by_cases hj : j ∈ l
       · apply full_of_isLat (α j) N'S h3 _ (hBS j)
-        simpa only [BS, if_pos hj] using (hA j).2.1
+        simpa only [BS, ite_eq_left hj] using (hA j).2.1
       · apply full_of_isLat (α j) NS h1 _ (hBS j)
-        simpa only [BS, if_neg hj] using (hA j).1
+        simpa only [BS, ite_eq_right hj] using (hA j).1
     have hBTfull : ∀ j, (BT j).IsFullLattice k := fun j => by
       by_cases hj : j ∈ l
       · apply full_of_isLat (β j) N'T h4 _ (hBT j)
-        simpa only [BT, if_pos hj] using (hA j).2.2.2
+        simpa only [BT, ite_eq_left hj] using (hA j).2.2.2
       · apply full_of_isLat (β j) NT h2 _ (hBT j)
-        simpa only [BT, if_neg hj] using (hA j).2.2.1
+        simpa only [BT, ite_eq_right hj] using (hA j).2.2.1
     obtain ⟨N₁S, hN₁S, hlatS, -⟩ := _root_.GlobalTheory.LatPresc.latAll D k ι p I P hPl n' S α NS h1 BS hBSfull
     obtain ⟨N₁T, hN₁T, hlatT, -⟩ := _root_.GlobalTheory.LatPresc.latAll D k ι p I P hPl n T β NT h2 BT hBTfull
     obtain ⟨g₁, hg₁, hO⟩ := ValDbl.overAll_cons.1 hg
     have hg₁' : OverAll ψ α β NS NT (fun j => latInd (BS j) (BT j)) l f g₁ :=
-      overAll_congrΨ l (fun j hj => by simp only [BS, BT, if_pos hj]) f g₁ hg₁
+      overAll_congrΨ l (fun j hj => by simp only [BS, BT, ite_eq_left hj]) f g₁ hg₁
     have IH := ih hnd NS N₁S NT N₁T AS BS AT BT h1 h2 hN₁S hN₁T
       (fun j => ⟨(hL j).1, hBS j, (hL j).2.2.1, hBT j⟩) (fun j => ⟨(hA j).1, hlatS j, (hA j).2.2.1, hlatT j⟩)
-      (fun j hj => ⟨by simp only [BS, if_neg hj], by simp only [BT, if_neg hj]⟩)
+      (fun j hj => ⟨by simp only [BS, ite_eq_right hj], by simp only [BT, ite_eq_right hj]⟩)
       f g₁ (fun j hj => hf j (List.mem_cons_of_mem _ hj)) hg₁'
-    have hBi : BS i = AS i ∧ BT i = AT i := ⟨by simp only [BS, if_neg hil], by simp only [BT, if_neg hil]⟩
+    have hBi : BS i = AS i ∧ BT i = AT i := ⟨by simp only [BS, ite_eq_right hil], by simp only [BT, ite_eq_right hil]⟩
     have hN₁Si : (α i).IsLat N₁S (AS i) := hBi.1 ▸ hlatS i
     have hN₁Ti : (β i).IsLat N₁T (AT i) := hBi.2 ▸ hlatT i
     have hg₁v : Vac ψ S T NS NT (· = (p i).v) g₁ :=
@@ -729,8 +729,8 @@ theorem gen (hstd : IsStdChar D ψ (-1)) {I : List ι} {P : Pl D → Prop} (hPl 
     have hO₁ := C.2 _ _ hO
     have hsame : ∀ j ∈ l, ∃ (ΛS : Submodule 𝒪[k] (n' → k)) (ΛT : Submodule 𝒪[k] (n → k)),
         (α j).IsLat N₁S ΛS ∧ (α j).IsLat N'S ΛS ∧ (β j).IsLat N₁T ΛT ∧ (β j).IsLat N'T ΛT := fun j hj =>
-      ⟨A'S j, A'T j, by simpa only [BS, if_pos hj] using hlatS j, (hA j).2.1,
-        by simpa only [BT, if_pos hj] using hlatT j, (hA j).2.2.2⟩
+      ⟨A'S j, A'T j, by simpa only [BS, ite_eq_left hj] using hlatS j, (hA j).2.1,
+        by simpa only [BT, ite_eq_left hj] using hlatT j, (hA j).2.2.2⟩
     have hgv : ∀ j ∈ l, Vac ψ S T N'S N'T (· = (p j).v) g := fun j hj => by
       obtain ⟨ΛS, ΛT, a, b, c, d⟩ := hsame j hj
       have hji : (p j).v ≠ (p i).v := fun e => hil (by rw [← hinj e]; exact hj)

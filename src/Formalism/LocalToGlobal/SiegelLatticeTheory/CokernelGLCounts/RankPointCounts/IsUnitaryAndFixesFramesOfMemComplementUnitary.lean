@@ -177,8 +177,8 @@ theorem prF_prF' (v : V) : Fr.prF (Fr.prF v) = Fr.prF v := by
     intro v b
     constructor
     · simp only [FrameD.prF, hsub, hsum, H.h_smul_left, hee, hese, mul_zero, Finset.sum_const_zero, sub_zero,
-        mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
-    · simp only [FrameD.prF, hsub, hsum, H.h_smul_left, hees, hss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+        mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
+    · simp only [FrameD.prF, hsub, hsum, H.h_smul_left, hees, hss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
   have h1 : ∀ a, H.h (Fr.prF v) (Fr.e a) = 0 := fun a => (hkey v a).1
   have h2 : ∀ a, H.h (Fr.prF v) (Fr.es a) = 0 := fun a => (hkey v a).2
   show Fr.prF v - ∑ a, H.h (Fr.prF v) (Fr.es a) • Fr.e a - ∑ a, H.h (Fr.prF v) (Fr.e a) • Fr.es a = Fr.prF v
@@ -206,8 +206,8 @@ theorem lset_LamStd (L : Submodule M.L.O (H.Wb Fr.f)) (w : H.Wb Fr.f) :
     intro v b
     constructor
     · simp only [FrameD.prF, hsub, hsum, H.h_smul_left, hee, hese, mul_zero, Finset.sum_const_zero, sub_zero,
-        mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
-    · simp only [FrameD.prF, hsub, hsum, H.h_smul_left, hees, hss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+        mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
+    · simp only [FrameD.prF, hsub, hsum, H.h_smul_left, hees, hss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
   constructor
   · intro hw
     obtain ⟨x, hxw⟩ := Submodule.mkQ_surjective _ w

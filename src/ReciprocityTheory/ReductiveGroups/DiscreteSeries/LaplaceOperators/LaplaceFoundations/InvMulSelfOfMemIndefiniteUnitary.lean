@@ -157,7 +157,7 @@ private theorem exists_inG_add_I_smul_inG (ε : Fin n → Bool) (X : Matrix (Fin
 theorem b3a : MatrixCoeffConjugationMove := by
   intro n ε H _ _ σ w hσ hw g hg X
   have hφ : ∀ Y, phiW ε σ w Y = ((actM (smE ε σ) Y ⟨w, hw⟩ : smD ε σ) : H) := fun Y => by
-    simp only [phiW, dif_pos hw]
+    simp only [phiW, dite_eq_left hw]
   have hlin : ∀ (Y Z : Matrix (Fin n) (Fin n) ℂ) (c : ℂ),
       ((actM (smE ε σ) (Y + c • Z) ⟨w, hw⟩ : smD ε σ) : H) =
         ((actM (smE ε σ) Y ⟨w, hw⟩ : smD ε σ) : H) +

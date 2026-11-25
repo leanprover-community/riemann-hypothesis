@@ -263,7 +263,7 @@ theorem split_all (d : ℕ) : ∀ (V : Type) [AddCommGroup V] [Module K V] [Fini
       rw [← hV]; exact Submodule.finrank_quotient_add_finrank _
     exact split_step ρ hex.choose hW (ih _ hlt hex.choose rfl (resEnd ρ hex.choose hW))
       (ih _ (by omega) (V ⧸ hex.choose) rfl (quoEnd ρ hex.choose hW))
-  · push_neg at hex
+  · push Not at hex
     rcases Nat.eq_zero_or_pos d with h0 | h0
     · exact split_zero ρ (hV.trans h0)
     · refine split_irr ρ (hV ▸ h0) fun W hW => ?_

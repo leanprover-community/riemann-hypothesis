@@ -31,16 +31,12 @@ lemma character_sum_range_add_modulus {q : ℕ} [NeZero q] (χ : DirichletCharac
 
 lemma norm_character_sum_range_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) (M : ℕ) :
     ‖∑ n ∈ range M, χ (n : ZMod q)‖ ≤ q := by
-  induction M using Nat.strong_induction_on with
-  | _ M ih =>
-    by_cases hM : M < q
-    · calc ‖∑ n ∈ range M, χ (n : ZMod q)‖ ≤ ∑ n ∈ range M, ‖χ (n : ZMod q)‖ := norm_sum_le _ _
-        _ ≤ ∑ n ∈ range M, (1 : ℝ) := Finset.sum_le_sum fun n _ => DirichletCharacter.norm_le_one χ _
-        _ = M := by simp
-        _ ≤ q := by exact_mod_cast hM.le
-    · obtain ⟨M', rfl⟩ : ∃ M', M = q + M' := ⟨M - q, by omega⟩
-      rw [character_sum_range_add_modulus χ hχ M']
-      exact ih M' (by have := NeZero.pos q; omega)
+  have hperiod : Function.Periodic (fun k => ∑ n ∈ range k, χ (n : ZMod q)) q :=
+    fun k => by simpa [add_comm k q] using character_sum_range_add_modulus χ hχ k
+  rw [← hperiod.map_mod_nat M]
+  calc ‖∑ n ∈ range (M % q), χ (n : ZMod q)‖ ≤ ∑ n ∈ range (M % q), (1 : ℝ) :=
+         norm_sum_le_of_le _ fun n _ => DirichletCharacter.norm_le_one χ _
+    _ ≤ q := by simpa using (Nat.mod_lt M (NeZero.pos q)).le
 
 lemma norm_character_sum_Icc_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) (M : ℕ) :
     ‖∑ n ∈ Icc 1 M, χ (n : ZMod q)‖ ≤ (q : ℝ) + 1 := by

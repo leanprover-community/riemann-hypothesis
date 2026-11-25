@@ -34,7 +34,7 @@ theorem UpperTheory.finiteSum_reduction :
     intro h
     have hmem : (Pi.single (Fin.castAdd b ⟨0, ha⟩) (1 : k) : Fin (a + b) → k) ∈ W := by
       intro j
-      rw [Pi.single_apply, if_neg]
+      rw [Pi.single_apply, ite_eq_right]
       intro h'
       exact absurd h' (Fin.ne_of_val_ne (by simp; omega))
     rw [h, Submodule.mem_bot] at hmem

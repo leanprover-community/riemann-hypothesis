@@ -1550,7 +1550,7 @@ theorem RegularityMaximalSurjective.proof (h₁ : RegularityOrder.Statement) (h�
   let g : Ideal (MRing ι) → Ideal (regRing P) := fun W =>
     if h : IsClosedPt W ∧ P ≤ W then regMaxAt P W h.1 h.2 (hL K ι P W hPp h.1.1.1 h.2).1 else ⊥
   have hgW : ∀ W (h : IsClosedPt W ∧ P ≤ W), g W = regMaxAt P W h.1 h.2 (hL K ι P W hPp h.1.1.1 h.2).1 :=
-    fun W h => dif_pos h
+    fun W h => dite_eq_left h
   by_contra hcon
   push Not at hcon
 

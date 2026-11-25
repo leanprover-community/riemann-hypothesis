@@ -153,9 +153,9 @@ theorem fock_inner_sum {T0 : GrpData (p * r + q * s) (p * s + q * r)} {T1 : GrpD
   simp only [map_sum, map_smul, sum_inner, inner_sum, inner_smul_left, inner_smul_right, F.fockIP]
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [Finset.sum_eq_single i]
-  · simp only [if_true]; simp [mul_assoc, mul_left_comm]
+  · simp only [ite_true]; simp [mul_assoc, mul_left_comm]
   · intro j hj hji
-    rw [if_neg (fun h => hji (hm hj hi h))]
+    rw [ite_eq_right (fun h => hji (hm hj hi h))]
     simp
   · intro hi'; exact absurd hi hi'
 

@@ -52,7 +52,7 @@ theorem infiniteLocalSymbol_eq_one_iff (v : InfinitePlace K) :
           ((-1 : (v.Completion)ˣ) : v.Completion) < 0 := by
         simp
       have h1 := infiniteLocalSymbol_apply L v hv ⟨w, this⟩ (-1)
-      rw [h, if_pos hneg, MonoidHom.one_apply] at h1
+      rw [h, ite_eq_left hneg, MonoidHom.one_apply] at h1
       exact conjAt_ne_one hram h1.symm
     · intro h
       ext1 x

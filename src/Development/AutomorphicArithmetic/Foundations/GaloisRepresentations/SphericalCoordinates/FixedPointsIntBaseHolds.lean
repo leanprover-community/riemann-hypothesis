@@ -1371,14 +1371,14 @@ theorem UpperTheory.Gal.W2.placeT_of :
       have hx : ∀ x, v.embedding (L.e x) = t₀ x := fun x => by rw [h]; exact hφ x
       refine ⟨?_, hx⟩
       unfold sgnV
-      rw [if_pos (by rw [hx, hρ])]
+      rw [ite_eq_left (by rw [hx, hρ])]
     · right
       have hx : ∀ x, v.embedding (L.e x) = (starRingEnd ℂ) (t₀ x) := fun x => by
         rw [h, ComplexEmbedding.conjugate_coe_eq, hφ]
       have hω : v.embedding (L.e (D.ω : D.F)) ≠ D.ρc := by rw [hx, hρ]; exact hne
       refine ⟨?_, fun hall => hω (by rw [hall, hρ]), fun x => by rw [hx, Complex.conj_conj]⟩
       unfold sgnV
-      rw [if_neg hω]
+      rw [ite_eq_right hω]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.PPlaceT =====

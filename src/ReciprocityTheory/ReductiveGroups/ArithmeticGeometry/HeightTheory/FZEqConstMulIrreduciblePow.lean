@@ -47,7 +47,7 @@ theorem height_const_eq_zero {K : Type} [Field K] [NumberField K] {B n : ℕ} (h
     unfold ReciprocityTheory.MultiplicativeHeights.gaussAbs
     by_cases ha : a = 0
     · simp [ha]
-    · rw [MvPolynomial.support_C, if_neg ha, Finset.sup_singleton, MvPolynomial.coeff_C, if_pos rfl,
+    · rw [MvPolynomial.support_C, ite_eq_right ha, Finset.sup_singleton, MvPolynomial.coeff_C, ite_eq_left rfl,
         Real.coe_toNNReal (w a) (by exact w.1.nonneg a)]
   simp_rw [hgauss, hmean]
   by_cases ha : a = 0
@@ -314,7 +314,7 @@ theorem relation_section_identity (hd : d.AxH 𝒜) (c : ι) (i : Fin (d.D + 1))
         algebraMap (MvPolynomial (SVar d.D d.N) (Ω c)) (OmS (Ω c) d.D d.N)
           (-∑ k, MvPolynomial.X (Sum.inr (i, k)) * MvPolynomial.C (d.x c k)) := by
       rw [hX]
-      simp only [sImg, hS0, if_neg hi]
+      simp only [sImg, hS0, ite_eq_right hi]
     have hB : ∀ k : Fin d.N, d.sH c (MvPolynomial.X (i, (d.jc c).succAbove k)) =
         algebraMap (MvPolynomial (SVar d.D d.N) (Ω c)) (OmS (Ω c) d.D d.N)
           (MvPolynomial.X (Sum.inr (i, k))) := by
@@ -419,7 +419,7 @@ theorem ker_relation_map_ne_bot (hd : d.AxH 𝒜) (c : ι) : RingHom.ker (d.rela
     by_cases hj : j = d.jc c
     · subst hj
 
-      simp only [if_true, Fin.insertNth_apply_same, map_neg, map_sum, map_mul, MvPolynomial.rename_X,
+      simp only [ite_true, Fin.insertNth_apply_same, map_neg, map_sum, map_mul, MvPolynomial.rename_X,
       MvPolynomial.rename_C, g]
       congr 1
       have e1 := Finset.add_sum_erase Finset.univ (fun k => (MvPolynomial.X (i, k) :
@@ -430,7 +430,7 @@ theorem ker_relation_map_ne_bot (hd : d.AxH 𝒜) (c : ι) : RingHom.ker (d.rela
         (d.jc c)
       exact add_left_cancel (e1.trans e2)
     · obtain ⟨k', rfl⟩ := Fin.exists_succAbove_eq hj
-      simp only [if_neg hj, Fin.insertNth_apply_succAbove, MvPolynomial.rename_X, g]
+      simp only [ite_eq_right hj, Fin.insertNth_apply_succAbove, MvPolynomial.rename_X, g]
   have hφ : Function.Injective φ := by
     intro a b hab
     apply hinj

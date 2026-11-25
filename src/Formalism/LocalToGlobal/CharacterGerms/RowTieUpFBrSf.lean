@@ -53,15 +53,6 @@ theorem integralSeries_uncurry_one {χ : PS C 1 dd} (h : IntS V χ) : IntS V (un
 end ChG
 
 
-section Chart
-
-open Formalism.L2.Pj NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
-
-end Chart
-
 end Formalism.L2.FormalSeriesBounds
 end -- clump:auto
 end -- clump:auto
@@ -211,7 +202,7 @@ theorem chi_ode {χ : PS C 1 dd} (hχ : Y.IsChar χ) (i : Fin dd) :
     intro k
     by_cases hk : k = i
     · subst hk
-      rw [MvPowerSeries.pderiv_X_self, one_mul, subst_subst (fun _ => cc_X _) (cc_exZero Y), if_pos rfl]
+      rw [MvPowerSeries.pderiv_X_self, one_mul, subst_subst (fun _ => cc_X _) (cc_exZero Y), ite_eq_left rfl]
       have : (fun s : Fin dd => MvPowerSeries.subst (exZero Y) (MvPowerSeries.X ((1 : Fin 2), s) : PS C 2 dd)) =
           fun _ => 0 := by
         funext s
@@ -219,7 +210,7 @@ theorem chi_ode {χ : PS C 1 dd} (hχ : Y.IsChar χ) (i : Fin dd) :
         rfl
       rw [this, subst_zeroPt, constantCoeff_pderiv_uncurry]
     · rw [MvPowerSeries.pderiv_X_of_ne (fun hh => hk (Prod.ext_iff.1 hh).2), zero_mul, subst_zero' (cc_exZero Y),
-        if_neg hk]
+        ite_eq_right hk]
   have h4 : MvPowerSeries.subst (exZero Y)
       (MvPowerSeries.subst (fun k : Fin dd => (MvPowerSeries.X ((0 : Fin 2), k) : PS C 2 dd)) (un1 χ)) = Psi Y χ := by
     rw [subst_subst (fun _ => cc_X _) (cc_exZero Y)]
@@ -377,15 +368,6 @@ theorem charGermSelf_holds : CharGermSelfSt := by
   · exact IntS.subst (fun _ => cc_X _) (fun _ => IntS_X _) hI
   · rw [AbstractGermZero.upG_subst (I := fun _ => I0) t ht0 g, key]
 
-section Chart
-
-open Formalism.L2.Pj NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
-
-end Chart
-
 end Formalism.L2.FormalSeriesBounds
 end -- clump:auto
 end -- clump:auto
@@ -490,7 +472,7 @@ theorem exists_unit_col {Y : FBChart C V OE dd} (p : SelfData Y d I0) (a0 : ZMod
     lt_of_le_of_ne (SelfConjugateGermZero.gm_int Y p a0 col g) (Ne.symm (hno col))
   have h1 := p.gm_hyp a0 (1 - g) g
   have hne : (1 - g : Fin 2) ≠ g := by fin_cases g <;> decide
-  rw [if_neg hne] at h1
+  rw [ite_eq_right hne] at h1
   have h2 : V.MM (∑ r, p.gm (a0 + p.hd) r (1 - g) * p.gm a0 r g) := by
     rw [Fin.sum_univ_two]
     have t : ∀ r, V.MM (p.gm (a0 + p.hd) r (1 - g) * p.gm a0 r g) := fun r => by
@@ -543,14 +525,14 @@ theorem upCharS_of_afBound (Y : FBChart C V OE dd) (p : SelfData Y d I0) (hr : (
         unfold SelfData.yOf
         rw [Finset.sum_eq_single col0]
         · beta_reduce
-          rw [if_pos rfl, Finset.mul_sum]
+          rw [ite_eq_left rfl, Finset.mul_sum]
           refine Finset.sum_congr rfl fun i _ => ?_
           show _ * (p.gm (p.ty0 (e1 c)) col0 g * p.e (e1 c) i) = _
           rw [he1, (e0 c).2, hW]
           ring
         · intro col _ hne
           beta_reduce
-          rw [if_neg hne]
+          rw [ite_eq_right hne]
           exact Finset.sum_eq_zero fun i _ => by rw [dlogC_one, zero_mul]
         · intro hne
           exact absurd (Finset.mem_univ _) hne

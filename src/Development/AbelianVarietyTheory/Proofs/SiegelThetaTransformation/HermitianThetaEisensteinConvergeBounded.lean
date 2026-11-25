@@ -408,8 +408,8 @@ theorem approx_entry (hΨ : IsType Ψ) : ∃ K : ℝ, ∀ w : Ψ → ℂ, ∃ a 
     conv_lhs => rw [← (canonicalEmbedding.latticeBasis E).sum_repr x]
     simp [c, canonicalEmbedding.latticeBasis_apply, Finset.sum_apply]
   have hre : ∀ τ : Ψ, w τ = ∑ i, ((c i).re : ℂ) * τ.1 (integralBasis E i) := fun τ => by
-    have h0 : w' (ComplexEmbedding.conjugate τ.1) = 0 := dif_neg ((hΨ τ.1).1 τ.2)
-    have h1 : w' τ.1 = w τ := dif_pos τ.2
+    have h0 : w' (ComplexEmbedding.conjugate τ.1) = 0 := dite_eq_right ((hΨ τ.1).1 τ.2)
+    have h1 : w' τ.1 = w τ := dite_eq_left τ.2
     have h2 : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ.1) = τ.1 := star_star _
     have e1 := hx τ.1
     have e2 := congrArg conj (hx (ComplexEmbedding.conjugate τ.1))
@@ -507,7 +507,7 @@ theorem theta_bdd (hΨ : IsType Ψ) {R : ℕ} {δ : ℝ} (hR : 0 < R) (hδ : 0 <
   have c : ∀ k : ℕ, IsIntegral ℤ (k : E) := fun k => by
     simpa using isIntegral_algebraMap (R := ℤ) (A := E) (x := (k : ℤ))
   have h₀ : IsSB φ₀ := by
-    refine ⟨R, hR, fun x hx => by_contra fun h => hx (if_neg h), fun x y hy => ?_⟩
+    refine ⟨R, hR, fun x hx => by_contra fun h => hx (ite_eq_right h), fun x y hy => ?_⟩
     refine if_congr (forall_congr' fun k => forall_congr' fun a => ?_) rfl rfl
     have hz : IsIntegral ℤ ((R : E) * ((R : E) * y k a)) := (c R).mul ((c R).mul (hy k a))
     simp only [Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, mul_add]
@@ -522,7 +522,7 @@ theorem theta_bdd (hΨ : IsType Ψ) {R : ℕ} {δ : ℝ} (hR : 0 < R) (hδ : 0 <
   have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
   by_cases hx : φ x = 0
   · rw [hx, zero_mul, norm_zero]; positivity
-  have h1 : φ₀ x = 1 := if_pos (hφ.1 x hx)
+  have h1 : φ₀ x = 1 := ite_eq_left (hφ.1 x hx)
   rw [h1, one_mul, norm_mul, mul_comm]
   refine mul_le_mul ?_ (hB x) (norm_nonneg _) (norm_nonneg _)
   rw [Complex.norm_exp, Complex.norm_exp]

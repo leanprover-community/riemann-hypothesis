@@ -58,7 +58,7 @@ open Classical in
 theorem atEmb_embedding_apply (w v : InfinitePlace E) (z : ℂ) :
     atEmb w.embedding z v = if v = w then z else 0 := by
   unfold atEmb
-  rw [InfinitePlace.mk_embedding, if_pos rfl, Pi.single_apply]
+  rw [InfinitePlace.mk_embedding, ite_eq_left rfl, Pi.single_apply]
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem star_atEmb (w : InfinitePlace E) (z : ℂ) :
@@ -180,7 +180,7 @@ theorem sum_famZ [DecidableEq (InfinitePlace E)] :
   have f2 : lie E a (famZ (w, i, j, false, true)) = lieS E a i j (eW w) - lieS E a j i (eW w) := map_sub _ _ _
   have f3 : lie E a (famZ (w, i, j, true, false)) = lieS E a i j (fW w) - lieS E a j i (fW w) := map_sub _ _ _
   have f4 : lie E a (famZ (w, i, j, true, true)) = lieS E a i j (fW w) + lieS E a j i (fW w) := map_add _ _ _
-  simp only [if_true, Bool.false_eq_true, if_false, f1, f2, f3, f4]
+  simp only [ite_true, Bool.false_eq_true, ite_false, f1, f2, f3, f4]
   abel
 
 theorem exists_family : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ), ∃ (ι : Type) (_ : Fintype ι) (_ : DecidableEq ι) (Z : ι → GlobalTheory.CuspRep.Lie E a) (K : Finset ι), Submodule.span ℝ (Set.range Z) = ⊤ ∧ (∀ κ ∈ K, (Matrix.of (Z κ))ᴴ = -(Matrix.of (Z κ))) ∧ (∑ i ∈ Kᶜ, lie E a (Z i) * lie E a (Z i) - ∑ κ ∈ K, lie E a (Z κ) * lie E a (Z κ)) ∈ Zalg E a := by

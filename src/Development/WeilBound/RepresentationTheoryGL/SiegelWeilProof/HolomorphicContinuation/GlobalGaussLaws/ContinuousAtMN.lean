@@ -84,7 +84,7 @@ theorem continuous_atMN (τ : D.what₂.Tau) : Continuous (atMN D (N := N) τ) :
   refine continuous_pi fun i => continuous_pi fun j => ?_
   refine (continuous_glueA D _).comp ((continuous_splitInv D).comp (continuous_pi fun τ' => ?_))
   by_cases h : τ' = τ
-  · simp only [h, if_true]; exact (continuous_apply j).comp (continuous_apply i)
-  · simp only [h, if_false]; exact continuous_const
+  · simp only [h, ite_true]; exact (continuous_apply j).comp (continuous_apply i)
+  · simp only [h, ite_false]; exact continuous_const
 
 end PositivityTheory.Rg.Sw.Glob.EmbP

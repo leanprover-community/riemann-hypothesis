@@ -96,8 +96,8 @@ theorem exists_local_form : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : F
   let μ : Fin e → ℕ := fun i => ∑ k, if σ k = some i then m k else 0
   have hμ : ∀ k i, σ k = some i → μ i = m k := by
     intro k i hk
-    refine (Finset.sum_eq_single k (fun b _ hb => if_neg fun h => hb (hinj _ _ i h hk))
-      (by simp)).trans (if_pos hk)
+    refine (Finset.sum_eq_single k (fun b _ hb => ite_eq_right fun h => hb (hinj _ _ i h hk))
+      (by simp)).trans (ite_eq_left hk)
   have hKS : ∀ y, ∏ k ∈ K, g k y = ∏ i ∈ S, ψ y i ^ μ i := by
     intro y
     refine Finset.prod_bij (fun k hk => Classical.choose (Finset.mem_filter.1 hk).2) ?_ ?_ ?_ ?_

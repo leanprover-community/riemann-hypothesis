@@ -101,7 +101,7 @@ private theorem key_succ {m d : ℕ} (h : m + 1 ≤ d) (ν μ : Fin (m + 1) → 
       ν (Fin.castSucc i) - Formalism.GradedWeylDivisibility.nuNext ν (Fin.castSucc i) := by
     intro i
     have hi : (Fin.castSucc i : ℕ) + 1 < m + 1 := by simp
-    simp only [Formalism.GradedWeylDivisibility.nuNext, dif_pos hi, hν]
+    simp only [Formalism.GradedWeylDivisibility.nuNext, dite_eq_left hi, hν]
     omega
   have e2 : Formalism.GradedWeylDivisibility.nuNext μ (Fin.last m) = 0 := by simp [Formalism.GradedWeylDivisibility.nuNext]
   have e3 : Formalism.GradedWeylDivisibility.nuNext ν (Fin.last m) = 0 := by simp [Formalism.GradedWeylDivisibility.nuNext]
@@ -150,7 +150,7 @@ theorem UpperTheory.TP.RP.exists_act1_equivariant_nablaSq_map_hitting_joint :
   | succ m =>
     have hd : lam.detShift = lam.w (Fin.last m) := by
       unfold DomWeight.detShift
-      rw [dif_pos (by omega)]
+      rw [dite_eq_left (by omega)]
       congr 1
     have hk : ∀ k, ((lam.natW k : ℕ) : ℤ) = (μ k : ℤ) - μ (Fin.last m) := by
       intro k

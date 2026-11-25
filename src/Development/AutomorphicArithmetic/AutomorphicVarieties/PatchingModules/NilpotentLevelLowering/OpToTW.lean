@@ -306,16 +306,16 @@ private theorem psLin_span {A κ : Type} [CommRing A] (d : ℕ) (s : Finset κ) 
       · have h' : ¬ (Finsupp.single a d ≤ e) := by
           rw [Finsupp.single_le_iff]
           omega
-        rw [if_neg h']
+        rw [ite_eq_right h']
         show _ = 0 + (if e a < d then MvPowerSeries.coeff e f else 0)
-        rw [if_pos h, zero_add]
+        rw [ite_eq_left h, zero_add]
       · have h' : Finsupp.single a d ≤ e := by
           rw [Finsupp.single_le_iff]
           omega
-        rw [if_pos h']
+        rw [ite_eq_left h']
         show _ = 1 * MvPowerSeries.coeff (e - Finsupp.single a d + Finsupp.single a d) f +
           (if e a < d then MvPowerSeries.coeff e f else 0)
-        rw [if_neg h, tsub_add_cancel_of_le h', one_mul, add_zero]
+        rw [ite_eq_right h, tsub_add_cancel_of_le h', one_mul, add_zero]
     rw [hfr]
     refine Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.subset_span ⟨a, rfl⟩)) (ih r ?_)
     intro e he
@@ -394,7 +394,7 @@ theorem UpperTheory.V.Pa.Lev.psLin :
         have := he i (Finset.mem_univ i)
         show e i ≤ d - 1
         omega
-      rw [map_sub, MvPolynomial.coeff_coe, MvPowerSeries.coeff_trunc', if_pos hle, sub_self]
+      rw [map_sub, MvPolynomial.coeff_coe, MvPowerSeries.coeff_trunc', ite_eq_left hle, sub_self]
     have h1 := psLin_small act ((maximalIdeal Λ) ^ k) d m hd1 _ hr
     have h2 := psLin_small act' ((maximalIdeal Λ) ^ k) d (φ m) hd2 _ hr
     have h3 := Submodule.smul_top_le_comap_smul_top ((maximalIdeal Λ) ^ k) φ h1

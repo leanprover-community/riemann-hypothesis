@@ -148,7 +148,7 @@ theorem exists_emb (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) 
     rw [mem_algebraicClosure_iff]
     exact (Algebra.IsAlgebraic.isAlgebraic (R := ℚ) x).algHom D.host.φ₀.toRatAlgHom
   refine ⟨lam.comp (D.host.φ₀.codRestrict Qbar hm), fun x => ?_⟩
-  simp only [lamC, dif_pos (hm x)]
+  simp only [lamC, dite_eq_left (hm x)]
   rfl
 
 theorem exists_sqrt_host (D : D7) : ∃ b : 𝓞 D.host.K, ((b : D.host.K) : D.host.E) ^ 2 = -(D.host.d : D.host.E) ∧

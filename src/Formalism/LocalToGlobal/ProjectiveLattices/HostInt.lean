@@ -365,8 +365,8 @@ theorem efW_unimod_of (hP : Formalism.BasicNotions.FactPrincipalDatum) (D : D7) 
   have hb : Function.Bijective (intForm (efQ D j) hI) := ⟨efQ_inj hP D j hI, fun f => efQ_surj hP D j hI f⟩
   unfold efW
   by_cases h : ∃ hI' : DatInt D j, DomFor D j (intForm (efQ D j) hI')
-  · rw [sgnW, if_pos h, one_smul]; exact hb
-  · rw [sgnW, if_neg h]
+  · rw [sgnW, ite_eq_left h, one_smul]; exact hb
+  · rw [sgnW, ite_eq_right h]
     have e : ⇑((-1 : ℤ) • intForm (efQ D j) hI) = Neg.neg ∘ ⇑(intForm (efQ D j) hI) := by
       funext y; simp
     rw [e]; exact neg_involutive.bijective.comp hb

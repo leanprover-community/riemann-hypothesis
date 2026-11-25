@@ -301,7 +301,7 @@ theorem valuation_stair {μ₀ : T} (hL : L.Is μ₀) (hq : OffQ D) (G : GridDat
       count_modulBar G hloc, neg_zero, add_zero]
   have d2 : FractionalIdeal.count D.host.E (G.pl.w v) (G.pl.stAbar sc) = -(G.pl.depth sc v : ℤ) := by
     rw [Places.stAbar, FractionalIdeal.count_mul _ _ m2 (right_ne_zero_of_mul n2), FractionalIdeal.count_inv, c2,
-      count_modul, cosExp, if_pos hw, G.pl.under_w hv, zero_add]
+      count_modul, cosExp, ite_eq_left hw, G.pl.under_w hv, zero_add]
   have h1 := GroundTheory.Global.valuation_le_of_mem_fractionalIdeal (G.pl.w v) hx
   rw [count_stairId n1 n2, d1, d2] at h1
   have h2 := GroundTheory.Global.valuation_le_of_mem_fractionalIdeal (G.pl.w v)
@@ -604,7 +604,7 @@ theorem exists_mem_modul (P : Places L) {v : GlobalTheory.FinPl.Pl D} (hv : v �
   push_cast
   rw [map_prod]
   calc valuation k ϖ ^ P.depth sc v = ∏ u ∈ P.S0, (if u = v then valuation k ϖ else 1) ^ P.depth sc u := by
-        rw [Finset.prod_eq_single_of_mem v hv fun u _ h => by rw [if_neg h, one_pow], if_pos rfl]
+        rw [Finset.prod_eq_single_of_mem v hv fun u _ h => by rw [ite_eq_right h, one_pow], ite_eq_left rfl]
     _ ≤ _ := Finset.prod_le_prod' fun u hu => by
         rw [map_pow, SubmonoidClass.coe_pow, map_pow, coe_prInt]
         exact pow_le_pow_left' (htv u hu) _
@@ -860,13 +860,13 @@ theorem GlobalTheory.FrameScale.clauses : OnStd fun {D} _ _ {sc} {G} W F => ∀ 
         by_cases hr : r = ⟨2 * σ - q.1, by omega⟩
         · subst hr
           have e1 : 2 * σ - q.1 + 1 = 2 * σ + 1 - q.1 := by omega
-          rw [Pi.single_eq_same, if_pos (by simp only; omega), e1]
+          rw [Pi.single_eq_same, ite_eq_left (by simp only; omega), e1]
           by_cases hq : q.1 = σ
-          · rw [if_pos (Fin.ext (by simp only; omega)), if_pos hq]
+          · rw [ite_eq_left (Fin.ext (by simp only; omega)), ite_eq_left hq]
             simp
-          · rw [if_neg (fun h => hq (by have := congrArg Fin.val h; simp only at this; omega)), if_neg hq]
+          · rw [ite_eq_right (fun h => hq (by have := congrArg Fin.val h; simp only at this; omega)), ite_eq_right hq]
             simp
-        · rw [Pi.single_eq_of_ne (hj.ne hr), if_neg (fun h => hr (Fin.ext (by simp only; omega)))]
+        · rw [Pi.single_eq_of_ne (hj.ne hr), ite_eq_right (fun h => hr (Fin.ext (by simp only; omega)))]
           simp
       · rw [hout m hm ⟨q.1, by omega⟩, Pi.smul_apply, Pi.single_eq_of_ne (fun h => hm ⟨_, h.symm⟩), smul_zero]
     have hs : (if q.1 = σ then (-1 : k) else 1) ≠ 0 := by split_ifs <;> norm_num
@@ -940,10 +940,10 @@ theorem GlobalTheory.FrameFB.frame_fb : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ
       generalize (p.pr (incA D (star (-D.host.xi0)))) ^ (q.1 + 1) = X at hx ⊢
       generalize (ϖ : k) ^ (G.pl.depth sc v * (2 * σ + 1 - q.1)) = Y at hϖn ⊢
       by_cases hqσ : q.1 = σ
-      · simp only [hqσ, if_true]
+      · simp only [hqσ, ite_true]
         push_cast
         field_simp
-      · simp only [hqσ, if_false]
+      · simp only [hqσ, ite_false]
         push_cast
         field_simp
 end -- clump:auto

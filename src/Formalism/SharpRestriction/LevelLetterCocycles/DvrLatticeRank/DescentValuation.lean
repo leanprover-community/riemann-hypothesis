@@ -47,10 +47,6 @@ def LemC (T : LocLat G Qp LL O) (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Pr
 
 end Local
 
-section Record
-
-end Record
-
 end Formalism.MainNotions.N.Ln34
 
 end
@@ -202,7 +198,7 @@ theorem u3downPf_lemC_rec (D : D7) (HW : HWOf D.loc) (Fo : FonOf D.loc D.locA HW
     have hd := hdown' τ ζ hpt
     have hb := hηb τ
     unfold deep at h
-    rw [if_neg (by simp [hd])] at h
+    rw [ite_eq_right (by simp [hd])] at h
     simp only [Set.mem_union, Set.mem_Icc] at h
     omega
 

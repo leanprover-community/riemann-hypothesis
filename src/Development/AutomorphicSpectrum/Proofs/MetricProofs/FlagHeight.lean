@@ -338,8 +338,8 @@ theorem flHeight_nonneg_dominant : Inputs → ∀ (II : IntersectionSystem), IsF
     refine Finset.sum_congr rfl fun w _ => ?_
     by_cases hw : ∀ j, ((w j).2 : ℕ) + 1 < N
     · congr 1
-      exact Finset.prod_congr rfl fun j _ => (if_pos (hw j)).symm
-    · push_neg at hw
+      exact Finset.prod_congr rfl fun j _ => (ite_eq_left (hw j)).symm
+    · push Not at hw
       obtain ⟨j, hj⟩ := hw
       rw [hzero w j (not_lt.2 hj), zero_mul, zero_mul]
   rw [e]
@@ -601,7 +601,7 @@ theorem flZero_main : Inputs → ∀ (II : IntersectionSystem), IsFullIntersecti
   · obtain ⟨j, hj⟩ := hw
     apply mul_eq_zero_of_right
     exact Finset.prod_eq_zero (Finset.mem_univ j) (by rw [hj]; exact hgap)
-  · push_neg at hw
+  · push Not at hw
     apply mul_eq_zero_of_left
     exact II_fsHerm_yDeg_eq_zero_of_ne II hII Ψ N hN p hp w hw
 

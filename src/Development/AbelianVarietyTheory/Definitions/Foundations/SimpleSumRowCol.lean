@@ -120,14 +120,14 @@ theorem coord_embedding (p : ℕ) : MeasurableEmbedding
     refine Measurable.of_eval fun r => Measurable.of_eval fun s => ?_
     show Measurable fun e : {rs : (n ⊕ Fin c) × (n ⊕ Fin c) // lev p rs.1 < lev p rs.2} → k => mkN (k := k) p e r s
     by_cases h : lev p r < lev p s
-    · simp only [mkN, Matrix.of_apply, dif_pos h]; exact measurable_pi_apply _
-    · simp only [mkN, Matrix.of_apply, dif_neg h]; exact measurable_const
+    · simp only [mkN, Matrix.of_apply, dite_eq_left h]; exact measurable_pi_apply _
+    · simp only [mkN, Matrix.of_apply, dite_eq_right h]; exact measurable_const
   · intro g
     ext r s
     show mkN (k := k) p (fun rs => (g : GL (n ⊕ Fin c) k).val rs.1.1 rs.1.2) r s = _
     by_cases h : lev p r < lev p s
     · simp [mkN, h]
-    · simp only [mkN, Matrix.of_apply, dif_neg h]
+    · simp only [mkN, Matrix.of_apply, dite_eq_right h]
       exact (mem_N_iff.1 g.2 r s (not_lt.1 h)).symm
 
 end meas

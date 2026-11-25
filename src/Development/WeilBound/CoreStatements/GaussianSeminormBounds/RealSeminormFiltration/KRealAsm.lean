@@ -198,9 +198,9 @@ theorem exists_prodForm_ne (y : ⨂[ℂ] i, V i) (hy : y ≠ 0) : ∃ ℓ : ∀ 
     by_cases h : β = α
     · subst h; simp
     · obtain ⟨i, hi⟩ := Function.ne_iff.1 h
-      rw [Finsupp.single_apply, if_neg h]
+      rw [Finsupp.single_apply, ite_eq_right h]
       symm
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [Finsupp.single_apply, if_neg hi])
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [Finsupp.single_apply, ite_eq_right hi])
   rw [← e]
   simpa using hα
 

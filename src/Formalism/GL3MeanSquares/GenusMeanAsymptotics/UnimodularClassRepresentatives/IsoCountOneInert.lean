@@ -97,7 +97,7 @@ theorem exists_norm [Fintype k] (σ : k ≃+* k) (hσ : ∀ x, σ (σ x) = x) (h
   by_cases h0 : c = 0
   · exact ⟨0, by simp [h0]⟩
   · have h := Formalism.HermitianLattices.Ext.L3.FiniteNormFibres.card_norm_fibre σ hσ hne q hq c hc
-    rw [if_neg h0] at h
+    rw [ite_eq_right h0] at h
     have hpos : 0 < (Finset.univ.filter fun y : k => σ y * y = c).card := by
       by_contra! hz
       have hz' : (Finset.univ.filter fun y : k => σ y * y = c).card = 0 := by omega

@@ -125,7 +125,7 @@ theorem _root_.GlobalTheory.TopVec.tv_cutF (Wp Wq : Type) [NormedAddCommGroup Wp
     have h1 : ∀ H, _root_.Formalism.FourierDecayAlt.D.vecV p.T.base p.ν' p.m₀ H q = _root_.Formalism.FourierDecayAlt.D.vecV p.T.base p.ν' p.m₀
         (_root_.Formalism.FourierDecayAlt.D.cutF p.T.base (fun x => if ε / G < x then 1 else 0) H G) q := by
       intro H
-      rw [vecV_cutoff_lemma, ← hG, div_self hGpos.ne', if_pos ((div_lt_one hGpos).mpr hlt)]
+      rw [vecV_cutoff_lemma, ← hG, div_self hGpos.ne', ite_eq_left ((div_lt_one hGpos).mpr hlt)]
       simp
     rw [h1, h1 (p.Θ.Θ w e F)]
     apply _root_.Formalism.FourierDecayAlt.P.PBE.vecV_congrGPos
@@ -153,7 +153,7 @@ theorem _root_.GlobalTheory.TopVec.tv_cutF (Wp Wq : Type) [NormedAddCommGroup Wp
     have h1 : ∀ H, _root_.Formalism.FourierDecayAlt.D.vecV p.T.base p.ν' p.m₀ H q = _root_.Formalism.FourierDecayAlt.D.vecV p.T.base p.ν' p.m₀
         (_root_.Formalism.FourierDecayAlt.D.cutF p.T.base (fun x => if x < δ * ε / G then 1 else 0) H G) q := by
       intro H
-      rw [vecV_cutoff_lemma, ← hG, div_self hGpos.ne', if_pos ((one_lt_div hGpos).mpr hlt)]
+      rw [vecV_cutoff_lemma, ← hG, div_self hGpos.ne', ite_eq_left ((one_lt_div hGpos).mpr hlt)]
       simp
     rw [h1]
     have h2 : _root_.Formalism.FourierDecayAlt.D.vecV p.T.base p.ν' p.m₀ (_root_.Formalism.FourierDecayAlt.D.cutF p.T.base

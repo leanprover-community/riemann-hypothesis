@@ -342,7 +342,7 @@ theorem mul_g_tuple {n : ℕ} (a b c : Fin (n + 1)) (i : Fin (n + 1) → ι) (k 
   have h2 := V.e_chg n a b x i k
   rw [h2] at h1
   simp only [fun k' => V.e_chg n b c x i k', hxi, Pi.single_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
   exact h1
 
 
@@ -356,7 +356,7 @@ theorem g_self_tuple {n : ℕ} (a : Fin (n + 1)) (i : Fin (n + 1) → ι) (k m :
     simp
   have h1 := V.e_chg n a a x i k
   simp only [hxi, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true] at h1
+    ite_true] at h1
   exact h1.symm
 
 theorem isCoc : IsCoc U V.κ V.g := by
@@ -370,7 +370,7 @@ theorem isCoc : IsCoc U V.κ V.g := by
       simp only [rs_rs] at this
       rw [this]
       split_ifs <;> simp
-    simp only [e, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [e, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   · intro α β γ T h₁ h₂ h₃ k f
     let i : Fin 3 → ι := ![α, β, γ]
     have hT : T ≤ capO U i := le_iInf fun a => by

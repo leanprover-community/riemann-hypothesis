@@ -131,7 +131,7 @@ theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (ar
         ring
       rw [e4, Valuation.map_neg]
       simpa using b'
-    · push_neg at hPQ
+    · push Not at hPQ
       obtain ⟨B, hB⟩ := ReciprocityTheory.Gal.exists_isPlaceOver N.Om P
       exact GlobalTheory.ToricDistribution.Corr.unr hart hcorr hB (hine P hPQ.1 hPQ.2 B hB) _ hun
   show ((χ.locK P (k P) : ℂˣ) : ℂ) = 1

@@ -54,7 +54,7 @@ theorem UpperTheory.V.Tower.cycRange :
     have := (hmu.1 (cZero l L + 1)).1 ⟨x, hx⟩
     omega
   rw [InfiniteGalois.mem_range_algebraMap_iff_fixed] at hnot
-  push_neg at hnot
+  push Not at hnot
   obtain ⟨σ, hσ⟩ := hnot
   have hu : cycZ L Ω l σ ∈ KStar.TotallyRealRoots.princ l (cZero l L) := hle ⟨σ, rfl⟩
   have hu' : cycZ L Ω l σ ∉ KStar.TotallyRealRoots.princ l (cZero l L + 1) := by

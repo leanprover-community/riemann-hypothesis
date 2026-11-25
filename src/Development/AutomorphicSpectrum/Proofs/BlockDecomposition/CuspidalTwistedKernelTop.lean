@@ -58,7 +58,7 @@ theorem unipRad_two_le_derUnip {n N : ℕ} (h : ∑ c, ![n, N - n] c = N) :
     rw [hc, hE r i (by omega)]
     by_cases hri : r = i
     · subst hri; simp
-    · rw [one_apply_ne hri, Pi.single_apply, if_neg hri]
+    · rw [one_apply_ne hri, Pi.single_apply, ite_eq_right hri]
 
 theorem unipRad_two_ne_bot {n N : ℕ} (h : ∑ c, ![n, N - n] c = N) (h1 : 1 ≤ n) (h2 : n < N) :
     unipRad k (stdBlocks ![n, N - n] h) ≠ ⊥ := by
@@ -79,7 +79,7 @@ theorem unipRad_two_ne_bot {n N : ℕ} (h : ∑ c, ![n, N - n] c = N) (h1 : 1 �
       rintro ⟨rfl, rfl⟩
       exact hrs ⟨by simp [i]; omega, le_refl _⟩
     simp only [transvection, Matrix.add_apply]
-    rw [Matrix.single_apply, if_neg, add_zero]
+    rw [Matrix.single_apply, ite_eq_right, add_zero]
     rintro ⟨rfl, rfl⟩
     exact this ⟨rfl, rfl⟩
   intro hb

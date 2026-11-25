@@ -41,15 +41,15 @@ theorem UpperTheory.V.Cj.H.smDiv :
   refine ⟨fun g => ?_, fun Z hZ h0 hw g x hx => ?_⟩
   · refine ((φ.2 g).mul (u.2 g)).congr fun x hx => ?_
     have h : IsUnit (Matrix.of x) := hx
-    simp only [chart, dif_pos h]
+    simp only [chart, dite_eq_left h]
   · have h : IsUnit (Matrix.of x) := hx
     have e : ∀ y ∈ invSet E a, chart (fun g => φ.1 g / w.1 g) g y = chart φ.1 g y * (chart w.1 g y)⁻¹ := by
       intro y hy
       have h' : IsUnit (Matrix.of y) := hy
-      simp only [chart, dif_pos h', div_eq_mul_inv]
+      simp only [chart, dite_eq_left h', div_eq_mul_inv]
     by_cases hz : g * infGL E a h.unit ∈ Z
     · have hne : chart w.1 g x ≠ 0 := by
-        rw [chart, dif_pos h]
+        rw [chart, dite_eq_left h]
         exact hw _ hz
       exact ((φ.2 g x hx).mul ((w.2 g x hx).inv hne)).congr e (e x hx)
     · let v : invSet E a → GL (Fin a) (Cinf E) := fun y => (show IsUnit (Matrix.of y.1) from y.2).unit
@@ -62,7 +62,7 @@ theorem UpperTheory.V.Cj.H.smDiv :
         rw [nhdsWithin_eq_map_subtype_coe hx, eventually_map]
         filter_upwards [hn] with y hy
         have h' : IsUnit (Matrix.of y.1) := y.2
-        rw [chart, dif_pos h', h0 _ hy, zero_div]
+        rw [chart, dite_eq_left h', h0 _ hy, zero_div]
       exact (contDiffWithinAt_const (c := (0 : ℂ))).congr_of_eventuallyEq hv (hv.self_of_nhdsWithin hx)
 end -- clump:auto
 end -- clump:auto

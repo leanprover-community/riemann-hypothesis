@@ -309,9 +309,9 @@ theorem exists_const_of_carries (hσ : GoodEmb c σ) (hU : IsUnf U) (hr : 1 ≤ 
         rw [this, norm_prod]
         exact Finset.prod_eq_one fun j _ => by
           rw [norm_pow, show ‖toC (t j : CAt σ)‖ = 1 from ht j, one_pow]
-      have v1 : rdU U (act f) k x₀.1 = toC (evR Xo c (act f) (U.un k x₀)) := dif_pos x₀.2
+      have v1 : rdU U (act f) k x₀.1 = toC (evR Xo c (act f) (U.un k x₀)) := dite_eq_left x₀.2
       have v2 : rdU U f k' (lact δ (castFr h.mt.psi x₀.1)) = toC (evR Xo c f (U.un k' ⟨_, h.mt.mem_dom x₀.2⟩)) :=
-        dif_pos (h.mt.mem_dom x₀.2)
+        dite_eq_left (h.mt.mem_dom x₀.2)
       have v3 := (GlobalTheory.Frames.algebraic_laws GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c).2.2.2.2.2.2 (CAt σ)
         (inferInstanceAs (IsReduced ℂ)) w n f f.2 t _ y' hb
       have v5 : rdU U (act f) k x₀.1 =

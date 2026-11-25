@@ -184,7 +184,7 @@ theorem rec_step (t : ℤ) (N : ℕ) : detD (H (N + 1) t) = ((t : ℂ) + N) * de
     intro e
     simp only [Equiv.Perm.decomposeFin_symm_apply_succ, Equiv.swap_self, Equiv.refl_apply]
     exact iterated_derivative_corner_case_int t e
-  simp only [h0, if_true, one_mul, Fin.succ_ne_zero, if_false]
+  simp only [h0, ite_true, one_mul, Fin.succ_ne_zero, ite_false]
   cases N with
   | zero => simp
   | succ M =>

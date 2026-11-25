@@ -180,7 +180,7 @@ theorem split_form {p q : ℕ} (hr : p + q = r) (N M : Matrix (Fin r) (Fin r) �
   have hM (a b) : M a b = t * (-(sgn p a : ℝ) * N a b + N a b * -(sgn p b : ℝ)) := by
     rw [← h, Matrix.smul_apply, Matrix.add_apply, diagonal_mul, mul_diagonal, smul_eq_mul]
   rw [hB, hB, Finset.sum_comm (f := fun i j => N (rowIdx hr (.inr j)) (rowIdx hr (.inl i)) * _ * _)]
-  simp only [e, hM, sgn, h1, h2, if_true, if_false, mul_add, Finset.mul_sum,
+  simp only [e, hM, sgn, h1, h2, ite_true, ite_false, mul_add, Finset.mul_sum,
     Finset.sum_add_distrib]
   have c2 {m m' : ℕ} (f f' : Fin m → Fin m' → ℂ) (h : ∀ a b, f a b = f' a b) :
       ∑ a, ∑ b, f a b = ∑ a, ∑ b, f' a b := by simp only [h]
@@ -316,9 +316,9 @@ theorem kZero_eq {x₁ x₂ : Frame X.Ψ r} (h₁ : x₁ ∈ X.dom) (h₂ : x₂
     dotProduct_mulVec _ (aLin X x₁ x₂ τ)⁻¹ᵀ,
     vecMul_transpose] at h
   have m1 (z w : Fin n → Fin g → ℂ) (i) : mix X idx z w τ k (rowIdx hr (.inl i)) =
-    w k (idx.symm (τ, rowIdx hr (.inl i))) := if_neg (h1 i)
+    w k (idx.symm (τ, rowIdx hr (.inl i))) := ite_eq_right (h1 i)
   have m2 (z w : Fin n → Fin g → ℂ) (i) : mix X idx z w τ k (rowIdx hr (.inr i)) =
-    z k (idx.symm (τ, rowIdx hr (.inr i))) := if_pos (h2 i)
+    z k (idx.symm (τ, rowIdx hr (.inr i))) := ite_eq_left (h2 i)
   simp only [m1, m2] at h
   simp only [mul_assoc (s τ), ← Finset.mul_sum]
   rw [e2]

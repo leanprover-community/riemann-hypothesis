@@ -122,7 +122,7 @@ theorem epow_hol (lam : Fin n → ℤ) (hD : AtDer) (hlam : Antitone lam) (M : M
         = (Rm lam y * At lam a c * ((At lam ^ m) c b * M)) i j := fun c => by
       rw [eu_congr (g := fun z => (Rm lam z * ((At lam ^ m) c b * M)) i j) ?_ true a c]
       · rw [eu_hol lam hD hlam ((At lam ^ m) c b * M) i j hy true a c]
-        exact if_pos rfl
+        exact ite_eq_left rfl
       · filter_upwards [isOpen_GLs.mem_nhds hy] with z hz
         exact (ih c b hz).trans (congrFun (congrFun (Matrix.mul_assoc _ _ _) i) j)
     simp only [key]

@@ -223,11 +223,11 @@ theorem exists_expMaps_near_chart_centre : ∀ (E : Type) [Field E] [NumberField
     filter_upwards [(Metric.isOpen_ball.prod isOpen_univ).mem_nhds hq] with q' hq'
     have hs : e0.symm q'.1 ∈ e0.source := e0.map_target (hρB hq'.1).2
     have hr : e0 (e0.symm q'.1) = q'.1 := e0.right_inv (hρB hq'.1).2
-    simp only [ex, dif_pos hs, Over.homMk_left]
+    simp only [ex, dite_eq_left hs, Over.homMk_left]
     rw [hr]
   · have hb : e0 x ∈ B' := (hρB (mem_ball_zero_iff.2 hxρ)).1
     obtain ⟨-, hadd, hsurj, -, h1, h2⟩ := hfib _ hb
-    have hex : ex x = fun w => (Over.homMk (e (e0 x) w).left (hw x hx w) : Over.mk (x.1 ≫ genι Z) ⟶ Z.t.G) := funext fun w => dif_pos hx
+    have hex : ex x = fun w => (Over.homMk (e (e0 x) w).left (hw x hx w) : Over.mk (x.1 ≫ genι Z) ⟶ Z.t.G) := funext fun w => dite_eq_left hx
     rw [hex]
     refine ⟨fun a => ?_, isExpAt_homMk Z.t _ _ (hyx x hx) _ (hw x hx) hadd h1 h2⟩
     obtain ⟨z, hz⟩ := hsurj (Over.homMk a.left (a.w.trans (hyx x hx).symm))

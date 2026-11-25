@@ -76,7 +76,7 @@ theorem env (M T : ℝ) : ∃ R1 : ℝ, ∀ (n p k : Matrix (Fin N) (Fin N) ℂ)
     · rw [hnb hil]; simp; positivity
     by_cases hlm : m < l
     · rw [hpb hlm]; simp; positivity
-    push_neg at hil hlm
+    push Not at hil hlm
     rw [norm_mul, norm_mul, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
       Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), abs_of_pos (Real.exp_pos _)]
     have h1 := hn i l hil
@@ -333,7 +333,7 @@ theorem count (s0 : Fin N → ℝ) : ∃ F : Finset (SpecialLinearGroup (Fin N) 
     · intro i j hij
       rcases hij.lt_or_eq with h | rfl
       · have hx' := hmem x hx i j
-        rw [if_pos h, Finset.mem_product, Finset.mem_range, Finset.mem_range] at hx'
+        rw [ite_eq_left h, Finset.mem_product, Finset.mem_range, Finset.mem_range] at hx'
         have e : umat x i j = ⟨((x i j).1 : ℤ), ((x i j).2 : ℤ)⟩ := by simp [umat, h.ne, h]
         rw [e]
         refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
@@ -371,12 +371,12 @@ theorem count (s0 : Fin N → ℝ) : ∃ F : Finset (SpecialLinearGroup (Fin N) 
       by_cases h : i < j
       · have e := congrArg
           (fun g : SpecialLinearGroup (Fin N) GaussianInt => (g : Matrix (Fin N) (Fin N) GaussianInt) i j) hxy
-        simp only [coe_uel_eq_umat, umat, h.ne, h, if_false, if_true] at e
+        simp only [coe_uel_eq_umat, umat, h.ne, h, ite_false, ite_true] at e
         have e1 := congrArg Zsqrtd.re e
         have e2 := congrArg Zsqrtd.im e
         simp only [Nat.cast_inj] at e1 e2
         exact Prod.ext e1 e2
-      · rw [if_neg h, Finset.mem_singleton] at hx' hy'
+      · rw [ite_eq_right h, Finset.mem_singleton] at hx' hy'
         rw [hx', hy']
 
 end PositivityTheory.KB.MomentRationality.Cz.Pk
@@ -702,8 +702,8 @@ theorem ineq (hN : 2 ≤ N) (T B : ℝ) (hB : B < 2 * ((N : ℝ) - 1)) : ∃ c �
           rw [Finset.sum_ite_eq']
           simp
       _ = ∑ k ∈ range n, |t k - t (k + 1)| := by
-          rw [Finset.sum_range_succ, if_neg (lt_irrefl n), add_zero]
-          exact sum_congr rfl fun a ha => if_pos (mem_range.mp ha)
+          rw [Finset.sum_range_succ, ite_eq_right (lt_irrefl n), add_zero]
+          exact sum_congr rfl fun a ha => ite_eq_left (mem_range.mp ha)
   have e3 : (∑ i : Fin (n + 1), ∑ j : Fin (n + 1), if i < j then t i - t j else 0) =
       ∑ j ∈ range (n + 1), ∑ i ∈ range j, (t i - t j) := by
     calc (∑ i : Fin (n + 1), ∑ j : Fin (n + 1), if i < j then t i - t j else 0)

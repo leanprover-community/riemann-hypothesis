@@ -186,7 +186,7 @@ theorem exists_basicOpen_le_of_app_eq_one_of_isClosedImmersion :
       have h2 : hY.fromSpec z ∉ X'.zeroLocus (U := Y') (i'.ker.ideal ⟨Y', hY⟩ : Set Γ(X', Y')) :=
         fun h ↦ h1 ((i'.ker.coe_support_inter ⟨Y', hY⟩).ge ⟨h, hyY⟩).1
       rw [Scheme.mem_zeroLocus_iff] at h2
-      push_neg at h2
+      push Not at h2
       obtain ⟨a, ha, hya⟩ := h2
       have ha' : a ∈ RingHom.ker (i'.app Y').hom := by
         rw [Scheme.Hom.ker_apply] at ha
@@ -674,7 +674,7 @@ theorem exists_pic_patch : ∀ (X X' Z Z' : Scheme.{0}) (p : X' ⟶ X) (i : Z �
   by_cases hx : ∃ z, i z = x
   · obtain ⟨z, rfl⟩ := hx
     exact hA2 X X' Z Z' p i i' p' hsq hp hi hgl L' LZ hL' hLZ w hw z
-  · push_neg at hx
+  · push Not at hx
     obtain ⟨W, s', hxW, hbot, hs'⟩ := hA1 X X' Z Z' p i i' p' hsq hp hi hgl L' hL' x hx
     have hno : ∀ y : Z, y ∉ i ⁻¹ᵁ W := fun y hy => by rw [hbot] at hy; exact hy
     refine ⟨W, s', fun _ => 1, hxW, hs', fun k l y _ _ hy => (hno y hy).elim,

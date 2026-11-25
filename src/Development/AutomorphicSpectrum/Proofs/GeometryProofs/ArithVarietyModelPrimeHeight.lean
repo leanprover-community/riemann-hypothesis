@@ -866,7 +866,7 @@ theorem seqfam_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → �
 
   have hw0 : algebraMap O Ω w ≠ 0 := by
     have h := hCp
-    simp only [HT.IsCp, if_neg hp2] at h
+    simp only [HT.IsCp, ite_eq_right hp2] at h
     obtain ⟨ζ, hζ, he⟩ := h
     rw [he]
     exact sub_ne_zero.2 (hζ.ne_one hp.one_lt)

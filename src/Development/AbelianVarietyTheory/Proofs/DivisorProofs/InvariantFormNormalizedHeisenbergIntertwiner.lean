@@ -60,12 +60,6 @@ open scoped BigOperators
 
 namespace GlobalTheory.FinWeil
 
-section
-variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M]
-  {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M}
-
-end
-
 open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M]
@@ -224,7 +218,7 @@ theorem _root_.GlobalTheory.FinWeil.invForm_intertwiner : ∀ {R X M : Type} [Co
     smul_eq_mul, hterm, map_inv₀]
     have hinv : (lam n)⁻¹ * (starRingEnd ℂ (lam n))⁻¹ * n = 1 := by
       rw [← mul_inv, hcn, inv_mul_cancel₀ hn0]
-    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ,
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul]
     linear_combination B e e' * hinv
   have key := invariantForms_eq_of_eq_on_vacua hW hA hspan ((B.comp T).compl₂ T) B

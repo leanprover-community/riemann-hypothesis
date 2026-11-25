@@ -148,10 +148,6 @@ theorem wordFusion_list (L : List ((R → Matrix (Fin 2) (Fin 2) B) × (R → R)
 
 end Words
 
-section Norm
-
-end Norm
-
 end Formalism.FourierDecayAlt.P.W
 
 namespace Formalism.FourierDecayAlt.P

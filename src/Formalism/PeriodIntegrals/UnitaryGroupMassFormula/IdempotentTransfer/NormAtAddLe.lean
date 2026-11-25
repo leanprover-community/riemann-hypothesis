@@ -10,22 +10,6 @@ namespace PI.Dv.Tr
 
 open PI.Dv Module NumberField
 
-section Sandwich
-
-variable {K : Type} [Field K] {W : Type} [AddCommGroup W] [Module K W] [FiniteDimensional K W]
-
-end Sandwich
-
-section GroupAlg
-
-variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G]
-
-
-
-
-
-end GroupAlg
-
 section Norms
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {V ι : Type} [AddCommGroup V] [Module K V]

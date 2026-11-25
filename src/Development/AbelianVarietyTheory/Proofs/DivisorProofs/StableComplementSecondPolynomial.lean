@@ -178,7 +178,7 @@ theorem heckeVec_divInd {D : D7} [IsCMField D.host.E] {V : HSp D}
   let g : GA D V → locU V.rank P := fun γ =>
     if h : (cj j h₀).symm γ ∈ locU V.rank P then ⟨_, h⟩ else 1
   have hg : ∀ γ ∈ R, (g γ : UA D.host.E V.rank) = (cj j h₀).symm γ := fun γ hγ => by
-    simp only [g, dif_pos (h1 γ hγ).1]
+    simp only [g, dite_eq_left (h1 γ hγ).1]
   have e : (fun x : locU V.rank P => divInd (Ov D.host.E P) d (((cLoc P).comp (locU V.rank P).subtype) x)) =
       Set.indicator {x : locU V.rank P | HasDiv (Ov D.host.E P) d (cLoc P x.val)} 1 := by
     funext x

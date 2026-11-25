@@ -109,7 +109,7 @@ theorem _root_.GlobalTheory.TypePrimeUnif.typePrime_mem_and_notMem_sq {X : _root
     have he : ∀ Q, e Q = 1 + if Q = P then 1 else 0 := fun Q => by
       by_cases h : Q = P <;> simp [e, h]
     simp only [he, Finset.sum_add_distrib, Finset.sum_const, smul_eq_mul, mul_one,
-      Finset.sum_ite_eq', hv, if_true, hP.vG_card i]
+      Finset.sum_ite_eq', hv, ite_true, hP.vG_card i]
   rw [hcount] at hnorm
   have := (Nat.pow_dvd_pow_iff_le_right hg1).mp hnorm
   omega

@@ -86,8 +86,6 @@ end General
 
 section Res
 
-attribute [local instance 2000] Rep.hV2
-
 theorem eq_zero_tateCompactCohomologyRes_of_shortExact {S : ShortComplex (Rep.{u} k G)}
     [IsDiscreteRep S.X₁] [IsDiscreteRep S.X₂] [IsDiscreteRep S.X₃] (hS : S.ShortExact) (n : ℕ)
     (h₁ : ∀ x : tateCompactCohomologyRes φ ψ S.X₁ n, x = 0)

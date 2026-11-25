@@ -69,7 +69,7 @@ theorem eventually_extUnram_two_notMem : ∀ D : D7, ∀ᶠ v : Pl D in cofinite
   · left
     have hE : ¬ GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.ExtUnramAt D v := fun hu => hv ⟨hu, h⟩
     unfold GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.ExtUnramAt at hE
-    push_neg at hE
+    push Not at hE
     obtain ⟨P, hP, hL, hU⟩ := hE
     have hover : v.asIdeal = P.under (𝓞 D.host.F) := hL.over
     have hPb : P ≠ ⊥ := by

@@ -96,8 +96,8 @@ theorem tate {H : Type} [CommGroup H] [TopologicalSpace H] [IsTopologicalGroup H
     simp only [A, Set.mem_setOf_eq] at h h'; omega)
   have eU : (fun x => (if m ≤ o x then (1 : ℂ) else 0) * χ x) = (⋃ k, A k).indicator χ := funext fun x => by
     by_cases h : m ≤ o x
-    · rw [if_pos h, one_mul, Set.indicator_of_mem (Set.mem_iUnion.2 ⟨(o x - m).toNat, by simp only [A, Set.mem_setOf_eq]; omega⟩)]
-    · rw [if_neg h, zero_mul, Set.indicator_of_notMem fun h' => by
+    · rw [ite_eq_left h, one_mul, Set.indicator_of_mem (Set.mem_iUnion.2 ⟨(o x - m).toNat, by simp only [A, Set.mem_setOf_eq]; omega⟩)]
+    · rw [ite_eq_right h, zero_mul, Set.indicator_of_notMem fun h' => by
         obtain ⟨k, hk⟩ := Set.mem_iUnion.1 h'
         simp only [A, Set.mem_setOf_eq] at hk; omega]
   have iA : ∀ k, IntegrableOn χ (A k) γ := fun k =>

@@ -86,9 +86,9 @@ theorem eps_mul (h1 : S 1) (hm : ∀ u v, S u → S v → S (u * v)) (c1 : χ 1 
   obtain ⟨hi, ci, -⟩ := inv_spec h1 hm c1 cm hu
   unfold eps
   by_cases hy : S y
-  · rw [if_pos hy, if_pos (hm _ _ hi hy), cm _ _ hi hy, ci, mul_inv, inv_inv, mul_div_assoc]
+  · rw [ite_eq_left hy, ite_eq_left (hm _ _ hi hy), cm _ _ hi hy, ci, mul_inv, inv_inv, mul_div_assoc]
   · have : ¬ S (u⁻¹ * y) := fun h => hy (by simpa using hm _ _ hu h)
-    rw [if_neg hy, if_neg this, mul_zero]
+    rw [ite_eq_right hy, ite_eq_right this, mul_zero]
 
 omit [Group G] in
 theorem sum_ite_card : ∑ y, (if S y then (1 : ℂ) else 0) = (Nat.card {u // S u} : ℂ) := by
@@ -108,7 +108,7 @@ theorem sum_eps_chi (h1 : S 1) (hm : ∀ u v, S u → S v → S (u * v)) (c1 : �
         have := (inv_spec h1 hm c1 cm hy).2.2
         rw [h] at this
         simp at this
-      rw [if_pos hy, if_pos hy]
+      rw [ite_eq_left hy, ite_eq_left hy]
       field_simp
     · simp [hy]
   simp_rw [this]
@@ -131,9 +131,9 @@ theorem isProj_eps (h1 : S 1) (hm : ∀ u v, S u → S v → S (u * v)) (c1 : χ
     unfold eps
     by_cases hx : S x
     · obtain ⟨hi, ci, hn⟩ := inv_spec h1 hm c1 cm hx
-      rw [if_pos hx, if_pos hi, ci, map_div₀, map_inv₀, map_natCast, Complex.inv_eq_conj hn]
+      rw [ite_eq_left hx, ite_eq_left hi, ci, map_div₀, map_inv₀, map_natCast, Complex.inv_eq_conj hn]
     · have : ¬ S x⁻¹ := fun h => hx (by simpa using (inv_spec h1 hm c1 cm h).1)
-      rw [if_neg hx, if_neg this, map_zero]
+      rw [ite_eq_right hx, ite_eq_right this, map_zero]
 
 theorem mem_range_iff {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ G M)
     (h1 : S 1) (hm : ∀ u v, S u → S v → S (u * v)) (c1 : χ 1 = 1)
@@ -163,7 +163,7 @@ theorem mem_range_iff {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Represent
 theorem eps_spec : ∀ (G : Type) [Group G] [Fintype G] (M : Type) [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (ρ : Representation ℂ G M), ∀ (S : G → Prop) (χ : G → ℂ), S 1 → (∀ u v, S u → S v → S (u * v)) → χ 1 = 1 → (∀ u v, S u → S v → χ (u * v) = χ u * χ v) → IsProj (eps S χ) ∧ eps S χ 1 = ((Nat.card {u // S u} : ℂ))⁻¹ ∧ (∀ x : M, x ∈ LinearMap.range (op ρ (eps S χ)) ↔ ∀ u, S u → ρ u x = χ u • x) ∧ ∀ (n : ℕ) (x : Fin n → M), LinearIndependent ℂ x → (∀ i u, S u → ρ u (x i) = χ u • x i) → n ≤ rk ρ (eps S χ) := by
   intro G _ _ M _ _ _ ρ S χ h1 hm c1 cm
   refine ⟨isProj_eps h1 hm c1 cm, ?_, mem_range_iff ρ h1 hm c1 cm, ?_⟩
-  · simp only [eps, if_pos h1, c1, inv_one, one_div]
+  · simp only [eps, ite_eq_left h1, c1, inv_one, one_div]
   · intro n x hx h
     have hmem : ∀ i, x i ∈ LinearMap.range (op ρ (eps S χ)) :=
       fun i => (mem_range_iff ρ h1 hm c1 cm _).2 (h i)

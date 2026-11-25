@@ -99,10 +99,10 @@ theorem realSize_le_pairing : ∀ (D : D7) (θ : InfFam D) (T : HSp D) (ρ : ℕ
     rw [pair_single]
   rw [hv, hv]
   have h1 : c τ * (star (compAt θ τ x i j) * α τ true) = star (compAt θ τ x i j) * Complex.I := by
-    simp only [α, if_true]
+    simp only [α, ite_true]
     field_simp [hc τ]
   have h0 : c τ * (star (compAt θ τ x i j) * α τ false) = star (compAt θ τ x i j) := by
-    simp only [α, Bool.false_eq_true, if_false]
+    simp only [α, Bool.false_eq_true, ite_false]
     field_simp [hc τ]
   rw [h1, h0]
   have hn := Complex.norm_le_abs_re_add_abs_im (compAt θ τ x i j)

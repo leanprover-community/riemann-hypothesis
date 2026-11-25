@@ -1045,7 +1045,7 @@ theorem main : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : G.Level) (K' : 
       ((gOf w : G.GAf) : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ) = w := by
     intro w g hg
     have h : ∃ g : G.GAf, (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ) = w := ⟨g, hg⟩
-    simp only [gOf, dif_pos h]
+    simp only [gOf, dite_eq_left h]
     exact h.choose_spec
   refine ⟨(S' ×ˢ F₂).image (fun q => (gOf (psiAway G x q.1.1) * r₁, psiP G q.1.2 * r₂ * q.2)), ?_⟩
   intro c hc
@@ -1059,7 +1059,7 @@ theorem main : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : G.Level) (K' : 
       ∃ s' ∈ S', dg G.C p γ * s = dg G.C p γ' * s' := by
     rcases lt_or_gt_of_ne (Units.ne_zero γ.2) with hneg | hpos
     · have hex : ∃ e, Pf e ∧ (e.2 : ℚ) < 0 := ⟨γ, ⟨hγf, hγc⟩, hneg⟩
-      have he₀ : e₀ = hex.choose := by simp only [e₀, dif_pos hex]
+      have he₀ : e₀ = hex.choose := by simp only [e₀, dite_eq_left hex]
       obtain ⟨⟨he1, he2⟩, he3⟩ := hex.choose_spec
       refine ⟨γ * e₀⁻¹, ⟨?_, ?_⟩, ?_, dg G.C p e₀ * s,
         Finset.mem_union_right _ (Finset.mem_image_of_mem _ hs), ?_⟩
@@ -1316,11 +1316,11 @@ theorem fin_cosets_away_sep : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : 
   let D' : ∀ v : AwayP p, Set (Gv G v) := fun v => if v ∈ Good then IntV G v else D₁ v
   have hD'c : ∀ v, IsCompact (D' v) := by
     intro v; by_cases hv : v ∈ Good
-    · simp only [D', if_pos hv]; exact _root_.GlobalTheory.OrbFinAf.isCompact_IntV p G v
-    · simp only [D', if_neg hv]; exact hD₁ v
+    · simp only [D', ite_eq_left hv]; exact _root_.GlobalTheory.OrbFinAf.isCompact_IntV p G v
+    · simp only [D', ite_eq_right hv]; exact hD₁ v
   have hD'i : ∀ᶠ v in (Filter.cofinite : Filter (AwayP p)), D' v ⊆ IntV G v := by
     filter_upwards [hGood] with v hv
-    simp only [D', if_pos hv]; exact le_rfl
+    simp only [D', ite_eq_left hv]; exact le_rfl
   have key : ∀ g : G.GAf, g⁻¹ * γ * g ∈ Ω → ∃ c ∈ T, ∃ d ∈ {g : G.GAf | ∀ v, piV G v g ∈ D' v}, g = c * d := by
     intro g hg
     have hloc : ∀ v, ∃ c ∈ GlobalTheory.BCT.twCent (MonoidHom.id (Gv G v)) (piV G v γ), ∃ d ∈ D' v, piV G v g = c * d := by
@@ -1329,13 +1329,13 @@ theorem fin_cosets_away_sep : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : 
         ⟨_, hg, by simp only [map_mul, map_inv]⟩
       by_cases hv : v ∈ Good
       · obtain ⟨c, hc, d, hd, e⟩ := hv.2.1 _ (hv.1 hgv)
-        exact ⟨c, hc, d, by simp only [D', if_pos hv]; exact hd, e⟩
+        exact ⟨c, hc, d, by simp only [D', ite_eq_left hv]; exact hd, e⟩
       · obtain ⟨c, hc, d, hd, e⟩ := hD₁g v _ hgv
-        exact ⟨c, hc, d, by simp only [D', if_neg hv]; exact hd, e⟩
+        exact ⟨c, hc, d, by simp only [D', ite_eq_right hv]; exact hd, e⟩
     choose c hc d hd e using hloc
     have hcint : ∀ᶠ v in (Filter.cofinite : Filter (AwayP p)), c v ∈ IntV G v := by
       filter_upwards [_root_.GlobalTheory.OrbFinAf.cptInt p G {g} isCompact_singleton, hGood] with v h1 h2
-      have hdv : d v ∈ IntV G v := by have := hd v; simp only [D', if_pos h2] at this; exact this
+      have hdv : d v ∈ IntV G v := by have := hd v; simp only [D', ite_eq_left h2] at this; exact this
       have ec : c v = piV G v g * (d v)⁻¹ := by rw [e v]; group
       rw [ec]
       exact h2.2.2 _ (h1 ⟨g, rfl, rfl⟩) _ (inv_mem_IntV G v hdv)

@@ -33,12 +33,12 @@ theorem posM_blk_apply (m : ℕ) (c : UnipotentBlockColumnIndex a m m → R) (i 
   · rw [Finset.sum_eq_single ⟨(i, j), h.1, h.2.ge, h.2.le⟩]
     · simp
     · intro t _ ht
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨e1, e2⟩
       exact ht (Subtype.ext (Prod.ext e1 e2))
     · simp
   · refine Finset.sum_eq_zero fun t _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨e1, e2⟩
     apply h
     have h1 := t.2
@@ -56,8 +56,8 @@ theorem posM_mul_of_row (m : ℕ) (c : UnipotentBlockColumnIndex a m m → R) (M
         simp only [Matrix.mul_apply, Matrix.single_apply]
         refine Finset.sum_congr rfl fun l _ => ?_
         by_cases h : t.1.1 = p ∧ t.1.2 = l
-        · rw [if_pos h, hM l q (by rw [← h.2]; omega)]
-        · rw [if_neg h, zero_mul, zero_mul]
+        · rw [ite_eq_left h, hM l q (by rw [← h.2]; omega)]
+        · rw [ite_eq_right h, zero_mul, zero_mul]
     _ = _ := mul_one _
 
 theorem blkU_mul_val (m : ℕ) (c : UnipotentBlockColumnIndex a m m → R) (γ : GL (Fin a) R)

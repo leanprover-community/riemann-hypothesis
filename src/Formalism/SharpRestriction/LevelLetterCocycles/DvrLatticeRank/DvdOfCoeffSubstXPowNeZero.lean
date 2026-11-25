@@ -56,13 +56,6 @@ theorem algHom_subst (φ : PowerSeries O →ₐ[O] PowerSeries O)
   rw [← hα, ← hβ]
   exact algHom_apply_eq_of_X_eq α β hX h0' g
 
-section Coordinate
-
-variable {p : PowerSeries O} (hp0 : constantCoeff p = 0) (hp1 : IsUnit (coeff 1 p))
-include hp0 hp1
-
-end Coordinate
-
 private theorem algHom_eq_C_constantCoeff_add_X_mul (α : PowerSeries O →ₐ[O] PowerSeries O) (f : PowerSeries O) :
     α f = C (constantCoeff f) + α X * α (mk fun n => coeff (n + 1) f) := by
   conv_lhs => rw [eq_X_mul_shift_add_const f]

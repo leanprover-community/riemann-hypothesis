@@ -875,7 +875,7 @@ theorem term (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F'] (s : 
       rw [← hH]
       exact H.mul_mem (H.mul_mem (H.inv_mem ((hH p).2 hp)) ((hH _).2 hδ₁))
         ((hH _).2 (inPar_gal _ a n p hp))
-    rw [if_pos hin, if_pos h1]
+    rw [ite_eq_left hin, ite_eq_left h1]
     obtain ⟨et, eb⟩ := blocks_twist (s : F' →+* F') a b n hn p δ₁ hp hδ₁
     have hN₁ : nrm s δ₁ = incl F F' n (y₀⁻¹ * γ * y₀) := by
       rw [hδ₁def, nrm_conj_incl, hN, map_mul, map_mul, map_inv]
@@ -887,7 +887,7 @@ theorem term (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F'] (s : 
     have eβ := lβ.2 (brG a b δ₁) (brG a b p)
     rw [galAct_apply] at eα eβ
     rw [eα, eβ, lα.1 _ _ (by unfold IsNorm; rw [nt]), lβ.1 _ _ (by unfold IsNorm; rw [nb])]
-  · rw [if_neg h1, if_neg]
+  · rw [ite_eq_right h1, ite_eq_right]
     intro hin
     obtain ⟨y₁, p₁, hp₁, e, hγ₁⟩ := (_root_.GlobalTheory.Shin.inPar_twistedConj_iff F F' s hs a n hle γ δ (c * p) hA hN).1 hin
     have hh : incl F F' n (y₁⁻¹ * y₀) = p₁ * p⁻¹ := by
@@ -919,7 +919,7 @@ theorem pointwise (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F'] 
   have hsupp : ∀ y, T y ≠ 0 → ∃ k p, p ∈ H ∧ y = incl F F' n k * p := by
     intro y hy
     have hin : InPar a (y⁻¹ * δ * gal (s : F' →+* F') n y) := by
-      by_contra h; exact hy (if_neg h)
+      by_contra h; exact hy (ite_eq_right h)
     obtain ⟨k, p, hp, e, -⟩ := (_root_.GlobalTheory.Shin.inPar_twistedConj_iff F F' s hs a n (by omega) γ δ y hA hN).1 hin
     exact ⟨k, p, (hH p).2 hp, e⟩
   have hcnt := count (incl F F' n) H T hsupp

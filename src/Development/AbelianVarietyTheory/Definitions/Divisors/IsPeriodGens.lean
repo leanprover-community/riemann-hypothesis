@@ -19,10 +19,6 @@ abbrev prj {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] {
     (h : IsPullDeg θ D D') : D'.P.A.left ⟶ D.P.A.left :=
   h.e.hom.left ≫ pullback.fst D.P.A.hom (specOf θ)
 
-def Extends {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] (θ : R →+* R') {F : Type} [Field F]
-    [Algebra (FractionRing R') F] (κ : FractionRing R →+* F) : Prop :=
-  ∀ r : R, κ (algebraMap R (FractionRing R) r) = algebraMap (FractionRing R') F (algebraMap R' (FractionRing R') (θ r))
-
 variable {D' : Datum H} {l : Geo.Tor.Level H} {c : Coeff l} (L : LowBase D' c) {V : Type} [CommRing V] [IsDomain V]
   (Q : DegPre V) [Module (𝓞 E) Q.X] (oQ : letI := H.starRing; Q.OAct (𝓞 E)) (iw : L.W →+* V) {I : Type} [Fintype I]
   (s : I → V) (ε : I → LinearMap.BilinForm ℤ L.D.X) (e : Q.X ≃ₗ[𝓞 E] L.D.X)

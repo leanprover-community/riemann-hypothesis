@@ -348,10 +348,10 @@ theorem exists_shift (A : Fin n → Fin n → Module.End ℂ S) (B : Fin n → F
   by_cases c : i = j
   · subst c
     have := key i 0 0 i
-    simp only [if_true] at this
+    simp only [ite_true] at this
     simp [this]
   · have := key i i i j
-    simp only [if_true, if_neg (Ne.symm c)] at this
+    simp only [ite_true, ite_eq_right (Ne.symm c)] at this
     simp [this, c]
 
 theorem prod_intertwine (L : M →ₗ[ℂ] S) : ∀ (k : ℕ) (a : Fin k → Module.End ℂ S) (b : Fin k → Module.End ℂ M),

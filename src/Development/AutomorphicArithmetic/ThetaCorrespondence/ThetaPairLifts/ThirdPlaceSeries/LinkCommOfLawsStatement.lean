@@ -416,7 +416,7 @@ theorem redM_eq_one (v : HeightOneSpectrum (𝓞 F)) (X : Matrix (Fin n) (Fin n)
       HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one]
     exact (hX i j).ne
   have e : (⟨X i j, hx⟩ : v.adicCompletionIntegers F) = ⟨_, hd⟩ + ⟨_, h1⟩ := Subtype.ext (sub_add_cancel _ _).symm
-  simp only [redM, dif_pos hx]
+  simp only [redM, dite_eq_left hx]
   rw [e, map_add (f := _), h0, zero_add]
   by_cases hij : i = j
   · subst hij

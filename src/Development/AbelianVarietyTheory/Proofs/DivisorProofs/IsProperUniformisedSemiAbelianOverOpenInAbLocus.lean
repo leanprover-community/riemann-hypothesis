@@ -111,14 +111,6 @@ theorem ab_even (P : CP G) : ∃ σ : CubTriv P.c (TQ.abelian G hG X).i, σ.Even
 
 end Generic
 
-section Thick
-variable {R : Type} [CommRing R] [IsDomain R] (I : Ideal R) (e : ℕ) (G : Over (Spec (CommRingCat.of R))) [GrpObj G]
-
-
-
-
-end Thick
-
 variable {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {A : PolAV (Spec (CommRingCat.of (FractionRing V)))}
   {G : Over (Spec (CommRingCat.of V))} [GrpObj G] [IsCommMonObj G]
 

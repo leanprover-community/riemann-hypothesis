@@ -1310,7 +1310,7 @@ theorem flag_pair_of_lat : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spe
     rw [← algebraMap_int_eq, MvPolynomial.aeval_map_algebraMap]
   refine ⟨B, B', w.unitsSMul ue, w.unitsSMul ue', fun c hc z => ⟨hBl c hc z, hBl' c hc z⟩, hmod, hsame, ?_⟩
   refine ⟨hfr, hfr', fun i j hij => ?_, fun i => ?_, fun i => ?_⟩
-  · rw [hcoef, if_neg hij.ne]
+  · rw [hcoef, ite_eq_right hij.ne]
   · obtain ⟨bf, bg, hbf, hbg, hb⟩ := hdeg i
     have hf0 : aeval y (Q.f i) ≠ 0 := by
       rw [hfg i]
@@ -1378,7 +1378,7 @@ theorem flag_pair_of_lat : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spe
       have hei := he0 i
       rw [hYg']
       field_simp
-  · simp only [hcoef, if_true]
+  · simp only [hcoef, ite_true]
     show aeval y (MvPolynomial.map (Int.castRingHom O) (Q.f i)) = _ * aeval y (MvPolynomial.map (Int.castRingHom O) (Q.g i))
     rw [hev, hev, hfg i]
 

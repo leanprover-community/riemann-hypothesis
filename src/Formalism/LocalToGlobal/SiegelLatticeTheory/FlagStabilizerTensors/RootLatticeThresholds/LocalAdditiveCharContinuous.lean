@@ -544,7 +544,7 @@ theorem locDualC_of (hG : LocDualGenC) (hU : LocUnramC) (hP : PinHostC) : LocDua
         · exact not_both D p hj hi
         · exact hne rfl
       subst hji; exact hval
-  · push_neg at hty
+  · push Not at hty
     obtain ⟨δ, hδ, hd⟩ := g1 hred hun
     exact ⟨δ, hδ, hd, fun i hi => absurd hi (hty i)⟩
 

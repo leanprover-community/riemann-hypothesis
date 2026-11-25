@@ -15,7 +15,7 @@ open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S
 theorem col_of_fix {m : ℕ} {h : Matrix (Fin m) (Fin m) ℂ} {c : Fin m} (hc : h *ᵥ bvec c = bvec c) (p : Fin m) :
     h p c = if p = c then 1 else 0 := by
   simpa only [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] using congrFun hc p
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] using congrFun hc p
 
 theorem Hpk_esI_row {k r : ℕ} (a : Fin r) (q : Fin (2 * r + k + 1)) :
     Hpk k r (esI k r a) q = if q = eI k r a then 1 else 0 := by
@@ -28,8 +28,8 @@ theorem Hpk_eI_row {k r : ℕ} (a : Fin r) (q : Fin (2 * r + k + 1)) :
 theorem Hpk_mid_col {k r : ℕ} (i j : Fin (2 * r + k + 1)) (hj1 : r ≤ j.val) (hj2 : j.val ≤ r + k)
     (hi : i.val < r ∨ r + k < i.val) : Hpk k r i j = 0 := by
   unfold Hpk
-  rw [if_neg (fun h => by have := h.1; have := h.2; omega), if_neg (fun h => by have := h.1; omega),
-    if_neg (fun h => by have := h.1; have := h.2.1; omega)]
+  rw [ite_eq_right (fun h => by have := h.1; have := h.2; omega), ite_eq_right (fun h => by have := h.1; omega),
+    ite_eq_right (fun h => by have := h.1; have := h.2.1; omega)]
 
 theorem UH_entry {m : ℕ} {H h : Matrix (Fin m) (Fin m) ℂ} (hUH : hᴴ * H * h = H) {c : Fin m}
     (hc : ∀ p, h p c = if p = c then 1 else 0) (j : Fin m) : ∑ q, H c q * h q j = H c j := by

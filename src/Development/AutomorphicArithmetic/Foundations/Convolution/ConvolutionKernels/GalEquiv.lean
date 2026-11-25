@@ -46,8 +46,8 @@ private theorem mult_comap_equiv {K : Type} [Field K] [NumberField K] (j : K ≃
   have h : (u.comap j.toRingHom).IsReal ↔ u.IsReal := InfinitePlace.isReal_comap_iff (f := j)
   unfold InfinitePlace.mult
   by_cases hu : u.IsReal
-  · rw [if_pos (h.2 hu), if_pos hu]
-  · rw [if_neg (mt h.1 hu), if_neg hu]
+  · rw [ite_eq_left (h.2 hu), ite_eq_left hu]
+  · rw [ite_eq_right (mt h.1 hu), ite_eq_right hu]
 
 private def infPerm {K : Type} [Field K] [NumberField K] (j : K ≃+* K) : InfinitePlace K ≃ InfinitePlace K where
   toFun u := u.comap j.toRingHom

@@ -72,8 +72,6 @@ theorem place_facts {PP : Formalism.L2.DIV.Pl D.host.E} (h : IsIdemAt q.e PP) :
     change q.pr _ = q.pr (q₀.sec (q₀.pr _))
     rw [q₀.sec_pr, he, pr_e_mul]
 
-def prO : 𝓞 D.host.E →+* k := (q.pr.comp (incA D)).comp (algebraMap (𝓞 D.host.E) D.host.E)
-
 theorem sec_mul (x y : k) : q.sec x * q.sec y = q.sec (x * y) := by
   have h := q.sec_pr (q.sec x * q.sec y)
   rw [map_mul, q.pr_sec, q.pr_sec, ← mul_assoc, ← GlobalTheory.FrameGlob.sec_eq_mul] at h

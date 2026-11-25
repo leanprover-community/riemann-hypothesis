@@ -137,7 +137,7 @@ theorem exists_isNab : Laws → ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   refine ⟨C S y, fun k F => ⟨_, hg S y k F⟩, ?_⟩
   intro k F f hf α
   have hne : Nonempty (Algebra ℚ S) := ⟨iQ⟩
-  have h1 : nab y k F α = @val S _ _ hne.some y k F α := dif_pos hne
+  have h1 : nab y k F α = @val S _ _ hne.some y k F α := dite_eq_left hne
   have h2 : hne.some = iQ := Subsingleton.elim _ _
   refine h1.trans ?_
   rw [h2, isGermFun_holds E H Dw l Xo c S y _ _ _ _ _ k F f _ hf (hg S y k F)]

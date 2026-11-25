@@ -384,7 +384,7 @@ theorem hecke_std (hB0 : B0) (hC0 : C0) (hC1 : C1) (N : ℕ) [NeZero N] (ω : He
       (filtration_le hn1 (hcond hv)) (W_bad hB0 hW (hbad v hv)) ϖ _ ϖ _ hR hR _ d hd 1
     simp only [one_mul] at hsum
     rw [sum_eq_sum_wPositions hW ϖ hl ht hinj, whittaker_hecke_coset_sum hW ϖ ht hinj] at hsum
-    simp only [if_pos hv, add_zero, hm, ← Finset.mul_sum, hsum]
+    simp only [ite_eq_left hv, add_zero, hm, ← Finset.mul_sum, hsum]
     field_simp
   · have hK := finAt_finEmb_mem hu.1 v
     have hm := fun b => move_past (c₁ := 1) hB0 one_ne_zero hl rfl h0
@@ -394,7 +394,7 @@ theorem hecke_std (hB0 : B0) (hC0 : C0) (hC1 : C1) (N : ℕ) [NeZero N] (ω : He
     have hsum := hC0 (Qv v) (localAdelicChar ℚ v) hstd W (W_good hB0 hW (hgood v hv)) ϖ _ ϖ _ hR hR _ hK 1
     simp only [one_mul] at hsum
     rw [sum_eq_sum_wPositions hW ϖ hl ht hinj, whittaker_hecke_coset_sum hW ϖ ht hinj, locfn_mul hW hl ht', hW _ _ ht'] at hsum
-    simp only [if_neg hv, hm, hm', ← Finset.mul_sum, inv_one, mul_one]
+    simp only [ite_eq_right hv, hm, hm', ← Finset.mul_sum, inv_one, mul_one]
     rw [← mul_add, hsum, mul_add]
 
 theorem hecke_types_of_lift : B0 → C0 → C1 → F0b → F1 → AutomorphicLevelEquivariance → HeckeSumLocalTranslates → F3 := by
@@ -423,7 +423,7 @@ theorem hecke_types_of_lift : B0 → C0 → C1 → F0b → F1 → AutomorphicLev
     simp only [mul_one] at hsum
     rw [hsum, sum_eq_sum_wPositions hW ϖ a' ht hinj, locfn_mul hW a' ht', hW _ _ a']
     have := hc (g * h')
-    rwa [if_neg hv] at this
+    rwa [ite_eq_right hv] at this
   · obtain ⟨ϖ, t, t', ht, ht', hR, hinj, hc⟩ := core v
     have hstd := (hB0.1 v).1
     have hp := (hB0.1 v).2.2.1
@@ -434,6 +434,6 @@ theorem hecke_types_of_lift : B0 → C0 → C1 → F0b → F1 → AutomorphicLev
     simp only [mul_one, map_one, Units.val_one, one_mul] at hsum
     rw [hsum, sum_eq_sum_wPositions hW ϖ a' ht hinj, hW _ _ a']
     have := hc (g * h')
-    rwa [if_pos hv, add_zero] at this
+    rwa [ite_eq_left hv, add_zero] at this
 
 end GlobalTheory.CompanionTheory.RankinHecke

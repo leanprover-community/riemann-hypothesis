@@ -284,7 +284,7 @@ theorem exists_adapted_family (F : ℤ → Submodule k M) (hF : Antitone F) :
   have hbdd : ∃ b, ∀ z, D ≤ F z → z ≤ b := by
     obtain ⟨x, hxD, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hD
     have : ¬ ∀ a, x ∈ F a := fun h => hx0 (hsep x hxD h)
-    push_neg at this
+    push Not at this
     obtain ⟨a, ha⟩ := this
     refine ⟨a, fun z hz => ?_⟩
     by_contra hlt
@@ -340,7 +340,7 @@ theorem exists_adapted_family (F : ℤ → Submodule k M) (hF : Antitone F) :
         · simpa using ha
       rw [hall, Set.image_univ, Set.Sum.elim_range, Submodule.span_union, hspan, hcspan, hsup]
       exact hx.1
-    · push_neg at ha
+    · push Not at ha
       have hx' : x ∈ D' ⊓ F a := ⟨⟨hx.1, hF (by omega) hx.2⟩, hx.2⟩
       refine Submodule.span_mono ?_ (hfil a hx')
       rintro _ ⟨j, hj, rfl⟩

@@ -68,7 +68,7 @@ theorem u3upPf_memNL (T : LocLat G Qp LL O) (Pt : ZMod n → LL → (K →ₐ[Qp
         exact Submodule.zero_mem _
       · apply Submodule.smul_mem
         refine u3upPf_FilC_anti T τ ?_ hv
-        push_neg at hlt
+        push Not at hlt
         omega
     · exact Submodule.zero_mem _
 

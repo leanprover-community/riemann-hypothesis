@@ -225,14 +225,14 @@ theorem exists_unitary_col (m : ℕ) (ε : Fin m → Bool) (z : Fin m) (u : Fin 
     by_cases h : u z = 0
     · simp [hφdef, h]
     · have htn : (t : ℂ) ≠ 0 := by simp [ht, h]
-      simp only [hφdef, h, if_false, star_div₀, Complex.star_def, Complex.conj_ofReal]
+      simp only [hφdef, h, ite_false, star_div₀, Complex.star_def, Complex.conj_ofReal]
       rw [div_mul_div_comm, Complex.conj_mul', ← ht]
       field_simp
   have hφt : star φ * u z = (t : ℂ) := by
     by_cases h : u z = 0
     · simp [hφdef, h, ht]
     · have htn : (t : ℂ) ≠ 0 := by simp [ht, h]
-      simp only [hφdef, h, if_false, star_div₀, Complex.star_def, Complex.conj_ofReal]
+      simp only [hφdef, h, ite_false, star_div₀, Complex.star_def, Complex.conj_ofReal]
       rw [div_mul_eq_mul_div, Complex.conj_mul', ← ht]
       field_simp
   have hφ' : (starRingEnd ℂ) φ * φ = 1 := by rw [← Complex.star_def]; exact hφ
@@ -251,7 +251,7 @@ theorem exists_unitary_col (m : ℕ) (ε : Fin m → Bool) (z : Fin m) (u : Fin 
   have hev : star e ⬝ᵥ v = (t : ℂ) := by
     simp [he, dotProduct, Pi.single_apply, hv, hφt']
   have hve : star v ⬝ᵥ e = (t : ℂ) := by
-    simp only [he, dotProduct, Pi.star_apply, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [he, dotProduct, Pi.star_apply, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     simp only [hv]
     rw [hφt]; simp
   set c : ℂ := ((1 / (1 + t) : ℝ) : ℂ) with hcdef
@@ -308,7 +308,7 @@ theorem exists_unitary_col (m : ℕ) (ε : Fin m → Bool) (z : Fin m) (u : Fin 
       by_cases h : i = z
       · subst h; simp [he]; ring
       · simp [he, h, one_apply_ne h]; ring
-    simp only [hk, mul_diagonal, hTz, hd, if_true, hv]
+    simp only [hk, mul_diagonal, hTz, hd, ite_true, hv]
     calc star φ * u i * φ = (star φ * φ) * u i := by ring
       _ = u i := by rw [hφ, one_mul]
 
@@ -431,8 +431,8 @@ theorem col_inv_norm {n : ℕ} (e : Option (Fin n) ≃ Fin (n + 1)) (ε : Fin (n
     ∑ i, (if ε i then (1 : ℝ) else -1) * ‖g⁻¹ i (e none)‖ ^ 2 = 1 := by
   have h : (g⁻¹)ᴴ * Jm ε * g⁻¹ = Jm ε := inv_mem hg
   have h2 := congrFun (congrFun h (e none)) (e none)
-  simp only [Matrix.mul_apply, Jm, Matrix.diagonal_apply, Matrix.conjTranspose_apply, hz, if_true] at h2
-  simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+  simp only [Matrix.mul_apply, Jm, Matrix.diagonal_apply, Matrix.conjTranspose_apply, hz, ite_true] at h2
+  simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
   have h3 : ((∑ i, (if ε i then (1 : ℝ) else -1) * ‖g⁻¹ i (e none)‖ ^ 2 : ℝ) : ℂ) = 1 := by
     rw [← h2]; push_cast
     refine Finset.sum_congr rfl fun i _ => ?_

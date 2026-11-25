@@ -44,11 +44,11 @@ theorem UpperTheory.Gal.TranscendenceTraces.wtExt_of :
   have h2 : ψ (pt a) = ∑ᶠ y ∈ fib (pullback.snd p (z ≫ p)) a,
       w L (y ≫ pullback.fst p (z ≫ p)) * φ (pt y) := hψ L a
   have hpt : pt (a ≫ z0) = pt z0 := by rw [pt_comp, pt_eq]
-  have hφ : φ (pt z0) = 1 := if_pos rfl
+  have hφ : φ (pt z0) = 1 := ite_eq_left rfl
   have hne : ∀ y : (pullback p (z ≫ p) : Scheme.{0}), φ y ≠ 0 → y = pt z0 := by
     intro y hy
     by_contra h
-    exact hy (if_neg h)
+    exact hy (ite_eq_right h)
   have e1 : ∑ᶠ y ∈ fib (pullback.snd p (z ≫ p)) (𝟙 (gp Ω)),
       w Ω (y ≫ pullback.fst p (z ≫ p)) * φ (pt y) = w Ω z := by
     rw [fsum_single _ _ z0 hs, hf, hφ, mul_one]

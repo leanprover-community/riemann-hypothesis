@@ -305,9 +305,9 @@ private theorem evalFr_two_smul {B : Type} [Fintype B] [DecidableEq B] {m : B �
       have hdet : ∀ b', (if b' ∈ s then (2 : ℂ) • X b' else X b').det ≠ 0 := by
         intro b'
         by_cases h : b' ∈ s
-        · simp only [h, if_true, Matrix.det_smul]
+        · simp only [h, ite_true, Matrix.det_smul]
           exact mul_ne_zero (pow_ne_zero _ two_ne_zero) (hX b')
-        · simp only [h, if_false]
+        · simp only [h, ite_false]
           exact hX b'
       have h2 : ((2 : ℂ) • (1 : Matrix (Fin (m b0)) (Fin (m b0)) ℂ)).det ≠ 0 := by
         rw [Matrix.det_smul, Matrix.det_one, mul_one]

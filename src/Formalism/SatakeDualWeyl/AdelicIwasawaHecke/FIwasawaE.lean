@@ -40,7 +40,7 @@ theorem fIwasawa_exists_max_pivot (hσv : ∀ x, Valued.v (σ x) = Valued.v x) (
   have hex : ∃ j ∈ W, M j ρ ≠ 0 := by
     by_contra! hcon
     have hgram := fIwasawa_gram_un σ M hM (Fin.rev ρ) ρ
-    rw [if_pos (Fin.rev_rev ρ).symm] at hgram
+    rw [ite_eq_left (Fin.rev_rev ρ).symm] at hgram
     have h0 : ∑ j, σ (M (Fin.rev j) (Fin.rev ρ)) * M j ρ = 0 := by
       refine Finset.sum_eq_zero fun j _ => ?_
       by_cases hj1 : j < ρ
@@ -197,7 +197,7 @@ theorem fIwasawa_tri_succ_of_max_pivot (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ 
   have hzout : ∀ t, ¬(ρ < t ∧ t < Fin.rev ρ) → z t = 0 := by
     intro t ht
     rw [hzeq]
-    exact if_neg ht
+    exact ite_eq_right ht
   have hzsupp : ∀ t, z t ≠ 0 → ρ < t ∧ t < Fin.rev ρ := by
     intro t ht
     by_contra h
@@ -206,7 +206,7 @@ theorem fIwasawa_tri_succ_of_max_pivot (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ 
     intro t h1 h2
     rw [hzeq]
     dsimp only
-    rw [if_pos (And.intro h1 h2), neg_mul_neg_div_self _ _ hp]
+    rw [ite_eq_left (And.intro h1 h2), neg_mul_neg_div_self _ _ hp]
   have hrevmid : ∀ j, ρ < Fin.rev j ∧ Fin.rev j < Fin.rev ρ → ρ < j ∧ j < Fin.rev ρ := by
     intro j h
     have h' := fin_rev_between_of_between ρ (Fin.rev j) h.1 h.2
@@ -236,20 +236,20 @@ theorem fIwasawa_tri_succ_of_max_pivot (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ 
     intro j
     rcases lt_trichotomy j ρ with h1 | h1 | h1
     · rw [hcz (Fin.rev j) (Fin.rev_lt_rev.mpr h1), map_zero σ, hzout j (fun h => lt_asymm h1 h.1),
-        if_neg (ne_of_lt h1), if_neg (ne_of_lt (lt_trans h1 hρ))]
+        ite_eq_right (ne_of_lt h1), ite_eq_right (ne_of_lt (lt_trans h1 hρ))]
       ring
-    · rw [h1, if_pos (rfl : ρ = ρ), if_neg hne, hzout ρ (fun h => lt_irrefl ρ h.1)]
+    · rw [h1, ite_eq_left (rfl : ρ = ρ), ite_eq_right hne, hzout ρ (fun h => lt_irrefl ρ h.1)]
       ring
     · rcases lt_trichotomy j (Fin.rev ρ) with h2 | h2 | h2
       · have hm := fin_rev_between_of_between ρ j h1 h2
-        rw [hMz j h1 h2, hMz (Fin.rev j) hm.1 hm.2, if_neg (ne_of_gt h1), if_neg (ne_of_lt h2),
+        rw [hMz j h1 h2, hMz (Fin.rev j) hm.1 hm.2, ite_eq_right (ne_of_gt h1), ite_eq_right (ne_of_lt h2),
           map_mul σ, map_neg σ]
         ring
-      · rw [h2, Fin.rev_rev, if_neg hne.symm, if_pos (rfl : Fin.rev ρ = Fin.rev ρ),
+      · rw [h2, Fin.rev_rev, ite_eq_right hne.symm, ite_eq_left (rfl : Fin.rev ρ = Fin.rev ρ),
           hzout (Fin.rev ρ) (fun h => lt_irrefl (Fin.rev ρ) h.2)]
         ring
-      · rw [hcz j h2, hzout j (fun h => lt_asymm h2 h.2), if_neg (ne_of_gt h1),
-          if_neg (ne_of_gt h2)]
+      · rw [hcz j h2, hzout j (fun h => lt_asymm h2 h.2), ite_eq_right (ne_of_gt h1),
+          ite_eq_right (ne_of_gt h2)]
         ring
   have hA : σ (M (Fin.rev ρ) ρ) * M ρ ρ + σ (M ρ ρ) * M (Fin.rev ρ) ρ +
       σ (M ρ ρ) * M ρ ρ * S = 0 := by

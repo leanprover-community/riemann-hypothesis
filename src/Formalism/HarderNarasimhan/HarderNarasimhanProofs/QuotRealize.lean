@@ -114,7 +114,7 @@ theorem inner_psi_psi (u v : P) (y z : ι → ℂ) :
   rw [PiLp.inner_apply]
   by_cases h : u = v
   · subst h
-    rw [if_pos rfl, PiLp.inner_apply, Complex.re_sum, Fintype.sum_prod_type, Finset.sum_eq_single u]
+    rw [ite_eq_left rfl, PiLp.inner_apply, Complex.re_sum, Fintype.sum_prod_type, Finset.sum_eq_single u]
     · rw [Fintype.sum_prod_type]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       simp [PlaceDecomposition.psi, Fin.sum_univ_two, Complex.mul_re]
@@ -124,7 +124,7 @@ theorem inner_psi_psi (u v : P) (y z : ι → ℂ) :
       simp [PlaceDecomposition.psi, hw]
     · intro hu
       exact absurd (Finset.mem_univ u) hu
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     apply Finset.sum_eq_zero
     rintro ⟨w, i, k⟩ -
     by_cases hw : w = u
@@ -184,24 +184,6 @@ def pv (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ) (U : Submod
     (v : InfinitePlace K) : Submodule ℂ (EuclideanSpace ℂ ι) :=
   Submodule.span ℂ ((fun y => (WithLp.equiv 2 (ι → ℂ)).symm (Formalism.HermitianLatticesTheory.fcoord b X v y)) '' (U : Set V))
 
-private theorem fcoord_smul_harder_narasimhan (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
-    (v : InfinitePlace K) (a : K) (x : V) :
-    Formalism.HermitianLatticesTheory.fcoord b X v (a • x) = v.embedding a • Formalism.HermitianLatticesTheory.fcoord b X v x := by
-  have h1 : Formalism.HermitianLatticesTheory.vecAt b v (a • x) = v.embedding a • Formalism.HermitianLatticesTheory.vecAt b v x := by
-    funext i
-    simp [Formalism.HermitianLatticesTheory.vecAt]
-  simp only [Formalism.HermitianLatticesTheory.fcoord, h1, Matrix.mulVec_smul]
-
-private theorem fcoord_finset_sum_smul {κ : Type} (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
-    (v : InfinitePlace K) (s : Finset κ) (r : κ → K) (c : κ → V) :
-    Formalism.HermitianLatticesTheory.fcoord b X v (∑ k ∈ s, r k • c k) =
-      ∑ k ∈ s, v.embedding (r k) • Formalism.HermitianLatticesTheory.fcoord b X v (c k) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [Formalism.HermitianLatticesTheory.fcoord_zero]
-  | insert a s ha ih =>
-      rw [Finset.sum_insert ha, Finset.sum_insert ha, Formalism.HermitianLatticesTheory.fcoord_add, ih, fcoord_smul_harder_narasimhan]
-
 theorem fcoord_mem_span (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
     (S : Submodule (𝓞 K) V) (v : InfinitePlace K) {y : V}
     (hy : y ∈ Submodule.span K (S : Set V)) :
@@ -211,12 +193,7 @@ theorem fcoord_mem_span (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι
   | zero => rw [Formalism.HermitianLatticesTheory.fcoord_zero]; exact Submodule.zero_mem _
   | add x y _ _ hx hy => rw [Formalism.HermitianLatticesTheory.fcoord_add]; exact Submodule.add_mem _ hx hy
   | smul a x _ hx =>
-      have h1 : Formalism.HermitianLatticesTheory.vecAt b v (a • x) = v.embedding a • Formalism.HermitianLatticesTheory.vecAt b v x := by
-        funext i
-        simp [Formalism.HermitianLatticesTheory.vecAt]
-      have h2 : Formalism.HermitianLatticesTheory.fcoord b X v (a • x) = v.embedding a • Formalism.HermitianLatticesTheory.fcoord b X v x := by
-        simp only [Formalism.HermitianLatticesTheory.fcoord, h1, Matrix.mulVec_smul]
-      rw [h2]
+      rw [PlaceDecomposition.fcoord_smul]
       exact Submodule.smul_mem _ _ hx
 
 theorem pv_le (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
@@ -367,7 +344,7 @@ theorem proj_eq_tv (hc : ∀ k, U.mkQ (c k) = b'' k) (v : InfinitePlace K) (x : 
       | exact (Submodule.starProjection_apply_eq_zero_iff _).mpr (Submodule.le_orthogonal_orthogonal _ hm)
   have hsplit : Formalism.HermitianLatticesTheory.fcoord b X v x = Formalism.HermitianLatticesTheory.fcoord b X v (x - ∑ k, r k • c k) +
       ∑ k, v.embedding (r k) • Formalism.HermitianLatticesTheory.fcoord b X v (c k) := by
-    rw [← fcoord_finset_sum_smul, ← Formalism.HermitianLatticesTheory.fcoord_add, sub_add_cancel]
+    rw [← PlaceDecomposition.fcoord_lincomb, ← Formalism.HermitianLatticesTheory.fcoord_add, sub_add_cancel]
 
   rw [← hL, hsplit, map_add (f := _), h0, zero_add, map_sum, tv, Fintype.linearCombination_apply]
   refine Finset.sum_congr rfl fun k _ => ?_

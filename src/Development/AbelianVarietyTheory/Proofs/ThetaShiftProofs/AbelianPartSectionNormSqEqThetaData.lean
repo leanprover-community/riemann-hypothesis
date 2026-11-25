@@ -131,7 +131,7 @@ theorem thetaCharOff_eq {g n : ℕ} (S : Finset (Fin g)) (e : Fin n ≃ {k // k 
   classical
   let ε : {m : Fin g → ℤ // ∀ k ∈ S, m k = 0} ≃ (Fin n → ℤ) :=
     { toFun := fun m i => m.1 (e i).1
-      invFun := fun m => ⟨fun k => if h : k ∈ S then 0 else m (e.symm ⟨k, h⟩), fun k hk => dif_pos hk⟩
+      invFun := fun m => ⟨fun k => if h : k ∈ S then 0 else m (e.symm ⟨k, h⟩), fun k hk => dite_eq_left hk⟩
       left_inv := fun m => Subtype.ext (funext fun k => by
         by_cases h : k ∈ S
         · simp [h, m.2 k h]

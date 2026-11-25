@@ -120,7 +120,7 @@ theorem adelstabL_lower (Λ : Submodule (𝓞 E) (n → E))
       rw [Pi.single_eq_same, Subring.smul_def, smul_eq_mul, ← hC, mul_comm]
     · intro k _ hki
       show (_ : 𝒮) • ι ((Pi.single k (m : E) : n → E) i) = 0
-      rw [Pi.single_apply, if_neg (Ne.symm hki), map_zero, smul_zero]
+      rw [Pi.single_apply, ite_eq_right (Ne.symm hki), map_zero, smul_zero]
     · exact fun h => absurd (Finset.mem_univ i) h
   rw [this]
   exact sum_mem fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, hsingle k, rfl⟩)

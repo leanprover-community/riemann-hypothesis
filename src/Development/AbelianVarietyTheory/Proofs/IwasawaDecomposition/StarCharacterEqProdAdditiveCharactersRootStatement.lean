@@ -685,10 +685,10 @@ theorem ew_mem_wInt (D : D7) (X : HidaSetting D) (kv : Σ k : Fin 2, D.nd.PlG k)
   obtain ⟨ob, h1, -⟩ := Formalism.L2.SG.Pf.KppFwdPf.ew_res X kv
   cases ob with
   | false =>
-    simp only [Bool.false_eq_true, if_false, sub_zero] at h1
+    simp only [Bool.false_eq_true, ite_false, sub_zero] at h1
     exact Wq_le_wInt X _ h1
   | true =>
-    simp only [if_true] at h1
+    simp only [ite_true] at h1
     exfalso
     apply hw
     intro y hy
@@ -730,9 +730,9 @@ namespace GlobalTheory.Mem.SymChar.EdgeReindex
 theorem sum_edge {Q : Type} [AddCommMonoid Q] {r t : ℕ} (ht : t < r) (P : Fin r → Prop) [DecidablePred P]
     (hP : ∀ j, P j ↔ j.val = t) (f : Fin r → Q) : (∑ j, if P j then f j else 0) = f ⟨t, ht⟩ := by
   rw [Finset.sum_eq_single ⟨t, ht⟩]
-  · rw [if_pos ((hP _).2 rfl)]
+  · rw [ite_eq_left ((hP _).2 rfl)]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hb (Fin.ext ((hP b).1 h))
   · simp
@@ -754,24 +754,24 @@ theorem inner_eq {Q : Type} [AddCommGroup Q] (ρ k r : ℕ) (hr : r = k + 2 * ρ
   · by_cases h2 : i.1 + 1 < ρ
     · rw [sum_edge (t := i.1 + 1) (by omega) _ (fun j => by
         simp only [symEdge]; constructor <;> intro h <;> omega)]
-      rw [if_pos h1, if_pos h2, extF, dite_eq_left ⟨i.2, by omega⟩]
-      simp only [GlobalTheory.Mem.SymChar.wtA, if_pos h1, one_smul]
+      rw [ite_eq_left h1, ite_eq_left h2, extF, dite_eq_left ⟨i.2, by omega⟩]
+      simp only [GlobalTheory.Mem.SymChar.wtA, ite_eq_left h1, one_smul]
     · rw [sum_edge (t := ρ + k) (by omega) _ (fun j => by
         simp only [symEdge]; constructor <;> intro h <;> omega)]
-      rw [if_pos h1, if_neg h2, extF, dite_eq_left ⟨i.2, by omega⟩]
-      simp only [GlobalTheory.Mem.SymChar.wtA, if_pos h1, one_smul]
+      rw [ite_eq_left h1, ite_eq_right h2, extF, dite_eq_left ⟨i.2, by omega⟩]
+      simp only [GlobalTheory.Mem.SymChar.wtA, ite_eq_left h1, one_smul]
   · by_cases h2 : i.1 + 1 < ρ + k
     · rw [sum_edge (t := i.1 + 1) (by omega) _ (fun j => by
         simp only [symEdge]; constructor <;> intro h <;> omega)]
-      rw [if_neg h1, if_pos h2]
-      simp only [GlobalTheory.Mem.SymChar.wtA, if_neg h1, if_pos h2]
+      rw [ite_eq_right h1, ite_eq_left h2]
+      simp only [GlobalTheory.Mem.SymChar.wtA, ite_eq_right h1, ite_eq_left h2]
       cases s
       · simp
       · rw [extF, dite_eq_left ⟨i.2, by omega⟩]
         simp
-    · rw [if_neg h1, if_neg h2]
+    · rw [ite_eq_right h1, ite_eq_right h2]
       refine Finset.sum_eq_zero fun j _ => ?_
-      simp only [GlobalTheory.Mem.SymChar.wtA, if_neg h1, if_neg h2, zero_smul, ite_self]
+      simp only [GlobalTheory.Mem.SymChar.wtA, ite_eq_right h1, ite_eq_right h2, zero_smul, ite_self]
 
 theorem sum_symEdge_wtA : ∀ (Q : Type) [AddCommGroup Q] (ρ k r : ℕ) (hr : r = k + 2 * ρ + 1) (s : Bool) (F : Fin r → Fin r → Q), (∑ i : Fin r, ∑ j : Fin r, if symEdge ρ k i j then GlobalTheory.Mem.SymChar.wtA ρ k s i j • F i j else 0) = (∑ a : Fin ρ, F ⟨a.1, by have := a.2; omega⟩ ⟨if a.1 + 1 < ρ then a.1 + 1 else ρ + k, by have := a.2; split_ifs <;> omega⟩) + ∑ i : Fin k, if h : i.1 + 1 < k then (if s then F ⟨ρ + i.1, by omega⟩ ⟨ρ + i.1 + 1, by omega⟩ else 0) else 0 := by
   intro Q _ ρ k r hr s F
@@ -782,29 +782,29 @@ theorem sum_symEdge_wtA : ∀ (Q : Type) [AddCommGroup Q] (ρ k r : ℕ) (hr : r
   have h3 : (∑ x ∈ Finset.range (ρ + 1), termAt ρ k s F (ρ + (k + x))) = 0 := by
     refine Finset.sum_eq_zero fun x _ => ?_
     unfold termAt
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   rw [h3, add_zero]
   congr 1
   · rw [← Fin.sum_univ_eq_sum_range (fun n => termAt ρ k s F n) ρ]
     refine Finset.sum_congr rfl fun a _ => ?_
     have ha := a.2
     unfold termAt extF
-    rw [if_pos ha, dite_eq_left ⟨by omega, by split_ifs <;> omega⟩]
+    rw [ite_eq_left ha, dite_eq_left ⟨by omega, by split_ifs <;> omega⟩]
   · rw [← Fin.sum_univ_eq_sum_range (fun n => termAt ρ k s F (ρ + n)) k]
     refine Finset.sum_congr rfl fun i _ => ?_
     have hi := i.2
     by_cases h : i.1 + 1 < k
     · rw [dite_eq_left h]
       unfold termAt
-      rw [if_neg (by omega), if_pos (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_left (by omega)]
       cases s
       · rfl
-      · simp only [if_true]
+      · simp only [ite_true]
         unfold extF
         rw [dite_eq_left ⟨by omega, by omega⟩]
     · rw [dite_eq_right h]
       unfold termAt
-      rw [if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
 
 end GlobalTheory.Mem.SymChar.EdgeReindex
 end -- clump:auto
@@ -899,7 +899,7 @@ theorem resid_at_w : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.
     · rw [dite_eq_left hi, dite_eq_left hi]
       by_cases hw : SymFrame.EwAt X w
       · have hs : side X w = true := by simp [side, hw]
-        rw [if_pos hs, hφ]
+        rw [ite_eq_left hs, hφ]
         apply hmk
         have h1 := one_sub_ew_mem X kv.1 hg hw
         have := dual_row X w hN (X.vectorsInLattice.2.2 i).2 (posB D i) (GlobalTheory.T.unipotentDualVector_pairing_symmetricFrame_mod_place D X w kv.1 hg hw h1 i)
@@ -910,7 +910,7 @@ theorem resid_at_w : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.
         rw [e1] at this
         exact this
       · have hs : side X w = false := by simp [side, hw]
-        rw [if_neg (by simp [hs])]
+        rw [ite_eq_right (by simp [hs])]
         rw [QuotientAddGroup.mk'_apply, QuotientAddGroup.eq_zero_iff]
         have hew := _root_.GlobalTheory.Mem.SymChar.EwZero.ew_mem_wInt D X kv hw
         have hbw : X.B.I.fmat k *ᵥ X.bw ⟨i.1 + 1, hi⟩ ∈ X.B.I.Lf :=
@@ -1077,9 +1077,9 @@ theorem row_sum {R : Type} [CommRing R] {r : ℕ} (M : Matrix (Fin r) (Fin r) R)
     simp only [this]
     rw [Finset.sum_ite_eq']
     simp
-  · rw [dif_neg h, mul_zero]
+  · rw [dite_eq_right h, mul_zero]
     refine Finset.sum_eq_zero fun j _ => ?_
-    rw [if_neg]; omega
+    rw [ite_eq_right]; omega
 
 theorem nat_id {R : Type} [CommRing R] (ρ k : ℕ) (s : Bool) (F : ℕ → R) :
     (∑ i ∈ Finset.range (2 * ρ + k), ((cw ρ k s i : ℤ) : R) * F i) =
@@ -1099,37 +1099,37 @@ theorem nat_id {R : Type} [CommRing R] (ρ k : ℕ) (s : Bool) (F : ℕ → R) :
     simp only [Finset.mem_range] at ht
     unfold cw
     by_cases h : t + 1 < ρ
-    · rw [if_pos h, if_pos (show ρ ≤ ρ + k + (ρ - 1 - t) ∧ ρ + k + (ρ - 1 - t) + 1 ≠ ρ + k by omega),
-        if_neg (show ¬ (ρ + k + (ρ - 1 - t) + 1 < ρ + k) by omega),
-        if_neg (show ¬ (ρ + k + (ρ - 1 - t) = ρ + k) by omega),
+    · rw [ite_eq_left h, ite_eq_left (show ρ ≤ ρ + k + (ρ - 1 - t) ∧ ρ + k + (ρ - 1 - t) + 1 ≠ ρ + k by omega),
+        ite_eq_right (show ¬ (ρ + k + (ρ - 1 - t) + 1 < ρ + k) by omega),
+        ite_eq_right (show ¬ (ρ + k + (ρ - 1 - t) = ρ + k) by omega),
         show ρ + k + (ρ - 1 - t) = 2 * ρ + k - t - 1 by omega]
       simp
-    · rw [if_neg h, if_pos (show ρ ≤ ρ + k + (ρ - 1 - t) ∧ ρ + k + (ρ - 1 - t) + 1 ≠ ρ + k by omega),
-        if_neg (show ¬ (ρ + k + (ρ - 1 - t) + 1 < ρ + k) by omega),
-        if_pos (show ρ + k + (ρ - 1 - t) = ρ + k by omega),
+    · rw [ite_eq_right h, ite_eq_left (show ρ ≤ ρ + k + (ρ - 1 - t) ∧ ρ + k + (ρ - 1 - t) + 1 ≠ ρ + k by omega),
+        ite_eq_right (show ¬ (ρ + k + (ρ - 1 - t) + 1 < ρ + k) by omega),
+        ite_eq_left (show ρ + k + (ρ - 1 - t) = ρ + k by omega),
         show ρ + k + (ρ - 1 - t) = ρ + k by omega]
       simp
   have h2 : (∑ t ∈ Finset.range (ρ + k - ρ), ((cw ρ k s (ρ + t) : ℤ) : R) * F (ρ + t)) =
       if s then 0 else ∑ i ∈ Finset.range k, if i + 1 < k then -F (ρ + k - 2 - i) else 0 := by
     rw [show ρ + k - ρ = k by omega]
     cases s
-    · simp only [Bool.false_eq_true, if_false]
+    · simp only [Bool.false_eq_true, ite_false]
       rw [← Finset.sum_range_reflect (fun i => if i + 1 < k then -F (ρ + k - 2 - i) else 0) k]
       rcases Nat.eq_zero_or_pos k with hk | hk
       · subst hk; simp
       · obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
         rw [Finset.sum_range_succ, Finset.sum_range_succ']
         have e1 : ((cw ρ (k' + 1) false (ρ + k') : ℤ) : R) * F (ρ + k') = 0 := by
-          unfold cw; rw [if_neg (by omega)]; simp
+          unfold cw; rw [ite_eq_right (by omega)]; simp
         have e2 : (if k' + 1 - 1 - 0 + 1 < k' + 1 then -F (ρ + (k' + 1) - 2 - (k' + 1 - 1 - 0)) else 0) = (0 : R) := by
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
         rw [e1, e2, add_zero, add_zero]
         refine Finset.sum_congr rfl fun t ht => ?_
         simp only [Finset.mem_range] at ht
-        rw [if_pos (show k' + 1 - 1 - (t + 1) + 1 < k' + 1 by omega),
+        rw [ite_eq_left (show k' + 1 - 1 - (t + 1) + 1 < k' + 1 by omega),
           show ρ + (k' + 1) - 2 - (k' + 1 - 1 - (t + 1)) = ρ + t by omega]
         simp [cw, show ρ ≤ ρ + t ∧ ρ + t + 1 ≠ ρ + (k' + 1) by omega, show ρ + t + 1 < ρ + (k' + 1) by omega]
-    · simp only [if_true]
+    · simp only [ite_true]
       refine Finset.sum_eq_zero fun t ht => ?_
       simp only [Finset.mem_range] at ht
       unfold cw
@@ -1149,7 +1149,7 @@ theorem weighted_sum_eq : ∀ {R : Type} [CommRing R] (ρ k r : ℕ) (hr : r = 2
     simp only [term_eq]
     rw [row_sum]
   rw [hL, Fin.sum_univ_eq_sum_range (fun i => ((cw ρ k s i : ℤ) : R) * F i), Finset.sum_range_succ,
-    show F (2 * ρ + k) = 0 from dif_neg (by omega), mul_zero, add_zero, nat_id]
+    show F (2 * ρ + k) = 0 from dite_eq_right (by omega), mul_zero, add_zero, nat_id]
   congr 1
   · refine (Fin.sum_univ_eq_sum_range (fun a => if a + 1 < ρ then -F (2 * ρ + k - a - 1) else F (ρ + k)) ρ).symm.trans
       (Finset.sum_congr rfl fun a _ => ?_)
@@ -1157,7 +1157,7 @@ theorem weighted_sum_eq : ∀ {R : Type} [CommRing R] (ρ k r : ℕ) (hr : r = 2
     · rw [hFv _ (2 * ρ + k - a.val) (by omega) (by omega) (by omega)]
     · rw [hFv _ (ρ + k + 1) (by omega) (by omega) (by omega)]
   · cases s
-    · simp only [Bool.false_eq_true, if_false]
+    · simp only [Bool.false_eq_true, ite_false]
       refine (Fin.sum_univ_eq_sum_range (fun i => if i + 1 < k then -F (ρ + k - 2 - i) else 0) k).symm.trans
         (Finset.sum_congr rfl fun i _ => ?_)
       split_ifs with h
@@ -1248,7 +1248,7 @@ theorem read (X : HidaSetting D) (w : HeightOneSpectrum (𝓞 D.host.E)) {g : �
     split_ifs with hj
     · rw [hj]
     · rw [map_zero, smul_zero]
-  simp only [e, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [e, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem r_eq (D : D7) : D.R.r = 2 * D.R.rS + D.R.k + 1 := by
   obtain ⟨t, ht⟩ := D.R.m_even
@@ -1281,7 +1281,7 @@ theorem symVec_bwd (X : HidaSetting D) (w : HeightOneSpectrum (𝓞 D.host.E)) (
     (i : Fin D.R.k) (p : Fin D.R.r) (hp : p.val = D.R.rS + D.R.k - 1 - i.val) :
     GlobalTheory.Mem.SymFrame.symVec X w p = X.bwd i := by
   unfold GlobalTheory.Mem.SymFrame.symVec GlobalTheory.SeeConjRead.flagV GlobalTheory.Mem.SymFrame.epsW
-  rw [if_neg hE, dite_eq_right (by omega), dite_eq_left (by omega)]
+  rw [ite_eq_right hE, dite_eq_right (by omega), dite_eq_left (by omega)]
   congr 1
   ext
   simp only [Fin.val_rev]
@@ -1336,7 +1336,7 @@ theorem resBar : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.I
         neg_neg]
   · by_cases hE : GlobalTheory.Mem.SymFrame.EwAt X w
     · have hs : side X w = true := by simp [side, hE]
-      rw [hs, if_pos rfl, map_zero]
+      rw [hs, ite_eq_left rfl, map_zero]
       refine Finset.sum_eq_zero fun i _ => ?_
       by_cases hi : i.val + 1 < D.R.k
       · rw [dite_eq_left hi]
@@ -1353,7 +1353,7 @@ theorem resBar : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.I
     · have hs : side X w = false := by simp [side, hE]
       have hew := GlobalTheory.T.conj_idempotent_sub_one_mem_placeIdeal D X h hι kv hgw hE
 
-      rw [hs, if_neg (by simp), map_sum]
+      rw [hs, ite_eq_right (by simp), map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       by_cases hi : i.val + 1 < D.R.k
       · rw [dite_eq_left hi, dite_eq_left hi]
@@ -1413,12 +1413,12 @@ theorem star_character_eq_prod_additive_characters_root : ∀ (D : D7) (X : Hida
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun j _ => ?_
   by_cases he : symEdge D.R.rS D.R.k i j
-  · simp only [if_pos he]
+  · simp only [ite_eq_left he]
     rw [← add_mul, ← Int.cast_add]
     rcases GlobalTheory.Mem.SymChar.wt_add D.R.rS D.R.k (GlobalTheory.Mem.SymChar.side X (D.naut.plGw kv.1 kv.2)) i j with h2 | h2
     · rw [h2]; simp
     · rw [h2]; simp
-  · simp only [if_neg he, add_zero]
+  · simp only [ite_eq_right he, add_zero]
 
 end GlobalTheory.Mem.SymChar
 end -- clump:auto

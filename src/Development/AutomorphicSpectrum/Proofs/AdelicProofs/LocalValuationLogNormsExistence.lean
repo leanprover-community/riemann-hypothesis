@@ -249,7 +249,7 @@ theorem exists_sep (la : HeightOneSpectrum (𝓞 K)) (hp : ((p : ℕ) : 𝓞 K) 
     (fun q => if q.1 = la then u else 1)
   refine ⟨y, ?_, fun q hq hne hmem => ?_⟩
   · have h1 := hy la (by simpa using hp)
-    simp only [if_true] at h1
+    simp only [ite_true] at h1
     have h2 : la.intValuation (y - u) < la.intValuation u := by
       rw [hu]
       refine ((la.intValuation_le_pow_iff_mem _ 2).2 h1).trans_lt ?_
@@ -258,7 +258,7 @@ theorem exists_sep (la : HeightOneSpectrum (𝓞 K)) (hp : ((p : ℕ) : 𝓞 K) 
     rw [sub_add_cancel] at h3
     rw [h3, hu]
   · have h1 := hy q (by simpa using hq)
-    simp only [if_neg hne, pow_one] at h1
+    simp only [ite_eq_right hne, pow_one] at h1
     have h2 : (1 : 𝓞 K) ∈ q.asIdeal := by
       have := q.asIdeal.sub_mem hmem h1
       simpa using this
@@ -390,13 +390,13 @@ theorem deg_dict : ∀ (K : Type) [Field K] [NumberField K] (r : (K →+* ℂ) �
       by_cases hm : placeOf κ ∈ S
       · rw [Finset.sum_eq_single (placeOf κ)]
         · simp
-        · intro b _ hb; rw [if_neg (Ne.symm hb), mul_zero]
+        · intro b _ hb; rw [ite_eq_right (Ne.symm hb), mul_zero]
         · intro hn; exact absurd (Finset.mem_filter.2 ⟨hm, natCast_mem_placeOf κ⟩) hn
       · have h0 : ρ (placeOf κ) = 0 := by by_contra h0; exact hm (hS _ h0)
         rw [h0, zero_mul]
         refine (Finset.sum_eq_zero fun la hla => ?_).symm
         have : placeOf κ ≠ la := fun h => hm (h ▸ (Finset.mem_filter.1 hla).1)
-        rw [if_neg this, mul_zero]
+        rw [ite_eq_right this, mul_zero]
     unfold LogNorms.finSum
     simp_rw [e1]
     rw [Finset.sum_comm, ← Finset.sum_neg_distrib]
@@ -418,10 +418,10 @@ theorem deg_dict : ∀ (K : Type) [Field K] [NumberField K] (r : (K →+* ℂ) �
       have hne : ∑ κ : K →+* ℂ_[P la], (if placeOf κ = la then Real.log ‖κ (u la)‖ else 0) ≠ 0 := by
         rw [hs, neg_ne_zero]; exact (Real.log_pos (by exact_mod_cast h1)).ne'
       obtain ⟨κ, _, hκ⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne
-      have hpl : placeOf κ = la := by by_contra h; rw [if_neg h] at hκ; exact hκ rfl
+      have hpl : placeOf κ = la := by by_contra h; rw [ite_eq_right h] at hκ; exact hκ rfl
       refine ⟨κ, ?_⟩
       rw [hf, hpl]
-      exact mul_ne_zero hla (by rwa [if_pos hpl] at hκ)
+      exact mul_ne_zero hla (by rwa [ite_eq_left hpl] at hκ)
     · intro hS
       refine (hS.image P).subset ?_
       rintro p ⟨κ, hκ⟩

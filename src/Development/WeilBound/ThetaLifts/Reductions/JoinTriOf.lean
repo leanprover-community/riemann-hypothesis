@@ -86,7 +86,7 @@ theorem local_poly (act : Mat r s →ₗ[ℂ] Module.End ℂ M) (hL : IsLie act)
     if h : sameBlock a b then (ρ a b).restrict (kSt_cycK ρ f a b h) else 0
   have hρV : ∀ a b, sameBlock a b → ∀ v : V, ((ρV a b v : V) : A) = ρ a b v := by
     intro a b h v
-    simp only [ρV, dif_pos h]
+    simp only [ρV, dite_eq_left h]
     rfl
   let ιV : V →ₗ[ℂ] M := ι ∘ₗ V.subtype
   have hιV : ∀ a b, sameBlock a b → ∀ v, ιV (ρV a b v) = act (Eab a b) (ιV v) := by

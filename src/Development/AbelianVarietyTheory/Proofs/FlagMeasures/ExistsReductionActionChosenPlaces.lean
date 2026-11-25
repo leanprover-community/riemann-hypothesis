@@ -996,8 +996,8 @@ theorem exists_idem_intAd (x : intAd F) : ∃ μ : intAd F, (μ * x) * (μ * x) 
       rwa [HeightOneSpectrum.mem_adicCompletionIntegers] at this
     show Valued.v ((1 - ((μ * x : intAd F) : Af F) v) * (x : Af F) v * (y : Af F) v + 1) = 1
     by_cases h : Valued.v ((x : Af F) v) = 1
-    · rw [hprod v, if_pos h, sub_self, zero_mul, zero_mul, zero_add, map_one]
-    · rw [hprod v, if_neg h, sub_zero, one_mul, add_comm]
+    · rw [hprod v, ite_eq_left h, sub_self, zero_mul, zero_mul, zero_add, map_one]
+    · rw [hprod v, ite_eq_right h, sub_zero, one_mul, add_comm]
       apply Valuation.map_one_add_of_lt
       rw [map_mul]
       calc Valued.v ((x : Af F) v) * Valued.v ((y : Af F) v) ≤ Valued.v ((x : Af F) v) * 1 :=

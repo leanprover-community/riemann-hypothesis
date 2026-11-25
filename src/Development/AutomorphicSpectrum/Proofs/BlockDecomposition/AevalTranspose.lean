@@ -1188,7 +1188,7 @@ theorem sLe_of_sMeet {m : ℕ} {e e' : Fin m → SignType} (h : sMeet e e' = e) 
   unfold sMeet at h1
   by_cases h2 : e i = e' i
   · exact h2.symm
-  · rw [if_neg h2] at h1
+  · rw [ite_eq_right h2] at h1
     exact absurd h1.symm hi
 
 theorem eq_neg_one_of {x : SignType} : x ≠ 0 → x ≠ 1 → x = -1 := by

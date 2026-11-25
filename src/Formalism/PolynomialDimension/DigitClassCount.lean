@@ -345,7 +345,7 @@ theorem harmonic_level_count_rec (k' : ℕ) : ∀ A B : ℕ,
     have hle : dimPol k' A * dimPol k' B ≤ dimPol k' (A + 1) * dimPol k' (B + 1) :=
       Nat.mul_le_mul (dimPol_mono k' (by omega)) (dimPol_mono k' (by omega))
     simp only [dimHar, Nat.sub_zero, Nat.add_sub_cancel, Nat.add_eq_zero_iff, one_ne_zero,
-      and_false, or_self, if_false]
+      and_false, or_self, ite_false]
     exact Nat.add_sub_cancel' hle
 
 theorem harmonic_level_count : LevelCount :=

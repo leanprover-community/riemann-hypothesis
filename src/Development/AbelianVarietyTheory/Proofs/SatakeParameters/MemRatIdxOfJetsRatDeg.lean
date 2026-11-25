@@ -381,7 +381,7 @@ theorem colMu_bound_all (hJ : JetLossAllAt Pr R A sel S) (hO : JetOpWeyl) (hW : 
     generalize g • p = p, g' • p' = p' at hg hg' ⊢
     have e1 : ((chKerC W Ch sel mu cst L A u m2 b hY P hK).kk j al be).k p p' =
         matK W Ch sel mu cst L (chTh W Ch sel mu cst A u m2) j al be p p' := by
-      simp only [chKerC, chKer, dif_pos hj]
+      simp only [chKerC, chKer, dite_eq_left hj]
     rw [e1]
     intro v hv
     refine kerOf_bound_all W Ch sel mu cst A hJ hO hW hPr hL.cst_ok u i w hw (by omega) rfl (hsu j (by omega)).2
@@ -404,7 +404,7 @@ theorem colMu_bound_all (hJ : JetLossAllAt Pr R A sel S) (hO : JetOpWeyl) (hW : 
     intro p₀ p Y' hg hg' hY''
     have e1 : ((chKerC W Ch sel mu cst L A u m2 b hY P hK).cp al).k1 p₀ p Y' =
         cp1K W Ch sel mu cst L (chTh W Ch sel mu cst A u m2) al p₀ p Y' := rfl
-    rw [e1, cp1K, if_pos hY'']
+    rw [e1, cp1K, ite_eq_left hY'']
     intro v hv
     refine kerOf_bound_all W Ch sel mu cst A hJ hO hW hPr hL.cst_ok u i w hw (by omega) rfl (hsu m2 (by omega)).2
       (hdeg m2 (by omega)) (hrat m2 (by omega)) (DecoF.deco p₀) (DecoF.deco p) hg hg' (isFrames_frsF p₀)
@@ -426,7 +426,7 @@ theorem colMu_bound_all (hJ : JetLossAllAt Pr R A sel S) (hO : JetOpWeyl) (hW : 
     intro p Y' d₂ hg hY'' hγ'
     have e1 : ((chKerC W Ch sel mu cst L A u m2 b hY P hK).cp al).k2 p Y' d₂ =
         cp2K W Ch sel mu cst (chTh W Ch sel mu cst A u m2) p Y' d₂ := rfl
-    rw [e1, cp2K, if_pos hY'']
+    rw [e1, cp2K, ite_eq_left hY'']
     intro v hv
     refine kerOf_bound_all W Ch sel mu cst A hJ hO hW hPr hL.cst_ok u i w hw (j := m2 + 1) (j' := R.m) (by omega) hm
       (hsu _ (by omega)).2 (hdeg _ (by omega)) (hrat _ (by omega)) (DecoF.deco p) (tilQ sel mu u d₂) hg

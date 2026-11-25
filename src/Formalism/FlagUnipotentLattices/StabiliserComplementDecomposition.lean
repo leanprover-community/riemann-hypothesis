@@ -159,14 +159,4 @@ def MomentPointwiseBound : Prop :=
 
 end PartB2
 
-section PartC2
-open Finset
-
-end PartC2
-
-section PartD2
-open Finset
-
-end PartD2
-
 end Formalism.HermitianLatticeCounting.ExpansionTerms

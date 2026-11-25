@@ -26,13 +26,4 @@ def FBChart.IsChar (Y : FBChart C V O dd) (χ : PS C 1 dd) : Prop :=
 
 def dlogC (χ : PS C 1 dd) (i : Fin dd) : C := MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) 1) χ
 
-section Chart
-
-open Formalism.L2.Pj NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
-
-end Chart
-
 end Formalism.L2.FormalSeriesBounds

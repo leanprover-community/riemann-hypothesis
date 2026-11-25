@@ -162,7 +162,7 @@ theorem coeff_monicOf {R : Type} [CommRing R] {d m : ℕ} (v : Fin d × Fin (m +
     (monicOf v).coeff d = 1 := by
   rw [monicOf, coeff_add, coeff_X_pow_self, finsetSum_coeff, Finset.sum_eq_zero, add_zero]
   intro i _
-  rw [coeff_C_mul_X_pow, if_neg i.2.ne']
+  rw [coeff_C_mul_X_pow, ite_eq_right i.2.ne']
 
 theorem monicOf_coeff {R : Type} [CommRing R] (A : R[X][X]) (hA : A.Monic) {d m : ℕ}
     (hd : A.natDegree = d) (hm : ∀ i, (A.coeff i).natDegree ≤ m) :

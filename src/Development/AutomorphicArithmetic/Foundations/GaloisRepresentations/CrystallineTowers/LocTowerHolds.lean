@@ -204,10 +204,10 @@ private def eqEquiv : (Fin d → F) ≃ₗ[F] (∀ v : ↥(Set.range c), ↥(eqS
     funext i
     rw [prEq_apply]
     by_cases h : c i = v.1
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       have : (⟨c i, i, rfl⟩ : ↥(Set.range c)) = v := Subtype.ext h
       exact congrArg (fun w : ↥(Set.range c) => (y w : Fin d → F) i) this
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       exact ((y v).2 i h).symm
 
 end Block
@@ -238,7 +238,7 @@ private theorem isCrys_gr (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P A
       refine Finset.sum_eq_zero fun j _ => ?_
       by_cases hj : c i = c j
       · rw [hx j (hj ▸ hi), mul_zero]
-      · rw [if_neg hj, zero_mul]
+      · rw [ite_eq_right hj, zero_mul]
     have hblock : ∀ v, IsCrys (P.PD K) (ρ.subrepresentation (eqSub c v) (hU v)) := by
       intro v
       have c1 := (GlobalTheory.Per.CrysSubQuot.crys_sub_quot l P AI T K L ↥(lowSub c v)
@@ -253,22 +253,22 @@ private theorem isCrys_gr (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P A
         show (prEq c v (ρ₀ g x.1) : Fin d → ↥L.1) i = ρ g (prEq c v x.1 : Fin d → ↥L.1) i
         rw [prEq_apply, h₁]
         by_cases hi : c i = v
-        · rw [if_pos hi, h₀]
+        · rw [ite_eq_left hi, h₀]
           change ∑ j, A g i j * x.1 j = _
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [prEq_apply]
           by_cases hj : c j = v
-          · rw [if_pos (hi.trans hj.symm), if_pos hj]
-          · rw [if_neg hj, mul_zero]
+          · rw [ite_eq_left (hi.trans hj.symm), ite_eq_left hj]
+          · rw [ite_eq_right hj, mul_zero]
             by_cases hl : v < c j
             · rw [x.2 j hl, mul_zero]
             · rw [hb g (lt_of_le_of_ne (not_lt.1 hl) hj |>.trans_eq hi.symm), zero_mul]
-        · rw [if_neg hi]
+        · rw [ite_eq_right hi]
           refine (Finset.sum_eq_zero fun j _ => ?_).symm
           rw [prEq_apply]
           by_cases hj : c j = v
-          · rw [if_neg fun h => hi (h.trans hj), zero_mul]
-          · rw [if_neg hj, mul_zero]
+          · rw [ite_eq_right fun h => hi (h.trans hj), zero_mul]
+          · rw [ite_eq_right hj, mul_zero]
       · intro y
         refine ⟨⟨y.1, fun i hi => y.2 i (ne_of_gt hi)⟩, ?_⟩
         apply Subtype.ext
@@ -276,8 +276,8 @@ private theorem isCrys_gr (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P A
         show (prEq c v y.1 : Fin d → ↥L.1) i = y.1 i
         rw [prEq_apply]
         by_cases hi : c i = v
-        · rw [if_pos hi]
-        · rw [if_neg hi, y.2 i hi]
+        · rw [ite_eq_left hi]
+        · rw [ite_eq_right hi, y.2 i hi]
     refine GlobalTheory.BlockSum.isCrys_sum (P.PD K) (ι := ↥(Set.range c)) (V := fun v => ↥(eqSub (F := ↥L.1) c v.1))
       (ρ := fun v => ρ.subrepresentation (eqSub c v.1) (hU v.1)) (ρ' := ρ) (E := eqEquiv c) ?_ fun v => hblock v.1
     intro g x v
@@ -286,18 +286,18 @@ private theorem isCrys_gr (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P A
     show (prEq c v.1 (ρ g x) : Fin d → ↥L.1) i = ρ g (prEq c v.1 x : Fin d → ↥L.1) i
     rw [prEq_apply, h₁, h₁]
     by_cases hi : c i = v.1
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [prEq_apply]
       by_cases hj : c i = c j
-      · rw [if_pos hj, if_pos (hj.symm.trans hi)]
-      · rw [if_neg hj, zero_mul, zero_mul]
-    · rw [if_neg hi]
+      · rw [ite_eq_left hj, ite_eq_left (hj.symm.trans hi)]
+      · rw [ite_eq_right hj, zero_mul, zero_mul]
+    · rw [ite_eq_right hi]
       refine (Finset.sum_eq_zero fun j _ => ?_).symm
       rw [prEq_apply]
       by_cases hj : c i = c j
-      · rw [if_neg fun h => hi (hj.trans h), mul_zero]
-      · rw [if_neg hj, zero_mul]
+      · rw [ite_eq_right fun h => hi (hj.trans h), mul_zero]
+      · rw [ite_eq_right hj, zero_mul]
 
 end Crys
 

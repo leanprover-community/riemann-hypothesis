@@ -464,7 +464,7 @@ theorem posAt_of_cptCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P Wp Wq) (nn : ℝ �
   · have hrr : p.RR F j w h h =
         p.form j hj w (KB.slv p.T F j hj w h hh.2) (KB.slv p.T F j hj w h hh.2) := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_pos ⟨hh, hh⟩, dif_pos hj]
+      rw [dite_eq_left ⟨hh, hh⟩, dite_eq_left hj]
       rfl
     rw [hrr]
     have hx := Formalism.FourierDecayAlt.P.module_form_pos_compact_support hA _ _ P p j hj w hw.1 (KB.slv p.T F j hj w h hh.2)
@@ -472,7 +472,7 @@ theorem posAt_of_cptCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P Wp Wq) (nn : ℝ �
     exact (Complex.le_def.mp hx).1
   · have hrr : p.RR F j w h h = 0 := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_neg (fun hc => hh hc.1)]
+      rw [dite_eq_right (fun hc => hh hc.1)]
     rw [hrr]
     simp
 
@@ -484,7 +484,7 @@ theorem truncated_limit_positivity_holdsCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P
         p.form 0 (Nat.zero_le _) w (KB.slv p.T F 0 (Nat.zero_le _) w [] hh.2)
           (KB.slv p.T F 0 (Nat.zero_le _) w [] hh.2) := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_pos ⟨hh, hh⟩, dif_pos (Nat.zero_le _)]
+      rw [dite_eq_left ⟨hh, hh⟩, dite_eq_left (Nat.zero_le _)]
       rfl
     rw [hrr]
     have hx := Formalism.FourierDecayAlt.P.module_form_pos_compact_support hA _ _ P p 0 (Nat.zero_le _) w hw.1
@@ -493,7 +493,7 @@ theorem truncated_limit_positivity_holdsCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P
     exact (Complex.le_def.mp hx).1
   · have hrr : p.RR F 0 w [] [] = 0 := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_neg (fun hc => hh hc.1)]
+      rw [dite_eq_right (fun hc => hh hc.1)]
     rw [hrr]
     simp
 

@@ -95,7 +95,7 @@ theorem exp_rev {ϖ : Lˣ} {σ : L →+* L} {q n : ℕ} (hU : IsUnramInv (ϖ : L
   have h1 := congrFun (congrFun h i) (Fin.rev i)
   have hJ : Formalism.UG.antiJ L n i (Fin.rev i) = 1 := by
     simp only [Formalism.UG.antiJ, Fin.val_rev]
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
   rw [hJ, ht, Formalism.UG.cT, Matrix.diagonal_map (map_zero σ), Matrix.diagonal_transpose, Matrix.mul_diagonal,
     Matrix.diagonal_mul, hJ] at h1
   rw [map_zpow₀, hU.2.2.1, mul_one, ← zpow_add₀ ϖ.ne_zero] at h1

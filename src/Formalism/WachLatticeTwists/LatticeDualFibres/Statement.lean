@@ -99,8 +99,6 @@ variable {O A HT' : Type u} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O
     [AddCommGroup A] [Module O A] [AddCommGroup HT'] [Module O HT']
     {pr : A →ₗ[O] HT' →ₗ[O] KO O} (Q : DualPush O A HT' pr)
 
-def HfY : Submodule O Q.HY := Q.HfVY.comap Q.jY
-
 end DualPush
 
 def StatLocTorsDual : Prop :=

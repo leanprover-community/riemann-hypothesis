@@ -131,7 +131,7 @@ private theorem deg_le (X : RowData C V (2 * d) I J) (n K : ℕ) (ga : ZMod (2 *
     _ = ∑ k ∈ Finset.Icc 1 K, (if Even s.val ∧ k = n then (0 : ℝ) else (k : ℝ) * ga s k) := by
         apply Finset.sum_congr rfl
         intro k _
-        simp only [rst, if_true]
+        simp only [rst, ite_true]
         split_ifs <;> simp
     _ ≤ _ := le_refl _
 
@@ -194,7 +194,7 @@ private theorem blocks_wt (hd : Odd d) (X : RowData C V (2 * d) I J) (ev : ZMod 
     exact (Finset.mem_filter.1 hi).2
   by_cases hkn : k = X.n
   swap
-  · simp only [hkn, and_false, if_false, Finset.sum_const_zero, add_zero]
+  · simp only [hkn, and_false, ite_false, Finset.sum_const_zero, add_zero]
     exact hfirst
   subst hkn
   simp only [and_true]
@@ -233,7 +233,7 @@ private theorem blocks_wt (hd : Odd d) (X : RowData C V (2 * d) I J) (ev : ZMod 
   · have hch0 : ∀ a, ¬ s = ev a := fun a h => he (by rw [h]; exact (hev a).1)
     have t3 : (∑ a, ∑ i ∈ oddLevels d, if s + (d : ZMod (2 * d)) = ev a + (i : ZMod (2 * d)) then y a i else 0) = 0 :=
       Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun i hi =>
-        if_neg (fun h => he ((ev_iff' hd ev hev s a i (hodd i hi)).1 h).1)))
+        ite_eq_right (fun h => he ((ev_iff' hd ev hev s a i (hodd i hi)).1 h).1)))
     have e2 := sum_supp y (fun a i v => if s + (d : ZMod (2 * d)) = ev a + (i : ZMod (2 * d)) then v else 0)
       (fun a i => by simp)
     rw [Finset.sum_add_distrib, e2, t3]
@@ -400,21 +400,21 @@ theorem UpperTheory.rowBound_le_Fnum_sum_add_error :
   have hν := UpperTheory.attains_blockListOfWeights_along_orbits hCH hMON P l C1 hcard hm hmk hr hl Pk y u ev hev
     (by
       intro z hz a
-      simp only [y, u, dif_pos hz]
+      simp only [y, u, dite_eq_left hz]
       exact (pl ⟨z, hz⟩).bal a)
     (by
       intro z hz a i hi
-      simp only [y, dif_pos hz]
+      simp only [y, dite_eq_left hz]
       exact (hpl ⟨z, hz⟩).1 a i hi)
     (by
       intro o a i _ hne
-      simp only [y, dif_pos o.2] at hne ⊢
+      simp only [y, dite_eq_left o.2] at hne ⊢
       exact (hpl o).2.1 a i hne)
   have hsum : ∑ z ∈ Pk.Z, ((∑ a, ∑ i ∈ oddLevels P.d, RF.blockBd l (P.k - 1) P.m i (y z a i)) +
       ∑ a, RF.chBd l (P.k - 1) P.m (u z a)) = ∑ o : ↥Pk.Z, (pl o).bound (P.k - 1) P.m := by
     rw [← Finset.sum_coe_sort Pk.Z]
     refine Finset.sum_congr rfl fun o _ => ?_
-    simp only [y, u, dif_pos o.2, Plan.bound]
+    simp only [y, u, dite_eq_left o.2, Plan.bound]
     rfl
   have hT0 : 0 < Pk.T := by linarith [hdeg.T_one]
   have hbound : Pk.T * Pk.ν ≤ ∑ o : ↥Pk.Z, Pk.T * (pl o).bound (P.k - 1) P.m +

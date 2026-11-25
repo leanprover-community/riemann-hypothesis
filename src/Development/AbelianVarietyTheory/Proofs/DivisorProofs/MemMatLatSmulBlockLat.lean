@@ -97,11 +97,11 @@ theorem mem_matLat_blockLat {ϖ : kˣ} {e : ℕ} {P : Finset D} {X : Matrix A D 
   simp only [h1]
   constructor
   · intro h
-    exact ⟨fun i j hj => by simpa only [blockUnits, if_pos hj] using h i j,
+    exact ⟨fun i j hj => by simpa only [blockUnits, ite_eq_left hj] using h i j,
       fun i j hj => by simpa [blockUnits, hj, Valuation.mem_integer_iff] using h i j⟩
   · rintro ⟨h, h'⟩ i j
     by_cases hj : j ∈ P
-    · simpa only [blockUnits, if_pos hj] using h i j hj
+    · simpa only [blockUnits, ite_eq_left hj] using h i j hj
     · simpa [blockUnits, hj, Valuation.mem_integer_iff] using h' i j hj
 
 theorem mem_matLat_smul_blockLat {ϖ : kˣ} {e : ℕ} {P : Finset D} {X : Matrix A D k} :
@@ -111,11 +111,11 @@ theorem mem_matLat_smul_blockLat {ϖ : kˣ} {e : ℕ} {P : Finset D} {X : Matrix
   constructor
   · intro h
     exact ⟨fun i j hj => by simpa [blockUnits, hj, Valuation.mem_integer_iff] using h i j,
-      fun i j hj => by simpa only [blockUnits, if_neg hj, mul_one] using h i j⟩
+      fun i j hj => by simpa only [blockUnits, ite_eq_right hj, mul_one] using h i j⟩
   · rintro ⟨h, h'⟩ i j
     by_cases hj : j ∈ P
     · simpa [blockUnits, hj, Valuation.mem_integer_iff] using h i j hj
-    · simpa only [blockUnits, if_neg hj, mul_one] using h' i j hj
+    · simpa only [blockUnits, ite_eq_right hj, mul_one] using h' i j hj
 
 variable [Fintype A] [DecidableEq A]
 
@@ -147,7 +147,7 @@ theorem hasDepth_fourierSum {ψ : AddChar k Circle} {ϖ : kˣ} (hϖ : IsUnif ϖ)
       · refine mem_matLat_smul_stdLat.2 fun i j => ?_
         by_cases hj : j ∈ P
         · simp [setCols, hj]
-        · simpa only [setCols, of_apply, dif_neg hj] using h2 i j hj
+        · simpa only [setCols, of_apply, dite_eq_right hj] using h2 i j hj
 
 theorem isNatDatum_invFourierSum {ψ : AddChar k Circle} {ϖ : kˣ} (hϖ : IsUnif ϖ) (hψ : HasConductor ψ 1) (e : ℕ)
     (P : Finset D) {Ψ : Matrix A D k → ℂ} (hΨ : HasDepth ϖ e (blockLat ϖ e P) Ψ) :
@@ -166,7 +166,7 @@ theorem isNatDatum_invFourierSum {ψ : AddChar k Circle} {ϖ : kˣ} (hϖ : IsUni
       refine hY (mem_matLat_stdLat.2 fun i j => ?_)
       by_cases hj : j ∈ P
       · exact h i j hj
-      · simpa only [setCols, of_apply, dif_neg hj] using (mem_matLat_blockLat (ϖ := ϖ) (e := e) (P := P) |>.1 H).2 i j hj
+      · simpa only [setCols, of_apply, dite_eq_right hj] using (mem_matLat_blockLat (ϖ := ϖ) (e := e) (P := P) |>.1 H).2 i j hj
     · rfl
   · have h1 := mem_matLat_smul_stdLat.1 hZ
     rw [invFourierSum_apply, invFourierSum_apply]
@@ -184,7 +184,7 @@ theorem isNatDatum_invFourierSum {ψ : AddChar k Circle} {ϖ : kˣ} (hϖ : IsUni
         ring
       · refine mem_matLat_smul_blockLat.2 ⟨fun i j hj => ?_, fun i j hj => ?_⟩
         · simp [setCols, hj]
-        · simpa only [setCols, of_apply, dif_neg hj] using h1 i j
+        · simpa only [setCols, of_apply, dite_eq_right hj] using h1 i j
 
 end GlobalTheory.SplitFlip.FourierDepth
 

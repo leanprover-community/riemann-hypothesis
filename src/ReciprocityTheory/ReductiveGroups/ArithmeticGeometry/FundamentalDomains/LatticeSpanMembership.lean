@@ -146,7 +146,7 @@ theorem mem_span_Λ (hD3 : IntegerApproximationCount (E := E)) (v : X.Ψ → Fin
     funext τ b
     rw [Finset.sum_apply, Finset.sum_apply]
     simp only [single, LinearMap.coe_mk, AddHom.coe_mk]
-    rw [Finset.sum_eq_single b (fun a _ hab => by rw [Pi.single_apply, if_neg (Ne.symm hab)])
+    rw [Finset.sum_eq_single b (fun a _ hab => by rw [Pi.single_apply, ite_eq_right (Ne.symm hab)])
       (fun h => absurd (Finset.mem_univ b) h), Pi.single_eq_same]
   rw [hv]
   exact Submodule.sum_mem _ fun a _ => hsing a _

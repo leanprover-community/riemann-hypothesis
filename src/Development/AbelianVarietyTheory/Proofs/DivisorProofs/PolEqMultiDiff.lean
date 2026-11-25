@@ -106,11 +106,11 @@ private theorem sum_neg_one_pow_card_range_subset_eq_ite_surjective {R : Type} [
     _ = _ := by
         split_ifs with hs
         · have h1 : ∀ i, ((-1 : R) + if i ∉ Set.range f then 1 else 0) = -1 := fun i => by
-            rw [if_neg (show ¬(i ∉ Set.range f) from not_not.2 (hs i)), add_zero]
+            rw [ite_eq_right (show ¬(i ∉ Set.range f) from not_not.2 (hs i)), add_zero]
           simp only [h1, Finset.prod_const, Finset.card_univ, hD]
         · simp only [Function.Surjective, not_forall] at hs
           obtain ⟨i, hi⟩ := hs
-          exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [if_pos (show i ∉ Set.range f from fun h => hi h)]; ring)
+          exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [ite_eq_left (show i ∉ Set.range f from fun h => hi h)]; ring)
 
 set_option autoImplicit false in
 open MvPolynomial in

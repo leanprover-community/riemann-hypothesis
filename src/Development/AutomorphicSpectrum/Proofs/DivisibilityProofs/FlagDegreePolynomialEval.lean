@@ -270,7 +270,7 @@ theorem eq_linForm (k₀ : K) (hK : ∀ a : K, a = k₀) {f : MRingOver F ι}
     subst hk
     by_cases hb : b = a
     · subst hb; simp [ha]
-    · rw [h0 b hb, Finsupp.single_apply, if_neg]
+    · rw [h0 b hb, Finsupp.single_apply, ite_eq_right]
       intro h
       exact hb (sigma_mk_injective h).symm
   ext m
@@ -281,7 +281,7 @@ theorem eq_linForm (k₀ : K) (hK : ∀ a : K, a = k₀) {f : MRingOver F ι}
     rw [Finset.sum_eq_single q]
     · simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hb (Finsupp.single_left_injective one_ne_zero h)
     · simp
@@ -490,7 +490,7 @@ theorem pivotRatio_algebraicIndependent (F : Type) [Field F] (Ψ : Type) (n : �
       simp only [δ, incl, Fin.val_castLE] at this
       have := q.2.2.2
       omega
-    simp only [Function.comp_apply, hne, if_false]
+    simp only [Function.comp_apply, hne, ite_false]
     rfl
   exact hrat ▸ hz.comp incl hincl
 
@@ -770,7 +770,7 @@ theorem ptsIntegral_bot (II : IntersectionSystem) (hII : IsIntersectionSystem II
     have hg : geoNum n (Ideal.span {C ((2 : ℕ) : ℤ)} : Ideal (MRing ι)) (fun j => ((fun _ : Fin n => L) j).a) = 1 :=
       geoNum_span 2 k₀ hk σ L.a ha
     unfold vertR
-    rw [divSupp_bot 2 k₀ hk σ, finsum_mem_singleton, if_neg (Inter.Conservation.not_horizontal Nat.prime_two hW),
+    rw [divSupp_bot 2 k₀ hk σ, finsum_mem_singleton, ite_eq_right (Inter.Conservation.not_horizontal Nat.prime_two hW),
       Inter.Conservation.charOf_eq Nat.prime_two hW, bot_sup_eq, ReciprocityTheory.ChartRestriction.G.AI.I1.inh_multAt_self, hg]
     simp
   rw [h1, hv] at h2
@@ -970,7 +970,7 @@ theorem lex_sum_Ico {σ : Type*} [LinearOrder σ] [WellFoundedGT σ] {n : ℕ} (
     rw [hdegX, MonomialOrder.degree_lt_iff hzero]
     intro c hc
     obtain ⟨s, hs, hcs⟩ := Finset.mem_biUnion.mp (MvPolynomial.support_sum hc)
-    rw [X, support_monomial, if_neg one_ne_zero, Finset.mem_singleton] at hcs
+    rw [X, support_monomial, ite_eq_right one_ne_zero, Finset.mem_singleton] at hcs
     rw [hcs]
     exact hlt s (Finset.mem_Ioo.mp hs).1
   rw [← Finset.Ioo_insert_left hab, Finset.sum_insert (by simp)]
@@ -1046,12 +1046,12 @@ theorem prod_range_sub_eq_factorial (i n : ℕ) :
     · obtain ⟨t, rfl⟩ : ∃ t, n = i + 1 + t := ⟨n - (i + 1), by omega⟩
       have e1 : i + 1 + t - 1 - i = t := by omega
       have e2 : i + 1 + t + 1 - 1 - i = t + 1 := by omega
-      rw [if_pos h, e1, e2, Nat.factorial_succ]
+      rw [ite_eq_left h, e1, e2, Nat.factorial_succ]
       push_cast
       ring
     · have e1 : n - 1 - i = 0 := by omega
       have e2 : n + 1 - 1 - i = 0 := by omega
-      rw [if_neg h, e1, e2]
+      rw [ite_eq_right h, e1, e2]
       simp
 
 theorem prod_rhoM_factorial (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) :
@@ -1336,7 +1336,7 @@ theorem isPull_unit [Fintype K] [DecidableEq K] (j : K → FlBlock Ψ N) (k₀ :
     show (if k' = k.1 then (1 : ℤ) else 0) = Function.extend _ _ _ k'
     by_cases h : k' = k₀
     · subst h
-      rw [Function.extend_apply' _ _ _ (by rintro ⟨x, hx⟩; exact x.2 hx), if_neg (Ne.symm k.2)]
+      rw [Function.extend_apply' _ _ _ (by rintro ⟨x, hx⟩; exact x.2 hx), ite_eq_right (Ne.symm k.2)]
       rfl
     · rw [show k' = ((⟨k', h⟩ : {k // k ≠ k₀}) : K) from rfl, Subtype.val_injective.extend_apply]
       show _ = if (⟨k', h⟩ : {k // k ≠ k₀}) = k then (1 : ℤ) else 0

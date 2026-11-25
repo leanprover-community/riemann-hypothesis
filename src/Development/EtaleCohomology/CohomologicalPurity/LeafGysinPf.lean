@@ -83,7 +83,7 @@ theorem LeafGysin_of (hBd : LeafBd) (hPur : LeafPur) : LeafGysin := by
       pur q P n i (rs q P n i u) =
         castHs (i + d) (show n + 2 * d - 1 + 1 = n + 2 * d by ring) (δ q (opn P.U) (n + 2 * d - 1) (i + d) u) := by
     intro q _ P hq n i u
-    simp only [rs, dif_pos (⟨NeZero.ne q, hq⟩ : q ≠ 0 ∧ IsUnit (q : Γ(P.X, ⊤)))]
+    simp only [rs, dite_eq_left (⟨NeZero.ne q, hq⟩ : q ≠ 0 ∧ IsUnit (q : Γ(P.X, ⊤)))]
     exact AddEquiv.ofBijective_apply_symm_apply (pur q P n i) ((hp q P hq).1 n i)
   refine ⟨gys, rs, ?_⟩
   intro q _ P hq

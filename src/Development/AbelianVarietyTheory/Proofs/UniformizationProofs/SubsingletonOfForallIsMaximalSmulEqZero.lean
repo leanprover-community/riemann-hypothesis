@@ -56,7 +56,6 @@ open scoped CategoryTheory.Obj
 namespace GlobalTheory.AbLaw
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem acyclic_extendScalars_of_flat {R S : Type} [CommRing R] [CommRing S] (g : R →+* S)
     (C : CochainComplex (ModuleCat.{0} R) ℕ) (n : ℕ) (hn : ∀ p, n < p → IsZero (C.X p))
     (hflat : ∀ p, Module.Flat R (C.X p)) (hC : C.Acyclic) :

@@ -358,9 +358,9 @@ theorem jumps_of_exact_degree : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (A
     unfold FildR
     rw [key c]
     by_cases hc : c ≤ d τ
-    · rw [if_pos hc, if_pos hc, h1]
+    · rw [ite_eq_left hc, ite_eq_left hc, h1]
       rfl
-    · rw [if_neg hc, if_neg hc, finrank_bot]
+    · rw [ite_eq_right hc, ite_eq_right hc, finrank_bot]
       rfl
   unfold multV
   rw [fk b, fk (b + 1)]
@@ -1092,7 +1092,7 @@ theorem GlobalTheory.CrysCharJumps.adm20_of_fonOf :
     rw [hp.2.2]
     have hex : ∃ i, Formalism.MainNotions.tableLineDegreeTwo.Over ((HW l).W K 1 LL hA.2.2).emb i τ := ⟨i, hi⟩
     have hc : c τ = a i := by
-      simp only [c, dif_pos hex]
+      simp only [c, dite_eq_left hex]
       congr 1
       apply ((HW l).W K 1 LL hA.2.2).emb_bij.1
       have h1 := hex.choose_spec

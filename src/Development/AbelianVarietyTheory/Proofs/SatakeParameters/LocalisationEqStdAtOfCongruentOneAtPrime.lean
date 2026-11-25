@@ -141,8 +141,8 @@ theorem ev_mem_std (i : Fin N) : ev (F := F) (E := E) i ∈ Formalism.L2.Herm.ha
   rw [mem_hatL_std_iff]
   intro j
   by_cases h : i = j
-  · simp only [ev, if_pos h]; exact one_mem _
-  · simp only [ev, if_neg h]; exact zero_mem _
+  · simp only [ev, ite_eq_left h]; exact one_mem _
+  · simp only [ev, ite_eq_right h]; exact zero_mem _
 
 theorem integralAt_stdLattice_iff (z : Fin N → E ⊗[F] 𝔸) :
     HP P (Formalism.L2.Col.stdLat E N) z ↔ ∀ i, IntAtA (F := F) P (z i) := by

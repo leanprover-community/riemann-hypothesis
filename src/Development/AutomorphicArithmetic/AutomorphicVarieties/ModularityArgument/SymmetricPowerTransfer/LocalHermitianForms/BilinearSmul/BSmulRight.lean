@@ -79,12 +79,12 @@ theorem multiple (L : IsLoc O Δ) {I : Type} (t : Finset I) (f : I → Lsq K Δ)
   refine (hdes _).1.2 ⟨?_, ?_⟩
   · obtain ⟨r, hr⟩ := hb (i, false) (Finset.mem_product.2 ⟨hi, Finset.mem_univ _⟩)
     refine ⟨r, ?_⟩
-    simp only [Bool.false_eq_true, if_false] at hr
+    simp only [Bool.false_eq_true, ite_false] at hr
     rw [re_smul]
     exact hr
   · obtain ⟨r, hr⟩ := hb (i, true) (Finset.mem_product.2 ⟨hi, Finset.mem_univ _⟩)
     refine ⟨r, ?_⟩
-    simp only [if_true] at hr
+    simp only [ite_true] at hr
     rw [im_smul]
     change algebraMap O K r = (b : O) • ((f i).im * s) at hr
     rw [hr, Algebra.smul_def, Algebra.smul_def]
@@ -400,10 +400,10 @@ theorem step (L : IsLoc O Δ) (M : Submodule O (Fin 3 → Lsq K Δ)) (hfg : M.FG
     by_cases hjk : j = k
     · subst hjk
       rw [Pi.single_eq_same] at hk
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       linear_combination hk
     · rw [Pi.single_eq_of_ne (Ne.symm hjk)] at hk
-      rw [if_neg hjk]
+      rw [ite_eq_right hjk]
       linear_combination hk
   exact exists_basis_size_reduce_column a b hrel
 

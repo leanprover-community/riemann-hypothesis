@@ -98,12 +98,6 @@ def LatPin {Cl : Type} (Lh : Cl → Submodule (𝓞 E) (Fin n → E)) (La : Cl �
 
 end Io
 
-section Ep
-
-variable {n : ℕ} {Cl : Type}
-
-end Ep
-
 section Row
 
 variable {n : ℕ} {Cl : Type} [Fintype Cl] {Vs : Type} [AddCommGroup Vs] [Module c.F Vs]

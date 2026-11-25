@@ -135,7 +135,7 @@ lemma offdiag_zero {n : ℕ} (ε : Fin n → Bool) (M : Matrix (Fin n) (Fin n) �
     split_ifs <;> positivity)).mp hk a (Finset.mem_univ _)
   have h1 := (Finset.sum_eq_zero_iff_of_nonneg (fun b _ => by
     split_ifs <;> positivity)).mp h0 b (Finset.mem_univ _)
-  simp only [ha, hb, and_self, if_true] at h1
+  simp only [ha, hb, and_self, ite_true] at h1
   simpa using h1
 
 lemma comm_of {n : ℕ} (ε : Fin n → Bool) (M : Matrix (Fin n) (Fin n) ℂ)

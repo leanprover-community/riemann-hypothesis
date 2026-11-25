@@ -103,11 +103,11 @@ theorem isInternal_quotPiece {I : Ideal (MvPolynomial ι k)}
       have : (⨆ (j) (_ : j ≠ i), weightedHomogeneousSubmodule k (fun _ : ι => (1 : ℤ)) j) ≤
           LinearMap.ker (weightedHomogeneousComponent (fun _ : ι => (1 : ℤ)) i) := by
         refine iSup₂_le fun j hj z hz => ?_
-        rw [LinearMap.mem_ker, weightedHomogeneousComponent_of_mem hz, if_neg (Ne.symm hj)]
+        rw [LinearMap.mem_ker, weightedHomogeneousComponent_of_mem hz, ite_eq_right (Ne.symm hj)]
       exact this hb
     have hab' : a - b ∈ I := Ideal.Quotient.eq.mp hab.symm
     have h2 := weightedHomogeneousComponent_one_mem hI i hab'
-    rw [map_sub, hb0, sub_zero, weightedHomogeneousComponent_of_mem ha, if_pos rfl] at h2
+    rw [map_sub, hb0, sub_zero, weightedHomogeneousComponent_of_mem ha, ite_eq_left rfl] at h2
     exact Ideal.Quotient.eq_zero_iff_mem.mpr h2
   · letI := weightedDecomposition k (fun _ : ι => (1 : ℤ))
     have htop := (DirectSum.Decomposition.isInternal

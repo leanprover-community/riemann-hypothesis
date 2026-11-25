@@ -129,7 +129,7 @@ theorem dec_weighted {ε : Fin n → Bool} (ν : Fin n → ℝ) (hν : Antitone 
       refine Finset.sum_congr rfl fun i _ => ?_
       split_ifs <;> ring
     · refine Finset.sum_eq_zero fun i _ => ?_
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       intro h
       exact hba (Fin.lt_iff_val_lt_val.mpr (lt_of_le_of_lt h.1 h.2))
   rw [hR]
@@ -376,7 +376,7 @@ theorem phi_decay_core (ν : Fin n → ℝ) (hν : Antitone ν) {g : ℝ}
     subst hY0
     have hl : ∀ i : Fin n, lead ((i : ℕ) + 1) (1 : Matrix (Fin n) (Fin n) ℂ) = 1 := fun i => by
       unfold lead
-      rw [dif_pos (show (i : ℕ) + 1 ≤ n from i.isLt), Matrix.submatrix_one _ (Fin.castLE_injective _),
+      rw [dite_eq_left (show (i : ℕ) + 1 ≤ n from i.isLt), Matrix.submatrix_one _ (Fin.castLE_injective _),
         Matrix.det_one]
     unfold phiReal
     rw [NormedSpace.exp_zero, h0]
@@ -399,14 +399,14 @@ theorem phi_decay_core (ν : Fin n → ℝ) (hν : Antitone ν) {g : ℝ}
     intro i
     by_cases hlast : (i : ℕ) + 1 < n
     · have hnn : 0 ≤ ν i - nuNext ν i := by
-        simp only [nuNext, dif_pos hlast]
+        simp only [nuNext, dite_eq_left hlast]
         exact sub_nonneg.mpr (hν (show i ≤ ⟨(i : ℕ) + 1, hlast⟩ from Fin.le_def.mpr (by simp)))
       apply mul_le_mul_of_nonneg_left _ hnn
       have h := decA_log_lower hY hU hYe hq hpos ((i : ℕ) + 1) i.isLt
       simp only [Nat.lt_add_one_iff, Nat.add_one_le_iff] at h
       exact h
     · have hV : V i = 0 :=
-        Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => if_neg (by have := a.isLt; omega)
+        Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => ite_eq_right (by have := a.isLt; omega)
       have hn : (i : ℕ) + 1 = n := by have := i.isLt; omega
       have hL : c i = 1 := by
         simp only [hcdef, hn]
@@ -461,7 +461,7 @@ private lemma posDef_exp_of_hermitian {Y : Matrix (Fin n) (Fin n) ℂ} (hY : Y�
 private lemma lead_exp_pos_of_hermitian {Y : Matrix (Fin n) (Fin n) ℂ} (hY : Yᴴ = Y) (i : Fin n) :
     0 < lead ((i : ℕ) + 1) (NormedSpace.exp Y) := by
   have hle : (i : ℕ) + 1 ≤ n := i.isLt
-  rw [lead, dif_pos hle]
+  rw [lead, dite_eq_left hle]
   exact ((posDef_exp_of_hermitian hY).submatrix (Fin.castLE_injective hle)).det_pos
 
 theorem phiM_exp_le (μ : Fin n → ℤ) (hμ : IsMu lam μ) (hlam : IsHCParam lam) {h : ℝ}

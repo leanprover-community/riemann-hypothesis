@@ -32,22 +32,6 @@ def JointApprox {k Γ : Type} [NormedField k] [Group Γ] {a : ℕ} (r : Γ →* 
     (t : Set (Γ →* GL (Fin a) k)) ⊆ C ∧ (∀ g : Γ, ‖trc r g - ∑ ρ ∈ t, c ρ * trc ρ g‖ ≤ ε) ∧
       ∀ j ≤ n, ‖S j - ∑ ρ ∈ t, c ρ * s ρ j‖ ≤ ε
 
-section Local
-
-variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    (PD : Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR)
-    {LL : Type} [Field LL] [Algebra Qp LL]
-    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
-    (ρ : Representation LL G V)
-
-
-
-end Local
-
 section Om
 
 variable {l : ℕ} [Fact l.Prime]

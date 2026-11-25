@@ -100,7 +100,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem thL_eq_thetaGL (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) : thL n w = GlobalTheory.CuspRep.thetaGL n (cj w) := by
   unfold thL
-  rw [if_neg hw]
+  rw [ite_eq_right hw]
 
 theorem cj_cj' (w : Pl E) (x : w.adicCompletion E) : cj w (cj w x) = x := (GlobalTheory.T.localConjugation_involutive_valuation_preserving E w).1 x
 

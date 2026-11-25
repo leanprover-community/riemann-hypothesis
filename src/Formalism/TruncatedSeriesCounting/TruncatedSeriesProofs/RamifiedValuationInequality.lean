@@ -33,27 +33,27 @@ theorem mem_span_iff_of_distinct_exponents : DistinctTerms := by
     obtain ⟨a, b, hab⟩ := Ideal.mem_span_pair.mp hmem
     have hcoef := congrArg (PowerSeries.coeff (e i₀)) hab
 
-    rw [map_add (f := _), mul_comm a, PowerSeries.coeff_X_pow_mul', if_neg (by omega), zero_add,
+    rw [map_add (f := _), mul_comm a, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega), zero_add,
     PowerSeries.coeff_mul_C, map_sum] at hcoef
     have hterm : ∀ i ∈ I, PowerSeries.coeff (e i₀) (w i * X ^ e i * C (ϖ ^ m i)) =
         (if e i ≤ e i₀ then PowerSeries.coeff (e i₀ - e i) (w i) else 0) * ϖ ^ m i := by
       intro i _
       rw [PowerSeries.coeff_mul_C, mul_comm (w i), PowerSeries.coeff_X_pow_mul']
-    rw [Finset.sum_congr rfl hterm, ← Finset.add_sum_erase _ _ hi₀, if_pos le_rfl,
+    rw [Finset.sum_congr rfl hterm, ← Finset.add_sum_erase _ _ hi₀, ite_eq_left le_rfl,
       Nat.sub_self] at hcoef
     have hrest : ϖ ^ s ∣ ∑ i ∈ I.erase i₀,
         (if e i ≤ e i₀ then PowerSeries.coeff (e i₀ - e i) (w i) else 0) * ϖ ^ m i := by
       refine Finset.dvd_sum fun i hi => ?_
       obtain ⟨hne, hiI⟩ := Finset.mem_erase.mp hi
       by_cases hle : e i ≤ e i₀
-      · rw [if_pos hle]
+      · rw [ite_eq_left hle]
         have hlt : e i < e i₀ := lt_of_le_of_ne hle fun h => hne (he hiI hi₀ h)
         have hms : s ≤ m i := by
           by_contra! hms
           have := hmin i (Finset.mem_filter.mpr ⟨hiI, by omega, hms⟩)
           omega
         exact Dvd.dvd.mul_left (pow_dvd_pow ϖ hms) _
-      · rw [if_neg hle, zero_mul]
+      · rw [ite_eq_right hle, zero_mul]
         exact dvd_zero _
     have hdvd : ϖ ^ s ∣ PowerSeries.coeff 0 (w i₀) * ϖ ^ m i₀ := by
       have h2 : PowerSeries.coeff 0 (w i₀) * ϖ ^ m i₀ =

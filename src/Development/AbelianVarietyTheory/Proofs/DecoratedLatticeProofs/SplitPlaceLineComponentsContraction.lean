@@ -1188,8 +1188,8 @@ theorem over_trans (h : Over ψ α β LS LT f₀ Ψ f) {x : WO S T} (hx : IsHalf
       rw [Matrix.add_apply, mul_add, hx i j, add_left_inj]
     unfold extFun
     by_cases ht : IsHalf p.e t
-    · rw [if_pos ht, if_pos (hc.2 ht), he t ht]
-    · rw [if_neg ht, if_neg (fun h' => ht (hc.1 h'))]
+    · rw [ite_eq_left ht, ite_eq_left (hc.2 ht), he t ht]
+    · rw [ite_eq_right ht, ite_eq_right (fun h' => ht (hc.1 h'))]
   refine ⟨hS, hT, hV, hΨ', hex, fun Tm hTm => ?_⟩
   show heisO ψ S T x f = Tm (extFun α β Ψ')
   rw [hall Tm hTm, hfun, hTm.trans _ hsb x hx]
@@ -1204,8 +1204,8 @@ theorem over_modul (h : Over ψ α β LS LT f₀ Ψ f) {y : WO S T} (hy : IsHalf
     funext t
     unfold extFun
     by_cases ht : IsHalf p.e t
-    · rw [if_pos ht, if_pos ht, he t ht]
-    · rw [if_neg ht, if_neg ht, mul_zero]
+    · rw [ite_eq_left ht, ite_eq_left ht, he t ht]
+    · rw [ite_eq_right ht, ite_eq_right ht, mul_zero]
   refine ⟨hS, hT, hV, hΨ', hex, fun Tm hTm => ?_⟩
   show heisO ψ S T y f = Tm (extFun α β Ψ')
   rw [hall Tm hTm, hfun, hTm.modul _ hsb y hy]

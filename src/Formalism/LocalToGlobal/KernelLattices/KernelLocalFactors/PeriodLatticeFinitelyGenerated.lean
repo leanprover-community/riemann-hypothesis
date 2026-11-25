@@ -37,7 +37,7 @@ section Num
 variable {S : Finset ℕ}
 
 theorem lamC_of_mem {p : ℕ} [Fact p.Prime] (lam : TaylorLogMetric.Qbar →+* ℂ_[p]) {x : ℂ} (h : x ∈ TaylorLogMetric.Qbar) : TaylorLogMetric.lamC lam x = lam ⟨x, h⟩ := by
-  unfold TaylorLogMetric.lamC; rw [dif_pos h]
+  unfold TaylorLogMetric.lamC; rw [dite_eq_left h]
 
 theorem lamC_add {p : ℕ} [Fact p.Prime] (lam : TaylorLogMetric.Qbar →+* ℂ_[p]) {x y : ℂ} (hx : x ∈ TaylorLogMetric.Qbar) (hy : y ∈ TaylorLogMetric.Qbar) :
     TaylorLogMetric.lamC lam (x + y) = TaylorLogMetric.lamC lam x + TaylorLogMetric.lamC lam y := by
@@ -421,10 +421,10 @@ theorem liftL_subD (h : a ≤ b) {β : ι → Matrix (Fin b) (Fin b) K} (hβ : I
     rintro ⟨τ, α, s⟩
     have hs : s.1 < b := lt_of_lt_of_le s.2 h
 
-    simp only [AlgHom.comp_apply, subD, colSub, aeval_X, dif_pos hs, map_sum, map_mul, liftL, Sum.elim_inl, Sum.elim_inr, rename_X,
+    simp only [AlgHom.comp_apply, subD, colSub, aeval_X, dite_eq_left hs, map_sum, map_mul, liftL, Sum.elim_inl, Sum.elim_inr, rename_X,
     algHom_C, algebraMap_eq]
     have h1 : ∀ r : Fin a, (r : ℕ) < b := fun r => lt_of_lt_of_le r.2 h
-    simp only [dif_pos (h1 _)]
+    simp only [dite_eq_left (h1 _)]
     simp only [Finset.sum_mul, Finset.mul_sum]
     rw [Finset.sum_comm]
     rw [sum_castLE h]
@@ -449,7 +449,7 @@ theorem jet_weight : JetWt := by
   rw [prod_castLE h]
   · refine Finset.prod_congr rfl fun r _ => ?_
     simp only [resB, extNu]
-    rw [dif_pos (show ((Fin.castLE h r : Fin b) : ℕ) < a from r.2)]
+    rw [dite_eq_left (show ((Fin.castLE h r : Fin b) : ℕ) < a from r.2)]
     rfl
   · intro r hr
     simp only [extNu]
@@ -714,10 +714,10 @@ theorem colAddS_insert (t l : Fin n) (hl : l ≠ t) (S : Finset (Fin n)) (hS : l
   intro v
   simp only [colAddS, colAdd, AlgHom.comp_apply, aeval_X]
   split_ifs with h
-  · rw [map_add (f := _), map_mul, aeval_X, aeval_X, algHom_C, if_pos h, if_neg hl, Finset.sum_insert hS]
+  · rw [map_add (f := _), map_mul, aeval_X, aeval_X, algHom_C, ite_eq_left h, ite_eq_right hl, Finset.sum_insert hS]
     simp only [algebraMap_eq]
     ring
-  · rw [aeval_X, if_neg h]
+  · rw [aeval_X, ite_eq_right h]
 
 theorem colAddS_inv {ν : Fin n → ℕ} {F : MvPolynomial (Fin r × Fin n) K} (hF : F ∈ dualWeyl K r n ν) (t : Fin n) (c : Fin n → K)
     (S : Finset (Fin n)) (hS : ∀ l ∈ S, l < t) : colAddS t S c F = F := by
@@ -795,16 +795,16 @@ theorem colOne_eq (β : Matrix (Fin n) (Fin n) K) (hβ : ∀ w s, s < w → β w
   split_ifs with h
   · rw [sum_split t _ fun w hw => by rw [hβ w t hw, C_0, zero_mul]]
 
-    rw [map_add (f := _), aeval_X, if_pos h, map_sum]
+    rw [map_add (f := _), aeval_X, ite_eq_left h, map_sum]
     congr 1
     · obtain ⟨a, s⟩ := v
       simp only at h
       subst h
       rfl
     · refine Finset.sum_congr rfl fun l hl => ?_
-      rw [map_mul, aeval_X, algHom_C, if_neg (Finset.mem_filter.1 hl).2.ne, C_1, one_mul]
+      rw [map_mul, aeval_X, algHom_C, ite_eq_right (Finset.mem_filter.1 hl).2.ne, C_1, one_mul]
       rfl
-  · rw [aeval_X, if_neg h, C_1, one_mul]
+  · rw [aeval_X, ite_eq_right h, C_1, one_mul]
 
 theorem colOne_good {ν : Fin n → ℕ} {F : MvPolynomial (Fin r × Fin n) K} (hF : F ∈ dualWeyl K r n ν) (β : Matrix (Fin n) (Fin n) K)
     (hβ : ∀ w s, s < w → β w s = 0) (t : Fin n) : colOne β t F = (β t t ^ ν t) • F := by
@@ -834,7 +834,7 @@ theorem colSub1_cut (β : Matrix (Fin n) (Fin n) K) (t : Fin n) (hid : ∀ s, s 
         unfold cutCol
         by_cases h1 : w = s
         · subst h1; simp
-        · rw [if_neg h1]
+        · rw [ite_eq_right h1]
           exact hid w (lt_of_le_of_ne (not_lt.1 hw) h1) x
       simp only [hc]
       rw [Finset.sum_eq_single w]
@@ -864,7 +864,7 @@ theorem colSub1_good {ν : Fin n → ℕ} {F : MvPolynomial (Fin r × Fin n) K} 
       · intro x _ hx
         simp [hx]
       · intro h; exact absurd (Finset.mem_univ _) h
-    rw [h2, AlgHom.id_apply, Finset.prod_eq_one (fun x _ => by rw [h1, if_pos rfl, one_pow]), one_smul]
+    rw [h2, AlgHom.id_apply, Finset.prod_eq_one (fun x _ => by rw [h1, ite_eq_left rfl, one_pow]), one_smul]
   | succ k ih =>
     intro t ht β hβ hid
     have htn : t < n := by omega
@@ -873,14 +873,14 @@ theorem colSub1_good {ν : Fin n → ℕ} {F : MvPolynomial (Fin r × Fin n) K} 
       intro w s hsw
       unfold cutCol
       by_cases h1 : s = tt
-      · rw [if_pos h1, if_neg (by rw [← h1]; exact hsw.ne')]
-      · rw [if_neg h1]; exact hβ w s hsw
+      · rw [ite_eq_left h1, ite_eq_right (by rw [← h1]; exact hsw.ne')]
+      · rw [ite_eq_right h1]; exact hβ w s hsw
     have hi : ∀ s : Fin n, s.1 < t + 1 → ∀ w, cutCol β tt w s = if w = s then 1 else 0 := by
       intro s hs w
       unfold cutCol
       by_cases h1 : s = tt
-      · rw [if_pos h1, h1]
-      · rw [if_neg h1]
+      · rw [ite_eq_left h1, h1]
+      · rw [ite_eq_right h1]
         refine hid s ?_ w
         have : s.1 ≠ t := fun h => h1 (Fin.ext h)
         omega
@@ -1006,7 +1006,7 @@ theorem colSub1_trans (l j : Fin n) (hlj : l ≠ j) (c : K) :
     · by_cases h2 : w = l
       · by_cases h3 : s = j <;> simp [h2, h3, hlj]
       · simp [h1, h2]
-  simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   split_ifs <;> simp
 
 theorem mem_dualWeyl_of_bor [Infinite K] {ν : Fin n → ℕ} {F : MvPolynomial (Fin r × Fin n) K}
@@ -1025,9 +1025,9 @@ theorem mem_dualWeyl_of_bor [Infinite K] {ν : Fin n → ℕ} {F : MvPolynomial 
       rw [coeff_colSc, MvPolynomial.coeff_smul, smul_eq_mul] at h3
       have h4 : (∏ y, (Matrix.diagonal (fun s => if s = t then x else 1) : Matrix (Fin n) (Fin n) K) y y ^ ν y) = x ^ ν t := by
         rw [Finset.prod_eq_single t]
-        · rw [Matrix.diagonal_apply_eq, if_pos rfl]
+        · rw [Matrix.diagonal_apply_eq, ite_eq_left rfl]
         · intro y _ hy
-          rw [Matrix.diagonal_apply_eq, if_neg hy, one_pow]
+          rw [Matrix.diagonal_apply_eq, ite_eq_right hy, one_pow]
         · intro h; exact absurd (Finset.mem_univ _) h
       rw [h4] at h3
       exact mul_right_cancel₀ hm h3
@@ -1042,7 +1042,7 @@ theorem mem_dualWeyl_of_bor [Infinite K] {ν : Fin n → ℕ} {F : MvPolynomial 
   · intro l j hlj c
     have h2 := h (fun w s => if w = s then 1 else if w = l ∧ s = j then c else 0)
       (fun w s hws => by
-        rw [if_neg hws.ne', if_neg]
+        rw [ite_eq_right hws.ne', ite_eq_right]
         rintro ⟨rfl, rfl⟩
         exact absurd hlj (not_lt.2 hws.le))
       (fun w => by simp)

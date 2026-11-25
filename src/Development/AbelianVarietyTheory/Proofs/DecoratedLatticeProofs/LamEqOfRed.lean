@@ -131,7 +131,7 @@ theorem char_of_red {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
       have := b.2; omega
     have e4 : ∀ (a b : Fin (s + 1)), (κ + b.val = κ + a.val + 1 ∧ κ + a.val + 1 ≠ κ) ↔ b.val = a.val + 1 := fun a b => by
       omega
-    simp only [e1, e2, e3, e4, if_false, Finset.sum_const_zero, add_zero, zero_add]
+    simp only [e1, e2, e3, e4, ite_false, Finset.sum_const_zero, add_zero, zero_add]
     rw [add_comm]
     rfl
   have hone : S.ψ (((S.ϖ⁻¹ : kˣ) : k) * (t - π z)) = 1 := by

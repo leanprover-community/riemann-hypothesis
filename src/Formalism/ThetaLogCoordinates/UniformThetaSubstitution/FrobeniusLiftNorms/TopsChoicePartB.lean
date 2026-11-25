@@ -296,10 +296,10 @@ theorem wt_AA (hT : ValTable) {K : Type} [NormedField K] {p : ℕ} (hp : p.Prime
   by_cases hd : d = Finsupp.single x 1 + Finsupp.single y p
   · have hx : d x = (p ^ 2) ^ 0 := by rw [hd]; simp [hxy.symm]
     have hy : d y = p * (p ^ 2) ^ 0 := by rw [hd]; simp [hxy]
-    rw [if_pos hd, coeff_AA_of K hp2 le_rfl hx hy]
+    rw [ite_eq_left hd, coeff_AA_of K hp2 le_rfl hx hy]
     simp only [add_zero, zero_add, pow_one, sub_self, norm_zero]
     positivity
-  · rw [if_neg hd, sub_zero]
+  · rw [ite_eq_right hd, sub_zero]
     by_cases h : MvPowerSeries.coeff d (AA K p x y) = 0
     · rw [h, norm_zero]; positivity
     · obtain ⟨i, j, hij, hx, hy⟩ := coeff_AA_ne_zero h
@@ -419,7 +419,7 @@ theorem RescaleExact_of (hT : ValTable) (hE : ExpIntegral) : RescaleExact := by
         MvPowerSeries.C ((p : K)⁻¹) * MvPowerSeries.C ϖ ^ (p + 1) := by
       rw [← map_pow, ← map_mul, div_eq_inv_mul]
     rw [e1]
-    simp only [a, if_true, Fin.isValue, one_ne_zero, if_false]
+    simp only [a, ite_true, Fin.isValue, one_ne_zero, ite_false]
     ring
   have hR0 : MvPowerSeries.constantCoeff (∑ e : E, MvPowerSeries.subst (a e) (G1 p c c')) = 0 := by
 

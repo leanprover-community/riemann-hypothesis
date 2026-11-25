@@ -743,7 +743,7 @@ theorem whitLie_holds : WhitLie := by
       (1 / 2 : ℂ) * (dpsi ψ (atEmb τ (β p q)) - Complex.I * dpsi ψ (atEmb τ (β p q * Complex.I))) else 0,
       fun p q hpq => ?_, fun p q hpq => ?_, fun p q hpq => ?_⟩
     · beta_reduce
-      rw [if_pos hpq]
+      rw [ite_eq_left hpq]
       refine mul_ne_zero (by norm_num) ?_
       have hu : IsUnit (b.val p p * (b⁻¹).val q q) :=
         (IsUnit.of_mul_eq_one _ (diag_inv b hb p)).mul (IsUnit.of_mul_eq_one_right _ (diag_inv b hb q))
@@ -754,7 +754,7 @@ theorem whitLie_holds : WhitLie := by
         (psi_nontriv hψ τ) (fun z => dpsi ψ (atEmb τ z))
         (fun z => by simpa only [atEmb_real_mul] using hasDerivAt_dpsi hψ (atEmb τ z)) _ hβ0
     · beta_reduce
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     · refine LinearMap.ext fun φ => ?_
       have hpq' : p ≠ q := ne_of_lt hpq
       have key : ∀ w : ℂ, ℓ (lieOp π (toL (Matrix.single p q (atEmb τ w))) φ) =

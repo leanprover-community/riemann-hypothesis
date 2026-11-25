@@ -173,12 +173,6 @@ def placeMapInf (w : InfinitePlace F) : PlaceMap F w.Completion where
 
 end Inhabitants
 
-section Ring
-
-variable {R : Type} [CommRing R] {M : ℕ}
-
-end Ring
-
 section Lift
 
 variable {F E K : Type} [Field F] [NumberField F] [Field E] [Algebra F E] [Field K] [Algebra F K]
@@ -188,11 +182,5 @@ def iB (P : PlaceMap F K) : K ⊗[F] E →ₗ[F] AF F ⊗[F] E :=
   TensorProduct.map { toFun := P.inj, map_add' := map_add _, map_smul' := map_smul _ } LinearMap.id
 
 end Lift
-
-section Iso
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E]
-
-end Iso
 
 end GlobalTheory.CompanionTheory.SaGen

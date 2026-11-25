@@ -766,7 +766,7 @@ theorem main : ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.
     have hex : ∃ d : K, d * star d = 1 ∧ ∀ t : K, t * d ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1 := ⟨c, hc, h5⟩
     obtain ⟨ζ, hζ⟩ := exists_torsion hK.2.1 h2 hc hex.choose_spec.1 h5 hex.choose_spec.2
     refine ⟨((𝔞, 𝔞'), ζ), ⟨⟨⟨h1, h3⟩, ⟨h2, h4⟩⟩, trivial⟩, ?_⟩
-    simp only [g, c0, dif_pos hex]
+    simp only [g, c0, dite_eq_left hex]
     exact hζ.symm
   have henc := (Set.encard_le_encard hsub).trans (Set.encard_image_le _ _)
   rw [← hB.cast_ncard_eq, Set.ncard_prod, Set.ncard_prod, Set.ncard_univ] at henc
@@ -929,7 +929,7 @@ theorem signed_block_count : ∀ (K : Type) [Field K] (j : ℕ) (δ : ℕ → K)
   · rintro P ⟨⟨w, sgn, hP⟩, hδ⟩
     refine Finset.mem_coe.2 (Finset.mem_biUnion.2 ⟨sgn, Finset.mem_univ _,
       Finset.mem_image.2 ⟨w.blocks, hT' _ _ w.size fun l hl => ?_, ?_⟩⟩)
-    · simp only [η, dif_pos hl]
+    · simp only [η, dite_eq_left hl]
       rw [eq_div_iff (Finset.prod_ne_zero_iff.2 fun b _ => sign_ne _), ← hδ l hl, mul_comm, minor,
         ← Matrix.det_mul_row]
       congr 1
@@ -1283,7 +1283,7 @@ theorem sum_le_orbit {G α ι : Type} [Group G] [MulAction G α] (Q : α → Pro
     rw [MulAction.orbitRel_apply] at h2
     obtain ⟨ρ, hρ⟩ := h2
     have hρ' : ρ • x i = (q i).out := hρ
-    rw [← hρ', if_pos (hQ i hi ρ).1, (hQ i hi ρ).2]
+    rw [← hρ', ite_eq_left (hQ i hi ρ).1, (hQ i hi ρ).2]
   rw [h1]
   exact ENNReal.sum_le_tsum _
 
@@ -1642,7 +1642,7 @@ theorem sum_clsOm_le_datBd : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSe
     intro b hb
     have hb' : ∃ t ∈ A, frCls Λ t = b := Finset.mem_image.1 hb
     obtain ⟨h1, h2⟩ := hb'.choose_spec
-    exact ⟨hb'.choose, h1, h2, by simp only [G, dif_pos hb']⟩
+    exact ⟨hb'.choose, h1, h2, by simp only [G, dite_eq_left hb']⟩
   have key := GlobalTheory.DegAsm.sum_weights_per_datum D.host.E (VS D).V W (HV D) HW W.subtype hK D.R.rS (F0 X u) (dI D)
     (gS D) j (Tu D u) x (fun l => star (δ l)) Λ d (k2Del D j δ) (DbL D j δ) (Set (Formalism.HermitianLatticeCounting.S6.FlagD (HV D) D.R.rS))
     (A.image (frCls Λ)) G hgS hx1 hDel1 hDb1 he ?_ ?_ ?_

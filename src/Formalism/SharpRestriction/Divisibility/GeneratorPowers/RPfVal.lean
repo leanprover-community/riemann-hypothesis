@@ -154,10 +154,10 @@ theorem vAdd_sW (B : WeightFamilies.Prov D) (hinj : Function.Injective D.what₂
   by_cases hS : resCharOf la ∣ D.host.QS
   · have h1 : resCharOf la ≠ D.host.q := fun h => D.host.q_not_dvd_QS (h ▸ hS)
     have h2 : resCharOf la ≠ D.host.d := fun h => D.host.d_not_dvd_QS (h ▸ hS)
-    rw [if_pos hS, if_neg h1, if_neg h2]
+    rw [ite_eq_left hS, ite_eq_right h1, ite_eq_right h2]
     generalize padicValNat (resCharOf la) D.host.QS = m
     push_cast; ring
-  · rw [if_neg hS, Nat.padicValNat_def, multiplicity_eq_zero_of_not_dvd hS]
+  · rw [ite_eq_right hS, Nat.padicValNat_def, multiplicity_eq_zero_of_not_dvd hS]
     split_ifs <;> (try (exfalso; omega)) <;> (try (exfalso; tauto)) <;> push_cast <;> ring
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.RPfVal

@@ -32,15 +32,15 @@ lemma upto_succ {ρ : ι → ℕ} {F : (ι → ℂ) → ι → ℂ} (hF : ShearC
   have hlv : ∀ p, ρ p ≠ n → lvl ρ F n x p = x p :=
     fun p hp => by simp [lvl, hp]
   by_cases h1 : ρ q < n
-  · rw [if_pos (by omega), if_pos h1]
+  · rw [ite_eq_left (by omega), ite_eq_left h1]
     have h2 := hF q x (lvl ρ F n x) (fun p hp => (hlv p (by omega)).symm)
     rw [hlv q (by omega)] at h2
     linear_combination h2
   · by_cases h2 : ρ q = n
-    · rw [if_pos (by omega), if_neg h1]
+    · rw [ite_eq_left (by omega), ite_eq_right h1]
       simp only [lvl]
-      rw [if_pos h2]
-    · rw [if_neg (by omega), if_neg h1, hlv q h2]
+      rw [ite_eq_left h2]
+    · rw [ite_eq_right (by omega), ite_eq_right h1, hlv q h2]
 
 lemma lvl_mp {ρ : ι → ℕ} {F : (ι → ℂ) → ι → ℂ} (hFm : Measurable F) (hF : ShearCond ρ F) (n : ℕ) :
     MeasurePreserving (lvl ρ F n) volume volume := by
@@ -74,7 +74,7 @@ lemma lvl_mp {ρ : ι → ℕ} {F : (ι → ℂ) → ι → ℂ} (hFm : Measurab
       simp [T, lvl, hq]
     · have hq : ρ q.1 = n := not_not.1 q.2
       simp only [T, φ, x0, lvl, Pi.add_apply]
-      rw [if_pos hq]
+      rw [ite_eq_left hq]
       have hagree : ∀ r, ρ r < ρ q.1 →
           x r = e.symm ((fun r : {q // p q} => x r), 0) r := by
         intro r hr
@@ -160,13 +160,13 @@ lemma shearMap_apply (x : C2.Lidx m → ℂ) (q : C2.Lidx m) :
     · rw [Finset.sum_eq_single ⟨(i, k), h⟩]
       · simp
       · intro t _ ht
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e
         exact ht (Subtype.ext e)
       · simp
     · apply Finset.sum_eq_zero
       intro t _
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact h (by simpa [e] using t.2)
   have hB : ∀ k j, (∑ t : C2.Lstidx w, if t.1 = (k, j) then x ⟨t.1, t.2.1⟩ else 0) = bX w x k j := by
@@ -176,13 +176,13 @@ lemma shearMap_apply (x : C2.Lidx m → ℂ) (q : C2.Lidx m) :
     · rw [Finset.sum_eq_single ⟨(k, j), h⟩]
       · simp
       · intro t _ ht
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e
         exact ht (Subtype.ext e)
       · simp
     · apply Finset.sum_eq_zero
       intro t _
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact h (by simpa [e] using t.2)
   have hexp : ∀ i j, (C2.lowOf (fun t : C2.LPidx w => t.1) (fun t => x ⟨t.1, t.2.1⟩) *
@@ -197,11 +197,11 @@ lemma shearMap_apply (x : C2.Lidx m → ℂ) (q : C2.Lidx m) :
   have hab : aX w x q.1.1 q.1.2 + bX w x q.1.1 q.1.2 = x q := by
     unfold aX bX
     by_cases h : w.symm q.1.2 < w.symm q.1.1
-    · rw [dif_pos ⟨q.2, h⟩, dif_neg (fun h' => lt_asymm h h'.2)]
+    · rw [dite_eq_left ⟨q.2, h⟩, dite_eq_right (fun h' => lt_asymm h h'.2)]
       simp
     · have h' : w.symm q.1.1 < w.symm q.1.2 :=
         lt_of_le_of_ne (not_lt.1 h) (fun e => hne (w.symm.injective e))
-      rw [dif_neg (fun h'' => h h''.2), dif_pos ⟨q.2, h'⟩]
+      rw [dite_eq_right (fun h'' => h h''.2), dite_eq_left ⟨q.2, h'⟩]
       simp
   simp only [mulMap, eSplit_apply]
   rw [hexp, Matrix.one_apply_ne hne]
@@ -245,16 +245,16 @@ lemma shear_meas : Measurable (fun x => mulMap w (eSplit w x)) := by
   have ha : ∀ i k, Measurable fun x : C2.Lidx m → ℂ => aX w x i k := by
     intro i k
     by_cases h : k < i ∧ w.symm k < w.symm i
-    · simp only [aX, dif_pos h]
+    · simp only [aX, dite_eq_left h]
       exact measurable_pi_apply _
-    · simp only [aX, dif_neg h]
+    · simp only [aX, dite_eq_right h]
       exact measurable_const
   have hb : ∀ k j, Measurable fun x : C2.Lidx m → ℂ => bX w x k j := by
     intro k j
     by_cases h : j < k ∧ w.symm k < w.symm j
-    · simp only [bX, dif_pos h]
+    · simp only [bX, dite_eq_left h]
       exact measurable_pi_apply _
-    · simp only [bX, dif_neg h]
+    · simp only [bX, dite_eq_right h]
       exact measurable_const
   apply measurable_pi_lambda
   intro q

@@ -43,7 +43,7 @@ theorem group_action_pairing_holds : GAPair := by
       rw [hTT]; exact le_of_lt hx.2
     rw [hWdef]
     unfold bcWeight
-    rw [if_pos hle]
+    rw [ite_eq_left hle]
     unfold Formalism.FourierDecayAlt.P.MAx2.Adj.dR MA.wq
     rw [hTT, ← mul_assoc, ← Finset.prod_mul_distrib]
     congr 1

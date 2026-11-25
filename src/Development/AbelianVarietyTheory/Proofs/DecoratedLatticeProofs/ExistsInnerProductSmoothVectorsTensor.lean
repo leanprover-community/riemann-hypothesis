@@ -157,7 +157,7 @@ theorem ipT_pos_fd [∀ i, FiniteDimensional ℂ (E i)] (x : ⨂[ℂ] i, E i) (h
     intro h; apply hx
     rw [← B.sum_repr x]; simp [c] at h; simp [h]
   obtain ⟨p, hp⟩ : ∃ p, c p ≠ 0 := by
-    by_contra h; push_neg at h; exact hc (Finsupp.ext h)
+    by_contra h; push Not at h; exact hc (Finsupp.ext h)
   rw [hsum, Complex.re_sum]
   refine Finset.sum_pos' (fun q _ => ?_) ⟨p, Finset.mem_univ p, ?_⟩
   · rw [Complex.mul_conj]; simp [Complex.normSq_nonneg]

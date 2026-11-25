@@ -29,7 +29,7 @@ theorem weightHeightAscending_add_root (nu : Fin n → ℤ) (a b : Fin n) :
   unfold weightHeightAscending rootW
   simp only [Pi.add_apply, Pi.sub_apply, mul_add, mul_sub, Finset.sum_add_distrib,
     Finset.sum_sub_distrib, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 theorem irreducible_lowering_word_weight [NeZero n] {E : GLOps n (KK O) V} {lam : Fin n → ℤ} {v : V} (hI : IsIrrHW E lam v)
     {u : Module.End (KK O) V} (hu : u ∈ loweringOperatorMonoid E) :
@@ -52,7 +52,7 @@ theorem irreducible_lowering_word_weight [NeZero n] {E : GLOps n (KK O) V} {lam 
     · have ha0 : a ≠ 0 := by
         intro h; rw [h] at hba; exact absurd hba (Fin.not_lt_zero _)
       have : (nu + rootW a b) 0 ≤ nu 0 := by
-        simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_apply, if_neg (Ne.symm ha0)]
+        simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_apply, ite_eq_right (Ne.symm ha0)]
         split_ifs <;> omega
       exact this.trans h0
     · have hbl : b ≠ lastIdx n := by
@@ -62,7 +62,7 @@ theorem irreducible_lowering_word_weight [NeZero n] {E : GLOps n (KK O) V} {lam 
         have : (b : ℕ) < (a : ℕ) := hba
         omega
       have : nu (lastIdx n) ≤ (nu + rootW a b) (lastIdx n) := by
-        simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_apply, if_neg (Ne.symm hbl)]
+        simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_apply, ite_eq_right (Ne.symm hbl)]
         split_ifs <;> omega
       exact hl.trans this
 

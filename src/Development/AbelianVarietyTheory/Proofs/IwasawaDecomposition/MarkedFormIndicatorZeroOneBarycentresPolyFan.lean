@@ -250,7 +250,7 @@ theorem exists_markFun_props : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   · rw [ev]
     split_ifs <;> simp
   · obtain ⟨β₀, h0, hc0⟩ := _root_.GlobalTheory.PolFan.Mark.exists_isMarked_inRCone E H q ψ lab i hD hψ hlab X hX m v hv β hβ hp hc hl
-    exact ⟨β₀, h0.1, h0.2.1, by rw [ev, if_pos h0], hc0⟩
+    exact ⟨β₀, h0.1, h0.2.1, by rw [ev, ite_eq_left h0], hc0⟩
 
 end GlobalTheory.PolFan.Mark
 end -- clump:auto

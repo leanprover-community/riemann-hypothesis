@@ -57,7 +57,7 @@ theorem UpperTheory.V.HV.xCard :
   have hf : ∀ ψ ∈ T, ψ = DirichletCharacter.changeLevel hgN (f ψ) := by
     intro ψ hψ
     have h := hex ψ hψ
-    simp only [f, dif_pos h]
+    simp only [f, dite_eq_left h]
     exact h.choose_spec
   have hinj : Set.InjOn f T := by
     intro a ha b hb hab

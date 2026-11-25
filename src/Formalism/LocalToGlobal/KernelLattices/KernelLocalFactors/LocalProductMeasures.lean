@@ -568,7 +568,7 @@ theorem xp_sgl_orth (T : Finset (HeightOneSpectrum (𝓞 F))) (v : HeightOneSpec
   rw [map_mul, map_zero]
   by_cases h : w = v
   · subst h
-    rw [xp_E_at, if_neg hv, mul_zero]
+    rw [xp_E_at, ite_eq_right hv, mul_zero]
   · rw [Formalism.L2.G.sgl_apply_ne F v 1 h, zero_mul]
 
 theorem xp_E_int (T : Finset (HeightOneSpectrum (𝓞 F))) : xpE T ∈ intAd F :=
@@ -651,7 +651,7 @@ theorem twist_product_formula : XiProd := by
   have hU : (ξ : Chr F E L) U = 1 := by
     obtain ⟨g, hg, hd⟩ := xp_g (N * k) hM (1 - xpE T) (Subring.sub_mem _ (Subring.one_mem _) (xp_E_int T)) (fun w hw => by
       classical
-      rw [map_sub, map_one, xp_E_at, if_pos ((hmemT w).2 hw), sub_self])
+      rw [map_sub, map_one, xp_E_at, ite_eq_left ((hmemT w).2 hw), sub_self])
     exact hcong (xp_mem_congN N k x b b' hb hb' g hg _ hd (xp_E_compl_idem T) U rfl)
   have hprod : (∏ v ∈ T, locId E v x) * U = ratId F E x := by
     apply Units.ext
@@ -1039,8 +1039,8 @@ theorem ml_muOff_gmap {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum 
   refine finprod_congr fun v => ?_
   unfold muFac zFac
   by_cases hv : ∃ P ∈ SB, P.asIdeal.under (𝓞 X.F) = v.asIdeal
-  · rw [if_pos hv, if_pos hv, if_pos hv, one_mul]
-  · rw [if_neg hv, if_neg hv, if_neg hv, ← Units.val_mul, ← zpow_add, ml_ordDet_gmap (sel v) N (hcnt_isFullLattice_of_unimodular hN.1 hN.2) γ]
+  · rw [ite_eq_left hv, ite_eq_left hv, ite_eq_left hv, one_mul]
+  · rw [ite_eq_right hv, ite_eq_right hv, ite_eq_right hv, ← Units.val_mul, ← zpow_add, ml_ordDet_gmap (sel v) N (hcnt_isFullLattice_of_unimodular hN.1 hN.2) γ]
 
 theorem ml_ratio {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} (hsel : IsSel X sel) (SB : Finset (HeightOneSpectrum (𝓞 X.E)))
     (mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ) (mI : SB → X.E → X.K)
@@ -1298,14 +1298,6 @@ theorem conjP_vGs (hX : X.Ok) (hPr : Pr.Ok) {P : HeightOneSpectrum (𝓞 X.E)} (
 
 end Joint
 
-section Core
-
-open Classical
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks}
-
-end Core
-
 end DetChrL
 
 end Formalism.L2.Col
@@ -1526,7 +1518,7 @@ theorem md_fac_off (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (
       (((muLam σ₀ (m0 ⟨i, hi⟩) (mu : Chr X.F X.E X.K) v x)⁻¹ : ℂˣ) : ℂ) := by
   have hsys := md_sys (Ch := Ch) (sel := sel) (mu := mu) hX.ok hPr hsel (hT.mu0 ⟨i, hi⟩)
   unfold zFac
-  rw [if_neg (show ¬ ∃ P ∈ rowSG Pr sel mu, P.asIdeal.under (𝓞 X.F) = v.asIdeal from hv)]
+  rw [ite_eq_right (show ¬ ∃ P ∈ rowSG Pr sel mu, P.asIdeal.under (𝓞 X.F) = v.asIdeal from hv)]
   by_cases hc : conjPrime₂ (sel v) = sel v
   · rw [absolute_value_inert_primes X hX.ok ℂˣ _ _ hsys v (sel v) (hsel v) hc hv (hX.unram (sel v)) x]
     have h1 : (sel v).valuation X.E (star (x : X.E)) = (sel v).valuation X.E (x : X.E) := by
@@ -1700,7 +1692,7 @@ theorem md_fac_bad (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hg : XiOffG P
   rw [dite_eq_left hu]
   generalize LocE.vP P.1 (Col.qOf P.1) ((x : X.E) / star (x : X.E)) = n at *
   by_cases hP : P.1 ∈ Pr.vGs
-  · rw [if_pos hP, if_pos hP]
+  · rw [ite_eq_left hP, ite_eq_left hP]
     have h1 := hGt i hi P hP (Units.mk0 ((Col.qOf P.1 : ℕ) : X.E) (ciQ_ne_zero hq2)) rfl
     have h2 : lamX (mu : Chr X.F X.E X.K) v c = 1 := (twist_components_compatible_system X.F X.E X.K S mu).unr v (hg P.1 hP v hv) c (fun P' hP' => by
       by_cases h : P' = P.1
@@ -1717,7 +1709,7 @@ theorem md_fac_bad (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hg : XiOffG P
       h3.trans (by rw [Units.val_inv_eq_inv_val, map_inv₀])
     rw [Units.val_inv_eq_inv_val (_ * _), Units.val_mul, Units.val_zpow_eq_zpow_val, Units.val_mul, hb, hd, mul_inv, inv_inv, ← inv_zpow, mul_inv]
     rfl
-  · rw [if_neg hP, if_neg hP]
+  · rw [ite_eq_right hP, ite_eq_right hP]
     have hPQ : P.1 ∈ QE sel (mu : Chr X.F X.E X.K) := (Finset.mem_union.1 P.2).resolve_left hP
     have hng : ∀ i' : Fin 2, ((Pr.g i' : ℕ) : 𝓞 X.E) ∉ P.1.asIdeal := by
       intro i' h
@@ -1754,12 +1746,12 @@ theorem md_muAtT_mul (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hT : LawTie
   unfold muAtT
   refine ml_locChar_mul _ (ciQ_mem P.1) hq2 _ ?_ _ a b ha hb
   by_cases hP : P.1 ∈ Pr.vGs
-  · rw [if_pos hP]
+  · rw [ite_eq_left hP]
     intro h0
     have h1 := hT.2.1 i hi P hP (Units.mk0 ((Col.qOf P.1 : ℕ) : X.E) (ciQ_ne_zero hq2)) rfl
     rw [h0, map_zero] at h1
     exact mul_ne_zero (inv_ne_zero (Units.ne_zero _)) ((map_ne_zero G.σ₀).2 (Units.ne_zero _)) h1.symm
-  · rw [if_neg hP]
+  · rw [ite_eq_right hP]
     exact Units.ne_zero _
 
 theorem md_prod (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hsel : IsSel X sel) (hg : XiOffG Pr (mu : Chr X.F X.E X.K)) (hT : LawTies W Ch sel mu cst G)
@@ -1811,8 +1803,8 @@ theorem md_prod (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hse
     refine finprod_congr fun v => ?_
     show f v = (if v ∈ RmOf Pr sel mu then 1 else f v) * (if v ∈ RmOf Pr sel mu then f v else 1)
     by_cases hv : v ∈ RmOf Pr sel mu
-    · rw [if_pos hv, if_pos hv, one_mul]
-    · rw [if_neg hv, if_neg hv, mul_one]
+    · rw [ite_eq_left hv, ite_eq_left hv, one_mul]
+    · rw [ite_eq_right hv, ite_eq_right hv, mul_one]
   have e1 : G.σ₀ (∏ᶠ v, zFac sel (rowSG Pr sel mu) (mUof Ch mu i) ((x : X.E) / star (x : X.E)) v) = ((∏ᶠ v, g v : ℂˣ) : ℂ) := by
     have a1 := MonoidHom.map_finprod (G.σ₀ : X.K →* ℂ) (ml_zFac_support hsel (rowSG Pr sel mu) (mUof Ch mu i) _ hz0)
     have a2 := MonoidHom.map_finprod (Units.coeHom ℂ) hgs
@@ -1820,10 +1812,10 @@ theorem md_prod (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hse
     refine finprod_congr fun v => ?_
     show G.σ₀ (zFac sel (rowSG Pr sel mu) (mUof Ch mu i) ((x : X.E) / star (x : X.E)) v) = (((if v ∈ RmOf Pr sel mu then 1 else f v : ℂˣ)) : ℂ)
     by_cases hv : v ∈ RmOf Pr sel mu
-    · rw [if_pos hv]
+    · rw [ite_eq_left hv]
       unfold zFac
-      rw [if_pos (show ∃ P ∈ rowSG Pr sel mu, P.asIdeal.under (𝓞 X.F) = v.asIdeal from hv), map_one, Units.val_one]
-    · rw [if_neg hv]
+      rw [ite_eq_left (show ∃ P ∈ rowSG Pr sel mu, P.asIdeal.under (𝓞 X.F) = v.asIdeal from hv), map_one, Units.val_one]
+    · rw [ite_eq_right hv]
       exact md_fac_off Ch hX hPr hsel hTd i hi x hv
   have e2 : G.σ₀ (∏ P : rowSG Pr sel mu, muAtT Ch sel mu cst i P ((x : X.E) / star (x : X.E))) = ((∏ᶠ v, h v : ℂˣ) : ℂ) := by
     have hsub : Function.mulSupport h ⊆ ↑((rowSG Pr sel mu).image fun P => P.under (𝓞 X.F)) := by
@@ -1831,7 +1823,7 @@ theorem md_prod (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hse
       by_contra hc
       apply hv
       show (if v ∈ RmOf Pr sel mu then f v else 1) = 1
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨P, hP, hPv⟩
       apply hc
       rw [Finset.coe_image]
@@ -1841,7 +1833,7 @@ theorem md_prod (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hse
       (md_inj hX.ok hPr hsel hg hP' hP (congrArg HeightOneSpectrum.asIdeal hh))), ← ecs, map_prod, Units.coe_prod]
     refine Finset.prod_congr rfl fun P _ => ?_
     show _ = (((if P.1.under (𝓞 X.F) ∈ RmOf Pr sel mu then f (P.1.under (𝓞 X.F)) else 1 : ℂˣ)) : ℂ)
-    rw [if_pos (md_mem_Rm P.2 rfl)]
+    rw [ite_eq_left (md_mem_Rm P.2 rfl)]
     exact md_fac_bad hX.ok hPr hsel hg hT i hi P rfl x
   rw [map_mul, e1, e2, ← Units.val_mul, ← hsplit, hftot]
 

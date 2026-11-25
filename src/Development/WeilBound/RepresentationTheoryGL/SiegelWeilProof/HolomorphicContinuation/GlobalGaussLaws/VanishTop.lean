@@ -477,7 +477,7 @@ def mlE (A : Matrix (Fin n) (Fin n) ℂ) : GR n :=
 
 theorem mlE_of {A : Matrix (Fin n) (Fin n) ℂ} (h : IsUnit A.det) :
     mlE A = mkGR (fromBlocks A 0 0 (A⁻¹)ᴴ) (inG_mL h) := by
-  unfold mlE; exact dif_pos h
+  unfold mlE; exact dite_eq_left h
 
 theorem isOpen_unitDet : IsOpen {A : Matrix (Fin n) (Fin n) ℂ | IsUnit A.det} := by
   have : {A : Matrix (Fin n) (Fin n) ℂ | IsUnit A.det} = (fun A : Matrix (Fin n) (Fin n) ℂ => A.det) ⁻¹' {z | z ≠ 0} :=
@@ -936,7 +936,7 @@ theorem linSec_of : ThLin → LinSec := by
   have hm : ∀ P, tens θ τ fr (fP (cLoc l τ) P) Ψ ∈ schwartzA θ V.rank n ∧
       tens θ τ fr (fP (cLoc l τ) P) Ψ ∈ fockA θ V n l s :=
     fun P => tensMem D n V θ l s τ ε fr c.hθ hl0 c.hs c.hfr Ψ hΨ P
-  have hphi : ∀ P, phiS θ τ fr (cLoc l τ) Ψ P = ⟨_, (hm P).1⟩ := fun P => dif_pos (hm P).1
+  have hphi : ∀ P, phiS θ τ fr (cLoc l τ) Ψ P = ⟨_, (hm P).1⟩ := fun P => dite_eq_left (hm P).1
   have hadd : ∀ P Q, phiS θ τ fr (cLoc l τ) Ψ (P + Q) = phiS θ τ fr (cLoc l τ) Ψ P + phiS θ τ fr (cLoc l τ) Ψ Q := by
     intro P Q
     rw [hphi, hphi, hphi]
@@ -1256,10 +1256,10 @@ theorem sEmb : SEmb := by
   obtain rfl := eq_thetaC D hθ
   refine ⟨iota τ, continuous_iota τ, fun y => ⟨?_, fun τ' hτ' => ?_, ?_⟩⟩
   · have e := psi_atMN D τ τ (reidx (mR y))
-    rw [if_pos rfl] at e
+    rw [ite_eq_left rfl] at e
     exact e
   · have e := psi_atMN D τ τ' (reidx (mR y))
-    rw [if_neg hτ'] at e
+    rw [ite_eq_right hτ'] at e
     exact e
   · exact fin_atMN D τ (reidx (mR y))
 
@@ -1370,7 +1370,7 @@ theorem xyC_single (a b a' : Fin m) (r : ℂ) (i : Fin n) (β : Bool) :
   by_cases h : a' = a
   · subst h
     simp only [xyC, Matrix.smul_apply, Matrix.single_apply, true_and, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, if_true]
+      mul_zero, ite_true]
     rw [Finset.sum_eq_single b]
     · simp
     · intro x _ hx
@@ -1409,7 +1409,7 @@ theorem hOp_eq (ε : Fin m → Bool) (c : ℝ) (a b : Fin m) (P : PX m n) :
   refine Finset.sum_congr rfl fun i _ => ?_
   simp only [ite_mul, zero_mul, mul_ite, mul_zero, add_mul, mul_add]
   rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [map_neg, map_one, map_mul, map_sub]
   ring
 
@@ -1442,7 +1442,7 @@ theorem isUe_zRe (ε : Fin m → Bool) (a b : Fin m) : IsUe ε (zRe ε a b) := b
   simp only [Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.conjTranspose_apply,
     Matrix.zero_apply, zRe, Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul, Matrix.single_apply, star_mul', star_sub, e1]
   by_cases h1 : a = i <;> by_cases h2 : b = j <;> by_cases h3 : b = i <;> by_cases h4 : a = j <;>
-    simp only [h1, h2, h3, h4, and_true, true_and, and_false, false_and, if_true, if_false, mul_zero, zero_mul, sub_zero,
+    simp only [h1, h2, h3, h4, and_true, true_and, and_false, false_and, ite_true, ite_false, mul_zero, zero_mul, sub_zero,
       add_zero, mul_one, star_one, star_zero, sgn_star] <;>
     (try subst_vars) <;> unfold sgn <;> split_ifs <;>
     first | (exfalso; tauto) | (simp only [star_one, star_zero]; ring)
@@ -1454,7 +1454,7 @@ theorem isUe_zIm (ε : Fin m → Bool) (a b : Fin m) : IsUe ε (zIm ε a b) := b
   simp only [Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.conjTranspose_apply,
     Matrix.zero_apply, zIm, Matrix.smul_apply, Matrix.add_apply, smul_eq_mul, Matrix.single_apply, star_mul', star_add, e2]
   by_cases h1 : a = i <;> by_cases h2 : b = j <;> by_cases h3 : b = i <;> by_cases h4 : a = j <;>
-    simp only [h1, h2, h3, h4, and_true, true_and, and_false, false_and, if_true, if_false, mul_zero, zero_mul, add_zero, mul_one, star_one, star_zero, sgn_star] <;>
+    simp only [h1, h2, h3, h4, and_true, true_and, and_false, false_and, ite_true, ite_false, mul_zero, zero_mul, add_zero, mul_one, star_one, star_zero, sgn_star] <;>
     (try subst_vars) <;> unfold sgn <;> split_ifs <;>
     first | (exfalso; tauto) | (simp only [star_one, star_zero]; ring)
 

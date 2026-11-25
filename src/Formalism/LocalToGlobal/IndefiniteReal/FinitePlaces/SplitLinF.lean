@@ -103,7 +103,7 @@ theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g
       rw [← hh i k, mul_comm (e₁ + cA D e₁), mul_assoc, hz k j, mul_zero]
     have h3 : ∑ k, ((mt T h) - 1) i k * t k j = 0 := Finset.sum_eq_zero fun k _ => h2 k
     simp only [Matrix.sub_apply, sub_mul, Finset.sum_sub_distrib, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at h3
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h3
     rw [Matrix.mul_apply]
     exact sub_eq_zero.1 h3
   have hR : HMul.hMul (t : Matrix (Fin T.rank) (Fin S.rank) (AE D)) (mt S g) = t := by
@@ -112,7 +112,7 @@ theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g
       rw [← hg k j, ← mul_assoc, mul_comm (t i k), hz i k, zero_mul]
     have h3 : ∑ k, t i k * ((mt S g) - 1) k j = 0 := Finset.sum_eq_zero fun k _ => h2 k
     simp only [Matrix.sub_apply, mul_sub, Finset.sum_sub_distrib, Matrix.one_apply, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h3
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h3
     rw [Matrix.mul_apply]
     exact sub_eq_zero.1 h3
   have hinv : HMul.hMul (mt S g) (mt S g⁻¹) = (1 : Matrix (Fin S.rank) (Fin S.rank) (AE D)) := by
@@ -372,7 +372,7 @@ theorem chi_sum_X {k : ℕ} [Fintype (Qt k (L ⊓ X))] {y : W} (hy : y ∈ Yk L 
       hLL _ (b.out : ↥(L ⊓ X)).2 y (AddSubgroup.mem_inf.2 ⟨hyL, hy'.1⟩)
     simp only [h1, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
   · have hne : ¬ ∀ x ∈ L ⊓ X, χ x y = 1 := fun hall => hyL (hdY y hy'.1 hall)
-    push_neg at hne
+    push Not at hne
     obtain ⟨u, hu, hχu⟩ := hne
     let m : Qt k (L ⊓ X) := QuotientAddGroup.mk ⟨u, hu⟩
     have hkey : ∀ b : Qt k (L ⊓ X), χ (((b + m).out : ↥(L ⊓ X)) : W) y = χ ((b.out : ↥(L ⊓ X)) : W) y * χ u y := by
@@ -796,7 +796,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
         · have h1' : symplO S T t (actO S T g⁻¹ h⁻¹ u) = symplO S T (actO S T g h t) u := by
             rw [← Formalism.IndefR.Eqv.symplO_actO S T g h t (actO S T g⁻¹ h⁻¹ u), Formalism.IndefR.Eqv.actO_inv_actO]
           rw [h1', (hd2 u (chalf_sub_of S T h1 hue)).2 hu _ hc.1 hc.2, one_mul]
-        · have : halfInd e (latAll S T ΛS ΛT) (actO S T g h t) = 0 := by unfold halfInd; rw [if_neg hc]
+        · have : halfInd e (latAll S T ΛS ΛT) (actO S T g h t) = 0 := by unfold halfInd; rw [ite_eq_right hc]
           rw [this, mul_zero]
     have hfix : ∀ u ∈ latAll S T ΛS ΛT, (IsHalf e₁ u ∨ IsHalf (cA D e₁) u) →
         heisO ψ S T u (om (g, h) (Tm (fun t => halfInd e (latAll S T ΛS ΛT) (actO S T g h t))) - c • f₀) =
@@ -864,7 +864,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
       · have h2 := (isHalf_actO_iff S T g h t).2 ht
         simp only [hstab t ht, ht, h2, and_true]
       · have h2 : ¬ IsHalf e (actO S T g h t) := fun h' => ht ((isHalf_actO_iff S T g h t).1 h')
-        simp only [ht, h2, and_false, if_false]
+        simp only [ht, h2, and_false, ite_false]
     rw [hindeq, hf₀T] at hw
     have hU := hω.om_unit μ 𝓕 hHaar hFD (g, h) f₀ hf₀
     rw [hw] at hU

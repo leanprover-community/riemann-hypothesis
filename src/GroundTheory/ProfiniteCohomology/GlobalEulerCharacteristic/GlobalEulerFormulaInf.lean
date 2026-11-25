@@ -45,11 +45,6 @@ def gsEulerRatio
 
 end Factor
 
-section Statement
-
-
-end Statement
-
 end
 
 end GroundTheory.ProfCoh

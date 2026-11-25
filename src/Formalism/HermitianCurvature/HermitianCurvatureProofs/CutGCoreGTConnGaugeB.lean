@@ -117,7 +117,7 @@ theorem fnZ_ev_eq {v : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : ℕ∞) : WithT
   have hopen : IsOpen (MA.Qset P.r P.TT) :=
     h1.inter (isOpen_lt continuous_const (Complex.continuous_normSq.comp continuous_snd))
   filter_upwards [hopen.mem_nhds q.2] with x hx
-  simp only [MA.ext, dif_pos hx]
+  simp only [MA.ext, dite_eq_left hx]
   exact fnZ_val P hv ⟨x, hx⟩
 
 theorem fderiv_snd_comp {v : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) v (Ann P)) (q : Qp P.r P.TT) :

@@ -35,7 +35,7 @@ theorem leadCoef_ratio_mem (Ω : Type) [Field Ω] (Li : Type) [AddCommGroup Li] 
       (∑ i, w i • b i) - (N * u) • b k := by
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ (fun i a => a • b i) (fun i => zero_smul Ω _)]
     simp only [Finsupp.coe_equivFunOnFinite_symm, sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, Subring.smul_def]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, Subring.smul_def]
   have h0 : Finsupp.linearCombination Ω b
       ((Finsupp.equivFunOnFinite.symm fun i => (w i : Ω) - if i = k then N * u else 0) - l) = 0 := by
     rw [map_sub, hsum, hlc, sub_self]

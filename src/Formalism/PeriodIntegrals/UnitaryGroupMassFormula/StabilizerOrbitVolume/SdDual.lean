@@ -421,7 +421,7 @@ theorem pairHerm_iota (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {a : ℕ
 
     simp only [BR, hR, Formalism.UG.hform, JR, Matrix.map_apply, Matrix.one_apply, apply_ite,
     map_one, map_zero, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, map_sum]
+    Finset.mem_univ, ite_true, map_sum]
   rw [hBR]
   simp only [pairHerm, iota, add_mul, Finset.sum_add_distrib, map_add (f := _)]
   simp only [← hTm]

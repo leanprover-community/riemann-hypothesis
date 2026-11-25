@@ -944,7 +944,7 @@ private theorem cl_count {n : ℕ} (u : Fin n → ℤ × ℤ) (h : ∀ j, Nat.ca
     by_contra hn
     have h2 : dimsL (u i) = 0 := by
       unfold dimsL
-      rw [if_neg, if_neg hn]
+      rw [ite_eq_right, ite_eq_right hn]
       rintro (e | e | e | e | e) <;> exact hn (by rw [e]; decide)
     haveI : Nonempty {k // u k = u i} := ⟨⟨i, rfl⟩⟩
     exact Nat.card_pos.ne' ((h _).trans h2)

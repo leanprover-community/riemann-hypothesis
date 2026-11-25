@@ -279,7 +279,7 @@ private theorem ext_bas {F E : Type} [Field F] [NumberField F] [Field E] [Number
     ∃ bas : ∀ v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), GL (Fin n) (Fv F v), ∀ v : B.P, Q v (bas v) := by
   choose b hb using h
   refine ⟨fun v => if hv : v ∈ B.P then b ⟨v, hv⟩ else 1, fun v => ?_⟩
-  simp only [dif_pos v.2]
+  simp only [dite_eq_left v.2]
   exact hb v
 
 end UpperTheory.HermitianSkewLattice

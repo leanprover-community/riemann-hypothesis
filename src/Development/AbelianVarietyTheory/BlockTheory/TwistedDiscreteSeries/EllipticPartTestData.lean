@@ -128,7 +128,7 @@ theorem unitary_of_hform {A : Type} [CommRing A] (s : A →+* A) (G M : Matrix (
   ext i j
   have := h (Pi.single i 1) (Pi.single j 1)
   simp only [Formalism.UG.hform, Matrix.mulVec_single_one, Pi.single_apply, apply_ite s, map_one, map_zero, ite_mul,
-    mul_ite, one_mul, mul_one, zero_mul, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+    mul_ite, one_mul, mul_one, zero_mul, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
   rw [← this, Finset.sum_comm]
   simp [Formalism.UG.cT, Matrix.mul_apply, Finset.sum_mul]
 

@@ -95,12 +95,4 @@ theorem _root_.GlobalTheory.CurveDegreesCompare.residueDegree_of_isOpenImmersion
   change Module.finrank (Y.residueField (f x)) (X.residueField x) = 1
   rw [← e.finrank_eq, Module.finrank_self]
 
-section Clauses
-
-variable (k : Type) [Field k] (C : Scheme.{0}) [Algebra k Γ(C, ⊤)] [IsIntegral C]
-
-variable {C}
-
-end Clauses
-
 end GlobalTheory.CurveDegreesCompare

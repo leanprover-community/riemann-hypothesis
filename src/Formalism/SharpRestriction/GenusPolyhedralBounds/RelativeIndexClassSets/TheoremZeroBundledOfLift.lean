@@ -554,7 +554,7 @@ theorem aaRep_holds : AARep := by
     let g : (Idx D j G.N →₀ ℕ) × (Idx D j G.N →₀ ℕ) → ↥(HK X la G.w wF) := fun q =>
       if h : hasse X la G.w q.2 (x0 : Lw X la G.w) ∈ HK X la G.w wF then ⟨_, h⟩ else 0
     have hg' : ∀ q : (Idx D j G.N →₀ ℕ) × (Idx D j G.N →₀ ℕ), ∀ hq : (q.2.sum fun _ n => n) ≤ a0 D j T - 1,
-        g q = ⟨_, h1 q.2 hq⟩ := fun q hq => dif_pos (h1 q.2 hq)
+        g q = ⟨_, h1 q.2 hq⟩ := fun q hq => dite_eq_left (h1 q.2 hq)
     let F : (Idx D j G.N →₀ ℕ) → ↥(HK X la G.w wF) := fun β =>
       ∑ q ∈ Finset.HasAntidiagonal.antidiagonal β, @algebraMap (Op X la G.N) (Kp X la G.N) _ _ _ (hasseOp X la G.N q.1 o) • g q
     have he : ∀ β : Idx D j G.N →₀ ℕ, (β.sum fun _ n => n) ≤ a0 D j T - 1 →

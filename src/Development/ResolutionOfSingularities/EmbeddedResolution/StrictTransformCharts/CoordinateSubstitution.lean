@@ -63,7 +63,7 @@ theorem coordBlowupSubstMap_appTop_coord_of_mem (k : Type u) [Field k] (m : ℕ)
         AffineSpace.coord (Spec (CommRingCat.of k)) (ULift.up s) := by
   have hc : (ULift.up j : ULift.{u} (Fin m)).down ∈ S ∧
       (ULift.up j : ULift.{u} (Fin m)).down ≠ s := ⟨hj, hjs⟩
-  rw [coordBlowupSubstMap_appTop_coord k m S s (ULift.up j : ULift.{u} (Fin m)), if_pos hc]
+  rw [coordBlowupSubstMap_appTop_coord k m S s (ULift.up j : ULift.{u} (Fin m)), ite_eq_left hc]
 
 theorem coordBlowupSubstMap_appTop_coord_self (k : Type u) [Field k] (m : ℕ) (S : Finset (Fin m))
     (s : Fin m) :
@@ -74,7 +74,7 @@ theorem coordBlowupSubstMap_appTop_coord_self (k : Type u) [Field k] (m : ℕ) (
       (ULift.up s : ULift.{u} (Fin m)).down ≠ s) := by
     rintro ⟨-, h⟩
     exact h rfl
-  rw [coordBlowupSubstMap_appTop_coord k m S s (ULift.up s : ULift.{u} (Fin m)), if_neg hc]
+  rw [coordBlowupSubstMap_appTop_coord k m S s (ULift.up s : ULift.{u} (Fin m)), ite_eq_right hc]
 
 theorem coordBlowupSubstMap_appTop_coord_of_notMem (k : Type u) [Field k] (m : ℕ) (S : Finset (Fin m))
     (s : Fin m) (j : Fin m) (hj : j ∉ S) :
@@ -83,7 +83,7 @@ theorem coordBlowupSubstMap_appTop_coord_of_notMem (k : Type u) [Field k] (m : �
       AffineSpace.coord (Spec (CommRingCat.of k)) (ULift.up j) := by
   have hc : ¬ ((ULift.up j : ULift.{u} (Fin m)).down ∈ S ∧
       (ULift.up j : ULift.{u} (Fin m)).down ≠ s) := fun h => hj h.1
-  rw [coordBlowupSubstMap_appTop_coord k m S s (ULift.up j : ULift.{u} (Fin m)), if_neg hc]
+  rw [coordBlowupSubstMap_appTop_coord k m S s (ULift.up j : ULift.{u} (Fin m)), ite_eq_right hc]
 
 theorem comap_coordBlowupSubstMap_coordSubspaceIdeal_singleton_of_mem (k : Type u) [Field k] (m : ℕ)
     (S : Finset (Fin m)) (s : Fin m) (j : Fin m) (hj : j ∈ S) (hjs : j ≠ s) :

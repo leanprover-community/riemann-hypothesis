@@ -133,8 +133,8 @@ theorem exists_lift_ext : Laws → BrGtSt → BrWpSt → AllA fun {_} _ _ _ {_} 
   have := a.D₀.P.isAb.smooth
   refine ⟨n, ?_, h₂.trans (by
     by_cases h : τ H.rt = A.ρ
-    · rw [if_pos h, if_pos (show f.comp τ H.rt = f A.ρ from congrArg f h)]
-    · rw [if_neg h, if_neg (show ¬ f.comp τ H.rt = f A.ρ from fun e => h (f.injective e))])⟩
+    · rw [ite_eq_left h, ite_eq_left (show f.comp τ H.rt = f A.ρ from congrArg f h)]
+    · rw [ite_eq_right h, ite_eq_right (show ¬ f.comp τ H.rt = f A.ρ from fun e => h (f.injective e))])⟩
   have e : spMap ((algebraMap (FractionRing R) F').comp (algebraMap R _)) =
       spMap f ≫ spMap ((algebraMap (FractionRing R) F).comp (algebraMap R _)) := by
     rw [← spMap_comp', ← RingHom.comp_assoc, hf]

@@ -166,10 +166,4 @@ def RankMaximalSelfCharts : Prop := AllSelfConjugateCharts Xo c fun _ _ V _ _ _ 
 
 end Named
 
-section Top
-
-variable {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io} {Orb : Type} {d : ℕ} [NeZero d]
-
-end Top
-
 end Formalism.L2.FormalSeriesBounds

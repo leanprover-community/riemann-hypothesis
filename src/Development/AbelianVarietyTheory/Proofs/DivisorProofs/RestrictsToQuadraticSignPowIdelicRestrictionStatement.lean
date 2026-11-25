@@ -72,8 +72,8 @@ theorem GlobalTheory.ResEtaOfPow.resEta_of_resEtaPow : ∀ (D : D7) (χ : (AE D)
   apply Circle.ext
   rw [key a, Circle.coe_pow]
   by_cases ha : a ∈ S
-  · rw [if_pos ha, hS a ha]; simp
-  rw [if_neg ha]
+  · rw [ite_eq_left ha, hS a ha]; simp
+  rw [ite_eq_right ha]
   rcases Nat.even_or_odd n with ⟨k, rfl⟩ | hn
   · rw [← two_mul, pow_mul, pow_mul, neg_one_sq, one_pow, ← Circle.coe_pow, sq, hsq a]; simp
   have hn1 : ((-1 : ℂ)) ^ n = -1 := hn.neg_one_pow
@@ -84,7 +84,7 @@ theorem GlobalTheory.ResEtaOfPow.resEta_of_resEtaPow : ∀ (D : D7) (χ : (AE D)
   have hab : a * b ∈ S := by
     by_contra hn2
     have e := key (a * b)
-    rw [map_mul, map_mul, Circle.coe_mul, key a, key b, if_neg ha, if_neg hbS, if_neg hn2, hn1] at e
+    rw [map_mul, map_mul, Circle.coe_mul, key a, key b, ite_eq_right ha, ite_eq_right hbS, ite_eq_right hn2, hn1] at e
     norm_num at e
   have hηb : (η b : ℂ) = -1 := GlobalTheory.VolHeckeCompare.circle_eq_neg_one (hsq b) hb
   have e2 : (η a : ℂ) * η b = 1 := by rw [← Circle.coe_mul, ← map_mul, hS _ hab]; simp

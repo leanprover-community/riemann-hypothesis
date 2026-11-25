@@ -951,7 +951,7 @@ theorem ptExt_q_series : ∀ (R : Type) [CommRing R] (I : Ideal R) [IsAdicComple
   have hc : ∀ (S : Type) [CommRing S] [Algebra R S] (h : ∃ k, Kills I k S) (a : Fin d → S),
       (∀ i, IsNilpotent (a i)) → (∀ j, IsNilpotent (c S a j)) ∧ E.q S h (x S a) = xB S (c S a) := by
     intro S _ _ h a ha
-    have : c S a = (exists_nilpotent_image E hx hB S h a ha).choose := dif_pos ⟨h, ha⟩
+    have : c S a = (exists_nilpotent_image E hx hB S h a ha).choose := dite_eq_left ⟨h, ha⟩
     rw [this]
     exact (exists_nilpotent_image E hx hB S h a ha).choose_spec
   have hnat : ∀ (S : Type) [CommRing S] [Algebra R S] (S' : Type) [CommRing S'] [Algebra R S'] (φ : S →ₐ[R] S')

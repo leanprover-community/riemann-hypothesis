@@ -675,7 +675,7 @@ theorem exists_isEigOf_of_vec : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (P
       (GlobalTheory.RowEig.sph_of_full hex.choose_spec) x hxf]
     exact (hsc Pr d hex.choose (GlobalTheory.RowEig.sph_of_full hex.choose_spec)).choose_spec x hxS hxf
   · intro Pr d hne
-    exact dif_neg hne
+    exact dite_eq_right hne
 
 theorem isot_part : (GlobalTheory.Published.DiscreteSeriesCover ∧ GlobalTheory.Published.HarishChandraModules ∧ GlobalTheory.Published.CasselmanWallach ∧ GlobalTheory.Published.HarishChandraFinite ∧ GlobalTheory.Published.CuspRapidDecay) → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd) (X0 : BaseLevelRowSide D) (Y : Read (A3 := A3) R.toRealDat F.lv2 X0) (Z : ReadL R F X0 Y), Pins R F cG → Holds R F → ∀ (hL : Lam3 Z), (∀ σ (i : Fin D.R.m), D.what₂.isot ((i : ℕ) + 1) (D.what₂.ft σ) ≠ ⊥) → ∀ σ, (principalLevelFrame.isotE R.θ Y.PY (R.MY 0) (levS _ (R.βY 0) (R.dat0 (R.levR F.lv2 true))) (levChi _ (R.βY 0) (R.dat0 (R.levR F.lv2 true))) R.e0 (principalLevelFrame.rowRepR R.θ (Y.eFT (D.what₂.ft σ)))).comap R.HE.e ≤ R.EEp3 (Classical.choose hL (D.what₂.ft σ)) := by
   intro hPr D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH hL hiso σ
@@ -1211,7 +1211,7 @@ theorem kapOf_of_eigen {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProduc
         ← OrthonormalBasis.coe_toBasis, Module.Basis.repr_self, Finsupp.single_apply, Matrix.diagonal_apply]
       by_cases hij : j = i
       · subst hij; simp [P]
-      · rw [if_neg hij, if_neg (fun h => hij h.symm)]; simp
+      · rw [ite_eq_right hij, ite_eq_right (fun h => hij h.symm)]; simp
     rw [hM, Matrix.det_diagonal, ← Complex.ofReal_prod, Finset.prod_mul_distrib, Finset.prod_const,
       Finset.card_univ, Fintype.card_fin]
   have hr : S.kapRatio ty = κ ^ n := by
@@ -1219,7 +1219,7 @@ theorem kapOf_of_eigen {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProduc
     rw [hdet, Complex.ofReal_re]
     exact mul_div_cancel_right₀ _ (Finset.prod_pos fun σ _ => hP σ).ne'
   unfold RowSide.kapOf
-  rw [hr, if_pos (pow_pos hk n), Real.pow_rpow_inv_natCast hk.le hn.ne']
+  rw [hr, ite_eq_left (pow_pos hk n), Real.pow_rpow_inv_natCast hk.le hn.ne']
 
 theorem iiStar_apply_eq {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
     (S : RowSide D EE) (y : EE) :

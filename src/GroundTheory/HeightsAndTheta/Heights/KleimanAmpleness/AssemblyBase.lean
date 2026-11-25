@@ -792,7 +792,7 @@ theorem SectionCount.Drop.proof (hF : SectionCount.Drop.Filt.Statement.{u, w})
     · rw [Finset.sum_comm]
       refine Finset.sum_congr rfl (fun j _ => ?_)
       by_cases hd : e j = d
-      · simp only [hd, true_and, if_true]
+      · simp only [hd, true_and, ite_true]
         rw [Finset.sum_ite_eq]
         simp
       · simp [hd]

@@ -387,7 +387,7 @@ theorem exists_depth_of_not_coboundary : ∀ (l : ℕ) [Fact l.Prime] {Γ : Type
     by_cases hnr : n < r
     · rw [Nat.sub_eq_zero_of_le hnr.le, pow_zero] at hx
       exact absurd hx (not_lt.mpr hx1)
-    push_neg at hnr
+    push Not at hnr
     have hxpos : 0 < ‖x‖ := lt_of_le_of_lt (pow_nonneg hq0 _) hx
     have hx0 : x ≠ 0 := norm_pos_iff.mp hxpos
     refine ⟨y / x, fun t ht => ?_⟩

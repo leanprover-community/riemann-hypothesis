@@ -70,15 +70,6 @@ theorem unitAt_div {L : Lat ξ Ω} {p : Cpt ξ} {s t : Ω} (hs : L.IsGenAt p s) 
 
 end General
 
-section Line
-
-open IsDedekindDomain Polynomial Crv.Inhab
-open scoped Classical
-
-variable (k : Type) [Field k]
-
-end Line
-
 section Proj
 
 open MvPolynomial HomogeneousLocalization ProjCoord

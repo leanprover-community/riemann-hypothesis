@@ -71,10 +71,10 @@ theorem actL_sgl (hP : IsPsiFor ε lam T Ψ) {m : ℕ} {w : List (Fin n × Fin n
     actL T Ψ (sgl m w v) = (cD hP w v : L2 ε) := by
   have hx0 : ofW (⟨⟨w.length, Nat.lt_succ_of_le h⟩, w.get⟩ : Wd n m) = w := List.ofFn_get w
   rw [actL_eq hP, Finset.sum_eq_single (⟨⟨w.length, Nat.lt_succ_of_le h⟩, w.get⟩ : Wd n m)]
-  · simp only [sgl, hx0, if_true]
+  · simp only [sgl, hx0, ite_true]
   · intro y _ hy
     have hne : ofW y ≠ w := fun e => hy (ofW_inj (e.trans hx0.symm))
-    simp only [sgl, if_neg hne, cD_zero]
+    simp only [sgl, ite_eq_right hne, cD_zero]
     rfl
   · intro hn
     exact absurd (Finset.mem_univ _) hn

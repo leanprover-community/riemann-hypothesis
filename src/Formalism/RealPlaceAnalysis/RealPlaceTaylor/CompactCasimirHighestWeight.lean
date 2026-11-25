@@ -277,7 +277,7 @@ theorem compact_lie_commute_casimir {A : Type*} [Ring A] {n : ℕ} {ε : Fin n �
       - (if c = a then (if ε c = ε d then F c d * F d b else 0) else 0) := by
     intro c d
     by_cases hcd : ε c = ε d
-    · simp only [if_pos hcd]
+    · simp only [ite_eq_left hcd]
       have e1 := h a b c d hab hcd
       have e2 := h a b d c hab hcd.symm
       calc F a b * (F c d * F d c) - F c d * F d c * F a b
@@ -294,7 +294,7 @@ theorem compact_lie_commute_casimir {A : Type*} [Ring A] {n : ℕ} {ε : Fin n �
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
   rw [Finset.sum_comm (f := fun c d => if b = c then (if ε c = ε d then F a d * F d c else 0) else 0),
     Finset.sum_comm (f := fun c d => if c = a then (if ε c = ε d then F c d * F d b else 0) else 0)]
-  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, hab]
+  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true, hab]
   abel
 
 section cas
@@ -315,14 +315,14 @@ theorem compact_casimir_term_highest (h : KRel ε F) {μ : Fin n → ℝ} {x : V
     F a b (F b a x) = ((if a = b then μ a ^ 2 else if a < b then μ a - μ b else 0 : ℝ) : ℂ) • x := by
   rcases lt_trichotomy a b with hlt | rfl | hgt
   · have := compact_lie_commutator h hab hab.symm x
-    rw [hx.2 a b hlt hab, map_zero, sub_zero, if_pos rfl, if_pos rfl, hx.1 a, hx.1 b] at this
-    rw [this, if_neg hlt.ne, if_pos hlt]
+    rw [hx.2 a b hlt hab, map_zero, sub_zero, ite_eq_left rfl, ite_eq_left rfl, hx.1 a, hx.1 b] at this
+    rw [this, ite_eq_right hlt.ne, ite_eq_left hlt]
     push_cast
     rw [sub_smul]
-  · rw [hx.1 a, map_smul, hx.1 a, smul_smul, if_pos rfl]
+  · rw [hx.1 a, map_smul, hx.1 a, smul_smul, ite_eq_left rfl]
     push_cast
     rw [sq]
-  · rw [hx.2 b a hgt hab.symm, map_zero, if_neg hgt.ne', if_neg (not_lt.mpr hgt.le)]
+  · rw [hx.2 b a hgt hab.symm, map_zero, ite_eq_right hgt.ne', ite_eq_right (not_lt.mpr hgt.le)]
     simp
 
 theorem compact_casimir_value_eq (μ : Fin n → ℝ) :
@@ -359,7 +359,7 @@ theorem compact_casimir_value_eq (μ : Fin n → ℝ) :
     · simp
     · simp [h2.ne', not_lt.mpr h2.le]
   simp only [hL, Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 theorem compact_casimir_highest_weight (h : KRel ε F) {μ : Fin n → ℝ} {x : V} (hx : KHighest ε F μ x) :
     CasK ε F x = ((ckv ε μ : ℝ) : ℂ) • x := by
@@ -369,7 +369,7 @@ theorem compact_casimir_highest_weight (h : KRel ε F) {μ : Fin n → ℝ} {x :
         : ℂ) • x := by
     intro a b
     by_cases hab : ε a = ε b
-    · rw [if_pos hab, if_pos hab, compact_casimir_term_highest h hx hab]
+    · rw [ite_eq_left hab, ite_eq_left hab, compact_casimir_term_highest h hx hab]
     · simp [hab]
   simp_rw [this, ← Finset.sum_smul]
   push_cast

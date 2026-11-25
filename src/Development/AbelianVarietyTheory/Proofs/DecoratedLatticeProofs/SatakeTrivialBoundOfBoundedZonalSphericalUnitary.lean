@@ -190,8 +190,8 @@ def denom (n : ℕ) (c : ℂ) (α : Fin (n / 2) → ℂˣ) (X : ℂ) : ℂ :=
 theorem differentiable_denom (n : ℕ) (c : ℂ) (α : Fin (n / 2) → ℂˣ) : Differentiable ℂ (denom n c α) := by
   unfold denom
   by_cases h : Odd n
-  · simp only [if_pos h]; fun_prop
-  · simp only [if_neg h]; fun_prop
+  · simp only [ite_eq_left h]; fun_prop
+  · simp only [ite_eq_right h]; fun_prop
 
 theorem one_sub_ne_zero {z : ℂ} (h : ‖z‖ < 1) : 1 - z ≠ 0 := fun e => by
   rw [← sub_eq_zero.1 e, norm_one] at h

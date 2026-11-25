@@ -885,7 +885,7 @@ private theorem finite_setOf_nat_polynomial_collision {F : Type*} [Field F] [Cha
     rw [Finset.sum_eq_single j]
     · simp
     · intro i _ hij
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun h => hij (Fin.ext h).symm
     · simp
   have hsub : {s : ℕ | ∃ v ∈ T, ∃ w ∈ T, v ≠ w ∧

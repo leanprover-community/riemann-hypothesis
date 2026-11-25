@@ -50,14 +50,6 @@ def unitOf (X : Tower Ω ε) (a : X.K) : X.Kˣ :=
 def clsHat (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (a : X.K) : X.Khat l :=
   AdicCompletion.of (idl l) (X.Kl l) ((1 : ℤ_[l]) ⊗ₜ Additive.ofMul (unitOf X a))
 
-def cR (l N : ℕ) (r₀ : ZMod l) : ℤ := (N : ℤ) * ((-r₀ * (N : ZMod l)⁻¹).val : ℤ)
-
-def gR (l N : ℕ) (r₀ : ZMod l) : SL(2, ℤ) :=
-  ⟨!![1, 0; cR l N r₀, 1], by simp [Matrix.det_fin_two]⟩
-
-
-
-
 open scoped MatrixGroups TensorProduct in
 open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in

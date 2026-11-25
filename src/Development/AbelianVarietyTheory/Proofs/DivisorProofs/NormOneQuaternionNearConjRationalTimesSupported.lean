@@ -721,13 +721,13 @@ theorem _root_.GlobalTheory.QSA.FinAdele.traceOpen_finiteAdele : ∀ (F : Type) 
       ⟨fun v => if v ∈ J then (hOne v).some else 0, Filter.eventually_cofinite.2 (hJ.subset
         fun v hv => by
           by_contra hvJ
-          exact hv (by simp only [if_neg hvJ]; exact zero_mem _))⟩
+          exact hv (by simp only [ite_eq_right hvJ]; exact zero_mem _))⟩
     refine ⟨t₀, Set.mem_iInter₂.2 fun v hv => ?_, fun v hv => ?_⟩
     · show (if v ∈ J then (hOne v).some else 0) ∈ O v
-      rw [if_pos hv]
+      rw [ite_eq_left hv]
       exact (hOne v).some_mem
     · show (if v ∈ J then (hOne v).some else 0) ∈ v.adicCompletionIntegers F
-      rw [if_neg hv]
+      rw [ite_eq_right hv]
       exact zero_mem _
   · rintro t ⟨htJ, htA⟩
     rw [Set.mem_iInter₂] at htJ

@@ -338,10 +338,10 @@ theorem tmul_sum_eq_zero_of_linDisj {R R₁ F K : Type} [CommRing R] [CommRing R
     by_cases hind : ∀ b : Fin (n+1) → R, ∑ i, algebraMap R F (b i) * u i = 0 → b = 0
     · have hr := hL (n+1) u hind r (by rw [← h]; exact Finset.sum_congr rfl fun i _ => mul_comm _ _)
       subst hr; simp
-    · push_neg at hind
+    · push Not at hind
       obtain ⟨b, hb, hb0⟩ := hind
       obtain ⟨j, hj⟩ : ∃ j, b j ≠ 0 := by
-        by_contra hc; push_neg at hc; exact hb0 (funext hc)
+        by_contra hc; push Not at hc; exact hb0 (funext hc)
       have hdj : algebraMap R F (b j) ≠ 0 := by
         intro h0; apply hj; apply hc₀; rw [h0, map_zero]
       obtain ⟨w, hw⟩ : ∃ w : Fin n → F, ∀ i, w i = u (j.succAbove i) / algebraMap R F (b j) := ⟨_, fun _ => rfl⟩

@@ -587,7 +587,7 @@ theorem blk_jlMap (h : ℕ) (l : Fin 8) (a : Fin h ⊕ Fin h → ℤ) :
 theorem kap_jlMap (h d : ℕ) (k : Fin 8) (a : Fin h ⊕ Fin h → ℤ) :
     kap h d k (jlMap h a) = if k = 0 then a else 0 := by
   rw [kap_apply]
-  simp only [blk_jlMap, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [blk_jlMap, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   fin_cases k <;> simp [vMat, sig]
 
 end GlobalTheory.ZarhinFam.KappaEx
@@ -601,8 +601,8 @@ theorem exists_kappaOK : ∀ (h M d : ℕ), 1 ≤ h → 3 ≤ M → Odd M → 0 
   intro h M d _ _ _ hd _
   refine ⟨kap h d, fun a b => ?_, fun a => ?_, fun k hk a => ?_⟩
   · rw [formZ_kap hd]
-  · rw [kap_jlMap, if_pos rfl]
-  · rw [kap_jlMap, if_neg hk]
+  · rw [kap_jlMap, ite_eq_left rfl]
+  · rw [kap_jlMap, ite_eq_right hk]
 
 end GlobalTheory.ZarhinFam
 end -- clump:auto
@@ -846,7 +846,7 @@ theorem nsmul_pull_diag_zCls : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp 
       z • pull (lift a (b ≫ mu)).left (cls c.P c.isLB) := fun z a b => by rw [smul_comm, hk]
   simp only [smul_add, Finset.smul_sum, hk, hk', Matrix.smul_apply, Matrix.one_apply, Matrix.transpose_apply,
     zero_add, smul_eq_mul, mul_ite, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true, one_smul, Finset.sum_add_distrib, mul_smul, two_smul, natCast_zsmul]
+    ite_true, one_smul, Finset.sum_add_distrib, mul_smul, two_smul, natCast_zsmul]
   abel
 
 end GlobalTheory.ZarhinFam
@@ -933,15 +933,15 @@ theorem zarhinBundle_kernel : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp (
   have z3 : ∀ {Y : Over S} (b : Y ⟶ B), evc hQ (1 : Y ⟶ c.A) b = 0 := fun b => hQd.additive.evc_one hQ b
   have s1 : (∑ k, evc hP ((snd c.A T ≫ x) ≫ pa c.A B k) ((fst c.A T ≫ inc) ≫ pa c.A B k)) =
       evc hP ((snd c.A T ≫ x) ≫ pa c.A B i) (fst c.A T) := by
-    rw [Finset.sum_eq_single i (fun k _ hk => by rw [hpa, if_neg hk, z1]) (fun hi => absurd (Finset.mem_univ i) hi),
-      hpa, if_pos rfl]
+    rw [Finset.sum_eq_single i (fun k _ hk => by rw [hpa, ite_eq_right hk, z1]) (fun hi => absurd (Finset.mem_univ i) hi),
+      hpa, ite_eq_left rfl]
   have s2 : (∑ k, ∑ j, quat d j k • evc hQ ((snd c.A T ≫ x) ≫ pa c.A B k) ((fst c.A T ≫ inc) ≫ pb c.A B j)) = 0 := by
     simp only [hpb, z2, smul_zero, Finset.sum_const_zero]
   have s3 : (∑ k, ∑ j, quat d j k • evc hQ ((fst c.A T ≫ inc) ≫ pa c.A B k) ((snd c.A T ≫ x) ≫ pb c.A B j)) =
       ∑ j, quat d j i • evc hQ (fst c.A T) ((snd c.A T ≫ x) ≫ pb c.A B j) := by
-    rw [Finset.sum_eq_single i (fun k _ hk => by simp only [hpa, if_neg hk, z3, smul_zero, Finset.sum_const_zero])
+    rw [Finset.sum_eq_single i (fun k _ hk => by simp only [hpa, ite_eq_right hk, z3, smul_zero, Finset.sum_const_zero])
       (fun hi => absurd (Finset.mem_univ i) hi)]
-    rw [hpa, if_pos rfl]
+    rw [hpa, ite_eq_left rfl]
   have s4 : (∑ j, evc hQ ((fst c.A T ≫ inc) ≫ pb c.A B j ≫ mu) ((snd c.A T ≫ x) ≫ pb c.A B j)) = 0 := by
     simp only [← Category.assoc _ (pb c.A B _) mu, hpb, MonObj.one_comp, z3, Finset.sum_const_zero]
   rw [s1, s2, s3, s4, add_zero, add_zero] at h1
@@ -1027,7 +1027,7 @@ theorem ker_zarhinPolarization_of_pullback : ∀ (h M d : ℕ) (S : Scheme.{0}) 
   simp only [AdjPf.zf, Category.assoc, AdjPf.mkZ_pa, AdjPf.mkZ_pb, hv, MonObj.comp_one, MonObj.one_comp,
     evc_one_right hQ hD1.zero, smul_zero, Finset.sum_const_zero, zero_add, add_zero] at h1
   simp only [apply_ite (evc hQ _), evc_one_right hQ hD1.zero, smul_ite, smul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at h1
+    Finset.mem_univ, ite_true] at h1
   refine (hD1.isPerfect hD2).ker_left T _ ((triv_ev_iff hQ _ _).2 ?_)
   let F : (T ⊗ B ⟶ c.A) →* Multiplicative (Pic (T ⊗ B).left) :=
     MonoidHom.mk' (fun a => Multiplicative.ofAdd (evc hQ a (snd T B))) fun a a' => by

@@ -48,7 +48,7 @@ theorem row_norm {n : ℕ} (u : Matrix (Fin n) (Fin n) ℂ) (hu : u * uᴴ = 1) 
         refine Finset.sum_congr rfl fun l _ => ?_
         rw [Finset.mul_sum]
     _ = ∑ k, x k * star (x k) := by
-        simp only [hu2, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [hu2, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem levF_unitary {m n : ℕ} (e : ℤ) (u : Matrix (Fin n) (Fin n) ℂ) (hu : uᴴ * u = 1) (K γ0 : ℂ) :
     levF e u (DG (m := m) (n := n) K (fun _ _ => γ0)) =

@@ -120,7 +120,7 @@ theorem GlobalTheory.tameLift_isTame_not_isUnram : ∀ (D : D7) (v : HeightOneSp
     rw [hl x 1 hr, map_one]
   · intro hun
     obtain ⟨k, hk⟩ : ∃ k, ξ k ≠ 1 := by
-      by_contra h; push_neg at h; exact hξ (MonoidHom.ext h)
+      by_contra h; push Not at h; exact hξ (MonoidHom.ext h)
     obtain ⟨x0, hx0⟩ := Ideal.Quotient.mk_surjective (k : kP PP)
     have hnot : x0 ∉ PP.asIdeal := by
       intro hm

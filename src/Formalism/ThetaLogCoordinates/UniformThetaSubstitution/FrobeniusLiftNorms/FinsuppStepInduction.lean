@@ -136,7 +136,7 @@ lemma jetPair_monomial_left (κ : ι →₀ ℕ) (a : K) (F : MvPowerSeries ι K
       a * ((Formalism.DworkPowerSeriesWeights.mfact κ : ℕ) : K) * MvPowerSeries.coeff κ F := by
   classical
   rw [Formalism.DworkPowerSeriesWeights.jetPair_eq_sum _ _ {κ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 lemma jetPair_X_mul (Q : MvPolynomial ι K) (x : ι) (G : MvPowerSeries ι K) :
     jetPair Q (MvPowerSeries.X x * G) = jetPair (MvPolynomial.pderiv x Q) G := by
@@ -149,7 +149,7 @@ lemma jetPair_X_mul (Q : MvPolynomial ι K) (x : ι) (G : MvPowerSeries ι K) :
     by_cases h : κ x = 0
     · rw [h]
       have : MvPowerSeries.coeff κ (MvPowerSeries.X x * G) = 0 := by
-        rw [MvPowerSeries.X, MvPowerSeries.coeff_monomial_mul, if_neg]
+        rw [MvPowerSeries.X, MvPowerSeries.coeff_monomial_mul, ite_eq_right]
         intro hle
         have := hle x
         simp [h] at this
@@ -240,7 +240,7 @@ theorem e_one_vanish_of : HasseDerivProdVanish := by
       rintro rfl
       simp at hβ
     simp only [Finset.univ_eq_empty, Finset.prod_empty, hasseDir, shiftPoly_one,
-      MvPolynomial.coeff_one, if_neg hne]
+      MvPolynomial.coeff_one, ite_eq_right hne]
   | succ C ih =>
     intro f m S h β hβ
     rw [Fin.prod_univ_succ, hasseDir_mul]
@@ -529,7 +529,7 @@ lemma degLE_X_of_notMem {W : Finset κ} {k : κ} (hk : k ∉ W) :
   rw [MvPolynomial.coeff_X] at h
   split_ifs at h with h1
   · rw [← h1]
-    simp only [Finsupp.single_apply, Finset.sum_ite_eq, if_neg hk, le_refl]
+    simp only [Finsupp.single_apply, Finset.sum_ite_eq, ite_eq_right hk, le_refl]
   · exact absurd rfl h
 
 lemma degLE_prod {α : Type*} {W : Finset κ} (s : Finset α) (n : α → ℕ)
@@ -580,7 +580,7 @@ lemma degLE_det_rankOne {K : Type} [Field K] {l : ℕ} {W : Finset κ} (φ : K �
       by_cases hi : i = i0
       · subst hi
         simp [hA]
-      · simp only [hA, hN, Matrix.of_apply, if_neg hi]
+      · simp only [hA, hN, Matrix.of_apply, ite_eq_right hi]
         have : φ (v i) = φ (v i / v i0) * φ (v i0) := by
           rw [← map_mul, div_mul_cancel₀ _ hi0]
         rw [this, map_neg]
@@ -588,10 +588,10 @@ lemma degLE_det_rankOne {K : Type} [Field K] {l : ℕ} {W : Finset κ} (φ : K �
     rw [← hdet]
     have := degLE_det_row (W := W) A (fun i => if i = i0 then 1 else 0) fun i c => by
       by_cases hi : i = i0
-      · simp only [hA, hN, Matrix.of_apply, if_pos hi]
+      · simp only [hA, hN, Matrix.of_apply, ite_eq_left hi]
         refine degLE_add (degLE_mono (hM _ _) (Nat.zero_le _)) ?_
         simpa using degLE_mul (hφ (v i0)) (hη c)
-      · simp only [hA, Matrix.of_apply, if_neg hi]
+      · simp only [hA, Matrix.of_apply, ite_eq_right hi]
         refine degLE_add (hM _ _) ?_
         simpa using degLE_mul (hφ (-(v i / v i0))) (hM i0 c)
     simpa using this
@@ -656,13 +656,13 @@ lemma degLE_minor_col (hI : Function.Injective I) (S : Finset κ) (J : Finset (F
   simp only [Matrix.of_apply]
   refine degLE_sum _ _ fun a _ => ?_
   by_cases hc : I c ∈ J
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     simpa using degLE_mul (degLE_CC S (T i a)) (degLE_shiftGen S _ (s, a, I c))
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have := degLE_mul (degLE_CC S (T i a)) (degLE_shiftGen_zero S
       (fun k => colDir (pos k) (ξ k) (col k)) (s, a, I c) fun k hk => by
         unfold colDir
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, h2⟩
         simp only at h1 h2
         exact hc (h2 ▸ hS k hk h1.symm))

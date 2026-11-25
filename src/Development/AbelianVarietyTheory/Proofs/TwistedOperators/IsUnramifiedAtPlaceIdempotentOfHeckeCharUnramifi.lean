@@ -122,7 +122,7 @@ theorem unramAt_of_unrAt : ∀ (D : D7) (c : (AE D)ˣ →* Circle) (χ : Formali
 
   obtain ⟨k', hk'1, hk'2⟩ : ∃ k' : HeightOneSpectrum (𝓞 D.host.E) → D.host.Eˣ,
       (∀ P, P.under (𝓞 D.host.F) = v → k' P = k P) ∧ (∀ P, P.under (𝓞 D.host.F) ≠ v → k' P = 1) :=
-    ⟨fun P => if P.under (𝓞 D.host.F) = v then k P else 1, fun _ h => if_pos h, fun _ h => if_neg h⟩
+    ⟨fun P => if P.under (𝓞 D.host.F) = v then k P else 1, fun _ h => ite_eq_left h, fun _ h => ite_eq_right h⟩
   have hcx := hmain x hx1 S k' ?_ ?_
   · have hprod : ∏ P ∈ S, ((χ.locK P (k' P) : ℂˣ) : ℂ) = 1 := by
       apply Finset.prod_eq_one

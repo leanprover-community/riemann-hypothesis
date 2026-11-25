@@ -428,8 +428,8 @@ theorem logBinomialDeficit : LogBinomialDeficit := by
     intro u hu
     have hn := fT'_nonneg k' (Bs u) (hB0 u hu)
     by_cases h0 : u = 0
-    · rw [if_pos h0]; linarith
-    · rw [if_neg h0]
+    · rw [ite_eq_left h0]; linarith
+    · rw [ite_eq_right h0]
       have e : u - 1 + 1 = u := Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero h0)
       have h := h4 (u - 1) (by rw [e]; exact hu)
       rw [e] at h
@@ -828,18 +828,18 @@ lemma G_split {n : ℕ} {la : ℕ → ℤ} (hd : Dom n la) {i j : ℕ} (hij : i 
   unfold pa pb pc
   rw [G_eq hij]
   by_cases hi0 : la i = 0 <;> by_cases hj0 : la j = 0
-  · rw [if_neg (show ¬(la i ≠ 0 ∧ la j ≠ 0) from fun h => h.1 hi0), if_pos hj0, if_pos hi0,
+  · rw [ite_eq_right (show ¬(la i ≠ 0 ∧ la j ≠ 0) from fun h => h.1 hi0), ite_eq_left hj0, ite_eq_left hi0,
       hi0, hj0]
     simp [hh_zero]
   · have hm : max (-(la j)) 0 = la i - la j := by
       rw [hi0, max_eq_left (show (0 : ℤ) ≤ -la j by linarith), zero_sub]
-    rw [if_neg (show ¬(la i ≠ 0 ∧ la j ≠ 0) from fun h => h.1 hi0), if_neg hj0, if_pos hi0, hm]
+    rw [ite_eq_right (show ¬(la i ≠ 0 ∧ la j ≠ 0) from fun h => h.1 hi0), ite_eq_right hj0, ite_eq_left hi0, hm]
     ring
   · have hm : max (la i) 0 = la i - la j := by
       rw [hj0, sub_zero, max_eq_left (by linarith)]
-    rw [if_neg (show ¬(la i ≠ 0 ∧ la j ≠ 0) from fun h => h.2 hj0), if_pos hj0, if_neg hi0, hm]
+    rw [ite_eq_right (show ¬(la i ≠ 0 ∧ la j ≠ 0) from fun h => h.2 hj0), ite_eq_left hj0, ite_eq_right hi0, hm]
     ring
-  · rw [if_pos ⟨hi0, hj0⟩, if_neg hj0, if_neg hi0]
+  · rw [ite_eq_left ⟨hi0, hj0⟩, ite_eq_right hj0, ite_eq_right hi0]
     ring
 
 lemma sum_ite_const_le {n Ns : ℕ} (p : ℕ → Prop) [DecidablePred p]
@@ -916,7 +916,7 @@ lemma sum_pa_le {Ns n : ℕ} {la : ℕ → ℤ} {L : ℝ} (hL0 : 0 ≤ L)
     rw [Finset.mem_range] at hj
     by_cases hj0 : la j = 0
     · simp [pa, hj0]
-    · rw [if_pos hj0]
+    · rw [ite_eq_left hj0]
       have h1 : ∑ i ∈ range j, pa la i j ≤ ∑ i ∈ range j, (if la i ≠ 0 then L else 0) := by
         apply Finset.sum_le_sum
         intro i hi
@@ -924,7 +924,7 @@ lemma sum_pa_le {Ns n : ℕ} {la : ℕ → ℤ} {L : ℝ} (hL0 : 0 ≤ L)
         unfold pa
         by_cases hi0 : la i = 0
         · simp [hi0]
-        · rw [if_pos ⟨hi0, hj0⟩, if_pos hi0]
+        · rw [ite_eq_left ⟨hi0, hj0⟩, ite_eq_left hi0]
           exact hG i j hi hj
       have h2 : ∑ i ∈ range j, (if la i ≠ 0 then L else 0) ≤
           ∑ i ∈ range n, (if la i ≠ 0 then L else 0) := by
@@ -1016,7 +1016,7 @@ theorem logWeylDimensionEstimate : LogWeylDimensionEstimate := by
     rw [Finset.mem_range] at hi
     unfold Formalism.InvariantFactorPaths.BranchingDimensions.TDim.pb
     by_cases hp : 0 < la i
-    · rw [if_pos hp, if_pos hp]
+    · rw [ite_eq_left hp, ite_eq_left hp]
       have hm : max (la i) 0 = la i := max_eq_left hp.le
       rw [hm]
       have hz : (0 : ℝ) ≤ ((la i : ℤ) : ℝ) := by exact_mod_cast hp.le
@@ -1024,7 +1024,7 @@ theorem logWeylDimensionEstimate : LogWeylDimensionEstimate := by
         have := htop i hi
         linarith
       exact pos_row h2 hK hn hd hP hM hL0 hi hp (_root_.Formalism.InvariantFactorPaths.BranchingDimensions.TDim.log_one_add_le_lemma hz (hA _ hle))
-    · rw [if_neg hp, if_neg hp]
+    · rw [ite_eq_right hp, ite_eq_right hp]
       have hm : max (la i) 0 = 0 := max_eq_right (not_lt.mp hp)
       rw [hm]
       simp [Formalism.InvariantFactorPaths.BranchingDimensions.TDim.hh_zero, Formalism.InvariantFactorPaths.BranchingDimensions.TDim.fT_zero]
@@ -1039,7 +1039,7 @@ theorem logWeylDimensionEstimate : LogWeylDimensionEstimate := by
     rw [Finset.mem_range] at hj
     unfold Formalism.InvariantFactorPaths.BranchingDimensions.TDim.pc
     by_cases hp : la j < 0
-    · rw [if_pos hp, if_pos hp]
+    · rw [ite_eq_left hp, ite_eq_left hp]
       have hm : max (-(la j)) 0 = -la j := max_eq_left (by omega)
       rw [hm]
       have h0 : (0 : ℤ) ≤ -la j := by omega
@@ -1048,7 +1048,7 @@ theorem logWeylDimensionEstimate : LogWeylDimensionEstimate := by
         have := hbot j hj
         linarith
       exact neg_row h2 hK hn hd hP hM hL0 hj hp (_root_.Formalism.InvariantFactorPaths.BranchingDimensions.TDim.log_one_add_le_lemma hz (hA _ hle))
-    · rw [if_neg hp, if_neg hp]
+    · rw [ite_eq_right hp, ite_eq_right hp]
       have hm : max (-(la j)) 0 = 0 := max_eq_right (by omega)
       rw [hm]
       simp [Formalism.InvariantFactorPaths.BranchingDimensions.TDim.hh_zero, Formalism.InvariantFactorPaths.BranchingDimensions.TDim.fT_zero]

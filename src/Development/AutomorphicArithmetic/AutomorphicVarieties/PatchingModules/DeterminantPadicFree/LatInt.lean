@@ -33,7 +33,7 @@ private theorem exists_stable_lattice {A F G : Type} [CommRing A] [IsDomain A] [
         ∑ i, a i j • (Pi.single i (algebraMap A F d)⁻¹ : Fin m → F) := by
       funext k
       simp only [Matrix.mulVec_single_one, Matrix.col_apply, Finset.sum_apply, Pi.smul_apply,
-        Pi.single_apply, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        Pi.single_apply, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [Algebra.smul_def, ← ha]
       field_simp
     simp only [SetLike.mem_coe]

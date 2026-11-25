@@ -76,7 +76,7 @@ theorem cmp_mul {m : Fin 4 → ℤ} {p q : ℤ} {A B : M4 R} (hA : FGe m p A) (h
     · simp [hA i l h1]
     · by_cases h2 : m l - m j < q
       · simp [hB l j h2]
-      · rw [if_pos (by omega), if_pos (by omega)]
+      · rw [ite_eq_left (by omega), ite_eq_left (by omega)]
   · refine (Finset.sum_eq_zero fun l _ => ?_).symm
     split_ifs with h1 h2
     · omega
@@ -100,8 +100,8 @@ theorem cmp_adj {m : Fin 4 → ℤ} (hm : Symp m) (p : ℤ) (A : M4 R) : cmp m p
   have h2 := hm j
   simp only [cmp_apply, adj_apply]
   by_cases h : m i - m j = p
-  · rw [if_pos h, if_pos (by omega)]
-  · rw [if_neg h, if_neg (by omega), smul_zero]
+  · rw [ite_eq_left h, ite_eq_left (by omega)]
+  · rw [ite_eq_right h, ite_eq_right (by omega), smul_zero]
 
 end Mat
 

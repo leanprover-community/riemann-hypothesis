@@ -125,7 +125,7 @@ theorem key {c d : ℕ} (hfL : ∀ b, (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • 
     have h := hA_int X.B.I _ (hfL b) _ hdw
     rw [hA_nat_left, hA_smul_right, hA_sum_right] at h
     simp only [hA_smul_right, hA_f_e, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true] at h
+      ite_true] at h
     convert h using 1
     push_cast; ring
   rw [Finset.smul_sum]

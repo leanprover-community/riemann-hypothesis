@@ -34,7 +34,7 @@ theorem mem_mirabolicParabolic_iff_mirabolicProj_mem_parabolic (k : Type) [Field
           (Fin.castSucc (GlobalTheory.SmGL.stdSum (rfl : m + j = m + j) (Sum.inl a))) = 0 := by
         rw [hlast]
         simp only [GlobalTheory.BZMir.eLast, Pi.single_apply]
-        rw [if_neg (Fin.castSucc_lt_last _).ne]
+        rw [ite_eq_right (Fin.castSucc_lt_last _).ne]
       convert h0 using 2 <;> apply Fin.ext <;>
         simp [GlobalTheory.SmGL.stdSum_inl, GlobalTheory.SmGL.stdSum_inr]
     | cast b =>

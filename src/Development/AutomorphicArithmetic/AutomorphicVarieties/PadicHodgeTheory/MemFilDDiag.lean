@@ -184,7 +184,7 @@ theorem hodge_diag (w : Fin n → ℤ) (hw : Function.Injective w) (m : ℤ → 
       · rw [sub_zero]
         exact step b _ (fun e => hba (hw e)) _ (hy' b)
     · have h1 := (mem_FilD_diag hρ _ _ _).1 hc' a
-      rw [Fin.sum_univ_one, map_sub, ← tm_smulD, pr_inc, if_pos rfl, (hF a _).2 (lt_add_one _),
+      rw [Fin.sum_univ_one, map_sub, ← tm_smulD, pr_inc, ite_eq_left rfl, (hF a _).2 (lt_add_one _),
         Submodule.mem_bot, sub_eq_zero] at h1
       funext j
       rw [Subsingleton.elim j 0]
@@ -206,7 +206,7 @@ theorem crys_diag {L : FinExt l} (h : K.1 ≤ L.1) (hN : ((GK L).subgroupOf (GK 
       pr l _ b (∑ a, smulC (Fin n → A) L (c a) (inc l _ a (x a))) = smulC A L (c b) (x b) := by
     intro c b
 
-    simp only [map_sum, ← tm_smulC, pr_inc, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [map_sum, ← tm_smulC, pr_inc, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   refine ⟨hN, hC, fun a => inc l _ a (x a), fun a => tm_Dcr _ _ (fun g => single_diag hρ a (incl h g)) (hx a),
     fun y hy => ?_, fun γ _ M hM => ?_⟩
   · choose c hc hcu using fun a => hB a _ (tm_Dcr _ _ (fun g => proj_diag hρ a (incl h g)) hy)
@@ -218,7 +218,7 @@ theorem crys_diag {L : FinExt l} (h : K.1 ≤ L.1) (hN : ((GK L).subgroupOf (GK 
   · rw [sum_tmul]
     refine Finset.sum_congr rfl fun b _ => ?_
     have h1 := congrArg (pr l _ b) (hM b)
-    rw [key (fun a => M a b), tm_actC _ _ _ (proj_diag hρ b γ), pr_inc, if_pos rfl, ht] at h1
+    rw [key (fun a => M a b), tm_actC _ _ _ (proj_diag hρ b γ), pr_inc, ite_eq_left rfl, ht] at h1
     exact (hB b _ (Submodule.smul_mem _ (t b γ) (hx b))).unique h1 (smulC_one L _ _).symm
 
 end Types

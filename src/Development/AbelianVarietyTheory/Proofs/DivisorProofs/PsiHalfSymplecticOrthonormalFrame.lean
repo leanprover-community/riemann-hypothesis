@@ -157,7 +157,7 @@ theorem sum_four {m n : ℕ} (c : ℂ) (G : Fin m → Fin m → ℂ) (x y : Fin 
   rw [← Finset.sum_neg_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_eq_single a (fun b _ hb => by simp [hb.symm]) (by simp), Finset.sum_comm]
-  simp only [← Finset.sum_neg_distrib, if_true]
+  simp only [← Finset.sum_neg_distrib, ite_true]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
 theorem psi_symplOH_eq : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D) (r g : ℕ) (hr : W.rank = r) (X : Data D.host.E r) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r), IsStdChar D ψ (-1) → IsInfFam θ → V.gram = 1 → Even V.rank → IsMod W hr X → IsSympl X bas → ∀ x ∈ X.dom, ∀ v w : WO V W, v.map (finPart D) = 0 → ψ (symplOH V W v w) = cexp (Real.pi * I * ((∑ b, (hx X bas idx x (zOf θ V W hr X idx x v b) (zOf θ V W hr X idx x w b)).im : ℝ) : ℂ)) := by

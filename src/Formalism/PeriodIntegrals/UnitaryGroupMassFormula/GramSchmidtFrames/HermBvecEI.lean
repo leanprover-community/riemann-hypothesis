@@ -59,7 +59,7 @@ lemma fvec_lt (z : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     fvec k r z ⟨a.val, by omega⟩ = bvec (eI k r a) := by
   unfold fvec
   first
-  | exact dif_pos a.isLt
+  | exact dite_eq_left a.isLt
 
 lemma wb_N {n : B.Mat k r} (hn : n ∈ Nset k r) {v : Fin (2 * r + k + 1) → ℂ}
     (hv : ∀ a : Fin r, v (esI k r a) = 0) : PI.UnitaryGroupMassFormula.GsFr.wbPart k r (n *ᵥ v) = PI.UnitaryGroupMassFormula.GsFr.wbPart k r v := by
@@ -69,7 +69,7 @@ lemma wb_N {n : B.Mat k r} (hn : n ∈ Nset k r) {v : Fin (2 * r + k + 1) → �
   unfold wbPart
   split_ifs with hi
   · rw [Matrix.mulVec, dotProduct, Finset.sum_eq_single i]
-    · rw [h2 i i hi.1 hi.2 hi.1, if_pos rfl, one_mul]
+    · rw [h2 i i hi.1 hi.2 hi.1, ite_eq_left rfl, one_mul]
     · intro j _ hji
       by_cases hj1 : j.val < r
       · have hle : (⟨j.val, hj1⟩ : Fin r).val ≤ i.val := by
@@ -78,9 +78,9 @@ lemma wb_N {n : B.Mat k r} (hn : n ∈ Nset k r) {v : Fin (2 * r + k + 1) → �
         have hc := h1 ⟨j.val, hj1⟩ i hle
         have he : eI k r ⟨j.val, hj1⟩ = j := Fin.ext rfl
         rw [he] at hc
-        rw [hc, if_neg (fun h => hji h.symm), zero_mul]
+        rw [hc, ite_eq_right (fun h => hji h.symm), zero_mul]
       · by_cases hj2 : j.val ≤ r + k
-        · rw [h2 i j (by omega) hj2 hi.1, if_neg (fun h => hji h.symm), zero_mul]
+        · rw [h2 i j (by omega) hj2 hi.1, ite_eq_right (fun h => hji h.symm), zero_mul]
         · have hjl := j.isLt
           have hes : j = esI k r ⟨2 * r + k - j.val, by omega⟩ :=
             Fin.ext (by simp only [esI, Fin.val_mk]; omega)

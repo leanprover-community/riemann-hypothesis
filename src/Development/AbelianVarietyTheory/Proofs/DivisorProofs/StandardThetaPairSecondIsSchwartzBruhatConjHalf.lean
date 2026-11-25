@@ -104,7 +104,7 @@ private theorem stdSnd_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset 
   unfold stdSnd
   by_cases hcnd : IsHalf (cA D e) t ∧ IsIntM (dualCoord A WW βA βW t) ∧
       ∀ i j, j.1 < a → InId I (dualCoord A WW βA βW t i j)
-  · rw [if_pos hcnd, if_pos ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
+  · rw [ite_eq_left hcnd, ite_eq_left ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
     refine (unitChar_congr he hl hc (isIntM_rightBlock hcnd.2.1)
       (Z := rightBlock a fun i j => (n₀ : EAf D) * W i j)
       (isIntM_rightBlock fun i j => mul_mem (natCast_mem _ _) (hW i j))

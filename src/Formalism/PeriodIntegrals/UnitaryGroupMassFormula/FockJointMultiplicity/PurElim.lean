@@ -81,7 +81,7 @@ theorem hwb_restrict (f : MvPolynomial σ ℂ) (hf : HWB ι f) :
 
     rw [bRow_apply, map_zero, map_sum, Fin.sum_univ_succ] at h0
     have e0 : ι (a.succ, 0) ∈ edge ι := Or.inr ⟨a, rfl⟩
-    simp only [map_mul, aeval_X, killS, e0, if_true, zero_mul, zero_add] at h0
+    simp only [map_mul, aeval_X, killS, e0, ite_true, zero_mul, zero_add] at h0
     rw [← h0]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [pderiv_aeval_killS _ _ (edge_succ_succ ι hι b k)]
@@ -92,7 +92,7 @@ theorem hwb_restrict (f : MvPolynomial σ ℂ) (hf : HWB ι f) :
 
     rw [bCol_apply, map_zero, map_sum, Fin.sum_univ_succ] at h0
     have e0 : ι (0, c.succ) ∈ edge ι := Or.inl ⟨c, rfl⟩
-    simp only [map_mul, aeval_X, killS, e0, if_true, zero_mul, zero_add] at h0
+    simp only [map_mul, aeval_X, killS, e0, ite_true, zero_mul, zero_add] at h0
     rw [← h0]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [pderiv_aeval_killS _ _ (edge_succ_succ ι hι i d)]

@@ -183,9 +183,9 @@ theorem nil_Ufl {g : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)} (hg : g 
     have e : v = Loc.inX k n c fun l => v (Fin.castAdd c l) := by
       funext l
       by_cases h : l.1 < n
-      · simp only [Loc.inX, LinearMap.pi_apply, dif_pos h]
+      · simp only [Loc.inX, LinearMap.pi_apply, dite_eq_left h]
         rfl
-      · simp only [Loc.inX, LinearMap.pi_apply, dif_neg h]
+      · simp only [Loc.inX, LinearMap.pi_apply, dite_eq_right h]
         exact hv l (by simpa using h)
     have h1 : g v = v := by
       rw [e]

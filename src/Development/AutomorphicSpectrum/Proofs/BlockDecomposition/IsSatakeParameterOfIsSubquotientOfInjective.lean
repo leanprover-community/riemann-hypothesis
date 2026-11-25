@@ -114,7 +114,7 @@ theorem paramChar_leviProj (α : Fin n → ℂˣ) (p : blockUpper k n (id : Fin 
           (GLnLocal.uniformizer k : k) ^ (-l i) := by
         simp only [e, Units.val_mul, Units.val_zpow_eq_zpow_val, coe_uniformizerUnit]
         rfl
-      rw [if_pos rfl, if_pos rfl, he', mul_left_comm, ← zpow_add₀ hϖ, add_neg_cancel, zpow_zero,
+      rw [ite_eq_left rfl, ite_eq_left rfl, he', mul_left_comm, ← zpow_add₀ hϖ, add_neg_cancel, zpow_zero,
         mul_one]
     · simp [h]
   have hu : (u : GL (Fin n) k) ∈ GLnLocal.integralGL k n := by

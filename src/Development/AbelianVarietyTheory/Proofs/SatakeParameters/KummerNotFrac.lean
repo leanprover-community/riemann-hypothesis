@@ -695,22 +695,22 @@ theorem log_trunc_pow : ∀ (l : ℕ) [Fact l.Prime] (ϖ : Per.Fl l), Per.kerP l
     · have h2 : ¬ k = n - 1 := by omega
       have hk1 : k + 1 = M := by omega
       have hda : d (k + 1) = 0 := by simp [d, hk1]
-      rw [if_pos h1, if_neg h2]
+      rw [ite_eq_left h1, ite_eq_right h2]
       simp only [a, hda, map_zero, mul_zero, zero_mul, add_zero, zero_add]
       rw [← hq, hk1, hM, Nat.cast_pow]
       ring
     · by_cases h2 : k = n - 1
       · have hk1 : k + 1 = n := by omega
         have hda : d (k + 1) = 0 := by simp [d, hk1]
-        rw [if_neg h1, if_pos h2]
+        rw [ite_eq_right h1, ite_eq_left h2]
         simp only [a, hda, map_zero, mul_zero, zero_mul, add_zero, zero_add]
         ring
       · have hne : ¬ (k + 1 = M ∨ k + 1 = n) := by omega
-        have hda : d (k + 1) = c (k + 1) := by simp only [d, hne, if_false]
+        have hda : d (k + 1) = c (k + 1) := by simp only [d, hne, ite_false]
         have hck := hc (k + 1) ⟨by omega, by omega, by omega⟩
         have hck' := congrArg (Per.zP l) hck
         rw [map_mul, map_natCast, map_pow, map_natCast] at hck'
-        rw [if_neg h1, if_neg h2]
+        rw [ite_eq_right h1, ite_eq_right h2]
         simp only [a, hda, add_zero]
         rw [← hq]
         linear_combination -(-1) ^ k * ((n.factorial / (k + 1) : ℕ) : Per.AinfP l) * β ^ (k + 1) *
@@ -722,7 +722,7 @@ theorem log_trunc_pow : ∀ (l : ℕ) [Fact l.Prime] (ϖ : Per.Fl l), Per.kerP l
       Finset.sum_ite_eq', Finset.sum_ite_eq', ← Finset.mul_sum]
     have hm1 : M - 1 ∈ Finset.range n := Finset.mem_range.2 (by omega)
     have hn1 : n - 1 ∈ Finset.range n := Finset.mem_range.2 (by omega)
-    rw [if_pos hm1, if_pos hn1, Nat.sub_add_cancel (by omega : 1 ≤ M)]
+    rw [ite_eq_left hm1, ite_eq_left hn1, Nat.sub_add_cancel (by omega : 1 ≤ M)]
     simp only [S, e0, T]
     ring
   have hβI : β ∈ Per.kerP l := by rw [hker]; exact Ideal.mem_span_singleton_self _

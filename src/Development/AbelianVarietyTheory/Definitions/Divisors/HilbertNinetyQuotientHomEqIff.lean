@@ -318,7 +318,7 @@ variable {c} in
 theorem ResEtaPow.map_conj {ξ : E} (h : IsQuad c ξ) {K : Subgroup Rˣ} {χ : Eˣ →* Circle} {n : ℕ} (hχ : ResEtaPow K χ n)
     (z : Eˣ) : χ (Units.map (c : E →* E) z) = (χ z)⁻¹ := by
   have h1 := hχ (Units.map (Algebra.norm R : E →* R) z)
-  rw [if_pos (Subgroup.mem_sup_right (MonoidHom.mem_range.mpr ⟨z, rfl⟩)), Circle.coe_eq_one,
+  rw [ite_eq_left (Subgroup.mem_sup_right (MonoidHom.mem_range.mpr ⟨z, rfl⟩)), Circle.coe_eq_one,
     show Units.map (algebraMap R E : R →* E) (Units.map (Algebra.norm R : E →* R) z) = z * Units.map (c : E →* E) z from
       Units.ext (h.algebraMap_norm z), map_mul] at h1
   exact eq_inv_of_mul_eq_one_right h1

@@ -294,7 +294,7 @@ theorem tdeg_oneE_inr (j : Fin d) : tdeg (oneE (Sum.inr j) : Gam n d) = 1 := by
 theorem ratE_mem {S : Finset (Fin d)} {k : Fin d} (hk : k ∈ S) (j : Fin d) : ratE k j ∈ (cone S : AddSubmonoid (Gam n d)) := by
   refine ⟨fun l => by simp [ratE, oneE], fun j' hj' => ?_, ?_⟩
   · have hne : j' ≠ k := fun h => hj' (h ▸ hk)
-    simp only [ratE, oneE, Pi.sub_apply, Pi.single_apply, Sum.inr.injEq, if_neg hne, sub_zero]
+    simp only [ratE, oneE, Pi.sub_apply, Pi.single_apply, Sum.inr.injEq, ite_eq_right hne, sub_zero]
     split_ifs <;> simp
   · have h1 := tdeg_add (ratE k j : Gam n d) (oneE (Sum.inr k))
     have h2 : (ratE k j : Gam n d) + oneE (Sum.inr k) = oneE (Sum.inr j) := by simp [ratE]

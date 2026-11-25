@@ -214,7 +214,7 @@ theorem rdAdj_read : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (Formalis
     ext i j
     have e1 := congrFun (congrFun hz i) j
     simp only [rdAdj, Matrix.map_apply] at e1
-    simp only [Matrix.map_apply, redM, dif_pos (hI' i j)]
+    simp only [Matrix.map_apply, redM, dite_eq_left (hI' i j)]
     exact hred ⟨_, hI' i j⟩ (z i j) e1.symm
 
 end GlobalTheory.DownLift.ReadAdj

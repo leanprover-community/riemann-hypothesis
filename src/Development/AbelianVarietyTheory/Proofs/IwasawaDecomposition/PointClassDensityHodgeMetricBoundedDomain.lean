@@ -898,14 +898,14 @@ theorem tc_monomial_glue (D : ι → (γ × γ →₀ ℕ)) :
   have h1 : ∑ w, F w = ∑ w ∈ Finset.univ.image (fun σ : ι → Equiv.Perm γ => Equiv.prodCongrRight σ), F w := by
     refine (Finset.sum_subset (Finset.subset_univ _) fun w _ hw => ?_).symm
     simp only [hF]
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro hg
     apply hw
     have hb : ∀ a, (w a).1 = a.1 := by
       intro a
       by_contra hne
       have e1 := glue_off D a (w a) (Ne.symm hne)
-      rw [hg, graph_apply, if_pos rfl] at e1
+      rw [hg, graph_apply, ite_eq_left rfl] at e1
       exact one_ne_zero e1
     obtain ⟨σ, hσ⟩ := exists_prodCongrRight w hb
     exact Finset.mem_image.mpr ⟨σ, Finset.mem_univ _, hσ⟩
@@ -916,15 +916,15 @@ theorem tc_monomial_glue (D : ι → (γ × γ →₀ ℕ)) :
   push_cast
   congr 1
   by_cases hD : D = fun τ => graph (σ τ)
-  · rw [if_pos hD]
+  · rw [ite_eq_left hD]
     symm
-    exact Finset.prod_eq_one fun τ _ => if_pos (congrFun hD τ)
-  · rw [if_neg hD]
+    exact Finset.prod_eq_one fun τ _ => ite_eq_left (congrFun hD τ)
+  · rw [ite_eq_right hD]
     obtain ⟨τ, hτ⟩ : ∃ τ, D τ ≠ graph (σ τ) := by
       by_contra! hall
       exact hD (funext hall)
     symm
-    exact Finset.prod_eq_zero (Finset.mem_univ τ) (if_neg hτ)
+    exact Finset.prod_eq_zero (Finset.mem_univ τ) (ite_eq_right hτ)
 
 theorem tc_prod_rename (f : ι → MvPolynomial (γ × γ) ℂ) :
     tc (∏ τ, rename (emb τ) (f τ)) = ∏ τ, tc (f τ) := by
@@ -1367,7 +1367,7 @@ theorem GlobalTheory.UnifFrameChange.exists_holomorphic_frame_change : ∀ (E : 
     exact this.symm
   let x : ReciprocityTheory.L2DbarEstimates.V X.dim → (U.X k).dom := fun b =>
     if hb : b ∈ B₀ then ⟨s b, hsB₀ b hb⟩ else ⟨s v, hsB₀ v hv₀⟩
-  have hxB : ∀ b (hb : b ∈ B₀), x b = ⟨s b, hsB₀ b hb⟩ := fun b hb => by simp only [x, dif_pos hb]
+  have hxB : ∀ b (hb : b ∈ B₀), x b = ⟨s b, hsB₀ b hb⟩ := fun b hb => by simp only [x, dite_eq_left hb]
   have hsd : DifferentiableOn ℂ s B₀ := fun b hb => (hB₀all b hb).2.differentiableAt.differentiableWithinAt
   have hd : ∀ τ a a', DifferentiableOn ℂ (fun b => ReciprocityTheory.ChartRestriction.G.FD.mat (x b).1 τ a a') B₀ := by
     intro τ a a'

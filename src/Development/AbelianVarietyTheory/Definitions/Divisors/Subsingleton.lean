@@ -60,8 +60,4 @@ def htAct {s : S ⟶ Sp R} (o : Obj b N s) : Out.RingAct o.A D.O :=
 
 @[simp] theorem htAct_act {s : S ⟶ Sp R} (o : Obj b N s) (c : D.O) : (htAct o).act c = o.act.act c := rfl
 
-section Basic₂
-
-end Basic₂
-
 end GlobalTheory.IwLevel

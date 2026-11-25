@@ -279,7 +279,7 @@ lemma herm_lift_right (k r' : ℕ) (u : Fin (2 * (1 + r') + k + 1) → ℂ) (y :
 lemma herm_sum {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u v : Fin m → ℂ) :
     ∑ j, herm H (bvec j) v * u j = herm H u v := by
   simp only [herm, bvec, dotProduct, mulVec, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, Pi.star_apply, Finset.sum_mul, Finset.mul_sum]
+    Finset.mem_univ, ite_true, Pi.star_apply, Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -398,9 +398,9 @@ lemma continuous_lift (k r' : ℕ) : Continuous (liftVec k 1 r') := by
   apply continuous_pi
   intro p
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
-  · simp only [liftVec, dif_pos hp]
+  · simp only [liftVec, dite_eq_left hp]
     exact continuous_apply _
-  · simp only [liftVec, dif_neg hp]
+  · simp only [liftVec, dite_eq_right hp]
     exact continuous_const
 
 lemma continuous_hb (k r' : ℕ) : Continuous fun x : HPar k r' => hb k r' x.1 x.2 := by
@@ -459,27 +459,27 @@ theorem heisClosed : HeisClosed := by
 lemma levi_first_row (k r' : ℕ) (g : Mat k r') (q : Fin (2 * (1 + r') + k + 1)) :
     ιLev k 1 r' g (i0 k r') q = if i0 k r' = q then 1 else 0 := by
   simp only [ιLev]
-  rw [dif_neg]
+  rw [dite_eq_right]
   all_goals first | rfl | omega | (simp only [first_index_val]; omega) | (rw [lev_val]; constructor <;> omega) | (simp_all [Fin.ext_iff] <;> omega)
 
 lemma lev_row_iL (k r' : ℕ) (g : Mat k r') (q : Fin (2 * (1 + r') + k + 1)) :
     ιLev k 1 r' g (iL k r') q = if iL k r' = q then 1 else 0 := by
   simp only [ιLev]
-  rw [dif_neg]
+  rw [dite_eq_right]
   all_goals first | rfl | omega | (simp only [iL_val]; omega)
 
 lemma levi_entry_first_zero (k r' : ℕ) (g : Mat k r') (i : Fin (2 * r' + k + 1)) :
     ιLev k 1 r' g (levPos k 1 r' i) (i0 k r') = 0 := by
   have hi := i.isLt
   simp only [ιLev]
-  rw [dif_pos, dif_neg]
+  rw [dite_eq_left, dite_eq_right]
   all_goals first | omega | (simp only [first_index_val, lev_val]; omega) | (rw [lev_val]; constructor <;> omega) | (simp_all [Fin.ext_iff] <;> omega)
 
 lemma lev_lev_iL (k r' : ℕ) (g : Mat k r') (i : Fin (2 * r' + k + 1)) :
     ιLev k 1 r' g (levPos k 1 r' i) (iL k r') = 0 := by
   have hi := i.isLt
   simp only [ιLev]
-  rw [dif_pos, dif_neg]
+  rw [dite_eq_left, dite_eq_right]
   all_goals first | omega | (simp only [iL_val, lev_val]; omega)
 
 lemma lev_lev_lev (k r' : ℕ) (g : Mat k r') (i j : Fin (2 * r' + k + 1)) :
@@ -487,7 +487,7 @@ lemma lev_lev_lev (k r' : ℕ) (g : Mat k r') (i j : Fin (2 * r' + k + 1)) :
   have hi := i.isLt
   have hj := j.isLt
   simp only [ιLev]
-  rw [dif_pos, dif_pos]
+  rw [dite_eq_left, dite_eq_left]
   all_goals first | rfl | omega | (simp only [lev_val]; omega)
 
 lemma levi_action_first_coordinate (k r' : ℕ) (g : Mat k r') (u : Fin (2 * (1 + r') + k + 1) → ℂ) :

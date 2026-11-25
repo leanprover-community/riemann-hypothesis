@@ -460,7 +460,7 @@ def normE {D : D7} (xd : ThData D) (h : XdAll xd) : IntegralHeckeForms.XD D wher
   theta_base_equivariant i j b a ha u := by
     by_cases hj : 1 ≤ j ∧ j ≤ D.R.m
     · exact xd.thetaBase_invariant_action i j b a (by rw [h i j b hj.1 hj.2]; trivial) u
-    · rw [if_neg hj] at ha
+    · rw [ite_eq_right hj] at ha
       exact ha.elim
 
 theorem normE_eq {D : D7} (xd : ThData D) (h : XdAll xd) :
@@ -468,7 +468,7 @@ theorem normE_eq {D : D7} (xd : ThData D) (h : XdAll xd) :
   intro i j hj b
   rw [Finset.mem_Icc] at hj
   show (if 1 ≤ j ∧ j ≤ D.R.m then Set.univ else ∅) = xd.xd0 i j b
-  rw [if_pos hj, h i j b hj.1 hj.2]
+  rw [ite_eq_left hj, h i j b hj.1 hj.2]
 
 theorem heq_ite_univ {T T' : Type} (hT : T = T') {Dat : T → ℕ → Bool → Type} {Dat' : T' → ℕ → Bool → Type}
     (hD : HEq Dat Dat') {m m' : ℕ} (hm : m = m') :
@@ -862,8 +862,8 @@ theorem nonempty_seed_of_kept : ∀ (D₁ D₀ : D7) (C₁ : NChoice D₁) (C₀
     epsilon_congr _ _ (funext fun r => propext ⟨fun ⟨h1, h2⟩ => ⟨h1, h.trans hG h2⟩,
       fun ⟨h1, h2⟩ => ⟨h1, (h.symm hG).trans hG h2⟩⟩)
   let s : D₁.what₂.places.Pl → D₁.ntw.Tw := fun v => if TwistedAt D₁ v then C₁.twI (rep v) else C₁.twI v
-  have hs_tw : ∀ v, TwistedAt D₁ v → s v = C₁.twI (rep v) := fun v hv => if_pos hv
-  have hs_un : ∀ v, ¬ TwistedAt D₁ v → s v = C₁.twI v := fun v hv => if_neg hv
+  have hs_tw : ∀ v, TwistedAt D₁ v → s v = C₁.twI (rep v) := fun v hv => ite_eq_left hv
+  have hs_un : ∀ v, ¬ TwistedAt D₁ v → s v = C₁.twI v := fun v hv => ite_eq_right hv
   let P : ∀ i : D₁.ntw.Tw, (Σ (Q : Finset (PlE D₁.host)) (k : ℕ), D₁.ntw.RCG i Q →* (D₁.ntw.Ok i k)ˣ) → Prop :=
     fun i z => ∀ r, TwistedAt D₁ r → C₁.twI r = i → ∀ a : ℤ, Nat.Coprime a.natAbs (D₁.ntw.l i) →
       IntegralHeckeForms.GoodTw D₁.nexp (BlochKatoReduction.bk0 D₁) (twEOf xd₁) N1 i (twEps D₁ i) (S1 i) (A i) z.1 z.2.1 (z.2.2 ^ a)

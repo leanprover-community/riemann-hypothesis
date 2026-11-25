@@ -30,12 +30,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL Matrix Topology Pointwise
 
 namespace GlobalTheory.WhitHered.CellLoc
 
-section Alg
-
-variable {k : Type} [Field k] {N : ℕ}
-
-end Alg
-
 section Main
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

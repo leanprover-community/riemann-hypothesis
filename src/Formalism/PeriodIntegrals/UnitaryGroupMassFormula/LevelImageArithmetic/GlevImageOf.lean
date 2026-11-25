@@ -58,7 +58,7 @@ lemma hpk_partner (k i r' : ℕ) (X p : Fin (2 * (i + r') + k + 1)) (hXv : X.val
   simp only [Fin.ext_iff]
   split_ifs <;> first | rfl | omega
 
-theorem glevImage_of (_hH : LevHom) (hU : LevUH) : GlevImage := by
+theorem glevImage_of (hU : LevUH) : GlevImage := by
   intro k i r'
   ext g
   constructor
@@ -95,12 +95,12 @@ theorem glevImage_of (_hH : LevHom) (hU : LevUH) : GlevImage := by
       have h2 := congrFun (congrFun hg' X) Q
       rw [Matrix.mul_apply] at h2
       simp only [h1, hpk_partner k i r' X p hXv hp, ite_mul, one_mul, zero_mul,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
       exact h2
     have hblk : ∀ p q : Fin (2 * (i + r') + k + 1), ¬(i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) →
         (i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i) → g p q = 0 := by
       intro p q hp hq
-      rw [hrow p hp q, if_neg]
+      rw [hrow p hp q, ite_eq_right]
       rintro rfl
       exact hp hq
     refine ⟨Matrix.of fun x y => g (levPos k i r' x) (levPos k i r' y), ?_, ?_⟩
@@ -125,7 +125,7 @@ theorem glevImage_of (_hH : LevHom) (hU : LevUH) : GlevImage := by
         by_cases hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i
         · rw [dite_eq_left hq]
           congr 1 <;> (apply Fin.ext; simp only [levPos]; omega)
-        · rw [dite_eq_right hq, hcol q hq p, if_neg]
+        · rw [dite_eq_right hq, hcol q hq p, ite_eq_right]
           rintro rfl
           exact hq hp
       · rw [dite_eq_right hp, hrow p hp q]

@@ -99,7 +99,7 @@ theorem hasDerivAt_coord {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} 
       have hv : (∑ l, star (X l b) • coord ε (a, l, false)) k = star (∑ l, toMK k a l * X l b) := by
         rw [Finset.sum_apply, star_sum]
         refine Finset.sum_congr rfl fun l _ => ?_
-        simp only [Pi.smul_apply, smul_eq_mul, coord, Bool.false_eq_true, if_false, star_mul']
+        simp only [Pi.smul_apply, smul_eq_mul, coord, Bool.false_eq_true, ite_false, star_mul']
         exact mul_comm _ _
       rw [hv]; exact h
   · refine ⟨∑ l, X l b • coord ε (a, l, true), ?_, fun k => ?_⟩
@@ -111,7 +111,7 @@ theorem hasDerivAt_coord {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} 
       have hv : (∑ l, X l b • coord ε (a, l, true)) k = ∑ l, toMK k a l * X l b := by
         rw [Finset.sum_apply]
         refine Finset.sum_congr rfl fun l _ => ?_
-        simp only [Pi.smul_apply, smul_eq_mul, coord, if_true]
+        simp only [Pi.smul_apply, smul_eq_mul, coord, ite_true]
         exact mul_comm _ _
       rw [hv]; exact hent k
 

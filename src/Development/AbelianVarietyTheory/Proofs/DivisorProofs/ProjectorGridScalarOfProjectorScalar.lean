@@ -162,7 +162,7 @@ theorem kill_pow {N : ℕ} {e : ℕ → ℕ → Module.End ℚ V} {lam : ℕ →
     {U : Module.End ℚ V} (hU : U ∈ vanSub N e lam s) (k : ℕ) (hk : 0 < k) : U ((e j i ^ k) v) = 0 := by
   refine hU _ _ (isWt_pow he hj hi hv k) ?_
   rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.sum_ite_eq']
-  simp only [his, hjs, if_true, if_false]
+  simp only [his, hjs, ite_true, ite_false]
   have : (0 : ℤ) < k := by exact_mod_cast hk
   linarith
 
@@ -174,13 +174,13 @@ theorem step (hS : StepScalar) {N K : ℕ} {e : ℕ → ℕ → Module.End ℚ V
   have hi : i < N := by omega
   have h1 : e i j * e j i - e j i * e i j = e i i - e j j := by
     have := he i j j i hi hj hj hi
-    rw [if_pos rfl, if_pos rfl] at this
+    rw [ite_eq_left rfl, ite_eq_left rfl] at this
     exact this
   have h2 : (e i i - e j j) * e j i - e j i * (e i i - e j j) = -(e j i + e j i) := by
     have a1 := he i i j i hi hi hj hi
     have a2 := he j j j i hj hj hj hi
-    rw [if_neg hij.ne, if_pos rfl] at a1
-    rw [if_pos rfl, if_neg hij.ne] at a2
+    rw [ite_eq_right hij.ne, ite_eq_left rfl] at a1
+    rw [ite_eq_left rfl, ite_eq_right hij.ne] at a2
     calc (e i i - e j j) * e j i - e j i * (e i i - e j j)
         = (e i i * e j i - e j i * e i i) - (e j j * e j i - e j i * e j j) := by noncomm_ring
       _ = -(e j i + e j i) := by rw [a1, a2]; abel

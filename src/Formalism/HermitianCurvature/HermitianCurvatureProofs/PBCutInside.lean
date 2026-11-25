@@ -25,7 +25,7 @@ theorem cutInside_of_built {E : Type} [Field E] [NumberField E] [IsCMField E] {W
       (S.G.place (S.pl v)).v S.l - 1 / 2 - de S.l * (S.G.place (S.pl v)).Del := by
     intro de
     unfold Sz.Cfg.u
-    rw [if_neg hne1, if_neg hne2, Nat.add_sub_cancel]
+    rw [ite_eq_right hne1, ite_eq_right hne2, Nat.add_sub_cancel]
   simp only
   unfold I.OnCut
   rw [hu S.de, hu S.de']

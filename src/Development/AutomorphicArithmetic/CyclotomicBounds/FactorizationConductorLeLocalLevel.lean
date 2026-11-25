@@ -53,13 +53,13 @@ theorem factorization_conductor_le_localLevel : H.condN.factorization (N.l i) �
   by_cases hlq : H.q = N.l i
   · have hz := Nat.factorization_eq_zero_of_not_dvd (notdvd (hlq ▸ dvd_mul_right _ _))
     have hdl : H.d ≠ N.l i := fun h => hqd (hlq.trans h.symm)
-    rw [hz, if_pos hlq, if_neg hdl]
+    rw [hz, ite_eq_left hlq, ite_eq_right hdl]
     exact le_max_left _ _
   · by_cases hld : H.d = N.l i
     · have hz := Nat.factorization_eq_zero_of_not_dvd (notdvd (hld ▸ dvd_mul_left _ _))
-      rw [hz, if_neg hlq, if_pos hld]
+      rw [hz, ite_eq_right hlq, ite_eq_left hld]
       exact le_max_left _ _
-    · rw [if_neg hlq, if_neg hld]
+    · rw [ite_eq_right hlq, ite_eq_right hld]
       simp
 
 end UpperTheory.KStar.S0

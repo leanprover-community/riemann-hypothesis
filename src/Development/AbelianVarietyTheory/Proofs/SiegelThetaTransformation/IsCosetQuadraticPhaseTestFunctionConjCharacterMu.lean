@@ -238,9 +238,9 @@ theorem shape_mul {φ ψ : Matrix κ ι ℚ → ℂ} (h : Shape φ) (h' : Shape 
     simp only [hφ x, hψ x, sub_add_sub_cancel]
     by_cases p : x - b ∈ S
     · by_cases p' : x - b ∈ S'
-      · rw [if_pos (i1.2 p), if_pos (i2.2 p'), if_pos (AddSubgroup.mem_inf.2 ⟨p, p'⟩)]; ring
-      · rw [if_neg (mt i2.1 p'), mul_zero, if_neg (fun q => p' (AddSubgroup.mem_inf.1 q).2)]
-    · rw [if_neg (mt i1.1 p), zero_mul, if_neg (fun q => p (AddSubgroup.mem_inf.1 q).1)]
+      · rw [ite_eq_left (i1.2 p), ite_eq_left (i2.2 p'), ite_eq_left (AddSubgroup.mem_inf.2 ⟨p, p'⟩)]; ring
+      · rw [ite_eq_right (mt i2.1 p'), mul_zero, ite_eq_right (fun q => p' (AddSubgroup.mem_inf.1 q).2)]
+    · rw [ite_eq_right (mt i1.1 p), zero_mul, ite_eq_right (fun q => p (AddSubgroup.mem_inf.1 q).1)]
   · refine ⟨0, 0, ⊥, fun _ => 1, ph_zero, ⟨fun _ _ => isMu_one, fun _ _ _ _ _ _ => rfl⟩, fun x => ?_⟩
     have : φ x * ψ x = 0 := by
       rw [hφ x, hψ x]

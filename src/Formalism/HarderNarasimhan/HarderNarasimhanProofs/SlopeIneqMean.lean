@@ -177,7 +177,7 @@ theorem norm_starProjection_le {G : Type*} [AddCommGroup G] (α : G →+ E) (β 
       have h2 := norm_nonneg (α g)
       exact norm_eq_zero.mp (le_antisymm (by nlinarith) h2)
     rw [hb g, ha, map_zero, map_zero, norm_zero, norm_zero, mul_zero]
-  push_neg at hC
+  push Not at hC
   have hw : α g - (span ℝ (α '' S))ᗮ.starProjection (α g) ∈ span ℝ (α '' S) := by
     first
     | (have hd := Submodule.starProjection_add_starProjection_orthogonal

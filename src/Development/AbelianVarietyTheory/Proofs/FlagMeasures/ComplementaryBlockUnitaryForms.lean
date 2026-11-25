@@ -224,7 +224,7 @@ theorem exists_measurable_levMap (n n₀ a : ℕ) (j : Fin a → ℕ) (ε : Fin 
     if hz : z ∈ S then (hex z hz).choose else 1
   have hθ : ∀ z ∈ S, uMat (θ z) = lev ε B B₀ (fun i => Matrix.of (z.1 i)) (uMat z.2) := by
     intro z hz
-    simp only [θ, dif_pos hz]
+    simp only [θ, dite_eq_left hz]
     exact (hex z hz).choose_spec
   refine ⟨θ, ?_, fun z hz => hθ z hz⟩
   have hdet : ∀ i, Measurable fun z : (∀ i, Fin (j i) → Fin (j i) → ℂ) × UJ ε₀ => (Matrix.of (z.1 i)).det :=
@@ -244,8 +244,8 @@ theorem exists_measurable_levMap (n n₀ a : ℕ) (j : Fin a → ℕ) (ε : Fin 
       else (fun r s => uMat (1 : UJ ε) r s) := by
     funext z
     by_cases hz : z ∈ S
-    · simp only [Function.comp_apply, if_pos hz, hθ z hz]
-    · simp only [Function.comp_apply, if_neg hz, θ, dif_neg hz]
+    · simp only [Function.comp_apply, ite_eq_left hz, hθ z hz]
+    · simp only [Function.comp_apply, ite_eq_right hz, θ, dite_eq_right hz]
   rw [heq]
   exact Measurable.ite hS (measurable_lev ε ε₀ B B₀) measurable_const
 

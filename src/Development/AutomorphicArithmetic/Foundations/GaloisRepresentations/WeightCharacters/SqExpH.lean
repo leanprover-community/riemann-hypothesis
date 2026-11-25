@@ -108,7 +108,7 @@ theorem UpperTheory.Gal.Wt.sqExp_h : ExpBasic → EvLem → Dom → SqExp := by
     · exact hT x hx
   have hds : ∀ i : Fin a, κ.detShift ≤ κ.w i := by
     intro i
-    simp only [DomWeight.detShift, dif_pos (Fin.pos i)]
+    simp only [DomWeight.detShift, dite_eq_left (Fin.pos i)]
     exact κ.anti (Fin.le_iff_val_le_val.mpr (by simp only; omega))
   have hnat : ∀ i : Fin a, ((κ.natW i : ℕ) : ℤ) = κ.w i - κ.detShift :=
     fun i => Int.toNat_of_nonneg (sub_nonneg.mpr (hds i))

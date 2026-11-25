@@ -1077,9 +1077,9 @@ theorem UpperTheory.exists_homogeneous_generators_idealSheaf_closedImmersion :
   refine ⟨n, M, F, ?_, ?_⟩
   · intro m
     by_cases hm : (m : ℕ) < M
-    · simp only [F, dif_pos hm]
+    · simp only [F, dite_eq_left hm]
       exact hGh _
-    · simp only [F, dif_neg hm]
+    · simp only [F, dite_eq_right hm]
       exact MvPolynomial.isHomogeneous_zero _ _ _
   · intro a hU
     change Ideal.span (Set.range fun m => phi i a (F m)) = I.ideal ⟨_, isAffineOpen_U i a⟩
@@ -1087,9 +1087,9 @@ theorem UpperTheory.exists_homogeneous_generators_idealSheaf_closedImmersion :
     · rw [Ideal.span_le]
       rintro _ ⟨m, rfl⟩
       by_cases hm : (m : ℕ) < M
-      · simp only [F, dif_pos hm]
+      · simp only [F, dite_eq_left hm]
         exact hGb _ a
-      · simp only [F, dif_neg hm, map_zero]
+      · simp only [F, dite_eq_right hm, map_zero]
         exact Ideal.zero_mem _
     · rw [← hgens a, Ideal.span_le]
       intro h hh
@@ -1097,7 +1097,7 @@ theorem UpperTheory.exists_homogeneous_generators_idealSheaf_closedImmersion :
         ⟨a, h, hh⟩
       refine Ideal.subset_span ⟨⟨e p, by omega⟩, ?_⟩
       have hlt : ((⟨e p, by omega⟩ : Fin (M + 1)) : ℕ) < M := (e p).2
-      simp only [F, dif_pos hlt]
+      simp only [F, dite_eq_left hlt]
       simp only [Fin.eta, Equiv.symm_apply_apply]
       exact hGa p
 end -- clump:auto

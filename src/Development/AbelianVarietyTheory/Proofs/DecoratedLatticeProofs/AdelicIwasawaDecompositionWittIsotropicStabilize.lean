@@ -318,14 +318,6 @@ namespace GlobalTheory.Core.Rk.IwIso
 
 open GlobalTheory.AdelicU Formalism.UG
 
-theorem local_decomp {A : Type} [CommRing A] {n r : ℕ} (σ : A →+* A) (f : A →+* ℂ) (hf : Function.Bijective f)
-    (hσ : ∀ x, f (σ x) = star (f x)) {J : Matrix (Fin n) (Fin n) A} (b : GL (Fin n) A) (ε : Fin n → Bool)
-    (hb : Formalism.UG.cT σ b.1 * J * b.1 = Matrix.diagonal fun i => if ε i then 1 else -1)
-    (X : Matrix (Fin n) (Fin r) A) (hX : Formalism.UG.cT σ X * J * X = 0) (g : GL (Fin n) A) (hg : g ∈ UJ σ J) :
-    ∃ k ∈ UJ σ J, b⁻¹ * k * b ∈ UJ σ (1 : Matrix (Fin n) (Fin n) A) ∧
-      ∃ β : Matrix (Fin r) (Fin r) A, (g * k⁻¹).1 * X = X * β :=
-  GlobalTheory.T.iwasawa_isotropic_columns_ring_iso_complex σ f hf hσ b ε hb X hX g hg
-
 theorem iso_arch {D : D7} {T T₀ : HSp D} {r : ℕ} (d : HypDec T T₀ r) (w : InfinitePlace D.host.F) :
     (Formalism.UG.cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR w.Completion D.sp.cm.sig) (Matrix.map d.jX (compInf D.host.F D.host.E w)) *
       Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.JR w.Completion T.gram : Matrix (Fin r) (Fin T.rank) _) *

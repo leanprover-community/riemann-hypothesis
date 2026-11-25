@@ -38,22 +38,22 @@ theorem compactMatrix_off_block {ε : Fin n → Bool} (w : KCo ε) {a b : Fin n}
     kMat w a b = 0 := by
   have hab : a ≠ b := fun e => h (e ▸ rfl)
   unfold kMat
-  rw [if_neg hab, dif_neg (fun h' => h h'.2), dif_neg (fun h' => h h'.2.symm)]
+  rw [ite_eq_right hab, dite_eq_right (fun h' => h h'.2), dite_eq_right (fun h' => h h'.2.symm)]
 
 theorem compactMatrix_conjTranspose {ε : Fin n → Bool} (w : KCo ε) : (kMat w)ᴴ = -kMat w := by
   ext a b
   change star (kMat w b a) = -(kMat w a b)
   by_cases hab : a = b
   · subst hab
-    simp only [kMat, if_true]
+    simp only [kMat, ite_true]
     simp
   · have hba : b ≠ a := Ne.symm hab
     by_cases h1 : b < a ∧ ε a = ε b
     · have h2 : ¬ (a < b ∧ ε b = ε a) := fun h => lt_asymm h.1 h1.1
-      simp only [kMat, if_neg hab, if_neg hba, dif_pos h1, dif_neg h2, star_neg, star_star]
+      simp only [kMat, ite_eq_right hab, ite_eq_right hba, dite_eq_left h1, dite_eq_right h2, star_neg, star_star]
     · by_cases h2 : a < b ∧ ε b = ε a
-      · simp only [kMat, if_neg hab, if_neg hba, dif_pos h2, dif_neg h1, neg_neg]
-      · simp only [kMat, if_neg hab, if_neg hba, dif_neg h2, dif_neg h1, star_zero, neg_zero]
+      · simp only [kMat, ite_eq_right hab, ite_eq_right hba, dite_eq_left h2, dite_eq_right h1, neg_neg]
+      · simp only [kMat, ite_eq_right hab, ite_eq_right hba, dite_eq_right h2, dite_eq_right h1, star_zero, neg_zero]
 
 theorem compactMatrix_comm_signature {ε : Fin n → Bool} (w : KCo ε) : kMat w * Jm ε = Jm ε * kMat w := by
   ext a b
@@ -79,7 +79,7 @@ theorem compactMatrix_injective (ε : Fin n → Bool) : Function.Injective (kMat
     simpa [kMat] using h2
   · have h2 := h1 ab.1.1 ab.1.2
     have hne : ab.1.1 ≠ ab.1.2 := ne_of_gt ab.2.1
-    simp only [kMat, if_neg hne, dif_pos ab.2] at h2
+    simp only [kMat, ite_eq_right hne, dite_eq_left ab.2] at h2
     exact h2
 
 theorem compactMatrix_continuous (ε : Fin n → Bool) :
@@ -87,14 +87,14 @@ theorem compactMatrix_continuous (ε : Fin n → Bool) :
   refine continuous_pi fun a => continuous_pi fun b => ?_
   unfold kMat
   by_cases h0 : a = b
-  · simp only [h0, if_true]; fun_prop
-  · simp only [if_neg h0]
+  · simp only [h0, ite_true]; fun_prop
+  · simp only [ite_eq_right h0]
     by_cases h1 : b < a ∧ ε a = ε b
-    · simp only [dif_pos h1]; fun_prop
-    · simp only [dif_neg h1]
+    · simp only [dite_eq_left h1]; fun_prop
+    · simp only [dite_eq_right h1]
       by_cases h2 : a < b ∧ ε b = ε a
-      · simp only [dif_pos h2]; fun_prop
-      · simp only [dif_neg h2]; fun_prop
+      · simp only [dite_eq_left h2]; fun_prop
+      · simp only [dite_eq_right h2]; fun_prop
 
 theorem compactMatrix_zero (ε : Fin n → Bool) : kMat (0 : KCo ε) = 0 := by
   ext a b
@@ -508,14 +508,14 @@ lemma kMat_eq_kdD {ε : Fin n → Bool} (w : KCo ε) : kMat w = kdD ε (fun s =>
         fun h => absurd ((kdE ε s).lt_iff_lt.1 h.1) (not_lt.2 hij.le)
       have h3 : kdE ε s i < kdE ε s j ∧ ε (kdE ε s j) = ε (kdE ε s i) :=
         ⟨(kdE ε s).lt_iff_lt.2 hij, hE.symm⟩
-      simp only [kMat, skMat, kdCoS, if_neg h1, dif_neg h2, dif_pos h3, if_neg hij.ne,
-        dif_neg (not_lt.2 hij.le), dif_pos hij]
+      simp only [kMat, skMat, kdCoS, ite_eq_right h1, dite_eq_right h2, dite_eq_left h3, ite_eq_right hij.ne,
+        dite_eq_right (not_lt.2 hij.le), dite_eq_left hij]
       rfl
     · simp [kMat, skMat, kdCoS]
     · have h1 : kdE ε s i ≠ kdE ε s j := (kdE ε s).injective.ne hij.ne'
       have h2 : kdE ε s j < kdE ε s i ∧ ε (kdE ε s i) = ε (kdE ε s j) :=
         ⟨(kdE ε s).lt_iff_lt.2 hij, hE⟩
-      simp only [kMat, skMat, kdCoS, if_neg h1, dif_pos h2, if_neg hij.ne', dif_pos hij]
+      simp only [kMat, skMat, kdCoS, ite_eq_right h1, dite_eq_left h2, ite_eq_right hij.ne', dite_eq_left hij]
       rfl
   · rw [Matrix.blockDiagonal'_apply_ne _ _ _ hst, kdSig_apply, kdSig_apply]
     have h1 := ε_kdE ε s i
@@ -529,7 +529,7 @@ lemma kMat_eq_kdD {ε : Fin n → Bool} (w : KCo ε) : kMat w = kdD ε (fun s =>
       have := h.2
       rw [h1, h2] at this
       exact this.symm)
-    simp only [kMat, if_neg hne, dif_neg hc2, dif_neg hc3]
+    simp only [kMat, ite_eq_right hne, dite_eq_right hc2, dite_eq_right hc3]
 
 lemma norm_kdCoS_le {ε : Fin n → Bool} (w : KCo ε) (s : Bool) : ‖kdCoS ε w s‖ ≤ ‖w‖ := by
   rw [Prod.norm_def, Prod.norm_def]

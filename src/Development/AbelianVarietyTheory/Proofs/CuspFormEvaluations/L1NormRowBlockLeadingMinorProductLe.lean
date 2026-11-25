@@ -76,12 +76,6 @@ def perpVector (ε : ι → Module.Dual R M) (e' : ι → M) (g : M) : M :=
     - ∑ a, ∑ a', ((pairingMatrix ε e').adjugate a a' * ε a g) • e' a'
 
 
-section Integral
-
-variable {A : Type*} [CommRing A] [Algebra A R]
-
-end Integral
-
 end Covector
 
 section Size
@@ -182,34 +176,6 @@ theorem seminorm_perpVector_le {p : ℕ} (ν : RingSeminorm R) (h1 : ν 1 ≤ 1)
   linarith
 
 end Size
-
-section Degree
-
-open MvPolynomial
-
-variable {S τ : Type*} [CommRing S]
-
-end Degree
-
-section Form
-
-variable {R M ι : Type*} [CommRing R] [AddCommGroup M] [Module R M] [Fintype ι] [DecidableEq ι]
-  {σ : R →+* R}
-
-
-end Form
-
-section InnerProduct
-
-variable {V : Type*} [SeminormedAddCommGroup V] [InnerProductSpace ℂ V]
-
-end InnerProduct
-
-section Places
-
-variable {R M T : Type*} [CommRing R] [StarRing R] [AddCommGroup M] [Module R M]
-
-end Places
 
 end GlobalTheory
 end -- clump:auto

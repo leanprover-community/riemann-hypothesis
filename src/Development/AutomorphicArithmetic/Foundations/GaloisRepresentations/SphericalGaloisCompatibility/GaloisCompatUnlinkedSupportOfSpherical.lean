@@ -116,7 +116,7 @@ theorem chs_cons (ξ : kˣ →* ℂˣ) (h : IsSmoothChar ξ) (s : Multiset (IrrG
   exact congrArg some (IrrGL.ofChar_inj.1 h2).symm
 
 theorem chs_cons_of_not {y : IrrGL (k := k)} (h : ¬ ∃ ξ : kˣ →* ℂˣ, ∃ hξ, y = IrrGL.ofChar ξ hξ) (s : Multiset (IrrGL (k := k))) :
-    chs (y ::ₘ s) = chs s := Multiset.filterMap_cons_none _ _ (dif_neg h)
+    chs (y ::ₘ s) = chs s := Multiset.filterMap_cons_none _ _ (dite_eq_right h)
 
 theorem chs_map {ι : Type} (t : Multiset ι) (ξ : ι → (kˣ →* ℂˣ)) (hξ : ∀ j, IsSmoothChar (ξ j)) :
     chs (t.map fun j => IrrGL.ofChar (ξ j) (hξ j)) = t.map ξ := by
@@ -272,7 +272,7 @@ private theorem mem_chs_iff (s : Multiset (IrrGL (k := k))) (ξ : kˣ →* ℂˣ
       rw [opt_ofChar] at e
       obtain rfl := Option.some.inj e
       exact ⟨hξ', hy⟩
-    · rw [dif_neg h] at e
+    · rw [dite_eq_right h] at e
       cases e
   · rintro ⟨hξ, h⟩
     exact ⟨_, h, opt_ofChar ξ hξ⟩
@@ -308,13 +308,13 @@ private theorem pol_eq_lp (s : Multiset (IrrGL (k := k))) (θ : kˣ →* ℂˣ) 
           rintro ⟨ξ', ⟨_, h2⟩, h3⟩
           obtain rfl := IrrGL.ofChar_inj.1 h2
           exact hu h3
-        rw [dif_neg h, one_mul]
+        rw [dite_eq_right h, one_mul]
         unfold vals
         rw [Multiset.filter_cons_of_neg (p := fun ξ => IsUnram (ξ * θ)) _ hu]
     · have h : ¬ ∃ ξ : kˣ →* ℂˣ, (∃ hξ, y = IrrGL.ofChar ξ hξ) ∧ IsUnram (ξ * θ) := by
         rintro ⟨ξ, h2, _⟩
         exact hy ⟨ξ, h2⟩
-      rw [dif_neg h, one_mul, UpperTheory.Gal.GamX.chs_cons_of_not hy]
+      rw [dite_eq_right h, one_mul, UpperTheory.Gal.GamX.chs_cons_of_not hy]
 
 end Loc
 
@@ -852,7 +852,7 @@ theorem UpperTheory.Gal.GamX.twValsOf :
           rw [Multiset.mem_singleton] at hbw
           rw [hbw, MonoidHom.comp_apply]
           exact hval j0 hj0.2 w
-      · push_neg at hex
+      · push Not at hex
         have hno : ∀ j, ¬ IsUnram (μ * e j) := by
           intro j hj
           obtain ⟨w0⟩ := hne
@@ -1186,9 +1186,6 @@ theorem toralGal_of_holds : UpperTheory.Gal.ToralGalois.Inq → SphericalLevelCo
 
 end GlobalTheory.RoadU
 
-section
-
-end
 end GalTw -- clump:auto
 end -- clump:auto
 end -- clump:auto

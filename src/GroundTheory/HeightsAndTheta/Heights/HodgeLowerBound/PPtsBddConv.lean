@@ -99,7 +99,7 @@ theorem PtsSumMeasurableWeight.aestronglyMeasurable_fibreSum_of_lifts
     intro m
     rw [Finset.sum_ite_eq]
     by_cases hm : y ∈ S m
-    · rw [if_pos (hmemF m hm)]
+    · rw [ite_eq_left (hmemF m hm)]
     · split_ifs
       · rfl
       · rw [hf0 m y hm]
@@ -115,7 +115,7 @@ theorem PtsSumMeasurableWeight.aestronglyMeasurable_fibreSum_of_lifts
       have hm1S : y ∈ S (Nat.find hP') :=
         ⟨hm1B, fun m' hm' h => Nat.find_min hP' hm' ⟨h.1, h.2.trans hm1w⟩⟩
       filter_upwards [eventually_gt_atTop (Nat.find hP')] with N hN
-      rw [Finset.sum_eq_single_of_mem (Nat.find hP') (Finset.mem_range.2 hN), if_pos hm1w,
+      rw [Finset.sum_eq_single_of_mem (Nat.find hP') (Finset.mem_range.2 hN), ite_eq_left hm1w,
         hterm _ hm1S, hm1w]
       intro m _ hne
       split_ifs with hmw
@@ -218,12 +218,12 @@ theorem PtsBddConv.proof (hAbs : Inter.PtsAbsIntegrable.Statement) : PtsBddConv.
           C * r⁻¹ ^ e * |sheetDensity P Ψ (pot fun _ => L) (logNorm oneLine 1) y w| := by
       intro h y w hh
       by_cases hγ : ∃ γ, IsSheet P Ψ y w γ
-      · simp only [sheetDensity, dif_pos hγ, logNorm_oneLine, one_mul, pot]
+      · simp only [sheetDensity, dite_eq_left hγ, logNorm_oneLine, one_mul, pot]
         rw [PtsBddConv.maDensity_div_const (fun _ y' => Real.log (L.h (hγ.choose y'))) r y, abs_mul, abs_mul,
           abs_of_nonneg (pow_nonneg (inv_nonneg.mpr hr.le) e), ← mul_assoc]
         exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (hh hγ)
           (pow_nonneg (inv_nonneg.mpr hr.le) e)) (abs_nonneg _)
-      · simp only [sheetDensity, dif_neg hγ, abs_zero, mul_zero, le_refl]
+      · simp only [sheetDensity, dite_eq_right hγ, abs_zero, mul_zero, le_refl]
     have hsum : ∀ (h : ((Σ k, ι k) → ℂ) → ℝ) y, (∀ w (hγ : ∃ γ, IsSheet P Ψ y w γ), |h (hγ.choose y)| ≤ C) →
         ‖∑ᶠ w ∈ fibre P Ψ y, sheetDensity P Ψ (fun (_ : Fin e) z => Real.log (L.h z) / r) h y w‖ ≤
           C * r⁻¹ ^ e * ∑ᶠ w ∈ fibre P Ψ y, |sheetDensity P Ψ (pot fun _ => L) (logNorm oneLine 1) y w| := by
@@ -271,14 +271,14 @@ theorem PtsBddConv.proof (hAbs : Inter.PtsAbsIntegrable.Statement) : PtsBddConv.
           rw [hg']
           simp only [hvdef]
           by_cases hyM : y ∈ M
-          · rw [if_pos ⟨y, hyM, (hlift m y hy).2.2⟩,
+          · rw [ite_eq_left ⟨y, hyM, (hlift m y hy).2.2⟩,
               Set.piecewise_eq_of_notMem _ _ _ (fun h : y ∈ B m \ M => h.2 hyM)]
             simp
           · have hne : ¬ ∃ y' ∈ M, Ψ (segre (γ m y)) = Fin.cons 1 y' := by
               rintro ⟨y', hy'M, h⟩
               obtain rfl := hcons (((hlift m y hy).2.2).symm.trans h)
               exact hyM hy'M
-            rw [if_neg hne, Set.piecewise_eq_of_mem (B m \ M) _ _ (Set.mem_sdiff_of_mem hy hyM)])
+            rw [ite_eq_right hne, Set.piecewise_eq_of_mem (B m \ M) _ _ (Set.mem_sdiff_of_mem hy hyM)])
         (by
           filter_upwards [hind0] with y hy w γ₁ γ₂ h₁ h₂
           have hd := hy w γ₁ γ₂ h₁ h₂
@@ -297,13 +297,13 @@ theorem PtsBddConv.proof (hAbs : Inter.PtsAbsIntegrable.Statement) : PtsBddConv.
       filter_upwards [measure_eq_zero_iff_ae_notMem.mp hM0] with y hy
       refine finsum_mem_congr rfl fun w _ => ?_
       by_cases hγ : ∃ γ, IsSheet P Ψ y w γ
-      · simp only [id, sheetDensity, dif_pos hγ]
+      · simp only [id, sheetDensity, dite_eq_left hγ]
         have hne : ¬ ∃ y' ∈ M, Ψ (segre (hγ.choose y)) = Fin.cons 1 y' := by
           rintro ⟨y', hy'M, h⟩
           obtain rfl := hcons ((hpt y w hγ).2.symm.trans h)
           exact hy hy'M
-        rw [hg', if_neg hne]
-      · simp only [id, sheetDensity, dif_neg hγ]
+        rw [hg', ite_eq_right hne]
+      · simp only [id, sheetDensity, dite_eq_right hγ]
 
     have hlimpt : ∀ᵐ y, Tendsto (fun s => ∑ᶠ w ∈ fibre P Ψ y,
         sheetDensity P Ψ (fun (_ : Fin e) z => Real.log (L.h z) / r) (g s) y w) (𝓝[>] 0)
@@ -313,9 +313,9 @@ theorem PtsBddConv.proof (hAbs : Inter.PtsAbsIntegrable.Statement) : PtsBddConv.
       simp only [finsum_mem_eq_finite_toFinset_sum _ (hfin y)]
       refine tendsto_finsetSum _ fun w _ => ?_
       by_cases hγ : ∃ γ, IsSheet P Ψ y w γ
-      · simp only [sheetDensity, dif_pos hγ]
+      · simp only [sheetDensity, dite_eq_left hγ]
         exact (hlim _ (hpt y w hγ).1 (hoff y hy w hγ)).mul_const _
-      · simp only [sheetDensity, dif_neg hγ]
+      · simp only [sheetDensity, dite_eq_right hγ]
         exact tendsto_const_nhds
     have hbound := hB.const_mul (C * r⁻¹ ^ e)
 
@@ -347,9 +347,9 @@ theorem PtsBddConv.proof (hAbs : Inter.PtsAbsIntegrable.Statement) : PtsBddConv.
   refine ⟨fun Ψ hΨ => (key Ψ hΨ).1, ?_⟩
   unfold ptsIntegral
   by_cases hΨ : ∃ Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ), IsGoodProj P Ψ
-  · simp only [dif_pos hΨ]
+  · simp only [dite_eq_left hΨ]
     exact (key _ hΨ.choose_spec).2
-  · simp only [dif_neg hΨ]
+  · simp only [dite_eq_right hΨ]
     exact tendsto_const_nhds
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree

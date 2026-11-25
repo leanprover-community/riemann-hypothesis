@@ -1159,7 +1159,7 @@ theorem chartMon_ne_zero {t : ∀ k, J k} (ht : mseg y t ≠ 0) (a : K → ℤ) 
   Finset.prod_ne_zero_iff.2 fun k hk => zpow_ne_zero _ (Finset.prod_ne_zero_iff.1 ht k hk)
 
 theorem rootIdx_left (τ : CMType H) (a : Fin D.p) :
-    HodgeCpt.rootIdx D (τ, Fin.castAdd D.q a) = ⟨.inl τ, a⟩ := dif_pos a.2
+    HodgeCpt.rootIdx D (τ, Fin.castAdd D.q a) = ⟨.inl τ, a⟩ := dite_eq_left a.2
 
 theorem rootIdx_right (τ : CMType H) (a : Fin D.q) :
     HodgeCpt.rootIdx D (τ, Fin.natAdd D.p a.rev) = ⟨.inr τ, a⟩ := by
@@ -1201,7 +1201,7 @@ theorem chart_flag_bases : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
       fun x => (off_facts hds (chart_le hp.out ho hq hz) hz hf).2 _⟩)
     (fun q hq (a : Fin D.p) u hu => by
       have h1 := (hroot (τ, Fin.castAdd D.q a)).2 q trivial t.1 hq
-      have h2 : HodgeCpt.rootSgn D (τ, Fin.castAdd D.q a) = 1 := if_pos a.2
+      have h2 : HodgeCpt.rootSgn D (τ, Fin.castAdd D.q a) = 1 := ite_eq_left a.2
       unfold HodgeCpt.Flag.rootLat at h1
       rw [rootIdx_left, h2] at h1
       have h3 := tens_gen _ q 1 (Or.inl rfl) u _ hu h1
@@ -1215,7 +1215,7 @@ theorem chart_flag_bases : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
       (off_facts hds (chart_le hp.out ho hq hz) hz hf).2⟩)
     (fun q hq (a : Fin D.q) u hu => by
       have h1 := (hroot (τ, Fin.natAdd D.p a.rev)).2 q trivial t.1 hq
-      have h2 : HodgeCpt.rootSgn D (τ, Fin.natAdd D.p a.rev) = -1 := if_neg (by simp)
+      have h2 : HodgeCpt.rootSgn D (τ, Fin.natAdd D.p a.rev) = -1 := ite_eq_right (by simp)
       unfold HodgeCpt.Flag.rootLat at h1
       rw [rootIdx_right, h2] at h1
       have h3 := tens_gen _ q (-1) (Or.inr rfl) u _ hu h1
@@ -1552,7 +1552,7 @@ theorem trivflag_charts : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Al
   refine ⟨fun s => if h : mseg y s ≠ 0 then
     ((g ⟨s, h⟩).map (fun a => (a : Ω))).submatrix id finSumFinEquiv.symm else 0, fun s hs => ?_,
     fun s t hs ht => ?_⟩
-  · simp only [dif_pos hs]
+  · simp only [dite_eq_left hs]
     refine ⟨fun a a' => (g ⟨s, hs⟩ _ _).2, ?_⟩
     obtain ⟨h, r, e⟩ := (hfe ⟨s, hs⟩).2 _ (hg ⟨s, hs⟩)
     refine ⟨h, h.2, r, r.2, ?_⟩
@@ -1560,7 +1560,7 @@ theorem trivflag_charts : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Al
     rw [map_mul, AlgHom.map_det] at this
     rw [hϖ, Matrix.submatrix_map]
     simpa using this
-  · simp only [dif_pos hs, dif_pos ht, hϖ]
+  · simp only [dite_eq_left hs, dite_eq_left ht, hϖ]
     haveI := hfr ⟨t, ht⟩
     have hu := div_mem_chartRing (o := o) (mseg y) t s
     have hu0 : mseg y s / mseg y t ≠ 0 := div_ne_zero hs ht

@@ -457,7 +457,7 @@ theorem res_eq {ι : Type} {n : ℕ} {lam : ι → DomWeight n} {lamW : ι → �
   have h2 := h τ ⟨n - 1, by omega⟩
   have h3 : (lam τ).w ⟨n - 1, by omega⟩ ≤ (lam τ).w a := (lam τ).anti (by
     rw [Fin.le_def]; have := a.2; simp only; omega)
-  simp only [res, DomWeight.natW, DomWeight.detShift, dif_pos hn] at h2 ⊢
+  simp only [res, DomWeight.natW, DomWeight.detShift, dite_eq_left hn] at h2 ⊢
   omega
 
 theorem liftPol_mem {K C : Type} [Field K] [Field C] (e0 : K →+* C) {ι : Type} {n : ℕ} {lam : ι → DomWeight n}
@@ -1726,13 +1726,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.GradedWeylDivisibility MvPolynomial
 namespace GlobalTheory.FrameRead
 open Formalism.IndefR.Bridge
-section Core
-variable {D : D7} (V : Formalism.BasicNotions.TH.HSp D) {l : ℕ} [Fact l.Prime]
-end Core
-section Point
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz)
-end Point
 theorem reads_of_small_alt : _root_.GlobalTheory.ExpTie.InRangeAlt fun _ _ _ _ p j P W w => SmallAt p j P w → ReadsAt p j P W w := by
   refine ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ _ _ =>
     _root_.GlobalTheory.BigTop.EventuallyAtPoints.of_forall fun x hx i p _ _ j P W hD _ w _ _ _ _ => ?_⟩⟩

@@ -227,7 +227,7 @@ theorem norm_prime : ∀ (D : D7) (P : Ideal (𝓞 D.host.E)), P.IsMaximal → E
       rw [hN, Nat.factorization_pow]
       simp
     · have hf0 : 2 * f ≠ 0 := by have := hf.pos; omega
-      rw [hN, sgn, hlf, Nat.primeFactors_prime_pow hf0 hq, Finset.filter_singleton, if_pos hin,
+      rw [hN, sgn, hlf, Nat.primeFactors_prime_pow hf0 hq, Finset.filter_singleton, ite_eq_left hin,
         Finset.sum_singleton, Nat.factorization_pow_self hq, Nat.mul_div_cancel_left _ two_pos, hf.neg_one_pow]
     · rintro rfl
       exact two_not_mem D hP.isPrime

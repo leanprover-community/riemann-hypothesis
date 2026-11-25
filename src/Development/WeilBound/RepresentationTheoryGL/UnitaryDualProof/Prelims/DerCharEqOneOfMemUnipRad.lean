@@ -153,12 +153,6 @@ theorem one_inr_inl {n t N : ℕ} (h : n + t = N) (i : Fin t) (j : Fin n) :
 
 end Concrete
 
-section ConcreteChar
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end ConcreteChar
-
 section Entries
 
 variable {k : Type} [Field k]

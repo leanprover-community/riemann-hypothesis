@@ -45,7 +45,7 @@ theorem decOrbit_root_count : ∀ (E Ω : Type) [Field E] [NumberField E] [Field
     intro x hx
     have h := (hS x).1 hx
     refine ⟨Classical.choose h, (Classical.choose_spec h).1, (Classical.choose_spec h).2, ?_⟩
-    simp only [φ, dif_pos h]
+    simp only [φ, dite_eq_left h]
 
   have hg0 : g ≠ 0 := hg.ne_zero
   have hconj : ∀ σ : G E Ω, σ β' ∈ (g.aroots Ω).toFinset := by

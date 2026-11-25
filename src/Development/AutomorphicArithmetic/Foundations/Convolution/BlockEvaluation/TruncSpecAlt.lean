@@ -224,7 +224,7 @@ theorem UpperTheory.ConvolutionTheory.Ci.truncSpec :
       congr 1
       have := congrArg (AddMonoidAlgebra.coeff · β) (hG k)
       rw [coeff_map, pieceK, coeff_sum] at this
-      simp only [coeff_monomial, Finset.sum_ite_eq', if_pos hβ] at this
+      simp only [coeff_monomial, Finset.sum_ite_eq', ite_eq_left hβ] at this
       exact this
     refine ⟨fun d => ∑ β ∈ Φ.support, (∑ k ∈ Finset.range (d + 1), eval L (piece k (Φ.coeff β))) *
       β.prod fun i e => hval t i ^ e, ?_, fun x d => ?_⟩

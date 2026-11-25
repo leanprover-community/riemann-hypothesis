@@ -140,12 +140,12 @@ theorem norm_posRealElem_pow (w : InfinitePlace K) {t : ℝ} (ht : 0 ≤ t) :
   · have h : ‖(ringEquivRealOfIsReal hw).symm t‖ = ‖t‖ :=
       (isometryEquivRealOfIsReal hw).symm.isometry.norm_map_of_map_zero
         (map_zero (ringEquivRealOfIsReal hw).symm) t
-    rw [h, mult, if_pos hw, pow_one, Real.norm_of_nonneg ht]
+    rw [h, mult, ite_eq_left hw, pow_one, Real.norm_of_nonneg ht]
   · have hc := not_isReal_iff_isComplex.1 hw
     have h : ‖(ringEquivComplexOfIsComplex hc).symm (Real.sqrt t : ℂ)‖ = ‖(Real.sqrt t : ℂ)‖ :=
       (isometryEquivComplexOfIsComplex hc).symm.isometry.norm_map_of_map_zero
         (map_zero (ringEquivComplexOfIsComplex hc).symm) _
-    rw [h, mult, if_neg hw, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg t),
+    rw [h, mult, ite_eq_right hw, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg t),
       Real.sq_sqrt ht]
 
 theorem posRealElem_ne_zero (w : InfinitePlace K) {t : ℝ} (ht : 0 < t) : posRealElem w t ≠ 0 := by

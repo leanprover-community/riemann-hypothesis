@@ -220,7 +220,7 @@ theorem eq_on_rankOneCurve_of_integral (hol : IsHoloSiegel g H) (hH : IsSpInvari
     H (rankOneCurve Z R u z) = H (rankOneCurve Z R u w) := by
   set A := (Int.castRingHom ℝ).range with hA
   let ε : Fin g → ℝ := fun i => if i = e then 1 else 0
-  have hεe : ε e = 1 := if_pos rfl
+  have hεe : ε e = 1 := ite_eq_left rfl
   have hε : ∀ i, ε i ∈ A := fun i => by
     by_cases h : i = e <;> simp [ε, h]
   have hNA : (N : ℝ) ∈ A := natCast_mem A N
@@ -235,7 +235,7 @@ theorem eq_on_rankOneCurve_of_integral (hol : IsHoloSiegel g H) (hH : IsSpInvari
         fun p (z : ℍ) => H (rankOneCurve Z (of p.1) p.2 z)).subset ?_
     rintro _ ⟨R, u, hu, hR, hRe, huN, hRN, hRN2, rfl⟩
     let k : Fin g → ℤ := fun i => if i = e then 0 else ⌊u i⌋
-    have hke : k e = 0 := if_pos rfl
+    have hke : k e = 0 := ite_eq_left rfl
     have hk : ∀ i, (k i : ℝ) ∈ A := fun i => intCast_mem A _
     let R₁ : Matrix (Fin g) (Fin g) ℝ := of fun i j => R i j - (k i * R j e + R i e * k j)
     have hR₁ : R₁.IsSymm := by
@@ -254,7 +254,7 @@ theorem eq_on_rankOneCurve_of_integral (hol : IsHoloSiegel g H) (hH : IsSpInvari
         (mul_mem (hRN i) (mul_mem hNA (hk j))))) (mul_mem (mul_mem hNA hNA) (intCast_mem A _))
     · by_cases h : i = e
       · simp [h, hu, hke]
-      · simp only [k, if_neg h]
+      · simp only [k, ite_eq_right h]
         exact abs_le.2 ⟨by linarith [Int.floor_le (u i)], by linarith [Int.lt_floor_add_one (u i)]⟩
     · simp only [mul_sub, mul_assoc]
       exact sub_mem (mul_mem hNA (huN i)) (mul_mem hNA (mul_mem hNA (hk i)))

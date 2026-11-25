@@ -38,10 +38,10 @@ theorem ph_detPl_ne_zero {R : Type} [CommRing R] [Nontrivial R] {n' r : ℕ} [Ne
     simp only [plEmb, rename_X, phSeg, aeval_X, map_pow, eval_X]
     by_cases hab : a = b
     · subst hab
-      have hv : v (posOf n' (X.row j x a), Fin.castAdd K a) = 1 := if_pos ⟨a, rfl, rfl⟩
+      have hv : v (posOf n' (X.row j x a), Fin.castAdd K a) = 1 := ite_eq_left ⟨a, rfl, rfl⟩
       rw [hv, one_pow, Matrix.one_apply_eq]
     · have hv : v (posOf n' (X.row j x a), Fin.castAdd K b) = 0 := by
-        apply if_neg
+        apply ite_eq_right
         rintro ⟨a', ha, hb⟩
         have e1 : a' = a := hinj ha
         have e2 : b = a' := Fin.castAdd_injective _ _ hb

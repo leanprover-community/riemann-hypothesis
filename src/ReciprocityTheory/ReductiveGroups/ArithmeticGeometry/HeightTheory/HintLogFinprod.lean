@@ -47,7 +47,7 @@ theorem hint_fp_split {R Fr ι : Type*} [CommRing R] [Field Fr] [Algebra R Fr] (
       have hpS : p ∈ S := by
         by_contra h
         exact hp (by simp [h])
-      rw [finprod_eq_if, if_pos hpS, map_pow, map_pow]
+      rw [finprod_eq_if, ite_eq_left hpS, map_pow, map_pow]
       exact hint_zpow_split _ _
   · refine ⟨∅, by simp, ?_⟩
     rw [finprod_of_infinite_mulSupport hfin]

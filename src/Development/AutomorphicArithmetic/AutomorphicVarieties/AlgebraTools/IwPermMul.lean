@@ -58,14 +58,14 @@ theorem UpperTheory.V.AlgebraTools.permMul :
       · intro a b hba
         rw [pm_conj_apply, hx1 c]
         have hab : w a ≠ w b := fun h => (ne_of_lt hba) (w.injective h).symm
-        rw [Matrix.add_apply, Matrix.one_apply_ne hab, zero_add, Matrix.single_apply, if_neg]
+        rw [Matrix.add_apply, Matrix.one_apply_ne hab, zero_add, Matrix.single_apply, ite_eq_right]
         rintro ⟨h1, h2⟩
         apply absurd hlt
         rw [h1, h2]
         simpa using hba.le
       · intro a
         rw [pm_conj_apply, hx1 c]
-        rw [Matrix.add_apply, Matrix.one_apply_eq, Matrix.single_apply, if_neg, add_zero]
+        rw [Matrix.add_apply, Matrix.one_apply_eq, Matrix.single_apply, ite_eq_right, add_zero]
         rintro ⟨h1, h2⟩
         exact hne (h1.trans h2.symm)
       · exact Subgroup.mul_mem _ (Subgroup.mul_mem _ (Subgroup.inv_mem _ (pm_mem_KO k w))

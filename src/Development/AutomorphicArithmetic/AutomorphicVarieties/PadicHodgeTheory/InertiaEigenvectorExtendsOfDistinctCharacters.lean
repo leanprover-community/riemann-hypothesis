@@ -157,7 +157,7 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
       rw [← horth k m]
       refine Finset.sum_congr rfl fun h _ => ?_
       rw [MonoidHom.mul_apply, Units.val_mul, mul_comm, ← hψ]
-    simp only [h1, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [h1, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hPne : ∀ k, ∃ w, P k w ≠ 0 := by
     intro k
     by_contra hcon
@@ -181,7 +181,7 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
     have h1 := congrArg (P j) hg
 
     rw [map_sum, map_zero] at h1
-    simp only [map_smul, hPE', smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h1
+    simp only [map_smul, hPE', smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h1
     rw [smul_smul] at h1
     have h2 := (smul_eq_zero.mp h1).resolve_right (hw j)
     exact (mul_eq_zero.mp h2).resolve_right hcard0
@@ -199,8 +199,8 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
 
       rw [map_sum] at h1
       simp only [map_smul, hb, hPE', smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-        if_true] at h1
-      rw [hPE k y hy m, if_neg hm, smul_smul] at h1
+        ite_true] at h1
+      rw [hPE k y hy m, ite_eq_right hm, smul_smul] at h1
       have h2 := (smul_eq_zero.mp h1).resolve_right (hw m)
       exact (mul_eq_zero.mp h2).resolve_right hcard0
     conv_lhs => rw [← hsum]
@@ -267,6 +267,6 @@ theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
         refine Finset.sum_congr rfl fun h _ => ?_
         rw [MonoidHom.mul_apply, Units.val_mul, ← hψ]
         ring
-      simp only [h1, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [h1, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have hceq : c = μ j σ := mul_right_cancel₀ hcard0 (htr1.symm.trans htr2)
     rw [hspan j y hy, map_smul, hcy, hceq, smul_comm]

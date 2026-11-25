@@ -175,7 +175,7 @@ theorem ae_simple_col {n N : ℕ} (U : Set (EuclideanSpace ℂ (Fin n))) (hU : I
     have : S (A y) y = S t y + (y - colProj j0 t) := by
       ext k
       simp only [hS, hA, Pi.add_apply, colInc_apply, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true, PiLp.add_apply]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true, PiLp.add_apply]
       field_simp
     simp only [hG, hπA, this]
     simp only [hA, map_add (f := _)]

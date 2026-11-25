@@ -55,7 +55,7 @@ theorem fourier_Nz (Y : Finset H) (κ : H → H → ℂ) (hκ : TB.PSDOn Y κ) (
       fun z => Fz Y κ D z * crystallineComparison.psi (σ * z) := by
     filter_upwards [ae_good] with z hz
     have h0 := Complex.nonneg_iff.mp (Fz_nonneg Y κ hκ D hD z hz)
-    rw [Nz, if_pos hz]
+    rw [Nz, ite_eq_left hz]
     congr 1
     exact Complex.ext (by simp) (by simp [← h0.2])
   have hpt : ∀ z : crystallineComparison.V f, Fz Y κ D z * crystallineComparison.psi (σ * z) =

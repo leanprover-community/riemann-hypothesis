@@ -121,13 +121,13 @@ theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι)
     rw [Pi.single_eq_same, Finset.sum_eq_single i]
     · simp
     · intro b _ hb
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro e
       exact hb (eq_of_heq (Sigma.mk.inj_iff.mp e).2).symm
     · simp
   · rw [Pi.single_eq_of_ne h]
     refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro e
     exact h (congrArg Sigma.fst e).symm
 
@@ -430,7 +430,7 @@ theorem SectionBounded.proof : SectionBounded.Statement := by
         split_ifs with hc'
         · exact mul_nonneg (hB0 c' hc') (pow_nonneg (hM0 c' hc') n)
         · exact le_rfl) (Finset.mem_univ c)
-    simpa only [dif_pos hyc] using this
+    simpa only [dite_eq_left hyc] using this
   have hAh : 0 ≤ A.h z ^ n := pow_nonneg (A.pos z hz.1).le n
   calc ‖eval z (map (Int.castRingHom ℂ) g)‖
       ≤ B c hyc * ‖eval z (map (Int.castRingHom ℂ) h)‖ * ∏ k, ‖z ⟨k, c k⟩‖ ^ ((n : ℤ) * A.a k) := h1

@@ -162,13 +162,13 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.embEx :
       have hh' : ∀ v, GM.cf v h ∈ (if v ∈ im w then U v else GLnLocal.integralGL (v.adicCompletion K) n) := hh
       refine ⟨fun j => GM.cf (w j) h, _, (mul_inv_cancel_left _ _).symm, fun i => ?_, hsplit h, fun v => ?_⟩
       · have := hh' (w i)
-        rwa [if_pos (Finset.mem_image_of_mem w (Finset.mem_univ i))] at this
+        rwa [ite_eq_left (Finset.mem_image_of_mem w (Finset.mem_univ i))] at this
       · by_cases hv : v ∈ im w
         · obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hv
           rw [hsplit h i]
           exact one_mem _
         · have := hh' v
-          rw [if_neg hv] at this
+          rw [ite_eq_right hv] at this
           rw [hmul, hinv, hoff _ v hv, inv_one, one_mul]
           exact this
     · rintro ⟨g, h', rfl, hg, h1, hint⟩
@@ -176,10 +176,10 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.embEx :
         intro v
         rw [hmul]
         by_cases hv : v ∈ im w
-        · rw [if_pos hv]
+        · rw [ite_eq_left hv]
           obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hv
           rw [hcf, h1 i, mul_one]
           exact hg i
-        · rw [if_neg hv, hoff g v hv, one_mul]
+        · rw [ite_eq_right hv, hoff g v hv, one_mul]
           exact hint v
       exact hh'

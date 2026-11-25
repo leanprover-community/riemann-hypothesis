@@ -354,12 +354,12 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.NefVolume
 theorem tendsto_pow_div_pow {i e : ℕ} (h : i ≤ e) :
     Tendsto (fun n : ℕ => (n : ℝ) ^ i / (n : ℝ) ^ e) atTop (𝓝 (if i = e then 1 else 0)) := by
   rcases h.eq_or_lt with rfl | hlt
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_gt_atTop 0] with n hn
     have : (n : ℝ) ≠ 0 := by positivity
     field_simp
-  · rw [if_neg hlt.ne]
+  · rw [ite_eq_right hlt.ne]
     have h0 : Tendsto (fun n : ℕ => (1 / (n : ℝ)) ^ (e - i)) atTop (𝓝 (0 ^ (e - i))) :=
       tendsto_one_div_atTop_nhds_zero_nat.pow _
     rw [zero_pow (by omega)] at h0

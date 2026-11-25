@@ -37,10 +37,4 @@ def IsSplitPlace (v : HeightOneSpectrum (𝓞 F)) : Prop :=
 
 end Notions
 
-section Basic₂
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
-
-end Basic₂
-
 end GlobalTheory.IndefiniteRowSideFullHecke.SplitPlaceUnitaryEvaluation

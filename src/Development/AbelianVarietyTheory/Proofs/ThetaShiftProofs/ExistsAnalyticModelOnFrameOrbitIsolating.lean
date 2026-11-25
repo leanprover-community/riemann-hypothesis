@@ -1007,7 +1007,7 @@ theorem _root_.GlobalTheory.ComplementTypes.types (E : Type) [Field E] [NumberFi
         simp only [he]), Fintype.card_subtype,
       Fintype.card_subtype, Finset.card_filter, Finset.card_filter, Fintype.sum_sum_type,
       Fintype.sum_prod_type]
-    simp only [t, Sum.elim_inl, Sum.elim_inr, hc1, Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul,
+    simp only [t, Sum.elim_inl, Sum.elim_inr, hc1, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul,
       mul_one]
     congr 1
   have hd : (2 : ℝ) ≤ H.d := by exact_mod_cast H.d_prime.two_le

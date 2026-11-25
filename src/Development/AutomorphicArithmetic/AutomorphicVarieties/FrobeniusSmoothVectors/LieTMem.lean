@@ -174,12 +174,12 @@ theorem UpperTheory.V.Fr.ep_dproj :
     · refine Finset.sum_congr rfl (fun c _ => ?_)
       rw [Matrix.map_apply, Matrix.map_apply, hDp]
       by_cases hcb : pw c b = 0
-      · rw [if_pos ((hsame c hcb).trans hab)]
+      · rw [ite_eq_left ((hsame c hcb).trans hab)]
       · rw [hN c b hcb, mul_zero, mul_zero]
     · refine Finset.sum_eq_zero (fun c _ => ?_)
       rw [Matrix.map_apply, hDp]
       by_cases hcb : pw c b = 0
-      · rw [if_neg (fun h => hab ((hsame c hcb).symm.trans h)), zero_mul]
+      · rw [ite_eq_right (fun h => hab ((hsame c hcb).symm.trans h)), zero_mul]
       · rw [hN c b hcb, mul_zero]
 end -- clump:auto
 end -- clump:auto

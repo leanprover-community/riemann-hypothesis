@@ -63,17 +63,17 @@ theorem pairSum {A : Type*} [Ring A] [Algebra ℂ A] {t : ℕ} (c d : Fin (t + 2
             (if i' < j then ((-1 : ℂ) ^ ((i' : ℕ) + (j : ℕ))) • (c j * d i' * G (skip2 i' j)) else 0)) := by
     intro i'
     conv_rhs => rw [Fin.sum_univ_succAbove _ i']
-    simp only [lt_irrefl, if_false, sub_zero, zero_add]
+    simp only [lt_irrefl, ite_false, sub_zero, zero_add]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     by_cases hk : (k : ℕ) < (i' : ℕ)
-    · have hv : ((i'.succAbove k : Fin (t + 2)) : ℕ) = k := by rw [valSuccAbove, if_pos hk]
+    · have hv : ((i'.succAbove k : Fin (t + 2)) : ℕ) = k := by rw [valSuccAbove, ite_eq_left hk]
       have h1 : i'.succAbove k < i' := by rw [Fin.lt_def, hv]; exact hk
       have h2 : ¬ i' < i'.succAbove k := by rw [Fin.lt_def, hv]; omega
-      rw [if_pos h1, if_neg h2, sub_zero, skip2Lt i' k hk, hv, add_comm (k : ℕ)]
-    · have hv : ((i'.succAbove k : Fin (t + 2)) : ℕ) = k + 1 := by rw [valSuccAbove, if_neg hk]
+      rw [ite_eq_left h1, ite_eq_right h2, sub_zero, skip2Lt i' k hk, hv, add_comm (k : ℕ)]
+    · have hv : ((i'.succAbove k : Fin (t + 2)) : ℕ) = k + 1 := by rw [valSuccAbove, ite_eq_right hk]
       have h1 : ¬ i'.succAbove k < i' := by rw [Fin.lt_def, hv]; omega
       have h2 : i' < i'.succAbove k := by rw [Fin.lt_def, hv]; omega
-      rw [if_pos h2, if_neg h1, zero_sub, skip2Gt i' k hk, hv, ← neg_smul]
+      rw [ite_eq_left h2, ite_eq_right h1, zero_sub, skip2Gt i' k hk, hv, ← neg_smul]
       congr 1
       rw [← add_assoc, pow_succ]
       ring

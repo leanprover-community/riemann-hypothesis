@@ -185,11 +185,11 @@ theorem leviEquivPi_symm_mulSingle (a : Set.range β) :
   by_cases hb : b = a
   · subst hb
     rw [Pi.mulSingle_eq_same, coe_centralUnif]
-    simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, blockIndicator, hk, if_true,
+    simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, blockIndicator, hk, ite_true,
       zpow_one, hkl]
     split_ifs <;> simp
   · rw [Pi.mulSingle_eq_of_ne hb]
-    simp only [Units.val_one, Matrix.one_apply, blockIndicator, hk, if_neg hb, zpow_zero, hkl]
+    simp only [Units.val_one, Matrix.one_apply, blockIndicator, hk, ite_eq_right hb, zpow_zero, hkl]
 
 
 variable (β) in

@@ -48,12 +48,6 @@ theorem mul_logWeight_pow_le (S : Finset κ) (z : κ → ℂ) {C C' : ℝ} {N N'
 
 end Weight
 
-section Polydisc
-
-variable {ι : Type*}
-
-end Polydisc
-
 section Growth
 
 variable {κ κ' X X' E F : Type*} [TopologicalSpace X] [TopologicalSpace X']
@@ -128,16 +122,6 @@ variable [Fintype m] [DecidableEq m]
 
 end MatrixLemmas
 
-section PiKronecker
-
-variable {α : Type*} [Fintype α] {l n o : α → Type*}
-
-variable [DecidableEq α] [∀ a, Fintype (n a)]
-
-variable [∀ a, DecidableEq (n a)]
-
-end PiKronecker
-
 section Compound
 
 variable {l n o : Type*} [LinearOrder l] [LinearOrder n] [LinearOrder o]
@@ -201,9 +185,5 @@ variable [Fintype m]
 end IsLogBounded
 
 end LogBounded
-
-section Examples
-
-end Examples
 
 end GlobalTheory

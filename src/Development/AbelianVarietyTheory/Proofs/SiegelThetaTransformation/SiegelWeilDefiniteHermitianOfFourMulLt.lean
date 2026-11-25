@@ -237,7 +237,7 @@ theorem sum_nb {M : ℕ} [Fintype (Cls E n M)] {P : Ideal (𝓞 E)} {A : Lt E n}
     simp [h0]
   let cl : Lt E n → Cls E n M := fun X =>
     if hX : X ∈ Vset E n M then Quot.mk _ ⟨X, hX⟩ else hE.some
-  have hcl : ∀ X (hX : X ∈ Vset E n M), cl X = Quot.mk _ ⟨X, hX⟩ := fun X hX => dif_pos hX
+  have hcl : ∀ X (hX : X ∈ Vset E n M), cl X = Quot.mk _ ⟨X, hX⟩ := fun X hX => dite_eq_left hX
   rw [finsum_mem_eq_finite_toFinset_sum _ hN,
     ← Finset.sum_fiberwise_of_maps_to (s := hN.toFinset) (t := Finset.univ) (g := cl)
       (fun _ _ => Finset.mem_univ _)]
@@ -931,7 +931,7 @@ theorem twist_ite {M R s : ℕ} {φ : Fam E n N} {Y : Lt E N} (hφ : admitted M 
       if ∀ ξ ∈ Y, (R : E) • (x *ᵥ ξ) ∈ Λ then φ Λ ((s : E) • x) else 0 := by
   split_ifs with h1
   · exact TwistAdm.twist_val hφ hA hΛ x s hs h1 (TwistAdm.cols_of_cond h h1)
-  · rw [TwistAdm.twist_eq φ (TwistAdm.exists_mult hφ.pos.2 hA), if_neg h1]
+  · rw [TwistAdm.twist_eq φ (TwistAdm.exists_mult hφ.pos.2 hA), ite_eq_right h1]
 
 end GlobalTheory.SW.HeckeId
 
@@ -1041,11 +1041,11 @@ theorem GlobalTheory.SW.hecke_relation_pointwise : ∀ (E : Type) [Field E] [Num
       have k3 : ∀ j, chiH Ψ (sym ((R : E) • (η i : Fin N → E))
           ((R : E) • ((b • ξ j : 𝔛) : Fin N → E))) x = pairChar u b (η i) (ξ j) := fun j => by
         rw [chiH_sym hΨ, Matrix.mulVec_smul, Matrix.mulVec_smul, ← hu, ← hu]; rfl
-      rw [if_pos (k.2 h), Finset.sum_congr rfl fun j _ => k3 j, hξ _ k1]
+      rw [ite_eq_left (k.2 h), Finset.sum_congr rfl fun j _ => k3 j, hξ _ k1]
       by_cases h2 : ∀ v, Int' (u (η i)) (u (b • v))
-      · rw [if_pos (k2.2 h2), if_pos ⟨h, h2⟩, Nat.cast_pow]
-      · rw [if_neg (fun H => h2 (k2.1 H)), if_neg (fun H => h2 H.2), zero_mul]
-    · rw [if_neg (fun H => h (k.1 H)), if_neg (fun H => h H.1), mul_zero]
+      · rw [ite_eq_left (k2.2 h2), ite_eq_left ⟨h, h2⟩, Nat.cast_pow]
+      · rw [ite_eq_right (fun H => h2 (k2.1 H)), ite_eq_right (fun H => h2 H.2), zero_mul]
+    · rw [ite_eq_right (fun H => h (k.1 H)), ite_eq_right (fun H => h H.1), mul_zero]
   have e3 : ∑ᶠ Λ' ∈ Nb M P Λ, twist R 𝔛 φ Λ' x =
       ({Λ' ∈ Nb M P Λ | ∀ v, u v ∈ Λ'}.ncard : ℂ) * c := by
     refine finsum_ite (nb_count hP hΛ).1 _ _ _ fun Λ' h' => ?_
@@ -1072,12 +1072,12 @@ theorem GlobalTheory.SW.hecke_relation_pointwise : ∀ (E : Type) [Field E] [Num
         fun i => ⟨fun v _ => h v, fun v => (hS _).1 (h _) _ (h _)⟩]
       simp [Set.ncard_univ]
     rw [k2] at k1
-    rw [k3, if_pos ((cX Λ).2 h), ← hc]
+    rw [k3, ite_eq_left ((cX Λ).2 h), ← hc]
     have k4 := congrArg (Nat.cast : ℕ → ℂ) k1
     have k5 := congrArg (Nat.cast : ℕ → ℂ) hA1
     push_cast [Nat.cast_sub hq.one_le, Nat.cast_sub (Nat.one_le_pow N q hq.pos)] at k4 k5
     linear_combination c * k4 + (q : ℂ) ^ N * c * k5
-  · rw [count_pole hP hΛ ha hab u h B hB hB1 hB2 η hη, if_neg fun H => h ((cX Λ).1 H),
+  · rw [count_pole hP hΛ ha hab u h B hB hB1 hB2 η hη, ite_eq_right fun H => h ((cX Λ).1 H),
       Set.eq_empty_of_forall_notMem (s := {i | (∀ v, u v ∈ Λ) ∧ _}) fun i H => h H.1]
     simp only [Set.ncard_empty, Nat.cast_zero]
     ring
@@ -1251,10 +1251,10 @@ theorem admissibleLatticeFamily_moved_by_rational_matrix {M R : ℕ} {φ : Fam E
     simp only [twist_eq φ hex]
     by_cases h : ∀ ξ ∈ 𝔛, (R : E) • ((x * a) *ᵥ ξ) ∈ Λ
     · have h' := key Λ Λ' h3 hx' h
-      rw [if_pos h, if_pos h']
+      rw [ite_eq_left h, ite_eq_left h']
       exact hφ.loc Λ hΛ Λ' hΛ' ⟨u, hu, hc.coprime_dvd_right ⟨c, by ring⟩, h3, h4⟩ _
         (cols_of_cond hex.choose_spec.2 h) (cols_of_cond hex.choose_spec.2 h')
-    · rw [if_neg h, if_neg (fun h' => h (key Λ' Λ h4 hx h'))]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h (key Λ' Λ h4 hx h'))]
 
 end GlobalTheory.SW.TwistMove
 

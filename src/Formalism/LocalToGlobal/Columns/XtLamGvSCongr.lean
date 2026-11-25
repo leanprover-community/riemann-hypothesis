@@ -172,7 +172,7 @@ theorem xtPhiGS_int (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (�
   apply h
   unfold LocE.PhiGS
   simp only
-  rw [if_neg]
+  rw [ite_eq_right]
   intro hc
   exact hn (hc.1 p p' hp hp')
 
@@ -215,7 +215,7 @@ theorem xtTilH_be (hN : N = n + 1) (d : DecoSet (E := E) (n := n) (ST := ∅) (S
   show (if v ∈ localization₂ w.1.asIdeal (tilN d.1.N) then
       Fin.snoc (α := fun _ => 𝓞 E ⧸ w.1.asIdeal) (d.1.be w (initL E n v))
         (redP w.1 (v (Fin.last n) / algebraMap (𝓞 E) E pi)) else 0) i = _
-  rw [if_pos hv']
+  rw [ite_eq_left hv']
   split_ifs with h
   · have hi : i = Fin.castSucc ⟨i.1, h⟩ := Fin.ext rfl
     conv_lhs => rw [hi, Fin.snoc_castSucc]

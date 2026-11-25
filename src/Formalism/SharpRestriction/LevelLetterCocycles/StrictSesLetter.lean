@@ -39,18 +39,6 @@ theorem mem_DcrisL_iff (τ₀ : K₀ →ₐ[Qp] LL) (z : V ⊗[Qp] B) :
 
 end Funct
 
-section SES
-
-variable {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
-
-end SES
-
-section P4Y
-
-variable {PD} {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
-
-end P4Y
-
 section Rec
 
 theorem p4YL (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (hL : Formalism.MainNotions.UnusedSlot80.LevCoeff D HW F) :

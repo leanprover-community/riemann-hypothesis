@@ -125,7 +125,7 @@ theorem eMat_mul_negCol {n : ℕ} (l : Fin n) (a : Fin n → R ⊗[F] E) (hl : a
   simp only [Matrix.mul_apply, eMat, Matrix.updateCol_apply, Matrix.one_apply]
   by_cases hk : k = l
   · subst hk
-    simp only [if_true, negCol]
+    simp only [ite_true, negCol]
     have : ∀ c, (if c = k then a i else if i = c then (1 : R ⊗[F] E) else 0) * (if c = k then 1 else - a c) =
         (if c = k then a i else 0) + (if c = i then (if i = k then 0 else - a i) else 0) := by
       intro c
@@ -137,18 +137,18 @@ theorem eMat_mul_negCol {n : ℕ} (l : Fin n) (a : Fin n → R ⊗[F] E) (hl : a
       · by_cases h2 : c = i
         · subst h2; simp [h1]
         · simp [h1, h2, Ne.symm h2]
-    simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     by_cases h : i = k
     · subst h; simp [hl]
     · simp [h]
-  · simp only [hk, if_false]
+  · simp only [hk, ite_false]
     have : ∀ c, (if c = l then a i else if i = c then (1 : R ⊗[F] E) else 0) * (if c = k then 1 else 0) =
         if c = k then (if i = k then 1 else 0) else 0 := by
       intro c
       by_cases h1 : c = k
       · subst h1; simp [hk]
       · simp [h1]
-    simp only [this, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [this, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem dMat_mul {n : ℕ} (l : Fin n) (s t : R ⊗[F] E) (h : s * t = 1) : dMat R l s * dMat R l t = 1 := by
   rw [dMat, dMat, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]

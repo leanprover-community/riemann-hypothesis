@@ -120,14 +120,4 @@ theorem cocycle_of_crys {T : (Ω ≃ₐ[E] Ω) →* GL (Fin m) O₀} {f : ↥Gw 
 
 end Bridge
 
-section Main
-
-variable (D : D7) (i : D.ntw.Tw) (s : D.ntw.Sig i) (k : ℕ)
-
-variable (ψ : GE D →* (D.ntw.Ok i k)ˣ) (v : PlE D.host) (hv : v ∈ placesOver D.host.E (D.ntw.l i))
-  (hψ : ∀ σ ∈ decAt D v, ψ σ = 1)
-
-
-end Main
-
 end GlobalTheory.BKIntegralToRational

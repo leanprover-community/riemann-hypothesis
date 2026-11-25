@@ -1268,7 +1268,7 @@ theorem detNorm_aut_mul (hE : IsTotallyComplex E) {Λ : Submodule (𝓞 E) (Fin 
       exact hγw w a c
     have h2 : ∀ w : InfinitePlace E, w.mult = 2 := fun w => by
       unfold InfinitePlace.mult
-      rw [if_neg (InfinitePlace.not_isReal_iff_isComplex.2 (hE.isComplex w))]
+      rw [ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.2 (hE.isComplex w))]
     simp_rw [h1, InfinitePlace.norm_embedding_eq]
     rw [← hnorm, ← InfinitePlace.prod_eq_abs_norm]
     simp_rw [h2]

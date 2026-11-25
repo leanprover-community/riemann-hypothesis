@@ -160,12 +160,6 @@ def assemble (B : Base) (C : Cols B) (W : RowsRest B C) (V : DivStage B C W) (S 
   gat_d := G.gat_d
   Y_sigval := B.Y_sigval
 
-section
-variable (B : Base) (C : Cols B) (W : RowsRest B C) (V : DivStage B C W) (S : SStage B C W) (N : NStage B C W)
-    (G : GJStage B C)
-
-end
-
 structure Stages where
   B : Base
   C : Cols B

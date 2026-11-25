@@ -111,7 +111,7 @@ theorem dgen_ne_zero : ∀ {R : Ranks} (H : Host R) (cD : Tau R → ℂ), Th.IsD
   let e : Tau R → H.E →+* M := fun σ => (embT H σ).codRestrict M (hemb σ)
   have hlift : ∀ σ (x : H.E), Formalism.MainNotions.TaylorLogMetric.liftM M (embT H σ x) = e σ x := by
     intro σ x
-    simp only [Formalism.MainNotions.TaylorLogMetric.liftM, dif_pos (hemb σ x)]
+    simp only [Formalism.MainNotions.TaylorLogMetric.liftM, dite_eq_left (hemb σ x)]
     rfl
   let f : Tau R → (𝓞 H.E →* M) := fun σ => ((e σ).comp (algebraMap (𝓞 H.E) H.E)).toMonoidHom
   have hf : Function.Injective f := by

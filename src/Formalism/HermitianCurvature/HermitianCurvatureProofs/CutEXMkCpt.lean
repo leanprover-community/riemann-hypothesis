@@ -104,11 +104,11 @@ theorem mkCpt : MkCpt := by
     have hg' : D.castM e g ∈ B.GV P.k (P.r + (P.r - P.r)) := Formalism.FourierDecayAlt.P.PBE.castM_GV e hg
     have hne' : PBI.chartCoefficient b b' Φ (D.castM e g) ≠ 0 := hne
     have hD : U.DjU P.k P.r (P.r - P.r) (D.castM e g) ≠ 0 := by
-      intro h0; apply hne'; unfold PBI.chartCoefficient; rw [if_neg (not_not.2 h0)]
+      intro h0; apply hne'; unfold PBI.chartCoefficient; rw [ite_eq_right (not_not.2 h0)]
     obtain ⟨-, hμ, heq⟩ := PBI.chart_spec (D.castM e g) hg' hD
     have hmk := hne'
     unfold PBI.chartCoefficient at hmk
-    rw [if_pos hD] at hmk
+    rw [ite_eq_left hD] at hmk
     obtain ⟨-, hΦne⟩ := smul_ne_zero_iff.1 hmk
     have hμ' : Matrix.of (PBI.chart (Matrix.of.symm (D.castM e g))).2.2 ∈ B.GV P.k (P.r - P.r) := by
       simpa only [PBI.chart, Equiv.apply_symm_apply] using hμ

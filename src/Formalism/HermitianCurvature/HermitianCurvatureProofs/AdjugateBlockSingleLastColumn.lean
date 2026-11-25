@@ -25,16 +25,16 @@ theorem ptMatN_append_one (h : C.LPt) (ζ : ℂ) (j : ℕ) (hj : D.ptSize h = j)
   obtain ⟨y, rfl⟩ := (Ux3.eC j 0).surjective b
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply, D.ptMatN]
   rcases x with x | x <;> rcases y with y | y
-  · simp only [Matrix.fromBlocks_apply₁₁, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, Ux3.column_index_first_val, hj, x.isLt, y.isLt, and_self, if_true]
+  · simp only [Matrix.fromBlocks_apply₁₁, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, Ux3.column_index_first_val, hj, x.isLt, y.isLt, and_self, ite_true]
     rfl
   · simp only [Matrix.fromBlocks_apply₁₂, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, Ux3.column_index_first_val, Ux3.column_index_second_val, hj, Matrix.zero_apply]
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   · simp only [Matrix.fromBlocks_apply₂₁, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, Ux3.column_index_first_val, Ux3.column_index_second_val, hj, Matrix.zero_apply]
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   · have hx : x.val = 0 := by omega
     have hy : y.val = 0 := by omega
     simp only [Matrix.fromBlocks_apply₂₂, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, Ux3.column_index_second_val, hj, Matrix.of_apply]
-    rw [if_neg (by omega), if_pos ⟨by omega, by omega⟩, hx, hy]
+    rw [ite_eq_right (by omega), ite_eq_left ⟨by omega, by omega⟩, hx, hy]
     simp [D.ptEntry]
 
 end blocks
@@ -142,7 +142,7 @@ theorem prW_lift (a u : Fin (2 * 0 + k + 1) → ℂ) :
     · rfl
     · unfold liftVec; rw [dite_eq_right (by omega)]
   have hb0 : (fun i : Fin (2 * 0 + k + 1) => if 0 ≤ i.val ∧ i.val ≤ 0 + k then u i else 0) = u := by
-    funext i; rw [if_pos ⟨Nat.zero_le _, by omega⟩]
+    funext i; rw [ite_eq_left ⟨Nat.zero_le _, by omega⟩]
   unfold D.prW
   simp only []
   rw [hb, hb0, herm_lift, herm_lift, liftVec_sub, liftVec_smul]
@@ -265,7 +265,7 @@ theorem mMap_col (Z : Matrix (Fin j) (Fin j) ℂ) (γ0 : B.Mat k 0) (b : Fin j) 
   have hb : ∀ y : Ix k j 0, bvec (eB k j 0 (Sum.inl (Sum.inl b))) (eB k j 0 y) =
       if y = Sum.inl (Sum.inl b) then 1 else 0 := by
     intro y; simp only [bvec, Pi.single_apply, EmbeddingLike.apply_eq_iff_eq]
-  simp only [hb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [mMap, Ux3.block3_apply]
   rcases x with (a | i) | a <;> simp [Matrix.fromBlocks, Matrix.fromRows, Matrix.fromCols]
 
@@ -336,14 +336,14 @@ theorem dFrame_mMap (S : B.RealPlaceData k (j + 0) Wp Wq) (S0 : B.RealPlaceData 
   have hcofR : D.cofR S (mMap k j 0 Z γ0) = Z.det • (mMap k j 0 Z γ0 *ᵥ S.z') := by
     unfold D.cofR
     rw [hZh, Finset.sum_eq_single (Fin.last (j + 0))]
-    · rw [adjugate_block_single_last_column Z ζ hZ hζ, if_pos rfl, _root_.Formalism.FourierDecayAlt.P.Dx2.DF.fvec_lastI]
-    · intro b _ hb; rw [adjugate_block_single_last_column Z ζ hZ hζ, if_neg hb, zero_smul]
+    · rw [adjugate_block_single_last_column Z ζ hZ hζ, ite_eq_left rfl, _root_.Formalism.FourierDecayAlt.P.Dx2.DF.fvec_lastI]
+    · intro b _ hb; rw [adjugate_block_single_last_column Z ζ hZ hζ, ite_eq_right hb, zero_smul]
     · intro h; exact absurd (Finset.mem_univ _) h
   have hcofL : D.cofL S (mMap k j 0 Z γ0) = star Z.det • S.z := by
     unfold D.cofL
     rw [hZh, Finset.sum_eq_single (Fin.last (j + 0))]
-    · rw [adjugate_block_single_last_line Z ζ hZ hζ, if_pos rfl, _root_.Formalism.FourierDecayAlt.P.Dx2.DF.fvec_lastI]; rfl
-    · intro b _ hb; rw [adjugate_block_single_last_line Z ζ hZ hζ, if_neg hb]; simp
+    · rw [adjugate_block_single_last_line Z ζ hZ hζ, ite_eq_left rfl, _root_.Formalism.FourierDecayAlt.P.Dx2.DF.fvec_lastI]; rfl
+    · intro b _ hb; rw [adjugate_block_single_last_line Z ζ hZ hζ, ite_eq_right hb]; simp
     · intro h; exact absurd (Finset.mem_univ _) h
   have hcofR0 : D.cofR S0 γ0 = γ0 *ᵥ S0.z' := by
     unfold D.cofR

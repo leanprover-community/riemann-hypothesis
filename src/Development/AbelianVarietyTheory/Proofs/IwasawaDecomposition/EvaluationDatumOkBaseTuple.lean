@@ -171,21 +171,6 @@ theorem pull_norm (c : E → E) (c' : E' → E') (h : ∀ x, e (c x) = c' (e x))
 
 end Pull
 
-section Vp
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E]
-
-
-end Vp
-
-section Val
-
-variable {K : Type} [Field K] [NumberField K] (σ : K →+* ℂ)
-
-
-
-end Val
-
 section Chi
 
 variable {D : D7} {X : Fields} (s : Seam D X) {χ : TaylorLogMetric.IdE D → ℂ}
@@ -295,7 +280,7 @@ theorem sum_ite_zero_eq_atN {n c : ℕ} (y : Fin (n + c) → E) :
   | succ c =>
     rw [Fin.sum_univ_succ]
     have h0 : ∀ i : Fin c, ¬ ((Fin.succ i).1 = 0) := fun i => by simp
-    simp only [Fin.val_zero, if_true, h0, if_false, Finset.sum_const_zero, add_zero]
+    simp only [Fin.val_zero, ite_true, h0, ite_false, Finset.sum_const_zero, add_zero]
     unfold Loc.atN
     rw [dite_eq_left (by omega)]
     congr 1

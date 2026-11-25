@@ -495,8 +495,8 @@ theorem card_eq_prod_locLen : ∀ (n : ℕ) (Q : Type) [AddCommGroup Q] [Module 
           Finsupp.single_apply]
         by_cases hw : (⟨m0, hm0⟩ : {p : Ideal R // p.IsMaximal}) = w
         · subst hw
-          rw [if_pos rfl, locLen_quot_self]; simp
-        · rw [if_neg hw, locLen_quot_ne w.1 m0 (fun h => hw (Subtype.ext h.symm))]; simp
+          rw [ite_eq_left rfl, locLen_quot_self]; simp
+        · rw [ite_eq_right hw, locLen_quot_ne w.1 m0 (fun h => hw (Subtype.ext h.symm))]; simp
       · have hz : ∀ w : {p : Ideal R // p.IsMaximal}, Nat.card (R ⧸ w.1) ^ 0 = 1 :=
           fun _ => pow_zero _
         have ha : ∀ (w : {p : Ideal R // p.IsMaximal}) (a c : ℕ), Nat.card (R ⧸ w.1) ^ (a + c) =
@@ -535,33 +535,5 @@ theorem relIndex_ne_zero {K V ι : Type} [Field K] [NumberField K] [StarRing K]
   exact (ht_pos b X hX (fg_of_le hM hNM)).ne' hi
 
 end Len
-
-section Span
-
-end Span
-
-section Tests
-
-end Tests
-
-section LocPow
-
-variable {K : Type} [Field K] [NumberField K]
-
-variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
-end LocPow
-
-section Local
-
-variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
-  [IsScalarTower (𝓞 K) K V]
-
-
-end Local
-
-section LocalTest
-
-end LocalTest
 
 end Formalism.LFunctionChainParameters.slopeLatticeData

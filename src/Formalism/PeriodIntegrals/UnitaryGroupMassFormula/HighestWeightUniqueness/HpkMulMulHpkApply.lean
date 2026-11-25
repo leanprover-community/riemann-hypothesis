@@ -58,17 +58,17 @@ lemma Hpk_apply (i j : Fin (2 * r + k + 1)) :
 lemma Hpk_mul_apply (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (i j) :
     (Hpk k r * X) i j = epsI k r i * X (piI k r i) j := by
   rw [Matrix.mul_apply, Fintype.sum_eq_single (piI k r i)]
-  · rw [Hpk_apply, if_pos rfl]
+  · rw [Hpk_apply, ite_eq_left rfl]
   · intro l hl
-    rw [Hpk_apply, if_neg hl, zero_mul]
+    rw [Hpk_apply, ite_eq_right hl, zero_mul]
 
 lemma Hpk_mulVec_apply (v : Fin (2 * r + k + 1) → ℂ) (i) :
     (Hpk k r *ᵥ v) i = epsI k r i * v (piI k r i) := by
   simp only [Matrix.mulVec, dotProduct]
   rw [Fintype.sum_eq_single (piI k r i)]
-  · rw [Hpk_apply, if_pos rfl]
+  · rw [Hpk_apply, ite_eq_left rfl]
   · intro l hl
-    rw [Hpk_apply, if_neg hl, zero_mul]
+    rw [Hpk_apply, ite_eq_right hl, zero_mul]
 
 lemma Hpk_mul_self : Hpk k r * Hpk k r = 1 := by
   ext i j
@@ -83,9 +83,9 @@ lemma Hpk_conjTranspose : (Hpk k r)ᴴ = Hpk k r := by
   rw [Matrix.conjTranspose_apply, Hpk_apply, Hpk_apply]
   by_cases h : j = piI k r i
   · subst h
-    rw [piI_piI, if_pos rfl, if_pos rfl, star_epsI, epsI_piI]
+    rw [piI_piI, ite_eq_left rfl, ite_eq_left rfl, star_epsI, epsI_piI]
   · have h' : ¬ i = piI k r j := fun h' => h (by rw [h', piI_piI])
-    rw [if_neg h', if_neg h, star_zero]
+    rw [ite_eq_right h', ite_eq_right h, star_zero]
 
 lemma inv_mul_UH {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r)) :
     (Hpk k r * gᴴ * Hpk k r) * g = 1 := by

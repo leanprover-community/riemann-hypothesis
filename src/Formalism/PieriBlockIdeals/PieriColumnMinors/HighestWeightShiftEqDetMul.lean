@@ -161,7 +161,7 @@ theorem highest_weight_shift_eq_det_mul (R : Type) [CommRing R] {r : ℕ} (ν : 
         have := i.isLt
         simp only [Fin.coe_castSucc]
         omega
-      simp only [nuNext, dif_pos hs]
+      simp only [nuNext, dite_eq_left hs]
       omega
     have hL : ∀ (h1 : (Fin.last r).val + 1 ≤ r + 1) (h2 : (Fin.last r).val + 1 ≤ r + 1),
         lpMinor R ((Fin.last r).val + 1) h1 h2 = genericDet R (r + 1) :=

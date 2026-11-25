@@ -727,8 +727,6 @@ open scoped CategoryTheory.Obj BigOperators
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Ex
 
-theorem _root_.GlobalTheory.T.exists_geometric_values_iso_of_identification_dvr : Laws → ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (D D' : DegPre V) (e : IsPullDeg (RingHom.id V) D D') (F : Type) [Field F] [Algebra (FractionRing V) F] (N N' : NumD F) (ν : NumOf D F N) (ν' : NumOf D' F N'), ∃ J : NumD.Iso N N', GeoIso ν ν' J.toIso ∧ ∀ (k : ℕ) (p : QkPt D F k) (p' : QkPt D' F k) (q : N.QT k) (q' : N'.QT k), ν.QPt p q → ν'.QPt p' q' → GlobalTheory.IndefiniteRowSideFullHecke.ThetaTowerRecognition.Carries e p p' → q'.1.1.toAdd = J.e q.1.1.toAdd ∧ J.Rel q.1.2 q'.1.2 := by
-  first | exact @GlobalTheory.IdentifiedValues.exists_geoIso_rel
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsGeometricValuesIsoOfIdentificationDvrStatement =====
@@ -1383,7 +1381,6 @@ theorem exists_integral : ∃ (M : NumD C) (ν₀ : NumOf D.toPre C M) (q : Quad
   obtain ⟨I, h⟩ := exists_gaugeMap D.psi_even D.tau_bimult ν ν₀ hth
   exact ⟨M, ν₀, q, I, hI, hq, h⟩
 
-
 include ν in
 theorem summable_of_data [CompleteSpace C] {m : ℕ} (hm : Odd m) (p : N.QT (m ^ 2)) :
     Summable (N.txT m p) ∧ ∀ j, j ≠ 0 → ∀ r : N.QT j, Summable (N.evT m p r.1.2) := by
@@ -1492,14 +1489,13 @@ theorem inducedBy_of_onQ (hn : 2 ≤ n) (h : SameMatch mt w) {j : ℕ} (hj : 1 �
   obtain ⟨p', hp'⟩ := exists_pt he' hb' ν' (qMap (TateInh.homOfIso J) _ q)
   exact ⟨p, p', _, hp, hp', he _ p p' q hp hp', a i q⟩
 
-
 omit he hb he' hb' [IsAlgClosed C] in
 theorem onQ_of_inducedBy (hn : n ≠ 0) (h : SameMatch mt w)
     (H : ∃ e : IsPullDeg (RingHom.id V) D D', w.InducedBy ν ν' e) :
     ∃ J : NumD.Iso N N', mt.OnQ J ∧ GeoIso ν ν' J.toIso := by
   haveI := hV.1
   obtain ⟨e, he⟩ := H
-  obtain ⟨J, hJ, hc⟩ := GlobalTheory.T.exists_geometric_values_iso_of_identification_dvr firstFiveLaws.1 V D D' e C N N' ν ν'
+  obtain ⟨J, hJ, hc⟩ := GlobalTheory.IdentifiedValues.exists_geoIso_rel firstFiveLaws.1 V D D' e C N N' ν ν'
   refine ⟨J, fun j p p' h₁ h₂ => ?_, hJ⟩
   refine (r_incl mt (sq (n ^ j)) (pow_ne_zero _ hn) p p' (up (sq _) p) (up (sq _) p') rfl rfl rfl rfl).2 ((h j _ _).2 ?_)
   obtain ⟨r, r', q', a₁, a₂, a₃, a₄⟩ := he j (up (sq (n ^ j)) p)

@@ -277,10 +277,10 @@ theorem not_lt_of_isChowFormInt {P : Ideal (MvPolynomial (Fin N) K)} {D D' δ δ
   rw [map_zero, map_zero, eval_map, ← aeval_def]
   obtain ⟨y, hy, hP, hu⟩ := (h'.zero_iff _).1 (aeval_eq_zero_of_block h'
     (fun v => if hv : (v.1 : ℕ) < D + 1 then u (⟨v.1, hv⟩, v.2) else 0) (Fin.last _)
-    (fun j => dif_neg (by simp; omega)))
+    (fun j => dite_eq_right (by simp; omega)))
   refine (h.zero_iff u).2 ⟨y, hy, hP, fun i => ?_⟩
   have := hu ⟨i, by omega⟩
-  simpa only [dif_pos i.2] using this
+  simpa only [dite_eq_left i.2] using this
 
 theorem exists_X_notMem {P : Ideal (MvPolynomial (Fin N) K)} {D δ : ℕ}
     {f : MvPolynomial (Fin (D + 1) × Fin N) K} (h : IsChowFormInt P D δ f) : ∃ j, X j ∉ P := by
@@ -346,7 +346,7 @@ theorem degree_eq_coeff (D : ℕ) : ∀ (K : Type) [Field K] [CharZero K] (P : I
     obtain ⟨hEp, hl⟩ := _root_.GlobalTheory.ExtPrime.isPrime_map_and_generic_form_notMem K L N P hp
     obtain ⟨Q, hQ, hIQ, hsat⟩ := _root_.GlobalTheory.Chow.exists_prime_saturation_generic_section K L N P hp fun u => by
       obtain ⟨y, hy, h1, h2⟩ := (h.zero_iff _).1 (aeval_eq_zero_of_block h
-        (fun v => if v.1 = 0 then u v.2 else 0) (Fin.last _) (fun j => if_neg (by simp)))
+        (fun v => if v.1 = 0 then u v.2 else 0) (Fin.last _) (fun j => ite_eq_right (by simp)))
       exact ⟨y, hy, h1, by simpa using h2 0⟩
     obtain ⟨f', hf'⟩ := _root_.GlobalTheory.ChowSpec.exists_isChowFormInt_generic_section K L N P D δ f hP h
     have hlin : (∑ j : Fin N, C (algebraMap (MvPolynomial (Fin N) K) L (X j)) * X j :

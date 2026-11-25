@@ -76,7 +76,7 @@ theorem emb_bij {Ψ : Type} {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) :
     rw [RingHom.comp_assoc, hres]
   constructor
   · rintro ⟨τ, b⟩ ⟨τ', b'⟩ e
-    cases b <;> cases b' <;> simp only [Bool.false_eq_true, if_true, if_false, hconj] at e
+    cases b <;> cases b' <;> simp only [Bool.false_eq_true, ite_true, ite_false, hconj] at e
     · rw [h.1 (embOf_injective e)]
     · exact absurd ⟨τ, embOf_injective e⟩ ((h.2 (σ τ')).1 ⟨τ', rfl⟩)
     · exact absurd ⟨τ', (embOf_injective e).symm⟩ ((h.2 (σ τ)).1 ⟨τ, rfl⟩)
@@ -98,7 +98,7 @@ theorem emb_bij {Ψ : Type} {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) :
       have e : (starRingEnd ℂ).comp ((starRingEnd ℂ).comp (φ.comp (algebraMap (𝓞 E) E))) =
           φ.comp (algebraMap (𝓞 E) E) := by
         ext a; simp
-      simp only [if_true, hconj, hτ, e, embOf_of_comp]
+      simp only [ite_true, hconj, hτ, e, embOf_of_comp]
 
 theorem trace_eq {Ψ : Type} [Fintype Ψ] {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) (x : E) :
     ((Algebra.trace ℚ E x : ℚ) : ℝ) = ∑ τ, 2 * (embOf (σ τ) x).re := by

@@ -43,7 +43,7 @@ theorem gs_eq (c : ℝ) (x : Fin m → Fin n → ℂ) : gs c x = Complex.exp (ev
   unfold gs
   congr 1
 
-  simp only [Sg, evX_eq, map_mul, map_sum, eval_C, eval_X, crd_apply, if_true, Bool.false_eq_true, if_false,
+  simp only [Sg, evX_eq, map_mul, map_sum, eval_C, eval_X, crd_apply, ite_true, Bool.false_eq_true, ite_false,
   Complex.star_def, Complex.conj_mul']
   push_cast
   ring

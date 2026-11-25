@@ -66,7 +66,7 @@ private theorem cont_rot : Continuous rot := by
 private def uu (y : ({0}ᶜ : Set ℝ)) : (TR.Rinf ℚ)ˣ :=
   ⟨fun _ => y.1, fun _ => y.1⁻¹, funext fun _ => mul_inv_cancel₀ y.2, funext fun _ => inv_mul_cancel₀ y.2⟩
 
-private theorem iy_uu (y : ({0}ᶜ : Set ℝ)) : iy y.1 = TR.infId ℚ (uu y) := dif_neg y.2
+private theorem iy_uu (y : ({0}ᶜ : Set ℝ)) : iy y.1 = TR.infId ℚ (uu y) := dite_eq_right y.2
 
 private theorem cont_iy : Continuous fun y : ({0}ᶜ : Set ℝ) => iy y.1 := by
   simp only [iy_uu]

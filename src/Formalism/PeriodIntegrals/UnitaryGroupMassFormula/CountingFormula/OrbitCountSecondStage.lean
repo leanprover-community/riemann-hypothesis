@@ -182,7 +182,7 @@ private theorem pW_skL (D : Formalism.BasicNotions.D7) (S : Matrix (Fin D.R.rS) 
   rw [skL_apply]
 
   simp only [pW, map_add (f := _), map_sum, map_smul, hf, hz, D.sp.hyp_ee, smul_eq_mul, mul_zero, add_zero,
-  mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, add_smul,
+  mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, add_smul,
   Finset.sum_add_distrib, Finset.sum_const_zero]
   module
 
@@ -214,7 +214,7 @@ theorem alM_skE (D : Formalism.BasicNotions.D7) {T : D.host.E} (T' : D.host.E) (
 
   rw [hfr, skL_apply, map_add (f := _), map_sum]
   simp only [map_smul, smul_eq_mul, hf, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true, hZ]
+    ite_true, hZ]
 
 end PI.UnitaryGroupMassFormula.CntFormula
 end -- clump:auto
@@ -447,7 +447,7 @@ theorem orbit_count_second_stage : Stage2 := by
     rw [hermP, Matrix.mul_add, Matrix.add_mul, e1, e2, add_comm]
   have hfx : hfun (pWf D x) = alM D x * R + (alM D x * R).conjTranspose := by
     have hex : ∃ y, Good D T' F0 Λ Z y ∧ pWf D y = pWf D x := ⟨x, hx, rfl⟩
-    simp only [hfun, dif_pos hex]
+    simp only [hfun, dite_eq_left hex]
     rw [hermitianDivisible_eq_smul D T' F0 Λ hF Z hex.choose_spec.1 hx hex.choose_spec.2, hH]
   refine ⟨(alM D x * R + (alM D x * R).conjTranspose, fun i j => ρ i j / N),
     ⟨⟨pWf D x, hxw, hfx⟩, ?_⟩, ?_⟩

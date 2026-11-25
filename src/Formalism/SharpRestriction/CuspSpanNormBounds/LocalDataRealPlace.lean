@@ -77,10 +77,6 @@ def FullLat (L : Submodule ℤ D.host.E) : Prop :=
 
 end S1bNum
 
-section Kernels
-
-end Kernels
-
 section S1bData
 
 variable (D : D7)
@@ -149,9 +145,5 @@ def ThS (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRea
   ThInvF D C1 C2 N T T' δ x L ^ (-(1 / (D.R.f : ℝ)))
 
 end Sizes
-
-section Rows
-
-end Rows
 
 end Formalism.MainNotions.S

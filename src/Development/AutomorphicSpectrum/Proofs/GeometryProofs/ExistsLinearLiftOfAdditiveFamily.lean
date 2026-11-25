@@ -325,7 +325,7 @@ theorem exists_linear_lift_of_additive_family : ∀ (R : Type) [CommRing R] (G :
   have hh : ∀ b ∈ B', ∀ z, e.ex b (h b z) = u b z := by
     intro b hb
     have hx := hexl b hb
-    rw [show h b = hx.choose from dif_pos hx]
+    rw [show h b = hx.choose from dite_eq_left hx]
     exact hx.choose_spec
   refine ⟨h, ?_, fun b hb => ⟨hh b hb, fun h' hh' => huniq b hb h' (h b) hh' (hh b hb), fun z v => ?_⟩⟩
   · intro z b₀ hb₀

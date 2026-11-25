@@ -182,11 +182,11 @@ theorem kmap_extend : ∀ {n : ℕ} (H V : Type) [NormedAddCommGroup H] [InnerPr
   let ξ := stdOrthonormalBasis ℂ Hs
   have hself : ∀ i, ⟪(ξ i : H), (ξ i : H)⟫_ℂ = 1 := fun i => by
     have := (orthonormal_iff_ite.1 ξ.orthonormal) i i
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     exact this
   have hoff : ∀ i j, i ≠ j → ⟪(ξ i : H), (ξ j : H)⟫_ℂ = 0 := fun i j hij => by
     have := (orthonormal_iff_ite.1 ξ.orthonormal) i j
-    rw [if_neg hij] at this
+    rw [ite_eq_right hij] at this
     exact this
   have hne : ∀ i, (ξ i : H) ≠ 0 := fun i h0 => by
     have := hself i

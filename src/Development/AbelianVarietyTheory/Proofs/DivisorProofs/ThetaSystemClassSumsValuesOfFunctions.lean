@@ -75,7 +75,7 @@ theorem sumI_fourier {V : Type} [CommRing V] [IsDomain V] (I : Ideal V) {n : ℕ
     simp_rw [pw]
     split_ifs with hmu
     · simp [hmu]
-    · push_neg at hmu
+    · push Not at hmu
       obtain ⟨τ₀, h0⟩ := hmu
       set χ : G → V := fun τ => ω ^ (-(w κ τ) + w mu τ).val with hχ
       have hmul : ∀ τ, χ (τ + τ₀) = χ τ * χ τ₀ := fun τ => by

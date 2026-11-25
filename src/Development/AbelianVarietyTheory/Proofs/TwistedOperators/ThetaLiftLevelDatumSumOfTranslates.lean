@@ -998,12 +998,12 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
         have := add_mem hyL (hIn2 _ hm)
         rwa [tr_sub, add_add_sub_cancel] at this
     rw [finsum_eq_single _ (QuotientAddGroup.mk ⟨y, hy⟩ : LvCls C Lv) (fun c hc' => by
-      rw [indL, if_neg (fun h => hc' ((hiff c).1 h)), mul_zero])]
+      rw [indL, ite_eq_right (fun h => hc' ((hiff c).1 h)), mul_zero])]
     set c₀ : LvCls C Lv := QuotientAddGroup.mk ⟨y, hy⟩ with hc₀
     have hw : x + tr S T e k₀ (c₀.out : Matrix (Fin S.rank) (Fin T.rank) D.host.E) ∈ liftL S T βS βT Pg Q e :=
       (hiff c₀).2 rfl
     change _ = _ * indL (liftL S T βS βT Pg Q e) (x + tr S T e k₀ (c₀.out : Matrix (Fin S.rank) (Fin T.rank) D.host.E))
-    rw [indL, if_pos hw, mul_one, hdat _ (neg_mem c₀.out.2), thPDatum, if_pos hx]
+    rw [indL, ite_eq_left hw, mul_one, hdat _ (neg_mem c₀.out.2), thPDatum, ite_eq_left hx]
     have hwI := hInt _ c₀.out.2
     have hnI : IsIntM (frMapAdj S T βS βT (-tr S T e k₀ (c₀.out : Matrix (Fin S.rank) (Fin T.rank) D.host.E))) := by
       rw [frMapAdj_neg]; exact fun i j => by rw [Matrix.neg_apply]; exact neg_mem (hwI i j)
@@ -1017,9 +1017,9 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
       rw [tr_neg, eq_neg_of_add_eq_zero_right h3.symm, eq_neg_of_add_eq_zero_left h1.symm]
     refine congrArg₂ (· * ·) (_root_.GlobalTheory.PlaceVec.omegaK_congr Pg (fun PP hPP => (hred PP (Finset.mem_union_left _ hPP)).symm))
       (_root_.GlobalTheory.PlaceVec.omegaQ_congr Q T.rank ξ (-1) (fun PP hPP => (hred PP (Finset.mem_union_right _ hPP)).symm))
-  · rw [thPDatum, if_neg hx]
+  · rw [thPDatum, ite_eq_right hx]
     refine (finsum_eq_zero_of_forall_eq_zero fun c => ?_).symm
-    rw [indL, if_neg, mul_zero]
+    rw [indL, ite_eq_right, mul_zero]
     intro h
     have hwI := hInt _ (c.out : _).2
     have hnI : IsIntM (frMapAdj S T βS βT (-tr S T e k₀ (c.out : Matrix (Fin S.rank) (Fin T.rank) D.host.E))) := by
@@ -1214,7 +1214,7 @@ theorem finPart_mul_mem (e : AE D) (SS : Finset (Formalism.L2.DIV.Pl D.host.E)) 
         rw [h1, h2, sub_zero, sub_self]
     rw [h0, zero_mul]
     exact (Q.adicCompletionIntegers D.host.E).zero_mem
-  · push_neg at hQ
+  · push Not at hQ
     refine mul_mem ?_ ?_
     · rw [hO, hE, hC]
       exact sub_mem (sub_mem (Q.adicCompletionIntegers D.host.E).one_mem
@@ -1560,7 +1560,7 @@ theorem red_nsmul {b a : ℕ} (PP : Formalism.L2.DIV.Pl D.host.E) {N : Matrix (F
     rw [Matrix.smul_apply, nsmul_eq_mul]; exact mul_mem (natCast_mem _ m) (hN i j)
   refine ⟨hI, ?_⟩
   ext i j
-  simp only [redM, dif_pos (hI i j), Matrix.zero_apply]
+  simp only [redM, dite_eq_left (hI i j), Matrix.zero_apply]
   have e : (⟨(m • N) i j, hI i j⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) =
       (m : Formalism.L2.Herm.intAf D.host.F D.host.E) * ⟨N i j, hN i j⟩ := by
     apply Subtype.ext; simp [Matrix.smul_apply, nsmul_eq_mul]

@@ -514,7 +514,7 @@ theorem continuous_transportF_apply_k : ∀ (F E : Type) [Field F] [NumberField 
   let f : _ → Fin m → SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ :=
     fun p => if h : p ∈ N then Classical.choose (hf p h) else 0
   have hfe : ∀ p ∈ N, om p Φ = ∑ i, pureA F (f p i) (g i) := fun p hp => by
-    simp only [f, dif_pos hp]
+    simp only [f, dite_eq_left hp]
     exact Classical.choose_spec (hf p hp)
   have hslice : ∀ p ∈ N, ∀ i v, f p i v = om p Φ (GlobalTheory.WeilCont.adeleJoin F v (y i)) := by
     intro p hp i v

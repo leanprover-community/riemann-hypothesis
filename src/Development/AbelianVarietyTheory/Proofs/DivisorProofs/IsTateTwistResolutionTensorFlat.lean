@@ -985,7 +985,7 @@ theorem Tens.d_upper_edge (I J : Cx R) (U : Scheme.{0}) (w n s : ℤ) (h : s + n
     rw [Tens.upper_of]
     by_cases hab : a = s ∧ b = n
     · obtain ⟨rfl, rfl⟩ := hab
-      rw [if_pos le_rfl, Tens.d_of, DFinsupp.add_apply, DFinsupp.smul_apply, DirectSum.of_eq_same, DirectSum.of_eq_of_ne,
+      rw [ite_eq_left le_rfl, Tens.d_of, DFinsupp.add_apply, DFinsupp.smul_apply, DirectSum.of_eq_same, DirectSum.of_eq_of_ne,
         smul_zero, add_zero, DirectSum.of_eq_same]
       intro e; simp at e
     · rw [DirectSum.of_eq_of_ne]
@@ -1085,7 +1085,7 @@ theorem Tens.cycle_loc_boundary {C J : Cx R} (a b : ℤ) [C.IsStrictlyGE a] [J.I
       Sec (C.X q.1.1) V ⊗[ULift.{1} R] Sec (J.X q.1.2) V) ⟨(w - n, n), by simp only; omega⟩ y0
     have hyu : Tens.upper n y = y := by
       simp only [y]
-      rw [Tens.upper_of, if_pos le_rfl]
+      rw [Tens.upper_of, ite_eq_left le_rfl]
     let x' : Tens C J V (w + 1) := Tens.res k (w + 1) x - Tens.d C J V w y
     have hx'd : Tens.d C J V (w + 1) x' = 0 := by
       simp only [x', map_sub, ← Tens.res_d, hdx, map_zero, Tens.d_d, sub_zero]
@@ -1098,7 +1098,7 @@ theorem Tens.cycle_loc_boundary {C J : Cx R} (a b : ℤ) [C.IsStrictlyGE a] [J.I
       show (Tens.res k (w + 1) x - Tens.d C J V w y) q = 0
       rw [DFinsupp.sub_apply]
       rcases lt_or_eq_of_le (Int.lt_add_one_iff.mp (not_le.mp hq)) with hlt | heq
-      · rw [Tens.res_apply, ← hu, Tens.upper_apply, if_neg (by omega), map_zero, ← hyu,
+      · rw [Tens.res_apply, ← hu, Tens.upper_apply, ite_eq_right (by omega), map_zero, ← hyu,
           Tens.d_upper_low C J V w n _ q hlt, sub_zero]
       · obtain ⟨⟨s', t'⟩, hq'⟩ := q
         simp only at heq hq'

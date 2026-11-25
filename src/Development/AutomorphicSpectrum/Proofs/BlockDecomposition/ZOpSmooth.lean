@@ -129,7 +129,7 @@ theorem Epow_gel (hR : RCalc) {f : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs 
     intro a b x hx
     by_cases hab : a = b
     · simp [Epow, hab]
-    · simp only [Epow, if_neg hab]
+    · simp only [Epow, ite_eq_right hab]
       exact (gel_zero hR s m hx).symm
   | succ m' ih =>
     intro a b x hx

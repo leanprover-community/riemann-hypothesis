@@ -157,12 +157,12 @@ theorem oeApprox_holds : Formalism.L2.SG.Pf.UnipLat.OEApprox := by
     exact ((norm_le_pi_norm _ u).trans (norm_snd_le _)).trans
       (hR _ (ZSpan.fract_mem_fundamentalDomain _ x))
   by_cases h : (w v).embedding = φ v
-  · have hcv : c v = t v := if_pos h
+  · have hcv : c v = t v := ite_eq_left h
     rw [hcv, h] at hb
     exact hb
   · have h2 : (w v).embedding = ComplexEmbedding.conjugate (φ v) :=
       (InfinitePlace.embedding_mk_eq (φ v)).resolve_left h
-    have hcv : c v = (starRingEnd ℂ) (t v) := if_neg h
+    have hcv : c v = (starRingEnd ℂ) (t v) := ite_eq_right h
     rw [hcv, h2, ComplexEmbedding.conjugate_coe_eq, ← map_sub, Complex.norm_conj] at hb
     exact hb
 
@@ -196,13 +196,13 @@ theorem condMat_inl (lv : ι → ℕ) (k : ℕ) (G G' : Matrix ι ι K) (f : K �
   first
     | simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, condMat, Matrix.of_apply, Sum.elim_inl]
   by_cases h : lv j < lv i + k
-  · rw [if_pos h, Finset.sum_eq_single (i, j)]
+  · rw [ite_eq_left h, Finset.sum_eq_single (i, j)]
     · simp [h]
     · intro q _ hq
       simp [hq]
     · intro hn
       exact absurd (Finset.mem_univ _) hn
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     simp [h]
 
 theorem condMat_inr (lv : ι → ℕ) (k : ℕ) (G G' : Matrix ι ι K) (f : K →+* L) (z : ι × ι → L) (i j : ι) :
@@ -227,11 +227,11 @@ theorem cond_iff (lv : ι → ℕ) (k : ℕ) (G G' : Matrix ι ι K) (f : K →+
     refine ⟨?_, ?_⟩
     · intro i j hij
       have := congrFun hz (Sum.inl (i, j))
-      rw [condMat_inl, if_pos hij] at this
+      rw [condMat_inl, ite_eq_left hij] at this
       simpa [matOf] using this
     · intro i j hij
       have := congrFun hz (Sum.inr (i, j))
-      rw [condMat_inr, if_pos hij] at this
+      rw [condMat_inr, ite_eq_left hij] at this
       simpa using this
   · rintro ⟨h1, h2⟩
     funext r

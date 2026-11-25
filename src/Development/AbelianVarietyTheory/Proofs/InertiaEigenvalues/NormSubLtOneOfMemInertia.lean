@@ -288,7 +288,7 @@ theorem detects_restrictNormal_inf : ∀ (l : ℕ) [Fact l.Prime] (L : Type) [Fi
       lift s ∈ N ∧ AlgEquiv.restrictNormalHom L (lift s) = s := by
     intro s hs
     have h : ∃ σ ∈ N, AlgEquiv.restrictNormalHom L σ = s := Subgroup.mem_map.mp hs
-    simp only [lift, dif_pos h]
+    simp only [lift, dite_eq_left h]
     exact h.choose_spec
   obtain ⟨hτN, hτ⟩ := hlift σ₀ hσ₀.1
   have hτN' : lift σ₀ ∉ N' := by
@@ -1491,7 +1491,7 @@ theorem jumpSum_mono_of_le :
   intro t _
   by_cases hC : A ⊓ R t ≤ C
   · simp [hBC t hC]
-  · rw [if_neg hC]
+  · rw [ite_eq_right hC]
     split_ifs <;> simp
 
 end GlobalTheory.PMon.Ram

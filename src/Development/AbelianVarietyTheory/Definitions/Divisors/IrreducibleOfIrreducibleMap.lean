@@ -217,12 +217,12 @@ theorem eq_of_components (h : IsChowFormCycle Z e dl f)
   let a' : Ideal (MvPolynomial (Fin N) k) → k := fun P => if hP : P ∈ Z.support then a P hP else 1
   refine ⟨c * ∏ P ∈ Z.support, a' P ^ Z P, mul_ne_zero hc
     (Finset.prod_ne_zero_iff.2 fun P hP => pow_ne_zero _ ?_), ?_⟩
-  · simp only [a', dif_pos hP]; exact ha P hP
+  · simp only [a', dite_eq_left hP]; exact ha P hP
   · rw [MvPolynomial.C_mul, mul_assoc, map_prod, Finsupp.prod, Finsupp.prod,
       ← Finset.prod_mul_distrib]
     congr 1
     refine Finset.prod_congr rfl fun P hP => ?_
-    simp only [a', dif_pos hP]
+    simp only [a', dite_eq_left hP]
     rw [hag P hP, mul_pow, map_pow]
 
 theorem unique (h : IsChowFormCycle Z e dl f) (h' : IsChowFormCycle Z e dl' f') :

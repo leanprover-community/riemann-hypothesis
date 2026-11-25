@@ -82,7 +82,7 @@ theorem det_eq_Dl : (Zhat F F').det = Dl F F' (r + 1) := by
   congr 1
 
 theorem pairing_omegaPrime_z : brS S (omp F F') F.z = Dl F F' (r + 1) := by
-  rw [show F.z = F.fvec (Fin.last r) by simp [FlagG.fvec], brS_omp_fvec, if_pos rfl, det_eq_Dl]
+  rw [show F.z = F.fvec (Fin.last r) by simp [FlagG.fvec], brS_omp_fvec, ite_eq_left rfl, det_eq_Dl]
 
 theorem adj_last_eq_Dl : (Zhat F F').adjugate (Fin.last r) (Fin.last r) = Dl F F' r := by
   rw [Matrix.adjugate_fin_succ_eq_det_submatrix]

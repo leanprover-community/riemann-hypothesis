@@ -229,10 +229,10 @@ theorem ip_smul_self (c : ℂ) (hc : c ≠ 0) (φ : Matrix κ ι ℚ → ℂ) :
       unfold IsSB; rw [hp]
     unfold haar
     by_cases h : IsSB ψ
-    · rw [dif_pos h, dif_pos (hiff.2 h), hch _ _ (hiff.2 h) h hp]
+    · rw [dite_eq_left h, dite_eq_left (hiff.2 h), hch _ _ (hiff.2 h) h hp]
       unfold haarAt
       rw [← mul_finsum]; ring
-    · rw [dif_neg h, dif_neg (mt hiff.1 h), mul_zero]
+    · rw [dite_eq_right h, dite_eq_right (mt hiff.1 h), mul_zero]
   unfold ip
   rw [← key _ hcc]
   congr 1; funext x; simp; ring
@@ -352,7 +352,7 @@ theorem vacuum (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι] (A : Ad
   have hv : ∀ y ∈ A, v (x₀ + y.2) = fac ε y (x₀ + y.2) := by
     intro y hy
     have h : ∃ y' ∈ A, x₀ + y.2 = x₀ + y'.2 := ⟨y, hy, rfl⟩
-    have e : v (x₀ + y.2) = fac ε h.choose (x₀ + y.2) := dif_pos h
+    have e : v (x₀ + y.2) = fac ε h.choose (x₀ + y.2) := dite_eq_left h
     obtain ⟨hy', e'⟩ := h.choose_spec
     rw [e]
     generalize h.choose = y' at hy' e'
@@ -364,7 +364,7 @@ theorem vacuum (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι] (A : Ad
     have : fac ε (y'.1 - y.1, 0) x₀ = 1 := by
       rw [← hx₀ _ hmem, fac, pr_zero_right, sub_zero]
     rw [this, mul_one]
-  have hv0 : ∀ x, (¬ ∃ y ∈ A, x = x₀ + y.2) → v x = 0 := fun x h => dif_neg h
+  have hv0 : ∀ x, (¬ ∃ y ∈ A, x = x₀ + y.2) → v x = 0 := fun x h => dite_eq_right h
   have hvx : v x₀ = 1 := by
     have := hv 0 A.zero_mem
     simpa [fac, h0, pr_zero_right, ex_zero] using this

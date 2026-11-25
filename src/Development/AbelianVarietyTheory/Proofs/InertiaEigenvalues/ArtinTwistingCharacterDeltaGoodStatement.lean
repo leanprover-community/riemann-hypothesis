@@ -135,7 +135,7 @@ theorem val_div_eq_one (τ : Ω ≃+* Ω) (hm : ∀ x, A.valuation (τ x) < 1 �
     exact lt_irrefl _ this
   rw [map_inv₀] at h2
   have h0 : A.valuation (τ y / y) ≠ 0 := by simpa using ha
-  push_neg at h1 h2
+  push Not at h1 h2
   exact le_antisymm ((one_le_inv₀ (zero_lt_iff.2 h0)).1 h2) h1
 
 end General
@@ -241,7 +241,7 @@ theorem fix_cube_root (τ : Ω ≃+* Ω) (hm : ∀ x, A.valuation (τ x) < 1 ↔
   have n1 : ¬ A.valuation (a - ((1 : ℕ) : Ω)) < 1 := fun h => hno (hnat 1 h)
   have n2 : ¬ A.valuation (a - t) < 1 := fun h => hno (hnat t h)
   have n3 : ¬ A.valuation (a - ((t ^ 2 : ℕ) : Ω)) < 1 := fun h => hno (hnat _ h)
-  push_neg at n1 n2 n3
+  push Not at n1 n2 n3
   rw [Nat.cast_one] at n1
   rw [map_mul, map_mul] at hR
   exact absurd hR (not_lt.2 (one_le_mul (one_le_mul n1 n2) n3))
@@ -597,7 +597,7 @@ theorem unramOutside_of_corr_of_tame : ∀ (D : D7) (N : NData D.R D.host D.what
         ring
       rw [e4, Valuation.map_neg]
       simpa using b'
-    · push_neg at hPQ
+    · push Not at hPQ
       obtain ⟨B, hB⟩ := ReciprocityTheory.Gal.exists_isPlaceOver N.Om P
       exact GlobalTheory.ToricDistribution.Corr.unr hart hcorr hB (hine P hPQ.1 hPQ.2 B hB) _ hun
   show ((χ.locK P (k P) : ℂˣ) : ℂ) = 1

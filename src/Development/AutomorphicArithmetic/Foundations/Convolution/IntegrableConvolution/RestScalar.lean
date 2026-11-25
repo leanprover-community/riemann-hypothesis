@@ -94,7 +94,7 @@ private theorem exists_tr_mem (g : AdelicGLn.FiniteAdelicGL K n) {U : Set (Adeli
     have hvS : v ∈ S := Finset.mem_union_left _ (Finset.mem_union_left _ (hI.mem_toFinset.2 hv))
     have : w' v = 1 := Subtype.ext <| by
       change (y⁻¹ * AdelicGLn.truncate S y) v = 1
-      rw [RestrictedProduct.mul_apply, RestrictedProduct.inv_apply, AdelicGLn.truncate_apply, if_pos hvS,
+      rw [RestrictedProduct.mul_apply, RestrictedProduct.inv_apply, AdelicGLn.truncate_apply, ite_eq_left hvS,
         inv_mul_cancel]
     rw [this]
     exact mem_of_mem_nhds (ht v)

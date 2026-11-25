@@ -34,10 +34,10 @@ theorem bnd_mono {φ : AdelicGLn.AdelicGL K n → ℂ} {m m' : ℕ → ℝ}
     apply Finset.sum_le_sum
     intro r _
     by_cases hr : 0 < r ∧ r < n
-    · rw [if_pos hr]
+    · rw [ite_eq_left hr]
       have := mul_le_mul_of_nonneg_left (hx r) (sub_nonneg.2 (hm r hr.1 hr.2))
       nlinarith
-    · rw [if_neg hr, sr_eq_zero x hr]
+    · rw [ite_eq_right hr, sr_eq_zero x hr]
       simp
   calc ‖φ (b * tor K x * q)‖ ≤ C * Real.exp (∑ r ∈ Finset.range n, m r * sr x r) := h1
     _ ≤ max C 0 * Real.exp (∑ r ∈ Finset.range n, m r * sr x r) :=

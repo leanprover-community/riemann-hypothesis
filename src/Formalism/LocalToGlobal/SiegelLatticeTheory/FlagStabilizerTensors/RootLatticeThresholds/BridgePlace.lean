@@ -35,7 +35,7 @@ private lemma eq_zero_of_hJ_frame_eq_zero (G : PtRepPf.Fr ε r k) (d : Fin n →
     intro b
     rw [PtRepPf.hJ_sub_right, PtRepPf.hJ_sub_right, PtRepPf.hJ_sum_right, PtRepPf.hJ_sum_right]
     simp only [PtRepPf.hJ_smul_right, G.ee, G.ef, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
   have h1 := G.pair _ d hx'e he
   simp only [hz, hw, mul_zero, zero_mul, Finset.sum_const_zero, add_zero] at h1
   have h2 : hJ ε x d = hJ ε (x - ∑ a, hJ ε (G.fd a) x • G.e a - ∑ a, hJ ε (G.e a) x • G.fd a) d := by
@@ -134,7 +134,7 @@ theorem trunc_eI (a : Fin r) : trunc (Formalism.QuantumDeterminants.bvec (Formal
   funext i
   simp only [trunc, Formalism.QuantumDeterminants.bvec, Pi.zero_apply]
   split_ifs with hi
-  · rw [Pi.single_apply, if_neg]
+  · rw [Pi.single_apply, ite_eq_right]
     intro h
     have h2 : i.val = a.val := congrArg Fin.val h
     have := a.isLt
@@ -145,7 +145,7 @@ theorem trunc_esI (a : Fin r) : trunc (Formalism.QuantumDeterminants.bvec (Forma
   funext i
   simp only [trunc, Formalism.QuantumDeterminants.bvec, Pi.zero_apply]
   split_ifs with hi
-  · rw [Pi.single_apply, if_neg]
+  · rw [Pi.single_apply, ite_eq_right]
     intro h
     have h2 : i.val = 2 * r + k - a.val := congrArg Fin.val h
     have := a.isLt

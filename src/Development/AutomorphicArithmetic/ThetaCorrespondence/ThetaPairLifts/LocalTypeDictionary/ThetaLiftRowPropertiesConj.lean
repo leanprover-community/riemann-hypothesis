@@ -584,9 +584,9 @@ theorem colMap_coeff_mem : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0
     (fun j => if h : j < D.R.m then ch.S.Z.kkMap 1 (d.1 ⟨j, h⟩) (ch.S.ptTop c j) (ch.S.ptTop c (j + 1)) else 0)
     (fun j v => ∀ m, AddMonoidAlgebra.coeff (v : Pol ℂ D.what₂.Tau (ch.G.V (.top j)).rank) m ∈ K) (fun j v hv => by
       by_cases h : j < D.R.m
-      · simp only [dif_pos h]
+      · simp only [dite_eq_left h]
         exact coeff_map_mem K _ _ _ (fun a b => (memK _).2 (hrat ⟨j, h⟩ a b)) v hv
-      · simp only [dif_neg h, LinearMap.zero_apply, ZeroMemClass.coe_zero,
+      · simp only [dite_eq_right h, LinearMap.zero_apply, ZeroMemClass.coe_zero,
           AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
         exact fun _ => zero_mem K) D.R.m _ h0
   intro m
@@ -767,7 +767,7 @@ theorem vK_mem (ch : Choice R) (large₂ : SizeData₂ D) (F : Face D A) (CF b :
     if hβ : β ∈ ch.S.supp t (ch.Phi a) then (hex β hβ).choose else 0
   have hτf : ∀ β (hβ : β ∈ ch.S.supp t (ch.Phi a)), IsCosetExpansion ch.S.toGridChoice t (ch.Phi a) β
       (expDepth ch.S.toGridChoice t (ch.Phi a) β) (τf β) := fun β hβ => by
-    simp only [τf, dif_pos hβ]; exact (hex β hβ).choose_spec
+    simp only [τf, dite_eq_left hβ]; exact (hex β hβ).choose_spec
   show ch.S.sAA * ch.S.vCore t (ch.Phi a) (psiC (ch.Psi a)) (ch.S.formC t (R.jX t x)) ∈ D.what₂.embLL.fieldRange
   refine mul_mem (sAA_mem ch hK) ?_
   rw [h.vCore_eq τf fun β hβ => (hτf β hβ).2.1]

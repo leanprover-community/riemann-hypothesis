@@ -210,7 +210,7 @@ theorem sum_wt_le {N : ℕ} (A : Finset (Fin N)) (h0 : 0 < A.card) (hN : A.card 
 theorem four_le_wt {N : ℕ} (A : Finset (Fin N)) (σ : Perm (Fin N))
     (h : A.map σ.toEmbedding = A) : 4 ≤ wt A σ := by
   unfold wt
-  rw [if_pos h]
+  rw [ite_eq_left h]
   split_ifs <;> omega
 
 theorem eight_le_sum_wt {N a : ℕ} (σ : Perm (Fin N)) (A : Finset (Fin N)) (hA : A.card = a)
@@ -244,7 +244,7 @@ theorem eight_le_sum_wt {N a : ℕ} (σ : Perm (Fin N)) (A : Finset (Fin N)) (hA
     have h1 := four_le_wt A σ h
     have h2 := four_le_wt B σ hBs
     omega
-  · have : wt A σ = 8 := by unfold wt; rw [if_pos h, if_neg hb]
+  · have : wt A σ = 8 := by unfold wt; rw [ite_eq_left h, ite_eq_right hb]
     rw [← this]
     exact Finset.single_le_sum (f := fun B => wt B σ) (fun _ _ => Nat.zero_le _) hAm
 

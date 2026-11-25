@@ -14,12 +14,6 @@ namespace Formalism.L2.G.Model.TS
 
 open Formalism.GradedWeylDivisibility
 
-section general
-
-variable {σ R : Type*} [CommRing R]
-
-end general
-
 section what₂
 
 variable {R : Type*} [CommRing R] {r n : ℕ}

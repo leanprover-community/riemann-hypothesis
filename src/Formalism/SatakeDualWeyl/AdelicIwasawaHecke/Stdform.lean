@@ -96,7 +96,7 @@ theorem stdform_psd (τ : E →+* ℂ) (M : Matrix n n ℂ) (hM : ∀ i j, ∃ e
       rintro _ ⟨v, rfl⟩
       exact hall fun i => ((v i).1 : E) + ((v i).2 : E) * e0
     exact hsub (by rw [h2.closure_range]; trivial)
-  · push_neg at hre
+  · push Not at hre
     have hM' : ∀ i j, (M i j).im = 0 := fun i j => by
       obtain ⟨e, he⟩ := hM i j
       rw [← he]

@@ -109,7 +109,7 @@ theorem maj_mt_le {θ : InfFam D} (hθ : IsInfFam θ) (T : HSp D) (n : ℕ) {K :
       have e : u - P (k, k0) = (mt T k ⬝ ((mt T k⁻¹ ⬝ u : Mx D T.rank n) - k0) : Mx D T.rank n) := by
         rw [Matrix.mul_sub, hu]
       rw [e, Matrix.map_mul, hkx, Matrix.mul_zero]
-    simp only [maj, if_pos hb, if_pos hb']
+    simp only [maj, ite_eq_left hb, ite_eq_left hb']
     have hs := realSize_mul_le θ (mt T k) (mt T k⁻¹ ⬝ u : Mx D T.rank n)
     rw [hu] at hs
     have hck : realSize θ (mt T k) ≤ |c| := (hc ⟨k, hk, rfl⟩).trans (le_abs_self c)
@@ -123,7 +123,7 @@ theorem maj_mt_le {θ : InfFam D} (hθ : IsInfFam θ) (T : HSp D) (n : ℕ) {K :
     have hB : 0 < (1 + realSize θ u) ^ N := by positivity
     rw [inv_eq_one_div, ← div_eq_mul_inv, div_le_div_iff₀ hA hB, one_mul, ← mul_pow]
     exact pow_le_pow_left₀ (by positivity) hle N
-  · have e : maj θ K₀ N (mt T k⁻¹ ⬝ u) = 0 := by simp only [maj, if_neg hb]
+  · have e : maj θ K₀ N (mt T k⁻¹ ⬝ u) = 0 := by simp only [maj, ite_eq_right hb]
     rw [e]
     exact mul_nonneg (by positivity) (maj_nonneg θ _ N u)
 

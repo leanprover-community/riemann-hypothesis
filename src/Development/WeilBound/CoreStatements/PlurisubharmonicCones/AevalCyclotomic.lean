@@ -100,12 +100,12 @@ theorem value_cp (hg : IsCptGen ξ) {F : Type} [Field F] [CharZero F] {z : Spec 
     (hp : p.Prime) {κ : Ω} {r : F} (hκ : HT.IsCp p κ) (hv : ValAt ξ z κ r) :
     (p = 2 → r = 4) ∧ (p ≠ 2 → IsPrimitiveRoot (r + 1) p) := by
   refine ⟨fun h => ?_, fun h => ?_⟩
-  · rw [HT.IsCp, if_pos h] at hκ
+  · rw [HT.IsCp, ite_eq_left h] at hκ
     have h3 := value_aeval hg hv (Polynomial.X - Polynomial.C 4) (by
       simp only [map_sub, Polynomial.aeval_X, hκ, map_ofNat, sub_self])
     simp only [map_sub, Polynomial.aeval_X, map_ofNat] at h3
     exact sub_eq_zero.1 h3
-  · rw [HT.IsCp, if_neg h] at hκ
+  · rw [HT.IsCp, ite_eq_right h] at hκ
     obtain ⟨ζ, hζ, rfl⟩ := hκ
     have hp0 : NeZero (p : F) := ⟨Nat.cast_ne_zero.2 hp.ne_zero⟩
     have h3 := value_aeval hg hv ((Polynomial.cyclotomic p ℤ).comp (Polynomial.X + 1)) (by

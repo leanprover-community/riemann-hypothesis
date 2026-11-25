@@ -90,7 +90,7 @@ theorem ell_nL (hj : j + 1 ≤ r) (hj1 : 1 ≤ j) (z : Fin (2 * r + k + 1) → �
     · rw [SingleEntryHermitianProducts.nL_apply, Matrix.one_apply_ne (by simp [eI, Fin.ext_iff]), zero_add]
       refine Finset.sum_eq_zero fun b _ => ?_
       rw [Matrix.single_apply_of_row_ne (SingleEntryHermitianProducts.eI_ne_esI _ _).symm, mul_zero, zero_sub, Matrix.single_apply]
-      rw [if_neg, mul_zero, neg_zero]
+      rw [ite_eq_right, mul_zero, neg_zero]
       rintro ⟨h1, h2⟩
       have e1 := congrArg Fin.val h1; have e2 := congrArg Fin.val h2
       simp only [eI] at e1 e2
@@ -100,7 +100,7 @@ theorem ell_nL (hj : j + 1 ≤ r) (hj1 : 1 ≤ j) (z : Fin (2 * r + k + 1) → �
         rw [SingleEntryHermitianProducts.nL_apply, Finset.sum_eq_zero, add_zero]
         intro b _
         rw [Matrix.single_apply_of_row_ne (SingleEntryHermitianProducts.eI_ne_esI _ _).symm, mul_zero, zero_sub, Matrix.single_apply]
-        rw [if_neg, mul_zero, neg_zero]
+        rw [ite_eq_right, mul_zero, neg_zero]
         rintro ⟨h1, _⟩
         have e1 := congrArg Fin.val h1
         simp only [eI] at e1

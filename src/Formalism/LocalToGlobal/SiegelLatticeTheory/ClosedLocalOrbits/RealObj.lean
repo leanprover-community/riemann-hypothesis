@@ -428,14 +428,6 @@ def VJoint [∀ x, FiniteDimensional ℂ (Wq x)] (S : Formalism.FourierDecayAlt.
 
 end Built
 
-section Carrier
-
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
-
-variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
-
-end Carrier
-
 section Proofs
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)

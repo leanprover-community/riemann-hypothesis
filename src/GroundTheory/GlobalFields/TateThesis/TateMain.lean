@@ -210,7 +210,7 @@ def thetaFun (w : InfinitePlace K) (F : 𝔸[K] → ℂ) (χ : HeckeCharacter K)
 
 theorem thetaFun_of_pos (w : InfinitePlace K) (F : 𝔸[K] → ℂ) (χ : HeckeCharacter K) {x : ℝ}
     (hx : 0 < x) : thetaFun w F χ x = thetaIntegral w F χ ⟨x, hx⟩ :=
-  dif_pos hx
+  dite_eq_left hx
 
 theorem continuousOn_thetaFun (w : InfinitePlace K) {F : 𝔸[K] → ℂ} (hF : F ∈ schwartzBruhat K)
     (χ : HeckeCharacter K) : ContinuousOn (thetaFun w F χ) (Set.Ioi 0) := by
@@ -282,7 +282,7 @@ theorem tsum_units_eq_tsum_sub {G : K → ℂ} (hG : Summable G) :
     ∑' ξ : Kˣ, G ξ = ∑' ξ : K, G ξ - G 0 := by
   classical
   rw [hG.tsum_eq_add_tsum_ite 0, add_sub_cancel_left]
-  refine (tsum_congr fun ξ : Kˣ ↦ (if_neg ξ.ne_zero).symm).trans
+  refine (tsum_congr fun ξ : Kˣ ↦ (ite_eq_right ξ.ne_zero).symm).trans
     (Function.Injective.tsum_eq Units.val_injective (f := fun ξ ↦ if ξ = 0 then 0 else G ξ)
       fun ξ hξ ↦ ?_)
   have h0 : ξ ≠ 0 := fun h ↦ hξ (by simp [h])
@@ -350,7 +350,7 @@ theorem tateZetaAt_eq (w : InfinitePlace K) {F : 𝔸[K] → ℂ} (hF : F ∈ sc
     (χ : HeckeCharacter K) :
     tateZetaAt w F χ = fun s ↦ (thetaPair w hF χ).Λ (s + (archExponent w χ : ℂ) * I) := by
   funext s
-  exact dif_pos hF
+  exact dite_eq_left hF
 
 theorem tateZetaAt_eq_globalZeta (w : InfinitePlace K) {F : 𝔸[K] → ℂ} (hF : F ∈ schwartzBruhat K)
     (χ : HeckeCharacter K) {s : ℂ} (hs : 1 < s.re) : tateZetaAt w F χ s = globalZeta F χ s := by

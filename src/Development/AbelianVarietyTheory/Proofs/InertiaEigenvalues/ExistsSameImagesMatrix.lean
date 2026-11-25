@@ -198,9 +198,9 @@ theorem mem_span_indicator_lowerSets :
     cases hx : ρ x with
     | none => simpa using h0 x hx
     | some m =>
-      simp only [Option.some.injEq, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [Option.some.injEq, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       have hex : ∃ y, ρ y = some m := ⟨x, hx⟩
-      simp only [c, dif_pos hex]
+      simp only [c, dite_eq_left hex]
       exact hΦ _ _ (hx.trans hex.choose_spec.symm)
   rw [hdecomp]
   exact S.sum_mem fun l _ => S.smul_mem _ (key l)
@@ -430,7 +430,7 @@ theorem _root_.GlobalTheory.DownLift.SplitGen.exists_same_images_matrix (hr : r 
     · rintro ⟨z, hz⟩
       replace hz := (key x z).1 hz
       have hx : ∃ y : Matrix (Fin n) (Fin r) O, ι d • x = y.map ι := ⟨_, hz⟩
-      refine ⟨_, dif_pos hx, ?_⟩
+      refine ⟨_, dite_eq_left hx, ?_⟩
       have hy : hx.choose = z * B := Matrix.map_injective hιinj (hx.choose_spec.symm.trans hz)
       rw [Submodule.span_le]
       rintro _ ⟨a, rfl⟩
@@ -480,7 +480,7 @@ theorem _root_.GlobalTheory.DownLift.SplitGen.exists_same_images_matrix (hr : r 
       Pi.smul_apply, Set.indicator_apply, Set.mem_setOf_eq, smul_eq_mul, mul_ite, mul_one, mul_zero]
     rcases hρ : ρ x with _ | l0
     · simp [hnone i x hρ]
-    · rw [Finset.sum_eq_single l0 (fun l _ hl => by simp [Ne.symm hl]) (by simp), if_pos rfl]
+    · rw [Finset.sum_eq_single l0 (fun l _ hl => by simp [Ne.symm hl]) (by simp), ite_eq_left rfl]
       have h : ∃ x', ρ x' = some l0 := ⟨x, hρ⟩
       simp only [rep, h, dite_true]
       exact hfib i _ _ (hρ.trans h.choose_spec.symm)

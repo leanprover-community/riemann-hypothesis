@@ -304,15 +304,6 @@ theorem integral_mul_prod_eq [TotallyDisconnectedSpace G] (P K : Subgroup G)
 
 end General
 
-section GeneralLinear
-
-variable (F : Type*) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
-  (n : ℕ) {α : Type*} [LinearOrder α] {β : Fin n → α}
-
-variable [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
-
-end GeneralLinear
-
 end Measures
 
 end GroundTheory.Automorphic

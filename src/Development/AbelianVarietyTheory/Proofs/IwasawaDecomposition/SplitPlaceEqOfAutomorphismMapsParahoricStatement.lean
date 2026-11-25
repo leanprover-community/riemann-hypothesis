@@ -218,7 +218,7 @@ theorem mem_low_iff {w : HeightOneSpectrum (𝓞 L⁺)} {n r : ℕ} (i : L →�
     refine ⟨(GlobalTheory.HeckeScalarSph.loc_mem_GLint_iff (SplitPlace.mk w i) κ.2.2).2 κ.2.1, fun a b ha hb => ?_⟩
     refine (redLoc_eq_zero_iff i κ a b).1 (h a b ?_)
     simp only [wLow]
-    rw [if_pos hb, if_neg (Nat.not_lt.2 ha)]
+    rw [ite_eq_left hb, ite_eq_right (Nat.not_lt.2 ha)]
     exact Nat.zero_lt_one
   · rintro ⟨-, h⟩ a b hab
     have key : r ≤ a.val ∧ b.val < r := by
@@ -330,7 +330,7 @@ theorem core {w : HeightOneSpectrum (𝓞 L⁺)} (i j : L →ₐ[L⁺] w.adicCom
     rw [hxu]
     refine ⟨hu, fun a b ha hb => ?_⟩
     show Valued.v (Matrix.transvection i0 ir (1 : w.adicCompletion L⁺) a b) < 1
-    rw [hent, if_neg, if_neg, add_zero, map_zero]
+    rw [hent, ite_eq_right, ite_eq_right, add_zero, map_zero]
     · exact zero_lt_one
     · rintro ⟨-, h⟩
       have := congrArg Fin.val h
@@ -347,7 +347,7 @@ theorem core {w : HeightOneSpectrum (𝓞 L⁺)} (i j : L →ₐ[L⁺] w.adicCom
     show (((SplitPlace.mk w i).loc n x : GL (Fin n) (w.adicCompletion L⁺)) : Matrix (Fin n) (Fin n) (w.adicCompletion L⁺)) i0 ir = 1
     rw [hxu]
     show Matrix.transvection i0 ir (1 : w.adicCompletion L⁺) i0 ir = 1
-    rw [hent, if_neg hne, if_pos ⟨rfl, rfl⟩, zero_add]
+    rw [hent, ite_eq_right hne, ite_eq_left ⟨rfl, rfl⟩, zero_add]
   rw [e, map_one] at h0
   exact lt_irrefl _ h0
 

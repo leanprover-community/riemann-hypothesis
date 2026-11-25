@@ -96,7 +96,7 @@ theorem UpperTheory.V.Tower.muQ :
     · rw [pow_one]
   have hP : Procyc L Ω l ↔ l ≠ 2 ∨ HasMuQ l L := by
     by_cases h : l = 2
-    · have h2 : qExp l = 2 := if_pos h
+    · have h2 : qExp l = 2 := ite_eq_left h
       rw [Procyc, HasMuQ, hq, h2, ← all_iff L Ω l 2]
       rfl
     · exact ⟨fun _ => Or.inl h, fun _ => Or.inl h⟩

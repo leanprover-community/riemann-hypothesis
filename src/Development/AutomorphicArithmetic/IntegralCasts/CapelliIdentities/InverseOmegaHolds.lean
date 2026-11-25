@@ -177,7 +177,7 @@ private theorem dX_flog {p : ℕ} [Fact (Nat.Prime p)] (W : WeierstrassCurve ℂ
     (w : ℂ_[p]⟦X⟧) : dX (flog W w) = omegaW W w := by
   ext n
   have hn : ((n : ℂ_[p]) + 1) ≠ 0 := Nat.cast_add_one_ne_zero n
-  rw [dX, coeff_mk, flog, coeff_mk, if_neg (Nat.succ_ne_zero n), Nat.add_sub_cancel,
+  rw [dX, coeff_mk, flog, coeff_mk, ite_eq_right (Nat.succ_ne_zero n), Nat.add_sub_cancel,
     Nat.cast_add_one, mul_div_cancel₀ _ hn]
 
 end UpperTheory.Reformulated.B.Gwa1

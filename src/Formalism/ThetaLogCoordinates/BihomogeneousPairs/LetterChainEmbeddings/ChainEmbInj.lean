@@ -82,7 +82,7 @@ theorem deg_U (hB : D.BlockOK) (j : Fin D.T.t → ℕ) (jp : ℕ) :
   simp only [BlockData.lettersAt]
   simp only [← List.sum_toFinset _ (List.nodup_finRange _), List.toFinset_finRange]
   rw [Finset.sum_eq_zero (fun b _ => by
-      rw [if_neg]
+      rw [ite_eq_right]
       have := pos_lt_u hB b
       omega)]
   simp

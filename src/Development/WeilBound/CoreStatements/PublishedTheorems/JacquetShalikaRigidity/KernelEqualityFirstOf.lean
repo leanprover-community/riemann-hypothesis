@@ -245,8 +245,8 @@ theorem law_lr (hk : 1 ≤ k) {R R' : Type} [CommRing R] [CommRing R'] (σ : R �
     σ (∑ i : Fin k, if (i : ℕ) + 1 = k then M i c else 0) = M.map σ ⟨k - 1, by omega⟩ c := by
 
   rw [map_sum, Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
-  · rw [if_pos (by simp; omega)]; rfl
-  · intro b _ hb; rw [if_neg, map_zero]
+  · rw [ite_eq_left (by simp; omega)]; rfl
+  · intro b _ hb; rw [ite_eq_right, map_zero]
     intro h; exact hb (Fin.ext (by simp; omega))
   · simp
 
@@ -428,8 +428,8 @@ theorem sph_lr (hk : 1 ≤ k) {R' : Type} [CommRing R'] (σ : Ad E →+* R') (g 
     σ (lastRow g c) = (g.val.map σ) ⟨k - 1, by omega⟩ c := by
 
   rw [lastRow, map_sum, Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
-  · rw [if_pos (by simp; omega)]; rfl
-  · intro b _ hb; rw [if_neg, map_zero]
+  · rw [ite_eq_left (by simp; omega)]; rfl
+  · intro b _ hb; rw [ite_eq_right, map_zero]
     intro h; exact hb (Fin.ext (by simp; omega))
   · simp
 

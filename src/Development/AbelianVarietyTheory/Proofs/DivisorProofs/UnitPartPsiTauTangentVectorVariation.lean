@@ -831,10 +831,10 @@ theorem monomial_eq_of_mul_unit {W : Type} [CommRing W] [Nontrivial W] {σ : Typ
       MvPowerSeries.monomial P (1 : W) * x = MvPowerSeries.monomial M 1 * x' → P ≤ M := by
     intro P M x x' hx' he
     have hc := congrArg (MvPowerSeries.coeff M) he
-    rw [MvPowerSeries.coeff_monomial_mul, MvPowerSeries.coeff_monomial_mul, if_pos le_rfl, tsub_self,
+    rw [MvPowerSeries.coeff_monomial_mul, MvPowerSeries.coeff_monomial_mul, ite_eq_left le_rfl, tsub_self,
       MvPowerSeries.coeff_zero_eq_constantCoeff_apply] at hc
     by_contra hPM
-    rw [if_neg hPM, _root_.one_mul] at hc
+    rw [ite_eq_right hPM, _root_.one_mul] at hc
     exact (hx'.map (MvPowerSeries.constantCoeff (σ := σ) (R := W))).ne_zero hc.symm
   exact le_antisymm (h1 _ _ _ _ hx' he) (h1 _ _ _ _ hx he.symm)
 
@@ -944,7 +944,7 @@ theorem exps_eq {σ k : Type} [Field k] [IsDomain (MvPowerSeries σ k)] {m : ℕ
     rw [Finsupp.finsetSum_apply, Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       exact fun e => hj (hv e)
     · simp
   rw [hmon, hmon] at he''

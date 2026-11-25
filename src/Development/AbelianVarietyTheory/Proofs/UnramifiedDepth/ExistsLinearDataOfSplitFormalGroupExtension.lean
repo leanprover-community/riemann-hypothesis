@@ -588,13 +588,13 @@ private theorem exists_curry :
     · rw [map_C]
       exact ((S.comp E₀).commutes t).trans (hc t)
     · change S (E₀ (X q)) = _
-      rw [hX₀, hS, if_pos rfl, hq]
+      rw [hX₀, hS, ite_eq_left rfl, hq]
   have h1 : S.toRingHom.comp E₁.toRingHom = C := by
     refine (mvPowerSeries_eval_of_pow_mem _ K (Fin 1 × Fin d) (fun q => C (X q)) hCK).2
       inferInstance O _ _ (fun t => ?_) (fun q => ?_) (fun q => rfl)
     · exact ((S.comp E₁).commutes t).trans (hc t)
     · change S (E₁ (X q)) = _
-      rw [hX₁, hS, if_neg (by simp), hq]
+      rw [hX₁, hS, ite_eq_right (by simp), hq]
   refine ⟨S, ?_, fun u => ?_, fun u => ?_⟩
   · obtain ⟨T, hTC, hTX⟩ : ∃ T : MvPowerSeries (Fin 1 × Fin d) (PS O 1 d) →+* PS O 2 d,
         (∀ u, T (C u) = E₁ u) ∧ ∀ q, T (X q) = X (0, q.2) :=

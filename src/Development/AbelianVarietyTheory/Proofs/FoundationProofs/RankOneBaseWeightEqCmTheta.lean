@@ -108,13 +108,6 @@ def designLevel (P : PiBar D.host) : Level (hostOfRecord D) :=
 theorem designLevel_Mb (P : PiBar D.host) :
     (designLevel P).Mb = ∏ k, (P.pb k).asIdeal.map (algebraMap (𝓞 D.host.K) (𝓞 D.host.E)) := rfl
 
-section Rec
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-end Rec
-
 end GlobalTheory.HalfOnRecord
 end -- clump:auto
 end -- clump:auto

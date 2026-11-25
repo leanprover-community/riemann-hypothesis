@@ -70,9 +70,9 @@ lemma colOK_of_path [NeZero r] (LL : LiftLetters (Fin N)) (B : Fin N → ℕ) (h
     intro j h
     have hs := P.step ⟨j, h⟩
     by_cases hv : LL.vec ⟨j, h⟩ = true
-    · rw [if_pos hv] at hs
+    · rw [ite_eq_left hv] at hs
       exact Or.inl ⟨hv, colH_strip _ _ _ hs c⟩
-    · rw [if_neg hv] at hs
+    · rw [ite_eq_right hv] at hs
       exact Or.inr ⟨by simpa using hv, colH_strip _ _ _ hs c⟩
   have hz : P.mu ⟨0, by omega⟩ = 0 := P.zero
   refine ⟨fun j h hlt => ?_, fun j h hlt => ?_, fun hc => ?_, fun hc => ?_⟩
@@ -141,7 +141,7 @@ lemma SgW_supp {R : Type} [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N +
   | zero =>
     intro J hJ
     have : J = ∅ := by
-      by_contra hne; exact hJ (by simp only [SgW]; unfold extOne; rw [if_neg hne])
+      by_contra hne; exact hJ (by simp only [SgW]; unfold extOne; rw [ite_eq_right hne])
     subst this
     refine ⟨fun hc => ⟨by rw [H.start hc]; simp, fun hr a ha => ?_, by simp⟩, by simp⟩
     rw [H.start hc] at hr; omega
@@ -149,7 +149,7 @@ lemma SgW_supp {R : Type} [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N +
     intro J hJ
     have h : j < N := hj
     have ih' := ih (by omega)
-    simp only [SgW, dif_pos h] at hJ
+    simp only [SgW, dite_eq_left h] at hJ
     unfold colStep at hJ
     have hci := costly_iff mu c j h
     split_ifs at hJ with h1 h2 h3 h4

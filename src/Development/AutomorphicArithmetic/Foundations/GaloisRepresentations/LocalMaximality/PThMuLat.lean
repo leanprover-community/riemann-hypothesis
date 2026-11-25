@@ -53,7 +53,7 @@ private lemma det_form {S : Type} [CommRing S] [Algebra ℂ S] (R : Subalgebra �
       ring
     · push Not at hσ
       obtain ⟨a, ha, hne⟩ := hσ
-      have h0 : ∏ a ∈ P, A a (σ a) = 0 := Finset.prod_eq_zero ha (by rw [hP a ha, if_neg hne])
+      have h0 : ∏ a ∈ P, A a (σ a) = 0 := Finset.prod_eq_zero ha (by rw [hP a ha, ite_eq_right hne])
       rw [h0]
       ring
 

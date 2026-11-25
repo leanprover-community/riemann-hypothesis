@@ -56,8 +56,8 @@ theorem transfer_word_entries_mem (QQ : ℂ → M2 A) (hQ : ∀ Y : ℂ, star Y 
     exact io_mem (hQ Y hY a b)
   | cons l w ih =>
     by_cases hp : l.plus
-    · rw [TTw, if_pos hp]; exact entries_mem_mul ih (reflection_entries_mem _ _)
-    · rw [TTw, if_neg hp]; exact entries_mem_mul (reflection_transpose_entries_mem _ _) ih
+    · rw [TTw, ite_eq_left hp]; exact entries_mem_mul ih (reflection_entries_mem _ _)
+    · rw [TTw, ite_eq_right hp]; exact entries_mem_mul (reflection_transpose_entries_mem _ _) ih
 
 theorem rrw_mem (QQ : ℂ → M2 A) (hQ : ∀ Y : ℂ, star Y = Y → ∀ a b, QQ Y a b ∈ 𝒜) (w : List (Letter ℂ S))
     (hw : ∀ l ∈ w, star l.pt = l.pt) : RRw QQ w ∈ entSub 𝒜 := by
@@ -122,12 +122,5 @@ theorem QQi_mem (L : R.LevelData (Pr (RadSp k r z z' π π')) r) (st : Fr.Start 
   exact star_mem (tprod_mem L 𝒜 (star Y) i.val hS f a)
 
 end Levels
-
-section Top
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
-
-end Top
 
 end Formalism.FourierDecayAlt.P5.HerA

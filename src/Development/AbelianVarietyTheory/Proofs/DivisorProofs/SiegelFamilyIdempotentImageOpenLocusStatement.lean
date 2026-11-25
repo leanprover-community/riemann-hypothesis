@@ -620,7 +620,7 @@ theorem GlobalTheory.levTriv_locus_open : ∀ (S : Scheme.{0}) [IsLocallyNoether
   have hpick : ∀ a, A a = A (pick (q a)) := fun a => by
     have hc : ∃ a', q a' = q a := ⟨a, rfl⟩
     refine hAq _ _ ?_
-    simp only [pick, dif_pos hc]
+    simp only [pick, dite_eq_left hc]
     exact hc.choose_spec.symm
   refine ⟨⟨⋂ c, A (pick c), isOpen_iInter_of_finite fun c => hAo _⟩, ?_, ?_⟩
   · rintro _ ⟨p, rfl⟩

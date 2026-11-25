@@ -161,7 +161,7 @@ theorem rowDegree_le_of_rowAdd_eq {R : Type*} [CommRing R] [IsDomain R] [CharZer
       rw [rowInd_apply]
       by_cases e : t' = t ∧ r'' = r'
       · obtain ⟨rfl, rfl⟩ := e
-        simp only [f, g, hr.symm, and_self, and_false, if_true, if_false, Polynomial.eval_add,
+        simp only [f, g, hr.symm, and_self, and_false, ite_true, ite_false, Polynomial.eval_add,
           Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, add_zero, pow_one]
         linear_combination (-z (t', r'', k)) * mul_inv_cancel₀ hs
       · simp [g, e]
@@ -186,7 +186,7 @@ theorem rowDegree_le_of_rowAdd_eq {R : Type*} [CommRing R] [IsDomain R] [CharZer
   have := congrArg (fun F : Polynomial K => F.coeff d') hid
   simp only [Polynomial.coeff_C_mul, Polynomial.coeff_eq_zero_of_natDegree_lt (hdeg.trans_lt hlt),
     mul_zero] at this
-  rw [Polynomial.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+  rw [Polynomial.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
     Polynomial.coeff_zero_eq_eval_zero, hev] at this
   rw [map_zero, ← this]
   congr 2
@@ -213,14 +213,14 @@ noncomputable def halfRowEquiv (hσ : Function.Involutive σ) (hΨ : ∀ τ, ¬ 
     fun b => ⟨σ y.1.1, b.cast (hq _ y.1.2).symm⟩
   left_inv x := by
     by_cases h : Ψ x.1
-    · beta_reduce; rw [dif_pos h]; rfl
-    · beta_reduce; rw [dif_neg h]
+    · beta_reduce; rw [dite_eq_left h]; rfl
+    · beta_reduce; rw [dite_eq_right h]
       exact Sigma.ext (hσ _) ((Fin.heq_ext_iff (congrArg dim (hσ _))).2 rfl)
   right_inv := by
     rintro ⟨⟨τ, h⟩, a | b⟩
-    · exact dif_pos h
+    · exact dite_eq_left h
     · have h' : ¬ Ψ (σ τ) := fun e => (hΨ τ).2 e h
-      exact (dif_neg h').trans (Prod.ext (Subtype.ext (hσ τ)) rfl)
+      exact (dite_eq_right h').trans (Prod.ext (Subtype.ext (hσ τ)) rfl)
 
 end Rows
 
@@ -255,10 +255,10 @@ theorem not_mem_hostType_iff (τ : E →+* ℂ) :
 
 variable {H} (D : Tor.Datum H)
 
-theorem mult_of_mem {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) : D.mult τ = D.p := if_pos h
+theorem mult_of_mem {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) : D.mult τ = D.p := ite_eq_left h
 
 theorem mult_conjEmb_of_mem {τ : E →+* ℂ} (h : τ (H.rt : E) = H.rt0) :
-    D.mult (Tor.conjEmb τ) = D.q := if_neg fun e => (not_mem_hostType_iff H τ).2 e h
+    D.mult (Tor.conjEmb τ) = D.q := ite_eq_right fun e => (not_mem_hostType_iff H τ).2 e h
 
 variable (n : ℕ)
 

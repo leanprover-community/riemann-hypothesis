@@ -204,7 +204,7 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
     ⟨(herm (Hpk k r) z' z').re, (Complex.conj_eq_iff_re.mp (hsym z' z').symm).symm⟩
   simp only [cvec, a1, a2, s1, s2, m1, m2, hee, hss, hes, hse, hz1, hz2, hz3, hz4, hn1, hn2, hn3, hn4,
     hzν, hνz, hνν, htz, mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_one, mul_ite,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   simp only [hco, Tz, htz, Complex.ofReal_re, Complex.ofReal_neg]
   ring
 

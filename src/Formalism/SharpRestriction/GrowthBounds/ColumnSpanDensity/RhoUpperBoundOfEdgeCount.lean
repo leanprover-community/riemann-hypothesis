@@ -28,7 +28,7 @@ theorem dvd_w_pow_of_vLEO {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValua
   unfold vO vK ordW at hq
   have hx0 : algebraMap O (KK O) z ≠ 0 :=
     (map_ne_zero_iff _ (IsFractionRing.injective O (KK O))).mpr hz
-  rw [if_neg hx0] at hq
+  rw [ite_eq_right hx0] at hq
   dsimp only at hq
   have hspec := Classical.choose_spec (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z))
   generalize Classical.choose (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z)) = ab
@@ -143,7 +143,7 @@ theorem rho_upper_bound_of_edge_count (hcnt : RestEdgeCountSrc) : RhoUpperBoundS
       by_cases hab : a = b
       · subst hab; simp
       · have : ((i, a) : Fin Ne × Fin n) ≠ (i, b) := fun h => hab (Prod.mk.inj h).2
-        rw [if_neg hab, if_neg this]; simp
+        rw [ite_eq_right hab, ite_eq_right this]; simp
     · have hne : es l ≠ es i := fun h => hil (hinj h).symm
       have hXs := CCL_other R lam0 t c (es i) (es l) (hes _).1 ((hes _).2.trans (hes _).2.symm) hne (hx i a)
       obtain ⟨b', hb⟩ := be_scale_Re R lam0 (es l) c hXs (hy l b).1.2

@@ -64,7 +64,7 @@ def ctSm (r : ℕ) (φ : Sm E N) : Sm E N := if h : An.ctn r φ.1 ∈ Sm E N the
 theorem ctSm_val (r : ℕ) {φ : Sm E N} (hφ : IsAutForm φ) : (ctSm r φ).1 = An.ctn r φ.1 := by
   obtain ⟨F, hF, -⟩ := D_ct_smooth r φ hφ.left hφ.level
   have h : An.ctn r φ.1 ∈ Sm E N := hF ▸ F.2
-  simp only [ctSm, dif_pos h]
+  simp only [ctSm, dite_eq_left h]
 
 theorem ctn_add (r : ℕ) {f g : GA E N → ℂ} (hf : Continuous f) (hg : Continuous g) :
     An.ctn r (f + g) = An.ctn r f + An.ctn r g := by

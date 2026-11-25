@@ -92,14 +92,14 @@ theorem partner_of_big (hK : KCoinv) (hM : IsMatched B G X om om' R Rf) {Φ} (h�
   let φ₀ : Fin m → ∀ v : Pl F, (Fin a' × Fin (a + a') → Fv F v) → ℂ := fun i v => if v ∈ T then χ i v else G.M'.vac v
   let φ' : Fin m → ∀ v : Pl F, (Fin a' × Fin (a + a') → Fv F v) → ℂ := fun i => Function.update (φ₀ i) B.v₁ (ζ i)
   have fam₀ : ∀ i, Fam G.M' (φ₀ i) := fun i => by
-    refine ⟨fun v => ?_, T.eventually_cofinite_notMem.mono fun v hv => if_neg hv⟩
+    refine ⟨fun v => ?_, T.eventually_cofinite_notMem.mono fun v hv => ite_eq_right hv⟩
     by_cases hv : v ∈ T
-    · simp only [φ₀, if_pos hv]; exact hχ i v
-    · simp only [φ₀, if_neg hv]; exact (hM.triple.geo.hM'.vac v).1
+    · simp only [φ₀, ite_eq_left hv]; exact hχ i v
+    · simp only [φ₀, ite_eq_right hv]; exact (hM.triple.geo.hM'.vac v).1
   have fam' : ∀ i, Fam G.M' (φ' i) := fun i => (fam₀ i).update B.v₁ (hζ i).1
   have out' : ∀ i, ∀ v ∉ T, φ' i v = G.M'.vac v := fun i v hv => by
     have hne : v ≠ B.v₁ := fun e => hv (e ▸ h1)
-    simp only [φ', Function.update_of_ne hne, φ₀, if_neg hv]
+    simp only [φ', Function.update_of_ne hne, φ₀, ite_eq_right hv]
   refine ⟨∑ i, pure (f' i) (φ' i), Submodule.sum_mem _ fun i _ => Submodule.subset_span
     ⟨f' i, φ' i, (fam' i).1, (fam' i).2, by simp only [φ', Function.update_self]; exact hζ i, rfl⟩, ?_⟩
   refine ⟨T, hXT, m, m, f, φ, f', φ', fun i => ⟨(hfφ i).1, (hfφ i).2.1, hout i⟩,
@@ -111,7 +111,7 @@ theorem partner_of_big (hK : KCoinv) (hM : IsMatched B G X om om' R Rf) {Φ} (h�
   by_cases hv : v = B.v₁
   · subst hv
     simp only [φ', Function.update_self, eζ]
-  · simp only [φ', Function.update_of_ne hv, φ₀, if_pos hvT, eχ]
+  · simp only [φ', Function.update_of_ne hv, φ₀, ite_eq_left hvT, eχ]
 
 theorem partner_of_small (hM : IsMatched B G X om om' R Rf) {Φ'} (hΦ' : Φ' ∈ PolData B G.M') :
     ∃ Φ, PolMatch B G X R Rf Φ Φ' := by
@@ -131,15 +131,15 @@ theorem partner_of_small (hM : IsMatched B G X om om' R Rf) {Φ'} (hΦ' : Φ' �
   let φ : Fin m → ∀ v : Pl F, (Fin a × Fin (a + a') → Fv F v) → ℂ := fun i v => if v ∈ T then χ i v else G.M.vac v
   have hφ : ∀ i v, φ i v ∈ SB _ := fun i v => by
     by_cases hv : v ∈ T
-    · simp only [φ, if_pos hv]; exact hχ i v
-    · simp only [φ, if_neg hv]; exact (hM.triple.geo.hM.vac v).1
-  refine ⟨∑ i, pure (f i) (φ i), T, hXT, m, m, f, φ, f', φ', fun i => ⟨hf i, hφ i, fun v hv => if_neg hv⟩,
+    · simp only [φ, ite_eq_left hv]; exact hχ i v
+    · simp only [φ, ite_eq_right hv]; exact (hM.triple.geo.hM.vac v).1
+  refine ⟨∑ i, pure (f i) (φ i), T, hXT, m, m, f, φ, f', φ', fun i => ⟨hf i, hφ i, fun v hv => ite_eq_right hv⟩,
     fun i => ⟨(hfφ i).1, (hfφ i).2.1, hout i⟩, rfl, rfl, ?_⟩
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [ef i]
   congr 2
   funext ⟨v, hvT⟩
-  simp only [φ, if_pos hvT, eχ]
+  simp only [φ, ite_eq_left hvT, eχ]
 
 theorem match_of_polMatch (hM : IsMatched B G X om om' R Rf) {Φ Φ'} (hS : Φ' ∈ G.M'.So B.ψ B.τ₁)
     (h : PolMatch B G X R Rf Φ Φ') : Φ ∈ PolData B G.M ∧ Φ' ∈ PolData B G.M' ∧ Match B G X R Rf Φ Φ' := by

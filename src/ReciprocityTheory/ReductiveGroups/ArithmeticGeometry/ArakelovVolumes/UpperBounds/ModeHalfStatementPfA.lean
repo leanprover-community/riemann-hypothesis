@@ -137,7 +137,7 @@ theorem maj_orth (X : Data E r) {u : Frame X.Ψ r} (hu : IsOrth X u) (τ : X.Ψ)
       (fun h => absurd (Finset.mem_univ a) h)]
     rw [Matrix.one_apply_eq, mul_one, hsf]
     have ha : ((Fin.castLE X.p0_le a : Fin r) : ℕ) < X.p0 := by simp
-    simp only [sgn, ha, if_true, Complex.ofReal_one, one_mul]
+    simp only [sgn, ha, ite_true, Complex.ofReal_one, one_mul]
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have hww : (sf X.p0 w w).re = ∑ k : Fin r, sgn X.p0 (k : ℕ) * ‖w k‖ ^ 2 := by
     unfold sf

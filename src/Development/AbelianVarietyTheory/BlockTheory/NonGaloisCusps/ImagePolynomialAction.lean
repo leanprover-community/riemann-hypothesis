@@ -81,12 +81,4 @@ def Valuation (l e : ℕ) (U : Finset ℤ) (η N : ℕ) : Prop :=
   padicValInt l ((polyR l e U η).eval 0) = ((shifts U η).erase 0).card ∧
   ((shifts U η).erase 0).card ≤ U.card * η ∧ U.card * η ≤ (N + 1) * η
 
-section Basic₂
-
-variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K]
-  [IsUnitBall O K] {l e a : ℕ} [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a]
-  [TameDescentExponentData K l e a] {η H : ℕ}
-
-end Basic₂
-
 end GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction

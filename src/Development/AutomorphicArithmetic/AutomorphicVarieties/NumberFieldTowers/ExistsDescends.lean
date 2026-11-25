@@ -83,7 +83,7 @@ private theorem exists_qz_ne_zero_annihilators_of_ne_zero (l : ℕ) [Fact l.Prim
     · rw [hdec _ a a0] at ha ⊢
       have hle : r ≤ a.valuation := Nat.find_min' hex ha
       rw [← Nat.add_sub_cancel' hle, pow_add, mul_comm, mul_smul, hx, smul_zero]
-  · push_neg at hex
+  · push Not at hex
     obtain ⟨ι, hinj, hrange, hlin⟩ := zmodToQZ l 1
     haveI : Fact (1 < l ^ 1) := ⟨by rw [pow_one]; exact hl1⟩
     have hι0 : ι 0 = 0 := by simpa using hlin 0 0
@@ -300,7 +300,7 @@ theorem UpperTheory.V.Tower.existsGen :
         rw [Subgroup.map_le_iff_le_comap]
         intro x hx
         have hx' := h hx
-        simp only [gamU, levU, qExp, if_pos hl, Subgroup.mem_inf] at hx'
+        simp only [gamU, levU, qExp, ite_eq_left hl, Subgroup.mem_inf] at hx'
         exact hx'.2
     · exact Or.inl hl
   obtain ⟨γ', hγ', hle⟩ := UpperTheory.V.Kum.existsGen l (U.map (cycZ k Ω l)) hclosed hc

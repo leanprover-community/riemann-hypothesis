@@ -81,19 +81,4 @@ include hψ
 
 end Unif
 
-section Quadratic
-
-end Quadratic
-
-section Transport
-
-variable {D : Datum H} {R : Type} [CommRing R] {t : SAB H (Sp R)} {B B' : Over (Sp R)} [GrpObj B] [GrpObj B']
-  {M : LB B.left} {M' : LB B'.left} {L : Submodule (𝓞 E) D.La} {ρ : R} {S S' : Set L} {φ : L → (B ⟶ t.G)}
-
-end Transport
-
-section Multiplication
-
-end Multiplication
-
 end GlobalTheory.CMSpreadCompare

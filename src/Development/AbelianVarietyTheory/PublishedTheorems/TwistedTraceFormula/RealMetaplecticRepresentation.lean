@@ -418,7 +418,7 @@ theorem quad_fromBlocks {A B C D : Matrix l l ℝ} (hX : fromBlocks A B C D ∈ 
     have t : (2 * π * I * (A.trace : ℝ) : ℂ) • (1 : Sch l →L[ℂ] Sch l) =
         ∑ j, ∑ k, (A j k : ℂ) • (2 * π * I * (if j = k then 1 else 0) : ℂ) • (1 : Sch l →L[ℂ] Sch l) := by
       simp only [Matrix.trace, diag_apply, ofReal_sum, Finset.mul_sum, Finset.sum_smul, smul_smul, mul_ite, mul_one,
-        mul_zero, ite_smul, zero_smul, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_zero, ite_smul, zero_smul, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       exact Finset.sum_congr rfl fun j _ => by rw [mul_comm]
     rw [t, Finset.sum_comm (f := fun j k => ((-A k j / 2 : ℝ) : ℂ) • _)]
     simp only [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]

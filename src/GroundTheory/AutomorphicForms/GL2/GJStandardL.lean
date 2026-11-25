@@ -228,12 +228,6 @@ theorem exists_unramified (hn : 2 ≤ n) (μ : Measure (Reduction.normOneGL (K :
 
 end Unramified
 
-section Converges
-
-variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
-
-end Converges
-
 section Helpers
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
@@ -287,12 +281,6 @@ theorem factor_nonvanishing {f : AdelicGLn.AdelicGL K n → ℂ} (hfc : Continuo
   exact hc.congr fun x ↦ (key x).symm
 
 end Helpers
-
-section Arch
-
-variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
-
-end Arch
 
 section NonVanishing
 

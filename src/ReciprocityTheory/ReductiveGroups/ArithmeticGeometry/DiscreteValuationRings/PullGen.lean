@@ -394,12 +394,12 @@ theorem exists_pullAl (hL : D.toPre.P.L.IsLB) (oa : D.toPre.OAct O) (w0 : O)
       (uPull_spec D F hL oa w0 uΨ huΨ a N hN hN1 k χ).2, ?_⟩
     have hex : ∃ χ₀, star a • χ₀ = star a • χ := ⟨χ, rfl⟩
     show GeneratorPullback.SecRel _ _ _ (pullSecs D F hL oa w0 uΨ huΨ a N hN hN1 k s (star a • χ)) _ _ _ _ _ _ _
-    simp only [pullSecs, dif_pos hex]
+    simp only [pullSecs, dite_eq_left hex]
     exact secRel_pullSecs hL oa w0 uΨ huΨ a N hN hN1 k s χ hex.choose hex.choose_spec
       (smul_star_inj a N hN hN1 hex.choose_spec)
   · have : ¬ ∃ χ, star a • χ = β := fun ⟨χ, h⟩ => hβ χ h.symm
     show (pullSecs D F hL oa w0 uΨ huΨ a N hN hN1 k s β).f j = 0
-    simp only [pullSecs, dif_neg this]
+    simp only [pullSecs, dite_eq_right this]
     rfl
 
 theorem exists_XB (hL : D.toPre.P.L.IsLB) (oa : D.toPre.OAct O) (w0 : O)

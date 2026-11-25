@@ -41,7 +41,7 @@ lemma wb_UW {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {α : B.Mat k r}
   · refine Finset.sum_congr rfl fun j _ => ?_
     split_ifs with hj
     · rfl
-    · rw [uw_entry hz hα i j (Or.inr hj), if_neg (fun (e : i = j) => hj (e ▸ hi)), zero_mul, mul_zero]
+    · rw [uw_entry hz hα i j (Or.inr hj), ite_eq_right (fun (e : i = j) => hj (e ▸ hi)), zero_mul, mul_zero]
   · symm
     refine Finset.sum_eq_zero fun j _ => ?_
     rw [uw_entry hz hα i j (Or.inl hi)]

@@ -44,12 +44,4 @@ instance (x : X) : IsScalarTower k (X.presheaf.stalk x) X.functionField := by
 
 end Scalars
 
-section DimensionOne
-
-variable {X : Scheme.{u}}
-
-variable [IsIntegral X]
-
-end DimensionOne
-
 end GroundTheory.Arith.SchemeCoh

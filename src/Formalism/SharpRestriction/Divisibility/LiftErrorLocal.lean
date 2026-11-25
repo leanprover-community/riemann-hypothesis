@@ -357,13 +357,6 @@ def ConjugationNormInvariance (C : ℝ) : Prop := ∃ r : ℕ → HeightOneSpect
 
 end Conclusion₂
 
-section Fam
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-  (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.ex x hx i).nch)
-
-end Fam
-
 end Formalism.MainNotions.LiftErrorLocal
 
 end

@@ -164,7 +164,7 @@ theorem isLocalHom_jetTan (ℓ : Fin 1 × Fin g) :
       rintro rfl
       rw [MvPolynomial.mem_support_iff] at hm
       apply hm
-      rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_pos rfl]
+      rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, ite_eq_left rfl]
       exact sub_self _
     obtain ⟨i, hi⟩ : ∃ i, m i ≠ 0 := by
       by_contra! hne

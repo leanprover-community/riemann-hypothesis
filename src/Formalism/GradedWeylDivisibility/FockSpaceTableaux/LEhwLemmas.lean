@@ -79,7 +79,7 @@ theorem lehwShift_one {R : Type*} [CommRing R] {r n : ℕ} (w : Fin r × Fin n �
     · subst h
       simp
     · exact (hd rfl).elim
-  · rw [Polynomial.coeff_one, if_neg (by omega)]
+  · rw [Polynomial.coeff_one, ite_eq_right (by omega)]
     intro d hd
     exact (hd (by simp)).elim
 
@@ -122,7 +122,7 @@ theorem lehwShift_gen {R : Type*} [CommRing R] {r n : ℕ} (w : Fin r × Fin n �
   intro k
   by_cases hc : c = b
   · subst hc
-    rw [if_pos (show (c, s).1 = c from rfl)]
+    rw [ite_eq_left (show (c, s).1 = c from rfl)]
     rcases k with _ | _ | k
     · have e : (Polynomial.C (X (c, s)) + Polynomial.X * Polynomial.C (X (a, s)) :
           Polynomial (MvPolynomial (Fin r × Fin n) R)).coeff 0 = X (c, s) := by simp
@@ -141,7 +141,7 @@ theorem lehwShift_gen {R : Type*} [CommRing R] {r n : ℕ} (w : Fin r × Fin n �
       rw [e]
       intro d hd
       exact (hd (by simp)).elim
-  · rw [if_neg (show ¬ (c, s).1 = b from hc), add_zero, Polynomial.coeff_C]
+  · rw [ite_eq_right (show ¬ (c, s).1 = b from hc), add_zero, Polynomial.coeff_C]
     split_ifs with hk
     · subst hk
       simpa using isWeightedHomogeneous_X R w (c, s)

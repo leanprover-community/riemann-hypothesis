@@ -66,10 +66,10 @@ open Classical in
 def val_vw (x : C) : EReal :=
   if x = 0 then ⊤ else (((vLa la (p : K) : ℝ) * (Real.log (v x) / Real.log (v (p : C))) : ℝ) : EReal)
 
-theorem val_vw_zero : val_vw la p v 0 = ⊤ := if_pos rfl
+theorem val_vw_zero : val_vw la p v 0 = ⊤ := ite_eq_left rfl
 
 theorem val_vw_of_ne {x : C} (hx : x ≠ 0) : val_vw la p v x =
-    (((vLa la (p : K) : ℝ) * (Real.log (v x) / Real.log (v (p : C))) : ℝ) : EReal) := if_neg hx
+    (((vLa la (p : K) : ℝ) * (Real.log (v x) / Real.log (v (p : C))) : ℝ) : EReal) := ite_eq_right hx
 
 theorem val_vw_ne_bot (x : C) : val_vw la p v x ≠ ⊥ := by
   unfold val_vw; split_ifs
@@ -499,11 +499,11 @@ def mixVals (B : ℝ) : ValFam Xo c := ValFam.patch (htPrimes l B) (htVals Xo c)
 
 theorem mixVals_of_mem {B : ℝ} {la : HeightOneSpectrum (𝓞 c.F)} {p : ℕ} (hp : p ∈ htPrimes l B)
     (h : (p : 𝓞 c.F) ∈ la.asIdeal) : (mixVals Xo c B).1 la = htValSet Xo c la :=
-  if_pos ⟨p, hp, h⟩
+  ite_eq_left ⟨p, hp, h⟩
 
 theorem mixVals_of_not_mem {B : ℝ} {la : HeightOneSpectrum (𝓞 c.F)} {p : ℕ} (hp : p.Prime) (hn : p ∉ htPrimes l B)
     (h : (p : 𝓞 c.F) ∈ la.asIdeal) : (mixVals Xo c B).1 la = valSet Xo c (algCls Xo c) la := by
-  refine if_neg fun ⟨q, hq, h'⟩ => hn ?_
+  refine ite_eq_right fun ⟨q, hq, h'⟩ => hn ?_
   by_contra hne
   have hc : IsCoprime (p : 𝓞 c.F) (q : 𝓞 c.F) :=
     Nat.Coprime.cast ((Nat.coprime_primes hp hq.1).2 fun e => hne (e ▸ hq))

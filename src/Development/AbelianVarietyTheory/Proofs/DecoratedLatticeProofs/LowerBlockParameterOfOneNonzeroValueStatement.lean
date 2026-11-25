@@ -82,7 +82,7 @@ theorem sum_translate {G : Type} [Group G] (J : Subgroup G) (g₀ : G) (R : Fins
   have hs : ∀ a ∈ J, ∀ y ∈ R, s a y ∈ R ∧ (s a y * g₀)⁻¹ * (a * y * g₀) ∈ J := by
     intro a ha y hy
     have h : a * y ∈ J := J.mul_mem ha (hRJ y hy)
-    have e : s a y = (hR _ h).exists.choose := dif_pos h
+    have e : s a y = (hR _ h).exists.choose := dite_eq_left h
     rw [e]
     exact (hR _ h).exists.choose_spec
   have huniq : ∀ a ∈ J, ∀ y ∈ R, ∀ z ∈ R, (z * g₀)⁻¹ * (a * y * g₀) ∈ J → s a y = z := by

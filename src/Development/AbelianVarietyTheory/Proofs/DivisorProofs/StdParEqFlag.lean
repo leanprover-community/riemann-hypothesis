@@ -155,7 +155,7 @@ theorem exists_coeff_of_mem_colSpan {F E : Type} [Field F] [NumberField F] [Fiel
     obtain ⟨i, hi, rfl⟩ := hx
     obtain ⟨j, rfl, hj⟩ := hI i hi
     refine ⟨Pi.single j 1, fun j' hj' => ?_, ?_⟩
-    · rw [Pi.single_apply, if_neg]
+    · rw [Pi.single_apply, ite_eq_right]
       rintro rfl
       exact hj' hj
     · rw [Matrix.mulVec_single_one]
@@ -287,7 +287,7 @@ theorem flag_mat {R : Type} [CommRing R] {n r : ℕ} (A : Matrix (Fin n) (Fin r)
       rw [Finset.sum_map]; rfl]
     refine Finset.sum_subset (Finset.subset_univ _) fun l _ hl => ?_
     have : s ≤ l.val := by
-      by_contra h; push_neg at h
+      by_contra h; push Not at h
       exact hl (Finset.mem_map.2 ⟨⟨l.val, h⟩, Finset.mem_univ _, Fin.ext rfl⟩)
     rw [hsmall _ hj l this, mul_zero]
 

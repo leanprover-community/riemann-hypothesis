@@ -147,7 +147,7 @@ theorem repr_mem_of_isRat (h : S.HasRatBasis) (f : S.Forms) (hf : S.IsRat (f : S
   have hb : ∀ i, S.IsRat (S.basis i : S.Cl → S.V) := by
     have : S.basis = h.choose := by
       unfold CSD.basis
-      exact dif_pos h
+      exact dite_eq_left h
     rw [this]
     exact h.choose_spec
   obtain ⟨φ, h1, h2⟩ := exists_retraction (cmMax K)
@@ -180,7 +180,7 @@ theorem forms_rat : ∀ {K : Type} [Field K] [NumberField K] [StarRing K] (S : C
   refine FormsDescent.repr_mem_of_isRat S h _ (hT _ ?_) a
   have : S.basis = h.choose := by
     unfold CSD.basis
-    exact dif_pos h
+    exact dite_eq_left h
   rw [this]
   exact h.choose_spec b
 

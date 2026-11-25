@@ -329,7 +329,7 @@ theorem main_ind (c : E ≃+* E) (hcc : ∀ x, c (c x) = x)
       refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
       · simp [hee]
       · simp only [Fin.cons_zero, Fin.cons_succ]
-        rw [hsym (v' j) e, hv'e, map_zero, if_neg (Fin.succ_ne_zero j).symm]
+        rw [hsym (v' j) e, hv'e, map_zero, ite_eq_right (Fin.succ_ne_zero j).symm]
       · simp [hv'e]
       · simp [hv'o]
     · rw [Fin.range_cons, Submodule.span_insert, hv'sp]

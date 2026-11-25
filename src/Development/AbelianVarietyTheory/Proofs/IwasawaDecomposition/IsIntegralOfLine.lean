@@ -312,15 +312,6 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL
 
 end Space
 
-section Rows
-
-open GlobalTheory.Mem.Col2 GlobalTheory.Mem.R3 GlobalTheory.EX
-
-variable (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL))
-  (tr : TrI X.B px)
-
-end Rows
-
 end GlobalTheory.Mem.RowCoord
 
 end

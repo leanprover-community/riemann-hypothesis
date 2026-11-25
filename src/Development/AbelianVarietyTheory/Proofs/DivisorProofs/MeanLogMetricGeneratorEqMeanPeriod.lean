@@ -203,7 +203,7 @@ theorem mean_logMet_eq : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (dl : ℂ) (c
   refine ⟨hne, fun M _ hD hcM τ => ?_⟩
   haveI : NumberField M := NumberField.mk
   have hell := ellT_eq_span D cD hgen M hD.1 τ (hcM τ)
-  have hl : TaylorLogMetric.liftM M (cD τ) = ⟨cD τ, hcM τ⟩ := dif_pos (hcM τ)
+  have hl : TaylorLogMetric.liftM M (cD τ) = ⟨cD τ, hcM τ⟩ := dite_eq_left (hcM τ)
   rw [hl, ← hmean M hD τ, Finset.sum_neg_distrib]
   exact (GlobalTheory.Glob.meanLogOm_eq_of_gen hD.1 (GlobalTheory.Glob.area_lamConj_pos hc hD) hell.symm).symm
 

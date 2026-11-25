@@ -159,12 +159,8 @@ theorem exists_cast [TopologicalSpace Γ] [TopologicalSpace K] {m n : ℕ} (h : 
   exact ⟨ρ, id, fun _ => rfl⟩
 
 theorem prod_get {M : Type} [CommMonoid M] {α : Type} (F : α → M) :
-    ∀ L : List α, ∏ k : Fin L.length, F (L.get k) = (L.map F).prod
-  | [] => by simp
-  | a :: L => by
-    show ∏ k : Fin (L.length + 1), F ((a :: L).get k) = _
-    rw [Fin.prod_univ_succ, List.map_cons, List.prod_cons, ← prod_get F L]
-    rfl
+    ∀ L : List α, ∏ k : Fin L.length, F (L.get k) = (L.map F).prod :=
+  fun L => Fin.prod_univ_fun_getElem L F
 
 end Alg
 

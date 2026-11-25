@@ -47,8 +47,4 @@ def HasSig (H : Host E) (p q : ℕ) {R : Type} [CommRing R] {G : Over (Sp R)} [G
   ρ ^ 2 = -(H.d : R) ∧
     ∀ (k : Type) [Field k] [IsAlgClosed k] [CharZero k] (β : R →+* k), SigAt H p q act (spMap β) (β ρ)
 
-def herm (D : Datum H) (x y : D.La) : Zw H :=
-  ((D.EF (H.w0 • x) y - D.EF x y : ℤ) : Zw H) + ((D.EF x y : ℤ) : Zw H) * wz H
-
-
 end GlobalTheory.IndefiniteRowSideFullHecke.CMCurveHermitianForms

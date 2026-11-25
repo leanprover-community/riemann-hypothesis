@@ -68,7 +68,7 @@ theorem UpperTheory.V.Fr.pr_norm2 :
     · subst hij
       simp
     · have hrev : j.rev ≠ i.rev := fun h => hij (Fin.rev_injective h).symm
-      rw [if_neg hrev, if_neg hij, hZr i j, hZr j j, hZr i i]
+      rw [ite_eq_right hrev, ite_eq_right hij, hZr i j, hZr j j, hZr i i]
       have hd : -Z j j - -Z i i = Z i i - Z j j := by ring
       rw [hd]
       ring
@@ -110,7 +110,7 @@ theorem UpperTheory.V.Fr.pr_norm2 :
       refine Finset.sum_eq_zero fun k _ => hII _ _ ?_ (hAI k j)
       rw [Matrix.mul_apply]
       exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_right _ _ (hAI i l)
-    rw [Matrix.sub_apply, Matrix.sub_apply, Matrix.add_apply, hAZ, hZA, hAZA, hA, if_neg hij]
+    rw [Matrix.sub_apply, Matrix.sub_apply, Matrix.add_apply, hAZ, hZA, hAZA, hA, ite_eq_right hij]
     have hu := Ring.inverse_mul_cancel _ (hunit i j hij)
     linear_combination (-(Z i j)) * hu
 end -- clump:auto

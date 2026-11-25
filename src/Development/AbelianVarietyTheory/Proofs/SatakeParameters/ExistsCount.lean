@@ -98,8 +98,8 @@ theorem exists_count (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) [FiniteDimensional �
     simp only [Multiset.count_replicate]
     rw [Finset.sum_ite_eq']
     by_cases hb : b ∈ Finset.Ico lo₁ hi
-    · rw [if_pos hb, Int.toNat_of_nonneg (nn b)]
-    · rw [if_neg hb, zero b hb]
+    · rw [ite_eq_left hb, Int.toNat_of_nonneg (nn b)]
+    · rw [ite_eq_right hb, zero b hb]
       rfl
 
 end Local

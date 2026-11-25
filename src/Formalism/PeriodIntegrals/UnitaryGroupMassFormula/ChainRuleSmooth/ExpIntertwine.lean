@@ -23,12 +23,10 @@ section expo
 
 variable {n : ℕ}
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_intertwine (Y Z H : Matrix (Fin n) (Fin n) ℂ) (h : Y * H = H * Z) :
     NormedSpace.exp Y * H = H * NormedSpace.exp Z := by
   apply GlobalTheory.RightDerivSmooth.exp_intertwine <;> assumption
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_mem_UH (H Y : Matrix (Fin n) (Fin n) ℂ) (hY : Yᴴ * H + H * Y = 0) :
     NormedSpace.exp Y ∈ Formalism.QuantumDeterminants.UH H := by
   show (NormedSpace.exp Y)ᴴ * H * NormedSpace.exp Y = H

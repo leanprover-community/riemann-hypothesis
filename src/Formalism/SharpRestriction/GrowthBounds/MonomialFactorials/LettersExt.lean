@@ -41,7 +41,7 @@ theorem ovr_u (hu : Function.Injective u) (a : Fin s → ℕ) (n : Fin t → ℕ
   rw [dite_eq_left h]
   exact congrArg n (hu (Classical.choose_spec h))
 
-theorem ovr_not (a : Fin s → ℕ) (n : Fin t → ℕ) (l : Fin s) (h : ¬ ∃ i, u i = l) : ovr u a n l = a l := dif_neg h
+theorem ovr_not (a : Fin s → ℕ) (n : Fin t → ℕ) (l : Fin s) (h : ¬ ∃ i, u i = l) : ovr u a n l = a l := dite_eq_right h
 
 theorem ovr_ovr (hu : Function.Injective u) (a : Fin s → ℕ) (n : Fin t → ℕ) :
     ovr u (ovr u a n) (fun i => a (u i)) = a := by
@@ -195,15 +195,15 @@ theorem deg_eta (aTop : Fin X.s → ℕ) (b : SegBlock X.s X.r) (x : Lv C0 CE1 C
   have hu : ¬ q = ⟨2 * X.s, by omega⟩ := by
     intro h
     exact h1 (by rw [h])
-  rw [dif_neg h1, if_neg hodd, htop, if_neg hnl]
-  simp only [hu, if_false, Nat.sub_zero]
+  rw [dite_eq_right h1, ite_eq_right hodd, htop, ite_eq_right hnl]
+  simp only [hu, ite_false, Nat.sub_zero]
   congr 1
   simp only [← List.sum_toFinset _ (List.nodup_finRange _), List.toFinset_finRange]
   apply Eq.trans (Finset.sum_eq_single i ?_ ?_)
-  · exact if_pos (Or.inr (show (q : ℕ) = 2 * ((X.S C0 CE1 CE2).sigma + (i : ℕ)) + 1 from hq))
+  · exact ite_eq_left (Or.inr (show (q : ℕ) = 2 * ((X.S C0 CE1 CE2).sigma + (i : ℕ)) + 1 from hq))
   · intro j _ hj
     have hj' : (j : ℕ) ≠ (i : ℕ) := fun h => hj (Fin.ext h)
-    apply if_neg
+    apply ite_eq_right
     show ¬ ((q : ℕ) = 2 * ((X.S C0 CE1 CE2).sigma + (j : ℕ)) ∨ (q : ℕ) = 2 * ((X.S C0 CE1 CE2).sigma + (j : ℕ)) + 1)
     omega
   · intro h
@@ -216,8 +216,8 @@ theorem deg_other (aTop aTop' : Fin X.s → ℕ) (b : SegBlock X.s X.r) (x : Lv 
   have hLL : (gB C0 CE1 CE2 X aTop 0 b).LL.deg q = (gB C0 CE1 CE2 X aTop' 0 b).LL.deg q := by
     simp only [gB, gmB, gmL, blockData, BlockData.withMargin, blockBase, segChain]
     by_cases h : (q : ℕ) = 2 * X.s
-    · rw [dif_pos h, dif_pos h]
-    · rw [dif_neg h, dif_neg h]
+    · rw [dite_eq_left h, dite_eq_left h]
+    · rw [dite_eq_right h, dite_eq_right h]
       have hv : ((topOf q h : Fin X.s) : ℕ) = (q : ℕ) / 2 := rfl
       have hlt : (q : ℕ) / 2 < X.s := by
         have := (topOf q h).2
@@ -255,7 +255,7 @@ theorem lLL_ovr (a : Fin X.s → ℕ) (n : Fin (X.S C0 CE1 CE2).t → ℕ) (b : 
       rw [deg_eta C0 CE1 CE2 X _ b x _ q hjq]
       have he : ∃ i, uTop (X.S C0 CE1 CE2) i = uTop (X.S C0 CE1 CE2) (Classical.choose h) := ⟨_, rfl⟩
       have hov : ovr (uTop (X.S C0 CE1 CE2)) a n (uTop (X.S C0 CE1 CE2) (Classical.choose h)) = n (Classical.choose h) := by
-        simp only [ovr, dif_pos he]
+        simp only [ovr, dite_eq_left he]
         rw [uTop_inj C0 CE1 CE2 X (Classical.choose_spec he)]
       simp only [coarseC, hov]
       rfl
@@ -265,7 +265,7 @@ theorem lLL_ovr (a : Fin X.s → ℕ) (n : Fin (X.S C0 CE1 CE2).t → ℕ) (b : 
           rintro ⟨i, rfl⟩
           simp only [uTop] at hl
           omega
-        simp only [ovr, dif_neg hne]
+        simp only [ovr, dite_eq_right hne]
       · rintro ⟨i, hi⟩
         exact h ⟨i, hi⟩
 

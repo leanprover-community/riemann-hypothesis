@@ -386,7 +386,7 @@ theorem starAD_of_global : ∀ (D : D7) (L : SizeData₂ D) (HW : HWOf D.loc) (X
     simp only [Rows.Data.VV, hIco]
   have hcls : TwistedPlaces.SplitK D (D.nd.l i) ∨ TwistedPlaces.InertK D (D.nd.l i) := by
     unfold TwistedPlaces.SplitK TwistedPlaces.InertK Host.cls primeClass
-    simp only [hsm, hlq, hld, if_false]
+    simp only [hsm, hlq, hld, ite_false]
     split_ifs <;> simp
   rcases hcls with hsp | hin
   ·
@@ -776,7 +776,7 @@ theorem main : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (HW :
   split_ifs with hlt
   · have := (exists_rat_btwn hlt).choose_spec
     linarith [this.1]
-  · push_neg at hlt
+  · push Not at hlt
     have hc0 : coreB L (D.nd.l i) w ≤ 0 := by linarith
     have : 3 * C₂ * coreB L (D.nd.l i) w ≤ 0 := by
       have : (0:ℝ) ≤ 3 * C₂ := by linarith
@@ -1226,8 +1226,8 @@ theorem flat_pos {D : D7} (L : SizeData₂ D) (bd : Prop) (l : ℕ) : 0 < Formal
   have h3 := Formalism.MainNotions.TwistedPlaces.L_ge_one L
   have h4 := L.Sc_pos
   by_cases hb : bd
-  · rw [if_pos hb]; linarith
-  · rw [if_neg hb]; linarith
+  · rw [ite_eq_left hb]; linarith
+  · rw [ite_eq_right hb]; linarith
 
 theorem coreF_pos {D : D7} (L : SizeData₂ D) (bd : Prop) (l : ℕ) (lam : HeightOneSpectrum (𝓞 D.host.E)) :
     0 < Formalism.MainNotions.N.coreF L bd l lam := by

@@ -25,9 +25,9 @@ private lemma dite_lt_eq_sum_smul_bvec {k r : ℕ} (g : Fin r → ℂ) :
   simp only [Pi.smul_apply, bvec, smul_eq_mul, Pi.single_apply]
   split_ifs with hp
   · rw [Finset.sum_eq_single ⟨p.val, hp⟩]
-    · rw [if_pos (show p = eI k r ⟨p.val, hp⟩ from Fin.ext rfl), mul_one]
+    · rw [ite_eq_left (show p = eI k r ⟨p.val, hp⟩ from Fin.ext rfl), mul_one]
     · intro c _ hc
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       intro h
       apply hc
       apply Fin.ext
@@ -38,7 +38,7 @@ private lemma dite_lt_eq_sum_smul_bvec {k r : ℕ} (g : Fin r → ℂ) :
   · symm
     apply Finset.sum_eq_zero
     intro c _
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro h
     apply hp
     rw [h]
@@ -70,14 +70,14 @@ theorem c2_tau_mem : C2.TauMem := by
         simp only [Matrix.mulVec, dotProduct]
         rw [Finset.sum_eq_single p]
         · by_cases hp : r ≤ p.val ∧ p.val ≤ r + k
-          · rw [unipotent_apply_middle_column vX p p hp.1 hp.2, if_pos rfl, one_mul]
+          · rw [unipotent_apply_middle_column vX p p hp.1 hp.2, ite_eq_left rfl, one_mul]
           · have : z p = 0 := by
               apply hz.1
               omega
             rw [this, mul_zero]
         · intro j _ hj
           by_cases hjW : r ≤ j.val ∧ j.val ≤ r + k
-          · rw [unipotent_apply_middle_column vX p j hjW.1 hjW.2, if_neg (Ne.symm hj), zero_mul]
+          · rw [unipotent_apply_middle_column vX p j hjW.1 hjW.2, ite_eq_right (Ne.symm hj), zero_mul]
           · have : z j = 0 := by
               apply hz.1
               omega

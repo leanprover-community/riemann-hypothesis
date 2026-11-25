@@ -248,11 +248,6 @@ variable (D : D7)
 
 abbrev EmbC : Type := D.what₂.Tau ⊕ D.what₂.Tau
 
-def toGG : EmbC D → D.R.GG
-  | Sum.inl τ => ((D.eTau τ : D.R.Psi) : D.R.GG)
-  | Sum.inr τ => ((D.eTau τ : D.R.Psi) : D.R.GG) * D.R.cc
-
-
 open Classical in
 def ofGG (g : D.R.GG) : EmbC D :=
   if h : g ∈ D.R.Psi then Sum.inl (D.eTau.symm ⟨g, h⟩)
@@ -270,8 +265,6 @@ def frobG (p : ℕ) : D.R.GG :=
       [P.LiesOver (Ideal.span {(p : ℤ)})], IsArithFrobAt ℤ (D.host.sigmaOf g) P
   then h.choose else 1
 
-def frobEmb (p n : ℕ) (σ : EmbC D) : EmbC D := ofGG D (toGG D σ * frobG D p ^ n)
-
 variable (N : ℕ)
 
 def pk (τ : D.what₂.Tau) (k : ℕ) : MvPolynomial (Rt D.what₂.Tau N) ℝ := ∑ i : Fin N, X (τ, i) ^ k
@@ -285,12 +278,6 @@ def collapse : MvPolynomial (Vm D.what₂.Tau N) ℝ →ₐ[ℝ] MvPolynomial (R
     | Sum.inr (_, k) => chTot D N k)
 
 variable {D N}
-
-def chLie (j : ℕ) (k : ℕ) : EmbC D → MvPolynomial (Rt D.what₂.Tau N) ℝ
-  | Sum.inl τ => C ((Nat.factorial k : ℝ)⁻¹) *
-      ∑ i ∈ univ.filter (fun i : Fin N => (i : ℕ) < j), X (τ, i) ^ k
-  | Sum.inr τ => C ((Nat.factorial k : ℝ)⁻¹) *
-      ∑ i ∈ univ.filter (fun i : Fin N => j ≤ (i : ℕ)), (-X (τ, i)) ^ k
 
 variable (D N)
 

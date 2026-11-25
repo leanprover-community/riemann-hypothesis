@@ -74,7 +74,7 @@ variable {X Y W S₀ : Scheme.{0}} {L : LB W} {K : Type} [Fintype K]
 theorem gs_zero (f : X ⟶ Y) (y : X) (U : Y.Opens) : gs f y U 0 = 0 := by
   by_cases h : f y ∈ U
   · rw [gs_eq f y U h, map_zero, map_zero]
-  · exact dif_neg h
+  · exact dite_eq_right h
 
 theorem exists_ratio (hL : L.IsLB) {φ : K → (Y ⟶ W)} {ε : K → ℤ} (p : Y ⟶ S₀)
     (hp : Function.Surjective p.appTop.hom) {u u' : LB.Gen (LB.LinComb L φ ε)} (hu : u.IsGen) (hu' : u'.IsGen) :

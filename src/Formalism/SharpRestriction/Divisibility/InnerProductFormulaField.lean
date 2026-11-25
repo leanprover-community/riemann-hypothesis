@@ -97,14 +97,6 @@ structure LevObj {D : D7} (T : ThetaX D) {EE : Type} [NormedAddCommGroup EE] [In
 
   idxgCh : D.what₂.Tup → ℕ → Pl D → ℕ
 
-section Level
-
-variable {D} {T} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
-
-variable (S : RowSide D EE) {n : ℕ} (b : OrthonormalBasis (Fin n) ℂ EE) (ty : Fin n → D.what₂.FT) (V : LevObj T S)
-
-end Level
-
 structure LevDat {D : D7} (T : ThetaX D) where
   EE : Type
   [nacg : NormedAddCommGroup EE]
@@ -117,12 +109,6 @@ structure LevDat {D : D7} (T : ThetaX D) where
   V : LevObj T S
 
 attribute [instance] LevDat.nacg LevDat.ips LevDat.fd
-
-section Fam
-
-variable {eps : ℝ}
-
-end Fam
 
 end Formalism.MainNotions.InnerProductFormulaField
 

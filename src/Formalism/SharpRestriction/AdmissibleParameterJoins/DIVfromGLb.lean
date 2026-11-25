@@ -54,7 +54,7 @@ theorem lamCol_top (D : D7) (L : SizeData₂ D) (u : D.what₂.Word) (τ : D.wha
   obtain ⟨h1, -⟩ := L.top_u τ t hk h
   have e1 := D.hcW_first u τ hk
   have e2 : flipTwoThree.aT D u τ = (((D.hcW u τ).u ⟨0, hk⟩ : ℚ) : ℝ) - (((D.R.k : ℝ) - 1) / 2) := by
-    simp only [flipTwoThree.aT, flipTwoThree.lamCol, dif_pos hk, hcToWeightQ, rhoVec, Nat.cast_zero,
+    simp only [flipTwoThree.aT, flipTwoThree.lamCol, dite_eq_left hk, hcToWeightQ, rhoVec, Nat.cast_zero,
       sub_zero] <;> push_cast <;> ring
   rw [e2, e1, h1]
   ring

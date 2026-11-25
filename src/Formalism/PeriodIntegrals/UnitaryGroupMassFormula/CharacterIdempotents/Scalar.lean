@@ -110,12 +110,12 @@ theorem scalar : Scalar := by
     have hdim : (Module.finrank ℂ V : ℂ) = Module.finrank ℂ W := by
       have := congr_fun (FDRep.char_iso e) 1
       rwa [FDRep.char_one, FDRep.char_one] at this
-    rw [if_pos hWV, hdim, mul_one] at htr
+    rw [ite_eq_left hWV, hdim, mul_one] at htr
     have hc1 : c = 1 := mul_right_cancel₀ hWpos (htr.trans (one_mul _).symm)
     rw [hc, hc1, one_smul]
   · intro hE
     have hn : ¬ Nonempty (W ≅ V) := fun ⟨e⟩ => hE.false e.symm
-    rw [if_neg hn, mul_zero] at htr
+    rw [ite_eq_right hn, mul_zero] at htr
     rw [hc, (mul_eq_zero.mp htr).resolve_right hWpos, zero_smul]
 
 end PI.CharIdemW

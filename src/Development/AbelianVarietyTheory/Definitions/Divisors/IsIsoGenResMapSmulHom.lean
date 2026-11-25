@@ -214,12 +214,6 @@ open GlobalTheory.Twist (resM resM_resM resM_smul app_resM)
 
 namespace GlobalTheory.Vert
 
-section Dim
-
-attribute [local instance low] specializationOrder
-
-end Dim
-
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
 namespace Model

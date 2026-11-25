@@ -382,7 +382,7 @@ private lemma densNonneg_S_consequence (hN : TopDensNonneg (S := S) P z z' π π
     have hwt : (0 : ℂ) ≤ ((∏ l, ‖q.1 l‖ ^ (-2 : ℤ) : ℝ) : ℂ) :=
       Complex.zero_le_real.mpr (Finset.prod_nonneg fun l _ => zpow_nonneg (norm_nonneg _) _)
     exact mul_nonneg hwt (hN w hw _ (level_product_preserves_compact hS w hw i u hu) _ hg _)
-  · push_neg at h0
+  · push Not at h0
     obtain ⟨j, hj⟩ := h0
     have h1 : (∏ l, ‖q.1 l‖ ^ (-2 : ℤ)) = 0 :=
       Finset.prod_eq_zero (Finset.mem_univ j) (by rw [hj, norm_zero]; exact zero_zpow _ (by norm_num))
@@ -676,17 +676,6 @@ theorem inK_act_span {G G' : Set V} (M : SlopeTestRemainingChoices S (Pr V)) (hM
 
 end Struct
 
-section Classes
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
-variable {S : Type} [Fintype S] [DecidableEq S]
-variable {P : M.Par} {z z' : Fin (2 * P.r + P.k + 1) → ℂ} {π : Mx P.k P.r → (Wp →L[ℂ] Wp)}
-  {π' : Mx P.k P.r → (Wq →L[ℂ] Wq)} {L : R.LevelData (Pr (RadSp P.k P.r z z' π π')) P.r}
-  {st : Fr.Start (Pr (RadSp P.k P.r z z' π π'))} {l0 : ℕ} {D : B.RealPlaceData P.k P.r Wp Wq}
-
-end Classes
-
 end Formalism.FourierDecayAlt.P5
 end -- clump:auto
 end -- clump:auto
@@ -910,21 +899,6 @@ theorem bT_mem (σ : Site A) (hp : σ.p ∈ 𝒜) (hc : σ.c ∈ 𝒜) (hci : σ
     · exact (star_mem (Ts_mem σ hp hc hci l.pt i j) : star _ ∈ 𝒜)
 
 end Gen
-
-section Lev
-
-variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp]
-  [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-  {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
-
-end Lev
-
-section Top
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
-
-end Top
 
 end Formalism.FourierDecayAlt.P5.HerA
 end -- clump:auto

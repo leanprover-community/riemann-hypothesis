@@ -686,7 +686,7 @@ theorem moved_mem (hy : y ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L))
   have low : ∀ k : Fin n, r ≤ (k : ℕ) →
       (lowD r n (cc (α : E) / (α : E)) * y) k ∈ Lev.loc D.𝔪 (𝔐 • X.Λ) := fun k hk' => by
     obtain ⟨s, hs, h⟩ := cong_zero.1 (hk k hk')
-    rw [lowD_row, if_neg (not_lt.2 hk')]
+    rw [lowD_row, ite_eq_right (not_lt.2 hk')]
     refine ⟨a * s, cop_mul (ha' _ hM) hs, ?_⟩
     rw [h𝔪, mul_comm 𝔐, Submodule.mul_smul] at h
     rw [mul_smul, smul_comm s]
@@ -695,7 +695,7 @@ theorem moved_mem (hy : y ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L))
   · obtain ⟨s, hs, h⟩ := loc_tens (y := lowD r n (cc (α : E) / (α : E)) * y)
       (𝔟 := Ideal.span {2} * conjI D.𝔪) hΛ' hM (near_of_mem hL) fun k => by
         by_cases hk' : (k : ℕ) < r
-        · rw [lowD_row, if_pos hk', one_smul]
+        · rw [lowD_row, ite_eq_left hk', one_smul]
           exact rows_loc hΛ hM (near_of_mem hL) hy k
         · exact loc_smul (cop_level D)
             (Lev.loc_mono Submodule.smul_le_right (low k (not_lt.1 hk')))
@@ -779,7 +779,7 @@ theorem low_laws (hy : y ∈ tens Λ'' ((Ideal.span {2} * conjI D.𝔪 * D.𝔪)
   refine ⟨tens_mono _ (Submodule.smul_mono_left Ideal.mul_le_left) h3, fun k hk => ?_,
     fun k => ?_⟩
   · have := cong_of_mem (y' := 0) hΛ hM (near_of_mem hL) (by rw [sub_zero]; exact move' h0 hm hy) k
-    rwa [lowD_row, if_pos hk, one_smul] at this
+    rwa [lowD_row, ite_eq_left hk, one_smul] at this
   · obtain ⟨s, hs, h⟩ := near_of_mem hL
     exact cong_of_mem (y' := 0) hΛ' hM' ⟨s, (h𝔪 ▸ hs).of_mul_right_left, h⟩
       (by rw [sub_zero]; exact h3) k
@@ -801,7 +801,7 @@ theorem of_datF_ne (h : datF D 𝔐 hn y ≠ 0) :
     (∃ k : D.J, D.Red (fun i => y (Fin.castLE hn i)) k) ∧
       ∀ k : Fin n, r ≤ (k : ℕ) → Cong X 𝔐 (y k) 0 := by
   by_contra h'
-  exact h (dif_neg h')
+  exact h (dite_eq_right h')
 
 theorem dat_eq : D.dat hn y = datF D D.𝔪 hn y := rfl
 
@@ -1086,7 +1086,7 @@ theorem sum_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
     have := cong_add (cong_refl (X := X) (𝔪 := D.𝔪) (y k)) ((hlow q).2.1 k hk)
     rw [add_zero] at this
     change Cong X D.𝔪 ((lowD r n (cc (α : E) / (α : E)) * y) k + _) _
-    rwa [lowD_row, if_pos hk, one_smul]
+    rwa [lowD_row, ite_eq_left hk, one_smul]
   refine ⟨Finset.univ.image f, ?_, ?_⟩
   · rw [Finset.sum_image hinj.injOn]
     exact phi_eq_sum idx hs he hn hM hΛ hL v₀ hv f f1 f2 f3
@@ -1121,20 +1121,20 @@ theorem sum_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
       · exact (D.lam κ).ne_zero
       · refine red_congr (fun a => ?_) hκ
         change Cong X D.𝔪 (if _ then _ else _) _
-        rw [if_pos (show ((Fin.castLE hn a : Fin n) : ℕ) < r from a.2)]
+        rw [ite_eq_left (show ((Fin.castLE hn a : Fin n) : ℕ) < r from a.2)]
         exact cong_refl _
       · intro k hk
         change Cong X D.𝔪 (if _ then _ else _) _
-        rw [if_neg (not_lt.2 hk)]
+        rw [ite_eq_right (not_lt.2 hk)]
         exact cong_refl _)
     have h3 : x - lowD r n (cc (α : E) / (α : E)) * f i ∈ tens Λ'' (D.sh L) := by
       refine mem_moved hM h𝔪 hc h0 hα h𝔞 hΛ hΛ' hΛ'' hm h2 hL (sub_mem hx (f6 i).1)
         (fun k hk => ?_) fun k hk => ?_
       · have h4 := hi k
         change Cong X D.𝔪 (if _ then _ else _) _ at h4
-        rw [if_pos hk] at h4
+        rw [ite_eq_left hk] at h4
         change Cong X D.𝔪 (x k - (lowD r n (cc (α : E) / (α : E)) * f i) k) 0
-        rw [lowD_row, if_pos hk, one_smul, cong_zero]
+        rw [lowD_row, ite_eq_left hk, one_smul, cong_zero]
         exact h4
       · have := cong_sub (h5 k hk) ((f6 i).2 k hk)
         rw [sub_zero] at this

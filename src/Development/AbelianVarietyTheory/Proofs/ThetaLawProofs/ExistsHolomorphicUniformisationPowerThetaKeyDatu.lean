@@ -268,7 +268,7 @@ theorem blockPr_blockIn (i i' : Fin j) (z : Fin g → ℂ) :
 
 theorem sum_blockIn_blockPr (z : Fin n → ℂ) : ∑ i, blockIn e i (blockPr e i z) = z := by
   funext q
-  simp only [Finset.sum_apply, blockIn_apply, blockPr_apply, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+  simp only [Finset.sum_apply, blockIn_apply, blockPr_apply, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     Prod.mk.eta, Equiv.apply_symm_apply]
 
 def blockLat (Λ : Submodule ℤ (Fin g → ℂ)) : Submodule ℤ (Fin n → ℂ) where
@@ -358,7 +358,7 @@ theorem exists_powUnif (hL : L.IsLB) {L' : LB G'.left} (hL' : L'.IsLB) (w : LB.I
     refine ⟨∑ i, blockIn e i (z i), pow_hom_ext p fun i => ?_⟩
 
     rw [hex, ← hz, map_sum]
-    simp only [blockPr_blockIn, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [blockPr_blockIn, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   · constructor
     · intro h i
       have := p.hom i

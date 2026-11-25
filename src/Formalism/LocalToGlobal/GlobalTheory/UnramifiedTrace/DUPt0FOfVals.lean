@@ -55,13 +55,13 @@ theorem comb_du {K X PD PE : Type*} [Field K] [Fintype K] [DecidableEq K] [AddCo
   have hA : ((Tn : ℂ) ^ n1) ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.2 hTn)
   have hfibE : ∀ x : X, x ≠ 0 → ∃ q, πE q = x := by
     intro x hx
-    have hc : 0 < (Finset.univ.filter (fun q => πE q = x)).card := by rw [hcE x, if_neg hx]; exact hTn'
+    have hc : 0 < (Finset.univ.filter (fun q => πE q = x)).card := by rw [hcE x, ite_eq_right hx]; exact hTn'
     obtain ⟨q, hq⟩ := Finset.card_pos.1 hc
     exact ⟨q, (Finset.mem_filter.1 hq).2⟩
   obtain ⟨wE, hwE⟩ : ∃ wE : X → ℂ, ∀ q, VE q = wE (πE q) :=
     ⟨fun x => if h : ∃ q, πE q = x then VE h.choose else 0, fun q => by
       have h : ∃ q', πE q' = πE q := ⟨q, rfl⟩
-      simp only [dif_pos h]
+      simp only [dite_eq_left h]
       exact hEE _ _ h.choose_spec.symm⟩
   have hVD : ∀ p, VD p = (if πD p = te then Φ else wE (πD p)) := by
     intro p
@@ -70,7 +70,7 @@ theorem comb_du {K X PD PE : Type*} [Field K] [Fintype K] [DecidableEq K] [AddCo
     · have h0 : πD p ≠ 0 := by
         intro h0
         have hc := hcD 0
-        rw [if_neg (Ne.symm hte0), if_pos (Submodule.zero_mem _)] at hc
+        rw [ite_eq_right (Ne.symm hte0), ite_eq_left (Submodule.zero_mem _)] at hc
         have hm : p ∈ Finset.univ.filter (fun p => πD p = 0) := Finset.mem_filter.2 ⟨Finset.mem_univ _, h0⟩
         rw [Finset.card_eq_zero.1 hc] at hm
         simp at hm

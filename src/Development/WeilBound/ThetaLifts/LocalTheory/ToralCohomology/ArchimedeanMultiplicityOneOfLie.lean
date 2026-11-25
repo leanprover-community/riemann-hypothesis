@@ -51,9 +51,9 @@ structure Emb (R S R₁ S₁ : ℕ) where
 open Classical in
 def Emb.h (m : Emb R S R₁ S₁) (a : Ix R S) : ℝ := if a = .inl m.i ∨ a = .inr m.j then m.ε else 0
 
-theorem Emb.h_e (m : Emb R S R₁ S₁) (b) : m.h (m.e b) = 0 := if_neg (not_or.2 ⟨m.ne_i b, m.ne_j b⟩)
+theorem Emb.h_e (m : Emb R S R₁ S₁) (b) : m.h (m.e b) = 0 := ite_eq_right (not_or.2 ⟨m.ne_i b, m.ne_j b⟩)
 
-theorem Emb.h_s (m : Emb R S R₁ S₁) {a} (h : a = .inl m.i ∨ a = .inr m.j) : m.h a = m.ε := if_pos h
+theorem Emb.h_s (m : Emb R S R₁ S₁) {a} (h : a = .inl m.i ∨ a = .inr m.j) : m.h a = m.ε := ite_eq_left h
 
 theorem Emb.cases (m : Emb R S R₁ S₁) (a : Ix R S) : (a = .inl m.i ∨ a = .inr m.j) ∨ ∃ b, m.e b = a := or_assoc.2 (m.cover a)
 
@@ -105,7 +105,7 @@ theorem HWMod.centre {act : (ι → Mat R S) →ₗ[ℂ] Module.End ℂ M} {Λ :
       simp only [Matrix.sum_apply, Matrix.single_apply, Matrix.one_apply]
       split_ifs with e
       · subst e; simp
-      · exact Finset.sum_eq_zero fun c _ => if_neg fun h => e (h.1.symm.trans h.2)
+      · exact Finset.sum_eq_zero fun c _ => ite_eq_right fun h => e (h.1.symm.trans h.2)
     · simp [un, Pi.single_eq_of_ne h]
   have : (act (Pi.single w 1)).eigenspace (∑ a, Λ w a) = ⊤ := by
     refine h.gen _ ?_ fun Z _ y hy => ?_
@@ -458,10 +458,10 @@ theorem exists_frame (m : Emb R S R₁ S₁) (hs : ∀ b, sg (m.e b) = sg b) {d 
     simp [this, h]
   let cl : Ix R S → Fin d → ℂ := fun a => if a = .inl m.i then N • (x + (1 : ℂ) • z) else if a = .inr m.j then
     N • (x + (-1 : ℂ) • z) else Function.extend m.e (fun b r => (ι * C₁) r b) 0 a
-  have ci : cl (.inl m.i) = N • (x + (1 : ℂ) • z) := if_pos rfl
+  have ci : cl (.inl m.i) = N • (x + (1 : ℂ) • z) := ite_eq_left rfl
   have cj : cl (.inr m.j) = N • (x + (-1 : ℂ) • z) := by simp [cl]
   have ce : ∀ b, cl (m.e b) = fun r => (ι * C₁) r b := fun b => by
-    simp only [cl, if_neg (m.ne_i b), if_neg (m.ne_j b), m.inj.extend_apply]
+    simp only [cl, ite_eq_right (m.ne_i b), ite_eq_right (m.ne_j b), m.inj.extend_apply]
   have o1 : ∀ b (s : ℂ), hf M (fun r => (ι * C₁) r b) (N • (x + s • z)) = 0 := fun b s => by
     rw [smr, addr, col _ b ox, col _ b oz]; simp
   have gram : (Matrix.of fun r a => cl a r)ᵀ * M * (Matrix.of fun r a => cl a r).map star = Jm R S := by

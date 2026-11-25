@@ -24,9 +24,9 @@ theorem succAbove_eq_fc {n : ℕ} (i : Fin (n + 1)) (l : Fin n) : i.succAbove l 
   apply Fin.ext
   rw [fc_val]
   rcases Nat.lt_or_ge (l : ℕ) (i : ℕ) with h | h
-  · rw [if_pos h, Fin.succAbove_of_castSucc_lt _ _ (by simpa [Fin.lt_def] using h)]
+  · rw [ite_eq_left h, Fin.succAbove_of_castSucc_lt _ _ (by simpa [Fin.lt_def] using h)]
     rfl
-  · rw [if_neg (by omega), Fin.succAbove_of_le_castSucc _ _ (by simpa [Fin.le_def] using h)]
+  · rw [ite_eq_right (by omega), Fin.succAbove_of_le_castSucc _ _ (by simpa [Fin.le_def] using h)]
     rfl
 
 theorem dc_eq {m : ℕ} (F : (Fin (m + 1) → Y) → ℝ) (y : Fin (m + 2) → Y) :

@@ -62,12 +62,6 @@ def DNeZeroAt : Prop :=
     ∀ (r T T' : ℕ), (S.sig τ).2 = r + 1 → 0 < T → 0 < T' →
     ∀ (F : FlagG S r (T : E)) (F' : FlagG S r (T' : E)), Gflag F F' ≠ 0 → Dl F F' (r + 1) ≠ 0
 
-section Record
-
-open Formalism.MainNotions.S.Lat
-
-end Record
-
 section Lemmas
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}

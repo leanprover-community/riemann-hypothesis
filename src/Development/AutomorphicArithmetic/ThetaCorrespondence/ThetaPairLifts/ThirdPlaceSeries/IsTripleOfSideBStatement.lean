@@ -135,9 +135,9 @@ theorem delAt_unr {D : D7} (cf : CharFrame D) (i : D.ntw.Tw) {P : PlE D.host} (h
     hS (D.ntw.primes_subset_exceptional i (by rw [← Finset.mem_coe, D.ntw.pD_eq i]; exact h))
   unfold CharFrame.delAt
   split_ifs with h
-  · rw [if_pos h] at hD
+  · rw [ite_eq_left h] at hD
     exact cf.isDel'.unr P hD
-  · rw [if_neg h] at hD
+  · rw [ite_eq_right h] at hD
     exact cf.isDel.unr P hD
 
 end GlobalTheory.TwInputs.HEig
@@ -169,15 +169,15 @@ theorem toC_delta {D : D7} (cf : CharFrame D) (i : D.ntw.Tw) {b : Bool} (ρ : Gl
       rw [IntermediateField.coe_inv, map_inv₀, hxd, inv_inv]
     have e : D.ntw.emb0 i xd = D.ntw.emb0b i xd⁻¹ := (D.ntw.restX_coefficientEmbedding_conj i xd⁻¹ xd ?_).symm
     · have h1 := ρ.read xd⁻¹
-      simp only [embSide, Bool.false_eq_true, if_false] at h1
-      simp only [Bool.false_eq_true, if_false]
+      simp only [embSide, Bool.false_eq_true, ite_false] at h1
+      simp only [Bool.false_eq_true, ite_false]
       rw [map_units_inv, hread, e, h1]
       show (D.what₂.embLL ((xd⁻¹ : D.LL0) : D.what₂.LL))⁻¹ = δ⁻¹
       rw [IntermediateField.coe_inv, map_inv₀, hxd, inv_inv]
     · rw [hstar, star_star]
   · have h1 := ρ.read xd
-    simp only [embSide, if_true] at h1
-    simp only [if_true, hread, h1]
+    simp only [embSide, ite_true] at h1
+    simp only [ite_true, hread, h1]
     exact hxd
 
 end GlobalTheory.TwInputs.HEig

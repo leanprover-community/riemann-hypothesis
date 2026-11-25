@@ -376,7 +376,7 @@ theorem resG_last_eq {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (J :
   congr 1
   rw [Complex.ofReal_prod]
   refine Finset.prod_congr rfl (fun a _ => ?_)
-  rw [if_pos (show (a : ℕ) < (Fin.last r : ℕ) from a.isLt)]
+  rw [ite_eq_left (show (a : ℕ) < (Fin.last r : ℕ) from a.isLt)]
 
 end Gauge
 

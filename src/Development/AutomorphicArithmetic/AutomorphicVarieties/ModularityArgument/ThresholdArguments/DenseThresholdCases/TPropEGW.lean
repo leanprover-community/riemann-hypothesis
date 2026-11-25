@@ -310,8 +310,8 @@ private theorem heckeC (N k : ℕ) [NeZero N] (hk : 1 ≤ k) (χ : DirichletChar
   rw [hf''n n hn, hg'n n hn]
   by_cases hd : p ∣ n
   · have hq : 1 ≤ n / p := Nat.div_pos (Nat.le_of_dvd (by omega) hd) hp.pos
-    simp only [hd, if_true, hf'n _ hq, hf'n _ hpn, hcj, map_add (f := _), map_mul, map_pow, map_natCast]
-  · simp only [hd, if_false, hf'n _ hpn, hcj, map_add (f := _), mul_zero, map_zero]
+    simp only [hd, ite_true, hf'n _ hq, hf'n _ hpn, hcj, map_add (f := _), map_mul, map_pow, map_natCast]
+  · simp only [hd, ite_false, hf'n _ hpn, hcj, map_add (f := _), mul_zero, map_zero]
 
 end UpperTheory.V.Z.Sym.Unl
 
@@ -336,7 +336,7 @@ theorem UpperTheory.V.Z.Sym.Unl.eigLiftC :
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [Phi_apply, fT_apply]
     · show Phi ι N k g' n = fT p.1 (e p) (Phi ι N k g) n
-      rw [he_def p, fT_Phi ι N k g p.2 _ hn, Phi_apply, if_neg (show n ≠ 0 by omega), hg'n n hn]
+      rw [he_def p, fT_Phi ι N k g p.2 _ hn, Phi_apply, ite_eq_right (show n ≠ 0 by omega), hg'n n hn]
   have he : ∀ p : Nat.Primes, ‖e p‖ ≤ 1 := by
     intro p
     rw [he_def p, map_mul ι.symm, map_pow ι.symm, map_natCast ι.symm, norm_mul, norm_pow]
@@ -384,7 +384,7 @@ theorem UpperTheory.V.Z.Sym.Unl.eigLiftC :
     · simp
     · exact hfI n
   have hf1' : ‖Phi ι N k f 1‖ = 1 := by
-    rw [Phi_apply, if_neg one_ne_zero]
+    rw [Phi_apply, ite_eq_right one_ne_zero]
     exact hf1
   let f0 : ↥((cjSub N k χ).map (Phi ι N k)) := ⟨Phi ι N k f, Submodule.mem_map_of_mem hfW⟩
   have happ : ∀ (j : Nat.Primes) (n : ℕ),
@@ -394,7 +394,7 @@ theorem UpperTheory.V.Z.Sym.Unl.eigLiftC :
     show ‖fT j.1 (e j) (Phi ι N k f) n - ι.symm (a j.1) * Phi ι N k f n‖ < 1
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [Phi_apply, fT_apply]
-    · rw [he_def j, fT_Phi ι N k f j.2 _ hn, Phi_apply, if_neg (show n ≠ 0 by omega), ← map_mul ι.symm, ← map_sub ι.symm]
+    · rw [he_def j, fT_Phi ι N k f j.2 _ hn, Phi_apply, ite_eq_right (show n ≠ 0 by omega), ← map_mul ι.symm, ← map_sub ι.symm]
       exact (ha j.1 j.2).2 n hn
   obtain ⟨h, b, hne, -, hhe, hb⟩ := delSerre l ℕ Nat.Primes ((cjSub N k χ).map (Phi ι N k)) hfd T hcomm hle hlt
     f0 (fun p => ι.symm (a p.1)) hfint ⟨1, hf1'⟩ (fun p => (ha p.1 p.2).1) happ
@@ -410,21 +410,21 @@ theorem UpperTheory.V.Z.Sym.Unl.eigLiftC :
     show (h : ℕ → Qbar l) = 0
     rw [← hgh]
     refine eq_zero_of_eig e b _ ?_ ?_ hev
-    · rw [Phi_apply, if_pos rfl]
-    · rw [Phi_apply, if_neg one_ne_zero, hz, map_zero]
+    · rw [Phi_apply, ite_eq_left rfl]
+    · rw [Phi_apply, ite_eq_right one_ne_zero, hz, map_zero]
   have heig : ∀ p (hp : p.Prime) n, 1 ≤ n →
       coef g (p * n) + χ p * (p : ℂ) ^ (k - 1) * (if p ∣ n then coef g (n / p) else 0) =
         ι (b ⟨p, hp⟩) * coef g n := by
     intro p hp n hn
     have h1 := congrFun (hev ⟨p, hp⟩) n
     change fT p (e ⟨p, hp⟩) (Phi ι N k g) n = b ⟨p, hp⟩ * Phi ι N k g n at h1
-    rw [he_def ⟨p, hp⟩, fT_Phi ι N k g hp _ hn, Phi_apply, if_neg (show n ≠ 0 by omega)] at h1
+    rw [he_def ⟨p, hp⟩, fT_Phi ι N k g hp _ hn, Phi_apply, ite_eq_right (show n ≠ 0 by omega)] at h1
     have h2 := congrArg ι h1
     rwa [RingEquiv.apply_symm_apply, map_mul ι, RingEquiv.apply_symm_apply] at h2
   have hlam : ∀ p (hp : p.Prime), (coef g 1)⁻¹ * coef g p = ι (b ⟨p, hp⟩) := by
     intro p hp
     have h1 := heig p hp 1 le_rfl
-    rw [mul_one, if_neg hp.not_dvd_one, mul_zero, add_zero] at h1
+    rw [mul_one, ite_eq_right hp.not_dvd_one, mul_zero, add_zero] at h1
     rw [h1, mul_comm, mul_assoc, mul_inv_cancel₀ hc1, mul_one]
   have hg1W : (coef g 1)⁻¹ • g ∈ cjSub N k χ := (cjSub N k χ).smul_mem _ hgW
   refine ⟨⟨(coef g 1)⁻¹ • g, hg1W.1, ?_, ?_⟩, hg1W.2, fun p hp => ?_⟩
@@ -595,9 +595,6 @@ section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
 open GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Base UpperTheory.V.Published
 namespace UpperTheory.V.Sd.EG
-section Norm
-variable {l : ℕ} [hl : Fact l.Prime]
-end Norm
 theorem primRam_lift (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (N : ℕ) [NeZero N] (r : ℕ) (hr : r.Prime)
     (A : ValuationSubring Ω) (hA : A.valuation (r : Ω) < 1) (u : (ZMod N)ˣ)
     (hu : u ∈ (ZMod.unitsMap (Nat.ordCompl_dvd N r)).ker) :
@@ -678,8 +675,8 @@ theorem ordExT_sv_alt (P : _root_.UpperTheory.V.Af.HypothesesH') (ι : Qbar l �
     have h4 := hg _ (normV_prime w)
     rw [map_sub, map_add (f := _), map_one, ← h1, ← h2] at h4
     exact ⟨h4, by rw [Set.mem_setOf_eq, h3, h1, (hval w hqN).2]⟩
-  have hlev : ∀ w : Pl ℚ, ((l : ℕ) : 𝓞 ℚ) ∉ w.asIdeal → levL l c w = c w := fun w hw => if_neg hw
-  have hlev1 : ∀ w : Pl ℚ, ((l : ℕ) : 𝓞 ℚ) ∈ w.asIdeal → levL l c w = 1 := fun w hw => if_pos hw
+  have hlev : ∀ w : Pl ℚ, ((l : ℕ) : 𝓞 ℚ) ∉ w.asIdeal → levL l c w = c w := fun w hw => ite_eq_right hw
+  have hlev1 : ∀ w : Pl ℚ, ((l : ℕ) : 𝓞 ℚ) ∈ w.asIdeal → levL l c w = 1 := fun w hw => ite_eq_left hw
   have hker : ψ⁻¹.ker = ψ.ker := by ext s; simp
   refine ⟨levL l c, π, r, ⟨hreg, ⟨χ', hpol⟩, hG.cont, hatt, MonoidHom.ext fun s => ?_, ?_, ?_, fun w A hA => ?_, fun w hw => ?_,
     fun w hw hwl => ?_, fun w hw => ?_⟩, fun s => (hall s).1, hU, fun w hw => (hval w hw).2 ▸ hsat w ((hc0 w).2 hw)⟩

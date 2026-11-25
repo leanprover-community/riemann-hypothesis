@@ -1006,12 +1006,12 @@ theorem xClasses : ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (A : Id
     refine ⟨fun x i j => if h : ∃ o : J.toAddSubgroup, ((o : 𝓞 K) : K) = (a : K) * Sx x i j
       then ((Classical.choose h : J.toAddSubgroup) : Q) else 0, fun x hG i j => ?_⟩
     have h := hent x hG i j
-    exact ⟨Classical.choose h, Classical.choose_spec h, by simp only [dif_pos h]⟩
+    exact ⟨Classical.choose h, Classical.choose_spec h, by simp only [dite_eq_left h]⟩
   obtain ⟨g, hg⟩ : ∃ g : (Fin r → Fin r → Q) → Matrix (Fin r) (Fin (r + 1)) K,
       ∀ q, (∃ x, Good x ∧ key x = q) → Good (g q) ∧ key (g q) = q := by
     refine ⟨fun q => if h : ∃ x, Good x ∧ key x = q then Classical.choose h else 0,
       fun q h => ?_⟩
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     exact Classical.choose_spec h
   refine ⟨Finset.univ.image g, ?_, ?_⟩
   · calc (Finset.univ.image g).card ≤ (Finset.univ : Finset (Fin r → Fin r → Q)).card :=

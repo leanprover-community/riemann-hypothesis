@@ -162,16 +162,6 @@ structure GRead {v : VCom f.c} {n : ℕ} (G : Fin n → GLoc v) (pl : Fin n ≃ 
 
 end Real
 
-section True
-
-open GlobalTheory.Mem GlobalTheory.Mem.Col2
-
-variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)}
-  {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts}
-  {Yd : DivX (I.rec7 l Z)} {cX : ExtraC} {ex : Extra (I.rec7 l Z) L hT Gi Gl Kc Yd cX}
-
-end True
-
 end GlobalTheory.Fam
 
 end

@@ -427,10 +427,4 @@ theorem posW_holds (D : D7) : PosW D := by
 
 end PosWPf
 
-section Final
-
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Corank
-
-end Final
-
 end Formalism.L2.SG.Pf

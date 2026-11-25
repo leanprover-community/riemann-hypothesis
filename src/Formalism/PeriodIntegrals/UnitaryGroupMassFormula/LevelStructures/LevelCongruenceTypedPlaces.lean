@@ -80,13 +80,6 @@ theorem tmap_inclR (φ : R →ₐ[F] S) (e : E) :
 
 end Gen
 
-section Loc
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {M : ℕ}
-  (J : Matrix (Fin M) (Fin M) E)
-
-end Loc
-
 end CompGAux
 
 end PI.VolStabSW
@@ -186,11 +179,11 @@ theorem glueHA_holds : GlueHA := by
   have hgt : ∀ v, gt v ∈ HR (Fv X.B.I.F v) X.B.I.cm.sig X.B.I.J := by
     intro v
     by_cases hv : v ∈ T
-    · simp only [gt, dif_pos hv]
+    · simp only [gt, dite_eq_left hv]
       exact (show ↥(HR (Fv X.B.I.F v) X.B.I.cm.sig X.B.I.J) from t ⟨v, hv⟩).2
-    · simp only [gt, dif_neg hv]
+    · simp only [gt, dite_eq_right hv]
       exact Subgroup.one_mem _
-  have hout : ∀ v, v ∉ T → gt v = 1 := fun v hv => by simp only [gt, dif_neg hv]
+  have hout : ∀ v, v ∉ T → gt v = 1 := fun v hv => by simp only [gt, dite_eq_right hv]
   have h1 : ∀ (v : HeightOneSpectrum (𝓞 X.B.I.F)),
       (1 : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (Fv X.B.I.F v ⊗[X.B.I.F] X.B.I.E)) =
         (1 : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E).map (inclR (Fv X.B.I.F v)) := fun v =>
@@ -222,7 +215,7 @@ theorem glueHA_holds : GlueHA := by
   · rw [hc p.1]
     apply Subtype.ext
     simp only [gt]
-    rw [dif_pos (show p.1 ∈ T from p.2)]
+    rw [dite_eq_left (show p.1 ∈ T from p.2)]
     rfl
   · rw [hc v]
     apply Subtype.ext

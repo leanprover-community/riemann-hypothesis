@@ -52,7 +52,7 @@ theorem UpperTheory.Gal.W2.fixLoc_of :
   set lam := RootSumWeights.eigL G v B.β y a.2.1 with hlam
   have hlamspec : (LKCx.toV G v B.β y).val *ᵥ a.2.1 = lam • a.2.1 := by
     rw [hlam]
-    simp only [RootSumWeights.eigL, dif_pos hfixL]
+    simp only [RootSumWeights.eigL, dite_eq_left hfixL]
     exact hfixL.choose_spec
   have hne : a.2.1 ≠ 0 := by
     intro h0

@@ -166,7 +166,7 @@ theorem lie_mem_Zalg (X : Lie E 1) : lie E 1 X ∈ Zalg E 1 := by
     rw [Subsingleton.elim i 0, Subsingleton.elim j 0]
     have : ∀ w : InfinitePlace E, atEmb w.embedding (X 0 0 w) = Pi.single w (X 0 0 w) := fun w => by
       unfold atEmb
-      simp only [InfinitePlace.mk_embedding, if_true]
+      simp only [InfinitePlace.mk_embedding, ite_true]
     simp [this, Finset.univ_sum_single]
 
   rw [e, ← lieS_apply, map_sum]

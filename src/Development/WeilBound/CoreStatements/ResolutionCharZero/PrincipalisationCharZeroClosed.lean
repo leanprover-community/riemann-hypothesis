@@ -240,8 +240,8 @@ theorem exists_coords_containing (k : Type*) [CommRing k] (ι : Type*) [Fintype 
       (∀ x : {j : ι // ¬ (j ∈ Jst)}, w (x : ι) = s (e x)) := by
     refine ⟨fun j => if hj : j ∈ Jst then EtaleCoordinates.coord k ι S j else s (e ⟨j, hj⟩),
       fun j hj => ?_, fun x => ?_⟩
-    · exact dif_pos hj
-    · exact dif_neg x.2
+    · exact dite_eq_left hj
+    · exact dite_eq_right x.2
   have hbasisApply : ∀ x : Fin h ⊕ {j : ι // j ∈ Jst},
       B x = (1 : IsLocalRing.ResidueField A) ⊗ₜ[A]
         KaehlerDifferential.D k A (algebraMap S A (w (τ x))) := by
@@ -650,7 +650,7 @@ theorem exists_labels {X : Scheme.{0}} {k : Type} [Field k] [CharZero k] {p : X 
       exact hyC
     have hxC : x ∉ (C : Set X) := by
       intro hxC
-      have h' : lab C = some (Classical.choose (hcomp C hC hxC)) := dif_pos ⟨hC, hxC⟩
+      have h' : lab C = some (Classical.choose (hcomp C hC hxC)) := dite_eq_left ⟨hC, hxC⟩
       rw [h'] at hnone
       cases hnone
     apply hyW.2
@@ -768,20 +768,20 @@ theorem gBoundary : PositivityTheory.ResPlug.WeightsCompactStabilizer.GBoundary 
     · intro i hi i' hi' s hs hs'
       simp only [List.length_map] at hi hi'
       dsimp only at hs hs'
-      rw [dif_pos hi] at hs
-      rw [dif_pos hi'] at hs'
+      rw [dite_eq_left hi] at hs
+      rw [dite_eq_left hi'] at hs'
       have := h1 _ (Finset.mem_toList.mp (List.getElem_mem hi)) _
         (Finset.mem_toList.mp (List.getElem_mem hi')) s hs hs'
       exact (hnd.getElem_inj_iff).mp this
     · intro i hi hnone
       simp only [List.length_map] at hi
       dsimp only at hnone
-      rw [dif_pos hi] at hnone
+      rw [dite_eq_left hi] at hnone
       simpa using h2 _ (Finset.mem_toList.mp (List.getElem_mem hi)) hnone
     · intro i hi s hs
       simp only [List.length_map] at hi
       dsimp only at hs
-      rw [dif_pos hi] at hs
+      rw [dite_eq_left hi] at hs
       simpa using h3 _ (Finset.mem_toList.mp (List.getElem_mem hi)) s hs
   · rw [← hcov]
     ext y

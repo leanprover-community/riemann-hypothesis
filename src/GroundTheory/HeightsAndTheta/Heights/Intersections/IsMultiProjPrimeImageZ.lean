@@ -188,7 +188,7 @@ theorem ProjectivePointVertical.proof
   · obtain ⟨hWm, hpr, hWd⟩ := hvert hh
     have hPW : P' ≤ W := le_sup_left.trans hW.1.1.2
     have e : (fun j => (L' j).a) = fun j => pullDeg κ (L j).a := funext fun j => (hL j).1
-    simp only [if_neg hh, e, geoNum_eq_zero hGeo hR4 hPC hv hP hdn hPW hWm hpr hWd (fun j => (L j).a)]
+    simp only [ite_eq_right hh, e, geoNum_eq_zero hGeo hR4 hPC hv hP hdn hPW hWm hpr hWd (fun j => (L j).a)]
     simp
 
 end GroundTheory.Heights₂.Heights.Inter

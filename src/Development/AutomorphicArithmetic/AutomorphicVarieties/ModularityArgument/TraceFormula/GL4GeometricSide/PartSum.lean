@@ -1197,7 +1197,7 @@ private theorem domLE_of {ν m : Fin n → ℝ} (h : inCone (fun a => (a : ℕ))
     · omega
     · simp
   · have hs := part_sum c (m - ν) hQ univ
-    simp only [Pi.sub_apply, mem_univ, if_true, sub_self, mul_zero, Finset.sum_const_zero,
+    simp only [Pi.sub_apply, mem_univ, ite_true, sub_self, mul_zero, Finset.sum_const_zero,
       Finset.sum_sub_distrib] at hs
     linarith
 

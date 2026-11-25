@@ -615,29 +615,6 @@ namespace GlobalTheory.CMFam
 
 open IntermediateField
 
-theorem exists_qcm_adjoin (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω]
-    [IsAlgClosure E Ω] (p : ℕ) (hp : 0 < p) (δ : Ω) (hδ : δ ^ 2 = -(p : Ω))
-    (hn : δ ∉ Set.range (algebraMap E Ω)) :
-    ∃ Q : GlobalTheory.RealGal.QCM E Ω, Q.K = IntermediateField.adjoin E {δ} :=
-  _root_.GlobalTheory.CMSqrtNeg.exists_qcm_adjoin_sqrt_neg E Ω p hp δ hδ hn
-
-theorem isSplitAt_of_dvd (L : Type) [Field L] [NumberField L] [IsCMField L] (p q : ℕ) (δ : L) (hp : 0 < p)
-    (hδ : δ ^ 2 = -(p : L)) (hq : ((8 * q : ℕ) : ℤ) ∣ (p : ℤ) + 1) (w : HeightOneSpectrum (𝓞 L))
-    (hw : (q : 𝓞 L) ∈ w.asIdeal) : GlobalTheory.UnitaryBC.IsSplitAt w :=
-  _root_.GlobalTheory.SplitOfNegPrime.isSplitAt L p q δ hp hδ hq w hw
-
-theorem not_isUnramifiedAt (E K : Type) [Field E] [NumberField E] [Field K] [NumberField K] [Algebra E K]
-    (p : ℕ) (hp : p.Prime) (hd : ¬ (p : ℤ) ∣ discr E) (δ : K) (hδ : δ ^ 2 = -(p : K))
-    (w : HeightOneSpectrum (𝓞 K)) (hw : (p : 𝓞 K) ∈ w.asIdeal) :
-    ¬ Algebra.IsUnramifiedAt (𝓞 E) w.asIdeal :=
-  _root_.GlobalTheory.SqrtNegRam.not_isUnramifiedAt_of_sq_eq_neg E K p hp hd δ hδ w hw
-
-theorem exists_unram (E : Type) [Field E] [NumberField E] [IsCMField E] :
-    ∃ N : ℕ, N ≠ 0 ∧ ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] [Algebra E K]
-      (w : HeightOneSpectrum (𝓞 K)), (N : 𝓞 K) ∉ w.asIdeal →
-        Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield K)) w.asIdeal :=
-  _root_.GlobalTheory.exists_nat_unramified_over_real_of_cm_subfield E
-
 theorem even_finrank (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω]
     (Q : GlobalTheory.RealGal.QCM E Ω) : Even (Module.finrank ℚ (maximalRealSubfield Q.K)) :=
   _root_.GlobalTheory.RealGal.QCM.even_finrank_maximalRealSubfield E Ω Q
@@ -665,7 +642,6 @@ theorem natCast_mem_under {E K : Type} [Field E] [NumberField E] [Field K] [Numb
 
 end GlobalTheory.CMFam
 
-
 open GlobalTheory.CMFam GlobalTheory.ExSplitCM in
 theorem GlobalTheory.GalCut.infinite_qcm_split_good : AutomorphicFormsFiniteGL → ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (l : ℕ) [Fact l.Prime] (a : ℕ) (π : CuspSub E a) (w₀ : HeightOneSpectrum (𝓞 E)), {Q : GlobalTheory.RealGal.QCM E Ω | (∀ A : ValuationSubring Ω, IsPlaceOver A w₀ → Dec (F := E) A ≤ (UpperTheory.V.Af.Bc.res E Ω ↥Q.K).range) ∧ (∀ w : HeightOneSpectrum (𝓞 ↥Q.K), w.under (𝓞 E) = w₀ → GlobalTheory.UnitaryBC.IsSplitAt w) ∧ (∃ w : HeightOneSpectrum (𝓞 ↥Q.K), ¬ Algebra.IsUnramifiedAt (𝓞 E) w.asIdeal ∧ ∃ B, (CG.mk π).HasSat (w.under (𝓞 E)) B) ∧ ∀ P : CuspSub ↥Q.K a, IsLift π P → Good l P}.Infinite := by
   intro hAF E Ω _ _ _ _ _ _ l _ a π w₀
@@ -673,7 +649,7 @@ theorem GlobalTheory.GalCut.infinite_qcm_split_good : AutomorphicFormsFiniteGL �
   have halg : Algebra.IsAlgebraic E Ω := IsAlgClosure.isAlgebraic
   obtain ⟨q₀, hq₀, hq₀w⟩ := exists_prime_mem w₀
   haveI : Fact q₀.Prime := ⟨hq₀⟩
-  obtain ⟨N, hN0, hN⟩ := exists_unram E
+  obtain ⟨N, hN0, hN⟩ := GlobalTheory.exists_nat_unramified_over_real_of_cm_subfield E
   set S : Set (HeightOneSpectrum (𝓞 E)) := {v | ¬ ∃ B, (CG.mk π).HasSat v B} with hSdef
   have hS : S.Finite := Filter.eventually_cofinite.1 (GlobalTheory.CuspRep.UnrSat.eventually_hasSatGL_locRep hAF E a π)
   set T : Finset ℕ := ({2, l, q₀} : Finset ℕ) ∪ N.primeFactors ∪ (discr E).natAbs.primeFactors ∪
@@ -729,7 +705,7 @@ theorem GlobalTheory.GalCut.infinite_qcm_split_good : AutomorphicFormsFiniteGL �
     obtain ⟨s, -, hs⟩ := hmove p hp u A' hu hA'
     exact hs (by rw [← hx]; exact s.commutes x)
   have hQ : ∀ p ∈ Gd, ∃ Q : GlobalTheory.RealGal.QCM E Ω, Q.K = IntermediateField.adjoin E {δ p} := fun p hp =>
-    exists_qcm_adjoin E Ω p hp.1.pos (δ p) (hδ p) (hnot p hp)
+    GlobalTheory.CMSqrtNeg.exists_qcm_adjoin_sqrt_neg E Ω p hp.1.pos (δ p) (hδ p) (hnot p hp)
   have hmem : ∀ p ∈ Gd, ∀ Q : GlobalTheory.RealGal.QCM E Ω, Q.K = IntermediateField.adjoin E {δ p} →
       Q ∈ {Q : GlobalTheory.RealGal.QCM E Ω | (∀ A : ValuationSubring Ω, IsPlaceOver A w₀ → Dec (F := E) A ≤ (UpperTheory.V.Af.Bc.res E Ω ↥Q.K).range) ∧ (∀ w : HeightOneSpectrum (𝓞 ↥Q.K), w.under (𝓞 E) = w₀ → GlobalTheory.UnitaryBC.IsSplitAt w) ∧ (∃ w : HeightOneSpectrum (𝓞 ↥Q.K), ¬ Algebra.IsUnramifiedAt (𝓞 E) w.asIdeal ∧ ∃ B, (CG.mk π).HasSat (w.under (𝓞 E)) B) ∧ ∀ P : CuspSub ↥Q.K a, IsLift π P → Good l P} := by
     intro p hp Q hQK
@@ -737,7 +713,7 @@ theorem GlobalTheory.GalCut.infinite_qcm_split_good : AutomorphicFormsFiniteGL �
     set y : ↥Q.K := ⟨δ p, hδK⟩ with hy
     have hy2 : y ^ 2 = -(p : ↥Q.K) := Subtype.ext (by simpa using hδ p)
     have hsplit : ∀ q ∈ T, ∀ w : HeightOneSpectrum (𝓞 ↥Q.K), (q : 𝓞 ↥Q.K) ∈ w.asIdeal → GlobalTheory.UnitaryBC.IsSplitAt w :=
-      fun q hq w hw => isSplitAt_of_dvd _ p q y hp.1.pos hy2 (h8 p hp q hq) w hw
+      fun q hq w hw => GlobalTheory.SplitOfNegPrime.isSplitAt _ p q y hp.1.pos hy2 (h8 p hp q hq) w hw
     refine ⟨fun A hA s hs => ?_, fun w hw => ?_, ?_, fun P hP => ?_⟩
     · rw [mem_range_res_iff, hQK]
       refine fix_adjoin (halg.isAlgebraic (δ p)).isIntegral s ?_
@@ -748,7 +724,7 @@ theorem GlobalTheory.GalCut.infinite_qcm_split_good : AutomorphicFormsFiniteGL �
       rw [← natCast_mem_under (E := E), hw]
       exact hq₀w
     · obtain ⟨w, hw⟩ := exists_mem_of_prime (F := ↥Q.K) hp.1
-      refine ⟨w, not_isUnramifiedAt E ↥Q.K p hp.1 (hdisc p hp) y hy2 w hw, ?_⟩
+      refine ⟨w, GlobalTheory.SqrtNegRam.not_isUnramifiedAt_of_sq_eq_neg E ↥Q.K p hp.1 (hdisc p hp) y hy2 w hw, ?_⟩
       by_contra hB
       exact hp.2.1 (hTS p hp.1 _ hB ((natCast_mem_under w p).2 hw))
     · refine ⟨⟨y, p, hp.1.pos, by rw [hy2]⟩, even_finrank E Ω Q, fun w hw => ?_⟩

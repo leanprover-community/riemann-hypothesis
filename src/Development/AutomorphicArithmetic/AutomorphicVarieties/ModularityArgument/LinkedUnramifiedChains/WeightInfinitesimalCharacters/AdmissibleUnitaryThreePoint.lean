@@ -62,13 +62,6 @@ def UnlPt (k : GalLink η Ψ σ g₁ B M L Φ) : Prop :=
 
 end Pt
 
-section Heads
-
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.HV GlobalTheory.GalOfCusp UpperTheory.V.U3 UpperTheory.V.Base
-open UpperTheory.V.Alg UpperTheory.V.Th
-
-end Heads
-
 section Count
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp

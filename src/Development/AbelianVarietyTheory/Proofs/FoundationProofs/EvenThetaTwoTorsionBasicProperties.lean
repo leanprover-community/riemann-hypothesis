@@ -107,7 +107,7 @@ theorem _root_.GlobalTheory.EvenTheta.evenThetaTwoTorsion_basic_properties : ∀
   have hopp : ∀ y, _root_.Formalism.MainNotions.TaylorLogMetric.U1 Λ (-t) (_root_.Formalism.MainNotions.TaylorLogMetric.sgStar Λ) y = -_root_.Formalism.MainNotions.TaylorLogMetric.U1 Λ t (_root_.Formalism.MainNotions.TaylorLogMetric.sgStar Λ) y := by
     intro y
     unfold _root_.Formalism.MainNotions.TaylorLogMetric.U1
-    rw [show y + t = y + -t + 2 * t by ring, sgStar_add_lattice_eq_mul_exp hΛ h2t, if_neg hhalf]
+    rw [show y + t = y + -t + 2 * t by ring, sgStar_add_lattice_eq_mul_exp hΛ h2t, ite_eq_right hhalf]
     simp only [mul_assoc, ← Complex.exp_add, map_neg, map_mul, map_ofNat]
     ring_nf
   have heven : ∀ z, _root_.Formalism.MainNotions.TaylorLogMetric.U1 Λ t (_root_.Formalism.MainNotions.TaylorLogMetric.sgStar Λ) (-z) = _root_.Formalism.MainNotions.TaylorLogMetric.U1 Λ t (_root_.Formalism.MainNotions.TaylorLogMetric.sgStar Λ) z := by
@@ -144,8 +144,8 @@ theorem _root_.GlobalTheory.EvenTheta.evenThetaTwoTorsion_basic_properties : ∀
     have h1 := sgStar_add_lattice_eq_mul_exp hΛ (add_mem hω h2t) t
     have h2 := sgStar_add_lattice_eq_mul_exp hΛ hω (t + 2 * t)
     have h3 := sgStar_add_lattice_eq_mul_exp hΛ h2t t
-    rw [if_neg hsum] at h1
-    rw [if_neg hhalf] at h3
+    rw [ite_eq_right hsum] at h1
+    rw [ite_eq_right hhalf] at h3
     rw [show t + 2 * t + ω = t + (ω + 2 * t) by ring, h1, h3] at h2
     have hε := mul_exp_eq_one_of_exp_relation
       (k := (↑Real.pi * t * (starRingEnd ℂ) ω - ↑Real.pi * ω * (starRingEnd ℂ) t) /

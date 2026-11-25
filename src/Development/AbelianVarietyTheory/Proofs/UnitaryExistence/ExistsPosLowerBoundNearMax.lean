@@ -265,7 +265,7 @@ theorem exists_le_maj_of_iso (X : Data E r) (la : Wt X.Ψ r) :
       have : {ζ : ℂ | -(2 * t) < ζ.im} ∈ 𝓝 ζ :=
         (isOpen_lt continuous_const Complex.continuous_im).mem_nhds hζ
       filter_upwards [this] with ζ' h'
-      simp only [hg, if_pos (show -(2 * t) < ζ'.im from h')]
+      simp only [hg, ite_eq_left (show -(2 * t) < ζ'.im from h')]
     refine DifferentiableAt.congr_of_eventuallyEq ?_ hev
     have hF : DifferentiableAt ℂ (fun ζ : ℂ => X.flow v (fun _ => ζ) z0) ζ :=
       ((FlowMeanContinuity.flow_differentiable X v z0).comp
@@ -274,12 +274,12 @@ theorem exists_le_maj_of_iso (X : Data E r) (la : Wt X.Ψ r) :
   have hzero : Tendsto g (comap im atTop) (𝓝 0) :=
     tendsto_zero X la P hP hz0 hξ
       (fun ζ hζ => hdom ζ (by linarith)) g
-      (fun ζ hζ => by simp only [hg, if_pos (show -(2 * t) < ζ.im by linarith)])
+      (fun ζ hζ => by simp only [hg, ite_eq_left (show -(2 * t) < ζ.im by linarith)])
   set B : ℝ := 2 * ‖P z0‖ * 2 ^ (w / 2) with hB
   have hBd : ∀ ζ : ℂ, ζ.im = -t → ‖g ζ‖ ≤ B := by
     intro ζ hζ
     have hlt : -(2 * t) < ζ.im := by linarith
-    simp only [hg, if_pos hlt]
+    simp only [hg, ite_eq_left hlt]
     set y := X.flow v (fun _ => ζ) z0 with hy
     have hyd := hdom ζ hlt
     have hnf : 0 < X.nfac la y := flowTermNormDecay.nfac_pos X la hyd
@@ -329,7 +329,7 @@ theorem exists_le_maj_of_iso (X : Data E r) (la : Wt X.Ψ r) :
     exact le_of_mul_le_mul_right h3 hnf
   have hsch := PeriodicSchwarzLemma.periodic_schwarz hM ht0 (show t < 2 * t by linarith) hper hdiff hzero hBd
   have hg0 : g 0 = P z0 := by
-    simp only [hg, Complex.zero_im, if_pos (show -(2 * t) < (0 : ℝ) by linarith)]
+    simp only [hg, Complex.zero_im, ite_eq_left (show -(2 * t) < (0 : ℝ) by linarith)]
     congr 1
     exact EmbeddingHermitianPairs.flow_zero X v z0
   rw [hg0] at hsch

@@ -143,7 +143,7 @@ theorem ev_subst_eq (n : ℕ) (a : Fin d → MvPowerSeries (Fin d) O)
       coeff α (subst a (s - (P : MvPowerSeries (Fin d) O))) = 0 := by
     have h1 : (N : ℕ∞) ≤ (s - (P : MvPowerSeries (Fin d) O)).order := by
       refine nat_le_order fun α hα => ?_
-      rw [map_sub, MvPolynomial.coeff_coe, hP, coeff_trunc', if_pos, sub_self]
+      rw [map_sub, MvPolynomial.coeff_coe, hP, coeff_trunc', ite_eq_left, sub_self]
       intro i
       have : α i ≤ α.degree := Finsupp.le_degree i α
       have h' : (Finsupp.equivFunOnFinite.symm fun _ : Fin d => N) i = N := by simp
@@ -166,7 +166,7 @@ theorem ev_subst_eq (n : ℕ) (a : Fin d → MvPowerSeries (Fin d) O)
   have hz' : (fun i => c.ev n (a i)) = 0 := funext hz
   rw [e, map_add (f := _), subst_coe, ← AlgHom.comp_apply, MvPolynomial.comp_aeval, hy, hz',
     MvPolynomial.aeval_zero, Algebra.smul_def, map_pow, map_natCast, MvPolynomial.constantCoeff_eq,
-    hP, coeff_trunc', if_pos (by simp), coeff_zero_eq_constantCoeff_apply]
+    hP, coeff_trunc', ite_eq_left (by simp), coeff_zero_eq_constantCoeff_apply]
 
 end GlobalTheory.LieLin
 

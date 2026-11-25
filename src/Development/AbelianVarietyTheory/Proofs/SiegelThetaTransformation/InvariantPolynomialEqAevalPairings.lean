@@ -122,7 +122,7 @@ theorem act_mul (g h g' h' : T → Matrix (Fin n) (Fin n) ℂ) (z : T × Bool ×
     act (fun t => g t * g' t) (fun t => h t * h' t) z = act g h (act g' h' z) := by
   funext ⟨t, b, k, j⟩
   cases b <;>
-  · simp only [act, Matrix.mul_apply, Finset.sum_mul, Finset.mul_sum, if_true, Bool.false_eq_true, if_false, mul_assoc]
+  · simp only [act, Matrix.mul_apply, Finset.sum_mul, Finset.mul_sum, ite_true, Bool.false_eq_true, ite_false, mul_assoc]
     exact Finset.sum_comm
 
 theorem act_diagonal (a b : T → Fin n → ℂ) (z : T × Bool × Fin n × Fin N → ℂ) :
@@ -151,7 +151,7 @@ theorem eval_act_diagonal (p : MvPolynomial (T × Bool × Fin n × Fin N) ℂ)
     apply differentiable_eval
     rintro ⟨t, b, k, j⟩
     simp only [act_diagonal]
-    cases b <;> simp only [if_true, Bool.false_eq_true, if_false] <;> fun_prop
+    cases b <;> simp only [ite_true, Bool.false_eq_true, ite_false] <;> fun_prop
   have hI : ∀ y : ℝ, F (y * I) = MvPolynomial.eval z p := by
     intro y
     rw [← hp (fun t => diagonal fun i => cexp (y * I * a t i)) ?_ z]
@@ -222,7 +222,7 @@ theorem eval_eq_base_of_isUnit (hN : N ≤ n) (p : MvPolynomial (T × Bool × Fi
   have hyt : ∀ t k j, y (t, true, k, j) = if k.val = j.val then 1 else 0 := by
     intro t k j
     have := congrFun (congrFun (hinv t) k) (Fin.castLE hN j)
-    simp only [hy, act, hz, if_true]
+    simp only [hy, act, hz, ite_true]
     rw [← Matrix.mul_apply, this, Matrix.one_apply]
     simp [Fin.ext_iff]
   let Y : ℂ → T × Bool × Fin n × Fin N → ℂ := fun c v =>
@@ -242,7 +242,7 @@ theorem eval_eq_base_of_isUnit (hN : N ≤ n) (p : MvPolynomial (T × Bool × Fi
       funext ⟨t, b, k, j⟩
       cases b
       · simp [Y]
-      · simp only [Y, if_true, hyt]
+      · simp only [Y, ite_true, hyt]
         have := j.2
         split_ifs <;> first | omega | simp
     · intro t
@@ -254,14 +254,14 @@ theorem eval_eq_base_of_isUnit (hN : N ≤ n) (p : MvPolynomial (T × Bool × Fi
   congr 2
   funext ⟨t, b, k, j⟩
   cases b
-  · simp only [Y, base, Bool.false_eq_true, if_false]
+  · simp only [Y, base, Bool.false_eq_true, ite_false]
     split_ifs with h
-    · simp only [hy, act, hz, Bool.false_eq_true, if_false, one_mul, transpose_apply]
+    · simp only [hy, act, hz, Bool.false_eq_true, ite_false, one_mul, transpose_apply]
       refine Finset.sum_congr rfl fun l _ => ?_
       rw [mul_comm]
       rfl
     · simp
-  · simp only [Y, base, if_true, hyt]
+  · simp only [Y, base, ite_true, hyt]
 
 theorem eval_eq_base [Finite T] (hN : N ≤ n) (p : MvPolynomial (T × Bool × Fin n × Fin N) ℂ)
     (hp : ∀ g h : T → Matrix (Fin n) (Fin n) ℂ, (∀ t, g t * (h t)ᵀ = 1) →

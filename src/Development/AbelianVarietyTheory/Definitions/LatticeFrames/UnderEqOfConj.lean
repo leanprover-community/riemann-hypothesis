@@ -77,12 +77,7 @@ theorem stages (hL : R.toLevCh.Is A.μ0) (hM : R.IsModels) (t : T) :
   refine ⟨fun j hj => ⟨r_le_Y j, rfl, ?_⟩, ⟨r_le_X, rfl, ?_⟩⟩
   · have hm : min j D.R.m = j := min_eq_left hj.le
     obtain ⟨c, hc⟩ := hL.βY j hj
-    have hν : (R.νY t j).IsHaarMeasure ∧ IsFundamentalDomain (GQ (Yc D j)) (R.fdY t j) (R.νY t j) := by
-      by_cases h1 : j + 1 < D.R.m
-      · exact ⟨(hM.νY t j h1).1.1, (hM.νY t j h1).2⟩
-      · have : j = D.R.m - 1 := by omega
-        subst this
-        exact ⟨(hM.νY' t).1.1, (hM.νY' t).2⟩
+    have hν := GlobalTheory.ChainEquiv.meas_chain hM.νY hM.νY' t j hj
     refine ⟨?_, D.sp.Y_sig _, fun τ => ?_, ?_, GlobalTheory.SDFrameLattice.isSelfDualC_of_isSDFrame D _ _ _ _ ⟨c, hc⟩, hc.1,
       ⟨_, hc, fun P hP hN => hP ?_⟩, ⟨r_le_Y j, R.xiR t, rfl⟩, hν.1, hν.2⟩
     · show (D.sp.Y (min j D.R.m)).rank = _

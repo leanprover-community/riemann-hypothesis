@@ -24,7 +24,7 @@ theorem genU_of_lt {a b : Fin (r s)} (h : a < b) : genU Ω r s a b = 0 := by
 
 theorem genU_of_gt {l k : Fin (r s)} (h : k < l) :
     genU Ω r s l k = algebraMap (MvPolynomial (GenIx r) Ω) (GenField Ω r) (MvPolynomial.X ⟨s, ⟨(l, k), h⟩⟩) :=
-  dif_pos h
+  dite_eq_left h
 
 end GenU
 

@@ -377,7 +377,7 @@ theorem indep_iff (Y : Matrix (Fin n) (Fin d) k) :
       exact (Finset.sum_subset (Finset.subset_univ _) fun j _ hj => by rw [h0 j hj, zero_smul]).trans
         ((vecMul_eq_sum p Y).symm.trans hp)
     · exact h0 j hj
-  · have := h (fun j => if j ∈ S then f j else 0) (fun j hj => if_neg hj) ((vecMul_eq_sum _ Y).trans (Eq.trans (by
+  · have := h (fun j => if j ∈ S then f j else 0) (fun j hj => ite_eq_right hj) ((vecMul_eq_sum _ Y).trans (Eq.trans (by
       simp only [ite_smul, zero_smul, Finset.sum_ite_mem, Finset.univ_inter]) hf))
     simpa [hj] using congrFun this j
 
@@ -580,7 +580,7 @@ theorem position_inj (hM : M.IsGood B.ψ) {f : SInf F (Fin n × Fin d)} (hf : f 
     let t : Pl F → ℂ := fun w => if w = v then z (fun i => evFin F v (y i)) else 1
     have ht : (Function.mulSupport t).Finite := (Set.finite_singleton v).subset fun w hw => by
       by_contra hn
-      exact hw (if_neg hn)
+      exact hw (ite_eq_right hn)
     have key : (fun w => Function.update M.vac v z w (fun i => evFin F w (y i))) =
         fun w => t w * Function.update M.vac v 1 w (fun i => evFin F w (y i)) := by
       funext w
@@ -588,8 +588,8 @@ theorem position_inj (hM : M.IsGood B.ψ) {f : SInf F (Fin n × Fin d)} (hf : f 
       · subst w; simp [t]
       · simp [t, hw]
     unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
-    rw [key, finprod_mul_distrib ht hs, finprod_eq_single t v fun w hw => if_neg hw]
-    simp only [t, if_true]
+    rw [key, finprod_mul_distrib ht hs, finprod_eq_single t v fun w hw => ite_eq_right hw]
+    simp only [t, ite_true]
     ring
   have piK_repl' (y : Fin n × Fin d → Fv F v) :
       (fun i => evFin F v (repl v x y i)) = y := by

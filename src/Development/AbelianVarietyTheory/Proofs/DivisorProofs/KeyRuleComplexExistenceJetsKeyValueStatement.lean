@@ -35,63 +35,17 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealCo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetFamilyDeriv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThJetOfNormalForm
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsPolAVSectionInverseImage
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorusExt
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.MemSpanOfCardLe
 import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidStA
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.BijectiveSmulChartSec
-import Mathlib.Tactic.Basify
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.NormNum.Parity
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubsingletonPrimeSpectrum
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaLawSymplecticNormalForm
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsEqCexpQuadraticOfEquivalentFactors
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ThetaQuasiPeriods.Transl
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
@@ -99,10 +53,8 @@ import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormu
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
 import Mathlib.Algebra.Azumaya.Basic
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Etale.Weakly
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKeyRuleValueClassicalNormalForm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -738,7 +690,7 @@ theorem exists_keyIn_nf :
         (2 * Real.pi * Complex.I : ℂ)⁻¹ • Mx i := by
       funext k
       simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply, mul_ite, MulZeroClass.mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       ring
     rw [e] at h1
     exact h1
@@ -1312,7 +1264,7 @@ theorem main_eq {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fin r) ℤ N.X
     have hq0 : 0 ≤ q := by
       rw [hq] at hnn
       have hp : (0:ℤ) < 2 * m ^ 2 := by positivity
-      by_contra hc; push_neg at hc
+      by_contra hc; push Not at hc
       have := mul_neg_of_pos_of_neg hp hc; linarith
     rw [hq, Int.mul_ediv_cancel_left _ hm2]
     have : ((q.toNat : ℕ) : ℂ) = (q : ℂ) := by exact_mod_cast Int.toNat_of_nonneg hq0

@@ -178,7 +178,7 @@ theorem quadratic_preimage_compact_on_subspace
         _ ≤ R := by linarith
     by_cases h1 : ‖w‖ ≤ 1
     · exact le_trans h1 (le_max_left _ _)
-    · push_neg at h1
+    · push Not at h1
       refine le_trans ?_ (le_max_right _ _)
       rw [le_div_iff₀ hμpos]
       have h2 : ‖w‖ * μ ≤ ‖w‖ ^ 2 * μ := by

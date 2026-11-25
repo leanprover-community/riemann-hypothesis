@@ -455,13 +455,6 @@ theorem eFMove_fmCast {S : NX.RatDat D.ntw} {S' : NX.RatDat D'.ntw} {eK : S.Ks �
 
 end CopyTw
 
-section Move
-
-variable {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e) (S : NX.RatDat D.ntw)
-  {i : D.ntw.Tw} {i' : D'.ntw.Tw} (hi : HEq i i') (j : ℕ) (b : Bool)
-
-end Move
-
 section Models
 
 variable {D D' : D7} {V : HSp D} {V' : HSp D'} {P : D.what₂.Tau → SPar} {P' : D'.what₂.Tau → SPar}

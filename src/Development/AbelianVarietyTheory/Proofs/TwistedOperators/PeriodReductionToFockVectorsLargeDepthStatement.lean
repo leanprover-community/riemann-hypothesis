@@ -968,7 +968,7 @@ theorem movedAt_big : Big fun ch => MovedAt ch := by
     have hz1 := ((hd1 d hd).2 i).2.2
     rw [GlobalTheory.T.movedFiniteDatum_eq_heisenbergCombination_vacuum large₂ F hS ch hIs t (.chi i D.R.m) (show DefPair D.R.m (Pair.chi (i : ℕ) D.R.m : Pair T) from ⟨i.2, rfl⟩) (d.2 i) ((c d).2 i) hz1 hvec ((hC d hd).2 i),
       hκ' i, comb_smul_heis]
-    simp only [dif_pos i.2, combR]
+    simp only [dite_eq_left i.2, combR]
 
 end GlobalTheory.RowVal
 

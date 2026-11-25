@@ -348,8 +348,8 @@ theorem sum_single (r : ZMod n → V) (i : ZMod n) :
     intro c
     rw [Pi.single_apply]
     by_cases h : i = c + j
-    · rw [if_pos h, if_pos (by rw [h]; ring)]
-    · rw [if_neg h, if_neg (fun h' => h (by rw [← h']; ring))]
+    · rw [ite_eq_left h, ite_eq_left (by rw [h]; ring)]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h (by rw [← h']; ring))]
   simp only [this]
   exact Finset.sum_ite_eq _ _ _
 
@@ -488,7 +488,7 @@ theorem splitting_of_positive_level :
     intro i
     rw [sum_single]
     by_cases hi : i - (j : ZMod n) ∈ Cu.cuts
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       obtain ⟨c, rfl⟩ : ∃ c, i = c + (j : ZMod n) := ⟨i - j, by ring⟩
       have e : c + (j : ZMod n) - j = c := by ring
       rw [e] at hi ⊢
@@ -501,7 +501,7 @@ theorem splitting_of_positive_level :
       simp only [map_sub, map_neg, map_smul, hom_phiIt, hw c hi, phiIt_sub, phiIt_lc, comp]
       simp only [smul_sub]
       abel
-    · rw [if_neg hi, map_zero]
+    · rw [ite_eq_right hi, map_zero]
       unfold Lat.dφ
       rw [← Efun_step Cu Y.LY j R hi, sub_self, smul_zero]
   have hcoc : ∀ i, L₂.dγ (∑ c ∈ Cu.cuts, (Pi.single (c + (j : ZMod n)) (r c) : ZMod n → V₂)) i
@@ -529,7 +529,7 @@ theorem splitting_of_positive_level :
           rw [sum_single] at this
           subst hi
           have e : c + (j : ZMod n) - j = c := by ring
-          rw [e, if_pos hc] at this
+          rw [e, ite_eq_left hc] at this
           rwa [Pi.single_eq_same]
         · unfold Lat.dγ
           rw [Pi.single_eq_of_ne hi, map_zero, sub_zero]

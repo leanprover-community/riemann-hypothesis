@@ -130,7 +130,7 @@ theorem exists_next (hS : IsHermSemilocal S) (hs : h.IsSymm) (hM : IsSelfDualMod
   obtain ⟨t, ht0, htM⟩ := hM.span (x j)
   have h0 : ∃ a ∈ M.map f, a ≠ 0 := by
     refine ⟨_, ⟨t • x j, htM, rfl⟩, ?_⟩
-    rw [hf, map_smulₛₗ, LinearMap.smul_apply, hx, if_pos rfl, smul_eq_mul, mul_one,
+    rw [hf, map_smulₛₗ, LinearMap.smul_apply, hx, ite_eq_left rfl, smul_eq_mul, mul_one,
       starRingEnd_apply]
     exact star_ne_zero.mpr ht0
   have hb : ∀ a ∈ M.map f, t * a ∈ S := by
@@ -146,7 +146,7 @@ theorem exists_next (hS : IsHermSemilocal S) (hs : h.IsSymm) (hM : IsSelfDualMod
     rw [map_smul, smul_eq_mul, mul_comm]
     exact this
   have hyy : h (α⁻¹ • x j) (α⁻¹ • x j) = star α⁻¹ * α⁻¹ := by
-    rw [map_smul, map_smulₛₗ, LinearMap.smul_apply, hx, if_pos rfl, starRingEnd_apply,
+    rw [map_smul, map_smulₛₗ, LinearMap.smul_apply, hx, ite_eq_left rfl, starRingEnd_apply,
       smul_eq_mul, smul_eq_mul, mul_one, mul_comm]
   obtain ⟨b, hb1, hbS⟩ := exists_norm_one_mul_mem hS (a := α⁻¹)
     (by rw [← hyy]; exact hM.int _ hy₀ _ hy₀)
@@ -165,7 +165,7 @@ theorem exists_next (hS : IsHermSemilocal S) (hs : h.IsSymm) (hM : IsSelfDualMod
     simp only [map_smul, smul_eq_mul, hx, mul_ite, mul_one, mul_zero]
     rw [Finset.sum_ite_eq]
   have hyw : h (α⁻¹ • x j) w = 1 := by
-    rw [map_smulₛₗ, LinearMap.smul_apply, hxw, if_neg hj, sub_zero, ← hsym w₀ (x j), hα,
+    rw [map_smulₛₗ, LinearMap.smul_apply, hxw, ite_eq_right hj, sub_zero, ← hsym w₀ (x j), hα,
       starRingEnd_apply, smul_eq_mul, ← star_mul', inv_mul_cancel₀ hα0, star_one]
   have hyy' : h (α⁻¹ • x j) (α⁻¹ • x j) = star (α⁻¹ * b) * (α⁻¹ * b) := by
     rw [hyy, star_mul']
@@ -176,7 +176,7 @@ theorem exists_next (hS : IsHermSemilocal S) (hs : h.IsSymm) (hM : IsSelfDualMod
   refine ⟨c • w + d • α⁻¹ • x j, M.add_mem (hM.smul_mem _ hc _ hwM) (hM.smul_mem _ hd _ hy₀),
     hcd, fun i hi => ?_⟩
   have hij : i ≠ j := fun e => hj (e ▸ hi)
-  rw [map_add (f := _), map_smul, map_smul, map_smul, hxw, if_pos hi, sub_self, hx, if_neg hij]
+  rw [map_add (f := _), map_smul, map_smul, map_smul, hxw, ite_eq_left hi, sub_self, hx, ite_eq_right hij]
   simp
 
 theorem exists_isom_frame (hS : IsHermSemilocal S) (hs : h.IsSymm) (hd : ∀ x, h x x = 0 → x = 0)
@@ -197,13 +197,13 @@ theorem exists_isom_frame (hS : IsHermSemilocal S) (hs : h.IsSymm) (hd : ∀ x, 
         (Finset.univ.filter (fun i : Fin n => i.val < k))
         (fun i hi => hgM i (Finset.mem_filter.mp hi).2) ⟨k, hk⟩ (by simp)
       obtain ⟨τ, hτ, hτj, hτfix⟩ := exists_isom_fix hs hd (x := g (e ⟨k, hk⟩)) (y := z)
-        (by rw [hx, if_pos rfl]) hzz
+        (by rw [hx, ite_eq_left rfl]) hzz
       refine ⟨τ * g, mul_mem hτ hg, fun i hi => ?_⟩
       show τ (g (e i)) ∈ M
       rcases Nat.lt_succ_iff_lt_or_eq.mp hi with h1 | h1
       · rw [hτfix]
         · exact hgM i h1
-        · rw [hx, if_neg]
+        · rw [hx, ite_eq_right]
           intro hc
           rw [← hc] at h1
           exact lt_irrefl _ h1

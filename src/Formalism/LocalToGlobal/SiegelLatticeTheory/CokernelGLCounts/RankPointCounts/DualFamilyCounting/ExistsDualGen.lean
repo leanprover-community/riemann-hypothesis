@@ -95,7 +95,7 @@ theorem exists_dual_gen (e : Fin r → S.V) (z : S.V) (N : ℕ) (hN : 0 < N) (hi
     intro a
     have := congrFun (hy0 a) (Fin.last r)
     simp only [LinearMap.pi_apply, f, Fin.snoc_last] at this
-    rw [this, if_neg (Fin.castSucc_lt_last a).ne']
+    rw [this, ite_eq_right (Fin.castSucc_lt_last a).ne']
   have hy0e : ∀ a d, S.hT (y0 a) (e d) = if d = a then 1 else 0 := by
     intro a d; rw [hsw, hey0]; split_ifs <;> simp
   have hL : ∀ (c : Fin r → E) (v : S.V), S.hT (∑ d, c d • e d) v = ∑ d, star (c d) * S.hT (e d) v := by

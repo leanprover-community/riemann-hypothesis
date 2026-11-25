@@ -665,7 +665,7 @@ theorem orbital_integral_over_base_group : UnitaryHyperbolicOrbitCount := by
     rw [← Subgroup.relIndex_mul_relIndex _ _ _ FF.2.2.1 FF.2.1, h0, zero_mul]
   unfold orb
   by_cases hc : x₁ / z₁ / (d 0 / d 2) ∈ V.H ∧ ∃ s, y₁ / (d 1 * s ^ 2) ∈ V.H
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     obtain ⟨hxz, s0, hs0⟩ := hc
     haveI : (V.H.subgroupOf V.H2).FiniteIndex := ⟨hne⟩
     let U : ↥V.H2 → Fin 3 → kˣ := fun v => ![x₁ / d 0, s0 * (v : kˣ), 1]
@@ -770,7 +770,7 @@ theorem orbital_integral_over_base_group : UnitaryHyperbolicOrbitCount := by
       (f := fun q : GL (Fin 3) k ⧸ V.J 3 => V.unitaryDoubleCosetIndicator d (q.out⁻¹ * δ * th k 3 q.out))
       (n := V.H.relIndex (Uo k)) Ψ hinj hrng hone
     exact ⟨hfin, hsum.trans rfl⟩
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hzero : ∀ q : GL (Fin 3) k ⧸ V.J 3, V.unitaryDoubleCosetIndicator d (q.out⁻¹ * δ * th k 3 q.out) = 0 := by
       intro q
       by_contra h
@@ -936,10 +936,10 @@ theorem UpperTheory.V.Z.Sym.Sig.orbital_integral_over_extended_group :
     rw [e]
     unfold Glob.one
     by_cases hP : x / z / t ∈ V.H
-    · rw [if_pos ⟨hP, hq₀⟩, if_pos hP, mul_one]
-    · rw [if_neg (fun hh => hP hh.1), if_neg hP, mul_zero]
+    · rw [ite_eq_left ⟨hP, hq₀⟩, ite_eq_left hP, mul_one]
+    · rw [ite_eq_right (fun hh => hP hh.1), ite_eq_right hP, mul_zero]
   · intro b hb hne
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨_, hq⟩
     exact hne (huniq b ⟨hb, hq⟩)
   · intro hn
@@ -1064,8 +1064,8 @@ theorem UpperTheory.V.Z.Sym.Sig.okGOrb :
   · have hm : x / z / t ∈ V.H := by
       rw [hxz, mul_div_cancel_left]
       exact hH
-    rw [show Glob.one (x / z / t ∈ V.H) = 1 from if_pos hm,
-      show Glob.one (Ind S.H (((t * h : kˣ) : k) + ((t * h : kˣ)⁻¹ : kˣ)) t) = 1 from if_pos hI']
+    rw [show Glob.one (x / z / t ∈ V.H) = 1 from ite_eq_left hm,
+      show Glob.one (Ind S.H (((t * h : kˣ) : k) + ((t * h : kˣ)⁻¹ : kˣ)) t) = 1 from ite_eq_left hI']
     show _ = (((V.H.relIndex (Uo k) : ℝ) * (V.H.relIndex V.H2 : ℝ) : ℝ) : ℂ) * 1
     push_cast
     rfl

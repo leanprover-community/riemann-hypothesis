@@ -289,10 +289,10 @@ theorem jvMat_mem (v : InfinitePlace E) (u : UN N) : jvMat v u.1 ∈ Matrix.unit
   simp only [Matrix.mul_apply, Matrix.star_apply, jvMat, Matrix.of_apply, Finset.sum_apply, Pi.mul_apply,
     Pi.star_apply, Matrix.one_apply]
   by_cases hw : w = v
-  · simp only [hw, if_true]
+  · simp only [hw, ite_true]
     rw [hij]
     split_ifs <;> rfl
-  · simp only [hw, if_false]
+  · simp only [hw, ite_false]
     by_cases h : i = j
     · subst h; simp
     · simp [h]

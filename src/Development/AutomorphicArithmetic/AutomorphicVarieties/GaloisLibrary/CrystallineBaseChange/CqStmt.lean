@@ -68,12 +68,6 @@ def FrobEx : Prop :=
     (∀ B B', FrobEig ι r w B → FrobEig ι r w B' → B = B') ∧
     ∀ M : ℕ, LevelAway l M r → ((l : ℕ) : 𝓞 F) ∉ w.asIdeal → ((M : ℕ) : 𝓞 F) ∉ w.asIdeal → ∃ B, FrobEig ι r w B
 
-def RootSum : Prop :=
-  ∀ (n p : ℕ), 0 < p → ∀ (m : Fin n → ℤ) (wt : ℤ) (I : Type) [Fintype I] (q f : I → ℕ), (∀ i, 1 ≤ f i ∧ f i ≤ 2 ∧ q i = p ^ f i) →
-    ∀ D : ∀ i, EigData n (q i) m wt, ∃ D' : EigData n p m wt, Nat.card D'.S ≤ 2 ^ (n + 1) * ∑ i, Nat.card (D i).S ∧
-      ∃ e : (Σ i, {x : (D i).S × Multiset ℂ // x.2.map (· ^ f i) = (D i).β x.1} × Bool) → D'.S,
-        Function.Injective e ∧ ∀ x, D'.β (e x) = x.2.1.1.2
-
 def PotMove : Prop :=
   ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (n : ℕ)
     (r : G F Ω →* GL (Fin n) (Qbar l)) (A A' : ValuationSubring Ω) (g : G F Ω), (∀ x, x ∈ A' ↔ g x ∈ A) → PotCrysAt r A → PotCrysAt r A'

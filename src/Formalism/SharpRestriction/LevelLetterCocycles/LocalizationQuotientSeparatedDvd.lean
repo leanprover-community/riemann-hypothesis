@@ -196,7 +196,7 @@ theorem lev_letE (c : ZMod n) (ζ : LL) : W.lev c ζ (letE c : LetA O n) = 1 := 
 theorem levN_letE (T : LocLat G Qp LL O) (c : ZMod n) (ζ : LL) (x : ↥(W.N T)) (k : ℤ) :
     W.levN T c ζ ((letE c : LetA O n) • x) k = W.levN T c ζ x k := by
   rw [W.levN_smul, lev_letE,
-    finsum_eq_single _ 0 (fun j hj => by rw [PowerSeries.coeff_one, if_neg hj, zero_smul])]
+    finsum_eq_single _ 0 (fun j hj => by rw [PowerSeries.coeff_one, ite_eq_right hj, zero_smul])]
   simp
 
 end W

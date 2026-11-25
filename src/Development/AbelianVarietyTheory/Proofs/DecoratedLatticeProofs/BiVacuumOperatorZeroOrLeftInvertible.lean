@@ -130,7 +130,7 @@ theorem latO_acts_by_signs : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] 
           rw [Finset.sum_eq_single i]
           · simp
           · intro j _ hj
-            rw [if_neg (fun h => hj (hP.inj h).symm), zero_mul]
+            rw [ite_eq_right (fun h => hj (hP.inj h).symm), zero_mul]
           · intro h
             exact absurd (List.mem_toFinset.2 (hP.all i)) h
         · rw [hsupp v hv]
@@ -383,7 +383,7 @@ theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D :
     rw [AddSubgroup.mem_prod, not_and_or] at hxy
     rcases hxy with h | h
     · rw [GlobalTheory.SelfDualAt.latO_ann_at D ψ hψ A S LA LS hA hS P (x - y).1 hd.1] at h
-      push_neg at h
+      push Not at h
       obtain ⟨l, hl, hne⟩ := h
       refine ⟨(l, 0), AddSubgroup.mem_prod.2 ⟨hl, zero_mem _⟩, fun heq => hne ?_⟩
       simp only [chi, GlobalTheory.SplitScalar.symplO_zero_left, AddChar.map_zero_eq_one, mul_one] at heq
@@ -394,7 +394,7 @@ theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D :
       rw [symplO_skew'] at h1
       exact psi_eq_one_of_neg ψ h1
     · rw [GlobalTheory.SelfDualAt.latO_ann_at D ψ hψ S A' LS LA' hS hA' P (x - y).2 hd.2] at h
-      push_neg at h
+      push Not at h
       obtain ⟨l, hl, hne⟩ := h
       refine ⟨(0, l), AddSubgroup.mem_prod.2 ⟨zero_mem _, hl⟩, fun heq => hne ?_⟩
       simp only [chi, GlobalTheory.SplitScalar.symplO_zero_left, AddChar.map_zero_eq_one, one_mul] at heq

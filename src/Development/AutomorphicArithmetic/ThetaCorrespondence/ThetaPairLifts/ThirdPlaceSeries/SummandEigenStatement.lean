@@ -630,7 +630,7 @@ theorem main_alt_alt : GlobalTheory.Published.AutomorphicFormsFiniteGL → ∀ (
     rintro _ ⟨x, hx, rfl⟩
     have hc : ∃ y ∈ Ds, (y : GAf D.host.E D.R.nV ⧸ (P.M.loc i).J) = (x : GAf D.host.E D.R.nV ⧸ (P.M.loc i).J) := ⟨x, hx, rfl⟩
     refine ⟨(x : GAf D.host.E D.R.nV ⧸ (P.M.loc i).J), ⟨x, hx, rfl⟩, ?_⟩
-    simp only [φ, dif_pos hc]
+    simp only [φ, dite_eq_left hc]
     have h1 := hc.choose_spec.2
     rw [QuotientGroup.eq] at h1
     exact QuotientGroup.eq.2 ((hJU _ hc.choose_spec.1 _ hx).1 h1)

@@ -40,7 +40,7 @@ theorem UpperTheory.ConvolutionTheory.Dp.sSatUnit :
     have hxc : x ∈ Subgroup.center _ :=
       Matrix.GeneralLinearGroup.mem_center_iff_val_mem_range_scalar.2 ⟨_, by rw [Matrix.scalar_apply, hx, Cartan.coe_diagPow]⟩
     have e1 : (fun a : Fin n => if a ≤ (⟨n - 1, by omega⟩ : Fin n) then (1 : ℤ) else 0) = fun _ => 1 :=
-      funext fun a => if_pos (Fin.le_def.2 (by have := a.2; simp only; omega))
+      funext fun a => ite_eq_left (Fin.le_def.2 (by have := a.2; simp only; omega))
     have e2 : {c : GL (Fin n) (w.adicCompletion K) ⧸ J | ∃ k ∈ J, c = QuotientGroup.mk (k * x)} = {QuotientGroup.mk x} := by
       ext c
       constructor

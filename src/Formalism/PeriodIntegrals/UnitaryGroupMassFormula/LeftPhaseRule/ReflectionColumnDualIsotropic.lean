@@ -30,10 +30,10 @@ lemma tau_es (l : Fin r) : tau k r (esI k r l) = eI k r l := by
   apply Fin.ext; rw [tau_val, eI_val, esI_val]; have := l.isLt; split_ifs <;> omega
 
 lemma sgn_e (l : Fin r) : WeylGroupFacts.sgn k r (eI k r l) = 1 := by
-  unfold WeylGroupFacts.sgn; rw [if_neg]; rw [eI_val]; have := l.isLt; omega
+  unfold WeylGroupFacts.sgn; rw [ite_eq_right]; rw [eI_val]; have := l.isLt; omega
 
 lemma sgn_es (l : Fin r) : WeylGroupFacts.sgn k r (esI k r l) = 1 := by
-  unfold WeylGroupFacts.sgn; rw [if_neg]; rw [esI_val]; have := l.isLt; omega
+  unfold WeylGroupFacts.sgn; rw [ite_eq_right]; rw [esI_val]; have := l.isLt; omega
 
 lemma star_sgn (i : Fin (2 * r + k + 1)) : star (WeylGroupFacts.sgn k r i) = WeylGroupFacts.sgn k r i := by
   unfold WeylGroupFacts.sgn; split_ifs <;> simp
@@ -98,24 +98,24 @@ lemma reflection_mul_star (l : Fin r) (c : ℂ) (hc : c ≠ 0) : w1 k r l c * w1
   by_cases hq1 : q = eI k r l
   · subst hq1
     rw [Finset.sum_eq_single (esI k r l)]
-    · rw [reflection_column_isotropic, if_pos rfl, reflection_column_dual_isotropic]
+    · rw [reflection_column_isotropic, ite_eq_left rfl, reflection_column_dual_isotropic]
       by_cases hp : p = eI k r l
-      · rw [if_pos hp, if_pos hp, inv_mul_cancel₀ hsc]
-      · rw [if_neg hp, if_neg hp, zero_mul]
-    · intro t _ ht; rw [reflection_column_isotropic, if_neg ht, mul_zero]
+      · rw [ite_eq_left hp, ite_eq_left hp, inv_mul_cancel₀ hsc]
+      · rw [ite_eq_right hp, ite_eq_right hp, zero_mul]
+    · intro t _ ht; rw [reflection_column_isotropic, ite_eq_right ht, mul_zero]
     · simp
   · by_cases hq2 : q = esI k r l
     · subst hq2
       rw [Finset.sum_eq_single (eI k r l)]
-      · rw [reflection_column_dual_isotropic, if_pos rfl, reflection_column_isotropic, star_star]
+      · rw [reflection_column_dual_isotropic, ite_eq_left rfl, reflection_column_isotropic, star_star]
         by_cases hp : p = esI k r l
-        · rw [if_pos hp, if_pos hp, mul_inv_cancel₀ hc]
-        · rw [if_neg hp, if_neg hp, zero_mul]
-      · intro t _ ht; rw [reflection_column_dual_isotropic, if_neg ht, mul_zero]
+        · rw [ite_eq_left hp, ite_eq_left hp, mul_inv_cancel₀ hc]
+        · rw [ite_eq_right hp, ite_eq_right hp, zero_mul]
+      · intro t _ ht; rw [reflection_column_dual_isotropic, ite_eq_right ht, mul_zero]
       · simp
     · rw [Finset.sum_eq_single q]
-      · rw [reflection_off_support _ _ q q hq1 hq2, if_pos rfl, mul_one, reflection_off_support _ _ p q hq1 hq2]
-      · intro t _ ht; rw [reflection_off_support _ _ t q hq1 hq2, if_neg ht, mul_zero]
+      · rw [reflection_off_support _ _ q q hq1 hq2, ite_eq_left rfl, mul_one, reflection_off_support _ _ p q hq1 hq2]
+      · intro t _ ht; rw [reflection_off_support _ _ t q hq1 hq2, ite_eq_right ht, mul_zero]
       · simp
 
 lemma weyl_cell_inv (l : Fin r) (c : ℂ) (hc : c ≠ 0) : (w1 k r l c)⁻¹ = w1 k r l (star c) :=
@@ -186,13 +186,13 @@ lemma weyl_cell_mul_apply (l : Fin r) (c : ℂ) (A : Mx k r) (p q : Fin (2 * r +
     · subst hp1; rw [h1, mul_zero]
     · by_cases hp2 : p = esI k r l
       · subst hp2; rw [h2, mul_zero]
-      · rw [reflection_off_support _ _ p p hp1 hp2, if_pos rfl, one_mul]
+      · rw [reflection_off_support _ _ p p hp1 hp2, ite_eq_left rfl, one_mul]
   · intro t _ ht
     by_cases ht1 : t = eI k r l
     · subst ht1; rw [h1, mul_zero]
     · by_cases ht2 : t = esI k r l
       · subst ht2; rw [h2, mul_zero]
-      · rw [reflection_off_support _ _ p t ht1 ht2, if_neg (Ne.symm ht), zero_mul]
+      · rw [reflection_off_support _ _ p t ht1 ht2, ite_eq_right (Ne.symm ht), zero_mul]
   · simp
 
 lemma mul_weyl_cell_apply (l : Fin r) (c : ℂ) (A : Mx k r) (p q : Fin (2 * r + k + 1))
@@ -202,13 +202,13 @@ lemma mul_weyl_cell_apply (l : Fin r) (c : ℂ) (A : Mx k r) (p q : Fin (2 * r +
     · subst hq1; rw [h1, zero_mul]
     · by_cases hq2 : q = esI k r l
       · subst hq2; rw [h2, zero_mul]
-      · rw [reflection_off_support _ _ q q hq1 hq2, if_pos rfl, mul_one]
+      · rw [reflection_off_support _ _ q q hq1 hq2, ite_eq_left rfl, mul_one]
   · intro t _ ht
     by_cases ht1 : t = eI k r l
     · subst ht1; rw [h1, zero_mul]
     · by_cases ht2 : t = esI k r l
       · subst ht2; rw [h2, zero_mul]
-      · rw [reflection_off_support_row _ _ t q ht1 ht2, if_neg ht, mul_zero]
+      · rw [reflection_off_support_row _ _ t q ht1 ht2, ite_eq_right ht, mul_zero]
   · simp
 
 end Formalism.FourierDecayAlt.Q.LeftMultiplicationRule

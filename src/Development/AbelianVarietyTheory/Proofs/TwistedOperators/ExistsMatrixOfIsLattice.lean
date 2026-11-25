@@ -460,7 +460,7 @@ theorem count_stairIdeal_at_S0 (hq : OffQ D) {μ₀ : T} (hL : L.Is μ₀) (G : 
   rw [GlobalTheory.FunObj.count_stairId h2.1 h3, Places.stA, Places.stAbar,
     FractionalIdeal.count_mul _ _ h1.1 (inv_ne_zero hmb), FractionalIdeal.count_mul _ _ (GlobalTheory.FunObj.ne_zero_of_conj h1.1 h1.2)
       (inv_ne_zero hmo), FractionalIdeal.count_inv, FractionalIdeal.count_inv, GlobalTheory.FunObj.count_modulBar G hw,
-    GlobalTheory.FunObj.count_modul, hA.1, hA.2, cosExp, if_pos hW, G.pl.under_w hv]
+    GlobalTheory.FunObj.count_modul, hA.1, hA.2, cosExp, ite_eq_left hW, G.pl.under_w hv]
   push_cast
   ring
 

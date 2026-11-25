@@ -1397,7 +1397,7 @@ theorem locUnrSplit : LocUnrSplit := by
   simp only [e2] at i1 i2
   refine ⟨i1, ?_⟩
   rw [hC, ← Finset.prod_range_reflect, ← Finset.prod_mul_distrib] at i2
-  rw [locD, if_pos ⟨τ⟩]
+  rw [locD, ite_eq_left ⟨τ⟩]
   convert i2 using 2
   · refine Finset.prod_congr rfl fun i hi => ?_
     have := Finset.mem_range.1 hi

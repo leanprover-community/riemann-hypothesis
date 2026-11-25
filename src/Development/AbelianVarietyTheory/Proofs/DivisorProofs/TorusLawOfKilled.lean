@@ -300,7 +300,7 @@ lemma law_single (h : ∀ τ, OrthFr (Hm τ) (q τ) (x₀ τ)) {f : (ι → Mt n
   have hd : ∀ v ∈ UG Hm, Complex.I * der τ Y f v = (w τ a : ℂ) * f v := by
     intro v hv
     have hkv := hk τ a a le_rfl v hv
-    rw [if_pos rfl, hZ] at hkv
+    rw [ite_eq_left rfl, hZ] at hkv
     unfold derC at hkv
     rw [hconj, add_neg_cancel, smul_zero, der_zero', zero_add, hcoef] at hkv
     exact hkv

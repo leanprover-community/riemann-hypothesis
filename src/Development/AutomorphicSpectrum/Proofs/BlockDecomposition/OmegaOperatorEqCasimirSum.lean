@@ -59,7 +59,7 @@ theorem atEmb_embedding_apply (w v : InfinitePlace E) (z : ℂ) :
     atEmb w.embedding z v = if v = w then z else 0 := by
   classical
   unfold atEmb
-  rw [InfinitePlace.mk_embedding, if_pos rfl, Pi.single_apply]
+  rw [InfinitePlace.mk_embedding, ite_eq_left rfl, Pi.single_apply]
 
 theorem atEmb_neg (τ : E →+* ℂ) (z : ℂ) : atEmb τ (-z) = -atEmb τ z := by
   rw [atEmb_eq τ (-z), atEmb_eq τ z]

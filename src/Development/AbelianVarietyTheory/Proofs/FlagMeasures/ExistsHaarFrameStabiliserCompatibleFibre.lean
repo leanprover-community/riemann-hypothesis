@@ -539,7 +539,7 @@ theorem extend_frame : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
     simp only [gramE, tupH, Fin.append_left, Fin.append_right, F0]
     refine Fin.lastCases ?_ (fun a => ?_) i
     · rw [Fin.snoc_last, ← hE_swap hinv hJ.1 P.z (P.f b), hfz, map_zero]
-      exact (if_neg (Fin.castSucc_ne_last b).symm).symm
+      exact (ite_eq_right (Fin.castSucc_ne_last b).symm).symm
     · rw [Fin.snoc_castSucc, hef]
       simp only [Fin.castSucc_inj]
   funext i j

@@ -160,13 +160,13 @@ private theorem alt_supp (x y : Wt n) (h : cf (alt x) y ≠ 0) :
   apply h
   rw [cf_alt]
   refine Finset.sum_eq_zero fun w _ => ?_
-  rw [if_neg fun e => hc w e.symm, mul_zero]
+  rw [ite_eq_right fun e => hc w e.symm, mul_zero]
 
 private theorem alt_top (x : Wt n) (hx : StrictAnti x) : cf (alt x) x = 1 := by
   rw [cf_alt, Finset.sum_eq_single 1]
   · simp [sg_one]
   · intro w _ hw
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro e
     apply hw
     ext a

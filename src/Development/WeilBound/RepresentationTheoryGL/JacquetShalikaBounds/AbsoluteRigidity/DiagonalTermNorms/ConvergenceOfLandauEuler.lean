@@ -118,7 +118,7 @@ theorem convergence_of_landau_euler : LandauL → EulerLog → Conv1 := by
         have h2 : 2 < (σ : ℂ).re := by simp; exact lt_of_le_of_lt (le_max_right _ _) hσ
         have h1 : ((σ : ℂ) - 1) ≠ 0 := by
           intro h; have := congrArg Complex.re h; simp at this; linarith [le_max_right σ₀ 2]
-        rw [hFe σ hσ0, if_pos rfl, mul_div_cancel_left₀ _ h1,
+        rw [hFe σ hσ0, ite_eq_left rfl, mul_div_cancel_left₀ _ h1,
           (hE W q _ _ (A x) (A x) σ hS.primes (hS.bd x) (hS.bd x) h2).2.1]
         have e : (∑' p, lterm q (A x) (A x) (σ : ℂ) p) = ((∑' p, cd (A x) p * Real.exp (-(ll q p * σ)) : ℝ) : ℂ) := by
           rw [Complex.ofReal_tsum]

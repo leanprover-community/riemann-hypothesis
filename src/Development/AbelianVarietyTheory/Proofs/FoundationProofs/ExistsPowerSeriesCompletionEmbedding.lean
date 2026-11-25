@@ -281,7 +281,7 @@ theorem exists_completion_embedding : ∀ (k A : Type) [Field k] [IsAlgClosed k]
     have h2 : (PowerSeries.X : PowerSeries k) ^ m ∣ φ - (PowerSeries.trunc m φ : PowerSeries k) := by
       rw [PowerSeries.X_pow_dvd_iff]
       intro n hn
-      rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hn, sub_self]
+      rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, ite_eq_left hn, sub_self]
     have := dvd_sub h2 h1
     rwa [sub_sub_sub_cancel_right] at this
 

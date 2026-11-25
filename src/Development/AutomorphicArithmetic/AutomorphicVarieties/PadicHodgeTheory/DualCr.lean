@@ -58,7 +58,7 @@ theorem UpperTheory.V.Loc.dualCr :
   have had : ((adRep r).comp D.HL.subtype : Representation E D.HL _) = adGL (glOn D.HL r h1) := by
     refine MonoidHom.ext fun g => LinearMap.ext fun X => ?_
     change (r g).adFun X = _
-    rw [GG.adFun, if_pos (h1 g g.2)]
+    rw [GG.adFun, ite_eq_left (h1 g g.2)]
     rfl
   have hy : (fun h : D.HL => γ h) ∈ Z1 (adGL (glOn D.HL r h1)) := by
     rw [← had]

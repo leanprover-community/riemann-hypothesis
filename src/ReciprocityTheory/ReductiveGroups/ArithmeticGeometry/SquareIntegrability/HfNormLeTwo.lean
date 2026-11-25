@@ -575,7 +575,7 @@ theorem eU_props {dim : (E →+* ℂ) → ℕ} {n nb : ℕ} (bs : Fin nb → Blo
     (a : Fin (bs j).i) : InPart (bs j).τ (eU bs j a) ∧ ‖eU bs j a‖ = 1 := by
   refine ⟨fun k hk => ?_, by simp [eU]⟩
   simp only [eU, PiLp.single_apply]
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro rfl
   exact hk rfl
 

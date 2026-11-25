@@ -51,16 +51,6 @@ end WachMod
 
 variable {B : Base p A} {η : ℕ}
 
-section Hyp
-
-variable {D₀ D₁ D₂ : Type}
-    [AddCommGroup D₀] [Module A D₀] [Module ℤ_[p] D₀] [IsScalarTower ℤ_[p] A D₀]
-    [AddCommGroup D₁] [Module A D₁] [Module ℤ_[p] D₁] [IsScalarTower ℤ_[p] A D₁]
-    [AddCommGroup D₂] [Module A D₂] [Module ℤ_[p] D₂] [IsScalarTower ℤ_[p] A D₂]
-    {W₀ : WachMod B η D₀} {W₁ : WachMod B η D₁} {W₂ : WachMod B η D₂}
-
-end Hyp
-
 end Formalism.CL.W
 end -- clump:auto
 end -- clump:auto
@@ -77,17 +67,6 @@ noncomputable section
 namespace Formalism.CoboundaryTransfers
 
 open Formalism
-
-section CL
-
-variable {p : ℕ} [Fact p.Prime] {A : Type} [CommRing A] [Algebra ℤ_[p] A]
-
-variable {B : CL.W.Base p A} {η : ℕ}
-
-variable {D D' : Type} [AddCommGroup D] [Module A D] [Module ℤ_[p] D] [IsScalarTower ℤ_[p] A D]
-  [AddCommGroup D'] [Module A D'] [Module ℤ_[p] D'] [IsScalarTower ℤ_[p] A D']
-
-end CL
 
 section CLback
 

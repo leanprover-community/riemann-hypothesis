@@ -473,7 +473,7 @@ theorem step_left (hc : IsCoefFam ε X c) (z : ℂ) (i : ι) (j : Fin n) :
       split_ifs with h
       · rw [h]
       · simp
-    rw [sum_congr rfl fun c' _ => e c', Finset.sum_ite_eq' univ j, if_pos (mem_univ j)]
+    rw [sum_congr rfl fun c' _ => e c', Finset.sum_ite_eq' univ j, ite_eq_left (mem_univ j)]
     calc ∑ d, M j d * stepCoef X z (c i) d u g
         = ∑ k, (∑ d, M j d * g d k) * c i (incl X z u k) g := by
           simp only [stepCoef_apply, Finset.mul_sum, Finset.sum_mul]

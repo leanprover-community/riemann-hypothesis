@@ -271,11 +271,11 @@ theorem exists_cosetExpansion_of_depthOK : ∀ {D : D7} {T : Type} {L : LevCh D 
       refine Finset.sum_eq_zero fun ρ hρ => Finset.sum_eq_zero fun ρ' hρ' => ?_
       rw [Fintype.mem_piFinset] at hρ hρ'
       rcases not_and_or.1 hin with h | h
-      · push_neg at h
+      · push Not at h
         obtain ⟨j, hj⟩ := h
         exact mul_eq_zero_of_left (mul_eq_zero_of_right _ (Finset.prod_eq_zero (Finset.mem_univ j) (Set.indicator_of_notMem
           (fun hm => hj (nsmul_mem_of_mem_halfCoset ((hR1 j).1 _ (hρ j)).2 hm)) _))) _
-      · push_neg at h
+      · push Not at h
         obtain ⟨i, hi⟩ := h
         exact mul_eq_zero_of_right _ (Finset.prod_eq_zero (Finset.mem_univ i) (Set.indicator_of_notMem
           (fun hm => hi (nsmul_mem_of_mem_halfCoset ((hR2 i).1 _ (hρ' i)).2 hm)) _))
@@ -415,7 +415,7 @@ theorem wt_core (ϖ : kˣ) (e : ℕ) (X : ℕ × ℕ) {a : ℕ} (ha : a < topRan
 
 theorem wt_end (ϖ : kˣ) (e : ℕ) {i j : ℕ} (h : G.m < j + 2) (a : ℕ) : wt G ϖ e (i, j) a = 1 := by
   unfold wt
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro ⟨-, h2⟩
   dsimp only at h2
   omega
@@ -453,9 +453,9 @@ theorem elt_eq [MeasurableSpace k] [BorelSpace k] (hs : 1 ≤ G.s) (J : G.Level)
       obtain _ | j := j
       · omega
       · simp only [Reps.elt, onColumn_apply]
-        rw [dif_neg (by omega)]
+        rw [dite_eq_right (by omega)]
     · simp only [Reps.elt, onColumn]
-      rw [dif_neg hi]
+      rw [dite_eq_right hi]
 
 theorem val_wt_le {ϖ : kˣ} (hϖ : IsUnif ϖ) (e : ℕ) (X : ℕ × ℕ) (a : ℕ) : valuation k (wt G ϖ e X a : k) ≤ 1 := by
   unfold wt
@@ -490,7 +490,7 @@ theorem moved_per {ϖ : kˣ} {e : ℕ}
       rw [FourierDepth.mem_matLat_smul_stdLat]
       intro r s
       by_cases hb : b ∈ oppositePath G.m
-      · simp only [d, if_pos hb, Matrix.sub_apply, moveArgs_apply]
+      · simp only [d, ite_eq_left hb, Matrix.sub_apply, moveArgs_apply]
         convert hδ b hb r s using 2
         simp only [Pi.sub_apply, Matrix.sub_apply]
         ring
@@ -541,7 +541,7 @@ theorem fill_sub_wt_le (ϖ : kˣ) (e : ℕ) {x a : ColArgs G} {y b : RowArgs G} 
         intro r s hne
         rw [Pi.sub_apply, fill_theta, fill_theta, Matrix.sub_apply, Matrix.transpose_apply,
           Matrix.transpose_apply] at hne
-        simp only [downMap, dif_pos hjm, Pi.add_apply, FlatDep.stepPt_add, Matrix.reindex_apply,
+        simp only [downMap, dite_eq_left hjm, Pi.add_apply, FlatDep.stepPt_add, Matrix.reindex_apply,
           Matrix.submatrix_apply] at hne
         rw [Matrix.add_apply, add_sub_cancel_left] at hne
         obtain ⟨hs1, hr1⟩ := lt_and_lt_of_fromBlocks_frame_ne_zero _ _ _ s r hne
@@ -569,10 +569,10 @@ theorem colVar_le {ϖ : kˣ} {e : ℕ} {T : G.Args → ℂ} (hT : G.IsTensor ϖ 
   have h1 : topRank G (j + 1) + (G.m - 2 - j) = G.rank (G.m, j + 1) := by omega
   have hm := moved_supp hT keep hz hb (frame h2 (Sum.inr ⟨0, by omega⟩)) (frame h1 (Sum.inl r))
   rw [fill_theta, Matrix.transpose_apply] at hm
-  simp only [downMap, dif_pos hjm, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply] at hm
+  simp only [downMap, dite_eq_left hjm, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply] at hm
   have hw1 : wt G ϖ e (G.m, (j : ℕ)) (topRank G j) = ϖ ^ e := by
     unfold wt
-    rw [if_pos ⟨rfl, by omega⟩]
+    rw [ite_eq_left ⟨rfl, by omega⟩]
     simp
   have hw2 : wt G ϖ e (G.m, (j : ℕ) + 1) r = 1 := wt_core ϖ e _ r.isLt
   simp only [frame, Equiv.trans_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right, finCongr_apply,
@@ -611,7 +611,7 @@ theorem shift_wt_le {ϖ : kˣ} (hϖ : IsUnif ϖ) (e : ℕ) (x : ColArgs G) (y : 
         intro r s hne
         rw [Pi.sub_apply, fill_theta, fill_theta, Matrix.sub_apply, Matrix.transpose_apply,
           Matrix.transpose_apply] at hne
-        simp only [downMap, dif_pos hjm, Matrix.reindex_apply, Matrix.submatrix_apply] at hne
+        simp only [downMap, dite_eq_left hjm, Matrix.reindex_apply, Matrix.submatrix_apply] at hne
         rw [← Matrix.sub_apply] at hne
         have hlt := lt_of_frame_entry_ne_zero_of_inr_zero _ s _ _ (by
           intro l col
@@ -645,19 +645,19 @@ private theorem valuation_sum_colVar_even_le_one {ϖ : kˣ} {e : ℕ} (x a : Col
   intro j _
   have hjlt := j.isLt
   by_cases hev : Even (G.m - 2 - ↑j)
-  · rw [if_pos hev]
+  · rw [ite_eq_left hev]
     apply Valuation.map_sum_le
     intro r _
     by_cases hj : (j : ℕ) + 1 < G.m - 1
-    · rw [if_pos hj, zero_mul, map_zero]
+    · rw [ite_eq_left hj, zero_mul, map_zero]
       exact zero_le'
     · have hj2 : (j : ℕ) + 2 = G.m := by omega
-      rw [if_neg hj, map_mul]
+      rw [ite_eq_right hj, map_mul]
       have h1 := ha (j + 1) (by omega) (topLast G (↑j + 1 + 1)) r
       have h2 := hc j hj2 r
       rw [map_mul] at h2
       exact le_trans (mul_le_mul' h1 le_rfl) h2
-  · rw [if_neg hev, map_zero]
+  · rw [ite_eq_right hev, map_zero]
     exact zero_le'
 
 private theorem addChar_neg_add_eq_of_conductor_one (hψ : HasConductor ψ 1) (p E : k) (hE : valuation k E ≤ 1) :
@@ -702,7 +702,7 @@ theorem flat_supp {ϖ : kˣ} {e : ℕ} {T : G.Args → ℂ} (hT : G.IsTensor ϖ 
       have h1 : topRank G (j + 1) + (G.m - 2 - j) = G.rank (G.m, j + 1) := by omega
       have hm := moved_supp hT keep hu hb (frame h2 (Sum.inl s)) (frame h1 (Sum.inl r))
       rw [fill_theta, Matrix.transpose_apply] at hm
-      simp only [downMap, dif_pos hjm, Matrix.reindex_apply, Matrix.submatrix_apply,
+      simp only [downMap, dite_eq_left hjm, Matrix.reindex_apply, Matrix.submatrix_apply,
         Equiv.symm_apply_apply] at hm
       simp only [frame, Equiv.trans_apply, finSumFinEquiv_apply_left, finCongr_apply,
         Fin.coe_cast, Fin.coe_castAdd] at hm
@@ -718,7 +718,7 @@ theorem flat_supp {ϖ : kˣ} {e : ℕ} {T : G.Args → ℂ} (hT : G.IsTensor ϖ 
         omega
       have hm := moved_supp hT keep hu hb ⟨s, hsl⟩ ⟨r, hrl⟩
       rw [fill_theta, Matrix.transpose_apply] at hm
-      simp only [downMap, dif_neg hjm, dif_pos hj1, Matrix.submatrix_apply] at hm
+      simp only [downMap, dite_eq_right hjm, dite_eq_left hj1, Matrix.submatrix_apply] at hm
       rw [wt_end (G := G) ϖ e (i := G.m) (j := j) (by omega),
         wt_end (G := G) ϖ e (i := G.m) (j := j + 1) (by omega)] at hm
       simpa using hm
@@ -766,7 +766,7 @@ theorem flat_last [ν.IsAddHaarMeasure] {ϖ : kˣ} {e : ℕ} {T : G.Args → ℂ
           rw [FlatLast.phase_shift x u j₀ hj₀ r (-t)]
           have hrow : rowVar x u ((j₀ : ℕ) + 1) r = X := by
             unfold rowVar
-            rw [dif_neg (by omega)]
+            rw [dite_eq_right (by omega)]
           rw [hrow, neg_add, AddChar.map_add_eq_mul, Circle.coe_mul]
           ring
       _ = _ := MeasureTheory.integral_const_mul _ _

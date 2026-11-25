@@ -106,7 +106,7 @@ private theorem logNorm_diag {E : Type} [Field E] [NumberField E] [IsCMField E] 
     (GlobalTheory.Mem.Chr.CharModel.infDiag_parts k).2, GlobalTheory.Mem.Chr.CharModel.logFin_one, sub_zero,
     GlobalTheory.Mem.Chr.CharModel.logInf_principal, ← h, Real.log_prod (fun v _ => pow_ne_zero _ (hp v))]
   refine Finset.sum_congr rfl fun v _ => ?_
-  rw [Real.log_pow, InfinitePlace.mult, if_neg (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v))]
+  rw [Real.log_pow, InfinitePlace.mult, ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v))]
   norm_num
 
 theorem UpperTheory.Gal.TP.Chr.absFacts :
@@ -816,7 +816,7 @@ theorem muEmb : MuEmb := by
   have hmk := mk_emb_eq emb v
   have hor := InfinitePlace.mk_eq_iff.1 (hmk.trans (InfinitePlace.mk_embedding v).symm)
   by_cases h : v.embedding = (emb (v.comap (algebraMap (maximalRealSubfield E) E))).1
-  · simp only [e, if_pos h]
+  · simp only [e, ite_eq_left h]
     rw [← h]
   · have hc : (emb (v.comap (algebraMap (maximalRealSubfield E) E))).1 =
         ComplexEmbedding.conjugate v.embedding := by
@@ -825,7 +825,7 @@ theorem muEmb : MuEmb := by
       · rw [← h']
         exact (star_star _).symm
     have hz : v.embedding (k : E) ≠ 0 := (map_ne_zero _).2 k.ne_zero
-    simp only [e, if_neg h]
+    simp only [e, ite_eq_right h]
     rw [hc, ComplexEmbedding.conjugate_coe_eq, conj_div_norm hz, inv_zpow']
 
 end UpperTheory.Gal.TP.Chr
@@ -888,7 +888,7 @@ private lemma dense_emb (emb : ∀ w : InfinitePlace (maximalRealSubfield E), Em
     refine ⟨fun v => if h : ∃ w, InfinitePlace.mk (emb w).1 = v then h.choose_spec ▸ g h.choose else 0, ?_⟩
     funext w
     have hex : ∃ w', InfinitePlace.mk (emb w').1 = InfinitePlace.mk (emb w).1 := ⟨w, rfl⟩
-    simp only [T, dif_pos hex]
+    simp only [T, dite_eq_left hex]
     rw [hcast w _ hex.choose_spec, hg]
   have hd := hTs.denseRange.comp (InfiniteAdeleRing.denseRange_algebraMap E) hT
   convert hd using 1
@@ -1401,10 +1401,10 @@ theorem typVal : TypVal := by
   constructor
   · unfold typ
     rw [h1]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   · unfold typ
     rw [h2]
-    exact if_neg (conj_ne _)
+    exact ite_eq_right (conj_ne _)
 
 end UpperTheory.Gal.TP.Chr
 

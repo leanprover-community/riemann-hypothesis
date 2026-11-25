@@ -655,8 +655,8 @@ theorem build (E : WEt I) [Nontrivial R.EE] {Zl S W : Type} [CommRing Zl] [CommR
         exact hO T hT _ _ (hS T hT _ _ hy) }
   let N : ∀ T, Submodule (LetA O n) (E.DD T) := fun T => if hT : IsCrys PD T.ρ then N₀ T hT else ⊥
   have hN : ∀ T, IsCrys PD T.ρ → ∀ y, y ∈ N T ↔ E.jD T y ∈ L T := fun T hT y => by
-    simp only [N, dif_pos hT]; rfl
-  have hN0 : ∀ T, ¬ IsCrys PD T.ρ → N T = ⊥ := fun T hT => dif_neg hT
+    simp only [N, dite_eq_left hT]; rfl
+  have hN0 : ∀ T, ¬ IsCrys PD T.ρ → N T = ⊥ := fun T hT => dite_eq_right hT
   have hNx : ∀ T hT (y : E.DD T), y ∈ N T ↔ ∃ t : Fin (q T hT) → S, y = ∑ i, a (t i) • x T hT i :=
     fun T hT y => (hN T hT y).trans (hD T hT y)
   have hQk : ∀ T (k : ℕ) (y : E.DD T), E.jD T (R.Q ^ k • y) = c (ψ Q) ^ k • E.jD T y := fun T k y => by

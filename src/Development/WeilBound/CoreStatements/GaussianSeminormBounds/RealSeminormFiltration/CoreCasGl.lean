@@ -527,7 +527,7 @@ theorem cas_bound {K I : Type} [Fintype K] [Fintype I] [DecidableEq I] (σ : K �
                 rw [List.getElem_set, List.getElem_ofFn, List.getElem_ofFn]
                 by_cases hm : (s : ℕ) = m
                 · subst hm; simp
-                · rw [if_neg hm, Function.update_of_ne]
+                · rw [ite_eq_right hm, Function.update_of_ne]
                   intro h; exact hm (by rw [← h])
             rw [e1]
             exact (List.set_perm_cons_eraseIdx (by simpa using s.2) i).trans
@@ -644,13 +644,13 @@ theorem Eab_mul_apply (a b e f : Ix r s) (Z : Mat r s) :
     (Eab a b * Z) e f = if e = a then Z b f else 0 := by
   by_cases h : e = a
   · subst h; simp [Eab]
-  · rw [if_neg h]; exact Matrix.single_mul_apply_of_ne _ _ _ _ _ h _
+  · rw [ite_eq_right h]; exact Matrix.single_mul_apply_of_ne _ _ _ _ _ h _
 
 theorem mul_Eab_apply (a b e f : Ix r s) (Z : Mat r s) :
     (Z * Eab a b) e f = if f = b then Z e a else 0 := by
   by_cases h : f = b
   · subst h; simp [Eab]
-  · rw [if_neg h]; exact Matrix.mul_single_apply_of_ne _ _ _ _ _ h _
+  · rw [ite_eq_right h]; exact Matrix.mul_single_apply_of_ne _ _ _ _ _ h _
 
 theorem Eab_apply (a b e f : Ix r s) : (Eab a b : Mat r s) e f = if a = e ∧ b = f then 1 else 0 := by
   simp [Eab, Matrix.single_apply]
@@ -670,10 +670,10 @@ theorem pc_ad {a b : Ix r s} (h : sameBlock a b) {Z : Mat r s} (hZ : IsPC Z) :
   rw [_root_.PI.FockOneDegW.Core.side_sb] at h hef
   rw [Matrix.sub_apply, Eab_mul_apply, mul_Eab_apply]
   by_cases h1 : e = a <;> by_cases h2 : f = b
-  · rw [if_pos h1, if_pos h2, hb b f (by rw [← h2]), hb e a (by rw [h1]), sub_zero]
-  · rw [if_pos h1, if_neg h2, hb b f (by rw [← h, ← h1, hef]), sub_zero]
-  · rw [if_neg h1, if_pos h2, hb e a (by rw [hef, h2, ← h]), sub_zero]
-  · rw [if_neg h1, if_neg h2, sub_zero]
+  · rw [ite_eq_left h1, ite_eq_left h2, hb b f (by rw [← h2]), hb e a (by rw [h1]), sub_zero]
+  · rw [ite_eq_left h1, ite_eq_right h2, hb b f (by rw [← h, ← h1, hef]), sub_zero]
+  · rw [ite_eq_right h1, ite_eq_left h2, hb e a (by rw [hef, h2, ← h]), sub_zero]
+  · rw [ite_eq_right h1, ite_eq_right h2, sub_zero]
 
 theorem kc_mul {Z W : Mat r s} (hZ : IsPC Z) (hW : IsPC W) : IsKC (Z * W) := by
   intro a b hab

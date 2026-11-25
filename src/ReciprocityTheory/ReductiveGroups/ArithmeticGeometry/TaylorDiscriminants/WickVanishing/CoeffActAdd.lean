@@ -33,7 +33,7 @@ theorem coeff_act_add (B : FB R d O) (a b : O) (i j : Fin d) :
   rw [← cc_pderiv', ← cc_pderiv' (B.A.act a i), ← cc_pderiv' (B.A.act b i), d2 hab]
 
   simp only [map_add (f := _), map_sum, map_mul, cc_ev' hab, cc_pderiv', coeff_single_zero_F_eq_ite, coeff_F_y, ite_mul, one_mul, zero_mul,
-  Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 variable {k : Type} [CommRing k] [Algebra ℚ k] [Algebra R k]
 

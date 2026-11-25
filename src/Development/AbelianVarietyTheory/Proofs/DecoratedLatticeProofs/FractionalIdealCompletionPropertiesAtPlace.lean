@@ -177,7 +177,7 @@ theorem good_indP (v : Pl D) : Good v (GlobalTheory.SelfDualAt.indP (D := D) (·
     split_ifs
     · exact one_mem _
     · exact zero_mem _
-  · rw [GlobalTheory.SelfDualAt.evalV_indP, if_neg hw]
+  · rw [GlobalTheory.SelfDualAt.evalV_indP, ite_eq_right hw]
 
 theorem indicatorAdele_mul_self (v : Pl D) :
     GlobalTheory.SelfDualAt.indP (D := D) (· = v) * GlobalTheory.SelfDualAt.indP (D := D) (· = v) = GlobalTheory.SelfDualAt.indP (D := D) (· = v) := by

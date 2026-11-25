@@ -52,12 +52,6 @@ namespace RowTypeInv
 
 open Formalism.L2.Col.Loc Formalism.L2.Col.LocE
 
-section Alg
-
-variable {R : Type*} [CommRing R]
-
-end Alg
-
 section Red
 
 variable {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E))

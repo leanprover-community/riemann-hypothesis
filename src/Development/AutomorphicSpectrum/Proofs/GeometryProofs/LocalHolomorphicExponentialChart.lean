@@ -341,7 +341,7 @@ theorem exists_dir [Fintype ι] (P : Algebra.SubmersivePresentation R A ι σ)
   simp only [dirDeriv, Finset.mul_sum, Matrix.vecMul, dotProduct]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j' _ => ?_
-  simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [← this j', mul_comm]
   rfl
 
@@ -414,7 +414,7 @@ theorem bijective_base [Fintype ι] (P : Algebra.SubmersivePresentation R A ι �
       rw [hF]
       exact hv₁ j
     · simp only [Sum.elim_inr, hT, hDc, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       ring
 
 theorem der_zero [Fintype ι] (P : Algebra.SubmersivePresentation R A ι σ) (χ : A →+* ℂ)
@@ -551,7 +551,7 @@ theorem exists_sections : ∀ (R A : Type) [CommRing R] [CommRing A] [Algebra R 
       Ψ b z (algebraMap P.Ring A p) = MvPolynomial.eval₂ (ψ b) (X (b, emb z)) p :=
     fun b hb z hz p => by
       rw [hΨd]
-      simp only [dif_pos (show b ∈ ball b₀ ε ∧ z ∈ ball (0 : Fin g → ℂ) ε from ⟨hb, hz⟩)]
+      simp only [dite_eq_left (show b ∈ ball b₀ ε ∧ z ∈ ball (0 : Fin g → ℂ) ε from ⟨hb, hz⟩)]
       exact hΨ₀ _ _ _ p
   have hcomp : ∀ b ∈ ball b₀ ε, ∀ z ∈ ball (0 : Fin g → ℂ) ε,
       (Ψ b z).comp (algebraMap R A) = ψ b := fun b hb z hz => RingHom.ext fun r => by

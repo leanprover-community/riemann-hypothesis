@@ -233,6 +233,6 @@ theorem inv_int : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (ρ : ℕ) (B : 
   have e := hpair 1
   rw [Matrix.mul_one, one_apply_eq, mul_one] at e
   rw [xZero, e, pairS, adj_mul, adj_single, Matrix.mul_assoc, ← Matrix.mul_assoc (gA J.W), ← Matrix.mul_assoc (adj J.d.jY),
-    HypDec.gram_YX, Matrix.one_mul, trace_single_mul, Matrix.single_apply, if_pos ⟨rfl, rfl⟩]
+    HypDec.gram_YX, Matrix.one_mul, trace_single_mul, Matrix.single_apply, ite_eq_left ⟨rfl, rfl⟩]
 
 end GlobalTheory.FinPl.InvStep

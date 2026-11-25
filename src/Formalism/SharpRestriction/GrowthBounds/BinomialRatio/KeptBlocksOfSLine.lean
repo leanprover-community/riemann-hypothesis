@@ -69,10 +69,10 @@ theorem pairC_le_sum {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {mu : Fin (2 
       rw [← h2, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases h1 : l.val < i
-      · rw [if_pos (by omega), if_pos h1, if_neg (fun h => by rw [h] at h1; simp at h1)]; ring
+      · rw [ite_eq_left (by omega), ite_eq_left h1, ite_eq_right (fun h => by rw [h] at h1; simp at h1)]; ring
       · by_cases h3 : l.val = i
-        · rw [if_pos (by omega), if_neg h1, if_pos (Fin.ext h3)]; ring
-        · rw [if_neg (by omega), if_neg h1, if_neg (fun h => h3 (by rw [h]))]; ring
+        · rw [ite_eq_left (by omega), ite_eq_right h1, ite_eq_left (Fin.ext h3)]; ring
+        · rw [ite_eq_right (by omega), ite_eq_right h1, ite_eq_right (fun h => h3 (by rw [h]))]; ring
     show ((pairC mu (i + 1) : ℤ) : ℝ) ≤ _
     rw [eC, e]
     have hOr : (0 : ℝ) ≤ ((pairO mu Ai ⟨i, by omega⟩ : ℤ) : ℝ) := by exact_mod_cast hO

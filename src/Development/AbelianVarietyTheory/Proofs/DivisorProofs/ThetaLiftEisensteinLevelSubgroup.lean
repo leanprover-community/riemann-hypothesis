@@ -79,14 +79,6 @@ variable {X : Matrix (Fin V.rank) (Fin V.rank) ℂ} {ψ : AddChar (AF D.host.F) 
   {μ : Measure (Mx D V.rank n)} {𝓕 : Set (Mx D V.rank n)} {ω : StdUnn.G D n →* Module.End ℂ (schwartzA θ V.rank n)}
 
 
-section
-
-variable (hψ : IsCharAF D.host.F ψ) (hθ : IsInfFam θ) (hμ : IsCovolOne (ratMx D V.rank n) μ 𝓕)
-  (hω : StdUnn.IsWeilSch ψ χ θ V μ ω)
-include hψ hθ hμ hω
-
-end
-
 end GlobalTheory.RegSch.CentreWeilComm
 
 end

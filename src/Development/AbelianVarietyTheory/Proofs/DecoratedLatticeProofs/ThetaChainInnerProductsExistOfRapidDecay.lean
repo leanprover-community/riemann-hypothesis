@@ -249,7 +249,7 @@ theorem metEx : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, MetEx D :=
         simp only [Lift.pet, LinearMap.mk₂'ₛₗ_apply]
         exact (hIP x y w w').2
   ·
-    push_neg at hsm
+    push Not at hsm
     obtain ⟨τ₀, hτ₀⟩ := hsm
     have htp : ∀ v : s.M.Vec, PiTensorProduct.tprod ℂ v = 0 := by
       intro v

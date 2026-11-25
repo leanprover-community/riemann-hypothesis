@@ -164,7 +164,7 @@ private theorem exists_eq_sum_vecMulVec_star {N : ℕ} (P : Matrix (Fin N) (Fin 
   conv_lhs => rw [hspec]
   rw [Unitary.conjStarAlgAut_apply, Matrix.sum_apply]
   simp only [Matrix.mul_apply, Matrix.diagonal_apply, mul_ite, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, vecMulVec_apply, Pi.star_apply, star_mul', Function.comp_apply]
+    Finset.mem_univ, ite_true, vecMulVec_apply, Pi.star_apply, star_mul', Function.comp_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   have hsq : ((Real.sqrt (hP.1.eigenvalues k) : ℝ) : ℂ) * (Real.sqrt (hP.1.eigenvalues k) : ℂ) =
       (RCLike.ofReal (hP.1.eigenvalues k) : ℂ) := by

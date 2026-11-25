@@ -282,9 +282,9 @@ theorem exists_block_solution {g : ℕ} (S : Finset (Fin g)) (A : Matrix (Fin g)
       have h1 := hT b k
       rw [hb] at h1
       by_cases hk : k ∈ S
-      · simp only [hk, if_true, Pi.zero_apply] at h1
+      · simp only [hk, ite_true, Pi.zero_apply] at h1
         simp [← h1]
-      · simp only [hk, if_false, Pi.zero_apply] at h1
+      · simp only [hk, ite_false, Pi.zero_apply] at h1
         simp [← h1]
     exact hpos.ne' this
   obtain ⟨b, hb⟩ := LinearMap.surjective_of_injective hinj

@@ -710,15 +710,15 @@ theorem edgeSum_sup_eq {κ : Type} [CommRing κ] {r k : ℕ} {g : GL (Fin r) κ}
   unfold edgeSum
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   by_cases h1 : supEdge i j <;> by_cases h2 : symEdge 0 k i j
-  · rw [if_pos h1, if_pos h2]
-  · rw [if_pos h1, if_neg h2]
+  · rw [ite_eq_left h1, ite_eq_left h2]
+  · rw [ite_eq_left h1, ite_eq_right h2]
     unfold supEdge at h1
     unfold symEdge at h2
     exact hg.2 i j (Nat.zero_le _) (by omega) (by omega)
   · unfold supEdge at h1
     unfold symEdge at h2
     omega
-  · rw [if_neg h1, if_neg h2]
+  · rw [ite_eq_right h1, ite_eq_right h2]
 
 theorem addCharHom_sym {κ : Type} [CommRing κ] {K : Type} [CommRing K] {r ρ k : ℕ} (ψ : AddChar κ K) (h : unipSym κ r ρ k) :
     (addCharHom ψ (symHom κ r ρ k) h : K) = ψ (edgeSum (symEdge ρ k) (h : GL (Fin r) κ)) := rfl
@@ -1044,9 +1044,9 @@ theorem edgeSum_split {k : ℕ} (h : k + 1 ≤ r) (g : tailUnip F r k) (E : Fin 
       edgeSum (fun a b => E a b ∧ a.val < k) (g : GL (Fin r) F) := by
     unfold edgeSum
     refine Fintype.sum_of_injective (Fin.castLE h) (Fin.castLE_injective h) _ _ (fun a ha => ?_) (fun a => ?_)
-    · refine Finset.sum_eq_zero fun b _ => if_neg fun hb => ha ⟨⟨a.val, by omega⟩, rfl⟩
+    · refine Finset.sum_eq_zero fun b _ => ite_eq_right fun hb => ha ⟨⟨a.val, by omega⟩, rfl⟩
     · refine Fintype.sum_of_injective (Fin.castLE h) (Fin.castLE_injective h) _ _ (fun b hb => ?_) (fun b => ?_)
-      · refine if_neg fun hE => hb ⟨⟨b.val, by have := h2 _ _ hE.1; have := hE.2; omega⟩, rfl⟩
+      · refine ite_eq_right fun hE => hb ⟨⟨b.val, by have := h2 _ _ hE.1; have := hE.2; omega⟩, rfl⟩
       · rw [corner_apply]
         refine if_congr ⟨fun hE => ⟨(h1 _ _).1 hE, ?_⟩, fun hE => (h1 _ _).2 hE.1⟩ rfl rfl
         have := h2 _ _ ((h1 _ _).1 hE)
@@ -1061,9 +1061,9 @@ theorem edgeSum_split {k : ℕ} (h : k + 1 ≤ r) (g : tailUnip F r k) (E : Fin 
   refine Finset.sum_congr rfl fun b _ => ?_
   by_cases hE : E a b
   · by_cases ha : a.val < k
-    · rw [if_pos hE, if_neg (fun t : tailEdge k a b => absurd t.2 (by omega)), if_pos ⟨hE, ha⟩, zero_add]
-    · rw [if_pos hE, if_pos (show tailEdge k a b from ⟨h2 _ _ hE, by omega⟩), if_neg (fun t => ha t.2), add_zero]
-  · rw [if_neg hE, if_neg (fun t => hE (h3 _ _ t)), if_neg (fun t => hE t.1), add_zero]
+    · rw [ite_eq_left hE, ite_eq_right (fun t : tailEdge k a b => absurd t.2 (by omega)), ite_eq_left ⟨hE, ha⟩, zero_add]
+    · rw [ite_eq_left hE, ite_eq_left (show tailEdge k a b from ⟨h2 _ _ hE, by omega⟩), ite_eq_right (fun t => ha t.2), add_zero]
+  · rw [ite_eq_right hE, ite_eq_right (fun t => hE (h3 _ _ t)), ite_eq_right (fun t => hE t.1), add_zero]
 
 theorem mem_unip_iff {k : ℕ} (h : k + 1 ≤ r) (g : GL (Fin r) F) : g ∈ unip F r ↔
     ∃ hg : g ∈ tailUnip F r k, (corner h ⟨g, hg⟩ : GL (Fin (k + 1)) F) ∈ unip F (k + 1) := by
@@ -1318,7 +1318,7 @@ theorem edgeSum_single (Ed : Fin r → Fin r → Prop) [DecidableRel Ed] (g : GL
     (h0 : ∀ i j, Ed i j → (i ≠ p ∨ j ≠ q) → (g : Matrix (Fin r) (Fin r) F) i j = 0) :
     edgeSum Ed g = (g : Matrix (Fin r) (Fin r) F) p q := by
   unfold edgeSum
-  rw [Finset.sum_eq_single p, Finset.sum_eq_single q, if_pos h]
+  rw [Finset.sum_eq_single p, Finset.sum_eq_single q, ite_eq_left h]
   · intro j _ hj
     split_ifs with e
     · exact h0 _ _ e (Or.inr hj)

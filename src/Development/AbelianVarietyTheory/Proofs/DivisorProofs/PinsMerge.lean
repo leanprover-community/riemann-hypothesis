@@ -447,7 +447,7 @@ theorem thAdIs_thAdOf (hV : R.models_HV) {J' : Subgroup (Bridge.Gf (Vc D i))} (h
   intro y x hy
   have hx : ∃ y, Place R i t h c0' y x := ⟨y, hy⟩
   have e := place_unique R i t h c0' hV hJ hr hx.choose_spec hy
-  exact (dif_pos hx).trans (congrArg (fun y => onQ (Wc D i) (R.thF i t y v₀)) e)
+  exact (dite_eq_left hx).trans (congrArg (fun y => onQ (Wc D i) (R.thF i t y v₀)) e)
 
 end Forms
 

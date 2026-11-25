@@ -81,8 +81,8 @@ theorem continuous_upSum {X : Type} [TopologicalSpace X] {ρ : ℕ} {T : X → M
   unfold upSum
   refine continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ => ?_
   by_cases h : j.1 = i.1 + 1
-  · simp only [h, if_true]; exact (continuous_apply j).comp ((continuous_apply i).comp hT)
-  · simp only [h, if_false]; exact continuous_const
+  · simp only [h, ite_true]; exact (continuous_apply j).comp ((continuous_apply i).comp hT)
+  · simp only [h, ite_false]; exact continuous_const
 
 theorem continuous_psiFlag {ψ : AddChar (AF D.host.F) ℂ} (hψ : Continuous ψ) {S S₀ : HSp D} {ρ : ℕ}
     (d : HypDec S S₀ ρ) : Continuous (psiFlag ψ d) := by

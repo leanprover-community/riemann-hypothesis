@@ -72,17 +72,17 @@ theorem rdU_of_isBC (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (σ' : c'.F →+
   by_cases hx : x ∈ ((U (σ'.comp (incF c c' hle))).X k).dom
   · letI : Algebra c.F (CAt σ') := (σ'.comp (incF c c' hle)).toAlgebra
     have e := h (CAt σ') (fun _ => rfl) ((unfBC hle U σ').un k ⟨x, hx⟩)
-    have e1 : rdU (unfBC hle U σ') f' k x = toC (evR Xo c' f' ((unfBC hle U σ').un k ⟨x, hx⟩)) := dif_pos hx
+    have e1 : rdU (unfBC hle U σ') f' k x = toC (evR Xo c' f' ((unfBC hle U σ').un k ⟨x, hx⟩)) := dite_eq_left hx
     rw [e1, e]
     refine Finset.sum_congr rfl fun j _ => ?_
     have e2 : rdU (U (σ'.comp (incF c c' hle))) (fs j) k x =
-      toC (evR Xo c (fs j) ((U (σ'.comp (incF c c' hle))).un k ⟨x, hx⟩)) := dif_pos hx
+      toC (evR Xo c (fs j) ((U (σ'.comp (incF c c' hle))).un k ⟨x, hx⟩)) := dite_eq_left hx
     rw [e2]
     rfl
-  · have e1 : rdU (unfBC hle U σ') f' k x = 0 := dif_neg hx
+  · have e1 : rdU (unfBC hle U σ') f' k x = 0 := dite_eq_right hx
     rw [e1]
     refine (Finset.sum_eq_zero fun j _ => ?_).symm
-    have e2 : rdU (U (σ'.comp (incF c c' hle))) (fs j) k x = 0 := dif_neg hx
+    have e2 : rdU (U (σ'.comp (incF c c' hle))) (fs j) k x = 0 := dite_eq_right hx
     rw [e2, mul_zero]
 
 theorem exists_rdU_eq_sum (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (σ' : c'.F →+* ℂ) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ)

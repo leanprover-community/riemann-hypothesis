@@ -189,7 +189,7 @@ theorem mem_stepGroup_map_iff : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Co
   have hK : (reGL (ixFin G t w j)).symm g ∈ KO (Kw w) (Ix (Fin D.R.r) (Fin D.R.t) j) ↔
       g ∈ KO (Kw w) (Fin ((locGrid G t w).rank (0, j))) := by
     rw [← reGL_mem_KO_iff (ixFin G t w j), MulEquiv.apply_symm_apply]
-  rw [hmap, stepGroup, if_pos hw, mem_iter_J, hK]
+  rw [hmap, stepGroup, ite_eq_left hw, mem_iter_J, hK]
   refine and_congr_right fun _ => and_congr ?_ ?_
   · constructor
     · intro h a b hab

@@ -65,7 +65,7 @@ theorem ChowFormSection.proof (h₁ : ConeDimOfChowForm.Statement) (h₂ : ConeD
   let g : Ideal (MvPolynomial (Fin n) F) → MvPolynomial (Fin e × Fin n) F :=
     fun W => if h : ∃ g, IsChowForm W e g then h.choose else 1
   have hg : ∀ W ∈ (divCycle I u).support, IsChowForm W e (g W) := fun W hW => by
-    simp only [g, dif_pos (hex W hW)]
+    simp only [g, dite_eq_left (hex W hW)]
     exact (hex W hW).choose_spec
   have hspan : ∀ W ∈ (divCycle I u).support, incIdeal W e = Ideal.span {g W} := fun W hW =>
     (isChowForm_iff.mp (hg W hW)).2

@@ -40,12 +40,6 @@ def corrOp {Z Y : Scheme.{0}} {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp ℂ} (c1 c2 : Y 
     (h1 : c1 ≫ s = s') (h2 : c2 ≫ s = s') (a b : ℕ) : hodgeH s a b →ₗ[ℂ] hodgeH s a b :=
   hodgeTrace h1 a b ∘ₗ hodgePull h2 a b
 
-section Eig
-
-variable {N : ℕ} {X : GenModel gb N} {k : ℕ} {S : Finset ℕ} {θ : (G.La →ₗ[G.O] G.La) → ℕ → ℂ} {a b : ℕ}
-
-end Eig
-
 end GlobalTheory.W2
 end -- clump:auto
 end -- clump:auto
@@ -222,12 +216,6 @@ variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p}
 variable (L : _root_.GlobalTheory.LKGeo.Link D G)
 
 end Away
-
-section Basic₂
-
-variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} (L : _root_.GlobalTheory.LKGeo.Link D G) {gb : GBase D.toG ℂ} {N : ℕ}
-
-end Basic₂
 
 end GlobalTheory.W2
 end -- clump:auto

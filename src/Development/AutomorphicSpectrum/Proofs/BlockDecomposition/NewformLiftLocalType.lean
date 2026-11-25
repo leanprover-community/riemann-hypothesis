@@ -82,13 +82,13 @@ theorem hecke_sum (k N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N)
     · convert h1 using 1
       funext m
       simp only [Function.comp_apply]
-      rw [if_pos (dvd_mul_right p m)]
+      rw [ite_eq_left (dvd_mul_right p m)]
       congr 3
       rw [eq_div_iff (Nat.cast_ne_zero.mpr hp.ne_zero)]
       push_cast
       ring
     · intro x hx
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨m, rfl⟩
       exact hx ⟨m, rfl⟩
   have h2 : HasSum ((fun m : ℕ => if p ∣ m then
@@ -97,7 +97,7 @@ theorem hecke_sum (k N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N)
     convert hf.exp w' using 1
     funext n
     simp only [Function.comp_apply]
-    rw [if_pos (dvd_mul_right p n), Nat.mul_div_cancel_left n hp.pos, hw']
+    rw [ite_eq_left (dvd_mul_right p n), Nat.mul_div_cancel_left n hp.pos, hw']
     congr 2
     push_cast
     ring
@@ -106,7 +106,7 @@ theorem hecke_sum (k N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N)
       ((f : ℍ → ℂ) w') := by
     refine (hinj.hasSum_iff ?_).mp h2
     intro x hx
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨m, rfl⟩
     exact hx ⟨m, rfl⟩
   have hR := ((hf.exp z).mul_left (a p)).sub (hw's.mul_left (χ p * (p : ℂ) ^ (k - 1)))
@@ -115,9 +115,9 @@ theorem hecke_sum (k N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N)
     intro m
     have h := he.2.2 p m hp
     by_cases hm : p ∣ m
-    · rw [if_pos hm] at h ⊢
+    · rw [ite_eq_left hm] at h ⊢
       linear_combination (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (m : ℂ) * (z : ℂ))) * h
-    · rw [if_neg hm] at h ⊢
+    · rw [ite_eq_right hm] at h ⊢
       linear_combination (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (m : ℂ) * (z : ℂ))) * h
   simp only [key] at hR
   exact hLm.unique (hR.mul_left (p : ℂ))
@@ -576,9 +576,9 @@ theorem f3a : Ad3.R.B0 → Ad3.R.HeckeSumLocalTranslates := by
       rw [ZMod.isUnit_iff_coprime]
       intro hc
       exact hpr.one_lt.ne' (Nat.eq_one_of_dvd_coprimes hc dvd_rfl hN)
-    rw [if_pos hN, hχ0]
+    rw [ite_eq_left hN, hχ0]
     ring
-  · rw [if_neg hN, phi_dg h0 hω hL hϖ hP hN ht' x]
+  · rw [ite_eq_right hN, phi_dg h0 hω hL hϖ hP hN ht' x]
     have hdet : 0 < (δ' * x).det.val := by
       rw [map_mul, Units.val_mul]; exact mul_pos hd2 hx
     rw [hL.real _ hdet, archLift_tri k f hd2 hx hδ'.2.1, hδ'.2.2.1, hδ'.1]

@@ -513,7 +513,7 @@ theorem theta_continuation : K4 := by
   let c : GA D A × GA D A → G D A.rank := fun x => if x ∈ K ×ˢ K then κ (io A x * p) else 1
   have hKK : IsCompact (K ×ˢ K) := hKc.prod hKc
   have hXX : X ×ˢ X ⊆ K ×ˢ K := Set.prod_mono hXK hXK
-  have hcK : ∀ x ∈ X ×ˢ X, c x = κ (io A x * p) := fun x hx => if_pos (hXX hx)
+  have hcK : ∀ x ∈ X ×ˢ X, c x = κ (io A x * p) := fun x hx => ite_eq_left (hXX hx)
   have hc0 : Continuous fun x : GA D A × GA D A => κ (io A x * p) :=
     hκc.comp ((continuous_io A).mul continuous_const)
   have hcm : Measurable c := Measurable.ite hKK.isClosed.measurableSet hc0.measurable measurable_const
@@ -521,8 +521,8 @@ theorem theta_continuation : K4 := by
     refine ((hKK.image hc0).union (isCompact_singleton (x := (1 : G D A.rank)))).closure_of_subset ?_
     rintro _ ⟨x, rfl⟩
     by_cases h : x ∈ K ×ˢ K
-    · exact Or.inl ⟨x, h, (if_pos h).symm⟩
-    · exact Or.inr (if_neg h)
+    · exact Or.inl ⟨x, h, (ite_eq_left h).symm⟩
+    · exact Or.inr (ite_eq_right h)
   have : IsFiniteMeasure ((m.prod m).restrict (X ×ˢ X)) :=
     isFiniteMeasure_restrict.2 ((measure_mono hXX).trans_lt hKK.measure_lt_top).ne
   have hwi : Integrable w ((m.prod m).restrict (X ×ˢ X)) :=

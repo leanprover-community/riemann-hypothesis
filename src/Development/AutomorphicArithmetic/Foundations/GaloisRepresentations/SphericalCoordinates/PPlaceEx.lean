@@ -1042,10 +1042,10 @@ private theorem sum_psiE {p : ℕ} [Fact p.Prime] (G : HTGroup p) (c : G.C) :
   rw [hf, Finset.sum_pair hne.symm]
   have h1 : psiE G v.embedding = G.psi v := by
     unfold psiE
-    rw [InfinitePlace.mk_embedding, if_pos rfl]
+    rw [InfinitePlace.mk_embedding, ite_eq_left rfl]
   have h2 : psiE G (ComplexEmbedding.conjugate v.embedding) = ((starRingEnd ℂ).mapMatrix).comp (G.psi v) := by
     unfold psiE
-    rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg hne.symm]
+    rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, ite_eq_right hne.symm]
   rw [h1, h2, RingHom.comp_apply]
   have h3 : Matrix.trace (((starRingEnd ℂ).mapMatrix) (G.psi v c)) = (starRingEnd ℂ) (Matrix.trace (G.psi v c)) := by
 
@@ -1169,7 +1169,7 @@ private theorem jt_indep {E F : Type} [Field E] [NumberField E] [Field F] [Numbe
       have hc : w.IsComplex := IsTotallyComplex.isComplex w
       exact (InfinitePlace.isComplex_iff.mp hc) (ComplexEmbedding.isReal_iff.mpr h)
     simp only [B, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
-    rw [if_neg hne]
+    rw [ite_eq_right hne]
   have key : ∀ c : 𝓞 E, ∑ σ : E →+* ℂ, (a σ - B (r.symm σ)) * σ (c : E) = 0 := by
     intro c
     simp only [sub_mul, Finset.sum_sub_distrib]
@@ -1248,9 +1248,9 @@ private theorem jt_S {p : ℕ} [Fact p.Prime] (D : Datum p) (c : 𝓞 D.F) :
     sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
   · refine Finset.sum_congr rfl fun τ h => ?_
-    rw [if_pos (Finset.mem_filter.mp h).2]; ring
+    rw [ite_eq_left (Finset.mem_filter.mp h).2]; ring
   · refine Finset.sum_congr rfl fun τ h => ?_
-    rw [if_neg (Finset.mem_filter.mp h).2]; ring
+    rw [ite_eq_right (Finset.mem_filter.mp h).2]; ring
 
 private theorem jt_lhs {p : ℕ} [Fact p.Prime] (D : Datum p) (τ₁ : D.F →+* ℂ) (c : 𝓞 D.F) :
     ∑ σ : D.F →+* ℂ, (Complex.I * (D.m : ℂ) * ((if σ = τ₁ then 2 else 0) -
@@ -1404,18 +1404,18 @@ theorem UpperTheory.trace_complex_structure_places :
       exact jt_ne D (h3.symm.trans hε)
     by_cases hw : v' = v
     · have h1' : σ' = τ₁ := (hvv.mp hw).resolve_right h2'
-      rw [hdiv, if_pos h1', if_neg h2', if_pos hε, if_pos hw, if_neg (not_not.mpr hε)]
+      rw [hdiv, ite_eq_left h1', ite_eq_right h2', ite_eq_left hε, ite_eq_left hw, ite_eq_right (not_not.mpr hε)]
       ring
     · have h1' : σ' ≠ τ₁ := fun h => hw (hvv.mpr (Or.inl h))
-      rw [hdiv, if_neg h1', if_neg h2', if_pos hε, if_neg hw, if_neg (not_not.mpr hε)]
+      rw [hdiv, ite_eq_right h1', ite_eq_right h2', ite_eq_left hε, ite_eq_right hw, ite_eq_right (not_not.mpr hε)]
       ring
   · have h1' : σ' ≠ τ₁ := fun h => hε (by rw [h, hτω])
     by_cases hw : v' = v
     · have h2' : σ' = (starRingEnd ℂ).comp τ₁ := (hvv.mp hw).resolve_left h1'
-      rw [hdiv, if_neg h1', if_pos h2', if_neg hε, if_pos hw, if_pos hε]
+      rw [hdiv, ite_eq_right h1', ite_eq_left h2', ite_eq_right hε, ite_eq_left hw, ite_eq_left hε]
       ring
     · have h2' : σ' ≠ (starRingEnd ℂ).comp τ₁ := fun h => hw (hvv.mpr (Or.inr h))
-      rw [hdiv, if_neg h1', if_neg h2', if_neg hε, if_neg hw, if_pos hε]
+      rw [hdiv, ite_eq_right h1', ite_eq_right h2', ite_eq_right hε, ite_eq_right hw, ite_eq_left hε]
       ring
 end -- clump:auto
 end -- clump:auto
@@ -1698,7 +1698,7 @@ theorem UpperTheory.Gal.W2.placeEx_of :
       by_cases hvv : v' = v
       · subst hvv
         simpa using hv
-      · rw [if_neg hvv]
+      · rw [ite_eq_right hvv]
         exact sig_zero L ha v v' hv hvv
     refine (UpperTheory.hermitian_congruent_and_positive_eigenvector_of_signature G.n (if v' = v then 1 else 0) (G.gram v' * G.psi v' ((β⁻¹ : G.Cˣ) : G.C))
       (G.gram v') (G.psiR v' Jc) (if v'.embedding (L.e D.ω) = D.ρc then Complex.I else -Complex.I) hH

@@ -14,13 +14,6 @@ open GlobalTheory.CompRat
 
 namespace GlobalTheory.DetFibre
 
-section Periods
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-
-end Periods
-
 section Marks
 
 open GlobalTheory.CharRead

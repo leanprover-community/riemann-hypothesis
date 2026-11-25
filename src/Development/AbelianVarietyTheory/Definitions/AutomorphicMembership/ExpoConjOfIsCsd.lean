@@ -119,8 +119,8 @@ theorem exists_iff {F : Type*} [Field F] [IsTotallyComplex F] {n : ℕ} (μ : (F
       intro τ
       by_cases e : g τ
       · have e' : ¬ g (ComplexEmbedding.conjugate τ) := fun x => (hg τ).1 x e
-        simp only [Q, if_pos e, if_neg e', cc]
-      · simp only [Q, if_neg e, if_pos ((hg τ).2 e), Multiset.map_map]
+        simp only [Q, ite_eq_left e, ite_eq_right e', cc]
+      · simp only [Q, ite_eq_right e, ite_eq_left ((hg τ).2 e), Multiset.map_map]
         simp
     refine ⟨⟨Q, fun τ => by rw [← hc τ, ← q1 τ, Multiset.card_map], fun τ p hp => ?_, qc⟩,
       ⟨fun τ z hz => ?_, fun τ => ?_⟩, q1⟩
@@ -605,14 +605,14 @@ end CM
 
 variable (E a) in
 def oneFn : Sm E a :=
-  ⟨fun _ => 1, fun _ => contDiffOn_const.congr (f := fun _ => 1) fun x hx => dif_pos (show IsUnit (Matrix.of x) from hx)⟩
+  ⟨fun _ => 1, fun _ => contDiffOn_const.congr (f := fun _ => 1) fun x hx => dite_eq_left (show IsUnit (Matrix.of x) from hx)⟩
 
 theorem oneFn_ne_zero : oneFn E a ≠ 0 := fun h => one_ne_zero (congrFun (congrArg Subtype.val h) 1)
 
 theorem lie_oneFn (X : Lie E a) : lie E a X (oneFn E a) = 0 := by
   refine Subtype.ext <| funext fun g => ?_
   have e : chart (oneFn E a).1 g =ᶠ[𝓝 (oneL E a)] fun _ => 1 :=
-    Filter.eventually_of_mem (isOpen_invSet.mem_nhds isUnit_one) fun x hx => dif_pos (show IsUnit (Matrix.of x) from hx)
+    Filter.eventually_of_mem (isOpen_invSet.mem_nhds isUnit_one) fun x hx => dite_eq_left (show IsUnit (Matrix.of x) from hx)
   change fderiv ℝ _ _ X = 0
   rw [e.fderiv_eq]
   simp
@@ -703,7 +703,7 @@ def infChar (π : CG E a) (τ : E →+* ℂ) : Multiset ℂ :=
 theorem HasInfChar.infChar_eq {π : CG E a} {τ : E →+* ℂ} {m : Multiset ℂ} (h : π.HasInfChar τ m) :
     π.infChar τ = m := by
   have h' : ∃ m, π.HasInfChar τ m := ⟨m, h⟩
-  rw [infChar, dif_pos h']
+  rw [infChar, dite_eq_left h']
   have h2 := h'.choose_spec
   generalize h'.choose = m' at h2
   induction π using Quotient.inductionOn

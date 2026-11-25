@@ -386,7 +386,7 @@ theorem exists_mvPolynomial_of_iteratedBackwardDifferenceVanish {ι : Type*} [Fi
     have h0 := isHomogeneous_diffTopPoly 0 g φ 0
     refine ⟨diffTopPoly 0 g φ 0, h0.totalDegree_le, fun n ↦ ?_, ?_⟩
     · rw [h.eval_diffTopPoly, h.form_apply _ (∑ i, n i • g i)]; simp
-    · rw [MvPolynomial.homogeneousComponent_of_mem h0, if_pos rfl]
+    · rw [MvPolynomial.homogeneousComponent_of_mem h0, ite_eq_left rfl]
   | succ d ih =>
     intro φ h
     obtain ⟨Q, hQ, hQ', -⟩ := ih _ h.sub_form_diag
@@ -394,7 +394,7 @@ theorem exists_mvPolynomial_of_iteratedBackwardDifferenceVanish {ι : Type*} [Fi
     refine ⟨Q + diffTopPoly (d + 1) g φ 0, (MvPolynomial.totalDegree_add _ _).trans
       (max_le (by omega) h0.totalDegree_le), fun n ↦ ?_, ?_⟩
     · rw [map_add (f := _), hQ', h.eval_diffTopPoly]; simp
-    · rw [map_add (f := _), MvPolynomial.homogeneousComponent_of_mem h0, if_pos rfl,
+    · rw [map_add (f := _), MvPolynomial.homogeneousComponent_of_mem h0, ite_eq_left rfl,
         MvPolynomial.homogeneousComponent_eq_zero _ _ (by omega), zero_add]
 
 theorem DiffVanish.exists_mvPolynomial {d : ℕ} {φ : G → K} (h : DiffVanish (d + 1) φ)

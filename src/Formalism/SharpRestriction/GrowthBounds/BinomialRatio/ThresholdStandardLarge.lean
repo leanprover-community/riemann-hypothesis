@@ -34,7 +34,7 @@ theorem pairSet_finite (hCD : ChainDimAt) {s : ℕ} (r A : ℕ) (Ai Ci : Fin s �
 
 theorem tl_symDim_nat (m g : ℕ) : symDim (m + 1) (g : ℤ) = sd m g := by
   unfold symDim sd
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
   simp
 
 
@@ -46,13 +46,13 @@ theorem pair_sum (hCD : ChainDimAt) (hNB : NumBranchAt) {s : ℕ} (r A : ℕ) (A
     rw [finsum_eq_sum_of_support_subset (s := (pairSet_finite hCD r A Ai Ci).toFinset)]
     · refine Finset.sum_congr rfl fun x hx => ?_
       have : IsPair A Ai Ci x.1 x.2 := by simpa [pairSet] using hx
-      rw [if_pos this]
+      rw [ite_eq_left this]
     · intro x hx
       by_contra hn
       apply hx
       have : ¬ IsPair A Ai Ci x.1 x.2 := by simpa [pairSet] using hn
       show (if IsPair A Ai Ci x.1 x.2 then wdim x.2 else 0) = 0
-      rw [if_neg this]
+      rw [ite_eq_right this]
   have hfin : (support fun x : (Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ) × (Fin r → ℤ) =>
       if IsPair A Ai Ci x.1 x.2 then wdim x.2 else 0).Finite := by
     refine (pairSet_finite hCD r A Ai Ci).subset fun x hx => ?_
@@ -60,7 +60,7 @@ theorem pair_sum (hCD : ChainDimAt) (hNB : NumBranchAt) {s : ℕ} (r A : ℕ) (A
     apply hx
     have : ¬ IsPair A Ai Ci x.1 x.2 := hn
     show (if IsPair A Ai Ci x.1 x.2 then wdim x.2 else 0) = 0
-    rw [if_neg this]
+    rw [ite_eq_right this]
   rw [e0, finsum_curry _ hfin]
   have e1 : (dimMM (r + 1) (A : ℤ) Ai Ci : ℚ) = ∏ a, (sdXi (r + 1) ((kLetters A Ai Ci).deg a) : ℚ) := by
     rw [prod_kLetters]
@@ -72,17 +72,17 @@ theorem pair_sum (hCD : ChainDimAt) (hNB : NumBranchAt) {s : ℕ} (r A : ℕ) (A
   unfold chainSum
   refine finsum_congr fun mu => ?_
   by_cases hmu : IsChain (kLetters A Ai Ci) mu
-  · rw [if_pos ⟨hmu, fun k => k.elim0⟩, hNB r _ (IsChain.anti_last hmu)]
+  · rw [ite_eq_left ⟨hmu, fun k => k.elim0⟩, hNB r _ (IsChain.anti_last hmu)]
     refine finsum_congr fun lam => ?_
     by_cases hl : Inter (mu (Fin.last _)) lam
     · have hl' : ∀ i : Fin r, mu (Fin.last _) i.succ ≤ lam i ∧ lam i ≤ mu (Fin.last _) i.castSucc := hl
-      rw [if_pos hl', if_pos (show IsPair A Ai Ci mu lam from ⟨hmu, hl⟩)]
+      rw [ite_eq_left hl', ite_eq_left (show IsPair A Ai Ci mu lam from ⟨hmu, hl⟩)]
     · have hl' : ¬ ∀ i : Fin r, mu (Fin.last _) i.succ ≤ lam i ∧ lam i ≤ mu (Fin.last _) i.castSucc := hl
-      rw [if_neg hl', if_neg (show ¬ IsPair A Ai Ci mu lam from fun h => hl h.2)]
-  · rw [if_neg (fun h => hmu h.1)]
+      rw [ite_eq_right hl', ite_eq_right (show ¬ IsPair A Ai Ci mu lam from fun h => hl h.2)]
+  · rw [ite_eq_right (fun h => hmu h.1)]
     apply finsum_eq_zero_of_forall_eq_zero
     intro lam
-    rw [if_neg (show ¬ IsPair A Ai Ci mu lam from fun h => hmu h.1)]
+    rw [ite_eq_right (show ¬ IsPair A Ai Ci mu lam from fun h => hmu h.1)]
 
 open Classical in
 theorem kept_sum (hCD : ChainDimAt) (p : ℕ) (La : ℝ) {s : ℕ} (r : ℕ) [NeZero r] (A : ℕ) (Ai Ci : Fin s → ℕ) :
@@ -93,14 +93,14 @@ theorem kept_sum (hCD : ChainDimAt) (p : ℕ) (La : ℝ) {s : ℕ} (r : ℕ) [Ne
   · refine Finset.sum_congr rfl fun x hx => ?_
     have : IsPair A Ai Ci x.1 x.2 := by simpa [pairSet] using hx
     by_cases hk : KeptPair p La Ai Ci x.1 x.2
-    · rw [if_pos ⟨this, hk⟩, if_pos hk]
-    · rw [if_neg (fun h => hk h.2), if_neg hk]
+    · rw [ite_eq_left ⟨this, hk⟩, ite_eq_left hk]
+    · rw [ite_eq_right (fun h => hk h.2), ite_eq_right hk]
   · intro x hx
     by_contra hn
     apply hx
     have : ¬ IsPair A Ai Ci x.1 x.2 := by simpa [pairSet] using hn
     show (if IsPair A Ai Ci x.1 x.2 ∧ KeptPair p La Ai Ci x.1 x.2 then wdim x.2 else 0) = 0
-    rw [if_neg (fun h => this h.1)]
+    rw [ite_eq_right (fun h => this h.1)]
 
 
 open Classical in

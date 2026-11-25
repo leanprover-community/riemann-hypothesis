@@ -42,13 +42,13 @@ theorem factorization_condN_le {l : ℕ} (hl : l.Prime) :
   by_cases h1 : H.q = l
   · have hs := factorization_eq_zero H (h1 ▸ q_not_mem H)
     have h2 : H.d ≠ l := by omega
-    rw [if_pos h1, if_neg h2, hs]
+    rw [ite_eq_left h1, ite_eq_right h2, hs]
     exact ⟨by simp, fun h => by omega⟩
   · by_cases h2 : H.d = l
     · have hs := factorization_eq_zero H (h2 ▸ d_not_mem H)
-      rw [if_neg h1, if_pos h2, hs]
+      rw [ite_eq_right h1, ite_eq_left h2, hs]
       exact ⟨by simp, fun h => by omega⟩
-    · rw [if_neg h1, if_neg h2]
+    · rw [ite_eq_right h1, ite_eq_right h2]
       exact ⟨by simp, fun _ => by simp⟩
 
 theorem image_mem_Kur_sup {l : ℕ} [Fact l.Prime] (J : H.E →+* Om l) {s : ℕ} (hs : H.condN.factorization l ≤ s) (x : H.E) :

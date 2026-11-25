@@ -127,7 +127,7 @@ theorem capScalar (h3 : PI.HwIrred) {n N : ℕ} (h : n + 1 = N) (lam : DomWeight
       constructor
       · intro a
         have e := hφpol a a _ hext
-        rw [if_pos rfl, eq_sub_iff_add_eq] at e
+        rw [ite_eq_left rfl, eq_sub_iff_add_eq] at e
         rw [← e]
         show φ (pol ℂ a a (hw ℂ le_rfl mu.natW)) + _ = _
         rw [io_pol_diag_hw _ (io_natW_anti mu), map_smul, io_natW_cast]
@@ -139,7 +139,7 @@ theorem capScalar (h3 : PI.HwIrred) {n N : ℕ} (h : n + 1 = N) (lam : DomWeight
         ring
       · intro a b hab
         have e := hφpol a b _ hext
-        rw [if_neg (ne_of_lt hab), sub_zero] at e
+        rw [ite_eq_right (ne_of_lt hab), sub_zero] at e
         rw [← e, pol_eq_rowDiv]
         show φ (rowDiv ℂ a b 1 (hw ℂ le_rfl mu.natW)) = 0
         rw [Formalism.GradedWeylDivisibility.hwRaise ℂ n n le_rfl mu.natW a b 1 hab le_rfl, map_zero]

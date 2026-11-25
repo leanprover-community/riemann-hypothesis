@@ -70,12 +70,12 @@ theorem GlobalTheory.CovRep.rep_of_basis : ∀ (l : ℕ) [Fact l.Prime] (Γ : Ty
   have hcrd : ∀ x ∈ T, x = ∑ s, zOm l (crd x s) • bb s := by
     intro x hx
     have h := hcoord x hx
-    simp only [crd, dif_pos h]
+    simp only [crd, dite_eq_left h]
     exact h.choose_spec
   have hcrd_eq : ∀ z : Fin d' → ℤ_[l], crd (∑ s, zOm l (z s) • bb s) = z := by
     intro z
     have h : ∃ z' : Fin d' → ℤ_[l], ∑ s, zOm l (z s) • bb s = ∑ s, zOm l (z' s) • bb s := ⟨z, rfl⟩
-    simp only [crd, dif_pos h]
+    simp only [crd, dite_eq_left h]
     exact (coord_unique hli h.choose_spec).symm
   let Mf : Γ → Matrix (Fin d') (Fin d') ℤ_[l] := fun g => Matrix.of fun s j => crd (GlobalTheory.TraceConjugationCover.tup ρs g * bb j) s
   have hMf : ∀ g j, GlobalTheory.TraceConjugationCover.tup ρs g * bb j = ∑ s, zOm l (Mf g s j) • bb s :=

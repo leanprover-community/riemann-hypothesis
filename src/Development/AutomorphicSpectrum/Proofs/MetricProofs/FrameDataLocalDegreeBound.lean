@@ -26,9 +26,9 @@ theorem continuous_upV (v : (Σ k, ιk k) → (Σ k, ι k)) : Continuous (upV v)
   refine continuous_pi fun q => ?_
   unfold upV
   by_cases h : ∃ q', v q' = q
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact continuous_apply _
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact continuous_const
 
 theorem continuous_pBase (M : FlagModel y Ψ N j) (v : (Σ k, ιk k) → (Σ k, ι k)) : Continuous (pBase M v) := by

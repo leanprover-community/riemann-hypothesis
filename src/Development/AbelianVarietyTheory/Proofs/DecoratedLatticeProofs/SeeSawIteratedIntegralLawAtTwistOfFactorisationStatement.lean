@@ -503,25 +503,25 @@ theorem exists_eq_sum_indicator {G : Type} [Group G] {M : Type} [AddCommMonoid M
     have hrep : ∀ t, dc R K t = dc R K t0 → rep t = hS.choose := by
       intro t ht
       have hSt : S t = S t0 := by simp only [S, ht]
-      simp only [rep, hSt, dif_pos hS]
+      simp only [rep, hSt, dite_eq_left hS]
     have hxt1 : x ∈ dc R K hS.choose := by rw [ht1dc]; exact hxt0
     rw [Finset.sum_eq_single hS.choose]
     · have hc1 : c hS.choose = φ hS.choose := by
         simp only [c]
-        rw [if_pos ⟨ht1T, hrep _ ht1dc⟩]
+        rw [ite_eq_left ⟨ht1T, hrep _ ht1dc⟩]
       rw [Set.indicator_of_mem hxt1, hc1, hinv hxt1]
     · intro t _ hne
       by_cases hxt : x ∈ dc R K t
       · have hc0 : c t = 0 := by
           simp only [c]
-          rw [if_neg]
+          rw [ite_eq_right]
           rintro ⟨-, h⟩
           exact hne (h.symm.trans (hrep t (hdc_eq hxt hxt0)))
         rw [Set.indicator_of_mem hxt, hc0]
       · rw [Set.indicator_of_notMem hxt]
     · intro h
       exact absurd ht1T h
-  · push_neg at hx
+  · push Not at hx
     have hφ : φ x = 0 := by
       by_contra h
       obtain ⟨t, ht, hxt⟩ := hT x h
@@ -848,7 +848,7 @@ theorem iterated_integral_product_groups : ∀ (A₁ : Type) [Group A₁] [Topol
     (fun r hr x => funext fun y => hfl x y r hr) (fun κ hκ x => funext fun y => hfx x y κ hκ)
     (fun x hx => by
       obtain ⟨y, hy⟩ : ∃ y, f x y ≠ 0 := by
-        by_contra h; push_neg at h; exact hx (funext h)
+        by_contra h; push Not at h; exact hx (funext h)
       obtain ⟨t, ht, r, hr, κ, hκ, e⟩ := hT x y hy
       exact ⟨t, ht, r, hr, κ, hκ, e⟩)
   have hY : ∀ t, ∃ (U : Finset (A₂ × B₂)) (d : A₂ × B₂ → ℂ),

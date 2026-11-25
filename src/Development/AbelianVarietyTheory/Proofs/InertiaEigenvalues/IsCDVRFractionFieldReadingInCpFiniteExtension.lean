@@ -107,8 +107,8 @@ def absOfVal (c : ℝ) (hc0 : 0 < c) (hc1 : c ≤ 1) : AbsoluteValue K ℝ where
     have px := zpow_pos hc0 (vV V x)
     have py := zpow_pos hc0 (vV V y)
     by_cases hxy : x + y = 0
-    · simp only [hxy, hx, hy, if_true, if_false]; positivity
-    simp only [hxy, hx, hy, if_false]
+    · simp only [hxy, hx, hy, ite_true, ite_false]; positivity
+    simp only [hxy, hx, hy, ite_false]
     rcases min_le_iff.1 (min_le_vV_add (V := V) hx hy hxy) with h | h
     · have := zpow_le_zpow_right_of_le_one₀ hc0 hc1 h
       linarith

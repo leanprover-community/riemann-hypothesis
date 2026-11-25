@@ -238,8 +238,8 @@ theorem cb_zero (r : Z ⟶ E.B.left) (z : Z) (j j' : E.ChartIdx) : cb E 0 r z j 
 theorem cb_basis (k) (r : Z ⟶ E.B.left) (z : Z) (j j' : E.ChartIdx) :
     cb E (E.basis k) r z j j' = tr (E.O (E.basis k)).L r z (j k) (j' k) := by
   classical
-  rw [cb, Finset.prod_eq_single k (fun k' _ h => by rw [E.basis.repr_self_apply, if_neg h.symm, zpow_zero])
-    (fun h => absurd (Finset.mem_univ k) h), E.basis.repr_self_apply, if_pos rfl, zpow_one]
+  rw [cb, Finset.prod_eq_single k (fun k' _ h => by rw [E.basis.repr_self_apply, ite_eq_right h.symm, zpow_zero])
+    (fun h => absurd (Finset.mem_univ k) h), E.basis.repr_self_apply, ite_eq_left rfl, zpow_one]
 
 theorem cb_self (χ : E.X) (r : Z ⟶ E.B.left) (z : Z) (j : E.ChartIdx) (h : r z ∈ E.chart j) :
     cb E χ r z j j = 1 :=
@@ -405,7 +405,7 @@ theorem exists_term {w : ∀ l, Γ(Φ.E.B.left, Φ.N₀.U l)} (h : Fam Φ.N₀.U
   · rintro β ⟨l, hl⟩
     by_contra hn
     exact hl ((WtPart.cf_mono (Φ.D.coord (Φ.ch l) (Φ.N₀.U l) (Φ.aff l) (Φ.le l)) β α _).trans
-      (if_neg fun e => hn e.symm))
+      (ite_eq_right fun e => hn e.symm))
 
 theorem mem_locus_term {φ : (Φ.H d).Sec} {w : ∀ l, Γ(Φ.E.B.left, Φ.N₀.U l)} (h : ∀ l : Φ.N₀.ι, φ.f l = term Φ d α l (w l))
     (z : Φ.G.left) (l : Φ.N₀.ι) (hl : Φ.D.q.left z ∈ Φ.N₀.U l) :

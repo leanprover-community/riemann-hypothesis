@@ -137,15 +137,6 @@ theorem ohat_zero : (0 : FiniteAdeleRing (𝓞 F) F) ∈ Ohat F :=
     show (0 : v.adicCompletion F) ∈ _
     exact zero_mem _
 
-section Coord
-
-variable {E : Type} [Field E] [NumberField E] [Algebra F E]
-variable {ι : Type} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι F E)
-
-variable {b}
-
-end Coord
-
 end PI.IwaMeasEx.Wau
 
 end

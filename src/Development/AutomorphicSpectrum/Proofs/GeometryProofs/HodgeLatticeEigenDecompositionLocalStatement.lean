@@ -347,7 +347,7 @@ theorem adapted_frames : ∀ (E : Type) [Field E] [NumberField E] (Ω Vs : Type)
     have h3 : ∑ k, ((AΩ * BΩ) i k - (1 : Matrix (Fin (p + q)) (Fin (p + q)) Ω) i k) •
         HT.eigProj ρH σ (t k) = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, ← h1, h2, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
     exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 (HodgeDeterminantLattice.linearIndependent_eigProj σ hfree) _ h3 k)
   have hAB : Matrix.of A * Matrix.of B = 1 := by
     ext i k

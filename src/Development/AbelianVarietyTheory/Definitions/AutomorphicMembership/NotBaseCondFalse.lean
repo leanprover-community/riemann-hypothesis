@@ -116,12 +116,6 @@ theorem Step.of_evLgG (h : EvLgG q) : Step KP p q := EvG.imp h fun _ _ _ _ _ H =
 
 end Steps
 
-section Tests
-variable (hH : DC.HostExQ) (hLP : LevelPrime) (h2b : StandardLattice.SiegelMassRatioCM)
-include hH hLP h2b
-
-end Tests
-
 end GlobalTheory.Mem.Top.GroupRetwisting
 
 end

@@ -30,19 +30,19 @@ theorem delta_cone_add (i : ι) (c : Finset ι → E) :
   funext t
   simp only [Pi.add_apply, GlobalTheory.DI.delta, cone]
   by_cases hi : i ∈ t
-  · rw [if_pos hi, add_zero, Finset.sum_eq_single i]
-    · rw [if_neg (by simp), Finset.insert_erase hi, smul_smul, cubeSign_mul_self, one_smul]
+  · rw [ite_eq_left hi, add_zero, Finset.sum_eq_single i]
+    · rw [ite_eq_right (by simp), Finset.insert_erase hi, smul_smul, cubeSign_mul_self, one_smul]
     · intro j _ hji
-      rw [if_pos (Finset.mem_erase.2 ⟨Ne.symm hji, hi⟩), smul_zero]
+      rw [ite_eq_left (Finset.mem_erase.2 ⟨Ne.symm hji, hi⟩), smul_zero]
     · intro h; exact absurd hi h
-  · rw [if_neg hi, Finset.sum_insert hi, Finset.erase_insert hi, smul_add, smul_smul, cubeSign_mul_self,
+  · rw [ite_eq_right hi, Finset.sum_insert hi, Finset.erase_insert hi, smul_add, smul_smul, cubeSign_mul_self,
       one_smul, Finset.smul_sum]
     have key : ∀ j ∈ t, cubeSign t j • (if i ∈ t.erase j then (0 : E) else
         cubeSign (insert i (t.erase j)) i • c (insert i (t.erase j))) +
         cubeSign (insert i t) i • cubeSign (insert i t) j • c ((insert i t).erase j) = 0 := by
       intro j hj
       have hij : i ≠ j := fun h => hi (h ▸ hj)
-      rw [if_neg (fun h => hi (Finset.mem_of_mem_erase h)), ← Finset.erase_insert_of_ne hij, smul_smul,
+      rw [ite_eq_right (fun h => hi (Finset.mem_of_mem_erase h)), ← Finset.erase_insert_of_ne hij, smul_smul,
         smul_smul, ← add_smul]
       have h1 := cubeSign_mul_erase (t := insert i t) (i := i) (j := j) (Finset.mem_insert_self _ _)
         (Finset.mem_insert_of_mem hj) hij
@@ -231,12 +231,12 @@ private lemma cone_exact {σ V : Type} [LinearOrder σ] [AddCommGroup V] [Module
         (Submodule.mem_pi.1 hC) (insert j s) (Set.mem_univ _)
       rw [Finset.card_insert_of_notMem hs] at h1
       by_cases hcard : (s.card : ℤ) = n - 1
-      · rw [if_pos hcard]
-        rw [if_pos (by push_cast; omega)] at h1
-        simp only [GlobalTheory.MonoCech.cone, if_neg hs]
+      · rw [ite_eq_left hcard]
+        rw [ite_eq_left (by push_cast; omega)] at h1
+        simp only [GlobalTheory.MonoCech.cone, ite_eq_right hs]
         exact zsmul_mem (hA s h1) _
-      · rw [if_neg hcard]
-        rw [if_neg (by push_cast; omega)] at h1
+      · rw [ite_eq_right hcard]
+        rw [ite_eq_right (by push_cast; omega)] at h1
         simp [GlobalTheory.MonoCech.cone, hs, (Submodule.mem_bot ℂ).1 h1]
   · have := GlobalTheory.MonoCech.delta_cone_add j c
     rw [hdc, GlobalTheory.MonoCech.cone_zero, add_zero] at this

@@ -792,7 +792,7 @@ theorem change_gen {F F' : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) (hF'
     rw [minorIJ_mul]; simp [hh]
   simp only [e3] at e1
   rw [eT, detFac_mul _ bR, Matrix.mul_assoc] at e2
-  simp only [hh, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at e2
+  simp only [hh, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at e2
   linear_combination e2 - detFac j p.2 R * e1
 
 theorem change_base {F F' : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) (hF' : M.IsFrame F') {p : Ψ × Fin N}
@@ -832,10 +832,10 @@ theorem left_inv_val {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {w : 
   rw [Finset.sum_comm]
   simp only [← Finset.sum_mul]
   rw [Finset.sum_eq_single I]
-  · rw [rel I hI, if_pos rfl, one_mul]
+  · rw [rel I hI, ite_eq_left rfl, one_mul]
   · intro I' _ hne
     by_cases h : IsStepRows N j p.2 I'
-    · rw [rel I' h, if_neg hne.symm, zero_mul]
+    · rw [rel I' h, ite_eq_right hne.symm, zero_mul]
     · rw [minor_stepCols_eq_zero M.j_le f I' bf h, mul_zero]
   · simp
 
@@ -982,7 +982,7 @@ theorem sum_dy (p : Ψ × Fin N) (L : K → ℝ) :
   have e1 : ∑ k' : NonPluckerBlocks M.blk, (M.b p k' : ℝ) * L k'.1 =
       ∑ k, if h : ∀ p', M.blk p' ≠ some k then (M.b p ⟨k, h⟩ : ℝ) * L k else 0 :=
     Fintype.sum_of_injective Subtype.val Subtype.val_injective _ _
-      (fun k hk => dif_neg fun h => hk ⟨⟨k, h⟩, rfl⟩) (fun k => by rw [dif_pos k.2])
+      (fun k hk => dite_eq_right fun h => hk ⟨⟨k, h⟩, rfl⟩) (fun k => by rw [dite_eq_left k.2])
   have e2 : (M.blk p).elim 0 L = ∑ k, if M.blk p = some k then L k else 0 := by
     cases M.blk p with
     | none => simp
@@ -991,8 +991,8 @@ theorem sum_dy (p : Ψ × Fin N) (L : K → ℝ) :
   refine Finset.sum_congr rfl fun k _ => ?_
   unfold FlagModel.dy
   by_cases h : ∀ p', M.blk p' ≠ some k
-  · rw [dif_pos h, dif_pos h, if_neg (h p)]; simp
-  · rw [dif_neg h, dif_neg h]; split_ifs <;> simp
+  · rw [dite_eq_left h, dite_eq_left h, ite_eq_right (h p)]; simp
+  · rw [dite_eq_right h, dite_eq_right h]; split_ifs <;> simp
 
 theorem Rel.smul
     (hgood : ∀ F τ w G, Gr F τ w G → M.IsFrame F ∧ w ∈ mcPts (mCoordIdeal M.x) ∧ M.GoodAt F (mCoordIdeal w) ∧
@@ -1063,7 +1063,7 @@ theorem exists_hom
     if h : ∃ r, Rel M Gr p z r then Real.exp h.choose else refNorm (M.dy p) z
   have fr : ∀ z r, Rel M Gr p z r → f z = Real.exp r := fun z r h => by
     have hex : ∃ r, Rel M Gr p z r := ⟨r, h⟩
-    simp only [f, dif_pos hex]
+    simp only [f, dite_eq_left hex]
     rw [Rel.unique hgood hcomp hex.choose_spec h]
   refine ⟨⟨M.dy p, f, fun z hz => ?_, fun c z hc => ?_⟩, rfl, fun F w G hG z hz ho hn h bh dh => ?_, fun z => ?_⟩
   · simp only [f]
@@ -1083,7 +1083,7 @@ theorem exists_hom
           funext q; simp [torusSmul, hc]
         rw [e] at this
         exact h ⟨_, this⟩
-      simp only [f, dif_neg h, dif_neg h']
+      simp only [f, dite_eq_right h, dite_eq_right h']
       exact refNorm_smul _ _ _
   · obtain ⟨c, hc, e⟩ := ho
     have hG' : Gr F p.1 (basePart M.blk z) G := by
@@ -1108,7 +1108,7 @@ theorem exists_hom
           funext q; simp [conjVec]
         rw [e] at this
         exact h ⟨_, this⟩
-      simp only [f, dif_neg h, dif_neg h']
+      simp only [f, dite_eq_right h, dite_eq_right h']
       simp [refNorm, conjVec]
 
 end PositivityTheory.Xgp.c_bm_exists_hom

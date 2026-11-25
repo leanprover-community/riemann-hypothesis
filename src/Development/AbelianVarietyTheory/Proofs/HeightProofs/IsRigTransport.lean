@@ -57,12 +57,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj Matrix
 
-section Data
-
-variable {R : Type} [CommRing R] [IsDomain R]
-
-end Data
-
 section Transport
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {L M : LB A.left} {g : ℕ}

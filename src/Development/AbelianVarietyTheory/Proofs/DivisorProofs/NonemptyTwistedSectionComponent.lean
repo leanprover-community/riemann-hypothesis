@@ -143,7 +143,7 @@ theorem twSec_keyRoot_with_evaluation : ∀ (E : Type) [Field E] [NumberField E]
   have hnorm := fun σ : c.F →+* ℂ => fun z (hz : z ∈ framesOn (U (goodOf c σ)) Z) =>
     homN_root E H Dw l Xo c (goodOf c σ) r (U (goodOf c σ)) x Z ρ K a (C σ) ha (hCpos σ) haK (hCeq σ) z hz
       ((hP.1 σ).2 z hz)
-  have hgood : ∀ σ, GoodEmb c σ → goodOf c σ = σ := fun σ h => if_pos h
+  have hgood : ∀ σ, GoodEmb c σ → goodOf c σ = σ := fun σ h => ite_eq_left h
   have hmono : ∀ (m : ℤ) (τ : E →+* ℂ) (i j : ℕ), i ≤ j → j < Dw.mult τ →
       (wtOf Dw 0 m).1 (τ, j) ≤ (wtOf Dw 0 m).1 (τ, i) := fun m τ i j hij hj => by
     rw [hwt m τ i (lt_of_le_of_lt hij hj), hwt m τ j hj]

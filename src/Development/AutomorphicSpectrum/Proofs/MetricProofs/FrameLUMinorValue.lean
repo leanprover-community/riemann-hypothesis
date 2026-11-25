@@ -59,10 +59,10 @@ theorem minorIJ_insert_erase_of_isLowerUni {X : Matrix (Fin N) (Fin N) ℂ} (hX 
   have hfmono : StrictMono f := by
     intro i j hij
     have hi : i ≠ Fin.last n := ne_of_lt (lt_of_lt_of_le hij (Fin.le_last j))
-    simp only [f, if_neg hi]
+    simp only [f, ite_eq_right hi]
     by_cases hj : j = Fin.last n
-    · rw [if_pos hj]; exact (hlt' i hi).trans hlt
-    · rw [if_neg hj]; exact eC.strictMono hij
+    · rw [ite_eq_left hj]; exact (hlt' i hi).trans hlt
+    · rw [ite_eq_right hj]; exact eC.strictMono hij
   have hfmem : ∀ k, f k ∈ insert a' (C.erase b') := by
     intro k
     simp only [f]
@@ -76,15 +76,15 @@ theorem minorIJ_insert_erase_of_isLowerUni {X : Matrix (Fin N) (Fin N) ℂ} (hX 
   · have h1 : ∀ k : Fin n, X.submatrix f eC k.castSucc k.castSucc = 1 := by
       intro k
       show X (f k.castSucc) (eC k.castSucc) = 1
-      simp only [f, if_neg (Fin.castSucc_lt_last k).ne]
+      simp only [f, ite_eq_right (Fin.castSucc_lt_last k).ne]
       exact hX.1 _
     rw [Fin.prod_univ_castSucc, Finset.prod_eq_one (fun k _ => h1 k), one_mul]
     show X (if Fin.last n = Fin.last n then a' else eC (Fin.last n)) (eC (Fin.last n)) = X a' b'
-    rw [if_pos rfl, hlast]
+    rw [ite_eq_left rfl, hlast]
   · intro i j hij
     have hij' : i < j := OrderDual.toDual_lt_toDual.mp hij
     have hi : i ≠ Fin.last n := ne_of_lt (lt_of_lt_of_le hij' (Fin.le_last j))
-    simp only [Matrix.submatrix_apply, f, if_neg hi]
+    simp only [Matrix.submatrix_apply, f, ite_eq_right hi]
     exact hX.2 _ _ (eC.strictMono hij')
 
 theorem mem_stepCols_stepOf (N j : ℕ) (c : Fin N) :

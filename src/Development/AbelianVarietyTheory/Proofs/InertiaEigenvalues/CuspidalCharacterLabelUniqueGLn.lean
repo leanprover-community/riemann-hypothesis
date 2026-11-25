@@ -121,7 +121,7 @@ theorem card_le_card_mul_card_support :
     simp only [hf, Finset.sum_mul, mul_assoc]
     rw [Finset.sum_comm]
     simp only [← Finset.mul_sum, sum_unitsChar_mul_inv, mul_ite, mul_zero]
-    rw [Finset.sum_ite_eq' S η, if_pos hη, mul_comm]
+    rw [Finset.sum_ite_eq' S η, ite_eq_left hη, mul_comm]
   have hc : ∀ η ∈ S, (Fintype.card C : ℝ) * ‖c η‖ ≤ T.card * ‖f z₀‖ := by
     intro η hη
     have h1 : ‖(Fintype.card C : ℂ) * c η‖ = (Fintype.card C : ℝ) * ‖c η‖ := by

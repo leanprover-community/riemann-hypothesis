@@ -500,7 +500,7 @@ theorem noFrame (_ : IdemEx) : NoFrame := by
     refine ⟨{v}, fun S hS e he z hz hh => hv ?_⟩
     refine congrOver_of_free _ (evFin D.host.F v) ε b₀ hb ?_ hz hh.1 hh.2.2.2
     have := he.2 v
-    rw [if_pos (hS (Finset.mem_singleton_self v))] at this
+    rw [ite_eq_left (hS (Finset.mem_singleton_self v))] at this
     exact this
   · push Not at h
     obtain ⟨w, hw⟩ := h

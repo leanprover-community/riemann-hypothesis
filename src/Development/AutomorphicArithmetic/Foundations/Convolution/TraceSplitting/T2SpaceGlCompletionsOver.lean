@@ -489,9 +489,9 @@ theorem UpperTheory.ConvolutionTheory.Loc.nearUp :
     simp only [id, mul_inv_rev, mul_assoc]
   have h1 : ∀ z ∈ U, φ (p z) = a z := fun z hz => by
     have h : ∃ z' ∈ U, p z' = p z := ⟨z, hz, rfl⟩
-    simp only [φ, dif_pos h]
+    simp only [φ, dite_eq_left h]
     exact wd _ h.choose_spec.1 _ hz h.choose_spec.2
-  have h2 : ∀ g, g ∉ p '' U → φ g = 0 := fun g h => dif_neg h
+  have h2 : ∀ g, g ∉ p '' U → φ g = 0 := fun g h => dite_eq_right h
   have ho : IsOpen (p '' U) := by
     rw [isOpen_iff_mem_nhds]
     rintro _ ⟨⟨κ, u⟩, ⟨hκ, hu⟩, rfl⟩
@@ -1008,25 +1008,25 @@ theorem locUp : UpperTheory.ConvolutionTheory.T.LocUp := by
     UF := fun v => if v ∈ S then UF₁ v else if v = q then GLnLocal.iwahori (v.adicCompletion F) n
       else GLnLocal.integralGL (v.adicCompletion F) n
     test := fun v hv => by
-      simp only [if_pos hv]
+      simp only [ite_eq_left hv]
       exact (hP v).1
     lev := fun v hv => by
-      simp only [if_pos hv]
+      simp only [ite_eq_left hv]
       exact (hP v).2.1
     inv := fun v hv => by
-      simp only [if_pos hv]
+      simp only [ite_eq_left hv]
       exact (hP v).2.2.1
     mat := fun v hv => by
-      simp only [if_pos hv]
+      simp only [ite_eq_left hv]
       exact (hP v).2.2.2.1
     at_q := by
-      simp only [if_neg hq, dif_pos, if_true]
+      simp only [ite_eq_right hq, dite_eq_left, ite_true]
       refine ⟨trivial, trivial, fun g => ?_, trivial⟩
       simp [iwG, Subgroup.mem_iInf]
     off := fun v hv hvq => by
-      simp only [if_neg hv, dif_neg hvq, if_neg hvq]
+      simp only [ite_eq_right hv, dite_eq_right hvq, ite_eq_right hvq]
       exact ⟨trivial, trivial, hunit v, trivial⟩ }, rfl, fun v hv => ?_⟩
-  simp only [if_pos hv]
+  simp only [ite_eq_left hv]
   exact ⟨(hP v).2.2.2.2.1, (hP v).2.2.2.2.2.1, (hP v).2.2.2.2.2.2⟩
 
 end UpperTheory.ConvolutionTheory.T

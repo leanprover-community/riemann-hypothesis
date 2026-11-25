@@ -186,7 +186,7 @@ theorem fib_structure : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral
       if h : IsIrreducible t then ringChar (X.residueField (IsIrreducible.genericPoint h)) else 0
     refine ⟨(hTf.toFinset.image ch).filter Nat.Prime, fun ℓ hℓ => (Finset.mem_filter.1 hℓ).2, ?_⟩
     rintro x ⟨t, ht, hxt⟩
-    have hct : ch t = ringChar (X.residueField (IsIrreducible.genericPoint (hTi t ht))) := dif_pos (hTi t ht)
+    have hct : ch t = ringChar (X.residueField (IsIrreducible.genericPoint (hTi t ht))) := dite_eq_left (hTi t ht)
     have hg := IsIrreducible.isGenericPoint_genericPoint (hTi t ht) (hTc t ht)
     have hsp := hg.specializes hxt
     rcases ringChar_eq_zero_or_prime (IsIrreducible.genericPoint (hTi t ht)) with h0 | hp

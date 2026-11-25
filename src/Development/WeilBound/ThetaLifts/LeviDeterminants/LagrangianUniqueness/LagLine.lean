@@ -311,10 +311,10 @@ theorem ind_mem {U₀ U : OpenAddSubgroup G} (h₀ : IsCompact (U₀ : Set G)) (
   refine ⟨(IsLocallyConstant.iff_eventually_eq _).mpr fun x => ?_, ?_⟩
   · by_cases hx : x - a ∈ U
     · filter_upwards [hc.isOpen.mem_nhds hx] with z hz
-      exact (if_pos hz).trans (if_pos hx).symm
+      exact (ite_eq_left hz).trans (ite_eq_left hx).symm
     · filter_upwards [hc.isClosed.isOpen_compl.mem_nhds hx] with z hz
-      exact (if_neg hz).trans (if_neg hx).symm
-  · refine HasCompactSupport.intro (h₀.image (continuous_add_const a)) fun y hy => if_neg fun h => hy ?_
+      exact (ite_eq_right hz).trans (ite_eq_right hx).symm
+  · refine HasCompactSupport.intro (h₀.image (continuous_add_const a)) fun y hy => ite_eq_right fun h => hy ?_
     exact ⟨y - a, hU h, sub_add_cancel y a⟩
 
 theorem uniform {φ : G → ℂ} (hφ : φ ∈ SB G) : ∃ U : OpenAddSubgroup G, ∀ u ∈ U, ∀ x, φ (x + u) = φ x := by
@@ -416,7 +416,7 @@ theorem test (hP0 : (0 : G) ∈ P) (h1 : ∀ p ∈ P, ∀ φ ∈ SB G, l (fun x 
       exact if_congr (U.toAddSubgroup.add_mem_cancel_right hpa) rfl rfl
     · refine off h₀ h2 (ind_mem h₀ hU a) fun b hb hbP => h ⟨b, hbP, ?_⟩
       by_contra hc
-      exact hb (if_neg hc)
+      exact hb (ite_eq_right hc)
   have zero : ∀ U ≤ U₀, l (ind U 0) = 0 := by
     intro U hU
     obtain ⟨t, ht, e⟩ := decomp (ind_mem h₀ le_rfl 0) U fun u hu x => by

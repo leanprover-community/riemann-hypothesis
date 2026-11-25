@@ -264,7 +264,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.G.levEx :
     rw [r1] at e1
     rw [r2] at e2
     rw [e1, e2]
-  · push_neg at hg
+  · push Not at hg
     rw [hz g hg, hz (u * g)]
     intro x hx hm
     apply hg x hx

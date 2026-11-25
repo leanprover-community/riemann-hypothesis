@@ -189,11 +189,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-theorem _root_.GlobalTheory.T.levelCharacter_inv_mul_diagEmbedding_eq_char_det : ∀ {κ K : Type} [CommRing κ] [Field K] {a n r t : ℕ} (h : a = n) (hn : n = r + t) (hra : r ≤ a)
-    (hrn : r ≤ n) (y : GL (Fin a) κ) (hy : y ∈ Formalism.L2.DIV.blockTri (Formalism.L2.DIV.blkOf r t)) (χ : κˣ →* Kˣ)
-    (hz : (LiftBrg.castGL h y)⁻¹ * Formalism.L2.Col.diagEmb κ hrn (Formalism.L2.DIV.upperLeftBlock hra y) ∈ Formalism.L2.Col.HKV κ n r t),
-    Formalism.L2.Col.lamKV χ n r t ⟨_, hz⟩ = χ (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blkOf r t) 1 y) := by
-  first | exact @GlobalTheory.Mem.R3.LiftBrg.LamKV.lamKV_inv_mul_diagEmb
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelCharacterInvMulDiagEmbeddingEqCharDetStatement =====
@@ -206,8 +201,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
-
-
 
 noncomputable section
 
@@ -266,8 +259,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
-
-
 
 namespace GlobalTheory.Mem.LevResXi
 
@@ -350,11 +341,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-theorem _root_.GlobalTheory.T.upperParahoric_character_inv_eq_inv_det_block : ∀ {κ K : Type} [CommRing κ] [Field K] {a n r b : ℕ} (h : a = n) (hn : n = r + b) (y : GL (Fin a) κ)
-    (hy : y ∈ Formalism.L2.DIV.blockTri (Formalism.L2.DIV.blk2 r)) (χ : κˣ →* Kˣ)
-    (hz : (LiftBrg.castGL h y)⁻¹ * 1 ∈ Formalism.L2.Col.HQ κ n r b),
-    Formalism.L2.Col.lamQ χ n r b ⟨_, hz⟩ = (χ (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blk2 r) 1 y))⁻¹ := by
-  first | exact @GlobalTheory.Mem.R3.LiftBrg.LamQInv.lamQ_castGL_inv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpperParahoricCharacterInvEqInvDetBlockStatement =====
@@ -463,8 +449,6 @@ end GlobalTheory.Mem.R3.LiftBrg.ActQ
 noncomputable section
 namespace GlobalTheory.Mem.R3.LiftBrg.ActQ
 
-
-
 theorem inv_redZ_mul_g0Hat_type : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → ∀ (i : Fin X.toD7.R.m) (t : TupU I U) (A k : GL (Fin X.B.R.nV) (LiftBrg.EA X)), LiftBrg.FrameOK X I U i t A k →
     ∀ κ : (levEnv (Vc X.toD7 i) (L.βV i) (L.datVt i t)).Q,
       ∃ hh : (LiftBrg.ActQ.redZ X I U L i t A k κ)⁻¹ *
@@ -526,10 +510,10 @@ theorem inv_redZ_mul_g0Hat_type : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Co
     else ((L.xiR t P (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blk2 X.B.R.r) 1 (Formalism.L2.DIV.redFn (L.βV i) P y)) : ℂˣ) : ℂ) with hFdef
   have hF1 : ∀ P (h : P ∈ (X.B.primes px).vGs), F P =
       (((L.chi ((i : ℕ) + 1) P)⁻¹ (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blkOf X.B.R.r X.B.R.t) 1 (Formalism.L2.DIV.redFn (L.βV i) P y)) : ℂˣ) : ℂ) :=
-    fun P h => if_pos h
+    fun P h => ite_eq_left h
   have hF2 : ∀ P (h : P ∉ (X.B.primes px).vGs), F P =
       ((L.xiR t P (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blk2 X.B.R.r) 1 (Formalism.L2.DIV.redFn (L.βV i) P y)) : ℂˣ) : ℂ) :=
-    fun P h => if_neg h
+    fun P h => ite_eq_right h
   have hval : ∀ w, X.toD7.what₂.embLL ((((Formalism.L2.Col.mtTyKK I.Ch I.sel t.1 ((i : ℕ) + 1) w).lam ⟨_, hmem w⟩)⁻¹ :
       X.B.fields.Kˣ) : X.B.fields.K) = F w.1 := fun w => by
     by_cases hw : w.1 ∈ (X.B.primes px).vGs
@@ -545,7 +529,7 @@ theorem inv_redZ_mul_g0Hat_type : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Co
       rw [lev_lam_congr' e (hmem w) hz ex]
       have key : (Formalism.L2.Col.mtTyK I.Ch ((i : ℕ) + 1) ⟨w.1, hw⟩).lam ⟨_, hz⟩ =
           Formalism.L2.Col.chiAt I.Ch ⟨w.1, hw⟩ (i : ℕ) (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blkOf X.B.R.r X.B.R.t) 1 (Formalism.L2.DIV.redFn (L.βV i) w.1 y)) :=
-        GlobalTheory.T.levelCharacter_inv_mul_diagEmbedding_eq_char_det (LiftBrg.rkEq X i).symm hn (L.datVt i t).hr (Formalism.L2.Col.r_le_nV X.B.R) _ (hM1 w hw) _ hz
+        GlobalTheory.Mem.R3.LiftBrg.LamKV.lamKV_inv_mul_diagEmb (LiftBrg.rkEq X i).symm hn (L.datVt i t).hr (Formalism.L2.Col.r_le_nV X.B.R) _ (hM1 w hw) _ hz
       rw [key, Units.val_inv_eq_inv_val]
       erw [map_inv₀]
       rw [hF1 _ hw, MonoidHom.inv_apply, Units.val_inv_eq_inv_val]
@@ -565,7 +549,7 @@ theorem inv_redZ_mul_g0Hat_type : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Co
           ⟨w.1, hwQ w hw⟩).lam ⟨_, hz⟩ =
           (Formalism.L2.DIV.resChar (t.1 : Formalism.L2.DIV.Chr X.B.fields.F X.B.fields.E X.B.fields.K) w.1
             (Formalism.L2.DIV.dBlk (Formalism.L2.DIV.blk2 X.B.R.r) 1 (Formalism.L2.DIV.redFn (L.βV i) w.1 y)))⁻¹ :=
-        GlobalTheory.T.upperParahoric_character_inv_eq_inv_det_block (LiftBrg.rkEq X i).symm hn _ (hM2 w hw) _ hz
+        GlobalTheory.Mem.R3.LiftBrg.LamQInv.lamQ_castGL_inv (LiftBrg.rkEq X i).symm hn _ (hM2 w hw) _ hz
       rw [key, inv_inv, hF2 _ hw]
       exact _root_.GlobalTheory.Mem.LevResXi.embLL_resChar_eq_xiR X px I U L hI hV hL t w.1 (hwQ w hw) _
   have hdis : Disjoint (X.B.primes px).vGs (Formalism.L2.Col.QE I.sel (t.1 : Formalism.L2.DIV.Chr X.B.fields.F X.B.fields.E X.B.fields.K)) :=
@@ -637,7 +621,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.R3.LiftBrg.ActQ
 
-
 theorem redQ_surjective : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → ∀ (i : Fin X.toD7.R.m) (t : TupU I U), Function.Surjective (LiftBrg.ActQ.redQ X I U L eG i t) := by
   intro X px I U L eG _ _ hL _ i t g
   obtain ⟨c, hc⟩ := hL.is.βV i
@@ -675,8 +658,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
-
-
 
 noncomputable section
 
@@ -776,11 +757,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-theorem _root_.GlobalTheory.T.stdDecoratedLattice_rightTranslate_levelQ : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U : Set I.ι) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)), I.Ok → ValsIn I → LevOf X I U L → ∀ (i : Fin X.toD7.R.m) (t : TupU I U) (A k : GL (Fin X.B.R.nV) (LiftBrg.EA X)), LiftBrg.FrameOK X I U i t A k →
-    ∀ (κ : (levEnv (Vc X.toD7 i) (L.βV i) (L.datVt i t)).Q) (x : Bridge.Gf (Vc X.toD7 i)),
-      LiftBrg.ActQ.ptS X I U i t A k (x * κ) =
-        ((1 : Formalism.L2.Col.UF X.B.fields.E X.B.R.nV), (LiftBrg.ActQ.redZ X I U L i t A k κ)⁻¹) • LiftBrg.ActQ.ptS X I U i t A k x := by
-  exact @GlobalTheory.Mem.R3.LiftBrg.ActQ.ptS_mul_Q
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StdDecoratedLatticeRightTranslateLevelQStatement =====
@@ -794,7 +770,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 
-
 noncomputable section
 
 namespace GlobalTheory.Mem.R3.LiftBrg.ActQ
@@ -806,7 +781,6 @@ theorem formRho_one_apply {Xf : Formalism.L2.Col.Fields} {n : ℕ} {ST SG : Fins
   show (((Λ.chr h : Xf.Kˣ) : Xf.K) • C.rho 1) v = _
   rw [map_one]
   rfl
-
 
 theorem act_key (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι)
     (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U))
@@ -871,8 +845,7 @@ theorem lemT : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (U
   intro X px I U L eG hI hV hL hG i t A k hA κ
   obtain ⟨hh, hc⟩ := _root_.GlobalTheory.Mem.R3.LiftBrg.ActQ.inv_redZ_mul_g0Hat_type X px I U L eG hI hV hL hG i t A k hA κ
   refine ⟨_, hh, fun x => ?_, hc⟩
-  rw [GlobalTheory.T.stdDecoratedLattice_rightTranslate_levelQ X px I U L hI hV hL i t A k hA κ x, mul_inv_cancel_right]
-
+  rw [GlobalTheory.Mem.R3.LiftBrg.ActQ.ptS_mul_Q X px I U L hI hV hL i t A k hA κ x, mul_inv_cancel_right]
 
 theorem lemAct : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → ∀ (cV : ∀ i, CoefA (Vc X.toD7 i)) (i : Fin X.toD7.R.m) (t : TupU I U) (A k : GL (Fin X.B.R.nV) (LiftBrg.EA X)), LiftBrg.FrameOK X I U i t A k → ∀ P : LiftBrg.PresL X I hX U Xg tr L cV i t, LiftBrg.ReadsStd X I hX U Xg tr L cV i t A k P →
     ∀ (g : Gc X.B px) (κ : (levEnv (Vc X.toD7 i) (L.βV i) (L.datVt i t)).Q), LiftBrg.ActQ.redQ X I U L eG i t κ = g →

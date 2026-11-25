@@ -26,8 +26,8 @@ noncomputable def UpperTheory.Reformulated.B.ProjectionCompact.piK :
         · subst h
           simp
         · obtain ⟨t, ht⟩ := Function.ne_iff.mp h
-          rw [if_neg h]
-          exact Finset.prod_eq_zero (Finset.mem_univ t) (if_neg ht)
+          rw [ite_eq_right h]
+          exact Finset.prod_eq_zero (Finset.mem_univ t) (ite_eq_right ht)
       map_mul' := fun M N => by
         ext f g
         simp only [Matrix.of_apply, Pi.mul_apply, Matrix.mul_apply]

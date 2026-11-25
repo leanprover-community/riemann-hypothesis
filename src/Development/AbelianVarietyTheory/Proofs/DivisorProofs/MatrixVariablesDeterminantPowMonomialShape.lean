@@ -127,7 +127,7 @@ theorem detPow_shape : ∀ (C : Type) [Field C] [CharZero C] (i c : ℕ),
       · rintro a b hab ⟨x, hx⟩
         obtain ⟨h1, h2⟩ := Sigma.mk.inj_iff.1 hx
         exact hab ((eq_of_heq h2).symm.trans h1)
-    rw [h1, ← MvPolynomial.coeff_killCompl hf, h2, MvPolynomial.coeff_monomial, if_pos rfl]
+    rw [h1, ← MvPolynomial.coeff_killCompl hf, h2, MvPolynomial.coeff_monomial, ite_eq_left rfl]
   · intro α hα
     constructor
     · intro a

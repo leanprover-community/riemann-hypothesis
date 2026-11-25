@@ -148,7 +148,7 @@ theorem avgCutoff_of_parts (hB : ACBump) (hI : ACInv) (hN : ACInt) (hP : ACHaarP
         exact Complex.ofRealCLM.contDiff.comp_contDiffOn h1
       · intro g hg hgG
         show (if g ∈ B.GV k r then ((φ₀ g * (σ (∫ p, φ₀ (B.sgs p g) ∂D.μSS))⁻¹ : ℝ) : ℂ) else 0) = _
-        rw [if_pos hgG, hII' g hg hgG]
+        rw [ite_eq_left hgG, hII' g hg hgG]
     · refine ⟨(tsupport φ₀)ᶜ, fun _ => 0, (isClosed_tsupport _).isOpen_compl, fun h => hO (hφ₀O h),
         contDiffOn_const, fun g hg _ => hφ0 g hg⟩
   ·
@@ -167,7 +167,7 @@ theorem avgCutoff_of_parts (hB : ACBump) (hI : ACInv) (hN : ACInt) (hP : ACHaarP
       have hG : B.sgs p (B.sgs p₀ (B.gq D q)) ∈ B.GV k r := Formalism.FourierDecayAlt.P.PositiveOrbitOpen.sgs_GV D hp hg.1
       have hIp : I (B.sgs p (B.sgs p₀ (B.gq D q))) = I (B.gq D q) := by
         rw [← hIg]; exact hI k r Wp Wq D φ₀ hφ₀cont p hp _
-      simp only [φ, if_pos hG, hIp, hσid _ (hc₀K q hq)]
+      simp only [φ, ite_eq_left hG, hIp, hσid _ (hc₀K q hq)]
     rw [integral_congr_ae hae, integral_complex_ofReal, integral_mul_const]
     change (((I (B.sgs p₀ (B.gq D q))) * (I (B.gq D q))⁻¹ : ℝ) : ℂ) = 1
     rw [hIg, mul_inv_cancel₀ hIpos.ne', Complex.ofReal_one]

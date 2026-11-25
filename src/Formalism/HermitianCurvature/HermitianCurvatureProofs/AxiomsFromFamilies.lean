@@ -137,7 +137,7 @@ theorem local_pullback : LocalPullback := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   ·
     intro t t' ht ht' h hh h' hh' hne
-    simp only [pullSys, dif_pos (And.intro ht ht')] at hne
+    simp only [pullSys, dite_eq_left (And.intro ht ht')] at hne
     have := hA2.2 K R ψ hD s hs (η h) (η h') _ _ (by rw [hm h hh, hm h' hh']) hne
     rw [hτi, hτi] at this
     show t⁻¹ - t'⁻¹ ∈ R.toAddSubgroup.comap
@@ -156,7 +156,7 @@ theorem local_pullback : LocalPullback := by
     have h2 := Jx9.pull (fun h => (η h, u * Units.map (σ : E →* K) (Units.mk0 t ht))) F _ h1
     refine Jx9.psd_congr h2 ?_
     intro x _ y _
-    simp only [pullSys, dif_pos (And.intro ht ht)]
+    simp only [pullSys, dite_eq_left (And.intro ht ht)]
   ·
     intro t t' htt h _ h' _
     show Θ ((u : K) * σ t) (η h) (η h') = Θ ((u : K) * σ t') (η h) (η h')
@@ -172,7 +172,7 @@ theorem local_pullback : LocalPullback := by
     have h2 := Jx9.pull η F _ (p4 (u * Units.map (σ : E →* K) (Units.mk0 t ht)))
     refine Jx9.psd_congr h2 ?_
     intro x _ y _
-    simp only [pullSys, dif_pos (And.intro ht ht), hτ]
+    simp only [pullSys, dite_eq_left (And.intro ht ht), hτ]
   ·
     intro R0 hR0
     apply tb
@@ -224,7 +224,7 @@ theorem local_unit_heads : LocalUnitHeads := by
   have h0 : A5.N0 R ψ (η x) (η y) = 1 :=
     hN0 K R ψ hψ _ _ (by rw [hm x hx, hm y hy]) (hG x hx) (hG y hy)
   simp only [hmem, h0, hτ]
-  simp only [pullSys, dif_pos (And.intro ht ht)]
+  simp only [pullSys, dite_eq_left (And.intro ht ht)]
   ring
 
 open Classical in
@@ -239,7 +239,7 @@ theorem top_pullback : TopPullback := by
     have htt : t = t' := by
       by_contra hn
       apply hne
-      simp only [topSys, if_neg hn]
+      simp only [topSys, ite_eq_right hn]
     show t⁻¹ - t'⁻¹ ∈ (⊥ : AddSubgroup E)
     rw [htt, sub_self]; exact AddSubgroup.zero_mem _
   ·
@@ -247,7 +247,7 @@ theorem top_pullback : TopPullback := by
     apply tb
     refine Jx9.psd_congr (Jx9.pull η F _ (p2 ((u : K) * σ t - τ₀))) ?_
     intro x _ y _
-    simp only [topSys, if_true]
+    simp only [topSys, ite_true]
   ·
     intro t t' htt h _ h' _
     show Θ ((u : K) * σ t - τ₀) (η h) (η h') = Θ ((u : K) * σ t' - τ₀) (η h) (η h')
@@ -263,7 +263,7 @@ theorem top_pullback : TopPullback := by
     apply tb
     refine Jx9.psd_congr (Jx9.psd_zero F) ?_
     intro x _ y _
-    simp only [topSys, if_true, sub_self]
+    simp only [topSys, ite_true, sub_self]
   ·
     intro R0 hR0
     apply tb

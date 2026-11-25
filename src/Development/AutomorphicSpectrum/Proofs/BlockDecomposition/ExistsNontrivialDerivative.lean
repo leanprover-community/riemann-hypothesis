@@ -341,7 +341,7 @@ theorem exists_chi_ne_one (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) {n : ℕ} {N :
     rw [isTrivialOn_mulShift_iff_mem hψ hψ1, sub_sub_cancel]
     exact hi
   unfold IsTrivialOn at hnt
-  push_neg at hnt
+  push Not at hnt
   obtain ⟨y, hy, hψy⟩ := hnt
   refine ⟨Multiplicative.ofAdd (Pi.single i y : Fin n → k), ?_, ?_⟩
   · show ∀ j, (Multiplicative.toAdd (Multiplicative.ofAdd (Pi.single i y : Fin n → k))) j ∈

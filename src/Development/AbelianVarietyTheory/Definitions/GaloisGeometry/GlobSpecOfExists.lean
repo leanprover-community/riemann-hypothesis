@@ -143,7 +143,7 @@ theorem prod_mem (T : PlTie X P) {δ : X.E} (hδ : star δ * δ = 1) :
   choose t ht using key
   rw [Finset.prod_congr rfl fun s _ => ht s, Finset.prod_mul_distrib, ← map_prod]
   have hsum : ∑ s : Fin (P.n' v), (a * (-1) ^ s.val : ℤ) = 0 := by
-    rw [← Finset.mul_sum, Fin.sum_univ_eq_sum_range (fun i => (-1 : ℤ) ^ i), neg_one_geom_sum, if_pos hS.even, mul_zero]
+    rw [← Finset.mul_sum, Fin.sum_univ_eq_sum_range (fun i => (-1 : ℤ) ^ i), neg_one_geom_sum, ite_eq_left hS.even, mul_zero]
   have hprod : ∀ (S : Finset (Fin (P.n' v))), ∏ s ∈ S, (p : Kf) ^ (a * (-1) ^ s.val : ℤ) =
       (p : Kf) ^ (∑ s ∈ S, (a * (-1) ^ s.val : ℤ)) := by
     intro S

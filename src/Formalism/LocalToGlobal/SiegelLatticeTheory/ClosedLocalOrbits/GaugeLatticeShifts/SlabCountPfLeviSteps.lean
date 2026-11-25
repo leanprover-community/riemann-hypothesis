@@ -113,7 +113,7 @@ theorem leviFinC_of (h : LeviStabFinC) : LeviFinC := by
       (h D X Y u' Λ₂ hP.1).choose.image (fun τ => hP.2.choose * τ) else ∅, ?_⟩
   intro Λ₁ _ Λ₂ hΛ₂ σ s hs hσ hS hmap
   have hP : P Λ₁ Λ₂ := ⟨hΛ₂, σ, s, hs, hσ, hS, hmap⟩
-  simp only [dif_pos hP]
+  simp only [dite_eq_left hP]
   obtain ⟨s₀, hs₀, hσ₀, hS₀, hmap₀⟩ := hP.2.choose_spec
   obtain ⟨hT1, hT2⟩ := (h D X Y u' Λ₂ hP.1).choose_spec
   generalize hP.2.choose = σ₀ at hs₀ hσ₀ hmap₀ ⊢

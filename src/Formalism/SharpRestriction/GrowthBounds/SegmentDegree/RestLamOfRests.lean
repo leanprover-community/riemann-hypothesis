@@ -319,7 +319,7 @@ theorem restLam_of_rests (C₀ : ℝ) (hA : RestLamA) (hI : RestLamInj C₀) (hD
     have hy'i : ∀ i : Fin X.F.J, y' (i.val : ℤ) = Yf i := by
       intro i
       have h : 0 ≤ (i.val : ℤ) ∧ ((i.val : ℤ)).toNat < X.F.J := ⟨by positivity, by simpa using i.isLt⟩
-      simp only [y', dif_pos h]
+      simp only [y', dite_eq_left h]
       exact congrArg Yf (Fin.ext (by simp))
     obtain ⟨hlab, hdeg⟩ := hD p n' r K X hX hLa hk f.1.1 (hΦ f).1 f.1.2 (hΦ f).2
     have hprod : (∏ j ∈ Finset.range X.F.J, X.phc p K O (j : ℤ) (y' j)) =
@@ -338,7 +338,7 @@ theorem restLam_of_rests (C₀ : ℝ) (hA : RestLamA) (hI : RestLamInj C₀) (hD
         simp only at this
         rw [this]
         exact hyM f ⟨k, hk'⟩ (a ⟨k, hk'⟩)
-      · simp only [y', dif_neg h]
+      · simp only [y', dite_eq_right h]
         exact Submodule.zero_mem _
     · rw [hprod, lam_expand]
       unfold RRdeg

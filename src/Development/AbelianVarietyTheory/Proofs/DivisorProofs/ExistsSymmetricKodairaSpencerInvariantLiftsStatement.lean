@@ -437,7 +437,7 @@ theorem exists_lift (hinj : ∀ (O : B.left.Opens) (f f' : Γ(B.left, O)),
   have hB : ∀ O, O ≤ V → ∀ f : Γ(B.left, O),
       pbT q.left (dB O f) (q.left ⁻¹ᵁ O) = d _ (pbT q.left f (q.left ⁻¹ᵁ O)) := by
     intro O h f
-    simp only [dB, dif_pos h]
+    simp only [dB, dite_eq_left h]
     exact (hdesc O h f).choose_spec
   obtain ⟨⟨h1, h2, h3⟩, h4⟩ := hd
   refine ⟨dB, ⟨⟨fun O h f f' => hinj O _ _ ?_, fun O h f f' => hinj O _ _ ?_, fun O O' h' h f => hinj O' _ _ ?_⟩,

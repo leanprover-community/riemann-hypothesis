@@ -473,9 +473,9 @@ theorem d_comm (z : Fin (2 * r + k + 1) → ℂ) (t : ℝ) {h : Mat k r} (hh : h
       · subst hij; simp [mul_comm]
       · simp [hij]
     · have e1 : d_dg k r t i = 1 := by
-        unfold d_dg; rw [if_neg (by omega), if_pos (by omega)]
+        unfold d_dg; rw [ite_eq_right (by omega), ite_eq_left (by omega)]
       have e2 : d_dg k r t j = 1 := by
-        unfold d_dg; rw [if_neg (by omega), if_pos (by omega)]
+        unfold d_dg; rw [ite_eq_right (by omega), ite_eq_left (by omega)]
       rw [e1, e2, one_mul, mul_one]
 
 theorem d_conj_apply (t : ℝ) (ht : t ≠ 0) (n : Mat k r) (i j : Fin (2 * r + k + 1)) :
@@ -491,9 +491,9 @@ theorem d_ell (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (t : ℝ) (ht 
   by_cases h : a.val + 1 < r
   · rw [dite_eq_left h, dite_eq_left h, d_conj_apply t ht]
     have e1 : d_dg k r t (eI k r a) = ((t ^ (r - a.val) : ℝ) : ℂ) := by
-      unfold d_dg; rw [if_pos (by simp only [eI]; omega)]; rfl
+      unfold d_dg; rw [ite_eq_left (by simp only [eI]; omega)]; rfl
     have e2 : d_dg k r t⁻¹ (eI k r ⟨a.val + 1, h⟩) = (((t⁻¹) ^ (r - (a.val + 1)) : ℝ) : ℂ) := by
-      unfold d_dg; rw [if_pos (by simp only [eI]; omega)]; rfl
+      unfold d_dg; rw [ite_eq_left (by simp only [eI]; omega)]; rfl
     rw [e1, e2]
     have e3 : r - a.val = (r - (a.val + 1)) + 1 := by omega
     have e4 : ((t ^ (r - a.val) : ℝ) : ℂ) * (((t⁻¹) ^ (r - (a.val + 1)) : ℝ) : ℂ) = (t : ℂ) := by
@@ -508,13 +508,13 @@ theorem d_ell (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (t : ℝ) (ht 
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [d_conj_apply t ht]
     have e1 : d_dg k r t (eI k r a) = (t : ℂ) := by
-      unfold d_dg; rw [if_pos (by simp only [eI]; omega)]
+      unfold d_dg; rw [ite_eq_left (by simp only [eI]; omega)]
       have : r - (eI k r a).val = 1 := by simp only [eI]; omega
       rw [this, pow_one]
     by_cases hj : j.val < r ∨ r + k < j.val
     · rw [hz j hj]; simp
     · have e2 : d_dg k r t⁻¹ j = 1 := by
-        unfold d_dg; rw [if_neg (by omega), if_pos (by omega)]
+        unfold d_dg; rw [ite_eq_right (by omega), ite_eq_left (by omega)]
       rw [e1, e2]; ring
 
 theorem d_lam (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (t : ℝ) (ht : t ≠ 0) (n : Mat k r) :

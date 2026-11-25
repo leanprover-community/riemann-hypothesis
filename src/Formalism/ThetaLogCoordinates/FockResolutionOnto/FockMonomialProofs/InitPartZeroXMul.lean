@@ -70,7 +70,7 @@ theorem initPart_zero_X_mul (v : σ) (a : MvPolynomial σ ℚ_[p]) : initPart v 
   ext m
   simp only [coeff_initPart, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
   split_ifs with hm
-  · rw [MvPolynomial.coeff_X_mul', if_neg (by simp [hm])]
+  · rw [MvPolynomial.coeff_X_mul', ite_eq_right (by simp [hm])]
   · rfl
 
 theorem X_mul_int_iff (v : σ) (a : MvPolynomial σ ℚ_[p]) : X v * a ∈ IntPol p σ ↔ a ∈ IntPol p σ := by
@@ -79,7 +79,7 @@ theorem X_mul_int_iff (v : σ) (a : MvPolynomial σ ℚ_[p]) : X v * a ∈ IntPo
   constructor
   · intro h m
     have h1 := h (m + Finsupp.single v 1)
-    rwa [MvPolynomial.coeff_X_mul', if_pos (by simp), add_tsub_cancel_right] at h1
+    rwa [MvPolynomial.coeff_X_mul', ite_eq_left (by simp), add_tsub_cancel_right] at h1
   · intro h m
     rw [MvPolynomial.coeff_X_mul']
     split_ifs

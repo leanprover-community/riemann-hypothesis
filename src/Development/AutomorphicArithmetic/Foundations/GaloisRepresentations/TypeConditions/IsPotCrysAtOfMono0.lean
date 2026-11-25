@@ -147,11 +147,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands Glo
 open GlobalTheory.RowTie (WDTie)
 open Matrix (GeneralLinearGroup)
 
-section G
-variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {a : ℕ}
-
-end G
-
 def _root_.UpperTheory.GalS.GaloisRepsN (D : D7) : Prop :=
   ∀ π : D.naut.CG D.R.r, D.naut.csd π → D.naut.ralg π →
     ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ), ∃ r, UpperTheory.GalS.IsGaloisRepOfN D π l ι r

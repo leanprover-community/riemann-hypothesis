@@ -68,7 +68,7 @@ private theorem gm_pullU_eq_gm_comp {X Y W : Scheme.{0}} (h : Y ⟶ X) (k : W �
   by_cases hw : k w ∈ h ⁻¹ᵁ V
   · rw [← gm_rp₁ k w (h ⁻¹ᵁ V) (k ⁻¹ᵁ (h ⁻¹ᵁ V)) le_rfl hw, gm_rp₂ k h w V _ le_rfl hw]
   · have hw' : ¬ (k ≫ h) w ∈ V := hw
-    simp only [gm, dif_neg hw, dif_neg hw', MonoidHom.one_apply]
+    simp only [gm, dite_eq_right hw, dite_eq_right hw', MonoidHom.one_apply]
 
 theorem exists_compat {N : LB Z} {f : Y ⟶ Z} (t : (N.pull f).Gen) (ht : t.IsGen) :
     ∃ a, Compat N f a := by
@@ -105,7 +105,7 @@ theorem Compat.pull {N : LB Z} {f : Y ⟶ Z} {a} (ha : Compat N f a) (h : Y' ⟶
 private theorem gm_id_val_eq_germ' {Y : Scheme.{0}} {V : Y.Opens} (u : Γ(Y, V)ˣ) (y : Y) (hy : y ∈ V) :
     (gm (𝟙 Y) y V u).val = Y.presheaf.germ V y hy u.val := by
   have hy' : (𝟙 Y) y ∈ V := hy
-  simp only [gm, dif_pos hy', pullU, MonoidHom.comp_apply, Units.coe_map]
+  simp only [gm, dite_eq_left hy', pullU, MonoidHom.comp_apply, Units.coe_map]
   rfl
 
 private theorem exists_global_unit_of_gm_agree_on_cover {Y : Scheme.{0}} {I : Type} (V : I → Y.Opens) (hcov : ⊤ ≤ ⨆ i, V i)

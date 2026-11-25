@@ -83,7 +83,7 @@ private theorem measure_slice_le_measure_mul_inv {G : Type} [Group G] [Topologic
           congr 1
           ext x
           simp
-  · push_neg at h0
+  · push Not at h0
     have hsub : {s | s ∈ S ∧ s⁻¹ * g ∈ K} ⊆ Nᶜ := fun s hs hsN => h0 s hsN hs.2
     calc ν {s | s ∈ S ∧ s⁻¹ * g ∈ K} ≤ ν Nᶜ := measure_mono hsub
       _ = 0 := hnull
@@ -107,11 +107,11 @@ theorem measure_mul_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
     have hsl : ∀ s, μ (Prod.mk s ⁻¹' E) = S.indicator (fun _ => μ K) s := by
       intro s
       by_cases hs : s ∈ S
-      · rw [Set.indicator_apply, if_pos hs, ← measure_preimage_mul μ s⁻¹ K]
+      · rw [Set.indicator_apply, ite_eq_left hs, ← measure_preimage_mul μ s⁻¹ K]
         congr 1
         ext x
         simp [hEd, hs]
-      · rw [Set.indicator_apply, if_neg hs]
+      · rw [Set.indicator_apply, ite_eq_right hs]
         have h0 : Prod.mk s ⁻¹' E = ∅ := by
           ext x
           simp [hEd, hs]
@@ -126,10 +126,10 @@ theorem measure_mul_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
           apply lintegral_mono
           intro g
           by_cases hg : g ∈ T
-          · rw [Set.indicator_apply, if_pos hg]
+          · rw [Set.indicator_apply, ite_eq_left hg]
             exact (le_of_eq (by rw [hEd]; rfl)).trans
               (measure_slice_le_measure_mul_inv (S := S) hnull hleft hK g)
-          · rw [Set.indicator_apply, if_neg hg]
+          · rw [Set.indicator_apply, ite_eq_right hg]
             have h0 : (fun s => (s, g)) ⁻¹' E = ∅ := by
               ext s
               simp only [hEd, Set.mem_preimage, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false,

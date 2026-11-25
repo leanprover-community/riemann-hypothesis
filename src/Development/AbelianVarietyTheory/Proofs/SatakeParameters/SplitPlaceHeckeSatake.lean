@@ -107,7 +107,7 @@ theorem coset_transport {G H : Type} [Group G] [Group H] (ψ : G →* H) (T U J 
         exact (h2 b (h1 b hb')).unique ⟨ha', e1⟩ ⟨hb', e2⟩
     · intro c hc
       by_contra hn
-      exact hc (dif_neg fun h => hn ((hset c).1 h))
+      exact hc (dite_eq_right fun h => hn ((hset c).1 h))
 
 theorem tensCast_under {E : Type} [Field E] [NumberField E] {F1 F2 : Subfield E} (h : F1 = F2)
     (P : HeightOneSpectrum (𝓞 E)) (α : FiniteAdeleRing (𝓞 F1) F1) (h1 : α (P.under (𝓞 F1)) = 1)

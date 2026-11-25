@@ -171,7 +171,7 @@ theorem sum_single_diag' (c : ℤ) : ∑ k : Fin 4 ⊕ Fin 4, single k k c = c �
   rw [Matrix.sum_apply]
   by_cases h : a = b
   · subst h; simp [single_apply]
-  · rw [Finset.sum_eq_zero (fun k _ => by rw [single_apply]; exact if_neg (fun hk => h (hk.1.symm.trans hk.2)))]
+  · rw [Finset.sum_eq_zero (fun k _ => by rw [single_apply]; exact ite_eq_right (fun hk => h (hk.1.symm.trans hk.2)))]
     simp [h]
 
 theorem sum_famM {d : ℕ} (hd : 0 < d) :
@@ -255,7 +255,7 @@ theorem exists_spanning_family_posDef :
     exact SpanFam.span_fam_eq_top
   · rw [transpose_one, Matrix.map_add _ Int.cast_add, Matrix.map_one _ Int.cast_zero Int.cast_one]
     exact Matrix.PosDef.one.add Matrix.PosDef.one
-  · simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  · simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [← SpanFam.sum_fam_mul_bar hd]
     exact Equiv.sum_comp e.symm (fun t => SpanFam.fam d t * bar d (SpanFam.fam d t))
 
@@ -734,11 +734,11 @@ theorem inc_dMap (h₁ : IsRAct Z₁ act₁) (h₂ : IsRAct Z₂ act₂) (pr₁ 
           rw [h₁.2.2.1]; conv_lhs => rw [hi]
           simp only [Category.assoc]
       _ = inc₁ ≫ (act₁ (idem d) ≫ pr₁ ≫ inc₂ ≫ act₂ (up d (Sum.inl 0))) ^ (d : ℤ) := by
-          rw [idem_lo, if_pos rfl, act_zsmul' h₁, zpow_comp']
+          rw [idem_lo, ite_eq_left rfl, act_zsmul' h₁, zpow_comp']
       _ = ((𝟙 A) ^ d) ≫ inc₂ := by
           rw [hW, comp_zpow', reassoc_of% hip₁, zpow_natCast, npow_comp', Category.id_comp]
   · intro k _ hk
-    rw [hi, Category.assoc, ← Category.assoc (act₁ (idem d)), ← h₁.2.2.1, idem_lo, if_neg hk, act_zero' h₁,
+    rw [hi, Category.assoc, ← Category.assoc (act₁ (idem d)), ← h₁.2.2.1, idem_lo, ite_eq_right hk, act_zero' h₁,
       MonObj.one_comp, MonObj.comp_one]
   · intro h; exact absurd (Finset.mem_univ _) h
 

@@ -92,9 +92,9 @@ theorem ftY_pert_qM (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (�
       rw [LinearMap.add_apply, mul_add]
       exact (h i).add (hδM i)
   unfold ftY
-  rw [if_neg hw, if_neg hw]
+  rw [ite_eq_right hw, ite_eq_right hw]
   by_cases hI : ∀ i : Fin n, IntAt w.1 ((qOf w.1 : X.E) ^ cst.M * η (Pi.single i 1))
-  · rw [if_pos (hiff.2 hI), if_pos hI]
+  · rw [ite_eq_left (hiff.2 hI), ite_eq_left hI]
     have heps : IntAt w.1 ((epsSg : ℤ) : X.E) := by
       have : ((epsSg : ℤ) : X.E) = -1 := by simp [epsSg]
       rw [this]
@@ -131,7 +131,7 @@ theorem ftY_pert_qM (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (�
       rw [e']
       exact heps.mul h2
     · exact hqD _ ((hqn _).mul ((hqn _).mul (heps.mul h1)))
-  · rw [if_neg (mt hiff.1 hI), if_neg hI]
+  · rw [ite_eq_right (mt hiff.1 hI), ite_eq_right hI]
 
 end FtY
 
@@ -369,7 +369,7 @@ theorem lastStepDatumLaw_K1Depth_twiceM : ∀ {X : Fields} {Pr : Primes X} {R : 
   have hrA' : R.r ≤ R.N (m2 + 1 + 1) - 1 := hrA
   have hs2 : rhoT Ch sel mu (m2 + 1) w (LinearEquiv.det κ'.1 : X.Eˣ) = xiZ ξ Ai.det := by
     unfold rhoT
-    rw [if_neg hw, unitV_eq, redP_detEquiv w.1 κ'.2]
+    rw [ite_eq_right hw, unitV_eq, redP_detEquiv w.1 κ'.2]
     exact congrArg (xiZ ξ) hdetAi
   have hnD : R.N (m2 + 1 + 1) = R.r + (R.m * R.t + 1) := by omega
   have hl1 : (((twTt (R := R) sel mu (m2 + 1 + 1) ⟨w.1, hwQ⟩).lam ⟨κ'⁻¹, hc'⟩ : X.Kˣ) : X.K) =
@@ -388,17 +388,17 @@ theorem lastStepDatumLaw_K1Depth_twiceM : ∀ {X : Fields} {Pr : Primes X} {R : 
     (fun x => PhiTopG Ch mu cst.sharp (m2 + 1) (m2 + 1 + 1) (R.N (m2 + 1 + 1)) w.1 (x ∘ₗ LinearMap.funLeft X.E X.E (Fin.castAdd (cOf R (m2 + 1)))))
     (fun x h => by
       unfold PhiTopG at h
-      (try rw [if_neg hw] at h)
+      (try rw [ite_eq_right hw] at h)
       exact tlq_phiQ_supp hqm hu ξ hc0 hr' hrA' x h)
     (fun x x' hx hx' hred => by
       show PhiTopG Ch mu cst.sharp (m2 + 1) (m2 + 1 + 1) (R.N (m2 + 1 + 1)) w.1 _ = PhiTopG Ch mu cst.sharp (m2 + 1) (m2 + 1 + 1) (R.N (m2 + 1 + 1)) w.1 _
       unfold PhiTopG
-      rw [if_neg hw]
+      rw [ite_eq_right hw]
       exact tlq_phiQ_red hqm hu ξ hc0 hr' hrA' x x' hx hx' hred)
     (fun η => ftY sel mu cst w η y₁)
     (fun η h => by
       unfold ftY at h
-      rw [if_neg hw] at h
+      rw [ite_eq_right hw] at h
       split_ifs at h with hI
       · exact hI
       · exact absurd rfl h)
@@ -411,7 +411,7 @@ theorem lastStepDatumLaw_K1Depth_twiceM : ∀ {X : Fields} {Pr : Primes X} {R : 
         PhiTopG Ch mu cst.sharp (m2 + 1) (m2 + 1 + 1) (R.N (m2 + 1 + 1)) w.1
           (prXpG X.E (R.N (m2 + 1 + 1)) ∘ₗ y ∘ₗ LinearMap.funLeft X.E X.E (Fin.castAdd (cOf R (m2 + 1)))) := by
     unfold PhiTopG
-    rw [if_neg hw]
+    rw [ite_eq_right hw]
     exact phiQ_law hqm hu ξ R.k R.r (cOf R (m2 + 1)) (R.N (m2 + 1)) (R.N (m2 + 1 + 1) - 1) hc0 hr' hrA' hf hγI A Ai
       1 hγ lA lAi (hf1 ▸ l1) l1 hAA (by rw [hf1, mul_one]) (prXpG X.E (R.N (m2 + 1 + 1)) ∘ₗ y)
   have hS := scal_law ξ hnA hn' hrA hr' A Ai 1 1 lA l1 hAA (mul_one 1)

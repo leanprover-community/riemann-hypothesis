@@ -178,7 +178,7 @@ theorem r_decomp : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClose
     by_cases hz1 : z = 1
     · subst hz1
       simp
-    rw [if_neg hz1]
+    rw [ite_eq_right hz1]
     by_cases hz0 : z = 0
     · subst hz0
       refine Finset.sum_eq_zero fun m _ => ?_
@@ -290,18 +290,18 @@ theorem r_decomp : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClose
     simp only at h6
     rw [h6]
     rw [Finset.sum_congr rfl (g := fun m => algebraMap R C ((σ ^ m) x) * algebraMap R C (if y = 0 then (if m = n then -1 else 0) else qi * (σ ^ m)⁻¹ y))
-      (fun m hm => by rw [if_neg (by simp at hm; omega), if_neg (by simp at hm; omega)])]
+      (fun m hm => by rw [ite_eq_right (by simp at hm; omega), ite_eq_right (by simp at hm; omega)])]
     by_cases hy : y = 0
     · subst hy
-      simp only [if_true, map_one, apply_ite (algebraMap R C), map_neg, map_zero, mul_ite, mul_neg, mul_one, mul_zero]
-      rw [Finset.sum_ite_eq' (Finset.Icc 1 n) n, if_pos (Finset.mem_Icc.mpr ⟨hn1, le_rfl⟩), hσn]
+      simp only [ite_true, map_one, apply_ite (algebraMap R C), map_neg, map_zero, mul_ite, mul_neg, mul_one, mul_zero]
+      rw [Finset.sum_ite_eq' (Finset.Icc 1 n) n, ite_eq_left (Finset.mem_Icc.mpr ⟨hn1, le_rfl⟩), hσn]
       by_cases hx : x = 0
       · subst hx
         rw [MulChar.map_nonunit (1 : MulChar F R) (not_isUnit_zero (M₀ := F)), map_zero, neg_zero, add_zero,
           Matrix.one_apply_eq]
       · rw [MulChar.one_apply (Ne.isUnit hx), map_one, Matrix.one_apply_ne hx]
         ring
-    · simp only [if_neg hy, if_true, map_zero, mul_zero, zero_add, map_mul, hqi]
+    · simp only [ite_eq_right hy, ite_true, map_zero, mul_zero, zero_add, map_mul, hqi]
       have e5 : ∀ m, algebraMap R C ((σ ^ m) x) * ((n : C)⁻¹ * algebraMap R C ((σ ^ m)⁻¹ y)) =
           (n : C)⁻¹ * algebraMap R C ((σ ^ m) (x * y⁻¹)) := by
         intro m
@@ -311,8 +311,8 @@ theorem r_decomp : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClose
       rw [← Finset.mul_sum, horth, Matrix.one_apply]
       by_cases hxy : x = y
       · subst hxy
-        rw [mul_inv_cancel₀ hy, if_pos rfl, if_pos rfl, inv_mul_cancel₀ hn0]
-      · rw [if_neg (by rwa [mul_inv_eq_one₀ hy]), if_neg hxy, mul_zero]
+        rw [mul_inv_cancel₀ hy, ite_eq_left rfl, ite_eq_left rfl, inv_mul_cancel₀ hn0]
+      · rw [ite_eq_right (by rwa [mul_inv_eq_one₀ hy]), ite_eq_right hxy, mul_zero]
   have hdetTU : T.det * U.det = 1 := by rw [← Matrix.det_mul, hTU, Matrix.det_one]
   have hTdet : T.det = algebraMap R C TR.det := (RingHom.map_det _ _).symm
   have hUdet : U.det = algebraMap R C UR.det := (RingHom.map_det _ _).symm
@@ -358,9 +358,9 @@ theorem r_decomp : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClose
       show (fun x => (T * Matrix.diagonal d) x j) ∈ AA.carrier
       rw [hcol j]
       by_cases hj : (e j : ℕ) = 0
-      · simp only [hj, if_true]
+      · simp only [hj, ite_true]
         exact AA.one_mem
-      · simp only [hj, if_false]
+      · simp only [hj, ite_false]
         exact hb _
   · rw [Matrix.det_mul, Matrix.det_diagonal, map_mul, hvT, one_mul, map_prod]
     have h7 := hreP (fun k => v (if k = 0 then 1 else algebraMap R C (c k)))
@@ -368,6 +368,6 @@ theorem r_decomp : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClose
     rw [show (∏ j, v (d j)) = ∏ j, v (if (e j : ℕ) = 0 then 1 else algebraMap R C (c (e j))) from rfl, h7]
     simp only [↓reduceIte, map_one, one_mul]
     refine Finset.prod_congr rfl fun m hm => ?_
-    rw [if_neg (by simp at hm; omega)]
+    rw [ite_eq_right (by simp at hm; omega)]
 
 end PositivityTheory.HtPt.Ri

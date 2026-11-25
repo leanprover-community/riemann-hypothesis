@@ -197,7 +197,7 @@ theorem exists_cocycle : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     by_cases hc : C0 c
     · have hgc : C0 (g • c) := hstab g c hc
       have hhgc : C0 ((h * g) • c) := hstab (h * g) c hc
-      simp only [hc, hgc, if_true]
+      simp only [hc, hgc, ite_true]
       obtain ⟨f', x, hfx⟩ := hc
       set f := ρ (h * g) f' with hfdef
       have hV : (f : C → M.dom → ℂ) ((h * g) • c) (Lmap M (h * g) c x) ≠ 0 := by
@@ -213,10 +213,10 @@ theorem exists_cocycle : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       simp [hc, hgc]
   · intro h f c x
     by_cases hc : C0 c
-    · simp only [hc, if_true]
+    · simp only [hc, ite_true]
       exact hform h f c x
     · have hhc : ¬ C0 (h • c) := hstab' h c hc
-      simp only [hc, if_false, Units.val_one, one_mul]
+      simp only [hc, ite_false, Units.val_one, one_mul]
       have l0 : ((ρ h⁻¹ f : M.cusp ka) : C → M.dom → ℂ) c x = 0 := by
         by_contra hne
         exact hc ⟨ρ h⁻¹ f, x, hne⟩
@@ -717,14 +717,6 @@ theorem model_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
       _ ≤ 2 * (Nat.card P * finrank ℂ (eig ρ P lam)) := by linarith
       _ = 2 * Nat.card P * finrank ℂ (eig ρ P lam) := by ring
 
-section Point
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-
-
-end Point
-
 end GlobalTheory.BadWOn
 
 end
@@ -999,7 +991,7 @@ theorem eU_coeff_one_ne (g N : ℕ) [NeZero g] (ψ₀ : AddChar (ZMod g) ℂ) :
   · rw [Finsupp.single_eq_same, h0, AddChar.map_zero_eq_one, inv_one, Complex.one_re]
     exact one_ne_zero
   · intro b _ hb
-    rw [Finsupp.single_apply, if_neg hb]
+    rw [Finsupp.single_apply, ite_eq_right hb]
     simp
   · intro h; exact absurd h1 h
 
@@ -1208,13 +1200,13 @@ theorem propW_eUk : ∀ (D : Formalism.BasicNotions.D7) (ψ₀ : ∀ k : Fin 2, 
     have hs0 := Finset.sum_nonneg (s := Finset.univ) fun v (_ : v ∈ Finset.univ) =>
       hite (¬ Squarefree (t v)) t
     by_cases h : ∀ v, Squarefree (t v)
-    · rw [if_pos h]; linarith
+    · rw [ite_eq_left h]; linarith
     · push Not at h
       obtain ⟨v, hv⟩ := h
-      rw [if_neg (fun h => hv (h v))]
+      rw [ite_eq_right (fun h => hv (h v))]
       have := Finset.single_le_sum (f := fun v => if ¬ Squarefree (t v) then ∏ v, w (t v) else 0)
         (fun v _ => hite _ t) (Finset.mem_univ v)
-      simp only [if_pos hv] at this
+      simp only [ite_eq_left hv] at this
       linarith
   set S' := S.filter (fun t => ∀ v, t v ∈ S0) with hS'
   have hA : ∑ t ∈ S', ∑ v, (if ¬ Squarefree (t v) then ∏ v, w (t v) else 0) ≤

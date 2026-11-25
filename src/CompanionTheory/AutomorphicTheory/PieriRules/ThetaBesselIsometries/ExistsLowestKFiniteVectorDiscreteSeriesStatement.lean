@@ -246,7 +246,7 @@ theorem torus_weight_action : PI.KFinSmooth → ∀ (k r : ℕ) (ε : Fin (2 * r
           by_cases hi : i = a
           · subst hi; simp
           · simp [hi, Ne.symm hi]
-        · rw [Matrix.diagonal_apply_ne _ hij, Matrix.smul_apply, Matrix.single_apply, if_neg, smul_zero]
+        · rw [Matrix.diagonal_apply_ne _ hij, Matrix.smul_apply, Matrix.single_apply, ite_eq_right, smul_zero]
           rintro ⟨rfl, rfl⟩
           exact hij rfl
       rw [f1, Matrix.exp_conj' _ _ hQu, Matrix.exp_diagonal, Pi.exp_def, ← Complex.exp_eq_exp_ℂ]
@@ -299,7 +299,7 @@ theorem torus_weight_action : PI.KFinSmooth → ∀ (k r : ℕ) (ε : Fin (2 * r
     have : ∑ c, (ν + root a b) c * θ c = (θ a - θ b) + ∑ c, ν c * θ c := by
       simp only [root, Pi.add_apply, Pi.sub_apply, add_mul, sub_mul, Finset.sum_add_distrib,
         Finset.sum_sub_distrib, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       ring
     rw [this]
     push_cast

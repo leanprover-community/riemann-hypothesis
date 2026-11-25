@@ -511,7 +511,7 @@ theorem _root_.GlobalTheory.SpacedDetected.card_spaced_detected_le : ∃ C : ℝ
         have := (Finset.mem_Ioc.mp hn).1
         exact_mod_cast (show n ≠ 0 by omega)
       rw [ha]
-      simp only [if_pos hn]
+      simp only [ite_eq_left hn]
       rw [neg_add, Complex.cpow_add _ _ hn0]
       ring
     set H : (Σ N : ℕ, DirichletCharacter ℂ (N + 1)) → ℝ := fun x =>

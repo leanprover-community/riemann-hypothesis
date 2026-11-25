@@ -86,7 +86,7 @@ theorem locK_mem (χ : HChar L) (G : Subgroup ℂˣ) (T : Finset (HeightOneSpect
     obtain ⟨y, hy⟩ := exists_approx (insert P T) (fun v => if v = P then a else 1)
       (fun v => by split_ifs; exacts [ha', one_ne_zero])
     have hP := hy P (Finset.mem_insert_self _ _)
-    simp only [if_true] at hP
+    simp only [ite_true] at hP
     have hy0 : (y : L) ≠ 0 := by
       intro h0
       rw [h0, zero_sub, Valuation.map_neg] at hP
@@ -99,7 +99,7 @@ theorem locK_mem (χ : HChar L) (G : Subgroup ℂˣ) (T : Finset (HeightOneSpect
     have e2 : ∏ v ∈ insert P T, χ.locK v (Units.mk0 (y : L) hy0) = χ.locK P (Units.mk0 (y : L) hy0) := by
       refine Finset.prod_eq_single P (fun v hv hne => ?_) (fun h => absurd (Finset.mem_insert_self _ _) h)
       have h1 := hy v hv
-      simp only [if_neg hne] at h1
+      simp only [ite_eq_right hne] at h1
       rw [locK_eq_of_tame χ (htame v) 1 _ (by simpa using h1), map_one]
     have h := hpr (insert P T) (fun v hv => hunr v fun h => hv (Finset.mem_insert_of_mem h)) (Units.mk0 (y : L) hy0)
     rw [e2, e1] at h

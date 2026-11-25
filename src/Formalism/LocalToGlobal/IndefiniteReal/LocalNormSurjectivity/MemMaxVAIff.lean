@@ -218,8 +218,4 @@ theorem normSurj [CompleteSpace L] (hF : FinNormSurj) (hS : HenselSqrt) {ϖ : L}
 
 end Norm
 
-section Final
-
-end Final
-
 end Formalism.IndefR.LocBrg

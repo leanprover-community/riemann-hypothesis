@@ -132,7 +132,7 @@ theorem eigenProjections_of_comaximal :
       simp
   · rw [Finset.prod_eq_zero (Finset.mem_univ l)]
     · rw [TensorProduct.zero_tmul, map_zero]; rfl
-    rw [if_neg (Ne.symm hil)]
+    rw [ite_eq_right (Ne.symm hil)]
     unfold Finsupp.sum
 
     rw [map_sum]
@@ -575,7 +575,7 @@ theorem lie_descends : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Da
     have h1 : P (Θ (e i) m) = m₃ i := by
 
       rw [hP, hPm, map_sum]
-      simp only [he _ _ i _ _ (eig₃ _), Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [he _ _ i _ _ (eig₃ _), Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact congrArg (fun z : TM A₀ (x'' ≫ π) => (Additive.toMul z).1) h1
   refine ⟨w, fun i c => ?_, ?_⟩
   · refine (isTanScal_iff' A₀ act₀ _ _ _ _).2 ⟨(Additive.toMul (Θ (e i) m)).2, jinj _ _ ?_⟩

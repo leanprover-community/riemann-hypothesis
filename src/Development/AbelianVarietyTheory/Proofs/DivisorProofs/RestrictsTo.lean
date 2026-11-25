@@ -88,11 +88,4 @@ variable {α β α' β' r}
 
 end General
 
-section Dieu
-
-variable {O : Type} [CommRing O] (q : ℕ) [Fact q.Prime] (k : Type) [Field k] [CharP k q] (c : O →+* O) {C : Scheme.{0}}
-  [Algebra k Γ(C, ⊤)] {G : Over C} [GrpObj G] [QuasiSeparated G.hom] (i : OAct O G)
-
-end Dieu
-
 end GlobalTheory.TwoSeq

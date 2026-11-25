@@ -95,7 +95,7 @@ theorem gram_diag_unitary {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (s : Fin n 
     by_cases hjk : j = k
     · subst hjk
       have hj' : (s j : ℂ) ≠ 0 := by exact_mod_cast hj
-      simp only [if_true]
+      simp only [ite_true]
       rw [Complex.ofReal_pow, map_inv₀, Complex.conj_ofReal]
       field_simp
     · have : (⟨j, hj⟩ : S) ≠ ⟨k, hk⟩ := fun h => hjk (congrArg Subtype.val h)

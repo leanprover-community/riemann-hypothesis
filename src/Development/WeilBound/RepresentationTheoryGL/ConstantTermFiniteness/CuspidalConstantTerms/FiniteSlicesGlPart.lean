@@ -856,7 +856,7 @@ theorem GlobalTheory.FlagNorm.conj_mem_unip : ∀ (F E : Type) [Field F] [Number
         change _ ∈ colSpan F X _ at h2
         simpa [sub_mulVec] using h2
       simpa [sub_mulVec] using hle hz
-    · push_neg at hex
+    · push Not at hex
       have eAj : {i | ∃ k ∈ T, i ≤ k ∧ k < j} = {i | i ≤ T.max' hne} := by
         rw [← eB]
         exact Set.ext fun i => ⟨fun ⟨k, hk, h1, _⟩ => ⟨k, hk, h1⟩, fun ⟨k, hk, h1⟩ => ⟨k, hk, h1, hex k hk⟩⟩

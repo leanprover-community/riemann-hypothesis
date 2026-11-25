@@ -99,12 +99,6 @@ structure SymmetricExtraCompatibility {D : D7} (X : FullTiedS D) {L : SizeData�
     haveI : Fact (D.what₂.places.resChar w).Prime := ⟨D.what₂.places.resChar_prime w⟩
     GIwPos u w h (ex.ker u w h)
 
-section Sub
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
-
-end Sub
-
 def FullTiedS.to0 {D : D7} (X : FullTiedS D) : Herm0 D := ⟨X.base.lev0, X.g⟩
 
 end Formalism.L2.Herm

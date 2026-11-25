@@ -210,9 +210,9 @@ theorem coeff_det_pencil_mem : ∀ {Γ X O : Type} [Group Γ] [CommRing O] {n : 
   rw [hfun]
   refine Subalgebra.sum_mem _ fun d _ => ?_
   by_cases hd : d 0 = j
-  · simp only [hd, if_true]
+  · simp only [hd, ite_true]
     exact key d
-  · simp only [hd, if_false]
+  · simp only [hd, ite_false]
     exact T.zero_mem
 
 end GlobalTheory.SpanRing

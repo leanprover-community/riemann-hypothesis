@@ -1153,7 +1153,7 @@ theorem sum_multV_le [NeZero n] (hFD : Sh.FilDim W) {d : ℕ} {T₁ T₂ : LocLa
       by_contra hnj
       exact hne (Formalism.MainNotions.N.Pv.LocalLengthBound.rk_multV_of_not_jump PD T₂.ρ τ k hnj)
     have hw := hjump k hj
-    simp only [Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS, hev, if_true, Set.mem_union, Set.mem_Icc] at hw
+    simp only [Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS, hev, ite_true, Set.mem_union, Set.mem_Icc] at hw
     have hk' := Finset.mem_Ico.1 hk
     simp only [Finset.mem_Icc]
     omega
@@ -1454,7 +1454,7 @@ theorem first_lift_of_hypotheses [NeZero n] (W : LocWach PD LL O v n) (hV : Form
     simp only [Finset.mem_filter] at hu
     obtain ⟨-, τ, hτ, hjmp⟩ := hu
     have hw := hjw c τ hτ p.1 hjmp
-    simp only [JumpWinS, hev, if_true, Set.mem_union, Set.mem_Icc] at hw
+    simp only [JumpWinS, hev, ite_true, Set.mem_union, Set.mem_Icc] at hw
     refine ⟨hx0, ?_⟩
     push_cast at hj1 hj2 ⊢
     omega

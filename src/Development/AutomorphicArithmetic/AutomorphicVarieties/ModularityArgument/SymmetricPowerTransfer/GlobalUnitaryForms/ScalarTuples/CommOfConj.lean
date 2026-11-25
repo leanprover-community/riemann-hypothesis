@@ -974,7 +974,7 @@ private theorem relIndex_ne {Γ X : Type} [Group Γ] (C H : Subgroup Γ) (φ : �
     refine QuotientGroup.induction_on q fun a => ?_
     have hex : ∃ b : H, φ b = ((⟨φ a, hmem a a.2⟩ : s) : X) := ⟨a, rfl⟩
     refine ⟨⟨φ a, hmem a a.2⟩, ?_⟩
-    simp only [F, dif_pos hex]
+    simp only [F, dite_eq_left hex]
     rw [QuotientGroup.eq, Subgroup.mem_subgroupOf]
     simpa using hinj _ _ hex.choose_spec
   exact Subgroup.index_ne_zero_of_finite
@@ -1121,10 +1121,10 @@ private theorem finK_fin (F : Type) [Field F] [NumberField F] (Δ : F) (D : Dat 
   refine cls_of_relIndex ι _ D.UZ ?_ hbig
   refine box_relIndex _ _ _ D.Sg (fun v hv => ?_) (fun v hv => ?_)
   · unfold Dat.J2v
-    rw [if_pos hv]
+    rw [ite_eq_left hv]
     exact ne_zero_of_dvd_ne_zero (hD.sig v hv).levelTwoFiniteIndex (Subgroup.relIndex_dvd_of_le_left _ le_sup_right)
   · unfold Dat.J2v
-    rw [if_neg hv]
+    rw [ite_eq_right hv]
     exact le_sup_right
 
 theorem UpperTheory.V.Z.Sym.Glob.finK :

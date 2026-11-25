@@ -576,7 +576,7 @@ theorem levOp_eq (ρ : Representation ℂ G V) (K J : Subgroup G) (t : G) [Finty
     obtain ⟨k, hk, hout⟩ := out_iota J t r
     have hmem : ∃ x ∈ J, ∃ z ∈ J, (iota J t r).out = x * t * z := ⟨r.out, (r.out).2, k, hk, hout⟩
     beta_reduce
-    rw [if_pos hmem, one_smul, LinearMap.comp_id, hout, map_mul, map_mul, Module.End.mul_apply,
+    rw [ite_eq_left hmem, one_smul, LinearMap.comp_id, hout, map_mul, map_mul, Module.End.mul_apply,
       Module.End.mul_apply, fix_apply y hk]
   · intro q hq
     rw [Function.mem_support] at hq

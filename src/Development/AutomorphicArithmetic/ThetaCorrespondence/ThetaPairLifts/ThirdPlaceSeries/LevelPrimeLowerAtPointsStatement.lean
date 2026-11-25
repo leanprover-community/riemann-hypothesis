@@ -202,10 +202,10 @@ theorem data_of_rows (eps CD : ℝ) (he : 0 < eps) (he' : eps < 1 / 52) (hCD : 3
     by_cases hL : D.s.letter u ⟨l - 1, by omega⟩ = true
     · right
       intro τ
-      rw [key τ, if_pos hL]
+      rw [key τ, ite_eq_left hL]
     · left
       intro τ
-      rw [key τ, if_neg hL]
+      rw [key τ, ite_eq_right hL]
       ring
   ·
     intro u τ
@@ -363,7 +363,7 @@ lemma vand_inner_le (c : Sz.Cfg) (hc : c.Ok) (hs : c.vth ≤ 1 / 10) (de : ℕ �
 
   have hu1 : c.u de 1 = c.a := by unfold Sz.Cfg.u; simp
   have huk : c.u de c.k = c.ulast := by
-    unfold Sz.Cfg.u; rw [if_neg (by omega), if_pos rfl]
+    unfold Sz.Cfg.u; rw [ite_eq_right (by omega), ite_eq_left rfl]
   have F1 : ∀ j ∈ Icc 2 c.k, 1 ≤ c.u de 1 - c.u de j := by
     intro j hj
     rw [mem_Icc] at hj

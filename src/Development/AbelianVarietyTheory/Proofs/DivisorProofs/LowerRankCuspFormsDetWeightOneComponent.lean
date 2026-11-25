@@ -145,7 +145,7 @@ theorem coeff_zero {n : ℕ} (A : Finset (Fin n → ℕ)) (b : (Fin n → ℕ) �
   rw [Finset.sum_eq_single α] at this
   · simpa [MvPolynomial.coeff_monomial] using this
   · intro β _ hβ
-    rw [MvPolynomial.coeff_monomial, if_neg]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right]
     intro he
     exact hβ (Finsupp.equivFunOnFinite.symm.injective he)
   · intro h'
@@ -551,19 +551,19 @@ theorem comb_facts {Ψ : Finset (E →+* ℂ)} {r p0 : ℕ} (s c : ℕ) {A L la 
   refine ⟨fun τ i j hij hj => ?_, fun τ i j hi hij => ?_, fun τ i j hi hj => ?_⟩
   · have hi : (i : ℕ) < p0 := lt_of_le_of_lt (Fin.le_def.1 hij) hj
     rw [hla, hla]
-    simp only [GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds.deMul, if_pos hi, if_pos hj]
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds.deMul, ite_eq_left hi, ite_eq_left hj]
     have h1 := mA τ i j hij (Or.inl hj)
     have h2 := mul_le_mul_of_nonneg_left (mL τ i j hij (Or.inl hj)) hc
     linarith
   · have hj : ¬ (j : ℕ) < p0 := by have := Fin.le_def.1 hij; omega
     have hi' : ¬ (i : ℕ) < p0 := by omega
     rw [hla, hla]
-    simp only [GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds.deMul, if_neg hi', if_neg hj]
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds.deMul, ite_eq_right hi', ite_eq_right hj]
     have h1 := mA τ i j hij (Or.inr hi)
     have h2 := mul_le_mul_of_nonneg_left (mL τ i j hij (Or.inr hi)) hc
     linarith
   · rw [hla, hla]
-    simp only [GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds.deMul, if_pos hi, if_neg (not_lt.2 hj)]
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds.deMul, ite_eq_left hi, ite_eq_right (not_lt.2 hj)]
     have pA := pair_of le_rfl hA hpA τ i j hi hj
     have pL := mul_le_mul_of_nonneg_left (pair_of zero_le_one hL hpL τ i j hi hj) (Nat.cast_nonneg (α := ℝ) c)
     have hs2 : ((s / 2 : ℕ) : ℝ) * 2 ≤ s := by exact_mod_cast Nat.div_mul_le_self s 2
@@ -784,7 +784,7 @@ theorem GlobalTheory.ShareOn.lowerRank_oneComponent : ∀ (E : Type) [Field E] [
     have hc : ∀ q, cc (e q).1.2 (e q).1.1 = a q := by
       intro q
       have h : ((e q).1.1, (e q).1.2) ∈ PM := (e q).2
-      simp only [cc, dif_pos h]
+      simp only [cc, dite_eq_left h]
       exact congrArg a (e.symm_apply_apply q)
     have hlead : ∀ x ∈ X.dom, leadM X.toData Fl.s Fl.w0 F Xa.T (Xa.T + 1) cc x = 0 := by
       intro x hx

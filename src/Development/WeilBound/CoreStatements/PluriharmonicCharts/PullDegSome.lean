@@ -15,9 +15,9 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 def κ₁ (k₀ : K) (k : K) : Option K := if k = k₀ then none else some k
 
-theorem κ₁_self (k₀ : K) : κ₁ k₀ k₀ = none := if_pos rfl
+theorem κ₁_self (k₀ : K) : κ₁ k₀ k₀ = none := ite_eq_left rfl
 
-theorem κ₁_ne {k₀ k : K} (h : k ≠ k₀) : κ₁ k₀ k = some k := if_neg h
+theorem κ₁_ne {k₀ k : K} (h : k ≠ k₀) : κ₁ k₀ k = some k := ite_eq_right h
 
 theorem κ₁_inj (k₀ : K) : Function.Injective (κ₁ k₀) := by
   intro a b h

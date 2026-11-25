@@ -44,12 +44,6 @@ def IsPairMap (F F' F'' : FlagD H r) (Λ : Submodule R V) (g : R) (β : V ≃ₗ
 
 
 
-section Pair
-
-variable {F F' F'' : FlagD H r} {Λ : Submodule R V} {g : R} {β : V ≃ₗ[K] V}
-
-end Pair
-
 namespace FlagExample
 
 open NumberField Formalism.BasicNotions.Examples₂

@@ -942,7 +942,7 @@ theorem ratio_odd_mul : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
   · refine ⟨1, 1, one_ne_zero, one_ne_zero, fun W _ _ _ T => ?_⟩
     obtain ⟨a, b, ha, hb, h⟩ := hθ W T
     exact ⟨a, a, 1, ha, ha, _root_.GlobalTheory.Mum.ZeroFam.exp_of_members_zero R hR D C W T 1 le_rfl θ₀ F₁ hz a b h a, by simp⟩
-  push_neg at hz
+  push Not at hz
   obtain ⟨G, S, hG, hS⟩ := _root_.GlobalTheory.Mum.exists_mulPull R hR D C m hm F₁ θ₀
   have hGz := hG hz
   have hk : 1 ≤ m ^ 2 := Nat.one_le_pow _ _ hm.pos

@@ -241,12 +241,12 @@ private theorem herm_Hb_wbPart_eq_herm_Hpk_of_inWb (r : ℕ) (z : Fin (2 * r + k
     simp only [Matrix.mulVec, dotProduct]
     rw [Finset.sum_eq_single i]
     · simp only [Hpk]
-      rw [if_neg (by omega), if_neg (by omega), if_pos (by simp [h1, h2])]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left (by simp [h1, h2])]
     · intro j _ hji
       by_cases hj : j.val < r ∨ r + k < j.val
       · rw [hz j hj, mul_zero]
       · simp only [Hpk]
-        rw [if_neg (by omega), if_neg (by omega), if_neg (by
+        rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by
           rintro ⟨_, _, h⟩
           exact hji h.symm), zero_mul]
     · intro h
@@ -276,8 +276,8 @@ private theorem herm_Hb_wbPart_eq_herm_Hpk_of_inWb (r : ℕ) (z : Fin (2 * r + k
       simp [wI, Fin.ext_iff]
     simp only [wbPart]
     by_cases hjl : j = Fin.last k
-    · rw [if_pos hjl, if_pos (hc.1 hjl)]
-    · rw [if_neg hjl, if_neg (fun h => hjl (hc.2 h))]
+    · rw [ite_eq_left hjl, ite_eq_left (hc.1 hjl)]
+    · rw [ite_eq_right hjl, ite_eq_right (fun h => hjl (hc.2 h))]
 
 theorem theSection_isSection (r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hk : 1 ≤ k) (hz : inWb k r z)
     (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z') :

@@ -61,7 +61,7 @@ theorem al_le_rowLen_sub {D : D7} (L : SizeData₂ D) (u : D.what₂.Word) (j : 
   obtain ⟨-, h4⟩ := L.cloud_u u (tauPl D (false, t)) ⟨1, by omega⟩ le_rfl (by show 1 + 1 < D.R.k; omega)
   have hk' : (5 : ℝ) ≤ D.R.k := by exact_mod_cast hk
   have hS := L.Sc_pos
-  rw [nuRowOK D u j hj, nuRowOK D u j hj, if_pos (by omega), if_pos (by omega), e1,
+  rw [nuRowOK D u j hj, nuRowOK D u j hj, ite_eq_left (by omega), ite_eq_left (by omega), e1,
     RowWeightLemmas.nuRow_head D u j hj _ 1 (by omega), hwe]
   unfold al cG kaJ Ranks.N
   push_cast

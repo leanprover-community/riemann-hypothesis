@@ -102,7 +102,7 @@ theorem levi_stepPot_cell : ∀ (N j : ℕ), j ≤ N → ∀ (i : Fin N) (w : Pa
           (-1) * gramLog (sigForm N j) (N - j) (cellMat N z) := by
       funext z
       delta GlobalTheory.CompanionTheory.Ar.PB.stepPot
-      rw [if_pos hij]
+      rw [ite_eq_left hij]
       ring
     rw [hfun]
     refine ⟨(G _ h1).add (contDiffAt_const.mul (G _ h0)), ?_⟩
@@ -125,7 +125,7 @@ theorem levi_stepPot_cell : ∀ (N j : ℕ), j ≤ N → ∀ (i : Fin N) (w : Pa
           1 * gramLog (sigForm N j) ((i : ℕ) + 1 - j) (cellMat N z) := by
       funext z
       delta GlobalTheory.CompanionTheory.Ar.PB.stepPot
-      rw [if_neg hij]
+      rw [ite_eq_right hij]
       ring
     have GA : ContDiffAt ℝ 2 (fun z : Pairs N → ℂ => gramLog (sigForm N j) N (cellMat N z) +
         (-1) * gramLog (sigForm N j) (N - j) (cellMat N z)) 0 :=

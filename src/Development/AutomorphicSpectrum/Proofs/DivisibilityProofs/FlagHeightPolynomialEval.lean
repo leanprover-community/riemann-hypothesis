@@ -34,7 +34,7 @@ theorem flMonoLines_eq (m : Ψ × Fin N →₀ ℕ) (d : ℕ) (hm : m.degree = d
   have hk : (k : ℕ) < (Finsupp.toMultiset m).toList.length := by
     rw [hl]
     exact k.2
-  simp only [GroundTheory.Heights₂.Heights.LowerBoundFree.monoLines, monoLines, dif_pos hk]
+  simp only [GroundTheory.Heights₂.Heights.LowerBoundFree.monoLines, monoLines, dite_eq_left hk]
 
 theorem linRoot_pow_eq (lam : Wt Ψ N) (n : ℕ) :
     linRoot lam ^ n = ((-1 : ℝ) ^ n) •
@@ -64,7 +64,7 @@ theorem hhFl_linRoot_pow : ∀ II : IntersectionSystem, IsFullIntersectionSystem
         (fun k => GroundTheory.Heights₂.Heights.LowerBoundFree.xLine Ψ N (w k)) := by
       rw [flMonoLines_eq _ _ hdeg]
       exact hI
-    rw [HhModel.hhFl_monomial, GroundTheory.Heights₂.Heights.LowerBoundFree.hFlMono, if_pos hdeg', hdeg, one_mul]
+    rw [HhModel.hhFl_monomial, GroundTheory.Heights₂.Heights.LowerBoundFree.hFlMono, ite_eq_left hdeg', hdeg, one_mul]
     exact congrArg (fun t => (-1 : ℝ) ^ (dimFl Ψ N + 1) * t) e1
   have hpoly : PB.hFlPoly Ψ N II = PB.formPoly (dimFl Ψ N + 1) fun w =>
       II (GroundTheory.Heights₂.Heights.LowerBoundFree.FlBlock Ψ N) (GroundTheory.Heights₂.Heights.LowerBoundFree.FlIdx Ψ N)

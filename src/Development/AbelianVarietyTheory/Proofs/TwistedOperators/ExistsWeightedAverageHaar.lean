@@ -200,7 +200,7 @@ theorem stdFst_fixed : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G 
           rw [e'] at h2
           exact h2.symm
         · unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.stdFst
-          rw [if_neg hx, if_neg hx']
+          rw [ite_eq_right hx, ite_eq_right hx']
 
 end GlobalTheory.StdFstFix
 end -- clump:auto
@@ -289,7 +289,7 @@ theorem exists_open_fix_vac_neg : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : 
     obtain ⟨n, hn⟩ := (h2.eventually (Metric.ball_mem_nhds _ hpos)).exists
     rw [hmc n, Pi.smul_apply, smul_eq_mul, dist_eq_norm, ← sub_one_mul, norm_mul] at hn
     have := hc n
-    push_neg at this
+    push Not at this
     nlinarith [norm_nonneg (X.vac w₀)]
   obtain ⟨n, hn⟩ := key
   have hNpos : 0 < N₁ * n.factorial := Nat.mul_pos hN₁ n.factorial_pos

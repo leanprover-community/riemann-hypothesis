@@ -1565,19 +1565,19 @@ theorem exOf_kapBase {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Rec
   · rfl
   · by_cases h' : τ (H.rt : E) = H.rt0
     · have hi : (i : ℕ) < Dw.p := by
-        have := i.2; simp only [Datum.mult, if_pos h'] at this; exact this
-      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, if_pos h', dif_pos h', dif_pos hi, kapBase, sub_zero,
-        if_pos hi]
+        have := i.2; simp only [Datum.mult, ite_eq_left h'] at this; exact this
+      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, ite_eq_left h', dite_eq_left h', dite_eq_left hi, kapBase, sub_zero,
+        ite_eq_left hi]
     · have hi : (i : ℕ) < Dw.q := by
-        have := i.2; simp only [Datum.mult, if_neg h'] at this; exact this
+        have := i.2; simp only [Datum.mult, ite_eq_right h'] at this; exact this
       have hc : conjEmb τ (H.rt : E) = H.rt0 := by
         have := (ReciprocityTheory.ChartRestriction.G.PullbackSections.CVA.inPsi_or H τ).resolve_left h'
         unfold InPsi at this
         rw [ComplexEmbedding.conjugate_coe_eq] at this
         exact this
       have hn : ¬ (Dw.p + (Dw.q - 1 - (i : ℕ)) < Dw.p) := by omega
-      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, if_neg h', dif_neg h', dif_pos hc, dif_pos hi, kapBase,
-        if_neg hn, neg_neg, sub_zero]
+      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, ite_eq_right h', dite_eq_right h', dite_eq_left hc, dite_eq_left hi, kapBase,
+        ite_eq_right hn, neg_neg, sub_zero]
 
 theorem exists_kap_theta : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (TF : TorFlag Xo c) (Z : Comp Xo c), 1 ≤ Dw.p + Dw.q → FnAlgClosed (Xo := Xo) (c := c) → ∀ [SmoothOfRelativeDimension Dw.dim (s₀ TF.Y Z)] (K : CanonLB (s₀ TF.Y Z) Dw.dim), ∃ (κ : LB (X₀ TF.Y Z)) (hκ : κ.IsLB), CechPic.pull (π₀ TF.X Z) (cls κ hκ) = cls (L₀ TF.X Z (kapBase Dw)) (isLB_L₀ TF.X Z _) ∧ ∃ θ : (LB.div κ K.bundle).Sec, nonzeroLocus θ = (j₀ TF.Y Z).opensRange := by
   intro E hE hNumber hCM H Dw l Xo c TF Z hpq hF hSmooth K

@@ -61,8 +61,4 @@ def centSum (ι₁ : Γ →* G₁) (ι₂ : Γ →* G₂) (θ : G₂ →* G₂) 
 
 end Count
 
-section Examples
-
-end Examples
-
 end GlobalTheory.LKCount

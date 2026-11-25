@@ -47,7 +47,7 @@ lemma exists_global_bound {f : V → ℂ} (hf : Continuous f) {b : ℝ} (hb : 0 
       _ ≤ max (M * (1 + r') ^ b) (|c| * 2 ^ b) * (1 + ‖v‖) ^ (-b) := by
           gcongr
           exact le_max_left _ _
-  · push_neg at hv
+  · push Not at hv
     have hv1 : 1 ≤ ‖v‖ := le_trans (le_max_right _ _) hv.le
     have hb' := hr ‖v‖ (le_trans (le_max_left _ _) hv.le) v rfl
     have hvpos : 0 < ‖v‖ := by linarith
@@ -100,7 +100,7 @@ lemma summable_one_add_norm (Λ : Submodule ℤ V) [DiscreteTopology Λ] [IsZLat
     simp only [ZeroMemClass.coe_zero, norm_zero, add_zero, Real.one_rpow, ↓reduceIte]
     linarith [Real.rpow_nonneg (le_refl (0 : ℝ)) (-b)]
   · have hl : 0 < ‖(l : V)‖ := norm_pos_iff.mpr (by simpa using h)
-    rw [if_neg h, add_zero]
+    rw [ite_eq_right h, add_zero]
     show (1 + ‖(l : V)‖) ^ (-b) ≤ ‖(l : V)‖ ^ (-b)
     rw [Real.rpow_neg (by positivity), Real.rpow_neg hl.le]
     exact inv_anti₀ (Real.rpow_pos_of_pos hl b) (Real.rpow_le_rpow hl.le (by linarith) hb0.le)

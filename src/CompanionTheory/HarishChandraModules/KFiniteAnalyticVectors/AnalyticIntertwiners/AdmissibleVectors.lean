@@ -34,8 +34,8 @@ theorem actLC_lie {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (X
   have hm : ∀ a b c d (x y : ℂ), actLC E (single a b x * single c d y) = (x * y) • (if b = c then E a d else 0) := by
     intro a b c d x y
     by_cases h : b = c
-    · subst h; rw [single_mul_single_same, actLC_single, if_pos rfl]
-    · rw [single_mul_single_of_ne (h := h), map_zero, if_neg h, smul_zero]
+    · subst h; rw [single_mul_single_same, actLC_single, ite_eq_left rfl]
+    · rw [single_mul_single_of_ne (h := h), map_zero, ite_eq_right h, smul_zero]
   induction X using Matrix.induction_on' with
   | h_zero => simp
   | h_add X X' h h' =>
@@ -85,8 +85,8 @@ theorem twLC_E (E : Fin (p + q) → Fin (p + q) → Module.End ℂ M) (j : ℕ) 
   rw [e, actLC_single, one_smul]
   congr 2
   by_cases h : a = b
-  · subst h; rw [Eab, trace_single_eq_same, if_pos rfl]; ring
-  · rw [Eab, trace_single_eq_of_ne _ _ _ h, if_neg h]; ring
+  · subst h; rw [Eab, trace_single_eq_same, ite_eq_left rfl]; ring
+  · rw [Eab, trace_single_eq_of_ne _ _ _ h, ite_eq_right h]; ring
 
 theorem upq_decC (Z : Mat p q) : ∃ Y₁ ∈ upq p q, ∃ Y₂ ∈ upq p q, Z = Y₁ + Complex.I • Y₂ ∧
     (IsKC Z → IsKC Y₁ ∧ IsKC Y₂) := by
@@ -214,7 +214,7 @@ theorem harish_chandra_first_clause (hD : ForIrr fun _ ε H _ _ σ => Dense {v :
         refine ⟨⟨w, hw⟩, Submodule.mem_iSup_of_mem (fun a => (μ (finSumFinEquiv a) : ℚ) + (j : ℚ) / 2) ?_, rfl⟩
         refine (Submodule.mem_iInf _).2 fun a => LinearMap.mem_ker.2 (Subtype.ext ?_)
         show L (Eab a a) w - (((μ (finSumFinEquiv a) : ℚ) + (j : ℚ) / 2 : ℚ) : ℂ) • w = 0
-        rw [hL, twLC_E, hμ, if_pos rfl]
+        rw [hL, twLC_E, hμ, ite_eq_left rfl]
         push_cast
         module
       obtain ⟨y, hy, e⟩ := hle (hW _ _ _ σ hσ hσi v.1 v.2)
@@ -241,7 +241,7 @@ theorem harish_chandra_first_clause (hD : ForIrr fun _ ε H _ _ σ => Dense {v :
       · obtain ⟨a, rfl⟩ := finSumFinEquiv.surjective i
         have h1 : M.act (Eab a a) w - ((μ a : ℚ) : ℂ) • w = 0 := LinearMap.mem_ker.1 ((Submodule.mem_iInf _).1 hw1 a)
         have h2 := hφ (Eab a a) w
-        rw [sub_eq_zero.1 h1, map_smul, hL, twLC_E, if_pos rfl] at h2
+        rw [sub_eq_zero.1 h1, map_smul, hL, twLC_E, ite_eq_left rfl] at h2
         show smE (epq p q) σ _ _ (φ w) =
           ((((μ (finSumFinEquiv.symm (finSumFinEquiv a)) : ℚ) : ℝ) - (j : ℝ) / 2 : ℝ) : ℂ) • φ w
         rw [Equiv.symm_apply_apply, eq_sub_of_add_eq h2.symm, ← sub_smul]
@@ -252,7 +252,7 @@ theorem harish_chandra_first_clause (hD : ForIrr fun _ ε H _ _ σ => Dense {v :
         have h1 : M.act (Eab a b) w = 0 := LinearMap.mem_ker.1
           ((Submodule.mem_iInf _).1 ((Submodule.mem_iInf _).1 ((Submodule.mem_iInf _).1 hw2 a) b) (posC_ofC hik he))
         have h2 := hφ (Eab a b) w
-        rw [h1, map_zero, hL, twLC_E, if_neg (fun h => by subst h; exact lt_irrefl _ hik), zero_smul, add_zero] at h2
+        rw [h1, map_zero, hL, twLC_E, ite_eq_right (fun h => by subst h; exact lt_irrefl _ hik), zero_smul, add_zero] at h2
         exact h2.symm
     · have := hirr.1
       obtain ⟨h, hh⟩ := exists_ne (0 : πU.H)

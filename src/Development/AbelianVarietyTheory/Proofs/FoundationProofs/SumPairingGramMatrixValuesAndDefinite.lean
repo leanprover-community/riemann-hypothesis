@@ -84,9 +84,9 @@ theorem blockForm_posDef {C I : Type} [Fintype C] [Fintype I] {N : ℕ} (e : Fin
   · ext a b
     simp only [Matrix.conjTranspose_apply, Matrix.of_apply]
     by_cases h : (e a).1 = (e b).1
-    · rw [if_pos h, if_pos h.symm]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
       exact hM.isHermitian.apply _ _
-    · rw [if_neg h, if_neg (fun h' => h h'.symm), star_zero]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h h'.symm), star_zero]
   · intro x hx
     rw [blockForm_apply]
     obtain ⟨a, ha⟩ := Function.ne_iff.mp hx
@@ -154,9 +154,9 @@ theorem sumGram_spec : ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (ι
     · ext a b
       simp only [sumGram, Matrix.conjTranspose_apply, Matrix.of_apply]
       by_cases h : (e a).1 = (e b).1
-      · rw [if_pos h, if_pos h.symm]
+      · rw [ite_eq_left h, ite_eq_left h.symm]
         exact (pairSymm K ι n lam G fun τ => (hG τ).1).eq _ _
-      · rw [if_neg h, if_neg (fun h' => h h'.symm), star_zero]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h h'.symm), star_zero]
     · intro a b
       simp only [sumGram, Matrix.of_apply]
       split_ifs

@@ -114,7 +114,7 @@ theorem value_of_adjoint_of_mem_span : ∀ (X W C : Type) [AddCommGroup W] [Modu
     intro k w hw
     have h1 := hl (b k) w hw
     rw [← hFu, hpet] at h1
-    simpa only [hb, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] using h1
+    simpa only [hb, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] using h1
   have hex : ∃ k, u k ≠ 0 := by
     by_contra! h
     apply hF0

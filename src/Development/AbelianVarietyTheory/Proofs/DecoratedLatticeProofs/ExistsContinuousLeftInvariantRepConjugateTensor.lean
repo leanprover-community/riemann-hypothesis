@@ -82,14 +82,14 @@ theorem act_list {D : D7} (θ : InfFam D) {V : HSp D} {S : D.what₂.Tau → SPa
     rw [List.map_cons, List.prod_cons]
     by_cases e : p.1 = τ
     · subst e
-      rw [Function.update_self, if_pos rfl, rep_mul M _ (hl p (by simp)), ContinuousLinearMap.mul_apply]
+      rw [Function.update_self, ite_eq_left rfl, rep_mul M _ (hl p (by simp)), ContinuousLinearMap.mul_apply]
       apply GlobalTheory.SmoothMultilinear.prod_mem
       intro g hg
       obtain ⟨q, hq, rfl⟩ := List.mem_map.1 hg
       split_ifs with e
       · exact e ▸ hl' q hq
       · exact GlobalTheory.SmoothMultilinear.prod_mem _ [] (by simp)
-    · rw [Function.update_of_ne (Ne.symm e), if_neg e, one_mul]
+    · rw [Function.update_of_ne (Ne.symm e), ite_eq_right e, one_mul]
 
 theorem smooth_of_contDiff {D : D7} (θ : InfFam D) {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
     {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] (ρ : GA D V →* (K →L[ℂ] K))

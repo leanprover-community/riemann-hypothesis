@@ -98,7 +98,7 @@ private theorem coeff_mem_subalgebra_of_eval_mem {R : Type} [CommRing R] [Algebr
   by_cases hj : F.natDegree + 1 ≤ j
   · rw [Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)]
     exact S.zero_mem
-  push_neg at hj
+  push Not at hj
   let v : Fin (F.natDegree + 1) → ℂ := fun i => ((i : ℕ) : ℂ)
   have hv : Function.Injective v := fun a b hab => Fin.ext (by simpa [v] using hab)
   let V := Matrix.vandermonde v
@@ -526,7 +526,7 @@ private theorem archExp_single (K : Type) [Field K] [NumberField K] (r s : ℕ) 
     intro p
     by_cases hp : p.1 = (Fin.castAdd s i, Fin.natAdd r j)
     · simp [P, hp]
-    · simp only [P, hp, if_false]
+    · simp only [P, hp, ite_false]
       rfl
   have hc := conj_unipGL_eq_archExp (1 : AdelicGLn.AdelicGL K (r + s)) P h0
   simp only [inv_one, one_mul, mul_one] at hc
@@ -540,17 +540,17 @@ private theorem archExp_single (K : Type) [Field K] [NumberField K] (r s : ℕ) 
   · obtain ⟨rfl, rfl⟩ := hab
     have hh : ((Fin.castAdd s i : Fin (r + s)) : ℕ) < r ∧ r ≤ ((Fin.natAdd r j : Fin (r + s)) : ℕ) :=
       ⟨by simp, by simp⟩
-    rw [dite_eq_left hh, if_pos ⟨rfl, rfl⟩]
-    simp only [P, if_pos rfl]
+    rw [dite_eq_left hh, ite_eq_left ⟨rfl, rfl⟩]
+    simp only [P, ite_eq_left rfl]
     exact (e.apply_symm_apply x).symm
-  · rw [if_neg hab]
+  · rw [ite_eq_right hab]
     split_ifs with hh
     · have hne : ¬ ((a, b) : Fin (r + s) × Fin (r + s)) = (Fin.castAdd s i, Fin.natAdd r j) := by
         intro heq
         apply hab
         simp only [Prod.mk.injEq] at heq
         exact ⟨heq.1.symm, heq.2.symm⟩
-      simp only [P, hne, if_false]
+      simp only [P, hne, ite_false]
       exact (map_zero e).symm
     · exact (map_zero e).symm
 

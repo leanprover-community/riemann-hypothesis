@@ -101,7 +101,7 @@ theorem isMultiHomogIdeal_of_blockDeg [Fintype K] {I : Ideal (MRing ι F)}
     rw [hG, coeff_weightedHomogeneousComponent]
     by_cases hw : Finsupp.weight (blockWeight ι) d = b
     · simp [hw]
-    · rw [if_neg hw, if_neg]
+    · rw [ite_eq_right hw, ite_eq_right]
       exact fun h => hw (funext fun k => h k (Finset.mem_univ k))
   rw [← this]
   exact hmem _
@@ -231,7 +231,7 @@ theorem pullNat_apply (e : K → ℕ) (k' : K') :
     rw [Finset.sum_eq_zero]
     · simp
     · intro κ _
-      rw [if_neg (fun hk => h ⟨κ, hk.symm⟩), mul_zero]
+      rw [ite_eq_right (fun hk => h ⟨κ, hk.symm⟩), mul_zero]
 
 theorem pullNat_sub (b : K → ℤ) :
     (fun k' => (pullNat K K' j (fun κ => (b κ).toNat) k' : ℤ) -

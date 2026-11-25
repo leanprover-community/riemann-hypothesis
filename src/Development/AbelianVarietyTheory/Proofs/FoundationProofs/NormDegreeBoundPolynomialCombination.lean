@@ -104,10 +104,10 @@ theorem form_bound {k σ : Type} [Field k] [Infinite k] [Fintype σ] (n : ℕ)
     intro hG'
     have h1 := congrArg (AddMonoidAlgebra.coeff · m0) hG'
     rw [hG, MvPolynomial.coeff_sum, Finset.sum_eq_single m0] at h1
-    · rw [MvPolynomial.coeff_monomial, if_pos rfl, hcm, MvPolynomial.coeff_zero] at h1
+    · rw [MvPolynomial.coeff_monomial, ite_eq_left rfl, hcm, MvPolynomial.coeff_zero] at h1
       exact (MvPolynomial.mem_support_iff.mp hm0) (Polynomial.leadingCoeff_eq_zero.mp h1)
     · intro m _ hm
-      rw [MvPolynomial.coeff_monomial, if_neg hm]
+      rw [MvPolynomial.coeff_monomial, ite_eq_right hm]
     · intro h
       exact absurd hm0 h
   obtain ⟨lam, hlam⟩ : ∃ lam : σ → k, MvPolynomial.eval lam G ≠ 0 := by
@@ -196,7 +196,7 @@ theorem norm_degree (k A : Type) [Field k] [Infinite k] [CommRing A] [IsDomain A
       (natDegree_add_le _ _).trans
         (max_le (natDegree_C_mul_X_pow_le _ _) (natDegree_le_of_degree_le (hp i).le))
     have hq2 : ∀ i, (C (lam i) * X ^ d + p i).coeff d = lam i := fun i => by
-      rw [coeff_add, coeff_C_mul_X_pow, if_pos rfl, coeff_eq_zero_of_degree_lt (hp i), add_zero]
+      rw [coeff_add, coeff_C_mul_X_pow, ite_eq_left rfl, coeff_eq_zero_of_degree_lt (hp i), add_zero]
     have hN : (Algebra.norm k[X] (∑ i, (C (lam i) * X ^ d + p i) • b i)).coeff (n * d + c) ≠ 0 := by
       rw [← hFev]
       exact hb2 d (fun i => C (lam i) * X ^ d + p i) hq1 hq2

@@ -401,14 +401,14 @@ theorem mem_parA (j : ℕ) (τ : D.what₂.Tau) (x : ℚ) (s : Bool) :
 theorem expS_eq_alV (k : Fin D.R.m) (τ : D.what₂.Tau) : expS D k τ = alV D k τ := by
   unfold expS alV
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_pos h, if_pos h.add_one]
-  · rw [if_neg (Nat.not_even_iff_odd.2 h), if_neg (Nat.not_odd_iff_even.2 h.add_one), sub_zero]
+  · rw [ite_eq_left h, ite_eq_left h.add_one]
+  · rw [ite_eq_right (Nat.not_even_iff_odd.2 h), ite_eq_right (Nat.not_odd_iff_even.2 h.add_one), sub_zero]
 
 theorem expT_eq_alW (k : Fin D.R.m) (τ : D.what₂.Tau) : expT D k τ = alW D k τ := by
   unfold expT alW
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_pos h, if_pos h.add_one, sub_zero]
-  · rw [if_neg (Nat.not_even_iff_odd.2 h), if_neg (Nat.not_odd_iff_even.2 h.add_one)]
+  · rw [ite_eq_left h, ite_eq_left h.add_one, sub_zero]
+  · rw [ite_eq_right (Nat.not_even_iff_odd.2 h), ite_eq_right (Nat.not_odd_iff_even.2 h.add_one)]
 
 theorem mem_lamS (k : Fin D.R.m) (τ : D.what₂.Tau) (x : ℚ) (s : Bool) :
     (x, s) ∈ lamS D k τ ↔ ∃ y : Idx D.R k, val (D.hc τ) _ y + (D.hc τ).e k = x ∧ sgn D.R _ y = s := by
@@ -416,8 +416,8 @@ theorem mem_lamS (k : Fin D.R.m) (τ : D.what₂.Tau) (x : ℚ) (s : Bool) :
   refine exists_congr fun y => and_congr_left' ?_
   unfold alW
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_neg (Nat.not_odd_iff_even.2 h), if_pos h.add_one]; constructor <;> intro h <;> linarith
-  · rw [if_pos h, if_neg (Nat.not_odd_iff_even.2 h.add_one)]; constructor <;> intro h <;> linarith
+  · rw [ite_eq_right (Nat.not_odd_iff_even.2 h), ite_eq_left h.add_one]; constructor <;> intro h <;> linarith
+  · rw [ite_eq_left h, ite_eq_right (Nat.not_odd_iff_even.2 h.add_one)]; constructor <;> intro h <;> linarith
 
 theorem mem_lamT (k : Fin D.R.m) (τ : D.what₂.Tau) (x : ℚ) (s : Bool) :
     (x, s) ∈ lamT D k τ ↔ ∃ y : Idx D.R (k + 1), val (D.hc τ) _ y + (D.hc τ).e k = x ∧ sgn D.R _ y = s := by

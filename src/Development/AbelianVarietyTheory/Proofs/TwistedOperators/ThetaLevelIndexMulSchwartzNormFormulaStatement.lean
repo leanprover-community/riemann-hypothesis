@@ -292,10 +292,10 @@ theorem suppInd_sq_sum_eq_card : ∀ {k : Type} [CommRing k] {b a : ℕ} (r t : 
     by_cases hz : z ∈ S
     · have hz' := hz
       simp only [S, Set.mem_ofPred_eq] at hz'
-      rw [if_pos hz', Set.indicator_of_mem hz]; norm_num
+      rw [ite_eq_left hz', Set.indicator_of_mem hz]; norm_num
     · have hz' := hz
       simp only [S, Set.mem_ofPred_eq] at hz'
-      rw [if_neg hz', Set.indicator_of_notMem hz]; norm_num
+      rw [ite_eq_right hz', Set.indicator_of_notMem hz]; norm_num
   simp_rw [hfun]
   rw [finsum_indicator_one_eq_ncard', hS, Set.ncard_image_of_injective _ hinj, ← Nat.card_coe_set_eq]
   rfl
@@ -349,10 +349,10 @@ theorem exists_GL_iff {κ : Type} [CommRing κ] {r : ℕ} (M : Matrix (Fin r) (F
   exact ⟨fun ⟨g, hg⟩ => ⟨g, hg⟩, fun ⟨g, hg⟩ => ⟨g, hg⟩⟩
 
 theorem locH_of_mem (Pg : Finset (Pl E)) {r : ℕ} (Hl : ∀ PP : ↥Pg, Subgroup (GL (Fin r) (kP PP.1))) {PP : Pl E}
-    (h : PP ∈ Pg) : locH Pg Hl PP = Hl ⟨PP, h⟩ := dif_pos h
+    (h : PP ∈ Pg) : locH Pg Hl PP = Hl ⟨PP, h⟩ := dite_eq_left h
 
 theorem locH_of_not (Pg : Finset (Pl E)) {r : ℕ} (Hl : ∀ PP : ↥Pg, Subgroup (GL (Fin r) (kP PP.1))) {PP : Pl E}
-    (h : PP ∉ Pg) : locH Pg Hl PP = ⊤ := dif_neg h
+    (h : PP ∉ Pg) : locH Pg Hl PP = ⊤ := dite_eq_right h
 
 theorem norm_omegaQ {D : D7} {a b : ℕ} (Q : Finset (Pl D.host.E)) (r : ℕ) (ξ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (k : ℤ)
     (y : ∀ PP : Pl D.host.E, Matrix (Fin b) (Fin a) (kP PP)) :
@@ -373,7 +373,7 @@ theorem norm_omegaG {D : D7} {b r t : ℕ} (hr : r ≤ r) (Pg : Finset (Pl D.hos
           ∃ g ∈ Hl ⟨PP, h⟩, ((g : GL (Fin r) (kP PP)) : Matrix (Fin r) (Fin r) (kP PP)) = topL r (y PP) then 1 else 0 := by
   by_cases hc : ∀ PP (h : PP ∈ Pg), LowZero r (y PP) ∧
       ∃ g ∈ Hl ⟨PP, h⟩, ((g : GL (Fin r) (kP PP)) : Matrix (Fin r) (Fin r) (kP PP)) = topL r (y PP)
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     unfold omegaG
     split
     · simp only [norm_mul, norm_prod, norm_inv, norm_char_fin, Finset.prod_const_one, inv_one, mul_one]
@@ -386,7 +386,7 @@ theorem norm_omegaG {D : D7} {b r t : ℕ} (hr : r ≤ r) (Pg : Finset (Pl D.hos
       intro PP _
       simp only [restrictedBlock_self_apply]
       exact (hc PP.1 PP.2).2.choose_spec.1
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     unfold omegaG
     split
     · rename_i h
@@ -411,7 +411,7 @@ theorem norm_omegaG_mul_omegaQ {D : D7} {b a r t : ℕ} (hr : r ≤ a) (har : a 
   rw [Finset.prod_ite_zero, Finset.prod_const_one]
   by_cases hc : ∀ PP ∈ Pg ∪ Q, LowZero r (y PP) ∧
       ∃ g ∈ locH Pg Hl PP, ((g : GL (Fin r) (kP PP)) : Matrix (Fin r) (Fin r) (kP PP)) = topL r (y PP)
-  · rw [if_pos hc, if_pos]
+  · rw [ite_eq_left hc, ite_eq_left]
     refine ⟨fun PP hP => ?_, fun PP hP => ?_⟩
     · have h1 := hc PP (Finset.mem_union_left _ hP)
       rwa [locH_of_mem Pg Hl hP] at h1
@@ -419,7 +419,7 @@ theorem norm_omegaG_mul_omegaQ {D : D7} {b a r t : ℕ} (hr : r ≤ a) (har : a 
       refine ⟨h1.1, ?_⟩
       obtain ⟨g, -, hg⟩ := h1.2
       exact (exists_GL_iff _).1 ⟨g, hg⟩
-  · rw [if_neg hc, if_neg]
+  · rw [ite_eq_right hc, ite_eq_right]
     rintro ⟨hA, hB⟩
     apply hc
     intro PP hP
@@ -553,9 +553,9 @@ theorem exists_half_redM_eq : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0
     intro PP hPP PP' hPP'
     by_cases hq : PP' = PP
     · subst hq
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact (GlobalTheory.IdemRes.resS_idem_eq_one D _ _ (h1 PP' hPP')).2
-    · rw [if_neg hq]
+    · rw [ite_eq_right hq]
       have hne : PP ≠ PP' := fun h => hq h.symm
       have horth : es PP * es PP' = 0 :=
         (GlobalTheory.PlaceModelSum.eq_or_mul_eq_zero (h1 PP hPP).1 (h1 PP' hPP').1).resolve_left fun h => by
@@ -593,9 +593,9 @@ theorem exists_half_redM_eq : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0
       rw [hsub, RingHom.map_mul, hres PP hPP, one_mul, map_sum]
     simp_rw [RingHom.map_mul, Formalism.L2.DIV.resS_oToS]
     rw [Finset.sum_eq_single ⟨PP, hPP⟩]
-    · rw [hdel PP hPP PP hPP, if_pos rfl, one_mul, ha]
+    · rw [hdel PP hPP PP hPP, ite_eq_left rfl, one_mul, ha]
     · intro b _ hb
-      rw [hdel PP hPP b.1 b.2, if_neg (fun h => hb (Subtype.ext h)), zero_mul]
+      rw [hdel PP hPP b.1 b.2, ite_eq_right (fun h => hb (Subtype.ext h)), zero_mul]
     · intro h; exact absurd (Finset.mem_attach _ _) h
 
 end GlobalTheory.AdjRedOnto
@@ -1058,14 +1058,14 @@ theorem normSq_thetaAt_halfProd : ∀ {D : D7} {G : Type} [Group G] [Fintype G] 
     funext x
     by_cases hx : IsHalf (cA D e) x ∧ IsIntM (FM x)
     · have hx' : x ∈ Λc := (hmem x).2 hx
-      rw [if_pos hx, dif_pos hx']
+      rw [ite_eq_left hx, dite_eq_left hx']
       congr 1; funext PP
       by_cases hP : PP ∈ S
-      · simp only [ext, dif_pos hP]; rfl
-      · simp only [ext, dif_neg hP]
+      · simp only [ext, dite_eq_left hP]; rfl
+      · simp only [ext, dite_eq_right hP]
         exact GlobalTheory.T.adjointFrameMatrix_reduction_eq_zero_off_places R F hPM i t σ s P cμ cη m ω BW f₀ f c io hL e he x hx.1 hx.2 PP hP
     · have hx' : x ∉ Λc := fun h' => hx ((hmem x).1 h')
-      rw [if_neg hx, dif_neg hx']
+      rw [ite_eq_right hx, dite_eq_right hx']
   have key := GlobalTheory.T.finite_plancherel_schrodinger_intertwiner_alt R.ψ (symplO (Vc D i) (Wc D i)) Λc red Tm (heisO R.ψ (Vc D i) (Wc D i))
     (IsSBHalf (cA D e) Λ) (IsHalf (cA D (cA D e))) (IsThetaFunO R.ψ (Vc D i) (Wc D i))
     (GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting.ipO μ 𝓧) f₀ (fun z => Gd (ext z))
@@ -1075,7 +1075,7 @@ theorem normSq_thetaAt_halfProd : ∀ {D : D7} {G : Type} [Group G] [Fintype G] 
       refine ⟨⟨x, (hmem x).2 ⟨hx1, hx2⟩⟩, ?_⟩
       funext PP
       show redM PP.1 (FM x) = z PP
-      rw [hx3 PP.1 PP.2]; simp only [ext, dif_pos PP.2])
+      rw [hx3 PP.1 PP.2]; simp only [ext, dite_eq_left PP.2])
     (_root_.GlobalTheory.LatVac.symplO_add_left _ _)
     (by
       intro Ψ hsupp hinv
@@ -1092,13 +1092,13 @@ theorem normSq_thetaAt_halfProd : ∀ {D : D7} {G : Type} [Group G] [Fintype G] 
       funext x
       unfold halfInd
       by_cases hx : x ∈ Λ ∧ IsHalf (cA D e) x
-      · rw [if_pos (show x ∈ Λc from hx), if_pos hx]
-      · rw [if_neg (show x ∉ Λc from hx), if_neg hx])
+      · rw [ite_eq_left (show x ∈ Λc from hx), ite_eq_left hx]
+      · rw [ite_eq_right (show x ∉ Λc from hx), ite_eq_right hx])
     (by
       intro x hx
       have hx2 := (hmem _).1 x.2
       obtain ⟨PP, hPP⟩ : ∃ PP : ↥S, redM PP.1 (FM x.1) ≠ 0 := by
-        by_contra hc; push_neg at hc; exact hx (funext hc)
+        by_contra hc; push Not at hc; exact hx (funext hc)
       obtain ⟨y, hy1, hy2, hy3⟩ := GlobalTheory.T.exists_dual_half_lattice_detecting_character R F hPM i t σ s P cμ cη m ω BW f₀ f c io hL e he x.1 hx2.1 hx2.2
         ⟨PP.1, PP.2, hPP⟩
       refine ⟨y, hy1, fun k hk => ?_, hy3⟩
@@ -1121,7 +1121,7 @@ theorem normSq_thetaAt_halfProd : ∀ {D : D7} {G : Type} [Group G] [Fintype G] 
         (((∑ z : Gt, ‖Gd (ext z)‖ ^ 2) / (Fintype.card Gt : ℝ) : ℝ) : ℂ) := by push_cast; ring
     rw [h2, Complex.ofReal_re]
   rw [hn]
-  exact norm_sq_product_extension_matrix_family_sum S (fun PP => kP PP) _ _ ext (fun z PP => by simp only [ext, dif_pos PP.2]) Gd h hGd
+  exact norm_sq_product_extension_matrix_family_sum S (fun PP => kP PP) _ _ ext (fun z PP => by simp only [ext, dite_eq_left PP.2]) Gd h hGd
 
 end GlobalTheory.PlancherelHalf
 end -- clump:auto
@@ -1191,7 +1191,7 @@ theorem levelVector_squareNorm_eq_prod_localVolumes_alt : GlobalTheory.Indefinit
     have hn : PP ∉ R.Pg := fun h => Finset.disjoint_left.1 (GlobalTheory.T.disjoint_Pg_Q_of_core R F hcore t) h hPP
     rw [div_eq_mul_inv]
     congr 2
-    simp only [GlobalTheory.LevelVecNorm.locH, dif_neg hn]
+    simp only [GlobalTheory.LevelVecNorm.locH, dite_eq_right hn]
     exact Nat.card_congr Subgroup.topEquiv.toEquiv
 
 end GlobalTheory.LevelVecNorm
@@ -1260,7 +1260,7 @@ theorem levelIndexNormC : GlobalTheory.IndefiniteRowSideFullHecke.LocalIntegralG
       letI : Field (kP PP) := Ideal.Quotient.field _
       rw [GlobalTheory.T.card_GL_div_parabolic_index_finiteField (kP PP) _ D.R.r D.R.t hrt, hrank]
       unfold dLoc quadTerm quadSign
-      rw [if_pos h2, ← Finset.prod_inv_distrib]
+      rw [ite_eq_left h2, ← Finset.prod_inv_distrib]
       refine Finset.prod_congr rfl fun j _ => ?_
       rw [inv_inv, hq]
       simp

@@ -103,9 +103,4 @@ omit [CommRing A] in
 theorem range_comp_symm {σ τ : Type} (e : σ ≃ τ) (v : σ → A) : Set.range (v ∘ e.symm) = Set.range v :=
   e.symm.surjective.range_comp v
 
-section
-variable (K : Type) [Field K] (g n N' : ℕ) {M : ℕ} (e : Ix g (N' ^ 2) ≃ Fin (M + 1))
-
-end
-
 end GlobalTheory.ZM.ProjCoord

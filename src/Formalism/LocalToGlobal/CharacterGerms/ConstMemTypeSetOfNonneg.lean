@@ -27,7 +27,7 @@ theorem coeff_tyS_pow (a : ℕ → C) (s : ℕ) : PowerSeries.coeff (l ^ s) (tyS
   rw [PowerSeries.coeff_mk]
   have hinj : ∀ t, l ^ t = l ^ s ↔ t = s := fun t => (Nat.pow_right_injective hl).eq_iff
   simp only [hinj]
-  rw [Finset.sum_ite_eq', if_pos]
+  rw [Finset.sum_ite_eq', ite_eq_left]
   have hs : s < l ^ s := Nat.lt_pow_self (by omega)
   exact Finset.mem_range.2 (by omega)
 
@@ -35,7 +35,7 @@ omit hl in
 theorem coeff_tyS_of_ne (a : ℕ → C) (m : ℕ) (hm : ∀ s, l ^ s ≠ m) : PowerSeries.coeff m (tyS l a) = 0 := by
   unfold tyS
   rw [PowerSeries.coeff_mk]
-  exact Finset.sum_eq_zero fun s _ => if_neg (hm s)
+  exact Finset.sum_eq_zero fun s _ => ite_eq_right (hm s)
 
 theorem tyS_eq (a : ℕ → C) (f : PowerSeries C) (h1 : ∀ s, PowerSeries.coeff (l ^ s) f = a s)
     (h2 : ∀ m, (∀ s, l ^ s ≠ m) → PowerSeries.coeff m f = 0) : tyS l a = f := by
@@ -43,7 +43,7 @@ theorem tyS_eq (a : ℕ → C) (f : PowerSeries C) (h1 : ∀ s, PowerSeries.coef
   by_cases h : ∃ s, l ^ s = m
   · obtain ⟨s, rfl⟩ := h
     rw [coeff_tyS_pow hl, h1]
-  · push_neg at h
+  · push Not at h
     rw [coeff_tyS_of_ne a m h, h2 m h]
 
 omit hl in
@@ -139,7 +139,7 @@ theorem coeff_subst_X_pow {l : ℕ} (hl : 0 < l) (f : PowerSeries C) (q : ℕ) :
   rw [PowerSeries.coeff_subst' (PowerSeries.HasSubst.of_constantCoeff_zero' (by simp [hl.ne'])), finsum_eq_single _ q]
   · rw [← pow_mul, PowerSeries.coeff_X_pow_self, smul_eq_mul, mul_one]
   · intro d hd
-    rw [← pow_mul, PowerSeries.coeff_X_pow, if_neg, smul_zero]
+    rw [← pow_mul, PowerSeries.coeff_X_pow, ite_eq_right, smul_zero]
     intro h
     exact hd (Nat.eq_of_mul_eq_mul_left hl h).symm
 
@@ -148,7 +148,7 @@ theorem coeff_subst_X_pow_of_not_dvd {l : ℕ} (hl : 0 < l) (f : PowerSeries C) 
   rw [PowerSeries.coeff_subst' (PowerSeries.HasSubst.of_constantCoeff_zero' (by simp [hl.ne']))]
   apply finsum_eq_zero_of_forall_eq_zero
   intro d
-  rw [← pow_mul, PowerSeries.coeff_X_pow, if_neg, smul_zero]
+  rw [← pow_mul, PowerSeries.coeff_X_pow, ite_eq_right, smul_zero]
   rintro rfl
   exact hm (dvd_mul_right l d)
 

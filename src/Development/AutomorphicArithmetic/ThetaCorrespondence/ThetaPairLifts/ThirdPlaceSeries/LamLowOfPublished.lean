@@ -455,14 +455,14 @@ theorem isConjChars_base_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (
             have h3 : (c' : D.host.E) = (q : D.host.E) := by simpa using hc2
             exact h3
           exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (this ▸ hc1)
-      simp only [if_pos hg]
+      simp only [ite_eq_left hg]
       rw [locK_eq_one hun a k hk ha, mul_one]
       exact h.lev.chi i PP hg a k u hk hu
     · have hq : PP ∈ R.Q t := hPP.resolve_left hg
       obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hq
       have hun : (R.C.mu0 i).UnrAt PP := (R.C.isMu0 i).unr PP fun l hl =>
         not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-      simp only [if_neg hg]
+      simp only [ite_eq_right hg]
       rw [locK_eq_one hun a k hk ha, one_mul]
       exact h.lev.xiR t PP hq a k u hk hu
 
@@ -485,7 +485,7 @@ theorem isLevelVec_base_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i
         obtain ⟨l, hl⟩ := g_mem_ofCore R h hg
         obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP.1 PP.2
         exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-      simp only [if_neg hn]
+      simp only [ite_eq_right hn]
     · rfl
   simp only [omegaG_triv, hQ]
   exact h1
@@ -500,13 +500,13 @@ theorem chr_base_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin 
     (fun _ PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (fun _ PP => (R.chi ((i : ℕ) + 1) PP)⁻¹)
     (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (R.xiR t) ?_ ?_ _
   · intro c PP hP
-    simp only [if_pos hP]
+    simp only [ite_eq_left hP]
   · intro PP hP
     have hn : PP ∉ R.Pg := fun hg => by
       obtain ⟨l, hl⟩ := g_mem_ofCore R h hg
       obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hP
       exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-    simp only [if_neg hn]
+    simp only [ite_eq_right hn]
 
 theorem exists_lift_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T0) :
     ∃ th : (R.HV i t).H →ₗ[ℂ] (R.HW i (sg0 D A)).H, ∀ x, (R.HW i (sg0 D A)).e (th x) = R.thF i t x :=
@@ -912,13 +912,13 @@ theorem chr_base_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R
     (fun _ PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (fun _ PP => (R.chi ((i : ℕ) + 1) PP)⁻¹)
     (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (R.xiR t) ?_ ?_ _
   · intro c PP hP
-    simp only [if_pos hP]
+    simp only [ite_eq_left hP]
   · intro PP hP
     have hn : PP ∉ R.Pg := fun hg => by
       obtain ⟨l, hl⟩ := g_mem_six R h hg
       obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hP
       exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-    simp only [if_neg hn]
+    simp only [ite_eq_right hn]
 
 end Survey
 
@@ -1078,7 +1078,7 @@ theorem lowForm_of_emb_six {s : ℕ} (hOk : A.fam.Ok s) (h : GlobalTheory.Hk3.Co
   have h1 := (GlobalTheory.BigOnBase.j_thetaMat_base hB i A.μ0 x).trans (one_smul ℂ _).symm
   have h2 := hE i (sgAt D.what₂.embLL v) _ _ h1 fun σ' u hu =>
     hm.2 u (fun x' => csum_eq_zero h.models.HV h.models.jV i A.μ0 (toF_mem i A.μ0 x') hu) σ' x
-  have e : sgAt D.what₂.embLL v = v.embedding := if_neg fun h0 => hv (h0.trans R.hv0.symm)
+  have e : sgAt D.what₂.embLL v = v.embedding := ite_eq_right fun h0 => hv (h0.trans R.hv0.symm)
   have h3 := congrArg (fun σ => csumAt (A.MtCSD i A.μ0) σ ((A.fam.L i A.μ0).toF (liftLvl F) (liftSub R F i A.μ0) x)
     ((A.fam.L i A.μ0).toF (liftLvl F) (liftSub R F i A.μ0) x)) e
   have h4 := norm_wC (R := R) (F := F) i v ((thetaMat R F i A.μ0).mulVec x)

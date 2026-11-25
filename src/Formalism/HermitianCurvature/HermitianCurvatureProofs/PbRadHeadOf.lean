@@ -56,7 +56,7 @@ theorem levW_below (P : M.Par) (j : ℕ) (hj : j + 1 ≤ P.r) {t : ℂ} (ht : t 
     ‖t‖ ^ (-2 : ℤ) * (‖t‖ ^ (2 * (P.r - j) + P.k)) ^ 2 = KB.levW P (j + 1) t := by
   have hj' : j + 1 ≠ P.r + 1 := by omega
   unfold KB.levW
-  rw [if_neg hj']
+  rw [ite_eq_right hj']
   have ht' : ‖t‖ ≠ 0 := norm_ne_zero_iff.2 ht
   rw [← pow_mul, ← zpow_natCast, ← zpow_add₀ ht']
   congr 1

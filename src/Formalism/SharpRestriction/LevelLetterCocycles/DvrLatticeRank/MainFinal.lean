@@ -440,7 +440,7 @@ theorem LV_smulO (K : ℕ) (o : O) (x : W.DD T) (hx : W.Q ^ K • W.φD T x ∈ 
   rw [finsum_eq_single _ 0]
   · simp
   · intro j hj
-    rw [PowerSeries.coeff_C, if_neg hj, zero_smul]
+    rw [PowerSeries.coeff_C, ite_eq_right hj, zero_smul]
 
 variable {Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop}
 
@@ -470,7 +470,7 @@ theorem levN_val (hp4 : Formalism.MainNotions.DeltaInvariantLattices.p4 W Pt T) 
       ring
     have hcoef : PowerSeries.coeff (k - Nat.find hex) ((W.lev c ζ W.Q) ^ (k - Nat.find hex)) =
         PowerSeries.coeff 1 (W.lev c ζ W.Q) ^ (k - Nat.find hex) := by
-      rw [hB', mul_pow, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+      rw [hB', mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, PowerSeries.coeff_succ_X_mul,
         PowerSeries.coeff_zero_eq_constantCoeff_apply]
     rw [e1, map_pow, hcoef, smul_smul, ← pow_sub₀ _ hc1 hk0]
@@ -746,7 +746,7 @@ theorem count (τ : K →ₐ[Qp] LL) [FiniteDimensional LL ↥(DdRE PD ρ τ)] {
           rw [Finset.mem_Ico] at ha
           refine hmult0 a (fun h => ?_) (fun h => ?_)
           · rw [hup] at h
-            simp only [deep, if_true, Set.mem_Icc] at h
+            simp only [deep, ite_true, Set.mem_Icc] at h
             omega
           · rw [Set.mem_Icc] at h
             omega
@@ -765,7 +765,7 @@ theorem count (τ : K →ₐ[Qp] LL) [FiniteDimensional LL ↥(DdRE PD ρ τ)] {
         rw [Finset.mem_Ico]
         omega
       · rw [hup] at h
-        simp only [deep, if_true, Set.mem_Icc] at h
+        simp only [deep, ite_true, Set.mem_Icc] at h
         rw [Finset.mem_Ico] at ha
         omega
       · exact hna (by rw [Finset.mem_Icc]; exact h)
@@ -780,7 +780,7 @@ theorem count (τ : K →ₐ[Qp] LL) [FiniteDimensional LL ↥(DdRE PD ρ τ)] {
         rw [Finset.mem_Ico]
         omega
       · rw [hdn] at h
-        simp only [deep, Bool.false_eq_true, if_false, Set.mem_Icc] at h
+        simp only [deep, Bool.false_eq_true, ite_false, Set.mem_Icc] at h
         rw [Finset.mem_Ico] at ha
         omega
       · exact hna (by rw [Finset.mem_Icc]; exact h)
@@ -928,7 +928,7 @@ theorem jumps_sub {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀
     JumpsInV PD ρ τ (Set.Icc (-((bτ + S : ℕ) : ℤ)) ((bτ + S : ℕ) : ℤ)) := by
   intro a hJ
   rcases hj a hJ with h | h
-  · simp only [deep, Bool.false_eq_true, if_false, Set.mem_Icc] at h
+  · simp only [deep, Bool.false_eq_true, ite_false, Set.mem_Icc] at h
     rw [Set.mem_Icc]
     push_cast
     omega

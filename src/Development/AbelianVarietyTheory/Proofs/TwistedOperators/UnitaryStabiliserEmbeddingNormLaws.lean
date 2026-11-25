@@ -180,9 +180,9 @@ theorem stab (hs : Signs e ε ε') {g : Mat (n + 1)} (hg : g ∈ UJset ε) (hc :
   have hr : ∀ b, g (e none) b = if b = e none then 1 else 0 := by
     intro b
     have h1 := congrFun (congrFun hJ b) (e none)
-    simp only [Matrix.mul_apply, hc, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+    simp only [Matrix.mul_apply, hc, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
     simp only [Jm, Matrix.conjTranspose_apply, Matrix.diagonal_apply, mul_ite, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, hs.1, mul_one] at h1
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, hs.1, mul_one] at h1
     have h2 := congrArg star h1
     simp only [star_star] at h2
     rw [h2]
@@ -231,7 +231,7 @@ theorem one_le_colLen {ε : Fin (n + 1) → Bool} (h0 : ε (e none) = true) {g :
   have hJ : gᴴ * Jm ε * g = Jm ε := hg
   have h1 := congrFun (congrFun hJ (e none)) (e none)
   rw [Matrix.mul_apply] at h1
-  simp only [Jm, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply, if_true, h0] at h1
+  simp only [Jm, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply, ite_true, h0] at h1
   have h2 : ∀ c, star (g c (e none)) * (if ε c = true then 1 else -1) * g c (e none) =
       (((if ε c = true then 1 else -1 : ℝ) * ‖g c (e none)‖ ^ 2 : ℝ) : ℂ) := by
     intro c

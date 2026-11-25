@@ -40,7 +40,7 @@ theorem UpperTheory.Reformulated.B.PowerSeriesMemSpanAllVariables.pi_span_X :
     have h2 : (MvPowerSeries.X a : MvPowerSeries σ O) ∣ f - g := by
       rw [MvPowerSeries.X_dvd_iff]
       intro m hm
-      rw [map_sub, hg, if_pos hm, sub_self]
+      rw [map_sub, hg, ite_eq_left hm, sub_self]
     have h3 : f - g ∈ Ideal.span (Set.range (MvPowerSeries.X : σ → MvPowerSeries σ O)) :=
       Ideal.mem_of_dvd _ h2 (Ideal.subset_span ⟨a, rfl⟩)
     have h4 := Ideal.add_mem _ h3 h1

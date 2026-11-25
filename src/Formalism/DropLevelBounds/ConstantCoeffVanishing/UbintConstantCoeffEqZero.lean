@@ -209,19 +209,6 @@ theorem ubint_mvExp_sum [CharZero C] {ι : Type} (s : Finset ι) (f : ι → MvP
 
 end UBIntLemmas
 
-section UBIntRows
-
-variable {C : Type} [Field C] {n0 : ℕ}
-
-
-end UBIntRows
-
-section UBIntMain
-
-variable {C : Type} [Field C] {n0 : ℕ}
-
-end UBIntMain
-
 end Formalism.UnitaryBoundIntegral
 end -- clump:auto
 end -- clump:auto

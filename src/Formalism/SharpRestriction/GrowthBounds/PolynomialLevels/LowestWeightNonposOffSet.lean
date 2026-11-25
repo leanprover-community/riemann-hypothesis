@@ -146,7 +146,7 @@ theorem tl_surj (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, nL j = (Fr.LLset (segZ j
   simp only [Frames.letters, Finset.mem_filter, Finset.mem_Icc] at hl
   have hw : Fr.fr (segZ j - 1) (r - 1) < x := by
     unfold Frames.IsW at hW
-    push_neg at hW
+    push Not at hW
     exact hW
   by_cases hlt : x < Fr.fr (segZ j) 0
   · have hLL : x ∈ Fr.LLset (segZ j) := by
@@ -154,7 +154,7 @@ theorem tl_surj (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, nL j = (Fr.LLset (segZ j
       exact ⟨⟨hw, hlt⟩, hl.2⟩
     obtain ⟨l, hl1, hl2⟩ := DdG.exists_llPos Fr (segZ j) x hLL
     exact ⟨Sum.inl ⟨l, by rw [hnL j]; exact hl1⟩, hl2⟩
-  · push_neg at hlt
+  · push Not at hlt
     obtain ⟨i, hi, hxi⟩ := DdG.eq_fr Fr hV.2.2.2.2.2.1 (by omega) (segZ j) x hlt hl.1.2 hl.2
     refine ⟨Sum.inr ⟨r - 1 - i, by omega⟩, ?_⟩
     show Fr.fr (segZ j) (r - 1 - (r - 1 - i)) = x
@@ -192,16 +192,16 @@ private theorem posU_strictMono (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, nL j = (
   unfold posU
   by_cases hb' : b < nL j
   · have ha' : a < nL j := lt_trans hab hb'
-    rw [if_pos ha', if_pos hb']
+    rw [ite_eq_left ha', ite_eq_left hb']
     exact Formalism.MainNotions.Proposition5Numerics.llPos_lt _ _ _ hab (by rw [← hnL j]; exact hb')
-  · rw [if_neg hb']
+  · rw [ite_eq_right hb']
     by_cases ha' : a < nL j
-    · rw [if_pos ha']
+    · rw [ite_eq_left ha']
       have hm := Formalism.MainNotions.Proposition5Numerics.llPos_mem Fr (segZ j) a (by rw [← hnL j]; exact ha')
       simp only [Frames.LLset, Finset.mem_filter, Finset.mem_Ioo] at hm
       have h2 := Formalism.MainNotions.Proposition5Numerics.DdG.fr_le Fr hmono (segZ j) (Nat.zero_le (b - nL j)) (by omega)
       exact lt_of_lt_of_le hm.1.2 h2
-    · rw [if_neg ha']
+    · rw [ite_eq_right ha']
       exact Formalism.MainNotions.Proposition5Numerics.DdG.fr_lt Fr hmono (segZ j) (by omega) (by omega)
 
 private theorem posU_lt_posU_iff (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, nL j = (Fr.LLset (segZ j)).card) (j : ZMod J)

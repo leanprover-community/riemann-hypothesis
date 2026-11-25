@@ -101,7 +101,7 @@ theorem levVec_fockVac : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : 
       rfl
     intro hz
     have := congrFun hz x
-    rw [if_pos ⟨hx, hint⟩, GlobalTheory.PlaceDatum.omegaG_congr _ m _ (fun PP => GlobalTheory.Chain.StepVac.rectOne (kP PP) _ _)
+    rw [ite_eq_left ⟨hx, hint⟩, GlobalTheory.PlaceDatum.omegaG_congr _ m _ (fun PP => GlobalTheory.Chain.StepVac.rectOne (kP PP) _ _)
       fun PP hP => hred PP (Finset.mem_union_left _ hP),
       GlobalTheory.PlaceVec.omegaQ_congr _ _ _ _ (y' := fun PP => GlobalTheory.Chain.StepVac.rectOne (kP PP) _ _)
       fun PP hP => hred PP (Finset.mem_union_right _ hP)] at this

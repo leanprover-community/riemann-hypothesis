@@ -18,12 +18,6 @@ open Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV
 def normSqAt {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K) (h : S.Ok) (s : K →+* ℂ) (φ : S.D → S.V) : ℝ :=
   (S.ipAt h (InfinitePlace.mk s) φ φ).re
 
-section Comparison₂
-
-variable {X : Fields} {Word : Type} (Nd : NumDatum) (W : Wts X Word Nd.R)
-
-end Comparison₂
-
 section Ev
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
@@ -49,20 +43,7 @@ theorem evOk (hX : X.Ok) (hPr : Pr.Ok) (P : LevFam X.E X.K R.r Pr.vGs) (u : Pr.W
       · exact h
       · rw [twistPrimes_trivialTuple_empty] at h
         simp at h
-    have hg : ∃ i, ((Pr.g i : ℕ) : 𝓞 X.E) ∈ w.1.asIdeal := by
-      rcases Finset.mem_union.mp hw1 with h | h
-      · exact ⟨0, hPr.piG_norm 0 ▸ Ideal.mul_mem_left _ _ (mem_of_mem_divs h)⟩
-      · exact ⟨1, hPr.piG_norm 1 ▸ Ideal.mul_mem_left _ _ (mem_of_mem_divs h)⟩
-    have hgg : ((Pr.cond * (Pr.g 0 * Pr.g 1) ^ 2 : ℕ) : 𝓞 X.E) ∈ w.1.asIdeal := by
-      push_cast
-      refine Ideal.mul_mem_left _ _ (Ideal.pow_mem_of_mem _ ?_ 2 two_pos)
-      obtain ⟨i, hi⟩ := hg
-      fin_cases i
-      · exact Ideal.mul_mem_right _ _ hi
-      · exact Ideal.mul_mem_left _ _ hi
-    obtain ⟨c, hc⟩ := hPr.piT_cong u
-    have h1 : Pr.piT u - 1 ∈ w.1.asIdeal := hc ▸ Ideal.mul_mem_right _ _ hgg
-    exact w.1.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (by simpa using sub_mem hw h1))
+    exact piT_notMem_vGs hPr u ⟨w.1, hw1⟩ hw
   have hroot : ∀ g : FormG (rowTy Ch sel (mu0 X.F X.E X.K Sg) P).inv, ∃ m : ℕ, 0 < m ∧
       ((((rowTy Ch sel (mu0 X.F X.E X.K Sg) P).inv.chr g.2)⁻¹ : X.Kˣ) : X.K) ^ m = 1 := by
     intro g

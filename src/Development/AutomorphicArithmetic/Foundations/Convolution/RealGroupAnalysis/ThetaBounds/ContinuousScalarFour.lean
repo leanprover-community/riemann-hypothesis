@@ -26,8 +26,8 @@ private theorem wt_mono'' {F : Type} [Field F] [NumberField F]
     wt S N v ≤ wt S' N v := by
   unfold wt
   by_cases hv : finPartPi v ∈ S
-  · rw [if_pos hv, if_pos (h hv)]
-  · rw [if_neg hv]
+  · rw [ite_eq_left hv, ite_eq_left (h hv)]
+  · rw [ite_eq_right hv]
     split_ifs
     · positivity
     · exact le_rfl

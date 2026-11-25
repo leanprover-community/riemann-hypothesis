@@ -175,10 +175,10 @@ theorem tri_le (e : Fin n → Fin n → ℝ) (h0 : ∀ a, e a a = 0) (ha : ∀ a
     · subst hac
       simp [h0]
     · have hn : ¬ (a = a ∧ a = c) := fun h => hac h.2
-      rw [if_neg hn, h0 a]
+      rw [ite_eq_right hn, h0 a]
       rcases hs a c hac with h | h <;> rw [h] <;> norm_num
   · have hn : ¬ (a = b ∧ b = c) := fun h => hab h.1
-    rw [if_neg hn]
+    rw [ite_eq_right hn]
     by_cases hbc : b = c
     · subst hbc
       rw [h0 b]
@@ -410,7 +410,7 @@ theorem multG_of (hCp : Compress) (hM : MultFor) (hA : AdmLeast) (h1 : N1) (hC :
   have hne_h : (harmSet lam).Nonempty := ⟨_, muQ_mem_harmSet (fun a => a) (isLev_id lam)⟩
   by_cases hex : ∃ μ ∈ harmSet lam, hwSp E1 E2 μ ≠ ⊥
   swap
-  · push_neg at hex
+  · push Not at hex
     obtain ⟨μ₀, hμ₀⟩ := hne_h
     refine ⟨μ₀, hμ₀, fun μ hμ _ => hex μ hμ, ?_⟩
     intro v w hv _ hv0
@@ -508,20 +508,20 @@ theorem mul_sg_self (lev : Fin n → ℕ) (a b : Fin n) :
   · have h' : (lev a : ℝ) < lev b := by exact_mod_cast h
     have hs : sg lev a b = 1 := by
       unfold sg
-      rw [if_pos h, if_neg (by omega)]
+      rw [ite_eq_left h, ite_eq_right (by omega)]
       norm_num
     rw [hs, abs_of_neg (by linarith)]
     ring
   · have hs : sg lev a b = 0 := by
       unfold sg
-      rw [if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
       norm_num
     rw [hs, h]
     simp
   · have h' : (lev b : ℝ) < lev a := by exact_mod_cast h
     have hs : sg lev a b = -1 := by
       unfold sg
-      rw [if_neg (by omega), if_pos h]
+      rw [ite_eq_right (by omega), ite_eq_left h]
       norm_num
     rw [hs, abs_of_pos (by linarith)]
     ring

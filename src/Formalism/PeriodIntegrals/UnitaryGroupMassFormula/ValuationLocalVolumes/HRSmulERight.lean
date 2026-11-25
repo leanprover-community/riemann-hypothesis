@@ -82,8 +82,8 @@ theorem gramE_entry (j i : Fin (D.R.rS + 1 + D.R.rS)) :
   simp only [Equiv.Perm.permMatrix, PEquiv.toMatrix_apply, Equiv.toPEquiv_apply, Option.mem_def,
     Option.some.injEq, Function.Involutive.coe_toPerm]
   by_cases h : i = piv D.R.rS j
-  · rw [if_pos h.symm, if_pos h, mul_one]
-  · rw [if_neg (fun e => h e.symm), if_neg h, mul_zero]
+  · rw [ite_eq_left h.symm, ite_eq_left h, mul_one]
+  · rw [ite_eq_right (fun e => h e.symm), ite_eq_right h, mul_zero]
 
 def OmVMem : Prop := ∀ (v : PlX X) (i : Fin (D.R.rS + 1 + D.R.rS)), yTup X u' v i ∈ latLoc (E := X.B.I.E) v (abelian₂ X)
 

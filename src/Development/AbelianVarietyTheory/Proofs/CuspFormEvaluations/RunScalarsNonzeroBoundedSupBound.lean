@@ -307,7 +307,7 @@ theorem exists_short_family_small : Formalism.MainNotions.ModuliIntegralCharts.H
   refine ⟨Sh, fun g hg => ?_, hShspan⟩
   obtain ⟨_, hgs, hgb⟩ := hShA g hg
   refine ⟨Submodule.subset_span hgs, fun σ => ?_⟩
-  rw [if_pos hj]
+  rw [ite_eq_left hj]
   exact hgb σ
 
 end GlobalTheory.RunIn

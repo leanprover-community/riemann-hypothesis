@@ -49,7 +49,7 @@ theorem banachHol : BanachHol := by
     convert K.continuous using 1
     funext z
     show Φ z = K z
-    simp only [Φ, dif_pos z.2, Subtype.coe_eta]
+    simp only [Φ, dite_eq_left z.2, Subtype.coe_eta]
   refine ⟨Φ, ?_, hΦ⟩
   intro w hw
   apply DifferentiableAt.differentiableWithinAt

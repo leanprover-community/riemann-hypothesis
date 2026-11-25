@@ -137,41 +137,41 @@ theorem MatUnits_of : MatrixUnits₂ := by
   refine ⟨fun i j => if rel A p i j then X i * Y j else 0, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro i j
     by_cases h : rel A p i j
-    · simp only [if_pos h]; exact (pairE i j h).1
-    · simp only [if_neg h]; exact A.zero_mem
+    · simp only [ite_eq_left h]; exact (pairE i j h).1
+    · simp only [ite_eq_right h]; exact A.zero_mem
   · intro i
-    simp only [if_pos (heq.refl i)]
+    simp only [ite_eq_left (heq.refl i)]
     exact (hXY i).2.2.2.2.1
   · intro i j
     by_cases h : rel A p i j
-    · simp only [if_pos h]; exact (pairE i j h).2.2.1
-    · simp only [if_neg h, mul_zero, zero_mul]
+    · simp only [ite_eq_left h]; exact (pairE i j h).2.2.1
+    · simp only [ite_eq_right h, mul_zero, zero_mul]
   · intro i j hne
     have h : rel A p i j := by
       by_contra h
-      simp only [if_neg h] at hne
+      simp only [ite_eq_right h] at hne
       exact hne rfl
-    simp only [if_pos (heq.symm h)]
+    simp only [ite_eq_left (heq.symm h)]
     exact pr_ne hp (pairE j i (heq.symm h))
   · intro i j k h1 h2
     have hij : rel A p i j := by
       by_contra h
-      simp only [if_neg h] at h1
+      simp only [ite_eq_right h] at h1
       exact h1 rfl
     have hjk : rel A p j k := by
       by_contra h
-      simp only [if_neg h] at h2
+      simp only [ite_eq_right h] at h2
       exact h2 rfl
     have hik := heq.trans hij hjk
-    simp only [if_pos hij, if_pos hjk, if_pos hik]
+    simp only [ite_eq_left hij, ite_eq_left hjk, ite_eq_left hik]
     refine ⟨?_, pr_ne hp (pairE i k hik)⟩
     rw [show X i * Y j * (X j * Y k) = X i * (Y j * X j) * Y k by simp only [mul_assoc],
       (hXY j).2.2.2.2.2, ← hreq i j hij, sand_right hp (hXY i).2.2.1]
   · intro a ha i j
     by_cases h : rel A p i j
-    · simp only [if_pos h]; exact oneDim hp hc (pairE i j h) ha
+    · simp only [ite_eq_left h]; exact oneDim hp hc (pairE i j h) ha
     · refine ⟨0, ?_⟩
-      simp only [if_neg h, smul_zero]
+      simp only [ite_eq_right h, smul_zero]
       by_contra h'
       obtain ⟨w, hw⟩ := partner (i := i) (j := j) hp hc hA (A.mul_mem (A.mul_mem (hc.1 i) ha) (hc.1 j))
         (by simp only [mul_assoc, idemL hp i]) (by rw [mul_assoc _ (p j), idem hp j]) h'

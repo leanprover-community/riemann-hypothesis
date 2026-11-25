@@ -559,7 +559,7 @@ private def EE (X : Type) [CommRing X] (g n a : ℕ) : Subalgebra X (Matrix (Fin
     · split_ifs
       · exact ⟨fun _ => rfl, rfl⟩
       · exact ⟨fun _ => rfl, rfl⟩
-    · rw [if_neg (by rintro rfl; exact e Iff.rfl)]
+    · rw [ite_eq_right (by rintro rfl; exact e Iff.rfl)]
       exact ⟨rfl, fun _ => rfl⟩
 
 private theorem EE_scal {a : ℕ} {c : DD X g} (hc : P0 c) :
@@ -570,7 +570,7 @@ private theorem EE_scal {a : ℕ} {c : DD X g} (hc : P0 c) :
   · split_ifs
     · exact hc
     · exact ⟨fun _ => rfl, rfl⟩
-  · rw [if_neg (by rintro rfl; exact e Iff.rfl)]
+  · rw [ite_eq_right (by rintro rfl; exact e Iff.rfl)]
     exact ⟨rfl, fun _ => rfl⟩
 
 variable {A : Type} [CommRing A] [Algebra A X] {a : ℕ}
@@ -777,9 +777,9 @@ theorem UpperTheory.V.Pa.defULift :
       have hA : Infinite x.A := by
         refine Infinite.of_injective (fun m : ℕ => (PowerSeries.X : PowerSeries x.K) ^ m) fun m m' e => ?_
         have e' := congrArg (PowerSeries.coeff m) e
-        simp only [PowerSeries.coeff_X_pow, if_true] at e'
+        simp only [PowerSeries.coeff_X_pow, ite_true] at e'
         by_contra hne
-        rw [if_neg hne] at e'
+        rw [ite_eq_right hne] at e'
         exact one_ne_zero e'
       exact Infinite.of_injective _ (IsFractionRing.injective x.A x.Fr)
     obtain ⟨w1w, ww1, tri⟩ := Tloc v

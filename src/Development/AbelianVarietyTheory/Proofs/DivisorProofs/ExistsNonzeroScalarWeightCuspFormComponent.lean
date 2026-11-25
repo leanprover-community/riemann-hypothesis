@@ -97,11 +97,11 @@ theorem cuspW_congr {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} (hU : ∀ σ, Go
 theorem wtOf_four_fst (τ : E →+* ℂ) (i : ℕ) (hi : i < Dw.mult τ) : (wtOf Dw 0 4).1 (τ, i) = -4 := by
   unfold Datum.mult at hi
   by_cases h : τ (H.rt : E) = H.rt0
-  · rw [if_pos h] at hi
-    simp only [wtOf, dif_pos h, dif_pos hi, Pi.zero_apply, zero_sub]
-  · rw [if_neg h] at hi
+  · rw [ite_eq_left h] at hi
+    simp only [wtOf, dite_eq_left h, dite_eq_left hi, Pi.zero_apply, zero_sub]
+  · rw [ite_eq_right h] at hi
     have h' : conjEmb τ (H.rt : E) = H.rt0 := conj_mem h
-    simp only [wtOf, dif_neg h, dif_pos h', dif_pos hi, Pi.zero_apply, neg_zero, zero_sub]
+    simp only [wtOf, dite_eq_right h, dite_eq_left h', dite_eq_left hi, Pi.zero_apply, neg_zero, zero_sub]
 
 theorem exZ_four_add (n : ℕ) :
     exZ Dw (wtZ (fun _ => 4) n + wtOf Dw 0 4) = exZ Dw (wtZ 0 (n + 8)) := by
@@ -172,7 +172,7 @@ theorem exists_scalar_of_four {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {x : �
   have h2 := hs0 σ hσ z hz
   obtain ⟨hy, hlies⟩ := hz
   have e : rdU (U σ) (g : Rul Xo c) z.1 z.2 = rdU (U σ) f z.1 z.2 := by
-    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dif_pos hy]
+    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left hy]
     rw [hg _ _ hlies]
   rw [AllWt.rdU_mul, Pi.mul_apply, Pi.mul_apply, e]
   exact mul_ne_zero hne h2
@@ -502,10 +502,10 @@ theorem exists_scalar_cusp_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [I
       have hp0 : ((U σ').X j).p0 = 0 ∨ ((U σ').X j).p0 = r := by
         rw [(hU'.2.1 j).1]; omega
       exact GlobalTheory.BoundedCusp.mem_SS_of_definite _ _ τ0 hp0 _ ⟨hs, bdd_of_definite _ hp0 _ _ hs⟩
-    · have e : rdU (U σ) f z.1 z.2 = toC (evR Xo c f ((U σ).un z.1 ⟨z.2, hz'.2⟩)) := dif_pos hz'.2
+    · have e : rdU (U σ) f z.1 z.2 = toC (evR Xo c f ((U σ).un z.1 ⟨z.2, hz'.2⟩)) := dite_eq_left hz'.2
       rw [e]
       exact hne
-  · push_neg at hdef
+  · push Not at hdef
     have hp : 1 ≤ Dw.p := Nat.one_le_iff_ne_zero.2 hdef.1
     have hq : 1 ≤ Dw.q := Nat.one_le_iff_ne_zero.2 hdef.2
     by_cases hrun : ∃ m : ℕ, 1 ≤ m ∧ m ^ 4 ≤ ReciprocityTheory.ChartRestriction.G.I2.PT.f E ∧ (ReciprocityTheory.ChartRestriction.G.I2.PT.f E : ℝ) ^ 2 ≤ ReciprocityTheory.ChartRestriction.G.I2.PT.rd E ∧ 16 ≤ ReciprocityTheory.ChartRestriction.G.I2.PT.rd E ∧ (Dw.p ≤ m ∨ Dw.q ≤ m)

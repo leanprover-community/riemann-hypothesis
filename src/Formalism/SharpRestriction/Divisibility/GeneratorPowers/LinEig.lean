@@ -72,7 +72,7 @@ theorem coeff_psTrunc' {ιt : Type} [Fintype ιt] [DecidableEq ιt] (m : ℕ) (f
   rw [psTrunc, MvPolynomial.coeff_sum, Finset.sum_eq_single e]
   · simp [MvPolynomial.coeff_monomial]
   · intro b _ hb
-    rw [MvPolynomial.coeff_monomial, if_neg hb]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right hb]
   · intro h
     exact absurd hmem h
 

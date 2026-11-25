@@ -51,14 +51,14 @@ theorem sum_cnt (n : ℕ) : ∑ k ∈ Finset.Icc 1 n, cnt K k =
         left_inv := by
           intro x
           by_cases h : Ideal.absNorm (x.1 : Ideal (𝓞 K)) ≤ n
-          · simp only [dif_pos h]
-          · simp only [dif_neg h]
+          · simp only [dite_eq_left h]
+          · simp only [dite_eq_right h]
         right_inv := by
           intro y
           rcases y with z | z
-          · simp only [dif_pos z.2]
+          · simp only [dite_eq_left z.2]
           · have hz : ¬ Ideal.absNorm z.1 ≤ n := by have := z.2; omega
-            simp only [dif_neg hz] }
+            simp only [dite_eq_right hz] }
     rw [Nat.card_congr e, Nat.card_sum]
     unfold cnt
     push_cast

@@ -29,7 +29,7 @@ theorem UpperTheory.V.Ws.sxLaurDesc :
     rw [h2, hy]
   have hone : φ 0 (GradedMonoid.GOne.one (A := fun j => W.gr j)) = 1 := by
     show (e (F 1)).coeff (τ 0) = 1
-    rw [map_one, map_one, map_zero, HahnSeries.coeff_one, if_pos rfl]
+    rw [map_one, map_one, map_zero, HahnSeries.coeff_one, ite_eq_left rfl]
   have hmul : ∀ {i j} (a : W.gr i) (b : W.gr j), φ _ (GradedMonoid.GMul.mul (A := fun j => W.gr j) a b) = φ i a * φ j b := by
     intro i j a b
     show (e (F (((a : W.A) : R) * ((b : W.A) : R)))).coeff (τ (i + j)) = _

@@ -145,7 +145,7 @@ theorem injective_toBilin'_stdSymp {R : Type*} [CommRing R] (g : ℕ) :
       have h1 : (l : ℕ) ≠ i := fun h => hl (Fin.ext h)
       have : stdSymp g l ⟨i + g, by omega⟩ = 0 := by
         unfold stdSymp
-        rw [if_neg (by simp only; omega), if_neg (by simp only; omega)]
+        rw [ite_eq_right (by simp only; omega), ite_eq_right (by simp only; omega)]
       simp [this]
     · simp
   · have hi2 := i.2
@@ -153,13 +153,13 @@ theorem injective_toBilin'_stdSymp {R : Type*} [CommRing R] (g : ℕ) :
     rw [Finset.sum_eq_single i] at h
     · have : stdSymp g i ⟨i - g, by omega⟩ = -1 := by
         unfold stdSymp
-        rw [if_neg (by simp only; omega), if_pos (by simp only; omega)]
+        rw [ite_eq_right (by simp only; omega), ite_eq_left (by simp only; omega)]
       simpa [this] using h
     · intro l _ hl
       have h1 : (l : ℕ) ≠ i := fun h => hl (Fin.ext h)
       have : stdSymp g l ⟨i - g, by omega⟩ = 0 := by
         unfold stdSymp
-        rw [if_neg (by simp only; omega), if_neg (by simp only; omega)]
+        rw [ite_eq_right (by simp only; omega), ite_eq_right (by simp only; omega)]
       simp [this]
     · simp
 

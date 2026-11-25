@@ -123,7 +123,7 @@ lemma eq_sum_mono (F : ↥(homogeneousSubmodule (Fin k) K d)) :
   rw [Submodule.coe_sum]
   conv_lhs => rw [(F : MvPolynomial (Fin k) K).as_sum]
   refine Finset.sum_congr rfl fun g hg => ?_
-  rw [Submodule.coe_smul, mono_val, if_pos (degree_of_coeff_ne F (MvPolynomial.mem_support_iff.1 hg)),
+  rw [Submodule.coe_smul, mono_val, ite_eq_left (degree_of_coeff_ne F (MvPolynomial.mem_support_iff.1 hg)),
     smul_monomial, smul_eq_mul, mul_one]
 
 lemma prodFact_fintype (g : Fin k →₀ ℕ) :

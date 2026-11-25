@@ -306,10 +306,6 @@ theorem _root_.GlobalTheory.range_fst_residue {B : Type u} [CommRing B] [IsLocal
 
 end QuasiSection
 
-section Field
-
-end Field
-
 section DiscreteValuation
 
 
@@ -342,17 +338,5 @@ theorem _root_.GlobalTheory.isDiscreteValuationRing_of_etale_of_isLocalHom (V V'
 variable {X S : Scheme.{u}} (f : X ⟶ S) [Smooth f]
 
 end DiscreteValuation
-
-section SpecialFibre
-
-variable {V : Type u} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {X : Scheme.{u}}
-  (f : X ⟶ Spec (.of V)) [Smooth f]
-  (U : (pullback f (Spec.map (CommRingCat.ofHom (residue V)))).Opens)
-
-end SpecialFibre
-
-section Main
-
-end Main
 
 end GlobalTheory

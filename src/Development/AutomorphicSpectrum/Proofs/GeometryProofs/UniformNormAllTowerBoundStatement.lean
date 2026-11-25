@@ -451,7 +451,7 @@ theorem exists_isometric_embedding : ∀ (E : Type) [Field E] [NumberField E] [I
         nlinarith
       have hk : (1 : ℝ) ≤ (vV T.V x⁻¹ : ℝ) := by
         have h := hAy
-        simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, if_neg hy0] at h
+        simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, ite_eq_right hy0] at h
         by_contra! hlt
         have hk0 : vV T.V x⁻¹ ≤ 0 := by
           have : vV T.V x⁻¹ < 1 := by exact_mod_cast hlt
@@ -463,7 +463,7 @@ theorem exists_isometric_embedding : ∀ (E : Type) [Field E] [NumberField E] [I
         have := Real.one_le_rpow hp1.le hexp
         linarith
       have hAN : GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT p la T e₀ x⁻¹ ^ (e₀ * ramOverZ la) ≤ (p : ℝ)⁻¹ := by
-        simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, if_neg hy0]
+        simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, ite_eq_right hy0]
         rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity), ← Real.rpow_neg_one]
         apply Real.rpow_le_rpow_of_exponent_le hp1.le
         have : -((vV T.V x⁻¹ : ℝ) / ((e₀ : ℝ) * (ramOverZ la : ℝ))) * ((e₀ * ramOverZ la : ℕ) : ℝ)
@@ -494,7 +494,7 @@ theorem exists_isometric_embedding : ∀ (E : Type) [Field E] [NumberField E] [I
   have hz := GlobalTheory.GeoTie.ReadExt.norm_eq_zpow T ι hiff hπ
   have hvp : (vV T.V (p : T.Fr) : ℝ) = (e₀ : ℝ) * (ramOverZ la : ℝ) := by
     have h := hpF
-    simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, if_neg hpF0] at h
+    simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, ite_eq_right hpF0] at h
     have h2 := congrArg Real.log h
     rw [Real.log_rpow (by positivity), Real.log_inv] at h2
     have hlog : 0 < Real.log p := Real.log_pos hp1
@@ -524,7 +524,7 @@ theorem exists_isometric_embedding : ∀ (E : Type) [Field E] [NumberField E] [I
   · subst hx
     simp [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT]
   · rw [hz x hx, hrval]
-    simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, if_neg hx]
+    simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, ite_eq_right hx]
     rw [← Real.rpow_intCast, ← Real.rpow_mul (by positivity)]
     congr 1
     ring
@@ -1111,7 +1111,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.uniform_all_root_origin_bound 
   have hN : (0 : ℝ) < (e₀ : ℝ) * (ramOverZ la : ℝ) :=
     mul_pos (by exact_mod_cast ho.1) (by exact_mod_cast hram0)
   obtain ⟨T₀, j, iT, r₀, L, hfin, hr₀, hj, hv₀, hzL, hLj, hnorm⟩ := ModelDimension.Read.ext T hy ι _ hN
-    (fun x hx => by rw [hι]; unfold FinRd.absT; rw [if_neg hx]) z
+    (fun x hx => by rw [hι]; unfold FinRd.absT; rw [ite_eq_right hx]) z
   let A₃ : Subring RM.Ω := (j.range.comap ev₁).map A.subtype
   have hA₃ : ∀ x, x ∈ A₃ ↔ ∃ hx : x ∈ A, ∃ b, j b = ev₁ ⟨x, hx⟩ := fun x =>
     ⟨by rintro ⟨a, ⟨b, hb⟩, rfl⟩; exact ⟨a.2, b, hb⟩, fun ⟨hx, b, hb⟩ => ⟨⟨x, hx⟩, ⟨b, hb⟩, rfl⟩⟩
@@ -1166,8 +1166,8 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.uniform_all_root_origin_bound 
     rw [e1, e2]
     unfold FinRd.absT
     by_cases hx : ev₀ ⟨x, h23 x.2⟩ = 0
-    · rw [hx, map_zero, map_zero, norm_zero, if_pos rfl]
-    · rw [if_neg ((map_ne_zero φ₂).2 hx), hnorm _ hx, hfe.2.2.2.2.2]
+    · rw [hx, map_zero, map_zero, norm_zero, ite_eq_left rfl]
+    · rw [ite_eq_right ((map_ne_zero φ₂).2 hx), hnorm _ hx, hfe.2.2.2.2.2]
       have hr2 : (r₂ : ℝ) ≠ 0 := by exact_mod_cast hfe.2.2.2.2.1.ne'
       push_cast
       congr 2
@@ -1384,10 +1384,10 @@ theorem vs_fin : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   have hex : Cθ ≤ if p ∈ o.toTowerOrigin.S B then exTwo E p else 0 := by
     rw [hCθ]
     split_ifs with h1' h2'
-    · simp only [exTwo, GlobalTheory.CovHt.htEx, if_pos h2', padicValInt, Nat.padicValNat_def]
+    · simp only [exTwo, GlobalTheory.CovHt.htEx, ite_eq_left h2', padicValInt, Nat.padicValNat_def]
       have : (0 : ℝ) ≤ (multiplicity p (discr E).natAbs : ℝ) / Module.finrank ℚ E := by positivity
       linarith
-    · simp only [exTwo, GlobalTheory.CovHt.htEx, if_neg h2', padicValInt, Nat.padicValNat_def]
+    · simp only [exTwo, GlobalTheory.CovHt.htEx, ite_eq_right h2', padicValInt, Nat.padicValNat_def]
       have : (0 : ℝ) ≤ (multiplicity p (discr E).natAbs : ℝ) / Module.finrank ℚ E := by positivity
       linarith
     · exact le_rfl

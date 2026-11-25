@@ -149,7 +149,7 @@ theorem exists_res_ne_zero : ∀ (D : D7) (V V' W : HSp D) (r : ℕ) (C : Matrix
     simp only [heisO, GlobalTheory.FinTranslate.symplOH_zero_right, add_zero, AddChar.map_zero_eq_one, one_mul] at this
     exact this.symm
   refine by_contra fun hall => ?_
-  push_neg at hall
+  push Not at hall
   obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := lattice_ratMx D W.rank r
   have : BorelSpace (Mx D W.rank r) := ⟨rfl⟩
   have hcont : Continuous (isoPart V W C : Mx D W.rank r → WO V W) := continuous_id.matrix_mul continuous_const

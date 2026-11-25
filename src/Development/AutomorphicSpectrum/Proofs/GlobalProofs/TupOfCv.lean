@@ -24,13 +24,4 @@ def chiG (G : Matrix ι ι F) (u v : ι → 𝔸[F]) : ℂ :=
 
 end Gen
 
-section Link
-open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open GlobalTheory.CompanionTheory.SW.BB
-open scoped TensorProduct ENNReal Matrix
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
-
-end Link
-
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Fth

@@ -108,10 +108,4 @@ theorem nonzeroLocus_secOfIso {A B : LB Y} (u : LB.Iso A B) (t : LB.Sec B) (hu :
 
 end NZ
 
-section Main
-
-variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
-
-end Main
-
 end ReciprocityTheory.ChartRestriction.G.DVR

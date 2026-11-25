@@ -490,7 +490,7 @@ theorem UpperTheory.finiteLevel_cyclotomic_of_openEmbedding :
   have hK := K.2
   by_cases hvl : v = l
   · subst hvl
-    rw [if_pos rfl, hi]
+    rw [ite_eq_left rfl, hi]
     obtain ⟨hf, hf'⟩ := GlobalTheory.fixingSubgroupEquiv_bicontinuous ℚ_[v] (PadicAlgCl v) K.1
     let ε : G ≃* Formalism.GaloisCohomology.GK v K.1 := e.trans (IntermediateField.fixingSubgroupEquiv K.1)
     have hε : Continuous ε := hf.comp he
@@ -503,7 +503,7 @@ theorem UpperTheory.finiteLevel_cyclotomic_of_openEmbedding :
       (P.leK v K.1 hK r M σ hr hσ)
     simp only [MonoidHom.comp_apply, ← hc']
     rfl
-  · rw [if_neg hvl, pow_zero]
+  · rw [ite_eq_right hvl, pow_zero]
     let Ω := AlgebraicClosure ℚ
     have : IsAlgClosure ℚ Ω := AlgebraicClosure.instIsAlgClosure ℚ
     let j : Ω →+* PadicAlgCl v := (IsAlgClosed.lift (R := ℚ) (S := Ω) (M := PadicAlgCl v)).toRingHom

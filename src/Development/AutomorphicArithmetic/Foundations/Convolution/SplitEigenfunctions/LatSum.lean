@@ -410,7 +410,7 @@ private theorem wt_decay {K : Set (Fin 4 → FiniteAdeleRing (𝓞 ℚ) ℚ)} (N
     wt K (N + s) v ≤ (L * T⁻¹) ^ s * wt K N v := by
   unfold wt
   by_cases hv : finPartPi v ∈ K
-  · rw [if_pos hv, if_pos hv]
+  · rw [ite_eq_left hv, ite_eq_left hv]
     have hp : 0 < 1 + ‖infPartPi v‖ := by linarith [norm_nonneg (infPartPi v)]
     have h1 : (1 + ‖infPartPi v‖)⁻¹ ≤ L * T⁻¹ := by
       rw [inv_le_iff_one_le_mul₀ hp]
@@ -420,7 +420,7 @@ private theorem wt_decay {K : Set (Fin 4 → FiniteAdeleRing (𝓞 ℚ) ℚ)} (N
         _ = L * T⁻¹ * (1 + ‖infPartPi v‖) := by ring
     rw [pow_add, mul_inv, mul_comm, ← inv_pow (1 + ‖infPartPi v‖) s]
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) h1 s) (by positivity)
-  · rw [if_neg hv, if_neg hv, mul_zero]
+  · rw [ite_eq_right hv, ite_eq_right hv, mul_zero]
 
 private theorem rt_injective : Function.Injective (rt : ℚ → A ℚ) := by
   haveI : Nontrivial (A ℚ) := ⟨⟨0, 1, fun h => by

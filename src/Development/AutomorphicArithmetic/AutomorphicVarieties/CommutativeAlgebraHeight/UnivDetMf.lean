@@ -387,7 +387,7 @@ private theorem lev_open {k G : Type} [CommRing k] [Group G] [TopologicalSpace G
       intro N
       rw [TwoSidedIdeal.mem_iInf]
       exact hall N
-    push_neg at hx1
+    push Not at hx1
     obtain ⟨N, H, hN⟩ := hx1
     refine ⟨(N, H), fun x hx hxmem => hN ?_⟩
     have hd : x - x0 ∈ closureIdeal I S := (mk_eq _ _).1 (by rw [map_sub, hx, sub_self])

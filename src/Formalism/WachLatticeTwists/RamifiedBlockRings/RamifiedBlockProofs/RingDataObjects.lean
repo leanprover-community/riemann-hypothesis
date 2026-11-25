@@ -50,11 +50,11 @@ theorem add_mem_tSpan {F F' : X → Matrix d d K} (h : F ∈ tSpan T r) (h' : F'
   simp only [term_add, Finset.sum_add_distrib]
   congr 1
   · refine (Finset.sum_congr rfl fun g hg => ?_).trans (Finset.sum_subset Finset.subset_union_left fun g _ hg => ?_)
-    · rw [if_pos hg]
-    · rw [if_neg hg, term_zero]
+    · rw [ite_eq_left hg]
+    · rw [ite_eq_right hg, term_zero]
   · refine (Finset.sum_congr rfl fun g hg => ?_).trans (Finset.sum_subset Finset.subset_union_right fun g _ hg => ?_)
-    · rw [if_pos hg]
-    · rw [if_neg hg, term_zero]
+    · rw [ite_eq_left hg]
+    · rw [ite_eq_right hg, term_zero]
 
 theorem sum_mem_tSpan {ι : Type*} (s : Finset ι) (F : ι → X → Matrix d d K)
     (h : ∀ i ∈ s, F i ∈ tSpan T r) : ∑ i ∈ s, F i ∈ tSpan T r := Finset.sum_induction _ (· ∈ tSpan T r) (fun _ _ ha hb => add_mem_tSpan T r ha hb)

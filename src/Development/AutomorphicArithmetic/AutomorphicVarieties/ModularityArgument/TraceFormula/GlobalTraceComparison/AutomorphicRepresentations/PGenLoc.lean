@@ -250,12 +250,12 @@ private theorem mem_dcs_of_positions {S : Set (Pl E)} {N : ∀ w : Pl E, Subgrou
     simp only [map_mul, map_inv]
     rw [hc i hi, hd i hi]
     by_cases hiJ : i ∈ hfin.toFinset
-    · rw [if_pos hiJ, if_pos hiJ, (hAB i hi).2.2]
+    · rw [ite_eq_left hiJ, ite_eq_left hiJ, (hAB i hi).2.2]
       simp [mul_assoc, (N i.1).one_mem]
-    · rw [if_neg hiJ, if_neg hiJ]
+    · rw [ite_eq_right hiJ, ite_eq_right hiJ]
       have hn : ¬ (qw n i.1 i.2 x ∉ N i.1 ∨ qw n i.1 i.2 g ∉ N i.1) := fun h =>
         hiJ ((hfin.mem_toFinset).2 ⟨hi, h⟩)
-      push_neg at hn
+      push Not at hn
       simpa using (N i.1).mul_mem ((N i.1).inv_mem hn.2) hn.1
   exact DoubleCoset.mem_doubleCoset.2
     ⟨c, hcL, (g⁻¹ * c⁻¹ * x * d⁻¹) * d, (Lev S N).mul_mem hkL hdL, by simp [mul_assoc]⟩
@@ -312,7 +312,7 @@ private theorem pf_eq {Z : Finset (Pl E)} {S : Set (Pl E)} {N : ∀ w : Pl E, Su
         have hsp : GlobalTheory.UnitaryBC.IsSplitAt w := hi.2 rfl
         simp only at hix
         simp only
-        rw [if_pos hsp, Set.indicator_of_notMem hix, mul_zero]
+        rw [ite_eq_left hsp, Set.indicator_of_notMem hix, mul_zero]
     · refine ((Z.finite_toSet).union
         (((hbad x).union (hbad g)).image fun i : Pl E × Bool => i.1)).subset ?_
       intro w hw

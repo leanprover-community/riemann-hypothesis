@@ -344,7 +344,7 @@ theorem exists_upUni (F : LFlag S r T) (n : S.V ≃ₗ[E] S.V)
   choose l hl0 hl using key
   refine ⟨Matrix.of fun a b => Fin.snoc (α := fun _ => E) (l b) 0 a + if a = b then 1 else 0, ?_, ?_, ?_⟩
   · intro a b hab
-    simp only [Matrix.of_apply, if_neg (ne_of_gt hab), add_zero]
+    simp only [Matrix.of_apply, ite_eq_right (ne_of_gt hab), add_zero]
     induction a using Fin.lastCases with
     | last => simp
     | cast k => simp only [Fin.snoc_castSucc]; exact hl0 b k hab.le
@@ -356,7 +356,7 @@ theorem exists_upUni (F : LFlag S r T) (n : S.V ≃ₗ[E] S.V)
   · intro b
     rw [hl b]
     simp only [Matrix.of_apply, add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [Fin.sum_univ_castSucc]
     simp [frame, FlagG.fvec, add_comm]
 
@@ -702,7 +702,7 @@ theorem inTh_lat_iff : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) {T T' : D.h
   have hgg := (c.c (below D P)).gg_some g' hM
   have hth : (G.S (below D P)).th = ((D.host.g i : ℕ) : (D.s.atP (below D P)).Fp) := by
     unfold Frames.th
-    rw [if_pos hgg.1, hgg.2, hq, sg.q_eq, hres]
+    rw [ite_eq_left hgg.1, hgg.2, hq, sg.q_eq, hres]
   haveI := ((placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)).loc (below D P)).char0
   have hgj0 : ((D.host.g j : ℕ) : ((placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)).loc (below D P)).Fp) ≠ 0 :=
     Nat.cast_ne_zero.2 (D.host.g_prime j).ne_zero

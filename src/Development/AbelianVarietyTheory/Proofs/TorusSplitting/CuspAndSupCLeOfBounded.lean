@@ -99,13 +99,13 @@ theorem cusp_and_supC_le_of_bounded : ∀ (E : Type) [Field E] [NumberField E] [
       · intro i i' h1 h2
         unfold laU
         by_cases h3 : ((U σ).X j).p0 ≤ (i : ℕ)
-        · rw [if_pos h3, if_pos (by omega)]
+        · rw [ite_eq_left h3, ite_eq_left (by omega)]
           simp
-        · rw [if_neg h3, if_neg (by omega)]
+        · rw [ite_eq_right h3, ite_eq_right (by omega)]
           simp
       · intro i i' h1 h2
         unfold laU
-        rw [if_neg (by omega), if_pos (by omega)]
+        rw [ite_eq_right (by omega), ite_eq_left (by omega)]
         omega
   · have h1 : lieFac Dw xi (0 : (E →+* ℂ) × ℕ → ℕ) = 1 := by simp [lieFac]
     unfold supC supN

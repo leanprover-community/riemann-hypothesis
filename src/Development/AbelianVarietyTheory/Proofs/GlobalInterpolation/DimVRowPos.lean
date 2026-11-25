@@ -212,7 +212,7 @@ theorem idx_ratio (R : Ranks) (g : Fin 2 → ℕ) (hp : ∀ i, (g i).Prime) (hg 
 
 def seqOf {n : ℕ} (x : Fin n → ℚ) (i : ℕ) : ℝ := if h : i < n then ((x ⟨i, h⟩ : ℚ) : ℝ) else 0
 
-theorem seqOf_lt {n : ℕ} (x : Fin n → ℚ) {i : ℕ} (h : i < n) : seqOf x i = ((x ⟨i, h⟩ : ℚ) : ℝ) := dif_pos h
+theorem seqOf_lt {n : ℕ} (x : Fin n → ℚ) {i : ℕ} (h : i < n) : seqOf x i = ((x ⟨i, h⟩ : ℚ) : ℝ) := dite_eq_left h
 
 theorem dimV_col {n : ℕ} (x : Fin n → ℚ) :
     dimV (fun i => ((x i : ℚ) : ℝ)) = Formalism.LogVandermondeBounds.StandardLattice.dimVN (seqOf x) n := by
@@ -231,11 +231,11 @@ theorem dimV_row {k m : ℕ} (v : Fin (k - 1) → ℚ) (b : Fin m → ℚ) :
   | left i =>
     have hi : (Fin.castAdd m i).val = i.val := rfl
     unfold Formalism.LogVandermondeBounds.StandardLattice.rowPar
-    rw [Fin.append_left, hi, if_pos i.2, seqOf_lt v i.2]
+    rw [Fin.append_left, hi, ite_eq_left i.2, seqOf_lt v i.2]
   | right j =>
     have hj : (Fin.natAdd (k - 1) j).val = k - 1 + j.val := rfl
     unfold Formalism.LogVandermondeBounds.StandardLattice.rowPar
-    rw [Fin.append_right, hj, if_neg (by omega), Nat.add_sub_cancel_left, seqOf_lt b j.2]
+    rw [Fin.append_right, hj, ite_eq_right (by omega), Nat.add_sub_cancel_left, seqOf_lt b j.2]
 
 theorem dimV_row_pos {R : Ranks} (p : HCParam R) :
     0 < dimV (Fin.append (fun i => ((p.v i : ℚ) : ℝ)) (fun j => -((p.b j : ℚ) : ℝ))) := by

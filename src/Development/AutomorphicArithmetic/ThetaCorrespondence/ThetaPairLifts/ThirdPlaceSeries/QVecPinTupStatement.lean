@@ -260,7 +260,7 @@ theorem latO_signs : ∀ (D : D7) (r : ℕ) (k : Fin r → Type) [∀ i, Field (
           rw [Finset.sum_eq_single i]
           · simp
           · intro j _ hj
-            rw [if_neg (fun h => hj (hinj h).symm), zero_mul]
+            rw [ite_eq_right (fun h => hj (hinj h).symm), zero_mul]
           · intro h
             exact absurd (Finset.mem_univ i) h
         · rw [hsupp v hv]
@@ -344,7 +344,7 @@ theorem comb_eq_on_vacua : ∀ (D : D7) (r : ℕ) (k : Fin r → Type) [∀ i, F
     intro x hx y hy h
     have hd : x - y ∈ suppGrp S T P := sub_mem hx hy
     rw [GlobalTheory.SelfDualAt.latO_ann_at D ψ hψ S T LS LT hS hT P (x - y) hd] at h
-    push_neg at h
+    push Not at h
     obtain ⟨l, hl, hl'⟩ := h
     refine ⟨l, hl, fun he => hl' ?_⟩
     rw [← sub_add_cancel x y, GlobalTheory.LatVac.symplO_add_right, AddChar.map_add_eq_mul] at he
@@ -439,7 +439,7 @@ theorem idemE_smul_mem (v : Pl D) {P : Pl D → Prop} {u : WO S T} (hu : u ∈ l
       · exact one_mem _
       · exact zero_mem _
     refine ⟨idemF v * α, hmem, fun w hw => ?_, a, ha, s, hs, t, ht, idemE_smul_gen v α _⟩
-    rw [map_mul, evalV_idemF, if_neg hw, zero_mul]
+    rw [map_mul, evalV_idemF, ite_eq_right hw, zero_mul]
   | zero => rw [smul_zero]; exact zero_mem _
   | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
   | neg x _ hx => rw [smul_neg]; exact neg_mem hx
@@ -511,7 +511,7 @@ theorem smul_mem_at {LS : Set (Fin S.rank → D.host.E)} {LT : Set (Fin T.rank �
     (hx : x ∈ latO S T LS LT fun _ => True) : q.e • x ∈ latO S T LS LT (· = q.v) := by
   obtain ⟨ε, hε, h⟩ := q.above
   have h1 : IsPlaceIdem D q.v (pairA _ 0 (GlobalTheory.VacUnion.idemF q.v)) :=
-    ⟨_, rfl, by rw [GlobalTheory.VacUnion.evalV_idemF, if_pos rfl], fun w hw => by rw [GlobalTheory.VacUnion.evalV_idemF, if_neg hw]⟩
+    ⟨_, rfl, by rw [GlobalTheory.VacUnion.evalV_idemF, ite_eq_left rfl], fun w hw => by rw [GlobalTheory.VacUnion.evalV_idemF, ite_eq_right hw]⟩
   have h2 : GlobalTheory.VacUnion.idemE q.v = q.e + cA D q.e := by
     rw [h, GlobalTheory.IdemSupport.placeIdem_unique hε h1]; rfl
   have h3 := GlobalTheory.VacUnion.idemE_smul_mem q.v (GlobalTheory.PlaceModelSum.idem_smul_latO q.split.1 hx)
@@ -892,11 +892,11 @@ theorem isSBHalf_splitProd : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] 
       exact toEAf_mem_of_pr q hx
   refine ⟨fun t ht => ?_, kΩ * K₀ * (p ^ N * M), Nat.mul_pos (Nat.mul_pos hkΩ hK₀) (Nat.mul_pos (pow_pos hp N) hM), fun u hu hue t => ?_, fun t ht => ?_⟩
   · by_contra h
-    exact ht (if_neg h)
+    exact ht (ite_eq_right h)
   · have hKu : IsHalf e ((kΩ * K₀ * (p ^ N * M)) • u) := GlobalTheory.HalfCoordSB.isHalf_nsmul hue _
     dsimp only
     by_cases ht : IsHalf e t
-    · rw [if_pos ht, if_pos (GlobalTheory.HalfCoordSB.isHalf_add ht hKu)]
+    · rw [ite_eq_left ht, ite_eq_left (GlobalTheory.HalfCoordSB.isHalf_add ht hKu)]
       have hΦe : Φ.1 ((ofSplit q).down FS FT (t + (kΩ * K₀ * (p ^ N * M)) • u)) =
           Φ.1 ((ofSplit q).down FS FT t) := by
         rw [down_add, down_nsmul, mul_smul]
@@ -918,12 +918,12 @@ theorem isSBHalf_splitProd : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] 
       rw [hΦe, hΩe]
     · have hn : ¬ IsHalf e (t + (kΩ * K₀ * (p ^ N * M)) • u) := fun h =>
         ht (by simpa using GlobalTheory.HalfCoordSB.isHalf_sub h hKu)
-      rw [if_neg ht, if_neg hn]
+      rw [ite_eq_right ht, ite_eq_right hn]
   · dsimp only at ht
     have hh : IsHalf e t := by
       by_contra h
-      exact ht (if_neg h)
-    rw [if_pos hh] at ht
+      exact ht (ite_eq_right h)
+    rw [ite_eq_left hh] at ht
     have hΦt : Φ.1 ((ofSplit q).down FS FT t) ≠ 0 := left_ne_zero_of_mul ht
     have hΩt : Ω ((1 - q.e) • t) ≠ 0 := right_ne_zero_of_mul ht
     have e3 : t = q.e • t + (1 - q.e) • t := by rw [← add_smul, add_sub_cancel, one_smul]
@@ -1224,9 +1224,9 @@ theorem puts (q : GlobalTheory.FinPl.SplitPt D k) {ψ : AddChar (AF D.host.F) �
       rw [redM_eq_map w hN, ← h1 π' hπ hred]
       rfl) ⟨Ξ, hΞ⟩ (fun x => by rw [← hco x]; exact congrFun hΞ' _)
   have e2 := hT' W (fun z => if ∀ i j, z i j ∈ 𝒪[k] then 1 else 0)
-    (fun z hz => by_contra fun h => hz (if_neg h))
+    (fun z hz => by_contra fun h => hz (ite_eq_right h))
     (fun N hN => by
-      rw [if_pos (show ∀ i j, N.map π' i j ∈ 𝒪[k] from fun i j => ((hint _).1 (hN i j)).2), one_mul]) O (fun x => by
+      rw [ite_eq_left (show ∀ i j, N.map π' i j ∈ 𝒪[k] from fun i j => ((hint _).1 (hN i j)).2), one_mul]) O (fun x => by
       have h5 := hco x
       simp only [LatFrame.coords, inv_one, Units.val_one, Matrix.one_mul, Matrix.mul_one] at h5
       rw [hO, Set.indicator_apply]
@@ -1539,7 +1539,7 @@ theorem qVec_pinTup_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I 
   have sdX : IsSelfDualC (I.rec7 l Z).sp.X' (_root_.GlobalTheory.Fam.pk_z W).ΛX := GlobalTheory.SDFrameLattice.isSelfDualC_of_isSDFrame _ _ _ _ _ hL.βX
   refine ⟨?_, ?_⟩
   · intro j hj d hd g hg
-    have hmid : ((_root_.GlobalTheory.Fam.familyOfRowColumnChoices a J row col hCh t).pinTup sc cT).eQ j = aconv (List.ofFn fun i => ((J t).E i).eL j) := if_pos hj
+    have hmid : ((_root_.GlobalTheory.Fam.familyOfRowColumnChoices a J row col hCh t).pinTup sc cT).eQ j = aconv (List.ofFn fun i => ((J t).E i).eL j) := ite_eq_left hj
     rw [hmid]
     rw [hS] at hg
     exact step_mid (I.rec7 l Z) (commOf (_root_.GlobalTheory.Fam.pk_z W) u a.g) a.v (baseOf (_root_.GlobalTheory.Fam.pk_z W) (_root_.GlobalTheory.Fam.complexLevelStructure W) u a.g) (_root_.GlobalTheory.Fam.chrK_alt W t) ha.vis (J t).r (J t).pl

@@ -290,7 +290,7 @@ theorem ratOn_apply (D : CartierDiv Y) {W : Y.Opens} (h : genericPoint Y ∈ W)
     (a : sectionsOn (twist (GlobalTheory.structureModule Y) (toLB D)) W) :
     ratOn D W a = fnOf _ (memInf h (gen_mem_chart (genChart D))) (coordFn a (genChart D)) /
       (chartEqn (genChart D) : Y.functionField) :=
-  dif_pos h
+  dite_eq_left h
 
 theorem ratOn_mul (D : CartierDiv Y) {W : Y.Opens} (h : genericPoint Y ∈ W)
     (a : sectionsOn (twist (GlobalTheory.structureModule Y) (toLB D)) W) (i : (toLB D).ι) :
@@ -803,7 +803,7 @@ theorem mult_lt_of_connected : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoe
       by_contra h0
       exact hvc (CartierDiv.coheight_eq_one_of_mult_ne_zero h0)
     rw [this]; exact hm'
-  push_neg at hvc
+  push Not at hvc
   haveI := hres.smooth
   haveI : Smooth (s ≫ p) := SmoothOfRelativeDimension.smooth n _
   haveI : GlobalTheory.IsNormalScheme Y := GlobalTheory.ModifSections.isNormalScheme_of_smooth (s ≫ p)

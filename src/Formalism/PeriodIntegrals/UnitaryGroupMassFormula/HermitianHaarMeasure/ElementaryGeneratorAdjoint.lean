@@ -152,7 +152,7 @@ lemma supp_conj {i : Fin (r + 1)} {A : Mx k r} (hA : SuppV i A) : SuppV i (Hpk k
 lemma supp_single (i : Fin (r + 1)) (c d : Fin (mdim k r i)) :
     SuppV i (Matrix.single (posL k r i c) (posL k r i d) (1 : ℂ)) := by
   intro p q h
-  rw [Matrix.single_apply, if_neg]
+  rw [Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   rcases h with h | h <;> exact not_out_posL i _ h
 
@@ -275,13 +275,13 @@ lemma hpk_conj_single_apply (a' b' p q : Fin (2 * r + k + 1)) :
 
 lemma hpk_out_left {i : Fin (r + 1)} {p m : Fin (2 * r + k + 1)} (hp : Out i p) (hm : ¬ Out i m) :
     Hpk k r p m = 0 := by
-  rw [WeylGroupFacts.hpk_row, if_neg]
+  rw [WeylGroupFacts.hpk_row, ite_eq_right]
   intro h
   exact hm (h ▸ out_tau hp)
 
 lemma hpk_out_right {i : Fin (r + 1)} {q m : Fin (2 * r + k + 1)} (hq : Out i q) (hm : ¬ Out i m) :
     Hpk k r m q = 0 := by
-  rw [WeylGroupFacts.hpk_row, if_neg]
+  rw [WeylGroupFacts.hpk_row, ite_eq_right]
   intro h
   apply hm
   have := out_tau (k := k) hq
@@ -311,26 +311,26 @@ lemma conj_single_expand (i : Fin (r + 1)) (a b : Fin (mdim k r i)) :
   by_cases hp : Out i p
   · rw [hpk_out_left hp (not_out_posL i b), zero_mul]
     symm
-    refine Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun d _ => if_neg ?_
+    refine Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun d _ => ite_eq_right ?_
     rintro ⟨rfl, -⟩
     exact not_out_posL i c hp
   by_cases hq : Out i q
   · rw [hpk_out_right hq (not_out_posL i a), mul_zero]
     symm
-    refine Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun d _ => if_neg ?_
+    refine Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun d _ => ite_eq_right ?_
     rintro ⟨-, rfl⟩
     exact not_out_posL i d hq
   obtain ⟨c₀, rfl⟩ := posL_surj hp
   obtain ⟨d₀, rfl⟩ := posL_surj hq
-  rw [Finset.sum_eq_single c₀, Finset.sum_eq_single d₀, if_pos ⟨rfl, rfl⟩]
+  rw [Finset.sum_eq_single c₀, Finset.sum_eq_single d₀, ite_eq_left ⟨rfl, rfl⟩]
   · rfl
   · intro d _ hd
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨-, h⟩
     exact hd (posL_inj h)
   · intro h; exact absurd (Finset.mem_univ _) h
   · intro c _ hc
-    refine Finset.sum_eq_zero fun d _ => if_neg ?_
+    refine Finset.sum_eq_zero fun d _ => ite_eq_right ?_
     rintro ⟨h, -⟩
     exact hc (posL_inj h)
   · intro h; exact absurd (Finset.mem_univ _) h

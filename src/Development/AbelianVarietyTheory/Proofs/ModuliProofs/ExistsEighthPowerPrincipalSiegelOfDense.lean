@@ -974,7 +974,7 @@ theorem eq_one_of_slice_trivial : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ) (S : Sche
   have h1 : x' = 1 := KerPow.eq_one_of_locGen hK x' fun _ => ⟨⊤, trivial, H.pull _ fun _ => rfl⟩
   have h0 := hx' 0
   have := hpr 0
-  rw [h1, MonObj.one_comp, if_pos rfl] at h0
+  rw [h1, MonObj.one_comp, ite_eq_left rfl] at h0
   exact h0.symm
 
 end GlobalTheory.FormBundleKer
@@ -1328,8 +1328,8 @@ theorem sum_single {G M : Type*} [Group G] [AddCommGroup M] (B : G → G → M)
   · simp
   · by_cases a₁ : b.1 = 0
     · have a₂ : b.2 ≠ 0 := fun a₂ => hb (Prod.ext a₁ a₂)
-      rw [if_neg a₂, z₂, smul_zero]
-    · rw [if_neg a₁, z₁, smul_zero]
+      rw [ite_eq_right a₂, z₂, smul_zero]
+    · rw [ite_eq_right a₁, z₁, smul_zero]
 
 open GlobalTheory.CechPic in
 theorem relAmple_diag : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ) (S : Scheme.{0}) [IsLocallyNoetherian S] (G A : Over S) [GrpObj G] [IsCommMonObj G] [GrpObj A] [IsCommMonObj A] (pr : Fin 8 → (G ⟶ A)) (L : LB G.left) (P : LB (G2 A).left), IsE8 W → IsAbelianScheme G → IsAbelianScheme A → (∀ u, IsMonHom (pr u)) → (∀ (T : Over S) (y : Fin 8 → (T ⟶ A)), ∃! x : T ⟶ G, ∀ u, x ≫ pr u = y u) → L.IsLB → P.IsLB → (∀ (T : Over S) (x x' y : T ⟶ A), (∃ t : (LB.LinComb P (K := Fin 3) ![(lift (x * x') y).left, (lift x y).left, (lift x' y).left] ![1, -1, -1]).Gen, t.IsGen) ∧ ∃ t : (LB.LinComb P (K := Fin 3) ![(lift y (x * x')).left, (lift y x).left, (lift y x').left] ![1, -1, -1]).Gen, t.IsGen) → LBIso L (LB.LinComb P (K := Fin 8 × Fin 8) (fun uv => (lift (pr uv.1) (pr uv.2)).left) (fun uv => W uv.1 uv.2)) → Out.RelAmple G L → Out.RelAmple A (P.pull (lift (𝟙 A) (𝟙 A)).left) := by
@@ -1337,7 +1337,7 @@ theorem relAmple_diag : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ) (S : Scheme.{0}) [I
   obtain ⟨j, hj, -⟩ := hpr A fun v => if v = 0 then 𝟙 A else 1
   have := hG.proper
   have hcl : IsClosedImmersion j.left := GlobalTheory.Retract.isClosedImmersion_section (r := (pr 0).left)
-    (by rw [← Over.comp_left, hj, if_pos rfl, Over.id_left]) (Over.w (pr 0))
+    (by rw [← Over.comp_left, hj, ite_eq_left rfl, Over.id_left]) (Over.w (pr 0))
   have hpos := diag_pos hW 0
   have hn : 0 < (W 0 0).toNat := by omega
   have hD : (P.pull (lift (𝟙 A) (𝟙 A)).left).IsLB := LB.isLB_pull hP _

@@ -32,11 +32,4 @@ def SchurOn (μG : Measure (Mt k r)) (σ : Mx k r → (H →L[ℂ] H)) : Prop :=
 
 end Generic
 
-section Assembly
-
-variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-  {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp]
-
-end Assembly
-
 end PI.WBL.FSW

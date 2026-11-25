@@ -201,7 +201,7 @@ theorem goodTupleIdempotent_central_and_action (T : NTypes A) (hs : ∀ k f, f.M
     exact ha ⟨k, v⟩
   have := hm a
   rw [ha'] at this
-  refine ⟨_, ten_ne_zero fun kv => ?_, fun h => this.trans (if_pos h), fun h => this.trans (if_neg h)⟩
+  refine ⟨_, ten_ne_zero fun kv => ?_, fun h => this.trans (ite_eq_left h), fun h => this.trans (ite_eq_right h)⟩
   rw [ha]
   exact hs _ _ (hf _ _)
 

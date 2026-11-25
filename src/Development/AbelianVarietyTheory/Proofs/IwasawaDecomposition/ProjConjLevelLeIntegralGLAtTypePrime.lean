@@ -55,9 +55,9 @@ theorem jat_le_stab_lamY {X : Fields} {Pr : Primes X} {R : Ranks} (sharp : Bool)
     (P : HeightOneSpectrum (𝓞 X.E)) (hP : P ∈ Pr.vGs) (g : AutY X R j) (hg : g ∈ Jat (Pr := Pr) sharp j P) :
     g ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) j P) := by
   unfold Jat at hg
-  rw [if_pos hP] at hg
+  rw [ite_eq_left hP] at hg
   unfold lamYat
-  rw [if_pos hP]
+  rw [ite_eq_left hP]
   split_ifs at hg
   · exact hg.1
   · exact hg.1
@@ -73,7 +73,7 @@ theorem prCat_le_GLint : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (sharp : B
   have e2 : h * (h⁻¹ * r * h) * h⁻¹ = r := by group
   rw [e2] at h2
   unfold lamYat at h2
-  rw [if_pos hP] at h2
+  rw [ite_eq_left hP] at h2
   have key : ∀ x : Sp X.E (R.N j), Loc.inX X.E (R.N j) (cOf R j) x ∈
       LocE.lamY P (qOf P) (R.N j) (cOf R j) (fun i => i + 1) ↔ x ∈ stdAt X.E (R.N j) P := fun x =>
     ⟨fun hx => by simpa only [GlobalTheory.CongLevel.resX_inX] using GlobalTheory.CongLevel.resX_mem P _ _ _ _ hx,

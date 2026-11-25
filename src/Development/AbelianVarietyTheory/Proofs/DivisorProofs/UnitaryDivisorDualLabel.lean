@@ -136,9 +136,9 @@ theorem hasDiv_dualLab : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplic
     simp only [cT, Matrix.transpose_apply, Matrix.map_apply, Matrix.diagonal_apply, Fin.rev_inj]
     by_cases h : i = j
     · subst h
-      simp only [if_true]
+      simp only [ite_true]
       rw [getD_dualLab d hd, map_zpow₀]
-    · rw [if_neg h, if_neg (Ne.symm h), map_zero]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h), map_zero]
   have hDD : Matrix.diagonal (fun i : Fin n => ϖ ^ d.getD i 0) *
       Matrix.diagonal (fun i : Fin n => ϖ ^ (-d.getD i 0)) = 1 := by
     rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]

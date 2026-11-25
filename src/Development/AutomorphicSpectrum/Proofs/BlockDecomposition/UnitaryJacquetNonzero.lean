@@ -252,7 +252,7 @@ private lemma entry_bound {L : Type} [Field L] [Valued L (WithZero (Multiplicati
     · exact hi
     · exact hi.le
   · intro hlt
-    rw [if_neg (by omega)] at hi
+    rw [ite_eq_right (by omega)] at hi
     exact hi
 
 end UpperTheory.Reformulated.B.IwahoriEntryBound.Helpers
@@ -394,7 +394,7 @@ theorem iwEnt_of_mem {g : GL (Fin n) L} (hg : g ∈ IwGL L n) : IwEnt (g : Matri
   have hm := Set.smul_mem_smul_set (a := Matrix.GeneralLinearGroup.toLin g) he
   rw [hs] at hm
   have hi := hm i
-  rw [if_neg (lt_irrefl _)] at hi
+  rw [ite_eq_right (lt_irrefl _)] at hi
   have e : ((Matrix.GeneralLinearGroup.toLin g) • (Pi.single j (1 : L) : Fin n → L)) i =
       (g : Matrix (Fin n) (Fin n) L) i j := by
     show (Matrix.mulVec (g : Matrix (Fin n) (Fin n) L) (Pi.single j (1 : L) : Fin n → L)) i = _
@@ -436,7 +436,7 @@ theorem minor_diag {M : Matrix (Fin n) (Fin n) L} (hM : IwEnt M) (hd : ∀ i, Va
     · obtain ⟨x, hx⟩ := hex
       exact term_lt hM f f s hx
     · exfalso
-      push_neg at hex
+      push Not at hex
       apply hs1
       ext x
       have := perm_sum_eq s (fun x => ((f x).val : ℤ)) (fun x => by exact_mod_cast hex x) x
@@ -1472,7 +1472,7 @@ theorem finiteDimensional_iwFix (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ x, Valu
   let wOf : Equiv.Perm (Fin n) → GU σ n := fun π => if h : ∃ w : GU σ n, IsPermW w π then h.choose else 1
   have hwOf : ∀ (w : GU σ n) π, IsPermW w π → wOf π = w := fun w π hw => by
     have h : ∃ w : GU σ n, IsPermW w π := ⟨w, hw⟩
-    simp only [wOf, dif_pos h]
+    simp only [wOf, dite_eq_left h]
     exact isPermW_unique h.choose_spec hw
   let F : iwFix σ n q α →ₗ[ℂ] (Equiv.Perm (Fin n) → ℂ) :=
     { toFun := fun φ π => (φ : GU σ n → ℂ) (wOf π)

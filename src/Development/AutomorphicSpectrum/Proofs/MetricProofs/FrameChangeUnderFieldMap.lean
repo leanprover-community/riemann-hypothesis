@@ -35,11 +35,11 @@ theorem stepCols_ne_empty {N j : ℕ} (i : Fin N) : stepCols N j i ≠ ∅ := by
   have hi := i.2
   by_cases h : (i : ℕ) + 1 ≤ j
   · have : (⟨N - j, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos h]
+      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left h]
       omega
     simp [e] at this
   · have : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg h]
+      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right h]
       omega
     simp [e] at this
 
@@ -177,7 +177,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   have hinv : ∀ F : FrameData ι Ψ N M.Ω M.blk, M.IsFrame F →
       ∑ m : ι k, φ (F.u' (stepCols N j p.2) ⟨k, m⟩) * φ (F.u ⟨k, m⟩ (stepCols N j p.2)) = 1 := fun F hF => by
     have e := hF.2.2.1 p k hp _ _ hstep hstep
-    rw [if_pos rfl] at e
+    rw [ite_eq_left rfl] at e
 
     rw [← map_one φ, ← e, map_sum]
     exact Finset.sum_congr rfl fun m _ => (map_mul φ _ _).symm

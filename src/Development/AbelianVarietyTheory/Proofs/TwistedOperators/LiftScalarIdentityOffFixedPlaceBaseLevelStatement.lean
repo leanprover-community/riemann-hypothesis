@@ -148,26 +148,6 @@ variable {Bs : DefBase K} {A : DefAmb Bs} (X : CxData A) {fc : DefSub A → DefF
 
 end Abstract
 
-section Concrete
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A)
-
-end Concrete
-
-section Comparison₂
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.MainNotions
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-
-
-end Comparison₂
-
 end GlobalTheory.ScalarConjugation
 end -- clump:auto
 end -- clump:auto
@@ -772,7 +752,7 @@ theorem lift_eig_mem_part : GlobalTheory.Hk3.HoweUnram → ∀ {D : D7} {G : Typ
     if h : Good R A.μ0 P ∧ RelLab (Wc D i) P d then (loc P h.1 d h.2).choose else 0
   obtain ⟨ev, hev⟩ := GlobalTheory.T.thetaForm_eigen_mem_single_part R hC.lev hC.models.HW i σ b
   refine ⟨ev, fun u hu => hev (th u) fun P d hP hd => ?_⟩
-  simp only [b, dif_pos (And.intro hP hd)]
+  simp only [b, dite_eq_left (And.intro hP hd)]
   exact (loc P hP d hd).choose_spec u hu
 
 end GlobalTheory.ConjScalar.LiftPart
@@ -1027,7 +1007,7 @@ theorem heckePolyOf_coeff {L : Type} [Field L] (n q : ℕ) (a : ℕ → L) {k : 
   classical
   simp only [Formalism.L2.Col.heckePolyOf, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow]
   rw [Finset.sum_ite_eq]
-  rw [if_pos (Finset.mem_range.2 (Nat.lt_succ_of_le hk))]
+  rw [ite_eq_left (Finset.mem_range.2 (Nat.lt_succ_of_le hk))]
 
 theorem heckePolyOf_val_eq {L : Type} [Field L] [CharZero L] (n q : ℕ) (hq : q ≠ 0) (a b : ℕ → L)
     (h : Formalism.L2.Col.heckePolyOf n q a = Formalism.L2.Col.heckePolyOf n q b) {k : ℕ} (hk : k ≤ n) : a k = b k := by

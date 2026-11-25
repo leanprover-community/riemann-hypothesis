@@ -91,8 +91,8 @@ theorem alt_contract {k : ℕ} (Q : (Fin k → I) → 𝒰) (r : Fin (k + 1) →
       funext i
       by_cases h : i = j
       · subst h
-        rw [Function.update_apply, if_pos rfl, Equiv.swap_apply_right]
-      · rw [Function.update_apply, if_neg h, Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero i)
+        rw [Function.update_apply, ite_eq_left rfl, Equiv.swap_apply_right]
+      · rw [Function.update_apply, ite_eq_right h, Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero i)
           (fun e => h (Fin.succ_injective _ e))]
     rw [hA]
     simp only [Equiv.Perm.mul_apply, Equiv.swap_apply_left]

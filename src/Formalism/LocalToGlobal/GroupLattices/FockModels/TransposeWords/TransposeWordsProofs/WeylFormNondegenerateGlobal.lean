@@ -187,7 +187,7 @@ theorem cwl_coeffT_Phi (L : List (Fin r × Fin r × (Fin r × Fin n)))
       simp only [Finsupp.single_le_iff]
     simp only [key, ih hw]
     rw [Finset.sum_eq_single (d v)]
-    · simp only [le_refl, if_true]
+    · simp only [le_refl, ite_true]
       have hfill : w.map (fun l => (l.1, l.2.1, (d - Finsupp.single v (d v)) l.2.2)) =
           w.map (fun l => (l.1, l.2.1, d l.2.2)) := by
         apply List.map_congr_left
@@ -293,13 +293,13 @@ theorem cw_foldl_point (L : List (Fin r × Fin r × (Fin r × Fin n)))
       intro hmem
       obtain ⟨x, hx, hxe⟩ := List.mem_map.mp hmem
       exact (h2l x hx l (by simp)).2 hxe
-    rw [if_neg hno, add_zero]
+    rw [ite_eq_right hno, add_zero]
     by_cases hv : v = l.2.2
     · subst hv
       have e1 : l.2.2.1 = l.2.1 := hl.1
       have e2 : idFrame (MvPolynomial (Fin r × Fin n) R) r n (l.1, l.2.2.2) = 1 := by
         simp [idFrame, hl.2.1]
-      rw [if_neg hlw, if_pos e1, e2]
+      rw [ite_eq_right hlw, ite_eq_left e1, e2]
       simp
     · have hcond : ¬ (v.1 = l.2.1 ∧ l.1.val = v.2.val) := by
         rintro ⟨c1, c2⟩
@@ -458,7 +458,7 @@ theorem coeffWord' : CoeffWord := by
     rw [hmem] at hu
     simp [cwStrict, hu]
   have key := cwl_coeffT_Phi (cwLetters r n) hnd F (cwStrict e)
-  rw [if_pos hcond, ← hw] at key
+  rw [ite_eq_left hcond, ← hw] at key
   rw [← key, cw_eval_coeffT]
   have hid : (fun v => (C (idFrame R r n v) : MvPolynomial (Fin r × Fin n) R)) =
       idFrame (MvPolynomial (Fin r × Fin n) R) r n := by
@@ -472,10 +472,10 @@ theorem coeffWord' : CoeffWord := by
   rw [hpt, cwl_iota, eval_map, eval₂_eq', coeff_sum]
   simp only [coeff_C_mul, cw_prod_pt]
   rw [Finset.sum_eq_single e]
-  · rw [if_pos he, coeff_monomial, if_pos rfl, mul_one]
+  · rw [ite_eq_left he, coeff_monomial, ite_eq_left rfl, mul_one]
   · intro m hm hne
     split_ifs with hL
-    · rw [coeff_monomial, if_neg, mul_zero]
+    · rw [coeff_monomial, ite_eq_right, mul_zero]
       intro hs
       apply hne
       refine cw_ext m e hL he hs fun s => ?_

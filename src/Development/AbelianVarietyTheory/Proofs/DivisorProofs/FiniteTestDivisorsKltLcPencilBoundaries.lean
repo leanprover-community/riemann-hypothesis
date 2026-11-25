@@ -458,7 +458,7 @@ theorem GlobalTheory.Discrepancy.MonoOrd.ord_eq_sum_of_monomial : ∀ {k : Type}
         rw [hother j (w i) hv h1 (fun e => hji (hw e.symm)), mul_zero]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
-    · push_neg at h
+    · push Not at h
       rw [Finset.sum_eq_zero fun j _ => by rw [hother j v hv h1 (h j), mul_zero],
         hφ v hv h1 h, add_zero]
   have hreg : ∀ g : Y.functionFieldˣ,
@@ -631,7 +631,7 @@ theorem finite_test_divisors : GlobalTheory.Published.Principalisation → ∀ (
     by_cases hall : ∀ j, t j = 0
     · have := h0 hall
       linarith
-    · push_neg at hall
+    · push Not at hall
       have hpos : 0 < ∑ j, (1 + (discrep (Es j) η m g - c * (Es j).ord f)) * (t j : ℚ) := by
         obtain ⟨j0, hj0⟩ := hall
         refine Finset.sum_pos' (fun j _ => mul_nonneg ?_ ?_) ⟨j0, Finset.mem_univ _, mul_pos ?_ ?_⟩
@@ -646,7 +646,7 @@ theorem finite_test_divisors : GlobalTheory.Published.Principalisation → ∀ (
     by_cases hall : ∀ j, t j = 0
     · have := h0 hall
       linarith
-    · push_neg at hall
+    · push Not at hall
       have hnn : 0 ≤ ∑ j, (1 + (discrep (Es j) η m g - c * (Es j).ord f)) * (t j : ℚ) := by
         refine Finset.sum_nonneg fun j _ => mul_nonneg ?_ ?_
         · have := hS (Es j) (hEs j).1 (hEs j).2.1; linarith

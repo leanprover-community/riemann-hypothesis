@@ -85,7 +85,7 @@ theorem unipGL_injective : Function.Injective (unipGL : (UPos n r → R) → GL 
   intro X Y h
   funext p
   have := congrArg (fun g : GL (Fin n) R => (g : Matrix (Fin n) (Fin n) R) p.1.1 p.1.2) h
-  simp only [coe_unipGL, unipMatrix, Matrix.add_apply, blockEntry_apply, dif_pos p.2] at this
+  simp only [coe_unipGL, unipMatrix, Matrix.add_apply, blockEntry_apply, dite_eq_left p.2] at this
   simpa using this
 
 end Ring

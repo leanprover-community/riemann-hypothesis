@@ -231,13 +231,6 @@ def bd (n : ℕ) {a b : ℕ} (u : Mt g a) (v : Mt g b) : Mt g n := fun i j =>
 def Good (b : ℕ) {n : ℕ} (M : Mt g n) : Prop :=
   IsUniUp M ∧ ∀ i j : ℕ, i < b → b ≤ j → j < n → entN M i j = 0
 
-section
-variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
-  (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a)
-include hσ
-
-end
-
 open Polynomial in
 open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
@@ -308,11 +301,11 @@ private lemma isUniUp_and_inPar_iff_good (M : _root_.GlobalTheory.GLq.Mt g (a + 
     simp only [Equiv.apply_symm_apply] at hI hJ
     have hIa : a ≤ ((σ.symm ⟨i, by omega⟩ : Fin (a + b)) : ℕ) := by
       by_contra hlt
-      rw [if_pos (by omega)] at hI
+      rw [ite_eq_left (by omega)] at hI
       omega
     have hJa : ((σ.symm ⟨j, hjn⟩ : Fin (a + b)) : ℕ) < a := by
       by_contra hle
-      rw [if_neg hle] at hJ
+      rw [ite_eq_right hle] at hJ
       omega
     have := h _ _ hJa hIa
     simp only [Matrix.submatrix_apply, Equiv.apply_symm_apply] at this
@@ -320,8 +313,8 @@ private lemma isUniUp_and_inPar_iff_good (M : _root_.GlobalTheory.GLq.Mt g (a + 
     exact this
   · have hI := hσ i
     have hJ := hσ j
-    rw [if_neg (by omega)] at hI
-    rw [if_pos hj] at hJ
+    rw [ite_eq_right (by omega)] at hI
+    rw [ite_eq_left hj] at hJ
     have := h (σ i) (σ j) (by omega) (by omega) (σ j).2
     rw [entN_fin_eq_apply] at this
     exact this
@@ -422,7 +415,7 @@ private lemma good_bd_of_isUniUp {u : _root_.GlobalTheory.GLq.Mt g a}
       exact (hu _ _).2 rfl
   · rw [entN_eq_apply_of_lt' _ (by omega) hjn]
     simp only [_root_.GlobalTheory.GLm.OpenCell.bd]
-    rw [if_pos hi, if_neg (by omega)]
+    rw [ite_eq_left hi, ite_eq_right (by omega)]
 
 open Polynomial in
 open scoped Classical in
@@ -456,7 +449,7 @@ private lemma tl_bd_submatrix (u : _root_.GlobalTheory.GLq.Mt g a) (v : _root_.G
   ext i j
   rw [tl_submatrix_apply hσ]
   simp only [_root_.GlobalTheory.GLm.OpenCell.bd]
-  rw [if_neg (by omega), if_neg (by omega), entN_eq_apply_of_lt' _ (by omega) (by omega)]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), entN_eq_apply_of_lt' _ (by omega) (by omega)]
   congr 1 <;> apply Fin.ext <;> simp
 
 open Polynomial in
@@ -470,7 +463,7 @@ private lemma br_bd_submatrix (u : _root_.GlobalTheory.GLq.Mt g a) (v : _root_.G
   ext i j
   rw [br_submatrix_apply hσ]
   simp only [_root_.GlobalTheory.GLm.OpenCell.bd]
-  rw [if_pos i.2, if_pos j.2, entN_fin_eq_apply]
+  rw [ite_eq_left i.2, ite_eq_left j.2, entN_fin_eq_apply]
 
 open Polynomial in
 open scoped Classical in
@@ -512,12 +505,12 @@ private lemma supFrom_zero_bd {a b : ℕ} (u : _root_.GlobalTheory.GLq.Mt g a)
       · simp
       · intro j hj
         simp only [Finset.mem_Ico] at hj
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
     · rw [← Finset.range_eq_Ico, ← Finset.range_eq_Ico, show a + b - 1 = b + (a - 1) by omega,
         Finset.sum_range_add, Finset.sum_eq_zero (fun j hj => by
-          simp only [Finset.mem_range] at hj; rw [if_neg (by omega)]), zero_add]
+          simp only [Finset.mem_range] at hj; rw [ite_eq_right (by omega)]), zero_add]
       refine Finset.sum_congr rfl fun k _ => ?_
-      rw [if_pos (by omega), Nat.add_sub_cancel_left]
+      rw [ite_eq_left (by omega), Nat.add_sub_cancel_left]
   · refine (Finset.sum_subset (fun j hj => by simp only [Finset.mem_Ico] at hj ⊢; omega)
       fun j _ hj => ?_).symm
     simp only [Finset.mem_Ico, not_and, not_lt] at hj
@@ -659,12 +652,12 @@ theorem shuffle_noDescent_iff_open :
       show σ (ρ k) < σ (ρ l)
       by_cases h1 : (k : ℕ) < b
       · by_cases h2 : (l : ℕ) < b
-        · rw [if_pos h1] at hk; rw [if_pos h2] at hl
+        · rw [ite_eq_left h1] at hk; rw [ite_eq_left h2] at hl
           exact hmono _ _ (Fin.lt_def.mpr (by omega)) (Or.inr (by omega))
-        · rw [if_pos h1] at hk; rw [if_neg h2] at hl
+        · rw [ite_eq_left h1] at hk; rw [ite_eq_right h2] at hl
           exact hup _ _ (by omega) (by omega)
       · have h2 : ¬ (l : ℕ) < b := by omega
-        rw [if_neg h1] at hk; rw [if_neg h2] at hl
+        rw [ite_eq_right h1] at hk; rw [ite_eq_right h2] at hl
         exact hmono _ _ (Fin.lt_def.mpr (by omega)) (Or.inl (by omega))
     have hid : ∀ k, σ (ρ k) = k := fun k =>
       le_antisymm (hs.dual.le_apply (x := OrderDual.toDual k)) hs.le_apply
@@ -681,8 +674,8 @@ theorem shuffle_noDescent_iff_open :
     have h1 := h i
     have h2 := h j
     have := j.isLt
-    rw [if_pos hi] at h1
-    rw [if_neg (by omega)] at h2
+    rw [ite_eq_left hi] at h1
+    rw [ite_eq_right (by omega)] at h2
     omega
 
 end GlobalTheory
@@ -758,7 +751,7 @@ theorem isUniUp_of_col {M M' : Mt g n} {p q : Fin n} (hpq : p < q) (t : ZMod g)
 theorem isUniUp_iff_of_col {M M' : Mt g n} {p q : Fin n} (hpq : p < q) (t : ZMod g)
     (h : ∀ r c, M' r c = M r c + if c = q then t * M r p else 0) : IsUniUp M' ↔ IsUniUp M := by
   refine ⟨isUniUp_of_col hpq (-t) fun r c => ?_, isUniUp_of_col hpq t h⟩
-  rw [h r c, h r p, if_neg hpq.ne]
+  rw [h r c, h r p, ite_eq_right hpq.ne]
   split_ifs <;> ring
 
 theorem supFrom_of_col {M M' : Mt g n} {p q : Fin n} (hpq : (q : ℕ) = p + 1) (t : ZMod g)
@@ -773,27 +766,27 @@ theorem supFrom_of_col {M M' : Mt g n} {p q : Fin n} (hpq : (q : ℕ) = p + 1) (
     rw [dite_eq_left hk', dite_eq_left hk', h]
     congr 1
     by_cases hkp : k = (p : ℕ)
-    · rw [if_pos hkp, if_pos (Fin.ext (by simp [hkp, hpq])), (hM _ p).2 (Fin.ext hkp), mul_one]
-    · rw [if_neg hkp, if_neg]
+    · rw [ite_eq_left hkp, ite_eq_left (Fin.ext (by simp [hkp, hpq])), (hM _ p).2 (Fin.ext hkp), mul_one]
+    · rw [ite_eq_right hkp, ite_eq_right]
       intro h1
       have := congrArg Fin.val h1
       simp only at this
       omega
   unfold supFrom
-  rw [Finset.sum_congr rfl this, Finset.sum_add_distrib, Finset.sum_ite_eq', if_pos]
+  rw [Finset.sum_congr rfl this, Finset.sum_add_distrib, Finset.sum_ite_eq', ite_eq_left]
   rw [Finset.mem_Ico]; omega
 
 theorem inPar_iff_of_col {M M' : Mt g n} {a : ℕ} {i j : Fin n} (hj : a ≤ (j : ℕ)) (t : ZMod g)
     (h : ∀ r c, M' r c = M r c + if c = j then t * M r i else 0) : InPar a M' ↔ InPar a M := by
   refine forall_congr' fun r => forall_congr' fun c => forall_congr' fun hc => ?_
-  rw [h, if_neg (by rintro rfl; omega), add_zero]
+  rw [h, ite_eq_right (by rintro rfl; omega), add_zero]
 
 theorem tl_of_col {M M' : Mt g n} {a : ℕ} {i j : Fin n} (hj : a ≤ (j : ℕ)) (t : ZMod g)
     (h : ∀ r c, M' r c = M r c + if c = j then t * M r i else 0) : tl a M' = tl a M := by
   ext r c
   unfold tl entN
   split_ifs with h1
-  · rw [h, if_neg, add_zero]
+  · rw [h, ite_eq_right, add_zero]
     rintro rfl
     have := c.2
     simp only at hj

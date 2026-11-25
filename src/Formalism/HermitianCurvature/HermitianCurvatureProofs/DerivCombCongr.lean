@@ -56,16 +56,16 @@ theorem glue_shEqJ (i j : Fin (r + 1)) (jl : Fin (r - i + 1)) (hjl : jl.val + i.
   by_cases h1 : j.val ≤ p.val
   · have h2 : i.val ≤ p.val := by omega
     have h3 : (jl).val ≤ p.val - i.val := by omega
-    simp only [glue, dif_pos h1, dif_pos h2, Formalism.FourierDecayAlt.P.PTie.shiftCf, dif_pos h3, shEqJ_apply]
+    simp only [glue, dite_eq_left h1, dite_eq_left h2, Formalism.FourierDecayAlt.P.PTie.shiftCf, dite_eq_left h3, shEqJ_apply]
     rfl
   · by_cases h2 : i.val ≤ p.val
     · have h3 : ¬ (jl).val ≤ p.val - i.val := by omega
-      simp only [glue, dif_neg h1, dif_pos h2, Formalism.FourierDecayAlt.P.PTie.shiftCf, dif_neg h3, shiftV]
+      simp only [glue, dite_eq_right h1, dite_eq_left h2, Formalism.FourierDecayAlt.P.PTie.shiftCf, dite_eq_right h3, shiftV]
       congr 1
       apply Fin.ext
       show p.val = p.val - i.val + i.val
       omega
-    · simp only [glue, dif_neg h1, dif_neg h2]
+    · simp only [glue, dite_eq_right h1, dite_eq_right h2]
       exact hc p (by omega)
 
 theorem wtI_shEqJ (i j : Fin (r + 1)) (jl : Fin (r - i + 1)) (hjl : jl.val + i.val = j.val) (c'' : Cf (r - i) (jl)) :

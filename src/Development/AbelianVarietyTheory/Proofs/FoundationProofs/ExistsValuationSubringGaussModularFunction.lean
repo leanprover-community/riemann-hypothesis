@@ -206,16 +206,16 @@ lemma redA_const (v : V) :
   funext r
   rw [redA_coeff, algS, HahnSeries.coeff_single]
   by_cases hr : r = 0
-  · rw [if_pos hr]
+  · rw [ite_eq_left hr]
     congr 1
     apply Subtype.ext
     show (e (algebraMap Ω K v)).coeff r = v
-    rw [coeff_const, if_pos hr]
-  · rw [if_neg hr]
+    rw [coeff_const, ite_eq_left hr]
+  · rw [ite_eq_right hr]
     have h0 : (⟨(e (algebraMap Ω K v)).coeff r, (mem_intA V e _).1 (const_mem V e v v.2) r⟩ : V) = 0 := by
       apply Subtype.ext
       show (e (algebraMap Ω K v)).coeff r = 0
-      rw [coeff_const, if_neg hr]
+      rw [coeff_const, ite_eq_right hr]
     rw [h0, map_zero]
 
 theorem exists_dom (j : K) (hj1 : (e j).coeff (-1) = 1) (hj2 : ∀ r : ℚ, r < -1 → (e j).coeff r = 0)

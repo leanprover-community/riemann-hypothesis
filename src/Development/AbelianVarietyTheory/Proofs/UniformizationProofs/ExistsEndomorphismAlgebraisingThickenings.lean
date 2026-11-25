@@ -606,7 +606,7 @@ def zeroSec (M : LB X) : LB.Sec M := ⟨fun _ => 0, fun _ _ => by rw [map_zero, 
 theorem gs_zero (r : Z ⟶ X) (z : Z) (U : X.Opens) : gs r z U 0 = 0 := by
   by_cases h : r z ∈ U
   · rw [gs_eq r z U h, map_zero, map_zero]
-  · exact dif_neg h
+  · exact dite_eq_right h
 
 theorem sval_zeroSec (M : LB X) (π : X' ⟶ X) (r : Z ⟶ X') (z : Z) (J : (Z ⟶ X) → M.ι) :
     sval (zeroSec (M.pull π)) r z J = 0 := gs_zero r z _

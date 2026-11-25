@@ -42,7 +42,7 @@ theorem sum_eU_diag (a : S) : ∑ i, (eU a i i : SlopeTestRemainingChoices S A) 
     · have h' : ¬ y = x := fun e => h e.symm
       simp [h, h']
   · intro i _ hi
-    rw [eU_apply, if_neg]
+    rw [eU_apply, ite_eq_right]
     rintro ⟨h, _⟩
     exact hi h.symm
   · intro h
@@ -66,12 +66,12 @@ theorem ins_star [StarRing A] (a : S) (M : M2 (SlopeTestRemainingChoices S A)) (
 
 theorem ins_one (a : S) : ins a (1 : M2 (SlopeTestRemainingChoices S A)) = 1 := by
   simp only [ins, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true]
+    ite_true]
   exact sum_eU_diag a
 
 theorem insert_diagonal_extract (a : S) (b : SlopeTestRemainingChoices S A) : ins a (d0 b) = b := by
   simp only [ins, d0, Matrix.diagonal_apply, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true]
+    ite_true]
   rw [← Finset.sum_mul, sum_eU_diag, one_mul]
 
 theorem ins_free {a c : S} (hc : c ≠ a) (M : M2 (SlopeTestRemainingChoices S A)) (hM : FreeOf2 c M) :

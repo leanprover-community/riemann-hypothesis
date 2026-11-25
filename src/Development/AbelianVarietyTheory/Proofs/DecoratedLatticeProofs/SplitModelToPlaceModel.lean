@@ -148,13 +148,6 @@ def SeeSawFourier (D : D7) : Prop :=
           N Ψ (tensRow Φ (hat p ψ ν f)) (u, (o''.resT S).symm (x', beta S ζ₁ ζ x)) =
             M₂ Φ x' * M₁ (tensCol Ψ f) ((o.resS S).symm (u, x))
 
-section Checks
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {p : SplitPt D k}
-  {S T : HSp D} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-
-end Checks
-
 end GlobalTheory.IndefiniteRowSideFullHecke.SeeSawLineFourier
 
 end
@@ -205,12 +198,6 @@ variable {Y Y' n n' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableE
 
 variable {q : SplitPt D k} {S T : HSp D} {s : k} {σ : Y' ≃ n'} {σ' : Y ≃ n} {FS : Frame k S.rank Y'} {FT : Frame k T.rank Y}
   {α : GlobalTheory.FinPl.Frame q S n'} {β : GlobalTheory.FinPl.Frame q T n}
-
-section Lines
-
-variable {L L'' : HSp D} {ζ₁ : Fin L.rank → D.host.E} {ζ : Fin L''.rank → D.host.E}
-
-end Lines
 
 end GlobalTheory.LastCompare
 

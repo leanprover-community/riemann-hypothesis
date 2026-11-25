@@ -99,7 +99,7 @@ private lemma laurentVariable_pow_mul_mem_of_frobenius_lemma_3 {l : ℕ} (hl : 0
     have h : ((((q : ℤ) + t).toNat : ℕ) : ℤ) = (q : ℤ) + t := by omega
     rw [h]
   exfalso
-  push_neg at ht
+  push Not at ht
   obtain ⟨s, hs⟩ : ∃ s : ℕ, (s : ℤ) = -t := ⟨(-t).toNat, by omega⟩
   have hms : m < l * s := lt_of_lt_of_le hq (Nat.mul_le_mul_left l (by omega))
   obtain ⟨b, hb⟩ := R.φ_int p

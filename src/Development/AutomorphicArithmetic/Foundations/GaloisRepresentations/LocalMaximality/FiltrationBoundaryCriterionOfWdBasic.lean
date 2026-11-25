@@ -138,13 +138,13 @@ private lemma low' (hW : WdBasic) {A : Finset σ → Submodule ℂ E} {w : σ �
     have hcm : cm ∈ (acx A w).C n := by
       refine Submodule.mem_pi.2 fun s hs => ?_
       by_cases h : ((s ∩ Q).card : ℤ) = k
-      · have : cm s = c s := if_pos h
+      · have : cm s = c s := ite_eq_left h
         rw [this]
         exact Submodule.mem_pi.1 hc1 s hs
-      · have : cm s = 0 := if_neg h
+      · have : cm s = 0 := ite_eq_right h
         rw [this]
         exact zero_mem _
-    have hcl : Lev Q (· = (k : ℤ)) cm := fun s hs => if_neg hs
+    have hcl : Lev Q (· = (k : ℤ)) cm := fun s hs => ite_eq_right hs
     have hkill : wd (wOn Q w) cm = 0 := by
       funext t
       by_cases ht : ((t ∩ Q).card : ℤ) = k + 1
@@ -153,7 +153,7 @@ private lemma low' (hW : WdBasic) {A : Finset σ → Submodule ℂ E} {w : σ �
           by_cases hiQ : i ∈ Q
           · right
             have h1 := card_erase_mem' hi hiQ
-            exact if_pos (by omega)
+            exact ite_eq_left (by omega)
           · left
             simp [wOn, hiQ]
         have e2 : wd (wOn Qᶜ w) c t = wd (wOn Qᶜ w) 0 t := by
@@ -181,8 +181,8 @@ private lemma low' (hW : WdBasic) {A : Finset σ → Submodule ℂ E} {w : σ �
     have e3 : wd (wOn Q w) y s = cm s := congrFun hyd s
     have e4 : cm s = c s := by
       by_cases h : ((s ∩ Q).card : ℤ) = k
-      · exact if_pos h
-      · have : cm s = 0 := if_neg h
+      · exact ite_eq_left h
+      · have : cm s = 0 := ite_eq_right h
         rw [this, hl' s (by omega)]
     show c s - wd w y s = 0
     rw [e1, e2, e3, e4, add_zero, sub_self]

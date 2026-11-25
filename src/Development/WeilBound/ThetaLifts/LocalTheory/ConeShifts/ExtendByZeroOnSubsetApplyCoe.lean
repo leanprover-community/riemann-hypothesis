@@ -393,7 +393,7 @@ theorem rest_idem (T : Finset (Pl F)) : rest T * rest T = rest T :=
     rw [map_mul, evFin_rest]; split_ifs <;> simp
 
 theorem idem_rest {T : Finset (Pl F)} {v : Pl F} (h : v ∈ T) : idem F v * rest T = 0 := by
-  rw [mul_comm]; exact mul_idem_zero (by rw [evFin_rest, if_pos h])
+  rw [mul_comm]; exact mul_idem_zero (by rw [evFin_rest, ite_eq_left h])
 
 theorem real_rest (T : Finset (Pl F)) : realAd F 1 * rest T = 0 := by rw [mul_comm]; exact mul_real_zero (rest_fst T)
 

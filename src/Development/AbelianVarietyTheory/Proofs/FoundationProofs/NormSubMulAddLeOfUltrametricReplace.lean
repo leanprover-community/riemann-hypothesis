@@ -386,7 +386,7 @@ theorem rat_unram_to_int_unram : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field
         exact mul_mem hu (sub_mem (mul_mem (hAO _ _ _) hQ) (mul_mem (hAO _ _ _) hP))
     · intro s₀ hs₀
       rw [hYv s₀ hs₀, smul_sub, Matrix.mulVec_smul]
-  · push_neg at h2
+  · push Not at h2
     by_cases h1 : ∃ s ∈ Ine (F := ℚ) B, ∃ i j, A s i j ≠ 0
     · obtain ⟨s, hs, i, j, hα⟩ := h1
       obtain ⟨k, u, hu, hαu⟩ := coefO_dvd_pow_l c (hAO s i j) hα
@@ -407,7 +407,7 @@ theorem rat_unram_to_int_unram : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field
         · simp only [Fin.mk_one, Fin.isValue] at hαu ⊢
           simp
           linear_combination (-(A s' i' 0 * v 0 + A s' i' 1 * v 1)) * hαu - u * v 0 * hdet
-    · push_neg at h1
+    · push Not at h1
       refine ⟨0, fun Y v _ hYv => ⟨0, fun _ => zero_mem _, fun s hs => ?_⟩⟩
       ext i
       rw [Pi.smul_apply, hYv s hs, hmv, hmv]

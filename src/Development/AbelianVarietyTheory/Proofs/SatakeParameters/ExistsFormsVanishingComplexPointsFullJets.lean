@@ -352,14 +352,6 @@ theorem Lm_apply (hp : ι ≫ PSpace.str ℂ N = p) (c : Fin (N + 1) → ℂ) :
 
 end Cot
 
-section Range
-
-variable {X : Scheme.{0}} {p : X ⟶ Sp ℂ} (ι : X ⟶ PSpace ℂ N) (g₀ : MvPolynomial (Fin (N + 1)) ℂ)
-  (hg₀ : g₀ ∈ ProjSpace.grading ℂ N 1) {y : CxPts p (RingHom.id ℂ)}
-  (hy : y ∈ CxPts.ptsIn p (RingHom.id ℂ) (fOpen ι g₀))
-
-end Range
-
 end GlobalTheory.EtProj.Generic
 end -- clump:auto
 end -- clump:auto

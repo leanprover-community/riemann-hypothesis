@@ -414,7 +414,7 @@ theorem exists_model {B : Base F E} {r s r' s' : ℕ} (hB : B.IsGood σ) (hX : X
     (fun u hu => ⟨funext fun k => by simp [p, (hI u hu).1], (hI u hu).2⟩) fun v c => by
       by_cases h : G v
       · show (if G v then S v else φa v) _ = _
-        rw [if_pos h, h.2]
+        rw [ite_eq_left h, h.2]
         refine Set.indicator_eq_indicator ⟨fun hx i => ?_, fun hx i => ?_⟩ rfl
         · simpa using hx (ε.symm (.inr i))
         · obtain ⟨i, rfl⟩ := ε.symm.surjective i
@@ -422,14 +422,14 @@ theorem exists_model {B : Base F E} {r s r' s' : ℕ} (hB : B.IsGood σ) (hX : X
           · rw [glue_inl]; exact zero_mem _
           · rw [glue_inr]; exact hx i
       · show (if G v then S v else φa v) _ = _
-        rw [if_neg h, hφb]
+        rw [ite_eq_right h, hφb]
   refine ⟨Ma, e, ⟨hr, fun v => ?_, ?_, hM.haar, hM.dom⟩, he⟩
   · show Model.IsVac _ _ _ (if G v then S v else φa v)
     split_ifs with h
     · exact h.1
     · exact hφa v
   · filter_upwards [Tw.VacIndic.eventually_isVac_indicator B hB X W r s r' s' hX hW co hr, hM₁.std] with v h1 h2
-    exact if_pos ⟨h1, h2⟩
+    exact ite_eq_left ⟨h1, h2⟩
 
 section Alg
 

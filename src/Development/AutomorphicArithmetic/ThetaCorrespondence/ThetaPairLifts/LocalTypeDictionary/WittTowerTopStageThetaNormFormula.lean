@@ -1255,21 +1255,21 @@ theorem exists_tied_pair_of_standing_hypotheses (hP : _root_.GlobalTheory.FunPr.
   let rel' : ∀ i j : ℕ, Submodule ℂ (PolRoute G (.grid i (j + 1)) (.grid (i + 1) (j + 1)) (.grid (i + 1) j) ×
       PolRoute G (.grid i (j + 1)) (.grid i j) (.grid (i + 1) j)) := fun i j =>
     if h : i < D.R.m ∧ j < D.R.m then r ⟨i, h.1⟩ ⟨j, h.2⟩ else rm.rel i j
-  have e : ∀ i j : Fin D.R.m, rel' i j = r i j := fun i j => dif_pos ⟨i.2, j.2⟩
+  have e : ∀ i j : Fin D.R.m, rel' i j = r i j := fun i j => dite_eq_left ⟨i.2, j.2⟩
   let ρ : RealMatch W := { rm with
     rel := rel'
     onto_big := fun i j a => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr1 ⟨i, h.1⟩ ⟨j, h.2⟩ a
-      · simp only [rel', dif_neg h]; exact rm.onto_big i j a
+      · simp only [rel', dite_eq_left h]; exact hr1 ⟨i, h.1⟩ ⟨j, h.2⟩ a
+      · simp only [rel', dite_eq_right h]; exact rm.onto_big i j a
     onto_small := fun i j b => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr2 ⟨i, h.1⟩ ⟨j, h.2⟩ b
-      · simp only [rel', dif_neg h]; exact rm.onto_small i j b
+      · simp only [rel', dite_eq_left h]; exact hr2 ⟨i, h.1⟩ ⟨j, h.2⟩ b
+      · simp only [rel', dite_eq_right h]; exact rm.onto_small i j b
     proper := fun i j => by
       by_cases h : i < D.R.m ∧ j < D.R.m
-      · simp only [rel', dif_pos h]; exact hr3 ⟨i, h.1⟩ ⟨j, h.2⟩
-      · simp only [rel', dif_neg h]; exact rm.proper i j }
+      · simp only [rel', dite_eq_left h]; exact hr3 ⟨i, h.1⟩ ⟨j, h.2⟩
+      · simp only [rel', dite_eq_right h]; exact rm.proper i j }
   refine ⟨ρ, rfl, rfl, fun i j A A₁ AV AV₁ hA hA₁ hV hV₁ t ωA ωB Pi rf rl p p' hm B n Φ τ τ' hn hF => ?_, fun B i j t => ?_⟩
   · obtain ⟨c, hc⟩ := hr4 i j ρ A A₁ AV AV₁ hA hA₁ hV hV₁ t ωA ωB Pi rf rl p p' hm B
     exact ⟨c, fun a b hab => hc n Φ τ τ' hn hF a b (e i j ▸ hab)⟩

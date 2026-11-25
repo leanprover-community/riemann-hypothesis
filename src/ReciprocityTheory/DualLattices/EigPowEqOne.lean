@@ -157,7 +157,7 @@ theorem proj (p : ℕ) [Fact p.Prime] (hv : v.Integers R) (hpv : v (algebraMap R
     · simp
   obtain ⟨a, b, hab⟩ : ∃ a b, εT i a b ∉ mI hv := by
     by_contra! hc
-    exact hi (idem_eq_zero hv (εT i) (by rw [horth, if_pos rfl]) hc)
+    exact hi (idem_eq_zero hv (εT i) (by rw [horth, ite_eq_left rfl]) hc)
   haveI := charP p hv hpv
   have hfrob : res hv ((∑ γ, (ψ i γ ^ (Fintype.card G - 1)) ^ p •
       (A γ).map (algebraMap ℤ_[p] R)) a b) =

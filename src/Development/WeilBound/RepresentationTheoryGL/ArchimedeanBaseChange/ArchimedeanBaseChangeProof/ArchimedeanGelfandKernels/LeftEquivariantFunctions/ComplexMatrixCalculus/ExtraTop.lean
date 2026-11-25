@@ -133,7 +133,7 @@ theorem hbB_apply [Nonempty (Md n)] (m : Md n) : hbB n m = hbM m := by
 theorem hbB_repr [Nonempty (Md n)] (X : Mat n) (m : Md n) : (hbB n).repr X m = (X * hbM m).trace := by
   conv_rhs => rw [← (hbB n).sum_repr X]
   simp only [Finset.sum_mul, Matrix.smul_mul, Matrix.trace_sum, Matrix.trace_smul, hbB_apply, trace_hbM_mul_hbM_eq_ite,
-    smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 def phiL (y : Mat n) : Mat n →ₗ[ℂ] Mat n where
   toFun X := y * X * yᴴ

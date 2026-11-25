@@ -100,7 +100,7 @@ theorem value_pow_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     have e1 : evR d.Xo₂ d.c₂ d.cδ z = χ (d.cδ p y') :=
       ReciprocityTheory.ChartRestriction.G.PullbackSections.evalAt_eq_of _ _ hWD d.cδ hnat p χ y' z hz
     have e2 := h.2 z
-    rw [map_sub, map_pow, map_one, ← e1, e2, ← map_pow, if_neg (by simp), ← Units.val_pow_eq_pow_val, ← map_pow,
+    rw [map_sub, map_pow, map_one, ← e1, e2, ← map_pow, ite_eq_right (by simp), ← Units.val_pow_eq_pow_val, ← map_pow,
       pow_card_eq_one', map_one, Units.val_one, map_one, sub_self]
   have e3 : evR d.Xo₂ d.c₂ d.cδ y₂ = φ (d.cδ p y') :=
     ReciprocityTheory.ChartRestriction.G.PullbackSections.evalAt_eq_of _ _ hWD d.cδ hnat p φ y' y₂ hy

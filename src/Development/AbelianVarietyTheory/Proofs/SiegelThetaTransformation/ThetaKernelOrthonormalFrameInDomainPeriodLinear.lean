@@ -219,7 +219,7 @@ theorem zR_single {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (F
   dsimp only
   by_cases hσ : σ = C.m.e τ
   · subst hσ
-    rw [if_pos rfl, Pi.single_eq_same, mat_xB C B τ]
+    rw [ite_eq_left rfl, Pi.single_eq_same, mat_xB C B τ]
     split_ifs with hj
     · refine (hermC_conj C τ (fun a => B τ a j) (fun a => z a k)).trans ?_
       have h1 : star (fun a => B τ a j) ⬝ᵥ gramAt D T τ *ᵥ (fun a => z a k) =
@@ -234,7 +234,7 @@ theorem zR_single {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (F
     · rw [inv_map_conj hu]
 
       simp [Matrix.mulVec, dotProduct, Matrix.mul_apply, map_sum, map_mul]
-  · rw [if_neg hσ, Pi.single_eq_of_ne hσ]
+  · rw [ite_eq_right hσ, Pi.single_eq_of_ne hσ]
     split_ifs <;> simp [ReciprocityTheory.ChartRestriction.G.FD.hermC]
 
 theorem zR_cplxO {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) :

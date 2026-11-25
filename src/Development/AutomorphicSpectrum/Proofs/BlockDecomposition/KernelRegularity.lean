@@ -140,8 +140,8 @@ theorem inner_cls_eq {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) {V :
     [InnerProductSpace ℂ V] {a b : Mat n → V} (ha : MemLp (fun y : G n => a y.val) 2 μ)
     (hb : MemLp (fun y : G n => b y.val) 2 μ) :
     ⟪cls μ a, cls μ b⟫_ℂ = ∫ y : G n, ⟪a y.val, b y.val⟫_ℂ ∂μ := by
-  have e1 : cls μ a = ha.toLp _ := dif_pos ha
-  have e2 : cls μ b = hb.toLp _ := dif_pos hb
+  have e1 : cls μ a = ha.toLp _ := dite_eq_left ha
+  have e2 : cls μ b = hb.toLp _ := dite_eq_left hb
   rw [e1, e2, L2.inner_def]
   refine integral_congr_ae ?_
   filter_upwards [ha.coeFn_toLp, hb.coeFn_toLp] with y h1 h2
@@ -565,8 +565,8 @@ lemma sr_inner_cls {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) {V : T
     (hg : MemLp (fun y : G n => g y.val) 2 μ) :
     Integrable (fun y : G n => ⟪f y.val, g y.val⟫_ℂ) μ ∧
       ⟪cls μ f, cls μ g⟫_ℂ = ∫ y : G n, ⟪f y.val, g y.val⟫_ℂ ∂μ := by
-  have e1 : cls μ f = hf.toLp _ := dif_pos hf
-  have e2 : cls μ g = hg.toLp _ := dif_pos hg
+  have e1 : cls μ f = hf.toLp _ := dite_eq_left hf
+  have e2 : cls μ g = hg.toLp _ := dite_eq_left hg
   have hae : (fun y : G n => ⟪(hf.toLp _ : Lp V 2 μ) y, (hg.toLp _ : Lp V 2 μ) y⟫_ℂ) =ᵐ[μ]
       fun y : G n => ⟪f y.val, g y.val⟫_ℂ := by
     filter_upwards [hf.coeFn_toLp, hg.coeFn_toLp] with y a b
@@ -1059,9 +1059,9 @@ theorem cls_inner {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) {V : Ty
     (hf' : MemLp (fun y : G n => f' y.val) 2 μ) :
     ⟪cls μ f, cls μ f'⟫_ℂ = ∫ y : G n, ⟪f y.val, f' y.val⟫_ℂ ∂μ := by
   have e1 : cls μ f = hf.toLp _ := by
-    unfold cls; exact dif_pos hf
+    unfold cls; exact dite_eq_left hf
   have e2 : cls μ f' = hf'.toLp _ := by
-    unfold cls; exact dif_pos hf'
+    unfold cls; exact dite_eq_left hf'
   rw [e1, e2, L2.inner_def]
   apply integral_congr_ae
   filter_upwards [hf.coeFn_toLp, hf'.coeFn_toLp] with y h1 h2

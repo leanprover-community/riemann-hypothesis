@@ -104,7 +104,7 @@ noncomputable def up : (Fin N → Fin N → ℂ) →L[ℂ] (Fin N → Fin N → 
 theorem up_apply (M : Fin N → Fin N → ℂ) (a b : Fin N) : up M a b = if b < a then 0 else M a b := rfl
 
 theorem up_tri (M : Fin N → Fin N → ℂ) : (Matrix.of (up M)).BlockTriangular id := fun a b h => by
-  rw [Matrix.of_apply, up_apply, if_pos (show b < a from h)]
+  rw [Matrix.of_apply, up_apply, ite_eq_left (show b < a from h)]
 
 theorem key (b₀ U : Matrix (Fin N) (Fin N) ℂ) (hb : b₀.BlockTriangular id) (hd : IsUnit b₀.det)
     (hU : U.BlockTriangular id) (z : Pairs N → ℂ) :
@@ -191,7 +191,7 @@ theorem inj_LL {b₀ : Matrix (Fin N) (Fin N) ℂ} (hb : b₀.BlockTriangular id
   by_cases hab : b < a
   · exact congrFun h0 ⟨(b, a), hab⟩
   · have := congrFun (congrFun h a) b
-    rw [Matrix.of_apply, Matrix.of_apply, up_apply, if_neg hab] at this
+    rw [Matrix.of_apply, Matrix.of_apply, up_apply, ite_eq_right hab] at this
     exact this.symm
 
 end PositivityTheory.Xgp.per_cell

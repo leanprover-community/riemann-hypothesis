@@ -69,7 +69,7 @@ theorem ord_eq_order_sub_of_fraction (x : KK O) (a b : O) (ha : a ≠ 0) (hb : b
     rw [zero_mul] at h
     exact ha (hinj (by rw [← h, map_zero]))
   unfold ordW
-  simp only [if_neg hx]
+  simp only [ite_eq_right hx]
   generalize_proofs hp
   have hs := Classical.choose_spec hp
   generalize Classical.choose hp = ab at hs ⊢

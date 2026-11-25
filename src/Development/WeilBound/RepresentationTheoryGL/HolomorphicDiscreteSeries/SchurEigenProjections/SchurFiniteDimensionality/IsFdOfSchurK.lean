@@ -468,7 +468,7 @@ theorem bigProjP_of (hg0 : PositivityTheory.UnitaryDecomposition.X4.IntegralGerm
     simp only [hs, Matrix.one_apply]
     have h2 : ∀ i j : Fin n, ‖(if i = j then (1 : ℂ) else 0)‖ ^ 2 = if i = j then (1 : ℝ) else 0 := by
       intro i j; split_ifs <;> simp
-    simp only [h2, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ,
+    simp only [h2, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul, mul_one]
     exact le_rfl
   have hgap' : GapAtLeast ε' mu (200 * ((n + 1 : ℕ) : ℝ) ^ 3) := by

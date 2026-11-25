@@ -57,10 +57,6 @@ namespace GlobalTheory
 
 namespace Avoid
 
-section Union
-
-end Union
-
 section Pick
 
 

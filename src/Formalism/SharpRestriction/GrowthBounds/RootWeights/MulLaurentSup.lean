@@ -26,7 +26,7 @@ private theorem laurent_mul_coeff_of_unique_decomp {B : Type*} [CommRing B] (f g
     · simp
     · intro k₂ hk₂ hne
       by_cases ha : a ∈ f.coeff.support
-      · rw [if_neg]; intro he; exact hne (h a ha k₂ hk₂ he).2
+      · rw [ite_eq_right]; intro he; exact hne (h a ha k₂ hk₂ he).2
       · have : f.coeff a = 0 := by simpa using ha
         simp [this]
     · intro hb
@@ -35,7 +35,7 @@ private theorem laurent_mul_coeff_of_unique_decomp {B : Type*} [CommRing B] (f g
   · intro k₁ hk₁ hne
     apply Finset.sum_eq_zero
     intro k₂ hk₂
-    dsimp only; rw [if_neg]; intro he; exact hne (h k₁ hk₁ k₂ hk₂ he).1
+    dsimp only; rw [ite_eq_right]; intro he; exact hne (h k₁ hk₁ k₂ hk₂ he).1
   · intro ha
     have : f.coeff a = 0 := by simpa using ha
     simp [this]
@@ -102,11 +102,11 @@ private theorem laurent_mul_C_coeff {B : Type*} [CommRing B] (y : LaurentPolynom
     intro k₁ _ k₂ hk₂ he
     have : k₂ = 0 := by
       by_contra hne
-      rw [Finsupp.mem_support_iff, hCc, if_neg hne] at hk₂
+      rw [Finsupp.mem_support_iff, hCc, ite_eq_right hne] at hk₂
       exact hk₂ rfl
     omega)
   rw [add_zero] at h
-  rw [h, hCc, if_pos rfl]
+  rw [h, hCc, ite_eq_left rfl]
 
 theorem mul_Phi_coeff {σ A : Type*} [CommRing A] (P : MvPolynomial σ (LaurentPolynomial A)) (m : σ →₀ ℕ) (k : ℤ) :
     AddMonoidAlgebra.coeff ((mul_Phi σ A P).coeff k) m = (AddMonoidAlgebra.coeff P m).coeff k := by

@@ -886,8 +886,8 @@ theorem filt_extend {a b : ℕ} {X Y : GRep k n} (f : Y.V →ₗ[ℂ] X.V)
   classical
   obtain ⟨F, hF1, hF2⟩ : ∃ F : ℕ → Subrepresentation X.ρ, (∀ i, i ≤ a → F i = ⊤) ∧
       (∀ i, a < i → F i = subMap f hf (F' i)) :=
-    ⟨fun i => if i ≤ a then ⊤ else subMap f hf (F' i), fun i h => if_pos h,
-      fun i h => if_neg (by omega)⟩
+    ⟨fun i => if i ≤ a then ⊤ else subMap f hf (F' i), fun i h => ite_eq_left h,
+      fun i h => ite_eq_right (by omega)⟩
   refine ⟨F, ?_, hF1 a le_rfl, ?_, ?_⟩
   · intro i j hij
     by_cases h2 : i ≤ a

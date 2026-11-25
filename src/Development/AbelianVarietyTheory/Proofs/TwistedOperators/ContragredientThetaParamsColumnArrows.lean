@@ -198,21 +198,21 @@ theorem partner_parPi (hN : G.NearMid) (hs : 1 ≤ G.s) (hγ : (G.s : ℚ) + 4 �
         left
         refine ⟨l, hl, ?_⟩
         by_cases hlt : l < G.m - i
-        · rw [if_neg (not_lt.2 (habove l hlt).le)]
+        · rw [ite_eq_right (not_lt.2 (habove l hlt).le)]
           simp only [Prod.mk.injEq, true_and]
           exact sign_step hlt
-        · rw [if_pos (hbelow l (by omega))]
+        · rw [ite_eq_left (hbelow l (by omega))]
           simp only [Prod.mk.injEq, true_and, Bool.not_not]
           have h1 : G.m - i ≤ l := by omega
           have h2 : G.m - (i + 1) ≤ l := by omega
           simp [h1, h2]
       · simp only at hq hyb
         subst hyb
-        rw [if_pos (hlow y (Or.inl hq))]
+        rw [ite_eq_left (hlow y (Or.inl hq))]
         exact Or.inr (Or.inl ⟨hq, rfl⟩)
       · simp only at hq hyb
         subst hyb
-        rw [if_pos (hlow y (Or.inr ⟨l, h1, h2, hq⟩))]
+        rw [ite_eq_left (hlow y (Or.inr ⟨l, h1, h2, hq⟩))]
         exact Or.inr (Or.inr ⟨l, by omega, h2, hq, rfl⟩)
     · exact GridData.mem_parPi.2 (Or.inr (Or.inr ⟨G.m - i, by omega, by omega, hz, rfl⟩))
   · intro h
@@ -223,20 +223,20 @@ theorem partner_parPi (hN : G.NearMid) (hs : 1 ≤ G.s) (hγ : (G.s : ℚ) + 4 �
       by_cases hlt : l < G.m - i
       · refine ⟨(G.a l, decide (G.m - i ≤ l ∨ Even (G.m - i - l))),
           GridData.mem_parPi.2 (Or.inl ⟨l, hl, rfl⟩), rfl, ?_⟩
-        rw [if_neg (not_lt.2 (habove l hlt).le)]
+        rw [ite_eq_right (not_lt.2 (habove l hlt).le)]
         rw [← sign_step hlt] at hb
         exact (Bool.not_inj hb).symm
       · have h1 : G.m - i ≤ l := by omega
         have h2 : G.m - (i + 1) ≤ l := by omega
         refine ⟨(G.a l, true), GridData.mem_parPi.2 (Or.inl ⟨l, hl, by simp [h1]⟩), rfl, ?_⟩
-        rw [if_pos (hbelow l h1)]
+        rw [ite_eq_left (hbelow l h1)]
         simp [h2] at hb
         simp [hb]
     · simp only at hq hb
       simp only [Bool.not_eq_eq_eq_not, Bool.not_true] at hb
       subst hb
       exact Or.inl ⟨(q, true), GridData.mem_parPi.2 (Or.inr (Or.inl ⟨hq, rfl⟩)), rfl,
-        by rw [if_pos (hlow q (Or.inl hq))]; rfl⟩
+        by rw [ite_eq_left (hlow q (Or.inl hq))]; rfl⟩
     · simp only at hq hb
       simp only [Bool.not_eq_eq_eq_not, Bool.not_true] at hb
       subst hb
@@ -244,7 +244,7 @@ theorem partner_parPi (hN : G.NearMid) (hs : 1 ≤ G.s) (hγ : (G.s : ℚ) + 4 �
       · subst hl
         exact Or.inr ⟨q, hq, rfl, rfl⟩
       · exact Or.inl ⟨(q, true), GridData.mem_parPi.2 (Or.inr (Or.inr ⟨l, by omega, h2, hq, rfl⟩)), rfl,
-          by rw [if_pos (hlow q (Or.inr ⟨l, by omega, h2, hq⟩))]; rfl⟩
+          by rw [ite_eq_left (hlow q (Or.inr ⟨l, by omega, h2, hq⟩))]; rfl⟩
 
 end
 

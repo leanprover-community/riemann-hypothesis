@@ -987,7 +987,7 @@ theorem exists_tmul_add_mul_isIntB : ∀ (L : Type) [Field L] [NumberField L] (�
 
     rw [map_sum, Finsupp.finsetSum_apply]
     simp only [repr_tmul_apply ℓ v, ℓ.repr_self, Finsupp.single_apply, apply_ite (algebraMap ℚ (v.adicCompletion ℚ)),
-      map_one, map_zero, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      map_one, map_zero, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_div₀]
     have h0 : (0 : WithZero (Multiplicative ℤ)) < Valued.v (D : v.adicCompletion ℚ) := by
       rw [zero_lt_iff]; exact (map_ne_zero _).2 hD'

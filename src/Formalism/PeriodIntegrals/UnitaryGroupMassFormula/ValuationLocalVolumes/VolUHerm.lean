@@ -84,7 +84,7 @@ def phiE : (Fin (r + 1) × Fin (r + 1) → Fv F v ⊗[F] E) ≃ₜ+ (Fin (r + 1)
   map_add' Y Z := by
     funext p
     by_cases h : p.1 < p.2
-    · simp only [phiF, h, if_true, Pi.add_apply, map_add (f := _)]
+    · simp only [phiF, h, ite_true, Pi.add_apply, map_add (f := _)]
       abel
     · simp [phiF, h]
   continuous_toFun := by
@@ -93,9 +93,9 @@ def phiE : (Fin (r + 1) × Fin (r + 1) → Fv F v ⊗[F] E) ≃ₜ+ (Fin (r + 1)
     haveI : ContinuousAdd (Fv F v ⊗[F] E) := IsModuleTopology.toContinuousAdd (Fv F v) _
     refine continuous_pi fun p => ?_
     by_cases h : p.1 < p.2
-    · simp only [phiF, h, if_true]
+    · simp only [phiF, h, ite_true]
       exact (continuous_apply p).add ((sigR_cont σ v).comp (continuous_apply (p.2, p.1)))
-    · simp only [phiF, h, if_false]
+    · simp only [phiF, h, ite_false]
       exact continuous_apply p
   continuous_invFun := by
     haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
@@ -104,9 +104,9 @@ def phiE : (Fin (r + 1) × Fin (r + 1) → Fv F v ⊗[F] E) ≃ₜ+ (Fin (r + 1)
       IsModuleTopology.topologicalAddGroup (Fv F v) (Fv F v ⊗[F] E)
     refine continuous_pi fun p => ?_
     by_cases h : p.1 < p.2
-    · simp only [phiB, h, if_true]
+    · simp only [phiB, h, ite_true]
       exact (continuous_apply p).sub ((sigR_cont σ v).comp (continuous_apply (p.2, p.1)))
-    · simp only [phiB, h, if_false]
+    · simp only [phiB, h, ite_false]
       exact continuous_apply p
 
 theorem phiF_mem_iff (Y : Fin (r + 1) × Fin (r + 1) → Fv F v ⊗[F] E) :

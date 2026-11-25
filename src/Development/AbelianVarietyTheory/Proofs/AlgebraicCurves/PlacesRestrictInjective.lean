@@ -161,7 +161,7 @@ theorem exists_integral_lift {Ω X : Type} [Field Ω] (S : Set X) (hS : S.Finite
       exact_mod_cast (by omega : (0 : ℤ) ≤ m x - 0)
     · have hsx : v x s = ((min (m x) 0 - 1 : ℤ) : WithTop ℤ) := by
         have := hs x hx
-        rwa [if_neg hxw] at this
+        rwa [ite_eq_right hxw] at this
       have h1x : v x (1 + s) = ((min (m x) 0 - 1 : ℤ) : WithTop ℤ) := by
         rw [AddValuation.map_add_eq_of_lt_right _ (by
           rw [AddValuation.map_one, hsx]

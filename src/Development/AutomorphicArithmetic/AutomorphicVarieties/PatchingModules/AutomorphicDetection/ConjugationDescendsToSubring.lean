@@ -1283,9 +1283,9 @@ theorem UpperTheory.V.Pa.Det.flagBasis :
     refine Infinite.of_injective (fun m : ℕ => ι (PowerSeries.X ^ m)) ?_
     intro m k hmk
     have h := congrArg (fun p => PowerSeries.coeff (R := K) m p) (hιi hmk)
-    simp only [PowerSeries.coeff_X_pow, if_true] at h
+    simp only [PowerSeries.coeff_X_pow, ite_true] at h
     by_contra hne
-    rw [if_neg hne] at h
+    rw [ite_eq_right hne] at h
     exact one_ne_zero h
   have hev' : ∀ g, mat (pushRep ι r) g ∈ Ev (FractionRing (PowerSeries K)) (FractionRing (PowerSeries K)) n a := by
     intro g

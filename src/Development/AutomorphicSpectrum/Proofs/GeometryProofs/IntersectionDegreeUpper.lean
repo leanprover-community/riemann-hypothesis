@@ -579,7 +579,7 @@ theorem genU_gen (Ω : Type) [Field Ω] {S : Type} (r : S → ℕ) (q : GenIx r)
     genU Ω r q.1 q.2.1.1 q.2.1.2 =
       algebraMap (MvPolynomial (GenIx r) Ω) (GenField Ω r) (MvPolynomial.X q) := by
   obtain ⟨s, ⟨⟨l, k⟩, h⟩⟩ := q
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem algebraicIndependent_gen (Ω : Type) [Field Ω] {S : Type} (r : S → ℕ) :
     AlgebraicIndependent Ω (fun q : GenIx r =>

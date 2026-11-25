@@ -135,13 +135,13 @@ theorem plPt_row (u : ∀ s, Matrix (Fin (r s)) (Fin (r s)) Ω) (h1 : ∀ s m, u
   unfold plPt
   rw [Matrix.det_of_isLowerTriangular]
   · rw [Fin.prod_univ_castSucc, Finset.prod_eq_one, one_mul]
-    · simp only [Matrix.of_apply, rowIx, if_true]
+    · simp only [Matrix.of_apply, rowIx, ite_true]
       rfl
     · intro a _
-      simp only [Matrix.of_apply, rowIx, if_neg (Fin.castSucc_lt_last a).ne, h1]
+      simp only [Matrix.of_apply, rowIx, ite_eq_right (Fin.castSucc_lt_last a).ne, h1]
   · intro a b hab
     have hab' : a < b := hab
-    simp only [Matrix.of_apply, rowIx, if_neg (hab'.trans_le (Fin.le_last b)).ne]
+    simp only [Matrix.of_apply, rowIx, ite_eq_right (hab'.trans_le (Fin.le_last b)).ne]
     exact h0 _ _ _ hab'
 
 theorem plPt_ne (u : ∀ s, Matrix (Fin (r s)) (Fin (r s)) Ω) (h1 : ∀ s m, u s m m = 1)

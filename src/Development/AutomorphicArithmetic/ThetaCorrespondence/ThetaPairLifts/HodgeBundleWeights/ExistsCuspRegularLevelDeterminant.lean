@@ -781,7 +781,7 @@ theorem exists_combination_delta (F V S J : Type) [Field F] [Algebra F ℂ] [Add
       rintro rfl
       obtain ⟨j, hj⟩ := h1
       exact hr ⟨j, hj⟩
-    rw [if_neg h1']
+    rw [ite_eq_right h1']
     exact Finset.sum_eq_zero fun k _ => by rw [h2 _ (hw k) h hr, mul_zero]
 
 theorem exists_vec_det_ne_zero (F : Type) [Field F] [CharZero F] [Algebra F ℂ] (V : Type) [AddCommGroup V] [Module F V]
@@ -1580,7 +1580,7 @@ theorem hodgeLineBundle_isBig : _root_.GlobalTheory.CovTop.PublishedHodgeBundleT
   let w : AllWt.Weight Dw := ∑ τ : Psi H, NefWt.unitWt τ (-1)
   have ew : 2 • hodgeWt Dw - χ = w := by
     funext τ i
-    simp only [w, Finset.sum_apply, NefWt.unitWt_apply, Finset.sum_ite_eq, Finset.mem_univ, if_true, Pi.sub_apply,
+    simp only [w, Finset.sum_apply, NefWt.unitWt_apply, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Pi.sub_apply,
       Pi.smul_apply, hodgeWt, CompHt.barWt, χ]
     split_ifs <;> norm_num
   have hwnef : (letI := algebraΓOfHom (str₀ TF.X Z); IsNef c.F (L₀ TF.X Z w)) := by

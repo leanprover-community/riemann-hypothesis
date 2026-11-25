@@ -148,7 +148,7 @@ private lemma low_two_of_lemma {σ : Type} {f : MvPowerSeries σ S} (h0 : consta
       by_cases hvw : v = w
       · subst hvw
         simp [hew]
-      · rw [hv v hvw, Finsupp.single_apply, if_neg (Ne.symm hvw)]
+      · rw [hv v hvw, Finsupp.single_apply, ite_eq_right (Ne.symm hvw)]
     rw [he1]
     exact h1 w
 
@@ -351,12 +351,12 @@ theorem psTrunc_two_twist (G : FGLaw S d) (c : Fin d → Fin d → S) :
     rw [psTrunc, MvPolynomial.coeff_sum]
     simp only [MvPolynomial.coeff_monomial, Finset.sum_ite_eq']
     by_cases h : e.degree ≤ 2
-    · rw [if_pos ((hmem e).2 h), if_pos h]
-    · rw [if_neg (fun h' => h ((hmem e).1 h')), if_neg h]
+    · rw [ite_eq_left ((hmem e).2 h), ite_eq_left h]
+    · rw [ite_eq_right (fun h' => h ((hmem e).1 h')), ite_eq_right h]
   have hXX : ∀ (a b : Fin 2 × Fin d) (e : Fin 2 × Fin d →₀ ℕ), 2 < e.degree →
       coeff e (X a * X b : MvPowerSeries (Fin 2 × Fin d) S) = 0 := by
     intro a b e he
-    rw [MvPowerSeries.X, MvPowerSeries.X, monomial_mul_monomial, coeff_monomial, if_neg]
+    rw [MvPowerSeries.X, MvPowerSeries.X, monomial_mul_monomial, coeff_monomial, ite_eq_right]
     rintro rfl
     have hdeg : (Finsupp.single a 1 + Finsupp.single b 1 : Fin 2 × Fin d →₀ ℕ).degree = 2 := by
       show (Finsupp.single a 1 + Finsupp.single b 1 : Fin 2 × Fin d →₀ ℕ).sum (fun _ k => k) = 2
@@ -366,17 +366,17 @@ theorem psTrunc_two_twist (G : FGLaw S d) (c : Fin d → Fin d → S) :
   ext e
   rw [hpt]
   by_cases hd : e.degree ≤ 2
-  · rw [if_pos hd, ← MvPolynomial.coeff_coe]
+  · rw [ite_eq_left hd, ← MvPolynomial.coeff_coe]
     have h := hdiff e (by omega)
     rwa [map_sub, sub_eq_zero] at h
   · set_option synthInstance.maxHeartbeats 100000 in
-      rw [if_neg hd, ← MvPolynomial.coeff_coe, hcoe, map_add (f := _), map_sum]
+      rw [ite_eq_right hd, ← MvPolynomial.coeff_coe, hcoe, map_add (f := _), map_sum]
     have h2 : 2 < e.degree := by omega
     have hz : ∀ a b : Fin 2 × Fin d, coeff e (X a * X b : MvPowerSeries (Fin 2 × Fin d) S) = 0 :=
       fun a b => hXX a b e h2
 
     simp only [map_sum, map_smul, hz, smul_zero, Finset.sum_const_zero, add_zero]
-    rw [coeff_one, if_neg]
+    rw [coeff_one, ite_eq_right]
     rintro rfl
     simp at hd
 

@@ -196,11 +196,11 @@ theorem irreducible_X_pow_add_prime_over_witt (e : ℕ) [NeZero e] : Irreducible
     exact fun h => hP.ne_top ((Ideal.eq_top_iff_one _).2 h)
   · intro n hn
     rw [hdeg] at hn
-    rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, if_neg hn.ne, zero_add, Polynomial.coeff_C]
+    rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, ite_eq_right hn.ne, zero_add, Polynomial.coeff_C]
     split_ifs
     · exact Ideal.mem_span_singleton_self _
     · exact zero_mem _
-  · rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, if_neg (NeZero.ne e).symm, zero_add, Polynomial.coeff_C_zero, Ideal.span_singleton_pow,
+  · rw [Polynomial.coeff_add, Polynomial.coeff_X_pow, ite_eq_right (NeZero.ne e).symm, zero_add, Polynomial.coeff_C_zero, Ideal.span_singleton_pow,
       Ideal.mem_span_singleton]
     rintro ⟨c, hc⟩
     have h1 : (l : Wq l a) * (1 - l * c) = 0 := by linear_combination hc

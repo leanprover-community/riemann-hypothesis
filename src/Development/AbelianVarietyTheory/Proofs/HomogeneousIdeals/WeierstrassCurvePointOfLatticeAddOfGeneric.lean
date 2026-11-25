@@ -168,7 +168,7 @@ private theorem weierstrassP_add_and_deriv_add_of_ne {z w : ℂ} (hz : z ∉ L.l
     · rw [h2]
       field_simp
       ring
-  push_neg at hw' hz'
+  push Not at hw' hz'
   have h2w : w + w ∈ L.lattice := (_root_.GlobalTheory.derivWeierstrassP_eq_zero_iff L hw).mp hw'
   have h2z : z + z ∈ L.lattice := (_root_.GlobalTheory.derivWeierstrassP_eq_zero_iff L hz).mp hz'
   have hzw : z + w ∉ L.lattice := fun h => hne ((_root_.GlobalTheory.weierstrassP_eq_iff L hz hw).mpr (Or.inr h))

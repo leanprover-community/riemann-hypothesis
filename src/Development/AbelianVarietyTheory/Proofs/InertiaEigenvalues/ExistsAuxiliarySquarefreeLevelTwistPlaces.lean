@@ -1037,7 +1037,7 @@ theorem ratUniv_of_reading (hRF : GlobalTheory.NT.RayField) (hV : T.V ((j : ℕ)
     funext g
     rw [Finset.sum_apply, Finset.sum_eq_single (Multiplicative.toAdd (detChar (Wc D j)
       ((univOf D.nexp i (admissibleConjugatePairPlaces D.ntw i Q M) M ρ.rc).delQ (half (ρ.ch i) (admissibleConjugatePairPlaces D.ntw i Q M))) g))
-      (fun a' _ ha' => by rw [if_neg (Ne.symm ha'), zero_mul]) (fun h0 => absurd (Finset.mem_univ _) h0), if_pos rfl, one_mul,
+      (fun a' _ ha' => by rw [ite_eq_right (Ne.symm ha'), zero_mul]) (fun h0 => absurd (Finset.mem_univ _) h0), ite_eq_left rfl, one_mul,
       Pi.smul_apply, Pi.smul_apply]
     exact congrArg _ (Base.xiCoef_apply _ _ _ _ _ _ _ _ _)
 

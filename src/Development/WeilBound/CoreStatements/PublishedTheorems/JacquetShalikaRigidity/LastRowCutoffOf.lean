@@ -553,9 +553,9 @@ theorem contDiff_lastEnt : ContDiff ℝ ∞ (lastEnt : (Fin k → Cinf E) → Ci
   unfold lastEnt
   refine ContDiff.sum fun c _ => ?_
   by_cases h : (c : ℕ) + 1 = k
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     exact contDiff_apply ℝ (fun _ : Fin k => Cinf E) c
-  · simp only [if_neg h]
+  · simp only [ite_eq_right h]
     exact contDiff_const
 
 theorem isOpen_lastEnt_unit : IsOpen {x : Fin k → Cinf E | IsUnit (lastEnt x)} :=
@@ -581,9 +581,9 @@ theorem contDiffOn_tauM :
   · have e : ∀ x : Fin k → Cinf E, tauM x i c = rowI x c := fun x => rowM_apply_last _ i c hi
     simp only [e]
     by_cases hc : (c : ℕ) + 1 = k
-    · simp only [rowI, if_pos hc]
+    · simp only [rowI, ite_eq_left hc]
       exact hinv
-    · simp only [rowI, if_neg hc]
+    · simp only [rowI, ite_eq_right hc]
       exact ((contDiff_apply ℝ (fun _ : Fin k => Cinf E) c).contDiffOn.mul hinv).neg
   · have e : ∀ x : Fin k → Cinf E, tauM x i c = (1 : Matrix (Fin k) (Fin k) (Cinf E)) i c :=
       fun x => rowM_apply_ne _ i c hi
@@ -887,7 +887,7 @@ theorem lastRowM_one {R : Type} [CommRing R] : lastRowM (1 : Matrix (Fin k) (Fin
       · exact Matrix.one_apply_ne hb
       · rfl
     · simp
-  · rw [lastRowM, eRow, if_neg hc]
+  · rw [lastRowM, eRow, ite_eq_right hc]
     refine Finset.sum_eq_zero fun i _ => ?_
     split_ifs with h
     · exact Matrix.one_apply_ne (fun e : i = c => hc (e ▸ h))
@@ -1161,7 +1161,7 @@ theorem exists_cut : S4 → S8 → PositivityTheory.jumpWindows.G0 → LastRowCu
   have hnorm : 1 ≤ ‖eRow (Cinf E) k‖ := by
     have hl : ((⟨k - 1, by omega⟩ : Fin k) : ℕ) + 1 = k := by simp; omega
     have h1 := norm_le_pi_norm (eRow (Cinf E) k) ⟨k - 1, by omega⟩
-    rw [eRow, if_pos hl, norm_one] at h1
+    rw [eRow, ite_eq_left hl, norm_one] at h1
     exact h1
   have hloc : ∀ w ∈ S, ∃ B : AddSubgroup (w.adicCompletion E), IsOpen (B : Set (w.adicCompletion E)) ∧
       (B : Set (w.adicCompletion E)) ⊆ (Formalism.UG.Ov E w : Set (w.adicCompletion E)) ∧

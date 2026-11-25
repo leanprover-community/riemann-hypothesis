@@ -78,7 +78,7 @@ theorem nrmM_le_one_iff (j : ℕ) (la : HeightOneSpectrum (𝓞 T.Q.c.F)) (y : T
   rw [key]
   by_cases hz : evI y' f = 0
   · simp [hz]
-  · simp only [hz, if_false, EReal.coe_ne_top, EReal.toReal_coe, EReal.coe_nonneg]
+  · simp only [hz, ite_false, EReal.coe_ne_top, EReal.toReal_coe, EReal.coe_nonneg]
     constructor
     · intro h
       by_contra hneg

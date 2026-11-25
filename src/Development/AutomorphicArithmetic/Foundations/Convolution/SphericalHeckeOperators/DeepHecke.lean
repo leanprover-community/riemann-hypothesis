@@ -185,7 +185,7 @@ theorem UpperTheory.ConvolutionTheory.H.core :
   have hv : ∑ S ∈ (pairs n).powerset, sgS S • monomial (eL S + eR S) = dPol n 1 :=
     eq_of_forall_evalAt fun z => by
       have := vandSum n z 1 1
-      simp only [Equiv.Perm.coe_one, Function.comp_id, if_true] at this
+      simp only [Equiv.Perm.coe_one, Function.comp_id, ite_true] at this
 
       rw [← this, map_sum]
       refine Finset.sum_congr rfl fun S _ => ?_
@@ -394,8 +394,8 @@ private lemma phi_anti (b : Fin n → ℕ) {i j : Fin n} (hij : i ≤ j) : phi b
   rw [phi_apply, phi_apply]
   refine Finset.sum_le_sum fun k _ => ?_
   by_cases h1 : j ≤ k
-  · rw [if_pos h1, if_pos (hij.trans h1)]
-  · rw [if_neg h1]
+  · rw [ite_eq_left h1, ite_eq_left (hij.trans h1)]
+  · rw [ite_eq_right h1]
     split_ifs <;> simp
 
 private def chi (w : Fin n → ℂˣ) : Multiplicative (Fin n → ℕ) →* ℂ where
@@ -1109,7 +1109,7 @@ private theorem exists_rep {G : Type} [Group G] (H U : Subgroup G) (y : G) :
   let s := DoubleCoset.setoid (H : Set G) (U : Set G)
   have hs : ∀ a b, s.r a b ↔ ∃ h ∈ H, ∃ u ∈ U, b = h * a * u := fun a b => DoubleCoset.rel_iff
   refine ⟨fun g => if Quotient.mk s g = Quotient.mk s y then y else (Quotient.mk s g).out, fun g => ?_, fun g h hh u hu => ?_,
-    if_pos rfl⟩
+    ite_eq_left rfl⟩
   · apply (hs _ _).1
     apply Quotient.exact (s := s)
     dsimp only

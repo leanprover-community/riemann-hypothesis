@@ -586,7 +586,7 @@ theorem exists_ins {a b : ℕ} (P : D.what₂.Tau → LPol b a) (τ : D.what₂.
   rw [mul_comm]
   congr 1
   refine Finset.prod_congr rfl fun σ hσ => ?_
-  rw [if_neg (Finset.ne_of_mem_erase hσ)]
+  rw [ite_eq_right (Finset.ne_of_mem_erase hσ)]
 
 
 open Classical in
@@ -687,7 +687,7 @@ theorem loc_line_of_matches {M : DSModel V S} {M' : DSModel W S'} {τ : D.what�
     obtain ⟨x, hx⟩ := hy
     apply U.injective
     rw [hc P x y hx.symm, map_smul, hc₁ P x y hx.symm, smul_smul, div_mul_cancel₀ _ hc₁0]
-  · push_neg at h0
+  · push Not at h0
     exact ⟨0, fun A hA => ⟨0, by rw [smul_zero]; exact h0 A hA⟩⟩
 
 theorem loc_line {X : ProvA} (hX : ChosenSeries X) (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X)

@@ -281,7 +281,7 @@ variable (V : HSp D) {ε ε' : AF D.host.F}
 
 theorem mt_resG (hε : IsIdempotentElem ε) (g : GA D V) :
     mt V (resG V ε g) = resM (algebraMap (AF D.host.F) (AE D) ε) (mt V g) := by
-  simp only [resG, dif_pos hε]
+  simp only [resG, dite_eq_left hε]
   exact mt_mkRes V ε hε g
 
 theorem algIdem (hε : IsIdempotentElem ε) :
@@ -419,7 +419,7 @@ def detAt (e : AE D) (V : HSp D) (g : GA D V) : (AE D)ˣ :=
 
 theorem detAt_val {e : AE D} (he : e * e = e) (V : HSp D) (g : GA D V) :
     ((detAt e V g : (AE D)ˣ) : AE D) = e * (mt V g).det + (1 - e) := by
-  rw [detAt, dif_pos he]
+  rw [detAt, dite_eq_left he]
 
 theorem isDetAt_detAt {e : AE D} (he : e * e = e) (V : HSp D) (g : GA D V) : IsDetAt e V g (detAt e V g) := by
   unfold IsDetAt

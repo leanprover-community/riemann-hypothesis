@@ -270,7 +270,7 @@ theorem mt_finite_order : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dt
     simp only [tupGrp, finChar, Subgroup.mem_inf] at htor
     obtain ⟨k, hk, hkk⟩ := (isOfFinOrder_iff_pow_eq_one).1 htor.1.1.1.2
     refine ⟨2 * (n * k), by positivity, ?_⟩
-    rw [pow_mul, hsq, hmt u, twMt, if_pos ⟨by omega, by omega⟩, MonoidHom.mul_apply, mul_pow, pow_mul, hmun, one_pow, one_mul,
+    rw [pow_mul, hsq, hmt u, twMt, ite_eq_left ⟨by omega, by omega⟩, MonoidHom.mul_apply, mul_pow, pow_mul, hmun, one_pow, one_mul,
       hξ x, ← map_pow, mul_comm, pow_mul]
     have : ((t.tup μ : Chr t.X.F t.X.E t.X.K) x) ^ k = 1 := by
       rw [← MonoidHom.pow_apply, hkk, MonoidHom.one_apply]
@@ -366,11 +366,11 @@ theorem norm_lamC_type_normOne : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (X : Sys 
       ‖(p : ℂ_[p])‖ ^ ((if IsOddPos s then -1 else 1) * e (pos ⟨v, s⟩) * ordP (X.G.P.W v) p (ρ v z)) := by
     intro v s
     by_cases hs : IsOddPos s
-    · rw [LamPos.odd X E pos lam ρ hL v s hs, if_pos hs, eq_inv_of_mul_eq_one_right (hρ v), map_inv₀, norm_inv, norm_twG X E v s (hρ0 v),
+    · rw [LamPos.odd X E pos lam ρ hL v s hs, ite_eq_left hs, eq_inv_of_mul_eq_one_right (hρ v), map_inv₀, norm_inv, norm_twG X E v s (hρ0 v),
         inv_zpow', ← zpow_mul]
       congr 1
       ring
-    · rw [LamPos.even X E pos lam ρ hL v s hs, if_neg hs, norm_twG X E v s (hρ0 v), ← zpow_mul]
+    · rw [LamPos.even X E pos lam ρ hL v s hs, ite_eq_right hs, norm_twG X E v s (hρ0 v), ← zpow_mul]
       congr 1
       ring
   rw [h1, norm_prod]

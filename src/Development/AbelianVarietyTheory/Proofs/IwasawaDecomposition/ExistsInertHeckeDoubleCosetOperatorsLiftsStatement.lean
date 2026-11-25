@@ -132,17 +132,17 @@ theorem exists_inertTie : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn
     hx := fun q => if hq : Formalism.L2.Col.InertTypeOk (Vc X.toD7 i).rank q.2 then (hN q hq).choose else 1
     hA := fun q => if hq : Formalism.L2.Col.InertTypeOk (Vc X.toD7 i).rank q.2 then (hN q hq).choose_spec.choose else ∅
     hx_ok := fun q hq => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact (hN q hq).choose_spec.choose_spec.1
     hA_loc := fun q hq => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact (hN q hq).choose_spec.choose_spec.2.1
     chi_loc := fun q _ j hj => _root_.GlobalTheory.Mem.R3.LiftInertChi.levChi_eq_one_of_isLocElt X px I hX U Xg tr L eG hI hV hL hG cV i t q j hj
     hDC := fun q hq => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact (hN q hq).choose_spec.choose_spec.2.2.1
     op_eq := fun q hq f => by
-      simp only [dif_pos hq]
+      simp only [dite_eq_left hq]
       exact opEq X I hX U Xg tr L cV i t A k P hR q _ (hN q hq).choose_spec.choose_spec.2.2.2 f }⟩
 
 end GlobalTheory.Mem.R3.LiftBrg.InertTie

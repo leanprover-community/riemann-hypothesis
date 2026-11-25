@@ -66,7 +66,7 @@ theorem blkOf_eq (ea : a = r + j * t) (eb : b = r + (j + 1) * t) (i : Fin b) (hi
     blkOf r t i = j + 1 := by
   unfold blkOf
   have h2 := i.2
-  rw [if_neg (by omega), Nat.div_eq_of_lt_le (k := j) (by omega) (by omega)]
+  rw [ite_eq_right (by omega), Nat.div_eq_of_lt_le (k := j) (by omega) (by omega)]
 
 theorem mem_twoBlockTriangular_of_blockTriangular (ea : a = r + j * t) (eb : b = r + (j + 1) * t) {g : GL (Fin b) κ}
     (hg : g ∈ blockTri (blkOf r t)) : g ∈ blockTri (blk2 a) := by

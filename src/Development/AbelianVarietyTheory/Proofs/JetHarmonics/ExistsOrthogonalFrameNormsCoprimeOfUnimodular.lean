@@ -332,7 +332,7 @@ private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S 
 
     rw [e, hP, map_sub, map_smul, map_sum]
     simp only [map_smul, smul_eq_mul, _root_.GlobalTheory.MomOne.OrthFrame.betaL, LinearMap.coe_mk,
-      AddHom.coe_mk, horth, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      AddHom.coe_mk, horth, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [mul_assoc, mul_comm (_root_.Formalism.L2.Ker.JMB.beta S.d S.Hm y (x j)), ← mul_assoc, ← Nat.cast_mul,
       Nat.div_mul_cancel (hdvd j)]
     ring
@@ -462,7 +462,7 @@ theorem _root_.GlobalTheory.MomOne.exists_orthFrame : ∀ (q g : ℕ) (S : _root
       · simpa using hnw
       · simp [hwo, (Fin.castSucc_lt_last j).ne']
       · simp only [Fin.snoc_castSucc, Fin.snoc_last]
-        rw [← conj_beta_eq_beta_swap _ hH, hwo, map_zero, if_neg (Fin.castSucc_lt_last i).ne]
+        rw [← conj_beta_eq_beta_swap _ hH, hwo, map_zero, ite_eq_right (Fin.castSucc_lt_last i).ne]
       · simp [horth]
     · intro i
       refine Fin.lastCases ?_ (fun i => ?_) i

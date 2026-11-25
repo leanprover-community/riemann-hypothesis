@@ -44,7 +44,7 @@ theorem chain_eta (aTop : Fin X.s → ℕ) (b : SegBlock X.s X.r) (i : Fin (X.S 
     unfold uTop; simp
   unfold segChain
   simp only
-  rw [dite_eq_right h1, if_neg h2, h3, if_neg h4]
+  rw [dite_eq_right h1, ite_eq_right h2, h3, ite_eq_right h4]
 
 theorem lvlRoom_of {dl : DCl X} {a0 : Fin X.s → ℕ} (ha0 : a0 ∈ cbox C0 CE1 CE2 X dl) {x : Σ _ : SegBlock X.s X.r, Lv C0 CE1 CE2 X}
     (hb : x.1.ry = dl.2) (hx : ∀ a ∈ cbox C0 CE1 CE2 X dl, x ∈ idx C0 CE1 CE2 X dl a) :

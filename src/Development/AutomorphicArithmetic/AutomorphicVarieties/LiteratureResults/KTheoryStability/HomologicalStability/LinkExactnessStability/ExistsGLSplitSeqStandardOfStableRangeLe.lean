@@ -193,12 +193,12 @@ theorem core (s : ℕ) (hs : StableRangeLe R s) : ∀ (k m : ℕ) (v f : Fin k �
     have hvl : ∀ j : Fin k, ((g₁ : Matrix _ _ R) *ᵥ v j.succ) (Fin.last m) = 0 := by
       intro j
       have key := dot_conj g₁ (f 0) (v j.succ)
-      rw [hg₁f, single_dotProduct, one_mul, hvf, if_neg (Fin.succ_ne_zero j).symm] at key
+      rw [hg₁f, single_dotProduct, one_mul, hvf, ite_eq_right (Fin.succ_ne_zero j).symm] at key
       exact key
     have hfl : ∀ j : Fin k, (f j.succ ᵥ* ((g₁⁻¹ : GL _ R) : Matrix _ _ R)) (Fin.last m) = 0 := by
       intro j
       have key := dot_conj g₁ (f j.succ) (v 0)
-      rw [hg₁v, dotProduct_single, mul_one, hvf, if_neg (Fin.succ_ne_zero j)] at key
+      rw [hg₁v, dotProduct_single, mul_one, hvf, ite_eq_right (Fin.succ_ne_zero j)] at key
       exact key
     let v' : Fin k → Fin m → R := fun j i => ((g₁ : Matrix _ _ R) *ᵥ v j.succ) i.castSucc
     let f' : Fin k → Fin m → R := fun j i => (f j.succ ᵥ* ((g₁⁻¹ : GL _ R) : Matrix _ _ R)) i.castSucc

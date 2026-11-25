@@ -132,7 +132,7 @@ theorem neg_eq_false_of_vStd (D : D7) (i : Fin D.R.m) (h : VStd D i) : D.sp.Vneg
   rw [Bool.not_eq_false] at hneg
   let τ := D.host.φ₀
   have hs := D.sp.V_sig ((i : ℕ) + 1) τ
-  rw [factVSig _ _ D.sp _ (by omega) (by omega) τ, if_pos hneg] at hs
+  rw [factVSig _ _ D.sp _ (by omega) (by omega) τ, ite_eq_left hneg] at hs
   have h1 : Formalism.UG.HasSignature ((Matrix.of fun a b => (Vc D i).hT ((Vc D i).frame a) ((Vc D i).frame b)).map τ)
       (Vc D i).rank 0 := by
     have h0 : (Matrix.of fun a b => (Vc D i).hT ((Vc D i).frame a) ((Vc D i).frame b)) = 1 := h.1
@@ -148,7 +148,7 @@ theorem neg_eq_false_of_posDef (D : D7) (i : Fin D.R.m) (h : (Vc D i).IsPosDef) 
   by_contra hneg
   rw [Bool.not_eq_false] at hneg
   have h1 := factVSig _ _ D.sp ((i : ℕ) + 1) (by omega) (by omega) D.host.φ₀
-  rw [if_pos hneg] at h1
+  rw [ite_eq_left hneg] at h1
   have h2 := congrArg Prod.snd ((h D.host.φ₀).symm.trans h1)
   exact (_root_.Formalism.L2.Col.nV_pos D.R).ne h2
 

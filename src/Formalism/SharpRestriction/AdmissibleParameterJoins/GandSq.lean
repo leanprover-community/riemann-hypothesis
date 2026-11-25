@@ -19,43 +19,26 @@ variable {p : ℕ} [Fact p.Prime] (g : G1 p) {σ τ : Type}
 
 theorem cc_l : PowerSeries.constantCoeff g.l = 0 := by
   unfold G1.l
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, Formalism.MainNotions.TaylorLogMetric.flog, PowerSeries.coeff_mk, if_pos rfl]
-
-private theorem cc_subst_lemma {R : Type} [CommRing R] {υ : Type} {a : MvPowerSeries υ R}
-    (ha : MvPowerSeries.constantCoeff a = 0) {f : PowerSeries R} (hf0 : PowerSeries.constantCoeff f = 0) :
-    MvPowerSeries.constantCoeff (PowerSeries.subst a f) = 0 := by
-  have hs : PowerSeries.HasSubst a := PowerSeries.HasSubst.of_constantCoeff_zero ha
-  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_subst hs]
-  refine (finsum_congr fun d => ?_).trans finsum_zero
-  rcases d with _ | d
-  · rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, hf0, zero_smul]
-  · rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, ha, zero_pow (Nat.succ_ne_zero d), smul_zero]
-
-private theorem comp_lemma_2 {υ ρ : Type} {R : Type} [CommRing R] {a : MvPowerSeries υ R}
-    (ha : MvPowerSeries.constantCoeff a = 0) {c : υ → MvPowerSeries ρ R} (hc : HasSubst c)
-    (f : PowerSeries R) : subst c (PowerSeries.subst a f) = PowerSeries.subst (subst c a) f := by
-  have ha' : HasSubst (fun _ : Unit => a) := hasSubst_of_constantCoeff_zero (fun _ => ha)
-  simp only [PowerSeries.subst]
-  rw [subst_comp_subst_apply ha' hc]
+  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, Formalism.MainNotions.TaylorLogMetric.flog, PowerSeries.coeff_mk, ite_eq_left rfl]
 
 theorem cc_lg {a : MvPowerSeries σ ℂ_[p]} (ha : constantCoeff a = 0) : constantCoeff (g.lg a) = 0 :=
-  cc_subst_lemma ha (cc_l g)
+  PowerSeries.constantCoeff_subst_eq_zero ha g.l (cc_l g)
 
 theorem cc_pt (hex : PowerSeries.constantCoeff g.ex = 0) {a : MvPowerSeries σ ℂ_[p]} (ha : constantCoeff a = 0) :
     constantCoeff (g.pt a) = 0 :=
-  cc_subst_lemma ha hex
+  PowerSeries.constantCoeff_subst_eq_zero ha g.ex hex
 
 theorem lg_subst {c : σ → MvPowerSeries τ ℂ_[p]} (hc : HasSubst c) {a : MvPowerSeries σ ℂ_[p]}
     (ha : constantCoeff a = 0) : subst c (g.lg a) = g.lg (subst c a) :=
-  comp_lemma_2 ha hc g.l
+  J.subst_psubst hc ha g.l
 
 theorem pt_subst {c : σ → MvPowerSeries τ ℂ_[p]} (hc : HasSubst c) {a : MvPowerSeries σ ℂ_[p]}
     (ha : constantCoeff a = 0) : subst c (g.pt a) = g.pt (subst c a) :=
-  comp_lemma_2 ha hc g.ex
+  J.subst_psubst hc ha g.ex
 
 theorem phAt_subst {c : σ → MvPowerSeries τ ℂ_[p]} (hc : HasSubst c) {a : MvPowerSeries σ ℂ_[p]}
     (ha : constantCoeff a = 0) : subst c (g.phAt a) = g.phAt (subst c a) :=
-  comp_lemma_2 ha hc g.ph
+  J.subst_psubst hc ha g.ph
 
 theorem add_subst (hex : PowerSeries.constantCoeff g.ex = 0) {c : σ → MvPowerSeries τ ℂ_[p]} (hc : HasSubst c)
     {a b : MvPowerSeries σ ℂ_[p]} (ha : constantCoeff a = 0) (hb : constantCoeff b = 0) :
@@ -88,11 +71,5 @@ theorem cc_Cl (ep : ℂ_[p]) : PowerSeries.constantCoeff (PowerSeries.C ep * g.l
   rw [map_mul, cc_l g, mul_zero]
 
 end G1
-
-section Lin
-
-variable {Z E Kap : Type} {R : Type} [CommRing R]
-
-end Lin
 
 end Formalism.MainNotions.J

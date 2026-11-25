@@ -41,8 +41,8 @@ private theorem pair_over {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam
   have hg : (show Matrix (Fin S.rank) (Fin S.rank) D.host.E from (sgn ε S).gram) =
       (if ε then -1 else 1 : D.host.E) • S.gram := by
     cases ε
-    · simp only [Bool.false_eq_true, if_false, one_smul]; rfl
-    · simp only [if_true, neg_smul, one_smul]; exact neg_gram S
+    · simp only [Bool.false_eq_true, ite_false, one_smul]; rfl
+    · simp only [ite_true, neg_smul, one_smul]; exact neg_gram S
   obtain ⟨cS, hcS, hcS'⟩ : ∃ cS : Matrix (Fin S.rank) (Fin d) (AE D) ≃+ WO S X,
       (∀ u, cS u = (HMul.hMul (uᵀ.submatrix e.symm id) (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.incM ((if ε then -1 else 1 : D.host.E) • S.gram)) :
         Matrix (Fin X.rank) (Fin S.rank) (AE D))) ∧ ∀ x, cS.symm x = ptO (sgn ε S).gram e x :=

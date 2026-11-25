@@ -14,12 +14,6 @@ open Formalism.RepresentationBoundsCohomology.FIN (IsCycG)
 
 namespace Formalism.AdicCompletionExports
 
-section Mat
-
-variable {k k' : Type*} [Field k] [Field k'] (σ : k ≃+* k')
-
-end Mat
-
 theorem isCycG_cycZ (l : ℕ) [Fact l.Prime] (Ek Ω O : Type) [Field Ek] [NumberField Ek] [Field Ω] [Algebra Ek Ω]
     [IsAlgClosure Ek Ω] [CommRing O] (f : ℤ_[l] →+* O) :
     IsCycG l ((Units.map f.toMonoidHom).comp (ReciprocityTheory.Gal.cycZ (F := Ek) (Ω := Ω) l)) := by

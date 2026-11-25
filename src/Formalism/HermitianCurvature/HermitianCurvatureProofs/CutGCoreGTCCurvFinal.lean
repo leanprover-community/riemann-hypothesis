@@ -244,10 +244,10 @@ theorem PLT.mono {N N' : ℕ} {f : ℂ → R} (h : PLT N f) (hN : N ≤ N') : PL
   rw [ha]
   symm
   rw [← Finset.sum_subset (Finset.range_mono hN)]
-  · exact Finset.sum_congr rfl fun k hk => by dsimp only; rw [if_pos (Finset.mem_range.1 hk)]
+  · exact Finset.sum_congr rfl fun k hk => by dsimp only; rw [ite_eq_left (Finset.mem_range.1 hk)]
   · intro k _ hk
     dsimp only
-    rw [if_neg (fun h => hk (Finset.mem_range.2 h)), smul_zero]
+    rw [ite_eq_right (fun h => hk (Finset.mem_range.2 h)), smul_zero]
 
 theorem plt_zero (N : ℕ) : PLT N (fun _ => (0 : R)) := ⟨fun _ => 0, fun s => by simp⟩
 
@@ -578,8 +578,8 @@ theorem curv_polyIn_sub {f g : ℂ → R} {d : ℕ} (hf : PolyIn f d) (hg : Poly
 theorem curv_polyIn_monomial (n : ℕ) (x : R) : PolyIn (fun s => s ^ n • x) n := by
   refine ⟨fun k => if k = n then x else 0, fun s => ?_⟩
   dsimp only
-  rw [Finset.sum_eq_single n (fun b _ hb => by rw [if_neg hb, smul_zero])
-    (fun h => absurd (Finset.mem_range.2 (Nat.lt_succ_self n)) h), if_pos rfl]
+  rw [Finset.sum_eq_single n (fun b _ hb => by rw [ite_eq_right hb, smul_zero])
+    (fun h => absurd (Finset.mem_range.2 (Nat.lt_succ_self n)) h), ite_eq_left rfl]
 
 end PolyTools
 
@@ -603,7 +603,7 @@ theorem curv_top_zero {E : Type*} [AddCommGroup E] [Module ℂ E] (n : ℕ) (c :
   simp only [hpdef, Polynomial.coeff_sub, Polynomial.coeff_C_mul_X_pow, Polynomial.finsetSum_coeff,
     Polynomial.coeff_zero] at hc
   rw [Finset.sum_eq_zero (fun i hi => by
-    rw [if_neg (by have := Finset.mem_range.1 hi; omega)]), sub_zero] at hc
+    rw [ite_eq_right (by have := Finset.mem_range.1 hi; omega)]), sub_zero] at hc
   exact hc
 
 theorem curvature_radial_torus_holds : GTCCurvRTT := by
@@ -871,10 +871,10 @@ theorem gTRTopNF_of_curvPoly (h : GTCCurvPoly) : GTRTopNF := by
     rw [Finset.sum_range_succ, Finset.sum_range_succ]
     simp only [show P.k ≠ P.k + 1 by omega, ↓reduceIte]
     rw [Finset.sum_congr rfl (fun j hj => by
-      rw [if_neg (by have := Finset.mem_range.1 hj; omega), if_neg (by have := Finset.mem_range.1 hj; omega),
-        if_pos (Finset.mem_range.1 hj)]), ← e]
+      rw [ite_eq_right (by have := Finset.mem_range.1 hj; omega), ite_eq_right (by have := Finset.mem_range.1 hj; omega),
+        ite_eq_left (Finset.mem_range.1 hj)]), ← e]
     abel
-  · simp only [show P.k ≠ P.k + 1 by omega, if_false, if_true, Int.cast_zero, zero_smul, add_zero]
+  · simp only [show P.k ≠ P.k + 1 by omega, ite_false, ite_true, Int.cast_zero, zero_smul, add_zero]
     exact thetaC_eq_thetaNF d hTT
 
 end

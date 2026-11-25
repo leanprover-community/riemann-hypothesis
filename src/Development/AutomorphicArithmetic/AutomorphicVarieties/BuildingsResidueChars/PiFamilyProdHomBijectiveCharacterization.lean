@@ -116,9 +116,9 @@ private def prodHom {R S : Type} [CommRing R] [Fintype S] [DecidableEq S] {H : S
     simp only [Matrix.of_apply, Pi.one_apply, map_one, Matrix.one_apply]
     by_cases h : i = a
     · subst h; simp
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       obtain ⟨u, hu⟩ := Function.ne_iff.1 h
-      exact Finset.prod_eq_zero (Finset.mem_univ u) (if_neg hu)
+      exact Finset.prod_eq_zero (Finset.mem_univ u) (ite_eq_right hu)
   map_mul' k k' := by
     ext i a
     simp only [Matrix.of_apply, Pi.mul_apply, map_mul, Matrix.mul_apply]

@@ -107,7 +107,7 @@ theorem general_second_minor_expansion {A : Type*} [Ring A] [Algebra ℂ A] {m :
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun i' _ =>
     Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun j' _ => ?_
   by_cases h : i < i' ∧ j < j'
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     rw [sumSingle W β' i i', sumSingle V a' j j', sum_mul_sum_mul_eq_sum_sum, Finset.smul_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [Finset.smul_sum]
@@ -115,7 +115,7 @@ theorem general_second_minor_expansion {A : Type*} [Ring A] [Algebra ℂ A] {m :
     simp only [smul_mul_assoc, mul_smul_comm, smul_smul]
     congr 1
     ring
-  · simp only [if_neg h, Finset.sum_const_zero]
+  · simp only [ite_eq_right h, Finset.sum_const_zero]
 
 theorem transfer_entry_one_one {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → Fin m → A) (Y Yb : Fin m → A)
     (x xb : Fin m → ℂ) (u : ℂ) :
@@ -141,12 +141,12 @@ theorem chat2Alin {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → 
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun i' _ =>
     Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun j' _ => ?_
   by_cases h : i < i' ∧ j < j'
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     simp only [← Finset.sum_smul]
     congr 1
     rw [sub_mul_eq_sum_single_sub_mul β β' i i', sub_mul_eq_sum_single_sub_mul a a' j j', mul_sum_mul_sum_eq_sum_sum]
     exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun p _ => by ring
-  · simp only [if_neg h, Finset.sum_const_zero]
+  · simp only [ite_eq_right h, Finset.sum_const_zero]
 
 private alias measurePreserving_swap4 := _root_.PI.QnHermHaar.sum_four_comm_version
 

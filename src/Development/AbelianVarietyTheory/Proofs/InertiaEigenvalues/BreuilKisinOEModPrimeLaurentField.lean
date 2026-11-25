@@ -65,8 +65,8 @@ theorem exists_unit (s : bk.S) (hs : ψ bk s ≠ 0) :
     ext i
     rw [map_add (f := _), coeff_X_pow_mul', ← map_natCast (C (R := Wq l bk.a)), coeff_C_mul, coeff_mk, coeff_mk]
     by_cases hi : i < k
-    · rw [if_neg (by omega), if_pos hi, zero_add, hc i hi]
-    · rw [if_pos (by omega), if_neg hi, mul_zero, add_zero, Nat.sub_add_cancel (by omega)]
+    · rw [ite_eq_right (by omega), ite_eq_left hi, zero_add, hc i hi]
+    · rw [ite_eq_left (by omega), ite_eq_right hi, mul_zero, add_zero, Nat.sub_add_cancel (by omega)]
   refine ⟨k, s₁, hs₁, ?_⟩
   conv_lhs => rw [hsplit]
   rw [map_add (f := _), map_mul, map_mul, map_pow, map_natCast, CharP.cast_eq_zero, zero_mul, add_zero]

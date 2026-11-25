@@ -71,7 +71,7 @@ lemma hpk_symm (i j : Fin (2 * r + k + 1)) : Hpk k r i j = Hpk k r j i := by
     rfl
   · have hji : ¬ j = i := fun h => hij h.symm
     unfold Hpk
-    simp only [hij, hji, and_false, if_false]
+    simp only [hij, hji, and_false, ite_false]
     split_ifs <;> first | rfl | (exfalso; omega)
 
 lemma star_hpk_dot (v y : Fin (2 * r + k + 1) → ℂ) : star (Hpk k r *ᵥ v) ⬝ᵥ y = herm (Hpk k r) y v := by

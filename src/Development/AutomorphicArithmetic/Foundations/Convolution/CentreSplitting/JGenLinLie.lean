@@ -21,8 +21,8 @@ private theorem UpperTheory.ConvolutionTheory.Dp.jGen_along {E : Type} [Field E]
   rw [h, PositivityTheory.Rg.Cz.GK.atEmb_apply]
   simp only [UpperTheory.ConvolutionTheory.along]
   by_cases e : w.1 = InfinitePlace.mk τ
-  · rw [if_pos e, if_pos e, e]
-  · rw [if_neg e, if_neg e]
+  · rw [ite_eq_left e, ite_eq_left e, e]
+  · rw [ite_eq_right e, ite_eq_right e]
 
 private theorem UpperTheory.ConvolutionTheory.Dp.jGen_lie {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ} (τ : E →+* ℂ)
     (a b : Fin n) (z : ℂ) :

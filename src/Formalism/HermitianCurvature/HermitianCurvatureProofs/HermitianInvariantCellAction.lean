@@ -70,14 +70,14 @@ theorem unipotent_fixes_base_vector (l : Fin r) (a : ℂ) {z : Fin (2 * r + k + 
   funext p
   simp only [Matrix.mulVec, dotProduct]
   rw [Finset.sum_eq_single (Qx3.sw k l p)]
-  · rw [Qx3.w1_apply, Qx3.sw_sw, if_pos rfl]
+  · rw [Qx3.w1_apply, Qx3.sw_sw, ite_eq_left rfl]
     rcases Qx3.tri l p with h | h | ⟨h1, h2⟩
     · subst h; rw [Qx3.sw_e, zs, ze, mul_zero]
     · subst h; rw [Qx3.sw_es, ze, zs, mul_zero]
     · rw [Qx3.sw_o l h1 h2, Qx3.dd_o l a h1 h2, one_mul]
   · intro q _ hq
     have : p ≠ Qx3.sw k l q := fun h => hq (by rw [h, Qx3.sw_sw])
-    rw [Qx3.w1_apply, if_neg this, zero_mul]
+    rw [Qx3.w1_apply, ite_eq_right this, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 

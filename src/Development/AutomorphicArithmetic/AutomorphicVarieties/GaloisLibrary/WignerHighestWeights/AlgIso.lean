@@ -36,7 +36,7 @@ private theorem weight_operator_commutator_multiGl {ι V : Type} [Fintype ι] [A
     intro s a
     by_cases hst : s = t
     · subst hst
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have h1 := congrArg (fun f : Module.End ℂ V => f x) (hgl s a a i j)
       simp only [LinearMap.sub_apply, Module.End.mul_apply] at h1
       have h2 : (if a = i then F s a j x else 0) - (if j = a then F s i a x else 0) =
@@ -44,7 +44,7 @@ private theorem weight_operator_commutator_multiGl {ι V : Type} [Fintype ι] [A
         split_ifs <;> simp
       rw [h2, ← h1]
       abel
-    · rw [if_neg hst]
+    · rw [ite_eq_right hst]
       have h1 := congrArg (fun f : Module.End ℂ V => f x) (hcomm s t hst a a i j)
       simp only [Module.End.mul_apply] at h1
       rw [h1, add_zero]
@@ -354,7 +354,7 @@ theorem UpperTheory.V.AlgRepEndIrreducible.multiHW :
   · rw [hF t]; simp
   · have h1 := hc t i j i
     have h2 := hc t j j i
-    simp only [hij.ne, if_false, if_true] at h1 h2
+    simp only [hij.ne, ite_false, ite_true] at h1 h2
     rw [sub_mul, mul_sub]
     linear_combination (norm := module) h1 - h2
   · simp [hν', sub_smul]

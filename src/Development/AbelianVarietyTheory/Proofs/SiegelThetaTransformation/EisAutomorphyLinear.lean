@@ -100,8 +100,6 @@ theorem exists_pos_mem_HnGe {N : ℕ} {E : Type} [Field E] (Ψ : Finset (E →+*
   · obtain ⟨τ0, -, hτ0⟩ := Finset.exists_min_image Finset.univ d Finset.univ_nonempty
     exact ⟨d τ0, hd τ0, fun τ => h τ _ (hτ0 τ (Finset.mem_univ τ))⟩
 
-alias main := _root_.GlobalTheory.PosSemidefShiftByScalar.exists_pos_mem_HnGe
-
 end GlobalTheory.PosSemidefShiftByScalar
 end -- clump:auto
 end -- clump:auto

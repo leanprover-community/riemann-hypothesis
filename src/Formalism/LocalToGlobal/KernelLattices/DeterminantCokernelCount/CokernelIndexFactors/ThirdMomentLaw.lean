@@ -198,12 +198,6 @@ namespace UnitaryThetaMoves
 
 variable {C : Type*} [NormedField C] {Γ : Type*} [CommGroup Γ]
 
-section Val
-
-variable {V : Type*} [Fintype V]
-
-end Val
-
 section Index
 
 def matLat (O K : Type*) [CommRing O] [Field K] [Algebra O K] (N N' : ℕ) : AddSubgroup (Matrix (Fin N') (Fin N) K) where
@@ -429,16 +423,6 @@ theorem relIndexFormula : RelIndexFormula := by
   | rfl
 
 end IdxMain
-
-section Model
-
-variable {F M : Type*} [AddCommGroup F] [Module C F] [AddCommGroup M] [Module C M]
-
-end Model
-
-section Assembled
-
-end Assembled
 
 end UnitaryThetaMoves
 

@@ -96,18 +96,18 @@ private theorem snd_aeval_eps_monomial_eq_ite {κ : Type} [DecidableEq κ] (ℓ 
   · have hp : (e.prod fun i k => (if i = ℓ then (DualNumber.eps : DualNumber ℂ) else 0) ^ k).snd = 0 := by
       by_cases hs : ∃ i ∈ e.support, i ≠ ℓ
       · obtain ⟨i, hi, hiℓ⟩ := hs
-        rw [Finsupp.prod, Finset.prod_eq_zero hi (by rw [if_neg hiℓ]; exact zero_pow (Finsupp.mem_support_iff.mp hi))]
+        rw [Finsupp.prod, Finset.prod_eq_zero hi (by rw [ite_eq_right hiℓ]; exact zero_pow (Finsupp.mem_support_iff.mp hi))]
         rfl
       · have he' : e = Finsupp.single ℓ (e ℓ) := by
           ext i
           by_cases hi : i = ℓ
           · subst hi
             simp
-          · rw [Finsupp.single_apply, if_neg (Ne.symm hi)]
+          · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hi)]
             by_contra h0
             exact hs ⟨i, Finsupp.mem_support_iff.mpr h0, hi⟩
         have hk : e ℓ ≠ 1 := fun h1 => he (by rw [he', h1])
-        rw [he', Finsupp.prod_single_index (by simp), if_pos rfl]
+        rw [he', Finsupp.prod_single_index (by simp), ite_eq_left rfl]
         rcases Nat.lt_or_gt_of_ne hk with h0 | h2
         · rw [show e ℓ = 0 by omega, pow_zero]
           rfl
@@ -136,7 +136,7 @@ private theorem snd_jetTan_psJet_succ_eq_coeff_single {κ : Type} [Fintype κ] [
 
   rw [map_sum, TrivSqZeroExt.snd_sum]
   simp_rw [snd_aeval_eps_monomial_eq_ite]
-  rw [Finset.sum_ite_eq', if_pos (single_one_mem_degLE_succ k ℓ)]
+  rw [Finset.sum_ite_eq', ite_eq_left (single_one_mem_degLE_succ k ℓ)]
 
 theorem fderiv_eq_of_jetOf {g : ℕ} (m : ℕ) (θ θ' : (Fin g → ℂ) → ℂ)
     (h : PullbackSections.jetOf (m + 1) θ = PullbackSections.jetOf (m + 1) θ') : fderiv ℂ θ 0 = fderiv ℂ θ' 0 := by
@@ -314,7 +314,7 @@ private theorem jetAug_jetN_zero_eq_apply_zero {n g : ℕ} (F : (Fin n → Fin g
 
   rw [map_sum]
   simp only [MvPolynomial.constantCoeff_monomial]
-  rw [Finset.sum_ite_eq', if_pos (zero_mem_degLE' 0)]
+  rw [Finset.sum_ite_eq', ite_eq_left (zero_mem_degLE' 0)]
   have e1 := PullbackSections.coeff_tay_zero (fun v => F (colsOf n g v)) 0
   have hf : PullbackSections.fct (0 : Fin 1 × Fin (n * g) →₀ ℕ) = 1 := by simp [PullbackSections.fct]
   have hdir : PullbackSections.dirs (0 : Fin 1 × Fin (n * g) →₀ ℕ) = 0 := by simp [PullbackSections.dirs]
@@ -472,7 +472,7 @@ theorem prod_zpow_fiber {M T K : Type*} [CommGroup M] [Fintype K] (s : Finset T)
   simp only [h]
   rw [Finset.prod_comm]
   refine Finset.prod_congr rfl fun k _ => ?_
-  rw [Finset.prod_ite_eq, if_pos (hs k)]
+  rw [Finset.prod_ite_eq, ite_eq_left (hs k)]
 
 
 open scoped Classical in
@@ -485,14 +485,14 @@ theorem prod_zpow_eq {M T K K' : Type*} [CommGroup M] [Fintype K] [Fintype K'] (
   let w : T → M := fun ψ => if h : ∃ k, φ k = ψ then u h.choose else if h' : ∃ k, φ' k = ψ then u' h'.choose else 1
   have hw : ∀ k, u k = w (φ k) := fun k => by
     have h : ∃ l, φ l = φ k := ⟨k, rfl⟩
-    simp only [w, dif_pos h]
+    simp only [w, dite_eq_left h]
     exact h₁ _ _ h.choose_spec.symm
   have hw' : ∀ k, u' k = w (φ' k) := fun k => by
     by_cases h : ∃ l, φ l = φ' k
-    · simp only [w, dif_pos h]
+    · simp only [w, dite_eq_left h]
       exact (h₃ _ _ h.choose_spec).symm
     · have h' : ∃ l, φ' l = φ' k := ⟨k, rfl⟩
-      simp only [w, dif_neg h, dif_pos h']
+      simp only [w, dite_eq_right h, dite_eq_left h']
       exact h₂ _ _ h'.choose_spec.symm
   simp only [hw, hw']
   rw [prod_zpow_fiber (Finset.univ.image φ ∪ Finset.univ.image φ') φ (fun k => by simp) ε w,

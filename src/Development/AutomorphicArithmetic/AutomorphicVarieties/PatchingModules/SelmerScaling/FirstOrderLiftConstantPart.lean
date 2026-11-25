@@ -304,12 +304,12 @@ private theorem psi_lem {k R Γ : Type} [Field k] [CommRing R] [Algebra k R] {n 
     simp [Matrix.algebraMap_matrix_apply, hab.ne', htri _ a b hab])).2 i
   rw [hrel, List.map_ofFn, List.prod_ofFn] at h2
   have h3 := one_zero _ i (fun j hj => unit_of e hn _ (by
-    have hg : g' j = s j hj := dif_pos hj
-    simp only [Function.comp_apply, Matrix.sub_apply, Matrix.map_apply, Matrix.algebraMap_matrix_apply, if_true,
+    have hg : g' j = s j hj := dite_eq_left hj
+    simp only [Function.comp_apply, Matrix.sub_apply, Matrix.map_apply, Matrix.algebraMap_matrix_apply, ite_true,
       map_sub, AlgHom.commutes, Algebra.algebraMap_self, RingHom.id_apply, hc, hg]
     exact sub_ne_zero.2 (hs j hj))) h2.symm
-  have hg : g' i = g := dif_neg (by simp)
-  simp only [Function.comp_apply, Matrix.sub_apply, Matrix.map_apply, Matrix.algebraMap_matrix_apply, if_true,
+  have hg : g' i = g := dite_eq_right (by simp)
+  simp only [Function.comp_apply, Matrix.sub_apply, Matrix.map_apply, Matrix.algebraMap_matrix_apply, ite_true,
     Algebra.algebraMap_self, RingHom.id_apply, hg] at h3
   exact (sub_eq_zero.1 h3).symm
 
@@ -335,7 +335,7 @@ private theorem u_lem {k R : Type} [Field k] [CommRing R] [Algebra k R] {n : ℕ
       (fun j => by
         by_cases hj : j = i
         · simp [hj]
-        · simp only [hj, if_false]; exact eig_map P _ v hv (c j))
+        · simp only [hj, ite_false]; exact eig_map P _ v hv (c j))
     have h2 := congrArg (fun Z => Z *ᵥ fun j => algebraMap k R (v j)) h
     simp only [sub_self, zero_sub, Matrix.zero_mulVec] at h2
     rw [← Matrix.mulVec_mulVec, Matrix.neg_mulVec, Algebra.algebraMap_eq_smul_one y, Matrix.smul_mulVec,
@@ -343,7 +343,7 @@ private theorem u_lem {k R : Type} [Field k] [CommRing R] [Algebra k R] {n : ℕ
     refine (IsUnit.mul_left_eq_zero (IsUnit.prod_iff.2 fun j _ => ?_)).1 (eig_zero v hv0 _ h2)
     by_cases hj : j = i
     · simp [hj]
-    · simp only [hj, if_false]; exact hu j hj
+    · simp only [hj, ite_false]; exact hu j hj
 
 private theorem conj_const {l : ℕ} [Fact l.Prime] (S : Ctx l) (R : Type) [CommRing R] [Algebra S.F R]
     (e : R →ₐ[S.F] S.F) (θ : S.U.AA →+* R) (hθ : S.Test R e θ) (T T' : Matrix (Fin S.n) (Fin S.n) R)
@@ -423,7 +423,7 @@ private theorem conj_const {l : ℕ} [Fact l.Prime] (S : Ctx l) (R : Type) [Comm
     funext k
     by_cases hk : k = i
     · simp [hk]
-    · simp only [Function.comp_apply, hk, if_false, map_sub, hφ1, hφ2]
+    · simp only [Function.comp_apply, hk, ite_false, map_sub, hφ1, hφ2]
   · exact key _ _ t3
 
 theorem UpperTheory.V.Pa.alInj :
@@ -507,12 +507,6 @@ variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n : ℕ}
 private theorem alg_eq (c : A) : algebraMap A (DD X g) c = DD.C (algebraMap A X c) := rfl
 
 end SlopeTestRemainingChoices
-
-section Conj
-
-variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (X : Type) [CommRing X] [Algebra x.A X]
-
-end Conj
 
 end UpperTheory.V.Pa
 
@@ -1609,7 +1603,7 @@ theorem UpperTheory.V.Pa.claim1 :
         split_ifs
         · rfl
         · rfl
-      simp only [hw, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [hw, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have hd : ∀ m, (fun i => c (Sum.inr (i, m))) = 0 := by
       intro m
       have hnegE : ∀ u : DD S.x.Fr S.k.g, (-u).ep m = -u.ep m := fun u => map_neg (epH S.x.Fr m) u

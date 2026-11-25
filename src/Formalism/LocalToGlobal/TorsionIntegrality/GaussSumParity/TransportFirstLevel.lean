@@ -744,20 +744,20 @@ theorem omega_integral_criterion : OmOKOf := by
       · have hb : b.val % 2 = 0 := by omega
         have h := TranslateJetMomentLawAnyIdempotentLevel.dual2 hE σ hO.2 hT b a
         rw [Fintype.sum_prod_type, Fintype.sum_bool] at h
-        simp only [mXY, TranslateJetMomentLawAnyIdempotentLevel.pXY, ha, hb, if_true] at h
-        simp only [Bool.true_eq_false, if_false, mul_zero, Finset.sum_const_zero, zero_add] at h
+        simp only [mXY, TranslateJetMomentLawAnyIdempotentLevel.pXY, ha, hb, ite_true] at h
+        simp only [Bool.true_eq_false, ite_false, mul_zero, Finset.sum_const_zero, zero_add] at h
         have e : (if a = b then (1 : K0) else 0) = if b = a then 1 else 0 := by
           by_cases hab' : a = b
-          · rw [if_pos hab', if_pos hab'.symm]
-          · rw [if_neg hab', if_neg (fun h => hab' h.symm)]
+          · rw [ite_eq_left hab', ite_eq_left hab'.symm]
+          · rw [ite_eq_right hab', ite_eq_right (fun h => hab' h.symm)]
         rw [e, ← h]
         exact Finset.sum_congr rfl fun r _ => mul_comm _ _
       · have hb : ¬ b.val % 2 = 0 := by omega
         have h := TranslateJetMomentLawAnyIdempotentLevel.dual2 hE σ hO.2 hT a b
         rw [Fintype.sum_prod_type, Fintype.sum_bool] at h
-        simp only [mXY, TranslateJetMomentLawAnyIdempotentLevel.pXY, ha, hb, if_false] at h
-        simp only [Bool.false_eq_true, if_false, mul_zero, Finset.sum_const_zero, add_zero,
-          if_true] at h
+        simp only [mXY, TranslateJetMomentLawAnyIdempotentLevel.pXY, ha, hb, ite_false] at h
+        simp only [Bool.false_eq_true, ite_false, mul_zero, Finset.sum_const_zero, add_zero,
+          ite_true] at h
         exact h
     have h2 := congrArg j key
 
@@ -774,7 +774,7 @@ theorem theta_integer_is_s_substitution : ThetaInZIsSSub := by
   unfold xOfZ Formalism.InvariantFactorPaths.G7.sSub Formalism.InvariantFactorPaths.G7.zLin conjJ
   congr 1
   by_cases h : x.1 = false
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
   · simp only [h]
     refine Finset.sum_congr rfl fun s _ => ?_
     rcases Nat.mod_two_eq_zero_or_one s.val with h2 | h2 <;> simp [h2]

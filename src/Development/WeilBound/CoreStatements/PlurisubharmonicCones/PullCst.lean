@@ -141,7 +141,7 @@ theorem arFun_word (hII : IsFullIntersectionSystem II) (t : ℝ) (w : Fin (dimFl
     simp [Finsupp.finsetSum_apply]
   obtain ⟨h2, -, -, h4⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.monoLines_monomial_word II hII.1 M.K M.ι M.P _ _ (M.line t) (fun j => some (w j)) M.arith (line_smooth M t)
   have hδ : (M.δ : ℝ) ≠ 0 := Nat.cast_ne_zero.2 M.δ_pos.ne'
-  rw [h1, RootModel.arFun, Module.Basis.constr_basis, RootModel.arMono, if_pos h2, h3, pow_zero, mul_one,
+  rw [h1, RootModel.arFun, Module.Basis.constr_basis, RootModel.arMono, ite_eq_left h2, h3, pow_zero, mul_one,
     div_mul_cancel₀ _ hδ, h4]
   rfl
 
@@ -187,7 +187,7 @@ theorem test_factor' [DecidableEq Ψ] {p q n r : ℕ} (e : Fin r ≃ PairIx Ψ p
   have h := test_factor e hq hn
   rw [Fin.prod_univ_add] at h ⊢
   simp only [Fin.append_left, Fin.append_right, Finset.prod_const, Finset.card_univ, Fintype.card_fin] at h ⊢
-  rw [testPoly, pow_succ', mul_assoc, h, pow_succ', mul_assoc, sum_muCoef, muSmall, if_pos (by omega)]
+  rw [testPoly, pow_succ', mul_assoc, h, pow_succ', mul_assoc, sum_muCoef, muSmall, ite_eq_left (by omega)]
 
 end LevelTowerAlt.Comparison₂
 end -- clump:auto
@@ -294,10 +294,10 @@ theorem isMultiHomog_rename {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (
     rw [hb.1.extend_apply, Finset.sum_eq_single k]
     · simpa using hf m₀ hm₀ k
     · intro k₂ _ hne
-      exact Finset.sum_eq_zero fun i _ => if_neg (hb.1.ne hne)
+      exact Finset.sum_eq_zero fun i _ => ite_eq_right (hb.1.ne hne)
     · simp
   · rw [Function.extend_apply' _ _ _ hk]
-    exact Finset.sum_eq_zero fun k _ => Finset.sum_eq_zero fun i _ => if_neg fun h => hk ⟨k, h⟩
+    exact Finset.sum_eq_zero fun k _ => Finset.sum_eq_zero fun i _ => ite_eq_right fun h => hk ⟨k, h⟩
 
 theorem isMultiHomog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
     IsMultiHomog (f * g) (a + b) := by
@@ -348,15 +348,6 @@ theorem evC_bdry {κ₁ : K₁ → K} {v₁ : (Σ k, ι₁ k) → Σ k, ι k} (h
   exact hz x₁ (hπ x x₁ hx₁ ▸ hx)
 
 end Sides
-
-section Assemble
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-  {K₁ : Type} [Fintype K₁] {ι₁ : K₁ → Type} [∀ k, Fintype (ι₁ k)]
-  {K₂ : Type} [Fintype K₂] {ι₂ : K₂ → Type} [∀ k, Fintype (ι₂ k)]
-  {K' : Type} [Fintype K'] {ι' : K' → Type} [∀ k, Fintype (ι' k)]
-
-end Assemble
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.Build
 end -- clump:auto

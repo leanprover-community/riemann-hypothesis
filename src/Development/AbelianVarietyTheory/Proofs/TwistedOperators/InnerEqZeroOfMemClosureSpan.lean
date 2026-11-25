@@ -175,8 +175,8 @@ theorem exists_isHilbertSchmidt_orthonormal_apply : ∀ (H K : Type) [NormedAddC
   have hG : ∀ v, G v = ∑' j, ⟪u j, v⟫_ℂ • w j := fun v => rfl
   have hval : ∀ j, G (u j) = w j := by
     intro j
-    rw [hG, tsum_eq_single j (fun k hk => by rw [orthonormal_iff_ite.1 hu k j, if_neg hk, zero_smul]),
-      orthonormal_iff_ite.1 hu j j, if_pos rfl, one_smul]
+    rw [hG, tsum_eq_single j (fun k hk => by rw [orthonormal_iff_ite.1 hu k j, ite_eq_right hk, zero_smul]),
+      orthonormal_iff_ite.1 hu j j, ite_eq_left rfl, one_smul]
   have hvan : ∀ v, (∀ j, inner ℂ (u j) v = 0) → G v = 0 := by
     intro v h
     rw [hG]
@@ -249,12 +249,12 @@ theorem tensorTrace_hasTrace : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (Hs
       (orthonormal_iff_ite.1 (e i).orthonormal) _ _
     simp only [this]
     by_cases h : ∀ x, j' x = j x
-    · rw [if_pos (funext h)]
-      exact Finset.prod_eq_one fun i _ => if_pos (h i)
-    · rw [if_neg fun h' => h (congrFun h')]
-      push_neg at h
+    · rw [ite_eq_left (funext h)]
+      exact Finset.prod_eq_one fun i _ => ite_eq_left (h i)
+    · rw [ite_eq_right fun h' => h (congrFun h')]
+      push Not at h
       obtain ⟨i, hi⟩ := h
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
 
   have hperp : ∀ x : H, (∀ j, ⟪u j, x⟫_ℂ = 0) → ∀ y, ⟪Φ y, x⟫_ℂ = 0 := by
     intro x hx y
@@ -528,7 +528,7 @@ theorem hasTrace_finiteRank_tensor : ∀ (ι : Type) [Fintype ι] [DecidableEq �
     refine ⟨GlobalTheory.OpTrace.isTraceClass_sum _ fun j _ => (hj j).1, ?_⟩
     rw [GlobalTheory.OpTrace.trace_sum _ fun j _ => (hj j).1, hc, Finset.sum_mul]
     exact Finset.sum_congr rfl fun j _ => (hj j).2
-  · push_neg at hnt
+  · push Not at hnt
     obtain ⟨i0, hi0⟩ := hnt
     have hTz : ∀ w y, T w y = 0 := fun w y => (T w).map_coord_zero i0 (Subsingleton.elim _ _)
     have hH : ∀ v : H, v = 0 := by

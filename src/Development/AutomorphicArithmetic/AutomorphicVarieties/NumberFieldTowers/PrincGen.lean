@@ -99,7 +99,7 @@ theorem UpperTheory.V.Tower.princGen :
         exact h
       show IsDiscreteValuationRing.addVal ℤ_[l] ((u : ℤ_[l]) - 1) = c
       apply le_antisymm _ a1
-      push_neg at a2
+      push Not at a2
       push_cast at a2
       exact ENat.lt_natCast_add_one_iff.mp a2
     · intro m

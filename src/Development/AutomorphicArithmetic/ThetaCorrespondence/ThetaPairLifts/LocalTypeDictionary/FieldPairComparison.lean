@@ -433,7 +433,7 @@ theorem log_prod_le {ι : Type} [Fintype ι] (a : ι → ℝ) (c : ℝ) (h0 : �
   · obtain ⟨i, hi⟩ := hz
     rw [Finset.prod_eq_zero (Finset.mem_univ i) hi, Real.log_zero]
     positivity
-  · push_neg at hz
+  · push Not at hz
     rw [Real.log_prod (fun i _ => hz i)]
     calc ∑ i, Real.log (a i) ≤ ∑ _i : ι, c := Finset.sum_le_sum fun i _ => h i
       _ = Fintype.card ι * c := by simp
@@ -880,7 +880,7 @@ private theorem exZ_le_of_width {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone �
       Formalism.CohomologicalDescent.UnitNormBounds.UN n (extN ν) a ≤ 0 + (w : ℤ) := by
     intro a ha
     have h := hw ⟨a, ha⟩
-    simp only [Formalism.CohomologicalDescent.UnitNormBounds.UN, extN, ha, dif_pos]
+    simp only [Formalism.CohomologicalDescent.UnitNormBounds.UN, extN, ha, dite_eq_left]
     simp only at h
     constructor <;> omega
   have h := Formalism.CohomologicalDescent.E.exIntervalLt_of_exCut GlobalTheory.LeviCut.exCut n (extN ν) hanti l hl 0 w hI
@@ -895,7 +895,7 @@ private theorem natW_wtOf_add_le (n : ℕ) (E : Finset ℚ) (lo hi : ℝ) (hE : 
   split_ifs with h
   · obtain ⟨z, hz⟩ := GlobalTheory.SignedHC.highestWeight_int h.1 h.2 a
     obtain ⟨z', hz'⟩ := GlobalTheory.SignedHC.highestWeight_int h.1 h.2 ⟨n - 1, by omega⟩
-    simp only [Formalism.BasicNotions.DomWeight.natW, Formalism.BasicNotions.DomWeight.detShift, dif_pos hpos, hz, hz', Int.floor_intCast]
+    simp only [Formalism.BasicNotions.DomWeight.natW, Formalism.BasicNotions.DomWeight.detShift, dite_eq_left hpos, hz, hz', Int.floor_intCast]
     have e1 : (z : ℚ) = GlobalTheory.SignedHC.descEnum E h.1 a - (((n : ℚ) - 1) / 2 - ((a : ℕ) : ℚ)) := hz.symm
     have e2 : (z' : ℚ) = GlobalTheory.SignedHC.descEnum E h.1 ⟨n - 1, by omega⟩ -
         (((n : ℚ) - 1) / 2 - ((n - 1 : ℕ) : ℚ)) := hz'.symm
@@ -1017,7 +1017,7 @@ private theorem entries_top_bound (D : D7) (large₂ : SizeData₂ D) (hS : Glob
     have e : G.v i = ⌊(D.hc τ).v ⟨i - 2, hi⟩⌋ := by
       show GlobalTheory.SignedHC.GridData.extend 2 (D.hc τ).v i = _
       unfold GlobalTheory.SignedHC.GridData.extend
-      rw [dif_pos hi]
+      rw [dite_eq_left hi]
     rw [e]
     have f1 : ((⌊(D.hc τ).v ⟨i - 2, hi⟩⌋ : ℤ) : ℚ) ≤ (D.hc τ).v ⟨i - 2, hi⟩ := Int.floor_le _
     have f2 : (D.hc τ).v ⟨i - 2, hi⟩ < ((⌊(D.hc τ).v ⟨i - 2, hi⟩⌋ : ℤ) : ℚ) + 1 := Int.lt_floor_add_one _
@@ -1032,7 +1032,7 @@ private theorem entries_top_bound (D : D7) (large₂ : SizeData₂ D) (hS : Glob
     have e : G.e l = ⌊(D.hc τ).e ⟨l - 1, hl⟩⌋ := by
       show GlobalTheory.SignedHC.GridData.extend 1 (D.hc τ).e l = _
       unfold GlobalTheory.SignedHC.GridData.extend
-      rw [dif_pos hl]
+      rw [dite_eq_left hl]
     rw [e]
     have hpos : (0 : ℚ) < (D.hc τ).e ⟨l - 1, hl⟩ := by
       have h0 : (0 : ℚ) < (D.hc τ).b ⟨l - 1, hl⟩ := by exact_mod_cast hc.1

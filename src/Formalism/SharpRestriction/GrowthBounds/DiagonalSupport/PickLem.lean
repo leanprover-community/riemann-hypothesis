@@ -81,8 +81,8 @@ theorem fock_monomial_right (F : MvPolynomial σ Kf) (nu : σ →₀ ℕ) :
     rw [mem_support_iff, coeff_monomial] at hm
     by_contra h
     rw [Finset.mem_singleton] at h
-    exact hm (if_neg fun h' => h h'.symm))]
-  rw [Finset.sum_singleton, coeff_monomial, if_pos rfl, mul_one]
+    exact hm (ite_eq_right fun h' => h h'.symm))]
+  rw [Finset.sum_singleton, coeff_monomial, ite_eq_left rfl, mul_one]
 
 theorem fock_smul_left (c : Kf) (F G : MvPolynomial σ Kf) : fock (c • F) G = c * fock F G := by
   rw [fock_eq_sum _ _ _ (Finset.Subset.refl _), fock_eq_sum F _ _ (Finset.Subset.refl _), Finset.mul_sum]

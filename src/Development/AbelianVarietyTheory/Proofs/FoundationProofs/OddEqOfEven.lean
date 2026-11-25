@@ -148,7 +148,7 @@ theorem halfP_revS (hN : Even N) : halfP D N * revS D N = revS D N - revS D N * 
   · subst h
     obtain ⟨k, hk⟩ := hN
     have hj := j.2
-    simp only [Fin.rev_rev, if_true, Fin.lt_def, Fin.val_rev]
+    simp only [Fin.rev_rev, ite_true, Fin.lt_def, Fin.val_rev]
     split_ifs with h1 h2 h2
     · omega
     · simp

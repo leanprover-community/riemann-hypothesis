@@ -155,19 +155,19 @@ theorem quotient_integral_holomorphic : ∀ (U : Set ℂ) (n : ℕ) (A D : ℂ �
           (limUnder (𝓝[≠] z₀) (fun w => A w / D w)) := by
         filter_upwards [Metric.ball_mem_nhds z₀ hr] with w hw
         by_cases hw0 : w = z₀
-        · subst hw0; rw [hh, if_pos hDz, Function.update_self]
-        · rw [hh, if_neg (hne w hw hw0), Function.update_of_ne hw0]
+        · subst hw0; rw [hh, ite_eq_left hDz, Function.update_self]
+        · rw [hh, ite_eq_right (hne w hw hw0), Function.update_of_ne hw0]
       exact (hg.differentiableAt (Metric.ball_mem_nhds z₀ hr)).congr_of_eventuallyEq heqg
     · have hDc : ContinuousAt D z₀ := (hD.differentiableAt hUn).continuousAt
       have heqf : h =ᶠ[𝓝 z₀] fun w => A w / D w := by
         filter_upwards [hDc.eventually_ne hDz] with w hw
-        rw [hh, if_neg hw]
+        rw [hh, ite_eq_right hw]
       exact ((hA.differentiableAt hUn).div (hD.differentiableAt hUn) hDz).congr_of_eventuallyEq heqf
   refine ⟨h, fun z hz => (hdiffAt z hz).differentiableWithinAt, ?_, ?_⟩
   · intro z hz
     by_cases hDz : D z = 0
     · rw [hDz, mul_zero]; exact hAz z hz hDz
-    · rw [hh, if_neg hDz, div_mul_cancel₀ _ hDz]
+    · rw [hh, ite_eq_right hDz, div_mul_cancel₀ _ hDz]
   · intro z hz
     by_cases hDz : D z = 0
     · have hUn : U ∈ 𝓝 z := hU.mem_nhds hz
@@ -181,12 +181,12 @@ theorem quotient_integral_holomorphic : ∀ (U : Set ℂ) (n : ℕ) (A D : ℂ �
         simp [Finset.sum_apply]
       have hev : ∀ᶠ w in 𝓝[≠] z, h w ^ n + ∑ j, s j w * h w ^ (j : ℕ) = 0 := by
         filter_upwards [hiso z hz, nhdsWithin_le_nhds hUn] with w hw hwU
-        rw [hh, if_neg hw]
+        rw [hh, ite_eq_right hw]
         exact hroot w hwU hw
       have ht : Tendsto (fun w => h w ^ n + ∑ j, s j w * h w ^ (j : ℕ)) (𝓝[≠] z) (𝓝 0) :=
         tendsto_const_nhds.congr' (hev.mono fun w hw => hw.symm)
       exact tendsto_nhds_unique (hFd.continuousAt.tendsto.mono_left nhdsWithin_le_nhds) ht
-    · rw [hh, if_neg hDz]
+    · rw [hh, ite_eq_right hDz]
       exact hroot z hz hDz
 
 end GlobalTheory

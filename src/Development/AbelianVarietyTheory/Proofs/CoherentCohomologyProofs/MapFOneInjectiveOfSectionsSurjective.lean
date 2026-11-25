@@ -283,14 +283,6 @@ theorem shortExact_map_toSheaf {S : ShortComplex (SheafOfModules.{v} R)} (hS : S
 
 end Modules
 
-section Top
-
-open TopologicalSpace
-
-variable {X : TopCat.{u}}
-
-end Top
-
 section Scheme
 
 open AlgebraicGeometry

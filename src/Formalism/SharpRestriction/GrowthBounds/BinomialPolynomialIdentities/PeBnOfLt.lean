@@ -28,12 +28,12 @@ theorem expSet_eq (n N : ℕ) (B : Fin N → ℕ) :
   constructor
   · rintro ⟨m, hm, rfl⟩ i
     by_cases h : i < N
-    · rw [if_pos h, pe_Bn_of_lt B h, ← hm ⟨i, h⟩]
+    · rw [ite_eq_left h, pe_Bn_of_lt B h, ← hm ⟨i, h⟩]
       unfold multideg
       refine Finset.sum_congr rfl fun a _ => ?_
       have : ((i, a) : ℕ × Fin n) = iv N n (⟨i, h⟩, a) := rfl
       rw [this, Finsupp.mapDomain_apply_of_injective (iv_inj N n)]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       refine Finset.sum_eq_zero fun a _ => ?_
       apply Finsupp.mapDomain_of_notMem_range
       rintro ⟨⟨x, y⟩, hxy⟩
@@ -46,14 +46,14 @@ theorem expSet_eq (n N : ℕ) (B : Fin N → ℕ) :
       · exact ⟨(⟨i, h⟩, a), rfl⟩
       · exfalso
         have h0 := he i
-        rw [if_neg h] at h0
+        rw [ite_eq_right h] at h0
         have := (Finset.sum_eq_zero_iff.mp h0) a (Finset.mem_univ a)
         simp only [Finset.mem_coe, Finsupp.mem_support_iff] at hia
         exact hia this
     refine ⟨e.comapDomain (iv N n) (iv_inj N n).injOn, ?_, Finsupp.mapDomain_comapDomain _ (iv_inj N n) e hsupp⟩
     intro i
     have h0 := he i.val
-    rw [if_pos i.2, pe_Bn_of_lt B i.2] at h0
+    rw [ite_eq_left i.2, pe_Bn_of_lt B i.2] at h0
     rw [← h0]
     unfold multideg
     refine Finset.sum_congr rfl fun a _ => ?_

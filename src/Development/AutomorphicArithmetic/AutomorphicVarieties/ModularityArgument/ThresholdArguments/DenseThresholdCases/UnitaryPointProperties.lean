@@ -48,10 +48,6 @@ open scoped TensorProduct Matrix
 namespace UpperTheory.V.Hi
 open UpperTheory.V.W (Plc)
 open UpperTheory.V.HV (Coef)
-section Alg
-variable {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l.Prime] (n : ℕ) {V : Type} [Fintype V] (S : V → Plc L)
-variable {n S}
-end Alg
 namespace HSet
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c)

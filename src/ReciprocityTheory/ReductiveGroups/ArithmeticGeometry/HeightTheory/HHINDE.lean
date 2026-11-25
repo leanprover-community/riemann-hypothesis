@@ -546,7 +546,7 @@ theorem sum_mult_logHeight_lower (hd : d.AxH 𝒜) (h : d.S1) (G : WT) (c : ι) 
       have hn0 : (0 : ℝ) ≤ d.nP h c G f p := by exact_mod_cast d.nP_nonneg hd h c hp G f hord
       push_cast at hL ⊢
       nlinarith [mul_le_mul_of_nonneg_left hL hn0]
-    · push_neg at hg
+    · push Not at hg
       have hG : d.GoodP c p = ∅ := Set.eq_empty_iff_forall_notMem.mpr hg
       have e2 : d.nP h c G f p = 0 := by unfold nP; rw [hG]; simp
       rw [e2]; simp

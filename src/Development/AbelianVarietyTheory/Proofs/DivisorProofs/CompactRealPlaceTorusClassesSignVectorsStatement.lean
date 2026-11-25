@@ -597,7 +597,7 @@ theorem exists_matrix (hc : IsCMExt F E σ) (h1 : ∀ y i, Ψ (sigR w.Completion
 
       rw [map_sum, Finset.sum_apply]
       simp only [Algebra.smul_def, map_mul, Pi.mul_apply, h2, he, RingEquiv.apply_symm_apply, Pi.single_apply,
-        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     funext i
     conv_lhs => rw [hy]
 

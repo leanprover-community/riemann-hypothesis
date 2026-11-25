@@ -15,7 +15,7 @@ private theorem acx_off {σ E : Type} [LinearOrder σ] [AddCommGroup E] [Module 
     (hc : c ∈ (acx A w).C n) (s : Finset σ) (hs : (s.card : ℤ) ≠ n) : c s = 0 := by
   have hc' : c ∈ Submodule.pi Set.univ (fun s : Finset σ => if (s.card : ℤ) = n then A s else ⊥) := hc
   have h := (Submodule.mem_pi.1 hc') s (Set.mem_univ s)
-  rw [if_neg hs] at h
+  rw [ite_eq_right hs] at h
   simpa using h
 
 private theorem acx_on {σ E : Type} [LinearOrder σ] [AddCommGroup E] [Module ℂ E]
@@ -23,7 +23,7 @@ private theorem acx_on {σ E : Type} [LinearOrder σ] [AddCommGroup E] [Module �
     (hc : c ∈ (acx A w).C n) (s : Finset σ) (hs : (s.card : ℤ) = n) : c s ∈ A s := by
   have hc' : c ∈ Submodule.pi Set.univ (fun s : Finset σ => if (s.card : ℤ) = n then A s else ⊥) := hc
   have h := (Submodule.mem_pi.1 hc') s (Set.mem_univ s)
-  rwa [if_pos hs] at h
+  rwa [ite_eq_left hs] at h
 
 private theorem cubeDifferential_identity_apply {σ E : Type} [LinearOrder σ] [AddCommGroup E] [Module ℂ E]
     (c : Finset σ → E) (t : Finset σ) :
@@ -111,7 +111,7 @@ private theorem core (hU : WdUni) (hW : WdBasic) (hB : SysBasic) (hOk : SysOk) (
       rw [hr2] at h2
       rw [hl2, hr2] at h4
       rw [hcard] at h3
-      rw [if_pos ⟨h1, h2⟩]
+      rw [ite_eq_left ⟨h1, h2⟩]
       have e1 : N - 1 - (I.card : ℤ) - J.card = d := by
         have : (I.card : ℤ) + J.card = p + 1 := by exact_mod_cast h3
         omega
@@ -190,14 +190,14 @@ theorem UpperTheory.Gal.productCup_of_system.pCmp_of :
     by_cases h : (lft b).Nonempty ∧ (rgt b).Nonempty ∧ b.card = p + 1
     · have hm := acx_on _ _ _ γ' hγ' b (by rw [h.2.2]; push_cast; ring)
       have hm' : γ' b ∈ omB ℂ K (rB ℂ K (xv x) (lft b ∪ rgt b)) a := by
-        simpa only [mixF, if_pos (And.intro h.1 h.2.1)] using hm
+        simpa only [mixF, ite_eq_left (And.intro h.1 h.2.1)] using hm
       obtain ⟨yb, h1, h2⟩ := hLift F K d x hx a (lft b) (rgt b) h.1 h.2.1 _ hm'
       exact ⟨yb, Or.inr ⟨h.1, h.2.1, h.2.2, h1⟩, h2⟩
     · have h0 : γ' b = 0 := by
         by_cases hb : b.card = p + 1
         · have hm := acx_on _ _ _ γ' hγ' b (by rw [hb]; push_cast; ring)
           have hn : ¬ ((lft b).Nonempty ∧ (rgt b).Nonempty) := fun h' => h ⟨h'.1, h'.2, hb⟩
-          simpa only [mixF, if_neg hn, Submodule.mem_bot] using hm
+          simpa only [mixF, ite_eq_right hn, Submodule.mem_bot] using hm
         · exact acx_off _ _ _ γ' hγ' b (by
             intro h'
             apply hb

@@ -22,7 +22,7 @@ theorem abs_wt_early {K r : ℕ} (LL : Letters (K + 1)) (o : ℕ) (c : Fin r) (m
   by_cases hi : i = Fin.last K
   · subst hi
     simp
-  · rw [if_neg hi]
+  · rw [ite_eq_right hi]
     have h2 : ∑ c', m (i, c') = LL.deg i := by
       have := hm i
       simpa [setLast, Function.update_of_ne hi] using this
@@ -102,13 +102,13 @@ theorem space_vanishing_holds : XVanish := by
     have h1 := eig_supp LL K a _ _ (eJ_cw_diag LL hv _ th h hhw a ha β)
     rw [mem_restrictSupport_iff] at h1
     refine h1 (Finset.mem_coe.mpr (mem_support_iff.mpr ?_))
-    rw [cw, coeff_compL, if_pos hmβ]
+    rw [cw, coeff_compL, ite_eq_left hmβ]
     exact mem_support_iff.mp hm
 
   let tN : ℕ → ℤ := fun i => if h : i < r then th ⟨i, h⟩ else 0
   let bN : ℕ → ℤ := fun i => if h : i < r then β ⟨i, h⟩ else 0
-  have htN : ∀ a : Fin r, tN (a : ℕ) = th a := fun a => by simp only [tN, dif_pos a.isLt, Fin.eta]
-  have hbN : ∀ a : Fin r, bN (a : ℕ) = β a := fun a => by simp only [bN, dif_pos a.isLt, Fin.eta]
+  have htN : ∀ a : Fin r, tN (a : ℕ) = th a := fun a => by simp only [tN, dite_eq_left a.isLt, Fin.eta]
+  have hbN : ∀ a : Fin r, bN (a : ℕ) = β a := fun a => by simp only [bN, dite_eq_left a.isLt, Fin.eta]
   have hCs : ∀ i, (h : i < r - 1) → (⟨i, by omega⟩ : Fin r) ∈ univ.erase ρ := by
     intro i h
     refine Finset.mem_erase.mpr ⟨fun he => ?_, Finset.mem_univ _⟩

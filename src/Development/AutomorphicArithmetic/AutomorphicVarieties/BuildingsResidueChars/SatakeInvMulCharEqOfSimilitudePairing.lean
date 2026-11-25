@@ -116,10 +116,10 @@ theorem UpperTheory.satake_inv_mul_char_eq_of_similitude_pairing :
       obtain ⟨a, ha, b, hb, e⟩ : ∃ a ∈ GLint (Fin n) (Ov E w), ∃ b ∈ GLint (Fin n) (Ov E w),
           g = a * dGL n ϖ j * b := by
         by_contra hn
-        exact hg (if_neg hn)
+        exact hg (ite_eq_right hn)
       refine ⟨a, ha, b, hb, _, (GlobalTheory.LFun.ConjPlace.invT c n).symm_apply_eq.2 (invT_dGL c ϖ j).symm, e, ?_⟩
       rw [GlobalTheory.SphGal.loc_det_of_Tj hχ hp hj, Units.val_pow_eq_pow_val]
-      rw [Tj_apply, if_pos ⟨1, one_mem _, 1, one_mem _, by rw [one_mul, mul_one]; rfl⟩]
+      rw [Tj_apply, ite_eq_left ⟨1, one_mem _, 1, one_mem _, by rw [one_mul, mul_one]; rfl⟩]
       exact one_ne_zero)
   rw [hx'.2.2.2 _ hp j hj, hy'.2.2.2 _ hp j hj, map_smul, map_smul, LinearMap.smul_apply,
     smul_eq_mul, smul_eq_mul, ← mul_assoc] at key

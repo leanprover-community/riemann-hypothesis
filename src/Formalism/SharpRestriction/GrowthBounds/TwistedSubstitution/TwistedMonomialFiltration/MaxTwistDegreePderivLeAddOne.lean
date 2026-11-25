@@ -93,15 +93,15 @@ theorem coeff_divDer (be μ : ι × Fin n →₀ ℕ) (F : MvPolynomial (ι × F
     · rw [notMem_support_iff.mp h, zero_mul]
   · intro m _
     by_cases h1 : be ≤ m
-    · rw [if_pos h1, coeff_monomial]
+    · rw [ite_eq_left h1, coeff_monomial]
       by_cases h2 : m = μ + be
       · subst h2
-        rw [if_pos (add_tsub_cancel_right μ be), if_pos rfl]
-      · rw [if_neg h2, if_neg]
+        rw [ite_eq_left (add_tsub_cancel_right μ be), ite_eq_left rfl]
+      · rw [ite_eq_right h2, ite_eq_right]
         intro h3
         apply h2
         rw [← h3, tsub_add_cancel_of_le h1]
-    · rw [if_neg h1, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, if_neg]
+    · rw [ite_eq_right h1, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, ite_eq_right]
       rintro rfl
       exact h1 le_add_self
 
@@ -119,9 +119,9 @@ theorem divDer_single_one (v : ι × Fin n) (F : MvPolynomial (ι × Fin n) R) :
     rw [coeff_divDer, pderiv_monomial, coeff_monomial, coeff_monomial]
     by_cases h : u = μ + Finsupp.single v 1
     · subst h
-      rw [if_pos rfl, if_pos (add_tsub_cancel_right μ _)]
+      rw [ite_eq_left rfl, ite_eq_left (add_tsub_cancel_right μ _)]
       simp [Finsupp.prod_single_index, Nat.choose_one_right]
-    · rw [if_neg h, zero_mul]
+    · rw [ite_eq_right h, zero_mul]
       split_ifs with h2
       · have hv : u v = 0 := by
           by_contra hv
@@ -155,7 +155,7 @@ theorem covDeg_single_le (S : Set ι) (v : ι × Fin n) : covDeg LL S (Finsupp.s
 theorem vecDeg_single_of (S : Set ι) (v : ι × Fin n) (h : v.1 ∈ S → LL.vec v.1 = false) :
     vecDeg LL S (Finsupp.single v 1) = 0 := by
   classical
-  rw [vecDeg, Formalism.MainNotions.CovariantDegrees.vecDeg, Finsupp.support_single_ne_zero _ one_ne_zero, Finset.sum_singleton, if_neg]
+  rw [vecDeg, Formalism.MainNotions.CovariantDegrees.vecDeg, Finsupp.support_single_ne_zero _ one_ne_zero, Finset.sum_singleton, ite_eq_right]
   rintro ⟨h1, h2⟩
   rw [h h1] at h2
   exact absurd h2 (by decide)
@@ -163,7 +163,7 @@ theorem vecDeg_single_of (S : Set ι) (v : ι × Fin n) (h : v.1 ∈ S → LL.ve
 theorem covDeg_single_of (S : Set ι) (v : ι × Fin n) (h : v.1 ∈ S → LL.vec v.1 = true) :
     covDeg LL S (Finsupp.single v 1) = 0 := by
   classical
-  rw [covDeg, Formalism.MainNotions.CovariantDegrees.covDeg, Finsupp.support_single_ne_zero _ one_ne_zero, Finset.sum_singleton, if_neg]
+  rw [covDeg, Formalism.MainNotions.CovariantDegrees.covDeg, Finsupp.support_single_ne_zero _ one_ne_zero, Finset.sum_singleton, ite_eq_right]
   rintro ⟨h1, h2⟩
   rw [h h1] at h2
   exact absurd h2 (by decide)

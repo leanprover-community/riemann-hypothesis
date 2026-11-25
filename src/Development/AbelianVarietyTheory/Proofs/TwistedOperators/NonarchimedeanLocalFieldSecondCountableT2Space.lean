@@ -98,21 +98,21 @@ theorem exists_conj (h1 : 1 ≤ p) (hc : p < c) (u β : n → k) :
     · simp [Matrix.one_apply]
     · simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
       simp only [fromBlocks_apply₁₂, hB, Matrix.of_apply]
-      rw [if_neg (by omega)]; simp
+      rw [ite_eq_right (by omega)]; simp
     · simp
     · simp only [lev, Sum.elim_inr] at hrs
       simp only [fromBlocks_apply₂₂, Matrix.add_apply, hCB]
-      rw [if_neg (by omega)]; simp [Matrix.one_apply]
+      rw [ite_eq_right (by omega)]; simp [Matrix.one_apply]
   · unfold simpleSum
     rw [hv]
     simp only [fromBlocks_apply₂₂, Matrix.add_apply, hCB]
     rw [Finset.sum_eq_single (⟨p - 1, by omega⟩ : Fin c), Finset.sum_eq_single (⟨p, hc⟩ : Fin c)]
-    · rw [if_pos (by simp; omega), if_pos (by simp; omega), Matrix.one_apply_ne, add_zero]
+    · rw [ite_eq_left (by simp; omega), ite_eq_left (by simp; omega), Matrix.one_apply_ne, add_zero]
       intro h
       have := congrArg Fin.val h
       simp at this; omega
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       apply hj
       ext

@@ -307,7 +307,7 @@ theorem mms_of_frobTw {e : MvPowerSeries σ C} (h : MMS V (frobTw V.l e)) : MMS 
   have hd : ∀ s, V.l ∣ (V.l • ν) s := fun s => by
     rw [Finsupp.smul_apply, smul_eq_mul]
     exact dvd_mul_right _ _
-  rw [coeff_frobTw, if_pos hd, divl_smul V.l_prime.pos] at h1
+  rw [coeff_frobTw, ite_eq_left hd, divl_smul V.l_prime.pos] at h1
   exact mm_of_pow h1
 
 private theorem intS_monomial_lemma_10 {ν : σ →₀ ℕ} {c : C} (hc : V.Ge 0 c) :
@@ -333,7 +333,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
     rw [Finset.sum_ite_eq]
   have hlow : ∀ ν, ν ≤ μ → MvPowerSeries.coeff ν (f - P) = 0 := by
     intro ν hν
-    rw [map_sub, hcoeffP, if_pos (Finset.mem_Iic.2 hν)]
+    rw [map_sub, hcoeffP, ite_eq_left (Finset.mem_Iic.2 hν)]
     exact sub_self _
   have h1 : MvPowerSeries.coeff μ (f ^ V.l) = MvPowerSeries.coeff μ (P ^ V.l) := by
     obtain ⟨Q, hQ⟩ := sub_dvd_pow_sub_pow f P V.l
@@ -349,7 +349,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
   have h3 : MvPowerSeries.coeff μ (frobTw V.l f) = MvPowerSeries.coeff μ (frobTw V.l P) := by
     rw [coeff_frobTw, coeff_frobTw]
     split_ifs
-    · rw [hcoeffP, if_pos (Finset.mem_Iic.2 (divl_le _ _))]
+    · rw [hcoeffP, ite_eq_left (Finset.mem_Iic.2 (divl_le _ _))]
     · rfl
   have h4 : frobTw V.l P = ∑ ν ∈ S, (MvPowerSeries.monomial ν (MvPowerSeries.coeff ν f)) ^ V.l := by
     ext μ'
@@ -371,7 +371,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
     · symm
       apply Finset.sum_eq_zero
       intro ν _
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro rfl
       apply hd
       intro s

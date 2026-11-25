@@ -62,12 +62,6 @@ def SimplePole : Prop :=
     (S : Set (HeightOneSpectrum (𝓞 F))) (r t : ℕ) (c P : Fam E) (m x : HeightOneSpectrum (𝓞 E) → ℂˣ),
     Hyp S r t c P m x → Concl S r t c P m x
 
-section Rep
-
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU
-
-end Rep
-
 theorem twist_liftFam (c : Fam E) (m x : HeightOneSpectrum (𝓞 E) → ℂˣ) (t : ℕ) :
     twist (liftFam c m x t) x⁻¹ = twist c m⁻¹ + segFam 1 t := by
   rw [liftFam, twist_add, twist_twist, twist_segFam, inv_mul_cancel_left, inv_mul_cancel]

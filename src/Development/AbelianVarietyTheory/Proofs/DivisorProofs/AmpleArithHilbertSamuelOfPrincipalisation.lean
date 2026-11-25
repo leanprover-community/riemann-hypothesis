@@ -22,65 +22,15 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Geo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArCalcOfPrincipalisation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArithHilbertSamuelSmallSectionsChangeOfMetric
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFubiniStudyWeightsBoundedDifference
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.L2DbarEstimates.LeviForms.LogNormSq
 import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Finset.Functor
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousHermSectionValueMulConjAndNormBounded
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLineBundlePairSectionsMulMemNormMul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermPairPowSectionMemAndNormPow
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SectionsEqSumAevalBoundedIntCoeffAmple
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Topology.Sheaves.Presheaf
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricDegreeProjectionFormulaSelfInterPow
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
@@ -306,12 +256,12 @@ theorem exists_finite_homogeneous_generators : ∀ (K : Type) [CommRing K] (D c 
     | mem p hp =>
       obtain ⟨g, hg, rfl⟩ := hp
       refine ⟨fun b hb => ?_, fun q => ?_⟩
-      · simp only [v, Polynomial.coeff_C_mul_X_pow]; rw [if_neg (by omega)]
+      · simp only [v, Polynomial.coeff_C_mul_X_pow]; rw [ite_eq_right (by omega)]
       · simp only [v, Polynomial.coeff_C_mul_X_pow]
         by_cases hq : q = g.1
-        · subst hq; rw [if_pos rfl]
+        · subst hq; rw [ite_eq_left rfl]
           exact AddSubgroup.subset_closure ⟨g, hg, 0, by simp, by simp⟩
-        · rw [if_neg (by omega)]; exact (A q).zero_mem
+        · rw [ite_eq_right (by omega)]; exact (A q).zero_mem
     | zero => exact good_zero c A
     | add a b _ _ ha hb => exact good_add ha hb
     | smul r a _ ha => rw [hsmul]; exact good_twist_mul x hA r a ha

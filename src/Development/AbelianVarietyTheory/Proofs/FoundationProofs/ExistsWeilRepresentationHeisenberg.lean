@@ -221,10 +221,10 @@ private theorem sum_smul_translate_eq_zero_of_fixes_selfDual {σ : R →+* R} {w
       rw [translate_eq_smul_of_sub_mem hU hz (hcase x hx x₀ hx₀), smul_smul]
     rw [col W e h he] at hc
     rw [col V u hV hu, (smul_eq_zero.mp hc).resolve_right (translate_ne_zero' h he0 x₀), zero_smul]
-  · push_neg at hcase
+  · push Not at hcase
     obtain ⟨x, hx, y, hy, hxy⟩ := hcase
     have hnot : ¬ ∀ a ∈ A, γ (x - y) a = 1 := fun H => hxy ((hA _).2 H)
-    push_neg at hnot
+    push Not at hnot
     obtain ⟨a, ha, hne⟩ := hnot
     have hγ : γ a x ≠ γ a y := by
       intro heq

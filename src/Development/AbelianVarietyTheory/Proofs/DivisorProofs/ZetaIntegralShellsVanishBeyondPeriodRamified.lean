@@ -350,7 +350,7 @@ theorem shell_eq_zero_of_support : ∀ (k : Type) [Field k] [ValuativeRel k] [To
     (φ : Matrix (Fin a) (Fin a) k → ℂ) (M' : ℕ), Function.support φ ⊆ scaledInt ϖ a (-(M' : ℤ)) →
     ∀ n : Fin a → ℤ, ¬ (∀ i, -(M' : ℤ) ≤ n i) → ∀ z : ℂ, shell μ ϖ ν z φ n = 0 := by
   intro k _ _ _ _ _ _ ϖ hϖ ν a μ φ M' hS n hn z
-  push_neg at hn
+  push Not at hn
   obtain ⟨i, hi⟩ := hn
   rw [shell]
   refine setIntegral_eq_zero_of_forall_eq_zero fun g hg => ?_

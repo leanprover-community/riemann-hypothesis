@@ -19,7 +19,6 @@ namespace Formalism.FourierDecayAlt.Q.EabGlW
 open Formalism.REAL Formalism.QuantumDeterminants
 
 
-set_option backward.isDefEq.respectTransparency false in
 open scoped Norms.Operator in
 theorem exp_mulVec_fix {n : ℕ} (Y : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ) (h : Y *ᵥ v = 0) :
     NormedSpace.exp Y *ᵥ v = v := by

@@ -215,12 +215,6 @@ end
 noncomputable section
 namespace GlobalTheory.CompanionTheory.GrCech
 
-section Sec
-
-variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A}
-
-end Sec
-
 section Res
 
 variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C]

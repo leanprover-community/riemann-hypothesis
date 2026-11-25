@@ -149,18 +149,7 @@ theorem isOneComb_sph {c P : ℕ} (h1 : 1 ≤ P) (h2 : P ≤ c) : IsOneComb ψ �
 
 end Local
 
-section Rat
-variable {D : D7}
-
-end Rat
-
 variable {D : D7} {c : Comm D} {v : VCom c} {χ : ℕ → (AE D)ˣ →* Circle}
-
-section Rel
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-
-end Rel
 
 
 end GlobalTheory.QPl.PinTest

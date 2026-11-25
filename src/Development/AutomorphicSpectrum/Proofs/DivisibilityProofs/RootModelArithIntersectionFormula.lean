@@ -64,7 +64,7 @@ theorem root_model_arithmetic_intersection : ∀ II : IntersectionSystem, IsFull
     have hb : (monomial (∑ k, Finsupp.single (w k) 1) (1 : ℝ) : RPA Ψ N) =
         basisMonomials (Option (Ψ × Fin N)) ℝ (∑ k, Finsupp.single (w k) 1) := by
       rw [coe_basisMonomials]
-    rw [RootModel.arFun, hb, Module.Basis.constr_basis, RootModel.arMono, if_pos hdeg, hII2]
+    rw [RootModel.arFun, hb, Module.Basis.constr_basis, RootModel.arMono, ite_eq_left hdeg, hII2]
   have hc : ∏ k, cc (w k) = (∏ k, M.coef lam s (w k)) *
       (M.kA : ℝ) ^ (∑ k, Finsupp.single (w k) 1 : Option (Ψ × Fin N) →₀ ℕ) none := by
     rw [← prod_weight w (M.kA : ℝ), ← Finset.prod_mul_distrib]

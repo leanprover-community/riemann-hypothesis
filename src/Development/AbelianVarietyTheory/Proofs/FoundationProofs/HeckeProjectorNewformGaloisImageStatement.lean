@@ -509,9 +509,9 @@ theorem exists_decomp {E : Type} [Field E] {ι : Type} [Fintype ι] [DecidableEq
     rw [Module.End.mul_apply] at this
     rw [this]; split_ifs <;> rfl
   set W := LinearMap.range (P i₀ i₀)
-  have hW : ∀ k u, P i₀ k u ∈ W := fun k u => ⟨P i₀ k u, by rw [hPa, if_pos rfl]⟩
+  have hW : ∀ k u, P i₀ k u ∈ W := fun k u => ⟨P i₀ k u, by rw [hPa, ite_eq_left rfl]⟩
   have hfix : ∀ w ∈ W, P i₀ i₀ w = w := by
-    rintro _ ⟨u, rfl⟩; rw [hPa, if_pos rfl]
+    rintro _ ⟨u, rfl⟩; rw [hPa, ite_eq_left rfl]
   let b := Module.finBasis E W
   let π : Fin (Module.finrank E W) → U →ₗ[E] (ι → E) :=
     fun i => LinearMap.pi fun k => (b.coord i).comp (LinearMap.codRestrict W (P i₀ k) (hW k))
@@ -566,7 +566,7 @@ theorem exists_decomp {E : Type} [Field E] {ι : Type} [Fintype ι] [DecidableEq
 
       rw [map_sum] at this
       simp only [map_smul] at this
-      rw [this, hPa, if_pos rfl]
+      rw [this, hPa, ite_eq_left rfl]
     simp only [hk]
     rw [← LinearMap.sum_apply, h1, Module.End.one_apply]
 

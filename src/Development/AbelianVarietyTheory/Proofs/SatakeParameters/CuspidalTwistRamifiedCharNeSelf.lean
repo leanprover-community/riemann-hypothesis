@@ -247,7 +247,7 @@ theorem no_eigvec (p : CuspSub E a) (ha : 1 ≤ a) (η : HChar E) (v : HeightOne
     by_cases ho : ∀ k, o ≠ .fin k
     · rw [← op_comm_fin p o ho, hPcomm o ho]
       rw [hφ g, map_zero]
-    · push_neg at ho
+    · push Not at ho
       obtain ⟨k, rfl⟩ := ho
       have e : p.finPart g (p.op (.fin k) φ) = p.finPart (g * k) φ := by
         rw [map_mul, Module.End.mul_apply]; rfl

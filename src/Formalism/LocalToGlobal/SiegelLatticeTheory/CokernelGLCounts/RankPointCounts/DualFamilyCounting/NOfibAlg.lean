@@ -43,8 +43,8 @@ theorem coef_e (S : Set (Fin D.R.rS)) {x : (VS D).V} (hx : x ∈ Submodule.span 
   | mem y hy =>
     obtain ⟨a, ha, rfl⟩ := hy
     refine ⟨?_, fun b hb => ?_⟩
-    · simp only [hfe, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-    · rw [hfe, if_neg]; rintro rfl; exact hb ha
+    · simp only [hfe, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    · rw [hfe, ite_eq_right]; rintro rfl; exact hb ha
   | zero => simp
   | add x y _ _ hx hy =>
     refine ⟨?_, fun b hb => ?_⟩
@@ -66,9 +66,9 @@ theorem pW_inW (y : (VS D).V) : InW X (pW X y) := by
   intro c
   constructor
   · simp only [pW, map_sub, hT_sumR, X.ee, X.ef, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
   · simp only [pW, map_sub, hT_sumR, X.ff, hfe, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
 
 theorem decomp (y : (VS D).V) :
     y = ∑ d, (VS D).hT (X.fY d) y • X.eX d + ∑ d, (VS D).hT (X.eX d) y • X.fY d + pW X y := by
@@ -84,7 +84,7 @@ theorem pW_smul (c : D.host.E) (x : (VS D).V) : pW X (c • x) = c • pW X x :=
   simp only [pW, map_smul, smul_eq_mul, mul_smul, ← Finset.smul_sum, smul_sub]
 
 theorem pW_e (a : Fin D.R.rS) : pW X (X.eX a) = 0 := by
-  simp only [pW, X.ee, hfe, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+  simp only [pW, X.ee, hfe, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     Finset.sum_const_zero, sub_self]
 
 theorem pW_sum_e (c : Fin D.R.rS → D.host.E) : pW X (∑ d, c d • X.eX d) = 0 := by
@@ -136,7 +136,7 @@ theorem Xq_expand (hn : NFl X u n) (a : Fin D.R.rS) : n (X.eX a) = ∑ b, Xq X n
     (if b = a then 1 else 0)) • X.eX b from Finset.sum_congr rfl fun b _ => by
       rw [map_sub, hfe, sub_add_cancel]; rfl]
   simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 theorem Xq_entry (hn : NFl X u n) (b a : Fin D.R.rS) :
     Xq X n b a = (VS D).hT (X.fY b) (n (X.eX a) - X.eX a) + if b = a then 1 else 0 := by
@@ -144,10 +144,10 @@ theorem Xq_entry (hn : NFl X u n) (b a : Fin D.R.rS) :
 
 theorem Xq_lower (hn : NFl X u n) {b a : Fin D.R.rS} (h : a < b) : Xq X n b a = 0 := by
   rw [Xq_entry hn, (coef_e X _ (ne_mem hn a)).2 b (by simp only [Set.mem_setOf_eq, not_lt]; exact le_of_lt h),
-    if_neg (ne_of_gt h), add_zero]
+    ite_eq_right (ne_of_gt h), add_zero]
 
 theorem Xq_diag (hn : NFl X u n) (a : Fin D.R.rS) : Xq X n a a = 1 := by
-  rw [Xq_entry hn, (coef_e X _ (ne_mem hn a)).2 a (by simp), if_pos rfl, zero_add]
+  rw [Xq_entry hn, (coef_e X _ (ne_mem hn a)).2 a (by simp), ite_eq_left rfl, zero_add]
 
 theorem inW_orth {w : (VS D).V} (hw : InW X w) : w ∈ orth (VS D) (Xsp (lf D (X.Fu u))) := by
   change w ∈ orth (VS D) (Submodule.span D.host.E (Set.range (X.Fu u).e))

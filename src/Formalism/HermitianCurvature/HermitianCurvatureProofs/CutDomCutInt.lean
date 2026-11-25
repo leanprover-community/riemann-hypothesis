@@ -42,7 +42,7 @@ theorem aesm_weight_smul (D : B.RealPlaceData k r Wp Wq) {E : Type*} [NormedAddC
   have hw : ContinuousOn (fun q => bcWeight k r (Tz k r D.z) (Tz k r D.z') q) s := by
     refine contW.continuousOn.congr fun q hq => ?_
     unfold bcWeight
-    rw [if_pos hq.2.le]
+    rw [ite_eq_left hq.2.le]
   have h1 : AEStronglyMeasurable (fun q => bcWeight k r (Tz k r D.z) (Tz k r D.z') q • g q)
       (volume.restrict s) := (hw.smul hc).aestronglyMeasurable hs
   have h2 := (aestronglyMeasurable_indicator_iff hs).mpr h1
@@ -74,23 +74,16 @@ theorem aesm_weight_smul (D : B.RealPlaceData k r Wp Wq) {E : Type*} [NormedAddC
   classical
   by_cases hq : q ∈ s
   · simp [hq]
-  · simp only [Set.indicator_apply, hq, if_false]
+  · simp only [Set.indicator_apply, hq, ite_false]
     have hlt : Complex.normSq q.2 < Tz k r D.z * Tz k r D.z' := by
       have hn : ¬ (Tz k r D.z * Tz k r D.z' < Complex.normSq q.2) := fun h => hq ⟨hqa, h⟩
       exact lt_of_le_of_ne (not_lt.mp hn) hqb
     have hz : bcWeight k r (Tz k r D.z) (Tz k r D.z') q = 0 := by
       unfold bcWeight
-      rw [if_neg (not_le.mpr hlt)]
+      rw [ite_eq_right (not_le.mpr hlt)]
     rw [hz, zero_smul]
 
 end general
-
-section place
-
-variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
-
-end place
 
 end
 

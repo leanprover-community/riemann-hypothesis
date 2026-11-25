@@ -167,9 +167,6 @@ def AvgZero : Prop :=
     IsAddFundamentalDomain Γ 𝓕 μ → ∀ ψ : G → ℂ, Continuous ψ → (∀ γ ∈ Γ, ∀ x, ψ (γ + x) = ψ x) →
     ∀ e : ℝ → G, Continuous e → ∀ N : ℝ, 0 < N → (∀ x, ∫ t in (0 : ℝ)..N, ψ (e t + x) = 0) → ∫ x in 𝓕, ψ x ∂μ = 0
 
-def SmCont : Prop :=
-  ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ) (φ : TR.Sm F a), IsOpen {k | TR.finRep F a k φ = φ} → Continuous φ.1
-
 def AutPer : Prop :=
   ∀ φ : TR.Sm ℚ 2, (∀ γ g, φ.1 (ratGL ℚ 2 γ * g) = φ.1 g) → IsOpen {k | TR.finRep ℚ 2 k φ = φ} → ∀ g, ∃ N : ℕ, 0 < N ∧
     ∀ x : BlockIx 2 1 → Ad ℚ, φ.1 (upR (aff 1 (N : ℝ)) * (unip x * g)) = φ.1 (unip x * g)

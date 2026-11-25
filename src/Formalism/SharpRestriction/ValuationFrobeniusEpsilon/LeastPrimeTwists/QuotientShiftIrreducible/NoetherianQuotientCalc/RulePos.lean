@@ -100,7 +100,7 @@ theorem isNoetherianRing_of_std [IsLocalRing B] (𝒜 : Deg k → Submodule B R)
           exact hm j
       have hsum' : ∑ j, (m - e i) j = (n : ℤ) := by
         simp only [e, Pi.sub_apply, Finset.sum_sub_distrib, hsum, Finset.sum_pi_single',
-          Finset.mem_univ, if_true]
+          Finset.mem_univ, ite_true]
         push_cast
         ring
       have hg := h.gen (m - e i) i hm'
@@ -145,9 +145,9 @@ theorem devComp_smul {F : GMod B R k} (hF : F.IsGr 𝒜) [Decomposition F.gr] {d
   rw [hsum, decompose_sum, DFinsupp.finsetSum_apply, AddSubmonoidClass.coe_finsetSum]
   simp_rw [hterm]
   rw [Finset.sum_eq_single (m - d)]
-  · rw [if_pos (sub_add_cancel m d)]
+  · rw [ite_eq_left (sub_add_cancel m d)]
   · intro j _ hj
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hjd
     exact hj (eq_sub_of_add_eq hjd)
   · intro hns
@@ -354,28 +354,28 @@ theorem good_step (X : HidaSetting k) (F : X.Mod) {N₀ N' : Submodule X.R F.M} 
   obtain ⟨t, N, 𝔮, d, hN0, rfl, hhom, hmono, hstep⟩ := h
   refine ⟨t + 1, fun i => if i ≤ t then N i else N', Function.update 𝔮 t 𝔮',
     Function.update d t d', ?_, ?_, ?_, ?_, ?_⟩
-  · simp only [Nat.zero_le, if_true]
+  · simp only [Nat.zero_le, ite_true]
     exact hN0
   · simp
   · intro i
     by_cases hi : i ≤ t
-    · simp only [if_pos hi]; exact hhom i
-    · simp only [if_neg hi]; exact hN'
+    · simp only [ite_eq_left hi]; exact hhom i
+    · simp only [ite_eq_right hi]; exact hN'
   · intro i
     by_cases hi : i + 1 ≤ t
-    · simp only [if_pos hi, if_pos (Nat.le_of_succ_le hi)]; exact hmono i
+    · simp only [ite_eq_left hi, ite_eq_left (Nat.le_of_succ_le hi)]; exact hmono i
     · by_cases hi' : i ≤ t
       · have hit : i = t := by omega
         subst hit
-        simp only [if_neg hi, if_pos hi']; exact hle
-      · simp only [if_neg hi, if_neg hi']; exact le_rfl
+        simp only [ite_eq_right hi, ite_eq_left hi']; exact hle
+      · simp only [ite_eq_right hi, ite_eq_right hi']; exact le_rfl
   · intro i hi
     by_cases hit : i = t
     · subst hit
-      simp only [le_refl, if_true, Nat.succ_le_iff, lt_irrefl, if_false, Function.update_self]
+      simp only [le_refl, ite_true, Nat.succ_le_iff, lt_irrefl, ite_false, Function.update_self]
       exact ⟨h1, h2, h3, h4⟩
     · have hlt : i < t := by omega
-      simp only [if_pos hlt.le, if_pos (Nat.succ_le_of_lt hlt), Function.update_of_ne hit]
+      simp only [ite_eq_left hlt.le, ite_eq_left (Nat.succ_le_of_lt hlt), Function.update_of_ne hit]
       exact hstep i hlt
 
 theorem ruleDev : RuleGr → RuleDev := by

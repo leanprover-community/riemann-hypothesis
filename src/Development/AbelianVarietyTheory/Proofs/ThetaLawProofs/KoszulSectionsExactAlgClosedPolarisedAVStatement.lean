@@ -1173,7 +1173,7 @@ theorem mulPw_restrict (s : LB.Sec (pw L n)) (h : W ≤ V) (x : SecOn (pw L l) V
     mulPw s l l' W (SecOn.restrict _ h x) = SecOn.restrict _ h (mulPw s l l' V x) := by
   by_cases e : l' = l + n
   · exact co_ext fun k => by simp only [co_mulPw s e, co_restrict, map_mul, rs_rs]
-  · simp only [mulPw, dif_neg e, LinearMap.zero_apply, map_zero]
+  · simp only [mulPw, dite_eq_right e, LinearMap.zero_apply, map_zero]
 
 theorem mulPw_comm (s s' : LB.Sec (pw L n)) {l'' : ℤ} (h : l' = l + n) (h' : l'' = l' + n)
     (x : SecOn (pw L l) V) :

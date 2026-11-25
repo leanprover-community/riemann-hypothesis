@@ -619,11 +619,4 @@ theorem tempered_diag_iff {ι : Type*} [Finite ι] (c : ι → ℂˣ) :
 
 end WD
 
-section Examples
-
-variable (h : IsPlaceOver A w)
-
-
-end Examples
-
 end GlobalTheory.WeilDeligne

@@ -430,7 +430,7 @@ theorem twoCocycleModPow_coboundary_of_frobenius_split (l : ℕ) [Fact l.Prime] 
     set a := k s' with ha
     set b := k t' with hb
     have hst : s * t ∈ D := D.mul_mem hs ht
-    simp only [dif_pos hs, dif_pos ht, dif_pos hst]
+    simp only [dite_eq_left hs, dite_eq_left ht, dite_eq_left hst]
     have hk : k ⟨s * t, hst⟩ = (a + b) % (m * l ^ n) := by
       show (Multiplicative.toAdd (d (s' * t'))).val = _
       rw [map_mul, toAdd_mul, ZMod.val_add]

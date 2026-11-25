@@ -276,7 +276,7 @@ theorem adapt_at (p : PtAt ex Csz) (w : D.what₂.places.Pl) (j : Fin D.R.m) (hm
   refine ⟨withTau ρ (ex.nch.twI w) (ex.nch.sd w) τ, withTau_good hρ _ _ τ hfix hδ, ⟨rfl, rfl, rfl, rfl, rfl⟩, realPin_withTau hpin _ _ τ,
     τ.toRingHom.comp g, fun x => hτ x, fun a => ?_⟩
   show τ (g _) = (withTau ρ (ex.nch.twI w) (ex.nch.sd w) τ).ek (ex.nch.twI w) (ex.nch.sd w) (ex.nch.k' w) _
-  rw [withTau_ek, if_pos ⟨rfl, rfl⟩]
+  rw [withTau_ek, ite_eq_left ⟨rfl, rfl⟩]
   exact congrArg τ (hg a)
 
 end Point

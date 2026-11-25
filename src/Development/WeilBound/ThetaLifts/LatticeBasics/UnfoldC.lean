@@ -141,7 +141,7 @@ theorem unfoldC (hO : OffOpen) (hU : PositivityTheory.ThKEnd.Grp.UnipUGood) {B :
     by_cases hq : Neg e q
     swap
     · simp [hq]
-    simp only [if_pos hq] at ig ⊢
+    simp only [ite_eq_left hq] at ig ⊢
     obtain ⟨U, u1, u2, u3, u4⟩ := hO F E σ B n Y r s hB hY e he _ q.out.2 hq
     obtain ⟨g, -⟩ := hU F E σ hB.cm n Y (.inr hY.skew) d0 U
     obtain ⟨κ, 𝓜, k1, k2, k3⟩ := g.ex
@@ -187,10 +187,10 @@ theorem unfoldC (hO : OffOpen) (hU : PositivityTheory.ThKEnd.Grp.UnipUGood) {B :
         exact tsum_congr fun q => by by_cases hq : Neg e q <;> simp [hq]
     _ = ∑' δ : ratU σ Y.J, ∫ x in D, k (h⁻¹ * (δ • x)) ∂μ := by
         rw [← (ratE_inj he).tsum_eq]
-        · exact tsum_congr fun δ => by rw [if_pos (by rw [neg_iff he, not_not]; exact ⟨δ, rfl⟩)]; simp only [op]
+        · exact tsum_congr fun δ => by rw [ite_eq_left (by rw [neg_iff he, not_not]; exact ⟨δ, rfl⟩)]; simp only [op]
         · intro q hq
           by_contra hn
-          exact hq (if_neg (not_not.2 ((neg_iff he q).2 hn)))
+          exact hq (ite_eq_right (not_not.2 ((neg_iff he q).2 hn)))
     _ = _ := by
         rw [← hD.integral_eq_tsum'' (fun x => k (h⁻¹ * x)) (ik.comp_mul_left h⁻¹), integral_mul_left_eq_self k]
 

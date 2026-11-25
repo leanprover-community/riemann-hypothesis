@@ -254,7 +254,7 @@ theorem residue_identity : ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ
   simp only [e]
   refine key.trans ?_
   have hr1 : r 1 = if N = 1 then (u : ℂ) else 0 := by
-    simp only [r, if_pos]
+    simp only [r, ite_eq_left]
     split_ifs <;> simp
   have hr0 : r 0 = -(m * (Real.log u : ℂ) + h 0) := by simp [r]
   have hrZ : ∑ p ∈ hZfin.toFinset, r p =

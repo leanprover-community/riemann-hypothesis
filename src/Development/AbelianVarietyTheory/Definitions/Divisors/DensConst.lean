@@ -87,12 +87,4 @@ theorem dens_const (N : MLine p σ) (c : AlgChart p σ D) (y : CxPts p σ) :
 theorem part_const (N : MLine p σ) (ε : ℤˣ) : part (fun _ : Fin D => N) ε = N.φ.chernPart D ε := by
   simp only [part, Weight.chernPart, dens_const]
 
-section Generic
-
-variable (t : X ⟶ Sp ℤ)
-
-variable {t}
-
-end Generic
-
 end GlobalTheory.Mix

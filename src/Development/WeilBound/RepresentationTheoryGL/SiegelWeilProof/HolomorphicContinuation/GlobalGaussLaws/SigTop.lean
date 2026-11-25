@@ -115,7 +115,7 @@ theorem mem_one_iff_isIntegral (z : E) : z ∈ (1 : FractionalIdeal (𝓞 E)⁰ 
 theorem herm_diag (d : Fin r → E) (x y : Fin r → E) :
     hermF (Matrix.diagonal d) x y = ∑ a, x a * d a * ccF (y a) := by
   simp only [ReciprocityTheory.ChartRestriction.G.FD.herm, Matrix.diagonal_apply, mul_ite, ite_mul, mul_zero, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 private theorem mem_stdLat_iff_forall_isIntegral (n : ℕ) (x : Fin n → E) :
     x ∈ GlobalTheory.InertWitt.stdLat E n ↔ ∀ i, IsIntegral ℤ (x i) := by

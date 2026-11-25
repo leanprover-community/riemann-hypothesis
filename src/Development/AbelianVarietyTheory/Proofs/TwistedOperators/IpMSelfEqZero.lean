@@ -56,7 +56,7 @@ theorem ipM_self_eq_zero {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : 
     rw [← h1]
     simp
   · unfold ipM
-    exact dif_neg h
+    exact dite_eq_right h
 
 theorem evInj {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} (T : CoreJ D)
     [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F)

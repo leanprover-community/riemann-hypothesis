@@ -96,9 +96,9 @@ lemma lowerInv_comm {N : ℕ} {a b : Fin N} (hab : a < b) (θ : Fin N → ℝ) (
   simp only [torus, Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.single_apply]
   by_cases h : b = i ∧ a = j
   · obtain ⟨rfl, rfl⟩ := h
-    simp only [and_self, if_true]
+    simp only [and_self, ite_true]
     rw [Matrix.one_apply_ne (ne_of_gt hab), ← key]; ring
-  · simp only [if_neg h, add_zero]
+  · simp only [ite_eq_right h, add_zero]
     by_cases hij : i = j
     · subst hij; ring
     · rw [Matrix.one_apply_ne hij]; ring
@@ -241,7 +241,7 @@ theorem lower_triangular_invariance : LowerInv := by
         simp only [Pi.add_apply, Pi.smul_apply, Pi.neg_apply, smul_eq_mul, root, Pi.sub_apply,
           add_mul, Finset.sum_add_distrib, mul_sub, sub_mul, Finset.sum_sub_distrib, Pi.single_apply,
           mul_ite, ite_mul, mul_one, mul_zero, zero_mul, Finset.sum_ite_eq',
-          Finset.mem_univ, if_true, mul_neg, Finset.sum_neg_distrib]
+          Finset.mem_univ, ite_true, mul_neg, Finset.sum_neg_distrib]
         ring
       set ev := Complex.exp (((∑ i, (Λ + (m : ℝ) • root a b) i * θ i : ℝ) : ℂ) * Complex.I)
       let w : S := ⟨σ (torus θ) (y : H), hstab θ y⟩ - ev • y
@@ -266,7 +266,7 @@ theorem lower_triangular_invariance : LowerInv := by
     ext m
     rcases Nat.eq_zero_or_pos m with rfl | hm
     · simp
-    · rw [Polynomial.coeff_C, if_neg (by omega)]
+    · rw [Polynomial.coeff_C, ite_eq_right (by omega)]
       have := LinearMap.congr_fun (hψ m hm) x
       rw [hψ_apply] at this
       simpa using this

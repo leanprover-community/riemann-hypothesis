@@ -388,7 +388,7 @@ private theorem term (Y : Lie E 2) (hY : (Matrix.of Y).trace = 0) (ψ' : S4 F) (
     have : Y 0 0 + Y 1 1 = 0 := hY
     rw [this, map_zero]
   simp only [dE_apply, T, Fin.sum_univ_two, Matrix.mul_apply, Matrix.map_apply, Matrix.of_apply]
-  simp only [Fin.isValue, zero_ne_one, one_ne_zero, if_true, if_false]
+  simp only [Fin.isValue, zero_ne_one, one_ne_zero, ite_true, ite_false]
   linear_combination (-(ψ'.1 v)) * tr
 
 end UpperTheory.ConvolutionTheory.R2.Ff.VectorFieldOperators

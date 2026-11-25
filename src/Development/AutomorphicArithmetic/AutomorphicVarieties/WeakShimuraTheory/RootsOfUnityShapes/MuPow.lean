@@ -56,7 +56,7 @@ theorem UpperTheory.V.Ws.Rq.muPs :
       (GroundTheory.Global.Cyclotomic.mem_torsion_iff l _).1
         ((CommGroup.mem_torsion _).2 (isOfFinOrder_iff_pow_eq_one.2 ⟨l ^ a, pow_pos hlp.pos a, ha⟩))
     have hcop : l.Coprime (GroundTheory.Global.Cyclotomic.torsionExponent l) := by
-      simp only [GroundTheory.Global.Cyclotomic.torsionExponent, hD.l_odd, if_false]
+      simp only [GroundTheory.Global.Cyclotomic.torsionExponent, hD.l_odd, ite_false]
       exact Nat.coprime_of_lt_prime (Nat.sub_pos_of_lt hlp.one_lt).ne' (Nat.sub_lt hlp.pos one_pos) hlp
     exact one_of hcop ha htor
   have hchi : chiO ℚ Ω l c.O (resQ T.F s) = 1 := by

@@ -86,8 +86,6 @@ open IsDedekindDomain NumberField CategoryTheory MonoidalCategory GroundTheory.G
 
 noncomputable section
 
-attribute [local instance 2000] Rep.hV2
-
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
 section Algebra
@@ -298,8 +296,6 @@ namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
-attribute [local instance 2000] Rep.hV2
-
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
@@ -355,8 +351,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory Limits
-
-attribute [local instance 2000] Rep.hV2
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   {ι : Type} {Hv : ι → Type} [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)]
@@ -562,8 +556,6 @@ namespace GroundTheory.ProfCoh
 open CategoryTheory MonoidalCategory Limits
 
 universe u
-
-attribute [local instance 2000] Rep.hV2
 
 section Core
 
@@ -865,8 +857,6 @@ open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-attribute [local instance 2000] Rep.hV2
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
@@ -985,8 +975,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
-
-attribute [local instance 2000] Rep.hV2
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 

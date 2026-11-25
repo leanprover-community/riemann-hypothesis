@@ -455,7 +455,7 @@ theorem nonGeneric_terms_same_coset_corank_one (t t' : TauC Y u u') (ht : t ∈ 
     apply ht.1
     show Formalism.L2.SG.TermOp.Gt t = 0
     unfold Formalism.L2.SG.TermOp.Gt
-    rw [if_pos ((Formalism.L2.SG.Pf.SatGram.gterm_G Y t).trans h)]
+    rw [ite_eq_left ((Formalism.L2.SG.Pf.SatGram.gterm_G Y t).trans h)]
   have hlat : Submodule.IsFullLattice D.host.E t.lam := ((Y.rowsOK u).1 t.lam t.mem).1.1
   have hLF : IsLift t.lam (lf D (X.Fu u)) := ((Y.rowsOK u).1 t.lam t.mem).2.1.2.2.1
   have hLt : IsLift t.lam t.frame := t.rep.2.2.2.2.1
@@ -464,7 +464,7 @@ theorem nonGeneric_terms_same_coset_corank_one (t t' : TauC Y u u') (ht : t ∈ 
   have hiso' : t'.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t'.rep.2.2.1
   show Formalism.L2.SG.TermOp.s0T t t' = 1
   unfold Formalism.L2.SG.TermOp.s0T
-  rw [if_pos ⟨hlam, hlam'⟩]
+  rw [ite_eq_left ⟨hlam, hlam'⟩]
   refine (Formalism.L2.SG.NGCut.CorankRelation.s0_eq_one_iff_Th_eq_Hp D.R.k hdim t.lam hlat _ t.frame t'.frame _ hLF hLt hGv).2 ?_
   refine le_antisymm (PI.PairCorankPos.W.Th_le_Hp _ _ _ _ _) fun x hx => ?_
   have hxo : ∀ i, (VS D).hT (Sum.elim (lf D (X.Fu u)).fl.fvec t.frame.fl.fvec i) x = 0 := fun i =>

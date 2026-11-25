@@ -238,7 +238,7 @@ lemma zc_eq : zc p q = ∑ i : Fin p, Eab (Sum.inl i) (Sum.inl i) := by
     simp [zc, Eab, Matrix.sum_apply, Matrix.single_apply, Matrix.diagonal_apply]
   by_cases h : a = b
   · subst h; simp [Finset.filter_eq']
-  · rw [if_neg h, eq_comm]
+  · rw [ite_eq_right h, eq_comm]
     simp only [Nat.cast_eq_zero, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
     rintro x - ⟨rfl, rfl⟩
     exact h rfl

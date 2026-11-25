@@ -555,9 +555,9 @@ theorem key (hθ : IsInfFam θ) {Y : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hY :
     refine Differentiable.mul_const (f.differentiable.comp ?_) _
     refine differentiable_pi.2 fun τ' => differentiable_pi.2 fun i => differentiable_pi.2 fun j => ?_
     by_cases h : τ' = τ
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       exact diff_entry Y (compAt θ τ z) i j
-    · simp only [h, if_false, Matrix.one_mul]
+    · simp only [h, ite_false, Matrix.one_mul]
       exact differentiable_const _
   · exact ⟨continuous_const, fun z => by simpa using differentiable_const (0 : ℂ)⟩
   · rintro x y - - ⟨h1, h2⟩ ⟨h3, h4⟩

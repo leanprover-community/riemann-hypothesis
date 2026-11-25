@@ -715,8 +715,8 @@ theorem UpperTheory.V.Lit.Geo.Cs.geoCut :
           ((hη s).mono (fun x (hx : x ∈ G.Y ∩ (G.Y ∩ Φ s ⁻¹' Set.Ioi R)) => ⟨hx.2.1, hx.2.2⟩))
       refine hsm.congr (fun x hx => ?_)
       have hx' : x ∈ G.Y ∧ R < Φ s x := ⟨hx.2.1, hx.2.2⟩
-      simp only [f, if_pos hx']
-    · push_neg at hR
+      simp only [f, ite_eq_left hx']
+    · push Not at hR
       refine ⟨G.Y ∩ Φ s ⁻¹' Set.Iio (R + 1 / 2),
         (hΦ.1 s).continuousOn.isOpen_inter_preimage G.isOpen isOpen_Iio,
         ⟨hp, show Φ s p < R + 1 / 2 by linarith⟩, ?_⟩
@@ -741,21 +741,21 @@ theorem UpperTheory.V.Lit.Geo.Cs.geoCut :
       by_cases hR : R < Φ s p
       · have h1 : G.ρ γ⁻¹ p ∈ G.Y ∧ R < Φ (G.σ γ⁻¹ s) (G.ρ γ⁻¹ p) := ⟨hp', by rw [hΦ']; exact hR⟩
         have h2 : p ∈ G.Y ∧ R < Φ s p := ⟨hp, hR⟩
-        simp only [f, if_pos h1, if_pos h2]
+        simp only [f, ite_eq_left h1, ite_eq_left h2]
         rw [hΦ', map_smul, hinv γ s p hp hR]
       · have h1 : ¬ (G.ρ γ⁻¹ p ∈ G.Y ∧ R < Φ (G.σ γ⁻¹ s) (G.ρ γ⁻¹ p)) := by
           rw [hΦ']
           exact fun h => hR h.2
         have h2 : ¬ (p ∈ G.Y ∧ R < Φ s p) := fun h => hR h.2
-        simp only [f, if_neg h1, if_neg h2, map_zero]
+        simp only [f, ite_eq_right h1, ite_eq_right h2, map_zero]
     · have hp' : G.ρ γ⁻¹ p ∉ G.Y := fun h => hp (by simpa [hρ] using G.maps γ _ h)
       have h1 : ¬ (G.ρ γ⁻¹ p ∈ G.Y ∧ R < Φ (G.σ γ⁻¹ s) (G.ρ γ⁻¹ p)) := fun h => hp' h.1
       have h2 : ¬ (p ∈ G.Y ∧ R < Φ s p) := fun h => hp h.1
-      simp only [f, if_neg h1, if_neg h2, map_zero]
+      simp only [f, ite_eq_right h1, ite_eq_right h2, map_zero]
   · intro s p hp h1
     have h2 : p ∈ G.Y ∧ R < Φ s p := ⟨hp, by linarith⟩
     show f s p = η s p
-    simp only [f, if_pos h2, hχ1 _ h1, one_smul]
+    simp only [f, ite_eq_left h2, hχ1 _ h1, one_smul]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.CsGeoCut =====

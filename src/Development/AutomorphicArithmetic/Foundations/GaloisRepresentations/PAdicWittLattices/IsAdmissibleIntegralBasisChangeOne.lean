@@ -37,7 +37,7 @@ theorem isAdmissibleIntegralBasisChange_one {i j : X.ι} (h : X.K i ≤ X.K j) :
 theorem tower_admissible_self {j : X.ι} {k : G} (hk : k ∈ X.K j) : X.admitted j j k :=
   ⟨X.K_le j k hk, fun _ hu => (X.K j).mul_mem ((X.K j).mul_mem hk hu) ((X.K j).inv_mem hk)⟩
 
-theorem pl_eq {i j : X.ι} {h : G} (a : X.admitted i j h) : X.pl T i j h = T.pull (X.tr i j h a.1 a.2) (X.tr_q ..) := dif_pos a
+theorem pl_eq {i j : X.ι} {h : G} (a : X.admitted i j h) : X.pl T i j h = T.pull (X.tr i j h a.1 a.2) (X.tr_q ..) := dite_eq_left a
 
 theorem pl_pl {i j m : X.ι} {h h' : G} (a : X.admitted i j h) (a' : X.admitted j m h') (x : T.H (X.q m)) :
     X.pl T i j h (X.pl T j m h' x) = X.pl T i m (h' * h) x := by

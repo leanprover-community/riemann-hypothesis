@@ -153,7 +153,7 @@ theorem cmbTest : CmbTest := by
     obtain ⟨w, hwZ, hw⟩ := hreg
     obtain ⟨hwS, hsp⟩ := hZ w hwZ
     refine ⟨w, hwS, hsp, fun y z hy hz => ?_⟩
-    rw [intersection_update_fsHerm_neg_one, if_pos hwZ] at hy hz
+    rw [intersection_update_fsHerm_neg_one, ite_eq_left hwZ] at hy hz
     have hzm : z ∈ (L.L₁ w).prod (L.L₂ w) := by
       by_contra hn
       exact hz (Set.indicator_of_notMem hn _)
@@ -161,7 +161,7 @@ theorem cmbTest : CmbTest := by
       rw [((hφ w hwZ).2 z hzm y).2]
       exact hy
     have := hw _ hne
-    simpa only [nrmL, if_pos hsp] using this
+    simpa only [nrmL, ite_eq_left hsp] using this
   obtain ⟨hr₁, hr₂⟩ := regS E a b S u₁ u₂ hu₁ hu₂ _ _ h₁ h₂ hReg
   obtain ⟨-, hFC⟩ := BlockFiniteConvolution.finConv' E A.blk S hS
   obtain ⟨hcs, ⟨U, hUo, hU⟩, -⟩ := hFC _ _ h₁ h₂

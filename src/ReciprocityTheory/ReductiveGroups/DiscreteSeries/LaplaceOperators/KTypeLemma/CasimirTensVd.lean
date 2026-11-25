@@ -44,7 +44,7 @@ theorem casimir_tensV' (E : Fin n → Fin n → Module.End ℂ M) (f : Fin n →
     casimir (tensV E) f = (fun c => casimir E (f c)) + (n : ℂ) • f + (2 : ℂ) • eeV E f := by
   funext e
   simp only [casimir_apply', Finset.sum_apply, tensV_apply', map_add (f := _), apply_ite (E _ _), map_zero,
-    Finset.sum_add_distrib, Pi.add_apply, Pi.smul_apply, eeV_apply', if_true, ite_add_zero]
+    Finset.sum_add_distrib, Pi.add_apply, Pi.smul_apply, eeV_apply', ite_true, ite_add_zero]
   simp [Finset.sum_ite_eq, Finset.sum_ite_irrel, two_smul]
   rw [Nat.cast_smul_eq_nsmul]
   abel
@@ -53,7 +53,7 @@ theorem casimir_tensVd' (E : Fin n → Fin n → Module.End ℂ M) (f : Fin n �
     casimir (tensVd E) f = (fun c => casimir E (f c)) + (n : ℂ) • f + (2 : ℂ) • eeVd E f := by
   funext e
   simp only [casimir_apply', Finset.sum_apply, tensVd_apply', map_sub, apply_ite (E _ _), map_zero,
-    Finset.sum_sub_distrib, Pi.add_apply, Pi.smul_apply, eeVd_apply', if_true]
+    Finset.sum_sub_distrib, Pi.add_apply, Pi.smul_apply, eeVd_apply', ite_true]
   simp [Finset.sum_ite_eq, Finset.sum_ite_irrel, two_smul]
   rw [Nat.cast_smul_eq_nsmul]
   abel

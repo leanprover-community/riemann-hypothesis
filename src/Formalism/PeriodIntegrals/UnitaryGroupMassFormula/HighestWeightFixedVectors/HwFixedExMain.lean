@@ -65,7 +65,7 @@ theorem monomial_mem_Ge (w : σ → ℕ) (m : σ →₀ ℕ) (c : K) : monomial 
   classical
   rw [mem_Ge]
   intro m' hm'
-  rw [coeff_monomial, if_neg]
+  rw [coeff_monomial, ite_eq_right]
   rintro rfl
   exact lt_irrefl _ hm'
 
@@ -260,7 +260,7 @@ theorem uni_X {ι : Type} [Fintype ι] {n : ℕ} (g : ι → GL (Fin n) ℂ) (hg
     show ∀ m, Finsupp.weight (wt ι n) m < _ → AddMonoidAlgebra.coeff (X u) m = 0
     intro m hm
     classical
-    rw [MvPolynomial.coeff_X, if_neg]
+    rw [MvPolynomial.coeff_X, ite_eq_right]
     rintro rfl
     simp [Finsupp.weight_apply, Finsupp.sum_single_index] at hm
     omega
@@ -347,7 +347,7 @@ theorem hwFixedEx_main : HwFixedEx := by
   have hgood0 : good (Finsupp.weight w m0) := by
     refine ⟨x, hxS', fun h => hm0 ?_⟩
     have := congrArg (AddMonoidAlgebra.coeff · m0) h
-    rwa [coeff_weightedHomogeneousComponent, if_pos rfl, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at this
+    rwa [coeff_weightedHomogeneousComponent, ite_eq_left rfl, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at this
   have hbound : ∀ k, good k → k ≤ D := by
     rintro k ⟨G, hG, hne⟩
     by_contra h
@@ -362,7 +362,7 @@ theorem hwFixedEx_main : HwFixedEx := by
   have hvGe : weightedHomogeneousComponent w (Nat.findGreatest good D) G ∈ Ge w (Nat.findGreatest good D) := by
     rw [mem_Ge]
     intro m hm
-    rw [coeff_weightedHomogeneousComponent, if_neg (ne_of_lt hm)]
+    rw [coeff_weightedHomogeneousComponent, ite_eq_right (ne_of_lt hm)]
   obtain ⟨v0, hv0S, hv0⟩ := Submodule.mem_map.mp (hS'P G hG (Nat.findGreatest good D))
   refine ⟨v0, hv0S, fun h => hGne ?_, ?_⟩
   · rw [← hv0, h, map_zero]
@@ -383,7 +383,7 @@ theorem hwFixedEx_main : HwFixedEx := by
     by_cases hm : Finsupp.weight w m < Nat.findGreatest good D + 1
     · exact mem_Ge.1 hd m hm
     · have := congrArg (AddMonoidAlgebra.coeff · m) (hmax (Finsupp.weight w m) (by omega) _ hd')
-      rwa [coeff_weightedHomogeneousComponent, if_pos rfl, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at this
+      rwa [coeff_weightedHomogeneousComponent, ite_eq_left rfl, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at this
 
 end PI.HwFix.UnitaryGroupMassFormula
 end -- clump:auto

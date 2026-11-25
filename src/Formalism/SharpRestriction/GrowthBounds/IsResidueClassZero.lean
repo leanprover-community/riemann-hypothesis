@@ -293,7 +293,7 @@ theorem served_orbits_in_set (X : Inst D L) (K : Consts) (a b : HH D → ℤ) : 
   intro p hc hs
   have hv : VV X K a b p = goodReps X p := by
     unfold VV
-    exact if_pos ⟨hc, hs⟩
+    exact ite_eq_left ⟨hc, hs⟩
   exact hv ▸ Finset.Subset.refl (goodReps X p)
 
 def winA (D : D7) (s : Scale) : Finset ℤ :=

@@ -140,7 +140,6 @@ theorem cauchy_schwarz (I : V →ₗ⋆[ℂ] V →ₗ[ℂ] ℂ) (hI : ∀ x : V,
 
 end GlobalTheory.HermitianCauchySchwarz
 
-alias GlobalTheory.HermitianCauchySchwarz.main := _root_.GlobalTheory.HermitianCauchySchwarz.cauchy_schwarz
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CauchySchwarz =====
@@ -297,7 +296,7 @@ theorem integral_prod_nonneg (ψ : ℝ → ℂ) (hc : Continuous ψ) (C : ℝ) (
         have e : ∀ l : Fin k, P.map (fun t => t l) = μ := fun l =>
           (measurePreserving_eval (fun _ : Fin k => μ) l).map_eq
         rw [e, e] at h2
-        rw [if_neg h, zero_add, hI, ← h2, integral_map (by fun_prop)]
+        rw [ite_eq_right h, zero_add, hI, ← h2, integral_map (by fun_prop)]
         exact (hc.comp (by fun_prop)).aestronglyMeasurable
     have h0 : 0 ≤ ∫ t, ∑ i, ∑ j, ψ (t j - t i) ∂P := integral_nonneg (fun t => hp k t)
     rw [MeasureTheory.integral_finsetSum _ (fun i _ => MeasureTheory.integrable_finsetSum _ (fun j _ => hint i j))] at h0

@@ -78,7 +78,7 @@ theorem coef_zero_of_per (hn : 0 < n) (y : D.La) (h : per hty c n y = 0) : c y =
   cases m with
   | inl a =>
     obtain ⟨τ, hτ⟩ := exists_emb (H := H) true
-    simp only [if_true] at hτ
+    simp only [ite_true] at hτ
     let k := ((eP hty τ hτ).symm a).1
     have hk : ty k = τ := ((eP hty τ hτ).symm a).2
     have hb : blk hty k = .inl a := by
@@ -91,7 +91,7 @@ theorem coef_zero_of_per (hn : 0 < n) (y : D.La) (h : per hty c n y = 0) : c y =
     simpa using h1
   | inr b =>
     obtain ⟨τ, hτ⟩ := exists_emb (H := H) false
-    simp only [Bool.false_eq_true, if_false] at hτ
+    simp only [Bool.false_eq_true, ite_false] at hτ
     have hτ' : τ (H.rt : E) ≠ H.rt0 := by rw [hτ]; exact fun h => Host_rt0_ne_neg (H := H) h.symm
     let k := ((eQ hty τ hτ').symm b).1
     have hk : ty k = τ := ((eQ hty τ hτ').symm b).2

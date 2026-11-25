@@ -713,11 +713,11 @@ theorem exists_tau : HypsG → ∀ (P : M.Par) (Wp Wq : Type) [NormedAddCommGrou
     refine ⟨fun I => if hc : I.card = P.r + 1 ∧ J ν ≠ 0 ∧ J (ν + eZ I) ≠ 0 then
       (ep ⟨I, hc.1⟩ : ℂ) * κ' ⟨I, hc.1⟩ * star (κ ⟨I, hc.1⟩) * s ν / s (ν + eZ I) else 0, ?_, fun _ => ?_⟩
     · intro I hI0
-      refine dif_neg ?_
+      refine dite_eq_right ?_
       rintro ⟨-, h1, h2⟩
       exact hI0.elim h1 h2
     · refine ⟨io, pr, ep, hT, fun I h1 h2 => ⟨κ I, κ' I, (hκ I h1).1, (hκ I h1).2, ?_⟩⟩
-      exact dif_pos (⟨I.2, h1, h2⟩ : I.1.card = P.r + 1 ∧ J ν ≠ 0 ∧ J (ν + eZ I.1) ≠ 0)
+      exact dite_eq_left (⟨I.2, h1, h2⟩ : I.1.card = P.r + 1 ∧ J ν ≠ 0 ∧ J (ν + eZ I.1) ≠ 0)
   choose tau h1 h2 using key
   exact ⟨tau, ⟨hFam, hL, hR, hco, hz, h1, h2⟩⟩
 
@@ -1157,11 +1157,11 @@ theorem kappa_bound : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup 
     (fun J => by
       by_cases hJ : NzOn (R (ν + eZ J.1)) (l (ν + eZ J.1))
       · exact Or.inl ((hmass _ (hνJ0 J)).2 hJ).1
-      · exact Or.inr (if_neg hJ))
+      · exact Or.inr (ite_eq_right hJ))
     (fun J y hy => by
       rw [hκd J y hy]
       by_cases hJ : NzOn (R (ν + eZ J.1)) (l (ν + eZ J.1))
-      · rw [if_pos hJ, smul_smul, smul_smul]
+      · rw [ite_eq_left hJ, smul_smul, smul_smul]
         congr 1
         have : ((Real.sqrt (dg (ν + eZ J.1)) : ℝ) : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.2 (Real.sqrt_pos.2 (hdJ J)).ne'
@@ -1169,11 +1169,11 @@ theorem kappa_bound : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup 
       · have : l (ν + eZ J.1) y = 0 := by
           by_contra hne
           exact hJ ⟨y, hy, hne⟩
-        rw [if_neg hJ, this]
+        rw [ite_eq_right hJ, this]
         simp)
     I ((hmass _ (hνJ0 I)).2 hnzI).1 w hw
   have hae := (GlobalTheory.T.quotientMeasure_ae_mem_and_measurable_besselModel hyp.1.2.2.1 k r _ _ (R ν) Wp z π u μW μN μG νq hDS hG).1
-  rw [if_pos hnzI, hκI I rfl, hw1] at h8
+  rw [ite_eq_left hnzI, hκI I rfl, hw1] at h8
   have h9 := h8.trans (le_trans (le_of_eq (lintegral_congr_ae ?_)) hint)
   · have hH : 0 ≤ Hsq r (Formalism.QuantumDeterminants.Tz k r z) b ^ (r + 1) := by
       apply pow_nonneg
@@ -1264,11 +1264,11 @@ theorem exists_tauL : HypsG → ∀ (P : M.Par) (Wp Wq : Type) [NormedAddCommGro
     refine ⟨fun I => if hc : I.card = j + 1 ∧ J ν ≠ 0 ∧ J (ν + eZ I) ≠ 0 then
       (ep ⟨I, hc.1⟩ : ℂ) * κ' ⟨I, hc.1⟩ * star (κ ⟨I, hc.1⟩) * s ν / s (ν + eZ I) else 0, ?_, fun _ => ?_⟩
     · intro I hI0
-      refine dif_neg ?_
+      refine dite_eq_right ?_
       rintro ⟨-, h1, h2⟩
       exact hI0.elim h1 h2
     · refine ⟨io, pr, ep, hT, fun I h1 h2 => ⟨κ I, κ' I, (hκ I h1).1, (hκ I h1).2, ?_⟩⟩
-      exact dif_pos (⟨I.2, h1, h2⟩ : I.1.card = j + 1 ∧ J ν ≠ 0 ∧ J (ν + eZ I.1) ≠ 0)
+      exact dite_eq_left (⟨I.2, h1, h2⟩ : I.1.card = j + 1 ∧ J ν ≠ 0 ∧ J (ν + eZ I.1) ≠ 0)
   choose tau h1 h2 using key
   exact ⟨tau, ⟨h1, h2⟩⟩
 

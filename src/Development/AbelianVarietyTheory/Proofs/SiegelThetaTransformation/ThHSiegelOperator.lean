@@ -297,7 +297,7 @@ theorem _root_.GlobalTheory.SW.thH_siegel_operator : ∀ (E : Type) [Field E] [N
     refine tsum_congr fun y => ?_
     have hc : _root_.GlobalTheory.SW.SiegelOp.col Ψ (_root_.GlobalTheory.SW.SiegelOp.cons0 y) = 0 :=
       (col_eq_zero_iff_exists_eq_cons0 Ψ hne _).mpr ⟨y, rfl⟩
-    simp only [g, hc, if_true, expo_cons0']
+    simp only [g, hc, ite_true, expo_cons0']
     rfl
   unfold _root_.GlobalTheory.SW.thH
   rw [← key]

@@ -47,10 +47,10 @@ theorem leading_minor_exp_re_pos {ε : Fin n → Bool} (y : PCoord ε → ℂ) {
 
 theorem continuous_leading_minor (i : ℕ) : Continuous (fun A : Matrix (Fin n) (Fin n) ℂ => Del A i) := by
   by_cases h : i ≤ n
-  · simp only [Del, dif_pos h]
+  · simp only [Del, dite_eq_left h]
     first
     | exact (continuous_id.matrix_submatrix _ _).matrix_det
-  · simp only [Del, dif_neg h]
+  · simp only [Del, dite_eq_right h]
     exact continuous_const
 
 section

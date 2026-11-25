@@ -40,8 +40,8 @@ private theorem fund_succ {k : Type} [Field k] {n : ℕ} (x : kˣ) (l : Fin n) :
     rw [Pi.mulSingle_eq_of_ne h, mul_one]
     congr 1
     by_cases h2 : (m : ℕ) < l
-    · rw [if_pos h2, if_pos (by omega)]
-    · rw [if_neg h2, if_neg (by omega)]
+    · rw [ite_eq_left h2, ite_eq_left (by omega)]
+    · rw [ite_eq_right h2, ite_eq_right (by omega)]
 
 private theorem dom_fund {k : Type} [Field k] [ValuativeRel k] {n : ℕ} {x : kˣ} (hx : IsUnif x) (m : ℕ) :
     Dom (fun l => x ^ fund n m l) := by
@@ -51,11 +51,11 @@ private theorem dom_fund {k : Type} [Field k] [ValuativeRel k] {n : ℕ} {x : k�
   have hab' : (a : ℕ) ≤ b := hab
   simp only [fund]
   by_cases hb : (b : ℕ) < m
-  · rw [if_pos hb, if_pos (by omega)]
-  · rw [if_neg hb]
+  · rw [ite_eq_left hb, ite_eq_left (by omega)]
+  · rw [ite_eq_right hb]
     by_cases ha : (a : ℕ) < m
-    · rw [if_pos ha]; simpa using h1
-    · rw [if_neg ha]
+    · rw [ite_eq_left ha]; simpa using h1
+    · rw [ite_eq_right ha]
 
 theorem UpperTheory.V.AlgebraTools.bernRel :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (A M : Type) [CommRing A] [AddCommGroup M] [Module A M] (ρ : Representation A (GL (Fin n) k) M) (x : kˣ), IsUnif x → IsUnit (resCard k : A) → ∀ θ : (Fin n → kˣ) →* (Module.End A (fixd ρ (iwC k n ⊤)))ˣ, (∀ t, Dom t → (θ t : Module.End A (fixd ρ (iwC k n ⊤))) = hk ρ (iwC k n ⊤) (diagT k (Fin n) t)) → ∀ (i j : Fin n), (j : ℕ) = i + 1 → (θ (Pi.mulSingle i x) : Module.End A (fixd ρ (iwC k n ⊤))) = hk ρ (iwC k n ⊤) (pm k n (Equiv.swap i j)) * (θ (Pi.mulSingle j x) : Module.End A (fixd ρ (iwC k n ⊤))) * hk ρ (iwC k n ⊤) (pm k n (Equiv.swap i j)) ∧ ∀ l : Fin n, l ≠ i → l ≠ j → Commute (hk ρ (iwC k n ⊤) (pm k n (Equiv.swap i j))) (θ (Pi.mulSingle l x) : Module.End A (fixd ρ (iwC k n ⊤))) := by
@@ -72,8 +72,8 @@ theorem UpperTheory.V.AlgebraTools.bernRel :
     have h := hc (f m) (dom_fund hx m) (by
       simp only [hf, fund]
       by_cases h2 : (j : ℕ) < m
-      · rw [if_pos h2, if_pos (by omega)]
-      · rw [if_neg h2, if_neg (by omega)])
+      · rw [ite_eq_left h2, ite_eq_left (by omega)]
+      · rw [ite_eq_right h2, ite_eq_right (by omega)])
     rw [← hθ _ (dom_fund hx m)] at h
     exact Commute.units_of_val h
   rw [hT] at hy1

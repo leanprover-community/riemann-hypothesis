@@ -122,25 +122,25 @@ private theorem star_aDil_entry_mul_aDil_entry_eq_one {k r : ℕ} (t : ℝ) (ht 
   · have e1 : ¬ j.val < r := by omega
     have e2 : ¬ j.val ≤ r + k := by omega
     have e3 : j.val - (r + k) = r - i.val := by omega
-    rw [if_pos hA.1, if_neg e1, if_neg e2, e3]
+    rw [ite_eq_left hA.1, ite_eq_right e1, ite_eq_right e2, e3]
     rw [show star ((t ^ (r - i.val) : ℝ) : ℂ) = ((t ^ (r - i.val) : ℝ) : ℂ) from Complex.conj_ofReal _]
     rw [← Complex.ofReal_mul, mul_inv_cancel₀ (pow_ne_zero _ ht), Complex.ofReal_one]
   by_cases hB : j.val < r ∧ i.val + j.val = 2 * r + k
   · have e1 : ¬ i.val < r := by omega
     have e2 : ¬ i.val ≤ r + k := by omega
     have e3 : i.val - (r + k) = r - j.val := by omega
-    rw [if_neg e1, if_neg e2, if_pos hB.1, e3]
+    rw [ite_eq_right e1, ite_eq_right e2, ite_eq_left hB.1, e3]
     rw [show star (((t ^ (r - j.val))⁻¹ : ℝ) : ℂ) = (((t ^ (r - j.val))⁻¹ : ℝ) : ℂ) from
       Complex.conj_ofReal _]
     rw [← Complex.ofReal_mul, inv_mul_cancel₀ (pow_ne_zero _ ht), Complex.ofReal_one]
   by_cases hC : r ≤ i.val ∧ i.val ≤ r + k ∧ i = j
   · obtain ⟨hC1, hC2, rfl⟩ := hC
-    rw [if_neg (not_lt.2 hC1), if_pos hC2]
+    rw [ite_eq_right (not_lt.2 hC1), ite_eq_left hC2]
     simp
   · exfalso
     apply h
     unfold Hpk
-    rw [if_neg hA, if_neg hB, if_neg hC]
+    rw [ite_eq_right hA, ite_eq_right hB, ite_eq_right hC]
 
 private theorem aDil_mem_gv {k r : ℕ} (t : ℝ) (ht : t ≠ 0) : aDil k r t ∈ GV k r := by
   show (aDil k r t)ᴴ * Hpk k r * aDil k r t = Hpk k r

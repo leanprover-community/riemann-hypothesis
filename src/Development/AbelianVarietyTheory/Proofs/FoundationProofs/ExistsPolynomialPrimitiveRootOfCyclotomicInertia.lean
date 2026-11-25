@@ -90,7 +90,7 @@ theorem valuation_term_le_sum_of_distinct {Ω Γ : Type} [Field Ω] [LinearOrder
   by_cases hall : ∀ i ∈ s, f i = 0
   · rw [hall j hj, map_zero]
     exact zero_le'
-  push_neg at hall
+  push Not at hall
   obtain ⟨i0, hi0, hfi0⟩ := hall
   obtain ⟨k, hk, hkmax⟩ := s.exists_max_image (fun i => v (f i)) ⟨i0, hi0⟩
   have hk0 : v (f k) ≠ 0 := by

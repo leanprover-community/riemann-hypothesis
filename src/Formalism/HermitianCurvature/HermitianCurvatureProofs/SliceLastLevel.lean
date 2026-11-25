@@ -40,30 +40,6 @@ namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.Ux5
 
-section szIndex
-
-variable (k r : ℕ)
-
-variable {k r}
-
-end szIndex
-
-section szBlocks
-
-variable {k r : ℕ}
-
-end szBlocks
-
-section szRel
-
-variable {k r : ℕ}
-
-end szRel
-
-section szBound
-
-end szBound
-
 section szMain
 
 lemma sz_N_zero {k : ℕ} {q : B.Mat k 0} (hq : q ∈ Nset k 0) : q = 1 := by
@@ -89,12 +65,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 open scoped Matrix.Norms.Elementwise
 
 variable {k r : ℕ}
-
-section transport
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-end transport
 
 lemma tr_gN_nonneg (g : B.Mat k r) : 0 ≤ B.gN g := Real.sqrt_nonneg _
 
@@ -346,26 +316,6 @@ lemma allLie_lr' {u v : List (B.Mat k r)} (hu : ∀ X ∈ u, B.inLie k r X) (hv 
   · exact hv X hX
 
 end bound
-
-section meas
-
-variable {k r : ℕ}
-
-end meas
-
-section clause2
-
-variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq]
-
-end clause2
-
-section clause12
-
-variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq]
-
-end clause12
 
 end Formalism.FourierDecayAlt.P.SliceLastLevel
 

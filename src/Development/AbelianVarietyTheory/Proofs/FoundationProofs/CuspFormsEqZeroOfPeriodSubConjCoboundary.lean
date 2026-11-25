@@ -974,13 +974,13 @@ theorem eichler_tail : ∀ (w : ℕ) (F : ℍ → ℂ) (C c : ℝ), MDifferentia
       (F ∘ UpperHalfPlane.ofComplex) (Complex.I + t * ((τ : ℂ) - Complex.I)) *
         (-(Complex.I + t * ((τ : ℂ) - Complex.I))) ^ (w - j) * ((τ : ℂ) - Complex.I) := by
     rw [eichler, Polynomial.finsetSum_coeff, Finset.sum_eq_single j]
-    · rw [Polynomial.coeff_C_mul_X_pow, if_pos rfl]
-    · intro b _ hb; rw [Polynomial.coeff_C_mul_X_pow, if_neg (Ne.symm hb)]
+    · rw [Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl]
+    · intro b _ hb; rw [Polynomial.coeff_C_mul_X_pow, ite_eq_right (Ne.symm hb)]
     · intro h; exact absurd hj' h
   have hc2 : Lp.coeff j = (w.choose j : ℂ) * (Complex.I * ∫ s in Ioi (0:ℝ), g j (Complex.I + s * Complex.I)) := by
     rw [hLp, Polynomial.finsetSum_coeff, Finset.sum_eq_single j]
-    · rw [Polynomial.coeff_C_mul_X_pow, if_pos rfl]
-    · intro b _ hb; rw [Polynomial.coeff_C_mul_X_pow, if_neg (Ne.symm hb)]
+    · rw [Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl]
+    · intro b _ hb; rw [Polynomial.coeff_C_mul_X_pow, ite_eq_right (Ne.symm hb)]
     · intro h; exact absurd hj' h
   have hint : (∫ t in (0 : ℝ)..1,
       (F ∘ UpperHalfPlane.ofComplex) (Complex.I + t * ((τ : ℂ) - Complex.I)) *

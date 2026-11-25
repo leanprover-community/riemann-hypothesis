@@ -195,9 +195,9 @@ theorem finrank_coneTangent_le (K : Type) [Fintype K] (ι : K → Type) [∀ k, 
       by_cases hi : i = ⟨k, p k⟩
       · subst hi
         simp
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
         simp [pderiv_X_of_ne (Ne.symm hi)]
-    simp only [hd, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hd, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [hDc, hv0 k, mul_zero]
 
   let Ψ : T →ₗ[ℂ] (K → ℂ) := (LinearMap.pi fun k => LinearMap.proj ⟨k, p k⟩) ∘ₗ T.subtype

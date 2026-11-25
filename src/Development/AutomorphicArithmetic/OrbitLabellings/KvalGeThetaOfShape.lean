@@ -162,7 +162,7 @@ theorem UpperTheory.exists_nonneg_dual_fnum_sub_le_of_demand_near_mul :
         have : -(4 * w s) ≤ (D s - κ * w s) * (gam l - max (sig s) c) := by
           linarith
         linarith
-      · push_neg at hh
+      · push Not at hh
         have hlt : max (sig s) c < 2 / (l : ℝ) := max_lt hh hc2
         have hlow : -(1 / (l : ℝ)) ≤ gam l - max (sig s) c := by
           have : 2 / (l : ℝ) = 1 / l + 1 / l := by ring
@@ -614,7 +614,7 @@ private theorem lpF_eq (l d : ℕ) [NeZero d] (D : ZMod d → ℝ) : Formalism.B
       rw [Finset.mem_range] at hi; by_cases ho : Odd i <;> simp [ho, hi]
     refine ⟨fun s i => if Odd i ∧ i < d then x s i else 0, ?_, ?_, ?_, ?_⟩
     · intro s i; dsimp only; split_ifs <;> simp [h0]
-    · intro s i h; dsimp only; rw [if_neg]; rintro ⟨h1, h2⟩; rcases h with h | h; exact h h1; omega
+    · intro s i h; dsimp only; rw [ite_eq_right]; rintro ⟨h1, h2⟩; rcases h with h | h; exact h h1; omega
     · intro s
       have h2 : ∀ i, (l : ℝ) ^ i * (if Odd i ∧ i < d then x s i else 0) =
           (if Odd i ∧ i < d then (l : ℝ) ^ i * x s i else 0) := by intro i; split_ifs <;> simp
@@ -650,7 +650,7 @@ private theorem orbit (D : D7) (L : SizeData₂ D) (X : Inst D L) (E : OrbitPlac
       unfold Formalism.IncomingBounds.gam
       rw [sub_nonneg, div_le_div_iff₀ (by linarith) (by nlinarith)]
       nlinarith
-  · have hn : nP D p = addOrderOf (hP D p) := if_neg hs
+  · have hn : nP D p = addOrderOf (hP D p) := ite_eq_right hs
     have h2 : 2 ≤ nP D p := by
       have h0 : nP D p ≠ 0 := NeZero.ne _
       have h1 : nP D p ≠ 1 := by rw [hn]; exact fun h => hh (AddMonoid.addOrderOf_eq_one_iff.1 h)

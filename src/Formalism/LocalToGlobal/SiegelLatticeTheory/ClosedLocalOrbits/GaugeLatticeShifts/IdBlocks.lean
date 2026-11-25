@@ -719,13 +719,13 @@ def Meets (cs : ColSys X u what₂) (cs' : ColSys X u' rows') (t : GTerm X u u' 
 theorem blk_of_not (cs : ColSys X u what₂) (cs' : ColSys X u' rows') (FdN FdN' : Set X.B.I.Ginf)
     {t : GTerm X u u' F0 F0' what₂ rows'} {ρ : cs.Cl} {ρ' : cs'.Cl} (h : ¬ Meets cs cs' t ρ ρ') :
     blk cs cs' FdN FdN' t ρ ρ' = 0 := by
-  unfold blk; exact if_neg h
+  unfold blk; exact ite_eq_right h
 
 theorem blk_of (cs : ColSys X u what₂) (cs' : ColSys X u' rows') (FdN FdN' : Set X.B.I.Ginf)
     {t : GTerm X u u' F0 F0' what₂ rows'} {ρ : cs.Cl} {ρ' : cs'.Cl} (h : Meets cs cs' t ρ ρ') :
     blk cs cs' FdN FdN' t ρ ρ' = ((scl FdN FdN' (X := X) (u := u) (u' := u') * X.volK2 : ℝ) : ℂ) •
       (X.chi2 (kOf X u u' (cs.h ρ : X.B.I.Gf) (cs'.h ρ' : X.B.I.Gf) t.pt) • OOt t) := by
-  unfold blk; exact if_pos h
+  unfold blk; exact ite_eq_left h
 
 
 variable (F0) in
@@ -770,7 +770,7 @@ theorem idDiagBlocks_of (cs : ColSys X u what₂) (FdN : Set X.B.I.Ginf) (hK2 : 
     exact hasSum_zero
   by_cases hρ : ρ = ρ'
   · subst hρ
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     obtain ⟨t0, ht0, hm0⟩ := h1.2.2 ρ
     have hval : blk cs cs FdN FdN t0 ρ ρ = ContinuousLinearMap.id ℂ (X.Vpi u) := by
       obtain ⟨hγ, hph⟩ := hP ρ t0 ht0 hm0
@@ -810,7 +810,7 @@ theorem idDiagBlocks_of (cs : ColSys X u what₂) (FdN : Set X.B.I.Ginf) (hK2 : 
       ⟨t0, ht0⟩ hz
     simp only at this
     rwa [hval] at this
-  · rw [if_neg hρ]
+  · rw [ite_eq_right hρ]
     have hz : (fun t : {t : GTerm X u u F0 F0 what₂ what₂ // t.isId} => blk cs cs FdN FdN t.1 ρ ρ') = fun _ => 0 :=
       funext fun t => blk_of_not _ _ _ _ fun hm => hρ (h1.1 ρ ρ' t.1 t.2 hm)
     rw [hz]

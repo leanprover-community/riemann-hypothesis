@@ -320,7 +320,7 @@ theorem partBase : PartBase := by
     have h1 : ContMDiffAt 𝓘(ℝ, V) 𝓘(ℝ) ∞ (fun y : Y' => g (y : V)) ⟨x, hx⟩ := by
       have e : (fun y : Y' => g (y : V)) = f j := by
         funext y
-        exact dif_pos y.2
+        exact dite_eq_left y.2
       rw [e]
       exact (f j).contMDiff.contMDiffAt
     have h2 : ContMDiffAt 𝓘(ℝ, V) 𝓘(ℝ) ∞ g x :=
@@ -334,15 +334,15 @@ theorem partBase : PartBase := by
     by_cases hxY : x ∈ Y
     · have h : f j ⟨x, hxY⟩ ≠ 0 := by simpa [hxY] using hne
       exact ⟨⟨x, hxY⟩, h, hNt hxN⟩
-    · exact (hne (dif_neg hxY)).elim
+    · exact (hne (dite_eq_right hxY)).elim
   · intro p hp
     refine Eq.trans ?_ (f.sum_eq_one (x := ⟨p, hp⟩) (Set.mem_univ _))
-    exact finsum_congr fun j => dif_pos hp
+    exact finsum_congr fun j => dite_eq_left hp
   · intro j p hne
     by_cases hpY : p ∈ Y
     · have h : f j ⟨p, hpY⟩ ≠ 0 := by simpa [hpY] using hne
       exact hf j (subset_tsupport _ h)
-    · exact (hne (dif_neg hpY)).elim
+    · exact (hne (dite_eq_right hpY)).elim
 
 end UpperTheory.V.Cj.A
 end -- clump:auto
@@ -476,9 +476,9 @@ theorem UpperTheory.V.Cj.A.coverEx :
     have h5 := h4 _ _ _ (right_ne_zero_of_mul hne)
     have h6 : G.ρ i.g⁻¹ p ∉ O (G.σ i.g⁻¹ s) := fun h => hp ((hO i.g⁻¹ s p).1 h)
     by_cases hj : i.j ∈ O (G.σ i.g⁻¹ s)
-    · rw [if_pos hj] at h5
+    · rw [ite_eq_left hj] at h5
       exact absurd h5 h6
-    · rw [if_neg hj] at h5
+    · rw [ite_eq_right hj] at h5
       exact h5
 end -- clump:auto
 end -- clump:auto
@@ -1256,7 +1256,7 @@ theorem UpperTheory.V.Cj.A.fwdStep :
     have hne : x ≠ [] := by
       rintro rfl
       simp at hx
-    simp only [dif_pos hx, dif_pos hx']
+    simp only [dite_eq_left hx, dite_eq_left hx']
     have hn : (x.map (γ • ·)).map ((g (x.map (γ • ·)))⁻¹ • ·) = x.map ((g x)⁻¹ • ·) := by
       rw [hg γ x hne, List.map_map]
       congr 1
@@ -1265,12 +1265,12 @@ theorem UpperTheory.V.Cj.A.fwdStep :
     rw [hηc _ _ _ ((hlen x).trans hx) hn, hg γ x hne, map_mul]
     rfl
   · intro x hx
-    simp only [dif_pos hx]
+    simp only [dite_eq_left hx]
     rw [UpperTheory.V.Lit.Dr.dEquiv Γ V S d G q, (hη _ _).1, ← hu (g x) _ ((hlen x).trans hx)]
     congr 1
     simp [List.map_map, Function.comp_def, smul_smul]
   · intro x hx s p _ hp
-    simp only [dif_pos hx]
+    simp only [dite_eq_left hx]
     have hp' : G.ρ (g x)⁻¹ p ∈ {p | ∀ i ∈ x.map ((g x)⁻¹ • ·), p ∈ C i ((G.σ (g x)⁻¹) s)} := by
       intro i hi
       obtain ⟨j, hj, rfl⟩ := List.mem_map.1 hi

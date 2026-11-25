@@ -1118,7 +1118,7 @@ private lemma eq_sum_beta_div_smul_of_beta_orthogonal {g d : ℕ} {Hm : Matrix (
     refine Fintype.linearIndependent_iff.2 fun c hc i => ?_
     have h := congrArg (fun w => _root_.Formalism.L2.Ker.JMB.beta d Hm w (x i)) hc
     simp only [beta_sum_left', beta_smul_left', hx, mul_ite, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     have h0 : _root_.Formalism.L2.Ker.JMB.beta d Hm 0 (x i) = 0 := by
       simpa using beta_smul_left' (d := d) Hm 0 (x i) (x i)
     rw [h0] at h
@@ -1130,7 +1130,7 @@ private lemma eq_sum_beta_div_smul_of_beta_orthogonal {g d : ℕ} {Hm : Matrix (
     have hsub : w + ∑ i, (_root_.Formalism.L2.Ker.JMB.beta d Hm v (x i) / (a i : ℂ)) • x i = v := by rw [hw]; abel
     have := congrArg (fun u => _root_.Formalism.L2.Ker.JMB.beta d Hm u (x j)) hsub
     simp only [beta_add_left', beta_sum_left', beta_smul_left', hx,
-      mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, div_mul_cancel₀ _ (ha' j)] at this
+      mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, div_mul_cancel₀ _ (ha' j)] at this
     linear_combination this
   have hww : _root_.Formalism.L2.Ker.JMB.beta d Hm w w = 0 := by
     have hmem : w ∈ Submodule.span ℂ (Set.range x) := by rw [hspan]; exact Submodule.mem_top

@@ -37,7 +37,7 @@ theorem sortSign_insert (τ : κ → ι) {s : Finset κ} {x : κ} (hx : x ∉ s)
     sortSign τ (insert x s) = sortSign τ s * invSign τ s x := by
   unfold sortSign invSign
   rw [Finset.prod_insert hx]
-  simp only [Finset.prod_insert hx, Finset.prod_mul_distrib, lt_irrefl, false_and, if_false,
+  simp only [Finset.prod_insert hx, Finset.prod_mul_distrib, lt_irrefl, false_and, ite_false,
     one_mul]
   ring
 
@@ -99,9 +99,9 @@ theorem injOn_erase_swap (τ : κ → ι) {t : Finset κ} {a b : κ} (hab : a �
     (by rw [val, val, e])
   by_cases h1 : u = a <;> by_cases h2 : w = a
   · rw [h1, h2]
-  · simp only [h1, h2, if_true, if_false] at this
+  · simp only [h1, h2, ite_true, ite_false] at this
     exact absurd this.symm hw.2
-  · simp only [h1, h2, if_true, if_false] at this
+  · simp only [h1, h2, ite_true, ite_false] at this
     exact absurd this hu.2
   · simpa [h1, h2] using this
 
@@ -155,11 +155,11 @@ def total : (∀ s, A.obj s) →ₛₗ[σ] ∀ t, B.obj t where
 
 theorem total_of_inj (X : ∀ s, A.obj s) {t : Finset κ} (h : Set.InjOn τ (t : Set κ)) :
     P.total X t = sortSign τ t • P.app t (X (t.image τ)) :=
-  if_pos (Finset.card_image_iff.2 h)
+  ite_eq_left (Finset.card_image_iff.2 h)
 
 theorem total_of_not (X : ∀ s, A.obj s) {t : Finset κ} (h : ¬ Set.InjOn τ (t : Set κ)) :
     P.total X t = 0 :=
-  if_neg fun e => h (Finset.card_image_iff.1 e)
+  ite_eq_right fun e => h (Finset.card_image_iff.1 e)
 
 theorem totalD_total (X : ∀ s, A.obj s) (t : Finset κ) :
     Cube.totalD B (P.total X) t = P.total (Cube.totalD A X) t := by
@@ -495,7 +495,7 @@ namespace PositivityTheory.AutomorphicGaloisHodgeTate.G8.HBC
 
 theorem sortSign_id' {ι : Type} [LinearOrder ι] (t : Finset ι) : sortSign (id : ι → ι) t = 1 := by
   unfold sortSign
-  refine Finset.prod_eq_one fun a _ ↦ Finset.prod_eq_one fun b _ ↦ if_neg ?_
+  refine Finset.prod_eq_one fun a _ ↦ Finset.prod_eq_one fun b _ ↦ ite_eq_right ?_
   rintro ⟨h₁, h₂⟩
   exact lt_asymm h₁ h₂
 

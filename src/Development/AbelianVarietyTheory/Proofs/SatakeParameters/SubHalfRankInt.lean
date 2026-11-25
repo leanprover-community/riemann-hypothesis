@@ -92,10 +92,10 @@ theorem chainWeights : ChainWeights := by
   have hpos : 0 < R.N j := R.N_pos j
   have e1 : (W.lamTrue u j τ).detShift = (W.lamTrue u j τ).w ⟨R.N j - 1, by omega⟩ := by
     unfold DomWeight.detShift
-    rw [dif_pos hpos]
+    rw [dite_eq_left hpos]
   have e2 : (W.nuW u (j + 1) τ).detShift = (W.nuW u (j + 1) τ).w (⟨R.N j - 1, by omega⟩ : Fin (R.N j)) := by
     unfold DomWeight.detShift
-    exact dif_pos hpos
+    exact dite_eq_left hpos
   have hge : 0 ≤ (W.lamTrue u j τ).w ⟨R.N j - 1, by omega⟩ + s' τ := by
     rw [← h1]
     have ha := (W.lamTrue u (j + 1) τ).anti

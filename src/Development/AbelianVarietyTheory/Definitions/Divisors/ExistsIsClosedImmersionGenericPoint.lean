@@ -387,7 +387,7 @@ theorem finite_support_mult [CompactSpace Z] (D : CartierDiv Z) :
     fun z hz => ?_
   obtain ⟨T, hT, hzT⟩ := mem_sUnion.1 (hU.le (mem_supp_of_mult_ne_zero hz))
   refine ⟨T, hT, ?_⟩
-  simp only [dif_pos (hi T hT)]
+  simp only [dite_eq_left (hi T hT)]
   have hg := (hi T hT).isGenericPoint_genericPoint (hc T hT)
   have h₁ : z ≤ (hi T hT).genericPoint := hg.specializes hzT
   have h₂ : (hi T hT).genericPoint < genericPoint Z := by
@@ -421,7 +421,7 @@ theorem ratVal_fnOf {U : Z.Opens} (hy : y ∈ ptsIn q σ U) (h : genericPoint Z 
   have hr := regAt_fnOf (mem_ptsIn.1 hy) h a
   have e := hr.exists_fnOf.choose_spec.choose_spec.choose_spec
   have hV := mem_ptsIn_inf.2 ⟨mem_ptsIn.2 hr.exists_fnOf.choose_spec.choose, hy⟩
-  rw [ratVal, dif_pos hr, ← ev_res inf_le_left hV, ← ev_res inf_le_right hV]
+  rw [ratVal, dite_eq_left hr, ← ev_res inf_le_left hV, ← ev_res inf_le_right hV]
   congr 1
   exact fn_ext fun _ => by rw [fnOf_resG, fnOf_resG, e]
 
@@ -487,7 +487,7 @@ variable {hL : L.IsLB} {s : L.Sec} {hs : genericPoint Z ∈ nonzeroLocus s}
 
 theorem val_ratOfSec {i : L.ι} (h : genericPoint Z ∈ L.U i) :
     (ratOfSec s hs i : Z.functionField) = fnOf _ h (s.f i) := by
-  rw [ratOfSec, dif_pos h, Units.val_mk0]
+  rw [ratOfSec, dite_eq_left h, Units.val_mk0]
 
 
 variable (s hs) in

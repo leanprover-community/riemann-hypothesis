@@ -170,7 +170,7 @@ end Cong
 theorem pref_prefRep {G D : Type} [Group G] [MulAction G D] (pref : D → Prop) {p : D} (hp : pref p) :
     pref (prefRep pref (Quotient.mk (MulAction.orbitRel G D) p)) := by
   have h : ∃ p', Quotient.mk (MulAction.orbitRel G D) p' = Quotient.mk (MulAction.orbitRel G D) p ∧ pref p' := ⟨p, rfl, hp⟩
-  rw [prefRep, dif_pos h]
+  rw [prefRep, dite_eq_left h]
   exact h.choose_spec.2
 
 section Top
@@ -221,16 +221,16 @@ theorem two_mul_le_topDep (M : ℕ) : 2 * M ≤ topDep R M := by
 
 def topLev : TopLev X Pr R (QE sel (mu : Chr X.F X.E X.K)) := topLevAt Ch sel mu P (topDep R cst.M)
 
-theorem topLevAt_levG_m (c : ℕ) : (topLevAt Ch sel mu P c).levG R.m = levGTop Ch P := dif_pos rfl
+theorem topLevAt_levG_m (c : ℕ) : (topLevAt Ch sel mu P c).levG R.m = levGTop Ch P := dite_eq_left rfl
 
-theorem topLevAt_levQ_m (c : ℕ) : (topLevAt Ch sel mu P c).levQ R.m = levQTop R sel mu c := dif_pos rfl
+theorem topLevAt_levQ_m (c : ℕ) : (topLevAt Ch sel mu P c).levQ R.m = levQTop R sel mu c := dite_eq_left rfl
 
 theorem topLevAt_finiteIndex (c j : ℕ) (Q : QE sel (mu : Chr X.F X.E X.K)) : ((topLevAt Ch sel mu P c).levQ j Q).H.FiniteIndex := by
   by_cases h : j = R.m
   · subst h
     rw [topLevAt_levQ_m]
     exact levCong_finiteIndex _ _ _
-  · rw [show (topLevAt Ch sel mu P c).levQ j = LevQFam.top X.E X.K (R.N j) _ from dif_neg h]
+  · rw [show (topLevAt Ch sel mu P c).levQ j = LevQFam.top X.E X.K (R.N j) _ from dite_eq_right h]
     exact ⟨fun e => one_ne_zero (Subgroup.index_top.symm.trans e)⟩
 
 theorem topLevAt_root (c j : ℕ) (Q : QE sel (mu : Chr X.F X.E X.K)) :
@@ -239,12 +239,12 @@ theorem topLevAt_root (c j : ℕ) (Q : QE sel (mu : Chr X.F X.E X.K)) :
   · subst h
     rw [topLevAt_levQ_m]
     exact levCong_root _ _ _
-  · rw [show (topLevAt Ch sel mu P c).levQ j = LevQFam.top X.E X.K (R.N j) _ from dif_neg h]
+  · rw [show (topLevAt Ch sel mu P c).levQ j = LevQFam.top X.E X.K (R.N j) _ from dite_eq_right h]
     exact ⟨1, one_pos, fun _ => pow_one _⟩
 
-theorem topLev_levG_m : (topLev Ch sel mu cst P).levG R.m = levGTop Ch P := dif_pos rfl
+theorem topLev_levG_m : (topLev Ch sel mu cst P).levG R.m = levGTop Ch P := dite_eq_left rfl
 
-theorem topLev_levQ_m : (topLev Ch sel mu cst P).levQ R.m = levQTop R sel mu (topDep R cst.M) := dif_pos rfl
+theorem topLev_levQ_m : (topLev Ch sel mu cst P).levQ R.m = levQTop R sel mu (topDep R cst.M) := dite_eq_left rfl
 
 theorem topLev_pref_m (u : Pr.Word) (p : ChPt (R := R) sel mu u R.m) :
     (topLev Ch sel mu cst P).pref u R.m p ↔ ∃ d, p = tilF sel mu u d := ⟨fun h => h rfl, fun h _ => h⟩

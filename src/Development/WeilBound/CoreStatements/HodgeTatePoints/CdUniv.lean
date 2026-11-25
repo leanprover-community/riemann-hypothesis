@@ -108,7 +108,7 @@ theorem aeval_inr {κ : Type} [Fintype κ] [DecidableEq κ] (c : κ → S) (P : 
   induction P using MvPolynomial.induction_on with
   | C r =>
     have : ∀ s : κ, (MvPolynomial.C r : MvPolynomial κ S).coeff (Finsupp.single s 1) = 0 := fun s => by
-      rw [MvPolynomial.coeff_C, if_neg (Finsupp.single_ne_zero.2 one_ne_zero).symm]
+      rw [MvPolynomial.coeff_C, ite_eq_right (Finsupp.single_ne_zero.2 one_ne_zero).symm]
     simp [this, TrivSqZeroExt.algebraMap_eq_inl]
   | add p q hp hq =>
     rw [map_add (f := _), hp, hq]

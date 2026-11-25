@@ -73,7 +73,7 @@ theorem part_last {n : ℕ} (c : Fin (n - 1) → ℝ) (i : Fin n) (hi : (i : ℕ
   unfold part
   refine Finset.sum_eq_zero fun j _ => ?_
   have := j.2
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem y_bound {n : ℕ} (y : Fin n → ℝ) (hl : ∀ i : Fin n, (i : ℕ) + 1 = n → 0 ≤ y i ∧ y i ≤ 1)
     (hd : ∀ j : Fin (n - 1), 0 ≤ sr y ((j : ℕ) + 1) ∧ sr y ((j : ℕ) + 1) ≤ 1) :

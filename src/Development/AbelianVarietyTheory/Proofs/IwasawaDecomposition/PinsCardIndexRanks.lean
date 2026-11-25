@@ -60,8 +60,8 @@ theorem card_unitri (Fr : Fin r → Fin r → Prop) (hFr : ∀ i j, Fr i j → i
   have hlow : ∀ f i j, j < i → mk f i j = 0 := by
     intro f i j hij
     have hne : i ≠ j := (ne_of_lt hij).symm
-    simp only [mk, if_neg hne]
-    rw [dif_neg]
+    simp only [mk, ite_eq_right hne]
+    rw [dite_eq_right]
     intro h
     exact absurd (hFr i j h) (not_lt.2 hij.le)
   have hdet : ∀ f, (mk f).det = 1 := by
@@ -77,7 +77,7 @@ theorem card_unitri (Fr : Fin r → Fin r → Prop) (hFr : ∀ i j, Fr i j → i
         fun i => by rw [htoG]; simp [mk],
         fun i j hij hn => by
           rw [htoG]
-          simp only [mk, if_neg (ne_of_lt hij), dif_neg hn]⟩⟩
+          simp only [mk, ite_eq_right (ne_of_lt hij), dite_eq_right hn]⟩⟩
       left_inv := by
         intro g
         obtain ⟨h0, h1, h2⟩ := (hH g.1).1 g.2
@@ -87,11 +87,11 @@ theorem card_unitri (Fr : Fin r → Fin r → Prop) (hFr : ∀ i j, Fr i j → i
         change mk (fun p => (g.1 : Matrix (Fin r) (Fin r) κ) p.1.1 p.1.2) i j = (g.1 : Matrix (Fin r) (Fin r) κ) i j
         simp only [mk]
         by_cases hij : i = j
-        · subst hij; rw [if_pos rfl, h1]
-        · rw [if_neg hij]
+        · subst hij; rw [ite_eq_left rfl, h1]
+        · rw [ite_eq_right hij]
           by_cases hf : Fr i j
-          · rw [dif_pos hf]
-          · rw [dif_neg hf]
+          · rw [dite_eq_left hf]
+          · rw [dite_eq_right hf]
             rcases lt_or_gt_of_ne hij with hl | hl
             · exact (h2 i j hl hf).symm
             · exact (h0 i j hl).symm
@@ -99,7 +99,7 @@ theorem card_unitri (Fr : Fin r → Fin r → Prop) (hFr : ∀ i j, Fr i j → i
         intro f
         funext p
         show mk f p.1.1 p.1.2 = f p
-        simp only [mk, if_neg (ne_of_lt (hFr _ _ p.2)), dif_pos p.2] }
+        simp only [mk, ite_eq_right (ne_of_lt (hFr _ _ p.2)), dite_eq_left p.2] }
   rw [Nat.card_congr e, Nat.card_fun]
 
 theorem card_unip : Nat.card (unip κ r) = Nat.card κ ^ Nat.card {p : Fin r × Fin r // p.1 < p.2} := by

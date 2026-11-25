@@ -101,9 +101,9 @@ def typeIdem : G → ℂ := fun g =>
   if h : g ∈ K then (Module.finrank ℂ W : ℂ) * (μ.real K : ℂ)⁻¹ * conj (τ.character (r ⟨g, h⟩)) else 0
 
 theorem typeIdem_coe (k : K) :
-    typeIdem μ r τ k = (Module.finrank ℂ W : ℂ) * (μ.real K : ℂ)⁻¹ * conj (τ.character (r k)) := dif_pos k.2
+    typeIdem μ r τ k = (Module.finrank ℂ W : ℂ) * (μ.real K : ℂ)⁻¹ * conj (τ.character (r k)) := dite_eq_left k.2
 
-theorem typeIdem_of_notMem {g : G} (h : g ∉ K) : typeIdem μ r τ g = 0 := dif_neg h
+theorem typeIdem_of_notMem {g : G} (h : g ∉ K) : typeIdem μ r τ g = 0 := dite_eq_right h
 
 theorem typeIdem_mul_ker {k : K} (hk : r k = 1) (g : G) :
     typeIdem μ r τ (k * g) = typeIdem μ r τ g ∧ typeIdem μ r τ (g * k) = typeIdem μ r τ g := by

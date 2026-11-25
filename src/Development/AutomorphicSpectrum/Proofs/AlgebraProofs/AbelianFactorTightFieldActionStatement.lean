@@ -689,7 +689,7 @@ theorem sum_cut (l : Fin n × Fin f → R) : ∑ s, cut s l = l := by
   simp [cut, Finset.sum_apply]
 
 theorem cut_supp (s : Fin f) (l : Fin n × Fin f → R) : ∀ j, j.2 ≠ s → cut s l j = 0 :=
-  fun _ h => if_neg h
+  fun _ h => ite_eq_right h
 
 theorem proj_Phi [Fintype F] [DecidableEq F] [IsDomain R] (h0 : (Fintype.card Fˣ : C) ≠ 0)
     (hinj : ∀ s t : Fin f, σ ^ p ^ (s : ℕ) = σ ^ p ^ (t : ℕ) → s = t)
@@ -826,7 +826,7 @@ theorem aflatT : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed 
       simpa [cut] using this
     let l2 : Fin n × Fin f → R := fun j =>
       if j.2 = s then (if j.1 < i then 0 else if j.1 = i then c else l j) else 0
-    refine ⟨l2, ?_, fun j hj => if_neg hj, fun j hj => by simp [l2, hj], by simp [l2]⟩
+    refine ⟨l2, ?_, fun j hj => ite_eq_right hj, fun j hj => by simp [l2, hj], by simp [l2]⟩
     have e4 : cut s l - l2 ∈ afLatT p f b σ AA.carrier := by
       refine mem_afLatT_of_p hinj _ _ ?_
       rintro ⟨j, t⟩
@@ -879,8 +879,8 @@ theorem flag_D : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed 
     · rintro ⟨l, hl, -, h2, h3⟩
       exact ⟨ρ s l, Submodule.mem_map_of_mem hl, h2, h3⟩
     · rintro ⟨_, ⟨l, hl, rfl⟩, h2, h3⟩
-      exact ⟨_, hgr l hl s, fun j hj => if_neg hj, fun j hj => (if_pos rfl).trans (h2 j hj),
-        (if_pos rfl).trans h3⟩
+      exact ⟨_, hgr l hl s, fun j hj => ite_eq_right hj, fun j hj => (ite_eq_left rfl).trans (h2 j hj),
+        (ite_eq_left rfl).trans h3⟩
   · let θ : (Fin n × Fin f → R) →ₗ[R] ((s : Fin f) → (Fin n → R) ⧸ L.map (ρ s)) :=
       LinearMap.pi fun s => Submodule.mkQ _ ∘ₗ ρ s
     have hsurj : Function.Surjective θ := by

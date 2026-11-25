@@ -138,14 +138,14 @@ theorem convergenceRate_holds : ConvergenceRateStatement := by
   have hτ : ∀ i, 0 < (fun i => if c i then t else t') i ∧ (fun i => if c i then t else t') i ≤ t₂ := by
     intro i
     by_cases h : c i
-    · simp only [h, if_true]; exact ⟨htpos, ht_t₂⟩
+    · simp only [h, ite_true]; exact ⟨htpos, ht_t₂⟩
     · simp only [h]; exact ⟨ht', htt'.trans ht_t₂⟩
   obtain ⟨hPP, hTR⟩ := hT _ hτ
   obtain ⟨-, hlogR⟩ := hTR ℓ hℓe
   have hsm : ∀ i, A.Smooth (phT i (if c i then t else t')) := by
     intro i
     by_cases h : c i
-    · simp only [h, if_true]; exact ((hR i).2.2 t htpos ht_t₀).1
+    · simp only [h, ite_true]; exact ((hR i).2.2 t htpos ht_t₀).1
     · simp only [h]; exact ((hR i).2.2 t' ht' (htt'.trans ht_t₀)).1
   have hmass := maMeasure_univ_eq A Θ th (fun i => phT i (if c i then t else t')) hΘ
     (fun i => (hW i).1) hsm (fun i => (hPP i).1) (fun i => (hPP i).2)

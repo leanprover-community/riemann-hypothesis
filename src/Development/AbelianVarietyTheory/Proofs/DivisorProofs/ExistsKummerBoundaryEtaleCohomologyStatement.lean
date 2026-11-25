@@ -1237,7 +1237,7 @@ theorem kummer_boundary : ∀ (q : ℕ) [NeZero q], ∃ κ : (restr (Int.castRin
     else 0
   have hbd : ∀ E (hE : Inv q E) n x, bd E n x = (Re E (n + 1)).symm (HK.ext ℤ _ z n (n + 1) rfl ((Pe E hE n).symm x)) := by
     intro E hE n x
-    simp only [bd, dif_pos hE]
+    simp only [bd, dite_eq_left hE]
     rfl
   refine ⟨bd, ?_, ?_, ?_, ?_⟩
   · intro E E' f hE' n x

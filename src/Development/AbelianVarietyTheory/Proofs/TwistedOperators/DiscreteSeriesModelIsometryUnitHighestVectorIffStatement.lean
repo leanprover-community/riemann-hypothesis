@@ -274,11 +274,11 @@ theorem mem_hwSub {lam : Ix p q → ℚ} {c : ℚ} (hp : IsParam lam) (ho : IsOr
     have ha := ho.2.1 a
     have hb := ho.2.1 b
     by_cases hs : br = cj
-    · have s1 : sg br cj = 1 := if_pos hs
+    · have s1 : sg br cj = 1 := ite_eq_left hs
       rw [s1] at ha hb ⊢
       rw [one_smul]
       exact GlobalTheory.HolDict.BorelK.not_cdom _ (hanti.lt_iff_gt.1 (by linarith))
-    · have s1 : sg br cj = -1 := if_neg hs
+    · have s1 : sg br cj = -1 := ite_eq_right hs
       rw [s1] at ha hb ⊢
       rw [show (-1 : ℝ) • Formalism.REAL.root (e a) (e b) = Formalism.REAL.root (e b) (e a) by simp [Formalism.REAL.root]]
       exact GlobalTheory.HolDict.BorelK.not_cdom _ (hanti.lt_iff_gt.1 (by linarith))

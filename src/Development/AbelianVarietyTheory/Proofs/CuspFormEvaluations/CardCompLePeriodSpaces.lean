@@ -165,26 +165,26 @@ theorem exists_idx {c : Coeff l} {σ : c.F →+* ℂ} (hσ : GoodEmb c σ) {r g 
   have hcc : ∀ τ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ := fun τ =>
     ComplexEmbedding.involutive_conjugate E τ
   obtain ⟨f, hf⟩ := GlobalTheory.FrameUnif.exists_letter_equiv X.Ψ X.cmType Dw.p Dw.q r hr (relab c σ) hbij Dw.mult
-    (fun τ h => by unfold Datum.mult; rw [if_pos ((hrt τ).1 ((hty _).1 h))])
-    (fun τ h => by unfold Datum.mult; rw [if_neg (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_left ((hrt τ).1 ((hty _).1 h))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_right (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
   obtain ⟨idx, hi⟩ : ∃ idx : Fin g ≃ X.Ψ × Fin r, ∀ j,
       (relab c σ (e j).1 ∈ X.Ψ ∧ (idx j).1.1 = relab c σ (e j).1 ∧ ((idx j).2 : ℕ) = Dw.q + (e j).2) ∨
       (relab c σ (e j).1 ∉ X.Ψ ∧ (idx j).1.1 = ComplexEmbedding.conjugate (relab c σ (e j).1) ∧
         ((idx j).2 : ℕ) = Dw.q - 1 - (e j).2 ∧ ((e j).2 : ℕ) < Dw.q) := ⟨e.trans f, fun j => hf (e j)⟩
   refine ⟨idx, fun j => ?_, fun x v j => ?_⟩
   · rcases hi j with ⟨a, b, c'⟩ | ⟨a, b, c', d⟩
-    · rw [if_neg (by omega), b]
-    · rw [if_pos (by omega), b, hcc]
+    · rw [ite_eq_right (by omega), b]
+    · rw [ite_eq_left (by omega), b, hcc]
   · have h := hi j
     generalize idx j = t at h ⊢
     obtain ⟨⟨τ, hτ⟩, ⟨n, hn⟩⟩ := t
     dsimp only at h ⊢
     rw [← hp0] at h ⊢
     rcases h with ⟨a, rfl, rfl⟩ | ⟨a, rfl, rfl, d⟩
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       unfold perFr
       rw [dite_eq_left a, dite_eq_left hn]
-    · rw [if_pos (by omega)]
+    · rw [ite_eq_left (by omega)]
       unfold perFr
       rw [dite_eq_right a, dite_eq_left (show conjEmb (relab c σ (e j).1) ∈ X.Ψ from hτ), dite_eq_left hn]
       rfl

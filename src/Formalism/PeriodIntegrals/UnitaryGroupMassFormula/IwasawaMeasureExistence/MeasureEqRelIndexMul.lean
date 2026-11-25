@@ -69,19 +69,6 @@ theorem measure_eq_relIndex_mul (μ : Measure G) [IsMulLeftInvariant μ] {U W : 
 
 end Idx
 
-section Conj
-
-variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-
-end Conj
-
-section Scale
-
-variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
-  [MeasurableSpace G] [BorelSpace G]
-
-end Scale
-
 end PI.IwaMeasEx.MF
 
 end

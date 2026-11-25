@@ -99,7 +99,7 @@ theorem degAt_one : DegAt x 0 (1 : MvPolynomial (ι × Fin n) R) := by
   intro m hm
   have h0 : m = 0 := by
     by_contra hne
-    exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_one, if_neg (Ne.symm hne)])
+    exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_one, ite_eq_right (Ne.symm hne)])
   subst h0
   simp [multideg]
 
@@ -122,7 +122,7 @@ theorem degAt_X [DecidableEq ι] (v : ι × Fin n) : DegAt x (if v.1 = x then 1 
   intro m hm
   have h0 : Finsupp.single v 1 = m := by
     by_contra hne
-    exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_X', if_neg hne])
+    exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_X', ite_eq_right hne])
   subst h0
   obtain ⟨a, c0⟩ := v
   by_cases ha : a = x

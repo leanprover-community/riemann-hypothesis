@@ -38,14 +38,14 @@ theorem aT_eq (N r : ℕ) (t : ℝ) : aT E N r t = An.aR E N r t := by
     sInf E ((aInf E N r t : Matrix (Fin N) (Fin N) (Cinf E)) i j) = _
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl, Matrix.one_apply_eq, Matrix.one_apply_eq]
+    rw [ite_eq_left rfl, Matrix.one_apply_eq, Matrix.one_apply_eq]
     change _ = 1 - sInf E 1 + sInf E (fun _ => Complex.exp _)
     congr 2
     funext w
     rw [show (aInf E N r t : Matrix (Fin N) (Fin N) (Cinf E)) = Matrix.diagonal (fun (k : Fin N) (_ : InfinitePlace E) =>
       Complex.exp (if (k : ℕ) < r then (t : ℂ) else 0)) from rfl, Matrix.diagonal_apply_eq]
     split_ifs <;> simp
-  · rw [if_neg hij, Matrix.one_apply_ne hij, Matrix.one_apply_ne hij]
+  · rw [ite_eq_right hij, Matrix.one_apply_ne hij, Matrix.one_apply_ne hij]
     rw [show (aInf E N r t : Matrix (Fin N) (Fin N) (Cinf E)) = Matrix.diagonal (fun (k : Fin N) (_ : InfinitePlace E) =>
       Complex.exp (if (k : ℕ) < r then (t : ℂ) else 0)) from rfl, Matrix.diagonal_apply_ne _ hij, map_zero, sub_zero, add_zero]
 

@@ -735,7 +735,7 @@ theorem UnitAt.mul {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]} {a b : �
   obtain ⟨ha, ha'⟩ := ha
   obtain ⟨hb, hb'⟩ := hb
   refine ⟨mul_mem ha hb, ?_⟩
-  simp only [lamC, ha, hb, mul_mem ha hb, dif_pos] at ha' hb' ⊢
+  simp only [lamC, ha, hb, mul_mem ha hb, dite_eq_left] at ha' hb' ⊢
   have : (⟨a * b, mul_mem ha hb⟩ : Qbar) = ⟨a, ha⟩ * ⟨b, hb⟩ := rfl
   rw [this, map_mul, norm_mul, ha', hb', one_mul]
 
@@ -743,14 +743,14 @@ theorem UnitAt.zpow {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]} {a : ℂ
     UnitAt lam (a ^ k) := by
   obtain ⟨ha, ha'⟩ := ha
   refine ⟨zpow_mem ha k, ?_⟩
-  simp only [lamC, ha, zpow_mem ha k, dif_pos] at ha' ⊢
+  simp only [lamC, ha, zpow_mem ha k, dite_eq_left] at ha' ⊢
   have : (⟨a ^ k, zpow_mem ha k⟩ : Qbar) = ⟨a, ha⟩ ^ k := rfl
   rw [this, map_zpow₀, norm_zpow, ha', one_zpow]
 
 theorem unitAt_neg_one {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) : UnitAt lam (-1) := by
   have h : (-1 : ℂ) ∈ Qbar := neg_mem (one_mem _)
   refine ⟨h, ?_⟩
-  simp only [lamC, h, dif_pos]
+  simp only [lamC, h, dite_eq_left]
   have : (⟨-1, h⟩ : Qbar) = -1 := rfl
   rw [this, map_neg, map_one, norm_neg, norm_one]
 

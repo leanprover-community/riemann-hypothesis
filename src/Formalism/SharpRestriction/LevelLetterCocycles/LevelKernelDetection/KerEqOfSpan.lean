@@ -82,8 +82,8 @@ theorem finrank_grQ {LL D : Type} [Field LL] [AddCommGroup D] [Module LL D] [Fin
     · rw [Submodule.mem_pi]
       intro k _
       by_cases h : k ∈ S
-      · simp only [dif_pos h]; exact (z ⟨k, h⟩).2
-      · simp only [dif_neg h]; exact Submodule.zero_mem _
+      · simp only [dite_eq_left h]; exact (z ⟨k, h⟩).2
+      · simp only [dite_eq_right h]; exact Submodule.zero_mem _
     · funext k
       rw [hφ, ← hz k]
       congr 1

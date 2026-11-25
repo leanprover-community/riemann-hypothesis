@@ -92,7 +92,7 @@ theorem upperPart_unipotent_mul (S : Matrix l l ℝ) (t : ℝ) (s : Mat l) :
   ext a b
   simp only [upperParabolic, loQ, nn, Matrix.add_apply, Matrix.mul_apply, Fintype.sum_sum_type, fromBlocks_apply₁₁,
     fromBlocks_apply₁₂, Matrix.one_apply, Matrix.map_apply, Matrix.smul_apply, smul_eq_mul, ite_mul, one_mul,
-    zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, ofReal_add, ofReal_sum, ofReal_mul]
+    zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, ofReal_add, ofReal_sum, ofReal_mul]
   have e : ∀ u v : l → ℝ, ∑ c, (t : ℂ) * (S a c : ℂ) * (u c : ℂ) - I * ∑ c, (t : ℂ) * (S a c : ℂ) * (v c : ℂ) =
       (t : ℂ) * ∑ c, (S a c : ℂ) * ((u c : ℂ) - I * (v c : ℂ)) := fun u v => by
     simp only [Finset.mul_sum]

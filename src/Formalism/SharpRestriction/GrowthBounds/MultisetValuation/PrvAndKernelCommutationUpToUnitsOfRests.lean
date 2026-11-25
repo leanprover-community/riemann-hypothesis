@@ -710,8 +710,8 @@ theorem main_ind {Y : Pend X} (hfr : IsFractionRing X.G.O X.G.Kf) (hp : (p : X.G
     rw [e4, e5, ZL_smul hL]
     have hb := ZL_bound hfr hL hF hE u m m' hj hu (fun v => hc0 v m' hj) (fun v => hcr v m' hj) B hBnd
       (fun v => if v ∈ B then Gn v (m' + 1) else G0n v (m' + 1))
-      (fun v hv => by simp only [hv, if_true]; exact h1 v (List.mem_of_mem_filter hv) m' hj)
-      (fun v hv => by simp only [hv, if_false]; exact h2 v m' hj) G' hG'
+      (fun v hv => by simp only [hv, ite_true]; exact h1 v (List.mem_of_mem_filter hv) m' hj)
+      (fun v hv => by simp only [hv, ite_false]; exact h2 v m' hj) G' hG'
     have h3 := vGe_smul X hfr (vGeK_ppow X hfr (-(PrS X (m' + 1) B))) (vGe_smul X hfr (vGeK_vsc (∑ j ∈ range m', bbJ X Lv Gn G0n Q j)) hb)
     rw [Finset.sum_range_succ]
     refine vGe_mono X hfr (le_of_eq ?_) h3
@@ -1074,7 +1074,7 @@ theorem Ar_lift_le (h : Std p n' k1 t m c r TT a b lam0 w) (j i : ℕ) (hj : j +
     · intro x hx
       rw [mem_filter] at hx
       unfold lamAt
-      rw [if_pos he]
+      rw [ite_eq_left he]
       show liftWt t k1 (lam0 s) (fun l => w l s) (j + 1) x = _
       unfold liftWt
       rw [dite_eq_left (by omega : x.val < k1 + 1)]
@@ -1096,7 +1096,7 @@ theorem Ar_lift_le (h : Std p n' k1 t m c r TT a b lam0 w) (j i : ℕ) (hj : j +
         (univ.filter fun x : Fin (k1 + (j + 1) * (t + 1) + 1) => x.val < i).card • w (j + 1) s := by
       refine Finset.sum_le_card_nsmul _ _ _ fun x _ => ?_
       unfold lamAt
-      rw [if_neg he]
+      rw [ite_eq_right he]
       exact neg_liftWt_le h s j hj x.rev
     refine le_trans h1 ?_
     rw [nsmul_eq_mul]
@@ -1136,7 +1136,7 @@ theorem restricted_hecke_integral_of_edges (h : ∀ j, RestWeylEdge (X.Pj j)) : 
   rw [mem_Icc] at hi
   have hp := p_ne_zero X v
   unfold Sys.Tt
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
   have h1 := TmInt X (h (j + 1)) v i hF
   have hle : Ar i ((X.Pj (j + 1)).lam0 (X.vJ (j + 1) v)) ≤ Nprime (X.G.P.lam0 v) (X.w v) (j + 1) i :=
     Ar_lift_le (X.std v) j i hj (by have := (X.std v).two_r; omega)

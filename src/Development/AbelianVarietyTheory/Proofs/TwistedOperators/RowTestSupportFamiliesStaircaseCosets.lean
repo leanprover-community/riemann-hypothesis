@@ -75,7 +75,7 @@ theorem oneAt : Big fun ch => OneAt ch := by
     have e : 1 ≤ cosExp ch.G w.1 := by
       classical
       unfold cosExp
-      rw [if_pos hw0]
+      rw [ite_eq_left hw0]
       exact ch.G.pl.depth_pos _ _
     rw [depthAt, max_eq_left e]
   rw [hce] at hT

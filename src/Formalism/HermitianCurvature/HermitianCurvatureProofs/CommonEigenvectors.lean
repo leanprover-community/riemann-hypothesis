@@ -81,7 +81,7 @@ theorem hop_move {n : ℕ} {E : Fin n → Fin n → Module.End ℂ V} (hE : GlRe
 
   simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, diag_move hE, smul_add, smul_sub,
   smul_ite, smul_zero, Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.sum_ite_eq,
-  Finset.mem_univ, if_true]
+  Finset.mem_univ, ite_true]
   rw [← sub_smul]
   congr 2
   ring

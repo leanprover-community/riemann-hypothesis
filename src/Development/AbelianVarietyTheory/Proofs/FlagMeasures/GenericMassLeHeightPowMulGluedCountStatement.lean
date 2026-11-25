@@ -300,8 +300,8 @@ theorem one_flag (Z : LocDat D) {T : D.host.E} (hT : T ≠ 0) (F : LFlag (D.sp.Y
   have hpat : ∀ (p : PlF D) (i j : Fin (D.R.rS + 1)), ¬ i < j → (Matrix.diagonal (frFac Z.δ p) * B p * Matrix.diagonal (fun a => Ring.inverse (frFac Z.δ p a))) i j = if i = j then 1 else 0 := by
     intro p i j hij
     rcases (not_lt.mp hij).lt_or_eq with h | h
-    · rw [if_neg (ne_of_gt h)]; exact (hsU p).1 i j h
-    · rw [h, if_pos rfl]; exact (hsU p).2 i
+    · rw [ite_eq_right (ne_of_gt h)]; exact (hsU p).1 i j h
+    · rw [h, ite_eq_left rfl]; exact (hsU p).2 i
   obtain ⟨t, ht, hts⟩ : ∃ t : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E,
       (∀ i j, ¬ i < j → t i j = if i = j then 1 else 0) ∧
       ∀ (p : PlF D) (i j : Fin (D.R.rS + 1)), ∃ o ∈ (Z.M p).L.O,
@@ -318,8 +318,8 @@ theorem one_flag (Z : LocDat D) {T : D.host.E} (hT : T ≠ 0) (F : LFlag (D.sp.Y
     split_ifs
     · exact one_mem _
     · exact zero_mem _
-  have htu : Uni t := ⟨fun a b hab => by rw [ht a b (not_lt.mpr hab.le), if_neg (ne_of_gt hab)],
-    fun a => by rw [ht a a (lt_irrefl a), if_pos rfl]⟩
+  have htu : Uni t := ⟨fun a b hab => by rw [ht a b (not_lt.mpr hab.le), ite_eq_right (ne_of_gt hab)],
+    fun a => by rw [ht a a (lt_irrefl a), ite_eq_left rfl]⟩
   obtain ⟨F₁, hF₁⟩ := (GlobalTheory.FlagChange.flag_change D F hT).1 t htu
   have hsc : ∀ p : PlF D, Chg (scaled Z p (frame F)) (Matrix.diagonal (fun a => Ring.inverse (frFac Z.δ p a)) * t.map (D.s.atP p).ιE * Matrix.diagonal (frFac Z.δ p)) (scaled Z p (frame F₁)) :=
     fun p => chg_scaled Z p hF₁
@@ -1146,7 +1146,7 @@ theorem mass_class_eq_weight_count : ∀ {F : Type} [Field F] [ValuativeRel F] [
       have hint : S.IsIntCls (h • C₂) := by
         rw [hC₂, ← (aS _ _ hΛ₁t h hh).2.2.2.2.1]
         exact (trm _ _ (aS _ _ hΛ₁t h hh).1).2.2.2.2.2.2.1
-      rw [e', if_pos hint, hwinv h hh, mul_one]
+      rw [e', ite_eq_left hint, hwinv h hh, mul_one]
     rw [(GlobalTheory.HL.CoordHeight.height_eq M hM H r k P S c).1]
     have := hle.trans hsum
     exact (ENNReal.ofReal_le_ofReal_iff (by unfold Frames.Hp; positivity)).1 this
@@ -1295,7 +1295,7 @@ theorem tri_trans : ∀ (K W : Type) [CommRing K] [AddCommGroup W] [Module K W] 
 
 theorem mapLF_frame : ∀ (D : D7) {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (m : GV D), m ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → (∀ a, frame (Formalism.L2.SG.TermOp.mapLF m F) a = m (frame F a)) ∧ (Formalism.L2.SG.TermOp.mapLF m F).zt = m F.zt ∧ (Formalism.L2.SG.TermOp.mapLF m F).fl.z = m F.fl.z := by
   intro D T F m hm
-  rw [Formalism.L2.SG.TermOp.mapLF, dif_pos hm]
+  rw [Formalism.L2.SG.TermOp.mapLF, dite_eq_left hm]
   refine ⟨fun a => ?_, rfl, rfl⟩
   simp only [frame, Formalism.MainNotions.S.FlagG.fvec, Formalism.L2.SG.TermOp.mapFlag]
   refine Fin.lastCases ?_ (fun i => ?_) a
@@ -1395,8 +1395,8 @@ theorem genericMass_le_heightPow_mul_glueSum : ∀ (D : D7) (X : HidaSetting D) 
     obtain ⟨-, -, ⟨n, hn, hfn, -⟩, ⟨n', hn', hfn', -⟩, -⟩ := htt p hp
     have u1 := _root_.GlobalTheory.LocOver.UnipOnto.unipotent_onto ((zOf Y).M p) (hOK p) (locH (zOf Y) p) D.R.rS (Fm.FP p).A (hAT p)
     have u2 := _root_.GlobalTheory.LocOver.UnipOnto.unipotent_onto ((zOf Y).M p) (hOK p) (locH (zOf Y) p) D.R.rS (Fm.FP p).B (hBT p)
-    have e1 : f p = (tt p hp).f := dif_pos hp
-    have e2 : f' p = (tt p hp).f' := dif_pos hp
+    have e1 : f p = (tt p hp).f := dite_eq_left hp
+    have e2 : f' p = (tt p hp).f' := dite_eq_left hp
     rw [e1, e2, ← hAf p, ← hBf p, hfn, hfn']
     exact ⟨u1.2.1 n hn, u2.2.1 n' hn'⟩
   obtain ⟨G, G'', hStd, hch⟩ := GlobalTheory.T.exists_rational_frames_prescribed_local_classes D (zOf Y) u u' F F' Fm.P f f' htri
@@ -1406,8 +1406,8 @@ theorem genericMass_le_heightPow_mul_glueSum : ∀ (D : D7) (X : HidaSetting D) 
         ENNReal.ofReal wp * locSum G G'' p (Fm.R p) (Fm.d0 p) := by
     intro p hp
     obtain ⟨A, A', hA, hA', hint, hc1, hc2⟩ := hch p hp
-    have e1 : f p = (tt p hp).f := dif_pos hp
-    have e2 : f' p = (tt p hp).f' := dif_pos hp
+    have e1 : f p = (tt p hp).f := dite_eq_left hp
+    have e2 : f' p = (tt p hp).f' := dite_eq_left hp
     rw [e1] at hc1
     rw [e2] at hc2
     obtain ⟨-, -, ⟨n, hn, hfn, -⟩, ⟨n', hn', hfn', -⟩, -⟩ := htt p hp

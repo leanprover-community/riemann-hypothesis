@@ -757,7 +757,7 @@ theorem eq_of_law (w : E) {L₁ L₂ : Lt E r} {β : Matrix (Fin r) (Fin r) E} (
     ψ x = if x ∈ tens Λ (L₁ ⊔ L₂) then
       ψ 0 * cexp (π * I * ((Algebra.trace ℚ E (x * β * ccT x).trace : ℚ) : ℂ)) else 0 := by
   by_cases hx : x ∈ tens Λ (L₁ ⊔ L₂)
-  · rw [if_pos hx]
+  · rw [ite_eq_left hx]
     obtain ⟨y₁, hy₁, y₂, hy₂, e1, e2⟩ := exists_lift hβ Λ hx
     have e2' : (1 / 2 : E) • ((y₁ + y₂) * skew X) = (y₁ - y₂) * β := by rw [e1]; exact e2
     have hrow : ∀ k, (1 / 2 : E) • ((y₁ k + y₂ k) ᵥ* skew X) = (y₁ k - y₂ k) ᵥ* β := by
@@ -781,7 +781,7 @@ theorem eq_of_law (w : E) {L₁ L₂ : Lt E r} {β : Matrix (Fin r) (Fin r) E} (
     simp only [GlobalTheory.SW.heisH, sub_self] at key
     rw [htr] at key
     exact key
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     by_contra hψx
     apply hx
     have hB : ∀ a b, rowForm X n a b = -rowForm X n b a := by

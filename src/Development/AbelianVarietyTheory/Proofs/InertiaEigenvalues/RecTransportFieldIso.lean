@@ -191,7 +191,7 @@ theorem prod_eq_of_psum_eq (s t : Multiset ℂ) (hc : Multiset.card s = Multiset
   by_cases hk : k ≤ Multiset.card s
   · rw [Multiset.prod_X_sub_C_coeff s hk, Multiset.prod_X_sub_C_coeff t (hc ▸ hk), hc,
       esymm_eq_of_psum_eq s t h]
-  · push_neg at hk
+  · push Not at hk
     rw [coeff_eq_zero_of_natDegree_lt, coeff_eq_zero_of_natDegree_lt]
     · rw [natDegree_multiset_prod_X_sub_C_eq_card]; omega
     · rw [natDegree_multiset_prod_X_sub_C_eq_card]; omega

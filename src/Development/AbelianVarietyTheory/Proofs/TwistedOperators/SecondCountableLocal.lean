@@ -115,12 +115,12 @@ theorem simpleSum_succ (g : GL (n' ⊕ Fin (c + 1)) k) :
     rw [Finset.sum_eq_single l.succ]
     · simp
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hj (Fin.ext (by simpa using h))
     · simp
   · intro j _
-    rw [if_neg]
+    rw [ite_eq_right]
     have := j.2
     simp only [Fin.val_last]
     omega
@@ -131,7 +131,7 @@ theorem ch_affPt_mul {g : GL (n' ⊕ Fin (c + 1)) k} (hg : InN p g) (x₀ : Matr
   rw [simpleSum_succ, ch, ch, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [mul_apply_of_inN hg, Finset.sum_eq_single (Sum.inr l.castSucc)]
-  · rw [if_pos (by simp [lev]), affPt_nonfree _ _ _ (Sum.inr l.castSucc) (by simp [Free])]
+  · rw [ite_eq_left (by simp [lev]), affPt_nonfree _ _ _ (Sum.inr l.castSucc) (by simp [Free])]
     simp [basePt]
   · intro s' _ hs
     split_ifs with h'

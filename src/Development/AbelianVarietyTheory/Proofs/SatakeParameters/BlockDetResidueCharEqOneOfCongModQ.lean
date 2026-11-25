@@ -113,8 +113,8 @@ theorem lamQB_eq_one_of_cong : ∀ {E K : Type} [Field E] [NumberField E] [StarR
     refine ⟨h1, ?_⟩
     rw [h2, Matrix.one_apply]
     by_cases hst : s = t
-    · rw [if_pos (Fin.ext (by simp [hst])), if_pos hst]
-    · rw [if_neg (fun h => hst (Fin.ext (by have := congrArg Fin.val h; simp at this; omega))), if_neg hst]
+    · rw [ite_eq_left (Fin.ext (by simp [hst])), ite_eq_left hst]
+    · rw [ite_eq_right (fun h => hst (Fin.ext (by have := congrArg Fin.val h; simp at this; omega))), ite_eq_right hst]
   have hdet : redP P D.det = 1 := by
     rw [(det_int fun s t => (hent s t).1).2]
     have : D.map (redP P) = 1 := Matrix.ext fun s t => (hent s t).2

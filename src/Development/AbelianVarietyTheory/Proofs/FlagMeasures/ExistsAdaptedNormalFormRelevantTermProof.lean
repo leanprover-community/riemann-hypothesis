@@ -206,7 +206,7 @@ theorem exists_dual [FiniteDimensional K V] (G : FlagD H r) (b : Fin r) :
   have hn : G.e b.castSucc ∉ Submodule.span K ((fun a : Fin r => G.e a.castSucc) '' {b}ᶜ) :=
     G.indep.notMem_span_image (by simp)
   have h := mt (memOfOrthogonalOrthogonal K V H _ (G.e b.castSucc)) hn
-  push_neg at h
+  push Not at h
   obtain ⟨v, hv, hb⟩ := h
   refine ⟨star (H.B (G.e b.castSucc) v)⁻¹ • v, fun a => ?_⟩
   rw [map_smulₛₗ]
@@ -356,7 +356,7 @@ theorem entry_cb (bs : List (K × ℕ)) (hb : ∀ b ∈ bs, b.1 ≠ 0 ∧ 1 ≤ 
     obtain ⟨t, s⟩ := b
     have h := hb (t, s) (by simp)
     have ih' := ih (fun b hb' => hb b (by simp [hb']))
-    simp only [List.map_cons, cb, dif_pos h, Formalism.MainNotions.S.Loc.ptEntryL, Formalism.MainNotions.S.ptEntry, PNat.mk_coe, Units.val_mk0]
+    simp only [List.map_cons, cb, dite_eq_left h, Formalism.MainNotions.S.Loc.ptEntryL, Formalism.MainNotions.S.ptEntry, PNat.mk_coe, Units.val_mk0]
     simp only [ih', apply_ite star, star_zero]
     exact if_congr Iff.rfl (if_congr Iff.rfl rfl rfl) (if_congr Iff.rfl rfl rfl)
 
@@ -367,7 +367,7 @@ theorem size_cb (bs : List (K × ℕ)) (hb : ∀ b ∈ bs, b.1 ≠ 0 ∧ 1 ≤ b
   | cons b bs ih =>
     have h := hb b (by simp)
     have ih' := ih (fun b hb' => hb b (by simp [hb']))
-    simp only [List.map_cons, List.sum_cons, cb, dif_pos h, PNat.mk_coe, ih']
+    simp only [List.map_cons, List.sum_cons, cb, dite_eq_left h, PNat.mk_coe, ih']
 
 end Mat
 end GlobalTheory.TypeAsm.NFEx

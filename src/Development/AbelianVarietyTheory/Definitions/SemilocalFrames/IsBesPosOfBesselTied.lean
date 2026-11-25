@@ -218,7 +218,7 @@ end Comparison₂
 def negLine (D : D7) : HSp D := Examples₂.stdSpace Examples₂.star_isIntegral 1 (fun _ => true) 0 1
 
 theorem negLine_gram (D : D7) (i j) : (negLine D).gram i j = -1 :=
-  (Examples₂.stdSpace_gram_apply Examples₂.star_isIntegral 1 (fun _ => true) 0 1 i j).trans (if_pos (Subsingleton.elim _ _))
+  (Examples₂.stdSpace_gram_apply Examples₂.star_isIntegral 1 (fun _ => true) 0 1 i j).trans (ite_eq_left (Subsingleton.elim _ _))
 
 theorem isNegLine_negLine (D : D7) : IsNegLine (negLine D) := by
   refine ⟨rfl, fun τ => ?_, fun _ => rfl⟩

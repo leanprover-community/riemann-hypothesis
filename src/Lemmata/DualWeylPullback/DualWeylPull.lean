@@ -98,7 +98,7 @@ theorem goal1 :
     dualWeyl_pull _ hinj _ G0 (by rw [hG0]; exact Submodule.smul_mem _ _ hG)
   refine ⟨n, ?_⟩
   unfold Formalism.MainNotions.G.H0
-  rw [if_pos hmu]
+  rw [ite_eq_left hmu]
   simp only [Submodule.mem_iInf]
   rintro g' ⟨hg', hspan⟩
   obtain ⟨A, hA, rfl⟩ := span_unit hinj g g' hg hspan

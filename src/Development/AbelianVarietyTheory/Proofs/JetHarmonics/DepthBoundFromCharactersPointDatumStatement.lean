@@ -1157,8 +1157,8 @@ theorem depth_bound_of_chars : Laws → Laws2 → Laws4 → TwistBaseChangeState
   have hm : m = fun t s => m₁ t s + m₂ t s := by
     funext t s
     by_cases ht : isV t <;> simp [m₁, m₂, ht]
-  have hm₁ : ∀ t, ¬ isV t → ∀ s, m₁ t s = 0 := fun t ht s => if_neg ht
-  have hm₂ : ∀ t, ¬ ¬ isV t → ∀ s, m₂ t s = 0 := fun t ht s => if_pos (not_not.1 ht)
+  have hm₁ : ∀ t, ¬ isV t → ∀ s, m₁ t s = 0 := fun t ht s => ite_eq_right ht
+  have hm₂ : ∀ t, ¬ ¬ isV t → ∀ s, m₂ t s = 0 := fun t ht s => ite_eq_left (not_not.1 ht)
   have hDD : ∑ t, ∑ s : Fin (rk t), m₁ t s * (s.val + 1) + ∑ t, ∑ s : Fin (rk t), m₂ t s * (s.val + 1) = D := by
     rw [hD, hm]
     simp only [add_mul, Finset.sum_add_distrib]
@@ -1183,11 +1183,11 @@ theorem depth_bound_of_chars : Laws → Laws2 → Laws4 → TwistBaseChangeState
   have hF₁ := val_eigen_columns y.v _ (fO_comp_eq y) y.B h hh H.w0 a p k hp'.ne_zero hpu hcop ω hω1 hω τ e he isV hV
     S col m₁ (fun t i ht => (hS t i).2 ht) hm₁ yy f₁ (fun b _ => hf₁ b)
     (fun b _ l hl mo => by
-      simp only [yy, dif_pos hl]
+      simp only [yy, dite_eq_left hl]
       exact hf₁' b ⟨⟨l.1, hl⟩, l.2⟩ mo)
     θ ep hep
     (fun t ht s => by
-      simp only [yy, dif_pos ht]
+      simp only [yy, dite_eq_left ht]
       refine (hy₂ ⟨t, ht⟩ s).trans (le_of_eq ?_)
       change (s.val + 1) • y.v c = _
       rw [hc, ← WithTop.coe_nsmul, nsmul_eq_mul, Nat.cast_succ])
@@ -1224,11 +1224,11 @@ theorem depth_bound_of_chars : Laws → Laws2 → Laws4 → TwistBaseChangeState
     rw [← minorMonomial_add, ← hm, sum_prod_const_mul S _ (fun b mo => y.B.nabVal F h H.w0 (k * p) (f b)
         (fun l i => (e l i : F)) (MvPolynomial.monomial mo 1)) (fun b mo => y.B.nabVal F h H.w0 (k * p)
         (FB.toK F (f₁ b) * FB.toK F ω ^ k) (fun l i => (e l i : F)) (MvPolynomial.monomial mo 1)) c₁
-        (fun b hb mo => by simp only [f, if_pos hb]; exact nabVal_C_mul _ _ _ _ _ _ _ _),
+        (fun b hb mo => by simp only [f, ite_eq_left hb]; exact nabVal_C_mul _ _ _ _ _ _ _ _),
       sum_prod_const_mul Sᶜ _ (fun b mo => y.B.nabVal F h H.w0 (k * p) (f b)
         (fun l i => (e l i : F)) (MvPolynomial.monomial mo 1)) (fun b mo => y.B.nabVal F h H.w0 (k * p)
         (ev (n := 1) ![y.B.actK F a] (f₂ b) * FB.toK F ω ^ k) (fun l i => (e l i : F)) (MvPolynomial.monomial mo 1)) c₂
-        (fun b hb mo => by simp only [f, if_neg (Finset.mem_compl.1 hb)]; exact nabVal_C_mul _ _ _ _ _ _ _ _)] at e₁
+        (fun b hb mo => by simp only [f, ite_eq_right (Finset.mem_compl.1 hb)]; exact nabVal_C_mul _ _ _ _ _ _ _ _)] at e₁
     refine (congrArg y.v e₁).trans_le ?_
     rw [y.v.map_mul, y.v.map_mul, y.v.map_mul, hF₂', add_zero, WithTop.coe_add, WithTop.coe_add]
     exact add_le_add (add_le_add (val_prod_le y.v _ _ _ fun b _ => (hc₁ b).le)
@@ -1237,8 +1237,8 @@ theorem depth_bound_of_chars : Laws → Laws2 → Laws4 → TwistBaseChangeState
   refine ⟨fun b => if b ∈ S then s₁ b else s₂ b, fun b => if b ∈ S then s₁' b else s₂' b,
     fun b => if b ∈ S then t₁ b else t₂ b, f, gm, fun b => ?_, hgm.symm, ?_⟩
   · by_cases hb : b ∈ S
-    · simp only [f, if_pos hb]; exact h₁ b
-    · simp only [f, if_neg hb]; exact h₂ b
+    · simp only [f, ite_eq_left hb]; exact h₁ b
+    · simp only [f, ite_eq_right hb]; exact h₂ b
   · rw [← hgm, WithTop.coe_le_coe] at hval
     have h1 : (gm : ℝ) ≤ ∑ b ∈ S, (r₁ b : ℝ) + D * (ep / (p - 1)) + ∑ b ∈ Sᶜ, (r₂ b : ℝ) := by
       rw [hθ] at hval

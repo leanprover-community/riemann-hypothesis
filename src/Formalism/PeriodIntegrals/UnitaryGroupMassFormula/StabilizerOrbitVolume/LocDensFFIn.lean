@@ -101,7 +101,7 @@ theorem frob_of_ne (σ : K ≃ₐ[k] K) (h2 : finrank k K = 2) (hne : σ ≠ Alg
   by_cases hx : ∃ a : k, algebraMap k K a = x
   · obtain ⟨a, rfl⟩ := hx
     rw [AlgEquiv.commutes, ← map_pow, FiniteField.pow_card]
-  push_neg at hx
+  push Not at hx
   have hq : x ^ Fintype.card k ≠ x := fun h => by
     obtain ⟨a, ha⟩ := exists_algebraMap_eq_of_frobenius_fixed x h
     exact hx a ha

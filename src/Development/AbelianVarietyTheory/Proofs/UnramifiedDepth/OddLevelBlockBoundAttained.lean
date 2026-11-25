@@ -202,7 +202,7 @@ theorem exists_std_coords {V : VF K} {d : ℕ} {I J : Type} [Fintype I] [Fintype
     ∃ (S : Sys G) (t : I → MvPowerSeries I K), S.IsT t ∧ ∀ x, OrdGE 2 (t x - X x) := by
   obtain ⟨S, hS⟩ := sysExists G (fun c x => if x = c then 1 else 0)
     (fun c x => by split_ifs; exacts [VF.Ge.one, VF.Ge.zero _])
-    (fun c x h => if_neg fun h' => h (by rw [h']))
+    (fun c x h => ite_eq_right fun h' => h (by rw [h']))
     (by
       have : (Matrix.of fun c x : I => if x = c then (1 : K) else 0) = 1 := by
         ext c x; simp [Matrix.one_apply, eq_comm]
@@ -217,7 +217,7 @@ theorem exists_std_coords {V : VF K} {d : ℕ} {I J : Type} [Fintype I] [Fintype
     rw [(S.curve c).2.1, hS]; rfl
   rw [Finset.sum_range_succ', Finset.sum_eq_zero, zero_add] at h
   · simp only [hal, pow_zero, pow_one, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true] at h
+      ite_true] at h
     rw [h]
   · intro s _
     refine Finset.sum_eq_zero fun c _ => ?_
@@ -270,14 +270,14 @@ theorem jetAt0_rowForm {n : ℕ} (g : Fin 2) (E : Fin n → I g → K) (E' : Fin
   · funext z
     rw [Fintype.sum_sum_type, Fintype.sum_prod_type, Fintype.sum_prod_type]
     simp only [Sum.elim_inl, Sum.elim_inr, ite_smul, zero_smul, Finset.sum_ite_irrel, Finset.sum_const_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, rowForm]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, rowForm]
   · congr 1
     funext u
     rw [Fintype.sum_prod_type]
     rcases u with ⟨ρ, c⟩ | ⟨ρ, c⟩
     all_goals
       simp only [Sum.elim_inl, Sum.elim_inr, apply_ite MvPolynomial.C, map_zero, ite_mul, zero_mul,
-        Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        Finset.sum_ite_irrel, Finset.sum_const_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [sum_toW]
 
 theorem subst_rowCopy {n : ℕ} (a : Fin n × WV I → MvPowerSeries (PVar n) K)
@@ -324,7 +324,7 @@ theorem restr_rows {n0 n : ℕ} (hn : n0 ≤ n) (g : Fin 2) (E : Fin n → I g �
 
   rw [restr_eq_killCompl, Finset.sum_filter, ← Fintype.sum_of_injective (Fin.castLE hn)
   (Fin.castLE_injective hn) (fun ρ => subst (rowForm g E E' (Fin.castLE hn ρ)) h) _
-  (fun c hc => if_neg (hrange c hc)) (fun ρ => (if_pos ρ.2).symm), map_sum]
+  (fun c hc => ite_eq_right (hrange c hc)) (fun ρ => (ite_eq_left ρ.2).symm), map_sum]
   unfold hRows
   refine Finset.sum_congr rfl fun ρ _ => ?_
   have hs : HasSubst (Sum.elim (fun c => (X (Sum.inl (ρ, c)) : MvPowerSeries (PVar n0) K))
@@ -376,7 +376,7 @@ theorem det_change {n : ℕ} (g : Fin 2) (p : Fin n → I g) (A : Fin n → Fin 
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b _ => ?_
   simp only [mul_ite, mul_one, mul_zero, apply_ite MvPolynomial.C, map_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem v_le_of_int_mul {V : VF K} {a b : K} (ha : V.Ge 0 a) : V.v b ≤ V.v (a * b) := by
@@ -656,7 +656,7 @@ theorem rows_main (V : VF C) (i n0 : ℕ) :
   unfold mainM
   refine Eq.trans (Finset.sum_congr rfl fun ρ _ => ?_) (Finset.smul_sum).symm
 
-  simp only [ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true, map_smul, map_sum,
+  simp only [ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_smul, map_sum,
   map_mul, map_pow, rename_X, neg_smul, one_smul, map_neg, Finset.sum_neg_distrib, smul_neg]
   rfl
 
@@ -771,7 +771,7 @@ theorem satIn_single (X : RowData K V d I J) (g : Fin 2) (a : ZMod d) {N : ℕ} 
     intro P _; split_ifs
     exacts [VF.Ge.one, VF.Ge.zero _]
   refine ⟨⟨fun c x => h01 _, fun x c => if x = p c then 1 else 0, fun x c => h01 _, fun c c' => ?_⟩,
-    fun c x hx => if_neg fun h => hx (by rw [h, hty])⟩
+    fun c x hx => ite_eq_right fun h => hx (by rw [h, hty])⟩
   simp [hp.eq_iff, eq_comm]
 
 theorem cc_mvExp' {σ : Type} (x : MvPowerSeries σ K) : constantCoeff (mvExp x) = 1 := by
@@ -832,10 +832,10 @@ theorem window_letterDet (X : RowData K V d I J) (hA : X.Alt) (hl : 5 ≤ V.l) (
     refine ⟨gr, hgr, hv.trans ?_⟩
     by_cases h0 : y = 0
     · subst h0
-      simp only [blockBd, if_true, mul_zero, pow_zero, mul_one, jetAt0_one', BiF, ite_self, one_mul, map_prod,
+      simp only [blockBd, ite_true, mul_zero, pow_zero, mul_one, jetAt0_one', BiF, ite_self, one_mul, map_prod,
         cc_mvExp', Finset.prod_const_one, V.v.map_one]
       rfl
-    · rw [blockBd, if_neg h0]
+    · rw [blockBd, ite_eq_right h0]
       exact h.resolve_right h0
   refine ⟨⟨S, t, hSt, hgood 0 (Or.inr rfl)⟩, fun Y0 => ?_⟩
   rcases Nat.eq_zero_or_pos n0 with h0 | h0

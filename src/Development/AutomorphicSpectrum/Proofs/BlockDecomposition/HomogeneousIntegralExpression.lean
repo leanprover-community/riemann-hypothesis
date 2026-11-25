@@ -80,7 +80,7 @@ theorem homogeneousComponent_aeval_mul {K σ : Type} [Field K] {m e : ℕ} (he :
       simp
     · have hne : e * r' + t ≠ e * r + t := fun h' =>
         hr (Nat.eq_of_mul_eq_mul_left he (Nat.add_right_cancel h'))
-      rw [if_neg hne.symm, if_neg hr]
+      rw [ite_eq_right hne.symm, ite_eq_right hr]
   conv_lhs => rw [← sum_homogeneousComponent C]
 
   rw [map_sum, Finset.sum_mul, map_sum]

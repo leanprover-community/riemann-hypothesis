@@ -282,11 +282,11 @@ private theorem rho_nu (v w : InfinitePlace F) : nuH v (rho w) = if v = w then 2
   change ‖((infiniteUnitsEquiv F).symm (Pi.mulSingle w (Units.mk0 2 (two_ne w))) : (InfiniteAdeleRing F)ˣ).val v‖ = _
   by_cases h : v = w
   · subst h
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     change ‖((Pi.mulSingle v (Units.mk0 (2 : v.Completion) (two_ne v)) : ∀ w : InfinitePlace F, w.Completionˣ) v).val‖ = 2
     rw [Pi.mulSingle_eq_same]
     exact norm_two v
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     change ‖((Pi.mulSingle w (Units.mk0 (2 : w.Completion) (two_ne w)) : ∀ w : InfinitePlace F, w.Completionˣ) v).val‖ = 1
     rw [Pi.mulSingle_eq_of_ne h]
     simp
@@ -305,9 +305,9 @@ private theorem nu_pos (v : InfinitePlace F) (x : IdeleGroup F) : 0 < nuH v x :=
 private theorem tau_nu (v : InfinitePlace F) (k : InfinitePlace F → ℤ) :
     ∏ i, nuH v (rho i) ^ k i = 2 ^ k v := by
   rw [Finset.prod_eq_single v]
-  · rw [rho_nu, if_pos rfl]
+  · rw [rho_nu, ite_eq_left rfl]
   · intro b _ hb
-    rw [rho_nu, if_neg (Ne.symm hb), _root_.one_zpow]
+    rw [rho_nu, ite_eq_right (Ne.symm hb), _root_.one_zpow]
   · simp
 
 private theorem nu_le (a : IdeleGroup F) (v : InfinitePlace F) :

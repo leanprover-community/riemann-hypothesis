@@ -62,7 +62,7 @@ theorem exists_repr : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
     · rintro rfl
       exact hi (by rw [← ht, map_zero])
     · rw [hE_single, ht]; simp
-  · push_neg at hd
+  · push Not at hd
     obtain ⟨i, j, hij⟩ : ∃ i j, T i j ≠ 0 := by
       by_contra! hc
       exact hdet (by rw [show T = 0 from Matrix.ext hc, Matrix.det_zero])

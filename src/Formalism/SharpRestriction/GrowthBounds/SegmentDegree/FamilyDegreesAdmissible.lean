@@ -106,10 +106,10 @@ theorem sum_bfam_late (la : Fin n' → Fin (r + K) → ℕ) (e : Fin X.F.J → F
     X.bfam p K la e (j.val : ℤ) x = X.setTau (j.val : ℤ) (X.nz p K la (j.val : ℤ)) (e j) x := by
   obtain ⟨h1, h2, h3, -⟩ := sum_late_mem hx
   unfold Dat.bfam Dat.setTau
-  rw [if_pos h1, if_neg h2, sum_eZ_val]
+  rw [ite_eq_left h1, ite_eq_right h2, sum_eZ_val]
   by_cases h : X.F.fr (j.val : ℤ) 0 ≤ x
-  · rw [if_pos h, if_pos ⟨h, h3⟩]
-  · rw [if_neg h, if_neg (fun hh => h hh.1)]
+  · rw [ite_eq_left h, ite_eq_left ⟨h, h3⟩]
+  · rw [ite_eq_right h, ite_eq_right (fun hh => h hh.1)]
 
 theorem family_degrees_admissible (hr : 0 < r) (hp : 0 < p) (hLL : ∀ j x, x ∈ X.F.LLset j → x ∈ X.toLate j)
     (la : Fin n' → Fin (r + K) → ℕ) (hla : la ∈ X.LA p K) (j : ℤ) :

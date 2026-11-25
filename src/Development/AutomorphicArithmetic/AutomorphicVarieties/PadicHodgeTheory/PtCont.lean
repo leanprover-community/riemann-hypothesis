@@ -117,7 +117,7 @@ theorem UpperTheory.Reformulated.B.IntegralOfNormBounded.ptc_field :
       hA y⁻¹ (inv_mul_cancel₀ hy) (UpperTheory.Reformulated.B.IntegralOfNormBounded.isIntegral_of_norm_le _ h)
     have h2 : f y * f y⁻¹ = 1 := by rw [← hfmul, mul_inv_cancel₀ hy, hf1]
     have h3 : 0 ≤ f y := (hf y).symm ▸ spectralNorm_nonneg y
-    push_neg at h1
+    push Not at h1
     nlinarith
   have hfpow : ∀ (n : ℕ) (z : K), f (z ^ n) = f z ^ n := by
     intro n z

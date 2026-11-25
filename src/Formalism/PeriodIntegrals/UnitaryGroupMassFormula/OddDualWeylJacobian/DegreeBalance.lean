@@ -40,12 +40,12 @@ theorem degW_eq {k : ℕ} (ν : Fin k → ℕ) (hν : Antitone ν) : degW ν = �
       ∑ s ∈ Finset.range k, (s + 1) * (ext0 ν s - ext0 ν (s + 1)) := by
     rw [← Fin.sum_univ_eq_sum_range (fun s => (s + 1) * (ext0 ν s - ext0 ν (s + 1))) k]
     refine Finset.sum_congr rfl fun s _ => ?_
-    simp only [ext0, dif_pos s.2]
+    simp only [ext0, dite_eq_left s.2]
     rfl
   have e2 : ∑ s : Fin k, ν s = ∑ s ∈ Finset.range k, ext0 ν s := by
     rw [← Fin.sum_univ_eq_sum_range (fun s => ext0 ν s) k]
     refine Finset.sum_congr rfl fun s _ => ?_
-    simp only [ext0, dif_pos s.2]
+    simp only [ext0, dite_eq_left s.2]
   unfold degW
   rw [e1, e2, h]
 

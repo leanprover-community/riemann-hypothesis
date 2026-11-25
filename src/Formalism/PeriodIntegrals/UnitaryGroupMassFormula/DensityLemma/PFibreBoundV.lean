@@ -65,31 +65,31 @@ lemma cases3 {P : Fin (2 * r + k + 1) → Prop} (h1 : ∀ a, P (eI k r a)) (h2 :
 lemma piI_eI (a : Fin r) : piI k r (eI k r a) = esI k r a := Fin.ext (by
   rw [piI_val]
   have h1 : ¬ (r ≤ (eI k r a).val ∧ (eI k r a).val ≤ r + k) := by rw [eI_val]; omega
-  rw [if_neg h1, eI_val, esI_val])
+  rw [ite_eq_right h1, eI_val, esI_val])
 lemma piI_wI (j : Fin (k + 1)) : piI k r (wI k r j) = wI k r j := Fin.ext (by
   rw [piI_val]
   have h1 : r ≤ (wI k r j).val ∧ (wI k r j).val ≤ r + k := by rw [wI_val]; omega
-  rw [if_pos h1])
+  rw [ite_eq_left h1])
 lemma piI_esI (a : Fin r) : piI k r (esI k r a) = eI k r a := Fin.ext (by
   rw [piI_val]
   have h1 : ¬ (r ≤ (esI k r a).val ∧ (esI k r a).val ≤ r + k) := by rw [esI_val]; omega
-  rw [if_neg h1, esI_val, eI_val]
+  rw [ite_eq_right h1, esI_val, eI_val]
   omega)
 lemma epsI_eI (a : Fin r) : epsI k r (eI k r a) = 1 := by
   have h1 : ¬ ((eI k r a).val = r + k) := by rw [eI_val]; omega
   unfold epsI
-  rw [if_neg h1]
+  rw [ite_eq_right h1]
 lemma epsI_esI (a : Fin r) : epsI k r (esI k r a) = 1 := by
   have h1 : ¬ ((esI k r a).val = r + k) := by rw [esI_val]; omega
   unfold epsI
-  rw [if_neg h1]
+  rw [ite_eq_right h1]
 lemma epsI_wI (j : Fin (k + 1)) : epsI k r (wI k r j) = hW k j := by
   unfold epsI hW
   by_cases h : j.val = k
   · have h1 : (wI k r j).val = r + k := by rw [wI_val]; omega
-    rw [if_pos h1, if_pos h]
+    rw [ite_eq_left h1, ite_eq_left h]
   · have h1 : ¬ (wI k r j).val = r + k := by rw [wI_val]; omega
-    rw [if_neg h1, if_neg h]
+    rw [ite_eq_right h1, ite_eq_right h]
 
 lemma hW_sq (j : Fin (k + 1)) : hW k j * hW k j = 1 := by
   unfold hW
@@ -133,21 +133,21 @@ lemma Hpk_es (a b : Fin r) : Hpk k r (eI k r a) (esI k r b) = if a = b then 1 el
   simp only [Hpk_apply, piI_eI, esI_inj, epsI_eI]
   by_cases h : a = b
   · subst h; simp
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 lemma Hpk_we (j : Fin (k + 1)) (b : Fin r) : Hpk k r (wI k r j) (eI k r b) = 0 := by
   simp [Hpk_apply, piI_wI, eI_ne_wI]
 lemma Hpk_ww (i j : Fin (k + 1)) : Hpk k r (wI k r i) (wI k r j) = if i = j then hW k i else 0 := by
   simp only [Hpk_apply, piI_wI, wI_inj, epsI_wI]
   by_cases h : i = j
   · subst h; simp
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 lemma Hpk_ws (j : Fin (k + 1)) (b : Fin r) : Hpk k r (wI k r j) (esI k r b) = 0 := by
   simp [Hpk_apply, piI_wI, (wI_ne_esI j b).symm]
 lemma Hpk_se (a b : Fin r) : Hpk k r (esI k r a) (eI k r b) = if a = b then 1 else 0 := by
   simp only [Hpk_apply, piI_esI, eI_inj, epsI_esI]
   by_cases h : a = b
   · subst h; simp
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 lemma Hpk_sw (a : Fin r) (j : Fin (k + 1)) : Hpk k r (esI k r a) (wI k r j) = 0 := by
   simp [Hpk_apply, piI_esI, (eI_ne_wI a j).symm]
 lemma Hpk_ss (a b : Fin r) : Hpk k r (esI k r a) (esI k r b) = 0 := by
@@ -294,23 +294,23 @@ theorem nb_uMap {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hB : Bm 
   rw [Matrix.one_apply]
   simp only [C2.uMap]
   by_cases ha : a.val < r
-  · rw [dif_pos ha, herm_esI]
+  · rw [dite_eq_left ha, herm_esI]
     by_cases hb : b.val < r
-    · simp only [fvec, dif_pos hb, mulVec_bvec, nb_ee]
+    · simp only [fvec, dite_eq_left hb, mulVec_bvec, nb_ee]
       by_cases hab : a = b
       · subst hab; simp
-      · rw [if_neg hab, if_neg]
+      · rw [ite_eq_right hab, ite_eq_right]
         intro h; exact hab (Fin.ext (by simpa using congrArg Fin.val h))
-    · simp only [fvec, dif_neg hb, nb_z_eI Bm S hzW, hB, Pi.zero_apply]
-      rw [if_neg]
+    · simp only [fvec, dite_eq_right hb, nb_z_eI Bm S hzW, hB, Pi.zero_apply]
+      rw [ite_eq_right]
       intro h; apply hb; rw [← h]; exact ha
-  · rw [dif_neg ha, herm_Hpk_of_inWb_eq_sum_wI hzW (unipotentBlockMatrix k r Bm S *ᵥ fvec k r z b)]
+  · rw [dite_eq_right ha, herm_Hpk_of_inWb_eq_sum_wI hzW (unipotentBlockMatrix k r Bm S *ᵥ fvec k r z b)]
     by_cases hb : b.val < r
-    · simp only [fvec, dif_pos hb, mulVec_bvec, nb_we, mul_zero, Finset.sum_const_zero, zero_div]
-      rw [if_neg]
+    · simp only [fvec, dite_eq_left hb, mulVec_bvec, nb_we, mul_zero, Finset.sum_const_zero, zero_div]
+      rw [ite_eq_right]
       intro h; apply ha; rw [h]; exact hb
-    · simp only [fvec, dif_neg hb, nb_z_wI Bm S hzW]
-      rw [← herm_Hpk_of_inWb_eq_sum_wI hzW z, div_self hne, if_pos]
+    · simp only [fvec, dite_eq_right hb, nb_z_wI Bm S hzW]
+      rw [← herm_Hpk_of_inWb_eq_sum_wI hzW z, div_self hne, ite_eq_left]
       exact Fin.ext (by omega)
 
 theorem nb_Nset (hS : Sᴴ = -S) : unipotentBlockMatrix k r Bm S ∈ Nset k r := by
@@ -319,8 +319,8 @@ theorem nb_Nset (hS : Sᴴ = -S) : unipotentBlockMatrix k r Bm S ∈ Nset k r :=
   · intro a i _
     rcases fin_eq_eI_or_wI_or_esI i with ⟨c, rfl⟩ | ⟨j, rfl⟩ | ⟨c, rfl⟩
     · rw [nb_ee]; simp only [eI_inj]
-    · rw [nb_we, if_neg (eI_ne_wI a j).symm]
-    · rw [nb_se, if_neg (eI_ne_esI a c).symm]
+    · rw [nb_we, ite_eq_right (eI_ne_wI a j).symm]
+    · rw [nb_se, ite_eq_right (eI_ne_esI a c).symm]
   · intro i j hj1 hj2 hi
     simp only [unipotentBlockMatrix, Matrix.of_apply]
     split_ifs <;> first | (exfalso; omega) | simp
@@ -332,11 +332,11 @@ theorem nb_mem {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hB : Bm *
 omit Bm S in
 lemma um_lt (z : Fin (2 * r + k + 1) → ℂ) (n : B.Mat k r) (a : Fin r) (b : Fin (r + 1)) :
     C2.uMap k r z n ⟨a.val, by omega⟩ b = (n *ᵥ fvec k r z b) (eI k r a) := by
-  simp only [C2.uMap, dif_pos a.isLt, herm_esI]
+  simp only [C2.uMap, dite_eq_left a.isLt, herm_esI]
 
 omit Bm S in
 lemma fvec_lt (z : Fin (2 * r + k + 1) → ℂ) (b : Fin r) : fvec k r z ⟨b.val, by omega⟩ = bvec (eI k r b) := by
-  simp only [fvec, dif_pos b.isLt]
+  simp only [fvec, dite_eq_left b.isLt]
 
 omit Bm S in
 lemma fvec_last (z : Fin (2 * r + k + 1) → ℂ) : fvec k r z (Fin.last r) = z := by
@@ -370,12 +370,12 @@ theorem nb_fwd {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (n : B.Mat
     rw [h1]
     by_cases hab : a = b
     · subst hab; simp
-    · rw [if_neg hab, if_neg]
+    · rw [ite_eq_right hab, ite_eq_right]
       intro h; exact hab (Fin.ext (by simpa using congrArg Fin.val h))
   have hlast : ∀ a : Fin r, (n *ᵥ z) (eI k r a) = 0 := by
     intro a
     have h1 := congrFun (congrFun hu ⟨a.val, by omega⟩) (Fin.last r)
-    rw [um_lt, fvec_last, Matrix.one_apply, if_neg] at h1
+    rw [um_lt, fvec_last, Matrix.one_apply, ite_eq_right] at h1
     · exact h1
     · intro h
       have h2 := congrArg Fin.val h
@@ -393,12 +393,12 @@ theorem nb_fwd {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (n : B.Mat
   have hwe : ∀ j b, n (wI k r j) (eI k r b) = 0 := by
     intro j b
     have := b.isLt
-    rw [hcol b (wI k r j) (by rw [wI_val]; omega), if_neg (eI_ne_wI b j).symm]
+    rw [hcol b (wI k r j) (by rw [wI_val]; omega), ite_eq_right (eI_ne_wI b j).symm]
   have hse : ∀ a b, n (esI k r a) (eI k r b) = 0 := by
     intro a b
     have := a.isLt
     have := b.isLt
-    rw [hcol b (esI k r a) (by rw [esI_val]; omega), if_neg (eI_ne_esI b a).symm]
+    rw [hcol b (esI k r a) (by rw [esI_val]; omega), ite_eq_right (eI_ne_esI b a).symm]
   have hww : ∀ i j, n (wI k r i) (wI k r j) = if i = j then 1 else 0 := by
     intro i j
     have := i.isLt
@@ -410,7 +410,7 @@ theorem nb_fwd {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (n : B.Mat
     have := a.isLt
     have := j.isLt
     rw [hmid (esI k r a) (wI k r j) (by rw [wI_val]; omega) (by rw [wI_val]; omega)
-      (by rw [esI_val]; omega), if_neg (wI_ne_esI j a).symm]
+      (by rw [esI_val]; omega), ite_eq_right (wI_ne_esI j a).symm]
   have hss : ∀ a b, n (esI k r a) (esI k r b) = if a = b then 1 else 0 := by
     intro a b
     have h := hE (eI k r a) (esI k r b)

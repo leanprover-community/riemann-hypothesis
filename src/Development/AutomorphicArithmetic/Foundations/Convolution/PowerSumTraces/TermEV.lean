@@ -202,9 +202,9 @@ theorem UpperTheory.eigenspace_factorization_over_nonsplit_places_CMDatum :
   let χ' : ∀ w : Pl E, Gw n w → ℂ := fun w => if w.under (𝓞 F) ∈ nsS T then 1 else T.χ w
   have hJpos : ∀ w : Pl E, w.under (𝓞 F) ∈ nsS T →
       J' w = (L.UE (w.under (𝓞 F))).map (GM.cmp (⟨w, ⟨rfl⟩⟩ : PlacesOver E (w.under (𝓞 F)))) ∧ χ' w = 1 :=
-    fun w hw => ⟨if_pos hw, if_pos hw⟩
+    fun w hw => ⟨ite_eq_left hw, ite_eq_left hw⟩
   have hJneg : ∀ w : Pl E, w.under (𝓞 F) ∉ nsS T → J' w = T.J w ∧ χ' w = T.χ w :=
-    fun w hw => ⟨if_neg hw, if_neg hw⟩
+    fun w hw => ⟨ite_eq_right hw, ite_eq_right hw⟩
   have hfw : ∀ w, f ∈ eigL μ w (J' w) (χ' w) := fun w => by
     by_cases hw : w.under (𝓞 F) ∈ nsS T
     · rw [(hJpos w hw).1, (hJpos w hw).2]

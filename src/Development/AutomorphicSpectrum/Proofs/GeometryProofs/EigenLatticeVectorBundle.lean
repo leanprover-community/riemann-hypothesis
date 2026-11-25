@@ -362,12 +362,12 @@ theorem isVBOn_eig_genFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     nlinarith [sq_nonneg r]
   refine ⟨?_, ?_, ?_, ?_⟩
   · have h := hV τ
-    have hr : Module.finrank Z.Ω (eigSp Z.ρ (σ τ)) = D.p := (finrank_eigSp Z τ).trans (if_pos hτ)
+    have hr : Module.finrank Z.Ω (eigSp Z.ρ (σ τ)) = D.p := (finrank_eigSp Z τ).trans (ite_eq_left hτ)
     rw [hr] at h
     exact h
   · have h := hV (ComplexEmbedding.conjugate τ)
     have hr : Module.finrank Z.Ω (eigSp Z.ρ (σ (ComplexEmbedding.conjugate τ))) = D.q :=
-      (finrank_eigSp Z _).trans (if_neg hne)
+      (finrank_eigSp Z _).trans (ite_eq_right hne)
     rw [hr] at h
     exact h
   · intro x hx

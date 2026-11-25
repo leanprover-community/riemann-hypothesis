@@ -26,7 +26,7 @@ variable {U u}
 lemma tu_def {V : Y.Opens} {ψ : Y ⟶ X} {p : ι} (h : V ≤ ψ ⁻¹ᵁ U p) :
     tu U u V ψ p = res h (pullU ψ _ (u p)) := by
   unfold tu
-  exact dif_pos h
+  exact dite_eq_left h
 
 private alias rs_rs' := _root_.ReciprocityTheory.ChartRestriction.G.DVR.rs_rs
 
@@ -120,10 +120,10 @@ lemma wu_gen (w : LB.Iso L M) (hw : w.IsGen) {V : Y.Opens} {ψ : Y ⟶ X} {a a' 
     tu_def (U := (LB.div M L).U) (u := w.s) c0'
   have e3 : tr M V ψ a a' = res c1 (pullU ψ _ (M.g a a')) := by
     unfold tr
-    exact dif_pos c1
+    exact dite_eq_left c1
   have e4 : tr L V ψ b b' = res c2 (pullU ψ _ (L.g b b')) := by
     unfold tr
-    exact dif_pos c2
+    exact dite_eq_left c2
   calc wu w V ψ a b = _ := e1
     _ = _ := K
     _ = tr M V ψ a a' * (tr L V ψ b b')⁻¹ * wu w V ψ a' b' := by
@@ -394,7 +394,7 @@ lemma g_pull_one {Z : Scheme.{0}} (h : Z ⟶ X) (a b : Fin 1 → L.ι) {W : Z.Op
       (inf_le_right.trans (LB.wchart_le L (fun _ : Fin 1 => 𝟙 X) b 0))))
   have e3 : tr L W h (a 0) (b 0) = res c (pullU h _ (L.g (a 0) (b 0))) := by
     unfold tr
-    exact dif_pos c
+    exact dite_eq_left c
   refine (congrArg (fun z => res hW (pullU h _ z)) (linComb_fin_one_g L k a b)).trans ?_
   refine (congrArg (res hW) (map_zpow (pullU h _) _ k)).trans ((map_zpow (res hW) _ k).trans ?_)
   congr 1

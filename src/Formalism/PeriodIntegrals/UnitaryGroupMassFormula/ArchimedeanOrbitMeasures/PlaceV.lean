@@ -111,10 +111,10 @@ theorem blk_lie (ε : Fin n → Bool) (S : Finset (Fin n)) (X : Matrix (Fin n) (
   rw [lie_entry] at h ⊢
   by_cases hij : i ∈ S ∧ j ∈ S
   · have hji : j ∈ S ∧ i ∈ S := ⟨hij.2, hij.1⟩
-    simp only [blk, if_pos hij, if_pos hji]
+    simp only [blk, ite_eq_left hij, ite_eq_left hji]
     simpa using h
   · have hji : ¬ (j ∈ S ∧ i ∈ S) := fun h' => hij ⟨h'.2, h'.1⟩
-    simp [blk, if_neg hij, if_neg hji]
+    simp [blk, ite_eq_right hij, ite_eq_right hji]
 
 end Coords
 
@@ -177,13 +177,11 @@ theorem exp_blk_mul_proj (S : Finset (Fin n)) (M : Matrix (Fin n) (Fin n) ℂ)
   · simp [hb]
   · simp [hb, hM a b (Or.inr hb)]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_neg_mul_exp {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) :
     NormedSpace.exp M * NormedSpace.exp (-M) = 1 := by
   rw [← Matrix.exp_add_of_commute M (-M) (Commute.neg_right (Commute.refl M)), add_neg_cancel,
     NormedSpace.exp_zero]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_neg_mul_exp' {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) :
     NormedSpace.exp (-M) * NormedSpace.exp M = 1 := by
   rw [← Matrix.exp_add_of_commute (-M) M (Commute.neg_left (Commute.refl M)), neg_add_cancel,

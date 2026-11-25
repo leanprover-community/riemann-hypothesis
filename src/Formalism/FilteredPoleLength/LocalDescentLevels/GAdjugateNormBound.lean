@@ -69,7 +69,7 @@ theorem gHadamard : GHadamard := by
       exact pow_eq_zero_iff two_ne_zero |>.mp this
     rw [Matrix.det_eq_zero_of_column_eq_zero j hcol, abs_zero]
     exact Finset.prod_nonneg fun j _ => Real.sqrt_nonneg _
-  push_neg at hz
+  push Not at hz
   have hpos : ∀ j, 0 < ∑ i, M i j ^ 2 := fun j => lt_of_le_of_ne (hs0 j) (Ne.symm (hz j))
   obtain ⟨r, hr⟩ : ∃ r : Fin n → ℝ, r = fun j => Real.sqrt (∑ i, M i j ^ 2) := ⟨_, rfl⟩
   have hr0 : ∀ j, 0 < r j := fun j => by

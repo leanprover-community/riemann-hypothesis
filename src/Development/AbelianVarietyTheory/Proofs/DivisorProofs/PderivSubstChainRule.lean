@@ -101,7 +101,7 @@ theorem pderiv_subst_chain {R σ τ : Type} [CommRing R] [Fintype σ] [Fintype �
         intro i
         by_cases h : i = s2
         · subst h; simp
-        · rw [if_neg h, pderiv_X_of_ne (Ne.symm h)]
+        · rw [ite_eq_right h, pderiv_X_of_ne (Ne.symm h)]
       have hterm : ∀ i : σ, subst a (pderiv (R := R) i ((p : MvPowerSeries σ R) * X s2)) * pderiv (R := R) k (a i) =
           (if i = s2 then subst a (p : MvPowerSeries σ R) * pderiv (R := R) k (a i) else 0) +
             a s2 * (subst a (pderiv (R := R) i (p : MvPowerSeries σ R)) * pderiv (R := R) k (a i)) := by
@@ -112,7 +112,7 @@ theorem pderiv_subst_chain {R σ τ : Type} [CommRing R] [Fintype σ] [Fintype �
         · rw [hs1]; ring
         · rw [hs0]; ring
       rw [Finset.sum_congr rfl (fun i _ => hterm i), Finset.sum_add_distrib, Finset.sum_ite_eq',
-        if_pos (Finset.mem_univ _), ← Finset.mul_sum]
+        ite_eq_left (Finset.mem_univ _), ← Finset.mul_sum]
   have := (MvPowerSeries.WithPiTopology.denseRange_toMvPowerSeries).equalizer c1 c2 (funext hpoly)
   exact congrFun this f
 

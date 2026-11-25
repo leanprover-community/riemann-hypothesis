@@ -259,7 +259,7 @@ theorem jumpDual_main : StepJumpDual := by
         · rw [abs_le] at h; unfold cen at h
           constructor <;> linarith [h.1, h.2]
         · unfold cloud cen at h; rw [hsg] at h
-          simp only [Bool.false_eq_true, if_false] at h; push_cast at h
+          simp only [Bool.false_eq_true, ite_false] at h; push_cast at h
           constructor <;> linarith [h.1, h.2]
       have k1 : b ≤ (eta : ℤ) + D.R.t := by exact_mod_cast key.1
       have k2 : -((s : ℤ) + S) - 1 ≤ b := by exact_mod_cast key.2
@@ -306,7 +306,7 @@ theorem stepJumpDirect_holds : StepJumpDirect := by
           constructor <;> linarith
         · rw [abs_le] at h; unfold cen at h
           constructor <;> linarith [h.1, h.2]
-        · unfold cloud cen at h; rw [hsg] at h; simp only [if_true] at h; push_cast at h
+        · unfold cloud cen at h; rw [hsg] at h; simp only [ite_true] at h; push_cast at h
           constructor <;> linarith [h.1, h.2]
       have k1 : -((eta : ℤ) + D.R.t + 1) - 1 < u := by exact_mod_cast key.1
       have k2 : u ≤ (s : ℤ) + S := by exact_mod_cast key.2

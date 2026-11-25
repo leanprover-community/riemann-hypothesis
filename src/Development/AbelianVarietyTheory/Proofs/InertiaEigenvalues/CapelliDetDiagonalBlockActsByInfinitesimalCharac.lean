@@ -207,7 +207,7 @@ theorem blockLin_single (e : (Σ j, Fin (n j)) ≃ Fin N) (i : Fin c) (p q : Fin
     change (blockDiagonal' _).submatrix e.symm e.symm (e ⟨j, p'⟩) (e ⟨k, q'⟩) =
       Matrix.single (e ⟨i, p⟩) (e ⟨i, q⟩) x (e ⟨j, p'⟩) (e ⟨k, q'⟩)
     rw [submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply, blockDiagonal'_apply_ne _ _ _ hjk,
-      Matrix.single_apply, if_neg]
+      Matrix.single_apply, ite_eq_right]
     rintro ⟨h1, h2⟩
     exact hjk ((congrArg Sigma.fst (e.injective h1)).symm.trans (congrArg Sigma.fst (e.injective h2)))
 

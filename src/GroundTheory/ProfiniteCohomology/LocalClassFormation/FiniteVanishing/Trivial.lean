@@ -65,8 +65,6 @@ theorem apply_eq_of_mem_rootsOfUnityFixing {K Ksep : Type} [Field K] [Field Ksep
 
 section Trivial
 
-attribute [local instance 2000] Rep.hV2
-
 variable (K Ksep : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   [Field Ksep] [Algebra K Ksep] [IsSepClosure K Ksep]
 

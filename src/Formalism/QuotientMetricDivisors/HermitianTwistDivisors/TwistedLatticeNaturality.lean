@@ -209,14 +209,6 @@ theorem shift_slope_mu :
     field_simp
     ring
 
-section Prime
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-variable [_root_.NumberField.IsTotallyComplex K]
-
-end Prime
-
 section Unit
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {d : ℕ}

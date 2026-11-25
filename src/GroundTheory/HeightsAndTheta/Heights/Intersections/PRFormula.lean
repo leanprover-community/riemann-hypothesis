@@ -246,19 +246,9 @@ theorem smooth_snoc {n : ℕ} {A : HermLine ι} {L : Fin n → HermLine ι} (hA 
 
 end Smooth
 
-section FibreSquare
-
-variable {ι ν κ : Type} [Fintype ι] [Fintype ν] [Fintype κ]
-
-end FibreSquare
-
 end DiagRAux
 
 open DiagRAux
-
-section Main
-
-end Main
 
 end
 

@@ -179,21 +179,6 @@ theorem IsDer.map_natCast {d : Ω → Ω} (h : IsDer d) (k : ℕ) : d k = 0 := b
   | zero => simpa using h.map_zero
   | succ k ih => rw [Nat.cast_succ, h.1, ih, h.map_one, add_zero]
 
-theorem IsDer.map_neg {d : Ω → Ω} (h : IsDer d) (a : Ω) : d (-a) = -d a := by
-  have := h.1 a (-a)
-  rw [add_neg_cancel, h.map_zero] at this
-  linear_combination -this
-
-theorem IsDer.map_sub {d : Ω → Ω} (h : IsDer d) (a b : Ω) : d (a - b) = d a - d b := by
-  rw [sub_eq_add_neg, h.1, h.map_neg, ← sub_eq_add_neg]
-
-theorem IsDer.map_sum {d : Ω → Ω} (h : IsDer d) {β : Type} (s : Finset β) (f : β → Ω) :
-    d (∑ i ∈ s, f i) = ∑ i ∈ s, d (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using h.map_zero
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, h.1, ih]
-
 theorem IsDer.pow_mul {d : Ω → Ω} (h : IsDer d) {g gi : Ω} (hg : g * gi = 1) (k : ℕ) (f : Ω) :
     d (g ^ k * f) = g ^ k * (d f + k * (d g * gi) * f) := by
   induction k with
@@ -283,7 +268,7 @@ theorem constFn_two {Z : Scheme.{0}} (p : Z ⟶ Sp R) (O : Z.Opens) : constFn p 
 theorem valR_pbT {A : Type} [CommRing A] {Z X : Scheme.{0}} (a : Sp A ⟶ Z) (p : Z ⟶ X) {O₀ : X.Opens} {O : Z.Opens}
     (hO : O ≤ p ⁻¹ᵁ O₀) (ha : ⊤ ≤ a ⁻¹ᵁ O) (s : Γ(X, O₀)) : valR a O (pbT p s O) = valR (a ≫ p) O₀ s := by
   have ha' : ⊤ ≤ (a ≫ p) ⁻¹ᵁ O₀ := ha.trans (a.preimage_mono hO)
-  rw [valR, dif_pos ha, valR, dif_pos ha', pbT_of_le p hO, ← Scheme.Hom.appLE_comp_appLE a p O₀ O ⊤ hO ha]
+  rw [valR, dite_eq_left ha, valR, dite_eq_left ha', pbT_of_le p hO, ← Scheme.Hom.appLE_comp_appLE a p O₀ O ⊤ hO ha]
   rfl
 
 theorem constFn_eq_pbT {Z : Scheme.{0}} (p : Z ⟶ Sp R) (O : Z.Opens) (r : R) :
@@ -292,7 +277,7 @@ theorem constFn_eq_pbT {Z : Scheme.{0}} (p : Z ⟶ Sp R) (O : Z.Opens) (r : R) :
 
 theorem valR_spMap {S : Type} [CommRing S] (φ : R →+* S) (r : R) :
     valR (spMap φ) ⊤ ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom r) = φ r := by
-  rw [valR, dif_pos (show ⊤ ≤ spMap φ ⁻¹ᵁ ⊤ from fun _ _ => trivial)]
+  rw [valR, dite_eq_left (show ⊤ ≤ spMap φ ⁻¹ᵁ ⊤ from fun _ _ => trivial)]
   have e := congrArg (fun f => f.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom r))
     (Scheme.ΓSpecIso_naturality (CommRingCat.ofHom φ))
   simp only [CommRingCat.hom_comp, RingHom.comp_apply, Iso.inv_hom_id_apply, CommRingCat.hom_ofHom] at e
@@ -305,19 +290,19 @@ theorem valR_constFn {A : Type} [CommRing A] {Z : Scheme.{0}} (a : Sp A ⟶ Z) (
 
 theorem valR_mul {A : Type} [CommRing A] {Z : Scheme.{0}} (a : Sp A ⟶ Z) {O : Z.Opens} (ha : ⊤ ≤ a ⁻¹ᵁ O)
     (f g : Γ(Z, O)) : valR a O (f * g) = valR a O f * valR a O g := by
-  simp only [valR, dif_pos ha, map_mul]
+  simp only [valR, dite_eq_left ha, map_mul]
 
 theorem valR_add {A : Type} [CommRing A] {Z : Scheme.{0}} (a : Sp A ⟶ Z) {O : Z.Opens} (ha : ⊤ ≤ a ⁻¹ᵁ O)
     (f g : Γ(Z, O)) : valR a O (f + g) = valR a O f + valR a O g := by
-  simp only [valR, dif_pos ha, map_add (f := _)]
+  simp only [valR, dite_eq_left ha, map_add (f := _)]
 
 theorem valR_sub {A : Type} [CommRing A] {Z : Scheme.{0}} (a : Sp A ⟶ Z) {O : Z.Opens} (ha : ⊤ ≤ a ⁻¹ᵁ O)
     (f g : Γ(Z, O)) : valR a O (f - g) = valR a O f - valR a O g := by
-  simp only [valR, dif_pos ha, map_sub]
+  simp only [valR, dite_eq_left ha, map_sub]
 
 theorem valR_one {A : Type} [CommRing A] {Z : Scheme.{0}} (a : Sp A ⟶ Z) {O : Z.Opens} (ha : ⊤ ≤ a ⁻¹ᵁ O) :
     valR a O (1 : Γ(Z, O)) = 1 := by
-  simp only [valR, dif_pos ha, map_one]
+  simp only [valR, dite_eq_left ha, map_one]
 
 theorem valR_zero {A : Type} [CommRing A] {Z : Scheme.{0}} (a : Sp A ⟶ Z) {O : Z.Opens} :
     valR a O (0 : Γ(Z, O)) = 0 := by

@@ -1083,7 +1083,7 @@ theorem UpperTheory.Gal.crystallineComparison.normPt_of :
     intro F
     funext k
     have hP : ∃ F', ptOf hV (IsLocalRing.ResidueField W) F' = ptOf hV (IsLocalRing.ResidueField W) F := ⟨F, rfl⟩
-    simp only [G, dif_pos hP]
+    simp only [G, dite_eq_left hP]
     rw [(hPtC Y V hV (IsLocalRing.ResidueField W)).1 (Classical.choose_spec hP)]
   have alt2 := congrArg (Multiset.map G) alt
   rw [pts_map, pts_map] at alt2

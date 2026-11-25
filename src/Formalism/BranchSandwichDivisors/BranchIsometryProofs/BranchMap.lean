@@ -338,7 +338,7 @@ theorem rowAction_ext_elemDeriv_X (R : Type*) [CommRing R] (n : ℕ) (g : Matrix
   · subst hc
     by_cases ha : a = Fin.last n
     · subst ha
-      simp only [ne_eq, not_true_eq_false, and_false, if_false, map_zero]
+      simp only [ne_eq, not_true_eq_false, and_false, ite_false, map_zero]
       refine (Finset.sum_eq_zero fun b _ => ?_).symm
       by_cases hb : b = Fin.last n
       · subst hb
@@ -346,7 +346,7 @@ theorem rowAction_ext_elemDeriv_X (R : Type*) [CommRing R] (n : ℕ) (g : Matrix
         simp [MvPolynomial.derivation_C]
       · rw [extendMatrix_last_left_zero R g b hb]
         simp
-    · simp only [ha, ne_eq, not_false_eq_true, and_self, if_true, rowAction_X_sum]
+    · simp only [ha, ne_eq, not_false_eq_true, and_self, ite_true, rowAction_X_sum]
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [Derivation.leibniz, elemDeriv_X, MvPolynomial.derivation_C, smul_zero, add_zero, smul_eq_mul]
       by_cases hb : b = Fin.last n
@@ -354,7 +354,7 @@ theorem rowAction_ext_elemDeriv_X (R : Type*) [CommRing R] (n : ℕ) (g : Matrix
         rw [extendMatrix_last_right_zero R g a ha]
         simp
       · simp [hb]
-  · simp only [hc, false_and, if_false, map_zero]
+  · simp only [hc, false_and, ite_false, map_zero]
     refine (Finset.sum_eq_zero fun b _ => ?_).symm
     rw [Derivation.leibniz, elemDeriv_X, MvPolynomial.derivation_C]
     simp [hc]
@@ -750,11 +750,11 @@ theorem bmA_comm_entry (E : Fin n → Fin n → Module.End R M) (u : ℤ)
   have h1 : E k l * ((if a = j then c else 0) - E a j) - ((if a = j then c else 0) - E a j) * E k l =
       - (E k l * E a j - E a j * E k l) := by
     by_cases haj : a = j
-    · simp only [haj, if_true]
+    · simp only [haj, ite_true]
       have : E k l * (c - E j j) - (c - E j j) * E k l =
           - (E k l * E j j - E j j * E k l) - (c * E k l - E k l * c) := by noncomm_ring
       rw [this, hcc]; noncomm_ring
-    · simp only [haj, if_false]; noncomm_ring
+    · simp only [haj, ite_false]; noncomm_ring
   rw [h1, h]
   by_cases hla : l = a <;> by_cases hkj : k = j
   · subst hla; subst hkj; simp
@@ -775,7 +775,7 @@ theorem capDet_central {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] 
     simp only [bmA_comm_entry E u hE, bmA_prod_update_sub, Finset.sum_sub_distrib, id_eq]
     congr 1
     · rw [Finset.sum_eq_single (α.symm l)]
-      · rw [if_pos (by simp)]
+      · rw [ite_eq_left (by simp)]
         congr 2
         funext q
         by_cases hq : q = α.symm l
@@ -785,17 +785,17 @@ theorem capDet_central {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] 
           simp [Function.update_of_ne this]
       · intro q _ hq
         have : l ≠ α q := fun h => hq (by rw [h]; simp)
-        rw [if_neg this, bmA_prod_update_zero']
+        rw [ite_eq_right this, bmA_prod_update_zero']
       · intro h; exact absurd (Finset.mem_univ _) h
     · rw [Finset.sum_eq_single k]
-      · rw [if_pos rfl]
+      · rw [ite_eq_left rfl]
         congr 2
         funext q
         by_cases hq : q = k
         · subst hq; simp
         · rw [Function.update_of_ne hq, Function.update_of_ne hq]; rfl
       · intro q _ hq
-        rw [if_neg (Ne.symm hq), bmA_prod_update_zero']
+        rw [ite_eq_right (Ne.symm hq), bmA_prod_update_zero']
       · intro h; exact absurd (Finset.mem_univ _) h
   have hsum : E k l * capDet E u - capDet E u * E k l =
       (∑ α : Equiv.Perm (Fin n), ((Equiv.Perm.sign α : ℤˣ) : ℤ) • bmM E u (Function.update id l k ∘ α) id) -
@@ -860,7 +860,7 @@ theorem capDet_eigen {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {n
     unfold bmM
     refine bmA_tri v _ _ (fun k => α k = k) ?_ ?_
     · intro k hk
-      simp only [bmF, id_eq, hk, if_true, LinearMap.sub_apply, hw]
+      simp only [bmF, id_eq, hk, ite_true, LinearMap.sub_apply, hw]
       rw [Module.End.intCast_apply, ← Int.cast_smul_eq_zsmul R, ← sub_smul]
       push_cast
       rfl
@@ -870,7 +870,7 @@ theorem capDet_eigen {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {n
         · exact h
         · exact absurd h hk
         · exact absurd (α.injective (hj _ h)) hk
-      simp only [bmF, id_eq, hk, if_false, LinearMap.sub_apply, hr _ _ hlt, LinearMap.zero_apply, sub_zero]
+      simp only [bmF, id_eq, hk, ite_false, LinearMap.sub_apply, hr _ _ hlt, LinearMap.zero_apply, sub_zero]
   unfold capDet bmPi
   rw [LinearMap.sum_apply, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
   · rw [LinearMap.smul_apply, (hα 1).1 (fun k => rfl)]
@@ -1058,7 +1058,7 @@ theorem bmE_comp_ne_iff {R σ B : Type*} [CommRing R] [AddCommMonoid B] [Decidab
     obtain ⟨d, hd, hw⟩ := Finset.mem_image.mp h
     intro h0
     have := congrArg (AddMonoidAlgebra.coeff · d) h0
-    rw [coeff_weightedHomogeneousComponent, if_pos hw, AddMonoidAlgebra.coeff_zero] at this
+    rw [coeff_weightedHomogeneousComponent, ite_eq_left hw, AddMonoidAlgebra.coeff_zero] at this
     exact mem_support_iff.mp hd this
 
 theorem bmE_sep_op {R σ B : Type*} [CommRing R] [AddCommMonoid B] (w : σ → B) (ω : B → ℤ)
@@ -1483,9 +1483,9 @@ theorem bm_eig {R : Type} [CommRing R] [IsDomain R] [CharZero R] {n : ℕ} (lam 
       unfold zcomp at hm
       rw [coeff_weightedHomogeneousComponent] at hm
       by_cases hw : Finsupp.weight (zW n) m = β
-      · rw [if_pos hw] at hm
+      · rw [ite_eq_left hw] at hm
         exact ⟨hw, hm⟩
-      · rw [if_neg hw] at hm
+      · rw [ite_eq_right hw] at hm
         exact absurd rfl hm
     obtain ⟨hmw, hmG⟩ := hm'
     have hβs : ∀ s, β s = (m (Fin.last n, s) : ℤ) := fun s => by rw [← hmw, bm_weight_zW]
@@ -1557,7 +1557,7 @@ theorem bm_isLow_iff {R : Type*} [CommRing R] {n : ℕ} (D : ℤ) (L : BP R n) :
     by_contra hc
     have h0 := h _ (not_lt.mp hc)
     have := congrArg (AddMonoidAlgebra.coeff · m) h0
-    rw [zcomp, coeff_weightedHomogeneousComponent, if_pos rfl, AddMonoidAlgebra.coeff_zero] at this
+    rw [zcomp, coeff_weightedHomogeneousComponent, ite_eq_left rfl, AddMonoidAlgebra.coeff_zero] at this
     exact mem_support_iff.mp hm this
 
 theorem bmF_low_zero {R : Type*} [CommRing R] {n : ℕ} (D : ℤ) : IsLow D (0 : BP R n) := by
@@ -1637,10 +1637,10 @@ theorem bmF_emb_WH {R : Type*} [CommRing R] {n : ℕ} {B : Type*} [AddCommMonoid
     simpa using hp.mul hx
 
 theorem bmF_zW_castSucc {n : ℕ} (a s : Fin n) : zW n (a.castSucc, s) = 0 := by
-  exact if_neg (Fin.castSucc_ne_last a)
+  exact ite_eq_right (Fin.castSucc_ne_last a)
 
 theorem bmF_lastW_castSucc {n : ℕ} (a s : Fin n) : lastW n (a.castSucc, s) = 0 := by
-  exact if_neg (Fin.castSucc_ne_last a)
+  exact ite_eq_right (Fin.castSucc_ne_last a)
 
 theorem bmF_lead_WH (R : Type*) [CommRing R] (n : ℕ) (b : Fin n → ℕ) (f : MvPolynomial (Fin n × Fin n) R) :
     IsWeightedHomogeneous (zW n) (zmon R n b * emb R n f) (fun s => (b s : ℤ)) := by
@@ -2010,13 +2010,13 @@ theorem bmG_base (R : Type*) [CommRing R] (n : ℕ) (lam : Fin n → ℕ) (h : �
       by_cases ht : t.val = 0
       · have : t = ⟨0, hn⟩ := Fin.ext ht
         rw [this]; simp
-      · rw [if_neg (by omega), hz t ht, mul_zero]
+      · rw [ite_eq_right (by omega), hz t ht, mul_zero]
     · funext t
       simp only [Pi.smul_apply, Pi.single_apply, smul_eq_mul]
       by_cases ht : t.val = 0
       · have : t = ⟨0, hn⟩ := Fin.ext ht
         rw [this]; simp
-      · rw [if_neg (fun hh => ht (by rw [hh])), hz t ht, mul_zero]
+      · rw [ite_eq_right (fun hh => ht (by rw [hh])), hz t ht, mul_zero]
     · rw [bmG_minor_empty, one_pow]
 
 theorem bmG_bidet {R : Type*} [CommRing R] {n : ℕ} : ∀ (K : ℕ) (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n)
@@ -2059,8 +2059,8 @@ theorem bmG_bidet {R : Type*} [CommRing R] {n : ℕ} : ∀ (K : ℕ) (sz : Fin K
             show lam ⟨t.val + 1, ht⟩ - (if t.val + 1 < sz 0 then 1 else 0) ≤ _
             by_cases h4 : t.val + 1 = sz 0
             · have h5 := h3 h4
-              rw [if_neg (by omega)]
-              rw [if_pos (by omega)] at h5
+              rw [ite_eq_right (by omega)]
+              rw [ite_eq_left (by omega)] at h5
               omega
             · split_ifs at h2 ⊢ <;> omega
           · rw [bmG_nuNext_last _ t ht]; exact Nat.zero_le _
@@ -2081,14 +2081,14 @@ theorem bmG_bidet {R : Type*} [CommRing R] {n : ℕ} : ∀ (K : ℕ) (sz : Fin K
     ·
       push Not at hA
       obtain ⟨i, hij, hle⟩ := hA
-      have hi1 : 1 ≤ shapeDeg sz i := by rw [hsg i, if_pos (by omega)]; omega
+      have hi1 : 1 ≤ shapeDeg sz i := by rw [hsg i, ite_eq_left (by omega)]; omega
       have hin : i.val + 1 < n := by
         by_contra hcon
         rw [bmG_nuNext_last lam i hcon] at hle
         omega
       have hs : sz 0 + 1 ≤ n := by omega
       have hlj : shapeDeg (fun k : Fin K => sz k.succ) (⟨sz 0, hs⟩ : Fin n) + 1 ≤ lam ⟨sz 0, hs⟩ := by
-        rw [bmG_nuNext_of_succ lam i ⟨sz 0, hs⟩ hij.symm, hsg i, if_pos (by omega)] at hle
+        rw [bmG_nuNext_of_succ lam i ⟨sz 0, hs⟩ hij.symm, hsg i, ite_eq_left (by omega)] at hle
         have h5 : shapeDeg (fun k : Fin K => sz k.succ) (⟨sz 0, hs⟩ : Fin n) ≤
             shapeDeg (fun k : Fin K => sz k.succ) i := hanti (Fin.le_def.mpr (by simp; omega))
         omega
@@ -2102,7 +2102,7 @@ theorem bmG_bidet {R : Type*} [CommRing R] {n : ℕ} : ∀ (K : ℕ) (sz : Fin K
           by_cases h4 : t.val = sz 0
           · have h6 : t = ⟨sz 0, hs⟩ := Fin.ext h4
             rw [h6]
-            rw [if_pos (by simp)]
+            rw [ite_eq_left (by simp)]
             omega
           · split_ifs at h1 ⊢ <;> omega
         · by_cases ht : t.val + 1 < n
@@ -2123,7 +2123,7 @@ theorem bmG_bidet {R : Type*} [CommRing R] {n : ℕ} : ∀ (K : ℕ) (sz : Fin K
         by_cases h4 : t.val = sz 0
         · have h6 : t = ⟨sz 0, hs⟩ := Fin.ext h4
           rw [h6]
-          rw [if_pos (by simp)]
+          rw [ite_eq_left (by simp)]
           omega
         · split_ifs at h1 ⊢ <;> omega
       · funext t
@@ -2134,9 +2134,9 @@ theorem bmG_bidet {R : Type*} [CommRing R] {n : ℕ} : ∀ (K : ℕ) (sz : Fin K
         by_cases h4 : t.val = sz 0
         · have h6 : t = ⟨sz 0, hs⟩ := Fin.ext h4
           rw [h6]
-          rw [if_pos rfl, if_pos (by simp), if_neg (by simp)]
+          rw [ite_eq_left rfl, ite_eq_left (by simp), ite_eq_right (by simp)]
           omega
-        · rw [if_neg (fun hh => h4 (by rw [hh]))]
+        · rw [ite_eq_right (fun hh => h4 (by rw [hh]))]
           split_ifs at h1 ⊢ <;> omega
 
 theorem bmLift_exists {R : Type} [CommRing R] [IsDomain R] {n : ℕ} (lam sg : Fin n → ℕ) (hIL : bmIL lam sg)
@@ -2195,9 +2195,9 @@ theorem bmG_rowsB {n : ℕ} (i : Fin n) :
   funext p
   simp only [rowsB]
   by_cases h : p.val < i.val
-  · rw [if_pos h, dite_eq_left h]
+  · rw [ite_eq_left h, dite_eq_left h]
     rfl
-  · rw [if_neg h, dite_eq_right h]
+  · rw [ite_eq_right h, dite_eq_right h]
 
 def bmG_D (R : Type*) [CommRing R] (n : ℕ) (s : ℕ) : MvPolynomial (Fin n × Fin n) R :=
   if h : s ≤ n then lpMinor R s h h else 1
@@ -2287,11 +2287,11 @@ theorem bmG_sumB {n : ℕ} (i : Fin n) :
   · refine Finset.sum_congr rfl fun p _ => ?_
     congr 1
     unfold rowsB
-    rw [if_pos (by simp)]
+    rw [ite_eq_left (by simp)]
     exact Fin.ext rfl
   · congr 1
     unfold rowsB
-    rw [if_neg (by simp)]
+    rw [ite_eq_right (by simp)]
 
 theorem bm_xi_row {R : Type} [CommRing R] {n : ℕ} (lam sg : Fin n → ℕ) (hIL : bmIL lam sg) :
     IsWeightedHomogeneous (rowW (n + 1) n) (xiB R lam sg) (bmRho lam sg) := by
@@ -2321,25 +2321,25 @@ theorem bm_xi_row {R : Type} [CommRing R] {n : ℕ} (lam sg : Fin n → ℕ) (hI
       rw [h4, ← Finset.sum_add_distrib]
       refine Eq.trans ?_ h2
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       have h5 := hIL i
       by_cases h6 : i.val = a.val
       · have h7 : i = ⟨a.val, ha⟩ := Fin.ext h6
-        rw [if_pos h7, if_pos (by omega), if_neg (by omega)]
+        rw [ite_eq_left h7, ite_eq_left (by omega), ite_eq_right (by omega)]
         omega
       · have h7 : i ≠ ⟨a.val, ha⟩ := fun h => h6 (by rw [h])
-        rw [if_neg h7]
+        rw [ite_eq_right h7]
         by_cases h8 : a.val < i.val
-        · rw [if_pos (by omega), if_pos h8]
+        · rw [ite_eq_left (by omega), ite_eq_left h8]
           omega
-        · rw [if_neg (by omega), if_neg h8]
+        · rw [ite_eq_right (by omega), ite_eq_right h8]
           omega
     have h9 := (hIL ⟨a.val, ha⟩).1
     omega
   · rw [dite_eq_right ha]
     have hl : a = Fin.last n := Fin.ext (by have := a.isLt; simp; omega)
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [if_pos hl, if_neg (by have := i.isLt; omega), if_neg (by have := i.isLt; omega)]
+    rw [ite_eq_left hl, ite_eq_right (by have := i.isLt; omega), ite_eq_right (by have := i.isLt; omega)]
     omega
 
 theorem bmK_two_tf (R : Type*) [CommRing R] [IsDomain R] [CharZero R] (n : ℕ) (x : Module.End R (BP R n))

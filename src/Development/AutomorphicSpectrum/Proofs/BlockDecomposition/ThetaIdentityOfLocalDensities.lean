@@ -198,7 +198,7 @@ theorem rv_unit (v : HeightOneSpectrum (𝓞 F)) (e : ℝ) {s : Fv F v} (hs : Va
   rw [tsum_eq_single 0]
   · simp [h0, hs]
   · intro i hi
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨-, h⟩
     rw [hs] at h
     have h3 : (1 : WithZero (Multiplicative ℤ)) = ((Multiplicative.ofAdd (0 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := rfl

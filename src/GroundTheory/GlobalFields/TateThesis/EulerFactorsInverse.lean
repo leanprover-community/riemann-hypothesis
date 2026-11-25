@@ -154,7 +154,7 @@ theorem infiniteParams_inv (w : InfinitePlace K) :
   symm
   refine (χ⁻¹).infiniteParams_unique w ?_ fun a ↦ ?_
   · intro hw
-    rw [if_pos hw]
+    rw [ite_eq_left hw]
     exact χ.infiniteWeight_of_isReal hw
   · rw [infiniteComponent_inv, Circle.coe_inv, χ.infiniteComponent_eq]
     simp only
@@ -179,11 +179,11 @@ theorem infiniteParams_inv (w : InfinitePlace K) :
 
 theorem infiniteWeight_inv_of_isReal {w : InfinitePlace K} (hw : w.IsReal) :
     (χ⁻¹).infiniteWeight w = χ.infiniteWeight w := by
-  rw [infiniteWeight, infiniteParams_inv, if_pos hw]
+  rw [infiniteWeight, infiniteParams_inv, ite_eq_left hw]
 
 theorem infiniteWeight_inv_of_isComplex {w : InfinitePlace K} (hw : w.IsComplex) :
     (χ⁻¹).infiniteWeight w = -χ.infiniteWeight w := by
-  rw [infiniteWeight, infiniteParams_inv, if_neg (not_isReal_iff_isComplex.2 hw)]
+  rw [infiniteWeight, infiniteParams_inv, ite_eq_right (not_isReal_iff_isComplex.2 hw)]
 
 end HeckeCharacter
 

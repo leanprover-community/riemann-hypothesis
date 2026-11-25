@@ -952,7 +952,7 @@ theorem main_alt_alt : HeckeStdPlain → ∀ (D : D7) (cf : CharFrame D) (jE : D
     if hvk : GenAt D (D.what₂.places.resChar w) (Sp.B.Qc j w) v k then Classical.choose (key v k hvk) else 0
   have hκF : ∀ v k (hvk : GenAt D (D.what₂.places.resChar w) (Sp.B.Qc j w) v k), φ (algebraMap _ _ (κF v k)) = c v k := by
     intro v k hvk
-    simp only [κF, dif_pos hvk]
+    simp only [κF, dite_eq_left hvk]
     exact Classical.choose_spec (key v k hvk)
   obtain ⟨e, hene, he⟩ := GlobalTheory.PtLocalEig.eig_descends D M Sp.B j w (D.what₂.muTw w) h1 h2 rfl φ hφ
     (fun v k => algebraMap _ _ (κF v k)) y hy (by
@@ -1132,14 +1132,14 @@ theorem sys_eq_iota_of_gen_at {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : _
     (h : GenAt D (D.what₂.places.resChar w) (C.Q w) v k) :
     sys L i x v k = iotaO L.X.nd L.Y.naut i ((L.X.nd.hT i v k : L.X.nd.X i → L.X.nd.O i) x) := by
   unfold sys
-  rw [if_pos ((_root_.GlobalTheory.PtExt.splitOut_iff_genAt_alt hB hi v k).2 h)]
+  rw [ite_eq_left ((_root_.GlobalTheory.PtExt.splitOut_iff_genAt_alt hB hi v k).2 h)]
 theorem sys_eq_zero_of_not_gen_at {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE} {M : MtFam D} {C : NChoice D}
     {tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E} {big : D.what₂.places.Pl → Finset ℂ} {L : LocAll (lay0 D)}
     (hB : _root_.GlobalTheory.CoefDuty.BuiltAlt A M C tup big L) {j : ℕ} {w : D.what₂.places.Pl} {i : L.X.nd.Loc}
     (hi : i ∈ L.X.nd.locs j w) (x : L.X.nd.X i) {v : PlE D.host} {k : ℕ}
     (h : ¬ GenAt D (D.what₂.places.resChar w) (C.Q w) v k) : sys L i x v k = 0 := by
   unfold sys
-  rw [if_neg (fun h' => h ((_root_.GlobalTheory.PtExt.splitOut_iff_genAt_alt hB hi v k).1 h'))]
+  rw [ite_eq_right (fun h' => h ((_root_.GlobalTheory.PtExt.splitOut_iff_genAt_alt hB hi v k).1 h'))]
 theorem sys_mem_eig_set_of_built {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE} {M : MtFam D} {C : NChoice D}
     {tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E} {big : D.what₂.places.Pl → Finset ℂ} {L : LocAll (lay0 D)}
     (hB : _root_.GlobalTheory.CoefDuty.BuiltAlt A M C tup big L) {j : ℕ} {w : D.what₂.places.Pl} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) {i : L.X.nd.Loc}
@@ -1467,9 +1467,6 @@ section -- clump:auto
 section
 noncomputable section
 section
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-end
-section
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 namespace GlobalTheory.CrysFromGTwo
 end GlobalTheory.CrysFromGTwo
@@ -1526,8 +1523,6 @@ theorem residual_charpoly_eq_alt_alt (hC : GlobalTheory.TwSys.Cheb) (D : D7) (h3
   exact mul_right_cancel₀ hP e1
 end GlobalTheory.AbsoluteIrreducibilityOfTraceSpan
 end
-section
-end
 end
 end
 end -- clump:auto
@@ -1543,9 +1538,6 @@ section -- clump:auto
 
 section
 noncomputable section
-section
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-end
 section
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 namespace GlobalTheory.CrysFromGTwo
@@ -1588,7 +1580,7 @@ theorem setting_of_live_alt_alt : GlobalTheory.TwSys.Cheb → ∀ (D : D7), _roo
   have hρ : ∀ x ∈ D.nd.Z i, ∃ e, IsDecomp (t := D.R.t) (rep x) (ρ x) (D.nd.chi i) e := by
     intro x hx
     have := Classical.choose_spec (hZ x hx (rep x) (hr x))
-    simp only [ρ, dif_pos hx]
+    simp only [ρ, dite_eq_left hx]
     exact this
   obtain ⟨π, hπ, r0, ρ0, hr0, h0, habs⟩ := hL
   refine ⟨rep, ρ, hr, D.nd.T_local i, D.nd.T_sep i, fun x => ?_, fun h d => ?_,
@@ -1610,8 +1602,6 @@ theorem setting_of_live_alt_alt : GlobalTheory.TwSys.Cheb → ∀ (D : D7), _roo
     rw [mat_mapRep, mat_mapRep, Matrix.trace_eq_neg_charpoly_coeff, Matrix.trace_eq_neg_charpoly_coeff,
       _root_.GlobalTheory.AbsoluteIrreducibilityOfTraceSpan.residual_charpoly_eq_alt_alt hC D h32 i rep hr x π (ρ x) ρ0 (hρ x hx) r0 hr0 h0 g]
 end GlobalTheory.AbsoluteIrreducibilityOfTraceSpan
-end
-section
 end
 end
 end
@@ -1714,7 +1704,7 @@ theorem evO_takenAll_alt : GlobalTheory.TwSys.Cheb → HeckeStdPlain → ∀ (D 
   have hex : ∃ S : Finset ℂ, Chosen (withLoc L₀).nd (withLoc L₀).naut i₀ ↑S :=
     _root_.GlobalTheory.OChoose.oChoose_alt hCh (withLoc L₀) hQ₀.1 hQ₀.2.1 i₀ (hQ₀.2.2 i₀) (hc₀i.2.2.1.2 hlive₀)
   have hch : Chosen (withLoc L₀).nd (withLoc L₀).naut i₀ ↑(S0 i₀) := by
-    simp only [S0, dif_pos hex]
+    simp only [S0, dite_eq_left hex]
     exact hex.choose_spec
   have hch' := (hc₀i.2.2.2.2.1 _).1 hch
   have hsub : S0 i₀ ⊆ big (L₁.X.nd.w i₁) := by

@@ -254,7 +254,7 @@ theorem subD_X (j : ℕ) (x : Σ v : Fin (X.Fl.Pj j).nV,
 
 theorem ySub_odd (j : ℕ) (v : X.Pl) (s : Fin (X.G.P.n' v)) (h : IsOddPos s) :
     ySub X Kc j v s = (YtMat X Kc j v s).adjugate := by
-  simp only [ySub, if_pos h]
+  simp only [ySub, ite_eq_left h]
 
 theorem delF_eq (j : ℕ) (G : (X.Pj j).Xsp) (R : DA X Kc j)
     (h : subD X Kc j G * numD X Kc j = denD X Kc j * R) (f : MvPowerSeries (X.ZA j) Kc) :

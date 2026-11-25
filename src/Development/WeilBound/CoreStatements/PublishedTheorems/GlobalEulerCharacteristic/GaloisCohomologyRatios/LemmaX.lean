@@ -182,8 +182,6 @@ namespace PositivityTheory.Lit1.GEN.X
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-attribute [local instance 2000] Rep.hV2
-
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) [Normal K.1 L.1]
   (hζ : ∃ ζ : L.1, IsPrimitiveRoot ζ ℓ)
@@ -491,8 +489,6 @@ open CategoryTheory GroundTheory.ProfCoh
 
 namespace PositivityTheory.Lit1.GEN.X
 
-attribute [local instance 2000] Rep.hV2
-
 theorem natCard_invariants_eq_of_addEquiv {k k' H V W : Type*} [CommRing k] [CommRing k'] [Group H]
     [AddCommGroup V] {_mV : Module k V} [AddCommGroup W] {_mW : Module k' W}
     (ρ : Representation k H V) (σ : Representation k' H W) (e : V ≃+ W)
@@ -566,8 +562,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheory.Global
 
 namespace PositivityTheory.Lit1.GEN.X
-
-attribute [local instance 2000] Rep.hV2
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
@@ -869,8 +863,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 namespace PositivityTheory.Lit1.GEN.X
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
-
-attribute [local instance 2000] Rep.hV2
 
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) [Normal K.1 L.1]

@@ -102,7 +102,7 @@ theorem good_of_vector_row_m : ∀ (D : D7) (Rw : GlobalTheory.HeightCounting.Ro
     simp only [] at h3
     rw [← p3] at h3 q1
     rw [D.ntypes.inertiaCharpoly_type k v _ (by rw [← Rw.lab_eq, q1, (D.nd.lab_monic k σ v).2]), ← Rw.lab_eq] at h3
-    rw [GlobalTheory.SeriesSupportTest.dualFun, if_pos hl]
+    rw [GlobalTheory.SeriesSupportTest.dualFun, ite_eq_left hl]
     exact GlobalTheory.GoodTypes.eq_of_teich _ (GlobalTheory.Compare.TeichmullerRoots.teich_injective _ (D.ntypes.teichC_inj k))
       (GlobalTheory.SeriesSupportTest.label_dual D k hl).1 (D.nd.lab_monic k σ v).1 h3.symm
   have hd := GlobalTheory.SeriesSupportTest.good_dualFun D t ht

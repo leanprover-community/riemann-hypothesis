@@ -119,7 +119,7 @@ theorem witt_partners {E V : Type} [Field E] [CharZero E] [StarRing E] [AddCommG
   · intro a b
 
     simp only [map_sub, map_sum, map_smulₛₗ, LinearMap.sub_apply, LinearMap.sum_apply, RingHom.id_apply, LinearMap.smul_apply, smul_eq_mul, hee, hge, hg'e, mul_zero, Finset.sum_const_zero, sub_zero,
-    mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, starRingEnd_apply]
+    mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, starRingEnd_apply]
     have hM : star (h (g b) (g a)) = h (g a) (g b) := hsymm _ _
     have h2 : star (2 : E) = 2 := by simp
     rw [star_div₀, hM, h2]
@@ -154,14 +154,14 @@ theorem diag_isometry {E V : Type} [Field E] [StarRing E] [AddCommGroup V] [Modu
     rw [hL]
 
     simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hee, hef, mul_zero, Finset.sum_const_zero, add_zero,
-    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     ring
   have key_f : ∀ b y, h (f b) (L y) = α b * h (f b) y := by
     intro b y
     rw [hL]
 
     simp only [map_add (f := _), map_sum, map_smul, smul_eq_mul, hff, hfe, mul_zero, Finset.sum_const_zero, add_zero,
-    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     ring
   have key_x : ∀ x y, h x (L y) = h x y + ∑ a, ((α a - 1) * h (f a) y) * star (h (e a) x) +
       ∑ a, ((β a - 1) * h (e a) y) * star (h (f a) x) := by
@@ -194,7 +194,7 @@ theorem diag_isometry {E V : Type} [Field E] [StarRing E] [AddCommGroup V] [Modu
     simp only [LinearEquiv.coe_ofInjectiveEndo]
     rw [hL]
     simp only [hfe, hee, mul_zero, zero_smul, Finset.sum_const_zero, add_zero, mul_ite, mul_one,
-      ite_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      ite_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [sub_smul, one_smul]; abel
   · intro x hx
     simp only [LinearEquiv.coe_ofInjectiveEndo]

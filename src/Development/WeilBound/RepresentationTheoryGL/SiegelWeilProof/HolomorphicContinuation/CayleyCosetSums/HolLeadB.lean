@@ -173,7 +173,7 @@ theorem crLem_of (hsec : LocSec) (hfib : Fib) (ha : CauchyRiemannFacts) : CRLem 
   have hH : ∀ y : GR n, φ y = F0 m 0 e y * H (zOfE (mR y)) := by
     intro y
     have hex : ∃ y' : GR n, zOfE (mR y') = zOfE (mR y) := ⟨y, rfl⟩
-    simp only [hHdef, dif_pos hex]
+    simp only [hHdef, dite_eq_left hex]
     have hz : zOfE (mR hex.choose) = zOfE (mR y) := hex.choose_spec
     have hk := hfib n hex.choose y hz
     have hkK : (hex.choose⁻¹ * y) ∈ AbsSt.KR n := hk

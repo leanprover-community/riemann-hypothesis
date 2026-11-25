@@ -287,12 +287,6 @@ def SemiHom.frobTwist (h' : (p : S) = 0) {σ : R →+* S} {G' : PDivGroup p S} (
   (SemiHom.liftOver_app ((frobProj h' G').comp s) σ _ n 1 a).trans
     (by rw [map_one, one_smul, SemiHom.comp_app])
 
-section BaseChange
-
-variable (h' : (p : S) = 0) [Algebra R S] (G)
-
-end BaseChange
-
 end PDivGroup
 
 end GlobalTheory

@@ -231,13 +231,13 @@ theorem archimedean_image_real (y : D.what₂.Tau → ℂ) (τ : D.what₂.Tau) 
     gW D (plW D τ) (preA D y 0) = ((y τ).re : ℂ) := by
   rw [gW_apply]
   dsimp only [preA]
-  rw [if_pos rfl, gW_symm, symm_plW]
+  rw [ite_eq_left rfl, gW_symm, symm_plW]
 
 theorem archimedean_image_imaginary (y : D.what₂.Tau → ℂ) (τ : D.what₂.Tau) :
     gW D (plW D τ) (preA D y 1) = (((y τ).im / (betaT D τ).im : ℝ) : ℂ) := by
   rw [gW_apply]
   dsimp only [preA]
-  rw [if_neg (by decide), gW_symm, symm_plW]
+  rw [ite_eq_right (by decide), gW_symm, symm_plW]
 
 theorem thetaC_splitInv (y : D.what₂.Tau → ℂ) (τ : D.what₂.Tau) : thetaC D τ (splitInv D y) = y τ := by
   rw [splitInv, map_add (f := _), thetaC_tmul, thetaC_tmul, map_one, mul_one, archimedean_image_real, archimedean_image_imaginary,

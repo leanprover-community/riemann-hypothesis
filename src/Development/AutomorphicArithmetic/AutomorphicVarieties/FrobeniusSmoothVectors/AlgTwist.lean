@@ -15,7 +15,7 @@ private theorem w_rev (n : ℕ) (i : Fin n) : w n i.rev = - w n i := by
 private theorem J_apply {K : Type} [CommRing K] {n : ℕ} (X : Matrix (Fin n) (Fin n) K) (i j : Fin n) :
     (Jmat (R := K) n * Xᵀ * Jmat (R := K) n) i j = X j.rev i.rev := by
   simp only [Matrix.mul_apply, Jmat, Matrix.transpose_apply, ite_mul, one_mul, zero_mul,
-    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have key : ∀ k : Fin n, (j = k.rev) ↔ (k = j.rev) := by
     intro k
     constructor
@@ -23,7 +23,7 @@ private theorem J_apply {K : Type} [CommRing K] {n : ℕ} (X : Matrix (Fin n) (F
       simp
     · rintro rfl
       simp
-  simp only [key, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [key, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 private def tw {K : Type} [CommRing K] (n : ℕ) (u : Kˣ) :
     Matrix (Fin n) (Fin n) K →ₐ[K] Matrix (Fin n) (Fin n) K where

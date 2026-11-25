@@ -784,7 +784,7 @@ theorem facAt_s_sgnAt_mul_of_moveAt (hW : _root_.GlobalTheory.Fam.AllFamilyCondi
   refine Eq.symm ?_
   refine (congrArg₂ (((J.G i).T (J.E i).δ (J.E i).tame (J.E i).η).xiPen _ _) h2 h5.symm).trans ((h6 _).trans ((h3 _ _ _).trans ?_))
   refine (congrArg (c * ·) hA).trans ?_
-  simp only [locXi, dif_neg (show ¬ (J.G i).s + 2 < B.R.m by omega), dif_pos hs, _root_.GlobalTheory.TwPlaces.sgnAt_alt]
+  simp only [locXi, dite_eq_right (show ¬ (J.G i).s + 2 < B.R.m by omega), dite_eq_left hs, _root_.GlobalTheory.TwPlaces.sgnAt_alt]
   ring
 theorem facAt_s_succ_inv_of_moveAt (hW : _root_.GlobalTheory.Fam.AllFamilyConditions W) (ha : a.Is) (haT : a.True)
     (hiA : ∀ r s, (a.g.oT B.R.m rfl).iA r s = if r.val = s.val then 1 else 0) (hJ : J.Reads) (hj : (J.G i).s + 1 + 1 ≤ B.R.m) (e')
@@ -814,8 +814,8 @@ theorem facAt_s_succ_inv_of_moveAt (hW : _root_.GlobalTheory.Fam.AllFamilyCondit
     rw [← hJ.M i] at hA
     refine Eq.trans ?_ (hA.trans ?_)
     · exact congrArg _ (h5.symm.trans rfl)
-    · simp only [locXi, dif_neg (show ¬ (J.G i).s + 1 + 2 < B.R.m by omega), dif_neg (show ¬ (J.G i).s + 1 + 2 = B.R.m by omega),
-        dif_pos hs]
+    · simp only [locXi, dite_eq_right (show ¬ (J.G i).s + 1 + 2 < B.R.m by omega), dite_eq_right (show ¬ (J.G i).s + 1 + 2 = B.R.m by omega),
+        dite_eq_left hs]
       rfl
   · obtain ⟨r, rfl⟩ := e'.surjective n
     have h6 := hmem r
@@ -860,13 +860,13 @@ theorem exists_roots_of_unity_signs_facAt (hW : _root_.GlobalTheory.Fam.AllFamil
     rw [h, zero_pow hn.ne'] at h1
     exact zero_ne_one h1
   let C : ∀ j, J.Ch₀ j → ℂ := fun j β => if h : j = (J.G i).s + 1 then c (h ▸ β) else 1
-  have hC : ∀ β, C ((J.G i).s + 1) β = c β := fun β => dif_pos rfl
+  have hC : ∀ β, C ((J.G i).s + 1) β = c β := fun β => dite_eq_left rfl
   have hCr : ∀ j β, ∃ n : ℕ, 0 < n ∧ C j β ^ n = 1 := fun j β => by
     by_cases h : j = (J.G i).s + 1
     · subst h
       rw [hC]
       exact hc β
-    · exact ⟨1, one_pos, by simp only [C, dif_neg h, one_pow]⟩
+    · exact ⟨1, one_pos, by simp only [C, dite_eq_right h, one_pow]⟩
   refine ⟨fun j β => if h : j + 1 < B.R.m then _root_.GlobalTheory.TwPlaces.sgnAt_alt J i j (by omega) β (B.R.N (j + 1) + Formalism.L2.Col.cOf B.R (j + 1)) else (C j β)⁻¹,
     fun j β => if h : j + 2 < B.R.m then _root_.GlobalTheory.TwPlaces.sgnAt_alt J i (j + 1) (by omega) β (B.R.N j + Formalism.L2.Col.cOf B.R j) else C (j + 1) β,
     fun j β => ?_, fun j β => ?_, fun j hj β => ?_, fun j hj α γ => ?_⟩
@@ -880,22 +880,22 @@ theorem exists_roots_of_unity_signs_facAt (hW : _root_.GlobalTheory.Fam.AllFamil
     · exact hCr _ β
   · beta_reduce
     by_cases h : j + 2 < B.R.m
-    · rw [dif_pos h, dif_pos (show j + 1 + 1 < B.R.m from h)]
+    · rw [dite_eq_left h, dite_eq_left (show j + 1 + 1 < B.R.m from h)]
       exact _root_.GlobalTheory.TwPlaces.sgnAt_mul_eq_one_of_even_add hJ _ _ _ (even_ranks B.R j h)
-    · rw [dif_neg h, dif_neg (show ¬ j + 1 + 1 < B.R.m from h)]
+    · rw [dite_eq_right h, dite_eq_right (show ¬ j + 1 + 1 < B.R.m from h)]
       obtain rfl : j = (J.G i).s := by omega
       rw [hC]
       exact mul_inv_cancel₀ (hc0 β)
   · beta_reduce
     rcases lt_trichotomy (j + 2) B.R.m with h | h | h
-    · rw [dif_pos h, dif_pos (show j + 1 < B.R.m by omega)]
+    · rw [dite_eq_left h, dite_eq_left (show j + 1 < B.R.m by omega)]
       exact _root_.GlobalTheory.TwPlaces.facAt_sgnAt_mul_sgnAt hW ha haT hJ hm j ((J.G i).s - (j + 1)) (by omega) hj _ α γ
     · obtain rfl : j = (J.G i).s := by omega
-      rw [dif_neg (show ¬ (J.G i).s + 2 < B.R.m by omega), dif_pos (show (J.G i).s + 1 < B.R.m by omega), hC]
+      rw [dite_eq_right (show ¬ (J.G i).s + 2 < B.R.m by omega), dite_eq_left (show (J.G i).s + 1 < B.R.m by omega), hC]
       exact _root_.GlobalTheory.TwPlaces.facAt_s_sgnAt_mul_of_moveAt hW ha haT hJ hm hj e he α γ _ (hc' _)
     · obtain rfl : j = (J.G i).s + 1 := by omega
-      rw [dif_neg (show ¬ (J.G i).s + 1 + 2 < B.R.m by omega), dif_neg (show ¬ (J.G i).s + 1 + 1 < B.R.m by omega), hC]
-      have h1 : C ((J.G i).s + 1 + 1) (J.ι _ γ) = 1 := dif_neg (by omega)
+      rw [dite_eq_right (show ¬ (J.G i).s + 1 + 2 < B.R.m by omega), dite_eq_right (show ¬ (J.G i).s + 1 + 1 < B.R.m by omega), hC]
+      have h1 : C ((J.G i).s + 1 + 1) (J.ι _ γ) = 1 := dite_eq_right (by omega)
       rw [h1, mul_one]
       exact _root_.GlobalTheory.TwPlaces.facAt_s_succ_inv_of_moveAt hW ha haT hiA hJ hj e he α γ _ (hc0 _) (hc' _)
 theorem exists_disjoint_places_isIdemSum (hW : _root_.GlobalTheory.Fam.AllFamilyConditions W) (ha : a.Is) (haT : a.True) (hJ : J.Reads) {e₀ : AE (I.rec7 l Z)}
@@ -1067,8 +1067,8 @@ theorem QuadraticExtensionData.dat_exists : ∀ {B : GlobalTheory.Mem.Base} {X :
   let k : ℕ → ℂ := fun j => if h : j + 1 < B.R.m then (hstep j h).choose else 1
   have hk : ∀ j, ∃ n : ℕ, 0 < n ∧ k j ^ n = 1 := fun j => by
     by_cases h : j + 1 < B.R.m
-    · simp only [k, dif_pos h]; exact (hstep j h).choose_spec.1
-    · simp only [k, dif_neg h]; exact ⟨1, one_pos, by simp⟩
+    · simp only [k, dite_eq_left h]; exact (hstep j h).choose_spec.1
+    · simp only [k, dite_eq_right h]; exact ⟨1, one_pos, by simp⟩
   let cc : ℕ → ℂ := fun j => c0 * ∏ i ∈ Finset.range j, k i
   have hcc : ∀ j, ∃ n : ℕ, 0 < n ∧ cc j ^ n = 1 := fun j =>
     _root_.GlobalTheory.TwPlaces.rou_mul hc0 (datRoot_prod _ _ fun i _ => hk i)
@@ -1076,7 +1076,7 @@ theorem QuadraticExtensionData.dat_exists : ∀ {B : GlobalTheory.Mem.Base} {X :
   have hs0 : ∀ α, s 0 α = 1 := fun _ => rfl
   have hsS : ∀ j γ, j < B.R.m → s (j + 1) γ = cc j * Bf j γ := fun j γ h => by
     show (if j < B.R.m then cc j * Bf j γ else 1) = _
-    rw [if_pos h]
+    rw [ite_eq_left h]
   have hsA : ∀ j, j < B.R.m → ∀ α, s j α * Af j α = cc j := by
     intro j
     induction j with
@@ -1084,7 +1084,7 @@ theorem QuadraticExtensionData.dat_exists : ∀ {B : GlobalTheory.Mem.Base} {X :
     | succ j ih =>
       intro hj γ
       rw [hsS j γ (by omega)]
-      have hk' : k j = (hstep j hj).choose := by simp only [k, dif_pos hj]
+      have hk' : k j = (hstep j hj).choose := by simp only [k, dite_eq_left hj]
       have := (hstep j hj).choose_spec.2 γ
       calc cc j * Bf j γ * Af (j + 1) γ = cc j * (Bf j γ * Af (j + 1) γ) := by ring
         _ = cc j * k j := by rw [hk', ← this]
@@ -1099,7 +1099,7 @@ theorem QuadraticExtensionData.dat_exists : ∀ {B : GlobalTheory.Mem.Base} {X :
       · rw [hsS j γ h]; exact _root_.GlobalTheory.TwPlaces.rou_mul (hcc j) (hB j h γ)
       · refine ⟨1, one_pos, ?_⟩
         show (if j < B.R.m then cc j * Bf j γ else 1) ^ 1 = 1
-        rw [if_neg h, one_pow]
+        rw [ite_eq_right h, one_pow]
   refine ⟨s, fun j α γ => s j α * (s (j + 1) γ)⁻¹ * (p j α * q j γ), fun _ => 1, hsroot, hs0,
     fun _ => ⟨1, one_pos, one_pow 1⟩, fun j hj α γ => ⟨?_, ?_⟩⟩
   · have h1 := hD e₀ he₀ j hj α γ _ _ (hC t J hR e₀ he₀ j hj α γ)

@@ -1018,7 +1018,7 @@ theorem sqrt_absNorm_le_prod_tauE : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) 
   have hnorm : ∏ τ, ‖tauE D τ (u : D.host.E)‖ ^ 2 = |((Algebra.norm ℚ (u : D.host.E) : ℚ) : ℝ)| := by
     rw [← Rat.cast_abs, ← NumberField.InfinitePlace.prod_eq_abs_norm]
     refine (Fintype.prod_bijective _ (_root_.GlobalTheory.CMTypePlaces.mk_tauE_bijective D) _ _ (fun τ => ?_))
-    rw [NumberField.InfinitePlace.mult, if_neg (GlobalTheory.LevelSeries.mk_tauE_complex D τ)]
+    rw [NumberField.InfinitePlace.mult, ite_eq_right (GlobalTheory.LevelSeries.mk_tauE_complex D τ)]
     rfl
   have hspan : Ideal.span {u} ≤ 𝔪 := (Ideal.span_singleton_le_iff_mem _).2 hu
   have hne : Ideal.absNorm (Ideal.span {u}) ≠ 0 := by
@@ -1317,7 +1317,7 @@ theorem identity_dominates : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (
   have hnorm := hH'.norm_le_of_bounded hβ's.hasSum (fun q => by
     by_cases hq : q = q₁
     · subst hq; simp
-    · simp only [Function.update_apply, hq, if_false]; exact hTle q)
+    · simp only [Function.update_apply, hq, ite_false]; exact hTle q)
   have hts : ∑' q, Function.update β q₁ 0 q ≤ Bt := by
     refine hβ's.tsum_le_of_sum_le fun t => ?_
     rw [← Finset.sum_erase t (a := q₁) (by simp)]

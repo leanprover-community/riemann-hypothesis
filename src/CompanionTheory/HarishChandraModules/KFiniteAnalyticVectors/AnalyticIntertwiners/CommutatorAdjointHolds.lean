@@ -36,7 +36,7 @@ theorem compact_sq_le_A (hU : IsInfUnitary ε E) (x : M) {a b : Fin n} (hab : ε
   have key : ∀ a' b', ε b' = ε a' →
       RCLike.re (inner ℂ ((E a' b' * E b' a') x) x) = ‖E b' a' x‖ ^ 2 := by
     intro a' b' h
-    rw [Module.End.mul_apply, hU a' b', adjSign, if_pos h.symm, one_mul, inner_self_eq_norm_sq]
+    rw [Module.End.mul_apply, hU a' b', adjSign, ite_eq_left h.symm, one_mul, inner_self_eq_norm_sq]
   have hsum : RCLike.re (inner ℂ (casimirK ε E x) x) =
       ∑ a', ∑ b' ∈ Finset.univ.filter (fun b' => ε b' = ε a'), ‖E b' a' x‖ ^ 2 := by
 

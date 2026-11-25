@@ -134,7 +134,7 @@ theorem SectionsRank.proof : SectionsRank.Statement := by
     unfold GroundTheory.Heights₂.Heights.NumbersDVR.gradedPiece
     rw [hV]
   unfold GroundTheory.Heights₂.Heights.NumbersDVR.hilbFn
-  rw [if_pos (fun _ => Int.natCast_nonneg n), hg _ (by funext; simp), finrank_sec_int]
+  rw [ite_eq_left (fun _ => Int.natCast_nonneg n), hg _ (by funext; simp), finrank_sec_int]
   congr 1
   refine finrank_map_eq _ _ _ fun f hf => ?_
   rw [AlgHom.toLinearMap_apply, Ideal.Quotient.mkₐ_eq_mk, Ideal.Quotient.eq_zero_iff_mem,

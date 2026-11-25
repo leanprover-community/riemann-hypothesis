@@ -51,9 +51,9 @@ theorem corner_fix {L R C : Formalism.L2.SG.LsDatumB.MatP D p} (hL0 : ∀ a b, a
     hLl a, hRl b]
   by_cases ha : a = Fin.last D.R.rS <;> by_cases hb : b = Fin.last D.R.rS
   · subst ha; subst hb; simp
-  · rw [if_neg hb, mul_zero, hC a b (fun h => hb h.2)]
-  · rw [if_neg ha, zero_mul, zero_mul, hC a b (fun h => ha h.1)]
-  · rw [if_neg ha, zero_mul, zero_mul, hC a b (fun h => ha h.1)]
+  · rw [ite_eq_right hb, mul_zero, hC a b (fun h => hb h.2)]
+  · rw [ite_eq_right ha, zero_mul, zero_mul, hC a b (fun h => ha h.1)]
+  · rw [ite_eq_right ha, zero_mul, zero_mul, hC a b (fun h => ha h.1)]
 
 end ModeG2
 

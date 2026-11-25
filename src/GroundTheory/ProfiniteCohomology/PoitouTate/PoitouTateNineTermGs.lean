@@ -92,8 +92,6 @@ open CategoryTheory MonoidalCategory NumberField IsDedekindDomain GroundTheory.G
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-attribute [local instance 2000] Rep.hV2
-
 noncomputable section
 
 section Ord
@@ -708,8 +706,6 @@ section Concrete
 
 open IsDedekindDomain NumberField GroundTheory.Global
 
-attribute [local instance 2000] Rep.hV2
-
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
@@ -835,8 +831,6 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory IsDedekindDomain NumberField GroundTheory.Global GroundTheory.GroupCoh GroundTheory.Global.IdeleGroup
-
-attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
@@ -994,8 +988,6 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory IsDedekindDomain NumberField GroundTheory.Global GroundTheory.GroupCoh GroundTheory.Global.IdeleGroup
-
-attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
@@ -1156,8 +1148,6 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory IsDedekindDomain NumberField GroundTheory.Global GroundTheory.GroupCoh
-
-attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
@@ -1457,8 +1447,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory MonoidalCategory GroundTheory.Global
-
-attribute [local instance 2000] Rep.hV2
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 

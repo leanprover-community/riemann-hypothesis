@@ -46,7 +46,7 @@ private theorem levOn_inter {K : Type} [Field K] [NumberField K] {n : ℕ} (P : 
       · exact this.2
       · exact this
     · have := hh' v
-      rw [if_pos hv] at this
+      rw [ite_eq_left hv] at this
       exact this.1
   · rintro ⟨h1, h2⟩
     have h1' := (AdelicGLn.mem_integralFiniteGL_iff_forall K n).1 h1

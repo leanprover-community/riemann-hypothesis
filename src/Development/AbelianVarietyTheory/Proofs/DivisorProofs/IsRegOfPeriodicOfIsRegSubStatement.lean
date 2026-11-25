@@ -123,9 +123,9 @@ theorem main : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L : LB A.left) (u :
   have hs : ∀ i z, pt u z ∈ ptsIn _ _ (M.U i) → s i (pt u z) = σ i z := fun i z hz => by
     have := hper i ⟨_, sub_mem_of_pt_eq u (hr (pt u z))⟩ z hz
     simp only [add_sub_cancel] at this
-    exact (if_pos hz).trans this
+    exact (ite_eq_left hz).trans this
   have hmem : s ∈ (AnRead.all A.hom (RingHom.id ℂ) D).holSec M := by
-    refine ⟨⟨fun i j y hi hj => ?_, fun i y h => if_neg h⟩, fun i => holoOn_of_comp u _ (isOpen_ptsIn _) ?_⟩
+    refine ⟨⟨fun i j y hi hj => ?_, fun i y h => ite_eq_right h⟩, fun i => holoOn_of_comp u _ (isOpen_ptsIn _) ?_⟩
     · obtain ⟨z, rfl⟩ := pt_surjective u y
       have hij : pt u z ∈ ptsIn _ _ (M.U i ⊓ M.U j) := mem_ptsIn_inf.2 ⟨hi, hj⟩
       have e : σ i z = gv _ _ M i j (pt u z) * σ j z := hcomp i j z hij

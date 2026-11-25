@@ -240,7 +240,7 @@ theorem hasDerivAt_mM (hθ : IsInfFam θ) {S T : HSp D} {τ : D.what₂.Tau} {X 
     Matrix.kroneckerMap_apply, Matrix.transpose_apply]
   by_cases h : τ₁ = τ₂
   · subst h
-    simp only [if_true]
+    simp only [ite_true]
     have hb := hasDerivAt_comp hθ hY τ₁ i i'
     have ha0 := hasDerivAt_comp hθ hX τ₁ j' j
     have ha : HasDerivAt (fun t : ℝ => Formalism.IndefR.Datum.compAt θ τ₁ (Formalism.L2.Theta.mt S (oneP θ S τ X t)) j' j)
@@ -252,7 +252,7 @@ theorem hasDerivAt_mM (hθ : IsInfFam θ) {S T : HSp D} {τ : D.what₂.Tau} {X 
     refine (hb.mul (ha.scomp 0 (hasDerivAt_neg 0))).congr_deriv ?_
     simp only [Function.comp_apply, neg_zero, hT0, hS0, Matrix.one_apply]
     split_ifs <;> simp <;> ring
-  · simp only [h, if_false, sub_zero]
+  · simp only [h, ite_false, sub_zero]
     exact hasDerivAt_const _ _
 
 theorem exists_generator : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : OmT S T), IsWeilDatumO ψ S T χS χT om → IsInfFam θ → ∀ (τ : D.what₂.Tau), ∀ X ∈ lieAt S τ, ∀ Y ∈ lieAt T τ, ∃ Gn : Module.End ℂ (WO S T → ℂ), ∀ f, IsThetaFunO ψ S T f → IsThetaFunO ψ S T (Gn f) ∧ (∀ u, Gn (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ u f) - Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ u (Gn f) = Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ (Y * u - u * X) f) ∧ (∀ τ', τ' ≠ τ → ∀ u, Gn (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ' u f) = Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ' u (Gn f)) ∧ (∀ w, HasDerivAt (fun t : ℝ => om (oneP θ S τ X t, oneP θ T τ Y t) f w) (Gn f w) 0) ∧ ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ g, IsThetaFunO ψ S T g → HasDerivAt (fun t : ℝ => ipO μ 𝓕 (om (oneP θ S τ X t, oneP θ T τ Y t) f) g) (ipO μ 𝓕 (Gn f) g) 0 := by
@@ -369,9 +369,9 @@ theorem half_sum {k : ℕ} (A : Fin k → Prop) [DecidablePred A] (Y : Fin k →
       (if i₀ = i then (if A i ∧ ¬ A i' then φ (Y i i') • V i' else 0) else 0) +
       (if i₀ = i' then (if A i ∧ ¬ A i' then φ (Y i i') • V i else 0) else 0) := fun i i' => by
     split_ifs <;> simp
-  simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_comm]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
   by_cases h1 : A i <;> by_cases h2 : A i₀
@@ -403,7 +403,7 @@ theorem comb (hS : IsPMat pS YS) (hT : IsPMat pT YT) (V : Fin m → Fin n → W)
       by_cases h1 : c₀ = d <;> by_cases h2 : i₀ = i <;> simp [h1, h2, sub_eq_add_neg]
     rw [lin, e1]
     split_ifs <;> simp [add_smul]
-  simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   congr 1
   · rw [Finset.sum_eq_single c₀ (fun c _ hc => by simp [Ne.symm hc]) (by simp)]
     simp only [Prod.mk.injEq, and_true]
@@ -411,7 +411,7 @@ theorem comb (hS : IsPMat pS YS) (hT : IsPMat pT YT) (V : Fin m → Fin n → W)
       (fun i j => congrFun (congrFun hT.1 j) i) (fun i => V i c₀) i₀
   · rw [Finset.sum_eq_single i₀ (fun c _ hc => by simp [Ne.symm hc]) (by simp), Finset.sum_comm (s := Finset.univ)
       (t := Finset.univ) (f := fun (i : Fin m) (d : Fin n) => if i₀ = i then _ else _)]
-    simp only [Prod.mk.injEq, true_and, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Prod.mk.injEq, true_and, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact half_sum φ (fun d : Fin n => i₀.val < pT ↔ d.val < pS) (fun d c => -YS c d)
       (fun i j h => by rw [hS.2 j i (by tauto), neg_zero])
       (fun i j => by rw [map_neg]; exact congrArg _ (congrFun (congrFun hS.1 i) j)) (fun i => V i₀ i) c₀
@@ -469,8 +469,8 @@ theorem fockP_X_mul (hS : IsPMat pS YS) (hT : IsPMat pT YT) (y : FVar D m n) (P 
         conj c • ((if y = z then pderiv z' P else 0) + (if y = z' then pderiv z P else 0)) else 0) :=
     fun p _ c z z' => by
       by_cases h : p
-      · rw [if_pos h, if_pos h, if_pos h, quadOp_X_mul]
-      · rw [if_neg h, if_neg h, if_neg h, mul_zero, sub_zero]
+      · rw [ite_eq_left h, ite_eq_left h, ite_eq_left h, quadOp_X_mul]
+      · rw [ite_eq_right h, ite_eq_right h, ite_eq_right h, mul_zero, sub_zero]
   unfold fockP
   simp only [e, Finset.sum_sub_distrib, ← Finset.mul_sum]
   rw [sub_add_sub_comm, mul_add]
@@ -765,14 +765,14 @@ theorem ccr (k l : FVar D T.rank S.rank) {g : WO S T → ℂ} (hg : IsThetaFunO 
     have sq : ∀ a : Fin S.rank, sg (pS τ) a * sg (pS τ) a = 1 := fun a => by
       unfold sg
       split_ifs <;> simp
-    simp only [if_true, GlobalTheory.FockVecInj.cplxO_unitMap (onb_diag (bS τ)).2.2 (onb_diag (bS τ)).2.1 (onb_diag (bT τ)).2.1,
+    simp only [ite_true, GlobalTheory.FockVecInj.cplxO_unitMap (onb_diag (bS τ)).2.2 (onb_diag (bS τ)).2.1 (onb_diag (bT τ)).2.1,
       Matrix.mul_smul, Matrix.trace_smul, GlobalTheory.FockVecInj.trace_unitMap sq (onb_diag (bS τ)).1 (onb_diag (bT τ)).1,
       Prod.mk.injEq, true_and]
     have hre := GlobalTheory.RealSymplForm.realPlace_imaginaryGenerator_re_eq_zero D τ
     have h1 := fockScale_sq (D := D) τ
     have h2 := GlobalTheory.VacuumFockLaws.fockScale_ne (D := D) τ
     by_cases e : a = c ∧ b = d
-    · rw [if_pos e, if_pos e, inv_mul_eq_iff_eq_mul₀ h2, mul_neg, h1]
+    · rw [ite_eq_left e, ite_eq_left e, inv_mul_eq_iff_eq_mul₀ h2, mul_neg, h1]
       unfold sg
       split_ifs <;> simp [hre] <;> ring_nf <;> simp only [I_sq] <;> ring1
     · simp [e]

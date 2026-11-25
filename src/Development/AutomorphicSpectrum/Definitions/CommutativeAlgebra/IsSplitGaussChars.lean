@@ -145,14 +145,6 @@ structure ConjData (p : ℕ) (O : Type) [CommRing O] [StarRing O] (d : ℕ) wher
 
 namespace Inhab
 
-section Line
-
-open Polynomial IsDedekindDomain
-
-variable (k : Type) [Field k]
-
-end Line
-
 section Const
 
 def trivLat (d : ℕ) : C.I → AddSubgroup (Fin d → K) := fun i =>
@@ -219,17 +211,6 @@ theorem deg_eq [FiniteDimensional K V]
   rw [← Module.Basis.det_mul_det _ (b i), map_mul, v_det C (h i) this, mul_one]
 
 end Const
-
-section Gauss
-
-end Gauss
-
-section Twist
-
-variable (k : Type) [Field k] (V : Type) [AddCommGroup V] [Module (RatFunc k) V]
-  [FiniteDimensional (RatFunc k) V]
-
-end Twist
 
 end Inhab
 

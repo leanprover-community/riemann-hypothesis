@@ -85,7 +85,7 @@ private theorem act_onePlus (s : ℤˣ) (X : Matrix (Fin m) (Fin m) C) (h : X * 
       1 + (if s = 1 then X else thetaLie X) := by
   rcases Int.units_eq_one_or s with rfl | rfl
   · simp [onePlus]
-  · rw [sgnAct_neg_one, theta_val, if_neg (by decide)]
+  · rw [sgnAct_neg_one, theta_val, ite_eq_right (by decide)]
     show Jmat C m * (1 - X)ᵀ * Jmat C m = _
     rw [Matrix.transpose_sub, Matrix.transpose_one, mul_sub, sub_mul, mul_one, Jmat_mul_Jmat]
     unfold thetaLie

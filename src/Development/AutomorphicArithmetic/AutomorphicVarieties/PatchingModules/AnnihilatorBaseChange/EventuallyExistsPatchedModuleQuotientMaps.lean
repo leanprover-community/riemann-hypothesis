@@ -293,16 +293,6 @@ private theorem UpperTheory.V.Pa.Core.spCong_gen (hI : (I • ⊤ : Submodule R 
     rw [e, e, UpperTheory.V.Pa.Core.spCong_smul, Submodule.Quotient.mk_smul]
   rw [h1, hκ, hκ, e', e', UpperTheory.V.Pa.Core.spCong_smul, Submodule.Quotient.mk_smul]
 
-private theorem UpperTheory.V.Pa.Core.spCong_ideal {q n : ℕ} (P P' : Fin q → Polynomial R) (ut : Fin q → Fin n → R)
-    (h : ∀ j k, (P' j).coeff k - (P j).coeff k ∈ I) :
-    spIdeal P ut ≤ spIdeal P' ut ⊔ I.map (MvPowerSeries.C : R →+* MvPowerSeries (Fin q × Fin n) R) := by
-  unfold spIdeal
-  rw [Ideal.span_le]
-  rintro _ ⟨j, k, rfl⟩
-  refine Submodule.mem_sup.2 ⟨_, Ideal.subset_span ⟨j, k, rfl⟩, _, Ideal.mem_map_of_mem _ (h j k), ?_⟩
-  simp only [Polynomial.coeff_sub, Polynomial.coeff_map, map_sub]
-  ring
-
 end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Pa.Core.spCong :
@@ -320,8 +310,8 @@ theorem UpperTheory.V.Pa.Core.spCong :
     rw [← neg_sub]
     exact I.neg_mem (h j k)
   obtain ⟨κ, hκ⟩ := UpperTheory.V.Pa.Core.spCong_gen I a M hI (Sp.mk P ut) (Sp.mk P' ut) (hs P) (hs P')
-    (by rw [hk, hk, ← hC]; exact UpperTheory.V.Pa.Core.spCong_ideal I P P' ut h')
-    (by rw [hk, hk, ← hC]; exact UpperTheory.V.Pa.Core.spCong_ideal I P' P ut h)
+    (by rw [hk, hk, ← hC]; exact sp_le I P' P ut h')
+    (by rw [hk, hk, ← hC]; exact sp_le I P P' ut h)
   refine ⟨κ, hκ, fun z hz x => UpperTheory.V.Pa.Core.spCong_kill I a M hI _ z ?_ x⟩
   rw [hk, ← hC]
   exact hz

@@ -120,8 +120,8 @@ theorem vA_frame (X : HSp D) (i : Fin X.rank) : vA X (X.frame i) = Pi.single i 1
   have : Formalism.L2.Herm.crd X (X.frame i) j = X.frame.repr (X.frame i) j := rfl
   rw [vA, this, Module.Basis.repr_self, Finsupp.single_apply, Pi.single_apply]
   by_cases h : i = j
-  · rw [if_pos h, if_pos h.symm, RingHom.map_one]
-  · rw [if_neg h, if_neg (Ne.symm h), RingHom.map_zero]
+  · rw [ite_eq_left h, ite_eq_left h.symm, RingHom.map_one]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), RingHom.map_zero]
 
 theorem gram_mA (Y Y' : HSp D) (f : Y.V →ₗ[D.host.E] Y'.V) (hf : HSpace.IsIsomEmb Y Y' f) :
     HMul.hMul (HMul.hMul (cT (cjA D) (mA Y' Y f)) (Y'.gram.map (inc D))) (mA Y' Y f) = Y.gram.map (inc D) := by

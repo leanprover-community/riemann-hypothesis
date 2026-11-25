@@ -95,10 +95,6 @@ def SectionOrder.Statement : Prop :=
           ∑ W ∈ (divCycle I u).support with Ideal.span {q} = incIdeal W e,
             ((divCycle I u W : ℕ) : ℕ∞)
 
-section Inhabitants
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights

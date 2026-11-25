@@ -73,7 +73,7 @@ theorem sx_frob_sum {ι α K' : Type} [Field K'] (R : Subring K') (s : Finset α
   · rw [MvPowerSeries.coeff_map]
     exact (MvPowerSeries.coeff n r).2
   · have hsum : ∀ i ∈ s, MvPowerSeries.map R.subtype (y' i) = x i := fun i hi => by
-      simp only [y', dif_pos hi]
+      simp only [y', dite_eq_left hi]
       exact hy i hi
     have h2 := congrArg (MvPowerSeries.map R.subtype) hr
 
@@ -124,7 +124,7 @@ theorem sx_lam_int (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (n : ℕ) :
       rw [Finset.sum_eq_single j]
       · simp
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact hb (hinj h).symm
       · intro hj
@@ -174,11 +174,11 @@ theorem sx_lam_int (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (n : ℕ) :
         have hnq : (p ^ 2) ^ j ≠ p ^ 2 := fun h => by
           have := hinj (show (p ^ 2) ^ j = (p ^ 2) ^ 1 by rw [h, pow_one])
           omega
-        rw [if_neg hn1, if_neg hnq]
+        rw [ite_eq_right hn1, ite_eq_right hnq]
         simp only [add_zero, sub_zero]
         exact dvd_pow_self _ (by omega)
   · have hsum : (∑ i ∈ range (n + 1), if n = (p ^ 2) ^ i then ((p : K') ^ i)⁻¹ else 0) = 0 :=
-      Finset.sum_eq_zero fun i _ => if_neg fun h => hn ⟨i, h⟩
+      Finset.sum_eq_zero fun i _ => ite_eq_right fun h => hn ⟨i, h⟩
     rw [hsum, mul_zero]
     have hn1 : n ≠ 1 := fun h => hn ⟨0, by simp [h]⟩
     have hnq : n ≠ p ^ 2 := fun h => hn ⟨1, by simp [h]⟩
@@ -193,7 +193,7 @@ private theorem sum_sign_if_eq_pow_at_pow (q : ℕ) (hq : 1 < q) (l : ℕ) :
   rw [Finset.sum_eq_single l]
   · simp
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hb (hinj h).symm
   · intro hl
@@ -201,7 +201,7 @@ private theorem sum_sign_if_eq_pow_at_pow (q : ℕ) (hq : 1 < q) (l : ℕ) :
 
 private theorem sum_sign_if_eq_pow_eq_zero_of_ne_pow (q m : ℕ) (hm : ∀ l, m ≠ q ^ l) :
     (∑ i ∈ range (m + 1), if m = q ^ i then ((-1 : ℤ)) ^ i else 0) = 0 :=
-  Finset.sum_eq_zero fun i _ => if_neg (hm i)
+  Finset.sum_eq_zero fun i _ => ite_eq_right (hm i)
 
 private theorem sum_sign_if_eq_pow_add_div_eq_indicator_one (q : ℕ) (hq : 1 < q) (n : ℕ) :
     (∑ i ∈ range (n + 1), if n = q ^ i then ((-1 : ℤ)) ^ i else 0) +
@@ -220,12 +220,12 @@ private theorem sum_sign_if_eq_pow_add_div_eq_indicator_one (q : ℕ) (hq : 1 < 
       have hne : q ^ (l + 1) ≠ 1 := fun h => by
         have := hinj (show q ^ (l + 1) = q ^ 0 by rw [h, pow_zero])
         omega
-      rw [if_pos hd, hdiv, sum_sign_if_eq_pow_at_pow q hq l, if_neg hne, pow_succ]
+      rw [ite_eq_left hd, hdiv, sum_sign_if_eq_pow_at_pow q hq l, ite_eq_right hne, pow_succ]
       ring
-  · push_neg at hn
+  · push Not at hn
     rw [sum_sign_if_eq_pow_eq_zero_of_ne_pow q n hn]
     have hn1 : n ≠ 1 := fun h => hn 0 (by simp [h])
-    rw [if_neg hn1, zero_add]
+    rw [ite_eq_right hn1, zero_add]
     split_ifs with hd
     · apply sum_sign_if_eq_pow_eq_zero_of_ne_pow
       intro l hl
@@ -276,7 +276,7 @@ private theorem coeff_subst_eq_sum_coeff_mul_coeff_pow {K : Type} [Field K] (μ 
     by_contra hlt
     apply hd
     obtain ⟨r, hr⟩ := PowerSeries.X_dvd_iff.2 h0
-    rw [hr, mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega), smul_zero]
+    rw [hr, mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega), smul_zero]
 
 theorem sx_mu_alt_int (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (μ : PowerSeries K')
     (h0 : PowerSeries.constantCoeff μ = 0)
@@ -358,7 +358,7 @@ theorem sx_mu_alt_int (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (μ : PowerS
         have hzb : ∀ d ∈ (range (n + 1)).erase 1, ((z d : ℤ) : ZMod p) = if d = p ^ 2 then 1 else 0 := by
           intro d hd
           have h := hz2 d
-          rw [if_neg (Finset.ne_of_mem_erase hd), zero_add] at h
+          rw [ite_eq_right (Finset.ne_of_mem_erase hd), zero_add] at h
           split_ifs at h ⊢ with hdq
           · have h' := (ZMod.intCast_zmod_eq_zero_iff_dvd _ p).2 h
             push_cast at h'
@@ -373,7 +373,7 @@ theorem sx_mu_alt_int (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (μ : PowerS
             ((P.map (Int.castRingHom (ZMod p))) ^ (p ^ 2)).coeff n else 0)]
           · rw [Finset.sum_ite_eq', hQq]
             split_ifs with h1 h2 h2
-            · rw [hQ, if_pos (Nat.div_lt_self (by omega) hq)]
+            · rw [hQ, ite_eq_left (Nat.div_lt_self (by omega) hq)]
             · rfl
             · exfalso
               apply h1
@@ -394,27 +394,27 @@ theorem sx_mu_alt_int (vp : K') (hvp : vp ^ (p ^ 2 - 1) = (p : K')) (μ : PowerS
       refine ⟨P + Polynomial.C ((if n = 1 then 1 else 0) -
           ∑ d ∈ (range (n + 1)).erase 1, z d * (P ^ d).coeff n) * Polynomial.X ^ n,
         ?_, ?_, ?_, ?_⟩
-      · rw [Polynomial.coeff_add, Polynomial.coeff_C_mul_X_pow, if_neg (by omega), hP0, add_zero]
+      · rw [Polynomial.coeff_add, Polynomial.coeff_C_mul_X_pow, ite_eq_right (by omega), hP0, add_zero]
       · intro m hm
-        rw [Polynomial.coeff_add, Polynomial.coeff_C_mul_X_pow, if_neg (by omega), hPz m (by omega),
+        rw [Polynomial.coeff_add, Polynomial.coeff_C_mul_X_pow, ite_eq_right (by omega), hPz m (by omega),
           add_zero]
       · intro m hm
         rw [Polynomial.coeff_add, Polynomial.coeff_C_mul_X_pow]
         rcases Nat.lt_or_ge m n with h | h
-        · rw [if_neg (by omega), add_zero]
+        · rw [ite_eq_right (by omega), add_zero]
           exact hPμ m h
         · have hmn : m = n := by omega
           subst hmn
-          rw [if_pos rfl, hPz m le_rfl, zero_add]
+          rw [ite_eq_left rfl, hPz m le_rfl, zero_add]
           exact hcμ
       · intro m hm
         rw [Polynomial.coeff_add, Polynomial.coeff_C_mul_X_pow]
         rcases Nat.lt_or_ge m n with h | h
-        · rw [if_neg (by omega), add_zero]
+        · rw [ite_eq_right (by omega), add_zero]
           exact hPd m h
         · have hmn : m = n := by omega
           subst hmn
-          rw [if_pos rfl, hPz m le_rfl, zero_add]
+          rw [ite_eq_left rfl, hPz m le_rfl, zero_add]
           exact hcd
   obtain ⟨P, -, -, hPμ, hPd⟩ := key (n + 1) (by omega)
   obtain ⟨y, hy⟩ := hPd n (by omega)
@@ -604,7 +604,7 @@ theorem th_frob_lin (hF : FrobSumH p n' r0 r1 K' (Rp p K' vp)) (hW : FrobWH p) (
     rw [MvPowerSeries.coeff_zero_C, MvPowerSeries.coeff_zero_C, hzeq]
     ring
   · refine ⟨0, Subring.zero_mem _, ?_⟩
-    rw [MvPowerSeries.coeff_C, MvPowerSeries.coeff_C, if_neg hn, if_neg hn]
+    rw [MvPowerSeries.coeff_C, MvPowerSeries.coeff_C, ite_eq_right hn, ite_eq_right hn]
     ring
 
 def linK (K' : Type) [Field K'] [Algebra (K0 p) K'] (w : WW p) (P : Finset (Fin n')) (a : Fin r0) (b : Fin r1)
@@ -775,7 +775,7 @@ theorem th_sumR {ν : ℕ} (w1 w2 : Fin ν → WW p) (P Q : Finset (Fin n'))
 
       rw [Finset.sum_congr rfl (fun r _ => h1 r), ← Finset.sum_mul, ← map_sum, hD t ht t' ht']
       split_ifs <;> simp
-    rw [Finset.sum_congr rfl e, Finset.sum_ite_eq' P (posAdd t' 1), if_pos (hQ t' ht')]
+    rw [Finset.sum_congr rfl e, Finset.sum_ite_eq' P (posAdd t' 1), ite_eq_left (hQ t' ht')]
   simp only [Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   rw [Finset.sum_congr rfl fun t _ => Finset.sum_comm]
@@ -978,8 +978,8 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
       _ = if posAdd t' 1 = t then 1 else 0 := h
       _ = if t = posAdd t' 1 then 1 else 0 := by
           by_cases h1 : t = posAdd t' 1
-          · rw [if_pos h1, if_pos h1.symm]
-          · rw [if_neg h1, if_neg (Ne.symm h1)]
+          · rw [ite_eq_left h1, ite_eq_left h1.symm]
+          · rw [ite_eq_right h1, ite_eq_right (Ne.symm h1)]
   rw [hR]
   simp only [Fintype.sum_prod_type]
   rw [triple_sum_comm]
@@ -996,11 +996,11 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
   · refine Finset.sum_congr rfl fun s hs => ?_
     rw [hu_def]
     dsimp only
-    rw [if_pos (Finset.mem_filter.mp hs).2]
+    rw [ite_eq_left (Finset.mem_filter.mp hs).2]
   · refine Finset.sum_congr rfl fun s hs => ?_
     rw [hu_def]
     dsimp only
-    rw [if_neg (Finset.mem_filter.mp hs).2, map_neg, neg_mul]
+    rw [ite_eq_right (Finset.mem_filter.mp hs).2, map_neg, neg_mul]
 
 end Formalism.MainNotions.FormalGroupSystem.Pf
 end -- clump:auto

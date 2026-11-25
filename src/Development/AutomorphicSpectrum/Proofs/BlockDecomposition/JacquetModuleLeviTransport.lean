@@ -117,7 +117,7 @@ theorem det_adLie_pairs (e : (Σ i, m i) ≃ Fin N) (β : Fin N → ℕ)
       else 1 := by
     intro a b
     by_cases hab : a ≤ b
-    · rw [if_pos hab]
+    · rw [ite_eq_left hab]
       have hmem : ∀ (i : m a) (j : m b), ¬ β (e ⟨b, j⟩) < β (e ⟨a, i⟩) := by
         intro i j
         rw [hβ]
@@ -153,7 +153,7 @@ theorem det_adLie_pairs (e : (Σ i, m i) ≃ Fin N) (β : Fin N → ℕ)
         rw [leviEmb_apply_same, leviEmb_apply_same]
         rfl
       rw [hk, Matrix.det_kronecker, Matrix.det_transpose]
-    · rw [if_neg hab]
+    · rw [ite_eq_right hab]
       have : IsEmpty {t : ParabolicIndex N β // κ t = toLex (a, b)} := by
         refine ⟨fun t => hab ?_⟩
         have h3 : blk e t.1.1.1 = a ∧ blk e t.1.1.2 = b := by simpa [κ] using t.2
@@ -282,10 +282,10 @@ theorem leviProj_found_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologic
   obtain ⟨⟨b, j⟩, rfl⟩ := e.surjective y
   by_cases hab : a = b
   · subst hab
-    rw [if_pos ((hblk _ _).2 (by simp))]
+    rw [ite_eq_left ((hblk _ _).2 (by simp))]
     have := leviEmb_apply_same k e (leviProj k e ⟨p, h1⟩) a i j
     rw [this, leviProj_apply]
-  · rw [if_neg (fun h => hab (by simpa using (hblk _ _).1 h))]
+  · rw [ite_eq_right (fun h => hab (by simpa using (hblk _ _).1 h))]
     exact leviEmb_apply_ne k e _ hab i j
 
 end GlobalTheory.CompanionTheory.SmGLBridge

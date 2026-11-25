@@ -536,13 +536,13 @@ theorem exists_orders (hZ : PropZ) {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ :
   let r₀ : HeightOneSpectrum (𝓞 F') → ℚ := fun v => if v ∈ T then (a v : ℚ) / M v else 0
   have hr₀ : (Function.support r₀).Finite := hfin.subset fun v hv => by
     by_contra h
-    exact hv (if_neg h)
+    exact hv (ite_eq_right h)
   refine ⟨Finsupp.ofSupportFinite r₀ hr₀, fun v π' hπ' => ?_⟩
   have hrv : (Finsupp.ofSupportFinite r₀ hr₀) v = r₀ v := rfl
   rw [hrv]
   by_cases hv : v ∈ T
   · have hMv : (M v : ℚ) ≠ 0 := by exact_mod_cast (hM v).ne'
-    refine ⟨M v, a v, hM v, by simp only [r₀, if_pos hv]; field_simp, fun p hp => ?_⟩
+    refine ⟨M v, a v, hM v, by simp only [r₀, ite_eq_left hv]; field_simp, fun p hp => ?_⟩
     refine orderAt_of_unit (hord v p hp) ?_
     have h0 : π' ≠ 0 := by
       rintro rfl
@@ -559,7 +559,7 @@ theorem exists_orders (hZ : PropZ) {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ :
     have e2 : v.valuation F' (π v / π')⁻¹ = 1 := by rw [map_inv₀, e1, inv_one]
     rw [← map_div₀]
     exact ⟨(map_ne_zero ψ).2 (div_ne_zero h1 h0), hp _ e1.le, by rw [← map_inv₀]; exact hp _ e2.le⟩
-  · refine ⟨1, 0, one_pos, by simp only [r₀, if_neg hv]; simp, fun p hp => ?_⟩
+  · refine ⟨1, 0, one_pos, by simp only [r₀, ite_eq_right hv]; simp, fun p hp => ?_⟩
     have h1 : v.valuation F' (n : F') ≤ 1 := by
       have := v.valuation_le_one (K := F') (n : 𝓞 F')
       simpa using this

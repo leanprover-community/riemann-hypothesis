@@ -635,7 +635,7 @@ theorem isMultiHomog_X {T : Type} [Fintype T] (t : T) :
   rw [Finset.sum_eq_single t]
   · simp
   · intro c _ hc
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     exact hc (sigma_mk_injective h).symm
   · simp

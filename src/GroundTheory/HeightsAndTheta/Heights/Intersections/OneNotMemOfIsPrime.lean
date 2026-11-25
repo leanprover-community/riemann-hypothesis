@@ -66,7 +66,7 @@ theorem mem_of_sum_mem {I : Ideal (MRing ι)} (hI : IsMultiHomogIdeal I) {β : T
       exact hne (hbb ▸ hm)
     · rfl
   · have hdeg := hh b hb m (mem_support_iff.mpr hm)
-    rw [if_pos (fun k _ => hdeg k), Finset.sum_eq_single b]
+    rw [ite_eq_left (fun k _ => hdeg k), Finset.sum_eq_single b]
     · intro b' hb' hne
       by_contra h'
       exact hne (hd hb' hb (funext fun k => (hh b' hb' m (mem_support_iff.mpr h') k).symm.trans (hdeg k)))

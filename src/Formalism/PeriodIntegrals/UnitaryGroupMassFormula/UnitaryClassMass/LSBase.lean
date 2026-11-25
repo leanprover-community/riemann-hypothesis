@@ -117,7 +117,7 @@ theorem lsOne : LSOne := by
     have e : (((u * k : ℕ) : F)) • z = ∑ i, Pi.single i ((k : F) • (u • z i)) := by
       funext j
       simp only [Finset.sum_apply, Pi.single_apply, Pi.smul_apply, Nat.cast_mul]
-      simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, Nat.cast_smul_eq_nsmul]
+      simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true, Nat.cast_smul_eq_nsmul]
       rw [mul_comm, mul_smul]
       rw [Nat.cast_smul_eq_nsmul F, Nat.cast_smul_eq_nsmul F]
     rw [e]

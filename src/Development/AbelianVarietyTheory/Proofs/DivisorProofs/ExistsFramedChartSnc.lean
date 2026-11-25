@@ -17,45 +17,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FlatS
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HorizontalCoordinateLatticeIsometryDetOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodLinearAlgebraHodgeSequenceExact
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TorsionCountThroughExponentialLatticeKernelStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Analysis.Real.Pi.Bounds
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExponentialDerivativeAtZeroIsTangent
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtIffIsDerivAt0
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsEigAtIffOfIsDerivAt0
@@ -64,8 +26,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSncCoo
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExponentialKernelsIsHolomorphicLatticeFamilyStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwoMarkingsDifferByLevelIsometry
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsDifferentiableOnTransfer
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.RingTheory.RootsOfUnity.Lemmas
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -227,10 +187,10 @@ theorem perVal_bound (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Rec
       have h5 : ∀ j', ∑ m, ρ j m * p.1.2.2.2.1 m j' = (Pi.single j (1 : ℂ) : Fin g → ℂ) j' := fun j' => by
         simpa [Finset.sum_apply] using congrFun (p.2.2.2.2.1 j) j'
       simp only [hQ, AddEquiv.apply_symm_apply, Pi.single_apply, Int.cast_ite, Int.cast_one, Int.cast_zero, ite_mul,
-        _root_.one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.mul_sum]
+        _root_.one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.mul_sum]
       rw [Finset.sum_comm]
       simp only [← _root_.mul_assoc, ← Finset.sum_mul, h5, Pi.single_apply, ite_mul,
-        _root_.one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        _root_.one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     ext i i'
     have h6 := congrFun (congrFun p.2.2.1 ⟨t, i'⟩) ⟨t, i⟩
     have h7 : (1 : Matrix (Letter Dw) (Letter Dw) ℂ) ⟨t, i'⟩ ⟨t, i⟩ =
@@ -302,24 +262,24 @@ theorem exists_log_lift {n : ℕ} (a : ℕ) (z : Fin n → ℂ) (hz : ‖z‖ < 
   refine ⟨s, ?_, ?_, ?_, ?_⟩
   · intro k
     by_cases hk : (k : ℕ) < a
-    · simp only [hk, if_true, hs]
+    · simp only [hk, ite_true, hs]
       rw [Complex.log_re]
       exact hlogneg k hk
-    · simp only [hk, if_false, hs]
+    · simp only [hk, ite_false, hs]
       linarith [hzk k]
   · funext k
     by_cases hk : (k : ℕ) < a
-    · simp only [logExp, hk, if_true, hs]
+    · simp only [logExp, hk, ite_true, hs]
       exact Complex.exp_log (h0 k hk)
-    · simp only [logExp, hk, if_false, hs]
+    · simp only [logExp, hk, ite_false, hs]
   · intro j hj
-    simp only [hj, if_true, hs]
+    simp only [hj, ite_true, hs]
     rw [Complex.log_im]
     exact Complex.abs_arg_le_pi _
   · have hsk : ∀ k, ‖s k‖ ≤ ℓ + 4 := by
       intro k
       by_cases hk : (k : ℕ) < a
-      · simp only [hk, if_true, hs]
+      · simp only [hk, ite_true, hs]
         have h1 : ‖Complex.log (z k)‖ ≤ |(Complex.log (z k)).re| + |(Complex.log (z k)).im| :=
           Complex.norm_le_abs_re_add_abs_im _
         rw [Complex.log_re, Complex.log_im] at h1
@@ -327,7 +287,7 @@ theorem exists_log_lift {n : ℕ} (a : ℕ) (z : Fin n → ℂ) (hz : ‖z‖ < 
         have h3 := Complex.abs_arg_le_pi (z k)
         have h4 := hℓk k hk
         linarith [Real.pi_lt_four]
-      · simp only [hk, if_false, hs]
+      · simp only [hk, ite_false, hs]
         linarith [hzk k]
     have : ‖s‖ ≤ ℓ + 4 := (pi_norm_le_iff_of_nonneg (by linarith)).mpr hsk
     linarith

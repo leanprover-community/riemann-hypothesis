@@ -29,16 +29,16 @@ theorem cone_strictAnti {m : ℕ} {l : Fin m → ℤ} (hl : Cone l) : StrictAnti
 
 theorem wexp_of_lt {n : ℕ} (l : Fin (n / 2) → ℤ) (i : Fin n) (h : (i : ℕ) < n / 2) :
     wexp n l i = l ⟨i, h⟩ := by
-  simp only [wexp, dif_pos h]
+  simp only [wexp, dite_eq_left h]
 
 theorem wexp_of_rev_lt {n : ℕ} (l : Fin (n / 2) → ℤ) (i : Fin n) (h' : n - 1 - (i : ℕ) < n / 2) :
     wexp n l i = -l ⟨n - 1 - i, h'⟩ := by
   have h : ¬ (i : ℕ) < n / 2 := by have := i.isLt; omega
-  simp only [wexp, dif_neg h, dif_pos h']
+  simp only [wexp, dite_eq_right h, dite_eq_left h']
 
 theorem wexp_of_middle {n : ℕ} (l : Fin (n / 2) → ℤ) (i : Fin n) (h : ¬ (i : ℕ) < n / 2)
     (h' : ¬ n - 1 - (i : ℕ) < n / 2) : wexp n l i = 0 := by
-  simp only [wexp, dif_neg h, dif_neg h']
+  simp only [wexp, dite_eq_right h, dite_eq_right h']
 
 theorem wexp_strictAnti_rev : ∀ (n : ℕ) (l : Fin (n / 2) → ℤ), Cone l →
     StrictAnti (wexp n l) ∧ ∀ i, wexp n l (Fin.rev i) = -wexp n l i := by

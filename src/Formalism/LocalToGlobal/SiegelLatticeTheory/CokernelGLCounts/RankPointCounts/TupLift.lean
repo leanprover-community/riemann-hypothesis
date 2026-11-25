@@ -168,7 +168,7 @@ theorem repAtTup_of (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D,
       PairVal.MatR D × PairVal.MatR D, PairVal.NormRep γ y.1 y.2.1 y.2.2.1 y.2.2.2 :=
     ⟨(w, x.1, x.2.1, x.2.2), hx⟩
   have hz : LsDatumB.zT γ = ZhatL (lf D F0) hex.choose.2.1 := by
-    simp only [LsDatumB.zT, LsDatumB.nrep, dif_pos hex]
+    simp only [LsDatumB.zT, LsDatumB.nrep, dite_eq_left hex]
   have hspec := hex.choose_spec
   generalize hex.choose = y at hz hspec
   obtain ⟨w₁, F₁, L₁, U₁⟩ := y

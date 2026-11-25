@@ -40,9 +40,9 @@ theorem rows_Kt_KZ (hrd : 0 < D.host.rdE) (t : D.s.Term u u') : rows_Kt Y t = ro
   unfold onePlusChSh
   by_cases h0 : Dr (X.fl t) (X.fl' t) = 0
   · have h0' : leadMinorE (termGramMatrix X t) D.R.rS = 0 := h0
-    rw [if_pos h0, if_pos h0']
+    rw [ite_eq_left h0, ite_eq_left h0']
   · have h0' : ¬ leadMinorE (termGramMatrix X t) D.R.rS = 0 := h0
-    rw [if_neg h0, if_neg h0']
+    rw [ite_eq_right h0, ite_eq_right h0']
     rfl
 
 def rows_KBound (Y : LoopTie D large₂ X u u' C1) (c : ℝ) : Prop :=

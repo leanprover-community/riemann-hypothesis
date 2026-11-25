@@ -119,11 +119,11 @@ theorem measurePreserving_glue (r p q : ℕ) (e : Fin r ≃ Fin p ⊕ Fin q) (he
     rfl
   · have hab' : b < a := hab
     simp only [σ, Equiv.ofBijective_apply, lowPos, glue, Equiv.apply_symm_apply, fromBlocks_apply₂₂, uni,
-      of_apply, dif_pos hab']
+      of_apply, dite_eq_left hab']
     rfl
   · have hab' : b < a := hab
     simp only [σ, Equiv.ofBijective_apply, lowPos, glue, Equiv.apply_symm_apply, fromBlocks_apply₁₁, uni,
-      of_apply, dif_pos hab']
+      of_apply, dite_eq_left hab']
     rfl
 
 end GlobalTheory.FlagFibre

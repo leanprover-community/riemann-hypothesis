@@ -118,7 +118,7 @@ theorem int_str_eq (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
   have hWk : ∀ k, ((W k : Yt →L[ℂ] Yt) : Yt →ₗ[ℂ] Yt) =
       (((wK hD (hφK k)).restrict (hSK _ (hφK k)) : Y →ₗ[ℂ] Y) : Yt →ₗ[ℂ] Yt) := by
     intro k
-    simp only [W, tOp, dif_pos (hφK k)]
+    simp only [W, tOp, dite_eq_left (hφK k)]
     rfl
   have hY : ∀ k, LinearMap.trace ℂ Y ((gradT ∘ₗ wK hD (hφK k)).restrict
       (fun y hy => hYG _ (hSK _ (hφK k) y hy))) =

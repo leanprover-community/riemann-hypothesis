@@ -34,14 +34,6 @@ variable [LocallyCompactSpace R] [T2Space R]
 
 end Gen
 
-section CM
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E]
-
-variable (R : Type) [CommRing R] [Algebra F R]
-
-end CM
-
 section Arch
 
 variable (F : Type) [Field F] [NumberField F]
@@ -53,20 +45,6 @@ instance secondCountable_Ainf : SecondCountableTopology (InfiniteAdeleRing F) :=
   inferInstanceAs (SecondCountableTopology ((v : InfinitePlace F) → v.Completion))
 
 end Arch
-
-section Glue
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
-
-end Glue
-
-section GlueTop
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
-variable (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R]
-  [LocallyCompactSpace R] [T2Space R]
-
-end GlueTop
 
 end PI.VolStabW
 end -- clump:auto

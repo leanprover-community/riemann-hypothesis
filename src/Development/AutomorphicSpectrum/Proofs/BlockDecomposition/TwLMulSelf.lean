@@ -116,7 +116,7 @@ theorem annL_annL (i j : Lt n) : (annL i * annL j + annL j * annL i : Module.End
   · simp [hi]
   by_cases hj : j ∈ A
   · simp [hj]
-  simp only [hi, hj, Finset.mem_insert, hij, hji, or_self, if_false]
+  simp only [hi, hj, Finset.mem_insert, hij, hji, or_self, ite_false]
   rw [sgL_insert j hi, sgL_insert i hj, twL_swap hij, Finset.insert_comm j i, smul_smul, smul_smul, ← add_smul]
   have : sgL i A * (-twL i j * sgL j A) + sgL j A * (twL i j * sgL i A) = 0 := by ring
   rw [this, zero_smul]
@@ -135,7 +135,7 @@ theorem creL_creL (i j : Lt n) : (creL i * creL j + creL j * creL i : Module.End
   by_cases hj : j ∈ A
   swap
   · simp [hj]
-  simp only [hi, hj, Finset.mem_erase, ne_eq, hij, hji, not_false_eq_true, and_self, if_true]
+  simp only [hi, hj, Finset.mem_erase, ne_eq, hij, hji, not_false_eq_true, and_self, ite_true]
   rw [sgL_erase j hi, sgL_erase i hj, twL_swap hij, Finset.erase_right_comm (a := j) (b := i), smul_smul, smul_smul,
     ← add_smul]
   have : sgL i A * (-twL i j * sgL j A) + sgL j A * (twL i j * sgL i A) = 0 := by ring
@@ -145,18 +145,18 @@ theorem annL_creL (i j : Lt n) :
     (annL i * creL j + creL j * annL i : Module.End ℂ (Cq n V)) = if i = j then 1 else 0 := by
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     refine LinearMap.ext fun x => funext fun A => ?_
     simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, annL_apply, creL_apply,
       Module.End.one_apply]
     by_cases hi : i ∈ A
     · have h1 : i ∉ A.erase i := Finset.notMem_erase i A
-      rw [if_pos hi, if_pos hi, if_neg h1, sgL_erase i hi, twL_self, one_mul, Finset.insert_erase hi,
+      rw [ite_eq_left hi, ite_eq_left hi, ite_eq_right h1, sgL_erase i hi, twL_self, one_mul, Finset.insert_erase hi,
         smul_smul, sgL_mul_self, one_smul, zero_add]
     · have h1 : i ∈ insert i A := Finset.mem_insert_self i A
-      rw [if_neg hi, if_pos h1, if_neg hi, sgL_insert i hi, twL_self, one_mul, Finset.erase_insert hi,
+      rw [ite_eq_right hi, ite_eq_left h1, ite_eq_right hi, sgL_insert i hi, twL_self, one_mul, Finset.erase_insert hi,
         smul_smul, sgL_mul_self, one_smul, add_zero]
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     refine LinearMap.ext fun x => funext fun A => ?_
     simp only [LinearMap.add_apply, Module.End.mul_apply, LinearMap.zero_apply, Pi.add_apply,
       Pi.zero_apply, annL_apply, creL_apply]
@@ -166,7 +166,7 @@ theorem annL_creL (i j : Lt n) :
     · by_cases hj : j ∈ A
       · have hj' : j ∈ insert i A := Finset.mem_insert_of_mem hj
         have hi' : i ∉ A.erase j := fun hm => hi (Finset.mem_of_mem_erase hm)
-        rw [if_neg hi, if_pos hj', if_pos hj, if_neg hi', sgL_insert j hi, sgL_erase i hj,
+        rw [ite_eq_right hi, ite_eq_left hj', ite_eq_left hj, ite_eq_right hi', sgL_insert j hi, sgL_erase i hj,
           twL_swap hij, Finset.erase_insert_of_ne hij, smul_smul, smul_smul, ← add_smul]
         have e : sgL i A * (-twL i j * sgL j A) + sgL j A * (twL i j * sgL i A) = 0 := by ring
         rw [e, zero_smul]

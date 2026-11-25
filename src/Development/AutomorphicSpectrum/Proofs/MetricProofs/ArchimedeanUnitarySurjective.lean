@@ -90,7 +90,7 @@ theorem tm_surj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : T
     by_cases hc : w.embedding = embOf (F.σ (e.symm w))
     · have hg : gramAt C.h v w = C.gr (e.symm w) := by
         simp only [gramAt, LatEmb.gr, hc]; rfl
-      simp only [M, if_pos hc, hg]
+      simp only [M, ite_eq_left hc, hg]
       exact hτ
     · have hconj : w.embedding = ComplexEmbedding.conjugate (embOf (F.σ (e.symm w))) := by
         have h1 : InfinitePlace.mk (embOf (F.σ (e.symm w))) = InfinitePlace.mk w.embedding := by
@@ -106,7 +106,7 @@ theorem tm_surj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : T
       simp only [Matrix.map_mul] at h2
       have h3 : ((b (e.symm w)).map (starRingEnd ℂ))ᴴ = ((b (e.symm w))ᴴ).map (starRingEnd ℂ) := by
         ext i k; simp [Matrix.conjTranspose_apply]
-      simp only [M, if_neg hc, hg]
+      simp only [M, ite_eq_right hc, hg]
       rw [h3]
       exact h2
   have hH : ∀ w, IsUnit (gramAt C.h v w).det := by
@@ -121,8 +121,8 @@ theorem tm_surj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : T
   have haM : ∀ w, (a w : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) = M w := fun w => rfl
   simp only [LatEmb.tm, tauMat, haM, M, he]
   by_cases hc : (plc F τ).embedding = embOf (F.σ τ)
-  · simp only [if_pos hc]
-  · simp only [if_neg hc]
+  · simp only [ite_eq_left hc]
+  · simp only [ite_eq_right hc]
     ext i k
     simp
 

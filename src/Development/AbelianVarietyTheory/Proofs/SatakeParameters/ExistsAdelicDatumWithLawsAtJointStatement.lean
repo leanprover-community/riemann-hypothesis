@@ -296,9 +296,9 @@ theorem cosetOf_eq_yb : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
     unfold SameCoset at h1 h2
     have key := smul_sub_mem_of_frames (GlobalTheory.ColPeriod.isFrames_frsF (A.pt _ (cpl_lt t μ).le c)) P _ y w _ h1 h2
     by_cases hP : P.1 ∈ t.Pr.vGs
-    · simp only [hP, if_true] at key ⊢
+    · simp only [hP, ite_true] at key ⊢
       simpa using key
-    · simp only [hP, if_false] at key ⊢
+    · simp only [hP, ite_false] at key ⊢
       simpa [zpow_natCast] using key
   · intro hy P
     rw [chartBaseRepresentative_penultimate_step]
@@ -354,7 +354,7 @@ theorem cong_mem_level_chr_one' : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (
     refine ⟨GlobalTheory.CongLevel.extE (cOf R j) k, GlobalTheory.Mem.Col2.LevMod.extE_mem_Cbe cst.sharp j P.1 hP hd (L.h j b P) hh k hkG hred, GlobalTheory.CongLevel.extE_inX _ k, ?_⟩
     have hh' := hh
     unfold lamYat at hh'
-    rw [if_pos hP] at hh'
+    rw [ite_eq_left hP] at hh'
     have hcong := GlobalTheory.CongLevel.conj_cong (qOf P.1) _ _ (L.h j b P) hh'
       (GlobalTheory.CongLevel.extE_cong P.1 (qOf P.1) (cOf R j) (fun i => i + 1) hd k hkG hred)
     have h1 := _root_.GlobalTheory.LamRowCong.lamRow_one_add_q Ch mu cst.sharp j P.1 hP ((qOf P.1 : X.E)⁻¹ •
@@ -362,7 +362,7 @@ theorem cong_mem_level_chr_one' : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (
       fun x hx => by
         have hx' := hx
         unfold lamYat at hx' ⊢
-        rw [if_pos hP] at hx' ⊢
+        rw [ite_eq_left hP] at hx' ⊢
         have h2 := hcong x hx'
         rw [LinearMap.smul_apply, LinearMap.sub_apply, LinearMap.id_apply, LinearEquiv.coe_coe]
         exact h2
@@ -372,7 +372,7 @@ theorem cong_mem_level_chr_one' : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (
   · have hstd : ∀ x, x ∈ lamYat (Pr := Pr) (R := R) j P.1 ↔ x ∈ stdAt X.E (R.N j + cOf R j) P.1 := by
       intro x
       unfold lamYat
-      rw [if_neg hP]
+      rw [ite_eq_right hP]
       unfold LocE.lamY
       rw [GlobalTheory.CongLevel.mem_sclLat, GlobalTheory.TopStep.mem_stdAt]
       simp only [LocE.scE, Pi.zero_apply, Nat.cast_zero, ite_self, zpow_zero, inv_one, one_mul]
@@ -397,14 +397,14 @@ theorem cong_mem_level_chr_one' : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (
       show (MulAut.conj (L.h j b P)⁻¹).toMonoidHom (GlobalTheory.CongLevel.extE (cOf R j) k) ∈ Jat (Pr := Pr) cst.sharp j P.1
       rw [e]
       unfold Jat
-      rw [if_neg hP]
+      rw [ite_eq_right hP]
       refine _root_.GlobalTheory.ParahoricOfCong.mem_JQ_of_cong P.1 (R.k + j) (R.N j) (cOf R j) _ hg ?_
       rw [einv]
       exact hginv
     · unfold chiInv
       rw [hψ, inv_one, one_mul]
       unfold lamRow
-      rw [if_neg hP]
+      rw [ite_eq_right hP]
       exact _root_.GlobalTheory.LamQBCong.lamQB_eq_one_of_cong P.1 _ (R.k + j) (R.N j) (R.N j + cOf R j) _ (by omega) hg
 
 theorem levAt_one : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
@@ -545,9 +545,9 @@ theorem psiAt_coset : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X
   have hq := qOf_ne (E := X.E) P.1
   have hqi : IntAt P.1 ((qOf P.1 : ℕ) : X.E) := intAt_nat (P := P.1) _
   by_cases hP : P.1 ∈ Pr.vGs
-  · simp only [if_pos hP] at hInv hSupp hc
+  · simp only [ite_eq_left hP] at hInv hSupp hc
     exact core _ _ hq hqi 0 1 (cst.D P) (by rw [hL.depthG P hP]) hInv hSupp k.1 hkint hk w w₁ hc
-  · simp only [if_neg hP] at hInv hSupp hc
+  · simp only [ite_eq_right hP] at hInv hSupp hc
     exact core _ _ hq hqi cst.M cst.M (cst.D P) (by have := hL.depthQ P hP; omega) hInv hSupp k.1 hkint hk w w₁ hc
 
 end GlobalTheory.PsiCosetInv
@@ -801,7 +801,7 @@ theorem ptAway_cpl : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =
   have hL := t.idx_ok μ
   funext z
   unfold xiPt
-  simp only [dif_neg (lt_irrefl _)]
+  simp only [dite_eq_right (lt_irrefl _)]
   unfold XiCpl1
   refine congrArg₂ (· * ·) ?_ (Finset.prod_congr rfl fun P _ => ?_)
 
@@ -1244,8 +1244,8 @@ theorem ptAway_mat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =
       rw [f1 y hy, f2 _ hzy]
     unfold phiT
     by_cases hc : ∀ P : t.Pr.vT (t.word u), ∀ y ∈ p.deco.1.at P.1, z y ∈ p'.deco.1.at P.1 ∧ p'.deco.1.f P (z y) = p.deco.1.f P y
-    · rw [if_pos hc, if_pos (key.2 hc)]
-    · rw [if_neg hc, if_neg (fun h => hc (key.1 h))]
+    · rw [ite_eq_left hc, ite_eq_left (key.2 hc)]
+    · rw [ite_eq_right hc, ite_eq_right (fun h => hc (key.1 h))]
   · refine Finset.prod_congr rfl fun P _ => ?_
     obtain ⟨k, hk, hkc⟩ := frames_cong A dtU a H T i _ β x x₁ p p₁ h1 h3 P
       (fun v hv' => (hv P.1 (Finset.mem_union_right _ P.2) v hv').1)
@@ -1530,10 +1530,10 @@ theorem sameCoset_symm_iff : ∀ {X : Fields} {Pr : Primes X} (sel : HeightOneSp
   obtain ⟨a, hak, hy⟩ : ∃ a, a + (if P.1 ∈ Pr.vGs then 0 else cst.M) ≤ cst.D P ∧ ∀ l, IntAt P.1 ((qOf P.1 : X.E) ^ a * y0 l) := by
     by_cases hP : P.1 ∈ Pr.vGs
     · refine ⟨1, ?_, fun l => by simpa using hy1 hP l⟩
-      rw [if_pos hP]
+      rw [ite_eq_left hP]
       simpa using hc.D_pos P
     · refine ⟨cst.M, ?_, hy2 hP⟩
-      rw [if_neg hP]
+      rw [ite_eq_right hP]
       have := hD hP
       omega
   unfold SameCoset
@@ -1585,7 +1585,7 @@ theorem ptAway_top : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =
     intro q q'
     funext z
     unfold xiPt
-    rw [dite_eq_right (by omega), if_neg (by omega)]
+    rw [dite_eq_right (by omega), ite_eq_right (by omega)]
   rw [e, e]
 
   have hF := _root_.GlobalTheory.FrameAgree.frame_away A dtU a hP hTie (t.m2 + 1) (Nat.le_of_succ_le hi) β x x₁ p p₁ h1 h3 hagS
@@ -1724,9 +1724,9 @@ theorem adLawAt_xiAd : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a
     rcases lt_trichotomy i t.m2 with h | h | h
     · rw [hTie.chain.2.2.1 i h c c', xiPt, dite_eq_left h]
     · subst h
-      rw [hTie.chain.2.2.2.1 c c', xiPt, dite_eq_right (lt_irrefl _), if_pos rfl, hCo c']
+      rw [hTie.chain.2.2.2.1 c c', xiPt, dite_eq_right (lt_irrefl _), ite_eq_left rfl, hCo c']
     · obtain rfl : i = t.m2 + 1 := by omega
-      rw [hTie.chain.2.2.2.2.1.2 c c', xiPt, dite_eq_right (by omega), if_neg (by omega), hCo c]
+      rw [hTie.chain.2.2.2.2.1.2 c c', xiPt, dite_eq_right (by omega), ite_eq_right (by omega), hCo c]
   · intro i hi β β' x x' x₁ x₁' hx
     funext z
     obtain ⟨p, hp⟩ := hE i _ β x

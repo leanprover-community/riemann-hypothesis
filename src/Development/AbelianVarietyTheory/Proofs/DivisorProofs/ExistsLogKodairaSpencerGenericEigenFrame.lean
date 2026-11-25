@@ -189,7 +189,7 @@ theorem symPair_mem_balanced {E : Type} [Field E] [NumberField E] [IsCMField E] 
     by_cases h2 : i = e ⟨(starRingEnd ℂ).comp P.1.1, P.2.2⟩ ∧ k = e ⟨P.1.1, P.2.1⟩
     · obtain ⟨rfl, rfl⟩ := h2
       simp only [Equiv.symm_apply_apply, embK_bar', sub_self, zero_mul]
-    · rw [if_neg h1, if_neg h2, add_zero, mul_zero]
+    · rw [ite_eq_right h1, ite_eq_right h2, add_zero, mul_zero]
 
 theorem exists_ext (k R K : Type) [CommRing k] [CommRing R] [Field K] (ρ : R →+* K) (α : k →+* K) (κ : k → R)
     (hfr : letI := ρ.toAlgebra; IsFractionRing R K) (hκ : ∀ a, ρ (κ a) = α a) (d : Derivation ℤ R R)

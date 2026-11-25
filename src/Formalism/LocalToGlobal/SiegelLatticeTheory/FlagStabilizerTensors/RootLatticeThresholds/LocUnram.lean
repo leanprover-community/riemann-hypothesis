@@ -149,15 +149,8 @@ theorem iotaE_mem (θ : D.host.E) (hθ : IsIntegral ℤ θ) : (D.s.atP p).ιE θ
   exact h1.tower_top
 
 private theorem algebraMap_Fp_Ep_injective :
-    Function.Injective (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep) := by
-  haveI : Nontrivial (D.s.atP p).Ep := by
-    by_contra hn
-    rw [not_nontrivial_iff_subsingleton] at hn
-    haveI := hn
-    have h := (D.s.atP p).rank
-    rw [Module.finrank_zero_of_subsingleton] at h
-    exact absurd h (by norm_num)
-  exact (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep).injective
+    Function.Injective (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep) :=
+  (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep).injective
 
 private theorem algebraMap_mem_O_of_mem_integers (a : (D.s.atP p).Fp)
     (ha : a ∈ 𝒪[(D.s.atP p).Fp]) :

@@ -317,7 +317,7 @@ theorem assembly : AssemblyStatement := by
           (P * NormedSpace.exp (Formalism.MainNotions.S.unrealify (x : EuclideanSpace ℝ _)) * P⁻¹)
           (Classical.choice (hT t ht)).w⟫_ℂ *
         Complex.exp (-((t : ℂ) * trace (dMat (dNode k r) * conjL P x))) :=
-    fun t ht x => dif_pos ht
+    fun t ht x => dite_eq_left ht
   have hgc : Continuous fun x : Formalism.MainNotions.S.lieE (Formalism.QuantumDeterminants.Nset k r) =>
       P * NormedSpace.exp (Formalism.MainNotions.S.unrealify (x : EuclideanSpace ℝ _)) * P⁻¹ :=
     (continuous_const.matrix_mul exp_unreal_continuous).matrix_mul continuous_const
@@ -459,7 +459,7 @@ theorem assembly : AssemblyStatement := by
   have hinWb : Formalism.QuantumDeterminants.inWb k r (z0 k r) := by
     intro i hi
     show (Pi.single (Formalism.QuantumDeterminants.wI k r (Fin.last k)) (1 : ℂ) : Fin (2 * r + k + 1) → ℂ) i = 0
-    rw [Pi.single_apply, if_neg]
+    rw [Pi.single_apply, ite_eq_right]
     intro hh
     subst hh
     simp only [Formalism.QuantumDeterminants.wI, Fin.val_last] at hi

@@ -266,11 +266,11 @@ private theorem laws_lemma_7 {D : D7} {V W : HSp D} {ψ : AddChar (AF D.host.F) 
           (if k = l then ((ε' k.1 * ε k.2 : ℝ) : ℂ) else 0)))).re : ℝ)) : ℂ) := by
     intro α β k l
     unfold GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.commScalar GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.symplAt GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.hermAt
-    rw [if_pos rfl, htr]
+    rw [ite_eq_left rfl, htr]
   have kap0 : ∀ (α β : ℂ) (k l : Fin W.rank × Fin V.rank), k ≠ l →
       GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.commScalar V W τ τ (α • unitMap B B' k.1 k.2) (β • unitMap B B' l.1 l.2) = 0 := by
     intro α β k l hkl
-    rw [kap, if_neg hkl]
+    rw [kap, ite_eq_right hkl]
     simp
   have kapI : ∀ k : Fin W.rank × Fin V.rank,
       GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.commScalar V W τ τ (unitMap B B' k.1 k.2) ((Complex.I * ((ε' k.1 * ε k.2 : ℝ) : ℂ)) • unitMap B B' k.1 k.2) =
@@ -278,7 +278,7 @@ private theorem laws_lemma_7 {D : D7} {V W : HSp D} {ψ : AddChar (AF D.host.F) 
     intro k
     have e := kap 1 (Complex.I * ((ε' k.1 * ε k.2 : ℝ) : ℂ)) k k
     rw [one_smul] at e
-    rw [e, if_pos rfl]
+    rw [e, ite_eq_left rfl]
     have h2 : (tauE D τ D.host.xi0 * (1 * ((starRingEnd ℂ) (Complex.I * ((ε' k.1 * ε k.2 : ℝ) : ℂ)) * ((ε' k.1 * ε k.2 : ℝ) : ℂ)))).re =
         (tauE D τ D.host.xi0).im := by
       have e2 : (1 : ℂ) * ((starRingEnd ℂ) (Complex.I * ((ε' k.1 * ε k.2 : ℝ) : ℂ)) * ((ε' k.1 * ε k.2 : ℝ) : ℂ)) =
@@ -372,14 +372,14 @@ private theorem laws_lemma_7 {D : D7} {V W : HSp D} {ψ : AddChar (AF D.host.F) 
     simp only [hA, hBo, L]
     by_cases hkl : k = l
     · subst hkl
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       funext x
       have e2 := Cm (unitMap B B' k.1 k.2) ((Complex.I * ((ε' k.1 * ε k.2 : ℝ) : ℂ)) • unitMap B B' k.1 k.2) g hg x
       rw [kapI k] at e2
       simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
       linear_combination ((-((fockScale D τ : ℂ)⁻¹ * Complex.I)) * (-(fockScale D τ : ℂ)⁻¹ - (fockScale D τ : ℂ)⁻¹)) * e2 + (g x) * hcinv +
         (-(8 * Real.pi) * (fockScale D τ : ℂ)⁻¹ * (fockScale D τ : ℂ)⁻¹ * ((tauE D τ D.host.xi0).im : ℂ) * g x) * Complex.I_mul_I
-    · rw [if_neg hkl]
+    · rw [ite_eq_right hkl]
       funext x
       have k1 := kap0 1 1 k l hkl
       rw [one_smul, one_smul] at k1

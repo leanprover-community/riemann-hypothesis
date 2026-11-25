@@ -77,12 +77,12 @@ theorem mvPowerSeries_algHom_kill_high_order :
     rw [map_sum]
     simp only [hcoeff]
     by_cases h : ∃ j, M ≤ α j
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       rw [Finset.sum_ite_eq]
       simp
-    · simp only [dif_neg h, Finset.sum_const_zero]
+    · simp only [dite_eq_right h, Finset.sum_const_zero]
       apply hf
-      push_neg at h
+      push Not at h
       rw [Finsupp.degree_eq_sum]
       calc ∑ i, α i ≤ ∑ _i : σ, M := Finset.sum_le_sum fun i _ => (h i).le
         _ = Fintype.card σ * M := by simp

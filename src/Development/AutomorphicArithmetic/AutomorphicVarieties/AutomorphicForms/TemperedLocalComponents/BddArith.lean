@@ -367,7 +367,7 @@ theorem UpperTheory.adelic_rep_dimension_bounded :
   have hk : ∀ j, k (rsel j) • v = V (rsel j).1 := by
     intro j
     have hex : ∃ g : Γ, g • v = V (rsel j).1 := ⟨gsel j, hgv j⟩
-    have hkj : k (rsel j) = Classical.choose hex := dif_pos hex
+    have hkj : k (rsel j) = Classical.choose hex := dite_eq_left hex
     rw [hkj]
     exact Classical.choose_spec hex
   have hmem : ∀ j, gsel j * (k (rsel j))⁻¹ ∈ MulAction.stabilizer Γ (V (rsel j).1) := by
@@ -1062,10 +1062,10 @@ theorem UpperTheory.fixedOrbits_finite_representatives :
   let bb : Z → Z := fun z => if hz : z ∈ W then (hb z hz).choose else z
   let hh : Z → G := fun z => if hz : z ∈ W then (hb z hz).choose_spec.2.choose else 1
   have bbB : ∀ z ∈ W, bb z ∈ B1 := fun z hz => by
-    simp only [bb, dif_pos hz]
+    simp only [bb, dite_eq_left hz]
     exact (hb z hz).choose_spec.1
   have hhb : ∀ z ∈ W, hh z • bb z = z := fun z hz => by
-    simp only [bb, hh, dif_pos hz]
+    simp only [bb, hh, dite_eq_left hz]
     exact (hb z hz).choose_spec.2.choose_spec
   have hcoc : ∀ z ∈ W, (hh z)⁻¹ * σ (hh z) ∈ MulAction.stabilizer G (bb z) := by
     intro z hz

@@ -51,10 +51,10 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 noncomputable def rootToFlag (H : Host E) (Dw : Datum H) (x : Root Dw.mult) :
     MvPolynomial (GlobalTheory.AllWt.Psi H × Fin (Dw.p + Dw.q)) ℝ :=
   if h : x.1 (H.rt : E) = H.rt0 then
-    X (⟨x.1, h⟩, ⟨x.2, by have := x.2.isLt; simp only [Datum.mult, h, if_true] at this; omega⟩)
+    X (⟨x.1, h⟩, ⟨x.2, by have := x.2.isLt; simp only [Datum.mult, h, ite_true] at this; omega⟩)
   else
     -X (⟨conjEmb x.1, GlobalTheory.AllWt.conj_mem h⟩,
-      ⟨Dw.p + (Dw.q - 1 - x.2), by have := x.2.isLt; simp only [Datum.mult, h, if_false] at this; omega⟩)
+      ⟨Dw.p + (Dw.q - 1 - x.2), by have := x.2.isLt; simp only [Datum.mult, h, ite_false] at this; omega⟩)
 
 noncomputable def rho (H : Host E) (Dw : Datum H) :
     MvPolynomial (Root Dw.mult) ℝ →ₐ[ℝ] MvPolynomial (GlobalTheory.AllWt.Psi H × Fin (Dw.p + Dw.q)) ℝ :=

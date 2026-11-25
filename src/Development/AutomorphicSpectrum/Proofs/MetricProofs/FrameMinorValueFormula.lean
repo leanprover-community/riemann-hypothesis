@@ -59,7 +59,7 @@ theorem pluck_eq {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {zb : (Σ
       · subst e; simp
       · simp [e, Ne.symm e]
     · have e : I ≠ I₀ := fun e => hI (e ▸ hI₀)
-      rw [off_step M hA I hI, if_neg e, mul_zero]
+      rw [off_step M hA I hI, ite_eq_right e, mul_zero]
   have read : ∑ m : ι k, val (vA I₀ ⟨k, m⟩) * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) zb * minorIJ A I (stepCols N j p.2) =
       minorIJ A I₀ (stepCols N j p.2) := by
     calc _ = ∑ I, (∑ m : ι k, val (vA I₀ ⟨k, m⟩) * val (uA ⟨k, m⟩ I)) * minorIJ A I (stepCols N j p.2) := by

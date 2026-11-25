@@ -21,16 +21,6 @@ open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.SmGL Global
 
 namespace UpperTheory.One.M
 
-section Twist
-
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-  {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {a : ℕ} [_root_.NumberField.IsTotallyComplex E]
-  (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
-
-
-
-end Twist
-
 namespace Old
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut}

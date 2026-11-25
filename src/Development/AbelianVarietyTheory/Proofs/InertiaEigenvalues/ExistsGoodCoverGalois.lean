@@ -376,9 +376,9 @@ theorem rel_at : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.
     obtain ⟨P₂, -, p₂, u₂, -, N₂⟩ := hP₂ _ ⟨x, hx⟩
     exact hn _ _ _ _ _ F F₂ _ _ P P₂ p p₂ u u₂ (N hd') (N₂ hd)
   · have e : rdU (T.U j σ) f (T.dict j σ h₀).1 x' =
-        toC (evR (T.Q.Xo j) T.Q.c f ((T.U j σ).un (T.dict j σ h₀).1 ⟨x', hx'⟩)) := dif_pos hx'
+        toC (evR (T.Q.Xo j) T.Q.c f ((T.U j σ).un (T.dict j σ h₀).1 ⟨x', hx'⟩)) := dite_eq_left hx'
     rw [e]
-    exact (dif_pos hx).trans (hr n a f hf f₂ hp)
+    exact (dite_eq_left hx).trans (hr n a f hf f₂ hp)
 
 end GlobalTheory.CoverConstAt
 
@@ -447,9 +447,9 @@ theorem const_of_rel : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.
   classical
   let g : Frame (C.U₂.X k₂).Ψ D.R.r → ℂ := fun x => if h : x ∈ (C.U₂.X k₂).dom then (hg x h).choose else 1
   have hg1 : ∀ x ∈ (C.U₂.X k₂).dom, ‖g x‖ = 1 := fun x h => by
-    simp only [g, dif_pos h]; exact (hg x h).choose_spec.1
+    simp only [g, dite_eq_left h]; exact (hg x h).choose_spec.1
   have hgr : ∀ i, ∀ x ∈ (C.U₂.X k₂).dom, P₂ i x = g x * P i x := fun i x h => by
-    simp only [g, dif_pos h]; exact (hg x h).choose_spec.2 i
+    simp only [g, dite_eq_left h]; exact (hg x h).choose_spec.2 i
   obtain ⟨u, hu1, hu⟩ := GlobalTheory.CoverConst.eq_const_mul_of_norm_one (C.U₂.X k₂).dom (ReciprocityTheory.ChartRestriction.G.FD.FourierCoefficientDomain.isOpen_dom _)
     (ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.flag_domain_frames_connected D.R.r (C.U₂.X k₂)).isPreconnected P₂ P g hP₂d hPd hg1 hgr
   refine ⟨u, hu1, ?_⟩

@@ -1100,7 +1100,6 @@ theorem coeff_logTrunc_charpolyRev {S : Type} [CommRing S] [Algebra ℝ S] {N : 
 
 end LogTrace
 
-
 open LogTrace in
 theorem trace_pow_eq_sum_smul_coeff_charpolyRev_pow :
     ∀ n : ℕ, 1 ≤ n → ∃ c : ℕ → ℝ, ∀ (S : Type) [CommRing S] [Algebra ℝ S] (N : ℕ)
@@ -1272,10 +1271,10 @@ theorem ptr_mul_trProd_mem_reach (n : ℕ) (S : Type) [CommRing S] [Algebra ℝ 
         rw [← hσ A (r + i - a) (by omega), Finset.mul_sum]
         exact Finset.sum_congr rfl fun j _ => (mul_smul_comm _ _ _).symm
       rw [Finset.sum_congr rfl e, Finset.sum_eq_single r]
-      · rw [if_pos (by omega), Algebra.smul_def, map_natCast, mul_assoc]
+      · rw [ite_eq_left (by omega), Algebra.smul_def, map_natCast, mul_assoc]
       · intro a ha har
         rw [Finset.mem_range] at ha
-        rw [if_neg (by omega), mul_zero]
+        rw [ite_eq_right (by omega), mul_zero]
       · intro h
         exact absurd (Finset.mem_range.2 (by omega)) h
     simp only [Pi.smul_apply, Finset.sum_apply]
@@ -1433,11 +1432,6 @@ open scoped Matrix
 
 namespace GlobalTheory.GoodMetric.ChernSpan
 
-theorem topCoeff_sum' {n : ℕ} {κ : Type} (s : Finset κ) (P : κ → MvPolynomial (Fin n × Fin n) ℂ) :
-    topCoeff (∑ i ∈ s, P i) = ∑ i ∈ s, topCoeff (P i) := by
-  simp only [topCoeff, coeff_sum, Finset.mul_sum]
-  exact Finset.sum_comm
-
 theorem topCoeff_real_smul {n : ℕ} (r : ℝ) (P : MvPolynomial (Fin n × Fin n) ℂ) :
     topCoeff (r • P) = (r : ℂ) * topCoeff P := by
   simp only [topCoeff, MvPolynomial.coeff_smul, Complex.real_smul, Finset.mul_sum]
@@ -1464,12 +1458,12 @@ theorem topCoeff_chern_eq_sum_rep : ∀ (ι : Type) [Fintype ι] (m : ι → ℕ
   have e1 : topCoeff (aeval c R) = ∑ d ∈ R.support, topCoeff (aeval c (monomial d (AddMonoidAlgebra.coeff R d))) := by
     conv_lhs => rw [R.as_sum]
 
-    rw [map_sum, topCoeff_sum']
+    rw [map_sum, GlobalTheory.GoodMetric.LinSubst.topCoeff_sum]
   have e2 : topCoeff (aeval c (weightedHomogeneousComponent (Prod.snd : ι × ℕ → ℕ) n R)) =
       ∑ d ∈ R.support with Finsupp.weight (Prod.snd : ι × ℕ → ℕ) d = n,
         topCoeff (aeval c (monomial d (AddMonoidAlgebra.coeff R d))) := by
 
-    rw [weightedHomogeneousComponent_apply, map_sum, topCoeff_sum']
+    rw [weightedHomogeneousComponent_apply, map_sum, GlobalTheory.GoodMetric.LinSubst.topCoeff_sum]
   have e3 : topCoeff (aeval c R) = topCoeff (aeval c (weightedHomogeneousComponent (Prod.snd : ι × ℕ → ℕ) n R)) := by
     rw [e1, e2, Finset.sum_filter]
     refine Finset.sum_congr rfl fun d _ => ?_
@@ -1478,7 +1472,7 @@ theorem topCoeff_chern_eq_sum_rep : ∀ (ι : Type) [Fintype ι] (m : ι → ℕ
     · exact key d h
   have hval := congrFun hfg A
   simp only [Finset.sum_apply, Pi.smul_apply] at hval
-  rw [e3, ← hval, topCoeff_sum']
+  rw [e3, ← hval, GlobalTheory.GoodMetric.LinSubst.topCoeff_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [topCoeff_real_smul, ← hρ i]
 

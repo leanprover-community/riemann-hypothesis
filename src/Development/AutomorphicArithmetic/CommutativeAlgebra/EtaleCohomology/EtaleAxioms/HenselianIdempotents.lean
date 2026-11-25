@@ -374,11 +374,11 @@ theorem UpperTheory.exists_root_subset_product_equation_of_henselian_reduction :
       rw [h, show n + m = m + n from add_comm n m, Finset.prod_range_add]
       have h1 : ∏ k ∈ Finset.range m, ((X : (A ⧸ I)[X]) - C (if k < m then 1 else 0)) =
           (X - 1) ^ m := by
-        rw [Finset.prod_congr rfl (fun k hk => by rw [if_pos (Finset.mem_range.mp hk), map_one])]
+        rw [Finset.prod_congr rfl (fun k hk => by rw [ite_eq_left (Finset.mem_range.mp hk), map_one])]
         simp
       have h2 : ∏ k ∈ Finset.range n, ((X : (A ⧸ I)[X]) - C (if m + k < m then 1 else 0)) =
           X ^ n := by
-        rw [Finset.prod_congr rfl (fun k _ => by rw [if_neg (by omega), map_zero, sub_zero])]
+        rw [Finset.prod_congr rfl (fun k _ => by rw [ite_eq_right (by omega), map_zero, sub_zero])]
         simp
       rw [h1, h2, mul_comm]
     have hsplit : g.map (algebraMap A (A ⧸ I)) = ∏ i, (X - C (x0 i)) := by

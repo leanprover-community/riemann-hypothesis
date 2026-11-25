@@ -231,17 +231,17 @@ theorem datumFn_eq_restrict {S T : HSp D} {F : Frame S T} (hF : F.Good) {G : Typ
   rw [restrictHalf_apply, ← halfIdem_eq_add hQ]
   by_cases hx : IsHalf (halfIdem G.Pg Qa) x
   swap
-  · rw [if_neg hx, mul_zero]
+  · rw [ite_eq_right hx, mul_zero]
     simp only [Frame.datumFn]
-    rw [if_neg fun h => hx h.1, zero_mul]
-  rw [if_pos hx, mul_one]
+    rw [ite_eq_right fun h => hx h.1, zero_mul]
+  rw [ite_eq_left hx, mul_one]
   have ha'x := isHalf_smul ha' x
   have hbx := isHalf_smul hb x
   by_cases hint : IsIntM (frMapAdj S T F.βS F.βT x) ∧ IsIntM (frMapO S T F.βS F.βT x)
   · obtain ⟨k1, k2, k3⟩ := (isInt_iff hF h hQ hx).1 hint
     obtain ⟨r1, r2⟩ := _root_.GlobalTheory.RedHalfDrop.redM_drop F.βS F.βT h hQ hx hint.1 hint.2
     simp only [Frame.datumFn, halfInd]
-    rw [if_pos ⟨hx, hint.1⟩, if_pos ⟨hx, hint.2⟩, if_pos ⟨ha'x, k1⟩, if_pos ⟨ha'x, k2⟩, if_pos ⟨k3, hbx⟩, mul_one]
+    rw [ite_eq_left ⟨hx, hint.1⟩, ite_eq_left ⟨hx, hint.2⟩, ite_eq_left ⟨ha'x, k1⟩, ite_eq_left ⟨ha'x, k2⟩, ite_eq_left ⟨k3, hbx⟩, mul_one]
     congr 1
     · exact GlobalTheory.PlaceDatum.omegaG_congr _ _ _ _ fun PP hPP => r1 PP hPP
     · exact hω _ _ fun PP hPP => r2 PP hPP
@@ -268,8 +268,8 @@ theorem vecAt_drop : ∀ (D : D7) (S T : HSp D) (B : Base S T) (Q Q' : Finset (P
     congr 1
     beta_reduce
     rw [Finset.prod_coe_sort Q (fun P => if P ∈ Q' then φ P (y P) else 1),
-      ← Finset.prod_subset hQ' (fun P _ hn => if_neg hn), Finset.prod_coe_sort Q' (fun P => φ P (y P))]
-    exact Finset.prod_congr rfl fun P hP => if_pos hP
+      ← Finset.prod_subset hQ' (fun P _ hn => ite_eq_right hn), Finset.prod_coe_sort Q' (fun P => φ P (y P))]
+    exact Finset.prod_congr rfl fun P hP => ite_eq_left hP
   have hQb : B.de.Q ∪ Q' ⊆ B.de.Q ∪ Q := Finset.union_subset_union (subset_refl _) hQ'
   have hω : ∀ y y' : Reds D T.rank S.rank, (∀ PP ∈ B.de.Q ∪ Q', y PP = y' PP) →
       B.locFn Q' (fun PP => φ PP.1) y = B.locFn Q' (fun PP => φ PP.1) y' := fun y y' hy => by

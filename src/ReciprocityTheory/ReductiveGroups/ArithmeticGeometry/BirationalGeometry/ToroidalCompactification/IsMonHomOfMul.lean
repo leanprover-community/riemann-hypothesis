@@ -96,7 +96,7 @@ theorem isGen_of_gm {M : LB X} {φ : K → (Y ⟶ X)} {ε : K → ℤ} (t : LB.G
 private theorem gm_id_lemma_6 {A : Scheme.{0}} (V : A.Opens) (y : A) (hy : y ∈ V) (s : Γ(A, V)ˣ) :
     ((gm (𝟙 A) y V s : A.presheaf.stalk y)) = A.presheaf.germ V y hy (s : Γ(A, V)) := by
   have hy1 : (𝟙 A) y ∈ V := by simpa using hy
-  simp only [gm, dif_pos hy1]
+  simp only [gm, dite_eq_left hy1]
   first
   | rfl
 

@@ -65,8 +65,8 @@ theorem sum_jacobiSym_eq_sum_residueClass (m₀ s a₀ : ℕ) (X : ℝ) (hm : 0 
         refine Finset.sum_congr rfl (fun q hq => ?_)
         rw [Finset.sum_ite_eq]
         by_cases h : q % (m₀ * s) ∈ clsB m₀ s a₀
-        · rw [if_pos h]
-        · rw [if_neg h, hzero q hq h]
+        · rw [ite_eq_left h]
+        · rw [ite_eq_right h, hzero q hq h]
 
 theorem cnt_add_small (m₀ s a₀ : ℕ) (X : ℝ) (b : ℕ) (hb : b ∈ clsB m₀ s a₀) :
     ((PPset m₀ a₀ X).filter (fun q => q % (m₀ * s) = b)).card + smallCnt X (m₀ * s) b = piAP X (m₀ * s) b := by

@@ -104,9 +104,9 @@ theorem hasDerivAt_ell {k r : ℕ} (z : Fin (2 * r + k + 1) → ℂ) (X : Mx k r
   unfold Formalism.QuantumDeterminants.ell
   refine HasDerivAt.fun_sum fun a _ => ?_
   by_cases h : a.val + 1 < r
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact hasDerivAt_exp_apply X _ _
-  · simp only [dif_neg h, Matrix.mulVec, dotProduct]
+  · simp only [dite_eq_right h, Matrix.mulVec, dotProduct]
     exact HasDerivAt.fun_sum fun j _ => (hasDerivAt_exp_apply X _ _).mul_const _
 
 theorem ell_one {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : Formalism.QuantumDeterminants.inWb k r z) :

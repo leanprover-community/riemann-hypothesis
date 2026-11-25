@@ -757,12 +757,12 @@ theorem weightWindowRequirement_host_of_point : ∀ (C : FC) (cD ch : ℝ) (p : 
   · rw [← hTT'] at ht
     have h1 := ha' t
     have h2 := hb' t
-    simp only [ht, if_false, Finset.mem_singleton] at h1 h2
+    simp only [ht, ite_false, Finset.mem_singleton] at h1 h2
     exact ⟨h1, h2⟩
   · rw [← hTT'] at ht
     have h1 := ha' t
     have h2 := hb' t
-    simp only [ht, if_true, G.winA, G.winB, Finset.mem_Icc, Int.ceil_le, Int.le_floor, G.Nstar] at h1 h2
+    simp only [ht, ite_true, G.winA, G.winB, Finset.mem_Icc, Int.ceil_le, Int.le_floor, G.Nstar] at h1 h2
     exact ⟨h1, h2⟩
   · have key : ∀ (q d : ℕ) (cl : ℕ → PrimeClass) (TT : Finset (p.D.R.A)) (Sc eta : ℝ) (hf : ℕ → p.D.R.A),
         p.D.host.q = q → p.D.host.d = d → p.D.host.cls = cl → p.D.host.TT = TT → p.L.Sc = Sc → p.L.etaSz = eta → (∀ l, G.hP p.D l = hf l) →

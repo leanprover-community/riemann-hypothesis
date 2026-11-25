@@ -48,9 +48,9 @@ private theorem exists_ext {A ι : Type*} {B : A → Type*} (f : ι → A) (hf :
     intro i j hj
     obtain rfl := hf hj
     rfl
-  refine ⟨fun a => if h : ∃ i, f i = a then h.choose_spec ▸ U h.choose else d a, fun i => ?_, fun a ha => dif_neg ha⟩
+  refine ⟨fun a => if h : ∃ i, f i = a then h.choose_spec ▸ U h.choose else d a, fun i => ?_, fun a ha => dite_eq_right ha⟩
   have h : ∃ j, f j = f i := ⟨i, rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact key i _ _
 
 section Two

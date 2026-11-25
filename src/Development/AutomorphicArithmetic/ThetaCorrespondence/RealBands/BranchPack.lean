@@ -869,10 +869,10 @@ theorem norm_prod_sub {ι : Type} [Fintype ι] [DecidableEq ι] (a b : ι → �
     simpa using hσ
   have hb : ∏ σ, b σ = b τ * ∏ σ ∈ ({τ}ᶜ : Finset ι), b σ := Fintype.prod_eq_mul_prod_compl τ _
   have hr : (∏ σ, if σ = τ then ‖a σ - b σ‖ else ‖b σ‖) = ‖a τ - b τ‖ * ∏ σ ∈ ({τ}ᶜ : Finset ι), ‖b σ‖ := by
-    rw [Fintype.prod_eq_mul_prod_compl τ, if_pos rfl]
+    rw [Fintype.prod_eq_mul_prod_compl τ, ite_eq_left rfl]
     congr 1
     refine Finset.prod_congr rfl fun σ hσ => ?_
-    rw [if_neg (by simpa using hσ)]
+    rw [ite_eq_right (by simpa using hσ)]
   rw [ha, hb, hr, ← sub_mul, norm_mul, norm_prod]
 
 theorem pack_of_loc : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ {Y V : HSp D} (d : HermitianOrthogonalExtensionData Y V 1 1) {S S' : D.what₂.Tau → SPar}
@@ -987,7 +987,7 @@ theorem pack_of_loc : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ {Y V : H
           simp only [↓reduceIte, hcomp]
         · simp only [hσ, ↓reduceIte]
       · intro σ hσ
-        rw [hcomp, if_neg hσ, one_mul]
+        rw [hcomp, ite_eq_right hσ, one_mul]
     have hb : ∀ σ, (∫ u, (fun σ Z => if σ = τ then
             ‖mco M σ (g₀ σ) (v₀ σ) (embAt θ d σ (GlobalTheory.SepPer.cmp θ τ (oneP θ Y τ X s) * Z)) -
               mco M σ (g₀ σ) (v₀ σ) (embAt θ d σ Z)‖
@@ -1027,7 +1027,7 @@ theorem pack_of_loc : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ {Y V : H
     calc _ ≤ κ * ∏ σ, (Real.exp q * ‖c σ‖ * (if σ = τ then |s| * hsn (A τ * X * (A τ)⁻¹) else 1)) :=
           mul_le_mul_of_nonneg_left hle hκ.le
       _ = _ := by
-        rw [Finset.prod_mul_distrib, Finset.prod_ite_eq', if_pos (Finset.mem_univ τ), Finset.prod_mul_distrib,
+        rw [Finset.prod_mul_distrib, Finset.prod_ite_eq', ite_eq_left (Finset.mem_univ τ), Finset.prod_mul_distrib,
           Finset.prod_const, Finset.card_univ, ← Real.exp_nat_mul, norm_mul, Complex.norm_real, norm_prod,
           Real.norm_eq_abs, abs_of_pos hκ]
         show _ = Real.exp (Fintype.card D.what₂.Tau * q) * (κ * ∏ σ, ‖c σ‖) * |s| * hsn (A τ * X * (A τ)⁻¹)

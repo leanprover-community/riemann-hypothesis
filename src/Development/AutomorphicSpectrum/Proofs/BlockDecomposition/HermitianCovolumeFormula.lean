@@ -37,10 +37,10 @@ def ofVec (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F E) (n : ℕ
 theorem ofVec_herm {σ : E →ₐ[F] E} (hinv : ∀ x, σ (σ x) = x) {d : ℕ} (b : Module.Basis (Fin d) F E)
     (n : ℕ) (k : Idx n d → F) (a c : Fin n) : σ (ofVec σ b n k c a) = ofVec σ b n k a c := by
   rcases lt_trichotomy a c with h | h | h
-  · simp only [ofVec, dif_pos h, dif_neg (not_lt_of_gt h), hinv]
+  · simp only [ofVec, dite_eq_left h, dite_eq_right (not_lt_of_gt h), hinv]
   · subst h
     simp only [ofVec, lt_irrefl, dite_false, AlgHom.commutes]
-  · simp only [ofVec, dif_pos h, dif_neg (not_lt_of_gt h)]
+  · simp only [ofVec, dite_eq_left h, dite_eq_right (not_lt_of_gt h)]
 
 theorem ratVec_ofVec [FiniteDimensional F E] [CharZero F] (h2 : Module.finrank F E = 2)
     (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F E) (n : ℕ) (k : Idx n d → F) :
@@ -52,7 +52,7 @@ theorem ratVec_ofVec [FiniteDimensional F E] [CharZero F] (h2 : Module.finrank F
     simp
   | inr q =>
     obtain ⟨p, l⟩ := q
-    simp only [ratVec, Sum.elim_inr, ofVec, dif_pos p.2]
+    simp only [ratVec, Sum.elim_inr, ofVec, dite_eq_left p.2]
     rw [b.repr_sum_self]
 
 variable (R : Type) [CommRing R] [Algebra F R]

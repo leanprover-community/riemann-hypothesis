@@ -89,7 +89,7 @@ def ldiagExt {α : Type*} [Zero α] {r : ℕ} (f : Fin r → α) (a : ℕ) : α 
   if h : a < r then f ⟨a, h⟩ else 0
 
 lemma ldiag_ext_fin {α : Type*} [Zero α] {r : ℕ} (f : Fin r → α) (a : Fin r) : ldiagExt f a = f a := by
-  rw [ldiagExt, dif_pos a.isLt]
+  rw [ldiagExt, dite_eq_left a.isLt]
 
 lemma ldiag_sum_filter_lt_eq_range {r : ℕ} (f : Fin r → ℕ) (k : ℕ) (hk : k ≤ r) :
     ∑ a : Fin r with a.val < k, f a = ∑ a ∈ range k, ldiagExt f a := by
@@ -128,9 +128,9 @@ theorem dominancePowerProduct_holds : DomPow := by
   · intro a b hab
     by_cases hb : b < r
     · have ha : a < r := lt_of_le_of_lt hab hb
-      simp only [ldiagExt, dif_pos ha, dif_pos hb]
+      simp only [ldiagExt, dite_eq_left ha, dite_eq_left hb]
       exact ht (show (⟨a, ha⟩ : Fin r) ≤ ⟨b, hb⟩ from hab)
-    · simp only [ldiagExt, dif_neg hb]
+    · simp only [ldiagExt, dite_eq_right hb]
       exact hext0 a
   · intro k hk
     rw [← ldiag_sum_filter_lt_eq_range μ k hk, ← ldiag_sum_filter_lt_eq_range lam k hk]
@@ -454,12 +454,12 @@ theorem sum_range_tsub_from (g : ℕ → ℕ) (hg : ∀ i j, i ≤ j → g j ≤
     have h1 := hg m (m + 1) (by omega)
     rcases lt_trichotomy a m with ham | ham | ham
     · have h2 := hg a m ham.le
-      rw [if_pos ham, if_pos ham.le, if_pos (by omega)]
+      rw [ite_eq_left ham, ite_eq_left ham.le, ite_eq_left (by omega)]
       omega
     · subst ham
-      rw [if_neg (lt_irrefl _), if_pos le_rfl, if_pos (by omega)]
+      rw [ite_eq_right (lt_irrefl _), ite_eq_left le_rfl, ite_eq_left (by omega)]
       omega
-    · rw [if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+    · rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
 
 private theorem pow_nsmul' {σ M S : Type*} [CommSemiring S] [AddCommMonoid M]
     {w : σ → M} {φ : MvPolynomial σ S} {m : M} (hφ : IsWeightedHomogeneous w φ m) :
@@ -472,7 +472,7 @@ private theorem pow_nsmul' {σ M S : Type*} [CommSemiring S] [AddCommMonoid M]
     intro d hd
     have hd0 : d = 0 := by
       by_contra h
-      exact hd (by rw [MvPolynomial.coeff_one, if_neg (Ne.symm h)])
+      exact hd (by rw [MvPolynomial.coeff_one, ite_eq_right (Ne.symm h)])
     rw [hd0, map_zero]
   | succ k ih =>
     rw [pow_succ, succ_nsmul]
@@ -514,9 +514,9 @@ theorem highestWeightVectorRowWeight : HWRowWeight := by
     · have h0 : hwrowExtNu ν n = 0 := by
         first
         | simp [hwrowExtNu]
-      rw [if_pos ha, h0, Nat.sub_zero]
+      rw [ite_eq_left ha, h0, Nat.sub_zero]
       all_goals first | rfl
-    · rw [if_neg ha]
+    · rw [ite_eq_right ha]
       simp [rowNu, ha]
   rw [key]
   unfold hw
@@ -579,12 +579,12 @@ theorem rowPartSum : RowNuSum := by
   have hR : ∑ t : Fin n with t.val < k, ν t = ∑ i ∈ Finset.range n, g i := by
     rw [Finset.sum_filter, ← Fin.sum_univ_eq_sum_range g n]
     refine Finset.sum_congr rfl fun t _ => ?_
-    simp only [g, dif_pos t.isLt]
+    simp only [g, dite_eq_left t.isLt]
   rw [hL, hR]
   refine (Finset.sum_subset (fun i hi => ?_) (fun i hi hni => ?_)).symm
   · simp only [Finset.mem_range] at hi ⊢; omega
   · simp only [Finset.mem_range] at hi hni
-    simp only [g, dif_neg hni, ite_self]
+    simp only [g, dite_eq_right hni, ite_self]
 
 end Formalism.GradedWeylDivisibility
 end -- clump:auto

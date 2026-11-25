@@ -333,7 +333,7 @@ theorem labelling_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   have h2 : V.l ≠ 2 := by
     intro h
     unfold NumDatum.cls primeClass at hcls
-    rw [if_pos (show V.l ∈ N.H.small from h ▸ Nat.mem_primeFactors.2 ⟨Nat.prime_two, N.H.two_dvd_QS, N.H.QS_pos.ne'⟩)] at hcls
+    rw [ite_eq_left (show V.l ∈ N.H.small from h ▸ Nat.mem_primeFactors.2 ⟨Nat.prime_two, N.H.two_dvd_QS, N.H.QS_pos.ne'⟩)] at hcls
     exact absurd hcls (by decide)
   have hj : jacobiSym (-(H.d : ℤ)) V.l = 1 := by
     rw [hP.d_eq]
@@ -412,7 +412,7 @@ theorem labelling_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     · obtain ⟨z', hz'⟩ := (hP.psi _).1 ((inPsi_conj_iff H τ).2 hτ)
       obtain ⟨p, hp, -⟩ := hZ z'
       refine ⟨(⟨p.1, hp.1⟩, 1, p.2), ?_⟩
-      simp only [tauSp, hp.2, hz', one_ne_zero, if_false]
+      simp only [tauSp, hp.2, hz', one_ne_zero, ite_false]
       exact star_star τ
   · intro z g s x
     have h1 : pos z (s + 1).val = pos z (s.val + 1) := by

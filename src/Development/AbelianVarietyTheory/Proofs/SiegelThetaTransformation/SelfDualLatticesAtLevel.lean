@@ -216,7 +216,7 @@ theorem exists_mul (P : Submonoid (𝓞 F)) (I : Ideal (𝓞 F))
     obtain ⟨s, hs, hv⟩ := exists_clear P ((1 - idem I) * algebraMap F (Af F) (d : F)⁻¹) fun v => by
       by_cases hv : I ≤ v.asIdeal
       · left
-        rw [mul_at, sub_at, idem_at, if_pos hv, one_at, sub_self, zero_mul]
+        rw [mul_at, sub_at, idem_at, ite_eq_left hv, one_at, sub_self, zero_mul]
         exact zero_mem _
       · exact Or.inr (hP v hv)
     refine ⟨_, ⟨s, hs, rfl⟩, (h1 _).1 ?_⟩
@@ -307,7 +307,7 @@ theorem trivAt_fmt {V : HSp D} {I : Ideal (𝓞 D.host.F)} {g : GA D V} (h : Tri
   smul_mulVec_eq _ _ (fun v => by
     by_cases hv : I ≤ v.asIdeal
     · exact Or.inr (h v hv)
-    · exact Or.inl (if_neg hv)) u
+    · exact Or.inl (ite_eq_right hv)) u
 
 theorem trivAt_fmtC {V : HSp D} {I : Ideal (𝓞 D.host.F)} {g : GA D V} (h : TrivAt V I g) (u) :
     lf (idem I) • (fmtC V g *ᵥ u) = lf (idem I) • u :=
@@ -326,14 +326,14 @@ theorem trivAt_fmtC {V : HSp D} {I : Ideal (𝓞 D.host.F)} {g : GA D V} (h : Tr
         exacts [map_one _, map_zero _]
       rw [e, e'] at this
       exact this
-    · exact Or.inl (if_neg hv)) u
+    · exact Or.inl (ite_eq_right hv)) u
 
 theorem trivOff_fmt {V : HSp D} {I : Ideal (𝓞 D.host.F)} {g : GA D V} (h : TrivOff V I g) (u) :
     lf (1 - idem I) • (fmt V g *ᵥ u) = lf (1 - idem I) • u :=
   smul_mulVec_eq _ _ (fun v => by
     by_cases hv : I ≤ v.asIdeal
     · left
-      rw [sub_at, idem_at, if_pos hv, one_at, sub_self]
+      rw [sub_at, idem_at, ite_eq_left hv, one_at, sub_self]
     · exact Or.inr (h v hv)) u
 
 theorem full_of_mov {g : GL (Fin k) (AfE D)} {Λ L : Lt D.host.E k} (hΛ : Λ.FG)

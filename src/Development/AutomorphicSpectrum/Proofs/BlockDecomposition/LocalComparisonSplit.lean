@@ -135,8 +135,8 @@ theorem abstract_sum {D D₁ P : Type} (π : D → D₁) (Ψ : D₁ → P → D)
     · refine Finset.sum_congr rfl fun Q _ => ?_
       by_cases hq : π Q = q
       · subst hq
-        rw [if_pos rfl, mul_assoc]
-      · rw [if_neg hq, hempty q Q hq]
+        rw [ite_eq_left rfl, mul_assoc]
+      · rw [ite_eq_right hq, hempty q Q hq]
         simp
     · intro Q hQ
       by_cases hq : π Q = q
@@ -152,7 +152,7 @@ theorem abstract_sum {D D₁ P : Type} (π : D → D₁) (Ψ : D₁ → P → D)
     show c q * ∑ᶠ p, f (Ψ q p) = 0
     rw [hinner q]
     refine Finset.sum_eq_zero fun Q hQ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hnot (by simpa using ⟨Q, by simpa using hQ, h⟩)
   have hsuppL : Function.support
@@ -165,7 +165,7 @@ theorem abstract_sum {D D₁ P : Type} (π : D → D₁) (Ψ : D₁ → P → D)
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun Q hQ => ?_
   rw [Finset.sum_ite_eq]
-  rw [if_pos (Finset.mem_image_of_mem π hQ)]
+  rw [ite_eq_left (Finset.mem_image_of_mem π hQ)]
 
 variable {H : Type} [Group H]
 
@@ -1063,27 +1063,27 @@ theorem fv_split (S : Set (Pl E)) (hS : IsSection S) (w : Pl E) (hw : w ∈ S) (
     intro u hu
     exact Subtype.ext ((hS w).unique ⟨hu, u.2⟩ ⟨hw, rfl⟩)
   rw [finprod_eq_single _ (⟨w, rfl⟩ : Above (w.under (𝓞 (maximalRealSubfield E))))]
-  · rw [finprod_eq_if, if_pos hw, if_pos hs]
+  · rw [finprod_eq_if, ite_eq_left hw, ite_eq_left hs]
   · intro u hu
-    rw [finprod_eq_if, if_neg (fun h => hu (key u h))]
+    rw [finprod_eq_if, ite_eq_right (fun h => hu (key u h))]
 
 theorem th_split (a b : ℕ) (w : Pl E) (hs : IsSplitAt w) :
     (thL a w).prodMap (thL b w) = MonoidHom.id (GLw a w × GLw b w) := by
   unfold thL
-  rw [if_pos hs, if_pos hs]
+  rw [ite_eq_left hs, ite_eq_left hs]
   ext x <;> rfl
 
 theorem seen_split (φ₁ φ₂ : ∀ w : Pl E, GLw a w × GLw b w → ℂ) (w : Pl E) (hs : IsSplitAt w) :
     seen φ₁ φ₂ w = fun y => hint (K2 a b w) fun z => φ₁ w z * φ₂ w (z⁻¹ * y) := by
   funext y
   unfold seen
-  rw [if_pos hs]
+  rw [ite_eq_left hs]
 
 theorem locEl_sep {n : ℕ} (w : Pl E) (hs : IsSplitAt w) (δ : GL (Fin n) E) (h : polE δ ∈ Ell E n) :
     (nrmL n w (locEl n w δ)).val.charpoly.Separable := by
   have : (nrmL n w (locEl n w δ)).val.charpoly = (polE δ).map (algebraMap E (w.adicCompletion E)) := by
     unfold nrmL locEl polE
-    rw [if_pos hs, if_pos hs]
+    rw [ite_eq_left hs, ite_eq_left hs]
     exact Matrix.charpoly_map _ _
   rw [this]
   exact h.2.2.1.map

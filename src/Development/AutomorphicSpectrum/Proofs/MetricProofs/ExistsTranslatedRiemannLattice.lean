@@ -49,7 +49,7 @@ theorem sum_embeddings_cm {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (f
     constructor
     · rintro ⟨τ, b⟩ ⟨τ', b'⟩ h
       have h' := congrArg (fun r : E →+* ℂ => r.comp (algebraMap (𝓞 E) E)) h
-      cases b <;> cases b' <;> simp only [m, Bool.false_eq_true, if_true, if_false, hr, restr_embOf] at h'
+      cases b <;> cases b' <;> simp only [m, Bool.false_eq_true, ite_true, ite_false, hr, restr_embOf] at h'
       · rw [hσ.1 h']
       · exact absurd ⟨τ, h'⟩ ((hσ.2 (σ τ')).1 ⟨τ', rfl⟩)
       · exact absurd ⟨τ', h'.symm⟩ ((hσ.2 (σ τ)).1 ⟨τ, rfl⟩)
@@ -58,13 +58,13 @@ theorem sum_embeddings_cm {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (f
       by_cases h : ∃ τ, σ τ = φ.comp (algebraMap (𝓞 E) E)
       · obtain ⟨τ, hτ⟩ := h
         refine ⟨(τ, false), ?_⟩
-        simp only [m, Bool.false_eq_true, if_false, hτ, embOf_restr]
+        simp only [m, Bool.false_eq_true, ite_false, hτ, embOf_restr]
       · have h2 : ∃ τ, σ τ = (starRingEnd ℂ).comp (φ.comp (algebraMap (𝓞 E) E)) := by
           by_contra h3
           exact h ((hσ.2 _).2 h3)
         obtain ⟨τ, hτ⟩ := h2
         refine ⟨(τ, true), ?_⟩
-        simp only [m, if_true]
+        simp only [m, ite_true]
         apply hom_ext
         rw [hr, hτ, hcc]
   rw [← (Equiv.ofBijective m hm).sum_comp, Fintype.sum_prod_type]

@@ -604,7 +604,7 @@ private theorem Js_pow (k : ℕ) (i j : Fin n) : (Js E n ^ k) i j = if (i : ℕ)
     · rw [Finset.sum_eq_single ⟨j + k, by omega⟩]
       · simp; omega
       · intro b _ hb
-        rw [if_neg (c := (b : ℕ) = j + k) fun e => hb (Fin.ext e), mul_zero]
+        rw [ite_eq_right (c := (b : ℕ) = j + k) fun e => hb (Fin.ext e), mul_zero]
       · simp
     · refine Finset.sum_eq_zero fun b _ => ?_
       split_ifs <;> first | omega | simp
@@ -1186,14 +1186,14 @@ theorem exists_scale (X : Finset k) :
     intro x
     by_cases h : valuation k x ≤ 1
     · simp [f, h]
-    · simp only [f, dif_neg h, Units.val_inv_eq_inv_val, Units.val_mk0, map_inv₀]
+    · simp only [f, dite_eq_right h, Units.val_inv_eq_inv_val, Units.val_mk0, map_inv₀]
       push Not at h
       exact inv_le_one_of_one_le₀ h.le
   have hf2 : ∀ x, valuation k ((f x : kˣ) * x) ≤ 1 := by
     intro x
     by_cases h : valuation k x ≤ 1
     · simpa [f, h] using h
-    · simp only [f, dif_neg h, Units.val_inv_eq_inv_val, Units.val_mk0]
+    · simp only [f, dite_eq_right h, Units.val_inv_eq_inv_val, Units.val_mk0]
       rw [inv_mul_cancel₀ (hne x h), map_one]
   refine ⟨∏ x ∈ X, f x, ?_, fun y hy => ?_⟩
   · rw [Units.coe_prod, map_prod]

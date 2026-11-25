@@ -93,11 +93,11 @@ theorem xOfZ_eq (l : ℕ) (j : K0 →+* K) (σ : K0 →+* K0) (om oms : ι → K
   unfold xOfZ linP
   congr 1
   cases c
-  · simp only [if_true]
+  · simp only [ite_true]
     refine Finset.sum_congr rfl fun s _ => ?_
     unfold pXY
     by_cases hs : s.val % 2 = 0 <;> simp [hs]
-  · simp only [Bool.true_eq_false, if_false]
+  · simp only [Bool.true_eq_false, ite_false]
     refine Finset.sum_congr rfl fun s _ => ?_
     unfold pXY
     by_cases hs : s.val % 2 = 0 <;> simp [hs]
@@ -183,7 +183,7 @@ theorem entLog_eq_letLog (l : ℕ) (s : ZMod d) (a : Fin N0) (b : Fin N1) :
     · show entLog (K := K) l ((s, a, b) : ZV d N0 N1) n = 0
       unfold entLog
       refine Finset.sum_eq_zero fun e _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       refine hn ⟨Finsupp.single (s - 2 * (e : ZMod d)) ((l ^ 2) ^ e), ?_⟩
       rw [h, Finsupp.embDomain_single]
@@ -223,7 +223,7 @@ theorem subst_xOfZ_zXY [Fintype ι] [DecidableEq ι] {l : ℕ} (hl : 2 ≤ l) (h
   rw [Finset.sum_eq_single s]
   · simp
   · intro y _ hy
-    rw [if_neg (fun h => hy h.symm), map_zero, map_zero, zero_mul]
+    rw [ite_eq_right (fun h => hy h.symm), map_zero, map_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ s) h
 

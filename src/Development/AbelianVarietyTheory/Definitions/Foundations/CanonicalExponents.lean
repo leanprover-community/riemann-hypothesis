@@ -10,14 +10,6 @@ namespace GlobalTheory.AllWt.Model
 
 open NumberField IsDedekindDomain MeasureTheory Module
 
-section Gram
-
-variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {V : Type} [AddCommGroup V] [Module K V]
-  [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [StarRing K]
-
-
-end Gram
-
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}

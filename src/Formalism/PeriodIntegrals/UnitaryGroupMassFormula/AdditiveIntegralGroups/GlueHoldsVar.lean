@@ -41,33 +41,6 @@ theorem coeff_one_flog {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]}
   first
   | (rw [e, PowerSeries.coeff_zero_eq_constantCoeff_apply, hinv])
 
-private theorem hasSubst_of_constantCoeff_eq_zero_additive_integral_groups {K : Type*} [Field K] {a : PowerSeries K}
-    (ha : PowerSeries.constantCoeff a = 0) : PowerSeries.HasSubst a := by
-  have ha2 : MvPowerSeries.constantCoeff a = 0 := ha
-  first
-  | exact PowerSeries.HasSubst.of_constantCoeff_zero ha2
-
-private theorem hasSubst_of_mvConstantCoeff_eq_zero {K : Type*} [Field K] {σ : Type*} {b : MvPowerSeries σ K}
-    (hb : MvPowerSeries.constantCoeff b = 0) : PowerSeries.HasSubst b := by
-  first
-  | exact PowerSeries.HasSubst.of_constantCoeff_zero hb
-
-private theorem subst_subst_eq_subst_subst_of_constantCoeff {K : Type*} [Field K] {σ : Type*} {a : PowerSeries K}
-    {b : MvPowerSeries σ K} (ha : PowerSeries.constantCoeff a = 0)
-    (hb : MvPowerSeries.constantCoeff b = 0) (f : PowerSeries K) :
-    PowerSeries.subst b (PowerSeries.subst a f) = PowerSeries.subst (PowerSeries.subst b a) f := by
-  have ha' := hasSubst_of_constantCoeff_eq_zero_additive_integral_groups ha
-  have hb' := hasSubst_of_mvConstantCoeff_eq_zero hb
-  first
-  | exact PowerSeries.subst_comp_subst_apply ha' hb' f
-
-private theorem subst_X_eq_self_of_constantCoeff_eq_zero {K : Type*} [Field K] {σ : Type*} {b : MvPowerSeries σ K}
-    (hb : MvPowerSeries.constantCoeff b = 0) :
-    PowerSeries.subst b (PowerSeries.X : PowerSeries K) = b := by
-  have hb' := hasSubst_of_mvConstantCoeff_eq_zero hb
-  first
-  | exact PowerSeries.subst_X hb'
-
 private theorem coeff_pow_eq_zero_of_X_dvd_of_lt {K : Type*} [Field K] {y : PowerSeries K}
     (hy : PowerSeries.X ∣ y) {m d : ℕ} (h : m < d) : PowerSeries.coeff m (y ^ d) = 0 := by
   have hd : (PowerSeries.X : PowerSeries K) ^ d ∣ y ^ d := pow_dvd_pow_of_dvd hy d
@@ -77,7 +50,7 @@ private theorem powerSeries_coeff_subst_eq_sum_range_coeff_mul {K : Type*} [Fiel
     (hy : PowerSeries.constantCoeff y = 0) (l : PowerSeries K) (n : ℕ) :
     PowerSeries.coeff n (PowerSeries.subst y l) =
       ∑ d ∈ Finset.range (n + 1), PowerSeries.coeff d l * PowerSeries.coeff n (y ^ d) := by
-  have hs := hasSubst_of_constantCoeff_eq_zero_additive_integral_groups hy
+  have hs := PowerSeries.HasSubst.of_constantCoeff_zero' hy
   have hX : PowerSeries.X ∣ y := PowerSeries.X_dvd_iff.2 hy
   have e : PowerSeries.coeff n (PowerSeries.subst y l) =
       ∑ᶠ d, PowerSeries.coeff d l • PowerSeries.coeff n (y ^ d) := by
@@ -180,7 +153,9 @@ theorem subst_left_inv {K : Type*} [Field K] {l ex : PowerSeries K} (hl0 : Power
        rw [powerSeries_coeff_subst_eq_sum_range_coeff_mul PowerSeries.constantCoeff_X]
        simp [PowerSeries.coeff_X_pow])
   have heq : PowerSeries.subst (PowerSeries.subst l ex) l = PowerSeries.subst PowerSeries.X l := by
-    rw [← subst_subst_eq_subst_subst_of_constantCoeff hex0 hl0 l, h, subst_X_eq_self_of_constantCoeff_eq_zero hl0, hXl]
+    rw [← PowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.of_constantCoeff_zero' hex0)
+      (PowerSeries.HasSubst.of_constantCoeff_zero' hl0) l, h,
+      PowerSeries.subst_X (R := K) (PowerSeries.HasSubst.of_constantCoeff_zero' hl0), hXl]
   exact eq_of_subst_eq_subst_of_coeff_one_eq_one hl1 hy0 PowerSeries.constantCoeff_X heq
 
 theorem add_eq_of {W : WeierstrassCurve ℂ_[p]} {wq ex : PowerSeries ℂ_[p]} (h : IsWq W wq)
@@ -195,7 +170,9 @@ theorem add_eq_of {W : WeierstrassCurve ℂ_[p]} {wq ex : PowerSeries ℂ_[p]} (
   have hinv := subst_left_inv hl0 hl1 hex0 hex
   first
   | unfold PI.AddIntG.add
-  rw [← hF, ← subst_subst_eq_subst_subst_of_constantCoeff hl0 hF0 ex, hinv, subst_X_eq_self_of_constantCoeff_eq_zero hF0]
+  rw [← hF, ← PowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.of_constantCoeff_zero' hl0)
+    (PowerSeries.HasSubst.of_constantCoeff_zero hF0) ex, hinv,
+    PowerSeries.subst_X (R := ℂ_[p]) (PowerSeries.HasSubst.of_constantCoeff_zero hF0)]
 
 theorem exists_intS (p : ℕ) [Fact p.Prime] : ∃ S : Subring ℂ_[p], ∀ x, x ∈ S ↔ ‖x‖ ≤ 1 := by
   have hadd : ∀ a b : ℂ_[p], ‖a + b‖ ≤ max ‖a‖ ‖b‖ := by

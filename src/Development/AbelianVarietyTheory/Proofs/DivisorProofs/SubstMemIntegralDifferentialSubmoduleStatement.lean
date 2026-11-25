@@ -106,7 +106,7 @@ theorem subst_mem_quasiInt : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [
       intro t
       by_cases ht : t = j
       · subst ht; simp only [Finsupp.single_eq_same]; omega
-      · rw [Finsupp.single_apply, if_neg (Ne.symm ht)]; exact Nat.zero_le _
+      · rw [Finsupp.single_apply, ite_eq_right (Ne.symm ht)]; exact Nat.zero_le _
     set δ := γ - Finsupp.single j 1 with hδ
     have hδγ : δ + Finsupp.single j 1 = γ := tsub_add_cancel_of_le hle
     have hδj : (δ j : Fr p k) + 1 = γ j := by

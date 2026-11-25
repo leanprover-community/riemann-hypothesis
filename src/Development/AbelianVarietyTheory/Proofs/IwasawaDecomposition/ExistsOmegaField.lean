@@ -172,7 +172,7 @@ theorem redM_uMat (V W : HSp D) (hV : V.gram = 1) (βV : GL (Fin V.rank) (EAf D)
     rw [uMat_eq V W hV]
     exact sum_mem fun b' _ => mul_mem (hβ b b') (hi b' a)
   refine ⟨h, fun PP b a => ?_⟩
-  rw [redM, dif_pos (h b a)]
+  rw [redM, dite_eq_left (h b a)]
 
   simp only [← map_mul, ← map_sum]
   congr 1
@@ -226,7 +226,7 @@ theorem exists_thAd {F : Face D A} (hR : R.Char F) (t : T0) {K' : Type} [Field K
       fun k => (h1 k).trans (h2 k).symm)
   refine ⟨fun x => if hx : ∃ y, Place R i t h c0' y x then onQ (Wc D i) (R.thF i t hx.choose v₀) else 0, fun y x hy => ?_⟩
   have hx : ∃ y, Place R i t h c0' y x := ⟨y, hy⟩
-  simp only [dif_pos hx]
+  simp only [dite_eq_left hx]
   rw [huniq _ _ _ hx.choose_spec hy]
 
 alias latEmb_iotaW := _root_.GlobalTheory.LevelAction.latEmb_iotaW

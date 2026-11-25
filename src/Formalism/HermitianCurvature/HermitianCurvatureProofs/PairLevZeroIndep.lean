@@ -922,8 +922,8 @@ theorem word_transfer_mem_entrywise (QQ : ℂ → M2 A) (w : List (Letter ℂ S)
     exact io_mem (hQ a b)
   | cons l w ih =>
     by_cases hp : l.plus
-    · rw [TTw, if_pos hp]; exact entries_mem_mul ih (reflection_entries_mem _ _)
-    · rw [TTw, if_neg hp]; exact entries_mem_mul (reflection_transpose_entries_mem _ _) ih
+    · rw [TTw, ite_eq_left hp]; exact entries_mem_mul ih (reflection_entries_mem _ _)
+    · rw [TTw, ite_eq_right hp]; exact entries_mem_mul (reflection_transpose_entries_mem _ _) ih
 
 theorem rrw_mem_at (QQ : ℂ → M2 A) (w : List (Letter ℂ S)) (hw : ∀ l ∈ w, ∀ a b, QQ l.pt a b ∈ 𝒜) :
     RRw QQ w ∈ entSub 𝒜 := by

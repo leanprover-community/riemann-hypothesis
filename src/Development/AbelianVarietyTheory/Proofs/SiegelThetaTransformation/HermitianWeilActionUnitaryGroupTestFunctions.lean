@@ -292,7 +292,7 @@ theorem exists_gram [IsCMField E] (hΨ : IsType Ψ) : ∃ G : Matrix (QI E N) (Q
     rw [← h2, ← eq_ratCast (algebraMap ℚ ℂ), h]
     exact (Fintype.sum_equiv (RingHom.equivRatAlgHom (R := E) (S := ℂ)) _ _ fun _ => rfl).symm
   by_cases h : p.1 = q.1
-  · simp only [qm, Matrix.map_apply, Matrix.of_apply, if_pos h, key]
+  · simp only [qm, Matrix.map_apply, Matrix.of_apply, ite_eq_left h, key]
     refine Finset.sum_congr rfl fun τ _ => ?_
     simp [Sm, sw, vecMul, dotProduct, Fintype.sum_sum_type, Matrix.one_apply, h, HAct.emb_cc]
     ring

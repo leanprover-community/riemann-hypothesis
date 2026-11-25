@@ -317,7 +317,7 @@ theorem real_part_and_conductors : ∀ (I : AutInst) (θ : InfinitePlace I.F →
     congr 1
     · simp
     · refine Finset.prod_congr rfl fun w _ => ?_
-      rw [InfinitePlace.mult, if_pos (IsTotallyReal.isReal w), pow_one, ← InfinitePlace.norm_embedding_eq,
+      rw [InfinitePlace.mult, ite_eq_left (IsTotallyReal.isReal w), pow_one, ← InfinitePlace.norm_embedding_eq,
         ← embedding_re, Complex.norm_real, Real.norm_eq_abs]
 
 end GlobalTheory.AdeleCharConductor

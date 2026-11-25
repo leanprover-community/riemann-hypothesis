@@ -1403,7 +1403,7 @@ theorem UpperTheory.V.AlgebraTools.qRegAt_mvPowerSeries :
     · rw [monoVal_X_eq, smul_eq_mul, MvPowerSeries.coeff_monomial_mul]
       simp
     · intro β _ hβ
-      rw [monoVal_X_eq, smul_eq_mul, MvPowerSeries.coeff_monomial_mul, if_neg]
+      rw [monoVal_X_eq, smul_eq_mul, MvPowerSeries.coeff_monomial_mul, ite_eq_right]
       intro hle
       exact hβ (Subtype.ext (eq_of_le_of_degree_eq hle (β.2.trans α.2.symm)))
     · simp

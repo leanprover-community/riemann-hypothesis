@@ -58,7 +58,7 @@ private theorem cond_dvd (h : Host) (O : Type) [CommRing O] [IsDomain O] (ψ : D
       exact one_dvd _
   by_cases hpe : p = h.q1 ∨ p = h.d
   · exact key hpe
-  push_neg at hpe
+  push Not at hpe
   rcases (hpf p hpp).mp hpN with h2' | hpq | hq1' | hd'
   · exact absurd h2' h2p
   · rw [hpow p hpp h2p hpe.1 hpe.2] at hdvdp

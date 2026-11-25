@@ -73,13 +73,4 @@ def refill {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G₀ : Formalism
 
 end Split
 
-section Views
-
-variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type}
-
-variable (F : ShimFam D G Lev) (I : Type) (dat : I → Dat D Lev) (hI : ∀ i, (dat i).Indef) (iW : ℕ → I)
-  (hiW : ∀ j, 1 ≤ j → j < D.R.m → dat (iW j) = datW D F.κg j)
-
-end Views
-
 end Formalism.MainNotions.Gaps.FamilyHypotheses

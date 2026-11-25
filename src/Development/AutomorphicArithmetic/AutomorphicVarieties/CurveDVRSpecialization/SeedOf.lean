@@ -465,7 +465,7 @@ theorem cone_of_integral (hF : F.Ok C₀) (hn : n = 2 ∨ n = 3) (C : Type) [Com
       refine artin_rees (maximalIdeal C) (S i j) hy0 (fun x hx => hint j _ (hmul hy hx))
         (fun g => ρ.r g i j) (fun g => hgen g i j) c hc (fun g => ?_)
       rw [hcg g, trace_single_mul, smul_eq_mul]
-    · push_neg at h0
+    · push Not at h0
       have hb : S i j = ⊥ := (Submodule.eq_bot_iff _).2 h0
       have hz : ∀ g, ρ.r g i j = 0 := fun g => h0 _ (hgen g i j)
       refine ⟨by rw [hb]; exact Submodule.fg_bot, fun N => ?_⟩

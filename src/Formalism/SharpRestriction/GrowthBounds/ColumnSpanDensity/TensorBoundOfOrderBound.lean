@@ -42,7 +42,7 @@ theorem dual_bases (hD3 : DualHeightBasis) (lamO : Fin n' → Fin (m + 1) → �
       Finsupp.single_apply]
     by_cases hab : a = b
     · subst hab
-      simp only [if_true, smul_eq_mul, mul_one]
+      simp only [ite_true, smul_eq_mul, mul_one]
       rw [R.p_zpow, R.p_zpow, ← zpow_add₀ R.w_ne, ← zpow_add₀ R.w_ne, ← zpow_add₀ R.w_ne]
       have : -order 1 lamO (π a) + 2 * -π a + (2 * Ar 1 lamO + -order 1 lamO (π a)) = 0 := by
         unfold order
@@ -169,12 +169,12 @@ theorem tensor_bound_of_order_bound (hTen : RestTensor) (hOrd : RestOrdBound) (h
       simp only [h2]
       by_cases hab : a = b
       · subst hab
-        simp only [if_true]
+        simp only [ite_true]
         rw [hM i j]
         by_cases hij : i = j
         · subst hij; simp
         · have : ((i, a) : Fin nT × Fin (dimV R.Kf (othW TT lam0))) ≠ (j, a) := fun h => hij (Prod.mk.inj h).1
-          rw [if_neg hij, if_neg this]
+          rw [ite_eq_right hij, ite_eq_right this]
       · have : ((i, a) : Fin nT × Fin (dimV R.Kf (othW TT lam0))) ≠ (j, b) := fun h => hab (Prod.mk.inj h).2
         simp [hab, this]
 

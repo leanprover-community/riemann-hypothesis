@@ -172,7 +172,7 @@ theorem uni_exists {M I C : Type*} (L : M ≃ I) (c : M → C) (w : M → ℕ) (
       have hf : f n (L m) ≠ 0 := by
         intro hf0
         apply hvi
-        rw [hi', hv, Finsupp.sub_apply, hf0, sub_zero, Finsupp.single_apply, if_neg]
+        rw [hi', hv, Finsupp.sub_apply, hf0, sub_zero, Finsupp.single_apply, ite_eq_right]
         intro heq
         exact hne (L.injective heq).symm
       obtain ⟨hc, hw⟩ := hlt n m hf

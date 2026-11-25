@@ -70,7 +70,7 @@ theorem monomial_mem_first_family (ε : Fin m → Bool) {t : Fin m × Fin n × B
   rw [mem_first_family_iff]
   intro s hs
   have : s = t := by
-    by_contra h; exact (MvPolynomial.mem_support_iff.mp hs) (by rw [coeff_monomial, if_neg (Ne.symm h)])
+    by_contra h; exact (MvPolynomial.mem_support_iff.mp hs) (by rw [coeff_monomial, ite_eq_right (Ne.symm h)])
   subst this; exact ht
 
 theorem monomial_mem_second_family (ε : Fin m → Bool) {t : Fin m × Fin n × Bool →₀ ℕ} (ht : ∀ k ∈ t.support, ¬ inF1 ε k) (d : ℂ) :
@@ -78,7 +78,7 @@ theorem monomial_mem_second_family (ε : Fin m → Bool) {t : Fin m × Fin n × 
   rw [mem_second_family_iff]
   intro s hs
   have : s = t := by
-    by_contra h; exact (MvPolynomial.mem_support_iff.mp hs) (by rw [coeff_monomial, if_neg (Ne.symm h)])
+    by_contra h; exact (MvPolynomial.mem_support_iff.mp hs) (by rw [coeff_monomial, ite_eq_right (Ne.symm h)])
   subst this; exact ht
 
 theorem representing_monomial_mem_first_family (ε : Fin m → Bool) (c : ℝ) (Λ : PX m n →ₗ[ℂ] ℂ) (s) : Bm ε c Λ s ∈ F1 ε := by
@@ -117,7 +117,7 @@ theorem key_mono (ε : Fin m → Bool) {c : ℝ} (hc : 0 < c) (Λ : PX m n →�
     {s u : Fin m × Fin n × Bool →₀ ℕ} (hs : ∀ k ∈ s.support, inF1 ε k) (hu : ∀ k ∈ u.support, ¬ inF1 ε k) :
     Λ (monomial s 1 * monomial u 1) = contr c (Bm ε c Λ s * monomial u 1) := by
   unfold Bm
-  rw [if_pos hs, Finset.sum_mul, contr_sum]
+  rw [ite_eq_left hs, Finset.sum_mul, contr_sum]
   simp_rw [smul_mul_assoc, contr_smul]
   have e : ∀ t ∈ cand ε (rdeg ε s), contr c (monomial t 1 * monomial u 1) =
       if t = u.mapDomain pE then (wt c t : ℂ) else 0 := fun t ht => by

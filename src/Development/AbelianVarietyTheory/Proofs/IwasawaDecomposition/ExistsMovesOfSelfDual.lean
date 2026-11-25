@@ -822,7 +822,7 @@ theorem exists_chi (D : D7) (κ : (AE D)ˣ →* ℂˣ) (h1 : ∀ u, IntU D u →
     have h : ∃ u : (AE D)ˣ, ∀ a, a ∈ 𝔞 ↔ ((u⁻¹ : (AE D)ˣ) : AE D) * inc D a ∈ OhE D := ⟨u, hu⟩
     have := h1 _ (i2 h.choose u fun a => (h.choose_spec a).symm.trans (hu a))
     rw [map_mul, map_inv, mul_inv_eq_one] at this
-    simp only [χ, dif_pos h, this]
+    simp only [χ, dite_eq_left h, this]
   refine ⟨χ, ⟨fun 𝔞 𝔟 ha hb => ?_, fun z => ?_⟩, fun n g₁ g₂ L₁ L₂ m₁ m₂ => hχ _ _ (mem_detId_iff D n _ _ L₁ L₂ m₁ m₂)⟩
   · obtain ⟨u, hu⟩ := i3 𝔞 ha
     obtain ⟨v, hv⟩ := i3 𝔟 hb

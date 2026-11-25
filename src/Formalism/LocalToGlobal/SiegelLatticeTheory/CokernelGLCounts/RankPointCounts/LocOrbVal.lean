@@ -60,14 +60,14 @@ theorem uLow_lowUni {n : ℕ} (x : Loc.IL n → E) : Formalism.DoubleCosetMeasur
   refine ⟨fun i j hij => ?_, fun a => ?_⟩
   · have h' : i < j := OrderDual.toDual_lt_toDual.mp hij
     simp only [Loc.uLow]
-    rw [if_neg (ne_of_lt h'), dite_eq_right (not_lt.mpr h'.le)]
+    rw [ite_eq_right (ne_of_lt h'), dite_eq_right (not_lt.mpr h'.le)]
   · simp [Loc.uLow]
 
 theorem uUp_upUni {n : ℕ} (w : Loc.Pt E n) (y : Loc.IN w → E) : Formalism.DoubleCosetMeasures.IsUpUni (Loc.uUp w y) := by
   refine ⟨fun i j hij => ?_, fun a => ?_⟩
   · have h' : j < i := hij
     simp only [Loc.uUp]
-    rw [if_neg (ne_of_gt h'), dite_eq_right (fun h => absurd h.1 (not_lt.mpr h'.le))]
+    rw [ite_eq_right (ne_of_gt h'), dite_eq_right (fun h => absurd h.1 (not_lt.mpr h'.le))]
   · simp [Loc.uUp]
 
 def rI {m : ℕ} (a : Loc.Pt E (m + 1)) (B : Matrix (Fin (m + 1)) (Fin (m + 1)) E) :

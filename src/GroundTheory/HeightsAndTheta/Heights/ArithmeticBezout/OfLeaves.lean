@@ -776,7 +776,7 @@ theorem sphereMeanLinear : SphereMeanLinear.Statement := by
   have hon : Orthonormal ℂ (({0} : Set (Fin (m + 1))).domRestrict fun _ => p') := by
     rw [orthonormal_iff_ite]
     intro i j
-    rw [Subsingleton.elim i j, if_pos rfl,
+    rw [Subsingleton.elim i j, ite_eq_left rfl,
       show (({0} : Set (Fin (m + 1))).domRestrict fun _ => p') j = p' from rfl,
       inner_self_eq_norm_sq_to_K, hp']
     simp

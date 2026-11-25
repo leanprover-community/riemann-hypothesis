@@ -307,7 +307,7 @@ theorem exists_shortBasis : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj
     have hq' : ρ ≤ D.R.m - j := hq.trans_eq (h.toLawsCore.pins.2.2.2 j hj).2.1
     have h0 : Module.finrank ℤ P.D.toPre.X = 0 := by
       rw [hρ, show ρ = 0 by omega, mul_zero]
-    have hφ : (recPJ h j hj).phiC la (PtV.mk la ho z hz η hl) = 0 := if_neg hm
+    have hφ : (recPJ h j hj).phiC la (PtV.mk la ho z hz η hl) = 0 := ite_eq_right hm
     refine ⟨0, 0, 0, ⟨le_rfl, Module.finBasisOfFinrankEq ℤ _ h0, fun i => i.elim0, fun i => i.elim0⟩, Nat.zero_le _,
       by positivity, fun _ => ⟨rfl, rfl⟩, ?_⟩
     rw [hφ]; simp

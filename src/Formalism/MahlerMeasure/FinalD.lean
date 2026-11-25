@@ -226,12 +226,12 @@ theorem multiset_card_filter_eq_sum {α : Type} (m : Multiset α) (P : α → Pr
   | cons a m ih =>
     by_cases h : P a
     · rw [Multiset.filter_cons_of_pos _ h]
-      simp only [Multiset.card_cons, Multiset.map_cons, Multiset.sum_cons, h, if_true]
+      simp only [Multiset.card_cons, Multiset.map_cons, Multiset.sum_cons, h, ite_true]
       push_cast
       rw [ih]
       ring
     · rw [Multiset.filter_cons_of_neg _ h]
-      simp only [Multiset.map_cons, Multiset.sum_cons, h, if_false]
+      simp only [Multiset.map_cons, Multiset.sum_cons, h, ite_false]
       rw [ih]
       ring
 
@@ -274,7 +274,7 @@ theorem vmin_step (p : ℕ) (hp1 : (1 : ℝ) < p) (h : ℕ) (E : ℝ) (hE : 0 �
       rw [hAeq]
       exact Real.logb_rpow hp0 hp1.ne'
     linarith
-  · push_neg at hu
+  · push Not at hu
     rw [max_eq_left (le_trans hBA hu.le), max_eq_left hu.le]
     simp
 

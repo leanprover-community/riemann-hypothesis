@@ -396,7 +396,7 @@ private lemma spectral_ne {T : H →L[ℂ] H} (hT : IsCompactOperator T) (hsa : 
   · obtain ⟨j, hj⟩ := hl
     exact ⟨l j, b j, hj, b.orthonormal.ne_zero j, hb j⟩
   · exfalso
-    push_neg at hl
+    push Not at hl
     apply hu
     rw [← (hsum u).tsum_eq]
     simp [hl]

@@ -226,11 +226,11 @@ theorem seenDef (D : D7) (H : Formalism.L2.Herm.ColsHermS D) : SeenDef D (errOfT
   simp only [hτ]
   constructor
   · intro hs _
-    rw [if_pos hs] at key
+    rw [ite_eq_left hs] at key
     exact key.2 ((H.atT u).Pv_pi v)
   · intro h
     by_contra hs
-    rw [if_neg hs, Formalism.L2.Col.mem_conjIdeal] at key
+    rw [ite_eq_right hs, Formalism.L2.Col.mem_conjIdeal] at key
     refine not_both_mem D.host (D.mem u).A.T_prime (H.atT u).piU _ (H.atT u).piU_K ?_
       (H.atT u).piU_norm _ ?_ (H.atT u).piU_cong _ ((H.atT u).Pv_max v).ne_top
       ((H.atT u).Pv_pi v) (key.1 (h ((D.fm u).tauOf w v)))

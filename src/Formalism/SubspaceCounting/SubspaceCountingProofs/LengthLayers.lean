@@ -129,12 +129,6 @@ theorem length_span_singleton_le (π : O) (hπ : Irreducible π) {X : Type} [Add
 
 end DVR
 
-section Main
-
-variable {O : Type} [CommRing O]
-
-end Main
-
 end LengthLayersP
 
 end Formalism.G0

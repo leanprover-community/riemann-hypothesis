@@ -249,7 +249,7 @@ theorem rotation_matrix_form_holds : GTRRMatFrom := by
     set q₀ : MA.Qp P.r P.TT := ⟨(c₀, ζ₀), hc₀, hζ₀⟩ with hq₀def
     have h1 := congrArg (fun F : M.Ty P → MA.SmQ P.r P.TT => (F ρ : MA.Qp P.r P.TT → ℂ) q₀) (hk f (Rt (Φ ρ')))
     rw [hRz, actA_kap, SSTr.trR_apply P Bs hpl hk2 e he 0] at h1
-    simp only [SetLike.val_smul, Pi.smul_apply, smul_eq_mul, hfdef, if_pos rfl, one_mul] at h1
+    simp only [SetLike.val_smul, Pi.smul_apply, smul_eq_mul, hfdef, ite_eq_left rfl, one_mul] at h1
     rw [SSTr.trR_apply P Bs hpl hk2 e he] at h1
     simp only [rawR, ZeroMemClass.coe_zero, Pi.zero_apply, hsVec_zero, inner_zero_right, mul_zero] at h1
     have hwq : ((wR P.k P.TT ζ₀ : ℝ) : ℂ) ≠ 0 := hw₀
@@ -269,7 +269,7 @@ theorem rotation_matrix_form_holds : GTRRMatFrom := by
       simpa using h
     show w₀ * (Complex.I * inner ℂ (B.hsVec (E ρ)) (B.hsVec _)) = 0
     rw [hS0, hv0, sub_eq_add_neg, VLem.hsV_add, inner_add_right, ← neg_smul, smul_smul, VLem.hsV_smul,
-      inner_smul_right, horth, if_neg hne, mul_zero, add_zero]
+      inner_smul_right, horth, ite_eq_right hne, mul_zero, add_zero]
     simp only [hx₀def] at hRt0 ⊢
     rw [hRt0]
     ring

@@ -137,7 +137,7 @@ theorem expSum_holds : PositivityTheory.Rg.BcB.F.ExpSum := by
     refine Finset.sum_eq_zero fun i hi => absurd ?_ hμS
     rw [hS, ← (Finset.mem_filter.mp hi).2]
     exact Finset.mem_image_of_mem lam (Finset.mem_univ i)
-  push_neg at hμS
+  push Not at hμS
   have hmaps : ∀ i ∈ (Finset.univ : Finset ι), lam i ∈ S := fun i _ => by
     rw [hS]; exact Finset.mem_image_of_mem lam (Finset.mem_univ i)
   have hsum : ∀ k : ℕ, ∑ i, c i * lam i ^ k = ∑ ν ∈ S, d ν * ν ^ k := by
@@ -579,7 +579,7 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
         _ ≤ ε0 := by
             have := (lt_div_iff₀ hb0p).1 hL
             nlinarith
-    · push_neg at hbig
+    · push Not at hbig
       calc ‖w‖ * ‖χ ⟨B, hB s⟩‖ * ‖w‖ ≤ 1 * ε0 * 1 := by
             apply mul_le_mul (mul_le_mul hw1 hbig.le (norm_nonneg _) zero_le_one) hw1 (norm_nonneg _)
               (by positivity)

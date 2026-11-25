@@ -240,7 +240,7 @@ theorem mx_apply_tensF {M : Type*} [AddCommGroup M] [Module ℂ M] (dual : Bool)
     rw [Finset.sum_eq_single c]
     · simp
     · intro a _ ha
-      rw [if_neg (Ne.symm ha)]
+      rw [ite_eq_right (Ne.symm ha)]
       simp
     · intro h
       exact absurd (Finset.mem_univ c) h
@@ -251,7 +251,7 @@ theorem mx_apply_tensF {M : Type*} [AddCommGroup M] [Module ℂ M] (dual : Bool)
     rw [Finset.sum_eq_single c]
     · simp
     · intro b _ hb
-      rw [if_neg (Ne.symm hb)]
+      rw [ite_eq_right (Ne.symm hb)]
       simp
     · intro h
       exact absurd (Finset.mem_univ c) h

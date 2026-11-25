@@ -664,7 +664,7 @@ theorem idx : IdxSt := by
   · intro g hg
     let g' : K1 := ⟨g, hg⟩
     have hex' : ∃ g'' : K1, τ g'' = τ g' := ⟨g', rfl⟩
-    have hσ : σ (τ g') = hex'.choose.1 := dif_pos hex'
+    have hσ : σ (τ g') = hex'.choose.1 := dite_eq_left hex'
     have hsτ : τ hex'.choose = τ g' := hex'.choose_spec
     set s' := hex'.choose with hs'
     refine ⟨s'.1, Finset.mem_image.2 ⟨τ g', Fintype.mem_piFinset.2 fun i => hτT g' i, hσ⟩, s'.2,
@@ -701,14 +701,6 @@ namespace GlobalTheory.HolDictModel
 
 open GlobalTheory.HolDict
 
-section Local
-
-open ReciprocityTheory.ChartRestriction.G.FD
-
-variable {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
-
-end Local
-
 section Adelic
 
 variable {D : D7}
@@ -724,22 +716,6 @@ theorem fix_iff (τ : D.host.E →+* ℂ) :
   exact ⟨fun h => D.host.φ₀.injective h, fun h => congrArg D.host.φ₀ h⟩
 
 end Adelic
-
-section Dict
-
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.Member
-
-variable {D : D7}
-
-
-end Dict
-
-section Forms
-
-variable {D : D7}
-
-
-end Forms
 
 end GlobalTheory.HolDictModel
 end -- clump:auto
@@ -795,14 +771,14 @@ theorem sum_muF_le (hT : TubeSt) (D : D7) (V : HSp D) (r : ℕ) (hr : V.rank = r
       (fun τ => if h : τ ∈ (X k).Ψ then archM V (th k ⟨τ, h⟩) (gA k) else 1) (x0 k) (y k) (FF k) (FF' k)
       (hX'Gm k) (hX'p0 k) ?_ ?_ ?_ (hF k).1 (hy k) (hF k).2 (hFF' k)
     · intro τ hτ
-      simp only [dif_pos hτ]
+      simp only [dite_eq_left hτ]
       rw [hG k]
       exact GlobalTheory.T.archimedeanMatrix_unitaryGroup_preserves_gram D V τ _ (hth k ⟨τ, hτ⟩) (gA k)
     · intro γ hγ
       obtain ⟨γ', h1, h2⟩ := GlobalTheory.T.arithmeticGroup_conj_rational_principalCongruence D V Comp X dict Kf th M x1 hK hth hD (fun c => (hx1 c).1) hact hG k (gA k)
         (hgA k) (Λk k) (hΛk k).1 γ hγ
       refine ⟨γ', (hX'Γ k γ').2 (by rw [hG k]; exact h1), fun τ hτ => ?_⟩
-      simp only [dif_pos hτ]
+      simp only [dite_eq_left hτ]
       exact h2 τ hτ
     · intro γ' hγ'
       have h1 := (hX'Γ k γ').1 hγ'
@@ -810,7 +786,7 @@ theorem sum_muF_le (hT : TubeSt) (D : D7) (V : HSp D) (r : ℕ) (hr : V.rank = r
       obtain ⟨γ, hγ, h2⟩ := _root_.GlobalTheory.RepConv.conj_mem_of_cong D V Comp X dict Kf th M x1 hK hth hD (fun c => (hx1 c).1) hact hG k (gA k)
         (hgA k) (Λk k) (hΛk k).1 (hΛk k).2.2.2 γ' h1
       refine ⟨γ, hγ, fun τ hτ => ?_⟩
-      simp only [dif_pos hτ]
+      simp only [dite_eq_left hτ]
       exact h2 τ hτ
   have hdist := _root_.GlobalTheory.RepsInj.reps_inj D V Comp X dict Kf th M gA hK hth hD (fun k => by rw [hgA k])
   have hΓ' : ∀ k γ, γ ∈ (X' k).Γ ↔ IsUStab (X' k).Gm (X' k).Λ γ ∧ ∀ x ∈ (X' k).Λ, ∃ z ∈ (X' k).Λ,

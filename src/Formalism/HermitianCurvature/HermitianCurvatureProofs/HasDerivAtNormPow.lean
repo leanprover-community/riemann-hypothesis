@@ -121,7 +121,7 @@ theorem gauge_positivity : PBN.GaugeP := by
       ((∏ a, ‖c a‖ ^ n a : ℝ) : ℂ) * ((n l : ℂ) / 2) := by
     rw [hψ', hψI]
     exact gauge_scalar (c l) (hc l) (n l) _
-  simp only [pOp, if_pos hc, wirt]
+  simp only [pOp, ite_eq_left hc, wirt]
   rw [hD, hD]
   simp only [← Complex.coe_smul]
   linear_combination (norm := module) hs • H c

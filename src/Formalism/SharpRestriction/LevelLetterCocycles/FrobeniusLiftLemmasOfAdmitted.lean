@@ -683,7 +683,7 @@ theorem lemGA_x_of [NeZero n] (W : LocWach PD LL O v n)
   have hJ2 := hJ d T₁ T₂ F b S η m hS
   have hp5 := h5 T₂ (MiW d b S η) (hiW d b S η) hT hJ2
   have hpar1 := lemGAx_parity hn d i hi
-  have hMi : MiW d b S η i = η := by unfold MiW; rw [if_neg (by omega)]
+  have hMi : MiW d b S η i = η := by unfold MiW; rw [ite_eq_right (by omega)]
   have hM2 : MiW d b S η (i - 1 + 1) = η := by rw [sub_add_cancel]; exact hMi
   have hbH : b i ≤ hpar n b S := by
     unfold hpar; exact le_trans (Finset.le_sup (Finset.mem_univ i)) (Nat.le_add_right _ _)
@@ -770,7 +770,7 @@ theorem lemGA_x_of [NeZero n] (W : LocWach PD LL O v n)
   have hc00 : ∀ r : ℕ, r < η →
       PowerSeries.coeff r (W.lev i ζ (Formalism.MainNotions.LiftingTheory.qp W ^ η * Formalism.MainNotions.LiftingTheory.pk W 1 ^ h₂)) = 0 := by
     intro r hr
-    rw [hlevk, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+    rw [hlevk, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
 
   have hg : ∀ k : ℤ, smulS (u ^ (b i + η)) dx k ∈
       lemGAx_F (R := LL) (b i : ℤ) (((2 * H : ℕ) : ℤ) - (b i : ℤ)) c0 k := by
@@ -952,10 +952,10 @@ theorem frobenius_sq_bound_of_local [NeZero n] (h3 : Formalism.MainNotions.Delta
     rw [sub_add_cancel] at this
     omega
   have hc2m : c - 1 - 1 ∈ evens n d := Finset.mem_filter.2 ⟨Finset.mem_univ _, hc2⟩
-  have hMc : boxM d b S η c = b c + S := if_pos hcD
-  have hMc1 : boxM d b S η (c - 1) = η := if_neg (by omega)
-  have hHc1 : boxH d b S η (c - 1) = b (c - 1) + S := if_neg (by omega)
-  have hMc2 : boxM d b S η (c - 1 - 1) = b (c - 1 - 1) + S := if_pos hc2
+  have hMc : boxM d b S η c = b c + S := ite_eq_left hcD
+  have hMc1 : boxM d b S η (c - 1) = η := ite_eq_right (by omega)
+  have hHc1 : boxH d b S η (c - 1) = b (c - 1) + S := ite_eq_right (by omega)
+  have hMc2 : boxM d b S η (c - 1 - 1) = b (c - 1 - 1) + S := ite_eq_left hc2
   have hM₁ : ∀ z ∈ W.Nl T₁ (c - 1), W.Q ^ (b c + S) • W.φD T₁ z ∈ W.N T₁ := by
     rw [← hMc]; exact h5₁.1 c
   have hM₂ : ∀ z ∈ W.Nl T₂ (c - 1), W.Q ^ (b c + S) • W.φD T₂ z ∈ W.N T₂ := by
@@ -1087,7 +1087,7 @@ theorem rhoLift_of [NeZero n] (W : LocWach PD LL O v n) (hT2 : Formalism.MainNot
     intro c' hc' a ha
     have hpar' := Formalism.MainNotions.RamifiedCoefficientChains.S9.parity_succ hn d c'
     unfold Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS at ha
-    rw [if_neg (by omega)] at ha
+    rw [ite_eq_right (by omega)] at ha
     simp only [Set.mem_union, Set.mem_Icc] at ha
     push_cast at ha
     omega

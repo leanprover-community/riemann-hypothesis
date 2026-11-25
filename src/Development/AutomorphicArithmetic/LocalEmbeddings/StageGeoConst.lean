@@ -499,10 +499,10 @@ theorem exists_fin (hX : X.Is ψ θ α β νH S) (hG : IsStageGeo ψ X FA FA' FW
     fun v => if h : v ∈ Xc.T then φ₀ ⟨v, h⟩ else Γ.M.vac v
   let φ' : ∀ v : HeightOneSpectrum (𝓞 D.host.F), (Fin A'.rank × Fin (A.rank + A'.rank) → Fv D.host.F v) → ℂ :=
     fun v => if h : v ∈ Xc.T then φ₀' ⟨v, h⟩ else Γ.M'.vac v
-  have e1 : ∀ v (h : v ∈ Xc.T), φ v = φ₀ ⟨v, h⟩ := fun v h => dif_pos h
-  have e1' : ∀ v (h : v ∈ Xc.T), φ' v = φ₀' ⟨v, h⟩ := fun v h => dif_pos h
-  have e2 : ∀ v ∉ Xc.T, φ v = Γ.M.vac v := fun v h => dif_neg h
-  have e2' : ∀ v ∉ Xc.T, φ' v = Γ.M'.vac v := fun v h => dif_neg h
+  have e1 : ∀ v (h : v ∈ Xc.T), φ v = φ₀ ⟨v, h⟩ := fun v h => dite_eq_left h
+  have e1' : ∀ v (h : v ∈ Xc.T), φ' v = φ₀' ⟨v, h⟩ := fun v h => dite_eq_left h
+  have e2 : ∀ v ∉ Xc.T, φ v = Γ.M.vac v := fun v h => dite_eq_right h
+  have e2' : ∀ v ∉ Xc.T, φ' v = Γ.M'.vac v := fun v h => dite_eq_right h
   have s1 : ∀ v, φ v ∈ GlobalTheory.WeilM.SB _ ∧ φ v ≠ 0 := fun v => by
     by_cases h : v ∈ Xc.T
     · rw [e1 v h]; exact ⟨l5 _, l10 _⟩

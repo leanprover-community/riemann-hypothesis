@@ -470,12 +470,12 @@ theorem stdA_mul {ν : kˣ →* ℂˣ} {ϖ : kˣ} {c a a' : ℕ} {X : Matrix (Fi
       have : gdet g = gdet (g * g₀) * (gdet g₀)⁻¹ := by rw [gdet_mul]; group
       rw [this, apow_mul, apow_of_valuation_eq_one hv, one_mul, apow_inv, neg_div]
     by_cases hc : ∀ i j, ((g₀⁻¹).val * blk₂ X) i j ∈ cball (ϖ ^ c)
-    · rw [if_pos hc, stdA, dite_eq_left ⟨hdet, hG, hcond.2 hc⟩, hu, hap, map_mul]
+    · rw [ite_eq_left hc, stdA, dite_eq_left ⟨hdet, hG, hcond.2 hc⟩, hu, hap, map_mul]
       simp only [_root_.mul_inv_rev, Units.val_mul, mul_one]
       have h1 : ((ν (gdet g) : ℂˣ) : ℂ) * (((ν (gdet g))⁻¹ : ℂˣ) : ℂ) = 1 := by
         rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
       linear_combination ((((ν (gdet g₀))⁻¹ : ℂˣ) : ℂ) * apow (gdet g₀) (-(Fintype.card (Fin (a + a')) : ℂ) / 2)) * h1
-    · rw [if_neg hc, stdA, dite_eq_right (fun H => hc (hcond.1 H.2.2))]
+    · rw [ite_eq_right hc, stdA, dite_eq_right (fun H => hc (hcond.1 H.2.2))]
       simp
   · rw [Set.indicator_of_notMem (by simpa using hS), stdA, dite_eq_right (fun H => hS ((mem_KO_iff_isGLO _).2 (hb1 ▸ H.2.1)))]
     simp
@@ -521,12 +521,12 @@ theorem stdB_mul {ν : kˣ →* ℂˣ} {ϖ : kˣ} {c a a' : ℕ} {Y : Matrix (Fi
       have : gdet g = gdet (g * g₀) * (gdet g₀)⁻¹ := by rw [gdet_mul]; group
       rw [this, apow_mul, apow_of_valuation_eq_one hv, one_mul, apow_inv, neg_div]
     by_cases hc : ∀ i j, ((g₀⁻¹).val * blk₁ Y) i j ∈ cball (ϖ ^ c)
-    · rw [if_pos hc, stdB, dite_eq_left ⟨hdet, hG, hcond.2 hc⟩, hu, hap, map_mul]
+    · rw [ite_eq_left hc, stdB, dite_eq_left ⟨hdet, hG, hcond.2 hc⟩, hu, hap, map_mul]
       simp only [_root_.mul_inv_rev, Units.val_mul, mul_one]
       have h1 : ((ν (gdet g) : ℂˣ) : ℂ) * (((ν (gdet g))⁻¹ : ℂˣ) : ℂ) = 1 := by
         rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
       linear_combination ((((ν (gdet g₀))⁻¹ : ℂˣ) : ℂ) * apow (gdet g₀) (-(Fintype.card (Fin (a + a')) : ℂ) / 2)) * h1
-    · rw [if_neg hc, stdB, dite_eq_right (fun H => hc (hcond.1 H.2.2))]
+    · rw [ite_eq_right hc, stdB, dite_eq_right (fun H => hc (hcond.1 H.2.2))]
       simp
   · rw [Set.indicator_of_notMem (by simpa using hS), stdB, dite_eq_right (fun H => hS ((mem_KO_iff_isGLO _).2 (hb1 ▸ H.2.1)))]
     simp
@@ -1320,7 +1320,7 @@ theorem exists_pure (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {Bs : Base
     · rw [Set.indicator_of_mem (show u ∈ halfP n k ε from hu), Finset.prod_congr rfl fun i _ =>
         (congrArg _ (hcoa i u).symm).trans ((hvac i).2 _ (hsm i u))]
       by_cases hl : m u ∈ latA ΛS ΛT
-      · rw [if_pos ⟨hl, (isHalf_m m).2 hu⟩, mul_one]
+      · rw [ite_eq_left ⟨hl, (isHalf_m m).2 hu⟩, mul_one]
         refine Finset.prod_congr rfl fun i _ => Set.indicator_of_mem ?_ _
         exact ⟨GlobalTheory.BigDat.smul_eq_zero_of_isHalf _ (hid i).2.2.1 ((hA i _).1 (hsm i u)), by
           rw [map_smul]; exact GlobalTheory.LatticeStable.smul_mem_latO D _ _ _ _ _ _ (hid i).2.2.2.2.1 _ hl⟩
@@ -1329,8 +1329,8 @@ theorem exists_pure (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {Bs : Base
           exact hl (GlobalTheory.BigDat.mem_of_sum_smul (P := Finset.univ) (a := a) (hε ▸ (isHalf_m m).2 hu) fun i _ => by
             rw [← map_smul]; exact (hall i).2)
         obtain ⟨i, hn⟩ := this
-        rw [Finset.prod_eq_zero (Finset.mem_univ i) (Set.indicator_of_notMem hn _), if_neg fun h => hl h.1, mul_zero]
-    · rw [Set.indicator_of_notMem (show u ∉ halfP n k ε from hu), if_neg fun h => hu ((isHalf_m m).1 h.2), mul_zero]
+        rw [Finset.prod_eq_zero (Finset.mem_univ i) (Set.indicator_of_notMem hn _), ite_eq_right fun h => hl h.1, mul_zero]
+    · rw [Set.indicator_of_notMem (show u ∉ halfP n k ε from hu), ite_eq_right fun h => hu ((isHalf_m m).1 h.2), mul_zero]
   have hR := _root_.GlobalTheory.InductLagr.rel_of_vac Mo Bs.ψ hstd hM Finset.univ pl hpl.injOn Z A A' co I (halfP n k ε) R (c • g)
     (fun i _ => hI i)
     (fun i _ u hu => ⟨GlobalTheory.BigDat.smul_eq_zero_of_isHalf _ (hid i).2.2.1 ((hA i _).1 hu),
@@ -1746,10 +1746,10 @@ theorem bottom_matching_of_triangle (hH : GlobalTheory.Published.HoweDualityReal
     fun v => if hv : v ∈ Bs.P then φ ⟨v, hv⟩ else Γ.M.vac v
   let Φ' : ∀ v : Pl D.host.F, (Fin A'.rank × Fin (A.rank + A'.rank) → Fv D.host.F v) → ℂ :=
     fun v => if hv : v ∈ Bs.P then φ' ⟨v, hv⟩ else Γ.M'.vac v
-  have e1 : ∀ i : Bs.P, Φ i = φ i := fun i => dif_pos i.2
-  have e1' : ∀ i : Bs.P, Φ' i = φ' i := fun i => dif_pos i.2
-  have e2 : ∀ v ∉ Bs.P, Φ v = Γ.M.vac v := fun v hv => dif_neg hv
-  have e2' : ∀ v ∉ Bs.P, Φ' v = Γ.M'.vac v := fun v hv => dif_neg hv
+  have e1 : ∀ i : Bs.P, Φ i = φ i := fun i => dite_eq_left i.2
+  have e1' : ∀ i : Bs.P, Φ' i = φ' i := fun i => dite_eq_left i.2
+  have e2 : ∀ v ∉ Bs.P, Φ v = Γ.M.vac v := fun v hv => dite_eq_right hv
+  have e2' : ∀ v ∉ Bs.P, Φ' v = Γ.M'.vac v := fun v hv => dite_eq_right hv
   have hall : ∀ v, (Φ v ∈ GlobalTheory.WeilM.SB _ ∧ Φ v ≠ 0) ∧ (Φ' v ∈ GlobalTheory.WeilM.SB _ ∧ Φ' v ≠ 0) ∧ Rf.p v (Φ v) = Rf.p' v (Φ' v) := by
     intro v
     by_cases hv : v ∈ Bs.P
@@ -1776,7 +1776,7 @@ theorem bottom_matching_of_triangle (hH : GlobalTheory.Published.HoweDualityReal
     I (fun i => GlobalTheory.BigNZ.isLagrModel_of_isLin (hI i)) (hX.fst t)
     (fun x hx => by
       by_contra hn
-      exact hx (if_neg fun h' => hn h'.1))
+      exact hx (ite_eq_right fun h' => hn h'.1))
     Φ (fun v => (hall v).1.1) (fun v hv => e2 v fun h' => hv ⟨v, h'⟩ rfl) one_ne_zero
     (fun x hx => by
       rw [one_mul]
@@ -1818,7 +1818,7 @@ theorem bottom_matching_of_triangle (hH : GlobalTheory.Published.HoweDualityReal
     I' (fun i => GlobalTheory.BigNZ.isLagrModel_of_isLin (hI' i)) (hX.snd t)
     (fun x hx => by
       by_contra hn
-      exact hx (if_neg fun h' => hn h'.1))
+      exact hx (ite_eq_right fun h' => hn h'.1))
     Φ' (fun v => (hall v).2.1.1) (fun v hv => e2' v fun h' => hv ⟨v, h'⟩ rfl) (κ := ∏ i, lam i)
     (Finset.prod_ne_zero_iff.2 fun i _ => nlam i)
     (fun x hx => by

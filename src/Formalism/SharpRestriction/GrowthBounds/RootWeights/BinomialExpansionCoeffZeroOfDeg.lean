@@ -46,16 +46,16 @@ theorem binomial_expansion_coeff_padic_dvd (p t : ℕ) (hp : p.Prime) (rho M l :
       simp only [coeff_sub, coeff_one_add_X_pow, coeff_one, coeff_X_pow]
       rcases Nat.eq_zero_or_pos i with rfl | hi
       · simp
-        rw [if_neg (ne_of_lt hP)]
+        rw [ite_eq_right (ne_of_lt hP)]
         exact dvd_zero _
       · by_cases hiP : i = p ^ t
         · subst hiP
           simp
-          rw [if_neg (by simp [hp.ne_zero])]
+          rw [ite_eq_right (by simp [hp.ne_zero])]
           exact dvd_zero _
         · by_cases hlt : i < p ^ t
           · have hdv := hp.dvd_choose_pow hi.ne' hiP
-            simp only [if_neg hi.ne', if_neg hiP, sub_zero]
+            simp only [ite_eq_right hi.ne', ite_eq_right hiP, sub_zero]
             exact_mod_cast hdv
           · rw [Nat.choose_eq_zero_of_lt (by omega)]
             simp [hi.ne', hiP]
@@ -71,7 +71,7 @@ theorem binomial_expansion_coeff_zero_of_gt (P rho M l : ℕ) (h : M < l) : bino
     rw [X_dvd_iff]
     simp [coeff_one_add_X_pow]
   rw [hq, mul_pow, show (1 + X : ℤ[X]) ^ rho * (X ^ l * q ^ l) = X ^ l * ((1 + X) ^ rho * q ^ l) by ring,
-    coeff_X_pow_mul', if_neg (by omega)]
+    coeff_X_pow_mul', ite_eq_right (by omega)]
 
 theorem binomial_expansion_coeff_zero_of_deg (P rho M l : ℕ) (h : rho + P * l < M) : binomialExpansionCoeff P rho M l = 0 := by
   unfold binomialExpansionCoeff
@@ -162,7 +162,7 @@ theorem derivative_digit_expansion (D : Formalism.BasicNotions.D7) : DerivativeD
       refine dvd_trans (pow_dvd_pow _ hc) ?_
       rw [← Finset.prod_pow_eq_pow_sum]
       exact Finset.prod_dvd_prod_of_dvd _ _ (fun k _ => binomial_expansion_coeff_padic_dvd p t hp (rho k) (M k) (l k))
-    · push_neg at hdeg
+    · push Not at hdeg
       obtain ⟨k, hk⟩ := hdeg
       rw [Finset.prod_eq_zero (Finset.mem_univ k) (binomial_expansion_coeff_zero_of_deg (p ^ t) (rho k) (M k) (l k) hk)]
       exact dvd_zero _

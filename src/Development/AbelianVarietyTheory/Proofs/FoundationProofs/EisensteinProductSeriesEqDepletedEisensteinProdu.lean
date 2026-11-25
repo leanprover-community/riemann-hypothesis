@@ -61,11 +61,11 @@ theorem zm_eq_mul_dep_eis : ∀ (k l j : ℕ) (u w A A' : ℤ → ℂ) (c c' : �
       rcases h with h | h <;> simp [dep, h]
     rw [hz]
     simp [h]
-  · push_neg at h
+  · push Not at h
     obtain ⟨h1, h2⟩ := h
     have p1 : p.1 ≠ 0 := fun e => h1 (e ▸ dvd_zero l)
     have p2 : p.2 ≠ 0 := fun e => h2 (e ▸ dvd_zero l)
-    simp only [dep, eis, h1, h2, p1, p2, if_false, or_self]
+    simp only [dep, eis, h1, h2, p1, p2, ite_false, or_self]
     have hsw : ∑ q ∈ p.2.divisorsAntidiagonal, A' (q.1 : ℤ) * ((q.1 : ℂ)) ^ (j + 1 - 1) * w (q.2 : ℤ)
         = ∑ y ∈ p.2.divisorsAntidiagonal, A' (y.2 : ℤ) * ((y.2 : ℂ)) ^ (j + 1 - 1) * w (y.1 : ℤ) := by
       refine Finset.sum_equiv (Equiv.prodComm ℕ ℕ) (fun q => ?_) (fun q _ => rfl)

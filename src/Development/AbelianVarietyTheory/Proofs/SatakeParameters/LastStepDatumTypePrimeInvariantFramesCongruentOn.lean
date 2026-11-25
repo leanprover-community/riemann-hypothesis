@@ -150,7 +150,7 @@ theorem topDat_frames_vGs : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A 
       exact h
     exact hA.trans hB
   ·
-    push_neg at hI
+    push Not at hI
     obtain ⟨j, l, hjl⟩ := hI
     have h0 : topDat t.Ch t.sel (t.tup μ) (t.cst μ) (t.m2 + 1) P y y'' = 0 := by
       by_contra h

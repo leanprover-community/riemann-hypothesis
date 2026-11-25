@@ -64,7 +64,7 @@ def Supp (S : Ix p q → Ix p q → Prop) (Z : Mat p q) : Prop := ∀ a b, ¬ S 
 
 lemma supp_Eab {S : Ix p q → Ix p q → Prop} {a b : Ix p q} (h : S a b) : Supp S (Eab a b) := by
   intro c d hcd
-  rw [Eab, Matrix.single_apply, if_neg]
+  rw [Eab, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   exact hcd h
 

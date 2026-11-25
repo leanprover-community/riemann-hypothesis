@@ -218,9 +218,9 @@ theorem prod_type (E : Type) [Field E] [NumberField E] (a : ℤ) (k : E) :
   rw [← Finset.prod_fiberwise Finset.univ InfinitePlace.mk]
   refine Finset.prod_congr rfl fun w _ => ?_
   rw [Finset.prod_eq_single_of_mem w.embedding (by simp)]
-  · rw [InfinitePlace.mk_embedding, if_pos rfl]
+  · rw [InfinitePlace.mk_embedding, ite_eq_left rfl]
   · intro φ hφ hne
-    rw [(Finset.mem_filter.1 hφ).2, if_neg hne.symm, zpow_zero]
+    rw [(Finset.mem_filter.1 hφ).2, ite_eq_right hne.symm, zpow_zero]
 
 def levT (K : Type) [Field K] [NumberField K] (T : Set (HeightOneSpectrum (𝓞 K))) (N : ℕ) : Subgroup (Ideles K) where
   carrier := {a | a ∈ GlobalTheory.Mem.Chr.unitIdl K ∧ ∀ v ∈ T,

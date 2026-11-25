@@ -142,11 +142,11 @@ theorem exists_mul_mem_integers (v : HeightOneSpectrum (𝓞 E)) (y : K)
       Classical.choose (exists_mem_comap_not_mem v w h) else 1
   have hf : ∀ w, f w ∉ v.asIdeal := fun w => by
     by_cases h : w.asIdeal.comap (algebraMap (𝓞 E) (𝓞 K)) ≠ v.asIdeal
-    · simp only [f, dif_pos h]; exact (Classical.choose_spec (exists_mem_comap_not_mem v w h)).2
-    · simp only [f, dif_neg h]; exact fun h1 => v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h1)
+    · simp only [f, dite_eq_left h]; exact (Classical.choose_spec (exists_mem_comap_not_mem v w h)).2
+    · simp only [f, dite_eq_right h]; exact fun h1 => v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h1)
   have hfw : ∀ w, w.asIdeal.comap (algebraMap (𝓞 E) (𝓞 K)) ≠ v.asIdeal →
       algebraMap (𝓞 E) (𝓞 K) (f w) ∈ w.asIdeal := fun w h => by
-    simp only [f, dif_pos h]; exact (Classical.choose_spec (exists_mem_comap_not_mem v w h)).1
+    simp only [f, dite_eq_left h]; exact (Classical.choose_spec (exists_mem_comap_not_mem v w h)).1
   let a : 𝓞 E := ∏ w ∈ F, f w ^ k
   have ha : a ∉ v.asIdeal := by
     refine Finset.prod_induction _ (· ∉ v.asIdeal) (fun x y hx hy h => (v.isPrime.mem_or_mem h).elim hx hy)

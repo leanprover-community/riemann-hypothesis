@@ -978,7 +978,7 @@ theorem dep_frames_mean_zero : ∀ (D : D7), Descent D → ∀ (ψ : AddChar (AF
         a * (Th (m.1 * n.1) * term ψ d W vS (om (m.1 * n.1, 1) Ψ) y.1)
       rw [hTu m.1 m.2 n.1 n.2, GlobalTheory.T.transvection_trivial_after_flagUnipotentFixing D hDesc ψ V V₀ W ρ d χV χW om hw vS Ψ hΨ j c s0.2.1 v u hform htr y.1 sy.2.2
         m.1 hm' n.1, mul_assoc]
-    · push_neg at hc
+    · push Not at hc
       exact ⟨1, one_mem _, 0, zero_ne_one, fun x hx => absurd hx (hc x)⟩
 
 end GlobalTheory.Unf.DepFrames

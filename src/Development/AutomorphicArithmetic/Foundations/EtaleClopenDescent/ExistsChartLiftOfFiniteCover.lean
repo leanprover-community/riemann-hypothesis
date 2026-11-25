@@ -118,7 +118,7 @@ private theorem cech_zero {ι E : Type} [LinearOrder ι] [AddCommGroup E] [Modul
     {G : Finset ι → Submodule ℂ E} {n : ℤ} {y : Finset ι → E} (hy : y ∈ (cech G).Z n)
     (s : Finset ι) (h : (s.card : ℤ) ≠ n + 1) : y s = 0 := by
   have h1 : y s ∈ (if s.Nonempty ∧ (s.card : ℤ) = n + 1 then G s else ⊥) := hy.1 s (Set.mem_univ s)
-  rw [if_neg (fun h' => h h'.2)] at h1
+  rw [ite_eq_right (fun h' => h h'.2)] at h1
   simpa using h1
 
 private theorem res_mu {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K]
@@ -216,10 +216,10 @@ theorem UpperTheory.Gal.productCup_of_system.coordinateSystem_degree_one_of_univ
     simp only [colA, Sys.colCx, kosT]
     congr 1
     funext L
-    simp only [hA, (hu b L).2.1, (hu b L).2.2.1, mixF, h1, h2, and_self, if_true]
+    simp only [hA, (hu b L).2.1, (hu b L).2.2.1, mixF, h1, h2, and_self, ite_true]
   have hbot : ∀ b : Finset (Two d), ¬ ((lft b).Nonempty ∧ (rgt b).Nonempty) → ∀ L, A (uni b L) = ⊥ := by
     intro b h L
-    simp only [hA, (hu b L).2.1, mixF, if_neg h]
+    simp only [hA, (hu b L).2.1, mixF, ite_eq_right h]
   have hcC : c ∈ (acx A (T.wt z)).C N := hc.1
   refine hL (Two d) κ E A (T.wt z) (d : ℤ) N hW ?_ c hc ?_ ?_
   · intro b
@@ -414,7 +414,7 @@ theorem UpperTheory.Gal.productCup_of_system.kSub_of :
         have : ((s ∩ img e).card : ℤ) ≤ s.card := by exact_mod_cast h1
         omega
       have h2 : c s ∈ (if (s.card : ℤ) = m then M else ⊥ : Submodule ℂ E) := hc.1 s (Set.mem_univ s)
-      rw [if_neg hne, Submodule.mem_bot] at h2
+      rw [ite_eq_right hne, Submodule.mem_bot] at h2
       rw [h2, map_zero]
       rfl
   · intro n c hc L
@@ -1355,7 +1355,7 @@ private lemma mem_C_iff (M : Submodule ℂ E) (u : κ → Sˣ) (z r : κ → S) 
   simp only [kosT, kos, acx, Submodule.mem_pi, Set.mem_univ, true_imp_iff]
   refine forall_congr' fun s => ?_
   by_cases h : (s.card : ℤ) = n
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
     constructor
     · rintro ⟨m, hm, hc⟩
       change act _ (c s) ∈ M
@@ -1363,7 +1363,7 @@ private lemma mem_C_iff (M : Submodule ℂ E) (u : κ → Sˣ) (z r : κ → S) 
       exact hm
     · intro hm
       exact ⟨_, hm, act_act_inv act _ _⟩
-  · simp only [h, if_false, Submodule.mem_bot]
+  · simp only [h, ite_false, Submodule.mem_bot]
     constructor
     · intro h0
       simp [unsc, h0]
@@ -1576,7 +1576,7 @@ theorem UpperTheory.Gal.productCup_of_system.pInt_of :
     obtain ⟨_, hL, hcard, hm⟩ := hcu _ _ h0
     rw [Finset.card_univ, Fintype.card_fin] at hcard
     dsimp only
-    rw [if_pos (show L.Nonempty ∧ (L.card : ℤ) = ↑p - 1 + 1 from ⟨hL, by omega⟩)]
+    rw [ite_eq_left (show L.Nonempty ∧ (L.card : ℤ) = ↑p - 1 + 1 from ⟨hL, by omega⟩)]
     exact Submodule.smul_of_tower_mem _ _ (residueCharacteristic_mem ρ _ _ hm)
   · funext J
     simp only [Lef.omCx, GlobalTheory.PD.cech, GlobalTheory.PD.deltaL, LinearMap.coe_mk, AddHom.coe_mk, GlobalTheory.DI.delta]
@@ -1660,7 +1660,7 @@ theorem UpperTheory.Gal.productCup_of_system.zAct_of :
     intro s hs
     have h1 : α s ∈ (if s.Nonempty ∧ (s.card : ℤ) = (p : ℤ) + 1 then omB ℂ K (rB ℂ K (xv x) s) a else ⊥ :
         Submodule ℂ (DR ℂ K)) := hα.1 s (Set.mem_univ s)
-    rw [if_neg (by
+    rw [ite_eq_right (by
       rintro ⟨-, h⟩
       exact hs (by exact_mod_cast h))] at h1
     simpa using h1

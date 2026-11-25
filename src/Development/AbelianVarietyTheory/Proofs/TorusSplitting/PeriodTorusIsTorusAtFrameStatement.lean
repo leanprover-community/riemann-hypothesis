@@ -142,7 +142,7 @@ theorem isTorusAt_of_isTorusOf : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     · by_contra hn
       exact h0 (((U.X k).cmType τ0).2 fun h' => hn ⟨_, h'⟩)
   have h1 : T.dim τ = Dw.p := by
-    rw [hdim]; unfold Datum.mult; rw [if_pos ((hty τ).1 hτ), hp]
+    rw [hdim]; unfold Datum.mult; rw [ite_eq_left ((hty τ).1 hτ), hp]
   have h2 := T.dim_conj τ
   rcases hm with hm | hm
   · exact ⟨τ, by omega⟩

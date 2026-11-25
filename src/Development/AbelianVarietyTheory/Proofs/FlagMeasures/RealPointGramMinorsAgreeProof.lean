@@ -166,7 +166,7 @@ theorem frq_fvec {Y : Full X} {u : D.what₂.Word} (t : GlobalTheory.TypeAsm.GT 
     (frq X t.rep).fl.fvec b = t.lin ((X.Fu u).fvec b) := by
   have h : (frq X t.rep).fl = mapFlag t.lin t.rep.2.2.1 (X.Fu u) := by
     unfold frq mapLF
-    simp only [dif_pos t.rep.2.2.1]
+    simp only [dite_eq_left t.rep.2.2.1]
     rfl
   rw [h]
   refine Fin.lastCases ?_ (fun b' => ?_) b
@@ -229,7 +229,7 @@ theorem dmin_gamT (C : Choice X 1) {Y : Full X} {u : D.what₂.Word} (t : Global
     push_cast
     ring
   unfold Formalism.QuantumDeterminants.Dmin Formalism.MainNotions.S.Dl leadMinorE
-  rw [dif_pos (by omega), hZ, ← det_scaled]
+  rw [dite_eq_left (by omega), hZ, ← det_scaled]
   rfl
 
 end GlobalTheory.TypeAsm.GramPf

@@ -145,7 +145,7 @@ theorem herm_e (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
   have ha := a.isLt
   rw [herm_bvec, hpk_mulVec]
   have h1 : ¬ (eI k r a).val = r + k := by simp [eI]; omega
-  rw [if_neg h1, one_mul]
+  rw [ite_eq_right h1, one_mul]
   congr 1
   ext
   simp [eI, esI, sgI, ha]
@@ -155,10 +155,10 @@ theorem herm_es (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
   have ha := a.isLt
   rw [herm_bvec, hpk_mulVec]
   have h1 : ¬ (esI k r a).val = r + k := by simp [esI]; omega
-  rw [if_neg h1, one_mul]
+  rw [ite_eq_right h1, one_mul]
   have h2 : sgI k r (2 * r + k - a.val) = a.val := by
     unfold sgI
-    rw [if_pos (Or.inr (by omega))]
+    rw [ite_eq_left (Or.inr (by omega))]
     omega
   congr 1
   ext
@@ -175,10 +175,10 @@ theorem fvec_eI (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (c : Fin (r 
   have hc := c.isLt
   unfold fvec
   by_cases h : c.val < r
-  · rw [dif_pos h]
+  · rw [dite_eq_left h]
     simp only [bvec, Pi.single_apply, eI, Fin.ext_iff]
     split_ifs <;> first | rfl | (exfalso; omega)
-  · rw [dif_neg h, hz (eI k r a) (Or.inl (by simp [eI])), if_neg (by omega)]
+  · rw [dite_eq_right h, hz (eI k r a) (Or.inl (by simp [eI])), ite_eq_right (by omega)]
 
 theorem z_esI (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (a : Fin r) : z (esI k r a) = 0 :=
   hz (esI k r a) (Or.inr (by have := a.isLt; simp [esI]; omega))
@@ -188,30 +188,30 @@ theorem fvec_esI (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (c : Fin (r
   have ha := a.isLt
   unfold fvec
   by_cases h : c.val < r
-  · rw [dif_pos h]
+  · rw [dite_eq_left h]
     simp only [bvec, Pi.single_apply, eI, esI, Fin.ext_iff]
-    rw [if_neg (by omega)]
-  · rw [dif_neg h]
+    rw [ite_eq_right (by omega)]
+  · rw [dite_eq_right h]
     exact z_esI z hz a
 
 theorem herm_Hpk_fvec_eq_ite (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (c : Fin (r + 1)) :
     herm (Hpk k r) (fvec k r z c) z = if c = Fin.last r then herm (Hpk k r) z z else 0 := by
   by_cases hc : c.val < r
   · have hne : c ≠ Fin.last r := fun h => by rw [h] at hc; simp at hc
-    rw [if_neg hne]
-    simp only [fvec, dif_pos hc]
+    rw [ite_eq_right hne]
+    simp only [fvec, dite_eq_left hc]
     rw [herm_swap, herm_e, z_esI z hz]
     simp
   · have heq : c = Fin.last r := Fin.ext (by have := c.isLt; simp; omega)
-    rw [if_pos heq]
-    simp only [fvec, dif_neg hc]
+    rw [ite_eq_left heq]
+    simp only [fvec, dite_eq_right hc]
 
 theorem herm_fvec_fvec (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (a b : Fin (r + 1)) :
     herm (Hpk k r) (fvec k r z b) (fvec k r z a) =
       if a = Fin.last r ∧ b = Fin.last r then herm (Hpk k r) z z else 0 := by
   by_cases ha : a.val < r
   · have hne : a ≠ Fin.last r := fun h => by rw [h] at ha; simp at ha
-    rw [if_neg (fun h => hne h.1)]
+    rw [ite_eq_right (fun h => hne h.1)]
     rw [show fvec k r z a = bvec (eI k r ⟨a.val, ha⟩) by simp [fvec, ha], herm_e, fvec_esI z hz]
   · have heq : a = Fin.last r := Fin.ext (by have := a.isLt; simp; omega)
     rw [show fvec k r z a = z by simp [fvec, ha], herm_Hpk_fvec_eq_ite z hz b]
@@ -227,9 +227,9 @@ theorem Adiag_apply (z : Fin (2 * r + k + 1) → ℂ) (a b : Fin (r + 1)) :
   by_cases hab : a = b
   · subst hab
     by_cases ha : a = Fin.last r <;> simp [ha]
-  · rw [if_neg hab]
+  · rw [ite_eq_right hab]
     have h2 : ¬ (a = Fin.last r ∧ b = Fin.last r) := fun h => hab (h.1.trans h.2.symm)
-    rw [if_neg h2]
+    rw [ite_eq_right h2]
 
 theorem gramM_blocks (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z') (γ : B.Mat k r)
     (hγ : γ ∈ B.GV k r) :
@@ -293,9 +293,9 @@ theorem uMap_eq (z : Fin (2 * r + k + 1) → ℂ) (hz : StdZ k r z) (s : B.Mat k
     rw [hcol, herm_sum_left]
     simp_rw [herm_Hpk_fvec_eq_ite z hzW]
     rw [Finset.sum_eq_single (Fin.last r)]
-    · rw [if_pos rfl, heq, mul_div_assoc, div_self hne, mul_one]
+    · rw [ite_eq_left rfl, heq, mul_div_assoc, div_self hne, mul_one]
     · intro c _ hc
-      rw [if_neg hc, mul_zero]
+      rw [ite_eq_right hc, mul_zero]
     · simp
 
 end PI.StabPairsW

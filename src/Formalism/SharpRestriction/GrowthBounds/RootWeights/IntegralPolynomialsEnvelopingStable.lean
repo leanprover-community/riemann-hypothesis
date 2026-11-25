@@ -89,13 +89,13 @@ theorem sum_single_apply_section {ι : Type} {n : ℕ} (g : ι → ι × Fin n) 
   · rw [Finset.sum_eq_single v.1]
     · rw [← hv, Finsupp.single_eq_same]
     · intro l _ hl
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       exact fun h => hl (key l h).1
     · intro hnot
       simp only [Finsupp.mem_support_iff, not_not] at hnot
       simp [hnot]
   · refine Finset.sum_eq_zero fun l _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     exact fun h => hv (key l h).2
 
 theorem exponent_factorial_eq_prod {ι : Type} [Fintype ι] {n : ℕ} (m : ι × Fin n →₀ ℕ) :
@@ -119,7 +119,7 @@ theorem divided_power_padic_valuation_bound {ι : Type} [Fintype ι] {n : ℕ} (
   swap
   ·
     left
-    push_neg at hall
+    push Not at hall
     obtain ⟨l, hl, hlt⟩ := hall
     apply Finset.prod_eq_zero hl
     have := hz l
@@ -547,19 +547,19 @@ theorem letter_polarization_commute (LL : Letters ι) (S : Set ι) (a b : Fin n)
   unfold letterPolarization
   by_cases h1 : l ∈ S
   · by_cases h2 : l' ∈ S
-    · rw [if_pos h1, if_pos h2]
+    · rw [ite_eq_left h1, ite_eq_left h2]
       by_cases v1 : LL.vec l = true <;> by_cases v2 : LL.vec l' = true
-      · rw [if_pos v1, if_pos v2]
+      · rw [ite_eq_left v1, ite_eq_left v2]
         exact hc _ _ _ _
-      · rw [if_pos v1, if_neg v2]
+      · rw [ite_eq_left v1, ite_eq_right v2]
         exact (hc _ _ _ _).neg_right
-      · rw [if_neg v1, if_pos v2]
+      · rw [ite_eq_right v1, ite_eq_left v2]
         exact (hc _ _ _ _).neg_left
-      · rw [if_neg v1, if_neg v2]
+      · rw [ite_eq_right v1, ite_eq_right v2]
         exact (hc _ _ _ _).neg_left.neg_right
-    · rw [if_neg h2]
+    · rw [ite_eq_right h2]
       exact Commute.zero_right _
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     exact Commute.zero_left _
 
 theorem divided_powers_preserve_letter (p : ℕ) [Fact p.Prime] (Q : MvPolynomial (ι × Fin n) K → Prop) (hQ : MonomialGradedLattice p Q)
@@ -661,7 +661,7 @@ theorem char_zero_stability_of_closure {p : ℕ} (hp : p.Prime) {O : Type} [Comm
       · intro m m' c z hmc _
         rw [hiff] at hmc ⊢
         obtain ⟨o, ho⟩ := hmc m
-        rw [MvPolynomial.coeff_monomial, if_pos rfl] at ho
+        rw [MvPolynomial.coeff_monomial, ite_eq_left rfl] at ho
         intro m''
         rw [MvPolynomial.coeff_monomial]
         split_ifs

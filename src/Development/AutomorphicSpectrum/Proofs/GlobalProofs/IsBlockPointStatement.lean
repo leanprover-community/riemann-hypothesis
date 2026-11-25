@@ -626,7 +626,7 @@ theorem schur_complement_step_cpx : ∀ (n r : ℕ) (J θ : Matrix (Fin n) (Fin 
     ext a c
     rw [Matrix.mul_apply, Fin.sum_univ_add]
     simp only [K, Fin.addCases_left, Fin.addCases_right, Matrix.add_apply, Matrix.one_apply,
-      mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+      mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
       Matrix.mul_apply]
     rw [add_comm]
     rfl
@@ -675,7 +675,7 @@ theorem schur_complement_step_cpx : ∀ (n r : ℕ) (J θ : Matrix (Fin n) (Fin 
       ext i j
       have := j.isLt
       simp only [Matrix.submatrix_apply, Matrix.one_apply, Fin.ext_iff, Matrix.zero_apply]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     rw [Matrix.mul_add, e1, ← Matrix.mul_assoc, e2, Matrix.zero_mul, add_zero]
   have hinj : Function.Injective (Xb + X₁ * A).mulVec := by
     intro v w hvw
@@ -1041,7 +1041,7 @@ theorem exists_unip_conj_unitary : ∀ (n r : ℕ) (J : Matrix (Fin n) (Fin n) �
     gram_sub_eq J X Y _ _ 1 (fun i j => by rw [hXY]; simp [Matrix.one_apply, Fin.ext_iff])
   have v1b : X₁.conjTranspose * J * Yb = 0 :=
     gram_sub_eq J X Y _ _ 0 (fun i j => by
-      rw [hXY, Matrix.one_apply, if_neg]
+      rw [hXY, Matrix.one_apply, ite_eq_right]
       · rfl
       · simp only [Fin.ext_iff]; omega)
   have ybb : Yb.conjTranspose * J * Yb = 0 := gram_sub_eq J Y Y _ _ 0 (fun i j => by rw [hYY]; rfl)

@@ -140,7 +140,7 @@ theorem mul_mat {A : Matrix n n R} (hA : A.BlockTriangular (blk e)) (x : Idx e �
   ext i j
   by_cases h : blk e i < blk e j
   · simp [mat, h, ent]
-  · simp only [mat, of_apply, h, dif_neg, not_false_eq_true, Matrix.mul_apply]
+  · simp only [mat, of_apply, h, dite_eq_right, not_false_eq_true, Matrix.mul_apply]
     refine Finset.sum_eq_zero fun l _ => ?_
     by_cases h' : blk e l < blk e j
     · rw [hA (h'.trans_le (not_lt.1 h)), zero_mul]
@@ -276,9 +276,9 @@ def unipHomeo : unipRad R e ≃ₜ (Idx e → R) where
     have h : Continuous fun x : Idx e → R => 1 + mat e x := by
       refine continuous_const.add (continuous_matrix fun i j => ?_)
       by_cases h : blk e i < blk e j
-      · simp only [mat, of_apply, h, dif_pos]
+      · simp only [mat, of_apply, h, dite_eq_left]
         exact continuous_apply _
-      · simp only [mat, of_apply, h, dif_neg, not_false_eq_true]
+      · simp only [mat, of_apply, h, dite_eq_right, not_false_eq_true]
         exact continuous_const
     refine Continuous.subtype_mk (Units.continuous_iff.2 ⟨h, h.matrix_adjugate.congr fun x => ?_⟩) _
     rw [Matrix.coe_units_inv, Matrix.inv_def]

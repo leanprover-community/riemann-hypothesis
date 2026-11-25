@@ -248,16 +248,6 @@ theorem V_eq_img (π : AutSub E n) {W : Wt E n} {M : Submodule ℂ (algForms W)}
 theorem finPart_stable (π : AutSub E n) (W : Wt E n) : ∀ k, ∀ f ∈ π.finPart W, algRep W k f ∈ π.finPart W :=
   fun k _ h => AutSub.mem_finPart.2 fun v => π.isAut.stable k _ (AutSub.mem_finPart.1 h v)
 
-section Iso
-
-variable {π π' : AutSub E n} {W : Wt E n} (e : π.finPart W ≃ₗ[ℂ] π'.finPart W) (T : π.V ≃ₗ[ℂ] π'.V)
-  (hA : π.V = img (jOf W (π.finPart W)))
-  (hT : ∀ p v (h : jOf W (π.finPart W) p v ∈ π.V), (T ⟨jOf W (π.finPart W) p v, h⟩ : UA E n → ℂ) = jOf W (π'.finPart W) (e p) v)
-
-include hA hT
-
-end Iso
-
 end Concrete
 
 end GlobalTheory.DefU.Pairs

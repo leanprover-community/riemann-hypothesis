@@ -89,10 +89,10 @@ def cosetInd (K : Subgroup G) (ho : IsOpen (K : Set G)) (hK : IsCompact (K : Set
       rw [IsLocallyConstant.iff_exists_open]
       intro y
       by_cases hy : y * g⁻¹ ∈ K
-      · exact ⟨_, h1, hy, fun x hx => by rw [if_pos hy]; exact if_pos hx⟩
-      · exact ⟨_, h2.isOpen_compl, hy, fun x hx => by rw [if_neg hy]; exact if_neg hx⟩
+      · exact ⟨_, h1, hy, fun x hx => by rw [ite_eq_left hy]; exact ite_eq_left hx⟩
+      · exact ⟨_, h2.isOpen_compl, hy, fun x hx => by rw [ite_eq_right hy]; exact ite_eq_right hx⟩
     · refine HasCompactSupport.intro (hK.image (continuous_id.mul (continuous_const (y := g))))
-        fun x hx => if_neg fun h => hx ⟨x * g⁻¹, h, by change (x * g⁻¹) * g = x; group⟩⟩
+        fun x hx => ite_eq_right fun h => hx ⟨x * g⁻¹, h, by change (x * g⁻¹) * g = x; group⟩⟩
 
 
 open Classical in
@@ -153,11 +153,11 @@ theorem conv_cosetInd_eq_smul (μ : Measure G) [μ.IsMulLeftInvariant] (K : Subg
     rw [GlobalTheory.InvBilinTest.cosetInd_apply]
     by_cases hx : y⁻¹ * x ∈ K
     · have h1 : x⁻¹ * y * 1⁻¹ ∈ K := by simpa using K.inv_mem hx
-      rw [if_pos h1, Set.indicator_of_mem (show x ∈ (fun x => y⁻¹ * x) ⁻¹' (K : Set G) from hx), mul_one]
+      rw [ite_eq_left h1, Set.indicator_of_mem (show x ∈ (fun x => y⁻¹ * x) ⁻¹' (K : Set G) from hx), mul_one]
       have := hf _ hx y
       rwa [mul_inv_cancel_left] at this
     · have h1 : ¬ x⁻¹ * y * 1⁻¹ ∈ K := fun h => hx (by simpa using K.inv_mem h)
-      rw [if_neg h1, Set.indicator_of_notMem (show x ∉ (fun x => y⁻¹ * x) ⁻¹' (K : Set G) from hx), mul_zero]
+      rw [ite_eq_right h1, Set.indicator_of_notMem (show x ∉ (fun x => y⁻¹ * x) ⁻¹' (K : Set G) from hx), mul_zero]
   show ∫ x, f x * (GlobalTheory.InvBilinTest.cosetInd K ho hK 1).1 (x⁻¹ * y) ∂μ = _
   rw [e, integral_indicator_const _ hs]
   simp only [Measure.real, measure_preimage_mul, Complex.real_smul]

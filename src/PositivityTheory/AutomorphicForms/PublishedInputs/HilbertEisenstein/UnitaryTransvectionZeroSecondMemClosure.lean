@@ -135,9 +135,9 @@ theorem integral_oddSchwartz : ∫ x, oddSchwartz F x ∂selfDualMeasure F = 0 :
     refine volume_preserving_pi (ι := {w : InfinitePlace F // w.IsReal})
       (f := fun i (r : ℝ) => if i = w₀ then -r else r) fun i => ?_
     by_cases h : i = w₀
-    · have e : (fun r : ℝ => if i = w₀ then -r else r) = Neg.neg := funext fun r => if_pos h
+    · have e : (fun r : ℝ => if i = w₀ then -r else r) = Neg.neg := funext fun r => ite_eq_left h
       rw [e]; exact Measure.measurePreserving_neg volume
-    · have e : (fun r : ℝ => if i = w₀ then -r else r) = id := funext fun r => if_neg h
+    · have e : (fun r : ℝ => if i = w₀ then -r else r) = id := funext fun r => ite_eq_right h
       rw [e]; exact MeasurePreserving.id volume
   set σ : mixedSpace F → mixedSpace F := Prod.map σ₁ id with hσdef
   have hσ : MeasurePreserving σ volume volume := by

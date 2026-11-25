@@ -101,16 +101,16 @@ private theorem tr_split (hCorr : CorrEqQ) (hId : TrIdQ) (l : ℕ) [Fact l.Prime
       simp only [hcn, hcs, mm]
       by_cases hy : y ≫ p' = x0
       · obtain ⟨j, hj, hu⟩ := existsUnique_sec p' s' hs hiso x0 y hy
-        rw [if_pos hy, Finset.sum_eq_single j]
+        rw [ite_eq_left hy, Finset.sum_eq_single j]
         · simp [hj]
         · intro k _ hk
-          rw [if_neg (fun e => hk (hu k e))]
+          rw [ite_eq_right (fun e => hk (hu k e))]
           simp
         · simp
-      · rw [if_neg hy]
+      · rw [ite_eq_right hy]
         simp only [mul_zero, zero_add]
         refine Finset.sum_eq_zero fun j _ => ?_
-        rw [if_neg]
+        rw [ite_eq_right]
         · simp
         · intro e
           apply hy

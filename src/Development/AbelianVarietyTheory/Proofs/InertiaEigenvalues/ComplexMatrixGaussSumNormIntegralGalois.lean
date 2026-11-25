@@ -30,10 +30,10 @@ theorem sum_addChar_trace_mul_eq {k : Type} [Field k] [Fintype k] [DecidableEq k
     rw [show Fintype.card (Matrix (Fin r) (Fin r) k) = Fintype.card (Fin r → Fin r → k) from rfl]
     simp [← pow_mul, sq]
   · obtain ⟨i, j, hij⟩ : ∃ i j, m i j ≠ 0 := by
-      by_contra h; push_neg at h; exact hm (Matrix.ext h)
+      by_contra h; push Not at h; exact hm (Matrix.ext h)
     have h1 := hψ hij
     obtain ⟨c, hc⟩ : ∃ c, ψ (m i j * c) ≠ 1 := by
-      by_contra h; push_neg at h; apply h1; ext c; simp [AddChar.mulShift_apply, h]
+      by_contra h; push Not at h; apply h1; ext c; simp [AddChar.mulShift_apply, h]
     set a₀ : Matrix (Fin r) (Fin r) k := Matrix.single j i c
     have ha₀ : trace (a₀ * m) = m i j * c := by
       simp [a₀, Matrix.trace_single_mul, mul_comm]
@@ -74,7 +74,7 @@ theorem matrixGaussSum_mul_dual_eq_card_pow : ∀ (k : Type) [Field k] [Fintype 
     rw [Finset.sum_eq_single 1]
     · simp
     · intro x _ hx1
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       intro h
       apply hx1
       ext1

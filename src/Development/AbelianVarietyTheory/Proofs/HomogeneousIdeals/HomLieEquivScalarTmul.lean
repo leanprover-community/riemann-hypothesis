@@ -518,15 +518,6 @@ theorem lieMult (t : Sp k ⟶ S) (τ : 𝓞 E →+* k) {n : ℕ}
 
 end Module
 
-section Ideal
-
-variable {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E}
-
-variable {G₁ H₁ : Over (Sp k)} [GrpObj G₁] [GrpObj H₁] [IsCommMonObj G₁] [IsCommMonObj H₁]
-  {a₁ : OAct (𝓞 K) G₁} {b₁ : OAct (𝓞 K) H₁}
-
-end Ideal
-
 end IsTensor
 
 end Mult

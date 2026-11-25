@@ -837,7 +837,7 @@ theorem exists_coset_reps (t : ℕ) (c : k) (S : Finset (Fin t → k)) :
       · rw [hsx]
         exact hex
       · exact hcov s hsS
-    · push_neg at hex
+    · push Not at hex
       refine ⟨insert x A, ?_, ?_⟩
       · intro s hs
         rcases Finset.mem_insert.1 hs with hsx | hsS
@@ -888,7 +888,7 @@ theorem eq_sum_coset_indicators : ∀ (k : Type) [Field k] [ValuativeRel k] [Top
       exact hba (hAuniq b hb a ha (cosetSet_trans_decomp (cosetSet_symm_decomp hvb) hva))
     · intro haA
       exact absurd ha haA
-  · push_neg at hv
+  · push Not at hv
     rw [Finset.sum_eq_zero]
     · by_contra hne
       have hvs : v ∈ tsupport φ := subset_tsupport _ hne

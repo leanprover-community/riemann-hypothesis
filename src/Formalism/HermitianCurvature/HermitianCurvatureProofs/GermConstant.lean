@@ -51,7 +51,7 @@ theorem weight_product_germ_indep (k r : ℕ) (GG GG' : ℝ) (fr : ℕ → ℕ �
     have hs : D.ptSize ((s, t) :: rest) = s + D.ptSize rest := by simp [D.ptSize]
     rw [hs] at h
     have hc : ¬ (b + s - 1 = r + 1 ∧ s = 1) := by omega
-    rw [if_neg hc, if_neg hc, weight_product_germ_indep k r GG GG' fr (b + s) rest (by omega)]
+    rw [ite_eq_right hc, ite_eq_right hc, weight_product_germ_indep k r GG GG' fr (b + s) rest (by omega)]
 
 theorem bSt_append (κ : ℝ) (P Q : C.LPt) : D.bSt κ (P ++ Q) = D.bSt κ P * D.bSt κ Q := by
   simp [D.bSt, List.map_append, List.prod_append]

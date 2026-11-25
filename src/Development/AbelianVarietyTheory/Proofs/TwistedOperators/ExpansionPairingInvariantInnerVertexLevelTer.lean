@@ -164,7 +164,7 @@ theorem term_datum_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} 
   have hT := _root_.GlobalTheory.FlipVertexInv.main S Φ ht hL hde hc w.1 w.2 j hj κ hκ
   have hg : ((repsAt G t w.1).elt (β w)) (j + 1, D.R.m) = 1 := by
     simp only [Reps.elt, onColumn]
-    exact dif_neg (by show j + 1 ≠ D.R.m; omega)
+    exact dite_eq_right (by show j + 1 ≠ D.R.m; omega)
   exact flat_move (locGrid G t w.1) _ _ _ _ _ _ hj κ hg hT x y
 
 end GlobalTheory.FlatRowMove
@@ -304,9 +304,9 @@ theorem splitScal_mul_eq_oppositePath : ∀ {D : D7} {T : Type} {L : LevCh D T} 
     intro a b η n n' h x
     unfold Formalism.IndefR.Lift.attChr
     by_cases hn : Odd n
-    · rw [if_pos hn, if_pos (h.1 hn), MonoidHom.mul_apply, MonoidHom.mul_apply, MonoidHom.inv_apply, mul_inv_rev, inv_inv,
+    · rw [ite_eq_left hn, ite_eq_left (h.1 hn), MonoidHom.mul_apply, MonoidHom.mul_apply, MonoidHom.inv_apply, mul_inv_rev, inv_inv,
         mul_comm (η x), mul_mul_mul_comm, mul_inv_cancel, mul_one]
-    · rw [if_neg hn, if_neg (fun h' => hn (h.2 h'))]
+    · rw [ite_eq_right hn, ite_eq_right (fun h' => hn (h.2 h'))]
   have hχ : ∀ i, 1 ≤ i → i ≤ D.R.m → ∀ y, ((G.ch.chi i (GlobalTheory.LFun.locIdele D.host.F w y) : Circle) : ℂ) =
       (((G.ch.chiH i).loc w y : ℂˣ) : ℂ) := fun i h1 h2 y => by
     have := congrArg (fun f => ((f y : ℂˣ) : ℂ)) (GlobalTheory.LFun.locChar_eq_of_chrEq (G.ch.chi_eq i h1 h2) w)
@@ -629,7 +629,7 @@ theorem sum_prod_scale_movFn_eq : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : 
   · rw [sum_fn_of_half S τ e hexp z hall,
       sum_fn_of_half S τ e hexp _ fun a => (isHalf_movPt S j hj k z e a).2 (hall a), inl_movPt, inr_movPt]
     exact local_prod S β hμ hq hc hU j hj k hk c₁ c₂ h1 h2 (fun i => z (.inl i)) (fun i => z (.inr i))
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨a, ha⟩ := hall
     rw [sum_fn_eq_zero τ e hsupp z a ha,
       sum_fn_eq_zero τ e hsupp _ a (fun h => ha ((isHalf_movPt S j hj k z e a).1 h)), mul_zero]
@@ -1017,12 +1017,12 @@ theorem pairPts_update_row : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Const
   let φ' : PureDat G t → ∀ a, V a := fun d => if hd : d ∈ τ.support then fun a => ⟨vecOf S d a, hth d hd a⟩ else 0
   have key := GlobalTheory.finsupp_sum_multilinear_eq_of_prod_eq V M τ τ φ φ' (fun z => by
     refine (Finsupp.sum_congr fun d hd => ?_).trans ((_root_.GlobalTheory.RowVertexInv.sum_prod_moveV_eq S hL hq hc hU hβ hτ hv j him k hk z).trans (Finsupp.sum_congr fun d hd => ?_))
-    · simp only [φ, dif_pos hd]
-    · simp only [φ', dif_pos hd])
+    · simp only [φ, dite_eq_left hd]
+    · simp only [φ', dite_eq_left hd])
   have l1 : (τ.sum fun d c => c • pairFn S x y (moveV S j him k (vecOf S d))) = τ.sum fun d c => c • M (φ d) :=
-    Finsupp.sum_congr fun d hd => by simp only [M, φ, dif_pos hd, MultilinearMap.mk'_apply]
+    Finsupp.sum_congr fun d hd => by simp only [M, φ, dite_eq_left hd, MultilinearMap.mk'_apply]
   have l2 : (τ.sum fun d c => c • pairFn S x y (vecOf S d)) = τ.sum fun d c => c • M (φ' d) :=
-    Finsupp.sum_congr fun d hd => by simp only [M, φ', dif_pos hd, MultilinearMap.mk'_apply]
+    Finsupp.sum_congr fun d hd => by simp only [M, φ', dite_eq_left hd, MultilinearMap.mk'_apply]
   rw [l1, l2, key]
 
 end GlobalTheory.RowVertexInv

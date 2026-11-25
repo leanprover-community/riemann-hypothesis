@@ -457,13 +457,6 @@ variable {D n}
 
 end Datum
 
-section Tests
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {n : ℕ}
-  {Q : Matrix (Fin (n + n)) (Fin (n + n)) E} (hQ : Q = StdUnn.blk4 0 1 (-1) 0)
-
-end Tests
-
 end GlobalTheory.LocIntw
 
 end

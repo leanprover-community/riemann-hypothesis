@@ -26,14 +26,6 @@ def zV (pG : IsPowGrp G' G n) (xT : ∀ m, jOG (𝟙 (Sp V)) d m 1 ⟶ G) (m : �
 
 end Jets
 
-section Coord
-
-variable {V : Type} [CommRing V] [IsDomain V] {I : Ideal V} {D' : DegData V I}
-  {A' : PolAV (Spec (CommRingCat.of (FractionRing V)))} {G' G : Over (Sp V)} [GrpObj G'] [IsCommMonObj G'] [GrpObj G]
-  {n d : ℕ}
-
-end Coord
-
 
 end BidegreeTwoJet
 end Formalism.MainNotions.ModuliIntegralCharts.H1

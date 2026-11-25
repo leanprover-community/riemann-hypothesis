@@ -400,7 +400,7 @@ theorem isInteger_of_maximalIdeal_smul_isInteger (S : Type) [CommRing S] [IsRegu
       rw [hy', Algebra.smul_def, mul_comm]
     exact (IsIntegrallyClosed.isIntegral_iff).1 hint
   · exfalso
-    push_neg at hA
+    push Not at hA
     obtain ⟨a, ha, hy⟩ := hA
     obtain ⟨y, hy'⟩ := hc a ha
     have hyu : y ∉ maximalIdeal S := fun h => hy y h hy'

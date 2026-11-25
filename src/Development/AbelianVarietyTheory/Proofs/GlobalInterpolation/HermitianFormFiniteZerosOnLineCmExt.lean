@@ -174,7 +174,7 @@ theorem _root_.GlobalTheory.HermLineZeros.exists_anisotropic (h : _root_.Formali
   by_cases hd : ∃ i, J i i ≠ 0
   · obtain ⟨i, hi⟩ := hd
     exact ⟨Pi.single i 1, by rwa [_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.hE, _root_.GlobalTheory.HermLineZeros.hform_single]⟩
-  push_neg at hd
+  push Not at hd
   let i₀ : Fin M := ⟨0, hM⟩
   obtain ⟨j, hj⟩ : ∃ j, J i₀ j ≠ 0 := by
     by_contra! hrow

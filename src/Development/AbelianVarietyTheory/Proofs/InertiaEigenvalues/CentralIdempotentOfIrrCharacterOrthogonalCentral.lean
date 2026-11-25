@@ -28,17 +28,17 @@ theorem ip_simple {G : Type} [Group G] [Fintype G] (V W : FDRep ℂ G) [Category
   unfold ip
   rw [h]
   by_cases hi : Nonempty (V ≅ W)
-  · rw [if_pos hi, if_pos (FDRep.char_iso hi.some)]
-  · rw [if_neg hi]
+  · rw [ite_eq_left hi, ite_eq_left (FDRep.char_iso hi.some)]
+  · rw [ite_eq_right hi]
     by_cases hc : V.character = W.character
     · exfalso
       have h1 := FDRep.char_orthonormal V V
-      rw [if_pos ⟨CategoryTheory.Iso.refl V⟩] at h1
+      rw [ite_eq_left ⟨CategoryTheory.Iso.refl V⟩] at h1
       have h2 := FDRep.char_orthonormal V W
-      rw [if_neg hi, ← hc] at h2
+      rw [ite_eq_right hi, ← hc] at h2
       rw [h1] at h2
       simp at h2
-    · rw [if_neg hc]
+    · rw [ite_eq_right hc]
 
 theorem zorth : ∀ (G : Type) [Group G] [Fintype G] (χ χ' : G → ℂ), IsIrr χ → IsIrr χ' → (zOf χ * zOf χ' = if χ = χ' then zOf χ else 0) ∧ (∀ a, zOf χ * a = a * zOf χ) ∧ ip χ χ' = if χ = χ' then 1 else 0 := by
   intro G _ _ χ χ' hχ hχ'
@@ -51,8 +51,8 @@ theorem zorth : ∀ (G : Type) [Group G] [Fintype G] (χ χ' : G → ℂ), IsIrr
   refine ⟨?_, ?_, ip_simple V W⟩
   · rw [zOf_eq_alg, zOf_eq_alg, ← alg_conv]
     by_cases hc : V.character = W.character
-    · rw [if_pos hc, ← hc, hidem]
-    · rw [if_neg hc, horth W hc]
+    · rw [ite_eq_left hc, ← hc, hidem]
+    · rw [ite_eq_right hc, horth W hc]
       unfold alg; simp
   · intro a
     rw [zOf_eq_alg, ← alg_coeff a, ← alg_conv, ← alg_conv, hcen]

@@ -243,9 +243,9 @@ theorem exists_irreducible_slice :
   have hgan : ∀ j, AnalyticOnNhd ℂ (g j) Set.univ := by
     intro j
     by_cases hj : j = i0
-    · simp only [g, hj, if_true]
+    · simp only [g, hj, ite_true]
       exact analyticOnNhd_const
-    · simp only [g, hj, if_false]
+    · simp only [g, hj, ite_false]
       exact (((ContinuousLinearMap.proj j).comp A).analyticOnNhd _).sub analyticOnNhd_const
   let S : Set (σ → ℂ) := {z | z ∈ X ∧ ∀ j, g j z = 0}
   have hSan : IsAnalyticNear S w := isAnalyticNear_zeros_inter hX g hgan
@@ -262,7 +262,7 @@ theorem exists_irreducible_slice :
       have := congrFun hx 0
       simpa [hA1] using this
     · have := hxg j
-      simp only [g, hj, if_false, sub_eq_zero] at this
+      simp only [g, hj, ite_false, sub_eq_zero] at this
       exact this
   have himg : ∀ V ∈ 𝓝 w, A1 '' (S ∩ V) ∈ 𝓝 (A1 w) := by
     intro V hV
@@ -271,9 +271,9 @@ theorem exists_irreducible_slice :
     have hψc : Continuous ψ := by
       refine continuous_pi fun j => ?_
       by_cases hj : j = i0
-      · simp only [ψ, hj, if_true]
+      · simp only [ψ, hj, ite_true]
         exact continuous_apply 0
-      · simp only [ψ, hj, if_false]
+      · simp only [ψ, hj, ite_false]
         exact continuous_const
     have hψw : ψ (A1 w) = A w := by
       funext j
@@ -291,11 +291,11 @@ theorem exists_irreducible_slice :
     · by_cases hj : j = i0
       · simp [g, hj]
       · have := congrFun hxy j
-        simp only [ψ, hj, if_false] at this
+        simp only [ψ, hj, ite_false] at this
         simp [g, hj, this]
     · funext k
       have := congrFun hxy i0
-      simp only [ψ, if_true] at this
+      simp only [ψ, ite_true] at this
       rw [hA1, this, Subsingleton.elim k 0]
   have hdomi : ∃ i, ∀ h : (Fin 1 → ℂ) → ℂ, AnalyticAt ℂ h (A1 w) →
       (∀ᶠ z in 𝓝 w, z ∈ Y i → h (A1 z) = 0) → ∀ᶠ y in 𝓝 (A1 w), h y = 0 := by
@@ -480,7 +480,7 @@ theorem dominant_of_open {ι : Type} [Fintype ι] {d : ℕ} (A : (σ → ℂ) �
   have hgood := hcont.and (hΦY.and (hv.and (hAball.and (show ∀ᶠ z in 𝓝 w, z ∈ W from hW))))
   have hfreq := Filter.not_eventually.mp hΦne
   obtain ⟨x, hx1, hx2⟩ := (hfreq.and_eventually hgood.eventually_nhds).exists
-  push_neg at hx1
+  push Not at hx1
   obtain ⟨hxY, hxΦ⟩ := hx1
   obtain ⟨hxc, -, -, hxA, hxW⟩ := hx2.self_of_nhds
   have hxS : x ∈ S := by

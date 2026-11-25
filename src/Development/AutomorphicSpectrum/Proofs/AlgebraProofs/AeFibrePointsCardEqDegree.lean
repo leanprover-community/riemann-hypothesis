@@ -30,7 +30,7 @@ private theorem ae_fibre_encard_eq {n e : ℕ} (S : Set (EuclideanSpace ℂ (Fin
       have hz : (fun w => T (cntOver S π w))
           =ᵐ[volume.restrict (Metric.ball (0 : EuclideanSpace ℂ (Fin (e + 1))) 1)] fun _ => 0 := by
         filter_upwards [ae_restrict_of_ae hπ] with w hw
-        simp only [T, hw, if_true]
+        simp only [T, hw, ite_true]
       rw [lintegral_congr_ae hz, lintegral_zero, mul_zero]
     rw [lintegral_congr_ae hae, lintegral_zero]
   rw [hlhs] at hcross
@@ -55,7 +55,7 @@ private theorem ae_fibre_encard_eq {n e : ℕ} (S : Set (EuclideanSpace ℂ (Fin
     (mul_eq_zero.mp hπ).resolve_left hg
   have hc : cntOver S π (firstCoordVec (e + 1)) = (δ : ℝ≥0∞) := by
     by_contra hne
-    simp only [T, hne, if_false, one_ne_zero] at hT0
+    simp only [T, hne, ite_false, one_ne_zero] at hT0
   have hc' : (((fibrePts S π).encard : ℕ∞) : ℝ≥0∞) = ((δ : ℕ∞) : ℝ≥0∞) := by
     rw [ENat.toENNReal_coe]
     exact hc

@@ -76,7 +76,7 @@ namespace GlobalTheory.DefArith
 theorem sum_laOf_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
     (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (hq : Dw.q = 0) (hn : Even n) (τ : Psi H) :
     (∑ k, (laOf Dw a n τ k : ℝ)) = (GlobalTheory.DualWeyl.size (part Dw a τ.1) : ℝ) + (Dw.p : ℝ) * n / 2 := by
-  have hm : Dw.mult τ.1 = Dw.p := by unfold Datum.mult; rw [if_pos τ.2]
+  have hm : Dw.mult τ.1 = Dw.p := by unfold Datum.mult; rw [ite_eq_left τ.2]
   have hk : ∀ k : Fin (Dw.p + Dw.q), (laOf Dw a n τ k : ℝ) = (a (τ.1, k) : ℝ) + ((n / 2 : ℕ) : ℝ) := by
     intro k
     have h := k.2
@@ -366,7 +366,7 @@ theorem logDim_le {PP A : ℝ} (hW : WtNum p i PP) (hH : HostNum D L PP A 1) (hS
     Real.log (GlobalTheory.DualWeyl.dim (part (dat p i) (wtA (p.κ i)) τ.1) : ℝ) ≤ 3 * L.sc.b := by
   obtain ⟨t, ht⟩ := WtShape.exists_tau p τ
   have e3 : (dat p i).p + (dat p i).q = D.R.r := hW.sig.2.2
-  have hmult : (dat p i).mult τ.1 = (dat p i).p := if_pos τ.2
+  have hmult : (dat p i).mult τ.1 = (dat p i).p := ite_eq_left τ.2
   have hanti : Antitone (part (dat p i) (wtA (p.κ i)) τ.1) := fun a b hab => hW.dom.1 τ.1 hab
   set N := (dat p i).mult τ.1 with hN
   have hNr : N ≤ D.R.r := by omega
@@ -379,7 +379,7 @@ theorem logDim_le {PP A : ℝ} (hW : WtNum p i PP) (hH : HostNum D L PP A 1) (hS
     have hl := WtShape.laOf_real p i τ t ht ⟨j, by omega⟩
     rw [← hl, ← WtShape.anchor_real p i τ t ht]
     congr 1
-    simp only [hw, part, laOf, weightOf, if_pos hj]
+    simp only [hw, part, laOf, weightOf, ite_eq_left hj]
     push_cast
     ring
   have hS1 : ∑ j : Fin N, |(((part (dat p i) (wtA (p.κ i)) τ.1 j : ℕ) : ℤ) : ℝ) - (w : ℝ)| ≤ 10 * D.R.m * L.sc.b := by

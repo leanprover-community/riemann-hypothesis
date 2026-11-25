@@ -485,9 +485,9 @@ private noncomputable def tens (M : ∀ v, H →* Matrix (Fin (d v)) (Fin (d v))
     by_cases h : i = j
     · subst h
       simp
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       obtain ⟨v, hv⟩ := Function.ne_iff.1 h
-      exact Finset.prod_eq_zero (Finset.mem_univ v) (if_neg (Ne.symm hv))
+      exact Finset.prod_eq_zero (Finset.mem_univ v) (ite_eq_right (Ne.symm hv))
   map_mul' g h := by
     ext i j
     have e : ∀ v, M v (g * h)⁻¹ (j v) (i v) = ∑ k, M v h⁻¹ (j v) k * M v g⁻¹ k (i v) := fun v => by
@@ -606,12 +606,12 @@ private theorem exists_places (w : HeightOneSpectrum (𝓞 E)) (hw : IsSplitAt w
     if h : ∃ τ ∈ Ov ι w, InfinitePlace.mk τ = v then h.choose else v.embedding
   have hφ : ∀ v, InfinitePlace.mk (φ v) = v := fun v => by
     by_cases h : ∃ τ ∈ Ov ι w, InfinitePlace.mk τ = v
-    · simp only [φ, dif_pos h]
+    · simp only [φ, dite_eq_left h]
       exact h.choose_spec.2
-    · simp only [φ, dif_neg h]
+    · simp only [φ, dite_eq_right h]
       exact InfinitePlace.mk_embedding v
   have hφw : ∀ v, (∃ τ ∈ Ov ι w, InfinitePlace.mk τ = v) → φ v ∈ Ov ι w := fun v h => by
-    simp only [φ, dif_pos h]
+    simp only [φ, dite_eq_left h]
     exact h.choose_spec.1
   have hP := fun v => placeHom _ ι E (φ v)
   choose u ψ h1 h2 h3 using hP
@@ -831,7 +831,7 @@ private theorem core (hn : 1 ≤ n) (σ : Submodule ℂ (UA E n → ℂ)) (hσ :
     by_cases h : u v = w
     · have h1 := hW _ hL' (u v) h (φ v) ((hOv v).2 h) (ψ v) (hψ v) (hint v) (d v) (e v) (C0 v) (hRB v) (j v) (i v)
       rw [← hp, List.length_map] at h1
-      rw [if_pos h]
+      rw [ite_eq_left h]
       simp only [M, mv_apply, hinv]
       refine (by simpa only [map_inv] using h1 : _ ≤ C0 v * B (φ v) ^ L.length).trans ?_
       exact mul_le_mul_of_nonneg_right (le_max_left _ _) (pow_nonneg (hB _) _)
@@ -841,7 +841,7 @@ private theorem core (hn : 1 ≤ n) (σ : Submodule ℂ (UA E n → ℂ)) (hσ :
         have h3 := h2 (u v)
         rw [Subgroup.mem_iInf] at h3
         exact MonoidHom.mem_ker.1 (h3 (hund v h))
-      rw [if_neg h, mul_one]
+      rw [ite_eq_right h, mul_one]
       simp only [M, mv_apply, hinv, h1, inv_one, map_one]
       rw [show (1 : Module.End ℂ _) = LinearMap.id from rfl, LinearMap.toMatrix_id, Matrix.one_apply]
       split_ifs

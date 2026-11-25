@@ -847,8 +847,8 @@ theorem exists_nth_of_fg_full : ∀ (D : D7) (tw : NTw D.R D.host D.what₂ D.LL
     iC := iC
     iC_int := hiC
     aL := fun i => if ∃ k, tw.l i = D.host.g k then 1 else 0
-    aL_g := fun i k h => if_pos ⟨k, h⟩
-    aL_off := fun i h => if_neg (not_exists.2 h)
+    aL_g := fun i k h => ite_eq_left ⟨k, h⟩
+    aL_off := fun i h => ite_eq_right (not_exists.2 h)
     Pt := fun i j => Σ b, Fin (n i j b)
     ev := fun i j b => sideEv (iC i) (e i j) b
     ev_smul := fun i j b a f y => sideEv_smul _ _ b a f y

@@ -40,8 +40,8 @@ lemma contDiffOn_vector_field_derivative (Y : Fin n → Fin n → ℂ) (F : (Fin
 
 lemma lop_mem (Y : Matrix (Fin n) (Fin n) ℂ) {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : F ∈ OmF n) :
     lop Y F ∈ OmF n := by
-  refine ⟨?_, fun z hz => if_neg hz⟩
-  exact (contDiffOn_vector_field_derivative Y F _ isOpen_omegaSet hF.1).congr fun z hz => if_pos hz
+  refine ⟨?_, fun z hz => ite_eq_right hz⟩
+  exact (contDiffOn_vector_field_derivative Y F _ isOpen_omegaSet hF.1).congr fun z hz => ite_eq_left hz
 
 lemma phiO_mem (μ : Fin n → ℤ) : PhiO μ ∈ OmF n := by
   refine ⟨?_, fun z hz => Set.indicator_of_notMem hz _⟩
@@ -51,20 +51,20 @@ lemma lop_add (Y : Matrix (Fin n) (Fin n) ℂ) {F G : Matrix (Fin n) (Fin n) ℂ
     (hG : G ∈ OmF n) : lop Y (F + G) = lop Y F + lop Y G := by
   funext z
   by_cases hz : z ∈ OmegaSet n
-  · simp only [lop, if_pos hz, Pi.add_apply]
+  · simp only [lop, ite_eq_left hz, Pi.add_apply]
     have e := DFunLike.congr_fun
       ((omF_diffAt hF hz).hasFDerivAt.add (omF_diffAt hG hz).hasFDerivAt).fderiv (Y * z)
     exact (congrArg Neg.neg e).trans (neg_add _ _)
-  · simp [lop, if_neg hz]
+  · simp [lop, ite_eq_right hz]
 
 lemma lop_smul (Y : Matrix (Fin n) (Fin n) ℂ) (c : ℂ) {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : F ∈ OmF n) :
     lop Y (c • F) = c • lop Y F := by
   funext z
   by_cases hz : z ∈ OmegaSet n
-  · simp only [lop, if_pos hz, Pi.smul_apply]
+  · simp only [lop, ite_eq_left hz, Pi.smul_apply]
     have e := DFunLike.congr_fun ((omF_diffAt hF hz).hasFDerivAt.const_smul c).fderiv (Y * z)
     exact (congrArg Neg.neg e).trans (smul_neg c ((fderiv ℂ F z) (Y * z))).symm
-  · simp [lop, if_neg hz]
+  · simp [lop, ite_eq_right hz]
 
 lemma lop_zero (Y : Matrix (Fin n) (Fin n) ℂ) : lop Y (0 : Matrix (Fin n) (Fin n) ℂ → ℂ) = 0 := by
   simpa using lop_smul Y 0 (OmF n).zero_mem
@@ -86,9 +86,9 @@ lemma lop_sum_left {ι : Type*} (s : Finset ι) (c : ι → ℂ) (Y : ι → Mat
   funext z
   by_cases hz : z ∈ OmegaSet n
 
-  · simp only [lop, if_pos hz, Finset.sum_apply, Pi.smul_apply, Finset.sum_mul, map_sum,
+  · simp only [lop, ite_eq_left hz, Finset.sum_apply, Pi.smul_apply, Finset.sum_mul, map_sum,
     Matrix.smul_mul, map_smul, smul_neg, Finset.sum_neg_distrib]
-  · simp [lop, if_neg hz]
+  · simp [lop, ite_eq_right hz]
 
 def lwM (D : List (Matrix (Fin n) (Fin n) ℂ)) (F : Matrix (Fin n) (Fin n) ℂ → ℂ) :
     Matrix (Fin n) (Fin n) ℂ → ℂ :=
@@ -110,7 +110,7 @@ lemma lWord_neg_eq {F F' : Matrix (Fin n) (Fin n) ℂ → ℂ} (hFF : Set.EqOn F
     have hev : lWord (D.map Neg.neg) F =ᶠ[𝓝 z] lwM D F' :=
       Filter.eventually_of_mem (isOpen_omegaSet.mem_nhds hz) fun y hy => ih hy
     show fderiv ℂ (lWord (D.map Neg.neg) F) z (-Z * z) = lop Z (lwM D F') z
-    rw [hev.fderiv_eq, lop, if_pos hz, Matrix.neg_mul, map_neg]
+    rw [hev.fderiv_eq, lop, ite_eq_left hz, Matrix.neg_mul, map_neg]
 
 lemma lwM_expand {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : F ∈ OmF n) :
     ∀ (l : ℕ) (c : Fin l → Fin n × Fin n → ℂ),

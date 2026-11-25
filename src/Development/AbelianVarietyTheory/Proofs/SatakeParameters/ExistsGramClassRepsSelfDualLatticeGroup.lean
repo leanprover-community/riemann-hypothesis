@@ -246,7 +246,7 @@ theorem GlobalTheory.Hk3.HoweDuality.exists_finset_reps_mul_inv :
     · have hr : rep (q t) = x := by simp [rep, hxt]
       rw [hr]; exact ⟨Finset.mem_insert_self _ _, hxt⟩
     · have h : ∃ t' ∈ T, q t' = q t := ⟨t, ht, rfl⟩
-      simp only [rep, hxt, if_false, h, dif_pos]
+      simp only [rep, hxt, ite_false, h, dite_eq_left]
       exact h.choose_spec
   refine ⟨T.image fun t => rep (q t), ?_, ?_, ?_, ?_⟩
   · refine Finset.mem_image.2 ⟨x, Finset.mem_insert_self _ _, ?_⟩

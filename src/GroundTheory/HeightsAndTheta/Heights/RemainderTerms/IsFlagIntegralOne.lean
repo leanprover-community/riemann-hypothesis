@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KernelsRest
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.RestTerms
 
 open MvPolynomial Matrix Real Finset

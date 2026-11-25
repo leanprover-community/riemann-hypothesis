@@ -47,9 +47,9 @@ def extNe {ι : Type} [DecidableEq ι] (a : ι) (y : {i // i ≠ a} → ℂ) : �
 theorem measurable_extNe {ι : Type} [DecidableEq ι] (a : ι) : Measurable (extNe a) := by
   refine Measurable.of_eval (fun j => ?_)
   by_cases h : j ≠ a
-  · simp only [extNe, dif_pos h]
+  · simp only [extNe, dite_eq_left h]
     exact measurable_pi_apply _
-  · simp only [extNe, dif_neg h]
+  · simp only [extNe, dite_eq_right h]
     exact measurable_const
 
 theorem measurePreserving_of_card (n : ℕ) : ∀ (ι : Type) [Fintype ι] [DecidableEq ι], Fintype.card ι = n →

@@ -418,8 +418,8 @@ theorem signature_count : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     have hor : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := sq_eq_sq_iff_eq_or_eq_neg.mp hsq
     rw [NumberField.ComplexEmbedding.conjugate_coe_eq]
     rcases hor with h | h
-    · rw [if_pos h, h, hconj, if_neg (Ne.symm hnn)]
-    · rw [if_neg (by rw [h]; exact Ne.symm hnn), h, map_neg, hconj, neg_neg, if_pos rfl, mul_comm]
+    · rw [ite_eq_left h, h, hconj, ite_eq_right (Ne.symm hnn)]
+    · rw [ite_eq_right (by rw [h]; exact Ne.symm hnn), h, map_neg, hconj, neg_neg, ite_eq_left rfl, mul_comm]
   rw [Finset.sum_congr rfl (fun τ _ => key τ), Finset.sum_const, Finset.card_univ,
     NumberField.Embeddings.card E ℂ, smul_eq_mul, NumberField.IsTotallyComplex.finrank]
   rw [Nat.mul_div_cancel_left _ (by norm_num : 0 < 2)]

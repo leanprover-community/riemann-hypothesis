@@ -63,12 +63,6 @@ open GlobalTheory.PD
 
 variable (k : Type) [Field k] (d : ℕ)
 
-section Bundle
-
-variable (k : Type) [Field k] {F : Type} [Field F] [Algebra k F] {d : ℕ} (x : Fin (d + 1) → F)
-
-end Bundle
-
 section Cover
 
 variable (k : Type) [Field k] {F : Type} [Field F] [Algebra k F] {d : ℕ} (x : Fin (d + 1) → F)
@@ -133,10 +127,6 @@ def chartEquiv (hP : IsPd k x) (i : Fin (d + 1)) : MvPolynomial (Fin d) k ≃ₐ
   (indep_yc k x hP i).aevalEquiv.trans (Subalgebra.equivOfEq _ _ (rA_single_eq k x hP.ne i).symm)
 
 end Cover
-
-section Extra
-
-end Extra
 
 end GlobalTheory.PD.Model
 end -- clump:auto

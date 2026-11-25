@@ -30,16 +30,16 @@ theorem exists_eq {R : Type} [CommRing R] (l : R) (P : Polynomial R) (hm : P.Mon
     intro i
     rw [Polynomial.coeff_divX, Polynomial.coeff_sub, Polynomial.coeff_X_pow]
     rcases lt_trichotomy (i + 1) P.natDegree with h | h | h
-    · rw [if_neg h.ne, sub_zero]
+    · rw [ite_eq_right h.ne, sub_zero]
       exact hc _ h
-    · rw [if_pos h, h, hm.coeff_natDegree, sub_self]
+    · rw [ite_eq_left h, h, hm.coeff_natDegree, sub_self]
       exact dvd_zero _
-    · rw [if_neg h.ne', sub_zero, Polynomial.coeff_eq_zero_of_natDegree_lt h]
+    · rw [ite_eq_right h.ne', sub_zero, Polynomial.coeff_eq_zero_of_natDegree_lt h]
       exact dvd_zero _
   obtain ⟨G, hG⟩ := h1
   refine ⟨G, ?_⟩
   have h2 := Polynomial.X_mul_divX_add (P - Polynomial.X ^ P.natDegree)
-  rw [hG, Polynomial.coeff_sub, Polynomial.coeff_X_pow, if_neg hd.ne, sub_zero, h0, map_mul] at h2
+  rw [hG, Polynomial.coeff_sub, Polynomial.coeff_X_pow, ite_eq_right hd.ne, sub_zero, h0, map_mul] at h2
   linear_combination -h2
 
 theorem map_E_eq : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (O : Type) [CommRing O] [IsLocalRing O] [CharP O l] [PerfectRing O l] (ψ : OCb l →+* O), ¬ IsUnit (ψ bk.flat) → ∃ w : WittVector l O, IsUnit w ∧ WittVector.map ψ (bk.ev bk.E) = WittVector.teichmuller l (ψ bk.flat) ^ bk.Ep.natDegree + ((l : ℕ) : WittVector l O) * w := by

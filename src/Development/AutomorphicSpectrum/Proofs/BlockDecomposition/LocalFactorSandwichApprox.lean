@@ -104,10 +104,7 @@ theorem exists_sandwich : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOn
       have h3 := (abs_le.1 h1).2
       rw [hKdef]; linarith
     · rw [hout s hO]; exact hK0.le
-  have hgi : Integrable g lam := by
-    by_contra h
-    rw [integral_undef h] at hone
-    norm_num at hone
+  have hgi : Integrable g lam := integrable_of_integral_eq_one hone
   have hnz : ∀ᵐ s ∂lam, s ≠ 0 := by
     have : ({0}ᶜ : Set (Fv F v)) ∈ ae lam := compl_mem_ae_iff.2 (measure_singleton 0)
     exact this
@@ -164,7 +161,7 @@ theorem exists_sandwich : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOn
     simp [hsB, hout s hs]
   · intro s hs
     by_cases hsB : s ∈ B
-    · simp only [Set.indicator, Set.mem_compl_iff, hsB, not_true_eq_false, if_false, if_true, zero_add]
+    · simp only [Set.indicator, Set.mem_compl_iff, hsB, not_true_eq_false, ite_false, ite_true, zero_add]
       exact ⟨hg0 s, hgK s hs⟩
     · simp [Set.indicator, hsB]
   · rw [hIm]; linarith

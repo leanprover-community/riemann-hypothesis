@@ -789,7 +789,7 @@ theorem exists_complete_discreteValuationRing_of_mem_closure_cones :
       (algebraMap F (A i) x))) = f (Ideal.Quotient.mk P (algebraMap K _ (algebraMap F K x)))
     rw [AlgHom.commutes, ← IsScalarTower.algebraMap_apply]
   · exfalso
-    push_neg at hex
+    push Not at hex
     choose G d hG hG0 hGv using hex
     have : ∀ i, Finite (minimalPrimes (K ⊗[F] A i)) := fun i =>
       (minimalPrimes.finite_of_isNoetherianRing _).to_subtype

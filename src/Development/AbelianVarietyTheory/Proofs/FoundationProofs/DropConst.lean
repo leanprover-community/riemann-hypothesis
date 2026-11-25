@@ -96,7 +96,7 @@ theorem drop_const (p m N k : ℕ) [Fact p.Prime] (hm : 1 ≤ m) (hpN : ¬ p ∣
   by_cases hi : i = 0
   · subst hi
     have hk1 : k - 1 ≠ 1 := by omega
-    simp only [eisF, const0, if_true, if_neg hk1]
+    simp only [eisF, const0, ite_true, ite_eq_right hk1]
     rw [sum_zero_left p m hm ψ hψ]
     simp [coefPos]
   by_cases hj : j = 0
@@ -115,10 +115,10 @@ theorem drop_const (p m N k : ℕ) [Fact p.Prime] (hm : 1 ≤ m) (hpN : ¬ p ∣
         rcases (Nat.prime_iff_prime_int.mp hp).dvd_or_dvd h2 with h3 | h3
         · exact hpN (Int.natCast_dvd_natCast.mp h3)
         · exact (mem_filter.mp hv).2 (Int.natCast_dvd_natCast.mp h3)
-      simp only [eisF, const0, if_true, if_neg this]
+      simp only [eisF, const0, ite_true, ite_eq_right this]
     rw [sum_congr rfl fun u _ => sum_congr rfl fun a _ => sum_congr rfl fun v hv => sum_congr rfl fun b _ => by
       rw [e v hv], sum_zero_right p m hm ψ hψ]
     simp [coefPos]
-  simp only [eisF, if_neg hi, if_neg hj]
+  simp only [eisF, ite_eq_right hi, ite_eq_right hj]
 
 end GlobalTheory.KummerEisensteinGalois.UnitPieceMu

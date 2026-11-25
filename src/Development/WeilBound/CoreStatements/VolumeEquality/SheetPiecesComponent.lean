@@ -394,9 +394,9 @@ theorem sheet_local : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintyp
   set c : K → (Fin n → ℂ) → ℂ := fun k y' => if k = k0 then (ψ y')⁻¹ else 1 with hcdef
   have hca : ∀ k, AnalyticAt ℂ (c k) (sheetProj Ψ γ t) := fun k => by
     by_cases hk : k = k0
-    · simp only [hcdef, hk, if_true]
+    · simp only [hcdef, hk, ite_true]
       exact hψa.inv hψ0
-    · simp only [hcdef, hk, if_false]
+    · simp only [hcdef, hk, ite_false]
       exact analyticAt_const
   have hcne : ∀ k y', ψ y' ≠ 0 → c k y' ≠ 0 := fun k y' h => by
     by_cases hk : k = k0

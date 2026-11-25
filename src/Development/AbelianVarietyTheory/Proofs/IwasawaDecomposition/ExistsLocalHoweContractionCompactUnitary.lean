@@ -110,7 +110,7 @@ theorem sum_castLE {M : Type*} [AddCommMonoid M] {k m : ℕ} (hk : k ≤ m) (f :
 theorem prod_pow_ite {k m : ℕ} (hk : k ≤ m) (c : Fin m → ℂ) :
     ∏ i, c i ^ (if (i : ℕ) < k then 1 else 0) = ∏ i : Fin k, c (Fin.castLE hk i) :=
   (Fintype.prod_of_injective (Fin.castLE hk) (Fin.castLE_injective hk) _ _
-    (fun i hi => by rw [if_neg (not_lt.2 (not_range_castLE hk i hi)), pow_zero])
+    (fun i hi => by rw [ite_eq_right (not_lt.2 (not_range_castLE hk i hi)), pow_zero])
     fun i => by simp).symm
 
 def block (hn : n ≤ N) {k : ℕ} (hk : k ≤ n) : Matrix (Fin k) (Fin k) (MvPolynomial (Fin N × Fin n) ℂ) :=

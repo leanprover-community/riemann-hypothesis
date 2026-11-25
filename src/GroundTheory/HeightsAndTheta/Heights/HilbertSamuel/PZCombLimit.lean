@@ -63,7 +63,7 @@ theorem eq_famExt_of_position (Q : HermLine ι → Prop) (e : Fin 2 → HermLine
       famExt J P n e (fun j => if j ∈ T then w else Pi.single (t j) 1) := by
   induction T using Finset.induction_on generalizing t with
   | empty =>
-    simp only [Finset.notMem_empty, if_false]
+    simp only [Finset.notMem_empty, ite_false]
     exact (famExt_basis e t).symm
   | insert a T ha ih =>
     have hins : ∀ {β : Type} (v : β) (F : Fin 2 → β),

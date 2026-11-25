@@ -204,7 +204,7 @@ theorem nuRow_nat (D : D7) (u : D.what₂.Word) (i : ℕ) (hi : i < D.R.m) (τ :
 theorem nuRowOK (D : D7) : NuRowOK D := by
   intro u i hi z r
   by_cases hr : r < D.R.N i
-  · rw [if_pos hr]
+  · rw [ite_eq_left hr]
     obtain ⟨n, _, hn⟩ := nuRow_nat D u i hi (tauPl D z) r hr
     rw [hn]
     have key : ∀ c : ℕ, c < (nuD D u i z).rowLen r ↔ c < n := by
@@ -224,7 +224,7 @@ theorem nuRowOK (D : D7) : NuRowOK D := by
     have : (nuD D u i z).rowLen r = n :=
       le_antisymm (not_lt.1 fun h => lt_irrefl _ ((key n).1 h)) (not_lt.1 fun h => lt_irrefl _ ((key _).2 h))
     rw [this]
-  · rw [if_neg hr]
+  · rw [ite_eq_right hr]
     have : (nuD D u i z).rowLen r = 0 := by
       by_contra hne
       have hmem : (r, 0) ∈ nuD D u i z := YoungDiagram.mem_iff_lt_rowLen.2 (Nat.pos_of_ne_zero hne)

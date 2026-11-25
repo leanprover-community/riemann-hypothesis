@@ -807,12 +807,12 @@ theorem level_conj_frame : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
   have hf_g : ∀ i v (h : (gp i : 𝓞 F) ∈ v.asIdeal), hf v = κl i v h := by
     intro i v h
     obtain rfl | rfl : i = 0 ∨ i = 1 := by fin_cases i <;> simp
-    · simp only [hf, dif_pos h]
+    · simp only [hf, dite_eq_left h]
     · have h0 : (gp 0 : 𝓞 F) ∉ v.asIdeal := fun h0 => not_both_mem (hgp 0) (hgp 1) hne v h0 h
-      simp only [hf, dif_neg h0, dif_pos h]
+      simp only [hf, dite_eq_right h0, dite_eq_left h]
   have hf_one : ∀ v, (gp 0 : 𝓞 F) ∉ v.asIdeal → (gp 1 : 𝓞 F) ∉ v.asIdeal → hf v = 1 := by
     intro v h0 h1
-    simp only [hf, dif_neg h0, dif_neg h1]
+    simp only [hf, dite_eq_right h0, dite_eq_right h1]
   have hf_lev : ∀ v, hf v ∈ levelVL cm.sig J v S.Lb := by
     intro v
     by_cases h0 : (gp 0 : 𝓞 F) ∈ v.asIdeal

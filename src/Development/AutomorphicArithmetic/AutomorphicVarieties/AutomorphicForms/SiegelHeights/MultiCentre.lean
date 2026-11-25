@@ -83,7 +83,7 @@ private theorem etr_mem_adjoin_range_qdet (A : Type) [Ring A] [Algebra ℂ A] (m
     rw [sub_zero] at e
     rw [e]
     refine Finset.sum_congr rfl fun l hl => ?_
-    rw [if_pos (Finset.mem_range.mp hl)]
+    rw [ite_eq_left (Finset.mem_range.mp hl)]
   refine Nat.strong_induction_on N ?_
   intro N ih
   have hgS : ∀ u : ℂ, algebraMap ℂ A ((-1) ^ N) *

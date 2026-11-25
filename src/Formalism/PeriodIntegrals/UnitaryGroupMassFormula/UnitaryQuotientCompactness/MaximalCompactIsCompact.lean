@@ -31,25 +31,25 @@ lemma hpk_eq (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   have hi := i.isLt
   have hj := j.isLt
   by_cases h1 : i.val < r ∨ r + k < i.val
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     have hne : i.val ≠ r + k := by omega
     by_cases h2 : j.val = 2 * r + k - i.val
     · have : j = ⟨2 * r + k - i.val, by omega⟩ := Fin.ext h2
-      rw [if_pos this, if_neg hne]
+      rw [ite_eq_left this, ite_eq_right hne]
       rcases h1 with h1 | h1
-      · rw [if_pos ⟨h1, by omega⟩]
-      · rw [if_neg (by omega), if_pos ⟨by omega, by omega⟩]
+      · rw [ite_eq_left ⟨h1, by omega⟩]
+      · rw [ite_eq_right (by omega), ite_eq_left ⟨by omega, by omega⟩]
     · have : j ≠ ⟨2 * r + k - i.val, by omega⟩ := fun h => h2 (by rw [h])
-      rw [if_neg this, if_neg (by omega), if_neg (by omega), if_neg]
+      rw [ite_eq_right this, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right]
       rintro ⟨_, _, h3⟩
       exact h2 (by rw [h3]; omega)
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     push Not at h1
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
     by_cases h3 : j = i
     · subst h3
       simp [h1.1, h1.2]
-    · rw [if_neg h3, if_neg]
+    · rw [ite_eq_right h3, ite_eq_right]
       rintro ⟨_, _, h4⟩
       exact h3 h4.symm
 
@@ -90,8 +90,8 @@ lemma hpk_conjTranspose (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
   rw [Matrix.conjTranspose_apply, hpk_eq, hpk_eq]
   by_cases h : j = hσ k r i
   · subst h
-    rw [if_pos (hσ_hσ k r i).symm, if_pos rfl, star_hs, hs_hσ]
-  · rw [if_neg (fun h' => h ((hσ_eq_iff k r i j).1 h')), if_neg h, star_zero]
+    rw [ite_eq_left (hσ_hσ k r i).symm, ite_eq_left rfl, star_hs, hs_hσ]
+  · rw [ite_eq_right (fun h' => h ((hσ_eq_iff k r i j).1 h')), ite_eq_right h, star_zero]
 
 lemma hpk_inv (k r : ℕ) : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_left_inv (hpk_mul_self k r)
 

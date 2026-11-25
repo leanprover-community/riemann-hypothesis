@@ -91,7 +91,7 @@ theorem exists_dvd_all {A ι : Type*} [CommRing A] [IsDomain A] [ValuationRing A
         · rcases Finset.mem_insert.1 hi with rfl | hi
           · exact dvd_rfl
           · exact hkj.trans (hdvd i hi)
-    · push_neg at hs
+    · push Not at hs
       obtain ⟨i, hi, hi0⟩ := h
       have hk : a k ≠ 0 := by
         rcases Finset.mem_insert.1 hi with rfl | hi

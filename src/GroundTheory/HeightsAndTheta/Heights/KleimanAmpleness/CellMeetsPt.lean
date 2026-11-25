@@ -84,7 +84,7 @@ theorem edge (S : Type) [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] (y : 
   have h0 : cellD S y 0 s ⟨J, hJ1⟩ = 0 := by rw [hs]; rfl
   unfold cellD at h0
   erw [LinearMap.pi_apply] at h0
-  erw [if_pos (show CellMeets y J from hm)] at h0
+  erw [ite_eq_left (show CellMeets y J from hm)] at h0
   rw [LinearMap.sum_apply, Finset.sum_eq_single k] at h0
   rotate_left
   · intro l _ hl

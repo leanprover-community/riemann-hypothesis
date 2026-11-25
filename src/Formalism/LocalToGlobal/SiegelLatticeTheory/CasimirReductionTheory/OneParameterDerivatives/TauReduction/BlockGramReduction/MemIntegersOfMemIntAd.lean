@@ -306,8 +306,8 @@ theorem Lf_lower : ∃ d : ℕ, 1 ≤ d ∧ ∀ y : Fin I.n → I.E ⊗[I.F] For
     funext k
     simp only [Pi.smul_apply, smul_eq_mul, Finset.sum_apply, Subring.smul_def, Pi.single_apply,
       mul_ite, mul_one, mul_zero]
-    rw [Finset.sum_eq_single k (fun b _ hb => by rw [if_neg (Ne.symm hb), map_zero, mul_zero])
-      (fun h => absurd (Finset.mem_univ k) h), if_pos rfl, map_natCast, mul_comm]
+    rw [Finset.sum_eq_single k (fun b _ hb => by rw [ite_eq_right (Ne.symm hb), map_zero, mul_zero])
+      (fun h => absurd (Finset.mem_univ k) h), ite_eq_left rfl, map_natCast, mul_comm]
   rw [heq]
   exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _
     (Submodule.subset_span ⟨⟨_, hdi i⟩, rfl⟩)

@@ -63,11 +63,11 @@ theorem sum_frame {A : Type} [Ring A] [Algebra ℂ A] (L : Matrix (Fin n) (Fin n
     intro a b
     by_cases c : e a = e b
     · have := pair_sq (L (single a b 1)) (L (single b a 1)) (s := 1) (Or.inl rfl)
-      simp only [xv, yv, gv, c, sg, if_true, if_false, map_zero, mul_zero, map_smul, map_sub, map_add (f := _), Bool.false_eq_true]
+      simp only [xv, yv, gv, c, sg, ite_true, ite_false, map_zero, mul_zero, map_smul, map_sub, map_add (f := _), Bool.false_eq_true]
       rw [add_zero, zero_sub, this]
       module
     · have := pair_sq (L (single a b 1)) (L (single b a 1)) (s := -1) (Or.inr rfl)
-      simp only [xv, yv, gv, c, sg, if_true, if_false, map_zero, mul_zero, map_smul, map_sub, map_add (f := _), Bool.false_eq_true]
+      simp only [xv, yv, gv, c, sg, ite_true, ite_false, map_zero, mul_zero, map_smul, map_sub, map_add (f := _), Bool.false_eq_true]
       rw [add_zero, sub_zero, this]
       module
   rw [← Finset.sum_sub_distrib, Fintype.sum_prod_type]
@@ -97,11 +97,11 @@ theorem cj_single (e : Fin n → Bool) (a b : Fin n) :
 
 theorem gv_true (e : Fin n → Bool) (a b : Fin n) :
     gv e (a, b, true) = (1 / 2 : ℂ) • (single a b 1 + cj (Formalism.REAL.Jm e) (single a b 1)) := by
-  rw [cj_single, gv, if_pos rfl, sub_eq_add_neg]
+  rw [cj_single, gv, ite_eq_left rfl, sub_eq_add_neg]
 
 theorem gv_false (e : Fin n → Bool) (a b : Fin n) :
     gv e (a, b, false) = (1 / (2 * Complex.I) : ℂ) • (single a b 1 - cj (Formalism.REAL.Jm e) (single a b 1)) := by
-  rw [cj_single, gv, if_neg (by simp), sub_neg_eq_add]
+  rw [cj_single, gv, ite_eq_right (by simp), sub_neg_eq_add]
 
 theorem gv_skew (e : Fin n → Bool) (p : Fin n × Fin n × Bool) :
     (gv e p)ᴴ * Formalism.REAL.Jm e + Formalism.REAL.Jm e * gv e p = 0 := by
@@ -179,10 +179,10 @@ theorem yv_kLie (e : Fin n → Bool) (p : Fin n × Fin n × Bool) : IsKLie e (yv
       have hst : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by
         simp [Complex.conj_I]
       cases d
-      · simp only [yv, gv, c', sg, if_true, Bool.false_eq_true, if_false, one_smul, conjTranspose_smul, hst,
+      · simp only [yv, gv, c', sg, ite_true, Bool.false_eq_true, ite_false, one_smul, conjTranspose_smul, hst,
           conjTranspose_add, conjTranspose_single, star_one]
         rw [add_comm, neg_smul]
-      · simp only [yv, gv, c', sg, if_true, one_smul, conjTranspose_smul, conjTranspose_sub, conjTranspose_single,
+      · simp only [yv, gv, c', sg, ite_true, one_smul, conjTranspose_smul, conjTranspose_sub, conjTranspose_single,
           star_one]
         simp only [star_div₀, star_one, star_ofNat]
         module

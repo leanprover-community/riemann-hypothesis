@@ -457,7 +457,7 @@ theorem span_singleton_eq_maximalIdeal_pow {L : Type} [CommRing L] [IsLocalRing 
     rcases Nat.eq_zero_or_pos (Nat.find hex) with h0 | hpos
     · rw [h0]; simp
     · have := Nat.find_min hex (show Nat.find hex - 1 < Nat.find hex by omega)
-      push_neg at this
+      push Not at this
       rwa [Nat.sub_add_cancel hpos] at this
   clear hex
   refine ⟨n, ?_⟩

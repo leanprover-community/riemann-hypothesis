@@ -84,16 +84,16 @@ theorem nu_back (hk : 1 ≤ k) (w s : ℂ) (hw : s * s = w * star w - 1) :
   have h0 := zero_ne_last hk
   rw [nu_mulVec]
   funext i
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply, h0, h0.symm, if_true, if_false]
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply, h0, h0.symm, ite_true, ite_false]
   by_cases hi0 : i = 0
   · subst hi0
-    simp only [h0, if_true, if_false]
+    simp only [h0, ite_true, ite_false]
     ring
   · by_cases hil : i = Fin.last k
     · subst hil
-      simp only [h0.symm, if_true, if_false]
+      simp only [h0.symm, ite_true, ite_false]
       linear_combination -hw
-    · simp only [hi0, hil, if_false]
+    · simp only [hi0, hil, ite_false]
       ring
 
 theorem secB_inv_a (hk : 1 ≤ k) {a b : Fin (k + 1) → ℂ} {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T')
@@ -162,7 +162,7 @@ theorem secB_perp {a b : Fin (k + 1) → ℂ} {T T' : ℝ} (hT' : 0 < T') (hb : 
     have hs : (if (0 : Fin (k + 1)) = Fin.last k then (-1 : ℂ) else 1) ≠ 0 := by split_ifs <;> norm_num
     exact (mul_eq_zero.1 hx0).resolve_left hs
   have cl : (gB k b T' *ᵥ x) (Fin.last k) = 0 := by
-    rw [← form_of_unitary (Hb k) (gB_spec k hT' hb).1, (gB_spec k hT' hb).2, herm_smul_right, herm_Hb_right, if_pos rfl] at hxb
+    rw [← form_of_unitary (Hb k) (gB_spec k hT' hb).1, (gB_spec k hT' hb).2, herm_smul_right, herm_Hb_right, ite_eq_left rfl] at hxb
     have h1 : star ((Real.sqrt T' : ℝ) : ℂ) ≠ 0 := by rw [show star ((Real.sqrt T' : ℝ) : ℂ) = _ from Complex.conj_ofReal _]; exact hne
     have h2 := (mul_eq_zero.1 hxb).resolve_left h1
     exact (mul_eq_zero.1 h2).resolve_left (by norm_num)

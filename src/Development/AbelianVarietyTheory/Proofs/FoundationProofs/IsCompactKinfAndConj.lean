@@ -53,13 +53,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Cusp.KinfCompact
 
-section Mat
-
-variable {p q n : ℕ} {A : Matrix (Fin p ⊕ Fin q) (Fin n) ℂ} {B : Matrix (Fin n) (Fin p ⊕ Fin q) ℂ}
-  {G m : Matrix (Fin n) (Fin n) ℂ}
-
-end Mat
-
 variable {D : D7}
 
 theorem isClosed_realPts (V : HSp D) : IsClosed (GinfC V : Set (GA D V)) := by

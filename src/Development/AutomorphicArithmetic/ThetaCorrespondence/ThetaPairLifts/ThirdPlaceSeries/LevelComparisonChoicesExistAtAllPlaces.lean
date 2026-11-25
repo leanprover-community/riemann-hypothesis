@@ -643,7 +643,7 @@ theorem lowAll_congr {s s' : Stages} (h : s.B.toPre = s'.B.toPre) : lowAll s.toD
 
 theorem lowAll_eq_lowPre (s : Stages) : lowAll s.toD7 = lowPre s.B.toPre := by
   have h : ∃ X : Stages, X.B.toPre = s.B.toPre := ⟨s, rfl⟩
-  simp only [lowPre, dif_pos h]
+  simp only [lowPre, dite_eq_left h]
   exact lowAll_congr h.choose_spec.symm
 
 theorem prime_of_mem_lowAll (D : D7) {p : ℕ} (hp : p ∈ lowAll D) : p.Prime := by

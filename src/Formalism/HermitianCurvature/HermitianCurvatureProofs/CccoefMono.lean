@@ -99,8 +99,8 @@ theorem belowTop : ∃ Cl : ℝ, 0 ≤ Cl ∧ ∀ Cc : ℝ, Cl ≤ Cc →
   unfold D.RRplace
   by_cases hab : D.IsLocPt a i ∧ D.IsLocPt b i
   swap
-  · simp only [dif_neg hab]; exact tendsto_const_nhds
-  simp only [dif_pos hab, dif_pos hi]
+  · simp only [dite_eq_right hab]; exact tendsto_const_nhds
+  simp only [dite_eq_left hab, dite_eq_left hi]
   have hca : P.r - i = P.r - D.ptSize a := by simp [hab.1.2]
   have hcb : P.r - i = P.r - D.ptSize b := by simp [hab.2.2]
   have hQa := fun e => hSQ Cs le_rfl P.k P.r Wp Wq p.T χ (A - 1) N P rfl rfl hk2 hχ hA' ε hε i hi w hw a hca hab.1 e
@@ -238,7 +238,7 @@ theorem cutCpt {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     have hc : χ (Gf P.k P.r Bs.z Bs.z' g / ε) ≠ 0 := by
       intro h0; apply hne; simp [D.cutF, h0]
     have h1 : δ ≤ Gf P.k P.r Bs.z Bs.z' g / ε := by
-      by_contra hlt; push_neg at hlt; exact hc (hδ0 _ hlt)
+      by_contra hlt; push Not at hlt; exact hc (hδ0 _ hlt)
     rw [le_div_iff₀ hε] at h1
     linarith
 

@@ -131,12 +131,6 @@ theorem mem_range_ixOf {U : Set I.ι} {a : I.ι} : a ∈ Set.range (ixOf I U) �
 theorem usedOf_mono (T : Top.TwDat B) {Wt Wt' : Set B.places.Pl} (h : Wt ⊆ Wt') : usedOf I T Wt ⊆ usedOf I T Wt' :=
   fun _ ⟨w, hw, e⟩ => ⟨w, h hw, e⟩
 
-section Fields
-
-variable (hX : B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc B px → B.LL)) (tr : TrI B px)
-
-end Fields
-
 theorem embLL_xiValOf (a : I.ι) (P : HeightOneSpectrum (𝓞 B.fields.E))
     (h : ∃ z : B.LL, B.embLL z = (((I.xi a).val P : ℂˣ) : ℂ)) :
     B.embLL (xiValOf I (I.tup a) P : B.LL) = (((I.xi a).val P : ℂˣ) : ℂ) := by

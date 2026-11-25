@@ -855,12 +855,12 @@ theorem unipSer_sum (K : Type) [Field K] [Finite K] (r : ℕ) (A : Type) [Ring A
       ⟨_, Formalism.CyclotomicNorms.Sqf.monicOf_coeffs f hf.1 hf.2.1⟩
   refine ⟨hfin.toFinset, fun f => hfin.mem_toFinset, ?_⟩
   unfold unipSer
-  rw [Finset.sum_ite_eq', if_pos]
+  rw [Finset.sum_ite_eq', ite_eq_left]
   exact hfin.mem_toFinset.2 ⟨(monic_unip r).1, (monic_unip r).2, unip_coeff_zero K r⟩
 
 theorem unipSer_of_squarefree {K : Type} [Field K] {r : ℕ} (hr : 2 ≤ r) (A : Type) [Ring A] {f : K[X]}
     (hf : Squarefree f) : unipSer K r A f = 0 := by
-  refine if_neg fun h => ?_
+  refine ite_eq_right fun h => ?_
   have h1 : IsUnit (X - 1 : K[X]) := hf _ (by rw [h, ← sq]; exact pow_dvd_pow _ hr)
   have h2 := natDegree_eq_zero_of_isUnit h1
   have h3 := (monic_unip (K := K) 1).2
@@ -931,7 +931,7 @@ def nTypes (N : NData R H what₂) [IsEmpty N.Loc] (pl : ∀ k, N.PlG k → PlE 
     all_goals simp
   eSer_zero := fun k f h => by
     haveI : Fact (H.g k).Prime := ⟨H.g_prime k⟩
-    refine if_neg fun h0 => h ?_
+    refine ite_eq_right fun h0 => h ?_
     rw [h0]
     exact ⟨(monic_unip _).1, (monic_unip _).2, unip_coeff_zero _ _⟩
   eSer_sum := fun k => haveI : Fact (H.g k).Prime := ⟨H.g_prime k⟩; unipSer_sum _ _ _

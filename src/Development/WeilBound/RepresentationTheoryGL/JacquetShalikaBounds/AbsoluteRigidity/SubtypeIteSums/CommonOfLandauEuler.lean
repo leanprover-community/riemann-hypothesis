@@ -192,13 +192,13 @@ theorem PositivityTheory.RgJS.common_of_landau_euler : LandauL → EulerLog → 
           (s + (((x p.1).2 + (y p.2).2 : ℝ) : ℂ) - 1) := by
         funext s
         unfold gf
-        rw [if_pos hc]
+        rw [ite_eq_left hc]
       rw [hgf]
       exact this
     · have hgf : gf F x y p = fun s : ℂ => F p (s + (((x p.1).2 + (y p.2).2 : ℝ) : ℂ)) := by
         funext s
         unfold gf
-        rw [if_neg hc]
+        rw [ite_eq_right hc]
       rw [hgf]
       exact hF'
   have hGa : ∀ σ : ℝ, 1 - δ < σ → AnalyticAt ℂ (fun s => ∏ p, gf F x y p s) σ := by
@@ -242,8 +242,8 @@ theorem PositivityTheory.RgJS.common_of_landau_euler : LandauL → EulerLog → 
           have := congrArg Complex.re h
           simp at this
           linarith [ht p.1, ht' p.2]
-        rw [hFE, if_pos hc, mul_div_cancel_left₀ _ hne1, hEL]
-      · rw [hFE, if_neg hc, one_mul, hEL]
+        rw [hFE, ite_eq_left hc, mul_div_cancel_left₀ _ hne1, hEL]
+      · rw [hFE, ite_eq_right hc, one_mul, hEL]
     show ∏ p, gf F x y p σ = _
     simp only [hg]
     rw [← Complex.exp_sum, ← Summable.tsum_finsetSum (fun p _ => hs' p)]

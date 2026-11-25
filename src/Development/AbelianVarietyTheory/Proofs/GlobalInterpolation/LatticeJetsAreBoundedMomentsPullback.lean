@@ -76,14 +76,14 @@ theorem latInt_pull : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (V :
     · intro i j
       by_cases hij : i = j
       · subst hij
-        simp only [if_true, map_inv₀, map_natCast, zc_eq]
+        simp only [ite_true, map_inv₀, map_natCast, zc_eq]
         have e : zcRing q ((u i)⁻¹ : ℤ_[q]ˣ).1 * (s i : ℂ_[q]) = 1 := by
           have e1 : (s i : ℂ_[q]) = zcRing q (u i).1 := by rw [hu i, map_natCast]
           rw [e1, ← map_mul, Units.inv_mul, map_one]
         exact (eq_inv_of_mul_eq_one_left e).symm
       · simp [hij, zc_eq]
     · intro i
-      simp only [ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [← Nat.cast_smul_eq_nsmul ℂ, smul_comm (ι.symm ω) (s i : ℂ), smul_smul, inv_mul_cancel₀ (hs0 i), one_smul]
   obtain ⟨μ, hμ, hm⟩ := hP
   refine ⟨μ, hμ, fun k j f hf => ?_⟩

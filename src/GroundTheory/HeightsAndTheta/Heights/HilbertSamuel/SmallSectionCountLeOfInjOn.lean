@@ -245,8 +245,8 @@ theorem fam_hermZpow {I : Ideal (MRing ι) → (m : ℕ) → (Fin m → HermLine
         have hij : (i : ℕ) ≠ j := fun h => hi (Fin.ext h)
         simp only [Lj]
         by_cases h1 : (i : ℕ) < j
-        · rw [if_pos h1, if_pos (by omega)]
-        · rw [if_neg h1, if_neg (by omega)]
+        · rw [ite_eq_left h1, ite_eq_left (by omega)]
+        · rw [ite_eq_right h1, ite_eq_right (by omega)]
     have e0 : Lj j = Function.update (Lj j) ⟨j, hj⟩ M := by
       funext i
       by_cases hi : i = ⟨j, hj⟩

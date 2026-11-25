@@ -142,7 +142,7 @@ theorem tw_inj (hT : T ≠ 0) (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNo
     have hsum : ∑ c, (Pm L (β : Matrix (Fin (r + 1)) (Fin (r + 1)) E) c b -
         (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) E) c b) • F.fvec c = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       rw [← hb, sub_self]
     have := Fintype.linearIndependent_iff.1 hliF _ hsum c
     exact sub_eq_zero.1 this

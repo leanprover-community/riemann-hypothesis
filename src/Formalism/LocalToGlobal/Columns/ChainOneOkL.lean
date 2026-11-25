@@ -124,7 +124,7 @@ theorem ookEntB_joinX (q : ℕ) {k₀ n' c' n c : ℕ} (hc' : c' = 1) (hc : c = 
     simp only [Fin.val_castAdd, Pi.single_apply, Fin.ext_iff]
   have e2 : Loc.eN E (n' + 1) s ⟨n', by omega⟩ = 0 := by
     unfold Loc.eN
-    rw [if_neg (by simp; omega)]
+    rw [ite_eq_right (by simp; omega)]
   rw [e1, e2, zero_mul, add_zero, sub_zero, zpow_zero, mul_one]
 
 theorem ookFIdx_lt {k₀ c' n' p' : ℕ} (hc' : c' = 1) (hk : k₀ ≤ n') (hp' : p' < n' + c') (hne : p' ≠ k₀) :

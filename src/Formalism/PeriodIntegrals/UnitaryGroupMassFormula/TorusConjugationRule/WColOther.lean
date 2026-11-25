@@ -114,7 +114,7 @@ private lemma hpk_col_lemma (x y : Fin (2 * r + k + 1)) :
   by_cases h : x = WeylGroupFacts.tau k r y
   · subst h
     simp [tau_tau_lemma, sgn_tau_lemma]
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_right h, ite_eq_right]
     intro h'
     apply h
     rw [h', tau_tau_lemma]
@@ -122,7 +122,7 @@ private lemma hpk_col_lemma (x y : Fin (2 * r + k + 1)) :
 private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
   ext i j
   rw [Matrix.mul_apply, Matrix.one_apply]
-  simp only [hpk_eq_lemma, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, tau_tau_lemma, sgn_tau_lemma]
+  simp only [hpk_eq_lemma, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, tau_tau_lemma, sgn_tau_lemma]
   by_cases h : i = j
   · subst h
     simp [sgn_sq_lemma]
@@ -133,7 +133,7 @@ private lemma conjTranspose_mul_Hpk_mul_apply (A : Mx k r) (p q : Fin (2 * r + k
   rw [Matrix.mul_apply]
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [Matrix.mul_apply]
-  simp only [Matrix.conjTranspose_apply, hpk_col_lemma, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Matrix.conjTranspose_apply, hpk_col_lemma, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 lemma w_uh (l : Fin r) (a : ℂ) (ha : a ≠ 0) : w1 k r l a ∈ UH (Hpk k r) := by
   apply Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.weyl_cell_mem_unitary <;> assumption
@@ -141,7 +141,7 @@ lemma w_uh (l : Fin r) (a : ℂ) (ha : a ≠ 0) : w1 k r l a ∈ UH (Hpk k r) :=
 lemma w_fix (l : Fin r) (a : ℂ) (x : Fin (2 * r + k + 1)) (h1 : x ≠ eI k r l) (h2 : x ≠ esI k r l) :
     w1 k r l a *ᵥ bvec x = bvec x := by
   funext p
-  simp only [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   exact w_col_other l a p x h1 h2
 
 lemma w_mul_mem (l : Fin r) (a : ℂ) (ha : a ≠ 0) (g₁ : Mx k r) (hg : g₁ ∈ Glev k r l.succ) :
@@ -172,7 +172,7 @@ private lemma apply_eq_ite_of_mulVec_bvec_eq (g : Mx k r) (v : Fin (2 * r + k + 
     (q : Fin (2 * r + k + 1)) : g q v = if q = v then 1 else 0 := by
   have h' := congrFun h q
   simp only [Matrix.mulVec, dotProduct, bvec, Pi.single_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at h'
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h'
   exact h'
 
 private lemma apply_eq_ite_of_isometry_of_tau_column (g : Mx k r) (hg : gᴴ * Hpk k r * g = Hpk k r) (p : Fin (2 * r + k + 1))
@@ -180,18 +180,18 @@ private lemma apply_eq_ite_of_isometry_of_tau_column (g : Mx k r) (hg : gᴴ * H
     g p q = if p = q then 1 else 0 := by
   have e := congrFun (congrFun hg q) (WeylGroupFacts.tau k r p)
   rw [conjTranspose_mul_Hpk_mul_apply, hpk_col_lemma, tau_tau_lemma] at e
-  simp only [h, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, tau_tau_lemma] at e
+  simp only [h, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, tau_tau_lemma] at e
   have hs := sgn_ne_zero' (k := k) (r := r) (WeylGroupFacts.tau k r p)
   by_cases hpq : p = q
   · subst hpq
-    rw [if_pos rfl] at e
+    rw [ite_eq_left rfl] at e
     have h1 : star (g p p) = 1 := mul_right_cancel₀ hs (e.trans (one_mul _).symm)
     have h2 := congrArg star h1
     rw [star_star, star_one] at h2
     simp [h2]
-  · rw [if_neg (Ne.symm hpq)] at e
+  · rw [ite_eq_right (Ne.symm hpq)] at e
     have h1 : star (g p q) = 0 := (mul_eq_zero.mp e).resolve_right hs
-    rw [if_neg hpq]
+    rw [ite_eq_right hpq]
     exact star_eq_zero.mp h1
 
 lemma dg_comm (l : Fin r) (u v : ℂ) (g₁ : Mx k r) (hg : g₁ ∈ Glev k r l.succ) :

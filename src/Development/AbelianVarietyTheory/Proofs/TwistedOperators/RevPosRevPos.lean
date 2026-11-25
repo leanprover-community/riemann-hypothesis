@@ -77,9 +77,9 @@ theorem revPos_revPos {n : ℕ} (p : ℕ) (a : Fin n) : revPos p (revPos p a) = 
   by_cases h : (a : ℕ) < p ∧ p ≤ n
   · have h' : p - 1 - (a : ℕ) < p ∧ p ≤ n := ⟨by omega, h.2⟩
     ext
-    simp only [revPos, dif_pos h, Fin.val_mk, dif_pos h']
+    simp only [revPos, dite_eq_left h, Fin.val_mk, dite_eq_left h']
     omega
-  · simp only [revPos, dif_neg h]
+  · simp only [revPos, dite_eq_right h]
 
 def revB {ι : Type} {n : ℕ} (p : ℕ) (B : ι → Matrix (Fin n) (Fin n) ℂ) : ι → Matrix (Fin n) (Fin n) ℂ :=
   fun τ => (B τ).submatrix id (revPos p)

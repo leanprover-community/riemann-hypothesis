@@ -86,7 +86,7 @@ theorem xi_mem_span (n : ℕ) (g : MvPolynomial (Formalism.GM.M.BVar N r G.T.t) 
     rw [Finset.sum_eq_single c]
     · simp
     · intro d _ hd
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       exact hd (xiVar_inj G h)
     · intro h; exact absurd (Finset.mem_univ c) h
@@ -95,7 +95,7 @@ theorem xi_mem_span (n : ℕ) (g : MvPolynomial (Formalism.GM.M.BVar N r G.T.t) 
       exact hv (hsupp v (Finsupp.mem_support_iff.2 hne))
     rw [h0]
     refine Finset.sum_eq_zero fun c _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     exact hv ⟨c, h.symm⟩
 

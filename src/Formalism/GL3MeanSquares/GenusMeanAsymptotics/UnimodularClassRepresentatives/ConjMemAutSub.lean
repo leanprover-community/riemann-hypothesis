@@ -29,7 +29,7 @@ theorem exists_reps {X : Type*} (r : X → X → Prop) (hr : Equivalence r) (A X
       Quotient.mk s (pick (Quotient.mk s x)) = Quotient.mk s x := by
     intro x hx
     have H : ∃ t ∈ X₀, Quotient.mk s t = Quotient.mk s x := ⟨x, hx, rfl⟩
-    simp only [pick, dif_pos H]
+    simp only [pick, dite_eq_left H]
     exact H.choose_spec
   refine ⟨hfin.toFinset.image (fun x => pick (Quotient.mk s x)), ?_, ?_⟩
   · intro t ht

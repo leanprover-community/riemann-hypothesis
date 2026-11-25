@@ -85,40 +85,4 @@ theorem isAdicComplete_map_of_finite {R : Type*} [CommRing R] [IsNoetherianRing 
   rw [IsAdicComplete.map_algebraMap_iff]
   exact isAdicComplete_of_finite I S
 
-section Tower
-
-variable {R : Type*} [CommRing R] (I : Ideal R)
-
-end Tower
-
-section Quotient
-
-variable {R : Type*} [CommRing R] (I : Ideal R)
-
-variable [IsNoetherianRing R] [IsAdicComplete I R] {A B : Type*} [CommRing A] [CommRing B]
-  [Algebra R A] [Algebra R B]
-
-end Quotient
-
-section Tensor
-
-variable {R : Type*} [CommRing R] (I : Ideal R)
-
-variable [IsNoetherianRing R] [IsAdicComplete I R]
-
-section
-
-variable {A B : Type*} [Ring A] [Ring B] [Algebra R A] [Algebra R B]
-
-end
-
-
-section
-
-variable {A B : Type*} [Ring A] [Ring B] [Bialgebra R A] [Bialgebra R B]
-
-end
-
-end Tensor
-
 end GlobalTheory

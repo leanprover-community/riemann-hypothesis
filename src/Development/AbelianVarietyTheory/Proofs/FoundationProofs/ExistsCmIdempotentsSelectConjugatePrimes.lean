@@ -107,10 +107,10 @@ theorem exists_loc [IsDedekindDomain R] {n : R} (hn : n ≠ 0) (T : Ideal R → 
     rintro P ⟨h1, h2⟩
     have h3 := hb' P h2 ((Ideal.span_singleton_le_iff_mem _).1 h1)
     by_cases hT : T P
-    · rw [if_pos hT] at h3
+    · rw [ite_eq_left hT] at h3
       have : (1 - b) * b = (-b) * (b - 1) := by ring
       rw [this]; exact P.mul_mem_left _ h3
-    · rw [if_neg hT, sub_zero] at h3
+    · rw [ite_eq_right hT, sub_zero] at h3
       exact P.mul_mem_left _ h3
   obtain ⟨k, hk⟩ := hrad
   rw [Ideal.mem_span_singleton, mul_pow] at hk
@@ -120,7 +120,7 @@ theorem exists_loc [IsDedekindDomain R] {n : R} (hn : n ≠ 0) (T : Ideal R → 
   by_cases hnP : n ∈ P
   · have h3 := hb' P hP.isPrime hnP
     by_cases hT : T P
-    · rw [if_pos hT] at h3 ⊢
+    · rw [ite_eq_left hT] at h3 ⊢
       refine ⟨b ^ k, fun h => ?_, ?_⟩
       · have h4 := hP.isPrime.mem_of_pow_mem k h
         have : (1 : R) ∈ P := by simpa using P.sub_mem h4 h3
@@ -128,7 +128,7 @@ theorem exists_loc [IsDedekindDomain R] {n : R} (hn : n ≠ 0) (T : Ideal R → 
       · have : b ^ k * (v * b ^ k - 1) = (-u) * ((1 - b) ^ k * b ^ k) := by
           linear_combination b ^ k * huv
         rw [this]; exact hk.mul_left _
-    · rw [if_neg hT, sub_zero] at h3 ⊢
+    · rw [ite_eq_right hT, sub_zero] at h3 ⊢
       refine ⟨(1 - b) ^ k, fun h => ?_, ?_⟩
       · have h4 := hP.isPrime.mem_of_pow_mem k h
         have : (1 : R) ∈ P := by simpa using P.add_mem h4 h3
@@ -187,17 +187,17 @@ theorem exists_select [IsDedekindDomain R] [CharZero R] {G : Type*} [Group G]
   · refine dvd_of_locDvd fun P hP => ?_
     have h := he N hN P hP
     by_cases hT : T P
-    · rw [if_pos hT] at h
+    · rw [ite_eq_left hT] at h
       exact LocDvd.comb hP.isPrime (e N) 0 h h (by ring)
-    · rw [if_neg hT] at h
+    · rw [ite_eq_right hT] at h
       exact LocDvd.comb hP.isPrime (e N - 1) 0 h h (by ring)
   · refine dvd_of_locDvd fun P hP => ?_
     have h := he N hN P hP
     have h' := he' N hN P hP
     by_cases hT : T P
-    · rw [if_neg (hT1 P hT)] at h'
+    · rw [ite_eq_right (hT1 P hT)] at h'
       exact LocDvd.comb hP.isPrime (e N) 0 h' h' (by ring)
-    · rw [if_neg hT] at h
+    · rw [ite_eq_right hT] at h
       exact LocDvd.comb hP.isPrime (c • e N) 0 h h (by ring)
   · refine dvd_of_locDvd fun P hP => ?_
     by_cases hNP : (N : R) ∈ P
@@ -205,7 +205,7 @@ theorem exists_select [IsDedekindDomain R] [CharZero R] {G : Type*} [Group G]
       have h2 := he' N hN P hP
       have h3 := h P hP hNP
       rw [h3] at h2
-      rw [if_neg (hT3 P h3)] at h1 h2
+      rw [ite_eq_right (hT3 P h3)] at h1 h2
       exact LocDvd.comb hP.isPrime 1 1 h1 h2 (by ring)
     · exact LocDvd.of_not_mem hNP _
   · refine dvd_of_locDvd fun P hP => ?_
@@ -214,11 +214,11 @@ theorem exists_select [IsDedekindDomain R] [CharZero R] {G : Type*} [Group G]
       have h2 := he' N hN P hP
       have h3 := h P hP hNP
       by_cases hT : T P
-      · rw [if_pos hT] at h1
-        rw [if_neg (hT1 P hT)] at h2
+      · rw [ite_eq_left hT] at h1
+        rw [ite_eq_right (hT1 P hT)] at h2
         exact LocDvd.comb hP.isPrime (-1) (-1) h1 h2 (by ring)
-      · rw [if_neg hT] at h1
-        rw [if_pos (hT2 P h3 hT)] at h2
+      · rw [ite_eq_right hT] at h1
+        rw [ite_eq_left (hT2 P h3 hT)] at h2
         exact LocDvd.comb hP.isPrime (-1) (-1) h1 h2 (by ring)
     · exact LocDvd.of_not_mem hNP _
 

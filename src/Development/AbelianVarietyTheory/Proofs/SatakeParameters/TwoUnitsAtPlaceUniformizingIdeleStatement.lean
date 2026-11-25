@@ -153,7 +153,7 @@ theorem exists_upts_det {n : ℕ} (hn : 0 < n) (Gm : Matrix (Fin n) (Fin n) E) (
       _ = _ := by rw [hdd, Matrix.mul_one]
   · ext
     simp only [Matrix.GeneralLinearGroup.val_det_apply, Units.val_mul, Matrix.det_mul, hd, Matrix.det_diagonal]
-    rw [← Units.coe_prod, hf, Finset.prod_pi_mulSingle', if_pos (Finset.mem_univ _)]
+    rw [← Units.coe_prod, hf, Finset.prod_pi_mulSingle', ite_eq_left (Finset.mem_univ _)]
     calc _ = (Matrix.det ((Cb⁻¹ : GL (Fin n) (E ⊗[F] R)) : Matrix (Fin n) (Fin n) (E ⊗[F] R)) *
           Matrix.det (Cb : Matrix (Fin n) (Fin n) (E ⊗[F] R))) * (x : E ⊗[F] R) := by ring
       _ = _ := by rw [← Matrix.det_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.det_one, one_mul]
@@ -633,7 +633,7 @@ theorem mu_mem_LL : Sites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fa
   · obtain ⟨ξ, hξ, hmt⟩ := J.pins.tw μ hμ rfl
     have e : (t.O u μ).mt (j + 1) = D.muTil (j + 1) * ξ := by
       rw [hmt u]
-      exact if_pos (⟨by omega, by omega⟩ : 1 ≤ j + 1 ∧ j + 1 ≤ D.R.m)
+      exact ite_eq_left (⟨by omega, by omega⟩ : 1 ≤ j + 1 ∧ j + 1 ≤ D.R.m)
     obtain ⟨r, hr⟩ := hK ((kU : t.X.K) * ((t.tup μ : Chr t.X.F t.X.E t.X.K) x : t.X.K))
     refine ⟨r, ?_⟩
     rw [hr, e, MonoidHom.mul_apply, Units.val_mul, hmuTil, hξ x, ← hk, map_mul]
@@ -689,8 +689,8 @@ theorem GlobalTheory.TwV.Xc.two_units : Sites (fun {D L hT Gi Gl Kc Dx cX ex u �
     · exact ((GlobalTheory.TwV.Xc.OrdA.ordA_props _ _ _ _ _ (A0 J) (GlobalTheory.TwV.LbB.locInt_locAt _) hS.1 v').2.2.2 v (Ne.symm h) π hπ.2.1)
   have hsum : (∑ v' : (sysS H X std).Pl, (sysS H X std).vm v' (j + 1) * ordA (A0 J) v' π) = (sysS H X std).vm v (j + 1) := by
     rw [Finset.sum_eq_single v]
-    · rw [hord v, if_pos rfl, mul_one]
-    · intro b _ hb; rw [hord b, if_neg hb, mul_zero]
+    · rw [hord v, ite_eq_left rfl, mul_one]
+    · intro b _ hb; rw [hord b, ite_eq_right hb, mul_zero]
     · intro h; exact absurd (Finset.mem_univ v) h
   rw [hsum] at hnorm
   obtain ⟨𝔞, h𝔞, hχ⟩ := (GlobalTheory.T.charOnNormOneIdeles_mul_unramified_classValue S hD hS).2.2.2 π hπU

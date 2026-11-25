@@ -1565,7 +1565,7 @@ theorem normA_holds {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K LL : FinExt l) 
         simp only [Set.mem_Icc] at h2
         omega
       unfold IsJumpV at hnj
-      push_neg at hnj
+      push Not at hnj
       unfold multV
       rw [hnj, sub_self]
 

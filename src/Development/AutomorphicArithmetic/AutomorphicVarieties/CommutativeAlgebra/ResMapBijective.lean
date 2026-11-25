@@ -161,7 +161,7 @@ theorem coeff_wcomp (j : X) (f : MvPowerSeries σ O) (n : σ →₀ ℕ) :
     coeff n (wcomp O wt j f) = if Finsupp.weight wt n = j then coeff n f else 0 := rfl
 
 theorem wcomp_mem (j : X) (f : MvPowerSeries σ O) : wcomp O wt j f ∈ wtPart O wt j :=
-  fun n hn => by rw [coeff_wcomp, if_neg hn]
+  fun n hn => by rw [coeff_wcomp, ite_eq_right hn]
 
 theorem mul_mem_wtPart {i j : X} {f g : MvPowerSeries σ O} (hf : f ∈ wtPart O wt i) (hg : g ∈ wtPart O wt j) :
     f * g ∈ wtPart O wt (i + j) := fun n hn => by
@@ -176,13 +176,13 @@ theorem mul_mem_wtPart {i j : X} {f g : MvPowerSeries σ O} (hf : f ∈ wtPart O
 
 theorem one_mem_wtPart : (1 : MvPowerSeries σ O) ∈ wtPart O wt 0 := fun n hn => by
   classical
-  rw [coeff_one, if_neg]
+  rw [coeff_one, ite_eq_right]
   rintro rfl
   exact hn (map_zero _)
 
 theorem X_mem_wtPart (i : σ) : (MvPowerSeries.X i : MvPowerSeries σ O) ∈ wtPart O wt (wt i) := fun n hn => by
   classical
-  rw [coeff_X, if_neg]
+  rw [coeff_X, ite_eq_right]
   rintro rfl
   exact hn (by simp [Finsupp.weight_single])
 

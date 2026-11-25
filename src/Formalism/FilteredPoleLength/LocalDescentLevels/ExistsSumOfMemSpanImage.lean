@@ -66,10 +66,10 @@ theorem nearestPlane_finset {ι : Type*} [DecidableEq ι] (v : ι → V) (T : Fi
         = ∑ i ∈ s, (c' i : ℝ) • v i := by
       refine Finset.sum_congr rfl (fun i hi => ?_)
       have hia : i ≠ a := fun h => ha (by rw [← h]; exact hi)
-      rw [if_neg hia]
+      rw [ite_eq_right hia]
     show ‖x - ∑ i ∈ insert a s, (((if i = a then k else c' i : ℤ)) : ℝ) • v i‖ ^ 2
       ≤ (1 / 4) * ∑ i ∈ insert a s, ‖v i‖ ^ 2
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, if_pos rfl, hsum]
+    rw [Finset.sum_insert ha, Finset.sum_insert ha, ite_eq_left rfl, hsum]
     have hdecomp : x - ((k : ℝ) • v a + ∑ i ∈ s, (c' i : ℝ) • v i) =
         (r a - k) • z + ((∑ i ∈ s, r i • v i) + (r a - k) • w - ∑ i ∈ s, (c' i : ℝ) • v i) := by
       rw [← hr, hwz]

@@ -56,10 +56,6 @@ def ExtremeU : Prop :=
 
 end U
 
-section GeneralLinearIntegers
-
-end GeneralLinearIntegers
-
 end PositivityTheory.SphericalProduct
 
 end

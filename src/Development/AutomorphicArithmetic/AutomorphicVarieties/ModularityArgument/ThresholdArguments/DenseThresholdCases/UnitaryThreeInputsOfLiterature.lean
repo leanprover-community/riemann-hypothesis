@@ -644,7 +644,7 @@ private theorem ine_finite [Finite (K →ₐ[F] Ω)] {l : ℕ} [Fact l.Prime] {n
   have huI : u ∈ Ine (F := K) A := ine_descend (by rw [hu]; exact mul_mem (inv_mem hg) hσ)
   refine ⟨(resK K σ, r (AlgEquiv.restrictScalarsHom F u)), ⟨Set.mem_univ _, u, huI, rfl⟩, ?_⟩
   show c (resK K σ) * r ((AlgEquiv.restrictScalarsHom F) u) = r σ
-  simp only [c, dif_pos hex]
+  simp only [c, dite_eq_left hex]
   rw [hu, map_mul, map_inv, mul_inv_cancel_left]
 
 end

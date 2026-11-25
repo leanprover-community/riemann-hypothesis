@@ -160,7 +160,7 @@ theorem testEx : TestEx := by
     exact Finset.prod_congr rfl fun v hvS => by simp [hvS]
   refine ⟨φ, fun v => if v ∈ S then A0 v else latV b v, ⟨h1, h2, h3, h4, ?_, ?_⟩, ?_, ?_⟩
   · intro v hvS
-    simp only [hvS, if_true]
+    simp only [hvS, ite_true]
     exact ⟨hc v, ho v, hs v⟩
   · intro v hvS
     simp [hvS]

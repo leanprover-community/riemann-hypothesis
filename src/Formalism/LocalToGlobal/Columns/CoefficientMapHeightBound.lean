@@ -72,12 +72,6 @@ theorem nfL_self (lam : ι → DomWeight n) (P : MvPolynomial (ι × Fin n × Fi
 
 end FockN
 
-section FinalTheorems
-
-variable (K : Type) [Field K] [NumberField K] [StarRing K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
-
-end FinalTheorems
-
 section Tgt
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)

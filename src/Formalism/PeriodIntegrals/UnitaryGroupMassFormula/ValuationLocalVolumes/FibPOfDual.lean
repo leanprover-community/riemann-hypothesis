@@ -273,7 +273,7 @@ theorem henselSurjective_of_primitiveDual (a : ℕ) (hD : PrimDual σ J ψ v Λ 
     rcases lt_trichotomy i j with h | rfl | h
     · simp [hAdef, h, not_lt.2 h.le, h.ne']
     · simp [hAdef, hxs]
-    · simp only [hAdef, h, not_lt.2 h.le, h.ne, h.ne', if_false, if_true, zero_add]
+    · simp only [hAdef, h, not_lt.2 h.le, h.ne, h.ne', ite_false, ite_true, zero_add]
       exact S.2 i j
   subst hLΛ
   refine ⟨fun j => ∑ k, A k j • W k, fun j => ?_, ?_⟩
@@ -282,9 +282,9 @@ theorem henselSurjective_of_primitiveDual (a : ℕ) (hD : PrimDual σ J ψ v Λ 
     simp only [crossM]
     rw [hR_sum_smul_right, hR_sum_smul_left]
     have e1 : ∑ k, A k j * hR (Fv F v) σ J (y i) (W k) = A i j := by
-      simp only [fun k => (hd i k).1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [fun k => (hd i k).1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have e2 : ∑ k, sigR (Fv F v) σ (A k i) * hR (Fv F v) σ J (W k) (y j) = sigR (Fv F v) σ (A j i) := by
-      simp only [fun k => (hd j k).2, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [fun k => (hd j k).2, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [e1, e2, hAS]
 
 theorem fiberHensel_of_henselOnto (a : ℕ) (Y : TupV (E := E) v n a) (h : HensOntoP σ J ψ v Λ a) :

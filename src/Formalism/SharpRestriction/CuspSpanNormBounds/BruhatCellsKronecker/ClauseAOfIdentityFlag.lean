@@ -51,12 +51,6 @@ theorem tie_X_eq_Xa (F : FlagG S r T) : F.X = F.Xa r := by
 
 end Gen
 
-section Rec
-
-variable {D : D7}
-
-end Rec
-
 end Formalism.MainNotions.BridgeLemma
 
 end

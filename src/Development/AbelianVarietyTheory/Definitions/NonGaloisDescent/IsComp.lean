@@ -110,14 +110,14 @@ theorem exists_good (D : D7) {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : Re
   rw [Ten.e0_eq, Ten.eGood, map_sum, LinearMap.sum_apply] at he
   obtain ⟨p, -, hp⟩ := Finset.exists_ne_zero_of_sum_ne_zero (he.trans_ne hx)
   by_cases hg : Ten.goodVec D p
-  · rw [if_pos hg] at hp
+  · rw [ite_eq_left hg] at hp
     refine ⟨_, _, hg, hp, fun k v => ?_⟩
     rw [← Module.End.mul_apply, ← map_mul,
       ← Subalgebra.mem_center_iff.1 (GlobalTheory.SeriesSupportTest.atPlace_central D k v _ (D.ntypes.eSer_central k _)),
       Ten.atPlace_eq, Ten.tens_mul_plc]
     congr 3
     exact Function.update_eq_self_iff.2 (D.ntypes.eSer_idem _ _)
-  · rw [if_neg hg] at hp
+  · rw [ite_eq_right hg] at hp
     simp at hp
 
 variable {D : D7} {X : BaseLevelRowSide D}

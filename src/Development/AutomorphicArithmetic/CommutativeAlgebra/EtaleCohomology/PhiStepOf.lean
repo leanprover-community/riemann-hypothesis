@@ -732,19 +732,19 @@ theorem nil_scalar (ψ : End F B) (hσψ : ∀ g, Commute (σ g) ψ) {e : ℕ} (
     intro x hx
     rw [← hN x hx]
     refine Finset.sum_congr rfl fun j hj => ?_
-    simp only [T', if_pos (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj))]
+    simp only [T', ite_eq_left (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj))]
   have hpol : UpperTheory.Gal.crystallineComparison.heckePol q n θ = UpperTheory.Gal.crystallineComparison.heckePol q n θ' := by
     unfold UpperTheory.Gal.crystallineComparison.heckePol
     refine Finset.sum_congr rfl fun j hj => ?_
-    simp only [θ', if_pos (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj))]
+    simp only [θ', ite_eq_left (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj))]
   rw [hpol]
   refine joinAbs_holds F G B σ ψ hσψ L e hB V ρ q n T' hA hN' U ρU i TU θ' hi hinj ?_ (fun j g => ?_) (fun j j' => ?_) (fun j hj => ?_)
     W ρW I C ρC f hS hf hsep
   · intro j u
     by_cases hj : j ≤ n
-    · simp only [TU, T', θ', if_pos hj, Module.End.one_apply, LinearMap.smul_apply]
+    · simp only [TU, T', θ', ite_eq_left hj, Module.End.one_apply, LinearMap.smul_apply]
       rw [map_smul, hiT j hj]
-    · simp [TU, T', θ', if_neg hj, LinearMap.baseChange_zero]
+    · simp [TU, T', θ', ite_eq_right hj, LinearMap.baseChange_zero]
   · exact (Commute.one_left _).smul_left _
   · exact ((Commute.one_left _).smul_left _).smul_right _
   · simp [TU]
@@ -769,7 +769,7 @@ def low (L : Type) [Field L] {a : ℕ} (c : Fin a → ℕ) (m : ℕ) : Submodule
   smul_mem' r x hx i hi := by simp [hx i hi]
 
 def prj (m : ℕ) : (Fin a → L) →ₗ[L] blk L c m where
-  toFun x := ⟨fun i => if c i = m then x i else 0, fun i hi => if_neg hi⟩
+  toFun x := ⟨fun i => if c i = m then x i else 0, fun i hi => ite_eq_right hi⟩
   map_add' x y := by
     ext i
     by_cases h : c i = m <;> simp [h]
@@ -808,12 +808,12 @@ theorem prj_diag {D : Matrix (Fin a) (Fin a) L} (hD : ∀ i j, c i ≠ c j → D
   funext i
   rw [prj_apply, mv, mv]
   by_cases h : c i = m
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     refine Finset.sum_congr rfl fun j _ => ?_
     by_cases h' : c j = m
     · simp [prj_apply, h']
     · simp [prj_apply, h', hD i j (by omega)]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     symm
     refine Finset.sum_eq_zero fun j _ => ?_
     by_cases h' : c j = m
@@ -823,17 +823,17 @@ theorem prj_diag {D : Matrix (Fin a) (Fin a) L} (hD : ∀ i j, c i ≠ c j → D
 theorem prj_tri {A D : Matrix (Fin a) (Fin a) L} (hA : A.BlockTriangular c) (hD : ∀ i j, D i j = if c i = c j then A i j else 0)
     {m : ℕ} {x : Fin a → L} (hx : x ∈ low L c m) :
     (prj c m (A *ᵥ x) : Fin a → L) = D *ᵥ (prj c m x : Fin a → L) := by
-  have hD' : ∀ i j, c i ≠ c j → D i j = 0 := fun i j h => by rw [hD, if_neg h]
+  have hD' : ∀ i j, c i ≠ c j → D i j = 0 := fun i j h => by rw [hD, ite_eq_right h]
   rw [← prj_diag c hD']
   funext i
   rw [prj_apply, prj_apply]
   by_cases h : c i = m
-  · rw [if_pos h, if_pos h, mv, mv]
+  · rw [ite_eq_left h, ite_eq_left h, mv, mv]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [hD]
     by_cases h' : c j = m
     · simp [h, h']
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       rcases lt_or_gt_of_ne h' with h2 | h2
       · simp [hA (show c j < c i by omega)]
       · simp [hx j h2]
@@ -849,7 +849,7 @@ theorem blocks (F : Type) {G L : Type} [Field F] [Group G] [Field L] [Algebra F 
       (_ : ∀ i, Module F (C i)) (_ : ∀ i, IsScalarTower F L (C i)) (ρC : ∀ i, Representation L G (C i))
       (E : (Fin a → L) ≃ₗ[L] ∀ i, C i),
       (∀ i, Inter ρ (ρC i) (LinearMap.proj i ∘ₗ E.toLinearMap)) ∧ ∀ i, Subq ρ₀ (ρC i) := by
-  have hD' : ∀ g i j, c i ≠ c j → D g i j = 0 := fun g i j hne => by rw [hD, if_neg hne]
+  have hD' : ∀ g i j, c i ≠ c j → D g i j = 0 := fun g i j hne => by rw [hD, ite_eq_right hne]
   let I : Type := ↥(Finset.univ.image c)
   let C : I → Type := fun t => ↥(blk L c t.1)
   let ρC : ∀ t : I, Representation L G (C t) := fun t => subRep ρ (blk L c t.1) fun g x hx => by
@@ -863,18 +863,18 @@ theorem blocks (F : Type) {G L : Type} [Field F] [Group G] [Field L] [Algebra F 
     show (prj c t.1 (ofPi y) : Fin a → L) i = (y t : Fin a → L) i
     rw [prj_apply, hof, Finset.sum_apply]
     by_cases hi : c i = t.1
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       refine Finset.sum_eq_single t (fun s _ hs => (y s).2 i fun e => hs (Subtype.ext (e.symm.trans hi))) (by simp)
-    · rw [if_neg hi, (y t).2 i hi]
+    · rw [ite_eq_right hi, (y t).2 i hi]
   have h2 : ofPi ∘ₗ toPi = LinearMap.id := by
     refine LinearMap.ext fun x => funext fun i => ?_
     show ofPi (toPi x) i = x i
     rw [hof, Finset.sum_apply]
     have hmem : c i ∈ Finset.univ.image c := Finset.mem_image_of_mem c (Finset.mem_univ i)
     rw [Finset.sum_eq_single (⟨c i, hmem⟩ : I)]
-    · exact if_pos rfl
+    · exact ite_eq_left rfl
     · intro s _ hs
-      exact if_neg fun e => hs (Subtype.ext e.symm)
+      exact ite_eq_right fun e => hs (Subtype.ext e.symm)
     · simp
   let E : (Fin a → L) ≃ₗ[L] ∀ t : I, C t := LinearEquiv.ofLinear toPi ofPi h1 h2
   refine ⟨I, inferInstance, inferInstance, C, inferInstance, inferInstance, inferInstance, inferInstance, ρC, E, ?_, ?_⟩
@@ -897,8 +897,8 @@ theorem blocks (F : Type) {G L : Type} [Field F] [Group G] [Field L] [Algebra F 
       funext i
       show (if c i = t.1 then y.1 i else 0) = y.1 i
       by_cases hi : c i = t.1
-      · rw [if_pos hi]
-      · rw [if_neg hi, y.2 i hi]
+      · rw [ite_eq_left hi]
+      · rw [ite_eq_right hi, y.2 i hi]
 
 section Coords
 variable {F A V : Type} [Field F] [Field A] [Algebra F A] [AddCommGroup V] [Module F V]
@@ -986,7 +986,7 @@ theorem UpperTheory.Ru.crystallineComparison.joinQ :
     let M' : Matrix (Fin d) (Fin a) ↥L.1 := Matrix.of fun i j => ⟨M i j, hMmem i j⟩
     have hM' : M'.map φ = M := Matrix.ext fun i j => rfl
     let ϑ' : ℕ → ↥L.1 := fun j => if h : j ≤ n then ⟨ϑ j, hθmem j h⟩ else 0
-    have hϑ' : ∀ j ≤ n, φ (ϑ' j) = ϑ j := fun j hj => by simp only [ϑ', dif_pos hj]; rfl
+    have hϑ' : ∀ j ≤ n, φ (ϑ' j) = ϑ j := fun j hj => by simp only [ϑ', dite_eq_left hj]; rfl
     have hinjM' : Function.Injective M'.mulVec := by
       intro x y hxy
       have h1 : ∀ w : Fin a → ↥L.1, M *ᵥ (fun i => φ (w i)) = fun i => φ ((M' *ᵥ w) i) :=

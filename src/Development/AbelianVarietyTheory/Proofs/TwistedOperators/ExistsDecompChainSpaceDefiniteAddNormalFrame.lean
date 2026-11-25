@@ -140,44 +140,44 @@ theorem exists_decomp_chainSpace_definite_add_normalFrame {j : ℕ} (hj : j < D.
     have l2 := n'.2
     simp only [b, normalFr]
     by_cases a1 : (n : ℕ) < nAux D j / 2
-    · rw [if_pos a1]
+    · rw [ite_eq_left a1]
       by_cases c1 : (n' : ℕ) < nAux D j / 2
-      · rw [if_pos c1, (h1 _ c1 _ a1).2.2, if_neg hne.symm]
-      rw [if_neg c1]
+      · rw [ite_eq_left c1, (h1 _ c1 _ a1).2.2, ite_eq_right hne.symm]
+      rw [ite_eq_right c1]
       by_cases c2 : Even j ∧ (n' : ℕ) = nAux D j / 2
-      · rw [if_pos c2]
+      · rw [ite_eq_left c2]
         exact sym _ _ ((h3 c2.1).2.2 _ a1).2
-      · rw [if_neg c2, map_smul, (h1 _ (hlt _ l2 c1 c2) _ a1).2.1, smul_zero]
-    rw [if_neg a1]
+      · rw [ite_eq_right c2, map_smul, (h1 _ (hlt _ l2 c1 c2) _ a1).2.1, smul_zero]
+    rw [ite_eq_right a1]
     by_cases a2 : Even j ∧ (n : ℕ) = nAux D j / 2
-    · rw [if_pos a2]
+    · rw [ite_eq_left a2]
       by_cases c1 : (n' : ℕ) < nAux D j / 2
-      · rw [if_pos c1]
+      · rw [ite_eq_left c1]
         exact ((h3 a2.1).2.2 _ c1).1
-      rw [if_neg c1]
+      rw [ite_eq_right c1]
       by_cases c2 : Even j ∧ (n' : ℕ) = nAux D j / 2
       · exact absurd (a2.2.trans c2.2.symm) hne
-      · rw [if_neg c2, map_smul, ((h3 a2.1).2.2 _ (hlt _ l2 c1 c2)).2, smul_zero]
-    · rw [if_neg a2]
+      · rw [ite_eq_right c2, map_smul, ((h3 a2.1).2.2 _ (hlt _ l2 c1 c2)).2, smul_zero]
+    · rw [ite_eq_right a2]
       by_cases c1 : (n' : ℕ) < nAux D j / 2
-      · rw [if_pos c1]
+      · rw [ite_eq_left c1]
         exact (h1 _ c1 _ (hlt _ l1 a1 a2)).1
-      rw [if_neg c1]
+      rw [ite_eq_right c1]
       by_cases c2 : Even j ∧ (n' : ℕ) = nAux D j / 2
-      · rw [if_pos c2]
+      · rw [ite_eq_left c2]
         exact sym _ _ ((h3 c2.1).2.2 _ (hlt _ l1 a1 a2)).1
-      · rw [if_neg c2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l2 c1 c2),
-          if_neg (show ¬ nAux D j - 1 - (n : ℕ) = nAux D j - 1 - (n' : ℕ) by omega), smul_zero]
+      · rw [ite_eq_right c2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l2 c1 c2),
+          ite_eq_right (show ¬ nAux D j - 1 - (n : ℕ) = nAux D j - 1 - (n' : ℕ) by omega), smul_zero]
   · have l1 := n.2
     simp only [b, normalFr]
     by_cases a1 : (n : ℕ) < nAux D j / 2
-    · rw [if_pos a1, if_pos a1, (h1 _ a1 _ a1).2.2, if_pos rfl]
+    · rw [ite_eq_left a1, ite_eq_left a1, (h1 _ a1 _ a1).2.2, ite_eq_left rfl]
       exact one_ne_zero
-    rw [if_neg a1, if_neg a1]
+    rw [ite_eq_right a1, ite_eq_right a1]
     by_cases a2 : Even j ∧ (n : ℕ) = nAux D j / 2
-    · rw [if_pos a2, if_pos a2, (h3 a2.1).1]
+    · rw [ite_eq_left a2, ite_eq_left a2, (h3 a2.1).1]
       exact neg_ne_zero.2 hT
-    · rw [if_neg a2, if_neg a2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l1 a1 a2), if_pos rfl, smul_eq_mul, mul_one]
+    · rw [ite_eq_right a2, ite_eq_right a2, map_smul, h4 _ (hlt _ l1 a1 a2) _ (hlt _ l1 a1 a2), ite_eq_left rfl, smul_eq_mul, mul_one]
       split_ifs
       · exact neg_ne_zero.2 hT
       · exact hT
@@ -231,19 +231,19 @@ theorem isUnit_chainMat {j : ℕ} (hj : j < D.R.m) (γ : GL (Fin (D.sp.X j).rank
     by_cases h : (b : ℕ) < D.R.k
     · refine ⟨⟨b, by omega⟩, fun i => ?_⟩
       unfold chainMat colX
-      rw [if_pos h, dif_pos hb]
+      rw [ite_eq_left h, dite_eq_left hb]
       rfl
     · refine ⟨⟨b + nAux D j, by omega⟩, fun i => ?_⟩
       unfold chainMat colX
       dsimp only
-      rw [if_neg (by omega), if_neg (by omega)]
-      simp only [Nat.add_sub_cancel, dif_pos hb]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+      simp only [Nat.add_sub_cancel, dite_eq_left hb]
       rfl
   · have hb := b.2
     refine ⟨⟨D.R.k + b, by omega⟩, (s : D.host.E) ^ ((b : ℕ) + 1), pow_ne_zero _ (Nat.cast_ne_zero.2 hs), fun i => ?_⟩
     unfold chainMat
     dsimp only
-    rw [if_neg (by omega), if_pos (by omega), Nat.add_sub_cancel_left]
+    rw [ite_eq_right (by omega), ite_eq_left (by omega), Nat.add_sub_cancel_left]
   · obtain ⟨x, t, h⟩ := exists_decomp_chainSpace_definite_add_normalFrame hj hA ((D.sp.Y j).frame.equivFun.symm y)
     refine ⟨(D.sp.X j).frame.repr x, t, ?_⟩
     unfold frameMat
@@ -404,7 +404,7 @@ theorem exists_frame_ortho (V : HSp D) (b : Bool)
       have h4 := hon a a'
       cases b
       · simpa [Matrix.one_apply] using h4
-      · rw [if_pos rfl, Matrix.neg_apply, Matrix.one_apply, ← h4]
+      · rw [ite_eq_left rfl, Matrix.neg_apply, Matrix.one_apply, ← h4]
         simp
 
 theorem exists_inertPlace_seesawW_scalar_frame (Pg : Finset (Pl D.host.E)) (hP : ∀ P ∈ Pg, ∃ e : AE D, IsIdemAt e P) {i : ℕ} (h1 : 1 ≤ i)

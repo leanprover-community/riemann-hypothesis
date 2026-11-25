@@ -88,9 +88,9 @@ theorem res_twFD (τ : FDRep ℂ (Gn g n)) (χ₀ : (ZMod g)ˣ →* ℂˣ) {a : 
   refine Finset.sum_congr rfl fun x _ => ?_
   by_cases hx : InPar a (x : Mt g n) ∧ tl a (x : Mt g n) = ((1 : Gn g a) : Mt g a) ∧
       br a (n - a) (x : Mt g n) = ((1 : Gn g (n - a)) : Mt g (n - a))
-  · rw [if_pos hx, if_pos hx, character_twFD,
+  · rw [ite_eq_left hx, ite_eq_left hx, character_twFD,
       det_eq_one_of_mem ((GlobalTheory.SerSys.TameGen.mem_unipRadical_iff ha x).2 hx), map_one, Units.val_one, one_mul]
-  · rw [if_neg hx, if_neg hx]
+  · rw [ite_eq_right hx, ite_eq_right hx]
 
 theorem isCusp_twFD (τ : FDRep ℂ (Gn g n)) (χ₀ : (ZMod g)ˣ →* ℂˣ) (hτ : IsCusp τ.character) :
     IsCusp (twFD τ χ₀).character := by

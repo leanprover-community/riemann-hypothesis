@@ -144,7 +144,7 @@ theorem tate (hI : IdeleFub) (hJ : IdealId0) (hS : StabEx) {B : Base F E} {M : M
       ((cont_wt hν z).comp continuous_subtype_val).aestronglyMeasurable
       (ae_restrict_of_forall_mem (hG.isClosed_fiber 0).measurableSet.compl fun l hl => ?_)
     have := (hin v (l₀ * l).1).1 (e3 l ▸ hk _ hl)
-    rw [if_pos this, one_mul, norm_wt, norm_wt, Subgroup.coe_mul, map_mul, NNReal.coe_mul, mul_pow,
+    rw [ite_eq_left this, one_mul, norm_wt, norm_wt, Subgroup.coe_mul, map_mul, NNReal.coe_mul, mul_pow,
       inv_mul_cancel_left₀ (pow_pos h0 z).ne']
 
 theorem finCone2_of (hI : IdeleFub) (hJ : IdealId0) (hS : StabEx) : FinCone2 := by

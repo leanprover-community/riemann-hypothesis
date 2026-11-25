@@ -128,7 +128,7 @@ theorem isOpenImmersion_j (W : ValuationSubring ℂ) (Y : Model Xo c (c.V W).sub
   by_cases h : ∃ p : ℕ, p.Prime ∧ (p : ℂ) ∈ W.nonunits
   · obtain ⟨p, hp, hW⟩ := h
     exact GlobalTheory.LocM.BaseMdl.isOpenImmersion_j hp hW Y
-  · push_neg at h
+  · push Not at h
     have hbij : Function.Bijective (c.V W).subtype :=
       ⟨Subtype.val_injective, fun x => ⟨⟨x, mem_V_of_forall W h x⟩, rfl⟩⟩
     have h1 : IsIso (CommRingCat.ofHom (c.V W).subtype) :=

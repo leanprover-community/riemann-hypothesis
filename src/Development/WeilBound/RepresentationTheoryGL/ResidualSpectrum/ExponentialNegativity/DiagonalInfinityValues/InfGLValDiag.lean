@@ -68,7 +68,7 @@ theorem diag_mul_unip {a r : ℕ} {R : Type} [CommRing R] (g : GL (Fin a) R) (d 
     split_ifs with hij
     · rfl
     · symm
-      simp only [Z, hg, hg', Matrix.mul_diagonal, Matrix.diagonal_mul, nilM, Matrix.of_apply, dif_neg hij, mul_zero,
+      simp only [Z, hg, hg', Matrix.mul_diagonal, Matrix.diagonal_mul, nilM, Matrix.of_apply, dite_eq_right hij, mul_zero,
         zero_mul]
   apply Units.ext
   change g.val * (1 + nilM y) = (1 + nilM fun q : BlockIx a r => Z q.1.1 q.1.2) * g.val

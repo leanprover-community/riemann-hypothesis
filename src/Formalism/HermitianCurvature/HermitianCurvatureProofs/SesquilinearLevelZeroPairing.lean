@@ -36,18 +36,18 @@ theorem ins_lift0_apply (s0 : S) (M : M2 A) (z z' : Ix S) :
     · intro h; exact absurd (Finset.mem_univ z') h
   simp only [h1]
   by_cases h : ∀ b, b ≠ s0 → z b = z' b
-  · rw [if_pos h, Finset.sum_eq_single (z s0)]
+  · rw [ite_eq_left h, Finset.sum_eq_single (z s0)]
     · rw [Finset.sum_eq_single (z' s0)]
-      · rw [if_pos ⟨rfl, rfl, h⟩]
-      · intro j _ hj; rw [if_neg]; intro hh; exact hj hh.2.1.symm
+      · rw [ite_eq_left ⟨rfl, rfl, h⟩]
+      · intro j _ hj; rw [ite_eq_right]; intro hh; exact hj hh.2.1.symm
       · intro hh; exact absurd (Finset.mem_univ _) hh
     · intro i _ hi
       refine Finset.sum_eq_zero fun j _ => ?_
-      rw [if_neg]; intro hh; exact hi hh.1.symm
+      rw [ite_eq_right]; intro hh; exact hi hh.1.symm
     · intro hh; exact absurd (Finset.mem_univ _) hh
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
-    rw [if_neg]; intro hh; exact h hh.2.2
+    rw [ite_eq_right]; intro hh; exact h hh.2.2
 
 def eS (s0 : S) (i : Fin 2) : Ix S := Function.update (fun _ => 0) s0 i
 
@@ -67,7 +67,7 @@ theorem blockMulVec_one_letter (QQ : ℂ → M2 (Q.Pr V)) (s0 : S) (Y : ℂ) (i 
   rw [rrw_one]
   unfold actP
   rw [Finset.sum_eq_single (eS s0 j)]
-  · rw [Pi.single_eq_same, ins_lift0_apply, if_pos (eS_agree s0 i j), eS_self, eS_self]
+  · rw [Pi.single_eq_same, ins_lift0_apply, ite_eq_left (eS_agree s0 i j), eS_self, eS_self]
   · intro b _ hb; rw [Pi.single_eq_of_ne hb, map_zero]
   · intro h; exact absurd (Finset.mem_univ _) h
 

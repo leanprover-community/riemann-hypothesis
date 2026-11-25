@@ -84,7 +84,7 @@ theorem one_sub_mem_idS_prod [StarRing E] (P : Finset (Pl E)) (d : Pl E → ℕ)
     refine Finset.prod_induction b (fun x => t * x = t) (fun x y hx hy => by rw [← mul_assoc, hx, hy]) (mul_one t) ?_
     intro w hw
     apply Subtype.ext
-    simp only [hb, hw, dif_pos, ht, Subring.coe_mul]
+    simp only [hb, hw, dite_eq_left, ht, Subring.coe_mul]
     linear_combination (hae w hw)
   refine ⟨t, ?_, rfl⟩
   rw [← hfix, ← hmap]

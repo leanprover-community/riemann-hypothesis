@@ -257,11 +257,11 @@ private theorem typeMultiset_fact (s : Finset ℕ) (n : ℕ → ℕ) :
   classical
   rw [Finset.prod_subset (s₁ := (typeMultiset s n).toFinset) (s₂ := s) ?_ ?_]
   · refine Finset.prod_congr rfl fun d hd => ?_
-    rw [typeMultiset_count, if_pos hd]
+    rw [typeMultiset_count, ite_eq_left hd]
   · intro a ha
     rw [Multiset.mem_toFinset, ← Multiset.count_pos, typeMultiset_count] at ha
     by_contra h
-    rw [if_neg h] at ha
+    rw [ite_eq_right h] at ha
     exact lt_irrefl 0 ha
   · intro a _ ha
     rw [Multiset.mem_toFinset, ← Multiset.count_eq_zero] at ha
@@ -281,7 +281,7 @@ theorem cycle_type_probability : CycleTypeProb := by
     · exact (Finset.mem_Icc.1 h).1
     · exact absurd ha (lt_irrefl 0)
   have key := Equiv.Perm.card_of_cycleType_mul_eq (Fin N) (typeMultiset (Finset.Icc 2 N) n)
-  rw [if_pos ⟨by simpa using hsumle, htwo⟩, Fintype.card_fin, typeMultiset_prod, typeMultiset_fact] at key
+  rw [ite_eq_left ⟨by simpa using hsumle, htwo⟩, Fintype.card_fin, typeMultiset_prod, typeMultiset_fact] at key
   have hprod : ∏ d ∈ Finset.Icc 1 N, (d ^ n d * (n d).factorial) =
       (N - (typeMultiset (Finset.Icc 2 N) n).sum).factorial * (∏ d ∈ Finset.Icc 2 N, d ^ n d) *
         ∏ d ∈ Finset.Icc 2 N, (n d).factorial := by
@@ -313,7 +313,7 @@ theorem cycle_type_probability : CycleTypeProb := by
         _ ≤ Fintype.card (Fin N) := Finset.card_le_univ _
         _ = N := Fintype.card_fin N
   · intro h d hd
-    rw [h, typeMultiset_count, if_pos hd]
+    rw [h, typeMultiset_count, ite_eq_left hd]
 
 end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end -- clump:auto
@@ -1362,7 +1362,7 @@ theorem type_weight_le (K : Type) [Field K] [Fintype K] (N : ℕ) (m : Multiset 
       (by rw [σ.partition.parts_sum, Fintype.card_fin]) hm1 hm
     intro d hd
     rw [Equiv.Perm.parts_partition, Multiset.count_add, hS' σ hσ d hd,
-      Multiset.count_replicate, if_neg (by have := (Finset.mem_Icc.mp hd).1; omega), add_zero]
+      Multiset.count_replicate, ite_eq_right (by have := (Finset.mem_Icc.mp hd).1; omega), add_zero]
   calc _ ≤ ∑ c ∈ S, sqWeight (monicOf c) := step1
     _ = _ := hSsum
     _ ≤ _ := step2
@@ -1555,11 +1555,11 @@ theorem wtOf_pi (P : Ω → ℝ) (S : ι → Set Ω) :
   by_cases h : ∀ v, x v ∈ S v
   · rw [Set.indicator_of_mem (show x ∈ {x : ι → Ω | ∀ v, x v ∈ S v} from h)]
     exact Finset.prod_congr rfl (fun v _ => (Set.indicator_of_mem (h v) P).symm)
-  · push_neg at h
+  · push Not at h
     obtain ⟨v, hv⟩ := h
     have h0 : x ∉ {x : ι → Ω | ∀ v, x v ∈ S v} := fun hx => hv (hx v)
     have h1 : Set.indicator (S v) P (x v) = 0 := by simp [Set.indicator, hv]
-    rw [Set.indicator_apply, if_neg h0, Finset.prod_eq_zero (Finset.mem_univ v) h1]
+    rw [Set.indicator_apply, ite_eq_right h0, Finset.prod_eq_zero (Finset.mem_univ v) h1]
 
 theorem wtOf_one_place (P : Ω → ℝ) (hP : ∑ c, P c = 1) (S : Set Ω) (v₀ : ι) :
     wtOf (fun x : ι → Ω => ∏ v, P (x v)) {x | x v₀ ∈ S} = wtOf P S := by

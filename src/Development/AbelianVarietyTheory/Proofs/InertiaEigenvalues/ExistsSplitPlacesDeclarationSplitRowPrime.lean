@@ -38,9 +38,9 @@ theorem embTypeUc_iff (τ : Br.Kw D.nbr i w hw →ₐ[ℚ_[D.nd.l i]] Br.LL D.nb
 theorem embTypeUe_iff (ep : Bool) (τ : Br.Kw D.nbr i w hw →ₐ[ℚ_[D.nd.l i]] Br.LL D.nbr i w hw) :
     EmbeddingTypes.EmbTypeUe ep τ ↔ GlobalTheory.IndefiniteRowSideFullHecke.SplitPlaceTypes.EmbIn (N := D.nd) D.nbr i ep w hw τ := by
   cases ep
-  · simp only [EmbeddingTypes.EmbTypeUe, Bool.false_eq_true, if_false]
+  · simp only [EmbeddingTypes.EmbTypeUe, Bool.false_eq_true, ite_false]
     exact embTypeUc_iff τ
-  · simp only [EmbeddingTypes.EmbTypeUe, if_true]
+  · simp only [EmbeddingTypes.EmbTypeUe, ite_true]
     rfl
 
 theorem plTypeUe_iff (ep : Bool) :

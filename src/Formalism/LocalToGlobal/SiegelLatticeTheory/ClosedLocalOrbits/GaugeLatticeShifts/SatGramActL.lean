@@ -39,9 +39,9 @@ theorem mapLF_mul_act {Λ : Submodule (𝓞 D.host.E) (VS D).V} {β γ : (VS D).
     subst he hz hzt
     rfl
   have h1 : mapLF (β * γ) F = ⟨mapFlag (β * γ) hβγ F.fl, (β * γ) F.zt⟩ := by
-    simp only [mapLF, dif_pos hβγ]
+    simp only [mapLF, dite_eq_left hβγ]
   have h2 : mapLF γ F = ⟨mapFlag γ hγ F.fl, γ F.zt⟩ := by
-    simp only [mapLF, dif_pos hγ]
+    simp only [mapLF, dite_eq_left hγ]
   rw [h1, h2]
   exact ext rfl rfl rfl
 
@@ -101,7 +101,7 @@ def phiT (hPD : Saturated.PDIso D) (x0 : X.B.I.GA) (β : (VS D).V ≃ₗ[D.host.
 theorem phiT_pos (hPD : Saturated.PDIso D) (x0 : X.B.I.GA) (β : (VS D).V ≃ₗ[D.host.E] (VS D).V)
     (hx : RatLink X x0 β) (t : GTerm X u u' F0 F0' what₂ rows') (h : β ∈ Saturated.AutF t.lam (lf D F0)) :
     phiT what₂ rows' hPD x0 β hx t = ⟨t.lam, t.mem, t.lam', t.mem', actQ F0 F0' hPD x0 β hx h t.cls⟩ := by
-  simp only [phiT, dif_pos h]
+  simp only [phiT, dite_eq_left h]
 
 theorem phiT_position (hPD : Saturated.PDIso D) (x0 : X.B.I.GA) (β : (VS D).V ≃ₗ[D.host.E] (VS D).V)
     (hx : RatLink X x0 β) (t : GTerm X u u' F0 F0' what₂ rows') :
@@ -126,7 +126,7 @@ theorem phiT_comp (hPD : Saturated.PDIso D) (x0 x1 : X.B.I.GA) (β β1 : (VS D).
     rw [actQ_comp hPD x0 x1 β β1 hx hx1 h h1 e1 e2]
   · have h1 : β1 ∉ Saturated.AutF t.lam (lf D F0) := by
       rw [hb1, autF_inv_iff]; exact h
-    simp only [phiT, dif_neg h, dif_neg h1]
+    simp only [phiT, dite_eq_right h, dite_eq_right h1]
 
 
 variable (what₂ rows') in
@@ -540,7 +540,7 @@ theorem fundOf_spec {D : D7} {X : HidaSetting D} {u u' : D.what₂.Word}
     {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)} {F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)}
     {what₂ rows' : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (hF : FundExists X u u' F0 F0' what₂ rows')
     (t : GTerm X u u' F0 F0' what₂ rows') : IsSFund X.B.I (ROinf t) (FundOf t) := by
-  unfold FundOf; rw [dif_pos (hF t)]; exact (hF t).choose_spec
+  unfold FundOf; rw [dite_eq_left (hF t)]; exact (hF t).choose_spec
 
 theorem kOf_mul {D : D7} {X : HidaSetting D} (u u' : D.what₂.Word) (a b : X.B.I.Gf) (x0 x : X.B.I.GA) :
     kOf X u u' a b (x0 * x) = ((a * X.xu u)⁻¹ * x0.2 * (a * X.xu u)) * kOf X u u' a b x := by

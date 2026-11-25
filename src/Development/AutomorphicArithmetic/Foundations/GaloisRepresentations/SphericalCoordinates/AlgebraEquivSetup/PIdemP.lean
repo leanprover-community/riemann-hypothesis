@@ -21,12 +21,12 @@ theorem UpperTheory.Gal.W2.Seed.pIdemP :
       · simpa [h] using one_mem (v.adicCompletionIntegers ℚ)
       · simpa [h] using zero_mem (v.adicCompletionIntegers ℚ)⟩
   have he : ∀ v : Plc ℚ, e v = if (p : 𝓞 ℚ) ∈ v.asIdeal then 1 else 0 := fun v => rfl
-  refine ⟨e, fun v => ⟨fun h => by rw [he, if_pos h], fun h => by rw [he, if_neg h]⟩, fun w => ?_⟩
+  refine ⟨e, fun v => ⟨fun h => by rw [he, ite_eq_left h], fun h => by rw [he, ite_eq_right h]⟩, fun w => ?_⟩
   have hiff : (p : 𝓞 ℚ) ∈ (below ℚ w).asIdeal ↔ (p : 𝓞 E) ∈ w.asIdeal := by
     show (p : 𝓞 ℚ) ∈ w.asIdeal.under (𝓞 ℚ) ↔ _
     rw [Ideal.under_def, Ideal.mem_comap, map_natCast]
   have hl : pLoc E w (finiteAdeleMap ℚ E e) =
       GroundTheory.Global.SemiLocal.completionMap (below ℚ w) w (e (below ℚ w)) := rfl
   refine ⟨fun h => ?_, fun h => ?_⟩
-  · rw [hl, he, if_pos (hiff.2 h), map_one]
-  · rw [hl, he, if_neg (fun h' => h (hiff.1 h')), map_zero]
+  · rw [hl, he, ite_eq_left (hiff.2 h), map_one]
+  · rw [hl, he, ite_eq_right (fun h' => h (hiff.1 h')), map_zero]

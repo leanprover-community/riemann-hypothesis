@@ -636,7 +636,7 @@ theorem eventually_ball_subset {s lam : ℝ} {E : Fin (n ^ 2) → Matrix (Fin n)
     ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ g : UJ ε, ‖uMat g - 1‖ ≤ lam * r → Θ t * g ∈ Θ '' closedBall t r := by
   have hE1 : ∀ i, ‖E i‖ ≤ 1 := fun i => by
     have := hE i i
-    rw [ip_self, if_pos rfl] at this
+    rw [ip_self, ite_eq_left rfl] at this
     exact (pow_le_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 this.le
   obtain ⟨L, B, h1, -, -, h4, h5⟩ := exists_deriv_prod hs t (n ^ 2) E
     (fun i => EuclideanSpace.proj i) hE1 ht

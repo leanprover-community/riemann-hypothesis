@@ -74,8 +74,8 @@ theorem isPolyDeg_prW {N : ℕ} (k r d : ℕ) (z : Fin (2 * r + k + 1) → ℂ)
       U.IsPolyDeg d (fun g => if r ≤ j.val ∧ j.val ≤ r + k then v g j else 0) := by
     intro j
     by_cases h : r ≤ j.val ∧ j.val ≤ r + k
-    · simpa only [if_pos h] using hv j
-    · simpa only [if_neg h] using pd_const (N := N) 0 d
+    · simpa only [ite_eq_left h] using hv j
+    · simpa only [ite_eq_right h] using pd_const (N := N) 0 d
   unfold D.prW
   simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, div_eq_mul_inv]
   refine pd_sub (hb i) (pd_mono (show d + 0 + 0 ≤ d by omega)

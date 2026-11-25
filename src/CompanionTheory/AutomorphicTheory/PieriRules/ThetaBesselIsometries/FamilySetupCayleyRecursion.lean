@@ -66,7 +66,7 @@ theorem gram_symm (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   · subst hij; rfl
   · have hji : ¬ j = i := fun h => hij h.symm
     have hv : i.val ≠ j.val := fun h => hij (Fin.ext h)
-    simp only [hij, hji, and_false, if_false]
+    simp only [hij, hji, and_false, ite_false]
     split_ifs <;> first | rfl | omega
 
 theorem gram_cayley {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {Q : Mx k r}
@@ -255,7 +255,7 @@ theorem H_ne {i j : Fin (2 * r + k + 1)} (h : Formalism.QuantumDeterminants.Hpk 
   · exact Or.inr (Or.inl h2)
   by_cases h3 : r ≤ i.val ∧ i.val ≤ r + k ∧ i = j
   · exact Or.inr (Or.inr ⟨h3.1, h3.2.1, congrArg Fin.val h3.2.2⟩)
-  · rw [if_neg h1, if_neg h2, if_neg h3] at h
+  · rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3] at h
     exact absurd rfl h
 
 theorem H_herm : (Formalism.QuantumDeterminants.Hpk k r)ᴴ = Formalism.QuantumDeterminants.Hpk k r := by

@@ -358,12 +358,6 @@ variable (C)
 
 end Flag
 
-section Presents
-
-variable {F : Type} [Field F] {e : F ≃+* c.F} (C : FlagCpt Z e)
-
-end Presents
-
 section Presents2
 
 variable {F : Type} [Field F] {e : F ≃+* c.F} (C : FlagCpt Z e)

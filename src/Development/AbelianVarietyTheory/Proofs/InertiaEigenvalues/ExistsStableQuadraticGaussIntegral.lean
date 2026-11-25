@@ -166,9 +166,9 @@ theorem GlobalTheory.JR.WeilQuad.exists_stableGauss : ∀ (F E : Type) [Nontrivi
     rw [integral_const_mul, integral_indicator_char μ M hMo (fun m => ψ (β m y))
       (fun a b => by simp [map_add (f := _), AddChar.map_add_eq_mul])]
     by_cases hy : y ∈ N
-    · rw [if_pos ((hN y).1 hy), Set.indicator_of_mem (by exact hy), hiΛ, Set.indicator_of_mem (by exact hNΛ hy)]
+    · rw [ite_eq_left ((hN y).1 hy), Set.indicator_of_mem (by exact hy), hiΛ, Set.indicator_of_mem (by exact hNΛ hy)]
       ring
-    · rw [if_neg (fun h' => hy ((hN y).2 h')), Set.indicator_of_notMem (by exact hy), mul_zero]
+    · rw [ite_eq_right (fun h' => hy ((hN y).2 h')), Set.indicator_of_notMem (by exact hy), mul_zero]
   have h1 : ∫ m, ∫ y, g m y ∂μ ∂μ = (μ.real (M : Set A.L) : ℂ) * ∫ y in (Λ : Set A.L), f y ∂μ := by
     simp_rw [hA]
     rw [integral_mul_const, hiM, integral_indicator_const _ hMo.measurableSet]

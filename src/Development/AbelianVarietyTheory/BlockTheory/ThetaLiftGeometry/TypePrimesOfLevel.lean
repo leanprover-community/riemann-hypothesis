@@ -11,14 +11,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.UnipotentLevelStabilisers
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col
 
-section Generic
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
-  {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
-
-
-end Generic
-
 variable (D : D7)
 
 

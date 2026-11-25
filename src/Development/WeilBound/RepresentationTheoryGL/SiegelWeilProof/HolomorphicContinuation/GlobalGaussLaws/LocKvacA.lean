@@ -58,8 +58,8 @@ theorem gaussian_vacuum_add_line {θ : InfFam D} (hθ : IsInfFam θ) (V : HSp D)
       rw [show (x + lineAt θ τ X t) i j = x i j + lineAt θ τ X t i j from rfl, map_add (f := _), map_add (f := _)]
     rw [hadd, hcomp t τ', Pi.add_apply, Pi.smul_apply]
     by_cases h : τ' = τ
-    · rw [if_pos h, h, dirAt_self]
-    · rw [if_neg h, dirAt_ne h, smul_zero]
+    · rw [ite_eq_left h, h, dirAt_self]
+    · rw [ite_eq_right h, dirAt_ne h, smul_zero]
   have h2 : (fun i j => finPart D ((x + lineAt θ τ X t) i j)) = (fun i j => finPart D (x i j)) := by
     funext i j
     have h0 : finPart D (lineAt θ τ X t i j) = 0 := congrFun (congrFun (hfinL t) i) j
@@ -106,10 +106,10 @@ private theorem hasDerivAt_mvPolynomial_eval_line_zero {σ : Type} [Fintype σ] 
       exact Finset.sum_congr rfl fun k _ => by ring
     have hs2 : ∑ k, v k * (if i = k then MvPolynomial.eval a p else 0) = MvPolynomial.eval a p * v i := by
       rw [Finset.sum_eq_single i]
-      · rw [if_pos rfl]
+      · rw [ite_eq_left rfl]
         ring
       · intro b _ hb
-        rw [if_neg (Ne.symm hb), mul_zero]
+        rw [ite_eq_right (Ne.symm hb), mul_zero]
       · intro h
         exact absurd (Finset.mem_univ i) h
     simp only [hk, mul_add, Finset.sum_add_distrib, hs1, hs2, Complex.ofReal_zero, zero_smul, add_zero]
@@ -172,7 +172,7 @@ theorem annS_tens {θ : InfFam D} (hθ : IsInfFam θ) {V : HSp D} {τ : D.what�
     rw [show (x + y) i j = x i j + y i j from rfl, map_add (f := _), map_add (f := _)]
   have hcz : ∀ t : ℝ, compAt θ τ (x + lineAt θ τ X t) = z + (t : ℂ) • X := by
     intro t
-    rw [hadd, hcomp t τ, if_pos rfl]
+    rw [hadd, hcomp t τ, ite_eq_left rfl]
   have hφ : ∀ t : ℝ, tens θ τ fr (fP c Q) (psi0 θ V n l s τ) (x + lineAt θ τ X t) =
       eval (ptX U + (t : ℂ) • ptX W) Q * gs c (U + (t : ℂ) • W) * Ψx := by
     intro t

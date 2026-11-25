@@ -15,18 +15,6 @@ noncomputable section
 namespace GlobalTheory.TwBridge.Model
 open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymBridge GlobalTheory.SymTieExists
 
-section Local
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Local
-
-section Add
-variable {E K k : Type} [Field E] [NumberField E] [Field K]
-  [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-
-end Add
-
 section Tw
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S₀ : Set ℕ}
@@ -97,7 +85,7 @@ theorem valuation_spec (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) {a : X.E
   refine ⟨?_, hu⟩
   by_contra hn
   have : redP P.1 (a / (qOf P.1 : X.E) ^ LocE.vP P.1 (qOf P.1) a) = 0 :=
-    dif_neg fun ⟨_, r, t, ht, e, _⟩ => hn ⟨r, t, ht, e⟩
+    dite_eq_right fun ⟨_, r, t, ht, e, _⟩ => hn ⟨r, t, ht, e⟩
   exact hu.ne_zero this
 
 theorem mu_agree (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) (i : ℕ) (hi : i < R.m) {a : X.E} (u : kˣ) (hu : (u : k) = ι a) :
@@ -112,7 +100,7 @@ theorem mu_agree (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) (i : ℕ) (hi 
   have h5 : u = W.ϖ ^ z * (u * W.ϖ ^ (-z)) := by simp [mul_comm u]
   change ((W.η (i + 1) * W.δ) u : ℂ) = _
   rw [h5, map_mul, map_zpow, Units.val_mul, Units.val_zpow_eq_zpow_val, h.mu i hi, MonoidHom.mul_apply, h4, one_mul, h3,
-    muAt, LocE.locChar, if_neg h.nmem, ← hz, map_mul, map_zpow₀, LocE.unitV, LocE.unitV, dite_eq_left h2, dite_eq_left h2]
+    muAt, LocE.locChar, ite_eq_right h.nmem, ← hz, map_mul, map_zpow₀, LocE.unitV, LocE.unitV, dite_eq_left h2, dite_eq_left h2]
   simp
 
 theorem nabs_agree (h : AtTwist (R := R) sel mu cst σ₀ P ι s W) (hok : cst.Ok) {a : X.E} (u : kˣ) (hu : (u : k) = ι a) (n : ℕ) :

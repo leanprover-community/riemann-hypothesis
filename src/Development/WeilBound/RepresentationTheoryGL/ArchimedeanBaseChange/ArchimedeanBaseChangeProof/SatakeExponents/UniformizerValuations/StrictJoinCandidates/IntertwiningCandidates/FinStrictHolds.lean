@@ -298,7 +298,7 @@ theorem FinStrict_holds : FinStrict := by
       intro R hR j
       have h' : (∃ z ∈ Reps, SIso ⟨R.N ⟨j.1, j.2⟩, R.V ⟨j.1, j.2⟩⟩ z) ∧ R.m ⟨j.1, j.2⟩ ∈ Ms := ⟨hrep R hR j, hmem R hR j⟩
       refine ⟨⟨Classical.choose h'.1, (Classical.choose_spec h'.1).1⟩, (Classical.choose_spec h'.1).2, ?_⟩
-      simp only [part, dif_pos j.2, dif_pos h']
+      simp only [part, dite_eq_left j.2, dite_eq_left h']
     refine ⟨forall₂_ofFn SIso hc _ _ fun j => ?_, hc, fun j => ?_⟩
     · obtain ⟨z, hz, hPz⟩ := hsome P hP j
       obtain ⟨z', hz', hQz⟩ := hsome Q hQ (Fin.cast hc j)

@@ -102,7 +102,7 @@ theorem frame_change (A : Subring Ω) {b b' : Fin r → E} (hb : LinearIndepende
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun m _ => by rw [smul_comm]
   have e' := congrFun e k
-  simp only [if_true] at e'
+  simp only [ite_true] at e'
   rw [Finset.sum_eq_single k] at e'
   · have : P k k * Q k k = 1 := Subtype.ext e'
     exact IsUnit.of_mul_eq_one _ this
@@ -128,7 +128,7 @@ theorem leadMinor_conj (Γ C : Matrix (Fin r) (Fin r) ℂ) (hC : ∀ l k, k < l 
     leadMinor (Cᴴ * Γ * C) n =
       (∏ a : Fin n, Complex.normSq (C (Fin.castLE hn a) (Fin.castLE hn a))) * leadMinor Γ n := by
   unfold leadMinor
-  rw [dif_pos hn, dif_pos hn]
+  rw [dite_eq_left hn, dite_eq_left hn]
   set ic := Fin.castLE hn with hι2
   have hz : ∀ (a : Fin n) (l : Fin r), n ≤ l → C l (ic a) = 0 := fun a l hl =>
     hC l (ic a) (Fin.lt_def.2 (lt_of_lt_of_le (show ((ic a : Fin r) : ℕ) < n by simp [hι2]) hl))
@@ -513,7 +513,7 @@ theorem exists_norm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     simpa using this.map eA
 
   let val : 𝔐.Li → Vz := fun e => if he : e ∈ 𝔐.M.lat q then ev ⟨e, he⟩ else 0
-  have hval : ∀ e (he : e ∈ 𝔐.M.lat q), val e = ev ⟨e, he⟩ := fun e he => dif_pos he
+  have hval : ∀ e (he : e ∈ 𝔐.M.lat q), val e = ev ⟨e, he⟩ := fun e he => dite_eq_left he
   have h0 : val 0 = 0 := by
     rw [hval 0 (zero_mem _)]
     exact map_zero ev

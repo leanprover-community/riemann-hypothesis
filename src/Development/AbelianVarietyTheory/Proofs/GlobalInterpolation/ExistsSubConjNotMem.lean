@@ -123,7 +123,7 @@ theorem _root_.GlobalTheory.UnramConjUnit.exists_sub_conj_notMem (h : _root_.For
     rw [h1', Subgroup.mem_bot] at hmem
     exact hτ1 hmem
   have hin' : ¬ ∀ x : 𝓞 E, τ • x - x ∈ P := fun hall => hin (AddSubgroup.mem_inertia.mpr hall)
-  push_neg at hin'
+  push Not at hin'
   obtain ⟨x, hx⟩ := hin'
   set d : 𝓞 E := x - τ • x with hd_def
   have hd : d ∉ P := fun hd => hx (by rw [← neg_sub]; exact P.neg_mem hd)

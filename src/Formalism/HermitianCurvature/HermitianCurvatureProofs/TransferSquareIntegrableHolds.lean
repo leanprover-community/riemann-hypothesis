@@ -94,7 +94,7 @@ theorem transfer_square_integrable_holds : TransferSquareIntegrable := by
       have hle : Tz S.G.k S.G.r Db.z * Tz S.G.k S.G.r Db.z' ≤ Complex.normSq x.2 := by
         rw [hTT]; exact le_of_lt hx.2
       unfold bcWeight
-      rw [if_pos hle]
+      rw [ite_eq_left hle]
       unfold Formalism.FourierDecayAlt.P.MAx2.Adj.dR MA.wq
       rw [hTT, ← mul_assoc, ← Finset.prod_mul_distrib]
       congr 1

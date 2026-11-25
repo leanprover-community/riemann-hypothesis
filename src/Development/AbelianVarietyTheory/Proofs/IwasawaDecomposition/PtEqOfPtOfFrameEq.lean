@@ -166,8 +166,8 @@ theorem pt_eq_of_block (hU : IsUnf U) (hσ : GoodEmb c σ) (k : U.Comp) (x x' : 
     simp only [hP']
     refine perFr_mem (U.X k) _ (fun a => (φ k a : Fin r → E)) x.2 h1 h2 _ (Dw.mult (e j).1) (fun h => ?_)
       (fun h => ?_) (fun i hi => ?_) _ (e j).2.2
-    · exact (if_pos ((hrt _).1 ((hty _).1 h))).trans (by omega)
-    · exact (if_neg (fun h' => h ((hty _).2 ((hrt _).2 h')))).trans hp0.symm
+    · exact (ite_eq_left ((hrt _).1 ((hty _).1 h))).trans (by omega)
+    · exact (ite_eq_right (fun h' => h ((hty _).2 ((hrt _).2 h')))).trans hp0.symm
     · refine Submodule.subset_span ⟨e.symm ⟨(e j).1, ⟨i, hi⟩⟩, funext fun a => ?_⟩
       dsimp only
       rw [hP, Equiv.apply_symm_apply]

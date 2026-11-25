@@ -121,7 +121,7 @@ theorem abs_kerPlace_sub_le (D : D7) (L : SizeData₂ D) (u u' : D.what₂.Word)
       rw [hS, Finset.mem_range] at hr
       simpa using hr
     by_cases hmid : 1 ≤ r ∧ r + 1 < D.R.k
-    · rw [if_pos hmid]
+    · rw [ite_eq_left hmid]
       obtain ⟨n1, hn1, he1⟩ := nuRow_nat D u i hi τ r hrN
       obtain ⟨n2, hn2, he2⟩ := nuRow_nat D u' i hi τ r hrN
       have hy1 : (1 : ℝ) ≤ DV.nuRow D u (i + 1) τ r := by rw [he1]; exact_mod_cast hn1
@@ -140,7 +140,7 @@ theorem abs_kerPlace_sub_le (D : D7) (L : SizeData₂ D) (u u' : D.what₂.Word)
       have hBe : B = L.Sc * Real.log M + L.Sc * |L.logOm| := by rw [hB]; ring
       rw [hBe, abs_le]
       constructor <;> linarith [hA.1, hA.2, hC.1, hC.2]
-    · rw [if_neg hmid, nuRow_eq_of_not_mid D u u' (i + 1) τ r hmid]
+    · rw [ite_eq_right hmid, nuRow_eq_of_not_mid D u u' (i + 1) τ r hmid]
       simp
   calc |∑ r ∈ S, ((phF (DV.nuRow D u (i + 1) τ r) - phF (DV.nuRow D u' (i + 1) τ r)) -
         (DV.nuRow D u (i + 1) τ r - DV.nuRow D u' (i + 1) τ r) * L.logOm)|

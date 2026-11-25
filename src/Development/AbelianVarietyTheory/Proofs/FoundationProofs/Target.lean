@@ -70,6 +70,4 @@ theorem main {k A : Type} [Field k] [CommRing A] [Algebra k A] {Q : Ideal A} {π
     rw [key]
     exact Ideal.add_mem _ hq hpm
 
-alias target := _root_.GlobalTheory.IntegralNormBound.main
-
 end GlobalTheory.IntegralNormBound

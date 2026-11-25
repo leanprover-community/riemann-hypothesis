@@ -33,21 +33,12 @@ structure Frame (S : Setup A n p) where
   vec_hat : ∀ v, v ∈ LaHat S.D ↔ ∀ w : Plc E, (p : 𝓞 E) ∉ w.asIdeal → ∀ i, vec w v i ∈ w.adicCompletionIntegers E
   vec_surj : ∀ y : ∀ w : Plc E, Fin n → w.adicCompletion E, (∀ w i, y w i ∈ w.adicCompletionIntegers E) →
     ∃ v, ∀ w : Plc E, (p : 𝓞 E) ∉ w.asIdeal → vec w v = y w
-  vec_in : ∀ (w : Plc E), (p : 𝓞 E) ∉ w.asIdeal → ∀ (y : Fin n → 𝓞 E) i, vec w (inAf S.D y) i = algebraMap (𝓞 E) _ (y i)
   vec_act : ∀ (w : Plc E), (p : 𝓞 E) ∉ w.asIdeal → ∀ g v, vec w (S.L.actG (j g) v) = (a w * comp w g * (a w)⁻¹).val *ᵥ vec w v
   vec_mul : ∀ (w : Plc E), (p : 𝓞 E) ∉ w.asIdeal → ∀ (c : 𝓞 E) v,
     vec w (mulF S.D c v) = algebraMap (𝓞 E) (w.adicCompletion E) c • vec w v
   ρ : AfQ →+* AfP p
   ρ_int : ∀ s : AfQ, IsIntAf (ρ s) ↔ ∀ v : Plc ℚ, (p : 𝓞 ℚ) ∉ v.asIdeal → Valued.v (s v) ≤ 1
   mult : ∀ g, (((j g : (AfP p ⊗[ℚ] S.G.C)ˣ × (AfP p)ˣ).2 : (AfP p)ˣ) : AfP p) = ρ (sim g : AfQˣ)
-  B : DForm S.G
-  x : (AfP p ⊗[ℚ] S.G.C)ˣ
-  t : (AfP p)ˣ
-  hx : GlobalTheory.LKMid.Triv S.G (AfP p) B.β x t
-  mem : ∀ y : GL (Fin n) E × ℚˣ, y ∈ GlobalTheory.LKCx.grp S.G B.β ↔ y ∈ Gam0 E n
-  emb1 : ∀ (y : GL (Fin n) E × ℚˣ) (h : y ∈ GlobalTheory.LKCx.grp S.G B.β) (h' : y ∈ Gam0 E n), (B.embAt x t hx ⟨y, h⟩).1 = j (rat ⟨y, h'⟩)
-  emb2 : ∀ (y : GL (Fin n) E × ℚˣ) (h : y ∈ GlobalTheory.LKCx.grp S.G B.β) (h' : y ∈ Gam0 E n),
-    (B.embAt x t hx ⟨y, h⟩).2 ∈ LocalSmoothExtension.Kp S.G ↔ ∀ w : Plc E, (p : 𝓞 E) ∈ w.asIdeal → comp w (rat ⟨y, h'⟩) ∈ KGL w (n := n)
   th : GUf E n →* GUf E n
   th_mat : ∀ g, (mat (th g)).val = ((mat g)⁻¹).valᵀ
   th_sim : ∀ g, sim (th g) = (sim g)⁻¹

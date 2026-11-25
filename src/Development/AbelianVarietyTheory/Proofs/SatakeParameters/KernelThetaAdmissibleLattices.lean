@@ -86,8 +86,6 @@ theorem transport {V : Type} [AddCommGroup V] [Module ℂ V] [DecidableEq V] (T 
     rw [map_sub] at h
     simpa using h
 
-alias main := _root_.GlobalTheory.TransportLemma.transport
-
 end GlobalTheory.TransportLemma
 end -- clump:auto
 end -- clump:auto

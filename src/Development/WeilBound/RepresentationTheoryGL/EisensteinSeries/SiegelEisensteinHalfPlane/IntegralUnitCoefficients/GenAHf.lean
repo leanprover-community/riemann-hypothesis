@@ -904,9 +904,9 @@ theorem locRedSplit : LocRedSplit := by
     have := congrFun hu j
     rw [vecMul_mix] at this
     by_cases h : j ∈ I
-    · rw [if_pos h] at this
+    · rw [ite_eq_left h] at this
       exact ⟨fun _ => this, fun h' => absurd h h'⟩
-    · rw [if_neg h] at this
+    · rw [ite_eq_right h] at this
       exact ⟨fun h' => absurd h' h, fun _ => this⟩
   have hC0 : u ᵥ* C = 0 := hInjC u (fun i hi => (hmix i).1 hi)
   have hD0 : u ᵥ* D = 0 := by

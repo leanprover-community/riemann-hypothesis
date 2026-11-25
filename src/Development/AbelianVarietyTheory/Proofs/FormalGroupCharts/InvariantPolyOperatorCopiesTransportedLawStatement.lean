@@ -78,7 +78,7 @@ theorem dofN_inCol_ne (F : Fin d → PS k 2 d) {b c : Fin n} (h : c ≠ b) (u : 
     DofN F b u (inCol c f) = 0 := by
   unfold DofN
   refine Finset.sum_eq_zero fun j _ => ?_
-  rw [pderiv_inCol, if_neg h, mul_zero]
+  rw [pderiv_inCol, ite_eq_right h, mul_zero]
 
 theorem dofN_eq_sum (F : Fin d → PS k 2 d) (b : Fin n) (u : Fin d → k) (g : PS k n d) :
     DofN F b u g = ∑ l, inCol b (Dof F u (X ((0 : Fin 1), l))) * pderiv (b, l) g := by

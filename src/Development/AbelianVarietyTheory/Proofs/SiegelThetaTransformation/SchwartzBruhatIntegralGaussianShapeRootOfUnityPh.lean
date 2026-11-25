@@ -78,8 +78,8 @@ theorem ph_finsum_quotient {A : Type} [AddCommGroup A] (P S : AddSubgroup A) (φ
     intro s hs t htS htP
     have h1 := hφ (a + (s + t))
     have h2 := hφ (a + s)
-    rw [add_sub_cancel_left, if_pos (S.add_mem hs htS)] at h1
-    rw [add_sub_cancel_left, if_pos hs] at h2
+    rw [add_sub_cancel_left, ite_eq_left (S.add_mem hs htS)] at h1
+    rw [add_sub_cancel_left, ite_eq_left hs] at h2
     have h3 : φ (a + (s + t)) = φ (a + s) := by rw [← add_assoc]; exact hper _ t htP
     exact mul_left_cancel₀ hc0 (h1.symm.trans (h3.trans h2))
 
@@ -107,7 +107,7 @@ theorem ph_finsum_quotient {A : Type} [AddCommGroup A] (P S : AddSubgroup A) (φ
     have hk := quotient_out_sub_mem' P (a + (u : A))
     have e : ((a + (u : A) : A) : A ⧸ P).out =
         (a + u) + (((a + (u : A) : A) : A ⧸ P).out - (a + u)) := by abel
-    rw [e, hper _ _ hk, hφ, add_sub_cancel_left, if_pos u.2]
+    rw [e, hper _ _ hk, hφ, add_sub_cancel_left, ite_eq_left u.2]
   have hfbne : ∀ m, fb m ≠ 0 := fun m h => by
     have h1 := (hf.1 _ (m.out).2).norm_eq_one
     simp [fb] at h

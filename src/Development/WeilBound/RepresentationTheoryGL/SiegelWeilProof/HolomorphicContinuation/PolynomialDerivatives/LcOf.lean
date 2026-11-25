@@ -42,7 +42,7 @@ def wC (c : ℝ) (s : Fin m × Fin n × Bool →₀ ℕ) : ℂ := ∏ a, ∏ i, 
 theorem hC_comm (c : ℝ) (p q : ℕ) : hC c p q = hC c q p := by
   unfold hC; by_cases h : p = q
   · subst h; rfl
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 
 theorem hC_rel (c : ℝ) (p q : ℕ) : hC c (p + 1) q = (2 * c : ℂ) * (q : ℂ) * hC c p (q - 1) := by
   rcases q with _ | q
@@ -78,7 +78,7 @@ theorem contr_add (c : ℝ) (p q : PX m n) : contr c (p + q) = contr c p + contr
 
 theorem contr_monomial (c : ℝ) (s : Fin m × Fin n × Bool →₀ ℕ) (r : ℂ) : contr c (monomial s r) = r * wC c s := by
   classical
-  rw [contr_eq_of_subset c _ {s} support_monomial_subset, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  rw [contr_eq_of_subset c _ {s} support_monomial_subset, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem contr_C (c : ℝ) (r : ℂ) : contr c (C r : PX m n) = r := by
   rw [← monomial_zero', contr_monomial]
@@ -109,18 +109,18 @@ theorem wC_rel (c : ℝ) (u : Fin m × Fin n × Bool →₀ ℕ) (k : Fin m × F
       have h2 : flip (a, i, b) ≠ (x.1, x.2, b') := fun h => hx' (by
         have := congrArg (fun y : Fin m × Fin n × Bool => (y.1, y.2.1)) h; simp [flip] at this; exact this.symm)
       simp only [Finsupp.coe_tsub, Pi.sub_apply, Finsupp.coe_add, Pi.add_apply, Finsupp.single_apply,
-        if_neg h1, if_neg h2, tsub_zero, zero_add]
+        ite_eq_right h1, ite_eq_right h2, tsub_zero, zero_add]
     rw [key false, key true]
   rw [hrest, ← mul_assoc]
   congr 1
   have e1 : (a, i, true) ≠ (a, i, false) := by simp
   cases b
   · simp only [flip, Bool.not_false, Finsupp.coe_tsub, Pi.sub_apply, Finsupp.coe_add, Pi.add_apply,
-      Finsupp.single_apply, if_pos, if_neg e1, if_neg e1.symm, tsub_zero, zero_add]
+      Finsupp.single_apply, ite_eq_left, ite_eq_right e1, ite_eq_right e1.symm, tsub_zero, zero_add]
     rw [add_comm]
     exact hC_rel c _ _
   · simp only [flip, Bool.not_true, Finsupp.coe_tsub, Pi.sub_apply, Finsupp.coe_add, Pi.add_apply,
-      Finsupp.single_apply, if_pos, if_neg e1, if_neg e1.symm, tsub_zero, zero_add]
+      Finsupp.single_apply, ite_eq_left, ite_eq_right e1, ite_eq_right e1.symm, tsub_zero, zero_add]
     rw [hC_comm c (u (a, i, false)), hC_comm c (u (a, i, false) - 1), add_comm]
     exact hC_rel c _ _
 
@@ -158,7 +158,7 @@ variable {m n : ℕ}
 theorem gaussian_moment_symm (c : ℝ) (p q : ℕ) : g1 c p q = g1 c q p := by
   unfold g1; by_cases h : p = q
   · subst h; rfl
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 
 theorem gaussian_moment_recurrence (c : ℝ) (hc : 0 < c) (p q : ℕ) : (p : ℂ) * g1 c (p - 1) q = (c : ℂ) * g1 c p (q + 1) := by
   rcases p with _ | p
@@ -200,18 +200,18 @@ theorem phi_rel (c : ℝ) (hc : 0 < c) (u : Fin m × Fin n × Bool →₀ ℕ) (
       have h2 : (x.1, x.2, b') ≠ flip (a, i, b) := fun h => hx (by
         have := congrArg (fun y : Fin m × Fin n × Bool => (y.1, y.2.1)) h; simpa [flip] using this)
       simp only [Finsupp.coe_tsub, Pi.sub_apply, Finsupp.coe_add, Pi.add_apply, Finsupp.single_apply,
-        if_neg (Ne.symm h1), if_neg (Ne.symm h2), tsub_zero, zero_add])]
+        ite_eq_right (Ne.symm h1), ite_eq_right (Ne.symm h2), tsub_zero, zero_add])]
   rw [← mul_assoc, ← mul_assoc]
   congr 1
   cases b
   · have e1 : (a, i, true) ≠ (a, i, false) := by simp
     simp only [flip, Bool.not_false, Finsupp.coe_tsub, Pi.sub_apply, Finsupp.coe_add, Pi.add_apply,
-      Finsupp.single_apply, if_pos, if_neg e1, if_neg e1.symm, tsub_zero, zero_add]
+      Finsupp.single_apply, ite_eq_left, ite_eq_right e1, ite_eq_right e1.symm, tsub_zero, zero_add]
     rw [add_comm]
     exact gaussian_moment_recurrence c hc _ _
   · have e1 : (a, i, true) ≠ (a, i, false) := by simp
     simp only [flip, Bool.not_true, Finsupp.coe_tsub, Pi.sub_apply, Finsupp.coe_add, Pi.add_apply,
-      Finsupp.single_apply, if_pos, if_neg e1, if_neg e1.symm, tsub_zero, zero_add]
+      Finsupp.single_apply, ite_eq_left, ite_eq_right e1, ite_eq_right e1.symm, tsub_zero, zero_add]
     rw [gaussian_moment_symm c _ (u (a, i, true) - 1), gaussian_moment_symm c (1 + u (a, i, false)), add_comm]
     exact gaussian_moment_recurrence c hc _ _
 
@@ -413,7 +413,7 @@ theorem fock_C (c : ℝ) (r : ℂ) : fock c (C r : PX m n) = C r := by
   classical
   by_cases hr : r = 0
   · subst hr; simp [fock]
-  · rw [fock, ← monomial_zero', support_monomial, if_neg hr, Finset.sum_singleton, coeff_monomial, if_pos rfl,
+  · rw [fock, ← monomial_zero', support_monomial, ite_eq_right hr, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl,
       fockMono_zero, smul_eq_C_mul, mul_one, monomial_zero']
 
 theorem deg_lt (s : Fin m × Fin n × Bool →₀ ℕ) (k : Fin m × Fin n × Bool) (hk : s k ≠ 0)
@@ -437,9 +437,9 @@ theorem pderiv_fock (c : ℝ) (hc : 0 < c) (k : Fin m × Fin n × Bool) (p : PX 
     rw [mul_comm, hX, pderiv_cr, hp, map_smul, pderiv_mul, pderiv_X, hL.map_add (f := _), hX, Pi.single_apply]
     by_cases h : k = flip j
     · have h' : j = flip k := by rw [h, flip_flip]
-      rw [if_pos h, if_pos h', one_mul, smul_add, add_comm]
+      rw [ite_eq_left h, ite_eq_left h', one_mul, smul_add, add_comm]
     · have h' : ¬ j = flip k := fun e => h (by rw [e, flip_flip])
-      rw [if_neg h, if_neg h', zero_mul, hL.map_zero, zero_smul, add_zero, zero_add]
+      rw [ite_eq_right h, ite_eq_right h', zero_mul, hL.map_zero, zero_smul, add_zero, zero_add]
 
 variable (hM : OneMom)
 
@@ -461,7 +461,7 @@ theorem fockMom_of : FockMom := by
     rw [← C_1, ← monomial_zero', mom_monomial hM c hc, one_mul, phi]
     refine Finset.prod_ne_zero_iff.2 fun a _ => Finset.prod_ne_zero_iff.2 fun i _ => ?_
     simp only [Finsupp.coe_zero, Pi.zero_apply, g1, Nat.factorial_zero, Nat.cast_one, mul_one, zero_add,
-      pow_one, if_true]
+      pow_one, ite_true]
     exact_mod_cast (div_pos Real.pi_pos hc).ne'
   refine ⟨h1, ?_⟩
   let D : PX m n → ℂ := fun p => mom c (fock c p) - mom c (1 : PX m n) * contr c p
@@ -604,8 +604,8 @@ theorem hop_deriv_fock {c : ℝ} (hc : 0 < c) (k : Fin m × Fin n × Bool) (p : 
       simp [Prod.ext_iff]
     rw [mul_comm p (X j), hop_fock_X_mul hB hc, hop_pderiv_cr, ih, hsplit, fock_add'' hB hc, hop_fock_X_mul hB hc, hop_cr_C_mul]
     by_cases h : k = j
-    · rw [if_pos (hcond.2 h), if_pos h]; ring
-    · rw [if_neg (mt hcond.1 h), if_neg h, fock_zero' hB hc]; ring
+    · rw [ite_eq_left (hcond.2 h), ite_eq_left h]; ring
+    · rw [ite_eq_right (mt hcond.1 h), ite_eq_right h, fock_zero' hB hc]; ring
 
 theorem hop_tr_false {c : ℝ} (hc : 0 < c) (a : Fin m) (i : Fin n) (q : PX m n) :
     C (2 * c : ℂ) * (X (a, i, false) * fock c q) = fock c (X (a, i, true) * q) + C (2 * c : ℂ) * fock c (pderiv (a, i, false) q) := by
@@ -633,7 +633,7 @@ theorem fockHOp_of : FockHOp := by
   rw [← fL_apply hB hc]
   by_cases h : ε a = ε b
 
-  · rw [if_pos h, map_sum, sgn_mul_same ε h]
+  · rw [ite_eq_left h, map_sum, sgn_mul_same ε h]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_sub, fL_apply, fL_apply, d1, d2]
     have e1 := hop_tr_false hB hc b i (pderiv (a, i, true) p)
@@ -642,7 +642,7 @@ theorem fockHOp_of : FockHOp := by
     simp only [sub_self, mul_zero, map_zero, zero_mul, sub_zero, map_one, one_mul]
     linear_combination e1 - e2
 
-  · rw [if_neg h, map_sum, sgn_mul_diff ε h]
+  · rw [ite_eq_right h, map_sum, sgn_mul_diff ε h]
     have hab : a ≠ b := fun e => h (e ▸ rfl)
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_sub, map_smul, map_smul, fL_apply, fL_apply, d1, d2, smul_eq_C_mul, smul_eq_C_mul]
@@ -717,10 +717,10 @@ theorem cr_comm (c : ℝ) (k l : Ix m n) (P : PX m n) :
     ⟨fun h => by rw [← h, flp_flp], fun h => by rw [← h, flp_flp]⟩
   by_cases h : flp l = k
   · have h' := e.mp h
-    simp only [h, h', if_true]
+    simp only [h, h', ite_true]
     ring
   · have h' : ¬ flp k = l := fun h'' => h (e.mpr h'')
-    simp only [h, h', if_false]
+    simp only [h, h', ite_false]
     ring
 
 theorem crAlg_comm (c : ℝ) : ∀ a ∈ Set.range (cr (m := m) (n := n) c), ∀ b ∈ Set.range (cr (m := m) (n := n) c),
@@ -889,7 +889,7 @@ theorem err_deg (c : ℝ) : ∀ d : ℕ, ∀ s : Ix m n →₀ ℕ, s.degree = d
     have hs0 : s ≠ 0 := by
       intro h; subst h; simp at hs
     obtain ⟨k, hk⟩ : ∃ k, s k ≠ 0 := by
-      by_contra h; push_neg at h; exact hs0 (Finsupp.ext h)
+      by_contra h; push Not at h; exact hs0 (Finsupp.ext h)
     have hle : Finsupp.single k 1 ≤ s := by
       intro i
       by_cases hi : i = k
@@ -927,7 +927,7 @@ theorem fock_injective (c : ℝ) (hc : 0 < c) : Function.Injective (fock (m := m
   obtain ⟨s0, hs0, hmax⟩ := Finset.exists_max_image r.support Finsupp.degree hne
   have key := congrArg (AddMonoidAlgebra.coeff · (Finsupp.mapDomain flp s0)) h0
   rw [fock_decomp, MvPolynomial.coeff_zero, MvPolynomial.coeff_sum, Finset.sum_eq_single s0] at key
-  · rw [MvPolynomial.coeff_smul, MvPolynomial.coeff_add, Sm, MvPolynomial.coeff_monomial, if_pos rfl] at key
+  · rw [MvPolynomial.coeff_smul, MvPolynomial.coeff_add, Sm, MvPolynomial.coeff_monomial, ite_eq_left rfl] at key
     have herr : AddMonoidAlgebra.coeff (err c s0) (Finsupp.mapDomain flp s0) = 0 := by
       by_contra hne'
       have := err_deg c _ s0 rfl _ (MvPolynomial.mem_support_iff.mpr hne')
@@ -942,7 +942,7 @@ theorem fock_injective (c : ℝ) (hc : 0 < c) : Function.Injective (fock (m := m
     rw [MvPolynomial.coeff_smul, MvPolynomial.coeff_add, Sm, MvPolynomial.coeff_monomial]
     have h1 : Finsupp.mapDomain flp s ≠ Finsupp.mapDomain flp s0 :=
       fun h => hne' (Finsupp.mapDomain_injective flp_injective h)
-    rw [if_neg h1]
+    rw [ite_eq_right h1]
     have herr : AddMonoidAlgebra.coeff (err c s) (Finsupp.mapDomain flp s0) = 0 := by
       by_contra hne''
       have := err_deg c _ s rfl _ (MvPolynomial.mem_support_iff.mpr hne'')
@@ -1321,10 +1321,10 @@ theorem fE_mem (ε : Fin m → Bool) (i j : Fin n) : ∀ R ∈ QA ε, fE i j R �
     have e : (∑ a, X (a, j, false) * (C (sgn ε a) * X (a, k, true)) : PX m n) = Qp ε k j := by
       rw [Qp_eq]
       exact Finset.sum_congr rfl (fun a _ => by ring)
-    simp only [if_true]
+    simp only [ite_true]
     rw [e]
     exact Qp_mem ε k j
-  · simp only [h, if_false, mul_zero, Finset.sum_const_zero]
+  · simp only [h, ite_false, mul_zero, Finset.sum_const_zero]
     exact zero_mem _
 
 theorem fA_mem (ε : Fin m → Bool) (i j : Fin n) : ∀ R ∈ QA ε, fA i j R ∈ QA ε := by
@@ -1337,10 +1337,10 @@ theorem fA_mem (ε : Fin m → Bool) (i j : Fin n) : ∀ R ∈ QA ε, fA i j R �
     have e : (∑ a, X (a, i, true) * (C (sgn ε a) * X (a, l, false)) : PX m n) = Qp ε i l := by
       rw [Qp_eq]
       exact Finset.sum_congr rfl (fun a _ => by ring)
-    simp only [if_true]
+    simp only [ite_true]
     rw [e]
     exact Qp_mem ε i l
-  · simp only [h, if_false, mul_zero, Finset.sum_const_zero]
+  · simp only [h, ite_false, mul_zero, Finset.sum_const_zero]
     exact zero_mem _
 
 def Bf (ε : Fin m → Bool) (i j : Fin n) (U V : PX m n) : PX m n :=
@@ -1364,7 +1364,7 @@ theorem sgn3 (ε : Fin m → Bool) (a : Fin m) :
 theorem sumT (ε : Fin m → Bool) (p q : Prop) [Decidable p] [Decidable q] (k l : Fin n) :
     (∑ a, C (sgn ε a) * ((if p then C (sgn ε a) * X (a, l, false) else 0) *
       (if q then C (sgn ε a) * X (a, k, true) else 0)) : PX m n) = if p ∧ q then Qp ε k l else 0 := by
-  by_cases hp : p <;> by_cases hq : q <;> simp only [hp, hq, if_true, if_false, and_self, and_true, and_false,
+  by_cases hp : p <;> by_cases hq : q <;> simp only [hp, hq, ite_true, ite_false, and_self, and_true, and_false,
     mul_zero, zero_mul, Finset.sum_const_zero]
   rw [Qp_eq]
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -1373,7 +1373,7 @@ theorem sumT (ε : Fin m → Bool) (p q : Prop) [Decidable p] [Decidable q] (k l
 theorem sumT' (ε : Fin m → Bool) (p q : Prop) [Decidable p] [Decidable q] (k l : Fin n) :
     (∑ a, C (sgn ε a) * ((if p then C (sgn ε a) * X (a, k, true) else 0) *
       (if q then C (sgn ε a) * X (a, l, false) else 0)) : PX m n) = if p ∧ q then Qp ε k l else 0 := by
-  by_cases hp : p <;> by_cases hq : q <;> simp only [hp, hq, if_true, if_false, and_self, and_true, and_false,
+  by_cases hp : p <;> by_cases hq : q <;> simp only [hp, hq, ite_true, ite_false, and_self, and_true, and_false,
     mul_zero, zero_mul, Finset.sum_const_zero]
   rw [Qp_eq]
   refine Finset.sum_congr rfl fun a _ => ?_
@@ -1528,7 +1528,7 @@ theorem fock_one (c : ℝ) : fock c (1 : PX m n) = 1 := by
   classical
   have h1 : (1 : PX m n) = monomial 0 1 := rfl
   unfold fock
-  rw [h1, support_monomial, if_neg one_ne_zero, Finset.sum_singleton, coeff_monomial, if_pos rfl, one_smul]
+  rw [h1, support_monomial, ite_eq_right one_ne_zero, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl, one_smul]
   simp [fockMono]
 
 theorem fock_C (hB : FockBasic) (c : ℝ) (hc : 0 < c) (a : ℂ) : fock c (C a : PX m n) = C a := by
@@ -1547,9 +1547,9 @@ theorem der_fock (hB : FockBasic) (c : ℝ) (hc : 0 < c) (k : Fin m × Fin n × 
     rw [mul_comm, hX, pderiv_cr, hp, map_smul, ← hX, pderiv_mul, pderiv_X, hL.map_add (f := _), smul_add]
     by_cases h : k0 = k
     · subst h
-      simp only [Pi.single_eq_same, if_true, mul_comm (X k0) (pderiv k0 p)]
+      simp only [Pi.single_eq_same, ite_true, mul_comm (X k0) (pderiv k0 p)]
       rw [one_mul, add_comm]
-    · simp only [Pi.single_apply, h, if_false, add_zero, zero_smul, mul_comm (X k0) (pderiv k p)]
+    · simp only [Pi.single_apply, h, ite_false, add_zero, zero_smul, mul_comm (X k0) (pderiv k p)]
       rw [zero_mul, hL.map_zero, smul_zero, zero_add]
 
 theorem qp_sum (ε : Fin m → Bool) (i j : Fin n) :
@@ -1571,7 +1571,7 @@ theorem op_id (c : ℝ) (ε : Fin m → Bool) (i j : Fin n) (P : PX m n) :
     ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
   cases hε : ε a
-  · simp only [Bool.false_eq_true, if_false, if_true, zero_sub, cr_apply, sw, Bool.not_true]
+  · simp only [Bool.false_eq_true, ite_false, ite_true, zero_sub, cr_apply, sw, Bool.not_true]
     rw [pderiv_comm (a, j, true) (a, i, false)]
     by_cases hij : i = j
     · subst hij
@@ -1580,7 +1580,7 @@ theorem op_id (c : ℝ) (ε : Fin m → Bool) (i j : Fin n) (P : PX m n) :
     · have hne : (a, j, false) ≠ (a, i, false) := by simp [Ne.symm hij]
       simp [sgn, hε, pderiv_X, smul_eq_C_mul, hij, hne, map_ofNat]
       ring
-  · simp only [if_true, Bool.true_eq_false, if_false, sub_zero, cr_apply, sw, Bool.not_false]
+  · simp only [ite_true, Bool.true_eq_false, ite_false, sub_zero, cr_apply, sw, Bool.not_false]
     by_cases hij : i = j
     · subst hij
       simp [sgn, hε, pderiv_X, smul_eq_C_mul, map_ofNat]
@@ -1628,9 +1628,9 @@ theorem fockK_of (hB : FockBasic) : FockK := by
       rfl
   rw [key, op_id]
   by_cases hij : i = j
-  · simp only [hij, if_true]
+  · simp only [hij, ite_true]
     module
-  · simp only [hij, if_false, zero_smul, sub_zero, add_zero]
+  · simp only [hij, ite_false, zero_smul, sub_zero, add_zero]
     module
 
 end PositivityTheory.Rg.Sw.LC

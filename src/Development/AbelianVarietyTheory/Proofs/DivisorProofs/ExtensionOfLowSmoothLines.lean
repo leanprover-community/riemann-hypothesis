@@ -111,7 +111,7 @@ theorem minor_ne (τ : D.what₂.Tau) (a b k : ℕ) (ha : a + k ≤ m) (hb : b +
     have hα := α.2
     have hβ := β.2
     have hr : a + β < m ∧ b + α < n := ⟨by omega, by omega⟩
-    simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, varF, dif_pos hr, MvPolynomial.eval_X,
+    simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, varF, dite_eq_left hr, MvPolynomial.eval_X,
       Matrix.one_apply, Fin.ext_iff]
     exact if_congr ⟨fun h => by omega, fun h => by omega⟩ rfl rfl
   rw [h2, Matrix.det_one] at h1

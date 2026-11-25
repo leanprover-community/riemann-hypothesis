@@ -504,7 +504,7 @@ theorem exists_ne_zero_algebraMap_eq_mul_of_formallyUnramified :
   by_cases hinj : Function.Injective (algebraMap P D)
   swap
   · rw [injective_iff_map_eq_zero] at hinj
-    push_neg at hinj
+    push Not at hinj
     obtain ⟨Q, hQ, hQ0⟩ := hinj
     exact ⟨Q, hQ0, 0, by rw [hQ, mul_zero]⟩
   let M := nonZeroDivisors P

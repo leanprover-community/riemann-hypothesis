@@ -282,16 +282,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace GlobalTheory.FrameEquiv.GenMove
 
-section Classical
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-variable {H : Geo.Tor.Host E} {Dw : Datum H} {l : Geo.Tor.Level H} {Xo : Moduli Dw l} {c : Coeff l} [Algebra c.F ℂ]
-  {r g : ℕ}
-
-
-end Classical
-
 section Adelic
 
 open GlobalTheory.IndefiniteRowSideFullHecke.ColumnDataLaws
@@ -419,9 +409,9 @@ theorem exists_const (hσ : GoodEmb c σ) (hU : IsUnf U) (hpq : 1 ≤ Dw.p + Dw.
   obtain ⟨t₀, ht⟩ := GlobalTheory.GeoLevel.exists_frBor_gen _ _ a₁ b₁
   have key : ∀ (w : Ix Dw → ℤ), ∀ f ∈ secZ Xo c w, rdU U (transl Xo c γ f) k x =
       toC (t₀ : CAt σ) ^ w none * rdU U f k' (lact δ (castFr h.mt.psi x)) := fun w f hf => by
-    have v1 : rdU U (transl Xo c γ f) k x = toC (evR Xo c (transl Xo c γ f) (U.un k ⟨x, hx⟩)) := dif_pos hx
+    have v1 : rdU U (transl Xo c γ f) k x = toC (evR Xo c (transl Xo c γ f) (U.un k ⟨x, hx⟩)) := dite_eq_left hx
     have v2 : rdU U f k' (lact δ (castFr h.mt.psi x)) = toC (evR Xo c f (U.un k' ⟨_, h.mt.mem_dom hx⟩)) :=
-      dif_pos (h.mt.mem_dom hx)
+      dite_eq_left (h.mt.mem_dom hx)
     rw [v1, v2, evR_transl hpq hA' γ hf, GlobalTheory.FlagTan.evR_frBor hf ht, Fintype.prod_option]
     simp only [Option.elim, one_zpow, Finset.prod_const_one, mul_one]
     exact congrArg (· * toC (evR Xo c f (U.un k' ⟨_, h.mt.mem_dom hx⟩))) (Units.val_zpow_eq_zpow_val (α := ℂ) t₀ _)

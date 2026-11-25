@@ -238,12 +238,6 @@ def piMap {A B : Type} [CommRing A] [CommRing B] (σ : A →+* B) (ι : Type) : 
   map_add' x y := funext fun i => map_add σ (x i) (y i)
   map_smul' a x := funext fun i => map_mul σ a (x i)
 
-section Quot
-
-variable {R X : Type} [CommRing R] [AddCommGroup X] [Module R X]
-
-end Quot
-
 variable {p : ℕ} [Fact p.Prime]
 
 section Ring

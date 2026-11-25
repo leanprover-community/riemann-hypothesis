@@ -362,7 +362,7 @@ lemma key {p : Fin n → Mat C N} {y : Mat C N} {π : Equiv.Perm (Fin n)} (hp : 
       · simp [S, hv]
       · intro m hm hm0
         simp only [S, Matrix.mulVec_smul, comp hp h r v hv]
-        rw [if_neg, smul_zero]
+        rw [ite_eq_right, smul_zero]
         intro hr
         have hper : Function.IsPeriodicPt π m r := by
           show (⇑π)^[m] r = r
@@ -389,7 +389,7 @@ lemma key {p : Fin n → Mat C N} {y : Mat C N} {π : Equiv.Perm (Fin n)} (hp : 
   · intro q hq
     rw [Matrix.mulVec_sum]
     refine Finset.sum_eq_zero fun m _ => ?_
-    simp only [S, Matrix.mulVec_smul, comp hp h r v hv, if_neg (hq m), smul_zero]
+    simp only [S, Matrix.mulVec_smul, comp hp h r v hv, ite_eq_right (hq m), smul_zero]
 
 theorem CycSpec_of : LateralTheory.DivDb.CycleCountPf.CycSpec := by
   intro C _ _ _ N n p y π hp hy hyp hd

@@ -230,7 +230,7 @@ lemma good_ne (e N l : ℕ) (χ θ : DirichletCharacter ℂ N) (ψ : DirichletCh
     ring
   have hEn : ∀ c' : ℂ, ∀ n, n ≠ 0 → (eis (e + 1) c₁ (hat φ) fun _ => 1) n = κ * (eis (e + 1) c' (fun y => ch ψ⁻¹ y * hat ⇑(θ * χ) y) fun _ => 1) n := by
     intro c' n hn
-    simp only [eis, if_neg hn, Finset.mul_sum, hhat]
+    simp only [eis, ite_eq_right hn, Finset.mul_sum, hhat]
     exact Finset.sum_congr rfl (fun _ _ => by ring)
   have hκ0 : κ ≠ 0 := by
     intro h0
@@ -309,7 +309,7 @@ lemma good_one (e N l : ℕ) (χ θ : DirichletCharacter ℂ N) (φ : DirichletC
     rcases eq_or_ne n 0 with rfl | hn
     · simp [hBsdef, eis, Vo]
     · rw [Pi.add_apply, Pi.smul_apply, smul_eq_mul, neg_mul (et * (l : ℂ) ^ e) (Vo l Bs n), ← hVpart n hn, hBsdef]
-      simp only [eis, if_neg hn, hinv]
+      simp only [eis, ite_eq_right hn, hinv]
       rw [← sub_eq_add_neg, ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl (fun p _ => ?_)
       by_cases h : (l : ℤ) ∣ (p.1 : ℤ)
@@ -341,7 +341,7 @@ lemma good_one (e N l : ℕ) (χ θ : DirichletCharacter ℂ N) (φ : DirichletC
         ch θ' l * (l : ℂ) * eis (e + 1) c'' (fun x => if (l : ℤ) ∣ x then hat ⇑θ' x else 0) (fun _ => 1) n - ch θ' l * Bs n := by
       rw [hV, Pi.add_apply, Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul, pow_succ]; ring
     rw [hsplit, hBsdef]
-    simp only [eis, if_neg hn, Finset.mul_sum, ← Finset.sum_sub_distrib, hhatE]
+    simp only [eis, ite_eq_right hn, Finset.mul_sum, ← Finset.sum_sub_distrib, hhatE]
     refine Finset.sum_congr rfl (fun p _ => ?_)
     split_ifs <;> ring
   have hRmf : MF (e + 1) (N * l) (ch φ⁻¹) ((ch θ' l * (et * (l : ℂ) ^ (e + 1))) • Vo l Bs + (-ch θ' l) • Bs) := by
@@ -925,7 +925,7 @@ theorem qExpansionFunction_coeffHeckeVOperator_eq_tsum (l : ℕ) (hl : 0 < l) (a
     simpa [hl.ne'] using h
   rw [← hinj.tsum_eq]
   · congr 1; ext m
-    simp only [dvd_mul_right, if_true, Nat.mul_div_cancel_left m hl]
+    simp only [dvd_mul_right, ite_true, Nat.mul_div_cancel_left m hl]
     congr 2; push_cast; ring
   · intro n hn
     by_cases h : l ∣ n

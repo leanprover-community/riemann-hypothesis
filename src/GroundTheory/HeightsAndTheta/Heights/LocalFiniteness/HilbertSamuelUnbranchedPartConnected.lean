@@ -150,7 +150,7 @@ theorem ResidualDisjoint.proof : ResidualDisjoint.Statement.{u} := by
   have hG'supp : G' ∈ (P' ⊔ Ideal.span {liftForm s}).minimalPrimes ∧ IsRelevant G' := by
     by_contra h
     unfold divCycle at hsG'
-    rw [dif_neg h] at hsG'
+    rw [dite_eq_right h] at hsG'
     exact (lt_irrefl 0) hsG'
   have hP'G' : P' ≤ G' := le_sup_left.trans hG'supp.1.1.2
 

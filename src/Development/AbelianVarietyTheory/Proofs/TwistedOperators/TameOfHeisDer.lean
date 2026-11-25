@@ -156,7 +156,7 @@ private theorem dH_eq_sum_re_im_single {ι B : Type} [Fintype ι] [DecidableEq �
   have hv : v = ∑ k, ((v k).re • (Pi.single k (1 : ℂ) : ι → ℂ) + (v k).im • (Pi.single k Complex.I : ι → ℂ)) := by
     funext x
     simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, Pi.single_apply, smul_ite, smul_zero,
-      Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, Complex.real_smul, mul_one]
+      Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Complex.real_smul, mul_one]
     exact (Complex.re_add_im (v x)).symm
   conv_lhs => rw [hv]
   unfold dH

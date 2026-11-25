@@ -49,10 +49,10 @@ theorem hasFDerivAt_eval (P : MvPolynomial J ℂ) (x : J → ℂ) :
       rw [Derivation.leibniz, pderiv_X]
       by_cases hq : q = q0
       · subst hq
-        simp only [Pi.single_eq_same, smul_eq_mul, map_add (f := _), map_mul, eval_X, map_one, if_true]
+        simp only [Pi.single_eq_same, smul_eq_mul, map_add (f := _), map_mul, eval_X, map_one, ite_true]
         ring
       · rw [Pi.single_eq_of_ne' hq]
-        simp only [smul_eq_mul, map_add (f := _), map_mul, eval_X, map_zero, if_neg hq]
+        simp only [smul_eq_mul, map_add (f := _), map_mul, eval_X, map_zero, ite_eq_right hq]
         ring
     have e : (fun y : J → ℂ => eval y (p * X q0)) = fun y => eval y p * y q0 := by funext y; simp
     rw [e]
@@ -61,7 +61,7 @@ theorem hasFDerivAt_eval (P : MvPolynomial J ℂ) (x : J → ℂ) :
         ∑ q, eval x (pderiv q (p * X q0)) * w q := by simp
     rw [lhs]
     simp only [key, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true]
+      ite_true]
     simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
       ContinuousLinearMap.proj_apply]
     have hs : (∑ q, eval x (pderiv q p) • ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : J => ℂ) q) w =

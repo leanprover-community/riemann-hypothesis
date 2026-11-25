@@ -177,11 +177,11 @@ def yO (w : O) (LL : LiftLetters (Fin N)) (i : Fin N) (b : Fin (r + K)) : MvPoly
 
 lemma yO_cond (w : O) (LL : LiftLetters (Fin N)) (i : Fin N) (b : Fin (r + K)) (h : condUS LL i b) :
     yO w LL i b = C w * X (i, b) := by
-  unfold condUS at h; unfold yO dW; rw [if_pos h]
+  unfold condUS at h; unfold yO dW; rw [ite_eq_left h]
 
 lemma yO_ncond (w : O) (LL : LiftLetters (Fin N)) (i : Fin N) (b : Fin (r + K)) (h : ¬ condUS LL i b) :
     yO w LL i b = X (i, b) := by
-  unfold condUS at h; unfold yO dW; rw [if_neg h]; simp
+  unfold condUS at h; unfold yO dW; rw [ite_eq_right h]; simp
 
 def SgVanish (LL : LiftLetters (Fin N)) (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) : Prop :=
   ∀ (j : ℕ) (h : j < N), IsCostly mu c ⟨j, h⟩ → ∀ m, ¬ condUS LL ⟨j, h⟩ m → ∀ J : Finset (Fin (r + K)),
@@ -214,8 +214,8 @@ theorem Inv_main [CharP (FF O) p] (S : UniformizedDVR p O) (LL : LiftLetters (Fi
     · have hnc : ¬ IsCostly mu c ⟨j, h⟩ := fun hc => costly_used mu c _ hc hu
       obtain ⟨Y, h1, h2⟩ := ih' s (fun i hi => hs i (by omega)) J
       refine ⟨Y, ?_, ?_⟩
-      · rw [ZZ_unused p _ _ mu c s j h hu, oS_succ p _ mu c s j h, if_neg hnc, add_zero]; exact h1
-      · rw [h2]; simp only [SgW, dif_pos h]
+      · rw [ZZ_unused p _ _ mu c s j h hu, oS_succ p _ mu c s j h, ite_eq_right hnc, add_zero]; exact h1
+      · rw [h2]; simp only [SgW, dite_eq_left h]
         congr 1
         unfold colStep; rw [hu]; simp
     · set s0 := LL.pos ⟨j, h⟩ with hs0
@@ -232,7 +232,7 @@ theorem Inv_main [CharP (FF O) p] (S : UniformizedDVR p O) (LL : LiftLetters (Fi
             colStep c (colH (mu ⟨j, by omega⟩) c) (colH (mu ⟨j + 1, by omega⟩) c)
               (fun b => piS p O LL.pos s0 (nomL ℤ LL mu c ⟨j, h⟩ b))
               (fun J => piS p O LL.pos s0 (SgW ℤ LL mu c j J)) J := by
-          simp only [SgW, dif_pos h, colStep_map]
+          simp only [SgW, dite_eq_left h, colStep_map]
         have eX : ∀ b : Fin (r + K), piS p O LL.pos s0 (X (⟨j, h⟩, b)) = X (⟨j, h⟩, b) := by
           intro b; simp [piS, hs0]
         rw [eS]
@@ -262,7 +262,7 @@ theorem Inv_main [CharP (FF O) p] (S : UniformizedDVR p O) (LL : LiftLetters (Fi
             · refine ⟨X (⟨j, h⟩, m) * (Y1 J') ^ p, by rw [yO_cond _ _ _ _ hcm]; ring, ?_⟩
               rw [map_mul, eV, map_X]
               have : nomL ℤ LL mu c ⟨j, h⟩ m = X (⟨j, h⟩, m) := by
-                unfold nomL; rw [if_pos (iff_of_true hcm hc)]
+                unfold nomL; rw [ite_eq_left (iff_of_true hcm hc)]
               rw [this, eX]
             · have hz : SgW ℤ LL mu c j J' = 0 := hm.resolve_left hcm
               obtain ⟨T, hT⟩ := piR_ker p S (Y1 J') (by rw [hY2, hz, map_zero])
@@ -285,7 +285,7 @@ theorem Inv_main [CharP (FF O) p] (S : UniformizedDVR p O) (LL : LiftLetters (Fi
                 · exact Or.inl hcm
                 · exact Or.inr ((HV j h hc m hcm J).2 hw hmJ))⟩) J
           refine ⟨Y, ?_, hYb⟩
-          rw [eZ, colStep_smul, hYa, oS_succ p _ mu c s0 j h, if_pos hc, ← hs0]
+          rw [eZ, colStep_smul, hYa, oS_succ p _ mu c s0 j h, ite_eq_left hc, ← hs0]
           simp only [sub_self, Int.toNat_zero, pow_zero]
           ring
         ·
@@ -293,18 +293,18 @@ theorem Inv_main [CharP (FF O) p] (S : UniformizedDVR p O) (LL : LiftLetters (Fi
           have eZ : ZZ p (yO S.w LL) LL.pos mu c j s0 = fun J => C S.w ^ oS p LL.pos mu c j s0 * Y J :=
             funext hY1
           refine ⟨colStep c (colH (mu ⟨j, by omega⟩) c) (colH (mu ⟨j + 1, by omega⟩) c) (yO S.w LL ⟨j, h⟩) Y J, ?_, ?_⟩
-          · rw [eZ, colStep_smul, oS_succ p _ mu c s0 j h, if_neg hc, add_zero]
+          · rw [eZ, colStep_smul, oS_succ p _ mu c s0 j h, ite_eq_right hc, add_zero]
           · rw [colStep_map]
             congr 1
             · funext b
               by_cases hcm : condUS LL ⟨j, h⟩ b
               · rw [yO_cond _ _ _ _ hcm, map_mul, piR_w p S, zero_mul]
                 have : nomL ℤ LL mu c ⟨j, h⟩ b = 0 := by
-                  unfold nomL; rw [if_neg (fun e => hc (e.mp hcm))]
+                  unfold nomL; rw [ite_eq_right (fun e => hc (e.mp hcm))]
                 rw [this, map_zero]
               · rw [yO_ncond _ _ _ _ hcm, map_X]
                 have : nomL ℤ LL mu c ⟨j, h⟩ b = X (⟨j, h⟩, b) := by
-                  unfold nomL; rw [if_pos (iff_of_false hcm hc)]
+                  unfold nomL; rw [ite_eq_left (iff_of_false hcm hc)]
                 rw [this, eX]
             · funext J'; exact hY2 J'
 

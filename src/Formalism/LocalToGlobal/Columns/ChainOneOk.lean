@@ -306,13 +306,4 @@ theorem ookXiUnit (hCh : Ch.Ok) {σ₀ : X.K →+* ℂ} {xi0 : X.E} (hW : Ch.Wei
 
 end Cst
 
-section Ok
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
-
-variable {Ch}
-
-end Ok
-
 end Formalism.L2.Col

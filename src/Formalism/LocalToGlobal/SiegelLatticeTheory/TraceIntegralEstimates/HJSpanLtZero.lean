@@ -35,7 +35,7 @@ theorem hJ_spanLt_zero (hfe : ∀ a b, hJ ε (f a) (e b) = if a = b then 1 else 
   induction hu using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨b, hb, rfl⟩ := hx
-    rw [hfe, if_neg]
+    rw [hfe, ite_eq_right]
     intro hab
     subst hab
     simp only [Set.mem_setOf_eq, lt_self_iff_false] at hb
@@ -71,7 +71,7 @@ theorem hJ_nxt (hfe : ∀ a b, hJ ε (f a) (e b) = if a = b then 1 else 0) (hfz 
     (a : Fin r) : hJ ε (f a) (nxt e z a) = 0 := by
   unfold nxt
   split_ifs with h
-  · rw [hfe, if_neg]
+  · rw [hfe, ite_eq_right]
     intro hc
     have := congrArg Fin.val hc
     simp at this
@@ -138,7 +138,7 @@ theorem hfe_X (v : InfinitePlace X.B.I.F) (a b : Fin D.R.rS) :
     by_cases hab : a = b
     · subst hab
       simp
-    · rw [if_neg (Ne.symm hab), if_neg hab, map_zero]
+    · rw [ite_eq_right (Ne.symm hab), ite_eq_right hab, map_zero]
   rw [h0]
   by_cases hab : a = b <;> simp [hab]
 

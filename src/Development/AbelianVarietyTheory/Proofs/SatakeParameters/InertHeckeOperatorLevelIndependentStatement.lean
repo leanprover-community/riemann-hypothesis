@@ -100,7 +100,7 @@ theorem finsum_cosets_eq {G W : Type} [Group G] [AddCommMonoid W] (S K U : Subgr
       have h1' : ((q.out : S) : G)⁻¹ * x ∈ K := by simpa using h1
       rw [← hxc]
       exact QuotientGroup.eq.2 ((key _ _ (q.out).2 hxS).2 h1')
-    · exact absurd (dif_neg hc') hc
+    · exact absurd (dite_eq_right hc') hc
   have hsum := finsum_mem_inter_support (fun c : G ⧸ U =>
       if hc : ∃ x : G, (x : G ⧸ U) = c ∧ x ∈ S then F hc.choose else 0) (Set.range ι)
   rw [Set.inter_eq_right.2 hsupp, finsum_mem_support, finsum_mem_range hinj] at hsum
@@ -138,7 +138,7 @@ theorem heckeFunI_level_indep : ∀ (L : Type) [Field L] [NumberField L] [IsCMFi
         exact e
       · have hyk : Dv.loc x * Dv.loc κ ∉ Formalism.UG.GU Dv.σw n := fun hm => hy (by
           simpa using (Formalism.UG.GU Dv.σw n).mul_mem hm ((Formalism.UG.GU Dv.σw n).inv_mem hκ))
-        rw [dif_neg hyk, dif_neg hy]
+        rw [dite_eq_right hyk, dite_eq_right hy]
     show Dv.hval h (Dv.loc (x * κ)) • φ (g * (x * κ)) = Dv.hval h (Dv.loc x) • φ (g * x)
     rw [hloc, hval, ← mul_assoc, hφκ]
   have e1 := finsum_cosets_eq (GlobalTheory.InertSph.Gv L n v) (Umax L n) U (fun κ hκ => hU κ hκ) F hF

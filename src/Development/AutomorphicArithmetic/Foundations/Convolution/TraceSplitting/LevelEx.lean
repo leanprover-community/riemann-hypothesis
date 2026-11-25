@@ -70,8 +70,8 @@ theorem UpperTheory.ConvolutionTheory.T.levelEx :
   choose U₀ hU₀ hU₀le hU₀ne using fun w : Pl K => exists_local_level μ V hV w
   let J : ∀ w : Pl K, Subgroup (Gw n w) := fun w =>
     if w ∈ S then U₀ w else GLnLocal.integralGL (w.adicCompletion K) n
-  have hJin : ∀ w ∈ S, J w = U₀ w := fun w hw => if_pos hw
-  have hJout : ∀ w, w ∉ S → J w = GLnLocal.integralGL (w.adicCompletion K) n := fun w hw => if_neg hw
+  have hJin : ∀ w ∈ S, J w = U₀ w := fun w hw => ite_eq_left hw
+  have hJout : ∀ w, w ∉ S → J w = GLnLocal.integralGL (w.adicCompletion K) n := fun w hw => ite_eq_right hw
   have hco : ∀ w, CO (J w) := fun w => by
     by_cases hw : w ∈ S
     · rw [hJin w hw]; exact hU₀ w

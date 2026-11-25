@@ -88,14 +88,14 @@ theorem nilM_injective : Function.Injective (nilM : (BlockIx a r → R) → Matr
   intro x y h
   funext p
   have := congrFun (congrFun h p.1.1) p.1.2
-  simpa only [nilM, Matrix.of_apply, dif_pos p.2] using this
+  simpa only [nilM, Matrix.of_apply, dite_eq_left p.2] using this
 
 theorem nil_matrix_conj_block {B C : Matrix (Fin a) (Fin a) R} (hB : BlockDiag r B) (hC : BlockDiag r C)
     (x : BlockIx a r → R) : nilM (upperRightBlockConj B C x) = B * nilM x * C := by
   ext i j
   by_cases h : (i : ℕ) < r ∧ r ≤ (j : ℕ)
-  · simp only [nilM, Matrix.of_apply, dif_pos h, upperRightBlockConj]
-  · rw [nilM, Matrix.of_apply, dif_neg h, Matrix.mul_apply]
+  · simp only [nilM, Matrix.of_apply, dite_eq_left h, upperRightBlockConj]
+  · rw [nilM, Matrix.of_apply, dite_eq_right h, Matrix.mul_apply]
     refine (Finset.sum_eq_zero fun l _ => ?_).symm
     rw [Matrix.mul_apply, Finset.sum_mul]
     refine Finset.sum_eq_zero fun k _ => ?_
@@ -103,7 +103,7 @@ theorem nil_matrix_conj_block {B C : Matrix (Fin a) (Fin a) R} (hB : BlockDiag r
     · by_cases hik : (i : ℕ) < r
       · rw [hC l j (by omega), mul_zero]
       · rw [hB i k (by omega), zero_mul, zero_mul]
-    · simp [nilM, dif_neg hk]
+    · simp [nilM, dite_eq_right hk]
 
 theorem conj_block_add (B C : Matrix (Fin a) (Fin a) R) (x y : BlockIx a r → R) :
     upperRightBlockConj B C (x + y) = upperRightBlockConj B C x + upperRightBlockConj B C y := by
@@ -133,8 +133,8 @@ theorem continuous_nilM {S : Type} [CommRing S] [TopologicalSpace S] :
     Continuous (nilM : (BlockIx a r → S) → Matrix (Fin a) (Fin a) S) := by
   refine continuous_matrix fun i j => ?_
   by_cases h : (i : ℕ) < r ∧ r ≤ (j : ℕ)
-  · simpa only [nilM, Matrix.of_apply, dif_pos h] using continuous_apply _
-  · simpa only [nilM, Matrix.of_apply, dif_neg h] using continuous_const
+  · simpa only [nilM, Matrix.of_apply, dite_eq_left h] using continuous_apply _
+  · simpa only [nilM, Matrix.of_apply, dite_eq_right h] using continuous_const
 
 theorem continuous_conj_block {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S]
     (B C : Matrix (Fin a) (Fin a) S) : Continuous (upperRightBlockConj B C : (BlockIx a r → S) → _) :=

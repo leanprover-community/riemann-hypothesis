@@ -28,10 +28,10 @@ theorem cd_nM (τ : X.Ψ) (a b : Fin r) : ContDiff ℂ ∞ fun z : V (nd X) => n
   show ContDiff ℂ ∞ fun z : V (nd X) => nmat X z τ a b
   unfold nmat
   by_cases h : b < a
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     first
       | fun_prop
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact contDiff_const
 
 theorem unipotentFrame_inv_eq_adjugate (z : V (nd X)) (τ : X.Ψ) : (n1 X z τ)⁻¹ = (n1 X z τ).adjugate := by
@@ -51,9 +51,9 @@ private lemma cd_adj_lemma_2 {𝕜 : Type*} [NontriviallyNormedField 𝕜] [Norm
   simp only [Matrix.adjugate_apply]
   refine _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExhD.contDiff_det_of fun a b => ?_
   by_cases hab : a = j
-  · simp only [Matrix.updateRow_apply, hab, if_true]
+  · simp only [Matrix.updateRow_apply, hab, ite_true]
     exact contDiff_const
-  · simp only [Matrix.updateRow_apply, hab, if_false]
+  · simp only [Matrix.updateRow_apply, hab, ite_false]
     exact h a b
 
 theorem cd_Zt (τ : X.Ψ) (a : Fin X.p0) (m : Fin (r - X.p0)) :

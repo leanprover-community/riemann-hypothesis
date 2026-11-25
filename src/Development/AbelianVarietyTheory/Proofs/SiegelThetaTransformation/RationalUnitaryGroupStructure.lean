@@ -251,7 +251,7 @@ theorem af_ext {F : Type} [Field F] [NumberField F] {a b : Af F} (h : ∀ v, eva
 theorem exists_indicator {F : Type} [Field F] [NumberField F] (P : HeightOneSpectrum (𝓞 F) → Prop) :
     ∃ e : Af F, (∀ v, P v → evalV F v e = 1) ∧ ∀ v, ¬ P v → evalV F v e = 0 := by
   refine ⟨⟨fun v => if P v then 1 else 0, Filter.Eventually.of_forall fun v => ?_⟩,
-    fun v hv => if_pos hv, fun v hv => if_neg hv⟩
+    fun v hv => ite_eq_left hv, fun v hv => ite_eq_right hv⟩
   beta_reduce
   split_ifs
   · exact one_mem (v.adicCompletionIntegers F)

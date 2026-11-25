@@ -73,7 +73,7 @@ theorem vNormSq_lowK_sub_root_lt {ε : Fin n → Bool} {lam : Fin n → ℝ} (hm
   have hsum : ∑ c, (root a b c * root a b c - 2 * (w c * root a b c)) = 2 - 2 * (w a - w b) := by
     rw [Fintype.sum_eq_add a b hab']
     · rw [hr a, hr b]
-      simp only [if_neg hab', if_neg hab'.symm, ↓reduceIte]
+      simp only [ite_eq_right hab', ite_eq_right hab'.symm, ↓reduceIte]
       ring
     · intro c hc
       rw [hr c]
@@ -108,7 +108,7 @@ theorem CDom_lowWt {ε : Fin n → Bool} (μ : Fin n → ℝ) :
     refine ⟨fun a b => c a b + if a = p.2 ∧ b = p.1 then 1 else 0, fun a b h => ?_, ?_⟩
     · by_cases h' : a = p.2 ∧ b = p.1
       · obtain ⟨rfl, rfl⟩ := h'; exact ⟨hp.1, hp.2.symm⟩
-      · dsimp only at h; rw [if_neg h', add_zero] at h; exact hc a b h
+      · dsimp only at h; rw [ite_eq_right h', add_zero] at h; exact hc a b h
     · have e : ∀ a b : Fin n, ((c a b + if a = p.2 ∧ b = p.1 then 1 else 0 : ℕ) : ℝ) • Formalism.REAL.root a b =
           (c a b : ℝ) • Formalism.REAL.root a b + if a = p.2 ∧ b = p.1 then Formalism.REAL.root a b else 0 := by
         intro a b; split_ifs <;> simp [add_smul]
@@ -158,7 +158,7 @@ theorem weights_le_of_irr_hw (hE : IsGlRep E) (hU : IsInfUnitary ε E) {μ : Fin
     obtain ⟨a, ha⟩ := Function.ne_iff.1 hne
     have h1 := hU a a (lowWord E w l) x
     rw [lowWord_wt hE hw.1 l a, hν a, inner_smul_left, inner_smul_right] at h1
-    simp only [adjSign, if_true, one_mul, Complex.conj_ofReal] at h1
+    simp only [adjSign, ite_true, one_mul, Complex.conj_ofReal] at h1
     have h2 : ((lowWt μ l a : ℂ) - (ν a : ℂ)) * inner ℂ (lowWord E w l) x = 0 := by
       rw [sub_mul, h1, sub_self]
     rcases mul_eq_zero.1 h2 with h | h

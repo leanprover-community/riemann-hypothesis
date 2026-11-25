@@ -82,14 +82,14 @@ private theorem idem_normal_form [IsLocalRing O] (e : Matrix r r O) (he : IsIdem
     rcases σ.symm j with k | k
     · have hk : (b0 (Sum.inl k) : r → O) = (bp k : r → O) := by
         simp [b0, Basis.map_apply, Basis.prod_apply]
-      simp only [Sum.isLeft_inl, if_true, one_smul, hk]
+      simp only [Sum.isLeft_inl, ite_true, one_smul, hk]
       obtain ⟨y, hy⟩ := (bp k).2
       rw [← hy]
       show (f * f) y = f y
       rw [hf]
     · have hk : (b0 (Sum.inr k) : r → O) = (bq k : r → O) := by
         simp [b0, Basis.map_apply, Basis.prod_apply]
-      simp only [Sum.isLeft_inr, Bool.false_eq_true, if_false, zero_smul, hk]
+      simp only [Sum.isLeft_inr, Bool.false_eq_true, ite_false, zero_smul, hk]
       exact LinearMap.mem_ker.mp (bq k).2
   have hdiag : LinearMap.toMatrix b b f =
       Matrix.diagonal fun i => if (σ.symm i).isLeft then (1 : O) else 0 := by

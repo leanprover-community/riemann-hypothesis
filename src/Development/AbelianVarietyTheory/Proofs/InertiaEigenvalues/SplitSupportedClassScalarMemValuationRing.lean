@@ -328,7 +328,7 @@ theorem unimod_hLat {D : D7} (V : HSp D) (hg : V.gram = 1) (g : Bridge.Gf V) :
   have h := (GlobalTheory.MovedLat.isSelfDualC_hLat V g).2 v
   rw [h]
   refine forall_congr' fun w => imp_congr_right fun _ => ?_
-  simp only [hg, Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hg, Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have e : ∑ j, (IsCMField.complexConj D.host.E) (v j) * w j =
       IsCMField.complexConj D.host.E (∑ x, star (w x) * v x) := by
 

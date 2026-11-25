@@ -180,9 +180,9 @@ theorem diagW_box_indicator : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (
       simp
     · rw [Set.indicator_of_notMem (fun h => hw2 (Set.mem_prod.1 h).2)]
       obtain ⟨i, hi⟩ : ∃ i, w.2 i ∉ v.adicCompletionIntegers F := by
-        by_contra h; push_neg at h; exact hw2 ((hmem _).2 h)
+        by_contra h; push Not at h; exact hw2 ((hmem _).2 h)
       obtain ⟨y, hy, hne⟩ : ∃ y ∈ v.adicCompletionIntegers F, psiLoc ψ v (w.2 i * y) ≠ 1 := by
-        by_contra h; push_neg at h; exact hi ((hψ _).1 h)
+        by_contra h; push Not at h; exact hi ((hψ _).1 h)
       have ha : Pi.single i y ∈ S := (hmem _).2 fun k => by
         rw [Pi.single_apply]; split_ifs
         · exact hy

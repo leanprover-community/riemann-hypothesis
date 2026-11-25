@@ -268,7 +268,7 @@ def gel (Γ : Subgroup SL(2, ℤ)) (τ : ℂ) : SL(2, ℤ) :=
 
 theorem gel_spec (Γ : Subgroup SL(2, ℤ)) {τ : ℂ} (h : τ ∈ Hs) :
     gel Γ τ ∈ Γ ∧ mob (ofSL (gel Γ τ)) (rep Γ ⟨τ, h⟩).1 = τ := by
-  simp only [gel, dif_pos h]
+  simp only [gel, dite_eq_left h]
   exact (rep_rel Γ ⟨τ, h⟩).choose_spec
 
 theorem rep_eq (Γ : Subgroup SL(2, ℤ)) {δ : SL(2, ℤ)} (hδ : δ ∈ Γ) {τ : ℂ} (h : τ ∈ Hs)
@@ -323,7 +323,7 @@ theorem GlobalTheory.KZ.H3.exists_pot_of_isCoc : ∀ (R : Type) [CommRing R] (w 
   refine ⟨potOf Γ z, ⟨fun τ => ?_, fun γ hγ => ⟨z γ, key γ hγ⟩⟩, key⟩
   by_cases hτ : τ ∈ Hs
   · exact polySlash_isHomogeneous _ (hz.1 _ (gel_spec Γ hτ).1)
-  · have : gel Γ τ = 1 := by simp [gel, dif_neg hτ]
+  · have : gel Γ τ = 1 := by simp [gel, dite_eq_right hτ]
     unfold potOf
     rw [this]
     exact polySlash_isHomogeneous _ (hz.1 _ Γ.one_mem)
@@ -842,7 +842,7 @@ theorem exists_basis (hinj : Function.Injective (algebraMap ℤ_[l] E)) (S : Fin
     have h2 : ((∑ i, (b.repr ⟨x, hxL⟩) i • b i : L) : E) = x := congrArg Subtype.val (b.sum_repr _)
     rw [Submodule.coe_sum] at h2
     simp only [Submodule.coe_smul] at h2
-    simp only [dif_pos hxL]
+    simp only [dite_eq_left hxL]
     exact h2.symm
 
 theorem poly_decomp {k : ℕ} (v : Fin k → E) (r : E → Fin k → ℤ_[l]) (P : MvPolynomial (Fin 2) E)
@@ -855,11 +855,11 @@ theorem poly_decomp {k : ℕ} (v : Fin k → E) (r : E → Fin k → ℤ_[l]) (P
   simp only [MvPolynomial.coeff_sum, MvPolynomial.coeff_smul, MvPolynomial.coeff_map, MvPolynomial.coeff_monomial,
   smul_eq_mul, map_sum]
   by_cases hn : n ∈ P.support
-  · simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', if_pos hn]
+  · simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', ite_eq_left hn]
     refine (hr n hn).trans ?_
     simp [Algebra.smul_def, mul_comm]
   · rw [MvPolynomial.notMem_support_iff.1 hn]
-    simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', if_neg hn, mul_zero,
+    simp only [apply_ite (algebraMap ℤ_[l] E), map_zero, Finset.sum_ite_eq', ite_eq_right hn, mul_zero,
       Finset.sum_const_zero]
 
 end GlobalTheory.KZ.H3.LamZero

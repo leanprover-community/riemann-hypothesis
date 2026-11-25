@@ -385,7 +385,7 @@ theorem aestronglyMeasurable_germ_integrand (hGS : GaXiSplit) (Bj : B.RealPlaceD
         Matrix.of q.2.1.2 * Matrix.of q.2.1.1 from rfl]
       symm
       convert this using 1
-      simp only [sxL, if_pos (show GoodL Bj σ q.1 from ⟨hh, hν⟩), PsiR, NR, of_levMt, Equiv.apply_symm_apply]
+      simp only [sxL, ite_eq_left (show GoodL Bj σ q.1 from ⟨hh, hν⟩), PsiR, NR, of_levMt, Equiv.apply_symm_apply]
       rfl
     have hpi : B0.π' (Matrix.of (PsiR q.2).1)⁻¹ = Bj.π' (Matrix.of q.2.1.1 : B.Mat k ρ)⁻¹ := by
       simp only [PsiR, of_levMt]

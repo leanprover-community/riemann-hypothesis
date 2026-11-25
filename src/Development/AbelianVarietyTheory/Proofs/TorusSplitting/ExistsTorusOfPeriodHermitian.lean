@@ -228,8 +228,8 @@ theorem mult_add_mult_conj (D : Datum H) (τ : E →+* ℂ) :
     exact H.d_prime.ne_zero (by simpa using this)
   simp only [Datum.mult, ComplexEmbedding.conjugate_coe_eq, h2]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 (h1.trans H.sqrt_neg_disc_sq.symm) with h | h
-  · rw [h, if_pos rfl, if_neg h3.symm]
-  · rw [h, neg_neg, if_pos rfl, if_neg h3.symm, add_comm]
+  · rw [h, ite_eq_left rfl, ite_eq_right h3.symm]
+  · rw [h, neg_neg, ite_eq_left rfl, ite_eq_right h3.symm, add_comm]
 
 theorem coe_one_sub_w0 : ((1 - H.w0 : 𝓞 E) : E) = cc (H.w0 : E) := by
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance

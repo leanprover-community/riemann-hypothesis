@@ -1010,7 +1010,7 @@ theorem latFlagPair_of_twoLevels : ∀ (E : Type) [Field E] [NumberField E] [IsC
       exact Sigma.ext rfl (heq_of_eq (Fin.ext rfl))
     have hsgn : HodgeCpt.rootSgn D (τ, Fin.castAdd D.q i) = 1 := by
       unfold HodgeCpt.rootSgn
-      rw [if_pos hlt]
+      rw [ite_eq_left hlt]
     have h0 := hR₀' (τ, Fin.castAdd D.q i)
     have h1 := hR' (τ, Fin.castAdd D.q i)
     rw [hidx, hsgn] at h0 h1

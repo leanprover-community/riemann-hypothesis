@@ -86,18 +86,18 @@ theorem one_le_gap_uMinus (P : WtPar Dw) (τ : Psi H) (hp : 1 ≤ Dw.p) (hq : 1 
   have h1 := P.gap_u₁ τ hk
   have hT : 0 < P.T₁ := by unfold WtPar.T₁; positivity
   have hg : 1 ≤ gap (P.u₁ τ) (Dw.p - 1) := by
-    rw [gap, dif_pos hk]
+    rw [gap, dite_eq_left hk]
     have := hs (show (⟨Dw.p - 1, by omega⟩ : Fin (Dw.p + Dw.q)) < ⟨Dw.p - 1 + 1, hk⟩ from by
       rw [Fin.mk_lt_mk]; omega)
     omega
   rw [h1, Int.le_ediv_iff_mul_le hT, one_mul] at hg
   have hkap : gap (FlagTan.kap Dw τ) (Dw.p - 1) = 2 * ((Dw.p : ℤ) + Dw.q) - 2 := by
-    simp only [gap, dif_pos hk, FlagTan.kap]
+    simp only [gap, dite_eq_left hk, FlagTan.kap]
     have := Nat.cast_sub (R := ℤ) hp
     split_ifs <;> push_cast at * <;> omega
   have hsub : gap ((P.uMinus - FlagTan.kap Dw) τ) (Dw.p - 1) =
       gap (P.uMinus τ) (Dw.p - 1) - gap (FlagTan.kap Dw τ) (Dw.p - 1) := by
-    simp only [gap, dif_pos hk, Pi.sub_apply]; ring
+    simp only [gap, dite_eq_left hk, Pi.sub_apply]; ring
   have hT1 : 1 ≤ P.T₁ := hT
   omega
 
@@ -111,7 +111,7 @@ theorem laOf_add_smul (a : (E →+* ℂ) × ℕ → ℕ) (n kc : ℕ) (c0 s : �
 theorem gap_add_smul_hodge (v : AllWt.Weight Dw) (x : ℤ) (w : Psi H → ℤ) (τ : Psi H) (hp : 1 ≤ Dw.p) (hq : 1 ≤ Dw.q) :
     gap ((v + x • hodgeWt Dw + FlatLine.parWt Dw w) τ) (Dw.p - 1) = gap (v τ) (Dw.p - 1) + x := by
   have hk := bar_lt hp hq
-  simp only [gap, dif_pos hk, Pi.add_apply, Pi.smul_apply, hodgeWt, CompHt.barWt, FlatLine.parWt, smul_eq_mul]
+  simp only [gap, dite_eq_left hk, Pi.add_apply, Pi.smul_apply, hodgeWt, CompHt.barWt, FlatLine.parWt, smul_eq_mul]
   split_ifs <;> first | omega
 
 theorem antitone_add_par (v : AllWt.Weight Dw) (w : Psi H → ℤ) (τ : Psi H) (h : Antitone (v τ)) :

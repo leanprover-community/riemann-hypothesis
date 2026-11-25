@@ -112,7 +112,7 @@ end GlobalTheory.HeckeFamilyMatrices
 namespace GlobalTheory.HeckeFamilyMatrices
 
 lemma sigma_pos {g : GL (Fin 2) ℝ} (hg : 0 < g.det.val) (z : ℂ) : σ g z = z := by
-  rw [σ, if_pos hg]
+  rw [σ, ite_eq_left hg]
   rfl
 
 lemma slash_scalar (k : ℤ) (c : ℝ) (hc : 0 < c) (G : ℍ → ℂ) :

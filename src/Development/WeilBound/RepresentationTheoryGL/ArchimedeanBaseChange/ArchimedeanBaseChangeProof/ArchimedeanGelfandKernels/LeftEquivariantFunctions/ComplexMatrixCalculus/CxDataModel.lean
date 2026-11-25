@@ -898,14 +898,14 @@ theorem qP_eval_zero (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
     (qP lam a b i j).eval 0 = Cxc.extL lam i ((wb lam j : Formalism.BasicNotions.nablaSq ℂ n (dw lam)) : MvPolynomial (Fin n × Fin n) ℂ) := by
   rw [← Polynomial.coeff_zero_eq_eval_zero, qP, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq, if_pos (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).2]
+  rw [Finset.sum_ite_eq, ite_eq_left (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).2]
 
 theorem qP_deriv_zero (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
     (Polynomial.derivative (qP lam a b i j)).eval 0 =
       Cxc.extL lam i (GlobalTheory.Mem.Gelf.rowE ℂ n n a b ((wb lam j : Formalism.BasicNotions.nablaSq ℂ n (dw lam)) : MvPolynomial (Fin n × Fin n) ℂ)) := by
   rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_derivative, qP, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq, if_pos (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).1]
+  rw [Finset.sum_ite_eq, ite_eq_left (by simp), (GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv ℂ n n a b _).1]
   simp
 
 theorem det_one_add_single (a b : Fin n) (w : ℂ) : (1 + single a b w : Mat n).det = if a = b then 1 + w else 1 := by
@@ -937,7 +937,7 @@ theorem hasDerivAt_Fw (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
       ((if a = b then ((dw lam).detShift : ℂ) else 0) * (qP lam a b i j).eval 0 + (Polynomial.derivative (qP lam a b i j)).eval 0) 0 := by
   unfold Fw
   by_cases hab : a = b
-  · simp only [if_pos hab]
+  · simp only [ite_eq_left hab]
     have h1 : HasDerivAt (fun w : ℂ => (1 + w) ^ (dw lam).detShift) ((dw lam).detShift : ℂ) 0 := by
       have := (hasDerivAt_zpow (dw lam).detShift (1 + (0 : ℂ)) (Or.inl (by simp))).comp (0 : ℂ)
         ((hasDerivAt_id (0 : ℂ)).const_add 1)
@@ -946,7 +946,7 @@ theorem hasDerivAt_Fw (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) :
     have := h1.mul (Polynomial.hasDerivAt (qP lam a b i j) (0 : ℂ))
     simp only [add_zero, _root_.one_zpow, one_mul] at this
     exact this
-  · simp only [if_neg hab, _root_.one_zpow, one_mul, zero_mul, zero_add]
+  · simp only [ite_eq_right hab, _root_.one_zpow, one_mul, zero_mul, zero_add]
     exact Polynomial.hasDerivAt (qP lam a b i j) (0 : ℂ)
 
 theorem line_deriv (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) (z : ℂ) :
@@ -963,10 +963,10 @@ theorem line_deriv (lam : Fin n → ℤ) (a b : Fin n) (i j : Jd n lam) (z : ℂ
   refine hR.congr_of_eventuallyEq ?_
   have hc : ∀ᶠ t : ℝ in nhds 0, (if a = b then 1 + (t : ℂ) * z else (1 : ℂ)) ≠ 0 := by
     by_cases hab : a = b
-    · simp only [if_pos hab]
+    · simp only [ite_eq_left hab]
       have hcont : ContinuousAt (fun t : ℝ => 1 + (t : ℂ) * z) 0 := by fun_prop
       exact hcont.eventually_ne (by simp)
-    · simp only [if_neg hab]
+    · simp only [ite_eq_right hab]
       exact Filter.Eventually.of_forall fun _ => one_ne_zero
   filter_upwards [hc] with t ht
   rw [Matrix.smul_single, Complex.real_smul, entry_eq lam a b i j _ ht]
@@ -1307,10 +1307,10 @@ theorem Et_hw (lam : Fin n → ℤ) (hlam : Antitone lam) :
     ∀ a b, a < b → Et lam a b (Formalism.GradedWeylDivisibility.hw ℂ le_rfl (dw lam).natW) = 0 := by
   refine ⟨fun a => ?_, fun a b hab => ?_⟩
   · rw [Et_eq]
-    simp only [Matrix.add_apply, Matrix.of_apply, LinearMap.add_apply, if_true, LinearMap.smul_apply, Module.End.one_apply]
+    simp only [Matrix.add_apply, Matrix.of_apply, LinearMap.add_apply, ite_true, LinearMap.smul_apply, Module.End.one_apply]
     rw [GlobalTheory.BrCompare.hw_weight (natW_anti lam) a, ← add_smul, natW_add lam hlam a]
   · rw [Et_eq]
-    simp only [Matrix.add_apply, Matrix.of_apply, if_neg hab.ne, add_zero]
+    simp only [Matrix.add_apply, Matrix.of_apply, ite_eq_right hab.ne, add_zero]
     exact GlobalTheory.BrCompare.hw_raise _ a b hab
 
 theorem trace_on_model (lam : Fin n → ℤ) (hlam : Antitone lam) (k : ℕ) {f : MvPolynomial (Fin n × Fin n) ℂ}

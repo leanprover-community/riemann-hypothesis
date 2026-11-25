@@ -126,7 +126,7 @@ theorem exists_proj_bc {L : Type} [CommRing L] [IsLocalRing L] (φ : c.F →+* L
           by_cases h : τ' = τ
           · subst h; rwa [Pi.single_eq_same]
           · rw [Pi.single_eq_of_ne h]; intro a; simp) τ
-        rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_same] at this
+        rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_same] at this
       refine ⟨fun m => e₂ _ (e₁ m), fun m => ?_⟩
       rw [ReciprocityTheory.ChartRestriction.G.Chart.mem_eigLat_iff]
       exact ⟨fun h => h ▸ e₁ m, fun h => e₂ m h⟩

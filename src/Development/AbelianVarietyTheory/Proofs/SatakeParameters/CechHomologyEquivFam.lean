@@ -110,12 +110,12 @@ variable {A : Finset ι → Submodule R E}
 theorem cechC_apply_mem {n : ℕ} {w : Finset ι → E} (hw : w ∈ cechC A (n : ℤ)) {s : Finset ι}
     (h : s.card = n + 1) : w s ∈ A s := by
   have := (Submodule.mem_pi.1 hw) s (Set.mem_univ _)
-  rwa [if_pos ⟨Finset.card_pos.1 (by omega), by omega⟩] at this
+  rwa [ite_eq_left ⟨Finset.card_pos.1 (by omega), by omega⟩] at this
 
 theorem cechC_apply_eq_zero {n : ℕ} {w : Finset ι → E} (hw : w ∈ cechC A (n : ℤ)) {s : Finset ι}
     (h : s.card ≠ n + 1) : w s = 0 := by
   have := (Submodule.mem_pi.1 hw) s (Set.mem_univ _)
-  rw [if_neg (fun h' => h (by omega))] at this
+  rw [ite_eq_right (fun h' => h (by omega))] at this
   exact (Submodule.mem_bot R).1 this
 
 theorem famMap_mem (hrange : ∀ s, s.Nonempty → LinearMap.range (g s) = A s) (n : ℕ)
@@ -206,7 +206,7 @@ theorem ker_cocMap (hinj : ∀ s, s.Nonempty → Function.Injective (g s))
       have hy0 : y = 0 := by
         funext s
         have := (Submodule.mem_pi.1 hy) s (Set.mem_univ _)
-        rw [if_neg (fun h => by
+        rw [ite_eq_right (fun h => by
           have := Finset.card_pos.2 h.1
           push_cast at h
           omega)] at this

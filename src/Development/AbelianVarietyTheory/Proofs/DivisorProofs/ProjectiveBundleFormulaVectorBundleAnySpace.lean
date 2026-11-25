@@ -728,7 +728,7 @@ def evD (γ : Cochain (totChains R X) K k) (t : ℤ) (a b : ℕ) (U : Scheme.{0}
   if h : -((a + b : ℕ) : ℤ) + k = t then evT γ a b t h U y else 0
 
 theorem evD_eq (γ : Cochain (totChains R X) K k) (t : ℤ) (a b : ℕ) (h : -((a + b : ℕ) : ℤ) + k = t) (U : Scheme.{0})
-    (y : BSx X a b U) : evD γ t a b U y = evT γ a b t h U y := dif_pos h
+    (y : BSx X a b U) : evD γ t a b U y = evT γ a b t h U y := dite_eq_left h
 
 def hB (γ : Cochain (totChains R X) K k) (t : ℤ) : ∀ (a b : ℕ) (U : Scheme.{0}), BSx X a b U → Sec (K.X t) U
   | 0, _, _, _ => 0
@@ -863,7 +863,7 @@ theorem xv_eq (α : Cochain ((chains R).obj E) I n) (z : Cochain ((chains R).obj
     xv μ α z w p r x v =
       μ.mul U s t w h (GlobalTheory.EtC.ev (R := R) α p s hs U x) (GlobalTheory.EtC.ev (R := R) z r t ht U v) := by
   subst hs ht
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem xv_δ_left {n₁ : ℤ} (hn : n + 1 = n₁) (α : Cochain ((chains R).obj E) I n) (z : Cochain ((chains R).obj B) J m)
     (w : ℤ) (p r : ℕ) (x : Sx E p U) (v : Sx B r U) (s s' t : ℤ) (hs : -(p : ℤ) + n = s) (hs' : s + 1 = s')

@@ -256,12 +256,12 @@ theorem exists_dc_choice (K : Subgroup G) (a : G) :
   · simp [SameDC.refl K a]
   · by_cases hz : SameDC K a z
     · simpa [hz] using hz.symm
-    · simp only [hz, if_false]
+    · simp only [hz, ite_false]
       exact SameDC.symm (Quotient.exact (s := s) (Quotient.out_eq (Quotient.mk s z)))
   · by_cases hb : SameDC K a b
     · simp [hb, hb.trans hbc]
     · have hc : ¬ SameDC K a c := fun h => hb (h.trans hbc.symm)
-      simp only [hb, hc, if_false]
+      simp only [hb, hc, ite_false]
       rw [Quotient.sound (s := s) hbc]
 
 theorem Reps.uniq {K : Subgroup G} {g a b c x : G} {R : Finset G} (h : Reps K g R) (ha : a ∈ R) (hb : b ∈ R)
@@ -342,13 +342,13 @@ theorem sum_single_of_dc {K : Subgroup G} {T : Finset G} {S : G → Finset G} (h
     F z = ∑ x ∈ T, ∑ y ∈ S x, if y⁻¹ * z ∈ K then F y else 0 := by
   obtain ⟨y₀, ⟨hy₀, e⟩, hu⟩ := (hS x₀ hx₀).2 z hz
   rw [Finset.sum_eq_single x₀ ?_ (fun h => absurd hx₀ h), Finset.sum_eq_single y₀ ?_ (fun h => absurd hy₀ h),
-    if_pos e]
+    ite_eq_left e]
   · have := hF y₀ _ e
     rwa [mul_inv_cancel_left] at this
   · intro y hy hne
-    exact if_neg fun h => hne (hu y ⟨hy, h⟩)
+    exact ite_eq_right fun h => hne (hu y ⟨hy, h⟩)
   · intro x hx hne
-    refine Finset.sum_eq_zero fun y hy => if_neg fun h => hne ?_
+    refine Finset.sum_eq_zero fun y hy => ite_eq_right fun h => hne ?_
     have hxy : SameDC K x y := (hS x hx).1 y hy
     have hyz : SameDC K y z := ⟨1, one_mem _, _, h, by group⟩
     exact hT x hx x₀ hx₀ ((hxy.trans hyz).trans hz.symm)
@@ -442,7 +442,7 @@ theorem pos_iff_lt : ∀ {n : ℕ} (d : Fin n → ℤ), Antitone d →
     have ih := pos_iff_lt (fun j : Fin n => d j.succ) (fun a b h => hd (Fin.succ_le_succ_iff.2 h))
     rw [List.ofFn_succ, List.filter_cons]
     by_cases h0 : 0 < d 0
-    · simp only [h0, decide_true, if_true, List.length_cons]
+    · simp only [h0, decide_true, ite_true, List.length_cons]
       refine Fin.cases ?_ (fun j => ?_) i
       · simp [h0]
       · simp [ih j]
@@ -597,8 +597,8 @@ theorem top_step : ∀ {D : D7} (V : HSp D) (P : Pl D.host.E), conjPl P ≠ P �
     have hsum' := hsum (fun x => if x = g * h then rep V P (List.ofFn dF) else rep V P (List.ofFn (cx x)))
       (fun x hxT => by
         by_cases hxe : x = g * h
-        · rw [if_pos hxe, hxe]; exact r₀
-        · rw [if_neg hxe]; exact hS x (hx x hxT).1 (cx x) (hcx x) (hcxD x)) M π u hu'
+        · rw [ite_eq_left hxe, hxe]; exact r₀
+        · rw [ite_eq_right hxe]; exact hS x (hx x hxT).1 (cx x) (hcx x) (hcxD x)) M π u hu'
     have lhs : ∑ γ ∈ rep V P (List.ofFn d₁), π γ (∑ γ' ∈ rep V P (List.ofFn aF), π γ' u) =
         ∑ γ ∈ rep V P (List.ofFn d₁), ∑ γ' ∈ rep V P (List.ofFn aF), π (γ * γ') u := by
       refine Finset.sum_congr rfl fun γ _ => ?_
@@ -606,11 +606,11 @@ theorem top_step : ∀ {D : D7} (V : HSp D) (P : Pl D.host.E), conjPl P ≠ P �
       rw [map_sum]
       refine Finset.sum_congr rfl fun γ' _ => ?_
       rw [map_mul, Module.End.mul_apply]
-    rw [lhs, hsum', ← Finset.add_sum_erase _ _ hghT, if_pos rfl]
+    rw [lhs, hsum', ← Finset.add_sum_erase _ _ hghT, ite_eq_left rfl]
     congr 1
     · rw [Nat.cast_smul_eq_nsmul]
     · refine Finset.sum_congr rfl fun x hxT => ?_
-      rw [if_neg (Finset.mem_erase.1 hxT).1, LinearMap.smul_apply, LinearMap.sum_apply, Nat.cast_smul_eq_nsmul]
+      rw [ite_eq_right (Finset.mem_erase.1 hxT).1, LinearMap.smul_apply, LinearMap.sum_apply, Nat.cast_smul_eq_nsmul]
 
 end GlobalTheory.SplitTopStep
 end -- clump:auto
@@ -713,7 +713,7 @@ theorem good_nonneg (hP : conjPl P ≠ P) : ∀ s q : ℕ, ∀ d : List ℤ, (�
     have hlt : d1.sum < d.sum := by
       have := List.sum_lt_sum (l := d) (fun x => if 0 < x then x - 1 else x) id
         (fun x _ => by simp only [id]; split_ifs <;> omega)
-        (by obtain ⟨x, hx, hx0⟩ := hpos; exact ⟨x, hx, by simp only [id]; rw [if_pos hx0]; omega⟩)
+        (by obtain ⟨x, hx, hx0⟩ := hpos; exact ⟨x, hx, by simp only [id]; rw [ite_eq_left hx0]; omega⟩)
       simpa using this
     have hs1 : 0 ≤ d1.sum := List.sum_nonneg hd1n
     have hq1 : 0 ≤ (d1.map fun x => x ^ 2).sum := List.sum_nonneg fun x hx => by
@@ -740,7 +740,7 @@ theorem good_nonneg (hP : conjPl P ≠ P) : ∀ s q : ℕ, ∀ d : List ℤ, (�
     have hm' : (m : ℂ) ≠ 0 := by exact_mod_cast hm.ne'
     rw [LinearMap.smul_apply, LinearMap.sub_apply, Module.End.mul_apply, e1 _ (fixed_opOf _ hu), hrel M π u hu,
       ec u hu, add_sub_cancel_right, smul_smul, inv_mul_cancel₀ hm', one_smul]
-  · push_neg at hpos
+  · push Not at hpos
     have h0 : d = splitLab V.rank 0 := by
       have hlen := ((GlobalTheory.T.isSphericalDoubleCosetLabel_iff_decreasing V P d).1 hl).1
       rw [splitLab, Nat.sub_zero, List.replicate_zero, List.append_nil, ← hlen]

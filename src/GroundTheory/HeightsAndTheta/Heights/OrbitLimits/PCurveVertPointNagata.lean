@@ -75,8 +75,8 @@ theorem coeff_aeval_C_mul_X {S : Type*} [CommRing S] [Algebra ℤ S] [Algebra �
     rw [hmono, coeff_monomial]
     have hw := Inter.LocRingPow.isMultiHomog_iff.mp hu
     by_cases h : Finsupp.equivFunOnFinite.symm (fun k => ∑ i, u ⟨k, i⟩) = n
-    · rw [if_pos h, comp, ← h, Finsupp.coe_equivFunOnFinite_symm, hw.weightedHomogeneousComponent_same]
-    · rw [if_neg h, comp, hw.weightedHomogeneousComponent_ne _ (fun e => h (by
+    · rw [ite_eq_left h, comp, ← h, Finsupp.coe_equivFunOnFinite_symm, hw.weightedHomogeneousComponent_same]
+    · rw [ite_eq_right h, comp, hw.weightedHomogeneousComponent_ne _ (fun e => h (by
         rw [← e, Finsupp.equivFunOnFinite_symm_coe])), map_zero]
   | add p q hp hq => rw [map_add (f := _), MvPolynomial.coeff_add, hp, hq, comp, comp, comp, map_add (f := _), map_add (f := _)]
 

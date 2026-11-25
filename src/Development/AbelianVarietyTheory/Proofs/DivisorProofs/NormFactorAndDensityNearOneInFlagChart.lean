@@ -69,7 +69,7 @@ theorem nmat_entry_le (X : Data E r) (z : V (nd X)) (τ : X.Ψ) (a b : Fin r) :
   unfold nmat
   by_cases h : b < a
   · have hab : a ≠ b := fun e => lt_irrefl b (e ▸ h)
-    rw [dite_eq_left h, if_neg hab, sub_zero]
+    rw [dite_eq_left h, ite_eq_right hab, sub_zero]
     exact PiLp.norm_apply_le z _
   · rw [dite_eq_right h]
     split_ifs <;> simp

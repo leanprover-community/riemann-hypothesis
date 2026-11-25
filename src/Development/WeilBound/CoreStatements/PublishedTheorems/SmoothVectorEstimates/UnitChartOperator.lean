@@ -201,7 +201,7 @@ theorem orb_gI (g : GL (Fin a) (ι → ℂ)) (v : X) : orb ρ v (gI g) = ρ g v 
     exact g.isUnit
   have hu : h.unit = g := Units.ext rfl
   simp only [orb]
-  rw [dif_pos h, hu]
+  rw [dite_eq_left h, hu]
 
 theorem orb_mulI (g : GL (Fin a) (ι → ℂ)) (v : X) (M : LieI ι a) :
     orb ρ v (mulI (gI g) M) = ρ g (orb ρ v M) := by
@@ -211,7 +211,7 @@ theorem orb_mulI (g : GL (Fin a) (ι → ℂ)) (v : X) (M : LieI ι a) :
   · have h' : IsUnit (Matrix.of (mulI (gI g) M)) := by rw [e]; exact g.isUnit.mul h
     have hu : h'.unit = g * h.unit := Units.ext (by simp [e])
     simp only [orb]
-    rw [dif_pos h', dif_pos h, hu, map_mul, ContinuousLinearMap.mul_apply]
+    rw [dite_eq_left h', dite_eq_left h, hu, map_mul, ContinuousLinearMap.mul_apply]
   · have h' : ¬ IsUnit (Matrix.of (mulI (gI g) M)) := by rw [e, Units.isUnit_units_mul]; exact h
     simp only [orb]
     rw [dite_eq_right h', dite_eq_right h, map_zero]
@@ -224,7 +224,7 @@ theorem orb_mulI_right (g : GL (Fin a) (ι → ℂ)) (v : X) (M : LieI ι a) :
   · have h' : IsUnit (Matrix.of (mulI M (gI g))) := by rw [e]; exact h.mul g.isUnit
     have hu : h'.unit = h.unit * g := Units.ext (by simp [e])
     simp only [orb]
-    rw [dif_pos h', dif_pos h, hu, map_mul, ContinuousLinearMap.mul_apply]
+    rw [dite_eq_left h', dite_eq_left h, hu, map_mul, ContinuousLinearMap.mul_apply]
   · have h' : ¬ IsUnit (Matrix.of (mulI M (gI g))) := by rw [e, Units.isUnit_mul_units]; exact h
     simp only [orb]
     rw [dite_eq_right h', dite_eq_right h]
@@ -610,7 +610,7 @@ theorem key [CompleteSpace X] [FiniteDimensional ℝ V] [MeasurableSpace V] [Bor
   have hF'g : ∀ g y, F' (gI g) y = (((ρ (g * u y)).restrictScalars ℝ).comp
       ((e_Dy D y).comp (lmul (gI (g * u y)⁻¹)))).comp (rmul (gI (u y))) := by
     intro g y
-    simp only [F', dif_pos (e_isUnit_gI g), e_unit_gI g]
+    simp only [F', dite_eq_left (e_isUnit_gI g), e_unit_gI g]
   have hdiff : ∀ g y, HasFDerivAt (F · y) (F' (gI g) y) (gI g) := by
     intro g y
     rw [hF'g]

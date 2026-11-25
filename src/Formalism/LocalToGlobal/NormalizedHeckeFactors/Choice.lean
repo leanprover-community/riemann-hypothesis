@@ -140,12 +140,6 @@ theorem emb0_mem_maximalIdeal_iff_val_pos_of_sidePl (D : D7) (w : D.what₂.plac
     exact lt_irrefl _ this
 
 
-section Vac
-
-variable (D : D7)
-
-end Vac
-
 end Formalism.L2
 
 end

@@ -142,7 +142,7 @@ theorem IsolatedFibreLocalUnbranched.proof (hcomp : OpenProjectionDominantCompon
         · rw [hji] at hzj
           exact ⟨hzj, hzU⟩
         · have hzj' := Set.mem_iInter.1 hzU.2 j
-          rw [if_neg hji] at hzj'
+          rw [ite_eq_right hji] at hzj'
           exact absurd hzj hzj'.2
       · rintro ⟨hzi, hzU⟩
         have hzW : z ∈ X ∩ B ∩ W0 := by

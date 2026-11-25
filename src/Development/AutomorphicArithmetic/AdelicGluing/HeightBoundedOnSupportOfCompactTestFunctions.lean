@@ -117,5 +117,5 @@ theorem UpperTheory.height_bounded_on_support_of_compact_test_functions :
     rw [hW, not_or] at hc'
     by_cases hq : w.under (𝓞 F) = q
     · simp [hq]
-    · simp only [ne_eq, hq, not_false_eq_true, if_true]
+    · simp only [ne_eq, hq, not_false_eq_true, ite_true]
       exact locHeight_eq_one_of_mem_integralGL (hx w hc'.1 hc'.2 hq)

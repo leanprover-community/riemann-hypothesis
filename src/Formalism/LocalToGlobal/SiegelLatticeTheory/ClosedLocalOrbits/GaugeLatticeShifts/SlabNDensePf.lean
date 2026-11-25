@@ -330,13 +330,13 @@ theorem cg_approx_mat {ι : Type} [Fintype ι] (lv : ι → ℕ) (Z : Matrix ι 
     ∃ W : Matrix ι ι E, InPat lv 1 W ∧ cg_C (IntAf F E) k (W.map (Formalism.UG.inclE (F := F) (Af F)) - Z) := by
   choose a t ht e using fun i j => cg_approx (F := F) k hk (Z i j)
   refine ⟨Matrix.of fun i j => if lv j < lv i + 1 then 0 else a i j, fun i j h => ?_, fun i j => ?_⟩
-  · simp only [Matrix.of_apply, if_pos h]
+  · simp only [Matrix.of_apply, ite_eq_left h]
   · by_cases h : lv j < lv i + 1
     · refine ⟨0, zero_mem _, ?_⟩
-      simp only [Matrix.sub_apply, Matrix.map_apply, Matrix.of_apply, if_pos h, map_zero, hZ i j h,
+      simp only [Matrix.sub_apply, Matrix.map_apply, Matrix.of_apply, ite_eq_left h, map_zero, hZ i j h,
         sub_zero, mul_zero]
     · refine ⟨t i j, ht i j, ?_⟩
-      simp only [Matrix.sub_apply, Matrix.map_apply, Matrix.of_apply, if_neg h]
+      simp only [Matrix.sub_apply, Matrix.map_apply, Matrix.of_apply, ite_eq_right h]
       exact e i j
 
 end Approx

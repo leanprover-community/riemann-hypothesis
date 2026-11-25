@@ -387,7 +387,7 @@ theorem exists_typeComplement : ∀ (K V : Type) [Group K] [AddCommGroup V] [Mod
         · obtain ⟨hA', ⟨e⟩⟩ := imRep_atom T hT hA hne
           have hle : imRep T hT S ≤ X := hcl _ S hA' hSX ⟨e.symm⟩
           exact fun s hs => hle ⟨s, hs, rfl⟩
-        · push_neg at hne
+        · push Not at hne
           intro s hs
           show T s ∈ X.toSubmodule
           rw [hne s hs]
@@ -399,7 +399,7 @@ theorem exists_typeComplement : ∀ (K V : Type) [Group K] [AddCommGroup V] [Mod
         · obtain ⟨hA', ⟨e⟩⟩ := imRep_atom T hT hA hne
           have hnX : ¬ imRep T hT S ≤ X := fun hle => hn (hcl S _ hA hle ⟨e⟩)
           exact fun s hs => hYle _ hA' hnX ⟨s, hs, rfl⟩
-        · push_neg at hne
+        · push Not at hne
           intro s hs
           show T s ∈ Y.toSubmodule
           rw [hne s hs]

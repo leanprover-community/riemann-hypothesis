@@ -36,35 +36,6 @@ section -- clump:auto
 
 namespace Formalism.HermitianLattices.CumulantEstimateDefs.CumulantEstimates
 
-section A
-open Finset
-
-end A
-
-section B
-open Finset
-open scoped ComplexOrder
-
-end B
-
-section C
-open Finset MeasureTheory
-open scoped ComplexOrder
-
-
-end C
-
-section D
-open Finset
-open scoped Nat
-
-end D
-
-section E
-open Finset Matrix Unitary
-
-end E
-
 section F
 open Finset
 
@@ -327,7 +298,7 @@ theorem isLevel_iff_free_support (k rS n : ℕ) {F : Type} [Zero F] [One F] (A :
   · rintro ⟨h1, h2, h3, h4⟩ i j hS
     by_cases hij : i = j
     · subst hij; simp [h2]
-    · rw [if_neg hij]
+    · rw [ite_eq_right hij]
       have hne : i.val ≠ j.val := fun h => hij (Fin.ext h)
       unfold IsFreePosition Formalism.HermitianLattices.CumulantEstimateDefs.CumulantEstimates.bb at hS
       simp only at hS
@@ -347,21 +318,21 @@ theorem isLevel_iff_free_support (k rS n : ℕ) {F : Type} [Zero F] [One F] (A :
   · intro h
     refine ⟨fun i j c => ?_, fun i => ?_, fun i j c c2 => ?_, fun i j c hij c2 => ?_⟩
     · have hne : i ≠ j := by rintro rfl; exact lt_irrefl _ c
-      rw [h i j ?_, if_neg hne]
+      rw [h i j ?_, ite_eq_right hne]
       unfold IsFreePosition Formalism.HermitianLattices.CumulantEstimateDefs.CumulantEstimates.bb
       unfold blk at c
       simp only
       split_ifs at c ⊢ <;> omega
-    · rw [h i i ?_, if_pos rfl]
+    · rw [h i i ?_, ite_eq_left rfl]
       unfold IsFreePosition
       simp
     · have c2' : j.val < i.val := c2
-      rw [h i j ?_, if_neg (ne_of_gt c2)]
+      rw [h i j ?_, ite_eq_right (ne_of_gt c2)]
       unfold IsFreePosition Formalism.HermitianLattices.CumulantEstimateDefs.CumulantEstimates.bb
       unfold blk at c
       simp only
       split_ifs at c ⊢ <;> omega
-    · rw [h i j ?_, if_neg hij]
+    · rw [h i j ?_, ite_eq_right hij]
       unfold IsFreePosition Formalism.HermitianLattices.CumulantEstimateDefs.CumulantEstimates.bb
       unfold blk at c2
       simp only
@@ -539,11 +510,11 @@ theorem line_param_apply (D : D7) (ρ : D.what₂.Tau) (a : Fin (D.R.k - 1 + D.R
   | left i =>
     have hi : (Fin.castAdd D.R.m i).val = i.val := rfl
     unfold rowLam Formalism.LogVandermondeBounds.StandardLattice.rowPar vN
-    rw [Fin.append_left, hi, if_pos i.2, dite_eq_left i.2]
+    rw [Fin.append_left, hi, ite_eq_left i.2, dite_eq_left i.2]
   | right j =>
     have hj : (Fin.natAdd (D.R.k - 1) j).val = D.R.k - 1 + j.val := rfl
     unfold rowLam Formalism.LogVandermondeBounds.StandardLattice.rowPar bN
-    rw [Fin.append_right, hj, if_neg (by omega), Nat.add_sub_cancel_left, dite_eq_left j.2]
+    rw [Fin.append_right, hj, ite_eq_right (by omega), Nat.add_sub_cancel_left, dite_eq_left j.2]
 
 theorem line_sign_apply (D : D7) (a : Fin (D.R.k - 1 + D.R.m)) :
     rowSgn D a = Formalism.LogVandermondeBounds.StandardLattice.plusSign D.R.k a.val := by
@@ -689,9 +660,9 @@ theorem param_vector_eq_line_param (D : D7) (ρ : D.what₂.Tau) :
   unfold lamSH lamS Formalism.LogVandermondeBounds.StandardLattice.rowPar vN bN
   simp only [Fin.val_cast]
   by_cases h : i.val < D.R.k - 1
-  · rw [dite_eq_left h, if_pos h, dite_eq_left h]
+  · rw [dite_eq_left h, ite_eq_left h, dite_eq_left h]
   · have h' : i.val - (D.R.k - 1) < D.R.m := by omega
-    rw [dite_eq_right h, if_neg h, dite_eq_left h', dite_eq_left h']
+    rw [dite_eq_right h, ite_eq_right h, dite_eq_left h', dite_eq_left h']
 
 theorem sign_vector_eq_line_sign (D : D7) : epsSH D.R = fun i => rowSgn D (Fin.cast (rank_dimension_identity D.R) i) := by
   funext i
@@ -714,7 +685,7 @@ theorem sum_indicator_even_range (c : ℕ) : ∑ j ∈ range (2 * c), (if j % 2 
 theorem count_plus_line_sign (D : D7) : nPlus (rowSgn D) = pY D := by
   unfold nPlus rowSgn
   rw [Finset.card_filter, Fin.sum_univ_add]
-  simp only [Fin.append_left, Fin.append_right, if_true, decide_eq_true_eq]
+  simp only [Fin.append_left, Fin.append_right, ite_true, decide_eq_true_eq]
   rw [Fin.sum_univ_eq_sum_range (fun j => if j % 2 = 0 then 1 else 0) D.R.m]
   obtain ⟨c, hc⟩ := D.R.m_even
   have hc' : D.R.m = 2 * c := by omega
@@ -927,12 +898,6 @@ theorem volume_eq_mass_of_definite (D : D7) (h2 : Conclusion2 D) (hv : DefiniteV
     have hpos := massI_pos D (P + Q)
     field_simp at hr
     exact hr
-
-section Landherr
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E]
-
-end Landherr
 
 end Formalism.MainNotions.StandardLattice
 
@@ -1331,7 +1296,7 @@ theorem formal_degree_line_eq (D : D7) (ρ : D.what₂.Tau) :
     · have hc' : a.val < b.val ∧
           Formalism.LogVandermondeBounds.StandardLattice.plusSign D.R.k b.val = Formalism.LogVandermondeBounds.StandardLattice.plusSign D.R.k a.val :=
         ⟨hc.1, by rw [← line_sign_apply, ← line_sign_apply]; exact hc.2.symm⟩
-      simp only [if_pos hc, if_pos hc']
+      simp only [ite_eq_left hc, ite_eq_left hc']
       have h1 := rho_sub_eq_card_opposite (rowSgn D) a b hc.1 hc.2
       rw [card_opposite_sign_between] at h1
       rw [line_param_apply, line_param_apply]
@@ -1340,7 +1305,7 @@ theorem formal_degree_line_eq (D : D7) (ρ : D.what₂.Tau) :
           Formalism.LogVandermondeBounds.StandardLattice.plusSign D.R.k b.val = Formalism.LogVandermondeBounds.StandardLattice.plusSign D.R.k a.val) := by
         rintro ⟨h1, h2⟩
         exact hc ⟨h1, by rw [line_sign_apply, line_sign_apply]; exact h2.symm⟩
-      simp only [if_neg hc, if_neg hc']
+      simp only [ite_eq_right hc, ite_eq_right hc']
   rw [e, h, ← Finset.prod_filter, ← Finset.prod_filter]
   refine Finset.prod_congr ?_ fun _ _ => rfl
   ext j
@@ -1357,10 +1322,10 @@ theorem abs_param_sup_le (D : D7) (ρ : D.what₂.Tau) :
   have : Nonempty (Fin (D.R.k - 1 + D.R.m)) := ⟨⟨0, hN⟩⟩
   have hanti := (line_param_strictAnti D ρ).antitone
   have h0 : rowLam D ρ ⟨0, hN⟩ = vN D ρ 0 := by
-    rw [line_param_apply]; unfold Formalism.LogVandermondeBounds.StandardLattice.rowPar; rw [if_pos (by show 0 < D.R.k - 1; omega)]
+    rw [line_param_apply]; unfold Formalism.LogVandermondeBounds.StandardLattice.rowPar; rw [ite_eq_left (by show 0 < D.R.k - 1; omega)]
   have h1 : rowLam D ρ ⟨D.R.k - 1 + D.R.m - 1, by omega⟩ = - bN D ρ (D.R.m - 1) := by
     rw [line_param_apply]; unfold Formalism.LogVandermondeBounds.StandardLattice.rowPar
-    rw [if_neg (by show ¬ (D.R.k - 1 + D.R.m - 1 < D.R.k - 1); omega)]
+    rw [ite_eq_right (by show ¬ (D.R.k - 1 + D.R.m - 1 < D.R.k - 1); omega)]
     congr 2
     show D.R.k - 1 + D.R.m - 1 - (D.R.k - 1) = D.R.m - 1
     omega

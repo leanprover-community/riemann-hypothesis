@@ -358,7 +358,7 @@ theorem chi_kill (K : KeyData C V O n d) (w : Fin n → C) (hw : w ≠ 0) (hP : 
   have hint : ∀ y, V.Ge 0 (χ y) := fun y => eig_int (K.ρ y) (K.ρ_int y) w hw (χ y) (hχ y)
   refine ⟨hint, ?_⟩
   obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-    by_contra hc; push_neg at hc; exact hw (funext hc)
+    by_contra hc; push Not at hc; exact hw (funext hc)
 
   have hT : Tends V (fun m => χ K.ε ^ V.l ^ m * w i) (w i) := by
     have h1 : Tends V (fun m => Matrix.mulVec (K.ρ (K.ε ^ V.l ^ m)) w i) (Matrix.mulVec K.P w i) := by
@@ -380,7 +380,7 @@ theorem chi_kill (K : KeyData C V O n d) (w : Fin n → C) (hw : w ≠ 0) (hP : 
   have h1 := congrArg (fun t => V.v (χ t)) hy
   simp only [map_mul, map_natCast, AddValuation.map_mul, V.v_l] at h1
   unfold VF.MM at hunit ⊢
-  push_neg at hunit
+  push Not at hunit
   have he0 : V.v (χ K.ε) = 0 := le_antisymm hunit (hint K.ε)
   rw [he0, zero_add] at h1
   rw [h1]
@@ -843,7 +843,7 @@ theorem coeff_extract [CharZero K] {ι : Type} [Fintype ι] [DecidableEq ι] (B 
       exact hroot t
     have hc1 := congrArg (fun p : K[X] => p.coeff 1) hq0
     simp only [hq, finsetSum_coeff, coeff_monomial_apply, Finset.sum_ite_eq', Finset.mem_range, coeff_zero] at hc1
-    rw [if_pos (by omega)] at hc1
+    rw [ite_eq_left (by omega)] at hc1
     exact hc1
   have hR1 : R.coeff 1 = (X - Polynomial.C (μ c)) * Polynomial.C (∏ c' ∈ Finset.univ.erase c, a c') := by
     rw [hR, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ c), hac, map_zero, map_zero, zero_add, mul_assoc]

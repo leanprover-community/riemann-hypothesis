@@ -130,7 +130,7 @@ theorem noCommonZero_of_readings : ∀ (D : D7) (T : Top D) (_h : LawsP T) (j : 
     rw [← e2, e3, e4]
   have e5 := (mul_eq_zero.mp e6).resolve_left hw2
   unfold rdU
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, dif_pos x.2, e5]
+  simp only [LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left x.2, e5]
   unfold toC
   rfl
 

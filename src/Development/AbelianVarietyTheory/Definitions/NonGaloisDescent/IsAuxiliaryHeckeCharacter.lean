@@ -110,8 +110,4 @@ def IsLamTie0 (Z : LamDat D) : Prop :=
 
 end Record
 
-section Examples
-
-end Examples
-
 end GlobalTheory.LamTie

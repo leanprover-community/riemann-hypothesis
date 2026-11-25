@@ -103,7 +103,7 @@ theorem sum_embeddings {E : Type} [Field E] [NumberField E] [_root_.NumberField.
 theorem atEmb_embedding {E : Type} [Field E] (v : InfinitePlace E) (z : ℂ) :
     atEmb v.embedding z = (Pi.single v z : Cinf E) := by
   unfold atEmb
-  rw [if_pos (by rw [InfinitePlace.mk_embedding])]
+  rw [ite_eq_left (by rw [InfinitePlace.mk_embedding])]
   congr 1 <;> simp
 
 theorem map_single_atEmb {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {N : Type} [AddCommGroup N]
@@ -391,8 +391,8 @@ theorem bigM_der (lab : Q → (E →+* ℂ)) (s : ℤ) (c : ℝ → GL (Fin a) (
     split_ifs <;> simp
   simp only [e2]
   by_cases hIJ : I = J
-  · simp only [if_pos hIJ]; push_cast; ring
-  · simp only [if_neg hIJ]; ring
+  · simp only [ite_eq_left hIJ]; push_cast; ring
+  · simp only [ite_eq_right hIJ]; ring
 
 theorem bigD_star (lab : Q → (E →+* ℂ)) (s : ℤ) (X : Matrix (Fin a) (Fin a) (Cinf E)) :
     bigD lab s (toL (star X)) = (bigD lab s (toL X))ᴴ := by
@@ -405,12 +405,12 @@ theorem bigD_star (lab : Q → (E →+* ℂ)) (s : ℤ) (X : Matrix (Fin a) (Fin
   · refine Finset.sum_congr rfl fun p _ => ?_
     by_cases h : ∀ r, r ≠ p → I r = J r
     · have h' : ∀ r, r ≠ p → J r = I r := fun r hr => (h r hr).symm
-      rw [if_pos h, if_pos h']
+      rw [ite_eq_left h, ite_eq_left h']
     · have h' : ¬ ∀ r, r ≠ p → J r = I r := fun h' => h fun r hr => (h' r hr).symm
-      rw [if_neg h, if_neg h', map_zero]
+      rw [ite_eq_right h, ite_eq_right h', map_zero]
   · by_cases h : I = J
-    · subst h; rw [if_pos rfl, if_pos rfl]; simp [map_sum]
-    · rw [if_neg h, if_neg (Ne.symm h), map_zero]
+    · subst h; rw [ite_eq_left rfl, ite_eq_left rfl]; simp [map_sum]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h), map_zero]
 
 end
 
@@ -483,7 +483,7 @@ theorem expand (X : Matrix (Fin a) (Fin a) (Cinf E)) (hX : Xᴴ = X) :
     ∑ x, ip X (fr x).1 • (fr x).1 = X := by
   ext p q w
   simp only [Matrix.sum_apply, Finset.sum_apply, Matrix.smul_apply, Pi.smul_apply, fr_apply, smul_add, smul_ite,
-    smul_zero, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, ip_fr]
+    smul_zero, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, ip_fr]
   have h : X q p w = star (X p q w) := by
     have h0 := congrFun (congrFun hX q) p
     rw [← h0]; rfl
@@ -698,7 +698,7 @@ theorem gelfVal_one_eq {n : ℕ} (χ : Fin n → ℂ) :
     · by_cases h2 : a < b
       · simp [h1, h2]
       · simp [h1, h2]
-  simp only [e, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_ite_mem,
+  simp only [e, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_ite_mem,
     Finset.univ_inter, Finset.sum_const, nsmul_eq_mul, Fin.card_Ioi, mul_one]
 
 theorem casVal_holds : CasVal := by
@@ -801,14 +801,14 @@ theorem min_irred (hadj : ∀ g, ∃ g', T g' = (T g)ᴴ) {D : Submodule ℂ (I 
   by_cases hg : ∃ w ∈ A, ⟪w, WithLp.toLp 2 v₀⟫_ℂ ≠ 0
   · exact Or.inr (Submodule.eq_of_le_of_finrank_le hAS (hmin A ⟨hA, fun v hv => hS.2.1 v (hAS hv), hg⟩))
   · left
-    push_neg at hg
+    push Not at hg
     have hB : Stab T (Aᗮ ⊓ S) := stab_inf (stab_orth hadj hA) hS.1
     have hsum := Submodule.finrank_add_inf_finrank_orthogonal hAS
     by_cases hg' : ∃ w ∈ Aᗮ ⊓ S, ⟪w, WithLp.toLp 2 v₀⟫_ℂ ≠ 0
     · have := hmin _ ⟨hB, fun v hv => hS.2.1 v hv.2, hg'⟩
       exact Submodule.finrank_eq_zero.1 (by omega)
     · exfalso
-      push_neg at hg'
+      push Not at hg'
       obtain ⟨w, hw, hne⟩ := hS.2.2
       rw [← Submodule.sup_orthogonal_inf_of_hasOrthogonalProjection hAS] at hw
       obtain ⟨x, hx, y, hy, rfl⟩ := Submodule.mem_sup.1 hw
@@ -980,7 +980,7 @@ lemma cxkey [_root_.NumberField.IsTotallyComplex E] (τ τ' : E →+* ℂ) :
   by_cases hm : InfinitePlace.mk τ' = InfinitePlace.mk τ
   · rcases InfinitePlace.mk_eq_iff.mp hm with h | h
     · subst h
-      rw [if_pos rfl, coord_atEmb, coord_atEmb, Complex.I_mul_I]
+      rw [ite_eq_left rfl, coord_atEmb, coord_atEmb, Complex.I_mul_I]
       norm_num
     · have h' : τ' = ComplexEmbedding.conjugate τ := by
         rcases InfinitePlace.mk_eq_iff.mp hm.symm with h2 | h2
@@ -992,11 +992,11 @@ lemma cxkey [_root_.NumberField.IsTotallyComplex E] (τ τ' : E →+* ℂ) :
         intro e
         apply IsTotallyComplex.complexEmbedding_not_isReal τ'
         rw [ComplexEmbedding.isReal_iff, h, e]
-      rw [if_neg hne, h', coord_conj_atEmb, coord_conj_atEmb, map_one, Complex.conj_I, mul_neg,
+      rw [ite_eq_right hne, h', coord_conj_atEmb, coord_conj_atEmb, map_one, Complex.conj_I, mul_neg,
         Complex.I_mul_I]
       norm_num
   · have hne : τ' ≠ τ := fun e => hm (by rw [e])
-    rw [if_neg hne, coord_atEmb_ne hm, coord_atEmb_ne hm]
+    rw [ite_eq_right hne, coord_atEmb_ne hm, coord_atEmb_ne hm]
     simp
 
 end
@@ -1024,27 +1024,27 @@ theorem bigCx_holds : BigCx := by
       · refine Finset.sum_congr rfl fun p _ => ?_
         rw [apply_ite (coord (lab p)), map_zero]
         by_cases h1 : ∀ r, r ≠ p → I r = J r
-        · rw [if_pos h1]
+        · rw [ite_eq_left h1]
           by_cases h4 : i = I p ∧ j = J p
-          · rw [if_pos h4, if_pos ⟨h1, h4.1.symm, h4.2.symm⟩]
-          · rw [if_neg h4, if_neg (fun h => h4 ⟨h.2.1.symm, h.2.2.symm⟩)]
-        · rw [if_neg h1, if_neg (fun h => h1 h.1)]
+          · rw [ite_eq_left h4, ite_eq_left ⟨h1, h4.1.symm, h4.2.symm⟩]
+          · rw [ite_eq_right h4, ite_eq_right (fun h => h4 ⟨h.2.1.symm, h.2.2.symm⟩)]
+        · rw [ite_eq_right h1, ite_eq_right (fun h => h1 h.1)]
       · by_cases h1 : I = J
         · by_cases h2 : i = j
           · subst h2
-            rw [if_pos h1, if_pos ⟨h1, rfl⟩]
+            rw [ite_eq_left h1, ite_eq_left ⟨h1, rfl⟩]
             congr 1
             refine Finset.sum_congr rfl fun τ' _ => ?_
-            simp only [and_self, apply_ite (coord τ'), map_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-          · rw [if_pos h1, if_neg (fun h => h2 h.2)]
+            simp only [and_self, apply_ite (coord τ'), map_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+          · rw [ite_eq_left h1, ite_eq_right (fun h => h2 h.2)]
             rw [Finset.sum_eq_zero fun τ' _ => Finset.sum_eq_zero fun k _ => by
-              rw [if_neg (fun h => h2 (h.1.trans h.2.symm)), map_zero]]
+              rw [ite_eq_right (fun h => h2 (h.1.trans h.2.symm)), map_zero]]
             simp
-        · rw [if_neg h1, if_neg (fun h => h1 h.1)]
+        · rw [ite_eq_right h1, ite_eq_right (fun h => h1 h.1)]
     have hS : (1 / 2 : ℂ) * (∑ τ' : E →+* ℂ, coord τ' (atEmb τ 1) -
         Complex.I * ∑ τ' : E →+* ℂ, coord τ' (atEmb τ Complex.I)) = 1 := by
       simp only [Finset.mul_sum, ← Finset.sum_sub_distrib]
-      simp only [cxkey, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [cxkey, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have hE : ∀ I J : Q → Fin a, cx τ (bigD lab s) i j I J =
         (∑ p, if (∀ r, r ≠ p → I r = J r) ∧ I p = i ∧ J p = j then (if lab p = τ then (1 : ℂ) else 0) else 0) -
           if I = J ∧ i = j then (s : ℂ) else 0 := by
@@ -1070,17 +1070,17 @@ theorem bigCx_holds : BigCx := by
         · rw [Finset.sum_eq_single (Function.update I p j)]
           · have hc : (∀ r, r ≠ p → I r = Function.update I p j r) ∧ I p = i ∧ Function.update I p j p = j :=
               ⟨fun r hr => by rw [Function.update_of_ne hr], hi, by simp⟩
-            rw [if_pos hc, if_pos hl, if_pos hl, if_pos hi, one_mul]
+            rw [ite_eq_left hc, ite_eq_left hl, ite_eq_left hl, ite_eq_left hi, one_mul]
           · intro J _ hJ
-            rw [if_neg, zero_mul]
+            rw [ite_eq_right, zero_mul]
             intro h
             exact hJ (Function.eq_update_iff.mpr ⟨h.2.2, fun r hr => (h.1 r hr).symm⟩)
           · intro h
             exact absurd (Finset.mem_univ _) h
-        · simp only [if_pos hl, if_neg hi]
+        · simp only [ite_eq_left hl, ite_eq_right hi]
           refine Finset.sum_eq_zero fun J _ => ?_
-          rw [if_neg (fun h => hi h.2.1), zero_mul]
-      · simp only [if_neg hl]
+          rw [ite_eq_right (fun h => hi h.2.1), zero_mul]
+      · simp only [ite_eq_right hl]
         simp
     · by_cases h : i = j
       · simp [h]
@@ -1213,7 +1213,7 @@ theorem tensForm_holds : TensForm := by
     simp only [B, LinearMap.mk₂'ₛₗ_apply, ec_lTensor, map_sum, map_smul, smul_eq_mul]
     simp only [Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, sub_mul,
       Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, Complex.sub_re, Complex.re_sum,
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, Complex.sub_re, Complex.re_sum,
       Complex.re_ofReal_mul] at key
     rw [Complex.re_sum, Complex.re_sum, Finset.mul_sum]
     simp only [Complex.re_sum]

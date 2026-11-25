@@ -91,10 +91,10 @@ private theorem arFact_agree (e e' a b : ℕ → ℂ) (ha : Rec e a) (hb : Rec e
       have hlt' : t < p * t := by have := hpp.two_le; nlinarith
       have hbt := ih t (by nlinarith) ht
         (fun q hq hqd => hsub q hq (dvd_mul_of_dvd_right hqd p))
-      rw [if_pos (dvd_mul_right p t), hdt] at h1 h2
+      rw [ite_eq_left (dvd_mul_right p t), hdt] at h1 h2
       rw [hbt, hb', hp p hpp, ← hep] at h2
       linear_combination h2 - h1
-    · rw [if_neg hpd, mul_zero, add_zero] at h1 h2
+    · rw [ite_eq_right hpd, mul_zero, add_zero] at h1 h2
       rw [hb', hp p hpp] at h2
       rw [h2, h1]
 
@@ -109,7 +109,7 @@ theorem UpperTheory.V.Af.Rs.arFact :
   by_cases hgood : ∀ p : ℕ, p.Prime → p ∣ n → e p = e' p
   · have hag := arFact_agree e e' a b ha hb hp n hn hgood
     exact ⟨n, hag, 1, by ring, by simp, by simp [hag]⟩
-  · push_neg at hgood
+  · push Not at hgood
     obtain ⟨p, hpp, hpn, hne⟩ := hgood
     have hap : a p = 0 := hbad p hpp hne
     have hbp : b p = 0 := by rw [hp p hpp, hap]
@@ -121,8 +121,8 @@ theorem UpperTheory.V.Af.Rs.arFact :
       have ht : 1 ≤ t := Nat.pos_of_ne_zero (by rintro rfl; simp at hn'')
       have hdt : p * t / p = t := Nat.mul_div_cancel_left t hpp.pos
       have h2 := hb.2 p hpp (p * t) hn''
-      rw [if_pos (dvd_mul_right p t), hdt, hap, zero_mul] at h1
-      rw [if_pos (dvd_mul_right p t), hdt, hbp, zero_mul] at h2
+      rw [ite_eq_left (dvd_mul_right p t), hdt, hap, zero_mul] at h1
+      rw [ite_eq_left (dvd_mul_right p t), hdt, hbp, zero_mul] at h2
       have hA : a (p * (p * t)) = -(e p * a t) := by linear_combination h1
       have hB : b (p * (p * t)) = -(e' p * b t) := by linear_combination h2
       have hat : a t ≠ 0 := by
@@ -142,7 +142,7 @@ theorem UpperTheory.V.Af.Rs.arFact :
           _ = ‖a n₁‖ * ((p * m : ℕ) : ℝ) ^ r := by push_cast; ring
     · exfalso
       apply han
-      rw [if_neg hpd, mul_zero, add_zero, hap, zero_mul] at h1
+      rw [ite_eq_right hpd, mul_zero, add_zero, hap, zero_mul] at h1
       exact h1
 end -- clump:auto
 end -- clump:auto
@@ -270,7 +270,7 @@ theorem UpperTheory.V.Af.Rs.clsEx :
     ψ (h.choose.1 : ZMod L) * F (h.choose.2 • z) else 0, ?_⟩
   intro n γ z
   have h : ∃ p : ℕ × SL(2, ℤ), cls L ((p.1 : ℤ) • row p.2) = cls L ((n : ℤ) • row γ) := ⟨(n, γ), rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact clsEx_key L ψ F hF n _ γ _ h.choose_spec z
 end -- clump:auto
 end -- clump:auto
@@ -1111,7 +1111,7 @@ private lemma UpperTheory.V.Af.Rs.stripInt_maj (A B s : ℝ) (hs : 1 < s) :
     refine h1'.congr_fun ?_ measurableSet_Ioc
     intro y hy
     have hy0 : 0 < y := hy.1
-    simp only [if_pos hy.2]
+    simp only [ite_eq_left hy.2]
     rw [Real.rpow_sub hy0, Real.rpow_two, mul_div_assoc]
   · have h2 : IntegrableOn (fun y : ℝ => y ^ (-2 : ℝ)) (Ioi 1) :=
       integrableOn_Ioi_rpow_of_lt (by norm_num) zero_lt_one
@@ -1120,7 +1120,7 @@ private lemma UpperTheory.V.Af.Rs.stripInt_maj (A B s : ℝ) (hs : 1 < s) :
     intro y hy
     have hy1 : (1:ℝ) < y := hy
     have hy0 : 0 < y := by linarith
-    simp only [if_neg (not_le.mpr hy1)]
+    simp only [ite_eq_right (not_le.mpr hy1)]
     rw [Real.rpow_neg hy0.le, Real.rpow_two, div_eq_mul_inv]
 
 theorem UpperTheory.V.Af.Rs.stripInt :

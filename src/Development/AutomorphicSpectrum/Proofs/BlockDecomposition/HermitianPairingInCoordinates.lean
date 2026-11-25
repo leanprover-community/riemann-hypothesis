@@ -44,7 +44,7 @@ theorem sum_sum_split {M : Type} [AddCommMonoid M] {n : ℕ} (f : Fin n → Fin 
     exact (Finset.sum_subtype _ (by simp) (fun a : Fin n × Fin n => g a.1 a.2)).symm
   rw [Finset.sum_add_distrib, hsub (fun a b => f a b), hsub (fun a b => f b a)]
   conv_lhs => enter [2, a, 2, b]; rw [h1 a b]
-  simp only [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_comm (f := fun a b => if b < a then f a b else 0)]
   abel
 

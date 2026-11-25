@@ -28,7 +28,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem exists_conj_ne (h : IsCMExt F E σ) : ∃ e : E, σ e ≠ e := by
   by_contra hσ
-  push_neg at hσ
+  push Not at hσ
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
   have := h.2.1
   apply IsTotallyComplex.complexEmbedding_not_isReal τ

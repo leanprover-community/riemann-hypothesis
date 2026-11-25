@@ -46,7 +46,7 @@ theorem neg_of_perp' {x : Frame X.Ψ r} (τ : X.Ψ) (hA : (X.gramPos x τ).PosDe
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [hermC_smul_left, hermC_sum_right]
     simp_rw [hermC_smul_right, hg, Matrix.diagonal_apply]
-    simp only [mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     ring
   by_contra! hcon
   let Q : Matrix (Fin r) (Option (Fin X.p0)) ℂ :=

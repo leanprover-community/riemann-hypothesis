@@ -263,7 +263,7 @@ theorem un_mat {γ : GL (Fin r) E} (h : IsUn X γ) :
   have := h (Pi.single a 1) (Pi.single b 1)
   simp only [herm, mulVec_single_one, Pi.single_apply, cc, apply_ite, map_one, map_zero] at this
   simp only [ite_mul, one_mul, mul_one, zero_mul, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at this
+    Finset.mem_univ, ite_true] at this
   rw [← this, Finset.sum_comm]
   simp [Matrix.mul_apply, ccT, cc, Finset.sum_mul]
 

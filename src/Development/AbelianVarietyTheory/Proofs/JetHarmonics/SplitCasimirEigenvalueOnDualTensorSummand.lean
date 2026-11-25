@@ -62,7 +62,7 @@ theorem dualTens_casimir_apply {M : Type} [NormedAddCommGroup M] [InnerProductSp
       = E a b (E b a (x i)) - (if i = a then E a b (x b) else 0) - (if i = b then E b a (x a) else 0)
         + (if i = b then x b else 0) := by
     intro a b
-    simp only [dualTens, map_sub, if_true]
+    simp only [dualTens, map_sub, ite_true]
     split_ifs <;> (try simp only [map_zero]) <;> abel
   have h1 : ∑ a, ∑ b, (if i = a then E a b (x b) else 0) = ∑ c, E i c (x c) := by
     rw [Finset.sum_comm]; simp

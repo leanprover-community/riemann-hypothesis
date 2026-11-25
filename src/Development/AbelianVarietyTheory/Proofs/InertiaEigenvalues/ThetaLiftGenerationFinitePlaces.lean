@@ -276,7 +276,7 @@ theorem mirC_conj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type)
     unfold mirC
     rw [h2]
     refine ite_congr_of_iff (and_congr (h1 g) ?_)
-    rw [if_neg Bool.false_ne_true, if_neg Bool.false_ne_true]
+    rw [ite_eq_right Bool.false_ne_true, ite_eq_right Bool.false_ne_true]
     exact h3
   · refine ⟨_, gl_inv_mulVec_ne_zero (R.eG x PP) ha, fun g => ?_⟩
     have h3 := conj_triv_mod_line_iff (R.eG x PP) (R.eG g PP) a
@@ -284,7 +284,7 @@ theorem mirC_conj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type)
     unfold mirC
     rw [h2]
     refine ite_congr_of_iff (and_congr (h1 g) ?_)
-    rw [if_pos rfl, if_pos rfl]
+    rw [ite_eq_left rfl, ite_eq_left rfl]
     exact h3
 
 end GlobalTheory.DownLift.GenFinite

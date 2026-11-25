@@ -588,7 +588,7 @@ theorem integral_act (hμ : μ.IsHaarMeasure) (h𝓕 : IsFundamentalDomain (GQ V
     rw [h1, levChi_inv hκ, mul_inv_cancel_right, actG0, dite_eq_left hk, star_mul']
     ring
   · have hk' : ¬ ∃ κ, IsLevelLift V β L g⁻¹ κ := fun ⟨κ, h⟩ => hk ⟨κ⁻¹, by simpa using isLiftFlagGroup_inv h⟩
-    simp [actG0, dif_neg hk, dif_neg hk']
+    simp [actG0, dite_eq_right hk, dite_eq_right hk']
 
 theorem ipM_gaL (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) (hμ : μ.IsHaarMeasure) (h𝓕 : IsFundamentalDomain (GQ V) 𝓕 μ)
     (eG : G ≃* G0 L.Pg L.r) (c : G → ℂ) (hc : ∀ g, c g⁻¹ = star (c g)) {X Y : MMap M}

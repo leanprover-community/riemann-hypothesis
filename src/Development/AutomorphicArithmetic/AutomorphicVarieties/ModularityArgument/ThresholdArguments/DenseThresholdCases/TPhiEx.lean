@@ -536,7 +536,7 @@ private theorem lemB {n : ℕ} {B A G : Type} [CommRing B] [CommRing A] [Group G
       exact hg (by rw [hx', h0, map_zero])
     rw [k1 ι y _ subset_rfl, k1 G (gen B x.coeff.support) y.coeff.support (fun g hg => by
       rw [Finsupp.mem_support_iff, gen_coeff] at hg
-      exact hsub (by_contra fun h0 => hg (if_neg h0))), ← AlgHom.comp_apply, ← AlgHom.comp_apply]
+      exact hsub (by_contra fun h0 => hg (ite_eq_right h0))), ← AlgHom.comp_apply, ← AlgHom.comp_apply]
     congr 1
     ext g
     simp only [AlgHom.comp_apply, MvPolynomial.aeval_X, gen_coeff, ← hx']
@@ -851,7 +851,7 @@ private theorem pp_tr {n : ℕ} {A B G H : Type} [CommRing A] [CommRing B] [Grou
   simp only [W.GDet.tr, W.GDet.lam]
   have h0 : f ((D.chi (MonoidAlgebra.mapDomainRingHom B π (MonoidAlgebra.single h 1 * y))).coeff (n - 1)) = 0 := by
     rw [← Polynomial.coeff_map, hc, Polynomial.coeff_X_pow]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   rw [(map_eq_zero_iff f hf).1 h0, mul_zero]
 
 

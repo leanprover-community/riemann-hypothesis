@@ -419,7 +419,7 @@ theorem norm_inv_unit (F : Type) [Field F] [NumberField F] (hF : IsTotallyReal F
     ‖((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F)‖ =
       ((∏ w : InfinitePlace F, ‖(n : InfiniteAdeleRing F) w‖₊)⁻¹ : ℝ≥0) := by
   have hmult : ∀ w : InfinitePlace F, w.mult = 1 := fun w => by
-    rw [InfinitePlace.mult, if_pos (hF.isReal w)]
+    rw [InfinitePlace.mult, ite_eq_left (hF.isReal w)]
   have hw : ∀ w : InfinitePlace F,
       ‖((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F) w‖ =
         ‖(n : InfiniteAdeleRing F) w‖⁻¹ := fun w => by
@@ -953,7 +953,7 @@ theorem md_eq (hF : IsTotallyReal F) (n : (AF F)ˣ) (T : Finset (HeightOneSpectr
   rw [finprod_eq_prod_of_mulSupport_subset _ hsub]
   congr 1
   refine Finset.prod_congr rfl fun w _ => ?_
-  rw [InfinitePlace.mult, if_pos (hF.isReal w), pow_one]
+  rw [InfinitePlace.mult, ite_eq_left (hF.isReal w), pow_one]
 
 end Comp
 
@@ -1218,7 +1218,7 @@ theorem equi_unit : PositivityTheory.Rg.Mass.Equi → ∀ (F E : Type) [Field F]
         simp only [hTd, hU]
         rw [e1, mul_zero, Set.indicator_of_notMem (by exact hall)]
     · rw [Set.indicator_of_notMem (by exact hx)]
-      push_neg at hx
+      push Not at hx
       obtain ⟨v, hv, i, hi⟩ := hx
       simp only [hU]
       have hn' : X ∉ {X : Fin 1 → Fin 1 → E | ∀ v, (fun a i => cV v (y : AF F ⊗[F] E) * ratTup (Fv F v) X a i) ∈ A v} :=
@@ -1377,8 +1377,8 @@ theorem ideleModule_bounded_on_compact : ∀ (K : Type) [Field K] [NumberField K
           · exact (Valued.toNormedField.norm_le_one_iff).2
               ((HeightOneSpectrum.mem_adicCompletionIntegers (R := 𝓞 K) K v).1 (hS ha v hv))
       _ = ∏ v ∈ S, (if v ∈ S then max (Bf v) 1 else 1) :=
-          (Finset.prod_subset Finset.subset_union_right fun v _ hv => if_neg hv).symm
-      _ = ∏ v ∈ S, max (Bf v) 1 := Finset.prod_congr rfl fun v hv => if_pos hv
+          (Finset.prod_subset Finset.subset_union_right fun v _ hv => ite_eq_right hv).symm
+      _ = ∏ v ∈ S, max (Bf v) 1 := Finset.prod_congr rfl fun v hv => ite_eq_left hv
   exact mul_le_mul h1 h2 (IdeleGroup.finiteModule_pos a).le
     (Finset.prod_nonneg fun _ _ => by positivity)
 

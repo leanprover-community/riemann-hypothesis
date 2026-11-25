@@ -282,10 +282,10 @@ theorem exists_cuspWeight : Top.Given → ∀ (E : Type) [Field E] [NumberField 
   let U : ((Σ k, J k) → ℂ) → ℝ := fun w => if h : ∃ x, HasWeight Or w x then h.choose else 0
   have hU : ∀ {w x}, HasWeight Or w x → U w = x := fun {w x} h => by
     have hex : ∃ x, HasWeight Or w x := ⟨x, h⟩
-    simp only [U, dif_pos hex]
+    simp only [U, dite_eq_left hex]
     exact hex.choose_spec.unique h
   have hU0 : ∀ {w}, (¬ ∃ x, HasWeight Or w x) → U w = 0 := fun {w} h => by
-    simp only [U, dif_neg h]
+    simp only [U, dite_eq_right h]
   have hw : ∀ {z : Sp ℂ ⟶ Or.𝔐.X} {w} {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ] (R : RiemLat E g Λ)
       {σ : CMType H → (𝓞 E →+* ℂ)}, CoordsAt Or.𝔐.ξ Dc.y z w → Or.𝔐.Interior z → FibreLat Or.𝔐.t z R →
       Or.𝔐.LabVal z Or.sm σ → HasWeight Or w (R.cuspW σ) := by
@@ -433,7 +433,7 @@ theorem cxModel_of_res {P : Ideal (MRing J)} {d : ℕ} (R : AnLogRes P ⊤ d) (h
   have hproj : ∀ z ∈ mcPts P, ReciprocityTheory.ChartRestriction.G.Geo.SameOrbit (R.lift (proj z) (proj z)) z := by
     intro z hz
     have h := hex z hz
-    simp only [proj, dif_pos h]
+    simp only [proj, dite_eq_left h]
     exact h.choose_spec
   have hproj_eq : ∀ z ∈ mcPts P, ∀ x, ReciprocityTheory.ChartRestriction.G.Geo.SameOrbit (R.lift x x) z → proj z = x := by
     intro z hz x hx
@@ -933,8 +933,8 @@ theorem ph_conj (hL : LogHom D ref.a w) (hr : IsConjInvariantH ref) (hO : ConjOf
   rw [← cj_proj M hz]
   unfold ph
   by_cases h : M.proj z ∈ Yo M
-  · rw [if_pos h, if_pos ((hY _).2 h), hg _ h]
-  · rw [if_neg h, if_neg fun h' => h ((hY _).1 h'),
+  · rw [ite_eq_left h, ite_eq_left ((hY _).2 h), hg _ h]
+  · rw [ite_eq_right h, ite_eq_right fun h' => h ((hY _).1 h'),
       limsup_invol (continuous_cj M) hi (fun x hx => (hY x).2 hx) hg]
 
 end LevelTowerAlt.Bdd
@@ -966,14 +966,14 @@ theorem LevelTowerAlt.potential_charts_regular_bound : ∀ (K : Type) [Fintype K
       (fun v hv => (hloc j v hv).1.continuousWithinAt)
       (_root_.GlobalTheory.CompanionTheory.AnForm.PshLocal.isPsh_of_locally _ _ _ ((P.chart j).open_target.sdiff (ReciprocityTheory.AnForm.A.PlurisubharmonicExtension.coordDiv_closed _))
         fun v hv => (hloc j v hv).2)
-      (fun v hv => if_pos ((symm_mem_Yo M P hA j hv.1).2 hv.2)) fun v hv hS => ?_
+      (fun v hv => ite_eq_left ((symm_mem_Yo M P hA j hv.1).2 hv.2)) fun v hv hS => ?_
     show ph M ref w ((P.chart j).symm v) = _
     unfold ph
-    rw [if_neg fun h => (symm_mem_Yo M P hA j hv).1 h hS, ← map_nhds_Yo M P hA j hv]
+    rw [ite_eq_right fun h => (symm_mem_Yo M P hA j hv).1 h hS, ← map_nhds_Yo M P hA j hv]
     rfl
   · show ph M ref w (M.proj z) = _
     unfold ph
-    rw [if_pos ((proj_mem_Yo M hz.2).2 hz.1.2), relative_weight_projection M hL hz.1]
+    rw [ite_eq_left ((proj_mem_Yo M hz.2).2 hz.1.2), relative_weight_projection M hL hz.1]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PlurisubharmonicCones.PotentialChartsRegularBound =====

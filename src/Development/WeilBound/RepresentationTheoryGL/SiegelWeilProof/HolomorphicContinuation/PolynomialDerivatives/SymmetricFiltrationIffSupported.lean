@@ -286,7 +286,7 @@ private theorem list_prod_pderiv_pow_monomial (e : Fin m × Fin n × Bool → �
     have h0 : (∑ k ∈ L.toFinset, Finsupp.single k (e k)) a = 0 := by
       rw [Finsupp.finsetSum_apply]
       refine Finset.sum_eq_zero fun k hk => ?_
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       rintro rfl
       exact haL hk
     congr 1
@@ -320,7 +320,7 @@ theorem op_inj {s : Sym m n} (h : ∀ f, op s f = 0) : s = 0 := by
   simp only [coeff_sum, AddMonoidAlgebra.coeff_zero] at h2
   simp only [MvPolynomial.coeff_smul, coeff_monomial, smul_eq_mul] at h2
   rw [Finset.sum_eq_single t0] at h2
-  · rw [if_pos] at h2
+  · rw [ite_eq_left] at h2
     · refine absurd h2 (mul_ne_zero (mem_support_iff.1 ht0) ?_)
       refine Finset.prod_ne_zero_iff.2 fun k _ => ?_
       rw [Finsupp.comapDomain_apply, Nat.descFactorial_self]

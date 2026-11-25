@@ -30,7 +30,7 @@ theorem hMat_rev (m : ℕ) (z : ℂ) : U.hMat (Fin.revPerm : Equiv.Perm (Fin m))
   simp only [G.ptLong, G.wMat, Matrix.smul_apply, Matrix.of_apply, Fin.revPerm_apply, smul_eq_mul]
   by_cases h : a.rev = b
   · subst h; simp
-  · rw [if_neg h, if_neg (fun h' => h h'.symm)]; simp
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h h'.symm)]; simp
 
 instance lw_rev_empty (m : ℕ) : IsEmpty (U.LW (Fin.revPerm : Equiv.Perm (Fin m))) :=
   ⟨fun q => by
@@ -173,7 +173,7 @@ theorem upper_mulVec_last {m : ℕ} (u : G.UT (m + 1) → ℂ) (x : Fin (m + 1) 
   rw [Finset.sum_eq_single (Fin.last m)]
   · simp
   · intro j _ hj
-    rw [if_neg (fun h => hj h.symm), dite_eq_right (not_lt.2 (Fin.le_last j))]
+    rw [ite_eq_right (fun h => hj h.symm), dite_eq_right (not_lt.2 (Fin.le_last j))]
     simp
   · simp
 

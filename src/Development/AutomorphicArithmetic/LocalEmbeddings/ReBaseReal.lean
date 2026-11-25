@@ -21,20 +21,6 @@ noncomputable section
 
 namespace GlobalTheory.ReBase
 
-section First
-
-open scoped Matrix Classical
-open Formalism.BasicNotions.TH
-open GlobalTheory.RealLift GlobalTheory.RealLift.LieFirstPf GlobalTheory.RealLift.FirstLine
-
-end First
-
-section Second
-
-open GlobalTheory.RealLift
-
-end Second
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
 section Pair

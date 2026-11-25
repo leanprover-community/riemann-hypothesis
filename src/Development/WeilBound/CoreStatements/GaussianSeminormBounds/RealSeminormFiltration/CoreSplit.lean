@@ -33,7 +33,7 @@ theorem minusPart_small {σ : Type} (A : Module.End ℂ (MvPolynomial σ ℂ)) {
     {Q : MvPolynomial σ ℂ} (hQ : Q ∈ homog σ d) : minusPart A Q = 0 := by
   unfold minusPart
   refine finsum_eq_zero_of_forall_eq_zero fun e => ?_
-  rw [homogeneousComponent_of_mem hQ, if_neg (by omega), map_zero, map_zero]
+  rw [homogeneousComponent_of_mem hQ, ite_eq_right (by omega), map_zero, map_zero]
 
 theorem charSplit (c : ℂ) (c0 : ℚ) (hc : c = c0) (d : ℕ) (W : Submodule ℂ (Pol p q r s))
     (hWd : W ≤ homog (Ix p q × Ix r s) d) (hW : KSt (units (fockAct1 p q r s)) W) :

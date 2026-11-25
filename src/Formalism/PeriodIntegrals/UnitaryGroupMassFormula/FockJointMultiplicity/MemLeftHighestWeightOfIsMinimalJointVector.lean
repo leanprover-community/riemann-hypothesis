@@ -33,9 +33,9 @@ theorem coeff_diag (T : Module.End ℂ (MvPolynomial σ ℂ)) (w : (σ →₀ �
     simp only [MvPolynomial.coeff_smul, coeff_monomial, smul_eq_mul]
     by_cases h : m = e
     · subst h
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       ring
   · rw [map_add (f := _), MvPolynomial.coeff_add, MvPolynomial.coeff_add, hp, hq, mul_add]
 
@@ -76,11 +76,11 @@ theorem noVar_of_pderiv_eq_zero {P : MvPolynomial σ ℂ} {v : σ} (h : pderiv v
     rw [map_sum, coeff_sum]
     simp only [pderiv_monomial, coeff_monomial]
     rw [Finset.sum_eq_single e]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro b _ hbe
       by_cases hbv : b v = 0
       · simp [hbv]
-      · rw [if_neg]
+      · rw [ite_eq_right]
         intro hb
         apply hbe
         have h1 : Finsupp.single v 1 ≤ b := Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr hbv)
@@ -121,7 +121,7 @@ theorem gR_pos_lemma (u v : κ → σ) (pos : κ → Bool) (hu : Function.Inject
   unfold gR at h0
 
   rw [map_sum, Finset.sum_eq_single c0] at h0
-  · rw [if_pos hc0, key, pderiv_X_self, mul_one] at h0
+  · rw [ite_eq_left hc0, key, pderiv_X_self, mul_one] at h0
     exact h0
   · intro c _ hc
     split_ifs with hpc
@@ -219,7 +219,7 @@ theorem pure_gen {ι κ : Type*} [Fintype ι] [Fintype κ] (x : ι → κ → �
       (Finset.sum_eq_zero_iff_of_nonneg hnn).mp hz c (Finset.mem_univ c)
     have hpc : pos a c = true := by
       by_contra hpc
-      rw [if_neg hpc] at hc0
+      rw [ite_eq_right hpc] at hc0
       omega
     refine ⟨by omega, ?_⟩
     rw [hpc]
@@ -235,7 +235,7 @@ theorem pure_gen {ι κ : Type*} [Fintype ι] [Fintype κ] (x : ι → κ → �
       (Finset.sum_eq_zero_iff_of_nonneg hnn).mp hz c (Finset.mem_univ c)
     have hpc : pos a c = false := by
       by_contra hpc
-      rw [if_pos (by simpa using hpc)] at hc0
+      rw [ite_eq_left (by simpa using hpc)] at hc0
       omega
     refine ⟨hs.ne, ?_⟩
     rw [hpc]
@@ -378,10 +378,10 @@ theorem leftRootOperator_eq_signedPolarization {p q r s : ℕ} (a b : Ix p q) (h
   unfold raiB lowB
   rw [hsame c]
   by_cases h : linePos ((a, c) : Ln p q r s) = true
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     simp
   · have hne : ((b, c) : Ln p q r s) ≠ (a, c) := fun e => hab (Prod.ext_iff.mp e).1.symm
-    simp only [if_neg h]
+    simp only [ite_eq_right h]
     simp [Derivation.leibniz, pderiv_X_of_ne hne]
 
 theorem rightRootOperator_eq_signedPolarization {p q r s : ℕ} (c d : Ix r s) (hcd : c ≠ d)
@@ -396,10 +396,10 @@ theorem rightRootOperator_eq_signedPolarization {p q r s : ℕ} (c d : Ix r s) (
   unfold raiB lowB
   rw [hsame a]
   by_cases h : linePos ((a, c) : Ln p q r s) = true
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     simp
   · have hne : ((a, d) : Ln p q r s) ≠ (a, c) := fun e => hcd (Prod.ext_iff.mp e).2.symm
-    simp only [if_neg h]
+    simp only [ite_eq_right h]
     simp [Derivation.leibniz, pderiv_X_of_ne hne]
 
 theorem ker_of_hw {p q : ℕ} {V : Type*} [AddCommGroup V] [Module ℂ V] {act : Mat p q →ₗ[ℂ] Module.End ℂ V}

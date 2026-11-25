@@ -308,7 +308,7 @@ theorem GlobalTheory.BKLim.beta_step : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt 
     have h := (GlobalTheory.AinfEPow.theta_eq_zero_iff bk _).2 ((dvd_pow_self _ hm.ne').trans (hent a b))
 
     simp only [σ, map_sub, map_sum, map_mul, GlobalTheory.BKLim.BetaBd.θ_σA_ev, hθβ, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     rw [sub_eq_zero] at h
     have hl := pow_ne_zero k hlOC
     apply mul_right_cancel₀ hl
@@ -353,7 +353,7 @@ theorem GlobalTheory.BKLim.beta_step : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt 
   rw [← GlobalTheory.AinfEPow.theta_eq_zero_iff] at hX
 
   simp only [σ, map_add (f := _), map_sub, map_mul, map_pow, map_natCast, map_sum, GlobalTheory.BKLim.BetaBd.θ_σA_ev, hP,
-  ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at hX
+  ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at hX
   refine ⟨-Per.θ l (η p q), ?_⟩
   simp only [Matrix.of_apply]
   linear_combination hX
@@ -550,7 +550,7 @@ theorem GlobalTheory.BKLim.beta_bdd_denominators : ∀ (l : ℕ) [Fact l.Prime] 
   · refine ⟨(l : bk.S) ^ (S m - k) • β, ?_⟩
     have := isBeta_scale F hβ (S m - k)
     rwa [Nat.add_sub_cancel' hk.le] at this
-  push_neg at hk
+  push Not at hk
   have key : ∀ i, 1 ≤ i → i ≤ m → ∃ γ : Matrix (Fin d) (Fin d) bk.S,
       ∀ p q, bk.E ^ i ∣ (β - (l : bk.S) ^ (k - S i) • γ) p q := by
     intro i
@@ -565,7 +565,7 @@ theorem GlobalTheory.BKLim.beta_bdd_denominators : ∀ (l : ℕ) [Fact l.Prime] 
         exact hβ.1 p q
       · obtain ⟨γ, hγ⟩ := ih hi0 (by omega)
         obtain ⟨δ, hδ1, hδ2⟩ := _root_.GlobalTheory.BKLim.beta_step l K bk N d ρ F g w hw m k β hβ i (k - S i) him γ hγ
-        have hAi : A i = a ⟨i, hi0⟩ := dif_pos hi0
+        have hAi : A i = a ⟨i, hi0⟩ := dite_eq_left hi0
         have hS1 : S (i + 1) ≤ k := le_trans (hSm _ _ him) hk
         have hle : a ⟨i, hi0⟩ ≤ k - S i := by rw [hSs] at hS1; omega
         have hexp : k - S i - a ⟨i, hi0⟩ = k - S (i + 1) := by rw [hSs, hAi]; omega
@@ -648,7 +648,7 @@ theorem exists_seq {R : Type} [CommRing R] (I : ℕ → Ideal R) (hI : ∀ n, I 
     let P : (ι → R ⧸ I (n + 1)) → Prop := fun t =>
       ∃ k, n + 1 ≤ k ∧ ¬ ∃ x, Q k x ∧ ∀ i, x i - rep t i ∈ I (n + 1)
     let kf : (ι → R ⧸ I (n + 1)) → ℕ := fun t => if h : P t then h.choose else 0
-    have hkf : ∀ t (h : P t), kf t = h.choose := fun t h => dif_pos h
+    have hkf : ∀ t (h : P t), kf t = h.choose := fun t h => dite_eq_left h
     obtain ⟨t0, ht0⟩ := Finite.exists_max kf
     obtain ⟨x, hx, hxy⟩ := hy (n + kf t0) (Nat.le_add_right _ _)
     let t : ι → R ⧸ I (n + 1) := fun i => Ideal.Quotient.mk _ (x i)

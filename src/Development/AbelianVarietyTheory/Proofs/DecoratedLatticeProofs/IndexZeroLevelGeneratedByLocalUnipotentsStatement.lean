@@ -636,8 +636,8 @@ theorem lev_back {cm : GlobalTheory.ChainOnto.Com D} {st : StAt (c.V 0)} {b : GA
       have e2 : π' ((1 : Matrix _ _ (Lev.EAf D)) (e' a₁) (e' b₁)) = (1 : Matrix _ _ (G PP').k) a₁ b₁ := by
         change π' (if e' a₁ = e' b₁ then 1 else 0) = (if a₁ = b₁ then 1 else 0)
         by_cases h : a₁ = b₁
-        · simp only [h, if_true, map_one]
-        · simp only [h, e'.injective.ne h, if_false, map_zero]
+        · simp only [h, ite_true, map_one]
+        · simp only [h, e'.injective.ne h, ite_false, map_zero]
       rw [← e2, ← e1, Valuation.map_zero]
       exact zero_lt_one
   change _ ∈ Lev.levG _ _ st.L

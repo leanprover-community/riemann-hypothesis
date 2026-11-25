@@ -35,18 +35,18 @@ theorem coef_nonneg (la : Wt X.Ψ r) (hdom : X.IsDominant la) (τ : X.Ψ) (a j :
   · have ha : (a : ℕ) < X.p0 := by omega
     have hz := h1 a j haj.le hj
     have hr : (la τ j : ℝ) ≤ la τ a := by exact_mod_cast hz
-    rw [if_pos hj, if_pos ha]
+    rw [ite_eq_left hj, ite_eq_left ha]
     norm_num
     linarith
   · by_cases ha : (a : ℕ) < X.p0
     · have hz := h3 a j ha (by omega)
       have hr : (la τ a : ℝ) ≤ la τ j := by exact_mod_cast hz
-      rw [if_neg hj, if_pos ha]
+      rw [ite_eq_right hj, ite_eq_left ha]
       norm_num
       linarith
     · have hz := h2' a j (by omega) haj.le
       have hr : (la τ j : ℝ) ≤ la τ a := by exact_mod_cast hz
-      rw [if_neg hj, if_neg ha]
+      rw [ite_eq_right hj, ite_eq_right ha]
       norm_num
       linarith
 
@@ -59,18 +59,18 @@ theorem coef_pos (la : Wt X.Ψ r) (hs : IsStrictDom X la) (τ : X.Ψ) (a j : Fin
   · have ha : (a : ℕ) < X.p0 := by omega
     have hz := h1 a j haj hj
     have hr : (la τ j : ℝ) < la τ a := by exact_mod_cast hz
-    rw [if_pos hj, if_pos ha]
+    rw [ite_eq_left hj, ite_eq_left ha]
     norm_num
     linarith
   · by_cases ha : (a : ℕ) < X.p0
     · have hz := h3 a j ha (by omega)
       have hr : (la τ a : ℝ) < la τ j := by exact_mod_cast hz
-      rw [if_neg hj, if_pos ha]
+      rw [ite_eq_right hj, ite_eq_left ha]
       norm_num
       linarith
     · have hz := h2' a j (by omega) haj
       have hr : (la τ j : ℝ) < la τ a := by exact_mod_cast hz
-      rw [if_neg hj, if_neg ha]
+      rw [ite_eq_right hj, ite_eq_right ha]
       norm_num
       linarith
 
@@ -251,7 +251,7 @@ theorem curvature_statement_holds : CurvGGStatement (E := E) := by
     refine Finset.sum_pos' (fun τ' _ => Finset.sum_nonneg fun a' _ => Finset.sum_nonneg fun j' _ => hnn τ' a' j')
       ⟨τ, Finset.mem_univ _, Finset.sum_pos' (fun a' _ => Finset.sum_nonneg fun j' _ => hnn τ a' j')
         ⟨a, Finset.mem_univ _, Finset.sum_pos' (fun j' _ => hnn τ a j') ⟨j, Finset.mem_univ _, ?_⟩⟩⟩
-    rw [if_pos haj]
+    rw [ite_eq_left haj]
     exact mul_pos (coef_pos X la hs τ a j haj) (pow_pos (norm_pos_iff.2 hY) 2)
 
 end ReciprocityTheory.ChartRestriction.G.AR.Inst.CurvPf

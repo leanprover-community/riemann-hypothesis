@@ -624,7 +624,7 @@ private lemma core (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] (C 
       by_cases h : i = j
       · subst h; simp [L, hφ1]
       · simp [L, h]
-    rw [Finset.sum_congr rfl step, Finset.sum_ite_eq' s j, if_pos hj, Ideal.Quotient.eq_zero_iff_mem] at h0
+    rw [Finset.sum_congr rfl step, Finset.sum_ite_eq' s j, ite_eq_left hj, Ideal.Quotient.eq_zero_iff_mem] at h0
     exact Ideal.mem_span_singleton.mp h0
 
 private lemma exact1 {R : Type} [CommRing R] (g a b : R) (h : ∀ x : R, g * x = 0 → ∃ u v, x = a * u + b * v)

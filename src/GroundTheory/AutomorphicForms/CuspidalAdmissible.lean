@@ -155,7 +155,7 @@ theorem gap_or_bounded (μ : Fin n → ℤ) {C : ℤ} (hC : 0 < C) :
   by_contra hcon
   rw [not_or] at hcon
   obtain ⟨hA, hB⟩ := hcon
-  push_neg at hB
+  push Not at hB
   obtain ⟨i, j, hij, hbig⟩ := hB
   obtain ⟨j₀, hj₀, hmin⟩ := Finset.exists_min_image (Finset.univ.filter fun k => β k = β j) μ
     ⟨j, by simp⟩
@@ -431,11 +431,11 @@ theorem isAdmissible_of_isCuspidal {σ : Representation ℂ (levi F n β) W} [σ
           exact ⟨μ k, Finset.mem_image_of_mem _ (by simp [hk])⟩) else 0
       have hcb_le : ∀ k, cb (β k) ≤ μ k := by
         intro k
-        simp only [cb, dif_pos (⟨k, rfl⟩ : ∃ j, β j = β k)]
+        simp only [cb, dite_eq_left (⟨k, rfl⟩ : ∃ j, β j = β k)]
         exact Finset.min'_le _ _ (Finset.mem_image_of_mem _ (by simp))
       have hcb_mem : ∀ j, ∃ k, β k = β j ∧ cb (β j) = μ k := by
         intro j
-        simp only [cb, dif_pos (⟨j, rfl⟩ : ∃ k, β k = β j)]
+        simp only [cb, dite_eq_left (⟨j, rfl⟩ : ∃ k, β k = β j)]
         obtain ⟨k, hk, hkeq⟩ := Finset.mem_image.1
           (Finset.min'_mem ((Finset.univ.filter fun k => β k = β j).image μ) _)
         exact ⟨k, (Finset.mem_filter.1 hk).2, hkeq.symm⟩

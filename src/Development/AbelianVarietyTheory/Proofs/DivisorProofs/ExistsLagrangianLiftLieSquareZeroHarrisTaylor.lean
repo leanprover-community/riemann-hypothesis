@@ -433,7 +433,7 @@ theorem GlobalTheory.lie_idempotents : ∀ (R C K : Type) [CommRing R] [CommRing
       Finset.sum_congr rfl fun _ _ => mul_comm _ _
     rw [hsum, hSC j i]
     by_cases hij : i = j
-    · subst hij; rw [if_pos rfl, if_pos rfl, hnN, one_smul]; exact hΦ.symm
+    · subst hij; rw [ite_eq_left rfl, ite_eq_left rfl, hnN, one_smul]; exact hΦ.symm
     · simp [hij, Ne.symm hij]
   · intro g hg i
     simp only [mul_smul_comm, smul_mul_assoc, Finset.mul_sum, Finset.sum_mul, hg]
@@ -540,7 +540,7 @@ lemma det_smul_eq' (u : A) : (gram b).det • u = ∑ l, trL (b l * u) • dualD
   intro k
 
   simp only [mul_sub, Finset.mul_sum, mul_smul_comm, map_sub, map_sum, map_zsmul, smul_eq_mul,
-  trL_basis_mul_dualD, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  trL_basis_mul_dualD, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   ring
 
 lemma det_ne_zero : (gram b).det ≠ 0 := by

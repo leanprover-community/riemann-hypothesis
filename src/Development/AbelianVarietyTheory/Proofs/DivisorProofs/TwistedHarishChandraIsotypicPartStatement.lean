@@ -71,9 +71,9 @@ theorem sum_dite_mem {G M : Type} [Group G] [Fintype G] [AddCommMonoid M] (H : S
     (f : H → M) : ∑ z : G, (if h : z ∈ H then f ⟨z, h⟩ else 0) = ∑ h : H, f h := by
   rw [← Fintype.sum_subtype_add_sum_subtype (fun z => z ∈ H)]
   have h2 : ∑ i : {x // ¬ x ∈ H}, (if h : (i : G) ∈ H then f ⟨i, h⟩ else 0) = 0 :=
-    Finset.sum_eq_zero fun i _ => dif_neg i.2
+    Finset.sum_eq_zero fun i _ => dite_eq_right i.2
   rw [h2, add_zero]
-  exact Fintype.sum_congr _ _ fun i => dif_pos i.2
+  exact Fintype.sum_congr _ _ fun i => dite_eq_left i.2
 
 theorem star_ext_zero {G : Type} [Group G] (H : Subgroup G) (c : H → ℂ) (z : G) :
     star (ext0 H c z) = ext0 H (fun h => star (c h)) z := by
@@ -266,7 +266,7 @@ theorem kills_iff_conv : ∀ (G : Type) [Group G] [Finite G] (φ Y : G → ℂ),
 
     rw [LinearMap.dualMap_apply, hδ, map_sum, hℓ] at h1
     simp only [map_smul, smul_eq_mul, Pi.single_apply, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
     rw [finsum_eq_sum_of_fintype]
     have h2 := congrArg star h1
     simp only [star_sum, star_mul', star_star] at h2
@@ -382,11 +382,11 @@ theorem kills_hcTw : ∀ (F : Type) [Field F] [Finite F], ∀ (t : F →+* F) (a
     unfold ext0
     by_cases h : InPar a z
     · have hz : z ∈ H := (hmem z).2 h
-      rw [if_pos h, dite_eq_left hz]
+      rw [ite_eq_left h, dite_eq_left hz]
       show _ = α (π ⟨z, hz⟩).1 * β (π ⟨z, hz⟩).2
       rw [hπ]
     · have hz : z ∉ H := fun hz => h ((hmem z).1 hz)
-      rw [if_neg h, dite_eq_right hz]
+      rw [ite_eq_right h, dite_eq_right hz]
   have h1 : hcTw t a b α β n = fun x => (Nat.card H : ℂ)⁻¹ *
       ∑ᶠ y : GL (Fin n) F, ext0 H (fun p => α (π p).1 * β (π p).2) (y⁻¹ * x * (fun y => gal t n y) y) := by
     funext x

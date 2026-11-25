@@ -52,7 +52,7 @@ theorem span_image_update_sum_eq {R : Type*} [CommRing R] {ι : Type*} [Decidabl
   have hzne : ∀ i : ι, i ≠ j →
       Function.update y j (∑ t ∈ S, a t * y t) i = y i := by
     intro i hi
-    rw [Function.update_apply, if_neg hi]
+    rw [Function.update_apply, ite_eq_right hi]
   have hsplit : ∑ t ∈ S, a t * y t = a j * y j + ∑ t ∈ S.erase j, a t * y t :=
     (Finset.add_sum_erase S (fun t => a t * y t) hj).symm
   have key1 : ∀ i ∈ S, Function.update y j (∑ t ∈ S, a t * y t) i
@@ -446,8 +446,8 @@ theorem exists_etaleChart_update_coord {X : Scheme.{u}} {k : Type u} [Field k]
         ∀ i : ULift.{u} (Fin m), i ≠ ULift.up j → v i = c.coord i.down := by
     refine ⟨Function.update (fun i : ULift.{u} (Fin m) => c.coord i.down) (ULift.up j)
       (∑ i ∈ S, a i * c.coord i), ?_, fun i hi => ?_⟩
-    · rw [Function.update_apply, if_pos rfl]
-    · rw [Function.update_apply, if_neg hi]
+    · rw [Function.update_apply, ite_eq_left rfl]
+    · rw [Function.update_apply, ite_eq_right hi]
   have hBcoord : ∀ i : ULift.{u} (Fin m),
       EtaleCoordinates.basisKaehler k (ULift.{u} (Fin m)) Γ(X, U) i =
         KaehlerDifferential.D k Γ(X, U) (c.coord i.down) := fun i =>
@@ -458,8 +458,8 @@ theorem exists_etaleChart_update_coord {X : Scheme.{u}} {k : Type u} [Field k]
         (ULift.up j) (KaehlerDifferential.D k Γ(X, U) (∑ i ∈ S, a i * c.coord i)) := by
     funext i
     by_cases hi : i = ULift.up j
-    · rw [Function.update_apply, if_pos hi, hi, hvj]
-    · rw [Function.update_apply, if_neg hi, hvne i hi, hBcoord i]
+    · rw [Function.update_apply, ite_eq_left hi, hi, hvj]
+    · rw [Function.update_apply, ite_eq_right hi, hvne i hi, hBcoord i]
   let D : Derivation k Γ(X, U) Γ(X, U) :=
     ((EtaleCoordinates.basisKaehler k (ULift.{u} (Fin m)) Γ(X, U)).coord (ULift.up j)).compDer
       (KaehlerDifferential.D k Γ(X, U))
@@ -620,9 +620,9 @@ theorem hasStrictNormalCrossingsWith_cons_of_le {X : Scheme.{u}} {k : Type u} [F
     funext i
     by_cases hij : i = j
 
-    · rw [Function.update_apply, if_pos hij, hij, hc2j, map_sum]
+    · rw [Function.update_apply, ite_eq_left hij, hij, hc2j, map_sum]
       exact Finset.sum_congr rfl fun t _ => map_mul _ _ _
-    · rw [Function.update_apply, if_neg hij]
+    · rw [Function.update_apply, ite_eq_right hij]
       exact hc2ne i hij
   have hupd : Ideal.span (c2.coord '' (S : Set (Fin m)))
       = Ideal.span ((fun i : Fin m => (X.presheaf.map (homOfLE hVU).op).hom (c.coord i)) ''

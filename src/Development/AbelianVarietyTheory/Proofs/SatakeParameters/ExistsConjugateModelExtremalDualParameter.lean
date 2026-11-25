@@ -138,7 +138,7 @@ theorem columns_indepMod :
   obtain ⟨b, hb, hbe⟩ := (H c hcint).1 hw j
   refine ⟨b, hb, ?_⟩
   obtain ⟨m, hm⟩ : ∃ m, a j = m + 1 := Nat.exists_eq_succ_of_ne_zero j.2.ne'
-  simp only [hc, dif_pos j.2, hm, Nat.add_sub_cancel] at hbe
+  simp only [hc, dite_eq_left j.2, hm, Nat.add_sub_cancel] at hbe
   apply mul_right_cancel₀ (pow_ne_zero m hϖ0)
   rw [hbe]; ring
 
@@ -231,7 +231,7 @@ theorem GlobalTheory.Hk3.IntWitt.exists_glInt_mulVec_mem_iff_forall_dvdPow : ∀
       have := Subring.sub_mem _ h1 (hEc i)
       rwa [add_sub_cancel_right] at this
     by_cases hj : (j : ℕ) < n'
-    · simp only [dif_pos hj]
+    · simp only [dite_eq_left hj]
       have h2 := hDc ⟨j, hj⟩
       rw [hDm, diag_mulVec_of_lt ϖ a c j hj] at h2
       split_ifs at h2 with ha
@@ -239,7 +239,7 @@ theorem GlobalTheory.Hk3.IntWitt.exists_glInt_mulVec_mem_iff_forall_dvdPow : ∀
         rw [← mul_assoc, ← mul_pow, mul_inv_cancel₀ hϖ0, one_pow, one_mul]
       · have : a ⟨j, hj⟩ = 0 := by omega
         rw [this]; exact dvdPow_zero_iff.mpr (hc j)
-    · simp only [dif_neg hj]; exact dvdPow_zero_iff.mpr (hc j)
+    · simp only [dite_eq_right hj]; exact dvdPow_zero_iff.mpr (hc j)
   · intro hd
     have hDc : ∀ i, (Dm *ᵥ c) i ∈ O := by
       intro i
@@ -248,7 +248,7 @@ theorem GlobalTheory.Hk3.IntWitt.exists_glInt_mulVec_mem_iff_forall_dvdPow : ∀
         rw [hij, hDm, diag_mulVec_of_lt ϖ a c ⟨i, hi⟩ i.isLt]
         split_ifs with ha
         · have h3 := hd ⟨i, hi⟩
-          simp only [dif_pos i.isLt] at h3
+          simp only [dite_eq_left i.isLt] at h3
           obtain ⟨b, hb, hcb⟩ := h3
           rw [hcb, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hϖ0, one_pow, one_mul]; exact hb
         · rw [zero_mul]; exact Subring.zero_mem _
@@ -369,7 +369,7 @@ theorem ker_le_of_latIdx_eq : ∀ (L : Type) [Field L] [Valued L (WithZero (Mult
     intro w
     have hc : ∃ u' : intVec L n, (QuotientAddGroup.mk (x *ᵥ (u' : Fin n → L)) : (Fin n' → L) ⧸ intVec L n') =
         QuotientAddGroup.mk (x *ᵥ (w : Fin n → L)) := ⟨w, rfl⟩
-    simp only [h, dif_pos hc]
+    simp only [h, dite_eq_left hc]
     have he := hc.choose_spec
     set u' := hc.choose
     rw [QuotientAddGroup.eq] at he

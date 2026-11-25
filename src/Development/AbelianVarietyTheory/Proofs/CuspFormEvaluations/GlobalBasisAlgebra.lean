@@ -135,7 +135,7 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
             rw [Finset.sum_comm]
             simp only [Finset.mul_sum]
         _ = (b.repr y j : K) := by
-            simp only [hBA, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+            simp only [hBA, mul_ite, _root_.mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     calc ρ y V = ρ (∑ j, b.repr y j • b j) V := by rw [b.sum_repr y]
       _ = ∑ j, κ (b.repr y j : K) • ρ (b j) V := by
 
@@ -161,10 +161,10 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
           exact Finset.sum_congr rfl fun k _ => by congr 2; ring
       _ = algebraMap K S (χ σ (a : E)) • P σ V := by
           rw [Finset.sum_eq_single σ]
-          · rw [hAB, if_pos rfl, _root_.mul_one]
+          · rw [hAB, ite_eq_left rfl, _root_.mul_one]
             rfl
           · intro ν _ hν
-            rw [hAB, if_neg hν, mul_zero, map_zero, zero_smul]
+            rw [hAB, ite_eq_right hν, mul_zero, map_zero, zero_smul]
           · intro h
             exact absurd (Finset.mem_univ σ) h
   have hPZ : ∀ σ τ (Z : M), (∀ a : 𝓞 E, ρ a Z = algebraMap K S (χ σ (a : E)) • Z) →
@@ -190,9 +190,9 @@ theorem global_basis_algebra {E : Type} [Field E] [NumberField E] {K S M : Type}
       ∀ τ, ∑ i, a ⟨τ, i⟩ • U ⟨τ, i⟩ = P τ W := by
     intro a ha τ
     rw [← ha, Fintype.sum_sigma, hPadd, Finset.sum_eq_single τ]
-    · rw [hPZ τ τ _ (hYeig a τ), if_pos rfl]
+    · rw [hPZ τ τ _ (hYeig a τ), ite_eq_left rfl]
     · intro σ _ hστ
-      rw [hPZ σ τ _ (hYeig a σ), if_neg hστ]
+      rw [hPZ σ τ _ (hYeig a σ), ite_eq_right hστ]
     · intro h
       exact absurd (Finset.mem_univ τ) h
   have hex : ∀ σ, ∃! c : Fin (mult σ) → S, ∑ i, c i • U ⟨σ, i⟩ = P σ W := fun σ => hb σ (P σ W) (hPeig σ W)

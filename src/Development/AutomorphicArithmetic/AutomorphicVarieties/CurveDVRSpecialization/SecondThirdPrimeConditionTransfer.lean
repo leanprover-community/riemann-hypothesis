@@ -561,7 +561,7 @@ theorem charpoly_star {f : B.B →+* Q} {σ : G.G₀ →* Matrix (Fin n) (Fin n)
     simp only [GDet.lam, Nat.sub_sub_self hk] at hP
     have := congrArg (fun t => (-1 : B.B) ^ (n - k) * t) hP
     simpa [← mul_assoc, ← mul_pow] using this
-  · push_neg at hk
+  · push Not at hk
     have hd : ∀ M : Matrix (Fin n) (Fin n) Q, M.charpoly.coeff k = 0 := by
       intro M
       apply Polynomial.coeff_eq_zero_of_natDegree_lt
@@ -875,11 +875,11 @@ private theorem chain_nat {α : Type} {r : α → α → Prop} {p q : α} (H : R
       by_cases hih : i < h
       · have h1 : i ≤ h := le_of_lt hih
         have h2 : i + 1 ≤ h := hih
-        simp only [h1, h2, if_true]
+        simp only [h1, h2, ite_true]
         exact hs i hih
       · have hie : i = h := by omega
         subst hie
-        simp only [le_refl, if_true, show ¬ (i + 1 ≤ i) from by omega, if_false, hh]
+        simp only [le_refl, ite_true, show ¬ (i + 1 ≤ i) from by omega, ite_false, hh]
         exact hbd
 
 theorem UpperTheory.V.Pr.rankThree_deformationSetup_splitting_condition :

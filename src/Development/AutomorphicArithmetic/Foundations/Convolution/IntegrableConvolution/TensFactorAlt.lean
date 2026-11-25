@@ -123,7 +123,7 @@ protected theorem dep_extend {ι α : Type*} {β : α → Type*} (w : ι → α)
     rw [e]
     intro hs
     rfl
-  · exact dif_neg hv
+  · exact dite_eq_right hv
 
 section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
@@ -326,7 +326,7 @@ private theorem mem_levOn (P : Finset (Pl K)) (h : AdelicGLn.FiniteAdelicGL K n)
       · rw [Subgroup.mem_bot] at h1; rw [h1]; exact one_mem _
       · exact h1
     · have h1 := H v
-      rw [if_pos hv] at h1
+      rw [ite_eq_left hv] at h1
       exact Subgroup.mem_bot.1 h1
   · rintro ⟨H1, H2⟩ v
     split_ifs with hv

@@ -119,7 +119,7 @@ theorem test_factor {n r : ℕ} (e : Fin r ≃ PairIx Ψ p q) (hq : q ≤ p) (hn
   have hmu : (muSmall p : RP Ψ (p + q)) = ∑ x, muCoef Ψ p q x • (X x : RP Ψ (p + q)) := by
     rw [sum_muCoef (X : Ψ × Fin (p + q) → RP Ψ (p + q))]
     unfold muSmall
-    rw [if_pos hN]
+    rw [ite_eq_left hN]
   have hdim : dimX Ψ (p + q) p = n := by
     unfold dimX
     rw [hn, Nat.add_sub_cancel_left]

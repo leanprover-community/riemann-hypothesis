@@ -134,10 +134,10 @@ private lemma sum_range_neg_one_pow_eq_ite (n : ℕ) :
     rw [Finset.sum_range_succ, ih]
     by_cases h : Even n
     · have h' : ¬ Even (n + 1) := by rw [Nat.even_add_one]; exact not_not.2 h
-      rw [if_pos h, if_neg h', h.neg_one_pow]
+      rw [ite_eq_left h, ite_eq_right h', h.neg_one_pow]
       norm_num
     · have h' : Even (n + 1) := Nat.even_add_one.2 h
-      rw [if_neg h, if_pos h', (Nat.not_even_iff_odd.1 h).neg_one_pow]
+      rw [ite_eq_right h, ite_eq_left h', (Nat.not_even_iff_odd.1 h).neg_one_pow]
       norm_num
 
 lemma geom_bounds {x : ℝ} (hx : x = 0 ∨ x = 1 ∨ x = -1) (k : ℕ) :
@@ -152,7 +152,7 @@ lemma geom_bounds {x : ℝ} (hx : x = 0 ∨ x = 1 ∨ x = -1) (k : ℕ) :
     have h : ¬ Even (2 * k + 1) := by
       rw [Nat.even_add_one, not_not]
       exact even_two_mul k
-    rw [if_neg h]
+    rw [ite_eq_right h]
     refine ⟨?_, le_refl _⟩
     split_ifs <;> norm_num
 
@@ -326,11 +326,11 @@ lemma sum_aRay (ε : D.G → ℝ) (n : ℕ) : ∑ g, ε g * aRay D g n = ∑ I �
       then ε g else 0 := by
     intro I
     by_cases h : I ≠ ⊥ ∧ IsCoprime I (Ideal.span {(M : 𝓞 K)})
-    · rw [chi, if_pos h]
-      simp only [ite_and, if_pos h]
+    · rw [chi, ite_eq_left h]
+      simp only [ite_and, ite_eq_left h]
       simp
-    · rw [chi, if_neg h]
-      simp only [ite_and, if_neg h, Finset.sum_const_zero]
+    · rw [chi, ite_eq_right h]
+      simp only [ite_and, ite_eq_right h, Finset.sum_const_zero]
   rw [Finset.sum_congr rfl (fun I _ => hchi I), Finset.sum_comm]
   refine Finset.sum_congr rfl fun g _ => ?_
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, hcard g, mul_comm]
@@ -342,17 +342,17 @@ lemma chi_mul (ε : D.G → ℝ) (hε : ∀ g h, ε (g * h) = ε g * ε h) (I J 
     · have hIJ : I * J ≠ ⊥ ∧ IsCoprime (I * J) (Ideal.span {(M : 𝓞 K)}) :=
         ⟨mul_ne_zero hI.1 hJ.1, hI.2.mul_left hJ.2⟩
       simp only [chi]
-      rw [if_pos hIJ, if_pos hI, if_pos hJ, D.cls_mul I J hI.2 hJ.2 hI.1 hJ.1, hε]
+      rw [ite_eq_left hIJ, ite_eq_left hI, ite_eq_left hJ, D.cls_mul I J hI.2 hJ.2 hI.1 hJ.1, hε]
     · have hIJ : ¬ (I * J ≠ ⊥ ∧ IsCoprime (I * J) (Ideal.span {(M : 𝓞 K)})) := by
         rintro ⟨h1, h2⟩
         exact hJ ⟨fun h => h1 (by rw [h, Ideal.mul_bot]), h2.of_mul_left_right⟩
       simp only [chi]
-      rw [if_pos hI, if_neg hJ, if_neg hIJ, mul_zero]
+      rw [ite_eq_left hI, ite_eq_right hJ, ite_eq_right hIJ, mul_zero]
   · have hIJ : ¬ (I * J ≠ ⊥ ∧ IsCoprime (I * J) (Ideal.span {(M : 𝓞 K)})) := by
       rintro ⟨h1, h2⟩
       exact hI ⟨fun h => h1 (by rw [h, Ideal.bot_mul]), h2.of_mul_left_left⟩
     simp only [chi]
-    rw [if_neg hI, if_neg hIJ, zero_mul]
+    rw [ite_eq_right hI, ite_eq_right hIJ, zero_mul]
 
 lemma chi_one (ε : D.G → ℝ) (h1 : ε 1 = 1) : chi D ε 1 = 1 := by
   have hc : IsCoprime (1 : Ideal (𝓞 K)) (Ideal.span {(M : 𝓞 K)}) := isCoprime_one_left
@@ -363,7 +363,7 @@ lemma chi_one (ε : D.G → ℝ) (h1 : ε 1 = 1) : chi D ε 1 = 1 := by
     have e := D.cls_mul 1 1 hc hc hb hb
     rw [one_mul] at e
     exact mul_left_cancel (by rw [mul_one]; exact e.symm : D.cls 1 * D.cls 1 = D.cls 1 * 1)
-  rw [chi, if_pos ⟨hb, hc⟩, hcls, h1]
+  rw [chi, ite_eq_left ⟨hb, hc⟩, hcls, h1]
 
 lemma conv_aRay (ε : D.G → ℝ) {n : ℕ} (hn : n ≠ 0) :
     ∑ p ∈ n.divisorsAntidiagonal, (∑ g, aRay D g p.1) * ∑ g, ε g * aRay D g p.2 =
@@ -427,9 +427,9 @@ theorem conv_real_char : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 �
           by_cases h : I ≠ ⊥ ∧ IsCoprime I (Ideal.span {(M : 𝓞 K)})
           · have h2 : I ^ 2 ≠ ⊥ ∧ IsCoprime (I ^ 2) (Ideal.span {(M : 𝓞 K)}) :=
               ⟨pow_ne_zero 2 h.1, h.2.pow_left⟩
-            rw [h01, h01, if_pos h, if_pos h2, one_mul]
+            rw [h01, h01, ite_eq_left h, ite_eq_left h2, one_mul]
             exact (hr I h.1).2
-          · rw [h01 I, if_neg h]
+          · rw [h01 I, ite_eq_right h]
             exact hterm (I ^ 2)
       _ = ∑ C ∈ (normEq K n).image (· ^ 2), chi D (fun _ => 1) C * r (chi D ε) C := by
           rw [Finset.sum_image]
@@ -467,7 +467,7 @@ theorem lamIdeal_pow {P : Ideal (𝓞 K)} (hP : Prime P) (k : ℕ) :
     lamIdeal (P ^ (k + 1)) = Real.log (Ideal.absNorm P) := by
   have h1 : P.IsPrime := Ideal.isPrime_of_prime hP
   unfold lamIdeal
-  rw [if_pos ⟨P, k + 1, h1, hP.ne_zero, by omega, rfl⟩, Ideal.radical_pow _ (by omega), h1.radical]
+  rw [ite_eq_left ⟨P, k + 1, h1, hP.ne_zero, by omega, rfl⟩, Ideal.radical_pow _ (by omega), h1.radical]
 
 theorem finite_dvd {I : Ideal (𝓞 K)} (hI : I ≠ 0) : {J : Ideal (𝓞 K) | J ∣ I}.Finite := by
   refine (Ideal.finite_setOf_absNorm_le (S := 𝓞 K) (Ideal.absNorm I)).subset fun J hJ => ?_
@@ -484,7 +484,7 @@ theorem sum_lamIdeal (I : Ideal (𝓞 K)) : I ≠ 0 → ∀ T : Finset (Ideal (�
     rw [map_one, Nat.cast_one, Real.log_one]
     refine Finset.sum_eq_zero fun J hJ => ?_
     unfold lamIdeal
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨P, k, hP, hP0, hk, rfl⟩
     have := isUnit_of_dvd_one ((hT _).1 hJ)
     rw [isUnit_pow_iff (by omega), Ideal.isUnit_iff] at this
@@ -507,7 +507,7 @@ theorem sum_lamIdeal (I : Ideal (𝓞 K)) : I ≠ 0 → ∀ T : Finset (Ideal (�
     · intro J hJ hne
       rw [Finset.mem_sdiff, hT, hSm] at hJ
       unfold lamIdeal
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨Q, k, hQ, hQ0, hk, rfl⟩
       have hQp : Prime Q := Ideal.prime_of_isPrime hQ0 hQ
       by_cases hQP : Q = P
@@ -670,7 +670,7 @@ theorem sum_lamIdeal_le (hK : Module.finrank ℚ K = 2) (n : ℕ) (S : Finset (I
   have hpos : ∀ I ∈ T, (0 : ℝ) < Ideal.absNorm I.radical := fun I hI =>
     Nat.cast_pos.2 (lt_trans one_pos (key I hI).2.2.2.2.1)
   push_cast at h3
-  rw [← Real.log_prod (fun I hI => (hpos I hI).ne'), vonMangoldt_apply, if_pos hn]
+  rw [← Real.log_prod (fun I hI => (hpos I hI).ne'), vonMangoldt_apply, ite_eq_left hn]
   have h4 := Real.log_le_log (Finset.prod_pos hpos) h3
   rw [Real.log_pow] at h4
   exact_mod_cast h4

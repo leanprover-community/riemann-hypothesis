@@ -110,8 +110,8 @@ theorem relIndex_eq_prod_local :
     have hh : ∀ v, h v ∈ Kv v := by
       intro v
       by_cases hv : v ∈ S
-      · simp only [h, dif_pos hv]; exact (x ⟨v, hv⟩).2
-      · simp only [h, dif_neg hv]; exact (Kv v).one_mem
+      · simp only [h, dite_eq_left hv]; exact (x ⟨v, hv⟩).2
+      · simp only [h, dite_eq_right hv]; exact (Kv v).one_mem
     obtain ⟨g, hg, h1, h2⟩ := exists_mem_proj_eq_on_finset π H Kv hH h hh S
     have hgK : g ∈ K := by
       refine (hK g).2 ⟨hg, fun v => ?_⟩
@@ -123,7 +123,7 @@ theorem relIndex_eq_prod_local :
     apply Subtype.ext
     change π v g = _
     rw [h1 v v.2]
-    simp only [h, dif_pos v.2]
+    simp only [h, dite_eq_left v.2]
   have hc : U.subgroupOf K =
       (Subgroup.pi Set.univ fun v : S => (Uv v).subgroupOf (Kv v)).comap f := by
     ext g

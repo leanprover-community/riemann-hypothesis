@@ -104,7 +104,7 @@ theorem jd_evQ_meas (g : MA.SmQ P.r P.TT) : AEStronglyMeasurable (MA.evQ P g) (M
   have hs : ContDiffOn ℝ MA.sm (MA.ext (g : MA.Qp P.r P.TT → ℂ)) (MA.Qset P.r P.TT) := g.2
   have h2 := hs.continuousOn.comp_continuous continuous_subtype_val (fun q => q.2)
   have hc : Continuous (MA.evQ P g) := h2.congr fun q => by
-    simp only [Function.comp, MA.ext, dif_pos q.2]
+    simp only [Function.comp, MA.ext, dite_eq_left q.2]
     rfl
   exact hc.aestronglyMeasurable
 

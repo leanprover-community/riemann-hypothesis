@@ -452,7 +452,7 @@ theorem MW_symm (w : Fin m → K) : (MW w)ᵀ = MW w := by
   simp only [MW, Matrix.transpose_apply, Matrix.of_apply]
   by_cases hij : i = j
   · subst hij; simp
-  · simp only [hij, Ne.symm hij, if_false]; ring
+  · simp only [hij, Ne.symm hij, ite_false]; ring
 
 theorem quad_expand (y w : Fin m → K) :
     y ⬝ᵥ (MW w *ᵥ y) = 2 * (∑ i, y i ^ 2 * w i +
@@ -463,11 +463,11 @@ theorem quad_expand (y w : Fin m → K) :
     simp only [MW, Matrix.of_apply]
     by_cases hij : i = j
     · subst hij; simp; ring
-    · simp only [hij, if_false]
+    · simp only [hij, ite_false]
       split_ifs <;> ring
   simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, e, Finset.sum_add_distrib]
   rw [Finset.sum_comm (f := fun i j => if i < j then y j * uW w j i * y i else 0)]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [← Finset.mul_sum]
   ring
 

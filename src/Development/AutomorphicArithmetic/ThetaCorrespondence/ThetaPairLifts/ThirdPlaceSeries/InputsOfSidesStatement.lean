@@ -362,7 +362,7 @@ theorem res_twist_spec : ∀ {D : D7} {N : NData D.R D.host D.what₂} {X : NTw 
     rw [hchar]
     exact GlobalTheory.ConjTwist.isResAt_unique hidem (isResAt_resOf ⟨_, hres⟩) hres
   have hs : ((univOf Y i (admissibleConjugatePairPlaces X i Q M) M ρ.rc).spec (half (ρ.ch i) (admissibleConjugatePairPlaces X i Q M)) χc).res PP.1 = χc.comp ((AddMonoidHom.toMultiplicative
-      (AddMonoidHom.single (fun _ : ↥(half (ρ.ch i) (admissibleConjugatePairPlaces X i Q M)) => ZMod (X.l i ^ M)) ⟨PP.1, PP.2⟩)).comp ((univOf Y i (admissibleConjugatePairPlaces X i Q M) M ρ.rc).kap PP.1)) := dif_pos PP.2
+      (AddMonoidHom.single (fun _ : ↥(half (ρ.ch i) (admissibleConjugatePairPlaces X i Q M)) => ZMod (X.l i ^ M)) ⟨PP.1, PP.2⟩)).comp ((univOf Y i (admissibleConjugatePairPlaces X i Q M) M ρ.rc).kap PP.1)) := dite_eq_left PP.2
   have hz : ∀ z : Multiplicative (DelQM D.host (X.l i) Q M), z ^ (X.l i ^ M) = 1 := by
     intro z
     rw [← ofAdd_toAdd z, ← ofAdd_nsmul]
@@ -710,11 +710,11 @@ theorem univ_spec {k : Type} [Field k] [Finite k] {r n : ℕ} {C : Type} [AddCom
         intro h0; apply hd; rw [hg, h0, mul_zero]
       simp only [AddMonoidAlgebra.coeff_single, Finsupp.single_apply]
       rw [Finset.sum_eq_single (Multiplicative.toAdd (κ (Units.mk0 _ hd)))]
-      · rw [if_pos rfl, Rat.cast_one, mul_one, flat_of_isUnit (ν.comp κ) (u := Units.mk0 _ hdet) rfl]
+      · rw [ite_eq_left rfl, Rat.cast_one, mul_one, flat_of_isUnit (ν.comp κ) (u := Units.mk0 _ hdet) rfl]
         have e : Units.mk0 _ hd = c U * Units.mk0 _ hdet := Units.ext (by simp [hg])
         rw [ofAdd_toAdd, e, map_mul, map_mul, Units.val_mul, MonoidHom.comp_apply]
       · intro a _ ha
-        rw [if_neg (Ne.symm ha), Rat.cast_zero, mul_zero]
+        rw [ite_eq_right (Ne.symm ha), Rat.cast_zero, mul_zero]
       · intro h; exact absurd (Finset.mem_univ _) h
     · rw [dite_eq_right hC]
       have hd : dU β U y = 0 := by
@@ -1062,17 +1062,11 @@ namespace GlobalTheory.TripleAdm
 open NumberField IsDedekindDomain Polynomial Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open Formalism.CyclotomicNorms (Fbar rootsBar IsGood IrredOn BB primeToPart)
 open GlobalTheory.TameLabels GlobalTheory.TripleResidual
-section Algebra
-variable {g : ℕ} [Fact g.Prime]
-end Algebra
 open GlobalTheory.TypeLeaf (WildOne FrobDense)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf IsReduction Zbar GalE toFb)
 open GlobalTheory.Triple (IsParam IsResidual Reading IsChars IsTripleWith IsTripleFor IsTripleOf IsTriple muBase hframe jIdx)
 open GlobalTheory.TwistDet GlobalTheory.GalChar Formalism.L2.Host
 variable {D : D7}
-section Row
-variable {σ : D.what₂.FT} {π : D.naut.CG D.R.r} {w : D.what₂.places.Pl}
-end Row
 section Comparison₂
 variable {Y : NTw D.R D.host D.what₂ D.LL0 D.nd} {i : Y.Tw} {b : Bool}
 variable {C : CharFrame D} {art : Neutral.B1.Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E D.nd.Om}

@@ -300,9 +300,9 @@ theorem rv_of_val (e : ℝ) (s : Fv F v) (k : ℕ) (hs : Valued.v s = WithZero.e
   unfold rv
   rw [tsum_eq_sum (s := Finset.range (k + 1))]
   · refine Finset.sum_congr rfl fun i hi => ?_
-    rw [if_pos ⟨hs0, (key i).2 (by simpa [Nat.lt_succ_iff] using hi)⟩]
+    rw [ite_eq_left ⟨hs0, (key i).2 (by simpa [Nat.lt_succ_iff] using hi)⟩]
   · intro i hi
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨-, h⟩
     exact hi (by simpa [Nat.lt_succ_iff] using (key i).1 h)
 
@@ -312,7 +312,7 @@ theorem rv_of_not_int (e : ℝ) (s : Fv F v) (hs : s ∉ v.adicCompletionInteger
   rw [tsum_eq_sum (s := ∅)]
   · simp
   · intro i _
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨-, h⟩
     refine hs' (h.trans ?_)
     change WithZero.exp (-(i : ℤ)) ≤ WithZero.exp 0
@@ -843,8 +843,8 @@ theorem locR : Scal → MassOne → LocR := by
         have hk' : Valued.v s = WithZero.exp (-((2 * l : ℕ) : ℤ)) := by
           rw [hk, two_mul]
         obtain ⟨u, hu, e⟩ := mass_even h0 h1 hσ hD hj hfib hsc v2 vD vj hns hLm hL hk'
-        rw [e, hfin u hu, if_neg (by simp [Nat.even_add_one])]
-      · rw [mass_odd (L := latV b v) h0 h1 hσ hD hj hfib v2 vD vj hns hk hev, if_pos (by simpa [Nat.even_add_one] using hev)]
+        rw [e, hfin u hu, ite_eq_right (by simp [Nat.even_add_one])]
+      · rw [mass_odd (L := latV b v) h0 h1 hσ hD hj hfib v2 vD vj hns hk hev, ite_eq_left (by simpa [Nat.even_add_one] using hev)]
         simp
     · have hsq : IsSquare (algebraMap F (Fv F v) D) := by
         by_contra h

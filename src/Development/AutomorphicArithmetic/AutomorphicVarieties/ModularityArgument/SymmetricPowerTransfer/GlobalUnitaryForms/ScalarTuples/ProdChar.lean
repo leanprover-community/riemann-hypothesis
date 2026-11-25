@@ -73,8 +73,8 @@ open NumberField UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Glob
 private theorem hs_real {d x : ℝ} (hd : d < 0) : Loc.hs d x * ((|x| : ℝ) : ℂ) = (x : ℂ) := by
   unfold Loc.hs
   rcases le_or_gt 0 x with h | h
-  · rw [if_pos ⟨√x, 0, by rw [Real.sq_sqrt h]; ring⟩, abs_of_nonneg h, one_mul]
-  · rw [if_neg (by rintro ⟨a, b, e⟩; nlinarith [sq_nonneg a, sq_nonneg b]), abs_of_neg h]
+  · rw [ite_eq_left ⟨√x, 0, by rw [Real.sq_sqrt h]; ring⟩, abs_of_nonneg h, one_mul]
+  · rw [ite_eq_right (by rintro ⟨a, b, e⟩; nlinarith [sq_nonneg a, sq_nonneg b]), abs_of_neg h]
     push_cast
     ring
 

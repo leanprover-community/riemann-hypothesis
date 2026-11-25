@@ -1347,7 +1347,7 @@ theorem sUnits_union_sup_finPow_eq_top :
   have hy : ∀ v ∈ T, v.valuation F ((a * x : Fˣ) : F) = 1 := by
     intro v hv
     have hx0 : v.valuation F (x : F) ≠ 0 := by simp
-    rw [Units.val_mul, map_mul, ha v (hTS v hv), if_pos hv, WithZero.exp_neg,
+    rw [Units.val_mul, map_mul, ha v (hTS v hv), ite_eq_left hv, WithZero.exp_neg,
       WithZero.exp_log hx0, inv_mul_cancel₀ hx0]
   have key : ∀ v ∈ T, ∃ w ∈ sUnits F S,
       w⁻¹ * (a * x) ∈ powSub p (algebraMap F (v.adicCompletion F)) ∧

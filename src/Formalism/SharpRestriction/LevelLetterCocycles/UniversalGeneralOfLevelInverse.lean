@@ -116,10 +116,10 @@ theorem level_form (hπ : W.π₀ ∈ W.AΔ) {a : ZMod n} {e s : ℕ} (hs : s �
   simp only [Function.update_apply] at hg
   have e1 : (∏ t ∈ (Finset.range e).erase s, ps W t ^ (if t = s then x else α t).toNat) =
       ∏ t ∈ (Finset.range e).erase s, ps W t ^ (α t).toNat :=
-    Finset.prod_congr rfl fun t ht => by rw [if_neg (Finset.ne_of_mem_erase ht)]
+    Finset.prod_congr rfl fun t ht => by rw [ite_eq_right (Finset.ne_of_mem_erase ht)]
   have e2 : (∏ t ∈ (Finset.range e).erase s, ps W t ^ (-(if t = s then x else α t)).toNat) =
       ∏ t ∈ (Finset.range e).erase s, ps W t ^ (-α t).toNat :=
-    Finset.prod_congr rfl fun t ht => by rw [if_neg (Finset.ne_of_mem_erase ht)]
+    Finset.prod_congr rfl fun t ht => by rw [ite_eq_right (Finset.ne_of_mem_erase ht)]
   rw [e1, e2] at hg
   have h1 := inFr_num_drop W (prod_ps_mem' W hπ _ _) hg
   have h2 := inFr_den_mul W (prod_ps_mem' W hπ ((Finset.range e).erase s) (fun t => H t - (-α t).toNat)) h1
@@ -388,7 +388,7 @@ theorem inId_αk_iff {a : ZMod n} {e s : ℕ} (hs : s ∈ Finset.range e) (d : �
     · simp [αk]
     · intro t ht
       have ht' := Finset.ne_of_mem_erase ht
-      have h0 : (αk e s d k t).toNat = 0 := by simp only [αk, if_neg ht']; omega
+      have h0 : (αk e s d k t).toNat = 0 := by simp only [αk, ite_eq_right ht']; omega
       rw [h0, pow_zero]
   have hd : (∏ t ∈ Finset.range e, ps W t ^ (-(αk e s d k t)).toNat) =
       ∏ t ∈ (Finset.range e).erase s, ps W t ^ d t := by
@@ -399,7 +399,7 @@ theorem inId_αk_iff {a : ZMod n} {e s : ℕ} (hs : s ∈ Finset.range e) (d : �
     rw [h1, pow_zero, one_mul]
     refine Finset.prod_congr rfl fun t ht => ?_
     have ht' := Finset.ne_of_mem_erase ht
-    have h2 : (-(αk e s d k t)).toNat = d t := by simp only [αk, if_neg ht']; omega
+    have h2 : (-(αk e s d k t)).toNat = d t := by simp only [αk, ite_eq_right ht']; omega
     rw [h2]
   simp only [InId]
   rw [hn, hd]
@@ -457,7 +457,7 @@ theorem mem_JS_thin (A : ArcP n) {c : ZMod n} {s : ℕ} (hs : s < A.len c)
     i ∈ A.JS c := by
   unfold ArcP.JS
   apply Finset.mem_union_left
-  rw [if_pos ⟨s, hs, hth⟩]
+  rw [ite_eq_left ⟨s, hs, hth⟩]
   exact Finset.mem_Icc.2 ⟨hi1, hi2⟩
 
 theorem mem_JS_up (A : ArcP n) {c : ZMod n} {s : ℕ} (hs : s < A.len c) {b : ℕ}

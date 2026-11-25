@@ -289,7 +289,7 @@ theorem flagDeg_le_gap : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ)
       rw [Fin.lt_def]
       show j - 1 < j
       omega
-    rw [if_pos hlt]
+    rw [ite_eq_left hlt]
     have hden : (((⟨j, hjN⟩ : Fin N) : ℕ) : ℝ) - (((⟨j - 1, hj1⟩ : Fin N) : ℕ) : ℝ) = 1 := by
       show ((j : ℕ) : ℝ) - ((j - 1 : ℕ) : ℝ) = 1
       rw [Nat.cast_sub hj, Nat.cast_one]
@@ -1633,12 +1633,12 @@ theorem thmW_tower : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Kl
     by_cases h : τ = τ₀ ∧ (i : ℕ) < T.j
     · exact ⟨q + 2 * (5 * (Fintype.card Ψ : ℚ) / B), by
         show l τ i + (if τ = τ₀ ∧ (i : ℕ) < T.j then 2 * θ else 0) = _
-        rw [if_pos h, hq, hθdef]
+        rw [ite_eq_left h, hq, hθdef]
         push_cast
         ring⟩
     · exact ⟨q, by
         show l τ i + (if τ = τ₀ ∧ (i : ℕ) < T.j then 2 * θ else 0) = _
-        rw [if_neg h, hq, add_zero]⟩
+        rw [ite_eq_right h, hq, add_zero]⟩
   have hs0 : (0 : ℝ) < s := by rw [hs]; positivity
   have hsQ : (0 : ℚ) ≤ s := by exact_mod_cast hs0.le
   have hθ2 : θ ^ 2 ≤ θ := by nlinarith

@@ -45,7 +45,7 @@ theorem eulerFinOf' : EulerFinOf' := by
   have h : ∃ w ∈ S, w.under (𝓞 (maximalRealSubfield E)) = v := by
     obtain ⟨u, ⟨huS, hu⟩, -⟩ := hS w0
     exact ⟨u, huS, hu.trans hw0⟩
-  simp only [secPl, dif_pos h, Option.elim]
+  simp only [secPl, dite_eq_left h, Option.elim]
   exact key _ h.choose_spec.1 h.choose_spec.2
 
 end GlobalTheory.CompanionTheory.EulerAsm

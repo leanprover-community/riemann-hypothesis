@@ -238,7 +238,7 @@ theorem single_mem_latO_gen (S T : HSp D) (hG : S.gram = 1) {cc : Ideal (𝓞 D.
   · ext i' j'
     rw [hG]
     simp only [Matrix.single_apply, Matrix.of_apply, Matrix.one_apply, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, Pi.single_apply]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, Pi.single_apply]
     rcases eq_or_ne i' i with rfl | h1 <;> rcases eq_or_ne j' j with rfl | h2
     · simp
     · simp [h2, h2.symm]

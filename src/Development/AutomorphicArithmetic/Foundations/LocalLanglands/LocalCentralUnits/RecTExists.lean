@@ -243,7 +243,7 @@ theorem iso_sp_dual (n : ℕ) : (WDRep.sp h n).dual.Iso (WDRep.sp h n) := by
       LinearMap.neg_apply, LinearMap.dualMap_apply, shiftEnd_single, shiftEnd_apply]
     by_cases hi : 1 ≤ (i : ℕ)
     · have hr : (i.rev : ℕ) + 1 < n := by rw [Fin.val_rev]; omega
-      rw [dite_eq_left hr, if_pos hi]
+      rw [dite_eq_left hr, ite_eq_left hi]
       have he : (⟨(i.rev : ℕ) + 1, hr⟩ : Fin n) = (⟨(i : ℕ) - 1, by omega⟩ : Fin n).rev := by
         ext; simp only [Fin.val_rev]; omega
       rw [he]
@@ -251,7 +251,7 @@ theorem iso_sp_dual (n : ℕ) : (WDRep.sp h n).dual.Iso (WDRep.sp h n) := by
       simp only [hk, Nat.add_sub_cancel, pow_succ]
       ring
     · have hr : ¬ (i.rev : ℕ) + 1 < n := by rw [Fin.val_rev]; omega
-      rw [dite_eq_right hr, if_neg hi]
+      rw [dite_eq_right hr, ite_eq_right hi]
       simp
 
 namespace WDClass
@@ -824,7 +824,7 @@ theorem UpperTheory.Zero.LLC.extInj :
   have hgy : ∀ Δ ∈ my.toList, g (f Δ) = some Δ := by
     intro Δ hΔ
     have hp : ∃ Δ' ∈ my.toList, f Δ' = f Δ := ⟨Δ, hΔ, rfl⟩
-    simp only [g, dif_pos hp]
+    simp only [g, dite_eq_left hp]
     exact congrArg some (key _ _ (hgood Δ hΔ) hp.choose_spec.2)
   have hgx : ∀ Δ ∈ mx.toList, g (f Δ) = some Δ := by
     intro Δ hΔ

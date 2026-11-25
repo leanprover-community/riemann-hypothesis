@@ -141,9 +141,6 @@ open scoped TensorProduct Matrix ComplexConjugate Pointwise
 open Formalism.IndefR.DatumF MeasureTheory PositivityTheory.ThKW.Dbl NumberField IsDedekindDomain
   Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.LFun
   GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-namespace PositivityTheory.ThKW.DblSchur
-open GlobalTheory.DblTargetDelta GlobalTheory.ThetaSchurF
-end PositivityTheory.ThKW.DblSchur
 open PositivityTheory.ThKW.DblSchur
 open GlobalTheory.DblTargetDelta in
 theorem PositivityTheory.ThKW.weil_pair_global_character_lift : ∀ (F E : Type) [Field F] [NumberField F] [Field E]

@@ -94,7 +94,7 @@ theorem sum_rev_ite {M : Type} [AddCommMonoid M] (f : Fin N → M) (j : Fin N) :
   rw [Finset.sum_eq_single j.rev]
   · simp
   · intro x _ hx
-    rw [if_neg fun e => hx (by rw [← e, Fin.rev_rev])]
+    rw [ite_eq_right fun e => hx (by rw [← e, Fin.rev_rev])]
   · simp
 
 theorem form_mid_last {M : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {r b : Fin N → L} {c : L} (h : Shape M r b c)
@@ -123,7 +123,7 @@ theorem form_eq_of (hσσ : ∀ x, σ (σ x) = x) {M : Matrix (Fin (N + 2)) (Fin
       mid_ne_zero, mid_ne_last, zero_ne_mid, last_ne_mid, mid_injective.eq_iff]
   · by_cases e : i = j.rev
     · subst e; simp
-    · rw [if_neg e, if_neg fun e' => e e'.symm]
+    · rw [ite_eq_right e, ite_eq_right fun e' => e e'.symm]
   · exact h1 i
   · have := congrArg σ (h1 j)
     simp only [map_add (f := _), hσσ, map_zero] at this
@@ -182,10 +182,10 @@ theorem Heisenberg₂ : Heis := by
     have hf : cT σ (mat u) * antiJ L (N + 2) * mat u = antiJ L (N + 2) := u.2
     have h1 : ∀ j, colOf u j.rev + σ (rowOf u j) = 0 := fun j => by
       have := congrFun (congrFun hf (mid j)) (Fin.last (N + 1))
-      rwa [form_mid_last hs, antiJ_eq, if_neg (by rw [Fin.rev_last]; exact mid_ne_zero j)] at this
+      rwa [form_mid_last hs, antiJ_eq, ite_eq_right (by rw [Fin.rev_last]; exact mid_ne_zero j)] at this
     have h2 : cornerOf u + ∑ k, σ (colOf u k.rev) * colOf u k + σ (cornerOf u) = 0 := by
       have := congrFun (congrFun hf (Fin.last (N + 1))) (Fin.last (N + 1))
-      rwa [form_last_last hs, antiJ_eq, if_neg (by rw [Fin.rev_last]; exact last_ne_zero)] at this
+      rwa [form_last_last hs, antiJ_eq, ite_eq_right (by rw [Fin.rev_last]; exact last_ne_zero)] at this
     have hr : ∀ j, rowOf u j = -σ (colOf u j.rev) := fun j => by
       have := congrArg σ (h1 j)
       simp only [map_add (f := _), hσσ, map_zero] at this

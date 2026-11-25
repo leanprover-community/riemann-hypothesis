@@ -24,10 +24,10 @@ theorem smInv_mem (f : MA.SmQ r TT) (hf : ∀ q, (f : MA.Qp r TT → ℂ) q ≠ 
   have hsm : ContDiffOn ℝ MA.sm (MA.ext (f : MA.Qp r TT → ℂ)) (MA.Qset r TT) := f.2
   have hne : ∀ x ∈ MA.Qset r TT, MA.ext (f : MA.Qp r TT → ℂ) x ≠ 0 := by
     intro x hx
-    simp only [MA.ext, dif_pos hx]
+    simp only [MA.ext, dite_eq_left hx]
     exact hf _
   show ContDiffOn ℝ MA.sm (MA.ext (fun q => ((f : MA.Qp r TT → ℂ) q)⁻¹)) (MA.Qset r TT)
-  exact (hsm.inv hne).congr fun x hx => by simp only [Pi.inv_apply, MA.ext, dif_pos hx]
+  exact (hsm.inv hne).congr fun x hx => by simp only [Pi.inv_apply, MA.ext, dite_eq_left hx]
 
 theorem inverse_apply (f : MA.SmQ r TT) (hf : ∀ q, (f : MA.Qp r TT → ℂ) q ≠ 0) (q : MA.Qp r TT) :
     ((Ring.inverse f : MA.SmQ r TT) : MA.Qp r TT → ℂ) q = ((f : MA.Qp r TT → ℂ) q)⁻¹ := by
@@ -76,7 +76,7 @@ theorem trR_unit (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (e : M.Ty P �
   by_cases hu : u ∈ MA.smSub P.r P.TT
   · have hmul : (fun q => (φ : MA.Qp P.r P.TT → ℂ) q * u q) ∈ MA.smSub P.r P.TT :=
       (MA.smSub P.r P.TT).mul_mem φ.2 hu
-    rw [dif_pos hmul, dif_pos hu]
+    rw [dite_eq_left hmul, dite_eq_left hu]
     rfl
   · have hmul : (fun q => (φ : MA.Qp P.r P.TT → ℂ) q * u q) ∉ MA.smSub P.r P.TT := by
       intro hm

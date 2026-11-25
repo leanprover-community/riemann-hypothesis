@@ -1213,7 +1213,7 @@ theorem lattice_ineq_integers : ∀ (C : Type) [Field C] [IsAlgClosed C] (v : Va
 
       simp only [F, freeMat, Matrix.mulVec, dotProduct, Matrix.of_apply, Fintype.sum_prod_type,
       Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, map_pow, ite_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.mul_sum]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.mul_sum]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
     ext x

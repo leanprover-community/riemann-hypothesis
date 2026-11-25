@@ -28,11 +28,11 @@ theorem posU_le_iff' (hV : Fr.Valid L₁ N₁) (j : ℤ) (N : ℕ) (hN : N = (Fr
 
 theorem posU_ll' (j : ℤ) (N : ℕ) (l : ℕ) (hl : l < N) : posU Fr N j l = llPos Fr j l := by
   unfold posU
-  rw [if_pos hl]
+  rw [ite_eq_left hl]
 
 theorem posU_fr' (j : ℤ) (N : ℕ) (i : ℕ) : posU Fr N j (N + i) = Fr.fr j i := by
   unfold posU
-  rw [if_neg (by omega), Nat.add_sub_cancel_left]
+  rw [ite_eq_right (by omega), Nat.add_sub_cancel_left]
 
 theorem w_lt_posU' (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (N : ℕ) (hN : N = (Fr.LLset j).card) (i u : ℕ) (hi : i < r)
     (hu : u < N + r) : Fr.fr (j - 1) i < posU Fr N j u := by

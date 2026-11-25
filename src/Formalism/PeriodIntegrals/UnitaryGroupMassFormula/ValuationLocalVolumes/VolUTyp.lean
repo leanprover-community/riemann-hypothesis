@@ -110,7 +110,7 @@ theorem volUZZAt_of (v : PlX X) (hv : TypAt X v)
     (hH : VolTHermCnt X.B.I.cm.sig ψ v (gAt X v) D.R.rS)
     (hC : VolTTFCong X u u' v) : VolTZZAt X u u' ψ v := by
   unfold VolTZZAt ZZX volS
-  rw [if_pos hv]
+  rw [ite_eq_left hv]
   have hset : ZZTyp X.B.I.cm.sig v (gAt X v) D.R.rS (TFv X u v) (TFv X u' v) =
       {z | (fun p => locZ (E := X.B.I.E) v z p.1 p.2) ∈
         {w | (fun p => (w p - TFv X u v p.1 p.2) * sc (E := X.B.I.E) v (gAt X v : Fv X.B.I.F v)⁻¹) ∈
@@ -129,7 +129,7 @@ theorem volume_deep_congruence_of_fubini (v : PlX X) (hv : TypAt X v)
     (hP : VolTProdU (E := X.B.I.E) ψ v (gAt X v) D.R.rS)
     (hO : VolTOne (E := X.B.I.E) ψ v (UIdx D.R.rS)) : VolumeDeepCongruenceSubgroup X ψ v := by
   unfold VolumeDeepCongruenceSubgroup localVolumeUnit volU
-  rw [if_pos hv, hE, hP, hO, one_mul, ENNReal.toReal_inv, ENNReal.toReal_pow, ENNReal.toReal_natCast,
+  rw [ite_eq_left hv, hE, hP, hO, one_mul, ENNReal.toReal_inv, ENNReal.toReal_pow, ENNReal.toReal_natCast,
     volU_two_card_uidx, zpow_neg, zpow_natCast]
 
 def VolUSteps (v : PlX X) : Prop :=

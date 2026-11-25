@@ -66,7 +66,7 @@ variable {F : Type} [Field F] [NumberField F] {n : ℕ} (v : HeightOneSpectrum (
 theorem redM_map (X : Matrix (Fin n) (Fin n) (v.adicCompletionIntegers F)) :
     redM F v (X.map (v.adicCompletionIntegers F).subtype) = X.map (IsLocalRing.residue _) := by
   ext a b
-  exact dif_pos (X a b).2
+  exact dite_eq_left (X a b).2
 
 theorem exists_map {X : Matrix (Fin n) (Fin n) (v.adicCompletion F)} (h : ∀ a b, X a b ∈ v.adicCompletionIntegers F) :
     ∃ X' : Matrix (Fin n) (Fin n) (v.adicCompletionIntegers F), X'.map (v.adicCompletionIntegers F).subtype = X :=

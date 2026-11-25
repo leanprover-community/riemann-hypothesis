@@ -189,15 +189,6 @@ theorem IsGroupCoord.conv_mem (h : IsGroupCoord c) (hf : f ∈ CcSmooth c) (hf' 
 
 end Coord
 
-section Mat
-
-variable {H n : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [Fintype n] [DecidableEq n]
-  {ι : H →* Matrix n n ℂ} {f f' : H → ℂ}
-
-variable [T2Space H] [MeasurableSpace H] [BorelSpace H] (μ : Measure H) [IsFiniteMeasureOnCompacts μ]
-
-end Mat
-
 section General
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]

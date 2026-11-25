@@ -31,7 +31,7 @@ theorem colSum_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
   simp only [harmK, Submodule.mem_iInf, LinearMap.mem_ker] at h0
   have h1 := h0 τ hτ i i'
   rw [← h1]
-  simp only [lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [LinearMap.sum_apply]
   rfl
 
@@ -267,7 +267,7 @@ theorem secondOrder_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
     simp [dotProduct, Matrix.mulVec, Pi.single_apply]
   unfold TB.secondOrder
   simp only [hdot, Fintype.sum_prod_type, apply_ite MvPolynomial.C, map_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   refine Finset.sum_eq_zero fun ℓ _ => ?_
   rw [Finset.sum_comm]
   refine Finset.sum_eq_zero fun ℓ' _ => ?_
@@ -317,11 +317,11 @@ theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPow
     obtain ⟨b', j⟩ := q
     by_cases h : b' = b
     · subst h
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       show Finsupp.mapDomain (ι b') (colPart b' M) (ι b' (0, j)) = M (b', j)
       rw [Finsupp.mapDomain_apply_of_injective (colEmb_inj b')]
       simp [colPart, Finsupp.comapDomain_apply]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       apply Finsupp.mapDomain_notin_range
       rintro ⟨p, hp⟩
       simp only [ι, Prod.mk.injEq] at hp

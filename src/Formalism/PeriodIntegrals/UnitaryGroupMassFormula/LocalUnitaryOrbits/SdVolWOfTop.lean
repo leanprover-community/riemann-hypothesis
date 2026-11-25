@@ -61,7 +61,7 @@ theorem sdVolW_of_top (a : ℕ) (hC : CondV σ J ψ v) (hT : TopW v Λ a) (hD : 
   intro hS hL hSD hU hμ
   have hd0 := dV_ne_zero v
   have hμsd : SdW F E σ n J (Fv F v) (psiV F ψ v) a (dX σ J ψ v a) := by
-    simp only [dX, dif_pos hμ]
+    simp only [dX, dite_eq_left hμ]
     exact hμ.choose_spec
   have := hμsd.1
   set μ := dX σ J ψ v a with hμdef

@@ -85,17 +85,4 @@ theorem neighbourConstruct_key (P : Ideal R) (hP0 : P ≠ ⊥) (L : Submodule R 
 
 end DedekindLFunctions
 
-section Avoid
-
-variable {R : Type*} [CommRing R]
-
-end Avoid
-
-section Main
-
-variable {R K V : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [StarRing K] [Algebra R K]
-  [IsFractionRing R K] [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
-
-end Main
-
 end Formalism.HermitianLatticesTheory

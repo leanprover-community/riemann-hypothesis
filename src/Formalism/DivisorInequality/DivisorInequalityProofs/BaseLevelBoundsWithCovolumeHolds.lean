@@ -38,9 +38,9 @@ theorem places_ell_weighted_sum_le_one (K : Type) [Field K] [NumberField K] [Sta
   rw [Finset.sum_filter] at h
   refine le_trans (le_of_eq (Finset.sum_congr rfl fun y _ => ?_)) h
   by_cases hr : (0:ℝ) ≤ (ramw y : ℝ)
-  · rw [if_pos hr, ellw, div_pow, Real.sq_sqrt hr, div_div_eq_mul_div]
+  · rw [ite_eq_left hr, ellw, div_pow, Real.sq_sqrt hr, div_div_eq_mul_div]
     ring
-  · rw [if_neg hr, ellw, Real.sqrt_eq_zero'.mpr (not_le.mp hr).le]
+  · rw [ite_eq_right hr, ellw, Real.sqrt_eq_zero'.mpr (not_le.mp hr).le]
     simp
 
 theorem slope_bounds : BoundsMu := by

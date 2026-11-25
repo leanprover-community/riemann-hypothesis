@@ -633,9 +633,9 @@ theorem continuous_contractMat (l : Fin N → ℤ) {X : Type} [TopologicalSpace 
     Continuous fun x => contractMat l (f x) (g x) := by
   refine continuous_matrix fun i j => ?_
   by_cases h : l j < l i
-  · simp only [contractMat, Matrix.of_apply, h, if_true]
+  · simp only [contractMat, Matrix.of_apply, h, ite_true]
     exact (hf.pow _).mul (hg.matrix_elem i j)
-  · simp only [contractMat, Matrix.of_apply, h, if_false]
+  · simp only [contractMat, Matrix.of_apply, h, ite_false]
     exact continuous_const
 
 theorem contractMat_zero (l : Fin N → ℤ) (m : Matrix (Fin N) (Fin N) k) : contractMat l 0 m = 1 := by
@@ -654,7 +654,7 @@ theorem val_conj_eq (l : Fin N → ℤ) (c : ℕ) (y : GL (Fin N) k)
   ext i j
   rw [conj_apply]
   by_cases h : l j < l i
-  · simp only [contractMat, Matrix.of_apply, h, if_true]
+  · simp only [contractMat, Matrix.of_apply, h, ite_true]
     congr 1
     have he : ((l i - l j).toNat : ℤ) = l i - l j := Int.toNat_of_nonneg (by omega)
     have : ((c : ℤ) • l) i - ((c : ℤ) • l) j = ((c * (l i - l j).toNat : ℕ) : ℤ) := by
@@ -664,7 +664,7 @@ theorem val_conj_eq (l : Fin N → ℤ) (c : ℕ) (y : GL (Fin N) k)
       ring
     rw [this, zpow_natCast, Units.val_pow_eq_pow_val, pow_mul]
   · have h' : l i ≤ l j := not_lt.1 h
-    simp only [contractMat, Matrix.of_apply, h, if_false]
+    simp only [contractMat, Matrix.of_apply, h, ite_false]
     rw [hy i j h']
     by_cases hij : i = j
     · subst hij
@@ -1650,14 +1650,14 @@ theorem exists_mul_mem_parab {N m : ℕ} (hm : 1 ≤ m) (e : (Σ a, μ a) ≃ Fi
     exact this
   have h1 : ∀ i j, blk e i ≤ blk e j → c.val i j = (1 : Matrix (Fin N) (Fin N) k) i j := fun i j h => by
     have := key i j
-    simp only [if_neg h.not_gt] at this
+    simp only [ite_eq_right h.not_gt] at this
     rwa [← Matrix.mul_apply, Matrix.one_mul] at this
   refine ⟨c, ⟨hc, (mem_unipRadLower k).2 ⟨(mem_parabLower_iff k).2 fun a b i j h => ?_, fun a i j => ?_⟩⟩,
     mem_parab_iff.2 fun a b i j h => ?_⟩
   · rw [h1 _ _ (by simpa using h.le), one_ne e h.ne]
   · rw [h1 _ _ (by simp), one_same]
   · have := key (e ⟨a, i⟩) (e ⟨b, j⟩)
-    simp only [blk_apply, if_pos h] at this
+    simp only [blk_apply, ite_eq_left h] at this
     rw [Units.val_mul, Matrix.mul_apply, this, one_ne e h.ne']
 
 theorem leviEmb_leviProj_mem_Km {N m : ℕ} (hm : 1 ≤ m) (e : (Σ a, μ a) ≃ Fin N) (p : parab k e)

@@ -95,7 +95,7 @@ private theorem exists_norm_le_one_p_eq_smul_Th {n : ℕ} {ε : Fin (n + 1) → 
   · refine ⟨0, 0, by simp, fun x c => ?_⟩
     rw [← hYs x s hs c, h0 x]
     simp
-  · push_neg at h0
+  · push Not at h0
     obtain ⟨x0, hx0⟩ := h0
     obtain ⟨i, hi⟩ := root_of_ne hgl hq (hEig x0 s hs) hx0
     set D := ∏ j ∈ univ.erase i, (-mm i + mm j) with hD

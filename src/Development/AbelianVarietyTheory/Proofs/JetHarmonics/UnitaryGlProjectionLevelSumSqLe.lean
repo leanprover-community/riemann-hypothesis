@@ -328,9 +328,9 @@ theorem _root_.GlobalTheory.norm_sum_eigenprojector_le_of_resolvent_bound :
       if i ∈ In then 2 * (Real.pi : ℂ) * I else 0 := by
     intro i
     by_cases hi : i ∈ In
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       exact circleIntegral.integral_sub_inv_of_mem_ball (mem_ball_iff_norm.mpr (hin i hi))
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       have hoff : ∀ z ∈ Metric.closedBall c R, z - lam i ≠ 0 := by
         intro z hz h
         rw [sub_eq_zero] at h
@@ -734,13 +734,13 @@ theorem hhJ_nonneg_of_cloud_eigen : ∀ (M : Type) [NormedAddCommGroup M] [Inner
     have hin : (⟪x c, x c⟫_ℂ : ℂ).re = ‖x c‖ ^ 2 := by
       simpa using inner_self_eq_norm_sq (𝕜 := ℂ) (x c)
     by_cases he : ε c = true
-    · rw [if_pos he, one_mul, hin]
+    · rw [ite_eq_left he, one_mul, hin]
       have := sq_nonneg ‖∑ a ∈ univ.erase c, E c a (x a)‖
       linarith
     · have hc : kk ≤ c.val + 1 := by
         by_contra h
         exact he (hS.2.2.2.1 c (not_le.mp h)).1
-      rw [if_neg he, neg_one_mul, Complex.neg_re, hin]
+      rw [ite_eq_right he, neg_one_mul, Complex.neg_re, hin]
       have := hnode c hc
       linarith
   have hsum := Finset.sum_le_sum (fun c (_ : c ∈ (univ : Finset (Fin n))) => hterm c)
@@ -908,7 +908,7 @@ theorem nsq_sub_single {n : ℕ} (u : Fin n → ℝ) (s : Fin n) :
     · subst ha; simp; ring
     · simp [ha]
   unfold nsq dot
-  simp only [h, sum_add_distrib, sum_ite_eq', mem_univ, if_true]
+  simp only [h, sum_add_distrib, sum_ite_eq', mem_univ, ite_true]
   ring
 
 theorem nsq_rhoC_le {n : ℕ} (ε : Fin n → Bool) : nsq (rhoC ε) ≤ (n : ℝ) ^ 3 := by

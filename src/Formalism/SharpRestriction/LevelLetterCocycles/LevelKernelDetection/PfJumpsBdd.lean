@@ -48,38 +48,11 @@ theorem jb_FilV_anti : Antitone (FilV PD (LL := LL) (V := V)) := by
   rw [e]
   exact LinearMap.range_comp_le_range _ _
 
-theorem jb_FilV_exh (y : V ⊗[Qp] BdR) : ∃ a, y ∈ FilV PD (LL := LL) (V := V) a := by
-  induction y using TensorProduct.induction_on with
-  | zero => exact ⟨0, zero_mem _⟩
-  | tmul v b =>
-    obtain ⟨a, ha⟩ := PD.Fil_exh b
-    exact ⟨a, ⟨v ⊗ₜ ⟨b, ha⟩, by simp⟩⟩
-  | add x y hx hy =>
-    obtain ⟨a, ha⟩ := hx
-    obtain ⟨b, hb⟩ := hy
-    exact ⟨min a b, add_mem (jb_FilV_anti PD (min_le_left a b) ha)
-      (jb_FilV_anti PD (min_le_right a b) hb)⟩
+theorem jb_FilV_exh (y : V ⊗[Qp] BdR) : ∃ a, y ∈ FilV PD (LL := LL) (V := V) a :=
+  Pv.LocalLengthBound.rk_filV_exh PD y
 
-theorem jb_FilV_sep (y : V ⊗[Qp] BdR) (hy : ∀ a, y ∈ FilV PD (LL := LL) (V := V) a) : y = 0 := by
-  classical
-  let bV := Module.Free.chooseBasis Qp V
-  let e := TensorProduct.equivFinsuppOfBasisLeft (N := BdR) bV
-  have hc : ∀ a, ∀ z ∈ FilV PD (LL := LL) (V := V) a, ∀ i, e z i ∈ PD.Fil a := by
-    intro a z hz i
-    obtain ⟨t, rfl⟩ := hz
-    induction t using TensorProduct.induction_on with
-    | zero => simp
-    | tmul v f =>
-      simp only [AlgebraTensorModule.map_tmul, LinearMap.id_apply, Submodule.subtype_apply, e,
-        TensorProduct.equivFinsuppOfBasisLeft_apply_tmul_apply]
-      exact (PD.Fil a).smul_of_tower_mem _ f.2
-    | add x y hx hy =>
-      rw [map_add (f := _), map_add (f := _), Finsupp.add_apply]
-      exact add_mem hx hy
-  have h0 : e y = 0 := by
-    ext i
-    exact PD.Fil_sep _ (fun a => hc a y (hy a) i)
-  exact e.injective (by rw [h0, map_zero])
+theorem jb_FilV_sep (y : V ⊗[Qp] BdR) (hy : ∀ a, y ∈ FilV PD (LL := LL) (V := V) a) : y = 0 :=
+  Pv.LocalLengthBound.rk_filV_sep PD y hy
 
 theorem jb_FildR_anti (ρ : Representation LL G V) (τ : K →ₐ[Qp] LL) : Antitone (FildR PD ρ τ) :=
   fun _ _ hab => inf_le_inf_left _ (jb_FilV_anti PD hab)

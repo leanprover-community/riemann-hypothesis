@@ -83,11 +83,5 @@ def InRhoFixReal (M : Type) [AddCommGroup M] [Module A M] [Module O M] [SMulComm
 
 end Defs
 
-section Defs2
-variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-  {A T' G : Type} [Ring A] [Algebra O A] [CommRing T'] [Algebra T' A] [Group G]
-
-end Defs2
-
 
 end Formalism.RepresentationBoundsCohomology.FIN

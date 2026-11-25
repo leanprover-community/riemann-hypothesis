@@ -167,7 +167,7 @@ theorem exists_extension {N : ℕ} (L : Submodule (𝓞 E) (Fin N → E)) (hL : 
     have h1 : (b * c') • (⟨x, hx⟩ : L) = ∑ i, ub i • (⟨Pi.single i (star (b : E)), hce i⟩ : L) := by
       apply Subtype.ext; funext j
       simp only [Submodule.coe_smul, Submodule.coe_sum, Finset.sum_apply, Pi.smul_apply,
-        Algebra.smul_def, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        Algebra.smul_def, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       have := hub j
       simp only [map_mul, hc']
       rw [show (algebraMap (𝓞 E) E) (ub j) = (b : E) * x j from this]

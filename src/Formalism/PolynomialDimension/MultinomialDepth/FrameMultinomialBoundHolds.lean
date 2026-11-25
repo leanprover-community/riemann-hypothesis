@@ -25,14 +25,14 @@ theorem gram_weylDim_cons (n : ℕ) (A : ℤ) (μ : Fin n → ℤ) :
   rw [Fin.prod_univ_succ]
   congr 1
   · rw [Fin.prod_univ_succ]
-    simp only [Fin.cons_zero, Fin.cons_succ, lt_self_iff_false, if_false, one_mul, Fin.succ_pos, if_true,
+    simp only [Fin.cons_zero, Fin.cons_succ, lt_self_iff_false, ite_false, one_mul, Fin.succ_pos, ite_true,
       Fin.val_succ, Fin.val_zero]
     refine Finset.prod_congr rfl (fun j _ => ?_)
     push_cast
     ring
   · refine Finset.prod_congr rfl (fun i _ => ?_)
     rw [Fin.prod_univ_succ]
-    simp only [Fin.cons_succ, Fin.cons_zero, Fin.not_lt_zero, if_false, one_mul, Fin.succ_lt_succ_iff,
+    simp only [Fin.cons_succ, Fin.cons_zero, Fin.not_lt_zero, ite_false, one_mul, Fin.succ_lt_succ_iff,
       Fin.val_succ]
     refine Finset.prod_congr rfl (fun j _ => ?_)
     split_ifs

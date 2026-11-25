@@ -226,7 +226,7 @@ theorem infMat_prod {θ : InfFam D} (W : HSp D) (m : D.what₂.Tau → Matrix (F
     rw [List.map_cons, List.prod_cons, GlobalTheory.PointAtPlaceHom.infMat_mul, ih hl.2]
     by_cases c : τ = a
     · subst c
-      rw [(hx τ).2.1, if_neg hl.1, if_pos List.mem_cons_self, Matrix.mul_one]
+      rw [(hx τ).2.1, ite_eq_right hl.1, ite_eq_left List.mem_cons_self, Matrix.mul_one]
     · rw [(hx a).2.2 τ c, Matrix.one_mul]
       simp only [List.mem_cons, c, false_or]
 
@@ -245,7 +245,7 @@ theorem exists_eq_prod_oneP {θ : InfFam D} (hθ : IsInfFam θ) (W : HSp D) (g :
     obtain ⟨τ, -, rfl⟩ := List.mem_map.1 hx
     exact GlobalTheory.PointAtPlaceHom.atTau_mem W τ _
   · rw [infMat_prod W _ _ (fun τ' => GlobalTheory.Mem.Lift.isAtTau_oneP hθ (hY τ') t) τ _ (Finset.nodup_toList _),
-      if_pos (Finset.mem_toList.2 (Finset.mem_univ τ)), hexp]
+      ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ τ)), hexp]
 
 theorem line_eq_prod : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (W : HSp D) (Wd : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc D.host.F D.host.E W.rank)
     (hJ : Wd.J = (1 : D.host.E) • W.gram), ∀ γ ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Lines D.sp.cm.sig Wd,
@@ -645,7 +645,7 @@ theorem line_sum_curve_eq_prod (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs)
       refine Tendsto.sup ?_ ?_
       · refine hlim'.congr' ?_
         filter_upwards [self_mem_nhdsWithin] with t ht
-        simp only [s, if_neg (show t ≠ 0 from ht)]
+        simp only [s, ite_eq_right (show t ≠ 0 from ht)]
       · simp only [tendsto_pure_left, s]
         exact fun _ => mem_of_mem_nhds
     have hk' : Tendsto k (𝓝 0) (𝓝 S') :=
@@ -654,7 +654,7 @@ theorem line_sum_curve_eq_prod (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs)
       intro t
       by_cases ht : t = 0
       · subst ht; simp [hc'0]
-      · simp only [s, if_neg ht, smul_smul, mul_inv_cancel₀ ht, one_smul, add_sub_cancel]
+      · simp only [s, ite_eq_right ht, smul_smul, mul_inv_cancel₀ ht, one_smul, add_sub_cancel]
     refine ⟨fun t => ci t + t • k t, fun t => ?_, ?_, ?_⟩
     · simp only [List.map_cons, List.prod_cons]
       rw [om_prod_one, hc' t, hcs t, tens_add_smul, map_add (f := _), map_smul, hci t, hk t, tens_add_smul]

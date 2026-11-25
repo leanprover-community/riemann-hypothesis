@@ -88,7 +88,7 @@ theorem exists_isRig {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ} (u
   have hk : ∀ (j) (hj : ⊤ ≤ (L.pull (eSec A)).U j),
       valAt' (𝟙 (Sp ℂ)) ((L.pull (eSec A)).U j) (k _ (c j)) = u.fr (j PUnit.unit) 0 := fun j hj => by
     refine (valAt'_constFn (𝟙 _) (𝟙 _) (Category.id_comp _) ((L.pull (eSec A)).U j) (c j) (fun y hy => hj hy)).trans ?_
-    simp only [c, dif_pos hj, Units.val_mk0]
+    simp only [c, dite_eq_left hj, Units.val_mk0]
   refine ⟨⟨fun j => Units.map (k ((L.pull (eSec A)).U j)).toMonoidHom (c j)⟩, fun i j => Units.ext (fn_point_ext _ _ _ fun hV => ?_),
     fun j hj => (hk j hj).symm⟩
   have hi : ⊤ ≤ (L.pull (eSec A)).U i := hV.trans inf_le_left

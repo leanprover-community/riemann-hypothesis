@@ -542,9 +542,9 @@ theorem _root_.GlobalTheory.exists_smul_mem_of_dense_fibres :
     by_cases hjs : j ∈ c.support
     · have hθv : θ v = c j • (1 : K) := by
         rw [← hcv, map_finsuppSum, Finsupp.sum, Finset.sum_eq_single j]
-        · rw [map_smul, hθs j hj, if_pos rfl]
+        · rw [map_smul, hθs j hj, ite_eq_left rfl]
         · intro m hm hmj
-          rw [map_smul, hθs m (hcs hm), if_neg hmj, smul_zero]
+          rw [map_smul, hθs m (hcs hm), ite_eq_right hmj, smul_zero]
         · intro h; exact absurd hjs h
       have h0 : θ (a ^ N • x) = 0 := by rw [map_smul, hx, smul_zero]
       rw [← hpv, map_add (f := _), hθP p hp, zero_add, hθv, Algebra.smul_def, _root_.mul_one] at h0

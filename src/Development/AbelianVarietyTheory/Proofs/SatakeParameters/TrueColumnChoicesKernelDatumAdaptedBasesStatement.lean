@@ -189,7 +189,7 @@ theorem mtType_std (hok : I.Ok) (hp : TC.Pins B X) (l : I.Laws) (Z : TC.Later B 
   have hm : 1 ≤ j.1 + 1 ∧ j.1 + 1 ≤ B.R.m := ⟨by omega, j.2⟩
   have e1 : (O u a).mt (j.1 + 1) = (I.rec7 l Z).muTil (j.1 + 1) * (show (I.rec7 l Z).Dt →* ℂˣ from tildeQ B.host I.SQ (I.xi a)) := by
     rw [hO.mt u a]
-    exact if_pos hm
+    exact ite_eq_left hm
   rw [e1, MonoidHom.mul_apply, T.muTil_eq j x hx, hT x]
   have e2 : (tildeQ B.host I.SQ (I.xi a)) (QuotientGroup.mk x) = (I.xi a).1 x :=
     (tildeQ_mk B.host I.SQ hk x).trans (congrArg _ (finPartI_eq_self hx))
@@ -322,7 +322,7 @@ theorem canM_ker (hfit : ∀ s c, (nu s).colLen c ≤ N) (χ : Module.Dual (Cw D
   ext i j
   have hj : (j : ℕ) < N := lt_of_lt_of_le j.2 (hfit s c)
   have hs : e.symm (tauPl D s) = s := e.symm_apply_apply s
-  simp only [Matrix.of_apply, GL3Columns.colsOf, dif_pos hj, hs]
+  simp only [Matrix.of_apply, GL3Columns.colsOf, dite_eq_left hj, hs]
 
 end GlobalTheory.KerVal
 
@@ -637,7 +637,7 @@ theorem evC_ratSpan_gen {D : D7} (O : ∀ u μ, GL3Theta.LiftObj D (D.chTw u μ)
         funext τ r
         rw [natW_lamTG M (j + 1) hi τ r, ← natW_succ (antitone_kernelChain_nuT D) u j hj τ r]
         have h1 := clause1 (antitone_kernelChain_nuT D) u (j + 1) hi τ r
-        have h2 : nn D u (j + 1) τ = nuT D u (j + 1) τ (lastI D (j + 1)) := by unfold nn; rw [if_pos hi]
+        have h2 : nn D u (j + 1) τ = nuT D u (j + 1) τ (lastI D (j + 1)) := by unfold nn; rw [ite_eq_left hi]
         omega
       rw [e]; exact hmem
     · rw [hev, hfn, MvPolynomial.eval_map]
@@ -1357,7 +1357,7 @@ theorem kerEntHyp_scB {Dx : DivX D} {Tw : TwForms D} (ha : ∀ w u μ τ, ‖a w
     rw [prTC_scB P O B a hC u μ w i hi, k0, thAtW_scB P O B a ha hB u μ w i hi c c',
       GlobalTheory.KerRescale.applyAt0_rescale _ _ _ (fun s => a w u μ (tauPl D s)), map_smul, smul_eq_mul, prSC_scB P O B a hC u μ w i hi]
     unfold unC
-    rw [if_neg hF, if_neg hF', unF_scB]
+    rw [ite_eq_right hF, ite_eq_right hF', unF_scB]
     have key : (∏ τ, ((a w u μ τ ^ i) ^ D.R.N i) ^ ((D.chTw u μ).sSharp i τ)) *
         (∏ τ, ((a w u μ τ ^ i) ^ D.R.N i) ^ (-(D.chTw u μ).sSharp i τ)) = 1 := by
       rw [← Finset.prod_mul_distrib]
@@ -1400,7 +1400,7 @@ theorem GlobalTheory.Pdv.kerEntC_true : ∀ {B : Base} {X : PreX B.toPre} (I : T
     ⟨Pm w u μ, h1 w u μ, h2 w u μ, h3 w u μ, fun i _ c τ => by
       show GlobalTheory.KerRescale.adUnit Pl O w u μ τ ^ i • _ = _
       unfold GlobalTheory.KerRescale.adUnit
-      rw [if_pos hw]⟩
+      rw [ite_eq_left hw]⟩
   exact ⟨_, h, ⟨fun u μ w _ => kfTieOf Pl O _ hBs hC h u μ w, fun u μ w _ => kfTieOf_un Pl O _ hBs hC h u μ (hR u μ) w⟩,
     KerEntTrue.adaptedTh_kerEntC hBs hA h⟩
 

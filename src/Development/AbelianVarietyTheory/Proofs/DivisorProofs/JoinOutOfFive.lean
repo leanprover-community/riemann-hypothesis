@@ -850,7 +850,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
   have hp : ∀ i, Sz l lam 0 (a i * b i * (Real.sqrt d : ℝ) / (2 * Real.pi))⁻¹ := by
     intro i
     have := (hab i).2.2.2
-    rwa [hc, if_neg hld, add_zero] at this
+    rwa [hc, ite_eq_right hld, add_zero] at this
   have hsd : ((Real.sqrt d : ℝ) : ℂ) ≠ 0 := by
     have : (0 : ℝ) < Real.sqrt d := Real.sqrt_pos.2 (by exact_mod_cast hF.1.pos)
     exact_mod_cast this.ne'
@@ -894,7 +894,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
     refine GlobalTheory.LatValRam.sz_neg_one_pow_mul _ (GlobalTheory.LatValRam.sz_mono (GlobalTheory.LatValRam.sz_mul hTg (GlobalTheory.LatValRam.sz_prod Finset.univ
       (fun i => ((κ i : ℕ) : ℝ) * 0 + ((2 * s + 2 * κ i : ℕ) : ℝ) * (a0 𝔣 l : ℝ)) _
       (fun i _ => GlobalTheory.LatValRam.sz_mul (GlobalTheory.LatValRam.sz_pow (hp i) _) (GlobalTheory.LatValRam.sz_pow (hab i).2.2.1 _)))) (le_of_eq ?_))
-    simp only [betaBound_vp, n_vp, if_pos hc, Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK]
+    simp only [betaBound_vp, n_vp, ite_eq_left hc, Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK]
     push_cast
     simp only [mul_zero, zero_add, add_mul, Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum, Finset.sum_const,
       Finset.card_univ, nsmul_eq_mul]

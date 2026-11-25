@@ -120,7 +120,7 @@ theorem re_fix_of_row {D : D7} (X : HidaSetting D) {f : X.B.I.GA → ℂ} (hf : 
       rw [X.e_eq g]
       by_cases hg : g ∈ X.K2
       · have hg' : g ∈ K2set X.B.I X.B.g X.e0 X.z0 X.bw := hg
-        rw [if_pos hg', Set.indicator_of_mem hg, hf.right g hg y]
+        rw [ite_eq_left hg', Set.indicator_of_mem hg, hf.right g hg y]
         have hn : ‖X.chi2 g‖ = 1 := hK.2.2.2.2 g hg
         have hc : star (X.chi2 g) * X.chi2 g = 1 := by
           rw [← starRingEnd_apply, Complex.conj_mul', hn]; simp
@@ -129,7 +129,7 @@ theorem re_fix_of_row {D : D7} (X : HidaSetting D) {f : X.B.I.GA → ℂ} (hf : 
         rw [e2, ev, star_mul', star_star, div_eq_mul_inv, div_eq_mul_inv]
         linear_combination (star (f y) * (((X.B.μf X.K2).toReal : ℂ))⁻¹) * hc
       · have hg' : g ∉ K2set X.B.I X.B.g X.e0 X.z0 X.bw := hg
-        rw [if_neg hg', Set.indicator_of_notMem hg, zero_mul]
+        rw [ite_eq_right hg', Set.indicator_of_notMem hg, zero_mul]
     rw [hfun, integral_indicator hKM, setIntegral_const]
     simp only [Measure.real]
     rw [Complex.real_smul]
@@ -181,7 +181,7 @@ theorem real_shift {D : D7} (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.Ins
           · subst hv
             have hm : X.pl (X.pl.symm τ) ∈ insert τ s := by simp
             have hn : X.pl (X.pl.symm τ) ∉ s := by simpa using hτ
-            rw [if_pos hm, if_neg hn, hb τ, mul_one]
+            rw [ite_eq_left hm, ite_eq_right hn, hb τ, mul_one]
           · have hpv : X.pl v ≠ τ := fun e => hv (by rw [← e, Equiv.symm_apply_apply])
             rw [hoth v hv, one_mul]
             simp [Finset.mem_insert, hpv]

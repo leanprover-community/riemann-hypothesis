@@ -54,12 +54,6 @@ def InRowReal (r : G →* A) (χ : G →* T'ˣ) (E : A) (Dw : Subgroup G) [Topol
 
 end Defs
 
-section Defs2
-variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-  {A T' G : Type} [Ring A] [Algebra O A] [CommRing T'] [Algebra T' A] [Group G]
-
-end Defs2
-
 def StatRowRhoReal : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [TopologicalSpace O] [TopologicalSpace (FractionRing O)]

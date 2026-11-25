@@ -234,7 +234,7 @@ theorem exists_ne_zero_polynomial_common_zero [IsAlgClosed k] (n r d m : ℕ)
   refine ⟨fun j => (genSub n s j).map (MvPolynomial.eval c'), ?_, ?_⟩
   · intro h0
     obtain ⟨q, hq⟩ : ∃ q, c q ≠ 0 := by
-      by_contra hh; push_neg at hh; exact hc0 (funext hh)
+      by_contra hh; push Not at hh; exact hc0 (funext hh)
     have := congrArg (fun x : Fin n → k[X] => (x (e2 q).1).coeff (e2 q).2) h0
     simp only [coeff_genSub_map_eval, Pi.zero_apply, Polynomial.coeff_zero] at this
     apply hq
@@ -267,7 +267,7 @@ theorem tsenLang_ratFunc :
   have hnumer : ∀ a ∈ S, algebraMap k[X] (RatFunc k) (numer a) = b • a := by
     intro a ha
     have h := hbS a ha
-    simp only [numer, dif_pos h]
+    simp only [numer, dite_eq_left h]
     exact (RingHom.mem_rangeS.mp h).choose_spec
   let g : Fin r → MvPolynomial (Fin n) k[X] := fun i =>
     ∑ μ ∈ (f i).support, MvPolynomial.monomial μ (numer ((f i).coeff μ))
@@ -289,7 +289,7 @@ theorem tsenLang_ratFunc :
     intro i μ hμ
     refine ⟨?_, ?_⟩
     · have hmem : μ ∈ (f i).support := by
-        by_contra h; rw [hgc, if_neg h] at hμ; exact hμ rfl
+        by_contra h; rw [hgc, ite_eq_right h] at hμ; exact hμ rfl
       have := hf i (MvPolynomial.mem_support_iff.mp hmem)
       rwa [Finsupp.degree_eq_weight_one]
     · exact le_trans (Finset.le_sup (f := fun μ => ((g i).coeff μ).natDegree)

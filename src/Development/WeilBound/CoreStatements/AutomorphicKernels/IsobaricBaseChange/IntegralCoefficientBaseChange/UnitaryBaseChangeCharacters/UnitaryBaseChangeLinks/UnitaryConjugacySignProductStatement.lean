@@ -1343,7 +1343,7 @@ theorem part1 (hU : Unr E) {n : ℕ} {S : Set (Pl E)} (hS : IsSection S) {P : E[
   have hγ' : h⁻¹ * γ.1 * h ∈ UE E n := hh ▸ γ'.2
   obtain ⟨c, hc1, hc2⟩ := _root_.GlobalTheory.NormHasseCent.main E hU n γ.1 h γ.2 (h1 ▸ hP) hγ' (fun w hw => by
     obtain ⟨g, hg⟩ := hloc w (mem_S hS hw)
-    have hUL : UL n w = UJ (cj w) 1 := by unfold UL; rw [if_neg hw]
+    have hUL : UL n w = UJ (cj w) 1 := by unfold UL; rw [ite_eq_right hw]
     refine (_root_.GlobalTheory.UnitaryConj.main _ (cj w) n _ _).1 ⟨g.1, hUL ▸ g.2, ?_⟩
     have := congrArg Subtype.val hg
     simp only [Subgroup.coe_mul, Subgroup.coe_inv, locPt_val hU] at this
@@ -1358,8 +1358,8 @@ theorem part2 (hU : Unr E) {n : ℕ} {S : Set (Pl E)} (hS : IsSection S) (γ : U
   apply finprod_mem_congr rfl
   intro w _
   by_cases hw : IsSplitAt w
-  · rw [if_pos hw]; unfold kapSign; rw [if_pos hw]
-  · rw [if_neg hw, kapSign_eq w hw, locPt_val hU]
+  · rw [ite_eq_left hw]; unfold kapSign; rw [ite_eq_left hw]
+  · rw [ite_eq_right hw, kapSign_eq w hw, locPt_val hU]
     unfold sgnOn
     have hA := aeval_map_mat w γ.1.val P₁
     have := _root_.GlobalTheory.UnitaryClasses.BaseChangeSign.main E hU w hw n 1 (aeval γ.1.val P₁)
@@ -1381,10 +1381,10 @@ theorem part3 (hU : Unr E) {n : ℕ} {S : Set (Pl E)} (hS : IsSection S) {P : E[
   choose k hk using hk
   have hinvol : ∀ w : Pl E, ∀ x, cj w (cj w x) = x := fun w => (GlobalTheory.ConjAtPlace.main E hU w).2.1
   have hval : ∀ w : Pl E, ∀ x, Valued.v (cj w x) = Valued.v x := fun w => (GlobalTheory.ConjAtPlace.main E hU w).2.2.1
-  have hUL : ∀ w : Pl E, ¬ IsSplitAt w → UL n w = UJ (cj w) 1 := fun w hw => by unfold UL; rw [if_neg hw]
+  have hUL : ∀ w : Pl E, ¬ IsSplitAt w → UL n w = UJ (cj w) 1 := fun w hw => by unfold UL; rw [ite_eq_right hw]
   have hyU : ∀ w : Pl E, ¬ IsSplitAt w → cT (cj w) (y w).1.val * 1 * (y w).1.val = 1 := fun w hw => by
     have h3 : ∀ z : GLw n w, z ∈ UL n w → cT (cj w) z.val * 1 * z.val = 1 := by
-      intro z hz; unfold UL at hz; rw [if_neg hw] at hz; exact hz
+      intro z hz; unfold UL at hz; rw [ite_eq_right hw] at hz; exact hz
     exact h3 _ (y w).2
   obtain ⟨H', hH'h, hH'i, hH'p, hH'l⟩ := _root_.GlobalTheory.UnitaryClasses.ExistForm.main E hU S hS n γ₀ (hγ₀ ▸ hP)
     (fun w => cT (cj w) ((k w)⁻¹).val * ((k w)⁻¹).val)
@@ -1397,8 +1397,8 @@ theorem part3 (hU : Unr E) {n : ℕ} {S : Set (Pl E)} (hS : IsSection S) {P : E[
       apply finprod_mem_congr rfl
       intro w _
       by_cases hw : IsSplitAt w
-      · rw [if_pos hw]; unfold kapSign; rw [if_pos hw]
-      · rw [if_neg hw, kapSign_eq w hw, hk w, _root_.GlobalTheory.UnitaryClasses.SgnConj.sgnOn_conj _ (cj w) (hval w)]
+      · rw [ite_eq_left hw]; unfold kapSign; rw [ite_eq_left hw]
+      · rw [ite_eq_right hw, kapSign_eq w hw, hk w, _root_.GlobalTheory.UnitaryClasses.SgnConj.sgnOn_conj _ (cj w) (hval w)]
         rfl)
   obtain ⟨h, hh⟩ := _root_.GlobalTheory.LandherrStd.main E hU n H' hH'h hH'p (fun w hw => by
     obtain ⟨c, -, hc⟩ := hH'l w hw
@@ -1418,7 +1418,7 @@ theorem part3 (hU : Unr E) {n : ℕ} {S : Set (Pl E)} (hS : IsSection S) {P : E[
         rw [Matrix.coe_units_inv]
         exact Matrix.charpoly_units_conj h γ₀.val
       obtain ⟨h', hh'⟩ := _root_.GlobalTheory.SepConj.conj_of_charpoly_eq_of_separable _ n (y w).1 _ hb.symm ((hy w) ▸ hsep w)
-      have hmem : h' ∈ UL n w := by unfold UL; rw [if_pos hw]; trivial
+      have hmem : h' ∈ UL n w := by unfold UL; rw [ite_eq_left hw]; trivial
       exact ⟨⟨h', hmem⟩, Subtype.ext (by simpa using hh')⟩
     · obtain ⟨c, hc1, hc2⟩ := hH'l w hw
       have hg : (k w)⁻¹ * c * (GeneralLinearGroup.map (algebraMap E (w.adicCompletion E)) h)⁻¹ ∈ UL n w := by

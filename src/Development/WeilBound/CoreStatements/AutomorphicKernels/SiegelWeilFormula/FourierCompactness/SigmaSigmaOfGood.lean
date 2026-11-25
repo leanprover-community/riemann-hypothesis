@@ -148,7 +148,7 @@ theorem nbE_mem {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : 
 theorem nbE_eq {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : IsFrame2 σ Y b) :
     nbE σ Y b = fun β => ⟨nU b β.1, nbE_mem hσ hb β⟩ := by
   funext β
-  simp only [nbE, dif_pos (nbE_mem hσ hb β)]
+  simp only [nbE, dite_eq_left (nbE_mem hσ hb β)]
 
 theorem isNMap_nbE {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : IsFrame2 σ Y b) :
     IsNMap b (nbE σ Y b) := by

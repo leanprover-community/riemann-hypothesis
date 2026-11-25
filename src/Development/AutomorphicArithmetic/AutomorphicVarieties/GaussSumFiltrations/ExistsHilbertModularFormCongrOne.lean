@@ -328,7 +328,7 @@ theorem genD_eq {y : Af F} {𝔪 𝔫 : Ideal (𝓞 F)} (h : GenD y 𝔪) (h' : 
 
 theorem coefAt_of_genD {y : Af F} {𝔪 : Ideal (𝓞 F)} (h : GenD y 𝔪) (a : Ideal (𝓞 F) → ℂ) : coefAt a y = a 𝔪 := by
   have h' : ∃ 𝔪, GenD y 𝔪 := ⟨𝔪, h⟩
-  rw [coefAt, dif_pos h', genD_eq h'.choose_spec h]
+  rw [coefAt, dite_eq_left h', genD_eq h'.choose_spec h]
 
 theorem ordI_eventually {I : Ideal (𝓞 F)} (hI : I ≠ ⊥) :
     ∀ᶠ w : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ordI w I = 0 := by
@@ -521,7 +521,7 @@ theorem GlobalTheory.HilbertThetaSeries.lift_hasExp : ∀ (F : Type) [Field F] [
   intro F _ _ _ k Ψ φ a hΨ hφ ha
   let c : Ideal (𝓞 F) → ℂ := fun 𝔪 => if h : 𝔪 ≠ ⊥ then a (exists_unit_genD h).choose 1 else 0
   have hc : ∀ 𝔪, 𝔪 ≠ ⊥ → ∃ Y : (Af F)ˣ, GenD (Y : Af F) 𝔪 ∧ c 𝔪 = a Y 1 := fun 𝔪 h =>
-    ⟨_, (exists_unit_genD h).choose_spec, dif_pos h⟩
+    ⟨_, (exists_unit_genD h).choose_spec, dite_eq_left h⟩
   refine ⟨c, fun x y hy yf => ?_, fun 𝔪 h => (hc 𝔪 h).imp fun _ h => h.2⟩
   have hP : 0 < ∏ v, y.val v := Finset.prod_pos fun v _ => hy v
   have hP' : (((∏ v, y.val v) ^ ((k : ℝ) / 2) : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (Real.rpow_pos_of_pos hP _).ne'

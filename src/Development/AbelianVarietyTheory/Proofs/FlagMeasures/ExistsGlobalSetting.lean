@@ -383,14 +383,14 @@ theorem exists_add_mul_notMem_of_maximal_ge {R : Type*} [CommRing R] [IsDedekind
   refine ⟨s, fun p hp hJp hmem => ?_⟩
   have h1 := Ideal.Quotient.eq.1 (hs ⟨p, hp, hJp⟩)
   by_cases hx : x ∈ p
-  · simp only [hx, if_true] at h1
+  · simp only [hx, ite_true] at h1
     have h2 : n * s ∈ p := by simpa using p.sub_mem hmem hx
     have h3 : n ∈ p := by
       have := p.sub_mem h2 (p.mul_mem_left n h1)
       have e : n * s - n * (s - 1) = n := by ring
       rwa [e] at this
     exact h p hp hJp h3 hx
-  · simp only [hx, if_false, sub_zero] at h1
+  · simp only [hx, ite_false, sub_zero] at h1
     apply hx
     simpa using p.sub_mem hmem (p.mul_mem_left n h1)
 

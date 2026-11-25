@@ -120,12 +120,6 @@ theorem block_coord_ne_zero {p : Cpt ξ} {c : (k : K) → ι k}
 
 end Multi
 
-section Single
-
-variable {κ : Type} {x : κ → Ω}
-
-end Single
-
 end Lat
 
 end GlobalTheory.CompanionTheory.Ar

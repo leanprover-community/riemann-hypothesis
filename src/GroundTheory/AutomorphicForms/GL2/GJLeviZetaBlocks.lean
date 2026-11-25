@@ -154,11 +154,11 @@ theorem exists_bound_of_coeff_ne_zero (hσ : IsSmooth σ) (hc : IsCuspidal σ) (
         exact ⟨μ k, Finset.mem_image_of_mem _ (by simp [hk])⟩) else 0
     have hcb_le : ∀ k, cb (β k) ≤ μ k := by
       intro k
-      simp only [cb, dif_pos (⟨k, rfl⟩ : ∃ j, β j = β k)]
+      simp only [cb, dite_eq_left (⟨k, rfl⟩ : ∃ j, β j = β k)]
       exact Finset.min'_le _ _ (Finset.mem_image_of_mem _ (by simp))
     have hcb_mem : ∀ j, ∃ k, β k = β j ∧ cb (β j) = μ k := by
       intro j
-      simp only [cb, dif_pos (⟨j, rfl⟩ : ∃ k, β k = β j)]
+      simp only [cb, dite_eq_left (⟨j, rfl⟩ : ∃ k, β k = β j)]
       obtain ⟨k, hk, hkeq⟩ := Finset.mem_image.1
         (Finset.min'_mem ((Finset.univ.filter fun k => β k = β j).image μ) _)
       exact ⟨k, (Finset.mem_filter.1 hk).2, hkeq.symm⟩
@@ -353,7 +353,7 @@ theorem blockOrd_diagPow (b : Set.range β) (μ : Fin n → ℤ) :
     simp only [blocks, Cartan.coe_diagPow, Matrix.diagonal_apply]
     by_cases h : i = j
     · subst h; simp
-    · rw [if_neg (fun e => h (Subtype.ext e)), if_neg h]
+    · rw [ite_eq_right (fun e => h (Subtype.ext e)), ite_eq_right h]
   rw [blockOrd, hmat, Matrix.det_diagonal,
     ord_prod _ fun i _ => zpow_ne_zero _ (Cartan.uniformizer_ne_zero F)]
   exact Finset.sum_congr rfl fun i _ => ord_zpow_uniformizer (μ i.1)

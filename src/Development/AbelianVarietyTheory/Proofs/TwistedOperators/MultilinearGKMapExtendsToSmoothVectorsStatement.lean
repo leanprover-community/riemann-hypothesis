@@ -348,7 +348,7 @@ theorem invariant_insert (A B : ∀ τ, Submodule ℂ (H τ)) (hAB : ∀ τ, A �
     (hT : Invariant A B Rk Rg C T₀ s T) : ∃ T', Invariant A B Rk Rg C T₀ (insert τ₀ s) T' := by
   obtain ⟨hTa, hTb, hTc⟩ := hT
   set D' := piecewiseSubmodule A B (insert τ₀ s) with hD'
-  have hD'0 : D' τ₀ = B τ₀ := if_pos (Finset.mem_insert_self τ₀ s)
+  have hD'0 : D' τ₀ = B τ₀ := ite_eq_left (Finset.mem_insert_self τ₀ s)
   have hBD' : ∀ x ∈ B τ₀, x ∈ D' τ₀ := fun x hx => by rw [hD'0]; exact hx
   have hD'B : ∀ x ∈ D' τ₀, x ∈ B τ₀ := fun x hx => by rw [← hD'0]; exact hx
   have hD'ne : ∀ τ, τ ≠ τ₀ → D' τ = piecewiseSubmodule A B s τ := by
@@ -360,7 +360,7 @@ theorem invariant_insert (A B : ∀ τ, Submodule ℂ (H τ)) (hAB : ∀ τ, A �
     split_ifs
     · exact hAB τ hx
     · exact hx
-  have hD0 : piecewiseSubmodule A B s τ₀ = A τ₀ := if_neg hτ₀
+  have hD0 : piecewiseSubmodule A B s τ₀ = A τ₀ := ite_eq_right hτ₀
 
   have hret := fun τ => (D' τ).subtype.exists_leftInverse_of_injective (Submodule.ker_subtype _)
   choose g hg using hret
@@ -521,7 +521,7 @@ theorem invariant_insert (A B : ∀ τ, Submodule ℂ (H τ)) (hAB : ∀ τ, A �
       · exact absurd h hne
       · exact h
     have hBDτ : ∀ x ∈ B τ, x ∈ D' τ := fun x hx => by
-      rw [hD'ne τ hne]; simp only [piecewiseSubmodule, if_pos hτs]; exact hx
+      rw [hD'ne τ hne]; simp only [piecewiseSubmodule, ite_eq_left hτs]; exact hx
     constructor
     · let F : H τ →ₗ[ℂ] H τ₀ →ₗ[ℂ] E := LinearMap.mk₂ ℂ (fun w b => T' (update (update u τ w) τ₀ b))
         (by intro w₁ w₂ b; rw [update_comm hne, update_comm hne, update_comm hne, T'.map_update_add])
@@ -906,7 +906,7 @@ theorem extend_positions : GlobalTheory.Published.HarishChandraModules → Globa
       exact h
   by_cases hz : ∀ u : GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.KVec M, T₀ u = 0
   · refine ⟨0, fun v u _ => (hz u).symm, fun τ g _ v w _ => by simp, fun τ i v => ⟨[], 0, by simp, fun w => by simp⟩⟩
-  push_neg at hz
+  push Not at hz
   obtain ⟨u₀, hu₀⟩ := hz
 
   have hNZ : ∀ τ, ∃ N : M.H τ →ₗ[ℂ] E, N ∈ C τ ∧ IsClosed (N '' {w | SmoothVec (lieSet (M.ε τ)) (M.σ τ) w}) ∧

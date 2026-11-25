@@ -269,7 +269,7 @@ theorem ptsPosDens_eq {P : Ideal (MRing ι)} {L : Fin e → HermLine ι} (hL : �
     have hqN : (y, segre (γ y)) ∈ N := by
       have h := hEN _ hy.2 (by rw [hΨ1]; simp)
       rwa [crd_of_eq hΨ1, nrm_of_eq hΨ1] at h
-    rw [finsum_eq_single _ (segre (γ y)) ?_, finsum_eq_if, if_pos hfib,
+    rw [finsum_eq_single _ (segre (γ y)) ?_, finsum_eq_if, ite_eq_left hfib,
       sheetDensity_eq hL hEg hU hγ hN hNp hqN hfib, Set.indicator_of_mem (show γ y ∈ E from hy.2)]
     intro w hne
     rw [finsum_eq_if]

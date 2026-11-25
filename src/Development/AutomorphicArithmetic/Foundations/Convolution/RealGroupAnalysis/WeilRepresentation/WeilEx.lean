@@ -109,7 +109,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.unrOf :
     intro i j
     by_cases hij : i = j
     · simp [Matrix.one_apply, hij]
-    · simp only [Matrix.one_apply, hij, if_false, Prod.snd_zero]
+    · simp only [Matrix.one_apply, hij, ite_false, Prod.snd_zero]
       change (0 : v.adicCompletion F) ∈ v.adicCompletionIntegers F
       exact zero_mem _
   set X : Fin 2 × Fin 2 → FiniteAdeleRing (𝓞 F) F :=
@@ -374,8 +374,8 @@ theorem UpperTheory.ConvolutionTheory.R2.C.etaQuad :
     unfold GlobalTheory.LFun.etaU
     have hi := QuadraticHeckeCharacter.isSplit_iff_normV h2 w hw'
     by_cases hs : Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) (w.under (𝓞 F))
-    · rw [if_pos hs, if_pos (hi.1 hs)]
-    · rw [if_neg hs, if_neg (mt hi.2 hs)]
+    · rw [ite_eq_left hs, ite_eq_left (hi.1 hs)]
+    · rw [ite_eq_right hs, ite_eq_right (mt hi.2 hs)]
   · have h3 : ((GlobalTheory.LFun.toHChar η hη'.isHeckeF).1 a : ℂ) = ((η a : Circle) : ℂ) := rfl
     rw [h3, he, MonoidHom.comp_apply]
     rcases Int.units_eq_one_or (GlobalTheory.IdeleNormChar.normSign E a) with e | e <;>
@@ -807,7 +807,7 @@ private lemma goodPlace {F : Type} [Field F] [NumberField F] (s : Finset (G1 F))
     fun x => if h : x ∈ v.adicCompletionIntegers F then ⟨x, h⟩ else 0
   have hto : ∀ x (h : x ∈ v.adicCompletionIntegers F), (toO x : v.adicCompletion F) = x := by
     intro x h
-    simp only [toO, dif_pos h]
+    simp only [toO, dite_eq_left h]
   let pr : G1 F → v.adicCompletionIntegers F × v.adicCompletionIntegers F :=
     fun g => (toO ((g 1 0).2 v), toO ((g 1 1).2 v))
   obtain ⟨t, ht⟩ := UpperTheory.ConvolutionTheory.R2.C.genLoc (v.adicCompletionIntegers F) (s.image pr) (by

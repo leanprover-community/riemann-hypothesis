@@ -134,7 +134,7 @@ private theorem dd_dd [Module ℂ N] (r : κ → R) (c : Finset κ → N) (t : F
     by_cases h : j = i
     · simp [F, h]
     · simp only [F]
-      rw [if_pos h, if_pos (Ne.symm h), GlobalTheory.cubeSign_mul_erase hi hj (Ne.symm h), mul_comm (r j),
+      rw [ite_eq_left h, ite_eq_left (Ne.symm h), GlobalTheory.cubeSign_mul_erase hi hj (Ne.symm h), mul_comm (r j),
         Finset.erase_right_comm (a := j), neg_smul, neg_add_cancel]
   have h3 : (∑ i ∈ t, ∑ j ∈ t, F i j) + ∑ i ∈ t, ∑ j ∈ t, F j i = 0 := by
     rw [← Finset.sum_add_distrib]
@@ -235,23 +235,6 @@ section -- clump:auto
 
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct Pointwise
-
-section
-variable {σ E : Type} [LinearOrder σ] [AddCommGroup E] [Module ℂ E]
-
-end
-
-section
-variable {R κ : Type} [CommRing R] [Algebra ℂ R] [LinearOrder κ]
-  {N N' : Type} [AddCommGroup N] [Module R N] [Module ℂ N] [IsScalarTower ℂ R N]
-  [AddCommGroup N'] [Module R N'] [Module ℂ N'] [IsScalarTower ℂ R N']
-
-end
-
-section
-variable {R κ : Type} [CommRing R] [Algebra ℂ R] [LinearOrder κ] [Fintype κ]
-
-end
 
 theorem UpperTheory.Gal.productCup_of_system.koszulExactBelowLengthOfWeaklyRegular_of_htpy :
     Htpy → KoszulExactBelowLengthOfWeaklyRegular :=

@@ -907,11 +907,11 @@ private theorem qq_tr {O G : Type} [CommRing O] [IsDomain O] [Group G] {n : ℕ}
     by_cases hk : k = i <;> simp [hk, rep_single, Algebra.algebraMap_eq_smul_one]
   rw [tr_rep (Nat.succ_le_of_lt (lt_of_le_of_lt (Nat.zero_le _) i.2)), e, Sp.trp O n _ α _ h,
     Finset.sum_eq_single i]
-  · rw [Polynomial.eval_pow, Polynomial.eval_prod, ← Finset.prod_erase_mul _ _ (Finset.mem_univ i), if_pos rfl,
+  · rw [Polynomial.eval_pow, Polynomial.eval_prod, ← Finset.prod_erase_mul _ _ (Finset.mem_univ i), ite_eq_left rfl,
       Polynomial.eval_one, mul_one]
     congr 1
     refine Finset.prod_congr rfl fun k hk => ?_
-    rw [if_neg (Finset.mem_erase.1 hk).1]
+    rw [ite_eq_right (Finset.mem_erase.1 hk).1]
     simp
   · intro a _ ha
     rw [Polynomial.eval_pow, Polynomial.eval_prod, Finset.prod_eq_zero (Finset.mem_univ a) (by simp [ha]), zero_pow E.succ_ne_zero]
@@ -1279,8 +1279,8 @@ private theorem mapRingHom_single_mul_partial_charpoly {S : Type} [CommRing S] (
   congr 4
   funext k
   by_cases hk : k = i
-  · simp only [Function.comp_apply, if_pos hk, map_one]
-  · simp only [Function.comp_apply, if_neg hk, map_sub, hs, map_one]
+  · simp only [Function.comp_apply, ite_eq_left hk, map_one]
+  · simp only [Function.comp_apply, ite_eq_right hk, map_sub, hs, map_one]
 
 private theorem mapDomain_partial_charpoly_power_zero {H : Type} [Group H] (φ : G →* H) (E : ℕ) (ph ta : G) (u : Fin n → R) (i : Fin n)
     (h : φ ta = 1) : MonoidAlgebra.mapDomainRingHom R φ (twoPowerModulus E ph ta u i 0) = 0 := by
@@ -1397,7 +1397,7 @@ theorem UpperTheory.V.Th.count :
           rfl
         rw [A.segmentWeightExponent, der_wt hδs, hδs_apply, k4, hw, map_zero, smul_zero]
       rw [LinearMap.smul_apply, hev, k3] at k2
-      simp only [hδw, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, zero_add] at k2
+      simp only [hδw, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, zero_add] at k2
       simp only [Algebra.algebraMap_eq_smul_one, smul_smul] at k2
       rw [← k2]
       congr 1
@@ -1408,7 +1408,7 @@ theorem UpperTheory.V.Th.count :
         obtain ⟨τ, hτ⟩ := tr_lin u.D hn
         rw [hδs_apply, hβtr, mapRingHom_single_mul_partial_charpoly, mapDomain_partial_charpoly_power_zero _ _ _ _ _ _ (Subtype.ext (T.ta_ker N j)), hτ, map_zero, map_zero, map_zero]
       rw [LinearMap.smul_apply, hev, k3] at k1
-      simp only [hδq, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, zero_add] at k1
+      simp only [hδq, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, zero_add] at k1
       simp only [Algebra.algebraMap_eq_smul_one, smul_smul] at k1
       have : c1 * c2 * c3 * t (some (.inr (j, i))) = c2 * (c1 * (t (some (.inr (j, i))) * c3)) := by ring
       rw [this, mul_smul, k1, smul_zero]

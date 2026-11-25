@@ -183,9 +183,9 @@ theorem inner_map (hadd : ∀ x y, U (x + y) = U x + U y) (hs : ∀ (z : ℂ) x,
   cases cj
   · apply Complex.ext <;> simp_all [cjc]
   · apply Complex.ext
-    · simp only [cjc, if_true, Complex.conj_re]
+    · simp only [cjc, ite_true, Complex.conj_re]
       exact h1
-    · simp only [cjc, if_true, Complex.conj_im] at h2 ⊢
+    · simp only [cjc, ite_true, Complex.conj_im] at h2 ⊢
       simpa using h2
 
 end Semi
@@ -1608,16 +1608,16 @@ theorem pairTop (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.Arch
 theorem alS_eq (k : Fin D.R.m) (τ : D.what₂.Tau) : alS D k τ = GlobalTheory.Chain.expS D k τ := by
   unfold alS GlobalTheory.Chain.expS
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_pos h.add_one, if_pos h]
-  · rw [if_neg (Nat.not_odd_iff_even.mpr h.add_one), if_neg (Nat.not_even_iff_odd.mpr h)]
+  · rw [ite_eq_left h.add_one, ite_eq_left h]
+  · rw [ite_eq_right (Nat.not_odd_iff_even.mpr h.add_one), ite_eq_right (Nat.not_even_iff_odd.mpr h)]
     ring
 
 theorem alT_eq (k : Fin D.R.m) (τ : D.what₂.Tau) : alT D k τ = GlobalTheory.Chain.expT D k τ := by
   unfold alT GlobalTheory.Chain.expT
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_pos h.add_one, if_pos h]
+  · rw [ite_eq_left h.add_one, ite_eq_left h]
     ring
-  · rw [if_neg (Nat.not_odd_iff_even.mpr h.add_one), if_neg (Nat.not_even_iff_odd.mpr h)]
+  · rw [ite_eq_right (Nat.not_odd_iff_even.mpr h.add_one), ite_eq_right (Nat.not_even_iff_odd.mpr h)]
 
 theorem itLaw (hP : GlobalTheory.Chain.ItPair D) (hL : GlobalTheory.Chain.ItLine D) (hg : NodeGap D) : ItLaw D := by
   intro k V W P P' M M' hPe hPe' ψ θ χS χT ω hω hχ f hf

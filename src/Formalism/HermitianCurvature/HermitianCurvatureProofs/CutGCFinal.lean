@@ -70,7 +70,7 @@ theorem family_locality_holds : FamLocal := by
   have hΦt_mem : Φt ∈ Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π' := by
     refine ⟨fun x hx => ?_, fun x₀ hx₀ => ?_, fun x hx h hh h' hh' => ?_⟩
     · show (if (x.1, x.2) ∈ Q.DomR P.k P.r Bs.z Bs.z' then Φ x.1 x.2 else 0) = 0
-      rw [if_neg hx]
+      rw [ite_eq_right hx]
     · obtain ⟨U, F, hU, hx₀U, hF, hΦF⟩ := hFF.1 x₀ ⟨hx₀.1, hdom x₀ hx₀⟩ hx₀.2.1
       have hO : IsOpen {x : (Fin P.r → ℂ) × Q.Mx P.k P.r | x.1 ∈ OmX P.r ∧ 0 < Q.GGl P.k P.r Bs.z Bs.z' x.2} := by
         have h1 : IsOpen {x : (Fin P.r → ℂ) × Q.Mx P.k P.r | x.1 ∈ OmX P.r} := by
@@ -86,12 +86,12 @@ theorem family_locality_holds : FamLocal := by
         hF.mono Set.inter_subset_left, fun x hx hxG => ?_⟩
       have hxD : x ∈ Q.DomR P.k P.r Bs.z Bs.z' := ⟨hx.2.1, hxG, hx.2.2⟩
       show (if (x.1, x.2) ∈ Q.DomR P.k P.r Bs.z Bs.z' then Φ x.1 x.2 else 0) = F x
-      rw [if_pos hxD]
+      rw [ite_eq_left hxD]
       exact hΦF x hx.1 hxG
     · have hxD' := Formalism.FourierDecayAlt.P.Qx5.DomR_inv hh hh' hx
       show (if (x.1, h * x.2 * h') ∈ Q.DomR P.k P.r Bs.z Bs.z' then Φ x.1 (h * x.2 * h') else 0) =
         (Bs.π h).comp ((if (x.1, x.2) ∈ Q.DomR P.k P.r Bs.z Bs.z' then Φ x.1 x.2 else 0).comp (Bs.π' h'))
-      rw [if_pos hxD', if_pos hx]
+      rw [ite_eq_left hxD', ite_eq_left hx]
       exact (hFF.2 x.1 hx.1).2.2.2 x.2 ⟨hx.2.1, hdom x hx⟩ h hh h' hh'
   refine ⟨⟨Φt, hΦt_mem⟩, {ζ' | Tz P.k P.r Bs.z * Tz P.k P.r Bs.z' < Complex.normSq ζ'}, ?_, fun ζ' hζ' => ?_⟩
   · refine (isOpen_lt continuous_const Complex.continuous_normSq).mem_nhds ?_
@@ -102,7 +102,7 @@ theorem family_locality_holds : FamLocal := by
     Formalism.FourierDecayAlt.P.NFRadRedA.mem_domR hz hz' hsec (q := (q.1.1, ζ')) ⟨q.2.1, hζ'⟩
   have hval : Φt q.1.1 (NF.muZ P.k P.r Bs.μsec ζ') = Φ q.1.1 (NF.muZ P.k P.r Bs.μsec ζ') := by
     show (if (q.1.1, NF.muZ P.k P.r Bs.μsec ζ') ∈ Q.DomR P.k P.r Bs.z Bs.z' then _ else 0) = _
-    rw [if_pos hqD]
+    rw [ite_eq_left hqD]
   refine ⟨hval, fun Y a b => ?_⟩
   rw [X.t_apply Y a b ⟨Φt, hΦt_mem⟩ (q.1.1, NF.muZ P.k P.r Bs.μsec ζ') hqD]
   show Q.tL P.k P.r Bs.z Bs.z' (Fin.last P.r) Y a b (Φt q.1.1) (NF.muZ P.k P.r Bs.μsec ζ') =
@@ -112,7 +112,7 @@ theorem family_locality_holds : FamLocal := by
   refine (Formalism.FourierDecayAlt.P.Qx2.ll_tL (i := Fin.last P.r) hDo Bs.z Bs.z' Y a b).1 (Φt q.1.1) (Φ q.1.1) (fun x hx => ?_)
     _ ⟨hqD.2.1, hqD.2.2⟩
   show (if (q.1.1, x) ∈ Q.DomR P.k P.r Bs.z Bs.z' then Φ q.1.1 x else 0) = Φ q.1.1 x
-  rw [if_pos ⟨q.2.1, hx.1, hx.2⟩]
+  rw [ite_eq_left ⟨q.2.1, hx.1, hx.2⟩]
 
 end
 
@@ -199,7 +199,7 @@ theorem fderiv_zeta_local {f₁ f₂ : MA.Qp r TT → ℂ} (hf₁ : f₁ ∈ MA.
       rw [hγ0]; exact hV.mem_nhds hqV)
   have heq : MA.ext f₁ ∘ γ =ᶠ[𝓝 0] MA.ext f₂ ∘ γ := by
     filter_upwards [hQ, hV'] with t ht htV
-    simp only [Function.comp_apply, MA.ext, dif_pos ht]
+    simp only [Function.comp_apply, MA.ext, dite_eq_left ht]
     refine hag ⟨γ t, ht⟩ ?_ htV
     show (q.1 + t • ((0 : Fin r → ℂ), w)).1 = c
     simp [hq]

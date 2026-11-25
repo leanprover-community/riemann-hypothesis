@@ -85,10 +85,10 @@ theorem dI_eq_sum {p q : ℕ} (x : Ix p q → ℝ) : dI x = ∑ j, ((x j : ℂ) 
   by_cases hab : a = b
   · subst hab
     simp
-  · rw [if_neg hab, eq_comm]
+  · rw [ite_eq_right hab, eq_comm]
     apply Finset.sum_eq_zero
     intro j _
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact hab rfl
 

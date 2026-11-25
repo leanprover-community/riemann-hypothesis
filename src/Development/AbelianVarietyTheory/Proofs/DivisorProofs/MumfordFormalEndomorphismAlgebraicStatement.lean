@@ -174,20 +174,20 @@ theorem eq_of_expandsAt_of_chartExpOn : ∀ (R : Type) [CommRing R] [IsDomain R]
       intro α h hn
       have h0 : ((U.gt e).pG.left.app (LB.wchart D.toPre.P.L (D.toPre.famφB α) (jf α))).hom
           ((f α).f (jf α)) = 0 := h1v α hn (jf α)
-      simp only [F, dif_pos h, tV]
+      simp only [F, dite_eq_left h, tV]
       rw [h0, map_zero, zero_mul]
     have hz2 : ∀ α ∈ S₁ ∪ S₂, α ∉ S₂ → F α = 0 := by
       intro α h hn
       have h0 : ((U.gt e).pG.left.app (LB.wchart D.toPre.P.L (D.toPre.famφB α) (jf α))).hom
           ((f α).f (jf α)) = 0 := h2v α hn (jf α)
-      simp only [F, dif_pos h, tV]
+      simp only [F, dite_eq_left h, tV]
       rw [h0, map_zero, zero_mul]
     rw [sum_attach_eq_sum_of_subset Finset.subset_union_left F _ (fun x => ?_) hz1] at E1V
     rw [sum_attach_eq_sum_of_subset Finset.subset_union_right F _ (fun x => ?_) hz2] at E2V
     rotate_left
-    · simp only [F, dif_pos (Finset.mem_union_right S₁ x.2), tV]
+    · simp only [F, dite_eq_left (Finset.mem_union_right S₁ x.2), tV]
       congr 1 <;> first | rfl | exact map_res_homOfLE _ _ _
-    · simp only [F, dif_pos (Finset.mem_union_left S₂ x.2), tV]
+    · simp only [F, dite_eq_left (Finset.mem_union_left S₂ x.2), tV]
       congr 1 <;> first | rfl | exact map_res_homOfLE _ _ _
     refine ⟨U.expW e p i' (S₁ ∪ S₂) jf jt ⊓ W, inf_le_right, ⟨hmem _, hy⟩, ?_⟩
     rw [map_map_homOfLE]
@@ -788,10 +788,10 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R 
     · obtain ⟨c, hc, -⟩ := (hP k hk).choose_spec
       have e1 := hc e s₁ i i'
       have e2 := hc e s₂ i i'
-      have hS : S k = (hP k hk).choose := dif_pos hk
+      have hS : S k = (hP k hk).choose := dite_eq_left hk
       rw [hS, e1, e2]
       ring
-    · have hS : S k = fun _ => zeroSec _ := dif_neg hk
+    · have hS : S k = fun _ => zeroSec _ := dite_eq_right hk
       rw [hS]
       dsimp only [zeroSec]
       erw [map_zero, map_zero]
@@ -808,7 +808,7 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R 
     have hyW : y ∈ ((b 0).left ≫ (fstG (maximalIdeal R) 0 G).left) ⁻¹ᵁ secChart U.LG.L i ⊓
         (fstG (maximalIdeal R) 0 G).left ⁻¹ᵁ secChart U.LG.L i' :=
       ⟨Scheme.basicOpen_le _ _ hu, hi'⟩
-    have hS : S k = (hP k hk).choose := dif_pos hk
+    have hS : S k = (hP k hk).choose := dite_eq_left hk
     refine ⟨s₀, y, i, i', hu, ?_⟩
     rw [hS]
     have key := hc 0 s₀ i i'

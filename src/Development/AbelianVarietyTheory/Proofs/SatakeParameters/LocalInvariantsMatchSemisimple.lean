@@ -153,10 +153,4 @@ theorem param_twist (hLP : TieLP N A) {a : ℕ} (π : A.CG a) (w : PlE H) (u s :
 
 end Glob
 
-section Main
-
-variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N)
-
-end Main
-
 end GlobalTheory.TwistLG

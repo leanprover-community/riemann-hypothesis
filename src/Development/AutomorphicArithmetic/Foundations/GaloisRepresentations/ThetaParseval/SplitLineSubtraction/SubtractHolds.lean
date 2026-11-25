@@ -178,7 +178,7 @@ theorem UpperTheory.Gal.TP.Sub.charEx_holds :
   have hspec : ∀ (χ : HChar E) (n : (E →+* ℂ) → ℤ), IsAlgPos χ n →
       Continuous (L χ n) ∧ IsLAdicOf art ι χ n (L χ n) := by
     intro χ n h
-    have e : L χ n = (hL χ n h).choose := dif_pos h
+    have e : L χ n = (hL χ n h).choose := dite_eq_left h
     rw [e]
     exact (hL χ n h).choose_spec
   refine ⟨L, fun χ n h => ⟨(hspec χ n h).1, fun w hw => ⟨fun hl => ?_, ?_⟩⟩, fun χ n χ' n' h h' e => ?_⟩

@@ -237,16 +237,6 @@ variable (c : (K →+* ℂ) → ℝ) (hc : ∀ σ, 0 < c σ) (σ : K →+* ℂ)
 
 end Scale
 
-noncomputable def scaleNormExp (t : (K →+* ℂ) → ℝ) : ArchMetric K V :=
-  { form := fun σ => (Real.exp (2 * t σ) : ℂ) • h.form σ
-    form_symm := fun σ x y => by
-      change (Real.exp (2 * t σ) : ℂ) * h.form σ y x =
-        conj ((Real.exp (2 * t σ) : ℂ) * h.form σ x y)
-      rw [h.form_symm]
-      simp only [map_mul, Complex.conj_ofReal]
-    posDef := fun σ _ e he =>
-      (h.posDef σ e he).smul (a := (Real.exp (2 * t σ) : ℂ)) (by exact_mod_cast Real.exp_pos _) }
-
 end Field
 
 end ArchMetric
@@ -675,11 +665,11 @@ theorem exists_unitri (F : FlagD H r) (y : Fin r → V) (he : ∀ a, F.e a.castS
         intro h
         omega
       · rw [Finset.sum_eq_single ⟨c, hca⟩]
-        · simp only [if_true, one_smul]
+        · simp only [ite_true, one_smul]
           congr 1
         · intro b _ hb
           dsimp only
-          rw [if_neg (fun h => hb (Fin.ext h)), zero_smul]
+          rw [ite_eq_right (fun h => hb (Fin.ext h)), zero_smul]
         · intro h
           exact absurd (Finset.mem_univ _) h
     | zero => exact ⟨0, fun _ _ => rfl, by simp⟩
@@ -698,7 +688,7 @@ theorem exists_unitri (F : FlagD H r) (y : Fin r → V) (he : ∀ a, F.e a.castS
     · have hab : a < b := hab
       simp [h1 a b hab.le, Matrix.one_apply_ne hab.ne]
   · simp only [Matrix.sub_apply, Matrix.of_apply, sub_smul, Finset.sum_sub_distrib, ← h2 a, Matrix.one_apply,
-      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact (sub_sub_cancel _ _).symm
 
 

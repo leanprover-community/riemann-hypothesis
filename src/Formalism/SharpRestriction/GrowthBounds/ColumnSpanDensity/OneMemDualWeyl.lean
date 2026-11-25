@@ -43,7 +43,7 @@ theorem Vsp_eq (Kf : Type) [Field Kf] {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1
   unfold Vsp
   congr 1
   funext s
-  rw [if_pos (kp_lamAt_antitone lam0 hdom s)]
+  rw [ite_eq_left (kp_lamAt_antitone lam0 hdom s)]
 
 end Formalism.MainNotions.flipOneThree.Pf
 

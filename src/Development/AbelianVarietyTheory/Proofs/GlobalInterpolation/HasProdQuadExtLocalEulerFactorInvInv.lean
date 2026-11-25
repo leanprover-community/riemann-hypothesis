@@ -354,12 +354,12 @@ private theorem eulerFac_hasProd_and_primesOver_card_le_two {σ : E →ₐ[F] E}
     have hval : ∀ Q ∈ v.asIdeal.primesOver (𝓞 E), _root_.Formalism.HermitianLatticesTheory.eulerFac E M Q = (1 - t)⁻¹ := by
       intro Q hQm
       unfold _root_.Formalism.HermitianLatticesTheory.eulerFac
-      rw [if_pos (hQ Q hQm).1, (hQ Q hQm).2]
+      rw [ite_eq_left (hQ Q hQm).1, (hQ Q hQm).2]
       push_cast
       rw [Real.sqrt_sq (by positivity)]
     have heul : _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.eulerInv F E M v = 1 - t := by
       unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.eulerInv _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.etaV _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.resCard
-      rw [if_pos hF]
+      rw [ite_eq_left hF]
     have hpos : 0 < 1 - t := by linarith [le_abs_self t]
     refine ⟨?_, by omega, by omega, fun Q hQm => ⟨by rw [hval Q hQm]; positivity, ?_⟩⟩
     · obtain ⟨Q₀, hQ₀⟩ := Set.ncard_eq_one.mp hn
@@ -376,10 +376,10 @@ private theorem eulerFac_hasProd_and_primesOver_card_le_two {σ : E →ₐ[F] E}
   · have hval : ∀ Q ∈ v.asIdeal.primesOver (𝓞 E), _root_.Formalism.HermitianLatticesTheory.eulerFac E M Q = (1 - x) ^ (-1 / 2 : ℝ) := by
       intro Q hQm
       unfold _root_.Formalism.HermitianLatticesTheory.eulerFac
-      rw [if_neg (hQ Q hQm).1, (hQ Q hQm).2]
+      rw [ite_eq_right (hQ Q hQm).1, (hQ Q hQm).2]
     have heul : _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.eulerInv F E M v = 1 - x := by
       unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.eulerInv _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.etaV _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.resCard
-      rw [if_neg hF]; simp [hxdef, hqdef]
+      rw [ite_eq_right hF]; simp [hxdef, hqdef]
     have hpos : 0 < 1 - x := by linarith
     refine ⟨?_, by omega, by omega, fun Q hQm => ⟨by rw [hval Q hQm]; positivity, ?_⟩⟩
     · obtain ⟨Q₁, Q₂, hne, hS⟩ := Set.ncard_eq_two.mp hn

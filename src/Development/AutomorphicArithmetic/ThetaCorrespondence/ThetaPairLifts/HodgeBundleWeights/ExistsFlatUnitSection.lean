@@ -379,7 +379,7 @@ theorem exists_ringHom_ne_zero_of_not_isNilpotent {K R : Type} [Field K] [CommRi
     obtain ⟨n, hn⟩ := Ideal.mem_radical_iff.1 h
     exact hb ⟨n, by simpa using hn⟩
   rw [Ideal.jacobson, Submodule.mem_sInf] at hrad
-  push_neg at hrad
+  push Not at hrad
   obtain ⟨m, ⟨-, hm⟩, hbm⟩ := hrad
   letI : Field (R ⧸ m) := Ideal.Quotient.field m
   haveI : Algebra.FiniteType K (R ⧸ m) :=
@@ -640,7 +640,7 @@ theorem cuspOn_fd_span : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       by_cases hz : (⟨k, y⟩ : Σ k, Frame ((U σ).X k).Ψ r) ∈ framesOn (U σ) Z
       · obtain ⟨hd, hl⟩ := hz
         have h1 : rdU (U σ) (idem Z) k y = 1 := by
-          simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hd, dif_pos]
+          simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hd, dite_eq_left]
           rw [evR_idem hl (htest _ ⟨hd, hl⟩ hd)]
           rfl
         rw [h1, one_mul]
@@ -677,7 +677,7 @@ theorem horizGen_mul_mem_span : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     · subst hkk
       have hd : y ∉ ((U σ).X k).dom := fun hd => hy (by rw [hk]; exact ⟨rfl, hd⟩)
       have h0 : rdU (U σ) f k y = 0 := by
-        simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hd, dif_neg, not_false_eq_true]
+        simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hd, dite_eq_right, not_false_eq_true]
       rw [mulAt_same]
       simp only [h0, mul_zero]
     · rw [mulAt_ne _ _ _ _ hkk]
@@ -716,7 +716,7 @@ theorem exists_model_cusp {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} (hL : Neat
     have hp : ((U σ).X k).p0 = 0 ∨ ((U σ).X k).p0 = r := by omega
     refine ⟨n, hn, he, _, GlobalTheory.BoundedCusp.mem_SS_of_definite _ _ τ0 hp _
       ⟨hs, GlobalTheory.ScalarCusp.bdd_of_definite _ hp _ _ hs⟩, y, hy, ?_⟩
-    have e : rdU (U σ) f k y = toC (evR Xo c f ((U σ).un k ⟨y, hy⟩)) := dif_pos hy
+    have e : rdU (U σ) f k y = toC (evR Xo c f ((U σ).un k ⟨y, hy⟩)) := dite_eq_left hy
     rw [e]
     exact hne
   · have hla : ∀ n : ℕ, laU (U σ) 0 n k = fun (τ : ((U σ).X k).Ψ) (j : Fin r) =>
@@ -815,7 +815,7 @@ theorem exists_cuspOn_two {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} (hL : Neat
   refine ⟨fun _ => 2, n, ⟨fun _ => antitone_const, hnev⟩, fun _ _ _ => le_rfl, hnb, hdv, g, g.2, ?_⟩
   intro h0
   have e : rdU (U σ) (g : Rul Xo c) k y = rdU (U σ) f k y := by
-    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dif_pos hy']
+    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left hy']
     rw [hg _ _ hlies]
   rw [h0, map_zero] at e
   exact hfy e.symm
@@ -997,7 +997,7 @@ theorem contOn_rdU : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
   intro E _ _ _ H Dw l Xo c r U hL e he0 s hs σ hσ k
   by_cases hanti : ∀ τ (i j : Fin (Dw.mult τ)), i ≤ j → e (some ⟨τ, j⟩) ≤ e (some ⟨τ, i⟩)
   · exact (GlobalTheory.ReadCont.differentiableOn_rdU_of_antitone (hL.unf σ hσ) hL.pos he0 hanti hs k).continuousOn
-  · push_neg at hanti
+  · push Not at hanti
     obtain ⟨τ, i, j, hij, hlt⟩ := hanti
     have hij' : i < j := lt_of_le_of_ne hij (by rintro rfl; exact lt_irrefl _ hlt)
     rw [GlobalTheory.IncrZero.secZ_eq_zero_of_lt E H Dw l Xo c e τ i j hij' hlt s hs, map_zero]
@@ -1208,7 +1208,7 @@ theorem GlobalTheory.FlatAnyLevel.exists_flat_unit_bounded_any_level : _root_.Gl
   obtain ⟨A⟩ := GlobalTheory.FlatAnyLevel.archEx (GlobalTheory.FlatAnyLevel.neatUnf_of_good D T j Y e o hG) (xiR D) Z τ
   simp only [Nat.cast_one, one_smul]
   refine ⟨A.sig, A.inv, A.sig_mem, A.inv_mem, A.idem_sig, A.idem_inv, A.mul_inv, fun σ hσ => ?_⟩
-  have hg : goodOf Y.d.c₂ σ = σ := if_pos hσ
+  have hg : goodOf Y.d.c₂ σ = σ := ite_eq_left hσ
   have hn := A.norm_inf σ
   rw [hg] at hn
   refine ⟨max (A.cInf σ) (A.cInf σ)⁻¹, fun z hz => ?_⟩

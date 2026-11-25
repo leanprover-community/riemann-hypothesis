@@ -191,7 +191,7 @@ lemma chj_hasDerivAt (j : ℕ) (t y : ℝ) :
   generalize sg(y) = s
   by_cases hj : Even j
   · have h1 : ¬ Even (j + 1) := by simpa [Nat.even_add_one] using hj
-    simp only [if_pos hj, if_neg h1]
+    simp only [ite_eq_left hj, ite_eq_right h1]
     have h2 : HasDerivAt (fun z : ℂ => Complex.cosh (z * s))
         (Complex.sinh ((t : ℂ) * s) * s) (t : ℂ) := by
       have h0 : HasDerivAt (fun z : ℂ => z * s) s (t : ℂ) := by
@@ -203,7 +203,7 @@ lemma chj_hasDerivAt (j : ℕ) (t y : ℝ) :
     rw [e]
     exact h3
   · have h1 : Even (j + 1) := by simpa [Nat.even_add_one] using hj
-    simp only [if_neg hj, if_pos h1]
+    simp only [ite_eq_right hj, ite_eq_left h1]
     have h2 : HasDerivAt (fun z : ℂ => Complex.sinh (z * s))
         (Complex.cosh ((t : ℂ) * s) * s) (t : ℂ) := by
       have h0 : HasDerivAt (fun z : ℂ => z * s) s (t : ℂ) := by

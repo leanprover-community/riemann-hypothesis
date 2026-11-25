@@ -41,7 +41,7 @@ theorem sum_split {s : ℕ} (c : Fin s → ℕ) (a : Fin s) :
     · simp [h]
     · simp [h, h.ne', not_lt.2 h.le]
   rw [h2, Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.sum_filter, ← Finset.sum_filter,
-    ← Finset.sum_filter, Finset.filter_eq', if_pos (Finset.mem_univ _), Finset.sum_singleton]
+    ← Finset.sum_filter, Finset.filter_eq', ite_eq_left (Finset.mem_univ _), Finset.sum_singleton]
 
 theorem concat_dec_topCut (Δ : Segment k) {s : ℕ} (c : Fin s → ℕ) (hc : ∀ a, 0 < c a) (h : ∑ a, c a = Δ.len)
     (i : Fin (∑ a, c a)) : concat c (fun a => dec (topCut Δ c hc a)) i = dec Δ (Fin.cast h i) := by

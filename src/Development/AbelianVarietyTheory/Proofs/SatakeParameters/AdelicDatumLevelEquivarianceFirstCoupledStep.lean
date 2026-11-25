@@ -197,10 +197,10 @@ theorem sameCoset_kappa : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dt
     rw [mul_inv_cancel_left]
     rfl
   · by_cases h : P.1 ∈ t.Pr.vGs
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       have := hok.depthG P h
       omega
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       have := hok.depthQ P h
       omega
 
@@ -376,11 +376,11 @@ theorem levAt_target : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a
   have ex1 : xiPt A t.m2 hi β β' p q' w = XiCpl1 t.Ch t.sel (t.tup μ) (t.cst μ) (t.idx μ) t.m2 (A.ib t.m2 hi β) p q'
       (cosetOf A (t.m2 + 1) hi β' q') w := by
     unfold xiPt
-    rw [dite_eq_right (lt_irrefl _), if_pos rfl]
+    rw [dite_eq_right (lt_irrefl _), ite_eq_left rfl]
   have ex2 : xiPt A t.m2 hi β β' p p' w = XiCpl1 t.Ch t.sel (t.tup μ) (t.cst μ) (t.idx μ) t.m2 (A.ib t.m2 hi β) p p'
       (cosetOf A (t.m2 + 1) hi β' p') w := by
     unfold xiPt
-    rw [dite_eq_right (lt_irrefl _), if_pos rfl]
+    rw [dite_eq_right (lt_irrefl _), ite_eq_left rfl]
   rw [ex1, ex2, hcos, hmu, ← hχ, ← map_mul, ← map_mul, mul_comm (∏ P : SB t μ, _), law]
 
 end GlobalTheory.CplTarget
@@ -639,7 +639,7 @@ theorem levSrc_cpl : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =
     congrFun (hAway β β' x₁ x' x₁ x' q p' p₁ p' hq hp' hp₁ hp' (fun _ _ => ⟨rfl, rfl⟩)) w
   rw [eA]
   unfold xiPt
-  rw [dite_eq_right (lt_irrefl _), if_pos rfl, dite_eq_right (lt_irrefl _), if_pos rfl]
+  rw [dite_eq_right (lt_irrefl _), ite_eq_left rfl, dite_eq_right (lt_irrefl _), ite_eq_left rfl]
   have hsrc := firstCoupledDatum_source_level_law (G := t.glob) (cst := t.cst μ) (Ch := t.Ch) hPins.fields.ok t.pr_ok (t.idx_ok μ) (al := A.ib t.m2 hlt β) p'
     (cosetOf A (t.m2 + 1) hi β' p') hfr hlev hN hf w
   have hprod : ((∏ P, c P : t.X.Kˣ) : t.X.K) * ∏ P, z P = 1 := by

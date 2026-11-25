@@ -1001,14 +1001,14 @@ theorem proof : ProjFrameGenPtTransc.Statement := by
     by_cases hm : m ∈ q.support
     · have h1 := congrArg (AddMonoidAlgebra.coeff · (Finsupp.single () m)) hFΓ
       rw [coeff_sum, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, Finset.sum_eq_single m] at h1
-      · rw [coeff_C_mul, coeff_X_pow, if_pos rfl, mul_one] at h1
+      · rw [coeff_C_mul, coeff_X_pow, ite_eq_left rfl, mul_one] at h1
         have h2 := (mul_eq_zero.1 h1).resolve_right (pow_ne_zero _ hX)
         rw [Ideal.Quotient.eq_zero_iff_mem] at h2
         have h3 := aeval_inl_eq_zero G h2
         rw [hg m] at h3
         exact Subtype.ext h3
       · intro n _ hn
-        rw [coeff_C_mul, coeff_X_pow, if_neg, mul_zero]
+        rw [coeff_C_mul, coeff_X_pow, ite_eq_right, mul_zero]
         intro h
         exact hn (Finsupp.single_injective () h)
       · intro h
@@ -1224,8 +1224,8 @@ theorem segreMap_weightedHomogeneousComponent [Nonempty K] (b : Unit → ℕ)
       · rintro rfl; rfl
       · intro h; funext u; cases u; exact congr_fun h (Classical.arbitrary K)
     by_cases h : b = Finsupp.weight (blockWeight (fun _ : Unit => ∀ k, ι k)) d
-    · rw [if_pos h, if_pos (key.mp h)]
-    · rw [if_neg h, if_neg (mt key.mpr h), map_zero]
+    · rw [ite_eq_left h, ite_eq_left (key.mp h)]
+    · rw [ite_eq_right h, ite_eq_right (mt key.mpr h), map_zero]
   | add p p' hp hp' => simp only [map_add (f := _), hp, hp']
 
 theorem SegrePrime.proof : SegrePrime.Statement := by
@@ -1289,10 +1289,10 @@ theorem proof : ShiftIntersectionPolynomial.Statement := by
   · rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single (fun _ => 0)]
     · rw [Polynomial.coeff_C_mul_X_pow]
       have hc : (Finset.univ.filter fun j : Fin n => (fun _ : Fin n => (0 : Fin 2)) j = 0).card = n := by simp
-      rw [if_pos hc.symm]
+      rw [ite_eq_left hc.symm]
       rfl
     · intro s _ hs
-      rw [Polynomial.coeff_C_mul_X_pow, if_neg]
+      rw [Polynomial.coeff_C_mul_X_pow, ite_eq_right]
       intro hc
       apply hs
       have hu : (Finset.univ.filter fun j => s j = 0) = Finset.univ :=
@@ -1318,7 +1318,7 @@ theorem proof : ShiftIntersectionPolynomial.Statement := by
         simpa [e] using h
     have key := ZCombLimit.eq_famExt_of_position (J := II K ι) (P := P) IsSmoothHerm e Z ![(q : ℝ), 1] he hZ hposition
       Finset.univ (fun _ => 0)
-    simp only [Finset.mem_univ, if_true] at key
+    simp only [Finset.mem_univ, ite_true] at key
     rw [key, famExt_apply, Polynomial.eval_finsetSum]
     refine Finset.sum_congr rfl fun s _ => ?_
     rw [prod_weights, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]

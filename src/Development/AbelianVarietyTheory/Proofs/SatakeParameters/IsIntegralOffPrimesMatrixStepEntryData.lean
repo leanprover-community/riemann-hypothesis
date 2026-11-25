@@ -70,11 +70,11 @@ theorem intAt_chArg_of_omPhi {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Char
     rw [hL.depthG P hP, pow_one, mul_neg]
     exact GlobalTheory.TopStep.intAt_neg h1
   · have h1 := right_ne_zero_of_mul h0
-    rw [PhiAt, if_neg hP] at h1
+    rw [PhiAt, ite_eq_right hP] at h1
     have hb := hL.boundQ i al P hP
     have hb' := hL.boundQ (i + 1) be P hP
     have hD := hL.depthQ' P hP
-    simp only [lamYat, hP, if_false, GlobalTheory.GO.ChRoot.mem_lamY_zero] at hb hb'
+    simp only [lamYat, hP, ite_false, GlobalTheory.GO.ChRoot.mem_lamY_zero] at hb hb'
     have hint : IntAt P.1 ((qOf P.1 : X.E) ^ (i + 1) * Loc.chArg y) := by
       refine GlobalTheory.ColPeriod.EntQ.intAt_chArg _ y fun v hv => ?_
       have h2 := (hb' _ (GlobalTheory.ColPeriod.EntQ.int_of_PhiQ (GlobalTheory.ColPeriod.EntQ.k_le_N R _) (GlobalTheory.ColPeriod.EntQ.k_le_N R _) h1 (hb v hv).1)).2

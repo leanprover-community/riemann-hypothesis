@@ -821,7 +821,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.L.sumCoset :
     · simp
     · intro b _ hb
       simp only [Set.indicator_apply, Set.mem_setOf_eq]
-      rw [if_neg (fun h => hb h.symm)]
+      rw [ite_eq_right (fun h => hb h.symm)]
     · intro hn
       exact absurd (hfin.mem_toFinset.2 (hkey g hg)) hn
 end -- clump:auto

@@ -496,7 +496,7 @@ theorem valBd_of (hM : MFH p Fr TT L₁ L₂ N₁ G' deg d Y (r + K) cP)
         have hmg := hM.margin _ _ hx.1 hx.2
         have hpos : (tlPos Fr Dt.nL (⟨j, Sum.inr ⟨r - 1 - (u - Dt.nL j), hm⟩⟩ : TL J Dt.nL r)) =
             (j, posU Fr (Dt.nL j) (segZ j) u) := by
-          simp only [tlPos, posTL, posU, if_neg (show ¬ u < Dt.nL j by omega)]
+          simp only [tlPos, posTL, posU, ite_eq_right (show ¬ u < Dt.nL j by omega)]
           congr 2
           omega
         rw [hpos] at hmg

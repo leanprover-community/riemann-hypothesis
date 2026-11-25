@@ -52,7 +52,7 @@ private theorem lv_eig {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (�
   have hf : ∀ g, f (δ g) = ρ g v := fun g => by
     have h : ∃ g', δ g' = δ g := ⟨g, rfl⟩
     have := hk (g⁻¹ * h.choose) (by rw [map_mul, h.choose_spec, ← map_mul, inv_mul_cancel, map_one])
-    simp only [f, dif_pos h]
+    simp only [f, dite_eq_left h]
     conv_rhs => rw [← this]
     rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel_left]
   have hm : ∀ g a, ρ g (f a) = f (δ g * a) := fun g a => by
@@ -61,7 +61,7 @@ private theorem lv_eig {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (�
       rw [← map_mul, hf, hf, map_mul, Module.End.mul_apply]
     · have h' : ¬ ∃ g', δ g' = δ g * a := fun ⟨g', e⟩ => h ⟨g⁻¹ * g', by
         rw [map_mul, e, ← mul_assoc, ← map_mul, inv_mul_cancel, map_one, one_mul]⟩
-      simp only [f, dif_neg h, dif_neg h', map_zero]
+      simp only [f, dite_eq_right h, dite_eq_right h', map_zero]
   have hfW : ∀ a, f a ∈ W := fun a => by
     simp only [f]; split_ifs
     · exact hW _ _ hv
@@ -69,7 +69,7 @@ private theorem lv_eig {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (�
   have hs : ∑ χ : DirichletCharacter ℂ N, ∑ a, χ a • f a ≠ 0 := by
     rw [Finset.sum_comm]
     simp only [← Finset.sum_smul, DirichletCharacter.sum_characters_eq, ite_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [← map_one δ, hf, map_one]
     exact smul_ne_zero (Nat.cast_ne_zero.2 (Nat.totient_pos.2 (NeZero.pos N)).ne') h0
   obtain ⟨χ, -, hχ⟩ := Finset.exists_ne_zero_of_sum_ne_zero hs

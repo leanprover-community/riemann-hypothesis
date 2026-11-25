@@ -847,7 +847,7 @@ theorem exists_elem (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hΛ : Fo
   have hwX : w ∈ Xsp F := Xflag_le_X _ hw
   have hσb : ∀ x ∈ Xflag F b, S.hT σ x = 0 := by
     refine ext_Xflag (S.hT σ) 0 b fun a ha => ?_
-    rw [hσ, if_neg (fun h => by rw [h] at ha; exact lt_irrefl _ ha)]
+    rw [hσ, ite_eq_right (fun h => by rw [h] at ha; exact lt_irrefl _ ha)]
     rfl
   have hww : S.hT w w = 0 := iso_X S F hwX hwX
   have hwσ : S.hT w σ = 0 := by rw [herm S, hσb w hw, star_zero]
@@ -876,9 +876,9 @@ theorem exists_elem (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hΛ : Fo
   · intro x hx
     rw [hap x ((mem_orth S).1 hx w hwX), sub_sub_cancel_left]
     exact Submodule.neg_mem _ (Submodule.smul_mem _ _ hwX)
-  · rw [hap _ (X_orth_frame hwX b), hσ, if_pos rfl]
+  · rw [hap _ (X_orth_frame hwX b), hσ, ite_eq_left rfl]
   · intro j hj
-    rw [hap _ (X_orth_frame hwX j), hσ, if_neg hj]; simp
+    rw [hap _ (X_orth_frame hwX j), hσ, ite_eq_right hj]; simp
 
 theorem exists_col (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat : Submodule.IsLattice E Λ)
     (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hT : T ≠ 0)
@@ -925,16 +925,16 @@ theorem exists_cols (w : Fin (r + 1) → S.V) (hw : ∀ b : Fin (r + 1), w b ∈
         rcases lt_trichotomy b.val k with hb | hb | hb
         · have : m (w b) = w b := ext_Xflag (m : S.V →ₗ[E] S.V) LinearMap.id b
             (fun a ha => e2 a fun h => by rw [h] at ha; exact lt_asymm ha hb) _ (hw b)
-          rw [if_pos hb, if_pos (by omega), map_add (f := _), this, e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
+          rw [ite_eq_left hb, ite_eq_left (by omega), map_add (f := _), this, e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
         · have : b = ⟨k, hk⟩ := Fin.ext hb
-          rw [if_neg (by omega), if_pos (by omega), add_zero, this, e1]
-        · rw [if_neg (by omega), if_neg (by omega), add_zero,
+          rw [ite_eq_right (by omega), ite_eq_left (by omega), add_zero, this, e1]
+        · rw [ite_eq_right (by omega), ite_eq_right (by omega), add_zero,
             e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
       · refine ⟨n, hn, fun b => ?_⟩
         have := b.2
-        rw [h1, if_pos (by omega), if_pos (by omega)]
+        rw [h1, ite_eq_left (by omega), ite_eq_left (by omega)]
   obtain ⟨n, hn, h1⟩ := key (r + 1)
-  exact ⟨n, hn, fun b => by rw [h1, if_pos b.2]⟩
+  exact ⟨n, hn, fun b => by rw [h1, ite_eq_left b.2]⟩
 
 theorem exists_frame_op (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat : Submodule.IsLattice E Λ)
     (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hT : T ≠ 0)

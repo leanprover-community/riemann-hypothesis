@@ -128,13 +128,7 @@ theorem unitPowMap_gal (F : FinExt l) {T J : Type} [AddCommGroup T] [Module ℤ_
 theorem realises_unitPow (F : FinExt l) {T J : Type} [AddCommGroup T] [Module ℤ_[l] T] [Fintype J]
     [DecidableEq J] (β : Module.Basis J ℤ_[l] T) (ρ : ↥(GK F) → (T →ₗ[ℤ_[l]] T)) (hρ : ∀ g x, ρ g x = x) :
     Realises F (unitPow l ↥(OL F) J) (ainfObj F) (ainfId F) T ρ (unitPowMap F β) := by
-  have hAinf : IsAinf F (ainfObj F) (ainfId F) := by
-    refine ⟨fun _ => rfl, fun _ => Iff.rfl, ?_⟩
-    intro x a h
-    have hθ : ainfQuot l (Ideal.Quotient.mk _ a) = ainfQuot l ((ainfQuot l).symm (intToOC F x)) :=
-      congrArg (ainfQuot l) h
-    rw [RingEquiv.apply_symm_apply] at hθ
-    exact congrArg Subtype.val hθ
+  have hAinf : IsAinf F (ainfObj F) (ainfId F) := isAinf_ainfObj F
   refine ⟨hAinf, ?_, ?_, ?_⟩
   · exact SemiBC.comp_equiv (semiBC_piMap ((inclW l).comp (ainfId F).toRingHom) J)
       (β.baseChange (WCb l)).equivFun.symm

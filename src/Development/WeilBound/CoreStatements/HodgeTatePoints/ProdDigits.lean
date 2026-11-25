@@ -745,8 +745,8 @@ lemma prod_digits {p f : ℕ} (hp : p ≠ 0) (w : ℕ → NNReal) :
     simp only [Finset.mem_range, Finset.mem_insert, Finset.mem_Icc]
     omega
   rw [h1, Fin.prod_univ_eq_prod_range (fun i => if i = 0 then 1 else w i), h2,
-    Finset.prod_insert (by simp), if_pos rfl, one_mul]
-  refine Finset.prod_congr rfl fun m hm => if_neg ?_
+    Finset.prod_insert (by simp), ite_eq_left rfl, one_mul]
+  refine Finset.prod_congr rfl fun m hm => ite_eq_right ?_
   have := (Finset.mem_Icc.1 hm).1
   omega
 
@@ -792,7 +792,7 @@ theorem r_mono : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed 
       intro h
       exact mul_ne_zero hn (pow_ne_zero _ hp0)
         (Finset.sum_eq_zero_iff.1 h n (Finset.mem_univ n))
-    rw [if_neg hne] at key
+    rw [ite_eq_right hne] at key
     rw [hg]
     have hval : v (algebraMap R C (∏ n : Fin f, c n ^ (d n : ℕ))) =
         v (algebraMap R C (g (∑ n : Fin f, (d n : ℕ) * p ^ (n : ℕ)))) := by

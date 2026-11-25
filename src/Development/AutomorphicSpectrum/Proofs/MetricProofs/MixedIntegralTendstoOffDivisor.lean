@@ -826,9 +826,9 @@ theorem position_tail (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpace X]
       LocPot.ofFun (if i ∈ T then u i else 0) + Θ) := by
     intro i
     by_cases hi : i ∈ T
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       exact hpsh i
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       intro x j y hy w
       have h3 := ReciprocityTheory.AnForm.P.TailBoundAlt.isPsh_of_isPosPot A Θ hΘp x j y ⟨hy.1, hy.2.2⟩ w
       have h2 : (LocPot.ofFun (0 : X → ℝ) + LocPot.ofFun 0 + Θ).φ x = Θ.φ x := by
@@ -998,9 +998,9 @@ theorem mixed_integral_tendsto_of_C2_off_divisor : ∀ (e : ℕ) (X : Type) [Top
         (fderiv ℝ (fderiv ℝ ((if i ∈ T then f i else 0) ∘ (A.chart j).symm))) (𝓝[>] 0) K' := by
     intro T i j K' hK' hKc
     by_cases hi : i ∈ T
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       exact (hC i j K' hK' hKc).2.2
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       exact Metric.tendstoUniformlyOn_iff.2 fun ε hε =>
         Eventually.of_forall fun t y _ => by simpa using hε
   have term := fun T : Finset (Fin e) => _root_.GlobalTheory.CompanionTheory.Ar.Giv.conv_chart_integral e X A R Θ
@@ -1046,7 +1046,7 @@ theorem mixed_integral_tendsto_of_C2_off_divisor : ∀ (e : ℕ) (X : Type) [Top
       (fun k y hy _ => locDens_nonneg_of_psh A _ hpot (hevt T).2.1 k hy) (hevt T).2.2 hg.1 hg.2
       j K hK hKc
   · have hne : Nonempty (ChartPartition A) := existsPartition A
-    simp_rw [mInt, dif_pos hne]
+    simp_rw [mInt, dite_eq_left hne]
     unfold integralWith
     refine tendsto_finsetSum _ fun j _ => ?_
     letI : MeasurableSpace X := borel X

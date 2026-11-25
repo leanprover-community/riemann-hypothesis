@@ -209,7 +209,7 @@ theorem two_w_le_first_row : ∀ {eps : ℝ} (Fm : FamP eps), ∃ x0 : ℝ, ∀ 
     have := D.R.m_add_three_le_k
     unfold Ranks.N
     omega
-  rw [nuRowOK D u j hj z 0, if_pos hN, e1]
+  rw [nuRowOK D u j hj z 0, ite_eq_left hN, e1]
   rw [e2, hbb] at e3
   rw [ha]
   linarith
@@ -319,14 +319,14 @@ theorem cap_le_width : ∀ {eps : ℝ} (Fm : FamP eps), ∃ x0 : ℝ, ∀ x ≥ 
   have hS := (Fm.L x i).Sc_pos
   split_ifs with hz
   · have e := nuRowOK (Fm.D x i) u j hj z 1
-    rw [if_pos (by omega)] at e
+    rw [ite_eq_left (by omega)] at e
     have := ((hr 1 (by omega)).2 hz le_rfl (by omega)).2
     rw [e]
     linarith
   · have e := nuRowOK (Fm.D x i) u j hj z 0
-    rw [if_pos (by omega)] at e
+    rw [ite_eq_left (by omega)] at e
     have := ((hr 0 (by omega)).1 hz).2
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     rw [e]
     linarith
 

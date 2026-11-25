@@ -190,7 +190,7 @@ theorem repr_bc (bc : V →ₗ[Ω] V₁) (w : Module.Basis (Fin N) Ω V) (w₁ :
   · rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_eq_same, smul_eq_mul,
       mul_one]
   · intro i _ hij
-    rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, if_neg hij,
+    rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right hij,
       smul_zero]
   · intro hj
     exact absurd (Finset.mem_univ j) hj

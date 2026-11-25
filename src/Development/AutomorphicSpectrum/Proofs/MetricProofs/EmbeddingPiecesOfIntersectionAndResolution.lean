@@ -608,9 +608,9 @@ theorem logNorm_one_eq_indicator {Ω F : Type} [Field Ω] [Field F] [Algebra F �
   rw [hone, hB z hz s hs]
   by_cases hst : s = tg
   · subst hst
-    rw [Set.indicator_of_mem (show z ∈ {z | LiesOver y s z} from hs), if_pos rfl, one_div,
+    rw [Set.indicator_of_mem (show z ∈ {z | LiesOver y s z} from hs), ite_eq_left rfl, one_div,
       Real.log_inv, Real.log_exp, neg_neg]
-  · rw [Set.indicator_of_notMem (fun h => hst (hs' tg h).symm), if_neg hst]
+  · rw [Set.indicator_of_notMem (fun h => hst (hs' tg h).symm), ite_eq_right hst]
     simp
 
 end SlopeTestRemainingChoices

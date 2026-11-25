@@ -208,7 +208,7 @@ theorem mul_Bm (Y : Gl r k) : Y.1 * Bm Y = Bm Y * companion (inv Y).1 := by
     simp [Matrix.mul_apply, Bm, mulVec, dotProduct]
   rw [hl, Matrix.mul_apply]
   by_cases hj : (j : ℕ) + 1 = r
-  · simp only [companion, of_apply, hj, if_true, Bm, inv]
+  · simp only [companion, of_apply, hj, ite_true, Bm, inv]
     rw [pow_card_eq Y.1, neg_mulVec, sum_mulVec']
     simp only [Pi.neg_apply, Finset.sum_apply, smul_mulVec, Pi.smul_apply, smul_eq_mul]
     rw [Fin.sum_univ_eq_sum_range (fun l => (Y.1 ^ l *ᵥ Y.2.1) i * -Y.1.charpoly.coeff l),

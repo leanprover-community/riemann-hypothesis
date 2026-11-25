@@ -191,7 +191,7 @@ theorem exists_blockProd_mem_harmA :
     exact ThetaClaimsCompare.not_inPsi_conjugate h (h1 ▸ h)
   have hdeg : RowDeg Dw.mult n c.F b (minorsP Dw.mult n col c.F b) :=
     minorMonomial_rowDegree _ _ _ _ _ (ThetaClaimsCompare.antitone_trunc fun τ i j hij => ha τ i j hij)
-      fun τ => if_neg (lt_irrefl _)
+      fun τ => ite_eq_right (lt_irrefl _)
   have hne := minorMonomial_ne_zero Dw.mult n c.F col hinj b
   have hD : (minorsP Dw.mult n col c.F b).totalDegree = Formalism.L2.Pj.DF Dw a := by
     rw [← ThetaClaimsCompare.df_trunc]

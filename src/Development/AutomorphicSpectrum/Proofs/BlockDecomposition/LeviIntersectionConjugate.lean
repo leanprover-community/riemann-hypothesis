@@ -156,13 +156,13 @@ theorem GlobalTheory.CompanionTheory.GeomCell.innerMat : ∀ (k : Type) [Field k
   rw [hL]
   by_cases hii : i = i'
   · subst hii
-    rw [if_pos ((key _ _).mpr (by rw [blk_apply, blk_apply])), ← hcell i j t, ← hcell i j' t',
+    rw [ite_eq_left ((key _ _).mpr (by rw [blk_apply, blk_apply])), ← hcell i j t, ← hcell i j' t',
       conj_apply_lemma, hcell i j t, hcell i j' t', leviEmb_apply_same, hrel]
     by_cases hjj : j = j'
     · subst hjj
       rw [leviEmb_apply_same, leviEmb_apply_same, hsw, hproj]
     · rw [leviEmb_apply_ne k e' p hjj, leviEmb_apply_ne k (f i) _ hjj]
-  · rw [if_neg (fun h => hii (by rw [key, blk_apply, blk_apply] at h; exact h)),
+  · rw [ite_eq_right (fun h => hii (by rw [key, blk_apply, blk_apply] at h; exact h)),
       leviEmb_apply_ne k e _ hii]
 end -- clump:auto
 end -- clump:auto

@@ -164,7 +164,7 @@ lemma nu_unitary (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s) (hw : s * s = w * 
   intro x y
   rw [nu_mulVec, nu_mulVec]
   simp only [herm_add_left, herm_add_right, herm_smul_left, herm_smul_right, herm_Hb_right, herm_Hb_left, herm_single]
-  simp only [Hb, Matrix.diagonal_apply, h0L, hL0, if_true, if_false, star_sub, star_one, star_star, hs]
+  simp only [Hb, Matrix.diagonal_apply, h0L, hL0, ite_true, ite_false, star_sub, star_one, star_star, hs]
   linear_combination (star (y (Fin.last k)) * x (Fin.last k) - star (y 0) * x 0) * hw
 
 lemma nu_last (hk : 1 ≤ k) (w s : ℂ) : herm (Hb k) (nu k w s *ᵥ Pi.single (Fin.last k) 1) (Pi.single (Fin.last k) 1) = -w := by
@@ -311,7 +311,7 @@ theorem base_vector_exists : Formalism.FourierDecayAlt.B2.ZExists := by
   constructor
   · intro i hi
     simp only [bvec]
-    rw [Pi.single_apply, if_neg]
+    rw [Pi.single_apply, ite_eq_right]
     intro h; subst h; simp [wI] at hi
   · simp only [Tz, bvec]
     rw [SettingConstruction.herm_single]

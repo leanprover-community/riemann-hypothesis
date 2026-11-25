@@ -100,7 +100,7 @@ theorem diagOne_mem (hr : r ≤ n) (t : ℕ) (g : GL (Fin r) κ) : diagOne hr g 
   unfold diagMat
   rw [Matrix.submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply]
   rcases a with a | a
-  · have : blkOf r t (splitIx hr (Sum.inl a)) = 0 := if_pos a.2
+  · have : blkOf r t (splitIx hr (Sum.inl a)) = 0 := ite_eq_left a.2
     have h2 : blkOf r t (splitIx hr b) < blkOf r t (splitIx hr (Sum.inl a)) := hij
     omega
   · rcases b with b | b

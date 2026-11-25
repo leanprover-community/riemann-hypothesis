@@ -121,7 +121,7 @@ private theorem evX_one_mul_gs_mul_cexp_eq_prod (b : Matrix (Fin n) (Fin n) ℂ)
   push_cast
   simp only [hn, Finset.mul_sum, Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply,
     Matrix.transpose_apply, smul_eq_mul, mul_add, add_mul, Finset.sum_add_distrib, ite_mul, mul_ite, zero_mul,
-    mul_zero, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_zero, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   congr 1
   · rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun a _ => ?_
@@ -149,7 +149,7 @@ private theorem F0_jG_mul_nG_eq (sg : ℤˣ) (e : ℤ) (b : Matrix (Fin n) (Fin 
   rw [hD, hmR]
   simp only [Matrix.toBlocks_fromBlocks₂₁, Matrix.toBlocks_fromBlocks₂₂]
   rcases Int.units_eq_one_or sg with rfl | rfl
-  · simp only [pOf, qOf, if_true]
+  · simp only [pOf, qOf, ite_true]
     have hM : Complex.I • (-1 : Matrix (Fin n) (Fin n) ℂ) + -b =
         (-(Complex.I * (((1 : ℤˣ) : ℤ) : ℂ))) • (1 - (Complex.I * (((1 : ℤˣ) : ℤ) : ℂ)) • b) := by
       ext i j
@@ -159,7 +159,7 @@ private theorem F0_jG_mul_nG_eq (sg : ℤˣ) (e : ℤ) (b : Matrix (Fin n) (Fin 
     simp
   · simp only [pOf, qOf]
     have hne : (-1 : ℤˣ) ≠ 1 := by decide
-    simp only [hne, if_false]
+    simp only [hne, ite_false]
     have hM : -(Complex.I • (-1 : Matrix (Fin n) (Fin n) ℂ)) + -b =
         (-(Complex.I * (((-1 : ℤˣ) : ℤ) : ℂ))) • (1 - (Complex.I * (((-1 : ℤˣ) : ℤ) : ℂ)) • b) := by
       ext i j

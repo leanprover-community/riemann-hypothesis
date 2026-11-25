@@ -143,12 +143,12 @@ theorem sum_ind_block {A : Type} [CommRing A] {r : ℕ} (T : Finset (Fin r)) :
         exact absurd (h2 k0 hk0T (lt_of_not_ge hlt)) (not_lt.2 hik0)
       · rintro rfl
         exact ⟨hik0, fun t ht htk => lt_of_not_ge fun hit => absurd (hmin t ht hit) (not_le.2 htk)⟩
-    rw [Finset.sum_eq_single_of_mem k0 hk0T, ind_apply, ind_apply, if_pos ((hb k0 hk0T).2 rfl), if_pos hi]
+    rw [Finset.sum_eq_single_of_mem k0 hk0T, ind_apply, ind_apply, ite_eq_left ((hb k0 hk0T).2 rfl), ite_eq_left hi]
     intro k hk hkk
-    rw [ind_apply, if_neg fun h => hkk ((hb k hk).1 h)]
-  · rw [ind_apply, if_neg hi]
+    rw [ind_apply, ite_eq_right fun h => hkk ((hb k hk).1 h)]
+  · rw [ind_apply, ite_eq_right hi]
     refine Finset.sum_eq_zero fun k hk => ?_
-    rw [ind_apply, if_neg fun h => hi ⟨k, hk, h.1⟩]
+    rw [ind_apply, ite_eq_right fun h => hi ⟨k, hk, h.1⟩]
 
 theorem ind_block_mul_ind_block {A : Type} [CommRing A] {r : ℕ} (T : Finset (Fin r)) {k l : Fin r} (hk : k ∈ T) (hl : l ∈ T) (hkl : k ≠ l) :
     (ind (block T k) : Fin r → A) * ind (block T l) = 0 := by
@@ -161,8 +161,8 @@ theorem ind_block_mul_ind_block {A : Type} [CommRing A] {r : ℕ} (T : Finset (F
       rcases lt_or_gt_of_ne hkl with h | h
       · exact absurd (h2.2 k hk h) (not_lt.2 h1.1)
       · exact absurd (h1.2 l hl h) (not_lt.2 h2.1)
-    · rw [if_neg h2, mul_zero]
-  · rw [if_neg h1, zero_mul]
+    · rw [ite_eq_right h2, mul_zero]
+  · rw [ite_eq_right h1, zero_mul]
 
 theorem prX_ind_le {A : Type} [CommRing A] (s : A →+* A) {n r : ℕ} (J : Matrix (Fin n) (Fin n) A) (Z W : Matrix (Fin n) (Fin r) A)
     (k : Fin r) : prX s J Z W (ind {i | i ≤ k}) =
@@ -224,7 +224,7 @@ theorem prX_mulVec_eq_zero {Z W : Matrix (Fin n) (Fin r) A} {I : Set (Fin r)} {y
     rw [mulVec_diagonal, ind_apply]
     by_cases hi : i ∈ I
     · rw [hy i hi, mul_zero]; rfl
-    · rw [if_neg hi, zero_mul]; rfl
+    · rw [ite_eq_right hi, zero_mul]; rfl
   rw [prX, Matrix.mul_assoc (Z * diagonal _), ← mulVec_mulVec, ← mulVec_mulVec, this, mulVec_zero]
 
 theorem mulVec_col {m : ℕ} (M : Matrix (Fin n) (Fin n) A) (N : Matrix (Fin n) (Fin m) A) (i : Fin m) :
@@ -445,7 +445,7 @@ theorem exists_uPart {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi σ J X
     funext a
     rw [Matrix.transpose_apply, Matrix.sub_apply]
     erw [Matrix.mul_diagonal]
-    rw [ind_apply, if_pos hi, mul_one, sub_self]
+    rw [ind_apply, ite_eq_left hi, mul_one, sub_self]
     rfl
   have hX : P * adMat F X = adMat F X * diagonal (ind (upTo T)) := by
     simp only [P, prj, Matrix.add_mul, prX_mul_X fyx, prY_mul_X fxx, add_zero]

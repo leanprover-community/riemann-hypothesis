@@ -513,12 +513,12 @@ theorem scalars_of_realisation : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {
   choose! rM hrM hM using hmid
   refine ⟨fun j => if j = D.R.m then rT else rM (j - 1), fun j hj1 hjm => ?_, fun t c hc => ?_⟩
   · by_cases hj : j = D.R.m
-    · simp only [if_pos hj]; exact hrT
-    · simp only [if_neg hj]; exact hrM (j - 1) (by omega)
+    · simp only [ite_eq_left hj]; exact hrT
+    · simp only [ite_eq_right hj]; exact hrM (j - 1) (by omega)
   · refine ⟨(hRP t c).1 hc, fun B hB => ⟨fun k hk => ?_, ?_⟩⟩
     · obtain ⟨l, hl, hS⟩ := hM k hk t c hc B hB
       refine ⟨l, hl, ?_⟩
-      simp only [if_neg (show k + 1 ≠ D.R.m by omega), Nat.add_sub_cancel]
+      simp only [ite_eq_right (show k + 1 ≠ D.R.m by omega), Nat.add_sub_cancel]
       exact hS
     · obtain ⟨l, hl, hS⟩ := hT t c hc B hB
       refine ⟨l, hl, ?_⟩

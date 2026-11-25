@@ -33,7 +33,7 @@ theorem exists_basicOpen_le_of_finite {U : X.Opens} (hU : IsAffineOpen U) (O : X
     fun y ↦ hU.exists_basicOpen_le ⟨y, hsO y.2⟩ (hsU y.2)
   choose g hgO hyg using hloc
   let P : X → Ideal Γ(X, U) := fun y ↦ if h : y ∈ U then (hU.primeIdealOf ⟨y, h⟩).asIdeal else ⊤
-  have hP : ∀ y (h : y ∈ U), P y = (hU.primeIdealOf ⟨y, h⟩).asIdeal := fun y h ↦ dif_pos h
+  have hP : ∀ y (h : y ∈ U), P y = (hU.primeIdealOf ⟨y, h⟩).asIdeal := fun y h ↦ dite_eq_left h
   have hnot : ¬ ((Ideal.span (Set.range g) : Set Γ(X, U)) ⊆ ⋃ i ∈ (↑hs.toFinset : Set X), P i) := by
     rw [Ideal.subset_union_prime y₀ y₀ (fun i hi _ _ ↦ by
       rw [hP i (hsU (hs.mem_toFinset.1 hi))]; infer_instance)]
@@ -50,7 +50,7 @@ theorem exists_basicOpen_le_of_finite {U : X.Opens} (hU : IsAffineOpen U) (O : X
   · have hz' : ¬ ∀ g' ∈ (Ideal.span (Set.range g) : Set Γ(X, U)), z ∉ X.basicOpen g' :=
       fun h ↦ h f hfJ hz
     rw [← Scheme.mem_zeroLocus_iff, Scheme.zeroLocus_span, Scheme.mem_zeroLocus_iff] at hz'
-    push_neg at hz'
+    push Not at hz'
     obtain ⟨_, ⟨i, rfl⟩, hzi⟩ := hz'
     exact hgO i hzi
 

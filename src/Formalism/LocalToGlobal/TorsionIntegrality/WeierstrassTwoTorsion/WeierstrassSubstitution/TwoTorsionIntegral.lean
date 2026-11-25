@@ -173,7 +173,7 @@ theorem coeff_two_tS (xP : K) : coeff 2 ((tS W xP).subst (expSer W)) = 1 := by
   rw [subst_tS]
   have hg := inv_subst_cc W xP
   generalize (invOfUnit (tDen W xP) 1).subst (expSer W) = g at hg ⊢
-  rw [he1, mul_pow, mul_assoc, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+  rw [he1, mul_pow, mul_assoc, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
     PowerSeries.coeff_zero_eq_constantCoeff_apply, map_mul, map_pow, hc1, hg]
   norm_num
 

@@ -44,7 +44,7 @@ theorem alt_fin {A M : Type} [CommRing A] [AddCommGroup M] [Module A M] (e : ℕ
 theorem wd_even {q : ℕ} (e : ℕ) (j : Fin (e + 1) → ZMod q) (i : Fin (2 * e + 1 + 1)) (k : Fin (e + 1))
     (h : (i : ℕ) = 2 * k) : wd e j i = Multiplicative.ofAdd (j k) := by
   unfold wd
-  rw [if_pos (by omega)]
+  rw [ite_eq_left (by omega)]
   congr 2
   ext
   show (i : ℕ) / 2 = k
@@ -53,7 +53,7 @@ theorem wd_even {q : ℕ} (e : ℕ) (j : Fin (e + 1) → ZMod q) (i : Fin (2 * e
 theorem wd_odd {q : ℕ} (e : ℕ) (j : Fin (e + 1) → ZMod q) (i : Fin (2 * e + 1 + 1))
     (h : (i : ℕ) % 2 = 1) : wd e j i = Multiplicative.ofAdd 1 := by
   unfold wd
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem wd_congr {q : ℕ} (e : ℕ) (j j' : Fin (e + 1) → ZMod q) (i : Fin (2 * e + 1 + 1))
     (h : ∀ k : Fin (e + 1), (i : ℕ) = 2 * k → j k = j' k) : wd e j i = wd e j' i := by
@@ -92,10 +92,10 @@ theorem contract_eq {q : ℕ} (e a : ℕ) (ha : a < e + 1) (j : Fin (e + 1) → 
   · rw [Fin.contractNth_apply_of_lt _ _ _ _ h, Fin.contractNth_apply_of_lt _ _ _ _ (by show (i : ℕ) < 2 * a + 1; omega)]
     refine wd_congr e _ _ _ fun k hk => ?_
     rw [Fin.val_castSucc] at hk
-    rw [Pi.add_apply, sh, if_neg (by omega), if_neg (by omega), add_zero]
+    rw [Pi.add_apply, sh, ite_eq_right (by omega), ite_eq_right (by omega), add_zero]
   · rw [Fin.contractNth_apply_of_eq _ _ _ _ h, Fin.contractNth_apply_of_lt _ _ _ _ (by show (i : ℕ) < 2 * a + 1; omega),
       wd_even e j i.castSucc ⟨a, ha⟩ h, wd_even e _ i.castSucc ⟨a, ha⟩ h,
-      wd_odd e j i.succ (by rw [Fin.val_succ]; omega), Pi.add_apply, sh, if_pos rfl, ofAdd_add]
+      wd_odd e j i.succ (by rw [Fin.val_succ]; omega), Pi.add_apply, sh, ite_eq_left rfl, ofAdd_add]
   · rw [Fin.contractNth_apply_of_gt _ _ _ _ h]
     rcases (show (i : ℕ) = 2 * a + 1 ∨ 2 * a + 1 < i by omega) with h' | h'
     · have hk : ((i.succ : Fin (2 * e + 1 + 1)) : ℕ) = 2 * ((⟨a + 1, by omega⟩ : Fin (e + 1)) : ℕ) := by
@@ -103,14 +103,14 @@ theorem contract_eq {q : ℕ} (e a : ℕ) (ha : a < e + 1) (j : Fin (e + 1) → 
         show (i : ℕ) + 1 = 2 * (a + 1)
         omega
       rw [Fin.contractNth_apply_of_eq _ _ _ _ h', wd_even e j _ _ hk, wd_even e _ _ _ hk,
-        wd_odd e _ i.castSucc (by rw [Fin.val_castSucc]; omega), Pi.add_apply, sh, if_neg (by simp), if_pos rfl,
+        wd_odd e _ i.castSucc (by rw [Fin.val_castSucc]; omega), Pi.add_apply, sh, ite_eq_right (by simp), ite_eq_left rfl,
         ← ofAdd_add]
       congr 1
       ring
     · rw [Fin.contractNth_apply_of_gt _ _ _ _ h']
       refine wd_congr e _ _ _ fun k hk => ?_
       rw [Fin.val_succ] at hk
-      rw [Pi.add_apply, sh, if_neg (by omega), if_neg (by omega), add_zero]
+      rw [Pi.add_apply, sh, ite_eq_right (by omega), ite_eq_right (by omega), add_zero]
 
 theorem SZc_of : SZc := by
   intro q _ e

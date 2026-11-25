@@ -82,7 +82,7 @@ theorem UpperTheory.ConvolutionTheory.R2.G.fockMul :
         (finPartPi v₀) = 1 := by
       have hself : ∀ a : FiniteAdeleRing (𝓞 F) F,
           cosetIndicator (1 : (FractionalIdeal (𝓞 F)⁰ F)ˣ) a a = 1 := fun a => by
-        rw [cosetIndicator_apply, if_pos]
+        rw [cosetIndicator_apply, ite_eq_left]
         rw [sub_self]
         exact zero_mem _
       exact Finset.prod_eq_one fun i _ => hself _

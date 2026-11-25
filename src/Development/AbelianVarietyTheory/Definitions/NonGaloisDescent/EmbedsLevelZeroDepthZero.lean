@@ -288,19 +288,6 @@ theorem deltaHalf_of_mem_leviK {g : Levi k m} (hg : g ∈ leviK k m) : deltaHalf
   rw [deltaHalf_apply]
   exact Finset.prod_eq_one fun a _ => detChar_of_mem_KO (isUnram_absPow k _) (hg a trivial)
 
-section Two
-
-variable {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
-
-
-end Two
-
-section Finite
-
-variable {R : Type} [Field R] {N h : ℕ} {d : Fin h → ℕ}
-
-end Finite
-
 
 variable (k) in
 abbrev unitIncl : 𝒪[k]ˣ →* kˣ := Units.map (algebraMap 𝒪[k] k).toMonoidHom
@@ -506,22 +493,22 @@ theorem canonFun_mul (ρ : Representation ℂ (GL n 𝓀[k]) W) (ω : kˣ →* �
     (g : GL n k) (x : ZK k n) : canonFun ρ ω h w (g * x) = canonFun ρ ω h (extZK ρ ω h x w) g := by
   unfold canonFun
   by_cases hg : g ∈ ZK k n
-  · rw [dif_pos hg, dif_pos (mul_mem hg x.2), ← Module.End.mul_apply, ← map_mul]; rfl
-  · rw [dif_neg hg, dif_neg fun h' => hg ((Subgroup.mul_mem_cancel_right _ x.2).1 h')]
+  · rw [dite_eq_left hg, dite_eq_left (mul_mem hg x.2), ← Module.End.mul_apply, ← map_mul]; rfl
+  · rw [dite_eq_right hg, dite_eq_right fun h' => hg ((Subgroup.mul_mem_cancel_right _ x.2).1 h')]
 
 def canon (ρ : Representation ℂ (GL n 𝓀[k]) W) (ω : kˣ →* ℂˣ) (h : ExtendsCentral ω ρ) :
     (extZK ρ ω h).IntertwiningMap ((depthZero ρ ω h).comp (ZK k n).subtype) where
   toFun w := ⟨⟨⟨canonFun ρ ω h w, fun x g => by
       unfold canonFun
       by_cases hg : g ∈ ZK k n
-      · rw [dif_pos hg, dif_pos (mul_mem x.2 hg), ← Module.End.mul_apply, ← map_mul]; rfl
-      · rw [dif_neg hg, dif_neg fun h' => hg ((Subgroup.mul_mem_cancel_left _ x.2).1 h'), map_zero]⟩,
+      · rw [dite_eq_left hg, dite_eq_left (mul_mem x.2 hg), ← Module.End.mul_apply, ← map_mul]; rfl
+      · rw [dite_eq_right hg, dite_eq_right fun h' => hg ((Subgroup.mul_mem_cancel_left _ x.2).1 h'), map_zero]⟩,
     mem_smoothPart_of_nhds (Filter.mem_of_superset (StepData.isOpen_KOne.mem_nhds (one_mem _)) fun u hu => by
       refine Subtype.ext (funext fun g => ?_)
       have h1 := StepData.KOne_le_KO hu
       refine (canonFun_mul ρ ω h w g ⟨u, KO_le_ZK h1⟩).trans ?_
       rw [extZK_KO ρ ω h ⟨u, h1⟩, (redK_eq_one_iff ⟨u, h1⟩).2 hu, map_one]; rfl)⟩,
-    {1}, isCompact_singleton, fun g hg => ⟨g, by_contra fun h' => hg (dif_neg h'), 1, rfl, (mul_one g).symm⟩⟩
+    {1}, isCompact_singleton, fun g hg => ⟨g, by_contra fun h' => hg (dite_eq_right h'), 1, rfl, (mul_one g).symm⟩⟩
   map_add' v w := Subtype.ext (Subtype.ext (Subtype.ext (funext fun g => by
     show canonFun ρ ω h (v + w) g = canonFun ρ ω h v g + canonFun ρ ω h w g
     unfold canonFun; split_ifs <;> simp)))
@@ -534,7 +521,7 @@ def canon (ρ : Representation ℂ (GL n 𝓀[k]) W) (ω : kˣ →* ℂˣ) (h : 
 theorem canon_injective (ρ : Representation ℂ (GL n 𝓀[k]) W) (ω : kˣ →* ℂˣ) (h : ExtendsCentral ω ρ) :
     Function.Injective (canon ρ ω h) := fun v w e => by
   have h1 : canonFun ρ ω h v 1 = canonFun ρ ω h w 1 := congrArg (fun f => f.1.1.1 1) e
-  have h2 : ∀ v, canonFun ρ ω h v 1 = v := fun v => (dif_pos (one_mem _)).trans (LinearMap.congr_fun (map_one _) v)
+  have h2 : ∀ v, canonFun ρ ω h v 1 = v := fun v => (dite_eq_left (one_mem _)).trans (LinearMap.congr_fun (map_one _) v)
   rwa [h2, h2] at h1
 
 theorem isUnram_mul {ν μ : kˣ →* ℂˣ} (h : IsUnram ν) (h' : IsUnram μ) : IsUnram (ν * μ) := fun x hx => by

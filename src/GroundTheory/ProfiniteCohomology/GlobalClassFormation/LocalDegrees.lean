@@ -181,10 +181,6 @@ namespace CyclotomicLayer
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-section TotallyReal
-
-end TotallyReal
-
 section Order
 
 theorem pow_dvd_addOrderOf_toZModPow {q : ℕ} [hq : Fact q.Prime] {n e a : ℕ} (hna : n + e ≤ a)

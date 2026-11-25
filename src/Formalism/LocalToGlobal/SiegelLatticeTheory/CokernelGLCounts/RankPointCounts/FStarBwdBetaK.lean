@@ -376,7 +376,7 @@ theorem Gom_orth (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T
     rcases eq_or_ne b (Fin.last _) with hb | hb
     · subst hb
       simp
-    · rw [if_neg (Ne.symm hb), if_neg hb, smul_zero]
+    · rw [ite_eq_right (Ne.symm hb), ite_eq_right hb, smul_zero]
   unfold orth Xsp
   simp only [Submodule.mem_iInf, LinearMap.mem_ker]
   intro x hx
@@ -385,7 +385,7 @@ theorem Gom_orth (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T
   | mem y hy =>
     obtain ⟨i, rfl⟩ := hy
     rw [← fvec_cs' F' i, PI.NRL.herm_eq, om_pair,
-      if_neg (Fin.castSucc_lt_last i).ne, star_zero]
+      ite_eq_right (Fin.castSucc_lt_last i).ne, star_zero]
   | zero => simp
   | add y z _ _ hy hz => simp [map_add (f := _), hy, hz]
   | smul a y _ hy => simp [hy]

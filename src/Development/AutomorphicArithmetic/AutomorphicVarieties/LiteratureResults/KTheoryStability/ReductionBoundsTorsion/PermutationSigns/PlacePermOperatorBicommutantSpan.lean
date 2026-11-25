@@ -115,19 +115,19 @@ theorem perm'_mul (σ τ : Equiv.Perm (Fin q)) (w v : Fin q → W) :
   · simp only [perm', of_apply, Equiv.Perm.coe_mul]
     by_cases hv : v = w ∘ σ
     · subst hv
-      rw [if_pos rfl, of_apply]
+      rw [ite_eq_left rfl, of_apply]
       by_cases hI : ∀ i, (I i).1 = w i
       · simp [hI, Function.comp_assoc]
       · simp [hI]
-    · rw [if_neg hv, Matrix.zero_apply]
+    · rw [ite_eq_right hv, Matrix.zero_apply]
       by_cases hI : ∀ i, (I i).1 = w i
       · have : ¬ ∀ i, ((I ∘ σ) i).1 = v i := fun h => hv (funext fun i => by
           rw [← h i]; exact hI (σ i))
-        simp only [this, false_and, if_false, mul_zero]
+        simp only [this, false_and, ite_false, mul_zero]
       · simp [hI]
   · intro J _ hJ
     simp only [perm', of_apply]
-    rw [if_neg (fun h => hJ h.2), zero_mul]
+    rw [ite_eq_right (fun h => hJ h.2), zero_mul]
   · simp
 
 theorem perm'_star (σ : Equiv.Perm (Fin q)) (w : Fin q → W) :
@@ -144,8 +144,8 @@ theorem perm'_star (σ : Equiv.Perm (Fin q)) (w : Fin q → W) :
       · have := h1 (σ⁻¹ i); simpa using this
       · funext i; simp
   by_cases h : (∀ i, (J i).1 = w i) ∧ I = J ∘ σ
-  · rw [if_pos h, if_pos (e.1 h), star_one]
-  · rw [if_neg h, if_neg (fun h' => h (e.2 h')), star_zero]
+  · rw [ite_eq_left h, ite_eq_left (e.1 h), star_one]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (e.2 h')), star_zero]
 
 theorem one_eq_sum_perm' : (1 : Matrix (Fin q → Ix W m) (Fin q → Ix W m) ℂ) = ∑ w, perm' 1 w := by
   ext I J
@@ -156,7 +156,7 @@ theorem one_eq_sum_perm' : (1 : Matrix (Fin q → Ix W m) (Fin q → Ix W m) ℂ
     · simp [h, Ne.symm h]
   · intro w _ hw
     simp only [perm', of_apply]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨h, -⟩
     exact hw (funext fun i => (h i).symm)
   · simp

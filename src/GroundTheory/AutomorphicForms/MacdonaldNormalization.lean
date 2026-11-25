@@ -57,11 +57,11 @@ theorem card_pairs_containing_le (i : Fin n) :
     · refine Finset.mem_image.2 ⟨p.2, Finset.mem_erase.2 ⟨fun h' => ?_, Finset.mem_univ _⟩, ?_⟩
       · rw [h, h'] at hlt
         exact lt_irrefl _ hlt
-      · simp only [g, ← h, if_pos hlt]
+      · simp only [g, ← h, ite_eq_left hlt]
     · refine Finset.mem_image.2 ⟨p.1, Finset.mem_erase.2 ⟨fun h' => ?_, Finset.mem_univ _⟩, ?_⟩
       · rw [h, h'] at hlt
         exact lt_irrefl _ hlt
-      · simp only [g, ← h, if_neg (not_lt.2 hlt.le)]
+      · simp only [g, ← h, ite_eq_right (not_lt.2 hlt.le)]
   calc _ ≤ ((Finset.univ.erase i).image g).card := Finset.card_le_card hsub
     _ ≤ (Finset.univ.erase i).card := Finset.card_image_le
     _ = n - 1 := by rw [Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ,

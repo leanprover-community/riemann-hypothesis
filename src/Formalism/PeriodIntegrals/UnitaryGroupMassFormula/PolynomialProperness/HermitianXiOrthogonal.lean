@@ -49,12 +49,12 @@ lemma herm_xi_zero (k r : ℕ) (y : Fin (2 * r + k + 1) → ℂ)
   by_cases hi : i.val < r
   · have hsig : r + k < (GBasic.sig k r i).val := by
       unfold GBasic.sig
-      rw [if_pos (Or.inl hi)]
+      rw [ite_eq_left (Or.inl hi)]
       show r + k < 2 * r + k - i.val
       omega
     have hz : (Hpk k r *ᵥ y) i = 0 := by
       simp only [Matrix.mulVec, dotProduct, GBasic.Hpk_eq, ite_mul, zero_mul, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true, hy _ hsig, mul_zero]
+        Finset.mem_univ, ite_true, hy _ hsig, mul_zero]
     rw [hz, mul_zero]
   · have hx : xiV k r p i = 0 := by
       unfold xiV
@@ -75,10 +75,10 @@ lemma hermitian_xi_orthogonal (k r : ℕ) {z : Fin (2 * r + k + 1) → ℂ} (hz 
   · rw [Pi.star_apply, hz i h, star_zero, zero_mul]
   · have hs : GBasic.sig k r i = i := by
       unfold GBasic.sig
-      rw [if_neg h]
+      rw [ite_eq_right h]
     have hx : (Hpk k r *ᵥ xiV k r p) i = 0 := by
       simp only [Matrix.mulVec, dotProduct, GBasic.Hpk_eq, ite_mul, zero_mul, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true, hs, xiV_hi k r p i (by omega), mul_zero]
+        Finset.mem_univ, ite_true, hs, xiV_hi k r p i (by omega), mul_zero]
     rw [hx, mul_zero]
 
 lemma T_ne {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : StdZ k r z) : ((Tz k r z : ℝ) : ℂ) ≠ 0 := by

@@ -41,10 +41,4 @@ def PerDecTw (D : D7) (Dx : DivX D) (T : TwForms D) (u : D.what₂.Word) (μ : D
       ∃ y : D.what₂.LL, D.what₂.embLL y = pc c ((T.fm u μ).ptEmb x) ((D.eMtTw u μ).symm F) ∧
         ∀ w : D.what₂.places.Pl, D.what₂.places.resChar w ∉ Dx.Qp μ → y = 0 ∨ 0 ≤ vAdd (D.plEq w) y
 
-section Fam
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Fam
-
 end Formalism.MainNotions.RT.PeriodPointConditions

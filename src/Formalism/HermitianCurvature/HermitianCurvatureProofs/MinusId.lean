@@ -293,7 +293,7 @@ theorem main (L : LevelData A r) (st : Start A) (hL : IsStarLevel L) (hst : IsLe
       · exact kMat_mul ihci (kMat_ins _ (kMat_of (kMat_smul _ (hx _ hrm)) kMat_zero kMat_zero (hxi _ p0 hr)))
       · have hq : (ofWord L st w).q (l.pt - 1) ≠ 0 := by
           have := hrec.2.2.2.2.2
-          simp only [hp, if_false, Bool.false_eq_true] at this
+          simp only [hp, ite_false, Bool.false_eq_true] at this
           exact this.2
         have hfree := Formalism.FourierDecayAlt.P.frame_free_of_new_position A S r L st w l.intersection_update_fsHerm_neg_one hnd'.1
         have ml := Formalism.FourierDecayAlt.P.minus_letter_last_entry A S r L (ofWord L st w) l.intersection_update_fsHerm_neg_one l.pt

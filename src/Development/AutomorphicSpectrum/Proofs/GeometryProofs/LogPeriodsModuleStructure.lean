@@ -125,7 +125,7 @@ theorem real_indep {J : Type*} [Fintype J] (b : Module.Basis J ℤ Λ) {w : Fin 
   have h2 := congrArg ψ h
 
   simp only [map_sum, map_smul, h1, map_zero, smul_eq_mul, mul_ite, mul_zero,
-  Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+  Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
   simpa using h2
 
 theorem continuousAt_P (x : Λ) {w₀ : Fin n → ℂ} (hw : w₀ ∈ logCover L.a_le) :

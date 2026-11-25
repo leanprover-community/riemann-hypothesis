@@ -174,7 +174,7 @@ theorem etaFin_norm (hr : ∀ (P : HeightOneSpectrum (𝓞 L)) (t : (𝐅)ˣ), o
   · rfl
 
 theorem etaInf_norm {k : Lˣ} {t : (𝐅)ˣ} (ht : upF 𝐅 t = k * cU 𝐜 k) (w : InfinitePlace 𝐅) : etaInf 𝐅 w t = 1 := by
-  rw [etaInf, if_neg]
+  rw [etaInf, ite_eq_right]
   have e : algebraMap 𝐅 L t = k * IsCMField.complexConj L k := congrArg Units.val ht
   rw [← ComplexEmbedding.lift_algebraMap_apply L w.embedding, e, map_mul, IsCMField.complexEmbedding_complexConj,
     Complex.mul_conj, Complex.ofReal_re, not_lt]

@@ -62,12 +62,6 @@ end Formal
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-section Flat
-
-variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {t : SAB H (Sp R)}
-
-end Flat
-
 variable {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 
 end GlobalTheory.IndefiniteRowSideFullHecke.FlatIsoUnitGenerator

@@ -59,7 +59,7 @@ theorem serMul_inv (S : ℤ → Submodule LL V) (hS : Monotone S) (g : PowerSeri
     intro i ih
     by_cases hi : i < m₀
     · rw [hf0 i hi]; exact Submodule.zero_mem _
-    push_neg at hi
+    push Not at hi
     have hN : i + m - m₀ < (((i + m - m₀).toNat + m + 1 : ℕ) : ℤ) := by omega
     have hsum := serMul_eq_sum g f m₀ hf0 (i + m) ((i + m - m₀).toNat + m + 1) hN
     have hmN : m ∈ Finset.range ((i + m - m₀).toNat + m + 1) := Finset.mem_range.mpr (by omega)
@@ -169,7 +169,7 @@ theorem levQ_pt (hs : W.s = 1) (i : ZMod n) (ζ : LL) (hζ : ζ ^ PD.p = 1) (hζ
   have h1 := congrArg (PowerSeries.coeff 1) hl
   rw [hb', mul_left_comm, PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply,
     map_mul, ha0, mul_pow, ← map_pow, hζ, map_one, one_mul, map_sub, hEp, PowerSeries.coeff_one,
-    if_neg one_ne_zero, sub_zero] at h1
+    ite_eq_right one_ne_zero, sub_zero] at h1
   rw [hb', PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply]
   intro h0
   rw [h0, mul_zero] at h1

@@ -47,11 +47,11 @@ theorem EB_gl (hD : IsOpen D) : GlRel (EB (E := E) hD) := by
   rw [h]
   congr 1
   · by_cases hbc : b = c
-    · rw [if_pos hbc, if_pos hbc]; rfl
-    · rw [if_neg hbc, if_neg hbc]; rfl
+    · rw [ite_eq_left hbc, ite_eq_left hbc]; rfl
+    · rw [ite_eq_right hbc, ite_eq_right hbc]; rfl
   · by_cases hda : d = a
-    · rw [if_pos hda, if_pos hda]; rfl
-    · rw [if_neg hda, if_neg hda]; rfl
+    · rw [ite_eq_left hda, ite_eq_left hda]; rfl
+    · rw [ite_eq_right hda, ite_eq_right hda]; rfl
 
 theorem map_AAx {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (φ : A →ₐ[ℂ] B)
     (Eu : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (xi : Fin r → Fin (2 * r + k + 1) → ℂ) (m : ℕ)
@@ -179,16 +179,16 @@ theorem plusPosOfParts : CutHL.PlusPosOfParts := by
     · rw [dite_eq_left (by omega), dite_eq_left hq, zfull_apply, dite_eq_left ⟨a.isLt, hq⟩]
     · rw [dite_eq_right hq]
       split_ifs with h1
-      · rw [zfull_apply, dite_eq_right (by simp; omega), if_neg (by simp; omega)]
+      · rw [zfull_apply, dite_eq_right (by simp; omega), ite_eq_right (by simp; omega)]
       · rfl
   have hxl : ∀ q : Fin (2 * r + k + 1), PBG.xi0 x₁ ⟨m + 1, by omega⟩ q = if q.val = m + 1 then τ else 0 := by
     intro q
     rw [hx₁, upper_minor_of_level_point hj Z τ γ ⟨m + 1, by omega⟩ q (by simp)]
     by_cases hq : q.val = m + 1
-    · rw [dite_eq_left (by omega), if_pos hq, zfull_apply, dite_eq_right (by simp), if_pos ⟨rfl, hq⟩]
-    · rw [if_neg hq]
+    · rw [dite_eq_left (by omega), ite_eq_left hq, zfull_apply, dite_eq_right (by simp), ite_eq_left ⟨rfl, hq⟩]
+    · rw [ite_eq_right hq]
       split_ifs with h1
-      · rw [zfull_apply, dite_eq_right (by simp), if_neg (by simp; omega)]
+      · rw [zfull_apply, dite_eq_right (by simp), ite_eq_right (by simp; omega)]
       · rfl
 
   have hHA := Formalism.FourierDecayAlt.P.head_algebra_relations (SB E hD) E k r m (by omega) z' (EB hD) La' (PBG.xi0 x₁) Z τ u

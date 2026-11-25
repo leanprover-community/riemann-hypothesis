@@ -113,8 +113,8 @@ theorem atW_val (v : InfinitePlace E) (t : G n) : atW v t.val = toL (infU n (Pi.
   funext i j w
   show (if w = v then t.val i j else (1 : Mat n) i j) = (((Pi.mulSingle v t : InfinitePlace E → G n) w : G n) : Mat n) i j
   by_cases hw : w = v
-  · subst hw; rw [if_pos rfl, Pi.mulSingle_eq_same]
-  · rw [if_neg hw, Pi.mulSingle_eq_of_ne hw, Units.val_one]
+  · subst hw; rw [ite_eq_left rfl, Pi.mulSingle_eq_same]
+  · rw [ite_eq_right hw, Pi.mulSingle_eq_of_ne hw, Units.val_one]
 
 theorem along_val (v : InfinitePlace E) (g : GA E n) (φ : GA E n → ℂ) (t : G n) :
     along v g φ t.val = φ (g * infP n (Pi.mulSingle v t)) := by

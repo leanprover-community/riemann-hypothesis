@@ -37,22 +37,12 @@ namespace Formalism.HermitianLatticeCounting.S4
 open Finset
 open Formalism.SL.IwahoriBlocks (IsHerm eich)
 
-section defs
-variable {E : Type*} [CommRing E] [StarRing E] {V : Type*} [AddCommGroup V] [Module E V]
-
-end defs
-
 def ValuationProductBound : Prop :=
   ∀ (B : Type) [Fintype B] (s : B → ℕ) (vh ve vt : B → ℝ) (q A : ℝ) (r : ℕ),
     1 ≤ q → (∀ b, 1 ≤ s b ∧ s b ≤ r + 1) → (∀ b, 0 ≤ vh b) → (∀ b, 0 ≤ ve b) →
     (∀ b, (s b : ℝ) * vt b = ve b - vh b) → ∑ b, vh b ≤ A → ∑ b, ve b ≤ A →
     ∏ b, q ^ (2 * (s b : ℝ) * vh b) ≤ (q ^ A) ^ (2 * ((r : ℝ) + 1)) ∧
     ∏ b, q ^ (vt b * ((s b : ℝ) * ((s b : ℝ) - 1) / 2)) ≤ (q ^ A) ^ (((r : ℝ) + 1) / 2)
-
-section herm
-variable (F E : Type*) [Field F] [CommRing E] [Algebra F E] [StarRing E]
-
-end herm
 
 def LocalDensityShareBound : Prop :=
   ∀ (Ov : Type) [Fintype Ov] (dens dl : Ov → ℝ) (κ be disc tot : ℝ) (k r : ℕ),

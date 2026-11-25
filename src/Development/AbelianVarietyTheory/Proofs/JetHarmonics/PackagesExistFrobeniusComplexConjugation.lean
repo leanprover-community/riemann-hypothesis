@@ -170,7 +170,7 @@ theorem poly_eq_prod (b : RF.GlobalTheory d) (h : ∀ g a k, b.wt X g a k ≠ 0 
       simp [RF.GlobalTheory.wt, hy]
     · intro hy
       apply h
-      simp only [RF.GlobalTheory.wt, and_self, if_true]
+      simp only [RF.GlobalTheory.wt, and_self, ite_true]
       omega
   | ch g0 a0 u =>
     show (MvPolynomial.rename (F.letter g0 a0) (minorK C X.n (X.rkF g0 a0) X.n) ^ u : MvPolynomial (Fin X.n × WV I) C) =
@@ -201,9 +201,9 @@ theorem poly_eq_prod (b : RF.GlobalTheory d) (h : ∀ g a k, b.wt X g a k ≠ 0 
         rw [show Finset.Ico (0 + 1) (min N (X.rkF g0 a) + 1) = Finset.Icc 1 (min N (X.rkF g0 a)) from by
           ext x; simp only [Finset.mem_Ico, Finset.mem_Icc]; omega]
         refine Finset.prod_congr rfl fun k hk => ?_
-        rw [if_pos ⟨trivial, Finset.mem_Icc.1 hk⟩]
+        rw [ite_eq_left ⟨trivial, Finset.mem_Icc.1 hk⟩]
       · intro k _ hk
-        rw [if_neg, pow_zero]
+        rw [ite_eq_right, pow_zero]
         rw [Finset.mem_range] at hk
         omega
     · intro g _ hg
@@ -247,7 +247,7 @@ omit [Fintype Orb] in
 theorem co_ne (hinj : Function.Injective fun x : Orb × ZMod 2 => tau x.1 x.2)
     (gi : Orb → ZMod 2 → Matrix (Fin 2) (Fin 2) C) {ρ ρ' : Fin N} (w w' : Var r tau) (col : Fin 2) (h : ρ' ≠ ρ) :
     co tau pl gi (lt tau pl ρ w col) (ρ', w') = 0 :=
-  Finset.sum_eq_zero fun _ _ => if_neg fun e => h (lt_eq tau pl hinj e).1.symm
+  Finset.sum_eq_zero fun _ _ => ite_eq_right fun e => h (lt_eq tau pl hinj e).1.symm
 
 theorem sum_co (hinj : Function.Injective fun x : Orb × ZMod 2 => tau x.1 x.2)
     (gi : Orb → ZMod 2 → Matrix (Fin 2) (Fin 2) C) {M : Type} [AddCommGroup M] [Module C M] (f : Var r tau → M)
@@ -261,13 +261,13 @@ theorem sum_co (hinj : Function.Injective fun x : Orb × ZMod 2 => tau x.1 x.2)
     congr 1
     unfold co
     rw [Finset.sum_eq_single col]
-    · exact if_pos rfl
+    · exact ite_eq_left rfl
     · intro col' _ hc
-      exact if_neg fun e => hc (lt_eq tau pl hinj e).2.1.symm
+      exact ite_eq_right fun e => hc (lt_eq tau pl hinj e).2.1.symm
     · simp
   · intro w' _ hw
     have : co tau pl gi (lt tau pl ρ w col) (ρ, w') = 0 :=
-      Finset.sum_eq_zero fun _ _ => if_neg fun e =>
+      Finset.sum_eq_zero fun _ _ => ite_eq_right fun e =>
         hw (Finset.mem_image.2 ⟨w'.2.1, Finset.mem_univ _, (lt_eq tau pl hinj e).2.2.symm⟩)
     rw [this, zero_smul]
 
@@ -324,7 +324,7 @@ theorem isImgS_sub (hinj : Function.Injective fun x : Orb × ZMod 2 => tau x.1 x
         rw [Matrix.mul_apply, Matrix.one_apply] at this
         rw [← this]
         exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
-      simp only [← Finset.sum_smul, h3, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [← Finset.sum_smul, h3, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact (congrArg (fun φ => φ Q) key).symm
 
 end Image
@@ -405,7 +405,7 @@ theorem cf_ne {C : Type} [Field C] {N n what₂ : ℕ} (pl : Fin N × Fin 2 ↪ 
   apply h
   unfold cf
   split_ifs with h1
-  · exact Finset.sum_eq_zero fun col _ => if_neg fun e => hc ⟨_, _, e⟩
+  · exact Finset.sum_eq_zero fun col _ => ite_eq_right fun e => hc ⟨_, _, e⟩
   · rfl
 
 section Mem
@@ -427,7 +427,7 @@ theorem sub_minor (hty : ∀ o g c, ((X o).G g).ty (Sum.inl c) = c.1 + sh g)
         (MvPolynomial.X ⟨tau o s, Fin.castLE hk i, b⟩ : MvPolynomial (Letter Ty r n) C)).det := by
   have hk' : k ≤ (X o).rkF g (s + sh g) := by rw [rkF_eq (X o) (hty o)]; exact hk
   unfold minorK toAll
-  rw [dif_pos ⟨hr, hk'⟩, AlgHom.map_det, AlgHom.map_det, AlgHom.map_det, AlgHom.map_det]
+  rw [dite_eq_left ⟨hr, hk'⟩, AlgHom.map_det, AlgHom.map_det, AlgHom.map_det, AlgHom.map_det]
   congr 1
   refine Matrix.ext fun ρ i => ?_
   simp only [AlgHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, MvPolynomial.rename_X, MvPolynomial.aeval_X,
@@ -435,16 +435,16 @@ theorem sub_minor (hty : ∀ o g c, ((X o).G g).ty (Sum.inl c) = c.1 + sh g)
   rw [en_eq (X o) (F o) (hty o) (hen o) g s _ (Fin.castLE hk i) rfl]
   have hρ : (ρ : ℕ) < what₂ := lt_of_lt_of_le ρ.2 hr
 
-  simp only [cf, dif_pos hρ, map_sum, Finset.sum_mul]
+  simp only [cf, dite_eq_left hρ, map_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   unfold sub
   refine Finset.sum_congr rfl fun col _ => ?_
   symm
   rw [Finset.sum_eq_single (pl (pr ⟨ρ, hρ⟩, col))]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     rfl
   · intro b _ hb
-    rw [if_neg hb, map_zero, zero_mul]
+    rw [ite_eq_right hb, map_zero, zero_mul]
   · simp
 
 end Mem
@@ -559,11 +559,11 @@ theorem sub_blocks_mem (hbij : Function.Bijective fun x : Orb × ZMod 2 => tau x
         simp only [Finset.mem_filter, Finset.mem_Ico, Finset.mem_Icc, true_and]
         omega
       · intro s' _ hs
-        exact Finset.sum_eq_zero fun k _ => if_neg fun e =>
+        exact Finset.sum_eq_zero fun k _ => ite_eq_right fun e =>
           hs (congrArg Prod.snd (hbij.1 (a₁ := (o, s')) (a₂ := (o, s)) e.1))
       · simp
     · intro o' _ ho
-      exact Finset.sum_eq_zero fun k _ => if_neg fun e =>
+      exact Finset.sum_eq_zero fun k _ => ite_eq_right fun e =>
         ho (congrArg Prod.fst (hbij.1 (a₁ := (o', k.2.2.1)) (a₂ := (o, s)) e.1))
     · simp
 
@@ -671,7 +671,7 @@ theorem exists_unit (a : ZMod d) (g : Fin 2) : ∃ col, V.v (p.gm a col g) = 0 :
     exact lt_of_lt_of_le (lt_of_le_of_ne h2 (hc r).symm) (le_add_of_nonneg_left h1)
   have hg : 1 - g ≠ g := by fin_cases g <;> decide
   have e := p.gm_hyp a (1 - g) g
-  rw [if_neg hg, Fin.sum_univ_two] at e
+  rw [ite_eq_right hg, Fin.sum_univ_two] at e
   have := V.v.map_lt_add (hpos 0) (hpos 1)
   rw [e, V.v.map_one] at this
   exact lt_irrefl _ this
@@ -732,7 +732,7 @@ theorem lin_u (col g : Fin 2) (f : PS C 1 dd) (x : I0) :
       p.gm (p.ty0 x) col g * ∑ i, Pdiv.ChartF.dl f i * p.e x i := by
   simp only [lin_inCol, Fintype.sum_prod_type, ite_mul, zero_mul, FBChart.rawSelf]
   rw [Finset.sum_comm]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.mul_sum]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.mul_sum]
   exact Finset.sum_congr rfl fun _ _ => by ring
 
 theorem char_inCol (col : Fin 2) {f : PS C 1 dd} (hf : Pdiv.ChartF.IsCh Y.B.G.F f) :
@@ -1084,7 +1084,7 @@ namespace GlobalTheory.RowAt
 theorem sum_sigma_extend {A C W : Type} [Fintype A] [Field C] [AddCommGroup W] [Module C W] (m : A → ℕ)
     (e : (Σ s : A, Fin (m s)) → W) (a : A) (b : Fin (m a) → C) :
     ∃ b' : (Σ s : A, Fin (m s)) → C, (∀ q, q.1 ≠ a → b' q = 0) ∧ ∑ x, b x • e ⟨a, x⟩ = ∑ q, b' q • e q := by
-  refine ⟨fun q => if h : q.1 = a then b (h ▸ q.2) else 0, fun q hq => dif_neg hq, ?_⟩
+  refine ⟨fun q => if h : q.1 = a then b (h ▸ q.2) else 0, fun q hq => dite_eq_right hq, ?_⟩
   rw [Fintype.sum_sigma, Finset.sum_eq_single a]
   · simp
   · intro s _ hs
@@ -1250,7 +1250,7 @@ theorem coeff_exp_lin [CharZero C] (w : τ → ℕ) {D : MvPowerSeries τ C}
   · simp [PowerSeries.coeff_exp]
   · intro k hk
     rcases Nat.eq_zero_or_pos k with rfl | hk0
-    · rw [pow_zero, coeff_one, if_neg, smul_zero]
+    · rw [pow_zero, coeff_one, ite_eq_right, smul_zero]
       rintro rfl
       simp at hm
     · rw [coeff_eq_zero_of_lt_weightedOrder w, smul_zero]
@@ -1349,11 +1349,11 @@ theorem coeff_formalBiextensionChart_secondPhase (μ : Fin 2 × Fin dd →₀ �
       have h0' : s.1 = 0 := h0
       rw [Nat.lt_one_iff, Finsupp.weight_apply, Finsupp.sum, Finset.sum_eq_zero_iff] at hm
       have := hm s hs
-      simp only [h0', if_true, smul_eq_mul, mul_one] at this
+      simp only [h0', ite_true, smul_eq_mul, mul_one] at this
       exact Finsupp.mem_support_iff.1 hs this
     have hx : ∀ i, Van {s : Fin 3 × Fin dd | s.1 = 0} (pt C dd (0 : Fin 3) i) := by
       intro i ν hν
-      rw [pt, coeff_X, if_neg]
+      rw [pt, coeff_X, ite_eq_right]
       rintro rfl
       exact hν (0, i) (by simp) rfl
     unfold dfc
@@ -1409,15 +1409,15 @@ theorem killCompl_formalGroupCocycleLinearTerm_column (col : Fin 2) (u : Fin 2 �
   rw [Finset.sum_eq_single col]
   · refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_eq_single col]
-    · rw [kill_dfc_gp, if_pos ⟨rfl, rfl⟩]
+    · rw [kill_dfc_gp, ite_eq_left ⟨rfl, rfl⟩]
     · intro k _ hk
-      rw [kill_dfc_gp, if_neg fun h => hk h.1.symm, map_zero]
+      rw [kill_dfc_gp, ite_eq_right fun h => hk h.1.symm, map_zero]
     · simp
   · intro c _ hc
     refine Finset.sum_eq_zero fun i _ => ?_
     rw [Finset.sum_eq_zero, mul_zero]
     intro k _
-    rw [kill_dfc_gp, if_neg fun h => hc h.2, map_zero]
+    rw [kill_dfc_gp, ite_eq_right fun h => hc h.2, map_zero]
   · simp
 
 omit [CharZero C] in
@@ -1597,7 +1597,7 @@ theorem supplyC_selfConj : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.Char
       by_contra hlt
       apply hk
       unfold gap
-      rw [if_neg (fun h => hlt h.2)]
+      rw [ite_eq_right (fun h => hlt h.2)]
 
 end GlobalTheory.RowAt
 end -- clump:auto
@@ -1642,11 +1642,11 @@ theorem exists_rowFam (hUp : ∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.Cha
   have hrk : (⟨tauC N pl, N.R.k - 1, j, N.R.m - j⟩ : LabS E (RPl N.R)).RankOK Dw := by
     intro z
     have h10 : ¬ (1 : ZMod 2) = 0 := by decide
-    have t0 : tauC N pl z 0 = pl z := if_pos rfl
-    have t1 : tauC N pl z 1 = ComplexEmbedding.conjugate (pl z) := if_neg h10
-    have m0 : Dw.mult (pl z) = Dw.p := if_pos (hpsi z)
+    have t0 : tauC N pl z 0 = pl z := ite_eq_left rfl
+    have t1 : tauC N pl z 1 = ComplexEmbedding.conjugate (pl z) := ite_eq_right h10
+    have m0 : Dw.mult (pl z) = Dw.p := ite_eq_left (hpsi z)
     have m1 : Dw.mult (ComplexEmbedding.conjugate (pl z)) = Dw.q :=
-      if_neg (GlobalTheory.LabSelf.not_inPsi_conj H (hpsi z))
+      ite_eq_right (GlobalTheory.LabSelf.not_inPsi_conj H (hpsi z))
     refine ⟨?_, ?_⟩
     · show Dw.mult (tauC N pl z 0) = N.R.k - 1 + j
       rw [t0, m0]; omega
@@ -1697,12 +1697,12 @@ theorem packages_conj : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.ChartRe
       (fun i i' hi hi' => hdom τ ⟨i, lt_of_le_of_lt hi hi'⟩ ⟨i', hi'⟩ hi)
     have hmain : ∀ z, gaC N Dw pl a z 0 (N.R.k - 1) = gapW N pl a z := by
       intro z
-      have t0 : tauC N pl z 0 = pl z := if_pos rfl
-      have hm : Dw.mult (pl z) = Dw.p := if_pos (hpsi _)
+      have t0 : tauC N pl z 0 = pl z := ite_eq_left rfl
+      have hm : Dw.mult (pl z) = Dw.p := ite_eq_left (hpsi _)
       unfold gaC
       rw [t0, hm]
       unfold gap gapW
-      rw [if_pos (by omega), if_pos (by omega)]
+      rw [ite_eq_left (by omega), ite_eq_left (by omega)]
       rfl
     have hDF : DF Dw a = ∑ z, ∑ s : ZMod 2, ∑ k ∈ Finset.Icc 1 N.R.r, k * gaC N Dw pl a z s k := by
       unfold DF

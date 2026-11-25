@@ -223,7 +223,7 @@ private theorem coc_rel [IsDomain A] (hr : Red η Ψ r) (h21 : ∀ g, (r g).mat 
   have E := congrArg (fun M => M 2 0) (mat_mul_eq_ite_of_hasMult hm g h)
   simp only [Matrix.mul_apply, Fin.sum_univ_three, h21 g, zero_mul, add_zero] at E
   rcases Int.units_eq_one_or (η g) with he | he
-  · simp only [he, if_true] at E
+  · simp only [he, ite_true] at E
     rw [hb, hb, hb] at E
     have E2 : b (g * h) = b g * (r h).mat 0 0 + (r g).mat 2 2 * b h :=
       mul_left_cancel₀ hx (by rw [E]; ring)
@@ -232,7 +232,7 @@ private theorem coc_rel [IsDomain A] (hr : Red η Ψ r) (h21 : ∀ g, (r g).mat 
   · have hne : η g ≠ 1 := by
       rw [he]
       decide
-    simp only [hne, if_false, jmat_mul_mul_jmat_apply] at E
+    simp only [hne, ite_false, jmat_mul_mul_jmat_apply] at E
     have E' : (r (g * h)).mat 2 0 = (r g).mat 2 0 * ((r h).mat)⁻¹ 2 2 + (r g).mat 2 2 * ((r h).mat)⁻¹ 2 0 := by
       rw [E]
       rfl
@@ -363,7 +363,7 @@ private theorem lc_div {A D : Type} [CommRing A] [IsDomain A] [IsDiscreteValuati
   have hφ : (fun g => residue A (b g)) = φ ∘ f := by
     funext g
     have hq : ∃ g', f g' = f g := ⟨g, rfl⟩
-    simp only [Function.comp, φ, dif_pos hq]
+    simp only [Function.comp, φ, dite_eq_left hq]
     exact key _ _ hq.choose_spec.symm
   rw [hφ]
   exact (hc (k + 1)).comp φ
@@ -384,7 +384,7 @@ private theorem ent_zero {O A : Type} [CommRing O] [IsLocalRing O] [CommRing A] 
         rw [map_mul, he, hF.ηc]
         decide
       have e := mat_mul_eq_ite_of_hasMult hm (g * F.c) F.c
-      rw [if_pos hgc, atc, Matrix.mul_one, mul_assoc, hF.csq, mul_one] at e
+      rw [ite_eq_left hgc, atc, Matrix.mul_one, mul_assoc, hF.csq, mul_one] at e
       rw [e]
       exact h21 _ hgc
   by_contra hne
@@ -533,7 +533,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.typeI_of_twoSigned :
   have hred := hpt.toCondN.toCond.toRed
   have hzeta' : IsUnit (zeta F.c g₁ r') := by
     rw [← IsLocalRing.residue_ne_zero_iff_isUnit]
-    simp only [zeta, zmat, Matrix.sub_apply, map_sub, ent_ofSL_eq_coe hred, if_true]
+    simp only [zeta, zmat, Matrix.sub_apply, map_sub, ent_ofSL_eq_coe hred, ite_true]
     have hgs : F.Ψ (gstar F.c g₁) = (F.Ψ g₁)⁻¹ := by
       simp [gstar, hF.Ψc]
     have w0 : wt1 0 = 1 := by decide

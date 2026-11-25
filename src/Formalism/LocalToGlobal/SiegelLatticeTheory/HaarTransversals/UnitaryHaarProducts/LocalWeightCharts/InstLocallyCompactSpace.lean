@@ -216,9 +216,9 @@ theorem hpk_row (i m : Fin (2 * r + k + 1)) :
 theorem hpk_mul_apply (A : Mx k r) (i j : Fin (2 * r + k + 1)) :
     (Hpk k r * A) i j = sgn k r i * A (tau k r i) j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (tau k r i)]
-  · rw [hpk_row, if_pos rfl]
+  · rw [hpk_row, ite_eq_left rfl]
   · intro m _ hm
-    rw [hpk_row, if_neg hm, zero_mul]
+    rw [hpk_row, ite_eq_right hm, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 

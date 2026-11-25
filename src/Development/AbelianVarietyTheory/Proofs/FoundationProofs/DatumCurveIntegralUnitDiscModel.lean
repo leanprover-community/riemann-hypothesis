@@ -350,7 +350,7 @@ theorem taylor_bound [Fintype ι] [DecidableEq ι] (c : R →+* K) (hc : ∀ w, 
         y n * (eval₂ c y p - eval₂ c x p - ∑ j, eval₂ c x (pderiv j p) * (y j - x j)) +
         (y n - x n) * ∑ j, eval₂ c x (pderiv j p) * (y j - x j) := by
       simp only [h1, Finset.sum_add_distrib, ← Finset.sum_mul, eval₂_mul, eval₂_X]
-      simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       ring
     rw [this]
     refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
@@ -398,7 +398,7 @@ theorem mem_of_gradient [Fintype ι] [DecidableEq ι] (W : Subring K) (hW : IsCl
           -(eval₂ W.subtype (fun i => (y i : K)) (G i) - eval₂ W.subtype x (G i) -
             ∑ j, eval₂ W.subtype x (pderiv j (G i)) * (y j - x j)) := by
         simp only [sub_mul, Finset.sum_sub_distrib, hG, ite_mul, one_mul, zero_mul,
-          Finset.sum_ite_eq', Finset.mem_univ, if_true]
+          Finset.sum_ite_eq', Finset.mem_univ, ite_true]
         push_cast
         rw [he]; ring
       rw [this]

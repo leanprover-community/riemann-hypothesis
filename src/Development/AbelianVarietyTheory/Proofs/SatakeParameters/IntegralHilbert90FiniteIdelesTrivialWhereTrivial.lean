@@ -352,13 +352,13 @@ theorem exists_integral_h90_preimage_of_mem_intU_unramified (σ : E →ₐ[F] E)
     rw [hιT, haι, haσ]
   have hxS : ∀ P : HeightOneSpectrum (𝓞 E), S (P.under (𝓞 F)) → ι x0 P = 1 := by
     intro P h
-    rw [ιx, if_pos h, hf0 _ h]
+    rw [ιx, ite_eq_left h, hf0 _ h]
     simp
   have hxN : ∀ P : HeightOneSpectrum (𝓞 E), ¬ S (P.under (𝓞 F)) → ι x0 P =
       algebraMap E _ (algebraMap (𝓞 E) E (f (P.under (𝓞 F)))) +
         ι d P * algebraMap E _ (σ (algebraMap (𝓞 E) E (f (P.under (𝓞 F))))) := by
     intro P h
-    rw [ιx, if_neg h, zero_add]
+    rw [ιx, ite_eq_right h, zero_add]
   have hde : (d : AfE F E) * T = T := by
     apply map_injective hι
     refine FiniteAdeleRing.ext _ fun P => ?_

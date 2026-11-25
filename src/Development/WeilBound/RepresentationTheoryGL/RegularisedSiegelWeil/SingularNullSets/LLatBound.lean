@@ -313,7 +313,7 @@ theorem tsum_schwartz_fullRank_le (E : Type) [Field E] (R : Subring E) (ι : Typ
     obtain ⟨j, hj1, hj2⟩ := exists_nat_pow_near (x := 1 + ‖y‖) (y := (2 : ℝ))
       (by linarith [norm_nonneg y]) one_lt_two
     refine le_trans ?_ (ENNReal.le_tsum j)
-    rw [if_pos]
+    rw [ite_eq_left]
     · rw [← ofReal_norm]
       refine ENNReal.ofReal_le_ofReal ?_
       show ‖φ y‖ ≤ Cφ / (2 ^ j) ^ (M + 1)

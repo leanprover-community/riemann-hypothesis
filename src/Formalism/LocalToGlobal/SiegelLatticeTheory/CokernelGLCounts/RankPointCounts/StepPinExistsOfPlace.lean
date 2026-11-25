@@ -319,16 +319,16 @@ theorem ptEntry_inj {K : Type*} [Zero K] : ∀ (bs cs : List (K × ℕ)) (i : �
     have e0 := he 0 (s - 1) (by omega) (by omega)
     rw [ptEntry_cons, ptEntry_cons] at e0
     have hl : (0 < s ∧ s - 1 < s) := ⟨by omega, by omega⟩
-    rw [if_pos hl, if_pos (by omega : 0 + (s - 1) + 1 = s)] at e0
+    rw [ite_eq_left hl, ite_eq_left (by omega : 0 + (s - 1) + 1 = s)] at e0
     have hss : s = s' ∧ t = t' := by
       by_cases h1 : 0 < s' ∧ s - 1 < s'
-      · rw [if_pos h1] at e0
+      · rw [ite_eq_left h1] at e0
         by_cases h2 : 0 + (s - 1) + 1 = s'
-        · rw [if_pos h2] at e0
+        · rw [ite_eq_left h2] at e0
           exact ⟨by omega, e0⟩
-        · rw [if_neg h2] at e0
+        · rw [ite_eq_right h2] at e0
           exact absurd e0 ht.1
-      · rw [if_neg h1, if_neg (by omega)] at e0
+      · rw [ite_eq_right h1, ite_eq_right (by omega)] at e0
         exact absurd e0 ht.1
     rcases hss with ⟨hs, htEq⟩
     subst s'
@@ -337,7 +337,7 @@ theorem ptEntry_inj {K : Type*} [Zero K] : ∀ (bs cs : List (K × ℕ)) (i : �
     refine ptEntry_inj bs cs (i - s) (fun b hb' => hb b (List.mem_cons_of_mem _ hb')) (by omega)
       (fun b hb' => hc b (List.mem_cons_of_mem _ hb')) (by omega) (fun a b ha hb2 => ?_)
     have := he (a + s) (b + s) (by omega) (by omega)
-    rw [ptEntry_cons, ptEntry_cons, if_neg (by omega), if_pos (by omega), if_neg (by omega), if_pos (by omega),
+    rw [ptEntry_cons, ptEntry_cons, ite_eq_right (by omega), ite_eq_left (by omega), ite_eq_right (by omega), ite_eq_left (by omega),
       Nat.add_sub_cancel, Nat.add_sub_cancel] at this
     exact this
 

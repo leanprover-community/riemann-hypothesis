@@ -285,7 +285,7 @@ theorem exists_real_idele_flow (F E : Type) [Field F] [NumberField F] [Field E] 
       haveI : Nontrivial (AF F) := (evInf F (Classical.arbitrary _)).toRingHom.domain_nontrivial
       rw [Algebra.norm_algebraMap, Module.finrank_baseChange, h.2.2.1]
     have h2 : ∀ v, evFin F v (ρ (u t)) = 1 := fun v => rfl
-    have h3 : ∀ w : InfinitePlace F, w.mult = 1 := fun w => if_pos (IsTotallyReal.isReal w)
+    have h3 : ∀ w : InfinitePlace F, w.mult = 1 := fun w => ite_eq_left (IsTotallyReal.isReal w)
     simp only [GlobalTheory.Doubling.absE_apply, GlobalTheory.Doubling.absEv_unitFin, GlobalTheory.Doubling.absEw_unitInf, h1, map_pow, h2, h3,
       one_pow, nnnorm_one, finprod_one, mul_one, pow_one, NNReal.coe_prod, coe_nnnorm, norm_pow, hn,
       Finset.prod_const, Finset.card_univ]

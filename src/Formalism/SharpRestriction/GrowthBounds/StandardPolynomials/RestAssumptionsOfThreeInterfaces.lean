@@ -556,7 +556,7 @@ theorem PreSys.core (D : Formalism.BasicNotions.D7) [CharZero (KK O)]
             refine Finset.sum_le_sum fun i _ => ?_
             by_cases hv : (L.LL j).vec i = true
             · simp [hv]
-            · simp only [hv, if_false, one_mul, Bool.false_eq_true]
+            · simp only [hv, ite_false, one_mul, Bool.false_eq_true]
               refine Finset.sum_le_sum fun a _ => ?_
               calc uC j a * P.dK j a i ≤ uC j a * 1 := Nat.mul_le_mul_left _ (P.digit_le_one j a i)
                 _ = uC j a := mul_one _

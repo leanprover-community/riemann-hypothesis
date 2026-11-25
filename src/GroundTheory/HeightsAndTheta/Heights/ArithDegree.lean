@@ -192,12 +192,7 @@ theorem card_quotient_range_comp {M : Type*} [AddCommGroup M] [Module (𝓞 K) M
 theorem card_quotient_mulVecLin {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι (𝓞 K))
     (hA : A.det ≠ 0) :
     Nat.card ((ι → 𝓞 K) ⧸ LinearMap.range A.mulVecLin) = (Algebra.norm ℤ A.det).natAbs := by
-  have hinj : Function.Injective A.mulVecLin := by
-    intro x y hxy
-    by_contra hne
-    refine hA (Matrix.exists_mulVec_eq_zero_iff.mp ⟨x - y, sub_ne_zero.mpr hne, ?_⟩)
-    rw [mulVec_sub]
-    exact sub_eq_zero.mpr hxy
+  have hinj : Function.Injective A.mulVecLin := Matrix.mulVec_injective_of_det_ne_zero hA
   set N := LinearMap.range A.mulVecLin
   let e : (ι → 𝓞 K) ≃ₗ[ℤ] N.restrictScalars ℤ :=
     (LinearEquiv.ofInjective A.mulVecLin hinj).restrictScalars ℤ

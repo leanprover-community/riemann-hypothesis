@@ -303,9 +303,6 @@ def thetaZero : ACrisZero (K := K) (p := p) →+* 𝒪 :=
   ((thetaAway (K := K) (p := p)).comp (ACrisZero (K := K) (p := p)).val.toRingHom).codRestrict (normInteger K)
     fun y => acrisZero_le_thetaIntegral y.2
 
-theorem coe_thetaZero (y : ACrisZero (K := K) (p := p)) : (thetaZero (K := K) (p := p) y : K) = thetaAway (K := K) (p := p) (y : 𝔸) :=
-  rfl
-
 theorem thetaZero_algebraMap (x : AInf K p) :
     thetaZero (K := K) (p := p) (algebraMap (AInf K p) (ACrisZero (K := K) (p := p)) x) = θ x :=
   Subtype.ext (thetaAway_algebraMap x)

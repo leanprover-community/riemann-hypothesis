@@ -208,16 +208,16 @@ theorem scal_exists (R : RealDat D A Ks) : ∃ kap lam, (R.upd6 kap lam).IsScal 
     exact mul_right_cancel₀ hne h2) 1
   refine ⟨kap, lam, fun i t p l hp hl => ?_, fun κ h h' => hk κ ⟨h, h'⟩, fun b i p v l hv hp hb he => ?_, fun i t p hp => ?_,
     fun i p v hv hp => ?_, fun i t p v hv => ?_⟩
-  · exact (if_pos rfl).trans (h0 i t p l ⟨hp, hl⟩)
-  · exact (if_neg hv).trans (h1 i p v l ⟨b, (RealDat.part_at_of_scalar_update _ _ _ _ _ _).1 hp,
+  · exact (ite_eq_left rfl).trans (h0 i t p l ⟨hp, hl⟩)
+  · exact (ite_eq_right hv).trans (h1 i p v l ⟨b, (RealDat.part_at_of_scalar_update _ _ _ _ _ _).1 hp,
       hb.imp id fun hn hh => hn ((RealDat.part_at_of_scalar_update _ _ _ _ _ _).2 hh), (RealDat.similarity_of_scalar_update _ _ _ _ _ _ _).1 he⟩)
   · rw [RealDat.subspaces_of_scalar_update]
-    exact (if_pos rfl).trans (h0' i t p fun l hl => hl.1 hp)
+    exact (ite_eq_left rfl).trans (h0' i t p fun l hl => hl.1 hp)
   · rw [RealDat.subspaces_of_scalar_update]
-    exact (if_neg hv).trans (h1' i p v fun l hl => by
+    exact (ite_eq_right hv).trans (h1' i p v fun l hl => by
       obtain ⟨b, hb, -⟩ := hl
       exact hp b ((RealDat.part_at_of_scalar_update _ _ _ _ _ _).2 hb))
-  · exact (if_neg hv).trans (if_neg hv).symm
+  · exact (ite_eq_right hv).trans (ite_eq_right hv).symm
 
 
 

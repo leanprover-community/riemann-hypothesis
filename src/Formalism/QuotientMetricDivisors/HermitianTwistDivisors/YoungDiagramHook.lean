@@ -484,7 +484,7 @@ theorem young_diagram_step : RowsStepE := by
     fun j ρ => by dsimp only; linarith, fun j ρ => by dsimp only; ring, fun j ρ => ?_, fun j ρ => ?_⟩
   · dsimp only
     by_cases hρ : ρ ∈ TT
-    · rw [if_pos hρ]
+    · rw [ite_eq_left hρ]
       have hT := htop j ρ hρ
       have h0 := top_nonneg hT
       have hF := (young_diagram_factorial n (w j ρ) Sc (m * (t + 1) * η) (cs * N) (a * rd) La (fa j ρ)
@@ -492,7 +492,7 @@ theorem young_diagram_step : RowsStepE := by
       have hA := arith_fact_top (w := (w j ρ : ℝ)) (n := (n : ℝ)) (Nat.cast_nonneg _) h0.1 h0.2
         (Nat.cast_nonneg _) hk hkN hcs hC2 hCcs hSc hLa1
       linarith
-    · rw [if_neg hρ]
+    · rw [ite_eq_right hρ]
       have hO := hoff j ρ hρ
       have h0 := off_nonneg hO
       have hF := (young_diagram_factorial (n + 1) (w j ρ) Sc (m * (t + 1) * η) (cs * N) (a * rd) La
@@ -503,7 +503,7 @@ theorem young_diagram_step : RowsStepE := by
       linarith
   · dsimp only
     by_cases hρ : ρ ∈ TT
-    · rw [if_pos hρ, if_pos hρ]
+    · rw [ite_eq_left hρ, ite_eq_left hρ]
       have hT := htop j ρ hρ
       have h0 := top_nonneg hT
       have hP := (young_diagram_period n (w j ρ) Sc (m * (t + 1) * η) (cs * N) (ν j ρ) (ap j ρ)).2
@@ -513,7 +513,7 @@ theorem young_diagram_step : RowsStepE := by
       obtain ⟨hP1, hP2⟩ := hP
       exact arith_per (n := (n : ℝ)) (k := k) (Nat.cast_nonneg _) h0.1 h0.2 (Nat.cast_nonneg _)
         (by rw [hk]; linarith) hkN hC2 hSc hX (by linarith) (by linarith)
-    · rw [if_neg hρ, if_neg hρ]
+    · rw [ite_eq_right hρ, ite_eq_right hρ]
       have hO := hoff j ρ hρ
       have h0 := off_nonneg hO
       have hP := (young_diagram_period (n + 1) (w j ρ) Sc (m * (t + 1) * η) (cs * N) (ν j ρ)

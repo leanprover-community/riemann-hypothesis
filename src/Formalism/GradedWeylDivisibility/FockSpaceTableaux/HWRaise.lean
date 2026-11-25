@@ -71,6 +71,6 @@ theorem rowGen_hw (R : Type*) [CommRing R] {r n : ℕ} (hn : n ≤ r) (ν : Fin 
 theorem highestWeightVectorRaising : HWRaise := by
   intro R _ r n hn ν a b k hab hk
   unfold rowDiv
-  rw [rowGen_hw R hn ν a b hab, Polynomial.coeff_C, if_neg (by omega)]
+  rw [rowGen_hw R hn ν a b hab, Polynomial.coeff_C, ite_eq_right (by omega)]
 
 end Formalism.GradedWeylDivisibility

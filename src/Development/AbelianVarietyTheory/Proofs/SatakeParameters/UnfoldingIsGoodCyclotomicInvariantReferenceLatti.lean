@@ -124,7 +124,7 @@ theorem chArg_int {n' c' n c : ℕ} {x : HomE E (n' + c') (n + c)}
       have h3 := mem_homS_sclLat.1 h ⟨_, h1⟩ ⟨_, h2⟩
       have e : LocE.scE n' (fun i => i + 1) (n' + i + 1) - LocE.scE n (fun i => i + 1) (n + i) = 1 := by
         unfold LocE.scE
-        rw [if_neg (by omega), if_neg (by omega)]
+        rw [ite_eq_right (by omega), ite_eq_right (by omega)]
         dsimp only
         omega
       rw [e, zpow_one, mul_comm] at h3
@@ -244,7 +244,7 @@ theorem entryAtG : EntryAtG := by
   have hbe := hL.stabG (i + 1) be P hP
   have hJ : Jat (Pr := Pr) cst.sharp (i + 1) P.1 ≤ stabL X.E _ (lamYat (Pr := Pr) (R := R) (i + 1) P.1) := by
     unfold Jat lamYat
-    rw [if_pos hP, if_pos hP]
+    rw [ite_eq_left hP, ite_eq_left hP]
     split_ifs
     · exact inf_le_left
     · exact inf_le_left
@@ -263,10 +263,10 @@ theorem entryAtG : EntryAtG := by
       (LocE.lamY P.1 (qOf P.1) (R.N (i + 1)) (cOf R (i + 1)) fun i => i + 1))
       (omPhi Ch sel mu cst i P (L.h i al P) (L.h (i + 1) be P)) := by
     unfold lamYat at hal hbe
-    rw [if_pos hP] at hal hbe
+    rw [ite_eq_left hP] at hal hbe
     refine good_om_two ?_ _ _ _ hal hbe
     unfold PhiAt
-    rw [if_pos hP]
+    rw [ite_eq_left hP]
     split_ifs
     · exact good_PhiGS _ _ h1 h2 h3 h4
     · exact good_PhiG _ _ h1 h2 h3 h4

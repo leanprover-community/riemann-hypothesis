@@ -80,7 +80,7 @@ theorem exists_potential {N : ℕ} {A : Type} [Group A] (E : Fin N → Fin N →
   have h : ∃ a, E a b := ⟨a, hab⟩
   have ha : h.choose = a := huniq _ _ _ h.choose_spec hab
   rw [WellFounded.fix_eq]
-  have : F b (fun y _ => wellFounded_lt.fix F y) = wellFounded_lt.fix F h.choose * r h.choose := dif_pos h
+  have : F b (fun y _ => wellFounded_lt.fix F y) = wellFounded_lt.fix F h.choose * r h.choose := dite_eq_left h
   rw [this, ha]
 
 theorem exists_unit_shift (g : ℕ) [Fact g.Prime] (ψ ψ' : AddChar (ZMod g) ℂ) (h : ψ ≠ 1) (h' : ψ' ≠ 1) :

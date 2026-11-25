@@ -201,7 +201,7 @@ theorem dI_sum_ind_le (E : ℕ → Set X) (hd : Pairwise (Function.onFun Disjoin
       simp [hxm]
     · intro h'
       exact absurd hm0 h'
-  · push_neg at hx
+  · push Not at hx
     refine le_trans (le_of_eq (Finset.sum_eq_zero fun m hm => ?_)) (abs_nonneg _)
     simp [hx m hm]
 

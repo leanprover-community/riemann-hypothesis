@@ -182,7 +182,7 @@ theorem exists_cut [CharZero k] (O : ValuationSubring k) (hO : IsCompact (O : Se
     refine ⟨U, fun Y hY => ?_, h⟩
     have h1 : p Y₀ = p Y := by
       by_contra h'
-      exact hY (if_neg fun h'' => h' (e.trans h''.symm))
+      exact hY (ite_eq_right fun h'' => h' (e.trans h''.symm))
     have h2 := (hΛ _).1 (QuotientAddGroup.eq.1 h1) U hU
     rw [show Y = Y₀ + (-Y₀ + Y) by abel, Matrix.add_mul, trace_add, AddChar.map_add_eq_mul, h2, mul_one]
 

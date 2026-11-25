@@ -326,7 +326,7 @@ theorem levelL_of_fix (hΛ : ∀ x, x ∈ Λ ↔ ∀ y ∈ Λ, IsIntegral ℤ (h
         refine Finset.sum_congr rfl fun k _ => ?_
         rw [Finset.sum_eq_single a (fun a' _ ha => by simp [hb, ha]) (by simp)]
         simp only [hb, Matrix.zero_apply, cc_zero, Matrix.smul_apply, Matrix.of_apply,
-          if_true, smul_eq_mul, Matrix.transpose_apply, Rat.smul_def, mul_zero]
+          ite_true, smul_eq_mul, Matrix.transpose_apply, Rat.smul_def, mul_zero]
         push_cast
         ring
       rw [heisH, e2, smul_zero, sub_zero, map_smul, mul_right_eq_self₀, or_iff_left hx,

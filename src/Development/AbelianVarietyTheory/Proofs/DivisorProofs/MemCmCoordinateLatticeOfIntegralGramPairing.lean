@@ -295,27 +295,6 @@ namespace GlobalTheory.LevelRigid
 
 section
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Semi
-open scoped CategoryTheory.Obj
-
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-variable {D : Datum H} {l : Level H} {c : Coeff l}
-
-end
-section
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
-open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
-
-variable {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {L : RigLB A} (c : CubicalStr A L)
-
-
-end
-section
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G.Semi
@@ -411,45 +390,10 @@ theorem pairing_nondeg (hW : Out.WeilSt) (hND : Out.WeilNondegSt) (hBC : Out.Pol
   apply hi
   rw [← hpu, ← tbpush, h1, tb1, MonObj.comp_one]
 
-section Act
-
-variable {S : Scheme.{0}} {B : Out.PolAV S} {O : Type} [Ring O] [StarRing O] (o : B.OAct O) {T : Over S}
-
-end Act
-
 theorem pairing_tors {S : Scheme.{0}} {G G' : Over S} [GrpObj G] [GrpObj G'] {T : Over S} (z : T ⟶ G)
     (f : G ⟶ G') (hf : IsMonHom f) (n : ℕ) (hz : z ^ n = 1) : (z ≫ f) ^ n = 1 := by
   have := hf
   rw [← MonObj.pow_comp, hz, MonObj.one_comp]
-
-end
-section
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory
-
-
-
-end
-section
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
-
-end
-section
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Semi
-open scoped CategoryTheory.Obj
-
-
-end
-
-section
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 end
 
@@ -589,19 +533,7 @@ open GlobalTheory.CM GlobalTheory.IndefiniteRowSideFullHecke
 noncomputable section
 namespace GlobalTheory.CMSharedCompare
 
-section Comb
-
-variable {R : Type} [CommRing R]
-
-end Comb
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {K : Type} [Field K] [NumberField K]
-
-section Vec
-
-variable {t : SAB H (Sp (𝓞 K))} (G : EigenLatticeFibres.GenFib t)
-
-end Vec
 
 structure Partner {T : PAT H (Sp (𝓞 K))} (F : GenFib T.pol) where
 
@@ -620,20 +552,6 @@ namespace Partner
 variable {F : GenFib T.pol} {F' : GenFib T'.pol} (Q : Partner F) (Q' : Partner F')
 
 end Partner
-
-section Metric
-
-variable {T : PAT H (Sp (𝓞 K))} {F : GenFib T.pol} (Q : Partner F)
-
-end Metric
-
-section Embeddings
-
-end Embeddings
-
-section Isogeny
-
-end Isogeny
 
 section Object
 

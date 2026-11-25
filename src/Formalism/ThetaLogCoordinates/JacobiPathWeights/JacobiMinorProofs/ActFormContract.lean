@@ -178,7 +178,7 @@ lemma lap_row (m : Matrix (Fin n) (Fin n) R) (I' J : Finset (Fin n)) (a : Fin n)
   obtain ⟨d, hd⟩ : ∃ d, I'.card = d := ⟨_, rfl⟩
   by_cases hJ : J.card = d + 1
   · by_cases ha : a ∈ I'
-    · rw [if_pos ha]
+    · rw [ite_eq_left ha]
       have hr : (fun x => (Fin.cons a ⇑(I'.orderEmbOfFin hd) : Fin (d + 1) → Fin n)
           ((0 : Fin (d + 1)).succAbove x)) = I'.orderEmbOfFin hd := by
         funext x
@@ -191,7 +191,7 @@ lemma lap_row (m : Matrix (Fin n) (Fin n) R) (I' J : Finset (Fin n)) (a : Fin n)
         exact this
       rw [Matrix.det_zero_of_row_eq (i := 0) (j := k.succ) (Fin.succ_ne_zero k).symm
         (by funext c; simp [hk]), mul_zero]
-    · rw [if_neg ha]
+    · rw [ite_eq_right ha]
       have hcard : (insert a I').card = d + 1 := by rw [Finset.card_insert_of_notMem ha, hd]
       obtain ⟨i, hi⟩ : ∃ i, (insert a I').orderEmbOfFin hcard i = a := by
         have : a ∈ Set.range ((insert a I').orderEmbOfFin hcard) := by
@@ -316,14 +316,14 @@ lemma basisF_insert {a : Fin n} {s : Finset (Fin n)} (hs : ∀ x ∈ s, x < a) :
   simp only [wedgeF, basisF, Pi.single_apply, mul_ite, mul_one, mul_zero]
   simp only [Finset.sum_ite_eq']
   by_cases ha : a ∈ I
-  · rw [if_pos ha]
+  · rw [ite_eq_left ha]
     by_cases hI : I = insert a s
     · subst hI
-      rw [if_pos rfl, Finset.erase_insert has, if_pos rfl, hsg]
+      rw [ite_eq_left rfl, Finset.erase_insert has, ite_eq_left rfl, hsg]
       simp
     · have : I.erase a ≠ s := fun he => hI (by rw [← he, Finset.insert_erase ha])
-      rw [if_neg hI, if_neg this]
-  · rw [if_neg ha, if_neg]
+      rw [ite_eq_right hI, ite_eq_right this]
+  · rw [ite_eq_right ha, ite_eq_right]
     rintro rfl
     exact ha (Finset.mem_insert_self a s)
 
@@ -346,13 +346,13 @@ theorem form_induction {P : Form R n → Prop} (h1 : P oneF)
 
 lemma actF_oneF (m : Matrix (Fin n) (Fin n) R) : actF (oneF : Form R n) m = oneF := by
   funext J
-  simp only [actF, oneF, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [actF, oneF, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   unfold minorF
   by_cases hJ : J = ∅
   · subst hJ
-    rw [dite_eq_left rfl, if_pos rfl]
+    rw [dite_eq_left rfl, ite_eq_left rfl]
     exact Matrix.det_eq_one_of_card_eq_zero (by first | exact Fintype.card_fin 0)
-  · rw [dite_eq_right, if_neg hJ]
+  · rw [dite_eq_right, ite_eq_right hJ]
     simpa [Finset.card_eq_zero] using hJ
 
 lemma contrF_oneF (Y : Fin n → R) : contrF (oneF : Form R n) Y = 0 := by

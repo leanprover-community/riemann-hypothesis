@@ -85,7 +85,7 @@ theorem inner_pderiv_monomial (h : HasCoeff F v E) (m : σ) (α : σ →₀ ℕ)
     simp [h0, this]
   · have hle : Finsupp.single m 1 ≤ α := Finsupp.single_le_iff.2 (Nat.pos_of_ne_zero h0)
     obtain ⟨β, rfl⟩ := exists_add_of_le hle
-    rw [if_pos hle, add_tsub_cancel_left, add_comm, prod_factorial_add_single]
+    rw [ite_eq_left hle, add_tsub_cancel_left, add_comm, prod_factorial_add_single]
     simp
     ring
 

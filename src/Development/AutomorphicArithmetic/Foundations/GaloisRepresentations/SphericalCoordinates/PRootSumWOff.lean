@@ -80,21 +80,21 @@ private theorem fib_eq {F : Type} [Field F] [NumberField F] {n : ℕ} (t₀ t₁
   have hA : detOne (t₀ x) (twist t₀ (ComplexEmbedding.conjugate t₀) ε y i g t₀)
       = (1 - t₀ x * (y * g t₀ i)) * ∏ j ∈ Finset.univ.erase i, (1 - t₀ x * g t₀ j) := by
     unfold detOne twist scaleAt
-    rw [if_pos rfl, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i), if_pos rfl]
+    rw [ite_eq_left rfl, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i), ite_eq_left rfl]
     congr 1
     apply Finset.prod_congr rfl
     intro j hj
-    rw [if_neg (Finset.ne_of_mem_erase hj)]
+    rw [ite_eq_right (Finset.ne_of_mem_erase hj)]
   have hB : detOne ((ComplexEmbedding.conjugate t₀) x) (twist t₀ (ComplexEmbedding.conjugate t₀) ε y i g (ComplexEmbedding.conjugate t₀))
       = (1 - (starRingEnd ℂ) (t₀ x) * (starRingEnd ℂ) (g t₀ i)) *
         ∏ j ∈ Finset.univ.erase i, (1 - (starRingEnd ℂ) (t₀ x) * (y * (starRingEnd ℂ) (g t₀ j))) := by
     unfold detOne twist scaleOff
-    rw [if_neg (Ne.symm hne), if_pos rfl, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i), if_pos rfl,
+    rw [ite_eq_right (Ne.symm hne), ite_eq_left rfl, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i), ite_eq_left rfl,
       ComplexEmbedding.conjugate_coe_eq, hc]
     congr 1
     apply Finset.prod_congr rfl
     intro j hj
-    rw [if_neg (Finset.ne_of_mem_erase hj), hc]
+    rw [ite_eq_right (Finset.ne_of_mem_erase hj), hc]
   have hC : ∀ τ ∈ (Finset.univ.erase t₀).erase (ComplexEmbedding.conjugate t₀),
       detOne (τ x) (twist t₀ (ComplexEmbedding.conjugate t₀) ε y i g τ)
         = (Multiset.map (fun r => 1 - τ x * (y ^ ε τ * r)) (rts χ τ)).prod := by
@@ -102,7 +102,7 @@ private theorem fib_eq {F : Type} [Field F] [NumberField F] {n : ℕ} (t₀ t₁
     have h1 := Finset.ne_of_mem_erase hτ
     have h2 := Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hτ)
     unfold detOne twist
-    rw [if_neg h2, if_neg h1, hr τ, Multiset.map_map, Finset.prod_map_val]
+    rw [ite_eq_right h2, ite_eq_right h1, hr τ, Multiset.map_map, Finset.prod_map_val]
     rfl
   rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ t₀),
     ← Finset.mul_prod_erase (Finset.univ.erase t₀) _ (Finset.mem_erase.mpr ⟨hne.symm, Finset.mem_univ _⟩),
@@ -125,8 +125,8 @@ theorem UpperTheory.Gal.W2.rootSumWOff_of :
   set t₁ := ComplexEmbedding.conjugate t₀ with ht₁
   have hne : t₀ ≠ t₁ := Ne.symm hconj
   let g : (F →+* ℂ) → Fin n → ℂ := fun τ => if τ = t₀ then (fun k => starRingEnd ℂ (r t₁ k)) else r τ
-  have hg0 : g t₀ = fun k => starRingEnd ℂ (r t₁ k) := if_pos rfl
-  have hg1 : ∀ τ, τ ≠ t₀ → g τ = r τ := fun τ h => if_neg h
+  have hg0 : g t₀ = fun k => starRingEnd ℂ (r t₁ k) := ite_eq_left rfl
+  have hg1 : ∀ τ, τ ≠ t₀ → g τ = r τ := fun τ h => ite_eq_right h
   have hrg : ∀ τ, rts χ τ = Multiset.map (g τ) Finset.univ.val := by
     intro τ
     by_cases h : τ = t₀

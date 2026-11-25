@@ -23,7 +23,7 @@ theorem antiJ_submatrix (L : Type) [Field L] (m : ℕ) :
   · have := i.2; have := j.2
     simp only [submatrix_apply, antiJ, ee, Wm, Equiv.trans_apply, Equiv.sumCongr_apply, Sum.map_inl, Equiv.refl_apply,
       finSumFinEquiv_apply_left, Fin.val_castAdd, fromBlocks_apply₁₁, Matrix.zero_apply]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   · have := i.2; have := j.2
     simp only [submatrix_apply, antiJ, ee, Wm, Equiv.trans_apply, Equiv.sumCongr_apply, Sum.map_inl, Sum.map_inr,
       Equiv.refl_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right, Fin.val_castAdd, Fin.val_natAdd,
@@ -37,7 +37,7 @@ theorem antiJ_submatrix (L : Type) [Field L] (m : ℕ) :
   · have := i.2; have := j.2
     simp only [submatrix_apply, antiJ, ee, Wm, Equiv.trans_apply, Equiv.sumCongr_apply, Sum.map_inr,
       finSumFinEquiv_apply_right, Fin.val_natAdd, fromBlocks_apply₂₂, Matrix.zero_apply, Fin.revPerm_apply, Fin.val_rev]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
 
 theorem Wm_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (β : Type) [DecidableEq β] :
     (Wm A β).map f = Wm B β := by

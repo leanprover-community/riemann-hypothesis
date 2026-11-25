@@ -49,9 +49,9 @@ theorem tens_single [DecidableEq I] (g : ∀ i, G i) : tens (fun i => (single (g
   simp only [MonoidAlgebra.coeff_single_apply]
   by_cases e : g = h
   · subst e; simp
-  · rw [if_neg e]
+  · rw [ite_eq_right e]
     obtain ⟨i, hi⟩ := Function.ne_iff.mp e
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
 
 theorem commute_of_single {Γ : Type} [Group Γ] (z : MonoidAlgebra k Γ)
     (h : ∀ g : Γ, z * single g 1 = single g 1 * z) (a : MonoidAlgebra k Γ) : z * a = a * z := by
@@ -106,11 +106,11 @@ theorem eSum_mul_tens (b : ∀ i, L i) : eSum E S * tens (fun i => E i (b i)) =
   unfold eSum
   rw [Finset.sum_mul, Finset.sum_eq_single b]
   · split_ifs
-    · rw [tens_mul_tens E hidem horth, if_pos rfl]
+    · rw [tens_mul_tens E hidem horth, ite_eq_left rfl]
     · simp
   · intro a _ hab
     split_ifs
-    · rw [tens_mul_tens E hidem horth, if_neg hab]
+    · rw [tens_mul_tens E hidem horth, ite_eq_right hab]
     · simp
   · intro h; exact absurd (Finset.mem_univ b) h
 
@@ -123,7 +123,7 @@ theorem eSum_idem : eSum E S * eSum E S = eSum E S := by
   refine Finset.sum_congr rfl fun b _ => ?_
   split_ifs with hb
   · have := eSum_mul_tens E S hidem horth b
-    rw [if_pos hb] at this
+    rw [ite_eq_left hb] at this
     exact this
   · simp
 

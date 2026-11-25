@@ -150,11 +150,11 @@ theorem cut_list_ratDiv (hC3 : CutByEffectiveDivisor.Statement.{0}) (hϖ : Irred
     rw [divCycle, hL]
     by_cases hw : W ∈ (P ⊔ Ideal.span {a}).minimalPrimes ∧ IsRelevant W
     · have hw' : W ∈ ReciprocityTheory.ChartRestriction.G.Geo.divSupp P a := hw
-      rw [dite_eq_left hw, if_pos hw', ReciprocityTheory.ChartRestriction.G.Geo.multAt,
+      rw [dite_eq_left hw, ite_eq_left hw', ReciprocityTheory.ChartRestriction.G.Geo.multAt,
         dite_eq_left hw.1.1.1]
       rfl
     · have hw' : W ∉ ReciprocityTheory.ChartRestriction.G.Geo.divSupp P a := hw
-      rw [dite_eq_right hw, if_neg hw']
+      rw [dite_eq_right hw, ite_eq_right hw']
       simp
   have e1 := cut_list hC3 hϖ hD hs hsP (fun H hH => hgen H (Or.inl (by rwa [← hcycle]))) l hP
   have e2 := cut_list hC3 hϖ hD hh hhP (fun H hH => hgen H (Or.inr (by rwa [← hcycle]))) l hP
@@ -231,7 +231,7 @@ theorem pairNum_cut_section (hC3 : CutByEffectiveDivisor.Statement.{0}) (hϖ : I
   rw [hR]
   refine cycEval_congr_support fun W hW => ?_
   by_cases hϖW : (C ϖ : MRing ι O) ∈ W
-  · simp only [if_pos hϖW]
+  · simp only [ite_eq_left hϖW]
 
     have hadd : ∀ (a₁ a₂ : K → ℤ) (l : List (K → ℤ)), e ≤ l.length →
         vNumL W ((a₁ + a₂) :: l) = vNumL W (a₁ :: l) + vNumL W (a₂ :: l) := by
@@ -259,7 +259,7 @@ theorem pairNum_cut_section (hC3 : CutByEffectiveDivisor.Statement.{0}) (hϖ : I
     simp only [classNumAddHom, AddMonoidHom.coe_mk, ZeroHom.coe_mk] at e5
     rw [e5, classNum_rename_vars, classNum_rename_vars]
     rfl
-  · simp only [if_neg hϖW]
+  · simp only [ite_eq_right hϖW]
     unfold pairNum
     refine Finset.sum_congr rfl fun i _ => ?_
     have e1 : (fun G : Ideal (MRing ι O) => classNum (Sum.elim z z') (Bs i) Q G) =

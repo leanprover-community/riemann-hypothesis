@@ -121,7 +121,7 @@ theorem kap_mem_parLev : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : 
       intro i j hij
       exfalso
       unfold Formalism.L2.DIV.blkOf at hij
-      rw [if_pos (hr i), if_pos (hr j)] at hij
+      rw [ite_eq_left (hr i), ite_eq_left (hr j)] at hij
       exact lt_irrefl 0 hij
     · exact absurd hP (Finset.notMem_empty PP)
 

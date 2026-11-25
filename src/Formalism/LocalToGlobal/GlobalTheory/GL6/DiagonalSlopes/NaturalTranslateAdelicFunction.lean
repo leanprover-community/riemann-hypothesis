@@ -182,12 +182,6 @@ theorem adelic_function_extends_from_classes (S : StepLevel F E σ J T f bad) (e
 
 end Gen
 
-section Tied
-
-variable {D : D7} {u : D.what₂.Word}
-
-end Tied
-
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 end -- clump:auto
 end -- clump:auto

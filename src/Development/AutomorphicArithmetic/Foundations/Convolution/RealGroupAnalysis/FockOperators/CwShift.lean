@@ -45,9 +45,9 @@ theorem UpperTheory.ConvolutionTheory.R2.Fo.weyl :
     have hg := O.d_spec w i φ v
     have hh : HasDerivAt (fun t : ℝ => cw w' (v j) + if C then (t : ℂ) else 0) (if C then 1 else 0) 0 := by
       by_cases c : C
-      · simp only [if_pos c]
+      · simp only [ite_eq_left c]
         exact (Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))).const_add _ |>.congr_deriv (by simp)
-      · simp only [if_neg c]
+      · simp only [ite_eq_right c]
         exact hasDerivAt_const _ _
     have hm := hh.mul hg
     have hd := O.d_spec w i (O.x w' j φ) v

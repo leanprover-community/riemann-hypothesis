@@ -3,52 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.OrthSubrepresentation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardIsGaloisTwistedNormGLMulCardGLStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConjOfIsConjGlFieldExtensionInclusionStatement
-import Mathlib.Algebra.Group.ConjFinite
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -88,7 +43,7 @@ theorem exists_isNorm : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [F
     intro δ
     by_cases h : ∃ γ, IsNorm s δ γ
     · obtain ⟨γ₀, h₀⟩ := h
-      rw [if_pos ⟨γ₀, h₀⟩]
+      rw [ite_eq_left ⟨γ₀, h₀⟩]
       have hiff : ∀ γ, IsNorm s δ γ ↔ IsConj γ₀ γ := by
         intro γ
         constructor
@@ -110,11 +65,11 @@ theorem exists_isNorm : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [F
       simp only [this]
       rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul, ← hcl_eq]
       exact mul_inv_cancel₀ (by exact_mod_cast (hcl_pos γ₀).ne')
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       apply Finset.sum_eq_zero
       intro γ _
       simp only [f]
-      rw [if_neg (fun hh => h ⟨γ, hh⟩)]
+      rw [ite_eq_right (fun hh => h ⟨γ, hh⟩)]
   have h2 : ∀ γ, ∑ δ, f δ γ = (Nat.card (GL (Fin n) F') : ℚ) / Nat.card (GL (Fin n) F) := by
     intro γ
     simp only [f]
@@ -139,7 +94,7 @@ theorem exists_isNorm : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [F
     split_ifs <;> norm_num
   have := (Finset.sum_eq_sum_iff_of_le hle).1 hsum δ₀ (Finset.mem_univ _)
   by_contra hno
-  rw [if_neg hno] at this
+  rw [ite_eq_right hno] at this
   norm_num at this
 
 end GlobalTheory.Shin

@@ -1413,7 +1413,7 @@ theorem redFn_conj (β t x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (PP :
       refine MonoidHom.mem_range.2 ⟨y, ?_⟩
       rw [GlobalTheory.FrameConj.frGL_mul_left, hy]
       group
-    simp only [Formalism.L2.DIV.redFn, Formalism.L2.DIV.ext1, dif_neg hx, dif_neg hx']
+    simp only [Formalism.L2.DIV.redFn, Formalism.L2.DIV.ext1, dite_eq_right hx, dite_eq_right hx']
 
 end Gen
 

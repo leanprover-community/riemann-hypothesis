@@ -153,7 +153,7 @@ theorem act_io (f : Pr (RadSp k r z z' π π')) (x : Ix S → RadSp k r z z' π 
   rw [Finset.sum_eq_single a]
   · simp
   · intro b _ hb
-    rw [if_neg (Ne.symm hb), pr_fst_zero, LinearMap.zero_apply]
+    rw [ite_eq_right (Ne.symm hb), pr_fst_zero, LinearMap.zero_apply]
   · intro h
     exact absurd (Finset.mem_univ a) h
 

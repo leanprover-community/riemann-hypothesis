@@ -213,7 +213,7 @@ private theorem coeff_linearForm_pow_eq_factorial_mul_prod {σ : Type} [Fintype 
   rw [Finset.sum_eq_single (⇑d)]
   · have hind : d = Finsupp.indicator univ (fun i _ => d i) := by
       ext i; simp
-    rw [if_pos hind, mul_one]
+    rw [ite_eq_left hind, mul_one]
     have hspec := Nat.multinomial_spec (univ : Finset σ) (⇑d)
     rw [hsum] at hspec
     have hpos : (∏ i, ((d i).factorial : ℝ)) ≠ 0 := by
@@ -222,7 +222,7 @@ private theorem coeff_linearForm_pow_eq_factorial_mul_prod {σ : Type} [Fintype 
     push_cast
     field_simp
   · intro k _ hk
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro h
     apply hk
     funext i

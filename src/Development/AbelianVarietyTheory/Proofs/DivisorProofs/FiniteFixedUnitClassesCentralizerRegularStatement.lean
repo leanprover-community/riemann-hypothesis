@@ -736,18 +736,18 @@ theorem _root_.GlobalTheory.FixNormField.fixed_classes_mod_norms : ∀ (K : Type
       (if _root_.GlobalTheory.FixNormCls.primeMap τ P = P then _root_.GlobalTheory.FixNormCls.ord P a % 2 else 0) := by
     intro P
     by_cases hfix : _root_.GlobalTheory.FixNormCls.primeMap τ P = P
-    · simp only [k, hfix, if_true]; omega
+    · simp only [k, hfix, ite_true]; omega
     · have e1 : k P = if P < _root_.GlobalTheory.FixNormCls.primeMap τ P then
           _root_.GlobalTheory.FixNormCls.ord P a else 0 := by
-        simp only [k]; rw [if_neg hfix]
+        simp only [k]; rw [ite_eq_right hfix]
       have e2 : k (_root_.GlobalTheory.FixNormCls.primeMap τ P) = if _root_.GlobalTheory.FixNormCls.primeMap τ P < P then
           _root_.GlobalTheory.FixNormCls.ord P a else 0 := by
-        simp only [k, hσσ, hσa]; rw [if_neg fun h => hfix h.symm]
-      rw [e1, e2, if_neg hfix, sub_zero]
+        simp only [k, hσσ, hσa]; rw [ite_eq_right fun h => hfix h.symm]
+      rw [e1, e2, ite_eq_right hfix, sub_zero]
       rcases lt_trichotomy P (_root_.GlobalTheory.FixNormCls.primeMap τ P) with h | h | h
-      · rw [if_pos h, if_neg (lt_asymm h), add_zero]
+      · rw [ite_eq_left h, ite_eq_right (lt_asymm h), add_zero]
       · exact absurd h.symm hfix
-      · rw [if_neg (lt_asymm h), if_pos h, zero_add]
+      · rw [ite_eq_right (lt_asymm h), ite_eq_left h, zero_add]
   have hkfin : ∀ᶠ P in Filter.cofinite, k P = 0 := by
     filter_upwards [FractionalIdeal.finite_factors (K := K)
       (FractionalIdeal.spanSingleton (𝓞 K)⁰ a)] with P hP
@@ -790,14 +790,14 @@ theorem _root_.GlobalTheory.FixNormField.fixed_classes_mod_norms : ∀ (K : Type
     have hr : (if P ∈ Rset then (1 : ℤ) else 0) =
         (if _root_.GlobalTheory.FixNormCls.primeMap τ P = P then _root_.GlobalTheory.FixNormCls.ord P a % 2 else 0) := by
       by_cases hfix : _root_.GlobalTheory.FixNormCls.primeMap τ P = P
-      · rw [if_pos hfix]
+      · rw [ite_eq_left hfix]
         by_cases hPT : P ∈ T
         · have h2 := Int.emod_two_eq_zero_or_one (_root_.GlobalTheory.FixNormCls.ord P a)
           rcases h2 with h2 | h2
-          · rw [if_neg (by simp [hRset, h2]), h2]
-          · rw [if_pos (by simp [hRset, hPT, hfix, h2]), h2]
-        · rw [if_neg (by simp [hRset, hPT]), hsplit P hPT hfix]
-      · rw [if_neg hfix, if_neg (by simp [hRset, hfix])]
+          · rw [ite_eq_right (by simp [hRset, h2]), h2]
+          · rw [ite_eq_left (by simp [hRset, hPT, hfix, h2]), h2]
+        · rw [ite_eq_right (by simp [hRset, hPT]), hsplit P hPT hfix]
+      · rw [ite_eq_right hfix, ite_eq_right (by simp [hRset, hfix])]
     have h1 := hk P
     show _root_.GlobalTheory.FixNormCls.ord P c = (if P ∈ Rset then 1 else 0) +
       FractionalIdeal.count K P (I : FractionalIdeal (𝓞 K)⁰ K) +
@@ -1146,7 +1146,7 @@ theorem normClassFinite_of_reduced : (∀ (K : Type) [Field K] [NumberField K] (
     by_cases h : σ I = I
     · obtain ⟨m, hm, e, he, hae⟩ :=
         Classical.choose_spec (stable_factor H τ hτ S I.asIdeal (hst I h)) a ha hτa hyp
-      refine ⟨m, by simp only [Mset, dif_pos h]; exact hm, e, he, fun _ => hae, fun h' => absurd h h'⟩
+      refine ⟨m, by simp only [Mset, dite_eq_left h]; exact hm, e, he, fun _ => hae, fun h' => absurd h h'⟩
     · refine ⟨1, by simp [Mset, h], if ch I then a else 1, ?_, fun h' => absurd h' h, fun _ => ⟨rfl, rfl⟩⟩
       split_ifs
       · exact fun hmem => I.isMaximal.ne_top (Ideal.eq_top_of_isUnit_mem _ hmem ha)
@@ -1182,11 +1182,11 @@ theorem normClassFinite_of_reduced : (∀ (K : Type) [Field K] [NumberField K] (
     by_cases hc : ch I
     · have hc' : ¬ ch (σ I) := by
         show ¬ n (σ I) < n (σ (σ I)); rw [hσσ]; exact not_lt.2 hc.le
-      rw [if_pos hc, if_neg hc']
+      rw [ite_eq_left hc, ite_eq_right hc']
       simp
     · have hc' : ch (σ I) := by
         show n (σ I) < n (σ (σ I)); rw [hσσ]; exact lt_of_le_of_ne (not_lt.1 hc) hne.symm
-      rw [if_neg hc, if_pos hc', hτa]
+      rw [ite_eq_right hc, ite_eq_left hc', hτa]
       simp
 
 end GlobalTheory

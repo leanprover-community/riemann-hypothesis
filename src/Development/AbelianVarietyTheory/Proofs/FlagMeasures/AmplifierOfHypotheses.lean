@@ -173,7 +173,7 @@ theorem integral_comm_of_norm {X E F : Type} [MeasurableSpace X] [NormedAddCommG
   by_cases hc : c ≤ 0
   · have : ∀ e, T e = 0 := fun e => norm_le_zero_iff.1 (by rw [hT]; exact mul_nonpos_of_nonpos_of_nonneg hc (norm_nonneg _))
     simp [this]
-  push_neg at hc
+  push Not at hc
   have ha : AntilipschitzWith (c⁻¹).toNNReal T := AddMonoidHomClass.antilipschitz_of_bound T fun e => by
     rw [hT, Real.coe_toNNReal _ (by positivity), ← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul]
   exact integral_undef fun h => hf ((T.lipschitz.integrable_comp_iff_of_antilipschitz ha (map_zero T)).1 h)

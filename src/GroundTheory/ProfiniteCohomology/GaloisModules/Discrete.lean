@@ -80,10 +80,4 @@ instance isDiscreteRep_galRootsOfUnity (n : ℕ) : IsDiscreteRep (galRootsOfUnit
 
 end Discrete
 
-section Galois
-
-variable (K L) [IsGalois K L]
-
-end Galois
-
 end GroundTheory.ProfCoh

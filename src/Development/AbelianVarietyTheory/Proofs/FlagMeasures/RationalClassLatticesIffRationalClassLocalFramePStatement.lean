@@ -541,13 +541,13 @@ private lemma exists_intValuation_sub_one_le_and_le_elsewhere (D : D7) (p : PlF 
     (fun q => if (q : PlF D) = p then 1 else 0)
   refine ⟨y, ?_, ?_⟩
   · have h := hy p (Finset.mem_insert_self _ _)
-    simp only [if_true] at h
+    simp only [ite_true] at h
     rw [p.intValuation_eq_exp_neg_multiplicity hr]
     exact (p.intValuation_le_pow_iff_mem _ _).2 h
   · intro q hq
     by_cases hqs : r ∈ q.asIdeal
     · have h := hy q (Finset.mem_insert_of_mem (hfin.mem_toFinset.2 hqs))
-      simp only [hq, if_false, sub_zero] at h
+      simp only [hq, ite_false, sub_zero] at h
       rw [q.intValuation_eq_exp_neg_multiplicity hr]
       exact (q.intValuation_le_pow_iff_mem _ _).2 h
     · rw [IsDedekindDomain.HeightOneSpectrum.intValuation_eq_one_iff.2 hqs]
@@ -1163,14 +1163,14 @@ lemma prF_e (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.e b) = 0 := by
   unfold FrameD.prF
   rw [GlobalTheory.Unfold.StdDual.h_sub_left, GlobalTheory.Unfold.StdDual.h_sub_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left]
   simp only [H.h_smul_left, h_ee, h_es_e, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   ring
 
 lemma prF_es (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.es b) = 0 := by
   unfold FrameD.prF
   rw [GlobalTheory.Unfold.StdDual.h_sub_left, GlobalTheory.Unfold.StdDual.h_sub_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left]
   simp only [H.h_smul_left, h_e_es, Fr.h_ss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 lemma prF_add (x y : V) : Fr.prF (x + y) = Fr.prF x + Fr.prF y := by

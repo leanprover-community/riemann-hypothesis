@@ -98,7 +98,7 @@ theorem jDACapTodaV_of_parts (h1 : TVCoef) (h2 : TVGrp) (h3 : TVCrd) : JDACapTod
   have hfun : (fun c' => gaugeF P.k P.r c' • J (Q.wCell P.k P.r (Fin.last P.r) c' * g)) =
       fun c' => Q.resG P.k P.r (Fin.last P.r) J c' g := funext hgauge
   rw [hfun] at e3
-  simp only [dMul, Q.crd, Q.cmp, if_true]
+  simp only [dMul, Q.crd, Q.cmp, ite_true]
   rw [← e3]
   have hres : Q.resG P.k P.r (Fin.last P.r) (capAv P.k P.r y J) c g =
       gaugeF P.k P.r c • capAv P.k P.r y J (Q.wCell P.k P.r (Fin.last P.r) c * g) := by

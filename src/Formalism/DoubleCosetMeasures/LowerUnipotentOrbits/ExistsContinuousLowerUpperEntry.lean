@@ -26,21 +26,21 @@ theorem lu_entry (h u : Matrix (Fin n) (Fin n) K) (hh : IsLowUni h) (hu : IsUpUn
       (if k = min i j then (h + u - 1) i j else 0) := by
     intro k
     rcases lt_trichotomy k (min i j) with hk | hk | hk
-    · rw [if_pos (lt_min_iff.mp hk), if_neg hk.ne, add_zero]
+    · rw [ite_eq_left (lt_min_iff.mp hk), ite_eq_right hk.ne, add_zero]
     · have hn : ¬ (k < i ∧ k < j) := fun hk' => (lt_min hk'.1 hk'.2).ne hk
-      rw [if_neg hn, if_pos hk, zero_add, hk]
+      rw [ite_eq_right hn, ite_eq_left hk, zero_add, hk]
       simp only [Matrix.sub_apply, Matrix.add_apply]
       rcases lt_trichotomy i j with hij | rfl | hij
       · rw [min_eq_left hij.le, hh.2, hL i j hij, Matrix.one_apply_ne hij.ne]; ring
       · rw [min_self, hh.2, hu.2, Matrix.one_apply_eq]; ring
       · rw [min_eq_right hij.le, hu.2, hU i j hij, Matrix.one_apply_ne hij.ne']; ring
     · have hn : ¬ (k < i ∧ k < j) := fun hk' => lt_asymm (lt_min hk'.1 hk'.2) hk
-      rw [if_neg hn, if_neg hk.ne', add_zero]
+      rw [ite_eq_right hn, ite_eq_right hk.ne', add_zero]
       rcases min_lt_iff.mp hk with hik | hjk
       · rw [hL i k hik, zero_mul]
       · rw [hU k j hjk, mul_zero]
   rw [Matrix.mul_apply, Finset.sum_congr rfl (fun k _ => key k), Finset.sum_add_distrib]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 variable [TopologicalSpace K] [IsTopologicalRing K]
 
@@ -55,18 +55,18 @@ theorem exists_continuous_lowerUpper_entry (m : ℕ) : ∃ E : Fin n → Fin n �
       fun M => M i j - ∑ k, if k < i ∧ k < j then E i k M * E k j M else 0, ?_, ?_⟩
     · intro i j
       by_cases hm : (min i j).val < m
-      · simp only [hm, if_true]; exact hEc i j
-      · simp only [hm, if_false]
+      · simp only [hm, ite_true]; exact hEc i j
+      · simp only [hm, ite_false]
         refine (continuous_id.matrix_elem i j).sub (continuous_finsetSum _ fun k _ => ?_)
         by_cases hk : k < i ∧ k < j
-        · simp only [hk, and_self, if_true]; exact (hEc i k).mul (hEc k j)
-        · simp only [hk, if_false]; exact continuous_const
+        · simp only [hk, and_self, ite_true]; exact (hEc i k).mul (hEc k j)
+        · simp only [hk, ite_false]; exact continuous_const
     · intro i j hij h u hh hu
       have hL : ∀ a b : Fin n, a < b → h a b = 0 := fun a b hab => hh.1 (OrderDual.toDual_lt_toDual.mpr hab)
       have hU : ∀ a b : Fin n, b < a → u a b = 0 := fun a b hab => hu.1 hab
       by_cases hm : (min i j).val < m
-      · simp only [hm, if_true]; exact hE i j hm h u hh hu
-      · simp only [hm, if_false]
+      · simp only [hm, ite_true]; exact hE i j hm h u hh hu
+      · simp only [hm, ite_false]
         rw [lu_entry h u hh hu i j]
         have hs : ∀ k, (if k < i ∧ k < j then E i k (h * u) * E k j (h * u) else 0) =
             (if k < i ∧ k < j then h i k * u k j else 0) := by
@@ -78,11 +78,11 @@ theorem exists_continuous_lowerUpper_entry (m : ℕ) : ∃ E : Fin n → Fin n �
               omega
             have hki : (min i k).val < m := by rw [min_eq_right hk.1.le]; exact hkm
             have hkj : (min k j).val < m := by rw [min_eq_left hk.2.le]; exact hkm
-            rw [if_pos hk, if_pos hk, hE i k hki h u hh hu, hE k j hkj h u hh hu]
+            rw [ite_eq_left hk, ite_eq_left hk, hE i k hki h u hh hu, hE k j hkj h u hh hu]
             rw [Matrix.sub_apply, Matrix.add_apply, Matrix.sub_apply, Matrix.add_apply, hU i k hk.1,
               hL k j hk.2, Matrix.one_apply_ne hk.1.ne', Matrix.one_apply_ne hk.2.ne]
             ring
-          · rw [if_neg hk, if_neg hk]
+          · rw [ite_eq_right hk, ite_eq_right hk]
         rw [Finset.sum_congr rfl (fun k _ => hs k)]
         ring
 
@@ -94,12 +94,12 @@ theorem lu_rec : ∃ Ph Pu : Matrix (Fin n) (Fin n) K → Matrix (Fin n) (Fin n)
     fun M i j => if i < j then E i j M else if i = j then 1 else 0, ?_, ?_, ?_⟩
   · refine continuous_pi fun i => continuous_pi fun j => ?_
     by_cases h1 : j < i
-    · simp only [h1, if_true]; exact hEc i j
-    · simp only [h1, if_false]; exact continuous_const
+    · simp only [h1, ite_true]; exact hEc i j
+    · simp only [h1, ite_false]; exact continuous_const
   · refine continuous_pi fun i => continuous_pi fun j => ?_
     by_cases h1 : i < j
-    · simp only [h1, if_true]; exact hEc i j
-    · simp only [h1, if_false]; exact continuous_const
+    · simp only [h1, ite_true]; exact hEc i j
+    · simp only [h1, ite_false]; exact continuous_const
   · intro h u hh hu
     have hL : ∀ a b : Fin n, a < b → h a b = 0 := fun a b hab => hh.1 (OrderDual.toDual_lt_toDual.mpr hab)
     have hU : ∀ a b : Fin n, b < a → u a b = 0 := fun a b hab => hu.1 hab
@@ -187,14 +187,14 @@ theorem pt_mul_pt {K : Type} [CommRing K] (s : List ℕ) (t t' : ℕ → Kˣ)
   have hrr : revIn s (revIn s a) = a := revIn_revIn s a a.isLt
   have hbb : blk s (revIn s a) = blk s a := blk_revIn s a a.isLt
   rw [Finset.sum_eq_single ⟨revIn s a, ha⟩]
-  · simp only [pt, hrr, hbb, if_true]
+  · simp only [pt, hrr, hbb, ite_true]
     by_cases hab : a = b
     · subst hab; simp [htt]
     · have hne : (b : ℕ) ≠ a := fun e => hab (Fin.ext e.symm)
       simp [hab, hne]
   · intro c _ hc
     simp only [pt]
-    rw [if_neg (fun e => hc (Fin.ext e)), zero_mul]
+    rw [ite_eq_right (fun e => hc (Fin.ext e)), zero_mul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 end Pt
@@ -337,6 +337,6 @@ theorem suppCompact : Formalism.DoubleCosetMeasures.SuppCompact := by
       ⟨hInt, ⟨⟨by rw [Set.mem_ofPred_eq, hGM]; exact hgl, by rw [Set.mem_ofPred_eq, hGM]; exact hhl⟩,
         by rw [Set.mem_ofPred_eq, hUM]; exact hu'⟩⟩
     exact ⟨⟨_, hMD⟩, Prod.ext (Subtype.ext (Units.ext hGM)) (Subtype.ext (Units.ext hUM))⟩
-  rw [Formalism.DoubleCosetMeasures.phi, if_neg hnot, zero_mul]
+  rw [Formalism.DoubleCosetMeasures.phi, ite_eq_right hnot, zero_mul]
 
 end Formalism.DoubleCosetMeasures.P

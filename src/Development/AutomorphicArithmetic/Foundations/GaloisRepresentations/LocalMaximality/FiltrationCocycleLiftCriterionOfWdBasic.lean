@@ -28,26 +28,26 @@ private lemma wd_wOn_mem {A : Finset σ → Submodule ℂ E} {w : σ → Module.
   intro s
   rw [wd_apply']
   by_cases hs : (s.card : ℤ) = n + 1
-  · rw [if_pos hs]
+  · rw [ite_eq_left hs]
     refine Submodule.sum_mem _ fun i hi => Submodule.smul_of_tower_mem _ _ ?_
     have hcard : ((s.erase i).card : ℤ) = n := by
       have := Finset.card_erase_add_one hi
       omega
     have hmem := hc (s.erase i)
-    rw [if_pos hcard] at hmem
+    rw [ite_eq_left hcard] at hmem
     unfold wOn
     split_ifs
     · have := h.2 (s.erase i) i (by simp) _ hmem
       rwa [Finset.insert_erase hi] at this
     · rw [LinearMap.zero_apply]
       exact Submodule.zero_mem _
-  · rw [if_neg hs, Submodule.mem_bot]
+  · rw [ite_eq_right hs, Submodule.mem_bot]
     refine Finset.sum_eq_zero fun i hi => ?_
     have hcard : ¬ ((s.erase i).card : ℤ) = n := by
       have := Finset.card_erase_add_one hi
       omega
     have hmem := hc (s.erase i)
-    rw [if_neg hcard, Submodule.mem_bot] at hmem
+    rw [ite_eq_right hcard, Submodule.mem_bot] at hmem
     rw [hmem, map_zero, smul_zero]
 
 private lemma wd_compl_lev [Fintype σ] {Q : Finset σ} {w : σ → Module.End ℂ E} {m : ℤ}

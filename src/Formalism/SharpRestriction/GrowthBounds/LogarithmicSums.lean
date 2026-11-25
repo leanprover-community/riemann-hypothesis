@@ -69,7 +69,7 @@ theorem stmtEF_of {eps : ℝ} (Fm : FamP eps) (h0 : FamilyAskBounds Fm) (h1 : Re
 
     intro t ht
     unfold aL bL
-    simp only [dif_pos ht]
+    simp only [dite_eq_left ht]
     exact ⟨((Fm.L x i).aT_win ⟨t, ht⟩).1, ((Fm.L x i).aT_win ⟨t, ht⟩).2, (Fm.L x i).bT_ge ⟨t, ht⟩⟩
 
 theorem stmtF_of_stmtEF {eps : ℝ} (Fm : FamP eps) (h : FamilyClosedForm Fm) : KudlaFamilyStatement Fm := by
@@ -158,7 +158,7 @@ theorem shift_le (p y κ A : ℝ) (hp : 2 ≤ p) (hκ : 0 ≤ κ) (hy0 : 0 ≤ y
   have hsupp : ∀ e ∉ Finset.range (n + 1), ind e = 0 := by
     intro e he
     simp only [hind]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨_, h⟩
     exact he (Finset.mem_range.2 (Nat.lt_succ_of_le (hlog e h)))
   have hind_sum : Summable ind := summable_of_ne_finset_zero hsupp
@@ -201,15 +201,15 @@ theorem shift_le (p y κ A : ℝ) (hp : 2 ≤ p) (hκ : 0 ≤ κ) (hy0 : 0 ≤ y
           have h1 : 1 < y / p ^ e := lt_of_le_of_lt (hw e) (by linarith)
           rw [lt_div_iff₀ (by positivity)] at h1
           linarith
-        rw [if_pos hq, if_pos hq, if_pos ⟨hq, hpA⟩, max_eq_right hu.le]
+        rw [ite_eq_left hq, ite_eq_left hq, ite_eq_left ⟨hq, hpA⟩, max_eq_right hu.le]
         have := le_max_right 0 (y / p ^ e - (w e + κ))
         linarith
-      · rw [if_pos hq, if_pos hq, max_eq_left (not_lt.1 hu)]
+      · rw [ite_eq_left hq, ite_eq_left hq, max_eq_left (not_lt.1 hu)]
         have h1 := le_max_left 0 (y / p ^ e - (w e + κ))
         have h2 : 0 ≤ κ * (if Q e ∧ (p : ℝ) ^ e < A then (1 : ℝ) else 0) :=
           mul_nonneg hκ (by split_ifs <;> norm_num)
         linarith
-    · rw [if_neg hq, if_neg hq, if_neg (fun h => hq h.1)]
+    · rw [ite_eq_right hq, ite_eq_right hq, ite_eq_right (fun h => hq h.1)]
       simp
   have hsκ := hs (fun e => w e + κ) (fun e => by linarith [hw e])
   calc ∑' e, (if Q e then max 0 (y / p ^ e - w e) else 0)
@@ -256,9 +256,9 @@ theorem fill_ge (X : Inst D L) (b : HH D → ℤ) (hb : ∀ t ∈ D.host.TT, (0 
       _ ≤ L.sc.b := div_le_self (by linarith) hX1
   unfold fill
   by_cases htop : IsTopPl D z
-  · rw [if_pos (show z.1 = false ∧ z.2 ∈ D.host.TT from htop)]
+  · rw [ite_eq_left (show z.1 = false ∧ z.2 ∈ D.host.TT from htop)]
     linarith [hb z.2 htop.2, (X.off_top j z htop).1]
-  · rw [if_neg (show ¬(z.1 = false ∧ z.2 ∈ D.host.TT) from htop), zero_add]
+  · rw [ite_eq_right (show ¬(z.1 = false ∧ z.2 ∈ D.host.TT) from htop), zero_add]
     by_cases hthick : IsThickPl D z
     · linarith [(X.off_thick j z hthick).1]
     · exact (X.off_thin j z ⟨htop, hthick⟩).1

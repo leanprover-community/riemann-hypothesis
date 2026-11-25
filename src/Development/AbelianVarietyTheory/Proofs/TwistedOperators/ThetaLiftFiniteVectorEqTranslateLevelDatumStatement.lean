@@ -325,7 +325,7 @@ theorem fsmul (c : 𝓞 D.host.E) (x : Fin r → D.host.E) : m *ᵥ toAf (D := D
 
 theorem sum_one_smul (β : Fin r → Fin r → D.host.E) (i : Fin r) :
     ∑ j, (1 : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) j i • β j = β i := by
-  simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem sum_sub_one (β : Fin r → Fin r → D.host.E) (κ' : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) (i : Fin r) :
     ∑ j, (κ' j i - (1 : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) j i) • β j = ∑ j, κ' j i • β j - β i := by
@@ -564,7 +564,7 @@ variable {D : D7} {S T : HSp D}
 
 theorem mem_of_indL_ne {L : AddSubgroup (WO S T)} {t : WO S T} (h : GlobalTheory.LiftLevel.indL L t ≠ 0) : t ∈ L := by
   by_contra hn
-  exact h (by simp only [GlobalTheory.LiftLevel.indL, hn, if_false])
+  exact h (by simp only [GlobalTheory.LiftLevel.indL, hn, ite_false])
 
 theorem isSBHalf_indL (a : AE D) (Λ L : AddSubgroup (WO S T)) (hL : ∀ x ∈ L, IsHalf a x)
     (h1 : ∃ m : ℕ, 0 < m ∧ ∀ x ∈ L, m • x ∈ Λ) (h2 : ∃ m : ℕ, 0 < m ∧ ∀ x ∈ Λ, IsHalf a x → m • x ∈ L) :
@@ -659,8 +659,8 @@ theorem indL_theta_fock_latVac : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C
     congr 1
     funext t
     by_cases h : t ∈ L
-    · simp only [GlobalTheory.LiftLevel.indL, h, if_true, ht t h, one_mul]
-    · simp only [GlobalTheory.LiftLevel.indL, h, if_false, mul_zero]
+    · simp only [GlobalTheory.LiftLevel.indL, h, ite_true, ht t h, one_mul]
+    · simp only [GlobalTheory.LiftLevel.indL, h, ite_false, mul_zero]
   have hfix_r : ∀ r ∈ GlobalTheory.PlaceModel.half S T b, heisO C.ψ S T r f₀ = f₀ →
       heisO C.ψ S T r (Tm (GlobalTheory.LiftLevel.indL L)) = Tm (GlobalTheory.LiftLevel.indL L) := fun r hr hr0 =>
     heisO_fix hψ hS hT ha hinf hTm r hr0
@@ -772,7 +772,7 @@ theorem thPVec_ne_zero : ∀ (D : D7) (S T : HSp D) (C : Ctx S T), T.rank ≤ S.
   intro h0
   have := congrFun h0 x
   simp only [Pi.zero_apply] at this
-  rw [if_pos ⟨hx1, hx2⟩] at this
+  rw [ite_eq_left ⟨hx1, hx2⟩] at this
   exact hx3 this
 
 end GlobalTheory.ThPVecNe

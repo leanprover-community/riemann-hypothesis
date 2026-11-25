@@ -793,7 +793,7 @@ theorem exists_trace_one [IsLocalRing O] [Module.Finite O O'] (ℓ : ℕ) (τ : 
       rw [map_mul, AlgEquiv.commutes]
     simp_rw [h]
     rw [← Finset.mul_sum, ← hc i, ← map_mul, ← hu, Units.inv_mul, map_one]
-  · push_neg at hunit
+  · push Not at hunit
     have htop : (⊤ : Submodule O O') ≤ IsLocalRing.maximalIdeal O • ⊤ := by
       intro z _
       have hz : z = ∑ i, c i • (z * x i) := by

@@ -78,12 +78,12 @@ theorem qProduct : QProduct := by
     rw [← ih']
     cases hp : l.plus
     · simp only [hp] at hl ⊢
-      simp only [Bool.false_eq_true, if_false]
+      simp only [Bool.false_eq_true, ite_false]
       have h2 : l.pt - Y - 1 ≠ 0 := hl
       field_simp
       try ring
     · simp only [hp] at hl ⊢
-      simp only [if_true]
+      simp only [ite_true]
       have h2 : Y - l.pt ≠ 0 := hl
       field_simp
 
@@ -97,23 +97,23 @@ theorem lemmaQ : LemmaQ := by
     intro l hl
     have h := hpts l hl
     cases hp : l.plus
-    · simp only [hp, Bool.false_eq_true, if_false] at h
-      simp only [hg, hp, Bool.false_eq_true, if_false, add_sub_cancel_left, abs_div, abs_one]
+    · simp only [hp, Bool.false_eq_true, ite_false] at h
+      simp only [hg, hp, Bool.false_eq_true, ite_false, add_sub_cancel_left, abs_div, abs_one]
       have : |l.pt - Y - 1| = |Y - (l.pt - 1)| := by rw [← abs_neg]; ring_nf
       rw [this]
       exact one_div_le_one_div_of_le hdlpos h.2
-    · simp only [hp, if_true] at h
-      simp only [hg, hp, if_true, add_sub_cancel_left, abs_div, abs_one]
+    · simp only [hp, ite_true] at h
+      simp only [hg, hp, ite_true, add_sub_cancel_left, abs_div, abs_one]
       exact one_div_le_one_div_of_le hdlpos h
   have hreg : ∀ l ∈ w, if l.plus then Y - l.pt ≠ 0 else l.pt - Y - 1 ≠ 0 := by
     intro l hl
     have h := hpts l hl
     cases hp : l.plus
-    · simp only [hp, Bool.false_eq_true, if_false] at h ⊢
+    · simp only [hp, Bool.false_eq_true, ite_false] at h ⊢
       intro h0
       have : |Y - (l.pt - 1)| = 0 := by rw [abs_eq_zero]; linarith
       linarith [h.2]
-    · simp only [hp, if_true] at h ⊢
+    · simp only [hp, ite_true] at h ⊢
       intro h0
       rw [h0, abs_zero] at h
       linarith
@@ -147,7 +147,7 @@ theorem dkStep4 : DKStep4 := by
       simp [hl, hL' l' hl']
     simp only [kapF, List.map_cons, List.prod_cons]
     rw [h1, ih hL']
-    simp only [ypt, hl, if_true]
+    simp only [ypt, hl, ite_true]
     ring
 
 end Formalism.FourierDecayAlt.P.GramProductIdentities

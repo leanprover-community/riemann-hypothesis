@@ -299,7 +299,7 @@ theorem glue : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ
   have hG : ∀ k, ∀ p ∈ K.W k, (f k).fn p = G p := by
     intro k p hp
     have h : ∃ k, p ∈ K.W k := ⟨k, hp⟩
-    simp only [G, dif_pos h]
+    simp only [G, dite_eq_left h]
     exact indep _ _ _ hp h.choose_spec
   have hGev : ∀ k, ∀ p ∈ K.W k, G =ᶠ[𝓝 p] (f k).fn := fun k p hp ↦ by
     filter_upwards [(K.W k).isOpen.mem_nhds hp] with q hq using (hG k q hq).symm

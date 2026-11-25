@@ -34,26 +34,6 @@ theorem hform_eq (J : Matrix (Fin n) (Fin n) ℂ) (x y : Fin n → ℂ) :
 
 end Form
 
-section Span
-
-variable (I : AutInst)
-
-end Span
-
-section Rad
-
-variable {n : ℕ}
-
-variable {J' : Matrix (Fin n) (Fin n) ℂ} {U : Submodule ℂ (Fin n → ℂ)}
-
-end Rad
-
-section Sub
-
-variable {n : ℕ} (ε : Fin n → Bool) {P J' : Matrix (Fin n) (Fin n) ℂ}
-
-end Sub
-
 end Formalism.MainNotions.BridgeUnipRad
 
 end

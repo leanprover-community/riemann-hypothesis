@@ -98,11 +98,11 @@ def lev (n : ℕ) (w : Pl E) (k : ℕ) (y : GLw n w) : ℂ :=
 
 theorem nrm_eq {w : Pl E} (hw : ¬ IsSplitAt w) (n : ℕ) (y : GLw n w) : nrmL n w y = y * thL n w y := by
   unfold nrmL thL
-  rw [if_neg hw, if_neg hw]
+  rw [ite_eq_right hw, ite_eq_right hw]
 
 theorem thL_KGL {w : Pl E} (hw : ¬ IsSplitAt w) (n : ℕ) {g : GLw n w} (hg : g ∈ GlobalTheory.LFun.KGL w (n := n)) :
     thL n w g ∈ GlobalTheory.LFun.KGL w (n := n) := by
-  have ht : thL n w = thetaGL n (cj w) := by unfold thL; rw [if_neg hw]
+  have ht : thL n w = thetaGL n (cj w) := by unfold thL; rw [ite_eq_right hw]
   rw [ht]
   obtain ⟨h, rfl⟩ := hg
   let c' : Ov E w →+* Ov E w := (cj w).restrict (Ov E w) (Ov E w) (GlobalTheory.PrincCong.cj_mem_Ov w)
@@ -133,7 +133,7 @@ theorem lev_hecke {w : Pl E} (hw : ¬ IsSplitAt w) (n k : ℕ) :
   · have hc := GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL w n
     refine HasCompactSupport.intro' hc.2 (Subgroup.isClosed_of_isOpen _ hc.1) fun y hy => ?_
     unfold lev
-    exact if_neg fun h => hy h.1
+    exact ite_eq_right fun h => hy h.1
   · have hxK := congSub_le hx
     have hθx := GlobalTheory.PrincCong.thL_mem_congSub w hw n k x hx
     unfold lev

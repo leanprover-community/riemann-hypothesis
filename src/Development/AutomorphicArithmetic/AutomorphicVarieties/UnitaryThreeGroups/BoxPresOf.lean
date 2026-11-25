@@ -483,12 +483,12 @@ theorem UpperTheory.exists_finite_place_set_factoring_through_GS :
     exact hmemS v (hlv v hv)
   · intro v
     by_cases h : v.1 = v₀
-    · simp only [A, if_pos h]
+    · simp only [A, ite_eq_left h]
       rw [h]
       exact hv₀
-    · simp only [A, if_neg h]
+    · simp only [A, ite_eq_right h]
       exact Classical.choose_spec (exists_isPlaceOver Ω v.1)
-  · simp only [A, v₀', if_pos rfl]
+  · simp only [A, v₀', ite_eq_left rfl]
     exact hA₀dec
   · intro v
     constructor
@@ -606,7 +606,7 @@ private def bm (x y z : k) : Matrix (Fin 3 ⊕ Fin 3) (Fin 3 ⊕ Fin 3) k :=
 
 private theorem emb_c {Γ : Type} [Group Γ] (η : Γ →* ℤˣ) (Ψ : Γ →* kˣ) (c : Γ) (h1 : η c = -1) (h2 : Ψ c = 1) :
     emb (r0 η Ψ c) = sw k := by
-  rw [emb_apply, GG.mat, unitaryThreeReflection_left, theta_tor, unitaryThreeReflection_right, h1, h2, map_one, if_neg (by decide)]
+  rw [emb_apply, GG.mat, unitaryThreeReflection_left, theta_tor, unitaryThreeReflection_right, h1, h2, map_one, ite_eq_right (by decide)]
   rfl
 
 private theorem J3 : Jmat k 3 = !![0, 0, 1; 0, 1, 0; 1, 0, 0] := by
@@ -727,7 +727,7 @@ theorem UpperTheory.finrank_ker_adRep_complexConj_sub_one_eq_boxDef :
     · simpa [bm, am] using congrFun (congrFun h (.inl 1)) (.inl 0)
     · simp [hx (by decide)]
     · simp [hy (by decide)]
-  rw [boxDef, if_neg (by rw [abs_le]; omega), Submodule.finrank_eq_zero, eq_bot_iff]
+  rw [boxDef, ite_eq_right (by rw [abs_le]; omega), Submodule.finrank_eq_zero, eq_bot_iff]
   intro Y hY
   obtain ⟨x, y, z, e, hx, hy, hz⟩ := eq_bm O h2 j Y.1 Y.2 ((hk Y).1 hY)
   rw [Submodule.mem_bot]
@@ -757,7 +757,7 @@ private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopolo
     have hxy : x⁻¹ * y ∉ ((ClosedSubgroup.mk N hN : ClosedSubgroup G) : Subgroup G) :=
       fun h => hab (QuotientGroup.eq.2 h)
     rw [ProfiniteGrp.closedSubgroup_eq_sInf_open (ClosedSubgroup.mk N hN), Subgroup.mem_sInf] at hxy
-    push_neg at hxy
+    push Not at hxy
     obtain ⟨U, ⟨hUo, hNU⟩, hyU⟩ := hxy
     let W : Set G := {g | x⁻¹ * g ∈ U}
     have hWo : IsOpen W := by

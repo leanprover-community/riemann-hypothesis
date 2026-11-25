@@ -413,7 +413,7 @@ private theorem vanish_of_cover {G : Type*} [Group G] [TopologicalSpace G] [IsTo
       obtain ⟨v, hv, x, hx, hvx⟩ := hC s hs s' hs' ⟨u, hu, y * z⁻¹, I.mul_mem hy (I.inv_mem hz), by
         rw [← mul_assoc, ← mul_inv_eq_iff_eq_mul.2 hsz]⟩
       exact hn ⟨v, hv, x * z, I.mul_mem hx hz, by rw [hsz, hvx]; group⟩
-  · push_neg at h
+  · push Not at h
     exact setIntegral_eq_zero_of_forall_eq_zero h
 
 private theorem exists_cover {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]

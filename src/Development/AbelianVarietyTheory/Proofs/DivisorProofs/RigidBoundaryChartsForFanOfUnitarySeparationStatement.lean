@@ -1614,7 +1614,7 @@ theorem exists_rsp_of_isEtaleCompletion : ∀ (A : Type) [CommRing A] [IsLocalRi
       rw [bdParam, MvPowerSeries.X_def, MvPowerSeries.coeff_mul_monomial] at h
       simpa using h
     · intro j _ hj
-      rw [bdParam, MvPowerSeries.X_def, MvPowerSeries.coeff_mul_monomial, if_neg]
+      rw [bdParam, MvPowerSeries.X_def, MvPowerSeries.coeff_mul_monomial, ite_eq_right]
       simp [Finsupp.single_le_iff, hj.symm]
     · simp
 

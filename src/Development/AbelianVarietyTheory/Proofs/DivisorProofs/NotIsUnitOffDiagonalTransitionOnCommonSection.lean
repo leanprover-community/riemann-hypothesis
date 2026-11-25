@@ -90,7 +90,7 @@ theorem not_unitAt_of_eq {F : Type} [Field F] {X Y : Var F} {ι : Type} {m : ι 
   let v : W.Z.functionField → k := fun u => if h : u ∈ (algebraMap (W.Z.presheaf.stalk (w (IsLocalRing.closedPoint k)))
     W.Z.functionField).range then ev ⟨u, h⟩ else 0
   have hv : ∀ x : (algebraMap (W.Z.presheaf.stalk (w (IsLocalRing.closedPoint k))) W.Z.functionField).range,
-      v (x : W.Z.functionField) = ev x := fun x => dif_pos x.2
+      v (x : W.Z.functionField) = ev x := fun x => dite_eq_left x.2
   have e1 := Par.map_mul_of hG hN₂ v ev hv
   rw [mul_assoc, Mat.inv_mul hN₂.det_ne, mul_one] at e1
   have e2 : ((A * B⁻¹).map W.α₁).map v = ((A * B⁻¹).map W.α₂).map v := by

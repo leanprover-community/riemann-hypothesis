@@ -702,7 +702,7 @@ theorem sEEofTT_spec {D : D7} {S : D.what₂.Tau → Formalism.BasicNotions.TH.S
       ((sEEofTT M μ 𝓕 E X G ι t c T : HHX X) : L2X X) ∈ goodSub X G := by
   have e : sEEofTT M μ 𝓕 E X G ι t c = (conjHH X G).toLinearMap.comp h.choose_spec.2.choose.toLinearMap := by
     unfold sEEofTT
-    exact dif_pos h
+    exact dite_eq_left h
   have e' : sEEofTT M μ 𝓕 E X G ι t c T = conjHH X G (h.choose_spec.2.choose T) := by
     rw [e]
     rfl
@@ -1195,12 +1195,6 @@ open GlobalTheory.Mem.R3
 noncomputable section
 namespace GlobalTheory.Mem.R3.SelectionPairing
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.IndefR.AutomorphicEvaluation
-section Args
-variable {K : Ctx} {B : GlobalTheory.Mem.Base} {f : Top.Fr B.toPre} {T : TwDat B} {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl}
-  {L : SizeData₂ (w.st Z).toD7} {hT : GatTies (w.st Z).toD7} {Gi : Formalism.MainNotions.G.Inst (w.st Z).toD7 L} {Gl : Formalism.MainNotions.G.LatInst (w.st Z).toD7}
-  {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (w.st Z).toD7} {cX : ExtraC} {ex : Extra (w.st Z).toD7 L hT Gi Gl Kc Yd cX}
-  {t : RowsT K w Z Wt ex.p0}
-end Args
 
 theorem wp3_ne_bot_and_piece_at_of_multEq (hWR : GlobalTheory.Published.WeilRepresentationUnitaryPair) (hDSE : GlobalTheory.Published.DiscreteSeriesExists)
     (hHCF : GlobalTheory.Published.HarishChandraFinite) (hCRD : GlobalTheory.Published.CuspRapidDecay) {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {p : _root_.GlobalTheory.Mem.Top.Bl.Parameters hL} {K : Ctx}

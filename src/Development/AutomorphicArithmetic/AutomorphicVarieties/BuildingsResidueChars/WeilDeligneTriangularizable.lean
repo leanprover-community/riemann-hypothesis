@@ -159,7 +159,7 @@ theorem UpperTheory.weilDeligne_triangular_initial_segment :
       by_cases hj : j = Fin.last n
       · subst hj
         rw [h2]; simp
-      · rw [h1 (lt_of_le_of_ne (Fin.le_last j) hj), Finsupp.single_apply, if_neg hj, mul_zero]
+      · rw [h1 (lt_of_le_of_ne (Fin.le_last j) hj), Finsupp.single_apply, ite_eq_right hj, mul_zero]
     simpa using LinearMap.congr_fun h x
   have hS : ∀ a, ∀ x ∈ LinearMap.ker (b.coord (Fin.last n)), T a x ∈ LinearMap.ker (b.coord (Fin.last n)) := by
     intro a x hx
@@ -171,7 +171,7 @@ theorem UpperTheory.weilDeligne_triangular_initial_segment :
   · let v : Fin n → LinearMap.ker (b.coord (Fin.last n)) := fun i =>
       ⟨b (Fin.castSucc i), by
         rw [LinearMap.mem_ker, Basis.coord_apply, Basis.repr_self, Finsupp.single_apply,
-          if_neg (Fin.castSucc_lt_last i).ne]⟩
+          ite_eq_right (Fin.castSucc_lt_last i).ne]⟩
     have hv : LinearIndependent k v := by
       apply LinearIndependent.of_comp (LinearMap.ker (b.coord (Fin.last n))).subtype
       exact b.linearIndependent.comp Fin.castSucc (Fin.castSucc_injective n)

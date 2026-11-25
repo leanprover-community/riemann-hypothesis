@@ -376,7 +376,7 @@ theorem xi_module_structure : XiModule := by
     rw [not_le] at hneg
     apply h1
     have := PowerSeries.coeff_coe (R := Ks) (f := a) ij.1
-    rw [if_pos hneg] at this
+    rw [ite_eq_left hneg] at this
     exact this
   have h4 : ij.2 ≤ i := by
     have : ij.1 + ij.2 = i := h3

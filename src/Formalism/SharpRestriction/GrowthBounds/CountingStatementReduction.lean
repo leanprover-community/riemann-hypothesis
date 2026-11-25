@@ -1903,11 +1903,11 @@ theorem weight_vector_other_isotypic_in_lowering_image {E : GLOps n K V} (hE : I
       · simpa using hw
       · rw [Finset.mem_singleton] at hκ
         subst hκ
-        simp only [if_neg (Ne.symm hne)]
+        simp only [ite_eq_right (Ne.symm hne)]
         exact Submodule.neg_mem _ hh.1)
     (by
       rw [Finset.sum_pair hne]
-      simp only [if_true, if_neg (Ne.symm hne)]
+      simp only [ite_true, ite_eq_right (Ne.symm hne)]
       have : x + -h = l := by rw [← hxe]; abel
       rw [this]; exact hl.1)
     mu (Finset.mem_insert_self _ _)
@@ -2019,7 +2019,7 @@ theorem ext_abs {r n : ℕ} (E : GLOps r K V) (φ : Fin n → Fin r) (hE : IsGLR
     · refine isotypic_stable_commuting E' (E c c) ?_ mu x hx
       intro a b
       have h := hE.1 c c (φ a) (φ b)
-      rw [if_neg (fun h : c = φ a => hc ⟨a, h.symm⟩), if_neg (fun h : φ b = c => hc ⟨b, h⟩), sub_zero,
+      rw [ite_eq_right (fun h : c = φ a => hc ⟨a, h.symm⟩), ite_eq_right (fun h : φ b = c => hc ⟨b, h⟩), sub_zero,
         sub_eq_zero] at h
       exact h
   have hcd : ∀ c x, e' (E c c x) = E c c (e' x) := fun c x =>
@@ -2338,17 +2338,17 @@ theorem segSub_good (aTop : Fin s → ℕ) (aPlus : ℕ) (m D : ℝ)
   · intro x hx b _
     have hb := hx b (Set.mem_univ b)
     by_cases hk : Kept p r S aTop b
-    · simp only [if_pos hk] at hb ⊢
+    · simp only [ite_eq_left hk] at hb ⊢
       exact (h b hk).1.1 hb
-    · simp only [if_neg hk] at hb ⊢
+    · simp only [ite_eq_right hk] at hb ⊢
       exact hb
   · intro c x hc hx hcx b _
     have hb := hx b (Set.mem_univ b)
     have hcb := hcx b (Set.mem_univ b)
     by_cases hk : Kept p r S aTop b
-    · simp only [if_pos hk] at hb hcb ⊢
+    · simp only [ite_eq_left hk] at hb hcb ⊢
       exact (h b hk).1.2 c (x b) hc hb hcb
-    · simp only [if_neg hk] at hb ⊢
+    · simp only [ite_eq_right hk] at hb ⊢
       exact hb
   · intro u hu
     obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
@@ -2360,7 +2360,7 @@ theorem segSub_good (aTop : Fin s → ℕ) (aPlus : ℕ) (m D : ℝ)
         intro b
         have hb := hu.1 b (Set.mem_univ b)
         by_cases hk : Kept p r S aTop b
-        · simp only [if_pos hk] at hb ⊢
+        · simp only [ite_eq_left hk] at hb ⊢
           have hnp := hno b hk
           unfold PrimIn at hnp
           push Not at hnp
@@ -2369,7 +2369,7 @@ theorem segSub_good (aTop : Fin s → ℕ) (aPlus : ℕ) (m D : ℝ)
           rw [hϖ.maximalIdeal_eq, Ideal.mem_span_singleton] at hcm
           obtain ⟨c', rfl⟩ := hcm
           exact ⟨c' • x, (L₂ b).smul_mem c' hx, by rw [hux, mul_smul]⟩
-        · simp only [if_neg hk] at hb ⊢
+        · simp only [ite_eq_right hk] at hb ⊢
           exact ⟨0, Submodule.zero_mem _, by rw [(Submodule.mem_bot O).1 hb, smul_zero]⟩
       choose y hy huy using hdiv
       have : IsUnit ϖ := hu.2 ϖ y (fun b _ => hy b) (funext fun b => by rw [Pi.smul_apply]; exact huy b)
@@ -2380,7 +2380,7 @@ theorem segSub_good (aTop : Fin s → ℕ) (aPlus : ℕ) (m D : ℝ)
     · intro b' _
       by_cases hbb : b' = b
       · subst hbb
-        simp only [if_pos hk, Pi.single_eq_same]
+        simp only [ite_eq_left hk, Pi.single_eq_same]
         exact hu'
       · rw [Pi.single_eq_of_ne hbb]
         exact Submodule.zero_mem _
@@ -2566,14 +2566,14 @@ theorem mem_segSub (aTop : Fin s → ℕ)
   · intro h
     refine ⟨fun b hk => ?_, fun b hk => ?_⟩
     · have := h b (Set.mem_univ _)
-      simpa only [if_pos hk] using this
+      simpa only [ite_eq_left hk] using this
     · have := h b (Set.mem_univ _)
-      simp only [if_neg hk] at this
+      simp only [ite_eq_right hk] at this
       exact (Submodule.mem_bot O).1 this
   · rintro ⟨h1, h2⟩ b -
     by_cases hk : Kept p r S aTop b
-    · simp only [if_pos hk]; exact h1 b hk
-    · simp only [if_neg hk]; rw [h2 b hk]; exact Submodule.zero_mem _
+    · simp only [ite_eq_left hk]; exact h1 b hk
+    · simp only [ite_eq_right hk]; rw [h2 b hk]; exact Submodule.zero_mem _
 
 def segSubMap (aTop : Fin s → ℕ)
     (L₂ : SegBlock s r → Submodule O (MvPolynomial (BVar (2 * s + 1) r S.t) (KK O))) :
@@ -2602,14 +2602,14 @@ def segSubEquiv (aTop : Fin s → ℕ)
         ((y ⟨b, (mem_keptSet p r S aTop b).2 hk⟩ : L₂ b) : MvPolynomial (BVar (2 * s + 1) r S.t) (KK O)) else 0, ?_⟩, ?_⟩
       · rw [mem_segSub]
         refine ⟨fun b hk => ?_, fun b hk => ?_⟩
-        · simp only [dif_pos hk]
+        · simp only [dite_eq_left hk]
           exact (y ⟨b, (mem_keptSet p r S aTop b).2 hk⟩).2
-        · simp only [dif_neg hk]
+        · simp only [dite_eq_right hk]
       · funext b
         apply Subtype.ext
         show (if hk : Kept p r S aTop b.1 then
           ((y ⟨b.1, (mem_keptSet p r S aTop b.1).2 hk⟩ : L₂ b.1) : MvPolynomial (BVar (2 * s + 1) r S.t) (KK O)) else 0) = _
-        rw [dif_pos ((mem_keptSet p r S aTop b.1).1 b.2)]⟩
+        rw [dite_eq_left ((mem_keptSet p r S aTop b.1).1 b.2)]⟩
 
 theorem rank_segSub (aTop : Fin s → ℕ)
     (L₂ : SegBlock s r → Submodule O (MvPolynomial (BVar (2 * s + 1) r S.t) (KK O))) :
@@ -2672,7 +2672,7 @@ theorem block_form_of_segment_form (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X :
   set L : SegBlock X.s X.r → Submodule X.O (MvPolynomial (BVar (2 * X.s + 1) X.r (X.S C0 CE1 CE2).t) (KK X.O)) :=
     fun b => if hk : Kept X.p X.r (X.S C0 CE1 CE2) aTop b then L₂ b hk else ⊥ with hL
   have hLk : ∀ b (hk : Kept X.p X.r (X.S C0 CE1 CE2) aTop b), L b = L₂ b hk := fun b hk => by
-    rw [hL]; simp only [dif_pos hk]
+    rw [hL]; simp only [dite_eq_left hk]
   refine ⟨L, fun b hk => by rw [hLk b hk]; exact (hL₂ b hk).1, ?_⟩
   rw [segLat_eq_segSub]
   by_cases hinf : ∃ b ∈ keptSet X.p X.r (X.S C0 CE1 CE2) aTop,
@@ -2868,14 +2868,14 @@ theorem realW_top (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (a0 : ℕ) (aTop 
   funext i
   unfold segATop realW
   have h : ∃ i', segPos TT j i' = segPos TT j i := ⟨i, rfl⟩
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   exact congrArg aTop (segPos_inj TT j h.choose_spec)
 
 theorem realW_plus (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (a0 : ℕ) (aTop : Fin (segS TT j) → ℕ) (aPlus : ℕ) :
     segAPlus TT (realW TT j a0 aTop aPlus) j = aPlus := by
   unfold segAPlus realW
   have h : ¬ ∃ i', segPos TT j i' = segNext TT j := fun ⟨i, hi⟩ => segPos_ne_next TT j i hi
-  rw [dif_neg h, if_pos rfl]
+  rw [dite_eq_right h, ite_eq_left rfl]
 
 theorem realW_mem (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (a0 : ℕ) (aTop : Fin (segS TT j) → ℕ) (aPlus : ℕ)
     (P : ℕ → Prop) (h0 : P a0) (hT : ∀ i, P (aTop i)) (hP : P aPlus) (s : Fin n') :
@@ -2933,12 +2933,12 @@ theorem keptSum_eq_sum {aTop : Fin X.s → ℕ} (hfin : {b | Kept X.p X.r (X.S C
   rw [finsum_eq_sum_of_support_subset (s := hfin.toFinset)]
   · refine Finset.sum_congr rfl fun b hb => ?_
     have hk : Kept X.p X.r (X.S C0 CE1 CE2) aTop b := hfin.mem_toFinset.1 hb
-    rw [if_pos hk]
+    rw [ite_eq_left hk]
   · intro b hb
     rw [Function.mem_support] at hb
     rw [Finset.mem_coe, hfin.mem_toFinset]
     by_contra hk
-    exact hb (if_neg hk)
+    exact hb (ite_eq_right hk)
 
 theorem clSum_eq_sum {aTop : Fin X.s → ℕ} (hfin : {b | Kept X.p X.r (X.S C0 CE1 CE2) aTop b}.Finite)
     (f : SegBlock X.s X.r → ℕ) (dl : DCl X) :
@@ -2949,15 +2949,15 @@ theorem clSum_eq_sum {aTop : Fin X.s → ℕ} (hfin : {b | Kept X.p X.r (X.S C0 
   · refine Finset.sum_congr rfl fun b hb => ?_
     have hk : Kept X.p X.r (X.S C0 CE1 CE2) aTop b := hfin.mem_toFinset.1 hb
     by_cases h : (b.rz, b.ry) = dl
-    · rw [if_pos h, if_pos ⟨hk, congrArg Prod.fst h, congrArg Prod.snd h⟩]
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_left h, ite_eq_left ⟨hk, congrArg Prod.fst h, congrArg Prod.snd h⟩]
+    · rw [ite_eq_right h, ite_eq_right]
       rintro ⟨-, h1, h2⟩
       exact h (Prod.ext h1 h2)
   · intro b hb
     rw [Function.mem_support] at hb
     rw [Finset.mem_coe, hfin.mem_toFinset]
     by_contra hk
-    exact hb (if_neg fun h => hk h.1)
+    exact hb (ite_eq_right fun h => hk h.1)
 
 
 open Classical in
@@ -3229,7 +3229,7 @@ theorem card_Ev_digits (k a P : ℕ) (hP : 0 < P) :
 
 theorem symDim_eq (r n : ℕ) : Formalism.MainNotions.ColumnSystems.symDim (r + 1) (n : ℤ) = (Ev (r + 1) n).card := by
   unfold Formalism.MainNotions.ColumnSystems.symDim
-  rw [if_neg (by omega), card_Ev, Int.toNat_natCast]
+  rw [ite_eq_right (by omega), card_Ev, Int.toNat_natCast]
   have e1 : n + (r + 1) - 1 = n + r := by omega
   have e2 : r + 1 + n - 1 = n + r := by omega
   have e3 : r + 1 - 1 = r := by omega
@@ -3238,7 +3238,7 @@ theorem symDim_eq (r n : ℕ) : Formalism.MainNotions.ColumnSystems.symDim (r + 
 
 theorem symDim_choose (r n : ℕ) : Formalism.MainNotions.ColumnSystems.symDim (r + 1) (n : ℤ) = (n + r).choose r := by
   unfold Formalism.MainNotions.ColumnSystems.symDim
-  rw [if_neg (by omega), Int.toNat_natCast]
+  rw [ite_eq_right (by omega), Int.toNat_natCast]
   have e1 : n + (r + 1) - 1 = n + r := by omega
   have e3 : r + 1 - 1 = r := by omega
   rw [e1, e3]
@@ -3328,18 +3328,18 @@ theorem mCl_factor (rz ry : Fin X.s → Fin (X.r + 1) → ℕ) (hrz : rz ∈ dig
         Formalism.MainNotions.ColumnSystems.symDim (X.r + 1) ((X.S C0 CE1 CE2).bPlus : ℤ) *
         ((∏ i, fA C0 CE1 CE2 X i (rz i)) * ∏ i, fC C0 CE1 CE2 X i (aTop i) (ry i)) := by
   by_cases hc : Compat C0 CE1 CE2 X (rz, ry) aTop
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     obtain ⟨-, hA, hC⟩ := hc
     have e1 : (∏ i, fA C0 CE1 CE2 X i (rz i)) = ∏ i, Formalism.MainNotions.ColumnSystems.symDim (X.r + 1)
         ((coarseA X.p (X.S C0 CE1 CE2) (Formalism.MainNotions.ColumnSystems.digitBlock rz ry) i : ℕ) : ℤ) :=
-      Finset.prod_congr rfl fun i _ => by unfold fA; exact if_pos (hA i)
+      Finset.prod_congr rfl fun i _ => by unfold fA; exact ite_eq_left (hA i)
     have e2 : (∏ i, fC C0 CE1 CE2 X i (aTop i) (ry i)) = ∏ i, Formalism.MainNotions.ColumnSystems.symDim (X.r + 1)
         ((coarseC X.p (X.S C0 CE1 CE2) aTop (Formalism.MainNotions.ColumnSystems.digitBlock rz ry) i : ℕ) : ℤ) :=
-      Finset.prod_congr rfl fun i _ => by unfold fC; exact if_pos (hC i)
+      Finset.prod_congr rfl fun i _ => by unfold fC; exact ite_eq_left (hC i)
     rw [e1, e2, ← Finset.prod_mul_distrib]
     unfold mCl Formalism.MainNotions.ColumnSystems.dimMM
     ring
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hd : ∀ i c, rz i c < (X.S C0 CE1 CE2).P X.p i ∧ ry i c < (X.S C0 CE1 CE2).P X.p i := by
       intro i c
       unfold digSet at hrz hry
@@ -3353,9 +3353,9 @@ theorem mCl_factor (rz ry : Fin X.s → Fin (X.r + 1) → ℕ) (hrz : rz ∈ dig
       rw [Finset.prod_ne_zero_iff] at h1 h2
       refine ⟨hd, fun i => ?_, fun i => ?_⟩
       · by_contra hn
-        exact h1 i (Finset.mem_univ i) (by unfold fA; exact if_neg hn)
+        exact h1 i (Finset.mem_univ i) (by unfold fA; exact ite_eq_right hn)
       · by_contra hn
-        exact h2 i (Finset.mem_univ i) (by unfold fC; exact if_neg hn)
+        exact h2 i (Finset.mem_univ i) (by unfold fC; exact ite_eq_right hn)
     rw [hz, mul_zero]
 
 

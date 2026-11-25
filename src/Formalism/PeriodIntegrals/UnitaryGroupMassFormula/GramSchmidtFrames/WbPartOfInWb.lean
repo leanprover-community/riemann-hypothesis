@@ -67,7 +67,7 @@ lemma sub_prW_X {z q : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z)
       · rw [Finset.sum_eq_single (esI k r a)]
         · simp only [Pi.star_apply, Pi.single_eq_same, star_one, one_mul]
           dsimp only [Hpk, eI, esI]
-          rw [if_pos ⟨ha, by omega⟩, one_mul]
+          rw [ite_eq_left ⟨ha, by omega⟩, one_mul]
         · intro j _ hj
           have hj' : (j : ℕ) ≠ 2 * r + k - a := fun h => hj (Fin.ext h)
           have hjl := j.isLt

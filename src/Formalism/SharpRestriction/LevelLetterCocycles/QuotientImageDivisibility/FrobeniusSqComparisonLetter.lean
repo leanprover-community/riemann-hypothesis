@@ -104,7 +104,7 @@ theorem frobenius_sq_bound_at (hs : W.s = 1) (hR : Formalism.MainNotions.UnusedS
   set ψ5 : ↥Fs →ₗ[O] ↥(Formalism.MainNotions.RamifiedCoefficientChains.S9.NDl W T₂ c) ⧸ K5 :=
     K5.mkQ ∘ₗ LinearMap.codRestrict (Formalism.MainNotions.RamifiedCoefficientChains.S9.NDl W T₂ c) w hw with hψ5
   obtain ⟨s5, hs5, hs5N, L5, kO5, hL5, hkO5, hLc5⟩ := hDc
-  have ch5 := pchain_DN W T₂ c kB K5 hK5 s5 hs5 hs5N L5 kO5 hL5 hkO5 hLc5 Fs ψ5
+  have ch5 := pchain_DN W T₂ c kB K5 s5 hs5 hs5N L5 kO5 hL5 hkO5 hLc5 Fs ψ5
   set F5 := kerSub Fs ψ5 (((Xd W T₂ c kB).comap (Formalism.MainNotions.RamifiedCoefficientChains.S9.NDl W T₂ c).subtype).map K5.mkQ)
   have hF5 : F5 ≤ Fs := kerSub_le _ _ _
   have mem5 : ∀ f : ↥F5, w ⟨f, hF5 f.2⟩ ∈ Xd W T₂ c kB := by
@@ -170,7 +170,7 @@ theorem frobenius_sq_bound_at (hs : W.s = 1) (hR : Formalism.MainNotions.UnusedS
           rw [← algebraMap_smul (LetA O n)]; exact (W.N T₂).smul_mem _ (hy2N f)
         rw [cmpD_sub W T₂ (hy2N _) hoN, cmpD_osmul W T₂ o (hy2N f), smul2, sub_self] }
   obtain ⟨s6, hs6, hs6N, L6, kO6, hL6, hkO6, hLc6⟩ := hDc2
-  have ch6 := pchain_DN W T₂ (c - 1 - 1) hh K6 hK6 s6 hs6 hs6N L6 kO6 hL6 hkO6 hLc6 F5 ψ6
+  have ch6 := pchain_DN W T₂ (c - 1 - 1) hh K6 s6 hs6 hs6N L6 kO6 hL6 hkO6 hLc6 F5 ψ6
   set F6 := kerSub F5 ψ6
     (((Xd W T₂ (c - 1 - 1) hh).comap (Formalism.MainNotions.RamifiedCoefficientChains.S9.NDl W T₂ (c - 1 - 1)).subtype).map K6.mkQ)
   have hF6 : F6 ≤ F5 := kerSub_le _ _ _

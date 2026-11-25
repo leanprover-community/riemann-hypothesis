@@ -71,14 +71,6 @@ def subEquiv (E : W' ≃ₗ[R] (ι → W)) (S' : Submodule R W') (S : Submodule 
 
 end Linear
 
-section Length
-
-variable {O O' : Type} [CommRing O] [CommRing O'] [Algebra O O'] {W W' : Type} [AddCommGroup W]
-  [AddCommGroup W'] [Module O W] [Module O W'] [Module O' W'] [IsScalarTower O O' W'] {ι : Type}
-  [Fintype ι]
-
-end Length
-
 section Tensor
 
 variable {Qp : Type} [Field Qp] {LL LL' : Type} [Field LL] [Field LL'] [Algebra Qp LL]
@@ -269,67 +261,6 @@ theorem mem_FildR_iff (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (τ : K →
   simp only [forall_and]
 
 end Period
-
-section Cochains
-
-variable {O LL : Type} [CommRing O] [Field LL] [Algebra O LL]
-  {V V' : Type} [AddCommGroup V] [AddCommGroup V'] [Module LL V] [Module LL V'] [Module O V]
-  [Module O V'] [IsScalarTower O LL V] [IsScalarTower O LL V'] {ι : Type}
-
-end Cochains
-
-section Lat
-
-variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    (PD : PeriodData G Qp K₀ K B BdR)
-    {LL LL' : Type} [Field LL] [Field LL'] [Algebra Qp LL] [Algebra Qp LL']
-    {O O' : Type} [CommRing O] [CommRing O'] [Algebra O LL] [Algebra O' LL']
-    {ι : Type} [Fintype ι] [DecidableEq ι] [TopologicalSpace G]
-
-section One
-
-variable {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
-    [Module O V] [IsScalarTower O LL V]
-    [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
-    {V' : Type} [AddCommGroup V'] [Module LL V'] [Module Qp V'] [IsScalarTower Qp LL V']
-    [Module LL' V'] [IsScalarTower Qp LL' V'] [Module O V'] [IsScalarTower O LL V']
-    [Module O' V'] [IsScalarTower O' LL' V']
-    [TopologicalSpace V'] [ContinuousAdd V'] [ContinuousConstSMul LL' V']
-    {ρ : Representation LL G V} {ρ' : Representation LL' G V'}
-    {E : V' ≃ₗ[LL] (ι → V)} {L : Lattice (O := O) ρ} {L' : Lattice (O := O') ρ'}
-
-end One
-
-section Two
-
-variable {V₁ : Type} [AddCommGroup V₁] [Module LL V₁] [Module Qp V₁] [IsScalarTower Qp LL V₁]
-    [Module O V₁] [IsScalarTower O LL V₁]
-    [TopologicalSpace V₁] [ContinuousAdd V₁] [ContinuousConstSMul LL V₁]
-    {V₁' : Type} [AddCommGroup V₁'] [Module LL V₁'] [Module Qp V₁'] [IsScalarTower Qp LL V₁']
-    [Module LL' V₁'] [IsScalarTower Qp LL' V₁'] [Module O V₁'] [IsScalarTower O LL V₁']
-    [Module O' V₁'] [IsScalarTower O' LL' V₁']
-    [TopologicalSpace V₁'] [ContinuousAdd V₁'] [ContinuousConstSMul LL' V₁']
-    {ρ₁ : Representation LL G V₁} {ρ₁' : Representation LL' G V₁'}
-    {E₁ : V₁' ≃ₗ[LL] (ι → V₁)} {L₁ : Lattice (O := O) ρ₁} {L₁' : Lattice (O := O') ρ₁'}
-    {V₂ : Type} [AddCommGroup V₂] [Module LL V₂] [Module Qp V₂] [IsScalarTower Qp LL V₂]
-    [Module O V₂] [IsScalarTower O LL V₂]
-    [TopologicalSpace V₂] [ContinuousAdd V₂] [ContinuousConstSMul LL V₂]
-    {V₂' : Type} [AddCommGroup V₂'] [Module LL V₂'] [Module Qp V₂'] [IsScalarTower Qp LL V₂']
-    [Module LL' V₂'] [IsScalarTower Qp LL' V₂'] [Module O V₂'] [IsScalarTower O LL V₂']
-    [Module O' V₂'] [IsScalarTower O' LL' V₂']
-    [TopologicalSpace V₂'] [ContinuousAdd V₂'] [ContinuousConstSMul LL' V₂']
-    {ρ₂ : Representation LL G V₂} {ρ₂' : Representation LL' G V₂'}
-    {E₂ : V₂' ≃ₗ[LL] (ι → V₂)} {L₂ : Lattice (O := O) ρ₂} {L₂' : Lattice (O := O') ρ₂'}
-    (F : LatHom L₁ L₂) (F' : LatHom L₁' L₂')
-
-end Two
-
-
-end Lat
 
 theorem finrank_ext {O O' : Type} [CommRing O] [CommRing O'] [Nontrivial O'] [Algebra O O']
     {W W' : Type} [AddCommGroup W] [AddCommGroup W'] [Module O W] [Module O W'] [Module O' W']

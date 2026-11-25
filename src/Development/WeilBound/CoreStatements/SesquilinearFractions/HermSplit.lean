@@ -43,7 +43,7 @@ theorem herm_split (z w : Fin g → ℂ) : hermForm (Hm hty G) z w = ∑ σ, Q h
     apply Finset.sum_congr rfl
     rintro ⟨k', hk'⟩ _
     have heq : ty k = ty k' := hk.trans hk'.symm
-    simp only [Hm, Matrix.of_apply, heq, if_true]
+    simp only [Hm, Matrix.of_apply, heq, ite_true]
     rw [hk']
     ring
   unfold hermForm

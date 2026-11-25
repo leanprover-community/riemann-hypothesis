@@ -91,7 +91,7 @@ theorem exists_valuation_coeff_mul_coeff_le {Γ : Type*} [LinearOrderedCommGroup
     · rintro ⟨x, y⟩ hxy
       rw [Finset.mem_sdiff, Finset.mem_product, Finset.mem_singleton] at hxy
       obtain ⟨⟨hx, hy⟩, hne⟩ := hxy
-      simp only [if_true, map_mul, ha₀.2, hb₀.2]
+      simp only [ite_true, map_mul, ha₀.2, hb₀.2]
       split_ifs with h
       · rw [map_mul]
         rcases (hamax x hx).lt_or_eq with h1 | h1

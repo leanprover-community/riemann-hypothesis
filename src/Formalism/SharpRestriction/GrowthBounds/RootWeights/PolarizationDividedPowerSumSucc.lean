@@ -51,9 +51,9 @@ theorem polarization_dividedPowerTerm (sg : ι → R) (src dst : ι → σ) (hs 
     by_cases hv : src l = v
     · subst hv
       have h3 := hd l l
-      simp only [h1, h2, h3, if_true, if_false]
+      simp only [h1, h2, h3, ite_true, ite_false]
       omega
-    · simp only [hv, if_false]
+    · simp only [hv, ite_false]
       omega
   have he : dividedPowerExponent src dst m f (src l) = m (src l) - f l := by
     simp [dividedPowerExponent, h1, h2]

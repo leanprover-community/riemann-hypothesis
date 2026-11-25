@@ -1221,8 +1221,8 @@ theorem trOn_forms_eq_finrank_mul : ∀ (E : Type) [Field E] [NumberField E] [Is
       _ = ((e (TensorProduct.map A LinearMap.id (e.symm v)) : forms S lam K') : UA E n → ℂ) := (hev _).symm
       _ = ((e.conj (TensorProduct.map A LinearMap.id) v : forms S lam K') : UA E n → ℂ) :=
           congrArg (fun u : forms S lam K' => (u : UA E n → ℂ)) (LinearEquiv.conj_apply_apply _ _ _).symm
-  have h1 : trOn (forms S lam K') (hop S K' f) = LinearMap.trace ℂ _ ((hop S K' f).restrict hF) := dif_pos hF
-  have h2 : trOn (vecM S lam K') (hopM S lam K' f) = LinearMap.trace ℂ _ A := dif_pos hM
+  have h1 : trOn (forms S lam K') (hop S K' f) = LinearMap.trace ℂ _ ((hop S K' f).restrict hF) := dite_eq_left hF
+  have h2 : trOn (vecM S lam K') (hopM S lam K' f) = LinearMap.trace ℂ _ A := dite_eq_left hM
   rw [h1, h2]
   exact (congrArg (LinearMap.trace ℂ _) he).trans
     ((LinearMap.trace_conj' _ e).trans ((trace_map_id A).trans (mul_comm _ _)))

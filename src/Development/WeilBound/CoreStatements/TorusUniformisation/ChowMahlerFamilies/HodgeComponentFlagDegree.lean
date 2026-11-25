@@ -38,12 +38,12 @@ theorem alt_triangular {Ω E W : Type} [Field Ω] [AddCommGroup E] [Module Ω E]
             Function.update (fun k : Fin s => if (k : ℕ) < i then c k • w k else v k) i (c i • w i) := by
           funext k
           by_cases hk : k = i
-          · rw [hk, Function.update_self, if_pos (Nat.lt_succ_self _)]
+          · rw [hk, Function.update_self, ite_eq_left (Nat.lt_succ_self _)]
           · rw [Function.update_of_ne hk]
             have hk' : (k : ℕ) ≠ i := fun h => hk (Fin.ext h)
             by_cases hki : (k : ℕ) < i
-            · rw [if_pos hki, if_pos (show (k : ℕ) < i + 1 by omega)]
-            · rw [if_neg hki, if_neg (show ¬ ((k : ℕ) < i + 1) by omega)]
+            · rw [ite_eq_left hki, ite_eq_left (show (k : ℕ) < i + 1 by omega)]
+            · rw [ite_eq_right hki, ite_eq_right (show ¬ ((k : ℕ) < i + 1) by omega)]
         rw [hnew]
         generalize hm : (fun k : Fin s => if (k : ℕ) < i then c k • w k else v k) = m
         have hmi : m i = v i := by
@@ -79,7 +79,7 @@ theorem alt_triangular {Ω E W : Type} [Field Ω] [AddCommGroup E] [Module Ω E]
   rw [key s]
   have hfun : (fun i : Fin s => if (i : ℕ) < s then c i • w i else v i) = fun i => c i • w i := by
     funext i
-    rw [if_pos i.2]
+    rw [ite_eq_left i.2]
   rw [hfun]
   exact f.toMultilinearMap.map_smul_univ c w
 
@@ -222,20 +222,20 @@ theorem prod_root {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E
   congr 1
   · refine Finset.prod_congr rfl fun i _ => ?_
     have h : ((Fin.castAdd D.q i : Fin (D.p + D.q)) : ℕ) < D.p := i.2
-    have e : HodgeCpt.rootIdx D (τ, Fin.castAdd D.q i) = ⟨.inl τ, i⟩ := dif_pos h
-    have e' : HodgeCpt.rootSgn D (τ, Fin.castAdd D.q i) = 1 := if_pos h
+    have e : HodgeCpt.rootIdx D (τ, Fin.castAdd D.q i) = ⟨.inl τ, i⟩ := dite_eq_left h
+    have e' : HodgeCpt.rootSgn D (τ, Fin.castAdd D.q i) = 1 := ite_eq_left h
     rw [e, e', zpow_one]
   · rw [← Finset.prod_inv_distrib]
     refine Fintype.prod_equiv (Fin.revPerm (n := D.q)) _ _ fun j => ?_
     have h : ¬ ((Fin.natAdd D.p j : Fin (D.p + D.q)) : ℕ) < D.p := by simp
     have e : HodgeCpt.rootIdx D (τ, Fin.natAdd D.p j) = ⟨.inr τ, Fin.rev j⟩ := by
-      refine (dif_neg h).trans ?_
+      refine (dite_eq_right h).trans ?_
       congr 1
       apply Fin.ext
       have hj : (j : ℕ) < D.q := j.2
       show D.p + D.q - 1 - (D.p + (j : ℕ)) = D.q - ((j : ℕ) + 1)
       omega
-    have e' : HodgeCpt.rootSgn D (τ, Fin.natAdd D.p j) = -1 := if_neg h
+    have e' : HodgeCpt.rootSgn D (τ, Fin.natAdd D.p j) = -1 := ite_eq_right h
     rw [e, e', zpow_neg_one]
     rfl
 

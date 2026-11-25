@@ -110,13 +110,13 @@ private theorem sum_dim {E G : Type} [Field E] (S : Submodule E (G → Matrix (F
       · rw [(x j).2.2 g trivial a b hj, (y j).2.2 g trivial a b hj]
     · intro γ
       refine ⟨fun j => ⟨_, h (((j : ℕ) : ℤ) - 2) γ γ.2, fun g _ a b hab => ?_⟩, ?_⟩
-      · simp only [Matrix.of_apply, if_neg hab]
+      · simp only [Matrix.of_apply, ite_eq_right hab]
       · apply Subtype.ext
         funext g
         ext a b
         obtain ⟨j, hj⟩ := wt_cases a b
         rw [hval _ g a b j hj]
-        simp only [Matrix.of_apply, if_pos hj]
+        simp only [Matrix.of_apply, ite_eq_left hj]
   rw [← (LinearEquiv.ofBijective f hb).finrank_eq, Module.finrank_pi_fintype]
 
 theorem UpperTheory.finrank_local_cocycles_adjoint_unitaryThree_eq_twelve :

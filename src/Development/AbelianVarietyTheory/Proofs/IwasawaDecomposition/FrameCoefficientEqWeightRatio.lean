@@ -78,7 +78,7 @@ theorem coef_eq_coW_change {E : Type} [Field E] [NumberField E] [IsCMField E] {r
   have hi : X.p0 + (i : ℕ) < r := by have := i.2; have := X.p0_le; omega
   have eb : (idx hj).symm (Sum.inl b) = ⟨X.p0 + b, hb⟩ := Fin.ext (by rw [idx_symm_inl]; show r - j + (b : ℕ) = X.p0 + b; omega)
   have ei : (idx hj).symm (Sum.inl i) = ⟨X.p0 + i, hi⟩ := Fin.ext (by rw [idx_symm_inl]; show r - j + (i : ℕ) = X.p0 + i; omega)
-  simp only [of_apply, coef, dif_pos τ.2, ent, dif_pos (And.intro hb hi), Subtype.coe_eta, toBlocks₁₁, reindex_apply,
+  simp only [of_apply, coef, dite_eq_left τ.2, ent, dite_eq_left (And.intro hb hi), Subtype.coe_eta, toBlocks₁₁, reindex_apply,
     submatrix_apply, eb, ei]
 
 end GlobalTheory.FramePairGram

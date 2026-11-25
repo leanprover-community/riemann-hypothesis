@@ -174,7 +174,7 @@ private lemma exists_divisibilityInvariant {O : Type} [CommRing O] (ϖ : O) (e :
 private lemma coeff_dvd_of_mem_span {O : Type} [CommRing O] (d : O) (B : ℕ) (F : PowerSeries O)
     (hF : F ∈ Ideal.span {C d, (X : PowerSeries O) ^ B}) (j : ℕ) (hj : j < B) : d ∣ coeff j F := by
   obtain ⟨a, b, rfl⟩ := Ideal.mem_span_pair.mp hF
-  rw [map_add (f := _), coeff_mul_C, coeff_mul_X_pow', if_neg (by omega), add_zero]
+  rw [map_add (f := _), coeff_mul_C, coeff_mul_X_pow', ite_eq_right (by omega), add_zero]
   exact dvd_mul_left _ _
 
 theorem content_divisibility : R2 := by

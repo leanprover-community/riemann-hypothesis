@@ -322,10 +322,10 @@ theorem PositivityTheory.Xgn.exists_holomorphic_chart_at_point : ∀ (K : Type) 
     let y' : (Fin m → ℂ) → (Γ(X, X.basicOpen g) →+* ℂ) := fun b =>
       if h : ⊤ ≤ y b ⁻¹ᵁ X.basicOpen g then ptHom (y b) _ h else ptHom x _ hxV
     have hy' : ∀ b ∈ U, spMap (y' b) ≫ hV.fromSpec = y b := fun b hb => by
-      simp only [y', dif_pos hb.2, ptHom_spec]
+      simp only [y', dite_eq_left hb.2, ptHom_spec]
     obtain ⟨ε, κ, ε0, b₁, b₂, b₃, b₄⟩ := a₂ m U y' (hy (X.basicOpen g) 0).1
       (fun f => (hy (X.basicOpen g) f).2.congr fun b hb => by
-        simp only [y', valAt', dif_pos hb.2]; rfl)
+        simp only [y', valAt', dite_eq_left hb.2]; rfl)
       (fun b hb => (over_iff s hV σ _).1 (by rw [← Category.assoc, hy' b hb, hσ b hb.1]))
-      b₀ ⟨hb₀, by rw [hy₀]; exact hxV⟩ (by subst hy₀; exact dif_pos hxV)
+      b₀ ⟨hb₀, by rw [hy₀]; exact hxV⟩ (by subst hy₀; exact dite_eq_left hxV)
     exact ⟨ε, κ, ε0, fun b hb => (b₁ hb).1, b₂, b₃, fun b hb => ⟨(b₄ b hb).1, by rw [← (b₄ b hb).2, hy' b (b₁ hb)]⟩⟩

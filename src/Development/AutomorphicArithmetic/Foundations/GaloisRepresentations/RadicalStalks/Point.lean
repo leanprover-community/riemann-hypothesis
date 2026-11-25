@@ -949,7 +949,7 @@ theorem UpperTheory.Gal.Ord.cnt :
     rw [← spOver_comp, Category.assoc]
     rfl
   · left
-    push_neg at hlt
+    push Not at hlt
     have hLle : L ≤ p ^ f := by
       rw [hL] at hlt
       exact_mod_cast hlt

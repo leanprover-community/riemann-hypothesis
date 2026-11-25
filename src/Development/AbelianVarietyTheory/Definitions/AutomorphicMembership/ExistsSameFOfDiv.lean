@@ -248,12 +248,6 @@ def SPack.re {F : ∀ u, Forms0 D u} (P : SPack D F) {F' : ∀ u, Forms0 (reD D 
   G := reG Z P.G
   pin := P.pin
 
-section API
-
-variable {F : ∀ u, Forms0 D u} (P : SPack D F) {F' : ∀ u, Forms0 (reD D Z) u} (h : SameForms0LevelsAndValues Z F F') (hF : FinX (reY Z P.Y))
-
-end API
-
 theorem conjHH_eEECre {X : HidaSetting D} (G : GoodOp X) (x : EEC X G) :
     conjHH (reX Z X) (reG Z G) (eEECre Z G x) = eHHre Z X (conjHH X G x) := (Eq.refl (eHHre Z X (conjHH X G x)))
 

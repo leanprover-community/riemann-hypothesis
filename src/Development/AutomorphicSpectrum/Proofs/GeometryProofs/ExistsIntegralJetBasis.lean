@@ -525,10 +525,10 @@ theorem pt_zero {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {P : R
   simp [eSec]
 
 theorem valF_eq {F : Type} [Field F] {X : Scheme.{0}} (y : Sp F ⟶ X) (U : X.Opens) (h : ⊤ ≤ y ⁻¹ᵁ U) (g : Γ(X, U)) :
-    valF y U g = ev y U h g := dif_pos h
+    valF y U g = ev y U h g := dite_eq_left h
 
 theorem valAt'_eq {X : Scheme.{0}} (y : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ y ⁻¹ᵁ U) (g : Γ(X, U)) :
-    valAt' y U g = ev y U h g := dif_pos h
+    valAt' y U g = ev y U h g := dite_eq_left h
 
 theorem jets : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (L : Type) [Field L] [NumberField L] (D : PPData H L) (x : D.B.carrier) (n r : ℕ) (s : Fin r → Out.H0 D.t.PP.L n), ∃ J : ℕ → Fin r → L, (∀ (i : ℕ) (c : Fin r → 𝓞 L), (∀ k < i, ∑ j, (c j : L) * J k j = 0) → IsIntegral ℤ (∑ j, (c j : L) * J i j)) ∧ ∀ (σ : L →+* ℂ) (a : D.Frame σ) (f : Fin r → (Fin D.g → ℂ) → ℂ) (v : Fin D.g → ℂ), (∀ j, a.IsFn (s j) (f j)) → D.IsVec a x v → ∀ (i : ℕ) (c : Fin r → ℂ), ((∀ k < i, ∑ j, c j * σ (J k j) = 0) ↔ ∀ k < i, iteratedDeriv k (fun τ : ℂ => ∑ j, c j * f j (τ • v)) 0 = 0) ∧ ((∀ k < i, ∑ j, c j * σ (J k j) = 0) → ∑ j, c j * σ (J i j) = iteratedDeriv i (fun τ : ℂ => ∑ j, c j * f j (τ • v)) 0) := by
   intro E _ _ _ H L _ _ D x n r s

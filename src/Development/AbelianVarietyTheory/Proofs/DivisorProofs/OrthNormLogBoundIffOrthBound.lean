@@ -64,7 +64,7 @@ theorem gramSum_eq_sumGram {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (G'
     · simp [ha, hb]
     · have h1 : a = Br.iL hN := Fin.ext (by have := a.2; simp only [Br.iL]; omega)
       have h2 : b = Br.iL hN := Fin.ext (by have := b.2; simp only [Br.iL]; omega)
-      rw [dite_eq_right ha, dite_eq_right ha, if_neg hb, if_neg hb, if_pos ⟨h1, h2⟩]
+      rw [dite_eq_right ha, dite_eq_right ha, ite_eq_right hb, ite_eq_right hb, ite_eq_left ⟨h1, h2⟩]
 
 theorem length_eq {K : Type} [Field K] [StarRing K] (s : K →+* ℂ) (hs : ∀ x : K, s (star x) = star (s x)) (g t : K) :
     s (star t * g * t) = ((‖s t‖ ^ 2 : ℝ) : ℂ) * s g := by
@@ -150,7 +150,7 @@ theorem last_ineq {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1) (lam : �
   have hs : (1 : ℤ) ≤ (lam τ).spread := by
     have hpos : 0 < N := by omega
     have := (lam τ).anti (show (⟨0, hpos⟩ : Fin N) ≤ ⟨N - 1, by omega⟩ from Fin.mk_le_mk.mpr (Nat.zero_le _))
-    simp only [DomWeight.spread, dif_pos hpos]
+    simp only [DomWeight.spread, dite_eq_left hpos]
     omega
   have hd' : (0 : ℝ) ≤ ((OrthogonalNormSquareSum.dOne hN (lam τ) (sg τ) : ℤ) : ℝ) := by exact_mod_cast hd
   have hs' : (1 : ℝ) ≤ (((lam τ).spread : ℤ) : ℝ) := by exact_mod_cast hs

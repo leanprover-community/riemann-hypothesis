@@ -111,7 +111,7 @@ theorem eq_smul_of_eigen {K κ : Type} [Field K] [Fintype κ] [Invertible (2 : K
     field_simp
     refine mul_left_cancel₀ hA ?_
     linear_combination η X₀ * e1 - f X₀ * e2
-  · push_neg at hu
+  · push Not at hu
     obtain ⟨i, hi0, hne1⟩ := hu
     have key : ∀ g : (κ → K) → ℂ, schr ψ₀ (L i) g = c i • g → ∀ Y, ψ₀ (Y ⬝ᵥ (L i).2) * g Y = c i * g Y := by
       intro g hg Y

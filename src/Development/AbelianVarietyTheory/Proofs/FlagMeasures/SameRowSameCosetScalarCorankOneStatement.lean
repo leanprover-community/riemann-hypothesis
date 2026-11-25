@@ -312,7 +312,7 @@ theorem scalar_of_same_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u 
   refine ⟨?_, ?_⟩
   · show s0T t t' = 1
     unfold s0T
-    rw [if_pos ⟨hlam, hlam'⟩]
+    rw [ite_eq_left ⟨hlam, hlam'⟩]
     exact hs0
   · show scalT t t'
     exact ⟨⟨hlam, hlam'⟩, hs0, hsc⟩

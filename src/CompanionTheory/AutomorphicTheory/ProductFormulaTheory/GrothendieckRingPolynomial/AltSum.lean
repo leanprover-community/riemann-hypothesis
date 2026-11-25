@@ -226,10 +226,10 @@ theorem altSumN (L : ℕ) (hL : 0 < L) (s : Finset (Finset (Fin L))) (hs : ∀ S
     simp [Finset.mem_map]
   by_cases hB : (∀ i, b i + l i ≤ L) ∧ (∀ x < L, ∃! i, b i ≤ x ∧ x < b i + l i)
   swap
-  · rw [if_neg]
+  · rw [ite_eq_right]
     · apply Finset.sum_eq_zero
       intro S _
-      rw [hf, if_neg, mul_zero]
+      rw [hf, ite_eq_right, mul_zero]
       rw [hcond]
       exact fun H => hB ⟨H.1, H.2.1⟩
     · rintro ⟨rfl, hbl⟩
@@ -241,7 +241,7 @@ theorem altSumN (L : ℕ) (hL : 0 < L) (s : Finset (Finset (Fin L))) (hs : ∀ S
   obtain ⟨hb, hP⟩ := hB
   by_cases hz : ∃ j, b j ≠ 0
   · obtain ⟨j, hj⟩ := hz
-    rw [if_neg (by rintro ⟨_, hbl⟩; exact hj (hbl j).1)]
+    rw [ite_eq_right (by rintro ⟨_, hbl⟩; exact hj (hbl j).1)]
     have hjL : b j < L := by have := hb j; have := hl j; omega
     set a : Fin L := ⟨b j, hjL⟩ with ha_def
     have hint : ∀ i x, b i < x → x < b i + l i → x ≠ (a : ℕ) := by
@@ -325,11 +325,11 @@ theorem altSumN (L : ℕ) (hL : 0 < L) (s : Finset (Finset (Fin L))) (hs : ∀ S
       obtain ⟨k, hk, _⟩ := hP (l i0) (by omega)
       rw [hall k, hz] at hk
       omega
-    rw [if_pos ⟨rfl, fun i => ⟨hz i, hlL i⟩⟩]
+    rw [ite_eq_left ⟨rfl, fun i => ⟨hz i, hlL i⟩⟩]
     obtain ⟨S0, hS0def⟩ : ∃ S0 : Finset (Fin L), S0 = Finset.univ.filter (fun a : Fin L => (a : ℕ) ≠ 0) := ⟨_, rfl⟩
     have hS0 : S0 ∈ s := (hs S0).2 (fun a ha => by rw [hS0def] at ha; exact (Finset.mem_filter.1 ha).2)
     rw [Finset.sum_eq_single_of_mem S0 hS0]
-    · rw [hf, if_pos, mul_one]
+    · rw [hf, ite_eq_left, mul_one]
       · congr 1
         obtain ⟨n, rfl⟩ : ∃ n, L = n + 1 := ⟨L - 1, by omega⟩
         have : S0 = Finset.univ.erase 0 := by
@@ -344,7 +344,7 @@ theorem altSumN (L : ℕ) (hL : 0 < L) (s : Finset (Finset (Fin L))) (hs : ∀ S
         simp [hS0def]
         omega
     · intro S hS hne
-      rw [hf, if_neg, mul_zero]
+      rw [hf, ite_eq_right, mul_zero]
       rw [hcond]
       rintro ⟨_, _, hT⟩
       apply hne
@@ -443,8 +443,8 @@ theorem altSum (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNon
           rw [AltC.cond_map (tN Δ) (tN_injective Δ)]
           rfl
         by_cases hC : AltC.Cond Δ.len (S.map Fin.valEmbedding) b (fun i => (Γ i).len)
-        · rw [if_pos (e.2 hC), if_pos hC]; simp
-        · rw [if_neg (mt e.1 hC), if_neg hC]; simp)
+        · rw [ite_eq_left (e.2 hC), ite_eq_left hC]; simp
+        · rw [ite_eq_right (mt e.1 hC), ite_eq_right hC]; simp)
     rw [H]
     have hiff : (h = 1 ∧ ∀ i, b i = 0 ∧ (Γ i).len = Δ.len) ↔ Finset.univ.val.map Γ = {Δ} := by
       rw [hmapiff]
@@ -452,14 +452,14 @@ theorem altSum (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNon
       · exact Segment.ext_first (by rw [hb i, h0, tN_zero]) hl
       · exact tN_injective Δ (by rw [← hb i, he, tN_zero])
     by_cases hc : Finset.univ.val.map Γ = {Δ}
-    · rw [if_pos (hiff.2 hc), if_pos hc]
-    · rw [if_neg (mt hiff.1 hc), if_neg hc]
+    · rw [ite_eq_left (hiff.2 hc), ite_eq_left hc]
+    · rw [ite_eq_right (mt hiff.1 hc), ite_eq_right hc]
   · push Not at hex
     obtain ⟨i, hi⟩ := hex
-    rw [if_neg]
+    rw [ite_eq_right]
     · apply Finset.sum_eq_zero
       intro S _
-      rw [AltC.shuffleCount_eq _ _ (hW S), if_neg]
+      rw [AltC.shuffleCount_eq _ _ (hW S), ite_eq_right]
       · simp
       rintro ⟨hs, _⟩
       have := (hs i).subset (first_mem_decWord (Γ i))

@@ -79,12 +79,6 @@ abbrev Ad : Type := FiniteAdeleRing (𝓞 H.E) H.E
 
 end Adelic
 
-section abelian₂
-
-variable {l : ℕ} [Fact l.Prime] (lam : (algebraicClosure ℚ ℂ) →+* ℂ_[l])
-
-end abelian₂
-
 abbrev Reps (D : D7) (u : D.what₂.Word) (μ : D.what₂.Tup) : Type :=
   ∀ i, (D.chTw u μ).cls i → GL (Fin (D.R.N i)) (Ad D.host)
 
@@ -125,20 +119,6 @@ theorem emb_mem {K : Type} [Field K] [NumberField K] (φ : K →+* ℂ) (x : K) 
 variable {R : Ranks} (H : Formalism.BasicNotions.Host R) (φ : H.E →+* ℂ) {N : ℕ} (g : GL (Fin N) (Ad H))
 
 end Units
-
-section Rescale
-
-variable {D : D7} {Dx : DivX D} {Tw : TwForms D}
-
-end Rescale
-
-section Ties
-
-variable {D : D7} {Dx : DivX D} {Tw : TwForms D} {C : CharFrame D} {nch : NChoice D}
-
-variable (E : KerEnt D Dx Tw) (Tp : TupTied D C nch) (g : ∀ u μ, Reps D u μ) (fr : ∀ u μ, Frames D u μ)
-
-end Ties
 
 end GlobalTheory.UnUnitCmp
 end -- clump:auto
@@ -256,13 +236,6 @@ def ball (r : ℝ) (hr : 0 ≤ r) : Submodule (𝓞 K) K where
 
 end Local
 
-section Det
-
-variable (D : D7) {l : ℕ} [Fact l.Prime] (ψ : D.host.E →+* ℂ_[l]) {N : ℕ}
-  {L₀ L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {P : Matrix (Fin N) (Fin N) D.host.E}
-
-end Det
-
 section Power
 
 variable (D : D7) {l : ℕ} [Fact l.Prime] (lam : Qbar →+* ℂ_[l])
@@ -277,14 +250,6 @@ theorem tauEmb_eq (τ : D.what₂.Tau) : tauEmb D lam τ = lamTau D lam τ := by
   rfl
 
 end Power
-
-section Main
-
-variable {D : D7} {Dx : DivX D} {Tw : TwForms D}
-
-variable (E : KerEnt D Dx Tw) (O : ∀ u μ, LiftObj D (D.chTw u μ))
-
-end Main
 
 end GlobalTheory.KernelScalarUnit
 end -- clump:auto

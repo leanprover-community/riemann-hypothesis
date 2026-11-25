@@ -683,7 +683,7 @@ theorem stdFst_actO : ∀ (D : D7) (A WW : HSp D) (ν : (AE D)ˣ →* Circle) (e
     · exact absurd (hcond.1 h1) h2
     · exact absurd (hcond.2 h2) h1
     · rfl
-  · rw [if_neg (fun h => hM (hInt.1 h.2.1)), if_neg (fun h => hM h.2.1)]
+  · rw [ite_eq_right (fun h => hM (hInt.1 h.2.1)), ite_eq_right (fun h => hM h.2.1)]
 
 end GlobalTheory.StdFstInv
 
@@ -1035,12 +1035,12 @@ theorem fockSub_mem {m n : ℕ} {K : IntermediateField ℚ ℂ} (hK : ∀ z ∈ 
   unfold fockSub
   rw [MvPolynomial.aeval_X]
   by_cases h1 : y.1 = τ
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     exact hs _ fun i j => by
       split_ifs
       · exact K.mul_mem (hT _ _) (hS _ _)
       · exact hK _ (K.mul_mem (hT _ _) (hS _ _))
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     exact X_mem K _
 
 theorem one_mem_entry {K : IntermediateField ℚ ℂ} {n : ℕ} (i j : Fin n) : (1 : Matrix (Fin n) (Fin n) ℂ) i j ∈ K := by
@@ -1357,7 +1357,7 @@ theorem classSums_span_bottom : ∀ {D : D7} {T : Type} [Finite T] {L : LevCh D 
     · exact mul_mem ((le_sup_left : M₁ ≤ M₁ ⊔ M₂) (hcM b)) ((le_sup_right : M₂ ≤ M₁ ⊔ M₂) hℓM)
     · exact zero_mem _
   rw [e1, Finset.sum_eq_single_of_mem h₀ hh₀ (fun b _ hb => by simp [hb])]
-  simp only [if_true]
+  simp only [ite_true]
   calc ∑ k' ∈ c.support, c k' * ℓ * X.I W.ψ W.θ t (MvPolynomial.monomial k' 1) h₀
       = ∑ k' ∈ c.support ∪ K, c k' * ℓ * X.I W.ψ W.θ t (MvPolynomial.monomial k' 1) h₀ :=
         Finset.sum_subset Finset.subset_union_left fun k' _ hk' => by

@@ -62,12 +62,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.CentralExponent
 
-section Abstract
-
-variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
-
-end Abstract
-
 section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -136,7 +130,7 @@ theorem exists_cong_subset {U : Set (GL n k)} (hU : U ∈ 𝓝 (1 : GL n k)) :
   refine ⟨γ, hγ1, fun g hg => hTU ?_⟩
   have := hγ (g.val - 1)
   have hg' : ∀ i j, valuation k ((g.val - 1) i j) < γ := hg
-  rw [Set.mem_preimage, Set.mem_preimage, if_pos hg', sub_add_cancel] at this
+  rw [Set.mem_preimage, Set.mem_preimage, ite_eq_left hg', sub_add_cancel] at this
   exact this
 
 variable {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]

@@ -165,11 +165,11 @@ theorem nonempty_linear_equiv_of_charpoly_eq (n : ℕ) : ∀ (V W : Type) [AddCo
       haveI : Subsingleton W :=
         Module.finrank_zero_iff.1 (finrank_eq_zero_of_hom (fun a => (h a).symm) h₂ h₁)
       exact ⟨LinearEquiv.ofSubsingleton V W⟩
-    · push_neg at h₂
+    · push Not at h₂
       obtain ⟨f, hf⟩ := h₂
       obtain ⟨e⟩ := step W V (by omega) (fun a => (h a).symm) f hf
       exact ⟨e.symm⟩
-  · push_neg at h₁
+  · push Not at h₁
     obtain ⟨f, hf⟩ := h₁
     exact step V W hn h f hf
 
@@ -339,15 +339,6 @@ def HidaSetting : Prop :=
   ContSemisimple N i r ∧ CharPolyInT N i r ∧ Constituents N i r ∧ ThetaShape N i r ρ
 
 end HidaSetting
-
-section Enlarge
-
-variable (N : NData R H what₂) (i : N.Loc) (N₁ : NData R H what₂) (i₁ : N₁.Loc)
-  (σ : N.Om ≃ₐ[H.E] N₁.Om) (φ : N.O i →+* N₁.O i₁) (β : N.X i ≃ N₁.X i₁)
-
-variable {N i N₁ i₁}
-
-end Enlarge
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CharPolyRootsConstruction
 
@@ -542,24 +533,6 @@ theorem sameSS_of_charpoly_eq (hBN : GlobalTheory.ConstituentsCompare.BrauerNesb
   exact (hf.trans (SameFactors.of_equiv hf.finiteLength_right e')).trans hf'.symm
 
 end Factors
-
-section Distinct
-open Matrix
-
-end Distinct
-
-section BaseChange
-open GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
-
-variable {Γ X A B : Type} [Group Γ] [CommRing A] [CommRing B] {n r t : ℕ}
-
-variable [Algebra A B]
-
-variable [IsDomain A] [IsDomain B]
-
-variable [IsLocalRing A] [IsLocalRing B]
-
-end BaseChange
 
 end GlobalTheory.ConsCompare
 end
