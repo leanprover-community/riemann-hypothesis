@@ -40,6 +40,8 @@ REFERENCE = re.compile(r"(?<![\w/&.-])([\w.-]+/[\w.-]+)#(\d+)\b"
 # The opening line of a fenced code block, and the backtick runs that open and close code spans.
 FENCE = re.compile(r"[ \t]*(`{3,}|~{3,})(.*)")
 TICKS = re.compile(r"`+")
+# One block quote marker, including its optional space.
+QUOTE = re.compile(r" {0,3}> ?")
 # A line that starts a list item, after up to three spaces.
 LIST_ITEM = re.compile(r" {0,3}(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$)")
 
@@ -102,9 +104,10 @@ def _visible(body):
     code blocks, code blocks indented by four spaces and code spans. Each blanked character becomes
     a space, apart from line endings, so every position in the result is the same as in `body`.
 
-    A comment or code block that is never closed runs to the end, as on GitHub. Code spans are read
-    within one line. An indented code block starts after a blank line, or at the start, and not
-    within a list, where indenting continues a list item instead.
+    A comment or code block that is never closed runs to the end, as on GitHub; a quoted fence
+    ends when its block quote does. Code spans are read within one line. An indented code block
+    starts after a blank line, or at the start, and not within a list, where indenting continues
+    a list item instead.
     """
     out = list(body)
 
@@ -113,12 +116,21 @@ def _visible(body):
             if out[at] not in "\r\n":
                 out[at] = " "
 
-    fence, comment = None, False
+    fence, fence_quotes, comment = None, 0, False
     # Whether the line before was blank, or there was none; whether it was in an indented code
     # block; and whether a list item has started and not ended.
     after_blank, indented, in_list = True, False, False
     for start, end in _lines(body):
         line = body[start:end]
+        quote_at, quotes = 0, 0
+        # Inside a fence, only its enclosing quotes are markers: any extra `>` is code.
+        while not fence or quotes < fence_quotes:
+            marker = QUOTE.match(line, quote_at)
+            if not marker:
+                break
+            quote_at, quotes = marker.end(), quotes + 1
+        if fence and quotes < fence_quotes:
+            fence = None
         if not fence and not comment:
             if not line.strip():
                 after_blank = True
@@ -134,8 +146,9 @@ def _visible(body):
             indented, after_blank = False, False
         if fence:
             blank(start, end)
-            close = re.fullmatch(r"[ \t]*(%s{%d,})[ \t]*" % (re.escape(fence[0]), len(fence)), line)
-            if close:
+            content = line[quote_at:]
+            close = re.fullmatch(r"[ \t]*(%s{%d,})[ \t]*" % (re.escape(fence[0]), len(fence)), content)
+            if close and (not fence_quotes or _indent(content) < 4):
                 fence = None
             continue
         at = 0
@@ -147,10 +160,11 @@ def _visible(body):
             blank(start, start + stop + 3)
             at, comment = stop + 3, False
         else:
-            opening = FENCE.fullmatch(line)
+            content = line[quote_at:]
+            opening = FENCE.fullmatch(content) if not quotes or _indent(content) < 4 else None
             # A backtick fence's info string cannot hold a backtick: such a line is a code span.
             if opening and not (opening.group(1)[0] == "`" and "`" in opening.group(2)):
-                fence = opening.group(1)
+                fence, fence_quotes = opening.group(1), quotes
                 blank(start, end)
                 continue
         while at < len(line):

@@ -89,6 +89,31 @@ class Dependencies(unittest.TestCase):
         body = "````\n```\ndepends on #1\n```\ndepends on #2\n````\n~~~\n```\ndepends on #3\n~~~\ndepends on #4\n"
         self.assertEqual(self.read(body), {4})
 
+    def test_quoted_fenced_examples_are_not_dependencies(self):
+        for prefix in ("> ", ">", "> > ", "  >   > "):
+            for fence in ("```", "~~~~"):
+                with self.subTest(prefix=prefix, fence=fence):
+                    body = "\n".join(prefix + line for line in
+                                     (fence + "markdown", "- [ ] depends on #1", fence, "depends on #2"))
+                    self.assertEqual(self.read(body + "\n\ndepends on #3\n"), {2, 3})
+
+    def test_a_quoted_fence_ends_with_its_container(self):
+        self.assertEqual(self.read("> ```\n> depends on #1\ndepends on #2\n"), {2})
+        self.assertEqual(self.read("> > ~~~\n> > depends on #1\n> depends on #2\n"), {2})
+        self.assertEqual(self.read("> ```\n> depends on #1\n\n> depends on #2\n"), {2})
+
+    def test_quote_markers_inside_fences_are_literal(self):
+        self.assertEqual(self.read("```\n> ```\ndepends on #1\n```\ndepends on #2\n"), {2})
+        self.assertEqual(self.read("> ```\n> > ```\n> depends on #1\n> ```\n> depends on #2\n"), {2})
+
+    def test_quoted_fences_still_require_matching_closers(self):
+        body = "> ````\n> ```\n> depends on #1\n> ~~~~\n> depends on #2\n> `````\n> depends on #3\n"
+        self.assertEqual(self.read(body), {3})
+
+    def test_indented_backticks_are_not_quoted_fences(self):
+        self.assertEqual(self.read(">     ```\n> depends on #1\n"), {1})
+        self.assertEqual(self.read("> ```\n>     ```\n> depends on #1\n> ```\n> depends on #2\n"), {2})
+
     def test_an_unclosed_fence_or_comment_runs_to_the_end(self):
         self.assertEqual(self.read("depends on #1\n```\ndepends on #2\n"), {1})
         self.assertEqual(self.read("depends on #1\n<!-- draft\ndepends on #2\n"), {1})
@@ -137,6 +162,13 @@ class Declarations(unittest.TestCase):
 
 
 class Tick(unittest.TestCase):
+    def test_quoted_examples_are_unchanged_and_real_boxes_keep_their_offsets(self):
+        example = "> ```markdown\r\n> - [ ] depends on #1\r\n> ```\r\n"
+        real = "> - [ ] depends on #1\r\n"
+        new, ticked = deps.tick(example + real, REPO, {1})
+        self.assertEqual(new, example + real.replace("[ ]", "[x]"))
+        self.assertEqual([line.index for line in ticked], [3])
+
     def test_only_lines_whose_pull_requests_have_all_landed(self):
         body = "- [ ] depends on: #1, #2\n- [ ] depends on: #1\n- [ ] depends on: #3\n"
         new, ticked = deps.tick(body, REPO, {1, 3})

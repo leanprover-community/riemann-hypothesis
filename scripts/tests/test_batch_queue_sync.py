@@ -1304,6 +1304,16 @@ class StackedBatches(unittest.TestCase):
         gh = self.stacked(ref="batch/b5", body="- [x] depends on: #1018\n")
         self.assertIn("#1050 is stacked on #1018, as a `depends on` line says", sync(gh))
 
+    def test_a_quoted_code_example_does_not_stack_independent_batches(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        by_hand(gh, 11)
+        body = "For example:\n\n> ```markdown\n> - [ ] depends on: #1018\n> ```\n"
+        by_hand(gh, 12, number=1050, ref="batch/independent", name="b5", body=body)
+        log = sync(gh)
+        self.assertFalse([line for line in log if "stacked on" in line])
+        self.assertEqual(self.labels(gh, 1018, 1050), [{BUILDING, LATEST}, {BUILDING, LATEST}])
+
     def test_a_depends_on_line_wins_over_the_branch_name(self):
         gh = Fake()
         queue(gh, 11, 12, 13)
