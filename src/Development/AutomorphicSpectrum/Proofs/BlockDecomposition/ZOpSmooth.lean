@@ -55,7 +55,7 @@ open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.WaveMult
 open GlobalTheory.CompanionTheory.WaveAll
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace GlobalTheory.CompanionTheory.WaveMult.Swap
 

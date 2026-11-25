@@ -14,8 +14,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.StabIntLat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (w : Point D.host.E (D.R.rS + 1))
 
 theorem qbar_qbar (q : FreeE w) : qbar w (qbar w q) = q := by

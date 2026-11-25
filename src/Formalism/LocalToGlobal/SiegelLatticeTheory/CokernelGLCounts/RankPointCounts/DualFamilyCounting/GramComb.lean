@@ -15,8 +15,6 @@ open Classical
 
 namespace Formalism.L2.SG.Pf.Cnt.R1
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def TotPosAll : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (x : D.host.E), star x = x → Formalism.MainNotions.S.LocalSplitGroups.TotPos x → Formalism.HermitianLattices.Ext.L3.TotPos x
 

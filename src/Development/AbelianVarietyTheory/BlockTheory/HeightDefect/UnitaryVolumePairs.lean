@@ -46,8 +46,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.UnitaryVolumePairs
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Volume
 
 variable {D : D7}

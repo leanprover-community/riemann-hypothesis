@@ -18,8 +18,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace Formalism.IndefR.Links
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Three2

@@ -21,8 +21,6 @@ set_option synthInstance.maxHeartbeats 160000
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Adeles
 
 variable {F : Type} [Field F] [NumberField F]

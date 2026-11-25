@@ -62,8 +62,6 @@ open scoped TensorProduct Topology
 
 namespace GlobalTheory.FunObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem natCast_smul_mem_hatL {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
     (Λ : Submodule (𝓞 E) (Fin n → E)) {𝔪 : Ideal (𝓞 E)} {N : ℕ} (hN : (N : 𝓞 E) ∈ 𝔪) {z : Fin n → E ⊗[F] Formalism.L2.Herm.Af F}
     (hz : z ∈ Formalism.L2.Herm.hatL (F := F) Λ) : N • z ∈ Formalism.L2.Herm.hatL (F := F) (𝔪 • Λ) := by

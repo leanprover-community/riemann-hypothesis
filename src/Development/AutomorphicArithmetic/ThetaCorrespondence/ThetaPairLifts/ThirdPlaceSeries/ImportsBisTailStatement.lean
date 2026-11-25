@@ -728,7 +728,6 @@ noncomputable section
 
 namespace GlobalTheory.LevCosetFin
 
-open ReciprocityTheory.Aut
 
 section Grp
 

@@ -62,9 +62,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.FirstOrderRigidityLevel
 
 abbrev Sp (R : Type) [CommRing R] : Scheme.{0} := Spec (CommRingCat.of R)
 
-def Conv (g n k : ℕ) : Prop :=
-  n.Prime ∧ Odd n ∧ 2 ≤ k ∧ 1 + 2 * (g : ℝ) * (2 : ℝ) ^ ((g : ℝ) / 2) < (((n ^ k) ^ 2 : ℕ) : ℝ)
-
 section General
 variable {S : Scheme.{0}}
 

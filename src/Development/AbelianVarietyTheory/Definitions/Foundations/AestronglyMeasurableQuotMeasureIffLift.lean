@@ -648,8 +648,6 @@ instance discreteTopology_ratPts {F E : Type} [Field F] [NumberField F] [Field E
     (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) : DiscreteTopology (ratPts σ J) :=
   GlobalTheory.RationalDiscrete.discreteTopology_HFinIn σ J
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (V : HSp D)
 
 instance discreteTopology_GQ : DiscreteTopology (GQ V) := GlobalTheory.RationalDiscrete.discreteTopology_GQ D V

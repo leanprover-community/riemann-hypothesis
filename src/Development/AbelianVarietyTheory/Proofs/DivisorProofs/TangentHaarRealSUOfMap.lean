@@ -205,7 +205,7 @@ end Chart
 
 section Density
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E)
 

@@ -310,8 +310,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L PositivityTheory.Rg.Rsw.Cell
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {p : ℕ}
 
 theorem idem_mul {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) : e * e = e := by

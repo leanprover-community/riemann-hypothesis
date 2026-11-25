@@ -46,7 +46,6 @@ noncomputable section
 namespace GlobalTheory.TwInputs
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.Host Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.NX ReciprocityTheory.Gal
   NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Col2 GlobalTheory.HeightCounting
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 structure TwistedRealJoin (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (nch : NChoice D) (xd : ThData D) (first : Prop) {G : Type}
     [iG : Group G] [fG : Fintype G] {Pl0 I0 T : Type}
     {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {C : Formalism.L2.Pj.CoreJ D} [aC : Algebra C.Q.c.F D.what₂.LL]

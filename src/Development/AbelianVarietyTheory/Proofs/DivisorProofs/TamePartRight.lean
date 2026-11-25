@@ -199,44 +199,6 @@ set_option backward.isDefEq.respectTransparency false
 open GlobalTheory.SliceSchwartz GlobalTheory.SliceOp
 open scoped ContDiff
 
-theorem GlobalTheory.norm_iteratedFDeriv_succ_le_sum_partial :
-    ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X],
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (g : X → ℂ), ContDiff ℝ ∞ g → ∀ (n : ℕ) (z : X),
-      ‖iteratedFDeriv ℝ (n + 1) g z‖ ≤ C * ∑ i, ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ g w (Module.finBasis ℝ X i)) z‖ := by
-  intro X _ _ _
-  set b := Module.finBasis ℝ X
-  let L : Fin (Module.finrank ℝ X) → ℂ →L[ℝ] X →L[ℝ] ℂ := fun i =>
-    StrongDual.smulRightL ℝ X ℂ (LinearMap.toContinuousLinearMap (b.coord i))
-  refine ⟨∑ i, ‖L i‖, Finset.sum_nonneg (fun i _ => norm_nonneg _), ?_⟩
-  intro g hg n z
-  have hsm : ∀ i, ContDiff ℝ ∞ (fun w => fderiv ℝ g w (b i)) := fun i =>
-    (hg.fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
-  have hdec : fderiv ℝ g = fun w => ∑ i, (L i ∘ (fun w => fderiv ℝ g w (b i))) w := by
-    funext w
-    apply ContinuousLinearMap.ext
-    intro v
-    have hv := b.sum_repr v
-    simp [L]
-
-    conv_lhs => rw [← hv, map_sum]
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [map_smul, Complex.real_smul]
-  have key : iteratedFDeriv ℝ n (fderiv ℝ g) z =
-      ∑ i, iteratedFDeriv ℝ n (⇑(L i) ∘ fun w => fderiv ℝ g w (b i)) z := by
-    conv_lhs => rw [hdec]
-    rw [iteratedFDeriv_sum (fun i _ => ((L i).contDiff.comp (hsm i)).of_le (by exact_mod_cast le_top)),
-      Finset.sum_apply]
-  rw [← norm_iteratedFDeriv_fderiv, key]
-  calc ‖∑ i, iteratedFDeriv ℝ n (⇑(L i) ∘ fun w => fderiv ℝ g w (b i)) z‖
-      ≤ ∑ i, ‖iteratedFDeriv ℝ n (⇑(L i) ∘ fun w => fderiv ℝ g w (b i)) z‖ := norm_sum_le _ _
-    _ ≤ ∑ i, ‖L i‖ * ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ g w (b i)) z‖ := by
-        gcongr with i
-        exact (L i).norm_iteratedFDeriv_comp_left (hsm i).contDiffAt (by exact_mod_cast le_top)
-    _ ≤ ∑ i, (∑ j, ‖L j‖) * ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ g w (b i)) z‖ := by
-        gcongr with i
-        exact Finset.single_le_sum (f := fun j => ‖L j‖) (fun j _ => norm_nonneg _) (Finset.mem_univ i)
-    _ = (∑ j, ‖L j‖) * ∑ i, ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ g w (b i)) z‖ := by
-        rw [Finset.mul_sum]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IteratedDerivativeBoundByPartials =====
@@ -617,16 +579,6 @@ theorem hasFDerivAt_qOp (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (
 
 end GlobalTheory.SliceOpDeriv
 
-open GlobalTheory.SliceSchwartz GlobalTheory.SliceOp in
-theorem GlobalTheory.SliceOp.differentiable_qOp_and_fderiv : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (κ κ' κ₁' : Type) [Fintype κ] [Fintype κ'] [Fintype κ₁']
-    (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ₁' → V) ℂ) (f : SchwartzMap (κ ⊕ κ' → V) ℂ),
-    Differentiable ℝ (qOp P f) ∧ ∀ (s v : κ ⊕ κ₁' → V),
-      fderiv ℝ (qOp P f) s v = qOp P (pd (padL (κ' := κ') (v ∘ Sum.inl)) f) s + qOp ((pd (v ∘ Sum.inr)).comp P) f s := by
-  intro V _ _ _ κ κ' κ₁' _ _ _ P f
-  refine ⟨fun s => (GlobalTheory.SliceOpDeriv.hasFDerivAt_qOp P f s).differentiableAt, fun s v => ?_⟩
-  rw [(GlobalTheory.SliceOpDeriv.hasFDerivAt_qOp P f s).fderiv]
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.coprod_apply]
-  rfl
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -733,102 +685,6 @@ open scoped ContDiff
 
 noncomputable section
 
-namespace GlobalTheory.SliceOp
-open GlobalTheory.SliceSchwartz
-
-variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-  {κ κ' κ₁' : Type} [Fintype κ] [Fintype κ'] [Fintype κ₁']
-
-theorem contDiff_qOp_nat (n : ℕ) : ∀ (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ₁' → V) ℂ)
-    (f : SchwartzMap (κ ⊕ κ' → V) ℂ), ContDiff ℝ n (qOp P f) := by
-  induction n with
-  | zero => intro P f; exact contDiff_zero.2 (_root_.GlobalTheory.SliceOp.differentiable_qOp_and_fderiv V κ κ' κ₁' P f).1.continuous
-  | succ n ih =>
-    intro P f
-    obtain ⟨hd, hf⟩ := _root_.GlobalTheory.SliceOp.differentiable_qOp_and_fderiv V κ κ' κ₁' P f
-    have e : ((n + 1 : ℕ) : WithTop ℕ∞) = (n : WithTop ℕ∞) + 1 := by push_cast; rfl
-    rw [e, contDiff_succ_iff_fderiv_apply]
-    refine ⟨hd, by simp, fun v => ?_⟩
-    have : (fun s => fderiv ℝ (qOp P f) s v) = fun s =>
-        qOp P (pd (padL (κ' := κ') (v ∘ Sum.inl)) f) s + qOp ((pd (v ∘ Sum.inr)).comp P) f s :=
-      funext fun s => hf s v
-    rw [this]
-    exact (ih _ _).add (ih _ _)
-
-theorem contDiff_qOp (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ₁' → V) ℂ)
-    (f : SchwartzMap (κ ⊕ κ' → V) ℂ) : ContDiff ℝ ∞ (qOp P f) :=
-  contDiff_infty.2 fun n => contDiff_qOp_nat n P f
-
-theorem decay_qOp (n : ℕ) : ∀ (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ₁' → V) ℂ) (k : ℕ),
-    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 ≤ C ∧ ∀ (f : SchwartzMap (κ ⊕ κ' → V) ℂ) (z : κ ⊕ κ₁' → V),
-      ‖z‖ ^ k * ‖iteratedFDeriv ℝ n (qOp P f) z‖ ≤ C * s.sup (schwartzSeminormFamily ℂ (κ ⊕ κ' → V) ℂ) f := by
-  induction n with
-  | zero =>
-    intro P k
-    obtain ⟨s, C, hC, h⟩ := _root_.GlobalTheory.SliceOpDecay.decay V κ κ' κ₁' P k
-    exact ⟨s, C, hC, fun f z => by rw [norm_iteratedFDeriv_zero]; exact h f z⟩
-  | succ n ih =>
-    intro P k
-    obtain ⟨CE, hCE, hE⟩ := _root_.GlobalTheory.norm_iteratedFDeriv_succ_le_sum_partial (κ ⊕ κ₁' → V)
-    set b := Module.finBasis ℝ (κ ⊕ κ₁' → V)
-    obtain ⟨s1, C1, hC1, h1⟩ := ih P k
-    choose s1' C1' hC1' h1' using fun i => clm_sup_bound (pd (padL (κ' := κ') (b i ∘ Sum.inl))) s1
-    choose s2 C2 hC2 h2 using fun i => ih ((pd (b i ∘ Sum.inr)).comp P) k
-    refine ⟨Finset.univ.sup (fun i => s1' i ∪ s2 i), CE * ∑ i, (C1 * C1' i + C2 i),
-      mul_nonneg hCE (Finset.sum_nonneg fun i _ => add_nonneg (mul_nonneg hC1 (hC1' i)) (hC2 i)), fun f z => ?_⟩
-    set p := schwartzSeminormFamily ℂ (κ ⊕ κ' → V) ℂ
-    set S := (Finset.univ.sup (fun i => s1' i ∪ s2 i)).sup p f
-    have hmono : ∀ i (t : Finset (ℕ × ℕ)), t ⊆ s1' i ∪ s2 i → t.sup p f ≤ S := by
-      intro i t ht
-      exact Seminorm.le_def.1 (Finset.sup_mono (ht.trans
-        (Finset.le_sup (f := fun i => s1' i ∪ s2 i) (Finset.mem_univ i)))) f
-    have key : ∀ i, ‖z‖ ^ k * ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ (qOp P f) w (b i)) z‖
-        ≤ (C1 * C1' i + C2 i) * S := by
-      intro i
-      have hfun : (fun w => fderiv ℝ (qOp P f) w (b i)) =
-          qOp P (pd (padL (κ' := κ') (b i ∘ Sum.inl)) f) + qOp ((pd (b i ∘ Sum.inr)).comp P) f :=
-        funext fun w => (_root_.GlobalTheory.SliceOp.differentiable_qOp_and_fderiv V κ κ' κ₁' P f).2 w (b i)
-      rw [hfun, iteratedFDeriv_add_apply (contDiff_qOp_nat n _ _).contDiffAt (contDiff_qOp_nat n _ _).contDiffAt]
-      have e1 := h1 (pd (padL (κ' := κ') (b i ∘ Sum.inl)) f) z
-      have e1' := h1' i f
-      have e2 := h2 i f z
-      have m1 := hmono i (s1' i) Finset.subset_union_left
-      have m2 := hmono i (s2 i) Finset.subset_union_right
-      have hz : 0 ≤ ‖z‖ ^ k := by positivity
-      calc ‖z‖ ^ k * ‖iteratedFDeriv ℝ n (qOp P (pd (padL (κ' := κ') (b i ∘ Sum.inl)) f)) z +
-              iteratedFDeriv ℝ n (qOp ((pd (b i ∘ Sum.inr)).comp P) f) z‖
-          ≤ ‖z‖ ^ k * ‖iteratedFDeriv ℝ n (qOp P (pd (padL (κ' := κ') (b i ∘ Sum.inl)) f)) z‖ +
-              ‖z‖ ^ k * ‖iteratedFDeriv ℝ n (qOp ((pd (b i ∘ Sum.inr)).comp P) f) z‖ := by
-            rw [← mul_add]; exact mul_le_mul_of_nonneg_left (norm_add_le _ _) hz
-        _ ≤ C1 * (C1' i * S) + C2 i * S := by
-            refine add_le_add (e1.trans (mul_le_mul_of_nonneg_left (e1'.trans
-              (mul_le_mul_of_nonneg_left m1 (hC1' i))) hC1)) (e2.trans (mul_le_mul_of_nonneg_left m2 (hC2 i)))
-        _ = (C1 * C1' i + C2 i) * S := by ring
-    have hz : 0 ≤ ‖z‖ ^ k := by positivity
-    calc ‖z‖ ^ k * ‖iteratedFDeriv ℝ (n + 1) (qOp P f) z‖
-        ≤ ‖z‖ ^ k * (CE * ∑ i, ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ (qOp P f) w (b i)) z‖) :=
-          mul_le_mul_of_nonneg_left (hE _ (contDiff_qOp P f) n z) hz
-      _ = CE * ∑ i, ‖z‖ ^ k * ‖iteratedFDeriv ℝ n (fun w => fderiv ℝ (qOp P f) w (b i)) z‖ := by
-          rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]; congr 1; funext i; ring
-      _ ≤ CE * ∑ i, (C1 * C1' i + C2 i) * S :=
-          mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun i _ => key i) hCE
-      _ = (CE * ∑ i, (C1 * C1' i + C2 i)) * S := by rw [mul_assoc, Finset.sum_mul]
-
-end GlobalTheory.SliceOp
-
-open GlobalTheory.SliceOp in
-theorem GlobalTheory.SliceOp.exists_tensor_clm : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (κ κ' κ₁' : Type)
-    [Fintype κ] [Fintype κ'] [Fintype κ₁'] (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ₁' → V) ℂ),
-    ∃ Q : SchwartzMap (κ ⊕ κ' → V) ℂ →L[ℂ] SchwartzMap (κ ⊕ κ₁' → V) ℂ,
-      ∀ (f : SchwartzMap (κ ⊕ κ' → V) ℂ) (s : κ ⊕ κ₁' → V), Q f s = P (sliceR f (s ∘ Sum.inl)) (s ∘ Sum.inr) := by
-  intro V _ _ _ κ κ' κ₁' _ _ _ P
-  refine ⟨SchwartzMap.mkCLM (σ := RingHom.id ℂ) (fun f => qOp P f) ?_ ?_ ?_ ?_, fun f s => rfl⟩
-  · intro f g s
-    simp only [qOp, ← sliceRL_apply, map_add (f := _), SchwartzMap.add_apply]
-  · intro a f s
-    simp only [qOp, ← sliceRL_apply, map_smul, SchwartzMap.smul_apply, RingHom.id_apply]
-  · intro f; exact contDiff_qOp P f
-  · rintro ⟨k, n⟩; exact decay_qOp n P k
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -881,45 +737,6 @@ theorem totallyDisconnected_finiteAdele : ∀ (F : Type) [Field F] [NumberField 
     td_of_inj (fun x v => x v) (continuous_pi fun v => RestrictedProduct.continuous_eval v)
       fun x y h => Subtype.ext (funext fun v => congrFun h v)
   exact inferInstanceAs (TotallyDisconnectedSpace (Πʳ v : HeightOneSpectrum (𝓞 F), [v.adicCompletion F, v.adicCompletionIntegers F]))
-
-theorem pureA_sum (F : Type) [Field F] [NumberField F] {κ ι : Type} [Fintype ι] (f : (κ → mixedEmbedding.mixedSpace F) → ℂ)
-    (g : ι → (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) : pureA F f (∑ i, g i) = ∑ i, pureA F f (g i) := by
-  funext x
-  simp [pureA, Finset.sum_apply, Finset.mul_sum]
-
-theorem isTame_partR : ∀ (F : Type) [Field F] [NumberField F] (κ κ' κ₁' : Type) [Fintype κ] [Fintype κ'] [Fintype κ₁']
-    (T : ((κ' → AF F) → ℂ) →ₗ[ℂ] ((κ₁' → AF F) → ℂ)), IsTame F T → IsTame F (partR (κ := κ) T) := by
-  intro F _ _ κ κ' κ₁' _ _ _ T hT g hg
-  haveI := GlobalTheory.AdelicUnitaryTop.locallyCompact_finiteAdele (F := F)
-  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField (F := F)
-  haveI := totallyDisconnected_finiteAdele F
-  obtain ⟨ι₀, _, g₁, g₂, hg₁, hg₂, rfl⟩ := _root_.GlobalTheory.SBProd.exists_sum_box _ κ κ' g hg
-  choose ι inst P g' hg' hP using fun i => hT (g₂ i) (hg₂ i)
-  choose Q hQ using fun (p : Σ i, ι i) => _root_.GlobalTheory.SliceOp.exists_tensor_clm (mixedEmbedding.mixedSpace F) κ κ' κ₁' (P p.1 p.2)
-  refine ⟨Σ i, ι i, inferInstance, Q, fun p z => g₁ p.1 (z ∘ Sum.inl) * g' p.1 p.2 (z ∘ Sum.inr),
-    fun p => GlobalTheory.SchwartzBox.sb_box (hg₁ p.1) (hg' p.1 p.2), fun f => ?_⟩
-
-  rw [pureA_sum, map_sum, Fintype.sum_sigma]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  funext s
-  rw [partR_apply, Finset.sum_apply]
-  set xa : κ → mixedEmbedding.mixedSpace F := fun k => InfiniteAdeleRing.ringEquiv_mixedSpace F (s (Sum.inl k)).1
-  have hfun : (fun x₂ => pureA F f (fun z => g₁ i (z ∘ Sum.inl) * g₂ i (z ∘ Sum.inr)) (Sum.elim (s ∘ Sum.inl) x₂)) =
-      g₁ i (fun k => (s (Sum.inl k)).2) • pureA F (sliceR f xa) (g₂ i) := by
-    funext x₂
-    simp only [pureA, Pi.smul_apply, smul_eq_mul, sliceR_apply]
-    have e : (fun k => InfiniteAdeleRing.ringEquiv_mixedSpace F ((Sum.elim (s ∘ Sum.inl) x₂ : κ ⊕ κ' → AF F) k).1) =
-        Sum.elim xa (fun k => InfiniteAdeleRing.ringEquiv_mixedSpace F (x₂ k).1) := by
-      funext k; cases k <;> rfl
-    rw [e]
-    simp only [Function.comp_def, Sum.elim_inl, Sum.elim_inr]
-    ring
-  rw [hfun, map_smul, hP i (sliceR f xa)]
-  simp only [Pi.smul_apply, Finset.sum_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  simp only [pureA, hQ]
-  simp only [Function.comp_def]
-  ring
 
 end GlobalTheory.TamePartR
 end -- clump:auto

@@ -57,7 +57,6 @@ noncomputable section
 namespace GlobalTheory.CplPt
 open Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section CongBasic
 

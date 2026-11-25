@@ -51,8 +51,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.OrientedCoord
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem mul_gramInv (V : HSp D) : V.gram.map (incA D) * (V.gram⁻¹).map (incA D) = 1 :=

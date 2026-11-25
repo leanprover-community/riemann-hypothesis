@@ -5,7 +5,7 @@ public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transpor
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsPrimeMemAsIdeal
 import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
 import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohField
-public import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohTate
+public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTate
 import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -92,7 +92,7 @@ theorem dualityFor_absGal (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p
     refine Eq.trans ?_ (key _).symm
     refine Eq.trans ?_ (map_nsmul e.symm _ m)
     rw [nsmul_eq_mul, ZMod.natCast_zmod_val]
-  exact PositivityTheory.LocalTateOrthogonality.Gcoh.tate_core CompanionTheory.LocalTateOrthogonality.Gcoh.gcRep CompanionTheory.LocalTateOrthogonality.Gcoh.gc0
+  exact CompanionTheory.LocalTateOrthogonality.Gcoh.tate_core CompanionTheory.LocalTateOrthogonality.Gcoh.gcRep CompanionTheory.LocalTateOrthogonality.Gcoh.gc0
     CompanionTheory.LocalTateOrthogonality.Gcoh.gc1 CompanionTheory.LocalTateOrthogonality.Gcoh.gc2 (galRootsOfUnity.{0} K (PadicAlgCl p) (l ^ r))
     (localDualityHypotheses hn)
     (fun A _ _ hA => finite_cohomology_galois_top K (PadicAlgCl p) hn A hA 1)

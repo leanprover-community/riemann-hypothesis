@@ -121,7 +121,7 @@ theorem isIntegral_trace_of_isIntegral {R K ι : Type*} [CommRing R] [Field K] [
     exact hz0 ((IsUnit.mk0 _ h).map _)
   exact ⟨p, hp, by rwa [eval_map] at heval⟩
 
-theorem isIntegral_trace {E : Type u_1} [inst : Field E] [NumberField E] {n : ℕ}
+theorem isIntegral_trace {E : Type u_1} [inst : Field E] [NumberField E] (_φ : E →+* ℂ) {n : ℕ}
     (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)) (hL : Submodule.FG L)
     (hspan : Submodule.span E (↑L : Set (Fin n → E)) = ⊤)
     (M : Matrix (Fin n) (Fin n) E) (hM : ∀ x ∈ L, Matrix.mulVec M x ∈ L) :

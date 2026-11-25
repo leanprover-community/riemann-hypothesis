@@ -61,7 +61,7 @@ open PositivityTheory.RgTw (Mat)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.RCalc
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

@@ -1177,7 +1177,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
 
 namespace GlobalTheory.HarmInCoef
 
-open NumberField IsDedekindDomain Formalism.L2.DIV
 
 private theorem not_isBasisAt_dualFr_tauLat {E K : Type} [Field E] [NumberField E]
     [Field K] [NumberField K] {ι : Type} {n : ℕ} (emb : ι → E →+* K) (τ : ι)

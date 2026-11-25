@@ -3,6 +3,7 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAmpleOfGenTwist
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
 
@@ -22,22 +23,15 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K 
   [∀ k, Fintype (ι k)] [∀ k, LinearOrder (ι k)]
 
 theorem isMultiHomog_mul {p q : MRingOver S ι} {a b : K → ℕ} (hp : IsMultiHomog p a)
-    (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m₁, h₁, m₂, h₂, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul p q hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hp m₁ h₁ k, hq m₂ h₂ k]
+    (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_mul hp hq
 
 theorem isMultiHomog_monomial (d : (Σ k, ι k) →₀ ℕ) (r : S) (a : K → ℕ)
-    (hd : ∀ k, ∑ i, d ⟨k, i⟩ = a k) : IsMultiHomog (monomial d r : MRingOver S ι) a := by
-  classical
-  intro m hm k
-  rw [Finset.mem_singleton.mp (MvPolynomial.support_monomial_subset hm)]
-  exact hd k
+    (hd : ∀ k, ∑ i, d ⟨k, i⟩ = a k) : IsMultiHomog (monomial d r : MRingOver S ι) a :=
+  funext hd ▸ GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_monomial d r
 
-theorem isMultiHomog_one (a : K → ℕ) (ha : ∀ k, a k = 0) : IsMultiHomog (1 : MRingOver S ι) a := by
-  rw [← MvPolynomial.C_1, MvPolynomial.C_apply]
-  exact isMultiHomog_monomial 0 1 a fun k => by simp [ha k]
+theorem isMultiHomog_one (a : K → ℕ) (ha : ∀ k, a k = 0) : IsMultiHomog (1 : MRingOver S ι) a :=
+  (funext ha).symm ▸ GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_one
 
 variable {V : Ideal (MRingOver S ι)}
 

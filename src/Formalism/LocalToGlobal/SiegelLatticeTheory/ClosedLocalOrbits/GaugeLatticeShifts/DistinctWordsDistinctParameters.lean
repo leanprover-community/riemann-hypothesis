@@ -589,8 +589,6 @@ open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.Pf.IdBlocks2.UkEmb Formalism.L2.SG.Pf.IdBlocks2.TensIrr
 
 theorem jm_allPos (k : ℕ) : Formalism.REAL.Jm (allPos k) = 1 := by
@@ -716,8 +714,6 @@ open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Fo
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem uS_ne {D : D7} {u u' : D.what₂.Word} (hu : u ≠ u') (τ : D.what₂.Tau) : uS D u τ ≠ uS D u' τ := by
   obtain ⟨l, hl⟩ : ∃ l, D.s.letter u l ≠ D.s.letter u' l := by
     by_contra h
@@ -754,8 +750,6 @@ open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Fo
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.Pf.IdBlocks2.Geo
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
@@ -779,8 +773,6 @@ theorem sAt_ne (v w : InfinitePlace X.B.I.F) (hw : w ≠ v) (g : Matrix (Fin D.R
 end Formalism.L2.SG.Pf.IdBlocks2.Geo
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.Pf.IdBlocks2.Geo
 
@@ -819,8 +811,6 @@ theorem idOffIneq_of_lift (hL : IdOffLift F0 F0' what₂ rows' (X := X)) :
 end Formalism.L2.SG.Pf.IdBlocks2.Geo
 
 namespace Formalism.L2.SG.Pf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat

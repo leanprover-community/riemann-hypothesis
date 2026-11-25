@@ -994,7 +994,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.Mem.FramePos
 
-open Formalism.L2.DIV
 
 theorem majAt_XQ_ne_zero {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
     {Pl0 : Type} {B : BlockDat K G Pl0} {ℓ : Lvl K G} {v0 : InfinitePlace K} {s : ℕ}

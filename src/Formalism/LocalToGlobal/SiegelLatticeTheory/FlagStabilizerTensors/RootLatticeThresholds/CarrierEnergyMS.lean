@@ -14,8 +14,6 @@ namespace Formalism.L2.SG.Pf.Carrier.EnergyMS
 
 open Formalism.L2.SG.LocVol Formalism.L2.SG.Pf.Carrier.EnergyConst Formalism.L2.SG.Pf.Carrier.EnergyConst2 Formalism.L2.SG.TypedSets Function
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Defs
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)

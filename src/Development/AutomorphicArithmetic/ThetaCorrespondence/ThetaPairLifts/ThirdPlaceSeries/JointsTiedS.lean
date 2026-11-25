@@ -47,7 +47,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain N
 open scoped TensorProduct
 namespace Formalism.L2
 open Formalism.L2.Joints
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {K : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC}
 structure JointsSAlt {ex : Extra D L hT Gi Gl K Y cX} (T : _root_.Formalism.L2.TiedDataSAlt ex) : Prop where

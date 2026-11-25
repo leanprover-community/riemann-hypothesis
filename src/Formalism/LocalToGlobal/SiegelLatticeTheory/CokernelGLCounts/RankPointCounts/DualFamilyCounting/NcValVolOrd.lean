@@ -48,8 +48,6 @@ namespace Formalism.L2.SG.Pf.NcVal
 
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sdNormDV_of {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F) ℂ) (hA : AnnX X ψ)
     (hψ : IsCharAF X.B.I.F ψ) (hs : IsStdChar ψ) : SdNormDV X ψ := by
   have c1 : SdFromAnn := SdW.sdFromAnn_holds

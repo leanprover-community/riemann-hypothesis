@@ -135,7 +135,6 @@ end
 
 end ReciprocityTheory.AnForm.A.PshLap
 
-open MeasureTheory Metric Set Filter Topology Real
 
 namespace ReciprocityTheory.AnForm.A.PshLap
 
@@ -272,7 +271,6 @@ end
 
 end ReciprocityTheory.AnForm.A.PshLap
 
-open MeasureTheory Metric Set Filter Topology Real
 
 namespace ReciprocityTheory.AnForm.A.PshLap
 
@@ -582,7 +580,6 @@ end
 
 end ReciprocityTheory.AnForm.A.PshMean
 
-open MeasureTheory Metric Set Filter Topology Real
 open scoped ContDiff
 
 namespace ReciprocityTheory.AnForm.A.PshMol
@@ -769,7 +766,6 @@ end ReciprocityTheory.AnForm.A.PshLap
 
 namespace ReciprocityTheory.AnForm.A.PshInh
 
-open MeasureTheory Metric Set Filter Topology Real
 
 noncomputable section
 

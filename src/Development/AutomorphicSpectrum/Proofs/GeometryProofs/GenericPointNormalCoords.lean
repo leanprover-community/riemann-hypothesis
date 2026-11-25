@@ -85,36 +85,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 namespace GenericFibreProof
 
-theorem spMap_field_pt {R K : Type} [CommRing R] [Field K] (δ : R →+* K) (z : Sp K) :
-    (spMap δ z).asIdeal = RingHom.ker δ := by
-  have hz : z.asIdeal = ⊥ := Ideal.eq_bot_of_prime _ (h := z.2)
-  show Ideal.comap δ z.asIdeal = _
-  rw [hz]; rfl
-
-theorem preimm_frac {O F : Type} [CommRing O] [Field F] (β : O →+* F)
-    (h : letI := β.toAlgebra; IsFractionRing O F) : IsPreimmersion (spMap β) := by
-  letI := β.toAlgebra
-  haveI := h
-  exact IsPreimmersion.of_isLocalization (nonZeroDivisors O)
-
-theorem generic_max {X : Type} [TopologicalSpace X] [T0Space X] {v v' : X} (h : v ∈ genericPoints X)
-    (hs : v' ⤳ v) : v' = v := by
-  have h1 : closure {v} ⊆ closure {v'} := specializes_iff_closure_subset.1 hs
-  have h2 : closure {v'} ⊆ closure {v} := h.2 isIrreducible_singleton.closure h1
-  exact (hs.antisymm (specializes_iff_closure_subset.2 h2)).eq
-
-theorem mem_of_dense_of_max {X : Type} [TopologicalSpace X] [TopologicalSpace.NoetherianSpace X] [QuasiSober X]
-    {U : Set X} (ho : IsOpen U) (hd : Dense U) {z : X} (hz : ∀ z', z' ⤳ z → z' = z) : z ∈ U := by
-  have hC := irreducibleComponent_mem_irreducibleComponents z
-  obtain ⟨o, hoo, ⟨u, hu⟩, hoC⟩ :=
-    TopologicalSpace.NoetherianSpace.exists_isOpen_nonempty_subset_irreducibleComponent _ hC
-  obtain ⟨w, hwo, hwU⟩ := hd.inter_open_nonempty o hoo ⟨u, hu⟩
-  have hg := hC.1.isGenericPoint_genericPoint_closure
-  rw [(isClosed_of_mem_irreducibleComponents _ hC).closure_eq] at hg
-  have hgz : hC.1.genericPoint = z := hz _ (hg.specializes mem_irreducibleComponent)
-  have hzw : z ⤳ w := hgz ▸ hg.specializes (hoC hwo)
-  exact hzw.mem_open ho hwU
-
 private theorem isLocallyNoetherian_of_closedImmersion_pSpace (O F : Type) [CommRing O] [Field F] (β : O →+* F) (X : Scheme.{0}) (s : X ⟶ Sp O)
     (hp : IsProjOver s) : TopologicalSpace.NoetherianSpace ↥(pullback (C := Scheme.{0}) s (spMap β)) := by
   obtain ⟨N, i, hi, hs⟩ := hp

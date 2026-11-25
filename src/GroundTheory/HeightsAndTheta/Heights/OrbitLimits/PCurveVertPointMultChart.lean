@@ -9,6 +9,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Smooth.Flat
 import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -26,20 +27,8 @@ variable {K : Type} {ι : K → Type}
 
 theorem aeval_mul_of_homog [Fintype K] [∀ k, Fintype (ι k)] {S : Type*} [CommRing S] [Algebra ℤ S] (r : (Σ k, ι k) → S) (t : K → S) {f : MRing ι}
     {d : K → ℕ} (hf : IsMultiHomog f d) :
-    aeval (fun p => r p * t p.1) f = aeval r f * ∏ k, t k ^ d k := by
-  classical
-
-  rw [f.as_sum, map_sum, map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  rw [aeval_monomial, aeval_monomial, mul_assoc]
-  congr 1
-  rw [Finsupp.prod_fintype _ _ (by simp), Finsupp.prod_fintype _ _ (by simp)]
-  simp_rw [mul_pow, Finset.prod_mul_distrib]
-  congr 1
-  rw [Fintype.prod_sigma]
-  refine Finset.prod_congr rfl fun k _ => ?_
-  dsimp only
-  rw [Finset.prod_pow_eq_pow_sum, hf m hm k]
+    aeval (fun p => r p * t p.1) f = aeval r f * ∏ k, t k ^ d k :=
+  BlockScaling.eval₂_mul_block_right (algebraMap ℤ S) r t hf
 
 theorem map_aeval_int {S T : Type*} [CommRing S] [CommRing T] [Algebra ℤ S] [Algebra ℤ T] (φ : S →+* T) (r : (Σ k, ι k) → S)
     (f : MRing ι) : φ (aeval r f) = aeval (fun p => φ (r p)) f := by

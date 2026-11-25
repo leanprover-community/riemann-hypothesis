@@ -538,94 +538,50 @@ variable (D : D7) (r j p : ℕ) (M : MP D p) (Q : Type) (fl : Q → CF p) (Lt : 
   FlagData := fun _ => Unit
   flagCl := fun _ _ => ()
   allFlags := ()
-  YY_eq := rfl
   Idl := fun _ => Unit
   blowUp := fun _ _ => ()
-  powP := fun _ => True
-  pbPrinc := fun _ _ => True
   Corr := fun _ _ => Unit
-  diagCl := fun _ _ _ => ()
   IvD := fun _ => Unit
-  jIdl := fun _ _ => ()
   ZP := fun _ => M.Gn
   spz := fun _ _ => True
   abP := fun _ => True
   inQ := fun _ => False
   isGenP := fun _ => False
-  isGenP_ab := fun _ h => h.elim
   gpt := fun η => η
-  abAt_iff := fun _ => Iff.rfl
-  gpt_notQ := fun _ h => h
-  genFin := fun _ => M.fin
   genNe := fun _ => M.ne
   redK := fun _ y => y
-  dvRho_pos_iff := fun _ _ => by
-    show 0 < (0 : ℕ) ↔ ¬ True
-    simp
   genK := fun η => η
-  redK_genK := fun _ => rfl
   imgM := fun χ => Empty.elim χ
   imgU := fun χ => Empty.elim χ
-  img_spz := fun χ => Empty.elim χ
-  imgU_inQ := fun χ => Empty.elim χ
-  chAt_imgM := fun χ => Empty.elim χ
-  chAbExact_imgU := fun χ => Empty.elim χ
   RFam := fun _ _ => Unit
-  chFam := fun _ => ()
   ptK := fun _ _ => q₀
-  ptK_good := fun _ _ => ⟨fun _ => rfl, fun _ => h₀⟩
   vpi := fun _ => 1
-  vpi_pos := fun _ => zero_lt_one
-  ordGe := fun _ _ _ _ => True
   yEta := fun _ => q₀
-  yEta_good := fun _ => ⟨fun _ => trivial, fun _ => h₀⟩
   homSh := fun _ _ => ()
-  homSh_inv := fun _ _ _ _ => trivial
   isoSec := fun _ => 0
-  nrm_isoSec := fun φ => Empty.elim φ
   isoSymm := fun φ => Empty.elim φ
-  vrat_symm := fun φ => Empty.elim φ
   LieV := fun _ => PUnit
   lvAdd := fun _ => inferInstance
   lvMod := fun _ => inferInstance
   lieL := fun _ => ⊤
   eig := fun _ _ => ⊤
   Wst := fun _ _ _ => ⊤
-  Wst_le := fun _ _ _ => le_rfl
   taut := fun _ _ _ => ⊤
-  taut_eq := fun _ _ _ => by simp
   nrmIn := fun _ _ _ _ => 0
-  nrmRef_def := fun _ _ _ => rfl
-  nrm_Lb_def := fun _ _ _ => rfl
-  om_smul := fun _ _ _ _ _ => AddSubgroup.mem_top _
   TC := fun _ => PUnit
   tcAdd := fun _ => inferInstance
   tcMod := fun _ => inferInstance
   iT := fun _ => 0
-  iT_span := fun _ => Subsingleton.elim _ _
   htC := fun _ => 0
-  htC_iT := fun _ _ => rfl
-  psiC := fun _ => 0
-  lieGt1 := fun _ => ⊤
-  eT := fun _ _ => 0
   HTn := fun _ => Empty
   htEval := fun h => Empty.elim h
   htIdl := fun _ => ()
-  IsHTBlowup_def := fun n Z' _ => ⟨fun h => h.elim, fun ⟨h, _⟩ => Empty.elim h⟩
-  wFib := fun _ _ _ => ⊤
-  htFlags := fun _ => ()
-  omSh := fun _ => ()
   omPat := fun _ => ⊤
-  omPat_def := fun _ _ _ h => h.elim
   BPt := fun _ => Empty
   bfld := fun _ => M.K
   OmB := fun _ => PUnit
   obAdd := fun _ => inferInstance
   obMod := fun _ => inferInstance
-  omB := fun _ => ⊤
-  omPB := fun _ => ⊤
-  eOmB := fun _ _ => ⊤
-  eB := fun _ _ => 0
   YsP := fun _ => Empty
   ysBd := fun _ => True
   FlP := Unit
@@ -635,22 +591,11 @@ variable (D : D7) (r j p : ℕ) (M : MP D p) (Q : Type) (fl : Q → CF p) (Lt : 
   flDim := fun _ => 0
   Sum1 := Unit
   locus := fun _ => ()
-  bdryLoci_def := fun _ => ⟨fun _ => ⟨∅, Set.finite_empty, fun x => Empty.elim x, by simp⟩, fun _ => trivial⟩
   CrvS := fun _ => Empty
   degGr := fun _ _ _ => 0
-  nefHT_def := fun _ _ => ⟨fun _ C => Empty.elim C, fun _ => trivial⟩
   CrvQ := Empty
   degGrQ := fun _ _ _ => 0
-  nefQ_def := fun _ => ⟨fun _ C => Empty.elim C, fun _ => trivial⟩
   degGrD := fun c => M.dg c
-  degLdR_def := fun _ _ => rfl
-  degLie_f := fun _ _ => rfl
-  degLie_alt := fun _ _ => rfl
-  eDeg_def := fun _ _ => rfl
-  Pm_head := fun c τ i _ h2 => le_trans (le_abs_self _)
-    (abs_le_pmM D (M.dg c) (r + j) τ _ (Finset.Icc_subset_Icc le_rfl (by omega)))
-  Pm_tail := fun c τ i _ _ => le_trans (neg_le_abs _)
-    (abs_le_pmM D (M.dg c) (r + j) τ _ (Finset.Icc_subset_Icc (by omega) (by omega)))
 
 end
 

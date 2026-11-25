@@ -61,8 +61,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Generic
 
 theorem idem_sum_zero {K R ι : Type*} [Field K] [CharZero K] [CommRing R] [Algebra K R] (s : Finset ι) (p : ι → R)

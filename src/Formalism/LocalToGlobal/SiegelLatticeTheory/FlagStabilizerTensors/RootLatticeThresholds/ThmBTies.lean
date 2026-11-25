@@ -13,8 +13,6 @@ namespace Formalism.L2.SG.Pf.OrderedProducts
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.MainNotions.BesselShellMomentBounds Formalism.L2.SG.RowsConc Formalism.FourierDecayAlt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lists
 
 def oprod {X : Type*} (G : ℕ → X × ℕ → ℝ) : ℕ → List (X × ℕ) → ℝ

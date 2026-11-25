@@ -779,7 +779,6 @@ noncomputable section
 
 namespace GlobalTheory.CovTop.WtSz
 
-open GlobalTheory.CompHS
 
 theorem abs_ofGaps_le {N : ℕ} (a : ℕ) (g : ℕ → ℤ) (hg : ∀ k, N ≤ k → g k = 0) (j : Fin N) :
     |((ofGaps a g j : ℤ) : ℝ)| ≤ 2 * ∑ k ∈ Finset.range N, |(g k : ℝ)| := by
@@ -851,7 +850,6 @@ end GlobalTheory.CovTop.WtSz
 
 namespace GlobalTheory.CovTop.WtSz
 
-open GlobalTheory.CompHS
 
 theorem gap_sub_const {N : ℕ} (w : Fin N → ℤ) (c : ℤ) (k : ℕ) : gap (fun j => w j - c) k = gap w k := by
   unfold gap; split_ifs <;> ring
@@ -1203,10 +1201,8 @@ open scoped TensorProduct
 open scoped GlobalTheory.CompHt
 noncomputable section
 namespace GlobalTheory.CovTop.WtSz
-open GlobalTheory.CompHS
 end GlobalTheory.CovTop.WtSz
 namespace GlobalTheory.CovTop.WtSz
-open GlobalTheory.CompHS
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
 end GlobalTheory.CovTop.WtSz
 namespace GlobalTheory.CovTop.WtSz

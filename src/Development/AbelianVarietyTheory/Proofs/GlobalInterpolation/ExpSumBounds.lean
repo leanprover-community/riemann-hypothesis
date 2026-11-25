@@ -175,18 +175,24 @@ lemma integral_integral_exp_kernel (A : ℝ → ℂ) (hA : Measurable A) (K : �
     Complex.ofReal_cpow hx0.le]
   norm_num
 
-lemma LFam.a_le_mul (𝓕 : LFam) (g : 𝓕.G) (n : ℕ) : 𝓕.a g n ≤ 14 * n := by
+/-- The counting estimate bounds the full partial sum, and hence each coefficient. -/
+lemma LFam.sum_a_le_mul (𝓕 : LFam) (g : 𝓕.G) (n : ℕ) :
+    ∑ m ∈ Finset.Icc 1 n, 𝓕.a g m ≤ 14 * n := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [𝓕.a_zero]
+  · simp
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have h := (abs_le.1 (𝓕.count g n hn1)).2
   rw [Nat.floor_natCast] at h
-  have h2 : 𝓕.a g n ≤ ∑ m ∈ Finset.Icc 1 n, 𝓕.a g m :=
-    Finset.single_le_sum (f := 𝓕.a g) (fun m _ => 𝓕.a_nonneg g m) (Finset.mem_Icc.2 ⟨hn, le_rfl⟩)
-  have h3 : Real.sqrt n ≤ n := by
+  have hs : Real.sqrt n ≤ n := by
     rw [Real.sqrt_le_left (by positivity)]; nlinarith
-  have h4 : 𝓕.κ * n ≤ 4 * n := by gcongr; exact 𝓕.κ_le
+  have hκ : 𝓕.κ * n ≤ 4 * n := by gcongr; exact 𝓕.κ_le
   linarith
+
+lemma LFam.a_le_mul (𝓕 : LFam) (g : 𝓕.G) (n : ℕ) : 𝓕.a g n ≤ 14 * n := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [𝓕.a_zero]
+  · exact (Finset.single_le_sum (f := 𝓕.a g) (fun m _ => 𝓕.a_nonneg g m)
+      (Finset.mem_Icc.2 ⟨hn, le_rfl⟩)).trans (𝓕.sum_a_le_mul g n)
 
 lemma summable_nat_mul_exp_neg {t : ℝ} (ht : 0 < t) :
     Summable (fun n : ℕ => (n : ℝ) * Real.exp (-(t * n))) := by

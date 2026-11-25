@@ -53,8 +53,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.ExportSeries
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {m n : ℕ}
 
 abbrev GLR (D : D7) (n : ℕ) : Type := D.what₂.Tau → GL (Fin n) ℂ

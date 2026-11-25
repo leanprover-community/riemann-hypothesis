@@ -99,20 +99,25 @@ theorem codSub_injective {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V
   fun _ _ hab => hf (congrArg Subtype.val hab)
 
 include hT in
-theorem mid_sub {V : Type} [AddCommGroup V] [Module ℂ V] {P : Representation ℂ (GL (Fin m) k) V}
-    (hP : HasFiniteLength P) (hs : IsSmooth P) (x : IrrCl (GL (Fin N) k)) (S : Subrepresentation P)
-    (hx : ∃ f : x.rep.ρ.IntertwiningMap (T S.toRepresentation).ρ, Function.Injective f) :
-    ∃ c : IrrCl (GL (Fin m) k), IsSubquotient c.rep.ρ P ∧
-      ∃ f : x.rep.ρ.IntertwiningMap (T c.rep.ρ).ρ, Function.Injective f := by
-  exact CompanionTheory.Exh.mid_sub T Tm hT hP hs x S hx
-
-include hT in
 theorem mid_gen {V : Type} [AddCommGroup V] [Module ℂ V] {P : Representation ℂ (GL (Fin m) k) V}
     (hP : HasFiniteLength P) (hs : IsSmooth P) (x : IrrCl (GL (Fin N) k))
     (f : x.rep.ρ.IntertwiningMap (T P).ρ) (hf : Function.Injective f) :
     ∃ c : IrrCl (GL (Fin m) k), IsSubquotient c.rep.ρ P ∧
       ∃ f : x.rep.ρ.IntertwiningMap (T c.rep.ρ).ρ, Function.Injective f := by
-  exact CompanionTheory.Exh.mid_gen T Tm hT hP hs x f hf
+  have hInj : ∀ {A B : Type} [AddCommGroup A] [Module ℂ A] [AddCommGroup B] [Module ℂ B]
+      {σ₁ : Representation ℂ (GL (Fin m) k) A} {σ₂ : Representation ℂ (GL (Fin m) k) B}
+      (f : σ₁.IntertwiningMap σ₂), Function.Injective f → Function.Injective (Tm f) := by
+    intro A B _ _ _ _ σ₁ σ₂ f hf
+    refine (hT f (quotMk (Representation.IntertwiningMap.range σ₁ σ₂ f)) hf ?_).1
+    intro y
+    show (Representation.IntertwiningMap.range σ₁ σ₂ f).toSubmodule.mkQ y = 0 ↔ _
+    rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+    exact Representation.IntertwiningMap.mem_range σ₁ σ₂ f y
+  let j : P.IntertwiningMap (⊤ : Subrepresentation P).toRepresentation :=
+    ⟨LinearMap.codRestrict (⊤ : Subrepresentation P).toSubmodule LinearMap.id (fun v => Submodule.mem_top),
+      fun g => LinearMap.ext fun v => Subtype.ext rfl⟩
+  have hj : Function.Injective j := fun a b h => congrArg Subtype.val h
+  exact CompanionTheory.Exh.mid_sub T Tm hT hP hs x ⊤ ⟨(Tm j).comp f, fun a b h => hf (hInj j hj h)⟩
 
 end General
 
@@ -214,11 +219,26 @@ theorem refineP' : RefineP k := fun x σ A M B hσ hx => by
   exact embL_block h hd (emb_trans (emb_of_iso (iso_symm (iso_single σ h))) e) hx
 
 variable (k) in
-theorem swapP' (h : GlobalTheory.BZSeg.LUnlinkedComm k) : SwapP k := CompanionTheory.Exh.swapP' k h
+theorem swapP' (h : GlobalTheory.BZSeg.LUnlinkedComm k) : SwapP k := fun x a b A B Δ Γ ha hb hl hx => by
+  have hd : ∑ i, (![a, b] i).1 = a.1 + b.1 := by simp [Fin.sum_univ_two]
+  have hd' : ∑ i, (![b, a] i).1 = a.1 + b.1 := by simp [Fin.sum_univ_two, add_comm]
+  have h1 : ∑ i, ([a, b].get i).1 = a.1 + b.1 := by simp
+  have h2 : ∑ i, ([b, a].get i).1 = a.1 + b.1 := by simp [add_comm]
+  exact embL_block h1 h2 (emb_of_iso (iso_trans (pr_congr (by simp [List.ofFn_succ]) h1 hd)
+    (iso_trans (iso_pr_of _ _ hd hd' (h Δ Γ a b _ hd hd' hl ha hb)) (pr_congr (by simp [List.ofFn_succ]) hd' h2)))) hx
 
 variable (k) in
-theorem midP' (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) : MidP k :=
-  CompanionTheory.Exh.midP' k hA
+theorem midP' (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) : MidP k := fun x A M B hx => by
+  obtain ⟨hd, e⟩ := (embL_iff _ _).1 hx
+  obtain ⟨m, hM⟩ : ∃ m, ∑ a, (M.get a).1 = m := ⟨_, rfl⟩
+  have h1 : ∑ a, (A.get a).1 + (m + ∑ a, (B.get a).1) = x.1 := by rw [← hM, ← deg3, hd]
+  obtain ⟨c, hc, e'⟩ := mid_br x rfl h1 _ _ _ (fl_pr hA M.get hM) (sm_pr M.get hM)
+    (emb_trans e (emb_of_iso (stage3_iso A M B hd rfl hM rfl rfl h1)))
+  have hs : ∑ a, ([(⟨m, c⟩ : IrrGL (k := k))].get a).1 = m := by simp
+  have hd' : ∑ a, ((A ++ [(⟨m, c⟩ : IrrGL (k := k))] ++ B).get a).1 = x.1 := by rw [deg3, hs, h1]
+  refine ⟨⟨m, c⟩, ⟨hM, (sq_pr_iff ⟨m, c⟩ M.get hM).1 hc⟩, (embL_iff _ _).2 ⟨hd', ?_⟩⟩
+  exact emb_trans (emb_trans e' (embedding_middle_factor_triple rfl h1 _ _ (emb_of_iso (iso_single ⟨m, c⟩ hs))))
+    (emb_of_iso (iso_symm (stage3_iso A [⟨m, c⟩] B hd' rfl hs rfl rfl h1)))
 
 end PositivityTheory.Exh
 

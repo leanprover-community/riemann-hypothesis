@@ -54,8 +54,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.Mem.DfGen
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 def RamSp {B : Base} (C : Cols B) (u : B.Word) : Type := (C.mem u).A.Mram
 
 instance {B : Base} (C : Cols B) (u : B.Word) : AddCommGroup (RamSp C u) :=

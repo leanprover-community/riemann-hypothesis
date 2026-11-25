@@ -50,7 +50,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Stan
 open Filter Topology IsDedekindDomain NumberField
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (compFin)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.KStabBridge
 

@@ -156,7 +156,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Top.Bl
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting NumberField IsDedekindDomain
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

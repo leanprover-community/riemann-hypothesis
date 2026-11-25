@@ -73,7 +73,6 @@ namespace UpperTheory.Bc
 
 abbrev prodW (W : Scheme.{0}) : Scheme.{0} ⥤ Scheme.{0} := prod.functor.obj W
 
-set_option backward.isDefEq.respectTransparency false in
 theorem prodW_compatible (W : Scheme.{0}) :
     CompatiblePreserving Scheme.etaleTopology.{0} (prodW W) := by
   constructor

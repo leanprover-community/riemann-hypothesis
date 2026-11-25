@@ -11,8 +11,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Herm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def SameOff {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} (P : Ideal (𝓞 E))
     (A B : Submodule (𝓞 E) S.V) : Prop :=
   ∀ (q : Ideal (𝓞 E)) (hq : q.IsMaximal), q ≠ P → q ≠ Formalism.HermitianLatticesTheory.conjIdeal (K := E) P →

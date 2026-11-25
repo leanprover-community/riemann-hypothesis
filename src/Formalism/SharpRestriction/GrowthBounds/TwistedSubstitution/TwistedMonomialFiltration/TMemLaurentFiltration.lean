@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
+public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivativeValuationBounds
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -69,13 +70,7 @@ def covDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × Fin 
   classical
   exact ∑ v ∈ al.support, if v.1 ∈ S ∧ LL.vec v.1 = false then al v else 0
 
-structure flt_Fil (B : Type*) [CommRing B] where
-  F : ℤ → AddSubgroup B
-  mul_mem : ∀ {t u : ℤ} {a b : B}, a ∈ F t → b ∈ F u → a * b ∈ F (t + u)
-  one_mem : (1 : B) ∈ F 0
-  anti : ∀ {t u : ℤ}, t ≤ u → F u ≤ F t
-
-def flt_L (A : Type*) [CommRing A] (e : ℤ) : flt_Fil (LaurentPolynomial A) where
+def flt_L (A : Type*) [CommRing A] (e : ℤ) : Formalism.MainNotions.G.GLWeightTheory.flt_Fil (LaurentPolynomial A) where
   F t :=
     { carrier := {f | ∀ k : ℤ, f.coeff k ≠ 0 → t ≤ e * k}
       zero_mem' := by intro k hk; simp at hk
@@ -137,8 +132,8 @@ theorem T_mem_laurentFiltration {A : Type*} [CommRing A] (e k : ℤ) : (LaurentP
   · rw [h]
   · exact absurd rfl hk
 
-def flt_lift {B : Type*} [CommRing B] {σ : Type*} (Fl : flt_Fil B) (wt : (σ →₀ ℕ) →+ ℤ) :
-    flt_Fil (MvPolynomial σ B) where
+def flt_lift {B : Type*} [CommRing B] {σ : Type*} (Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B) (wt : (σ →₀ ℕ) →+ ℤ) :
+    Formalism.MainNotions.G.GLWeightTheory.flt_Fil (MvPolynomial σ B) where
   F t :=
     { carrier := {P | ∀ m, AddMonoidAlgebra.coeff P m ∈ Fl.F (t - wt m)}
       zero_mem' := by intro m; simp
@@ -172,10 +167,10 @@ def flt_lift {B : Type*} [CommRing B] {σ : Type*} (Fl : flt_Fil B) (wt : (σ �
     intro t u h P hP m
     exact Fl.anti (by linarith) (hP m)
 
-theorem flt_lift_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : flt_Fil B} {wt : (σ →₀ ℕ) →+ ℤ} {t : ℤ}
+theorem flt_lift_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B} {wt : (σ →₀ ℕ) →+ ℤ} {t : ℤ}
     {P : MvPolynomial σ B} : P ∈ (flt_lift Fl wt).F t ↔ ∀ m, AddMonoidAlgebra.coeff P m ∈ Fl.F (t - wt m) := Iff.rfl
 
-theorem flt_monomial_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : flt_Fil B} {wt : (σ →₀ ℕ) →+ ℤ} {t : ℤ}
+theorem flt_monomial_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B} {wt : (σ →₀ ℕ) →+ ℤ} {t : ℤ}
     {m : σ →₀ ℕ} {a : B} (ha : a ∈ Fl.F (t - wt m)) : monomial m a ∈ (flt_lift Fl wt).F t := by
   classical
   rw [flt_lift_mem]
@@ -185,12 +180,12 @@ theorem flt_monomial_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : flt_Fil B} 
   · subst h; exact ha
   · exact (Fl.F _).zero_mem
 
-theorem flt_C_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : flt_Fil B} {wt : (σ →₀ ℕ) →+ ℤ} {t : ℤ}
+theorem flt_C_mem {B : Type*} [CommRing B] {σ : Type*} {Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B} {wt : (σ →₀ ℕ) →+ ℤ} {t : ℤ}
     {a : B} (ha : a ∈ Fl.F t) : (C a : MvPolynomial σ B) ∈ (flt_lift Fl wt).F t := by
   have := flt_monomial_mem (wt := wt) (m := 0) (a := a) (t := t) (by simpa using ha)
   rwa [← C_apply] at this
 
-theorem flt_pow_mem {B : Type*} [CommRing B] (Fl : flt_Fil B) {t : ℤ} {a : B} (ha : a ∈ Fl.F t) (k : ℕ) :
+theorem flt_pow_mem {B : Type*} [CommRing B] (Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B) {t : ℤ} {a : B} (ha : a ∈ Fl.F t) (k : ℕ) :
     a ^ k ∈ Fl.F (k * t) := by
   induction k with
   | zero => simpa using Fl.one_mem
@@ -200,7 +195,7 @@ theorem flt_pow_mem {B : Type*} [CommRing B] (Fl : flt_Fil B) {t : ℤ} {a : B} 
     have e : ((k : ℤ) * t + t) = ((k + 1 : ℕ) : ℤ) * t := by push_cast; ring
     rwa [e] at this
 
-theorem flt_hom_monomial {B₀ B' : Type*} [CommRing B₀] [CommRing B'] {σ : Type*} (Fl' : flt_Fil B')
+theorem flt_hom_monomial {B₀ B' : Type*} [CommRing B₀] [CommRing B'] {σ : Type*} (Fl' : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B')
     (φ : MvPolynomial σ B₀ →+* B') (wt : (σ →₀ ℕ) →+ ℤ)
     (hX : ∀ w, φ (X w) ∈ Fl'.F (wt (Finsupp.single w 1))) (m : σ →₀ ℕ) :
     φ (monomial m 1) ∈ Fl'.F (wt m) := by
@@ -217,7 +212,7 @@ theorem flt_hom_monomial {B₀ B' : Type*} [CommRing B₀] [CommRing B'] {σ : T
     rw [e2, map_nsmul, nsmul_eq_mul]
     exact hp
 
-theorem flt_hom_mem {B₀ B' : Type*} [CommRing B₀] [CommRing B'] {σ : Type*} (Fl : flt_Fil B₀) (Fl' : flt_Fil B')
+theorem flt_hom_mem {B₀ B' : Type*} [CommRing B₀] [CommRing B'] {σ : Type*} (Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B₀) (Fl' : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B')
     (φ : MvPolynomial σ B₀ →+* B') (wt : (σ →₀ ℕ) →+ ℤ)
     (hC : ∀ (t : ℤ) (b : B₀), b ∈ Fl.F t → φ (C b) ∈ Fl'.F t)
     (hX : ∀ w, φ (X w) ∈ Fl'.F (wt (Finsupp.single w 1))) {t : ℤ} {P : MvPolynomial σ B₀}
@@ -232,7 +227,7 @@ theorem flt_hom_mem {B₀ B' : Type*} [CommRing B₀] [CommRing B'] {σ : Type*}
   have := Fl'.mul_mem (hC _ _ ((flt_lift_mem.1 hP) m)) (flt_hom_monomial Fl' φ wt hX m)
   rwa [sub_add_cancel] at this
 
-abbrev laurentCoeffFiltration (R : Type*) [CommRing R] (n : ℕ) (σ : Type*) (e : ℤ) : flt_Fil (MvPolynomial σ (GLLaurent R n)) :=
+abbrev laurentCoeffFiltration (R : Type*) [CommRing R] (n : ℕ) (σ : Type*) (e : ℤ) : Formalism.MainNotions.G.GLWeightTheory.flt_Fil (MvPolynomial σ (GLLaurent R n)) :=
   flt_lift (flt_L (GLCoord R n) e) 0
 
 theorem flt_mem_sDegs {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} (LL : Letters ι) (S : Set ι) (j : Fin n)
@@ -288,56 +283,9 @@ theorem flt_lam1S_le {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} [NeZero n] 
     simp only [AddMonoidHom.zero_apply, sub_zero, neg_one_mul, neg_le_neg_iff] at this
     exact WithBot.coe_le_coe.2 this
 
-theorem flt_withTop_le {a b : WithTop ℤ} {N : ℤ}
-    (h : ∀ t : ℤ, (t : WithTop ℤ) ≤ a → ((t - N : ℤ) : WithTop ℤ) ≤ b) : a ≤ b + (N : WithTop ℤ) := by
-  induction a using WithTop.recTopCoe with
-  | top =>
-    induction b using WithTop.recTopCoe with
-    | top => simp
-    | coe c =>
-      exfalso
-      have := WithTop.coe_le_coe.1 (h (c + N + 1) le_top)
-      linarith
-  | coe x =>
-    have h1 := h x le_rfl
-    induction b using WithTop.recTopCoe with
-    | top => simp
-    | coe c =>
-      have := WithTop.coe_le_coe.1 h1
-      rw [← WithTop.coe_add, WithTop.coe_le_coe]
-      linarith
-
-theorem flt_withTop_add_le {a b c : WithTop ℤ}
-    (h : ∀ t u : ℤ, (t : WithTop ℤ) ≤ a → (u : WithTop ℤ) ≤ b → ((t + u : ℤ) : WithTop ℤ) ≤ c) : a + b ≤ c := by
-  induction a using WithTop.recTopCoe with
-  | top =>
-    induction c using WithTop.recTopCoe with
-    | top => exact le_top
-    | coe z =>
-      exfalso
-      induction b using WithTop.recTopCoe with
-      | top =>
-        have := WithTop.coe_le_coe.1 (h (z + 1) 0 le_top le_top)
-        linarith
-      | coe y =>
-        have := WithTop.coe_le_coe.1 (h (z - y + 1) y le_top le_rfl)
-        linarith
-  | coe x =>
-    induction b using WithTop.recTopCoe with
-    | top =>
-      induction c using WithTop.recTopCoe with
-      | top => exact le_top
-      | coe z =>
-        exfalso
-        have := WithTop.coe_le_coe.1 (h x (z - x + 1) le_rfl le_top)
-        linarith
-    | coe y =>
-      rw [← WithTop.coe_add]
-      exact h x y le_rfl le_rfl
-
 theorem flt_valS_mul_ge {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} [NeZero n] (LL : Letters ι) (S : Set ι)
     (F G : MvPolynomial (ι × Fin n) R) : valS LL S F + valS LL S G ≤ valS LL S (F * G) := by
-  apply flt_withTop_add_le
+  apply Formalism.MainNotions.G.GLWeightTheory.flt_withTop_add_le
   intro t u ht hu
   rw [flt_le_valS] at ht hu ⊢
   rw [map_mul]

@@ -12,8 +12,6 @@ open scoped TensorProduct ContDiff
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def ratMx (D : D7) (m n : ℕ) : AddSubgroup (Mx D m n) :=

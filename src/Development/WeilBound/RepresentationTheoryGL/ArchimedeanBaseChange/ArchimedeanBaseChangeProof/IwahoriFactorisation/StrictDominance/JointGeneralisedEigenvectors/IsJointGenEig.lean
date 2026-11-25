@@ -60,13 +60,9 @@ structure CassData (G : Type) [Group G] [TopologicalSpace G] where
   J : Subgroup G
   isOpen_J : IsOpen (J : Set G)
   isCompact_J : IsCompact (J : Set G)
-  isClosed_N : IsClosed (N : Set G)
-  isClosed_Nm : IsClosed (Nm : Set G)
   isClosed_alt : IsClosed (T : Set G)
   norm_N : ∀ t ∈ T, t ∈ Subgroup.normalizer (N : Set G)
   norm_Nm : ∀ t ∈ T, t ∈ Subgroup.normalizer (Nm : Set G)
-
-  fact_low : ∀ x ∈ J, ∃ a ∈ J ⊓ Nm, ∃ b ∈ J ⊓ T, ∃ c ∈ J ⊓ N, x = a * b * c
 
   fact_up : ∀ x ∈ J, ∃ c ∈ J ⊓ N, ∃ b ∈ J ⊓ T, ∃ a ∈ J ⊓ Nm, x = c * b * a
 

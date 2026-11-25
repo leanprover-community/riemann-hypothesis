@@ -150,7 +150,7 @@ variable {R : Ranks} (H : Host R)
 
 theorem hypOdd : HypOdd H.q H.d := hypOdd_of_hostHyp H.hyp
 
-@[instance_reducible] noncomputable def cmStar : StarRing H.E :=
+@[instance_reducible] noncomputable instance cmStar : StarRing H.E :=
   @NumberField.IsCMField.starRing H.E _ _ H.isCMField_hostE _
 
 noncomputable def sigmaOf (g : R.GG) : H.E ≃ₐ[ℚ] H.E := H.gal.symm g

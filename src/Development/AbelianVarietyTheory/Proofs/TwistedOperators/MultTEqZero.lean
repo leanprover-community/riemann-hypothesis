@@ -56,8 +56,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR.Mult GlobalTheory.SmVec MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Grid.Sep
 
 theorem density {G H ι : Type} [Group G] [Fintype ι] [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]

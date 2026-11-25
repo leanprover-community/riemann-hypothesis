@@ -87,20 +87,9 @@ theorem tu_of_sharp {X : Scheme.{0}} (D : LineData X) (B : PAlg l) (a b : Spec (
   rw [D.nat (gU B) a b h, tu_apply, hw, ← toΓ_nat, toΓ_hom]
   rfl
 
-theorem exists_root (A : PAlg l) (n : ℕ) (w : (A.A)ˣ) : ∃ ω : (A.A)ˣ, ω ^ l ^ n = w := by
-  have hs : ∀ (n : ℕ) (x : A.A), ∃ y : A.A, y ^ l ^ n = x := by
-    intro n
-    induction n with
-    | zero => exact fun x => ⟨x, by simp⟩
-    | succ n ih =>
-      intro x
-      obtain ⟨y, hy⟩ := (PerfectRing.bijective_frobenius (R := A.A) (p := l)).2 x
-      obtain ⟨z, hz⟩ := ih y
-      exact ⟨z, by rw [pow_succ, pow_mul, hz]; exact hy⟩
-  obtain ⟨y, hy⟩ := hs n w
-  have hu : IsUnit y := (isUnit_pow_iff (pow_ne_zero _ (Fact.out : l.Prime).ne_zero)).1 (hy ▸ w.isUnit)
-  obtain ⟨ω, rfl⟩ := hu
-  exact ⟨ω, Units.ext (by simpa using hy)⟩
+theorem exists_root (A : PAlg l) (n : ℕ) (w : (A.A)ˣ) : ∃ ω : (A.A)ˣ, ω ^ l ^ n = w :=
+  ⟨Units.map (powMulEquiv A.A (l ^ n)).symm.toMonoidHom w,
+    Units.ext (by simp)⟩
 
 section Main
 variable {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {M : Model l K} {C : Type 1} [Category.{0} C]

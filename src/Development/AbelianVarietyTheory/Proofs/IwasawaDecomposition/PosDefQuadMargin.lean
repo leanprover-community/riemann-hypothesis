@@ -115,7 +115,6 @@ theorem posDef_quad_margin {ι : Type} [Fintype ι] (M : ι → ι → ℝ)
   have hK0 : 0 ≤ K := sq_nonneg _
   refine ⟨μ / (2 * K + 1), div_pos hμpos (by linarith), ?_⟩
   intro E hE c hc
-  have hη0 : 0 ≤ μ / (2 * K + 1) := (div_pos hμpos (by linarith)).le
   have herr := quad_err E _ hE c
   have hs : 0 < ‖c‖ := norm_pos_iff.mpr hc
   have hsplit : ∑ i, ∑ j, c i * c j * (M i j + E i j)

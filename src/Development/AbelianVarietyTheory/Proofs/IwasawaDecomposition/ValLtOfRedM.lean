@@ -463,7 +463,7 @@ end Small
 
 open Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2.TC
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
+attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 
 

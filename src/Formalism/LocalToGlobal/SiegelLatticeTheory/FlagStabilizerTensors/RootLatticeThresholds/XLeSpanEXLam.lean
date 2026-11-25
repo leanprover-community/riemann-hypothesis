@@ -20,8 +20,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.L2.SG.Pf.FinXP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Reps
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}

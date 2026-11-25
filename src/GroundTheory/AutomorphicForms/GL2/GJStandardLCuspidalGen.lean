@@ -732,7 +732,6 @@ theorem exists_pureTensor (P : CuspidalAutomorphicRepresentation K n) (D : Adeli
 
 section Sph
 
-open scoped Classical
 
 theorem exists_pureTensor_spherical (P : CuspidalAutomorphicRepresentation K n) (D : AdelicDecomposition P.toModule) :
     ∃ (a : D.toDecomposition.W₁) (x : ∀ v, D.finite.W v), IsRestricted D.finite.ξ x ∧ a ≠ 0 ∧ (∀ v, x v ≠ 0) ∧

@@ -60,41 +60,6 @@ open scoped ENNReal ContDiff ComplexConjugate Matrix
 
 noncomputable section
 
-namespace BergmanDensIntegrable
-
-variable {D : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas D X}
-
-theorem hessC_weight_trans {L : HolLineBundle A} (W : Weight L) (j k : Fin A.n) {y : Fin D → ℂ}
-    (hy : y ∈ ((A.chart j).symm.trans (A.chart k)).source) :
-    hessC (W.φ j ∘ (A.chart j).symm) y =
-      (jacC ((A.chart j).symm.trans (A.chart k)) y)ᵀ *
-        hessC (W.φ k ∘ (A.chart k).symm) (((A.chart j).symm.trans (A.chart k)) y) *
-        (jacC ((A.chart j).symm.trans (A.chart k)) y).map (starRingEnd ℂ) := by
-  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BergmanDensChartSum.hessC_weight_trans <;> assumption
-
-variable [MeasurableSpace X] [BorelSpace X]
-
-theorem lintegral_dens_trans (dV : SmoothVolume A) (j k : Fin A.n)
-    (f : (Fin D → ℂ) → ℝ≥0∞) (hf : Measurable f) :
-    ∫⁻ y in ((A.chart j).symm.trans (A.chart k)).source, f y * ENNReal.ofReal (dV.dens j y) =
-      ∫⁻ y in ((A.chart j).symm.trans (A.chart k)).source,
-        ENNReal.ofReal (Complex.normSq (jacC ((A.chart j).symm.trans (A.chart k)) y).det) *
-          (f y * ENNReal.ofReal (dV.dens k (((A.chart j).symm.trans (A.chart k)) y))) := by
-  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BergmanDensChartSum.lintegral_dens_trans <;> assumption
-
-theorem dens_trans (dV : SmoothVolume A) (j k : Fin A.n) {y : Fin D → ℂ}
-    (hy : y ∈ ((A.chart j).symm.trans (A.chart k)).source) :
-    dV.dens j y = Complex.normSq (jacC ((A.chart j).symm.trans (A.chart k)) y).det *
-      dV.dens k (((A.chart j).symm.trans (A.chart k)) y) := by
-  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BergmanDensChartSum.dens_trans <;> assumption
-
-variable {L : HolLineBundle A}
-
-def densIn (W : Weight L) (dV : SmoothVolume A) (j : Fin A.n) (x : X) : ℝ :=
-  chernTopDens W j (A.chart j x) / ((D.factorial : ℝ) * dV.dens j (A.chart j x))
-
-end BergmanDensIntegrable
-
 theorem BergmanDensIntegrable.proof : BergmanDensIntegrable.Statement := by
   intro D X _ _ _ _ _ A L W dV
   have := dV.isProb

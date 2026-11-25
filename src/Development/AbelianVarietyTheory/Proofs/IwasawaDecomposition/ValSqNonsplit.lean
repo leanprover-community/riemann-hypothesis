@@ -99,7 +99,6 @@ theorem of_at {E : Type} [Field E] [NumberField E] (χ : HChar E) (h : NC.HC E) 
   have hu : χ.UnrAt v := k.2.2 ha.1
   exact ⟨hu, (k.1 hu).unique ha⟩
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 theorem val_sq_nonsplit (D : D7) {χ : HChar D.host.E} (ht : χ.TrivOn D.host.F) {v : PlE D.host} (hu : χ.UnrAt v)
     (hv : ¬ IsSplitPl D.host v) : χ.val v ^ 2 = 1 := by
   refine TypeValues.val_sq_eq_one D.sp.cm ht hu ?_

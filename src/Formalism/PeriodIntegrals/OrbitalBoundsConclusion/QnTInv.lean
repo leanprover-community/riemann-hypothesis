@@ -92,22 +92,12 @@ lemma hpk_unit : IsUnit (Hpk k r) := ⟨⟨Hpk k r, Hpk k r, Hpk_sq k r, Hpk_sq 
 lemma hpk_hh (A : Mx k r) : Hpk k r * (Hpk k r * A) = A := by rw [← mul_assoc, Hpk_sq, one_mul]
 
 lemma hpart1_skew (Z : Mx k r) :
-    (hpart1 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart1 (Hpk k r) Z * Hpk k r) := by
-  unfold hpart1
-  rw [hpk_inv]
-  have hs : star (1 / 2 : ℂ) = 1 / 2 := by simp
-  simp only [conjTranspose_smul, conjTranspose_sub, conjTranspose_mul, conjTranspose_conjTranspose, Hpk_herm, hs,
-    mul_smul_comm, smul_mul_assoc, mul_sub, sub_mul, mul_assoc, hpk_hh, Hpk_sq, mul_one]
-  rw [← smul_neg, neg_sub]
+    (hpart1 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart1 (Hpk k r) Z * Hpk k r) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpart1_skew Z
 
 lemma hpart2_skew (Z : Mx k r) :
-    (hpart2 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart2 (Hpk k r) Z * Hpk k r) := by
-  unfold hpart2
-  rw [hpk_inv]
-  have hs : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by simp
-  simp only [conjTranspose_smul, conjTranspose_add, conjTranspose_mul, conjTranspose_conjTranspose, Hpk_herm, hs,
-    mul_smul_comm, smul_mul_assoc, mul_add, add_mul, mul_assoc, hpk_hh, Hpk_sq, mul_one]
-  rw [neg_smul, add_comm Zᴴ]
+    (hpart2 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart2 (Hpk k r) Z * Hpk k r) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpart2_skew Z
 
 lemma skew_real (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * Hpk k r)) (t : ℝ) :
     ((t : ℂ) • X)ᴴ = -(Hpk k r * ((t : ℂ) • X) * Hpk k r) := by
@@ -115,54 +105,12 @@ lemma skew_real (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * Hpk k r)) (t : ℝ) :
   simp [Complex.conj_ofReal]
 
 lemma exp_mem_UH (Y : Mx k r) (hY : Yᴴ = -(Hpk k r * Y * Hpk k r)) :
-    NormedSpace.exp Y ∈ UH (Hpk k r) := by
-  show (NormedSpace.exp Y)ᴴ * Hpk k r * NormedSpace.exp Y = Hpk k r
-  have e1 : Yᴴ = Hpk k r * (-Y) * (Hpk k r)⁻¹ := by
-    rw [hY, hpk_inv, mul_neg, neg_mul]
-  rw [← Matrix.exp_conjTranspose, e1, Matrix.exp_conj _ _ hpk_unit, hpk_inv]
-  simp only [mul_assoc, hpk_hh]
-  rw [← Matrix.exp_add_of_commute _ _ (Commute.refl Y).neg_left, neg_add_cancel, NormedSpace.exp_zero, mul_one]
+    NormedSpace.exp Y ∈ UH (Hpk k r) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.exp_mem_UH Y hY
 
 lemma exp_fix (Y : Mx k r) (c : Fin (2 * r + k + 1)) (hY : ∀ x, Y x c = 0) :
-    NormedSpace.exp Y *ᵥ bvec c = bvec c := by
-  set P : Mx k r := Matrix.single c c 1 with hPdef
-  have hYP : Y * P = 0 := by
-    ext x y
-    simp only [hPdef, Matrix.mul_apply, Matrix.single_apply, Matrix.zero_apply]
-    refine Finset.sum_eq_zero (fun j _ => ?_)
-    split_ifs with h
-    · rw [← h.1, hY, mul_one]
-    · exact mul_zero _
-  have hne : NormedSpace.exp Y ≠ 0 := by
-    intro h0
-    have hc : NormedSpace.exp (-Y) * NormedSpace.exp Y = 1 := by
-      rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl Y)), neg_add_cancel,
-        NormedSpace.exp_zero]
-    rw [h0, Matrix.mul_zero] at hc
-    have := congrFun (congrFun hc ⟨0, by omega⟩) ⟨0, by omega⟩
-    simp at this
-  have hsum : Summable (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • Y ^ n) := by
-    by_contra hns
-    apply hne
-    rw [congrFun (NormedSpace.exp_eq_tsum ℂ) Y]
-    exact tsum_eq_zero_of_not_summable hns
-  have hhas : HasSum (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • Y ^ n) (NormedSpace.exp Y) := by
-    have := hsum.hasSum
-    rwa [← congrFun (NormedSpace.exp_eq_tsum ℂ) Y] at this
-  have h1 := hhas.mul_right P
-  have h2 : HasSum (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • Y ^ n * P) P := by
-    have := hasSum_single (f := fun n : ℕ => ((n.factorial : ℂ)⁻¹) • Y ^ n * P) 0 (by
-      intro m hm
-      obtain ⟨m', rfl⟩ := Nat.exists_eq_succ_of_ne_zero hm
-      rw [Matrix.smul_mul, pow_succ, Matrix.mul_assoc, hYP, Matrix.mul_zero, smul_zero])
-    simpa using this
-  have hEP : NormedSpace.exp Y * P = P := h1.unique h2
-  have hPv : P *ᵥ bvec c = bvec c := by
-    ext x
-    by_cases h : x = c
-    · subst h; simp [hPdef, bvec, Matrix.mulVec, dotProduct, Matrix.single_apply, Pi.single_apply]
-    · simp [hPdef, bvec, Matrix.mulVec, dotProduct, Pi.single_apply, h, Ne.symm h]
-  rw [← hPv, Matrix.mulVec_mulVec, hEP]
+    NormedSpace.exp Y *ᵥ bvec c = bvec c :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.exp_fix Y c hY
 
 lemma exp_mem_glev (i : Fin (r + 1)) (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * Hpk k r))
     (hc : ∀ a : Fin r, a.val < i.val → ∀ x, X x (eI k r a) = 0 ∧ X x (esI k r a) = 0) (t : ℝ) :
@@ -173,13 +121,8 @@ lemma exp_mem_glev (i : Fin (r + 1)) (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * H
   · rw [Matrix.smul_apply, (hc a ha x).2, smul_zero]
 
 lemma hpk_zero (i : Fin (r + 1)) (p : Fin (mdim k r i)) (a : Fin r) (ha : a.val < i.val) :
-    Hpk k r (posL k r i p) (eI k r a) = 0 ∧ Hpk k r (posL k r i p) (esI k r a) = 0 := by
-  have hp := p.isLt
-  have ha' := a.isLt
-  have hi := i.isLt
-  unfold mdim at hp
-  simp only [Hpk, posL, eI, esI, Fin.mk.injEq]
-  constructor <;> split_ifs <;> first | rfl | (exfalso; omega)
+    Hpk k r (posL k r i p) (eI k r a) = 0 ∧ Hpk k r (posL k r i p) (esI k r a) = 0 :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpk_zero i p a ha
 
 lemma unit_col (i : Fin (r + 1)) (p q : Fin (mdim k r i)) (c : Fin (2 * r + k + 1))
     (hcq : c ≠ posL k r i q) (hHc : Hpk k r (posL k r i p) c = 0) (x : Fin (2 * r + k + 1)) :
@@ -198,14 +141,8 @@ lemma unit_col (i : Fin (r + 1)) (p q : Fin (mdim k r i)) (c : Fin (2 * r + k + 
       rw [h0, zero_mul]
 
 lemma posL_ne (i : Fin (r + 1)) (q : Fin (mdim k r i)) (a : Fin r) (ha : a.val < i.val) :
-    eI k r a ≠ posL k r i q ∧ esI k r a ≠ posL k r i q := by
-  have hq := q.isLt
-  have ha' := a.isLt
-  unfold mdim at hq
-  refine ⟨fun h => ?_, fun h => ?_⟩ <;>
-  · have h2 := congrArg Fin.val h
-    simp only [eI, esI, posL] at h2
-    omega
+    eI k r a ≠ posL k r i q ∧ esI k r a ≠ posL k r i q :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.posL_ne i q a ha
 
 lemma hpart_cols (i : Fin (r + 1)) (p q : Fin (mdim k r i)) :
     (∀ a : Fin r, a.val < i.val → ∀ x,
@@ -229,22 +166,8 @@ theorem rdV_ext {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (f F : Mx k r → E) (U : Set (Mx k r)) (g : Mx k r) (hU : IsOpen U) (hg : g ∈ U)
     (hgG : g ∈ Glev k r i) (hF : ContDiffOn ℝ ∞ F U)
     (hfF : ∀ x ∈ U, x ∈ Glev k r i → f x = F x) :
-    RdV X f g = fderiv ℝ F g (g * X) := by
-  have hγ := hasDerivAt_mul_exp_smul_zero g X
-  have hγ0 : g * NormedSpace.exp (((0 : ℝ) : ℂ) • X) = g := by
-    simp [NormedSpace.exp_zero]
-  have hFd : DifferentiableAt ℝ F g :=
-    (hF.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hg)
-  have hcomp : HasDerivAt (fun t : ℝ => F (g * NormedSpace.exp ((t : ℂ) • X)))
-      (fderiv ℝ F g (g * X)) 0 :=
-    hFd.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hγ hγ0.symm
-  have hev : (fun t : ℝ => f (g * NormedSpace.exp ((t : ℂ) • X))) =ᶠ[𝓝 0]
-      (fun t : ℝ => F (g * NormedSpace.exp ((t : ℂ) • X))) := by
-    have hmem : ∀ᶠ t : ℝ in 𝓝 0, g * NormedSpace.exp ((t : ℂ) • X) ∈ U :=
-      hγ.continuousAt.preimage_mem_nhds (by rw [hγ0]; exact hU.mem_nhds hg)
-    filter_upwards [hmem] with t ht
-    exact hfF _ ht (glev_mul' hgG (hX t))
-  exact (hcomp.congr_of_eventuallyEq hev).deriv
+    RdV X f g = fderiv ℝ F g (g * X) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.rdV_ext i X hX f F U g hU hg hgG hF hfF
 
 theorem transfer_invariance_congruence : StepCongr := by
   intro E _ _ k r i D a b f f' g hD hg hff

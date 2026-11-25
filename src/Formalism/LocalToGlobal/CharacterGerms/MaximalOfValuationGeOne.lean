@@ -6,8 +6,6 @@ public import Mathlib.Data.Nat.Choose.Dvd
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open scoped BigOperators

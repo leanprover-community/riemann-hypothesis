@@ -62,8 +62,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.Pf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Def
 
 variable {D : D7} (X : HidaSetting D)
@@ -77,8 +75,6 @@ end Def
 end Formalism.L2.SG.Pf
 
 namespace Formalism.L2.SG.Pf.Level
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Proj
 
@@ -1877,8 +1873,6 @@ end Final
 end Formalism.L2.SG.Pf.Level
 
 namespace Formalism.L2.SG.Pf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 export Level (prV prV_apply hT_f_e prV_e prV_f prV_Lb Lb_le projection_preserves_lattice toV crd_toV toV_crd toV_add toV_sub toV_smul toV_sum hE iota_hE prE toV_prE prE_L prA prA_apply incl_sub incl_smul incl_sum prA_incl incl_mem_Lf prA_Lf hA_e_e hA_f_f hA_e_f prA_e prA_f prA_span_e hA_e_prA hA_f_prA prA_fix hfin_fix_sub kset_split_fwd natsmul_eq natsmul_mem intsmul_mem mL_le_Lf bez_vec psi_zero psi_neg psi_zsmul psi_bez GoodC dvd_smul_mL exists_goodC C_e_Lf C_f_Lf mL_pres Z_left Z_right hA_natsmul_left hA_sub_left hA_f_span span_repr key_alg coef xinv_fix_e fix_span span_im_le zR_L fmat_kappa kappa_K cong_e cong_alt hermitian_e_transport_invariant cong_b unipotent_conj_mem_level Iad psi_Iad Iad_mono Iad_mul hermitian_f_lattice_mem_ideal hA_f_Lf ddS_ne coord_dd hA_f_nxt psi_sum psi_B xw_diff Z_term Z_bw levelDec_of_psiDd phWellDef_of_psiDd phi_star hJ_rv rv_mulVec incl_mulVec nxt_rv nxt_incl algebraMap_tens)
 

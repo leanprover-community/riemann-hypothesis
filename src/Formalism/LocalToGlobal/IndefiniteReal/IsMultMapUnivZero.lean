@@ -19,8 +19,6 @@ open IsDedekindDomain NumberField MeasureTheory
 
 namespace Formalism.IndefR.RecTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Zero
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : Datum.InfFam D) (M : Mult.DSModel V S)

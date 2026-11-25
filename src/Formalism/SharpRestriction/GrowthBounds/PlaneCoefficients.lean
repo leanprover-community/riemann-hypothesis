@@ -246,16 +246,8 @@ theorem mem_LLset (j x : ℤ) : x ∈ Fr.LLset j ↔
 variable {Fr} {L₁ N₁ : ℕ}
 
 theorem LL_sub_letters (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j y : ℤ) (hy : y ∈ Fr.LLset j) :
-    y ∈ Fr.letters j ∧ ¬ Fr.IsW j y := by
-  have h := (mem_LLset Fr _ _).1 hy
-  have h1 := frame_row_monotone Fr L₁ N₁ hV (j - 1) (r - 1) (by omega)
-  have h2 := frame_row_monotone Fr L₁ N₁ hV j (r - 1) (by omega)
-  refine ⟨?_, ?_⟩
-  · unfold Frames.letters
-    simp only [Finset.mem_filter, Finset.mem_Icc]
-    exact ⟨⟨by omega, by omega⟩, h.2⟩
-  · unfold Frames.IsW
-    omega
+    y ∈ Fr.letters j ∧ ¬ Fr.IsW j y :=
+  _root_.Formalism.MainNotions.Proposition5Numerics.LL_sub_letters hV hr j y hy
 
 theorem posU_mem (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ) (hu : u < (Fr.LLset j).card + r) :
     posU Fr (Fr.LLset j).card j u ∈ Fr.letters j ∧ ¬ Fr.IsW j (posU Fr (Fr.LLset j).card j u) := by

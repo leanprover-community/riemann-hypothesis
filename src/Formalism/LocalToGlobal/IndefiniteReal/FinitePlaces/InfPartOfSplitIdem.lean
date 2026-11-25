@@ -57,8 +57,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas.Lat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lift
 
 variable (F : Type) [Field F] [NumberField F]

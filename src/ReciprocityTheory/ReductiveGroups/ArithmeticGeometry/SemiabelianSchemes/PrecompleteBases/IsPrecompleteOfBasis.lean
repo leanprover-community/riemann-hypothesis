@@ -12,8 +12,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open IsLocalRing Polynomial
 
 namespace ReciprocityTheory.ChartRestriction.G.Semi

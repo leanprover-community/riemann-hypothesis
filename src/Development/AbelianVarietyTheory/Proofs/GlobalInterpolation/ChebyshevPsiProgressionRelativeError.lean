@@ -878,7 +878,6 @@ theorem explicit_formula_right : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q]
     · rw [ite_eq_left h, ite_eq_left (hone.mpr h)]
     · rw [ite_eq_right h, ite_eq_right (mt hone.mp h)]
   have hu0 : 0 < u := by linarith
-  have hT0 : 0 < T := by linarith
   have hZ0 : 0 ≤ zsumR χ.primitiveCharacter 0 1 (fun ρ => 1 / ‖ρ‖) := by
     rw [zsumR_eq]
     exact Finset.sum_nonneg fun ρ _ => by positivity
@@ -1311,10 +1310,6 @@ theorem der_pos {q : ℕ} [NeZero q] (χ₁ χ : DirichletCharacter ℂ q) (h : 
   have hsq : χ₁ n ^ 2 = 1 := by
     rw [← MulChar.pow_apply' _ two_ne_zero, h, MulChar.one_apply hu]
   set A : ℝ := Λ n * (Real.log n ^ k / k.factorial) * (n : ℝ) ^ (-2 : ℝ) with hA
-  have hA0 : 0 ≤ A := by
-    have := Real.log_natCast_nonneg n
-    have := vonMangoldt_nonneg (n := n)
-    positivity
   rw [e1, e0, MulChar.one_apply hu, MulChar.mul_apply]
   have key : ∀ ε : ℝ, χ₁ n = ε → 0 ≤ 1 + ε → 0 ≤ (((Λ n : ℝ) : ℂ) * 1 * ((Real.log n : ℂ) ^ k / (k.factorial : ℂ)) * (((n : ℝ) ^ (-2 : ℝ) : ℝ) : ℂ) +
       ((Λ n : ℝ) : ℂ) * χ₁ n * ((Real.log n : ℂ) ^ k / (k.factorial : ℂ)) * (((n : ℝ) ^ (-2 : ℝ) : ℝ) : ℂ) +
@@ -1484,14 +1479,12 @@ theorem repulsion : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ₁ χ : 
                                          positivity
       have : (0 : ℝ) ≤ 1 / 2 ^ j := by positivity
       linarith
-  have hCL : 0 ≤ C * L := by positivity
   have key := P ((W0 + V1).map (fun w => 1 / ((2 : ℂ) + (0 : ℝ) * I - w)) +
       (V2 + V3).map (fun w => 1 / ((2 : ℂ) + t * I - w))) (1 / ((2 : ℂ) + t * I - ρ))
       ((8 * C + 4) * L) (1 - β) (1 - ρ.re)
       (Multiset.mem_add.2 (Or.inr (Multiset.mem_map_of_mem _ (Multiset.mem_add.2 (Or.inl hρV)))))
       (by nlinarith) (by linarith) (by linarith) (by linarith) ?_ ?_ ?_
   · have hL' : 0 < L := by linarith
-    have hδ : 0 < 1 - β := by linarith
     convert key using 1
     have e : 1 / (D * (8 * C + 4)) / ((1 - β) * L) = 1 / (D * ((8 * C + 4) * L) * (1 - β)) := by
       field_simp
@@ -1577,7 +1570,6 @@ lemma zsum (s t : Set ℂ) (ht : t.Finite) (hst : s ⊆ t) (o : ℂ → ℕ) (u 
   have h2 : 1 / 2 ≤ ‖ρ‖ := h1.trans (Complex.re_le_norm ρ)
   rw [norm_mul, norm_div, Complex.norm_natCast, Complex.norm_cpow_eq_rpow_re_of_pos hu,
     Real.rpow_sub_one hu.ne']
-  have h3 : 0 < u ^ ρ.re := Real.rpow_pos_of_pos hu _
   have h4 : u ^ ρ.re / ‖ρ‖ ≤ 2 * u ^ ρ.re := by
     rw [div_le_iff₀ (by linarith)]
     have := mul_le_mul_of_nonneg_left h2 (show (0 : ℝ) ≤ 2 * u ^ ρ.re by positivity)
@@ -1695,8 +1687,6 @@ lemma mainLower (θ β V : ℝ) (hθ : θ ≤ 1) (h1 : 7 / 8 ≤ β) (h2 : β < 
       have h6 : (1 - x / 4) * (1 + x) * (1 - x / 8) =
           1 + 11 / 32 * (x * (1 - x)) + 9 / 32 * x + 1 / 32 * (x * (x * x)) := by ring
       linarith [mul_nonneg hx0.le (sub_nonneg.2 h), mul_nonneg hx0.le (mul_nonneg hx0.le hx0.le)]
-  have hu := Real.exp_pos V
-  have e5 : 0 < Real.exp (-x) / β := by positivity
   rw [e1, mul_div_assoc (Real.exp V) (Real.exp (-x))]
   have : θ * (Real.exp V * (Real.exp (-x) / β)) ≤ 1 * (Real.exp V * (1 - min 1 x / 4)) := by
     refine (mul_le_mul_of_nonneg_right hθ (by positivity)).trans ?_
@@ -1779,7 +1769,6 @@ lemma realEnd (Ce Ca η₀ c' K cw R₀ : ℝ) (hCe : 0 < Ce) (hCa : 0 < Ca) (h�
         have := mul_le_mul_of_nonneg_left h1 hc.le
         linarith
       linarith [Real.exp_pos (-c₃ * V / m)]
-  have hs0 : 0 ≤ s := by linarith
   have q1 : (m + V + (8 * m + s)) ^ 2 ≤ 1536 * Real.exp (s / 2) := by
     have h1 : (m + V + (8 * m + s)) ^ 2 ≤ (2 * V) ^ 2 := by gcongr; linarith
     have h2 := Real.pow_div_factorial_le_exp (s / 2) (by linarith) 4
@@ -1882,7 +1871,6 @@ theorem psiAP_relative : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ c₁ : ℝ, 0 < c₁ �
   have hfin := fun w => (hR m V w hm1 hV).2.2
   clear hR
   set L := 10 * m + √V with hLd
-  have hL1 : 10 ≤ L := by linarith
   have hL0 : 0 < L := by linarith
   have hL8 : 8 * L ≤ V := le_trans (by gcongr; exact le_max_right _ _) hL
   have hLA : A * L ≤ V := le_trans (by gcongr; exact (le_max_right _ _).trans (le_max_left _ _)) hL

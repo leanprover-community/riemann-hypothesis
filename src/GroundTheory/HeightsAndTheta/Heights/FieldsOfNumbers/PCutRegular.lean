@@ -273,7 +273,7 @@ end CutRegular
 
 open CutRegular in
 theorem CutRegular.proof (h1 : HilbExactDivide.Statement.{u}) (h2 : MultEqualsCoeff.Statement.{u})
-    : CutRegular.Statement.{u} := by
+    (_h3 : IntNumSymm.Statement.{u}) : CutRegular.Statement.{u} := by
   intro F _ K _ _ ι _ P hP n hdim c s hs hsP bs
   haveI := hP.isPrime
   set I := P ⊔ Ideal.span {s} with hIdef

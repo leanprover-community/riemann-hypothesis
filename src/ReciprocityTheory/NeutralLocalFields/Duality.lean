@@ -71,7 +71,6 @@ set_option linter.unusedVariables false
 
 noncomputable section
 
-open Representation
 
 variable {R : Type*} [CommRing R]
 variable {G : Type*} [Group G] [TopologicalSpace G]
@@ -265,7 +264,6 @@ section Coh
 
 noncomputable section
 
-open Representation
 
 variable {R : Type*} [CommRing R]
 variable {G : Type*} [Group G] [TopologicalSpace G]

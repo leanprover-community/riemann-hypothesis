@@ -71,17 +71,8 @@ theorem eq_zero_of_mem_lowDeg_zero {f : ι → σ} {R : MvPolynomial σ K}
   exact absurd (h m hm) (Nat.not_lt_zero _)
 
 theorem pderiv_mem_lowDeg {f : ι → σ} {t : ℕ} (k : σ) {R : MvPolynomial σ K}
-    (h : R ∈ lowDeg f t) : pderiv k R ∈ lowDeg f t := by
-  rw [mem_lowDeg] at h
-
-  rw [R.as_sum, map_sum]
-  refine Submodule.sum_mem _ (fun m hm => ?_)
-  rw [pderiv_monomial, mem_lowDeg]
-  intro m' hm'
-  rw [Finset.mem_singleton.mp (support_monomial_subset hm')]
-  calc ∑ i, (m - Finsupp.single k 1 : σ →₀ ℕ) (f i) ≤ ∑ i, m (f i) :=
-        Finset.sum_le_sum (fun i _ => by rw [Finsupp.tsub_apply]; exact Nat.sub_le _ _)
-    _ < t := h m hm
+    (h : R ∈ lowDeg f t) : pderiv k R ∈ lowDeg f t :=
+  _root_.PI.WickFormula.Gen.pderiv_mem_lowDeg k h
 
 theorem pderiv_mem_lowDeg_of_succ {f : ι → σ} {t : ℕ} (i : ι) {R : MvPolynomial σ K}
     (h : R ∈ lowDeg f (t + 1)) : pderiv (f i) R ∈ lowDeg f t := by
@@ -89,17 +80,8 @@ theorem pderiv_mem_lowDeg_of_succ {f : ι → σ} {t : ℕ} (i : ι) {R : MvPoly
 
 theorem pow_apply_eq_zero_of_lowDeg (D : Module.End K (MvPolynomial σ K)) (f : ι → σ)
     (hD : ∀ t R, R ∈ lowDeg f (t + 1) → D R ∈ lowDeg f t) :
-    ∀ n R, R ∈ lowDeg f n → (D ^ n) R = 0 := by
-  intro n
-  induction n with
-  | zero =>
-    intro R hR
-    rw [pow_zero]
-    exact eq_zero_of_mem_lowDeg_zero hR
-  | succ n ih =>
-    intro R hR
-    rw [pow_succ, Module.End.mul_apply]
-    exact ih _ (hD n R hR)
+    ∀ n R, R ∈ lowDeg f n → (D ^ n) R = 0 :=
+  _root_.PI.WickFormula.Gen.pow_apply_eq_zero_of_lowDeg D f hD
 
 end
 

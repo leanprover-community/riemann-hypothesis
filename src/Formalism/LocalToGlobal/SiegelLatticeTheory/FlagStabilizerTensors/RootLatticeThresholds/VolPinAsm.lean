@@ -18,8 +18,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.VolPinAsm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def StG (w : Point D.host.E (D.R.rS + 1)) : Subgroup (Formalism.L2.SG.PairVal.GLR D) where

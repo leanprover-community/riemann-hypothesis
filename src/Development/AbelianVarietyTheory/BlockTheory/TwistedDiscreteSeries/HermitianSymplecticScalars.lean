@@ -46,8 +46,6 @@ open scoped TensorProduct ENNReal ComplexConjugate
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def hermAt (V W : HSp D) (τ : D.what₂.Tau) (z w : Matrix (Fin W.rank) (Fin V.rank) ℂ) : ℂ :=

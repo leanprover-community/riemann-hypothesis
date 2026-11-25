@@ -184,8 +184,6 @@ end Val
 
 section Comp
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (θ : InfF D) (V : HSp D) {n : ℕ} (hn : V.rank = n) {ι : Type} (t : ι ≃ D.what₂.Tau)
 
 def finN : GA D V →* GL (Fin n) (AfE D.host.F D.host.E) := by

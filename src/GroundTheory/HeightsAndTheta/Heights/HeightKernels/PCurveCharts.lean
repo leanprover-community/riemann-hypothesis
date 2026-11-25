@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
@@ -123,31 +124,13 @@ theorem mem_blockFnField_of_mem_curveRing [NumberField K'] (hy : IsArithVar (mCo
 
 theorem exists_nat_mul_mem_adjoin [CharZero K'] {S : Set K'} {x : K'} (hx : x ∈ Algebra.adjoin ℚ S) :
     ∃ n : ℕ, n ≠ 0 ∧ (n : K') * x ∈ Algebra.adjoin ℤ S := by
-  induction hx using Algebra.adjoin_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by simpa using Algebra.subset_adjoin hx⟩
-  | algebraMap q =>
-    refine ⟨q.den, q.den_nz, ?_⟩
-    have hq : (q.den : K') * algebraMap ℚ K' q = (q.num : K') := by
-      rw [eq_ratCast, Rat.cast_def]
-      field_simp
-    rw [hq]
-    exact intCast_mem _ _
-  | add x z _ _ hx hz =>
-    obtain ⟨n, hn, hnx⟩ := hx
-    obtain ⟨m, hm, hmz⟩ := hz
-    refine ⟨n * m, mul_ne_zero hn hm, ?_⟩
-    have e : ((n * m : ℕ) : K') * (x + z) = (m : K') * ((n : K') * x) + (n : K') * ((m : K') * z) := by
-      push_cast; ring
-    rw [e]
-    exact add_mem (mul_mem (natCast_mem _ m) hnx) (mul_mem (natCast_mem _ n) hmz)
-  | mul x z _ _ hx hz =>
-    obtain ⟨n, hn, hnx⟩ := hx
-    obtain ⟨m, hm, hmz⟩ := hz
-    refine ⟨n * m, mul_ne_zero hn hm, ?_⟩
-    have e : ((n * m : ℕ) : K') * (x * z) = ((n : K') * x) * ((m : K') * z) := by
-      push_cast; ring
-    rw [e]
-    exact mul_mem hnx hmz
+  obtain ⟨t, ht⟩ := multiple_mem_adjoin_of_mem_localization_adjoin (nonZeroDivisors ℤ) ℚ S x hx
+  refine ⟨t.1.natAbs, Int.natAbs_ne_zero.mpr (nonZeroDivisors.ne_zero t.2), ?_⟩
+  have ht' : (t.1 : K') * x ∈ Algebra.adjoin ℤ S := by simpa [Submonoid.smul_def, zsmul_eq_mul] using ht
+  rcases Int.natAbs_eq t.1 with h | h
+  · rwa [← Int.cast_natCast, ← h]
+  · rw [← Int.cast_natCast, neg_eq_iff_eq_neg.mp h.symm, Int.cast_neg, neg_mul]
+    exact neg_mem ht'
 
 
 omit [Fintype T] in

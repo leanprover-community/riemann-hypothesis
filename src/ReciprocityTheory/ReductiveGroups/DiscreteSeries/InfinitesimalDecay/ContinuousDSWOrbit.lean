@@ -9,8 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.InfinitesimalDeca
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open scoped Matrix

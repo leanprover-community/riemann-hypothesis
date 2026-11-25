@@ -16,8 +16,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.NGCut.NormalVectorPairings
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Defs
 
 variable {D : D7} {X : HidaSetting D} (Y : Full X) (u u' : D.what₂.Word)

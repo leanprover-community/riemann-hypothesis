@@ -212,8 +212,6 @@ attribute [instance] HMod.nH HMod.iH HMod.fH
 def HMod.Is {X : Type} [AddCommGroup X] [Module ℂ X] (M : HMod X) (V : Submodule ℂ X) (ip : X → X → ℂ) : Prop :=
   Function.Injective M.e ∧ LinearMap.range M.e = V ∧ ∀ x y, inner ℂ x y = ip (M.e x) (M.e y)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Levels

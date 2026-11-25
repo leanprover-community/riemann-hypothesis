@@ -15,8 +15,6 @@ namespace Formalism.IndefR.Fock.CCR
 
 open Formalism.IndefR.Fock.Sk
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem realPlace_imaginaryGenerator_re_eq_zero (D : D7) (τ : D.what₂.Tau) : (tauE D τ D.host.xi0).re = 0 := by

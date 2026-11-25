@@ -48,8 +48,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.DetUnit
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem det_mem_intAE (V : HSp D) (g : GA D V)

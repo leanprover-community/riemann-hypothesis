@@ -15,8 +15,6 @@ open Classical
 
 namespace Formalism.IndefR.NX
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 structure ExpSet (D : D7) where

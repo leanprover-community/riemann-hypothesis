@@ -95,11 +95,6 @@ namespace GlobalTheory.CompanionTheory.SW.Growth
 section Place
 variable {F : Type} [Field F] [NumberField F]
 
-theorem val_lt_one_of_mem (v : HeightOneSpectrum (𝓞 F)) {r : 𝓞 F} (h : r ∈ v.asIdeal) :
-    Valued.v ((algebraMap F (Fv F v)) (algebraMap (𝓞 F) F r)) < 1 := by
-  rw [_root_.GlobalTheory.CompanionTheory.SW.GoodInt.valued_algebraMap]
-  exact (v.valuation_lt_one_iff_mem r).2 h
-
 theorem val_le_one (v : HeightOneSpectrum (𝓞 F)) (r : 𝓞 F) :
     Valued.v ((algebraMap F (Fv F v)) (algebraMap (𝓞 F) F r)) ≤ 1 := by
   rw [_root_.GlobalTheory.CompanionTheory.SW.GoodInt.valued_algebraMap]

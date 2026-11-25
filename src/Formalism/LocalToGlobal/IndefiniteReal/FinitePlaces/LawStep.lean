@@ -53,8 +53,6 @@ namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
 open Formalism.IndefR.Fin.LevelGroupLemmas.Lat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def epsP (P : Finset (Formalism.L2.DIV.Pl D.host.E)) : AF D.host.F := ∑ PP ∈ P, sA (belowPl PP) 1

@@ -61,7 +61,7 @@ theorem extB_indep (σ : L →+* ℂ) {w : Fin n → H} (hw : LinearIndependent 
     (hx : LinearIndependent L x) : LinearIndependent ℂ fun k => extB σ w (x k) := by
   let _ : Algebra L ℂ := σ.toAlgebra
   have h1 : LinearIndependent ℂ fun k => algebraMap L ℂ ∘ x k := linearIndependent_algebraMap_comp_iff.2 hx
-  exact h1.map' _ (lc_ker hw)
+  exact h1.map' (Fintype.linearCombination ℂ w) (lc_ker hw)
 
 theorem extB_injective (σ : L →+* ℂ) {w : Fin n → H} (hw : LinearIndependent ℂ w) : Function.Injective (extB σ w) := by
   intro x y h

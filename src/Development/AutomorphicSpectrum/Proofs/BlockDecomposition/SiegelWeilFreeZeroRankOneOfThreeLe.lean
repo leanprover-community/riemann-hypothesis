@@ -1185,7 +1185,7 @@ theorem free_act {S : Type} [CommRing S] {M n : ℕ} (g : GL (Fin M) S) {Y : Fin
     intro x y h
     have h2 := congrArg (Matrix.mulVec ((g⁻¹ : GL (Fin M) S) : Matrix (Fin M) (Fin M) S)) h
     simpa [Matrix.mulVec_mulVec] using h2
-  exact hY.map' _ hk
+  exact hY.map' (Matrix.mulVecLin (g : Matrix (Fin M) (Fin M) S)) hk
 
 theorem free_of_unit {S : Type} [CommRing S] {M : ℕ} {Y : Fin 1 → Fin M → S} {i : Fin M}
     (hu : IsUnit (Y 0 i)) : LinearIndependent S Y := by

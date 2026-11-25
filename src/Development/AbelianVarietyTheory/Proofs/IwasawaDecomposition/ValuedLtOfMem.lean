@@ -418,6 +418,4 @@ theorem exists_isPtOf_cm (n : ℕ) (ST SG Q : Finset (HeightOneSpectrum (𝓞 E)
   · rw [c2 _ P.2, ptFr_of_mem p (Finset.disjoint_right.1 h3 P.2) P.2]
     rfl
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 end GlobalTheory.Mem.Col2.PtExist

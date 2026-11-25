@@ -45,7 +45,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PairLeIffPairH
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Core GlobalTheory.Core.Ht2
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 namespace GlobalTheory.Core.Ht2
 

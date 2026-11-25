@@ -58,8 +58,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {F : Type} [Field F] [NumberField F]

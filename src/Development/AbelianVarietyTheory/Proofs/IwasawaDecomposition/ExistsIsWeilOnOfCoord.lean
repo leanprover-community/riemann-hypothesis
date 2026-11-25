@@ -54,8 +54,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.WeilTransport
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem integral_transport {X Y : Type} [AddCommGroup X] [AddCommGroup Y] [TopologicalSpace X] [TopologicalSpace Y]

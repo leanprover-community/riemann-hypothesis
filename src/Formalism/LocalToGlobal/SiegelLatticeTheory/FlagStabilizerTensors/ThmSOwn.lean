@@ -67,8 +67,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.ThmSOwn
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Record
 
 variable (D : D7) (large₂ : SizeData₂ D)

@@ -46,8 +46,6 @@ namespace GlobalTheory.Mem.Df
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 variable {B : Base} {X : PreX B.toPre} (I : TC B X)
 
 abbrev MtCx (a : I.ι) : Type := MtP B.wts I.Ch I.sel (I.tup a) I.Ps B.embLL

@@ -52,8 +52,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section General
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]

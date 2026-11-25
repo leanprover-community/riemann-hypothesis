@@ -50,7 +50,7 @@ namespace GlobalTheory.CompanionTheory.WaveK
 open PositivityTheory.RgBcC
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

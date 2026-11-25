@@ -13,8 +13,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG
 
 namespace Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure SymmetricTwistedColumnsCompatible {D : D7} {cf : Formalism.L2.Host.CharFrame D} {nch : NChoice D} (tp : Formalism.L2.Host.TupTied D cf nch)
     (cols : ColsTiedSym D) (Tw : TwForms D) where
   ch : Formalism.L2.Herm.TwistedCharacterData tp

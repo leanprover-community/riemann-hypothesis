@@ -48,8 +48,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev Ef (D : D7) : Type := Formalism.IndefR.Lev.EAf D
 
 variable {D : D7}

@@ -17,8 +17,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.Full
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Defs
 
 variable {D : D7} (X : HidaSetting D)

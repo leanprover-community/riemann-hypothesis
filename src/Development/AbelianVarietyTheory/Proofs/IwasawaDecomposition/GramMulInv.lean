@@ -50,8 +50,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.OrientedAdjoint
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem gram_det_ne (V : HSp D) : V.gram.det ≠ 0 := by

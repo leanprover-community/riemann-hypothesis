@@ -49,8 +49,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SepRows
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def PairEx : Prop := ∀ (D : D7) (S S' : D.what₂.Tau → SPar) (aS aT : D.what₂.Tau → ℚ),
   (∀ τ, GlobalTheory.PairLift.PairPar (S τ) (S' τ) (aS τ) (aT τ)) → ∀ (V W : HSp D) (M : DSModel V S) (M' : DSModel W S') (θ : InfFam D)
     (ψ : AddChar (AF D.host.F) ℂ), IsInfFam θ → ∃ It : PolF D W.rank V.rank →ₗ[ℂ] SmT M' →ₗ[ℂ] SmT M,

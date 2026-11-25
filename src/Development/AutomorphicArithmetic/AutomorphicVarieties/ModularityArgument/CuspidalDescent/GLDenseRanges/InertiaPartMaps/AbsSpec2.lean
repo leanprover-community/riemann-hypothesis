@@ -329,9 +329,6 @@ private theorem ctrl_tr {O Ω : Type} [CommRing O] [IsLocalRing O] [Field Ω] [A
 
 end UpperTheory.V.Hi.Sp
 
-attribute [local instance 2000] UpperTheory.V.W.coefLocal
-
-
 theorem UpperTheory.V.Z.Desc.V0.spec2 :
     Spec2 := by
   intro L Ω _ _ _ _ _ l _ n c H hAx A _ _ _ θ hWt ι x lam hAr

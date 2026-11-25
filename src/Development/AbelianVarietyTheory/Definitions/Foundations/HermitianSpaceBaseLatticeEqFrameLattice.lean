@@ -445,8 +445,6 @@ theorem frameLat_fg {E : Type} [Field E] [NumberField E] [StarRing E] (V : HSpac
   rw [this]
   exact V.standardTuple_isLattice.fg.map _
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (V : HSp D)
 
 theorem isCMExt_host (D : D7) : IsCMExt D.host.F D.host.E D.sp.cm.sig :=

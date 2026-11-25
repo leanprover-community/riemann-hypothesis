@@ -400,7 +400,7 @@ namespace Formalism.FourierDecayAlt.P.NFx3
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF Formalism.FourierDecayAlt.P.NFx1
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem interpolation_inverse_matrix_sum_identity {M N : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
     (e : M →ₗ[ℂ] N) (he : Function.Injective e) (F : ℂ → Module.End ℂ M) (m : ℕ) (c : ℕ → M → N)

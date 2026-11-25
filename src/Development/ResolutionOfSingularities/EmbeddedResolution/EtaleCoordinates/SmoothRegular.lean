@@ -372,9 +372,6 @@ private theorem exists_isOpen_isIrreducible_of_unique_minimal_prime_le {A : Type
     rw [PrimeSpectrum.isIrreducible_iff_vanishingIdeal_isPrime,
       PrimeSpectrum.vanishingIdeal_zeroLocus_eq_radical, hK.radical]
     exact hK
-  have hPT₀ : P ∈ PrimeSpectrum.zeroLocus (K : Set A) := by
-    rw [PrimeSpectrum.mem_zeroLocus]
-    exact fun a ha => hmin P.asIdeal P.isPrime le_rfl ha
   have hcomp : ∀ T ∈ irreducibleComponents (PrimeSpectrum A), P ∈ T →
       T = PrimeSpectrum.zeroLocus (K : Set A) := by
     intro T hT hPmem

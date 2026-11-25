@@ -17,8 +17,6 @@ open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.MainNo
 open PI.ScalarPairDr.W (mem_orth hT_swap orth_orth finrank_orth fvec_castSucc fvec_last mem_orth_Xplus
   X_le_orth_Xplus mem_ThPairs hT_add_left hT_sub_left hT_smul_left)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lat
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}

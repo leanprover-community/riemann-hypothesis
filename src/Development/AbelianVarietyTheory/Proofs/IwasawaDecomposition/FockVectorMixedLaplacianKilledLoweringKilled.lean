@@ -59,7 +59,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqTopOfTrans
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT GlobalTheory.HolDict
 open scoped TensorProduct InnerProductSpace ContDiff ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DefLift
 
 namespace GlobalTheory.FockKill
@@ -595,34 +594,6 @@ end Model
 theorem rderC_theta_eq_zero : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ θ : InfFam D, IsInfFam θ → S.SigOK → T.SigOK → ∀ (BS : D.what₂.Tau → Mt S.rank), (∀ τ, IsONBasis (gramAt D S τ) 1 (BS τ) S.rank) → ∀ (Sp : D.what₂.Tau → SPar) (M : DSModel T Sp) (p : D.what₂.Tau → ℕ), (∀ τ a, M.ε τ a = decide ((a : ℕ) < p τ)) → ∀ f, IsThetaFunO ψ S T f → (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO 1 (cart M τ)) f) → ∀ (P : PolF D T.rank S.rank) τ, (∀ a b : Fin T.rank, p τ ≤ (a : ℕ) → (b : ℕ) < p τ → ∑ c : Fin S.rank, MvPolynomial.pderiv (τ, a, c) (MvPolynomial.pderiv (τ, b, c) P) = 0) → ∀ Z ∈ GlobalTheory.IndefiniteRowSideFullHecke.HolomorphicParabolicSmoothFunctions.pMinus M τ, ∀ h, RderC θ T τ Z (fun g => thetaKO om h g (pureTensorO ψ θ S T (fun _ => 1) (cart M) BS (onb M) f P)) = 0 := by
   intro D ψ S T χS χT om hom θ hθ kS kT BS hBS Sp M p hp f hf hv P τ hP Z hZ h
   have hψ := hom.std
-  have theta_add : ∀ {f g : WO S T → ℂ}, IsThetaFunO ψ S T f → IsThetaFunO ψ S T g → IsThetaFunO ψ S T (f + g) := by
-    intro f g hf hg
-    exact {
-      quasi := by intro γ w; simp only [Pi.add_apply, hf.quasi, hg.quasi, mul_add]
-      level := by
-        obtain ⟨U, hU, h1⟩ := hf.level
-        obtain ⟨V, hV, h2⟩ := hg.level
-        refine ⟨U ⊓ V, hU.inter hV, fun u hu h0 => ?_⟩
-        funext w
-        have e1 := congrFun (h1 u hu.1 h0) w
-        have e2 := congrFun (h2 u hu.2 h0) w
-        unfold heisO at e1 e2 ⊢
-        rw [Pi.add_apply, Pi.add_apply, mul_add, e1, e2]
-      cont := hf.cont.add hg.cont
-      smooth := fun k L h1 h2 w => (hf.smooth k L h1 h2 w).add (hg.smooth k L h1 h2 w) }
-  have theta_smul : ∀ (c : ℂ) {f : WO S T → ℂ}, IsThetaFunO ψ S T f → IsThetaFunO ψ S T (c • f) := by
-    intro c f hf
-    exact {
-      quasi := by intro γ w; rw [Pi.smul_apply, Pi.smul_apply, hf.quasi, smul_eq_mul, smul_eq_mul, mul_left_comm]
-      level := by
-        obtain ⟨U, hU, h1⟩ := hf.level
-        refine ⟨U, hU, fun u hu h0 => ?_⟩
-        funext w
-        have e1 := congrFun (h1 u hu h0) w
-        unfold heisO at e1 ⊢
-        rw [Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul, mul_left_comm, e1]
-      cont := hf.cont.const_smul c
-      smooth := fun k L h1 h2 w => contDiff_const.mul (hf.smooth k L h1 h2 w) }
   have hT := GlobalTheory.Chain.VacVec.cart_isCartanInv M
   have hB : ∀ τ, (BS τ)ᴴ * gramAt D S τ * BS τ = 1 := fun τ => by
     obtain ⟨ε, h1, h2, -⟩ := hBS τ

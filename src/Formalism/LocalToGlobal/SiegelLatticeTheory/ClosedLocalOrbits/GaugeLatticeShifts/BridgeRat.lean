@@ -18,8 +18,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.BridgeRat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 def hat (A : X.B.I.Gf) (y : (VS D).V) : VA X.B.I := X.B.I.fmat A⁻¹ *ᵥ incl X.B.I (X.crd y)

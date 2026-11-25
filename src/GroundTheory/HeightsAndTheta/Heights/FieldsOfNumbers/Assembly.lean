@@ -1802,7 +1802,7 @@ theorem MultEqualsCoeff.full : MultEqualsCoeff.Statement.{u} :=
   MultEqualsCoeff.proof PrimeFiltration.full MixedDiffConst.full RelevantPrimeDimGe.full
 
 theorem CutRegular.full : CutRegular.Statement.{u} :=
-  CutRegular.proof HilbExactDivide.full MultEqualsCoeff.full
+  CutRegular.proof HilbExactDivide.full MultEqualsCoeff.full IntNumSymm.full
 
 theorem CutRational.full : CutRational.Statement.{u} :=
   CutRational.proof CutRegular.full IntNumAdd.full

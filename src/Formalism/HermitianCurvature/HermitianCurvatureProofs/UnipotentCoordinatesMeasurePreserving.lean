@@ -887,7 +887,6 @@ theorem haar_norm {a : ℕ} {U : Set (B.Mat k a)} {μ : Measure (Mt k a)} (hμ :
     rw [hμ.conc, add_zero] at h1
     exact lt_of_le_of_lt h1 (hμ.finite_compact U hU)
   have h0 : μ Set.univ ≠ 0 := Measure.measure_univ_ne_zero.mpr hμ.ne_zero
-  have hc0 : (μ Set.univ)⁻¹ ≠ 0 := ENNReal.inv_ne_zero.mpr hfin.ne
   have hct : (μ Set.univ)⁻¹ ≠ ⊤ := ENNReal.inv_ne_top.mpr h0
   have hn : ((μ Set.univ)⁻¹ • μ) Set.univ = 1 := by
     rw [Measure.smul_apply, smul_eq_mul, ENNReal.inv_mul_cancel h0 hfin.ne]
@@ -1411,8 +1410,6 @@ theorem YB_gram (hz : inWb k r z') (hν : inWb k r ν') (hs : 0 < s)
     herm (Hpk k r) (YB π d z' ν' s κ i) (YB π d z' ν' s κ j) =
       herm (Hpk k r) (uB z' ν' i) (uB z' ν' j) := by
   have hs' : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
-  have hne : ∀ b : Fin r, π b.castSucc ≠ Fin.last r := by
-    intro b h; rw [← hB] at h; exact Fin.castSucc_ne_last b (π.injective h)
   have hzν := herm_zν hνz
   rcases i with ((b | b) | i) <;> rcases j with ((c | c) | j)
   all_goals try fin_cases i
@@ -3242,7 +3239,6 @@ theorem measurePreserving_coord_permutation : MeasurePreserving (perm8 (k := k) 
   have s6 := ((MeasurePreserving.id (μc.prod μCL)).prod (middle_four_swap_measure_preserving μq1 μq2 μQ1L μQ2L)).prod
     (MeasurePreserving.id (μU0.prod μu))
   have hall := s6.comp (s5.comp (s4.comp (s3.comp (s2.comp s1))))
-  have e : (perm8 (k := k) (j := j) (ρ := ρ)) = _ := funext fun q => rfl
   exact hall
 
 def tgt (q : Bs k j ρ × Fs k j ρ) : U.RC k (j + 1) ρ × (G.UT (j + 1) → ℂ) :=
@@ -4231,7 +4227,6 @@ theorem herm_basis_isotropic_perp (b : Fin r) (j : Fin (2 * r + k + 1)) (hj1 : r
   simp only [bvec, Pi.single_apply]
   rw [ite_eq_right]; · simp
   intro e
-  have h1 := congrArg Fin.val e
   have h2 : (esI k r (sX hB b)).val = 2 * r + k - (sX hB b).val := rfl
   have := (sX hB b).isLt
   omega
@@ -4266,7 +4261,6 @@ theorem rhoD'_N (x : C2.Lstidx w → ℂ) : γ⁻¹ * rhoD γ hB d x * γ ∈ Ns
       rw [show herm (Hpk k r) (bvec j) (DF.ee k r ((sX hB).symm a)) = 0 by
         rw [DF.herm_ee]; simp only [bvec, Pi.single_apply]; rw [ite_eq_right]
         intro e
-        have h1 := congrArg Fin.val e
         have h2 : (esI k r ((sX hB).symm a)).val = 2 * r + k - ((sX hB).symm a).val := rfl
         have := ((sX hB).symm a).isLt
         omega]
@@ -4397,7 +4391,6 @@ include hγ hd hZ hB
 theorem trivial_of_u_one {ρ : B.Mat k r} (hρ : ρ ∈ C6.Rset γ) (hu1 : C2.uMap k r D.z ρ = 1) : ρ = 1 := by
   have hu := isUnit_G hγ
   have hP := Formalism.FourierDecayAlt.P.C2x2.isUnit_det_monomialMatrix w d hd
-  have hγ' : γᴴ * Hpk k r * γ = Hpk k r := hγ
   have hρU : ρᴴ * Hpk k r * ρ = Hpk k r := hρ.1.1
 
   have hF := ((Formalism.FourierDecayAlt.P.unipotent_map_frame k r D.z ⟨D.z_mem, D.T_pos⟩).1 ρ (N_sub_S D.z hρ.1)).1
@@ -5391,9 +5384,7 @@ theorem frame_fix (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (hbase 
   have vA := Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_N hnA
   have vB := Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_N hnB
   have sA : IsUnit (hA * nA).det := by rw [Matrix.det_mul]; exact uA.mul vA
-  have sB : IsUnit (hB * nB).det := by rw [Matrix.det_mul]; exact uB.mul vB
   have uγ := Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_G hγe
-  have um := Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_G hmU
   have hsfA := mul_fix hhA hfA
   have hsfB := mul_fix hhB hfB
   obtain ⟨hAiU, hAie, hAis, hAiz⟩ := uw_parts (WeylGroupFacts.uw_inv hhA)
@@ -6349,8 +6340,6 @@ theorem card_UT (m : ℕ) : 2 * Fintype.card (G.UT m) = m * (m - 1) := by
     have e := Fintype.card_congr (utEquiv (ph := m) (n := 0))
     have h1 : Fintype.card (G.UT (0 + 1)) = 0 := by
       rw [Fintype.card_eq_zero_iff]; exact ⟨fun q => absurd q.2 (by
-        have a := q.1.1.isLt
-        have b := q.1.2.isLt
         have e : q.1.1 = q.1.2 := Fin.ext (by omega)
         rw [e]; exact lt_irrefl _)⟩
     simp only [Fintype.card_sum, Fintype.card_prod, Fintype.card_fin, h1, add_zero] at e
@@ -6415,7 +6404,6 @@ theorem core (σ : Equiv.Perm (Fin ph)) (d : Fin ph → ℂ) (t : ℂ)
   let Φ : U.Xi k (ph + (n + 1)) 0 ρ (sigP σ) ≃ᵐ RR × (U.XiH ph (n + 1) σ × (G.UT (n + 1) → ℂ)) :=
     MeasurableEquiv.prodCongr (MeasurableEquiv.refl RR) (xiE σ)
   have sX : SFinite (U.muXiH (ph + (n + 1)) 0 (sigP σ)) := by
-    have hT := probT (ph + (n + 1))
     have b1 : SigmaFinite (volume : Measure (U.LW (sigP (n := n) σ) → ℂ)) := inferInstance
     have b2 : SigmaFinite (volume : Measure (G.UT (ph + (n + 1)) → ℂ)) := inferInstance
     have b3 : SigmaFinite (volume : Measure ((U.LW (sigP (n := n) σ) → ℂ) × (G.UT (ph + (n + 1)) → ℂ))) := by
@@ -6456,8 +6444,6 @@ theorem core (σ : Equiv.Perm (Fin ph)) (d : Fin ph → ℂ) (t : ℂ)
     have c3 : SigmaFinite (volume : Measure (U.LW σ → ℂ)) := inferInstance
     have c4 : SigmaFinite (volume : Measure (G.UT ph → ℂ)) := inferInstance
     have c5 : SigmaFinite (volume : Measure ((Fin (n + 1) → Fin ph → ℂ) × (Fin ph → Fin (n + 1) → ℂ))) := by
-      rw [Measure.volume_eq_prod]; infer_instance
-    have c6 : SigmaFinite (volume : Measure ((U.LW σ → ℂ) × (G.UT ph → ℂ))) := by
       rw [Measure.volume_eq_prod]; infer_instance
     rw [Measure.volume_eq_prod]; infer_instance
   have hA : MeasurePreserving (MeasurableEquiv.prodAssoc : (RR × U.XiH ph (n + 1) σ) × (G.UT (n + 1) → ℂ) ≃ᵐ _)

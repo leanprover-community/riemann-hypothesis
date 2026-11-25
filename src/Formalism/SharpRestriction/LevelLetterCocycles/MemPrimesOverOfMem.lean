@@ -59,7 +59,6 @@ namespace Formalism.MainNotions.TwistedPlaces
 open Formalism.BasicNotions
 
 section
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem finrank_E_host (D : D7) : Module.finrank ℚ D.host.E = 2 * D.R.f := by
   rw [D.host.finrank_cmField]

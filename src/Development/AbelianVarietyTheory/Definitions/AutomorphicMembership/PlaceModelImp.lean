@@ -56,8 +56,6 @@ abbrev Late.D {B : Base} {C : Cols B} (a : Late B C) : D7 := a.st.toD7
 
 namespace R3.Tr
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {B : Base} {C : Cols B} {a : Late B C} (b : Late B C)
 
 theorem cd_eq (c c' : CDHaar) : c = c' := by

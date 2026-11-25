@@ -131,7 +131,7 @@ theorem mclose_of (hIC : InfConv) {E : Type} [Field E] [NumberField E] [IsCMFiel
   unfold MClose mOf
   exact hIC n _ _ (h _ _) ε hε
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem isKer_smul_rank {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) (M : KMod n) (g : ℝ → ℝ)
     (k : Mat n → (M.V →L[ℂ] M.V)) (s : Bool) (hk : IsKer μ M [] g k) : IsKer μ M [(s, 0)] g ((n : ℂ) • k) := by

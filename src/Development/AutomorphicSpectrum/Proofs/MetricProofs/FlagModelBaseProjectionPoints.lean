@@ -86,30 +86,12 @@ theorem sum_mapDomain_block {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (
   apply GlobalTheory.CompanionTheory.Ar.PB.CovGraph.RegPhi.sum_mapDomain_block <;> assumption
 
 theorem isMultiHomog_rename_block {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hb : IsBlockMap κ v) {f : MRing ι}
-    {b : K → ℕ} (hf : IsMultiHomog f b) : IsMultiHomog (rename v f) (Function.extend κ b 0) := by
-  intro m hm k'
-  rw [support_rename_of_injective hb.2.1, Finset.mem_image] at hm
-  obtain ⟨m₀, hm₀, rfl⟩ := hm
-  rw [sum_mapDomain_block hb.2.2.1, Fintype.sum_sigma]
-  by_cases hk : ∃ k, κ k = k'
-  · obtain ⟨k, rfl⟩ := hk
-    rw [hb.1.extend_apply, Finset.sum_eq_single k]
-    · simpa using hf m₀ hm₀ k
-    · intro k₂ _ hne
-      exact Finset.sum_eq_zero fun i _ => ite_eq_right (hb.1.ne hne)
-    · simp
-  · rw [Function.extend_apply' _ _ _ hk]
-    exact Finset.sum_eq_zero fun k _ => Finset.sum_eq_zero fun i _ => ite_eq_right fun h => hk ⟨k, h⟩
+    {b : K → ℕ} (hf : IsMultiHomog f b) : IsMultiHomog (rename v f) (Function.extend κ b 0) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.PB.CovGraph.RegPhi.isMultiHomog_rename_block hb hf
 
 theorem mConeMap_rename {Ω : Type} [Field Ω] {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hb : IsBlockMap κ v)
-    (y : (Σ k, ι' k) → Ω) (g : MRing ι) : mConeMap y (rename v g) = rename κ (mConeMap (y ∘ v) g) := by
-  induction g using MvPolynomial.induction_on with
-  | C a => simp [mConeMap]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p n hp =>
-    simp only [map_mul, hp, rename_X]
-    congr 1
-    simp [mConeMap, hb.2.2.1 n]
+    (y : (Σ k, ι' k) → Ω) (g : MRing ι) : mConeMap y (rename v g) = rename κ (mConeMap (y ∘ v) g) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.PB.CovGraph.RegPhi.mConeMap_rename hb y g
 
 theorem mConeMap_comp {Ω Ω' : Type} [Field Ω] [Field Ω'] (φ : Ω →+* Ω') (x : (Σ k, ι k) → Ω) (g : MRing ι) :
     mConeMap (φ ∘ x) g = map φ (mConeMap x g) := by
@@ -284,10 +266,10 @@ theorem detFac_one (j : ℕ) (i : Fin N) : detFac j i (1 : Matrix (Fin N) (Fin N
 theorem stepCols_nonempty {j : ℕ} (hj : j ≤ N) (i : Fin N) : (stepCols N j i).Nonempty := by
   by_cases h : (i : ℕ) + 1 ≤ j
   · refine ⟨⟨N - j, by omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left h]
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos h]
     omega
   · refine ⟨⟨0, by have := i.2; omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right h]
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg h]
     omega
 
 theorem detFac_ne_zero {L : Type} [Field L] {j : ℕ} (hj : j ≤ N) (i : Fin N) {T : Matrix (Fin N) (Fin N) L}
@@ -390,7 +372,7 @@ theorem flag_nonzero {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : 
   by_cases hk : ∀ p, M.blk p ≠ some k
   · obtain ⟨i, hi⟩ := hzb.1 ⟨k, hk⟩
     exact ⟨i, hi⟩
-  · push Not at hk
+  · push_neg at hk
     obtain ⟨p, hp⟩ := hk
     obtain ⟨a, ha, hz⟩ := H.2.2 p k hp
     let val := regVal hzb
@@ -470,7 +452,7 @@ theorem flag_back {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ
       · have e1 : ρ (C ⟨_, _, hv m⟩) = val ⟨_, _, hv m⟩ := eval₂Hom_C _ _ _
         rw [e1, show val ⟨_, _, hv m⟩ = _ from regVal_eq hzb _ (hv m), hzc, div_one, one_mul]
         rfl
-    · push Not at hk
+    · push_neg at hk
       obtain ⟨p, hp⟩ := hk
       obtain ⟨a, ha, hz⟩ := H.2.2 p k hp
       let uA : (Σ k, ι k) → Finset (Fin N) → A := fun q I => ⟨F.u q I, exists_isValueAt hzb (hG.2.1 q I).1⟩

@@ -658,44 +658,12 @@ variable (R : Type) [CommRing R] {D : Type} [CommRing D] [Algebra R D]
 
 def locMap (s : D) : D →ₐ[R] Localization.Away s := IsScalarTower.toAlgHom R D _
 
-theorem locMap_apply (s x : D) : locMap R s x = algebraMap D (Localization.Away s) x := rfl
-
 def locR (a b : D) : Localization.Away a →ₐ[R] Localization.Away (a * b) :=
   ⟨IsLocalization.Away.awayToAwayRight a b, fun r ↦ by
     have := IsLocalization.Away.awayToAwayRight_eq (S := Localization.Away a) (P := Localization.Away (a * b))
       a b (algebraMap R D r)
     rw [← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply] at this
     exact this⟩
-
-def locL (a b : D) : Localization.Away b →ₐ[R] Localization.Away (a * b) :=
-  ⟨IsLocalization.Away.awayToAwayLeft b a, fun r ↦ by
-    have := IsLocalization.Away.awayToAwayLeft_eq (S := Localization.Away b) (P := Localization.Away (a * b))
-      b a (algebraMap R D r)
-    rw [← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply] at this
-    exact this⟩
-
-theorem locR_apply (a b : D) (x : Localization.Away a) :
-    locR R a b x = IsLocalization.Away.awayToAwayRight a b x := rfl
-
-theorem locL_apply (a b : D) (x : Localization.Away b) :
-    locL R a b x = IsLocalization.Away.awayToAwayLeft b a x := rfl
-
-theorem locR_comp (a b : D) : (locR R a b).comp (locMap R a) = locMap R (a * b) := by
-  ext x
-  rw [AlgHom.comp_apply, locR_apply, locMap_apply, locMap_apply]
-  exact IsLocalization.Away.awayToAwayRight_eq a b x
-
-theorem locL_comp (a b : D) : (locL R a b).comp (locMap R b) = locMap R (a * b) := by
-  ext x
-  rw [AlgHom.comp_apply, locL_apply, locMap_apply, locMap_apply]
-  exact IsLocalization.Away.awayToAwayLeft_eq b a x
-
-theorem awayMap_comp {E : Type} [CommRing E] [Algebra R E] (φ : D →ₐ[R] E) (s : D) :
-    (IsScalarTower.toAlgHom R E (Localization.Away (φ s))).comp φ = (Localization.awayMapₐ φ s).comp (locMap R s) := by
-  ext x
-  rw [AlgHom.comp_apply, AlgHom.comp_apply, IsScalarTower.toAlgHom_apply, locMap_apply]
-  first
-    | simp [Localization.awayMapₐ, IsLocalization.Away.mapₐ, IsLocalization.Away.map, IsLocalization.map_eq]
 
 theorem existsUnique_of_natural : ∀ (R : Type) [CommRing R] (X : Over (Sp R)) (K : Type) (W : K → X.left.Opens),
     ⨆ i, W i = ⊤ → ∀ (D : Type) [CommRing D] [Algebra R D] (y : Pt X D)

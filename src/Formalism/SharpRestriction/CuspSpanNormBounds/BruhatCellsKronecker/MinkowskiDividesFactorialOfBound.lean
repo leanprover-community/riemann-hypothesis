@@ -55,8 +55,6 @@ namespace Formalism.MainNotions.BridgeLemma
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Cnt
 open scoped ENNReal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem word_theorem_a_admissible (D : D7) (u u' : D.what₂.Word) : VanishingOnXAndXPlus.adm14 D u u' := Formalism.MainNotions.LatticeGluingRadicals.theorem_A_section D u _
 
 section FamAdm

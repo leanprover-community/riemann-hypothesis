@@ -47,8 +47,6 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions Form
   Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt
 open scoped ComplexConjugate
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def dimAt (D : D7) (i : Fin D.R.m) (τ : D.what₂.Tau) : ℝ :=
   ((dimK _ _ (Formalism.L2.NTheta.wtOf D (Wc D i) τ) : ℚ) : ℝ)
 

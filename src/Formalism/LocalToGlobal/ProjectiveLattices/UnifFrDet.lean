@@ -47,8 +47,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor R
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open scoped Matrix ComplexConjugate
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Mat
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}

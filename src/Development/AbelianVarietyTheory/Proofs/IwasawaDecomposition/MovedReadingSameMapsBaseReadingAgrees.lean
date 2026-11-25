@@ -44,7 +44,7 @@ noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Cx Formalism.IndefR.RecTie
 open scoped TensorProduct InnerProductSpace ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.IndefR.principalLevelFrame.instCMHostI
+attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 
 namespace GlobalTheory.Mem.R3.Rw.DivMv
@@ -54,8 +54,7 @@ section Gen
 variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ)
 
 
-open DivX (md) in
-def divBack (X : DivX (GlobalTheory.EX.OB.setDiv D N h)) : DivX D := { X with md := fun S κ p _ la z => { md X S κ p la z with } }
+def divBack (X : DivX (GlobalTheory.EX.OB.setDiv D N h)) : DivX D := { X with }
 
 theorem idxDefs_fwd {X : DivX (GlobalTheory.EX.OB.setDiv D N h)} (H : IdxDefs D (divBack N h X)) : IdxDefs (GlobalTheory.EX.OB.setDiv D N h) X :=
   ⟨(by with_unfolding_all exact (H.Ij_def :)), (by with_unfolding_all exact (H.jw_def :))⟩
@@ -130,13 +129,11 @@ def datMv {hX : B.fields.Ok} (z : Dat (w.st Z) w.I hX T Wt) : Dat (w.st (Db.setD
 def p0Mv (p0 : BaseLevelRowSide (w.D Z)) : BaseLevelRowSide (w.D (Db.setDivZ Z N h)) :=
   ⟨{ p0.s with }⟩
 
-open DivX (md) in
 def divMv (X : DivX (w.D Z)) : DivX (w.D (Db.setDivZ Z N h)) :=
-  { X with md := fun S κ p _ la z => { md X S κ p la z with } }
+  { X with }
 
-open DivX (md) in
 def divUnmv (X : DivX (w.D (Db.setDivZ Z N h))) : DivX (w.D Z) :=
-  { X with md := fun S κ p _ la z => { md X S κ p la z with } }
+  { X with }
 
 def objMv (O : Obj2 (w.D Z)) : Obj2 (w.D (Db.setDivZ Z N h)) where
   gatT := { O.gatT with }

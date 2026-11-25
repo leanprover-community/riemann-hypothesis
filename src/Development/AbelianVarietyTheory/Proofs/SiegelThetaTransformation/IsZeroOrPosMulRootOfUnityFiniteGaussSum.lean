@@ -55,7 +55,7 @@ open scoped ComplexConjugate Real
 namespace GlobalTheory.Phase.GaussSum
 
 theorem twist {N W : Type} [AddCommGroup N] [Fintype N] [AddCommGroup W] (e : W → ℂ)
-    (he : ∀ s t, e (s + t) = e s * e t) (hc : ∀ t, e (-t) = conj (e t))
+    (he : ∀ s t, e (s + t) = e s * e t) (hc : ∀ t, e (-t) = conj (e t)) (h0 : e 0 = 1)
     (Q : N → W) (B : N →+ N →+ W) (hQ : ∀ x y, Q (x + y) = Q x + Q y + B x y) (ψ : N →+ W)
     (hT : ∑ x, e (Q x) = ∑ x, e (ψ x - Q x)) :
     ∑ x, e (Q x) = 0 ∨ ∃ a, ∑ x, e (Q x) = e (Q a) * conj (∑ x, e (Q x)) := by
@@ -167,7 +167,7 @@ theorem pow_four {M W : Type} [AddCommGroup M] [Fintype M] [AddCommGroup W] (e :
       intro x y
       rw [quat_add, hQ, hQ, hB (quat _ _ _ _ _), quat_form, hm, ← hB, sub_smul, hnB, one_smul]
       abel)
-  have := twist e he hc (fun x : Fin 4 → M => ∑ i, q (x i)) B hQ ψ (by
+  have := twist e he hc h0 (fun x : Fin 4 → M => ∑ i, q (x i)) B hQ ψ (by
     rw [← hbij.sum_comp (fun x => e (∑ i, q (x i)))]
     refine Finset.sum_congr rfl fun x _ => ?_
     congr 1

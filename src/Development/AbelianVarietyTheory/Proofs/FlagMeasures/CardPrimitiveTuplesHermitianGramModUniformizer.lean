@@ -183,7 +183,7 @@ theorem sum_char_unit_mul_ip_eq_zero {B : Type} [CommRing B] [Fintype B] (c : B 
   exact AddChar.sum_eq_zero_of_ne_one hψ
 
 theorem norm_gauss_sum_ip_le {B : Type} [CommRing B] [Fintype B] (c : B →+* B)
-    (hc : ∀ u, c (c u) = u) (q : ℕ) (_hq : 2 ≤ q) (hB : Fintype.card B = q ^ 2)
+    (hc : ∀ u, c (c u) = u) (q : ℕ) (hB : Fintype.card B = q ^ 2)
     (χ : AddChar B ℂ) (hχ : χ.IsPrimitive) (hinv : ∀ u, χ (c u) = χ u) (n : ℕ) (a : B)
     (ha : IsUnit (a + c a)) (v : Fin n → B) :
     ‖∑ y : Fin n → B, χ (a * ip c y y + ip c y v)‖ ≤ (q : ℝ) ^ n := by
@@ -354,7 +354,7 @@ theorem quad_count {B : Type} [CommRing B] [Fintype B] (c : B →+* B) (hc : ∀
       positivity
     · have hu : IsUnit (a + c a) := hf _ (by rw [map_add (f := _), hc, add_comm])
         (fun h => ha (by linear_combination h))
-      have h1 := _root_.GlobalTheory.GramCount.norm_gauss_sum_ip_le c hc q hq hB χ hχ hχc n a hu (∑ i, c (s i) • x i)
+      have h1 := _root_.GlobalTheory.GramCount.norm_gauss_sum_ip_le c hc q hB χ hχ hχc n a hu (∑ i, c (s i) • x i)
       have h2 : F (a, s) = χ (-(a * t + ∑ i, s i * g i)) *
           ∑ y : Fin n → B, χ (a * ip c y y + ip c y (∑ i, c (s i) • x i)) := by
         simp only [F, hv, Finset.mul_sum, ← AddChar.map_add_eq_mul]

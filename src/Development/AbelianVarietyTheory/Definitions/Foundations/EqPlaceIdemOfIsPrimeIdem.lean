@@ -180,7 +180,6 @@ theorem splitIdemAd_mul (h : IsCMExt F E σ) {v : HeightOneSpectrum (𝓞 F)} (�
 section Record
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Mult GlobalTheory.IdemModTwo
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (V : HSp D) {v : HeightOneSpectrum (𝓞 D.host.F)}
 

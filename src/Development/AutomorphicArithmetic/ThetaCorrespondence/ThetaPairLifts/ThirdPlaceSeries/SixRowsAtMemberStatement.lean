@@ -862,8 +862,7 @@ theorem exists_integralPendingObject_symmetricFormsLevel : ∀ (D : D7) (u : D.w
     fun w c => ((B w c : GL (Fin (D.R.N D.R.m - 1)) D.host.E) : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E) with hBm
   have hBu : ∀ w c, IsUnit (Bm w c).det := fun w c => (Matrix.isUnit_iff_isUnit_det _).1 (B w c).isUnit
   have hL : Formalism.L2.GlobalTheoryTheory.Br.LowerSymmetricCompatible Tf := ⟨hBe, hMap⟩
-  refine Formalism.L2.GlobalTheoryTheory.Br.brExists_of_rest4S Tf hL Bm hBu (gPof Bm hBu o) ⟨?_, ?_,
-    Formalism.L2.GlobalTheoryTheory.Br.ipV_co_ofS Tf Bm hBu o ho, Formalism.L2.GlobalTheoryTheory.Br.weightedInner_self_eq_sum_coords_of_orthonormal' Tf Bm hBu o (fun τ => Or.inl (ho τ))⟩
+  refine Formalism.L2.GlobalTheoryTheory.Br.brExists_of_rest4S Tf hL Bm hBu (gPof Bm hBu o) ⟨?_, ?_⟩
   · intro w x hx c
     obtain ⟨B', hB'eq, hB'⟩ := exists_isLocBasis_dual D u Ch chOf Tf w c (B w c) (hB w c)
     obtain ⟨n, hn, hχ'⟩ := hχ

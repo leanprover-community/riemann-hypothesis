@@ -55,8 +55,6 @@ open scoped TensorProduct nonZeroDivisors Pointwise
 
 namespace GlobalTheory.SignatureAddition
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Generic
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]

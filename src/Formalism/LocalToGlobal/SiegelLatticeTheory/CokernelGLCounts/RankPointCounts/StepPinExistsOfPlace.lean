@@ -221,8 +221,6 @@ section St
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem ninf_eq (u : D.what₂.Word) : (ProductExactness.NinfG X u : Set X.B.I.Ginf) = X.NinfU u := ProductExactness.NinfG_coe X u
@@ -353,8 +351,6 @@ section Pin
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def PinHaarEx : Prop :=
   ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)),
     (∃ γ, IsPtRep X u u' w γ) →
@@ -464,8 +460,6 @@ section Assembly
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word)
 
 theorem muInf_map (h : X.B.I.Ginf) :
@@ -549,8 +543,6 @@ section Places
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

@@ -68,7 +68,7 @@ theorem oldest_le_row (hX : X.Hyp p K) (j x : ℤ) (hx : x ∈ X.toLate j) (i : 
     X.F.oldest j x ≤ X.row j x i := by
   have hr0 : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
   have hmem := (mem_late X j x).1 hx
-  have hlen := r_le_length hX.valid j x hmem.1 hmem.2
+  have hlen := r_le_length hX.valid j x hmem.2
   have hi := i.isLt
   rw [oldest_eq, row_eq]
   have h1 : (evL X.F j x).length - r < (evL X.F j x).length := by omega
@@ -80,7 +80,7 @@ theorem sg_mul_le (hX : X.Hyp p K) (j x : ℤ) (hx : x ∈ X.toLate j) (i : Fin 
     (X.sg p K j x : ℝ) * (p : ℝ) ^ X.F.dist j (X.row j x i) ≤ 2 * X.a / (Dat.k (r := r) K ^ 2 * X.Y) := by
   have hr0 : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
   have hmem := (mem_late X j x).1 hx
-  have hlen := r_le_length hX.valid j x hmem.1 hmem.2
+  have hlen := r_le_length hX.valid j x hmem.2
   have hold : X.F.oldest j x ∈ X.F.letters j := by
     rw [oldest_eq]
     have h1 : (evL X.F j x).length - r < (evL X.F j x).length := by omega
@@ -123,7 +123,7 @@ private theorem late_index_map_mem_letters (hX : X.Hyp p K) (j x : ℤ) (hx : x 
     X.row j x i ∈ X.F.letters j := by
   have hr0 : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
   have hmem := (mem_late X j x).1 hx
-  have hlen := r_le_length hX.valid j x hmem.1 hmem.2
+  have hlen := r_le_length hX.valid j x hmem.2
   have hi := i.isLt
   rw [row_eq]
   have h2 : (evL X.F j x).length - r + (i : ℕ) < (evL X.F j x).length := by omega
@@ -134,7 +134,7 @@ private theorem late_index_map_injective (hX : X.Hyp p K) (j x : ℤ) (hx : x �
     Function.Injective (X.row j x) := by
   have hr0 : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
   have hmem := (mem_late X j x).1 hx
-  have hlen := r_le_length hX.valid j x hmem.1 hmem.2
+  have hlen := r_le_length hX.valid j x hmem.2
   intro i i' h
   have hi := i.isLt
   have hi' := i'.isLt

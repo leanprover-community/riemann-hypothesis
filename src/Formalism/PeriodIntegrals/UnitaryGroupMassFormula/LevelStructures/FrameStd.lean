@@ -51,8 +51,6 @@ namespace MassDataLevelSSteps.FrameW
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.TypedSets Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem host_star_conj : Formalism.BasicNotions.bridge_star := by
   apply Formalism.L2.SG.Pf.NcVal.OmVSt.OmW.host_star_conj
 

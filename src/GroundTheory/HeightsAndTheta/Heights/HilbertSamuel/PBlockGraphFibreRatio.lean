@@ -2,6 +2,7 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphFibreRatio
 import Mathlib.RingTheory.SimpleRing.Principal
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
 
@@ -44,22 +45,8 @@ theorem aeval_eq_zero_of_mem {Ω : Type} [Field Ω] {v : (Σ k, ι k) → Ω} {f
   simpa using h.symm
 
 theorem isMultiHomog_X [DecidableEq K] (k : K) (i : ι k) :
-    IsMultiHomog (X ⟨k, i⟩ : MRing ι) (blockDeg k 1) := by
-  classical
-  intro m hm k'
-  rw [support_X, Finset.mem_singleton] at hm
-  subst hm
-  by_cases hk : k' = k
-  · subst hk
-    have hs : ∀ b, (Finsupp.single (⟨k', i⟩ : Σ k, ι k) 1 : (Σ k, ι k) →₀ ℕ) ⟨k', b⟩ = if b = i then 1 else 0 := by
-      intro b
-      by_cases hb : b = i
-      · subst hb
-        simp
-      · rw [ite_eq_right hb, Finsupp.single_apply, ite_eq_right]
-        exact fun h => hb (eq_of_heq (Sigma.mk.inj h).2).symm
-    simp [blockDeg, hs]
-  · simp [blockDeg, hk, Sigma.ext_iff]
+    IsMultiHomog (X ⟨k, i⟩ : MRing ι) (blockDeg k 1) :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X_ite ⟨k, i⟩
 
 end Cone
 
@@ -185,7 +172,7 @@ theorem BlockGraphFibreRatio.proof : BlockGraphFibreRatio.Statement := by
     intro h0
     rw [hker, graphMap_nForm hI] at h0
     have h1 := congrArg (AddMonoidAlgebra.coeff · (Finsupp.single () 1)) h0
-    rw [coeff_C_mul, coeff_X, ite_eq_left rfl, mul_one, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, Ideal.Quotient.eq_zero_iff_mem] at h1
+    rw [coeff_C_mul, coeff_X, if_pos rfl, mul_one, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, Ideal.Quotient.eq_zero_iff_mem] at h1
     exact hl h1
   have hcross : ∀ a, aeval G.x' (nForm k₀ N a) * z ⟨k₀, l⟩ = z ⟨k₀, a⟩ * aeval G.x' (nForm k₀ N l) := by
     intro a
@@ -195,7 +182,8 @@ theorem BlockGraphFibreRatio.proof : BlockGraphFibreRatio.Statement := by
     have h0 := (hker (nForm k₀ N a * X (inlV ⟨k₀, l⟩) - X (inlV ⟨k₀, a⟩) * nForm k₀ N l)).2 (by
       rw [map_sub, map_mul, map_mul, graphMap_nForm hI, graphMap_nForm hI, hX, hX]
       ring)
-    rwa [map_sub, map_mul, map_mul, aeval_X, aeval_X, sub_eq_zero] at h0
+    rw [map_sub, map_mul, map_mul, aeval_X, aeval_X, sub_eq_zero] at h0
+    exact h0
   set c := aeval G.x' (nForm k₀ N l) / z ⟨k₀, l⟩ with hcdef
   have hc : c ≠ 0 := div_ne_zero hwl hzl
   have hwc : ∀ a, aeval G.x' (nForm k₀ N a) = c * z ⟨k₀, a⟩ := by

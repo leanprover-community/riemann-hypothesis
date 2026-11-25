@@ -486,8 +486,6 @@ end Claims
 
 section Host
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7) (V : TH.HSp D)
 
 end Host

@@ -582,7 +582,7 @@ theorem monomialPrincipalization_isPullbackBlowupSequence_of_smooth
     (hGeom : MonomialGeometryHypotheses.{u}) (hinv : ComapIsoInvariance.{u}) (T : MarkedIdealWithBoundary.{u})
     (hT : MonomialCenter.IsLocallyMonomialTriple T)
     (Y : Scheme.{u}) (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme)
-    [AlgebraicGeometry.Smooth h] (E' : List Y.IdealSheafData)
+    [AlgebraicGeometry.Smooth h] (_hq : h ≫ T.structMap = q) (E' : List Y.IdealSheafData)
     (hE : MarkedIdealWithBoundary.SameNontrivialBoundary (T.pullbackAlong Y q h).boundary E')
     (hT' : MonomialCenter.IsLocallyMonomialTriple ((T.pullbackAlong Y q h).withBoundary E')) :
     IsPullbackBlowupSequence h

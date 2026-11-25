@@ -16,8 +16,6 @@ namespace Formalism.L2.KerInert.RepComb
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Th1.H
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem xiL_expand {V : Type} [AddCommGroup V] [Module ℂ V] (H : Sesq V) (α : V → ℂ) (vol : ℝ)
     (SX SA SB : Finset V) (Φ e : V → ℂ) (z : V) :
     xiL H α vol SX SA SB Φ e z = ∑ x ∈ SX, ∑ y ∈ SB,

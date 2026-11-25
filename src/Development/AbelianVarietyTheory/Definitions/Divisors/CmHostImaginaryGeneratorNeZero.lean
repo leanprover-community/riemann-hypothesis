@@ -57,8 +57,6 @@ open scoped TensorProduct nonZeroDivisors Pointwise
 
 namespace GlobalTheory.ChiGrid
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem cmHost_imaginaryGenerator_ne_zero : D.host.xi0 ≠ 0 := by

@@ -12,8 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def minfDensity (N : ℕ) : ENNReal := ((2 : ENNReal) ^ (N * (N - 1) / 2))⁻¹
 
 def petCOf (D : D7) (petF : HSp D → ℝ) (petR : ℕ → ℕ → ℝ) (V : HSp D) : ℝ :=

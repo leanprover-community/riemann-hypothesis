@@ -8,8 +8,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG
 
 namespace Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem reGL_rfl {a : ℕ} (R : Type) [CommRing R] (x : GL (Fin a) R) : reGL rfl R x = x := by
   apply Units.ext
   ext i j

@@ -16,8 +16,6 @@ namespace Formalism.IndefR.principalLevelFrame
 
 section Dec
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 local instance instCMHostD (D : Formalism.BasicNotions.D7) : IsCMField D.host.E := D.host.isCMField_hostE
 
 variable {D : Formalism.BasicNotions.D7} {V : Formalism.BasicNotions.TH.HSp D} {n : ℕ} {Sp : D.what₂.Tau → SPar}
@@ -41,8 +39,6 @@ def IsotDecomp (P : RowPsi V n) (M : Mult.DSModel V Sp) (J : Set (GA D V)) (χ :
 end Dec
 
 section DecProofs
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 local instance instCMHostD' (D : Formalism.BasicNotions.D7) : IsCMField D.host.E := D.host.isCMField_hostE
 

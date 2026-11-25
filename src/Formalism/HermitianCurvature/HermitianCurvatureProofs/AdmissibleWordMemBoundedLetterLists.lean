@@ -119,10 +119,6 @@ theorem block_schur {X ι : Type} [Fintype ι] (Y : Finset X) (κ : X → X → 
   set W := ∑ p ∈ Y, ∑ q ∈ Y, κ p q * ∏ v, w v p q
   set A := (∑ p ∈ Y, ∑ q ∈ Y, κ p q * ∏ v, a v p q).re
   set B := (∑ p ∈ Y, ∑ q ∈ Y, κ p q * ∏ v, b v p q).re
-  have hW : ‖W‖ ^ 2 ≤ A * B := hcs
-  have hA0 : 0 ≤ A := hA
-  have hB0 : 0 ≤ B := hB'
-  have hn := norm_nonneg W
   nlinarith [sq_nonneg (A - B), sq_nonneg (‖W‖ - (A + B) / 2)]
 
 section words
@@ -492,10 +488,6 @@ theorem nhat_eq_nhatV (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram 
     ring
   have hcv := prod_dlB S hg hU i
   have hrd := Formalism.FourierDecayAlt.P.Jx4.rd_pos E
-  have hdl0 : KB.dlB S i 1 ≠ 0 := by
-    unfold KB.dlB D.deG
-    have hg' : (0 : ℝ) < (S.g : ℝ) := by exact_mod_cast hg
-    positivity
   have eR : KB.NhatV S ε i w Y κ (fun v => S.σ v l) = ∑ h : Y, ∑ h' : Y, κ h h' *
       ∏ v, ((KB.dlB S i 1 : ℂ)⁻¹ * ((∫ c, φ v h h' c * ψ v c) / (S.sizeAt v (w.1 v) : ℂ))) := by
     unfold KB.NhatV

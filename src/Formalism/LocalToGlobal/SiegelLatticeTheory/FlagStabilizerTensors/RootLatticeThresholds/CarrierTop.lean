@@ -205,8 +205,6 @@ end Sign
 
 section G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 def cS (r : ℕ) (sc : ℝ) : Fin (r + 1) → ℂ := fun a => ((sc : ℂ) ^ (r - a.1))⁻¹

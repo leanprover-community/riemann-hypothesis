@@ -100,7 +100,7 @@ theorem baseChangeCompatible_of_smooth (hG : PrincipalizationGeometryHypotheses.
   · intro S hmon E hE hmon'
     have : AlgebraicGeometry.Smooth S.left := MarkedPullbackSquare.smooth_verticalMap S
     exact monomialPrincipalization_isPullbackBlowupSequence_of_smooth hG.monomialInputs τ S.lowerTriple hmon
-      S.topScheme (S.top ≫ q) S.left E hE hmon'
+      S.topScheme (S.top ≫ q) S.left (MarkedPullbackSquare.verticalMap_comp_lowerStructMap S q hq) E hE hmon'
   · intro S E hE hV
     have : AlgebraicGeometry.Smooth S.left := MarkedPullbackSquare.smooth_verticalMap S
     exact hG.nonMonomialPart_comap_of_sameNontrivialBoundary S.lowerTriple S.valid S.topScheme

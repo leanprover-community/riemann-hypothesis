@@ -137,7 +137,7 @@ theorem cechHStep_pull' : ∀ {X Y : TopCat.{0}} (f : X ⟶ Y) {κ ι : Type} (V
   let q := cechPullH f α.τ₁.hom V U τ hτ (m + 2)
   have hδ (y : cechH S.X₃.obj V (m + 1)) : q (δ y) = δ' (p y) := by
     refine QuotientAddGroup.induction_on y fun σ => ?_
-    exact GlobalTheory.T.cech_short_exact_pull_compat f V U τ hτ
+    exact GlobalTheory.CompanionTheory.OmCechDelta.cechPullH_delta f V U τ hτ
       (F := S.X₁.obj) (I := S.X₂.obj) (Q := S.X₃.obj)
       (F' := S'.X₁.obj) (I' := S'.X₂.obj) (Q' := S'.X₃.obj)
       hC hC' α.τ₁.hom α.τ₂.hom α.τ₃.hom h₁₂ h₂₃ (m + 1) σ
@@ -294,7 +294,7 @@ theorem cechHOne_pull' : ∀ {X Y : TopCat.{0}} (f : X ⟶ Y) {κ ι : Type} (V 
   let r (s : S.X₃.obj.obj (op ⊤)) := res S'.X₃.obj (top_le_map f) (φ₃.app (op ⊤) s)
   have hL (s : S.X₃.obj.obj (op ⊤)) :
       cechPullH f φ₁ V U τ hτ 1 (cechOneProj V hC s) = cechOneProj U hC' (r s) :=
-    (GlobalTheory.T.cech_short_exact_pull_compat f V U τ hτ hC hC' φ₁ φ₂ φ₃ h₁₂ h₂₃ 0
+    (GlobalTheory.CompanionTheory.OmCechDelta.cechPullH_delta f V U τ hτ hC hC' φ₁ φ₂ φ₃ h₁₂ h₂₃ 0
       (globalCocycle S.X₃.obj V s)).trans
       (congrArg (fun z => hC'.delta 0 z) (Subtype.ext (pullCoch_globalCocycle f φ₃ V U τ hτ s)))
   have hδ (s : S.X₃.obj.obj (op ⊤)) :

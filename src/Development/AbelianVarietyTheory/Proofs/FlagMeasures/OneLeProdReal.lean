@@ -60,8 +60,6 @@ section Count
 open Formalism.MainNotions.S.Cnt GlobalTheory.Mass
 open scoped ENNReal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem cntCl_mono {α : Type} {X Y : Set α} (h : X ⊆ Y) (R : α → α → Prop) : cntCl X R ≤ cntCl Y R := by
   unfold cntCl
   have hsub : {O : Set α | ∃ a ∈ X, O = {b | b ∈ X ∧ R a b}} ⊆

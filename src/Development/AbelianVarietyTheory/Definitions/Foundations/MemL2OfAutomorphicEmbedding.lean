@@ -52,8 +52,6 @@ open scoped TensorProduct ComplexConjugate InnerProductSpace
 
 namespace GlobalTheory.AutMult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (V : HSp D) {H X W : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup X]
   [InnerProductSpace ℂ X] [AddCommGroup W] [Module ℂ W] {S : D.what₂.Tau → SPar}
 

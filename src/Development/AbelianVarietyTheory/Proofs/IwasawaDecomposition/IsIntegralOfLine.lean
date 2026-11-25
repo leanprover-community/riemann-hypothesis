@@ -237,8 +237,6 @@ end Coef
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Space
 
 variable {D : D7}

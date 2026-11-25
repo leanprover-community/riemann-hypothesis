@@ -116,7 +116,6 @@ theorem exists_fin_KN_coset_reps
         ∀ y ∈ J, ∃! i, (x i)⁻¹ * y ∈
           J ⊓ J.map (MulAut.conj (leviEmb k (stdBlocks d hd) t)).toMonoidHom := by
   intro hJo hJc hIw hpos t hdom
-  have hKN : KN k N J d hd ≤ J := inf_le_left
   exact GlobalTheory.CompanionTheory.CosetReps.exists_fin_coset_reps (GL (Fin N) k) J
     (J ⊓ J.map (MulAut.conj (leviEmb k (stdBlocks d hd) t)).toMonoidHom) (KN k N J d hd) hJc
     (GlobalTheory.CompanionTheory.TopGroup.inter_conj_isOpen _ J hJo _)

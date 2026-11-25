@@ -58,9 +58,6 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.Mum.Cover
 
-theorem comp_one_pt {S : Scheme.{0}} {G X Y : Over S} [GrpObj G] (f : X ⟶ Y) : f ≫ (1 : Y ⟶ G) = 1 := by
-  rw [Hom.one_def, Hom.one_def, ← Category.assoc, comp_toUnit]
-
 theorem exists_section_translate_mem : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (O : G.left.Opens), (∀ g : G.left, G.hom g = closedPoint R → g ∈ O) → ∀ x : G.left, ∃ a : 𝟙_ (Over (Sp R)) ⟶ G, (𝟙 G * (toUnit G ≫ a)).left x ∈ O := by
   intro R _ _ _ hB G _ _ hG O hO x
   obtain ⟨hN, -, -, hC⟩ := hB

@@ -69,20 +69,8 @@ open MvPolynomial Vertical Vertical.NormFormIrreducible
 theorem aeval_smul_of_isHomogeneous {F K : Type*} [Field F] [Field K] [Algebra F K] {n d : ℕ}
     {g : MvPolynomial (Fin n) F} (hg : g.IsHomogeneous d) (c : K) (y : Fin n → K) :
     aeval (fun j => c * y j) g = c ^ d * aeval y g := by
-  classical
-  conv_lhs => rw [g.as_sum]
-  conv_rhs => rw [g.as_sum]
-
-  rw [map_sum, map_sum, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hdeg : ∑ j ∈ m.support, m j = d := by
-    have := hg (mem_support_iff.mp hm)
-    rw [Finsupp.weight_apply, Finsupp.sum] at this
-    simpa using this
-  rw [aeval_monomial, aeval_monomial]
-  simp only [mul_pow]
-  rw [Finsupp.prod_mul, Finsupp.prod, Finset.prod_pow_eq_pow_sum, hdeg]
-  ring
+  rw [aeval_def, aeval_def, ← eval_map, ← eval_map]
+  exact (hg.map (algebraMap F K)).eval_smul c y
 
 theorem ChowDegreeClosedPoint.proof (hField : ClosedPointChartField.Statement)
     (hCone : ClosedPointConeCoord.Statement) : ChowDegreeClosedPoint.Statement := by

@@ -1641,14 +1641,6 @@ namespace GlobalTheory.CompanionTheory.SW.ThW
 
 section Linear
 
-theorem sb_integrable {V : Type} [AddCommGroup V] [TopologicalSpace V] [MeasurableSpace V]
-    {χ : V → V → ℂ} {μ : Measure V} (hV : NADual V χ μ) {φ : V → ℂ} (h : SB φ) (y : V) :
-    Integrable (fun x => φ x * χ x y) μ := by
-  obtain ⟨hT, _, _, _, hB, hH, _, _, hC, _⟩ := hV
-  have hc : Continuous fun x => φ x * χ x y :=
-    h.1.continuous.mul (hC.comp (by fun_prop : Continuous fun x : V => (x, y)))
-  exact hc.integrable_of_hasCompactSupport h.2.mul_right
-
 theorem fou_smul {V : Type} [MeasurableSpace V] (χ : V → V → ℂ) (μ : Measure V) (c : ℂ)
     (φ : V → ℂ) : fou χ μ (c • φ) = c • fou χ μ φ := by
   funext y

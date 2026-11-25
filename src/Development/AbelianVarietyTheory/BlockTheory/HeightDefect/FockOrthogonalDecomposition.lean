@@ -46,8 +46,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.FockOrthogonalDecomposition
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 structure IsOrthDec (V : HSp D) (τ : D.what₂.Tau) (P N : Submodule D.host.E V.V) : Prop where

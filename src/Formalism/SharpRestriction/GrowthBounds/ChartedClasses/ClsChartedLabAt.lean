@@ -51,8 +51,6 @@ open Formalism.BasicNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.
   Formalism.MainNotions.G.CmpJ.PStabEq
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Cast
 
 variable {R : Ranks} {ι : Type} [Fintype ι] {hc : ι → HCParam R}

@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.MemPairOfMemSingle
 public import Mathlib.Data.Nat.PadicValNat
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Data.Nat.Choose.Multinomial
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 import Mathlib.Tactic.Lemma

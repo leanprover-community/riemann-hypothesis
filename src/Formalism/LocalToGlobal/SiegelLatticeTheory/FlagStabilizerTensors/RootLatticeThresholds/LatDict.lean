@@ -25,8 +25,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.Pf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace LatDict
 
 section Basic

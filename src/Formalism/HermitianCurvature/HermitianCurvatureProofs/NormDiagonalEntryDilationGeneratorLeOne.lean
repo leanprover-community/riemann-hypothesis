@@ -77,7 +77,7 @@ namespace Formalism.FourierDecayAlt.P.B6
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def X0 (k r : ℕ) : Mat k r := Matrix.diagonal fun i =>
   if i.val < r then ((((r - i.val : ℕ) : ℝ) / ((r : ℝ) + 1) : ℝ) : ℂ)

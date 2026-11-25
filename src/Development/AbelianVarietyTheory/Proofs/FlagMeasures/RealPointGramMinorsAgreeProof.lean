@@ -51,8 +51,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace GlobalTheory.TypeAsm.GramPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D}
 
 theorem pl_vOf (τ : D.what₂.Tau) : X.pl (vOf X τ) = τ := X.pl.apply_symm_apply τ
@@ -107,7 +105,6 @@ theorem phiV_herm (C : Choice X 1) (τ : D.what₂.Tau) (x y : (VS D).V) :
 end GlobalTheory.TypeAsm.GramPf
 
 namespace GlobalTheory.TypeAsm.GramPf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {X : HidaSetting D}
 
 theorem phiV_span (C : Choice X 1) (τ : D.what₂.Tau) :
@@ -163,7 +160,6 @@ theorem gamT_act (C : Choice X 1) {Y : Full X} {u : D.what₂.Word} (t : GlobalT
 end GlobalTheory.TypeAsm.GramPf
 
 namespace GlobalTheory.TypeAsm.GramPf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {X : HidaSetting D}
 
 theorem frq_fvec {Y : Full X} {u : D.what₂.Word} (t : GlobalTheory.TypeAsm.GT Y u) (b : Fin (D.R.rS + 1)) :
@@ -239,7 +235,6 @@ theorem dmin_gamT (C : Choice X 1) {Y : Full X} {u : D.what₂.Word} (t : Global
 end GlobalTheory.TypeAsm.GramPf
 
 namespace GlobalTheory.TypeAsm.GramPf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {X : HidaSetting D}
 
 theorem frameExp_cast (r l : ℕ) (hl : l ≤ r + 1) :
@@ -274,8 +269,6 @@ theorem norm_dmin (l : ℕ) (hl : l ≤ D.R.rS + 1) (x : ℂ) :
 end GlobalTheory.TypeAsm.GramPf
 
 namespace GlobalTheory.TypeAsm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem gramC_holds : GramC := by
   intro D X Y u C τ

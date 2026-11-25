@@ -12,8 +12,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace Formalism.L2.SG.Pf.NormSteps
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace ColLatRepSPf
 
 theorem basicNotions_bridge_star : Formalism.BasicNotions.bridge_star := by

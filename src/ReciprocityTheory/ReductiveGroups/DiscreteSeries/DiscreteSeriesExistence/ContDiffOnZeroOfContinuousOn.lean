@@ -61,7 +61,7 @@ namespace ReciprocityTheory.ChartRestriction.DS
 
 section Curve
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
@@ -220,7 +220,7 @@ end GenG
 
 section GenM
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

@@ -48,8 +48,6 @@ namespace Formalism.MainNotions.S
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S.Lat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def ZhatOM {K : Type*} [CommRing K] {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) :
     Matrix (Fin (r + 1)) (Fin (r + 1)) K :=
   fun a b => (-1) ^ (r - b.val) * Z a b

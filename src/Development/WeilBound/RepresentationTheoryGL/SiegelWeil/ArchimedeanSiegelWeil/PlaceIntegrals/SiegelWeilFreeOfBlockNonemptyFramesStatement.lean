@@ -1066,7 +1066,7 @@ theorem li_mulVec {A : Type} [CommRing A] {M n : ℕ} (G : GL (Fin M) A) {X : Fi
     intro x y hxy
     have h := congrArg (((G⁻¹ : GL (Fin M) A) : Matrix (Fin M) (Fin M) A).mulVec) hxy
     simpa [Matrix.mulVec_mulVec] using h
-  exact hX.map' _ (LinearMap.ker_eq_bot.2 hinj)
+  exact hX.map' (Matrix.mulVecLin (G : Matrix (Fin M) (Fin M) A)) (LinearMap.ker_eq_bot.2 hinj)
 
 omit [Field F] [NumberField F] [NumberField E] [Algebra F E] in
 theorem li_mulVec_iff {A : Type} [CommRing A] {M n : ℕ} (G : GL (Fin M) A) (X : Fin n → Fin M → A) :

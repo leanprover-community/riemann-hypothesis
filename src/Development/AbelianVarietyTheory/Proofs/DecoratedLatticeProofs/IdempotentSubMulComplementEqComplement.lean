@@ -48,7 +48,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.DIV (Pl kP blockTri blkOf upperLeftBlock dBlk resS LevelP)
 open GlobalTheory.FunObj.Comparison₂ (IsRed Compat IsIx)
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocMod.StepVec
 

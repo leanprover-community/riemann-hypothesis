@@ -66,8 +66,6 @@ def StdSide {ι : Type} (lam : X.Tau → DomWeight n) (rho : GL (Fin n) X.E →*
 
 end Gen
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def matIn {D : D7} (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (h : Bridge.Gf V) : GL (Fin V.rank) (Lev.EAf D) :=
   Formalism.UG.bc (swapAE D) (h : GL (Fin V.rank) _) * β
 

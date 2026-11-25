@@ -50,7 +50,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 
 namespace GlobalTheory.ParPairArrows
@@ -288,75 +287,5 @@ theorem card_parPi (i : ℕ) : (G.parPi i).card ≤ (G.m + 1) + (G.k - 1) + i * 
     omega
 
 end
-
-theorem parPi_pairPar : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (i : ℕ) (τ : D.what₂.Tau), i < D.R.m →
-    PairPar (dualPar (GlobalTheory.SignedHC.flip (parP D (i + 1) τ))) (dualPar (parP D i τ)) (cen D τ (D.R.m - i))
-      (cen D τ (D.R.m - i)) ∧
-    PairPar (dualPar (parP D i τ)) (dualPar (GlobalTheory.SignedHC.flip (parP D (i + 1) τ))) (cen D τ (D.R.m - i))
-      (cen D τ (D.R.m - i)) := by
-  intro D hS i τ hi
-  have hN : (grid D τ).NearMid := grid_nearMid D τ
-  have hγ := (isLeast_gap D).1.2.1
-  have hr := hS.1
-  have hsl : sLen D = D.R.r + 6 := rfl
-  have hrk : D.R.r = D.R.k + D.R.m - 1 := rfl
-  obtain ⟨a, ha⟩ := D.R.k_even
-  obtain ⟨b, hb⟩ := D.R.m_even
-  have hkm := D.R.m_add_three_le_k
-  have hs1 : 1 ≤ (grid D τ).s := show 1 ≤ sLen D by omega
-  have hq : (grid D τ).s = 2 * (a + b + 2) + 1 := show sLen D = _ by rw [hsl, hrk]; omega
-  have hmN : D.R.m ≤ D.R.m * (D.R.t + sLen D + 1) := Nat.le_mul_of_pos_right _ (by omega)
-  have hN1 : 1800 < bigN D := by unfold bigN; omega
-  have hN3 : 1 ≤ bigN D ^ 3 := Nat.one_le_pow _ _ (by omega)
-  have hγq : ((grid D τ).s : ℚ) + 4 ≤ (grid D τ).ga := by
-    show (sLen D : ℚ) + 4 ≤ (gap D : ℚ)
-    exact_mod_cast (by omega : sLen D + 4 ≤ gap D)
-  have hγ2 : 2 * (bigN D : ℚ) ^ 3 < (grid D τ).ga := by
-    show 2 * (bigN D : ℚ) ^ 3 < (gap D : ℚ)
-    exact_mod_cast (by omega : 2 * bigN D ^ 3 < gap D)
-  have hsγ : ((grid D τ).s : ℚ) ≤ (grid D τ).ga := by linarith
-  have hs0 : (0 : ℚ) ≤ (grid D τ).s := by positivity
-  have hcastT : ((sLen D - 1 : ℕ) : ℚ) = (sLen D : ℚ) - 1 := by rw [Nat.cast_sub (show 1 ≤ sLen D by omega)]; simp
-  have hsq : ((grid D τ).s : ℚ) = (sLen D : ℚ) := rfl
-  have hpart : partner (sLen D - 1) false (cen D τ (D.R.m - i) : ℚ) (cen D τ (D.R.m - i) : ℚ) (parP D i τ) =
-      flip (parP D (i + 1) τ) := partner_parPi (grid D τ) hN hs1 hγq hi
-  have hgap : ∀ j, j ≤ D.R.m → GapOver (parP D j τ) (2 * (bigN D : ℚ) ^ 3) := fun j hj x hx y hy hne =>
-    lt_of_lt_of_le hγ2 (gap_parPi (grid D τ) hN hs1 hsγ hj x hx y hy hne)
-  have hfar : FarFrom (cen D τ (D.R.m - i) : ℚ) (((sLen D : ℚ) + 2) / 2) (parP D i τ) :=
-    far_parPi (grid D τ) hN hs1 hγq hi
-  have hth : ThetaPar (sLen D - 1) (parP D i τ) (flip (parP D (i + 1) τ)) (cen D τ (D.R.m - i))
-      (cen D τ (D.R.m - i)) := by
-    have h := GlobalTheory.T.isRealThetaParameterPair_thetaPartnerSignedParameter (sLen D - 1) false (cen D τ (D.R.m - i) : ℚ) (cen D τ (D.R.m - i) : ℚ) (parP D i τ) (bigN D)
-      (by omega) ⟨_, GridData.mem_parPi.2 (Or.inl ⟨0, Nat.zero_le _, rfl⟩)⟩
-      (by
-        intro x hx y hy e
-        by_contra hne
-        have := gap_parPi (grid D τ) hN hs1 hsγ hi.le x hx y hy hne
-        rw [e, sub_self, abs_zero] at this
-        linarith)
-      (inCoset_parPi (grid D τ) hq (cen D τ (D.R.m - i)) i)
-      (fun x hx => by
-        have := hfar x hx
-        rw [hcastT]; linarith)
-      (by
-        have hc := card_parPi (grid D τ) i
-        have h1 : (i + 1) * (sLen D - 1) ≤ D.R.m * (sLen D - 1) := Nat.mul_le_mul_right _ hi
-        have h2 : (i + 1) * (sLen D - 1) = i * (sLen D - 1) + (sLen D - 1) := Nat.succ_mul _ _
-        have h3 : D.R.m * (sLen D - 1) + D.R.m ≤ D.R.m * (D.R.t + sLen D + 1) := by
-          rw [← Nat.mul_succ]; exact Nat.mul_le_mul_left _ (by omega)
-        show ((grid D τ).parPi i).card + (sLen D - 1) ≤ D.R.k + D.R.m * (D.R.t + sLen D + 1)
-        change _ ≤ (D.R.m + 1) + (D.R.k - 1) + i * (sLen D - 1) at hc
-        omega)
-      (by omega) (hgap i hi.le)
-      (by
-        rw [hpart]
-        intro x hx y hy hne
-        rw [mem_flip] at hx hy
-        exact hgap (i + 1) hi (x.1, !x.2) hx (y.1, !y.2) hy fun h => hne (Bool.not_inj h))
-    rwa [hpart] at h
-  refine ⟨⟨sLen D - 1, flip (parP D (i + 1) τ), parP D i τ, rfl, rfl, Or.inr hth⟩,
-    ⟨sLen D - 1, parP D i τ, flip (parP D (i + 1) τ), rfl, rfl, Or.inl ⟨hth, fun x hx => ?_⟩⟩⟩
-  have := hfar x hx
-  rw [hcastT]; linarith
 
 end GlobalTheory.ParPairArrows

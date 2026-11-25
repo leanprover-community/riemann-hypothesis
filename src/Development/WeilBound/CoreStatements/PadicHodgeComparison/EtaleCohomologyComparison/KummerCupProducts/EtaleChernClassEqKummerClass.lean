@@ -120,14 +120,15 @@ theorem cris_log (A : PAlg l) (n : ℕ) {x : Ainf l} (hx : x ∈ RingHom.ker (th
 theorem cris_logTerm (A : PAlg l) (n k : ℕ) {x : Ainf l} (hx : x ∈ RingHom.ker (theta0 l)) :
     A.cris n (ACris.logTerm hx k) =
       (-1) ^ k * (k.factorial : A.Acr n) * A.mkAcr n (A.cris0 (ACris.dpowZero hx (k + 1))) := by
-  rw [ACris.logTerm, AdicCompletion.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
-    PAlg.cris_of, ACris.logTermZero]
+  rw [ACris.logTerm, PAlg.cris_of', ACris.logTermZero]
   set_option synthInstance.maxHeartbeats 100000 in
     simp only [map_mul, map_pow, map_neg, map_one, map_natCast]
 
 theorem acrisZero_image_divided_power (A : PAlg l) (k : ℕ) {x : Ainf l} (hx : x ∈ RingHom.ker (theta0 l)) :
-    (A.cris0 (ACris.dpowZero hx k)).1 = dpw k (WittVector.map A.s x) :=
-  awayW_dpw A.s k (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero) x
+    (A.cris0 (ACris.dpowZero hx k)).1 = dpw k (WittVector.map A.s x) := by
+  show awayW A.s (ACris.dpow (K := ℂ_[l]) (p := l) k x) = _
+  rw [dpow_eq_dpw]
+  exact awayW_dpw A.s k (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero) x
 
 theorem map_mu (A : PAlg l) (e : Ob l) :
     WittVector.map A.s (AInf.mu (K := ℂ_[l]) (p := l) e) = WittVector.teichmuller l (A.s e) - 1 := by

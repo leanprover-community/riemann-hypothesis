@@ -56,8 +56,6 @@ open Matrix
 
 namespace Formalism.L2.SG.Pf.SlabCoverPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem slabCoverC_of (hGF : GFInfInj) (hSA : NStrongApprox) (hNL : NLift) (hNR : NRatLam)
     (hRL : RatLeviC) (hPD : PsiDdC) : SlabCoverC := by
   intro D X Y u Ωs hKL hNeat hΩ

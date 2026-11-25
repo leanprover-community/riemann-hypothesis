@@ -15,8 +15,6 @@ open NumberField ValuativeRel IsDedekindDomain Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.StabIntSh
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem lg_int_of_locF (t : D.host.F)

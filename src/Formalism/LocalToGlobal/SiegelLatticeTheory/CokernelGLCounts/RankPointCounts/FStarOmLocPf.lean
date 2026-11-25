@@ -142,8 +142,6 @@ end Gen
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)
 
 open Formalism.L2.SG.Pf.ScalarFramePf (sF sF' isUnit_sF isUnit_sF')
@@ -250,8 +248,6 @@ end D7
 
 section Main
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sp_frameAct {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {n : ℕ}
     (f : Fin n → S.V) (ξ : Matrix (Fin n) (Fin n) (𝓞 E)) (hξ : ξ⁻¹ * ξ = 1) :
     Submodule.span E (Set.range f) ≤ Submodule.span E (Set.range (frameAct f ξ⁻¹)) := by
@@ -283,8 +279,6 @@ end Main
 end OmL
 
 open OmL
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}

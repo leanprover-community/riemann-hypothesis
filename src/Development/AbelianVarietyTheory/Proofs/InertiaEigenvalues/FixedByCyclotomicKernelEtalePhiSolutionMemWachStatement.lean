@@ -144,6 +144,7 @@ theorem idem_pow {ε : R} (h : ε * ε = ε) (n : ℕ) : ε ^ (n + 1) = ε := by
   | succ n ih => rw [pow_succ, ih, h]
 
 theorem idem_eq_zero (ι : B →+* R) (τ : B) (hu : IsUnit (ι τ)) (hinj : Function.Injective ι)
+    (htf : ∀ x : R, (p : R) * x = 0 → x = 0)
     (hsep : ∀ x : R, (∀ k : ℕ, ∃ r, x = (p : R) ^ k * r) → x = 0)
     (hsat : ∀ (y : B) (x : R), ι y = (p : R) * x → ∃ y', ι y' = x)
     (hnear : ∀ x : R, (∀ m, Near ι p (ι τ) m x) → ∃ r, x = (p : R) * r)
@@ -419,7 +420,7 @@ theorem const_dvd (ι : B →+* R) (io : LetA O n →ₐ[O] B) (τ : B) (hp : (p
     · simp [letE, hk]
   have h2 := h.mul_ι (io (letE i))
   rw [← map_mul, ← map_mul, hE', map_mul io, io.commutes] at h2
-  have h4 := idem_eq_zero (p := p) ι τ hu hinj hsep hsat hnear (io (letE i))
+  have h4 := idem_eq_zero (p := p) ι τ hu hinj htf hsep hsat hnear (io (letE i))
     (algebraMap O B (c i)) (algebraMap O B d) (algebraMap O B w) N (by rw [← map_mul, hE])
     (by rw [← map_mul, ← hd, map_natCast]) (by rw [← map_pow, hw, map_mul, map_natCast]) h2
   have h5 : (letE i : LetA O n) = 0 := hio (h4.trans (map_zero io).symm)

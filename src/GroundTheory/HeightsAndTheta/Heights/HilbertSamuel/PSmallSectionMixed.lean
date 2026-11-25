@@ -63,6 +63,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
 
@@ -81,55 +82,18 @@ namespace SmallSectionMixedAlt
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem isMultiHomog_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f - g) a := by
-  classical
-  intro m hm k
-  rcases Finset.mem_union.mp (MvPolynomial.support_sub _ f g hm) with h | h
-  · exact hf m h k
-  · exact hg m h k
+    IsMultiHomog (f - g) a :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_sub hf hg
 
-theorem isMultiHomog_C (r : ℤ) : IsMultiHomog (C r : MRing ι) 0 := by
-  classical
-  intro m hm k
-  have : m = 0 := by
-    by_contra h
-    rw [mem_support_iff, coeff_C, ite_eq_right (Ne.symm h)] at hm
-    exact hm rfl
-  simp [this]
+theorem isMultiHomog_C (r : ℤ) : IsMultiHomog (C r : MRing ι) 0 :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_C r
 
-theorem isMultiHomog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) := by
-  classical
-  intro m hm k
-  rw [MvPolynomial.support_X, Finset.mem_singleton] at hm
-  subst hm
-  obtain ⟨k₀, i₀⟩ := p
-  by_cases h : k = k₀
-  · subst h
-    simp [Finsupp.single_apply]
-  · have : ∀ j : ι k, (⟨k₀, i₀⟩ : Σ k, ι k) ≠ ⟨k, j⟩ := fun j e => h (congrArg Sigma.fst e).symm
-    simp [h]
+theorem isMultiHomog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X p
 
 theorem isMultiHomog_coordProd (c : ∀ k, ι k) (d : K → ℕ) :
-    IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k) d := by
-  classical
-  have key : ∀ s : Finset K, IsMultiHomog (∏ k ∈ s, (X ⟨k, c k⟩ : MRing ι) ^ d k)
-      (∑ k ∈ s, d k • Pi.single k 1) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simpa using isMultiHomog_C (ι := ι) 1
-    | insert k s hk ih =>
-      rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      refine _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul ?_ ih
-      induction d k with
-      | zero => simpa using isMultiHomog_C (ι := ι) 1
-      | succ j hj =>
-        rw [pow_succ, succ_nsmul]
-        exact _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul hj (isMultiHomog_X ⟨k, c k⟩)
-  have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
-    ext k
-    simp [Finset.sum_apply, Pi.single_apply]
-  have := key Finset.univ
-  rwa [e] at this
+    IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k) d :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_chartMono c d
 
 theorem aeval_coordProd {Ω : Type} [Field Ω] (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (d : K → ℕ) :
     aeval y (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k) = ∏ k, y ⟨k, c k⟩ ^ d k := by
@@ -221,13 +185,13 @@ theorem divCycle_apply_of_mem {P W : Ideal (MRing ι)} {s : MRing ι} (h : W ∈
     divCycle P s W = multAt (P ⊔ Ideal.span {s}) W := by
   classical
   simp only [divCycle, Finsupp.ofSupportFinite_coe]
-  rw [ite_eq_left h]
+  rw [if_pos h]
 
 theorem divCycle_apply_of_not_mem {P W : Ideal (MRing ι)} {s : MRing ι} (h : W ∉ divSupp P s) :
     divCycle P s W = 0 := by
   classical
   simp only [divCycle, Finsupp.ofSupportFinite_coe]
-  rw [ite_eq_right h]
+  rw [if_neg h]
 
 theorem divCycle_congr {P : Ideal (MRing ι)} {a b : MRing ι}
     (h : P ⊔ Ideal.span {a} = P ⊔ Ideal.span {b}) : divCycle P a = divCycle P b := by
@@ -362,7 +326,7 @@ theorem SmallSectionMixed.proof (hG4 : G4.Statement) (hG41 : ArithmeticVolumeDim
   intro K _ ι _ P P0 d M H p q II hII hd hP hP0 hMs hMn hMc hHa hHs hHm hHc hp htop
   obtain ⟨Ω, _, y, rfl, hbir⟩ := BirationalModelExists.proof K ι P d hP
   have hinj : Function.Injective (algebraMap ℤ Ω) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro m hm
     have hmem : (C m : MRing ι) ∈ mCoordIdeal y := by
       rw [mCoordIdeal, RingHom.mem_ker, mConeMap, aeval_C, MvPolynomial.algebraMap_apply, hm, map_zero]

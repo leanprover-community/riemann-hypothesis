@@ -71,7 +71,7 @@ namespace Formalism.FourierDecayAlt.P.B4
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 noncomputable def dg (k r : ℕ) (t : ℝ) (i : Fin (2 * r + k + 1)) : ℂ :=
   if i.val < r then ((t ^ (r - i.val) : ℝ) : ℂ)

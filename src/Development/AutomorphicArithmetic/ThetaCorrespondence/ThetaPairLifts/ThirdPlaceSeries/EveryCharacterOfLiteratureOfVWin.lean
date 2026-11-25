@@ -335,15 +335,6 @@ theorem dRep_eq_dS (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (X : Ma
   unfold Formalism.L2.Theta.dRep dS
   congr 1
 
-theorem isAdmissible_of [CompleteSpace H] (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ)
-    (hirr : Formalism.MainNotions.S.IsIrredOn (Formalism.MainNotions.S.UJset ε) σ) : IsAdmissible ε σ := by
-  rintro S ⟨hf, -, hK, -⟩
-  have hfin : FiniteDimensional ℂ (Formalism.MainNotions.BridgeCPX.eqImg (fun k : Formalism.REAL.KG ε => σ (Formalism.REAL.toMK k)) S) :=
-    (CompanionTheory.HCMult.harish_chandra_multiplicity : Formalism.MainNotions.BridgeCPX.HCMult) n ε H σ hσ hirr S hf hK
-  have hle : kIsotypic ε σ S ≤ Formalism.MainNotions.BridgeCPX.eqImg (fun k : Formalism.REAL.KG ε => σ (Formalism.REAL.toMK k)) S :=
-    iSup_le fun T => le_sSup ⟨T.1, fun a v w h => T.2 _ a.2 v w h, rfl⟩
-  exact Submodule.finiteDimensional_of_le hle
-
 theorem isLieStable_of [CompleteSpace H] (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ)
     (hirr : Formalism.MainNotions.S.IsIrredOn (Formalism.MainNotions.S.UJset ε) σ) : IsLieStable ε σ (kFinSub ε σ) := by
   apply _root_.GlobalTheory.CompanionTheory.KFinLink.isLieStable_of <;> assumption
@@ -943,12 +934,10 @@ section -- clump:auto
 
 
 section
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure UpperTheory.LiteratureTheorems.OpenLiteratureStatements : Prop where
-  caraianiLocalGlobalDual : _root_.UpperTheory.One.M.Row
-  localLanglandsExists : _root_.UpperTheory.Zero.LLC.RecTExists
-  galoisRepOfPolarizedPairLit : _root_.UpperTheory.One.M.Row
+/- These providers expose the arithmetic hypotheses used by this proof assembly.
+   The former polarized-pair and local-global fields had the same formal type `M.Row`.
+   Sharing this input does not identify the corresponding literature theorems:
+   `M.Row` is the project-specific interface, not a claim of their full textbook strength. -/
 theorem UpperTheory.LiteratureTheorems.logDerivOne : GlobalTheory.Mem.An.LogDerOne :=
   GlobalTheory.LogDerOneProof.logDerOne_holds
 theorem UpperTheory.LiteratureTheorems.ellipticMainTheoremCM' : GlobalTheory.Published.EllipticMainTheoremCM :=
@@ -961,10 +950,10 @@ theorem UpperTheory.LiteratureTheorems.partial_zeta_functional_equation_of_liter
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.partialZetaFunctionalEquation
 theorem UpperTheory.LiteratureTheorems.deligne_ribet_of_literature : GlobalTheory.Published.DeligneRibet :=
   _root_.PositivityTheory.PfDRL.deligneRibet
-theorem UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.SiegelKlingenDeligneRibet :=
+theorem UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_literature : GlobalTheory.Published.SiegelKlingenDeligneRibet :=
   _root_.GlobalTheory.siegelKlingenDeligneRibet_of_both _root_.GlobalTheory.CompanionTheory.Hypotheses₂.siegelKlingen (_root_.UpperTheory.LiteratureTheorems.deligne_ribet_of_literature)
-theorem UpperTheory.LiteratureTheorems.join_out_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Mem.LiteralAutomorphy.JoinOut :=
-  GlobalTheory.JoinFun.joinOut_of_five (_root_.UpperTheory.LiteratureTheorems.ellipticMainTheoremCM') (_root_.UpperTheory.LiteratureTheorems.hilbertClassFieldJ') (_root_.UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_literature O) (_root_.UpperTheory.LiteratureTheorems.partial_zeta_functional_equation_of_literature) (_root_.UpperTheory.LiteratureTheorems.heckeTateFunctionalEquation')
+theorem UpperTheory.LiteratureTheorems.join_out_of_literature : GlobalTheory.Mem.LiteralAutomorphy.JoinOut :=
+  GlobalTheory.JoinFun.joinOut_of_five (_root_.UpperTheory.LiteratureTheorems.ellipticMainTheoremCM') (_root_.UpperTheory.LiteratureTheorems.hilbertClassFieldJ') (_root_.UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_literature) (_root_.UpperTheory.LiteratureTheorems.partial_zeta_functional_equation_of_literature) (_root_.UpperTheory.LiteratureTheorems.heckeTateFunctionalEquation')
 theorem UpperTheory.LiteratureTheorems.ht_card_of_literature : GlobalTheory.HeightCounting.HtCard :=
   (GlobalTheory.HtCardProof.htCard )
 theorem UpperTheory.LiteratureTheorems.ab_mul_n_st_of_literature : GlobalTheory.Published.AbMulNSt :=
@@ -977,19 +966,21 @@ theorem UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_literature : 
   _root_.CompanionTheory.FamInh.globalArtin
 theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature : GlobalTheory.Published.HeckeLAdicCharacterDeRham :=
   _root_.HodgeLocalDeRhamField.HLdR.field_outright
-theorem UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.AlgebraicCharacterWD :=
+theorem UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature : GlobalTheory.Published.AlgebraicCharacterWD :=
   UpperTheory.Lit.CharWD.algebraicCharacterWD (_root_.UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_literature) (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature)
 theorem UpperTheory.LiteratureTheorems.ar_calc_of_literature : GlobalTheory.Published.ArCalc :=
   GlobalTheory.MixHt.arCalc_of_principalisation PositivityTheory.ResPlug.WeightsCompactStabilizer.principalisation_closed
+theorem UpperTheory.LiteratureTheorems.cycle_heights_of_literature : GlobalTheory.Published.CycleHeights :=
+  GlobalTheory.Published.cycleHeights_of_arCalc (_root_.UpperTheory.LiteratureTheorems.ar_calc_of_literature)
 theorem UpperTheory.LiteratureTheorems.principalisation_of_literature : GlobalTheory.Published.Principalisation :=
   PositivityTheory.ResPlug.WeightsCompactStabilizer.principalisation_closed
-theorem UpperTheory.LiteratureTheorems.arith_hilbert_samuel_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.ArithHilbertSamuel :=
+theorem UpperTheory.LiteratureTheorems.arith_hilbert_samuel_of_literature : GlobalTheory.Published.ArithHilbertSamuel :=
   GlobalTheory.arithHilbertSamuel_of_principalisation (_root_.UpperTheory.LiteratureTheorems.principalisation_of_literature)
 theorem UpperTheory.LiteratureTheorems.automorphic_forms_finite_gl_of_literature : GlobalTheory.Published.AutomorphicFormsFiniteGL :=
   CuspFormAutomorphicBounds.automorphicFormsFiniteGL
 theorem UpperTheory.LiteratureTheorems.base_change_isobaric : GlobalTheory.Published.BaseChangeIsobaricTransfer :=
   UpperTheory.BaseChangeIdentities.baseChangeNB
-theorem UpperTheory.LiteratureTheorems.base_change_definite_unitary_group_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.BaseChangeDefiniteUnitaryGroup :=
+theorem UpperTheory.LiteratureTheorems.base_change_definite_unitary_group_of_literature : GlobalTheory.Published.BaseChangeDefiniteUnitaryGroup :=
   UpperTheory.BaseChangeIdentities.definiteN_of (_root_.UpperTheory.LiteratureTheorems.base_change_isobaric)
 theorem UpperTheory.LiteratureTheorems.bernstein_unitary_product_irreducible_of_literature : GlobalTheory.Published.BernsteinUnitaryProductIrreducible :=
   PositivityTheory.RgUd.All.bernsteinUnitaryProductIrreducible
@@ -997,7 +988,7 @@ theorem UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_litera
   PositivityTheory.Prw.bernsteinZelevinskyFiniteness_holds
 theorem UpperTheory.LiteratureTheorems.bhatt_scholze_integral_of_literature : GlobalTheory.Published.BhattScholzeIntegral :=
   GlobalTheory.BSP.bhattScholzeIntegral
-theorem UpperTheory.LiteratureTheorems.bhatt_scholze_crystalline_lattices_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.BhattScholzeCrystallineLattices :=
+theorem UpperTheory.LiteratureTheorems.bhatt_scholze_crystalline_lattices_of_literature : GlobalTheory.Published.BhattScholzeCrystallineLattices :=
   (GlobalTheory.bhattScholze_coeff (_root_.UpperTheory.LiteratureTheorems.bhatt_scholze_integral_of_literature))
 theorem UpperTheory.LiteratureTheorems.bloch_kato_local_of_literature : GlobalTheory.Published.BlochKatoLocal :=
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.BK.blochKatoLocal
@@ -1007,44 +998,44 @@ theorem UpperTheory.LiteratureTheorems.brauer_degree_zero_of_literature : Global
   (GlobalTheory.BrauerZero.brauerDegreeZero )
 theorem UpperTheory.LiteratureTheorems.cm_curve_good_outside_prime_st_of_literature : GlobalTheory.Published.CMCurveGoodOutsidePrimeSt :=
   GlobalTheory.Published.cmCurveGoodOutsidePrime
+theorem UpperTheory.LiteratureTheorems.segment_representation_of_literature : GlobalTheory.Published.SegmentRepresentation :=
+  PositivityTheory.RgGu.segmentRepresentation
 theorem UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature : GlobalTheory.Published.EssSquareIntegrableSegments :=
-  PositivityTheory.Exh.essSquareIntegrableSegments_of_seg (PositivityTheory.RgGu.segmentRepresentation)
-theorem UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.UpperTheory.Zero.LLC.RecTExists :=
-  O.localLanglandsExists
-theorem UpperTheory.LiteratureTheorems.pair_u_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.UpperTheory.GalS.PairUAlt :=
-  _root_.UpperTheory.GalS.pairU_of_star_alt O.galoisRepOfPolarizedPairLit
+  PositivityTheory.Exh.essSquareIntegrableSegments_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
+theorem UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature (hLiteratureRecT : _root_.UpperTheory.Zero.LLC.RecTExists) : _root_.UpperTheory.Zero.LLC.RecTExists :=
+  hLiteratureRecT
+theorem UpperTheory.LiteratureTheorems.pair_u_of_literature (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.UpperTheory.GalS.PairUAlt :=
+  _root_.UpperTheory.GalS.pairU_of_star_alt hLiteratureRow
 theorem UpperTheory.LiteratureTheorems.cusp_forms_bounded_gl_of_literature : GlobalTheory.Published.CuspFormsBoundedGL :=
   _root_.RfCs.cuspidalSpectrumGL.2.2
 theorem UpperTheory.LiteratureTheorems.jacquet_shalika_rigidity_of_literature : GlobalTheory.Published.JacquetShalikaRigidity :=
   PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity
-theorem UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.GelfandKazhdanDual :=
+theorem UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature : GlobalTheory.Published.GelfandKazhdanDual :=
   PositivityTheory.JMult1.gelfandKazhdanDual_of_rigidity (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_rigidity_of_literature) (_root_.UpperTheory.LiteratureTheorems.cusp_forms_bounded_gl_of_literature)
 theorem UpperTheory.LiteratureTheorems.generic_unlinked_gl_of_literature : GlobalTheory.Published.GenericUnlinkedGL :=
-  GlobalTheory.RgGu.genericUnlinkedGL_of_segRep2 (PositivityTheory.RgGu.segmentRepresentation)
+  GlobalTheory.RgGu.genericUnlinkedGL_of_segRep2 (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 theorem UpperTheory.LiteratureTheorems.chevalley_units_of_literature : GlobalTheory.Published.ChevalleyUnits :=
   (GlobalTheory.Published.chevalleyUnits' )
 theorem UpperTheory.LiteratureTheorems.geometric_restriction_of_literature : GlobalTheory.Published.GeometricLemma :=
   GlobalTheory.CompanionTheory.GeoLink.geometricLemma
 theorem UpperTheory.LiteratureTheorems.grothendieck_ring_polynomial_of_literature : GlobalTheory.Published.GrothendieckRingPolynomial :=
-  PositivityTheory.Groth.grothendieckRingPolynomial_of_seg (PositivityTheory.RgGu.segmentRepresentation)
-theorem UpperTheory.LiteratureTheorems.segment_representation_of_literature : GlobalTheory.Published.SegmentRepresentation :=
-  PositivityTheory.RgGu.segmentRepresentation
-theorem UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.ZelevinskyPolynomialRing :=
-  _root_.GlobalTheory.zelevinskyPolynomialRing_of_parts PositivityTheory.Prw.bernsteinZelevinskyFiniteness_holds (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature) (_root_.UpperTheory.LiteratureTheorems.grothendieck_ring_polynomial_of_literature)
-theorem UpperTheory.LiteratureTheorems.depth_zero_induction_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.DepthZeroInduction :=
-  (GlobalTheory.DepthZeroPass.depthZeroInduction (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_of_literature) (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature) (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature O))
+  PositivityTheory.Groth.grothendieckRingPolynomial_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
+theorem UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature : GlobalTheory.Published.ZelevinskyPolynomialRing :=
+  _root_.GlobalTheory.zelevinskyPolynomialRing_of_parts _root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature) (_root_.UpperTheory.LiteratureTheorems.grothendieck_ring_polynomial_of_literature)
+theorem UpperTheory.LiteratureTheorems.depth_zero_induction_of_literature : GlobalTheory.Published.DepthZeroInduction :=
+  (GlobalTheory.DepthZeroPass.depthZeroInduction (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_of_literature) (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature) (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature))
 theorem UpperTheory.LiteratureTheorems.langlands_exhaustion_gl_of_literature : GlobalTheory.Published.LanglandsExhaustionGL :=
-  PositivityTheory.Exh.langlandsExhaustionGL_of_seg (PositivityTheory.RgGu.segmentRepresentation)
+  PositivityTheory.Exh.langlandsExhaustionGL_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 theorem UpperTheory.LiteratureTheorems.langlands_multisegments_of_literature : GlobalTheory.Published.LanglandsMultisegments :=
-  PositivityTheory.Exh.langlandsMultisegments_of_seg (PositivityTheory.RgGu.segmentRepresentation)
+  PositivityTheory.Exh.langlandsMultisegments_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 theorem UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature : GlobalTheory.Published.StandardCosocleGL :=
-  PositivityTheory.Exh.standardCosocleGL_of_seg (PositivityTheory.RgGu.segmentRepresentation)
+  PositivityTheory.Exh.standardCosocleGL_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 alias UpperTheory.LiteratureTheorems.local_langlands_gl_recT_exists_of_literature := _root_.UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature
 theorem UpperTheory.LiteratureTheorems.irreducible_admissible_gl_of_literature : GlobalTheory.Published.IrreducibleAdmissibleGL :=
   PositivityTheory.Tls2.BZGL.irreducibleAdmissibleGL_top
 theorem UpperTheory.LiteratureTheorems.standard_functors_finite_length_of_literature : GlobalTheory.Published.StandardFunctorsFiniteLength :=
   PositivityTheory.Tls2.BZGL.standardFunctorsFiniteLength_top
-theorem UpperTheory.LiteratureTheorems.tempered_product_of_square_integrable_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.TemperedProductOfSquareIntegrable :=
+theorem UpperTheory.LiteratureTheorems.tempered_product_of_square_integrable_of_literature : GlobalTheory.Published.TemperedProductOfSquareIntegrable :=
   UpperTheory.Lit.Cas.temperedProduct (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_of_literature) (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature) (_root_.UpperTheory.LiteratureTheorems.irreducible_admissible_gl_of_literature) (_root_.UpperTheory.LiteratureTheorems.standard_functors_finite_length_of_literature) (_root_.UpperTheory.LiteratureTheorems.langlands_exhaustion_gl_of_literature) (_root_.UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature) (_root_.UpperTheory.LiteratureTheorems.langlands_multisegments_of_literature) (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature)
 theorem UpperTheory.LiteratureTheorems.casselman_wallach_of_literature : GlobalTheory.Published.CasselmanWallach :=
   PositivityTheory.CWB.casselmanWallach
@@ -1068,8 +1059,6 @@ theorem UpperTheory.LiteratureTheorems.cusp_trace_class_of_literature : GlobalTh
   _root_.GlobalTheory.Published.cuspTraceClass_of_factorisation _root_.PositivityTheory.DM.dixmierMalliavinFactorisation_holds
 theorem UpperTheory.LiteratureTheorems.cuspidal_spectrum_gl_of_literature : GlobalTheory.Published.CuspidalSpectrumGL :=
   RfCs.cuspidalSpectrumGL
-theorem UpperTheory.LiteratureTheorems.cycle_heights_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.CycleHeights :=
-  GlobalTheory.Published.cycleHeights_of_arCalc (_root_.UpperTheory.LiteratureTheorems.ar_calc_of_literature)
 theorem UpperTheory.LiteratureTheorems.depth_zero_jacquet_injective_of_literature : GlobalTheory.Published.DepthZeroJacquetInjective :=
   (GlobalTheory.DepthZeroJac.depthZeroJacquetInjective )
 theorem UpperTheory.LiteratureTheorems.depth_zero_support_of_literature : GlobalTheory.Published.DepthZeroSupport :=
@@ -1092,7 +1081,7 @@ theorem UpperTheory.LiteratureTheorems.dixmier_malliavin_factorisation_of_litera
   _root_.CompanionTheory.DM.dixmierMalliavinFactorisation_holds
 theorem UpperTheory.LiteratureTheorems.siegel_eisenstein_continuation_of_literature : GlobalTheory.Published.SiegelEisensteinContinuation :=
   PositivityTheory.RgEis.Sp.Hd.siegelEisensteinContinuation
-theorem UpperTheory.LiteratureTheorems.doubling_method (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.DoublingMethodLocalZetaIntegrals :=
+theorem UpperTheory.LiteratureTheorems.doubling_method : GlobalTheory.Published.DoublingMethodLocalZetaIntegrals :=
   ResidueKilled.dm_of_two (_root_.UpperTheory.LiteratureTheorems.cusp_rapid_decay_of_literature) (_root_.UpperTheory.LiteratureTheorems.siegel_eisenstein_continuation_of_literature) trivial
 theorem UpperTheory.LiteratureTheorems.fontaine_bcris_of_literature : GlobalTheory.Published.FontaineBcris :=
   (GlobalTheory.MemLoc.fontaineBcris )
@@ -1102,8 +1091,8 @@ theorem UpperTheory.LiteratureTheorems.formal_degree_compact_dual_of_literature 
   PositivityTheory.RgFd.B.formalDegreeCompactDual
 theorem UpperTheory.LiteratureTheorems.gl_howe_duality_of_literature : GlobalTheory.Published.GLHoweDuality :=
   PositivityTheory.Stage1.PM.gLHoweDuality
-theorem UpperTheory.LiteratureTheorems.cusp_u_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.UpperTheory.GalS.CuspUAlt :=
-  (_root_.UpperTheory.GalS.bridgeStar_alt (_root_.UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature O)).2 (_root_.UpperTheory.LiteratureTheorems.pair_u_of_literature O)
+theorem UpperTheory.LiteratureTheorems.cusp_u_of_literature (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.UpperTheory.GalS.CuspUAlt :=
+  (_root_.UpperTheory.GalS.bridgeStar_alt (_root_.UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature)).2 (_root_.UpperTheory.LiteratureTheorems.pair_u_of_literature hLiteratureRow)
 theorem UpperTheory.LiteratureTheorems.generic_unitary_dual_gl_of_literature : GlobalTheory.Published.GenericUnitaryDualGL :=
   PositivityTheory.Gud.Fin.genericUnitaryDualGL_holds
 theorem UpperTheory.LiteratureTheorems.geometric_restriction_filtration_of_literature : GlobalTheory.Published.GeometricLemmaFiltration :=
@@ -1115,13 +1104,13 @@ theorem UpperTheory.LiteratureTheorems.green_cuspidal_of_literature : GlobalTheo
 theorem UpperTheory.LiteratureTheorems.green_regular_characters_of_literature : GlobalTheory.Published.GreenRegularCharacters :=
   PositivityTheory.Stage1.PM.greenRegularCharacters
 theorem UpperTheory.LiteratureTheorems.green_series_st_of_literature : GlobalTheory.Published.GreenSeriesSt :=
-  _root_.GlobalTheory.GreenSeries.green_series PositivityTheory.Stage1.PM.greenCuspidal
+  _root_.GlobalTheory.GreenSeries.green_series _root_.UpperTheory.LiteratureTheorems.green_cuspidal_of_literature
 theorem UpperTheory.LiteratureTheorems.abelian_lifting_of_literature : GlobalTheory.Published.AbelianLifting :=
   GlobalTheory.abelianScheme_hom_lifting_nilpotent_dividedPowers
-theorem UpperTheory.LiteratureTheorems.grothendieck_deformation_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.GrothendieckDeformation :=
+theorem UpperTheory.LiteratureTheorems.grothendieck_deformation_of_literature : GlobalTheory.Published.GrothendieckDeformation :=
   GlobalTheory.Published.grothendieckDeformation_of_lifting (_root_.UpperTheory.LiteratureTheorems.abelian_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.abelian_lifting_of_literature)
-theorem UpperTheory.LiteratureTheorems.grothendieck_messing_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.GrothendieckMessing :=
-  GlobalTheory.Published.GrothendieckDeformation.grothendieckMessing (_root_.UpperTheory.LiteratureTheorems.grothendieck_deformation_of_literature O)
+theorem UpperTheory.LiteratureTheorems.grothendieck_messing_of_literature : GlobalTheory.Published.GrothendieckMessing :=
+  GlobalTheory.Published.GrothendieckDeformation.grothendieckMessing (_root_.UpperTheory.LiteratureTheorems.grothendieck_deformation_of_literature)
 theorem UpperTheory.LiteratureTheorems.principal_polarisation_one_section_of_literature : GlobalTheory.Published.principalPolarisationOneSection :=
   GlobalTheory.AbLaw.principalPolarisation_unique_section
 theorem UpperTheory.LiteratureTheorems.harish_chandra_finite_of_literature : GlobalTheory.Published.HarishChandraFinite :=
@@ -1132,12 +1121,12 @@ theorem UpperTheory.LiteratureTheorems.hasse_norm_st_of_literature : GlobalTheor
   GlobalTheory.QNorm.hasseNormSt
 theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_of_literature : GlobalTheory.Published.HeckeLAdicCharacter :=
   PositivityTheory.Stage1.PM.heckeLAdicCharacter
-theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_crystalline_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.HeckeLAdicCharacterCrystalline :=
-  _root_.GlobalTheory.Published.CharCrysModel.of_hypotheses_m_alt (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature) (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature O)
-theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.HeckeLAdicCharacterAbove :=
-  GlobalTheory.HeckeAboveBridge.heckeLAdicCharacterAbove_of_potSemistable (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_crystalline_of_literature O) (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature)
-theorem UpperTheory.LiteratureTheorems.hecke_l_adic_parameter_above_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.GlobalTheory.Published.HeckeLAdicParameterAboveAlt :=
-  (_root_.GlobalTheory.heckeLAdicParameterAbove_of_algebraicCharacterWD_alt (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature O))
+theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_crystalline_of_literature : GlobalTheory.Published.HeckeLAdicCharacterCrystalline :=
+  _root_.GlobalTheory.Published.CharCrysModel.of_hypotheses_m_alt (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature) (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature)
+theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literature : GlobalTheory.Published.HeckeLAdicCharacterAbove :=
+  GlobalTheory.HeckeAboveBridge.heckeLAdicCharacterAbove_of_potSemistable (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_crystalline_of_literature) (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature)
+theorem UpperTheory.LiteratureTheorems.hecke_l_adic_parameter_above_of_literature : _root_.GlobalTheory.Published.HeckeLAdicParameterAboveAlt :=
+  (_root_.GlobalTheory.heckeLAdicParameterAbove_of_algebraicCharacterWD_alt (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature))
 theorem UpperTheory.LiteratureTheorems.hecke_l_entire_and_nonzero_at_one_of_literature : GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne :=
   PositivityTheory.Stage1.PM.heckeLEntireAndNonzeroAtOne
 theorem UpperTheory.LiteratureTheorems.hecke_l_partial_continuation_of_literature : GlobalTheory.Published.HeckeLPartialContinuation :=
@@ -1160,8 +1149,8 @@ theorem UpperTheory.LiteratureTheorems.linnik_of_literature : GlobalTheory.Publi
   UpperTheory.Lit.linnik
 theorem UpperTheory.LiteratureTheorems.cuspidal_multiplicity_one_of_literature : GlobalTheory.Published.CuspidalMultiplicityOne :=
   PositivityTheory.jumpWindows.cuspidalMultiplicityOne
-theorem UpperTheory.LiteratureTheorems.carU_local_global_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.UpperTheory.GalS.CarUAlt :=
-  (_root_.UpperTheory.GalS.ofDual_star_alt (PositivityTheory.PRW.GKD.gelfandKazhdanDual_of_multiplicityOne (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_rigidity_of_literature) (_root_.UpperTheory.LiteratureTheorems.cuspidal_multiplicity_one_of_literature) GlobalTheory.CompanionTheory.CuspFinGL.cuspFormsBoundedGL) O.caraianiLocalGlobalDual)
+theorem UpperTheory.LiteratureTheorems.carU_local_global_of_literature (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.UpperTheory.GalS.CarUAlt :=
+  (_root_.UpperTheory.GalS.ofDual_star_alt (PositivityTheory.PRW.GKD.gelfandKazhdanDual_of_multiplicityOne (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_rigidity_of_literature) (_root_.UpperTheory.LiteratureTheorems.cuspidal_multiplicity_one_of_literature) GlobalTheory.CompanionTheory.CuspFinGL.cuspFormsBoundedGL) hLiteratureRow)
 theorem UpperTheory.LiteratureTheorems.moy_prasad_jacquet_iso_of_literature : GlobalTheory.Published.MoyPrasadJacquetIso :=
   _root_.GlobalTheory.CompanionTheory.MoyPrasadTop.moyPrasadJacquetIso
 theorem UpperTheory.LiteratureTheorems.nadel_vanishing_and_non_klt_divisor_of_literature : GlobalTheory.Published.NadelVanishingAndNonKltDivisor :=
@@ -1180,13 +1169,13 @@ theorem UpperTheory.LiteratureTheorems.siegel_weil_unitary_convergent_of_literat
   UpperTheory.Lit.Sw47.convergent
 theorem UpperTheory.LiteratureTheorems.weil_theta_convergence_of_literature : GlobalTheory.Published.WeilThetaConvergence :=
   _root_.PositivityTheory.Rg.Sw.Glob.wtc
-theorem UpperTheory.LiteratureTheorems.ray_character_artin_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.RayCharacterArtin :=
+theorem UpperTheory.LiteratureTheorems.ray_character_artin_of_literature : GlobalTheory.Published.RayCharacterArtin :=
   GlobalTheory.Published.GlobalArtinReciprocity.rayCharacterArtin (_root_.UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_literature)
 theorem UpperTheory.LiteratureTheorems.ray_class_field_st_of_literature : GlobalTheory.Published.RayClassFieldSt :=
   PositivityTheory.Stage1.PM.rayClassFieldSt
 theorem UpperTheory.LiteratureTheorems.real_metaplectic_representation_of_literature : GlobalTheory.Published.RealMetaplecticRepresentation :=
   PositivityTheory.Stage1.PM.realMetaplecticRepresentation
-theorem UpperTheory.LiteratureTheorems.regular_algebraic_purity_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.RegularAlgebraicPurity :=
+theorem UpperTheory.LiteratureTheorems.regular_algebraic_purity_of_literature : GlobalTheory.Published.RegularAlgebraicPurity :=
   (GlobalTheory.regularAlgebraicPurity_of_clozel (_root_.UpperTheory.LiteratureTheorems.clozel_purity_of_literature) (_root_.UpperTheory.LiteratureTheorems.clozel_cohomological_of_literature))
 theorem UpperTheory.LiteratureTheorems.schur_orthogonality_square_integrable_of_literature : GlobalTheory.Published.SchurOrthogonalitySquareIntegrable :=
   PositivityTheory.Stage1.PM.schurOrthogonalitySquareIntegrable
@@ -1202,7 +1191,7 @@ theorem UpperTheory.LiteratureTheorems.siegel_set_unitary_of_literature : Global
   _root_.GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary
 theorem UpperTheory.LiteratureTheorems.siegel_weil_unitary_schrodinger_of_literature : GlobalTheory.Published.SiegelWeilUnitarySchrodinger :=
   PositivityTheory.SiegelWeilCoefficients.field
-theorem UpperTheory.LiteratureTheorems.square_integrable_segment_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.SquareIntegrableSegment :=
+theorem UpperTheory.LiteratureTheorems.square_integrable_segment_of_literature : GlobalTheory.Published.SquareIntegrableSegment :=
   _root_.GlobalTheory.Published.squareIntegrableSegment_of_ess (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature)
 theorem UpperTheory.LiteratureTheorems.strong_approx_su_of_literature : GlobalTheory.Published.StrongApproxSU :=
   GlobalTheory.StrongApproxSUProof.strongApproxSU
@@ -1211,8 +1200,8 @@ theorem UpperTheory.LiteratureTheorems.toroidal_compactification_of_literature :
 theorem UpperTheory.LiteratureTheorems.toroidal_for_fan_ks_of_literature : GlobalTheory.Published.ToroidalForFanKS :=
   GlobalTheory.TorKSField.toroidalForFanKS
 theorem UpperTheory.LiteratureTheorems.totally_disjoint_product_irreducible_of_literature : GlobalTheory.Published.TotallyDisjointProductIrreducible :=
-  _root_.GlobalTheory.CompanionTheory.Hypotheses₂.totallyDisjointProductIrreducible_of_parts (GlobalTheory.geometricLemma_of_filtration PositivityTheory.Prw.bernsteinZelevinskyFiniteness_holds PositivityTheory.Geo.geometricLemmaFiltration) (PositivityTheory.RgGu.segmentRepresentation) (PositivityTheory.Groth.grothendieckRingPolynomial_of_seg (PositivityTheory.RgGu.segmentRepresentation))
-theorem UpperTheory.LiteratureTheorems.unlinked_product_irreducible_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Published.UnlinkedProductIrreducible :=
+  _root_.GlobalTheory.CompanionTheory.Hypotheses₂.totallyDisjointProductIrreducible_of_parts (GlobalTheory.geometricLemma_of_filtration _root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature PositivityTheory.Geo.geometricLemmaFiltration) (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature) (_root_.UpperTheory.LiteratureTheorems.grothendieck_ring_polynomial_of_literature)
+theorem UpperTheory.LiteratureTheorems.unlinked_product_irreducible_of_literature : GlobalTheory.Published.UnlinkedProductIrreducible :=
   (GlobalTheory.TotDisjUnlinked.main (_root_.UpperTheory.LiteratureTheorems.totally_disjoint_product_irreducible_of_literature))
 theorem UpperTheory.LiteratureTheorems.unramified_doubling_gl_of_literature : GlobalTheory.Published.UnramifiedDoublingGL :=
   (GlobalTheory.UnramDoublingProof.unramifiedDoublingGL )
@@ -1226,7 +1215,7 @@ theorem UpperTheory.LiteratureTheorems.weil_siegel_formula_unitary_of_literature
   UpperTheory.Lit.Sw47.weilUnitary
 theorem UpperTheory.LiteratureTheorems.dual_abelian_scheme_of_literature : GlobalTheory.Published.DualAbelianScheme :=
   GlobalTheory.dualAbelianScheme
-theorem UpperTheory.LiteratureTheorems.zarhin_statement (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.CompanionTheory.Ar.GR.ZarhinStatement :=
+theorem UpperTheory.LiteratureTheorems.zarhin_statement : GlobalTheory.CompanionTheory.Ar.GR.ZarhinStatement :=
   PositivityTheory.HtPt.Narrow.zarhin (_root_.UpperTheory.LiteratureTheorems.dual_abelian_scheme_of_literature)
 theorem UpperTheory.LiteratureTheorems.fargues_exact_of_literature : GlobalTheory.CompanionTheory.Ar.HT.FarguesExact :=
   UpperTheory.Lit.farguesExact
@@ -1242,7 +1231,7 @@ theorem UpperTheory.LiteratureTheorems.eis_bl_of_literature : GlobalTheory.ThK.D
   PositivityTheory.RgEis.Hd.eisBL
 theorem UpperTheory.LiteratureTheorems.siegel_weil_std_of_literature : GlobalTheory.ThK.Dbl.SiegelWeilStd :=
   PositivityTheory.SiegelWeilFormula.Fin.siegelWeilStd
-theorem UpperTheory.LiteratureTheorems.theta_integrals_agree_and_local_matching_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree ∧ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching :=
+theorem UpperTheory.LiteratureTheorems.theta_integrals_agree_and_local_matching_of_literature : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree ∧ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching :=
   PositivityTheory.ThKR.theoremK_head2 (_root_.UpperTheory.LiteratureTheorems.eis_bl_of_literature) (_root_.UpperTheory.LiteratureTheorems.siegel_weil_std_of_literature)
 theorem UpperTheory.LiteratureTheorems.global_euler_char_of_literature : ReciprocityTheory.Gal.GlobalEulerChar :=
   PositivityTheory.Lit1.GEN.globalEulerChar_full
@@ -1254,7 +1243,7 @@ theorem UpperTheory.LiteratureTheorems.local_finiteness_of_literature : Reciproc
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.localFiniteness
 theorem UpperTheory.LiteratureTheorems.local_tate_duality_of_literature : ReciprocityTheory.Gal.LocalTateDuality :=
   GlobalTheory.LocalDualityAll.localTateDuality
-theorem UpperTheory.LiteratureTheorems.greenberg_wiles_of_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : ReciprocityTheory.Gal.GreenbergWiles :=
+theorem UpperTheory.LiteratureTheorems.greenberg_wiles_of_literature : ReciprocityTheory.Gal.GreenbergWiles :=
   _root_.GlobalTheory.CompanionTheory.GreenbergWiles.Assembly.greenbergWiles_of_poitouTate (_root_.UpperTheory.LiteratureTheorems.poitou_tate_normalised_of_literature) (_root_.UpperTheory.LiteratureTheorems.global_euler_char_of_literature) (_root_.UpperTheory.LiteratureTheorems.local_tate_duality_of_literature) (_root_.UpperTheory.LiteratureTheorems.localEulerChar_alt_alt) (_root_.UpperTheory.LiteratureTheorems.local_finiteness_of_literature)
 theorem UpperTheory.LiteratureTheorems.unramified_orthogonality_of_literature : ReciprocityTheory.Gal.UnramifiedOrthogonality :=
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.unramifiedOrthogonality
@@ -1266,28 +1255,28 @@ theorem UpperTheory.LiteratureTheorems.local_finiteness_k_of_literature : Formal
   CompanionTheory.LocalTateOrthogonality.Gcoh.top_locfin
 theorem UpperTheory.LiteratureTheorems.local_tate_duality_k_of_literature : Formalism.GaloisCohomology.LocalTateDualityK :=
   CompanionTheory.LocalTateOrthogonality.Gcoh.top_tate
-theorem UpperTheory.LiteratureTheorems.literature_local (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.GlobalTheory.Mem.LiteralAutomorphy.LocalRepresentationTheoryHypothesesAlt :=
+theorem UpperTheory.LiteratureTheorems.literature_local (hLiteratureRecT : _root_.UpperTheory.Zero.LLC.RecTExists) : _root_.GlobalTheory.Mem.LiteralAutomorphy.LocalRepresentationTheoryHypothesesAlt :=
   {
     bz := (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature),
     bern := (_root_.UpperTheory.LiteratureTheorems.bernstein_unitary_product_irreducible_of_literature),
     geo := (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_of_literature),
-    zel := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature O),
+    zel := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature),
     disj := (_root_.UpperTheory.LiteratureTheorems.totally_disjoint_product_irreducible_of_literature),
     mp := (_root_.UpperTheory.LiteratureTheorems.moy_prasad_jacquet_iso_of_literature),
-    temp := (_root_.UpperTheory.LiteratureTheorems.tempered_product_of_square_integrable_of_literature O),
+    temp := (_root_.UpperTheory.LiteratureTheorems.tempered_product_of_square_integrable_of_literature),
     seg := (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature),
-    sq := (_root_.UpperTheory.LiteratureTheorems.square_integrable_segment_of_literature O),
+    sq := (_root_.UpperTheory.LiteratureTheorems.square_integrable_segment_of_literature),
     gen := (_root_.UpperTheory.LiteratureTheorems.generic_unlinked_gl_of_literature),
     multi := (_root_.UpperTheory.LiteratureTheorems.langlands_multisegments_of_literature),
     exh := (_root_.UpperTheory.LiteratureTheorems.langlands_exhaustion_gl_of_literature),
     cos := (_root_.UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature),
-    llc := (_root_.UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature O),
-    dzi := (_root_.UpperTheory.LiteratureTheorems.depth_zero_induction_of_literature O),
+    llc := hLiteratureRecT,
+    dzi := (_root_.UpperTheory.LiteratureTheorems.depth_zero_induction_of_literature),
     brauer := (_root_.UpperTheory.LiteratureTheorems.brauer_degree_zero_of_literature),
     chev := (_root_.UpperTheory.LiteratureTheorems.chevalley_units_of_literature),
     green := (_root_.UpperTheory.LiteratureTheorems.green_regular_characters_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.literature_automorphy (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.GlobalTheory.Mem.LiteralAutomorphy.GlobalAutomorphicGaloisHypotheses' :=
+theorem UpperTheory.LiteratureTheorems.literature_automorphy (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.GlobalTheory.Mem.LiteralAutomorphy.GlobalAutomorphicGaloisHypotheses' :=
   {
     decay := (_root_.UpperTheory.LiteratureTheorems.cusp_rapid_decay_of_literature),
     hc := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_finite_of_literature),
@@ -1295,18 +1284,18 @@ theorem UpperTheory.LiteratureTheorems.literature_automorphy (O : _root_.UpperTh
     js := (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_of_literature),
     cusp := (_root_.UpperTheory.LiteratureTheorems.cuspidal_spectrum_gl_of_literature),
     bc := (_root_.UpperTheory.LiteratureTheorems.base_change_isobaric),
-    gk := (_root_.UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature O),
-    gal := (_root_.UpperTheory.LiteratureTheorems.pair_u_of_literature O),
-    car := O.caraianiLocalGlobalDual,
+    gk := (_root_.UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature),
+    gal := (_root_.UpperTheory.LiteratureTheorems.pair_u_of_literature hLiteratureRow),
+    car := hLiteratureRow,
     pur := (_root_.UpperTheory.LiteratureTheorems.clozel_purity_of_literature),
     coh := (_root_.UpperTheory.LiteratureTheorems.clozel_cohomological_of_literature),
     art := (_root_.UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_literature),
     ray := (_root_.UpperTheory.LiteratureTheorems.ray_class_field_st_of_literature),
-    chA := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literature O),
-    chW := (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature O),
+    chA := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literature),
+    chW := (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature),
     berger := (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.literature_cohomology (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.Mem.LiteralAutomorphy.LitCoh :=
+theorem UpperTheory.LiteratureTheorems.literature_cohomology : GlobalTheory.Mem.LiteralAutomorphy.LitCoh :=
   {
     pt := (_root_.UpperTheory.LiteratureTheorems.poitou_tate_normalised_of_literature),
     lf := (_root_.UpperTheory.LiteratureTheorems.local_finiteness_of_literature),
@@ -1315,21 +1304,21 @@ theorem UpperTheory.LiteratureTheorems.literature_cohomology (O : _root_.UpperTh
     gf := (_root_.UpperTheory.LiteratureTheorems.global_finiteness_of_literature),
     ge := (_root_.UpperTheory.LiteratureTheorems.global_euler_char_of_literature),
     uo := (_root_.UpperTheory.LiteratureTheorems.unramified_orthogonality_of_literature),
-    gw := (_root_.UpperTheory.LiteratureTheorems.greenberg_wiles_of_literature O),
+    gw := (_root_.UpperTheory.LiteratureTheorems.greenberg_wiles_of_literature),
     lfK := (_root_.UpperTheory.LiteratureTheorems.local_finiteness_k_of_literature),
     ltK := (_root_.UpperTheory.LiteratureTheorems.local_tate_duality_k_of_literature),
     leK := (_root_.UpperTheory.LiteratureTheorems.local_euler_char_k_of_literature),
     bk := (_root_.UpperTheory.LiteratureTheorems.bloch_kato_local_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.literature_nonexistence (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.GlobalTheory.Mem.LiteralAutomorphy.NonEndoscopicHypothesesAlt :=
+theorem UpperTheory.LiteratureTheorems.literature_nonexistence (hLiteratureRow : _root_.UpperTheory.One.M.Row) (hLiteratureRecT : _root_.UpperTheory.Zero.LLC.RecTExists) : _root_.GlobalTheory.Mem.LiteralAutomorphy.NonEndoscopicHypothesesAlt :=
   {
-    loc := (_root_.UpperTheory.LiteratureTheorems.literature_local O),
-    aut := (_root_.UpperTheory.LiteratureTheorems.literature_automorphy O),
-    coh := (_root_.UpperTheory.LiteratureTheorems.literature_cohomology O),
-    join := (_root_.UpperTheory.LiteratureTheorems.join_out_of_literature O),
+    loc := (_root_.UpperTheory.LiteratureTheorems.literature_local hLiteratureRecT),
+    aut := (_root_.UpperTheory.LiteratureTheorems.literature_automorphy hLiteratureRow),
+    coh := (_root_.UpperTheory.LiteratureTheorems.literature_cohomology),
+    join := (_root_.UpperTheory.LiteratureTheorems.join_out_of_literature),
     fe := (_root_.UpperTheory.LiteratureTheorems.heckeTateFunctionalEquation')
   }
-theorem UpperTheory.LiteratureTheorems.published_results_analytic (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.NRows.GeometricGaloisRepCompatibility :=
+theorem UpperTheory.LiteratureTheorems.published_results_analytic : GlobalTheory.NRows.GeometricGaloisRepCompatibility :=
   {
     weil := (_root_.UpperTheory.LiteratureTheorems.weil_representation_unitary_pair_of_literature),
     ds := (_root_.UpperTheory.LiteratureTheorems.discrete_series_exists_of_literature),
@@ -1337,12 +1326,12 @@ theorem UpperTheory.LiteratureTheorems.published_results_analytic (O : _root_.Up
     trc := (_root_.UpperTheory.LiteratureTheorems.cusp_trace_class_of_literature),
     dm := (_root_.UpperTheory.LiteratureTheorems.dixmier_malliavin_factorisation_of_literature),
     sw := (_root_.UpperTheory.LiteratureTheorems.weil_siegel_formula_unitary_of_literature),
-    dbl := (_root_.UpperTheory.LiteratureTheorems.doubling_method O),
+    dbl := (_root_.UpperTheory.LiteratureTheorems.doubling_method),
     udbl := (_root_.UpperTheory.LiteratureTheorems.unramified_doubling_gl_of_literature),
     hl := (_root_.UpperTheory.LiteratureTheorems.hecke_l_partial_continuation_of_literature),
     ht := (_root_.UpperTheory.LiteratureTheorems.ht_card_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.published_results_local (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.NLink.Hypotheses₂ :=
+theorem UpperTheory.LiteratureTheorems.published_results_local : GlobalTheory.NLink.Hypotheses₂ :=
   {
     font := (_root_.UpperTheory.LiteratureTheorems.fontaine_bcris_of_literature),
     artin := (_root_.UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_literature),
@@ -1352,39 +1341,39 @@ theorem UpperTheory.LiteratureTheorems.published_results_local (O : _root_.Upper
     fin := (_root_.UpperTheory.LiteratureTheorems.local_finiteness_k_of_literature),
     bs := (_root_.UpperTheory.LiteratureTheorems.bhatt_scholze_integral_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.published_results_eigen (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : _root_.GlobalTheory.Fc.S0.UnitaryGroupThirdPlaceHypotheses :=
+theorem UpperTheory.LiteratureTheorems.published_results_eigen (hLiteratureRow : _root_.UpperTheory.One.M.Row) (hLiteratureRecT : _root_.UpperTheory.Zero.LLC.RecTExists) : _root_.GlobalTheory.Fc.S0.UnitaryGroupThirdPlaceHypotheses :=
   {
     clozelCohomological := (_root_.UpperTheory.LiteratureTheorems.clozel_cohomological_of_literature),
     greenCuspidal := (_root_.UpperTheory.LiteratureTheorems.green_cuspidal_of_literature),
     heckeLAdicCharacter := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_of_literature),
     chebotarevDegreeOne := (_root_.UpperTheory.LiteratureTheorems.chebotarev_degree_one_of_literature),
-    galoisRepOfPolarizedCuspidal := (_root_.UpperTheory.LiteratureTheorems.cusp_u_of_literature O),
-    baseChangeDefiniteUnitary := (_root_.UpperTheory.LiteratureTheorems.base_change_definite_unitary_group_of_literature O),
-    bhattScholzeCrystallineLattices := (_root_.UpperTheory.LiteratureTheorems.bhatt_scholze_crystalline_lattices_of_literature O),
-    heckeLAdicCharacterAbove := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literature O),
+    galoisRepOfPolarizedCuspidal := (_root_.UpperTheory.LiteratureTheorems.cusp_u_of_literature hLiteratureRow),
+    baseChangeDefiniteUnitary := (_root_.UpperTheory.LiteratureTheorems.base_change_definite_unitary_group_of_literature),
+    bhattScholzeCrystallineLattices := (_root_.UpperTheory.LiteratureTheorems.bhatt_scholze_crystalline_lattices_of_literature),
+    heckeLAdicCharacterAbove := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literature),
     cuspRapidDecay := (_root_.UpperTheory.LiteratureTheorems.cusp_rapid_decay_of_literature),
     weilSiegelFormulaUnitary := (_root_.UpperTheory.LiteratureTheorems.weil_siegel_formula_unitary_of_literature),
     siegelWeilUnitaryConvergent := (_root_.UpperTheory.LiteratureTheorems.siegel_weil_unitary_convergent_of_literature),
-    doublingMethod := (_root_.UpperTheory.LiteratureTheorems.doubling_method O),
+    doublingMethod := (_root_.UpperTheory.LiteratureTheorems.doubling_method),
     unramifiedDoublingGL := (_root_.UpperTheory.LiteratureTheorems.unramified_doubling_gl_of_literature),
     bernsteinZelevinskyFiniteness := (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature),
     formalDegreeCompactDual := (_root_.UpperTheory.LiteratureTheorems.formal_degree_compact_dual_of_literature),
     bernsteinUnitaryProductIrreducible := (_root_.UpperTheory.LiteratureTheorems.bernstein_unitary_product_irreducible_of_literature),
     geometricLemmaFiltration := (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_filtration_of_literature),
-    unlinkedProductIrreducible := (_root_.UpperTheory.LiteratureTheorems.unlinked_product_irreducible_of_literature O),
+    unlinkedProductIrreducible := (_root_.UpperTheory.LiteratureTheorems.unlinked_product_irreducible_of_literature),
     depthZeroJacquetInjective := (_root_.UpperTheory.LiteratureTheorems.depth_zero_jacquet_injective_of_literature),
     jacquetShalika := (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_of_literature),
     automorphicFormsFiniteGL := (_root_.UpperTheory.LiteratureTheorems.automorphic_forms_finite_gl_of_literature),
-    localGlobalAboveL := (_root_.UpperTheory.LiteratureTheorems.carU_local_global_of_literature O),
-    regularAlgebraicPurity := (_root_.UpperTheory.LiteratureTheorems.regular_algebraic_purity_of_literature O),
+    localGlobalAboveL := (_root_.UpperTheory.LiteratureTheorems.carU_local_global_of_literature hLiteratureRow),
+    regularAlgebraicPurity := (_root_.UpperTheory.LiteratureTheorems.regular_algebraic_purity_of_literature),
     globalArtinReciprocity := (_root_.UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_literature),
-    heckeLAdicParameterAbove := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_parameter_above_of_literature O),
+    heckeLAdicParameterAbove := (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_parameter_above_of_literature),
     deRhamPotSemistable := (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature),
     harishChandraFinite := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_finite_of_literature),
     greenRegularCharacters := (_root_.UpperTheory.LiteratureTheorems.green_regular_characters_of_literature),
-    zelevinskyPolynomialRing := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature O),
+    zelevinskyPolynomialRing := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature),
     rayClassFieldSt := (_root_.UpperTheory.LiteratureTheorems.ray_class_field_st_of_literature),
-    rayCharacterArtin := (_root_.UpperTheory.LiteratureTheorems.ray_character_artin_of_literature O),
+    rayCharacterArtin := (_root_.UpperTheory.LiteratureTheorems.ray_character_artin_of_literature),
     genericUnitaryDualGL := (_root_.UpperTheory.LiteratureTheorems.generic_unitary_dual_gl_of_literature),
     standardCosocleGL := (_root_.UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature),
     cheb := (_root_.UpperTheory.LiteratureTheorems.cheb_of_literature),
@@ -1405,25 +1394,25 @@ theorem UpperTheory.LiteratureTheorems.published_results_eigen (O : _root_.Upper
     siegelEisensteinContinuation := (_root_.UpperTheory.LiteratureTheorems.siegel_eisenstein_continuation_of_literature),
     siegelEisensteinSimplePole := (_root_.UpperTheory.LiteratureTheorems.siegel_eisenstein_simple_pole),
     schurOrthogonalitySquareIntegrable := (_root_.UpperTheory.LiteratureTheorems.schur_orthogonality_square_integrable_of_literature),
-    litN := (_root_.UpperTheory.LiteratureTheorems.literature_nonexistence O),
-    toHypothesesX := (_root_.UpperTheory.LiteratureTheorems.published_results_analytic O),
-    nLink := (_root_.UpperTheory.LiteratureTheorems.published_results_local O),
+    litN := (_root_.UpperTheory.LiteratureTheorems.literature_nonexistence hLiteratureRow hLiteratureRecT),
+    toHypothesesX := (_root_.UpperTheory.LiteratureTheorems.published_results_analytic),
+    nLink := (_root_.UpperTheory.LiteratureTheorems.published_results_local),
     depthZeroSupport' := (_root_.UpperTheory.LiteratureTheorems.depth_zero_support_of_literature),
     localFiniteness := (_root_.UpperTheory.LiteratureTheorems.local_finiteness_of_literature),
     localTateDuality := (_root_.UpperTheory.LiteratureTheorems.local_tate_duality_of_literature),
     localEulerChar := (_root_.UpperTheory.LiteratureTheorems.localEulerChar_alt_alt)
   }
-theorem UpperTheory.LiteratureTheorems.published_results_first (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.FunPr.ThetaLocalInputs :=
+theorem UpperTheory.LiteratureTheorems.published_results_first : GlobalTheory.FunPr.ThetaLocalInputs :=
   {
     greenSeriesSt := (_root_.UpperTheory.LiteratureTheorems.green_series_st_of_literature),
     linnik := (_root_.UpperTheory.LiteratureTheorems.linnik_of_literature),
     complexMultiplicationJSt := (_root_.UpperTheory.LiteratureTheorems.complex_multiplication_j_st_of_literature),
     bernsteinUnitaryProductIrreducible := (_root_.UpperTheory.LiteratureTheorems.bernstein_unitary_product_irreducible_of_literature),
-    zelevinskyPolynomialRing := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature O),
+    zelevinskyPolynomialRing := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature),
     bernsteinZelevinskyFiniteness := (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature),
     cuspTraceClass := (_root_.UpperTheory.LiteratureTheorems.cusp_trace_class_of_literature),
     weilSiegelFormulaUnitary := (_root_.UpperTheory.LiteratureTheorems.weil_siegel_formula_unitary_of_literature),
-    doublingMethod := (_root_.UpperTheory.LiteratureTheorems.doubling_method O),
+    doublingMethod := (_root_.UpperTheory.LiteratureTheorems.doubling_method),
     unramifiedDoublingGL := (_root_.UpperTheory.LiteratureTheorems.unramified_doubling_gl_of_literature),
     borelCasselman := (_root_.UpperTheory.LiteratureTheorems.borel_casselman_of_literature),
     radfordShufflePolynomial := (_root_.UpperTheory.LiteratureTheorems.radford_shuffle_polynomial_of_literature),
@@ -1456,7 +1445,7 @@ theorem UpperTheory.LiteratureTheorems.published_results_first (O : _root_.Upper
     siegelSetUnitary := (_root_.UpperTheory.LiteratureTheorems.siegel_set_unitary_of_literature),
     weilRepresentationExists := (_root_.UpperTheory.LiteratureTheorems.weil_representation_exists_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.published_results_arithmetic (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) : GlobalTheory.CovTop.PublishedHodgeBundleTheorems :=
+theorem UpperTheory.LiteratureTheorems.published_results_arithmetic : GlobalTheory.CovTop.PublishedHodgeBundleTheorems :=
   {
     p1 := (_root_.UpperTheory.LiteratureTheorems.toroidal_compactification_of_literature),
     p4 := (_root_.UpperTheory.LiteratureTheorems.ar_calc_of_literature),
@@ -1472,23 +1461,23 @@ theorem UpperTheory.LiteratureTheorems.published_results_arithmetic (O : _root_.
     p23 := (_root_.UpperTheory.LiteratureTheorems.induced_simple_lowest_alcove_of_literature),
     p25 := (_root_.UpperTheory.LiteratureTheorems.principal_polarisation_one_section_of_literature),
     p26 := (_root_.UpperTheory.LiteratureTheorems.ab_mul_n_st_of_literature),
-    q1 := (_root_.UpperTheory.LiteratureTheorems.grothendieck_messing_of_literature O),
+    q1 := (_root_.UpperTheory.LiteratureTheorems.grothendieck_messing_of_literature),
     q4 := (_root_.UpperTheory.LiteratureTheorems.prismatic_dieudonne_hodge_of_literature),
     q6 := (_root_.UpperTheory.LiteratureTheorems.kawamata_viehweg_of_literature),
     q7 := (_root_.UpperTheory.LiteratureTheorems.nef_numerics_of_literature),
-    q9 := (_root_.UpperTheory.LiteratureTheorems.arith_hilbert_samuel_of_literature O),
-    q11 := (_root_.UpperTheory.LiteratureTheorems.cycle_heights_of_literature O),
+    q9 := (_root_.UpperTheory.LiteratureTheorems.arith_hilbert_samuel_of_literature),
+    q11 := (_root_.UpperTheory.LiteratureTheorems.cycle_heights_of_literature),
     q15 := (_root_.UpperTheory.LiteratureTheorems.nadel_vanishing_and_non_klt_divisor_of_literature),
     q16 := (_root_.UpperTheory.LiteratureTheorems.principalisation_of_literature),
     q18 := (_root_.UpperTheory.LiteratureTheorems.formal_algebraisation_of_literature)
   }
-theorem UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin (O : _root_.UpperTheory.LiteratureTheorems.OpenLiteratureStatements) (hV : UpperTheory.Top.VWin) : UpperTheory.EveryCharacter :=
-  have hTheta := _root_.UpperTheory.LiteratureTheorems.theta_integrals_agree_and_local_matching_of_literature O
+theorem UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin (hLiteratureRow : _root_.UpperTheory.One.M.Row) (hLiteratureRecT : _root_.UpperTheory.Zero.LLC.RecTExists) (hV : UpperTheory.Top.VWin) : UpperTheory.EveryCharacter :=
+  have hTheta := _root_.UpperTheory.LiteratureTheorems.theta_integrals_agree_and_local_matching_of_literature
   _root_.UpperTheory.Lit.every_character_of_theta_integrals_local_matching
-    (_root_.UpperTheory.LiteratureTheorems.published_results_eigen O)
-    (_root_.UpperTheory.LiteratureTheorems.published_results_first O) hTheta.1 hTheta.2
-    (_root_.SelfIntersectionVolumeEstimates.topCovolSlim2_use_alt_alt (_root_.UpperTheory.LiteratureTheorems.resolution_char_zero_of_literature) (_root_.UpperTheory.LiteratureTheorems.principalisation_char_zero_of_literature) PositivityTheory.Tls2.Pl.poincareLelong PositivityTheory.Pf1.HilbertSamuelMoriwaki.hsUse_outright PositivityTheory.Pf1.HilbertSamuelMoriwaki.moriwakiBig_outright (_root_.UpperTheory.LiteratureTheorems.fargues_exact_of_literature) (_root_.UpperTheory.LiteratureTheorems.zarhin_statement O) (_root_.UpperTheory.LiteratureTheorems.nef_rr_of_literature) (_root_.UpperTheory.LiteratureTheorems.toroidal_for_fan_ks_of_literature) (_root_.UpperTheory.LiteratureTheorems.semi_abelian_lie_seminegative_of_literature) (_root_.UpperTheory.LiteratureTheorems.point_separation_pair_of_literature) (_root_.UpperTheory.LiteratureTheorems.published_results_arithmetic O) (_root_.UpperTheory.LiteratureTheorems.grothendieck_deformation_of_literature O))
-    (_root_.UpperTheory.LiteratureTheorems.local_langlands_gl_recT_exists_of_literature O) hV
+    (_root_.UpperTheory.LiteratureTheorems.published_results_eigen hLiteratureRow hLiteratureRecT)
+    (_root_.UpperTheory.LiteratureTheorems.published_results_first) hTheta.1 hTheta.2
+    (_root_.SelfIntersectionVolumeEstimates.topCovolSlim2_use_alt_alt (_root_.UpperTheory.LiteratureTheorems.resolution_char_zero_of_literature) (_root_.UpperTheory.LiteratureTheorems.principalisation_char_zero_of_literature) PositivityTheory.Tls2.Pl.poincareLelong PositivityTheory.Pf1.HilbertSamuelMoriwaki.hsUse_outright PositivityTheory.Pf1.HilbertSamuelMoriwaki.moriwakiBig_outright (_root_.UpperTheory.LiteratureTheorems.fargues_exact_of_literature) (_root_.UpperTheory.LiteratureTheorems.zarhin_statement) (_root_.UpperTheory.LiteratureTheorems.nef_rr_of_literature) (_root_.UpperTheory.LiteratureTheorems.toroidal_for_fan_ks_of_literature) (_root_.UpperTheory.LiteratureTheorems.semi_abelian_lie_seminegative_of_literature) (_root_.UpperTheory.LiteratureTheorems.point_separation_pair_of_literature) (_root_.UpperTheory.LiteratureTheorems.published_results_arithmetic) (_root_.UpperTheory.LiteratureTheorems.grothendieck_deformation_of_literature))
+    hLiteratureRecT hV
 end
 end -- clump:auto
 end -- clump:auto

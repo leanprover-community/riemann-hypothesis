@@ -195,8 +195,6 @@ open ProvisionalDivX
 
 def provisionalDivX (D : D7) (G : DV.Geo D.what₂.LL) (Y : G.Var)
     (jc : ∀ (p : ℕ) [Fact p.Prime], DV.KW p →+* ℂ)
-    (M : ∀ (p : ℕ) [Fact p.Prime] (r : ℕ),
-      DV.Mdl D p (max r 2) (DV.rkOf (DV.PsiOf D (jc p)) (max r 2) 1))
     (F : ∀ j, MjForm D j) : DivX D :=
   letI := D.host.cmStar
   { geo := G
@@ -215,7 +213,6 @@ def provisionalDivX (D : D7) (G : DV.Geo D.what₂.LL) (Y : G.Var)
     divisorWeight_def := fun p _ => wtL_eq_ramIdx_mul D p
     jC := fun p _ _ => jc p
     Mp := fun _ _ _ _ _ => Unit
-    md := fun S _ p _ _ _ => M p S.rank
     vdd := fun _ _ => 0
     vdd_unram := fun _ _ _ => rfl
     phiFr_unram := fun _ _ _ _ _ _ => rfl

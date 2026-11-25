@@ -107,7 +107,7 @@ theorem bet_nondeg {χ : AddChar (ι → ℂ) ℂ} (hχ : ∀ z, (∀ w, χ (z *
   rw [hl, h1]
   simp
 
-def Lb : V ι a m →L[ℝ] LieI ι a :=
+def Lb (_hm : m + 1 < a) : V ι a m →L[ℝ] LieI ι a :=
   LinearMap.toContinuousLinearMap
     { toFun := fun y => Matrix.of.symm (posM Subtype.val y)
       map_add' := fun y y' => by rw [posM_add]; rfl
@@ -118,11 +118,11 @@ def Lb : V ι a m →L[ℝ] LieI ι a :=
         refine Finset.sum_congr rfl fun t _ => ?_
         split_ifs <;> simp }
 
-theorem blkU_val (hm : m + 1 < a) (y : V ι a m) : (blkU y : GL (Fin a) (ι → ℂ)).val = 1 + Matrix.of (Lb y) := by
+theorem blkU_val (hm : m + 1 < a) (y : V ι a m) : (blkU y : GL (Fin a) (ι → ℂ)).val = 1 + Matrix.of (Lb hm y) := by
   rfl
 
 theorem blkU_inv_val (hm : m + 1 < a) (y : V ι a m) :
-    (blkU y : GL (Fin a) (ι → ℂ))⁻¹.val = 1 - Matrix.of (Lb y) := by
+    (blkU y : GL (Fin a) (ι → ℂ))⁻¹.val = 1 - Matrix.of (Lb hm y) := by
   rfl
 
 theorem lastE_eq {R : Type} [CommRing R] (hm : m + 1 < a) (y : UnipotentBlockColumnIndex a (m + 1) (m + 1) → R) :
@@ -314,7 +314,7 @@ theorem mirabolic_induction_step_exists : S2 → S3 → S5 → S6 → S8 → Mir
       (CornerBlockIndex.sM hm) (CornerBlockIndex.isOpen_O hm) (CornerBlockIndex.cd_sI hm) (CornerBlockIndex.cd_sM hm).contDiffOn
       (fun x hx => CornerBlockIndex.sI_mul_sM hm hx)
     have hGmem : FT μ (CornerBlockIndex.bet l) F ∈ 𝒢 := hG η v hηd hηc hηO hv
-    obtain ⟨hint, hsm⟩ := h3 ι a X ρ hρ (CornerBlockIndex.V ι a m) μ (fun y => blkU y) (CornerBlockIndex.Lb)
+    obtain ⟨hint, hsm⟩ := h3 ι a X ρ hρ (CornerBlockIndex.V ι a m) μ (fun y => blkU y) (CornerBlockIndex.Lb hm)
       (CornerBlockIndex.blkU_val hm) (CornerBlockIndex.blkU_inv_val hm) 𝒢 h𝒢 _ hGmem
     have hFint : ∀ y, Integrable (fun x => Complex.exp (-↑((CornerBlockIndex.bet l x) y) * Complex.I) • F x) μ := by
       intro y

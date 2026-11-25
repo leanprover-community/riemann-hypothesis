@@ -68,8 +68,6 @@ open scoped TensorProduct ENNReal ComplexConjugate
 
 namespace GlobalTheory.Size
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Words
 
 variable {ι X : Type} (A : ι → X → X) (p : X → ℝ≥0∞)

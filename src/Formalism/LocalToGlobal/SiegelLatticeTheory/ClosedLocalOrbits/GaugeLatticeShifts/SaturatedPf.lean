@@ -337,8 +337,6 @@ end Transport
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem XS_mapFlag (β : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hβ : β ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) {T : D.host.E}
@@ -814,8 +812,6 @@ end DC
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem big_block_function_holds (u u' : D.what₂.Word) : BBFun D u u' := by
@@ -1015,8 +1011,6 @@ end SplitEquiv
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem Xa_r' {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
@@ -1128,8 +1122,6 @@ theorem automorphism_induces_lattice_map (u : D.what₂.Word) (F0 : FlagG (VS D)
 end D7
 
 section D7
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -1248,8 +1240,6 @@ theorem eq_of_locP {A B : Submodule (𝓞 E) S.V}
 end Int
 
 section D7
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 

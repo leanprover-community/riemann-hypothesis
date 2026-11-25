@@ -118,15 +118,6 @@ open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.
 
 namespace GlobalTheory.PDivGroup
 
-theorem frobProj_frobTwist_app {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R] (h : (p : R) = 0)
-    (G : PDivGroup p R) (n : ℕ) (x : (frobTwist h G).A n) :
-    ((frobProj h G).frobTwist h h).app n x = (frobProj h (frobTwist h G)).app n x := by
-  induction x using frobTwist_induction h n with
-  | h0 => simp only [map_zero]
-  | h2 x y hx hy => simp only [map_add (f := _), hx, hy]
-  | h1 r a =>
-    rw [SemiBialgHom.smul_map, SemiBialgHom.smul_map, SemiHom.frobTwist_app_frobProj]
-
 private theorem frobProj_app_verschiebung {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R]
     (h : (p : R) = 0) (G : PDivGroup p R) (n : ℕ) (a : G.A n) :
     (frobProj h (frobTwist h G)).app n ((verschiebung h G).app n a) =

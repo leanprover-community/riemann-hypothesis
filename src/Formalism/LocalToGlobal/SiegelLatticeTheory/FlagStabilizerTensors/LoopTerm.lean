@@ -25,8 +25,6 @@ open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotio
 
 namespace Formalism.L2.SG.LoopTerm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section PartB
 
 variable {D : D7} {X : HidaSetting D} {θ : ℝ}

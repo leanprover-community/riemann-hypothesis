@@ -42,8 +42,3 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
-
-open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
-
-theorem _root_.GlobalTheory.T.etale_cohomology_vanishing_algebraic_over_ratFunc : GlobalTheory.EtC.C1 := by
-  first | (exact @GlobalTheory.EtC.gaugeSplitting_holds)

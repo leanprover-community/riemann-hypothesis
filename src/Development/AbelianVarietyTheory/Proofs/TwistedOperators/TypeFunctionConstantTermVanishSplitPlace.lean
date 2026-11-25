@@ -52,7 +52,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.WittIndexEqZeroI
 open MeasureTheory Set Filter NumberField IsDedekindDomain
 open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Cusp GlobalTheory.SplitWeil
 open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (radical)
 

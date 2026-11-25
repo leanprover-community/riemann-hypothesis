@@ -370,7 +370,6 @@ theorem nf_arith_low (R x N : ℝ) (hR1 : 1 ≤ R) (hx1 : 1 ≤ x) (hN0 : 0 ≤ 
 
 theorem nf_arith_ab (r k : ℝ) (hr : 0 ≤ r) (hk : 2 ≤ k) :
     2 * (k + r) * (r + 1) + 1 ≤ 20 * ((r + 1) * (2 * r + k + 1) ^ 3) := by
-  have hs : 3 ≤ 2 * r + k + 1 := by linarith
   have hs3 : 9 * (2 * r + k + 1) ≤ (2 * r + k + 1) ^ 3 := by
     nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * r + k + 1)
       (by linarith : (0 : ℝ) ≤ 2 * r + k + 1 - 3)) (by linarith : (0 : ℝ) ≤ 2 * r + k + 1 + 3)]
@@ -598,7 +597,6 @@ theorem dominated_L2_truncation_bound_holds : DominatedL2TruncationBound := by
       have := mul_neg_of_neg_of_pos h hp
       linarith [this, show C₁ * (2 * (P.r : ℝ) + P.k + 1) * ((N : ℝ) + 1) =
         C₁ * ((2 * (P.r : ℝ) + P.k + 1) * ((N : ℝ) + 1)) by ring]
-    have h2 : (0 : ℝ) ≤ (B.opOrder Th : ℝ) := Nat.cast_nonneg _
     linarith
   have hd0 : 0 ≤ C₁ * ((P.r : ℝ) + 1) * (2 * (P.r : ℝ) + P.k + 1) * ((N : ℝ) + 1) := by positivity
   obtain ⟨-, hcc1⟩ := Formalism.FourierDecayAlt.P.CutMP.class_lower_decay_holds P.k P.r Wp Wq Th _ A₀ hd0 hgc f hfck hf
@@ -609,7 +607,6 @@ theorem dominated_L2_truncation_bound_holds : DominatedL2TruncationBound := by
   obtain ⟨KT, hKT0, hKT⟩ := jdCCLowerQ Th _ (A₀ - 1) hd0 hgc 5
   set d : ℝ := C₁ * ((P.r : ℝ) + 1) * (2 * (P.r : ℝ) + P.k + 1) * ((N : ℝ) + 1) with hd
   set q₀ : ℝ := (((2 * P.r + 2) * p₀ : ℕ) : ℝ) with hq₀
-  have hq0 : 0 ≤ q₀ := Nat.cast_nonneg _
   set x : ℝ := 2 * (P.r : ℝ) + P.k + 1 with hx
   set R : ℝ := (P.r : ℝ) + 1 with hR
   have hS : 0 ≤ R ^ 4 * (N * x ^ 2 + x ^ 3) := by positivity
@@ -687,7 +684,6 @@ theorem dominated_L2_truncation_bound_holds : DominatedL2TruncationBound := by
   have hM0 : 0 ≤ M := by positivity
   have hT_le : ∀ m : ℕ, ∫⁻ c, T m c ≤ ENNReal.ofReal (M * (1 / ((m : ℝ) + 1) ^ 2)) := by
     intro m
-    have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
     have i1 := hC3 (B.opApply Th (ψ m)) _ ⟨_, Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_A hA3le (hYc m)⟩
       (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_A hA3le (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_m (by norm_num) (hYc m)))
     have i2 := hC3 _ _ ⟨_, hY'c m⟩ (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_m (by norm_num) (hY'c m))

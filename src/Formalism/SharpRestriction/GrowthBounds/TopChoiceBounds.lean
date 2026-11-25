@@ -75,7 +75,7 @@ theorem bc_fwd_le {n a b : ℕ} (hb : b < n) (hab : a ≤ b) : fwd n a b = b - a
 theorem bc_fwd_gt {n a b : ℕ} (ha : a < n) (hab : b < a) : fwd n a b = b + n - a :=
   Nat.mod_eq_of_lt (by omega)
 
-theorem bc_fwd_of {n a b d : ℕ} (ha : a < n) (_hb : b < n) (hd : d < n) (h : (a + d) % n = b) : fwd n a b = d := by
+theorem bc_fwd_of {n a b d : ℕ} (ha : a < n) (hd : d < n) (h : (a + d) % n = b) : fwd n a b = d := by
   by_cases hc : a + d < n
   · rw [Nat.mod_eq_of_lt hc] at h
     subst h
@@ -228,12 +228,11 @@ theorem bc_seg {n' : ℕ} {TT : Finset (Fin n')} {r L₁ L₂ u M₀ G' N₁ : �
     rw [← hφ.2] at this
     exact Finset.mem_range.mp (bc_sub TT (Finset.mem_inter.mp this).1)
   have han : a < n' := hmem f s hf _
-  have hbn : b < n' := hmem f' s' hf' _
   have s1 : (if s < s' then b - a else b + n' - a) < G' := hS.1
   have s2 : (a + (if s < s' then b - a else b + n' - a)) % n' = b := hS.2.1
   have s3 : (TT.map Fin.valEmbedding ∩ (Finset.range ((if s < s' then b - a else b + n' - a) + 1)).image
       (fun j => (a + j) % n')).card ≤ N₁ := hS.2.2
-  have hDd : Dd = (if s < s' then b - a else b + n' - a) := bc_fwd_of han hbn (by omega) s2
+  have hDd : Dd = (if s < s' then b - a else b + n' - a) := bc_fwd_of han (by omega) s2
   rw [hDd]
   refine ⟨by omega, s3, fun i _ => e1 ▸ hgev i, fun i _ => e2 ▸ hgev' i, ?_, ?_⟩
   · intro i hi _
@@ -740,7 +739,7 @@ theorem bs_next {TT : Finset (Fin n')} {r L₁ L₂ u M₀ G' N₁ : ℕ} (hr : 
   obtain ⟨d, d1, d2, dT, dE, _, dN⟩ := bc_next hr h x.val (Finset.mem_map.mpr ⟨x, hx, rfl⟩) hev
   obtain ⟨e, heT, hev'⟩ := Finset.mem_map.mp dT
   have hev'' : e.val = (x.val + d) % n' := hev'
-  have hcd : cdist x e = d := bc_fwd_of x.isLt e.isLt (by omega) hev''.symm
+  have hcd : cdist x e = d := bc_fwd_of x.isLt (by omega) hev''.symm
   refine ⟨d, e, d1, d2, heT, by rw [hev'']; exact dE, ?_, hcd, dN⟩
   rintro rfl
   have : cdist e e = 0 := by
@@ -963,7 +962,7 @@ theorem vertex_count_eq_card_tops (X : Inst D L) {p : ℕ} (hc : IsResidueClassZ
     exact ⟨⟨y, hy⟩, by simpa [topsPos] using h2, rfl⟩
 
 theorem forward_back_index_eq {n y d : ℕ} (hy : y < n) (hd : d < n) : CornerGLContinuity.fwd n ((y + n - d) % n) y = d := by
-  refine bc_fwd_of (Nat.mod_lt _ (by omega)) hy hd ?_
+  refine bc_fwd_of (Nat.mod_lt _ (by omega)) hd ?_
   rw [Nat.mod_add_mod, Nat.sub_add_cancel (by omega), Nat.add_mod_right, Nat.mod_eq_of_lt hy]
 
 theorem back_smul_eq_sub (h t0 : HH D) {y d : ℕ} (hd : d ≤ addOrderOf h) :

@@ -68,7 +68,7 @@ theorem tA (ε : Fin m → Bool) {c : ℝ} {a b : Fin m} (ha : ε a = true) (hb 
   simp only [pE_apply, Bool.not_false] at h1 h2
   rw [h1, h2]
 
-theorem tB (ε : Fin m → Bool) {c : ℝ} {a b : Fin m} (ha : ε a = false) (hb : ε b = false) (i : Fin n)
+theorem tB (ε : Fin m → Bool) {c : ℝ} (hc : 0 < c) {a b : Fin m} (ha : ε a = false) (hb : ε b = false) (i : Fin n)
     {h g : PX m n} (hh : h ∈ F1 ε) (hg : g ∈ F2 ε) :
     contr c (X (b, i, true) * pderiv (a, i, true) h * g) = contr c (h * (X (a, i, false) * pderiv (b, i, false) g)) := by
   have h1 := T1 ε (c := c) (k := (b, i, true)) (by simp [inF1, hb]) (partial_deriv_mem_first_family ε (a, i, true) hh) hg
@@ -106,7 +106,7 @@ theorem contraction_first_operator_adjoint (ε : Fin m → Bool) {c : ℝ} (hc :
     · have hb : ε b = false := by rw [← hab, ha]
       simp only [Bool.false_eq_true, ite_false]
       rw [Finset.sum_mul, contr_sum, mul_neg, contr_neg, Finset.mul_sum, contr_sum, neg_neg]
-      exact Finset.sum_congr rfl fun i _ => tB ε ha hb i hh hg
+      exact Finset.sum_congr rfl fun i _ => tB ε hc ha hb i hh hg
     · have hb : ε b = true := by rw [← hab, ha]
       simp only [ite_true]
       rw [neg_mul, contr_neg, Finset.sum_mul, contr_sum, Finset.mul_sum, contr_sum]

@@ -190,7 +190,7 @@ theorem exists_inv (v : HeightOneSpectrum (𝓞 F)) {p q : ℕ} (hpq : p.Coprime
       mul_inv_cancel₀ hq0, Algebra.TensorProduct.one_def]
 
 theorem idem_eq_zero (v : HeightOneSpectrum (𝓞 F)) {p : ℕ} (hp : p.Prime) (hv : (p : 𝓞 F) ∈ v.asIdeal)
-    {e : E ⊗[F] v.adicCompletion F} (hee : e * e = e)
+    {e : E ⊗[F] v.adicCompletion F} (he : e ∈ intV E v) (hee : e * e = e)
     (hd : ∃ t ∈ OAd F E, Formalism.UG.P.afsplitIE v e = (p : E ⊗[F] Ad F) * t) : e = 0 := by
   obtain ⟨t, ht, hte⟩ := hd
   have hprops := GlobalTheory.St.G.IntAd.integral_adeles_properties F E
@@ -244,7 +244,7 @@ theorem GlobalTheory.St.G.psi_local_ne_one : ∀ (F E : Type) [Field F] [NumberF
       inclE (F := F) (v.adicCompletion F) ((p : E)⁻¹) := by
     rw [Algebra.TensorProduct.algebraMap_apply, map_inv₀, map_natCast]
     rfl
-  apply idem_eq_zero (E := E) v hp hv hee
+  apply idem_eq_zero (E := E) v hp hv he hee
   obtain ⟨x, t, ht, hxt⟩ := hprops.2.1 _ (ie_mem v he) p hp.pos
   have htr : ∀ y : 𝓞 E, ∃ n : ℤ, (n : ℚ) = Algebra.trace ℚ E ((p : E)⁻¹ * x * y) := by
     intro y

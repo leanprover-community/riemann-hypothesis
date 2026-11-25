@@ -57,7 +57,6 @@ open scoped TensorProduct ContDiff
 
 namespace GlobalTheory.ConjMult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 theorem map_gelfA_mem {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} {E : Fin n → Fin n → A} (hE : Formalism.REAL.GlRel E)

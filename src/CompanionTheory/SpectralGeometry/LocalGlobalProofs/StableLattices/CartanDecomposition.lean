@@ -262,24 +262,8 @@ theorem Hq_outer (k r : ℕ) (i j : Fin (2 * r + k + 1)) (hi : outer k r i) (hij
   have hm := m.isLt
   have hjl := j.isLt
   simp only [Matrix.mulVec, dotProduct, hbv, Pi.single_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    Finset.sum_ite_eq', Finset.mem_univ, if_true]
   rw [hout] at hi
-  simp only [hHq, hout, Fin.ext_iff]
-  split_ifs <;> (try simp) <;> omega
-
-theorem Hq_inner (k r : ℕ) (j : Fin (2 * r + k + 1)) (hj : ¬ outer k r j) :
-    Hq k r *ᵥ bvec j = bvec j := by
-  have hHq : ∀ i j : Fin (2 * r + k + 1), Hq k r i j =
-      if outer k r i then (if (i : ℕ) + (j : ℕ) = 2 * r + k then 1 else 0) else if i = j then 1 else 0 :=
-    fun _ _ => rfl
-  have hout : ∀ i : Fin (2 * r + k + 1), outer k r i ↔ ((i : ℕ) ≤ r ∨ r + k ≤ (i : ℕ)) := fun _ => Iff.rfl
-  have hbv : ∀ {m : ℕ} (i : Fin m), bvec i = Pi.single i (1 : ℂ) := fun _ => rfl
-  funext m
-  have hm := m.isLt
-  have hjl := j.isLt
-  simp only [Matrix.mulVec, dotProduct, hbv, Pi.single_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-  rw [hout] at hj
   simp only [hHq, hout, Fin.ext_iff]
   split_ifs <;> (try simp) <;> omega
 
@@ -348,7 +332,12 @@ theorem dg_mem (k r : ℕ) (hk : 1 ≤ k) (u : ℝ) (hu : u ≠ 0) : dg (tor k r
     · simp [hHq, h1, h3]
 
 theorem UH_mul {m : ℕ} {H g h : Matrix (Fin m) (Fin m) ℂ} (hg : g ∈ UH H) (hh : h ∈ UH H) : g * h ∈ UH H := by
-  exact GlobalTheory.CompanionTheory.BesselLevi.mul_mem hg hh
+  have hUH : ∀ {m : ℕ} (H g : Matrix (Fin m) (Fin m) ℂ), g ∈ UH H ↔ gᴴ * H * g = H := fun _ _ => Iff.rfl
+  rw [hUH] at hg hh ⊢
+  calc (g * h)ᴴ * H * (g * h) = hᴴ * (gᴴ * H * g) * h := by
+        rw [Matrix.conjTranspose_mul]
+        simp only [Matrix.mul_assoc]
+    _ = H := by rw [hg, hh]
 
 theorem bvec_dot {m : ℕ} (i j : Fin m) : star (bvec i) ⬝ᵥ bvec j = if i = j then (1 : ℂ) else 0 := by
   have hbv : ∀ {m : ℕ} (i : Fin m), bvec i = Pi.single i (1 : ℂ) := fun _ => rfl
@@ -392,7 +381,7 @@ theorem cartanQ : CartanQ := by
   set v0 : Fin (2 * r + k + 1) → ℂ := bvec i0 - bvec iL with hv0
   have hv0H : star v0 ⬝ᵥ Hq k r *ᵥ v0 = -2 := by
     rw [hv0, Matrix.mulVec_sub, hHe0, hHeL, star_sub, sub_dotProduct, dotProduct_sub, dotProduct_sub,
-      bvec_dot, bvec_dot, bvec_dot, bvec_dot, ite_eq_left rfl, ite_eq_left rfl, ite_eq_right hne, ite_eq_right (Ne.symm hne)]
+      bvec_dot, bvec_dot, bvec_dot, bvec_dot, if_pos rfl, if_pos rfl, if_neg hne, if_neg (Ne.symm hne)]
     norm_num
   set y := (Hq k r * μᴴ * Hq k r) *ᵥ v0 with hy
   have hμy : μ *ᵥ y = v0 := by rw [hy, Matrix.mulVec_mulVec, hμν, Matrix.one_mulVec]
@@ -405,17 +394,17 @@ theorem cartanQ : CartanQ := by
   have hg1U' := (hUH _ _).mp hg1U
   have ht0 : tor k r u⁻¹ i0 = u⁻¹ := by
     unfold tor
-    rw [ite_eq_left hi0]
+    rw [if_pos hi0]
   have htL : tor k r u⁻¹ iL = u := by
     unfold tor
-    rw [ite_eq_right (by omega), ite_eq_left hiL, inv_inv]
+    rw [if_neg (by omega), if_pos hiL, inv_inv]
   set xv := dg (tor k r u⁻¹) *ᵥ v0 with hxvdef
   have hxv : xv = ((u⁻¹ : ℝ) : ℂ) • bvec i0 - ((u : ℝ) : ℂ) • bvec iL := by
     rw [hxvdef, hv0, Matrix.mulVec_sub, dg_bvec, dg_bvec, ht0, htL]
   have hxn : star xv ⬝ᵥ xv = star y ⬝ᵥ y := by
     rw [hyN, hxv, star_sub, star_smul, star_smul, sub_dotProduct, dotProduct_sub, dotProduct_sub, smul_dotProduct,
       smul_dotProduct, smul_dotProduct, smul_dotProduct, dotProduct_smul, dotProduct_smul, dotProduct_smul,
-      dotProduct_smul, bvec_dot, bvec_dot, bvec_dot, bvec_dot, ite_eq_left rfl, ite_eq_left rfl, ite_eq_right hne, ite_eq_right (Ne.symm hne)]
+      dotProduct_smul, bvec_dot, bvec_dot, bvec_dot, bvec_dot, if_pos rfl, if_pos rfl, if_neg hne, if_neg (Ne.symm hne)]
     simp only [smul_eq_mul, mul_one, mul_zero, sub_zero, zero_sub, sub_neg_eq_add, Complex.star_def,
       Complex.conj_ofReal]
     rw [← huN]
@@ -433,12 +422,12 @@ theorem cartanQ : CartanQ := by
     have h1 : i0 ≠ j := fun h => hj1 (by rw [← h]; exact hi0)
     have h2 : iL ≠ j := fun h => hj2 (by rw [← h]; exact hiL)
     rw [hxv, star_sub, star_smul, star_smul, sub_dotProduct, smul_dotProduct, smul_dotProduct, bvec_dot, bvec_dot,
-      ite_eq_right h1, ite_eq_right h2, smul_zero, smul_zero, sub_zero]
+      if_neg h1, if_neg h2, smul_zero, smul_zero, sub_zero]
   have hvz : ∀ j : Fin (2 * r + k + 1), (j : ℕ) ≠ r → (j : ℕ) ≠ r + k → star v0 ⬝ᵥ bvec j = 0 := by
     intro j hj1 hj2
     have h1 : i0 ≠ j := fun h => hj1 (by rw [← h]; exact hi0)
     have h2 : iL ≠ j := fun h => hj2 (by rw [← h]; exact hiL)
-    rw [hv0, star_sub, sub_dotProduct, bvec_dot, bvec_dot, ite_eq_right h1, ite_eq_right h2, sub_zero]
+    rw [hv0, star_sub, sub_dotProduct, bvec_dot, bvec_dot, if_neg h1, if_neg h2, sub_zero]
 
   have hfixK : ∀ a : Fin r, K' *ᵥ bvec (Formalism.QuantumDeterminants.eI k r a) = bvec (Formalism.QuantumDeterminants.eI k r a) ∧
       K' *ᵥ bvec (Formalism.QuantumDeterminants.esI k r a) = bvec (Formalism.QuantumDeterminants.esI k r a) := by
@@ -469,7 +458,7 @@ theorem cartanQ : CartanQ := by
     rw [dg_bvec]
     have : tor k r u⁻¹ j = 1 := by
       unfold tor
-      rw [ite_eq_right hj1, ite_eq_right hj2]
+      rw [if_neg hj1, if_neg hj2]
     rw [this, Complex.ofReal_one, one_smul]
   refine ⟨μ * K' * dg (tor k r u⁻¹), ⟨UH_mul (UH_mul hμU hK'U) hg1U, fun a => ?_⟩, tor k r u, K'ᴴ, ?_, ?_, ?_,
     ?_, ?_, ?_⟩
@@ -491,13 +480,13 @@ theorem cartanQ : CartanQ := by
       · exact one_pos
     · show tor k r u i0 ≤ 1
       unfold tor
-      rw [ite_eq_left hi0]
+      rw [if_pos hi0]
       exact hu1
   · intro a
     have ha := a.isLt
     have he : ((Formalism.QuantumDeterminants.eI k r a : Fin (2 * r + k + 1)) : ℕ) = a := rfl
     unfold tor
-    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+    rw [if_neg (by omega), if_neg (by omega)]
   · rw [Matrix.conjTranspose_conjTranspose, hK'u']
   · simp only [Matrix.mul_assoc]
     rw [← Matrix.mul_assoc (dg (tor k r u⁻¹)), dg_mul k r u hu, Matrix.one_mul, hK'u', Matrix.mul_one]

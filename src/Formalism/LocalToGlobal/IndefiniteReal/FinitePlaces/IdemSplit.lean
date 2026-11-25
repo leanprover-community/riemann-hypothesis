@@ -59,8 +59,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem star_sqrt : star D.host.sqrtMinusD = -D.host.sqrtMinusD := by

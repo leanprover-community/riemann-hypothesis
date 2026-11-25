@@ -134,13 +134,8 @@ variable [OpensMeasurableSpace X] [T2Space X] [LocallyCompactSpace X]
   [IsFiniteMeasureOnCompacts ν] [ν.IsOpenPosMeasure]
 
 theorem dens_unique {g1 g2 : X → ℝ} (h1 : Continuous g1) (h2 : Continuous g2)
-    (h : ∀ S, IsCompact S → ∫ b in S, g1 b ∂ν = ∫ b in S, g2 b ∂ν) : g1 = g2 := by
-  funext b
-  have := DensGen.eq_zero_of_setIntegral (ν := ν) (fun b => g1 b - g2 b) univ b univ_mem
-    (h1.sub h2).continuousOn (fun S hS _ => by
-      rw [integral_sub (h1.continuousOn.integrableOn_compact hS)
-        (h2.continuousOn.integrableOn_compact hS), h S hS, sub_self])
-  linarith
+    (h : ∀ S, IsCompact S → ∫ b in S, g1 b ∂ν = ∫ b in S, g2 b ∂ν) : g1 = g2 :=
+  _root_.PI.VolStabSW.Glue.dens_unique h1 h2 h
 
 theorem dens_nonneg {g : X → ℝ} (hg : Continuous g)
     (h : ∀ S, IsCompact S → 0 ≤ ∫ b in S, g b ∂ν) (b0 : X) : 0 ≤ g b0 := by
@@ -314,27 +309,8 @@ def DisintStep : Prop :=
         ∀ S : Set X, IsCompact S → ∫ v in f ⁻¹' (ι '' S), φ v ∂μ = ∫ b in S, ∫ v, φ v ∂(fib b) ∂ν) →
       ∀ φ : V → ENNReal, Measurable φ → ∫⁻ v in U, φ v ∂μ = ∫⁻ b, ∫⁻ v, φ v ∂(fib b) ∂ν
 
-theorem fibOfDens_of (hDis : DisintStep) : FibOfDens := by
-  intro V X Y _ _ _ _ _ _ _ _ _ _ _ _ _ _ μ ν hμ hν hpos f ι U hf hι hr hU hD
-  refine ⟨fibG hD hU, fibG_supp hD hU hf hι.continuous, ?_, fun φ hc hs hsu => ?_⟩
-  · have hint : ∀ φ : V → ℝ, IsCcOn U φ → (fun b => ∫ v, φ v ∂(fibG hD hU b)) = G hD φ :=
-      fun φ h => funext fun b => (fibG_integral hD hU b φ h).2
-    refine hDis V X Y μ ν hμ hν hpos f ι U hf hι hr hU (fibG hD hU)
-      (fibG_supp hD hU hf hι.continuous) (fun b K hK hKU => ?_) (fun φ h => ?_)
-    · haveI : LocallyCompactSpace U := hU.isOpenEmbedding_subtypeVal.locallyCompactSpace
-      have hme : MeasurableEmbedding (Subtype.val : U → V) :=
-        MeasurableEmbedding.subtype_coe hU.measurableSet
-      rw [fibG, hme.map_apply]
-      have hsub : K ⊆ Set.range (Subtype.val : U → V) := by rw [Subtype.range_coe]; exact hKU
-      exact ((Topology.IsInducing.subtypeVal.isCompact_preimage_iff hsub).2 hK).measure_lt_top
-    · refine ⟨fun b => (fibG_integral hD hU b φ h).1, ?_, fun S hS => ?_⟩
-      · rw [hint φ h]; exact (G_spec hD h).1
-      · rw [hint φ h]; exact (G_spec hD h).2 S hS
-  · have h : IsCcOn U φ := ⟨hc, hs, hsu⟩
-    refine ⟨fun b _ => (fibG_integral hD hU b φ h).1, ?_⟩
-    have : (fun b => ∫ v, φ v ∂(fibG hD hU b)) = G hD φ :=
-      funext fun b => (fibG_integral hD hU b φ h).2
-    rw [this]; exact (G_spec hD h).1.continuousOn
+theorem fibOfDens_of (hDis : DisintStep) : FibOfDens :=
+  _root_.PI.VolStabSW.Glue.fibOfDens_of hDis
 
 end PI.VolStabS.Glue
 end -- clump:auto

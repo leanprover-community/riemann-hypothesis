@@ -64,8 +64,6 @@ namespace GlobalTheory.LevLaws
 
 open GlobalTheory.PrincCore
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem eq_one_of_norm_one {E : Type} [Field E] [NumberField E] [IsCMField E] {M : ℕ} (hM : 3 ≤ M) (u : E)
     (hint : IsIntegral ℤ ((u - 1) / M)) (hc : u * IsCMField.complexConj E u = 1) : u = 1 := by
   have hM0 : M ≠ 0 := by omega

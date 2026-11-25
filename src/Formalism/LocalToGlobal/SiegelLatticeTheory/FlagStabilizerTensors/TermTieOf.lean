@@ -54,8 +54,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.TermTieOf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Witt
 
 variable {D : D7} (X : HidaSetting D)

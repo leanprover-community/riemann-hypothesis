@@ -568,7 +568,7 @@ variable {X Γ U ι : Type} [TopologicalSpace X] [T2Space X] [SecondCountableTop
   [Monoid Γ] [TopologicalSpace Γ] [ContinuousMul Γ] [AddCommGroup U] [Module ℂ U]
 
 omit [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] in
-private theorem prod_cs {κ : Type} [Fintype κ] (e : κ → X → ℂ) (he : ∀ v, Continuous (e v) ∧ HasCompactSupport (e v)) :
+protected theorem prod_cs {κ : Type} [Fintype κ] (e : κ → X → ℂ) (he : ∀ v, Continuous (e v) ∧ HasCompactSupport (e v)) :
     Continuous (fun y : κ → X => ∏ v, e v (y v)) ∧ HasCompactSupport (fun y : κ → X => ∏ v, e v (y v)) := by
   refine ⟨continuous_finsetProd _ fun v _ => (he v).1.comp (continuous_apply v), ?_⟩
   refine HasCompactSupport.intro (isCompact_univ_pi fun v => (he v).2.isCompact) fun y hy => ?_
@@ -594,8 +594,8 @@ private theorem iter_fin (μ : Measure X) [SigmaFinite μ] [IsFiniteMeasureOnCom
       exact continuous_list_prod _ fun i _ => (hj _).comp (continuous_apply i)
     have hF : Integrable (fun y : Fin (m + 1) → X => (∏ i, e (s i) (y i)) *
         Φ u (g * (List.ofFn fun i => j (s i) (y i)).prod)) (Measure.pi fun _ => μ) :=
-      ((prod_cs (fun i => e (s i)) fun i => he _).1.mul ((hΦ u).comp (continuous_const.mul hl))).integrable_of_hasCompactSupport
-        (prod_cs (fun i => e (s i)) fun i => he _).2.mul_right
+      ((GSp4Splitting.prod_cs (fun i => e (s i)) fun i => he _).1.mul ((hΦ u).comp (continuous_const.mul hl))).integrable_of_hasCompactSupport
+        (GSp4Splitting.prod_cs (fun i => e (s i)) fun i => he _).2.mul_right
     rw [← (hmp.symm _).integral_comp']
     refine (integral_prod _ (((hmp.symm _).integrable_comp_emb (MeasurableEquiv.measurableEmbedding _)).2 hF)).trans ?_
     have hin : ∀ t : X, ∫ z : Fin m → X, (fun y : Fin (m + 1) → X => (∏ i, e (s i) (y i)) *
@@ -638,7 +638,7 @@ private theorem iter_list [Fintype ι] (μ : Measure X) [SigmaFinite μ] [IsFini
 
 end Iter
 
-private theorem prod_single {ι M : Type} [DecidableEq ι] [Monoid M] (y : ι → M) :
+protected theorem prod_single {ι M : Type} [DecidableEq ι] [Monoid M] (y : ι → M) :
     ∀ l : List ι, l.Nodup → ∀ w, (l.map fun v => (Pi.mulSingle v (y v) : ι → M)).prod w = if w ∈ l then y w else 1 := by
   intro l
   induction l with
@@ -652,7 +652,7 @@ private theorem prod_single {ι M : Type} [DecidableEq ι] [Monoid M] (y : ι �
       simp [hl.1]
     · simp [h]
 
-private theorem split_two {X Y K : Type} [Group X] [TopologicalSpace X] [IsTopologicalGroup X] [LocallyCompactSpace X]
+protected theorem split_two {X Y K : Type} [Group X] [TopologicalSpace X] [IsTopologicalGroup X] [LocallyCompactSpace X]
     [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] [Group Y] [TopologicalSpace Y] [IsTopologicalGroup Y]
     [LocallyCompactSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] [Group K] [TopologicalSpace K]
     [IsTopologicalGroup K] [MeasurableSpace K] [BorelSpace K] (e : X × Y ≃ₜ* K) (μ : Measure K) [IsHaarMeasure μ]
@@ -673,7 +673,7 @@ private theorem split_two {X Y K : Type} [Group X] [TopologicalSpace X] [IsTopol
   exact integral_prod (fun z => f (e z))
     ((hf.comp e.continuous).integrable_of_hasCompactSupport (hs.comp_homeomorph e.toHomeomorph))
 
-private theorem hecke_cont {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] (K : Subgroup Γ)
+protected theorem hecke_cont {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] (K : Subgroup Γ)
     (hK : IsOpen (K : Set Γ)) (h : Γ → ℂ) (hh : ∀ k ∈ K, ∀ g, h (g * k) = h g) : Continuous h := by
   refine continuous_iff_continuousAt.2 fun g => ?_
   have hn : (fun x => g⁻¹ * x) ⁻¹' (K : Set Γ) ∈ nhds g :=
@@ -706,12 +706,12 @@ theorem UpperTheory.V.Z.GSp4Splitting.opForm :
   intro _ _ hL E _ _ _ n hn π hθ K hKo hKc hKθ _ _ μf _ D lam hch _ _ ν _ hν _ _ μC _ μ _ P hP
   classical
   haveI : IsHaarMeasure (Measure.pi fun _ : InfinitePlace E => μC) := pi.isHaarMeasure _
-  obtain ⟨c, hc0, hc⟩ := split_two (split0 E n) μ (Measure.pi fun _ : InfinitePlace E => μC) μf
+  obtain ⟨c, hc0, hc⟩ := GSp4Splitting.split_two (split0 E n) μ (Measure.pi fun _ : InfinitePlace E => μC) μf
   refine ⟨c, hc0, fun k val T hk h hh ψ u hu x => ?_⟩
   set e : InfinitePlace E → G n → ℂ := fun w => phiOf (lefE n (lam w)) (lefT n (lam w)) (k w) with he
   have hecs : ∀ w, Continuous (e w) ∧ HasCompactSupport (e w) := fun w =>
     PositivityTheory.Rg.BcB.F.F0.phiOf_cs μC _ _ _ _ _ (hk w)
-  have hhc : Continuous h := hecke_cont K hKo h fun k hk g => by simpa using hh.2 1 K.one_mem k hk g
+  have hhc : Continuous h := GSp4Splitting.hecke_cont K hKo h fun k hk g => by simpa using hh.2 1 K.one_mem k hk g
   have hcont : ∀ φ : π.V, Continuous φ.1.1 := fun φ => DiscreteGroups.T1.G.continuous_of_mem π φ.2
   have hphi : ∀ p : (InfinitePlace E → G n) × GL (Fin n) (Af E), phiProd lam k h (split0 E n p) = (∏ w, e w (p.1 w)) * h p.2 := by
     intro p
@@ -727,11 +727,11 @@ theorem UpperTheory.V.Z.GSp4Splitting.opForm :
       ((split0 E n).symm_apply_apply p)).symm
   have hpc : Continuous (phiProd lam k h) := by
     rw [hphi']
-    exact (((prod_cs e hecs).1.comp continuous_fst).mul (hhc.comp continuous_snd)).comp (Homeomorph.continuous _)
+    exact (((GSp4Splitting.prod_cs e hecs).1.comp continuous_fst).mul (hhc.comp continuous_snd)).comp (Homeomorph.continuous _)
   have hps : HasCompactSupport (phiProd lam k h) := by
     rw [hphi']
     refine HasCompactSupport.comp_homeomorph ?_ _
-    refine HasCompactSupport.intro ((prod_cs e hecs).2.isCompact.prod hh.1.isCompact) fun p hp => ?_
+    refine HasCompactSupport.intro ((GSp4Splitting.prod_cs e hecs).2.isCompact.prod hh.1.isCompact) fun p hp => ?_
     rcases not_and_or.1 hp with h1 | h1
     · rw [show (∏ w, e w (p.1 w)) = 0 from
         image_eq_zero_of_notMem_tsupport (f := fun y : InfinitePlace E → G n => ∏ v, e v (y v)) h1, zero_mul]
@@ -746,7 +746,7 @@ theorem UpperTheory.V.Z.GSp4Splitting.opForm :
     intro y
     have e1 : (l.map fun v => (Pi.mulSingle v (y v) : InfinitePlace E → G n)).prod = y := by
       funext w
-      rw [prod_single y l (Finset.nodup_toList _), ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ w))]
+      rw [GSp4Splitting.prod_single y l (Finset.nodup_toList _), if_pos (Finset.mem_toList.2 (Finset.mem_univ w))]
     conv_rhs => rw [← e1]
     refine Eq.trans ?_ (map_list_prod ih _).symm
     rw [List.map_map]
@@ -784,7 +784,7 @@ open UpperTheory.V.Z.GSp4Splitting PositivityTheory.RgBcC PositivityTheory.RgBcC
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-private theorem trace_range {V U : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module ℂ U]
+protected theorem trace_range {V U : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module ℂ U]
     (i : U →ₗ[ℂ] V) (B : V →ₗ[ℂ] U) (F : Submodule ℂ U) [FiniteDimensional ℂ F] (hB : ∀ v, B v ∈ F) :
     FiniteDimensional ℂ (LinearMap.range (i ∘ₗ B)) ∧
       trOn F (B ∘ₗ i) = LinearMap.trace ℂ (LinearMap.range (i ∘ₗ B))
@@ -813,21 +813,21 @@ private theorem trace_range {V U : Type} [AddCommGroup V] [Module ℂ V] [AddCom
   have e3 : b ∘ₗ a = (i ∘ₗ B).restrict fun x _ => LinearMap.mem_range_self (i ∘ₗ B) x := by
     ext x
     rfl
-  rw [trOn, dite_eq_left h0, e1, LinearMap.trace_comp_comm', e2, LinearMap.trace_comp_comm', e3]
+  rw [trOn, dif_pos h0, e1, LinearMap.trace_comp_comm', e2, LinearMap.trace_comp_comm', e3]
 
-private theorem trOn_smul {U : Type} [AddCommGroup U] [Module ℂ U] (F : Submodule ℂ U) (c : ℂ) (f : U →ₗ[ℂ] U)
+protected theorem trOn_smul {U : Type} [AddCommGroup U] [Module ℂ U] (F : Submodule ℂ U) (c : ℂ) (f : U →ₗ[ℂ] U)
     (hf : ∀ x ∈ F, f x ∈ F) : trOn F (c • f) = c * trOn F f := by
   have h : ∀ x ∈ F, (c • f) x ∈ F := fun x hx => F.smul_mem c (hf x hx)
   have e : (c • f).restrict h = c • f.restrict hf := by
     ext x
     rfl
-  rw [trOn, trOn, dite_eq_left h, dite_eq_left hf, e, map_smul, smul_eq_mul]
+  rw [trOn, trOn, dif_pos h, dif_pos hf, e, map_smul, smul_eq_mul]
 
 section Conc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-private theorem exists_theta (π : CuspSub E n) (hθ : ThetaFix π) :
+protected theorem exists_theta (π : CuspSub E n) (hθ : ThetaFix π) :
     ∃ t : π.V →ₗ[ℂ] π.V, ∀ ψ g, (t ψ).1.1 g = ψ.1.1 (thetaA E n g) := by
   choose f hf hfe using hθ.2
   refine ⟨⟨⟨fun ψ => ⟨f ψ.1 ψ.2, hf ψ.1 ψ.2⟩, fun a b => ?_⟩, fun c a => ?_⟩, fun ψ g => hfe ψ.1 ψ.2 g⟩
@@ -840,7 +840,7 @@ private theorem exists_theta (π : CuspSub E n) (hθ : ThetaFix π) :
     rw [hfe, hfe]
     rfl
 
-private theorem integrable_hecke (π : CuspSub E n) {K : Subgroup (GL (Fin n) (Af E))}
+protected theorem integrable_hecke (π : CuspSub E n) {K : Subgroup (GL (Fin n) (Af E))}
     (hKo : IsOpen (K : Set (GL (Fin n) (Af E)))) [MeasurableSpace (GL (Fin n) (Af E))] [BorelSpace (GL (Fin n) (Af E))]
     (μf : Measure (GL (Fin n) (Af E))) [μf.IsHaarMeasure] {h : GL (Fin n) (Af E) → ℂ} (hh : IsHeckeF K h) (ψ : π.V)
     (x : GA E n) : Integrable (fun g => h g * ψ.1.1 (x * finGL E n g)) μf := by
@@ -871,7 +871,7 @@ private theorem exists_hecke (hM : HeckeMem) (π : CuspSub E n) {K : Subgroup (G
     rw [map_add (f := _)]
     change (D.i (f (a + b))).1.1 x = (D.i (f a)).1.1 x + (D.i (f b)).1.1 x
     rw [hf, hf, hf, heckeOp, heckeOp, heckeOp,
-      ← integral_add (integrable_hecke π hKo μf hh a x) (integrable_hecke π hKo μf hh b x)]
+      ← integral_add (GSp4Splitting.integrable_hecke π hKo μf hh a x) (GSp4Splitting.integrable_hecke π hKo μf hh b x)]
     refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
     exact mul_add (h g) (a.1.1 _) (b.1.1 _)
   · refine Subtype.ext (Subtype.ext (funext fun x => ?_))
@@ -927,7 +927,7 @@ theorem UpperTheory.V.Z.GSp4Splitting.exists_global_hecke_theta_lift :
   have he : ∀ y : Y, ((e y : Y.map j) : Sm E n) = (D.i y).1 := fun _ => rfl
   let ρ : (GL (Fin n) (Af E) → ℂ) → Module.End ℂ (Y.map j) := fun h =>
     if hh : IsHeckeF K h then e.conj ((D.R ⟨h, hh⟩).restrict (hYR ⟨h, hh⟩)) else 0
-  have hρ : ∀ h (hh : IsHeckeF K h), ρ h = e.conj ((D.R ⟨h, hh⟩).restrict (hYR ⟨h, hh⟩)) := fun h hh => dite_eq_left hh
+  have hρ : ∀ h (hh : IsHeckeF K h), ρ h = e.conj ((D.R ⟨h, hh⟩).restrict (hYR ⟨h, hh⟩)) := fun h hh => dif_pos hh
   have hmul : ∀ f g : Module.End ℂ Y, e.conj f * e.conj g = e.conj (f * g) := fun f g => (e.conj_comp g f).symm
   refine ⟨Y.map j, ρ, e.conj (D.Θ.restrict hYΘ), c₂ * c₁, ?_, inferInstance, ?_, ?_, ?_, ?_, ?_, ?_,
     mul_ne_zero hc₂ hc₁, ?_⟩
@@ -968,12 +968,12 @@ theorem UpperTheory.V.Z.GSp4Splitting.exists_global_hecke_theta_lift :
     rw [hρ h hh, hρ _ hh', hmul, hmul]
     exact congrArg e.conj (LinearMap.ext fun y => Subtype.ext (LinearMap.congr_fun hc y.1))
   · intro k val T hk h hh
-    obtain ⟨t, ht⟩ := exists_theta π hθ
+    obtain ⟨t, ht⟩ := GSp4Splitting.exists_theta π hθ
     obtain ⟨S, hS⟩ := exists_hecke hM π hKo hKc μf D hh
     set Q : Module.End ℂ D.U := ((univ : Finset (InfinitePlace E)).toList.map P).prod with hQ
     set a : ℂ := c₂ * ∏ w, val w (infOf (lam w)) with ha
     haveI := hFin
-    obtain ⟨hf, htrL⟩ := trace_range D.i (a • (Q ∘ₗ S ∘ₗ t)) (⨅ w, isoSp (D.σ w) (lefE n (lam w)))
+    obtain ⟨hf, htrL⟩ := GSp4Splitting.trace_range D.i (a • (Q ∘ₗ S ∘ₗ t)) (⨅ w, isoSp (D.σ w) (lefE n (lam w)))
       fun v => Submodule.smul_mem _ _ (hPF _)
     refine ⟨D.i ∘ₗ (a • (Q ∘ₗ S ∘ₗ t)), fun ψ x => ?_, hf, ?_⟩
     · have h1 := hop k val T hk h hh (t ψ) (S (t ψ)) (hS _) x
@@ -987,9 +987,9 @@ theorem UpperTheory.V.Z.GSp4Splitting.exists_global_hecke_theta_lift :
         simp only [LinearMap.comp_apply, LinearMap.smul_apply, Module.End.mul_apply, h3, h4]
       have h5 : ∀ y ∈ Y, (D.R ⟨h, hh⟩ * D.Θ) y ∈ Y := fun y hy => hYR _ _ (hYΘ y hy)
       have h6 : LinearMap.trace ℂ (Y.map j) (ρ h * e.conj (D.Θ.restrict hYΘ)) = trOn Y (D.R ⟨h, hh⟩ * D.Θ) := by
-        rw [hρ h hh, hmul, LinearMap.trace_conj', trOn, dite_eq_left h5]
+        rw [hρ h hh, hmul, LinearMap.trace_conj', trOn, dif_pos h5]
         rfl
-      rw [← htrL, h2, trOn_smul _ a (Q * D.R ⟨h, hh⟩ * D.Θ) (fun x _ => hPF _), htr, h6, ha]
+      rw [← htrL, h2, GSp4Splitting.trOn_smul _ a (Q * D.R ⟨h, hh⟩ * D.Θ) (fun x _ => hPF _), htr, h6, ha]
       ring
 end -- clump:auto
 end -- clump:auto

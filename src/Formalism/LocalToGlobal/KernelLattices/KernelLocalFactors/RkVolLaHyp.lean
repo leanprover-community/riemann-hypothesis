@@ -164,7 +164,8 @@ theorem unmat_mem_hom {A : Matrix (Fin b) (Fin a) D.host.E} (hA : ∀ x ∈ s.la
   have : z = unmat s A y := by
     funext i
     exact s.iE.injective (congrFun hzz i)
-  rwa [← this]
+  rw [← this]
+  exact hz
 
 theorem gen_eq (c : 𝓞 D.host.K) (t : D.host.E) (x : HomE X.E a b) :
     phi s δ (s.iE.symm ((((c : 𝓞 D.host.K) : D.host.K) : D.host.E) * t) • x) =
@@ -274,12 +275,14 @@ theorem embH_iff (hok : s.Ok) (δ : ℂ) {a b : ℕ} (x : HomE X.E a b) (z : DVa
     funext τ i j
     have h1 := congrFun (congrFun (congrFun h (s.iT.symm τ)) i) j
     have h2 : δ * s.σ₀ (X.emb (s.iT.symm τ) (x (Pi.single j 1) i)) = z (s.iT.symm τ, i, j) := h1
-    rwa [hok.1, Equiv.apply_symm_apply] at h2
+    rw [hok.1, Equiv.apply_symm_apply] at h2
+    exact h2
   · intro h
     funext τ i j
     have h1 := congrFun (congrFun (congrFun h (s.iT τ)) i) j
     have h2 : δ * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D (s.iT τ) (s.iE (x (Pi.single j 1) i)) = z (s.iT.symm (s.iT τ), i, j) := h1
-    rwa [← hok.1, Equiv.symm_apply_apply] at h2
+    rw [← hok.1, Equiv.symm_apply_apply] at h2
+    exact h2
 
 theorem lamTie : LamTie := by
   intro D X s cc δ B χ cD a b N N' hok
@@ -361,7 +364,8 @@ theorem inMul_std (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a))
         push_cast
         ring
       · simp only [Pi.smul_apply, ite_eq_right hi, smul_zero]
-    rwa [e]
+    rw [e]
+    exact h3
 
 theorem embC_injective (hok : s.Ok) : Function.Injective (X.embC (ambOf s B χ cD).σ₀) := by
   intro τ τ' h
@@ -371,7 +375,8 @@ theorem embC_injective (hok : s.Ok) : Function.Injective (X.embC (ambOf s B χ c
   intro y
   have h1 := congrArg (fun f : X.E →+* ℂ => f (s.iE.symm y)) h
   have h2 : s.σ₀ (X.emb τ (s.iE.symm y)) = s.σ₀ (X.emb τ' (s.iE.symm y)) := h1
-  rwa [hok.1, hok.1, RingEquiv.apply_symm_apply] at h2
+  rw [hok.1, hok.1, RingEquiv.apply_symm_apply] at h2
+  exact h2
 
 theorem thF_eq {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) :
     Formalism.L2.AlgTh.thF (ambOf s B χ cD) N N' = fun z => B.eNat χ a b (s.lat N) (s.lat N') (s.flatV a b z) := rfl
@@ -404,7 +409,7 @@ open NumberField Formalism.BasicNotions
 
 namespace Formalism.L2.Ker.Cd.KS
 
-open Formalism.L2.Ker.KS hiding La_left La_nsmul La_right YYl_nsmul al_flat alpha_flat fixed_pb fnPow_eq form_flat hPow_hOne herm_pb homL_nsmul inter_pb lamM' latPow_eq locNorm_ambOf_of locNorm_thF_of not_dvd_relIdx opU_pb pb relIdx_pb reps_pb selfDual_pb semi_pb thF_ambOf thM' th_pb
+open Formalism.L2.Ker.KS hiding La_left La_nsmul La_right YYl_nsmul al_flat alpha_flat fixed_pb fnPow_eq form_flat homL_nsmul inter_pb lamM' latPow_eq locNorm_ambOf_of locNorm_thF_of opU_pb pb relIdx_pb reps_pb selfDual_pb semi_pb thF_ambOf thM' th_pb
 
 open Formalism.MainNotions Formalism.L2.Col
 open Formalism.L2.Th1.H (Sesq IsHerm IsPosDef altE opU dualLat IsSelfDual IsSemiChar fixedBy sumU IsReps relIdx inter Th IsLat matH alphaQ
@@ -428,8 +433,6 @@ variable (H : Sesq V) (H' : Sesq W) (hH : ∀ x y, H x y = H' (e x) (e y))
 include hH
 
 alias opU_pb := _root_.Formalism.L2.Ker.KS.opU_pb
-
-theorem herm_pb (h : IsHerm H') : IsHerm H := fun x y => by rw [hH, hH]; exact h _ _
 
 theorem semi_pb {Λ : AddSubgroup W} {α : V → ℂ} {α' : W → ℂ} (hα : ∀ x, e x ∈ Λ → α x = α' (e x))
     (h : IsSemiChar H' Λ α') : IsSemiChar H (pb e Λ) α := by
@@ -460,7 +463,8 @@ theorem selfDual_pb {Λ : AddSubgroup W} (h : IsSelfDual H' Λ) : IsSelfDual H (
     simpa [altE, hH] using hm
   · intro hx
     have hx' : e x ∈ dualLat H' Λ := by
-      rwa [h]
+      rw [h]
+      exact hx
     intro y hy
     obtain ⟨m, hm⟩ := hx' (e y) hy
     refine ⟨m, ?_⟩
@@ -518,22 +522,6 @@ theorem th_pb {Λ : AddSubgroup W} {α : V → ℂ} {α' : W → ℂ} (hα : ∀
   exact h.1.comp h1 (fun _ _ => Set.mem_univ _)
 
 end GenTh
-
-theorem not_dvd_relIdx {V : Type*} [AddCommGroup V] (Λ₁ Λ₂ : AddSubgroup V) (p s : ℕ) [Fact p.Prime] (hs : Nat.Coprime s p)
-    (h0 : relIdx Λ₁ Λ₂ ≠ 0) (hk : ∀ x ∈ Λ₂, s • x ∈ Λ₁) : ¬ p ∣ relIdx Λ₁ Λ₂ := by
-  intro hd
-  have h0' : Nat.card (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) ≠ 0 := h0
-  have hd' : p ∣ Nat.card (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) := hd
-  have : Finite (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) := Nat.finite_of_card_ne_zero h0'
-  obtain ⟨q, hq⟩ := exists_prime_addOrderOf_dvd_card' p hd'
-  have hsq : s • q = 0 := by
-    induction q using QuotientAddGroup.induction_on with | H a => ?_
-    rw [← QuotientAddGroup.mk_nsmul, QuotientAddGroup.eq_zero_iff, AddSubgroup.mem_addSubgroupOf, AddSubgroup.coe_nsmul]
-    exact hk _ a.2
-  have h1 : p ∣ s := hq ▸ addOrderOf_dvd_of_nsmul_eq_zero hsq
-  have h2 : p ∣ Nat.gcd s p := Nat.dvd_gcd h1 dvd_rfl
-  rw [hs] at h2
-  exact (Fact.out : p.Prime).one_lt.ne' (Nat.dvd_one.1 h2)
 
 section LaS
 
@@ -602,7 +590,7 @@ theorem form_flat (A : ℝ) (x y : DVar X.Tau a b → ℂ) :
     matH (hSc X.Tau a b A⁻¹) x y = formV A D.what₂.Tau a b (s.flatV a b x) (s.flatV a b y) := by
   rw [formV_apply]
   show (∑ i, ∑ j, x i * hSc X.Tau a b A⁻¹ i j * conj (y j)) = _
-  simp only [hSc, Matrix.diagonal_apply, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  simp only [hSc, Matrix.diagonal_apply, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   rw [Fintype.sum_prod_type, ← Equiv.sum_comp s.iT.symm, Finset.sum_div]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [Fintype.sum_prod_type, Finset.sum_div]
@@ -617,19 +605,6 @@ theorem form_flat (A : ℝ) (x y : DVar X.Tau a b → ℂ) :
 theorem alpha_flat (c A : ℝ) (x : DVar X.Tau a b → ℂ) :
     alphaQ c (matH (hSc X.Tau a b A⁻¹)) x = alphaQ c (formV A D.what₂.Tau a b) (s.flatV a b x) := by
   simp only [alphaQ, Formalism.L2.Th1.H.qOf, form_flat s]
-
-theorem hPow_hOne (L : PeriodPair) :
-    hPow (Fin b × Fin a) (hOne L X.Tau) = hSc X.Tau a b (Formalism.L2.Th1.F.area L)⁻¹ := by
-  ext w w'
-  simp only [hPow, hOne, hSc, Matrix.smul_apply, Matrix.one_apply, Matrix.diagonal_apply, smul_eq_mul]
-  by_cases h1 : w = w'
-  · subst h1
-    simp
-  · rw [ite_eq_right h1]
-    by_cases h2 : w.2 = w'.2
-    · have h3 : w.1 ≠ w'.1 := fun h => h1 (Prod.ext h h2)
-      simp [h2, h3]
-    · simp [h2]
 
 variable {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
@@ -649,6 +624,7 @@ theorem latPow_eq : latPow (Fin b × Fin a) (lamM' s B) = s.laF B.tor (Formalism
   ext z
   show (∀ i : Fin b × Fin a, (fun τ => z (s.iT.symm τ, i)) ∈ B.lamM) ↔ s.flatV a b z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor _ _
   rw [show Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b) = powLat B.lamM a b from B.lat0OK a b]
+  show _ ↔ ∀ i j, (fun τ => z (s.iT.symm τ, i, j)) ∈ B.lamM
   exact Prod.forall
 
 theorem fnPow_eq : fnPow (Fin b × Fin a) (thM' s B) = fun z => B.thZero a b (s.flatV a b z) := by
@@ -817,7 +793,8 @@ theorem isLat_comap {Λ' : AddSubgroup W} (h : IsLat Λ') : IsLat (Λ'.comap (g 
     have hf : Continuous f :=
       Continuous.subtype_mk (((g : V →ₗ[ℂ] W).continuous_of_finiteDimensional).comp continuous_subtype_val) _
     have hinj : Function.Injective f := by
-      exact fun x y hxy => Subtype.ext (g.injective (congrArg Subtype.val hxy))
+      intro x y hxy
+      exact Subtype.ext (g.injective (congrArg Subtype.val hxy))
     exact DiscreteTopology.of_continuous_injective hf hinj
   · rw [eq_top_iff]
     intro v _
@@ -828,14 +805,17 @@ theorem isLat_comap {Λ' : AddSubgroup W} (h : IsLat Λ') : IsLat (Λ'.comap (g 
       rintro _ ⟨y, hy, rfl⟩
       apply Submodule.subset_span
       show g (g.symm y) ∈ Λ'
-      rwa [g.apply_symm_apply]
+      rw [g.apply_symm_apply]
+      exact hy
     refine h2 ⟨g v, by rw [h.2]; trivial, ?_⟩
+    show g.symm (g v) = v
     exact g.symm_apply_apply v
 
 theorem th_comap (hI : IsIsom H H' (g : V →ₗ[ℂ] W)) {Λ' : AddSubgroup W} {α' : W → ℂ} {G : W → ℂ} (hG : G ∈ Th H' α' Λ') :
     (fun v => G (g v)) ∈ Th H (fun v => α' (g v)) (Λ'.comap (g : V →ₗ[ℂ] W).toAddMonoidHom) := by
   refine (ThIsom_of heisenbergIsometry V W H H' g hI _ α' G).1 ?_
-  rwa [img_comap]
+  rw [img_comap]
+  exact hG
 
 theorem relIdx_comap (Λ₁ Λ₂ : AddSubgroup W) :
     relIdx (Λ₁.comap (g : V →ₗ[ℂ] W).toAddMonoidHom) (Λ₂.comap (g : V →ₗ[ℂ] W).toAddMonoidHom) = relIdx Λ₁ Λ₂ := by
@@ -871,7 +851,8 @@ theorem form_flat (A : ℝ) (a b : ℕ) (x y : DVar X.Tau a b → ℂ) :
       unfold hSc
       rw [Matrix.diagonal_apply_ne _ (Ne.symm hj)]
       simp
-    · exact fun hi => absurd (Finset.mem_univ i) hi
+    · intro hi
+      exact absurd (Finset.mem_univ i) hi
   simp only [h1]
   rw [← Finset.sum_div]
   congr 1
@@ -898,7 +879,8 @@ theorem matH_hSc (sc : ℝ) (a b : ℕ) (x y : DVar X.Tau a b → ℂ) :
     unfold hSc
     rw [Matrix.diagonal_apply_ne _ (Ne.symm hj)]
     simp
-  · exact fun hi => absurd (Finset.mem_univ i) hi
+  · intro hi
+    exact absurd (Finset.mem_univ i) hi
 
 theorem herm_hSc (sc : ℝ) (a b : ℕ) : IsHerm (matH (hSc X.Tau a b sc)) := by
   intro x y
@@ -1090,7 +1072,8 @@ theorem lamC_eq (hok : s.Ok) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (N : Submod
     exact ⟨x, hx, (ptE_embH s hok δ x).symm⟩
   · rintro ⟨x, hx, h⟩
     refine ⟨x, hx, (s.ptE a b).injective ?_⟩
-    rwa [ptE_embH s hok]
+    rw [ptE_embH s hok]
+    exact h
 
 theorem HV_ptE (A : ℝ) (x y : VCx X.Tau a b) : HV A⁻¹ x y = formV A D.what₂.Tau a b (s.ptE a b x) (s.ptE a b y) := by
   simp only [HV, formV, LinearMap.mk₂'ₛₗ_apply]
@@ -1270,7 +1253,8 @@ theorem nonempty_tau : Nonempty X.Tau := by
     have := D.R.two_le_m
     omega
   have h3 : 0 < @Fintype.card D.what₂.Tau D.what₂.instTau := by
-    rwa [D.what₂.card_Tau]
+    rw [D.what₂.card_Tau]
+    exact h2
   haveI : Nonempty D.what₂.Tau := (@Fintype.card_pos_iff _ D.what₂.instTau).mp h3
   exact s.iT.nonempty
 

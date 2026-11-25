@@ -268,7 +268,6 @@ def x0 (Z : ReadL R F X0 Y) (hP : Pins R F cG) (hH : Holds R F) : DivX D where
   divisorWeight_def := fun p _ la => Formalism.BasicNotions.Examples₂.PlOver.wtLog_eq D p la
   jC := fun p _ _ => (Formalism.BasicNotions.Examples₂.teich_Om_equiv p).some.toRingHom.comp (algebraMap (DV.KW p) (Formalism.BasicNotions.Examples₂.TeichOm p))
   Mp := fun _ κ => κ.elim
-  md := fun _ κ => κ.elim
   vdd := fun _ _ => 0
   vdd_unram := fun _ _ _ => rfl
   phiFr_unram := fun _ κ => κ.elim

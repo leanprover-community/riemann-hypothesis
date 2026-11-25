@@ -42,7 +42,6 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 open Matrix Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR.Datum
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FrameEquiv
 

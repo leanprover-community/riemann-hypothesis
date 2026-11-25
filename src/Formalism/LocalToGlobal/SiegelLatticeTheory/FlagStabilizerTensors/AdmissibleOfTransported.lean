@@ -11,7 +11,6 @@ open MeasureTheory Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.
   Formalism.L2.SG.RowDict Formalism.L2.SG.ColDict Formalism.L2.SG.KerJoinS Formalism.L2.SG.KerSideCut Formalism.IndefR.Cx Formalism.L2.Indef
 
 namespace Formalism.L2.SG.JoinSI
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Twist
 

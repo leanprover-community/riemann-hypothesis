@@ -1183,7 +1183,7 @@ theorem tendsto_fibSq (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (he
     refine GlobalTheory.CompactDualQuot.tendsto_div_of_squeeze
       (F := fun r : ℝ => (volume : Measure (ℝ × Sp P' Q')) {x | tanSq x < r ^ 2})
       (V := fun r : ℝ => (volume : Measure (ℝ × Sp P' Q')) {x | tanSq x < r ^ 2})
-      ENNReal.one_ne_top (fun t r ht hr => tanBall_mul t r ht) hVV ?_
+      ENNReal.one_ne_top (fun t r ht _ => tanBall_mul t r ht) hVV ?_
     intro t ht
     have hti : t⁻¹ < 1 := inv_lt_one_of_one_lt₀ ht
     have htp : 0 < t⁻¹ := inv_pos.2 (by linarith)

@@ -18,8 +18,6 @@ open Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Valuat
 
 namespace Formalism.L2.SG.SpectralTiesReal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section KV
 
 variable {E : Type} [Field E] {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]

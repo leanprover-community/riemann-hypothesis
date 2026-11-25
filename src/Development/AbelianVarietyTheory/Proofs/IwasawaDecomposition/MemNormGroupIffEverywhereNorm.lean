@@ -250,8 +250,6 @@ theorem globalNormIndexTwo : Formalism.D.Classical.GlobalNormIndexTwo := by
     rw [← div_mul_cancel a (toUnits F (AdeleRing (𝓞 F) F) t), map_mul, ← hx, h3 x, one_mul]
     exact h1 t
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta in
 theorem existsUnique_isEta : ∀ D : D7, ∃! η : (AF D.host.F)ˣ →* Circle, IsEta D η := fun D =>

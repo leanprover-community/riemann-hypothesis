@@ -1654,6 +1654,7 @@ alias PhaseOnMinus.full := _root_.GroundTheory.Heights₂.Heights.FiniteCovolume
 
 theorem KTransitive.full : KTransitive.Statement ι :=
   KTransitive.proof ι (IsotropicSplit.full ι) (EigenReflectionMaps.full ι) (PhaseOnMinus.full ι)
+    (EigenspacesOrthogonal.full ι)
 
 end Matrices
 

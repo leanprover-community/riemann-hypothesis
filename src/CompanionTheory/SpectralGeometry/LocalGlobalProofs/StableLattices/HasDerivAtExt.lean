@@ -33,7 +33,7 @@ theorem fderiv_comm {E G : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [Nor
   rw [(hD.hasFDerivAt.clm_apply L.hasFDerivAt).fderiv, (hD.hasFDerivAt.clm_apply M.hasFDerivAt).fderiv]
   simp [hs (M x) (L x)]
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

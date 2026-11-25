@@ -50,7 +50,7 @@ namespace PositivityTheory.RgBcC
 
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def MatrixFrechetDerivativeAtZero : Prop := ∀ (n : ℕ) (lam : Fin n → ℤ), DifferentiableAt ℝ (fr0 lam) (1 : Mat n) ∧ ∀ X : Mat n, X.IsHermitian →
   fderiv ℝ (fr0 lam) 1 X = (fderiv ℝ (fun x : Mat n => gamM (Mt x⁻¹)ᵀ) 1 X) ⊗ₖ (1 : Matrix (Jd n lam × Jd n lam) (Jd n lam × Jd n lam) ℂ) +

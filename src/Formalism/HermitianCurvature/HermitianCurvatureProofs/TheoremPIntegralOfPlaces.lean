@@ -87,7 +87,7 @@ open Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.JCx1
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem contDiff_entry {k r : ℕ} (i j : Fin (2 * r + k + 1)) :
     ContDiff ℝ (⊤ : ℕ∞) (fun g : B.Mat k r => g i j) := by
@@ -131,7 +131,7 @@ end Formalism.FourierDecayAlt.P.JCx1
 
 namespace Formalism.FourierDecayAlt.P
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem cutoff_smooth : Formalism.FourierDecayAlt.JC.CutFSmooth := by
   intro k r Wp Wq _ _ _ _ Bs χ f ε hχ hf hε g₀ hg₀

@@ -46,8 +46,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 
 namespace GlobalTheory.RowClaim
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem colFn_cont_left : Big fun ch => ∀ a, Continuous (colFn ch a) ∧
     ∀ γ ∈ GQ (ch.G.V (.top 0)), ∀ g, colFn ch a (γ * g) = colFn ch a g := by
   refine ⟨0, fun ε CF _ => ⟨0, ?_⟩⟩

@@ -15,8 +15,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.SG.PoincareInHH.Cut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
 section R6a

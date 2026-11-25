@@ -1099,6 +1099,8 @@ def d (k : ℕ) : Acris l := AdicCompletion.of _ _ (ACris.dpowZero (xi0_mem (l :
 theorem cris_d (A : PAlg l) (n k : ℕ) : A.cris n (d k) = A.dxi n k := by
   rw [d, cris_of]
   refine congrArg (A.mkAcr n) (Subtype.ext ?_)
+  change awayW A.s (ACris.dpow k (xi0 l)) = dpw k A.xi
+  rw [dpow_eq_dpw]
   exact awayW_dpw A.s k (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero) (xi0 l)
 
 theorem sW_base (x : Ainf l) : (base (l := l)).sW x = x := wmap_id x
@@ -1248,7 +1250,7 @@ theorem tensMap_tmul (n : ℕ) (a : Acris l) (w : A.W) :
 
 theorem red_cris {m n : ℕ} (h : n ≤ m) (a : Acris l) : A.red h (A.cris m a) = A.cris n a :=
   RingHom.congr_fun (ACris.ringHom_ext (F := (A.red h).comp (A.cris m)) (G := A.cris n) fun y => by
-    rw [RingHom.comp_apply, cris_of, cris_of, red_mk]) a
+    rw [RingHom.comp_apply, cris_of', cris_of', red_mk]) a
 
 theorem red_toAcr {m n : ℕ} (h : n ≤ m) (w : A.W) : A.red h (A.toAcr m w) = A.toAcr n w := rfl
 
@@ -1261,6 +1263,8 @@ theorem dxi_eq_cris (n k : ℕ) : A.dxi n k =
     A.cris n (AdicCompletion.of _ _ ⟨ACris.dpow k (xi0 l), ACris.dpow_mem xi0_mem k⟩) := by
   rw [cris_of]
   refine congrArg (A.mkAcr n) (Subtype.ext ?_)
+  change dpw k A.xi = awayW A.s (ACris.dpow k (xi0 l))
+  rw [dpow_eq_dpw]
   exact (awayW_dpw A.s k (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero) (xi0 l)).symm
 
 theorem tensMap_surjective (n : ℕ) : Function.Surjective (tensMap A n) := by

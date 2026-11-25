@@ -46,7 +46,6 @@ open NumberField IsDedekindDomain Matrix
 open scoped TensorProduct Classical
 
 namespace GlobalTheory.AdForm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 abbrev EF (D : D7) : Type := D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F

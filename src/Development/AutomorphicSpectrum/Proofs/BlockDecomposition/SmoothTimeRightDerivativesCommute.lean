@@ -55,7 +55,7 @@ namespace GlobalTheory.CompanionTheory.WaveSpd
 open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveSpd
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace SmCalc
 

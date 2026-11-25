@@ -347,26 +347,6 @@ variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [Number
 local notation "jK" => algebraMap (𝓞 K) K
 local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
 
-private theorem coe_iota_eq_algebraMap_coe (a : 𝓞 F) : jK (ι a) = algebraMap F K (a : F) := by
-  rw [← IsScalarTower.algebraMap_apply (𝓞 F) (𝓞 K) K, IsScalarTower.algebraMap_apply (𝓞 F) F K]
-
-private theorem jK_iota_ne_zero {a : 𝓞 F} (ha : a ≠ 0) : jK (ι a) ≠ 0 := by
-  rw [coe_iota_eq_algebraMap_coe]
-  refine (map_ne_zero (algebraMap F K)).mpr ?_
-  exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).mpr ha
-
-private theorem jK_ne_zero_of_mem_closure_prime_compl {𝔭 : Ideal (𝓞 F)} {s : 𝓞 K}
-    (hs : s ∈ Submonoid.closure {s : 𝓞 K | ∃ t : 𝓞 F, t ∉ 𝔭 ∧ algebraMap (𝓞 F) (𝓞 K) t = s}) :
-    jK s ≠ 0 := by
-  induction hs using Submonoid.closure_induction with
-  | mem y hy =>
-    obtain ⟨t, ht, rfl⟩ := hy
-    refine jK_iota_ne_zero ?_
-    rintro rfl
-    exact ht 𝔭.zero_mem
-  | one => simp
-  | mul y z _ _ hy hz => rw [map_mul]; exact mul_ne_zero hy hz
-
 section
 
 variable {h : V →ₗ⋆[K] V →ₗ[K] K} {X : Submodule K V} {L : Submodule (𝓞 K) V} {𝔭 : Ideal (𝓞 F)}

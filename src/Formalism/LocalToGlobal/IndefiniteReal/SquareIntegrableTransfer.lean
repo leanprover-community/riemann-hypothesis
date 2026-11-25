@@ -11,8 +11,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace Formalism.IndefR.AutomorphicEvaluation
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {S : D.what₂.Tau → SPar}
 
 section Pieces

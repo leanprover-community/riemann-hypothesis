@@ -61,8 +61,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SeriesTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
 namespace Setup

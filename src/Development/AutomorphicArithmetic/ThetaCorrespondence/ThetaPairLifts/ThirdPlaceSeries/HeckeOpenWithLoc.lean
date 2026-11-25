@@ -57,7 +57,6 @@ section Gen
 variable {D : D7} {M : MtFam D}
 end Gen
 section Chars
-open Formalism.L2.Host
 end Chars
 
 

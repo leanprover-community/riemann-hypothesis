@@ -406,8 +406,6 @@ end Spec
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem fe_of {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {e f : Fin r → S.V}
     (hef : ∀ a b, S.hT (e a) (f b) = if a = b then 1 else 0) :
     ∀ a b, S.hT (f a) (e b) = if a = b then 1 else 0 := by

@@ -51,7 +51,7 @@ open Matrix PI.UpqRep CompanionTheory.D.Upq.Sm
 
 namespace GlobalTheory.CompanionTheory.DSSmLin
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem mul_mem_UJset {n : ℕ} (ε : Fin n → Bool) (a b : Matrix (Fin n) (Fin n) ℂ) (ha : a ∈ UJset ε)
     (hb : b ∈ UJset ε) : a * b ∈ UJset ε := by

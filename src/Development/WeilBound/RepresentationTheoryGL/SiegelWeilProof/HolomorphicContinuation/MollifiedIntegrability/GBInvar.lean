@@ -63,7 +63,7 @@ open Matrix Finset
 
 namespace PositivityTheory.Rg.Sw.WR.K.GB
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
