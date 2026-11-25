@@ -128,7 +128,8 @@ After every run, `frozen` is put on each open pull request a maintainer's `batch
 A frozen pull request whose head has moved on from the commit that was taken, by its own batch or
 by the queue, is labelled `changed after frozen` until its head is that commit again or it is no
 longer frozen; `pushed` adds the label as soon as the push comes in, and every sync looks again.
-A new head that its batch's branch has already counts as the commit taken (see `has_head`).
+A new head that its batch's branch has already, with the commit taken in it, counts as the
+commit taken (see `takes`).
 Which pull requests a batch contains is read from its branch, never from its description. The names of the labels are in
 `batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
 should do for all this to work.
