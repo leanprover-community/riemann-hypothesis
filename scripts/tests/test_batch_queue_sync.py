@@ -365,6 +365,55 @@ class WithAssembly(unittest.TestCase):
         self.addCleanup(patch.stop)
 
 
+class Deferred(WithAssembly):
+    """A maintainer's hold overrides an earlier batch approval."""
+
+    def test_deferred_commit_is_skipped_even_with_priority(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        gh.label(11, add="deferred", login="maintainer")
+        gh.label(11, add=PRIORITY, login="maintainer")
+        log = sync(gh)
+        self.assertEqual(merges(gh), [sha("head12")])
+        self.assertNotIn(sha("head11"), gh.inside[gh.refs[FIRST]])
+        self.assertEqual(gh.pulls[11]["labels"], {QUEUED, PRIORITY, "deferred"})
+        self.assertEqual(gh.said(11), [])
+        self.assertIn("left #11 queued without merging it: labelled `deferred`", log)
+
+    def test_only_deferred_work_does_not_start_a_batch(self):
+        gh = Fake()
+        queue(gh, 11)
+        gh.label(11, add="deferred", login="maintainer")
+        sync(gh)
+        self.assertEqual(gh.refs, {})
+        self.assertEqual(merges(gh), [])
+
+    def test_removing_deferred_uses_the_approved_commit(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        gh.label(11, add="deferred", login="maintainer")
+        sync(gh)
+        gh.push(11, "head11-later")
+        gh.label(11, remove="deferred", login="maintainer")
+        gh.writes = []
+        sync(gh)
+        self.assertEqual(merges(gh), [sha("head11")])
+        self.assertNotIn(sha("head11-later"), gh.inside[gh.refs[FIRST]])
+
+    def test_existing_batch_is_not_rewritten_when_a_member_is_deferred(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        sync(gh)
+        tip = gh.refs[FIRST]
+        gh.label(11, add="deferred", login="maintainer")
+        gh.writes = []
+        sync(gh)
+        self.assertEqual(merges(gh), [])
+        self.assertEqual(gh.refs[FIRST], tip)
+        self.assertIn("#11, labelled `deferred` after it was merged in", batch_pull(gh)["body"])
+        self.assertIn("check that its changes are removed", batch_pull(gh)["body"])
+
+
 class QueuedCommits(WithAssembly):
     """A batch takes the commit a maintainer queued, and nothing else."""
 

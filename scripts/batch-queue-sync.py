@@ -29,6 +29,10 @@ a pull request that GitHub cannot merge into it is told so in a comment. Once th
 request is merged or closed, its branch is removed. What it contained and is still open stays
 queued, and the next run starts a new batch with it.
 
+The `deferred` label pauses new merges of a queued pull request. It stays queued, with its
+approval unchanged, until that label is removed. As with taking a pull request out of the
+queue, this does not undo commits already in a batch; those must be removed before it is merged.
+
 Queued commits are merged in pull request number order, except that those of pull requests
 labelled `priority` go first: when one of them and another pull request cannot both be merged,
 the other one is left out. The order counts when a batch is started or rebuilt. After that, a
@@ -123,6 +127,7 @@ _labels = _rest.load("batch-labels.py")
 _deps = _rest.load("pr-dependencies.py")
 
 QUEUED, BUILDING, LATEST = _labels.QUEUED, _labels.BUILDING, _labels.LATEST
+DEFERRED = _labels.DEFERRED
 # A maintainer's label: pull requests that carry it go into a batch before the others.
 PRIORITY = _labels.PRIORITY
 PREFIX = _labels.PREFIX
@@ -1196,6 +1201,9 @@ def sync(gh, now=None):
                     key=lambda pr: (PRIORITY not in pr["labels"], pr["number"]))
     for pr in queued:
         number, key = pr["number"], str(pr["number"])
+        if DEFERRED in pr["labels"]:
+            log.append(f"left #{number} queued without merging it: labelled `{DEFERRED}`")
+            continue
         sha, comments = look(gh, pr, state["seen"])
         if sha is None:
             unapproved.append(number)
@@ -1262,6 +1270,9 @@ def sync(gh, now=None):
             continue
         if pr is None:
             also.append((number, "closed since it was merged in"))
+        elif DEFERRED in pr["labels"]:
+            also.append((number, "labelled `deferred` after it was merged in; check that its changes "
+                                  "are removed before merging this batch"))
         elif QUEUED in pr["labels"]:
             also.append((number, "at an earlier commit than the one now queued"))
         elif BUILDING in pr["labels"] and held.get(key):
