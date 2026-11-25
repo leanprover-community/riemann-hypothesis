@@ -9,11 +9,9 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.LevelSubgroupFiniteAdelicStandard
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stabfin
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 
 @[expose] public section
 

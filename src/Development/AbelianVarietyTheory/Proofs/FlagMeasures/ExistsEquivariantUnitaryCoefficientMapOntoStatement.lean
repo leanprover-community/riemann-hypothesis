@@ -3,18 +3,14 @@ module
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.UnitaryGroup
 public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LevelMatchIff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ColumnWittFrameBasisBlockGramStatement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
-public import Formalism.LocalToGlobal.HermitianForms.TiedStep
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MapFnOfEqValC
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TensorTypesRealPlacesEquivSpanWeylModules
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
@@ -30,8 +26,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
@@ -57,8 +51,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style

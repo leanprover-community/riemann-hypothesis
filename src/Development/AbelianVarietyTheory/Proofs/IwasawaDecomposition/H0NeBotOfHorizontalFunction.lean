@@ -1,10 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PerValNeZero
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RiemannExtensionOfLogGrowth
 
 @[expose] public section

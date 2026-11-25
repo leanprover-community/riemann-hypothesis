@@ -13,17 +13,10 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Normal
 public import Formalism.LocalToGlobal.IndefiniteReal.FWTie
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCcIsEquivAtSerOfOneMapRowOfFive
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VectorValuedLiftFieldChange
-public import Development.AbelianVarietyTheory.Definitions.Divisors.MarkAd
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OscillatorModelExtensionFirst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalPointsGenerate
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeightExponentsEmbeddingsDegree
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsRootNotMem
 

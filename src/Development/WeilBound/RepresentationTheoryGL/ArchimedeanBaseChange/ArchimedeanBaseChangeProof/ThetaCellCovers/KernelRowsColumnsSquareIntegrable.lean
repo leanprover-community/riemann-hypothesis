@@ -2,9 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaCellCovers.VecClose
 public import Mathlib.Topology.UrysohnsLemma
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaCellCovers.KernelL2RowsColumns
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Function.LpSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Prod
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence

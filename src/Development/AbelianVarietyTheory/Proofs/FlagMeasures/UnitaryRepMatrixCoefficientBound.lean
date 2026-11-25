@@ -9,11 +9,9 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentRadi
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.EigenfunctionFiniteCoefficients
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Topology.Algebra.Group.Units
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.WeilFormulaWithCutoffSubgroup, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryRepMatrixCoefficientBound

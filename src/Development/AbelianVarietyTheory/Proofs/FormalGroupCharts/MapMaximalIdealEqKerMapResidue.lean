@@ -14,8 +14,6 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Mathlib.RingTheory.Noetherian.Defs
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FlatQuotientWeaklyRegular
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsWeaklyRegularIffIsQuasiRegularSeqOfIsLocalRing
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.MvPowerSeries.Equiv
 import Mathlib.Tactic.Linter.HaveILetI
 

@@ -17,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZer
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorsAtOneRealPlaceOverVacuumStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FrameExistsSignCompat
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieActionFockOperatorsScalarsTraceStatement
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MapFinNeg
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,11 +55,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtWeilRepRealOneParamAdelicPoint
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeilRepresentationOneParameterGenerator
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic

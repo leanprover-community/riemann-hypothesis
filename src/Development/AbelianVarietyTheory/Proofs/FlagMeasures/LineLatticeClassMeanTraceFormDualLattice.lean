@@ -7,21 +7,14 @@ public import Mathlib.RingTheory.Complex
 public import Mathlib.RingTheory.Norm.Transitivity
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableSetDetNormPos
-public import Mathlib.Algebra.Module.Lattice.Full
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLatticeTraceDualAndTraceDualTraceDual
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatticeCoveringOfTraceDualLowerBound
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

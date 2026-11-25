@@ -3,11 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmAtSmulRight
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FockVacuumAnnihilationEquationRealCoordinatesStatement
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotLinearIndependent
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RationalPointsFinitePartSelfDualLatticeIffStatement
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealSymplecticFormAlternatingInvariantDefiniteStatement
@@ -56,8 +51,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 

@@ -5,9 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Sel
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SmallPair
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicPointComponentsAtPlacesLatticesVacua
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceMemLatticeCompletionIffParts
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

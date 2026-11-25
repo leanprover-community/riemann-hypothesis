@@ -4,10 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EntryAg
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsGLExistsUnique
 public import Formalism.LocalToGlobal.Columns.ChainTwAn
 public import Formalism.LocalToGlobal.Columns.ChainTw
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PhiTopAgree
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegralPeriodicCompactSupportEqFiniteSum
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ResiduesOfCompletionAtPrimeWithUniformizer
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnfoldingIntegralEqFiniteSumOverNumberField
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ParahoricTestFunctionsAgreeRationalPoints
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TwistSupportPeriodicLevels
@@ -48,13 +45,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

@@ -7,7 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 

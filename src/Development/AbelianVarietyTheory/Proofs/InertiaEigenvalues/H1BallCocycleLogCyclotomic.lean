@@ -9,11 +9,9 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Cycloto
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCyclotomicTowerLevelGeneratorProperties
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTateOperatorLevelComplement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormUnitPowSubOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDecompositionCompletedCyclotomicIntegers
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.RootsOfUnity.Lemmas
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic

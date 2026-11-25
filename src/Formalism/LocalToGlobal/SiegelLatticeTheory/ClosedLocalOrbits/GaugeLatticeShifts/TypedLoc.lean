@@ -9,9 +9,7 @@ public import Mathlib.NumberTheory.RamificationInertia.Inertia
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ModuliIntegralCharts
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.NumberTheory.RamificationInertia.Basic
 import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section

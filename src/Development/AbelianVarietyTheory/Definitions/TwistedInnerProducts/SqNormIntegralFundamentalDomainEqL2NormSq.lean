@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff
 import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
@@ -16,7 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Conti
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsInfFamAndStdChar
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaFunctionFundamentalDomainInnerProductBasic
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 
 @[expose] public section
 

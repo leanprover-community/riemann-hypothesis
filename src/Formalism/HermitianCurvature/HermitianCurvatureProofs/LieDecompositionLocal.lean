@@ -2,10 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

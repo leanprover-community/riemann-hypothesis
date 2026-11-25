@@ -1,14 +1,11 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpChartActionPoint
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ScaleGenIsGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdLB
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.HasSubstActPS
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetPointZeroEqOne
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSEqJetMap
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSTrunc
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section

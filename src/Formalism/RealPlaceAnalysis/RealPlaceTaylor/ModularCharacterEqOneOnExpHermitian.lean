@@ -7,9 +7,7 @@ public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IndefiniteUnitaryPreservesForm
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

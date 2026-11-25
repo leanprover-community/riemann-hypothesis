@@ -6,7 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigCas
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CrossOpSlotBound
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KhwWeightEqOfIrr
 
 @[expose] public section
 

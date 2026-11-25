@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ChiNCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ColPhaseCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentBlockMeasure
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCoreGamProdSum
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCorePsiNatEquiv
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLocPfA
@@ -14,7 +13,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowDictPf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.AdmNPf
 
 @[expose] public section
 

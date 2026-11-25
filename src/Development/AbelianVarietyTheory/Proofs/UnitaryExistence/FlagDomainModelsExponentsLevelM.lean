@@ -9,20 +9,13 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfMemSpanFraction
 public import Formalism.LocalToGlobal.ProjectiveLattices.SpanRatSmulMem
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ZMatEInjective
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsEqNsmulOfDvdPairing
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HermitianFormsSameSignatureSameSpace
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Algebra.Order.Star.Real
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
-import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt
-import Formalism.LocalToGlobal.ProjectiveLattices.JFDFree
 import Mathlib.RingTheory.PiTensorProduct
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit

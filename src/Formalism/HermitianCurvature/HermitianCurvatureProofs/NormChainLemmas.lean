@@ -7,8 +7,6 @@ public import Formalism.HermitianCurvature.StatementPN
 public import Formalism.FlagUnipotentLattices.AlgebraicIdentityHigherDegree
 public import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
 public import Formalism.HermitianCurvature.HeisenbergConjugationMeasurePreserving
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SuperdiagonalAdditionInvariance, Formalism.FlagUnipotentLattices.ValuationProductBound, Formalism.HermitianCurvature.HermitianCurvatureProofs.NormChainLemmas

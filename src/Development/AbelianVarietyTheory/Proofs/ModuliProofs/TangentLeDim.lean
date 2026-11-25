@@ -35,12 +35,8 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -48,7 +44,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
@@ -62,9 +57,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RankPf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.CmFieldHostElementAddConjEqOne
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
 import Mathlib.Algebra.Order.Star.Real

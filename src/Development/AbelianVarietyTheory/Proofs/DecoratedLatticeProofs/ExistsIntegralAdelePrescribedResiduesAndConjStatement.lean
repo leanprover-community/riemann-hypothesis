@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Supported
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InstExists
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

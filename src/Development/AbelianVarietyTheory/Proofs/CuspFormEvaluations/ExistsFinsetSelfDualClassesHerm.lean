@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Exists
 public import ReciprocityTheory.SemistableReduction.LatSemiSt
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmApproximationTransference
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsThickPointHyperbolic
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.TraceHermNondegenerate
 public import Mathlib.Analysis.Matrix.Order
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
@@ -18,7 +17,6 @@ public import ReciprocityTheory.SemistableReduction.SemiAll
 import ReciprocityTheory.SemistableReduction.SemiDegAA
 import ReciprocityTheory.SemistableReduction.SemiDegH
 import ReciprocityTheory.SemistableReduction.SemiDegZ
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantTheorems.ScaledBoundInequality
 
 @[expose] public section
 

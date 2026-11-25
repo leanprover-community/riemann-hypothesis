@@ -5,10 +5,7 @@ public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsConjLinearIsometryCompactUnitaryTypeWeylMo
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalizedFockFormPureTensorProperties
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MapFnOfEqValC
 

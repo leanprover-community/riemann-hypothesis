@@ -1,24 +1,17 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardSubspacesOfFinrankMulCardBases
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.FieldTheory.Finiteness
-public import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyBlockAndInvariantUnderStabilizerNilradic
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EndomorphismMassEqOfLinearEquivInvariant
 public import Mathlib.Algebra.BigOperators.Field
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Analysis.CStarAlgebra.Classes
 

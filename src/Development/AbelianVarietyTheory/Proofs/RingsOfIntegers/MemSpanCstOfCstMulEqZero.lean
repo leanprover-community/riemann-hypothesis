@@ -9,10 +9,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValua
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.CstDvdOfCstMulEqZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtOfSucc
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtSecIsMul
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.LevelFrameOfLaws
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPowSt
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -13,16 +13,12 @@ public import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField

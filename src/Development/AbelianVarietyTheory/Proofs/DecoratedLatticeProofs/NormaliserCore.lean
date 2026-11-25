@@ -2,11 +2,7 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSingle
-public import Formalism.LocalToGlobal.Divisibility.DefGroup
-public import Formalism.SatakeDualWeyl.Statement
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsEqTransposeMulMapOfIdempotent
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NormaliserUnipSymCharPattern
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -14,7 +10,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -53,9 +48,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit

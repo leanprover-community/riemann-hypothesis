@@ -3,26 +3,12 @@ module
 public import Development.AbelianVarietyTheory.PublishedTheorems.Landherr₂.DimEqZero
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.AbelianVarietyTorsionCardEqPowProof
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.PlOrdSomeOfAssociated
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Mathlib.Algebra.Polynomial.Basis
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.Basic.Complex.BigOperators
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Mathlib.LinearAlgebra.Matrix.PosDef
-public import Mathlib.Topology.Algebra.Order.Archimedean
-public import Mathlib.Topology.DenseEmbedding
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.OfDerivationFnOn
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AbelianVarietyTorsionFiniteEndomorphismDivisible
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPositiveDefiniteQuadraticFormEndomorphisms
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import Mathlib.Tactic.Monotonicity.Lemmas
-public import Mathlib.Analysis.Complex.Norm
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatQuotientIsoOfSameKernel
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SplitTorusHomProperTrivialField
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AmpleCubPullAndPullPow
@@ -31,19 +17,11 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsI
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsTorusAbelianQuotientPDivisibleSmoothGroup
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.GeometricallyConnectedOfSurjective
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.AlgebraicGeometry.QuasiAffine
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.AbelianVarietyTorsionCardEqPowProofStatement, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.CardTorsionAbelianVarietyLeConstMulPow, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SimilitudeDefiniteFormIsAlgebraicOnVector, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPolyNormSqRoots, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FrobGPowAndClosedSubgroup, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FrobGSplitTorusPow, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.PullPowOfFix, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FrobeniusOnTorsion

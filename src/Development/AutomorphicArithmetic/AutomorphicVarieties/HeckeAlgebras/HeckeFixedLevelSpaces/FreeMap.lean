@@ -9,7 +9,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebr
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.CtrlOrd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.OrdBCMapOrd
 public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.UOpSum
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.FnIndep

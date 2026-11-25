@@ -5,9 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 public import Mathlib.Algebra.MvPolynomial.Nilpotent
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

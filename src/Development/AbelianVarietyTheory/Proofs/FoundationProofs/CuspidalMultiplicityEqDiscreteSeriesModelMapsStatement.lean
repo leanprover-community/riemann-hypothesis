@@ -4,14 +4,12 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.MemL2OfBo
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ContinuousSetIntegralConstTermOn
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
-public import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteVolumeAdelicUnitaryQuotient
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ForallEventuallyFinLocIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedAutomorphicHasRepresentativeStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedHolomorphicFormEqMultiplicitySpaceValue
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicTransportMeasureThird
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.Analysis.InnerProductSpace.Completion
 public import Mathlib.Analysis.InnerProductSpace.TensorProduct
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepMemSm
@@ -29,7 +27,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
@@ -57,9 +54,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasTypeVec
-import Development.AbelianVarietyTheory.Definitions.Foundations.InnerEqZeroOfNotUEquiv
-import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
-import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscreteSeriesModelUnitaryIrreducibleOrthonormalStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EquivariantMultilinearMapsSmoothVectorsIntertwinStatement
@@ -68,10 +62,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothVectorsSubspa
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SobolevBoundForSmoothVectorsStatement
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

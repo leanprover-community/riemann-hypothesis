@@ -10,8 +10,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

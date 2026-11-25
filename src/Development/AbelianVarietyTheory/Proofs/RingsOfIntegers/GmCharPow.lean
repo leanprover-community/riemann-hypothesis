@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsIsPowGrpSplitTorus
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsBoxMaps
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.IsMonHomOfComm
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.IsPowGrpBaseChange
@@ -11,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ProductUniformizationTorusIsPower
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.RatioTrans
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.CancelSecAct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.GtCoordCompatOfPow, Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.GmCharPow

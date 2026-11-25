@@ -3,9 +3,6 @@ module
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiCasA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Calculus.Deriv.ZPow
 
 -- This file was produced by scripts/clump.py from the modules listed below.

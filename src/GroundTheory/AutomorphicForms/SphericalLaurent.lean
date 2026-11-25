@@ -4,7 +4,6 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.FiniteType
 public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
 import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.LinearAlgebra.LinearIndependent.Basic
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.Analysis.Normed.Field.Basic

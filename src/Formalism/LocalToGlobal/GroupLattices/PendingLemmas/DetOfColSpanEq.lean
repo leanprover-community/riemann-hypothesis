@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
-import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
 

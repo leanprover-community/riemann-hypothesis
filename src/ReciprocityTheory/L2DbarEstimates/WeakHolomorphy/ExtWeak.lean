@@ -12,15 +12,8 @@ public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 public import Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner
 public import Mathlib.Analysis.InnerProductSpace.Dual
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-public import Mathlib.Geometry.Manifold.ContMDiffMap
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MollifyEqConvolution
-public import Mathlib.Analysis.Calculus.FDeriv.Measurable
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma

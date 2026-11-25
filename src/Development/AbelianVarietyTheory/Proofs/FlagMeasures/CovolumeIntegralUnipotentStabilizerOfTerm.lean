@@ -7,16 +7,13 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueP
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLattice
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoveringOHolds
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolumeCongruenceStabiliser
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramUnipotentStabilizerBruhatCellConjRoot
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFrameFixingIsometrySplitRowLatticeStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUpUniMul

@@ -12,8 +12,6 @@ public import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData

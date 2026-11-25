@@ -5,7 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueIsMonHomOfLinearMapLatticeAnyDim
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.OLinearMatrixOfUnifPow
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Clauses
 public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
 public import ReciprocityTheory.ThetaQuasiPeriods.Transl
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LbIsoOfSameFactor
@@ -19,7 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.UnimodularSym
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.BijectiveTensorOmegaStd
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CubeLineBundleAdjointIffHermFormAdjoint
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.E8SharpClassPrimitiveIsoClosed
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EighthPowerIntegerMatrixPrimitiveAdjoint
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLatticeUniformisationOfPrimTheta
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLinearLiftOfIsMonHomPolAV
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TransportThetaLevelUniformisationCoordinates
@@ -31,12 +29,10 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -52,7 +48,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -66,23 +61,11 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Proofs.ToricGeometry.CubeTrivialisationOnUniformisingSpace
-import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen

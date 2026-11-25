@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.Scalar
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.NonemptyAdelicDecomposition
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

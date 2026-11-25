@@ -4,17 +4,9 @@ public import Development.AbelianVarietyTheory.Definitions.Degenerations.Admissi
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIntegralDegenerationValuesStatement
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsArcLiftExtensionLargerClosedField
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.CharZeroOfIsPrimitiveRoot
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.GtActIffEqGtSmul
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsGtExtOfTorsion
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Mathlib.LinearAlgebra.FreeModule.Basic
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Expand
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRankZero
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.HomTransport
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TwistTerms
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EqOfIsMinInClassTwoOfSameClassFour
@@ -22,7 +14,6 @@ public import Mathlib.Topology.Algebra.Valued.NormedValued
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsCompleteIsAlgClosedCExt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IntegralGaugeValuesAreValuationUnits
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaConstantTermRepresentativeDependence
@@ -56,9 +47,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -80,27 +69,17 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.Interval.Finset.Box
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.RingTheory.PowerSeries.Ideal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

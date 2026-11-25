@@ -7,16 +7,10 @@ public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.IsUnivChart
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.QSurjective
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MemBasicOpenOfIsUnit
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.GermEvalOneStandardPointSelf
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ThetaGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.WchartLePreimage
@@ -26,26 +20,14 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.Thickened
 public import Mathlib.RingTheory.Finiteness.NilpotentKer
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPowSt
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
-import Mathlib.RingTheory.MvPowerSeries.Basic
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtSecIsMul
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.AlgChart
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

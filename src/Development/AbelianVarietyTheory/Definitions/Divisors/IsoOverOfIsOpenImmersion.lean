@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.CommGroupMul
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MemSubPtsCutBaseChangeIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VanishesToPullChartIffOfFlat
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsQuasiRegularSeqOfIsFreeGen
 
 @[expose] public section
 

@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Inv
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsFourthSide
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.RigidifiedIsoRespectsCubeAndSymmetry
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationPolarisationsAgreeAtLevel

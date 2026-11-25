@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodChi
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodTupleConditionOfIdempotentZero
-import Formalism.CyclotomicNorms.NonsquarefreeBounds.NonsquarefreeMonicBoundHolds
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

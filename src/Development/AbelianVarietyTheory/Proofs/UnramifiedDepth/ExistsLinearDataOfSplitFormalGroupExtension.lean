@@ -5,30 +5,16 @@ public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.Valuation.Integers
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEigBasisIff
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.Algebra.Ring.Hom.InjSurj
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.FreeModule.Basic
-public import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.LocalRing.Module
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.LePreimageOfNil
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.MvPowerSeriesEvalOfPowMem
-public import Mathlib.LinearAlgebra.TensorProduct.Finiteness
-public import Mathlib.RingTheory.Ideal.GoingUp
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.PointsAddCommMonoidStatement
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MemSupSpanXPowIffAndIsAdicComplete
-public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.RingTheory.MvPowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalDiscPointsValuationIntegers
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalGroupSeriesSeparatedByTorsionStatement
-public import Mathlib.Algebra.Category.Grp.Injective
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.MvPowerSeriesExistsPolynomialTotalDegreeLeSubMem
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.GmLawCharsMul
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.PredMulSumPadicValNatFactorialAddCardLe
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalSeriesJacobianChainRuleLinearPart
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -42,7 +28,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -72,11 +57,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.DualLattices.FormalChartAtZero
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

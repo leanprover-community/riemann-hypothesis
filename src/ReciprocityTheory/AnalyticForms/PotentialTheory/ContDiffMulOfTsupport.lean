@@ -6,15 +6,10 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.Lintegra
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Order.CompletePartialOrder
 

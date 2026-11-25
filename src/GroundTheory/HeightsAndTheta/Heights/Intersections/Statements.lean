@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.RingTheory.KrullDimension.Polynomial
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section

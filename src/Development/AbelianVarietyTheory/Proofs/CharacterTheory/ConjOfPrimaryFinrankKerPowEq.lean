@@ -12,13 +12,11 @@ public import Mathlib.Algebra.Polynomial.Module.AEval
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Mathlib.Algebra.Module.PID
-public import Mathlib.Algebra.DirectSum.Module
 public import Mathlib.RingTheory.AdjoinRoot
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

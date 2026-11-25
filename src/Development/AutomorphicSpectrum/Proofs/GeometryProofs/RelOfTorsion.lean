@@ -6,15 +6,9 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DerRingInjec
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValues
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Mathlib.Tactic.ENatToNat
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingOpenImmersion
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderValueEval
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualLatticePointUniversal
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueBtOrderEmbedding
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

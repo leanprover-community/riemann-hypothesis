@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsInducedLocus
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushEquivSymmLeft
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCyclotomicTowerLevelGeneratorProperties
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicNormZpowSubOnePadicValInt
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.GroupTheory.Nilpotent

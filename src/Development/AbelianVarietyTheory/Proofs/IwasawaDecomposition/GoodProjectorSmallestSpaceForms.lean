@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
 
 @[expose] public section
 

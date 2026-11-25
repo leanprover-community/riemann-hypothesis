@@ -4,7 +4,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrin
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.MonomialPrincipalization
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.LexOrderEncoding
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.MonomialCenter
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec
 

@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocalFact
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaInnerProductHermitianStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousFourierGau
 public import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
-public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrictedTensorVacuumEqSmulBasePoint
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
@@ -67,11 +66,6 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealSymplecticFormAlternatingInvariantDefinite
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.InfAdeleTensorBijective
-import Mathlib.Analysis.Matrix.Hermitian
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit

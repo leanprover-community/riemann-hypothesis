@@ -8,15 +8,10 @@ public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsTo
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.PredMulSumPadicValNatFactorialAddCardLe
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.RepJetAugCompTrunc
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans

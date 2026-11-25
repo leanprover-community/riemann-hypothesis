@@ -43,7 +43,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
@@ -58,12 +57,9 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 import ReciprocityTheory.GaloisValuations.GlobalA
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemOfLpCharLpSpEqSumList
-import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Tactic.Basify
@@ -81,7 +77,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalRepGLEx
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParIndJacPlacing
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsSteinberg
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.FixedNeBotOfEquiv
-import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.IrreducibleAdmissibleGL
 import Mathlib.RingTheory.PicardGroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.

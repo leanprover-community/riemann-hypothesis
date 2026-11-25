@@ -9,9 +9,6 @@ public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClas
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RootEqOfSubMem
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSym
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycBasic
 
 @[expose] public section
 

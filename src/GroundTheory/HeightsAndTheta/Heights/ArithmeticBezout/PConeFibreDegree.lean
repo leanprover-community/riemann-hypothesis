@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsPr
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntPoly
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Algebra.MvPolynomial
 

@@ -1,16 +1,11 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsPowEqOfBaseChange
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsGtExtOfTorsion
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsPullDegOfVal
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPullDegCancelTowerOfFields
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.PsiEvenTauBimultDescendOfInjective
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.NonemptyCubicalPull
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TauBimultOfIsPullDeg
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 @[expose] public section
 

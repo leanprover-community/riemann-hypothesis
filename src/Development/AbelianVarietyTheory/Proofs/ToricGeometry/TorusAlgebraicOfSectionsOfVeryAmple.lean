@@ -10,22 +10,14 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EqZeroOfSemicharacterMultiplier
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SurjectiveOfComplexPointsLiftOfUniversallyClosed
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
-public import Mathlib.RingTheory.KrullDimension.Basic
 public import Mathlib.RingTheory.NoetherNormalization
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.FieldTheory.Perfect
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
-public import Mathlib.RingTheory.Localization.Finiteness
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LeadingCoeffNonnegOfEventuallyEvalNat
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFormDegreeLeHilbertDegreeEvalNeZero
 public import Development.AbelianVarietyTheory.Statements.ThetaLevelCharacters.MemThetaLevelCharDimZero
@@ -49,9 +41,6 @@ public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsNhdsSu
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsPrimitiveElementDiscriminantMultiple
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsProjectiveModelPolarisedTorusTheta
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsTestFunctionsSubsetOfMemNhds
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsThetaSeriesApplyNeZeroOfLargeForm
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsTopLePreimageOfISupEqTop
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsUniqueHomOfLocallyRegular
@@ -81,32 +70,19 @@ public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ReFormPosOfT
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.RelAmpleThetaBundleProjectiveModel
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.RiemannThetaLevelOneNeZero
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TangentBijectionOfValues
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TranslateTrivialEqOneOfFiniteTypePoints
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TranslationFixingBundleArtinPointEqOne
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ThetaQuasiPeriods.Transl
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsComplementaryThetaOfLinearMap, Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsIsHomogeneousEvalOfMulMemSpan, Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsMemThetaLevelCharApplyNeZero, Development.AbelianVarietyTheory.Proofs.ToricGeometry.FiniteOfIsIntegralOfBirationalOfPresentation, Development.AbelianVarietyTheory.Proofs.ToricGeometry.LocallyOfFiniteTypeTensor, Development.AbelianVarietyTheory.Proofs.ToricGeometry.ThetaConeIdealIsPrimeAndRingKrullDimLe, Development.AbelianVarietyTheory.Proofs.ToricGeometry.TorusAlgebraicOfSectionsOfVeryAmple

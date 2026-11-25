@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.WhittakerCriterion
 public import GroundTheory.AutomorphicForms.WhittakerGroups
-public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.MeasuresGL
 public import GroundTheory.AutomorphicForms.WhittakerDistribution
 public import GroundTheory.AutomorphicForms.ContragredientTranspose.GelfandKazhdan

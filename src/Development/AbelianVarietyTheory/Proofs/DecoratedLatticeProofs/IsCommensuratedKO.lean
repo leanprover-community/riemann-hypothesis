@@ -8,14 +8,10 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwasawaBl
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLeCard
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicIndexEquality.CommensuratedOfIsOpenIsCompact
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HasSumHeckeSeriesBorelSphericalIntegralCosets
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HasSumHeckeSeriesSphericalIntegralInverse
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BiInvariantReplaceSameDoubleCosetSums
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralRightInvariantEqSumOpenSubgroupCosets
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -58,12 +54,8 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization

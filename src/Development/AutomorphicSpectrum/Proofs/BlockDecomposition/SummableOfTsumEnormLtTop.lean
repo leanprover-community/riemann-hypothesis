@@ -22,12 +22,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -50,10 +45,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.UniformSpace.Uniformizable

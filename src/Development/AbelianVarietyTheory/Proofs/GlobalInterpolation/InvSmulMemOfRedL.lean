@@ -5,24 +5,12 @@ public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemUnitOff
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 public import Formalism.LocalToGlobal.Columns.DecoFin
-public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMatrixBasisLatticeUpToDenominatorNotMem
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnimodularLatticeLocalConjSymm
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LevelChainSharpColumnValuationOwnChainIff
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GlobSpecOfExists
-import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

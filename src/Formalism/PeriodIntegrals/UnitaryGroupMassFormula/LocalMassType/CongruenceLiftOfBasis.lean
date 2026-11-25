@@ -14,7 +14,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.Me
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.SaturatedSplitLattice
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.TransitiveOverLocalRings
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.SplitDecomp
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

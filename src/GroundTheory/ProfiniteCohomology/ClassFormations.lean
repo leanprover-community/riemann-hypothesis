@@ -4,7 +4,6 @@ public import GroundTheory.ProfiniteCohomology.ClassFormations.Quotient
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.Higher
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

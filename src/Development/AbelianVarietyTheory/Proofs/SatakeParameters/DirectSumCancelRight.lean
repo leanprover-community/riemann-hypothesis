@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Nilpotent.Basic
 public import Mathlib.RingTheory.Artinian.Defs
 public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.RingTheory.Artinian.Module
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Algebra.Module.Prod
 public import Mathlib.Algebra.FreeAlgebra
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MonodromyZeroOfWeilDeligneRepClassIff

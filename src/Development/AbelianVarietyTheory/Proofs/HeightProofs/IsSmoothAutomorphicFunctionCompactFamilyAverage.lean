@@ -7,12 +7,9 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CompactAverag
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.NormInfSubmultiplicativeLeAdelicHeightStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GrowthSizeRWordNeTopOfLe
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
 
 @[expose] public section
 

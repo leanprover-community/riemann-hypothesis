@@ -3,14 +3,11 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.DoubleCosetDecomposition
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ClassMassEqSumOfBijective
-public import Formalism.SatakeDualWeyl.DefsCS
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.MassFormulaPositivity
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DefClassDecompIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryMassLatticeEqGenusMass
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

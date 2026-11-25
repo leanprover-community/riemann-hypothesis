@@ -9,9 +9,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposi
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposition.ModOne
 public import Formalism.PeriodIntegrals.ScMuExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposition.InstAll
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.Analysis.InnerProductSpace.PiL2
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianFrameExistence.Transfer
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TensorFrameConstruction.LocalFramePreservesOrthogonal
 public import Formalism.PeriodIntegrals.ScPiExists

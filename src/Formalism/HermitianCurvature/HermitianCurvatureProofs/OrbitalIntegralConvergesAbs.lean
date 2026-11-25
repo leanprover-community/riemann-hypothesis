@@ -9,7 +9,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctio
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
-import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.PiTensorProduct

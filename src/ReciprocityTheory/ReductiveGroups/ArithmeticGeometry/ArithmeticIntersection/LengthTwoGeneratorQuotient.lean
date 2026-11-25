@@ -3,7 +3,6 @@ module
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LocalLengthAdditivityTorsionFree
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-public import Mathlib.RingTheory.Length
 public import Mathlib.RingTheory.KrullDimension.Regular
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LengthCokerEqKerAddDimOneOrderSum
 import Mathlib.Order.CompletePartialOrder

@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
 public import Mathlib.RingTheory.Ideal.AssociatedPrime.Localization
 public import Mathlib.RingTheory.Regular.IsSMulRegular
 import Mathlib.Tactic.Linter.HaveILetI
-public import Mathlib.Algebra.GroupWithZero.Action.Regular
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 
 @[expose] public section

@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ArchimedeanCompact.OneTmulMemCenter
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.AffineCharacterGenerators.AffChar
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT

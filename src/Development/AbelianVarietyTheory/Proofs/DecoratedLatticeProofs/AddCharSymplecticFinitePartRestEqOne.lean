@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EmbHIn
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HalfAComponentsMemCompletedLatticeOffPrimesStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 
 -- This file was produced by scripts/clump.py from the modules listed below.

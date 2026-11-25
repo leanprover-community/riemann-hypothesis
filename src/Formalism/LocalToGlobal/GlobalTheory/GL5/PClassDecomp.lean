@@ -7,7 +7,6 @@ public import Formalism.LocalRingCardinality.PosOfIsomEmb
 public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.ExistsDenOfIsCompact
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.ExistsDenOfIsCompactAdele
-import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.MemClosureOfMemSS
 import Mathlib.Tactic.TypeStar
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Upqcpt
 

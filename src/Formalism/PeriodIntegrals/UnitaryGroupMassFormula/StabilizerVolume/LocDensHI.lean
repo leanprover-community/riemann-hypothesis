@@ -7,11 +7,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.GroupTheory.Index
-public import Mathlib.MeasureTheory.Group.Defs
-import Formalism.PeriodIntegrals.VolFromSW
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Mathlib.MeasureTheory.Group.Measure
 
 @[expose] public section
 

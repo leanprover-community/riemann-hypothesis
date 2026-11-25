@@ -2,23 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolyRep
 public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.BigOperators.Pi
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Degree.Operations
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DvdTraceOfBalancedTensor
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.LinearAlgebra.Matrix.IsDiag
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -63,9 +47,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify

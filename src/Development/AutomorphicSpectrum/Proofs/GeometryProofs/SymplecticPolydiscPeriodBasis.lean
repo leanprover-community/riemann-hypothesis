@@ -3,11 +3,6 @@ module
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeOnPuncturedDisc
 
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
-public import Mathlib.LinearAlgebra.BilinearMap
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.LinearAlgebra.FreeModule.Basic
-public import Mathlib.LinearAlgebra.Quotient.Defs
-public import Mathlib.RingTheory.Finiteness.Defs
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DualRestrictSurjectiveOfIsTorsionFreeQuotient
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FromBlocksMapIntCastMemSymplecticGroup
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SymplecticUnipotentShape
@@ -16,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPuncturedExpOrder
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

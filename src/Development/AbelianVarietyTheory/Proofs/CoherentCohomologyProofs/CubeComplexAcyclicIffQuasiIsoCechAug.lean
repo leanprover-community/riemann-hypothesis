@@ -4,9 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomolo
 public import Mathlib.Algebra.Homology.Embedding.ExtendHomology
 public import Mathlib.Algebra.Homology.HomologySequence
 public import Mathlib.Algebra.Ring.NegOnePow
-import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 public import Mathlib.Algebra.Homology.HomologySequenceLemmas
-import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.Tactic.NormNum.LegendreSymbol

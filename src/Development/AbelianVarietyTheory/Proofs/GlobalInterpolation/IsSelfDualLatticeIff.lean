@@ -10,24 +10,13 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Additi
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FibOfZero
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Inverse
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SelfDualUnramifiedPlaces
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.DualExponentDensity
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianFormFiniteZerosOnLineCmExt
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IntegralClosureCompletedCMAlgebraCompactOpen
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldAdicCompletionTensorOfInert
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotIsFieldAdicCompletionTensorOfSplit
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.RingTheory.Unramified.Locus
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadraticUnramifiedIffInertOrSplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
@@ -36,9 +25,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.RingTheory.PiTensorProduct

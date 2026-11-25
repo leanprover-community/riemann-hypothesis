@@ -3,9 +3,6 @@ module
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementG
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.OmegaInjectiveHolds
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.TypesLELeYcondC
-public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
-public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
 
 @[expose] public section
 

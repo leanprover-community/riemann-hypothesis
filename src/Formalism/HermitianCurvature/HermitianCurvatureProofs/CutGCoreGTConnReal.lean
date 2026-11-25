@@ -9,7 +9,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSConst
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSTr
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGenTransferFn
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import Mathlib.Tactic.Linter.Style
 

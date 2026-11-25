@@ -3,7 +3,6 @@ module
 public import Formalism.FrobeniusOrbits.Statement
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.FrobMulInertia
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
-import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
 import Formalism.TameInertiaTowers.TowerFieldFoundations
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCom
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CoefIntegralEq
 public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
-public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -41,14 +40,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEqZeroOfInf
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral

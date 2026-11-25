@@ -1,10 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.MemSaturatedOrderIsoSubspaceSpanSymmApply
-public import Mathlib.Algebra.Star.Basic
 public import Mathlib.GroupTheory.GroupAction.Ring
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.LinearAlgebra.FreeModule.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

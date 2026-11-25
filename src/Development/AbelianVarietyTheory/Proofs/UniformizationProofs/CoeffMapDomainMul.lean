@@ -15,7 +15,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -52,9 +51,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

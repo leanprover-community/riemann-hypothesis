@@ -7,7 +7,6 @@ public import GroundTheory.TateCohomology.Characters
 public import GroundTheory.LocalFields.UnramifiedGalois
 public import GroundTheory.LocalFields.UnramifiedDefs
 public import GroundTheory.ProfiniteCohomology.TorsionDualDefs
-public import Mathlib.RepresentationTheory.Homological.TateCohomology.Basic
 public import GroundTheory.LocalFields.UnramifiedNorms
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 public import GroundTheory.TateCohomology.Herbrand

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Invaria
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisOrbitInvariantMapProper
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisTransferFactorKrylovDet
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryGroupPositiveCharacterTrivialAndUnimodula
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryActionHermitianInvariantsTransitive
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

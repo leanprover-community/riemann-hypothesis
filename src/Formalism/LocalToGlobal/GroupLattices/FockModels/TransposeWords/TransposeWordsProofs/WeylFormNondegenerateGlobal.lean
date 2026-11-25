@@ -4,7 +4,6 @@ public import Formalism.GradedWeylDivisibility.StatementE
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ColSums
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockPairingHighestWeight
 public import Formalism.GradedWeylDivisibility.FinalC
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.DualWeylIn
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas

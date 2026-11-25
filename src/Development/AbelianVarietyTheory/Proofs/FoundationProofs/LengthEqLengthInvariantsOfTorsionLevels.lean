@@ -1,27 +1,15 @@
 module
 
 public import ReciprocityTheory.Hypotheses.GalCohDefs
-public import Mathlib.Analysis.Normed.Group.Ultra
-public import Mathlib.NumberTheory.Padics.RingHoms
 public import Mathlib.Topology.Instances.ZMod
-public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
-public import Mathlib.Analysis.Normed.Group.FunctionSeries
-public import Mathlib.Analysis.SpecificLimits.Basic
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLengthEqAndCardEqPowOfIsFiniteLength
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
-public import Mathlib.RingTheory.Filtration
 public import Formalism.GaloisCohomology.Statement
 public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsPrimitiveRootPow
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardDualZmodModuleEqCard
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ContCohomologyTransportMulEquiv
-public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DecompositionGroupMulEquivLocalGaloisCyclotomic
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDecompositionGroupCyclotomicCharacterZpowN
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicCoboundaryOfDivisible
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIntTwoCocycleEqPowSmulOfReductionCoboundary
@@ -67,18 +55,14 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.GaloisCohomology.StatementLoc
 import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Formalism.ConjugateSelfDual.Statement
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI

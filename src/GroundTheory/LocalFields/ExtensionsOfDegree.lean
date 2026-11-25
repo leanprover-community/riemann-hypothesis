@@ -5,7 +5,6 @@ public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import Mathlib.FieldTheory.Separable
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Field.Krasner
-public import Mathlib.Analysis.Normed.Algebra.Ultra
 public import Mathlib.NumberTheory.LocalField.Basic
 
 @[expose] public section

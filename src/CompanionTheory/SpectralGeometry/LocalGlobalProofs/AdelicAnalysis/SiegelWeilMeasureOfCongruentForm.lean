@@ -15,9 +15,6 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitaryActionEulerProduct
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitaryIsomOfIsometry
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

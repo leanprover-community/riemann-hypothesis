@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.OnePl
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DegVand
 public import Formalism.LocalRingCardinality.DataTies
 public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnitaryTorusScaleBesselCharacter
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalDataBothAmplitudeSidesStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MomentPieriNumericsOfSizeHyps

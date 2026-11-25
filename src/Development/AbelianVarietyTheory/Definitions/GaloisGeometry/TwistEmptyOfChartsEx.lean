@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-import Formalism.LocalToGlobal.Columns.ChainInst
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ReadsMove
 
 @[expose] public section

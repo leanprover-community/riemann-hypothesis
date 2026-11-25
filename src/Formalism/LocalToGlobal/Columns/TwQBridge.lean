@@ -5,16 +5,12 @@ public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapFacts
 public import Formalism.LocalToGlobal.Columns.TwQSplit
 public import Formalism.LocalToGlobal.Columns.TiedGlLoc
-public import Formalism.LocalToGlobal.Columns.RecLevel
 public import Formalism.LocalToGlobal.Columns.TwQLevU
 public import Formalism.LocalToGlobal.Columns.TwQDefs
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 
 section
 @[expose] public section

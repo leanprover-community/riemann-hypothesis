@@ -4,40 +4,19 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ULimKer
 public import Mathlib.RingTheory.Finiteness.Ideal
 public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.RingTheory.Finiteness.Cardinality
 public import Mathlib.RingTheory.AdicCompletion.Algebra
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
-public import Mathlib.RingTheory.Localization.Away.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.QRegScal
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.RingTheory.Ideal.Operations
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
-public import Mathlib.Data.Fintype.Pigeonhole
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
-public import Mathlib.RingTheory.Nakayama
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PatchedSupportCompletions
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AnnihilatorBaseChange.KjMap
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AnnihilatorBaseChange.SpecializationMapCompUniversalSection
-public import Mathlib.Order.Filter.Ultrafilter.Defs
-public import Mathlib.Order.Filter.Ultrafilter.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HidaCompleteRings.FinCompl
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.Imports
-public import Mathlib.RingTheory.MvPowerSeries.Basic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MemSpanVariable
-public import Mathlib.RingTheory.MvPowerSeries.Order
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNoetherianRingAdicCompletionOfNoetherian
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IsCplAtSelf
-import Mathlib.RingTheory.AdicCompletion.Completeness
 import Mathlib.RingTheory.MvPowerSeries.Ideal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

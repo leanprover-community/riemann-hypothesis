@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompleteOCSpanSingletonSetCast
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AinfIsDomainAndAinfInvPInjective
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineThetaEqZeroIffFontaineXiElementDvd
 import Std.Tactic.BVDecide.Normalize.Prop

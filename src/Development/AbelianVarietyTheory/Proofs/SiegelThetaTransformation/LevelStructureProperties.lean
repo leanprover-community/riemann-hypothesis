@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsIntMulIntegral
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs

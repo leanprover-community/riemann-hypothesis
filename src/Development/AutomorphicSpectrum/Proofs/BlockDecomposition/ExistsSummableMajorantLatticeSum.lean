@@ -3,13 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.GL2.AdelicFourier2TensorCosetIndicatorAlgebraMap
 public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
 public import GroundTheory.GlobalFields.TateThesis.GlobalZetaFinite
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Topology.Algebra.InfiniteSum.Order
-public import Mathlib.Topology.Algebra.InfiniteSum.Real
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.IsEpCont
 import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 import Mathlib.Algebra.Order.Floor.Extended
@@ -52,8 +45,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

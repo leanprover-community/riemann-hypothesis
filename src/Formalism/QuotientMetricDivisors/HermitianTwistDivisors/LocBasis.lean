@@ -6,7 +6,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-public import Mathlib.RingTheory.DedekindDomain.Dvr
 
 @[expose] public section
 

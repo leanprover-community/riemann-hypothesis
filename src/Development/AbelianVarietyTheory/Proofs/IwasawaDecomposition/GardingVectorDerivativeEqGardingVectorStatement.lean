@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
 import Aesop.Main
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

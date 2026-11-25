@@ -4,16 +4,10 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.SchemeImage
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveSpaceChart
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
-public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
 public import Mathlib.Tactic.ENatToNat
 public import Mathlib.AlgebraicGeometry.Noetherian
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ChowSegre
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.AlgebraicGeometry.IdealSheaf.IrreducibleComponent
-public import Mathlib.AlgebraicGeometry.Restrict
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleSheaf
-public import Mathlib.Algebra.Category.ModuleCat.Sheaf.Quasicoherent
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.ImmersionPush
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.HasExtInstances
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.CohFinite

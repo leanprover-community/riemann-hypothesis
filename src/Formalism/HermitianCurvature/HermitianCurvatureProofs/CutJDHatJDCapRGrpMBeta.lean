@@ -2,9 +2,7 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialSideRaising
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpMRad
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 
 @[expose] public section
 

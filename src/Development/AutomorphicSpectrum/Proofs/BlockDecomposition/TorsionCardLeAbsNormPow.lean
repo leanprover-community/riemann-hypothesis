@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLatIntVec
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermOf
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

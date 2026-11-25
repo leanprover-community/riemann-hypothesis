@@ -7,9 +7,6 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EvalAtOneExtremalMul
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

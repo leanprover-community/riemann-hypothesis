@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValues
 public import Mathlib.Tactic.ENatToNat
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHtBc

@@ -13,7 +13,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolum
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.RhGradStatementPfA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.RhGradStatementPfB
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

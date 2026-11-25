@@ -6,7 +6,6 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepre
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExtOfSymmApply
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsUnimodularAtIffVd
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section

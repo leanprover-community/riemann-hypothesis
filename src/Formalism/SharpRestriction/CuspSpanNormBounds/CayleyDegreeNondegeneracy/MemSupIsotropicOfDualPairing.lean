@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.OrthLatticeIsIntegralOfUnimodular
-import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 import Mathlib.Algebra.Module.StablyFree.Basic
 
 @[expose] public section

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.Morphis
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.KaRuleK
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRuleOneOfKeyFormula
 
 @[expose] public section
 

@@ -2,8 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalOrderProjection.LocOProjOf
 public import Mathlib.RingTheory.DedekindDomain.PID
-public import Mathlib.RingTheory.DedekindDomain.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Formalism.PeriodIntegrals.LocHerm
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalGluing.LocGlueOfPair

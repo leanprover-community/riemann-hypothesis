@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.G
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ParabolicReductionImage
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ReductionImageOfLocalMod
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.StRedOfSplit
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.GOfPrime
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ImASubKpp
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ParabolicImageOfBasisAdapted
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.StKHolds
@@ -17,8 +16,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.F
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondCoordsSmulInteger
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.LocDegOneBelow
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SplitTransport
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondCoordsTensorSmul
 
 -- This file was produced by scripts/clump.py from the modules listed below.

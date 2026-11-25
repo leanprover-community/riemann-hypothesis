@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.Calculus.DSlope
 public import Mathlib.Analysis.Meromorphic.Order
-import Mathlib.Analysis.Calculus.LogDeriv
 public import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.NormNum.LegendreSymbol
 public import Mathlib.Analysis.Calculus.Deriv.Mul

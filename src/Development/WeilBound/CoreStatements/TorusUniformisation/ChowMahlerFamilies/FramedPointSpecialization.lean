@@ -7,9 +7,6 @@ public import Mathlib.Algebra.MvPolynomial.Cardinal
 public import Mathlib.FieldTheory.IsAlgClosed.Classification
 import Development.WeilBound.CoreStatements.PluriharmonicCharts.FderivValueZero
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModelBaseChange
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 import Mathlib.Tactic.Linter.HaveILetI

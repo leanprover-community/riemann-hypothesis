@@ -1,14 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DKerHasCompactSupport
-import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.DenseWeakVectors
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.Garding
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Mathlib.Analysis.Calculus.Deriv.Star
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.Tactic.TypeStar
 

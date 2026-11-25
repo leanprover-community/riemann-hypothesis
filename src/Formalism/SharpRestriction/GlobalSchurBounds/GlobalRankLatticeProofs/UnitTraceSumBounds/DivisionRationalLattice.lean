@@ -4,33 +4,20 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PositiveDefinite
 public import Mathlib.Analysis.Matrix.Hermitian
 public import Mathlib.NumberTheory.Height.NumberField
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Analysis.Complex.Basic
-public import Formalism.PeriodIntegrals.FinOrdAd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PowerBoundedIntegrality.Development
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.RingTheory.Polynomial.Vieta
-public import Formalism.PeriodIntegrals.PowBddInt
 public import Formalism.PeriodIntegrals.AdCpctDen
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicCompactDensity.ExistsNatLocal
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitKronecker.Development
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Lemmata.GeneralBFactRightBis.Imports
 public import Formalism.PeriodIntegrals.UnitKron
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.UnitaryKronecker
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Topology.Algebra.Category.ProfiniteGrp.Basic
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ActAApply
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompletedStandardAdelicLatticeProperties
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
 import Mathlib.RingTheory.PiTensorProduct
 

@@ -11,10 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ProdSumRei
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExpansionBijectiveOverFields
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationDataTorsionStructureAlgClosed
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsoOnG
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 

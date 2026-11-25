@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 
 @[expose] public section
 

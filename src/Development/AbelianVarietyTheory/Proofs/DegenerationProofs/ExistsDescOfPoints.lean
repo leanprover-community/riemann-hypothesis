@@ -13,12 +13,8 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsPullbackO
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeometricallyReducedOfPerfectField
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 

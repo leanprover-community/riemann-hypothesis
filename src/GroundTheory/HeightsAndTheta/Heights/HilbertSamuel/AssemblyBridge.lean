@@ -11,15 +11,8 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibre
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PullBad
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.HasStrictFDerivAtEquiv
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjectionPullbackZeroSetNull
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsBlockGenFinite
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AParamStA
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
-import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-import Mathlib.Topology.Algebra.MvPolynomial
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeE
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridge
 
 -- This file was produced by scripts/clump.py from the modules listed below.

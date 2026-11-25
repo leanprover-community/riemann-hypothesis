@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.HeckeFr
 public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.FibrePushforward
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.CategoryTheory.ExtremalEpi

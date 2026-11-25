@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandSt
-public import Formalism.HermitianLattices.StatementMass
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BinaryHermitianFormRepresentsTotallyPositive
 
 @[expose] public section

@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationPr
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaZeroLogDerivative
 public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Mathlib.Analysis.Normed.Module.Connected
-public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.CMQuasiPeriodConst
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.CmAlternatingForm
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.IsogenyP
@@ -15,8 +14,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationPr
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.MulStableIntegral
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SigmaLogDeriv2
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.IsogenySigma, Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.WeierstrassPSecondDerivative, Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral

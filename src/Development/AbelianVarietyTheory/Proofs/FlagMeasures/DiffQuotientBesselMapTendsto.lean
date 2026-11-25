@@ -11,7 +11,6 @@ public import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.TypeStar
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -5,16 +5,12 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Analysis.Matrix.Normed
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.DiscreteSeriesTopClasses.IsInvOne
-public import Mathlib.MeasureTheory.Integral.Prod
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTwistHomotopyKernel
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpenStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceSingleMulSingle
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.SymZeroCommFrame
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminant
 public import Mathlib.Analysis.SpecialFunctions.Sqrt
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold
 import Mathlib.Algebra.Order.Floor.Extended
@@ -22,13 +18,10 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -36,7 +29,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -60,15 +52,11 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Algebra.Star.Unitary
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegration, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegrationStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariantStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFinite, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFiniteStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminantStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactor, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactorStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeStructure

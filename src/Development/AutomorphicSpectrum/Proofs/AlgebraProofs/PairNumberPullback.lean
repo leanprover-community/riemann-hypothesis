@@ -12,14 +12,8 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PCon
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDvrConeDimTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinBirationalJoin
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVerticalDivisorJoinPullback
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.FlagMinor
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PComponentDim
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleFiniteSupport
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMinimalPrimeMultiHomog
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSupSpanMultiHomog
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultiProjectivePrimeIntersection, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XSPullback, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PairNumberPullback

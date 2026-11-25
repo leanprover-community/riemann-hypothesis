@@ -23,27 +23,14 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionsHaveF
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.TypeStar
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HomogeneousIdealSectionsOfLineBundlePower
 import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
 import Mathlib.Algebra.Order.Star.Int
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniformRegularityBound, Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinrankMapAddFinrankInfKerOfFinite, Development.AbelianVarietyTheory.Proofs.ModuliProofs.HomogeneousComponentMulMemSpanDegree, Development.AbelianVarietyTheory.Proofs.ModuliProofs.AbelianVarietyCutOutBoundedDegreeTorsion

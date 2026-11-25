@@ -1,13 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.SelfDual
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 
 @[expose] public section
 

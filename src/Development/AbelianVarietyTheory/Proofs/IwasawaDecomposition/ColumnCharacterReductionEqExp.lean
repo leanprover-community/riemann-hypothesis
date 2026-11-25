@@ -6,10 +6,7 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfD
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldSplitCompletelyPlaceStructure
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGLocIdGChiTied
 import Formalism.LocalRingCardinality.ConjSqrtMinusD
-import Formalism.LocalRingCardinality.SpanPowerMembership.Adelic
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Formalism.LocalToGlobal.Columns.BaseLemmas
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -27,7 +24,6 @@ import Mathlib.NumberTheory.RamificationInertia.Inertia
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.KrullDimension.PID
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd

@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.OEOsInjective
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf

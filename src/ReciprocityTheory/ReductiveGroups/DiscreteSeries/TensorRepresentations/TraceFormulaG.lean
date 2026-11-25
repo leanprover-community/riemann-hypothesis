@@ -5,8 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentat
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RightDerivativeToL2
 
 @[expose] public section
 

@@ -66,7 +66,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify

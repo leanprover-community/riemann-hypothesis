@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 public import Formalism.RealPlaceAnalysis.StatementA
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.BicommutantTensorFactorPermMemSpan
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommutantLiftModStableSelfAdjoint
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommutatorGlGeneratorTensorWordMapMatrixUnits
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommuteGelfandInvariantMatrixUnitsOfGlRel

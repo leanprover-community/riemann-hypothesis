@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.ContragredientTranspose.GelfandKazhdan
-import GroundTheory.AutomorphicForms.GLnLocal
 import GroundTheory.AutomorphicForms.MeasuresModulus
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma

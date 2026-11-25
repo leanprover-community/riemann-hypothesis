@@ -4,7 +4,6 @@ public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.LocalFields.PadicLogSeries
 public import GroundTheory.LocalFields.PadicLogHom
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -18,9 +18,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_PtwCut
 public import Mathlib.Analysis.PSeries
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LUFactorOrbitBounds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplySub
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

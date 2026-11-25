@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AbsNormPr
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmEmbeddingProperties
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResCharConj
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ToMapSurj
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

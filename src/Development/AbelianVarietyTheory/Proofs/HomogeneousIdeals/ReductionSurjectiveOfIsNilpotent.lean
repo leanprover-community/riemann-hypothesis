@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsChartOfMemRedKer
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.SpanEqTopOfForallMaximal
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AwayToAwayRightEqOfComp
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLawPf

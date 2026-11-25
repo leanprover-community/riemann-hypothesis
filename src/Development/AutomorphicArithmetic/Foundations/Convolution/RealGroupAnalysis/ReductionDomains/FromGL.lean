@@ -1,14 +1,11 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
-public import GroundTheory.AutomorphicForms.ReductionIwasawa
 public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.GJGlobalModulus
 public import GroundTheory.AutomorphicForms.GL2Classical.GrowthReduction
 public import GroundTheory.AutomorphicForms.ReductionCore
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.KkCpt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.ContinuousEntry
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,7 +5,6 @@ public import Formalism.SatakeDualWeyl.StatementG
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOfValILeOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoOneOfSummable
 import Formalism.LocalRingCardinality.ConjSqrtMinusD

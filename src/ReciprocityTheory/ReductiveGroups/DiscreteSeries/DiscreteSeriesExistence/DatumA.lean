@@ -3,7 +3,6 @@ module
 import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothDefs
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SquareIntegrableInnerProduct
 public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SmoothBr

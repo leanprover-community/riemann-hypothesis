@@ -12,9 +12,6 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.NumberTheory.Bernoulli
-public import Mathlib.NumberTheory.LSeries.HurwitzZetaValues
-public import Mathlib.NumberTheory.ModularForms.Discriminant
 
 @[expose] public section
 

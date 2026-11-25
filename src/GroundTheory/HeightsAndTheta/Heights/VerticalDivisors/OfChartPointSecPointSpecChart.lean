@@ -3,12 +3,9 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFibreCut
 public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.ZariskisMainTheorem
-public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 public import Mathlib.RingTheory.MvPolynomial.Localization
-public import Mathlib.RingTheory.QuasiFinite.Basic
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsOrd
 public import Mathlib.RingTheory.Ideal.Height
-public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.ComapMaximalIdealParDVR
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsGenSecKer

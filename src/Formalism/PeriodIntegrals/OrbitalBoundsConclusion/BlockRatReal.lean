@@ -10,9 +10,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacob
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.RevColOneTranspose
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.TransvectionMulApply
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RationalRealBlocks.Bridge
-public import Formalism.GradedWeylDivisibility.StatementA
 public import Formalism.PeriodIntegrals.BlockRatReal
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.MnrUpdateEqZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RationalRealBlocks.AntitoneStar, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RationalRealBlocks.MapDetGenM, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RationalRealBlocks.NuOfAntitone, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BlockRatReal

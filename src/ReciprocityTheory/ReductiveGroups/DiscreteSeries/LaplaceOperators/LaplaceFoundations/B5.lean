@@ -7,7 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.RaisingLoweringNormIdentities
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.UnipotentExpHaarSqrtBound
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.EqZeroOfInPOfNoncompactRankZero, ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.LieExponentialMajorantHolds, ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.B5

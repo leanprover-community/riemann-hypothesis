@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemT
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsCommensuratedKO
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonJacquetOfPerm
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -1,14 +1,12 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamDieudonneSpansTensorDeRhamPeriods
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CLTateInvariantsFiniteExtensionMem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfTateTwistInvariantFiniteExtension
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyThetaDeRhamFilZeroConcretePeriod
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 

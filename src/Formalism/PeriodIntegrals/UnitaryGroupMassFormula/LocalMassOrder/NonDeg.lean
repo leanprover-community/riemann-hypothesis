@@ -1,11 +1,8 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.ContinuousHRRight
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.LatCpt
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.SelfDualMeasureSFinite
-public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.IsClosedCongruenceSubgroup

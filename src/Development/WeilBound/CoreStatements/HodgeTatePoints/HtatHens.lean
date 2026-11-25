@@ -8,9 +8,6 @@ public import Mathlib.RingTheory.Etale.StandardEtale
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.CategoryTheory.Filtered.Final
 public import Mathlib.RingTheory.Unramified.LocalStructure
-public import Mathlib.CategoryTheory.Limits.ConcreteCategory.Basic
-public import Mathlib.RingTheory.Localization.AtPrime.Basic
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.Smooth.IntegralClosure
 public import Mathlib.RingTheory.Flat.TorsionFree
 import Mathlib.Algebra.Category.Ring.FilteredColimits

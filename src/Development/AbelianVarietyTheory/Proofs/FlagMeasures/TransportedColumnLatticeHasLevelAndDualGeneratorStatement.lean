@@ -6,12 +6,9 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Level
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ColumnWittFrameBasisBlockGram
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrLink
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MiddleLatticeSelfDualAnisotropicPairingStatement
-public import Formalism.LocalToGlobal.HermitianForms.TiedStep
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryDatumLevelPrimeSplitDegreeGramFacts
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesSubmodule
-public import Formalism.SharpRestriction.GrowthBounds.ObjPol
-public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsHighestCoordinateFunctional
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DeltaIntegralEnvelopingStable
 public import Lemmata.ClearingDenominators.UmonLeUzmon

@@ -5,7 +5,6 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
 
 set_option backward.isDefEq.respectTransparency false
 

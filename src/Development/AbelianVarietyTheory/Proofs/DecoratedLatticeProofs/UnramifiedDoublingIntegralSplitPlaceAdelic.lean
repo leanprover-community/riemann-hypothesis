@@ -8,21 +8,15 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecU
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAHEqOfMemRatPts
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HasIwasawaDecompositionDoubledSplitPlace
-public import Development.AbelianVarietyTheory.Definitions.Foundations.MemSiegelOfIffRightAct
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsLatticeFrameAtPlaceDirectSumBlockDiagonal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOne
-public import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
-public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NormCmExtensionSplitPlaceEqZpow
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalHeckeValuesSameParameters
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GradedSeriesContinuationDominated
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumCardCosetsDiagonalDoubleCosetGLStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeVectorHeckeEigenvalueStatement
@@ -34,7 +28,6 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -66,24 +59,13 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Order.Interval.Finset.Box
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactLevelOffFinEmpty

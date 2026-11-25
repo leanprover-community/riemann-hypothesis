@@ -5,7 +5,6 @@ public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.URepSchur
 public import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.Tactic.TypeStar
-public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.URepBasic
 
 @[expose] public section
 

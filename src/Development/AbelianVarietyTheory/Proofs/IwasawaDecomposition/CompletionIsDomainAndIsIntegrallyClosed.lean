@@ -4,38 +4,20 @@ public import Mathlib.RingTheory.AdicCompletion.Algebra
 public import Mathlib.RingTheory.AdicCompletion.Exactness
 public import Mathlib.RingTheory.Ideal.AssociatedPrime.Basic
 public import Mathlib.RingTheory.Localization.AtPrime.Basic
-public import Mathlib.RingTheory.Filtration
 public import Mathlib.RingTheory.EssentialFiniteness
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.KrullDimension.Basic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdicCompletionQuotientRingEquiv
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.RingTheory.Flat.Basic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AssociatedPrimeLocalizationDvr
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteIntegralClosureOfEssFiniteTypeIntDomain
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNoetherianRingAdicCompletionOfNoetherian
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingKrullDimLtTopOfEssFiniteType
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Coeff
-public import Mathlib.Algebra.Polynomial.Lifts
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 public import Mathlib.RingTheory.RingHom.QuasiFinite
-public import Mathlib.Algebra.MvPolynomial.Nilpotent
-public import Mathlib.RingTheory.AdjoinRoot
-public import Mathlib.RingTheory.AlgebraicIndependent.Basic
-public import Mathlib.RingTheory.LocalRing.ResidueField.Polynomial
-public import Mathlib.RingTheory.QuasiFinite.Basic
-public import Mathlib.RingTheory.ZariskisMainTheorem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiscrMulMemOfIsIntegral
-public import Mathlib.RingTheory.TensorProduct.Basic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRingEquivAdicCompletionLocalizationProd
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsRegularLocalRingAdicCompletion
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RegularLocalRingNormalDomain
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsBasicOpenEqZeroOfMemIInfPowSmul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDomainOfIsIntegrallyClosedOfIsReduced
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -48,7 +30,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -79,22 +60,14 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.AdicCompletion.Completeness
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.RingTheory.Unramified.LocalStructure
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop

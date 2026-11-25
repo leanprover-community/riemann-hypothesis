@@ -4,14 +4,11 @@ public import Formalism.PeriodIntegrals.UpqRep
 public import Formalism.RealPlaceAnalysis.StatementKT
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Formalism.RealPlaceAnalysis.StatementA
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsDerivedActionFiniteDimUnitaryRep
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeightCompactDominanceOfMemHighestWeightSpan
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 public import Mathlib.Analysis.ODE.ExistUnique
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IsCompactInvariantCompactSpan
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr

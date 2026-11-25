@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.Integr
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalField
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.SeparableOfMap
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IwahoriDoubleCosets
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrbits.HoweSpace
 
 @[expose] public section

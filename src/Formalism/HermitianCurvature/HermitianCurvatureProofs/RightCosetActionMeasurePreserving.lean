@@ -2,20 +2,13 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GaXiSplit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFactor
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StrictUpperNeg
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SubMulRight
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.CategoryTheory.Countable
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section

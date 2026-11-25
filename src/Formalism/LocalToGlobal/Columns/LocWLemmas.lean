@@ -9,7 +9,6 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
 public import Formalism.LocalRingCardinality.Lemmas
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Sheaves.Presheaf
 

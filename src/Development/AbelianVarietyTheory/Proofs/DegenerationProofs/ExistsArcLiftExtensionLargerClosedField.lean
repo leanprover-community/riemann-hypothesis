@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.Relations
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsGtExtOfTorsion
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIntegralDegenerationValues
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsNumOf
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRankZero
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.HomTransport
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DetCondIffOfFieldExtension
 import Mathlib.RingTheory.Henselian

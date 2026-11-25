@@ -2,10 +2,7 @@ module
 
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ExistsPowPrincipalFractionalIdeal
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
-public import Formalism.LocalRingCardinality.DataTheta
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CmBaseFieldIntegersAndCurveIdealFacts
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsDetRoot
@@ -13,7 +10,6 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -48,18 +44,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsDiscriminantTwelfthRootOfIdealLatticeIffDelta1
-import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MidChart
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EvalAtOneExtremalMul
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Formalism.SharpRestriction.Divisibility.ProductZerothFirstParts

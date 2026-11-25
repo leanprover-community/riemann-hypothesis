@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SobContId
-public import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
@@ -11,12 +10,10 @@ import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordin
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DRhoSumAndSobOLe
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaFunctionHeisenbergWordSupLeLevelPow
 public import Mathlib.Analysis.LocallyConvex.Barrelled
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.AnalyticOnNhdTsumNpow
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SphericalEisensteinSeriesOnGroup
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RegularisedSiegelWeilFirstTerm
 
 @[expose] public section
 

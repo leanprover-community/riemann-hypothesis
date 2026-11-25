@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Statements.PrincipalLattices.LogHermFormOfUnitDiscriminant
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.HermFormPrincipalDimOne
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.HolomorphicUniformizationTangentUnimodularRiemann
 
 @[expose] public section

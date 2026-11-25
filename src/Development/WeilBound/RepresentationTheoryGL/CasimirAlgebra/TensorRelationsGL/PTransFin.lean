@@ -2,14 +2,7 @@ module
 
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 public import Mathlib.RingTheory.Artinian.Module
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Monic
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Basic
 public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.QdetFacts
 import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.LiftCommEAt

@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.CompactDerivativesBounded
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 
 @[expose] public section

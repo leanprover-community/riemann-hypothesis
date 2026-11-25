@@ -5,7 +5,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FrobFree
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.NumberTheory.Padics.ProperSpace
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Connected.Separation

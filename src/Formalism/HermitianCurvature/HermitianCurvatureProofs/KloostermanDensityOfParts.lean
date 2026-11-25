@@ -7,7 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFam
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeBoundInBanachSpace
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FubiniHeadLastPart
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InnerAveragingInputOfSliceData
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

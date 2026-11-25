@@ -3,13 +3,10 @@ module
 import all Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.LocEuler
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DecompositionGroupEquivLocalGaloisGroup
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalAdjoinRange
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Connected.Separation
 public import Mathlib.Data.FunLike.Fintype
 

@@ -1,20 +1,15 @@
 module
 
 public import CompanionTheory.HarishChandraModules.NonemptyRepresentations.NonemptyOfAntitone
-public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Mathlib.Analysis.Calculus.Deriv.Linear
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Normed.Algebra.Exponential
 public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Analysis.Matrix.Normed
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Linear
 public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import Formalism.HermitianCurvature.FrameExists2
-public import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagonalTransferAction

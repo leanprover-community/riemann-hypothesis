@@ -16,8 +16,6 @@ public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.RingTheory.HopkinsLevitzki
-public import Mathlib.RingTheory.Ideal.Height
 
 @[expose] public section
 

@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Statements.PrincipalLattices.LogH
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsConstOfSqMulTendstoZero
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsGrpObjPolarised
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsPeriodPairOfLatticeInLine
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsWeierstrassCoordinatesOnLine
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
 

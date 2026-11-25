@@ -10,10 +10,8 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBr
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.FockFEqSumOfSubsetB
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.AevalScaleMonomial
 public import Formalism.PeriodIntegrals.GTBranch
-public import Formalism.PeriodIntegrals.HwIrred
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HwIrred
 import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas
 import Formalism.LocalRingCardinality.Params
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int

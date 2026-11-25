@@ -7,7 +7,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
-import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsPrimeInvolutionOfRingInvolution, Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CmConjugationOnPrimesProperties

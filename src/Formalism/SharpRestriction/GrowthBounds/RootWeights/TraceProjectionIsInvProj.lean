@@ -10,7 +10,6 @@ import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

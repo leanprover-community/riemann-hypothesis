@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FirstSlotSliceSlotMixedCasimirZero
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.RingTheory.WittVector.IsPoly

@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgC
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLieBase
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MultOfNotMem
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 

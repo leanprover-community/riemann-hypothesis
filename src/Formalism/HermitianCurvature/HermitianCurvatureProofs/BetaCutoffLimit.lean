@@ -8,7 +8,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellVanis
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

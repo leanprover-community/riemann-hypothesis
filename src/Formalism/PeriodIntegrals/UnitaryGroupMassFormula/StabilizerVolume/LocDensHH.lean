@@ -5,7 +5,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensFibV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensVDx
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocDensHL
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

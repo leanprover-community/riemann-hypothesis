@@ -5,15 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardCokernelU
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdEApply
 public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.Algebra.Module.Submodule.Map
-public import Mathlib.LinearAlgebra.Quotient.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.Algebra.Module.Submodule.Equiv
-public import Mathlib.LinearAlgebra.Isomorphisms
-public import Mathlib.LinearAlgebra.Prod
 public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DetCommutatorMapEqCharpolyResultant
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

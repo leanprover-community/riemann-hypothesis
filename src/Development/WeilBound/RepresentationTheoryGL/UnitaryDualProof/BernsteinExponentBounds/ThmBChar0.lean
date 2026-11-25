@@ -8,7 +8,6 @@ public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Trac
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.LocStep
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.SliceVanishing
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.ModulusInduction
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.OpenSlices
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.FrobeniusReciprocity.FrobProof
 
 @[expose] public section

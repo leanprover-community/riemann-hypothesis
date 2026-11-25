@@ -5,12 +5,6 @@ public import Mathlib.Basic.Real.Basic
 public import Mathlib.Data.Finset.Card
 public import Mathlib.Data.Fintype.Basic
 public import Mathlib.LinearAlgebra.Lagrange
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.MonoidAlgebra.Defs
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.BigOperators
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.KTypeIntDomStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.WeylPos
 import Mathlib.Tactic.Lemma

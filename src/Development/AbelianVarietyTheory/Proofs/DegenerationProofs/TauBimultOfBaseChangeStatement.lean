@@ -6,8 +6,6 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Development.AbelianVarietyTheory.Definitions.Degenerations.ExistsUniquePartner
 
 -- This file was produced by scripts/clump.py from the modules listed below.

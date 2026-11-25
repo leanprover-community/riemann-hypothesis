@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TransferOn
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EqPlaceIdemOfIsPrimeIdem
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeckeOperatorMoveAcrossInvariantBilinear
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsHeckeOpFullDualLab
@@ -15,8 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Spherical
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceIdempotentVacuumHyperspecialDictionaryStatement
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-public import Formalism.LocalToGlobal.Columns.HeckeSp
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeEsymmScaledMultisetAddSegment
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeVectorIffInverseDoubleCosets
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsUnitaryChartsAllFinitePlacesFrameLatticeStatement
@@ -27,10 +23,8 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Ine
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnramifiedHeckeVacuumLargerEqSmallerStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumInertPlaceStandardCayleyPairStatement
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalThetaInertPlace
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BaseChangeThetaLiftSatakeParameterEqAddSegment
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeTransformEqAtThetaLiftOfVacuumEq
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -66,17 +60,9 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactLevelOffFinEmpty
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Mathlib.Tactic.Basify
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaVacuumHeckeIdentitySplitPlace
 import Mathlib.Tactic.Lemma
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

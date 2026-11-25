@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LGradedLemmas
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LEhwLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwrowLemmas
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal

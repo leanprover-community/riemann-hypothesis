@@ -2,23 +2,12 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.LSeries.AbstractFuncEq
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.HeisenbergTheta.HeisenbergThetaConstant.ThetaC
-public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.IsEpCont
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSummableMajorantLatticeSum
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.SchwartzBruhatMajorants.ExistsSchwartzBruhatPiMajorant
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSubValueZeroRapidDecay
-public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.SchwartzBruhatMajorants.ThetaCScalCEq
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LinearChangeMemSchwartzBruhatPi
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.GL2.GodementSection
-import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
-import GroundTheory.AutomorphicForms.LocallyProfinite
-import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.SchwartzBruhatMajorants.MeasurePreservingCompEquiv

@@ -5,9 +5,6 @@ public import GroundTheory.AutomorphicForms.InductionParabolicGroups
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIrreducibleSecondFactorOfIrreducibleProduct
 public import GroundTheory.AutomorphicForms.IwahoriFactorization
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantModulus
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RepresentationTheory.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSupercuspidalOfIsCuspidal
@@ -24,7 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsE
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CentralExponentBoundOver
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsComplementaryProductOfIsCuspidal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothIterPhi
-public import GroundTheory.LocalFields.PadicLogSeries
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.GKLocal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassTwistNeg
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
@@ -35,28 +31,19 @@ public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.ConjDual
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.ConjProd
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.CuspPairIrr
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
@@ -66,7 +53,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -79,29 +65,15 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.Compact
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.PiTensorTwist
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
-import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.PosMkIff
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.SegmentSubquotients.RhoNuRhoOfC
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductTransposeInverseDualReverse
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
 
 -- This file was produced by scripts/clump.py from the modules listed below.

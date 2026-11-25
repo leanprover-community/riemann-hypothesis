@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsEquivOfSumEq
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
 import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
-import Development.AbelianVarietyTheory.Statements.PrincipalLattices.FiniteDimensionalBase
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalToGlobal.ProjectiveLattices.AlgebraMapCAt

@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SerreCla
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.SEqOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenFiniteInfIff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenOfThickeningMorphism
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismBot
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CechVanishingForUpwardClosedCover, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatBaseChangeCohomologyFamily, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CechCohomologyFullSubcategoryIso, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SerreClassOfUpwardClosedCover, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StableCoverCechVanishing

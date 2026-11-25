@@ -6,7 +6,6 @@ public import Formalism.LocalRingCardinality.DataKap
 public import Formalism.QuotientMetricDivisors.TheoremDivIneqRowsShift
 public import Formalism.LocalRingCardinality.HostCls
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section

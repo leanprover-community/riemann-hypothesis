@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.Divisibility.DefGroup
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InstExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.EmbeddingTraceSumAlt.NormUnitsOfCalculation
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PsiCondAll
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TypedLoc
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Rat
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlagLevelCharacterEqPsiDivN

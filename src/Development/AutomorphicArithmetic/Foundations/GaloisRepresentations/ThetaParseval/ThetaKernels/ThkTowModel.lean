@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsInteger
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.WeilBound.ThetaLifts.FrameEstimates.BlockForm
-public import Development.WeilBound.ThetaLifts.FrameEstimates.SquareIntegrableWeilRange
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowDef
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowFinal
 public import Development.WeilBound.ThetaLifts.TowerModels.DetHerm
@@ -21,18 +20,13 @@ public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.Eventuall
 public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.ExistsRationalDarbouxHermitianTensorAdeles
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSchroedingerEigenvectorCompactCocycle
 public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardAddCharSymplecticLocalLatticeEqOne
-public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
 public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.TensorLatticeAtFinitePlaceEqIntegralSpanGenerato
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzMemL2
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOfMemSchA
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchrodingerPreservesSchwartz
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoMulInvOf
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.DCdE
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.Mfac
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 
 /-! # ThkTowModel: Consolidated global theta-kernel definitions and proofs (ThkTowModel). -/
 @[expose] public section

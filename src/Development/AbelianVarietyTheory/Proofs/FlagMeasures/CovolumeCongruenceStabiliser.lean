@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.OfRoo
 public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 public import Mathlib.RingTheory.Nilpotent.Exp
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramUnipotentLieLatticeDomainVolumeBound
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramUnipotentStabilizerBruhatCellConjRoot
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen

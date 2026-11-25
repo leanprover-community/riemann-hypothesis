@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.MapUgAlgebraMap
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LiftIdempotentAdicComplete
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SharpSurjectiveKerSpan
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.MapWXi
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UntiltAdicComplete
 import Mathlib.Tactic.Linter.HaveILetI
 

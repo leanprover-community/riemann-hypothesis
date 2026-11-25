@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteTw
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralTsumEnormNeTop
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OnlyStableSubspaces
 import Formalism.LocalToGlobal.IndefiniteReal.PHeisFCA
-import GroundTheory.AutomorphicForms.AdelicGLn
 import GroundTheory.GlobalFields.Adele.Topology
 
 @[expose] public section

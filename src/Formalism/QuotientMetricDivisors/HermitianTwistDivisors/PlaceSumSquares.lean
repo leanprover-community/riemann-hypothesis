@@ -1,11 +1,7 @@
 module
 
 public import Formalism.QuotientMetricDivisors.Statement
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
-public import Mathlib.RingTheory.DedekindDomain.Factorization
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.RingTheory.FractionalIdeal.Norm
-public import Mathlib.RingTheory.Norm.Transitivity
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Analysis.SpecialFunctions.Log.Monotone
 import Mathlib.Algebra.Order.Floor.Extended
@@ -47,7 +43,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar

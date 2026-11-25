@@ -3,7 +3,6 @@ module
 public import GroundTheory.GlobalFields.TateThesis.AdelicChar
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionHeisenbergInvariant
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 
 @[expose] public section
 

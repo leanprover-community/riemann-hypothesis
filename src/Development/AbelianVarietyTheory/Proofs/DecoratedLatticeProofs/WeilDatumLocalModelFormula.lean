@@ -4,12 +4,8 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsU
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LawLoc
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmEqSumLattice
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexMatrixLattice
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotMemSpanOfCommute
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmVacuumEqSplitFacSmulSum
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LocalSelfDualLatticeSplitPlaceDecomposition
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardInversePrimeRepsIntegralRightMulHecke
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LocalSchrodingerModelUniqTransportExists
@@ -51,19 +47,10 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsNormaliseMeanSquareOfCocompact
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
-import Mathlib.Topology.LocallyConstant.Algebra
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselCharacterLocalElementEqSimpleEntrySum
 

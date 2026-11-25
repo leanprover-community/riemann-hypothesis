@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOne
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConjMemCompletedLatticeIffDualSplitPlaceStatement
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 
 @[expose] public section
 

@@ -1,10 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycBasic
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSymOfModEq
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycGrp
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RootEqOfSubMem
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

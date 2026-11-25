@@ -2,8 +2,6 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.TypeStar

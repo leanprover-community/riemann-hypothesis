@@ -16,7 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliRepOfBa
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjRigidClosed
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsInducedLocus
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompEqIdOfTwists
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsObjTwistBySimilitude

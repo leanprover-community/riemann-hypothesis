@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.LocalFields.HerbrandFunction
 public import GroundTheory.LocalFields.LowerIndexQuotient
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 

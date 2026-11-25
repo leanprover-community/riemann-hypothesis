@@ -3,8 +3,6 @@ module
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.LinearAlgebra.Matrix.Rank
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import Mathlib.Analysis.Complex.Order
-public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannFormPeriodDeterminantBound
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

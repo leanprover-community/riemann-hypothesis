@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseOrderBound.Development
-public import Formalism.PeriodIntegrals.HasseOrdBd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseOrderBound.CompositionalInverseSymm
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ZeroGeneratorsLeThetaSpan
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.IntegralFormsEqSpan

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Compl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsBasisFgMaximalOrderSpanningFree
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemPerpSpan
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

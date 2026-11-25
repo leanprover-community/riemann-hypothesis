@@ -9,7 +9,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedB
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictTransformFlatBaseChange
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.DetachedLocus
 public import Mathlib.Order.Interval.Set.Monotone
-import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupFlatBaseChange
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 import Mathlib.Tactic.Linter.Style
 

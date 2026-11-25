@@ -14,17 +14,12 @@ public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAd
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.CStarAlgebra.ContinuousMap
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.ENatToNat
 import GroundTheory.GlobalFields.Adele.Compact
 import GroundTheory.GlobalFields.Adele.Discrete
 import Mathlib.Algebra.Module.Torsion.Prod
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar

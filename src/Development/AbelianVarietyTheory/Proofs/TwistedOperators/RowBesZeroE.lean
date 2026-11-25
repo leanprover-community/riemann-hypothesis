@@ -48,7 +48,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsDatOfTower, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowBesZeroE

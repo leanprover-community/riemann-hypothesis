@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RescaleCore, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.Rescale

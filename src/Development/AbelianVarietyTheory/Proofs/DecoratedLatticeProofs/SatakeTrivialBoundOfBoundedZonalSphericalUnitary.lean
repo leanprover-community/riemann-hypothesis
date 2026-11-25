@@ -3,21 +3,13 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.Analysis.Complex.LocallyUniformLimit
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Analytic.IsolatedZeros
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.GaussianBinomialClosedForm
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.TrivialParameterBound
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactUnitaryIntegralPoints
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumUnramifiedZetaSumUnitaryInert
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralRightInvariantEqSumOpenSubgroupCosetsStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SphericalDoublingSectionGraphDiagonalEqStatement
-import Mathlib.MeasureTheory.Function.L1Space.Integrable
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SummableNormCosetOut
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

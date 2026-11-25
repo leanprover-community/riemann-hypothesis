@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TotalDegreeSubstFLe
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectionalDerivFormulaAndSmooth
 import Mathlib.Algebra.Order.Floor.Extended

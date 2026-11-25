@@ -11,7 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelIndexMatrixLa
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.RationalRayLevels
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IntFormsSubset
-import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
 
 @[expose] public section
 

@@ -10,13 +10,10 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeDe
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PtBoundOfDecGap
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SummableOfSupport
 public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.SideNormalisedGap
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.ExistsIsCayleyUIff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DFactsHolds
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CayleyExistsAndAny
 import Mathlib.Algebra.Order.Star.Real
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Mathlib.LinearAlgebra.Matrix.CharP
 import Mathlib.Tactic.Lemma
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

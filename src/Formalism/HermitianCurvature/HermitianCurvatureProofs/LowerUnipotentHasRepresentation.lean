@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRCoreCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRDatumConst
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 import Mathlib.Tactic.Linter.Style

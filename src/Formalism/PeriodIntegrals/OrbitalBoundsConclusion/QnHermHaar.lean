@@ -2,13 +2,10 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConjugateTransposeLeibniz.YOperatorLeibnizRule
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.Development
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Mathlib.Analysis.Complex.RealDeriv
-public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.ElementaryGeneratorAdjoint
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.RepresentsTransferOneOne
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.GeneralSecondMinorExpansion
@@ -28,7 +25,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnRdSkew
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.NestedMinorExpansionOneZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.ElementaryGeneratorPreservesTest, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.RestrictedGramHermitianInvolution, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.Assemble, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMeasure.HermitianAlgebraGeneration, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnHermHaar

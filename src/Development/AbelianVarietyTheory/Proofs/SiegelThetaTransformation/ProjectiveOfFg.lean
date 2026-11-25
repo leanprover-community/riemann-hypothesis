@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.UnitaryDetClass
 public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.ThetaSpanAdjoint
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsAdelicUnitaryTranslateStandardLattice
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.AdmissibleHarmonicLattice
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermForm
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StandardHermitianFormHostFieldInhabitant
@@ -11,9 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Unitar
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletionFractionalIdealDivisibleEqZero
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMulMemOfMemSpan
 import Mathlib.RingTheory.PiTensorProduct
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsUnitaryOfSelfDual
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HintLogFinprod
-public import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.MeasureTheory.Measure.RegularityCompacts
 import Mathlib.Topology.UniformSpace.Uniformizable

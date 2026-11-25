@@ -1,12 +1,8 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsPeriodAtRestrict
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameDomainInSegreChart
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PairLatticeSumComap
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreChartBundle
 
 @[expose] public section

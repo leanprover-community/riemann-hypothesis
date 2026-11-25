@@ -26,8 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentHori
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnitsInvHaar
 public import Formalism.UnipotentAdelicQuotients.SiegelWeilUnitaryConvergent
 public import CompanionTheory.AutomorphicTheory.SiegelWeilFiniteness.Bridge
-import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLevi
-import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentModulus
 import Mathlib.Tactic.TypeStar
 import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 

@@ -2,11 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocOrbSumPf
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
-import Formalism.DoubleCosetMeasures.LatticeCoset
 import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.ExistsContinuousLowerUpperEntry
 import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsOpenIsIntSet
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DataCut
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumB
 

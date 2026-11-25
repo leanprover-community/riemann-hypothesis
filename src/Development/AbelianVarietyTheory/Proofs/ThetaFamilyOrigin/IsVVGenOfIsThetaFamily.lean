@@ -6,14 +6,12 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Exi
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsGenOfLocalOnBase
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ForallGeometricallyIntegralOfSmoothOfGeometrical
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverOfSubsingleton
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 @[expose] public section
 

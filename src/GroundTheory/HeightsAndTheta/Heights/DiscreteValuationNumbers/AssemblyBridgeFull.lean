@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVoc
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVocabMultiHomogIdeal
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

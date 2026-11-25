@@ -4,10 +4,8 @@ public import GroundTheory.PAdicHodge.BCrisEigenChar
 public import GroundTheory.PAdicHodge.BCrisPlusInvariants
 public import GroundTheory.PAdicHodge.BCrisRegular
 public import GroundTheory.PAdicHodge.BCrisEigenMaps
-import GroundTheory.PAdicHodge.BdRTGalois
 public import GroundTheory.PAdicHodge.GalSmulAlgebraMapPadicPlus
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

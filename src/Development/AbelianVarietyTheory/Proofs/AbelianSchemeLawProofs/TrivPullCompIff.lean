@@ -6,8 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
 
 @[expose] public section
 

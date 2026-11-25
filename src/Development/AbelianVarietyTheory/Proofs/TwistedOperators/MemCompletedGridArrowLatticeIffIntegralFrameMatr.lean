@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHatMxHomLatIff
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SmulMemLatOIdem
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RangeSndRel
-import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 
 @[expose] public section
 

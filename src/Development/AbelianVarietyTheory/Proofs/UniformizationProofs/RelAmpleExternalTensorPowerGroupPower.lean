@@ -9,8 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsAffineAndGeneratedOfWideProduct, Development.AbelianVarietyTheory.Proofs.UniformizationProofs.RelAmpleExternalTensorPowerGroupPower

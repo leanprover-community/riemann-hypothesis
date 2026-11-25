@@ -4,11 +4,9 @@ public import GroundTheory.LocalFields.Interface
 public import GroundTheory.LocalFields.FormalGroups.LubinTateGroup
 public import GroundTheory.LocalFields.IntermediateField
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
-public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.LocalFields.ExamplesLaurent
 public import GroundTheory.LocalFields.SeparableClosure
-import GroundTheory.LocalFields.Uniqueness
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

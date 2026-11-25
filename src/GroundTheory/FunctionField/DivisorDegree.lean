@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.FunctionField.Divisor
-import GroundTheory.FunctionField.Approximation
 import Mathlib.Algebra.Polynomial.Basis
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian

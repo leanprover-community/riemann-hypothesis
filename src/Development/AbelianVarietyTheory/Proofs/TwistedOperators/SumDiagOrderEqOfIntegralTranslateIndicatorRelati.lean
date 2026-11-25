@@ -2,12 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSymmetricElementaryDivisorsUnitary
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Mathlib.Tactic.Lemma
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalThetaInertPlace
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 
 @[expose] public section
 

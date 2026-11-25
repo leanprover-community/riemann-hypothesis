@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.AdelicUnitaryGroups
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -40,19 +39,12 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharpolyUnitaryEqConjugateReciprocal, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAdjoinRootLinearEquivOfCharpolyEq, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNormClassOfRationalIsometryTraceForm, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUnitaryTorusTraceFormOfHermitian, Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryRationalDiagonalHomBijective, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsTorusClassOfIrreducibleCharpolyUnitary

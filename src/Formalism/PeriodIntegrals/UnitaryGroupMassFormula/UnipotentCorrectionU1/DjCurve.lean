@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrect
 public import Formalism.HermitianCurvature.StatementU
 public import Mathlib.Analysis.Calculus.Deriv.Linear
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.CoreStar
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.HaarCompactGrowth.IsHaarOnUWsetOfIsHaarOnOfUnivEqOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.

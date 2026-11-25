@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasDerivAtZeroAndIsTheta
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
 import Mathlib.Algebra.Order.Floor.Extended

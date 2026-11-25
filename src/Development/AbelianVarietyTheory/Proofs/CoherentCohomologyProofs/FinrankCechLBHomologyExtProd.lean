@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.IsScalarTowerOfAlgebraMapEq
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsLocalizedModuleResBasicOpenOfQcqs
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsAffineOpenBiInfOfLe
-import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct

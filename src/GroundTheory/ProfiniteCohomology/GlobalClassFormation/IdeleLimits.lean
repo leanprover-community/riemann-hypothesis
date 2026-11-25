@@ -3,23 +3,13 @@ module
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LocalTransition
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Infinite
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.IntegerUnits
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Finite
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Unramified
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Decomposition
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
-public import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.IsDiscreteRepCoindStabRep
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.Levels
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LevelsColimit
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.LiesOver
-public import GroundTheory.ProfiniteCohomology.Factor
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.ApplyCompletionEmbeddingOfLocalDecompHomEqOne
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfLiesOver
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfRange
@@ -29,13 +19,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.
 import Mathlib.MeasureTheory.Integral.CompactlySupported
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.TateThesis.DegreeOneDensity
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.ProfiniteCohomology.FilteredHomology
-import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
-import Mathlib.FieldTheory.Galois.Profinite
 import GroundTheory.GlobalFields.CyclotomicCharacters.Character
 
 -- This file was produced by scripts/clump.py from the modules listed below.

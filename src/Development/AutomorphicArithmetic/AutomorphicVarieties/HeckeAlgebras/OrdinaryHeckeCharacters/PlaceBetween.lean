@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Intertwin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsContinuousRetractionOntoUnitaryLocalPoints
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL
 import Formalism.GradedWeylDivisibility.FinalD
-import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

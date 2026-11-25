@@ -3,7 +3,6 @@ module
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LeftPhaseRule.ReflectionColumnDualIsotropic
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 public import Mathlib.Analysis.SpecialFunctions.Exponential

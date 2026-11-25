@@ -2,17 +2,12 @@ module
 
 public import Formalism.GradedWeylDivisibility.StatementA
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
-public import Mathlib.LinearAlgebra.Matrix.Block
 public import Formalism.GradedWeylDivisibility.StatementD
 public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLKBasis
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLTwist
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FinalD
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 

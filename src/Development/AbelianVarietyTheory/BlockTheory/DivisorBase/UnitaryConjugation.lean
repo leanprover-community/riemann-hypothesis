@@ -3,9 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BplusOfEquivariant
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsDetRoot
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

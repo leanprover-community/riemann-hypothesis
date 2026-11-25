@@ -11,7 +11,6 @@ public import Mathlib.RingTheory.Norm.Transitivity
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.QQuasiCompact
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-public import Mathlib.CategoryTheory.MorphismProperty.Descent
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LeftEqIffLieVecSmul
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsCocharacterLieModel
@@ -22,19 +21,14 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPull
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PicardClassTrivialBySeesaw
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.GlobalFnsHolds
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsGenThetaOfIsAbelianScheme
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsAbelianSchemeAndExtendOfGenericHoms
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.KTrivOfLamEq
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SplitTorusToAbelianVarietyConst
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsHeckeQuotientTriple
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPrimitiveNormalisation
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsGroupQuotientPullback
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
-public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartOfBasis
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GermSys
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalHermitianActionPairing
 public import Mathlib.RingTheory.Flat.TorsionFree
@@ -43,30 +37,15 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuoti
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFiniteKernelNonzeroStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperMultiplicationKernelStatement
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFunctorialMap
 import Mathlib.RingTheory.DualNumber
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsaRos
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.CategoryTheory.ExtremalEpi
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsAbelianPartExtension
 
 -- This file was produced by scripts/clump.py from the modules listed below.

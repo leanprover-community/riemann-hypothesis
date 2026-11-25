@@ -24,7 +24,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -48,14 +47,12 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitAtOfIsSplitPl
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

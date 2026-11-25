@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeVacuaExistUnique
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 import Formalism.LocalToGlobal.ProjectiveLattices.JFDFree

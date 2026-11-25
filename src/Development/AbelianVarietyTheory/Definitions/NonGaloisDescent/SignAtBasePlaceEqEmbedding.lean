@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivChar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistDataAgreeAcrossCoefficients
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.CoreBC
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.LevelCuspCharacters
 
 @[expose] public section
 

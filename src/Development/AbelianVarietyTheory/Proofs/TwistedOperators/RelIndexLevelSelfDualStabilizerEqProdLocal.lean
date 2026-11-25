@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasureTo
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemOfFrame
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCongruenceLevelMapsIntoLatticeCongruence
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelLeStabilizerSelfDualLatticeFrame
-public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaLiftLevelsGoodPrimesProperties
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelAndTwistPlacesSplitDistinct
@@ -59,12 +58,8 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnramifiedQuadraticCharSignSplitEqOneInertEqNeg
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -7,12 +7,10 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscrim
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfTies
 import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 -- This file was produced by scripts/clump.py from the modules listed below.

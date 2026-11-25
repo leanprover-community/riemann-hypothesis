@@ -14,12 +14,8 @@ public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.FiniteHeig
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.FormalGroupLawCompMulNZero
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.FormalGroupPointsOfIntegralChartSpec
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.FormalModuleMatrixApplyPointsActionLaws
-public import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.MvPowerSeriesSubstConstTermsLocalAlgHomSpec
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Mathlib.RingTheory.MvPolynomial
 

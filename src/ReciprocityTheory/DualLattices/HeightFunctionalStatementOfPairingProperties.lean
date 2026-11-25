@@ -4,13 +4,10 @@ public import ReciprocityTheory.DualLattices.SqZeroOfSpan
 public import ReciprocityTheory.DualLattices.SeriesState
 public import ReciprocityTheory.DualLattices.ModuliPointsState
 public import ReciprocityTheory.DualLattices.IsFibreSq
-public import Mathlib.Algebra.Algebra.Prod
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.DualLattices.ToSigmaAddFstZeroFst, ReciprocityTheory.DualLattices.HeightFunctionalStatementOfPairingProperties

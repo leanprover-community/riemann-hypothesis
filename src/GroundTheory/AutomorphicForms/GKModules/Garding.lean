@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import GroundTheory.AutomorphicForms.GKModules.ParametricIntegral
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.MeasureTheory.Group.Integral
 
 @[expose] public section

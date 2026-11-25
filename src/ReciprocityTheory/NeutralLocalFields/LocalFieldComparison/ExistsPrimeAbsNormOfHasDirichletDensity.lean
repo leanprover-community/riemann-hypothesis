@@ -7,7 +7,6 @@ public import Mathlib.NumberTheory.RamificationInertia.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TendstoPrimeIdealZetaSumUniv
-public import Mathlib.Analysis.PSeries
 
 @[expose] public section
 

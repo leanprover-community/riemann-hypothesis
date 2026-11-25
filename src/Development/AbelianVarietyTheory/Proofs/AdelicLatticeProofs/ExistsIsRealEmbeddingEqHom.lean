@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.AlgebraMapNormOfBasisOneSqrt
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.MemPowSub
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormPrincipleOfIsCyclic
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsNormFromBaseChangeBaseChangeProperties
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroup
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ScaledBaseChangeFibreSectionCalculus
 

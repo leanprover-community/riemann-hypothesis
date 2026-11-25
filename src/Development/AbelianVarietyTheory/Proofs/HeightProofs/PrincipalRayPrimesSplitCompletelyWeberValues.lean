@@ -8,25 +8,17 @@ public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AddMonoi
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ModularJExpansionAndPolynomialAndIsIntegral
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Mathlib.RingTheory.Valuation.LocalSubring
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.HasSumLocallyUniformlyWeierstrassZetaExcept
-public import Mathlib.RingTheory.LocalRing.LocalSubring
 public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.FiniteDimensionalOfSz
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsFieldCmCurvesUnitDiscriminant
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.WeierstrassPComplexMultiplicationCongruenceModPr
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.WeierstrassPTorsionIntegralAndDistinctMod
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsWeierstrassPMulOde
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorsionIntegralDistinctOfPos
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.WeberValuesFiniteAlgebraicPermuted
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRingEquivComplexCompEq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -37,13 +29,8 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -52,7 +39,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -65,14 +51,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.NormNum.Parity
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

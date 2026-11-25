@@ -9,7 +9,6 @@ import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.TorusInj
 public import Mathlib.CategoryTheory.MorphismProperty.Descent
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 

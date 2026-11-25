@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.Unita
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlagLevelCharacterEqPsiDivN
-import Formalism.LocalToGlobal.Divisibility.DefGroup
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
 
 @[expose] public section

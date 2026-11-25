@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LevelMatchIff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ColumnWittFrameBasisBlockGram
-public import Formalism.LocalToGlobal.HermitianForms.TiedStep
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ColumnWittFrameBasisBlockGramStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryStabiliserOrthogonalSummand
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianClassFiniteness.RtUnitaryOf
@@ -44,12 +41,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ColDict
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic

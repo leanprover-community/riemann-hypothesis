@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsHcharPrescribedTrivial
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussSumNeZeroOfRamified
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-import Formalism.DoubleCosetMeasures.Statement
 import GroundTheory.GlobalFields.SemilocalAlgebras.LocalDegree
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

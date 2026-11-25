@@ -2,13 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.CMModuli.ProjectiveSpaceOverSpec
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsIndEtaleOverEtaleOfIsIndEtale
-public import Mathlib.RingTheory.AdicCompletion.Algebra
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsNoetherianRingOfIsAdicComplete
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
-public import Mathlib.RingTheory.AdicCompletion.Completeness
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.Noetherian.Defs
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIndEtaleAlgebraOfStrictlyHenselianEtaleStalkAf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStrictHenselisationOfDirectedUnion

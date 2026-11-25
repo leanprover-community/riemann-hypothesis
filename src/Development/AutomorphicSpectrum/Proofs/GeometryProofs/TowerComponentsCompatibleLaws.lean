@@ -9,10 +9,6 @@ public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EvLApply
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FramePointBorelSectionScaling
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
-public import Mathlib.RingTheory.AlgebraicIndependent.AlgebraicClosure
-public import Mathlib.LinearAlgebra.Matrix.Block
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjEmbRtOfNe
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginGenericFrame
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CInfGood
@@ -28,12 +24,7 @@ import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.ProIsoAt
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
-import Formalism.LocalRingCardinality.DataHost
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PolyGrowthStatementPfB
 import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

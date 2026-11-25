@@ -10,10 +10,7 @@ public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointE
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ThickenedPointToTorusExtensionGenerator
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsGenLiftOfIsNilpotent
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsNilpotentOfRd, Development.AbelianVarietyTheory.Proofs.UniformizationProofs.EvSurjective, Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsEvenCubicalTrivialisationLiftNilpotent

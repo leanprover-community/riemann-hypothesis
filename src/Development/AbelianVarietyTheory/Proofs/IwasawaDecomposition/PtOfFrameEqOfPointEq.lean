@@ -11,9 +11,7 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtIffIsDer
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0CompLinear
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsEigAtIffOfIsDerivAt0
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UniformizationPeriodLatticeChange
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfB
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

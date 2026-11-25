@@ -12,13 +12,8 @@ public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TateBasisMatrix
 public import Mathlib.Algebra.Module.ZMod
 public import Mathlib.FieldTheory.Finiteness
-public import Mathlib.LinearAlgebra.Dimension.Finrank
 public import Mathlib.RingTheory.Algebraic.Defs
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import Mathlib.Analysis.SpecificLimits.Basic
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 public import Mathlib.RingTheory.Algebraic.Integral
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LineBundleGlobalSectionsFunctionFieldIff
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatAndSurjectiveOfIsFiniteAbelianEnd
@@ -29,7 +24,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DenseTorsionAndEqOne
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EqProdOfMul
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSecImageNonzeroLocus
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.MapDegreeEqExpCharPowMulCardKernel
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PolarisationFormIntPolynomialBundles
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PrincipalPolarisationVolumeFormSymmetricAmple
@@ -86,21 +80,11 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.QuasiAffine
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionsGrowthBasicPropertiesAbelianVariety
 import Mathlib.Algebra.Ring.IsFormallyReal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 

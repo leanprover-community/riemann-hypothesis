@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.ElementDenominator
 public import Formalism.PadicSubsetSums.StableGradedCounts.ARCReuse
 public import Mathlib.RingTheory.OrderOfVanishing.Basic
-public import Formalism.PadicSubsetSums.CentralIdempotents.WindowSums
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 

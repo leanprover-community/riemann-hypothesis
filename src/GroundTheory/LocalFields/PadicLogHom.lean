@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.PadicLogSeries
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
-import GroundTheory.LocalFields.ExamplesCharZero
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.Tactic.TypeStar

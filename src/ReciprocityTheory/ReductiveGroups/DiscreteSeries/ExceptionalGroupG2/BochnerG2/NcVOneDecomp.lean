@@ -5,13 +5,10 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.InnerCrossOpEigEqZero
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Numerics
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.Numerics
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.Analysis.InnerProductSpace.Spectrum
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.NcVOneDecomp
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigRep
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 

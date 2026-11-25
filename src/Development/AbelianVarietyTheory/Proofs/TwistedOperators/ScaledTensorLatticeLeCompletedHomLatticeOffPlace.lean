@@ -2,12 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteAdeleOfSplitPlacesIdempotentSum
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RedMFrMapAdjZero
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMultiplierShiftedLatticeAwayFromPlaces
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SelfDualLatticesAtLevel
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemCompletedMatrixGroupOfLocalMultiplier
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThPDatumEq
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
@@ -17,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSumAddConjIdempotentConjFixed
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
 import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

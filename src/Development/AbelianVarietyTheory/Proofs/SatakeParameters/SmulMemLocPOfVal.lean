@@ -15,9 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Exists
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsMulOfApprox
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.KernelAwayPrimes
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RenameMemDualWeyl
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelJets

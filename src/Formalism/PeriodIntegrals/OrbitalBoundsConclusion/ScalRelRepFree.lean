@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Formalism.PeriodIntegrals.ScalRelRepFree
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 

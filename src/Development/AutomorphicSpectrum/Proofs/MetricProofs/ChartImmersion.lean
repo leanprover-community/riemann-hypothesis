@@ -3,8 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVApply
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartNinth
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalIntegrability
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpen
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.PMatStepColsEntry
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

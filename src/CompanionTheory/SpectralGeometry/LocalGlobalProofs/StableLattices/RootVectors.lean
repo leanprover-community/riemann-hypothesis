@@ -3,7 +3,6 @@ module
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-import Mathlib.Analysis.CStarAlgebra.Matrix
 
 @[expose] public section
 

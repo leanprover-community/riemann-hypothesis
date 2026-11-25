@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Unitar
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalPointsIntegralPointsMembership
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConjugateMinimaInstance
 import Mathlib.Tactic.Linter.HaveILetI

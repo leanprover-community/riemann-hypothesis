@@ -5,8 +5,6 @@ public import Mathlib.Tactic.Continuity
 public import Mathlib.GroupTheory.Perm.DomMulAct
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 

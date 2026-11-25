@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 import Formalism.LocalToGlobal.GlobalTheory.GL4.BranchingNormalisedOfAdjoint
 import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdelicFunctionRightTranslateDiamond
 import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 @[expose] public section
 

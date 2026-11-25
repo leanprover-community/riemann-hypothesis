@@ -5,19 +5,12 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PlacesT
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilCharacterSplitPlaceExistsContinuousNontrivia
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumLemmas
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselToJacobiFlatSchwartzLinear
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ContrFactor
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsPreserveSchwartzBruhatAndSurjective
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergFrameHalfInverse
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousCharactersLocallyConstantNonarchLocalF
-public import Aesop.BuiltinRules
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SingleMemIdAt
-public import Development.AbelianVarietyTheory.Definitions.Foundations.EqPlaceIdemOfIsPrimeIdem
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsQuasiFam
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapFourierJacobiFactorsLocalFlat
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LocalFlatMapDualColumnMultiplicationLaws
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittHyperbolicAnisotropicCommuteLevi
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -52,18 +45,12 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

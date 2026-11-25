@@ -3,8 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Imports
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.Polynomial
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit

@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.GaloisValuations.Global
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.Kloc
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.MemRangeOfAevalRatEqZero

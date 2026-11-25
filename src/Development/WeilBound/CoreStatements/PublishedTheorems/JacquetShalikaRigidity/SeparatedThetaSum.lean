@@ -9,8 +9,6 @@ public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.ColumnConjugationMeasure
 public import GroundTheory.AutomorphicForms.ReductionFinite
 import Aesop.Main
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.SepSum, Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.SeparatedThetaSum

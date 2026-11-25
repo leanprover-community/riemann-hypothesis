@@ -6,7 +6,6 @@ public import Mathlib.Tactic.ENatToNat
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.Generation
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.ModulesAbExact
 import Mathlib.AlgebraicGeometry.Morphisms.Finite
-import Mathlib.CategoryTheory.Sites.EpiMono
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

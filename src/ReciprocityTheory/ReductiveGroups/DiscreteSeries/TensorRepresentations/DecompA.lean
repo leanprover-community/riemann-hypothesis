@@ -10,7 +10,6 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

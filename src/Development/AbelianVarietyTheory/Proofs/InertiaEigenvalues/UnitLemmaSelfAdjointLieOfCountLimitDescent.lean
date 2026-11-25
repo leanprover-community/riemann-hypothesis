@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaGramDetEqOneOfSelfDualLattice
-public import Mathlib.RingTheory.Norm.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GramDetEqNormMulGramDetOne
 import Mathlib.Tactic.Linter.Style
 

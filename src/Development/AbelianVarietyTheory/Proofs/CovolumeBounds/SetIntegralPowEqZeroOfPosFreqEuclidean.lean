@@ -12,7 +12,6 @@ public import Mathlib.Topology.Algebra.Module.Multilinear.Basic
 public import Mathlib.Algebra.Module.ZLattice.Basic
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsEventuallyNormRiemannThetaTermLe
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Fourier.Notation
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CovolumeBounds.SummablePiProd, Development.AbelianVarietyTheory.Proofs.CovolumeBounds.SetIntegralPowEqZeroOfPosFreqEuclidean

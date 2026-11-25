@@ -7,11 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.InL
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OneSubIdemQMulSelf
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PlaceIdempotentActsOnSupportedAndOff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactLevelOffFinEmpty
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmSplitHalves
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 

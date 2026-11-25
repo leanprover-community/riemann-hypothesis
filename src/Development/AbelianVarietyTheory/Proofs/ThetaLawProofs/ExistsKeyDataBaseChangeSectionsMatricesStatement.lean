@@ -4,9 +4,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.FiniteType
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiCompact
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-public import Mathlib.AlgebraicGeometry.IdealSheaf.Basic
-public import Mathlib.AlgebraicGeometry.IdealSheaf.Subscheme
-public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.PwIsoIsGen
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.BasisPowerSectionsLocalBaseChange

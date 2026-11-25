@@ -10,7 +10,6 @@ public import Formalism.LocalToGlobal.Columns.CmUnramifiedOfFieldConditions
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
 public import Formalism.LocalToGlobal.GroupLattices.Joint0
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,8 +5,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 
 @[expose] public section
 

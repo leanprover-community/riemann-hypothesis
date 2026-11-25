@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitEqNormCo
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LiftVAlgebraMapMul
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FromBlocksMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
-import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

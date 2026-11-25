@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZer
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomialVectorChangeOrthonormalBasesSubst
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsFockVacAtOfIsThetaAt
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec

@@ -15,9 +15,7 @@ public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCo
 public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
 public import GroundTheory.ProfiniteCohomology.Colimit
 public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Hilbert90
-public import Mathlib.FieldTheory.IsSepClosed
 import Mathlib.Tactic.TypeStar
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

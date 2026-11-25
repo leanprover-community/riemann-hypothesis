@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.TraceClass
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCusp
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-public import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

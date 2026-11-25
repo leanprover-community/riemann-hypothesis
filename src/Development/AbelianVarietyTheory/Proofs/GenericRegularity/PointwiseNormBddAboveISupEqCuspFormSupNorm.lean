@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSup
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
-public import Formalism.LocalToGlobal.ProjectiveLattices.CompOrd
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PointwiseNormSectionEqFlagDomainNorm
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
 import Mathlib.Tactic.Linter.Style

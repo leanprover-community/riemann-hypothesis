@@ -3,7 +3,6 @@ module
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Reciprocity
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.CoeNormEqProdSmulNorm
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Multiplicative
-import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.Polynomial.Basic

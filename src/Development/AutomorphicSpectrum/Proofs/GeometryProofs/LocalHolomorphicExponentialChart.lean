@@ -5,32 +5,18 @@ public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 public import Mathlib.Tactic.ENatToNat
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasChainA
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import Mathlib.Algebra.DualNumber
 public import Mathlib.RingTheory.Smooth.StandardSmooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AnChart
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OneLeftSpMap
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsAffineLieBasisBaseChange
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.GroupTheory.MonoidLocalization.Away
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.RingTheory.OreLocalization.Ring
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.RingTheory.Localization.Defs
 public import Mathlib.RingTheory.Localization.Integer
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DerivationVanishingConstants
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HolomorphicHomDetermined
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecMapCompAppLE
 
 -- This file was produced by scripts/clump.py from the modules listed below.

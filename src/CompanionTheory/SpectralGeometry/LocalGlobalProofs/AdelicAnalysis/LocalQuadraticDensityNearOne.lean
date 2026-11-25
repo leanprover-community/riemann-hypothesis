@@ -2,14 +2,9 @@ module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.Symmetric
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteFieldQuadraticFormPointCount
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.PrimitiveVectorQuadraticLevelMeasure
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DegreeOnePrimeReductionSplitPlaceDictionary
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StandardLocalHaarProperties
-import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 
 @[expose] public section
 

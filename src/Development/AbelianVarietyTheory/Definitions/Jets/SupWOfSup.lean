@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.StatementQ
 import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
-import Formalism.HermitianCurvature.BesselNonvanishingReduction
 
 @[expose] public section
 

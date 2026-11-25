@@ -1,9 +1,7 @@
 module
 
 public import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.PiClosU
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.PowerBoundFastDecay
 import Aesop.Main
-import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.LogAbsEqLogIdeleNorm
 
 @[expose] public section
 

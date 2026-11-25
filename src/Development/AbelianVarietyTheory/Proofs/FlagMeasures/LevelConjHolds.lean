@@ -5,15 +5,12 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrLin
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicColumnLatticeEqSpanPartTransportedFrameStatement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfDualAt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProjectionMovesTypeVectorsModLevel
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TransportedFiniteCharacterInverseExpTrace
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsCoprimeProjectionAdelicLatticeIntoColumnsStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DualLatticeLocalCharacterization
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MiddleLatticeSelfDualAnisotropicPairingStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TransportedColumnLatticeHasLevelAndDualGeneratorStatement
-public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAdelicCorrectionLevelCharacter
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -54,13 +51,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralFiniteAdeleIsoCommutesWithConjugation
 import Mathlib.Tactic.Linter.Style
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ColDict
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ColumnWittFrameBasisBlockGram
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryDatumLevelPrimeSplitDegreeGramFacts
 
 -- This file was produced by scripts/clump.py from the modules listed below.

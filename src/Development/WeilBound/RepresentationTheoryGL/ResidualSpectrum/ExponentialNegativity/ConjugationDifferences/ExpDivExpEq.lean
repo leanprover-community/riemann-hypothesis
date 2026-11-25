@@ -3,9 +3,7 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.L2DecayOfCountEscape
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ConjugationDifferences.ExistsNatCastConjMem
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ConjugationDifferences.ExistsNormConjArchLe
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
-import GroundTheory.GlobalFields.Adele.Topology
 
 @[expose] public section
 

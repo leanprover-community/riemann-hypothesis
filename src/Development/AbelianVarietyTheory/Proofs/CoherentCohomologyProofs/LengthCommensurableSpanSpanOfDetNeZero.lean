@@ -3,10 +3,8 @@ module
 public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.RingTheory.OrderOfVanishing.Noetherian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.OrderOfVanishing.Basic
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.LengthCommensurableMapIffOfInjective
 public import Mathlib.RingTheory.KrullDimension.PID
 import Mathlib.Order.CompletePartialOrder

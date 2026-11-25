@@ -9,15 +9,9 @@ public import Mathlib.Algebra.MonoidAlgebra.Basic
 public import Mathlib.RingTheory.TwoSidedIdeal.Operations
 public import Mathlib.RingTheory.Congruence.Hom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
-public import Mathlib.RingTheory.TensorProduct.Maps
-public import Mathlib.RingTheory.SimpleModule.Basic
-public import Mathlib.RingTheory.Artinian.Defs
-public import Mathlib.RingTheory.Artinian.Module
 public import Mathlib.RingTheory.Flat.Basic
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.Style
 

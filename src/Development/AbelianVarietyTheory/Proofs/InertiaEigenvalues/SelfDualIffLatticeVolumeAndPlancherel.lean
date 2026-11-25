@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualMeasureExistsUniqueFourierInversion
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedStandardAddCharConductorProperties
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Real

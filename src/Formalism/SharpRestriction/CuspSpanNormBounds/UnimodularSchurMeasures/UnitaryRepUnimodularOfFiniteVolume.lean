@@ -3,9 +3,7 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrdStronglyMeasurable
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrsSecondCountableAbs
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SphericalFunctionIntegrableOfLocal
 import Mathlib.MeasureTheory.Measure.SeparableMeasure
 
 section

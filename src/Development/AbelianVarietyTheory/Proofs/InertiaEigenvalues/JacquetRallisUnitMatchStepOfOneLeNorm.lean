@@ -11,9 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormMul
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GeneralLinearHaarIsMulRightInvariantUnramified
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegralSumIndicatorTranslate
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BorderedInvariantsAndHankelDetMapRingHom
-public import Mathlib.Topology.Sets.Compacts
-public import Mathlib.Analysis.Normed.Field.ProperSpace
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMulStarEqOfNormOneUnramifiedQuadratic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisOrbitalIntegralsInvariantLocallyCon
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryOrbitNormalFormUnitInvariant
@@ -70,8 +67,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Topology.Algebra.Star.Unitary
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryActionHermitianInvariantsTransitive
 import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.

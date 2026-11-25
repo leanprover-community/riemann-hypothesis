@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 public import Formalism.HermitianCurvature.StatementU
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Archimedean.Real.Hom

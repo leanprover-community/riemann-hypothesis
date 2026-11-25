@@ -4,8 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureR
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.L2Cusps.AbsCompactAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.FNonneg
-import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.DifferentialTranslates.DifferentiableAtOm
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.NormEucSq, Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.ThStmt

@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuotientInvarian
 public import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
 public import Mathlib.MeasureTheory.Measure.Prod
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuBesselLoc
-public import Formalism.PeriodIntegrals.QuotInv
 import Mathlib.Tactic.Lemma
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QuotSetU
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuotientMeasureRightInvariant

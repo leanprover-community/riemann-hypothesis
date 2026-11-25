@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtSizePtG
 public import Formalism.HermitianCurvature.StatementTBB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AeNeZeroComplex
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEX_UwTop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGCongr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGInt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PbGermRateLowBOfParts

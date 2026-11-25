@@ -3,8 +3,6 @@ module
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.Flat.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegAVpt
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 

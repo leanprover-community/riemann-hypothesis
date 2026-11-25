@@ -5,24 +5,14 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermInf
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RatTuple
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DeltaEqLatticeIndex
-public import Mathlib.MeasureTheory.Group.Defs
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitHermOfDet
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdeleHaarMapEqScaledVolume
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StandardAdelicCharacter
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AdelicCharacterArchimedeanForm
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.SchwartzBruhatEqSumPure
 import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Algebra.Order.Floor.Extended
@@ -42,10 +32,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -67,34 +54,19 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelWeilUnitarySchrodinger
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaPartD
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.BigCellDefs
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.ThetaOrbits
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfCo
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Data.Finsupp.Pointwise
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DeltaConjInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DeltaPosIndex, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DisjointTranslatesVolumeBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussSumFiniteAverageBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussSumQuadraticCharacterBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeLevelOpenCompact, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeLevelsNeighbourhoodBasis, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairingBiadditive, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairingOnRationalTupleFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PhaseCocycleBimultiplicative, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PhaseContinuousUnitary, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RationalCharacterKernelScaling, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsNatMulMem, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RationalTupleInLatticeLevel, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceDualDenominatorBounded, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLocalOrbitalIntegralBounded, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLocalOrbitalIntegralBoundedStatement

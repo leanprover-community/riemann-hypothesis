@@ -2,11 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.PullChartIsLB
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsClosedImmersionBySectionsOfSpan
-public import Mathlib.Algebra.MonoidAlgebra.Defs
-public import Mathlib.Algebra.Ring.Subring.Basic
-public import Mathlib.LinearAlgebra.Basis.Defs
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.LinearAlgebra.Basis.Basic
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsPartPartSec
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPowEqTorus
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUniqueIsRatio
@@ -64,7 +59,6 @@ import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 

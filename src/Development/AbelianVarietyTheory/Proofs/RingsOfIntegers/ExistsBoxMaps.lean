@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsBoxPullGen
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.RatioTrans
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Splits
 
 @[expose] public section
 

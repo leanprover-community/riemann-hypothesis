@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.StatementB
 import Formalism.HermitianCurvature.CompositeFormulaLevelZero
-import Formalism.HermitianCurvature.StatementQ
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section

@@ -11,7 +11,6 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepre
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.UnimodularOfMemGenusOrtho
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 import Mathlib.Algebra.Module.StablyFree.Basic

@@ -3,7 +3,6 @@ module
 public import Formalism.SatakeDualWeyl.StatementF
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
-public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

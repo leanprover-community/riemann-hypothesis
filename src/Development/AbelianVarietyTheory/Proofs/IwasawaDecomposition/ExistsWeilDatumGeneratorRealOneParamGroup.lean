@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsQuadOfPlane
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FockVacuumAnnihilationEquationRealCoordinates
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
@@ -17,9 +16,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralEqOfNorms
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

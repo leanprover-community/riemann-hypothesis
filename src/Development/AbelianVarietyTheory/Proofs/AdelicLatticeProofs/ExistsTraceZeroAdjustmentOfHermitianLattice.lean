@@ -3,7 +3,6 @@ module
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermHyperbolic
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ExistsNatSmulMem
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 

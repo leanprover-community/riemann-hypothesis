@@ -3,12 +3,7 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.SliceShift
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SiegelHeights.InfEmbGrpEq
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.DecayUniform
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelCount
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelFinite
-import GroundTheory.GlobalFields.Adele.Topology
 
 @[expose] public section
 

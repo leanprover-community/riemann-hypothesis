@@ -6,11 +6,7 @@ public import Formalism.PadicSubsetSums.StableGradedCounts.LocalEstimateIVOfType
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 public import Formalism.CyclotomicNorms.NonsquarefreeBounds.NonsquarefreeMonicBoundHolds
 public import Formalism.SharpRestriction.LevelLetterCocycles.ResidualIrreducibleOfTheoremThreePrime
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NeZeroOfMemRoots
 
 -- This file was produced by scripts/clump.py from the modules listed below.

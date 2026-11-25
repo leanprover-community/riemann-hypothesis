@@ -5,26 +5,12 @@ public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.Local
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.WDBasic
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.GenericIrreducibility.NormEqOneOfIsUnitarisableU
 public import GroundTheory.LocalFields.LocalZetaChar
-public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.DiscreteGroups.GlobalIrreducibility.DzApprox
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompletionBaseChangePlaces
-public import Mathlib.RingTheory.Ideal.Maximal
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardQuotientEqOfPowSubSelfMem
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqOfRootCongrOfDerivUnit
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExtensionUnramifiedAtOnePlace
 public import Development.DiscreteGroups.GlobalIrreducibility.DzIneEq
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
-public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.Algebra.Algebra.Equiv
-public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.Algebra.CharP.Lemmas
 public import Mathlib.Algebra.Group.AddChar
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LocalLanglandsGL
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.IsSemisimpleInducedParam
@@ -37,26 +23,13 @@ public import CompanionTheory.AutomorphicTheory.PlaceSeparation.IsOpenQuotientMa
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.ArtEx
 public import Development.DiscreteGroups.GlobalIrreducibility.DzGalRes
 public import Development.DiscreteGroups.GlobalIrreducibility.ExistsIneOfVEqOne
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer
 public import Development.DiscreteGroups.GlobalIrreducibility.DzIsoKO
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrincipalCongruenceFixedVectorsLeSmoothVectors
-public import Development.DiscreteGroups.GlobalIrreducibility.ExistsOfMemKOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Mono0OfLpDimEqOne
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.GoodMap
-import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
-import ReciprocityTheory.GaloisValuations.GlobalA
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusPowApplySubPowLtOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NotMemSqOfDerivative
-import Development.DiscreteGroups.GlobalIrreducibility.DzNormV
-import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import GroundTheory.LocalFields.PadicLogSeries
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.NormEqProd
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.ParOne

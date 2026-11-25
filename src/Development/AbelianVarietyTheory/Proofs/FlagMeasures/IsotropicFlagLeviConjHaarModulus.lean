@@ -3,30 +3,18 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-public import Formalism.RealPlaceAnalysis.Complexify
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.LinearAlgebra.Determinant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviMaxCompactClosedSubgroups
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.Etale.Weakly
 public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.TotallySplit
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-public import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GaugeMeasureMatrixAlgebraSubgroupLocalAsymptotic
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.RightDerivativeZeroOutsideSupport
 public import Mathlib.Analysis.Calculus.BumpFunction.Normed
-public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DoubledFlagSumEqUnipotentDimAndLayerProd
-public import Mathlib.LinearAlgebra.Matrix.Trace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagUnipotentRadicalClosedSubgroupKeeps
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.SimpleRing.Principal
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.InitialStatement
 import Mathlib.Algebra.Order.Star.Int
@@ -34,8 +22,6 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Tactic.Linter.Style
 

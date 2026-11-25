@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Equiv
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.FixedDense
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocEmb
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.IwasawaCompletion.AwayPartMulIotaWPart
-import GroundTheory.AutomorphicForms.TensorProductTheorem.Irreducible
-import GroundTheory.AutomorphicForms.TensorProductTheorem.Places
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms

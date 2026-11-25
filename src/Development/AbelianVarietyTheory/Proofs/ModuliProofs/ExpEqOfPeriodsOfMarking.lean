@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimag
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitOnInjectiveOfCommRing
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen

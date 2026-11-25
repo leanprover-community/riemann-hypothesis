@@ -9,10 +9,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWe
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquenessConjugation
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialAdjointOfParts
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
 

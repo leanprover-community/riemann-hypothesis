@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFormNotInCoordIdeal
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemOfAevalEqZero
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVo
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.HRAddSmul
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.MeasureImageCosets
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.OmAtComplZero
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocDensHI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

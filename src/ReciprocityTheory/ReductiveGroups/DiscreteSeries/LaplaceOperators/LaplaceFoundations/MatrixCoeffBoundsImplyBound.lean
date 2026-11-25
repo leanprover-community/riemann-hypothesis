@@ -13,7 +13,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.OneParameterSubgroups.OneParam, ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.MatrixCoeffBoundsImplyBound

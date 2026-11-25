@@ -7,12 +7,9 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfL
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.GlobalConditionOfLocalAgreement
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InnerPreimageEqOfLocalInnerLatticeEq
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfLocGlob
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfQ
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalInnerLatticeEqOfInnerPreimageEq
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsComplementUnitaryMulActionLocalInnerDatum
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalAutomorphismLocalExtensionMovesLatticesStatement
 import Mathlib.Algebra.Order.Floor.Extended
@@ -54,21 +51,10 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Tactic.Lemma
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

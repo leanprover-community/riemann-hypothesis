@@ -10,7 +10,6 @@ public import Mathlib.GroupTheory.FiniteAbelian.Duality
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonemptyRayDataOfNeZero
-public import Mathlib.Analysis.Normed.Group.FunctionSeries
 
 @[expose] public section
 

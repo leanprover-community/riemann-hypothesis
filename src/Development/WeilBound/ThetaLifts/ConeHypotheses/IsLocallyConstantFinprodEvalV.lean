@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.AdmCpt
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 

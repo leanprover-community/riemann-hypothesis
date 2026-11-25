@@ -8,8 +8,6 @@ public import Mathlib.AlgebraicGeometry.Noetherian
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RingHomFlatCodescendsAlongFaithfullyFlat
 public import Mathlib.RingTheory.LocalRing.Module
-public import Mathlib.Algebra.Module.FinitePresentation
-public import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation
 public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
 public import Mathlib.RingTheory.Etale.QuasiFinite

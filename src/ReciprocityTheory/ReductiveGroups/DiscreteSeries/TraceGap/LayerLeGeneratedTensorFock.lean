@@ -10,11 +10,7 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.GsBasisP
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.ProjectionCommutesDerivedAction
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TraceEqTraceRestrictOfRangeLe
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdMatConjTranspose
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CsqDdPt
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.MemTensorFockOfCoeffs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.WKTensFockGenSub, ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.LayerLeGeneratedTensorFock

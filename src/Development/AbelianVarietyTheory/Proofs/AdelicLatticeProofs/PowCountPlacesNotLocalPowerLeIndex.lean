@@ -8,11 +8,7 @@ public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CyclicKummerNormFixedHilbert90
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsKum
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HerbrandPrimeOrder
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PIdxUnitsFiniteExtensionAdicCompletion
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.GroupTheory.Index
-public import Mathlib.GroupTheory.OrderOfElement
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitsLocalPowersAtPlacesIndexLe
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitsMappingToPowersLeUnitsLocalKummerNorms
@@ -21,7 +17,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsApproxModPowers, Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUnitNotLocalKummerNormOfNotPow, Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PowCardLeIndexIInfOfPrime, Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PowCountPlacesNotLocalPowerLeIndex

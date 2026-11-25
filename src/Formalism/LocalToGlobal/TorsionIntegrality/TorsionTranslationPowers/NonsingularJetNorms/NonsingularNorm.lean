@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementU
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

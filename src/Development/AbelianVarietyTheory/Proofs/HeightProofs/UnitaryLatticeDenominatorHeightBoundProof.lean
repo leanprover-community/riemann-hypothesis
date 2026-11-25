@@ -3,14 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.DenomBound
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
-public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
-public import Mathlib.Analysis.Normed.Ring.Ultra
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsNatMulMemRingOfIntegers
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 
 -- This file was produced by scripts/clump.py from the modules listed below.

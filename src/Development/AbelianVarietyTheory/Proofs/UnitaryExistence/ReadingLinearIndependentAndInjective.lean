@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedMod
 public import Formalism.LocalToGlobal.ProjectiveLattices.ReadAlg
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.NormConst
 import Formalism.LocalToGlobal.ProjectiveLattices.RulInst
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

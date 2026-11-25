@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.HerbrandQuotients.UnitsHerbrand
-import GroundTheory.GlobalFields.HerbrandQuotients.LatticeBridge
-import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsExact
 import Mathlib.Algebra.CharP.Pi
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.Etale.Weakly

@@ -2,7 +2,6 @@ module
 
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StageData
 public import Mathlib.Probability.Kernel.Defs
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicUnitaryGroupLocallyCompact
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.BlockOneScalarPreservesNondegenerate
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasureGeneralRankExtension
@@ -10,8 +9,6 @@ public import Mathlib.MeasureTheory.Function.Floor
 public import Mathlib.Probability.Kernel.Composition.MapComap
 public import Mathlib.Probability.Kernel.MeasurableLIntegral
 public import Mathlib.Probability.Kernel.Basic
-import Formalism.UnipotentAdelicQuotients.SWXSDefs
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section

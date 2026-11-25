@@ -1,9 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.LubinTateTower
-import GroundTheory.LocalFields.Eisenstein
-import GroundTheory.LocalFields.ExamplesLaurent
-import GroundTheory.LocalFields.SeparableClosure
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.CompletePartialOrder

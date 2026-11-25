@@ -8,7 +8,6 @@ public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ComplexMatrixGaussSumNormIntegralGalois
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MatrixGaussSumSingularAndInvertible
 import Std.Tactic.BVDecide.Normalize.Prop

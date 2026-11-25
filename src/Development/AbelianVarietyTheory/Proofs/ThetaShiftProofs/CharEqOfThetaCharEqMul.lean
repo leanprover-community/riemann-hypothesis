@@ -15,7 +15,6 @@ import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Algebra.Star.Real
 import ReciprocityTheory.ThetaQuasiPeriods.Transl
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HasSumPolyDerivMulProdAddMatrix
 
 @[expose] public section
 

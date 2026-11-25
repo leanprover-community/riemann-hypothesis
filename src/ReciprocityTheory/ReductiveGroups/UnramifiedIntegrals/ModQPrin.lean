@@ -6,7 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDeltaInt
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEisInt
 import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
-public import Mathlib.NumberTheory.ModularForms.CuspFormSubmodule
 
 @[expose] public section
 

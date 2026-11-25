@@ -5,11 +5,9 @@ public import Development.AbelianVarietyTheory.Definitions.Degenerations.BaseFac
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.IsAffineSplitTorusLeft
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AbelianSchemeProperClosureDataBasicProperties
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsProperIffOfSplit
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SplitTorusHomProperTrivialField
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsGeometricTestMapClassicalPointStatement
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsNeZeroOfLe
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUniformisationTestOfGeometricTestStatement
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.CompanionTheory
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsoSpecialFibreTestGeometricTestStatement
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsSectionExtendingTorsionPointsSupportStatement
@@ -21,14 +19,9 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsU
 public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.UTorsSt
 public import Development.AbelianVarietyTheory.PublishedTheorems.SemistableReduction₂.SemistableReductionSt
 public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.ImmersedBy
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.PullChartIsLB
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemNonzeroLocusIffPowFn
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.InducedModelMorphismCompStructureMap
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsInvertibleMatrixChangeOfSpanEq
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsAffineOpenOfLocalSectionCombinationLocus
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAmpleLBOfRelAmpleOfIsAffine
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.BaseFactsHasGeoExistsClos
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsSemiAbelianGroupSchemeCubicalBundleClosureStatement
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsTwistSections
@@ -40,12 +33,10 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -72,15 +63,9 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsSectionExtendingTorsionPointsSupport
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSectionsIndependentOnClosedFibreStatement
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaSystemHasTestsOfRealPointStatement

@@ -4,40 +4,23 @@ public import Formalism.LocalToGlobal.IndefiniteReal.CxPass
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
 public import Formalism.LocalToGlobal.GlobalTheory.DivPassage
 public import Formalism.LocalToGlobal.GlobalTheory.DivPassageP
-public import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteEpsilonOperator
-public import Formalism.LocalToGlobal.IndefiniteReal.TransferStatement
 public import Formalism.LocalToGlobal.IndefiniteReal.CxPassSk
 public import Formalism.LocalToGlobal.IndefiniteReal.AllPartsTransfer
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.OrthSum
 public import Formalism.BranchSandwichDivisors.DivFromPassageAndNorm
 public import Formalism.LocalToGlobal.IndefiniteReal.MemSpanOfSmulMem
 public import Lemmata.RankOneOrbitForms.RankOneForm
-public import Mathlib.RepresentationTheory.Intertwining
-public import Mathlib.RepresentationTheory.Character
 public import Formalism.LocalToGlobal.IndefiniteReal.OpNormAtLeOfPoints
 public import Formalism.LocalToGlobal.IndefiniteReal.InBlock
 public import Formalism.LocalToGlobal.IndefiniteReal.RowGSurj
-public import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfMemRangeAdjoint
 public import Formalism.LocalToGlobal.IndefiniteReal.CxPassRep
 public import Formalism.LocalToGlobal.IndefiniteReal.MajorantAtBaseEqInnerOfPackage
 public import Formalism.LocalToGlobal.IndefiniteReal.PackageFromPrimitiveStatements
 public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsBaseLevel
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
-import Formalism.QuotientMetricDivisors.Statement
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
-import Formalism.LocalToGlobal.IndefiniteReal.TraceOfDiag
-import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.AuxStatement14
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Mathlib.Data.Finsupp.Pointwise
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.Data.Matrix.Basic
 public import Mathlib.GroupTheory.GroupAction.Quotient
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFix
-public import Formalism.WeaklyAdmissibleFiltrations.Statement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodDataComparison
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBasisOfSubmodule
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysOfSplitStatement

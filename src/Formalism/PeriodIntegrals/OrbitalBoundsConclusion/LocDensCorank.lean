@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.GramCondIff
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LinQRawRange
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGF
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGFL
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.FlCoeMul
@@ -15,7 +14,6 @@ public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.FieldTheory.Finite.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDensityCorank.SplitCount
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.DensInert
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 public import Formalism.PeriodIntegrals.LocDensCorank
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDensityCorank.ResidueEqZeroIff
 import Mathlib.Tactic.Linter.HaveILetI

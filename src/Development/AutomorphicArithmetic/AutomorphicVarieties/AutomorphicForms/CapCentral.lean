@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RTwist
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfCharInfCharOfCommute
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 
 @[expose] public section
 

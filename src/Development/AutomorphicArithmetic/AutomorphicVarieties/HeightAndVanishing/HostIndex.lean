@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
-import Mathlib.NumberTheory.MulChar.Duality
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 

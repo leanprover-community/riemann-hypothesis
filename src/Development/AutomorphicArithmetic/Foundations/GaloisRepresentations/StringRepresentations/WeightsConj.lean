@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEqu
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Mathlib.NumberTheory.NumberField.CMField
 import ReciprocityTheory.NeutralLocalFields.Reciprocity

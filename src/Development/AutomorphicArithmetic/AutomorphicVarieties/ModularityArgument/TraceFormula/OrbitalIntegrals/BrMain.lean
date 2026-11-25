@@ -12,8 +12,6 @@ import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrb
 import GroundTheory.LocalFields.Integers
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Mathlib.Topology.Separation.Connected

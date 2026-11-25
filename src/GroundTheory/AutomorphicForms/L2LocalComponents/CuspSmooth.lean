@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCusp
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
 public import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCuspSplit
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite

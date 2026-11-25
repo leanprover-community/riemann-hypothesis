@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
-import Mathlib.Algebra.Group.Submonoid.Units
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

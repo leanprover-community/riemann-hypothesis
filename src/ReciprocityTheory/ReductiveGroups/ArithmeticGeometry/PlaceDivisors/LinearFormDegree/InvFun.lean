@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupLawLinea
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.RingTheory.MvPowerSeries.Substitution
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 

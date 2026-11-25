@@ -3,7 +3,6 @@ module
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import Mathlib.Algebra.Order.Positive.Field
-import GroundTheory.GlobalFields.Adele.Topology
 
 @[expose] public section
 

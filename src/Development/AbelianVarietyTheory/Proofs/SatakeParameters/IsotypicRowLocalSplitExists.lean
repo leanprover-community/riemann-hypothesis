@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIrr
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinTypInvariantFormOfIsotIn
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.Automorphisms.PlaceA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLocalComponent, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsotypicRowLocalSplitExists

@@ -13,10 +13,8 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Schrodinge
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchrodingerThetaEqSchwartzBruhatStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ShiftedAdditiveCharacterArchimedeanParameters
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.IterPLin
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalVolumeLift
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalZero
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HeckeFormNSOfHeckeForm
 
 @[expose] public section

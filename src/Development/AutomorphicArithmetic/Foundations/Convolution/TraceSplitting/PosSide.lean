@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.NormCharSplit
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.ExistsPowerSums
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.ListProdStable
-public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor
 public import Development.WeilBound.CuspidalAdmissibility.OccursIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.PowIndep
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.AmpFin

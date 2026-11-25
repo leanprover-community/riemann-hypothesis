@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -9,7 +9,6 @@ import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

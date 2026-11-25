@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsKStableOnKFiniteVectors
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
-public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

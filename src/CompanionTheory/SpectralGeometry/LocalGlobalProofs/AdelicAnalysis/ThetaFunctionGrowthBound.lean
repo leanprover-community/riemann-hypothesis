@@ -5,7 +5,6 @@ public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerPr
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ArchimedeanGaussianFourier
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.DenominatorPowerSummable
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FourierCoefficientGrowthBound
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Topology.Separation.CompletelyRegular
 
 -- This file was produced by scripts/clump.py from the modules listed below.

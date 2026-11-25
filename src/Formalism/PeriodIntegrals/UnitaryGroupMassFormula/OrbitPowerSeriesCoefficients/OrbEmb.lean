@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.OrbJetBase
-public import Mathlib.RingTheory.MvPowerSeries.Rename
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -1,9 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJStandardL
-import GroundTheory.AutomorphicForms.GL2.GJGlobal
-import GroundTheory.AutomorphicForms.GL2.GJStandardLEngine
-import GroundTheory.AutomorphicForms.GL2.GJStandardLEuler
 import GroundTheory.AutomorphicForms.GL2.GJStandardLPartial
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

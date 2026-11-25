@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalVolumeLift
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RegularisedSiegelWeilFirstTerm
-public import Mathlib.Data.Matrix.ColumnRowPartitioned
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwasawaBlockTriangular
 import Mathlib.Algebra.Order.Floor.Extended

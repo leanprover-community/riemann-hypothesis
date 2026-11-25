@@ -44,7 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HeckeFormNSOfHeckeForm
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MixSDblDecZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousWeilSchrodingerStandardUnnEvalZeroStatement, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ValueZeroParabolic, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilSchrodingerRealParameter

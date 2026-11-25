@@ -4,13 +4,9 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTe
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualIffLatticeVolumeAndPlancherel
-public import Mathlib.Topology.Algebra.Valued.NormedValued
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSubringEqOK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralPi
 public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualMeasureExistsUniqueFourierInversion
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

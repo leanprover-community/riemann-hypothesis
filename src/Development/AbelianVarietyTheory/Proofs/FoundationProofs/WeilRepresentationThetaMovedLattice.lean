@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HESmulRight
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRationalPointOfMemMovedThetaLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KernelLatticesFormSelfDualTriples

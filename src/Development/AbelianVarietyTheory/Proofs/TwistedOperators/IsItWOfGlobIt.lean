@@ -2,22 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChosenSeries
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesPureInnerProductsTensorProduct
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRealIntertwinerOfCompactGroupIntertwiner
-public import Formalism.LocalRingCardinality.DataHost
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RaisingLoweringOperators
-public import Formalism.FormalDegreeBessel.StatementG
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-public import Formalism.LocalRingCardinality.DataTheta
-public import Mathlib.Basic.Complex.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotLocallyFiniteQuadraticMulAddDegreeNonraising
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubstitutionTotalDegreeLe
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContractionIsometricDiscreteSeriesFock
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.BarMatrix
@@ -62,23 +49,13 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.EquivariantOfGeneratorOneParameterGroup, Development.AbelianVarietyTheory.Proofs.TwistedOperators.EquivariantOfGeneratorOneParameterGroupStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockSourceGlActionEqQuadraticAddNonRaising, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockTargetGlActionEqQuadraticAddNonRaising, Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemMaximalCompactOfMapsFockVectorToFock, Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotLocallyFiniteQuadraticMulAddDegreeNonraisingStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactActionPreservesPolynomialDegree, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContractionIsometricDiscreteSeriesFockStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsItWOfGlobIt

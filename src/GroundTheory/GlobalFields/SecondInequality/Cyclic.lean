@@ -15,26 +15,13 @@ public import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
 public import GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma.Places
 public import GroundTheory.GlobalFields.KummerTheory.Unramified
 public import Mathlib.Order.CompletePartialOrder
-public import GroundTheory.GlobalFields.KummerTheory.Degree
 public import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
 public import GroundTheory.GlobalFields.ExistenceTheorem.IndexRangePowMonoidHomAdicCompletionMulNorm
-public import GroundTheory.GlobalFields.KummerTheory.Splitting
-public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 public import GroundTheory.GlobalFields.FirstInequality
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import GroundTheory.GlobalFields.KummerTheory.SplittingKummer
-import GroundTheory.GlobalFields.SplittingFromInequality
 import Mathlib.Tactic.TypeStar
-import GroundTheory.GlobalFields.ExistenceTheorem.PowerIndex
-import GroundTheory.GlobalFields.IdeleGroups.IndexFormula
-import Mathlib.RingTheory.DedekindDomain.SelmerGroup
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import Mathlib.FieldTheory.KummerExtension
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.SecondInequality.PrimeDegree, GroundTheory.GlobalFields.SecondInequality.Reduction, GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma.PowerKernel, GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma, GroundTheory.GlobalFields.SecondInequality.PowFinrankMemRangeInfiniteLocalNorm, GroundTheory.GlobalFields.SecondInequality.Cyclic

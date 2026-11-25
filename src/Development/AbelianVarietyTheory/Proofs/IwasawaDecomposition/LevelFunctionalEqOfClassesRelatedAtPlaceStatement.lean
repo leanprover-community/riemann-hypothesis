@@ -4,10 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemSm
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StdLvPr
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ClassPairMovedOfMultipliesLocalFunctional
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MiddleStepOneLevelProjectionEqChartProjection
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryCompletionMapsDualLattices
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelFunctionalEqOfClassesRelatedAtPlace, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelFunctionalEqOfClassesRelatedAtPlaceStatement

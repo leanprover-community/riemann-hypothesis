@@ -5,8 +5,6 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
 public import Formalism.HarderNarasimhan.ShiftInvariance
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DualMu
 public import Formalism.LocalToGlobal.ExponentGrids.ScaledCoordinatesValuationLemma
-public import Mathlib.RingTheory.FractionalIdeal.Norm
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
 public import Formalism.PairingDivisors.PairingDivisorProofs.Height
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondComplementParameterBounds
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
@@ -14,7 +12,6 @@ public import Formalism.TowerValuationBounds.TowerValuationProofs.SumAdditiveCha
 public import Lemmata.PlaneOverMembership.PlOverOfMem
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.PairingDivisors.PairingDivisorProofs.SumValuationNat
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula

@@ -11,7 +11,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNb
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

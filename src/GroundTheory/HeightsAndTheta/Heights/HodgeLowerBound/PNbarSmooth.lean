@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVer
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

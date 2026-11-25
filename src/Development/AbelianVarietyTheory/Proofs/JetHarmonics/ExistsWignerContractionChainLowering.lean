@@ -4,17 +4,10 @@ public import Formalism.HermitianCurvature.FrameExists2
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieListProducts
 public import Development.AbelianVarietyTheory.Definitions.Jets.WigMap
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameExpansionUwGroup
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
-public import Formalism.RealPlaceAnalysis.StatementE
-public import Mathlib.Analysis.Normed.Lp.PiLp
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LastComatrixRowInvertsDual
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TensorDualStandardRel
-public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
 public import Development.AbelianVarietyTheory.Definitions.Jets.Imports
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumStarProjectionEigenspaceEqSelfOfEigenvaluesLi
-public import Formalism.RealPlaceAnalysis.StatementB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenvectors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HighestWeightPolynomials
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleCapelliModules
@@ -26,15 +19,10 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsTypeOfIrred
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AdjointMemCapSpSubA
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapComp
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapZeroOfContraction
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Mathlib.Analysis.Calculus.Deriv.Star
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Real
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

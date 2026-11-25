@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.WuDecay
-public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

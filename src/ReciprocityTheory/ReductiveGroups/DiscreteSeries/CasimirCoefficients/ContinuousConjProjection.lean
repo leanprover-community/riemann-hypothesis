@@ -19,11 +19,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.LinearAlgebra.Trace
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Group.Integral
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 

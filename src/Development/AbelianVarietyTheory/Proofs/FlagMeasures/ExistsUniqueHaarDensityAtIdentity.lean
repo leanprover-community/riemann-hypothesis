@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.Normed.Algebra.Exponential
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
@@ -17,7 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MatGroupHaarU
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalRingCardinality.DataCD
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.MeasureTheory.Measure.RegularityCompacts

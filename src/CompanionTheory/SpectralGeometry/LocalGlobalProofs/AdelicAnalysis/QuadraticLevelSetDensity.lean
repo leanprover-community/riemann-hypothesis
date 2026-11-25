@@ -6,8 +6,6 @@ public import Mathlib.Analysis.Fourier.Inversion
 public import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ArchimedeanGaussianFourier
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

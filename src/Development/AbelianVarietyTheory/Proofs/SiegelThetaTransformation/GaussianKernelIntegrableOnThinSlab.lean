@@ -4,45 +4,24 @@ public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSy
 public import Development.AbelianVarietyTheory.Definitions.UpperBounds.FreeBallIffOfDimXEqZero
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsOrthonormalOfLinearIndependent
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LowestWeightFunctionMulEq
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-public import Mathlib.Analysis.Matrix.Order
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.RingTheory.Complex
 public import Mathlib.Algebra.Order.Chebyshev
-public import Mathlib.Analysis.Matrix.Hermitian
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-public import Mathlib.RingTheory.Norm.Transitivity
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsMemRowHighestTotalDegreeEqTwo
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.KernInvariantSymmPos
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.MeasurePreservingMulLeft
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RealPlaceKernelHolomorphicWeightRowHighest
-import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.OneLeMinorOfIsOrth
-import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfC
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LUStatementPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.DetSubUpper
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Separation.CompletelyRegular
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
-import Development.AbelianVarietyTheory.Definitions.ThetaValues.PolyDerivSmulLetter
-import Mathlib.MeasureTheory.Integral.Pi
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExtendByZeroAntitoneOffBreak, Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LintegralMulRight, Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IntegrableOnMinorFin, Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.GaussianKernelIntegrableOnThinSlab

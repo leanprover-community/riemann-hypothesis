@@ -8,11 +8,9 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CornerBlockA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.EmbeddedGroupMeasurePreserving
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PsiNormalization
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaFiniteOfHaar
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.StrictUpperNeg
 import Mathlib.CategoryTheory.Countable
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

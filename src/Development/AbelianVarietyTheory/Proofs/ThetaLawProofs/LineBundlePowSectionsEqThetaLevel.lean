@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.LevelThreeSe
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 public import Development.AbelianVarietyTheory.Statements.ThetaLevelCharacters.MemThetaLevelCharDimZero
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EqZeroOfSemicharacterMultiplier
 
 @[expose] public section
 

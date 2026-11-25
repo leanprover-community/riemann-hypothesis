@@ -5,27 +5,17 @@ public import Mathlib.RingTheory.TensorProduct.Basic
 public import Mathlib.Algebra.Algebra.Subalgebra.Centralizer
 public import Mathlib.RingTheory.Flat.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CuspidalFiniteness.HasUnivOfStep
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Coeff
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.RingTheory.Polynomial.Vieta
-public import Formalism.RealPlaceAnalysis.StatementE
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.MemCenterOfCommuteE
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.HarishChandraProjQuantumDetEqProd
 public import GroundTheory.AutomorphicForms.HarishChandraCentre
-public import Mathlib.Algebra.Lie.UniversalEnveloping
 public import Mathlib.LinearAlgebra.Basis.Bilinear
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.IsArchSmoothOfContDiffChart
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ConstantTermEqZeroOfIsCuspidal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.IsKFiniteTotallyRealModelOfIsKFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ModerateGrowthTotallyRealModelOfModerateGrowth
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite
-public import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspCentral
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

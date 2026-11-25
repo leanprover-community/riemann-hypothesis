@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeffZe
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeAlgebraMapOC
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NearPiSepComplete
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 
 -- This file was produced by scripts/clump.py from the modules listed below.

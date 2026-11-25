@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
-public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
 public import Mathlib.RingTheory.TensorProduct.Pi
 import Mathlib.Tactic.TypeStar
 

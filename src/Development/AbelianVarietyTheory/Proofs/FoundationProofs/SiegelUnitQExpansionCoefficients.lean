@@ -8,10 +8,7 @@ public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerAnEqSiegelUnitOnComplex
-import Development.AbelianVarietyTheory.Definitions.Foundations.CthFac
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitQExpansionCoeffsIntegral
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -10,24 +10,9 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficien
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ContinuousConjProjection
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ContinuousOnFderivPhiP
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DerivGA
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.Analysis.Calculus.ParametricIntegral
-public import Mathlib.MeasureTheory.Group.Integral
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DTauFacts
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.Analysis.Calculus.Deriv.ZPow
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IdThmA
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFactsA
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiCasA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IdThmB, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.InfRightA, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ByParts, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DerivG, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ContinuousOnFderivPhiM, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiPart, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.TauPart, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.LowMinusUpExpand, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.InfRight, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsMInfNhd

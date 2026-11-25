@@ -5,7 +5,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupProperties
 public import Development.ResolutionOfSingularities.Foundations.Blowup.AffineBlowupUniversal
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupExistence
-public import Development.ResolutionOfSingularities.Foundations.Blowup.AffineBlowupCartier
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 

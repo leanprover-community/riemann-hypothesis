@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCommonLevelSpanMultiple
-public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsConjLevelElemExponentShimura
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFunctionTowerIntegrality
 import Mathlib.Tactic.Linter.Style

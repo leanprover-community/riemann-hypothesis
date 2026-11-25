@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.StepPtRepPfA
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

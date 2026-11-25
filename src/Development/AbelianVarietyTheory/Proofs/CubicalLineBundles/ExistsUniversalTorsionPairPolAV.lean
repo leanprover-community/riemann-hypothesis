@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.CMLattices.LamLetters
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIrreducibleGeneralizations
 import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
 import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

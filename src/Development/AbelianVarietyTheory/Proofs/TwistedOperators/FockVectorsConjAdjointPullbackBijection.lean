@@ -1,14 +1,12 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasDerivAtZeroAndIsTheta
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCharacterHalfSymplecticFormRealPoint
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.APlusComm
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorLaws
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianAdjointLawsStandardCharacterStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieAlgebrasAtPlaceActFockVectorsByFockOperators
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 
 @[expose] public section
 

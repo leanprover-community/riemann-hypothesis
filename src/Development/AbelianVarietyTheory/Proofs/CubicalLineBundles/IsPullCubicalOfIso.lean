@@ -6,8 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AbelianSchemeCubicalBundleExistsAndMaps
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.NonemptyCubicalPull
 import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 
 @[expose] public section
 

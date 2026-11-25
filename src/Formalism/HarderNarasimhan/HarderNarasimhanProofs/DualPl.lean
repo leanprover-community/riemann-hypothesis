@@ -22,7 +22,6 @@ import Mathlib.Tactic.Linter.Style
 import Lemmata.FiberEquations.FiberEq
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
-import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 

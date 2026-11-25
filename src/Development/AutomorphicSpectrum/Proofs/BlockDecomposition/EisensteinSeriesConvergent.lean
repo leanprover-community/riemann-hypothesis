@@ -5,21 +5,12 @@ public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EmbBar
 public import Mathlib.Algebra.FiniteSupport.Basic
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.Algebra.Order.Ring.Finset
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
 public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldC
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftInvertibleExistsNonzeroMinor
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PluckerMinorsDetermineColumnSpace
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableHeightPowOfPolynomialCount
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldA
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

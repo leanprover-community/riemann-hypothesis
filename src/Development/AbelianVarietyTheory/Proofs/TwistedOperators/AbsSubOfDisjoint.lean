@@ -6,10 +6,7 @@ public import Mathlib.Algebra.MvPolynomial.Monad
 public import Mathlib.Basic.Complex.Basic
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ColumnDegreeLe
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsEqMulProdMinors
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowAddGenericRowAddTerm
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Sl2NonnegWeightOfHighestWeightVector
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ISupEigenspaceEqTop
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ProdLeadMinorDiagonal
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PderivEqZeroOfColOp
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
@@ -24,7 +21,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LineKroneckerRightMatrixConjTranspose
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SumRowDegreeEqOfHarmonicHighestCasimir, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ColumnDegrees, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulMinorPoly, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FnShapeOfJointShape, Development.AbelianVarietyTheory.Proofs.TwistedOperators.LengthAddLeOfDisjoint, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowColWeightsAgree, Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsSubOfDisjoint

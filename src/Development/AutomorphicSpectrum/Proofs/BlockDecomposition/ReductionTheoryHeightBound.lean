@@ -1,26 +1,15 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CvecSurjective
-public import GroundTheory.AutomorphicForms.AnisotropicUnitaryHeight
 public import CompanionTheory.AutomorphicTheory.SiegelWeilFiniteness.Bridge
 public import GroundTheory.AutomorphicForms.AnisotropicHeight
-public import GroundTheory.AutomorphicForms.AdelicUnitaryGroups
 public import GroundTheory.AutomorphicForms.AnisotropicOrbit
-public import GroundTheory.AutomorphicForms.AnisotropicUnitaryCompact
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RatVInjective
-public import Formalism.SatakeDualWeyl.Statement
-public import GroundTheory.AutomorphicForms.AnisotropicUnitaryRes
-public import GroundTheory.AutomorphicForms.ReductionHeight
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusElt
 import Development.WeilBound.ThetaLifts.Reductions.SiegelAbs
-import GroundTheory.AutomorphicForms.ReductionMahler
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
-import Development.WeilBound.ThetaLifts.Reductions.SiegelHaar
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmallHeightVectorIsotropic, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorusSiegelHeightLowerBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryPointsHeightBoundCompact, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryPointsHeightBoundFinite, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryHeightBound

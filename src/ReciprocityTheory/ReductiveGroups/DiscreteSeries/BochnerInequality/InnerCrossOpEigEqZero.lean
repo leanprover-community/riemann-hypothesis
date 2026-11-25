@@ -7,7 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigCas
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigRep
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KhwWeightEqOfIrr
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Weights
 

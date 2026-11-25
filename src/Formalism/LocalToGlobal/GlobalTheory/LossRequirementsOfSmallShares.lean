@@ -3,15 +3,11 @@ module
 public import Formalism.SharpRestriction.GlobalSchurBounds.LossesSmallShares
 public import Formalism.LocalToGlobal.GlobalTheory.SuppSat
 public import Formalism.SizeWindowBrackets.PrimeClassLossHypothesesSatisfiable
-public import Formalism.SizeWindowBrackets.WindowSettingSatisfiable
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.AdmissibleSchurLemma
 public import Mathlib.Analysis.SpecialFunctions.Log.Monotone
 public import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesEight
 public import Formalism.LocalToGlobal.GlobalTheory.PowFourLtCeilThresholdPrime
-import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Tactic.Lemma
-import Mathlib.Algebra.Order.Star.Real
-import Formalism.SharpRestriction.GlobalSchurBounds.FrameCodeOfAdditive
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.SmallShareWeightExists, Formalism.SizeWindowBrackets.ChainSlopeWindows.OneLeThresholdMulPowers, Formalism.SizeWindowBrackets.ChainSlopeWindows.DiscriminantSettingSatisfied, Formalism.LocalToGlobal.GlobalTheory.LossRequirementsOfSmallShares

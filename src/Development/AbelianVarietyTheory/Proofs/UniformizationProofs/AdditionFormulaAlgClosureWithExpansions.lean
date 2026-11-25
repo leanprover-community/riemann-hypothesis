@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Stalk
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalEqZeroOfSumMulCoord
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PsiScal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
-public import Mathlib.Algebra.Group.Basic
-public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Mathlib.Algebra.Group.TypeTags.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubeVal
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsRatioPoints
@@ -17,9 +15,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExp
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.AppCompatGeneric
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SectionLinCombFiberProductSeparatedStatement
-public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsExpansionSectionLineBundlePower
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniquePullB
@@ -43,7 +39,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -66,16 +61,9 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.QuasiAffine
 

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfF
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SameBlockOfPosC
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryHarishChandraDiscreteSeries
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
@@ -18,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProjectorOfI
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CasimirNumberIdentityDualPair
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesIntegrableCoefficientProjector
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EmbedsOfLowestType
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsTensorEmbedding
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUnitaryQuotient
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockModelDualPairCasimirApply
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LowestKTypesJointHarmonicShape

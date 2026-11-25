@@ -1,29 +1,19 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PairingRankOneMemInverseDifferent
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatMod
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharStd
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatAnn
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceDualB
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.TwoSplitIdem
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.InfPartSplitIdem
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SplitInt
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSDa
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.PsiTrCoreApprox
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceSum
 
 -- This file was produced by scripts/clump.py from the modules listed below.

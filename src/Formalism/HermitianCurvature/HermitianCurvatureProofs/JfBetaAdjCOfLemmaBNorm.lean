@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.StatementB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactSupportFiniteClass
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 
 @[expose] public section
 

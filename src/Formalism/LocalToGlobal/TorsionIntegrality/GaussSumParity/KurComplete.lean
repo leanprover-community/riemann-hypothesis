@@ -9,10 +9,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.RingAFacts
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ExistsUnitFactorizationBounded
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.FrobeniusExtensionOnInclusion
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.ExponentialSpecification
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.FirstMomentIdempotentLaw
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.TilInvariantLOf
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TransportFirstLevel
 
 -- This file was produced by scripts/clump.py from the modules listed below.

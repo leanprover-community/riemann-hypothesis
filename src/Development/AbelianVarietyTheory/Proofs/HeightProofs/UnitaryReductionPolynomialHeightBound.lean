@@ -13,9 +13,7 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FinitePartPreser
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RationalPointsAdelicUnitaryEqUnitary
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
-import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 

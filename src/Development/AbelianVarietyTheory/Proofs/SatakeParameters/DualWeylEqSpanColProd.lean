@@ -4,9 +4,6 @@ public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalRingCardinality.DataKerI
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
 
 @[expose] public section
 

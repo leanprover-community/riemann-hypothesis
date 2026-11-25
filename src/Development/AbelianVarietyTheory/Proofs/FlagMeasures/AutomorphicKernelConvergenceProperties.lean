@@ -7,12 +7,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSerie
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowsAutIdemElementary
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ShellSumMajorant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SummableAndTsumLeOfBoxCount
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantIntegrable
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeLipschitzProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

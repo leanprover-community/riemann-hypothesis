@@ -2,15 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ISmulOneMemUnitaryLie
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionTranslateAtRealPlace
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasFDerivAtOfContinuousPartials
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RWordRTrAdelic
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.WordDerivatives
@@ -19,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Deriv
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivariantMapCarriesGelfandInvariantToFunction
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GelfandInvariantActionSmoothVectorsScalar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,15 +49,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsQuadOfPlane
 import Mathlib.Topology.Sheaves.Init
-import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariant
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieWordCommutesOneParameterDerivativeStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SobolevContinuousFormSumLieWordInnerStatement
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.TopfBasis
 

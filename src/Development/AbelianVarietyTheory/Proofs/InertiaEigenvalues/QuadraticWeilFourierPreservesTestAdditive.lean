@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsStableGauss
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualMeasureExistsUniqueFourierInversion
 import Mathlib.Tactic.Linter.HaveILetI

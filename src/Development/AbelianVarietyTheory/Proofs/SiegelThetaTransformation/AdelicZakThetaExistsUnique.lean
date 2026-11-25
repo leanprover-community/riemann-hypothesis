@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SymplecticCharacterRealFinitePointsMatchStatement
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaFunctionSpaceHeisenbergLawsStatement
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.Fischer
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasDerivAtZeroAndIsTheta
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

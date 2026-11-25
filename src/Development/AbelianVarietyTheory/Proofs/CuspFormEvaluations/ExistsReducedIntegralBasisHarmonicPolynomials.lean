@@ -11,12 +11,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThProps
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsShortIndependentIntegers
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HarmAMemSpanShort
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt

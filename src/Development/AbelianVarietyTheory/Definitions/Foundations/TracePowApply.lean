@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.GelfA
 public import Formalism.RealPlaceAnalysis.StatementB
 public import Formalism.GradedWeylDivisibility.StatementA
-public import Mathlib.LinearAlgebra.Matrix.Trace
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

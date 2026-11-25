@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasNormGroups
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Linter.HaveILetI

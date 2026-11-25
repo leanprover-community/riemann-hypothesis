@@ -6,7 +6,6 @@ public import Mathlib.Algebra.BigOperators.Field
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 public import Formalism.PeriodIntegrals.JetsPhW
 public import Mathlib.RingTheory.PowerSeries.Derivative
-public import Mathlib.RingTheory.MvPowerSeries.Derivative
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntMvPderiv
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntegralPolynomialSecond
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.UnitBall

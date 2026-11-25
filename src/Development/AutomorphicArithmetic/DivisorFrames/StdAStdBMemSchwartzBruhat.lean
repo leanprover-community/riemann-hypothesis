@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 public import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocPart
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardPairMembersMemSchwartzBruhat
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
-import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
@@ -15,7 +13,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsReading
 import Development.AutomorphicArithmetic.LocalEmbeddings.FinMatchDefs
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

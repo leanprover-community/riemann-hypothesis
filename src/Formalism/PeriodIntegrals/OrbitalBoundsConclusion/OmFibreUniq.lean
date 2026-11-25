@@ -7,16 +7,8 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HaarFibreUniquen
 public import Formalism.PeriodIntegrals.OmFibreUniq
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HaarFibreUniqueness.AdditiveCharacterNontrivial
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HaarFibreUniqueness.SdExInst
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.SetTheory.ZFC.PSet
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Separation.Connected
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DensFibV
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensAll
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

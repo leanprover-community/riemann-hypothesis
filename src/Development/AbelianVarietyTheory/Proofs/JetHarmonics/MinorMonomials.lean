@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.RowDeg
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MinorsDisjointColumnsHarmonic
 
 @[expose] public section

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasIn
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentComponentMemFrameStabilizer
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 public import Formalism.SatakeDualWeyl.StatementG
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulOfResSNeOne
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -48,7 +47,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut

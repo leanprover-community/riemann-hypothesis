@@ -4,22 +4,12 @@ public import Mathlib.Algebra.BigOperators.Finprod
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.GroupTheory.Coset.Defs
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.GroupTheory.QuotientGroup.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PullEqGaussSmulIntertwiner
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
-import Mathlib.GroupTheory.FiniteAbelian.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinsumQuotientNonnegOfSwapConj, Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryThetaConstantEqInverseDeterminantPhase

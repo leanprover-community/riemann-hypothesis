@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFor
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PtCellUniq
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpBig
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpTrans
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.AmpCell, Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.AmpFinal

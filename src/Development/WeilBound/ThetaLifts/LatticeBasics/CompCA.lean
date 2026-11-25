@@ -3,9 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.MemIntLocOfIdem
 public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.ExistsIntAddConjEqOneOfBaseGood
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceSplitOrInert
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtFin
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SkewTwo
 

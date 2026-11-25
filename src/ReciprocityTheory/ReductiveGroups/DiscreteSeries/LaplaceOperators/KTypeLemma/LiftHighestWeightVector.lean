@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.InnerCompactWordActionAdjoint
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Data.Set.Finite.List
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KUnitB
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.DerivEntries

@@ -4,9 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CompletedLFun
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Mathlib.NumberTheory.Harmonic.ZetaAsymp
-import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Mathlib.Analysis.Analytic.Order
-public import Mathlib.NumberTheory.LSeries.RiemannZeta
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LogDerivRiemannZetaLocalZeroSum
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma

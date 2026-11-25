@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.Perfectoid.BDeRham
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
 import Mathlib.Tactic.TypeStar
-public import Mathlib.RingTheory.AdicCompletion.Completeness
 
 @[expose] public section
 

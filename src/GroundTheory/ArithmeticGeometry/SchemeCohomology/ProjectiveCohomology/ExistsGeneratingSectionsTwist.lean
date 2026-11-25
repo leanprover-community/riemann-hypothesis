@@ -5,9 +5,7 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomol
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.PSpaceFinite
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.SerrePAux
 public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.Generation
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.Immersion
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafAlt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.SerreP, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.ExistsGeneratingSectionsTwist

@@ -18,10 +18,6 @@ import Mathlib.Topology.MetricSpace.Ultra.Pi
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqTopOfTranslates
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

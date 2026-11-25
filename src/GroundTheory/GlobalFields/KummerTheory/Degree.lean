@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.KummerFinite
-public import Mathlib.FieldTheory.IsSepClosed
 public import GroundTheory.ProfiniteCohomology.KummerCorrespondence
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

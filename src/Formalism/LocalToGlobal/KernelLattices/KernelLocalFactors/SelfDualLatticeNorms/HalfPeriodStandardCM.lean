@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactAltForm
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

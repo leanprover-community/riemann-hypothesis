@@ -50,7 +50,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.InFrameStabilizer
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrameLats
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 

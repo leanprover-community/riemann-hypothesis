@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementAlgT
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TranslateMomentsAllOfJetMomR
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VacuumEntireAndNormalizedJetsAlgebraic
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTaylorCoeffsAlgebraicAtComplexMultiplicatio
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.GaloisGeometry.AlgTAll, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AlgTAll

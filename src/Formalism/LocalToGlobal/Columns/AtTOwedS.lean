@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.AtTLemmas
-import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 @[expose] public section

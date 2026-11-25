@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GeometricLemmaNormal
-import GroundTheory.AutomorphicForms.GeometricLemmaCellSurjective
 public import GroundTheory.AutomorphicForms.LeviStagesProduct
 import Mathlib.Tactic.TypeStar
 

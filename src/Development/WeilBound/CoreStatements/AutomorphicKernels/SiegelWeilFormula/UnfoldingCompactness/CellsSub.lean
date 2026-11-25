@@ -1,9 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.Trace
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.IncMTranspose
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.FrameInvPf
 import Mathlib.Tactic.Linter.Style

@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.GlobalCharacterOfInputs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralNonnegNormaliserEq
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.IsTransl
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.MeasureTheory.Integral.Pi
 public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.AltBranchStatement
@@ -11,8 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLocall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapPFinThetaGL
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinGLMemOfPow
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.AntitoneOfMemInterl
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.PTranslAd
 
 -- This file was produced by scripts/clump.py from the modules listed below.

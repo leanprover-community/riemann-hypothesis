@@ -1,23 +1,15 @@
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.Analysis.Complex.Order
 public import Mathlib.LinearAlgebra.Matrix.PosDef
-public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Mathlib.Analysis.Matrix.PosDef
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Data.Matrix.Basis
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsDetAddEqDetMulDetOneAdd
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsFiniteSymmetricIrreducibleRotations
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsScalarSubPosSemidef
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI

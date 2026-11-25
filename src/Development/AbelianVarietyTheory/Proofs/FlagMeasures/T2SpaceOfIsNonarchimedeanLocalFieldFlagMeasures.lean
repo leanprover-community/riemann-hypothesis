@@ -3,10 +3,7 @@ module
 import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Valuation.Extension
 public import Mathlib.RingTheory.Valuation.Integral

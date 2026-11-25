@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

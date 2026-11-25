@@ -2,10 +2,7 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AeNeZeroComplex
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftDegreeLemmas
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBFVnice
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGWave
 
 @[expose] public section
 

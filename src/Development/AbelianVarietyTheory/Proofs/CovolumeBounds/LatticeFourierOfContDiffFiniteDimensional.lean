@@ -14,10 +14,6 @@ import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.Fourier.AddCircle
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section

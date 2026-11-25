@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Derivatio
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPeriodPairIdealCurveLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralLeOfDisjointTranslates
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsFundamentalDomainAndQuotMeasureEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntegerMapEqHalfOneAddSqrt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
@@ -17,10 +16,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Intertwin
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaNormUnimodularLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumCoeffMonomial
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TaylorCoeffConjugateSeries
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar

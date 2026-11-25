@@ -7,9 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.C
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Linear
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 
 @[expose] public section
 

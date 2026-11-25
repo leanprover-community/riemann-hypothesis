@@ -3,13 +3,8 @@ module
 public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
 public import Mathlib.Topology.Algebra.IsOpenUnits
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.Extension
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
-public import Mathlib.Topology.Algebra.Group.Extension
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DistribHaarCharTransport
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSelfDualOfDualSubgroups
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSmallDualLattices
@@ -21,10 +16,7 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Compactness.Paracompact
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Analysis.Normed.Field.ProperSpace
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic

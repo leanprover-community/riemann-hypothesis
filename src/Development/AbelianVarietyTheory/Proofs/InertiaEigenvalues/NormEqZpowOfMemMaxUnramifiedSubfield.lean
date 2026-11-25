@@ -5,13 +5,11 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.NumberTheory.Padics.ProperSpace
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 

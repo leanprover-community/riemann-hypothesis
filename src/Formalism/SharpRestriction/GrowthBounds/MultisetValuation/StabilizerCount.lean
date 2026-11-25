@@ -11,7 +11,6 @@ public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Mathlib.Tactic.Linter.Style
 import Formalism.SubspaceCounting.SubspaceCountingProofs.ManyOrbits
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.ThetaLogCoordinates.ProductIdealMonotone.ElementarySymmetricExpBound, Formalism.ThetaLogCoordinates.ProductIdealMonotone.ProductIdealProofs.ElementarySymmetricExpBound, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.StabilizerCount

@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.ClassFieldConsequences.TrivialModulus
-import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
 
 @[expose] public section
 

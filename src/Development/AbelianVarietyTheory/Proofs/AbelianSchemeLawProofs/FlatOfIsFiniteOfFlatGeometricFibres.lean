@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FlatOfIsFiniteOfFinitePresentationOfFlatGeometri
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FlatOfFlatFibresDvr
-public import Mathlib.AlgebraicGeometry.Morphisms.Finite
-public import Mathlib.AlgebraicGeometry.Noetherian
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealEqBotOfFlatQuotientOfMapMaximalIdeal
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RingHomFlatCodescendsAlongFaithfullyFlat
 import Mathlib.Algebra.Order.Floor.Extended
@@ -55,7 +52,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-public import Mathlib.RingTheory.LocalRing.Module
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 
 @[expose] public section

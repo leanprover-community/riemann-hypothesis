@@ -1,10 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalWeilOperators.LocNbar
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierTransformMatrixSpaceInvolution
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.Decomp
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalWeilOperators.LocForm

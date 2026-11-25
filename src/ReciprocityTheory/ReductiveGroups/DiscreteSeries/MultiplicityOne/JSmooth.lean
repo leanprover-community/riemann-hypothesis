@@ -6,11 +6,8 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.J
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UnitaryGroupStructuralFacts
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

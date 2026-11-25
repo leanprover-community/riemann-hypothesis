@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDou
 public import Formalism.LocalToGlobal.Columns.ReferenceActionRationalLevels
 public import Formalism.LocalToGlobal.Columns.TwQCmp
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PatchAtSelf
-public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
 public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
@@ -31,8 +30,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -59,19 +56,12 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.Columns.HeckeInertLemmas
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
 import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs

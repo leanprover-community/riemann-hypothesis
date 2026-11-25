@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.Divisibility.BoundaryLocalData
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CmHostRootComplexEqPmSqrt
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsFrameOfForallExists
 public import Formalism.LocalToGlobal.ProjectiveLattices.DataAtPointN3
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 
 @[expose] public section

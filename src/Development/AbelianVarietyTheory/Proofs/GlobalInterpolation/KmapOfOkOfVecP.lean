@@ -15,7 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Normal
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotDvdDifferent
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RelIndexLocPNeZero
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SubDSharpInDeg
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TameCharacterValuesEqHeckeCharLocalValues
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TildeQDetPtEqChiId
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
@@ -26,18 +25,10 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDiv
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertAtLeCongN
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NotDvdCardOfInjective
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaSupportInDivLattice
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OrdDetConjFinite
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitOfConjPNe
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.PicardGroup
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinAfMemIntUIff
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsNormEqOfSplitFactor
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

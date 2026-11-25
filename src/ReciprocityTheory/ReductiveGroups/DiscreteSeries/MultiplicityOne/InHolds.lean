@@ -10,7 +10,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HeisenbergHaarFactsHold
 
 @[expose] public section

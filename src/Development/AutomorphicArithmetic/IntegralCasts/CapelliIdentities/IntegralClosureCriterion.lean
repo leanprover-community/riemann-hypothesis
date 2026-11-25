@@ -4,10 +4,6 @@ public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.Algebra.Squarefree.Basic
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 

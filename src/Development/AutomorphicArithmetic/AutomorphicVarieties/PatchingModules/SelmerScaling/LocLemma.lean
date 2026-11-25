@@ -1,9 +1,6 @@
 module
 
 public import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Data.Matrix.Basic
 public import Mathlib.RingTheory.Ideal.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagMap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagTriangular
@@ -16,7 +13,6 @@ import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TriDiag, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.LocLemma

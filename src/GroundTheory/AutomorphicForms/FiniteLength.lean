@@ -4,18 +4,13 @@ public import GroundTheory.AutomorphicForms.LeviStagesJacquet
 public import GroundTheory.AutomorphicForms.LeviStagesProduct
 public import GroundTheory.AutomorphicForms.CuspidalSplittingIsotypic
 public import GroundTheory.AutomorphicForms.GeometricLemmaNormal
-public import GroundTheory.AutomorphicForms.JacquetAdmissible
 public import GroundTheory.AutomorphicForms.FiniteLengthSubquotient
 public import GroundTheory.AutomorphicForms.FiniteLengthJacquet
 public import GroundTheory.AutomorphicForms.FiniteLengthPieces
 public import GroundTheory.AutomorphicForms.GeometricLemma
 public import GroundTheory.AutomorphicForms.LeviStagesInduction
-import GroundTheory.AutomorphicForms.AdmissibleInduction
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.SmoothRepSchur
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
-import GroundTheory.LocalFields.LocalFourierHaar
-import GroundTheory.LocalFields.PadicLogSeries
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.LeviStagesExact, GroundTheory.AutomorphicForms.FiniteLengthLeviBlock, GroundTheory.AutomorphicForms.FiniteLengthLevi, GroundTheory.AutomorphicForms.FiniteLengthCuspidal, GroundTheory.AutomorphicForms.FiniteLengthLeviJacquet, GroundTheory.AutomorphicForms.FiniteLengthSeries, GroundTheory.AutomorphicForms.FiniteLength

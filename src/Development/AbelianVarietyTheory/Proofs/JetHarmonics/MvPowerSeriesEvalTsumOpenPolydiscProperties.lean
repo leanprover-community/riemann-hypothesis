@@ -5,9 +5,7 @@ public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesConvergentSubstHasSumAndBounds
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesConvergentSubstIsRingHomOnBounded
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConvergentSubstOneVariableAndFormalAgreement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesIntegralBoundedClosure
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.UniformSpace.Uniformizable

@@ -22,7 +22,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyDataDesc
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.NonemptyRingHomComplex
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ThetaUniformisationComplexAbelianVariety
-import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusConstMul
 

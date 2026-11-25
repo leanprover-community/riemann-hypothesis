@@ -4,7 +4,6 @@ public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.DisintegrationDensityContinuous
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Compactness.Paracompact
 

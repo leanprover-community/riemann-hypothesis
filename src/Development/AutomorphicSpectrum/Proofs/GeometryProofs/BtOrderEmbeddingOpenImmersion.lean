@@ -2,17 +2,12 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MhBase
-public import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation
-public import Mathlib.AlgebraicGeometry.Morphisms.Flat
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FormallyUnramifiedOfCompOfEtaleOfSurjective
 public import Mathlib.AlgebraicGeometry.Morphisms.FlatMono
-public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
 public import Mathlib.RingTheory.Henselian
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinitePartLePreimageOfClosedFibreSubset
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
-public import Mathlib.RingTheory.Flat.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenselianFlatOverPrime
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderScalarExtension
@@ -20,10 +15,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderFlatBaseChange
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderIsHopfOrderNoetherian
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueBtOrderEmbedding
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFinOpenSubOfFinite
-import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealEqBotOfFlatQuotientOfMapMaximalIdeal
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBaseChangeGroup
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

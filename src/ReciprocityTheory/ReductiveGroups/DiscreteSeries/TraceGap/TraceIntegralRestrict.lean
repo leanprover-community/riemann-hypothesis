@@ -1,13 +1,11 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TsubValInjective
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 public import Mathlib.Analysis.InnerProductSpace.Trace
 public import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.ActDiagMemOfWK
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdPhysDiagSingle
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.MemTensorFockOfCoeffs
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TraceEqTraceRestrictOfRangeLe
 
 @[expose] public section

@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
 public import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.TotallySplit

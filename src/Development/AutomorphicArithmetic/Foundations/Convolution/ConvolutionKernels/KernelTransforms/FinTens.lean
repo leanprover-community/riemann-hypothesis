@@ -8,9 +8,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.Continuou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.HomConv
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.NormIntLe
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.LocalFields.PadicLogSeries
-import GroundTheory.AutomorphicForms.ReductionFinite
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.AutomorphicForms.WhittakerGroups
 import GroundTheory.GlobalFields.LocalAtPlace
 import Mathlib.Tactic.Linter.Style

@@ -2,9 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.SelmerCrystallineCocycles
-public import Mathlib.LinearAlgebra.Matrix.Trace
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPlaceOverMoveValCc
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.TameGeneratorProjectors
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
@@ -14,10 +11,7 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanRep
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InjPrimeTo
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLinearMapOfTraceEq
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertiaTypePrimesOfAdmissible, Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpanEqTopOfTraceEq, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeneralAdmissibleOfIrreducibilityStmt

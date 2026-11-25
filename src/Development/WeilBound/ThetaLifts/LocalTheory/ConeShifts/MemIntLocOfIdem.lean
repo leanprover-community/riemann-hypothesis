@@ -3,8 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ExistsPowIdem
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasAd
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IdeleCharacterEqOneIntegralUnitsUnramifiedAdelic
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Inertof
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
@@ -12,7 +10,6 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 
 @[expose] public section
 

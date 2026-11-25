@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompactGroupInte
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.Topology.UniformSpace.Uniformizable
 public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 public import Mathlib.MeasureTheory.Group.Integral

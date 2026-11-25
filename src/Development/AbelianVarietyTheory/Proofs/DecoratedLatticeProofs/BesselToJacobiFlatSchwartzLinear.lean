@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousIntegrand
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HandBFSmul
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousIsotropicSandwichMeanTranslation
 import Mathlib.Algebra.Order.Floor.Extended
@@ -18,7 +17,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -39,11 +37,9 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsUnitarySupportedAtPlaceOfMulEqIdem
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates
 
 @[expose] public section
 

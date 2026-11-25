@@ -2,12 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEigBasisIff
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsPowerSeriesOfNaturalNilpotentPoints
-public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NEvalSqZero
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.PowerSeriesEqOfEvalAtNilpotentPointsEq
 public import Mathlib.RingTheory.Noetherian.Nilpotent
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.QRelExistsUniqueMulNat
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
-public import Mathlib.CategoryTheory.MorphismProperty.Descent
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UnifPreCharacterGroupIso
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsPowerSeriesOfNaturalNilpotentPointsStatement
@@ -18,7 +16,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -54,8 +51,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ValTorusPointAndTranslate
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 

@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSelfDu
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HalfPrincipalAndSplit
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
 public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapSplit
 import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 

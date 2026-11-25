@@ -1,10 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DmulMulDRight
-public import Mathlib.RingTheory.Norm.Defs
-public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.RingTheory.TensorProduct.Maps
-public import Mathlib.RingTheory.TensorProduct.Free
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankDpstUnramifiedLeDimRepresentation
@@ -16,13 +12,10 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReading
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
 import Formalism.AlgebraicWeights.IsAlgWeight
-import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import ReciprocityTheory.Automorphisms.PlaceA
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 

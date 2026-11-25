@@ -4,7 +4,6 @@ public import Mathlib.FieldTheory.Finite.Extension
 public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.WittVector.DiscreteValuationRing
-public import Mathlib.RingTheory.WittVector.Frobenius
 public import Mathlib.RingTheory.WittVector.Teichmuller
 import Mathlib.RingTheory.AdicCompletion.Functoriality
 import Mathlib.RingTheory.WittVector.Complete

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.CycImage
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

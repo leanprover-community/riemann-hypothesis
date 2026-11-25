@@ -4,9 +4,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul

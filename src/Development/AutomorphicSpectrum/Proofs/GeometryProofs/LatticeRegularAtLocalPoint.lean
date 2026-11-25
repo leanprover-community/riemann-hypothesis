@@ -3,9 +3,7 @@ module
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChange
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

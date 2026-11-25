@@ -5,8 +5,6 @@ public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TensCont
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TensApply
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
 import GroundTheory.GlobalFields.Adele.Topology
 
 -- This file was produced by scripts/clump.py from the modules listed below.

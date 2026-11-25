@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsContinuous
 public import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
 import Mathlib.Tactic.TypeStar

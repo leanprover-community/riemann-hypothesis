@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.BasisExtend
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 

@@ -11,7 +11,6 @@ public import Formalism.SharpRestriction.GrowthBounds.Joints
 public import Formalism.SharpRestriction.GrowthBounds.TensorLatticeBounds.ExistsHypothesesNonempty
 public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
-import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
 import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesSubmodule
 

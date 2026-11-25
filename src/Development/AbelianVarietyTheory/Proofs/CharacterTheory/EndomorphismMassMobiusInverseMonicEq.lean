@@ -6,19 +6,14 @@ public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.FieldTheory.Finiteness
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EndomorphismMassMulParabolicInductionTrivial
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharpolyEqFinsumPsi
-public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobiusInverseCharpolyLinearEqui
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.TotallySplit
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EndomorphismMassEqOfLinearEquivInvariant
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 
 -- This file was produced by scripts/clump.py from the modules listed below.

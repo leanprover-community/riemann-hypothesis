@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 public import Mathlib.Analysis.Normed.Ring.Ultra
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocallyConstantPartialFourierGLBlock
 public import Mathlib.Analysis.Normed.Field.ProperSpace

@@ -7,21 +7,10 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.Projecti
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffMulOfTsupport
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.Topology.OpenPartialHomeomorph.IsImage
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 import Mathlib.Order.CompletePartialOrder
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.AnalyticForms.PotentialTheory.IsCompatChartChart, ReciprocityTheory.AnalyticForms.PotentialTheory.MIntSumCont, ReciprocityTheory.AnalyticForms.PotentialTheory.IsCompatChartRestrOpen, ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement

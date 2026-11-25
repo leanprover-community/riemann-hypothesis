@@ -1,13 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DropHom
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityJacquetEqBorelJacquetOfS
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardBlocksReindexStrictMono
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorProductDropZeroFactors
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InducedProductDropZeroFactors
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
@@ -25,7 +22,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentR
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
 import GroundTheory.LocalFields.PadicLogSeries
 import Std.Tactic.BVDecide.Normalize.BitVec
 

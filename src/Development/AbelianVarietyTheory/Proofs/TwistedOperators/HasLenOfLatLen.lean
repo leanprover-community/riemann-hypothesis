@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MemSiegelOfIffRightAct
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeC
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

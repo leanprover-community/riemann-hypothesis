@@ -1,30 +1,21 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.XSmulMemWeightedHomogeneousSubmodule
-public import Mathlib.RingTheory.FiniteType
 public import Mathlib.RingTheory.KrullDimension.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRingKrullDimQuotientMvPolynomialEqNat
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RingKrullDimQuotientAddOneOfMemMinimalPrimesSup
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LeadingCoeffNonnegOfEventuallyEvalNat
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.RingTheory.GradedAlgebra.Basic
 public import Mathlib.FieldTheory.IsSepClosed
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.GradedAlgebra.Radical
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RingKrullDimQuotientOfMemMinimalPrimesSup, Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RingKrullDimQuotientLeOne

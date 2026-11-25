@@ -8,10 +8,8 @@ public import Formalism.TorsionNormIteration.InverseIntegralClasses.MemSpanOfNor
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.NormSigmaLeOne
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.SigmaNormLeOne
 public import Lemmata.MultivariateIntegrals.IntegralMv
-public import Formalism.TorsionNormIteration.InvIntegralOfClass
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.InvIntV
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
-public import Formalism.FormalGroupWitt.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.FormalGroupWitt.FormalGroupWittProofs.CoeffExpandEqZero, Formalism.FormalGroupWitt.FormalGroupWittProofs.CoeffV, Formalism.FormalGroupWitt.FormalGroupWittProofs.FunctionalEquationSubstVector, Formalism.FormalGroupWitt.FormalGroupWittProofs.FunctionalEquationHomVector, Formalism.FormalGroupWitt.WeightInvariance

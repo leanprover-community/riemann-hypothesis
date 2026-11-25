@@ -10,16 +10,11 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Transport
 public import Mathlib.Topology.Algebra.Module.Compact
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.ValSurjective
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.IsUniformInducingOfVal
-public import Mathlib.Topology.UniformSpace.CompleteSeparated
 public import Formalism.PeriodIntegrals.LocalEnd
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.HenselRoot
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
 

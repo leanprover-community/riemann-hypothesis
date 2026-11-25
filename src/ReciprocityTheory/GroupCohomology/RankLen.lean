@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.QuotSMulTop
 public import Mathlib.Algebra.Module.PID
 public import Mathlib.Data.ENat.BigOperators
 public import Mathlib.LinearAlgebra.TensorProduct.Prod
-public import Mathlib.Algebra.Category.ModuleCat.Biproducts
 public import ReciprocityTheory.GroupCohomology.TransgressionStatement
 public import ReciprocityTheory.GroupCohomology.ConnNatHolds
 import Mathlib.Algebra.Module.StablyFree.Basic

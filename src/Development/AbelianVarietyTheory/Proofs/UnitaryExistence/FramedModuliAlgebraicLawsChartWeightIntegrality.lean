@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ChartCoverFOfSectionBaseChange
 public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
-public import Formalism.LocalToGlobal.ProjectiveLattices.FrameProofs
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralLatticeStructureUnique
 
 @[expose] public section

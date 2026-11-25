@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.FourierWhittaker.Series
 public import GroundTheory.GlobalFields.TateThesis.LatticePoisson
-public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.PiTensorProduct

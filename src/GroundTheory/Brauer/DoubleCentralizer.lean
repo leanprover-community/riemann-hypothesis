@@ -4,7 +4,6 @@ public import GroundTheory.Brauer.SkolemNoether
 public import Mathlib.RingTheory.SimpleModule.Basic
 import GroundTheory.Brauer.TensorSimple
 public import Mathlib.LinearAlgebra.Basis.MulOpposite
-import Mathlib.RingTheory.TensorProduct.Finite
 
 @[expose] public section
 

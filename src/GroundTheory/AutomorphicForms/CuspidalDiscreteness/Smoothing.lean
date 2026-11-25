@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.ReductionSplitting
 public import Mathlib.Topology.ContinuousMap.CompactlySupported
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
 import GroundTheory.AutomorphicForms.Reduction
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Compactness.Paracompact
 

@@ -55,21 +55,10 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LengthPosOfPosDef
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralTensorAdelesEqAdelicCompletionOne
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSatVecUOfDiag
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.Order.Interval.Finset.Box
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilMatrixCoefficientVacuaUnramifiedPlace
 

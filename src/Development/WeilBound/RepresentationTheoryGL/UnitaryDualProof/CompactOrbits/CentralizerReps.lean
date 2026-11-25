@@ -4,13 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prel
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.OpenSlices
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
-public import Mathlib.LinearAlgebra.Matrix.Basis
-public import Mathlib.RingTheory.Artinian.Module
 
 @[expose] public section
 

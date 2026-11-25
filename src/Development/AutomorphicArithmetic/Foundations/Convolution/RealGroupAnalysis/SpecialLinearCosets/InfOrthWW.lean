@@ -9,14 +9,8 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.SpecialLinearCosets.JmMeasurable
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.SpecialLinearCosets.Cols
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.FockSt
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.Smooth
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
-import GroundTheory.GlobalFields.LocalAtPlace
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.SgLaws
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.SpecialLinearCosets.ColsHApply, Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.SpecialLinearCosets.ContinuousQuaternaryFormLeft, Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.SpecialLinearCosets.IntegrableCols, Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.SpecialLinearCosets.InfOrthWW

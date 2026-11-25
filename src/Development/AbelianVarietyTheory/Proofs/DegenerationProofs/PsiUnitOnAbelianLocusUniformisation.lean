@@ -11,13 +11,8 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.M
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.QkToAkUInvariantUnderFieldEmbeddingStatement
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionIdentificationWithPairing
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.DedekindDomain.Instances
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Ideal.AssociatedPrime.Localization
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc

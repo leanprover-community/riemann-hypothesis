@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 

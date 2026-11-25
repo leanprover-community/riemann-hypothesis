@@ -3,14 +3,10 @@ module
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import GroundTheory.AutomorphicForms.SatakeNormalized
 public import GroundTheory.AutomorphicForms.Satake
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsUnitarisableOfCharIff
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PrincipalSeriesSubquotientOfCharacters
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

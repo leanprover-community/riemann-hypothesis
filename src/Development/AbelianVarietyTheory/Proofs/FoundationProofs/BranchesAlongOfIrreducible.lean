@@ -2,16 +2,12 @@ module
 
 public import Mathlib.RepresentationTheory.Intertwining
 public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
-public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 public import Mathlib.RepresentationTheory.Irreducible
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNeZeroMapEqZeroOfWeightNe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InitMinorNeZeroOfStrictMono
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntertwiningGlOfUnitary
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIrreducibleSmallRepUnitary
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyDirectSumEquivOfFinrankLe
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.GradedWeylDivisibility.FinalD
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinrankIntertwiningMapDirectSum, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSsIdxInjective, Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinrankLeFinrankDirectSumBelow, Development.AbelianVarietyTheory.Proofs.FoundationProofs.BranchesAlongOfIrreducible

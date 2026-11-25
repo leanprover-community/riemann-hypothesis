@@ -2,24 +2,14 @@ module
 
 public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AevalElimEqRenameLinearSubstitution
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Degree.TrailingDegree
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FZEqConstMulIrreduciblePow
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ComponentFormProperties
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.MvPolynomial.Division
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

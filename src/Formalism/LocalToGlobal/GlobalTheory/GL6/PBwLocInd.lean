@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocElim
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionOfDecompGlob
 
 @[expose] public section
 

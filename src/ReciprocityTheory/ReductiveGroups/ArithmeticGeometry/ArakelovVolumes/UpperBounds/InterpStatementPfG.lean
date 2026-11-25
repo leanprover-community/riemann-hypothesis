@@ -5,15 +5,7 @@ public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfD
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfE
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.Topology.Separation.CompletelyRegular
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
-public import ReciprocityTheory.L2DbarEstimates.NormFibrations.MvBlowup
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Topology.Sheaves.Presheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.

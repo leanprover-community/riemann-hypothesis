@@ -1,14 +1,9 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddnessConditionHolds
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterTrivialAtInertPrimes
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfIdem
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTranslationIntertwinerUnitary
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.WeilOperatorConjHeisenbergMovedLattice
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.WeilRepresentationVacuumSignInertPlaces
 
 @[expose] public section
 

@@ -9,8 +9,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.W
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.FlowBasic
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.LogExp
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.FlowTwo
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -1,8 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliAbstractCharacter
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUni
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsFamRep
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.ClosedPointWeilPower
 

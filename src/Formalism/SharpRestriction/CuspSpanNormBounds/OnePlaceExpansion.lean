@@ -3,10 +3,6 @@ module
 public import Mathlib.Basic.ENNReal.Basic
 public import Mathlib.Basic.ENNReal.Real
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPtRepTrDat
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
-import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.Linter.Style
 import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 

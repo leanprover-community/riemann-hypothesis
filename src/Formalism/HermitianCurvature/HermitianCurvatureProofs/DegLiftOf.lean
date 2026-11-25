@@ -8,8 +8,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGFormJ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGLift
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGSlice
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGWaveMain
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 
 @[expose] public section
 

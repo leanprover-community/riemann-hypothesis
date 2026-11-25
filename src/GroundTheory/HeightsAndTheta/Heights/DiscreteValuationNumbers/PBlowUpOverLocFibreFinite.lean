@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Asse
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.LiftFormNotMemBlowUpOf
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpLocRingIso
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpLocalChart
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpModel
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpOverLocInChart
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHomLocRingDimLe
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHomLocRingIsLocal
@@ -15,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHom
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMinimalPrimeMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSupSpanMultiHomog
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

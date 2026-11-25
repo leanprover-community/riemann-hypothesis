@@ -2,16 +2,9 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAGroupAdjCut
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaCutoffLimit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnBetaFrame
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnFibMem
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnTrSmooth
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointLeibnizExpansion
 
 @[expose] public section
 

@@ -4,7 +4,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-public import GroundTheory.GlobalFields.CyclotomicCharacters.DegreeDecomposition
 
 @[expose] public section
 

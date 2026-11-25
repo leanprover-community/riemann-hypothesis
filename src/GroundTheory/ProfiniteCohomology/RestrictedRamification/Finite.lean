@@ -12,10 +12,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteRoots
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
-public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeDefs
 
 @[expose] public section
 

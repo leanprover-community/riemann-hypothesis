@@ -3,22 +3,15 @@ module
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsUnitarisableOfCharIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
 import Formalism.AlgebraicWeights.IsAlgWeight
-import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import ReciprocityTheory.Automorphisms.PlaceA
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

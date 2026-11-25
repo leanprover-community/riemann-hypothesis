@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Exi
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ZeroSectionBase
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDualOfIsPerfectOfAdditive
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.AdjointEndomorphismsCubeLBOfDenseFibres
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 
 @[expose] public section
 

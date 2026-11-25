@@ -7,7 +7,6 @@ public import GroundTheory.GlobalFields.TateThesis.ConductorIdeal
 public import GroundTheory.GlobalFields.IdeleGroups.Rational
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 public import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
-import GroundTheory.GlobalFields.Adele.Discrete
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.StrongApproximationSLDoubleCoset, GroundTheory.AutomorphicForms.GL2Classical.ExistsIntOfMemIntegralFiniteAdeles, GroundTheory.AutomorphicForms.GL2Classical.Adelic

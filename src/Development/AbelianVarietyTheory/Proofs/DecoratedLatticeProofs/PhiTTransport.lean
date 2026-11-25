@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Cla
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicMatrixCongruenceBadPrimeIffCompletion
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValSubLtOfHasRes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedInvMulLe
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MidChart

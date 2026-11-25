@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjugateNeSelf
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolyRep
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraicWeightPolyMatrixMultiplicative
 import Mathlib.Tactic.Linter.Style
 

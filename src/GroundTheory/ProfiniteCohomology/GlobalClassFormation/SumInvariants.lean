@@ -7,7 +7,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
 import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SymbolBridgeCyclotomic
-public import GroundTheory.GlobalFields.CyclotomicCharacters.Degree
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalSymbol
 
 @[expose] public section

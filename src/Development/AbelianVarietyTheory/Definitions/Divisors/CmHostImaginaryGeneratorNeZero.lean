@@ -13,7 +13,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization

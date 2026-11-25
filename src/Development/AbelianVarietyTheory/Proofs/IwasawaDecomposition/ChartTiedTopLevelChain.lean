@@ -18,11 +18,9 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueC
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ValuationLeOneOfMemZmu
 public import Formalism.LocalToGlobal.Columns.RecLevelStep
 public import Mathlib.Algebra.Group.Action.Sigma
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -54,11 +52,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsDiscriminantTwelfthRootOfIdealLatticeIffDelta1
-import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
 import Formalism.LocalToGlobal.Columns.RecLevelLocP
 import Mathlib.Tactic.Linter.Style

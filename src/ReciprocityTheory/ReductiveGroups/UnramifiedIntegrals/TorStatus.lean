@@ -2,13 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementK
-public import Formalism.EllipticTorsion.FormalGroupPointsParametrisation
-public import Formalism.EllipticTorsion.EllipticTorsionProofs.FormalGroupPointsHomDef
-public import Formalism.EllipticTorsion.FormalGroupPointsNoTorsion
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorDefs
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.NonsingularNorm
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ExistsTeichmullerRepModPrime
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormNatCastClOfNotDvd
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorBasic
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorHensel
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorSub
@@ -16,10 +12,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.CM4
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.ExistsFinitePartOneIdeleSplitCongruenceQuotient
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.ScaledTorsionPointNonsingular
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
-import Mathlib.Analysis.Normed.Ring.Ultra
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TorRes
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

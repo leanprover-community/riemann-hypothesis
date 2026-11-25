@@ -5,7 +5,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.TactVanish
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.TchPoly
 public import Mathlib.RingTheory.AdicCompletion.Completeness
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueFixedPointOfAdicContraction
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoEvLow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
@@ -14,7 +13,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.MvPowerSeries.Inverse
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

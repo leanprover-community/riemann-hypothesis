@@ -5,15 +5,10 @@ public import Formalism.LocalToGlobal.Columns.ColumnsProofs.SymLevEnt
 public import Formalism.LocalToGlobal.Columns.TiedGlMat
 public import Formalism.LocalToGlobal.Columns.ChainInstY
 import Formalism.LocalToGlobal.Columns.AdelicLemmas
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.FirstUnfoldingEqZeroOfNotIntegral
 import Formalism.LocalToGlobal.Columns.RecLevelSymF
 public import Formalism.LocalToGlobal.Columns.XtLamGvSCongr
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
-import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 
 @[expose] public section
 

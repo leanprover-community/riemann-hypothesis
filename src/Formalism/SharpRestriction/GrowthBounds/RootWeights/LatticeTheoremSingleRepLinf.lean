@@ -13,15 +13,12 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.BinomialPreser
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.InvariantDenominatorLinftyBound
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightEntriesBetweenExtremeHighest
 import Mathlib.RingTheory.LocalProperties.Reduced
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightSpaceEqBotOutsideSupport
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Algebra.Order.Star.Int
-public import Mathlib.Algebra.Module.Lattice.Full
 public import Lemmata.GeneralBFactLeftAltForm.MQ
 import Mathlib.RingTheory.PicardGroup
 

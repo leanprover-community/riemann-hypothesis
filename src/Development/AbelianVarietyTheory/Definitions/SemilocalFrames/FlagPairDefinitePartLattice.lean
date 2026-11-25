@@ -3,8 +3,6 @@ module
 public import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.FinalNeighbourConstruct
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Formalism.ThetaLiftIndependence.ThetaOrbitSums.LatLiftIndep
 import Mathlib.Tactic.Linter.Style

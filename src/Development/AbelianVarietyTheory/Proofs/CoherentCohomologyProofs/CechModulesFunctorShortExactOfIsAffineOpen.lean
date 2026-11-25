@@ -2,12 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.HigherDirectImagesVanishOfIsAffineHom
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CechModulesFunctorShortExactOfAcyclic
-public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Mathlib.Tactic.ENatToNat
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndSurjectiveAppOfExactOfEpi
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RestrictPullbackIsoHomAppPullbackSections
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SubsingletonOfSheafPullback
-import Mathlib.Algebra.Category.Grp.Zero
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

@@ -2,10 +2,7 @@ module
 
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.GJGlobalModulus
 import GroundTheory.AutomorphicForms.ReductionMeasure
 import GroundTheory.GlobalFields.TateThesis.AdeleScaling

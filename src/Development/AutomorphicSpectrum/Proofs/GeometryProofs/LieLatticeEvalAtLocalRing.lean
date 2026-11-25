@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRing
 import Mathlib.Tactic.Linter.HaveILetI

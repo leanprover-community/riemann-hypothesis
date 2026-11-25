@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.ClosedSubgroupsStatement
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.Groups
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.SpectralGap.HaarMap

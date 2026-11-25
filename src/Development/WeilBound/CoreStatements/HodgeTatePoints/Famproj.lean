@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Hcptgen
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLev
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

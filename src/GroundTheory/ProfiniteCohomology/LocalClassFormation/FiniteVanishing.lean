@@ -1,11 +1,9 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Vanishing
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Trivial
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Devissage
 public import GroundTheory.ProfiniteCohomology.EulerCharDefs
 public import GroundTheory.ProfiniteCohomology.PoincareDuality
-import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

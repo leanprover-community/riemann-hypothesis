@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsNorma
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IndepOnEmpty
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SimilitudeIsoThetaProductBaseChange
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.GenMove
 
 @[expose] public section
 

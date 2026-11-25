@@ -14,11 +14,9 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReduc
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenConnectedComponentOfNoetherianSpace
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 import Formalism.LocalToGlobal.ProjectiveLattices.RulInst
-import Mathlib.AlgebraicGeometry.QuasiAffine
 public import Mathlib.FieldTheory.LinearDisjoint
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
-import Development.AbelianVarietyTheory.Statements.PrincipalLattices.FiniteDimensionalBase
 
 @[expose] public section
 

@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionF
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCompactEmbedded
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterAlgRes
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI

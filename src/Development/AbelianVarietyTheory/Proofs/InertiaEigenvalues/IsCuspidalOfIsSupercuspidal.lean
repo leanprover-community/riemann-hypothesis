@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CentralExponentBoundOver
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
-public import Mathlib.Topology.Algebra.Group.Units
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
@@ -27,8 +26,6 @@ import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

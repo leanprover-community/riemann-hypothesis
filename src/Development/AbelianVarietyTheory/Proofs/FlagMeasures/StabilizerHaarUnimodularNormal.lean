@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsNor
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerSetEqRangeNormalForm
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LintegralInvEqOfBiInvariantMatGroup
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.LinearAlgebra.Charpoly.Basic
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicLeviEmbeddingHomomorphismProperties
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure
 import Mathlib.Algebra.Order.Archimedean.Real.Hom

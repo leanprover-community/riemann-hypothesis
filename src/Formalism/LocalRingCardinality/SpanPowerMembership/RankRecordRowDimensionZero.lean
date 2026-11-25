@@ -2,9 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.SpanPowerMembership.GenericMemberLevelNearLower
 public import Formalism.LocalRingCardinality.SpanPowerMembership.BaseFormAnisotropicOrthogonalSingle
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleClassGroupCardPos
-import Formalism.LocalRingCardinality.SpanPowerMembership.Adelic
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 
 @[expose] public section
 

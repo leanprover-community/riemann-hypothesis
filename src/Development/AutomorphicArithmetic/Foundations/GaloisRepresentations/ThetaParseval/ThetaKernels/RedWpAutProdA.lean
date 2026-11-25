@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HalvedSymple
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTopologicalRingAE
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergOpDoubledGramDoublingThetaTensor
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergOperatorFPreservesIsThetaFunction
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalPointsSelfAnnihilatorSymplecticStandardC
@@ -26,8 +25,6 @@ public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepC
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SpanInfRatF
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SumFourEqTrace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharSymplecticLocalLatticeEqOne
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalSymplecticPointsSelfAnnihilator
 
 /-! # RedWpAutProdA: Consolidated global theta-kernel definitions and proofs (RedWpAutProdA). -/
 @[expose] public section

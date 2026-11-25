@@ -8,37 +8,26 @@ public import Mathlib.MeasureTheory.Function.L1Space.Integrable
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FderivIntegralApplyOfHolomorphicOfDominated
 public import Mathlib.Analysis.Fourier.Inversion
-public import Mathlib.Analysis.Complex.Convex
-public import Mathlib.Analysis.Fourier.FourierTransform
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Probability.Independence.Basic
-public import Mathlib.MeasureTheory.Integral.ExpDecay
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentRadicalVolumeGrowth
-public import Mathlib.Analysis.Complex.Exponential
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsMeasurableCutoffFibreIntegralOneSubgroup
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedVectorDifferentiable
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarSubgroupBiInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneParameterConjugationBound
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.EigenfunctionFiniteCoefficients
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicSplitTorusIwasawaUnitaryGroup
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryRepMatrixCoefficientBound
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CauchySchwarz, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrableExpNegMulAbs, Development.AbelianVarietyTheory.Proofs.FlagMeasures.EqZeroOfExpDecayOfFourierEqZeroOnHalfLine, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralNonnegOfSums, Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoeffEqZeroOfLipschitzUnitaryFlowDecay, Development.AbelianVarietyTheory.Proofs.FlagMeasures.DecayOfMemSpan, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanDecay, Development.AbelianVarietyTheory.Proofs.FlagMeasures.TorusModulusUnipotentRadicalUnitaryGroup, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryRepFormalDegreeBound

@@ -1,10 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MultidegAdd
-public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.LiftSubstitutionCoeffDivisible
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.HookKeyOrderGeOne
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.KeyOne
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
 
 @[expose] public section
 

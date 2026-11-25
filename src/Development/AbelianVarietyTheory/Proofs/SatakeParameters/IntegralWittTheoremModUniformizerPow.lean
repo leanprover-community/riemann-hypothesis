@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDou
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CayleyTransformTrivialPhaseSkewHermitian
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MatrixLatticeIndexIntegralTranslationInvariance
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalThetaPairExistence
 
 -- This file was produced by scripts/clump.py from the modules listed below.

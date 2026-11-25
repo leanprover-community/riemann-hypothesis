@@ -8,9 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactSu
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesPureInnerProductsTensorProduct
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIntegralForm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubstitutionTotalDegreeLe
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRangeMapSubtypeOfContr
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Tactic.Linter.Style
 

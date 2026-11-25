@@ -18,19 +18,9 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DescendToThet
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsObjectAtMinimalPrime
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ResidueGeneric
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaPointsVanishingIdealRadicalHomogeneous
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.LocalProperties.Reduced
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 

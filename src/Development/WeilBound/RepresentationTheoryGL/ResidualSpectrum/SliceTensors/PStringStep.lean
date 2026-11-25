@@ -3,17 +3,11 @@ module
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-public import Mathlib.Basic.Real.Basic
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PStringStepC
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.TwistedSlicesSquareIntegrable
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.AbsPowOneNotIsAlgRat
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ResiduallyFiniteUnitOff
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PStringStepB
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

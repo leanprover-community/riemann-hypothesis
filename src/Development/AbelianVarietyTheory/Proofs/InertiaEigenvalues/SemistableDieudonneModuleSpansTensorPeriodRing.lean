@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EqOfPowEqOneOfNormSubLt
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSemistablePeriodMatrixOfIsSemistable
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorProductBasisCoordinates
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdmSt
 

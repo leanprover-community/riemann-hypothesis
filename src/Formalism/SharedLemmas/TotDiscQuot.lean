@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Topology.Algebra.ClopenNhdofOne
 public import Mathlib.Topology.Separation.Connected
-public import Mathlib.Topology.Separation.Regular
 
 /-!
 # Shared Mathlib-only lemmas

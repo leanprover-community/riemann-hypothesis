@@ -1,12 +1,9 @@
 module
 
 public import GroundTheory.AutomorphicForms.MacdonaldAlternant
-public import GroundTheory.AutomorphicForms.SatakeNormalized
 public import GroundTheory.AutomorphicForms.WhittakerGroups
 public import GroundTheory.AutomorphicForms.AffineBruhat
 import GroundTheory.AutomorphicForms.HaarCosets
-import GroundTheory.AutomorphicForms.MacdonaldRecursion
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular

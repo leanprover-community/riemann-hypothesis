@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocJEq
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 set_option backward.isDefEq.respectTransparency false
 

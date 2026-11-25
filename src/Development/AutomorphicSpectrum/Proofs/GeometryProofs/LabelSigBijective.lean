@@ -4,7 +4,6 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.VerticalBoundHeight
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CInfGood
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.OverLaUnique
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.ReadsRootsFinZero
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.ExistsAlgPtOff
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 import Mathlib.Tactic.Linter.Style

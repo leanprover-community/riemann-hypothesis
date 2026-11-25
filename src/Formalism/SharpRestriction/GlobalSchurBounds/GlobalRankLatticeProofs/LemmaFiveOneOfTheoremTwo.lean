@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeOfExplicitAndCompact
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 import Formalism.LogVandermondeBounds.LogVandermondeProofs.BlockDimensionIdentities
-import Formalism.LogVandermondeBounds.LogVandermondeProofs.CardStabilizerVector
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

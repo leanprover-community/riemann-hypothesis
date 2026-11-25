@@ -2,13 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Mathlib.GroupTheory.NoncommCoprod
 public import Mathlib.RingTheory.WittVector.IsPoly
 public import Mathlib.Tactic.Polynomial.Basic
 public import Mathlib.Tactic.ReduceModChar
-public import Mathlib.Topology.Algebra.Group.Units
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 import Mathlib.Tactic.Linter.Style
 

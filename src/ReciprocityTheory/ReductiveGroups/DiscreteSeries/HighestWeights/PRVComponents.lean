@@ -3,19 +3,13 @@ module
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 public import Formalism.RealPlaceAnalysis.StatementKT
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.LinearAlgebra.Dimension.Finite
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents.HighestWeightDifferencesNat
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents.TensorActionLieRelations
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
-public import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
-public import Mathlib.Analysis.Normed.Lp.PiLp
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.UniqueA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents.CompactRelationsApplyComm, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents.ParthasarathyTensorMatrix, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents

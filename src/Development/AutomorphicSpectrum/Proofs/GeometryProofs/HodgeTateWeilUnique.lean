@@ -5,14 +5,10 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsG
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsStalkFractionOfGeneric
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeRegularAtLocalPoint
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionEqZeroOfValues
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionEmbeddingGeometricPoints
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

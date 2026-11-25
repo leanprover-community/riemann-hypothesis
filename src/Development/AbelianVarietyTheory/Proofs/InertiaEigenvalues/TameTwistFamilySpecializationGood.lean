@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetReducedBlockEqResidueDet
-public import Formalism.LocalToGlobal.Divisibility.DefGroup
-public import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPlaceModelPlaceMap
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBaseChangeFiniteAdeleRingEquiv
 import Formalism.LocalToGlobal.Columns.AdelicLemmas

@@ -7,9 +7,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsIntegralPivotDecomposition
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsIntegralSmoothChartFrameModuli
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsTriangularReframeExistsAndUnique
 import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style

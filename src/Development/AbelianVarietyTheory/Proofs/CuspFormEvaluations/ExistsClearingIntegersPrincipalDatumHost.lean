@@ -14,8 +14,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsInte
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Formalism.LocalRingCardinality.ConjSqrtMinusD
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt

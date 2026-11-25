@@ -4,7 +4,6 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import Mathlib.RingTheory.Nullstellensatz
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import Mathlib.RingTheory.Ideal.Height
 public import Mathlib.FieldTheory.RatFunc.Basic
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.RingTheory.SimpleRing.Principal

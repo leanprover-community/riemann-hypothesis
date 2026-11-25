@@ -15,7 +15,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Separation.CompletelyRegular
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
 public import Mathlib.RingTheory.Norm.Transitivity
 

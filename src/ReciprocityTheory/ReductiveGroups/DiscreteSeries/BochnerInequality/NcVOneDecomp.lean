@@ -5,9 +5,6 @@ public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigCas
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.InnerCrossOpEigEqZero
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KUnitB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
-public import Mathlib.Analysis.InnerProductSpace.PiL2
-public import Mathlib.Analysis.InnerProductSpace.Spectrum
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Numerics
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
@@ -23,7 +20,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigRep
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar

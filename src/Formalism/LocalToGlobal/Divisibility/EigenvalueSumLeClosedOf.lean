@@ -3,18 +3,12 @@ module
 public import Formalism.LocalToGlobal.Divisibility.NumericScaleExponentEqExtended
 public import Formalism.LocalToGlobal.Divisibility.ConstantGeTwentyEightAlt
 public import Formalism.LocalToGlobal.Divisibility.SmallTies
-public import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
 public import Formalism.LocalToGlobal.Divisibility.NumbersLink
 public import Formalism.SharpRestriction.Divisibility.SlopeExcess.ConstRankBaseLePolyFourth
 public import Formalism.LocalToGlobal.Divisibility.DivisibilityConstruction.RBLam
 public import Formalism.LocalToGlobal.GroupLattices.JointServices.VwResChar
 public import Formalism.SharpRestriction.AdmissibleParameterJoins
 public import Formalism.SharpRestriction.Divisibility.HookProducts.LwPNonneg
-import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
-import Formalism.PeriodIntegrals.GZeroLogBound
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearCardBound.ZeroLogBound
-import Formalism.SharpRestriction.GrowthBounds.JointsLit
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Rat
 

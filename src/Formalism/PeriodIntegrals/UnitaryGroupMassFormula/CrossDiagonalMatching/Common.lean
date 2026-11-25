@@ -2,9 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.StabiliserOfLocalTransport
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PKerAtP
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
-public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
 
 @[expose] public section
 

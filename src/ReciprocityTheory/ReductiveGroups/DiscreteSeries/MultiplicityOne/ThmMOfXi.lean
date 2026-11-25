@@ -3,22 +3,13 @@ module
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UnitaryGroupStructuralFacts
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeEquivB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeEquivA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StSchurW
-public import Formalism.HermitianCurvature.StatementB
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Prod
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JSchurGA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JDicho
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvGroup
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvGroupA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JDichoWA
-public import Formalism.FormalDegreeBessel.StatementBF
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JPairsA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JSchurG
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.TransposeUnitary
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 public import Mathlib.Analysis.Normed.Module.HahnBanach
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UuInv
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.InHolds
@@ -31,16 +22,9 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.J
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JSmooth
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.TheoremMOf
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.XiExistsOfIn
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.SpecialFunctions.PolarCoord
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.Topology.Algebra.Group.Units
-import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JTransM
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StReps
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StSInt

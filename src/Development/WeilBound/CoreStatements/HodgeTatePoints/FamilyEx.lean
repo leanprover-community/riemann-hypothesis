@@ -13,10 +13,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LocalCo
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.LbIsoPullPull
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormalGermBaseChangeStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormalGermDimensionUniqueStatement
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Development.WeilBound.CoreStatements.HodgeTatePoints.CdLocal
-import Development.WeilBound.CoreStatements.HodgeTatePoints.CdUniv
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

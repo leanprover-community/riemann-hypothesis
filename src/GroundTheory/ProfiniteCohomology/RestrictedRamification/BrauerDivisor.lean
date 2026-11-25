@@ -7,9 +7,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerOrd
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModule
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SInvariantToInvariantsEqZeroIff
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
 
 -- This file was produced by scripts/clump.py from the modules listed below.

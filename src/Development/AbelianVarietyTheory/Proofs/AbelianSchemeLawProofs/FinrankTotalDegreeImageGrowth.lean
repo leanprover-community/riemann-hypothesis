@@ -6,8 +6,6 @@ public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Mathlib.RingTheory.NoetherNormalization
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst

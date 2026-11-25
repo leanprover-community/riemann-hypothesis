@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartFlagPt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseChartHolomorphicComposition
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseMetricVectorLogResolution
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFlagPointInOrbit
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPointInMultiprojectivePoints

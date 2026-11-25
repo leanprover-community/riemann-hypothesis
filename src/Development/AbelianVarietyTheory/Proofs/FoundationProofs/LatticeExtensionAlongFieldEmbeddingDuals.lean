@@ -5,7 +5,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsSelfDualE
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
-import Formalism.QuotientMetricDivisors.Statement
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.RingTheory.Flat.EquationalCriterion

@@ -2,11 +2,9 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenAdelicUnipotentTimesIntegralOutsideSet
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedS
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

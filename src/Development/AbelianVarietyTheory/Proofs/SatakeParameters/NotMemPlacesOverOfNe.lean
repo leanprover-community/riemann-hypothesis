@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurable
 import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 
 @[expose] public section
 

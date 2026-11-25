@@ -8,7 +8,6 @@ public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
 public import Mathlib.RingTheory.AdicCompletion.RingHom
 import Mathlib.Tactic.TypeStar
-public import Mathlib.RingTheory.AdicCompletion.Completeness
 
 @[expose] public section
 

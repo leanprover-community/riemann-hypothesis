@@ -3,8 +3,6 @@ module
 public import Formalism.HermitianCurvature.LatticeHerglotzBound
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
-public import Mathlib.MeasureTheory.Integral.Pi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCStmt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelSizesJointMean
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLatticeFactsSplitOfGeneral

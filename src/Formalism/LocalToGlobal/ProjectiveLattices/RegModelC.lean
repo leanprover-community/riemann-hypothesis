@@ -6,11 +6,7 @@ public import Mathlib.RingTheory.Ideal.Height
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegAVpt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegVert
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.RingTheory.Flat.Stability
-public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Localization.Away.AdjoinRoot
-public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegKrull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegHor
 import Mathlib.Tactic.Linter.HaveILetI

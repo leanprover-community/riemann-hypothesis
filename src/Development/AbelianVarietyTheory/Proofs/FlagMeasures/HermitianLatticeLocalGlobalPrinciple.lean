@@ -2,10 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueGlobalLatticeOfLocalLattices
-import Mathlib.Algebra.Module.Lattice.Full
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLattices
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 
 @[expose] public section

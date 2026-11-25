@@ -9,22 +9,15 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolEqOfAedisjoint
 public import Mathlib.RingTheory.Complex
-public import Mathlib.MeasureTheory.Group.LIntegral
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-public import Mathlib.RingTheory.Norm.Transitivity
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InfiniteGLHaarMeasureEqPiLocal
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.MeasureTheory.Measure.RegularityCompacts
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI

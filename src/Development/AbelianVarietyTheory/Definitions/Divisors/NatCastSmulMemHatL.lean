@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHype
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.AdelicUnitaryTopCong
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCompactParahoricLevelAndContainsLifts
 public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

@@ -3,12 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertDensity.FinrankInfKerAddOne
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertDensity.ExistsTraceNeZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertDensity.ValMain
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertDensity.AnisoPeelAlt
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.Algebra.CharP.Lemmas
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Algebra.CharP.Frobenius
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.DensExact
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI

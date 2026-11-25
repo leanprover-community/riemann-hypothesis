@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoi
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TermAttrConst
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermCarrierStability.TermStableHolds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.AdjointActionReduction
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

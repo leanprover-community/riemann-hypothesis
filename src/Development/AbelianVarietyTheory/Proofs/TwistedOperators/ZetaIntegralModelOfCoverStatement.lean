@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.BlockOrderedS
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsConjGaugeInvariant
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDerivedActionsTensorMembers
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.NotTrivialAndTwist
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockModelJointHarmonicsFormNormalisationUniqueneStatement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

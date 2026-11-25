@@ -1,14 +1,12 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChartEqsOfParts
-import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSSymExp
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermSelfNeZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermSumRight
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermZeroOfTrace
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerFixesTailCoords
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedLocSec
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.HermitianXiOrthogonal
 

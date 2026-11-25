@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.SwSand
-public import Mathlib.Analysis.Matrix.Normed
 
 @[expose] public section
 

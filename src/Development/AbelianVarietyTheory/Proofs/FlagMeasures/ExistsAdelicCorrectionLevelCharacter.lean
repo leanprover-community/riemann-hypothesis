@@ -11,20 +11,14 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepLevelTLat
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DualOfDualFrames
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemDualSetOfMemSpan
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DualLatticeLocalCharacterization
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAdelicUnitaryOfFiniteSupport
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLocallySelfDualOfHermitianLatticeOfLevel
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalLevelCharacterMatchAtTypePrime
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemAdelicSpanOfLatticeIffForallPlace
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
-import Formalism.PeriodIntegrals.SplitIntLoc
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitPrimeIntegers.ExistsUnitDiff
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceFirstFactorLocalFrame
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemLocLatOverLat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

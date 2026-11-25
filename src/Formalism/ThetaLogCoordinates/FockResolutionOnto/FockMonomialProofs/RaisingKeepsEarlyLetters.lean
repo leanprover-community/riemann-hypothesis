@@ -5,10 +5,8 @@ public import Formalism.MahlerMeasure.MahlerMeasureProofs.FockBlocks
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.InitPartZeroXMul
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.MulEarlyLettersHolds
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
 import Mathlib.Tactic.Linter.Style
-public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 
 @[expose] public section
 

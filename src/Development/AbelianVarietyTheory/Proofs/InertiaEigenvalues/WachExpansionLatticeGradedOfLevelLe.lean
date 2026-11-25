@@ -11,7 +11,6 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnramifiedSubfieldLeCyclotomicExt
 public import Mathlib.Data.Nat.Choose.Dvd
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SingleMemOfSupportSubset, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachExpansionLatticeGradedOfLevelLe

@@ -1,9 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJLeviZetaBlocks
-public import Mathlib.Analysis.CStarAlgebra.Classes
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.SmoothRepSchur
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.GL2.GJLeviZetaConv, GroundTheory.AutomorphicForms.GL2.GJLeviZeta

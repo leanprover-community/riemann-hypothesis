@@ -1,13 +1,9 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
-public import Formalism.HermitianCurvature.StatementU
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CayleyTransformPreservesForm
 public import Formalism.FormalDegreeBessel.FinalG
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
 import Mathlib.Algebra.Order.Archimedean.Real.Hom

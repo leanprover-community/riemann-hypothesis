@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFin
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConjOpInvolutive
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterGLStarEqInvOfUnitarisable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartStarInvT
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 
 @[expose] public section
 

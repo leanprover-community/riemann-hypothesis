@@ -13,12 +13,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.EpsEq
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PatchedSupportCompletions
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.FSurj
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.OfDetToDet
-public import Mathlib.RingTheory.Idempotents
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.BcChiTmul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DCorner
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DExtPoly
-public import Mathlib.Algebra.Module.BigOperators
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.HatEx
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.OBLt
 import Mathlib.Tactic.Linter.Style
@@ -27,7 +24,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DTrCoeff
 import Mathlib.RingTheory.SimpleModule.WedderburnArtin
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,9 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorPolyMap
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CapelliOfGelfand
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceElementGelfandPolynomialFormula
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetAddOneSubEqSumQminor
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetPolyMapMonic
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TracedQminorComatrixTruncatedInverse
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceElementCapelliRecursion, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceElementsActByGelfandValues

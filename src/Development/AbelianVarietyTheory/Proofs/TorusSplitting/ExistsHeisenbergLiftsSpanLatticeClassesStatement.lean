@@ -4,9 +4,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsTorusAndQuotientHom
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.GtOntoDivisibleKernel
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsNullVal
 import Development.AbelianVarietyTheory.Definitions.TorusSections.ExistsSecTie
 import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig

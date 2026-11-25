@@ -10,9 +10,6 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

@@ -5,8 +5,6 @@ public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNone
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTateA
 public import GroundTheory.ProfiniteCohomology.CyclicCupProf
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing
-import GroundTheory.ProfiniteCohomology.PoincareDuality
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTateB, CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTate

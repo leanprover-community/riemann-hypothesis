@@ -12,9 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUni
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Imports
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerSlActionRowVector
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitQExpansionCoefficients
-import Development.AbelianVarietyTheory.Definitions.Foundations.CthFac
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitIndexAddIntVector
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitQExpansionCoeffsIntegral
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

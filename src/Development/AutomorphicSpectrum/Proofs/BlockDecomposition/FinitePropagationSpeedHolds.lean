@@ -3,29 +3,13 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Rr
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FderivZeroApply
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RdSkewEqConst
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Mathlib.Topology.Algebra.Group.Units
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.Analysis.Normed.Operator.Basic
-public import Mathlib.Analysis.Matrix.Normed
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.DiscreteSeriesTopClasses.IsInvOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothTimeRightDerivativesCommuteStatement
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Topology.Algebra.Module.ModuleTopology
-public import Mathlib.Analysis.Calculus.Deriv.MeanValue
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
 public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Slope
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveTimeReversal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,15 +51,10 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothTimeRightDerivativesCommute
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.HaveILetI

@@ -6,10 +6,8 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinU
 public import GroundTheory.AutomorphicForms.GLnLocal
 public import GroundTheory.AutomorphicForms.WhittakerLSpace
 public import Mathlib.LinearAlgebra.Semisimple
-public import Mathlib.LinearAlgebra.Trace
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.Topology.Instances.Matrix
-import Mathlib.Algebra.CharZero.Infinite
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.UniNilp
 
 @[expose] public section

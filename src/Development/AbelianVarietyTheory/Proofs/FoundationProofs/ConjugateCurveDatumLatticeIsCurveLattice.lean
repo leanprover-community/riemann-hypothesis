@@ -2,10 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalStarComplexMultiplicationPoints
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
-public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeInvariantsPeriodPairDictionary
 public import Formalism.LocalRingCardinality.ConjSqrtMinusD
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

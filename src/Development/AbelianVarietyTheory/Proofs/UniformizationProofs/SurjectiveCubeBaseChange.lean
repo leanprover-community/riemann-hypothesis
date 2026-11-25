@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Uniformization.SameB
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ComparisonTorusInvariant
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CompatAlongOfSquare
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

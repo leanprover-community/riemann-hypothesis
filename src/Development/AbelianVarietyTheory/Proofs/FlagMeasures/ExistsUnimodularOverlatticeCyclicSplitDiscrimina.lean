@@ -5,10 +5,6 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.HermitianLattices.StatementMass
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import Mathlib.RingTheory.DedekindDomain.Factorization

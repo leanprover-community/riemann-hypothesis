@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsQProjOverBa
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.NonemptySiegelFamilyOverArithmeticBase
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SiegelPrePullbackPrincipalRingChange
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TheoremOfCubePolAbelianScheme
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.GeomIntSelf
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.ExistsArBaseAway
 

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Mathlib.RingTheory.Polynomial.ScaleRoots
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
 
 public section

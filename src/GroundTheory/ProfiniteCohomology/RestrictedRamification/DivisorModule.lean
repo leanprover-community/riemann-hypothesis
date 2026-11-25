@@ -11,7 +11,6 @@ public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 public import GroundTheory.ProfiniteCohomology.Procyclic
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.ProfiniteCohomology.CupProducts
 
 @[expose] public section
 

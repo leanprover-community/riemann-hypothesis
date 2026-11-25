@@ -11,8 +11,6 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Lemma
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

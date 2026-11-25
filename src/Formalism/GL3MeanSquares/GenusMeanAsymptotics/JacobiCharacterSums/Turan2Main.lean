@@ -9,9 +9,7 @@ public import Mathlib.Algebra.Polynomial.Degree.Defs
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Algebra.Polynomial.BigOperators
-public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import Mathlib.RingTheory.Polynomial.Vieta
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic

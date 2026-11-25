@@ -34,7 +34,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -47,13 +46,8 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfThickenings
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfVeryAmpleBy
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomEqOfPullSections
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsProperOfIsProjBy
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.VeryAmpleByPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsHomogeneousXPowMulAddXPowMul
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SectionPull

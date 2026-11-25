@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.MvPowerSeries.Inverse
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Derivative
 public import Mathlib.RingTheory.PowerSeries.Inverse
-public import Mathlib.RingTheory.Derivation.Basic
 
 @[expose] public section
 

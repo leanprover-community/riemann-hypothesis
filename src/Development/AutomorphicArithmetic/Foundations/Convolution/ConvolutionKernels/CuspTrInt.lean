@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.CommProj
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.RopAdj
-public import GroundTheory.AutomorphicForms.CuspidalProjection.OrthogonalProjectionOntoCompSubtypeL
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalTwistEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.HsOfKer
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KvCont

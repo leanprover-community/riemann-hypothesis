@@ -3,15 +3,11 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeVLem
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCGenToQQ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCRadSpSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCSecMove
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSectionStab
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeGQLFam

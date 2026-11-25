@@ -8,11 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRin
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RingKrullDimQuotientAddOneOfMemMinimalPrimesSup
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.GradedAlgebra.Radical
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-import Mathlib.RingTheory.KrullDimension.Polynomial
 public import Mathlib.RingTheory.Nullstellensatz
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar

@@ -2,9 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBaseClassLevelAdapted
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.CoverFourierCoeffEqFiniteFourierSum
-public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeVacuaExistUnique
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelStructureProperties
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ProjProjOfGood
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
@@ -27,7 +25,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -56,20 +53,9 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsClassicalLevelDataCoverSelfDual
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
-import Formalism.LocalToGlobal.ProjectiveLattices.JFDFree
-import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.Ideal.Quotient.Index
 

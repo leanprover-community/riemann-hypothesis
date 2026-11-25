@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.StatementTL
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AnisotropicColumnSums
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BorderedDeterminants
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

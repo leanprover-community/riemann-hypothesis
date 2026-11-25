@@ -55,7 +55,6 @@ import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

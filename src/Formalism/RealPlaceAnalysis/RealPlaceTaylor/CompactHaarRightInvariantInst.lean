@@ -2,10 +2,8 @@ module
 
 public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Analysis.Calculus.Deriv.Shift
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Mathlib.MeasureTheory.Group.Integral

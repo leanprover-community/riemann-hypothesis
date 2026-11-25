@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGDictPf
-import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

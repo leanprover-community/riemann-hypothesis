@@ -5,8 +5,6 @@ public import GroundTheory.AutomorphicForms.RealGroupsLie
 public import Mathlib.Analysis.Matrix.Spectrum
 public import GroundTheory.HeightsAndTheta.Theta.Cartan
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsArchUnimodular
-public import GroundTheory.AutomorphicForms.HarishChandraInvariance.Compact
-public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PGramAtData
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsStabilizerLevi
@@ -18,9 +16,7 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsUnit
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusEmbedding
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsLineEigenvalue
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusModulus
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.MajorantInvolutionDiagonalForm
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsSemidirectCovering
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipotentHorizontal
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StUnipotentCentral
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PWittPartner
@@ -29,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.OfUnfolding
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMajorantStabCompact
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLevi
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnipotentModulus
-import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Examples
 
 section -- clump:auto
 @[expose] public section

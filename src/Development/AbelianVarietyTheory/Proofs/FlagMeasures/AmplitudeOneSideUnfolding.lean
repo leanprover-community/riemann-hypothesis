@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsFolnerUWset
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HcTypeWIrreducibleAndSchurAverage
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnimodularBesselSubgroupsUWN
 import Mathlib.Tactic.Linter.HaveILetI

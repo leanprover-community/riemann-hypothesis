@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementC
-public import Mathlib.Algebra.MvPolynomial.Degrees
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCpeelLemmas
 public import Mathlib.Algebra.MvPolynomial.Monad
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf

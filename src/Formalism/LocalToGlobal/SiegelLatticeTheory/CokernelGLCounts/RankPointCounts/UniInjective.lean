@@ -7,8 +7,6 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ParametersTermRelations
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 public import Mathlib.Algebra.Module.Equiv.Defs

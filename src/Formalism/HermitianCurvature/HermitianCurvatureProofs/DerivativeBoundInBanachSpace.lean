@@ -2,8 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Integral.Prod
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CuspidalIrreducibleSubrep
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EtaleIntegralityFacts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitTailEstimates
@@ -11,7 +9,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StationaryPh
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WirtingerIntegrationByParts
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Mathlib.Analysis.Calculus.ContDiff.Bounds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BudgetTopConvergence
@@ -26,15 +23,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FourierUniquenessMirabolic
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionCriticalPoints
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhaseFunctionDerivatives
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeakApproximationGL
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WhittakerVanishingImpliesZero
 import Mathlib.Tactic.Lemma
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose

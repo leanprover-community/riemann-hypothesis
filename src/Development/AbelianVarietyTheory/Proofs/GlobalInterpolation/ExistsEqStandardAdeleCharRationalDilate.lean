@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.LocalDualIndex
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNeZeroAdeleCharEqCompMulTotallyReal
 import Mathlib.Tactic.Linter.HaveILetI
 

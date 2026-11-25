@@ -9,14 +9,8 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelLabelExt
 public import Development.AbelianVarietyTheory.Statements.HyperbolicHypotheses.HypothesesInhabitedHyperbolic
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundaryChartHodgeMatrix
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFamilyExponentialLocally
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLogPeriodFamily
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodHolomorphicContinuation
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeDiscreteFree
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeSpans
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodSetClosed
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionPeriodsFiniteQuotient
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

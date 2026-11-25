@@ -3,18 +3,13 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsAction
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackEquivalence
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeConstantRank
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeFrameSpecializes
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalLieModelExtends
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundle
 
 -- This file was produced by scripts/clump.py from the modules listed below.

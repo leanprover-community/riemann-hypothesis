@@ -2,22 +2,12 @@ module
 
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.FinalNeighbourConstruct
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.ShortVectorEveryPlace
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusHolds
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-public import Mathlib.RingTheory.FractionalIdeal.Norm
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
-public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
-public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.ConvexBody
 public import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-public import Formalism.HermitianLattices.DefsCS
-public import Formalism.FockGram.FockGramProofs.CovolGram
 public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
-public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
 import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 import Mathlib.Tactic.Linter.Style

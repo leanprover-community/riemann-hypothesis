@@ -7,8 +7,6 @@ import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSteps
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumSectionCut
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionKoszul
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PRepresentative
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

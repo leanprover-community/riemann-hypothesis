@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

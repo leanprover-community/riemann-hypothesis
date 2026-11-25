@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.MemOfMemSupportToFinsupp
 public import Mathlib.Algebra.MvPolynomial.Eval
-public import GroundTheory.AutomorphicForms.HarishChandraCentre.MemCenterOfCommuteE
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.RepBase
 public import Mathlib.RingTheory.Derivation.Lie
 import Mathlib.Tactic.ENatToNat

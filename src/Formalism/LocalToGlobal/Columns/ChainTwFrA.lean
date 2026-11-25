@@ -1,13 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.RecChainYUnfPol
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.Columns.Record
 public import Formalism.LocalToGlobal.Columns.DilYStab
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
 public import Formalism.LocalToGlobal.Columns.XiTopTilRefHolds
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.LocalToGlobal.Columns.HeckeSpCount
 import Formalism.LocalToGlobal.Columns.ChainInst
 
 -- This file was produced by scripts/clump.py from the modules listed below.

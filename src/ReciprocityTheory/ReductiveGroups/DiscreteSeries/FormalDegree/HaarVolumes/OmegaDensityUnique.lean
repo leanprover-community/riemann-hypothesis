@@ -10,13 +10,10 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.Haar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarMirror
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.JacobianNearOneOfSmall
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.MeasurableEmbeddingUpqMat
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarHaar
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Compactness.Paracompact
 

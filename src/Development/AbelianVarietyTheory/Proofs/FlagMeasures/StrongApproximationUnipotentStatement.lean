@@ -18,9 +18,7 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalExtend
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 

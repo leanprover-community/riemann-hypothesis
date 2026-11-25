@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import Mathlib.Algebra.Ring.Associated
 public import Mathlib.RingTheory.RootsOfUnity.CyclotomicUnits
 public import Mathlib.RingTheory.RootsOfUnity.Lemmas
 public import Mathlib.Algebra.BigOperators.Associated

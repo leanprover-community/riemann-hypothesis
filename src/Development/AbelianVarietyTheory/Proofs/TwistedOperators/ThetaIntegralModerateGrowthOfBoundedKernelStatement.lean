@@ -1,15 +1,9 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-public import Mathlib.RingTheory.PicardGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsModGrowthExpLeNormInfPow
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteVolumeAdelicUnitaryQuotient
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CmTypeRestrictRealSubfieldInfinitePlaceBijective
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

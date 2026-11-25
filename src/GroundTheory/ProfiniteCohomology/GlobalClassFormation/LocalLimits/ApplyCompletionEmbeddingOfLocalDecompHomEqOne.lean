@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.LocalFields.ExtensionsOfDegree
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.IsScalarTowerFiniteSubfieldAlgebraicClosure
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.LiesOver
 import Mathlib.Tactic.TypeStar
 

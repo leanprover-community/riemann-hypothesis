@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsIntegralOfQuad
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

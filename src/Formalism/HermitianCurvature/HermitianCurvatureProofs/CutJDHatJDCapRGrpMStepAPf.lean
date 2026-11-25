@@ -3,10 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianInvariantCellAction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpMRad
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpMTop
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QxChain
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

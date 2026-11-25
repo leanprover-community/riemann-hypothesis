@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Ideal.Span
 public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.LinearAlgebra.Quotient.Pi
 import Mathlib.Tactic.TypeStar

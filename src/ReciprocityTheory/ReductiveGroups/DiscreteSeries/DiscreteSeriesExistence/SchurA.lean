@@ -4,8 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 public import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 
 @[expose] public section
 

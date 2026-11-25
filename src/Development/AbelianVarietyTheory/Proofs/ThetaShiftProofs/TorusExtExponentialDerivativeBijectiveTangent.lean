@@ -16,9 +16,6 @@ import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsAbelianSchemeThick
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

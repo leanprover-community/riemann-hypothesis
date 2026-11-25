@@ -1,10 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHasDerivAtZeroOfMapAddMul
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension

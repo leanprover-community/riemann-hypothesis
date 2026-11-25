@@ -12,11 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Genera
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetE
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ValAtLem
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 

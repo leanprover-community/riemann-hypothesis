@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.CarryLift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.FamParts
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.PowTwist
-import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.SatakeTwists.SatakeTwistHolds
 
 @[expose] public section
 

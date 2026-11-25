@@ -2,10 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DecompositionAlmostEverywhere
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FinPartPhiE
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.PsiTrCoreApprox
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

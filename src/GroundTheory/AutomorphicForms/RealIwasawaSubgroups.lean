@@ -8,7 +8,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

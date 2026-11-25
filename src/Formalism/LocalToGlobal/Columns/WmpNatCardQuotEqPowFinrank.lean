@@ -11,7 +11,6 @@ public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 public import Lemmata.GeneralBFactRightMore.Imports
 public import Formalism.LocalToGlobal.Divisibility.Tuples
 import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ColonCountWeighted, Formalism.FlagUnipotentLattices.IdealCountLeWAsm, Formalism.LocalToGlobal.Columns.WmpNatCardQuotEqPowFinrank

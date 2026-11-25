@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaInte
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicitySpaceEqZeroOfApplyNonzeroTensorZero
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaKORatLeftAndEigenRight
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

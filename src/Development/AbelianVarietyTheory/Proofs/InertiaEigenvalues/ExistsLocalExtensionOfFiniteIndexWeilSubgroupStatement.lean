@@ -2,14 +2,6 @@ module
 
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.Invariant.Profinite
-public import ReciprocityTheory.GaloisValuations.GlobalB
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsRootOfUnityFixedDvdWeilGroupDegree
@@ -21,7 +13,6 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ENatToNat
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 
 -- This file was produced by scripts/clump.py from the modules listed below.

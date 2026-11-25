@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.DataG
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.SecPsiMulPow
 public import Formalism.SatakeDualWeyl.Statement
-import Formalism.FrobeniusOrbits.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GroupLattices.LevelGatherings.HostPlacesWeight, Formalism.LocalToGlobal.GroupLattices.LevelGatherings.CastGLApply

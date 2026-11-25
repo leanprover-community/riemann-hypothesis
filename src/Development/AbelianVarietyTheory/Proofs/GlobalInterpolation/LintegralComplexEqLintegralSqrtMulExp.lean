@@ -5,7 +5,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Mathlib.MeasureTheory.Function.JacobianOneDim
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 public import Mathlib.Analysis.SpecialFunctions.PolarCoord
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen

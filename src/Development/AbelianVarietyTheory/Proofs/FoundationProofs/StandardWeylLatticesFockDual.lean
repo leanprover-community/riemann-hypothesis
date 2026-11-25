@@ -4,7 +4,6 @@ public import Formalism.GradedWeylDivisibility.StatementE
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQRowDivAdj
 public import Formalism.GradedWeylDivisibility.StatementC
 public import Formalism.GradedWeylDivisibility.FinalC
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
@@ -13,11 +12,8 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StdWeylLa
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ColSums
 import Formalism.GradedWeylDivisibility.FinalD
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 import Mathlib.RingTheory.Henselian

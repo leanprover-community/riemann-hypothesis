@@ -2,9 +2,7 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightDerivativeSmoothOnIndefiniteUnitaryGroup
 public import Formalism.FormalDegreeBessel.StatementG
-import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Topology.UniformSpace.Matrix
 import Formalism.HermitianCurvature.StatementB
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 

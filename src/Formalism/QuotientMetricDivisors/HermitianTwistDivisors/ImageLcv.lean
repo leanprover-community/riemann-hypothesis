@@ -4,7 +4,6 @@ public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

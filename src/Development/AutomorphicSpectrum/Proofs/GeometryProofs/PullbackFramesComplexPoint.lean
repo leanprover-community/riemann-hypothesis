@@ -4,10 +4,8 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsValFam
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationTangentComb
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordDegreeBoundOfFlag
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
-public import Mathlib.LinearAlgebra.ExteriorPower.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiChangeOfBasisDet
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiNeZeroOfLinIndep
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombIdentityMatrix
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombMatrixMul
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway

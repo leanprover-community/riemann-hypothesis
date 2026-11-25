@@ -2,10 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.StandardDeterminantUnit
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.StrongApproximationUnitaryCongruence
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

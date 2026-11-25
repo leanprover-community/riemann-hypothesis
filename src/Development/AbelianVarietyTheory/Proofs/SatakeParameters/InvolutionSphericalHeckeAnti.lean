@@ -57,18 +57,8 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Heckecomm
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Std.Tactic.BVDecide.Normalize.Prop
 

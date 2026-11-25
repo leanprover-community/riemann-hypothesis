@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Surje
 public import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 
 @[expose] public section
 

@@ -3,9 +3,6 @@ module
 public import Mathlib.RingTheory.Regular.RegularSequence
 public import Mathlib.RingTheory.Depth.Rees
 public import Mathlib.RingTheory.Regular.Category
-public import Mathlib.Algebra.Category.ModuleCat.Basic
-public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic
-public import Mathlib.Algebra.Homology.DerivedCategory.Ext.ExactSequences
 public import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsQuasiRegularSeqSelfIffLocalizationMaximal
 public import Mathlib.RingTheory.Ideal.Height
@@ -15,7 +12,6 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsWeaklyRegularIffIsQuasiRegularSeqOfIsLocalRing
 public import Mathlib.RingTheory.KrullDimension.Regular
 public import Mathlib.RingTheory.Flat.Tensor
-public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic

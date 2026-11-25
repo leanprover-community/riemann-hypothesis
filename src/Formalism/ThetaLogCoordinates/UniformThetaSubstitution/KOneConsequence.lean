@@ -6,7 +6,6 @@ public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementAB
 public import Formalism.GrowthSums.FactorialBaseGrowth.PathBasisOfCount
 public import Mathlib.Algebra.BigOperators.Field
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
-public import Formalism.GrowthSums.StatementG
 public import Formalism.GaussJetBounds.StatementJ
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp

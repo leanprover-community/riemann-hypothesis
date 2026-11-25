@@ -2,8 +2,6 @@ module
 
 public import Formalism.GradedWeylDivisibility.StatementE
 public import Formalism.HermitianLattices.StatementLat
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
 public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQHW

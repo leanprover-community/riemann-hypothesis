@@ -1,9 +1,7 @@
 module
 
 public import GroundTheory.LocalFields.LubinTateTowerMaps
-public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.UnramifiedExistence
-public import GroundTheory.LocalFields.UnramifiedGalois
 public import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Tactic.TypeStar
 

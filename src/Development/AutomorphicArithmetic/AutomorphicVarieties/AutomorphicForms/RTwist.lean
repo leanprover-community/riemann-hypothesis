@@ -5,7 +5,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SatakeParametersOfTwist
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.Topology.Algebra.Group.Matrix
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCon
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GaloisValuations.GlobalB
 import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq

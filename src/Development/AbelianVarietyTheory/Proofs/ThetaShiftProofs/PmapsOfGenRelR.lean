@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Cubic
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PulledComparisonEven
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ToStkAInjective
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.TangentLinearity.ConstPullback
 import Mathlib.RingTheory.LaurentSeries
 
 @[expose] public section

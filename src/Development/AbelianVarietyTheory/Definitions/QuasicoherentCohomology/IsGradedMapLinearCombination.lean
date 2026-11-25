@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.XSmulMemWeightedHomogeneousSubmodule
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.WeightAddLeOfMemSupportDividedContraction
-public import Mathlib.Algebra.Exact.Basic
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Batteries.Tactic.Lint.Basic

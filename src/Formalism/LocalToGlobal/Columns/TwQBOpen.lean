@@ -4,10 +4,6 @@ public import Formalism.LocalToGlobal.Columns.TwQBridge
 public import Formalism.LocalToGlobal.Columns.TwQLev
 import Formalism.LocalToGlobal.Columns.TiedGlLoc
 import Formalism.LocalToGlobal.Columns.TwQSplit
-import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

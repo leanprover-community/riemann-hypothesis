@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.
 public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniqueSelfDualMeasuresFinitePlace
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
 public import Mathlib.LinearAlgebra.SymplecticGroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFlagDualBasis
@@ -17,7 +16,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfAll
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensVAll
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.ExOmTOfSteps
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FibreFamilyUnique
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsHaarFrameStabiliserCompatibleFibre
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LocalUnitaryGroupStabilizersUnimodularFinitePlac
@@ -62,25 +60,15 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.FibDis
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensAll
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.MetricSpace.Ultra.Pi
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardFrameGramDetNeZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.

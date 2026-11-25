@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

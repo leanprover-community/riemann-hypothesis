@@ -6,7 +6,6 @@ public import Mathlib.Analysis.Calculus.Taylor
 public import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.IteratedDerivOrbit
-public import Mathlib.Analysis.Calculus.Deriv.Comp
 
 @[expose] public section
 

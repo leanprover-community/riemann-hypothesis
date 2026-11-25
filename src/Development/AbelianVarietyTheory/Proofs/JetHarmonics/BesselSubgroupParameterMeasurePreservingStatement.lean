@@ -5,10 +5,6 @@ public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsHaarOnIffGroupsUnitaryUnipotent
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

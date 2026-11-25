@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.MatchIndOf
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
-import GroundTheory.GlobalFields.CompletionAtPlace.Degree
 public import GroundTheory.GlobalFields.GlobalReciprocity.General
 import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
 import Mathlib.Algebra.Order.Floor.Extended

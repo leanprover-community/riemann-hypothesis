@@ -4,15 +4,9 @@ public import Formalism.LocalToGlobal.Columns.MtHeckeKv
 public import Formalism.LocalToGlobal.Columns.HeckeSp
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 public import Formalism.LocalToGlobal.Columns.HeckeSpCount
-import Formalism.LocalToGlobal.Columns.RecLevelCls
 public import Formalism.LocalToGlobal.Columns.TiedUpDnA
 public import Formalism.LocalToGlobal.Columns.TiedUpDnLoc
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Formalism.LocalToGlobal.Columns.RecLevelHost
 

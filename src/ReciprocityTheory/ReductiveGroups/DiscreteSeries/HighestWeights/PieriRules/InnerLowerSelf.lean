@@ -4,14 +4,10 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Continuou
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.NilpotentOfPowerTraces
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.KTypeIntDomStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.KtintExpApplyOfEig, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.InnerLowerSelf

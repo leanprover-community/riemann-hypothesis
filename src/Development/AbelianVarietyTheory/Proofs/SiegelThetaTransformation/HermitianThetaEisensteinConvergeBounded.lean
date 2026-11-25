@@ -16,12 +16,7 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.PiTensorProduct

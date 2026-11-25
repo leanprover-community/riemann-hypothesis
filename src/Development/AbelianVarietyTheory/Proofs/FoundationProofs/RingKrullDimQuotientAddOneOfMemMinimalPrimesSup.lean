@@ -2,18 +2,13 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LeadingCoeffNonnegOfEventuallyEvalNat
 public import Mathlib.RingTheory.Ideal.Height
-public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRingKrullDimQuotientMvPolynomialEqNat
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.GradedAlgebra.Radical
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.RingTheory.IntegralClosure.GoingDown
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-import Mathlib.RingTheory.KrullDimension.Polynomial
 public import Mathlib.RingTheory.NoetherNormalization
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar

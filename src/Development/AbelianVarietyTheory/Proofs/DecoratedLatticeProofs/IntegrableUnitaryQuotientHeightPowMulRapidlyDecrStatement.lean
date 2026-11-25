@@ -9,10 +9,7 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ex
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Development.AbelianVarietyTheory.Definitions.Foundations.WittIndexEqZeroIff
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegrableUnitaryQuotientHeightPowMulRapidlyDecr, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegrableUnitaryQuotientHeightPowMulRapidlyDecrStatement

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisOApplyZero
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsCuspFunIffConstTerm
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

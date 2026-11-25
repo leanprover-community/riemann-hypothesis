@@ -9,8 +9,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrin
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.ClosedEmbedding.StrictTransformClosedImmersion
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.IdealSheafFlatDescent
 import Development.ResolutionOfSingularities.Foundations.Schemes.AffineOpens
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
-import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
 
 @[expose] public section
 

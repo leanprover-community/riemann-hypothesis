@@ -39,7 +39,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import GroundTheory.AutomorphicForms.LocallyProfinite
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaPair

@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Pro
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ProperTriple
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuotientIntegralLinear
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentHaarAndModulus
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnipotentRadicalBasic
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.EqSemiMeasOfCovolOne
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RootExchangeUnipotentHaarIntegralPointsEqOneStatement
@@ -14,20 +12,14 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRootEx
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FramePositiveSum
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ToOneSucc
 public import Formalism.DoubleCosetMeasures.StatementZ
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -60,25 +52,7 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsUnitaryS
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsOneComb
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
-import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemFourierJacobiSubgroupIffParabolicMulColumn
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilFormulaRootExchangeParabolicIntersection
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Algebra.Group.Units
-import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

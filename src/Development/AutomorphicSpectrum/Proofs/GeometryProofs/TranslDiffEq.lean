@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 
 @[expose] public section
 

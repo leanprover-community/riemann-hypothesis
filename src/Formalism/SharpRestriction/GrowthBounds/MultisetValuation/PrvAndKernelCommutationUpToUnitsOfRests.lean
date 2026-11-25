@@ -11,8 +11,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PrimeCas
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AofUpdate
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelProductForm
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ExpansionAllPlacesOfPlace
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DworkExponentialRestrictions
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.RamifiedLatticeOfChainEstimates
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.GShiftRowGenMonomial
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelSumOfClassData
@@ -22,9 +20,7 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.SmulPsiG
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AuxUOfFirstTheoremPlaceBound
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.GaussElementarySymmetric
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TheoremOfAlternateForm
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NatCastInvMemRp
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.RelativePresentationOfD7
 
 -- This file was produced by scripts/clump.py from the modules listed below.

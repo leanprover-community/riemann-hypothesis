@@ -45,7 +45,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 import Mathlib.AlgebraicGeometry.Modules.Sheaf

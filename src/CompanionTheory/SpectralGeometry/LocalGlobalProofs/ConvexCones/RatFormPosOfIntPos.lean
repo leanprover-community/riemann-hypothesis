@@ -3,14 +3,11 @@ module
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Algebra.Order.Star.Real
 import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsStrictIff
 public import Mathlib.Topology.Algebra.Order.Archimedean
 public import Mathlib.Topology.DenseEmbedding
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 

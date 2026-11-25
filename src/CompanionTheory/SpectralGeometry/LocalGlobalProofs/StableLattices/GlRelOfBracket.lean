@@ -6,7 +6,6 @@ public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 
 @[expose] public section

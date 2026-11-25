@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

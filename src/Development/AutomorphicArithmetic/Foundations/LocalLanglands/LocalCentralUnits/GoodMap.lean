@@ -19,9 +19,7 @@ public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.Local
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.NormEqProd
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.ParOne
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.ParUniq
-import GroundTheory.AutomorphicForms.GLnLocal
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.GaloisValuations.GlobalB
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.TwTame
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import GroundTheory.LocalFields.PadicLogSeries

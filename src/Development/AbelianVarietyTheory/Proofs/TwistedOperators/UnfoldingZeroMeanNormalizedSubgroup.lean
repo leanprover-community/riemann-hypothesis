@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NullMeasurableSetShearImage
 public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.MeasureTheory.Group.Measure
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuotientIntegrationFormulaDiscreteSubgroupLeft

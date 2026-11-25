@@ -5,13 +5,11 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsC
 public import GroundTheory.AutomorphicForms.CompactAbelianCharacters
 public import Mathlib.Topology.Algebra.InfiniteSum.Field
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.ExistsPrimeAbsNormOfHasDirichletDensity
-public import Mathlib.NumberTheory.NumberField.DirichletDensity
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ContinuousInfiniteAdeleMap
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AbsNormPrimeIffInertiaDegEqOneAndFiniteRamified
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Hilbert90AdeleRingTensorQuadratic
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TendstoPrimeIdealZetaSumUniv
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.

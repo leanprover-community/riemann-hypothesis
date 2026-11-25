@@ -5,10 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfT
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormalizedPullbackConjugateTranslateEqTranslateL
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLevelPointEqOfKilledByHalfLevelStatement
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HarmonicValueNormalisedPullbackChainRuleStatement
-import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpBijectiveUniformisation
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LemmaBStatement
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.XiVal
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRootNear
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ContinuousCharacterFiniteOrderIntegralUnits
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsOpenCongruenceIdelesAndRealFiniteParts
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsQuotEquiv
@@ -22,8 +21,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicElementLat
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FinitePartPreservesFormDetNormOneStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameUniformEmbeddingSecond
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelAutomorphismPeriodFamily
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

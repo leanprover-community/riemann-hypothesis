@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

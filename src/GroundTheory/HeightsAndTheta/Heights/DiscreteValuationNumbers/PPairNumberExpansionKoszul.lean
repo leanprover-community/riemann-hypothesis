@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSt
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMixedDiffLinear
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVerticalDivisorsCommute
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

@@ -5,9 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolum
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.QuotientIsHausdorff
 public import Lemmata.GeneralBFactVariant.Imports
 import Mathlib.Topology.Algebra.Group.Units
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPfA
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 
 @[expose] public section
 

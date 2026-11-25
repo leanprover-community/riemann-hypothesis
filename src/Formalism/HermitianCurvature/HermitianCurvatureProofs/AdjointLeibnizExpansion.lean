@@ -2,11 +2,8 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtEpart
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfExhaustOfAvgCutoff
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveOrbitOpen
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

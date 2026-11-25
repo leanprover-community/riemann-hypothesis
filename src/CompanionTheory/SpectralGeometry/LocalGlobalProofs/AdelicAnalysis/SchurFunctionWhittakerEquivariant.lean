@@ -6,14 +6,8 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.DenominatorPowerSummable
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FourierCoefficientGrowthBound
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.WeilOperatorIntegralInvariance
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.SetTheory.ZFC.PSet
-import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.LocallyConstant.Algebra
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

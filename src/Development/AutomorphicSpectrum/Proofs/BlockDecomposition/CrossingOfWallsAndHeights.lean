@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
 public import Mathlib.Analysis.Complex.Trigonometric
 public import Mathlib.Analysis.Complex.LocallyUniformLimit
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 

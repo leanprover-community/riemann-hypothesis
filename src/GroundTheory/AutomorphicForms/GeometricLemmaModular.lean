@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.MeasuresChart
 public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.AdmissibleInduction
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
-import GroundTheory.AutomorphicForms.MeasuresGL
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 

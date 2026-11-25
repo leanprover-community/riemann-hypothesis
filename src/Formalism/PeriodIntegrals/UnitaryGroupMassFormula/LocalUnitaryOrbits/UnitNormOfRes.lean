@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbi
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.TwoNeZeroV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.OBas1OfUnitV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.MemUnifOIff
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.UnifExHolds
 import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.

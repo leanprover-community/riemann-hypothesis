@@ -3,7 +3,6 @@ module
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.ThmSUniform
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LocalComponentGL
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.PartialCoboundaryLinear
@@ -14,11 +13,8 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.Statemen
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TransportFirstLevel
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SecondLevelOfNormHolds
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ConstantCoeffFirstTwoOfThree
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.OmegaOfTraceDuality
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.TraceDualExists
 
 -- This file was produced by scripts/clump.py from the modules listed below.

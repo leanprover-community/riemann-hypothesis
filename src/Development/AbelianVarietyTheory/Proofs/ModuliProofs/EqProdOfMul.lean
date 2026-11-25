@@ -5,11 +5,6 @@ public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import Mathlib.RingTheory.Algebraic.Defs
 public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
-public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.Algebra.MvPolynomial.Funext
@@ -22,7 +17,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
 import Mathlib.CategoryTheory.Monoidal.Mon
 import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens

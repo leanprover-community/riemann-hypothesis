@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemIntMat
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLatticeIffIntegralMatrixSplitChart
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsHeckeOpFullDualLab
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt

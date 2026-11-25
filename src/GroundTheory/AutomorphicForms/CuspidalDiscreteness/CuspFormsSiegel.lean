@@ -2,12 +2,8 @@ module
 
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Translation
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.DecayUniform
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelCount
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelFinite
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Tactic.TypeStar

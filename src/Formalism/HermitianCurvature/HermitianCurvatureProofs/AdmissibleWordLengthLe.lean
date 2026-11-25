@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrect
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.CompRB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SplLen
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

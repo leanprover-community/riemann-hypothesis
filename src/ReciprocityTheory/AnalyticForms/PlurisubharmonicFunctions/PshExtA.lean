@@ -7,7 +7,6 @@ public import Mathlib.Analysis.SpecialFunctions.Integrals.PosLog
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshPoisson
-public import Mathlib.Analysis.Complex.MeanValue
 
 @[expose] public section
 

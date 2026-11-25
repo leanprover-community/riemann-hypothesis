@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistB
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.MvPowerSeries.Inverse
-public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MemRangeOfForallHeightEqOneOfIsReflexive
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
@@ -59,7 +58,6 @@ import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 

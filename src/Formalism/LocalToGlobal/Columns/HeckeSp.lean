@@ -4,11 +4,8 @@ public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAlg
 public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
 public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
-import Mathlib.LinearAlgebra.Eigenspace.Pi
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -4,15 +4,11 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoFinite
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.NumberTheory.Padics.ProperSpace
-import Mathlib.RingTheory.AdicCompletion.Functoriality
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Algebra.Ring.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.SharedLemmas.PrecompleteFinite
 
 @[expose] public section
 

@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NarrowJetMome
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ComplexFormsFiniteDimensional
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

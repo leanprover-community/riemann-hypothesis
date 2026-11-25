@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsThetaFunOO
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHolRepOfIsTau
 public import Formalism.LocalToGlobal.IndefiniteReal.BridgeTie
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPolynomialModelCoefficientSpaceRealPoints
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PureTensorLIntertwine
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
@@ -21,7 +20,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeilM
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompAtMtEqInfMat
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsFockVacAtOfIsThetaAt
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.InfinityTypes
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -60,8 +58,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomi
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaWeightArithmeticAtPlaceProofStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfPartOneSubEInfSmul
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 
 -- This file was produced by scripts/clump.py from the modules listed below.

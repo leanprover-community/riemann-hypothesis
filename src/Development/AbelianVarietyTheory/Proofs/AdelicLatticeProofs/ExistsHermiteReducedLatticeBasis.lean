@@ -5,8 +5,6 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.Analysis.InnerProductSpace.Defs
 public import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.Algebra.Order.Round
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.GramLeadingMinorLowerBoundIntegral
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
 import Mathlib.Tactic.Linter.Style

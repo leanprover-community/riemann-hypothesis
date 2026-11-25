@@ -19,7 +19,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MidChart
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.OnesRepresent
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PairForm
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 
 @[expose] public section
 

@@ -56,7 +56,6 @@ import Mathlib.Topology.Sheaves.Init
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 
 @[expose] public section

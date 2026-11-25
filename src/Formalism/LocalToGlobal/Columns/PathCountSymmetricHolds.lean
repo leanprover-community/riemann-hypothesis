@@ -5,10 +5,8 @@ public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 public import Formalism.LocalToGlobal.Columns.WmpNatCardQuotEqPowFinrank
 public import Formalism.LocalToGlobal.Columns.MemOfSmulMemOfAddEqOne
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.Columns.CardPathsEqSubmodulePairs, Formalism.LocalToGlobal.Columns.NeighbourConjOfTopNeighbour, Formalism.LocalToGlobal.Columns.PathCountSymmetricHolds

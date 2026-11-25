@@ -5,8 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGen
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.SubConjTransposeOfSymm
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KaRuleK
-public import Mathlib.Analysis.Calculus.FDeriv.Add
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Development.AbelianVarietyTheory.Statements.ThetaLevelCharacters.MemThetaLevelCharDimZero
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyInNormalAt
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubsingletonPrimeSpectrum
@@ -19,13 +17,8 @@ import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRuleOneOfKeyFormula
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 import Mathlib.Tactic.ENatToNat

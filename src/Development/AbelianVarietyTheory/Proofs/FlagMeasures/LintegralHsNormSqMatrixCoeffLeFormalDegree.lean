@@ -2,16 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselOrbitalIntegralEqInvDegSmul
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFormConvergesEquivariantHermitian
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupRepTwistedIsUnitaryRep
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupsClosedUnitaryWCompact
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnimodularBesselSubgroupsUWN
 public import Mathlib.MeasureTheory.Function.L2Space
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentUpperFacts
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedSubgroupBesselHaarFiniteCompactPosOpen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedSubgroupBesselUnitaryHaarUnique
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsFolnerUWset
-import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -57,10 +50,8 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Polynomial.Basic
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Mathlib.Algebra.Order.Star.Real
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselOpNormPowerIntegralLtTopClosedSubgroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IintEqEll, Development.AbelianVarietyTheory.Proofs.FlagMeasures.FolnerSingleTranslateProportionTendstoOne, Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFolnerOverlapAverageTendstoForm, Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFunctionalTwoSided, Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselRootDilationNormalizesContractsUnipotent, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIsFolnerSequenceBessel, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IintEquivariant, Development.AbelianVarietyTheory.Proofs.FlagMeasures.HsNormSqIintLeLiminf, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralHsNormSqDoubleCosetLeFatou, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralHsNormSqMatrixCoeffLeFormalDegree

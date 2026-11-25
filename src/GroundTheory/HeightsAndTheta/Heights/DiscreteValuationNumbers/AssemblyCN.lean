@@ -2,12 +2,10 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsCN
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Statements
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Order.Filter.AtTopBot.Group
 public import Mathlib.Algebra.Module.LocalizedModule.Exact
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.MvPolynomial.Ideal
-public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PColonMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PCutByForm

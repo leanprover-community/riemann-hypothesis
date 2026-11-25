@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.RamificationTwoAndConjugationAtQAndD
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SecondPropositionEveryLocalisation
 public import Formalism.SharpRestriction.GlobalSchurBounds.Joints
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationBoundaryCriterion
 

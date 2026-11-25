@@ -5,12 +5,7 @@ public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
-public import Mathlib.RingTheory.Complex
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
-import GroundTheory.AutomorphicForms.ReductionBlock
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

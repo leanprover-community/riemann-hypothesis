@@ -27,7 +27,6 @@ public import Mathlib.RingTheory.ZariskisMainTheorem
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 

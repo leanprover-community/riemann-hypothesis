@@ -8,10 +8,8 @@ public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
 import Aesop.Main
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Order.Star.Int

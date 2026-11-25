@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsOrd
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsNorm
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.CompletePartialOrder
 

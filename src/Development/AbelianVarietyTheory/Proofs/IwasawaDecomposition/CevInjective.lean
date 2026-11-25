@@ -3,13 +3,10 @@ module
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ClassSumPosHerm
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
 import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal

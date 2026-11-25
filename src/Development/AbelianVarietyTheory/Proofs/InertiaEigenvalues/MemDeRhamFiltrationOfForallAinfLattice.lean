@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowMulM
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamFilQuotientXiPowerAinf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineXiPowSaturatedQuotientComplete
 
 @[expose] public section

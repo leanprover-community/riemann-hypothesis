@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.ProfiniteCohomology.CyclicCupProf
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbol
-public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 
 @[expose] public section
 

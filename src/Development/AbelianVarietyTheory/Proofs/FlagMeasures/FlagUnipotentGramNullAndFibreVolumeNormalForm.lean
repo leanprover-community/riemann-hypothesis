@@ -1,17 +1,14 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsNormalFormStabilizerMeasure
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicLeviEmbeddingHomomorphismProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalFormFlagZeroMiddleInverseMinorOrthogonal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousUpperOff
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.LinearAlgebra.Charpoly.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantFlagLengthsInvarianceTorusPositivity
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedDualVectorPairingBoundedMajorant
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsFolnerUWset
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerSetEqRangeNormalForm
@@ -34,10 +31,8 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify
@@ -68,15 +63,8 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TwoSidedSizeFunctionPosInvariantContinuous
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Topology.Separation.CompletelyRegular

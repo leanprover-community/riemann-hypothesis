@@ -1,10 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
-public import Mathlib.RingTheory.Noetherian.Defs
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.PrecompleteOfFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HidaCompleteRings.LocChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.HeckeCommRing

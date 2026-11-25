@@ -6,7 +6,6 @@ public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Complex.CauchyIntegral
-public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.Circle, ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MeasurableEmbeddingRotAbout

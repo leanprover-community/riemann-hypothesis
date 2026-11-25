@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsNormCo
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplittingCharactersUnramifiedOffLevelsStatement
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import Formalism.SharpRestriction.Divisibility.KudlaSiegelWeil
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

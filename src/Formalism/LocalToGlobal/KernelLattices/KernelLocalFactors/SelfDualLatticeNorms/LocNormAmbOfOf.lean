@@ -6,10 +6,6 @@ public import Formalism.LocalToGlobal.AlgebraicTheory.StatementNorm
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.LinkThetaStatementFamily
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LocalComponentGL
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

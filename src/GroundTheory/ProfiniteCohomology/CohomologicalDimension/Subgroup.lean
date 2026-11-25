@@ -7,7 +7,6 @@ public import Mathlib.Data.Nat.Factorization.Basic
 public import Mathlib.GroupTheory.Index
 public import Mathlib.Topology.Algebra.OpenSubgroup
 public import GroundTheory.ProfiniteCohomology.OpenNormal
-public import Mathlib.Topology.Algebra.ClopenNhdofOne
 public import GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
 public import Mathlib.CategoryTheory.Category.Preorder
 public import Mathlib.CategoryTheory.Types.Basic

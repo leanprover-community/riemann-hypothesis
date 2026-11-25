@@ -2,7 +2,6 @@ module
 
 public import Formalism.GradedWeylDivisibility.StatementA
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylMap
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ProdFactorialSupportSubSingle
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LFockbLemmas

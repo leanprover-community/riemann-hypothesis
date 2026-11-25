@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValua
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaSummableAndDeterminesTestFn
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThHEqThSDictionary
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Tactic.Lemma

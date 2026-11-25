@@ -5,9 +5,6 @@ public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.DirichletDensity.DirichletDensityProofs.QuadDiscr
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

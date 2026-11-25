@@ -4,25 +4,13 @@ public import ReciprocityTheory.DualLattices.HtLinStatement
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import ReciprocityTheory.DualLattices.DualPairInh
 public import ReciprocityTheory.DualLattices.IsFibreSq
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import ReciprocityTheory.DualLattices.FormalChartAtZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.LePreimageOfNil
 public import ReciprocityTheory.DualLattices.LinPairStatement
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.TensorProduct.Basis
-public import Mathlib.RingTheory.Nilpotent.Basic
 public import Mathlib.Algebra.DualNumber
 public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Mathlib.RingTheory.DualNumber
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.Idempotents
-public import Mathlib.RingTheory.LocalRing.Defs
-public import Mathlib.RingTheory.Ideal.Nonunits
-public import Mathlib.RingTheory.LocalRing.Basic
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import ReciprocityTheory.DualLattices.IsPairingValueAddRight
 public import ReciprocityTheory.DualLattices.AinfFacts
@@ -60,7 +48,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -83,9 +70,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.DualLattices.CotangentSurjective
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -94,7 +78,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
-import ReciprocityTheory.DualLattices.SqZeroOfSpan
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

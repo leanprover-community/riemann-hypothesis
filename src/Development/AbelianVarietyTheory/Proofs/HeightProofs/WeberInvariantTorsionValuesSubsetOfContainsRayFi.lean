@@ -2,12 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.FiniteDimensionalOfSz
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RayFieldTheta
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CompleteSplittingCompositumDegreeOnePrime
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.LeOfFiniteSplitNotSplitBauer
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.PrincipalRayPrimesSplitCompletelyWeberValues
 import Mathlib.Tactic.Linter.HaveILetI
 

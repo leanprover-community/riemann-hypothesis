@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTubeFor
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Analytic.Polynomial
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Topology.Algebra.MvPolynomial

@@ -3,8 +3,6 @@ module
 public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecCEApply
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
@@ -16,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRes
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HaarModulusOfUnitCompletionsAtPlacesEqProdNorm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsOpenEmbeddingPairOfTuplesToTupleOfPairs
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TensorIdeleNormalizedAbsEqAdelicAbsNorm
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

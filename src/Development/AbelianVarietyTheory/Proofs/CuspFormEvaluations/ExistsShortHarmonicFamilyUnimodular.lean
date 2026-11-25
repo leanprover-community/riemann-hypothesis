@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsWeightedHomogeneousOfMemOrbitSpan
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import Mathlib.LinearAlgebra.Matrix.DotProduct
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.PerpVecPerpSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EqZeroOfEvalGridEqZeroOfTotalDegreeLe
@@ -13,19 +12,14 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsShortHarmonicFamilyLinear
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.L1NormRowBlockLeadingMinorProductLe
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowHighestLeSpanColWordComplex
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaLetterEquivConjugate
-public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsMemRowHighestTotalDegreeEqTwo
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.TraceHermNondegenerate
 import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.

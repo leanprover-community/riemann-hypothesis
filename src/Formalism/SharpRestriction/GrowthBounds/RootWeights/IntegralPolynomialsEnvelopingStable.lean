@@ -4,18 +4,8 @@ import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
-public import Mathlib.Data.Int.NatAbs
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.FockLatticeFiniteSpanning
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralPolyLinearMapClosed
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Data.Nat.Factorial.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
-public import Mathlib.Algebra.Module.Submodule.LinearMap
-public import Mathlib.Data.Nat.Choose.Cast
-public import Mathlib.Data.Nat.Choose.Sum
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.PolarizationDividedPowerMonomial
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ContravariantIsotypicOrthogonal
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IsotypicProjectorLatticeScaling
@@ -27,12 +17,10 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.HighestWeightD
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Data.Finsupp.Interval
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Topology.Sheaves.Presheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.

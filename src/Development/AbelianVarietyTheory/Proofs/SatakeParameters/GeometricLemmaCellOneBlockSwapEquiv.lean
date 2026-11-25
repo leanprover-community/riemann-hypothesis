@@ -13,7 +13,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
@@ -47,10 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
-import Formalism.AlgebraicWeights.IsAlgWeight
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import ReciprocityTheory.Automorphisms.PlaceA
 
 @[expose] public section
 

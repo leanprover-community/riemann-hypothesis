@@ -6,15 +6,9 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagonalTran
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedLocSec
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.ExistsFrameOfPositiveVector
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.GANormSqStar
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.RadialDecompositionOfParts
-import Mathlib.Analysis.InnerProductSpace.Spectrum
-import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.HermitianCurvature.FrameExists2
 
 @[expose] public section
 

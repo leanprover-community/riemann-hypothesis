@@ -8,7 +8,6 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLi
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.GramBlock
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.PlaceSplit
 import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
-import Formalism.LatticeSlopes.LatticeSlopesProofs.DegQuot
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian

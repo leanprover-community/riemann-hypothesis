@@ -5,8 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimBdPf
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimBdPfKFin
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOfSubadditive
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 
 @[expose] public section
 

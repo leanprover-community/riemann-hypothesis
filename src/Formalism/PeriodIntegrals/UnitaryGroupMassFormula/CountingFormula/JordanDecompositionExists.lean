@@ -1,27 +1,18 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DifferentIdealPowersNeZero
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.ExistsExactIdeal
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.JordanExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.LinearIndependentOfDetGram
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DifferentIdealPowers
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SplitPrimeCounts.LsSetresInt
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.FieldDictionaryHolds
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.CountCoeEqMultiplicity
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.JordanExists
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.JordanSplittingExists
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarUniq
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Order.Star.Rat

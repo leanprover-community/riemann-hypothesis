@@ -7,7 +7,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomol
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.SerrePAux
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperFiniteness
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSheaf
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalDegree
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.CechFamily
 

@@ -2,8 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianClassFiniteness.Development
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 

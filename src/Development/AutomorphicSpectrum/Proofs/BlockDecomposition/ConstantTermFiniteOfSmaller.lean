@@ -6,19 +6,13 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartUnipotentFderivContinuousOn
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCuspidalLieActionOfIsCuspForm
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapS
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliConstantTermVanishing
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliLeviFactorizationSum
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliOperatorsCommute
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliPolynomialCoefficientsIdeal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliAuxiliaryStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CofiniteOfCapelliMonic
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermAutomorphicCriterion
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermCofiniteIdealTransfer
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLeviParabolicFormula
@@ -27,8 +21,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Constant
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermAuxiliaryStatementA
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermAuxiliaryStatementB
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CtGrowth
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimCoefficientsFiniteDetermining
-public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuantumDeterminantPolynomialCoefficients
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -65,16 +57,11 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AdlEqZeroOfMemNbhd
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CofiniteCenterMonicAnnihilator, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermKFiniteCoefficient, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsFinsetSeparating, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeparatelyFiniteDimFunctionsFinite, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermFiniteOfSmaller

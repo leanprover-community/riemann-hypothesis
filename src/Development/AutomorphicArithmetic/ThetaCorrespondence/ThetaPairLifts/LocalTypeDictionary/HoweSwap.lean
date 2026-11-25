@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSu
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSubGAlgDOne
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HoweDualityReal
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactUnitaryPreservesPolynomialFock
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieDerivativePolynomialFockArchimedeanUnitary
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RelInf
@@ -51,14 +50,7 @@ import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.ThetaCorrespondence.HoweDuality.Imports

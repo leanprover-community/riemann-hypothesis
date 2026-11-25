@@ -6,9 +6,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DimFormC
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeSumBound
 public import Formalism.SharpRestriction.CuspSpanNormBounds.MinorIntegralityTorus
-import Mathlib.Algebra.Order.Star.Real
-import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

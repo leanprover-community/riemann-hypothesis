@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.UnipotentBlockPairs
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
-import GroundTheory.AutomorphicForms.ReductionCore
 
 @[expose] public section
 

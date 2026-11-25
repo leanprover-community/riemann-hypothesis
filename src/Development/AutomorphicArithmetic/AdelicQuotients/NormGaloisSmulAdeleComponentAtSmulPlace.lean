@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.IsNormAlong
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
-public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Places
 

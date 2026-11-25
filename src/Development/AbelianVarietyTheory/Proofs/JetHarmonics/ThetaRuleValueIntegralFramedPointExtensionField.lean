@@ -9,10 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsVtOv
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfTies
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon

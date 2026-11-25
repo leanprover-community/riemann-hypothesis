@@ -6,9 +6,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Mathlib.MeasureTheory.Integral.Prod
-public import Mathlib.Analysis.InnerProductSpace.LinearMap
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Function.L1Space.Integrable
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.ConvolutionSmoothL2
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AbsOpIntIntegrable
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIsometricIntertwinerOfMatrixCoeffEq
@@ -19,12 +16,10 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -54,18 +49,14 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsIrrAndDenseOfIsFdegG
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightRegularRepUnitaryStronglyContinuous
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegratedOperatorIsStarProjectionAndSandwich, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MatrixCoeffIdempotentOfOrthogonality, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SesqEqZeroOfDiagEqZero, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SigmaFiniteAndIsInvInvariantOfContinuousIntegrab, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProjAbsHolds, Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalConvolutionOrthogonalProjectorProof

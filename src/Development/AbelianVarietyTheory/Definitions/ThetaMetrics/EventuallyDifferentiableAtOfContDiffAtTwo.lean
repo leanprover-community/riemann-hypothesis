@@ -8,9 +8,6 @@ public import Mathlib.Topology.Algebra.Module.ModuleTopology
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.NumberTheory.Height.NumberField
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Shift
 public import Mathlib.Analysis.SpecialFunctions.Log.Deriv

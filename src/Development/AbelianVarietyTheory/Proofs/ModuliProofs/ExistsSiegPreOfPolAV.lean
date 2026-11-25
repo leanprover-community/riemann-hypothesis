@@ -8,10 +8,7 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSecImag
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KTrivExternalTensorPowerLineBundle
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LocGenOfTrivial
 
 @[expose] public section
 

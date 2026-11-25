@@ -19,7 +19,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 @[expose] public section
 

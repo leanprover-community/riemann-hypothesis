@@ -6,11 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFin
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 
 @[expose] public section
 

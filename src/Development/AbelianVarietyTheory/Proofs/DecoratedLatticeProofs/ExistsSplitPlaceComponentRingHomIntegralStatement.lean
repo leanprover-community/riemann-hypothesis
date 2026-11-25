@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.HermitianForms.TiedStep
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ChartCharacterTrivialOnStandardPairStabilizer
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

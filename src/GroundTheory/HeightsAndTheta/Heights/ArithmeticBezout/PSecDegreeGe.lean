@@ -4,12 +4,10 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSe
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSecFiniteUnit
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSecRankSpecialize
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Assembly
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.AssemblyPartial
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Imports
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowFormHomog
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowNormForm
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowNormFormGeneric
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowSecDegree
 import Mathlib.RingTheory.DedekindDomain.Instances
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup

@@ -9,7 +9,6 @@ public import Mathlib.RingTheory.Algebraic.Defs
 public import Mathlib.RingTheory.Algebraic.Integral
 public import Mathlib.RingTheory.Localization.Integral
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI

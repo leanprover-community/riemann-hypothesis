@@ -8,9 +8,6 @@ import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.GenSmooth
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import Mathlib.RingTheory.Algebraic.Basic
-public import Mathlib.RingTheory.AlgebraicIndependent.Defs
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section

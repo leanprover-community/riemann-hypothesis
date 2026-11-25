@@ -1,9 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Development.WeilBound.ThetaLifts.SmallCones.KerGeo
 
 @[expose] public section

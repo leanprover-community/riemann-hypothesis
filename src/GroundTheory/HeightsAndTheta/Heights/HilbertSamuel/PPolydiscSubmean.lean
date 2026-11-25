@@ -10,12 +10,6 @@ public import Mathlib.Analysis.Complex.Isometry
 public import Mathlib.Analysis.Complex.MeanValue
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Linear
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Calculus.DiffContOnCl
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergman
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen

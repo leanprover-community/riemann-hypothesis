@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.Surject
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.RelationsAreFunctions
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ZeroFLeftExt
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
 
 @[expose] public section
 

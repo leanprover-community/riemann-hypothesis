@@ -2,21 +2,17 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialIntegrality.InvNatMemWf
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.SubstMem
 public import Formalism.PeriodIntegrals.InvSerSub
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.GuLine
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.CoeffPowMemS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.DXEqDerivative
-public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.PeriodIntegrals.W2pair
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WfRing
 public import Formalism.PeriodIntegrals.WfSubst
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WittSubstitution.CoeffMapMem
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WittEndomorphism.FlogConstantCoeff
-public import Formalism.PeriodIntegrals.WfRing
 import Mathlib.Tactic.Linter.Style
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialIntegrality.Development
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.EndIntWOf, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WittLogarithm.CoefWfIff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WittLogarithm.FormalLogarithmHolds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WittLogarithm.WfLogOf, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittLogarithm, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WittEndomorphism.WfEndOfLog, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittFrobeniusEnd, Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtEndIntWOfOkp

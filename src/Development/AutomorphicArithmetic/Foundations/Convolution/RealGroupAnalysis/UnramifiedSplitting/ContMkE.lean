@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.ExistsCombComb
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.SplitAt
 
 @[expose] public section

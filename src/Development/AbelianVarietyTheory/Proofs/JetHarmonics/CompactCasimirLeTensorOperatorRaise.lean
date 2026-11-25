@@ -4,10 +4,7 @@ public import Mathlib.Analysis.Normed.Group.Defs
 public import Mathlib.Analysis.Normed.Group.Basic
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 public import Mathlib.Analysis.InnerProductSpace.PiL2
-public import Formalism.RealPlaceAnalysis.StatementKT
-public import Mathlib.Analysis.InnerProductSpace.Symmetric
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CasKIsSymmetricAndForm
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ReInnerLeOnImageOfIntertwining
 import Mathlib.Algebra.Order.Star.Real
 

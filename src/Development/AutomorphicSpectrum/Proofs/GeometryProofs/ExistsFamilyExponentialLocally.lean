@@ -7,12 +7,7 @@ public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 public import Mathlib.Analysis.Analytic.Composition
 public import Mathlib.Analysis.Analytic.Constructions
 public import Mathlib.Analysis.Calculus.FDeriv.Analytic
-public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Complex.Schwarz
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Const
-public import Mathlib.Analysis.Calculus.FDeriv.Prod
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IterDifferentiableOn
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods

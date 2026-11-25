@@ -12,14 +12,9 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RangeSu
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFiniteTorusExtensionOfModel
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompleteDvrFiniteSubalgebra
 public import Mathlib.Topology.Algebra.Valued.NormedValued
-import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull

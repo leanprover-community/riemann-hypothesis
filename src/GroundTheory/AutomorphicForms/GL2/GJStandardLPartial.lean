@@ -3,13 +3,10 @@ module
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDefs
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalMellin
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Compactness.Paracompact
 
 @[expose] public section
 

@@ -6,7 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocal
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJLowerUniSwap
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PMatStepColsEntry
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpen
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -4,15 +4,6 @@ public import Formalism.BranchSandwichDivisors.StatementR
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.BigOperators.Intervals
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 
 @[expose] public section

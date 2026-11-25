@@ -3,11 +3,7 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicProperties
-public import Mathlib.LinearAlgebra.BilinearForm.Properties
-public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoDimOfQlDimensionFormula
@@ -17,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Lattice
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateH2PeriodDatum
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1PeriodDatum
-public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemOfForallAnnihilatorAnnihilatorFieldModInteger
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticeReductionModPowMemLocConstCocycles

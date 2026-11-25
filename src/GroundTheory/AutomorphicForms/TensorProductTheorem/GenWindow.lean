@@ -3,14 +3,12 @@ module
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Operators
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
 public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.RepresentationTheory.Irreducible
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 

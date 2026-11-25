@@ -9,9 +9,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
 import Mathlib.Algebra.Ring.IsFormallyReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

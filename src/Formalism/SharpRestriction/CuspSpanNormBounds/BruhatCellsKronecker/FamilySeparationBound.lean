@@ -1,8 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilySeparationBoundOfNorms
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section

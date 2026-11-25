@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.NormCharSplit
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TypedEx
-public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor
 public import Development.WeilBound.CuspidalAdmissibility.OccursIff
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 

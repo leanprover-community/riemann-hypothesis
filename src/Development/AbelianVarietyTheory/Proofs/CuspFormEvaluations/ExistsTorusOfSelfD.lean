@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Period
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HMatMulVecPerCrd
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianFormAtFrameLaws
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
-import Development.AbelianVarietyTheory.Proofs.TorusSplitting.TorusAtExistsOfParts
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

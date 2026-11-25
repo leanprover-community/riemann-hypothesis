@@ -11,9 +11,6 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
-import Formalism.AlgebraicWeights.IsAlgWeight
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 
 @[expose] public section
 

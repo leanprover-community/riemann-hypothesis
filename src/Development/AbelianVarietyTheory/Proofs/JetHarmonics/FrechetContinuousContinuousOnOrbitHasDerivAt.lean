@@ -5,12 +5,10 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DerivedActionDiscreteSeriesPropertiesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiffQuotientBesselMapTendsto
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.HeckeMultiplication
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.Smooth
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

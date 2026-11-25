@@ -6,7 +6,6 @@ public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Ring.Ultra
 public import Mathlib.Algebra.Polynomial.Eval.Degree
-public import Mathlib.Analysis.Normed.Group.Ultra
 
 @[expose] public section
 

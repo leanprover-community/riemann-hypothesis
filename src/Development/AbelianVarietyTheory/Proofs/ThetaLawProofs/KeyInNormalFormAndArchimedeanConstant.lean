@@ -16,8 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsThetaFnAn
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.NormalFormOfParts
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.UnimodularAndTangentOfIsAH
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SetIntegralPeriodLatticeEqVolumeMulCube, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.VolumeFundamentalDomainPeriodLattice, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyInNormalFormAndArchimedeanConstant

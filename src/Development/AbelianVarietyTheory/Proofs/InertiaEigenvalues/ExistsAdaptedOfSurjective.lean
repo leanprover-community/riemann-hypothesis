@@ -5,9 +5,7 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Acri
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsComponentEquiv
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AntitoneFiltrationExistsAdaptedLinearIndepSet
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AssociatedPowOfUnits
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConcretePeriodDeRhamModuleFinrankLe
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamComparisonIsFiltered
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinBasisSubsetOfIsField
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankMulLeFinrankDdROfSpans
@@ -16,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Injecti
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanDOfFixed
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdemNotMemFilVOne
 
 @[expose] public section
 

@@ -9,18 +9,12 @@ public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetIm
 public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.NeedBergmanClosed
 public import Mathlib.Topology.Connected.Separation
-public import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloContDiffAtComplex
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
-public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.CommFderivApply
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 section
 @[expose] public section

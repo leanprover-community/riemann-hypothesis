@@ -4,8 +4,6 @@ public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.GroupTheory.Index
 public import Mathlib.NumberTheory.SumFourSquares
-public import Mathlib.Algebra.Module.BigOperators
-public import Mathlib.GroupTheory.OrderOfElement
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine

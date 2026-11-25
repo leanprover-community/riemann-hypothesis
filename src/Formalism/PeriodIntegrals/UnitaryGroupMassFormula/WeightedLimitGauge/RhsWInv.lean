@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.MBaseMem
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.HaarUniq
-public import Mathlib.MeasureTheory.Measure.WithDensity
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.TBallMeas
 public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Algebra.Order.Star.Real

@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalCongruenceFunctionMemAdjoinJSiegelUnits
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SgC
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitJPolynomialBoundedDenominators
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -2,10 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsOrthonormalBasisEigenOfInnerMap
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralCexpGaussianPlane
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralGaussianUnitary
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeisenbergReproducingKernelSumSpec
@@ -14,21 +10,12 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PhDetMulI
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralDensEqZero
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTranslationIntertwinerUnitary
-public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPeriodPairIdealCurveLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralHeisKerSumDiag
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeCovolumePosAndSelfDual
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
-import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TiledBoundaries.TileIntegral
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 
 -- This file was produced by scripts/clump.py from the modules listed below.

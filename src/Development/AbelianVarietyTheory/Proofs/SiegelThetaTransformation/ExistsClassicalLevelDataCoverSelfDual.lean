@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExample
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelStructureProperties
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeneralLinearGroupCharEqOneOfDetEqOne
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.HalvesFreeAndAdjoint
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.LinearAlgebra.Span.TensorProduct
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian

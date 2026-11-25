@@ -2,9 +2,6 @@ module
 
 public import Formalism.FormalDegreeBessel.StatementG
 public import Formalism.HermitianCurvature.StatementQ
-public import Formalism.RealPlaceAnalysis.StatementA
-public import Formalism.RealPlaceAnalysis.StatementB
-public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
@@ -13,8 +10,6 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -48,7 +43,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.HermitianCurvature.StatementQr
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

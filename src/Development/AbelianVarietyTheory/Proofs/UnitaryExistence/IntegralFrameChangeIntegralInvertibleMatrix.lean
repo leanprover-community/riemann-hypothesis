@@ -5,11 +5,8 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsChartIff
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntFrames
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointFieldFromTestRing
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Tactic.Linter.Style
 

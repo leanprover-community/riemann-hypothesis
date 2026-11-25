@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaBound.FormQuasiInvariantMirabolic
-import GroundTheory.AutomorphicForms.AffineBruhat
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

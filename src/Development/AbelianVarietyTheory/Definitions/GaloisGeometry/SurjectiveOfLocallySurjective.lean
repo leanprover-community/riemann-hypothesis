@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqA
 public import Mathlib.RingTheory.Etale.Basic
 public import Mathlib.RingTheory.Trace.Defs
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsQuasicoherentOfForallExistsAffine
 public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

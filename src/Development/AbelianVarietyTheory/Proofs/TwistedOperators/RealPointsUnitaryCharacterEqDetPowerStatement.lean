@@ -5,10 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Transv
 public import Mathlib.LinearAlgebra.Matrix.Nondegenerate
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsOrthogonalBasisDotProductApplyEq
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.QuasiReflectionEqUnitaryTransvectionMul
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Algebra.QuadraticDiscriminant
-public import Mathlib.Analysis.Real.Sqrt
-public import Mathlib.RingTheory.SimpleRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CircleHomEqZpow
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsArchimedeanLiftUnitaryGroupProduct
@@ -62,8 +58,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryTransvectionSubmonoidNormalDetOne
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryCharacterKillsUnitaryTransvections, Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryGeneratedByQuasiReflectionsAndWitt, Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharEqOneOfDetEqOne, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealIsotropicOrOneClass, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPointsUnitaryCharacterEqDetPower, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPointsUnitaryCharacterEqDetPowerStatement

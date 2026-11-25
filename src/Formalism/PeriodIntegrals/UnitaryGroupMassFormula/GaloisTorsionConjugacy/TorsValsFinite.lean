@@ -5,29 +5,18 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationPr
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GaloisTorsionConjugacy.AddLaw
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.FieldTheory.IntermediateField.Basic
-public import Mathlib.RingTheory.Algebraic.Defs
-public import Mathlib.Algebra.Module.Torsion.Field
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.Algebra.CharP.IntermediateField
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.TranslateProduct
 public import Mathlib.Algebra.Algebra.Hom.Rat
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import Mathlib.FieldTheory.RatFunc.AsPolynomial
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SigmaLogDeriv2
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField

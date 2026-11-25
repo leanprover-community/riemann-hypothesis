@@ -2,14 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
-public import Mathlib.Algebra.BigOperators.Finprod
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.GroupTheory.DoubleCoset
-public import Mathlib.GroupTheory.Index
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
-public import Mathlib.Topology.Algebra.Group.Defs
 public import Mathlib.Topology.Algebra.OpenSubgroup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralEqSumSmallerLevel
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeIntegralFiniteSum
@@ -25,7 +18,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairLoca
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitPlaceLocalElement
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactConjugacyTransversal, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDiagonalDoubleCosets, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactPartDiagonalMap, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeConvolutionSupport, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelIndexNeZeroOfOpenLe, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SwapTwistedCentralizerDiagonal, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedOrbitalSwapConvolution, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedOrbitalPairConvolution, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalComparisonSplit

@@ -7,7 +7,6 @@ public import GroundTheory.LocalFields.HilbertCyclic
 public import GroundTheory.LocalFields.UnramifiedNormSurj
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 
 @[expose] public section
 

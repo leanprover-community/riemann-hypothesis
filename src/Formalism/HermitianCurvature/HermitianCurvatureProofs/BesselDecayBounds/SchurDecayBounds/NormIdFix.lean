@@ -9,7 +9,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.DecayZeroRight.NormDec
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselLine
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.SchurDecayBounds.NormIdCore
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.FSFdeg
@@ -20,10 +19,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.SchurDecayBounds.NormIdSm
 public import Formalism.SharpRestriction.CuspSpanNormBounds.KfinOfMemLowKSub
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.SmoothStep
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Algebra.Order.Star.Real
 

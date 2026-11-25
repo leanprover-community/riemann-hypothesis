@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RootVectorAc
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ResGContDiffAt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainFirstIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialRaisingTopOfParts
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 
 @[expose] public section
 

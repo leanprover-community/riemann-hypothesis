@@ -3,8 +3,6 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinCongMemLevEnv
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteDimensionalModel
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LatHatOpenAndContinuous
 import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

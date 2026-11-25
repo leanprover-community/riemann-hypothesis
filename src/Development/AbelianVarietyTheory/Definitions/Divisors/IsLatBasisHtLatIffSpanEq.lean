@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneou
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdicCompleteDualNumber
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ValuationCoeEqNorm
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOfOverFractionFieldOfValuationRing
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CotangentBidualToTangentFunctionInjective
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OverExtOfPoints
 import Std.Tactic.BVDecide.Normalize.Prop
 

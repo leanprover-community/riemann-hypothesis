@@ -5,33 +5,16 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Contin
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsTensorFiniteAdeleEquiv
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsArchAdeleTensorEquivComplexCmType
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
-public import Development.AbelianVarietyTheory.Definitions.Foundations.CdScaleTieIff
-public import Mathlib.Algebra.Module.Lattice.Full
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.Analysis.InnerProductSpace.GramMatrix
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
-public import Mathlib.Analysis.Normed.Ring.Units
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EisValueAtIffEisPoleLE
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactAdelesRationalPointsFiniteEventuallyZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAdeleCoverModFieldShrunkCompact
-public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeAdelicMatrixIntegralTranslate
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OneMemEntries
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SkewHermitianAdelicCoverOfAdeleCover
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SummableRpowOfFibreCardLe
-public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TensorIdeleNormalizedAbsIdeleHalfAtInfinity
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsLinearIndependentOfRatIndependent
 public import Mathlib.Analysis.InnerProductSpace.EuclideanDist
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniqueInfEmb
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -68,24 +51,17 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Matrix.PosDef
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCmAdeleSplitComplexFiniteAdeles, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntGeneratorsCardEqOfIsLatticePi, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GramDetIndexSublattice, Development.AbelianVarietyTheory.Proofs.FoundationProofs.LinearIndependentVecMulOfSpanRat, Development.AbelianVarietyTheory.Proofs.FoundationProofs.MatrixInvEntriesBounded, Development.AbelianVarietyTheory.Proofs.FoundationProofs.TotallyComplexSpanEmbeddingsAndFinrank, Development.AbelianVarietyTheory.Proofs.FoundationProofs.DetGramSmul

@@ -2,9 +2,6 @@ module
 
 public import Mathlib.RingTheory.QuasiFinite.Weakly
 public import Mathlib.RingTheory.ZariskisMainTheorem
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.RingTheory.Jacobson.Ring
 public import Mathlib.RingTheory.NoetherNormalization
 public import Mathlib.Algebra.Algebra.ZMod

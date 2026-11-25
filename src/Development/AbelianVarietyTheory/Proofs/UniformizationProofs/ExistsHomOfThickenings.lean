@@ -12,9 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Secti
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.VeryAmpleByPull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HomEqOfPullSections
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsProjectiveAlgebraisationFormalEmbeddingStatement, Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsHomOfThickenings

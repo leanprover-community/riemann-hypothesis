@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSmoothCompactSupportFixLowestKType
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InnerRepK
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

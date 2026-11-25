@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfIsOrbFormConst
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotIsPrimZero
-public import Mathlib.LinearAlgebra.BilinearMap
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntBilinFormDescendAlongSurjective
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemilinearPullbackOfMarkedOrbitIndicator
 import Mathlib.Tactic.Linter.Style

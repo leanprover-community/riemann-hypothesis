@@ -13,11 +13,7 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.KExp
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.MulMemUJset
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ZetaDegZero
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Formalism.PeriodIntegrals.ContractionsCovariantIff
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovariantDeterminantScaling.IntCastMulEqSmul
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovariantLinearProduct.OfFnProdSmul
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma

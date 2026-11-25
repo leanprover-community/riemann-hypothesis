@@ -2,9 +2,6 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ScaledBoundInequalityHypothesesOne
 public import Mathlib.Analysis.Complex.Schwarz
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

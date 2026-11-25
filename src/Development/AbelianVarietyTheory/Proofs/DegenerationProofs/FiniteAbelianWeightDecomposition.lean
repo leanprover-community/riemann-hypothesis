@@ -3,7 +3,6 @@ module
 public import Mathlib.RepresentationTheory.Basic
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Mathlib.GroupTheory.FiniteAbelian.Duality
-public import Mathlib.GroupTheory.Rank
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.GroupTheory.Schreier
 import Mathlib.Tactic.Linter.HaveILetI

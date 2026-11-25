@@ -4,7 +4,6 @@ public import Formalism.BranchSandwichDivisors.StatementL
 public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MapScale
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Transfer
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 import Formalism.HarderNarasimhan.ShiftInvariance
 import Std.Tactic.BVDecide.Normalize.Prop
 

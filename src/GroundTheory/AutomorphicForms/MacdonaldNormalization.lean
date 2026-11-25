@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.MacdonaldAlternant
-public import Mathlib.LinearAlgebra.Vandermonde
 
 @[expose] public section
 

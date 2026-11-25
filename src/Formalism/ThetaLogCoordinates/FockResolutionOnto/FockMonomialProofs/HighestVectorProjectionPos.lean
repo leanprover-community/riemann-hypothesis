@@ -4,11 +4,8 @@ public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementH
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.HighestVectorProjection
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.RemoveS
-public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 
 @[expose] public section
 

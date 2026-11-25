@@ -8,10 +8,8 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelMapFibre
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsoEqOfMapsAlongSection
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.CarriedGeneratorUnique, Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFramedPointMoveUniversalTriple

@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemClosureIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.LocalRingCardinality.Lemmas
 import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
 import Formalism.LocalToGlobal.Columns.CoefficientsModP
@@ -16,7 +15,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -28,9 +26,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify

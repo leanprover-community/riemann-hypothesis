@@ -48,7 +48,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.Divisibility.Tuples
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsPowLocKMulInf
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RingHomEqOfComapEqUnramifiedDegreeOne
 import Mathlib.Tactic.Basify

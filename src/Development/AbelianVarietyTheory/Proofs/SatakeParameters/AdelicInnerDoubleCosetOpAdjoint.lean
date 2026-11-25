@@ -5,7 +5,6 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.GroupTheory.GroupAction.Defs
 public import Mathlib.SetTheory.Cardinal.Finite
 public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
-public import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

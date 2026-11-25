@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassEquivIdeleClassMapOfComm
 public import GroundTheory.ProfiniteCohomology.DiscreteModules
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 
 @[expose] public section
 

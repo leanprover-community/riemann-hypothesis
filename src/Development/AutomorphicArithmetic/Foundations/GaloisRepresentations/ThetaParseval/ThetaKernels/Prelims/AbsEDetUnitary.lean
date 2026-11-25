@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
-import Mathlib.Algebra.Order.GroupWithZero.Basic
 
 @[expose] public section
 

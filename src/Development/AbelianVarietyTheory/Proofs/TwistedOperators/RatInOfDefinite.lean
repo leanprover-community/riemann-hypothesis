@@ -50,10 +50,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.UnitCharTriangle
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocallyCompactSecondCountableT2

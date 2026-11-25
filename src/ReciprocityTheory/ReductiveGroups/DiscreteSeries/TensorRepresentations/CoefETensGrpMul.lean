@@ -1,16 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CoefDTensActPow
-public import Mathlib.Analysis.InnerProductSpace.Subspace
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Analytic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ClosureK
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ExistsExpEqOfMemKset
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.PolarJmConjTranspose
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Taylor
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IsInLieAlgebraISmulAddConjTranspose
 
 @[expose] public section
 

@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ThresholdCubicInequalitySignPattern
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyProjectorSectionLocal
 import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.FamilyStatementOfAbsAndVandermonde
-import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
 
 @[expose] public section
 

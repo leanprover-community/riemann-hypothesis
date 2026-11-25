@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.Columns.PolyFn
 public import Formalism.LocalToGlobal.Divisibility.Frames
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.Columns.DecorationStabilizerTrivialUnipotent
-import Formalism.HermitianLattices.FinalNeighbourConstruct
 public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

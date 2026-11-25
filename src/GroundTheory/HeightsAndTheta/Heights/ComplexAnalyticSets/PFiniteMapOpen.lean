@@ -12,13 +12,7 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.Nullstellensatz
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Topology.Algebra.MvPolynomial
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-public import Mathlib.RingTheory.Ideal.GoingUp
 
 @[expose] public section
 

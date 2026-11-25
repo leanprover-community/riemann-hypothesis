@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.Vanish
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RCocompactPfConj
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipReal
-import Formalism.RealPlaceAnalysis.FinalF
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

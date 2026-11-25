@@ -2,11 +2,8 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVApply
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagValuationNormalization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ValuationRingExtensionSpecialization
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

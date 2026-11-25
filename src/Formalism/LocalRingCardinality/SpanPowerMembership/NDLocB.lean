@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.NumberTheory.NumberField.Basic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

@@ -11,11 +11,8 @@ public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LieCombBaseChange
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomLieEquivScalarTmul
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsAwayNotMem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ChartAway
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCRing
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabCancel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FibreIff
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmCurveBaseChangeComp
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
@@ -56,24 +53,14 @@ import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLawPf
 import Development.AbelianVarietyTheory.Definitions.CMLattices.IsCyclotomicExtensionCyclotomicField28
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VecMulMapEqZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAbelianGaloisHost
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.NormNum.Parity
 import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.

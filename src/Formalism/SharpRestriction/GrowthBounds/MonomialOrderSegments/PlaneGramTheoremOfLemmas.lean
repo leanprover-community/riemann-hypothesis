@@ -13,9 +13,7 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.Test
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.SecondEmbeddingInjective
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.IntegralMonomial
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.SubstitutionXFirstEmbedding
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.Data.FunLike.Fintype
-public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.LiftBoundOfHypotheses
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.OmegaValue
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.SumOnLetterApplyInl
 import Mathlib.Tactic.Linter.HaveILetI

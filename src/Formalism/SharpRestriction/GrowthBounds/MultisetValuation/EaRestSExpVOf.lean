@@ -9,7 +9,6 @@ import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AtPiEqRescale
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.InParamMap
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.IntRPsubst
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NatCastInvMemRp
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

@@ -2,9 +2,7 @@ module
 
 public import GroundTheory.LocalFields.UnramifiedExistence
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsOpenSubgroupMemFixedModule
-public import Mathlib.FieldTheory.KrullTopology
 public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.RingTheory.RamificationInertia.Inertia
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Frobenius
 import GroundTheory.LocalFields.AbstractLocalReciprocity.Valuation
 import GroundTheory.LocalFields.FiniteExtension
@@ -14,7 +12,6 @@ public import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
-public import Mathlib.Topology.LocallyConstant.Basic
 
 @[expose] public section
 

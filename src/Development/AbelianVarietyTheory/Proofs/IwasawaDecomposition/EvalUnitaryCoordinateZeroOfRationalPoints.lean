@@ -4,10 +4,7 @@ public import Mathlib.NumberTheory.NumberField.CMField
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolyRep
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
-public import ReciprocityTheory.Automorphisms.Unitary
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CayleyTransformMemRationalUnitaryGroup
-public import Mathlib.Algebra.MvPolynomial.Eval
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MvPolynomialClearDenominatorsEval
 import Mathlib.Tactic.Linter.Style
 

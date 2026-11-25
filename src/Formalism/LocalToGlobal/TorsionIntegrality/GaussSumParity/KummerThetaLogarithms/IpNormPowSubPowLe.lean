@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.LetterSh
 public import Formalism.FormalGroupWitt.WeightInvariance
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 public import Lemmata.GeneralBFactUpper.Imports
-public import Formalism.FormalGroupWitt.Statement
 
 @[expose] public section
 

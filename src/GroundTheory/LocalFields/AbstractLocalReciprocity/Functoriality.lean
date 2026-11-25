@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ReciprocityMap
 import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
-import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.TypeStar
 

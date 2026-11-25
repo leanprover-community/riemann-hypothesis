@@ -3,21 +3,14 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MaBase
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MbLCentre
-public import Mathlib.RingTheory.EssentialFiniteness
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.Localization.FractionRing
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PFiniteIntegralClosure
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.InChartOfMemCtrSet
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingModelChartCompat
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureChartSpan
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaled
-public import Mathlib.RingTheory.LocalRing.LocalSubring
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringIntegralClosureMax
-public import Mathlib.RingTheory.LocalRing.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MaximalIdealMembershipOfLocal
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeMemIffNotUnitLocalization
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModelNonempty
@@ -68,8 +61,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.Henselian
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Basify

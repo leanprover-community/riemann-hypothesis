@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -46,7 +45,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameOnOne
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

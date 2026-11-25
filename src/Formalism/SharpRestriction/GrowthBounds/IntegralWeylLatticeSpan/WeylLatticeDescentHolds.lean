@@ -3,7 +3,6 @@ module
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.JacRev
 public import Lemmata.GeneralBFactRightAlt.Imports
-public import Formalism.PeriodIntegrals.OddDualWeyl
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.AevalMulHomog
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.DegreeBalance
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.EvalDuality
@@ -15,11 +14,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacob
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.EvenBlockRowActionEval
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescent
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescentOfIntegralModels
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.MnrUpdateEqZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.ExistsEqMulOfColumnSpanLe, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.HighestWeightVectorUnique, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.OddDualWeylFactorization, Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescentHolds

@@ -5,21 +5,10 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsLatBasisZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PerValNeZero
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoisotropicSublatticeOfTorsionCount
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DetNeZeroOfImHermFormIntegralRealBasis
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DetNeZeroOfRealIndependentIsotropicHermitian
-public import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
-public import Mathlib.LinearAlgebra.BilinearForm.Basic
-public import Mathlib.LinearAlgebra.Matrix.BilinearForm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermFormPeriodsAlternatingNondegRankEqTwoMul
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import Mathlib.Data.Matrix.Basic
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RiemannRelationsPeriodMatrixHermitian
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PullbackAnalytic
@@ -31,15 +20,10 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -66,27 +50,11 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AmpleOnAbelianBase
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgClosedOfFixedPoints
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Complex.Schwarz
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
 

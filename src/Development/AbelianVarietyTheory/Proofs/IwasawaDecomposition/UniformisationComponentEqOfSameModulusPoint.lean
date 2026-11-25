@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnFree
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.IsOrth
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HodgeMetricUniformisationSmoothOnInterior
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLieBase
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ToroidalCompactificationData
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqOfConjEqOne
@@ -11,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Frame
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtEqOfPtOfFrameEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtOfFrameEqOfPointEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnfoldedFramesParabolicRelation
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NonemptyUnifWitnessDataOfIsUnf
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ThetaPointsFrameRatio
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

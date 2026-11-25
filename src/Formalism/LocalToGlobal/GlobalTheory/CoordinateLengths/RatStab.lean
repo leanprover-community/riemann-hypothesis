@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.IntSpanLeRat
-import Formalism.GradedWeylDivisibility.FinalD
 import Formalism.LocalToGlobal.GlobalTheory.GL6.WeylLengthDiagonalUnitUniformiser
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.SwRowGenMonomial
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.DualWeylModuleStable

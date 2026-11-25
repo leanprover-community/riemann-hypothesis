@@ -9,9 +9,7 @@ import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LatticeSpanMembership
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 
 @[expose] public section
 

@@ -15,27 +15,15 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Counta
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.DedekindZetaEulerProductMulSubOneEntire
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EulerProductNeZeroOneOfEntire
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OneSubRePosOfNormLeHalf
-public import Mathlib.Analysis.SpecialFunctions.Pow.Complex
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InfinitelyManyPrimesInRayClass
-public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-public import Mathlib.NumberTheory.RamificationInertia.Galois
 public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotInjectiveTwoPrimesEqualNormCofinite
 public import Mathlib.RingTheory.Frobenius
 public import Mathlib.NumberTheory.Cyclotomic.Gal
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DedekindZetaEulerProductMulSubOneEntireNeZero
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SummableInvAbsNormPrimesOfNotPrimeNorm
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Mathlib.NumberTheory.PrimesCongruentOne
-public import Mathlib.FieldTheory.LinearDisjoint
-public import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 public import Mathlib.RingTheory.RamificationInertia.Inertia
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ChebotarevDegreeOneIffCheb
 public import ReciprocityTheory.GaloisValuations.Global
@@ -45,13 +33,10 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -60,7 +45,6 @@ import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -84,10 +68,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.GaloisValuations.GlobalA
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IdealCharacterLSeriesContinuation
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TsumIdealMulAbsNormCpowEqExpTsum
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style

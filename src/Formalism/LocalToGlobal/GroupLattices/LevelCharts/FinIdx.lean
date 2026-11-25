@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharEqOfSpl
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeComb
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 
 @[expose] public section

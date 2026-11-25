@@ -11,7 +11,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.RingTheory.Valuation.LocalSubring
 public import Mathlib.FieldTheory.Galois.Infinite
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
-public import Mathlib.RingTheory.Invariant.Defs
 
 @[expose] public section
 

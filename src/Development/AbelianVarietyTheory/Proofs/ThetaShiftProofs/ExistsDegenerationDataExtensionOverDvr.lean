@@ -2,13 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabMapOfLbIso
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.NonemptyCubicalPull
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SelfTorusExtensionCoordValuesEqOne
-import Mathlib.AlgebraicGeometry.ValuativeCriterion
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

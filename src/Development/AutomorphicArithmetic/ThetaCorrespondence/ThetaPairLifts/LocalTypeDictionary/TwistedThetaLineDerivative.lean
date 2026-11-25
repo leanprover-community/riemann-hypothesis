@@ -5,14 +5,10 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFinOfRest
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsWeilRepArchimedeanSmoothOrbit
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrictionLineOperatorSum, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TwistedThetaLineDerivative

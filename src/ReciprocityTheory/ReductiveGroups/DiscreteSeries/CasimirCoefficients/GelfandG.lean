@@ -10,7 +10,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficien
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.LholClmEventually
 import Mathlib.Tactic.Lemma
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiMLocal
 

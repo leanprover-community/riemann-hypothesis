@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.ColumnConjugationMeasure
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 public import GroundTheory.AutomorphicForms.ReductionFinite
 public import GroundTheory.AutomorphicForms.ReductionMahler
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue

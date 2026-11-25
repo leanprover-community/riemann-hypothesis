@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.RingTheory.MvPowerSeries.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 
 @[expose] public section
 

@@ -10,7 +10,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbit
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.LintegralMulRightOfMem
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.T2SpaceTensorProductFiniteExtension
 import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.Fo
 import Formalism.GradedWeylDivisibility.FinalB
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
-import Formalism.FockPairing
 
 @[expose] public section
 

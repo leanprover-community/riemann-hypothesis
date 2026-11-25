@@ -13,17 +13,9 @@ public import Mathlib.Analysis.Calculus.FDeriv.Measurable
 public import Mathlib.MeasureTheory.Function.L2Space
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import ReciprocityTheory.L2DbarEstimates.Localization.LocalizeA
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ExistsChartPartition
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-public import Mathlib.Analysis.Calculus.Deriv.MeanValue
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.BasicIdentityStatement
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement

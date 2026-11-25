@@ -3,11 +3,9 @@ module
 public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
-public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.Tactic.TypeStar
 public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 
 @[expose] public section
 

@@ -2,15 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.FirstCoordinateAdmissible
 public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaEisensteinConvergeBounded
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SchwartzBruhatInnerProductSelfNonnegBounds
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionSiegelParabolicExplicit
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionUnitaryGroupTestFunctions
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.QuadCocycle
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.UnitaryActHalfSpace
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

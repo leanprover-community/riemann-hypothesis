@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.FiniteLength
 public import Mathlib.Data.DFinsupp.WellFounded
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import GroundTheory.AutomorphicForms.JacquetAdmissible
-public import GroundTheory.AutomorphicForms.InductionJacquet
-public import GroundTheory.AutomorphicForms.InductionParabolic
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.SmoothRepSchur
 

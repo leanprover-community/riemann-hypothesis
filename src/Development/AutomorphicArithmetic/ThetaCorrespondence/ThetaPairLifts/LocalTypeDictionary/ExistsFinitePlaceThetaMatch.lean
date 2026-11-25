@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTenso
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsReading
 public import Development.AutomorphicArithmetic.LocalEmbeddings.FinMatchDefs
-public import Mathlib.Analysis.Matrix.MeasurableSpace
 public import Formalism.DoubleCosetMeasures.StatementZ
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocPart
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardPairFrameBlocksDetAndNegTranspose
@@ -30,12 +29,10 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenIntertw
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasDerivAtThetaTransformHeisenbergRealLine
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ArchimedeanLineEqRealScalarSmulSupported
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieActionFockOperatorsScalarsTrace
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPlaceComponentArchLineComplexStructureStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SeesawWeilZetaGlobal
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilModelArchimedeanExponent
 public import Development.AutomorphicArithmetic.DivisorFrames.ThetaOperatorIntertwinesHeisenberg
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ArchLineApply
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaAtEqSumHeisOfFourierSum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoxGraphGraphHeis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsINeZeroKind
@@ -65,22 +62,13 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TripleMapCompInverseFinite
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRtensOp
 import Development.AutomorphicArithmetic.DivisorFrames.ExistsIsSBHalfThetaOfSelfDualLattices
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
-import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
@@ -93,7 +81,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -103,33 +90,18 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ScaledBlockSumSelfDualTraceSkewForm
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NsmulProjectionXColumnsMemSelfDualLattice
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleWeightMiddleEntries
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
 import Mathlib.Algebra.Order.Star.Rat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompactSupportFinprodSchwartzBruhatFiniteAdel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantFinprodSchwartzBruhatFiniteAdel
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitIdempotentBaseFunctionIdentity
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistCharacterOfArtin
@@ -142,10 +114,7 @@ import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.Loca
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ThetaTripleMapsLieEquivariant
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TripleProductAlgebraWeilRepRangeEqTop
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TripleProductSecondMapThetaPure
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.DivisorFrames.ShellSumEqConstOfTwistEqIndicatorDoubleCoset, Development.AutomorphicArithmetic.DivisorFrames.BigPStdSchwartzTranslateEqSmallPOfIsUnif, Development.AutomorphicArithmetic.DivisorFrames.ExistsGlStdFstEqProductLocal, Development.AutomorphicArithmetic.DivisorFrames.ExistsGlStdSndEqProductLocal, Development.AutomorphicArithmetic.DivisorFrames.ExistsLatticeThetaDataOfRamificationPlacesCMDatu, Development.AutomorphicArithmetic.DivisorFrames.ExistsPolynomialOfIsFinFThetaLiftPureTensor, Development.AutomorphicArithmetic.DivisorFrames.IsSBHalfThetaFunOfHalfIdempotentPlaces, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsFinitePlaceThetaMatch

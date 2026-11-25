@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenominatorRegular
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteOpenHopfOrder
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.WeilBound.CoreStatements.HodgeTatePoints.ValAtRestrict
 
 @[expose] public section
 

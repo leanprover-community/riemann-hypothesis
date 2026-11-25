@@ -4,8 +4,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.ASmooth
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SSatEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SSatUnit
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
 
 @[expose] public section
 

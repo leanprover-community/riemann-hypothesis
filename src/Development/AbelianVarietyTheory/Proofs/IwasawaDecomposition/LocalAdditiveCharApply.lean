@@ -7,11 +7,8 @@ public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNatCongrOfAbsNormPrime
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield
-import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.Automorphisms.PlaceA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCharactersPrescribedValues, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalAdditiveCharApply

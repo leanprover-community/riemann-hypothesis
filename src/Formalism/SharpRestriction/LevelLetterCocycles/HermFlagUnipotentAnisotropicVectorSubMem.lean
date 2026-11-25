@@ -5,9 +5,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntegerSpanGenerators
 import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
-import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -17,7 +17,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Calculus.SmoothSeries
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
@@ -56,10 +55,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Compactness.DeltaGeneratedSpace
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Module.ZLattice.Summable
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Fourier.AddCircleMulti
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

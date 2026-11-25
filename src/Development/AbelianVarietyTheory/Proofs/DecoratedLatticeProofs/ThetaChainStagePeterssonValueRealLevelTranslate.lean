@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProduct
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepMemSm
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffDerivSnoc
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

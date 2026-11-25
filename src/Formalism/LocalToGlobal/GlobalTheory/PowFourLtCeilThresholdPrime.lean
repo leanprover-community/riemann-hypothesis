@@ -9,9 +9,6 @@ import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSk
 public import Formalism.SharpRestriction.GlobalSchurBounds.FrameCodeOfAdditive
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.GenericFramesLetters
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SecondPropositionEveryLocalisation
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

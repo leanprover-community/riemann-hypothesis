@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StepHeightOfNormOne
 public import Formalism.FlagUnipotentLattices.AlgebraicIdentityHigherDegree
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.BlockEndMinorsOfCell
-import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

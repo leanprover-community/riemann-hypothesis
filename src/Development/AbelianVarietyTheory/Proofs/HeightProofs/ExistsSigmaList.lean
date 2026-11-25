@@ -24,13 +24,11 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryAdelic
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLatticeDenominatorHeightBoundProofStatement
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryLieGeneratorsRepStatement
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitaryReductionPolynomialHeightBoundStatement
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Finiteness.Lattice
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.HeightProofs.MulApply, Development.AbelianVarietyTheory.Proofs.HeightProofs.CommutingAlgebrasFiniteSpan, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsEnvelopingAlgHomUnitaryLieAlgebraStatement, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSigmaList

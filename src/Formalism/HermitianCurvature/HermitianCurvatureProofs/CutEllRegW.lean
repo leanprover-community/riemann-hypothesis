@@ -3,35 +3,15 @@ module
 public import Formalism.UnipotentAdelicQuotients.EllReg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferSmoothOfRegularity
 public import Formalism.UnipotentAdelicQuotients.EllRegStep
-public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-public import Mathlib.Analysis.Calculus.MeanValue
 public import Formalism.UnipotentAdelicQuotients.EllipticRegularity.KernDecay
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Fourier.FourierTransform
-public import Mathlib.MeasureTheory.Group.Integral
-public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
-public import Formalism.UnipotentAdelicQuotients.EllRegCut
-public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Mathlib.Analysis.Fourier.FourierTransformDeriv
 public import Mathlib.Analysis.Fourier.Inversion
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
-public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 public import Formalism.UnipotentAdelicQuotients.EllipticRegularity.BaseLevel
 public import Formalism.UnipotentAdelicQuotients.EllipticRegularity.ConvolutionBound
 public import Formalism.UnipotentAdelicQuotients.EllipticRegularity.StepCore
 public import Formalism.UnipotentAdelicQuotients.EllipticRegularity.WeakFourier
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.Fourier.Notation
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 

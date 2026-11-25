@@ -9,7 +9,6 @@ import Development.ResolutionOfSingularities.Foundations.Schemes.AffineOpens
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.RingTheory.RegularLocalRing.Polynomial
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.SetTheory.ZFC.PSet

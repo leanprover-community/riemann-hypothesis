@@ -4,10 +4,8 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMi
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIsometryOfUnimodularLatticesAtPlace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedFramesPerpendicularVectors
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfPerpPerp
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
-import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
 
 @[expose] public section
 

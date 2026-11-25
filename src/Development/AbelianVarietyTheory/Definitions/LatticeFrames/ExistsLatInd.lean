@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ProdDat
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SingleMemIdAt
-public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsGLEmbeddingUnitaryAdelicSplitPlaceBasis
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSBExtFunEqHalfInd

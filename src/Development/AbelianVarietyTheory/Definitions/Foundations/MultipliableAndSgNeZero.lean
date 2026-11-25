@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CthFac
 public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 @[expose] public section
 

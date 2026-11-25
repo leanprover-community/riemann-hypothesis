@@ -1,7 +1,6 @@
 module
 
 public import Formalism.CoboundaryTransfers.StatementAPI
-public import Formalism.CoboundaryTransfers.Statement
 public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Formalism.CoboundaryTransfers.GammaStableTransfers.TorsionKilledCriterionHolds
 import Mathlib.Tactic.Lemma

@@ -4,7 +4,6 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Jacquet
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

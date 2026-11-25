@@ -5,15 +5,11 @@ public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.BoundsY
 public import Mathlib.Analysis.Calculus.FDeriv.Add
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Complex.OperatorNorm
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Linear
 public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StRiemannSlices
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StPuncturedExpOrder
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StLogCoverDescent
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.Analysis.Complex.OpenMapping
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PAnalyticDerivBound
@@ -22,9 +18,7 @@ public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PInvEntryBound
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PGlueRegularised
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PHodgeDerivative
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.

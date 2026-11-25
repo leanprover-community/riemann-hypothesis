@@ -5,12 +5,10 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.JacB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarBasic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.IntMuCD
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarHaarA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarInv
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,7 +4,6 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RepresentationTheory.Irreducible
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsIrreducibleIff
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CommutingEndAlgebrasCommonFixedVector
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAlgHomEndomorphismOfSpanIntertwiners
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMultilinearMapOfCommutingEndAlgHom

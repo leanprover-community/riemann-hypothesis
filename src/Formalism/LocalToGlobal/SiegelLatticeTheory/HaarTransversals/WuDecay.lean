@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
-public import Mathlib.Analysis.CStarAlgebra.Matrix
 
 @[expose] public section
 

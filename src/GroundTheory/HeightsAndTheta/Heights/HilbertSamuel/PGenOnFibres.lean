@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturb
-import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

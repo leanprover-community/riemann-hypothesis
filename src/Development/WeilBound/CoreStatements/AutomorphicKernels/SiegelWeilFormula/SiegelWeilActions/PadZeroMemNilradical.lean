@@ -2,12 +2,7 @@ module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.DefsPlus
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SiegelWeilActions.SplitPrimeIdeals
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarMeasureSplitExactSequence
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AdelicFormCongruences.ExistsGlCol
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.MatrixOfUnipotentFrame
 import Mathlib.Tactic.Linter.Style

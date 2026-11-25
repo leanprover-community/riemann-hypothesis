@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.IsLocallyConstantRankAtStalkEigenSub
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.RingTheory.Valuation.Integers
 public import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Linter.HaveILetI

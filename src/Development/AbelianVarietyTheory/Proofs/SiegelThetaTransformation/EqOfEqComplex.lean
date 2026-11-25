@@ -3,15 +3,11 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FirstIffSecondAndResiduals
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IntMIffInt
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
-import Development.AbelianVarietyTheory.Definitions.ThetaValues.PolyDerivSmulLetter
 
 @[expose] public section
 

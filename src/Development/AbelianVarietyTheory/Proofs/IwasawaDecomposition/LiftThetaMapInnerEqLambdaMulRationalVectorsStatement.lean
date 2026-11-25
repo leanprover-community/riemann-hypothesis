@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanRangeMulVec
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaMapHilbertModelEqConcreteThetaMapFamilyThreStatement
 import Formalism.LocalToGlobal.Divisibility.FramesLemmas
-import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
-import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasLab
 

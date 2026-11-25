@@ -3,8 +3,6 @@ module
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarmonicPolynomialEqZeroOfFunction
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHolRepOfIsTau
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

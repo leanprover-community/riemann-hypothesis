@@ -5,7 +5,6 @@ public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GroundT
 public import Formalism.GaussValuationBounds.GaussValueContraction.PhiIterXProof
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Formalism.DistinguishedUnitIdeals.StatementE
-public import Mathlib.Algebra.Group.Subgroup.Finite
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.RhoMapFunctorial
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.SplittingOfPositiveLevel
 public import Formalism.DistinguishedUnitIdeals.WordConsts
@@ -15,7 +14,6 @@ public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.LevelsM
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.LinExtEqZeroOfMemExt
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -7,13 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTen
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RationalAdelicMatricesSelfAnnihilator
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SecondOnCommonRangeOfSecond
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousHermPart
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualOfCovolumeOne
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
-import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

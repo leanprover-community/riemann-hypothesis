@@ -4,7 +4,6 @@ public import Formalism.FormalDegreeBessel.StatementDS
 public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.CircleIntegralInvSubEqZeroOfOutside
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.FlagUnipotentLattices.UnipotentStabiliserCharacterisation
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.DSFdeg
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec

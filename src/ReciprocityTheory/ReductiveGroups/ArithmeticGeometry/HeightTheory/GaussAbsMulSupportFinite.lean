@@ -5,8 +5,6 @@ import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
@@ -14,7 +12,6 @@ import ReciprocityTheory.SemistableReduction.GaussAbsMulOfMonomialOrder
 import ReciprocityTheory.SemistableReduction.LogNormCoeffSubLeBlockSphereLogMean
 public import ReciprocityTheory.SemistableReduction.SemiDegCA
 import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
-public import Mathlib.RingTheory.FractionalIdeal.Norm
 
 @[expose] public section
 

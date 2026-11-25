@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaCutoffLimit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SeminormCompletion
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

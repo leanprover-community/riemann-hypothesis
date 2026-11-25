@@ -18,15 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LatContMapCon
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionEqAndWeilIsOfIsHolTo
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.

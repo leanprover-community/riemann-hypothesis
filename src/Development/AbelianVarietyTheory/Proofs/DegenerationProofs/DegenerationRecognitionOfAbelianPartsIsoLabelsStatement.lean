@@ -3,8 +3,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.LinearAlgebra.QuadraticForm.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsReducedBasisOfLinearIndependent
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBimultiplicativeOfSecondQuotConst
-public import Mathlib.LinearAlgebra.Basis.Defs
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.NotAllMatchRankZero
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationDataTorsionStructureAlgClosed
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FourierExtractionTsumClass
@@ -27,12 +25,9 @@ public import Development.AbelianVarietyTheory.Definitions.Degenerations.Admissi
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsoOnG
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.DegenerationWeilPairingProperties
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

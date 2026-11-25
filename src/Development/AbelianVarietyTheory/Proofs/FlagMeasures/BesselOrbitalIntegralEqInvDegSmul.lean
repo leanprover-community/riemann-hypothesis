@@ -3,22 +3,17 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FixedPointsGramVector
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
-public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SiegelRegionNormBound
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselModelUnitaryGroupOpNormProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselZhatInvAndRegularIff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselOpNormPowerIntegralLtTopClosedSubgroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupsClosedUnitaryWCompact
-public import Mathlib.Basic.Real.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselConstantBoundsOfGeTwoNPowFive
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFormConvergesEquivariantHermitian
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocInOfUniqOfDecLow
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupRepTwistedIsUnitaryRep
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

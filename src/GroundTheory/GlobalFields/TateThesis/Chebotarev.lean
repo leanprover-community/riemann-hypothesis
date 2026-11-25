@@ -6,7 +6,6 @@ public import Mathlib.Order.CompletePartialOrder
 import Batteries.Tactic.OpenPrivate
 public import GroundTheory.GlobalFields.TateThesis.ChebotarevAbelian
 import GroundTheory.GlobalFields.TateThesis.DegreeOneDensity
-import GroundTheory.GlobalFields.TateThesis.PrimeZetaPole
 
 @[expose] public section
 

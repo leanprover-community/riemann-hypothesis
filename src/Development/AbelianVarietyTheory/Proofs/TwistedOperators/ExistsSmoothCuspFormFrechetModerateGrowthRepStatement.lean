@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
-public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplexDerivativeRightDerivativeCommutator
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.SqNormIntegralFundamentalDomainEqL2NormSq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
@@ -9,13 +8,10 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemSm
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsGrowthSobNeTopOfIsAutFunSm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCuspFunOfTendstoModerateGrowthSize
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModerateGrowthSobolevSizeRightTranslatePolyBound
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GrowthSizeRWordNeTopOfLe
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsAutFunSmStar
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsModGrowthExpLeNormInfPow
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionTranslateAtRealPlace
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCompactKinfAndConj
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsCuspFunctionClosedUnderOperations
 import Mathlib.Algebra.Order.Floor.Extended
@@ -52,10 +48,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
-import Mathlib.Analysis.Calculus.UniformLimitsDeriv
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
@@ -64,10 +56,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.ENatToNat
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RWordRTrAdelic
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

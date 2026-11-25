@@ -10,10 +10,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

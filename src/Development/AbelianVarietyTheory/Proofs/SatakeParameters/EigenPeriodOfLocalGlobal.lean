@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
@@ -14,10 +13,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WildEqOneOfCha
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.NormNum.Prime
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeCharEqOfLAdicRealisation
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic

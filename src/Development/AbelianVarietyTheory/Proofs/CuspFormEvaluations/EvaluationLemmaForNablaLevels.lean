@@ -10,13 +10,8 @@ import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsFramedP
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortThetaValueExistsUniqueNaturalOfLawsStatement
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.TensorProduct.IncludeLeftSubRight
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EvaluationLemmaForNablaLevels

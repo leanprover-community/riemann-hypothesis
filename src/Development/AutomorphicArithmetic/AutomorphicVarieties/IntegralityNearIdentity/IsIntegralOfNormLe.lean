@@ -2,9 +2,6 @@ module
 
 public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Module.Submodule.Defs
-public import Mathlib.Data.Matrix.Mul
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsIntegralOfNormLe, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ProdMulMem, Development.AutomorphicArithmetic.AutomorphicVarieties.IntegralityNearIdentity.IsIntegralOfNormLe

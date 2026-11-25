@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.TendstoUniformlyOnDoublingLogOfContraction
 public import Mathlib.Algebra.Module.ZLattice.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 public import Mathlib.Topology.IsLocalHomeomorph
 import Mathlib.Algebra.Order.Star.Real

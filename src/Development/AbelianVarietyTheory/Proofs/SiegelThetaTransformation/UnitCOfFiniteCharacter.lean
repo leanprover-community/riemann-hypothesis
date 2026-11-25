@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Law
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
 public import Formalism.LocalToGlobal.ProjectiveLattices.ReadAlg
-import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 import Mathlib.Tactic.Linter.HaveILetI
 

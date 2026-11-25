@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellExpansionOfSubadditive
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
-import Mathlib.Analysis.Complex.ExponentialBounds
 
 @[expose] public section
 

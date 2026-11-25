@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ResidualConstruction
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanRingCornerIdealModuleIff
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIdempotentSubMemOfPowSubMem
 import Mathlib.Tactic.Linter.HaveILetI
 

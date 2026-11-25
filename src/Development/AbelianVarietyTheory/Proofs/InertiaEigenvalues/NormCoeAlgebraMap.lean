@@ -4,11 +4,6 @@ public import Mathlib.NumberTheory.Padics.RingHoms
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormPowSubOneOfNotDvd
 public import Mathlib.NumberTheory.Padics.Hensel
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Derivative
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.GroupTheory.Torsion
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEmbOfFixed
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegralCyclotomicChar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocPrimeVNormalised

@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVecto
 public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.CauchyLoc
 public import GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainImageOfMapVecLattice
 public import GroundTheory.AutomorphicForms.ReductionMeasure
-public import GroundTheory.AutomorphicForms.SatakeNormalized
 
 @[expose] public section
 

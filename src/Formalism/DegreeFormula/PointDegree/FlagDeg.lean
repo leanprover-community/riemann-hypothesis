@@ -8,7 +8,6 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Algebra.BigOperators.Field
 public import Mathlib.Algebra.MvPolynomial.CommRing
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Vandermonde
 

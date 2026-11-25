@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsSe
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ValuesEqOfCommonPoint
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
-import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

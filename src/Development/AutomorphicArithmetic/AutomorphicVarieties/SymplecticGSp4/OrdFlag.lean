@@ -2,8 +2,6 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MapRepApply
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

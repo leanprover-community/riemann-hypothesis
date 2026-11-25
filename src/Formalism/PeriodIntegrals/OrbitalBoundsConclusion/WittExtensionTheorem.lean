@@ -5,7 +5,6 @@ public import Mathlib.GroupTheory.GroupAction.Ring
 public import Mathlib.Algebra.Module.LinearMap.Star
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Formalism.PeriodIntegrals.WittExtension
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma

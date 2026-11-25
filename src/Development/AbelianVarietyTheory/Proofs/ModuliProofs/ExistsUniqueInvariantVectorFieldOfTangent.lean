@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ConstThickeningFieldStructure
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
 import Mathlib.AlgebraicGeometry.Modules.Sheaf

@@ -10,7 +10,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibra
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.IsClassFieldHilbert
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.Mk0IdMapCongr
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.InfLiesOver
 import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.LiesOver
 

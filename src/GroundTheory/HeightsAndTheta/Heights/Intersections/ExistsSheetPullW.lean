@@ -2,17 +2,11 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherExtra
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
-import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
-import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeE
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeF
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheetA
 
 @[expose] public section
 

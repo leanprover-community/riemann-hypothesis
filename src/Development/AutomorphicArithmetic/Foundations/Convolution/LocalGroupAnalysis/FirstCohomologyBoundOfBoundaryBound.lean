@@ -7,8 +7,6 @@ public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.Selmer
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalExt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalField
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
-import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.NmPoly
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

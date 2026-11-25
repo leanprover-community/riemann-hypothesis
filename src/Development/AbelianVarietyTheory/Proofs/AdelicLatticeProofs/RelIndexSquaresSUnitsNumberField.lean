@@ -5,7 +5,6 @@ public import Mathlib.GroupTheory.FiniteAbelian.Basic
 public import Mathlib.GroupTheory.IndexNSmul
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinrankSUnitsNumberFieldAddOne
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SUnitsNumberFieldFg
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

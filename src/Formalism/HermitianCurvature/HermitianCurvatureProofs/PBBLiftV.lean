@@ -3,8 +3,6 @@ module
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtNonneg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBBStmt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleWordMemBoundedLetterLists
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.JointInstanceTheoremA
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 
 @[expose] public section
 

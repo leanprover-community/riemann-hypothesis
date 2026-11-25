@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAtOfSmooth
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GeneralLinearGroupUnimodular
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold
 import Aesop.Main

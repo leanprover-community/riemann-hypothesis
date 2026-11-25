@@ -6,15 +6,8 @@ public import Mathlib.MeasureTheory.Integral.IntegrableOn
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyChern
 public import Mathlib.Topology.Algebra.MvPolynomial
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma

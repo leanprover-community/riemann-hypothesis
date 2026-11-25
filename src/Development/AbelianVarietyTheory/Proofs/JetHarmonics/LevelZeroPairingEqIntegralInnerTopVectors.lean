@@ -4,27 +4,13 @@ public import Mathlib.Algebra.Module.Defs
 public import Mathlib.Basic.Complex.Basic
 public import Development.AbelianVarietyTheory.Definitions.Jets.ImportsAlt
 public import Formalism.HermitianCurvature.HerGenC
-public import Formalism.HermitianCurvature.StatementQ
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliProductLevelZeroPairingSesquilinear
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelZeroFormEqBigCellIntegralTopDensityCompact
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TopVectorAddSmulCompactCoefficients
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsNormBoundThreeFamilies
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Function.L2Space
-public import Mathlib.Analysis.InnerProductSpace.Continuous
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyContinuousOn
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
-public import Formalism.HermitianCurvature.StatementD
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelZeroPairingCompactApproximantsCauchyBound
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutDec
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftClosedUnderOperations
-import Mathlib.Algebra.Order.Star.Real
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TopFirstOfParts
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CccoefMono
 
 -- This file was produced by scripts/clump.py from the modules listed below.

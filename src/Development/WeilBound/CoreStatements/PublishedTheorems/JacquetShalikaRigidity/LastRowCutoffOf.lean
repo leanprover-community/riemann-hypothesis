@@ -3,18 +3,9 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LastRowMulRowGLInv
 public import GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainImageOfMapVecLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicGLHomeomorphInfiniteFinite
-public import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.WhittakerVanishingImpliesZero
-public import GroundTheory.GlobalFields.Adele.Compact
-public import GroundTheory.GlobalFields.Adele.Approximation
-public import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.MirabolicColumnBlock
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.ColumnConjugationMeasure
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.SphOff
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.PiTensorProduct
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 
 -- This file was produced by scripts/clump.py from the modules listed below.

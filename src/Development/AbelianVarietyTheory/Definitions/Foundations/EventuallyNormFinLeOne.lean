@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EqOrConjOfPlaceOf
-public import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

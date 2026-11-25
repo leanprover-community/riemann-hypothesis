@@ -2,9 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModelBaseChange
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsAction
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct

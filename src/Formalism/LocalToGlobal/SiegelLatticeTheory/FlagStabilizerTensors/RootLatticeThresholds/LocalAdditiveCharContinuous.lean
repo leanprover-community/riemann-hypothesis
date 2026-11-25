@@ -8,7 +8,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Valuation.Extension
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf
 

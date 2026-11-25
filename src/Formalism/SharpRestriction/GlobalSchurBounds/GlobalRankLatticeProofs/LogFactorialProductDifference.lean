@@ -4,7 +4,6 @@ public import Formalism.LogVandermondeBounds.LogRatioUpperBound
 public import Formalism.LogVandermondeBounds.LogRatioLowerBound
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeOfExplicitAndCompact
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.PartFiveExplicitOfPropositions
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate

@@ -8,11 +8,8 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Exists
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLocalConjugationSelfDualLatticesHost
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UnramifiedOfIsCMUnram
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.AdelicUnitaryGroups
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.LandherrAndLandherrSt
-import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.TraceFormDualOneTraceFormDual
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -50,8 +47,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar

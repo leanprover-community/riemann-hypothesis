@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 
 @[expose] public section
 

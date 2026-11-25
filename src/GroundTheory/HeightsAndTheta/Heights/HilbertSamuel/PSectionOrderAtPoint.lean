@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIde
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.MemDivSuppOfDivCycleNeZero
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 
 @[expose] public section
 

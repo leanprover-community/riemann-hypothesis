@@ -4,7 +4,6 @@ public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Ring.Ultra
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Mathlib.RepresentationTheory.Basic

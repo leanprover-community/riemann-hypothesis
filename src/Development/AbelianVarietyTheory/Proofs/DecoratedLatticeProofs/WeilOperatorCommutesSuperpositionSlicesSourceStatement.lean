@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsT
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumPreservesThetaFundamentalDomainPairingStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilOperatorOneVariableKeepsThetaFunctionsStatement
 public import Mathlib.MeasureTheory.Function.StronglyMeasurable.Lp
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousIsotropicSandwichMeanTranslation
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

@@ -31,7 +31,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeC
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeActMem
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeConvolutionMemHolds
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawa
-public import Formalism.SatakeDualWeyl.Statement
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AssocFin
 public import Formalism.SatakeDualWeyl.StatementB
 public import Formalism.SatakeDualWeyl.StatementW
@@ -39,7 +38,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SplitUnitaryGroupIso
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stdform
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal
-public import Mathlib.RingTheory.Flat.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stabstd

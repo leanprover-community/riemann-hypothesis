@@ -2,10 +2,7 @@ module
 
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicCoordsOfGenericPoint
-public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SectionBoundaryClosedAndCodense
 public import Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsForm
 public import Development.WeilBound.CoreStatements.VolumeEquality.HolNull

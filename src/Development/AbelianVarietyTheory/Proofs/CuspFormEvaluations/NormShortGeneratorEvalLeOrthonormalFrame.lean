@@ -17,12 +17,8 @@ public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBa
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ProjAEqSumReps
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HMatMulVecPerCrd
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelTestFunctionFiniteSumEquivariant
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinear
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaSeriesTestFunctionHolomorphicWeight
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeilActionPreservesThetaAndInnerProduct
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.NormShortGeneratorEvalLeOrthonormalFrame

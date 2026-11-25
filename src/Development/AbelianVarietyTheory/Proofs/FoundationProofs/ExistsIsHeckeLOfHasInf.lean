@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostC
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeLEntireAndNonzeroAtOneHolds
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFiniteAdeleCompleteSeparated
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

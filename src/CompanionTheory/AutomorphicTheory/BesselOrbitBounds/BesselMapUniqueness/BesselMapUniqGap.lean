@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.BesselMapUniq
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.IntegralMemOfIsClosed
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 
 @[expose] public section
 

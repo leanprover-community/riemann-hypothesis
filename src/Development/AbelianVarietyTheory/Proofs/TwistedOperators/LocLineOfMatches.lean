@@ -7,9 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockOperator
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomialsLocallyFiniteRationalWeights
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointIntertwinerDiscreteSeriesDescends
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedAdjoint
-public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteDimensionalForallMapMem
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.BarMatrix
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLocalFockIntertwinerRealPlaceOfCoverContra
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsConjModelExt
@@ -53,14 +51,12 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultiplicitySpaceEqZeroOfLowestKTypes
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.CovariantPairingUniqueUpToScalar, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCoverKFinitePairingOfRealIntertwiner, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealIntertwinerContractionValuesKFinite, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealIntertwinerContractionValuesKFiniteStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocLineOfMatches

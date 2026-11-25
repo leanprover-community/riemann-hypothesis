@@ -7,10 +7,6 @@ public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.KrullDimension.Polynomial
 public import Mathlib.RingTheory.NoetherNormalization
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodA
-public import Mathlib.Algebra.Polynomial.Eval.Coeff
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.RingTheory.Algebraic.Defs
-public import Mathlib.RingTheory.Algebraic.Integral
 public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodE

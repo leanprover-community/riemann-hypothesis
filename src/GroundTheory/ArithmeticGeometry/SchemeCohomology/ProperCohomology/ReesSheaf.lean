@@ -2,14 +2,10 @@ module
 
 public import GroundTheory.ArithmeticGeometry.EtaleCompletion.QcohZariski
 public import Mathlib.Algebra.Category.ModuleCat.Sheaf.Quasicoherent
-public import Mathlib.AlgebraicGeometry.AffineScheme
 public import GroundTheory.ArithmeticGeometry.EtaleCompletion.PullbackAffine
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesScheme
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
-public import Mathlib.Algebra.Polynomial.Module.Basic
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSheafBase
-public import Mathlib.RingTheory.ReesAlgebra
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.PullbackGamma
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.PullbackBaseChange, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesRing, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSections, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSubmodule, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSheaf

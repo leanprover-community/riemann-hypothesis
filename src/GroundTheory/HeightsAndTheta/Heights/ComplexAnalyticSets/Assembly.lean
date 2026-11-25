@@ -16,13 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSe
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOrder
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsNormForm
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-public import Mathlib.Algebra.MvPolynomial.Nilpotent
-public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.RingTheory.Norm.Transitivity
-public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
-public import Mathlib.RingTheory.MvPolynomial.Localization
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormSection
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompare
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetAreaCompare
@@ -45,8 +38,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMassFini
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZeroSetOpenMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteMapOpen
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFiniteFibreDim
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeGraphCover
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeJacMeasurable
@@ -186,14 +177,7 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PStokesOf
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PUnitaryZariskiDense
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarietySlabMeasure
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.AssemblyPartial
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowNormFormGeneric
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChowSecDegree
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PNormFormEval
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.Polynomial
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PAffineChartTrdeg
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartIncDomain

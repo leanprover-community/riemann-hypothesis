@@ -3,8 +3,6 @@ module
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

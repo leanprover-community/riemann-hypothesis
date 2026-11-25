@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

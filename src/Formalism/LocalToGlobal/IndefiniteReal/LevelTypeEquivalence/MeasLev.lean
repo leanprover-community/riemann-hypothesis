@@ -1,16 +1,13 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.BaseSt
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Lemmata.MiscLemmasB.Imports
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.HfinExistsMat
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelA
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MeasFr
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MeasUpq
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
 import Formalism.LocalRingCardinality.SpanPowerMembership.HaarDensityNeZero
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MeasBrg
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.NumFieldHosCountable
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodGA
 
 @[expose] public section

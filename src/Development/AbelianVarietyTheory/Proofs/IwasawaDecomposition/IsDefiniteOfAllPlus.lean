@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Tenso
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteDimensionalModel
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
 import Mathlib.Algebra.Order.Floor.Extended

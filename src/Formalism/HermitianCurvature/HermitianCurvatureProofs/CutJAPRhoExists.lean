@@ -4,18 +4,10 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJABddKapNrmW
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_TypeNormMeas_TC
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.GANormSqStar
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRho
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoFrameLoc
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnGeomAtGq
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieListProducts
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.TypeStar
-import Formalism.FormalDegreeBessel.FinalG
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 
 -- This file was produced by scripts/clump.py from the modules listed below.

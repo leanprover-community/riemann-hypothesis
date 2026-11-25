@@ -8,14 +8,11 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 import Mathlib.AlgebraicGeometry.QuasiAffine
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBaseClassLevelAdapted
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.PolyDerivSmulLetter
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OnbPerp
 

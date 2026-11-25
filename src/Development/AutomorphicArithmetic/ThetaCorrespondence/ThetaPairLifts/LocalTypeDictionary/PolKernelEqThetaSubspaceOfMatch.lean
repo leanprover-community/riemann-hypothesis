@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SumPureMe
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PairsOfSquareTriple
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaActionExists
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MatchedMapsLocalIdentity
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TmulSumEqZeroOfPureTensorFunctionZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealmapsIsomorphism
@@ -17,7 +16,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSubSelf
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 

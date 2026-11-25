@@ -2,16 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilModelArchimedeanExponent
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactUnitaryMovesHeisenbergDerivative
@@ -19,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Heisenber
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.MemPolarizationStabilizerOfDualPair
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolActs
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOneParameterInUnitaryArchimedeanMaxCompact
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepresentationIntegralAction
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemKerPD
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.LieActionMemKerPolarizationProjection
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
@@ -48,7 +39,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSu
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -59,7 +49,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -77,34 +66,13 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Finiteness.Lattice
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.TotallySplit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts

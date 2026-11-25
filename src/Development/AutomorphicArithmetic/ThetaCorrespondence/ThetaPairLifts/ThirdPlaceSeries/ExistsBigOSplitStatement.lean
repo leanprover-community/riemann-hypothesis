@@ -2,30 +2,15 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
-public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IrreducibleSpanAfterMap
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanRepMatrixEqTopOfAbsIrreducible
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRestrictEqTopOfAbsIrrSub
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ResidualConstruction
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SplitRep
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SemisimpleMatrixRepIsInternalIrreducible
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.WdOfMono0L
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TraceNondegenerateOfIsSSRep
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharpolyEqOfEqOnDense
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
 public import Formalism.LocalToGlobal.NumberFieldFamilies.NPartCNd
-public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeEigenvalueSystemSetFinite
@@ -66,34 +51,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormPowSubPowLe
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Formalism.AlgebraicWeights.IsAlgWeight
-import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-import ReciprocityTheory.Automorphisms.PlaceA
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 

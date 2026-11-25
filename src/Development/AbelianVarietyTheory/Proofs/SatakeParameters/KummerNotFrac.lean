@@ -6,33 +6,16 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Acri
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BcrisRegularOfTensorInj
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FundamentalMapSurjective
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LMulBeta
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Acris0TorsionFree
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AcrisFiltrationApproxByEnvelopeKernelPower
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KummerNotCoboundary
 public import Development.AbelianVarietyTheory.Counterexamples.UpperHalfSurvey.NonemptyAlgebra
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PadicIntHomUnique
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaBdRPlusSurjectiveKerUnitsEquivariant
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusFiltrationEqFontaineXiPow
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPrimitiveTiltedRootOfUnityLocalPeriodRingsData
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.RingTheory.Localization.FractionRing
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import Mathlib.Algebra.Polynomial.FieldDivision
-public import Mathlib.Algebra.Polynomial.HasseDeriv
-public import Mathlib.Algebra.Polynomial.Taylor
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AssociatedPowOfUnits
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLogOnePlusKerThetaDeRhamPlus
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GaloisLogTeichmullerRatioEqAddKummer
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsUnitOfStableLine
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KerPEqSpanBeta
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BcrisFrobeniusFixedFilZeroEqQp
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.FieldTheory.Galois.Profinite
@@ -42,11 +25,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BcrisEqAcrisLocalizationPeriodT
 

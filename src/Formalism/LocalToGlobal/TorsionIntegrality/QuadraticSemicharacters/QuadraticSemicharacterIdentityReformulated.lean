@@ -4,12 +4,9 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RelIdxNeZeroOfLeLeft
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.KeyDef
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.CommOfBounded
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.ExistsGoodForm
-public import Formalism.PeriodIntegrals.UnimodLocStd
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.IsKTheta
 public import Mathlib.Data.Nat.Prime.Int
 public import Mathlib.FieldTheory.Finite.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RamDef

@@ -10,8 +10,6 @@ public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CardRingHomRealEqNrRealPlaces
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsTwoPlacesOverOfIsSquareLocal
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsQuadraticSqrtExtensionOfNotSquare
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RelIndexSquaresSUnitsNumberField
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

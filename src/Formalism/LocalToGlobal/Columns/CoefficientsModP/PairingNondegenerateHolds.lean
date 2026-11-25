@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.PolyFn
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
 public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Mathlib.Algebra.Order.Star.Rat

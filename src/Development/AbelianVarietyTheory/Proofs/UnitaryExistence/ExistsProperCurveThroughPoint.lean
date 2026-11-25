@@ -14,7 +14,6 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.HaveILetI
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 
 @[expose] public section
 

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemDivsOfMem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqOfMapEq
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.IndexExponentDegree
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EmbHInjective
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

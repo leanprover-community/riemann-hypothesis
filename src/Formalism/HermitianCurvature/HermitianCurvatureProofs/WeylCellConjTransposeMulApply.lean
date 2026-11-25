@@ -10,7 +10,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTranspose
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 public import Mathlib.Analysis.Calculus.Deriv.Prod
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

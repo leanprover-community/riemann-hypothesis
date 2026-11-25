@@ -16,7 +16,6 @@ public import Mathlib.Data.Rat.Cast.Order
 public import Mathlib.LinearAlgebra.Span.Defs
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.Noetherian.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 

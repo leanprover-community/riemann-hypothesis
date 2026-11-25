@@ -5,7 +5,6 @@ public import Mathlib.Analysis.Matrix.Normed
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAtOfSmooth
 import Std.Tactic.BVDecide.Normalize.Bool
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

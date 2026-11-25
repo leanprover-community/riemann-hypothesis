@@ -3,18 +3,13 @@ module
 public import GroundTheory.GlobalFields.CompletionAtPlace
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
-public import Mathlib.NumberTheory.RamificationInertia.Galois
 public import GroundTheory.GlobalFields.CompletionAtPlace.Degree
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnits
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleHerbrand
 public import GroundTheory.GlobalFields.FirstInequalityStatement
-import Mathlib.NumberTheory.NumberField.Completion.Ramification
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.FirstInequality.HerbrandClass, GroundTheory.GlobalFields.FirstInequality

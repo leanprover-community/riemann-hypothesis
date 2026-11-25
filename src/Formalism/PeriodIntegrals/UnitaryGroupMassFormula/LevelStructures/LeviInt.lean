@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
 
 @[expose] public section
 

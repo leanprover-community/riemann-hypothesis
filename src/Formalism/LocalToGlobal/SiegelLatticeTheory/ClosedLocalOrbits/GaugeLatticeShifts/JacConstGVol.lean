@@ -5,9 +5,7 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFro
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.VolUSetMeasurable
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConstBHModel
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConstBHVolP
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.CategoryTheory.Countable
 import Mathlib.RingTheory.TotallySplit
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.BridgeA

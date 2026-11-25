@@ -5,13 +5,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsTestZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CenterCommutesLieAction
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOfIsBlockEmb
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemWeakIn
@@ -19,22 +12,14 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TestFunc
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNonnegTestFunctionNearOne
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalKTypeFinite
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneParameterSubgroupExists
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
-public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
-public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unital
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ContinuousSetIntegralConstTermOn
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsCompactOperatorOfIsHilbertSchmidt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsOpenIsCompact
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SetIntegralNormRmulLe
 
 -- This file was produced by scripts/clump.py from the modules listed below.

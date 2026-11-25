@@ -4,10 +4,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HESmulRig
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeImageRationalHomLattice
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SpanImageLeOf
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.ZeroDimA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.Taylor
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.JetSumTable

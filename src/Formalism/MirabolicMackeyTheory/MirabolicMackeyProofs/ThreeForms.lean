@@ -10,9 +10,7 @@ public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
-public import Mathlib.RingTheory.DedekindDomain.Dvr
 
 @[expose] public section
 

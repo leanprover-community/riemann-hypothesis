@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FiniteInter
 public import Formalism.RealPlaceAnalysis.Complexify
 public import Formalism.RealPlaceAnalysis.FinalF
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

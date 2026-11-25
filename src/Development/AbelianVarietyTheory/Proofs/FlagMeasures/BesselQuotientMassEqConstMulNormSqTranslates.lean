@@ -14,9 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrechetContin
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuotientMeasureRightInvariant
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryGroupMatGroupUnimodular
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.Smooth
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

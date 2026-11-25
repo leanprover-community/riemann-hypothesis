@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CompatibleChartProductProjection
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSncAdaptedChartAtPoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedChartSectionForm

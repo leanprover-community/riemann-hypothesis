@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSt
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionIndependence
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVerticalDivisorsCommute
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionKoszul
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

@@ -8,7 +8,6 @@ public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.SchurOrthogonality, CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.SchurH

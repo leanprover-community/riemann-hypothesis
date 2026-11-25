@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.GeometricLemmaModular
 public import GroundTheory.AutomorphicForms.GeometricLemmaCharacters
-public import GroundTheory.AutomorphicForms.JacquetAdmissible
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

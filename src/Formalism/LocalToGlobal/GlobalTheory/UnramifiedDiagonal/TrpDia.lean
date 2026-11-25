@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.DiaSame
-import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.PSplitT
-import Formalism.LocalToGlobal.GlobalTheory.GL6.RndLinkAdmTOf
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

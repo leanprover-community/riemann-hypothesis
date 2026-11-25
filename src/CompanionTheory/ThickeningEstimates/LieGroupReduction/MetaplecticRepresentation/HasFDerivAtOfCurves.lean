@@ -2,8 +2,6 @@ module
 
 public import CompanionTheory.ThickeningEstimates.LieGroupReduction.MetaplecticRepresentation.ContinuousOm
 public import CompanionTheory.ThickeningEstimates.LieGroupReduction.MetaplecticRepresentation.MpFOne
-import Mathlib.Analysis.Calculus.Deriv.Prod
-import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 @[expose] public section
 

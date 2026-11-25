@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGener
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.GroupTheory.DoubleCoset
-public import Mathlib.LinearAlgebra.BilinearForm.DualLattice
 public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal

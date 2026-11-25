@@ -13,12 +13,8 @@ public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.PrimitiveE
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvertibleEndInnerProductRootPowerSumEqTorusSum
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsPrimitiveEndClassFunctionInvariantSubspaceMobi
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootPowerSumCharacterAdditiveAndXSubOnePow
-import Mathlib.LinearAlgebra.Charpoly.BaseChange
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.Linter.Style
 

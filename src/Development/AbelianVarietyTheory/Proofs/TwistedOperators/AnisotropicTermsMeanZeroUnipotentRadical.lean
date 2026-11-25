@@ -9,14 +9,11 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZe
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaRestrictIsotropicQuotientWittTowerPropertieStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WittTowerRestrictionUnipotentRadicalInvariantStatement
 import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Data.Matrix.ColumnRowPartitioned
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.WeilIdempotents
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section

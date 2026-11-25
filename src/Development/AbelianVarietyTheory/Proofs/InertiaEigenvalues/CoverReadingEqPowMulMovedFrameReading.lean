@@ -15,7 +15,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameUniformEmbe
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0CompLinear
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0OfIsPullback
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TransvectionEq
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
 import Development.AbelianVarietyTheory.Definitions.HeightFunctions.XiValIffXiAt
 

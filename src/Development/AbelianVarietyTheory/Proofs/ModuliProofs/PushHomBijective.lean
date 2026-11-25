@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.InKIffTrivialTwist
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsAffineOfQuasiAffine
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsInKNeOne
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.AlWellDefSt
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsIsGenTranslDiffComp
@@ -69,9 +68,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.RingTheory.DualNumber
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ModuliProofs.FiniteSections, Development.AbelianVarietyTheory.Proofs.ModuliProofs.KTrivOfGeometricPointsAndTangents, Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushHomBijective

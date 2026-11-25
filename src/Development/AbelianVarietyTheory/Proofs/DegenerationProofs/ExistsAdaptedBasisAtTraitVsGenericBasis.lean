@@ -10,9 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.NormsOf
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SectionPowerCalculusGeometricFibre
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpBijFAndExpandsFLin
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.SectionScalarValuation
 import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
 
 @[expose] public section

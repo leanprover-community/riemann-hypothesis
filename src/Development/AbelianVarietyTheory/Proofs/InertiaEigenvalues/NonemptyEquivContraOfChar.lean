@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.EmbedsLevelZeroDepthZero
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

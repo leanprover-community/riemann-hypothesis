@@ -5,16 +5,13 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIsolate
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PAreaMultiplicity
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetAreaCompare
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Algebra.MvPolynomial
 import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import Mathlib.RingTheory.Norm.Transitivity
 

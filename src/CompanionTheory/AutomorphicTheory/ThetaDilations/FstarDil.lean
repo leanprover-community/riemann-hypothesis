@@ -4,12 +4,7 @@ public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerPr
 public import CompanionTheory.AutomorphicTheory.ThetaDilations.ProdRho
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ThetaFunctionAutomorphy
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ThetaFunctionModularity
-public import Development.WeilBound.CoreStatements.ThetaDilations.IsOpenCoset
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ThetaFunctionGrowthBound
-import CompanionTheory.AutomorphicTheory.ThetaDilations.SqPosOfNe
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ArchimedeanGaussianFourier
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ThetaSeriesSummable
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.WeilRepresentationQuadraticDatum
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: CompanionTheory.AutomorphicTheory.ThetaDilations.IntFou, CompanionTheory.AutomorphicTheory.ThetaDilations.FstarDil

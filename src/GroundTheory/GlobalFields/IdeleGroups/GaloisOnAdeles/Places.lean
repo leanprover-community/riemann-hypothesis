@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

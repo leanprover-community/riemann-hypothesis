@@ -7,7 +7,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Algebra.Polynomial.Eval.Coeff
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ContinuousAevalMvPolynomial
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
@@ -23,13 +22,8 @@ public import Mathlib.RingTheory.RingHom.Etale
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 public import Mathlib.RingTheory.Smooth.Field
 public import ReciprocityTheory.SemistableReduction.AeBlockSphereEvalNeZero
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Linear
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 public import Mathlib.Geometry.Manifold.ChartedSpace
 public import Mathlib.Geometry.Manifold.IsManifold.Basic
-public import Mathlib.MeasureTheory.Function.Jacobian
 public import Mathlib.RingTheory.RingHom.StandardSmooth
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
@@ -40,12 +34,10 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.NoetherNormalization
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Unramified.LocalStructure
-import Mathlib.Geometry.Manifold.StructureGroupoid
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.PowCardLeNormProd, Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsApplyEqZeroAndEqOne, Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsNeZeroIsStandardSmoothOfRelativeDimension

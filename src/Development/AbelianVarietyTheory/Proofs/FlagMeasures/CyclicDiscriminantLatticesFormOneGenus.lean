@@ -13,13 +13,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIsometr
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnimodularOverlatticeCyclicSplitDiscrimina
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 import Mathlib.Tactic.TypeStar

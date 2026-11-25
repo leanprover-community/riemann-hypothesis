@@ -2,12 +2,6 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
-public import Mathlib.Algebra.Order.Floor.Defs
-public import Mathlib.Algebra.Order.Floor.Ring
-public import Mathlib.Analysis.Normed.Group.Defs
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.Order.Filter.AtTopBot.Archimedean
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.Topology.Algebra.Order.Floor
 public import Mathlib.RingTheory.TensorProduct.Finite
 public import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps

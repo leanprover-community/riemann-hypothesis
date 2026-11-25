@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AestronglyMeasurableCompRep
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI

@@ -4,7 +4,6 @@ public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassMapIdeleClassM
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsOpenSubgroupMemFixedModule
 public import Mathlib.FieldTheory.KrullTopology
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

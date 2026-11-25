@@ -13,8 +13,6 @@ import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.Lev
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopAdm
 import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.WhittakerModels.UnipBEqUnipotent
 import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.AutomorphicForms.LocallyProfinite
-import GroundTheory.AutomorphicForms.MeasuresGL
 
 noncomputable section
 

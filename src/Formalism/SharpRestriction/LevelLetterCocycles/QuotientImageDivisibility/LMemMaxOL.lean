@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreserves
 public import Formalism.SharpRestriction.LevelLetterCocycles.IsFracOL
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExpCritPOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.PtTransRec
-import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 
 @[expose] public section
 

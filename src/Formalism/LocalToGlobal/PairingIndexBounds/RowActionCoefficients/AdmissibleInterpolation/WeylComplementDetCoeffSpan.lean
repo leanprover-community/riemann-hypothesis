@@ -2,7 +2,6 @@ module
 
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.TransvectionMulApply
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.WeylComplementInDetCoeffSpan
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

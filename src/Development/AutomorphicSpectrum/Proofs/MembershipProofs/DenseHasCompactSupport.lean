@@ -16,14 +16,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 public import Mathlib.Topology.MetricSpace.ProperSpace.Lemmas
 import Mathlib.Topology.UniformSpace.Uniformizable
-public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Convolution
-public import Mathlib.Analysis.Calculus.DSlope
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Complex.CauchyIntegral
-public import Mathlib.Geometry.Manifold.ContMDiff.Basic
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-public import Mathlib.Geometry.Manifold.ContMDiffMap
 
 @[expose] public section
 

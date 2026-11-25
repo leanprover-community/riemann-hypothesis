@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementA
-public import Mathlib.LinearAlgebra.Matrix.Reindex
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal
 public import Formalism.GradedWeylDivisibility.FinalB

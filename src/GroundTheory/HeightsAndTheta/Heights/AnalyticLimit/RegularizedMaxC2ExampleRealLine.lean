@@ -7,8 +7,6 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpenNeighbourhood
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ContinuousTmaxShift
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 
 @[expose] public section
 

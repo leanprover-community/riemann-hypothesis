@@ -6,7 +6,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsC
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOnDualAndBidual
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatRestrictComapSpan
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RadialGaugeOfGaugeIdentitySlices
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
 import Formalism.FormalDegreeBessel.FinalG
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
@@ -11,7 +10,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplic
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliarySlotStates
 
 @[expose] public section
 

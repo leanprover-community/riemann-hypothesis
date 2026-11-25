@@ -2,8 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.SigmaFiniteAmplitudes.BesselIntg
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrablePhiF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaContOn
 import Mathlib.Tactic.TypeStar

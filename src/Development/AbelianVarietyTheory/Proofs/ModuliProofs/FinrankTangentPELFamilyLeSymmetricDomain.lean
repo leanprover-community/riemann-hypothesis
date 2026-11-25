@@ -5,14 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLieBasi
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
 public import Mathlib.Tactic.ENatToNat
 public import Mathlib.Algebra.Module.ZLattice.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.ParametricIntegral
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CauchyRiemannIffDifferentiableOnComplex
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PeriodicCechCocycleSmoothCoboundary
@@ -21,14 +13,12 @@ public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsHolomorphicUniformisationPowerThetaKeyDatu
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EntireAntilinearLatticePeriodsConst
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsDifferentiableOnVerticalVectorField
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueUniformisingVectorVerticalTangent
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLocalDerivationAlongFibreOfSmooth
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HolomorphicPeriodicCocycleCoboundary
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LocDerRegularCoeff
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DerivationEqZeroOfKodairaSpencerZeroStatement
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsGoodUniformisationKodairaSpencer
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.ExistsArBaseAway
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EqZeroOfLineSubsetDiscrete
@@ -70,11 +60,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLaw
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
@@ -82,22 +68,13 @@ import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaLevelAbelianSchemePullback
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinrankEigenspaceOfLieMultiplicity, Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinrankSymmAntilinearCommCMLe, Development.AbelianVarietyTheory.Proofs.ModuliProofs.SetIntegralFderivEqZeroOfLatticePeriodic, Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaCocyclePeriodicNonvanishingSections, Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaCocyclePeriodicNonvanishingSectionsStatement, Development.AbelianVarietyTheory.Proofs.ModuliProofs.KodairaSpencerClassIsSymmOfLift, Development.AbelianVarietyTheory.Proofs.ModuliProofs.KodairaSpencerClassIsSymmOfLiftStatement, Development.AbelianVarietyTheory.Proofs.ModuliProofs.KodairaSpencerCommutesWithEndomorphism, Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsAnalyticKodairaSpencerClass, Development.AbelianVarietyTheory.Proofs.ModuliProofs.FderivFnAddLattice, Development.AbelianVarietyTheory.Proofs.ModuliProofs.KodairaSpencerMatrixLinearInDerivation, Development.AbelianVarietyTheory.Proofs.ModuliProofs.TangentInjectsSymmetricAntilinearCommuting, Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinrankTangentPELFamilyLeSymmetricDomain

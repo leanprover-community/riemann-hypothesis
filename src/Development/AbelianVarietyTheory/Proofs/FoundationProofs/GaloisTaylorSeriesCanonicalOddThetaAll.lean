@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTy
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeInvariantsPeriodPairDictionary
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaFunctionExistenceUniqueness
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsMulEqPolynomialWeierstrassP
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.WeierstrassPAddOfNeOfDerivNeZero
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
 public import Mathlib.Analysis.Complex.TaylorSeries
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop

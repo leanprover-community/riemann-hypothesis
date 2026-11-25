@@ -16,7 +16,6 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -29,7 +28,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
@@ -61,7 +59,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.SharedLemmas.HpkSq
 
 @[expose] public section
 

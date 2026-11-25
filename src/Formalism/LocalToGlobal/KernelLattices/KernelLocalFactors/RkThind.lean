@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional

@@ -11,7 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNormalisedTh
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteRestrictionVanishing
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralOfTwistConjugatePlace
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.TopoThetaRCont
-import GroundTheory.GlobalFields.LocalFieldAtPlace
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

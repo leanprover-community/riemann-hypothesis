@@ -9,12 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Fra
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FractionalIdealCompletionPropertiesAtPlaceStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsSelfDualLatticeAtPlaceLatticeCompletion
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualLatticeAtPlaceSmulIntegralMem
-import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PeriodIdealZpowCompletionAdeleConjIff
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

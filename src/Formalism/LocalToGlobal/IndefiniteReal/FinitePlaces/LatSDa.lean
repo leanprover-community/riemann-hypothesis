@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatMod

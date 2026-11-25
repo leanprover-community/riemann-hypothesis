@@ -1,18 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.AlTieFD
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.AlTiePl
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DensitySumsAndDomination
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IntegralApproximation
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocModel
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DataCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocUnram
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.FieldDictionaryHolds
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
-import Mathlib.NumberTheory.RamificationInertia.Basic
 import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PicardGroup

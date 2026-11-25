@@ -6,10 +6,8 @@ public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.Henselian
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteMaximalSpectrumOfFiniteOfIsLocalRing
 public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
-import Mathlib.RingTheory.Etale.QuasiFinite
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 
 @[expose] public section
 

@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CompactCovering.NCovAd
 public import Formalism.LocalToGlobal.AdelicCompactOpens.IntAdelesCompactOpen
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicIntegersCompact.IsCompactAdicCompletionIntegers
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

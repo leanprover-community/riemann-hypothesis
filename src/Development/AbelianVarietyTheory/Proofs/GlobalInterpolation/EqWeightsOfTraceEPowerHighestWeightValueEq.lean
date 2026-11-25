@@ -3,9 +3,7 @@ module
 public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.Data.ZMod.Defs
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
-public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Algebra.Field.ZMod
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style

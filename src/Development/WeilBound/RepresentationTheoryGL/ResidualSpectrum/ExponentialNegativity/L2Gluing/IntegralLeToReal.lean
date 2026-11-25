@@ -1,20 +1,12 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.L2DecayOfCountEscape
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
-public import Mathlib.MeasureTheory.Measure.WithDensity
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SetLIntegralLeMulFundamentalDomainDiff
 import Mathlib.SetTheory.Cardinal.Free
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.CompletePartialOrder
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
-import GroundTheory.GlobalFields.Adele.Topology
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.Linter.Style
 

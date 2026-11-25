@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.Flat.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvrComplete
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PowerSeries.Ideal
 public import Mathlib.RingTheory.Regular.Free
@@ -14,7 +13,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.RingTheory.LocalRing.Module
 public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Mathlib.RingTheory.QuasiFinite.Basic

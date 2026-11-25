@@ -10,8 +10,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.CoordMapInjective
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.ComplexSpanBlockActionStable
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.DiamondCommDistinctPlaces
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.ValuationClassTranslateMem
-public import Formalism.LocalToGlobal.Columns.PolyFn
-import Formalism.LocalToGlobal.GlobalTheory.GL6.AdelicFunctionRightTranslateDiamond
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation

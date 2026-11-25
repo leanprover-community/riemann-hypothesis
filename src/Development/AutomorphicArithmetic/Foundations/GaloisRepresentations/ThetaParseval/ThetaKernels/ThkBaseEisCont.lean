@@ -12,19 +12,9 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.ContinuousFlat
 public import Development.WeilBound.ThetaLifts.LatticeBasics.EisCont
 public import Development.WeilBound.ThetaLifts.LatticeBasics.FrameB
 public import Development.WeilBound.ThetaLifts.LatticeBasics.FrameConj
-public import Development.WeilBound.ThetaLifts.LatticeBasics.Hypotheses2
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesX
-public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsStable
 public import Development.WeilBound.ThetaLifts.LatticeBasics.RatEquiv
-public import Development.WeilBound.ThetaLifts.LatticeBasics.SWFull
 public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldB
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceSplitOrInert
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtFin
-public import Development.WeilBound.ThetaLifts.LatticeBasics.SkewTwo
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ConstIdele
 
 /-! # ThkBaseEisCont: Consolidated global theta-kernel definitions and proofs (ThkBaseEisCont). -/

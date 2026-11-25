@@ -6,7 +6,6 @@ public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHo
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.EnergyIntTor
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianCurvature.BigCellVanishingOfCommute
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.JacobianCommutation.PRhoRw, Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ConjEApply

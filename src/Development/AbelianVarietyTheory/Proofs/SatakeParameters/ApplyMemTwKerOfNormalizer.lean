@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometryâ
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantOrbit
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MatrixRegular
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

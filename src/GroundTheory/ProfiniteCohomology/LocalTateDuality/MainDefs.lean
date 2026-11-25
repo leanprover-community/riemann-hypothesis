@@ -2,21 +2,12 @@ module
 
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.InjectiveCohomologyMapKummerSeqOpenFTwo
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.Bockstein
-public import GroundTheory.ProfiniteCohomology.CyclicCupProf
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNonemptyAddEquiv
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.DeltaPairing
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-public import Mathlib.FieldTheory.KrullTopology
 public import GroundTheory.LocalFields.LocalReciprocityUniversal
 public import GroundTheory.LocalFields.NormCorrespondence
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing
-import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 import Mathlib.Tactic.TypeStar
-import GroundTheory.LocalFields.UnitsPowers
-import Mathlib.Algebra.Lie.OfAssociative
-import GroundTheory.LocalFields.LocalAxiomDictionary
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.LocalTateDuality.KummerCup, GroundTheory.ProfiniteCohomology.LocalTateDuality.NormCharacters, GroundTheory.ProfiniteCohomology.LocalTateDuality.EqZeroOfForallCupPairingZmodMulEqZeroLeft, GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs

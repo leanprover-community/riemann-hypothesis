@@ -2,17 +2,11 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussTubeOfTubeGood
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
-public import Mathlib.MeasureTheory.Function.L1Space.Integrable
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.ExpDecay
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentialFourierIntegralBound
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Mathlib.Analysis.Fourier.FourierTransform
 public import Mathlib.Analysis.Fourier.Inversion
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContourShiftGaussianDecay
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Polynomial.Basic

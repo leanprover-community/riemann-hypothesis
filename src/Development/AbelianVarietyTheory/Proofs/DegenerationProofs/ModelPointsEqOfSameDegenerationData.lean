@@ -15,10 +15,7 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaLevelObj
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.PullQkSurjective
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionIdentificationWithPairing
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ObjMapIdCompCancel
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ModelPointsEqOfSameDegenerationData

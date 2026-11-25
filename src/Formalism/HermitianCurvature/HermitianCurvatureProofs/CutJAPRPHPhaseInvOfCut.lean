@@ -11,7 +11,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedF
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSectionStab
 import Mathlib.Tactic.Linter.Style
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 
 @[expose] public section
 

@@ -2,9 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Formalism.PeriodIntegrals.KerIso
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.FractionalIdeal.Basic
-public import Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Tactic.Linter.Style

@@ -7,15 +7,10 @@ public import Mathlib.Analysis.SpecialFunctions.PolarCoord
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Complex.RealDeriv
 public import Mathlib.Analysis.SpecialFunctions.Integrability.Basic
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 public import Mathlib.MeasureTheory.Group.Integral
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenSt
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Integral.Prod
 import Aesop.Main
 import Mathlib.Order.CompletePartialOrder
 

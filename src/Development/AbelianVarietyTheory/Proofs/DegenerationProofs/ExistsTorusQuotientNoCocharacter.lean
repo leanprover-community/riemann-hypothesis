@@ -9,23 +9,12 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.LocallyTrivialTorusQuotientFlatSurjectiveCosetsStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsUnitEv
-public import Mathlib.Tactic.ENatToNat
-public import Mathlib.AlgebraicGeometry.FunctionField
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Ring.Hom.Defs
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.GroupWithZero.Units.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatQuotientIsoOfSameKernel
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.InvariantFunctionsDescend
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsTorusStableGoodOpenOfWeightUnits
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsLiftOneParameterQuotientTorus
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TorusStableAffineOpenFunctionsWeightGraded
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
@@ -35,18 +24,8 @@ import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
 import Mathlib.Algebra.AffineMonoid.Basic

@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.PrincipalUnitsModule
-public import GroundTheory.LocalFields.ExamplesCharZero
-public import GroundTheory.LocalFields.PadicLogHom
 public import GroundTheory.LocalFields.Integers
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar

@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Stat
 public import Mathlib.Algebra.MvPolynomial.Monad
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PProjIdealFormValue
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagBundleChartSection
-import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 import Mathlib.Tactic.TypeStar
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagBundleForms
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn

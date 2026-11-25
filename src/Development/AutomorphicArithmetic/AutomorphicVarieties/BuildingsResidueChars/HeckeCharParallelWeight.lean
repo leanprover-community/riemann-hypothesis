@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RealTransport.RealTransport
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

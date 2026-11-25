@@ -3,8 +3,6 @@ module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.NumberTheory.Padics.Hensel
 public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Data.Nat.Factorization.Induction
 public import Mathlib.FieldTheory.Finite.Basic
 

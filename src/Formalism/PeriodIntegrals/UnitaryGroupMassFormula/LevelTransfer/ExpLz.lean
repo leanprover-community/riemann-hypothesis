@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.LzOutRight
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.Topology.UniformSpace.Matrix
 
 @[expose] public section
 

@@ -52,7 +52,6 @@ import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.BlockTheory.CMModuli.PeriodMapPresentation
 public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
-import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 
 @[expose] public section
 

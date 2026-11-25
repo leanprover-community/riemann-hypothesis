@@ -3,17 +3,6 @@ module
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Mathlib.GroupTheory.ArchimedeanDensely
 public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.RingTheory.TensorProduct.Basic
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Derivative
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.FieldTheory.Minpoly.Basic
-public import Mathlib.FieldTheory.PrimitiveElement
-public import Mathlib.RingTheory.Norm.Defs
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Ramification
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormCloseToOneOfCloseAbovePlace
 public import Mathlib.LinearAlgebra.Charpoly.BaseChange
@@ -23,7 +12,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ArtinTransportAlgClosureEquiv
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAbelianizedGaloisHomOfClosureIso
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTotallyPositiveApproxAtFinitePlaces
-public import Mathlib.Basic.Real.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormTotallyPositiveOfTotallyPositiveNeZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocUnitApply
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ProdIdeleCharacterEqOneOfTotallyPositive
@@ -31,20 +19,16 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitsAd
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsoluteGaloisAbelianizationEqOneOfMemOpenSubgro
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinsetPlacesOverFinsetPlaces
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenIdeleSubgroupContainsCongruenceUnits
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdLocalValuesGlobalOverPlacesAbove
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -75,18 +59,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.Topology.Algebra.Group.OpenMapping
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

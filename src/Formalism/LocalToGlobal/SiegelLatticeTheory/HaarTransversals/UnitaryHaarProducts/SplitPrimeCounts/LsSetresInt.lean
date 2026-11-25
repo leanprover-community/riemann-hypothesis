@@ -5,7 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotDvdAbsNormDiffere
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SplitPrimeCounts.LsSetresSplit
-import ReciprocityTheory.ReductiveGroups.PlaceCounting.RaySplA
 
 @[expose] public section
 

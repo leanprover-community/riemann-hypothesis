@@ -1,7 +1,6 @@
 module
 
 import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LFunctionConj
-import Mathlib.Algebra.Group.SelfInv
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBoundRight
 
 public import Mathlib.Analysis.Analytic.Order

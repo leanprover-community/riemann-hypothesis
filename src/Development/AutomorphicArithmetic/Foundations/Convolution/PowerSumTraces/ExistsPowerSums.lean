@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkApply
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

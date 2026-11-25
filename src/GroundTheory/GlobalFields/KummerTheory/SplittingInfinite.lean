@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
-import Mathlib.NumberTheory.NumberField.Completion.Ramification
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

@@ -8,8 +8,6 @@ public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
-public import Mathlib.MeasureTheory.Integral.Pi
 
 @[expose] public section
 

@@ -9,15 +9,10 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMea
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHilbertSchmidtOfFiniteDimensional
 public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenNormalisedSubgroupSubset
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Module.PID
-import Mathlib.Algebra.Polynomial.Module.FiniteDimensional
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Baire.LocallyCompactRegular

@@ -5,7 +5,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGau
 public import Mathlib.Analysis.SpecialFunctions.Sqrt
 public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Mathlib.MeasureTheory.Function.JacobianOneDim
 public import Mathlib.Analysis.SpecialFunctions.PolarCoord
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushH

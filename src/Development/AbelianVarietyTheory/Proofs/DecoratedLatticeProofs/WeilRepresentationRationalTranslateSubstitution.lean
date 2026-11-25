@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisOApplyZero
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 
 @[expose] public section
 

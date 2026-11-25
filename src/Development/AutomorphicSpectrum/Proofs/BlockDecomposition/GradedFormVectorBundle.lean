@@ -1,8 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.CapOComp
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.SEqOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordinatesRestrictAffineOpen
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenFiniteInfIff
 

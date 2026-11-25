@@ -8,7 +8,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.GramCEqTranspose
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

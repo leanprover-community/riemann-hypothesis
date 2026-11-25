@@ -5,9 +5,7 @@ public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Formalism.LocalRingCardinality.SpanPowerMembership.Adelic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarePairLocal.MemFixSub
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Lemmata.GeneralBFactLeftBis.Imports
-public import Mathlib.RingTheory.DedekindDomain.Dvr
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarePairLocal.IntAtOfDivAtZero
 public import Formalism.PeriodIntegrals.UnimodGenus
 public import Mathlib.Algebra.Module.Lattice.Full
@@ -55,14 +53,12 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.AffineMonoid.Basic
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularGenus.StdLatEqSpan
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

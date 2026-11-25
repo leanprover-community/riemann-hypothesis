@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVo
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.ContinuousHRRight
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.SelfDualMeasureSFinite
 import Mathlib.RingTheory.PiTensorProduct
 import GroundTheory.IdeleRoots.TorusPowers.HeckeTensor
 

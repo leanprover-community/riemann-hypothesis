@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRoo
 public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsOpenCongruenceIdelesAndRealFiniteParts
-import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIntegralUnitRootNormOneAdele
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section

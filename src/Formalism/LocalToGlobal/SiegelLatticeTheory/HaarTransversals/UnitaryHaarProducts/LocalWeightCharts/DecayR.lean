@@ -1,12 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.WavePacketL1L2
-public import Formalism.PeriodIntegrals.UpqRep
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeSquareIntegrable.Closed
-public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiPolarDecompositionEquivariance

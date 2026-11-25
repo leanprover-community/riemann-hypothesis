@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.CutI
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpModel
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDimensionInequality, GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDimensionInequalityOneGenerator, GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPolynomialDimensionInequality, GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPolynomialPrimeOverZeroHeight, GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PQuotientHeightAddOne, GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PReesAlgebraDim, GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyDimensionInequality

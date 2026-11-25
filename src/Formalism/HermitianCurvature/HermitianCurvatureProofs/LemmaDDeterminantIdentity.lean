@@ -22,7 +22,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConjugateTranspo
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylConjugationFixedColumn.ReflectionScalarDualIsotropic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialFirstColumn.FirstColumnSplitBijective
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowExpansionMinor.FirstColumnSplitBijective
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.TypeStar
 

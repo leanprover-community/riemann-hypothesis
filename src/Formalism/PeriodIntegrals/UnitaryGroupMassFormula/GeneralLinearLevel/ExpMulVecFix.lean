@@ -3,8 +3,6 @@ module
 public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Topology.UniformSpace.Matrix
 import Formalism.FormalDegreeBessel.StatementWR
 
 @[expose] public section

@@ -1,18 +1,12 @@
 module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.NumberTheory.Padics.Complex
 public import Formalism.LocalRingCardinality.DataDIV
 public import Formalism.LocalRingCardinality.DataKerI
 public import Formalism.LocalRingCardinality.DataNChoice
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Valuation.Integral
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfDiagMulFinPartI

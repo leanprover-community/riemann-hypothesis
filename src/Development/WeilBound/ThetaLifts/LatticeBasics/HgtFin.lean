@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceAd
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LocGram
 public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.ExistsIntAddConjEqOneOfBaseGood
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceSplitOrInert
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.HasSatOfFamily
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.MemKFinOfFrameIntegral
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtWitt

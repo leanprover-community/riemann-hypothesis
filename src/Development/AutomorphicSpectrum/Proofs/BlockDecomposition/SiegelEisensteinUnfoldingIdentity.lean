@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitHermOfDet
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MeasurableSetIntF
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
 

@@ -6,9 +6,7 @@ public import Development.AbelianVarietyTheory.CrystallinePeriods.CrisIncl
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
 public import Mathlib.RingTheory.Nilpotent.Exp
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFontaineThetaOnAinf
-import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaBdRPlusSurjectiveKerUnitsEquivariant
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

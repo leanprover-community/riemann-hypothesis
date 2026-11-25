@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixedNeBotOfMemSupport
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterSplitPlaceComponentUniqueStatement
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsLevel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TameHeckeCharacterSplitPlaceLocalComponent
 
 @[expose] public section

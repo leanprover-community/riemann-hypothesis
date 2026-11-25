@@ -10,7 +10,6 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.FieldTheory.IsSepClosed
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
-public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.OfDerivationFnOn
 public import Mathlib.FieldTheory.KrullTopology
 public import Mathlib.RingTheory.Flat.TorsionFree
@@ -18,7 +17,6 @@ public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteMaximalSpectrumOfFiniteOfIsLocalRing
 public import Mathlib.RingTheory.Polynomial.Eisenstein.Criterion
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.FieldTheory.Galois.Profinite

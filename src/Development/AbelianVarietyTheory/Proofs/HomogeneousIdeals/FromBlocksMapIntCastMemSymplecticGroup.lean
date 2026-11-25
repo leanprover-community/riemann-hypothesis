@@ -17,10 +17,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.GenMain
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.OneEqSpTranslZero
 public import ReciprocityTheory.SemistableReduction.ShareDetA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.Blocks
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.OfRealVecHalfVec
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly

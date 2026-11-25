@@ -2,10 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PlacesToAdeles
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsSatisfyFlatLawsFinitePlacesStatement
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticeVacuumIffPlacewise
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualImageAdelicPointWittCore
 
 @[expose] public section
 

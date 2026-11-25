@@ -5,15 +5,7 @@ public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.Trace.Defs
 public import Mathlib.RingTheory.Trace.Basic
 public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Mathlib.RingTheory.Flat.Localization
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.RingTheory.TensorProduct.Basic
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
-public import Mathlib.RingTheory.Artinian.Defs
-public import Mathlib.RingTheory.Artinian.Module
 public import Mathlib.RingTheory.Ideal.GoingUp
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs

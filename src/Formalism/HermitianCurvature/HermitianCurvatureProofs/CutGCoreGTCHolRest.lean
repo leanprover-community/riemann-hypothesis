@@ -3,14 +3,10 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCHolCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSTr
-public import Formalism.HermitianCurvature.StatementNF
-public import Mathlib.MeasureTheory.Integral.CircleIntegral
-public import Mathlib.Analysis.Calculus.FDeriv.Star
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_GCore_GTConnCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCHolPhaseRel
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

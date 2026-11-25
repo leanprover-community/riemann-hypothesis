@@ -7,7 +7,6 @@ public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.NormResidueSymbol.Rational
 public import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
 import Mathlib.Tactic.TypeStar
-import GroundTheory.GlobalFields.NormResidueSymbol.RationalDiagonal
 import Mathlib.Algebra.Order.Positive.Field
 import Mathlib.Analysis.CStarAlgebra.Classes
 

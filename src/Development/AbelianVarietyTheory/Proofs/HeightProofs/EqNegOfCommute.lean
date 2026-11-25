@@ -1,33 +1,19 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FrameBasisMatrixOrthogonalProperties
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Algebra.Module.ZLattice.Basic
-public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Mathlib.Basic.Real.Basic
 public import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
-public import Mathlib.Analysis.Real.Sqrt
-public import Mathlib.LinearAlgebra.QuadraticForm.Basic
-public import Mathlib.Basic.Complex.Basic
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
 public import Mathlib.Analysis.Complex.Conformal
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsHeisenbergDerivativeLinearOperators
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIsArchimedeanAdeleChartOfRealChart
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPosNatMemOpenAdeleSubgroup
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FockOrthogonalDecomposition
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRealChartInfiniteAdelesCmType
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsRealPointUnitaryWithComponents
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSubmoduleThetaFunctions
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDerivativeCommutatorRelation
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedKfin
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectionalDerivFormulaAndSmooth
-public import Formalism.SatakeDualWeyl.Statement
-public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
 public import Mathlib.Analysis.Matrix.Order
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.RealAdeleExtAndStandardCharacterFormula
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordinatesAndRealLines
@@ -38,9 +24,6 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitary
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CmTypeRestrictRealSubfieldInfinitePlaceBijectiveStatement
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style

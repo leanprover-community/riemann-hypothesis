@@ -5,7 +5,6 @@ public import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.TieAlg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleGD
 public import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.TieRad
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJD
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHat
 

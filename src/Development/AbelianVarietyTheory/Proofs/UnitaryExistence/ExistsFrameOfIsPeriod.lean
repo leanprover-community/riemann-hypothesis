@@ -1,16 +1,12 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import Mathlib.Analysis.Matrix.Hermitian
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 

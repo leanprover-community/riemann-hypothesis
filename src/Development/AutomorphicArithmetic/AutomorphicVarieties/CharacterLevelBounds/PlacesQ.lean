@@ -2,11 +2,9 @@ module
 
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PartsConj
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ShaFamMono
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 
 @[expose] public section
 

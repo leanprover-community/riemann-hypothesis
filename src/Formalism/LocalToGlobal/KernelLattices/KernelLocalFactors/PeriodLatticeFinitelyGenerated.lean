@@ -5,7 +5,6 @@ import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylPoint
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.TensorBasis
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.LinkThetaStatementFamily
@@ -13,13 +12,7 @@ import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.LocalComponentGL
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.GroupTheory.FiniteAbelian.Basic
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.LocalToGlobal.Columns.MtIsoVal
 
 @[expose] public section

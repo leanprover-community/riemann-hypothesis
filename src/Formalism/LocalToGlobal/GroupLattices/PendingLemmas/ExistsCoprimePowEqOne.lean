@@ -1,10 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

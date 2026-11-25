@@ -6,10 +6,6 @@ public import Mathlib.Topology.Separation.CompletelyRegular
 public import Mathlib.Analysis.SpecialFunctions.PolarCoord
 public import Mathlib.Analysis.SpecialFunctions.Sqrt
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 @[expose] public section
 

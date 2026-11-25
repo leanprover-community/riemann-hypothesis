@@ -1,11 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FormLevLimit
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
-public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

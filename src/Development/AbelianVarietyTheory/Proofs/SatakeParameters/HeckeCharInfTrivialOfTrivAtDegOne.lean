@@ -10,10 +10,8 @@ public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DegOneIffSurjective
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousIdeleCharLocalFactorization
-public import Mathlib.RingTheory.Ideal.Maps
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ResidueDegreeOneOfLinearMem
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Tactic.ENatToNat

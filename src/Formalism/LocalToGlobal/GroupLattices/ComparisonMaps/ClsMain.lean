@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.JPMemAwayP
-public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.IdemMulCompl
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsOrb
 
 -- This file was produced by scripts/clump.py from the modules listed below.

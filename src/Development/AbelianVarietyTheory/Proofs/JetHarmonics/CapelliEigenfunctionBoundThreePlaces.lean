@@ -7,11 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BetaIntegrand
 public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_PtwCut
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Function.L2Space
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
-public import Formalism.HermitianCurvature.StatementTBB
 public import Formalism.HermitianCurvature.HerGenC
 public import Development.AbelianVarietyTheory.Definitions.Jets.ImportsAlt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AestronglyMeasurableTopVectorSmoothCoefficient
@@ -26,10 +21,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutDec
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Cut_BPEq
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OnePointBasisFundamentalDomainVolume
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LatticeSumOfCompactCoefficientPositivity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimET
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.JetBoundEqualTypesThreePlacesOfXiIntegrable
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSqLeShifted
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOfSubadditive
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelZeroEnergyBoundDecayingCasimirEigenfunction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBPEqNF
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointnessPolynomiallyBounded
@@ -81,8 +73,6 @@ import Mathlib.Topology.Sheaves.Init
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBPEqShift
 import Development.AbelianVarietyTheory.Definitions.Jets.SupWOfSup
 

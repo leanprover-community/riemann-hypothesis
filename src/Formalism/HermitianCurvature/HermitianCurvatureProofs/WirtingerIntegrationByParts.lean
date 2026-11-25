@@ -12,9 +12,6 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 public import Mathlib.Algebra.Order.Chebyshev
-public import Mathlib.Analysis.Calculus.Deriv.ZPow
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 public import Mathlib.Analysis.Complex.Liouville
 
 @[expose] public section

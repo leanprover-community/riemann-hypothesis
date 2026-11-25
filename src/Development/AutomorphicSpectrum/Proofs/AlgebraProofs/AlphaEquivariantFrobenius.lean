@@ -3,8 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CbBase
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CbFrob
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.WeilBound.CoreStatements.HodgeTatePoints.CoeffEvPowOne
-import Development.WeilBound.CoreStatements.HodgeTatePoints.FirstPowerEqProdAt
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries

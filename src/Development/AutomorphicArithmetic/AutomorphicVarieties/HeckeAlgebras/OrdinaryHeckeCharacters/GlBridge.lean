@@ -4,13 +4,10 @@ public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.Distinct
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriTraceOfBorelCasselman
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.IwMemMul
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

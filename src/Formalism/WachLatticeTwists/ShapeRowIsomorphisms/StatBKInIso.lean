@@ -3,7 +3,6 @@ module
 public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 public import Formalism.WachLatticeTwists.CharacterSplitJumps.WachTwistTheoremFromTorsionBound
-import Formalism.WachLatticeTwists.CharacterSplitJumps.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.WachLatticeTwists.CupProductVanishing.Statement, Formalism.WachLatticeTwists.ShapeRowIsomorphisms.StatBKInIso

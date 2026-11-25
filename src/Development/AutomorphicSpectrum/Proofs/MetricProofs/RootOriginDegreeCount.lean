@@ -5,8 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AlgebraicEle
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentres
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCoordField
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOneOfChartGenerators
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier

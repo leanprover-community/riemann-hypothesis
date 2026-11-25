@@ -2,35 +2,14 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNegBaseY
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.OscActMonomialOfUnique
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousOfDense
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussianVectorAnnihilatorEquations
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerGaussianVectorsFockSpace
-public import Mathlib.Analysis.Complex.Order
-public import Mathlib.LinearAlgebra.Matrix.PosDef
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitDetOneSubConjTransposeMulContractions
 public import Formalism.LocalRingCardinality.DataTheta
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.NotTrivialAndTwist
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOscillatorGaussianKernelRight, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseSpanCoherentVectorsFock, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryRepOfActionOnTotalFamily, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockExistsUniqueGaussianVector, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussianInnerEqInvariantKernel, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtInvDetAndInvAtIdentity, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtGaussianParametersAtIdentity, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtInnerPolynomialMovingGaussian, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtOfWeakDerivOnInvariantTotalSet, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerLieActionAdjointGaussianPolynomial, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOscillatorRepresentationUnitaryCover, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyFockModelUnitaryDualPair

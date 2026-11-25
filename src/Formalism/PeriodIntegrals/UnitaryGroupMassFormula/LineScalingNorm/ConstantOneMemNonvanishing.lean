@@ -5,9 +5,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLemB
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieBracketMultiplication
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSectionStab
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSection
 
 @[expose] public section
 

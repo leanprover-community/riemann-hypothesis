@@ -5,10 +5,7 @@ public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassEquivIdeleClas
 public import Mathlib.FieldTheory.Galois.Profinite
 public import GroundTheory.GlobalFields.IdeleClassGroup.InvariantsGalois
 public import GroundTheory.GlobalFields.SecondInequality.Cyclic
-public import GroundTheory.GlobalFields.IdeleClassGroup.Invariants
 public import GroundTheory.GlobalFields.NormResidueSymbol.CyclotomicImage
-import GroundTheory.LocalFields.HerbrandCyclic
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.IdeleClassGroup.NatCardTateOfIsCyclic, GroundTheory.GlobalFields.IdeleClassGroup.Theory, GroundTheory.GlobalFields.GlobalReciprocity.InfKerDegreeLeOfLeSupZhatField

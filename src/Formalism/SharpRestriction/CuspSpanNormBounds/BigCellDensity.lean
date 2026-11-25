@@ -2,14 +2,9 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentNormRpowNeg
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
-import Formalism.FormalDegreeBessel.FinalG
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WittOrthonormalBasis
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

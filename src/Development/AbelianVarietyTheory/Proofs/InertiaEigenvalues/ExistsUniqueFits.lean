@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsOfLayers
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGammaLayerPadicCoordinates
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWeakTopologyWittTiltTensor
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
 import Mathlib.Tactic.ENatToNat

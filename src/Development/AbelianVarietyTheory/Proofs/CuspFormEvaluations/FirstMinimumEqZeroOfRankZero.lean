@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FirstMinimumInvariantContinuousPosOnFrames
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MahlerCompactness
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Normed.Group.Tannery
@@ -19,9 +18,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FrequencySumBounds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicThreshold
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.M3bExpHolds
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajPos
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantOperators
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MinimumGrowthBounds
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivityHolds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PeriodLatticeCountable
 import Std.Tactic.BVDecide.Normalize.Prop

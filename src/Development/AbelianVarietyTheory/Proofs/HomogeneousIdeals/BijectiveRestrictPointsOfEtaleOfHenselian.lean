@@ -15,7 +15,6 @@ public import Mathlib.RingTheory.Unramified.LocalStructure
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.RingTheory.Etale.StandardEtale
 
 @[expose] public section
 

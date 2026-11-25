@@ -20,10 +20,7 @@ public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClas
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.WeightedSlopeExcessDecomposition
 public import Lemmata.GeneralBFactLeftBisAlt.Imports
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
-import Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation
-import Formalism.SizeWindowBrackets.ChainSlopeWindows.JointDModelAppliesUnitLattice
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.SizeWindowBrackets.SecondKindBucket

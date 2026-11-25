@@ -3,9 +3,6 @@ module
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsSupersetMemSUnits
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocUnitApply
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
-public import Mathlib.RingTheory.RamificationInertia.Inertia
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntValuationNormEqSumResidueDegreeMul
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder

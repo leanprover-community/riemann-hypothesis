@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.MinkowskiNumberDvdFactorial
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended

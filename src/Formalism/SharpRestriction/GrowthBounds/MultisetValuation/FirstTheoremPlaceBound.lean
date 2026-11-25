@@ -2,26 +2,14 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaGeCOfNorm
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.GainOfCapacityLoss
-public import Mathlib.Algebra.Order.Archimedean.Real.Basic
-public import Mathlib.Algebra.Ring.Subring.Defs
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
-public import Mathlib.Analysis.Normed.Field.Ultra
-public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
-public import Mathlib.Analysis.Normed.Group.Completion
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PrimeCastNeZero
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaRestSExpVOf
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ExpansionAllPlacesOfPlace
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DworkExponentialRestrictions
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.BiadditiveSecondVariable
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaRestSExpV
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TheoremOfAlternateForm
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AllPlacesOfRestrictions
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaApplyDScale, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaDegreeMapDomain, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.RationalLowerBounds, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NmNEqZero, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NmPinvOfPlace, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NmRestNormOfPlace, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ThRestGcVOf, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.FirstTheoremPlaceBound

@@ -3,7 +3,6 @@ module
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.MapStdPoly
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Data.Fin.Tuple.Sort
 
 @[expose] public section
 

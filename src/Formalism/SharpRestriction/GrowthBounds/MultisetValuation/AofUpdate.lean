@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.RamifiedLatticeOfChainEstimates
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TheoremOfAlternateForm
 
 @[expose] public section
 

@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagUnipotentLebesgueMeasureIsHaarOn
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarLieNilpotentEqLebesgue
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HcTypeWIrreducibleAndSchurAverage

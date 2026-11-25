@@ -8,13 +8,8 @@ import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThetaSwapFirstTwo
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtUniq
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.GenProd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.LevelFrameOfLaws
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
 
 @[expose] public section
 

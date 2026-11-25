@@ -4,15 +4,8 @@ public import ReciprocityTheory.SemistableReduction.ApproxBasisA
 public import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
 public import ReciprocityTheory.SemistableReduction.ApproxGraphA
 public import ReciprocityTheory.SemistableReduction.ApproxGraphB
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.LinearAlgebra.Lagrange
-public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Analysis.CStarAlgebra.Matrix
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Comp
 public import Mathlib.Analysis.Calculus.FDeriv.Prod
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement

@@ -12,14 +12,11 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLatti
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RingsCyclotomic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
-public import Mathlib.NumberTheory.Multiplicity
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -57,12 +54,9 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.PowerSeries.Inverse
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueSum, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FreeAndInvariantsGen, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValOfPowAssociated, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeDeltaInvariantBasis, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachModuleDescentToTameSubextension

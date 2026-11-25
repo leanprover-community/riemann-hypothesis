@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RealSiz
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SupNormWordSumSubLeAndDerivativeCost
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 
 @[expose] public section
 

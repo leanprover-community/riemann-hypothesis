@@ -1,14 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Module.Pi
-public import Mathlib.LinearAlgebra.Span.Defs
-public import Mathlib.Tactic.Continuity
-public import Mathlib.Algebra.Module.Submodule.Ker
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IrreducibleSpanAfterMap
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SemisimpleMatrixRepIsInternalIrreducible

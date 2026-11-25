@@ -7,34 +7,17 @@ public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliModuleModel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
-public import Formalism.FormalDegreeBessel.StatementG
-public import Formalism.HermitianCurvature.StatementU
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliEigenSumLinearCombination
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CkOnInCCCongrOnGroup
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBPEqDecay
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DminStarPd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.WeightBoundMultiplicative
 public import Development.AbelianVarietyTheory.PublishedTheorems.BesselIntegrals.BesselXiIntegrable
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.XiExistsOfBesselXiIntegrable
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
-public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapAdInv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutERCap
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutERCapAdjAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutERCapAdjS
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutER
-public import Formalism.HermitianCurvature.StatementB
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Basic.Complex.BigOperators
-public import Formalism.HermitianCurvature.LetterProductDoubleDegreeCount
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BetaFinsetSumSmulOfXiExists
-public import Formalism.HermitianCurvature.StatementTBB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimE
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSqLeShifted
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOfSubadditive
@@ -43,7 +26,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -81,22 +63,10 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutFpmDecay
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HomogeneityNaturalDegree
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinorSmoothness.ExpSecondHermitianMemLevel
 import Mathlib.Tactic.ENatToNat
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutERCapAdjFrom
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
-import Mathlib.Algebra.Order.Star.Real
-import Formalism.RealPlaceAnalysis.StatementA
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MapConjLebesgueCommonStabilizerNormalForm
 
 -- This file was produced by scripts/clump.py from the modules listed below.

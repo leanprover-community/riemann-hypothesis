@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermExponentsNonnegAndDefectGroupBound
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFourInverseMul
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SelfDualLatticeUnipotentTranslateStandard
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsIntegralIff
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitEntries
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsIntegralOfQuad
@@ -31,10 +30,8 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.PiTensorProduct
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemPerpSpan
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermInvariantsIndependentOfWitnesses
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetFrameClassProperties
 

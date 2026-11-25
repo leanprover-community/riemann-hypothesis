@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClas
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcDiffSmulMem
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcPair
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 

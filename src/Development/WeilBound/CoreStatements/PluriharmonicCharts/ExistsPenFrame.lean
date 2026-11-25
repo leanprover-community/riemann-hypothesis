@@ -3,11 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.MinorColsBEqZero
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsFlagFrame
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.MCoordIdealLeOfHomog
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorSumIdentityBaseChange
-import Development.WeilBound.CoreStatements.PluriharmonicCharts.MinorUpdateColLin
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar

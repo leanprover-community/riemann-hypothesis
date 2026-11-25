@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Exists
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HermFormDiagonalEq
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.CoeffEqZeroOfOrthonormal
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaIdealLatticeEqSumLevelTranslates
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianFormAtFrameLaws
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct

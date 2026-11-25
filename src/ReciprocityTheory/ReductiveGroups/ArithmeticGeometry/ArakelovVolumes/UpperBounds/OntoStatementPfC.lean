@@ -1,22 +1,14 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.Topology.Separation.CompletelyRegular
-public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
 public import ReciprocityTheory.L2DbarEstimates.NormFibrations.Hormander
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfB
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.ContDiff.WithLp
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

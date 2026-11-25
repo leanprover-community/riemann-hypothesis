@@ -6,7 +6,6 @@ public import Mathlib.MeasureTheory.Constructions.Pi
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsTest
 import Mathlib.Tactic.Lemma
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.ConstPair
-import Mathlib.Analysis.Matrix.Normed
 
 @[expose] public section
 

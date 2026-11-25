@@ -4,7 +4,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasure
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.CompletelyRegular

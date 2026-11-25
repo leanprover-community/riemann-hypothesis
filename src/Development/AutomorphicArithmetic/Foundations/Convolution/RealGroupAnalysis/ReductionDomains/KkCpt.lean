@@ -1,10 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
-public import GroundTheory.AutomorphicForms.ReductionIwasawa
-public import GroundTheory.AutomorphicForms.ReductionHeight
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.ContinuousEntry
-import GroundTheory.AutomorphicForms.ReductionCore
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -17,11 +17,7 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.I
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthBallQuotientEqSumMulFdeg
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MumfordBundleCechFiniteVanishesOffOrigin
 public import Mathlib.Algebra.Category.ModuleCat.Descent
-import Mathlib.RingTheory.Henselian
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Category.ModuleCat.ChangeOfRingsExact
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CokerDualMapEquivResidueFieldOfOrigin, Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.FinrankMumfordBundleCechHomologyOrigin

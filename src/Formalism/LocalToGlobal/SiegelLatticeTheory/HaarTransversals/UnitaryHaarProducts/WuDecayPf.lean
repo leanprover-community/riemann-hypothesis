@@ -1,13 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.WuDecay
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 public import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section

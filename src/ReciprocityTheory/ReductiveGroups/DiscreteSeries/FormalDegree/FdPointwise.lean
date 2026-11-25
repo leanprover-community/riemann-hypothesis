@@ -6,7 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdDe
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
 import Mathlib.Algebra.Order.Star.Real
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PSpecB
 
 @[expose] public section
 

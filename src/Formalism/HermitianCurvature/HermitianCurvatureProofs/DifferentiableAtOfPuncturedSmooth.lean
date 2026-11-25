@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.StatementHeads
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftVectorZeroBlock
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

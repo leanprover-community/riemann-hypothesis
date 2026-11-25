@@ -6,10 +6,8 @@ public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.FormalDegreeBessel.FinalG
 public import Mathlib.Analysis.Calculus.Deriv.Prod
-public import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Linear
 public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfSmoothBuiltOfLeaves
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.UnitNorm.UnrealifyRealify

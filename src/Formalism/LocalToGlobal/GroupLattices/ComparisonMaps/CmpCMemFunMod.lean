@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ValUniqOf
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CastGLSymmBc
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ColSpanMap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.IsLatTupSmulIff, Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemFunMod

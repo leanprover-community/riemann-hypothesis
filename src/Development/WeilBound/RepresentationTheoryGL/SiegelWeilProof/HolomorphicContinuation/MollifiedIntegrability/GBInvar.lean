@@ -4,10 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

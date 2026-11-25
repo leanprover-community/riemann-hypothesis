@@ -10,13 +10,10 @@ public import Mathlib.Topology.ContinuousMap.StoneWeierstrass
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasDerivAtAndIsTheta
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalSymplecticPointsSelfAnnihilator
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DescMk
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.CStarAlgebra.ContinuousMap
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Compactness.Paracompact
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HomSymplecticHalfFormAlgebraicLawsContinuous

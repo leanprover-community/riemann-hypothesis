@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThetaFramePf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TangentVectorsThetaSectionArcWitnessBaseChange
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArcTheta
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
-public import Formalism.LocalToGlobal.ProjectiveLattices.UnFree
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentEigenbasisExponential
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsThetaPt
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFrameChangeByMatrices

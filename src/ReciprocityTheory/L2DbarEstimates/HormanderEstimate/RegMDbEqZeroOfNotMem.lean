@@ -8,7 +8,6 @@ import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.RegGlue
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

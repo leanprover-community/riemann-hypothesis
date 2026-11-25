@@ -3,15 +3,12 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.AdelicThetaSumNormLePolynomialScale
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.WeilRepRationalSupportCommonDenominator
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.ThetaSumInvariantRationalUnitary
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.ContinuousOfMem
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowFin
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowFinal
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowHt
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowSob
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowTr
 

@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.SumFourSquares
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory

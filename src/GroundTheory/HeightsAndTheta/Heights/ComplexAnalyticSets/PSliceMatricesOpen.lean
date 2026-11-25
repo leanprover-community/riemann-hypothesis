@@ -14,7 +14,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Comp
 public import Mathlib.Analysis.Calculus.FDeriv.Equiv
 public import Mathlib.Analysis.Calculus.FDeriv.Prod
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

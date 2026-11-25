@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.DedekindDomain.PID
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.StarMemAp
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.ThetaA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.WBasis
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.Development
 public import Formalism.PeriodIntegrals.ScRefExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.TargetOfWframe
 

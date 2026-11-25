@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientC
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.IsCompactInterUnitBox
 public import Formalism.PeriodIntegrals.NUnimodLoc
 public import Formalism.PeriodIntegrals.QuotSetU
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.NilpotentSubgroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnimodularLattice.NonstandardUnimodularLattice, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnimodularLattice.Development

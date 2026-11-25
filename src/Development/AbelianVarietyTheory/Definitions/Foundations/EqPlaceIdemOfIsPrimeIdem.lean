@@ -3,9 +3,7 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NonemptyAlgHomOfNotIsField
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsSplitIdempotentsOfRelTraceOneModTwo
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalVAlgebraMapMem
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
 
 @[expose] public section
 

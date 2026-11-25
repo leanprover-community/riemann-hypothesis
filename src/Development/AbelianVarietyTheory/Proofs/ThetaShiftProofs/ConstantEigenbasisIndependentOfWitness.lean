@@ -1,12 +1,8 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsConstantLieBasisArcGroup
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsSmulPtSmulPt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.LiePush
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LieCombBaseChange
-import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueConstantTangentVectorsAlongArc
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LieImgIffIsLieComb
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.PmapsOfGenRelR
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CubicalSymmetryTransport
 import Mathlib.Algebra.Order.Floor.Extended
@@ -19,7 +15,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField

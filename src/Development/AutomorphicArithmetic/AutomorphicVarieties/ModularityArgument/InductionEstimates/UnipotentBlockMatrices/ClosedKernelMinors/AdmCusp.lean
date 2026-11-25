@@ -8,14 +8,8 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocalRepresentationL2
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ClsBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.FormsIrr
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
-import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite
-import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspScalar
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosureOrbits.FinClosure, Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosureOrbits.OrbitStable, Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.AdmCusp

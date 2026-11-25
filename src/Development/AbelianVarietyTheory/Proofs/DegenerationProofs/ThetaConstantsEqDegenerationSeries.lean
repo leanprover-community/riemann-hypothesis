@@ -12,13 +12,8 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ThetaConstantEqSumThetaTermsOddMultiple
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.WeilIsIffCommIsOfAndLiftSubsingleton
 public import Mathlib.Analysis.Normed.Group.Ultra
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ValueAtOrigin
-import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.ExistsGeneratorOfIsField
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

@@ -3,12 +3,8 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObjects
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRat
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
 import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

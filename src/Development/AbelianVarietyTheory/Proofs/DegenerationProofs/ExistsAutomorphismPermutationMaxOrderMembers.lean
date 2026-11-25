@@ -13,13 +13,11 @@ public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsRe
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AwayToAwayRightEqOfComp
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueInvariantVectorFieldOfTangent
 public import Development.AbelianVarietyTheory.Statements.FundamentalDomains.ExistsIsAddFundamentalDomain
-public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLiftOfSchemeTheoreticallyDominant
 public import Mathlib.AlgebraicGeometry.Morphisms.FlatMono
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUniqueModelHasJacobianOrder
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ChainRuleAndJacobianCriterion
-public import Mathlib.Algebra.DualNumber
 public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsEqDivOfIsPullback
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ProdIrrAndWeakNeron
@@ -27,14 +25,10 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ModelMa
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LeISupInfPreimage
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.Tactic.Lemma
 import Mathlib.RingTheory.PiTensorProduct

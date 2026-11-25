@@ -2,8 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaReindexing.HatMem
-import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
-import GroundTheory.HeightsAndTheta.Theta.Weil.PartialFourierAdelicPi
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianProducts.ExistsRowSec
 
 @[expose] public section

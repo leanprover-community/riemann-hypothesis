@@ -5,8 +5,6 @@ public import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddin
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

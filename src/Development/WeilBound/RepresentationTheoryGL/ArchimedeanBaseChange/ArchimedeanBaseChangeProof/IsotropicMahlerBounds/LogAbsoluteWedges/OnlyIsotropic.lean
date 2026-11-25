@@ -1,21 +1,13 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.LogAbsBasic
-public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.Etale.Weakly
-public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.TotallySplit
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.WedgeSub
-public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Algebra.Order.Chebyshev
-public import Mathlib.Analysis.Matrix.PosDef
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.OnlyIsotropic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EllipticTermOfIsotropic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SizeFinitePlaces
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaCellCovers.Mahler
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicDegreeFormula
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjugatePlacesFacts
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DegreeBoundedOfBasis

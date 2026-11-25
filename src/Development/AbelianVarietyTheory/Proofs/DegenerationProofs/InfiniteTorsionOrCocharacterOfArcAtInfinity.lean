@@ -6,23 +6,11 @@ public import Mathlib.RingTheory.PowerSeries.Order
 public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.OfDerivationFnOn
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AlgOverHomSurjective
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-public import Mathlib.Algebra.MonoidAlgebra.Basic
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.GroupTheory.MonoidLocalization.Away
-public import Mathlib.RingTheory.OreLocalization.Ring
-public import Mathlib.Algebra.MvPolynomial.Basic
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.Ideal.Quotient.Operations
-public import Mathlib.RingTheory.Localization.Away.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.LawsChart
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsMonHomExtension
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff
-public import Mathlib.Algebra.CharP.Defs
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ArcExtendsOfRegularSecondAxis
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsAffineUnitChartSmoothGroupScheme
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsArcQuotientTwoVariableCoords
@@ -30,7 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsB
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.PowerSeriesGenericRelationChain
 public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SubstTwoVariablesIdentities
-public import Mathlib.RingTheory.MvPowerSeries.Order
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.WeightedOrderSlopeComparison
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -38,23 +25,18 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -80,14 +62,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
@@ -95,7 +70,6 @@ import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsaRos
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsLeadingQuotientWeightedArcs, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsAlgHomLocalizationAwayOfRationalPoints, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsMultiplicativeGroupOpenNonvanishingPolynom, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsOneParameterSubgroupOfRationalFamily, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.InfinitePowCharEqOneOfAdditiveFamily, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.InfiniteTorsionOrCocharacterOfArcAtInfinity

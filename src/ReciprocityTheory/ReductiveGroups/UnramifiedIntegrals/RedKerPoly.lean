@@ -5,24 +5,11 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationPr
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.ExistsFinitePartOneIdeleSplitCongruenceQuotient
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedHalf
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EndoZInstance
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EisensteinRecursion
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.IsogenyFormulaInstance
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedVeluAlg
-public import Mathlib.Algebra.Field.Subfield.Defs
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Field.Subfield.Basic
-public import Mathlib.Algebra.Order.Antidiag.Prod
-public import Mathlib.Algebra.Polynomial.Coeff
-public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SemiChar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedProjA, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedProj, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedVeluFun, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedSeries, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedSqrt, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedKerPoly

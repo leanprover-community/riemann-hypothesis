@@ -2,20 +2,14 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolTSt
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DiffProd
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
-public import Mathlib.RingTheory.RamificationInertia.Inertia
-public import Mathlib.RingTheory.RamificationInertia.Ramification
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.RingTheory.Ideal.Int
-public import Mathlib.RingTheory.RamificationInertia.Basic
-public import Mathlib.Algebra.Algebra.Hom.Rat
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolTUnit
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolULeaf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUTr
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataConc
-import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolumeDeepCongruenceOfFubini, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUArith, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUTyp

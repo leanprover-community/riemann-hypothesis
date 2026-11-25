@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ScaleGenIsGen
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdLB
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBSer
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDPf
 
 @[expose] public section
 

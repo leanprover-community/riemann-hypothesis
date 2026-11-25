@@ -5,10 +5,7 @@ public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.RaisingKeepsEarlyLetters
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.TypesLELeYcondC
-public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
 import Formalism.MahlerMeasure.MahlerMeasureProofs.LevelAct
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.MulEarlyLettersHolds
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

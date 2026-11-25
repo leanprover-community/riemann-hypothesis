@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
 public import GroundTheory.AutomorphicForms.GL2.GJUnramified
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionLocal
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

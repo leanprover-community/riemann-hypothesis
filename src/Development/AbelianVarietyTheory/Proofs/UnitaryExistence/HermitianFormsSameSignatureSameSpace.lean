@@ -9,9 +9,7 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsBin
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsHermCoordOfDatum
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SignatureHermitianModelOfDatum
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.InPsiOrInPsiConjugate
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAdelicU
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmFieldAdeleSplitPlaceSupportIntegral
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegerUnitSplitPlaceConjugatePrime
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RecTExists
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
@@ -24,25 +23,19 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Conjugate
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DiagUniformiserConjTransposeInvMemUpperParahoric
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLocalComponentEigenvectorAtSplitPlaceIsoty
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitPlaceCompletionIsoPreservesValuation
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
@@ -65,27 +58,13 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
 import Development.AbelianVarietyTheory.Definitions.Foundations.WittIndexEqZeroIff
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.InverseChamberMap
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LinearIndependentE
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalRepGLExistsSatakeParameters
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PrincipalSeriesSubquotientOfCharacters
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers

@@ -1,9 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
-public import Mathlib.Algebra.Module.LinearMap.Star
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HermitianAdjointExistsUniqueOfPosDef
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemRangeAdjointOfMemSpanEvaluationValues
 import Mathlib.Tactic.Linter.HaveILetI

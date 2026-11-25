@@ -3,25 +3,18 @@ module
 public import Formalism.PeriodIntegrals.BallQuotLen
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RamificationRankSum.Points
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.PiBallFromAlt
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.GradedCoef
 public import Formalism.PeriodIntegrals.LengthPoleInLift
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.AssembleAlt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.FiltOk
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.LeOrdASmulOsK
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.Vanish
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.FinitePtsOfCurve
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.TaylorSpanGeneratorsAlt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.Column
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.TaylorHasse
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseOrderBound.CompositionalInverseSymm
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.TaylorRep
 public import Formalism.PeriodIntegrals.FiltLenF
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiltrationLength.FiltLenFMain
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SumAntidiagonalTuple
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.RestrictedDerivativeLinear
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseJacobsonPowers.SfrMulMemJHfr
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

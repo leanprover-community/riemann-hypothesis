@@ -5,7 +5,6 @@ public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.DerivedActionDiscreteSeriesProperties
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.FrechetContinuousContinuousOnOrbitHasDerivAt
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 
 -- This file was produced by scripts/clump.py from the modules listed below.

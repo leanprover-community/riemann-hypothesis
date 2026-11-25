@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGener
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitAtOfIsSplitPl
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 public import Mathlib.Data.Multiset.Functor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeltaHalfMulUnrTorus
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SatakeParametersOfTwist

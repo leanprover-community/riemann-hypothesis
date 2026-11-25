@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IteratedLiftChains
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsPowHeckeCharUnramifiedEverywhere
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharacterInfiniteOrderAtSplit
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsUnitaryOfOrder

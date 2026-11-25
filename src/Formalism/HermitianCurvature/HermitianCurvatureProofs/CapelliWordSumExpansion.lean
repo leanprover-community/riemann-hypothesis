@@ -5,8 +5,6 @@ public import Formalism.HermitianCurvature.StatementJF
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

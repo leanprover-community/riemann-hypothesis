@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriI
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TransvectionEq
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
-import Development.AbelianVarietyTheory.Statements.PrincipalLattices.FiniteDimensionalBase
 
 @[expose] public section
 

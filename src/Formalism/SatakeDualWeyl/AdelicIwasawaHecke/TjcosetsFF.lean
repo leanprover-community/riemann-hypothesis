@@ -8,7 +8,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.LinearAlgebra.Dimension.RankNullity
 
 @[expose] public section
 

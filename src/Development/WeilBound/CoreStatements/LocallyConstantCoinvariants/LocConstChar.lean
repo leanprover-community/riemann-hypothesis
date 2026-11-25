@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsClosedEmbeddingTopEmb
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGLMulRightColumnsEqZeroOfRank
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftColumnsMulVecInjectiveOfRankEqCard
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyConstantExtensionByZero
@@ -14,13 +12,9 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RankFiltr
 public import Mathlib.Topology.Algebra.Group.OpenMapping
 public import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.Separation.CompletelyRegular

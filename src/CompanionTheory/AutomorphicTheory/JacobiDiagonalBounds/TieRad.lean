@@ -3,7 +3,6 @@ module
 public import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.TieAlg
 public import Formalism.HermitianCurvature.StatementMA
 public import Formalism.HermitianCurvature.StatementTop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHat
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeCut
 

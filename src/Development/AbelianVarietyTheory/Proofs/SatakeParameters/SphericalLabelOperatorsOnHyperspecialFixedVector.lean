@@ -17,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertPlac
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralTensorAdelesEqAdelicCompletionOne
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvolutionSphericalHeckeAnti
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

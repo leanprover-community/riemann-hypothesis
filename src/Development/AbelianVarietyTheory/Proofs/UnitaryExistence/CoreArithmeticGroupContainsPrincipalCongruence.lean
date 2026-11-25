@@ -11,20 +11,16 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsInte
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RootOfUnityEqOneOfConjCongruence
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnfGroupContainsCongruenceUptoRootsOfUnity
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
-public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryExistsWithPrescribedParts
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeRationalVectorsInAdelicTranslate
 public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.PicardGroup
 

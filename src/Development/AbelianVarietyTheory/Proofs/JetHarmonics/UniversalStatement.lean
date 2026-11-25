@@ -4,11 +4,9 @@ public import Mathlib.RingTheory.Ideal.Maps
 public import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SaturationChartsHolds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.DualLiftCompJetSub
-import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.LieEig
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

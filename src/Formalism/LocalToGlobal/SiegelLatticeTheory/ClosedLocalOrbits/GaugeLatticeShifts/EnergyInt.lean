@@ -6,9 +6,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.Concr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LintegralFinProd
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuDecayAll
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WuDecayPf
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.WuDecay
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
 
 -- This file was produced by scripts/clump.py from the modules listed below.

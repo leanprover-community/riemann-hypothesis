@@ -25,8 +25,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsTorsion
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GenericPartDenseProOpen
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionDivision
-import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ObjMapIdCompCancel

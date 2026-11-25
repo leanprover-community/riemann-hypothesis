@@ -2,11 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsChartIff
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFrameChangeIntegralInvertibleMatrix
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroup
 public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

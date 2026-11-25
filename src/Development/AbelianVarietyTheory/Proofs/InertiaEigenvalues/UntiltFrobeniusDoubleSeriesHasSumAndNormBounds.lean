@@ -3,9 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ImportsAlt
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltUntiltToComplexPAdicBasicLaws
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UltrametricNormHasSumSubFinsetSumLe
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UntiltFrobeniusLaurentSeriesHasSumBoundFrobenius
 

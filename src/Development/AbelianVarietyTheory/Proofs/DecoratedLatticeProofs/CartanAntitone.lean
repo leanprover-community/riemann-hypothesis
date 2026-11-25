@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
 public import Mathlib.Data.Matrix.PEquiv
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ValuationDivZpowOrd
-import Mathlib.Data.Fin.Tuple.Sort
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.VolumeFlatSection
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCoType

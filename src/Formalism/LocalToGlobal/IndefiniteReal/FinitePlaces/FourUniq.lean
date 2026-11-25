@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourModel
 public import Mathlib.Algebra.Module.Pi
-public import Mathlib.GroupTheory.QuotientGroup.Defs
 public import Mathlib.LinearAlgebra.Span.Defs
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal

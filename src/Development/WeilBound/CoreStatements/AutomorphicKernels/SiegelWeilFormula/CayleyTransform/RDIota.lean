@@ -2,8 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.CayleyTransform.DZTranspose
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.CayleyTransform.CompFinFinOne
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -5,21 +5,18 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsRegularRingOfSmooth
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndKerBaseChangeOfForallResidueField
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsRegularOfSupportDimQuotientAddLengthLe
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RingKrullDimOfEtaleMvPolynomial
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Depth.Rees
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.RingTheory.KrullDimension.Field
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
 
 @[expose] public section
 

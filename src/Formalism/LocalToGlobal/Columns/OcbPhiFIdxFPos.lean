@@ -2,10 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.Columns.OcbBEntEntB
 public import Formalism.LocalToGlobal.Columns.ChainOneB
-import Formalism.LocalToGlobal.Columns.ChainInst
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.Columns.ChainInstS
 
 @[expose] public section

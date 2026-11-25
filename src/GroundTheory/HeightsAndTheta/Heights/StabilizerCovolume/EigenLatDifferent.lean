@@ -4,7 +4,6 @@ public import Mathlib.NumberTheory.NumberField.CMField
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.EqZeroOfIsIsoSub
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Mathlib.RingTheory.DedekindDomain.Different
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.AffineMonoid.Basic

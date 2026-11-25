@@ -8,7 +8,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTra
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictNormalCrossingsBlowup
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MarkedBlowupSequence.MarkedSequenceTransforms
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossingsWithoutUnitIdeals
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.KrullDimClosedSubset
 import Std.Tactic.BVDecide.Normalize.Bool
 
 -- This file was produced by scripts/clump.py from the modules listed below.

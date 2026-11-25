@@ -11,14 +11,12 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PairAtTAdjCpt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumPairAtStarMul
 public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinuousOnZero
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSCoordAdj
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSIpInt
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.ZeroNotMemTsupportPsiL, Formalism.HermitianCurvature.HermitianCurvatureProofs.NormCDZPsiCLe, Formalism.HermitianCurvature.HermitianCurvatureProofs.HsRealSmulRight, Formalism.HermitianCurvature.HermitianCurvatureProofs.CsliceContDiffAt, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSPAdj

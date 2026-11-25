@@ -2,29 +2,22 @@ module
 
 public import Formalism.SharpRestriction.ParConsts
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsPlaceCofactorValuationLowerBound
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.WeilJacquetShalikaLaw
 public import Formalism.LocalRingCardinality.Lemmas
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ModelsOK
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
 public import Formalism.SharpRestriction.Divisibility.ProductZerothFirstParts
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
-public import Mathlib.Data.Fin.Tuple.Sort
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EnInParamKProd
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.SubstitutionOfVariables
-public import Formalism.LocalRingCardinality.DataExtra
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitValuationBounds.AdmissibleOfJetBounds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitValuationBounds.HidaSetting
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitValuationBounds.LossLe
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitValuationBounds.SumWcLe
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitValuationBounds.SummableTruncatedGeometric
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLetterCoordinatesSeriesOnePlace
-public import Formalism.SharpRestriction.GrowthBounds.IsResidueClassZero
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ServedPrimeProperties
-public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-public import Formalism.LocalRingCardinality.DataForced
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PrimeOfLiesOver
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasPartAnd
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CapLeWidth
@@ -32,7 +25,6 @@ public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.LocalBou
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AllPlacesOfRestrictions
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HasSubstCoordZA
 import Std.Tactic.BVDecide.Normalize.BitVec
 
 -- This file was produced by scripts/clump.py from the modules listed below.

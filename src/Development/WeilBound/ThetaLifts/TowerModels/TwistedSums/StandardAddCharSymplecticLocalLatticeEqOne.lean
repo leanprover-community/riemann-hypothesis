@@ -1,13 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddCharTrivialIntegralFiniteAdeleMul
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -40,10 +37,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style

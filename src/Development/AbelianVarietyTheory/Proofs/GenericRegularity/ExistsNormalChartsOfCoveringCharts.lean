@@ -2,7 +2,6 @@ module
 
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.EqZeroOfForallLTensorEqZero
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Mathlib.RingTheory.Valuation.LocalSubring
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.SCharts
@@ -12,8 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsMu
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.InjectiveAlgebraMapOfDvrOfIsIntegral
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NaturalRuleValueBaseChangeOfIsReduced
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PicardGroup

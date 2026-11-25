@@ -13,9 +13,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIs
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
 import Formalism.UnipotentAdelicQuotients.SWXSDefs
-public import Mathlib.Analysis.Analytic.Uniqueness
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
 @[expose] public section

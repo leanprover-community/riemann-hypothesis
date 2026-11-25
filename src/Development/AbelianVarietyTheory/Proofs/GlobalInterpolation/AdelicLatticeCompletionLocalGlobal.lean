@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SplittingProjection
-public import Formalism.SatakeDualWeyl.StatementC
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsGeneratorsMemCompletedLatticeIff
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitB
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob

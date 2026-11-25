@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbExactDiv
 import Mathlib.Algebra.Order.Sub.Prod
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import Mathlib.RingTheory.MvPolynomial.Ideal
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

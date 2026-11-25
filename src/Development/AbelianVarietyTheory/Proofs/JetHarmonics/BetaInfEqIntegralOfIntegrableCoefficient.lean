@@ -4,14 +4,10 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFactor
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.BesselUnitaryEquivHolds
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointnessPolynomiallyBounded
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
@@ -26,7 +22,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core

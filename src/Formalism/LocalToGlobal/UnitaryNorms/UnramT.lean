@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.ValuationDetBasisChange
 public import Formalism.LocalToGlobal.UnitaryNorms.MemFIffReal
 public import Formalism.LocalToGlobal.UnitaryNorms.RamificationIdxEqOneOfNotDvd
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

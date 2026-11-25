@@ -2,8 +2,6 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianLatticeMaps
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MahlerCompactness
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.IntegralModuleBases.DetToMatrixSq
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 
 @[expose] public section
 

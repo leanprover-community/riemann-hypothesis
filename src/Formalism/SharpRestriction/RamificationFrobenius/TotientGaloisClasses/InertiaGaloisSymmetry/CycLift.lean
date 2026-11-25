@@ -3,7 +3,6 @@ module
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.Frobenius
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
-import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

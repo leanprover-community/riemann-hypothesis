@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.RealIwasawaSubgroups
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.CategoryTheory.Countable
@@ -10,7 +8,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section

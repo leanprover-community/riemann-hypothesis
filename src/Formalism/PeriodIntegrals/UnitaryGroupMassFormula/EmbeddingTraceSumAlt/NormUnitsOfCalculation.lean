@@ -4,7 +4,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardCharacterTrace.
 public import Formalism.PeriodIntegrals.ScPsiExists
 public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Analysis.Complex.Circle
 
 @[expose] public section
 

@@ -8,8 +8,6 @@ public import Mathlib.Analysis.Complex.Schwarz
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.Calculus.FDeriv.Add
-public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 @[expose] public section
 

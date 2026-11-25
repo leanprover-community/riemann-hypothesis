@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FrameMatrixAdjointJointAction
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FrameMatrixAdjointSupportedOfConjHalf
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelFiniteThetaDatumNeZeroFrameAdjointSpec
@@ -56,7 +55,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfin
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemLevelOfLevelDatumNeZeroTranslate, Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemLevelOfLevelDatumNeZeroTranslateStatement

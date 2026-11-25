@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowNorm
-public import Mathlib.FieldTheory.Galois.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisLinearDisjoint
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LeKurOfNorm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BcrisEqAcrisLocalizationPeriodT

@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsGenOfIn
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsHeckeQuotientTriple
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LamIsoOfPairings
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.SectionsHaveFiniteDimension
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsPicardGroup
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DenseTorsionAndEqOne
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsClosedTriv
@@ -18,8 +17,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KTrivExternalTensorPowerLineBundle
 public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LocGenOfTrivial
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

@@ -3,18 +3,11 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.BoxVolumes.MeasureBoxGLLe
 public import GroundTheory.AutomorphicForms.ReductionSiegel
 public import GroundTheory.AutomorphicForms.ReductionLocalVolume
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Fintype.Prod
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Data.Fintype.BigOperators
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.L2DecayOfCountEscape
-public import GroundTheory.GlobalFields.Adele.Topology
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
 public import GroundTheory.AutomorphicForms.Reduction
 import GroundTheory.AutomorphicForms.RealIwasawaIntegration
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.AutomorphicForms.ReductionFinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.BoxVolumes.MeasureBoxRingEquivLe, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.BoxVolumes.SumRangeSuccMulSubPred, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.BoxVolumes.ExistsMeasureLeProd

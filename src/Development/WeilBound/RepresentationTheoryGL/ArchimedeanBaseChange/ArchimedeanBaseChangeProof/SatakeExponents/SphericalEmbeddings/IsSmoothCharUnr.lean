@@ -12,7 +12,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsE
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.LUnlinkedIrrOfSeg
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.Outright
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviEmbMulSingle
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.SegmentJacquetSubquotients.SegmentRepresentation
 

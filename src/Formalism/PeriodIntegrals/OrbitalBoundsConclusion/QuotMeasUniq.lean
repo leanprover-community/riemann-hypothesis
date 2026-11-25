@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuotientMeasureUniqueness.QmuWeight
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuotientMeasureUniqueness.QLiftIsMulLeftInvariant
 public import Formalism.PeriodIntegrals.WeilQuotMeas
-public import Mathlib.MeasureTheory.Group.LIntegral
 public import Mathlib.MeasureTheory.Measure.Haar.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 import Mathlib.Tactic.Linter.Style

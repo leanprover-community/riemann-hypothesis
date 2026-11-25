@@ -45,12 +45,8 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalVolumeLift
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalZero
-import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-import Development.AbelianVarietyTheory.Definitions.Foundations.WittIndexEqZeroIff
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 @[expose] public section
 

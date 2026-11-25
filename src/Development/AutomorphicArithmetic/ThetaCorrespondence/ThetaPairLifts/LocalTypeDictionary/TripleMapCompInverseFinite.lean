@@ -20,7 +20,6 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -49,23 +48,13 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

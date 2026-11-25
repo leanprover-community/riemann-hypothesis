@@ -7,8 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StTraceHermNon
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StDualLatticeMultiple
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StCoordLatticeFullRank
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsDoubleCoset
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsHaarParabolicCoordinates
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsLineStabHaar
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsArchUnimodular
@@ -17,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Statements
 public import GroundTheory.AutomorphicForms.HaarSK
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.SecondCountableTopologyArchUnitary
 public import Mathlib.Topology.Algebra.Group.Units
-public import Mathlib.RingTheory.Localization.Module
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Imports
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CoerciveOfPositiveDefinite
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StMajorantTransport

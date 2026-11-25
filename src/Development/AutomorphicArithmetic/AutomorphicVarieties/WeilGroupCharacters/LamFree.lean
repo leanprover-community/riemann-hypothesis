@@ -1,22 +1,15 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.Inertia
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Algebra.Group.Subgroup.Ker
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.LocallyConstant.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoEvLow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoMvps
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
 public import Mathlib.RingTheory.Teichmuller
-public import Mathlib.RingTheory.Perfection
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Connected.Separation
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamFactor, Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamZl, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LocallyConstantOfOpenSet, Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamFree

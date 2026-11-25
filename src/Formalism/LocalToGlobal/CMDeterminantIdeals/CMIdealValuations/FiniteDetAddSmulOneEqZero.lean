@@ -6,7 +6,6 @@ import Mathlib.Tactic.Linter.Style
 public import Mathlib.Topology.Algebra.MvPolynomial
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

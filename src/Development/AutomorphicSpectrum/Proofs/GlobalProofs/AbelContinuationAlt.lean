@@ -5,19 +5,12 @@ public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.Analysis.Complex.Convex
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PartialSum
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Analytic.Uniqueness
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Congr
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConeSeriesDifferentiableLeftStrip
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PeriodicWeightBounded
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConeSeriesSummableRightHalfPlane
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.WeightSumAsFiniteDifferences
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
-import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteDifferenceSummable
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GlobalProofs.RealDifferenceConeBound, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConeTilingBySignRegions, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConeValuesNegativeIntegerRational, Development.AutomorphicSpectrum.Proofs.GlobalProofs.SummationDecompositionFiniteDifferences, Development.AutomorphicSpectrum.Proofs.GlobalProofs.TendstoTailInfiniteProductOne, Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuationAlt

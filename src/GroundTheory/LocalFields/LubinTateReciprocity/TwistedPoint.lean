@@ -5,13 +5,8 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import GroundTheory.LocalFields.FormalGroups.FrobeniusTwist
 public import GroundTheory.LocalFields.LubinTateReciprocity.RootEval
 public import GroundTheory.LocalFields.LubinTateTorsion
-import GroundTheory.LocalFields.FormalGroups.Truncation
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.MvPowerSeries.Expand
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic

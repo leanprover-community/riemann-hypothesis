@@ -10,12 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMem
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ResidueCharIsOfFinOrder
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaKernelFiniteAdelicLawsStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IpMSelfEqZero
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
-import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 

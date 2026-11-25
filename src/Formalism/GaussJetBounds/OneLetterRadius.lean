@@ -3,16 +3,8 @@ module
 public import Formalism.GaussJetBounds.GenLogInverse
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.HomWProd
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.Data.Nat.PadicValNat
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
-public import Mathlib.Analysis.Normed.Ring.Ultra
-public import Mathlib.Analysis.Normed.Group.Ultra
-public import Mathlib.Data.Nat.Factorization.Basic
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
-public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
 public import Mathlib.Data.Nat.Choose.Lucas
 public import Mathlib.Data.Nat.Prime.Factorial
 public import Formalism.GaussJetBounds.Statement
@@ -20,7 +12,6 @@ public import Formalism.GaussJetBounds.GaussJetProofs.AsmOne
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffEvenDerivativeEqZero
 public import Formalism.GaussJetBounds.GaussJetProofs.OneLetterRadiusIdentity
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.FormalGroupLog.Statement
 import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 
 -- This file was produced by scripts/clump.py from the modules listed below.

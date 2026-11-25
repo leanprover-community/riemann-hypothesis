@@ -6,7 +6,6 @@ public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
 public import Mathlib.RingTheory.HopfAlgebra.Convolution
 public import Mathlib.AlgebraicGeometry.Group.Affine
 import Mathlib.Tactic.Linter.HaveILetI
-public import Mathlib.Algebra.Category.CommHopfAlgCat
 public import Mathlib.RingTheory.LocalRing.Module
 public import Mathlib.RingTheory.Norm.Basic
 

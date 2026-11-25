@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

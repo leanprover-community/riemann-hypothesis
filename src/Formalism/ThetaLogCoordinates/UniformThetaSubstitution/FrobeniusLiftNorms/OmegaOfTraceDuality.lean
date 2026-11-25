@@ -3,9 +3,7 @@ module
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.ThmSUniform
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ConstantCoeffFirstTwoOfThree
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.NormLiftLeOne
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ScalingSwapLemmas
 
 @[expose] public section

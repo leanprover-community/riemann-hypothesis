@@ -10,7 +10,6 @@ public import Formalism.LocalToGlobal.JointCharacters.SameChr
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.EMtLevel
 public import Formalism.LocalToGlobal.UnitaryNorms.CharGal
 public import Formalism.LocalToGlobal.UnitaryNorms.JointCut
-public import Formalism.LocalToGlobal.UnitaryNorms.LeastSplitAuxiliaryPrimeThetaChainSpec
 
 @[expose] public section
 

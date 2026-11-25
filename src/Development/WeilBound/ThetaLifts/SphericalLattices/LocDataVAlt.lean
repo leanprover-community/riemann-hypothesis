@@ -25,7 +25,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Schroedinger
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchroedingerMemSchwartzBruhatFinitePlace
 public import Development.WeilBound.ThetaLifts.SphericalLattices.HoweDefs
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsCompactIsOpenUnitsAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SelfDualLocalSubgroupFirstProjEqAnnihilator
 

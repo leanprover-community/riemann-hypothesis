@@ -3,21 +3,12 @@ module
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Data.Matrix.Mul
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemRiemannRochSpaceIffRegularAtEverywhere
-public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.GapAbsOf
 public import Mathlib.LinearAlgebra.Matrix.Dual
 public import Mathlib.FieldTheory.Finiteness
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.Algebra.Module.Prod
-public import Mathlib.Algebra.Module.Submodule.Range
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Mathlib.LinearAlgebra.Matrix.DotProduct
-public import Mathlib.Algebra.Algebra.Basic
-public import Mathlib.Algebra.Module.LinearMap.Star
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Basic.Complex.BigOperators
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.TjcosetsFF
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ExpNegGlue
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.TwistedSlicesSquareIntegrable
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.SqIntCritOf
 import Std.Tactic.BVDecide.Normalize.Prop

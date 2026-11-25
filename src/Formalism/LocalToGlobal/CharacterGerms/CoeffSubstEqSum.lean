@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalGroupAction
 public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
 public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Mathlib.Algebra.Order.Floor.Semiring
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 

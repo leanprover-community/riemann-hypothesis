@@ -2,8 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicCoordsOfGenericPoint
 public import Development.WeilBound.CoreStatements.VolumeEquality.CoverRootsSch
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic

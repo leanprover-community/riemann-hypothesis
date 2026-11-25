@@ -4,9 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormO
 public import Formalism.LocalToGlobal.Columns.Adelic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValDetSubOneLt
 public import Formalism.LocalToGlobal.Columns.RecLevelTop
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReferenceCharactersFactorTame
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemberLevelPrimeNotMemUnderLevelPrimes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PointDeterminantEqNormOneClassOfLevel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistPrimesReferenceTupleEqEmpty
@@ -14,12 +11,10 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Formalism.LocalToGlobal.HermitianForms.ExtraSym
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RelDetAdelicOfPinned
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DetMulConjDet
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -54,8 +49,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop

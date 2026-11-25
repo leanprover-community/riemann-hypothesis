@@ -3,12 +3,9 @@ module
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.NormGroups
 public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
 public import GroundTheory.LocalFields.LocalReciprocityFinite
-import GroundTheory.LocalFields.AbstractLocalReciprocity.Isomorphism
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.InductiveDimension.Functions
-import Mathlib.Topology.Separation.Connected
 import GroundTheory.LocalFields.AbstractLocalReciprocity.Functoriality
 
 -- This file was produced by scripts/clump.py from the modules listed below.

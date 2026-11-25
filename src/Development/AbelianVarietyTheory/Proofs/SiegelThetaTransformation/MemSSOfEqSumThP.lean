@@ -5,9 +5,7 @@ public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsMem
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsExpansionOfEqSumThFr
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsExpansionOfRowHighest
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.NotIsIsoOfDefinite
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaCharacteristicsIffTestFunctionThetaSeries
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 @[expose] public section

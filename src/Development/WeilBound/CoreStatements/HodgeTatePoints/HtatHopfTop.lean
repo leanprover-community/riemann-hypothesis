@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenomi
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
 public import Mathlib.RingTheory.Henselian
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfFin
-public import Mathlib.RingTheory.Flat.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenselianFlatOverPrime
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBaseChangeGroup
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtBaseChangeStatement
@@ -55,10 +54,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 

@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.ExStabTop
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.ExStabSt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoClose
-public import Formalism.SatakeDualWeyl.Statement
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.HformEntry
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.InclRAlgebraMap
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.LocalSum
@@ -13,7 +12,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianDiagona
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Mathlib.Tactic.Linter.Style
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.UnitChoice
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AwayActions.SigmaSigma
 import Std.Tactic.BVDecide.Normalize.Prop
 

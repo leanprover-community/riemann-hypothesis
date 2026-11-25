@@ -4,13 +4,11 @@ module
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdArith
 public import Mathlib.LinearAlgebra.Lagrange
-public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Mathlib.NumberTheory.Cyclotomic.Basic
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
-public import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DecompTypeI
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
@@ -19,7 +17,6 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Order.CompletePartialOrder
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdBound, Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdDiff, Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DvdDiscrOfInertia

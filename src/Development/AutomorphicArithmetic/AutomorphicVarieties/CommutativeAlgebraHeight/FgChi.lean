@@ -13,7 +13,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.HomTwo
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Std.Tactic.BVDecide.Normalize.Prop

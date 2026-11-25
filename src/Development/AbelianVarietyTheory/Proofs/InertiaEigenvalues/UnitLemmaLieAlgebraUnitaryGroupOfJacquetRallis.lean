@@ -4,17 +4,13 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExt
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteMaximalSpectrumOfFiniteOfIsLocalRing
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdjoinPrimitiveRootEqIntegersUnramifiedQuadratic
-public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvolutionResiduePowAndRootsOfUnity
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralIntegersUnramifiedInvolutionExt
-public import Mathlib.RingTheory.Henselian
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MonicDvdXPowCardSubOneExistsRoot
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocalRingOfIdem
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardResidueFieldAdjoinUnitaryProd
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyOverExtIntegralReductionPow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaGramDetInvAlgBaseChangeUnramifiedOdd
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnramifiedOddDegreeQuadraticLocalExt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeparableCharpolyInvAlgBaseChangeUnramified
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitLemmaResiduallyUnipotentViaCayley
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedBaseChangeLatticeCountEq
@@ -23,31 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Involut
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvolutiveAlgebraProductIdentity
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.KappaSumZeroAndStableSumMulZeroOfNotIntegral
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
-public import Mathlib.Data.Int.Interval
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Order.Filter.AtTopBot.Archimedean
-public import Mathlib.Order.Filter.AtTopBot.Field
-public import Mathlib.Topology.Algebra.Monoid
-public import Mathlib.Topology.Algebra.Order.Field
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Data.Finset.Card
-public import Mathlib.Data.Fintype.EquivFin
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosure
-public import Mathlib.RingTheory.Artinian.Ring
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdjoinEqTopAndIsReducedOfCharpolySeparable
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Algebra.Group.Int.Defs
-public import Mathlib.Algebra.Group.Pi.Hom
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Algebra.Order.Group.Unbundled.Abs
-public import Mathlib.Tactic.Continuity
-public import Mathlib.Algebra.Order.Group.Abs
-public import Mathlib.Algebra.Ring.Defs
-public import Mathlib.Algebra.Ring.Int.Defs
-public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
-public import Mathlib.Algebra.Group.Subgroup.Finite
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FullLatticeSandwichBetweenIntegralElements
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualStableLatticeUnitOrbitsFinite
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
@@ -74,11 +45,8 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -86,7 +54,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -104,13 +71,10 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitLemmaUnitaryGroupEveryResidueOfLie
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticeCountAndGramDetSignNormClass
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValsAtApply
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TorusSubmoduleMulLeftImageMemSelfDualStableLatti
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnramifiedInvolutionFieldEmbedding, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitLemmaLocalOddResidueOfLieAlgebra, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitLemmaUnitaryGroupOddResidueOfLie, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteAlgebraInvolutionRhoPowEqCardBox, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TendstoRatioBoxCountsProdOne, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsRepresentativesTwoElementOrbitsInvolution, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSurjectiveValuationIsIntegralIffNonneg, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralIffForallMaximalSpectrumResidue, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIntegralResidueComapInvolutionIff, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsReducedOfLieReg, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NotIsIntegralResidueInvSmallInteger, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TorusInvMulPowValuationNonnegIff, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitPrescribedResidueReducedFiniteAlgebra, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZValuationsAtIndicesTorusEqOneIff, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZValuationsAtIndicesTorusSurjective, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TorusModIntegralUnitsStructureAndIntegrality, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TorusOrbitLatticeCountBoundedByRho, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UUEqSumOverTorusOrbits, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryLatticeCountRatioTendsto, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitLemmaLieAlgebraUnitaryGroupOfJacquetRallis

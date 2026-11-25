@@ -8,9 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Set
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumTransportSourceRationalIsometry
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WittDecompositionMixedCoordsRankZero
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WittHyperbolicRankZeroProjMulEmb
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates
 
 @[expose] public section
 

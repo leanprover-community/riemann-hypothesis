@@ -3,16 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsIntOv
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardCosetsEqSubspacesKernelResidue
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.LinearAlgebra.Matrix.ToLin
-public import Formalism.LocalRingCardinality.DataHost
 public import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankReductionRangeAddCorank
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLatticeIffIntegralMatrixSplitChart
-public import Mathlib.LinearAlgebra.Matrix.Rank
-public import Mathlib.FieldTheory.Finiteness
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Formalism.LocalToGlobal.Columns.HeckeSp
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
@@ -26,11 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeElem
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHyperspecialIffGIntOfSuppAtSplitStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitChartUniformiserAndResidueCardStatement
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,12 +6,9 @@ public import Mathlib.Data.ZMod.Basic
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

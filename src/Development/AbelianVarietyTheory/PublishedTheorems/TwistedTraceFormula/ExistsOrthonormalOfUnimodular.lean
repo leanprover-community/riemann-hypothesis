@@ -9,7 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsQuatern
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUnitValuedTernaryLtOne
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsZeroFiveOfValuation
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
-import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsOrthogonalBasisDotProductApplyEq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

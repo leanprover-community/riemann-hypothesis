@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftCapelliO
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyContinuousOn
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar

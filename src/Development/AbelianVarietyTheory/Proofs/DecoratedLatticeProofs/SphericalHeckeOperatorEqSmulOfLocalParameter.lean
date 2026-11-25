@@ -3,13 +3,11 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnitarySatakeTransformEqOfBaseChangeSatakeParame
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BcParamEqOfSatUEq
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeB
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeC
 import Mathlib.Tactic.Linter.Style

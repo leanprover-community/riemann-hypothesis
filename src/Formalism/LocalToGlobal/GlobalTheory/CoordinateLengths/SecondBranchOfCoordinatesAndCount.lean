@@ -6,8 +6,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.SecondBranchInclLengthOfL
 public import Formalism.SharpRestriction.GlobalSchurBounds.LemmaBSecondBranchOfLength
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.PowSmulLatticeLeWeightLatticeTop
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkTied
-public import Formalism.LocalToGlobal.GroupLattices.Joint0
-import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

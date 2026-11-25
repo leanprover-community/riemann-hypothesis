@@ -7,16 +7,7 @@ public import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.In
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CommuteImageAbelianByPrimePowerOfNormalCentral
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCharacterEigenvectorOfCommutingRepresentat
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsAbelianByPrimePowerGroupSubgroup
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.GroupTheory.Perm.Cycle.Basic
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
 public import Mathlib.LinearAlgebra.Eigenspace.Semisimple
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
@@ -33,14 +24,11 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RepresentationTheory.Maschke
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.VirtualCharactersMulComapConjIndLinear

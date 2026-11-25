@@ -1,12 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
-public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Algebra.Module.Submodule.Defs
-public import Mathlib.Data.Nat.Factorial.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsFiniteIwahoriDoubleCosetRepresentatives
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsSectionAutomorphicSpaceWithPrescribedValue
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.MemValInOfInvariantAndValuesMemPow

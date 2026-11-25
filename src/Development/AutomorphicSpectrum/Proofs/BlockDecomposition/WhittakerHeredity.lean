@@ -13,10 +13,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCell
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetTensorProductEquiv
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.AutomorphicForms.InductionParabolicGroups
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdjacentDescentOrOpenCell, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BruhatCellHeightStratification, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerCharacterNontrivialOnCell, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InducedFunctionOpenCellModuloWhittaker, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerHeredity

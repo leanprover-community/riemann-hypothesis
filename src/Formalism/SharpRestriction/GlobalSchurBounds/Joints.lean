@@ -9,7 +9,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.ZetaZeroFreeRegion
 public import Development.AutomorphicArithmetic.PrimitiveCosets.RecH
 public import Development.AutomorphicArithmetic.ConductorsKronecker.dataField
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.RamDiscr
-import Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij
 public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Mathlib.Analysis.Calculus.Deriv.Star

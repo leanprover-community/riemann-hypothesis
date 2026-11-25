@@ -2,17 +2,10 @@ module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.BaseEx
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
-public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ComplexPadicNormKappaSplitPrime
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Determinant
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementReBase
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementCurve
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.HalfTorsionNotMemCmLattice
@@ -24,22 +17,17 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.KappaSelfDualFourthPowerLattice
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.GroupTheory.Nilpotent
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -56,14 +44,9 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
@@ -72,18 +55,9 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
 import Mathlib.Tactic.TypeStar
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.Th0CharMulOpUTh0HalfPeriodEq
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThIndep
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.FinitelyGeneratedModPow
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlock
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.StdDataCmProof
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
-import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExists
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

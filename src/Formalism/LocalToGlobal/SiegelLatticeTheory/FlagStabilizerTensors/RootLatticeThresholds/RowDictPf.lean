@@ -16,7 +16,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
 import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Tactic.TypeStar
 import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
 

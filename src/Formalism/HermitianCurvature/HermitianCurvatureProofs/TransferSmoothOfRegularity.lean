@@ -1,15 +1,11 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutRegFF
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutMP2
 public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapAdInv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBesselEigen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGraded
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGradedRegFFM
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvariantOperatorUnderJacquet
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutRegFFName, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSDistEigen, Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferSmoothOfRegularity

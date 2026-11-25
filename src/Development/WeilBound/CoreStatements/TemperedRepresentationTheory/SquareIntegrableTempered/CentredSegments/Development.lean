@@ -1,19 +1,10 @@
 module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CasselmanNecTemp
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
-public import Mathlib.Basic.Real.Basic
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitarisableSegmentTwistPrecedesAddOneLe
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CentredSegments.IrreducibleUnif
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
-public import Mathlib.NumberTheory.LocalField.Basic
-public import Mathlib.RepresentationTheory.Irreducible
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.StandardFunctorsFiniteLength
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorJacquetEigenLeft
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorJacquetEigenRight
@@ -25,23 +16,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Congruen
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DoubleCosetVolumeFormula
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixCoefficientHeckeDecay
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIrreducibleSubquotient
-public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Analysis.Normed.Ring.InfiniteSum
-public import Mathlib.Analysis.SpecificLimits.Basic
 
 section
 @[expose] public section

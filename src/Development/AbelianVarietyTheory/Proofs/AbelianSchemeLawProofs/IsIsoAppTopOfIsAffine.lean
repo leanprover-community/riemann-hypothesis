@@ -6,9 +6,7 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.E
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsAppTopEqOfEffectiveEpi
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoAppTopOfIsPullbackOfSurjective
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.Morphisms.Descent
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.AlgebraicGeometry.QuasiAffine
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.RingTheory.Etale.Weakly

@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NotMem
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmVacuumEqSplitFacSmulSum
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

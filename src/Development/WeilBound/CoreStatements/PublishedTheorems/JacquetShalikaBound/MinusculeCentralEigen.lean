@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShal
 import GroundTheory.AutomorphicForms.HaarCosets
 public import GroundTheory.AutomorphicForms.MacdonaldHecke
 public import GroundTheory.AutomorphicForms.MacdonaldWhittakerHecke
-import GroundTheory.LocalFields.LocalFourierHaar
 
 @[expose] public section
 

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NormOneAtOne
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualSplitComponentIsLatticeStabilizerEq
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,7 +3,6 @@ module
 public import Formalism.UnipotentAdelicQuotients.ThmBInHecke
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

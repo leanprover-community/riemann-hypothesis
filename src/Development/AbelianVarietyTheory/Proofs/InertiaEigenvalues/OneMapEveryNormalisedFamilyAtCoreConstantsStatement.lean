@@ -25,9 +25,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PureTensorOInjectiv
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaKernelOneClassEqClassicalShortSeries
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VPNeZeroCore
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VecFockCore
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsRootNotMem
 

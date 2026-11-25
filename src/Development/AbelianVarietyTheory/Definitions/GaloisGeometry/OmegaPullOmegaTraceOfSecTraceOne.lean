@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Surjec
 public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSecImageNonzeroLocus
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.OmegaPullId
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

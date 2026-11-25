@@ -4,9 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeightLawGoodOfFieldEmbedding
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
 import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

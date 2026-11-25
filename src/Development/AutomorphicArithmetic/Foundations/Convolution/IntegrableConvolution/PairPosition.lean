@@ -14,8 +14,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Integrab
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.ThickFrames
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.ArchBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.LactCv
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.PositionOf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.MatchInf, Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.CvPowers, Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.LactGen, Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.LactTens, Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.WordTens, Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.PairPosition

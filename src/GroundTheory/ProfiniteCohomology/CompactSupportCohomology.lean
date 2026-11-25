@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConeMap
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomologyMapPiLiftPiHomologyIsoHom
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
-import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 @[expose] public section
 

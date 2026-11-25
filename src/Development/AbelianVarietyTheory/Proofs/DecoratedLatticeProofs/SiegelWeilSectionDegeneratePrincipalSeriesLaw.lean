@@ -6,9 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.Integra
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SkewGramHalfModule
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MixedModelFormulasWittSourceProofStatement
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

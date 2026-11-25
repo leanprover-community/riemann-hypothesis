@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.ProductThetaMem
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.HasSumLocallyUniformlyWeierstrassZetaExcept
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralDensEqZero
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.Analysis.Calculus.Deriv.Pi
 import Mathlib.NumberTheory.Height.NumberField
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -39,7 +39,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
 import Formalism.LocalToGlobal.IndefiniteReal.RecTie
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar

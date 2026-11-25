@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsQuasiFam
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaTensorRuleOrthogonalSumSourceStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaTensorRuleTargetOrthogonalSumStatement
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilRepSourceLineEqOppositeTargetLine, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastSeeSawThetaIdentity

@@ -5,16 +5,12 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawaB
 public import Formalism.SatakeDualWeyl.StatementF
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryDoubleCosetOfGLintDoubleCoset
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeComb
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertPlaceHeckeDoubleCosetsInverseRepsLabel
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryMemIntegralUnitaryDoubleCosetOfGLnDoubleC
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawa
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeB
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.UniformizerPowerTorusMemNormalUnitarySubgroup, Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormalSubgroupContainingHyperspecialEqTopUnramif

@@ -2,7 +2,6 @@ module
 
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
-public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 @[expose] public section

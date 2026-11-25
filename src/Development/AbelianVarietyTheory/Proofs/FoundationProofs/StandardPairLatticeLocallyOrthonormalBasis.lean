@@ -3,21 +3,14 @@ module
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsCongrIffTraceFormsIsometricCm
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
-public import Mathlib.Algebra.Algebra.Basic
-public import Mathlib.NumberTheory.Padics.PadicNorm
-public import Mathlib.Algebra.Order.Archimedean.Basic
-public import Mathlib.LinearAlgebra.BilinearMap
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeCharacterTrivialNearOne
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm

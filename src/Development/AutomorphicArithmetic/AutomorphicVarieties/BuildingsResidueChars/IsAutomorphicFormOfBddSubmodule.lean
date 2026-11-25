@@ -33,7 +33,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Finiteness.Lattice
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
@@ -60,12 +59,9 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Gl2LocalToAdelicEmbedding
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsConstAlongSingleton

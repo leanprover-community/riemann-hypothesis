@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwoChartAtlas.TwoChartSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLawPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullFEPf
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.AddOfPtPt
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.CanonGaugeIndependenceAll
@@ -17,11 +16,8 @@ public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.RosatiCu
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ToJetOneEqSum
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.TopLePreimageWchart
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ValSerGermFnVal
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ActStOf, Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExUniqueSer, Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.RosatiGenOneMulStar, Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.RosIdSt

@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictAll
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictGen
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictLat
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 

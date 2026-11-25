@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Mathlib.Analysis.Calculus.SmoothSeries
 public import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 

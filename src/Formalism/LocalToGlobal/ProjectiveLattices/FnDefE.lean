@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Formalism.LocalToGlobal.ProjectiveLattices.SupPTGePf
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegLaw
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MeasurableIndicatorOfContOn
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
 

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 import Mathlib.Tactic.Lemma
 
 @[expose] public section

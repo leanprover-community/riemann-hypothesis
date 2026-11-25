@@ -12,7 +12,6 @@ import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.GaloisValuations.GlobalA
 public import ReciprocityTheory.GaloisValuations.GlobalB
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
-public import Mathlib.RingTheory.LocalRing.LocalSubring
 
 @[expose] public section
 

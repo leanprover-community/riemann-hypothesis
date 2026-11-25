@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 public import Mathlib.RingTheory.Filtration
 public import Formalism.EisensteinCokernelLengths.RationalTailBound
 public import Mathlib.Basic.ENNReal.Real
-public import Formalism.GaussValuationBounds.GaussUnit
 public import Mathlib.Basic.ENNReal.Operations
 public import Formalism.DistinguishedUnitIdeals.Statement
 public import Formalism.DistinguishedUnitIdeals.LemmaCFull
@@ -20,8 +19,6 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
-import Formalism.GaussValuationBounds.Statement
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.PowerSeries.Ideal
 import Mathlib.Tactic.Linter.HaveILetI

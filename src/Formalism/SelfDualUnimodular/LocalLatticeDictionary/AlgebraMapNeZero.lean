@@ -1,13 +1,11 @@
 module
 
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapNeZeroOfMemHcompl
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.ExistsIsomFrame
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.StGenusOf
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.GmapLocEqOfFrame
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LatDictZAbs
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LatDictZSt
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SelfDualUnimodular.LocalLatticeDictionary.UnimodOfSelfDual, Formalism.SelfDualUnimodular.LocalLatticeDictionary.AlgebraMapNeZero

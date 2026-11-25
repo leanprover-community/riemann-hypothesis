@@ -3,9 +3,7 @@ module
 public import Mathlib.Algebra.MvPolynomial.Basic
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.CapelliMain
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.CapelliDefs
 public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.ShiftOf
@@ -13,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCo
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.InfinitesimalCharacterPullback.HasInfCharPullSub
 

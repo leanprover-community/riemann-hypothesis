@@ -2,59 +2,14 @@ module
 
 public import GroundTheory.AutomorphicForms.GKModules.Casimir
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
-public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
-public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
-public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
-public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.Analysis.Normed.Operator.Compact.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import GroundTheory.AutomorphicForms.L2LocalComponents.CuspSmooth
 public import GroundTheory.AutomorphicForms.L2LocalComponents.Summand
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Analysis.Normed.Group.Bounded
-public import Mathlib.Analysis.Normed.Ring.Basic
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.Analysis.InnerProductSpace.Spectrum
-public import Mathlib.Analysis.InnerProductSpace.Orthonormal
-public import Mathlib.Analysis.InnerProductSpace.PiL2
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.Complex.RealDeriv
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Development.AutomorphicArithmetic.TwistedTraces.ExistsSignedBasisLieSubalgebraExpCompact
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.Analysis.SpecificLimits.Basic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.SliceShift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.HkApply
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
-import GroundTheory.AutomorphicForms.ReductionBlock
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness
-import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
 import GroundTheory.AutomorphicForms.LocallyProfinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -7,9 +7,7 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeF
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSiegelHProjArchEq
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtArch
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtFin
-import Development.WeilBound.ThetaLifts.LatticeBasics.HgtWitt
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceAdeleRing
 
 @[expose] public section
 

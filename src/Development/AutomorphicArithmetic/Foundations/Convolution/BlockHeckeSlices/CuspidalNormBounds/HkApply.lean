@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHec
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeVecMemFixed
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivOfISupRange
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 
 @[expose] public section
 

@@ -6,28 +6,18 @@ public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 public import Mathlib.Analysis.Normed.Affine.Convex
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Data.Fintype.Card
-public import Mathlib.Tactic.Continuity
-public import Mathlib.Data.Fintype.EquivFin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
 public import Mathlib.Analysis.Analytic.IteratedFDeriv
-public import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibExtMarked
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaKernelOrthonormalFrameInDomainPeriodLinear
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -56,15 +46,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsInvariantNatLengthLattice
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SmulMemOfIsIntegral
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta

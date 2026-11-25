@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartFourth
 public import Mathlib.Analysis.Calculus.Deriv.Prod
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartSecond
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

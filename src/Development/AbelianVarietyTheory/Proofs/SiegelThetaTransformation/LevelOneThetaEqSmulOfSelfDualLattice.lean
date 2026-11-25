@@ -8,13 +8,11 @@ public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.CardLePowOfL
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.EntirePeriodicEqZeroOfFourierCoeffEqZero
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.FourierCoeffUnitCubeTranslateOfEntirePeriodic
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsUnitOfLagrangian
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifferentiableOnLeftInverse
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.TotallySplit
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DifferentiableOnDetHMat
 
 @[expose] public section
 

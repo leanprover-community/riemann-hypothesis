@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Smooth
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FrobeniusBoundOfMulNearOne
 public import Mathlib.Analysis.Calculus.Deriv.Star
 import Mathlib.Tactic.Linter.Style
 

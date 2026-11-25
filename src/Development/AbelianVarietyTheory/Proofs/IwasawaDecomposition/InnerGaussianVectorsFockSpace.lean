@@ -3,30 +3,13 @@ module
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousOfDense
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.OscActMonomialOfUnique
 public import Mathlib.Analysis.Calculus.SmoothSeries
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.Analysis.Calculus.Deriv.Prod
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Linear
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
-public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Complex.RealDeriv
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoeffPowEqZeroOfDegreeLt
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussianVectorAnnihilatorEquations
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitDetOneSubConjTransposeMulContractions
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
@@ -66,10 +49,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

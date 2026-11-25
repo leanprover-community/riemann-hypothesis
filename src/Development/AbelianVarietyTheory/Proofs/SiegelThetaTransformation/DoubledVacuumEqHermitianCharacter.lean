@@ -10,12 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeVacuaExistUnique
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DoubledThetaTestFunctionSesquilinearHeisenberg
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinear
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

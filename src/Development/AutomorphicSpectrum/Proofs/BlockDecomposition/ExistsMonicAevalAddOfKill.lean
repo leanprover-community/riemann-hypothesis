@@ -9,9 +9,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasimirMemCente
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactSpanFiniteDimStable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMonicAevalMemOfLeSup
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaOperatorEqCasimirSum
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
 
 @[expose] public section
 

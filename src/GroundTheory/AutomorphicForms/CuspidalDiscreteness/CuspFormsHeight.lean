@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 
 @[expose] public section
 

@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.RootsOfUnity.Complex
 

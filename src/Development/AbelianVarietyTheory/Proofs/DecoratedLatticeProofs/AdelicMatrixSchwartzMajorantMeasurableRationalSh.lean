@@ -8,7 +8,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCS
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 
 @[expose] public section
 

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmul
 public import Mathlib.NumberTheory.ModularForms.NormTrace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoefQExpansionFunctionUpperHalfPlane
-public import Mathlib.NumberTheory.ModularForms.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFormGammaOneOfCoeffSeq
 public import Mathlib.NumberTheory.ModularForms.LevelOne.DimensionFormula
 import Mathlib.Tactic.Linter.HaveILetI

@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAA
-public import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.ReduceModChar

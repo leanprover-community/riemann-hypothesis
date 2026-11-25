@@ -11,7 +11,6 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 
 @[expose] public section
 

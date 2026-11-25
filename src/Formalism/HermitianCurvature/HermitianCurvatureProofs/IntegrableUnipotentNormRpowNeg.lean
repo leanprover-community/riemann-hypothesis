@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquenessConjugation
@@ -12,12 +11,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PolynomialMa
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SectionDecomposition
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceLastLevel
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

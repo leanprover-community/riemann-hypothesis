@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAddValuationIntegerRingNormalizedIff
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
 public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.MultiplicationKernelIdentity
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HerbrandQuotientEigenDet
@@ -10,7 +9,6 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
 import Development.AbelianVarietyTheory.Definitions.Divisors.IotaScalarOne
-import Development.AbelianVarietyTheory.Definitions.Divisors.XiMulNu
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.

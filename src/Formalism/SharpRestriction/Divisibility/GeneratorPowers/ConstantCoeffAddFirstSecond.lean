@@ -8,10 +8,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConstantCoeffAddSecondThird
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSTrunc
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ExpLaw
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.MulGenScaleRight, Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConstantCoeffAddFirstSecond

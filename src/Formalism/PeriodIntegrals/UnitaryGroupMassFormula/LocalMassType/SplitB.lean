@@ -5,7 +5,6 @@ public import Formalism.PeriodIntegrals.SplitIntLoc
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.SatSplit
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitPrimeIntegers.ExistsUnitDiff
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.HRSmulERight
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.SelfDualMeasureSFinite
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

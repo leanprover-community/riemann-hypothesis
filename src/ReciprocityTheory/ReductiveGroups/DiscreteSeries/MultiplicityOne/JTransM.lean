@@ -4,7 +4,6 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Algebra.Star.Unitary
-public import Mathlib.Analysis.Complex.Exponential
 public import Formalism.HermitianCurvature.StatementB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvGroupA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists

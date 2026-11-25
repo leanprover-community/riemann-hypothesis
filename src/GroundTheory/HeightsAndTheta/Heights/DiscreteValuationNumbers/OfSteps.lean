@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

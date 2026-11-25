@@ -4,16 +4,7 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Data.Fintype.Basic
 public import Mathlib.LinearAlgebra.Lagrange
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.MonoidAlgebra.Defs
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.Analysis.Real.Sqrt
-public import Mathlib.Data.Matrix.Mul
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.RaisingLoweringNormIdentities
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.NChart
 import Mathlib.Algebra.Order.Star.Real

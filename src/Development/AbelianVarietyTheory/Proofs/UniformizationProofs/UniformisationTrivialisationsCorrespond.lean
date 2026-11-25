@@ -12,9 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HasBasisOfBasis
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.RigidifiedIsoRespectsCubeAndSymmetry
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.SectionScalarValuation
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionArithmetic
 
 @[expose] public section
 

@@ -6,20 +6,12 @@ public import GroundTheory.AutomorphicForms.DixmierMalliavinHaar
 public import GroundTheory.AutomorphicForms.DixmierMalliavinLine
 public import GroundTheory.AutomorphicForms.DixmierMalliavinSeries
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsClosedEmbeddingOfLocallyCompact
-public import GroundTheory.AutomorphicForms.RealGroupsLie
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedMatrixSubgroupTheorem
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GlueSmoothOfCompactSupport
 import GroundTheory.AutomorphicForms.DixmierMalliavin
-import GroundTheory.AutomorphicForms.DixmierMalliavinHaarCoord
 import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: CompanionTheory.AutomorphicTheory.PadicUnitaryWeights.DixmierMalliavin.DecompDirection, CompanionTheory.AutomorphicTheory.PadicUnitaryWeights.DixmierMalliavin.DixmierMalliavinFactorisationHolds

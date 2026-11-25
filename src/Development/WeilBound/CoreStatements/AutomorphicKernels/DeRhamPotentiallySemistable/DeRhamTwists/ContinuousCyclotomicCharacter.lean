@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.HeckeCharacterDeRham.DeRhamHeckeResults.PotentiallySemistableDeRham.SemistableDeRhamStatement.Second
-import GroundTheory.PAdicHodge.ACrisBdRGalois
 public import GroundTheory.PAdicHodge.ThetaBDeRhamPlusFieldCycloUnitBdRZpow
 import Mathlib.Tactic.Linter.Style
 

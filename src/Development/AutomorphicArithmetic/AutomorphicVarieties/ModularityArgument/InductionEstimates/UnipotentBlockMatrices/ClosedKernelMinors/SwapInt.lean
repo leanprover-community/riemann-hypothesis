@@ -52,11 +52,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.TruncatedCuspIrreducibility.AdelDefs
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.TruncatedCuspIrreducibility.ScatteringLimits
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.TorusDifference

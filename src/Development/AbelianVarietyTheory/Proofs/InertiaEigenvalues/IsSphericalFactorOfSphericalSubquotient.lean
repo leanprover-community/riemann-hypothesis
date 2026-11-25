@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.EmbedsLevelZeroDepthZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 import Mathlib.Tactic.Linter.Style
@@ -13,7 +11,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReading
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsContractNeZero
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

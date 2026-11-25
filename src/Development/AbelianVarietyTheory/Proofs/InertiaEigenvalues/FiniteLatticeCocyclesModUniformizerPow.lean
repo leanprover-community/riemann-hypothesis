@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardCocyclesMulInvariantsDiscrete
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicProperties
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsOpenOfFgOfSpanEqTop

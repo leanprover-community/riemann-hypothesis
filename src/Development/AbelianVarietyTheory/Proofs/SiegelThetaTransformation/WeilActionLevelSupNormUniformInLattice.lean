@@ -7,13 +7,9 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianHeisenbergOperatorLaws
 public import Mathlib.RingTheory.DedekindDomain.Different
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianWeilActionUnitaryGroupTestFunctions
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.UnitaryActHalfSpace
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.GroupTheory.IndexNSmul
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

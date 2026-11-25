@@ -3,24 +3,16 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Jets.Imports
 public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Order.Interval.Finset.Nat
 public import Formalism.HermitianCurvature.FrameExists2
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameExpansionUwGroup
 public import Development.AbelianVarietyTheory.Definitions.Jets.WigMap
-public import Formalism.RealPlaceAnalysis.StatementB
-public import Mathlib.Analysis.Normed.Lp.PiLp
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TensorStdRelAdjointSplitCasimir
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenvectors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HighestWeightPolynomials
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleCapelliModules
 public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliComatrixLastRowInvertsCasimir
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumStarProjectionEigenspaceEqSelfOfEigenvaluesLi
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WignerExtremeNeZero
@@ -31,22 +23,13 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AdjointMemCap
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapComp
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapZeroOfContraction
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameExistsAndVectorEqSmulTranslate
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.Analysis.InnerProductSpace.Spectrum
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsWignerContractionChainLowering
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Lemma
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-import Mathlib.Algebra.Order.Star.Real
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.InvSqLeWignerCoeffSqLowering, Development.AbelianVarietyTheory.Definitions.Jets.FactorNonneg, Development.AbelianVarietyTheory.Proofs.JetHarmonics.InvSqLeWignerCoeffSqRaising, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ChainLowerBound, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIntCoordsOfRegularParam, Development.AbelianVarietyTheory.Proofs.JetHarmonics.CoefHasDerivAt, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsTensorStandardRep, Development.AbelianVarietyTheory.Proofs.JetHarmonics.OpNormSumSmulSqLe, Development.AbelianVarietyTheory.Proofs.JetHarmonics.HighestWeightTensorStandard, Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitCasimirEigenspaceIrreducibleStandard, Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitCasimirStdEigenvalue, Development.AbelianVarietyTheory.Proofs.JetHarmonics.StarProjectionSplitCasimirRaisingLast, Development.AbelianVarietyTheory.Proofs.JetHarmonics.PieriRaisingSubmoduleGlSucc, Development.AbelianVarietyTheory.Proofs.JetHarmonics.WignerStepRaisingUnitaryComplement, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsWignerContractionChainRaising, Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormAdjointApplyOfNormPreserving, Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormSqAdjointAddGeOfJointEigenspaces, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsShiftedTypesLowerBound

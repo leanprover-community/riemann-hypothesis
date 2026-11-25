@@ -5,27 +5,10 @@ public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueExtensionOfForallNormLeOne
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TranslDiffEq
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 public import Mathlib.Tactic.ENatToNat
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Ring.Hom.Defs
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
-public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.Algebra.CharP.Basic
-public import Mathlib.Algebra.CharP.Lemmas
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

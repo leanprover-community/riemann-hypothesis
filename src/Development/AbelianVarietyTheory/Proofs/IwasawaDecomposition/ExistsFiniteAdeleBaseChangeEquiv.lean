@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAde
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFiniteAdeleCompleteSeparated
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Formalism.FrobeniusOrbits.Statement
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 

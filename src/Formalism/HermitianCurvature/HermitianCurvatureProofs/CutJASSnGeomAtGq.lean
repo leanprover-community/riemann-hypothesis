@@ -10,7 +10,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.LongWeylElement
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HermXGen
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HmSelfRe
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.WbPartOfInWb
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.XiHermitianCofactorDet
 
 @[expose] public section
 

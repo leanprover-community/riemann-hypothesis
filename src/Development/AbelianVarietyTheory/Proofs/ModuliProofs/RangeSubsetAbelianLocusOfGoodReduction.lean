@@ -3,7 +3,6 @@ module
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MorphismsSpreadOutToFgSubalgebra
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
@@ -59,7 +58,6 @@ import Mathlib.AlgebraicGeometry.Morphisms.FlatDescent
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 -- This file was produced by scripts/clump.py from the modules listed below.

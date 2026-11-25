@@ -44,8 +44,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHasCls
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 
 @[expose] public section
 

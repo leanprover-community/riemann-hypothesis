@@ -7,8 +7,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Presheaf
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LogInt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Function.Jacobian
 
 @[expose] public section
 

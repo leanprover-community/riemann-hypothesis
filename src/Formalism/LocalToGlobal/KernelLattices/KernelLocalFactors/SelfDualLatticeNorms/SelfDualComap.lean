@@ -2,14 +2,9 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.KerStd
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.LinkThetaStatementFamily
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.ZeroInjectionMemFourthPower
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.FinitelyGeneratedModPow
-import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExists
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.LocalToGlobal.AlgebraicTheory.AlgebraicTheoryProofs.NormInter
 
 @[expose] public section

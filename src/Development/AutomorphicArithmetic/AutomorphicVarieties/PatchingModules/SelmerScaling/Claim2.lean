@@ -8,14 +8,12 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingMod
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.InverseWeylLiftEqPair
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.LocLemma
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.SelmerSpannedByKappaLaurent
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.TriProdZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.TpDual
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.AlSel
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.DefUTest
 

@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDiv
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeLocalLength
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalLength
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivCycleSupport
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
 
 @[expose] public section
 

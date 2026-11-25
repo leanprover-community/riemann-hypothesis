@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ConvZero
-public import Mathlib.Algebra.CharP.IntermediateField
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Analysis.Normed.Module.FiniteDimension

@@ -8,7 +8,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.DoubleCosetDecompositionAll
 public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
 import Formalism.LocalToGlobal.HermitianForms.TiedBrInj
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Order.Star.Int

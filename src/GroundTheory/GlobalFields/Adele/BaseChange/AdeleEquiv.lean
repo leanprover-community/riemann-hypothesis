@@ -7,11 +7,7 @@ public import GroundTheory.GlobalFields.Adele.BaseChange.FiniteMap
 public import GroundTheory.GlobalFields.SemilocalAlgebras.InfiniteAdeleTopology
 public import Mathlib.NumberTheory.NumberField.AdeleRing
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.RestrictedProduct.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.Adele.BaseChange.FiniteCoord, GroundTheory.GlobalFields.Adele.BaseChange.FiniteTensor, GroundTheory.GlobalFields.Adele.BaseChange.AdeleEquiv

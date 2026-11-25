@@ -2,14 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 public import Mathlib.Analysis.InnerProductSpace.Symmetric
-public import Formalism.RealPlaceAnalysis.StatementKT
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CasKIsSymmetricAndForm
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ReInnerLeOnImageOfIntertwining
 public import Mathlib.Analysis.InnerProductSpace.ProdL2
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WtNearLeOfAddDistLe
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Analysis.Calculus.FDeriv.Add
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Complex.CauchyIntegral
@@ -18,14 +14,10 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitCasimirO
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CardFilterLeSuccAndSqSumLePow
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitCasEigenvalueSummand
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryGlModuleProjComponentsLevelAddTwo
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AlgTensWtNear
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CompactCasimirBoundProjectionDualTensor
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeightNearDiagonalOperatorsBounds
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

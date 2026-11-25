@@ -5,7 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Comp
 public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBoxInvariantSnd
 public import GroundTheory.AutomorphicForms.WhittakerDistribution
-public import Mathlib.Analysis.CStarAlgebra.Classes
 import GroundTheory.AutomorphicForms.MeasuresModulus
 
 @[expose] public section

@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.ExistsMapEqOfPowMul
 public import Development.WeilBound.CoreStatements.PeriodRingComparison.CrystallinePeriodRings.GammaEqDpow
-import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.EqZeroOfPMulEqZero
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.FrobAinfMapFrobenius
 public import Development.WeilBound.CoreStatements.PeriodRingComparison.CrystallinePeriodRings.AcrisNAlgebraMapAinf
 import GroundTheory.PAdicHodge.ACrisBdRInj

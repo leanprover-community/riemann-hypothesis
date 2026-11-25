@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcEqOfPowEqOne
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DecompTypeI
 
 @[expose] public section
 

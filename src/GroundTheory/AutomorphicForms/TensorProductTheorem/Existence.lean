@@ -7,7 +7,6 @@ public import GroundTheory.AutomorphicForms.TensorProductTheorem.Window
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Places
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Irreducible
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

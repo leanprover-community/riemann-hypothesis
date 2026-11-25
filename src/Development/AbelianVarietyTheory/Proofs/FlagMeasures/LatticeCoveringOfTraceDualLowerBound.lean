@@ -10,7 +10,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.HarderNarasimhan.Statement
 import Formalism.HermitianLattices.StatementLat
 
 @[expose] public section

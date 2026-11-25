@@ -1,11 +1,9 @@
 module
 
 public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrandInfinite
-public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.InfinitePlaces
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.IntegerUnits
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleHerbrand.Product
-public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Decomposition
 import Mathlib.Tactic.TypeStar
 

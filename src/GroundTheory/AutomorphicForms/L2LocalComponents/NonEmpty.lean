@@ -4,8 +4,6 @@ public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenFor
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Density
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsArchConv
 public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchHaar
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
-public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
 public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteFactor
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
@@ -13,10 +11,7 @@ public import GroundTheory.AutomorphicForms.L2LocalComponents.Summand
 public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchBump
 public import GroundTheory.AutomorphicForms.L2LocalComponents.CenterCommute
 import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Star.Real
 import GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainImageOfMapVecLattice
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsContinuous
-import Mathlib.Analysis.InnerProductSpace.Spectrum
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.L2LocalComponents.NonEmptyOps, GroundTheory.AutomorphicForms.MultiplicityOne.NormOne, GroundTheory.AutomorphicForms.MultiplicityOne.ArchTypeExists, GroundTheory.AutomorphicForms.L2LocalComponents.NonEmpty

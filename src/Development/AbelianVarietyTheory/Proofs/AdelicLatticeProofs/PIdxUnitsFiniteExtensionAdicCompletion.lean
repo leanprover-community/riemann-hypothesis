@@ -5,8 +5,6 @@ public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.Ideal.Quotient.Defs
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.MemPowSub
-public import Mathlib.GroupTheory.QuotientGroup.Basic
-public import Mathlib.LinearAlgebra.Dimension.Free
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PowIndexTorsionKerRangeMul
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsGlobalUniformizerResidueRepresentatives
@@ -16,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NormCo
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SubgroupPowRelIndexTopOfGroupFg
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Order.Star.Int

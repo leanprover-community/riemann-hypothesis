@@ -8,13 +8,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyConti
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomPtw
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeibAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeibExp
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HomogeneityNaturalDegree
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeibBd, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeibOps, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeibVLin, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeibMain

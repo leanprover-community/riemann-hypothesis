@@ -46,10 +46,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
 
 @[expose] public section

@@ -12,13 +12,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolum
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfD
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LUStatementPfB
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.IsOrth
-public import Mathlib.Analysis.Calculus.ContDiff.WithLp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MeasurableSetBorSat
@@ -26,12 +19,9 @@ public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.NormBchar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExtFStatementPf
 import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ChangeDifferentiableOn, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.DetMulStrictLowerEqOne, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.DetOfBlockTriangularInjective, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.DifferentiableAtAdjugate, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LintegralImageLeConst, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LintegralLeOfSection, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MeasureStatements

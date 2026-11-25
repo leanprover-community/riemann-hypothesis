@@ -10,11 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsOrthono
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralProductExpChartAllRealPlacesLe
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasureLeCardMul
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SobolevIteratedOneParameterSubgroups
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 

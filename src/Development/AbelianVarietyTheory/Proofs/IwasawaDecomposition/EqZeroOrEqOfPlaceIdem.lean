@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddNsm
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 
 @[expose] public section
 

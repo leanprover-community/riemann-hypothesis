@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 public import Mathlib.Algebra.Module.ZLattice.Covolume
-public import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.Tactic.TypeStar
 public import Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient
 

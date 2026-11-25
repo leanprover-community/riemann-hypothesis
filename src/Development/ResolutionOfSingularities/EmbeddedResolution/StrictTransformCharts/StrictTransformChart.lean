@@ -2,10 +2,8 @@ module
 
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.CoordinateDivisorBlowup
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinateSubscheme
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.EtaleChartExistence
 import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupChartComputations
 import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
-import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

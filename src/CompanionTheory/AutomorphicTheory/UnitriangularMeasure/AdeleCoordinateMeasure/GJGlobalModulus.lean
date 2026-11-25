@@ -5,9 +5,6 @@ public import GroundTheory.AutomorphicForms.ReductionIwasawa
 import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
 public import GroundTheory.AutomorphicForms.ReductionMahler
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.IdeleGroups.UnitBound
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

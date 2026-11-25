@@ -16,8 +16,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TangentSpaceDeformationAtL
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.OnCompSelf
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FrobDense
-import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

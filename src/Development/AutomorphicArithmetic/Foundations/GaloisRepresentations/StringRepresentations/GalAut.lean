@@ -23,7 +23,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpehShapeIffOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitaryOfIsCsd
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaBound.JacquetShalikaBound
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsUnitarisableTrivChar
 
 @[expose] public section
 

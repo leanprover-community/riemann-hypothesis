@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Herglotz
 public import Mathlib.MeasureTheory.Integral.PeakFunction
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-public import Mathlib.MeasureTheory.Group.Integral
 public import Formalism.HermitianCurvature.LatticeHerglotzBound
 import Aesop.Main
 import Mathlib.Algebra.Order.Star.Real

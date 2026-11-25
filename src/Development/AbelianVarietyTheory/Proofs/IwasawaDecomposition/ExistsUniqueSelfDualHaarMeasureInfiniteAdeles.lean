@@ -7,7 +7,6 @@ public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 public import Mathlib.Analysis.InnerProductSpace.Dual
 public import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalComponentsNontrivialAdelicCharacter
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension

@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
 public import Formalism.LocalToGlobal.Columns.RecLevelAsm
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemPrinCongOfSm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EmbFColZeroMemMram
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.FrobeniusNoKernelOfFrobeniusSimilitude
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

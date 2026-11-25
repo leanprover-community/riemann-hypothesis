@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.Smooth
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.IwDens
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.LintegralUnipotentQuotientRightInvariant
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.LintegralUnipotentQuotientCompDiagonalConj, Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.ImportsMore

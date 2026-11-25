@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
-public import Mathlib.RepresentationTheory.Invariants
 public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section

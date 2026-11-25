@@ -5,17 +5,11 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwDecomp
 public import Formalism.LocalRingCardinality.Lemmas
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.WeylLengthDiagonalUnitUniformiser
 public import Formalism.SharpRestriction.GlobalSchurBounds.FiniteModelOfAdmissibleTransports
-public import Mathlib.GroupTheory.GroupAction.Ring
-public import Mathlib.RingTheory.Length
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.RingTheory.Flat.Domain
-public import Mathlib.RingTheory.TensorProduct.MvPolynomial
 public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

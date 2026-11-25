@@ -10,10 +10,6 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollA
-public import Mathlib.Analysis.Complex.Circle
-public import Mathlib.MeasureTheory.Group.Integral
-public import Mathlib.MeasureTheory.Integral.Prod
-public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 @[expose] public section
 

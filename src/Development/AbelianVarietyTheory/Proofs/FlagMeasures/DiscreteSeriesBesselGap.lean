@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselQuotientMassEqConstMulNormSqTranslates
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsKFinNeZeroOfCwCont
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselGapDimensionFormula
@@ -13,14 +12,9 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesUnitar
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrechetContinuousContinuousOnOrbitHasDerivAt
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GrowthUnitaryGroupRpowNegIntegrable
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HaarEqSmul
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselNeZeroOfCyclicOrbit
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ReproducingFormulaReduction
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
-import Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.OnePlaceKF

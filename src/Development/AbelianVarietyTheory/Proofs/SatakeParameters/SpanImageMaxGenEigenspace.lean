@@ -4,13 +4,10 @@ public import Formalism.LocalToGlobal.Columns.HeckeSp
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

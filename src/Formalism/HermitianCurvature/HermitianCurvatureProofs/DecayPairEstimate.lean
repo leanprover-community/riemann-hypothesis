@@ -10,8 +10,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelIntegrandAestr
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBFVpic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBFVstep
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ResidueSquareIntegrablePositiveRank
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

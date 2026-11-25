@@ -3,7 +3,6 @@ module
 import all Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.LocEuler
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.GLinkQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsPrimitiveRootPow
@@ -12,8 +11,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal

@@ -7,7 +7,6 @@ public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.ArithmeticGeometry.AbelianVarieties.FunctionFieldPoint
 public import Mathlib.RingTheory.DedekindDomain.PID
-public import Mathlib.RingTheory.DedekindDomain.Dvr
 
 @[expose] public section
 

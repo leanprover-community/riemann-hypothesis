@@ -7,7 +7,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasDerivAtZeroAndIsTheta
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Topology.Compactness.DeltaGeneratedSpace
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth

@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Lifts
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoInfMulProd
 public import Formalism.LocalRingCardinality.PosOfIsomEmb
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

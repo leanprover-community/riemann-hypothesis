@@ -4,8 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenera
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CapCentral
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.ExistsContRep
 import Formalism.GaloisIrreducibility.GaloisIrreducibilityProofs.OneNonUnit
-import Mathlib.Analysis.Calculus.Deriv.Prod
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.RingTheory.Etale.Weakly
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 

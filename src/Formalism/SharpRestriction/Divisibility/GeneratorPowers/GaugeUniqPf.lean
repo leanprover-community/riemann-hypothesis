@@ -4,11 +4,9 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsExpChart
 public import Mathlib.Tactic.ENatToNat
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PrimUniqPf
-public import Mathlib.RingTheory.PowerSeries.Exp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.GaugeRatio
 public import Mathlib.RingTheory.MvPowerSeries.Rename
-public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniqA
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniq
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniqB

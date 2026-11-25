@@ -2,10 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataCD
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqDefiniteCompact
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpBallUMemNhds
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TranslateChartBallDistortion
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOmegaDensity
@@ -14,7 +10,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -48,7 +43,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -62,11 +56,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Formalism.LocalRingCardinality.SpanPowerMembership.HaarDensityNeZero
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
 import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
-import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-import Mathlib.Analysis.Matrix.Normed
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Presheaf
 

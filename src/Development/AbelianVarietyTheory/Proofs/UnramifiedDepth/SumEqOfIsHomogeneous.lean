@@ -9,8 +9,6 @@ public import ReciprocityTheory.DualLattices.DetPolyMulCayleyOmegaPow
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuation
 public import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Mathlib.Algebra.Algebra.Rat
-public import Mathlib.Basic.Real.Basic
 public import Mathlib.RingTheory.PowerSeries.Exp
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BlockValueOnRowsEq
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.DetFrobeniusSubPowSupport
@@ -63,9 +61,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Basify
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop

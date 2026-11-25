@@ -15,9 +15,7 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTie
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpGauge
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrRatio
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTiePf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LinEigPf
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PsiCover
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndAll, Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndTop

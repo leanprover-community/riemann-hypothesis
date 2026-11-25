@@ -3,19 +3,10 @@ module
 public import Mathlib.LinearAlgebra.Dual.Defs
 public import Mathlib.LinearAlgebra.Matrix.Symmetric
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsCobOfIsAffineOpen
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

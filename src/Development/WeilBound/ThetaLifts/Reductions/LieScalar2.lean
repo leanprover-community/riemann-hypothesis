@@ -6,32 +6,13 @@ public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieG
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieH
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Normed.Module.DoubleDual
-public import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.Complex.RealDeriv
 public import Development.WeilBound.ThetaLifts.Reductions.MetaDef
-public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieB
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.LinearAlgebra.Matrix.Trace
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
-public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLFock
-public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieE
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.EvIHalfTrace
-import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLines
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieI, Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.TraceBlocks, Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieA, Development.WeilBound.ThetaLifts.Reductions.RealSmulL2Coe, Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieC, Development.WeilBound.ThetaLifts.Reductions.SymplOfMem, Development.WeilBound.ThetaLifts.Reductions.LieScalar2

@@ -11,8 +11,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNb
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinear
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFunctorialMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackEquivalence
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorExtendsDvr
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
 import Mathlib.Tactic.Linter.Style

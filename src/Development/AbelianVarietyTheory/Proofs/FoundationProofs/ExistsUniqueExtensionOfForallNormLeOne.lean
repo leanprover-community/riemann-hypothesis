@@ -1,11 +1,9 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
-public import Mathlib.AlgebraicGeometry.FunctionField
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsUniquePointOfRingHom
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
 
 @[expose] public section
 

@@ -7,7 +7,6 @@ import all Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplit
 import Batteries.Tactic.OpenPrivate
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.HkApply
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.UmgOps
-public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocalRepresentationL2
 
 @[expose] public section
 

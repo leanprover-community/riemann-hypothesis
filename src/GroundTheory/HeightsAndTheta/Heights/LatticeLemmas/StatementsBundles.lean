@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeIdeal
 public import GroundTheory.HeightsAndTheta.Heights.HermitianDual
-public import Mathlib.LinearAlgebra.TensorProduct.Projective
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

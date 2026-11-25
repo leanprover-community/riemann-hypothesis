@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.TruncLogEqOfPowEqZero
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
-public import Mathlib.RingTheory.AdicCompletion.Completeness
 
 @[expose] public section
 

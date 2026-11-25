@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleIffOfLinearEquiv
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.IsInvForm
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.ThmBChar0
-public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.HighestDerivativeProducts.HighestDerivProd
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantModulus
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.ThetaCorrespondence.GeneralLinearGroups.MultiAt, Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TwoAtCharZero

@@ -2,8 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.PrimitiveCosets.RecH
 public import Development.AutomorphicArithmetic.PrimitiveCosets.hostFactsS
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AutomorphicArithmetic.DedekindLFunctions.SplitInertia

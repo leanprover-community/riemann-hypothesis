@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsOneComb
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HandBFSmul
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsUnitarySupportedAtPlaceOfMulEqIdem
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumLocalModelFormula
 
 -- This file was produced by scripts/clump.py from the modules listed below.

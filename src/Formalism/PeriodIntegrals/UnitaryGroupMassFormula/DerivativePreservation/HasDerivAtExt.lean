@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.StatementQ
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

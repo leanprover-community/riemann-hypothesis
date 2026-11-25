@@ -5,12 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaussNormExtensionAcris
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAlgClosedTiltFieldAndValuationRing
 public import Mathlib.Analysis.SpecialFunctions.Log.Base
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemBallOfGaugeLt
-import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
-import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompleteOCSpanSingletonSetCast
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UntiltNormUltrametricEqZero
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorGaussNormMul
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorGaussNormUltrametric
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

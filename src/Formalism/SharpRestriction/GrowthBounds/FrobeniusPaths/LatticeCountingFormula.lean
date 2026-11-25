@@ -2,11 +2,9 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.DividedPowerZeroOfGlActionZero
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.ColOKOfPath
-public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
-import Formalism.SharpRestriction.GrowthBounds.ConclusionA2
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

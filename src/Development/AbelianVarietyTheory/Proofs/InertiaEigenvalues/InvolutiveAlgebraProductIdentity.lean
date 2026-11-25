@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Lattice
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeightedCountStableLatticesProductDescentGL
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Mathlib.LinearAlgebra.Semisimple
-public import Mathlib.Algebra.Module.Lattice.Basic
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeIdempotentPositionInvolutionStable
 import Mathlib.Tactic.Linter.Style
 

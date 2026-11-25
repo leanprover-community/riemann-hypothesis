@@ -8,8 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentat
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.CoordSpan
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.DiracSquareMemLayer
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.GsBasisPhys
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.IsPhysSet
-public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.Arbitrary
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EquivSigLamOfIsDS
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.DetOneSubEqSumMinors
@@ -18,15 +16,11 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.LayerLeG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TensFockInfPhysSub
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TotalDegreeBindLeOfLinear
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TraceIntegralRestrict
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdPhysApplySingle
 import Mathlib.Tactic.TypeStar
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.ExistsKhwGenSubOfKType
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.AdPhysDiagSingle
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.MemTensorFockOfCoeffs
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.TraceEqTraceRestrictOfRangeLe
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.InvoluteExteriorPower, ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.SupTrace

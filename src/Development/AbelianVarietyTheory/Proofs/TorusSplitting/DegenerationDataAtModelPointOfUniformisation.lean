@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ExtPtUnique
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.UnifAt
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsNullVal

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemChainVecsDet
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.NumberTheory.Padics.LocalField
 
 @[expose] public section
 

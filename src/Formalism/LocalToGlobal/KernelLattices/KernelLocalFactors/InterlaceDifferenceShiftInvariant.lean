@@ -12,8 +12,6 @@ import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
 public import Formalism.LocalRingCardinality.FactDelDualNabla
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.StdDual
 import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 public import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim

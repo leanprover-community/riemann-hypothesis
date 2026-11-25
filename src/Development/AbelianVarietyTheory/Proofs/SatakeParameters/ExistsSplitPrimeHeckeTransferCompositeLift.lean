@@ -11,8 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Petersson
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplittingCharactersUnramifiedOffLevelsStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaVacuumHeckeIdentitySplitPlaceStatement
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaLiftLevelsGoodPrimesPropertiesStatement
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

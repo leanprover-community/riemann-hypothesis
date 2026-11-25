@@ -7,17 +7,14 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.PtCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TateRat
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MapRepApply
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsFirstOrderDeformationOfRZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.ExistsUniqueUnramifiedHomOfFrobeniusValue
 import GroundTheory.LocalFields.Examples
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -51,20 +48,9 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Sheaves.Init
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
-import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.PicardGroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LineBundleI
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.KaRuleK
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRuleOneOfKeyFormula
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

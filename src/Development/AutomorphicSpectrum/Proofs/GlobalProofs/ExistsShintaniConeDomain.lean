@@ -3,20 +3,8 @@ module
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CongSubgroup
-public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Fintype.Card
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Data.Finset.Max
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PartialZetaTwistedEntireDifference
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Data.Set.Finite.Basic
-public import Mathlib.Data.Set.Finite.Lemmas
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

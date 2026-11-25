@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupport
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
 
 @[expose] public section
 

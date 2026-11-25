@@ -14,13 +14,10 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdFN
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdAbsNormDivsDvd
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryDeterminantKernelOpenAndFactor
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -58,7 +55,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 

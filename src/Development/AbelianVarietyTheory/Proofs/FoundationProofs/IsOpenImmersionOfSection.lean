@@ -4,16 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabi
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNumberFieldPoint
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
-import Formalism.LocalToGlobal.ProjectiveLattices.GenSpecV
-import Formalism.LocalToGlobal.ProjectiveLattices.GenSpecLocFrM
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCRing
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeC
-import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Unramified.LocalStructure
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 
 @[expose] public section

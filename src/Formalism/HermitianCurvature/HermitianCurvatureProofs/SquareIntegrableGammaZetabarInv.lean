@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivedCoeff
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTransferConjTransposeCommute
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
 public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

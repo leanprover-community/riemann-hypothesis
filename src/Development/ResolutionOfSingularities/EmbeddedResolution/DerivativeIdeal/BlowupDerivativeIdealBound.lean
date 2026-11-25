@@ -2,8 +2,6 @@ module
 
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupSmoothness
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.ControlledTransform
-public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealSheaf
-public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealSheafOrderDecrease
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdealSheafSmoothPullback
@@ -14,7 +12,6 @@ import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates
 import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.AffineSpaceCoordinateBlowup
 import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupChartComputations
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupIsoOffCenter
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

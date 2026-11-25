@@ -11,12 +11,8 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RowHig
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPinsRec
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.MemNabStdOfDetMulIntegral
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.MemOfForallLocP
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsHarmonicProdOfDisjointColumns
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 

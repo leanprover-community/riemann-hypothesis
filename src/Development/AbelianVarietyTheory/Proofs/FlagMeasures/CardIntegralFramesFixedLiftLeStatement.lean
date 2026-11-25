@@ -4,21 +4,12 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMi
 public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FixedFramesPerpendicularVectors
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLatticeStatement
-public import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniquePlace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralOfUnimodular
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PerpendicularRankIdealBoundStatement
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalRingCardinality.Params
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop

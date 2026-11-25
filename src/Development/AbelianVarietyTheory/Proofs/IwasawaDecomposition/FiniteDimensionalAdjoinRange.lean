@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.FieldTheory.Galois.Profinite
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodChi
-import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield
 
 @[expose] public section
 

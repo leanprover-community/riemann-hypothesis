@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DegreeOfIsInte
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Birational
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ArithIntersectionMultilinearAll
-import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumFundCoMulSumIic
 

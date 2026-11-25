@@ -24,7 +24,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PrimeToPartLe
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushforwardPolarisationBundleInvertibleOnModel
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TorsionSectionExtendsAbLocus
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ValuationRingOfUnitBall
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjRigidClosed
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,9 +68,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelAutActsOnRaisedModel, Development.AbelianVarietyTheory.Proofs.ModuliProofs.RaisedModelLevelOneDescends, Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelStructureConditionsAndSplitFibres, Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelStructureConditionsAndSplitFibresStatement

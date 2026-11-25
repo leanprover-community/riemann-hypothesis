@@ -3,17 +3,10 @@ module
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import Mathlib.Algebra.Module.LocalizedModule.Basic
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.IsTensorProduct
-public import Mathlib.RingTheory.Finiteness.Cardinality
-public import Mathlib.RingTheory.Ideal.Operations
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteProjectiveBis
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieChartOfSmoothChart
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLieB
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalizedModuleBaseChange
 import Mathlib.Tactic.Linter.HaveILetI

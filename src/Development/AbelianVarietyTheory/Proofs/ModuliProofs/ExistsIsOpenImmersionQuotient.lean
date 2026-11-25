@@ -9,9 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverI
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsAffineCoverOfQuotient
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsDomainAndIsIntegrallyClosedLocalizationOfIsInv
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAmpleLBOfRelAmpleOfIsAffine
-public import Mathlib.AlgebraicGeometry.Morphisms.Flat
-public import Mathlib.AlgebraicGeometry.Noetherian
-public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.AuxiliaryInertOddPrime
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsActionOfIsPullback
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsAffineOpenLeOfIsQProjOver
@@ -21,13 +18,10 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GenericPartDe
 public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsProjOverCompFinite
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.QuotientExistsUniqueCompEq
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.QuotientIsFiniteLocallyOfFiniteTypeDescend
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

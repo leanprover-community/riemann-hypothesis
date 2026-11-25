@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

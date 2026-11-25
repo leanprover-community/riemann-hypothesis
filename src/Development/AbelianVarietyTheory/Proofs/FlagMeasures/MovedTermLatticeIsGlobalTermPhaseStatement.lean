@@ -3,18 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PsiEDef
-public import Mathlib.NumberTheory.Padics.Complex
-public import Mathlib.Algebra.Algebra.Hom.Rat
-public import Mathlib.RingTheory.DedekindDomain.Factorization
-public import Formalism.LocalRingCardinality.DataSpaces
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsIntegralOfQuad
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalExtend
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
-public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDatumEquivariantFlagIsometries
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedTermLatticeIsLocalTermAtPlaceStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermsOrbitsHeightsAmplitudesInCoordinates
@@ -58,35 +49,16 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
 import Development.WeilBound.CoreStatements.SesquilinearFractions.NIdeal
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TraceEqSumLocalTracesAbovePrime
 

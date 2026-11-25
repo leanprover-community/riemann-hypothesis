@@ -11,7 +11,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 
 @[expose] public section
 

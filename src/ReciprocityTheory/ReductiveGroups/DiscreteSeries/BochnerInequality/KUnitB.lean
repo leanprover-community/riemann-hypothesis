@@ -7,7 +7,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.CasimirKKhwVec
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.MulMulSubMulMulEqAdd
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementA
-public import Mathlib.RingTheory.LocalRing.Defs
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal

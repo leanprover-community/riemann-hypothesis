@@ -9,37 +9,13 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalAutomorphismLocalExtensionMovesLattices
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalAutomorphismLocalExtensionMovesLatticesStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalLatticeClassesFiniteLocalOrbitsStatement
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameFixingIsometriesEmbedProdLocalUnitary
 public import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GgNone
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramePairCoordinatesTransportUnitaryMass
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramePairCoordinatesTransportInnerData
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesComplementUnitaryActsOnTerms
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StabilizerCommensurableInvVolumeSmulComplement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermsCorrespond
 public import Mathlib.GroupTheory.Commensurable
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FinitePlacesNotPrimeToBaseFrameInvariantsStatement
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
-public import Mathlib.Basic.Real.ENatENNReal
-public import Mathlib.GroupTheory.Index
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.Order.Real
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Basic.ENNReal.Inv
-public import Mathlib.GroupTheory.GroupAction.SubMulAction
-public import Mathlib.Topology.Algebra.InfiniteSum.Basic
-public import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
-public import Mathlib.Algebra.Group.Subgroup.Actions
-public import Mathlib.Data.Set.Card
-public import Mathlib.GroupTheory.GroupAction.Defs
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarInvVolumeRelIndexPiUnivEqFinprod
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsComplementUnitaryMulActionLocalInnerDatum
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -62,7 +38,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -76,21 +51,10 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
-import Mathlib.Algebra.Module.Lattice.Full
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLattices
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq

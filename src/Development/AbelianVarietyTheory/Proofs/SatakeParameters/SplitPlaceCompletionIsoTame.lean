@@ -4,9 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaM
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ValLeOneOfMemKO
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ValuationLtOneIffNormLtOnePadicCmCompletion
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.Automorphisms.PlaceA
 
 @[expose] public section
 

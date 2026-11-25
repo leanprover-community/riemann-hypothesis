@@ -18,8 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotMe
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResCharConj
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TameHeckeCharLocalEqInvTypeCharacter
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqOfMapEq
-import Formalism.LocalRingCardinality.ConjSqrtMinusD
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjugateEmbApply

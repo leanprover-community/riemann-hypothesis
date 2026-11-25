@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BernsteinZelevinskyDerivativeGLnEqTwistedSum
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel
 
 @[expose] public section

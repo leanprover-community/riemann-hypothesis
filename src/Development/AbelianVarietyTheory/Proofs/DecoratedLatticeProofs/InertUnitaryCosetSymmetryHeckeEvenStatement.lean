@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TransferOn
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.InertUnitaryCosetSymmetryHeckeEven, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.InertUnitaryCosetSymmetryHeckeEvenStatement

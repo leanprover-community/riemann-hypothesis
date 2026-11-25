@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GeometricLemmaCellGroups
-public import GroundTheory.AutomorphicForms.GeometricLemmaAverage
 public import GroundTheory.AutomorphicForms.GeometricLemmaCount
 import Mathlib.Tactic.TypeStar
 

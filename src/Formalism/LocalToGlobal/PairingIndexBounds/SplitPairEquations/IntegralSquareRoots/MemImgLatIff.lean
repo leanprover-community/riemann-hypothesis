@@ -2,7 +2,6 @@ module
 
 import Formalism.LocalToGlobal.AlgebraicTheory.AlgebraicTheoryProofs.NormPow
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.UnitaryConstant
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway

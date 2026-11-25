@@ -9,7 +9,6 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -21,8 +20,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
@@ -53,7 +50,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.CdScaleTieIff
 import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasModelOfAntitone, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsHarishChandraTypeDualWeylModuleFockNorm

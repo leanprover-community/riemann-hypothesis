@@ -6,9 +6,7 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.Fock
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.GlobalTheory
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.SubstitutedExponentApplyBlock
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.TestBoundOfRhoAndNormSets
-public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.CgeZeroIffIntegral
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.DigitPartMonomial
-import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.Monomial
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -14,11 +14,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValua
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExpF
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.NonemptyCubicalPull
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PhiRelTransport
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdNeg
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PowEqOneOfInjective
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.QkToAkU
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsPhiRelSmul
@@ -29,7 +26,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.GmMul
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PtEqOfProportional
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.QkToAkBaseChange
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ValEqOfAppInjective
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.OLinBaseChangeSt
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.RelationsAreFunctions
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ArcWitPsiOnBasicOpen
@@ -37,11 +33,7 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.DvrAd
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsPolAVGenericFibre
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsPullFOfGenRel
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SmoothOfRelativeDimensionOfGeneric
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsCommonField
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TraceFormTwistIsoOfPullback
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueSecPull
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IntegralFamilyPrescribedTermUnitAtPrime
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -52,7 +44,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -80,20 +71,8 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsFamRep
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExpansionBijectiveOverFields
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpandsAtTransport
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpandsFOfIntegral
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PowEqOneOfPush
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.PowerSeries.Inverse
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigIsoCongr
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 

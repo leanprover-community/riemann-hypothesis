@@ -3,12 +3,9 @@ module
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobData
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.DilationDecomposition.LocDerBig
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AesmIteratedDerivReal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousOnIteratedDerivFamily
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.DenseCell

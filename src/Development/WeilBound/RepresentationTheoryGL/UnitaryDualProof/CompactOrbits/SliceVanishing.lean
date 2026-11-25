@@ -3,14 +3,8 @@ module
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinUnitaryProducts.BernsteinTheoremA.FiberLocalization.EqZeroOfFiberEquivariant
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.LocStep
 public import GroundTheory.AutomorphicForms.WhittakerDistribution
-import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Mathlib.LinearAlgebra.Isomorphisms
-import Mathlib.Topology.Algebra.Group.OpenMapping
-import Mathlib.Topology.Algebra.Group.Quotient
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 import Mathlib.Topology.Baire.LocallyCompactRegular
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Mathlib.LinearAlgebra.JordanChevalley
 
 @[expose] public section

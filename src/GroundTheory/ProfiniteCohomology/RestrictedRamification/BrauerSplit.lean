@@ -10,11 +10,7 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
 public import GroundTheory.ProfiniteCohomology.InflationRestriction
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplitLayers
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.NumberTheory.NumberField.Cyclotomic.Embeddings
-public import GroundTheory.GlobalFields.CyclotomicCharacters.PadicUnitsLog
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalDegrees.Layers
 
 @[expose] public section
 

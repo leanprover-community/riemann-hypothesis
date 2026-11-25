@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Data.ZMod.QuotientGroup
 
 @[expose] public section
 

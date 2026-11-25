@@ -11,11 +11,8 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSegre
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSegreHilb
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSegreDimGe
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PProjDegreePositive
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PCutByForm
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.RingTheory.KrullDimension.Field
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

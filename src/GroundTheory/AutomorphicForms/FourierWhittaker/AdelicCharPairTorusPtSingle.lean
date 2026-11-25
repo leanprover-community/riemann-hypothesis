@@ -3,10 +3,8 @@ module
 public import GroundTheory.AutomorphicForms.FourierWhittaker.AlgebraMapIntegerMemIntegralFiniteAdeles
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.PSeries
-import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

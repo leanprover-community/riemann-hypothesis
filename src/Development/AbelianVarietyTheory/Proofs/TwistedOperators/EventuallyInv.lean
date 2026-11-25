@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
-public import Mathlib.Topology.Algebra.Group.Units
 public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwasawaBlockTriangular
 

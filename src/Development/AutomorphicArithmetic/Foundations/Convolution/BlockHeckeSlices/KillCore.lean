@@ -5,11 +5,9 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHec
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.RepOps
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.AmpComm
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
-public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.EvExSub
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.ExistsFinMap
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.GenPiecesK
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.CapZcMemOfE
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

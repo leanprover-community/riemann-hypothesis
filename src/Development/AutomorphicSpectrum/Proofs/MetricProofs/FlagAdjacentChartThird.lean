@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartSecond
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
 
 @[expose] public section

@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LinearIndepen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardFrameGramDetNeZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfSS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensVSec
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfCo
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.CjDefs
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.BVRApply
@@ -15,12 +14,9 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.NnrealEqOneOfMulSelf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.TraceGramNondegenerate
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.UniHaar
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.MapPhiOfModM
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FibreFamilyUnique
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalUnitaryGroupTuplesTopologicalFacts
-public import Mathlib.MeasureTheory.Group.Measure
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsUniqueHaarOfInvariantRadonOnCosets
-public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InvariantRadonFibre
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramFibreMeasureFreeTupleNeZeroFinite
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -40,10 +36,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -70,14 +63,12 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsGlIsometryCompEqOfNondegenerate
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Algebra.ProperAction.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

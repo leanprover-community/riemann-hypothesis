@@ -3,25 +3,11 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
 public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.Topology.ContinuousMap.Compact
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Formalism.RealPlaceAnalysis.Complexify
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Mathlib.MeasureTheory.Integral.PeakFunction
-public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
-public import Mathlib.MeasureTheory.Group.Integral
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
 public import Mathlib.Analysis.Calculus.FDeriv.Star
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.Convex.Contractible
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -30,9 +16,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 import Mathlib.Analysis.CStarAlgebra.ContinuousMap
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.Lemma
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 

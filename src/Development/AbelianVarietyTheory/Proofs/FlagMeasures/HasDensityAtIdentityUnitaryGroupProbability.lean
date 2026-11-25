@@ -9,27 +9,16 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnitary
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 public import Mathlib.RingTheory.Complex
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-public import Mathlib.RingTheory.Norm.Transitivity
 public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueHaarDensityAtIdentity
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarVolumeThinTubeUnitaryProductAsymptotic
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Separation.CompletelyRegular
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MatGroupHaarUniqueFiniteCompactOpenPos
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.MeasureTheory.Group.AddCircle
 import Mathlib.MeasureTheory.Measure.RegularityCompacts
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.UniformSpace.Uniformizable

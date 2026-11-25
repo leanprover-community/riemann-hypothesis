@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsDetInt
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentTwistedGroupEndomorphism
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoFinitePlaceTruncationAdeleE
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

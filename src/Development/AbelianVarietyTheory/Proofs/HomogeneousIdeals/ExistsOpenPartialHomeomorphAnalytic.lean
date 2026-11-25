@@ -16,9 +16,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.Analytic.ChangeOrigin
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Constructions
 public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Comp
 public import Mathlib.Analysis.Calculus.Deriv.Mul

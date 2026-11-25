@@ -47,12 +47,9 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

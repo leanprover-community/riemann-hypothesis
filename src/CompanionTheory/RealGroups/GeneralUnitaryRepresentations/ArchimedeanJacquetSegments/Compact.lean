@@ -2,7 +2,6 @@ module
 
 public import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.Complementary
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantModulus
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 

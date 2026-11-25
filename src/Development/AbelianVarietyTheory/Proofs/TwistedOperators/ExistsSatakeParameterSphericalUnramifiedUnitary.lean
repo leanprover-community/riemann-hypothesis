@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
-import Formalism.SatakeDualWeyl.StatementF
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactUnitaryIntegralPoints
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 
 @[expose] public section

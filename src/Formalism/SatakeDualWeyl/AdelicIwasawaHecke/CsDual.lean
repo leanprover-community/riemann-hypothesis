@@ -2,11 +2,9 @@ module
 
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 public import Formalism.SatakeDualWeyl.DefsCS
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stabfin
 import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section

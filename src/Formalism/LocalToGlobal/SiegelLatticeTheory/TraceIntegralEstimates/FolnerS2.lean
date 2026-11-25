@@ -7,7 +7,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientC
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MaximalCompactIsCompact
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.IsClosedS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.UnitaryWeylCompact
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal

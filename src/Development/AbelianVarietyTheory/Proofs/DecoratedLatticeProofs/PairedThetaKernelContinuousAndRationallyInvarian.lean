@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsQuasi
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicMatrixQuotientPeriodicIntegralContinuousPaStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumThetaJointlyContinuousStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisOApplyZero
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 
 @[expose] public section
 

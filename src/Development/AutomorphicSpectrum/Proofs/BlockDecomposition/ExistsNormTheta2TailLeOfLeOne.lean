@@ -15,7 +15,6 @@ import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Mathlib.NumberTheory.NumberField.Basic
-import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
 
 @[expose] public section
 

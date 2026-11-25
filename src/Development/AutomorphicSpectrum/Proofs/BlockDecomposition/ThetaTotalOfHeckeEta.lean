@@ -21,7 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Sch
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalVolumeLift
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FuncSt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFundamentalDomainMassOneCocompactLattice
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaRestrictIsotropicQuotientWittTowerPropertie
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductMeasureStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductThetaOfSchwartzTensor
@@ -54,7 +53,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -71,13 +69,11 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Aesop.Main
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.LocallyConstant.Algebra
 import Std.Tactic.BVDecide.Normalize.Bool
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LatHatOpenAndContinuous
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsFockVectorOfSchrodingerMemFockSpaceStatement
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchrodingerThetaEqSchwartzBruhatStatement
@@ -85,7 +81,6 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ShiftedAdd
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilRepPreservesFockDegreeOfCommuteCartanStatement
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.ThetaSquareIntegrable
 import Formalism.LocalToGlobal.IndefiniteReal.RealSeparation.BesPerSt
-import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EuclideanTotal, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockTotalOfEuclidean, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaCompactness, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceConjTransposeMulSelf, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrbitMajorant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankOneMajorant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StepTotalOfProducts, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationKFinite, Development.AutomorphicSpectrum.Proofs.TwistedProofs.ExistsIsCovolOneRatMx, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaTotalOfHeckeEta

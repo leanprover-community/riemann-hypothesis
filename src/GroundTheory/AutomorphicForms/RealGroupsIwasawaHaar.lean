@@ -2,13 +2,9 @@ module
 
 public import GroundTheory.AutomorphicForms.RealGroupsIwasawa
 public import GroundTheory.AutomorphicForms.RealGroupsHaar
-import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.CategoryTheory.Countable
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Algebra.Star.Real
-import Mathlib.Topology.Algebra.Star.Unitary
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section

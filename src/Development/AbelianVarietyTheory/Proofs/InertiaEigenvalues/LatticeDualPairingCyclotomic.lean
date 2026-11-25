@@ -2,21 +2,14 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicProperties
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Mathlib.FieldTheory.Galois.Infinite
-public import Mathlib.Basic.Finite.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCompatibleSeqOfFiniteNonempty
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteLatticeCocyclesModUniformizerPow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TatePairingLatticeQuotientsNondegenerate
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

@@ -29,18 +29,11 @@ public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.StarMemSch
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryDoubledBlockDiagOne
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Kcompact
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.PresOfHat
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Inertof
 public import Development.WeilBound.ThetaLifts.SphericalLattices.HoweInert
 public import Development.WeilBound.ThetaLifts.SphericalLattices.LocDataVAlt
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitLoc
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Vaceigen
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
-import Development.WeilBound.CoreStatements.LocalThetaKernels.LocrepAd
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
 
 section -- clump:auto
 @[expose] public section

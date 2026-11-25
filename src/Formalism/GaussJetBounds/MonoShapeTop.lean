@@ -8,7 +8,6 @@ public import Mathlib.Analysis.SpecificLimits.Basic
 public import Formalism.GaussJetBounds.StatementC
 public import Formalism.GaussJetBounds.GaussJetProofs.AsmRDotAddRight
 public import Mathlib.Analysis.Normed.Ring.Ultra
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 public import Formalism.GaussJetBounds.StatementG
 public import Formalism.GaussJetBounds.GenLogInverse
@@ -16,13 +15,9 @@ public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Formalism.GaussJetBounds.GaussJetProofs.PureCrossTermWeight
 public import Formalism.GaussJetBounds.OneLetterRadius
-public import Formalism.GaussJetBounds.Statement
 public import Formalism.IncomingBounds.WeightIdentities
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
-import Formalism.IncomingBounds.FlowDegreeBounds.ProdRangeEqFactorialMulProdIco
-import Formalism.GaussJetBounds.GaussJetProofs.OneLetterRadiusIdentity
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.GaussJetBounds.GaussJetProofs.CapacityLeReachCapacity, Formalism.GaussJetBounds.GaussJetProofs.FrameCoeffMulLin, Formalism.GaussJetBounds.GaussJetProofs.LemmaRA, Formalism.GaussJetBounds.GaussJetProofs.ThmAJet, Formalism.GaussJetBounds.GaussJetProofs.TheoremAOneMonomialLogLoss, Formalism.GaussJetBounds.MonoShapeTop

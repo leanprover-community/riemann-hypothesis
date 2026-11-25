@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
 public import GroundTheory.AutomorphicForms.GL2Classical.Adelic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

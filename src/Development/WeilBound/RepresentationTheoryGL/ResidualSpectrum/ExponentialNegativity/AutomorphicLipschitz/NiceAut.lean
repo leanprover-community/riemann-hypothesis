@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Conti
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchLieDerivativeExists
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenLevel
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLeftInvariantOfIsAutForm
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 
 @[expose] public section
 

@@ -41,7 +41,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpandsAtCancelNonzeroScalar, Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsSecExpandsAtOfIntegralFamily

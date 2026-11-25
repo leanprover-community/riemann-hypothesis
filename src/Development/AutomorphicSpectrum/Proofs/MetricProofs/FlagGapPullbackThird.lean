@@ -9,11 +9,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPermOfRa
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapPullbackFirst
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HoloOnDivCongr
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumSqCompBlockMap
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricGrassmannChartLocal
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogBlockMetricOffBoundary
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

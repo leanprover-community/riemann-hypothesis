@@ -14,15 +14,9 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsB
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFormSec
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MeetsOpensOfSeparatesSections
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.CardTorsionTranslateZerosLt
-import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DegenerationProofs.PartVanishesOnTorusTorsionFourier, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.PureEqZeroOfVanishingOnTorsion, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FormVanishesOfTorsionTorusExtension, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FormVanishesOfTorsionTorusExtensionStatement

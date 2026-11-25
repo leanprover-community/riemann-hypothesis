@@ -11,7 +11,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.PerpendicularDefinitionHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocModel
 public import Mathlib.Algebra.Order.Field.GeomSum
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
 import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.

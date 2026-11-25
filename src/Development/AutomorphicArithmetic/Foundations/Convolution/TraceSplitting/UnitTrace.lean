@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.SplitStable
-public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor
 public import Development.WeilBound.CuspidalAdmissibility.OccursIff
 public import Development.AutomorphicArithmetic.TwistedTraces.SummandLeClosureSpanLocalTypeImages
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.LocUApply

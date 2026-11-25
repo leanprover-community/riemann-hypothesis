@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
-public import Mathlib.Algebra.Module.ZLattice.Basic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RCocompactPfApprox
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RCocompactPf
 import Mathlib.Tactic.Linter.Style

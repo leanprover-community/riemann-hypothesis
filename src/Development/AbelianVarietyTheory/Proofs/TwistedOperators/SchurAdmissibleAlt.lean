@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPar
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RepresentationTheory.Irreducible
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.DataHost

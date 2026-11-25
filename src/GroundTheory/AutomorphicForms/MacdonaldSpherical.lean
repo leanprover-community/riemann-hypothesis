@@ -1,9 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.MacdonaldHecke
-import GroundTheory.AutomorphicForms.AffineBruhat
-import GroundTheory.AutomorphicForms.MeasuresGL
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected

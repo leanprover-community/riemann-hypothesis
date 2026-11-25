@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.IsUnitDetOfMemGV
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.ConverseStep
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FrameInd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.ConvAlg
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth

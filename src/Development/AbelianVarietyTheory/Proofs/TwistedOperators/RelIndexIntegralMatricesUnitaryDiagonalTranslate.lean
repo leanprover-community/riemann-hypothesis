@@ -50,17 +50,10 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop

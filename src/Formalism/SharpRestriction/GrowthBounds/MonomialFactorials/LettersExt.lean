@@ -9,8 +9,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockBoundUniformiser
-import Formalism.SharpRestriction.GrowthBounds.CountingStatementReduction
-import Formalism.SharpRestriction.GrowthBounds.FlipOneThree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BoxOfFibres, Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.LettersExt

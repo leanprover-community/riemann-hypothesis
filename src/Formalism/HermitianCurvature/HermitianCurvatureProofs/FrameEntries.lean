@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorRepr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.SharedLemmas.HpkSq
 
 @[expose] public section
 

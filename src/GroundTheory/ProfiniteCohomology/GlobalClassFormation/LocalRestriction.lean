@@ -1,11 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
-import GroundTheory.ProfiniteCohomology.Factor
-import GroundTheory.ProfiniteCohomology.FilteredHomology
-import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LevelsColimit
-import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.GlobalClassFormation.UnitsLevels, GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction

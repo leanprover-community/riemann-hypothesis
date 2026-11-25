@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Kma
 public import Formalism.LocalToGlobal.KernelLattices.ENatEq
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.IndexExponentDegree
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmulCompSmul
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.AtZeroCompProdX
 public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormEqOfSplit
@@ -26,8 +25,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OrdSu
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDivLatticeQuotient
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaSupportInDivLattice
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.AmbOfENeSd
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivGen
@@ -49,9 +46,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify

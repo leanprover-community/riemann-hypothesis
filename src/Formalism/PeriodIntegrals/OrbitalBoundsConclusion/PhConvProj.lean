@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConvolutionProje
 public import Mathlib.Analysis.InnerProductSpace.LinearMap
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import Mathlib.Analysis.InnerProductSpace.Continuous
 public import Mathlib.MeasureTheory.Integral.Prod
 public import Formalism.PeriodIntegrals.PhConvProj
 import Mathlib.Tactic.Linter.Style

@@ -2,14 +2,10 @@ module
 
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.IsDSOfIsDG
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TorusWeightEigenAndRootShift
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.DerivedActionDiscreteSeriesProperties
 public import Formalism.RealPlaceAnalysis.StatementKT
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.CayleyExistsAndAny
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DominantRootSums
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerSmoothStability.ExistsFinStableOfMemSSup
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 

@@ -16,9 +16,7 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LambdaBundleI
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjMapOfIsHeckeIsog
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ObjMapUniqueOfIsDominant
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 @[expose] public section
 

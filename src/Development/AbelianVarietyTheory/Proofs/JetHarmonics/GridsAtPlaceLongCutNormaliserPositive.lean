@@ -3,12 +3,6 @@ module
 import CompanionTheory.AutomorphicTheory.BesselWaveGrids.FourLeOfFive
 public import Formalism.HermitianCurvature.StatementI
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Order.Interval.Finset.Nat
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Intervals
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Formalism.HermitianCurvature.StatementM
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OnePointBasisFundamentalDomainVolume

@@ -30,13 +30,11 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRenameIntNum
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Sub.Prod
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.RingTheory.KrullDimension.Polynomial
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbExactDivide
 
 -- This file was produced by scripts/clump.py from the modules listed below.

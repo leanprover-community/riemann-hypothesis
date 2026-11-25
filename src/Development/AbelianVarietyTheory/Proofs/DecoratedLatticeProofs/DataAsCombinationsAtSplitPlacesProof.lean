@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SmallPair
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationDisjointPlacesCommuteVacua
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceBaseVacuumDatumExistsUniqueStatement
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CombAtSingleZero
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceChangeBaseVacuumHeisenbergCombination
 
 @[expose] public section

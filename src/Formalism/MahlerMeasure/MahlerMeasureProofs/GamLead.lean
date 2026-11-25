@@ -5,7 +5,6 @@ import Formalism.MahlerMeasure.MahlerMeasureProofs.FockPairing
 public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.MahlerMeasure.FinalM
 import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeBij
-import Formalism.MahlerMeasure.MahlerMeasureProofs.LevelAct
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.LinearAlgebra.Dual.Lemmas

@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 
 @[expose] public section
 

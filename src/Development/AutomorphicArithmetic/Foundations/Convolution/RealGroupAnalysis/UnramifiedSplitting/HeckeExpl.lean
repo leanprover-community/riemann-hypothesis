@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.SplitAt
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.ExistsCombComb
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.MemIffLocal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.SphDict
@@ -9,7 +8,6 @@ import GroundTheory.AutomorphicForms.HaarCosets
 import GroundTheory.AutomorphicForms.MacdonaldHecke
 import GroundTheory.GlobalFields.CompletionAtPlace.Inertia
 import GroundTheory.GlobalFields.LocalAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

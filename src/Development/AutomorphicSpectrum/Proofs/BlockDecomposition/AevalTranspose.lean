@@ -5,34 +5,17 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteTw
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableSdot
 public import GroundTheory.AutomorphicForms.AnisotropicOrbit
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulEqOfRangeLe
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Data.Matrix.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OnlyStableSubspaces
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicDegreeFormula
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.Algebra.Module.Submodule.LinearMap
-public import Mathlib.Algebra.Module.Submodule.Range
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.LinearAlgebra.Dimension.Free
-public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import GroundTheory.AutomorphicForms.ReductionHeight
 public import GroundTheory.AutomorphicForms.AnisotropicHeight
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.OnlyIsotropic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjugatePlacesFacts
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DegreePairingIdentity
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormCVPosIdele
-public import Mathlib.FieldTheory.Separable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCyclicVectorOfSeparable
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.WedgeSub
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.QuotientVanishing.QuotVanish
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.InvTransposeGLInvTransposeGL
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.ReductionMahler
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

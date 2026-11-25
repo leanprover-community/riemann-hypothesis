@@ -7,7 +7,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HNormA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValNorm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValUFD
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraMapOLInjective
 
 @[expose] public section
 

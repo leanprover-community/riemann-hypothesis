@@ -8,7 +8,6 @@ public import Mathlib.NumberTheory.Harmonic.Bounds
 public import Mathlib.Algebra.Order.Chebyshev
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IntegralNormSqLp
 import Mathlib.Algebra.Order.Star.Int

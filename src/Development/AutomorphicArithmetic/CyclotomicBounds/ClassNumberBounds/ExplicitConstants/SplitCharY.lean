@@ -1,16 +1,13 @@
 module
 
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.LogRootDiscChar
-public import Mathlib.NumberTheory.MulChar.Duality
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.IsImagQuad
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.BridgeDefs
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.CondDisc
 public import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.CycInertia
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI

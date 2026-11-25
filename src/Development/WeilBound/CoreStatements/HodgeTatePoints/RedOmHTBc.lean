@@ -4,13 +4,6 @@ public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.Valuation.Integers
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.Algebra.Ring.Hom.InjSurj
-public import Mathlib.LinearAlgebra.Quotient.Defs
-public import Mathlib.RingTheory.Finiteness.Basic
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.LocalRing.Module
 public import Mathlib.Algebra.Module.Lattice.Basic
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.OmStable
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.EigSubEqDifferentSmulEigQuot

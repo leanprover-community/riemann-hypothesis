@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

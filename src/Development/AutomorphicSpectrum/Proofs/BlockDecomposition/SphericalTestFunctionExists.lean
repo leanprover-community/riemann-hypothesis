@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.IsEpCont
 public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -10,9 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFin
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebra
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdInfMulFinPart
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSquareMulInfinite
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.HaveILetI
 

@@ -51,7 +51,6 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemPrinCongOfSm
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NeZeroTop
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 import Mathlib.Tactic.Polynomial.Basic

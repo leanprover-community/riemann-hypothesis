@@ -3,8 +3,6 @@ module
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Group.Ultra
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Group.Subgroup.Defs
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicTowerTraceAlmostSurjective
 import Mathlib.Tactic.Polynomial.Basic
@@ -13,11 +11,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormPrimitiveR
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar

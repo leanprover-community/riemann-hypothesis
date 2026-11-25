@@ -9,7 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumTe
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
-import GroundTheory.LocalFields.PadicLogSeries
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

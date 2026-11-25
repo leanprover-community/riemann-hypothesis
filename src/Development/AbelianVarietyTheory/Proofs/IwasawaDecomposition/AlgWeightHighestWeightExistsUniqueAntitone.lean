@@ -6,26 +6,12 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EvalU
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraicWeightPolyMatrixMultiplicative
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanRationalPointOrbitAlgebraicWeight
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.Data.Matrix.PEquiv
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-public import Mathlib.LinearAlgebra.Matrix.IsDiag
 public import Mathlib.Topology.Algebra.MvPolynomial
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBorelEigenvectorOfPolynomialRepGLComplex
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolynomialRepGLComplexAlgebraicWeightEvalPoint
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
 import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects

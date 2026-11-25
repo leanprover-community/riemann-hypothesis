@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
-public import Mathlib.Analysis.Matrix.Order
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiHolomorphicNearPositiveMatricesAtOne
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff

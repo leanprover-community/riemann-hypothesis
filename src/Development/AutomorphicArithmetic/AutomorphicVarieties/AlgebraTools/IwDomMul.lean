@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwLeviMul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwPermUnit
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
 

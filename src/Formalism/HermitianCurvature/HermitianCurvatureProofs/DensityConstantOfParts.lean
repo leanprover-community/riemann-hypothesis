@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockTwoDiagonalZeroSize
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostermanDensityOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixOneZero
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FubiniHeadLastPart
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostermanDensity, Formalism.HermitianCurvature.HermitianCurvatureProofs.DensityConstantOfParts

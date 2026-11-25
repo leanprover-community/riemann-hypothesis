@@ -1,15 +1,11 @@
 module
 
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.MCoordIdealLeOfHomog
-public import Mathlib.FieldTheory.RatFunc.AsPolynomial
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryFactorCommutation
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.IsBlockMapInitialVertex
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverTransferIdealEq
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

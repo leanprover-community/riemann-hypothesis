@@ -10,7 +10,6 @@ public import GroundTheory.AutomorphicForms.ReductionSplitting
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ExpNegGlue
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsRightHaarMeasure
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BoundOfNatDegree
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SetLIntegralLeOfBound
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UpdateLeUpdate
@@ -24,8 +23,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Expo
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.SquareIntegrableCovers.SetLIntegralLeOfCover
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.AutomorphicForms.ReductionFinite
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CountLeOfDvd, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SingleVecMulUnipMatrix, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.GapPairings.GapGlue, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.SqIntCritOf

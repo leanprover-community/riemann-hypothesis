@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecU
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSubquotSmIndCongr
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSubquotientOfSameSphericalHeckeEigenvalues
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFixedIff
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

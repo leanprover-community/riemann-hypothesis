@@ -5,9 +5,7 @@ public import CompanionTheory.AutomorphicTheory.HeckeStandardModules.ExistsCen
 import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
 public import Mathlib.NumberTheory.NumberField.ExistsRamified
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.Mk0IdMapCongr
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PlacesOfRationals.GenLeOfFintype
-public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 
 @[expose] public section
 

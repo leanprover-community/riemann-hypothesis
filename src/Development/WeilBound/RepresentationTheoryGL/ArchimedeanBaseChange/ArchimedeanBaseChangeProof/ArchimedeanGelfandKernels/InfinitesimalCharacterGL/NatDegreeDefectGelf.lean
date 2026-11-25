@@ -5,10 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPa
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorPolyMap
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CapelliOfGelfand
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceElementGelfandPolynomialFormula
-import Formalism.RealPlaceAnalysis.StatementE
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetAddOneSubEqSumQminor
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetPolyMapMonic
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TracedQminorComatrixTruncatedInverse
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

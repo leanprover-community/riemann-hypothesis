@@ -2,9 +2,7 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeExact
 public import GroundTheory.HeightsAndTheta.Heights.HermitianSum
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit

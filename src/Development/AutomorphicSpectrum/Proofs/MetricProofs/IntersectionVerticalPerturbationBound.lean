@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenFibre
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogIdealChain
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedA
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 
 -- This file was produced by scripts/clump.py from the modules listed below.

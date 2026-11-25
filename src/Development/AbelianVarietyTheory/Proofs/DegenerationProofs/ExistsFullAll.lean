@@ -54,8 +54,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FinitePresentationOfInjective
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 

@@ -5,7 +5,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedB
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceComposition
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupExistence
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.MvPowerSeries.Basic
 public import Formalism.LocalRingCardinality.DataKerI
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTieAlg
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

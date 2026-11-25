@@ -4,8 +4,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAt
 public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBP
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Data.Set.Finite.List
 
 @[expose] public section
 

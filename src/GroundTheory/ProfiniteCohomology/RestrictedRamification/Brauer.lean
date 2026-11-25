@@ -2,11 +2,9 @@ module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalVal
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDivisor
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
 import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 import GroundTheory.ProfiniteCohomology.Colimit
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ExistsUnitsToIdelesEqOfIdelesSumInvEqZero
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 
 @[expose] public section

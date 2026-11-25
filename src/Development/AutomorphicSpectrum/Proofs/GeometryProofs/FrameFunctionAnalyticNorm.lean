@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsConstMul
-public import Mathlib.AlgebraicGeometry.AffineScheme
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
 public import Mathlib.Analysis.Analytic.Polynomial
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
@@ -16,15 +15,10 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentOpe
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentPointValueHolomorphic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFramesAnalytic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionsFlatAgree
-public import Mathlib.Basic.Complex.Basic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValueLocallyRegularFunction
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEigenLineGenerator
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NotIsLineFnZero, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsDomainAway, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicFamilyOfHoms, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicChartNearPoint, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionAnalyticNorm

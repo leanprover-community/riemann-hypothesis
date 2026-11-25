@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeRationalVectorsInAdelicTranslate
 public import Formalism.LocalToGlobal.Columns.CoefModAt
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousCoeffBlockAct
 
 @[expose] public section
 

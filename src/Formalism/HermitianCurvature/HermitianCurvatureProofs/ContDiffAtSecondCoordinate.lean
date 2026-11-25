@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HcoSmulRight
-import Mathlib.Analysis.InnerProductSpace.Calculus
 
 @[expose] public section
 

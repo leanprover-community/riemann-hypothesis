@@ -9,8 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryL
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
-import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

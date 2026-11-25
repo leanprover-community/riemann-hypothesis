@@ -2,7 +2,6 @@ module
 
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcEqOfPowEqOne
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycBasic
-public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycLift
 import Mathlib.Tactic.Linter.HaveILetI

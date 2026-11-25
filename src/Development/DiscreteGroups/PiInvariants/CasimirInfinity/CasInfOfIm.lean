@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 public import Mathlib.Analysis.Real.Pi.Bounds
@@ -10,7 +9,6 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.LeftInv
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.EntZero
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic

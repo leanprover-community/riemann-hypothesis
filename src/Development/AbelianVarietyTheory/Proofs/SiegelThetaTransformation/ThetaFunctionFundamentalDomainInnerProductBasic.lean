@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsNormaliseMeanSquareOfCocompact
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSumHeisenbergTranslatesDistinctChars
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style

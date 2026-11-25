@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

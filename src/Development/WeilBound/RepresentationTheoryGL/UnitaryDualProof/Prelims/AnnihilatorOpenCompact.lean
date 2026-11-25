@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.LocalField.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddCharConductorAndHaarIntegersExist
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierTransformInversionLocalFieldPi
 import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 
 @[expose] public section
 

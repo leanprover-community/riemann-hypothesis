@@ -4,9 +4,6 @@ public import Formalism.LocalToGlobal.Columns.ChainInstS
 public import Formalism.LocalToGlobal.Columns.ChainTwOk
 public import Formalism.LocalToGlobal.Columns.AtTOwedC
 public import Formalism.LocalToGlobal.Columns.ChainTwCst
-import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
-import Formalism.LocalToGlobal.Columns.StdBasisFlagSubmoduleOfBlockTriangular
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SandwichNormalForm
 
 @[expose] public section

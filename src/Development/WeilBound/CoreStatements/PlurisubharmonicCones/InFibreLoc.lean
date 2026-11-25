@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.Integra
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalFractionField
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GhModelGeo
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.AevalCyclotomic
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.NormBound

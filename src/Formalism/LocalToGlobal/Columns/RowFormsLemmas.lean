@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.Columns.RowForms
 public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
-import Formalism.LocalToGlobal.Columns.DecoFin
 public import Formalism.LocalToGlobal.Columns.GSetLemmas
 import Mathlib.Topology.Sheaves.Presheaf
 

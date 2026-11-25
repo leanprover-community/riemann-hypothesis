@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddCharCo
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemTwKerPolyBall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsRepsSumEqZero
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.TwKerLeComapOf
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

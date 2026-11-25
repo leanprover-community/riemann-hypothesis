@@ -4,28 +4,17 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFor
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GenericDetPowMulHw
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ProdFactorialSupportSubSingle
-public import Formalism.RealPlaceAnalysis.FockPairGl
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RepresentationTheory.Intertwining
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyDirectSumEquivOfFinrankLe
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleOuterTprod
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIrreducibleSmallRepUnitary
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LFocksLemmas
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
-import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Formalism.GradedWeylDivisibility.FinalB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsColAddFixedOfStable, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMapNablaSqPad, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsStableDisjoint, Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenericSubmoduleMonomials, Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemDualWeylOfUnitriangularFixed, Development.AbelianVarietyTheory.Proofs.TwistedOperators.OuterTensorIntertwiningEqZeroOfLeft, Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairingEquivariantAndNeZero, Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowDivEqZeroOfMatRepUnipotentFixed, Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeightMapDomain, Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeightedHomogeneousComponentColWMem, Development.AbelianVarietyTheory.Proofs.TwistedOperators.SqRepTopVecOfUnitriangular

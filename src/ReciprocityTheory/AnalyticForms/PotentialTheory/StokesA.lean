@@ -5,8 +5,6 @@ import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

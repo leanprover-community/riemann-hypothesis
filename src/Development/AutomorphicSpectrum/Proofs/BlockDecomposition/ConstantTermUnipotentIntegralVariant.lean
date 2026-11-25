@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartUnipotentFderivContinuousOn
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNormalisedThetaSub
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCuspidalLieActionOfIsCuspForm
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AdlEqZeroOfMemNbhd
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineGLForms.GenSpace
 

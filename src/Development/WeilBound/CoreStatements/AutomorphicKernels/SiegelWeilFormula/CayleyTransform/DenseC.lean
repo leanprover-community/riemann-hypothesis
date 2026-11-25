@@ -3,8 +3,6 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.Complex.Trigonometric
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

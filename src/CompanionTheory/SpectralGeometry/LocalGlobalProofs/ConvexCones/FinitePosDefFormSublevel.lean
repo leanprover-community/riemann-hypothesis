@@ -6,14 +6,11 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.ConvexCones.Rat
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Data.Pi.Interval
 import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsStrictIff
 public import Mathlib.Analysis.Normed.MulAction
 public import Mathlib.Topology.Instances.Matrix
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 
 @[expose] public section
 

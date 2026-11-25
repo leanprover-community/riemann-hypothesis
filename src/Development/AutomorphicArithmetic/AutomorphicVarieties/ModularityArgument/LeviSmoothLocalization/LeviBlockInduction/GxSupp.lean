@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.LeviBlockInduction.GxDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.WinUpDown
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SupercuspidalSupportUniqueGL
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCovBySubmodule
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEquivDetCharacterOfIrreducibleRankLeOne
@@ -15,7 +14,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetM
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.BernsteinZelevinskyFiniteness
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GeometricLemma
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HasSupportOfIsSubquotientProdIrr
-import Formalism.DoubleCosetMeasures.Statement
 public import GroundTheory.AutomorphicForms.GL2.GJFELevi
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

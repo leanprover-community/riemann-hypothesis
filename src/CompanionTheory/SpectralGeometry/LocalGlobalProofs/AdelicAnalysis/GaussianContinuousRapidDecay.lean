@@ -3,7 +3,6 @@ module
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 public import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Algebra.Order.Star.Real

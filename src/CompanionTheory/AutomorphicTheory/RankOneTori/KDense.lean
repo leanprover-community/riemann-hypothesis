@@ -8,12 +8,9 @@ public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.Smoo
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfIwasawa
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.MaximalCompactIsCompact
-import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.ContinuousMap.StoneWeierstrass
 
 @[expose] public section
 

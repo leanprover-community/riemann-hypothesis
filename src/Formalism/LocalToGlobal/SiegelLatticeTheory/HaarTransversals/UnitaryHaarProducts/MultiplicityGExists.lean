@@ -10,7 +10,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements
 public import Mathlib.Topology.Algebra.Group.OpenMapping
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.FundamentalContinuity.AdelicIsomorphismStatement
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

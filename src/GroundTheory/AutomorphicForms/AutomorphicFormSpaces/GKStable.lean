@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
 public import GroundTheory.AutomorphicForms.ReductionFinite
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.TypeStar
 

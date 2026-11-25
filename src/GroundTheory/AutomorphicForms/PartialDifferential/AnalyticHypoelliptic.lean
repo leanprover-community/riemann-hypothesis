@@ -4,14 +4,10 @@ public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoBasi
 public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCutoff
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.Analytic.IteratedFDeriv
 public import Mathlib.Analysis.Calculus.Taylor
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoStep
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoCalc
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.UniformSpace.Uniformizable
 

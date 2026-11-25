@@ -3,8 +3,6 @@ module
 public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
-public import Mathlib.MeasureTheory.Constructions.Polish.Basic
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma

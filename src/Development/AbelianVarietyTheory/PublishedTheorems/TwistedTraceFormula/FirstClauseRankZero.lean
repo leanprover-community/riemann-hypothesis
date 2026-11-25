@@ -46,11 +46,9 @@ import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValHalfInf
-import Formalism.LocalRingCardinality.DataTheta
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

@@ -4,8 +4,6 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 
 @[expose] public section
 

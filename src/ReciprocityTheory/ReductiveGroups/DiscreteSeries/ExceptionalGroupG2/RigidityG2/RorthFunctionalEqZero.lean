@@ -9,7 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.CasimirGapAtNoncompactWeight
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RorthFunctionalEqZero
 import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RorthFunctionalEqZero
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 
 @[expose] public section
 

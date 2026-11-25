@@ -4,11 +4,8 @@ public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
-public import Mathlib.Analysis.Matrix.Hermitian
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop

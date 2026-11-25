@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSt
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianFormAtFrameLaws
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ThetaFunctionTorusL2Norm
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.FlatMemLatIffStdLat
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.TraceHermNondegenerate
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.L2NormFundamentalDomain
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ContinuousThetaSectionPointwiseNormSq
@@ -21,10 +20,7 @@ import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TiledBoundaries.MemSpanBn
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SupLeL2PrincipalTorus
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Std.Tactic.BVDecide.Normalize.Prop

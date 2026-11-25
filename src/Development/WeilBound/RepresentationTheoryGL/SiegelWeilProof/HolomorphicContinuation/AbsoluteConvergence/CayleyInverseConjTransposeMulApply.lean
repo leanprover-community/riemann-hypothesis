@@ -1,13 +1,7 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.InnerProductSpace.Orthonormal
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.DerivativeVacuumDilationsAlt
 public import Mathlib.Analysis.SpecialFunctions.Arsinh
 import Mathlib.Tactic.Linter.Style

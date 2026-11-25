@@ -2,23 +2,13 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.OnlyIsotropic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousConjNilSymm
-public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.MeasureTheory.Group.LIntegral
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoPolish
-public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.InvTransposeGLInvTransposeGL
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralNonnegNormaliserEq
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableNilrad
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.QuotientVanishing.QuotVanish
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EqZeroOfCommuteOfSeparable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIsometryFlagOfEquiv
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsMulRightInvariantOfCenter
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.VeryCuspZero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwCentPreservesFlag
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Objects
 
 -- This file was produced by scripts/clump.py from the modules listed below.

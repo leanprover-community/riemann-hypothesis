@@ -7,7 +7,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
 public import Mathlib.MeasureTheory.Function.Jacobian
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ContinuousTmaxShift
 
 @[expose] public section
 

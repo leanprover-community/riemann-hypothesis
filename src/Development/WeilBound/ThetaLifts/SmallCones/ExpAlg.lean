@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompactSupportFinprodSchwartzBruhatFiniteAdel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantFinprodSchwartzBruhatFiniteAdel
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
 import Mathlib.Tactic.Linter.Style

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Idemp
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChartPointRightTranslateByLevelCoupledStep
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralAtOfAdelicIntegralAt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemIntegralGLPrincipalCongruenceOfColsCong
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.XiAtCongInvariant
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.XiTopEqProd
 

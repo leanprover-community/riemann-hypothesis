@@ -7,12 +7,8 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGSO
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensGSDvr
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.MemSmulLatCoord
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.FieldTheory.Finiteness
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitDensity.FiberCard
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.DensExact
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDensityCorank.SplitCount
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
@@ -34,11 +30,8 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd

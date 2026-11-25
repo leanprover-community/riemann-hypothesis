@@ -6,7 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Formalism.LocalToGlobal.ProjectiveLattices.CoreProofs
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntFrames
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIntegralFramesModelInvertiblePushforward
-public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsModelPushInvertibleOverCompleteDVR
 public import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
 public import Formalism.LocalToGlobal.ProjectiveLattices.RealPtGeo

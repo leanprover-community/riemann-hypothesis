@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LatticeTheta.LatticeSummableDecay
-public import Mathlib.Algebra.Module.ZLattice.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 public import Formalism.LatticeTheta.Statement
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 public import Mathlib.Algebra.Module.ZLattice.Summable

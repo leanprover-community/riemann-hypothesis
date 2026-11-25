@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.DerivExistsAllPosStatement
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 import Mathlib.Tactic.Lemma
 
 @[expose] public section

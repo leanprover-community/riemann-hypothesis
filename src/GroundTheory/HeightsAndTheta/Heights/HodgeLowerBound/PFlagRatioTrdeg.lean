@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.GenericMinors
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.FlagPivot
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagPivotIdentity
 import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1

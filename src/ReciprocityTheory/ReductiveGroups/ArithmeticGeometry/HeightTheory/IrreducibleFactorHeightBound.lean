@@ -4,7 +4,6 @@ public import Mathlib.RingTheory.Derivation.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
 public import ReciprocityTheory.SemistableReduction.AlgebraicIndependentOfDerivations
 public import ReciprocityTheory.SemistableReduction.ExistsDualDerivations
-public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AevalElimEqRenameLinearSubstitution
 public import Mathlib.RingTheory.Ideal.Height
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightIntegralEstimates
@@ -13,19 +12,14 @@ public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.SemistableReduction.LagrangeIdealLiftsFact
 public import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NatDegreeLeAndCoeffProdPow
-public import Mathlib.NumberTheory.NumberField.ProductFormula
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HtDefs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IrreducibleFactorStructure
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.SemistableReduction.SphereTorusA
 import Mathlib.Order.CompletePartialOrder
-import ReciprocityTheory.SemistableReduction.GaussAbsMulOfMonomialOrder
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValAlgebraMapEqZero
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GeneratorNeZeroOfHeight
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraicIndependentScaledForms, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightKerScaledSubstitutionLeOne, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ContinuousTorusPoint, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LogHeightLeTorusHeightSubst, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IrreducibleFactorHeightBound

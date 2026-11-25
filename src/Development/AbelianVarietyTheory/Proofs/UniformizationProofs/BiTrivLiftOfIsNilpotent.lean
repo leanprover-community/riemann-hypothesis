@@ -7,20 +7,10 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueTorusCompat
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
-public import Mathlib.Algebra.MonoidAlgebra.Basic
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.RingTheory.Nilpotent.Basic
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompRedIff
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.Algebra.MonoidAlgebra.MapDomain
-public import Mathlib.RingTheory.Ideal.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

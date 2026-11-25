@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.DifferentiableOnFamPtAffine
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsConstOfCover
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsLinearOfMulPeriod
 import Mathlib.AlgebraicGeometry.Modules.Sheaf

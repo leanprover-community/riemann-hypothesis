@@ -50,7 +50,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 
 @[expose] public section
 

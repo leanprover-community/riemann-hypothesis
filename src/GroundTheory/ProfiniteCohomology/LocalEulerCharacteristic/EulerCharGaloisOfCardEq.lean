@@ -10,18 +10,13 @@ public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.LubinTatePoints
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Vanishing
 public import GroundTheory.ProfiniteCohomology.EulerCharDefs
-public import Mathlib.FieldTheory.IsSepClosed
-public import Mathlib.FieldTheory.KrullTopology
 public import Mathlib.NumberTheory.LocalField.Basic
-public import GroundTheory.ProfiniteCohomology.Colimit
 public import GroundTheory.ProfiniteCohomology.EulerChar
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Coprime
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCoind
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCount
 import Mathlib.Tactic.TypeStar
-import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ModNEquivOfSurjectiveApplyModNRep
-import GroundTheory.ProfiniteCohomology.PoincareDuality
 import Mathlib.Algebra.Order.Star.Rat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

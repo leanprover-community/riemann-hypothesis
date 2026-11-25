@@ -7,7 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.U
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JSchurG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StSInt
 import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JPairsA
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

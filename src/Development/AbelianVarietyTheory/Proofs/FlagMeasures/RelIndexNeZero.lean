@@ -56,7 +56,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
-import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsBisTer, Development.AbelianVarietyTheory.Proofs.FlagMeasures.RelIndexNeZero

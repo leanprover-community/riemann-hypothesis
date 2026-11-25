@@ -25,7 +25,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -50,7 +49,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 

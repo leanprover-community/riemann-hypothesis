@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteCovolumeUnimodular
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfAeFundamentalDomainOfLeftInvariant
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Lemmata.MiscLemmasB.Imports
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

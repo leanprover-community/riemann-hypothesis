@@ -10,9 +10,6 @@ import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentati
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsIntegralAtLocF
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsUnimodularAtIffVd
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.UnimodularOfMemGenusOrtho
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
-import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

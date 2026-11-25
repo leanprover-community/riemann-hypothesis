@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeOnMemGo
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsFramedPointBaseChangeAlgHom
 public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSupA
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

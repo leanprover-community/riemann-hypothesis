@@ -8,10 +8,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharStd
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSplit
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.TermTiesEmptyOfLargeIndex
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
-import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.PicardGroup
 
 @[expose] public section
 

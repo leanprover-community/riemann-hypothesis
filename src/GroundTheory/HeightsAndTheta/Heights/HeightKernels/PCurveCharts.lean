@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsClosedPointChart
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
-import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 

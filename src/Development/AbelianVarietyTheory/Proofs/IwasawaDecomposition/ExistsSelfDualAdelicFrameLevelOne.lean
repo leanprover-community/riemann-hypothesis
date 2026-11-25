@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicCompletion
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfMemSpanFraction
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFiniteAdeleCompleteSeparated
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemAdelicCompletionPseudoBasisIff
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 
 @[expose] public section
 

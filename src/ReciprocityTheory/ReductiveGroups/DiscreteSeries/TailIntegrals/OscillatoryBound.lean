@@ -6,7 +6,6 @@ public import Mathlib.MeasureTheory.Group.LIntegral
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Imports
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius

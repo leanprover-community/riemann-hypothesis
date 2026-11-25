@@ -3,7 +3,6 @@ module
 import Formalism.FormalGroupWitt.FormalGroupWittProofs.WittTeichmullerRoot
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.CharZeroWittQuadratic
-import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IsLocalRingOfComplete
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 

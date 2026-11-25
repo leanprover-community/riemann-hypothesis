@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.IsSquareDeterminantComparison
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsChartOfMemRedKer
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AwayToAwayRightEqOfComp
 
 @[expose] public section
 

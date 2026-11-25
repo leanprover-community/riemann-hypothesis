@@ -8,12 +8,10 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Compl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameMoveCharacterNeOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IndexIntegrableShareTopLevelVectors
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
-public import Mathlib.Analysis.Complex.Norm
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IndexMeasureIntegralLinearPositiveNormBound
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IndexMeasureIntegralProdFubiniStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermIntegralNearOneBound
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToLePerp
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermExponentsNonnegAndDefectGroupBound
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

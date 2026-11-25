@@ -10,7 +10,6 @@ public import Mathlib.RingTheory.KrullDimension.Polynomial
 import Mathlib.Tactic.Linter.HaveILetI
 public import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.RingTheory.Finiteness.Ideal
 public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 
 @[expose] public section

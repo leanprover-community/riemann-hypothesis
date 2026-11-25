@@ -9,19 +9,12 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CentreSetDom
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatingModelChartCompat
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralClosureChartSpan
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaled
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.LocalRing.LocalSubring
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringIntegralClosureMax
-public import Mathlib.RingTheory.LocalRing.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MaximalIdealMembershipOfLocal
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeMemIffNotUnitLocalization
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModelNonempty
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularFunctionsTwoComponents
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPrimeExistsUniquePoint
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtChartLocalization
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.CoreStatements.HodgeTatePoints.MbLNormExists
 

@@ -3,14 +3,12 @@ module
 public import Formalism.PeriodIntegrals.AmpRootH
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupHaar.ContinuousGS
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.ContinuousRootCoords
 public import Formalism.PeriodIntegrals.AmpRoot
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpRootCut
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AmpOrbQuot
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AmpRelAtPt
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.PeriodIntegrals.AmpOrbQ
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupHaar.MatEqZeroOfSpan
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

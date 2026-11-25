@@ -7,26 +7,16 @@ public import Mathlib.RingTheory.Ideal.Quotient.Defs
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChartA
 public import Mathlib.Algebra.Algebra.Rat
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.Ideal.Prime
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChart
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.StalkLocA
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.MemConePtsIffChartIdeal
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPC
-public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.Algebra.TrivSqZeroExt.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.RingTheory.Kaehler.Basic
-public import Mathlib.Algebra.Algebra.Hom.Rat
-public import Mathlib.RingTheory.Localization.Away.Basic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChart
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionRegularLocalRing

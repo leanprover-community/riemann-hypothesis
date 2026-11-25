@@ -5,10 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsI
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GlobalArtinReciprocityMapUnique
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InverseLocalArtinContinuousOnInertia
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SmoothWeilCharEqOneOfToAbsGaloisAbEqOne
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.LocalFields.Integers
-import GroundTheory.LocalFields.PadicLogSeries
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 

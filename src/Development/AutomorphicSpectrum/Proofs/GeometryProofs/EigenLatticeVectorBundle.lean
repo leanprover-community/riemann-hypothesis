@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSp
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeVectorBundleOfSmooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 import Std.Tactic.BVDecide.Normalize.Prop

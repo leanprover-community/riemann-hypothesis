@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.UnipotentIntegralPreservesLattice
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseMulEquiv
 import Mathlib.Algebra.AffineMonoid.Basic
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.LinearIndependentOfDetGram
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPower
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.AnaSysW
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalB
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.BridgeTwoMore
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.ChordEquation
-public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
 
 @[expose] public section
 

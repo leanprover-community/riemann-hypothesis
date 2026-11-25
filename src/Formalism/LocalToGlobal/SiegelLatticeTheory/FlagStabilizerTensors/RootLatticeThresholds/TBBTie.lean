@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BigCellDensity
 public import Formalism.HermitianCurvature.StatementTBB
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 
 -- This file was produced by scripts/clump.py from the modules listed below.

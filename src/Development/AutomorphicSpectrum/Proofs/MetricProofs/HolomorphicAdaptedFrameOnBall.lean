@@ -7,9 +7,7 @@ public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameInverseProperties
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PPartRealSmul
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormSqEqAdaptedFrameSum
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallDomainOpenConvexZero
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsAdaptedFrameBis
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicCoefficientsInFrame

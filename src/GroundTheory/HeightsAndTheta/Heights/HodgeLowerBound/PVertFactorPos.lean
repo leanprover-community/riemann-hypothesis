@@ -2,12 +2,10 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenFibreHomog
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
 @[expose] public section
 

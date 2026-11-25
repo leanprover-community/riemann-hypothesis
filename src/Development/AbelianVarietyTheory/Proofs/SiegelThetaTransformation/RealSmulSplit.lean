@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeisenbergDerivativeThetaFunctionLaws
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 
 @[expose] public section
 

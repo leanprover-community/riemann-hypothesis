@@ -2,8 +2,6 @@ module
 
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementG
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
-public import Formalism.GaussJetBounds.StatementP
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.EJoint
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementGK
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.ThmSUniform

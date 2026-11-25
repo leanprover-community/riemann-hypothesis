@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 
 @[expose] public section
 

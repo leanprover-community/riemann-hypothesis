@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.StdBasisFlagSubmoduleOfBlockTriangular
 public import Formalism.LocalToGlobal.Columns.ChainOneB
-import Formalism.LocalToGlobal.Columns.ChainInst
 
 @[expose] public section
 

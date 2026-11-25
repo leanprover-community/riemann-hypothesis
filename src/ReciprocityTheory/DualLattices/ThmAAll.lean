@@ -23,7 +23,6 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import ReciprocityTheory.DualLattices.IsFibreSq
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.DualLattices.OneAddPowOfSq, ReciprocityTheory.DualLattices.NsmulTensorEqZero, ReciprocityTheory.DualLattices.SmKerSurj, ReciprocityTheory.DualLattices.TotalFibreMapTotalFibreNsmulSnd, ReciprocityTheory.DualLattices.TangentPairingStatementOfHeightFunctional, ReciprocityTheory.DualLattices.ThmAAll

@@ -2,11 +2,7 @@ module
 
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
-import GroundTheory.AutomorphicForms.ReductionFinite
-import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 public import GroundTheory.GlobalFields.TateThesis.GlobalZetaFinite
-import Mathlib.Algebra.Module.ZLattice.Summable
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue

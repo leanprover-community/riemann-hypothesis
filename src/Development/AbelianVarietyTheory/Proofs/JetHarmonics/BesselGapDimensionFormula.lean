@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselCharacterUnipotentRadicalPropertiesStatement
-public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GrowthUnitaryGroupRpowNegIntegrable
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
@@ -10,15 +9,10 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayB
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselSubgroupParameterMeasurePreservingStatement
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesUnitarySmoothBasic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HaarEqSmul
-public import Formalism.PeriodIntegrals.BesselPeriodGGP
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeilFormulaIntegrableComplex
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ReproducingFormulaReduction
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselNeZeroOfCyclicOrbit
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaContOn
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.HpkMulMulHpkApply
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

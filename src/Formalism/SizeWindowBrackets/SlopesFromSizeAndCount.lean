@@ -7,8 +7,6 @@ public import Formalism.SizeWindowBrackets.ErrorFormsWeakWindowsFalse
 public import Formalism.ThickAverageLoss.PartnersToFactorsAt
 public import Formalism.HarderNarasimhan.StatementPl
 public import Formalism.SizeWindowBrackets.RealSlopeBoundsSplit
-import Formalism.HarderNarasimhan.Statement
-import Formalism.RankGapBounds.MeanBoundSecondForm
 import Formalism.SizeWindowBrackets.FirstPrimeNeSecondPrime
 import Formalism.SizeWindowBrackets.QuotientSlopeBoundsWith
 import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis

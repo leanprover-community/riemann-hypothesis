@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelStructureProperties
 import Formalism.LocalRingCardinality.ConjSqrtMinusD
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
-import Mathlib.Algebra.AffineMonoid.Basic
 
 @[expose] public section
 

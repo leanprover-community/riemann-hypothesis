@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnCut
-public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapAdInv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnCVLocal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvariantOperatorUnderJacquet

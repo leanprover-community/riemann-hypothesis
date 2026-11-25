@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DifferentiableOnDetHMat
 
 @[expose] public section
 

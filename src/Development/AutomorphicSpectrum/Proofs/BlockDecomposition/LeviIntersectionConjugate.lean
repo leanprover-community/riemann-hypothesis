@@ -5,10 +5,7 @@ public import GroundTheory.AutomorphicForms.FiniteBruhat
 public import GroundTheory.AutomorphicForms.GeometricLemmaJacquetCell
 public import GroundTheory.AutomorphicForms.GeometricLemmaModular
 public import GroundTheory.AutomorphicForms.GeometricLemmaNormal
-public import GroundTheory.AutomorphicForms.Iwasawa
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
-public import GroundTheory.AutomorphicForms.InductionParabolicGroups
-import GroundTheory.AutomorphicForms.GeometricLemmaOrbit
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 

@@ -11,36 +11,20 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHa
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsArchimedeanPairNegativeSymplecticPairing
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsComplexStructureGaussVacuumFockEquations
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairInfApply
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSchwartzCexpNegForm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteWeightComplementaryArchimedeanSchwar
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
-public import Mathlib.Analysis.InnerProductSpace.Dual
 public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemOfClosedSubmoduleGaussianConvolution
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemClosureWideGaussianMulSchwartz
 public import Mathlib.Analysis.Fourier.Convolution
-public import Mathlib.Analysis.Convolution
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Deriv
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Complex.RealDeriv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TrPApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulRealAdEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPairingStdP
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHeisenbergLineDerivativeFormula
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsArchSchwartzDerivativeHeisenbergLine
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsPairOfIsTriple
@@ -54,7 +38,6 @@ public import Development.AbelianVarietyTheory.Statements.HaarFundamentalDomain.
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -83,38 +66,19 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGeneratorNeZero
 import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
 import Development.AbelianVarietyTheory.Definitions.Divisors.FlatTensorVacuum
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinHasTemperateGrowth
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormLeIncInf
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Fourier.Notation
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChainFrameTripleHaarIdentityTwo, Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorCartanInvolutionInvariantAndPositive, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrangianEvaluationGauss, Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceSympNegOne, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPositiveComplexStructureDarbouxPair, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSiegelFockFormOfComplexStructure, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGaussVacuumNondegenerateGaussianDualPair, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEquivEuclideanPiMulNormSqEqRe, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFourierStableGaussianSubmodule, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSchwartzGaussWidth, Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAllGaussianWidthsOfFourierStableSchwartz, Development.AbelianVarietyTheory.Proofs.DivisorProofs.NarrowGaussConvolutionDense, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzClosureStableLinearFormFourier, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzDensityTransportLinearEquivChirp, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzSubmoduleEqTopOfGaussianMemDerivStable, Development.AbelianVarietyTheory.Proofs.DivisorProofs.TracePairingNondegenerate, Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolynomialFockDenseArchimedeanSchwartz, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryToTransposeGramGroupMapSurjective, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.PureThetaIntegralContinuousOrthogonal, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ExistsAlgebraicFunctionDefiniteThetaNeZero

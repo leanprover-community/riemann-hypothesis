@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.Differentia
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DblZMemHn
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.PolyDerivEqSumList
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

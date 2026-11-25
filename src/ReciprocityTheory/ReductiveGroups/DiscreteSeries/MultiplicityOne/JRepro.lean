@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.J
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.UnitaryGroupStructuralFacts
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StSInt
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JReproB, ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JRepro

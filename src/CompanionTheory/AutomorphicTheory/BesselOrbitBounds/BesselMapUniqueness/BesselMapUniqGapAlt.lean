@@ -3,12 +3,10 @@ module
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.ContinuousOnOrbit
-public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 public import Mathlib.Analysis.LocallyConvex.HahnBanach
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
 public import Mathlib.Analysis.Calculus.BumpFunction.Normed
 public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-public import Mathlib.Analysis.Calculus.LineDeriv.Basic
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.ParametricIntegralSmoothness.IntCommute
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.OrbitMult
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.AdaptExists
@@ -20,17 +18,8 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.RootVectors
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SpanGenerators
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.TorusConjugacy
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.TypeStar
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaChol
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Matrix
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SigmaFiniteQuotients.Exists
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

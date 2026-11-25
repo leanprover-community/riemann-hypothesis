@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar

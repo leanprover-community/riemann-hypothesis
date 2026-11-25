@@ -2,28 +2,19 @@ module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import Mathlib.RingTheory.PicardGroup
-public import Mathlib.RingTheory.RamificationInertia.Inertia
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrobeniusRestrictScalarsPowModInertia
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocUnitApply
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-public import Formalism.ConjugateSelfDual.Statement
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseRangeUnits
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharInfTrivialOfTrivAtDegOne
-public import Mathlib.FieldTheory.KrullTopology
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsoluteGaloisAbelianizationEqOneOfMemOpenSubgro
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsApproxFinitePlacesNumberFieldTarget
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinsetPlacesOverFinsetPlaces
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenIdeleSubgroupContainsCongruenceUnits
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormCloseToOneOfCloseAbovePlace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdLocalValuesGlobalOverPlacesAbove
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MinpolyAndNormOfPowEqUniformizer
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TameEisensteinExtensionUniqueTotallyRamifiedPlac
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitPowNormVSubOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrobeniusInvMulMemInertia
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrobeniusRatioPiCongrTameUnit
@@ -69,16 +60,11 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
-import ReciprocityTheory.GaloisValuations.GlobalA
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.WittVector.IsPoly

@@ -7,11 +7,6 @@ import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 

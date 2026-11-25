@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLb
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLm
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SevenLogLeLOfPowerBound
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GlobalSchurBounds.AlcoveOf, Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLo

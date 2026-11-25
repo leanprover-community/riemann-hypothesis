@@ -5,9 +5,7 @@ public import Mathlib.LinearAlgebra.TensorProduct.Basis
 public import Mathlib.RingTheory.TensorProduct.Basic
 public import Mathlib.Algebra.Central.TensorProduct
 public import Mathlib.RingTheory.SimpleRing.Congr
-public import Mathlib.Algebra.Central.Basic
 public import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Mathlib.RingTheory.TensorProduct.Maps
 
 @[expose] public section
 

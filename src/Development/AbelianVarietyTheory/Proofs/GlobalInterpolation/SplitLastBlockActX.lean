@@ -1,11 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
 

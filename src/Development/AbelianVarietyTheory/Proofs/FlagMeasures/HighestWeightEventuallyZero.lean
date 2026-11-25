@@ -13,17 +13,13 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PhiCentreEige
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ScalarOfMultOne
 public import Mathlib.Analysis.Calculus.Deriv.Star
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiEntriesCentreEigenfunctionsDiscreteSeries
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.NoncompactArrFiniteDimensional
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.EigenfunctionFiniteCoefficients
 import Mathlib.Tactic.Lemma
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.DerivExpEntry, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsDerivPhiConj, Development.AbelianVarietyTheory.Proofs.FlagMeasures.HighestWeightEventuallyZero

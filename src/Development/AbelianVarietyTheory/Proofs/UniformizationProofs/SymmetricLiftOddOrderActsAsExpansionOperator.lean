@@ -3,15 +3,12 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FrameSqEqOfSymmetricThetaElement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPowAlg
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.GenProd
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPow
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.NuGeIffOfIsActOfOfPowEqOne
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpBijFAndExpandsFLin
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UnivIdentity
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Std.Tactic.BVDecide.Normalize.Prop

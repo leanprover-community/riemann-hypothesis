@@ -2,14 +2,12 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MaxVSpanSingleton
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.CharacterValuation

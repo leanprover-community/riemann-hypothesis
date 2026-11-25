@@ -2,9 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ArchimedeanCompact.AutomorphicFormsLeSm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.FoundBridge
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ArchimedeanCompact.OneTmulMemCenter
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.CuspidalRep
-import GroundTheory.AutomorphicForms.UnitaryAdmissible
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

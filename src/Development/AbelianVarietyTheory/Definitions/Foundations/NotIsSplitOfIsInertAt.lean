@@ -4,13 +4,10 @@ public import Formalism.SatakeDualWeyl.StatementG
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal

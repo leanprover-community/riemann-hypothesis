@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.GrowthIntegrals.BeBessel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.HaarCompactGrowth.IsHaarOnUWsetOfIsHaarOnOfUnivEqOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.SchurDecayBounds.NormIdFix
-import Formalism.SharpRestriction.CuspSpanNormBounds.KfinOfMemLowKSub
 
 @[expose] public section
 

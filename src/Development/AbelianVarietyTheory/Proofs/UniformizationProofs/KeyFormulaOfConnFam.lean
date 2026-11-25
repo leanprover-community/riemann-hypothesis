@@ -50,9 +50,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SmoothOfI
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSecOnNonvanishing
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisBaseChange
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnivChartOfStandardSmooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleIdentityIso
-public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.LinearAlgebra.TensorProduct.Defs
 public import Mathlib.SetTheory.Cardinal.Continuum
 public import Mathlib.FieldTheory.IsAlgClosed.Classification
 public import Mathlib.RingTheory.Algebraic.Cardinality
@@ -124,38 +121,22 @@ import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.PwIsoIsGen
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubsingletonPrimeSpectrum
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 import Mathlib.Tactic.Basify
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.KaRuleK
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.StTransl
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.IntegralClosure.GoingDown
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.TangentLinearity.ConstPullback
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Artinian.Instances
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyDataDescendCountableSubringsStatement

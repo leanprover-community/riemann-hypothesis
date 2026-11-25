@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WHyp
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualMeasureExistsUniqueFourierInversion
 import Mathlib.Tactic.Linter.Style

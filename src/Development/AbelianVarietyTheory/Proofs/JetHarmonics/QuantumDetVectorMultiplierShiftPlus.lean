@@ -2,20 +2,13 @@ module
 
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliLeftComatrix
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Mathlib.LinearAlgebra.Lagrange
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Data.Fintype.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorIntertwiningApply
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorPolyMap
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.RealPlaceAnalysis.StatementA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorCommOfCommColumns, Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliDetMulVectorType, Development.AbelianVarietyTheory.Proofs.JetHarmonics.AevalNegEqZeroOfResolventIdentity, Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumEigenvectorsOfAevalProdLinearEqZero, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsEigenSplitOfResolventIdentity, Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuantumDetVectorMultiplierShiftPlus

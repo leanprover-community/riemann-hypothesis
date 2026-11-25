@@ -8,13 +8,10 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Integrab
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.ThickFrames
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.FinSplit
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.SplitLoc
-import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.GlobalFields.LocalAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.AutomorphicForms.WhittakerGroups
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.MatchFin, Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.MatchProd

@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfFderivEqZer
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsUnitOfLagrangian
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import ReciprocityTheory.ThetaQuasiPeriods.PeriodLattice
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DualRestrictSurjectiveOfIsTorsionFreeQuotient
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EqZeroOfSemicharacterMultiplier
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsEtaleCoordsVanishing
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsTestFunctionsSubsetOfMemNhds
@@ -20,7 +19,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal

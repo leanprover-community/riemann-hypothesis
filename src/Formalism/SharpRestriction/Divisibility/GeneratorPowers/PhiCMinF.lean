@@ -1,7 +1,6 @@
 module
 
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsLinearIndependentNormLeSuccMin
-import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinSt
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 import Mathlib.Algebra.Order.Star.Real

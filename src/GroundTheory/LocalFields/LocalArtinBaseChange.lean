@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.LocalArtinMap
-public import GroundTheory.LocalFields.SeparableClosure
 import GroundTheory.LocalFields.AbstractLocalReciprocity.IsoCyclic
 public import GroundTheory.LocalFields.LocalArtinUniqueness
 import Mathlib.Tactic.TypeStar

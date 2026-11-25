@@ -4,7 +4,6 @@ public import Formalism.RealPlaceAnalysis.SmoothVectorGrowthBound
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Topology.Algebra.Group.Matrix
 
 @[expose] public section
 

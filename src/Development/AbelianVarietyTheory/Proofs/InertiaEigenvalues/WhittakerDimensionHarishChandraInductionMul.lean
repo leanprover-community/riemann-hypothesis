@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsColReduced
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Order.WellFounded
 public import Mathlib.GroupTheory.Nilpotent
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardDoubleCosetMulCardInter
@@ -15,7 +13,6 @@ import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.Fin.Tuple.Sort
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
@@ -50,10 +47,6 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders

@@ -4,7 +4,6 @@ public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.ExtNull
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MeasurableEmbeddingRotAbout
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MvDivIntegrand
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
 
 @[expose] public section
 

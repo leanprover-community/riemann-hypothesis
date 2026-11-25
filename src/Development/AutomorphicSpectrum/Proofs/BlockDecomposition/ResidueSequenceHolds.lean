@@ -8,34 +8,17 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNo
 public import Mathlib.Topology.Algebra.ClopenNhdofOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EGPgTrueEqLastIff
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RepresentationTheory.Basic
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.ColMatMulGlEmbMat
-public import Mathlib.Algebra.Group.Basic
-public import Mathlib.Topology.Constructions.SumProd
-public import Mathlib.Topology.Compactness.Compact
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIrreducibleSecondFactorOfIrreducibleProduct
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.LeibnizOrd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EventuallyInv
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsUnitarisableOfCharIff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BijectiveIntertwinerSubrepEquiv
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SurjectiveIntertwinerQuotientEquiv
-import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 import Mathlib.Topology.InductiveDimension.Functions
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.LeibnizDerivatives.EPGFalseEqLastIff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenFixedOfSubgroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.

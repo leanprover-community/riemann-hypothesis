@@ -10,18 +10,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralUnfol
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightConvolutionOperatorAeEqIntegralAdelic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExtAeEqContRep
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalConvolutionOrthogonalProjectorProof
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
-import Mathlib.Topology.Algebra.Group.Units
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
-import Formalism.FormalDegreeBessel.StatementWR
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightRegularRepUnitaryStronglyContinuous
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Compactness.Paracompact
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSeriesCoefficientIntegrableMajorant
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoeFnSumSmulAeEq, Development.AbelianVarietyTheory.Proofs.FlagMeasures.DenseCompactlySupportedL2, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsContRepKernelIntegralCompactSupport, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrablePh

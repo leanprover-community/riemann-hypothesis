@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeKe
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HpkMulSingleEsI
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocOfSmoothOnH
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 
 @[expose] public section
 

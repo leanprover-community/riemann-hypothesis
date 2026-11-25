@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteSup
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.BarMatrix
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFockPolynomialIsoUnitaryPairStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLocalFockIntertwinerRealPlaceOfCoverContra
-public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NoInvariantPairingSmallerFockSource
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RapidDecayLift
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaLiftCuspFormAutomorphicSmoothModerateGrowth
@@ -31,7 +30,6 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
@@ -61,12 +59,9 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsKActOfStable
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubstitutionTotalDegreeLe
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDat
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsUnitaryAdelicVolumeMeasure
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSetPosFinite
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteVolumeAdelicUnitaryQuotient
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FundamentalDomainUnitaryAdelicExistsMeasureEq
 
 @[expose] public section

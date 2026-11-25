@@ -1,12 +1,10 @@
 module
 
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
-public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.SplittingFromInequality.Decomposition
 public import GroundTheory.GlobalFields.Adele.BaseChange.FiniteMap
 public import GroundTheory.GlobalFields.KummerTheory.Splitting
-import Mathlib.NumberTheory.RamificationInertia.Galois
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

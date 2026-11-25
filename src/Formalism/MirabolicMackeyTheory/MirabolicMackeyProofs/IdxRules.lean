@@ -6,7 +6,6 @@ import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.IdxChange
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 

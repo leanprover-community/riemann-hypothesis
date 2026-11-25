@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSpecStalk
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 

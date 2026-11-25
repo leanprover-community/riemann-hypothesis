@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.PStabEq
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ColSpanMap
 
 @[expose] public section
 

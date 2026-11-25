@@ -4,7 +4,6 @@ public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Mathlib.RingTheory.Trace.Defs
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PsiEDef
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.BasisEApply

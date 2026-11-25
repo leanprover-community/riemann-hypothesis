@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Tactic.Linter.HaveILetI

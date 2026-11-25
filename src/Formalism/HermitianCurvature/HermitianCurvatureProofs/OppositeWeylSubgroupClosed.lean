@@ -7,9 +7,7 @@ public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.RealPlaceAnalysis.FinalF
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 import Std.Tactic.BVDecide.Normalize.BitVec
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 

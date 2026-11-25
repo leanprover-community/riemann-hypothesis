@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.ProvisionExtensionLink
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.RecursiveLatticeMembership.MemLamOfIff
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

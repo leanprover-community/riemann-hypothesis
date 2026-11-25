@@ -4,9 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LieLatticeFgAndSpanEqTopRingOfIntegers
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LieAlgebraSquaredLengthCompPairingHom
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIrreducibleGeneralizations
-import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
 
 -- This file was produced by scripts/clump.py from the modules listed below.

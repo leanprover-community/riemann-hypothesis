@@ -4,10 +4,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.NonemptyPadicIntRingHomOfIsAdicComplete
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompleteDvrFiniteSubalgebra
-public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralClosureFiniteLocalCompleteMixedChar
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
 public import Formalism.LocalToGlobal.ProjectiveLattices.DataAtPointN3
@@ -20,13 +16,8 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProperO
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PsiCoordExistsUniqueUpToUnitLocal
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PsiCoordOfIsPullDegId
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.NumberTheory.Padics.RingHoms
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Valuation.Integral
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FiniteAlgebraLocalCompletion
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenOfRangeGenericSubset
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj

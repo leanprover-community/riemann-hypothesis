@@ -3,17 +3,12 @@ module
 public import GroundTheory.AutomorphicForms.FourierWhittaker.Smooth
 public import GroundTheory.AutomorphicForms.FourierWhittaker.AdelicCharPairTorusPtSingle
 public import GroundTheory.AutomorphicForms.FourierWhittaker.Single
-public import GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainImageOfMapVecLattice
-public import GroundTheory.AutomorphicForms.FourierWhittaker.Series
-public import GroundTheory.AutomorphicForms.FourierWhittaker.AlgebraMapIntegerMemIntegralFiniteAdeles
-public import GroundTheory.AutomorphicForms.FourierWhittaker.UMatColXEqFromBlocks
 public import GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffDiagonalBlockGLEqVecCoeff
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.ReductionMeasure
 import Mathlib.CategoryTheory.Countable
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
-import GroundTheory.GlobalFields.Adele.Topology
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffBlockGLEqOfVecMulEq, GroundTheory.AutomorphicForms.FourierWhittaker.IsAddFundamentalDomainShearSymm, GroundTheory.AutomorphicForms.FourierWhittaker

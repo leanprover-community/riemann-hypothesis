@@ -5,11 +5,7 @@ public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
 public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.CommutingTwist
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ConjugateWeightLatticeOfGeneral
-import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
 
 @[expose] public section

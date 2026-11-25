@@ -2,21 +2,15 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnipMir
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
 public import Mathlib.Topology.Instances.Matrix
 public import GroundTheory.LocalFields.LocalFourierChar
-public import GroundTheory.LocalFields.LocalFourierHaar
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemTwKerIffAverage
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.ColMatMulGlEmbMat
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicTwistedKernelDerivativeZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetPhiMinusEquiv
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import GroundTheory.LocalFields.Interface
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import GroundTheory.LocalFields.PadicLogSeries
 
 -- This file was produced by scripts/clump.py from the modules listed below.

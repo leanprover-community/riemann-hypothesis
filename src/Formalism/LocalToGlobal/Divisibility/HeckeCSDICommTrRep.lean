@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.Divisibility.HeckeRI
 public import Formalism.LocalToGlobal.Columns.HeckeInertTr
 import Formalism.LocalToGlobal.Columns.RowFormsGood
 import Formalism.LocalToGlobal.Columns.RowFormsRat
-import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 
 @[expose] public section
 

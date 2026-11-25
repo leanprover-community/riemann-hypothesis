@@ -3,11 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsGauss
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AcrisGaussNormEventuallyMonomial
 public import Development.AbelianVarietyTheory.CrystallinePeriods.CrisMapsLoc
-public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsGaussGCTarget
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaussNormAcrisRadiusPosDefinite
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ISupMonomialHolderLogConvex
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Acris0TorsionFree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaussNormAcrisUnique, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CocyclePartialSumIterateSucc, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AcrisValuationRadiusLaws

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.RingTheory.Discriminant
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.MvPowerSeries.Derivative
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsUnitDetOfProductMapNeZero

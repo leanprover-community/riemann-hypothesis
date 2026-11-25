@@ -2,10 +2,7 @@ module
 
 public import GroundTheory.AutomorphicForms.GL2.GJFELeviPeel
 public import GroundTheory.AutomorphicForms.GL2.GJFELeviConv
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.GL2.GJFEBlock
-import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

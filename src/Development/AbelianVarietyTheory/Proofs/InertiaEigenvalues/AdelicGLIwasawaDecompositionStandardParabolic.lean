@@ -3,7 +3,6 @@ module
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.Analysis.Matrix.LDL
-public import Mathlib.Analysis.Complex.Order
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Mathlib.Tactic.Linter.HaveILetI

@@ -1,14 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.BesselNVG
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpOrbOfAmpDD
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CfgTopFalseIff
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpUnif
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ThresholdCubicInequalitySignPattern
-import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.BesselNVGClosed, Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomSchur, Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.HzOfInWb

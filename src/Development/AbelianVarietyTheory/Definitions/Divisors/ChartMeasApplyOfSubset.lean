@@ -4,11 +4,6 @@ public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FamilyLeC
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Mathlib.RingTheory.Complex
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.ZPow
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-public import Mathlib.MeasureTheory.Function.Jacobian
 public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section

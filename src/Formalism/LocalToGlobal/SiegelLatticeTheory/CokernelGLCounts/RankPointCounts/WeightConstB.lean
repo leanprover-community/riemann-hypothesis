@@ -3,8 +3,6 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RowFrameCoherence
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportProposition
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.WeightConstA
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
-import Formalism.SharpRestriction.CuspSpanNormBounds.OscillatoryIntegralBounds
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.MemInvCoeIdeal
 

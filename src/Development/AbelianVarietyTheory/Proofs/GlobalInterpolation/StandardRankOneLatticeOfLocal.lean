@@ -2,11 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Development.AbelianVarietyTheory.Counterexamples.PlaceInjectivity.StandardDeterminantUnits
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

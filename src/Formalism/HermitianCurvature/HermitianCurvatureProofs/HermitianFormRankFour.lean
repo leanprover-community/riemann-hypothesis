@@ -1,11 +1,8 @@
 module
 
 public import Formalism.HermitianCurvature.FrameExists2
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Mathlib.Analysis.CStarAlgebra.Unitary.Connected
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal

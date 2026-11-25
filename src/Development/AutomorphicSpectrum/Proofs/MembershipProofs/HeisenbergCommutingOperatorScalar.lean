@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.NumberTheory.NumberField.AdeleRing
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionHeisenbergInvariant
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility

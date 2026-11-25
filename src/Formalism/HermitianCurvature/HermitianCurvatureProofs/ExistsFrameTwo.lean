@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.FrameExists2
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AnisotropicColumnSums
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 
 @[expose] public section
 

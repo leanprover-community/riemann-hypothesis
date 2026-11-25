@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockRelatio
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelsOfBuiltSetting
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

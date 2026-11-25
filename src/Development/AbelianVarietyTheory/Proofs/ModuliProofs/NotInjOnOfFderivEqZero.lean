@@ -11,9 +11,6 @@ public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 public import Mathlib.Analysis.Complex.AbsMax
 public import Mathlib.Analysis.Complex.RemovableSingularity
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.Calculus.ContDiff.RCLike
-public import Mathlib.Analysis.Calculus.DSlope
 public import Mathlib.Analysis.Calculus.DiffContOnCl
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

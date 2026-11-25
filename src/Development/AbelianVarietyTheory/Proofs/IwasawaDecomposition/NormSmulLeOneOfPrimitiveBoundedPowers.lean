@@ -4,7 +4,6 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Ring.Ultra
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
 @[expose] public section

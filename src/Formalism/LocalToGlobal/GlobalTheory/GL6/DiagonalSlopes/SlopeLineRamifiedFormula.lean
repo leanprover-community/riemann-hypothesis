@@ -9,12 +9,7 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.PSplitT
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
 public import Formalism.SharpRestriction.GlobalSchurBounds.FiniteModelOfAdmissibleTransports
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticePropsOfModel
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedRankEqFinrank
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdmissibleStabilisersOfCompatibleForms
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.GroupActionMulSingleEqDilation
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
-import Formalism.LocalToGlobal.HermitianForms.FramesLemmas
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit

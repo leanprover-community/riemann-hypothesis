@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 public import Mathlib.Analysis.Calculus.Deriv.Linear

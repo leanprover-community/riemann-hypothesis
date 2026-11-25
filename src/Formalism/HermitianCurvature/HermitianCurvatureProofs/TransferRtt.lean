@@ -2,13 +2,10 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateCommuteRaisingConstant
 public import Formalism.HermitianCurvature.StatementM
-public import Mathlib.LinearAlgebra.Dual.Defs
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelNablaStarRelations
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MultiplicationOpHom
-public import Mathlib.Algebra.Polynomial.BigOperators
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 section

@@ -11,7 +11,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 

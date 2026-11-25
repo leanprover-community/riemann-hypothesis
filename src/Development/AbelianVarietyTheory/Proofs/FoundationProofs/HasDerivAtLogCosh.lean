@@ -11,8 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockKsetP
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialKFiniteBothMembers
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 

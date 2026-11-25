@@ -14,13 +14,7 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Convolut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.NormIntLe
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.RrTens
 public import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.ConvSpec
-import GroundTheory.AutomorphicForms.HaarCosets
-import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
-import GroundTheory.AutomorphicForms.ReductionFinite
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.CuspidalAdmissible
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

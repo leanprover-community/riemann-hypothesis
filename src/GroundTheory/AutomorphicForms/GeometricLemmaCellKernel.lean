@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GeometricLemmaJacquetCell
-import GroundTheory.AutomorphicForms.GeometricLemmaCount
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

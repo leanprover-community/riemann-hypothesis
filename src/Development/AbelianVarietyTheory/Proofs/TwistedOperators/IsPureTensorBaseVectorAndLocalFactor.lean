@@ -51,7 +51,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
 

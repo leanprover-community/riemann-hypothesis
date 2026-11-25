@@ -4,8 +4,6 @@ public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 public import Mathlib.RingTheory.Algebraic.Defs
 public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 public import Mathlib.RingTheory.Ideal.GoingUp
-public import Mathlib.FieldTheory.IntermediateField.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.Algebra.BigOperators.Field
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.IsSquareDeterminantComparison
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.JacNeZeroIffSpanEqMaximalIdeal
@@ -19,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SectionsSep
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusVia
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.QuasiAffine
@@ -28,7 +25,6 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrul
 import Mathlib.RingTheory.DualNumber
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.InjectiveOfInjectiveCompAevalOfTrdegLe, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DetNeZeroOfGenericLinearFormsVanish, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FiniteOfIsClosedSingleton, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.GenericSectionsMeetTransversally

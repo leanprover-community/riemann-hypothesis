@@ -15,9 +15,7 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.CubeIcoMeas
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MajLactRmul
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DetOfTriangular
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -8,11 +8,8 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CubeLBP
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.GramStdBasisPosDefAndHq
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsFibreOfIffIsPolFibre
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LinearIndependentOfIsLieBasis
-public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementB
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.TopLieVectorNormSqEqGramDet
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.VecLineNormSqEqForm
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.IsLieBasisIffIsUnitDet
-import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

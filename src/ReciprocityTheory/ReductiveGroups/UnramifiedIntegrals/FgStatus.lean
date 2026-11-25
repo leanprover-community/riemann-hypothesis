@@ -5,10 +5,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.CoeffOneSubstOfConstantCoeffEqZero
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.EndIntegral
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.TchOfIntegral
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.FgBasic
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.FgMulN
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormSqrtNegPowPrimeSqSub
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ShortWIntModel
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OneSubTwoOmegaSq
 
 -- This file was produced by scripts/clump.py from the modules listed below.

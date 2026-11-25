@@ -4,11 +4,7 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEOuterLeib
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSELeib
 import Aesop.Main
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinuousOnZero
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar

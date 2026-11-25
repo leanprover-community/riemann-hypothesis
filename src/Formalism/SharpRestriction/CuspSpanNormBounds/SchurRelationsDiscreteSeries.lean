@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
@@ -15,7 +14,6 @@ import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyProjectorSectionLocal
 import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
 
 @[expose] public section
 

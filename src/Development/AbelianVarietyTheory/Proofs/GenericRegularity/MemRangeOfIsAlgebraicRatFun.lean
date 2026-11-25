@@ -5,12 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteInt
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompNonemptyFiniteGenFrTrdeg
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsIntegralRatZetaOfCoeff
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
-import Mathlib.AlgebraicGeometry.QuasiAffine
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe

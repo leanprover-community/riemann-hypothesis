@@ -8,13 +8,11 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsL
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EqZeroOfFderivEqZero
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLinearLiftOfIsMonHomPolAV
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SubsingletonPrimeSpectrum
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.AppellHumbertUniformisationRiemannForm
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TateIsoDifferBySimilitude
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.ExistsArBaseAway
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.AdjointBaseChange
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CubeLineBundleAdjointIffHermFormAdjoint
-public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLatticeUniformisationOfPrimTheta
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PelObjectClassPrimAndIsoClosed
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TransportThetaLevelUniformisationCoordinates
@@ -25,7 +23,6 @@ public import Development.AbelianVarietyTheory.Definitions.HermitianLattices.Tra
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsFiniteOrthogonalLengths
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsFiniteRepresentatives
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsFiniteUnitaryClassesOfDualEqSmul
-public import Development.AbelianVarietyTheory.Definitions.HermitianLattices.ExistsZsmulMemOfIsLattice
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.EqZeroOfSumEmbeddingMul
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPeriodDomainParam
@@ -36,12 +33,10 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -68,25 +63,14 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Convex.Contractible
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.ExistsIntMulIsIntegralOfTrace
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
-import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen

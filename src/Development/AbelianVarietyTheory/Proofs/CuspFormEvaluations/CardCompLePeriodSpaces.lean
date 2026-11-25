@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFra
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExponentialDerivativeAtZeroIsTangent
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
 import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 
 @[expose] public section
 

@@ -10,24 +10,13 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramRightActionIdentities
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianMatricesLocallyCompactBorel
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-public import Mathlib.Analysis.Calculus.FDeriv.Add
-public import Mathlib.Analysis.Calculus.FDeriv.CompCLM
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
-public import Mathlib.Topology.Instances.RealVectorSpace
-public import Mathlib.Analysis.Normed.Ring.Lemmas
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdeleHaarMapEqScaledVolume
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitsOpenEmbeddingLocalTensor
 import Mathlib.Tactic.Linter.HaveILetI
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitHermOfDet
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaPartD
-import Formalism.UnipotentAdelicQuotients.SWXSDefs
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
 import Mathlib.Tactic.Linter.Style
 

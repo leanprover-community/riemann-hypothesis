@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
 import Mathlib.RingTheory.Artinian.Instances
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

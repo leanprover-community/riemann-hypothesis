@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmAtSmulRight
 public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.RowsStackRight
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

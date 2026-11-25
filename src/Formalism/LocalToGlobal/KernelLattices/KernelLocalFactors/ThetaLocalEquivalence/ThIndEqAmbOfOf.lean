@@ -8,7 +8,6 @@ public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ChiLawAmbOf
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.GMConjTranspose
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 
 @[expose] public section
 

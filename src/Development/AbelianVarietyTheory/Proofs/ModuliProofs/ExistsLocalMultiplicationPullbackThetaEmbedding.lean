@@ -12,15 +12,8 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsGenSe
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLocalMultiplicationPullbackThetaEmbeddingI
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ProjCoordRepresentationGeometricFibreSpanning
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaEmbeddingSectionsBaseChangeAffineStatement
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SecCoordBcScaleUnique
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionCoordinateVectorExistsLocally
-import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.DualNumber
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ModuliProofs.EmbeddingSectionsSpanGeometricFibreStatement, Development.AbelianVarietyTheory.Proofs.ModuliProofs.MonoOfGeomPoints, Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLocalMultiplicationPullbackThetaEmbedding

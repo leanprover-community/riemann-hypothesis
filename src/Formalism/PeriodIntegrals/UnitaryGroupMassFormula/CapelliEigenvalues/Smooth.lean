@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalu
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.SmRight
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.CapelliHighestWeightConjugated
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.HeckeMultiplication
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 

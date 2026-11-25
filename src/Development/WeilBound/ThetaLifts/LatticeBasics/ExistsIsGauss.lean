@@ -2,16 +2,11 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SchwartzFunctionalEqZeroOfDense
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.NormIteratedFDerivCexpCompLe
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SchToPol
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsRealStructure
 public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.TwistedProofs.EqZeroOfPiInf
 import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactIntV
 import Mathlib.Tactic.Linter.HaveILetI
 

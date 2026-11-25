@@ -4,19 +4,14 @@ public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LocalComponentGL
-public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Mathlib.RingTheory.MvPowerSeries.Rename
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Data.Nat.Choose.Lucas
-public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ConstantCoeffFirstTwoOfThree
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
-import Mathlib.Analysis.Normed.Ring.Ultra
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
-import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder

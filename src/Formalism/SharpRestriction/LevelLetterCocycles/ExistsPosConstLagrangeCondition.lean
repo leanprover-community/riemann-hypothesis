@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.RamifiedCoefficient
 public import Formalism.TruncatedSeriesCounting.RamifiedValuationInequality
 public import Formalism.FrobeniusContraction.FrobeniusContractionProofs.LenBound
 public import Formalism.TruncatedSeriesCounting.EtaDeterminantPolynomialIdentities
-import Formalism.TruncatedSeriesCounting.TruncatedSeriesProofs.ColAssembly
 import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section

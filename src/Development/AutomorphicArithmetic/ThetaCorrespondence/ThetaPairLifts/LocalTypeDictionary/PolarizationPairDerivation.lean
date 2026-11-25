@@ -4,52 +4,28 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFor
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IteratedLineDerivMemWeylAlg
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzTranslate
 public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
-public import Mathlib.Analysis.Fourier.Inversion
-public import Mathlib.Analysis.Fourier.FourierTransform
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
-public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.MeanValue
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivedActionIntertwinesOfGroupStatement
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Inverse
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPairingStdP
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSymplecticGroupMatrixOfPreservesPhaseSpace
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousMatrixOneParameterGroupEqExp
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntertwiningSymplecticAndGroupLaw
-public import Mathlib.Algebra.Lie.Classical
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemSymplecticLieAlgebraOfExpSmulMemSymplecticGro
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPairingSpaceResultOfSchrodingerCoordinates
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ArchimedeanLineIntertwinesRealSchrodinger
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ArchimedeanOneParameterFamilyContinuous
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHeisenbergLineDerivativeFormula
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepresentationIntegralAction
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ArchimedeanThetaFamilyExistsSmooth
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsArchSchwartzDerivativeHeisenbergLine
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -75,20 +51,10 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHasDerivAtZeroOfMapAddMul
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAdmissibleFiniteFactorArchimedeanSchwartz
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.TotallySplit
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ThetaActionLocalAtArchimedeanPlace
 import Mathlib.Tactic.Linter.Style

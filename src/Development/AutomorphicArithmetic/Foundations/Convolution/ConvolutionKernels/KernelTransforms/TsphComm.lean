@@ -8,8 +8,6 @@ public import GroundTheory.AutomorphicForms.HeckeIrreducible
 public import GroundTheory.AutomorphicForms.SphericalCommutative
 import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.HaveILetI
-public import GroundTheory.AutomorphicForms.HeckeAlgebra
-public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
 
 @[expose] public section
 

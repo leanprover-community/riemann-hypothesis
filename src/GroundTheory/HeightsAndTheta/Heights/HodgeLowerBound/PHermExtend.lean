@@ -7,10 +7,6 @@ public import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
-public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Geometry.Manifold.ContMDiff.Basic
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-public import Mathlib.Geometry.Manifold.ContMDiffMap
 
 @[expose] public section
 

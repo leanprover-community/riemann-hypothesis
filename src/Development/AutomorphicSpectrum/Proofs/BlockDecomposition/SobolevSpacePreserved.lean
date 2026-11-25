@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RwAppend
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarChartIntegralComparison
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.Friedrichs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RegularRepresentationContinuous
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LpIntegralAePointwiseStatement
@@ -17,11 +16,9 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ApproximateIdentityExists, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.L2LimitEqPointwiseLimitHolds, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftConvolutionApproximation, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationAeEqConvolution, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationDifferentiable, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationEvaluationContinuous, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationRightTranslate, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightTranslateDerivativeIntegral, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevPointwiseBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevSequenceUniformCauchy, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevSpacePreserved

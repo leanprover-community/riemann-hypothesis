@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.CuspidalSplittingCoeff
 public import GroundTheory.AutomorphicForms.CuspidalSplittingIsotypic
 import GroundTheory.AutomorphicForms.CuspidalSplittingProjective
 import GroundTheory.AutomorphicForms.SmoothRepSchur
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.StabiliserOfLocalTransport
 import Formalism.LocalToGlobal.GlobalTheory.GL6.PKerAtP
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Common
-public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
 
 @[expose] public section
 

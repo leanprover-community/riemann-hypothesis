@@ -8,7 +8,6 @@ public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Aesop.Main
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -6,13 +6,9 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibRepAp
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsClosedEmbeddingTopEmb
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGLMulRightColumnsEqZeroOfRank
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwasawaBlockTriangular
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftColumnsMulVecInjectiveOfRankEqCard
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField

@@ -6,9 +6,7 @@ public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLi
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
 public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
-import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Normed.Ring.Ultra
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section

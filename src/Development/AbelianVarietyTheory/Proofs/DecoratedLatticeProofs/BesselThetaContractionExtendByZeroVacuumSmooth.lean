@@ -14,9 +14,7 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Her
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfIsTheta
 public import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaContractionIntegrandContinuousPeriodicStatement
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.CoordDnApply
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaContractionExtendByZeroDoubleCombination, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaContractionIsBiSmooth, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaContractionQuasiPeriodicRational, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselThetaContractionExtendByZeroVacuumSmooth

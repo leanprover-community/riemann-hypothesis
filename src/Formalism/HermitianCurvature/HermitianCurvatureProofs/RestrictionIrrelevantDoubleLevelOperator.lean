@@ -19,7 +19,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBloc
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 public import Mathlib.Analysis.Calculus.Deriv.Prod
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

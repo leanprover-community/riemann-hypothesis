@@ -6,19 +6,11 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBridgeC
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.BcField
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBridgeA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBridgeB
 public import Formalism.LocalToGlobal.ProjectiveLattices.PtOfSInst
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLoc
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInj
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveUnit
-import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RankPf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.ProjectiveLattices.PtOfSPfBC, Formalism.LocalToGlobal.ProjectiveLattices.PtOfSPf

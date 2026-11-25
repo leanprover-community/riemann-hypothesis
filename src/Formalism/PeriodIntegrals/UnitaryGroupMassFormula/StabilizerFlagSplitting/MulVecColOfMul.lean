@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Mathlib.Tactic.Cases
 
 -- This file was produced by scripts/clump.py from the modules listed below.

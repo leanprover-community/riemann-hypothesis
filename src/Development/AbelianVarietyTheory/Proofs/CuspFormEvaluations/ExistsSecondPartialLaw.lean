@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBFr
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

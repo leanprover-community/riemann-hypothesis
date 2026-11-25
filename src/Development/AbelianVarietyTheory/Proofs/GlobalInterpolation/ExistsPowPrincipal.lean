@@ -5,11 +5,8 @@ import Mathlib.NumberTheory.NumberField.ClassNumber
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.CharacterValuation
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MaxVSpanSingleton
 import Formalism.HermitianLattices.StatementJac
-import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.ClassGroup.Basic
 
 @[expose] public section

@@ -7,8 +7,6 @@ public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.Basic
 public import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-public import Mathlib.NumberTheory.LSeries.HurwitzZetaValues
-public import Mathlib.NumberTheory.ModularForms.Discriminant
 
 @[expose] public section
 

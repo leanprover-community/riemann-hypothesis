@@ -3,9 +3,6 @@ module
 public import Mathlib.Algebra.BigOperators.Finsupp.Basic
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Multilinear.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Module.Pi
-public import Mathlib.Algebra.Module.Submodule.Defs
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinsetFunctionsRecoveredFromValues
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

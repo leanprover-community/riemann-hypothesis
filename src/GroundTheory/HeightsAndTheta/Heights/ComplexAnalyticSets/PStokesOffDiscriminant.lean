@@ -13,7 +13,6 @@ public import Mathlib.Geometry.Manifold.ContMDiffMap
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StokesOffDiscriminantWindow, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PStokesOffDiscriminant

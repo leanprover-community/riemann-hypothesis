@@ -6,8 +6,6 @@ public import Formalism.DistinguishedUnitIdeals.BridgeLevelOf
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Partners
 public import Formalism.DistinguishedUnitIdeals.PhiFreeOfBasis
-public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GoodOf
-public import Formalism.DistinguishedUnitIdeals.UnivPart
 public import Formalism.DistinguishedUnitIdeals.FinalArcProps
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.ThmEPrim
 import Mathlib.Tactic.Linter.HaveILetI

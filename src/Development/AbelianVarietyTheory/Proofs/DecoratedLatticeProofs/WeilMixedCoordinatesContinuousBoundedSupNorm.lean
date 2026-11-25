@@ -2,9 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedModelTargetHeisenbergAnisotropicPart
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumThetaJointlyContinuous
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates
 
 @[expose] public section
 

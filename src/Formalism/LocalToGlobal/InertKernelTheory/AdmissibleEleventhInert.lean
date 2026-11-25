@@ -1,13 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSo
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MemWOfNorm
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
-public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSu
 public import Formalism.LocalRingCardinality.DataKerP
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne

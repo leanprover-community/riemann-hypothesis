@@ -7,8 +7,6 @@ public import GroundTheory.ProfiniteCohomology.FilteredHomology
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.Coinduced
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.Higher
-import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
-import GroundTheory.ProfiniteCohomology.InflationRestriction.Section
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.InflationRestriction.TransgressionLift, GroundTheory.ProfiniteCohomology.InflationRestriction.Transgression, GroundTheory.ProfiniteCohomology.InflationRestriction.FiveTerm, GroundTheory.ProfiniteCohomology.InflationRestriction

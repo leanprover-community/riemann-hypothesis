@@ -1,10 +1,7 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.OpenSlices
-public import Mathlib.LinearAlgebra.Determinant
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
 
 @[expose] public section
 noncomputable section

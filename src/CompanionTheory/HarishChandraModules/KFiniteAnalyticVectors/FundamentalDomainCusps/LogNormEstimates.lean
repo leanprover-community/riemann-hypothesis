@@ -5,13 +5,11 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.VolumeClassRepresentatives.DensRat
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
 
 @[expose] public section

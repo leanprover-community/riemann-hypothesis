@@ -18,9 +18,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiCasA
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,11 +4,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.Order.Interval.Finset.Nat
 public import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.BigOperators.Intervals
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardSubspacesOfFinrankMulCardBases
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Lemma

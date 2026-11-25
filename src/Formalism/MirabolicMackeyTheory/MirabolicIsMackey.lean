@@ -8,7 +8,6 @@ public import Formalism.MirabolicMackeyTheory.StatementT
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.OnLocal
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.Mirabolic

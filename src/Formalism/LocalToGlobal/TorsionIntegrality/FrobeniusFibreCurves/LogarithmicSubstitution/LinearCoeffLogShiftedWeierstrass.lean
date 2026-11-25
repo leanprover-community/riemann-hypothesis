@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.St
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.ConstantCoeffSig1S
 import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
 import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.WeierstrassReducedEquations
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

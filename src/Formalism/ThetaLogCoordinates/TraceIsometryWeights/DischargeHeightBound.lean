@@ -1,7 +1,6 @@
 module
 
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.OrthogonalIsomorphismHolds
-public import Formalism.PolynomialDimension.MultinomialDepth.MonoCount
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.CommProjectionHolds
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementA
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementB

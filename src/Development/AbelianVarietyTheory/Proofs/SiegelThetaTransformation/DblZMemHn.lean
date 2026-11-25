@@ -3,7 +3,6 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
 import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
 
 @[expose] public section
 

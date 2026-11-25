@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RealIoX
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodPartEq
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Wp3ApplyEqSqMulSubSqMul
 

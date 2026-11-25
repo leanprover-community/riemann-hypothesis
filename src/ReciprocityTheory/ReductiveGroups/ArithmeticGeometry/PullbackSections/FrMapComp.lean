@@ -1,7 +1,6 @@
 module
 
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CoefChangeTypingsEquivOfValueWD
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 

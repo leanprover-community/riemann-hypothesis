@@ -4,15 +4,7 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHec
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.AbsGrow
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.AffineCharacterGenerators.Generators
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.PieceAdd
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
-public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.SubEqZeroIff
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Algebra.BigOperators.NatAntidiagonal
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Coeff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CommuteCenterRtInfGL
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.ExistsFinMap
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.BandOps

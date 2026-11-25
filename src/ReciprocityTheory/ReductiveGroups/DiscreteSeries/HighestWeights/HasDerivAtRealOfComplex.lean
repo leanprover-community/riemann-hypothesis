@@ -9,9 +9,6 @@ import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
 public import Mathlib.Analysis.Calculus.Deriv.Comp
 public import Mathlib.Analysis.Calculus.Deriv.Linear
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 @[expose] public section
 

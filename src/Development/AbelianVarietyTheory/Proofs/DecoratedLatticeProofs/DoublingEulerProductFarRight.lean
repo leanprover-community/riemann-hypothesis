@@ -10,14 +10,9 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsUni
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PeterssonCoefficientBoundedSphericalUnramifiedStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NsmulProjectionXColumnsMemSelfDualLattice
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PartialNormalizingFactorProductAnalyticNeZeroStatement
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactLevelOffFinEmpty
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 
 -- This file was produced by scripts/clump.py from the modules listed below.

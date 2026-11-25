@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClas
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.InertD
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.inertQ
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycBasic
-public import Development.AutomorphicArithmetic.FrobeniusLocalisation.DiffDefs
 public import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycGrp

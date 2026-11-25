@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsobaricDiscreteSelfDualStrongMultiplicityOne
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MonodromyZeroOfWeilDeligneRepClassIff
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TemperedOfLpDimLeOneOfUnitEigenvalues
 
 @[expose] public section

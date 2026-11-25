@@ -4,10 +4,6 @@ import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
 
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
-public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
-import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
-import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartB
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EvalVCutIdemOfNotMem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
-public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.PiTensorProduct

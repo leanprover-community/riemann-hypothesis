@@ -5,14 +5,8 @@ public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.RecTT
 public import Development.DiscreteGroups.GlobalIrreducibility.DzTame
 public import Development.DiscreteGroups.GlobalIrreducibility.ExistsIneOfVEqOne
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.DepthZeroCuspidal.LeviInductionForms
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
-import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

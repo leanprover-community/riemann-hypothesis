@@ -2,11 +2,7 @@ module
 
 public import Formalism.ConjugateSelfDual.Statement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import ReciprocityTheory.GaloisValuations.GlobalB
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Langlands
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -26,11 +22,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -51,13 +43,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.WittVector.IsPoly

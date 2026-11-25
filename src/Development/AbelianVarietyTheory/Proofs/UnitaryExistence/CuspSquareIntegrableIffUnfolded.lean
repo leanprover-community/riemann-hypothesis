@@ -2,16 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.UnitaryHaarVolume
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProbabilityMeasureAutQuotientNormalized
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.DetSubUpper
-public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsStrictMeasurableFundamentalSetOfDiscrete
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.Hermitian
-public import Mathlib.Analysis.Real.Sqrt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
-public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MajLactRmul
 public import Mathlib.Analysis.Matrix.Hermitian
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsDiscreteArithGroupImageRealUnitary
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetPf
@@ -30,12 +21,9 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -11,25 +11,17 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
 public import Development.WeilBound.ThetaLifts.LocalTheory.DixmierCommutants.AtSingle
 public import Development.WeilBound.ThetaLifts.LocalTheory.DixmierCommutants.LocalMultiplicityOneIrreducibleGL
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinPartIdemMulMemIff
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibRepApply
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KCoinvOfNarrow
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
-import Development.WeilBound.ThetaLifts.LocalTheory.DixmierCommutants.ChgApply
-import Development.WeilBound.ThetaLifts.LocalTheory.DixmierCommutants.SlopeTestRemainingChoices
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
@@ -38,9 +30,7 @@ import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -60,18 +50,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenNormalisedSubgroupSubset
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviIntegralFacts
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SmIndCoinvariants
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreRepresentationSmooth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaEquivInducedFibre
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.ExistsExtZ
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LocConstChar
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.TopOfMap
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

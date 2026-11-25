@@ -2,9 +2,7 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.FrameExists2
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliCoordinates
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

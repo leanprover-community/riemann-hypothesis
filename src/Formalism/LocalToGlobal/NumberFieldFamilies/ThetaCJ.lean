@@ -1,9 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedBessel
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Formalism.LocalRingCardinality.DataHost
-public import Formalism.LocalRingCardinality.DataTheta
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCN, Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCJ

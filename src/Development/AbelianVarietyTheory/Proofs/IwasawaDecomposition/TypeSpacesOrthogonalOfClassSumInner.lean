@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TypeOrthO
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ClassSumEqConstMulPetersson
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgWtExistsInvForm
-public import Formalism.AlgebraicWeights.IsAlgWeight
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDoubleCosetsDefiniteUnitaryMaximalLevel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothAdmissibleUnitaryMemSupIsotypicParts
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteClass
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
@@ -16,7 +14,6 @@ import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
 import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 
 @[expose] public section
 

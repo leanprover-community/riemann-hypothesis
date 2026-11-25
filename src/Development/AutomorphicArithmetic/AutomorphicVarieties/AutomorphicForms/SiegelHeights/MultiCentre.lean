@@ -2,8 +2,6 @@ module
 
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsLieDataCircle
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Module.Submodule.Defs
 public import Mathlib.Basic.Complex.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMemSubmoduleOfComplexPolyValuesMem
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommuteGelfandInvariantMatrixUnitsOfGlRel
@@ -11,15 +9,12 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorPolyMap
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetAddOneSubEqSumQminor
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetPolyMapMonic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TracedQminorComatrixTruncatedInverse
-public import Formalism.RealPlaceAnalysis.StatementA
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.BicommutantTensorFactorPermMemSpan
-public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommutantLiftModStableSelfAdjoint
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.CommutatorGlGeneratorTensorWordMapMatrixUnits
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdjoinGlActionOfCommuteTensorPerm
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.PermutationWordGelfandPolynomialModShorter
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.PolarConjTranspose
-public import Mathlib.RingTheory.TensorProduct.Basic
 import Mathlib.Tactic.Linter.Style
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 

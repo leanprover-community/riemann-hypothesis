@@ -7,7 +7,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HaarScaling.MapE
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Formalism.LocalToGlobal.IndefiniteReal.HaarTransfer.UnimodP
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodGA
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ExistsOmegaLeb
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Upqcpt
 
 -- This file was produced by scripts/clump.py from the modules listed below.

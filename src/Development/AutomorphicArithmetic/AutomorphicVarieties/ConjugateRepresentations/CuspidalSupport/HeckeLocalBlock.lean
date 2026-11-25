@@ -2,10 +2,8 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CuspidalSupport.HasCapOneFn
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CmBridge
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Satake
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.FormsFiniteness.FormsFiniteAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.FormsFiniteness.OrderedCechToCatCochainsOneApplyValueAtSubset
-public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

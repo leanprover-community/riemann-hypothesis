@@ -8,8 +8,6 @@ import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSym
 
 @[expose] public section
 

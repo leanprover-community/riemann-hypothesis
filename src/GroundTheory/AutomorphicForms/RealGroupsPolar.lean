@@ -4,7 +4,6 @@ public import Mathlib.Analysis.Matrix.Order
 public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
 public import GroundTheory.AutomorphicForms.RealGroupsLie
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Isometric
 import Mathlib.Tactic.TypeStar
 

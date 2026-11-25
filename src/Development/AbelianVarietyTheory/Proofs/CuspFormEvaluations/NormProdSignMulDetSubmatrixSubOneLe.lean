@@ -8,8 +8,6 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Mathlib.LinearAlgebra.Matrix.Gershgorin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.DiscriminantEstimates.DiscriminantTheorems.ScaledBoundInequality
 public import Mathlib.Analysis.InnerProductSpace.GramMatrix
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic

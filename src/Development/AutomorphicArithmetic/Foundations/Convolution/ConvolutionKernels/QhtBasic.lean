@@ -1,10 +1,8 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
-import GroundTheory.AutomorphicForms.ReductionFinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalTwistEx
-import GroundTheory.AutomorphicForms.CuspidalProjection.Global
 
 @[expose] public section
 

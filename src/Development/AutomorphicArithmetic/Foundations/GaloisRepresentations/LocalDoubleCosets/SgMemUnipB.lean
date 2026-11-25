@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrbits.HoweSpace
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import GroundTheory.AutomorphicForms.LocallyConstantCompact
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

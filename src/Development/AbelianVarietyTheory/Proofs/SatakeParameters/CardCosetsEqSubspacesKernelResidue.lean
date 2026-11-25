@@ -5,12 +5,7 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsIntOv
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankReductionRangeAddCorank
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
 import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLinearEquivMapEqOfFinrankEq, Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardCosetsEqSubspacesKernelResidue

@@ -24,8 +24,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LocDensCorank
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.JordanDecompositionExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.ResCharLeAbsNorm
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
 
 @[expose] public section
 

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.KeyFormula.SameObj
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DualNumberRingHomExt
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyPBId
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
 
 @[expose] public section

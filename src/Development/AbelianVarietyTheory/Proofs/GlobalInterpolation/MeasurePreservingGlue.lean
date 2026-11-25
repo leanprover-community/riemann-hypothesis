@@ -4,20 +4,14 @@ public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.Perpe
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBorelSectionUnitaryOrbitQuadric
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ActionCoordinates
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyCompactDualHaar
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FourierInversionHaarSymmForm
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFibreFamilyEqAtContinuityPoint
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LintegralComplexEqLintegralSqrtMulExp
 public import Mathlib.RingTheory.Complex
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Order.CompletePartialOrder

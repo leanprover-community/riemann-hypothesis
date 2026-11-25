@@ -4,15 +4,12 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficien
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.SignedIdentityColumns
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 public import Mathlib.MeasureTheory.Function.L2Space
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IntegrableOfDecayVG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.LholClmEventually
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiDecayCore
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IntegrA, ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.Integr

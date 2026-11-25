@@ -10,16 +10,11 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.BinomialPreser
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.LoweringWordWeightOrNMinus
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExtremalProjectorLatticeScaledMem
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
-public import Mathlib.Algebra.Lie.OfAssociative
-public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.InvariantDenominatorLinftyBound
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Order.Interval.Finset.Box
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Sheaves.Presheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.

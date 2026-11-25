@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelExplicitFormula
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
 import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsIntOfLatOfLe
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModulusLocallyConstant
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.Style

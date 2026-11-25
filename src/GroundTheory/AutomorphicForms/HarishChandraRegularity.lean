@@ -4,21 +4,17 @@ public import GroundTheory.AutomorphicForms.HarishChandraRegularity.ContDiffComp
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import GroundTheory.AutomorphicForms.DixmierMalliavinHaarCoord
 public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import GroundTheory.AutomorphicForms.DixmierMalliavinHaar
 public import GroundTheory.AutomorphicForms.DixmierMalliavinHaarDensity
 public import Mathlib.Analysis.Calculus.ContDiff.WithLp
 public import Mathlib.Analysis.Calculus.Deriv.Abs
 public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoBasic
-public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import GroundTheory.AutomorphicForms.GKModules.Casimir
 public import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
 public import GroundTheory.AutomorphicForms.PartialDifferential.AnalyticHypoelliptic
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf

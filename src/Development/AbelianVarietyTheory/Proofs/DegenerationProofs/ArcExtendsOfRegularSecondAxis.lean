@@ -2,12 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.LawsChart
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.AlgOverHomSurjective
-public import Mathlib.RingTheory.LocalRing.Defs
-public import Mathlib.RingTheory.Localization.FractionRing
-public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Mathlib.RingTheory.PowerSeries.Inverse
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.RingTheory.MvPowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic

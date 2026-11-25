@@ -2,10 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.LetAct
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalB
-import Formalism.GradedWeylDivisibility.FinalC
-import Formalism.GradedWeylDivisibility.FinalD
 import Mathlib.Algebra.Order.Monoid.Prod
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Rat

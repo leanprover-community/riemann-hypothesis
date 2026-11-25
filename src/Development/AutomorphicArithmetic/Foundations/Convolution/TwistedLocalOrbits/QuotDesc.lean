@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Exists
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IwahoriDoubleCosets
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrbits.HoweSpace
 public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap

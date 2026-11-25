@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LiftCoordinatesInGoodPartOf
 public import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
 public import Formalism.LocalToGlobal.IndefiniteReal.BridgeLemmas
-import Formalism.LocalToGlobal.LatticeGeometry.DegFlLApply
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.LatticeGeometry.FormsK, Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas

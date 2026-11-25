@@ -2,7 +2,6 @@ module
 
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.EGaussK
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.DworkPowerSeriesWeights
-public import Mathlib.RingTheory.MvPowerSeries.Rename
 import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
 import Formalism.GaussJetBounds.GaussJetProofs.FJEval
 import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison

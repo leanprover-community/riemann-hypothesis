@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.FiniteStabAt
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.GramDetIsUnit
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GenCoprime
-import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 
 @[expose] public section
 

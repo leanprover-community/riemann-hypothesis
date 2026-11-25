@@ -9,13 +9,8 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Spl
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FlagUnipotentAnisotropicProjectionEqOne
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.T2SpaceCmHostAdeles
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsUniqueIsProdMeasureFinAway
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicPointComponentsAtPlacesLatticesVacua
-import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.MarkSpec
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.OpenMapping
 import Mathlib.Topology.Baire.LocallyCompactRegular
 
 @[expose] public section

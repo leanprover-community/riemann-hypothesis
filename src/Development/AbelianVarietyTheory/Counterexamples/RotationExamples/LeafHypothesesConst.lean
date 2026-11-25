@@ -48,7 +48,6 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.FunctionalLowerBou
 public import Formalism.PairingDivisors.StatementH
 import Formalism.PairingDivisors.StatementN
 public import Formalism.PairingDivisors.StatementX
-import Formalism.QuotientMetricDivisors.Statement
 
 @[expose] public section
 

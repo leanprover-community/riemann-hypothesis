@@ -5,13 +5,11 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.U
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.CutFold
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeConvA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeEquivB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeEquivA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JBeConv
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JPairs
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.MeasurableBetGm, ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.PhiIntegrable

@@ -3,8 +3,6 @@ module
 public import Formalism.QuotientMetricDivisors.ClassSumDualGeF
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.AuxStatement14
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section

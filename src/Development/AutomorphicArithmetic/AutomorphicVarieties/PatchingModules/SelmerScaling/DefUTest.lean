@@ -9,7 +9,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingMod
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.TestEx
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.TestVal
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

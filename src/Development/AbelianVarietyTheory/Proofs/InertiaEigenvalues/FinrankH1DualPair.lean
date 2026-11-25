@@ -5,9 +5,6 @@ public import Formalism.GaloisCohomology.StatementLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
-public import Mathlib.NumberTheory.Padics.PadicNumbers
-public import Mathlib.RingTheory.Localization.Module
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicProperties
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsOpenOfFgOfSpanEqTop
@@ -15,22 +12,12 @@ public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterCongrRootOfUnityPow
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardDualZmodModuleEqCard
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardCocyclesMulInvariantsDiscrete
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.GroupTheory.Index
-public import Mathlib.RingTheory.Localization.Finiteness
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardQuotPowSmulBoundsDvrFgModule
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMutuallyDualStableLattices
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1PeriodDatum
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GrowthGaloisInvariantsModPrimePowerLattice
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H1ReductionIndexBoundDual
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar

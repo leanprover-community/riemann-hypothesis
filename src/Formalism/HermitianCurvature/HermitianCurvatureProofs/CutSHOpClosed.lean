@@ -8,16 +8,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MemLevelZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSHCellTie
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSHFamAlg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSHRepLin
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothnessOnGoodSet
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
 import Mathlib.LinearAlgebra.Matrix.CharP
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSHFamJFDeriv, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSHOpClosed

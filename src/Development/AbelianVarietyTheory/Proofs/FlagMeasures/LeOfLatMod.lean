@@ -3,9 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast

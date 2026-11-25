@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
-public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierTransformInversionLocalFieldPi
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeSupportAndFourierRelation
 import Mathlib.Algebra.Order.Floor.Extended

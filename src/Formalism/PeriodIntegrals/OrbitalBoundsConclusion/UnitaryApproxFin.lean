@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.UnitaryApprox
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.SigmaMemIntOE
 public import Lemmata.GeneralBFactRightTer.Imports
 public import Mathlib.RingTheory.Flat.Basic
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.WeakApproxF
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.WeakApproximationFiniteUnitary
 public import Formalism.PeriodIntegrals.UnitaryApproxFin

@@ -7,7 +7,6 @@ public import GroundTheory.LocalFields.Examples
 public import GroundTheory.LocalFields.LocalArtinMap
 public import GroundTheory.PAdicHodge.GaloisOnCp
 public import Mathlib.RingTheory.PicardGroup
-import GroundTheory.LocalFields.ConductorReciprocity
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

@@ -2,7 +2,6 @@ module
 
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.ContinuousUnitaryMatrix
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EqZeroOfDatumEmbeddingEqZero
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar

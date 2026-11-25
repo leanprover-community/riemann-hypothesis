@@ -6,19 +6,11 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Chebota
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RegPolOfRepOf
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmSubfieldsCompositumClosedStatement
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Connected.Separation
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RestrictsSelf
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

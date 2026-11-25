@@ -4,13 +4,10 @@ public import Mathlib.FieldTheory.Finite.Basic
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPowCharPowEqSelf
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GaloisValuations.GlobalB
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Invariant.Profinite
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 

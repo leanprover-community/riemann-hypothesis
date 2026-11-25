@@ -11,16 +11,11 @@ public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
-public import Mathlib.Algebra.Algebra.Basic
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.BilinearMap
-public import Mathlib.Data.Rat.Cast.CharZero
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelOneThetaEqSmulOfSelfDualLattice
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.ExistsEquivOfSumEq
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 

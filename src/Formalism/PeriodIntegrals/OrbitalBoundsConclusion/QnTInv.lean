@@ -13,7 +13,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovariantLinearP
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnEabGl
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnEabPres
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnMinorLeft
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DerivativePreservation.HasDerivAtExt
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

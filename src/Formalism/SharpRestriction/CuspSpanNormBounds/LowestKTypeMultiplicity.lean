@@ -2,11 +2,7 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.UnitNorm.UnrealifyRealify
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Topology.UniformSpace.Matrix
-public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-public import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur

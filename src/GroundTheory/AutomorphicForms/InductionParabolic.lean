@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.InductionParabolicGroups
 public import GroundTheory.AutomorphicForms.MeasuresParabolic
 public import GroundTheory.AutomorphicForms.InductionJacquet
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.GLnLattice
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
 import Mathlib.MeasureTheory.Measure.HasOuterApproxClosedProd

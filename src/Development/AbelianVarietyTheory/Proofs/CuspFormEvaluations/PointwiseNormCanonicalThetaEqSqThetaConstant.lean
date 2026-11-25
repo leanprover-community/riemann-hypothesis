@@ -9,17 +9,13 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.UnimodularSym
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LatDen
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.EqTopOfForallEmbAllMem
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsTorusCoordinates
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MemIffConjugateNotMem
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Calculus.ContDiff.WithLp
 public import Mathlib.Analysis.Calculus.FDeriv.Star
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.PiTensorProduct
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpCStatementPfA
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.L2NormFundamentalDomain
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.LemmaNA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtDataPf
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNonzeroIntertwiningMapFromUnitarySupercusp
@@ -14,7 +13,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CentralExponentB
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCovBySubmodule
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsInSupportOfMultiProd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSubquotient
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParIndJacPlacing
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonJacquetOfPerm
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
@@ -24,7 +22,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

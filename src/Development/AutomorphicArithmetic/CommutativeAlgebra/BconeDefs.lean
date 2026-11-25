@@ -4,7 +4,6 @@ public import Mathlib.AlgebraicGeometry.Sites.Etale
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleMemIffPoints
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
-import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

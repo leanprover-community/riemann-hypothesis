@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.StatementKB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfCauchySchwarz
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGWave
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

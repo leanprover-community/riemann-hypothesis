@@ -17,8 +17,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-public import Mathlib.AlgebraicGeometry.Geometrically.Basic
-public import Mathlib.AlgebraicGeometry.Geometrically.Reduced
 public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section

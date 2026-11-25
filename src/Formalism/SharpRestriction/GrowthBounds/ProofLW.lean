@@ -11,7 +11,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NdBNonne
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PriceBoundLargePrimes
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PriceLinearCombinationLe
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcSize
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcTsumOdd
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NdLszLe
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NumericalClosedOfNeed
 -- This file was produced by scripts/clump.py from the modules listed below.

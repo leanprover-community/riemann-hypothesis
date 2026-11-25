@@ -5,7 +5,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoor
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.ChartRing
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.IdealSheafOrder
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinateDivisorSmoothness
-import Development.ResolutionOfSingularities.EmbeddedResolution.AlgebraicPreliminaries.RegularLocalRing
 import Development.ResolutionOfSingularities.Foundations.Schemes.AffineOpens
 
 -- This file was produced by scripts/clump.py from the modules listed below.

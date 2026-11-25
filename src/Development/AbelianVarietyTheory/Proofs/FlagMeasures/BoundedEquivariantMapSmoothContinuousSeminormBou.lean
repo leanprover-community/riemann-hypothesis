@@ -4,28 +4,18 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointOfIso
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarCompactLtTop
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothVectorsDenseInvariant
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Formalism.PeriodIntegrals.QuotInv
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MatGroupHaarUniqueFiniteCompactOpenPos
-public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquenessConjugation
-public import Formalism.RealPlaceAnalysis.FinalF
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EventuallyBallSubset
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsLimitOfChart
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsOrthonormalBasis
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SobolevIteratedOneParameterSubgroups
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SobolevInequalityAtOneIndefiniteUnitary
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupsClosedUnitaryWCompact
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedSubgroupBesselHaarFiniteCompactPosOpen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightDerivativeSmoothOnIndefiniteUnitaryGroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsUnimodularBesselModelUnitaryGroup
-public import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -63,14 +53,9 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.ReduceModChar
-import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
-import Mathlib.Algebra.Order.Star.Real
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDensityAtIdentityLieAlgebraOfOmegaDensity
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Analysis.Normed.Module.HahnBanach
 import Aesop.Main
 import Mathlib.RingTheory.PiTensorProduct
 

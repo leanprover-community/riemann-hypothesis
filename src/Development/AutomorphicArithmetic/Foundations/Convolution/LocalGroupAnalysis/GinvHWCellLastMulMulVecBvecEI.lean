@@ -2,12 +2,9 @@ module
 
 public import Mathlib.FieldTheory.Galois.Basic
 public import Mathlib.RingTheory.Etale.Field
-public import Mathlib.RingTheory.Etale.Basic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.NormAlmostAll
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsRealEmbeddingEqHom
-public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.MemPowSub
 public import Mathlib.RingTheory.TensorProduct.Pi
-public import Mathlib.LinearAlgebra.Charpoly.BaseChange
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.ConjSep
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalBase
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalExt
@@ -15,14 +12,10 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Hermitia
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalField
 public import Development.AbelianVarietyTheory.PublishedTheorems.AdelicLattices₂.AlgebraMapNormOfBasisOneSqrt
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.EllipticityFromProductFormula
-public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.IsHerm
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -34,10 +27,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -61,9 +51,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRingHomAdicCompletionUnder
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormPrincipleOfIsCyclic
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsNormFromBaseChangeBaseChangeProperties
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic

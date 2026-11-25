@@ -11,9 +11,7 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Cyclic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsSupersetMemSUnits
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUnitValuationEqOfAdm
 public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Mathlib.NumberTheory.RamificationInertia.Galois
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsTwoPlacesOverOfIsSquareLocal
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsKum
@@ -25,7 +23,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal

@@ -9,32 +9,21 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Adeli
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelElementSameCharacterNearBadStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelElementAtBadPrimesIntegralAndNearStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StdPointMatrixAndInverseIntegralAtEveryPrimeStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemHJsymIffJSymG
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SymmetricFlagBasisVectorEqSingleOfNoExtra
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiTopTargetTwist
-public import Formalism.LocalToGlobal.Columns.RowFormsSel
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.MqRowSGUnif
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteAdeleFieldIdentificationEqBaseChangeRingEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DetIdStdBot
 public import Formalism.LocalToGlobal.KernelLattices.KerMemPin
-public import Formalism.LocalToGlobal.KernelLattices.KerMtPin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompanionCrd
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevOkTwists
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred
 public import Formalism.LocalToGlobal.Columns.ChainLawTw
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsTwIffCanonEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiamondElementIntegralSupportLastRow
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunKilled
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InclMulInvMul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPointOfLastCoordinateDilationOnePrime
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalGroupElementEqLevelComponentBadPrime
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormEqOfSplit
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotDvdDifferent
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalAutomorphismCongruentNearFrameReading
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalAutomorphismsNearSameAdelicCongruent
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RepresentativeLatticeEqCompanionOfAdelicRep
@@ -51,7 +40,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepN
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -82,18 +70,12 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdAbsNormDivsDvd
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ENatToNat
-import Formalism.LocalToGlobal.Columns.RecLevelDiv
-import Formalism.LocalToGlobal.Columns.RecLevelSym
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.Columns.ChainTwCst
 import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

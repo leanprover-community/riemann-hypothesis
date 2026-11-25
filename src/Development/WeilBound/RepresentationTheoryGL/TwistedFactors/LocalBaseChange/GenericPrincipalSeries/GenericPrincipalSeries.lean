@@ -4,7 +4,6 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 
 @[expose] public section
 

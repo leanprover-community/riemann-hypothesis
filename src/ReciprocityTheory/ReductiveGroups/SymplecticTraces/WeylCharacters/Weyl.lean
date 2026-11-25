@@ -3,24 +3,13 @@ module
 public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.BlockCombStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousTorepK
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.DerivExistsAllPosStatement
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HasDerivAtRealOfComplex
 public import Mathlib.Analysis.InnerProductSpace.TensorProduct
-public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Weight
-public import Mathlib.LinearAlgebra.Trace
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.URepCompRed
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Unique
 public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.Statement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
-public import Formalism.LocalRingCardinality.DataCoeff
-public import Formalism.PeriodIntegrals.UpqRep
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HwIrred
-public import Formalism.PeriodIntegrals.WeylForU
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompactGroupIntegrability.IsPositiveDefiniteMatrixCoefficientOfMemAlgA
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryDense
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.Assembly
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.DetSplit
@@ -28,12 +17,9 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelI
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.ModelMap
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.PolyExt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.TorusEigenvalueFormula
-public import Formalism.PeriodIntegrals.HwIrred
 public import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.SqChar
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Formalism.LocalRingCardinality.Params
 import Mathlib.RingTheory.MvPolynomial
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -8,15 +8,7 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFor
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
 public import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.NApply
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
-import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import GroundTheory.GlobalFields.TateThesis.SchwartzBruhat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -13,9 +13,7 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CmFram
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CorrOfJetsOfAnalyticFrameProducts
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.JetRdMulInvPow
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.JetReadingLinearSubstitutionPoints
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
 

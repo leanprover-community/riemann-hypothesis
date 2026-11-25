@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.LetterProductDoubleDegreeCount
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

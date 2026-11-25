@@ -4,15 +4,10 @@ public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersCompleteDVR
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ReduceModChar
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI

@@ -4,30 +4,20 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfD
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralExtensionFiniteAdelesBasicProperties
 public import Formalism.PeriodIntegrals.SplitIntLoc
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitPrimeIntegers.ExistsUnitDiff
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.Matrix.Block
 public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FirstComponentsBasisLocalLatticeSplit
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLocalLevelUnitriangularIff
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldSplitCompletelyPlaceStructure
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceFirstFactorLocalFrame
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardAdditiveCharacterLocalNeOneSplitPrime
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLocallySelfDualOfHermitianLatticeOfLevel
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepLevelTLat
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SatakeDualWeyl.Statement
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceLatticeComponents
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

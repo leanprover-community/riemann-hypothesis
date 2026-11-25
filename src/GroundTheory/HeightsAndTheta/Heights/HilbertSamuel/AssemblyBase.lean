@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNonvanishingDense
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountLattice
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBoundCount
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountIntegrals
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedProductNonneg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedRestrict
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedEffectiveSection
@@ -26,15 +25,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPoint
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolyNonnegAtZero
-public import Mathlib.Algebra.Order.Archimedean.Basic
-public import Mathlib.Order.Filter.AtTopBot.Basic
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.Algebra.Monoid
-public import Mathlib.Topology.Algebra.Polynomial
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPolySandwich
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import Mathlib.Order.Filter.AtTopBot.Archimedean
-public import Mathlib.Topology.Algebra.Order.Polynomial
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameFibreDeg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameFibrePt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRatioFieldDeg
@@ -48,7 +39,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameImage
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionFormsIndependent
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeStB
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSegrePrime
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftIntersectionPolynomial
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerExtra
@@ -57,8 +47,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingLocal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingNoeth
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingPow
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
-public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-public import Mathlib.RingTheory.Ideal.Height
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerBis
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PrimeComplMapLeNonZeroDivisorsQuot
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsLocalizedQuotientLength
@@ -272,12 +260,7 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreCoordGoodProj
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegrePartition
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-import Mathlib.Topology.Algebra.MvPolynomial
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeStA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AParamStA
 import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly

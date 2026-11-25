@@ -21,7 +21,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulOfRes
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrame
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 
 @[expose] public section
 

@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSy
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsExOfPow
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HMatMulVecPerCrd
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinear
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style

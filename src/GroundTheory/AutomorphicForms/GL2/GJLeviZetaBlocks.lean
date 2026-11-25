@@ -1,20 +1,15 @@
 module
 
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
-public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
 public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
 public import GroundTheory.AutomorphicForms.LeviStagesProduct
 public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.AdmissibleInduction
-import GroundTheory.AutomorphicForms.GLnLattice
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.Finset.Functor
 import Mathlib.Tactic.TypeStar
 import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-import GroundTheory.LocalFields.SeparableClosureValuation
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.GL2.GJLeviSupport, GroundTheory.AutomorphicForms.GL2.GJLeviZetaBlocks

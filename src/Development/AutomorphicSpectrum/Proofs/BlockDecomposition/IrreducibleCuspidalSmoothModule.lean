@@ -14,9 +14,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCuspidalLi
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemZalgCommuteCompactRep
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousConjFin
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemZalgCommuteLieAction
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModerateGrowthConvolutionIntegral
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary

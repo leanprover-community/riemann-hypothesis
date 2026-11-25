@@ -8,10 +8,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGLet
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceInductionLevel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.VLetZeroNear
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DetLowW
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadCorrespondenceOfParts
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NegMulCCancel
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHBCutOff, Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothTruncationInduction

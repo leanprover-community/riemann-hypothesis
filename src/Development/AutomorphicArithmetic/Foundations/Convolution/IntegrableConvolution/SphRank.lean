@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.LineRank
-public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor
 public import Development.WeilBound.CuspidalAdmissibility.OccursIff
 import GroundTheory.AutomorphicForms.Satake
 import GroundTheory.GlobalFields.LocalAtPlace

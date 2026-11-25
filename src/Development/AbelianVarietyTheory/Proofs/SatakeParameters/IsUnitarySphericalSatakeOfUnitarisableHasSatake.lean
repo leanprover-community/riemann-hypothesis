@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RpowNegLeNormOfComponent
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GlMapDiagUniformizerElementarySublattice
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.FiniteResidueFieldPadicInt
-public import Formalism.SatakeDualWeyl.StatementE
-public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GlMapStandardLatticeEqIffMemGLintAdic
 public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws

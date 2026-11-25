@@ -6,7 +6,6 @@ public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardT
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.ContinuousOfMem
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowSplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main

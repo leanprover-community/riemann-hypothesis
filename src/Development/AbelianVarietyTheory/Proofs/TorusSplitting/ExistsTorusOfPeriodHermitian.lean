@@ -5,10 +5,7 @@ public import Development.AbelianVarietyTheory.Definitions.TorusSections.IsTorus
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.TorusAtExistsOfParts
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.Analysis.Matrix.Hermitian
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodPointOrConjugate
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters

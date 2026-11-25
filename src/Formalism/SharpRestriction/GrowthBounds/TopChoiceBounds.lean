@@ -10,8 +10,6 @@ public import Formalism.LocalRingCardinality.HostCls
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSa
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Formalism.SubspaceCounting.ChoiceOfTopsRefined
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramUnipotent
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameTermCountSublatticeBoundStatement
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf

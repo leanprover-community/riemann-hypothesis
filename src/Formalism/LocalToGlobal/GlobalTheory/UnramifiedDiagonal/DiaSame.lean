@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.NaturalTranslateAdelicFunction
-import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.PSplitT
-import Formalism.LocalToGlobal.GlobalTheory.GL6.RndLinkAdmTOf
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

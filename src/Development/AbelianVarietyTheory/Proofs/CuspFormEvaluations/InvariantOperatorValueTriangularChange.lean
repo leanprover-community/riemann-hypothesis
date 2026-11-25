@@ -7,7 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscrim
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
-public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 

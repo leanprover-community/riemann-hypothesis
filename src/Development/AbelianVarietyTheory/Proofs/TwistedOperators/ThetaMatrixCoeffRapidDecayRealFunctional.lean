@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HomSymplectic
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.SmoothIffRealCoordinatesAndRealLines
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaFunctionsSquareIntegrableHeisenbergUnitary
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaSquareIntegrable
-import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar

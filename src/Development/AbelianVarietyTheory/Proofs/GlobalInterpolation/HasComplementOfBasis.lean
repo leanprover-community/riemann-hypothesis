@@ -7,10 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseN
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLocalConjugationSelfDualLatticesHost
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UnramifiedOfIsCMUnram
 public import Development.AbelianVarietyTheory.PublishedTheorems.Landherr₂.LandherrStIffLandherr
-import Formalism.FockGram.SymGramPosSemidef
 import Std.Tactic.BVDecide.Normalize.BitVec
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.AdelicUnitaryGroups
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 
 @[expose] public section
 

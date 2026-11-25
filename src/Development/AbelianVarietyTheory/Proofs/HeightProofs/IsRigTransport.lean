@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsProjBySmoot
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 
 @[expose] public section
 

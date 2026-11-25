@@ -3,8 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFLeib
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomPtw
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointLeibnizExpansion
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyContinuousOn
 

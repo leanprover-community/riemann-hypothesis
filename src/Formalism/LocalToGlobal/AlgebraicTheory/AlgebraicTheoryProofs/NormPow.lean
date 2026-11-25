@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementNorm
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

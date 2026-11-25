@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

@@ -8,25 +8,13 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.OverZpO
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDualBC
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsHTAtIff
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HTChartExistsHolds
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateChartIntegral
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PowFlatLocallyQuasiFinite
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionEmbeddingGeometricPoints
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HcptgenChart
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HcptgenRing
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Hcptgen
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLat
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatPol
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
-import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLie
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLev
-import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.PowValIntCast, Development.WeilBound.CoreStatements.HodgeTatePoints.BtLink, Development.WeilBound.CoreStatements.HodgeTatePoints.HtatReg, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HtatLinkOf, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFreeFlagLatticeLower

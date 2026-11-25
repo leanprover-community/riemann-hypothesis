@@ -9,17 +9,9 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Foc
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeylDeterminantTwistTensorFiniteDimensionalStabl
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SqRepTopVecOfUnitriangular
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsPiTensorMvPolynomialEquivBlocks
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemSpanTprodOfCommuteAtEachPlace
 public import Mathlib.Topology.Algebra.MvPolynomial
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.RingTheory.PiTensorProduct

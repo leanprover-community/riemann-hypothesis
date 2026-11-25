@@ -16,11 +16,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomP
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomVMul
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTrNormKB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEPairAtDeriv
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsAdmissibleSplittingCharPairMulTwist
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyContinuousOn
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.VectorVanishesBigCell
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section

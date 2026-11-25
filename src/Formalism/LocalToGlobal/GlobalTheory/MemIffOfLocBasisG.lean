@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.TotallyPositiveTraceGeOfNormDiscr
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

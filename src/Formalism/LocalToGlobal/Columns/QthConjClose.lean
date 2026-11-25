@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.QthExistsBound
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

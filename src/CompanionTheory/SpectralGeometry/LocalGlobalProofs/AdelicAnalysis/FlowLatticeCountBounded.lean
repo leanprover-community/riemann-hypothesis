@@ -3,11 +3,7 @@ module
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.HypJ
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicBoxLatticeCountRatio
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicBoxesCompactExhaust
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.RationalTuplesDiscreteCocompactAdelic
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Set.Finite.Lemmas
 
 @[expose] public section
 

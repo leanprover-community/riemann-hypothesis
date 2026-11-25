@@ -14,7 +14,6 @@ import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.Quadra
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

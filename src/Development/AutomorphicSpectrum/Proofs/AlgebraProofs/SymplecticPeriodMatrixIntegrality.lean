@@ -5,7 +5,6 @@ public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.RingTheory.Valuation.Integers
 public import Mathlib.LinearAlgebra.SymplecticGroup
-public import Mathlib.Algebra.Ring.Hom.InjSurj
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.MulEqSmulOneSymm, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SymplecticPeriodMatrixIntegrality

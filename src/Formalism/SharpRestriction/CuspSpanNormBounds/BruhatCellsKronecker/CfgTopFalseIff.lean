@@ -4,7 +4,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamil
 public import Formalism.HermitianCurvature.StatementSz
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingNumericalData
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

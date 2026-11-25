@@ -11,7 +11,6 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExpandsAtOfSucc
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.CancelSecAct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFiniteValues, Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsLevelPoint

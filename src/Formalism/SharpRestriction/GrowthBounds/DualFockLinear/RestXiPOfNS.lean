@@ -3,13 +3,9 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.Lemma4ElementZero
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.NormalDegreeZeroMul
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.InitialLevelMonoWeights
-public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.NormDegUniv
-public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.SubstSPtrue
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.WspanLeOpCl
 public import Formalism.SharpRestriction.GrowthBounds.FlipOneThree
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RankMulConductorDivLeOne
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestNDOfAdm, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.XiStepNOfP, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestXiPOfNS

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundUnitary
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
 public import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.IsCyclotomicExtensionFourSlopeModelField
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 
 @[expose] public section
 

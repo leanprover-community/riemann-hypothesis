@@ -8,7 +8,6 @@ public import Mathlib.NumberTheory.Multiplicity
 public import Mathlib.RingTheory.ZMod.UnitsCyclic
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section
 

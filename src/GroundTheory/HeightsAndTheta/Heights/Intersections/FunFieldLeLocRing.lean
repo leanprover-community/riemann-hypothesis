@@ -7,10 +7,7 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotMemOfNonZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PHorizNotMem
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
 import GroundTheory.HeightsAndTheta.Heights.Intersections.CardLeRingKrullDim
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

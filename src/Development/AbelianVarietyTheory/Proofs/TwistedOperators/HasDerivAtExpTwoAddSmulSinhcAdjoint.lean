@@ -5,14 +5,6 @@ public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Normed.Algebra.Exponential
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Slope
-public import Mathlib.Analysis.SpecialFunctions.Exponential
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Algebra.Order.Floor.Extended

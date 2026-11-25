@@ -4,9 +4,7 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFramesDifferByUnit
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameProofs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SemiAbelianDvrExtensionsIsoCompatible
-public import Mathlib.Tactic.ENatToNat
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ValVEqOneIntegralGenerators
 
 -- This file was produced by scripts/clump.py from the modules listed below.

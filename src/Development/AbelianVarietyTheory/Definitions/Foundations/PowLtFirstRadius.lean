@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Eisenstein.IsIntegral
 
 @[expose] public section

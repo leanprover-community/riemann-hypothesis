@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpUnif
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpBig
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
-public import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.DegreeRatioFormulaStatement
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyFormalDegreeLowerBound
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpOrbOfAmpDD
@@ -11,10 +10,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficient
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CoefDecay
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.AmpNZTie
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.NumericSettingWithGapSatisfiable
-import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
-import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CfgTopFalseIff
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpNZCut, Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomSchurG, Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomTie, Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.AmpNZFinal

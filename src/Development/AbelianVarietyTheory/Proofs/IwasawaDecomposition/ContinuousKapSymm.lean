@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlacesStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau

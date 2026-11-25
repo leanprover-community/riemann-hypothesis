@@ -10,9 +10,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 public import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
-import Formalism.PeriodIntegrals.VolFromSW
 
 @[expose] public section
 

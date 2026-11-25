@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassInvolutive
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentDualPrecedesIff
 
 @[expose] public section

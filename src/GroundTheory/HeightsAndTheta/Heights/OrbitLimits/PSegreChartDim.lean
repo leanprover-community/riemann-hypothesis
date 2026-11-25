@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricO
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDim
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
 @[expose] public section
 

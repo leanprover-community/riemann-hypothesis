@@ -5,9 +5,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.KernelDiagonalOfTriangleInequality
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrgCountableField
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 
 @[expose] public section

@@ -6,26 +6,15 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Complet
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BrauerDegreeZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RealInducedCharacters.Induced
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.LinearAlgebra.Trace
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootsCharpolyPowEqMapPow
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
-public import Mathlib.RingTheory.Polynomial.Vieta
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MonodromyZeroOfWeilDeligneRepClassIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Mono0OfLpDimEqOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAevalEqSmulOnEigenspace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeilGroupIsSemisimpleOfSemisimpleFrob
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalTraceCompletion
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousRingEquivLocalFieldPreservesValuation
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaussSumNeZeroOfRamified
-public import Mathlib.RingTheory.Trace.Defs
 public import Mathlib.RepresentationTheory.Semisimple
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilDeligneSemisimple
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilGroupRestriction
@@ -39,17 +28,12 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PlaceOv
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
@@ -75,28 +59,14 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
-import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.LinearAlgebra.Eigenspace.Semisimple
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.LocalSubring
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompletionBaseChangePlacesStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InducedRepresentationCharacter, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyEqOfTracePowers, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MultiplicativeVirtualCharacter, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilDeligneInductionPrinciple, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilDeligneOfFiniteImage, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EpsilonUniqueOfInductive, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EpsilonUniqueOfInductiveStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalTraceCompletionStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateEpsilonTransport, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateEpsilonTransportStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TraceBaseChangeField, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TraceBaseChangeFieldStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilDeligneSemisimpleStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilGroupRestrictionStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilGroupTransport, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilGroupTransportStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RecTransportFieldIso

@@ -5,12 +5,8 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FiniteDimensionalLetter
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFix
 public import Mathlib.RingTheory.PicardGroup
-public import Mathlib.RingTheory.WittVector.Compare
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.NormSubgroupOpen
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedIsCrysAndJumpEqZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.MemIK
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CharAbove
@@ -19,22 +15,12 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCh
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTopologicalClosureZpowersSupInertia
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfWdMkPhiDPow
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ConclusionFinite
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 import Mathlib.Algebra.CharP.Subring
-import Mathlib.RingTheory.WittVector.Identities
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.NumberTheory.Padics.LocalField
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,20 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSiegelZeroFront
-public import Mathlib.LinearAlgebra.Matrix.Trace
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Analysis.Complex.Norm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEqAddOfRedVEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdaptedSiegelBasisBalancedForms
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SiegelGramMemConeIntegerSquares
@@ -56,18 +43,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Int
 

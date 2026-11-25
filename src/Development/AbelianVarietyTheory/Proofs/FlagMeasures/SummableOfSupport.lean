@@ -3,13 +3,7 @@ module
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.AutomorphicBallCount
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizePos
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Algebra.Order.Ring.Pow
-public import Mathlib.Analysis.SpecificLimits.Basic
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.CuspFrame
-import Mathlib.Algebra.Order.Star.Real
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointMajorantFramesGiveMajorants

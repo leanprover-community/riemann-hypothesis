@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.NewtonLow
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 

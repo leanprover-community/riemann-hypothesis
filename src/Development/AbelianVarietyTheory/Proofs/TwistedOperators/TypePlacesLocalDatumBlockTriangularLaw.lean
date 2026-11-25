@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApp
 import Formalism.LocalToGlobal.Columns.RowForms
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TameOnOne
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

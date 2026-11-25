@@ -14,9 +14,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 

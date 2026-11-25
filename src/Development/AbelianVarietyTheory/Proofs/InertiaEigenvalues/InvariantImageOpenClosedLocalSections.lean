@@ -5,9 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Jacquet
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompanionMatrixOfCoeffsPowMulVecFirstBasisVector
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 public import Mathlib.Analysis.Matrix.Normed
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Mathlib.Topology.Algebra.Star.Unitary
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryActionHermitianInvariantsTransitive
 import Mathlib.Tactic.Linter.HaveILetI

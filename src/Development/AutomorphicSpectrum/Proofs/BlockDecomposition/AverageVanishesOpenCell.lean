@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanish
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjectionToTwistedEigenfunctionSupport
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinear
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemTwKerIffAverage
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolyBall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemTwKerPolyBall
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsRepsSumEqZero

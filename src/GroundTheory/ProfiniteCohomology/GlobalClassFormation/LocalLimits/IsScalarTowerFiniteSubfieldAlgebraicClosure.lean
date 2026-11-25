@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.LocalMaps
 public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrand
-public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
 
 @[expose] public section
 

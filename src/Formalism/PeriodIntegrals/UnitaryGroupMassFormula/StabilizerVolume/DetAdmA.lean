@@ -1,8 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DetAdmA
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 
 @[expose] public section

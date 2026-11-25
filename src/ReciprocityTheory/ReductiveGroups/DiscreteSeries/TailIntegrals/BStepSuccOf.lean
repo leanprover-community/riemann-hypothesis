@@ -18,7 +18,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.MatExtBvec
 import Mathlib.Analysis.Matrix.MeasurableSpace
 
 -- This file was produced by scripts/clump.py from the modules listed below.

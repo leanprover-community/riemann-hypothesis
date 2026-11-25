@@ -1,12 +1,8 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-public import Mathlib.Analysis.SpecialFunctions.Pow.Complex
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
 import Development.WeilBound.ThetaLifts.LatticeBasics.Hypotheses2
 

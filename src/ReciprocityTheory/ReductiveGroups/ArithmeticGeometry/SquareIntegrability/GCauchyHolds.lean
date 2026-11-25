@@ -9,7 +9,6 @@ public import Formalism.FilteredPoleLength.LocalDescentLevels.MinimumChainBounds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ExistsShortRealSpan
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.EmbComb
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.PrjMemOfSpan
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ActOmegaExpand
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitSt
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitO
@@ -24,8 +23,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegra
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.PerFactor
 import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ExistsMinNorm
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ContDiffOfDifferentiableFd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.LemmaS
 

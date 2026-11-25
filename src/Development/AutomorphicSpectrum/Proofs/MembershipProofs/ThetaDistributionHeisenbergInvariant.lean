@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.NumberTheory.NumberField.AdeleRing
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
 import Mathlib.Tactic.Linter.HaveILetI

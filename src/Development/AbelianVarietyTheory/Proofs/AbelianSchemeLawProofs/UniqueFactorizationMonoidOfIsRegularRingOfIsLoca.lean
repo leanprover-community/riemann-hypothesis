@@ -6,8 +6,6 @@ public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Mathlib.RingTheory.Ideal.UFD
 import Mathlib.Tactic.Linter.HaveILetI
 public import ReciprocityTheory.CommutativeAlgebra.MaximalIdealSquares.RingKrullDimQuotientSpanSingletonAddOne
-public import Mathlib.Algebra.Module.FinitePresentation
-public import Mathlib.RingTheory.Ideal.Height
 public import Mathlib.RingTheory.LocalProperties.Projective
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst

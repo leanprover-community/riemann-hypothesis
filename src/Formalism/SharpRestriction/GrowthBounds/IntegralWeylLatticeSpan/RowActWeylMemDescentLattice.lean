@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescent
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.EvenBlockRowActionEval
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpLApply
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.DeterminantTwistRowActionMem
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylEqSpanInt
 
 @[expose] public section

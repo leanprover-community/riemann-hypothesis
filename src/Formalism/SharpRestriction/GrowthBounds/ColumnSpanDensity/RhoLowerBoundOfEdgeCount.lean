@@ -1,12 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundLargeConductor
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,7 +2,6 @@ module
 
 import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ScalarStabilizers.FinSupp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.WeightChange
-public import Mathlib.Algebra.AffineMonoid.Basic
 public import GroundTheory.AutomorphicForms.StrongApproximationSLDense
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.GlobFixed
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsUnitaryOfCharIff
@@ -17,12 +16,10 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -45,15 +42,12 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 import Lemmata.GeneralBFactRightSide.Imports
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.AddCharInverseDifferentAndResidueSumEqZero, Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.BijectiveResidueUnitMulLift, Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsGlobalElementValuationEqIdeleAtPlace, Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.HilbertHolomorphicInvariantIntegralTranslation, Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExistsIdele

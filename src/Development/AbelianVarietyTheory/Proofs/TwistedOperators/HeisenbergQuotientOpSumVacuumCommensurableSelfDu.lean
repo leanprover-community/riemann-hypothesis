@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LinearIndependentOfJointEigenvectors
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalThetaInertPlace
@@ -55,11 +54,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeComb
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

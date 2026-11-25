@@ -4,9 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecti
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbFnValueSpan
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbFnValueSpan
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
 
 @[expose] public section

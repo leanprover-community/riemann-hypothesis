@@ -3,10 +3,8 @@ module
 public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
 public import GroundTheory.AutomorphicForms.InductionParabolicGroups
 public import GroundTheory.AutomorphicForms.MeasuresParabolic
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import GroundTheory.AutomorphicForms.AdmissibleInduction
 import GroundTheory.AutomorphicForms.CuspidalAdmissible
-import GroundTheory.AutomorphicForms.MeasuresGL
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.TypeStar

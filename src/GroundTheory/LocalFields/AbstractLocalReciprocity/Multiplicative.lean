@@ -3,15 +3,11 @@ module
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.CoeNormEqProdSmulNorm
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
 public import Mathlib.Algebra.BigOperators.Fin
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.Reciprocity
-import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
-import GroundTheory.LocalFields.AbstractLocalReciprocity.Unramified
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.Connected
 

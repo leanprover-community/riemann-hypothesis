@@ -5,11 +5,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Star
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.LogNormSq
 import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 

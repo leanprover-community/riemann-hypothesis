@@ -2,13 +2,9 @@ module
 
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.ReciprocityMap
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Isomorphism
-import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.Connected
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.Functoriality
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.IsoPGroup
 
 @[expose] public section
 

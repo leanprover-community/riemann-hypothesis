@@ -5,7 +5,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.DualLattices.ATowerInh
 public import ReciprocityTheory.DualLattices.AinfFacts
-public import Mathlib.RingTheory.Ideal.GoingUp
 
 @[expose] public section
 

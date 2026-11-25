@@ -7,7 +7,6 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsCovolOne
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence

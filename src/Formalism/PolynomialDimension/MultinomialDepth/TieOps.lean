@@ -6,10 +6,7 @@ public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamInt
 public import Formalism.MahlerMeasure.StatementT
 public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.PolynomialDimension.MultinomialDepth.MonoCount
-import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeBij
-import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeInto
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.LieMat
-import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

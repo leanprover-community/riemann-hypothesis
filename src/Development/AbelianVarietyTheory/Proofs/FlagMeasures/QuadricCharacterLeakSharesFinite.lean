@@ -6,12 +6,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalId
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrthonormalBasisAndOneOrbit
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SqNormSumRepsMulIndexLe
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Order.Interval.Finset.Nat
 public import Mathlib.Algebra.Order.Field.GeomSum
-public import Mathlib.Algebra.BigOperators.Intervals
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CongruenceSubgroupLatticeStabilizer

@@ -5,21 +5,9 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceAdeleRing
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.InstBorelGL
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CartanExponentsNonnegMinusculeTopProduct
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Formalism.LocalRingCardinality.DataHost
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 
 -- This file was produced by scripts/clump.py from the modules listed below.

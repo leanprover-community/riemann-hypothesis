@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFineSub
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetMoveTermWeightCharacter
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
-public import Mathlib.Analysis.Complex.Norm
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IndexMeasureIntegralLinearPositiveNormBound
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -7,8 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousEx
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivCombCongr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelSquareIntegrableOfTransport
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ResidueSquareIntegrablePositiveRank
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsCompactZetaLe
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumPairAtStarMul
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.ThmPActualCptOfStepParts2, Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPCompactOfStepDensity

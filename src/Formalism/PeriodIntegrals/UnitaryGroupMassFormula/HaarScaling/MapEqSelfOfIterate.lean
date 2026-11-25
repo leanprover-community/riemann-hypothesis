@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.CdHaarScale
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

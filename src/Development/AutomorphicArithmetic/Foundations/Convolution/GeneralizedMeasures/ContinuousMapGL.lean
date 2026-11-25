@@ -7,8 +7,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.HeckeFinAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.AvgTens
 public import Mathlib.Topology.LocallyConstant.Algebra
-import GroundTheory.GlobalFields.Adele.Topology
-import GroundTheory.LocalFields.LocalFourierHaar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsLCProd, Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.ContinuousMapGL

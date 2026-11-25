@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.GLinkQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.ZMod.LocalRing

@@ -1,11 +1,8 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementA
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
-public import Mathlib.LinearAlgebra.Matrix.Block
 
 @[expose] public section
 

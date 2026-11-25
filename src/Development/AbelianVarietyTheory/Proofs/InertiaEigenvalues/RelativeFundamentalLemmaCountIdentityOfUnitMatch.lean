@@ -9,11 +9,8 @@ public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyDvdPowOfAevalEqZero
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerBasisOfCharpolySeparable
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuadraticStarStructure
-public import Mathlib.Algebra.CharP.Algebra
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ValIrreducible
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFixedBasis

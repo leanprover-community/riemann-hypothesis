@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MaBase
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesOfCoordsRegular
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap

@@ -1,28 +1,12 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Mathlib.Topology.Algebra.ContinuousMonoidHom
-public import Mathlib.Topology.Algebra.Support
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Topology.Algebra.Monoid
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsCovolOne
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsUnipotentInvariantCompactlySupportedWeight
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordForm
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitHermOfDet
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.Pi
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
-public import Mathlib.Order.Filter.SmallSets
-public import Mathlib.Topology.Constructions
-public import Mathlib.Topology.Compactness.Compact
-public import Mathlib.Topology.Homeomorph.Lemmas
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CoefS
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SelfDualMap
@@ -31,12 +15,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HCoConti
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPairingInCoordinates
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ArchimedeanHaarScalingNorm
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsAdelicHaarCovolumeOne
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HermCoord
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaPartD
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteComponentCoordinatesAction
 import Mathlib.Tactic.Linter.Style
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
@@ -44,9 +24,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicIntegersCompact.IsC
 import Std.Tactic.BVDecide.Normalize.Prop
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.Adele.Topology
 import GroundTheory.HeightsAndTheta.Theta.AdelicFourier
-import GroundTheory.LocalFields.LocalFourierHaar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualProdIff, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ApproximateIdentityProductBumps, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CovolumeOneInvariantUnderMatrix, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierInversionInvariantMatrix, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCoordinatesMeasurePreserving, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCoordinatesNaturalInRing, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixPreservesIntegersAlmostAll, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductNeighbourhoodsShrinkCompactOpen, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TestTContinuousHasCompactSupport, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMeasureEulerProduct

@@ -4,12 +4,6 @@ public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
 public import GroundTheory.AutomorphicForms.CompactSelfAdjoint
-public import GroundTheory.AutomorphicForms.TraceClass
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
-import GroundTheory.AutomorphicForms.ReductionBlock
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

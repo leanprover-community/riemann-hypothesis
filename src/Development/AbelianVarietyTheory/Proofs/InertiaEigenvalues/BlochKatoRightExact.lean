@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamS
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBlochKatoCocycleOfCrysDeRhamPair
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCrystallineSpan
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OfShortExact
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorFundamentalExactSequenceCrystalline
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

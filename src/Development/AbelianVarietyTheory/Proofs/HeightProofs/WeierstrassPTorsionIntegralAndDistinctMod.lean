@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.AddMonoidHomEqZeroOfEventually
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.WeierstrassPAddOfNeOfDerivNeZero
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

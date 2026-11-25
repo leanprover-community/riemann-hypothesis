@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointInPoints
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 import Mathlib.Tactic.Linter.Style
 

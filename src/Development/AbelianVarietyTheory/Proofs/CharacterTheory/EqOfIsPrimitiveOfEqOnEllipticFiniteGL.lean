@@ -6,18 +6,12 @@ public import Mathlib.Data.Nat.PrimeFin
 public import Mathlib.Order.Interval.Finset.Nat
 public import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 public import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.InvariantSubspaceMobiusInverseRecEqOfFinrankLt
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Algebra.Order.GroupWithZero.Defs
-public import Mathlib.Algebra.Ring.GeomSum
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Mathlib.LinearAlgebra.Vandermonde
 public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.Algebra.Field.GeomSum
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.RingTheory.RootsOfUnity.Complex
-public import Mathlib.Algebra.Order.Ring.GeomSum
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.TotallySplit
@@ -27,11 +21,7 @@ public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteGrou
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteGroupFunctionPairingSelfIrreducibleAlgClos
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobiusInverseCharpolyOfIrreduci
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvertibleEndomorphismInnerProductPrimitiveMobiu
-public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FrobeniusTorusCharacterOrthogonality
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FrobeniusTorusMinpolyDegreeRootPowerSum
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.GeneralLinearFunctionExtendZeroEndProperties
@@ -42,7 +32,6 @@ import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootPowerSumChara
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.StarVirtualCharacterEqApplyInv
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.VirtualCharactersMulComapConjIndLinear
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

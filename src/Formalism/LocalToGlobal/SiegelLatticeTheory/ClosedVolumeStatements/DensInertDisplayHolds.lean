@@ -3,9 +3,6 @@ module
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.LinearAlgebra.SesquilinearForm.Basic
 public import Formalism.PeriodIntegrals.FlagGramNonneg
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Data.Matrix.Block
-public import Mathlib.LinearAlgebra.Matrix.Notation
 public import Mathlib.Basic.Complex.BigOperators
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.GramJoint
 import Mathlib.Tactic.Linter.HaveILetI

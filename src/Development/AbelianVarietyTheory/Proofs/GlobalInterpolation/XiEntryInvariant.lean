@@ -2,11 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.KerIsTerm
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmulCompSmul
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumPeriodicMulLatticeFinal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsMoveRight
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HomConjEquivMemHomAt
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParahoricOfTrivialReduction
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 import Mathlib.Tactic.Linter.Style
 

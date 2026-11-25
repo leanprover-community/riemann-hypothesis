@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.WittVector.IsPoly
 public import Mathlib.Tactic.ReduceModChar
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsRegularOfSupportDimQuotientAddLengthLe
 public import Mathlib.RingTheory.Regular.ProjectiveDimension
-public import Mathlib.CategoryTheory.Abelian.Projective.Dimension
 
 @[expose] public section
 

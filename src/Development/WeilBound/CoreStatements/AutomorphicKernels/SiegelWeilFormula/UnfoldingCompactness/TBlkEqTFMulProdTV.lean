@@ -7,7 +7,6 @@ import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.CompactStandardSubgroup.KCptPf
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.G2HaarMeasure.ContinuousInFrame
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.G2HaarMeasure.CountableRationalPointsDoubled
-import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactOfUnits
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.CompactStandardSubgroup.Imports
 

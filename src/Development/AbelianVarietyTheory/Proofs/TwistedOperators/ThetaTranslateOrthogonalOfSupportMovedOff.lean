@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZer
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzBruhatHalfSpanModulatedTranslates
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaInnerProductHermitian
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite

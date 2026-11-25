@@ -9,8 +9,6 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.DescentSlope
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.CovolumeAssemblyHolds
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ShiftInvariance
-import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
 import Mathlib.Tactic.Linter.Style
 import Formalism.MeanHeightDescent.AverageDegreeBounds.GoodBadCut
 import Formalism.MeanHeightDescent.AverageDegreeBounds.MuMaxMinkowski

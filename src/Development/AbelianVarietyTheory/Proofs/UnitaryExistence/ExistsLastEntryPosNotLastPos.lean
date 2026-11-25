@@ -41,7 +41,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Formalism.LocalToGlobal.ProjectiveLattices.RowDeg
 import Development.WeilBound.CoreStatements.PlurisubharmonicCones.Rt0ConjNegNeZero
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian

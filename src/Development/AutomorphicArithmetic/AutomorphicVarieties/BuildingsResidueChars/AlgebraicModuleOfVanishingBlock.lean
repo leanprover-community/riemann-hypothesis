@@ -3,18 +3,7 @@ module
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Mathlib.RingTheory.Polynomial.IsIntegral
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Operations
-public import Mathlib.Algebra.Polynomial.Eval.Degree
-public import Mathlib.Algebra.Polynomial.Lifts
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.Data.Matrix.Diagonal
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.LinearAlgebra.Vandermonde
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
 public import Development.AutomorphicArithmetic.DivisorFrames.ExistsQdetEqPowAddSumCoeffMemSpan
@@ -24,7 +13,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelConj
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.BlockDiagConjUnipotentLinear
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.AlgModBotOfMemAdjoinCommuting
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.GenGlRelationsAndCommuteOfIsLie
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.QdetGeneratesUniversalEnvelopingCentre
@@ -33,8 +21,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -47,7 +33,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -71,10 +56,6 @@ import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar

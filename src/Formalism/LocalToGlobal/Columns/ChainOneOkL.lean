@@ -1,13 +1,9 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.FirstUnfoldingEqZeroOfNotIntegral
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ChainInstS
 public import Formalism.LocalToGlobal.Columns.OcbPhiFIdxFPos
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

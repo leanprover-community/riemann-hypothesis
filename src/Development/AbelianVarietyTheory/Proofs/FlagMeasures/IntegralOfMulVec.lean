@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsComp
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsEqZpowMulUnit
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameLatticeGramDetAndMinorsOrbitInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemPerpSpan
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 

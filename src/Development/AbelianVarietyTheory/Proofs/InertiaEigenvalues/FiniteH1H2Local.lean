@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Mathlib.LinearAlgebra.Dimension.Basic
 public import Mathlib.LinearAlgebra.Dimension.ErdosKaplansky
 public import Formalism.GaloisCohomology.LocalTateDualityK
-public import Mathlib.Data.ZMod.Defs
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

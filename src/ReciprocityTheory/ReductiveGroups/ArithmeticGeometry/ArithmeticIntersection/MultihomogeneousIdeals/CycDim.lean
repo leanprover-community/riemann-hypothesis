@@ -15,7 +15,6 @@ import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAC
-public import Mathlib.RingTheory.Ideal.Height
 
 @[expose] public section
 

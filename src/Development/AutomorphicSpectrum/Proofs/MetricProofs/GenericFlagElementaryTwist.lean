@@ -8,12 +8,9 @@ import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfS
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-import ReciprocityTheory.AnalyticForms.MaIntEmpty
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

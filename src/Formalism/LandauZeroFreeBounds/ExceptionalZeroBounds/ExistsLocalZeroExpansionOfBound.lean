@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LandauLocalOf
 public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LogDerivBound

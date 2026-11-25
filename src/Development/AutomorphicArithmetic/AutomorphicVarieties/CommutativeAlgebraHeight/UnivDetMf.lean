@@ -3,7 +3,6 @@ module
 import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.UnivLift
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DPoly
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.OfDetToDet
 public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.DualNumber
@@ -13,12 +12,9 @@ public import Mathlib.RingTheory.Ideal.Quotient.HasFiniteQuotients.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DChKer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DToDet
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DToDetCH
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DkerOfKills
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ExistsOpenNormalSubgroupKillsOfGroupDetLawIsCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.GChmap
-public import Mathlib.Topology.Algebra.ClopenNhdofOne
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DAmitsur
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DExtPoly
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DFactor
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.FinDefs
@@ -89,7 +85,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.Connected
 import Mathlib.RingTheory.TwoSidedIdeal.Instances
-import Mathlib.RingTheory.MvPowerSeries.Inverse
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Tactic.ENatToNat
 

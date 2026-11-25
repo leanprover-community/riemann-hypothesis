@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HodgeIPIffHodgeFormConj
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeHermitianFormExists
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 

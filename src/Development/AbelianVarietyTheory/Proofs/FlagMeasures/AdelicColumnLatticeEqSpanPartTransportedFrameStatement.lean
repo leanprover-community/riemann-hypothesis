@@ -2,16 +2,11 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LevelMatchIff
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfDualAt
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralFiniteAdeleIsoCommutesWithConjugation
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrLink
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ColumnWittFrameBasisBlockGramStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MulVecMemLatS
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ColDict
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicLatticeConcreteDataEqAdelicSpan, Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoordinateLatticeSelfDualIsFullRank, Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicColumnLatticeEqSpanPartTransportedFrame, Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicColumnLatticeEqSpanPartTransportedFrameStatement

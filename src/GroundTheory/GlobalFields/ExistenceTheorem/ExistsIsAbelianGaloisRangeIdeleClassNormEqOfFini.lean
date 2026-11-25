@@ -1,27 +1,15 @@
 module
 
 public import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
-public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import GroundTheory.GlobalFields.ExistenceTheorem.IndexRangePowMonoidHomAdicCompletionMulNorm
 public import GroundTheory.GlobalFields.FirstInequality
-public import GroundTheory.GlobalFields.KummerTheory.Degree
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
-public import Mathlib.FieldTheory.Galois.Abelian
-public import GroundTheory.GlobalFields.ExistenceTheorem.PowerIndex
 public import GroundTheory.GlobalFields.GlobalReciprocity.General
 public import GroundTheory.GlobalFields.ClassFieldConsequences.CongruenceSubgroupLeStandardOpenSubgroup
 public import GroundTheory.GlobalFields.ClassFieldConsequences.OpenSubgroup
-public import GroundTheory.GlobalFields.GlobalReciprocity.InfKerDegreeLeOfLeSupZhatField
-import GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma.HasEnoughRootsOfUnityOfRingHom
-import GroundTheory.GlobalFields.KummerTheory.Unramified
-import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
-import Mathlib.RingTheory.DedekindDomain.SelmerGroup
 import Mathlib.Tactic.TypeStar
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
-import GroundTheory.GlobalFields.NormResidueSymbol.Functorial
 import Mathlib.GroupTheory.Schreier
 import Mathlib.RingTheory.PicardGroup
-import GroundTheory.LocalFields.LubinTateUnramified
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.PowerSubgroupIndex.Existence, GroundTheory.GlobalFields.ExistenceTheorem.KummerNorm, GroundTheory.GlobalFields.ExistenceTheorem.Kummer, GroundTheory.GlobalFields.ExistenceTheorem.NormLimitation, GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini

@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsJumpVIffOfExactCrystallineLattices
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OfShortExact
 import Mathlib.Tactic.Linter.HaveILetI

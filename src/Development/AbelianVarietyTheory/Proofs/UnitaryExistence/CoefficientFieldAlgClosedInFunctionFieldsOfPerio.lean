@@ -7,17 +7,12 @@ public import Mathlib.Tactic.ENatToNat
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.CountableFractionRingMvPolynomial
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.MemRangeOfIsAlgebraicRatFun
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRingEquivComplexCompEq
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RegularFunctionConstOfFiniteValuesOnPeriodSpace
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.KapFgTrdeg
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsRingHomComplexCompEqOfCountable
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Algebraic.Cardinality
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

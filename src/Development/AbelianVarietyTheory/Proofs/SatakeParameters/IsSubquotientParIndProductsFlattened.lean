@@ -1,23 +1,15 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
-public import Mathlib.Topology.Algebra.Group.Units
 public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleIffOfLinearEquiv
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Order.Fin.Basic
 public import Mathlib.Order.Sigma
-public import Mathlib.Order.Sum.Order
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
-public import Mathlib.Algebra.BigOperators.Fin
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinSigmaFinEquivSymmStrictMonoToLex
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ParabolicInductionProductBlockRenamingEquiv
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ParabolicInductionProductEquivOfNoBlocks
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws

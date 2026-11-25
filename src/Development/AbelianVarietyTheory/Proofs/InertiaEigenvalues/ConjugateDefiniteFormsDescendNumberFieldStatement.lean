@@ -6,9 +6,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FWTie
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaloisConjDefiniteFormsSemilinearEquiv
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntValuationEqOfMem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpOfTranslates
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsRootNotMem
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousCoeffBlockAct
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

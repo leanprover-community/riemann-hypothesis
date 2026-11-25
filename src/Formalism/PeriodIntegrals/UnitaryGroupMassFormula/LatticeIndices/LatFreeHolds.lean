@@ -6,10 +6,7 @@ public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.LatBasisAllOf
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SpanTopFamily
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.LocalSubring
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -11,7 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntAtNatCast
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedK1BlockDecomposition
 public import Formalism.LocalToGlobal.Columns.QthExistsBound
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
 
 @[expose] public section
 

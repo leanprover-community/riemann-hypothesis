@@ -8,9 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueP
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLatticeLatIn
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfPerpPerp
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

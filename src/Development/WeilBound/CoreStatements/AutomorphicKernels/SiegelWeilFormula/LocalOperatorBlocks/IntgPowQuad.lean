@@ -4,11 +4,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Complex.RealDeriv
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section
 

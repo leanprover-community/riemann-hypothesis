@@ -7,23 +7,10 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBloc
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LieAlgebraBesselModelMiddleUnitaryEntries
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LieEntriesUnipotentBesselNCharacterization
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
-public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpBallUMemNhds
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
 public import Formalism.PeriodIntegrals.QuotInv
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DensityInChart
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarLieIsHaarOnUnipotentRadical
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsHaarOnIffGroupsUnitaryUnipotent
 public import Formalism.FormalDegreeBessel.FinalBF
@@ -35,14 +22,7 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Topology.Separation.CompletelyRegular
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 

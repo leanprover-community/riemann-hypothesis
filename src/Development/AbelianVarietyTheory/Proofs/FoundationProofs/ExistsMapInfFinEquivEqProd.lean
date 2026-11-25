@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAuxiliaryPlaceNotMemFinset
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-public import Mathlib.Geometry.Manifold.ContMDiffMap
 
 @[expose] public section
 

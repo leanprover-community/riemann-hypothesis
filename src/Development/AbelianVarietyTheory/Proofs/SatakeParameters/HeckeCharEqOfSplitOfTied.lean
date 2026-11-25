@@ -2,17 +2,8 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DegOneIffSurjective
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.DedekindDomain.Basic
-public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ResidueDegreeOneOfLinearMem
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousIdeleCharLocalFactorization
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsWeakApproxUnitFinitePlace
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharInfTrivialOfTrivAtDegOne
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied

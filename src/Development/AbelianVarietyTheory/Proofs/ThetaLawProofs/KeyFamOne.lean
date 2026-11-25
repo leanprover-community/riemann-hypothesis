@@ -2,11 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBPair
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralOfForallMemDiscreteValuationSubring
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DualNumberRingHomExt
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.StalkOfAppLEEq
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FamUnit
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExactKeyFormulaProofStatement
 

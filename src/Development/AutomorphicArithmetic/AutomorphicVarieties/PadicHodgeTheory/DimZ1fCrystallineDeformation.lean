@@ -10,7 +10,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.I
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.PtCont
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.Z1fMap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.AdRepBaseLiftApply
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Algebra.Group.Units
 

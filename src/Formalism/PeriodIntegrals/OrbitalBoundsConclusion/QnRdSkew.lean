@@ -4,25 +4,13 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SkewAnalyticGrou
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Function.L1Space.Integrable
-public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.Analysis.Matrix.Normed
 public import Formalism.HermitianCurvature.StatementQ
 public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 public import Mathlib.Analysis.Calculus.Deriv.Star
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Formalism.FormalDegreeBessel.FinalG
-public import Mathlib.Analysis.Calculus.Deriv.Linear
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.SpecialFunctions.Exponential
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.HermitianCurvature.StatementI
-import Formalism.RealPlaceAnalysis.StatementA
 import Aesop.Main
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConjugateTransposeLeibniz.ExpMulVecFix

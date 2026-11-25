@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.EndDeterminedOnTorsion
-public import Mathlib.NumberTheory.NumberField.CMField
-public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.Henselian

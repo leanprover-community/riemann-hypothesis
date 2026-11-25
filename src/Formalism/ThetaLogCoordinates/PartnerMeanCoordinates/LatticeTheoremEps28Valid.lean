@@ -5,33 +5,21 @@ public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProof
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.GramBoundOfRestrictionOfProj
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.GramBoundUnconditionalOfSat
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.Vanish
-public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamInt
 public import Formalism.ThetaLogCoordinates.PartnerMeanCoordinates.TheoremMCB
 public import Formalism.ThetaLogCoordinates.PartnerMeanCoordinates.TheoremMXB
 public import Formalism.PolynomialDimension.MultinomialDepth.TieOps
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam
-public import Formalism.MahlerMeasure.QuotientUpperBoundsOfPowerBounds
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.WeightSpaceDimensionMonotone
-public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Formalism.PolynomialDimension.ChainOrderLetters
 public import Formalism.MahlerMeasure.CoarseLevelSlackInequalities
 public import Formalism.MahlerMeasure.FinalD
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.BadCrit
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamDeg
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamLead
-public import Formalism.PolynomialDimension.MultinomialDepth.MonoCount
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.HighestVectorProjectionPos
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.RestrictedSaturationHolds
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.MulEarlyLettersHolds
-import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.PartnerDeterminantHolds
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeInto
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.ThetaLogCoordinates.TraceIsometryWeights.DischargeHeightBound
 import Formalism.ThetaLogCoordinates.TraceIsometryWeights.FinalP
 
 -- This file was produced by scripts/clump.py from the modules listed below.

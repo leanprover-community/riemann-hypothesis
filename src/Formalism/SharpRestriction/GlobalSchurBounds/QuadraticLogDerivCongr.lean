@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.SumLogPrimeFactorsLe
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.JointDModelAppliesUnitLattice
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

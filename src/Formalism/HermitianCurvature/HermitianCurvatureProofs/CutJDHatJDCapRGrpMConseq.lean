@@ -6,8 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCa
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpPPCommPf
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasFDerivAtFsvOther
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

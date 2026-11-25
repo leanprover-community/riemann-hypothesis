@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RealCusp
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsHasCentChar
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CasimirScalarOfCapelliDeterminantEigenvalue
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QdetTopThreeOrders
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

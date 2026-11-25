@@ -7,13 +7,7 @@ public import Mathlib.Analysis.Calculus.ContDiff.Defs
 public import Mathlib.Analysis.Calculus.ContDiff.Basic
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.InnerProductSpace.LinearMap
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 public import Mathlib.LinearAlgebra.Matrix.SchurComplement

@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompactGroupRepDefinedOverFiniteExtension
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCrystallineSpan
 import Mathlib.FieldTheory.Galois.Profinite

@@ -1,11 +1,7 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.IsAddHaarMeasureMatrixMeasureFinSq
-public import Mathlib.Analysis.SpecialFunctions.Log.Base
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.St
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalA
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.FinalB
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.SubstPairSubst
-import Mathlib.Analysis.Normed.Ring.Ultra
 
 @[expose] public section
 

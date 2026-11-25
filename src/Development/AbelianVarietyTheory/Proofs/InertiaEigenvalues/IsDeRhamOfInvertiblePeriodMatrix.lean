@@ -2,9 +2,7 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankInvariantsEqOfInvertiblePeriodMatrix
-public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorProductBasisCoordinates
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT

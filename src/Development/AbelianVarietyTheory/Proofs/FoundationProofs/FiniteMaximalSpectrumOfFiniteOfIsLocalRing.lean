@@ -8,8 +8,6 @@ public import Mathlib.RingTheory.Unramified.LocalStructure
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.RingTheory.Etale.StandardEtale
-public import Mathlib.RingTheory.Unramified.Finite
 
 @[expose] public section
 

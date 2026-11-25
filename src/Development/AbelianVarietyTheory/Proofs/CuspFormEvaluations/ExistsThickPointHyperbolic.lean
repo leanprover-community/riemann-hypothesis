@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.TraceH
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.TraceFormDualOneTraceFormDual
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct

@@ -15,7 +15,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

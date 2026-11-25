@@ -8,9 +8,7 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharac
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalCharacterIntegrals.ShellP
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalInvariantNeighborhoods.MeasurePreservingOfAddEquiv
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.LocDensVolT
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style

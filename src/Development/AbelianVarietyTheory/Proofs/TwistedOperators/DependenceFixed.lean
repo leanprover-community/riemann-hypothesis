@@ -22,12 +22,9 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NsmulProj
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmSplitHalves
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsDetInt
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsNormaliseMeanSquareOfCocompact
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsInvariantForm
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfPartOneSubEInfSmul
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilOperatorLatticeStabiliserFixesVacuumNonsplit
-import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,19 +6,11 @@ public import Mathlib.Analysis.Fourier.FourierTransformDeriv
 public import Mathlib.Analysis.Fourier.Inversion
 public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
-public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
-public import Mathlib.Analysis.Calculus.Deriv.ZPow
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralIteratedFDerivEqZero
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.MeasureTheory.Covering.Besicovitch
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 
 -- This file was produced by scripts/clump.py from the modules listed below.

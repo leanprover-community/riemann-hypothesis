@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
-public import Formalism.AlgebraicWeights.IsAlgWeight
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryFiniteAdelesSplitPlaceDecomposition
 import Mathlib.Tactic.Linter.HaveILetI
 

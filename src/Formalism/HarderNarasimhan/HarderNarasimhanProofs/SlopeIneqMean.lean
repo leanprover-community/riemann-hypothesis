@@ -10,9 +10,7 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HNSlopes
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.RescaleCovol
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ShiftInvariance
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.TwistFinrankEq
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
-import Formalism.LatticeSlopes.LatticeSlopesProofs.SlopeInequality
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

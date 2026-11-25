@@ -48,10 +48,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeA
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc

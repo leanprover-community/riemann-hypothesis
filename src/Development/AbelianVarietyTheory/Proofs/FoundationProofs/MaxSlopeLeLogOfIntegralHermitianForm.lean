@@ -4,29 +4,17 @@ public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionL
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSelfDualE
 public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
-public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.PairingDivisors.PairingDivisorProofs.SumValuationNat
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.IdxChange
-public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LcvBasis
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LocBasis
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionLemmaFirst
-public import Mathlib.Analysis.Complex.Order
-public import Mathlib.LinearAlgebra.Matrix.PosDef
-public import Mathlib.Analysis.Matrix.Order
 public import Formalism.HarderNarasimhan.ShiftInvariance
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsNsmulMem
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DeterminantCauchySchwarz
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Etale.Weakly

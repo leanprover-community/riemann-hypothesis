@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ConjTupRefl
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FourierFlatCharacterDatumFiniteField
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.ExistsRootNotMem

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemIntMat
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmithNormalFormIntegralMatrix
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Gam0
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SelfDualOne
-public import Formalism.SatakeDualWeyl.Statement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalThetaPairExistence
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MulSelfEqOneIffOfLinearOrderedCommGroupWithZero

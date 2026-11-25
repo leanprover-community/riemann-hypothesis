@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianSquareIntegrableAll
-public import Formalism.HermitianCurvature.StatementJC
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeRulesA1
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FsvMulFsvNeg

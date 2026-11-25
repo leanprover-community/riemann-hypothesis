@@ -4,14 +4,11 @@ public import Development.WeilBound.ThetaLifts.SphericalLattices.LatDefs
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Topology.LocallyConstant.Basic
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.WeilBound.ThetaLifts.SphericalLattices.HoweInert
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EventuallyCompSideMulEq
 public import Development.WeilBound.ThetaLifts.SphericalLattices.ExistsFixedSum
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitDict
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalLatticeIndicatorFourier
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.ExistsEigenLift
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KCoinvOfNarrow
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.PfDict
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
@@ -19,10 +16,6 @@ public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.LocalFields.PadicLogSeries
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LocConstChar
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfSurj
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.SphericalLattices.ExistsIsUnitAddMul, Development.WeilBound.ThetaLifts.SphericalLattices.ExistsVBallSubset, Development.WeilBound.ThetaLifts.SphericalLattices.LattEq, Development.WeilBound.ThetaLifts.SphericalLattices.BelowIffRows, Development.WeilBound.ThetaLifts.SphericalLattices.SplitLoc, Development.WeilBound.ThetaLifts.SphericalLattices.SphSplitOf, Development.WeilBound.ThetaLifts.SphericalSplitting.SphSplitGeo

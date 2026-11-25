@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.Valuation.Integers
 public import ReciprocityTheory.DualLattices.ExistsFamilyValuationDetEqOne
 public import ReciprocityTheory.DualLattices.IsUnitDetOfSpanEq
 public import ReciprocityTheory.DualLattices.MemSupOfRestrictToSubgroupMemSq
-public import Mathlib.LinearAlgebra.Matrix.Kronecker
 import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

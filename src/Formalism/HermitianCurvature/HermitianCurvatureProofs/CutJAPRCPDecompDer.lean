@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRCPDecompDefs
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRCoreCut
-import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic.Lemma
 
 @[expose] public section

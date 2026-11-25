@@ -13,13 +13,7 @@ public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SymBox
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.TauBimultPow
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ValPsiZero
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PsiInOfIsPullDeg
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.WchartCompLePull, Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.MapsAtIdIsoPow, Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.PsiInProdOfIsPowDeg, Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.PsiInOfComponent

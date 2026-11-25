@@ -4,16 +4,7 @@ public import ReciprocityTheory.Automorphisms.SplitCoeAlgebraMap
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SerFixOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldSplitPlaceEqOfPlaceEq
-public import Mathlib.Algebra.Module.Submodule.Lattice
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Order.CompletePartialOrder
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsCharLab
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsFinTyp
-public import Formalism.AlgebraicWeights.IsAlgWeight
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryFiniteAdelesSplitPlaceDecomposition
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
-public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ValuationLtOneIffNormLtOnePadicCmCompletion
 public import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsSplitPlace
@@ -25,7 +16,6 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LabLPIsLabelActK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasLabelOfIsCuspOf
 public import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.GoodLem
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharInOfIsCharLab
 public import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.AbsCentralAlt
 public import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.ClassMapD
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SglobDzBigDef
@@ -70,14 +60,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.FixedNeBotOfEquiv
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalLanglandsTransport

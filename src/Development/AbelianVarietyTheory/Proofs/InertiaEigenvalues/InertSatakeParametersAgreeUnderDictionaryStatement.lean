@@ -10,28 +10,16 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Defin
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertOfUnramifiedIsometricInvolution
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GEquivIntL
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SphericalHeckeOperatorEqSmulOfLocalParameter
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitarySatakeInvariantAntidiagTransport
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DefiniteUnitaryAutFormEqZeroOfFinitePoints
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnramifiedOfSphericalVectorDictionary
-public import Mathlib.Algebra.BigOperators.Finprod
-public import Mathlib.Algebra.Module.LinearMap.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.GroupTheory.Coset.Defs
-public import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawaB
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeB
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawaA
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAutLoc
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertHeckeOperatorIndepOfInertDatum
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SatakeParametersUnramifiedUnitary
 public import Formalism.SatakeDualWeyl.StatementF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalHeckeValuesSameParameters
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryIwasawaCellBoundSmallTorusDoubleCoset
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitarySatakeTransformIsLaurentPolynomial
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitarySatakeEqOfSameUnramifiedBaseChange
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,46 +57,18 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEqAlt
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Formalism.AlgebraicWeights.IsAlgWeight
-import ReciprocityTheory.Automorphisms.PlaceA
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitAtOfIsSplitPl
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnramifiedNonsplitExistsConjInvolutionUniformise
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDvrFrobeniusLift
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsNonsplitPlaceWithInertDatum
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
-import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.IsBichar
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeA
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedPlaceUnitaryLocalPointsEquivLocalUnitaryGro
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeC
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

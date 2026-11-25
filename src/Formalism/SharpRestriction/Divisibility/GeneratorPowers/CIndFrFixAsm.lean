@@ -4,13 +4,8 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirecti
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FormalGroupLinearSecond
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
-public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PairEvaluation
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.AevalDiagMonomial
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConstantCoeffAddFirstSecond
 import Mathlib.Tactic.Lemma
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThetaSwapFirstTwo
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.BalOf, Formalism.SharpRestriction.Divisibility.GeneratorPowers.LogLowOrderOne, Formalism.SharpRestriction.Divisibility.GeneratorPowers.IsUnitCoeffZero, Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFixAsm

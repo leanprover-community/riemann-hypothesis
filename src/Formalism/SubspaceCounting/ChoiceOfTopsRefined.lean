@@ -2,9 +2,6 @@ module
 
 public import Formalism.SubspaceCounting.GoodOrbitIntervalTileCondition
 public import Formalism.SubspaceCounting.Statement
-public import Mathlib.Data.Fintype.Pi
-public import Mathlib.Order.Lattice.Nat
-public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.SubspaceCount
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.TypeIIDown

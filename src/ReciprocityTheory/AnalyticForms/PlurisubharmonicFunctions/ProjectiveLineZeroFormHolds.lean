@@ -4,24 +4,14 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenSt
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LeviOneEqLaplacianThm
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LogInt
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Calculus.ParametricIntegral
-public import Mathlib.MeasureTheory.Group.Integral
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ContDiffOfContDiffOnZeroOff
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HessCRestrictThm
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenOfPoincareLelongHyperplane
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LogIntSt
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.GreenCoord, ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HasCompactSupportCompHypInclAt, ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ProjectiveLineZeroFormHolds

@@ -4,10 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinkowskiBound.P
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Formalism.PeriodIntegrals.Minkowski
-public import Mathlib.GroupTheory.Sylow
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
-public import Mathlib.Data.Nat.Factorial.BigOperators
-public import Mathlib.LinearAlgebra.Trace
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Artinian.Instances

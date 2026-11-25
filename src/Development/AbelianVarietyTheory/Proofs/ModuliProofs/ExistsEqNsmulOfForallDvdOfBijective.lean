@@ -5,8 +5,6 @@ public import Mathlib.LinearAlgebra.Dimension.Finrank
 public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
-public import Mathlib.Algebra.Group.AddChar
-public import Mathlib.Algebra.Group.Subgroup.Finite
 
 @[expose] public section
 

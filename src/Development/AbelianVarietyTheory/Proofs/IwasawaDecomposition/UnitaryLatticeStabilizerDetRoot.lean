@@ -3,7 +3,6 @@ module
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
 public import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalToGlobal.Divisibility.Tuples

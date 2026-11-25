@@ -3,7 +3,6 @@ module
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremFE
 import GroundTheory.GlobalFields.TateThesis.HeckeTheoremConj
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremTrivial
-import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

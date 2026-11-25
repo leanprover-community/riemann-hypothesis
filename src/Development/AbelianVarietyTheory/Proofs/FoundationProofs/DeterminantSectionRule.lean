@@ -5,13 +5,11 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FibreIff
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LieCombBaseChange
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.SpanXLeKerAevalZero
 import Development.AbelianVarietyTheory.Definitions.CMLattices.IsCyclotomicExtensionCyclotomicField28
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VecMulMapEqZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAbelianGaloisHost
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.DivisorBase.RamifiedPlacesSplitEigen, Development.AbelianVarietyTheory.Proofs.FoundationProofs.DeterminantSectionRule

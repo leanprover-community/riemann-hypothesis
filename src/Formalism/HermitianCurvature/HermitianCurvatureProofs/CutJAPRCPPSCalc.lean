@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRCoreCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRAsmPS
-import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

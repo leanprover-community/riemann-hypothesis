@@ -7,9 +7,6 @@ public import Mathlib.Algebra.Module.Submodule.Map
 public import Mathlib.Algebra.Ring.Divisibility.Basic
 public import Mathlib.LinearAlgebra.BilinearMap
 public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Module.Submodule.Defs
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingInputs
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup

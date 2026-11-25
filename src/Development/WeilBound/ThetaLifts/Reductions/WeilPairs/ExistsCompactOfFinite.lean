@@ -15,7 +15,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaFunctionHeisenbergInvariant
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.OpenMapping
 import Mathlib.Topology.MetricSpace.Ultra.Pi
 import Std.Tactic.BVDecide.Normalize.Prop
 

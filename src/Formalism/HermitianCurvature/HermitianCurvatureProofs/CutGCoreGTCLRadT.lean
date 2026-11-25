@@ -1,22 +1,14 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTAsmA
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 public import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTCut
 public import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedF
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
-public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-public import Mathlib.Analysis.Analytic.IteratedFDeriv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLocalCut
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedLocSec
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTAsmB, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTAsm, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTJet, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTJetRad, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTTaylor, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadT

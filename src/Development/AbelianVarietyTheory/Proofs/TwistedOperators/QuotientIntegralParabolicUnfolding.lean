@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsMulLeftInvariantVolGL
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentHaarAndModulus
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnipotentRadicalBasic
 import Mathlib.Algebra.Order.Floor.Extended

@@ -10,9 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Principal
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.TransvectionMemPrincipalCongruenceGroup
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnifDom
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SignatureHermitianModelOfDatum
 import Mathlib.Algebra.Order.Star.Real
 import Std.Tactic.BVDecide.Normalize.Prop
 

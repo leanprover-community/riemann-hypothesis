@@ -13,13 +13,11 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.C
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsResMEqSecHomSecToPow
 public import Mathlib.RingTheory.Polynomial.HilbertPoly
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsFormOfEqRatioPowMul
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsMonomialBasisCechCubePolynomialGrading
 import Mathlib.Order.Interval.Finset.Box
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.

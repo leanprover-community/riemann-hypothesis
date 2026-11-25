@@ -2,9 +2,7 @@ module
 
 public import Mathlib.Algebra.Category.ModuleCat.Descent
 public import Formalism.HermitianCurvature.StatementFr
-public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.Analysis.Real.Sqrt
-public import Mathlib.Order.PiLex
 public import Mathlib.RingTheory.HahnSeries.Summable
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.PiTensorProduct

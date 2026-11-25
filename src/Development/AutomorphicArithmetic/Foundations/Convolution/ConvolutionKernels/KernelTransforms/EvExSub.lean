@@ -8,13 +8,7 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.AmpComm
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.InnerOps
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TsphComm
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
-import GroundTheory.AutomorphicForms.ReductionBlock
 import GroundTheory.AutomorphicForms.WhittakerRelevance
 
 -- This file was produced by scripts/clump.py from the modules listed below.

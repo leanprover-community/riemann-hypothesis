@@ -4,15 +4,9 @@ public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
 public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.ContDiff.RCLike
-public import Mathlib.MeasureTheory.Function.Jacobian
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FamilyLeCoords
 

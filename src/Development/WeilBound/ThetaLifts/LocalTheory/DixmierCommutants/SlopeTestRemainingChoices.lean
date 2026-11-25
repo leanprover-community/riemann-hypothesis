@@ -2,10 +2,7 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DixmierCommutantScalar
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.FullOfSoLoc
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibRepApply
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaEquivInducedFibre
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.ExistsExtZ
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.TopOfMap
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

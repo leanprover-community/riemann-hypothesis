@@ -5,9 +5,6 @@ public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Mathlib.GroupTheory.DoubleCoset
 public import Mathlib.Topology.LocallyConstant.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Integral.Prod
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.OrbitalIntegrals.TwistedOrbitalIntegrals.CentComm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.OrbitalIntegrals.TwistedOrbitalIntegrals.ExtCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.OrbitalIntegrals.TwistedOrbitalIntegrals.HaarComm
@@ -64,10 +61,6 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Aesop.Main
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

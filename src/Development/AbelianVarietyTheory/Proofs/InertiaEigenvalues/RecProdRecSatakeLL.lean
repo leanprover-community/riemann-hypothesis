@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIrreducibleFixed
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasSatakeGLOfHasSatakeParametersPrincipalSeries
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFixedIff
 import Mathlib.Algebra.Order.Floor.Extended

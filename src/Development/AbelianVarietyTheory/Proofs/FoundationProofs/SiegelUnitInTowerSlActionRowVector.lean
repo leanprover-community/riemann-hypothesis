@@ -7,7 +7,6 @@ public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelFunctionTransformation
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerAnEqSiegelUnitOnComplex
 import Mathlib.Tactic.Linter.Style

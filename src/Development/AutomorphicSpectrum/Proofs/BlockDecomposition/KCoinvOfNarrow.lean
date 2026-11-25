@@ -12,7 +12,6 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.C
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.ExistsExtZ
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfSurj
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.SoStatement
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -53,7 +52,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LocConstChar
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.TopOfMap
 import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Basify

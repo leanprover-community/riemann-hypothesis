@@ -12,9 +12,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitar
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ValLeOneOfMemKO
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

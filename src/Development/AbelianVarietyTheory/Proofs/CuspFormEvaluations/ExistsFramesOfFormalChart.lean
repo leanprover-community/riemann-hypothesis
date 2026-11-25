@@ -2,23 +2,14 @@ module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsAdjointnessSeriesOfFrames
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBSer
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsSymmetrySeriesOfFrames
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBFr
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBPrim
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.FamMod
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsSecNonzeroLocusEqBasicOpen
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsSecondPartialLaw
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.QuasiAffine
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBGen
 
 -- This file was produced by scripts/clump.py from the modules listed below.

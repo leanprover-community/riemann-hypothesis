@@ -8,9 +8,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApp
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOneOfChartGenerators
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeDominantCompat
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeMap
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRing
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

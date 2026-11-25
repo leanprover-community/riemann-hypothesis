@@ -2,14 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StPuncturedExpOrder
 public import Mathlib.Analysis.Complex.RemovableSingularity
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Analytic.ChangeOrigin
-public import Mathlib.Analysis.Analytic.IsolatedZeros
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.ZPow
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

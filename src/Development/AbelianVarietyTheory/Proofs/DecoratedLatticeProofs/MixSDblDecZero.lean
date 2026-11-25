@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittDecompSymplInclIsotropicInclAnisotropic
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalZero
-public import Mathlib.Data.Matrix.ColumnRowPartitioned
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -44,9 +41,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalVolumeLift
-import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-import Development.AbelianVarietyTheory.Definitions.Foundations.WittIndexEqZeroIff
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates

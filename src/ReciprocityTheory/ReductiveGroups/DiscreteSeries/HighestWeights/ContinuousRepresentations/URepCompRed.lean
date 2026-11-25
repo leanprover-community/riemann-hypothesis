@@ -3,26 +3,14 @@ module
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjTransposeSignFormDiagEqSignedSumCol
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.DerivExistsAllPosStatement
 public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.Blocks
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OpEqExp
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.SingleMulJmComm
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.Analysis.Calculus.Deriv.Slope
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-public import Mathlib.Analysis.SpecialFunctions.Exponential
-public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.RelOpCurve
 import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.RelOpCurve
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.URepHom
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.FromHC
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IsCompactInvariantCompactSpan
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

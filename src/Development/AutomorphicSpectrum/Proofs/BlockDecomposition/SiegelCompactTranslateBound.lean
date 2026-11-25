@@ -5,11 +5,7 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsS
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAuxiliaryPlaceNotMemFinset
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodConstOfAniso
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Formalism.SatakeDualWeyl.Statement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumFrameIdem
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeFrameWeightRatioBound
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorusArchimedeanFrameAction
@@ -18,8 +14,6 @@ public import Development.WeilBound.ThetaLifts.Reductions.SiegelPar
 import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusIntegral
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.WeilBound.ThetaLifts.Reductions.SiegelHaar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

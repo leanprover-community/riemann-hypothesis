@@ -4,10 +4,6 @@ module
 import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.DualWByLettersExtended
 import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmaGsOfLemGAB
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.Analysis.SpecialFunctions.Log.Base
-public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.LetterConditionGlobal
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
 import Mathlib.Tactic.TypeStar

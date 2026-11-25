@@ -18,7 +18,6 @@ public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Topology.Algebra.MvPolynomial
 public import Mathlib.Analysis.Complex.TaylorSeries
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 public import Mathlib.LinearAlgebra.Vandermonde
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.InvariantPolynomialEqAevalPairings
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.NullSec
@@ -30,8 +29,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -68,10 +65,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -15,7 +15,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsHermCoordO
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsUnf
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompat
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
 
 @[expose] public section

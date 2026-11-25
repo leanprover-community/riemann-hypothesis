@@ -7,35 +7,20 @@ public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.TriDens
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Linear
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
 public import Mathlib.MeasureTheory.Function.Jacobian
 public import Mathlib.MeasureTheory.Integral.Pi
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.GaussA
-public import Mathlib.MeasureTheory.Function.L1Space.Integrable
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.VolUFactProdMulLe
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 public import Mathlib.RingTheory.Complex
-public import Mathlib.RingTheory.Norm.Transitivity
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.TriHaar
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.QrMapMeasurableSetImage
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.VolUSetMeasurable
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.VolUMeasurableSetTriPos
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.CategoryTheory.Countable
 import Mathlib.MeasureTheory.Order.Group.Lattice
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal

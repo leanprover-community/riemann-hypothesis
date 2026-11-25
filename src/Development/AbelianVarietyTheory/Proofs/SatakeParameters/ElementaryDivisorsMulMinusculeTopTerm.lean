@@ -5,14 +5,10 @@ public import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

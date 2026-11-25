@@ -7,7 +7,6 @@ import GroundTheory.LocalFields.FiniteExtension
 import GroundTheory.LocalFields.IntermediateField
 public import GroundTheory.LocalFields.UnramifiedExistence
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderBound
-import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderCyclic
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.RingTheory.PicardGroup
 

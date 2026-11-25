@@ -4,7 +4,6 @@ public import Mathlib.Algebra.Group.Subgroup.Lattice
 public import Mathlib.Topology.Algebra.Group.Defs
 public import Mathlib.Topology.Connected.TotallyDisconnected
 public import Mathlib.Topology.Algebra.ClopenNhdofOne
-public import Mathlib.Algebra.Group.Pointwise.Set.Basic
 public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
 public import ReciprocityTheory.GroupCohomology.ContinuousContractNth
 import Mathlib.Order.CompletePartialOrder

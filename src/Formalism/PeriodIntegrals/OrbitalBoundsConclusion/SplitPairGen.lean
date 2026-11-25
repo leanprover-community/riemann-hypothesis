@@ -2,15 +2,8 @@ module
 
 public import Formalism.PeriodIntegrals.SqPair
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarePairGluing.ExistsDenLe
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarePairGluing.ConjTransposeMemLam
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalCartanPairs.PiNonunit
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.RingTheory.LocalRing.Defs
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
-public import Mathlib.RingTheory.Henselian
 public import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodUnramUnique
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarePairLocal.SqPairLocalOf
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SplitPairGen

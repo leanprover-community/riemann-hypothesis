@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemil
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRank
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocLength
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KrullDimQuotientEqOneIffEqBot
-public import Mathlib.RingTheory.OrderOfVanishing.Basic
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreAlt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisAlt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.LeOfHeightMapEqZero
@@ -27,12 +26,9 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreBis
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CardQuotEqNatAbsNorm
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerSide
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.XcNotMemOfIsRelevant
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherRest
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherTer
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOver
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ImageVarIdBotTwo
@@ -53,8 +49,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingFrac
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingLocal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingNoeth
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingPow
-public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-public import Mathlib.RingTheory.Ideal.Height
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingInj
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingLocal
@@ -62,13 +56,11 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLocRi
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingChartLoc
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsMonoSemiPos
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StSheetHessPSD
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StRankFracDegree
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocChartRatio
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StFibreOverFinite
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocIntegral
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PCentreOverW
-public import Mathlib.RingTheory.Valuation.LocalSubring
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocLengthSum
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreDivSupp
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRankAdjoin
@@ -153,11 +145,8 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCoordRatioDeg
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGenFibreChartDeg
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ProjContract
-import Mathlib.RingTheory.LocalProperties.Reduced
-import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZ
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogOfPullWeight
 import GroundTheory.HeightsAndTheta.Heights.Intersections.NormSegreSameOrbit

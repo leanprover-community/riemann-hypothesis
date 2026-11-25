@@ -3,10 +3,6 @@ module
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BilinearVacuumNonzeroCuspForm
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LintegralCompactLe
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsUniqueIsProdMeasureFinAway
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEqZeroOfInf
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BiThetaOfVac
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousIntegralCompactAutomorphicQuotientParaStatement
@@ -21,9 +17,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitar
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMultTOfEquivariant
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelADef
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
-import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

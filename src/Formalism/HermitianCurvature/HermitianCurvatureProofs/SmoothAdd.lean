@@ -2,8 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-public import Formalism.PeriodIntegrals.LowCyc
-public import Formalism.PeriodIntegrals.KFinSmooth
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerSmoothStability.ExistsFinStableOfMemSSup
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal

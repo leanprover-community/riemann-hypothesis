@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.ThetaValues.ThConst
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.MvPolynomial.Ideal
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsValueAtJetPointCmFrameSection
 import Mathlib.Tactic.TypeStar

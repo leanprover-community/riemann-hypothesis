@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Inv
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.WeightedChartPullback.TorusInj
 
 @[expose] public section
 

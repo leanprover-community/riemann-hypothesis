@@ -20,7 +20,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.AdelicHeckeBlocks.PLocOk
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LocalOperatorSums.LocOp3
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveKernelExistence
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.AdelicHeckeBlocks.PLocComm
 
 -- This file was produced by scripts/clump.py from the modules listed below.

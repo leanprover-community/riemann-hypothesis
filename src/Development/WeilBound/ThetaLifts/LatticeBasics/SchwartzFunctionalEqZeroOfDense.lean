@@ -7,14 +7,11 @@ public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.NormIterat
 public import Mathlib.Analysis.Calculus.LineDeriv.Basic
 public import Mathlib.Analysis.Complex.TaylorSeries
 public import Mathlib.Analysis.Normed.Module.HahnBanach
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.ParametricIntegral
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.DictIrr
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
 public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.ThetaLifts.SchwartzMoments.DenseC
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.SchwartzMoments.MulLPowApply, Development.WeilBound.ThetaLifts.SchwartzMoments.JetApply, Development.WeilBound.ThetaLifts.SchwartzMoments.EqZeroOfMoments, Development.WeilBound.ThetaLifts.LatticeBasics.SchwartzFunctionalEqZeroOfDense

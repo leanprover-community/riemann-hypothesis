@@ -7,11 +7,6 @@ public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Shift
 public import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.NumberTheory.DirichletCharacter.Basic
 

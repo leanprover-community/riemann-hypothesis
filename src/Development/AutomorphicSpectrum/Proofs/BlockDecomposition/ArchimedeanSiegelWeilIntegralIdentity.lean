@@ -3,40 +3,25 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableHermC
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
 public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LintegralFintypeProdEqProd
 public import Mathlib.Topology.Separation.CompletelyRegular
-public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
-public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PiDens
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatC
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianArchimedeanComplexCoordinates
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ModerateGrowthSchwartz
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBlkM
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
 public import Mathlib.RingTheory.Complex
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-public import Mathlib.RingTheory.Norm.Transitivity
-public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-public import Mathlib.MeasureTheory.Integral.Pi
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermInf
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdeleHaarMapEqScaledVolume
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanCharacterInCoordinatesStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComplexCoordinatesExistAtInfinityStatement
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AdelicCharacterArchimedeanForm
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -78,17 +63,11 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.Topology.UniformSpace.Uniformizable
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalRingCardinality.DataHost
 import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
@@ -100,15 +79,8 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSie
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.TotallySplit
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

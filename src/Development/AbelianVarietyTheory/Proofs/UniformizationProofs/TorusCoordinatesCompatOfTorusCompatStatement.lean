@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsRat
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.EqOneOfFibreConstOfSection
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.GtCoordCompatOfPull
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.TangentLinearity.ConstPullback
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 
 -- This file was produced by scripts/clump.py from the modules listed below.

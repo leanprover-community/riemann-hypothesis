@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdicNeighbourhood
-public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 

@@ -3,10 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.NewtonLow
 public import Mathlib.Analysis.Calculus.DSlope
 public import Mathlib.Analysis.Complex.RemovableSingularity
-public import Mathlib.Analysis.Analytic.ChangeOrigin
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.FDeriv.Analytic
-public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

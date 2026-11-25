@@ -6,7 +6,6 @@ public import Mathlib.MeasureTheory.Group.Integral
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.RegConv
 public import Mathlib.Analysis.Calculus.DiffContOnCl
 public import Mathlib.Analysis.Complex.CauchyIntegral
-public import Mathlib.Analysis.Convolution
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloWeakStatement

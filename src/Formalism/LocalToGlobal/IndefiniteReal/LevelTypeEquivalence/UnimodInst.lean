@@ -6,11 +6,8 @@ public import Formalism.LocalToGlobal.UnitaryNorms.RealPl
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.UnitaryPointsRankZeroSubsingleton
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.AdelicIsomorphismStatement
-import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 

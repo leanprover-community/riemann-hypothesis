@@ -6,13 +6,10 @@ import Mathlib.Algebra.Order.Star.Int
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsNullVal
 import Development.AbelianVarietyTheory.Definitions.TorusSections.ExistsSecTie
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst

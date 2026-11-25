@@ -8,11 +8,8 @@ public import Development.AbelianVarietyTheory.Definitions.RegularCharts.SCharts
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsFiniteIntegralChartCoverFlagSpace
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsNormalChartsOfCoveringCharts
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.Valuation.AlgebraInstances
 
 -- This file was produced by scripts/clump.py from the modules listed below.

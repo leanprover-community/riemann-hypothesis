@@ -5,10 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsBlockTr
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.ContractRelevant
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.IsAlgebraicAdjoinRangeIff
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageArith, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PBlockTrdeg, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageArithClosed

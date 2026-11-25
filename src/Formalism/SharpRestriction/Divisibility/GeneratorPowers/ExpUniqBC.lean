@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpUniqLoc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpUniqSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.LePreimageOfNil
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.DualLiftInjective
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.UnivChartLoc
 
 -- This file was produced by scripts/clump.py from the modules listed below.

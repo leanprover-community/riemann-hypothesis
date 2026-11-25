@@ -1,11 +1,7 @@
 module
 
 public import GroundTheory.AutomorphicForms.SphericalLaurent
-public import Mathlib.Data.Fintype.Perm
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Tactic.Continuity
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.SymSum
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import GroundTheory.AutomorphicForms.IwahoriFactorization
 public import GroundTheory.AutomorphicForms.MacdonaldNormalization
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.DcoShape
@@ -15,10 +11,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Spherica
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.Mac
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.ThPMul
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.VandSum
-import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.AutomorphicForms.Iwasawa
-import GroundTheory.AutomorphicForms.MacdonaldFormula
-import GroundTheory.LocalFields.LocalFourierHaar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.EigBasis, Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.PsDimDecomp, Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.SandPS

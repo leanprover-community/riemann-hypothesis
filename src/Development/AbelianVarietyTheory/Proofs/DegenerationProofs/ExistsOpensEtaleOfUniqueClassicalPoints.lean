@@ -14,10 +14,8 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Geometric
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section

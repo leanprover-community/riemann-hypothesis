@@ -6,20 +6,12 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerTh
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.NormLeInvOfLtOne
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstZeroOfConstantCoeff
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.RingAFacts
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Mathlib.RingTheory.RootsOfUnity.Minpoly
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementGK
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.EGaussK
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementJ
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.ThetaInZIsThetaLog
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.EChain
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.SubstFirstCoboundaryThree
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.TilInvariantLOf
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
 import Mathlib.Tactic.Linter.Style
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.PartialCoboundaryLinear
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
@@ -27,8 +19,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.FirstMomentIdempotentLaw
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.TraceDualExists
 
 -- This file was produced by scripts/clump.py from the modules listed below.

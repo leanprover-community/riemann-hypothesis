@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.CommGroupMul
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MemSubPtsCutBaseChangeIff
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsQuasiRegularSeqSelfIffLocalizationMaximal
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ChainRuleAndJacobianCriterion
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.DivSheaf
 
 @[expose] public section
 

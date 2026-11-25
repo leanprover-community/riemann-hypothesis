@@ -6,8 +6,6 @@ public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
 public import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
 public import GroundTheory.GlobalFields.TateThesis.NonvanishingPrimes
 public import Mathlib.NumberTheory.LSeries.Positivity
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
-public import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.UniformSpace.Uniformizable
 

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DifferentiableOnDetHMat
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HeisenbergOperatorRationalPointLaws
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsIntMulIntegral
 import Mathlib.RingTheory.PiTensorProduct

@@ -3,11 +3,6 @@ module
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TopFirstOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GramLocSetCApp
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RatioBound
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBFVnice
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGWave
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
 
 @[expose] public section
 

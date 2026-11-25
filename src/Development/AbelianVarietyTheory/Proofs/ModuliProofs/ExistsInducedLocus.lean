@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SpMapComp
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsCoprimeZpow
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoIffBijectiveOverAlgClosed
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsObjTwistBySimilitude
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TateIsoDifferBySimilitude
@@ -9,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitOnInj
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

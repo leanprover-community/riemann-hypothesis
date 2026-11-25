@@ -2,10 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsOrthonormalBasisEigenOfInnerMap
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralCexpGaussianPlane
 public import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Data.Finsupp.Pointwise

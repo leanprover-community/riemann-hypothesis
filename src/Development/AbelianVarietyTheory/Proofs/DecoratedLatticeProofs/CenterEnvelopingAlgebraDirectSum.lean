@@ -5,17 +5,9 @@ public import Mathlib.RingTheory.TensorProduct.Maps
 public import Mathlib.Algebra.Algebra.Subalgebra.Centralizer
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.WordDerivatives
 public import Mathlib.Algebra.Lie.DirectSum
-public import Mathlib.Algebra.Lie.UniversalEnveloping
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AutomorphicFormsFiniteIdeal
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

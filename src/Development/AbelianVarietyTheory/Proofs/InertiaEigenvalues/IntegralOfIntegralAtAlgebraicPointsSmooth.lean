@@ -7,15 +7,10 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.PrimeAvoidanceFibre
 public import Mathlib.Algebra.CharP.Algebra
 public import Mathlib.FieldTheory.Separable
-public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Localization.Finiteness
 public import Mathlib.RingTheory.TensorProduct.Nontrivial
-public import Mathlib.RingTheory.FiniteType
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BddGood
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsAlgebraMapEqOfValVLeOne
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsExtendOfPowDenom

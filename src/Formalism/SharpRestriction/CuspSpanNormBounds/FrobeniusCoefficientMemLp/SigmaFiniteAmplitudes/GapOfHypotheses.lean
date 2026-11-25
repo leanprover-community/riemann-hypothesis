@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker
 import CompanionTheory.AutomorphicTheory.BesselWaveGrids.GapSizes
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.CuspSpanNormBounds.NearParameterGap, Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.SigmaFiniteAmplitudes.GapOfHypotheses

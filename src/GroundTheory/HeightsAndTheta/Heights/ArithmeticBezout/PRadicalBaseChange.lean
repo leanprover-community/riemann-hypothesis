@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.FieldTheory.SeparablyGenerated
 public import Mathlib.RingTheory.LocalProperties.Reduced
 public import Mathlib.RingTheory.TensorProduct.Pi
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 public import Mathlib.RingTheory.Unramified.Basic

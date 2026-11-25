@@ -12,10 +12,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemDivsOfMem
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormEqOfSplit
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CharacterValueAtT
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DeltaNeZero
-public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HeckeCharProductFormulaNormOne
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.JetOpIdentityOfEntire
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LocalCharEqHeckeCharLocalComponentOfValues
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormalisedFamilyLatticeHypAndSmooth
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotDvdDifferent
@@ -24,16 +22,10 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TameCh
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DetIdLatGmap
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GmapToAddSubgroup
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmulLatMatOf
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinAfMemIntUIff
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsOfStarEq
-import Formalism.LocalToGlobal.Columns.BaseLemmas
-import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

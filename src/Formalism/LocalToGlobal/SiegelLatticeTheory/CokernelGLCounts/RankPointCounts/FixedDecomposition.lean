@@ -6,9 +6,6 @@ public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.Vanish
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
-public import Mathlib.Analysis.LocallyConvex.SeparatingDual
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CovariantRepresentation
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SubOneMulVecFix
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc
@@ -18,13 +15,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NinfConjIff
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.KappaOffDiagonal
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HermitianETransportInvariant
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.HaarPushforward, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MapConjOfBounded, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CountableConjSub, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ShiftCore, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FixedDecomposition

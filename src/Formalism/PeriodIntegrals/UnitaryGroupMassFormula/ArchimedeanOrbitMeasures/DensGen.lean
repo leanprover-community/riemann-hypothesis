@@ -7,7 +7,6 @@ public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 
 @[expose] public section
 

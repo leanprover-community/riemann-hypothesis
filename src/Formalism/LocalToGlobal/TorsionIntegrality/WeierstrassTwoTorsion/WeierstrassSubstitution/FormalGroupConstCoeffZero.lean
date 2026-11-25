@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.S
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.FormalGroupEqWSeries
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.FlowTwoTorsionWp
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.CurveSer
 import Formalism.EllipticTorsion.EllipticTorsionProofs.CubeThree
 
 @[expose] public section

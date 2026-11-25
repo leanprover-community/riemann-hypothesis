@@ -5,12 +5,10 @@ public import Mathlib.RingTheory.Ideal.Prime
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfIdem
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConjInvolutiveAndExistsHalfIdempotent
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIdeleGenerator
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRealSpanEqConjFixedPrimeMulRelNorm
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.IsPrincipalIdealRingLoc
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmFiniteAdeleIntegralSeparatedComplete
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalPointsIntegralPointsMembership
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryHeckeCharacterValues
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

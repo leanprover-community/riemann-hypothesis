@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Charpol
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SgnLatSpanBasis
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
-public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.RingTheory.Flat.TorsionFree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardStableLattices
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlternatingDifferenceTermWindow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeIdempotentPositionInvolutionStable
@@ -21,7 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Tendsto
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SignedInvolutionStableLatticeSumMulFixedUnit
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ProductLatticePositionsAndTerms, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SgnLatProdEqEtaResultantMul, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardSigmaStableProdLatticeExtSq, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsFullLatticeProdOfComapInlMapSnd, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ClearDenominators, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LieLatticeProdComapInlAndMapSnd, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumStableLatticesProductEqQPowMul, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TendstoSignedLatticeSumProductSubFactors

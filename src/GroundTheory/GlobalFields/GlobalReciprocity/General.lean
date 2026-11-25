@@ -3,30 +3,19 @@ module
 public import GroundTheory.GlobalFields.IdeleClassGroup.InvariantsGalois
 public import GroundTheory.GlobalFields.CyclotomicCharacters.DegreeDecomposition
 public import Mathlib.RingTheory.Ideal.NatInt
-public import GroundTheory.GlobalFields.CyclotomicCharacters.ProfinitePadic
-public import GroundTheory.GlobalFields.CyclotomicCharacters.Degree
-public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassMapIdeleClassMap
 public import GroundTheory.GlobalFields.NormResidueSymbol.CyclotomicCompositum
-public import GroundTheory.GlobalFields.IdeleClassGroup.Invariants
 public import GroundTheory.GlobalFields.GlobalReciprocity.InfKerDegreeLeOfLeSupZhatField
 public import GroundTheory.GlobalFields.NormResidueSymbol.Cyclotomic
 public import GroundTheory.GlobalFields.GlobalReciprocity.NormSquare
 public import GroundTheory.PowerSubgroups.CountableNeighbourhoods.PowInvariant
 public import GroundTheory.GlobalFields.GlobalReciprocity.LocalSurjective
-public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
-import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
 import Mathlib.GroupTheory.Abelianization.Finite
 import Mathlib.Tactic.TypeStar
-import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialInfinite
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Std.Tactic.BVDecide.Normalize.BitVec
-import GroundTheory.GlobalFields.Adele.IdeleBasis
-import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
-import GroundTheory.GlobalFields.NormResidueSymbol.AbstractUnique
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 import GroundTheory.GlobalFields.NormResidueSymbol.Functorial
 import GroundTheory.GlobalFields.NormResidueSymbol.Surjective
 

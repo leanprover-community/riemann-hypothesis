@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.LocalFields.LocalZetaIntegral
 public import GroundTheory.LocalFields.PadicLogHom
-import GroundTheory.LocalFields.SeparableClosureValuation
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.LocalFields.LocalZetaTate, GroundTheory.LocalFields.LocalZetaEpsilon

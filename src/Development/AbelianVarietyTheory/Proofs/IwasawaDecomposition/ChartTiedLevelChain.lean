@@ -7,11 +7,9 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseF
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelFunctionalLevelVectorLaws
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Formalism.LocalToGlobal.Columns.AdelicLemmas
 public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
-import Formalism.LocalToGlobal.Columns.RecLevelLocK
 public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

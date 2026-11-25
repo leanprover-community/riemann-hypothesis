@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PowFl
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FormallyUnramifiedMulN
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsUnitNatCastSections
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionEmbeddingGeometricPoints
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

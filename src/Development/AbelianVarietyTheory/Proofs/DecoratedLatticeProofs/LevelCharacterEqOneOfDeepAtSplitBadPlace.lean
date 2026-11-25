@@ -14,8 +14,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EvalAtOneExtre
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MidChart
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section
 

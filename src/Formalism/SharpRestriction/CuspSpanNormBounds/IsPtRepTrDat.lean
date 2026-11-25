@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StarVecMulDM
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SpanMemOfImage
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.CuspSpanNormBounds.DMiMulVecApply
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

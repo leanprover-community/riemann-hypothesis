@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BorelParam
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

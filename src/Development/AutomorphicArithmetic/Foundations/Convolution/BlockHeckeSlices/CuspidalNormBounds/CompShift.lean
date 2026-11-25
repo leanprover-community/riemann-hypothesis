@@ -7,9 +7,7 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHec
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTorusTranslate
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceA
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.CompBound
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.SliceUmg
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.SliceShift, Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.CompShift

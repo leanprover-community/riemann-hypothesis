@@ -8,16 +8,11 @@ public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import Mathlib.LinearAlgebra.Matrix.Nondegenerate
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Mathlib.Analysis.Matrix.Order
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.Algebra.Star.Pi
-public import Mathlib.Analysis.Complex.Order
-public import Mathlib.Analysis.Matrix.Hermitian
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.Algebra.Algebra.Hom.Rat
-public import Mathlib.Basic.Complex.BigOperators
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens

@@ -1,10 +1,7 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UnitTimesParameterMonomial
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChart
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsMulMemOfAlgebraMapLocRingEqZero
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
-public import Mathlib.RingTheory.Nullstellensatz
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AffineChartIdealPrimeAndSaturated
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.MemConePtsIffChartIdeal
@@ -16,11 +13,7 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncMo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPC
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartParametersAtConePoint
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.Monomial
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.StalkLocA
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
 

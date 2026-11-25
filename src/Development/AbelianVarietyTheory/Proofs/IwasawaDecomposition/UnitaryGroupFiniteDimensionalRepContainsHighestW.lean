@@ -51,7 +51,6 @@ import Mathlib.Topology.Algebra.Star.Unitary
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds

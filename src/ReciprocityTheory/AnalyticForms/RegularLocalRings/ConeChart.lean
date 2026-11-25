@@ -4,7 +4,6 @@ public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHyp
 public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartA
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChartB
-import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
 
 @[expose] public section
 

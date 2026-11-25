@@ -18,7 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsReducedIsNo
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SpMapComp
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeometricallyReducedOfPerfectField
 import Development.WeilBound.CoreStatements.FlagImmersions.ValAtOfExtends
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoIffBijectiveOverAlgClosed
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsObjTwistBySimilitude
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEquiv
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TateIsoDifferBySimilitude
@@ -69,7 +68,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
 

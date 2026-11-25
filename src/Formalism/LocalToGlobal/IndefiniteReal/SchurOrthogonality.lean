@@ -3,10 +3,8 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Formalism.LocalToGlobal.IndefiniteReal.SmExpSmulContDiff
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.DenseWeakVectors
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.KFiniteSmoothVectors.Garding
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -13,8 +13,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.HenselCountHolds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensAll
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Formalism.PeriodIntegrals.VolFromSW
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DensFibV
 

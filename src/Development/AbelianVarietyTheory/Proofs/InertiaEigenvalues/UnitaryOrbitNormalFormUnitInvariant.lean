@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FullToGlIsSelfAdjoint
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjTransposeVecMulVecSelf
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMulStarEqOfNormOneUnramifiedQuadratic
 import Mathlib.Tactic.Linter.Style
 

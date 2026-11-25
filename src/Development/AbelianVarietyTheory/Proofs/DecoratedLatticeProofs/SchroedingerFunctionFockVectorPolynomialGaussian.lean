@@ -24,8 +24,6 @@ import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HeckeFormNSOfHeckeForm
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MixSDblDecZero
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchrodingerFunctionLinearThetaFunctionsStatement

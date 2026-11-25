@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsCuspSpaceBot
-public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
@@ -12,22 +11,9 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Mathlib.FieldTheory.Galois.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4HoweTheory.GalIsom
 public import Development.DiscreteGroups.GlobalIrreducibility.ExistsUniformizerValuation
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NontrivialTwJacquetOfSurjective
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHilbertSchmidtOfFiniteDimensional
-public import Mathlib.Algebra.Module.Lattice.Full
 public import Formalism.PadicSubsetSums.StableGradedCounts.BaseChangeIwahoriFactorization
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
-public import Mathlib.MeasureTheory.Function.L1Space.Integrable
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Group.Integral
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.Topology.LocallyConstant.Basic
-public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4HoweTheory.HoweChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4HoweTheory.HoweGroup
 public import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.WhittakerModels.WhitCuspOfSegCuspGeneric
@@ -38,16 +24,13 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExCusp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.LineRank
-public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor
 public import Development.WeilBound.CuspidalAdmissibility.OccursIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OccursIff
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Development.DiscreteGroups.GlobalIrreducibility.LConvCut
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 
 -- This file was produced by scripts/clump.py from the modules listed below.

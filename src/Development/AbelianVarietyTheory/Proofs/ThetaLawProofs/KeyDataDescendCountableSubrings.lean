@@ -27,12 +27,8 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.StalkOfAppL
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsProperOfIsProjBy
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProjByBaseChange
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.GenMove
-import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisBaseChange
-import Development.AbelianVarietyTheory.Statements.FundamentalDomains.ExistsIsAddFundamentalDomain
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.GrpObjDescendsFaithfullyFlat, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.VeryAmpleByDescendsCountableSubring, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyDataDescendCountableSubrings

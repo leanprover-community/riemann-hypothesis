@@ -7,7 +7,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.LinearAlgebra.Dimension.Finite
 
 @[expose] public section
 

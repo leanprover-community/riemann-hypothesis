@@ -2,11 +2,7 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymmetricLevelTypePrimeDatumLocallySmall
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Sheaves.Presheaf
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleRanksRankComplement
 public import Formalism.LocalToGlobal.Columns.CyclotomicIsCyclotomicExtension

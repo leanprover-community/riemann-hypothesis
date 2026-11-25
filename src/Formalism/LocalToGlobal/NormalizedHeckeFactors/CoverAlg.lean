@@ -9,7 +9,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Algebra.Polynomial.Inductions
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 
 @[expose] public section

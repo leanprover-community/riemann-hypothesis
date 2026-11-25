@@ -4,7 +4,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepres
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.FrobeniusPowerCompatibility
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
-import Mathlib.RingTheory.Ideal.Norm.RelNorm
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValSubLtIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MinpolyAndNormOfPowEqUniformizer
 

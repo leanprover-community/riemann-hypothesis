@@ -2,12 +2,9 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeVectorBundleOfSmooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkClosedPointToGermTop
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

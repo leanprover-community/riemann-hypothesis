@@ -49,8 +49,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExponentAndT
 import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.Objects
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

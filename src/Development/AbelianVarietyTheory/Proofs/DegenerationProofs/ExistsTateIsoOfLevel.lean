@@ -25,19 +25,12 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfC
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ObjIsAbelianSchemeDimRigidifiedSym
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.WeilIsAlternatingSkewNatural
 
 @[expose] public section

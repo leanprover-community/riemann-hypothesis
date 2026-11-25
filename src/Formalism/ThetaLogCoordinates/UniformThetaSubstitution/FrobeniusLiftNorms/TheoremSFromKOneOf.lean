@@ -8,10 +8,6 @@ import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartB
 public import Lemmata.GeneralBFactRightExtra.Imports
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Normed.Ring.Ultra
-public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
-public import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 
 @[expose] public section
 

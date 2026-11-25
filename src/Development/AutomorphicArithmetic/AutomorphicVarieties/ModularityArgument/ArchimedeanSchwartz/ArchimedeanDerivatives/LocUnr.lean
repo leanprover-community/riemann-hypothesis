@@ -1,8 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.HodgeTateFromSandwich
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Formalism.DoubleCosetMeasures.Statement
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDual
 import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
 import Mathlib.Algebra.Module.StablyFree.Basic

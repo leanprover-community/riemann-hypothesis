@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.WCompat
-public import Mathlib.Tactic.ENatToNat
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueIsPointOfDualNumber
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TorusCoordAdd
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueSamePt
@@ -19,10 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Torsi
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalEqZeroOfWeightSum
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.RedIffReduction
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

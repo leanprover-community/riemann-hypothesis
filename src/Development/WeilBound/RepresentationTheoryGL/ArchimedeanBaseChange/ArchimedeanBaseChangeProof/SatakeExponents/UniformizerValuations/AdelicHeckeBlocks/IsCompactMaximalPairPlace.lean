@@ -4,7 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Heckecomm
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

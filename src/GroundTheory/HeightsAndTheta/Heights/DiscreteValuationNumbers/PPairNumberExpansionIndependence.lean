@@ -3,7 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionKoszul
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Statements
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 

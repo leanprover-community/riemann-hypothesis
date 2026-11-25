@@ -5,15 +5,10 @@ public import GroundTheory.GlobalFields.KummerTheory.Degree
 public import GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma.HasEnoughRootsOfUnityOfRingHom
 public import GroundTheory.GlobalFields.KummerTheory.SplittingKummer
 public import GroundTheory.GlobalFields.SplittingFromInequality
-public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import Mathlib.RingTheory.DedekindDomain.SInteger
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.SUnits
-import Mathlib.GroupTheory.FiniteAbelian.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma.PowerPlaces, GroundTheory.GlobalFields.KummerTheory.KummerIndexLemma.Places

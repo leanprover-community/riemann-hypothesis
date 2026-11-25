@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.HasDerivAtInvpow
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Topology.Algebra.MvPolynomial
 

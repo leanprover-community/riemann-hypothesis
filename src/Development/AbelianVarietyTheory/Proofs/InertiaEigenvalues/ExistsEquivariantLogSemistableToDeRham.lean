@@ -9,9 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLog
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LMulBeta
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GaloisLogTeichmullerRatioEqAddKummer
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KerPEqSpanBeta
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodRingsGaloisActionLawsFrobeniusComm
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdmSt
 

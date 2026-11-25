@@ -9,7 +9,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompletionDegree
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompletionDegrees.NormLeOneOfInteger
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonemptyAllIff
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 import Mathlib.RingTheory.PicardGroup

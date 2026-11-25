@@ -5,7 +5,6 @@ public import Mathlib.Algebra.Module.Pi
 public import Mathlib.Algebra.Module.LinearMap.End
 public import Mathlib.Data.Finset.Card
 import Mathlib.Data.Finset.Basic
-import Mathlib.Tactic.SplitIfs
 
 @[expose] public section
 

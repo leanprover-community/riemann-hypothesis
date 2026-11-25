@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
 
 @[expose] public section

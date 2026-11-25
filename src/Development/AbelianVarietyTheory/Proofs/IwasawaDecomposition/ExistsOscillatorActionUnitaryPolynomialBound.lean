@@ -6,12 +6,10 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Fderi
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FderivEqQuadComm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDerivAtLineDH
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOscillatorActionUnitaryGroupHermitian
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeisenbergSmoothVectorDerivativeCalculus
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousFourierGau
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussianPairingUnitaryGroupTwoThree
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianCongrInvolution

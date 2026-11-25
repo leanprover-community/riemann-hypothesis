@@ -6,19 +6,14 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryCharOfOpenSubgroupAndHom
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitOpenAndCongrOpen
-public import Formalism.LocalRingCardinality.DataHost
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.NcardEqTwoIff
 public import Mathlib.Algebra.QuadraticAlgebra.NormDeterminant
-public import Mathlib.Algebra.QuadraticAlgebra.Basic
 public import Development.AutomorphicArithmetic.WeightCongruences.RootOfUnityGaloisActionCMDatum
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.ExistsPrimitiveRootTorsionOrder
 public import Development.AutomorphicArithmetic.WeightCongruences.ProdNegOneZpow
 public import Formalism.LocalToGlobal.UnitaryNorms.CharHost
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmEmbeddingProperties
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -59,26 +54,16 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.QuadraticAlgebra.IsQuadraticExtension
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcEqOfPowEqOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnramifiedResEta, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EtaEqJacobiSym, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsUnitNormOfIsCoprime, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.QuadraticCharProductFormulaCMHost, Development.AutomorphicArithmetic.WeightCongruences.ProdCmTypePhaseOneAddRootOfUnity, Development.AutomorphicArithmetic.WeightCongruences.ExistsUnitEqRootOfUnityMulConjPhaseOne, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostEtaTildeCharacterExists

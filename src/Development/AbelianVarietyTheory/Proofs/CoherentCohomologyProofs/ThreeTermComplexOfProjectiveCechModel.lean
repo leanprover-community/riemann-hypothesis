@@ -2,11 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.IsScalarTowerOfAlgebraMapEq
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.CechHOneVanishesOnOpenOfIsAffineOpen
-public import Mathlib.Algebra.Exact.Basic
-public import Mathlib.LinearAlgebra.Matrix.ToLin
-public import Mathlib.LinearAlgebra.TensorProduct.Pi
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.Finiteness.Projective
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsLocalizedModuleResBasicOpenOfQcqs
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsFiniteProjectiveComplexQuasiIso
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.BijOnKerAndExactOfQuasiIsoBaseChange

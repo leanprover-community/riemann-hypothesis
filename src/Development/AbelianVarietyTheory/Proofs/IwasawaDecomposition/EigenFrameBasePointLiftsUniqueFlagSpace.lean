@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TriIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CarriesFlagsIffAdaptedFrameAtImage
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameCoordinatesComp
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LieEigenspaceFrameStableOfIsLocalRing
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

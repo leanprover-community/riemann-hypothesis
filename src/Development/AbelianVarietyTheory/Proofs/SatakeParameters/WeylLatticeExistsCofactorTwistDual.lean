@@ -1,14 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PosOkId
-public import Mathlib.LinearAlgebra.Matrix.Transvection
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCofactorTwistHighestWeight
-public import Formalism.GradedWeylDivisibility.StatementA
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowDivRowWeight
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GlobSpecOfExists
-import Formalism.LocalRingCardinality.Params
 import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
-import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 
 -- This file was produced by scripts/clump.py from the modules listed below.

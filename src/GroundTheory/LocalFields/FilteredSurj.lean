@@ -4,7 +4,6 @@ public import Mathlib.Algebra.Group.Subgroup.Map
 public import Mathlib.Order.Filter.AtTopBot.Defs
 public import Mathlib.Order.Filter.AtTopBot.Basic
 import Mathlib.Algebra.Group.Subgroup.Ker
-import Mathlib.Tactic.Choose
 
 @[expose] public section
 

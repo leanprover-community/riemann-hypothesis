@@ -2,9 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.UnitaryVolumePairs
-public import Mathlib.NumberTheory.NumberField.AdeleRing
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIdeleNotMulNorm
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebra
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticFormIdeleValuesMemNhdsOne
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsInfEmbUnique

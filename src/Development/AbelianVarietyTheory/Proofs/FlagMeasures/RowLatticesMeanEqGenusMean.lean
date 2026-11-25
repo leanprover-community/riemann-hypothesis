@@ -7,11 +7,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardMiddleLat
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowBaseLatticesMemSameHermitianGenusStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesSameMiddleConjugateUnipotentStatement
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
 import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI

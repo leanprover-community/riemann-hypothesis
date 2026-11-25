@@ -4,7 +4,6 @@ public import Mathlib.NumberTheory.Cyclotomic.Basic
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

@@ -3,25 +3,9 @@ module
 import all Formalism.GaussJetBounds.MonoShapeTop
 public import Formalism.GaussJetBounds.StatementU
 public import Formalism.GaussJetBounds.GaussJetProofs.OneGauss
-public import Formalism.GaussJetBounds.StatementI
-public import Formalism.GaussJetBounds.StatementJ
-public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
-public import Formalism.GaussJetBounds.GaussJetProofs.NormDetLeOneOfEntries
-public import Formalism.GaussJetBounds.StatementM
-public import Formalism.GaussJetBounds.FrameJetEval
-public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffEvenDerivativeEqZero
-public import Formalism.GaussJetBounds.GaussJetProofs.GField
-public import Formalism.GaussJetBounds.StatementP
-public import Formalism.GaussJetBounds.GaussJetProofs.FJEval
-public import Formalism.GaussJetBounds.GaussJetProofs.Labels
-public import Formalism.GaussJetBounds.GaussJetProofs.Transfer
 public import Formalism.SharpRestriction.Divisibility.ProductZerothFirstParts
-import Mathlib.Analysis.Normed.Ring.Ultra
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.GaussJetBounds.OneLetterGauss, Formalism.GaussJetBounds.StatementK, Formalism.GaussJetBounds.GaussJetProofs.FrameA, Formalism.GaussJetBounds.GaussJetProofs.Generic, Formalism.GaussJetBounds.GaussJetProofs.ThmAGaussOf, Formalism.GaussJetBounds.ThmAGauss, Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.DworkPowerSeriesWeights

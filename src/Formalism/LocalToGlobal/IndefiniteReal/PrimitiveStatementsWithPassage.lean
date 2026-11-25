@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 public import Formalism.LocalToGlobal.Divisibility.LiftLat
 public import Formalism.LocalToGlobal.IndefiniteForms.PairingConditionOfInverseMatrixIdentity
-public import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
-public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.CutPassage
 public import Formalism.LocalToGlobal.IndefiniteReal.FaceOf3
 public import Formalism.LocalToGlobal.IndefiniteReal.LiftCoordinatesInGoodPartOfDefinite
@@ -14,9 +12,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RatZOfTest
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -12,11 +12,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensio
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ThetaIdentityOfMapsAll
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowsJoinPinned
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
 
 @[expose] public section
 

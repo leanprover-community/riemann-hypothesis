@@ -4,9 +4,6 @@ public import GroundTheory.AutomorphicForms.TensorProductTheorem.GKTensor
 public import GroundTheory.AutomorphicForms.GKModules.ZKFinite
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.LinearAlgebra.Charpoly.Basic
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

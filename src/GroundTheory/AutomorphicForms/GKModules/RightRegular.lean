@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

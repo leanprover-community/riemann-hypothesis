@@ -52,7 +52,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.DeformCr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.PtCont
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TriDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.UnramifiedLiftDeformation
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.Z1fDescAvg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.DefCoc

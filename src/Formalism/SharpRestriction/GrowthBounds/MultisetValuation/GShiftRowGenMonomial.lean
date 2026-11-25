@@ -2,8 +2,6 @@ module
 
 import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.AdmissibleInterpolation.WeylComplementDetCoeffSpan
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FinalD
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLTwist
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal

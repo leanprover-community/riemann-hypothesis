@@ -5,7 +5,6 @@ public import GroundTheory.GlobalFields.TateThesis.Gaussian
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInverse
 public import GroundTheory.GlobalFields.TateThesis.GaussianComplexFourier
-import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

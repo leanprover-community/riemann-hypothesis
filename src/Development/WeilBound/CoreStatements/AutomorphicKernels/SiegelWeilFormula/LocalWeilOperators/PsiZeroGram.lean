@@ -4,13 +4,10 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
-public import Mathlib.Analysis.Complex.Circle
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AuxiliaryPrimeFunction
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.CayleyTransform.CompFinFinOne
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SchwartzBilinear.ExistsEquivInnerOfNondegenerate, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzFourierTransformMatrix, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalWeilOperators.PsiZeroGram

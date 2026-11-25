@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Columns.RhoEqOfSmulEq
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 
 @[expose] public section
 

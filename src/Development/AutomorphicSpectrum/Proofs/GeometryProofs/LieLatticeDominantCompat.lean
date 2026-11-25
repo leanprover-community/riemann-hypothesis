@@ -5,8 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapFromSp
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelBaseChangeMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence

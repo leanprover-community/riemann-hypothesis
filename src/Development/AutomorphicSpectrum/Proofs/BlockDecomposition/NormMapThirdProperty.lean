@@ -5,12 +5,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitOn
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFiniteAlgebraJacobsonRadical
 public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
-public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
-public import Mathlib.LinearAlgebra.TensorProduct.Associator
-public import Mathlib.LinearAlgebra.FreeModule.Basic
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.TensorProduct.Basic
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 public import Mathlib.RingTheory.Jacobson.Ideal
 import Mathlib.Tactic.Linter.HaveILetI

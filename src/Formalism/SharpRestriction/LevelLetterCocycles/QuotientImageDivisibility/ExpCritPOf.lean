@@ -5,9 +5,7 @@ public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
-public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.RingTheory.PowerSeries.Order
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExpRules
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
@@ -15,7 +13,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisi
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.HasSubstPi0Series
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.IsExpSmulA
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.PhiExp
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExistsXPowMul
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.Pi0PowSmulInjective
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSDivMem
 import Mathlib.Tactic.Linter.HaveILetI

@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValu
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import Mathlib.Tactic.ENatToNat
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NatCastSmulMemHtLat
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionLiftIsClosedImmersion

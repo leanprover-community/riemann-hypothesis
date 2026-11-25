@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigen
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 
 @[expose] public section
 

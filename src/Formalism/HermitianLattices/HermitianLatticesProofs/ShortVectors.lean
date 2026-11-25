@@ -4,7 +4,6 @@ public import Formalism.SuccessiveMinima.DefsMink
 public import Mathlib.MeasureTheory.Function.Floor
 public import Mathlib.Analysis.Convex.Measure
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Formalism.SuccessiveMinima.StatementMink
 public import Formalism.SuccessiveMinima.SuccessiveMinimaProofs.SuccMin
 public import Formalism.HermitianLattices.DefsCS
 import Mathlib.Tactic.Linter.HaveILetI

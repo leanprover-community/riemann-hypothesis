@@ -3,10 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.H0IsoHomCohomologyClassZero
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.SubsingletonCohomologyOneGalUnitsSubgroupOf
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

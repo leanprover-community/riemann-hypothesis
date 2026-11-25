@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Exi
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.AppLESurjective
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsIntegralOfIsAbelianSchemeField
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
 
 @[expose] public section
 

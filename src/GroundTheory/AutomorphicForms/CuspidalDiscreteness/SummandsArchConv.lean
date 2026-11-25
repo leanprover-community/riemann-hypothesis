@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.DiscreteSpectrumAbstract
 public import GroundTheory.AutomorphicForms.GKModules.Garding
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 import GroundTheory.AutomorphicForms.Reduction
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.UniformSpace.Uniformizable
 

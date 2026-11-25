@@ -2,13 +2,10 @@ module
 
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementC
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.InitPartZeroXMul
-import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FirstWeightLeOfSupport
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.RemoveS
-public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 
 @[expose] public section
 

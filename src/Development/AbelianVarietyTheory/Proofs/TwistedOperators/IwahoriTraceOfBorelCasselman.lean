@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinea
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCharacterEigenvectorOfCommutingRepresentat
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlockTriangularOneAddMat
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BorelCasselmanHolds
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocallyConstantOrbit
@@ -60,7 +59,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section

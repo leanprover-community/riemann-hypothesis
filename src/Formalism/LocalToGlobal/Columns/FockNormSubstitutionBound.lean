@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.CoefficientMapHeightBound
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section

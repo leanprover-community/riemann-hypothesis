@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.QmBorderFull
 public import Formalism.PeriodIntegrals.QmColExp
 public import Formalism.PeriodIntegrals.QmRowExp
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BorderMinorRotation.SkipTwoSuccAboveComp
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BorderMinorRotation.Development
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmBorderES
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuantumDeterminantCommute.Development
 public import Formalism.FormalDegreeBessel.FinalG
@@ -19,20 +18,13 @@ public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnEabGl
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnEabPres
-public import Formalism.YangianSpanCharacter.ExchangeGen
-public import Formalism.YangianSpanCharacter.StatementT
-public import Mathlib.Basic.Complex.Basic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstEmbeddingOne
 public import Formalism.PeriodIntegrals.RTTIndependence
 public import Formalism.YangianSpanCharacter.YangianRTTProofs.RttRelation
-public import Formalism.FormalDegreeBessel.StatementRP
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelLiftBasics.LevelGroupUnitaryHermitian
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.LzOutRight
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.SecondCapelliMinorLevel
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LeftPhaseRule.MulApplyS
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Mathlib.Analysis.Complex.RealDeriv
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
@@ -43,9 +35,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithm
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnHermHaar
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnTInv
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnTPres
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmColExp
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmRowExp
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConjugateTransposeLeibniz.ExpMulVecFix
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

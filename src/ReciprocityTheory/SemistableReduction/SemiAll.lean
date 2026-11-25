@@ -2,11 +2,9 @@ module
 
 public import ReciprocityTheory.SemistableReduction.LatSemiSt
 public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import ReciprocityTheory.SemistableReduction.SemiContractC
 public import ReciprocityTheory.SemistableReduction.SemiDegSt
 public import ReciprocityTheory.SemistableReduction.SemiDegAA
-public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Matrix.Order
 public import ReciprocityTheory.SemistableReduction.SemiDegB
 public import ReciprocityTheory.SemistableReduction.SemiDegC

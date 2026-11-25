@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThU
-public import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Formalism.GL3MeanSquares.InvariantSeriesBidegreeOneOne
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.IopIso
 

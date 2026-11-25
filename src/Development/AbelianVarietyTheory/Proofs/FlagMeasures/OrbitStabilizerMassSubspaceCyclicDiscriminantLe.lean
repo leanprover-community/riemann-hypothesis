@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitStabiliz
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitStabilizerMassProdEqMul
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitWeightedStabilizerSumMonoSubadditive
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimitiveHermitianSublatticeDiscriminantGenerato
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

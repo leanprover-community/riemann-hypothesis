@@ -4,15 +4,8 @@ public import ReciprocityTheory.DualLattices.FormalChartAtZero
 public import Mathlib.Algebra.TrivSqZeroExt.Basic
 public import ReciprocityTheory.DualLattices.TowerZeroSurjective
 public import ReciprocityTheory.DualLattices.WFrobStatement
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.Algebra.DualNumber
 public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.RingTheory.Coprime.Basic
-public import Mathlib.RingTheory.Coprime.Lemmas
-public import Mathlib.RingTheory.Ideal.Defs
-public import Mathlib.RingTheory.Ideal.Operations
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
 public import ReciprocityTheory.DualLattices.EvLatStatement
 public import ReciprocityTheory.DualLattices.PSerFrobStatement
 public import Mathlib.CategoryTheory.Category.Basic
@@ -20,9 +13,6 @@ public import ReciprocityTheory.DualLattices.EvHtStatement
 public import ReciprocityTheory.DualLattices.CharR
 public import ReciprocityTheory.DualLattices.DualPairInh
 public import ReciprocityTheory.DualLattices.IsPairingValueAddRight
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.RingTheory.LocalRing.Defs
-public import Mathlib.RingTheory.TensorProduct.Basic
 public import Mathlib.RingTheory.Ideal.GoingUp
 public import ReciprocityTheory.DualLattices.EvenTwoEvaluationSign
 public import ReciprocityTheory.DualLattices.EvActStatement
@@ -52,7 +42,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -78,12 +67,8 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import ReciprocityTheory.DualLattices.CotangentSurjective
-import ReciprocityTheory.DualLattices.SqZeroOfSpan
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.DualLattices.IsFibreSq
-import ReciprocityTheory.DualLattices.IsHeightUnique
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop

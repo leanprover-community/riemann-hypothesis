@@ -3,8 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.IdxLin
 public import Mathlib.MeasureTheory.Group.Defs
-public import Mathlib.MeasureTheory.Group.Measure
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
 

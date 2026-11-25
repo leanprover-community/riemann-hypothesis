@@ -11,7 +11,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.Inte
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KinstSecondCountable
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PBridge
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
 
 @[expose] public section
 

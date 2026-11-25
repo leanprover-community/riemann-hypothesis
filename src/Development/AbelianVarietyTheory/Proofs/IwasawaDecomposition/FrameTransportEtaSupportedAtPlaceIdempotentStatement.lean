@@ -7,16 +7,10 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCompatFiniteIsometry
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NVNeZero
-public import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
-public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Formalism.LocalToGlobal.Columns.MtHeckeLoc
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsDiscriminantTwelfthRootOfIdealLatticeIffDelta1
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 
 -- This file was produced by scripts/clump.py from the modules listed below.

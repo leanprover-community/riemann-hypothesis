@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrameLats
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MemConfTOfDetNeZero
 import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Mathlib.MeasureTheory.Integral.Marginal
 
 @[expose] public section

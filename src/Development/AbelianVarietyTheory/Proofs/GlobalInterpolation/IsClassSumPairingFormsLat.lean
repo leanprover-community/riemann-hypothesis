@@ -4,12 +4,10 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Minkowski
 public import Formalism.LocalToGlobal.Columns.ToHLat
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeExtensionAlongFieldEmbeddingDuals
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedWeylLatticeHermitianDuality
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
 public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
 public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.ColumnAvoidanceConditions

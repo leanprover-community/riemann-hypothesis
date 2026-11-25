@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.PAdicHodge.BCrisRegular
-public import GroundTheory.PAdicHodge.BCrisPlusInvariants
-import GroundTheory.PAdicHodge.ACrisFrobFixed
 import GroundTheory.PAdicHodge.ACrisPhi
 public import GroundTheory.PAdicHodge.FontaineLemma
 import Mathlib.RingTheory.Henselian

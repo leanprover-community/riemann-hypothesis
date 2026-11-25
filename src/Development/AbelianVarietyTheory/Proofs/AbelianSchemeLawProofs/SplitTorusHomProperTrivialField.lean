@@ -18,7 +18,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsaRos
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 

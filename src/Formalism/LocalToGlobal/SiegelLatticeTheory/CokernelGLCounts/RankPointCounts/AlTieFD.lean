@@ -8,10 +8,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.FieldDictionaryHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LeadingMinorIntegrality
 import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-import Mathlib.NumberTheory.RamificationInertia.Basic
 import Mathlib.RingTheory.PicardGroup
-public import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtB
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.AFTransport
 
 @[expose] public section
 

@@ -2,10 +2,6 @@ module
 
 public import Formalism.UnipotentAdelicQuotients.EllRegCut
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section

@@ -6,8 +6,6 @@ public import Formalism.RealPlaceAnalysis.FinalF
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.ZuckermanDuality.ZuckDualTOfZuckDual
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.CapelliEigenvalues.Transport
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfIwasawa
-import Formalism.RealPlaceAnalysis.QuotientSettingHolds
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.CapelliHighestWeightConjugated
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

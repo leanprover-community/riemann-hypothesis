@@ -3,10 +3,8 @@ module
 public import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.RingTheory.PiTensorProduct
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 
 @[expose] public section
 

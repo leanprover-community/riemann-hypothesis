@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.RowS
 public import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.BlockIndexEqCornerIff
-public import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.MirabolicColumnBlock
 public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Tactic.Linter.Style
 

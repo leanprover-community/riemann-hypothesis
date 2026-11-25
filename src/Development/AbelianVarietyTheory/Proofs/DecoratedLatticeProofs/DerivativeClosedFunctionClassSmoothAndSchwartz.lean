@@ -3,8 +3,6 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HasFDerivAtOfContinuousCoordinatePartials
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SobolevBoundedThetaFormMatrixCoeffSmooth
 

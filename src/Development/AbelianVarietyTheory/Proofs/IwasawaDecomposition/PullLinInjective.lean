@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBaryStageStart
-import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.GlActionMemBalFormsOfSemilinear
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HomExtNormalSt
 
 @[expose] public section

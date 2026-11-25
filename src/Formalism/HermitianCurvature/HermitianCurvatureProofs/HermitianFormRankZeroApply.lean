@@ -15,7 +15,6 @@ import Mathlib.CategoryTheory.Countable
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
 
 @[expose] public section
 

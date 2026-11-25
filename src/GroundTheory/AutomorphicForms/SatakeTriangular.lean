@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.SatakeNormalized
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 

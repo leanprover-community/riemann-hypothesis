@@ -13,7 +13,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposi
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposition.ModOne
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HaarOn
 
 -- This file was produced by scripts/clump.py from the modules listed below.

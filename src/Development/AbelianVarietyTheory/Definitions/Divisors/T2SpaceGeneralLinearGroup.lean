@@ -5,8 +5,6 @@ public import Mathlib.MeasureTheory.Group.ModularCharacter
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Mathlib.Topology.Algebra.Group.Units
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 

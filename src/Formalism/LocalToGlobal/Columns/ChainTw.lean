@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.RecLevelSym
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

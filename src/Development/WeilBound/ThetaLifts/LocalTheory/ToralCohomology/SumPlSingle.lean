@@ -11,8 +11,6 @@ public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSe
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreCyc
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreMain
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreCasB
-import Formalism.PeriodIntegrals.JointBlockShapes.MinusPart
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.ToralCohomology.ShiftLow, Development.WeilBound.ThetaLifts.LocalTheory.ToralCohomology.SumPlSingle

@@ -3,25 +3,16 @@ module
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousRingEquivLocalFieldPreservesValuation
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LocalLanglandsGL
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RestrictMem
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import ReciprocityTheory.GaloisValuations.Global
-public import Mathlib.RingTheory.Ideal.Maximal
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardQuotientEqOfPowSubSelfMem
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqOfRootCongrOfDerivUnit
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusPowApplySubPowLtOne
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NotMemSqOfDerivative
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GaloisValuations.GlobalA
 import ReciprocityTheory.GaloisValuations.GlobalB
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs

@@ -5,7 +5,6 @@ public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
-public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.LemmaDN0
 public import Formalism.SharpRestriction.LevelLetterCocycles.CardBasisEq
@@ -15,7 +14,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisi
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVNonneg
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.LevelLetterCocycles.EqZeroOfPowDvd
-import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

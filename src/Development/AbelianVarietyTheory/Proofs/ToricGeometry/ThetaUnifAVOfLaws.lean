@@ -17,7 +17,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.AppellHumbertNormalFormOfLinearExponent
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.AutomorphyFactorExpLinearOfCube
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.CardLePowOfLinearIndependent

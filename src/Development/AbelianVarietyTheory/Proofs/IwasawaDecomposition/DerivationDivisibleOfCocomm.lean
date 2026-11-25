@@ -3,9 +3,6 @@ module
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MemPrimitiveTensorsIffIsPrimitiveElem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsIntegralOfDivisibleCharacters
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSmulLeOneOfPrimitiveBoundedPowers
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 

@@ -4,12 +4,8 @@ public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BetaFinsetSumSmulOfXiExists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CccoefMono
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyContinuousOn
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveDensityModerateGrowth
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FormLevLimit
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LimitOfModuleForms
 
 @[expose] public section

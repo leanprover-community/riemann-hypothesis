@@ -4,12 +4,7 @@ public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Tactic.Continuity
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.LatDen
-public import Mathlib.GroupTheory.Index
-public import Mathlib.Order.ModularLattice
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.RelIndexSpanNeZero
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.GramDetInequalitiesClosedForms
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

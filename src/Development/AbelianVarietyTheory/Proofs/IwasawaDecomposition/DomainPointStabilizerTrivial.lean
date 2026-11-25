@@ -3,7 +3,6 @@ module
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FirstIndexEqOfUnfolded
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtOfFrameEqOfPointEq
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpCStatementPfA

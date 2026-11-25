@@ -4,7 +4,6 @@ public import GroundTheory.GlobalFields.HerbrandQuotients.Cyclic
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Ramification
-public import Mathlib.NumberTheory.RamificationInertia.Galois
 public import GroundTheory.GlobalFields.HerbrandQuotients.LatticeBridge
 import Mathlib.Tactic.TypeStar
 

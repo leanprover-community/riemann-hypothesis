@@ -5,16 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalP
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AdmissibleAtOfIrreducibleTame
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompletedStandardAdelicLatticeProperties
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Algebra.Module.LinearMap.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryHeckeCharacterValues
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.WeilOperatorRationalTranslateMemThetaFunctions
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

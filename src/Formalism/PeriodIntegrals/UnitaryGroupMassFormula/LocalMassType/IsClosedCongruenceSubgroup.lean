@@ -3,9 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.ContinuousHRRight
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.SelfDualMeasureSFinite
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.UnitaryLocalMassIdentity
-public import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

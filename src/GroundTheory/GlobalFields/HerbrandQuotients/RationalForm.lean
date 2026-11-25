@@ -7,8 +7,6 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Algebra.MvPolynomial.Basic
-public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.LinearAlgebra.Basis.Basic
 public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.RingTheory.Finiteness.Basic

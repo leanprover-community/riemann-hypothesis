@@ -6,7 +6,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.RingTheory.WittVector.Teichmuller
 public import Mathlib.RingTheory.WittVector.TeichmullerSeries
-public import Mathlib.RingTheory.WittVector.Complete
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UltraSumLe, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorGaussNormUltrametric

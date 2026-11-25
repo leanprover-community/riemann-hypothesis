@@ -13,9 +13,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HESmulRight
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.Algebra.Algebra.Defs
 public import Mathlib.Algebra.Algebra.Equiv
 public import Mathlib.Algebra.Field.Subfield.Basic

@@ -3,13 +3,11 @@ module
 public import GroundTheory.AutomorphicForms.GL2.GJLaurentIdeal
 public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
 public import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.GL2.GJZetaCore
 import GroundTheory.AutomorphicForms.MeasuresGL
 import GroundTheory.AutomorphicForms.SmoothRepContragredient
 import GroundTheory.AutomorphicForms.SmoothRepSchur
-import GroundTheory.LocalFields.SeparableClosureValuation
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.TypeStar
 

@@ -22,10 +22,8 @@ public import Mathlib.Topology.Algebra.ClopenNhdofOne
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DkerOfKills
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.Connected
 import Mathlib.RingTheory.TwoSidedIdeal.Instances

@@ -3,7 +3,6 @@ module
 public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
 public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.AdeleIntA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdeleClassFiniteness.BorelGL
-public import Mathlib.RingTheory.ClassGroup.Basic
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.RingTheory.SimpleRing.Principal
 

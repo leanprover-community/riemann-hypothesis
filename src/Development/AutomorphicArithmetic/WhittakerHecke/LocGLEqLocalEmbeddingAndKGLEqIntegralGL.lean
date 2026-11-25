@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecU
 public import GroundTheory.AutomorphicForms.StrongApproximationSLDense
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb
 import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
 
 @[expose] public section
 

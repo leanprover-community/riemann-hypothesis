@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IwahoriDoubleCosets
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ForallEventuallyFinLocIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrreducibleAdmissibleDecomposableCompEquiv
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

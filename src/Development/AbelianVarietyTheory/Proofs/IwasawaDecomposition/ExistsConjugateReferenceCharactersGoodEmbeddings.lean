@@ -13,8 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Finit
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterInfinityExponentGroupLaws
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoInfMulProd
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RealAdelesCmFieldEquivComplexCmType
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

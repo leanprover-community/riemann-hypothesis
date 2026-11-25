@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGene
 import Development.AbelianVarietyTheory.Definitions.Divisors.FlatTensorVacuum
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 
 @[expose] public section
 

@@ -14,7 +14,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGen
 import ReciprocityTheory.ThetaQuasiPeriods.Change
 import ReciprocityTheory.ThetaQuasiPeriods.Transl
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.Blocks
 
 @[expose] public section
 

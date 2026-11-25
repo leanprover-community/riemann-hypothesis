@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.LocalFields.Integers
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
-public import Mathlib.RingTheory.Trace.Defs
 public import GroundTheory.LocalFields.Uniqueness
 import GroundTheory.LocalFields.UnitsPowers
 import Mathlib.Tactic.TypeStar

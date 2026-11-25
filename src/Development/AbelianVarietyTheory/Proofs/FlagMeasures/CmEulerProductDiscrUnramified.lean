@@ -7,16 +7,13 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RootDiscrGeTh
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldAdicCompletionTensorOfInert
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotIsFieldAdicCompletionTensorOfSplit
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadraticUnramifiedIffInertOrSplit
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Int
 public import Mathlib.Analysis.PSeries
 public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.Finiteness.Quotient
-import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.Ideal.Int
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section

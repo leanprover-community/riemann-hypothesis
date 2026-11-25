@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeAdelicMatrixIntegralTranslate
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RayClassConeParametrization
-import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

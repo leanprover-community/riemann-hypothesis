@@ -6,7 +6,6 @@ public import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.SigIntIntegrable
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec
 
 @[expose] public section
 

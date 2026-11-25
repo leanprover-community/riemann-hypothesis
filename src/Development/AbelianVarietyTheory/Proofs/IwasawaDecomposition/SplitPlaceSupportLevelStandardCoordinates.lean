@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartConjM
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelCharEqOneInertPrimeOffLevel
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsPrimeIdemOfInert
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitHeckeElementLabelZerosThenNegOnes
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupportedSubgroupSplitCommutePrimeIdempotents
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 public import Formalism.LocalToGlobal.Columns.MtHeckeLoc
 public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 import Mathlib.Tactic.Linter.Style

@@ -4,7 +4,6 @@ public import Mathlib.AlgebraicGeometry.AffineScheme
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiSeparated
-public import Mathlib.AlgebraicGeometry.Morphisms.QuasiCompact
 
 @[expose] public section
 

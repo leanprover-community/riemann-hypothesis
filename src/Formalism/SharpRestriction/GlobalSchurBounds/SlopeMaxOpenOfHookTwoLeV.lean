@@ -1,8 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.IntegrableOfContinuousCircleMeasure
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 
 @[expose] public section
 

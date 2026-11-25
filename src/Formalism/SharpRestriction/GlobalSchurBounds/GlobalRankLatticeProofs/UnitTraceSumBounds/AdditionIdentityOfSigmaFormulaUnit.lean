@@ -10,8 +10,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProo
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtTransInvHolds
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyLogGammaSmallHolds
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.NumberTheory.Padics.ProperSpace
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

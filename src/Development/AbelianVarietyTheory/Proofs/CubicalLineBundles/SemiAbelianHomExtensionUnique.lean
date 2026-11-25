@@ -8,7 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSc
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsAbelianSchemeAndExtendOfGenericHoms
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsSchemeTheoreticallyDominantSpecOfInjective
 public import Mathlib.AlgebraicGeometry.SpreadingOut
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 @[expose] public section
 

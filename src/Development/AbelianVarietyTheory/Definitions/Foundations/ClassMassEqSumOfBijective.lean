@@ -11,8 +11,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityO
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Ipindep
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Transport
 
 @[expose] public section

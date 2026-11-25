@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.Hermiti
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LbIsoCubeLBMulRightOf
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ArakelovDegreeEqDegreeOfFamily
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
-import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LieLatticeFgAndSpanEqTopRingOfIntegers
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

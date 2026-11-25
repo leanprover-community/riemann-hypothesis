@@ -7,9 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Con
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsWeilDatumConjNegHermitianSpaces
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaHeisenbergConjugationNegHermitianSpace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralNormSqEqToL2
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ConjugateAdjointDagger
 
 @[expose] public section
 

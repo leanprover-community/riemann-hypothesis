@@ -4,25 +4,18 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.MeasureTheory.Integral.CircleIntegral
 public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Mathlib.RingTheory.Polynomial.Vieta
-public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Extremal
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.BigOperators
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBoundRight
 public import Mathlib.Data.FunLike.Fintype
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IteratedDerivLogDerivDirichletLViaNearbyZeros
-public import Mathlib.Analysis.Complex.Norm
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.NumberTheory.DirichletCharacter.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.Turan2Main
-import Mathlib.NumberTheory.LSeries.Nonvanishing
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TuranSecondMainTheoremPowerSumsUnitCoefficients, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLargeVonMangoldtLogPowerSeriesNearZero

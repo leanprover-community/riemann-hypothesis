@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.SummableAndAbsTsumSubIntegralLe
-public import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 public import Mathlib.NumberTheory.ModularForms.DedekindEta
 public import Mathlib.Analysis.Normed.Group.Tannery
 public import Mathlib.NumberTheory.Harmonic.ZetaAsymp

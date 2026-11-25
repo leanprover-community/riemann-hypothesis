@@ -6,12 +6,9 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Exists
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitNormFormAtOddPlace
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EtaProdEqOfEverywhereNormDiv
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsBasisOfIsQuadraticExtension
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEverywhereNormDivOfEtaProdEqOne
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IndexTwoOfFiniteReal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -25,7 +22,6 @@ import Mathlib.NumberTheory.NumberField.Completion.LiesOverInstances
 public import Mathlib.NumberTheory.NumberField.Completion.Ramification
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core

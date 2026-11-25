@@ -13,7 +13,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
@@ -46,13 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowLevelMatch
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowsJoinPinned
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiagGLConjApply
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

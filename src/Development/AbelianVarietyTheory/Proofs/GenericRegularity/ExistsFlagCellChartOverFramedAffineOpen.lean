@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsLo
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtGMulVec
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsTriangularReframeExistsAndUnique
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PolyChartSmoothFractionLift

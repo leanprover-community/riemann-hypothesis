@@ -4,17 +4,12 @@ public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.InnerProductSpace.Defs
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Analysis.InnerProductSpace.Adjoint
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.HermitianCurvature.StatementB
 import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct

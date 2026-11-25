@@ -3,16 +3,11 @@ module
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.FiniteCohPushforwardIffOfIsClosedImmersion
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SecEqZeroAndHomEqOfThickenings
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAmpleLBOfRelAmpleOfIsAffine
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemNonzeroLocusIffPowFn
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExactAndSurjectiveAppOfExactOfEpi
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsGloballyGeneratedIffGeneratingSections
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RestrictPullbackIsoHomAppPullbackSections
 public import Mathlib.Algebra.Module.Submodule.Union
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Regular.IsSMulRegular
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.DivSheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

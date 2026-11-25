@@ -4,7 +4,6 @@ public import Formalism.LatticeSlopes.CovolAntiSameRank
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolPos
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.DegQuot
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.SaturationProperties
-public import Formalism.LatticeSlopes.LatticeSlopesProofs.DiscreteTopologyOfLe
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.MuMaxAttained
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolEqGram
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.GramDetLe

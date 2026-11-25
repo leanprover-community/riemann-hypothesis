@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

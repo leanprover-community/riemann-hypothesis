@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.FlagMatLower
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.SUpPowEqZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.ContinuousRootCoords
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.NegOnePowMulSelf
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

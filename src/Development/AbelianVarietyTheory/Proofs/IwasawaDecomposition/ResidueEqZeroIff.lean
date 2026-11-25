@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitC
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

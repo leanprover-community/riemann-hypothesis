@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsRealCoord
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSigmaList
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsLogNearOneUnitaryGroupOfFormLinearBound
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemSmoothFunctionsOfClosedRightDerivatives

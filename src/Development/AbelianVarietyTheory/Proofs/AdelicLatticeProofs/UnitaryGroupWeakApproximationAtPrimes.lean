@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.H
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermForm
 public import Mathlib.RingTheory.QuasiFinite.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IdempotentAdelesAndSmallAdelicMatrices
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CayleyTransformUnitarySkewInvolutive
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseOneAddPreservingAdelicCompletion
 import Mathlib.RingTheory.SimpleRing.Principal
@@ -15,7 +14,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

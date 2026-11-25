@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Algebra
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEquivPiExteriorTensorBlockLevi
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.BernsteinZelevinskyFiniteness
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

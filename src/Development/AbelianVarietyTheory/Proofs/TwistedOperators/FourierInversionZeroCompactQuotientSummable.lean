@@ -56,7 +56,6 @@ import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalRingCardinality.DataTheta
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 

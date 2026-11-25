@@ -6,14 +6,11 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Line
 public import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.Ideal.Norm.RelNorm
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsReducedOfSeparableMarkedCharpoly
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormCharacterOnIdempotentPartFrameProperties
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteStableLatticesDifferenceTermNeZero
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SignedInvolutionStableLatticeSumMulFixedUnit
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlternatingDifferenceTermWindow
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeIdempotentPositionInvolutionStable
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TendstoBadWindowDivRho
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteClassesOfSeparableCharPoly
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUniformizerIdempotentFrameProd
@@ -65,13 +62,11 @@ import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ExistsPowIdem
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Star.Rat

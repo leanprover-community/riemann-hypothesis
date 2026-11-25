@@ -2,20 +2,16 @@ module
 
 public import Formalism.LocalToGlobal.Columns.RecLevelLocT
 public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-public import Formalism.LocalRingCardinality.DataLevel
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsAddEquivField
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsSplittingOfCharacter
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ImportsExtra
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelPrimeDvdOfAdicValuationLtOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ULocDualHformOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UlocOfTrivDisc
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValNatCastLtOne
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.LevelSubgroupFiniteAdelicStandard
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,28 +3,18 @@ module
 public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Mathlib.Data.Matrix.PEquiv
-public import Mathlib.Basic.PEquiv
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsTemperedCoeff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsUnitarisableOfCharIff
-public import Mathlib.Topology.Algebra.Group.Units
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgebraMapIntertwiningMapBijectiveOfIsSmooth
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmoothContragredientIrreducibleAndReflexive
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenNormalisedSubgroupSubset
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

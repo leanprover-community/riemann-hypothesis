@@ -2,7 +2,6 @@ module
 
 import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.AnnihilatorMulRelativeDifferent
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Formalism.LocalRingCardinality.ConjSqrtMinusD
 public import Formalism.LocalToGlobal.ProjectiveLattices.ExistsParameterConditions
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Int

@@ -11,10 +11,7 @@ public import Formalism.HermitianLattices.FinalNeighbourConstruct
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Formalism.LocalToGlobal.ProjectiveLattices.UnramBridgeHolds
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.AdelicUnitaryGroups
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 
 @[expose] public section
 

@@ -7,9 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreKLExistsOfAlg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HighestWeightPolynomials
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleCapelliModules
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 
 @[expose] public section
 

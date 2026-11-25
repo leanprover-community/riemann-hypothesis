@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.WeilfunCore
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate

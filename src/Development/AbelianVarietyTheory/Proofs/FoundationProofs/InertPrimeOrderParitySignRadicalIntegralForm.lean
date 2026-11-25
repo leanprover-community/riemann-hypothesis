@@ -4,10 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdxEqRelI
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterTrivialAtInertPrimes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AbsNormCmPrimeInertPrimeSign
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NoRatInert
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HESmulRight
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceOneIntegerConjDiffPrimeTo
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinsumNormNeg
@@ -15,17 +11,8 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FrameEmbe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PullEqGaussSmulIntertwiner
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryThetaConstantEqInverseDeterminantPhase
-public import Mathlib.GroupTheory.FiniteAbelian.Basic
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddnessConditionHolds
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTranslationIntertwinerUnitary
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QuadraticCharNegOne
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralDensEqZero
 public import Mathlib.RingTheory.Complex
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeImageRationalHomLattice
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGeneratorCmDifferentIdealScaled
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DetRationalMatrixTwoSidedMulEqProdEmbeddings
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNormOneScalarAvoidingMatrixEigenvalues
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OmEqPullOfVacuum
@@ -34,16 +21,10 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RelIndexN
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaPullbackFirstGroupRationalPointEqSmul
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpanRationalTranslatesVacuum
 public import Formalism.SharpRestriction.Divisibility.BoundaryLocalData
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmFiniteAdeleIntegralSeparatedComplete
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConjInvolutiveAndExistsHalfIdempotent
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRealSpanEqConjFixedPrimeMulRelNorm
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalPointsIntegralPointsMembership
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -78,23 +59,13 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.WeilOperatorConjHeisenbergMovedLattice
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVSubRight
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.WeilRepresentationVacuumSignInertPlaces
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.CharacterAtInertComponent, Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumCompSurjective, Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardMulCardOrth, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConstOfGaussSign, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConstOfEquivariant, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSplitPart, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ProdSqNormEmbT, Development.AbelianVarietyTheory.Proofs.FoundationProofs.RelIndexImageOneSubComplexLinearEquiv, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeIndex, Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertPrimeOrderParitySignRadicalIntegralForm

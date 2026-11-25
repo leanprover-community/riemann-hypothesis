@@ -23,10 +23,8 @@ public import Formalism.SharpRestriction.GrowthBounds.PathWeight
 import Formalism.SharpRestriction.GrowthBounds.PolBridge
 public import Formalism.SharpRestriction.GrowthBounds.ProofLW
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.PositivityConditionHolds
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
 import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Formalism.SubspaceCounting.ChoiceOfTopsRefined
 import Formalism.SubspaceCounting.SubspaceCountingProofs.SubspaceCount
 public import Lemmata.GeneralBFactUpperBis.Imports

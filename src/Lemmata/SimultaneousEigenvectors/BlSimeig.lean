@@ -3,7 +3,6 @@ module
 import Mathlib.Analysis.Complex.Polynomial.Basic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

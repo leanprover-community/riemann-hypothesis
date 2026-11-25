@@ -20,11 +20,9 @@ import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsImage
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 
 -- This file was produced by scripts/clump.py from the modules listed below.

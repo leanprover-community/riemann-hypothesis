@@ -5,7 +5,6 @@ public import Mathlib.LinearAlgebra.Dimension.Finrank
 public import Mathlib.RingTheory.Algebraic.Defs
 public import Mathlib.Tactic.Continuity
 public import Mathlib.FieldTheory.LinearDisjoint
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTranscRatioDeg
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.Tactic.Linter.HaveILetI

@@ -11,10 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ScaledBlockS
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLatticeLatticeBlockDirectSumScaled
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StarMemPolarizationIdealOfMemConj
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharUnramifiedAbovePlaceOfTrivialUnits
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjTauEOverRealPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitCompletelyAuxiliaryPlaceOutsideFinset
@@ -63,32 +59,13 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUnimod
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
-import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsNormEqOfNcardPlacesOver
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NcardPrimesOverOfStabilizer
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsInertPlOfInertOff
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSplitPrimeAvoiding
-import Formalism.SharpRestriction.Divisibility.KudlaSiegelWeil
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.NumberTheory.PrimesCongruentOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPlacewiseTripleSpacesOfSeesaw, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsThetaTripleBaseDataCharacters, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPlacewiseSeesawTripleOverHermitian, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPlacewiseSeesawTripleOverHermitianStatement

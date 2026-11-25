@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InjPrimeTo
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAttachedHodge
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 @[expose] public section

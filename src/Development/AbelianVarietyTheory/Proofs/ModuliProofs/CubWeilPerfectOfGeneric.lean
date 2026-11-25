@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.Ideal.Span
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.RingTheory.Ideal.BigOperators
 public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.Data.Matrix.Mul
 public import Mathlib.RingTheory.MvPowerSeries.Basic
 public import Mathlib.RingTheory.Ideal.Operations
 public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
@@ -18,9 +17,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowEqScaleAndExistsUniqueTorsion
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NilpotentCoordinates
 public import Mathlib.RingTheory.MvPowerSeries.Inverse
-public import Mathlib.RingTheory.Trace.Defs
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DvdTraceOfBalancedTensor
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CardAlgHomReducedTraceSum
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
@@ -28,12 +24,8 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsReducedTors
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CubWeilOneLeft
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FinRepExistsIsPullbackSpec
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 import Mathlib.AlgebraicGeometry.Modules.Sheaf

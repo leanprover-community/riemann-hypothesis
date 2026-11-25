@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementEig
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.BaseEx
-import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section
 

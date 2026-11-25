@@ -13,14 +13,10 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ProjRepGraphS
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SpMapCompRingHomComp
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.DenseOfDenseP
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsAwayFlatProjRep
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ProjectiveRepresentationPullbackCoordinates
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionCoordinateVectorExistsLocally
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SegreCoordinates
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

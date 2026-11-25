@@ -1,10 +1,7 @@
 module
 
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
-public import Formalism.FormalDegreeBessel.StatementG
-public import Formalism.PeriodIntegrals.IsLowUnitH
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsFrameConjUnitaryBlockEqUnitaryComplement
-public import Formalism.PeriodIntegrals.UpqRep
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsHighestWeightIrreducibleUnitaryRepU
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.UnitaryOfBlockWMem
 import Mathlib.Tactic.Linter.HaveILetI

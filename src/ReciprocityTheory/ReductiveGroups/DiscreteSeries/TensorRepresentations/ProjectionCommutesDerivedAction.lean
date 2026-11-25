@@ -6,7 +6,6 @@ import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.ImageLeClosGen
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IsInLieAlgebraISmulAddConjTranspose
 
 @[expose] public section
 

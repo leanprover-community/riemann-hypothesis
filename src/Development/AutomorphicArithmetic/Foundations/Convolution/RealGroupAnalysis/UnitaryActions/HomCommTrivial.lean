@@ -7,15 +7,6 @@ public import Mathlib.RingTheory.Ideal.Defs
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.FiniteProjectionSingleSame
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
-import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
-import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

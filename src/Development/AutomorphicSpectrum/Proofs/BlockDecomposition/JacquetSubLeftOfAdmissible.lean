@@ -2,10 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.Defs
-public import Mathlib.Algebra.Algebra.Bilinear
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyExhaustion.PropsExh
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBijectiveOfIsSubquotient
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivProdIrrTw
@@ -18,8 +14,6 @@ public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.JacquetModuleF
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ParabolicInductionFiniteLength
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonJacquetOfPerm
-import GroundTheory.LocalFields.PadicLogSeries
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
 
 -- This file was produced by scripts/clump.py from the modules listed below.

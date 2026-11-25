@@ -3,11 +3,7 @@ module
 public import ReciprocityTheory.AnalyticForms.LeviForms.HomDens
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.LinearAlgebra.Matrix.Block
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsOpenFlagDomainNondegenerateMinors
-public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.XPerCell
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogDetComparableGramBound
@@ -15,7 +11,6 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPotentialLeviFormCell, Development.AutomorphicSpectrum.Proofs.MetricProofs.GramLogUnitaryTriangularInvariance, Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalBruhatCellAnalyticCoordinates, Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodChartPotentialLeviForm

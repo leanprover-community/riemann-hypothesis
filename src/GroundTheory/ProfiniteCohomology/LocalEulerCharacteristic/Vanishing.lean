@@ -7,16 +7,12 @@ public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMa
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 public import GroundTheory.ProfiniteCohomology.InflationRestriction
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Descent
-public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
 public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.UnitsPower
-public import GroundTheory.LocalFields.UnitsBasic
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.KummerOpen
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Vanishing
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.CohomologyKummer
-import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 import GroundTheory.LocalFields.UnramifiedRootsOfUnity
-import GroundTheory.ProfiniteCohomology.ClassFormations.CorestrictionDefs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.VanishingCore, GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.VanishingUnits, GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Vanishing

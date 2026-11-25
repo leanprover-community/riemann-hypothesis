@@ -15,7 +15,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.Connected
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

@@ -3,13 +3,11 @@ module
 public import Formalism.HermitianCurvature.StatementTL
 public import Formalism.FlagUnipotentLattices.StabiliserComplementDecomposition
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.BlockMinorAbsoluteOfExplicit
-import Formalism.FormalDegreeBessel.FinalG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OmpCofLPd
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.GANormSqStar
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.SimpleRing.Principal

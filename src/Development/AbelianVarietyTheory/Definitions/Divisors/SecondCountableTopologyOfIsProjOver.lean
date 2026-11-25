@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NoCommonZeroCombVal
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsClosedEmbeddingOfAffine
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SmoothOfRelativeDimensionPspace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DOnEqZeroOfEqOne
 public import Mathlib.Analysis.Calculus.ContDiff.WithLp

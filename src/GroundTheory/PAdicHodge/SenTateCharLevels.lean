@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.PAdicHodge.SenTateCharTower
 public import GroundTheory.PAdicHodge.FieldOfNormsRam
-import GroundTheory.LocalFields.ConductorReciprocity
 
 @[expose] public section
 

@@ -1,13 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SigLamLeOfKTypes
-public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.Topology.UniformSpace.Uniformizable
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
 import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur

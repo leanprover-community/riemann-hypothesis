@@ -7,9 +7,6 @@ public import GroundTheory.GlobalFields.SplittingFromInequality.Decomposition
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SignsCup
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.ProfiniteCohomology.Colimit
 
 -- This file was produced by scripts/clump.py from the modules listed below.

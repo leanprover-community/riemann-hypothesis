@@ -2,8 +2,6 @@ module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IntegralIndicatorCharOfTrivial
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.NonarchimedeanSelfdualMeasurePi
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CharEqOneOfNear
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsCovolOne
 public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
@@ -11,33 +9,18 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsFiniteAdeleHaarNormalized
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsLocalApproximateIdentity
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CoefS
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleHaarPiRestrictedProduct
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ArchimedeanSelfdualMeasurePi
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocalAnnihilatorSelfDualVolume
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 public import Mathlib.Analysis.Calculus.BumpFunction.Normed
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
-public import Mathlib.MeasureTheory.Integral.Pi
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsUnipotentInvariantCompactlySupportedWeight
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SelfDualMap
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Aesop.Main
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharacters.SelfDualLatticeFiltrationCharacter
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartzBruhatOfProd
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdeleHaarMapEqScaledVolume
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalComponentsNontrivialAdelicCharacter
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumPlacesEqTrace
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

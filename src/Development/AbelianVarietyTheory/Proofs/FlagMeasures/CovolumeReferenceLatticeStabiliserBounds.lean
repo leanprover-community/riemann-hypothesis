@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePair
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LebesgueCommonStabilizerEqRadicalLeviMap
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RealFrameAutomorphismUnitriangularRowsCoords
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicLeviEmbeddingHomomorphismProperties
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingOfBall
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAddFundamentalDomainLatticeDomain
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FinrankMulDiscrRpowLeSumSqOfMemTraceDual
@@ -17,21 +15,11 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFundIpo
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfForall
 public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfMemSpanFraction
-public import Mathlib.Algebra.Group.Basic
-public import Mathlib.Algebra.Notation.Pi.Basic
-public import Mathlib.Algebra.Notation.Prod
-public import Mathlib.Data.Fintype.Defs
-public import Mathlib.Data.Finset.Insert
-public import Mathlib.Data.Finset.Max
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerSetEqRangeNormalForm
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormCongruenceLiftSmallGroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsBlockOfFrame
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RefLatticeStabilizerMiddleBottomLayers
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
-import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Topology.Separation.CompletelyRegular
@@ -44,15 +32,7 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
-import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExistsHasLeadingCoeffOfMemSpanBelow
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Sheaves.Presheaf
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.Linter.HaveILetI

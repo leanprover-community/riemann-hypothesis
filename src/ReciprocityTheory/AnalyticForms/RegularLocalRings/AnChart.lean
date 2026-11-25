@@ -7,14 +7,9 @@ public import Mathlib.Analysis.Calculus.FDeriv.Add
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.JacChart
 public import Mathlib.Algebra.DualNumber
-public import Mathlib.Analysis.Analytic.Basic
 public import Mathlib.Analysis.Analytic.Polynomial
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 public import Mathlib.Topology.Algebra.MvPolynomial
-public import Mathlib.Analysis.Analytic.ChangeOrigin
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.FDeriv.Analytic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

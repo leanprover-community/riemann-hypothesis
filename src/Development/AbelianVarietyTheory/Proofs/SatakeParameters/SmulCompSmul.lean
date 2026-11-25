@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiMapsAndOmegaLaw
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPDivOfUnit
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BlkDetEqDB
 public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
@@ -16,8 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiTopSou
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiTopTargetSym
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiTopTargetTwist
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.XiTopInvariant
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharSymMulInvEqOne
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

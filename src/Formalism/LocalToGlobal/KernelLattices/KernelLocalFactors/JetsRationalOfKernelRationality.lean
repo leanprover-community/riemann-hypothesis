@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.JetFieldLeKR
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section
 

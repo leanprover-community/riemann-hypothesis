@@ -18,7 +18,6 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 
 @[expose] public section
 

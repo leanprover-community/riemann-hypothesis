@@ -8,7 +8,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Algebra.Module.FinitePresentation
-public import Mathlib.Algebra.Module.Torsion.Basic
 public import Mathlib.RingTheory.Flat.EquationalCriterion
 public import Mathlib.RingTheory.Flat.TorsionFree
 

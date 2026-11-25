@@ -9,7 +9,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEva
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.SideEst
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.TotalDegreeAevalLe
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.Degree
-public import Development.AutomorphicArithmetic.Foundations.Convolution.ASmooth
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.CprsMulRight
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.EvalPowE
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.ExpForm
@@ -26,8 +25,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Convolut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspTrBand
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.DecayTraceClass
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SmoothDecay
-import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
-import GroundTheory.AutomorphicForms.ReductionBlock
 import GroundTheory.AutomorphicForms.WhittakerRelevance
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

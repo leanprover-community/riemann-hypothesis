@@ -8,9 +8,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesB
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesC
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HessCRestrictThm
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Order.CompletePartialOrder

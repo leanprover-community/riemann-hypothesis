@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.AdelicCharacterRationalDual
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.HeisenbergCommutingOperatorScalar
-import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionHeisenbergInvariant
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -2,13 +2,11 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnFree
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIsometryOfSabMap
-import Mathlib.Algebra.Order.Star.Real
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IntegralBasisReduction
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicIndexSums
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
-public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 
 @[expose] public section
 

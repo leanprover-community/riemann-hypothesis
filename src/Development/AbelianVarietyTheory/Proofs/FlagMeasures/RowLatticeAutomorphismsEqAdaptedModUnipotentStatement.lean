@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
-public import Formalism.LocalRingCardinality.DataSpaces
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LinearFormsBoundedRepresentatives
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UnitriangularLatticeStabiliserSubFrameAutomorphi
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralOfUnimodular
@@ -9,12 +8,9 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesSa
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AutLzFinite
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.LiftsConjugateUnderStabilizer
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Lemmata.GeneralBFactThirdRest.Imports
 import Mathlib.Tactic.Linter.Style
 import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
-import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

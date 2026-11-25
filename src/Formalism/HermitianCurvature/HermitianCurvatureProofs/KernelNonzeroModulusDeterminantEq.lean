@@ -5,8 +5,6 @@ public import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 public import Aesop.BuiltinRules
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 @[expose] public section

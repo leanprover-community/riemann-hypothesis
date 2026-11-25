@@ -2,40 +2,26 @@ module
 
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.PID
-public import Mathlib.RingTheory.DedekindDomain.Dvr
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHomLatticeCommensurableOrthonormal
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.JetSumTable
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TranslateMomentsAll
-public import Mathlib.NumberTheory.Padics.ProperSpace
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DerivationCoordinateChange
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AlgebraicNumbersPadicPlacesFacts
-public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FieldIsoLatticesFormTaylorCorrespond
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HeisenbergCocycleFormIntegralSelfDual
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RatIntOfIsIntegral
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeylHeisenbergOperatorCalculusRational
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceDualFamilyHomLattice
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceDualFamilyInverseHalfDifferent
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HermitianPairingRationalValues
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.IsPrincipalIdealRingLoc
-import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Nonarchimedean.Completion
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Valuation.Integral
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsPrincipalIdealRingLoc, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdmissibleLatticeBasisExists, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsLocallyConstantToZModPow, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MonomialEqSumJet, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ContinuousToZModComp

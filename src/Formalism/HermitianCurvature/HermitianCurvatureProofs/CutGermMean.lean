@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermParts
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PairingTriangular
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AverageOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeanBoundsLimits
 import Mathlib.RingTheory.Coalgebra.CoassocSimps

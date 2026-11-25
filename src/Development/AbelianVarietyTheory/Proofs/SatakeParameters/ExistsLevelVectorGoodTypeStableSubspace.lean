@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
 public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs

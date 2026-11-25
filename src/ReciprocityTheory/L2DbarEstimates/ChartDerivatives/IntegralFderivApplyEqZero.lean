@@ -10,10 +10,6 @@ import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ExistsChartPartition
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
-import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 

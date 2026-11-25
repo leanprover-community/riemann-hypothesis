@@ -2,7 +2,6 @@ module
 
 public import Formalism.GradedWeylDivisibility.StatementA
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.RingTheory.LocalRing.Defs
 
 @[expose] public section
 

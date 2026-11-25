@@ -16,9 +16,7 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseC
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralLatticeStructureUnique
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NatCastMemMaximalIdealOfOverLa
-import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 
 @[expose] public section
 

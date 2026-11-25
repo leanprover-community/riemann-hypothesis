@@ -4,7 +4,6 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalRingCardinality.Lemmas
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LevelChainSharpColumnValuationOwnChainIff
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsSmulMemOfMemLocW, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemFiCComp

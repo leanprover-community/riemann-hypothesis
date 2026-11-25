@@ -20,33 +20,20 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValua
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GermCompOneAssocOfConstantCoeffZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimitiveDerivationPairing
 public import Mathlib.LinearAlgebra.Matrix.Rank
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsIntegralOfSmoothFieldOfConnectedSpace
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.LevelFrameOfLaws
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCSt
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.DualNumber
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.KernelRankMultiplicationCharP, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperGroupGermFiniteSubscheme, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperMultiplicationKernel, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperMultiplicationKernelStatement

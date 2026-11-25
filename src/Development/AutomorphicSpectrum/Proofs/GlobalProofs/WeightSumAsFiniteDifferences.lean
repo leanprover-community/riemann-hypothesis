@@ -2,25 +2,8 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PartialSum
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Complex.RealDeriv
-public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Analysis.PSeries
-public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Analysis.Normed.Ring.InfiniteSum
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
-import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteDifferenceConeTermEq, Development.AutomorphicSpectrum.Proofs.GlobalProofs.HighDifferenceVanishesNegativeInteger, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConeSeriesDerivativeGrowthBound, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConeSeriesRealDerivativeFormula, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ShintaniValuesNegativeIntegersRational, Development.AutomorphicSpectrum.Proofs.GlobalProofs.SizePowerLeInverseSquareProduct, Development.AutomorphicSpectrum.Proofs.GlobalProofs.SummableInverseSquareProduct, Development.AutomorphicSpectrum.Proofs.GlobalProofs.WeightSumAsFiniteDifferences

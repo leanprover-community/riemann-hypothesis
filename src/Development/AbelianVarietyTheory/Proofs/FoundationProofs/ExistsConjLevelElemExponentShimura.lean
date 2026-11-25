@@ -7,7 +7,6 @@ public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpecialLinearGroupIntMapZmodSurjective
 public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-public import Mathlib.FieldTheory.IsSepClosed
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

@@ -12,10 +12,7 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsThe
 public import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicConjTransposeBlockMatrixTwoByTwoFin
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.AdjointIsotropicDecomposition
 
 @[expose] public section
 

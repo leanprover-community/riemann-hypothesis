@@ -6,7 +6,6 @@ public import Formalism.WeaklyAdmissibleFiltrations.Statement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RatioInvariantInK0
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 -- This file was produced by scripts/clump.py from the modules listed below.

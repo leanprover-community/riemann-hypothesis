@@ -5,19 +5,12 @@ public import Mathlib.FieldTheory.Separable
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LeftMulTau
 public import Mathlib.FieldTheory.Perfect
 public import Mathlib.Topology.Algebra.Group.Units
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjugatesSeparableMatrixCompactModCentralizer
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleUnitsHaarMeasureDivAbsIsHaarMeasure
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.Topology.LocallyConstant.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLocallyConstantCutoffClosedEmbedding
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisInvKRegularIffIsUnit
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasCompactSupportPartialFourierGLBlock
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocallyConstantPartialFourierGLBlock
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.RingTheory.Trace.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisTransferFactorKrylovDet
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedValuationParitySignCharacterKernelNorm
@@ -47,7 +40,6 @@ import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -78,10 +70,8 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Std.Tactic.BVDecide.Normalize.Prop
 

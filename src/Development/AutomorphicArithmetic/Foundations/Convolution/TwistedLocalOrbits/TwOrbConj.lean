@@ -10,7 +10,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.OrbitalIntegrals.TwistedOrbitalIntegrals.HeckeRepresentationSatake
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.OrbitalIntegrals.TwistedOrbitalIntegrals.QuotIndep
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IwahoriDoubleCosets
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AutomorphicArithmetic.Foundations.Convolution.TwistedLocalOrbits.HoweSpace
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,16 +6,13 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBoundU
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLatticeLatIn
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLocalizedModuleSubtype
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfPerpPerp
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Sheaves.Presheaf
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
 import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 

@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.EmbShortThLeThetaPlain
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ActLevFullLevelGroupFramedPoints
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsLevMove
-public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralFramedPointOfLevelMove
 public import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 import Mathlib.Tactic.Linter.Style

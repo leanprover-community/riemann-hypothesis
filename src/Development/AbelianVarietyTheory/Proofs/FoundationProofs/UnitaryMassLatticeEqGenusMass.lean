@@ -6,7 +6,6 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUnitaryClassRepTrivialAtCm
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ClassMassEqSumOfBijective
 public import Formalism.HermitianLattices.StatementMass
@@ -21,7 +20,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,9 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.DefiningCoordinates
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Mathlib.Data.Pi.Interval
-public import Mathlib.RingTheory.PowerSeries.Basic
 
 @[expose] public section
 

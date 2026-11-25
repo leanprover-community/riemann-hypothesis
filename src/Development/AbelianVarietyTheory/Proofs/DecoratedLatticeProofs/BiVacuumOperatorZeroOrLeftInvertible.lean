@@ -5,15 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDu
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CompletedHomLatticeStableSplitIdempotent
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticeCompletionSelfAnnihilatorAtPlaces
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Algebra.Module.LinearMap.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Data.Finsupp.Defs
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsolateAbstract
-public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BiCombEqLOpROp
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisOFinsetSum
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEqZeroOfInf

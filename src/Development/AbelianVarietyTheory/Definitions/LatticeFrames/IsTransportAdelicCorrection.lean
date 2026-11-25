@@ -7,12 +7,8 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiPinnedWithFinIff
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ThetaIdentityOfMapsAll
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowsJoinPinned
 
 @[expose] public section
 

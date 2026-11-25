@@ -3,8 +3,6 @@ module
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsInertiaInfiniteCyclotomic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.CycInertia
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IqBasic

@@ -10,16 +10,12 @@ public import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
 public import GroundTheory.GlobalFields.KummerTheory.SplittingKummer
 public import GroundTheory.GlobalFields.KummerTheory.Unramified
 public import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
-public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import GroundTheory.GlobalFields.ExistenceTheorem.PowerIndex
 public import GroundTheory.GlobalFields.IdeleGroups.IndexFormula
 public import GroundTheory.GlobalFields.IdeleGroups.IndexProductFormula
 public import GroundTheory.GlobalFields.SplittingFromInequality
-import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
-import Mathlib.RingTheory.DedekindDomain.SelmerGroup
-import Mathlib.RingTheory.Henselian
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.ExistenceTheorem.LocalPowers, GroundTheory.GlobalFields.ExistenceTheorem.IndexRangePowMonoidHomAdicCompletionMulNorm

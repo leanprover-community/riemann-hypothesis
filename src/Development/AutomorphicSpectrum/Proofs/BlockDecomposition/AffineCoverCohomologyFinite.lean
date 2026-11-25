@@ -5,8 +5,6 @@ public import Mathlib.AlgebraicGeometry.Modules.Sheaf
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.BijectiveSmulChartSec
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.CechFunctor
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
-public import Mathlib.Tactic.ENatToNat
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.NaturalLeray
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperFiniteness

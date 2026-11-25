@@ -4,8 +4,6 @@ public import Formalism.PeriodIntegrals.DiffGenLoc
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

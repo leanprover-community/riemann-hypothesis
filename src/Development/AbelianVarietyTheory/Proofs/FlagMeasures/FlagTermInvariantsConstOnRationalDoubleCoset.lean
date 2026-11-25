@@ -46,7 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
 
 @[expose] public section
 

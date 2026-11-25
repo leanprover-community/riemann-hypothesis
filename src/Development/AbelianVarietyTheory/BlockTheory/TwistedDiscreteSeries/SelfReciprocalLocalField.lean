@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsOrthonormalOfUnimodular
-public import Mathlib.RingTheory.Unramified.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

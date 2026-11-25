@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HalfData
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 
 @[expose] public section
 

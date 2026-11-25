@@ -6,18 +6,14 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Ind
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.IntegrableUnitIndicator
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HalfLeNormOneSub
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.NormFixedUnitaryEntryLeOne
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.TailInt
 public import Mathlib.Analysis.SpecialFunctions.PolarCoord
 public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
-public import Mathlib.Analysis.SpecialFunctions.Integrability.Basic
-public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.PolynomialGrowthIntegrals
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.XphiLinInd
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HpkMulVecMulVec
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.GaNonneg
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.FixOfPerp
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.AStepSuccOf
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.BStepSuccOf
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HeisenbergHaarFactsHold
@@ -26,7 +22,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Osc
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.ProdIicCastLE
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.TailFinOf
 import Mathlib.Tactic.Lemma
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.MeasureTheory.Order.Group.Lattice
 import Mathlib.Tactic.TypeStar
 

@@ -7,7 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDResRa
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfBetaAdjCOfLemmaBNorm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveOrbitOpen
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

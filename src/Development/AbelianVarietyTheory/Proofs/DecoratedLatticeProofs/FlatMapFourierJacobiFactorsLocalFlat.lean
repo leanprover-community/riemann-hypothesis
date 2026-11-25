@@ -2,15 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapsPreserveSchwartzBruhatAndSurjective
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsRead
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.KernelReductionExtendEvaluatedIntegrated
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingTriangular
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ContrFactor
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsClosedEmbeddingAffPtUncurry
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -50,9 +44,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LinearMapKillingPartialEvalIntegralKernelTransla
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -60,7 +51,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousCharactersLocallyConstantNonarchLocalF
 import Mathlib.Tactic.Linter.Style
 

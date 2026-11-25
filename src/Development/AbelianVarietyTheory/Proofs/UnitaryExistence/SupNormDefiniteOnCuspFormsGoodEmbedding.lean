@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
-public import Formalism.LocalToGlobal.ProjectiveLattices.UnFree
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ReadingLinearIndependentAndInjective
 
 @[expose] public section

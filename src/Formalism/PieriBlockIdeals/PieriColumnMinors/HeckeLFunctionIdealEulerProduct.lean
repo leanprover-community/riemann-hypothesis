@@ -4,7 +4,6 @@ public import Mathlib.LinearAlgebra.Matrix.Block
 public import Formalism.PieriBlockIdeals.Statement
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Data.ZMod.Basic
 public import Formalism.PieriBlockIdeals.LemmaWAssembled
 public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff

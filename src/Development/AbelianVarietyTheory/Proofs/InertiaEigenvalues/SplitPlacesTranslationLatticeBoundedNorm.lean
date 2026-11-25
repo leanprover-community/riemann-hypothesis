@@ -3,15 +3,10 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GoodSetupCountEqZeroOffBadPlaces
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OscillatorModelValuesThird
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
-public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
-public import Formalism.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNsmulMemOfSpan
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemLatAtIffHat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceIdempotentComponentsConjValuation
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBaseChangeFiniteAdeleRingEquiv
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFinitePlaceIdempotentBaseChangeAdeles
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeCharEqProdLocalComponentsApproximating
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -51,12 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivChar
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsSplitOfMemAdmissibleConjugatePairPlaces
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivOfNotLinearIndependent
-import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 

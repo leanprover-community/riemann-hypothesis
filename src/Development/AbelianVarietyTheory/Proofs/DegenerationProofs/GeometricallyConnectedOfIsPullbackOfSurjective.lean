@@ -6,7 +6,6 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Valuation.ValuationRing
 public import Mathlib.RingTheory.Valuation.LocalSubring
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.TensorProduct.Free
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.QSurjective

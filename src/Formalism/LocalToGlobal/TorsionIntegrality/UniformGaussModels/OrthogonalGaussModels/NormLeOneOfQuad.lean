@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.Fi
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.FinalD
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.AnalyticTransOfAdd
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.CmIntegralityOfTorsionPoints
-import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CubeThreeR
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 

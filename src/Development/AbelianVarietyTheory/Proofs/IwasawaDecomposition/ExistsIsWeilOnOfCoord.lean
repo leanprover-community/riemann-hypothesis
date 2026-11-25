@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
-public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ExistsJunkLiftNotVanishing
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOpenKer
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumEqTraceOriented

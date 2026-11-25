@@ -10,9 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsS
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOne
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 
 @[expose] public section
 

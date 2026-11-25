@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.LinearAlgebra.Span.Defs
-import Mathlib.Algebra.Group.Submonoid.Membership
 
 @[expose] public section
 

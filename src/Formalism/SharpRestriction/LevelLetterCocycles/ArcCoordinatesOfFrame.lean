@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralO
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
-public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
-public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
 
 @[expose] public section
 

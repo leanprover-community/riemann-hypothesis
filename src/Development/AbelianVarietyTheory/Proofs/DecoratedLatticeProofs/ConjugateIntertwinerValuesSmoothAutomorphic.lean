@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PiCongrLe
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjIntertwinerPointValueSobolevContinuousStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjugateEvaluationMapIntertwinesRealPlacesStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CuspidalFrame
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DerivativeClosedClassBoundedByInverseLeastSize
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HeightBoundByInfinityNorm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdelicIdentificationRespectsRealFinite
@@ -15,8 +13,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.Ortho
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicTransportMeasureThird
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeLipschitzProperties
-import Mathlib.Analysis.Calculus.Deriv.Star
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

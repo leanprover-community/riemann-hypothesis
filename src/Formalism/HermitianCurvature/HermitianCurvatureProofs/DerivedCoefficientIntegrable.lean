@@ -12,15 +12,12 @@ public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 public import Formalism.HermitianCurvature.StatementLE
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Slope
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Cauchy
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaLimit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightedL2BoundedMul
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasIterDeriv
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

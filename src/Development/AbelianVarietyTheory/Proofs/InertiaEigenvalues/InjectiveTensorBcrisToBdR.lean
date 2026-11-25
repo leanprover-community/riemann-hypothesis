@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.FieldTheory.Galois.Infinite
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvFilD
-public import Mathlib.FieldTheory.Galois.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisLinearDisjoint
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemMaxUnramifiedOfCrystallineRatio
 import Std.Tactic.BVDecide.Normalize.Prop

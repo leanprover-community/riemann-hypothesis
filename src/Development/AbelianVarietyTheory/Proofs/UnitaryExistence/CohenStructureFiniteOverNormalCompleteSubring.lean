@@ -6,17 +6,7 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.LinearAlgebra.SModEq.Pow
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.Algebra.CharP.Basic
-public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.RingTheory.Filtration
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.Algebra.Field.Subfield.Defs
-public import Mathlib.Algebra.Ring.Subring.Basic
-public import Mathlib.Order.Preorder.Chain
 public import Mathlib.Algebra.CharP.Reduced
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.FieldTheory.KummerPolynomial
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.KrullDimension.Basic
@@ -29,9 +19,7 @@ public import Mathlib.RingTheory.AdicCompletion.Topology
 public import ReciprocityTheory.AdicCompleteness.IsAdicCompleteComapConstantCoeff
 public import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.SetTheory.ZFC.PSet

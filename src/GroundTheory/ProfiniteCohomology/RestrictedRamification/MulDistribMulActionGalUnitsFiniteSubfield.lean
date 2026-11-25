@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalLimits.IsScalarTowerFiniteSubfieldAlgebraicClosure
 public import GroundTheory.ProfiniteCohomology.CupProducts
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
 import GroundTheory.ProfiniteCohomology.FilteredHomology
 import GroundTheory.ProfiniteCohomology.GaloisCohomology.BrauerInflation

@@ -8,14 +8,10 @@ public import Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedKerPoly
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedKerPrin
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SemiChar
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

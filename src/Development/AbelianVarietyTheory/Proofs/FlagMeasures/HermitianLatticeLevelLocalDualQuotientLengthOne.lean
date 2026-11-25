@@ -2,15 +2,11 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfDualAt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceLatticeComponents
-public import Formalism.PeriodIntegrals.SplitIntLoc
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitPrimeIntegers.ExistsUnitDiff
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DualLatticeLocalCharacterization
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLatticeVectorApproxAllFinitePlaces
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldSplitCompletelyPlaceStructure
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SelfDualLocalBasis.OneTmulMemOloc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalHermitianDualQuotientCyclicSplitPlace, Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimeSqLeLocalHermitianDualIndex, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdLocalRelIndexDvdHermitianDual, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitPlaceDualQuotientComponentsIff, Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeLevelLocalDualQuotientLengthOne

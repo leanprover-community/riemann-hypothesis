@@ -5,11 +5,9 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExMapAlt
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExMap
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterOsgood
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.EqZeroOfEventuallyEval
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.LeviOfRealSmulRight
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRatioAlgDep
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.Intersections.MixedDiscEqZeroOfMulVec, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Contract

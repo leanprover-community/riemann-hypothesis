@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTopologicalRingAE
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HalvedSymplecticFormFiniteRealOrthogonal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM

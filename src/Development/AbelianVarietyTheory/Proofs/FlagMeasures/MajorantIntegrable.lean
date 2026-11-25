@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarBallGrowthUnitaryJ
-public import Mathlib.MeasureTheory.Function.L1Space.Integrable
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrableExpNegMulOfSublevelGrowth
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
 import Mathlib.Algebra.Order.Star.Real

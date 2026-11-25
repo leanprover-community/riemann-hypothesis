@@ -9,17 +9,12 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianTyp
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolTUnit
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUHaar
 public import Formalism.PeriodIntegrals.LocJacTyp
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.ChiZeroRight
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DetAdmA
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.GaloisValuations.Global
-public import ReciprocityTheory.GaloisValuations.GlobalB
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

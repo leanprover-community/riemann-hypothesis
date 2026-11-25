@@ -1,11 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUnitaryClassRepTrivialAtCm
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryGroupWeakApproximationAtPrimes
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section

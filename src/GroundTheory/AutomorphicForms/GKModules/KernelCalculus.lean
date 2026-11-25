@@ -3,10 +3,8 @@ module
 public import GroundTheory.AutomorphicForms.GKModules.Garding
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
 import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
-import GroundTheory.AutomorphicForms.GKModules.ParametricIntegral
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

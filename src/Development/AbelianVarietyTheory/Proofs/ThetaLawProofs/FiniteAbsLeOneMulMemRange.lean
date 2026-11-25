@@ -19,8 +19,6 @@ import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.GenCol
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.OfRealVecHalfVec
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.NumberTheory.ModularForms.Basic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.SymplecticCharacters.GenBase
 
 @[expose] public section
 

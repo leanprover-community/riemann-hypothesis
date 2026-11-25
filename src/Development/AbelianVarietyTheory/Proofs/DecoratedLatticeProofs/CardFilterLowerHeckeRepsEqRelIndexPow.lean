@@ -2,12 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCoType
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BlockDetLowUEmb
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasBoundedSumsOne
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnramifiedHeightLatticeIndexIdentity

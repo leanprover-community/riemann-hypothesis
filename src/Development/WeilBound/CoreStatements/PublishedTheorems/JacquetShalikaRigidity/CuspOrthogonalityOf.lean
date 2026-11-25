@@ -10,7 +10,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFiniteMeasureQuotMeasure
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.CardStepOf
-import GroundTheory.AutomorphicForms.QuotientMeasure
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.SameSatakeOfProjection, Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.CuspOrthogonalityOf

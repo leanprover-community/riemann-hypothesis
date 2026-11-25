@@ -10,14 +10,12 @@ import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectiona
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousIsotropicSandwichMeanTranslation
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsFockVacAtOfIsThetaAt
-import Mathlib.Analysis.Complex.Conformal
 public import Mathlib.Analysis.Complex.Schwarz
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalZero
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
 
 @[expose] public section
 

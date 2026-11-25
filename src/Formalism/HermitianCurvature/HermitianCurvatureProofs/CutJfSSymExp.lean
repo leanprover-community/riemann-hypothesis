@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSSymDefs
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSmoothCut
-import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.SimpleRing.Principal

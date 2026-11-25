@@ -4,7 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalOperatorBlocks.ContinuousWeightFactorUnitary
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.RingTheory.Complex
-import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.HermTranspose
 

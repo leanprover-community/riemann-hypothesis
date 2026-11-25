@@ -16,11 +16,9 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Uni
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsNonzeroLocusEqOfIsAffineOpen
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsAffineOfQuasiAffine
-import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBCorr
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

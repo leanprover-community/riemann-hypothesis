@@ -45,7 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPairingStdP
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowSplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClosedAdelicLatticeClosure, Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepresentationIntegralAction

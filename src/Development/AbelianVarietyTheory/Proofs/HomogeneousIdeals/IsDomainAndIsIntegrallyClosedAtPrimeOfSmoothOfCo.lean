@@ -12,7 +12,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.RingTheory.Smooth.IntegralClosure
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-public import Mathlib.RingTheory.LocalProperties.IntegrallyClosed
 
 @[expose] public section
 

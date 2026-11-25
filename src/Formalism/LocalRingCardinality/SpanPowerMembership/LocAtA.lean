@@ -6,7 +6,6 @@ public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 
 @[expose] public section
 

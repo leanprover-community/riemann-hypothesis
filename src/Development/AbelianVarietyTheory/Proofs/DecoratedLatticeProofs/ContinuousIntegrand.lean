@@ -4,10 +4,8 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FourierJac
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsQuasiFam
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EncardSmulMemLeEncardSmulInterNonempty
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.WeilRepresentationContinuous
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InfPartOneSubEInfSmul
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -44,7 +42,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.MixedCoordinates
 
 @[expose] public section
 

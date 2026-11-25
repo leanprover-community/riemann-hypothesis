@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerTh
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KurComplete
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TransportFirstLevel
 public import Mathlib.NumberTheory.LegendreSymbol.Basic
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 
 @[expose] public section
 

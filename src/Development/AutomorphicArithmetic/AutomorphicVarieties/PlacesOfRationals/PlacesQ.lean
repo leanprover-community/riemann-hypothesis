@@ -2,10 +2,8 @@ module
 
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LengthCyclotomicBlockCocyclesLeSha
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.Mk0IdMapCongr
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PlacesOfRationals.GenLeOfFintype
 
 @[expose] public section

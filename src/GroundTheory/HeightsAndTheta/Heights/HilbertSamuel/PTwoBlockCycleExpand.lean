@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockFnFiel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.CycDim

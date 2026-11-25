@@ -5,7 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.ColAnti
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiCapelliStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.GelfandPsB
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.GelfandPhiA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CapPhi
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasPsA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasChain
@@ -17,9 +16,7 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Order.CompletePartialOrder
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.GelfandPsA
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.Central
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiMLocal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

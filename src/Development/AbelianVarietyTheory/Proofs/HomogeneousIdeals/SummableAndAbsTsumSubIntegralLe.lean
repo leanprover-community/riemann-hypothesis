@@ -5,8 +5,6 @@ public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.NumberTheory.Harmonic.GammaDeriv
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
-public import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 
 @[expose] public section
 

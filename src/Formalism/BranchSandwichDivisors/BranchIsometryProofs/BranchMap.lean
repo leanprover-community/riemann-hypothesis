@@ -9,7 +9,6 @@ public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MemBranchRan
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.SumIcoTsubTelescope
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

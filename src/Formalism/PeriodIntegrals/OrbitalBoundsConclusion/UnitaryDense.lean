@@ -5,10 +5,7 @@ public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Matrix.PosDef
 public import Formalism.PeriodIntegrals.UnitaryDense
 public import Mathlib.Algebra.MvPolynomial.Monad
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Order.Interval.Set.Infinite
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Order.Star.Real

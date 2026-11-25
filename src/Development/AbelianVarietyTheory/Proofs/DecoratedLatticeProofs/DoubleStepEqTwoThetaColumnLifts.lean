@@ -20,12 +20,9 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Wei
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilRepresentationRationalTranslateSubstitutionStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousMovPair
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MeasureFundamentalDomainLtTop
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousIsotropicSandwichMeanTranslation
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsThetaFam
-import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 
 -- This file was produced by scripts/clump.py from the modules listed below.

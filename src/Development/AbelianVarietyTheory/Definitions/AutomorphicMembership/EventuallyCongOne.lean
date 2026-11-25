@@ -8,11 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCom
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelPrimeDiamondPreservesComplexForms
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MulAntiOfUnitary
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Formalism.LocalToGlobal.Columns.RecLevelTop
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Mathlib.Topology.Algebra.MvPolynomial

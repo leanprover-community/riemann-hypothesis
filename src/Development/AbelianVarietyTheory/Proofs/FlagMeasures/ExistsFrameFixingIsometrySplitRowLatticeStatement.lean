@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMi
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIntegerAddStarEqOneOfIsCMUnram
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmulMemOfOne
-import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended

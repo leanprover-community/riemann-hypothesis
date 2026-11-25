@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InertIntegra
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralConjEtaleMemCentralizerMulIntegralGL
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMaxCompactGLOfCommuteEtaleCharpolyBounded
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNormalisedThetaSub
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

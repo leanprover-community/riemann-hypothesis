@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Fla
 public import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsTransportAdelicCorrection
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InstExists
-public import Formalism.QuotientMetricDivisors.Statement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaLiftLevelsGoodPrimesProperties
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

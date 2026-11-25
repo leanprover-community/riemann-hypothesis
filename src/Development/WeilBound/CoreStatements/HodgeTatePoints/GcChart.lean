@@ -4,8 +4,6 @@ public import Mathlib.Algebra.Module.Lattice.Full
 public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.RingTheory.Valuation.Integers
 public import Mathlib.RingTheory.Flat.LocallyFree
-public import Mathlib.Algebra.Ring.Hom.InjSurj
-public import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsCompactUnitaryPointsAtPlaceFstMemCompact
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GcDescend
@@ -13,7 +11,6 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.GcIncl
 import Development.WeilBound.CoreStatements.HodgeTatePoints.IsFractionRingOfIntegers
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.GcBase, Development.WeilBound.CoreStatements.HodgeTatePoints.GcChart

@@ -8,7 +8,6 @@ public import ReciprocityTheory.Hypotheses.GalCoh
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PhiCondOfFiniteH1
 
 @[expose] public section

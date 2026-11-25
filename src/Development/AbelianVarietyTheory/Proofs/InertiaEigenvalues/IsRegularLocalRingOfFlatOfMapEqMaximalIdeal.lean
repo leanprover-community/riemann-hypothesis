@@ -4,8 +4,6 @@ public import Mathlib.CategoryTheory.Abelian.Projective.Dimension
 public import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsHasProjectiveDimensionLEOfResidueField
-import Mathlib.Algebra.Category.ModuleCat.Projective
-import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 public import Mathlib.Algebra.Module.SpanRankOperations
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
@@ -13,8 +11,6 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
-import Mathlib.RingTheory.KrullDimension.Regular
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.ReduceModChar

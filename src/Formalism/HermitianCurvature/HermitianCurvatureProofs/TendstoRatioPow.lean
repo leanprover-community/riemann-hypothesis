@@ -1,14 +1,9 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TendstoSmulCocompact
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.Order.CompletePartialOrder
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AestronglyMeasurableMainD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermFibreKernels
-public import Mathlib.MeasureTheory.Function.L2Space
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRealisation
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralNormCvecSq
 import Aesop.Main

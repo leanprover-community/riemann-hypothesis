@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormalFormOr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTRadAdj
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSAdjH
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

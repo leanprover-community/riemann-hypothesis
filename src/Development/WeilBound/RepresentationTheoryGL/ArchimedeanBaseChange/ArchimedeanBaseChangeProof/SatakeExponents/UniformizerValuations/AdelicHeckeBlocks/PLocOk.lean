@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameL
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DgMatOne
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsHalfBlockDetIntegralGLInvariant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockLevelsEqIntegralGLOfUnramified
@@ -10,8 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurje
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactSupportDcos
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
-import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingTransferOf

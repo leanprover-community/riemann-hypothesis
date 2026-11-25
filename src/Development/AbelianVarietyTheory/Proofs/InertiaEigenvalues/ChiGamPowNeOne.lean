@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodDiscExtensionTateElement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeriesTransport
-public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ConvZero
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesDataLevIsExpansionAtZeta
@@ -18,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsW
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MaxUnramifiedActsOnLetterIdempotentImage
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeAinfSandwichInvertPi
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeFreeOfCrystalline
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SGaugeDensB
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
 import Mathlib.Tactic.Linter.Style
 

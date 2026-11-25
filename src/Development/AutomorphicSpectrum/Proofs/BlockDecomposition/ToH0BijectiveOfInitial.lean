@@ -4,12 +4,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EtaNat
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.FaceMapCompSuccAboveCastSucc
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClsCongr
 public import Mathlib.RingTheory.Flat.Basic
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalisationLadders.TruncationHomExt
-public import Mathlib.Algebra.Exact.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiltrationCriticalComparisonMap
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismBot
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MemBoundariesZeroIff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensTransfer
 
 -- This file was produced by scripts/clump.py from the modules listed below.

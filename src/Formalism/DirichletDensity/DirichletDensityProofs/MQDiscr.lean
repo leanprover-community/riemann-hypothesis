@@ -6,7 +6,6 @@ public import Formalism.DirichletDensity.Statement
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 public import Mathlib.RingTheory.Prime
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

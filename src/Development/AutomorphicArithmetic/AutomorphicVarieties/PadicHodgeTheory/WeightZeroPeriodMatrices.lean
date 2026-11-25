@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamComparis
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.ExistsMonicUnitCoeffZeroAnnihilatingOfSpectrumNo
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.InertiaFixesOfFrobeniusAnnihilatedMemFilZero
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.NormLeOneOfMemSpectrumFrobeniusMatrixFilZero
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.Ring
 
 /-!
 # Weight-zero period matrices

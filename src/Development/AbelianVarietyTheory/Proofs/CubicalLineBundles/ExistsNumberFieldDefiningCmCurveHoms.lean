@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsLieCo
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.EllipticCurveLatticeBaseChangeStable
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.HomDerivBaseChange
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MultiplierIffExistsHom
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.HomDerivDescendsToNumberField, Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.HomDerivativeClosure, Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsNumberFieldDefiningCmCurveHoms

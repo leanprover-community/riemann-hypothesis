@@ -4,7 +4,6 @@ public import Formalism.LocalRingCardinality.DataTheta
 public import Formalism.LocalRingCardinality.SpanPowerMembership.BaseFormAnisotropicOrthogonalSingle
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedBessel
 public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCF
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleRanksRankComplement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.InertJacobiLevels.ExtraTheta, Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCP

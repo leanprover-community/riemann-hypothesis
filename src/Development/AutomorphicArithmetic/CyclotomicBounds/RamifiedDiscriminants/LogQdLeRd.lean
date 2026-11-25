@@ -7,7 +7,6 @@ public import Development.AutomorphicArithmetic.FrobeniusLocalisation.DiffDefs
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.LogRdSum
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.MemRam
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.RamEq
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DvdDiscrOfInertia
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.FrobeniusLocalisation.inertQ

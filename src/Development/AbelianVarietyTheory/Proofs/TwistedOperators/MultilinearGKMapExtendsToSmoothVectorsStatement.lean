@@ -1,15 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.LocallyConvex.WithSeminorms
 public import Mathlib.Analysis.LocallyConvex.Barrelled
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.LinearAlgebra.BilinearMap
-public import Mathlib.LinearAlgebra.Multilinear.Basic
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.Analysis.LocallyConvex.Separation
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.KTypeExtension
@@ -55,17 +47,10 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Polynomial.Basic
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SobBdSeminorm, Development.AbelianVarietyTheory.Proofs.TwistedOperators.BilinearBoundOfDenseSecondSlot, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMultilinearSlotwiseExtensionOfEquivariant, Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemClosureOfForallDualVanish, Development.AbelianVarietyTheory.Proofs.TwistedOperators.SobolevContinuousModelRepOfSobolevBound, Development.AbelianVarietyTheory.Proofs.TwistedOperators.SobolevContinuousModelRepOfSobolevBoundStatement, Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultilinearGKMapExtendsToSmoothVectors, Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultilinearGKMapExtendsToSmoothVectorsStatement

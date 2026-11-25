@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsInva
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.IntegrablePair
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.GoodChar
 
 @[expose] public section
 

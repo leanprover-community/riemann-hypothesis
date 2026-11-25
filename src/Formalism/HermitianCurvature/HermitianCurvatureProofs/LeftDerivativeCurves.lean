@@ -1,10 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.StatementQr
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 

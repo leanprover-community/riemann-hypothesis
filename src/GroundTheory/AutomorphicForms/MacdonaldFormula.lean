@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.MacdonaldSpherical
 public import GroundTheory.AutomorphicForms.MacdonaldNormalization
-import GroundTheory.AutomorphicForms.MacdonaldRecursion
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

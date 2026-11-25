@@ -12,8 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Exist
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsProjectiveRep
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTorsionLift
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.ValuativeCriterion
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.Style

@@ -5,9 +5,7 @@ public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

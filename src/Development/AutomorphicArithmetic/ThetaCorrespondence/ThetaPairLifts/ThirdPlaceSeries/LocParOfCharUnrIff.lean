@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 public import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.AbsCentralAlt
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EventuallyUnr
 import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateWords
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

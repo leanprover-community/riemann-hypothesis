@@ -2,25 +2,18 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLatIntVec
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermOf
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CmConjugationProperties
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DeltaEqLatticeIndex
 public import Mathlib.RingTheory.Ideal.Norm.RelNorm
-public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.RingTheory.Flat.EquationalCriterion
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LamIsLattice
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelativeNormCmAbsNorm
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
-public import Mathlib.Analysis.Real.Sqrt
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeQuotientTorsionNonzero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorsionCardLeAbsNormPow
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorsionNormZetaBound
 public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TsumCompBoundedFibresLe
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ModerateGrowthSchwartz
@@ -70,10 +63,7 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI

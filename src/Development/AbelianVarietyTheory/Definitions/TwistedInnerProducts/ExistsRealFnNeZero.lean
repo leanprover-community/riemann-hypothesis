@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ForallEve
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BplusOfEquivariant
 public import Development.AbelianVarietyTheory.Definitions.Divisors.InvVolConjLevelOne
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitLastBlockActX
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

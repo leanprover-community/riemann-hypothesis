@@ -3,7 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 public import Mathlib.FieldTheory.RatFunc.Basic
 public import Mathlib.FieldTheory.Relrank
-public import Mathlib.Tactic.Continuity
 
 @[expose] public section
 

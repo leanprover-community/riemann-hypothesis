@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.CentralizerReps
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.Fourier
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.ModulusBounds
-public import GroundTheory.AutomorphicForms.WhittakerOrbit
 public import Mathlib.GroupTheory.CosetCover
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 

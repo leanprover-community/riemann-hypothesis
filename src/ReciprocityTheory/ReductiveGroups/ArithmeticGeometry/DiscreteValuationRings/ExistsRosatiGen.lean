@@ -9,7 +9,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalB
-public import Mathlib.Topology.Algebra.Order.Archimedean
 
 @[expose] public section
 

@@ -5,10 +5,6 @@ public import GroundTheory.AutomorphicForms.TensorProductTheorem.KFinite
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.GenWindow
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.OuterTensor
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.Existence
-public import GroundTheory.AutomorphicForms.SmoothRep
-public import Mathlib.Topology.Algebra.Group.Units
-import GroundTheory.AutomorphicForms.LocallyProfinite
-import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
 import GroundTheory.AutomorphicForms.TensorProductTheorem.Window
 
 -- This file was produced by scripts/clump.py from the modules listed below.

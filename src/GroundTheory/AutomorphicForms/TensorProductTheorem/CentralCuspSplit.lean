@@ -2,11 +2,9 @@ module
 
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.Analysis.InnerProductSpace.Defs
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCusp
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspCentral
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
 public import GroundTheory.AutomorphicForms.SmoothRep
 import Mathlib.Tactic.TypeStar
 

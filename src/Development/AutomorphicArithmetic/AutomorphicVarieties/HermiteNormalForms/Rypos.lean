@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Grampd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.RealVec
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Realsurj
-import Mathlib.Analysis.Matrix.Hermitian
 
 @[expose] public section
 

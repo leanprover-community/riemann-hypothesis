@@ -7,8 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtNormPow
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QminorZero
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialRaisingTopOfParts
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellMulVecBasis
 
 @[expose] public section
 

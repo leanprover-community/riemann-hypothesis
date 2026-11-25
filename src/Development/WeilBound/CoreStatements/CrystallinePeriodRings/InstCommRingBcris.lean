@@ -8,7 +8,6 @@ public import GroundTheory.PAdicHodge.TateCpTwist
 public import GroundTheory.PAdicHodge.UntiltFrobeniusEquivSymmEpsilonNeOne
 public import GroundTheory.PAdicHodge.ACrisBdRGalois
 import GroundTheory.PAdicHodge.ACrisBdRInj
-import GroundTheory.PAdicHodge.ACrisPhi
 public import GroundTheory.PAdicHodge.BdRTGalois
 
 @[expose] public section

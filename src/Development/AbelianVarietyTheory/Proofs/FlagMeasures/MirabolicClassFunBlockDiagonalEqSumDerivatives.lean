@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMir
 public import Mathlib.GroupTheory.Nilpotent
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DerTail
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsMirabolicConjInvariantTwistedTailMeanFun
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

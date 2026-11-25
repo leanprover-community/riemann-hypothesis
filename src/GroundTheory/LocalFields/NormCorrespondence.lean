@@ -3,7 +3,6 @@ module
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 public import GroundTheory.LocalFields.MaximalAbelianExtension
 public import GroundTheory.LocalFields.Existence
-import GroundTheory.LocalFields.ExistenceDictionary
 public import GroundTheory.LocalFields.LocalReciprocityUniversal
 import Mathlib.Tactic.TypeStar
 

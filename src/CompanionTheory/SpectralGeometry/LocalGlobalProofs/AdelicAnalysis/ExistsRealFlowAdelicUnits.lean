@@ -1,8 +1,6 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.HypJ
-public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TotallyRealContinuousEmbeddingInfiniteAdeles
 
 @[expose] public section

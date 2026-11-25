@@ -6,8 +6,6 @@ import Mathlib.Algebra.Order.Archimedean.Real.Hom
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Order.CompletePartialOrder
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 

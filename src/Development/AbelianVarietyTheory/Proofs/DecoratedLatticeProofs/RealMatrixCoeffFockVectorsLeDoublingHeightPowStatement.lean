@@ -16,9 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsEtaT
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilDatumOfSplittingCharacters
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SphericalZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramNegTransposeDiag
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilDatumAtPlaceEqLatticeIntertwinerMulDetChar
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

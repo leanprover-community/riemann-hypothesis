@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.IsoEq
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange.PSConjSpaceC
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.NormCharSplit
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.FormsFiniteGL
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SSatIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdBasic
@@ -16,8 +15,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSpl
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.JacquetShalikaRigidity
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange.PSGalAdEx
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange.P_SSatEx
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExSummand
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.GalCentral
 import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfIff
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdUnique
 

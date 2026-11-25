@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicLeviEmbeddingHomomorphismProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.LinearAlgebra.Charpoly.Basic
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsNormalFormStabilizerMeasure
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Floor.Extended
@@ -56,7 +55,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsFundOne
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
-import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.UEmbMulPEl, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LebesgueCommonStabilizerEqRadicalLeviMap

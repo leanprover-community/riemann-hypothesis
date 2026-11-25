@@ -3,18 +3,11 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.NablaSpanC
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.DetSubmatrixFun
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.SatDefs
-public import Formalism.PeriodIntegrals.NablaSpans.MinorProdSpanHasCompl
 public import Formalism.GradedWeylDivisibility.StatementA
-public import Mathlib.Combinatorics.Young.YoungDiagram
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.GradedWeylDivisibility.FinalD
-public import Formalism.PeriodIntegrals.NablaSpans.ExpansionCoeffValuationGe
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 import Mathlib.Tactic.TypeStar
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.BideterminantMem
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 @[expose] public section
 

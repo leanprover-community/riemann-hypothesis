@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishC
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesCentralIdempotentLaws
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelMulOfConstituent
 public import Mathlib.Data.Matrix.PEquiv
-public import Mathlib.Basic.PEquiv
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelExistsUniqueGLn
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsCharLab

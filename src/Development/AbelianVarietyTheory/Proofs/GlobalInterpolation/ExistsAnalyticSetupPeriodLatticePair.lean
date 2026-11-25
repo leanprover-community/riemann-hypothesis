@@ -6,15 +6,12 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CmBase
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
-public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
 
 @[expose] public section
 

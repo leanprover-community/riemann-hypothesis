@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI

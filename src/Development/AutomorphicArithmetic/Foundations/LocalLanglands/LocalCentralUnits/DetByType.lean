@@ -10,8 +10,6 @@ public import Development.DiscreteGroups.GlobalIrreducibility.DzKSchur
 public import Development.DiscreteGroups.GlobalIrreducibility.DzLcFin
 public import Development.DiscreteGroups.GlobalIrreducibility.DzLcPerm
 public import Development.WeilBound.RepresentationTheoryGL.GaloisPermutationReps.SubquotientEquivalence.ConjTorusSubApply
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

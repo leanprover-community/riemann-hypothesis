@@ -5,9 +5,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquili
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.UniformSpace.Matrix
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeRulesA1
 

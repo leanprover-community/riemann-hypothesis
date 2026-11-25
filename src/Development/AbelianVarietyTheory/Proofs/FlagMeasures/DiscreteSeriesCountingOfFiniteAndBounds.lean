@@ -3,9 +3,6 @@ module
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.ConjTranspose
 public import Mathlib.LinearAlgebra.Matrix.DotProduct
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.DefiniteFiniteCount
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ConjPowOfMulEqOne
@@ -13,29 +10,20 @@ public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.Convo
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSeriesCoefficientIntegrableMajorant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalConvolutionOrthogonalProjectorProof
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrablePh
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsRadicalSpanPrimeOfNcardPrimesOverEqFinrank
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LogSingularValuesEuclidNormCartanProperties
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.NearNonzeroTerms
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.FarTermSum
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.CuspFrame
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.SameKindIsometric
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.RareFlags
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.DeepSetBound
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.LatticeCountingTheorem
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutomorphicKernelConvergenceProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CountHypPAtAddQAt
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowsAutIdemElementary
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Separation.CompletelyRegular
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeRightTranslateLowerBoun

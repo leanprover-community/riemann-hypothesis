@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisi
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ConstantCoeffQZeroEqP
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.IndepOfSpan
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ExistsInfFilVEqBot
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 

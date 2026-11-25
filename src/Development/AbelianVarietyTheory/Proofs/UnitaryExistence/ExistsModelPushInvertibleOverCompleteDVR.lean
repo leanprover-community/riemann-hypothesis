@@ -3,9 +3,6 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.FieldTheory.IntermediateField.Basic
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsValuationSubringComplexComapValEq
 import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 

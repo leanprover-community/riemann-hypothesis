@@ -4,9 +4,6 @@ public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
 public import ReciprocityTheory.L2DbarEstimates.Localization.ChartA
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.UniformSpace.Uniformizable
 

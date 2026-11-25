@@ -1,12 +1,9 @@
 module
 
 public import GroundTheory.AutomorphicForms.RealGroupsIwasawaHaar
-import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.CategoryTheory.Countable
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Algebra.Star.Unitary
 
 @[expose] public section
 

@@ -12,9 +12,7 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinate
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WittOrthonormalBasis
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

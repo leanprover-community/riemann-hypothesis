@@ -10,9 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsI
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TraceIntOfIsIntegral
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitTraceUnramifiedExtension
 public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.Etale.Weakly
-public import Mathlib.RingTheory.Flat.TorsionFree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyLeftMulBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeparableCharpolyInvAlgBaseChangeUnramified
 import Mathlib.Tactic.Linter.HaveILetI

@@ -4,7 +4,6 @@ public import Formalism.LocalRingCardinality.DataTheta
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EqOneOfSmulHaarEq
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Mathlib.Analysis.InnerProductSpace.Spectrum
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedAdjoint
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AnalyticOnNhdOrbitPol
@@ -16,11 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockHarmonic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomialsLocallyFiniteRationalWeights
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GlBlockFiniteDimModuleStructure
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerExpJointHarmPos
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AnalyticOnNhdOrbitOfDerivSeqNormEq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CasimirNumberIdentityDualPair
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesIntegrableCoefficientProjector
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoubleCoverUpqKsetGeneratedByExp
@@ -31,18 +25,15 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairKEqui
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockOperatorsLieRepresentationCommute
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
-import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.LogNormEstimates
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProjectorOfIntegrableDiscreteSeriesCoefficient
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoublingCoefficientsVanishOfOneVanishes, Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfPositiveCoeffOrthogonalEmbeddings, Development.AbelianVarietyTheory.Proofs.TwistedOperators.InnerCoeffEqOfIsometricAnalyticModules, Development.AbelianVarietyTheory.Proofs.TwistedOperators.InnerEqOfIrreducible, Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoublingIntegralJointHarmonicPos

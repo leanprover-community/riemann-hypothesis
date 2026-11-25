@@ -13,8 +13,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkPk
 public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsNsmulMem
-import Formalism.LocalRingCardinality.Lemmas
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SevenLogLeLOfPowerBound
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.WeightedSlopeExcessDecomposition
 import Mathlib.Algebra.Ring.IsFormallyReal
 

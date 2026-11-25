@@ -3,14 +3,12 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.GlobWIff
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.HANegRight
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.Development
-public import Formalism.PeriodIntegrals.ScRefExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.IdemLiftOfSteps
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.HenselRoot
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.PPAssemble
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.NatCastSmulMemL
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.ThetaA
-public import Mathlib.RingTheory.DedekindDomain.Factorization
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.StarMemAp

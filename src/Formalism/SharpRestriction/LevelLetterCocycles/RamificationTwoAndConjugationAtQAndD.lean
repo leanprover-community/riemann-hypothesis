@@ -3,15 +3,10 @@ module
 public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthEqKerAddRange
 public import Formalism.WachLatticeTwists.Statement
-public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 public import Formalism.WachLatticeTwists.TorsionLengthCounts.SubmoduleLengthBoundStatement
 public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoDuality
 public import Formalism.CharacterColumnKernels.StatementRho
 public import Formalism.WeaklyAdmissibleFiltrations.CrystallineStableLifts.Galois
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional

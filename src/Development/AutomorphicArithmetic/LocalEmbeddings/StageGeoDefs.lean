@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.LocalEmbeddings.FinMatchDefs
 public import Development.AutomorphicArithmetic.LocalEmbeddings.ComplEquivEvW
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.UnitCharTriangle
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem

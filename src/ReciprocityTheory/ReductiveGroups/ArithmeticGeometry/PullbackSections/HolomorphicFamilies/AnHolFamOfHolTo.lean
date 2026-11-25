@@ -3,13 +3,11 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetB
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.RingTheory.PiTensorProduct
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetD
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetE
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.TaylorComp
 
 @[expose] public section
 

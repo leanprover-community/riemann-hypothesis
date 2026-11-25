@@ -3,11 +3,8 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.AdmissibleOfSplitAndRoundTrips
 public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section

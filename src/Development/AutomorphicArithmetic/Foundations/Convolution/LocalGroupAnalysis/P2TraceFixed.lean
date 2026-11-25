@@ -1,24 +1,8 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.EllipticityFromProductFormula
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Algebra.BigOperators.Finsupp.Basic
-public import Mathlib.Algebra.Group.Pi.Units
-public import Mathlib.Algebra.MonoidAlgebra.Defs
-public import Mathlib.Algebra.MvPolynomial.Basic
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Data.Matrix.Basic
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.FieldTheory.Separable
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import GroundTheory.AutomorphicForms.StableConjCyclic
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalBase
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalField
 import Mathlib.Tactic.Linter.HaveILetI

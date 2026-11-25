@@ -7,7 +7,6 @@ public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Mathlib.RingTheory.PowerSeries.Trunc
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 
 @[expose] public section
 

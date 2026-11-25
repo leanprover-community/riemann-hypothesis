@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Tactic.Linter.Style
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator

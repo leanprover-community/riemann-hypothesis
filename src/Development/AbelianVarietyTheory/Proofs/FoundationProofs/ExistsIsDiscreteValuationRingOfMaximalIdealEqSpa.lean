@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.Unramified.Field
 public import Mathlib.RingTheory.Unramified.LocalRing
 
 @[expose] public section

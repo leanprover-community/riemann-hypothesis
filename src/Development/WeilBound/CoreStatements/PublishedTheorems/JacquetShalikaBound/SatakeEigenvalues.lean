@@ -6,7 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Symmetri
 import GroundTheory.AutomorphicForms.MacdonaldRecursion
 public import GroundTheory.IdeleRoots.TorusPowers.SatakeBoundAdic
 public import GroundTheory.IdeleRoots.TorusPowers.SatakeBoundReps
-public import GroundTheory.GlobalFields.LocalFieldAtPlace
 
 @[expose] public section
 

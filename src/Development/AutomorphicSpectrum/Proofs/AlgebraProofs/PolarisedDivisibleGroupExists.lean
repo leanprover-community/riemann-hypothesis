@@ -12,21 +12,16 @@ public import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPo
 public import Mathlib.LinearAlgebra.BilinearForm.TensorProduct
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import Mathlib.RingTheory.Henselian
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToSpanSingletonConstGenInjective
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DUnitMemRangeOfMemKerIdeal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DerivationDivisibleOfCocomm
 public import ReciprocityTheory.DualLattices.BlockOneMulMulBlockOne
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CompleteIntegersProperties
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsIntegralOfDivisibleCharacters
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSmulLeOneOfPrimitiveBoundedPowers
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

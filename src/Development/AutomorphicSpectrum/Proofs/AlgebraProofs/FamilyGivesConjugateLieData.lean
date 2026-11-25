@@ -7,15 +7,7 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinea
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultiplicationByPFactorsFrobenius
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOneSeriesPFormula
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowerSeriesPowPFrobenius
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.Data.Matrix.Basic
-public import Mathlib.Data.Matrix.Block
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaBetaIsomorphismTransport
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaEquivariantFrobenius
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BetaEquivariantFrobenius
@@ -24,7 +16,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalDataBas
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalGroupActionRingHom
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FrobeniusLatticeDegreeMulP
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalHermitianActionPairing
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalIsomorphismTransport

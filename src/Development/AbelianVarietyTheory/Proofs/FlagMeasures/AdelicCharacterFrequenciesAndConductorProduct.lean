@@ -11,14 +11,12 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumPlacesEqTr
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
 public import Mathlib.Analysis.Complex.CoveringMap
-import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Mathlib.Topology.Homotopy.Lifting
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GaugeUnfold
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 
 @[expose] public section
 

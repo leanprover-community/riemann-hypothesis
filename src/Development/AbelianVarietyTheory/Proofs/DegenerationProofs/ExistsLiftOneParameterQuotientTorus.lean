@@ -8,7 +8,6 @@ import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.CategoryTheory.Monoidal.Cartesian.GrpLimits
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TensorProduct.IncludeLeftSubRight
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar

@@ -7,8 +7,6 @@ public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Algebra.Module.PID
 public import Mathlib.Algebra.Polynomial.Module.FiniteDimensional
 public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-import Mathlib.LinearAlgebra.Matrix.BilinearForm
-public import Mathlib.LinearAlgebra.Charpoly.Basic
 
 @[expose] public section
 

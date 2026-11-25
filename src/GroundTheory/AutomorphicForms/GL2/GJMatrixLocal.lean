@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJMatrixCoord
 public import GroundTheory.LocalFields.LocalFourier
 public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
 import GroundTheory.AutomorphicForms.MeasuresModulus
-import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected

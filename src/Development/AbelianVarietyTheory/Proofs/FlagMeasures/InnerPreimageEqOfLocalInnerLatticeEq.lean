@@ -2,10 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeLocalGlobalPrinciple
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
-import Mathlib.Algebra.Module.Lattice.Full
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLattices
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

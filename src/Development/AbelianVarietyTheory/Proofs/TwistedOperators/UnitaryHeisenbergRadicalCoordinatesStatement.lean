@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeB
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

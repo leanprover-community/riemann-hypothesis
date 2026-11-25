@@ -2,8 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveDensityModerateGrowth
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 
 @[expose] public section
 

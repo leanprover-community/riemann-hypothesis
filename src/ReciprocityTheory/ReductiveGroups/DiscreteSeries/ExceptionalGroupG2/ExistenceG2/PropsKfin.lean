@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.StdGap
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOne
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsKfin
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.CasimirGapAtNoncompactWeight
 

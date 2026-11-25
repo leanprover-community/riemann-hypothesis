@@ -1,13 +1,9 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RemainingWeightVectorCount
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.SymbolRealisableBound
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.OrdMaxRest
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeAdaptedBasis
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LaTwTranspose
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RankMulConductorDivLeOne
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.BitVec
 

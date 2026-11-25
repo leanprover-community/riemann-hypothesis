@@ -13,7 +13,6 @@ public import Mathlib.Algebra.MvPolynomial.CommRing
 public import Mathlib.Algebra.Polynomial.Lifts
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
-import Mathlib.RingTheory.MvPolynomial.Localization
 
 @[expose] public section
 

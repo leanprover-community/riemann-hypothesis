@@ -27,7 +27,6 @@ import Mathlib.NumberTheory.LucasLehmer
 public import Mathlib.NumberTheory.RamificationInertia.Basic
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd

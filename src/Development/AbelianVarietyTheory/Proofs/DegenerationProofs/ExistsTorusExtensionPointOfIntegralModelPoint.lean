@@ -6,12 +6,8 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.TestFie
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompleteDvrFiniteSubalgebra
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUnitLevels
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsZeroGt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ToStkAInjective
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueIsPointOfDualNumber
 
 @[expose] public section

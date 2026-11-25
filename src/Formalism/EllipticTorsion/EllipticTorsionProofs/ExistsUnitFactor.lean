@@ -3,7 +3,6 @@ module
 public import Formalism.EllipticTorsion.WChordSeries
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.MvPowerSeries.NoZeroDivisors
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.RingTheory.MvPowerSeries.Inverse

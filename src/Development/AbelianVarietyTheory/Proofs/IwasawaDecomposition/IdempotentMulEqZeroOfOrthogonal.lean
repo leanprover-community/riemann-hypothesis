@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
-public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 public import Formalism.LocalToGlobal.Columns.RowForms
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddNsmulResidueAssoc
@@ -23,7 +22,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
@@ -50,7 +48,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 

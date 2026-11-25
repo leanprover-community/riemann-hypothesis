@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrameLats
-public import Mathlib.Data.Matrix.Diagonal
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FractionFieldToGenericStalkAlgebraMapEq
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MulVecMemLatMap
 public import Formalism.SharpRestriction.CuspSpanNormBounds.Point
@@ -9,7 +8,6 @@ public import Formalism.LocalRingCardinality.DataSpaces
 public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -7,8 +7,6 @@ public import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Mathlib.Analysis.Complex.Liouville
 
 @[expose] public section

@@ -1,9 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
-public import Formalism.LocalRingCardinality.DataLevel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSmulMemLatticeOfMemCompletion
-public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnitaryCompletionMapsDualLattices
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators

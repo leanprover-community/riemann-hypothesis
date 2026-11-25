@@ -16,7 +16,6 @@ import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.RealPlaceAnalysis.StatementA
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Mathlib.Analysis.Calculus.Deriv.Shift
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 public import Mathlib.Analysis.Calculus.MeanValue

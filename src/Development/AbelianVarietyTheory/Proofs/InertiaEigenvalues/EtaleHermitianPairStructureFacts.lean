@@ -64,9 +64,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.Normed
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.WittVector.IsPoly

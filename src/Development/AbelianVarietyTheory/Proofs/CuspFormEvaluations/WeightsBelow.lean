@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.AdmissibleModuleIffLatticeQuotients
 import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 @[expose] public section
 

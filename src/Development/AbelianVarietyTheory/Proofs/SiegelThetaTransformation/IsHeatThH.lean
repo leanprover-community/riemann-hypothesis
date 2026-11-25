@@ -4,13 +4,10 @@ public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHe
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaSummableAndDeterminesTestFn
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.LineDeriv.Basic
 public import Mathlib.Analysis.Normed.Affine.Convex
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustStatementPfA
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlobApprox
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
 import Mathlib.Algebra.Order.Star.Int

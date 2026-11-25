@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpBallUM
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOmegaDensity
 public import Mathlib.Analysis.Complex.Isometry
-public import Mathlib.Analysis.Complex.Circle
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBorelSectionUnitaryOrbitQuadric
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsTangentBorelSectionQuadric
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsUnitaryBlockEmbeddingOntoStabiliser
@@ -17,27 +16,21 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Invari
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MeasurePreservingGlue
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OrthogonalComplementUnitaryEmbeddingConjBlock
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PositiveDefiniteUnitSphereMassProof
-public import Mathlib.MeasureTheory.Measure.Prod
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TendstoSublevelDensityProdMeasure
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ActionCoordinates
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Matrix.Normed
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.UniformSpace.Matrix
 import Aesop.Main
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Separation.CompletelyRegular
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqIsMulRightInvariant
 import Mathlib.Analysis.Fourier.Inversion
 
 -- This file was produced by scripts/clump.py from the modules listed below.

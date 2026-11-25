@@ -14,8 +14,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.ComplexHessianIsHermitianOfContDiffAt
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.CovLog
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
-public import Mathlib.MeasureTheory.Function.Jacobian
 public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section

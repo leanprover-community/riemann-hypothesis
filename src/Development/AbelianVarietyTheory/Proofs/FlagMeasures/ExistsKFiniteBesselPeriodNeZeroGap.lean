@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UniqGapOfUniq
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.HaarEqSmul
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.SumNonneg
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselQuotientMassEqConstMulNormSqTranslates
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DiscreteSeriesBesselGap
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsKFinNeZeroOfCwCont
@@ -15,8 +14,6 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrechetContinuousCon
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GrowthUnitaryGroupRpowNegIntegrable
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ReproducingFormulaReduction
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 

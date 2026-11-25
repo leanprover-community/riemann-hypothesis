@@ -3,15 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimOfIsUnitDet
 public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Algebra.Group.Subgroup.Map
-public import Mathlib.Data.Set.Card
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Group.Subgroup.Ker
-public import Mathlib.GroupTheory.Index
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
-public import Mathlib.LinearAlgebra.Matrix.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardHermitianMatricesDvdSq
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 import Mathlib.Algebra.Order.Floor.Extended
@@ -56,7 +48,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

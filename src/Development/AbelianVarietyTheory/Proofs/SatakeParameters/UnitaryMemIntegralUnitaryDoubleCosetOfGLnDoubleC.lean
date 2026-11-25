@@ -2,9 +2,6 @@ module
 
 public import Formalism.SatakeDualWeyl.StatementE
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.RingTheory.Noetherian.Defs
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsNormEqXModMonicOfAdicCompleteInvolution
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 import Mathlib.NumberTheory.Height.NumberField

@@ -19,19 +19,13 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.E
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsMonHomFactorOfFlatSurjective
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsQuotientAbelianByFinitePoints
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SmoothOfRelativeDimensionDescendsEtaleCover
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Degenerations.OfDerivationFnOn
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
-import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 
 -- This file was produced by scripts/clump.py from the modules listed below.

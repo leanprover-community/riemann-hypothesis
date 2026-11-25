@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
-public import Formalism.LocalRingCardinality.DataSpaces
 public import Mathlib.RingTheory.Henselian
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield

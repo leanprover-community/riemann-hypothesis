@@ -5,16 +5,11 @@ public import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh
 public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmulMemLocPOfVal
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeylRowActionMemWeylLatticeSquare
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 import Formalism.LocalRingCardinality.Lemmas
 public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
 import Formalism.LocalToGlobal.Columns.CoefficientsModP
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section

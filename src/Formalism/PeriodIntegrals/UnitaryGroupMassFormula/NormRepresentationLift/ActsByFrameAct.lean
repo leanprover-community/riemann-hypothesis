@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataSpaces
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
-public import Mathlib.Data.Matrix.Mul
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

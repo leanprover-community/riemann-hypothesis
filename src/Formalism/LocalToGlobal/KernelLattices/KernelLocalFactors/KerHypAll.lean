@@ -5,11 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.XiEntryInvari
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.TopLawQ
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.LocalToGlobal.Columns.ChainInst
 import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivFr
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivConcrete, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerHypAll

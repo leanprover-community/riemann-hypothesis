@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.WavePacketL1L2
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Topology.Separation.CompletelyRegular
-public import Formalism.SharedLemmas.HpkSq
 
 @[expose] public section
 

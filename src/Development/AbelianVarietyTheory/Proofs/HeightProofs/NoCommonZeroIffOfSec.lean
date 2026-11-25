@@ -5,12 +5,9 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ChartCoverFOfSectionBaseChange
-public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 public import Formalism.LocalToGlobal.ProjectiveLattices.RegPFree
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
 

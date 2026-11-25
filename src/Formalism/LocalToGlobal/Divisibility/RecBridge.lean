@@ -2,26 +2,17 @@ module
 
 public import Formalism.LocalToGlobal.Divisibility.ConstantGeTwentyEight
 public import Formalism.LocalToGlobal.Columns.HeckeInert
-public import Formalism.LocalToGlobal.Divisibility.Inputs
 public import Formalism.LocalRingCardinality.DataDIVDefs
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsNsmulMem
-public import Formalism.HarderNarasimhan.Statement
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Rerealize
-public import Formalism.LocalRingCardinality.DataArith
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ExistsSmulMemOfFinrankEq
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
 public import Formalism.SharpRestriction.Divisibility.HookProducts.RBTieOp
 public import Formalism.SharpRestriction.Divisibility.HookProducts.RBTieFrame
 public import Formalism.LocalToGlobal.Divisibility.NumbersLink
 public import Formalism.SharpRestriction.GlobalTheoremInputs
 public import Formalism.LocalToGlobal.GroupLattices.ServJointF
-public import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
-public import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
 public import Formalism.SharpRestriction.AdmissibleParameterJoins
 public import Formalism.SharpRestriction.Divisibility.ClosedSizeLink.DivisionAdmissibleFamilyOfData
 public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
-import Formalism.LocalRingCardinality.DataAmbForm
-import Formalism.LocalToGlobal.Divisibility.ClassSum
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.LocalToGlobal.GroupLattices.JointServices.ValIntNonneg

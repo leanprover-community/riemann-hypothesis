@@ -4,28 +4,13 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHec
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransposeMulIncl
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.ContinuousLev
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.GoodSmul
-public import Formalism.RealPlaceAnalysis.StatementE
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousConjFin
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SiegelHeights.MultiCentre
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CapRDefs
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdeleModuleDetDiagUnitsPosIdele
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitCentreDerivativeLieAction
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.SliceShift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.RapidDecay
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.UmgOps
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import GroundTheory.AutomorphicForms.ReductionMahler
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.OneParam
-public import GroundTheory.AutomorphicForms.ReductionSplitting
-public import Mathlib.Analysis.Calculus.Deriv.Prod
-public import Mathlib.Analysis.Calculus.Deriv.Star
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RingEquivPlaceCorrespondencePlaceUnder
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.CuspUmg
 public import Development.AutomorphicArithmetic.WhittakerHecke.IntegrableTranslateMulConjAndInnerSelfNeZero
@@ -35,13 +20,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliL
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.DatBasics
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.SliceBound
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.SliceUmg
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
-import GroundTheory.GlobalFields.Adele.Topology
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
-import GroundTheory.AutomorphicForms.QuotientMeasure
-import GroundTheory.AutomorphicForms.ReductionBlock
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

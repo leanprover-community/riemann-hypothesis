@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.WdDefs
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EqOfPowEqOneOfNormSubLt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankDpstUnramifiedLeDimRepresentation
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KummerNotFrac
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.WeilDeligneDpstLeftExact

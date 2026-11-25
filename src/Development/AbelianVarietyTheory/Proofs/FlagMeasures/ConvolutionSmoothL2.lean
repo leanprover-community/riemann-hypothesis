@@ -2,7 +2,6 @@ module
 
 public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AestronglyMeasurableCompRep
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.ConvolutionSmoothL2
@@ -11,13 +10,10 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicU
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormPosOfIsUnit
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitaryPointsDiscreteFundamentalDomain
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightRegularRepUnitaryStronglyContinuous
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContDiffExtensionOfIsClosed
 public import Formalism.RealPlaceAnalysis.FinalF
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RightConvolutionOperatorAeEqIntegralAdelic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeLipschitzProperties
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main

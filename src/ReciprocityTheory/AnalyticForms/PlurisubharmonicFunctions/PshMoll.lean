@@ -7,8 +7,6 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollA
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollB
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

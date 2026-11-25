@@ -2,15 +2,11 @@ module
 
 public import Formalism.PeriodIntegrals.AdUnimod
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AdIndexEq
-public import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodInst
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.PeterssonNormOfUpLift
 public import Formalism.LocalToGlobal.IndefiniteReal.HaarTransfer.UnimodP
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.NumFieldHosCountable
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ConstructionA
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ConstructionB
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ConstructionD
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

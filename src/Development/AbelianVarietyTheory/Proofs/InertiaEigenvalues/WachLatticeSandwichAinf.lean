@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusIntegralityTensorAinfCoefficients
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 

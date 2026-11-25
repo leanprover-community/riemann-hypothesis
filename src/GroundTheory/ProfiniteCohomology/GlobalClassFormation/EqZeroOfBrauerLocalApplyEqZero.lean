@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalInvariants
 public import GroundTheory.GlobalFields.CyclotomicCharacters.Character
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassLimitDefs
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolPrime
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassLevels
 
 @[expose] public section

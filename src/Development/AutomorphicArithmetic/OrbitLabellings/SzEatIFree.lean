@@ -8,7 +8,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.B
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.SizeDel
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PrimeLogOverP
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.PrimeWeightedRemainderBound
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.OrbitLabellings.SumLogMulMaxZeroLeOfOddAddOrderOf, Development.AutomorphicArithmetic.OrbitLabellings.SzEatIFree

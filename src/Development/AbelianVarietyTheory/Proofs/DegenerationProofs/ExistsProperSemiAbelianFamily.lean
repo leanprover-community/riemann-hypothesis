@@ -7,9 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsFract
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsBigThetaSysWithAction
 public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.ImmersedBy
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ZarhinNormalProjectiveModelExistsProof
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 
 @[expose] public section
 

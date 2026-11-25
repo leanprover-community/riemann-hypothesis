@@ -23,17 +23,9 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjArch
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryAdelicIwasawaCompact
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitarySiegelDomainExists
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelOfCore
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsUniqueIsProdMeasureFinAway
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsQuotHeightMulExpInfLe
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 import Aesop.Frontend.Tactic
 import Aesop.Main
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusElt
-import Development.WeilBound.ThetaLifts.Reductions.SiegelAbs
-import Development.WeilBound.ThetaLifts.Reductions.SiegelGood
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalConstantTermSmall, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodFunctionLineDerivative, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeightBoundSiegelTorus, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspFormRapidDecay, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspFormSiegelBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SingleMulSingle, Development.AutomorphicSpectrum.Proofs.GlobalProofs.SiegelSetUnitary

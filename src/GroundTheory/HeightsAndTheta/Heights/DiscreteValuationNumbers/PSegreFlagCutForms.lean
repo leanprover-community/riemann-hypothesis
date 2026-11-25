@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Stat
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagBundleSectionFormsTools
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreFlagCutTools
-import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 import Mathlib.Tactic.TypeStar
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagBundleForms
 

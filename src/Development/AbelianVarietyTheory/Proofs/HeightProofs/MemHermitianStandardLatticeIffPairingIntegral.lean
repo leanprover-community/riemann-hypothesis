@@ -1,9 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.HeightDefect.ShiftMapsUpDown, Development.AbelianVarietyTheory.Proofs.HeightProofs.MemHermitianStandardLatticeIffPairingIntegral

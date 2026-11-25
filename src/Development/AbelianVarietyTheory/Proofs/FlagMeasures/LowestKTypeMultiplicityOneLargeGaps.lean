@@ -17,23 +17,12 @@ public import Formalism.RealPlaceAnalysis.StatementC
 public import Formalism.RealPlaceAnalysis.StatementKT
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HighestWeightDerivativeSumZero
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NormAdditiveCharacterTypePrimeEqOne
-import Mathlib.Algebra.Order.Star.Real
 import Formalism.RealPlaceAnalysis.QuotientSettingHolds
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.EigenfunctionFiniteCoefficients
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSmoothCompactSupportFixLowestKType
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FirstSlotSliceSlotMixedCasimirZero
-import Mathlib.Analysis.InnerProductSpace.Dual
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotCdomAdd
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ScalarOfMultOne
 

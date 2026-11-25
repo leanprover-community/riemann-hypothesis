@@ -7,18 +7,11 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHTFor
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenWeil
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import Mathlib.Tactic.ENatToNat
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsStalkFractionOfGeneric
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionEqZeroOfValues
-public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionExtendsFromStalkPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionLiftIsClosedImmersion
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusPointOverFractionField
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,31 +4,16 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.U
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.NCDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjHA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.ToMatrixLin
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.SemiAlg
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ModTop
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.NCIface
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
-public import Mathlib.Topology.Constructions
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.ConjDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.CjDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.OrthogonalInvarianceOfStableRankOne
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.FiniteAdelesSecondCountable
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ClosedStep
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.SemiTop
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.LeviInfUnipotentEqOne
 public import Formalism.PeriodIntegrals.LevelKSplit
 import Mathlib.Tactic.Linter.Style
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.UnitaryGroupSecondCountableT2
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TopoAF
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

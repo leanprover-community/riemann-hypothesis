@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsLinea
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsNeZeroNormSqLeMulCovolumeRpow
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Matrix.Order
 public import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
@@ -14,7 +13,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsLinearIndependentNormLeSuccMin
 
 @[expose] public section
 

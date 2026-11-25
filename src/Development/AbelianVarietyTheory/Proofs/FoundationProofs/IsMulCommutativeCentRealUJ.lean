@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAux
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftMulMatrixTransfer
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 public import Mathlib.Topology.Algebra.MvPolynomial
 import Mathlib.RingTheory.PicardGroup

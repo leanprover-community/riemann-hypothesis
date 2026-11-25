@@ -15,7 +15,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTo
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoAF
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoMeas
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoNuFin
-import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section

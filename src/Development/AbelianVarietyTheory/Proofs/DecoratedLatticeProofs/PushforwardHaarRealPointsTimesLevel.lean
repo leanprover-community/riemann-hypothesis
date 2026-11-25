@@ -1,10 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
-public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
-public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsCompactFiniteAdelicSubgroupIntegralOpen
-public import Mathlib.MeasureTheory.Group.Measure
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MapRestrictIsHaarOfOpenProductCompact
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Mathlib.Tactic.Linter.HaveILetI

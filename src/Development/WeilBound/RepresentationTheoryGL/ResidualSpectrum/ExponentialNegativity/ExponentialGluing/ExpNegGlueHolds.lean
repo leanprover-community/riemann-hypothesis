@@ -4,7 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Expo
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableOnFundamentalDomain
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLeftInvariantOfIsAutForm
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ExponentialGluing.DecTranslate
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.Linter.Style
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
 

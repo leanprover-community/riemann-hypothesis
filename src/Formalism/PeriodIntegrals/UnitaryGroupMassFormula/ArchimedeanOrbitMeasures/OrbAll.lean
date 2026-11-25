@@ -10,7 +10,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbit
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.HaarUniqInfHolds
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.StrongApproxN
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.WittInfHolds
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
 import Mathlib.Topology.Algebra.ProperAction.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

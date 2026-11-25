@@ -5,13 +5,6 @@ public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-public import Mathlib.LinearAlgebra.Matrix.ToLin
-public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EqZeroOfNotPrimary
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExtAlgebraMap

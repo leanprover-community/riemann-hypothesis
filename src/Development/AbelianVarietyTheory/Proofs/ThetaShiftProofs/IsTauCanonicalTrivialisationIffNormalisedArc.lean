@@ -3,9 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.PrimAn
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.NonemptyGtAnOfToric
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section

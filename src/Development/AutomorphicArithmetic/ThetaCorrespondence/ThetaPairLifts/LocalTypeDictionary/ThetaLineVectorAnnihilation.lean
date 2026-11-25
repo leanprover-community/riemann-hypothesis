@@ -2,10 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjUInvMemGfC
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjugateUnitaryAdelicIsoMapHaarAndFundamentalDo
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousMatrixOneParameterGroupEqExp
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOneParamSubgroupTransposeGramLieAt
@@ -17,7 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqOfTensE
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilActionUnitaryCompact
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLineGoodModelAction
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TendstoSlopeOfArchimedeanPairing
-public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsCompactIsOpenUnitsAt
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.HasDerivAtThetaSumAlongLine
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.MemPolarizationStabilizerOfDualPair
@@ -26,7 +23,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSu
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -54,29 +50,12 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Mathlib.RingTheory.PiTensorProduct
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SeesawUnfoldingSwap, Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryArchimedeanOneParamEqProdCmTypeLines, Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatchedPairThetaVanishing, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaPairListProduct, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaPairListAction, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.JointlyContinuousArchimedeanWeilAction, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.LineDerivativeAdditiveInLines, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.LineDerivativeSplitEqSum, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ThetaLineVectorAnnihilation

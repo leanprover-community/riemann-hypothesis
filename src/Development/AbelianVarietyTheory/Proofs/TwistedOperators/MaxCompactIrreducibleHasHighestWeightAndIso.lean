@@ -49,7 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsStandardIndModule
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsAdmissibleSubOfFiniteDimensional
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -58,7 +57,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Polynomial.Basic
 import Formalism.RealPlaceAnalysis.FinalF
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 

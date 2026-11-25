@@ -7,10 +7,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliL
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliOperatorsCommute
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliPolynomialCoefficientsIdeal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuantumDeterminantPolynomialCoefficients
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousConjFin
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonicFactorCoefficientsIntegral
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

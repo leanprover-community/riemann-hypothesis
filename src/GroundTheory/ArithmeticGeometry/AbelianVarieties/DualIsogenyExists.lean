@@ -4,10 +4,8 @@ public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
 public import Mathlib.Analysis.Normed.Ring.Lemmas
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobeniusSep
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenySeparable
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyFrobenius
 
 @[expose] public section
 

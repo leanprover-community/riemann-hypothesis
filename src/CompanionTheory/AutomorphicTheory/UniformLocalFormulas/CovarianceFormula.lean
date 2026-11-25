@@ -22,7 +22,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealXCR
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.CategoryTheory.Countable
-import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Separation.CompletelyRegular
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ProductExactness

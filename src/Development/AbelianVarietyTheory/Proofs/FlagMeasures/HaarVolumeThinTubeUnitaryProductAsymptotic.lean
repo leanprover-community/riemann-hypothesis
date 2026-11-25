@@ -3,37 +3,22 @@ module
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlkExt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDensityAtIdentityLieAlgebraOfOmegaDensity
 public import Mathlib.Topology.Separation.CompletelyRegular
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemLieEUnitaryGroupIffOfInvolutive
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MatGroupHaarUniqueFiniteCompactOpenPos
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 public import Mathlib.MeasureTheory.Group.AddCircle
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Star
-public import Mathlib.Analysis.SpecialFunctions.Sqrt
-public import Formalism.PeriodIntegrals.QuotInv
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DensityInChart
 public import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableSetImageBall
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.SimpleRing.Principal
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Mathlib.Topology.UniformSpace.Matrix
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsProductChartTangentEquivBallVolume, Development.AbelianVarietyTheory.Proofs.FlagMeasures.KapMulLast, Development.AbelianVarietyTheory.Proofs.FlagMeasures.RotationInvariantMeasureUnitCircleArc, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ThinUnitaryTubeVolumeLimitArith, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryTubeProductChartHasStrictFDerivAtEntry, Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarVolumeThinTubeUnitaryProductAsymptotic

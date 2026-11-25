@@ -3,23 +3,16 @@ module
 public import Formalism.HermitianCurvature.StatementKB
 public import Mathlib.Topology.Separation.CompletelyRegular
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleWordMemBoundedLetterLists
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GramLocTendsto
 public import Mathlib.Topology.MetricSpace.Sequences
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleOfPlaces
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfCauchySchwarz
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtNonneg
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockEstimatesSumForm
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JointInstanceTheoremA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCLoc
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBBLiftV
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCBlk
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCKer
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCLat
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCStep
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCGlob
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCHerg
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCSplit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableInvCube
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OutsideSystemsBound
 public import Formalism.HermitianCurvature.ArchimedeanUniformConstantsCompactSupport
@@ -28,11 +21,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFam
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LimitOfModuleForms
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCutInside
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBJoint
-import Mathlib.MeasureTheory.Integral.Pi
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Tactic.Lemma
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCChain
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf
 

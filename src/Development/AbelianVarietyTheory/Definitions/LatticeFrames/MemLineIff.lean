@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Smu
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CxTiesOf
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiStarOfMid
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.NotBadPrimeBase
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
-import Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF
 
 @[expose] public section
 

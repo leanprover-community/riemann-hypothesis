@@ -3,13 +3,6 @@ module
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsPiola
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsCalc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsIbp, ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HessCRestrictThm

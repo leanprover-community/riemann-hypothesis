@@ -6,19 +6,10 @@ public import Mathlib.MeasureTheory.Group.Integral
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualIffLatticeVolumeAndPlancherel
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedStandardAddCharConductorProperties
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.RingTheory.TensorProduct.IsBaseChangePi
-public import Mathlib.FieldTheory.Fixed
-public import Mathlib.FieldTheory.Galois.Basic
 public import Mathlib.RingTheory.Norm.Transitivity
-public import Mathlib.RingTheory.Trace.Defs
-public import Mathlib.RingTheory.Trace.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TransportSelfDualHaarMeasureKernelAddEquiv
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisBorderedMatrixNormalFormInvariants
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisOrbitalIntegrandIsLocallyConstantCo
-public import Mathlib.FieldTheory.Separable
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisMatchOfDenseSeparable
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisUnitMatchStepOfOneLeNorm
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PartialFourierPreservesTestFixesUnit
@@ -77,8 +68,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedQuadraticIntegralTraceFormPerfect
-import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Real
 

@@ -3,9 +3,6 @@ module
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

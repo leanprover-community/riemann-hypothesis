@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DetC
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemChainVecsDet
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LabelEqOfSuppAdds
 public import Mathlib.NumberTheory.Padics.LocalField
-public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

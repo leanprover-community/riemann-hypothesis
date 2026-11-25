@@ -1,8 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Defs
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HilbertSchurUnitaryIrreducibleScalar
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 public import Mathlib.MeasureTheory.Function.L2Space

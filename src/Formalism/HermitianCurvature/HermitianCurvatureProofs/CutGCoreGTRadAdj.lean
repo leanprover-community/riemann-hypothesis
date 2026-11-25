@@ -11,7 +11,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.RankOneEmbeddings
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

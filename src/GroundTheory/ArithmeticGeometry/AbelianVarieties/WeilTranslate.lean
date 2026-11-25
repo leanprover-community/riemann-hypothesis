@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
 import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
-import Mathlib.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Degree
 
 @[expose] public section
 

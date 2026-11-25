@@ -3,13 +3,7 @@ module
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Basic.Finite.Defs
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.Algebra.CharP.Basic
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Degree.SmallDegree
-public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsUnitFormSelfOfNotMem
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

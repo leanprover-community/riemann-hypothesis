@@ -6,7 +6,6 @@ public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConjugateTransposeLeibniz.ExpMulVecFix
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma

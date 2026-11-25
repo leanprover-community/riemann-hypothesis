@@ -7,12 +7,6 @@ import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
 @[expose] public section
 

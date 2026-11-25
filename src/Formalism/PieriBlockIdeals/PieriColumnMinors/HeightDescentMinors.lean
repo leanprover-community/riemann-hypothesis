@@ -14,10 +14,7 @@ public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 public import Mathlib.RingTheory.RootsOfUnity.Lemmas
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.RingTheory.MvPowerSeries.Expand
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
-public import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 

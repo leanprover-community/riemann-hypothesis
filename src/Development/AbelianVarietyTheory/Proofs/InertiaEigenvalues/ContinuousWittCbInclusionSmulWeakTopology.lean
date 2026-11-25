@@ -3,18 +3,10 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlTowerGen
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWeakTopologyWittTiltTensor
-public import Mathlib.RingTheory.WittVector.Defs
-public import Mathlib.RingTheory.WittVector.Domain
-public import Mathlib.RingTheory.WittVector.Teichmuller
-public import Mathlib.RingTheory.WittVector.Truncated
-public import Mathlib.RingTheory.WittVector.Basic
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NotFullBot
 import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.WeaklyAdmissibleFiltrations.Statement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegersCompleteDVR
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

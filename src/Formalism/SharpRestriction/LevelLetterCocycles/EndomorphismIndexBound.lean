@@ -7,7 +7,6 @@ public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthQuotS
 public import Formalism.SharpRestriction.LevelLetterCocycles.DecompositionData
 public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 import Mathlib.Tactic.Lemma
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
 

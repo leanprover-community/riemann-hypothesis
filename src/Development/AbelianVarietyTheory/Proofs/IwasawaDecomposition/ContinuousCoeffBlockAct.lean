@@ -11,9 +11,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqBot
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsInfFamFamily
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanMapNabKDelK
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryExistsWithPrescribedParts
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairingNondegenerateHolds
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -9,12 +9,10 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cart
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairCocycle
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumSectionCut
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionKoszul
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreClosureNumber
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreFlagCutTools
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
 
 @[expose] public section
 
