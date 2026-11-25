@@ -61,8 +61,9 @@ The description of a batch assembled by hand lists pull requests under headings 
 colon. Those listed under a heading that says "left out" or "not included" are told so in a
 comment quoting the heading and their entry, and are labelled `awaiting-author`. `batch queue`
 stays on them. The quote puts the pull requests it names in code spans, so that it does not
-mention each of them. A pull request told before, by any batch, that it is left out under the same
-heading is not told again: that comment is brought up to date instead, which notifies nobody.
+mention each of them. A pull request this batch told before, whatever its entry and heading say
+now, or another batch told it is left out under the same heading, is not told again: that comment
+is brought up to date instead, which notifies nobody.
 One whose entry is removed from the description is told that too. A batch whose record is older
 than these notices tells nobody what its description leaves out when this script first reads it,
 only what is added or changed after that. After every run, `frozen` is
@@ -1002,11 +1003,12 @@ def tell_left_out(gh, batch, pulls, log):
     """Tell each open pull request a batch's description lists as left out what it says.
 
     The comment quotes the heading and the pull request's entry, and the pull request is
-    labelled `awaiting-author`. One whose latest such comment, from this batch or another, was
-    for the same kind of reason (the same heading, see `left_out_digest`) is not told again:
-    that comment is brought up to date with what the description says now, which notifies
-    nobody, so a pull request left out of batch after batch hears it once and still finds the
-    latest reason there. The quote names pull requests and issues of this repository in code
+    labelled `awaiting-author`. One that this batch told before is not told again, whatever its
+    entry or its heading now says, and neither is one whose latest such comment, from another
+    batch, was for the same kind of reason (the same heading, see `left_out_digest`): that
+    comment is brought up to date with what the description says now, which notifies nobody, so
+    a pull request left out of batch after batch hears it once and still finds the latest reason
+    there. Only a different batch leaving it out for a different kind of reason tells it again. The quote names pull requests and issues of this repository in code
     spans (see `unlinked`). One whose entry has gone from the description since it was told is
     told that, if this batch's comment told it. What the batch contains is never told it is left
     out. The note's `left` remembers, for each pull request, a digest of the entry it was last
@@ -1032,19 +1034,23 @@ def tell_left_out(gh, batch, pulls, log):
                        "out, and the next run carries on")
             return False
         comments = gh.pages(f"issues/{key}/comments")
-        latest, previous = None, None
+        # The latest comment about being left out, the kind of reason it gave, and the latest one
+        # from this batch.
+        latest, previous, ours = None, None, None
         for comment in comments:
             match = LEFT_OUT.match(comment.get("body") or "") if by_workflow(comment) else None
             if match:
-                latest = comment
                 try:
-                    previous = json.loads(match.group(1)).get("digest")
+                    said = json.loads(match.group(1))
                 except ValueError:
-                    previous = None
+                    said = {}
+                latest, previous = comment, said.get("digest") if isinstance(said, dict) else None
+                if isinstance(said, dict) and said.get("batch") == number:
+                    ours = comment
         if entry is None:
             # One that was never told it is left out, as when the note was filled in from an older
             # record, is not told that it no longer is either.
-            if told_left_out(latest, number) and tell(
+            if ours is not None and tell(
                     gh, pr["number"], comments, NO_LONGER_LEFT_OUT.format(number=number),
                     f"The description of batch #{number} no longer lists this pull request as left out. If you were "
                     "waiting on that, comment `ready`."):
@@ -1056,9 +1062,12 @@ def tell_left_out(gh, batch, pulls, log):
         body = (f"{marker}\nBatch #{number} leaves this pull request out. Its description says:\n\n> {heading}\n>\n"
                 f"> {text}\n\nOnce you have dealt with that, comment `ready` to hand this pull request back to the "
                 "maintainers.\n")
-        if latest is not None and previous == digest:
-            if latest.get("body") == body or gh.write(
-                    "PATCH", f"issues/comments/{latest['id']}", {"body": body})[0] in (0, 200):
+        # This batch's own comment is brought up to date whatever its entry now says, its heading
+        # too. So is another batch's for the same kind of reason.
+        earlier = ours if ours is not None else latest if previous == digest else None
+        if earlier is not None:
+            if earlier.get("body") == body or gh.write(
+                    "PATCH", f"issues/comments/{earlier['id']}", {"body": body})[0] in (0, 200):
                 left[key] = seen
                 log.append(f"brought up to date what #{key} was told about being left out, for the batch #{number}")
         elif announce(gh, batch, pr["number"], marker, body[len(marker) + 1:].rstrip("\n")):
@@ -1069,15 +1078,6 @@ def tell_left_out(gh, batch, pulls, log):
             save(gh, batch)
             since = 0
     return True
-
-
-def told_left_out(comment, number):
-    """Whether a pull request's latest comment about being left out, or None, is from batch `number`."""
-    match = LEFT_OUT.match((comment or {}).get("body") or "")
-    try:
-        return bool(match) and json.loads(match.group(1)).get("batch") == number
-    except ValueError:
-        return False
 
 
 def describe_by_hand(note):

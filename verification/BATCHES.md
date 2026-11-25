@@ -84,9 +84,11 @@ description doesn't mention, and pull requests reverted in the branch.
    names. A batch that was being built before the workflow read descriptions tells nobody what
    its description leaves out at that point: only entries added or changed afterwards are told.
 8. **Edit the description whenever the batch changes.** The workflow reads it again on every
-   edit. A pull request listed under a new heading is sent a comment as above, one whose entry
-   changed under the same heading has its comment brought up to date, and one whose entry is
-   removed is told so.
+   edit. A pull request newly listed as left out is sent a comment as above. One whose entry
+   changed, under the same heading or another, has this batch's comment brought up to date,
+   which notifies nobody, so fixing a typo in a heading tells no one again. One whose entry is
+   removed is told so. A new comment, and `awaiting-author` again, comes only when another batch
+   leaves a pull request out under a different kind of heading.
 
 ## What the workflow does
 

@@ -1211,19 +1211,53 @@ class Members(unittest.TestCase):
         self.assertNotIn(WAITING, gh.pulls[23]["labels"])
         self.assertNotIn("told #23 that the batch #1100 leaves it out: now `awaiting-author`", log)
 
-    def test_a_new_kind_of_reason_is_told_and_hands_it_back_again(self):
+    def moved(self):
+        """The description, with #23 moved under another heading."""
+        moved = DESCRIPTION.replace(f"- {URL}23 Drop imports from the root theorems (@frank): it changes `src/Main.lean`.\n", "")
+        return moved.replace("Left out because they conflict with a PR earlier in the batch:\n\n",
+                             f"Left out because they conflict with a PR earlier in the batch:\n\n- {URL}23 Drop (@frank): conflicts with #11.\n")
+
+    def test_a_new_heading_in_the_same_batch_edits_its_comment_in_place(self):
+        gh = self.built()
+        sync(gh)
+        gh.label(23, remove=WAITING)  # the author commented `ready`
+        gh.pulls[1018]["body"] = self.moved()
+        gh.touch(1018)
+        log = sync(gh)
+        [note] = self.left(gh, 23)
+        self.assertIn("conflicts with `#11`", note)
+        self.assertIn("> Left out because they conflict with a PR earlier in the batch:", note)
+        self.assertNotIn(WAITING, gh.pulls[23]["labels"])
+        self.assertIn("brought up to date what #23 was told about being left out, for the batch #1018", log)
+
+    def test_a_heading_corrected_in_the_same_batch_tells_no_one_again(self):
         gh = self.built()
         sync(gh)
         gh.label(23, remove=WAITING)
-        moved = DESCRIPTION.replace(f"- {URL}23 Drop imports from the root theorems (@frank): it changes `src/Main.lean`.\n", "")
-        moved = moved.replace("Left out because they conflict with a PR earlier in the batch:\n\n",
-                              f"Left out because they conflict with a PR earlier in the batch:\n\n- {URL}23 Drop (@frank): conflicts with #11.\n")
-        gh.pulls[1018]["body"] = moved
+        gh.pulls[1018]["body"] = DESCRIPTION.replace("Left out for other reasons:", "Left out, for other reasons:")
         gh.touch(1018)
+        gh.writes = []
         sync(gh)
+        [note] = self.left(gh, 23)
+        self.assertIn("> Left out, for other reasons:", note)
+        self.assertNotIn(WAITING, gh.pulls[23]["labels"])
+        self.assertEqual([method for method, path, _ in gh.writes if path.startswith("issues/23/")], [])
+
+    def test_a_new_kind_of_reason_from_another_batch_is_told_and_hands_it_back_again(self):
+        gh = self.built()
+        sync(gh)
+        gh.label(23, remove=WAITING)
+        gh.close(1018)
+        sync(gh)
+        by_hand(gh, 11, 12, 14, number=1100, ref="batch/b5-on-1018", name="kim-b5")
+        gh.pulls[1100]["body"] = self.moved()
+        log = sync(gh)
         first, second = self.left(gh, 23)
+        self.assertIn("Batch #1018 leaves this pull request out", first)
+        self.assertIn("Batch #1100 leaves this pull request out", second)
         self.assertIn("conflicts with `#11`", second)
         self.assertIn(WAITING, gh.pulls[23]["labels"])
+        self.assertIn("told #23 that the batch #1100 leaves it out: now `awaiting-author`", log)
 
     def test_an_entry_reworded_in_the_description_is_brought_up_to_date(self):
         gh = self.built()
