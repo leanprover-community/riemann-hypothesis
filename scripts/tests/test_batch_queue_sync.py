@@ -1773,12 +1773,12 @@ class StackedOnABatchByHand(WithAssembly):
         gh.allow_pulls = False  # so it has no note in a pull request's text
         queue(gh, 11, 12, 13)
         by_hand(gh, 11, 12)
-        with self.assertRaises(batch.Refused):
-            sync(gh)
+        sync(gh)
+        self.assertTrue(gh.failed)
         for hours in (1, 2):
-            gh.reads, gh.writes = [], []
-            with self.assertRaises(batch.Refused):
-                sync(gh, hours=hours)
+            gh.reads, gh.writes, gh.failed = [], [], False
+            sync(gh, hours=hours)
+            self.assertTrue(gh.failed)
             self.assertEqual((resets(gh), merges(gh)), ([], []))
             self.assertNotIn(f"git/commits/{sha('kim')}", gh.reads)
         self.assertIn(sha("head13"), gh.inside[gh.refs[FIRST]])
@@ -2011,10 +2011,11 @@ class OpeningThePullRequest(WithAssembly):
         gh = Fake()
         gh.allow_pulls = False
         queue(gh, 11)
-        with self.assertRaises(batch.Refused) as caught:
-            sync(gh)
-        self.assertIn(f"https://github.com/o/r/compare/main...{FIRST}?expand=1", str(caught.exception))
-        self.assertIn("not permitted to create", str(caught.exception))
+        log = sync(gh)
+        [refusal] = [line for line in log if line.startswith("GitHub would not let this workflow open")]
+        self.assertIn(f"https://github.com/o/r/compare/main...{FIRST}?expand=1", refusal)
+        self.assertIn("not permitted to create", refusal)
+        self.assertTrue(gh.failed)
         self.assertIn(sha("head11"), gh.inside[gh.refs[FIRST]])
         # A maintainer opens it by hand; the next run adopts it instead of starting another branch.
         gh.pulls[50] = {"number": 50, "state": "open", "merged_at": None, "labels": set(), "sha": gh.refs[FIRST],
@@ -2023,6 +2024,37 @@ class OpeningThePullRequest(WithAssembly):
         sync(gh, hours=1)
         self.assertEqual(list(gh.refs), [FIRST])
         self.assertIn(f"- #11 at `{short('head11')}`\n- #12 at `{short('head12')}`", gh.pulls[50]["body"])
+
+
+class RefusedPullRequest(WithAssembly):
+    """A refusal to open the batch's pull request does not stop the rest of the run."""
+
+    def test_the_labels_are_still_reconciled_and_the_run_fails(self):
+        gh = Fake()
+        gh.allow_pulls = False
+        queue(gh, 11)
+        gh.label(11, remove=FROZEN)  # queued before `frozen` existed
+        gh.add_pull(32, "head32", labels=[MEMBER, FROZEN])  # nothing holds it
+        log = sync(gh)
+        self.assertTrue(gh.failed)
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[32]["labels"]), (QF, set()))
+        self.assertIn("#11 is queued: now `frozen`", log)
+        self.assertIn("#32 is neither queued nor in a batch being built: `batch-building` and `frozen` removed", log)
+        refusal = next(index for index, line in enumerate(log) if line.startswith("GitHub would not let"))
+        self.assertLess(refusal, log.index("#11 is queued: now `frozen`"))
+
+    def test_main_exits_non_zero(self):
+        gh = Fake()
+        gh.allow_pulls = False
+        queue(gh, 11)
+        printed, run = io.StringIO(), batch.sync
+        with mock.patch.object(batch, "GitHub", lambda repo, dry_run: gh), \
+                mock.patch("sys.argv", ["batch-queue-sync.py", "--repo", REPO]), \
+                mock.patch.object(batch, "sync", lambda gh: run(gh, NOW)), \
+                contextlib.redirect_stdout(printed), self.assertRaises(SystemExit) as caught:
+            batch.main()
+        self.assertEqual(caught.exception.code, 1)
+        self.assertIn("- GitHub would not let this workflow open a pull request", printed.getvalue())
 
 
 class DryRun(WithAssembly):
@@ -2121,8 +2153,8 @@ class ApprovalList(unittest.TestCase):
         queue(gh, 11, 12)
         with assembling():
             gh.allow_pulls = False
-            with self.assertRaises(batch.Refused):
-                sync(gh)
+            sync(gh)
+        self.assertTrue(gh.failed)
         left = dict(gh.refs)
         self.assertEqual(list(left), [FIRST])
         queue(gh, 13)

@@ -141,7 +141,8 @@ SETTLE = datetime.timedelta(seconds=120)
 #   Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests". So
 #   the queue's branch `batch/2026-11-24-142233` never got a pull request, and every sync run
 #   ended in `Refused` at `publish`: the job failed, its summary showed only the refusal, and
-#   anything that runs after `publish` would not run. Run 45503694341 shows it.
+#   anything that runs after `publish` would not run. Run 45503694341 shows it. `assemble` now
+#   logs that refusal and goes on, and the run still fails.
 # - The batches maintainers assemble by hand already take every open pull request that is not a
 #   draft, touches `src/` and merges cleanly, queued or not, so a second batch assembled from the
 #   queue largely builds them again.
@@ -489,7 +490,8 @@ def describe(batch, state, members, also=(), refused=(), unapproved=(), stack=()
 
 
 def publish(gh, batch, main, text):
-    """Open the batch's pull request if it has none, and bring its text up to date."""
+    """Open the batch's pull request if it has none, and bring its text up to date. A refusal to
+    open it raises `Refused`, which `assemble` logs and goes on from."""
     if batch["number"]:
         if text != batch["body"]:
             gh.write("PATCH", f"pulls/{batch['number']}", {"body": text})
@@ -1498,11 +1500,19 @@ def assemble(gh, now):
                     "new batch from what is still queued."):
                 log.append(f"told #{number} that its commits stay in batch #{batch['number']}")
     if members or batch["number"]:
-        publish(gh, batch, main, describe(batch, state, members, also, refused, unapproved,
-                                          on_top(state, crowded)))
-        if len(log) > before:
-            log.append(f"batch pull request #{batch['number']} lists {len(members)} pull request(s)"
-                       if batch["number"] else f"`{batch['ref']}` has no pull request yet")
+        try:
+            publish(gh, batch, main, describe(batch, state, members, also, refused, unapproved,
+                                              on_top(state, crowded)))
+        except Refused as error:
+            # Such as when GitHub Actions may not open pull requests here. What was merged is in
+            # the branch, so the next run picks it up, and `reconcile` still runs after this. The
+            # run fails all the same, so that the refusal is seen.
+            gh.failed = True
+            log.append(str(error))
+        else:
+            if len(log) > before:
+                log.append(f"batch pull request #{batch['number']} lists {len(members)} pull request(s)"
+                           if batch["number"] else f"`{batch['ref']}` has no pull request yet")
     return log or ["nothing to do"], approved, pulls, held
 
 
@@ -1528,7 +1538,8 @@ def main():
     if args.summary:
         with args.summary.open("a") as handle:
             handle.write(text)
-    sys.exit(failure)
+    # A refusal that did not stop the run (see `assemble`) fails it too.
+    sys.exit(failure or (1 if gh.failed else None))
 
 
 if __name__ == "__main__":
