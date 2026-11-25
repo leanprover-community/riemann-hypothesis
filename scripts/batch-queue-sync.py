@@ -267,9 +267,9 @@ LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
 # conflicts with main, such as "Left out because they conflict with main in a way that is not
 # mechanical:", is not one: `main-conflict` says nothing, so those are told from the description.
 CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\s+(?!main\b)[^:]*\bbatch\b", re.IGNORECASE)
-# The workflow that labels conflicts, started when a batch is first labelled `building` or
-# `latest batch`: those labels are put on with the workflow's token, which starts no run of it by
-# itself.
+# The workflow that labels conflicts, started once at the end of a run in which a batch is first
+# labelled `building` or `latest batch`: those labels are put on with the workflow's token, which
+# starts no run of it by itself.
 CONFLICT_WORKFLOW = "conflict-labels.yml"
 # When this many pull requests leave the left-out lists of a batch's description at once and the
 # description still lists them, a heading was most likely reworded: they are not told that they
