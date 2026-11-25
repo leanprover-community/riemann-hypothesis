@@ -90,8 +90,6 @@ def shL (G : HTGroup p) : G.C →ₗ[ℚ] G.C where
     show (G.star (q • x)).unop = q • (G.star x).unop
     rw [map_rat_smul]; rfl
 
-theorem shL_apply (G : HTGroup p) (c : G.C) : shL G c = sh G c := rfl
-
 def phi (G : HTGroup p) (β Y : G.C) (β' : G.C) : G.C →ₗ[ℚ] G.C × G.C :=
   (LinearMap.mulRight ℚ Y - LinearMap.mulLeft ℚ Y).prod
     (LinearMap.mulLeft ℚ β ∘ₗ LinearMap.mulRight ℚ β' ∘ₗ shL G - LinearMap.id)
@@ -128,7 +126,6 @@ section -- clump:auto
 
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount GlobalTheory.LKCx GlobalTheory.AwayOrb GlobalTheory.FinClsLoc
 open scoped TensorProduct Classical
-
 
 open GlobalTheory.FinClsLoc.BaseChangeCent in
 theorem GlobalTheory.FinClsLoc.baseChange_fixedCentraliser_alg :
@@ -595,7 +592,6 @@ section -- clump:auto
 
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount GlobalTheory.LKCx GlobalTheory.AwayOrb GlobalTheory.FinClsLoc
 open scoped TensorProduct Classical
-
 
 open GlobalTheory.LocNormTau in
 theorem GlobalTheory.LocNormTau.exists_norm_of_tau_fixed_sep : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (β : G.Cˣ), sh G (β : G.C) = β →

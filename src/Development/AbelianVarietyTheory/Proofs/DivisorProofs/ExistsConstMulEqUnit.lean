@@ -72,10 +72,6 @@ theorem UnitAt.inv {x : X} {s : X.functionField} (hs : UnitAt x s) : UnitAt x s�
   obtain ⟨u, rfl⟩ := hs
   exact ⟨u⁻¹, by rw [map_units_inv]⟩
 
-theorem UnitAt.ne_zero {x : X} {s : X.functionField} (hs : UnitAt x s) : s ≠ 0 := by
-  obtain ⟨u, rfl⟩ := hs
-  exact (u.isUnit.map _).ne_zero
-
 theorem isOpen_unitAt (t : X.functionField) : IsOpen {x : X | UnitAt x t} := by
   refine isOpen_iff_forall_mem_open.2 ?_
   rintro x ⟨u, hu⟩

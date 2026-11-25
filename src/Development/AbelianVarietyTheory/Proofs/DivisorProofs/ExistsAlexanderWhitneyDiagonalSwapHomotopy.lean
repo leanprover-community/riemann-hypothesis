@@ -300,14 +300,11 @@ theorem d₂_zero {p : ℕ} (a : SimplexCategory.mk p ⟶ SimplexCategory.mk N) 
 theorem d₂_succ {p r : ℕ} (a : SimplexCategory.mk p ⟶ SimplexCategory.mk N) (b : SimplexCategory.mk (r + 1) ⟶ SimplexCategory.mk N) :
     Pr.d₂ (⟨p, r + 1, a, b⟩ : Pr N) = ∑ j : Fin (r + 2), single ⟨p, r, a, δ j ≫ b⟩ ((-1) ^ (j : ℕ)) := rfl
 
-
 variable (N) in
 def D₁ (N : ℕ) : (Pr N →₀ ℤ) →ₗ[ℤ] (Pr N →₀ ℤ) := linearCombination ℤ fun z => z.d₁
 
-
 variable (N) in
 def D₂ (N : ℕ) : (Pr N →₀ ℤ) →ₗ[ℤ] (Pr N →₀ ℤ) := linearCombination ℤ fun z => z.d₂
-
 
 variable (N) in
 def E (N : ℕ) : (Pr N →₀ ℤ) →ₗ[ℤ] (Pr N →₀ ℤ) := linearCombination ℤ fun z : Pr N => (-1 : ℤ) ^ z.1 • single z (1 : ℤ)
@@ -341,12 +338,6 @@ theorem d_eq (c : Pr N →₀ ℤ) : Pr.d N c = D₁ N c + E N (D₂ N c) := by
   | zero => simp
   | add f g hf hg => simp only [map_add (f := _), hf, hg]; abel
   | single z c => simp [d_single, D₁_single, D₂_single, E_d₂]
-
-theorem E_E (c : Pr N →₀ ℤ) : E N (E N c) = c := by
-  induction c using Finsupp.induction_linear with
-  | zero => simp
-  | add f g hf hg => simp only [map_add (f := _), hf, hg]
-  | single z c => rw [E_single, map_zsmul, E_single, smul_smul, ← mul_pow]; simp
 
 theorem D₂_E (c : Pr N →₀ ℤ) : D₂ N (E N c) = E N (D₂ N c) := by
   induction c using Finsupp.induction_linear with
@@ -785,7 +776,6 @@ lemma bd_sub {N : ℕ} (a b : Pr N →₀ ℤ) : Pr.bd (a - b) = Pr.bd a - Pr.bd
 
 lemma aw_zero_eq_wa_zero : Pr.aw 0 = Pr.wa 0 := by
   simp [Pr.aw, Pr.wa]
-
 
 open Classical in
 noncomputable def step (N : ℕ) (c : Pr N →₀ ℤ) : Pr (N + 1) →₀ ℤ :=

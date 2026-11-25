@@ -212,13 +212,6 @@ lemma adjoinRoot_surj {A : Type} [CommRing A] [Nontrivial A] (f : A[X]) (hf : f.
     exact hd (by rw [hf.isUnit_iff.1 h, natDegree_one]))
   exact PrimeSpectrum.comap_surjective_of_faithfullyFlat
 
-lemma etale_of_unit {A : Type} [CommRing A] (f : A[X]) (hm : f.Monic) (h : IsUnit (AdjoinRoot.mk f (derivative f))) :
-    Algebra.Etale A (AdjoinRoot f) := by
-  let P : StandardEtalePair A := ⟨f, hm, derivative f, 1, 0, 1, by simp⟩
-  exact .of_equiv (P.equivAwayAdjoinRoot.trans
-    ((IsLocalization.atUnit _ (Localization.Away (AdjoinRoot.mk f (derivative f))) _
-      h).symm.restrictScalars A))
-
 lemma cyc_etale {A : Type} [CommRing A] (q : ℕ) [NeZero q] (hq : IsUnit (q : A)) :
     Algebra.Etale A (AdjoinRoot (cyclotomic q A)) := by
   apply LateralTheory.E.LeafPrimCoverPf.etale_adjoin <;> assumption

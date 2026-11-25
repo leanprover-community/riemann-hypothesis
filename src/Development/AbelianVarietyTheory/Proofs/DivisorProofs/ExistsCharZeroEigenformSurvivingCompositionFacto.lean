@@ -921,12 +921,6 @@ private theorem map_mem_smul_top {R M : Type} [CommRing R] [AddCommGroup M] [Mod
     exact Submodule.smul_mono le_rfl le_top
   exact hmap (Submodule.mem_map_of_mem hx)
 
-theorem quot_ker_stable {l : ℕ} [Fact l.Prime] {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (F : Frame l ι N)
-    (mu : ι → ℕ → ℕ) (jKm : F.K →* alg F.O N mu) (ϖ : F.O) (κ : F.K) (x : NablaT F.O N mu)
-    (hx : x ∈ (Ideal.span {ϖ} • ⊤ : Submodule F.O (NablaT F.O N mu))) :
-    repOf F.O (A := alg F.O N mu) jKm (NablaT F.O N mu) κ x ∈ (Ideal.span {ϖ} • ⊤ : Submodule F.O (NablaT F.O N mu)) := by
-  exact map_mem_smul_top _ _ hx
-
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1000000
 

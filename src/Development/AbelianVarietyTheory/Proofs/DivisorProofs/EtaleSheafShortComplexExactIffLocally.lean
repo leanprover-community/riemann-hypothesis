@@ -62,18 +62,6 @@ theorem exactIff_map_res {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V
   have := congrArg (fun m => m.hom x) (φ.hom.naturality g.op)
   simpa using this
 
-theorem exactIff_kernel_sec {R : Type} [CommRing R] {G K : Shv R} (ψ : G ⟶ K) {U : Scheme.{0}}
-    (b : Sec G U) (hb : Sec.map ψ b = 0) : ∃ k : Sec (kernel ψ) U, Sec.map (kernel.ι ψ) k = b := by
-  let Φ : Shv R ⥤ ModuleCat.{1} (ULift.{1} R) :=
-    sheafToPresheaf Scheme.etaleTopology _ ⋙ (evaluation _ _).obj (op U)
-  let T : ShortComplex (Shv R) := ShortComplex.mk (kernel.ι ψ) ψ (kernel.condition ψ)
-  have hT : T.Exact := ShortComplex.exact_of_f_is_kernel T (kernelIsKernel ψ)
-  have hTm : Mono T.f := inferInstanceAs (Mono (kernel.ι ψ))
-  have hP : PreservesLimit (parallelPair T.g 0) Φ := inferInstanceAs (PreservesLimit (parallelPair ψ 0) Φ)
-  have h2 := (ShortComplex.moduleCat_exact_iff _).1 (hT.map_of_mono_of_preservesKernel Φ hTm hP) b hb
-  obtain ⟨k, hk⟩ := h2
-  exact ⟨k, hk⟩
-
 theorem exactIff : ∀ (R : Type) [CommRing R] (S : ShortComplex (Shv R)), S.Exact ↔ ∀ U (b : Sec S.X₂ U), Sec.map S.g b = 0 → Loc U fun V g => ∃ a : Sec S.X₁ V, Sec.map S.f a = Sec.res g b := by
   apply LateralTheory.EtaleFoundations.acycIffPf.exact_iff
 

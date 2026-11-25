@@ -199,7 +199,6 @@ def kernelIso (M : LB X) (hM : M.IsLB) :
 
 end GlobalTheory.SerreOnto
 
-
 open CategoryTheory.Limits in
 theorem GlobalTheory.surjective_toPushforward_app_top_lbPow : ∀ (k : Type) [CommRing k] [IsNoetherianRing k]
     (X : Scheme.{0}) (p : X ⟶ Sp k), IsProjOver p → ∀ (L : LB X), IsAmpleLB L →
@@ -614,10 +613,6 @@ open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier Glo
 noncomputable section
 namespace GlobalTheory.PowNowhereZero
 
-theorem tensSec (T : Scheme.{0}) [IsAffine T] (A B : LB T) (hA : A.IsLB) (hB : B.IsLB) :
-    Nonempty (TensorProduct Γ(T, ⊤) (LB.Sec A) (LB.Sec B) ≃ₗ[Γ(T, ⊤)] LB.Sec (CechPic.tens A B)) :=
-  _root_.GlobalTheory.SecTensor.tensorSecEquiv T A B hA hB
-
 variable {T : Scheme.{0}}
 
 def tp (L : LB T) (k : ℕ) : LB T :=
@@ -778,7 +773,6 @@ theorem coheight_le_one {Y : Scheme.{0}} [IsLocallyNoetherian Y] {N : LB Y} (hN 
 end GlobalTheory.KrullZero
 
 namespace GlobalTheory.KrullZero
-
 
 open GlobalTheory.MixHt in
 theorem exists_irreducible_zero : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ),

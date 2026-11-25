@@ -86,7 +86,6 @@ def smoothing (ν : Measure (Lie E a)) (α : Lie E a → ℂ) (φ : GA E a → �
 
 variable (μ : Measure (GA E a)) [μ.IsHaarMeasure]
 
-
 variable {μ} [μ.IsMulRightInvariant] {S : Submodule ℂ (L2 (latticeGL E a) μ)}
 
 section
@@ -118,31 +117,13 @@ theorem continuous_integrand {α : Lie E a → ℂ} (hα : IsTest (invSet E a) �
   refine (he.continuousAt_iff (x := (x, u))).1 (Continuous.continuousAt ?_)
   exact (hφ.comp (continuous_fst.mul (continuous_infGL.comp continuous_snd))).congr fun q => (chart_val φ q.1 q.2).symm
 
-theorem norm_chart_le {φ : GA E a → ℂ} {C : ℝ} (hC : ∀ g, ‖φ g‖ ≤ C) (x : GA E a) (y : Lie E a) : ‖chart φ x y‖ ≤ C := by
-  unfold chart
-  split_ifs
-  · exact hC _
-  · exact norm_zero.trans_le ((norm_nonneg _).trans (hC 1))
-
-theorem continuous_smoothing (ν : Measure (Lie E a)) [ν.IsAddHaarMeasure] {α : Lie E a → ℂ}
-    (hα : IsTest (invSet E a) α) {φ : GA E a → ℂ} (hφ : Continuous φ) {C : ℝ} (hC : ∀ g, ‖φ g‖ ≤ C) :
-    Continuous (smoothing ν α φ) :=
-  continuous_of_dominated (bound := fun y => ‖α y‖ * C)
-    (fun x => ((continuous_integrand hα hφ).comp (Continuous.prodMk_right x)).aestronglyMeasurable)
-    (fun x => .of_forall fun y => (norm_mul _ _).trans_le
-      (mul_le_mul_of_nonneg_left (norm_chart_le hC x y) (norm_nonneg _)))
-    ((hα.1.continuous.integrable_of_hasCompactSupport hα.2.1).norm.mul_const C)
-    (.of_forall fun y => (continuous_integrand hα hφ).comp (Continuous.prodMk_left y))
-
 variable [IsFiniteMeasure (GlobalTheory.AutomorphicL2Unitary.quotMeasure (latticeGL E a) μ)]
-
 
 omit [μ.IsMulRightInvariant] in
 theorem memL2_of_bound {φ : GA E a → ℂ} (hφ : Continuous φ) (hl : LeftInv (latticeGL E a) φ) {C : ℝ}
     (hC : ∀ g, ‖φ g‖ ≤ C) : MemL2Quotient (latticeGL E a) μ φ :=
   ⟨hl, MemLp.of_bound (aestronglyMeasurable_quotMeasure_iff_lift.2 (by
     rw [hl.lift_descend]; exact hφ.aestronglyMeasurable)) C (.of_forall fun q => hC _)⟩
-
 
 end GlobalTheory.CuspQuot
 
