@@ -1,10 +1,11 @@
 # Batches assembled by hand
 
 A batch merges many pull requests into one branch so that they are built and landed together.
-The batch-queue workflow (`.github/workflows/batch-queue.yml`, which runs
-`scripts/batch-queue-sync.py`) assembles batches of its own from the queue. It also keeps the
-labels and comments of a batch assembled by hand in step, as long as the batch follows the rules
-below. This page is for whoever assembles one.
+The batch queue is a list of approvals, and maintainers assemble batches from it by hand. The
+batch-queue workflow (`.github/workflows/batch-queue.yml`, which runs
+`scripts/batch-queue-sync.py`) assembles none of its own: that code is switched off by `ASSEMBLE`
+in the script. It keeps the labels and comments of a batch assembled by hand in step, as long as
+the batch follows the rules below. This page is for whoever assembles one.
 
 ## Labels at a glance
 
@@ -35,7 +36,8 @@ description doesn't mention, and pull requests reverted in the branch.
 
 1. **Use a branch of this repository named `batch/...`**, such as `batch/b9-on-1313`, and open
    its pull request against `main`. Don't use the name `batch/` followed by a date and time,
-   such as `batch/2026-11-23-041230`: that form belongs to the workflow's own batches.
+   such as `batch/2026-11-23-041230`: that form belongs to the workflow's own batches, which
+   are switched off for now.
 2. **Merge each pull request's head commit into the branch with a merge commit.** The workflow
    reads what a batch contains from its branch, not from its description: a pull request is in
    the batch when its head commit is. A squash, cherry-pick or rebase of a pull request makes new
@@ -113,8 +115,6 @@ of the sync job in `.github/workflows/batch-queue.yml` names some of them as wel
 ## Several batches at once
 
 A batch whose branch contains the head of another batch's pull request is built as part of it.
-The other batch is treated as one of the pull requests it contains. If more than one batch
-assembled by hand is open on `main`, the workflow's own batch is built on `main`, because it
-cannot tell which of them lands first. The workflow cannot yet tell a batch that is being built
-from one that waits for another to land: every open batch assembled by hand counts as being
-built.
+The other batch is treated as one of the pull requests it contains. The workflow cannot yet tell
+a batch that is being built from one that waits for another to land: every open batch assembled
+by hand counts as being built.
