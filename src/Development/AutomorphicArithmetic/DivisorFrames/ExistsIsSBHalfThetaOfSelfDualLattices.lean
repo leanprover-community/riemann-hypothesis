@@ -68,7 +68,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime IsSplitBasis)
 open GlobalTheory.BotMatch (evW)
 open GlobalTheory.StageGeo
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace UpperTheory.SgPlace
 
@@ -222,15 +221,15 @@ theorem UpperTheory.exists_isSBHalf_theta_of_selfDual_lattices :
         ∀ (b : ∀ v : P, GL (Fin S.rank) (Fv D.host.F v)) (c : ∀ v : P, GL (Fin d) (Fv D.host.F v))
           (ι : ∀ v : P, ((Fin S.rank × Fin d → Fv D.host.F v) → ℂ) →ₗ[ℂ] (Matrix (Fin S.rank) (Fin d) (Fv D.host.F v) → ℂ)),
         (∀ v, M.IsLin ψ (piW (t₁ v)) (piW (t₀ v)) (fun u => (b v).1 * u.map (piW (t₁ v)) * (c v).1) (ι v)) →
-        (∀ v : P, ι v (M.vac v) 0 = 1) →
         ∀ (φ : ∀ v : HeightOneSpectrum (𝓞 D.host.F), (Fin S.rank × Fin d → Fv D.host.F v) → ℂ), (∀ v, φ v ∈ GlobalTheory.WeilM.SB _) →
         (∀ v, v ∉ P → φ v = M.vac v) →
         ∀ (g : SInf D.host.F (Fin S.rank × Fin d)) (Φ f : WO (sgn ε S) X → ℂ),
         (∀ x, Φ x = if IsHalf eh x then ∏ v : P, ι v (φ v) ((b v).1 * (ptO (sgn ε S).gram e x).map (piW (t₁ v)) * (c v).1) else 0) →
         IsThetaAt ψ (symplO (sgn ε S) X) (heisO ψ (sgn ε S) X) eh (latO (sgn ε S) X (ΛS : Set (Fin S.rank → D.host.E)) (ΛX : Set (Fin X.rank → D.host.E)) fun _ => True) 1
           (thO M ψ (sgn ε S).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure g M.vac)) Φ f →
-        f = thO M ψ (sgn ε S).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure g φ) := by
-  intro D ψ ε S X d e Bs Vs Ws M hP ΛS ΛX hLat sdS sdX P t₁ t₀ ht eh h₀ h₁ b c ι hι hn φ hφ hφv g Φ f hΦ hth
+        (∏ v : P, ι v (M.vac v) 0 ≠ 0) ∧
+          f = thO M ψ (sgn ε S).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure ((∏ v : P, ι v (M.vac v) 0) • g) φ) := by
+  intro D ψ ε S X d e Bs Vs Ws M hP ΛS ΛX hLat sdS sdX P t₁ t₀ ht eh h₀ h₁ b c ι hι φ hφ hφv g Φ f hΦ hth
   obtain ⟨⟨T, hT⟩, hf⟩ := hth
   have hfT := hf T hT
   obtain ⟨lsym, lrho, ladd, lsmul, -, -⟩ := UpperTheory.thetaOperator_intertwines_heisenberg D ψ ε S X d e Bs Vs Ws M hP
@@ -269,8 +268,8 @@ theorem UpperTheory.exists_isSBHalf_theta_of_selfDual_lattices :
         if IsHalf eh x then ∏ v : P, ι v (χ v) ((b v).1 * (ptO (sgn ε S).gram e x).map (piW (t₁ v)) * (c v).1) else 0 := by
     intro χ x
     by_cases hx : IsHalf eh x
-    · rw [ite_eq_left hx, Set.indicator_of_mem ((hH x).2 hx)]
-    · rw [ite_eq_right hx, Set.indicator_of_notMem (mt (hH x).1 hx)]
+    · rw [if_pos hx, Set.indicator_of_mem ((hH x).2 hx)]
+    · rw [if_neg hx, Set.indicator_of_notMem (mt (hH x).1 hx)]
   have hbase : (fun x : WO (sgn ε S) X => Set.indicator (H : Set _)
       (fun u => ∏ v : P, ι v (M.vac v) ((b v).1 * u.map (piW (t₁ v)) * (c v).1)) (ptO (sgn ε S).gram e x)) =
       (∏ v, z v) • halfInd eh Λ := by
@@ -284,12 +283,12 @@ theorem UpperTheory.exists_isSBHalf_theta_of_selfDual_lattices :
           rw [Matrix.map_apply, Matrix.smul_apply, GlobalTheory.LatFill.piW_smul, ((h₀ _).1 (hu i j)).2 v, mul_zero]; rfl)]
         refine congrArg (fun w => ι v (M.vac v) ((b v).1 * w * (c v).1)) (Matrix.ext fun i j => ?_)
         rw [Matrix.map_apply, Matrix.map_apply, Matrix.smul_apply, GlobalTheory.LatFill.piW_smul, GlobalTheory.LatVac.evFin_liftV, one_mul]
-      rw [ite_eq_left hx, Finset.prod_congr rfl fun v _ => key v]
+      rw [if_pos hx, Finset.prod_congr rfl fun v _ => key v]
       by_cases hl : x ∈ Λ
-      · rw [ite_eq_left ⟨hl, hx⟩, mul_one]
-        exact Finset.prod_congr rfl fun v _ => ite_eq_left (lat₂ v _ (GlobalTheory.LatVac.at_liftV v.1 1)
+      · rw [if_pos ⟨hl, hx⟩, mul_one]
+        exact Finset.prod_congr rfl fun v _ => if_pos (lat₂ v _ (GlobalTheory.LatVac.at_liftV v.1 1)
           (by rw [GlobalTheory.LatVac.evFin_liftV]; exact one_mem _) x hl)
-      · rw [ite_eq_right fun h => hl h.1, mul_zero]
+      · rw [if_neg fun h => hl h.1, mul_zero]
         by_contra hne
         refine hl ?_
         have hx' : x = ∑ v : P, GlobalTheory.LatVac.liftV v.1 (1 : Fv D.host.F v) • x := Matrix.ext fun i j => by
@@ -299,8 +298,8 @@ theorem UpperTheory.exists_isSBHalf_theta_of_selfDual_lattices :
         refine sum_mem fun v _ => lat₁ v _ ?_
         rw [ptO_smul']
         by_contra hn
-        exact hne (Finset.prod_eq_zero (Finset.mem_univ v) (ite_eq_right hn))
-    · rw [ite_eq_right hx, ite_eq_right fun h => hx h.2, mul_zero]
+        exact hne (Finset.prod_eq_zero (Finset.mem_univ v) (if_neg hn))
+    · rw [if_neg hx, if_neg fun h => hx h.2, mul_zero]
   have hmm : ∀ (v : P) (t : D.host.E →ₐ[D.host.F] Fv D.host.F v) (w : AE D) (u : Matrix (Fin S.rank) (Fin d) (AE D)),
       (w • u).map (piW t) = piW t w • u.map (piW t) := fun v t w u => Matrix.ext fun i j => map_mul (piW t) w (u i j)
   have hR := _root_.GlobalTheory.InductLagr.rel_of_vac M Bs.ψ hstd hM (Finset.univ : Finset P) Subtype.val Subtype.val_injective.injOn
@@ -356,10 +355,12 @@ theorem UpperTheory.exists_isSBHalf_theta_of_selfDual_lattices :
         funext fun _ => mul_assoc _ _ _
       rw [hbase, e1, lsmul, ← hT.vac, one_smul, map_smul]⟩
     φ hφ fun v hv => hφv v fun hm => hv ⟨v, hm⟩ (Finset.mem_univ _) rfl
-  have hz1 : ∀ v : P, z v = 1 := fun v => by
+  have hzeq : ∀ v : P, z v = ι v (M.vac v) 0 := fun v => by
     have h := hz v 0 (fun u _ => smul_zero u) (Matrix.map_zero _ (map_zero _))
-    rw [Matrix.map_zero _ (map_zero _), Matrix.mul_zero, Matrix.zero_mul, hn v, ite_eq_left (zero_mem _)] at h
+    rw [Matrix.map_zero _ (map_zero _), Matrix.mul_zero, Matrix.zero_mul, ite_eq_left (zero_mem _)] at h
     exact h.symm
-  have hg : (∏ v, z v) • g = g := by rw [Finset.prod_eq_one fun v _ => hz1 v, one_smul]
-  rw [hfT, ← hg, ← hR.2.2]
+  have hprod : ∏ v : P, ι v (M.vac v) 0 = ∏ v, z v := Finset.prod_congr rfl fun v _ => (hzeq v).symm
+  rw [hprod]
+  refine ⟨Finset.prod_ne_zero_iff.2 fun v _ => hz0 v, ?_⟩
+  rw [hfT, ← hR.2.2]
   exact congrArg T (funext fun x => (hΦ x).trans (hind φ x).symm)
