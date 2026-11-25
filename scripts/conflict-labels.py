@@ -31,9 +31,12 @@ a batch, and does not get it. The comparison is
 the one `batch-queue-conflicts.py` makes: git cannot merge a file that both change since they
 left main, or one of the two deletes a Lean file that the other starts to import. Most pull
 requests change no file that the batch changes, and need no trial merge. When the comparison
-cannot be made, the label stays as it is. The first time a pull request gets the label for a
-batch, it is also labelled `awaiting-author` and sent a comment that says what conflicts and
-what to do. A hidden marker in the comment names the batch, so it is sent once for each batch.
+cannot be made, the label stays as it is. Each time a pull request gets the label, it is also
+labelled `awaiting-author` and sent a comment for each batch it conflicts with, which says what
+conflicts and what to do: the first time, and again when it conflicts after the label came off
+because it had been fixed. While it keeps the label, a hidden marker in the comment, which names
+the batch, has it told once for each batch, including a batch it conflicts with after the one it
+got the label for.
 
 Both labels come off as soon as their reason has gone, whoever put them on: the pull request was
 fixed or closed, it joined the batch, or the batch was merged or closed. `awaiting-author` never
@@ -51,9 +54,10 @@ copy only its own commits onto it. A hidden marker in the comment names the batc
 so it is sent once for each head of the batch.
 
 Which batches a pull request was told about is read from its comments, once a run at most, and
-only when it is about to be told something it may not have been told. Nothing is kept from one
-run to the next: a pull request already labelled `batch-conflict` that is compared with more than
-one batch, as with two separate stacks, has its comments read again by each sweep.
+only when it is about to be told something it may not have been told: when it carries
+`batch-conflict` and conflicts with a batch, or its branch carries commits a batch no longer has.
+Nothing is kept from one run to the next, so each sweep reads the comments of every pull request
+labelled `batch-conflict` that still conflicts.
 
 The workflow's token may make 1,000 REST requests an hour, shared with every other workflow
 here, and the batch-queue workflow can use several hundred of them. So everything is read
@@ -355,18 +359,20 @@ def decide(pr, main, batches, results, carried=None):
     return {"main": wanted_main, "batch": wanted_batch, "conflicts": conflicts, "stale": stale, "why": why}
 
 
-def needs_told(pr, decision, batches, known=None):
+def needs_told(pr, decision, known=None):
     """Whether to read a pull request's comments to see what it was told.
 
-    That is only needed when it is about to be told something it may not have been told: it
-    conflicts with a batch, and either does not carry the label yet or it is compared with more
-    than one batch; or its branch carries commits that a batch it builds on no longer has. `known`
-    is what an earlier run read or said, as `GitHub.notices` gives it, or None: what it shows the
-    pull request was told is not read again.
+    That is needed when it is about to be told something it may not have been told. One that
+    carries `batch-conflict` and conflicts with a batch it is compared with was told about each
+    batch once while it kept the label, but the label may be from an older batch, or the comment
+    may not have gone out after the label did, so its comments say which. One that does not carry
+    the label is told about every batch it conflicts with, without reading anything (see `plan`).
+    And one whose branch carries commits that a batch it builds on no longer has may have been
+    told so already. `known` is what this run, or a caller sharing it, read or said, as
+    `GitHub.notices` gives it, or None: what it shows the pull request was told is not read again.
     """
     known = known or {"told": set(), "stale": set()}
-    new = set(decision["conflicts"]) - known["told"]
-    if new and (BATCH_CONFLICT not in pr["labels"] or len(compared(batches)) > 1):
+    if decision["batch"] and BATCH_CONFLICT in pr["labels"] and set(decision["conflicts"]) - known["told"]:
         return True
     return any((number, item["head"]) not in known["stale"] for number, item in decision.get("stale", {}).items())
 
@@ -377,6 +383,10 @@ def plan(pr, decision, told, batches, stale_told=None):
     `told` is the set of batches the pull request was already sent a comment about, and
     `stale_told` the (batch, head) it was told it carries commits of that the batch no longer
     has, both None when they were not read because nothing new is to be said (see `needs_told`).
+    A pull request that conflicts with a batch and does not carry `batch-conflict` is told about
+    every batch it conflicts with, whatever `told` says: it conflicts for the first time, or again
+    after the label came off, when it had been fixed. While it keeps the label, it is told about
+    each batch once.
     """
     add, remove, notes = set(), set(), []
     for label, wanted in ((MAIN_CONFLICT, decision["main"]), (BATCH_CONFLICT, decision["batch"])):
@@ -384,6 +394,8 @@ def plan(pr, decision, told, batches, stale_told=None):
             add.add(label)
         elif wanted is False and label in pr["labels"]:
             remove.add(label)
+    if decision["batch"] and BATCH_CONFLICT not in pr["labels"]:
+        told = set()
     if decision["batch"] and told is not None:
         for number, result in sorted(decision["conflicts"].items()):
             if number not in told:
@@ -431,7 +443,8 @@ def message(batch, result):
         "request is taken out of a batch, your branch still carries the pull request that was taken out. Then "
         "make a new branch from the new batch branch, copy only your own commits onto it with `git cherry-pick`, "
         "and push that to this pull request.".format(n=batch["number"]),
-        "2. Add this line at the top of the pull request's description:",
+        "2. Add this line at the end of the pull request's description, under a line `---`, as the template "
+        "in `AGENTS.md` has it:",
         "",
         "   ```",
         f"   - [ ] depends on: #{batch['number']}",
@@ -702,7 +715,7 @@ def sync(gh, number=None, compare=compare_all, known=None):
         pr, decision = pulls[key], decisions[key]
         try:
             told = stale_told = None
-            if needs_told(pr, decision, batches, known.get(key)):
+            if needs_told(pr, decision, known.get(key)):
                 known[key] = gh.notices(key)
                 told, stale_told = known[key]["told"], known[key]["stale"]
             add, remove, notes = plan(pr, decision, told, batches, stale_told)
@@ -730,6 +743,13 @@ def sync(gh, number=None, compare=compare_all, known=None):
                     if not gh.dry_run:
                         raise Refused(f"There is no `{label}` label in {gh.repo}. Was it renamed?")
                     log.append(f"there is no `{label}` label yet, so a real run would stop here")
+            # The labels before the comments: a pull request labelled but not yet told has its
+            # comments read by the next run, which then tells it (see `needs_told`), while one told
+            # but not labelled would never get `awaiting-author`.
+            if add:
+                gh.add_labels(key, add)
+            for label in sorted(remove):
+                gh.remove_label(key, label)
             for batch, text in notes:
                 gh.comment(key, text)
                 record = known.setdefault(key, {"told": set(), "stale": set()})
@@ -737,10 +757,6 @@ def sync(gh, number=None, compare=compare_all, known=None):
                     record["stale"].add((batch, batches[batch]["sha"]))
                 else:
                     record["told"].add(batch)
-            if add:
-                gh.add_labels(key, add)
-            for label in sorted(remove):
-                gh.remove_label(key, label)
             pr["labels"] = (pr["labels"] | add) - remove
             verb = "would " if gh.dry_run else ""
             said = [f"{verb}add `{label}`, because {decision['why'].get(label, 'it is told about a batch')}"
