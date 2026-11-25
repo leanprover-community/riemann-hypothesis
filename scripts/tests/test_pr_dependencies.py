@@ -33,7 +33,7 @@ class Dependencies(unittest.TestCase):
             with self.subTest(line=line):
                 self.assertEqual(self.read(line), {7})
 
-    def test_the_wordings_prdag_reads_too(self):
+    def test_other_common_wordings(self):
         for line in ("blocked by #7", "- [ ] Blocked by: #7", "requires #7", "Requires: #7", "needs #7",
                      "- [x] needs: #7", "> depends on #7", "> - [ ] blocked by #7", "-depends on #7",
                      "[ ] depends on #7", "[] depends on #7", "**Depends on** #7", "depends\ton\t#7",
