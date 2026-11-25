@@ -1426,6 +1426,34 @@ class Robustness(unittest.TestCase):
         self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [IN] * 3)
         self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 14)], [2, 2])
 
+    def test_a_batch_closed_without_merging_has_what_it_told_cleared(self):
+        gh = self.built()
+        gh.add_pull(23, "head23")
+        gh.pulls[1018]["body"] = f"Left out for other reasons:\n\n- #23 Too big (@frank): it changes `src/Main.lean`.\n"
+        sync(gh)
+        gh.label(23, remove=WAITING)  # the author commented `ready`
+        gh.close(1018)
+        sync(gh)
+        stored = note(gh.said(1018)[0])
+        self.assertEqual((stored["told"], stored["pushed"], stored["left"], stored["labelled"]), ({}, {}, {}, []))
+        gh.reopen(1018)
+        sync(gh)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [2, 2, 2])
+        # What the description leaves out is brought up to date in place: nobody is told again.
+        self.assertEqual(len([body for body in gh.said(23) if body.startswith("<!-- batch-queue-left-out")]), 1)
+        self.assertNotIn(WAITING, gh.pulls[23]["labels"])
+
+    def test_a_batch_labelled_building_again_while_open_tells_no_one_again(self):
+        gh = self.built()
+        sync(gh)
+        gh.label(1018, remove=BUILDING, login="maintainer")
+        gh.writes = []
+        log = sync(gh)
+        self.assertIn("#1018 is a batch assembled by hand with open pull requests in it: now `building`", log)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [1, 1, 1])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [IN] * 3)
+        self.assertEqual([(method, path) for method, path, _ in gh.writes], [("POST", "issues/1018/labels")])
+
     def test_a_member_never_queued_is_not_queued_when_it_is_reopened(self):
         gh = self.built()
         sync(gh)

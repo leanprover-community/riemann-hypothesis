@@ -105,7 +105,9 @@ If its new head is merged into the branch, the batch holds that one instead.
 When the batch is merged, what it contained loses `batch-building` and `frozen`. A pull request
 whose head has moved on since the batch took it stays open, and is told what landed and what did
 not. When the batch is closed without being merged, what it contained loses its labels too, is
-told it can push again, and goes back to `batch queue` if it was queued.
+told it can push again, and goes back to `batch queue` if it was queued. If the batch is reopened,
+what it contains is labelled and told it is frozen again. A batch that gets `building` back
+otherwise, say after someone took the label off, tells no one again.
 
 A pull request queued with a `batch` comment is labelled `frozen` too, since the queue also takes
 only the commit that was queued. `-batch` takes `frozen` off again, unless a batch being built

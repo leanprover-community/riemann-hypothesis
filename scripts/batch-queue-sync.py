@@ -410,9 +410,9 @@ def finished(gh, closed_building, known):
         info = gh.get(f"pulls/{item['number']}")
         if not holds_batch(gh, info) or own_batch(info["head"]["ref"]):
             continue
-        note = read_record(gh, info["number"])[1]
+        comment, note = read_record(gh, info["number"])
         batch = {"number": info["number"], "fate": "merged" if info.get("merged") else "closed",
-                 "members": members(note), "queued": queued_before(note)}
+                 "members": members(note), "queued": queued_before(note), "comment": comment, "note": note}
         known |= set(batch["members"])
         found.append(batch)
     return found
@@ -714,12 +714,11 @@ def built_by_hand(gh, pulls, log):
             if not relabel(gh, pr, add=BUILDING):
                 continue
             log.append(f"#{pr['number']} is a batch assembled by hand with open pull requests in it: now `{BUILDING}`")
+        # Labelled `building` just now, for the first time or again, the note is kept: what it says
+        # was told still was, and `hold` looks through the branch again. A batch closed without
+        # being merged and reopened had its members told they could push again, and `finish`
+        # cleared what they were told then, so they are told they are frozen again.
         comment, note = read_record(gh, pr["number"])
-        if commits is not None:
-            # Labelled `building` just now: for the first time, or again after it was closed
-            # without being merged and reopened. What the note says was done then has been
-            # undone since, so it starts again.
-            note = {}
         found.append({"ref": pr["ref"], "sha": pr["sha"], "number": pr["number"], "base": pr["base"],
                       "comment": comment, "note": note, "commits": commits})
     return found
@@ -776,7 +775,8 @@ def hold(gh, batch, pulls, held, main, log):
 
     It contains each open pull request whose head commit is in its branch, queued or not. When
     the branch's head has moved since the note was written, its commits are listed again, a
-    request for each hundred of them. What has arrived is added. What was found before stays as
+    request for each hundred of them, and so they are when the batch has just been labelled
+    `building` again. What has arrived is added. What was found before stays as
     long as the commit it was found at is still there, even after its author has pushed again,
     unless its new head is in the branch too. Whatever has left loses `batch-building` and
     `frozen` unless another batch contains it, goes back to `batch queue` if it was queued before
@@ -799,7 +799,8 @@ def hold(gh, batch, pulls, held, main, log):
     found, queued, new = members(note), queued_before(note), set()
     # A round of telling that the last run started and did not finish.
     batch["resumed"] = bool(note.get("telling"))
-    if note.get("head") != batch["sha"]:
+    # A batch labelled `building` just now was looked through already, and is looked at afresh.
+    if note.get("head") != batch["sha"] or batch.get("commits") is not None:
         commits = batch.get("commits")
         if commits is None:
             if gh.short():
@@ -1231,6 +1232,13 @@ def finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_la
                            + (f"`{QUEUED}` again" if back else f"no longer `{MEMBER}`"))
         if stopped:
             break
+        if batch["fate"] == "closed" and batch["comment"] is not None:
+            # Its members were told they can push again, and lost its labels. If it is reopened,
+            # they are labelled and told they are frozen again; what the description leaves out
+            # is brought up to date in this batch's comments, which notifies nobody.
+            batch["note"] = dict(batch["note"], members=batch["members"], labelled=[], told={}, pushed={}, left={})
+            batch["note"].pop("telling", None)
+            save(gh, batch)
         # Taking the label off the batch itself marks it as dealt with.
         relabel(gh, batch["number"], remove=BUILDING)
         log.append(f"tidied up after batch #{batch['number']}, which was assembled by hand")
