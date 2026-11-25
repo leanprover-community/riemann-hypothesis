@@ -437,7 +437,7 @@ def batches(gh, pulls):
     return found, leftover
 
 
-def finished(gh, closed_building, known):
+def finished(gh, closed_building, hand, pulls):
     """Batches assembled by hand that were merged or closed and not yet tidied up after, with a
     `fate`, the pull requests they contained as `members`, {number: commit}, those of them that
     were labelled `batch queue` before as `queued`, and their own `labels`.
@@ -446,12 +446,17 @@ def finished(gh, closed_building, known):
     them. That works whether or not someone has already deleted the branch. `closed_building`
     is every closed issue or pull request that still carries `building`.
 
-    Telling a batch assembled by hand from any other pull request takes a request, so `known`,
-    the pull requests some open batch is known to contain, are not asked about. Neither is what
-    a batch just found contained, and the newest are looked at first, because a batch is opened
-    after what it contains.
+    Telling a batch assembled by hand from any other pull request takes a request, so what the
+    open batches `hand` are known to contain is not asked about. Neither is what a batch just
+    found contained, and the newest are looked at first, because a batch is opened after what it
+    contains. A record written before batches were stacked lists the batch underneath among the
+    members, so a number a batch may be stacked on (see `named_below`) is asked about all the same.
     """
-    found, known = [], set(known)
+    known, found = set(), []
+    for batch in hand:
+        pr = pulls[batch["number"]]
+        known |= set(members(batch["note"])) - {str(number) for number in named_below(gh, pr["ref"], pr["body"],
+                                                                                         batch["note"])}
     for item in sorted(closed_building, key=lambda item: -item["number"]):
         if "pull_request" not in item or str(item["number"]) in known:
             continue
@@ -462,7 +467,8 @@ def finished(gh, closed_building, known):
         batch = {"number": info["number"], "fate": "merged" if info.get("merged") else "closed",
                  "members": members(note), "queued": queued_before(note), "comment": comment, "note": note,
                  "labels": {label["name"] for label in info["labels"]}}
-        known |= set(batch["members"])
+        below = named_below(gh, info["head"]["ref"], info.get("body") or "", note)
+        known |= set(batch["members"]) - {str(number) for number in below}
         found.append(batch)
     return found
 
@@ -800,6 +806,17 @@ def stacked_on(gh, pr, batches):
     return set(), None
 
 
+def named_below(gh, ref, body, note):
+    """Every number that a batch assembled by hand, with branch `ref`, description `body` and note
+    `note`, names as a batch it may be stacked on, open or not: in a `depends on` line, in its
+    branch name or in the note's `below`."""
+    named = set(_deps.dependencies(body, gh.repo)) | {int(key) for key in note.get("below") or {}}
+    match = ON_BATCH.fullmatch(ref)
+    if match:
+        named.add(int(match.group(1)))
+    return named
+
+
 def stack(gh, hand, pulls, log):
     """Put the open batches assembled by hand that are being built in order, the lowest first.
 
@@ -908,7 +925,7 @@ def save(gh, batch):
 SAVE_EVERY = 10
 
 
-def look_through(gh, batch, by, pulls, before, log):
+def look_through(gh, batch, by, pulls, before, gone, log):
     """Find what a batch assembled by hand contains of its own.
 
     It contains each open pull request whose head commit is in its branch, queued or not, that
@@ -919,7 +936,8 @@ def look_through(gh, batch, by, pulls, before, log):
     they are when the batch has just been labelled `building` again. What has arrived is added.
     What was found before stays as long as the commit it was found at is still there, even after
     its author has pushed again, unless its new head is in the branch too. `before` is the pull
-    requests that some note says were labelled `batch queue` before a batch took them.
+    requests that some note says were labelled `batch queue` before a batch took them, and `gone`
+    the batches assembled by hand that were merged or closed and are being tidied up after.
 
     Sets the batch's new `note`, with its `head`, `members`, `queued` and `below`, and `old`, the
     note it had, for `keep_in_step` to finish. Nothing is set when the branch could not be listed:
@@ -956,9 +974,9 @@ def look_through(gh, batch, by, pulls, before, log):
                 log.append(f"warning: #{number} says in {batch['how']} that it is stacked on #{other}, but its branch "
                            f"shares no commit with that of #{other} beyond `main`")
     # A note written before batches were stacked lists what the batches under this one contain,
-    # and those batches themselves, among its members.
+    # and those batches themselves, open or not, among its members.
     found = {key: commit for key, commit in found.items()
-             if key not in taken and not (pulls.get(int(key)) or {}).get("batch")}
+             if key not in taken and int(key) not in gone and not (pulls.get(int(key)) or {}).get("batch")}
     queued = {key for key in found
               if key in queued or key in before or QUEUED in (pulls.get(int(key)) or {}).get("labels", ())}
     batch["old"] = note
@@ -1714,7 +1732,7 @@ def assemble(gh, now):
     closed = closed_building + [item for label in (MEMBER, FROZEN)
                                 for item in gh.pages(f"issues?state=closed&labels={quoted(label)}")]
     closed_labels = {item["number"]: {label["name"] for label in item.get("labels") or ()} for item in closed}
-    done = finished(gh, closed_building, holders(hand))
+    done = finished(gh, closed_building, hand, pulls)
     # The lowest batch first, so that what a batch contains of its own is found after what the
     # batches under it contain. A batch stacked on one closed just now takes over what that one
     # contained and its branch still holds. Labels change only once every batch has been looked
@@ -1723,7 +1741,7 @@ def assemble(gh, now):
     before = set().union(*(queued_before(batch["note"]) for batch in hand), *(batch["queued"] for batch in done))
     by = {batch["number"]: batch for batch in hand}
     for batch in hand:
-        look_through(gh, batch, by, pulls, before, log)
+        look_through(gh, batch, by, pulls, before, {gone['number'] for gone in done}, log)
     held = holders(hand)
     requeued = False
     for batch in hand:

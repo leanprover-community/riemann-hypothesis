@@ -2317,6 +2317,16 @@ class StackedBatches(unittest.TestCase):
         self.assertIn(f"told #21 that the batch #1018 leaves it out: now `{WAITING}`", log)
         self.assertEqual(note(self.record(gh, 1018))["left"].keys(), {"21"})
 
+    def test_a_lower_batch_an_old_record_lists_is_tidied_up_when_it_lands(self):
+        # It lands before this script first runs, while the old record of #1050 still lists it.
+        gh = self.legacy()
+        for number in (11, 12, 1018):
+            gh.close(number, merged=True)
+        log = sync(gh)
+        self.assertIn("tidied up after batch #1018, which was assembled by hand", log)
+        self.assertEqual(self.labels(gh, 11, 12, 1018, 1050), [set(), set(), set(), {BUILDING, LATEST}])
+        self.assertNotIn("1018", note(self.record(gh, 1050))["members"])
+
     def test_without_the_label_on_github_nothing_is_labelled_latest(self):
         gh = self.stacked()
         gh.missing.add(LATEST)
