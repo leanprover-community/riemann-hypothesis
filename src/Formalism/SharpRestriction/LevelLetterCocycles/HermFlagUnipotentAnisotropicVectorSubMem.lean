@@ -4,6 +4,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingI
 public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntegerSpanGenerators
+public import Formalism.SharpRestriction.LevelLetterCocycles.IsTruncIff
 import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
@@ -106,11 +107,11 @@ theorem ser_exists [NeZero n] (hinj : Function.Injective (algebraMap O LL))
     simp only [eY_eq]
     abel
 
-theorem ser_unique [NeZero n] (hinj : Function.Injective (algebraMap O LL))
+theorem serZ_unique [NeZero n] (hinj : Function.Injective (algebraMap O LL))
     (hO2 : ∀ x : LL, 0 ≤ v x → ∃ o : O, algebraMap O LL o = x) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
     (hH : Formalism.MainNotions.LiftingTheory.coreH W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ)
-    (i : ZMod n) (w : W.DD T) (c c' : ℕ → W.DD T) (hc : Formalism.MainNotions.CrystallineLiftingInputs.IsSer W T i w c)
-    (hc' : Formalism.MainNotions.CrystallineLiftingInputs.IsSer W T i w c') (K : ℕ) : ∃ j : ℕ,
+    (i : ZMod n) (ζ : W.DD T) (c c' : ℕ → W.DD T) (hc : Formalism.MainNotions.RamifiedCoefficientChains.S9.ExtensionLemmaAlt.IsSerZ W T i ζ c)
+    (hc' : Formalism.MainNotions.RamifiedCoefficientChains.S9.ExtensionLemmaAlt.IsSerZ W T i ζ c') (K : ℕ) : ∃ j : ℕ,
       Formalism.MainNotions.CrystallineLiftingInputs.InPN W T K (((PD.p : ℕ) : O) ^ j • ∑ y ∈ Finset.range K,
         ((PD.p : ℕ) : O) ^ (Formalism.MainNotions.CrystallineLiftingInputs.eY PD.p K - Formalism.MainNotions.CrystallineLiftingInputs.eY PD.p y) •
           (W.π₀ ^ y • (c y - c' y))) := by
@@ -189,7 +190,7 @@ theorem tTool1_of [NeZero n] (hinj : Function.Injective (algebraMap O LL))
     (hH : Formalism.MainNotions.LiftingTheory.coreH W) : Formalism.MainNotions.CrystallineLiftingInputs.TTool1 W := by
   intro hA T hT i w hw
   exact ⟨ser_exists W hinj hO2 h9 hH hA T hT i w hw,
-    fun c c' hc hc' K => ser_unique W hinj hO2 h9 hH hA T hT i w c c' hc hc' K⟩
+    fun c c' hc hc' K => serZ_unique W hinj hO2 h9 hH hA T hT i (W.γ T w - w) c c' hc hc' K⟩
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
@@ -526,7 +527,7 @@ theorem uniq_alt_alt [NeZero n] [IsDomain O] (hinj : Function.Injective (algebra
   obtain ⟨c, r, s, hc, hrs, hzd⟩ := hz
   obtain ⟨c', r', s', hc', hrs', hzd'⟩ := hz'
   set K0 := max M X + 1
-  obtain ⟨t, a, ha, haΔ, hae⟩ := ser_unique W hinj hO2 h9 hH hA T hT i w c c' hc hc' K0
+  obtain ⟨t, a, ha, haΔ, hae⟩ := serZ_unique W hinj hO2 h9 hH hA T hT i (W.γ T w - w) c c' hc hc' K0
   obtain ⟨Gv, hGv, hred⟩ := red W hR T i hc hrs hzd t
   obtain ⟨Gv', hGv', hred'⟩ := red W hR T i hc' hrs' hzd' t
   rw [truncatedSeries_pow_shift] at hred hred'
@@ -635,7 +636,8 @@ theorem linear_of_frobenius_power [NeZero n] [IsDomain O] (hinj : Function.Injec
   obtain ⟨c'', r'', s'', hc'', hrs'', hzd''⟩ := hz''
   set K0 := max M X + 1
   have hc3 := ser_lin W T i a a' hc hc'
-  obtain ⟨t, b, hb, hbΔ, hbe⟩ := ser_unique W hinj hO2 h9 hH hA T hT i _ c'' _ hc'' hc3 K0
+  obtain ⟨t, b, hb, hbΔ, hbe⟩ := serZ_unique W hinj hO2 h9 hH hA T hT i (W.γ T (a • w + a' • w') - (a • w + a' • w'))
+    c'' (fun y => a • c y + a' • c' y) hc'' hc3 K0
   obtain ⟨Gv, hGv, hred⟩ := red W hR T i hc hrs hzd t
   obtain ⟨Gv', hGv', hred'⟩ := red W hR T i hc' hrs' hzd' t
   obtain ⟨Gv'', hGv'', hred''⟩ := red W hR T i hc'' hrs'' hzd'' t
