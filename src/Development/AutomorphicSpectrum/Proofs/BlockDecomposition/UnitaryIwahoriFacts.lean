@@ -48,8 +48,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.UnitaryWitt
 
 section Generic

@@ -12,8 +12,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.Fin GlobalTheory.CompanionTheory.LocalHypotheses
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.TransportLoc
 
 variable {G G' : Type} [Group G] [Group G']
@@ -166,5 +164,3 @@ theorem locConds_of_equiv : ∀ {G G' : Type} [Group G] [TopologicalSpace G] [Gr
       exact hb
 
 end GlobalTheory.CompanionTheory.TransportLoc
-
-end

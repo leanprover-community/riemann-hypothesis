@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.FilMul
 
 variable {l : ℕ} [Fact l.Prime] (A : PAlg l)

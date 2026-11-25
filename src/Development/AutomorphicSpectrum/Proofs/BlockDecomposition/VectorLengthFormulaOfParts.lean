@@ -31,8 +31,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Mass.One
 
 open PositivityTheory.Rg.Mass

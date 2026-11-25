@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyCon
 open NumberField IsDedekindDomain MeasureTheory Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.RT.Inj
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
@@ -54,5 +52,3 @@ variable {B : Base F E} {Γ : Geo σ a a'} {X : Chars F E} {om : Rep σ Γ.V Γ.
 variable {R : RealMaps F a a'} {Rf : FinMaps F a a'}
 
 end GlobalTheory.CompanionTheory.Ar.RT.Inj
-
-end

@@ -6,8 +6,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsMultOfFintype
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Finset
 open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgTw (Mat G)

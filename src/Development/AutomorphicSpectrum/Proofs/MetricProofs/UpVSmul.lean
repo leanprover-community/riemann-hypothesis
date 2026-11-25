@@ -22,8 +22,6 @@ open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WMan
 open GlobalTheory.CompanionTheory.Ar.PB.PFl
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.PFl.Cover
 
 open GlobalTheory.CompanionTheory.Ar.PB.WMan.Cover GlobalTheory.CompanionTheory.Ar.PB.ValRing

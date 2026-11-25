@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.WigAlg Formalism.REAL
 
 namespace GlobalTheory.CompanionTheory.RgCz
@@ -58,5 +56,3 @@ theorem charInt : PositivityTheory.Rg.Cz.CharInt := by
   exact ⟨l, fun τ => (hl τ).1, fun τ => (hl τ).2⟩
 
 end GlobalTheory.CompanionTheory.RgCz
-
-end

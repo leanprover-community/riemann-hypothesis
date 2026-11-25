@@ -8,8 +8,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieMode
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.BT.TanLift
 
 theorem comp_one_over {S : Scheme.{0}} {X Y M : Over S} [GrpObj M] (u : Y ⟶ X) : u ≫ (1 : X ⟶ M) = 1 := by

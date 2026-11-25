@@ -42,8 +42,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Filter
 open GlobalTheory.BCT Formalism.L2.Host PositivityTheory.Rg.BcB.F.Ex0 PositivityTheory.Rg.Bc.ArchbcB.B
 
@@ -72,5 +70,3 @@ theorem GlobalTheory.CompanionTheory.MuOpen.muEx_of_exists :
   refine ⟨μ, e, hμ, fun w hw x hx => ?_, GlobalTheory.Mem.UnrAe.unr_ae_and_level E μ |>.1, fun w => isOpen_ker_loc μ w⟩
   rw [hμ.2.2.1 w hw]
   exact unrChar_apply_of_isUnitAt w _ x hx
-
-end

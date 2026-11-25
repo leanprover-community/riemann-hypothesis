@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearI
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.AdaptedSpan
 
 open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat

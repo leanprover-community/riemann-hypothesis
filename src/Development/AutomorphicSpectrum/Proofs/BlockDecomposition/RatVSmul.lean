@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix NumberField
 open scoped NumberField.AdeleRing
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG

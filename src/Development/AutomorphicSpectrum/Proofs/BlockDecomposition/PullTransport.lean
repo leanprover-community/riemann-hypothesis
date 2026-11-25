@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitsAbs
 
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.FirstChernComparison
 
 universe w w' u₁ v₁ u₂ v₂ u₃ v₃

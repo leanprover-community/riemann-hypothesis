@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1 GlobalTheory.CuspRep
 
 namespace GlobalTheory.CompanionTheory.LogAbs
@@ -64,5 +62,3 @@ theorem logAbsBasic : LogAbsBasic := fun _ _ _ _ =>
   ⟨support_log_finite, logAbs_mul, logAbs_algebraMap⟩
 
 end GlobalTheory.CompanionTheory.LogAbs
-
-end

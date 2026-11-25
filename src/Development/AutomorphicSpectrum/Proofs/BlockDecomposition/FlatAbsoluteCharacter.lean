@@ -9,8 +9,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation GlobalTheory.CompanionTheory.LimV
 open scoped ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LimV
 
 open GlobalTheory.Mem.Chr.CharModel
@@ -91,5 +89,3 @@ theorem absFn_flat : ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberFiel
     exact (mulChi N (GlobalTheory.CuspRep.Model.absC E w) (oneFn E N)).2
 
 end GlobalTheory.CompanionTheory.LimV
-
-end

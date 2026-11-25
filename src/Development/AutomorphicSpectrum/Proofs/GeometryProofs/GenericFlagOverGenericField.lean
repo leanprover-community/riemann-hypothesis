@@ -9,8 +9,6 @@ public import Mathlib.RingTheory.Flat.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.FlagBun
 
 open AlgebraicGeometry CategoryTheory

@@ -11,8 +11,6 @@ public import GroundTheory.GlobalFields.Adele.Approximation
 
 @[expose] public section
 
-noncomputable section
-
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter
 open GroundTheory.Global PositivityTheory.Rg.Base1 GlobalTheory.CompanionTheory.BasePsi
 open scoped ENNReal NNReal Classical
@@ -162,5 +160,3 @@ theorem common_denominator (F : Type) [Field F] [NumberField F] (D : Set (AF F)�
     simpa using mul_le_mul' (valuation_natCast_le_one v (∏ v ∈ T, n v)) ht
 
 end GlobalTheory.CompanionTheory.BasePsi.Den
-
-end

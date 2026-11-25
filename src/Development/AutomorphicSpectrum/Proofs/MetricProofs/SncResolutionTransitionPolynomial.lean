@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes
 
 open MvPolynomial ReciprocityTheory.AnForm.R

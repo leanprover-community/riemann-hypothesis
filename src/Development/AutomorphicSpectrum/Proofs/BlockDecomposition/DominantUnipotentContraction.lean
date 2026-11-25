@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 open GlobalTheory.PRep GlobalTheory.SmGL Matrix Formalism.UG PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.DomGLVal
 open scoped Pointwise
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.DomUnitary
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} {σ : L →+* L}

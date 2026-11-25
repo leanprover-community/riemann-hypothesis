@@ -4,8 +4,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.ValuationCompleteness
 
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain PositivityTheory.PfSWUS.Loc PositivityTheory.SiegelWeilFormula.Gunr Filter Topology
@@ -134,5 +132,3 @@ theorem q2 : Q2 := by
   exact ⟨fun a ha => separated _ S hS h0 h1 hϖ a ha, fun f hf => complete _ S hS h0 h1 hϖ f hf⟩
 
 end GlobalTheory.CompanionTheory.ValuationCompleteness
-
-end

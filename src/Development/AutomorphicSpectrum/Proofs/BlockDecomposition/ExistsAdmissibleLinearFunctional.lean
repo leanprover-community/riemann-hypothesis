@@ -15,7 +15,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.SwapRoot MeasureTheory
 open GlobalTheory.BorelUMod GlobalTheory.BorelUMod.UpLatIndex GlobalTheory.LineUMod
 
-noncomputable section
 namespace GlobalTheory.CompanionTheory.SwapInt
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]

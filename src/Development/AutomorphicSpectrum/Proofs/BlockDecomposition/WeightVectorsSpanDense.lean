@@ -10,8 +10,6 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.RgDsHilb
 
 open ReciprocityTheory.ChartRestriction.DS

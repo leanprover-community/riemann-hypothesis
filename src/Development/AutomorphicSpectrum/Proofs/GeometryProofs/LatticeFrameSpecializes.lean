@@ -12,8 +12,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar Filter Topology Metric
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.LieFrameIndep
 
 theorem linearIndependent_values {Ω C E EC : Type} [Field Ω] [Field C] [AddCommGroup E] [Module Ω E]

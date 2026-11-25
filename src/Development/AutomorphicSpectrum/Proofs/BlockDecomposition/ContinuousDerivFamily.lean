@@ -5,8 +5,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.WeakHolo
 
 open Metric Set Filter Topology Complex Real
@@ -192,5 +190,3 @@ theorem wholo_growForms (v : ℂ → modFun σ Y) {S : Set ℂ} (hS : IsOpen S)
     (fun _ _ _ hg hA => mem_modFun hg hA) μ hμ v hS hd hc hb
 
 end GlobalTheory.CompanionTheory.WeakHolo
-
-end

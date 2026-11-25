@@ -10,8 +10,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZSeg GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.BZOnto.PerpSmall ValuativeRel Zc
 open scoped Topology
 
@@ -122,5 +120,3 @@ theorem evVal_additive_homogeneous : ∀ {k : Type} [Field k] [ValuativeRel k] [
   exact evVal_bilinear ν ψ T B hψ hT
 
 end GlobalTheory.CompanionTheory.MirPair.EvLin
-
-end

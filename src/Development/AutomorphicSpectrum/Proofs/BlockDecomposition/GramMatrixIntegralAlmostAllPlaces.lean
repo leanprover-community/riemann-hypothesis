@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartz
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.SiegelND GlobalTheory.CompanionTheory.SiegelND.Coef
 open scoped TensorProduct ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SiegelND.Coef
 
 open Formalism.L2.SG.LocVol Formalism.L2.SG.Pf.NcS.KfOrbPf Formalism.L2.SG.Pf.NcS.IntWittPf

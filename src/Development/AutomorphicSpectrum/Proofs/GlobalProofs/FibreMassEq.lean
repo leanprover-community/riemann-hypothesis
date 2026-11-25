@@ -10,8 +10,6 @@ import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsCovolOne
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
 open scoped TensorProduct ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.AvgV
 
 theorem fibre_mass_eq {V R : Type} [TopologicalSpace V] [MeasurableSpace V] [TopologicalSpace R] [MeasurableSpace R]
@@ -93,4 +91,3 @@ theorem tendsto_mean {R : Type} [TopologicalSpace R] [MeasurableSpace R] (ν : M
     linarith
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.AvgV
-

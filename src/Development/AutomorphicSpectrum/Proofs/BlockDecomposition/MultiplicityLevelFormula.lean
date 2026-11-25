@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SiegLoc.NuIndex
 
 open MeasureTheory
@@ -294,5 +292,3 @@ theorem nuLev : PositivityTheory.SiegelWeilFormula.Gunr.NuLev := by
   exact multiplicity_hermitian_level hG lam L hlam hL k X hX
 
 end GlobalTheory.CompanionTheory.SiegLoc.NuIndex
-
-end

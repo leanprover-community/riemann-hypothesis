@@ -14,8 +14,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InstAddCommGroup
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult GlobalTheory.SmGL.Exponents
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SubEmb
 
 theorem exists_injective_of_subsingleton {G V Y : Type} [Group G] [Subsingleton G] [AddCommGroup V] [Module ℂ V]

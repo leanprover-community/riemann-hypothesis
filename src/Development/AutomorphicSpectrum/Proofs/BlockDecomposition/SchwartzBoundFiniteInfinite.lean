@@ -16,8 +16,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.SiegelFormula
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.WeilTheta
 
 theorem schwartzA_continuous_and_dominated : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (m n : ℕ) (Φ : Mx D m n → ℂ),
@@ -62,5 +60,3 @@ theorem schwartzA_continuous_and_dominated : ∀ (D : D7) (θ : InfFam D), IsInf
     exact hb x
 
 end GlobalTheory.CompanionTheory.WeilTheta
-
-end

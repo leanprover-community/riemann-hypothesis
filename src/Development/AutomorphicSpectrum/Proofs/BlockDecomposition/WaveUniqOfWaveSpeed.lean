@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveSolu
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix
 open scoped ContDiff
 open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveK

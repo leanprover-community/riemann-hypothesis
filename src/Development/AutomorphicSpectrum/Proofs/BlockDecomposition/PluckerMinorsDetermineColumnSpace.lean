@@ -12,8 +12,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 open GlobalTheory.Doubling (absE)
 open GlobalTheory.CompanionTheory.GodementH
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.GodementH.Cramer
 
 open Matrix

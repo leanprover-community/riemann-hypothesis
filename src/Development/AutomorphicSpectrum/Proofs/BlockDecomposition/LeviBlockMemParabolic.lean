@@ -9,8 +9,6 @@ import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrde
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZPsiPG.QLevi
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -118,5 +116,3 @@ theorem levi_Qp_mem_pgProj (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
   ⟨QLevi.levi_mem_HPG i t q, QLevi.pgProj_levi i t q _⟩
 
 end GlobalTheory.CompanionTheory.BZPsiPG
-
-end

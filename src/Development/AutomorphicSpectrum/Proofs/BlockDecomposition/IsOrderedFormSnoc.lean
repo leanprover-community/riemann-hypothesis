@@ -8,8 +8,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc
 
 namespace GlobalTheory.CompanionTheory.ExhGood
@@ -72,5 +70,3 @@ theorem isOrderedForm_snoc {h : ℕ} {Δ : Fin h → Segment k} {𝔫 : Multiset
       exact H.2 i j (by simpa using hij)
 
 end GlobalTheory.CompanionTheory.ExhGood
-
-end

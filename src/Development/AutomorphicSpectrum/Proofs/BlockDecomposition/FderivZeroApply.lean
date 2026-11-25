@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 open MeasureTheory Matrix Finset
 open scoped ContDiff ComplexConjugate InnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.WaveSpd.OmDec
 
 open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveSpd

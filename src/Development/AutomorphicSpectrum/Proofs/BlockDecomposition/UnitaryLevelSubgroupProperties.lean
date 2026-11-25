@@ -49,8 +49,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.IwLevels
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

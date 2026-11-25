@@ -10,8 +10,6 @@ open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WMan
 open GlobalTheory.CompanionTheory.Ar.PB.PFl
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.PFl.SmallStep
 
 theorem stepCols_subset_of_le {N j : ℕ} (hj : j ≤ N) {m i b x : Fin N} (hmi : m ≤ i)

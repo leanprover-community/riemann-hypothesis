@@ -5,8 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFunc
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj

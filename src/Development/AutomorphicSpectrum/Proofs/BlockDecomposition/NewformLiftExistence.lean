@@ -14,8 +14,6 @@ open GroundTheory.Global.RationalSymbol (prime unitAt)
 open GroundTheory.Automorphic.GodementSection (adeleAt)
 open scoped NumberField.AdeleRing ValuativeRel
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.RankinSelbergQ
 
 open DirichletHecke

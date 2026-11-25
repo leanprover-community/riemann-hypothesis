@@ -5,8 +5,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial
 open GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
 open PositivityTheory.Rg.Rs.An
@@ -139,5 +137,3 @@ theorem bootGlue : BootGlue := by
   simp [h0, h1]
 
 end GlobalTheory.CompanionTheory.AnBoot
-
-end

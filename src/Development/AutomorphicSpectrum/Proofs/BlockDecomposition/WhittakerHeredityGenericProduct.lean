@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Nontriv
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir.Leib
 open scoped TensorProduct
 
@@ -52,5 +50,3 @@ theorem genericProdIff_of_whitHeredity (k : Type) [Field k] [ValuativeRel k] [To
     (nontrivial_piTensorProduct_iff _)
 
 end GlobalTheory.CompanionTheory.Leib
-
-end

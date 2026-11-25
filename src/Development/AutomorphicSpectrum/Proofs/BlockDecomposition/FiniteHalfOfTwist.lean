@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -88,5 +86,3 @@ theorem finHalfOf : FinHalfOf := by
   rw [hdc', hmass, hEuler E hUnr a b S hS φ₁ φ₂ hT1 hT2 δ₁ δ₂ h1 h2]
 
 end GlobalTheory.CompanionTheory.FinHalfAsm
-
-end

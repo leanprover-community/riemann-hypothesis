@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSub
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.JHMult
 
 namespace GlobalTheory.CompanionTheory.CsStages

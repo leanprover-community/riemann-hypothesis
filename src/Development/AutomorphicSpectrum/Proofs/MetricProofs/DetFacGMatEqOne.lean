@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.DetG
 
 open AlgebraicGeometry CategoryTheory NumberField Matrix

@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Lat
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.HT.ProjEig
 
 open Module NumberField

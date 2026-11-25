@@ -21,8 +21,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Mirabol
 
 open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun Matrix Topology
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZMirOnto
 
 theorem exists_fixed_lift {L W W' : Type} [Group L] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']

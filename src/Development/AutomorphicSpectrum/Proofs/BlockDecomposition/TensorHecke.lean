@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.CuspRep
 open scoped TensorProduct
 
@@ -112,5 +110,3 @@ theorem tensHk : TensHk := by
     exact hp (by simp [h0])
 
 end GlobalTheory.CompanionTheory.TensHkSum
-
-end

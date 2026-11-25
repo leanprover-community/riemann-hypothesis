@@ -8,7 +8,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E
 open scoped ENNReal Pointwise
@@ -26,4 +25,3 @@ theorem size_facts (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) 
     (hc g h).trans (add_le_add le_rfl (le_max_left _ _))⟩
 
 end GlobalTheory.CompanionTheory.Growth
-end

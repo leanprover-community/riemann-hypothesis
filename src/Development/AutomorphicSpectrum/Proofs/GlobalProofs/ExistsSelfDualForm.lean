@@ -15,8 +15,6 @@ import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsCovolOne
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.SdExist
 
 open MeasureTheory Topology

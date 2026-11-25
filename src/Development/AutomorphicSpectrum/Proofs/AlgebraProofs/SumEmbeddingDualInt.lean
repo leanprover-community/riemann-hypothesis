@@ -5,8 +5,6 @@ public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.HT.EigDim
 
 open Module NumberField GlobalTheory.CompanionTheory.Ar.HT GlobalTheory.CompanionTheory.Ar.HT.LatBasic

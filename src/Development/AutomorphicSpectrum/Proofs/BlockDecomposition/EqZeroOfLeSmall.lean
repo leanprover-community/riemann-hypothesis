@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory PositivityTheory.Rg.BcB.E1
 open scoped ENNReal Pointwise
 
@@ -123,5 +121,3 @@ theorem ptEq_of : KerBasic → CvTest → OpAdj → ColOp → BumpEx → ApproxU
   exact sub_eq_zero.1 (norm_le_zero_iff.1 this)
 
 end GlobalTheory.CompanionTheory.KerPoint
-
-end

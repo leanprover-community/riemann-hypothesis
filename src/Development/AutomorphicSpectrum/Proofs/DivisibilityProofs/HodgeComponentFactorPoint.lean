@@ -9,8 +9,6 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorGen
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.GenOpen
 
 open AlgebraicGeometry CategoryTheory Limits NumberField

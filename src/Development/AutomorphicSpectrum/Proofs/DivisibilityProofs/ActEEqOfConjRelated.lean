@@ -15,8 +15,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.SplitFlip GlobalTheory.SplitWeil
 open ValuativeRel
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.SvN
 
 open Matrix

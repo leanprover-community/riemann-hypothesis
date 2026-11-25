@@ -46,8 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open scoped Classical
 
@@ -108,5 +106,3 @@ theorem GlobalTheory.CompanionTheory.MuLocal.muLoc_holds : PositivityTheory.Rg.B
     · have h2 := hc (atFin (GlobalTheory.ThetaSatake.cw w) (unif (GlobalTheory.ThetaSatake.cw w)))
       rw [μ.val_eq hun _ (isUnifAt_conj w _ (unif_spec _))] at h2
       exact eq_inv_of_mul_eq_one_left h2
-
-end

@@ -7,8 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Spherica
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open GlobalTheory.BCT GlobalTheory.UnitaryBC PositivityTheory.Rg.Bc.ArchbcB.B PositivityTheory.Rg.BcB.F.MT
 open PositivityTheory.Rg.BcB.F.Eig (lconv)
@@ -45,5 +43,3 @@ theorem matchSplitOf : MatchSplitOf := by
   exact h
 
 end GlobalTheory.CompanionTheory.MatchPowers
-
-end

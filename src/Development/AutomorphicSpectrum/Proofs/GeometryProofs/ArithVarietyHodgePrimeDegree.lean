@@ -26,8 +26,6 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx
 
 section pts

@@ -16,8 +16,6 @@ public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.Analyt
 
 open Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.KFinLink
 
 open GlobalTheory.KFinVec
@@ -94,5 +92,3 @@ theorem kFiniteVectors_irreducibleUnitary_unitaryGroupPQ : GlobalTheory.Publishe
     fun S hS hL => GlobalTheory.CompanionTheory.KFinLink.lieIrr_of hσ hirr S hS hL⟩
 
 end GlobalTheory.CompanionTheory.Published
-
-end

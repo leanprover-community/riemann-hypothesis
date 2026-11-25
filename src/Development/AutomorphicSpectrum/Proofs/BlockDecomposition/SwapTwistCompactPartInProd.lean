@@ -11,8 +11,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.Fin GlobalTheory.CompanionTheory.LocalHypotheses
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SplitUnit
 
 theorem compact_zpowers_fst {H : Type} [Group H] [TopologicalSpace H] [T2Space H] (t : H × H)
@@ -60,5 +58,3 @@ theorem main : ∀ {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup
         group
 
 end GlobalTheory.CompanionTheory.SplitUnit
-
-end

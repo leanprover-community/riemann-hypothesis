@@ -8,8 +8,6 @@ import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrde
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibPhi Topology
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LeibPhi
 
 theorem continuous_glEmbMat_comp {k X : Type} [Field k] [TopologicalSpace k] [TopologicalSpace X] (m : ℕ)
@@ -29,5 +27,3 @@ theorem continuous_iotaM : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
   exact continuous_induced_rng.2 (hemb.comp continuous_subtype_val)
 
 end GlobalTheory.CompanionTheory.LeibPhi
-
-end

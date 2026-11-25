@@ -42,8 +42,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.IwEntries
 
 variable {E : Type} [Field E] [NumberField E]

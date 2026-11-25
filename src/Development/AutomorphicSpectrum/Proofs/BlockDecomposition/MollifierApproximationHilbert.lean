@@ -8,8 +8,6 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory ReciprocityTheory.ChartRestriction.DS
 
 namespace GlobalTheory.CompanionTheory.HilbMoll

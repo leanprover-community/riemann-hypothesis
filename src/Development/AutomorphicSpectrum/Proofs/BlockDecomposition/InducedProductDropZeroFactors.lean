@@ -11,8 +11,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Cos
 
 namespace GlobalTheory.CompanionTheory.FineProd.ProdDrop
@@ -115,5 +113,3 @@ theorem prodIrr_drop : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpa
   exact ⟨e2⟩
 
 end GlobalTheory.CompanionTheory.FineProd.ProdDrop
-
-end

@@ -9,8 +9,6 @@ open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WMan
 open GlobalTheory.CompanionTheory.Ar.PB.PFl
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.PFl.MatRead
 
 theorem det_of_key {m : ℕ} (A : Matrix (Fin m) (Fin m) ℂ) (f : Fin m → ℕ) (hf : Function.Injective f)

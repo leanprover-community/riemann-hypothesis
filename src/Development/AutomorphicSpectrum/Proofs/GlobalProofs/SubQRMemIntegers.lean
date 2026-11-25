@@ -14,8 +14,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVo
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
 open scoped TensorProduct ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef
 
 open Formalism.L2.SG.LocVol Formalism.L2.SG.Pf.NcS.KfOrbPf Formalism.L2.SG.Pf.NcS.IntWittPf

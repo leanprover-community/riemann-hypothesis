@@ -14,8 +14,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.LieEigFrame
 
 variable {S : Scheme.{0}} {R : Type} [CommRing R] {G : Over S} [GrpObj G] {x : Sp R ⟶ S} {Em : Type}

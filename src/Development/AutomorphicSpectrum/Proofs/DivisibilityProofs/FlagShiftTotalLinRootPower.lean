@@ -7,8 +7,6 @@ public import Mathlib.CategoryTheory.Category.Basic
 
 open MvPolynomial Filter Topology GlobalTheory.CompanionTheory.Ar.Top
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Top.LinPow
 
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}

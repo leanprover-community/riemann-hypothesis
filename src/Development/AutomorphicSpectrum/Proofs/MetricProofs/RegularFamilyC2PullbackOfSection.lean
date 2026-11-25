@@ -12,8 +12,6 @@ open scoped ContDiff
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 
-noncomputable section
-
 theorem isOpen_compl_bdry {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X}
     {L : LocPot X} {s : X → X → ℂ} (hs : IsSection A L s) : IsOpen (bdry s)ᶜ := by
   apply PositivityTheory.Xgp.c_grad_atlas.isOpen_compl_bdry <;> assumption
@@ -29,7 +27,5 @@ theorem regular_family_C2_pullback_of_open {e e' : ℕ} {X X' : Type} [Topologic
     (ph ∘ h) hph (fun _ _ => rfl) hT (fun k K hK hKs => hC k K hKs hK)
   intro j K hKs hK
   exact key j K hK hKs
-
-end
 
 end GlobalTheory.CompanionTheory.Ar.Giv

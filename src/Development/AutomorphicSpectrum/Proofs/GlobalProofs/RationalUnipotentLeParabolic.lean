@@ -11,8 +11,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.LocalCountingBounds
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin
 
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev

@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsS
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -353,5 +351,3 @@ theorem suppFinOf : SuppFinOf := by
   exact ⟨γ, hγ, f', hf', k' * k, mul_mem hk' hk, by rw [e, e', mul_assoc _ k' k]⟩
 
 end GlobalTheory.CompanionTheory.SuppFinTw
-
-end

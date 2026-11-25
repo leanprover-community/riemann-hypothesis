@@ -11,7 +11,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineG
 
 @[expose] public section
 
-noncomputable section
 open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl GlobalTheory.CompanionTheory.CTFin Topology
 
 namespace GlobalTheory.CompanionTheory.CTFin.Central

@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.BCT
 
 namespace GlobalTheory.CompanionTheory.MassProd
@@ -122,5 +120,3 @@ theorem massProd : PositivityTheory.Rg.BcB.G8.Fin.MassProd := by
   rw [mul_div_mul_comm]
 
 end GlobalTheory.CompanionTheory.MassProd
-
-end

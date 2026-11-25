@@ -9,8 +9,6 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermi
 
 @[expose] public section
 
-noncomputable section
-
 open MvPolynomial ReciprocityTheory.AnForm.R GlobalTheory.CompanionTheory.Ar.Cmp
 
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par

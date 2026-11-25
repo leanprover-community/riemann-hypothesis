@@ -13,8 +13,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 
 open scoped Classical
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.F.RS
 open PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.F.Tail
@@ -51,5 +49,3 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 variable {k : Type} [Fintype k]
 
 end GlobalTheory.CompanionTheory.TailLocPow
-
-end

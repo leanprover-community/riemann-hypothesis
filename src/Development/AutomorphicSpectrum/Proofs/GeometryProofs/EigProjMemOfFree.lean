@@ -5,8 +5,6 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsV
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.QuotEig

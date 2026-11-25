@@ -6,8 +6,6 @@ public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Crv.DegDual
 
 open GlobalTheory.CompanionTheory.Ar.Crv Module

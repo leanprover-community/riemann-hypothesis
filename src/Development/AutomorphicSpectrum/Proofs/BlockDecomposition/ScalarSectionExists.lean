@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.ScalWall
 
 open PositivityTheory.RgEis ResidueKilled.Tr GlobalTheory.CompanionTheory.SiegelFrame
@@ -124,5 +122,3 @@ theorem tScal : TScal := by
         rw [e3, e1, e2]
 
 end GlobalTheory.CompanionTheory.ScalWall
-
-end

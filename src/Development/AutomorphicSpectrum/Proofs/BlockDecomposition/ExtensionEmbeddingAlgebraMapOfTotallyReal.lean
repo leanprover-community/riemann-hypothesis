@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField NumberField.InfinitePlace NumberField.InfinitePlace.Completion
 open scoped NumberField.AdeleRing NumberField.LiesOver TensorProduct
 open PositivityTheory.RgEis PositivityTheory.RgEis.So

@@ -7,8 +7,6 @@ import GroundTheory.GlobalFields.Adele.Topology
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open scoped NumberField.AdeleRing
 
@@ -31,5 +29,3 @@ theorem isCuspidal_of_isCuspForm : ∀ (E : Type) [Field E] [NumberField E] [_ro
   simpa only [AutomorphicForm.constantTerm, unipGL_eq_unip] using h2
 
 end GlobalTheory.CompanionTheory.CuspBridge
-
-end

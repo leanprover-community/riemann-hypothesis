@@ -10,8 +10,6 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogRatio
 
 @[expose] public section
 
-noncomputable section
-
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar.Giv.Mix
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv.Mix

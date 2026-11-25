@@ -11,8 +11,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HodgeIP
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.SncRes.SegreForm
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Cmp

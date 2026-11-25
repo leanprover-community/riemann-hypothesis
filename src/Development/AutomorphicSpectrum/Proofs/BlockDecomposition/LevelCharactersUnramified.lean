@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.GunrLevChars
 
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain PositivityTheory.PfSWUS.Loc PositivityTheory.SiegelWeilFormula.Gunr
@@ -155,5 +153,3 @@ theorem levChars : PositivityTheory.SiegelWeilFormula.Gunr.LevChars := by
   exact psiF_compat hG c k a
 
 end GlobalTheory.CompanionTheory.GunrLevChars
-
-end

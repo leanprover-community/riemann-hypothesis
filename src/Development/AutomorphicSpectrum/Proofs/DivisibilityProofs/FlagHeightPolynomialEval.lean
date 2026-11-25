@@ -13,8 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinea
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Top
 
 section

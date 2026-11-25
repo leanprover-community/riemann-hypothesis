@@ -5,8 +5,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Filter
 open scoped ENNReal
 open PositivityTheory.Rg.Tf.Loc

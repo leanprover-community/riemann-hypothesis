@@ -16,8 +16,6 @@ public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 open Matrix Topology Filter
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LieStable
 
 open scoped Matrix.Norms.Operator
@@ -73,5 +71,3 @@ theorem lieAlg_stable : ∀ {n : ℕ} {G : Set (Matrix (Fin n) (Fin n) ℂ)}, Gl
     exact 𝔤.smul_mem _ (𝔤.sub_mem (hmem s) (hmem 0))
 
 end GlobalTheory.CompanionTheory.LieStable
-
-end

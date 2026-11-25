@@ -22,8 +22,6 @@ open scoped ComplexOrder
 
 set_option backward.isDefEq.respectTransparency false
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.PhMuFree
 
 

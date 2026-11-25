@@ -6,8 +6,6 @@ import Mathlib.Tactic.NormNum.LegendreSymbol
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.LieStable
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField

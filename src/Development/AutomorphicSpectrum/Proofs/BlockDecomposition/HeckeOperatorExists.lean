@@ -14,8 +14,6 @@ import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 
 open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.HeckeKm
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -128,5 +126,3 @@ theorem exists_isHeckeOp : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
   exact h0
 
 end GlobalTheory.CompanionTheory.HeckeKm
-
-end

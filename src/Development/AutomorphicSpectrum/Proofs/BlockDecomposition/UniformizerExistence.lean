@@ -5,8 +5,6 @@ public import GroundTheory.GlobalFields.LocalAtPlace
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LocalUnif
 
 open NumberField IsDedekindDomain HeckeCharacterZeroLocus.SiegelWeilU
@@ -45,5 +43,3 @@ theorem unifEx : PositivityTheory.SiegelWeilFormula.Gunr.UnifEx := by
     exact Ideal.mem_span_singleton.1 hm
 
 end GlobalTheory.CompanionTheory.LocalUnif
-
-end

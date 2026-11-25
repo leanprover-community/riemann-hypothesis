@@ -17,8 +17,6 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.Plane
 
 variable {N : ℕ}

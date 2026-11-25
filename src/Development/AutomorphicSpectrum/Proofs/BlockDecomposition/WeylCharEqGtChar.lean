@@ -7,8 +7,6 @@ import ReciprocityTheory.ReductiveGroups.SymplecticTraces.WeylCharacters.Antiton
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.RmCharacter

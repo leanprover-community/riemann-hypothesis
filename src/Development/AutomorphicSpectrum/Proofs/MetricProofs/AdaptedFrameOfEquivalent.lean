@@ -9,8 +9,6 @@ open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheo
 open scoped ENNReal InnerProductSpace
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.Dict
 
 namespace LatEmb

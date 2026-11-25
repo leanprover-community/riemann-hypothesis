@@ -11,8 +11,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.EisHalf
 
 open scoped TensorProduct NNReal Matrix
@@ -156,5 +154,3 @@ theorem eis_half_plane : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
   exact (hD z le_rfl le_rfl x).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) q0)
 
 end GlobalTheory.CompanionTheory.EisHalf
-
-end

@@ -4,8 +4,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.ResidueInvolution
 
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain PositivityTheory.SiegelWeilFormula.Gunr
@@ -85,5 +83,3 @@ theorem q1 : PositivityTheory.SiegelWeilFormula.Gunr.Q1 := by
     exact one_ne_zero h10
 
 end GlobalTheory.CompanionTheory.ResidueInvolution
-
-end

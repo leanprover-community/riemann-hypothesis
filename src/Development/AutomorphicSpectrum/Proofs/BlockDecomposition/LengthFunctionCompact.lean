@@ -7,8 +7,6 @@ public import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Finset
 
 namespace GlobalTheory.CompanionTheory.LgBound

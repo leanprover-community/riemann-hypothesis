@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Filter Topology
 open scoped ContDiff ComplexConjugate
 

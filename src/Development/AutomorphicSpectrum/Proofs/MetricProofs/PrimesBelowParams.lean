@@ -9,8 +9,6 @@ import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par
 
 open MvPolynomial ReciprocityTheory.AnForm.R ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages GlobalTheory.CompanionTheory.Ar.Cmp

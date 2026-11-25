@@ -8,8 +8,6 @@ import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂
 
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R

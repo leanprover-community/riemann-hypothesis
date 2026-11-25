@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteTw
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4
 
@@ -66,5 +64,3 @@ theorem ratDisc : PositivityTheory.Rg.BcB.D4.RatDisc :=
   ⟨fun _ _ _ _ _ d => ⟨ratCent_le d, discrete_ratIn d, isClosed_adCent d⟩, measurable_gam⟩
 
 end GlobalTheory.CompanionTheory.RatDisc
-
-end

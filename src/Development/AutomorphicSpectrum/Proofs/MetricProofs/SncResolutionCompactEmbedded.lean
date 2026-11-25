@@ -6,8 +6,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Top
 
 open MvPolynomial ReciprocityTheory.AnForm.R

@@ -55,8 +55,6 @@ import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompat
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial Module TensorProduct
 open GlobalTheory.WeilDeligne LocalGlobalAboveLAlt
 

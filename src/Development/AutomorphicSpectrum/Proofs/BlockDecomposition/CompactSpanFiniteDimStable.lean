@@ -10,8 +10,6 @@ set_option maxSynthPendingDepth 1
 open NumberField GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open scoped NumberField.AdeleRing
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.HCRep
 
 open AutomorphicForm GlobalTheory.CompanionTheory.ArchSmooth
@@ -67,5 +65,3 @@ theorem liB_skew_mem_span : ∀ (E : Type) [Field E] [NumberField E] [_root_.Num
   rwa [show liB Z ψ = w from Subtype.ext e.symm]
 
 end GlobalTheory.CompanionTheory.HCRep
-
-end

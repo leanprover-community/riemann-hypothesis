@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
 open scoped Pointwise
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SatPow
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n : ℕ}
@@ -114,5 +112,3 @@ theorem iwU_diag (hσv : ∀ x, Valued.v (σ x) = Valued.v x) {g : GU σ n} (hg 
     _ ≤ _ := mul_le_of_le_one_right' (k1 i i)
 
 end GlobalTheory.CompanionTheory.SatPow
-
-end

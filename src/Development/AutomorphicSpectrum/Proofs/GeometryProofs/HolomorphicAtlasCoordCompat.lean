@@ -9,8 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SmallPointsC
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.ImmBlock
 
 theorem aeval_mul_of_isHomogeneous {σ R : Type*} [Fintype σ] [CommRing R] {alg : Algebra ℤ R}

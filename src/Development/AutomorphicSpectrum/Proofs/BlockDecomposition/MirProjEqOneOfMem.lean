@@ -6,8 +6,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Mirabol
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
 
 namespace GlobalTheory.CompanionTheory.BZMirAdj

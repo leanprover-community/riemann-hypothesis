@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordTieComp
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.FlagBun
 
 open AlgebraicGeometry CategoryTheory

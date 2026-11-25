@@ -10,8 +10,6 @@ import Development.WeilBound.RepresentationTheoryGL.FormalDegree.FormalDegreeHil
 
 @[expose] public section
 
-noncomputable section
-
 open Finset MeasureTheory Matrix
 open scoped InnerProductSpace ComplexOrder
 

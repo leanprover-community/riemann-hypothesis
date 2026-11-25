@@ -4,8 +4,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.AdelicCharLocal
 
 open NumberField IsDedekindDomain
@@ -38,5 +36,3 @@ theorem psiBasic : PositivityTheory.SiegelWeilFormula.Gunr.PsiBasic := by
   · exact hψ.1.comp (Continuous.prodMk continuous_const (continuous_singleV F v))
 
 end GlobalTheory.CompanionTheory.AdelicCharLocal
-
-end

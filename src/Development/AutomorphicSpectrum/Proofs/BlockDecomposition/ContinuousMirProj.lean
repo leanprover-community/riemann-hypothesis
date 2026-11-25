@@ -10,8 +10,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Mirabol
 
 open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZMirFun
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

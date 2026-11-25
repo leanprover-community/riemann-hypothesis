@@ -17,8 +17,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.IsSchwartz
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.SiegelND GlobalTheory.CompanionTheory.SiegelND.Coef
 open scoped TensorProduct ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SiegelND.Coef.AvgV
 
 theorem ae_lift_eq {V X Y : Type} [TopologicalSpace V] [MeasurableSpace V] [TopologicalSpace X] [MeasurableSpace X]

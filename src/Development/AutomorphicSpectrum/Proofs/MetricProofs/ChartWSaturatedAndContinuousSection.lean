@@ -10,8 +10,6 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.Fub
 open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GroundTheory.Heights₂.Heights.LowerBoundFree GroundTheory.Heights₂.Heights.Regular
 open GlobalTheory.CompanionTheory.Ar.RiemannLimit GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.NoMonodromy
 
 variable {a g : ℕ}

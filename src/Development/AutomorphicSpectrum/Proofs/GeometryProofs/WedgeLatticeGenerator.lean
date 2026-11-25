@@ -5,8 +5,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLo
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.WedgeFrame
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat

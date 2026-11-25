@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZMir
 
 theorem mem_MirUin_iff_mem_derUnipM (k : Type) [Field k] (n : ℕ) (g : Mir k n) :

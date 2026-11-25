@@ -9,8 +9,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 open CategoryTheory AlgebraicGeometry Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.E GlobalTheory.EtC
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.PrimAlgProof
 
 open Polynomial

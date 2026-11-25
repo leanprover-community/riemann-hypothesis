@@ -8,8 +8,6 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemAbLocusIff
 open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.OrArch
 
 section Lines

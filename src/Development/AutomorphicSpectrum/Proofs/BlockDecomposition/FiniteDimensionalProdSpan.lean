@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStabl
 
 @[expose] public section
 
-noncomputable section
-
 open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.LimV
@@ -28,5 +26,3 @@ theorem finiteDimensional_prodSpan_of_fd : ∀ {A B : Type} (U₁ : Submodule �
   exact Submodule.finiteDimensional_of_le hle
 
 end GlobalTheory.CompanionTheory.LimV
-
-end

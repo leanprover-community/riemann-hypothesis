@@ -7,8 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOpe
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.Casselman
@@ -34,5 +32,3 @@ theorem hecke_dominant_mul_abstract (G : Type) [Group G] [TopologicalSpace G] [I
   simp [hr0]
 
 end GlobalTheory.CompanionTheory.Casselman
-
-end

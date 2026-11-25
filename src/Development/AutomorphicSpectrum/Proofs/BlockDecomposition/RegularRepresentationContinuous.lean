@@ -11,7 +11,6 @@ open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc GlobalTheory.CompanionTheory.PresSobA
 open scoped Matrix.Norms.Elementwise
-noncomputable section
 
 namespace GlobalTheory.CompanionTheory.PresSobA
 

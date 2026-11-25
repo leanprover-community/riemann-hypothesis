@@ -16,8 +16,6 @@ import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped ComplexOrder Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.CovMap.Deg
 
 theorem isAnalyticSubset_preimage {e : ℕ} {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]

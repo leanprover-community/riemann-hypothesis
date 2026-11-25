@@ -10,8 +10,6 @@ import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrde
 
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZMir.GpExists
 
 section Entries
@@ -118,5 +116,3 @@ theorem exists_gpProj_unip (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
           Matrix.one_apply_ne h]
 
 end GlobalTheory.CompanionTheory.BZMir
-
-end

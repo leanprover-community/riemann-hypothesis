@@ -8,8 +8,6 @@ import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LocGram
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.CompanionTheory.IwaDbl
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.IwaDbl
 
 theorem mem_KFin_of_frame_integral {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}

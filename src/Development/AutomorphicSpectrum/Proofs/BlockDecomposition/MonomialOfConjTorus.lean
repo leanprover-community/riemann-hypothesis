@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalB
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
 
 namespace GlobalTheory.CompanionTheory.LbElem.ConjMonomial
@@ -72,5 +70,3 @@ theorem mem_tor_of_offDiag {N : ℕ} (x : GL (Fin N) k)
     exact h1
 
 end GlobalTheory.CompanionTheory.LbElem.ConjMonomial
-
-end

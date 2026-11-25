@@ -25,8 +25,6 @@ open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
 set_option backward.isDefEq.respectTransparency false
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
 open GlobalTheory.CompanionTheory.Ar.LieTangent GlobalTheory.CompanionTheory.Ar.LieVB

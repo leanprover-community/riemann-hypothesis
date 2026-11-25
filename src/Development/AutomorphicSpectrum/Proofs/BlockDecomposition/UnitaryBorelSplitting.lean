@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BorelSplit
 
 theorem borelSplitU : PositivityTheory.SphericalProduct.BorelSplitU := by

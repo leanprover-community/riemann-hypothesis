@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Set Filter
 open scoped ContDiff Topology
 

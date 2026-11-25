@@ -5,8 +5,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThPr
 
 @[expose] public section
 
-noncomputable section
-
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter GroundTheory.Global PositivityTheory.Rg.Base1 GlobalTheory.CompanionTheory.BasePsi
 open scoped ENNReal NNReal Classical
 
@@ -56,5 +54,3 @@ theorem pure_rv_zero_apply (S : Finset (HeightOneSpectrum (𝓞 F))) (G : Ainf F
       ENNReal.ofReal_zero]
 
 end GlobalTheory.CompanionTheory.BasePsi
-
-end

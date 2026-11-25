@@ -16,8 +16,6 @@ open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheo
 open scoped ENNReal InnerProductSpace
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.BallInverse
 
 theorem isOpen_posDef_hermitian {X κ : Type} [TopologicalSpace X] [Fintype κ]

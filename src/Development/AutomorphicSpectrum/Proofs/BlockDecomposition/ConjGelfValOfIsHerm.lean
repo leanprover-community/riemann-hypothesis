@@ -6,8 +6,6 @@ import Std.Tactic.BVDecide.Normalize.Bool
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Finset
 open scoped ContDiff ComplexConjugate InnerProductSpace
 

@@ -6,8 +6,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.G2
 
 namespace GlobalTheory.CompanionTheory.EllLoc
@@ -91,5 +89,3 @@ theorem ellLocal : EllLocal := by
     rwa [Polynomial.map_mul] at this
 
 end GlobalTheory.CompanionTheory.EllLoc
-
-end

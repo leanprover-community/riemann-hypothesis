@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
@@ -194,5 +192,3 @@ theorem degMove_of : MulF → MulI → SzFin → FinSupp → DegBasisG → DegMo
   nlinarith [hc, hpos]
 
 end GlobalTheory.CompanionTheory.DegMoveProof
-
-end

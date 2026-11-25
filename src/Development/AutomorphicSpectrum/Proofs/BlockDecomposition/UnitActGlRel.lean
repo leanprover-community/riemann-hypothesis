@@ -8,8 +8,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.VectorComplexifiedDerivativeC
 open scoped InnerProductSpace
 open Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.SmoothVecMod
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SmoothVecGl
 
 theorem unitAct_glRel : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H]

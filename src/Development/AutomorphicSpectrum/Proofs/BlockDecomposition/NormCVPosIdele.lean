@@ -7,8 +7,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1 PositivityTheory.Rg.BcB.E1
 open GroundTheory.Automorphic.Reduction
@@ -112,4 +110,3 @@ theorem torNorm : LogAbsBasic → TorNorm := fun _ E _ _ _ =>
       linarith⟩⟩
 
 end GlobalTheory.CompanionTheory.TorNorm
-end

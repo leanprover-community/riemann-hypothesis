@@ -7,8 +7,6 @@ public import Mathlib.Analysis.Normed.Group.Ultra
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.Wedge
@@ -276,5 +274,3 @@ theorem wedgeF_of_mulF : MulF → WedgeF := by
       quot := fun κ _ _ B hB => nF_quot hM B hB }
 
 end GlobalTheory.CompanionTheory.Wedge
-
-end

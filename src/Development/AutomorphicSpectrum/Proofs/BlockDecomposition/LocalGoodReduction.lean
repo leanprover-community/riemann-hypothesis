@@ -20,8 +20,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open GlobalTheory.BCT
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LocGoodProof
 
 section Generic
@@ -112,5 +110,3 @@ theorem locGood : PositivityTheory.Rg.BcB.G8.Fin.LocGood := by
   exact good_pair hU a b w y h₁ h₂
 
 end GlobalTheory.CompanionTheory.LocGoodProof
-
-end

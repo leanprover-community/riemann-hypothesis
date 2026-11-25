@@ -13,8 +13,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Exists
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.TD
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.Published GlobalTheory.LocGL.SupportUnique GlobalTheory.SplitRead

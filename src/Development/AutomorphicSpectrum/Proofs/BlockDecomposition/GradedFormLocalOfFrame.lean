@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFil
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
-noncomputable section
 namespace GlobalTheory.CompanionTheory.GrForm
 
 theorem rep_congr {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {A : C ⥤ CommAlgCat.{0} R} {a b : IdF A} {j : ℕ}

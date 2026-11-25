@@ -11,8 +11,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.SegreChart
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I4 GroundTheory.Heights₂.Heights.HilbertSamuel

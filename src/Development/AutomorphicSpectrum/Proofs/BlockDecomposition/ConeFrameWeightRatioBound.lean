@@ -7,8 +7,6 @@ import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RapidDecay
 open Formalism.UG (cT)
 open GlobalTheory.Orb (archMat)
@@ -188,5 +186,3 @@ theorem frameWt_div_le_div_ratio : ∀ (r : ℕ) (c : ℝ), 0 < c → ∃ K : �
   exact key
 
 end GlobalTheory.CompanionTheory.RapidDecay
-
-end

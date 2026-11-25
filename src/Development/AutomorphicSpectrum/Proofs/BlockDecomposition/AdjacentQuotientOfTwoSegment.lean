@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MultiProdCompCon
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.SplitWeil GlobalTheory.ProdReorder
 open scoped TensorProduct
 
@@ -57,4 +55,3 @@ theorem nontrivial_prodIrr {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ 
   exact nontrivial_indSp _ (isSmooth_piTensor fun a => (x a).2.rep.smooth)
 
 end GlobalTheory.CompanionTheory.AdjQuot
-end

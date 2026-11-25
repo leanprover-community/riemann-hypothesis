@@ -26,8 +26,6 @@ open ReciprocityTheory.AnForm.A (Mollifier molli shrink regMax coordDiv limsupEx
 open GroundTheory.Heights₂.Heights.AnalyticLimit
 open GroundTheory.Heights₂.Heights.Regular (RegChartData PotentialCharts)
 
-noncomputable section
-
 theorem arg_C2_through_chart {D : ℕ} (ρ : Mollifier D) {O P L : Set (Fin D → ℂ)}
     (hO : IsOpen O) (hP : IsOpen P) (hL : IsCompact L) (hLO : L ⊆ O)
     {T : (Fin D → ℂ) → Fin D → ℂ} (hTO : ContDiffOn ℝ ∞ T O) (hTP : MapsTo T O P)
@@ -435,7 +433,5 @@ theorem regWeight_tendsto_C2_of_tied :
   intro K _ ι _ P n M Xo B S hS j K' hK's hK'c
   have h := regularised_C2 S.R S.ρ S.cutoff hS.K_tendsto hS.e1_tendsto_zero S.e1_ge hS.compare j hK'c hK's
   exact ⟨h.1, h.2.1, h.2.2⟩
-
-end
 
 end GlobalTheory.CompanionTheory.Ar.Giv

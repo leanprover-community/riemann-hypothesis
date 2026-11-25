@@ -16,8 +16,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.JoinPts
 
 open MvPolynomial AlgebraicGeometry CategoryTheory NumberField

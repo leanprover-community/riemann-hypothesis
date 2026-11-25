@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelP
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.AutomorphicL2Unitary PositivityTheory.S2.Clozel Filter Topology
 open scoped ComplexConjugate InnerProductSpace
 

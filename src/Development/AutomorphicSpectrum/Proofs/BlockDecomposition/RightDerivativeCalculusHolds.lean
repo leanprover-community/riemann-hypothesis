@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryM
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Finset
 open scoped ContDiff ComplexConjugate
 

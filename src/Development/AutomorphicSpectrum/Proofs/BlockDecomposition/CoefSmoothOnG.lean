@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothVecUnit
 
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.CoefSmooth
 
 open scoped Matrix.Norms.Elementwise

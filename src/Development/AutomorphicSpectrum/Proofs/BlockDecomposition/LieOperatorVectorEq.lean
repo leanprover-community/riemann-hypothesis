@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2Spac
 
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL MeasureTheory PositivityTheory.S2.Clozel
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.ClozelPurity
 
 theorem EopV_val (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (π : CuspSub E a)
@@ -16,5 +14,3 @@ theorem EopV_val (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTota
   simp [EopV, Eop, lieS_apply, CuspSub.op_val, act]
 
 end GlobalTheory.CompanionTheory.ClozelPurity
-
-end

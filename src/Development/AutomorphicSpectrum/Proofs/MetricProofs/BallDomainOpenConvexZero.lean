@@ -13,8 +13,6 @@ open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheo
 open scoped ENNReal InnerProductSpace
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.BallConvex
 
 theorem re_star_dotProduct_self {κ : Type} [Fintype κ] (w : κ → ℂ) :

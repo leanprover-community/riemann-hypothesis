@@ -8,8 +8,6 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Per
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.HodgeVal
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology

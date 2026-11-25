@@ -6,7 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFil
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
-noncomputable section
 namespace GlobalTheory.CompanionTheory.GrForm
 
 variable {O : Type} [CommRing O] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)}

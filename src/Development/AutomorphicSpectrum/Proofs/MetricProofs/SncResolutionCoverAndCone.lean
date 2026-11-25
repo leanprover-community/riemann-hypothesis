@@ -6,8 +6,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.I
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes
 
 open MvPolynomial ReciprocityTheory.AnForm.R

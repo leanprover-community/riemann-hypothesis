@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
 open scoped NumberField.AdeleRing
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.GodementSection

@@ -9,8 +9,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OfE
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
 open scoped TensorProduct ENNReal NNReal Matrix Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.MdRay
 
 theorem norm_theta {F : Type} [Field F] [NumberField F] (hF : IsTotallyReal F) (θ : ℝ →+* Ainf F)
@@ -46,5 +44,3 @@ theorem norm_md_ray : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F 
   rw [Finset.prod_pow_eq_pow_sum, InfinitePlace.sum_mult_eq]
 
 end GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.MdRay
-
-end

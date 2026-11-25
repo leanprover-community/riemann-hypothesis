@@ -22,8 +22,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.TD
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.Published GlobalTheory.LocGL.SupportUnique GlobalTheory.SplitRead GlobalTheory.JHMult
@@ -264,5 +262,3 @@ theorem exists_equiv_of_eq_nu {p q : ℕ} (x : Irr k p) (y : Irr k q) (c : ℂ)
   exact ⟨rfl, IrrGL.of_eq_of.1 h⟩
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.TD
-
-end

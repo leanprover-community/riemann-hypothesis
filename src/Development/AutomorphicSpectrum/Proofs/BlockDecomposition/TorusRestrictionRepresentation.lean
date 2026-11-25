@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.Discre
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Matrix
 
 namespace GlobalTheory.CompanionTheory.RgTorus

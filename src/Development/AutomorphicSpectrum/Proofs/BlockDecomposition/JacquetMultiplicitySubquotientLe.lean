@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
 
 namespace GlobalTheory.CompanionTheory.JmMono
@@ -54,5 +52,3 @@ theorem jm_le_of_isSubquotient {k : Type} [Field k] [ValuativeRel k] [Topologica
     (GlobalTheory.JacquetExact.isSubquotient_jac _ hP h)
 
 end GlobalTheory.CompanionTheory.JmMono
-
-end

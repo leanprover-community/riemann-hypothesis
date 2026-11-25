@@ -10,8 +10,6 @@ import GroundTheory.LocalFields.PadicLogSeries
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep GlobalTheory.SplitWeil PositivityTheory.Rg.BcN.F2
 
 namespace GlobalTheory.CompanionTheory.ProdLen

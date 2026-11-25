@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Top.ConvergenceI2
 
 theorem sum_shift_le {N : ℕ} (l : Fin N → ℝ) :

@@ -6,8 +6,6 @@ public import GroundTheory.AutomorphicForms.AdelicGLn
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix Topology Set
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.BcB
 open scoped Pointwise
@@ -72,5 +70,3 @@ theorem finite_twConj_of_isTest {φ : GA E n → ℂ} (hφ : IsTest φ) {C : Set
 theorem kerFin : PositivityTheory.Rg.BcB.D4.KerFin := fun _ _ _ _ _ _ hφ _ hC => finite_twConj_of_isTest hφ hC
 
 end GlobalTheory.CompanionTheory.KerTwFin
-
-end

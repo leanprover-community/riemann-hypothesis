@@ -12,8 +12,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineG
 
 open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl GlobalTheory.CompanionTheory.CTFin
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.CTFin.Growth
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a r : ℕ}
@@ -61,5 +59,3 @@ theorem ct_growth : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField
   ring
 
 end GlobalTheory.CompanionTheory.CTFin.Growth
-
-end

@@ -7,8 +7,6 @@ import Mathlib.Tactic.NormNum.LegendreSymbol
 
 @[expose] public section
 
-noncomputable section
-
 open TensorProduct CrystallineSemistableComparison.D
 open scoped LaurentPolynomial
 

@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Integrab
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl
 
 namespace GlobalTheory.CompanionTheory.CuspSubspace
@@ -42,5 +40,3 @@ theorem mem_of_mem_span_cuspForms :
     rw [e, hx.2 r hr hr' μ 𝓕 hμ hF g, smul_zero]
 
 end GlobalTheory.CompanionTheory.CuspSubspace
-
-end

@@ -19,8 +19,6 @@ open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open AlgebraicGeometry CategoryTheory
 open scoped Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Rec.FinRd.Roots.RootUnit
 
 section Lin

@@ -16,8 +16,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
 open scoped Classical TensorProduct
 
-noncomputable section
-
 open scoped Pointwise
 
 namespace GlobalTheory.CompanionTheory.GL3BlockMatrixLocal

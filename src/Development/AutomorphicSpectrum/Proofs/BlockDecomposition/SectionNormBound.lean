@@ -48,8 +48,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Finset Topology
 open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
 

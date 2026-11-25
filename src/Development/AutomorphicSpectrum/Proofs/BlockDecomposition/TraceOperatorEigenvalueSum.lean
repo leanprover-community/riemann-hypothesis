@@ -9,8 +9,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelP
 
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL MeasureTheory PositivityTheory.S2.Clozel
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.CapelliTrace
 
 open Polynomial Formalism.REAL GroundTheory.BlockD.FourierDecayAlt.GaugeExists
@@ -121,5 +119,3 @@ theorem trace_Eop_eq : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberFi
     simpa using this
 
 end GlobalTheory.CompanionTheory.CapelliTrace
-
-end

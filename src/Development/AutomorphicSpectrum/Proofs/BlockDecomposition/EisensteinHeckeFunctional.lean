@@ -6,8 +6,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldC
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.EisRat
 
 open scoped TensorProduct NNReal Matrix
@@ -50,5 +48,3 @@ theorem law_flat {K : Subgroup (G2 σ Y)} {a : G2 σ Y → ℝ} (hK : IsHgt K a)
   ring
 
 end GlobalTheory.CompanionTheory.EisRat
-
-end

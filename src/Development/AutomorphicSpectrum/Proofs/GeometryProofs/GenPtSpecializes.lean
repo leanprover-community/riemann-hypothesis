@@ -5,8 +5,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGe
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.CptInh
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar

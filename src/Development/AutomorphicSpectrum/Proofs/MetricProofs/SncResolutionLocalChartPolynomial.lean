@@ -9,8 +9,6 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCompactE
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Cmp
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.ChartInv
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]

@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTenso
 
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.RealAdeleComponent
 
 open scoped TensorProduct
@@ -42,5 +40,3 @@ theorem piInf_realAd_smul {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     rw [TensorProduct.smul_tmul', smul_eq_mul, h, h, map_mul, map_mul, extensionEmbedding_evInf_realAd, mul_assoc]
 
 end GlobalTheory.CompanionTheory.RealAdeleComponent
-
-end

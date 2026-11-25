@@ -11,8 +11,6 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT GlobalTheory.CompanionTheory.Ar.LieEx GlobalTheory.CompanionTheory.Ar.BT.Tan
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.BT.ValEmb
 
 theorem valAt_pull {A B : Type} [CommRing A] [CommRing B] {X : Scheme.{0}}

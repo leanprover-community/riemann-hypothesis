@@ -9,8 +9,6 @@ import Mathlib.RingTheory.GradedAlgebra.HomogeneousLocalization
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.ProjectiveLinePlaces
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar

@@ -5,8 +5,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.FixedPointsCM
 
 open NumberField IsDedekindDomain HeckeCharacterZeroLocus.SiegelWeilU

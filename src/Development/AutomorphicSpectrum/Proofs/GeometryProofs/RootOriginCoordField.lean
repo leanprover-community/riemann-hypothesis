@@ -16,8 +16,6 @@ open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
 open ReciprocityTheory.ChartRestriction.G.AI.I4 (imageZ IsPullHerm)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter (pullHerm)
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Chg.CoverEff
 
 section Gen

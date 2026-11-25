@@ -15,8 +15,6 @@ open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheor
 open PositivityTheory.Rg.Bc.ArchbcB.B.M4 PositivityTheory.Rg.Bc.ArchbcB.B.M4.Tw
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.IwFacts
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

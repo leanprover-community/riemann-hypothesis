@@ -7,8 +7,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemTwCentSwTw
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.Fin GlobalTheory.CompanionTheory.LocalHypotheses
@@ -56,5 +54,3 @@ theorem inert_iso : CjEx → ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   exact ⟨evY hw a b, evY_apply hw a b, evY_thv hC hw a b, mem_Kv_iff hw a b⟩
 
 end GlobalTheory.CompanionTheory.LocHypInert
-
-end

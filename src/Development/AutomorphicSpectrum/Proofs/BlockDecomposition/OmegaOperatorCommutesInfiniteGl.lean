@@ -11,8 +11,6 @@ set_option maxSynthPendingDepth 1
 open NumberField GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open scoped NumberField.AdeleRing
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.HCRep
 
 open AutomorphicForm GlobalTheory.CompanionTheory.ArchSmooth
@@ -118,5 +116,3 @@ theorem omegaOp_comm_rt (E : Type) [Field E] [NumberField E] [_root_.NumberField
     AdU_casimir b ε hε2 horth, hrt, smL_omegaOp]
 
 end GlobalTheory.CompanionTheory.HCRep
-
-end

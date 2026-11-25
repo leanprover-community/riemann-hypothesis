@@ -10,7 +10,6 @@ public import Mathlib.Data.Fin.Tuple.Sort
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
 open GlobalTheory.CatH (face toLast)
 
-noncomputable section
 namespace GlobalTheory.CompanionTheory.ConeLocal
 
 section Collapse

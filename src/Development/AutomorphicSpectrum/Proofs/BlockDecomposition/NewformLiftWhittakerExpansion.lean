@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar adeleAt glAt)
@@ -399,5 +397,3 @@ theorem whittaker_of_lift : Ad3.R.F2 := by
     fun t => whittaker_value hf.exp ha.2.1 hl t⟩
 
 end GlobalTheory.CompanionTheory.RsWhittaker
-
-end

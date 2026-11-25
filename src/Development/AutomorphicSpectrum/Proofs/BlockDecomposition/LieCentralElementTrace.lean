@@ -8,8 +8,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelP
 
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL MeasureTheory PositivityTheory.S2.Clozel
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.ClozelLie
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}

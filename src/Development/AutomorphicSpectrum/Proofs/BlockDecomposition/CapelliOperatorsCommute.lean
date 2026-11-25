@@ -10,8 +10,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineG
 
 open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl GlobalTheory.CompanionTheory.CTFin
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.CTFin.CapComm
 
 open Formalism.REAL
@@ -47,5 +45,3 @@ theorem capR_capS_commute (E : Type) [Field E] [NumberField E] [_root_.NumberFie
   · exact qdet_commute_self (GlobalTheory.CapHC.glRel_restrict hE _ (Fin.natAdd_injective _ _)) _ _
 
 end GlobalTheory.CompanionTheory.CTFin.CapComm
-
-end

@@ -14,8 +14,6 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.FC
 
 theorem lift_analyticAt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {P J : Ideal (MRing ι)} {n e : ℕ}

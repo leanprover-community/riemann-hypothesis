@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkM
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar
 
 namespace GlobalTheory.CompanionTheory.Ar.ChartSmooth

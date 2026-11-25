@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Has
 
 @[expose] public section
 
-noncomputable section
-
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree
 
 namespace GlobalTheory.CompanionTheory.Ar.Top.HhModel

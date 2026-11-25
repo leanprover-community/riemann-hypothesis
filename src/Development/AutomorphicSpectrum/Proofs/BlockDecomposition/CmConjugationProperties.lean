@@ -12,8 +12,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermOf
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.CompanionTheory.SiegelND.Integ.Hua GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
 open scoped Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.HS
 
 theorem isCMExt_conj_fixed_integers : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]

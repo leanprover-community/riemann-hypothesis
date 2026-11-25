@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismB
 
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LocBC
 
 universe w w'

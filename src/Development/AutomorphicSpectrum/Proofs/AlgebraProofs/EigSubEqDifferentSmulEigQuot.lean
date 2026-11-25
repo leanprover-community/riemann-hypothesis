@@ -8,8 +8,6 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndepend
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.HT.SubDiffQuot
 
 open Module NumberField GlobalTheory.CompanionTheory.Ar.HT

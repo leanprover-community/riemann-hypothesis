@@ -9,8 +9,6 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLineGenOn
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Flat
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.FrameTri
 
 open MonoidalCategory CartesianMonoidalCategory MonObj

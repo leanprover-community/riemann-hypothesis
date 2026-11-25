@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -115,5 +113,3 @@ theorem adelEqOf : AdelEqOf := by
     rfl
 
 end GlobalTheory.CompanionTheory.AdelEqProof
-
-end

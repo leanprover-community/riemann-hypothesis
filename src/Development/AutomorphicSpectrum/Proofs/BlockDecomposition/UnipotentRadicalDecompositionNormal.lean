@@ -9,8 +9,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Mirabol
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir.Leib GlobalTheory.CompanionTheory.Rodier
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Rodier.OpenFactor
 
 theorem conj_perm_entry {k : Type} [Field k] {N : ℕ} (w : Equiv.Perm (Fin N)) (g : GL (Fin N) k) (p q : Fin N) :
@@ -128,5 +126,3 @@ theorem GlobalTheory.CompanionTheory.Rodier.unipB_eq_levi_mul_rad : ∀ (k : Typ
   intro k _ _ _ _ h N d hd
   exact ⟨fun n hn => GlobalTheory.CompanionTheory.Rodier.OpenFactor.exists_mul k d hd hn,
     fun n hn u hu => GlobalTheory.CompanionTheory.Rodier.OpenFactor.conj_mem_unipU k d hd hn hu⟩
-
-end

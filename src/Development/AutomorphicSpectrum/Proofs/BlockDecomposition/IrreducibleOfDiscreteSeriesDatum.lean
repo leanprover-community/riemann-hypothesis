@@ -9,8 +9,6 @@ import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSerie
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Matrix
 
 namespace GlobalTheory.CompanionTheory.RgDsHilb

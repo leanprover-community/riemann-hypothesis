@@ -5,8 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Monomial
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel PositivityTheory.Lbc
 open GlobalTheory.CompanionTheory.LbElem.ConjMonomial (stdBlocks_ones)
 
@@ -46,5 +44,3 @@ theorem mem_Nlo_of {N : ℕ} (g : GL (Fin N) k)
     rw [stdBlocks_ones, stdBlocks_ones, h1, one_block]
 
 end GlobalTheory.CompanionTheory.LbElem.IwahoriLDU
-
-end

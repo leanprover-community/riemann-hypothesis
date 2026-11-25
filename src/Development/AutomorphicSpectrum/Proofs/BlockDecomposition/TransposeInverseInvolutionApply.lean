@@ -8,8 +8,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Cos
 open scoped Matrix
 
@@ -31,5 +29,3 @@ theorem thetaW_thetaW {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
   thetaW_thetaW_ring N g
 
 end GlobalTheory.CompanionTheory.ThetaInv
-
-end

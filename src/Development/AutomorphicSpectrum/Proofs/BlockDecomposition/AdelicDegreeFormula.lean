@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
@@ -97,5 +95,3 @@ theorem degAdelic_of (hF : MulF) (hI : MulI) (hL : LogAbsBasic) (hS : FinSupp) :
   linarith
 
 end GlobalTheory.CompanionTheory.DegAdelicProof
-
-end

@@ -14,7 +14,6 @@ open scoped TensorProduct ContDiff
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
-noncomputable section
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UEmb
 
 open Formalism.L2.Fam.ThC (colM colM_vec frameMat_eq frame_rel perp_rel prM coM embU)
@@ -240,4 +239,3 @@ theorem range_embHom : ∀ (D : D7) (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.r
 end Final
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UEmb
-end

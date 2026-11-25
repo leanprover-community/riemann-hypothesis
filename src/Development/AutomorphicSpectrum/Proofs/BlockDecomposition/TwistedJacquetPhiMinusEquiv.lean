@@ -10,8 +10,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZMirStep
 
 section Abstract

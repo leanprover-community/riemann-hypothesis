@@ -12,8 +12,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.C
 
 set_option backward.isDefEq.respectTransparency false
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.RootHt
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField TensorProduct Filter Topology Matrix

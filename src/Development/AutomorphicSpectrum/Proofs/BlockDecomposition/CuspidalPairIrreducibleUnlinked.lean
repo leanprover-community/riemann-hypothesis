@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.None
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
 
 namespace GlobalTheory.CompanionTheory.BZPair
@@ -56,5 +54,3 @@ theorem not_linked_single {x y : IrrGL (k := k)} (hx : x.IsCusp) (hy : y.IsCusp)
       exact Set.mem_union_left _ (Set.mem_singleton x)
 
 end GlobalTheory.CompanionTheory.BZPair
-
-end

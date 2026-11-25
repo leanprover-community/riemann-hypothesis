@@ -6,8 +6,6 @@ public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
 open scoped TensorProduct
 
@@ -48,5 +46,3 @@ theorem whitRankStd_of_heredity : ∀ (k : Type) [Field k] [ValuativeRel k] [Top
     (fun a => hR ψ hc h1 (x a).1 (x a).2.rep.V (x a).rep (x a).2.rep.smooth (x a).2.rep.irr)
 
 end GlobalTheory.CompanionTheory.BZSeg
-
-end

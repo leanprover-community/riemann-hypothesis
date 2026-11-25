@@ -14,8 +14,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.Fin GlobalTheory.CompanionTheory.LocalHypotheses
 open scoped Classical
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.LocalHypotheses
 
 theorem thetaGL_id_mem {E : Type} [Field E] [NumberField E] (n : ℕ) (w : Pl E) {g : GLw n w}
@@ -41,5 +39,3 @@ theorem sgP_facts : ∀ (E : Type) [Field E] [NumberField E] (a b : ℕ) (w : Pl
     exact ⟨thetaGL_id_mem a w hk.1, thetaGL_id_mem b w hk.2⟩
 
 end GlobalTheory.CompanionTheory.LocalHypotheses
-
-end

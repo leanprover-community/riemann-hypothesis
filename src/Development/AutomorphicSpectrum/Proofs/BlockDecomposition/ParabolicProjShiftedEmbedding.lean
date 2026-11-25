@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BZPhiPG.HpgEmb
 
 theorem ePG_false_castSucc (i t : ℕ) (a : Fin (i + 1)) :
@@ -149,5 +147,3 @@ theorem sEmb_HGP_mem_HPG : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
     rfl
 
 end GlobalTheory.CompanionTheory.BZPhiPG.HpgEmb
-
-end

@@ -12,8 +12,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Restrict
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
 
 namespace GlobalTheory.CompanionTheory.BZDeriv

@@ -8,8 +8,6 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.LieFib
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj

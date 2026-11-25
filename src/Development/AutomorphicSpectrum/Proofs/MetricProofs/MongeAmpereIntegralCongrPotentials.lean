@@ -12,8 +12,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Set
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.PB
 
 namespace SamePotInt

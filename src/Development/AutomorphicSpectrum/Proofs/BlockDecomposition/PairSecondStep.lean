@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitBlo
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation
@@ -187,5 +185,3 @@ theorem pairStep₂ : PairSlices → PairStep₂ := by
   exact h1
 
 end GlobalTheory.CompanionTheory.EGlue
-
-end

@@ -19,8 +19,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain MvPoly
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flat.LiesOver
 
 open GroundTheory.Heights₂.Heights.Targets.BoundedSectionTransfer

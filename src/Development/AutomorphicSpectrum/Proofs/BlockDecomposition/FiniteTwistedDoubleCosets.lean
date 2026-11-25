@@ -6,8 +6,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.Fin GlobalTheory.CompanionTheory.LocalHypotheses
@@ -99,5 +97,3 @@ theorem finite_doubleCosets_split : ∀ {H : Type} [Group H] [TopologicalSpace H
   rw [← mul_assoc, ← e', mul_inv_cancel_right]
 
 end GlobalTheory.CompanionTheory.LocHypSplit
-
-end

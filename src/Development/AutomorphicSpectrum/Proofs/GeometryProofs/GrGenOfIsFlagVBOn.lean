@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.Ar.Flag
 
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar

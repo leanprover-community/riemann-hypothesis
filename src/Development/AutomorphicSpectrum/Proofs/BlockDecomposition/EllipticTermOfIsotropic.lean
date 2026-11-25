@@ -11,8 +11,6 @@ open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 open Polynomial NumberField
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.EllIso
 
 theorem exists_eigvec {n : ℕ} (G : Matrix (Fin n) (Fin n) ℂ) (S : Submodule ℂ (Fin n → ℂ)) (hS : S ≠ ⊥)
@@ -246,5 +244,3 @@ theorem ellTerm_of_onlyIsotropic : OnlyIsotropic → EllTerm := by
   simp [prof]
 
 end GlobalTheory.CompanionTheory.EllIso
-
-end

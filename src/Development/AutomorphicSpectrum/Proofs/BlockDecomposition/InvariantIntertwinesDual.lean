@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WtRInjec
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Finset
 open scoped InnerProductSpace
 

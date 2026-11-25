@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
@@ -349,5 +347,3 @@ theorem polar : MapsExist → HtExist → HeckeEta → RightId → PoleReal → 
     exact hmu.lim (fun x : ℝ => Rsec M m ψ b₀ (fam H φ (((t : ℝ) / 2 : ℝ) : ℂ) (x : ℂ)) g Ω) hcr hlw _ hT
 
 end GlobalTheory.CompanionTheory.RswPolar
-
-end

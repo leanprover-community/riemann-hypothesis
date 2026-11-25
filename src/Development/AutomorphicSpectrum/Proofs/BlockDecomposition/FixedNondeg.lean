@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySch
 
 @[expose] public section
 
-noncomputable section
 open PositivityTheory.PfSWUS.Loc
 namespace GlobalTheory.CompanionTheory.SiegLoc
 
@@ -67,4 +66,3 @@ theorem trace_nondeg {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} {ψ : ∀ k,
   exact Ideal.mul_mem_left _ _ h3
 
 end GlobalTheory.CompanionTheory.SiegLoc
-end

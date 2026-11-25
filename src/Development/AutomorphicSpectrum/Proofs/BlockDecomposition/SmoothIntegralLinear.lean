@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Mirabol
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir.Leib GlobalTheory.CompanionTheory.Rodier
 open scoped TensorProduct
 
@@ -184,5 +182,3 @@ theorem smInt_properties : ∀ {X W W' : Type} [TopologicalSpace X] [MeasurableS
     fun A v _ _ _ => smInt_indicator μ A v⟩
 
 end GlobalTheory.CompanionTheory.Rodier.SmIntEl
-
-end

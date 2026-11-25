@@ -39,8 +39,6 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormSt
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.CompanionTheory.Ar.Plug.Test
