@@ -59,7 +59,6 @@ def toChainReal (R : RealDat D A Ks) (F : Face D A) (tupT : D.what₂.Tup → T)
   fdX μ := R.fdX (tupT μ)
   measE b := ENNReal.ofReal (RealDat.nP F b)⁻¹ • R.ν0
   fdE := R.fd0
-  chr μ := R.toLevCh.mu (tupT μ)
   Sinf k := PolF D (Yc D (k + 1)).rank (Yc D k).rank
   pt _ μ k := R.ptY (tupT μ) k
   It := R.ItY

@@ -143,21 +143,6 @@ theorem iota_eq_zero {R : Ranks} (D : Rows.Data R) (hm : 0 < R.m) (μ : D.Tup) (
     | succ k => rw [Rows.Data.downTo, h, LinearMap.comp_zero]
   rw [Rows.Data.iota, this _ hm, LinearMap.zero_comp, LinearMap.comp_zero]
 
-theorem bu_word (D : D7) (h : Rows.BuDefQ D.what₂) (u : D.what₂.Word)
-    (hK : ∀ φ F, F ∈ D.what₂.V0 D.what₂.mu0 → D.what₂.iota D.what₂.mu0 F = 0 → D.what₂.perCol u D.what₂.mu0 φ F = 0)
-    (φ F) (hF : F ∈ D.what₂.V0 D.what₂.mu0) : D.what₂.perCol u D.what₂.mu0 φ F = D.what₂.Bu u φ (D.what₂.iota D.what₂.mu0 F) := by
-  set n : D.what₂.Amb D.what₂.mu0 := (D.what₂.Usp D.what₂.mu0).starProjection F with hn
-  have hnU : n ∈ D.what₂.Usp D.what₂.mu0 := Submodule.starProjection_apply_mem _ _
-  have hq : F - n ∈ D.what₂.Qsp D.what₂.mu0 :=
-    ⟨Submodule.sub_mem _ hF hnU.1, Submodule.sub_starProjection_mem_orthogonal F⟩
-  have hι : D.what₂.iota D.what₂.mu0 F = D.what₂.iota D.what₂.mu0 (F - n) := by
-    have : D.what₂.iota D.what₂.mu0 n = 0 := hnU.2
-    rw [map_sub, this, sub_zero]
-  have hF' : F = (F - n) + n := (sub_add_cancel F n).symm
-  rw [h u φ, hι, D.what₂.sec_iota _ _ hq]
-  conv_lhs => rw [hF']
-  rw [D.perCol_add, hK φ n hnU.1 hnU.2, add_zero]
-
 theorem exists_type {E A Φ : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [AddCommGroup A] [Module ℂ A] {n : ℕ}
     (bs : Fin n → E) (ty : Fin n → Φ) (π : Φ) (j : E →ₗ[ℂ] A) (P : Submodule ℂ A)
     (h : Submodule.span ℂ (bs '' {σ | ty σ = π}) = P.comap j) (h0 : P ≠ ⊥) (hle : P ≤ LinearMap.range j) : ∃ σ, ty σ = π := by
@@ -172,18 +157,6 @@ theorem exists_type {E A Φ : Type} [NormedAddCommGroup E] [InnerProductSpace �
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {F : Face D A}
-
-theorem xi_base (hB : R.BaseW F) : R.toLevCh.xi A.μ0 = 1 := by
-  have h := hB.lev.xi A.μ0
-  rw [hB.lev.xi_base] at h
-  exact MonoidHom.ext (GlobalTheory.ChrEqUnique.eq_one_of_chrEq h)
-
-theorem colTie (y : Hd R) (hB : R.BaseW F) (hb : Rows.BuDefQ D.what₂) :
-    ColTieR (y.C F) ⟨fun μ => R.toLevCh.xi (y.tupT μ)⟩ := by
-  have h0 : R.toLevCh.xi (y.tupT D.what₂.mu0) = 1 := by rw [← y.tup0, y.tupT_tup]; exact xi_base hB
-  refine ⟨fun μ _ j _ _ => ?_, h0, bu_word D hb⟩
-  show R.toLevCh.mu0 j * R.toLevCh.xi (y.tupT μ) = R.toLevCh.mu0 j * R.toLevCh.xi (y.tupT D.what₂.mu0) * R.toLevCh.xi (y.tupT μ)
-  rw [h0, mul_one]
 
 theorem exists_eE (y : Hd R) (hB : R.BaseW F) (b : Bool) {E : Type} [AddCommGroup E] [Module ℂ E] (j : E →ₗ[ℂ] (y.C F).Amb 0)
     (hj : LinearMap.range j = (y.C F).EEc b) :
@@ -281,7 +254,7 @@ theorem GlobalTheory.Mem.R3.Rw.read_of_moved : ∀ (B : Base) (f : Fr B.toPre) (
     PW := m.y.PW
     eFT := eF
     ιW := m.y.ιW
-    tied := ⟨h1R, h0R, hLT, colTie m.y hB hN.bu⟩
+    tied := ⟨h1R, h0R, hLT⟩
     prtE := fun π => by exact (h1P π).trans ((heF π).2.1 true).symm
     prtE0 := fun π => by exact (h0P π).trans ((heF π).2.1 false).symm
     prtWE := fun i π => by exact (hPW i π).trans ((heF π).2.2.1 i).symm

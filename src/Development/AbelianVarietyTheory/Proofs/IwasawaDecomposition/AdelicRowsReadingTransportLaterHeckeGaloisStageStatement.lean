@@ -268,7 +268,7 @@ theorem read_of_fits : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B
     PW := m.y.PW
     eFT := eF
     ιW := m.y.ιW
-    tied := ⟨h1R, h0R, hLT, colTie m.y hB hN.bu⟩
+    tied := ⟨h1R, h0R, hLT⟩
     prtE := fun π => by exact ((heF π).2.1 true).symm
     prtE0 := fun π => by exact ((heF π).2.1 false).symm
     prtWE := fun i π => by exact (hPW i π).trans ((heF π).2.2.1 i).symm

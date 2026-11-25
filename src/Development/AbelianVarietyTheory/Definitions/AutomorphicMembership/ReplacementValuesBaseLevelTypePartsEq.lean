@@ -233,7 +233,6 @@ theorem recTied_tr {X0 : BaseLevelRowSide a.D} {Ish : RowIds (RowSide.sharp a.D)
     RecTied c.to.D (baseLevelRowSideTransport c X0) (chainB c.to F tupT hm hTop) ((rowIds c Ish)) (by exact_by_kernel rowIds c Iz) (liftB c.to F tupT hm hTop hinj)
       (liftIds c IL) (colReal c K) :=
   @RecTied.mk _ _ _ _ _ _ _ _ ((rowSideReal_tr c H.sharp)) (by exact_by_kernel rowSideReal_tr c H.base) (liftTie_tr c H.lift)
-    (@ColTieR.mk _ _ _ ((H.col.tup)) ((H.col.xi0)) ((H.col.bu)))
 
 def mjTie (x : MjTie R F) : @MjTie c.to.D G _ _ Pl0 T (famM c.to A) Ks _ _ (alg c.to iK) (real c.to R) (face c.to F) :=
   @MjTie.mk c.to.D G _ _ Pl0 T (famM c.to A) Ks _ _ (alg c.to iK) (real c.to R) (face c.to F) x.eW

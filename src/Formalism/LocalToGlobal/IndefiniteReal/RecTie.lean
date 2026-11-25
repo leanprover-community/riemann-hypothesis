@@ -84,7 +84,6 @@ structure ChainReal (D : D7) where
   measE : Bool → Measure (GA D (Y 0))
   fdE : Set (GA D (Y 0))
 
-  chr : D.what₂.Tup → ℕ → (AE D)ˣ →* Circle
 
   Sinf : ℕ → Type
   [acgS : ∀ k, AddCommGroup (Sinf k)]
@@ -354,15 +353,6 @@ structure ColReal (D : D7) where
 
   xi : D.what₂.Tup → (AE D)ˣ →* Circle
 
-structure ColTieR {D : D7} (C : ChainReal D) (K : ColReal D) : Prop where
-
-  tup : ∀ μ, Used0 D μ → ∀ j, 1 ≤ j → j ≤ D.R.m → C.chr μ j = Lift.tup (C.chr D.what₂.mu0) (K.xi μ) j
-
-  xi0 : K.xi D.what₂.mu0 = 1
-
-  bu : ∀ u, (∀ φ F, F ∈ D.what₂.V0 D.what₂.mu0 → D.what₂.iota D.what₂.mu0 F = 0 → D.what₂.perCol u D.what₂.mu0 φ F = 0) →
-    ∀ φ F, F ∈ D.what₂.V0 D.what₂.mu0 → D.what₂.perCol u D.what₂.mu0 φ F = D.what₂.Bu u φ (D.what₂.iota D.what₂.mu0 F)
-
 structure RecTied (D : D7) (X0 : BaseLevelRowSide D) (C : ChainReal D) (Ish : RowIds (RowSide.sharp D) C true)
     (I0 : RowIds X0.s C false) (L : LiftReal D C) (IL : LiftIds L) (K : ColReal D) : Prop where
 
@@ -371,8 +361,6 @@ structure RecTied (D : D7) (X0 : BaseLevelRowSide D) (C : ChainReal D) (Ish : Ro
   base : RowSideReal X0.s C false I0 D.what₂.onb0 D.what₂.ft0
 
   lift : LiftTie L IL
-
-  col : ColTieR C K
 
 structure LatReal (D : D7) (C : ChainReal D) (L : LiftReal D C) where
 
