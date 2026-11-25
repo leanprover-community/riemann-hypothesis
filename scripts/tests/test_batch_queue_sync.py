@@ -1291,57 +1291,65 @@ class Members(unittest.TestCase):
     def no_longer(self, gh, number):
         return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-no-longer-left-out")]
 
+    def others(self, gh, *numbers):
+        """The description, with these pull requests left out for other reasons as well, next to #23.
+        That heading is not about conflicts, so they are told whether or not the conflict-labels
+        workflow is switched on."""
+        for number in numbers:
+            gh.add_pull(number, f"head{number}")
+        extra = "".join(f"- {URL}{number} Too big (@grace): split it.\n" for number in numbers)
+        return DESCRIPTION.replace("Left out for other reasons:\n\n", f"Left out for other reasons:\n\n{extra}")
+
     def reworded(self, body):
-        """The description with both left-out headings reworded so that they no longer say so."""
-        return (body.replace("Left out because they conflict with a PR earlier in the batch:",
-                             "Conflicting with a PR earlier in the batch:")
-                .replace("Left out for other reasons:", "Waiting for other reasons:"))
+        """The description with the heading for other reasons reworded so that it no longer says
+        "left out"."""
+        return body.replace("Left out for other reasons:", "Waiting for other reasons:")
 
     def test_a_reworded_heading_tells_no_one_they_are_no_longer_left_out(self):
         gh = self.built()
+        body = gh.pulls[1018]["body"] = self.others(gh, 25, 26)
         sync(gh)
-        gh.pulls[1018]["body"] = self.reworded(DESCRIPTION)
+        self.assertEqual([len(self.left(gh, n)) for n in (23, 25, 26)], [1, 1, 1])
+        gh.pulls[1018]["body"] = self.reworded(body)
         gh.touch(1018)
         gh.writes = []
         log = sync(gh)
-        self.assertIn("the description of the batch #1018 no longer lists #21, #22, #23 as left out, but still lists "
+        self.assertIn("the description of the batch #1018 no longer lists #23, #25, #26 as left out, but still lists "
                       "them: was a heading reworded? They were not told", log)
-        self.assertEqual([self.no_longer(gh, n) for n in (21, 22, 23)], [[], [], []])
-        self.assertEqual([path for method, path, _ in gh.writes if path.startswith(("issues/21/", "issues/22/",
-                                                                                     "issues/23/"))], [])
-        self.assertEqual(note(gh.said(1018)[0])["left"], {})
+        self.assertEqual([self.no_longer(gh, n) for n in (23, 25, 26)], [[], [], []])
+        self.assertEqual([path for method, path, _ in gh.writes if path.startswith(("issues/23/", "issues/25/",
+                                                                                     "issues/26/"))], [])
+        self.assertFalse({"23", "25", "26"} & set(note(gh.said(1018)[0])["left"]))
         gh.writes = []
         self.assertEqual(sync(gh), ["nothing to do"])
         # Worded back, their comments are brought up to date: nobody is told again.
         gh.label(23, remove=WAITING)  # the author commented `ready`
-        gh.pulls[1018]["body"] = DESCRIPTION
+        gh.pulls[1018]["body"] = body
         gh.touch(1018)
         sync(gh)
-        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
+        self.assertEqual([len(self.left(gh, n)) for n in (23, 25, 26)], [1, 1, 1])
         self.assertNotIn(WAITING, gh.pulls[23]["labels"])
 
     def test_a_few_entries_moved_out_of_the_left_out_lists_are_told(self):
         gh = self.built()
+        body = gh.pulls[1018]["body"] = self.others(gh, 25)
         sync(gh)
-        gh.pulls[1018]["body"] = DESCRIPTION.replace("Left out because they conflict with a PR earlier in the batch:",
-                                                     "Conflicting with a PR earlier in the batch:")
+        gh.pulls[1018]["body"] = self.reworded(body)
         gh.touch(1018)
         log = sync(gh)
-        self.assertEqual([len(self.no_longer(gh, n)) for n in (21, 22, 23)], [1, 1, 0])
-        self.assertIn("told #22 that the batch #1018 no longer lists it as left out", log)
+        self.assertEqual([len(self.no_longer(gh, n)) for n in (23, 25)], [1, 1])
+        self.assertIn("told #25 that the batch #1018 no longer lists it as left out", log)
 
     def test_an_entry_removed_along_with_a_reworded_heading_is_still_told(self):
         gh = self.built()
-        gh.add_pull(25, "head25")
-        gh.pulls[1018]["body"] = DESCRIPTION.replace(
-            "Left out for other reasons:\n\n", f"Left out for other reasons:\n\n- {URL}25 Too big (@grace): split it.\n")
+        body = gh.pulls[1018]["body"] = self.others(gh, 25, 26, 27)
         sync(gh)
-        self.assertEqual(len(self.left(gh, 25)), 1)
-        gh.pulls[1018]["body"] = self.reworded(DESCRIPTION)
+        self.assertEqual(len(self.left(gh, 27)), 1)
+        gh.pulls[1018]["body"] = self.reworded(body).replace(f"- {URL}27 Too big (@grace): split it.\n", "")
         gh.touch(1018)
         log = sync(gh)
-        self.assertEqual([len(self.no_longer(gh, n)) for n in (21, 22, 23, 25)], [0, 0, 0, 1])
-        self.assertIn("told #25 that the batch #1018 no longer lists it as left out", log)
+        self.assertEqual([len(self.no_longer(gh, n)) for n in (23, 25, 26, 27)], [0, 0, 0, 1])
+        self.assertIn("told #27 that the batch #1018 no longer lists it as left out", log)
 
     def test_dropped_from_the_branch_it_is_told_it_can_push_again(self):
         gh = self.built()
