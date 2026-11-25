@@ -69,7 +69,7 @@ theorem pf_arch (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (a : Ω c) (ha : a ≠ 0)
     blockSphereMean (d.D + 1) (d.N + 1) (MvPolynomial.map sg PA) -
       blockSphereMean (d.D + 1) (d.N + 1) (MvPolynomial.map sg PB) =
       ∫ z, d.lsum c sg a z ∂(blockSphereProb d.D (d.N + 1)) := by
-  have hP1 := sphereMeasure_isProbability (n := d.N + 1) (Nat.succ_pos _)
+  have hP1 := isProbabilityMeasure_sphereProb (n := d.N + 1) (Nat.succ_pos _)
   have hPD := blockSphereMeasure_isProbability (B := d.D) (n := d.N + 1) (Nat.succ_pos _)
   have hSF : SFinite (blockSphereProb d.D (d.N + 1)) := by have := hPD; infer_instance
   have hSF1 : SFinite (sphereProb (d.N + 1)) := by have := hP1; infer_instance

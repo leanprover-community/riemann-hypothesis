@@ -16,26 +16,6 @@ namespace ReciprocityTheory.MultiplicativeHeights
 open MeasureTheory Metric
 open scoped Pointwise
 
-private theorem toSphere_univ_ne_zero_of_pos {n : ℕ} (hn : 0 < n) :
-    (volume : Measure (EuclideanSpace ℂ (Fin n))).toSphere Set.univ ≠ 0 := by
-  have : Nontrivial (EuclideanSpace ℂ (Fin n)) :=
-    ⟨⟨EuclideanSpace.single (⟨0, hn⟩ : Fin n) (1 : ℂ), 0, fun h => by
-        simpa using congrArg norm h⟩⟩
-  rw [Measure.toSphere_apply_univ]
-  refine mul_ne_zero ?_ (measure_ball_pos _ _ one_pos).ne'
-  exact_mod_cast (Module.finrank_pos (R := ℝ) (M := EuclideanSpace ℂ (Fin n))).ne'
-
-private theorem toSphere_univ_ne_top' {n : ℕ} :
-    (volume : Measure (EuclideanSpace ℂ (Fin n))).toSphere Set.univ ≠ ⊤ := by
-  exact measure_ne_top _ _
-
-theorem isProbabilityMeasure_sphereProb {n : ℕ} (hn : 0 < n) :
-    IsProbabilityMeasure (sphereProb n) := by
-  constructor
-  simp only [sphereProb, ProbabilityTheory.cond, Measure.smul_apply, Measure.restrict_univ,
-    smul_eq_mul]
-  exact ENNReal.inv_mul_cancel (toSphere_univ_ne_zero_of_pos hn) toSphere_univ_ne_top'
-
 private theorem volume_preimage_linearIsometryEquiv {n : ℕ}
     (A : EuclideanSpace ℂ (Fin n) ≃ₗᵢ[ℝ] EuclideanSpace ℂ (Fin n))
     (X : Set (EuclideanSpace ℂ (Fin n))) : volume (A ⁻¹' X) = volume X :=

@@ -302,7 +302,7 @@ theorem sphereMean_fubini {F : MvPolynomial (Fin (d.D + 1) × Fin (d.N + 1)) ℂ
       ∫ z, (∫ s, Real.log ‖MvPolynomial.eval (hintPt (spherePoint s) z) F‖ ∂(sphereProb (d.N + 1)))
         ∂(blockSphereProb d.D (d.N + 1)) := by
   have hn : 0 < d.N + 1 := Nat.succ_pos _
-  haveI := sphereMeasure_isProbability hn
+  haveI := isProbabilityMeasure_sphereProb hn
   haveI := blockSphereMeasure_isProbability (B := d.D) hn
   set G : UnitSphereC (d.N + 1) × BlockSphere d.D (d.N + 1) → ℝ :=
     fun p => Real.log ‖MvPolynomial.eval (hintPt (spherePoint p.1) p.2) F‖ with hG
@@ -362,7 +362,7 @@ theorem archimedean_local_height_term (hd : d.AxH 𝒜) (h : d.S1) (x : Fin (d.N
   letI : Algebra (KTf K d.D d.N) (OmS (Ω c) d.D d.N) := (d.KTtoS h c).toAlgebra
   haveI : FiniteDimensional (KTf K d.D d.N) (OmS (Ω c) d.D d.N) := (d.omS_finite hd h c).1
   have hn : 0 < d.N + 1 := Nat.succ_pos _
-  haveI := sphereMeasure_isProbability hn
+  haveI := isProbabilityMeasure_sphereProb hn
   haveI := blockSphereMeasure_isProbability (B := d.D) hn
   have hinj := IsFractionRing.injective (KTp K d.D d.N) (KTf K d.D d.N)
   set ra := ratio (Ω := Ω c) (d.wx x c) (d.w (d.jc c) c) with hra

@@ -305,7 +305,7 @@ theorem hint_intU (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (sg : K →+* ℂ) :
   obtain ⟨αa, hαa0, hαa⟩ := hintMH_map ha sg
   obtain ⟨αb, hαb0, hαb⟩ := hintMH_map hb sg
   have hn : 0 < d.N + 1 := Nat.succ_pos _
-  haveI := sphereMeasure_isProbability hn
+  haveI := isProbabilityMeasure_sphereProb hn
   haveI := blockSphereMeasure_isProbability (B := d.D) hn
   have I1 := hint_fubini hn hFc0 hFcmh
   have I2 := hint_logInt_tail hn hac0 hαa hαa0 0

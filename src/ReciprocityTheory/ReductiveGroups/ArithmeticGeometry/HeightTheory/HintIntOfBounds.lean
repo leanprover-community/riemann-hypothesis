@@ -28,7 +28,7 @@ theorem hint_mpSplit (D n : ℕ) (hn : 0 < n) :
 theorem hint_mpTail (D n : ℕ) (hn : 0 < n) :
     MeasurePreserving (fun z : BlockSphere (D + 1) n => fun i : Fin D => z i.succ)
       (blockSphereProb (D + 1) n) (blockSphereProb D n) := by
-  haveI := sphereMeasure_isProbability hn
+  haveI := isProbabilityMeasure_sphereProb hn
   haveI : SFinite (blockSphereProb D n) := by
     unfold blockSphereProb
     infer_instance
@@ -129,7 +129,7 @@ theorem hint_fubini {D n : ℕ} (hn : 0 < n) {a : Fin (D + 1) → ℕ}
     Integrable (fun z : BlockSphere D n =>
       ∫ s, Real.log ‖MvPolynomial.eval (hintPt (spherePoint s) z) F‖ ∂(sphereProb n))
       (blockSphereProb D n) := by
-  haveI := sphereMeasure_isProbability hn
+  haveI := isProbabilityMeasure_sphereProb hn
   haveI := blockSphereMeasure_isProbability (B := D) hn
   set G : UnitSphereC n × BlockSphere D n → ℝ :=
     fun p => Real.log ‖MvPolynomial.eval (hintPt (spherePoint p.1) p.2) F‖ with hG

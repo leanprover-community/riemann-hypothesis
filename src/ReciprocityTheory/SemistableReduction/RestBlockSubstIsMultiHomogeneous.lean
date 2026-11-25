@@ -17,7 +17,8 @@ namespace ReciprocityTheory.MultiplicativeHeights
 
 open MeasureTheory MvPolynomial
 
-theorem sphereMeasure_isProbability {n : ℕ} (hn : 0 < n) : IsProbabilityMeasure (sphereProb n) := by
+theorem isProbabilityMeasure_sphereProb {n : ℕ} (hn : 0 < n) :
+    IsProbabilityMeasure (sphereProb n) := by
   haveI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
   unfold sphereProb
   apply ProbabilityTheory.cond_isProbabilityMeasure_of_finite
@@ -29,7 +30,7 @@ theorem sphereMeasure_isProbability {n : ℕ} (hn : 0 < n) : IsProbabilityMeasur
 
 theorem blockSphereMeasure_isProbability {B n : ℕ} (hn : 0 < n) :
     IsProbabilityMeasure (blockSphereProb B n) := by
-  haveI := sphereMeasure_isProbability hn
+  haveI := isProbabilityMeasure_sphereProb hn
   unfold blockSphereProb
   infer_instance
 
@@ -212,7 +213,7 @@ theorem blockSphere_logMean_bound (hSJ : SJStatement) (hInt : SphereLogIntegrabl
       (u : BlockSphere B n), IsMultiHomogeneous a g → eval (blockPoint u) g ≠ 0 →
       Real.log ‖eval (blockPoint u) g‖ - (∑ b, (a b : ℝ)) / 2 * (harmonic (n - 1) : ℝ) ≤
         blockSphereMean B n g := by
-  haveI hP1 : IsProbabilityMeasure (sphereProb n) := sphereMeasure_isProbability hn
+  haveI hP1 : IsProbabilityMeasure (sphereProb n) := isProbabilityMeasure_sphereProb hn
   intro B
   induction B with
   | zero =>
