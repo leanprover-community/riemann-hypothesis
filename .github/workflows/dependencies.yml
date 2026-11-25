@@ -67,7 +67,6 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: read
-      issues: write
       pull-requests: write
     steps:
       - name: Check out this workflow's own copy of the scripts
