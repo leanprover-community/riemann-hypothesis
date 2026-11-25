@@ -102,9 +102,6 @@ def sieg (ν : Type) [Fintype ν] [DecidableEq ν] : Subgroup (UG c (stdJ ν E))
     rw [mat_inv, ← fromBlocks_toBlocks (mat c g), show (mat c g).toBlocks₂₁ = 0 from hg]
     simp [stdJ, fromBlocks_map, fromBlocks_transpose, fromBlocks_multiply, fromBlocks_neg, h0]
 
-theorem mem_sieg {g : UG c (stdJ ν E)} : g ∈ sieg c ν ↔ (mat c g).toBlocks₂₁ = 0 := by
-  exact Iff.rfl
-
 def InCell (g : UG c (stdJ ν E)) : Prop := ∃ p ∈ sieg c ν, ∃ q ∈ sieg c ν, g = p * weyl c ν * q
 
 end Group
