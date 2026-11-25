@@ -83,14 +83,9 @@ private theorem isReduced_of_ringEquiv
     _root_.IsReduced A :=
   ⟨fun _ hx => e.injective (((hx.map e).eq_zero).trans (map_zero e).symm)⟩
 
-private theorem isReduced_of_forall_isReduced_stalk (X : Scheme.{u})
-    (h : ∀ x : X, _root_.IsReduced (X.presheaf.stalk x)) : IsReduced X := by
-  have := h
-  exact isReduced_of_isReduced_stalk X
-
 theorem isReduced_sigmaOpens (Y : Scheme.{u}) [IsReduced Y] {ι : Type u} (U : ι → Y.Opens) :
     IsReduced (sigmaOpens Y U) := by
-  refine isReduced_of_forall_isReduced_stalk _ ?_
+  refine @AlgebraicGeometry.isReduced_of_isReduced_stalk _ ?_
   intro x
   obtain ⟨⟨i, y⟩, hx⟩ := (sigmaMk fun i => (U i).toScheme).surjective x
   have hx' : (Sigma.ι (fun i => (U i).toScheme) i).base y = x := by simpa using hx

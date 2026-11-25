@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N ValuativeRel
 open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 private theorem UpperTheory.V.hasFixed_of_equiv {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
     [Module ℂ W] {ρ : Representation ℂ G V} {τ : Representation ℂ G W} (e : ρ.Equiv τ) {U : Subgroup G}
     (h : UpperTheory.V.Af.HasFixed τ U) : UpperTheory.V.Af.HasFixed ρ U := by

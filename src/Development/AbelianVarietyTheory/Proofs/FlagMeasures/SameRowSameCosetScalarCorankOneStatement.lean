@@ -137,7 +137,7 @@ namespace GlobalTheory.SnFam.CvScal
 variable {D : D7}
 
 theorem pair_scalar (D : D7) {T T' : D.host.E} (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F : LFlag (D.sp.Y 0) D.R.rS T)
-    (F' F'' : LFlag (D.sp.Y 0) D.R.rS T') (_hΛ : Submodule.IsLattice D.host.E Λ) (hF : F.zt = F.fl.z)
+    (F' F'' : LFlag (D.sp.Y 0) D.R.rS T') (hF : F.zt = F.fl.z)
     (hF' : F'.zt = F'.fl.z) (hF'' : F''.zt = F''.fl.z) (n) (hn : n ∈ NRat F) (m) (hm : m ∈ NRat F')
     (hfr : ∀ a, frame F'' a = (n * m) (frame F' a)) : IsScalar Λ F F' F'' (n * m) := by
   have hnm : ∀ v, (n * m) v = n (m v) := fun v => rfl
@@ -205,7 +205,7 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.pair_isScalar_in_unipotentRadical_doubleCoset : ∀ (D : D7) {T T' : D.host.E} (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F : LFlag (D.sp.Y 0) D.R.rS T) (F' F'' : LFlag (D.sp.Y 0) D.R.rS T'), Submodule.IsLattice D.host.E Λ → F.zt = F.fl.z → F'.zt = F'.fl.z → F''.zt = F''.fl.z → ∀ n ∈ NRat F, ∀ m ∈ NRat F', (∀ a, frame F'' a = (n * m) (frame F' a)) → IsScalar Λ F F' F'' (n * m) := by
+theorem _root_.GlobalTheory.T.pair_isScalar_in_unipotentRadical_doubleCoset : ∀ (D : D7) {T T' : D.host.E} (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F : LFlag (D.sp.Y 0) D.R.rS T) (F' F'' : LFlag (D.sp.Y 0) D.R.rS T'), F.zt = F.fl.z → F'.zt = F'.fl.z → F''.zt = F''.fl.z → ∀ n ∈ NRat F, ∀ m ∈ NRat F', (∀ a, frame F'' a = (n * m) (frame F' a)) → IsScalar Λ F F' F'' (n * m) := by
   first | exact @GlobalTheory.SnFam.CvScal.pair_scalar
 end -- clump:auto
 end -- clump:auto
@@ -299,7 +299,6 @@ theorem scalar_of_same_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u 
   have hlam' : t.lam' = t'.lam' := congrArg (fun r => (r.2.1 : Submodule (𝓞 D.host.E) (VS D).V)) hr
   have hdim := Formalism.L2.SG.Corank.finrank_VS D
   have hrow := (Y.rowsOK u).1 t.lam t.mem
-  have hlat : Submodule.IsLattice D.host.E t.lam := hrow.2.1.1
   have hLF : IsLift t.lam (lf D (X.Fu u)) := hrow.2.1.2.2.1
   have hLt : IsLift t.lam t.frame := t.rep.2.2.2.2.1
   have hLt' : IsLift t'.lam t'.frame := t'.rep.2.2.2.2.1
@@ -321,7 +320,7 @@ theorem scalar_of_same_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u 
   have hTh : Th t.lam (lf D (X.Fu u)) t.frame t'.frame (n * (t.lin * n' * t.lin⁻¹)) = Hp t.lam (lf D (X.Fu u)) t.frame := by
     first
     | exact GlobalTheory.T.theta_cocycle_product_of_rational_unipotents D t.lam (lf D (X.Fu u)) t.frame t'.frame hrow.1.1 rfl hLt.2 hLt'.2 n hn1 _ hm hfr
-  have hsc := GlobalTheory.T.pair_isScalar_in_unipotentRadical_doubleCoset D t.lam (lf D (X.Fu u)) t.frame t'.frame hlat rfl hLt.2 hLt'.2 n hn1 _ hm hfr
+  have hsc := GlobalTheory.T.pair_isScalar_in_unipotentRadical_doubleCoset D t.lam (lf D (X.Fu u)) t.frame t'.frame rfl hLt.2 hLt'.2 n hn1 _ hm hfr
   rw [← hβ] at hTh hsc
   have hs0 : Lat.s0 t.lam (lf D (X.Fu u)) t.frame t'.frame (t'.lin * t.lin⁻¹) D.R.k = 1 :=
     (Formalism.L2.SG.NGCut.CorankRelation.s0_eq_one_iff_Th_eq_Hp D.R.k hdim t.lam hrow.1.1 _ t.frame t'.frame _ hLF hLt hGv).2 hTh

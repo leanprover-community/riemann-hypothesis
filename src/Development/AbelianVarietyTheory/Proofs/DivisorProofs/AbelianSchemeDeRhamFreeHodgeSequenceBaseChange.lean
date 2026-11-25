@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory
 
 theorem abelianDeRham_free_hodge_baseChange : GlobalTheory.Published.AbelianHodgeDeRham →

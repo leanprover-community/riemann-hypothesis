@@ -96,12 +96,9 @@ def gmapEquiv {N : ℕ} (g : GL (Fin N) k) : Submodule k (Fin N → k) ≃ Submo
   right_inv M := by rw [← gmap_mul, mul_inv_cancel, gmap_one]
 
 theorem finrank_gmap {N : ℕ} (g : GL (Fin N) k) (M : Submodule k (Fin N → k)) :
-    Module.finrank k (gmap g M) = Module.finrank k M := by
-  have hinj : Function.Injective (Matrix.toLin' g.val) := by
-    intro x y h
-    have := congrArg (fun z => (g⁻¹).val *ᵥ z) h
-    simpa [Matrix.toLin'_apply, Matrix.mulVec_mulVec, ← Units.val_mul] using this
-  exact (Submodule.equivMapOfInjective _ hinj M).finrank_eq.symm
+    Module.finrank k (gmap g M) = Module.finrank k M :=
+  (Submodule.equivMapOfInjective _ (by simpa [Function.Injective, Matrix.toLin'_apply] using
+    Matrix.mulVec_injective_iff_isUnit.mpr g.isUnit) M).finrank_eq.symm
 
 theorem first_basis_ne_zero : e0 k n ≠ 0 := by
   intro h

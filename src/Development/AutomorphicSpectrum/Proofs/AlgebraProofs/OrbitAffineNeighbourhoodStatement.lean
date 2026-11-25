@@ -89,12 +89,6 @@ open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hyp
 
 namespace GlobalTheory.CompanionTheory.PrimesToPts
 
-private theorem to_spec_gamma_bijective (X : Scheme.{0}) [IsAffine X] : Function.Bijective X.toSpecΓ := by
-  rw [← Scheme.isoSpec_hom]
-  refine ⟨fun a b h => ?_, fun y => ⟨X.isoSpec.inv y, Scheme.inv_hom_apply _ _⟩⟩
-  have h' := congrArg X.isoSpec.inv h
-  rwa [Scheme.hom_inv_apply, Scheme.hom_inv_apply] at h'
-
 theorem mem_basicOpen_iff_toSpecΓ {X : Scheme.{0}} (f : Γ(X, ⊤)) (x : X) :
     x ∈ X.basicOpen f ↔ f ∉ (X.toSpecΓ x : PrimeSpectrum Γ(X, ⊤)).asIdeal := by
   rw [← X.toSpecΓ_preimage_basicOpen f]
@@ -116,9 +110,9 @@ theorem primes_to_pts : ∀ {P D : Scheme.{0}} [IsAffine P] [IsAffine D] (v : P 
     refine (GlobalTheory.CompanionTheory.PrimesToPts.mem_basicOpen_iff_toSpecΓ e z).2 (H _ ?_)
     exact (GlobalTheory.CompanionTheory.PrimesToPts.comap_toSpecΓ v z).trans (by rw [hz])
   · intro H q hq
-    obtain ⟨z, rfl⟩ := (to_spec_gamma_bijective P).2 q
+    obtain ⟨z, rfl⟩ := P.toSpecΓ.homeomorph.surjective q
     have hz : v z = y := by
-      apply (to_spec_gamma_bijective D).1
+      apply D.toSpecΓ.homeomorph.injective
       apply PrimeSpectrum.ext
       exact (GlobalTheory.CompanionTheory.PrimesToPts.comap_toSpecΓ v z).symm.trans hq
     exact (GlobalTheory.CompanionTheory.PrimesToPts.mem_basicOpen_iff_toSpecΓ e z).1 (H z hz)

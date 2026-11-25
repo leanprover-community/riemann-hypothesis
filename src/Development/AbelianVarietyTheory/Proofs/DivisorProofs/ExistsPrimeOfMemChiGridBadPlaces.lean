@@ -399,8 +399,6 @@ end General
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links GlobalTheory.ChiGrid
 open IsDedekindDomain NumberField Formalism.L2.Host GlobalTheory.Mem.Chr
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem not_conjPl_self {D : D7} {e : AE D} {w : HeightOneSpectrum (𝓞 D.host.E)} (he : Formalism.L2.NTheta.IsIdemAt e w)
     {c : D.host.E ≃ₐ[D.host.F] D.host.E} (hc : ∀ x, c x = D.host.conj x) : ¬ ConjPl c.toRingEquiv w w := fun h => by
   obtain ⟨Φ, hΦ⟩ := GlobalTheory.IdemSupport.exists_comp D

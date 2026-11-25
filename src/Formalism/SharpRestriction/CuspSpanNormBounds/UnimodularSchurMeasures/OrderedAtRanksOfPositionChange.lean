@@ -54,7 +54,7 @@ open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ContDiff
 open Formalism.MainNotions.S Formalism.MainNotions.CayleySignature Formalism.BasicNotions
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem mat_mul_mem_UH_Hpk {k r : ℕ} {g h : CayleySignature.Mat k r} (hg : g ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r))
     (hh : h ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) : g * h ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r) := by

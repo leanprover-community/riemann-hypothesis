@@ -340,7 +340,6 @@ end Transpose
 
 end Formalism.L2.Ker
 
-open MvPolynomial NumberField
 open scoped Matrix
 
 noncomputable section
@@ -543,7 +542,6 @@ end BCMaps
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -551,7 +549,6 @@ namespace Formalism.L2.Ker
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -1077,7 +1074,6 @@ end Open
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -1756,7 +1752,6 @@ end Equiv
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -1779,7 +1774,6 @@ def IsHwRow {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (sg : DomWeight n)
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -1998,7 +1992,6 @@ end Slice
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -2267,7 +2260,6 @@ end BPlevel
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -2371,7 +2363,6 @@ theorem hwC_single_of {K : Type} [Field K] [CharZero K] {N n : ℕ} (hN : N = n 
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -2554,7 +2545,6 @@ end C
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -2812,7 +2802,6 @@ end RecP4
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -2844,7 +2833,6 @@ theorem in_ioOne_mem {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (l : DomW
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3008,7 +2996,6 @@ theorem inB_capInt {n : ℕ} (lam sg : Fin n → ℕ) (hI : Formalism.BranchingD
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3315,7 +3302,6 @@ end Ident
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3389,7 +3375,6 @@ end D
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3431,7 +3416,6 @@ end E
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3562,7 +3546,6 @@ end NmA
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3667,7 +3650,6 @@ end NmB
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3833,7 +3815,6 @@ end NmC
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3940,7 +3921,6 @@ end NmRec
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -4018,7 +3998,6 @@ end NmE
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 

@@ -574,35 +574,12 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem infSign_ideleMap_finPartI (b : Neutral.B1.Ideles (maximalRealSubfield E)) :
     infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E (GlobalTheory.Mem.Chr.finPartI _ b)) = 1 := by
-  letI : IsOneApply (Neutral.B1.Ideles E →* ℂˣ) := ⟨fun _ => rfl⟩
-  letI : IsMulApply (Neutral.B1.Ideles E →* ℂˣ) := ⟨fun _ _ _ => rfl⟩
-  rw [infSign, prod_apply]
-  refine Finset.prod_eq_one fun w _ => ?_
-  have : Units.map (GlobalTheory.IdeleNormChar.infEval w)
-      (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E (GlobalTheory.Mem.Chr.finPartI _ b)) = 1 := by
-    refine Units.ext ?_
-    change (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.infiniteAdeleMap (maximalRealSubfield E) E 1) w = 1
-    rw [map_one]; rfl
-  simp only [MonoidHom.comp_apply, this, map_one]
+  exact GlobalTheory.ConsEta.infSign_ideleMap_finPartI b
 
 theorem eta_eq_infSign (hU : Unr E) (b : Neutral.B1.Ideles (maximalRealSubfield E))
     (hb : b ∈ GlobalTheory.Mem.Chr.unitIdl (maximalRealSubfield E)) :
     (GlobalTheory.GalOfCusp.quadChar E).1 b = infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E b) := by
-  set f := GlobalTheory.Mem.Chr.finPartI (maximalRealSubfield E) b
-  have h1 : ∀ v, ((b * f⁻¹ : Neutral.B1.Ideles _) : AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E)).2 v = 1 := by
-    intro v
-    have e : f⁻¹ = GlobalTheory.Mem.Chr.finPartI (maximalRealSubfield E) b⁻¹ := (map_inv _ b).symm
-    rw [e]
-    exact congrArg (fun z : AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E) => z.2 v) b.mul_inv
-  have h2 := GlobalTheory.T.quadraticHeckeCharCM_eq_ideleInfiniteSign_finiteTrivial E _ h1
-  have h3 := cm_quadratic_character_unramified E hU b hb
-  have e1 : (GlobalTheory.GalOfCusp.quadChar E).1 b = (GlobalTheory.GalOfCusp.quadChar E).1 (b * f⁻¹) * (GlobalTheory.GalOfCusp.quadChar E).1 f := by
-    rw [← map_mul, inv_mul_cancel_right]
-  have e2 : infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E b) =
-      infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E (b * f⁻¹)) *
-        infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E f) := by
-    rw [← map_mul, ← map_mul, inv_mul_cancel_right]
-  rw [e1, e2, h2, h3, infSign_ideleMap_finPartI, mul_one]
+  exact GlobalTheory.ConsEta.eta_eq_infSign hU b hb
 
 theorem quadratic_character_square : type_of% GlobalTheory.T.exists_unitary_hecke_character_norm :=
   GlobalTheory.T.exists_unitary_hecke_character_norm

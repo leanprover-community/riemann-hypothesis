@@ -61,7 +61,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenS
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -466,7 +465,6 @@ theorem count_stairIdeal_at_S0 (hq : OffQ D) {μ₀ : T} (hL : L.Is μ₀) (G : 
   ring
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 theorem exists_splitPoint_at_S0 (P : Places L) {v : GlobalTheory.FinPl.Pl D} (hv : v ∈ P.S0) :
     ∃ (k : Type) (_ : Field k) (_ : ValuativeRel k) (_ : TopologicalSpace k) (_ : IsNonarchimedeanLocalField k)
       (p : SplitPt D k), p.v = v ∧ Formalism.L2.NTheta.IsIdemAt p.e (P.w v) := by

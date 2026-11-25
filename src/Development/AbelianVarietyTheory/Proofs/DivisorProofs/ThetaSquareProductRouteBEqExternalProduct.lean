@@ -66,8 +66,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.RouteSeesaw
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.SeesawSmall
 
 open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger GlobalTheory.MixModel

@@ -160,28 +160,4 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
   simp only [G, G'] at h3
   exact (mul_left_cancel₀ (by exact_mod_cast hk'.ne' : (k' : ℤ) ≠ 0) h3).symm
 
-theorem coneSum_eq : ∀ (φ : InvFun ℤ) (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (m m' : ℕ)
-    (δ : Fin m → LinearMap.BilinForm ℤ X) (δ' : Fin m' → LinearMap.BilinForm ℤ X), IsCone id φ δ → IsCone id φ δ' →
-    ∀ (c : Fin m → ℕ) (c' : Fin m' → ℕ), (∀ k, 0 < c k) → (∀ k, 0 < c' k) →
-    ∑ k, c k • δ k = ∑ k, c' k • δ' k → ∑ k, δ k = ∑ k, δ' k := by
-  intro φ X _ _ m m' δ δ' hδ hδ' c c' hc hc' he
-  classical
-  have h1 : ∀ k, ∃ j, δ k = δ' j := cone_gen_mem_of_common hδ hδ' c c' hc he
-  have h2 : ∀ j, ∃ k, δ' j = δ k := cone_gen_mem_of_common hδ' hδ c' c hc' he.symm
-  have himg : Finset.univ.image δ = Finset.univ.image δ' := by
-    ext x
-    simp only [Finset.mem_image, Finset.mem_univ, true_and]
-    constructor
-    · rintro ⟨k, rfl⟩
-      obtain ⟨j, hj⟩ := h1 k
-      exact ⟨j, hj.symm⟩
-    · rintro ⟨j, rfl⟩
-      obtain ⟨k, hk⟩ := h2 j
-      exact ⟨k, hk.symm⟩
-  have e1 : ∑ x ∈ Finset.univ.image δ, x = ∑ k, δ k :=
-    Finset.sum_image fun a _ b _ h => hδ.injective h
-  have e2 : ∑ x ∈ Finset.univ.image δ', x = ∑ k, δ' k :=
-    Finset.sum_image fun a _ b _ h => hδ'.injective h
-  rw [← e1, ← e2, himg]
-
 end GlobalTheory.TInj

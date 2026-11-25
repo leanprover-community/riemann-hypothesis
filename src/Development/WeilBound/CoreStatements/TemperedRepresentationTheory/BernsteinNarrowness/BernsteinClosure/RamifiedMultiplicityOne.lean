@@ -868,7 +868,6 @@ end Local
 
 section Ram
 
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 attribute [local instance 10000] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 theorem ramMaps_of (hI : IndIrredNarrow) : RamMaps := by

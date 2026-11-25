@@ -46,8 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open scoped Matrix
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 noncomputable section
 
 namespace GlobalTheory.OppLinChar

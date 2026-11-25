@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZariskiConnectednessIsPreconnectedFibreStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartExpOn
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecRatioEqRefl
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsToricRankOne
@@ -1058,15 +1059,7 @@ namespace GlobalTheory.Mum
 theorem thick_apply_eq_closedPoint {R : Type} [CommRing R] [IsLocalRing R] (e : ℕ)
     (p : Spec (CommRingCat.of (R ⧸ maximalIdeal R ^ (e + 1)))) :
     thick R (maximalIdeal R) e p = closedPoint R := by
-  haveI : p.asIdeal.IsPrime := p.isPrime
-  apply PrimeSpectrum.ext
-  show Ideal.comap (Ideal.Quotient.mk (maximalIdeal R ^ (e + 1))) p.asIdeal = maximalIdeal R
-  have hle : maximalIdeal R ^ (e + 1) ≤ Ideal.comap (Ideal.Quotient.mk (maximalIdeal R ^ (e + 1))) p.asIdeal := by
-    intro a ha
-    simp [Ideal.Quotient.eq_zero_iff_mem.2 ha]
-  have hm : maximalIdeal R ≤ Ideal.comap (Ideal.Quotient.mk (maximalIdeal R ^ (e + 1))) p.asIdeal :=
-    (Ideal.IsPrime.comap _).le_of_pow_le hle
-  exact ((maximalIdeal.isMaximal R).eq_of_le (Ideal.IsPrime.comap _).ne_top hm).symm
+  apply _root_.GlobalTheory.ClosedFibreConn.thick_apply_eq <;> assumption
 
 theorem exists_thick_zero {R : Type} [CommRing R] [IsLocalRing R] (e : ℕ) (G : Over (Sp R))
     (y : (thickObj R (maximalIdeal R) e G).left) :
@@ -1150,15 +1143,8 @@ open GlobalTheory.Mum
 namespace GlobalTheory.Mum
 
 theorem secRatioEq_comp : ∀ {X Y Z : Scheme.{0}} (L : LB X) {k k' : ℕ} (u v : Y ⟶ X) (h : Z ⟶ Y) (s₁ s₂ : H0 L k) (t₁ t₂ : H0 L k'), SecRatioEq L u v s₁ s₂ t₁ t₂ → SecRatioEq L (h ≫ u) (h ≫ v) s₁ s₂ t₁ t₂ := by
-  intro X Y Z L k k' u v h s₁ s₂ t₁ t₂ hR i i'
-  have e := congrArg (h.app (u ⁻¹ᵁ secChart L i ⊓ v ⁻¹ᵁ secChart L i')).hom (hR i i')
-  simp only [map_mul] at e
-  simp only [Scheme.Hom.comp_app]
-  erw [_root_.GlobalTheory.ConstThickening.res_app h (inf_le_left : u ⁻¹ᵁ secChart L i ⊓ v ⁻¹ᵁ secChart L i' ≤ u ⁻¹ᵁ secChart L i),
-    _root_.GlobalTheory.ConstThickening.res_app h (inf_le_right : u ⁻¹ᵁ secChart L i ⊓ v ⁻¹ᵁ secChart L i' ≤ v ⁻¹ᵁ secChart L i'),
-    _root_.GlobalTheory.ConstThickening.res_app h (inf_le_left : u ⁻¹ᵁ secChart L i ⊓ v ⁻¹ᵁ secChart L i' ≤ u ⁻¹ᵁ secChart L i),
-    _root_.GlobalTheory.ConstThickening.res_app h (inf_le_right : u ⁻¹ᵁ secChart L i ⊓ v ⁻¹ᵁ secChart L i' ≤ v ⁻¹ᵁ secChart L i')]
-  exact e
+  intros
+  apply _root_.GlobalTheory.Mum.SecRatioEq.comp <;> assumption
 
 end GlobalTheory.Mum
 end -- clump:auto

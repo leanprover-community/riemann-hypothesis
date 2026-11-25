@@ -152,8 +152,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.AnVal GlobalTheory.BlockTh GlobalTheory.EtaAn
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -643,8 +641,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.AnVal GlobalTheory.BlockTh GlobalTheory.EtaAn
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 namespace GlobalTheory
 
 section
@@ -1025,8 +1021,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.AlphaChain
@@ -1305,8 +1299,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory
 
 theorem semichar_unit_frame : ReciprocityTheory.ChartRestriction.G.PullbackSections.PPSemicharSt := by
@@ -1328,8 +1320,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SumLeFinsumOfSurjectsOntoFinset", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.ThetaValues.ThConst\npublic import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsBlockProd\npublic import Development.AbelianVarietyTheory.Definitions.TorusSections.IsTorusOf\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThetaValCAlpha\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.NonemptyUnitAt\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAt\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DatumNsmulEqZero\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.DeterminantBlockProductRenameTorusPolynomial\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsTorusOfRows\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HmEqDiagonal\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsPiActLOfIsTorusOf\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsRepsLevelTranslates\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsTorusAtOfIsTorusOf\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.PolyDerivLevelSqEqAlpha\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.PolyDerivProdFockEqTranslate\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaRuleValuePeriods\npublic import Development.AbelianVarietyTheory.Proofs.TorusSplitting.AppellHumbertSectionEntireWithFactor\npublic import Development.AbelianVarietyTheory.Proofs.TorusSplitting.GCauchyHolds\npublic import Development.AbelianVarietyTheory.Proofs.TorusSplitting.RelabellingGoodEmbeddingIsTypeFn\npublic import Development.AbelianVarietyTheory.Proofs.TorusSplitting.SemicharUnitFrame\npublic import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ThetaFunctionTorusL2Norm\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Calculus.ContDiff.WithLp\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\npublic import Mathlib.LinearAlgebra.FreeModule.IdealQuotient\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Coalgebra.IsFrobenius\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.SupGenTies\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 

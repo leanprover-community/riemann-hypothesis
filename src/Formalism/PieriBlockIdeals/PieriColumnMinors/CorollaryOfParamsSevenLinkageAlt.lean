@@ -83,41 +83,6 @@ def HidaLatticeInclusionAtCoarseWeightBound : Prop :=
     P.lJ < (l : ℝ) → X.WInputs l (kc P) W.j W.T2 (W.iW P l) →
     X.Incl l (W.coarseWeightBound P l) ∧ X.Jmin l ≤ W.coarseWeightBound P l
 
-def RecIncl7 : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P →
-    ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
-    (∀ l : ℕ, l.Prime → W.WRange P l → (X l).WInputs l (kc P) W.j W.T2 (W.iW P l)) →
-    ∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Jmin l ≤ W.Jrec7 P l
-
-def CorollaryOfRecord7 : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P → Fintype.card ι = P.f →
-    W.Sp.card ≤ 5 →
-    ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
-    (∀ l : ℕ, l.Prime → W.WRange P l → (X l).WInputs l (kc P) W.j W.T2 (W.iW P l)) →
-    (∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Incl l ((X l).Jmin l) ∧
-      (X l).Jmin l ≤ W.Jrec7 P l) ∧
-    ∀ Q : Finset ℕ, (∀ l ∈ Q, l.Prime) →
-      ∑ l ∈ Q, (W.Jrec7 P l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2) ∧
-      ∑ l ∈ Q, ((X l).Jmin l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2)
-
-def CorollaryOfRecord7Link : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P → Fintype.card ι = P.f →
-    W.Sp.card ≤ 5 →
-    ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
-    (∀ l : ℕ, l.Prime → W.WRange P l → WInputsLink P W (X l) l) →
-    (∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Incl l ((X l).Jmin l) ∧
-      (X l).Jmin l ≤ W.Jrec7 P l) ∧
-    ∀ Q : Finset ℕ, (∀ l ∈ Q, l.Prime) →
-      ∑ l ∈ Q, (W.Jrec7 P l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2) ∧
-      ∑ l ∈ Q, ((X l).Jmin l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2)
-
 end SF09
 
 end Formalism.CohomologicalDescent.Top
@@ -554,16 +519,6 @@ namespace PI.PC
 open Finset Real
 open ArithmeticFunction hiding log id
 open scoped Nat Chebyshev ArithmeticFunction.zeta
-
-theorem log_factorial_eq_sum_log (N : ℕ) : log ((N ! : ℕ) : ℝ) = ∑ m ∈ Ioc 0 N, log (m : ℝ) := by
-  induction N with
-  | zero => simp
-  | succ n ih =>
-    rw [Finset.sum_Ioc_succ_top (Nat.zero_le n), ← ih, Nat.factorial_succ, Nat.cast_mul,
-      Real.log_mul (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n))
-        (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n))]
-    push_cast
-    ring
 
 theorem log_factorial_eq_sum (N : ℕ) :
     log ((N ! : ℕ) : ℝ) = ∑ d ∈ Ioc 0 N, Λ d * ((N / d : ℕ) : ℝ) := by

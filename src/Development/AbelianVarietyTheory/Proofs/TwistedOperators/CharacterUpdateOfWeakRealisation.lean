@@ -46,8 +46,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR.Links Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CharRealise
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}

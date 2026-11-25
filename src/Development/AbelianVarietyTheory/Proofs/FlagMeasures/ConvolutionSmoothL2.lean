@@ -624,15 +624,7 @@ theorem integrable_mul_of_support {X : Type} [MeasurableSpace X] (μ : Measure X
   exact mul_le_mul_of_nonneg_right (hM g) (norm_nonneg _)
 
 theorem continuous_of_smoothInf (I : AutInst) (a : I.Ginf → ℂ) (ha : SmoothInf I a) : Continuous a := by
-  refine continuous_iff_continuousAt.2 fun x => ?_
-  obtain ⟨F, hF, he⟩ := ha x
-  have hc : Continuous fun g : I.Ginf => (fun v i j => uMat (g v) i j :
-      InfinitePlace I.F → Fin I.n → Fin I.n → ℂ) := by
-    refine continuous_pi fun v => continuous_pi fun i => continuous_pi fun j => ?_
-    have h1 : Continuous fun g : UJ (I.ε v) => uMat g := Units.continuous_val.comp continuous_subtype_val
-    exact (h1.comp (continuous_apply v)).matrix_elem i j
-  exact (hF.continuousAt.comp (f := fun g : I.Ginf => (fun v i j => uMat (g v) i j :
-      InfinitePlace I.F → Fin I.n → Fin I.n → ℂ)) hc.continuousAt).congr (he.mono fun _ h => h.symm)
+  apply _root_.GlobalTheory.SmoothConv.continuous_of_smoothInf <;> assumption
 
 theorem continuous_of_open_invariant {X G : Type} [TopologicalSpace X] [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] (K : Set G) (hK : IsOpen K) (h1 : (1 : G) ∈ K) (f : X × G → ℂ)

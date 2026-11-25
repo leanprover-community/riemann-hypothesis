@@ -53,8 +53,6 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 open IsDedekindDomain NumberField
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CompanionTheory.Jp
 
 abbrev Ov (D : D7) (v : Pl D) : Type := v.adicCompletionIntegers D.host.F

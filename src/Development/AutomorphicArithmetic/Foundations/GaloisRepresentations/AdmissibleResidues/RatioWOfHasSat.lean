@@ -59,8 +59,6 @@ noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.HeckeGal GlobalTheory.GalOfCusp GlobalTheory.LocLanglands GlobalTheory.LocGL UpperTheory.V UpperTheory.V.Af
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.GalN.V
 
 private theorem norm_inf {F : Type} [Field F] [NumberField F] (χ : HChar F) (k : Fˣ)

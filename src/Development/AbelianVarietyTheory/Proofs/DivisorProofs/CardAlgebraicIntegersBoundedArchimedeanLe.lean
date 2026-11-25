@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NcardRationalPointsTranslatedCompactLePow
 public import Mathlib.NumberTheory.NumberField.House
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,16 +57,7 @@ namespace GlobalTheory.IntCount
 theorem exists_abs_repr_le_mul_house (E : Type) [Field E] [NumberField E] :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (x : 𝓞 E) (j : Module.Free.ChooseBasisIndex ℤ (𝓞 E)),
       |(((RingOfIntegers.basis E).repr x j : ℤ) : ℝ)| ≤ C * house (x : E) := by
-  let L := (canonicalEmbedding.latticeBasis E).equivFun.toLinearMap.toContinuousLinearMap
-  refine ⟨‖L‖, norm_nonneg _, fun x j => ?_⟩
-  have h1 := L.le_opNorm (canonicalEmbedding E x)
-  have h2 := norm_le_pi_norm (L (canonicalEmbedding E x)) j
-  have h3 : L (canonicalEmbedding E x) j = (((RingOfIntegers.basis E).repr x j : ℤ) : ℂ) := by
-    have := canonicalEmbedding.integralBasis_repr_apply E (x : E) j
-    rw [NumberField.integralBasis_repr_apply] at this
-    simpa [L] using this
-  rw [h3, Complex.norm_intCast] at h2
-  exact h2.trans h1
+  apply _root_.GlobalTheory.RatCount.exists_repr_le_house <;> assumption
 
 theorem card_bounded_integers_le (E : Type) [Field E] [NumberField E] :
     ∃ (m : ℕ) (C : ℝ), 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T →

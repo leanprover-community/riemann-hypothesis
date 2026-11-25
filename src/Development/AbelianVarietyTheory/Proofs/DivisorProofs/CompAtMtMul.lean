@@ -170,7 +170,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.F
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem compAt_mt_mul {D : D7} (θ : InfFam D) (W : HSp D) (τ : D.what₂.Tau) (g g' : GA D W) :
     compAt θ τ (Formalism.L2.Theta.mt W (g * g')) =

@@ -44,8 +44,6 @@ public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountUpSt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField ReciprocityTheory.GeometryOfNumbersTheory GlobalTheory.ChowHt GlobalTheory.HermTools

@@ -66,26 +66,8 @@ def IsTensorMap (p₁ : G →* G₁) (p₂ : G →* G₂) (π₁ : G₁ →* (H�
   DenseRange J ∧ ∀ g x y, π g (J (x ⊗ₜ y)) = J (π₁ (p₁ g) x ⊗ₜ π₂ (p₂ g) y)
 
 
-variable (H₁ H₂) in
-abbrev HTensor : Type := Completion (H₁ ⊗[ℂ] H₂)
-
-def hTensor (p₁ : G →* G₁) (p₂ : G →* G₂) (π₁ : G₁ →* (H₁ →L[ℂ] H₁)) (π₂ : G₂ →* (H₂ →L[ℂ] H₂)) :
-    G →* (HTensor H₁ H₂ →L[ℂ] HTensor H₁ H₂) where
-  toFun g := (TensorProduct.mapL (π₁ (p₁ g)) (π₂ (p₂ g))).completion
-  map_one' := ContinuousLinearMap.ext fun z => Completion.induction_on z
-    (isClosed_eq (ContinuousLinearMap.continuous _) continuous_id) fun a => by
-      rw [ContinuousLinearMap.completion_apply_coe, map_one, map_one, map_one, map_one]
-      exact congrArg _ (by simp [ContinuousLinearMap.one_def])
-  map_mul' g h := ContinuousLinearMap.ext fun z => Completion.induction_on z
-    (isClosed_eq (ContinuousLinearMap.continuous _) (ContinuousLinearMap.continuous _)) fun a => by
-      simp only [map_mul, TensorProduct.mapL_mul, mul_apply_eq_comp, ContinuousLinearMap.completion_apply_coe]
-
 variable {p₁ : G →* G₁} {p₂ : G →* G₂} {π₁ : G₁ →* (H₁ →L[ℂ] H₁)} {π₂ : G₂ →* (H₂ →L[ℂ] H₂)} {π : G →* (H →L[ℂ] H)}
   {J : H₁ ⊗[ℂ] H₂ →ₗᵢ[ℂ] H}
-
-theorem hTensor_coe (g : G) (a : H₁ ⊗[ℂ] H₂) :
-    hTensor p₁ p₂ π₁ π₂ g a = TensorProduct.mapL (π₁ (p₁ g)) (π₂ (p₂ g)) a :=
-  ContinuousLinearMap.completion_apply_coe _ a
 
 end Two
 

@@ -68,11 +68,6 @@ variable {R : RD d} {L : LD d}
 variable {nb : nA σ d.Y d.b → d.G} {uM : (Fin L.n → AE F E) → d.G} {nb' : nA σ L.Y L.b → G2 σ L.Y} {w₁ : d.G}
   {cM : (Fin L.n → AE F E) × AF F → d.G} {δ : E}
 
-theorem eA_eq (R : RD d) : eA R = ((R.ε : ℤ) : AE F E) := map_intCast _ _
-
-theorem cA_eA (R : RD d) : cA σ (eA R) = eA R := by
-  rw [eA_eq]; exact map_intCast _ _
-
 theorem eigLine (hcm : IsCMExt F E σ) (ε : ℤˣ) {δ : E} (hδ0 : δ ≠ 0) (hδ : σ δ = -(((ε : ℤ) : E)) * δ) {e : E}
     (he : σ e = -(((ε : ℤ) : E)) * e) : ∃ c : F, c • δ = e := by
   have h2 : Module.finrank F E = 2 := hcm.2.2.1

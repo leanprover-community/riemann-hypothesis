@@ -111,23 +111,6 @@ section Hol
 
 variable {V V' : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup V'] [NormedSpace ℂ V']
 
-theorem isHolTo_pull {X : Scheme.{0}} {B : Set V} {y : V → (Sp ℂ ⟶ X)} (hy : IsHolTo B y)
-    {W : Set V'} (hW : IsOpen W) {φ : V' → V} (hφ : DifferentiableOn ℂ φ W) (hm : Set.MapsTo φ W B) :
-    IsHolTo W (fun w => y (φ w)) := by
-  intro U f
-  have hset : {w ∈ W | ⊤ ≤ y (φ w) ⁻¹ᵁ U} = W ∩ φ ⁻¹' {b ∈ B | ⊤ ≤ y b ⁻¹ᵁ U} := by
-    ext w
-    constructor
-    · rintro ⟨h1, h2⟩
-      exact ⟨h1, hm h1, h2⟩
-    · rintro ⟨h1, -, h2⟩
-      exact ⟨h1, h2⟩
-  refine ⟨by rw [hset]; exact hφ.continuousOn.isOpen_inter_preimage hW (hy U f).1, ?_⟩
-  refine DifferentiableOn.comp (g := fun b => valAt' (y b) U f) (t := {b ∈ B | ⊤ ≤ y b ⁻¹ᵁ U})
-    (hy U f).2 (hφ.mono fun w hw => hw.1) ?_
-  intro w hw
-  exact ⟨hm hw.1, hw.2⟩
-
 end Hol
 
 section Fam
@@ -138,7 +121,7 @@ variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] {g n : ℕ}
 def restrict (e : FamExp G M B ψ) (hB' : IsOpen B') (h : B' ⊆ B) : FamExp G M B' ψ where
   ex := e.ex
   add b hb := e.add b (h hb)
-  hol := isHolTo_pull e.hol (hB'.prod isOpen_univ) differentiableOn_id fun p hp => ⟨h hp.1, hp.2⟩
+  hol := GlobalTheory.LocLift.isHolTo_comp e.hol (hB'.prod isOpen_univ) differentiableOn_id fun p hp => ⟨h hp.1, hp.2⟩
   diff b hb := e.diff b (h hb)
   log b hb := e.log b (h hb)
 
@@ -299,7 +282,7 @@ theorem cubWeil_carry {R : Type} [CommRing R] {t : SAB H (Sp R)} {g n : ℕ} {M 
       GlobalTheory.UU.CubWeil t.cub N (e.ex b ((N : ℂ)⁻¹ • s b)) (e.ex b ((N : ℂ)⁻¹ • s' b)) (unitOn ζ) := by
   have hhol : ∀ u : (Fin n → ℂ) → (Fin g → ℂ), DifferentiableOn ℂ u (Metric.ball 0 ρ) →
       IsHolTo (Metric.ball 0 ρ) (fun b => (e.ex b ((N : ℂ)⁻¹ • u b)).left) := fun u hu =>
-    isHolTo_pull (φ := fun b => (b, (N : ℂ)⁻¹ • u b)) e.hol Metric.isOpen_ball
+    GlobalTheory.LocLift.isHolTo_comp (β := fun b => (b, (N : ℂ)⁻¹ • u b)) e.hol Metric.isOpen_ball
       (differentiableOn_id.prodMk (hu.fun_const_smul _)) (fun b hb => ⟨hb, trivial⟩)
   have htor : ∀ u : (Fin n → ℂ) → (Fin g → ℂ), (∀ b ∈ Metric.ball (0 : Fin n → ℂ) ρ, u b ∈ e.per b) →
       ∀ b ∈ Metric.ball (0 : Fin n → ℂ) ρ, e.ex b ((N : ℂ)⁻¹ • u b) ^ N = 1 := fun u hu b hb => by

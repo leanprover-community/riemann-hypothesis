@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPullbackOneProdKernel
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SameIdIff
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsClosedSubschemeLocallyTrivialProductLineBu
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsKerIffMinors
@@ -101,16 +102,7 @@ variable {S : Scheme.{0}} (A : Over S)
 
 theorem isPullback_lift {Y T : Over S} (y : Y ⟶ T) :
     IsPullback (lift (fst A Y) (snd A Y ≫ y)).left (snd A Y).left (snd A T).left y.left := by
-  have h₀ : IsPullback (pullback.fst A.hom T.hom) (snd A T).left A.hom T.hom :=
-    IsPullback.of_hasPullback A.hom T.hom
-  have e₁ : (lift (fst A Y) (snd A Y ≫ y)).left ≫ pullback.fst A.hom T.hom = (fst A Y).left := by
-    rw [show pullback.fst A.hom T.hom = (fst A T).left from rfl, ← Over.comp_left, lift_fst]
-  have big : IsPullback ((lift (fst A Y) (snd A Y ≫ y)).left ≫ pullback.fst A.hom T.hom) (snd A Y).left A.hom
-      (y.left ≫ T.hom) := by
-    have := IsPullback.of_hasPullback A.hom Y.hom
-    rw [e₁, Over.w y]
-    exact this
-  exact IsPullback.of_right big (by rw [← Over.comp_left, lift_snd, Over.comp_left]) h₀
+  apply _root_.GlobalTheory.RigDesc.isPullback_one_prod <;> assumption
 
 theorem exists_closed_locTriv_noeth (hG : GlobalFnsSt) {T : Over S} [GrpObj A] [IsLocallyNoetherian T.left]
     (hA : IsAbelianScheme A) (F : LB (A ⊗ T).left) (hF : F.IsLB) :

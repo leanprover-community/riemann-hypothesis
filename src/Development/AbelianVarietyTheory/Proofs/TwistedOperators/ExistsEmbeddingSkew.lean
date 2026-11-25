@@ -58,8 +58,6 @@ open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
 open scoped TensorProduct InnerProductSpace Classical
 open GlobalTheory.Chain.IoLift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Chain.CuspL2
 
 theorem exists_toLp_ext {G : Type} [MeasurableSpace G] (ν : Measure G) :

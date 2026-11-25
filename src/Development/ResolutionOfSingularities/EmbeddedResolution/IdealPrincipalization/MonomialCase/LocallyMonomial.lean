@@ -64,58 +64,17 @@ structure IsLocallyMonomialTriple (T : MarkedIdealWithBoundary.{u}) : Prop where
   monomialNear : ∀ x ∈ orderAtLeastLocus T.ideal T.mult, IsMonomialNear T.boundary T.ideal x
 
 structure IsLocallyMonomialPrincipalization (P : ℕ → Prop) (F : PrincipalizationAssignment.{u}) : Prop where
-  center_subset_boundaryLocus :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ i < (F T).length,
-        (↑((F T).center i).support : Set ↥((F T).schemeAt i)) ⊆
-          MarkedSequenceOfBlowups.boundaryLocus (F T) i
   cert :
     ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
       ∀ i < (F T).length,
         PrincipalizationCertificate ((F T).schemeAt i) (MarkedSequenceOfBlowups.projectionToSpec (F T) i) ((F T).ideal i) T.mult
           (MarkedSequenceOfBlowups.boundaryLocus (F T) i) ((F T).center i)
-  center_eq :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ i < (F T).length,
-        (F T).center i = monomialCenter ((F T).ideal i) T.mult ((F T).boundary i)
-  minLevel_ne_zero :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ i < (F T).length, minIndexCard ((F T).ideal i) T.mult ((F T).boundary i) ≠ 0
-  key_le :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ t, t + 1 < (F T).length →
-        (centerInvariant ((F T).ideal t) T.mult ((F T).boundary t)).Le
-          (centerInvariant ((F T).ideal (t + 1)) T.mult ((F T).boundary (t + 1)))
-  monomial_near :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ i ≤ (F T).length, ∀ x ∈ orderAtLeastLocus ((F T).ideal i) T.mult,
-        IsMonomialNear ((F T).boundary i) ((F T).ideal i) x
   center_nonempty :
     ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
       ∀ i < (F T).length, (↑((F T).center i).support : Set ↥((F T).schemeAt i)).Nonempty
   resolves :
     ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
       MarkedSequenceOfBlowups.IsResolution (F T)
-  smooth_pullback :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ (Y : Scheme.{u}) (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme)
-        [AlgebraicGeometry.Smooth h], h ≫ T.structMap = q →
-        ∀ (E' : List Y.IdealSheafData),
-          MarkedIdealWithBoundary.SameNontrivialBoundary (T.pullbackAlong Y q h).boundary E' →
-            IsLocallyMonomialTriple ((T.pullbackAlong Y q h).withBoundary E') →
-              P ((T.pullbackAlong Y q h).withBoundary E').krullDimSucc →
-                IsPullbackBlowupSequence h
-                  (F ((T.pullbackAlong Y q h).withBoundary E')).toSequenceOfBlowups (F T).toSequenceOfBlowups
-  smooth_pullback_strict :
-    ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
-      ∀ (Y : Scheme.{u}) (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme)
-        [AlgebraicGeometry.Smooth h] [AlgebraicGeometry.Surjective h], h ≫ T.structMap = q →
-        ∀ (E' : List Y.IdealSheafData),
-          MarkedIdealWithBoundary.SameNontrivialBoundary (T.pullbackAlong Y q h).boundary E' →
-            IsLocallyMonomialTriple ((T.pullbackAlong Y q h).withBoundary E') →
-              P ((T.pullbackAlong Y q h).withBoundary E').krullDimSucc →
-                IsStrictPullbackBlowupSeq h
-                  (F ((T.pullbackAlong Y q h).withBoundary E')).toSequenceOfBlowups (F T).toSequenceOfBlowups
   trivial_of_coSupport_empty :
     ∀ (T : MarkedIdealWithBoundary.{u}), IsLocallyMonomialTriple T → P T.krullDimSucc →
       orderAtLeastLocus T.ideal T.mult = ∅ → (F T).length = 0

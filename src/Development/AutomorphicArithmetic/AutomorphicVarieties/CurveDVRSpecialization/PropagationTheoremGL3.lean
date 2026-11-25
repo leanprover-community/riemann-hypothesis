@@ -295,6 +295,7 @@ theorem UpperTheory.V.Fr.frobenius_corner_maximalIdeal_le :
   intro l _ O _ _ _ _ F C₀ n hF hn S P hO hmon hψ
   obtain ⟨hco, hmax⟩ := co_B hF hn S
   haveI := hco
+  haveI : IsNoetherianRing S.B := UpperTheory.V.Alg.IsCO.toIsNoetherian O
   obtain ⟨-, -, h0, -, -, -, -⟩ := gr_A hF hn S
   obtain ⟨-, -, -, hcl⟩ := cont_u hF hn S
   have hinj : Function.Injective (algebraMap S.B S.A) := by

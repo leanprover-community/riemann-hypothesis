@@ -22,7 +22,6 @@ structure AllTied (D : D7) (X : ThetaX D) (A : TH.ProvA) where
   ty : TypTied T
 
   W : WeilTied D X T
-  unr : WeilUnramifiedCondition W
 
   kf : KfinTied W
 

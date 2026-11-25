@@ -328,14 +328,7 @@ theorem diag_inK (ε : Fin n → Bool) (θ : Fin n → ℝ) :
 theorem exp_diag (θ : Fin n → ℝ) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) =
       Matrix.diagonal (fun a => Complex.exp (((t * θ a : ℝ) : ℂ) * Complex.I)) := by
-  rw [← Matrix.diagonal_smul, Matrix.exp_diagonal]
-  congr 1
-  funext a
-  rw [Pi.coe_exp, ← Complex.exp_eq_exp_ℂ]
-  congr 1
-  simp only [Pi.smul_apply, smul_eq_mul]
-  push_cast
-  ring
+  apply _root_.GlobalTheory.KTypeHighest.exp_diag <;> assumption
 
 theorem act_diag (d : Fin n → ℂ) (v : V) : act E (Matrix.diagonal d) v = ∑ a, d a • E a a v := by
   rw [act_apply]

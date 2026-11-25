@@ -49,8 +49,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRes
 open AlgebraicGeometry CategoryTheory GlobalTheory.DeRham GlobalTheory.Cris
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj

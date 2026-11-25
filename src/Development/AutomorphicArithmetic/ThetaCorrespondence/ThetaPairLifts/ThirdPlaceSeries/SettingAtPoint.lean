@@ -46,7 +46,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 namespace GlobalTheory.BigTop.Fun
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 def SizeAtAlt : Prop := Closed FamHyp fun Fm _ => _root_.GlobalTheory.BigTop.EventuallyAtPoints Fm fun x _ i _ => GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows (Fm.L x i)
 def SettingAtPoint : Prop := Closed FamHyp fun Fm _ => _root_.GlobalTheory.BigTop.EventuallyAtPoints Fm fun x _ i p =>
   GlobalTheory.GLq.ESerTie (Fm.D x i) → HidaSetting (Fm.L x i) p.R.toRealDat p.F.lv2

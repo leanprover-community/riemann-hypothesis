@@ -50,8 +50,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT GlobalTheory.LFun Formalism.L2.Host
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.ConjSat
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}

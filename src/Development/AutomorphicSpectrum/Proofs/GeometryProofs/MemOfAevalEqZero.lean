@@ -83,11 +83,6 @@ theorem homog_add {a b : MRing ι} {d : K → ℕ} (ha : IsMultiHomog a d) (hb :
   · exact ha m h k
   · exact hb m h k
 
-theorem homog_sub {a b : MRing ι} {d : K → ℕ} (ha : IsMultiHomog a d) (hb : IsMultiHomog b d) :
-    IsMultiHomog (a - b) d := by
-  rw [sub_eq_add_neg]
-  exact homog_add ha (fun m hm => hb m (by rwa [support_neg] at hm))
-
 theorem homog_C (n : ℤ) : IsMultiHomog (C n : MRing ι) (0 : K → ℕ) := by
   intro m hm k
   rw [C_apply] at hm
@@ -334,7 +329,7 @@ theorem isUnitSec_iff_chart (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fin
       intro hGmem
       apply cMon_notMem (W := W) hcW (m + m')
       have hmem : G * G' - cMon c (m + m') ∈ mCoordIdeal y := by
-        apply mem_of_aeval_eq_zero (homog_sub (homog_mul hG hG') (homog_cMon c (m + m')))
+        apply mem_of_aeval_eq_zero (GroundTheory.Heights₂.Heights.Targets.CurveVerticalPointChart.form_sub (homog_mul hG hG') (homog_cMon c (m + m')))
         rw [map_sub, map_mul, aeval_cMon, ← eG, ← eG']
         simp only [Pi.add_apply, pow_add, Finset.prod_mul_distrib]
         have hρρ := mul_inv_cancel₀ hρ0
@@ -347,7 +342,7 @@ theorem isUnitSec_iff_chart (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fin
       · exact hGW h
       · exact cMon_notMem hcW df h
     · have hd : (dg + m) + df = (m + df) + dg := by abel
-      apply mem_of_aeval_eq_zero (homog_sub (homog_mul (homog_cMon c (dg + m)) hf)
+      apply mem_of_aeval_eq_zero (GroundTheory.Heights₂.Heights.Targets.CurveVerticalPointChart.form_sub (homog_mul (homog_cMon c (dg + m)) hf)
         (by rw [hd]; exact homog_mul (homog_mul hG (homog_cMon c df)) hg))
       rw [map_sub, map_mul, map_mul, map_mul, aeval_cMon, aeval_cMon, ← eG]
       have h17 := zpow_factor (a := df) (b := dg) (fun k => y ⟨k, c k⟩) hc

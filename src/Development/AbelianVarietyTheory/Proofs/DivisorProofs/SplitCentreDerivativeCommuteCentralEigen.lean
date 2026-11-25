@@ -47,7 +47,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.Is
 
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.ResW GlobalTheory.Published
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.ResW
 

@@ -268,8 +268,6 @@ section -- clump:auto
 
 open GlobalTheory.ShFam.Hor
 
-set_option autoImplicit false
-
 namespace GlobalTheory.LogDescent
 
 open Complex Topology
@@ -1414,8 +1412,6 @@ open scoped ComplexOrder Topology
 open GlobalTheory.ShFam.Hor GlobalTheory.CxPts
 open MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.ShFam.Hor.LogCh
 attribute [local instance] Over.cartesianMonoidalCategory
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -1065,10 +1065,7 @@ theorem v_det_of_isUnitDet {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum
 
 theorem mem_cball_pow (w : Pl D.host.E) (c : ℕ) (z : Kw (D := D) w) :
     z ∈ cball (unifAt (D := D) w ^ c) ↔ Valued.v z ≤ WithZero.exp (-(c : ℤ)) := by
-  have h : Valued.v (unifAt (D := D) w : Kw (D := D) w) = WithZero.exp (-1 : ℤ) := Formalism.L2.Host.unif_spec w
-  refine (vEq w _ _).trans ?_
-  rw [Units.val_pow_eq_pow_val, map_pow, h, ← WithZero.exp_nsmul]
-  simp
+  apply _root_.GlobalTheory.TopFlip.StdLoc.mem_cball_iff <;> assumption
 
 theorem mem_integer_iff (w : Pl D.host.E) (z : Kw (D := D) w) : z ∈ (ValuativeRel.valuation (Kw (D := D) w)).integer ↔ Valued.v z ≤ 1 := by
   rw [Valuation.mem_integer_iff, (vEq w).le_one_iff_le_one]
@@ -1190,13 +1187,7 @@ variable {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : Grid
 
 theorem locChar_nu {μ₀ : T} (hL : L.Is μ₀) (t : T) (i j : Fin D.R.m) (w : Pl D.host.E) :
     locChar (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.alpha G t i j / GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.beta G i j) w = (locGrid G t w).nu i j := by
-  have e1 : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.alpha G t i j / GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.beta G i j = G.nu t i (j + 1) :=
-    mul_div_mul_right_eq_div _ _ _
-  rw [e1, GlobalTheory.LFun.locChar_eq_of_chrEq (SqNum.chrEq_nu G t i j hL)]
-  have hj : (j : ℕ) < D.R.m := j.2
-  ext x
-  simp only [SqNum.nuH, Grid.nu, locGrid, muBase, dif_pos hj, div_eq_mul_inv]
-  rfl
+  apply _root_.GlobalTheory.TopFlip.StdLoc.locChar_nu <;> assumption
 
 theorem val_colX_ordX (t : T) (i j : Fin D.R.m) (w : Pl D.host.E)
     (s : Fin ((locGrid G t w).rank (i + 1, j + 1) + (locGrid G t w).rank (i, j))) :
@@ -1295,10 +1286,6 @@ open GlobalTheory.RouteSeesaw (box2 topR botR)
 variable {D : D7}
 
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice (D := D)
-
 
 
 
@@ -1320,7 +1307,7 @@ theorem eq_smul_of_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
   obtain ⟨σ, h⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
   obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.self_dual_lattice_pairing_dual D ψ S T ΛS ΛT hψ hΛS hΛT
   have hden := GlobalTheory.T.scaled_finite_matrix_mem_lattice D S T ΛS ΛT
-    (selfDual_isFullLattice S ΛS hΛS) (selfDual_isFullLattice T ΛT hΛT)
+    (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hΛS) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hΛT)
   have hlat := hf.2.lat
   have hinf := fun u => latO_inf (u := u) S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E))
     fun _ => True

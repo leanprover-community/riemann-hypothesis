@@ -48,8 +48,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AdelicU GlobalTheory.StdUnn
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.RhoH
 
 variable {D : D7} {n : ℕ}

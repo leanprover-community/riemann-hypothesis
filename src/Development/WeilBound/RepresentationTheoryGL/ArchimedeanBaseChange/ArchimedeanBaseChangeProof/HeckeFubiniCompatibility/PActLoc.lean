@@ -55,7 +55,7 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC.Bridge (along atW)
 open scoped ContDiff Classical
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace PositivityTheory.Rg.BcB.CG
 

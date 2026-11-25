@@ -52,16 +52,4 @@ open scoped TensorProduct NNReal Matrix Classical
 open NumberField MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.Rg.Sw
 
-namespace PositivityTheory.SiegelWeilFormula.KSplit
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-
-theorem A_sym (d : SD σ) : ∃ ε : ℤˣ, ∀ i j, σ (d.A.J j i) = ((ε : ℤ) : E) * d.A.J i j := by
-  exact KSplitA.A_sym d
-
-theorem A_det (d : SD σ) : d.A.J.det ≠ 0 := by
-  exact KSplitA.A_det d
-
-end PositivityTheory.SiegelWeilFormula.KSplit
-
 end

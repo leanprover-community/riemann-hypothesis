@@ -96,10 +96,6 @@ def Tr (f : R →+* V) {D₀ : DegPre R} {D : DegPre V} (hD : IsPullDeg f D₀ D
 
 end Tr
 
-def OverPt {X : Scheme.{0}} {h n : ℕ} {B : Type} [CommRing B] {ζ : B} {sX : X ⟶ Sp B} (c : SiegPre h n ζ sX) {S : Scheme.{0}}
-    (A : PolAV S) (y : S ⟶ X) (α : A.A.left ⟶ c.A.left) : Prop :=
-  IsGrpPullback A.A c.A y α ∧ ∃ α₂ : (G2 A.A).left ⟶ (G2 c.A).left, IsSquare α α₂ ∧ LBIso (abelian₂ A.A A.L) (c.P.pull α₂)
-
 def Match {V : Type} [CommRing V] [IsDomain V] (D₁ D₂ : DegPre V) (b : D₁.P.A ⟶ D₂.P.A) (φ : D₁.X ≃+ D₂.X) (F : Type) [Field F]
     [Algebra (FractionRing V) F] : Prop :=
   IsMonHom b ∧ IsIso b ∧

@@ -287,8 +287,6 @@ theorem quad_zero (hT : 0 < T) (hT' : 0 < T') (hdet : Zm.det ≠ 0) (hG : 0 < gP
     rw [← Complex.ofReal_mul, Real.mul_self_sqrt (mul_pos hT hT').le]
   have hg : ((sGT T T' Zm : ℝ) : ℂ) * ((sGT T T' Zm : ℝ) : ℂ) = ((gPoly (T * T') Zm / T : ℝ) : ℂ) := by
     rw [← Complex.ofReal_mul, sGT, Real.mul_self_sqrt (div_pos hG hT).le]
-  have hs0 : ((Real.sqrt (T * T') : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast (Real.sqrt_pos.mpr (mul_pos hT hT')).ne'
   have hT0 : ((T : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hT.ne'
   have hT'0 : ((T' : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hT'.ne'
   rw [hsplit, hA, hB, hal, hbe, hkl]
@@ -608,7 +606,6 @@ theorem secM_spec (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) →
   have hs2 : s ^ 2 = T' := Real.sq_sqrt hT'.le
   have hzz : herm (Hpk k r) S.z' S.z' = -((s : ℂ) ^ 2) := by
     rw [herm_self_alt]; congr 1; exact_mod_cast hs2.symm
-  have hzzT : herm (Hpk k r) S.z' S.z' = -((T' : ℝ) : ℂ) := herm_self_alt
   have hzz0 : herm (Hpk k r) S.z' S.z' ≠ 0 := by rw [hzz]; simpa using hs'
   have hzν : herm (Hpk k r) S.z' ν' = 0 := herm_zν hνz
   set μ := Real.sqrt (T' / T) with hμdef
@@ -750,7 +747,6 @@ theorem secM_spec (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) →
     rw [hinv, prW_cvec hz' hν hνz hzz0, hZ]
     congr 1
     simp only [hddef]
-    have hpc := ph_conj Zm hdet
     have hph' : ph Zm = Zm.det / ((‖Zm.det‖ : ℝ) : ℂ) := rfl
     have hnorm : Zm.det * conj Zm.det = ((‖Zm.det‖ : ℝ) : ℂ) ^ 2 := by
       rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]; push_cast; ring
@@ -1207,7 +1203,6 @@ theorem fib_indep (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (hbase 
   have hτN : τ ∈ Nset k r := A.tau_N hz hv
   have hτN' : τ' ∈ Nset k r := A.tau_N hz' hu'
   have uτ := _root_.Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_N hτN
-  have uτ' := _root_.Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_N hτN'
   have hGG := Formalism.FourierDecayAlt.P.unitary_group_closed k r
   have hg1 : τ⁻¹ * γ0 * τ' ∈ B.GV k r :=
     hGG.mul_mem _ (hGG.mul_mem _ (hGG.inv_mem _ hτN.1) _ hγe) _ hτN'.1
@@ -1233,7 +1228,6 @@ theorem fib_indep (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (hbase 
   obtain ⟨hnB'', hfB''⟩ := conj_fix hz' hu' hnB huB
   have uhA : IsUnit hA.det := Dx2.OrbJ.isUnit_of_G hhA.1
   have uhB : IsUnit hB.det := Dx2.OrbJ.isUnit_of_G hhB.1
-  have unA : IsUnit nA.det := _root_.Formalism.FourierDecayAlt.P.Dx2.OrbJ.isUnit_of_N hnA
 
   have cA : hA⁻¹ * τ⁻¹ = τ⁻¹ * hA⁻¹ := by
     have := A.tau_comm hhA v

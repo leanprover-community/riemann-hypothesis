@@ -84,14 +84,7 @@ theorem UpperTheory.iwahori_compactOpen_and_iwCoset_indicator_test :
     have hc := isCompact_iwCoset w ν
     have hclopen : IsClopen (iwCoset w ν) := ⟨hc.isClosed, isOpen_iwCoset w ν⟩
     refine ⟨⟨?_, ?_⟩, ?_⟩
-    · rw [IsLocallyConstant.iff_eventually_eq]
-      intro x
-      by_cases hx : x ∈ iwCoset w ν
-      · filter_upwards [hclopen.isOpen.mem_nhds hx] with y hy
-        rw [Set.indicator_of_mem hy, Set.indicator_of_mem hx]
-        rfl
-      · filter_upwards [hclopen.compl.isOpen.mem_nhds hx] with y hy
-        rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
+    · exact ((LocallyConstant.const (Gw n w) (1 : ℂ)).indicator hclopen).isLocallyConstant
     · exact HasCompactSupport.intro hc fun x hx => Set.indicator_of_notMem hx _
     · intro u hu g
       have hiff : u * g ∈ iwCoset w ν ↔ g ∈ iwCoset w ν := by

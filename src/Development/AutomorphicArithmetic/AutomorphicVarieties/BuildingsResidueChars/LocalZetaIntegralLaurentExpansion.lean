@@ -52,7 +52,6 @@ open MeasureTheory Polynomial GroundTheory.Automorphic GroundTheory.Automorphic.
 open GroundTheory.Automorphic.GodementJacquet
 open scoped NNReal Classical ValuativeRel
 
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 theorem UpperTheory.local_zeta_integral_laurent_expansion :
     UpperTheory.V.Z.Gam.LdLaurent := by

@@ -49,6 +49,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
+import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.InvMulVecScalarMul
 
 @[expose] public section
 
@@ -233,7 +234,7 @@ theorem lie_derivative_eisenstein_integral {χ : HChar F} {c : HeightOneSpectrum
   have hH2 : I2 one = ∫ p, Rc χ c g p one ∂μ2 := integral_prod _ i2
 
   have hdl := (contDiff_dl (F := F) g).contDiffAt (x := one)
-  have hdl0 : dl g one ≠ 0 := by rw [dl_one]; exact (absD_pos g).ne'
+  have hdl0 : dl g one ≠ 0 := by rw [dl_one]; exact (EisensteinIntegrability.absD_pos g).ne'
   have hD : ContDiffAt ℝ ∞ (Dc g) one :=
     (Complex.ofRealCLM.contDiff.contDiffAt).comp _ (hdl.rpow_const_of_ne hdl0)
   have hA : ContDiffAt ℝ ∞ (Ac g) one :=

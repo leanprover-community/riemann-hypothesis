@@ -61,19 +61,16 @@ theorem conv_one (f : ℤ → M) : conv (1 : PowerSeries LL) f = f := by
   · intro j hj
     simp [PowerSeries.coeff_one, hj]
 
-theorem mem_latSpan {ι : Type} (e : ι → ℤ → M) (x : ι) : e x ∈ latSpan (LL := LL) e :=
-  Submodule.subset_span ⟨1, x, (conv_one _).symm⟩
-
 theorem neg_eq_zero {ι : Type} {e : ι → ℤ → M} {D : Submodule LL M} (h : Std D (latSpan e))
     (x : ι) (k : ℤ) (hk : k < 0) : e x k = 0 :=
-  ((h _).1 (mem_latSpan e x)).2 k hk
+  ((h _).1 (GlobalTheory.NL.Model.mem_latSpan e x)).2 k hk
 
 theorem span_const {ι : Type} {e : ι → ℤ → M} {D : Submodule LL M} (h : Std D (latSpan e)) :
     Submodule.span LL (Set.range fun x => e x 0) = D := by
   apply le_antisymm
   · rw [Submodule.span_le]
     rintro _ ⟨x, rfl⟩
-    exact ((h _).1 (mem_latSpan e x)).1 0
+    exact ((h _).1 (GlobalTheory.NL.Model.mem_latSpan e x)).1 0
   · intro d hd
     have key : ∀ f ∈ latSpan (LL := LL) e, f 0 ∈ Submodule.span LL (Set.range fun x => e x 0) := by
       intro f hf
@@ -181,7 +178,7 @@ theorem low_span {M' ι : Type} [AddCommGroup M'] [Module LL M'] (a : ι → ι)
   simp only [conv_one] at ha
   refine ⟨fun x k => ⟨?_, fun hk => ?_⟩, span_const_map hS L _ fun x => by rw [ha, hN]⟩
   · rw [hN]
-    exact Submodule.mem_map_of_mem (((hS _).1 (mem_latSpan e _)).1 k)
+    exact Submodule.mem_map_of_mem (((hS _).1 (GlobalTheory.NL.Model.mem_latSpan e _)).1 k)
   · rw [hN, neg_eq_zero hS x k hk, map_zero]
 
 end Series

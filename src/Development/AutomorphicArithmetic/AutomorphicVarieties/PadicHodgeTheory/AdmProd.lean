@@ -78,15 +78,6 @@ private theorem fixT_map (r : G → V →ₗ[Q] V) (r' : G → V' →ₗ[Q] V') 
   refine forall_congr' fun g => ?_
   rw [← (TensorProduct.prodLeft Q Q V V' B).injective.eq_iff, prodLeft_act, Prod.ext_iff]
 
-private def prodEquiv' {M N : Type} [AddCommGroup M] [Module Q M] [AddCommGroup N] [Module Q N]
-    (p : Submodule Q M) (q : Submodule Q N) : ↥(p.prod q) ≃ₗ[Q] ↥p × ↥q where
-  toFun x := (⟨x.1.1, x.2.1⟩, ⟨x.1.2, x.2.2⟩)
-  invFun y := ⟨(y.1.1, y.2.1), y.1.2, y.2.2⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-  left_inv _ := rfl
-  right_inv _ := rfl
-
 private theorem fixT_finite [FiniteDimensional Q V] (r : G → V →ₗ[Q] V) (a : G → B →ₗ[Q] B) {n : ℕ} (hn : n ≠ 0)
     (h : finrank Q ↥(fixT r a) = n * finrank Q V) : Module.Finite Q ↥(fixT r a) := by
   rcases Nat.eq_zero_or_pos (finrank Q V) with h0 | h0
@@ -101,7 +92,7 @@ private theorem fixT_prod [FiniteDimensional Q V] [FiniteDimensional Q V'] (r : 
   haveI := fixT_finite r a hn h
   haveI := fixT_finite r' a hn h'
   rw [← LinearEquiv.finrank_map_eq (TensorProduct.prodLeft Q Q V V' B), fixT_map,
-    (prodEquiv' _ _).finrank_eq, Module.finrank_prod, Module.finrank_prod, h, h', mul_add]
+    (Submodule.prodEquiv _ _).finrank_eq, Module.finrank_prod, Module.finrank_prod, h, h', mul_add]
 
 end
 

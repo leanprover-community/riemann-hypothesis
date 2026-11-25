@@ -47,7 +47,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismB
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
-set_option autoImplicit false
 set_option linter.unusedVariables false
 
 noncomputable section

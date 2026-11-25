@@ -118,21 +118,20 @@ private theorem integrable_term (φ : S4 F) (v : V4 F) :
   exact hs.mono (hs.1.mul hc.aestronglyMeasurable)
     (Eventually.of_forall fun s => by rw [norm_mul, ψ, Circle.norm_coe, mul_one])
 
+theorem hat_add (φ χ : S4 F) (v : V4 F) :
+    hat (φ + χ).1 v = hat φ.1 v + hat χ.1 v := by
+  simp only [hat, Submodule.coe_add, Pi.add_apply, add_mul]
+  exact integral_add (integrable_term φ v) (integrable_term χ v)
+
+theorem hat_smul (c : ℂ) (φ : V4 F → ℂ) (v : V4 F) : hat (c • φ) v = c * hat φ v := by
+  simp only [hat, Pi.smul_apply, smul_eq_mul, mul_assoc]
+  exact integral_const_mul c _
+
 end UpperTheory.ConvolutionTheory.R2.G
 
 theorem UpperTheory.ConvolutionTheory.R2.G.hatLin :
     ∀ (F : Type) [Field F] [NumberField F], ∃ H : S4 F →ₗ[ℂ] S4 F, ∀ φ, (H φ).1 = hat φ.1 := by
   intro F _ _
-  have hadd : ∀ φ χ : S4 F, hat (φ + χ).1 = hat φ.1 + hat χ.1 := by
-    intro φ χ
-    funext v
-    simp only [hat, Submodule.coe_add, Pi.add_apply, add_mul]
-    exact integral_add (integrable_term φ v) (integrable_term χ v)
-  have hsmul : ∀ (c : ℂ) (φ : S4 F), hat (c • φ).1 = c • hat φ.1 := by
-    intro c φ
-    funext v
-    simp only [hat, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, mul_assoc]
-    exact integral_const_mul c _
   refine ⟨{ toFun := fun φ => ⟨hat φ.1, (UpperTheory.ConvolutionTheory.R2.D.hatMem F φ).1⟩
-            map_add' := fun φ χ => Subtype.ext (hadd φ χ)
-            map_smul' := fun c φ => Subtype.ext (hsmul c φ) }, fun φ => rfl⟩
+            map_add' := fun φ χ => Subtype.ext (funext (hat_add φ χ))
+            map_smul' := fun c φ => Subtype.ext (funext (hat_smul c φ.1)) }, fun φ => rfl⟩

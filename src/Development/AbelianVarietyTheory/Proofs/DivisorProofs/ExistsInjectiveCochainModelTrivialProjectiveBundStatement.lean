@@ -1072,42 +1072,10 @@ theorem secRes_res {F : Shv R} {U V W : Scheme.{0}} (g : V ⟶ U) (g' : W ⟶ V)
     Sec.res g' (Sec.res g b) = Sec.res (g' ≫ g) b := by
   rw [Sec.res, Sec.res, Sec.res, op_comp, Functor.map_comp, ModuleCat.hom_comp, LinearMap.comp_apply]
 
-theorem ev_smulU {E : Spc} {I : Cx R} {n : ℤ} (r : ULift.{1} R) (α : Cochain ((chains R).obj E) I n) (p : ℕ) (s : ℤ)
-    (h : -(p : ℤ) + n = s) (U : Scheme.{0}) (x : Sx E p U) :
-    _root_.GlobalTheory.EtC.ev (R := R) (r • α) p s h U x =
-      r • _root_.GlobalTheory.EtC.ev (R := R) α p s h U x := by
-  unfold _root_.GlobalTheory.EtC.ev
-  rw [Cochain.smul_v, Linear.comp_smul]
-  rfl
-
 def schSx {V W : Scheme.{0}} (v : W ⟶ V) (p : ℕ) : Sx (sch.obj V) p W := v
 
 theorem schSx_map {V V' W : Scheme.{0}} (v : W ⟶ V) (u : V ⟶ V') (p : ℕ) :
     (schSx v p).map (sch.map u) = schSx (v ≫ u) p := rfl
-
-def evLin (I : Cx R) (E : Spc) (n : ℤ) (p : ℕ) (s : ℤ) (h : -(p : ℤ) + n = s) (U : Scheme.{0}) (x : Sx E p U) :
-    Cochain ((chains R).obj E) I n →ₗ[ULift.{1} R] Sec (I.X s) U where
-  toFun α := _root_.GlobalTheory.EtC.ev (R := R) α p s h U x
-  map_add' α β := by
-    simp [_root_.GlobalTheory.EtC.ev, Cochain.add_v]
-  map_smul' r α := ev_smulU r α p s h U x
-
-theorem cotPre_ev (q N : ℕ) (I : Cx R) (n : ℤ) {U V : Scheme.{0}} (v : V ⟶ U)
-    (c : Cochain ((chains R).obj (sch.obj U ⨯ fibQ q N)) I n) (p : ℕ) (s : ℤ) (h : -(p : ℤ) + n = s) (W : Scheme.{0})
-    (y : Sx (sch.obj V ⨯ fibQ q N) p W) :
-    _root_.GlobalTheory.EtC.ev (R := R) (I := I) (E := sch.obj V ⨯ fibQ q N)
-        (((cotPre R q N I n).map v.op).hom c) p s h W y =
-      _root_.GlobalTheory.EtC.ev (R := R) c p s h W (y.map (prod.map (sch.map v) (𝟙 _))) := by
-  let f : sch.obj V ⨯ fibQ q N ⟶ sch.obj U ⨯ fibQ q N := prod.map (sch.map v) (𝟙 _)
-  change _root_.GlobalTheory.EtC.ev (R := R) ((Cochain.ofHom ((chains R).map f)).comp c (zero_add n))
-    p s h W y = _root_.GlobalTheory.EtC.ev (R := R) c p s h W (y.map f)
-  unfold _root_.GlobalTheory.EtC.ev
-  rw [Cochain.zero_cochain_comp_v, Cochain.ofHom_v, ← Category.assoc,
-    _root_.GlobalTheory.EtC.CupSpec.chains_map, Category.assoc]
-  change Sec.map ((chainsXIso R (sch.obj U ⨯ fibQ q N) p).inv ≫ c.v _ _ h)
-    (Sec.map ((free R).map (f.app (op (SimplexCategory.mk p)))) (freeGen R _ W y)) = _
-  rw [_root_.GlobalTheory.EtC.CupSpec.freeGen_map]
-  rfl
 
 end GlobalTheory.EtC
 

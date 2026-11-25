@@ -47,8 +47,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.TranslateRepresentations
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Space

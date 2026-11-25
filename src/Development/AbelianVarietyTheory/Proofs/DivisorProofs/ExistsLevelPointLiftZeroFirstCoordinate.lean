@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorDegDataUnitaryTypeStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsGenVal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.QkExtExistsG
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
@@ -106,19 +107,8 @@ theorem ex_pow (c x : A) (w : U) (k : ℕ) :
 
 theorem cubN_pow (a x : A) (n k : ℕ) :
     cubN θ n 1 a (x ^ k) * cubN θ k 1 x a ^ n = cubN θ n 1 a x ^ k * cubN θ k 1 x (a ^ n) := by
-  induction k with
-  | zero => rw [pow_zero, pow_zero, h.N_one]; simp [cubN]
-  | succ k ih =>
-    have e := h.N_add n 1 a (x ^ k) x
-    rw [h.face, _root_.mul_one, _root_.one_mul] at e
-    rw [cubN_succ' h, cubN_succ' h, _root_.one_mul, pow_succ x k, h.s12 (x ^ k) x a, h.s01 (x ^ k) a x,
-      h.s12 (x ^ k) x (a ^ n), h.s01 (x ^ k) (a ^ n) x]
-    apply Additive.ofMul.injective
-    have e' := congrArg Additive.ofMul e
-    have ih' := congrArg Additive.ofMul ih
-    simp only [ofMul_mul, ofMul_pow] at e' ih' ⊢
-    simp only [add_nsmul, one_nsmul, nsmul_add]
-    linear_combination (norm := abel) e' + ih'
+  intros
+  apply _root_.GlobalTheory.SympQ.PushPow.cubN_pow_right <;> assumption
 
 end Alg
 

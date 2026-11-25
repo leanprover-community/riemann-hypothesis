@@ -1,47 +1,7 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementC
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -50,11 +10,6 @@ open MvPolynomial Finset
 noncomputable section
 
 namespace Formalism.GradedWeylDivisibility
-
-private theorem exists_pos_of_sum_pos {ι : Type*} (s : Finset ι) (f : ι → ℕ)
-    (h : 0 < ∑ i ∈ s, f i) : ∃ i ∈ s, 0 < f i := by
-  obtain ⟨i, hi, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero (Nat.pos_iff_ne_zero.mp h)
-  exact ⟨i, hi, Nat.pos_of_ne_zero hne⟩
 
 private theorem colExp_apply {r n h : ℕ} (c : Fin h → Fin r) (hh : h ≤ n) (a : Fin r)
     (t : Fin n) :
@@ -102,7 +57,7 @@ theorem semistandardPeel : SSYTPeel := by
   have hstep : ∀ l j : Fin n, j.val = l.val + 1 → 0 < ν j → 0 < ν l := by
     intro l j hlj hj
     rw [← hcol j] at hj
-    obtain ⟨a, -, ha⟩ := exists_pos_of_sum_pos _ _ hj
+    obtain ⟨a, -, ha⟩ := Finset.sum_pos_iff.mp hj
     have h1 : (∑ b : Fin r with b ≤ a, m (b, j)) ≤ 0 + ∑ b : Fin r with b < a, m (b, l) :=
       hint_r l j hlj a
     have h2 : m (a, j) ≤ ∑ b : Fin r with b ≤ a, m (b, j) :=
@@ -159,7 +114,7 @@ theorem semistandardPeel : SSYTPeel := by
     intro p
     have hp : 0 < ν (Fin.castLE hh p) := (hiff _).1 p.isLt
     rw [← hcol] at hp
-    obtain ⟨a, -, ha⟩ := exists_pos_of_sum_pos _ _ hp
+    obtain ⟨a, -, ha⟩ := Finset.sum_pos_iff.mp hp
     have hS : (Finset.univ.filter (fun b : Fin r => 0 < m (b, Fin.castLE hh p))).Nonempty :=
       ⟨a, Finset.mem_filter.mpr ⟨Finset.mem_univ _, ha⟩⟩
     refine ⟨(Finset.univ.filter (fun b : Fin r => 0 < m (b, Fin.castLE hh p))).min' hS, ?_, ?_⟩
@@ -187,7 +142,7 @@ theorem semistandardPeel : SSYTPeel := by
       Finset.single_le_sum (f := fun b => m (b, j)) (fun _ _ => Nat.zero_le _) (by simp)
     have h3 := hc1' j hj
     have h4 : 0 < ∑ b : Fin r with b < c ⟨j.val, hj⟩, m (b, l) := by omega
-    obtain ⟨b, hb, hbpos⟩ := exists_pos_of_sum_pos _ _ h4
+    obtain ⟨b, hb, hbpos⟩ := Finset.sum_pos_iff.mp h4
     rw [Finset.mem_filter] at hb
     exact lt_of_le_of_lt (hc2' l hl b hbpos) hb.2
   have hcstep' : ∀ p q : Fin h, q.val = p.val + 1 → c p < c q := by

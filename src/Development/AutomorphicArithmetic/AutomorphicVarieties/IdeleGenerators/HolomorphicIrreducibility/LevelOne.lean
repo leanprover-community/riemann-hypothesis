@@ -52,15 +52,6 @@ namespace UpperTheory.V.Sd
 private def GoodWt (k : ℕ) : Prop :=
   ∃ f : ModularForm 𝒮ℒ (k : ℤ), coef f 0 = 1 ∧ ∀ n, ∃ c : ℤ, coef f n = c
 
-private lemma bern4 : bernoulli 4 = -1 / 30 := by
-  rw [bernoulli_eq_bernoulli'_of_ne_one (by norm_num), bernoulli'_four]
-  norm_num
-
-private lemma bern6 : bernoulli 6 = 1 / 42 := by
-  have h5 : bernoulli' 5 = 0 := bernoulli'_eq_zero_of_odd (by decide) (by norm_num)
-  rw [bernoulli_eq_bernoulli'_of_ne_one (by norm_num), bernoulli'_def]
-  norm_num [Finset.sum_range_succ, h5, Nat.choose, bernoulli'_four, bernoulli'_three, bernoulli'_two]
-
 private lemma good0 : GoodWt 0 := by
   refine ⟨(1 : ModularForm 𝒮ℒ 0), ?_, fun n => ?_⟩
   · simp [coef, qExpansion_one]
@@ -72,7 +63,7 @@ private lemma good4 : GoodWt 4 := by
   · exact EisensteinSeries.E_qExpansion_coeff_zero _ (by decide)
   · refine ⟨if n = 0 then 1 else 240 * (ArithmeticFunction.sigma 3 n : ℤ), ?_⟩
     unfold coef
-    rw [EisensteinSeries.E_qExpansion_coeff _ (by decide), bern4]
+    rw [EisensteinSeries.E_qExpansion_coeff _ (by decide), bernoulli_four]
     split_ifs
     · simp
     · push_cast; ring
@@ -82,7 +73,7 @@ private lemma good6 : GoodWt 6 := by
   · exact EisensteinSeries.E_qExpansion_coeff_zero _ (by decide)
   · refine ⟨if n = 0 then 1 else -504 * (ArithmeticFunction.sigma 5 n : ℤ), ?_⟩
     unfold coef
-    rw [EisensteinSeries.E_qExpansion_coeff _ (by decide), bern6]
+    rw [EisensteinSeries.E_qExpansion_coeff _ (by decide), bernoulli_six]
     split_ifs
     · simp
     · push_cast; ring

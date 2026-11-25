@@ -49,8 +49,6 @@ open NumberField IsDedekindDomain
 open GlobalTheory.BCT GlobalTheory.UnitaryBC PositivityTheory.Rg.Bc.ArchbcB.B
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.MatchLMPlaces
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.MLM PositivityTheory.Rg.BcB.G8

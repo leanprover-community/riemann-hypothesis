@@ -56,8 +56,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.V.W
 
-instance coefLocal {l : ℕ} [Fact l.Prime] (c : Coef l) : IsLocalRing ↥c.O := c.dvr.toIsLocalRing
-
 abbrev Plc (F : Type) [Field F] : Type := HeightOneSpectrum (𝓞 F)
 
 def GDet.IsTwist {n : ℕ} {A G : Type} [CommRing A] [Group G] (D : GDet n A G) (β : G →* Aˣ) (D' : GDet n A G) : Prop :=

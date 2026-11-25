@@ -87,9 +87,6 @@ theorem isOpen_ball (γ : ValueGroupWithZero K) (hγ : γ ≠ 0) :
   rw [sub_add_cancel] at h
   exact h.trans (max_le hy.le hx)
 
-theorem isCompact_ball (γ : ValueGroupWithZero K) : IsCompact {x : K | valuation K x ≤ γ} :=
-  IsNonarchimedeanLocalField.isCompact_closedBall K γ
-
 end Field
 
 variable {K : Type} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
@@ -132,7 +129,7 @@ theorem box_eq_image (b : Basis ι K E) (γ : ι → ValueGroupWithZero K) :
 
 theorem isCompact_box (b : Basis ι K E) (γ : ι → ValueGroupWithZero K) : IsCompact (box b γ) := by
   rw [box_eq_image]
-  exact (isCompact_univ_pi fun i => isCompact_ball (γ i)).image (continuous_equivFun_symm b)
+  exact (isCompact_univ_pi fun i => IsNonarchimedeanLocalField.isCompact_closedBall _ (γ i)).image (continuous_equivFun_symm b)
 
 theorem zero_mem_box (b : Basis ι K E) (γ : ι → ValueGroupWithZero K) : (0 : E) ∈ box b γ := by
   intro i

@@ -61,8 +61,6 @@ open GlobalTheory.AllWt (wtOf cuspOn)
 open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.FlagTan (dimFlag)
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ModifSections

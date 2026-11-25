@@ -1249,16 +1249,6 @@ theorem typTied (ht : TypAdd D) : TypTied T := ⟨⟨θ, h.inf⟩, fun _ h' V hV
   rw [h.forms V] at this
   exact ⟨fun k => k.2, fun k => ⟨this, k⟩⟩⟩
 
-theorem weilUnrTied : WeilUnramifiedCondition W := fun V V' χ χ' hr h1 h2 S u1 u2 k hk k' hk' Φ hΦ => by
-  have hc : ∀ χ, IsHC D (T.eChr χ) := fun χ => by
-    have : T.eChr χ ∈ Set.range T.eChr := ⟨χ, rfl⟩
-    rwa [T.eChr_range] at this
-  have hf : W.evS V V' Φ ∈ Set.range (W.evS V V') := ⟨Φ, rfl⟩
-  rw [h.sch] at hf
-  refine W.evS_inj V V' ?_
-  rw [h.om V V' χ χ' (k, k') Φ ⟨_, mem_ThS.2 hf⟩ rfl,
-    Wf.om_unr V V' _ _ ⟨hr, hc χ, hc χ', h1, h2⟩ S u1 u2 k hk k' hk' _ hΦ]
-
 def schEquiv (V V' : HSp D) : X.Sch V V' ≃ₗ[ℂ] ThS W.ψ V V' :=
   LinearEquiv.ofBijective ((W.evS V V').codRestrict _ fun Φ => mem_ThS.2 (by
       have hf : W.evS V V' Φ ∈ Set.range (W.evS V V') := ⟨Φ, rfl⟩

@@ -92,24 +92,6 @@ end GaussBonnet
 
 open GaussBonnet
 
-def GaussBonnetUnitary : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
-    (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E))
-    (Γ : Subgroup (GL (Fin r) E)) (P Q : Ψ → ℕ)
-    (B : ∀ τ : Ψ, Matrix (Fin r) (Fin (P τ) ⊕ Fin (Q τ)) ℂ) (c : CDHaar)
-    (D : Set (∀ τ : Ψ, UpqT (P τ) (Q τ))),
-    (∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) →
-    (∀ a b, cc (G a b) = G b a) → G.det ≠ 0 →
-    Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ →
-    (∀ τ, P τ + Q τ = r) → (∀ τ : Ψ, IsOrthFrame τ.1 G (B τ)) →
-    (∀ γ ∈ Γ, ∀ x y, herm G ((γ : Matrix (Fin r) (Fin r) E) *ᵥ x)
-      ((γ : Matrix (Fin r) (Fin r) E) *ᵥ y) = herm G x y) →
-    Subgroup.Commensurable Γ (GlobalTheory.FiniteCovolume.uStabSubgroup G Λ) →
-    (∀ γ ∈ Γ, ∀ (n : ℕ) (z : E), 0 < n →
-      ((γ ^ n : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) = z • (1 : Matrix (Fin r) (Fin r) E) → γ = 1) →
-    IsFundamentalDomain (realImage Ψ B Γ) D (Measure.pi fun τ : Ψ => c.cd (P τ) (Q τ)) →
-    ∃ n : ℕ, (Measure.pi fun τ : Ψ => c.cd (P τ) (Q τ)) D * ∏ τ : Ψ, (r.choose (P τ) : ℝ≥0∞) = n
-
 namespace GaussBonnet
 
 end GaussBonnet

@@ -129,8 +129,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRin
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -425,8 +423,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FSMass
 
 theorem chern_mass_hermitian_O_one_projective : ∀ N : ℕ, ((ProjSpace.hermitianTwistingSheaf ℂ N).φ (RingHom.id ℂ)).chernPart N 1 Set.univ = 1 ∧ ((ProjSpace.hermitianTwistingSheaf ℂ N).φ (RingHom.id ℂ)).chernPart N (-1) Set.univ = 0 := by
@@ -559,8 +555,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
 
-set_option autoImplicit false
-
 namespace GlobalTheory
 
 theorem chernInt_pull_fubiniStudy_eq_zero_of_not_dominant : ∀ (Y : Var ℂ) (π : Y.X ⟶ PSpace ℂ Y.dim) (hπ : π ≫ PSpace.str ℂ Y.dim = Y.str), (∃ x : PSpace ℂ Y.dim, ¬ π (genericPoint Y.X) ⤳ x) → Weight.chernInt (((ProjSpace.hermitianTwistingSheaf ℂ Y.dim).φ (RingHom.id ℂ)).pull π hπ) Y.dim Set.univ (fun _ => 1) = 0 := by
@@ -592,8 +586,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -634,7 +626,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
 
-set_option autoImplicit false
 noncomputable section
 open scoped Classical
 open GlobalTheory.ChartGlue
@@ -698,8 +689,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
 
-set_option autoImplicit false
-
 namespace GlobalTheory.ChernMassPull
 
 theorem mass : ∀ (k : Type) [Field k] (X Y : Scheme.{0}) [IsIntegral X] [IsIntegral Y] (p : X ⟶ Sp k) (q : Y ⟶ Sp k) (σ : k →+* ℂ) (D : ℕ), IsProjOver p → IsProjOver q → SmoothOfRelativeDimension D p → ∀ (π : Y ⟶ X) (hπ : π ≫ p = q), π (genericPoint Y) = genericPoint X → π.residueDegree (genericPoint Y) ≠ 0 → ∀ (B : LB X) (φ : Weight p σ B), φ.IsCInf → ∀ ε : ℤˣ, (φ.pull π hπ).chernPart D ε Set.univ = (π.residueDegree (genericPoint Y) : ENNReal) * φ.chernPart D ε Set.univ := by
@@ -750,8 +739,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter Asymptotics
@@ -796,8 +783,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.TopSelfIntersectionO1Projective", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.FiniteCohPushforwardIffOfIsClosedImmersion\npublic import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOneChartEqPreimageStandardChart\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.LbH0EqChiStructureModuleOfKrullDimZero\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemRiemannRochSpaceIffRegularAtEverywhere\nimport Development.AbelianVarietyTheory.Definitions.Divisors.DetJacMatCoordsEqTransitionJacobianDet\nimport Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsRegularFnIffOfIsAffineOpen\nimport ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -860,8 +845,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1135,8 +1118,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
 
-set_option autoImplicit false
-
 namespace GlobalTheory.SelfInterPoly
 
 theorem exists_polynomial_multilinear {A : Type*} {ι : Type} [AddCommGroup A] [Fintype ι]
@@ -1243,7 +1224,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ProjVar
-set_option autoImplicit false
 
 namespace GlobalTheory.MassDegree
 

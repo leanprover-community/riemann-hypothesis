@@ -49,8 +49,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.Admissi
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.AdLat GlobalTheory.UnRep ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj

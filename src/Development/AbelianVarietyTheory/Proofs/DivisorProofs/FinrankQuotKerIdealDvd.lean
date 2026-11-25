@@ -48,8 +48,6 @@ open GlobalTheory.DeRham (spOver spOver_comp)
 open scoped CategoryTheory.MonObj
 attribute [local instance] CategoryTheory.Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.AV.KerPart

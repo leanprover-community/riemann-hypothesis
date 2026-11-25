@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentVectorSectionValueEqExpansionSumStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftsAlong
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SameIdIff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotIsIsoSpMapDnFst
@@ -93,7 +94,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.DualCon.LiftInduct
@@ -271,7 +271,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.DualCon
@@ -338,7 +337,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.DualCon.FieldRep
 
@@ -406,7 +404,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.RepChart
@@ -499,7 +496,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
@@ -540,7 +536,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.DualOpen
@@ -858,8 +853,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 namespace GlobalTheory.DualOpen
 
 theorem glue_into_affineOpen (S : Scheme.{0}) [IsAffine S] (U T T₁ T₂ T₀ : Over S) (j₁ : T₁ ⟶ T) (j₂ : T₂ ⟶ T)
@@ -951,7 +944,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.DualOpen
@@ -1003,7 +995,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
 open scoped CategoryTheory.Obj
@@ -1147,7 +1138,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
@@ -1316,8 +1306,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SmoothPtLift
 
-set_option autoImplicit false
-
 theorem exists_lift (U S : Scheme.{0}) (p : U ⟶ S) [Smooth p] (C : Type) [CommRing C] [IsLocalRing C]
     (I : Ideal C) (hI : I ^ 2 = ⊥) (s : Sp C ⟶ S) (u₀ : Sp (C ⧸ I) ⟶ U)
     (hw : u₀ ≫ p = spMap (Ideal.Quotient.mk I) ≫ s) :
@@ -1402,7 +1390,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
 open scoped CategoryTheory.Obj
@@ -1535,7 +1522,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.DualGraph
@@ -1641,7 +1627,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
@@ -1651,18 +1636,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.DualOpen
 
 theorem subsingleton_spectrum_dualNumber (K : Type) [Field K] : Subsingleton (PrimeSpectrum (DualNumber K)) := by
-  have key : ∀ (p : PrimeSpectrum (DualNumber K)) (x : DualNumber K), x ∈ p.asIdeal ↔ x.fst = 0 := by
-    intro p x
-    constructor
-    · intro hx
-      by_contra h
-      have hu : IsUnit x := TrivSqZeroExt.isUnit_iff_isUnit_fst.2 (isUnit_iff_ne_zero.2 h)
-      exact p.isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ hx hu)
-    · intro h
-      have hsq : x * x = 0 := by
-        refine TrivSqZeroExt.ext ?_ ?_ <;> simp [h]
-      exact p.isPrime.mem_of_pow_mem 2 (by rw [pow_two, hsq]; exact p.asIdeal.zero_mem)
-  exact ⟨fun p q => PrimeSpectrum.ext (Ideal.ext fun x => by rw [key p x, key q x])⟩
+  apply _root_.GlobalTheory.MBLow.TanVal.subsingleton_dual <;> assumption
 
 private theorem spMap_comp_of_eq {R₁ R₂ R₂' R₃ : Type} [CommRing R₁] [CommRing R₂] [CommRing R₂'] [CommRing R₃]
     {f : R₁ →+* R₂} {g : R₂ →+* R₃} {f' : R₁ →+* R₂'} {g' : R₂' →+* R₃} (h : g.comp f = g'.comp f') :
@@ -1738,7 +1712,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon GlobalTheory.DualOpen
@@ -1767,7 +1740,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon

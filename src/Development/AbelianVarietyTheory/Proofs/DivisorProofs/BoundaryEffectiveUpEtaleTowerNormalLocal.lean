@@ -178,8 +178,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FieldPair
 
 theorem Place.ord_eq_zero_iff_isUnit {L : Type} [Field L] {cL : ℂ →+* L} (P : Place cL) {u : P.ring}
@@ -381,8 +379,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -651,8 +647,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FieldPair.PolyPlaceEt
@@ -755,8 +749,6 @@ section -- clump:auto
 open GlobalTheory GlobalTheory.TopForm
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace GlobalTheory.TopFormAppend
 
 theorem dForm_append_eq_smul : ∀ {k K L : Type} [CommRing k] [CommRing K] [CommRing L] (cK : k →+* K) (cL : k →+* L)
@@ -809,7 +801,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.FieldPair
@@ -929,8 +920,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FieldPair
 
 theorem etTower_coords_algebraicIndependent {K L : Type} [Field K] [Field L] (cK : ℂ →+* K)
@@ -993,8 +982,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1070,8 +1057,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1217,8 +1202,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FieldPair
@@ -1300,7 +1283,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.FieldPair.EtForm
@@ -1624,8 +1606,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 noncomputable section
 

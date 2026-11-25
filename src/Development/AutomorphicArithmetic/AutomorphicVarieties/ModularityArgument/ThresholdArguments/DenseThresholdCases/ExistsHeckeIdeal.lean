@@ -246,7 +246,6 @@ section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-attribute [local instance high] UpperTheory.V.W.coefLocal
 private theorem cd_compact {R : Type} [CommRing R] [WithIdeal R] [IsAdicComplete (WithIdeal.i : Ideal R) R]
     (hf : ∀ N : ℕ, Finite (R ⧸ (WithIdeal.i : Ideal R) ^ N)) : CompactSpace R := by
   have hI : IsAdic (WithIdeal.i : Ideal R) := rfl

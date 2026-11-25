@@ -213,7 +213,7 @@ theorem wt [CharZero k] (P : GL (Fin n) k) (w : Fin n → ℤ) (W : Submodule k 
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem relIndex_eq (I J : AddSubgroup (Matrix (Fin n) (Fin n) k))
-    (GI GJ : Subgroup (GL (Fin n) k)) (_hJI : J ≤ I)
+    (GI GJ : Subgroup (GL (Fin n) k))
     (hGI : ∀ u : GL (Fin n) k, u ∈ GI ↔ u.val - 1 ∈ I)
     (hGJ : ∀ u : GL (Fin n) k, u ∈ GJ ↔ u.val - 1 ∈ J)
     (hsurj : ∀ x ∈ I, ∃ u : GL (Fin n) k, u.val = 1 + x)
@@ -687,12 +687,12 @@ private theorem modul_eq [CharZero k] (hratio : RatioP k n) (Z : SubM k n) (hZ :
     let ⟨w, hw⟩ := surj C _ (mem_cj.mp hx)
     ⟨g * w * g⁻¹, by rw [Units.val_mul, Units.val_mul, hw, Matrix.mul_add, Matrix.add_mul,
       Matrix.mul_one, Units.mul_inv, adL_adL_inv]⟩
-  have e1 := relIndex_eq X Y K L hYX hKm hLm (surj C) fun u hu => multC _ u (intK u hu) (Subgroup.mem_inf.mp hu).2
-  have e2 := relIndex_eq XW YW (K ⊓ stab Z p) (L ⊓ stab Z p) hYWXW memKS memLS (surj W) fun u hu =>
+  have e1 := relIndex_eq X Y K L hKm hLm (surj C) fun u hu => multC _ u (intK u hu) (Subgroup.mem_inf.mp hu).2
+  have e2 := relIndex_eq XW YW (K ⊓ stab Z p) (L ⊓ stab Z p) memKS memLS (surj W) fun u hu =>
     let ⟨hK, hS⟩ := Subgroup.mem_inf.mp hu
     multW _ u (intK u hK) (Subgroup.mem_inf.mp hK).2 ((hSiff u (Subgroup.mem_inf.mp hK).2).mp hS)
-  have e3 := relIndex_eq gX Y gK L hYgX hgKm hLm surjgX fun u hu => multC _ u (gKint u hu).1 (gKint u hu).2
-  have e4 := relIndex_eq gXW YW (gK ⊓ stab Z p) (L ⊓ stab Z p) hYWgXW memgKS memLS
+  have e3 := relIndex_eq gX Y gK L hgKm hLm surjgX fun u hu => multC _ u (gKint u hu).1 (gKint u hu).2
+  have e4 := relIndex_eq gXW YW (gK ⊓ stab Z p) (L ⊓ stab Z p) memgKS memLS
     (fun x hx => surjgX x (mem_cj.mpr (latWC _ _ (mem_cj.mp hx)))) fun u hu =>
       let ⟨hK, hS⟩ := Subgroup.mem_inf.mp hu
       multW _ u (gKint u hK).1 (gKint u hK).2 ((hSiff u (gKint u hK).2).mp hS)

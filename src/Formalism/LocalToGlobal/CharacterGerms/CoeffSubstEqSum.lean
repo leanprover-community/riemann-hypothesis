@@ -229,11 +229,6 @@ theorem TendsS.fprod {ι : Type} (d : ι →₀ ℕ) {a : ℕ → ι → MvPower
   exact TendsS.prod d.support (f := fun i n => a n i ^ d i) (F := fun i => A i ^ d i)
     (fun i _ => (ha i).pow (d i))
 
-theorem TendsS.intS {f : ℕ → MvPowerSeries σ C} {F : MvPowerSeries σ C} (hf : TendsS V f F)
-    (hi : ∀ n, IntS V (f n)) : IntS V F := by
-  intro μ
-  exact (hf μ).ge0 (fun n => hi n μ)
-
 def Ord (k : ℕ) (f : MvPowerSeries σ C) : Prop := ∀ μ : σ →₀ ℕ, Finsupp.degree μ < k → coeff μ f = 0
 
 theorem Ord.mul {k k' : ℕ} {f g : MvPowerSeries σ C} (hf : Ord k f) (hg : Ord k' g) : Ord (k + k') (f * g) := by

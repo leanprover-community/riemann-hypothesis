@@ -45,8 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField IsDedekindDomain GlobalTheory.NT
 
 namespace GlobalTheory.UnramDiscr

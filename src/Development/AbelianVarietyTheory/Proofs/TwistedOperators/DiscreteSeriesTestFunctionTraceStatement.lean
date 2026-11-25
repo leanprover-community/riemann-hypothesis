@@ -123,7 +123,6 @@ noncomputable section
 namespace GlobalTheory.ArchTrace
 
 open Formalism.MainNotions.S (IsURepOn UJset IsIrredOn)
-open GlobalTheory.Orb (ujMat ujRep frameEquiv)
 open GlobalTheory.RealInd (IsIrrAdm groupRep)
 
 section Pull
@@ -197,7 +196,6 @@ end GlobalTheory.ArchTrace
 namespace GlobalTheory.ArchTrace
 
 open Formalism.MainNotions.S (IsURepOn UJset IsIrredOn)
-open GlobalTheory.Orb (ujMat ujRep frameEquiv IsPseudoCoeff isPseudoCoeff_dsRep_iff exists_frameMat_eq repOp_map)
 open GlobalTheory.RealInd (IsIrrAdm groupRep)
 
 theorem trace_pseudoCoeff_arch : GlobalTheory.Published.DiscreteSeriesClassification → GlobalTheory.Published.HarishChandraCharacters → GlobalTheory.IndefiniteRowSideFullHecke.PseudoCoefficientSeparation.PseudoCoeffSeparation → ∀ (D : D7) (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (S : D.what₂.Tau → SPar) (M : DSModel V S) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w)) (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ), IsTestData V lam M T U μa μf μ fa ff → ∀ (ρ : D.what₂.Tau) (X : Type) [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteSpace X] (δ : GArch D.sp.cm.sig V.gram (placeOf D ρ) →* (X →L[ℂ] X)), IsIrrUnitary δ → ∃ c, HasTrace (repOp δ (μa (placeOf D ρ)) (fa (placeOf D ρ))) c ∧ (c ≠ 0 → IsUnitEquiv δ (dsRep M ρ)) := by

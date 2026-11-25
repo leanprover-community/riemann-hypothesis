@@ -998,21 +998,18 @@ theorem span_pair {k Γ : Type} [Field k] [Monoid Γ] {a t : ℕ} (ha : 2 ≤ a)
     (M, v) ∈ Submodule.span k (Set.range (ρ.prod (Pi.monoidHom χ))) := by
   set B := Submodule.span k (Set.range (ρ.prod (Pi.monoidHom χ))) with hB
   have h1 : ∀ N : Matrix (Fin a) (Fin a) k, ∃ w, (N, w) ∈ B := fun N => by
-    have hN : N ∈ Submodule.span k (Set.range ρ) := hρ ▸ Submodule.mem_top
-    induction hN using Submodule.span_induction with
-    | mem _ h => obtain ⟨g, rfl⟩ := h; exact ⟨_, Submodule.subset_span ⟨g, rfl⟩⟩
-    | zero => exact ⟨0, B.zero_mem⟩
-    | add _ _ _ _ h h' => obtain ⟨w, h⟩ := h; obtain ⟨w', h'⟩ := h'; exact ⟨_, B.add_mem h h'⟩
-    | smul c _ _ h => obtain ⟨w, h⟩ := h; exact ⟨_, B.smul_mem c h⟩
+    obtain ⟨⟨_, w⟩, hw, rfl⟩ := (Submodule.span_le.2 (by
+        rintro _ ⟨g, rfl⟩; exact ⟨_, Submodule.subset_span ⟨g, rfl⟩, rfl⟩) :
+      _ ≤ B.map (LinearMap.fst k (Matrix (Fin a) (Fin a) k) (Fin t → k)))
+      (hρ ▸ Submodule.mem_top)
+    exact ⟨w, hw⟩
   have h2 : ∀ w : Fin t → k, ∃ N, (N, w) ∈ B := fun w => by
-    have hli : LinearIndependent k (fun j => (χ j : Γ → k)) := (linearIndependent_monoidHom Γ k).comp χ hχ
-    have hw : w ∈ Submodule.span k (Set.range (flip fun j => (χ j : Γ → k))) :=
-      (span_flip_eq_top_iff_linearIndependent.2 hli) ▸ Submodule.mem_top
-    induction hw using Submodule.span_induction with
-    | mem _ h => obtain ⟨g, rfl⟩ := h; exact ⟨_, Submodule.subset_span ⟨g, rfl⟩⟩
-    | zero => exact ⟨0, B.zero_mem⟩
-    | add _ _ _ _ h h' => obtain ⟨w, h⟩ := h; obtain ⟨w', h'⟩ := h'; exact ⟨_, B.add_mem h h'⟩
-    | smul c _ _ h => obtain ⟨w, h⟩ := h; exact ⟨_, B.smul_mem c h⟩
+    have hli := (linearIndependent_monoidHom Γ k).comp χ hχ
+    obtain ⟨⟨N, _⟩, hw, rfl⟩ := (Submodule.span_le.2 (by
+        rintro _ ⟨g, rfl⟩; exact ⟨_, Submodule.subset_span ⟨g, rfl⟩, rfl⟩) :
+      _ ≤ B.map (LinearMap.snd k (Matrix (Fin a) (Fin a) k) (Fin t → k)))
+      ((span_flip_eq_top_iff_linearIndependent.2 hli) ▸ Submodule.mem_top)
+    exact ⟨N, hw⟩
   have h3 : ∀ N N' : Matrix (Fin a) (Fin a) k, (N', (0 : Fin t → k)) ∈ B → (N * N', (0 : Fin t → k)) ∈ B := fun N N' h => by
     obtain ⟨w, hw⟩ := h1 N
     simpa using span_mul_mem (R := k) _ hw h

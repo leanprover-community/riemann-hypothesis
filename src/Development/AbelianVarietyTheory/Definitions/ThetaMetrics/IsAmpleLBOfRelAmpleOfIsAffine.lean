@@ -92,12 +92,6 @@ theorem exists_finset_iSup_eq_top [CompactSpace X] (U : X → X.Opens) (hU : ∀
   obtain ⟨a, ha, h⟩ := Set.mem_iUnion₂.1 (hT (Set.mem_univ y))
   exact Opens.mem_iSup.2 ⟨⟨a, ha⟩, h⟩
 
-theorem IsGenerated.exists_fin_succ (h : IsGenerated L) :
-    ∃ (N : ℕ) (s : Fin (N + 1) → L.Sec), ⨆ i, nonzeroLocus (s i) = ⊤ := by
-  obtain ⟨n, s, hs⟩ := h
-  exact ⟨n, Fin.cons DVR.SecOps.secZero s, top_le_iff.1 (hs.ge.trans (iSup_le fun i =>
-    le_iSup_of_le i.succ le_rfl))⟩
-
 theorem IsGenerated.isLB (h : IsGenerated L) : L.IsLB := by
   have coc : ∀ (y : X) i j k, y ∈ L.U i → y ∈ L.U j → y ∈ L.U k →
       gm (𝟙 X) y (L.U i ⊓ L.U j) (L.g i j) * gm (𝟙 X) y (L.U j ⊓ L.U k) (L.g j k) =

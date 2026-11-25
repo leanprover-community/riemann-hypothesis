@@ -81,12 +81,6 @@ namespace GlobalTheory.LocalLatticeIntegral
 
 open NumberField
 
-theorem exists_int_mul_integral {E : Type} [Field E] [NumberField E] (e : E) :
-    ∃ M : ℤ, M ≠ 0 ∧ ∃ r : 𝓞 E, (r : E) = (M : E) * e := by
-  have h : IsAlgebraic ℤ e := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic e)
-  obtain ⟨M, hM, hi⟩ := h.exists_integral_multiple
-  exact ⟨M, hM, ⟨M • e, hi⟩, by simp [zsmul_eq_mul]⟩
-
 theorem exists_int_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E))
     [Submodule.IsFullLattice E L] (x : Fin n → E) : ∃ N : ℤ, N ≠ 0 ∧ N • x ∈ L := by
   apply GlobalTheory.LatAlmostAll.exists_int_smul_mem <;> assumption

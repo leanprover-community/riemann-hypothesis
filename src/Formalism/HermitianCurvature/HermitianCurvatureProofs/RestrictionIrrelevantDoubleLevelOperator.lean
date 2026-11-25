@@ -78,7 +78,7 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem herm_UH {ι : Type*} [Fintype ι] [DecidableEq ι] {H g : Matrix ι ι ℂ} (hg : g ∈ UH H) (x w : ι → ℂ) :
     herm H (g *ᵥ x) (g *ᵥ w) = herm H x w := by
@@ -372,7 +372,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem actual_start_from_level_starts : Formalism.FourierDecayAlt.Q.ActualStartFromLevels := by
   intro hR hDet hT Wp Wq _ _ _ _ _ _ P z z' π π' hP X
@@ -418,7 +418,7 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section Eigen
 
@@ -491,7 +491,7 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section NF
 
@@ -597,7 +597,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem level_start_from_normal_form : Formalism.FourierDecayAlt.Q.LevelStartFromNormalForm := by
   intro hNF hAS _ _ Wp Wq _ _ _ _ _ _ P z z' π π' hP X l
@@ -611,7 +611,7 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section Lie
 
@@ -1153,7 +1153,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem determinant_capelli_from_descent : Formalism.FourierDecayAlt.Q.DetCoreFromSteps := by
   intro hR hQ hDH hRT hLT hP hT Wp Wq _ _ _ _ _ _ P z z' π π' D hPl hD J hJ g hg Y c d
@@ -1252,7 +1252,7 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section CDsec
 
@@ -1712,7 +1712,7 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section RepDer
 

@@ -171,11 +171,7 @@ private theorem key (wi r ri w : Matrix (Fin n) (Fin n) A) (Y K : Fin g → Matr
     rw [mul_epM, epM_mul, ← epM_sub, ← epM_sub, mul_epM, epM_mul]
     congr 1
     funext j
-    have map_sub_matrix (M N : Matrix (Fin n) (Fin n) A) :
-        (M - N).map (algebraMap A X) = M.map (algebraMap A X) - N.map (algebraMap A X) := by
-      ext i k
-      simp [Matrix.map_apply]
-    simp only [Matrix.map_mul, map_sub_matrix]
+    simp only [← RingHom.mapMatrix_apply, map_mul, map_sub]
   have i1 : w.map (algebraMap A (DD X g)) * wi.map (algebraMap A (DD X g)) = 1 := by
     rw [← Matrix.map_mul, h1]; simp
   have i2 : ri.map (algebraMap A (DD X g)) * r.map (algebraMap A (DD X g)) = 1 := by

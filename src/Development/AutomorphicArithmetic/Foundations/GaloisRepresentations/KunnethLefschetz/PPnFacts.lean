@@ -137,10 +137,6 @@ noncomputable def polyPres (k : Type) [CommRing k] (N : ℕ) :
       rw [Matrix.det_isEmpty, map_one]
       exact isUnit_one }
 
-theorem poly_ssmooth (k : Type) [CommRing k] (N : ℕ) :
-    Algebra.IsStandardSmoothOfRelativeDimension N k (MvPolynomial (Fin N) k) :=
-  (polyPres k N).isStandardSmoothOfRelativeDimension (by simp [Algebra.Presentation.dimension])
-
 open CategoryTheory AlgebraicGeometry LateralTheory.EtaleTrace.LPdCut
 attribute [local instance] MvPolynomial.gradedAlgebra
 
@@ -149,7 +145,7 @@ theorem spec_C_smooth (k : Type) [Field k] (N : ℕ) :
   rw [HasRingHomProperty.Spec_iff (P := @SmoothOfRelativeDimension N)]
   refine RingHom.locally_of RingHom.isStandardSmoothOfRelativeDimension_respectsIso _ ?_
   exact (RingHom.isStandardSmoothOfRelativeDimension_algebraMap (n := N) (R := k) (S := MvPolynomial (Fin N) k)).mpr
-    (poly_ssmooth k N)
+    (Algebra.IsStandardSmoothOfRelativeDimension.mvPolynomial_fin (R := k) (n := N))
 
 theorem Dp_cover (k : Type) [Field k] (N : ℕ) : ⨆ i, Dp k N i = ⊤ := by
   apply Proj.iSup_basicOpen_eq_top'

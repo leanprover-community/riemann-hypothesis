@@ -266,8 +266,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.NormUnitInert
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def NormUnitK (D : D7) (p : ℕ) [Fact p.Prime] (lam : TaylorLogMetric.Qbar →+* ℂ_[p]) : Prop :=
   ∀ z : D.host.E, z * D.host.conj z = 1 → ‖TaylorLogMetric.lamC lam (∏ τ : D.what₂.Tau, TaylorLogMetric.embT D τ z)‖ = 1
 

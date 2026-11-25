@@ -277,8 +277,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.SecQuot
@@ -489,8 +487,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HeatLoc
@@ -678,8 +674,6 @@ open GlobalTheory.LogKS (IsField)
 open GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.InvDerBridge
@@ -766,8 +760,6 @@ open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -966,7 +958,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CocVal
 
@@ -1024,7 +1015,6 @@ open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1115,7 +1105,6 @@ open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.Heat.ZeroKS

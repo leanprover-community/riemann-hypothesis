@@ -46,7 +46,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.mem_doublingSiegelParabolic_iff_chart_mem_siegelUnn : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ κ : GA D (dblSp A) ≃* G D A.rank, IsChart A μ κ → ∀ g, g ∈ siegel A ↔ κ g ∈ P D A.rank := by

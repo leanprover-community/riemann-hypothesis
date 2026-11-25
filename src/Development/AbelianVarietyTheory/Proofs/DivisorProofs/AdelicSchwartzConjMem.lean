@@ -44,14 +44,13 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjLinApply
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 
 @[expose] public section
 
 open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.DblEval
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 
 noncomputable section
 open scoped Classical

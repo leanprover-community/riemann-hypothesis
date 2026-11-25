@@ -117,26 +117,16 @@ lemma Em_mul_mid {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + 
   apply Formalism.FourierDecayAlt.P.B2x3.Em_mul_mid <;> assumption
 
 lemma Em_mul_out {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + k + 1)) (x : X) (hi : ¬ mid k r i) :
-    (Em k r * A) i x = 0 := by
-  rw [Matrix.mul_apply]
-  apply Finset.sum_eq_zero
-  intro b _
-  rw [Em, if_neg, zero_mul]
-  intro h
-  exact hi (h ▸ mid_wI b)
+    (Em k r * A) i x = 0 :=
+  _root_.Formalism.FourierDecayAlt.P.B2x3.Em_mul_out A i x hi
 
 lemma mul_EmT_mid {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : mid k r j) :
     (A * (Em k r)ᵀ) x j = A x (midx hj) := by
   apply Formalism.FourierDecayAlt.P.B2x3.mul_EmT_mid <;> assumption
 
 lemma mul_EmT_out {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : ¬ mid k r j) :
-    (A * (Em k r)ᵀ) x j = 0 := by
-  rw [Matrix.mul_apply]
-  apply Finset.sum_eq_zero
-  intro b _
-  rw [Matrix.transpose_apply, Em, if_neg, mul_zero]
-  intro h
-  exact hj (h ▸ mid_wI b)
+    (A * (Em k r)ᵀ) x j = 0 :=
+  _root_.Formalism.FourierDecayAlt.P.B2x3.mul_EmT_out A j x hj
 
 lemma EmT_Em : (Em k r)ᵀ * Em k r = 1 := by
   apply Formalism.FourierDecayAlt.P.B2x3.EmT_Em
@@ -171,12 +161,8 @@ lemma sandwich (a b N : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (M : Mat k r)
 lemma emb_one : embWb k r 1 = 1 := by
   rw [emb_eq, Matrix.mul_one, add_sub_cancel]
 
-lemma emb_mul (a b : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : embWb k r (a * b) = embWb k r a * embWb k r b := by
-  have h := sandwich (r := r) a b 1 1 (by rw [Matrix.one_mul, Matrix.mul_one]) (by rw [Matrix.one_mul, Matrix.mul_one])
-  rw [Matrix.mul_one] at h
-  rw [h, emb_eq, Matrix.mul_one, Matrix.mul_one]
-  congr 1
-  rw [Matrix.mul_sub, Matrix.mul_one, ← Matrix.mul_assoc, Q_Em, Matrix.zero_mul, sub_zero]
+lemma emb_mul (a b : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : embWb k r (a * b) = embWb k r a * embWb k r b :=
+  _root_.Formalism.FourierDecayAlt.P.B2x3.emb_mul a b
 
 lemma emb_conjT (a : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : (embWb k r a)ᴴ = embWb k r aᴴ := by
   rw [emb_eq, emb_eq, Matrix.conjTranspose_add, Matrix.conjTranspose_sub, Matrix.conjTranspose_mul,
@@ -208,14 +194,8 @@ lemma Hpk_eq : Hpk k r =
   exact h
 
 lemma sand_inj {a b : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (h : Em k r * a * (Em k r)ᵀ = Em k r * b * (Em k r)ᵀ) :
-    a = b := by
-  have h2 : (Em k r)ᵀ * (Em k r * a * (Em k r)ᵀ) * Em k r = (Em k r)ᵀ * (Em k r * b * (Em k r)ᵀ) * Em k r := by rw [h]
-  have e : ∀ c : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ, (Em k r)ᵀ * (Em k r * c * (Em k r)ᵀ) * Em k r = c := by
-    intro c
-    calc (Em k r)ᵀ * (Em k r * c * (Em k r)ᵀ) * Em k r = ((Em k r)ᵀ * Em k r) * c * ((Em k r)ᵀ * Em k r) := by
-          simp only [Matrix.mul_assoc]
-      _ = c := by rw [EmT_Em, Matrix.one_mul, Matrix.mul_one]
-  rwa [e, e] at h2
+    a = b :=
+  _root_.Formalism.FourierDecayAlt.P.B2x3.sand_inj h
 
 lemma emb_mem (a : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
     embWb k r a ∈ UH (Hpk k r) ↔ aᴴ * Hb k * a = Hb k := by

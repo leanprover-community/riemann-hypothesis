@@ -55,16 +55,6 @@ private lemma powSum_eq_count (s : Multiset ℂ) (S : Finset ℂ) (h : ∀ z ∈
     have : s.count z = 0 := Multiset.count_eq_zero.2 fun hm => hz (Multiset.mem_toFinset.2 hm)
     simp [this]
 
-private def powHom (z : ℂ) : Multiplicative ℕ →* ℂ where
-  toFun n := z ^ n.toAdd
-  map_one' := by simp
-  map_mul' a b := by simp [pow_add]
-
-private lemma powHom_injective : Function.Injective powHom := by
-  intro a b h
-  have := DFunLike.congr_fun h (Multiplicative.ofAdd 1)
-  simpa [powHom] using this
-
 theorem UpperTheory.ConvolutionTheory.C.powIndep :
     UpperTheory.ConvolutionTheory.C.PowIndep := by
   classical
@@ -86,15 +76,15 @@ theorem UpperTheory.ConvolutionTheory.C.powIndep :
     intro z hz h0
     obtain ⟨i, -, hi⟩ := Finset.mem_biUnion.1 hz
     exact hZ i (h0 ▸ Multiset.mem_toFinset.1 hi)
-  have lin : LinearIndependent ℂ (fun z : S => (powHom z : Multiplicative ℕ → ℂ)) :=
-    (linearIndependent_monoidHom (Multiplicative ℕ) ℂ).comp (fun z : S => powHom z)
-      (powHom_injective.comp Subtype.val_injective)
+  have lin : LinearIndependent ℂ (fun z : S => (powersHom ℂ (z : ℂ) : Multiplicative ℕ → ℂ)) :=
+    (linearIndependent_monoidHom (Multiplicative ℕ) ℂ).comp (fun z : S => powersHom ℂ (z : ℂ))
+      ((powersHom ℂ).injective.comp Subtype.val_injective)
   rw [Fintype.linearIndependent_iff] at lin
   have hb := lin (fun z => a z * (z : ℂ) ^ N) (by
     funext n
     have := key (N + n.toAdd) (Nat.le_add_right _ _)
     rw [← Finset.sum_coe_sort S] at this
-    simpa [powHom, pow_add, mul_assoc, Finset.sum_apply] using this)
+    simpa [pow_add, mul_assoc, Finset.sum_apply] using this)
   have ha : a ζ = 0 := by
     by_cases hζ : ζ ∈ S
     · have := hb ⟨ζ, hζ⟩

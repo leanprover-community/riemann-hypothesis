@@ -163,13 +163,6 @@ namespace ExistsNonSplitPlace
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem mem_of_not_isSplitAt {Sec : Set (Pl E)} (hS : IsSection Sec) {w : Pl E} (hw : ¬ IsSplitAt w) :
-    w ∈ Sec := by
-  obtain ⟨u, ⟨hu, hue⟩, -⟩ := hS w
-  by_cases h : u = w
-  · exact h ▸ hu
-  · exact absurd ⟨u, h, hue⟩ hw
-
 theorem exists_not_isSplitAt (B : Set (Pl E)) (hB : B.Finite) : ∃ w : Pl E, w ∉ B ∧ ¬ IsSplitAt w := by
   set F := maximalRealSubfield E
   have h2 : Module.finrank F E = 2 := Algebra.IsQuadraticExtension.finrank_eq_two F E

@@ -47,7 +47,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.LeastExponentCompare
 open NumberField NumberField.IsCMField TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace

@@ -93,8 +93,6 @@ end Loc
 
 section Glob
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def placesOf (Z : LocDat D) : Places D.host.F D.host.E D.conjF where

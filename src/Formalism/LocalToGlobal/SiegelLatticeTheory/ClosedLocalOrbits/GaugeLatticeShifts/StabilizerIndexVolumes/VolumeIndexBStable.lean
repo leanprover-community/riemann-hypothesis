@@ -161,8 +161,6 @@ theorem lo_conjT {E : Type} [Field E] [StarRing E] {n : ℕ} {M : Matrix (Fin n)
   subst hij
   rw [(h i i).2 rfl, star_one]
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem volume_index_b_stable (D : D7) (u u' : D.what₂.Word)
     (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
     (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V))

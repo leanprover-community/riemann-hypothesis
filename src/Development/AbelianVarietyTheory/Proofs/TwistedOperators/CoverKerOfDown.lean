@@ -51,7 +51,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxC
 open scoped TensorProduct InnerProductSpace Classical
 open GlobalTheory.Chain.IoLift
 open GlobalTheory.RealPar.DerivedAdjoint
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Chain.IoLift.CoverKernel
 

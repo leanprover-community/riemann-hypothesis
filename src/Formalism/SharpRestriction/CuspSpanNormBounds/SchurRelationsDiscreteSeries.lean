@@ -453,8 +453,6 @@ open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ENNReal
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section MultOne
 
 end MultOne
@@ -751,8 +749,6 @@ open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ENNReal
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.MainNotions.UniformConstantsAndStatements ValuativeRel IsDedekindDomain NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Main
 
 variable (D : D7)
@@ -801,8 +797,6 @@ namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ENNReal
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.MainNotions.UniformConstantsAndStatements ValuativeRel IsDedekindDomain NumberField
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Main2
 

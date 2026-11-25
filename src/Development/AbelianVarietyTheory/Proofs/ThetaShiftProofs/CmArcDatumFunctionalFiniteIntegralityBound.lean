@@ -608,37 +608,12 @@ theorem gtTanR_of_isZero {ν : GtPt D (epsR R)} (h : ν.IsZero) : GtTanR ν := b
   exact (gtTanR_iff ν).2 ⟨by rw [hb, MonObj.comp_one], fun χ y J hJ => (val_corr hJ (h.2 χ) _).trans (val_one _)⟩
 
 theorem gtTanR_of_scale {a : R} {ν ν' : GtPt D (epsR R)} (h : GtPt.IsPull (spMap (epsScaleR a)) ν ν')
-    (ht : GtTanR ν) : GtTanR ν' := by
-  obtain ⟨h₁, h₂⟩ := (gtTanR_iff ν).1 ht
-  have s : (origin R).left ≫ spMap (epsScaleR a) = (origin R).left :=
-    (spMap_comp _ _).symm.trans (congrArg spMap (RingHom.ext fun x => by simp [epsScaleR]))
-  refine (gtTanR_iff ν').2 ⟨Over.OverMorphism.ext ?_, fun χ y J hJ => ?_⟩
-  · rw [← h₁, Over.comp_left, Over.comp_left, h.1, ← Category.assoc, s]
-  · refine (val_corr hJ (h.2 χ) _).trans ((val_pull hJ _ _ _).trans ?_)
-    rw [s]
-    exact h₂ χ y J hJ
+    (ht : GtTanR ν) : GtTanR ν' :=
+  _root_.GlobalTheory.FinLocalTan.gtTanR_of_scale h ht
 
 theorem gtTanR_of_isAdd {ν ν' ν'' : GtPt D (epsR R)} (h : ν.IsAdd ν' ν'') (ht : GtTanR ν) (ht' : GtTanR ν') :
-    GtTanR ν'' := by
-  obtain ⟨h₁, h₂⟩ := (gtTanR_iff ν).1 ht
-  obtain ⟨h₁', h₂'⟩ := (gtTanR_iff ν').1 ht'
-  have hb : ν''.b = ν.b * ν'.b := h.1
-  refine (gtTanR_iff ν'').2 ⟨by rw [hb, MonObj.comp_mul, h₁, h₁', _root_.mul_one], fun χ y J hJ => ?_⟩
-  have e := (val_mul hJ _ _ _).symm.trans ((val_corr hJ (h.2 χ) (origin R).left).trans (val_mul hJ _ _ _))
-  have c := val_cub D.cub (origin R) hJ (DegPre.cT D (epsR R) χ) ν.b ν'.b
-  have c' := congrArg (fun z => cubV D.cub y J ((origin R) ≫ DegPre.cT D (epsR R) χ)
-    ((origin R) ≫ ν.b) z) h₁'
-  have cz (x x' : Over.mk (𝟙 (Sp R)) ⟶ D.P.A) : cubV D.cub y J x x' 1 = 1 := by
-    have hm : lift x (lift x' 1) = lift x x' ≫ faceMap (G := D.P.A) 2 := by
-      simp [faceMap, x2, pzero, Hom.one_def]
-    refine Eq.trans ?_ ((val_corr (hJ := hJ) (D.cub.face 2) (lift x x').left).trans (val_one _))
-    refine Eq.trans ?_ (val_pull (hJ := hJ) ..).symm
-    show val D.cub.t (lift x (lift x' 1)).left y J = _
-    rw [hm, Over.comp_left]
-    all_goals rfl
-  have c := c.trans (c'.trans (cz _ _))
-  have e' := (congrArg₂ (· * ·) rfl c).symm.trans (e.trans (congrArg₂ (· * ·) (h₂ χ y J hJ) (h₂' χ y J hJ)))
-  simpa using e'
+    GtTanR ν'' :=
+  _root_.GlobalTheory.FinLocalTan.gtTanR_of_isAdd h ht ht'
 
 theorem gtTanR_of_gtComb {m : ℕ} {cf : Fin m → R} {e : Fin m → GtPt D (epsR R)} {ν : GtPt D (epsR R)}
     (h : GtComb cf e ν) (he : ∀ i, GtTanR (e i)) : GtTanR ν := by

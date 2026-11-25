@@ -19,8 +19,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.PairingIndexBounds.F
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def homRe {E : Type} [Field E] {a b a' b' : ℕ} (ha : a = a') (hb : b = b') (x : HomE E a b) : HomE E a' b' :=
   (LinearEquiv.funCongrLeft E E (finCongr hb.symm)).toLinearMap ∘ₗ x ∘ₗ
     (LinearEquiv.funCongrLeft E E (finCongr ha.symm)).symm.toLinearMap

@@ -5,49 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsExpChart
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.KillAdd
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndEnc
 public import Mathlib.RingTheory.MvPowerSeries.Rename
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndEncPf, Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConstantCoeffPolyAdd
@@ -352,21 +309,6 @@ theorem colEmb_inj {n d : ℕ} (b : Fin n) : Function.Injective (fun p : Fin 1 �
 def colPart {n d : ℕ} (b : Fin n) (M : Fin n × Fin d →₀ ℕ) : Fin 1 × Fin d →₀ ℕ :=
   Finsupp.comapDomain (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) M (colEmb_inj b).injOn
 
-private theorem coeff_rename_mapDomain_lemma {σ τ R : Type} (f : σ → τ) [Filter.TendstoCofinite f]
-    [CommSemiring R] (hf : Function.Injective f) (p : MvPowerSeries σ R) (x : σ →₀ ℕ) :
-    coeff (Finsupp.mapDomain f x) (rename f p) = coeff x p := by
-  classical
-  rw [MvPowerSeries.coeff_rename]
-  rw [Finset.sum_eq_single x]
-  · intro y hy hne
-    exfalso
-    simp only [Set.Finite.mem_toFinset] at hy
-    exact hne (Finsupp.mapDomain_injective hf hy)
-  · intro h
-    exfalso
-    apply h
-    simp
-
 theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPowerSeries (Fin 1 × Fin d) S)
     (M : Fin n × Fin d →₀ ℕ) :
     coeff M (∏ b, rename (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) (g b)) =
@@ -392,7 +334,9 @@ theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPow
   rw [Finset.sum_eq_single (Finsupp.equivFunOnFinite.symm Mb)]
   · refine Finset.prod_congr rfl fun b _ => ?_
     rw [Finsupp.coe_equivFunOnFinite_symm]
-    exact coeff_rename_mapDomain_lemma _ (colEmb_inj b) _ _
+    dsimp only [Mb, ι]
+    simpa only [Finsupp.embDomain_eq_mapDomain, Function.Embedding.coeFn_mk] using
+      MvPowerSeries.coeff_embDomain_rename ⟨fun p => (b, p.2), colEmb_inj b⟩ (g b) (colPart b M)
   · intro l hl hne
     by_contra hprod
     apply hne

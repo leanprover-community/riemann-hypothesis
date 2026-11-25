@@ -166,13 +166,6 @@ theorem Wt.at_conjugate (W : Wt E n) (τ : E →+* ℂ) : W.at (ComplexEmbedding
 
 def Wt.ofFam (lam : (E →+* ℂ) → DomWeight n) : Wt E n := fun v => lam v.embedding
 
-theorem Wt.at_ofFam {lam : (E →+* ℂ) → DomWeight n} (h : ∀ τ, lam (ComplexEmbedding.conjugate τ) = (lam τ).dual)
-    (τ : E →+* ℂ) : (Wt.ofFam lam).at τ = lam τ := by
-  unfold Wt.at Wt.ofFam
-  rcases InfinitePlace.embedding_mk_eq τ with e | e
-  · rw [if_pos e, e]
-  · rw [if_neg (by rw [e]; exact conjugate_ne τ), e, h, dual_dual]
-
 def infW (W : Wt E n) (τ : E →+* ℂ) : Multiset ℂ := infOfWeight (W.at τ)
 
 

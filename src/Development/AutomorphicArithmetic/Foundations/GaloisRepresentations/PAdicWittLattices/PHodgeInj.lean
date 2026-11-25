@@ -56,8 +56,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.HodgeCoh
 
-set_option autoImplicit false
-
 namespace GlobalTheory.HodgeCoh
 open GlobalTheory.CechDR
 
@@ -82,8 +80,6 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC GlobalTheory.GalV 
 open UpperTheory.Gal.Int.Geo (FEt Cover gen piece IsHEig)
 open Opposite ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechDR KaehlerDifferential
 universe u v
-
-set_option autoImplicit false
 
 private theorem natCast_isUnit (k : Type) [Field k] [CharZero k] {A : Type} [CommRing A] [Algebra k A]
     {n : ℕ} (hn : n ≠ 0) : IsUnit (n : A) := by

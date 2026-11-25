@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitOfBasicOpenTop
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SecMInvariantEqBotOrUnivAtGeometricPoint
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
@@ -260,15 +261,7 @@ theorem isGenSec_of_isSecBasis {S : Scheme.{0}} (P : PolAV S) {T : Over S} {th :
 
 theorem isUnit_of_basicOpen_eq_top {Y : Scheme.{0}} (a : Γ(Y, ⊤)) (h : Y.basicOpen a = ⊤) :
     IsUnit a := by
-  have key : ∀ (g : Opposite.op (⊤ : Y.Opens) ⟶ Opposite.op (Y.basicOpen a)) (g' : Opposite.op (Y.basicOpen a) ⟶ Opposite.op ⊤),
-      (Y.presheaf.map g').hom ((Y.presheaf.map g).hom a) = a := by
-    intro g g'
-    rw [← CommRingCat.comp_apply, ← Functor.map_comp, Subsingleton.elim (g ≫ g') (𝟙 _),
-      CategoryTheory.Functor.map_id, CommRingCat.id_apply]
-  have u := (Y.toRingedSpace.isUnit_res_basicOpen a).map
-    (Y.presheaf.map (homOfLE (le_of_eq h.symm)).op).hom
-  convert u using 1
-  exact (key _ _).symm
+  apply _root_.GlobalTheory.RescaleLift.isUnit_of_basicOpen_top <;> assumption
 
 theorem exists_good_translate (hL : Laws) (hL₂ : Laws2) {S : Scheme.{0}} [IsAffine S] (P : PolAV S) (K : Type)
     [Field K] [IsAlgClosed K] (x : Sp K ⟶ S) (n : ℕ) (hn : 2 ≤ n) (hK : (n : K) ≠ 0)

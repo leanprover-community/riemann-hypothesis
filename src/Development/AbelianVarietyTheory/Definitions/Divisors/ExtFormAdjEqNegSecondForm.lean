@@ -582,8 +582,6 @@ def kappa : ℂ := I / (2 * Real.pi)
 
 def ddc (u : E → ℝ) (z ξ η : E) : ℂ := kappa * leviForm u z ξ η
 
-def diagVal {V : Type*} (α : V → V → ℂ) (ξ : V) : ℝ := (-I * α ξ ξ).re
-
 section Tangent
 
 variable {ι : Type*} [Fintype ι]
@@ -760,38 +758,6 @@ theorem curv_submatrix_equiv [Fintype n] [DecidableEq n] (K : E → Matrix n n �
 end Sub
 
 section Examples
-
-def tautGram (e : ℕ) (z : Fin e → ℂ) : Matrix (Fin 1) (Fin 1) ℂ :=
-  of fun _ _ => ((1 + ∑ k, ‖z k‖ ^ 2 : ℝ) : ℂ)
-
-theorem contDiff_one_add_normSq (e : ℕ) :
-    ContDiff ℝ ∞ fun z : Fin e → ℂ => 1 + ∑ k, ‖z k‖ ^ 2 :=
-  contDiff_const.add (ContDiff.sum fun k _ => (contDiff_apply ℝ (fun _ => ℂ) k).norm_sq ℂ)
-
-theorem isPosFrame_tautGram (e : ℕ) : IsPosFrame Set.univ (tautGram e) := by
-  refine ⟨isOpen_univ, fun _ _ =>
-    (ofRealCLM.contDiff.comp (contDiff_one_add_normSq e)).contDiffOn, fun z _ => ?_⟩
-  have : tautGram e z = diagonal fun _ => ((1 + ∑ k, ‖z k‖ ^ 2 : ℝ) : ℂ) := by
-    ext a b; rw [Subsingleton.elim a b]; simp [tautGram]
-  rw [this, posDef_diagonal_iff]
-  intro _
-  exact_mod_cast (by positivity : (0 : ℝ) < 1 + ∑ k, ‖z k‖ ^ 2)
-
-theorem curv_tautGram_zero (e : ℕ) (ξ η : Fin e → ℂ) :
-    curv (tautGram e) 0 ξ η = -(∑ k, ξ k * conj (η k)) • (1 : Matrix (Fin 1) (Fin 1) ℂ) := by
-  ext a b
-  rw [curv_line (f := fun z : Fin e → ℂ => 1 + ∑ k, ‖z k‖ ^ 2)
-    ((contDiff_one_add_normSq e).contDiffAt.of_le (by norm_cast)) (by simp)
-    (Eventually.of_forall fun _ => rfl), Subsingleton.elim a b]
-  let φ : (Fin e → ℂ) →L[ℂ] EuclideanSpace ℂ (Fin e) := (EuclideanSpace.equiv (Fin e) ℂ).symm
-  have h : (fun x : Fin e → ℂ => Real.log (1 + ∑ k, ‖x k‖ ^ 2)) =
-      fun x => Real.log (‖φ x‖ ^ 2 + 1) := by
-    funext x; rw [EuclideanSpace.norm_sq_eq, add_comm]; rfl
-  rw [h, leviForm_log_normSq_add_comp φ.contDiff.contDiffAt (by simp), φ.fderiv]
-  simp [φ, PiLp.inner_apply]
-
-def tautPairGram (z : ℂ) : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ :=
-  fromBlocks (of fun _ _ => 1 + z * conj z) (of fun _ _ => z) (of fun _ _ => conj z) 1
 
 end Examples
 

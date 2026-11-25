@@ -391,17 +391,7 @@ theorem inTh_tr {Λ Λ₁ : Submodule L.O S.V} {a : S.GLV} (ha : ∀ v, v ∈ Λ
 
 theorem isSD_smul {g : S.GLV} (hg : g ∈ isomG L S.Hm) {Λ : Submodule L.O S.V} (h : IsSD L S.Hm Λ) :
     IsSD L S.Hm (g • Λ) := by
-  refine ⟨⟨?_, ?_⟩, fun y => ?_⟩
-  · exact h.1.1.map _
-  · rw [Submodule.coe_pointwise_smul, Submodule.span_smul, h.1.2, smul_top]
-  · rw [mem_smul, ← h.2]
-    constructor
-    · intro H x hx
-      have := H (g x) ((mem_smul S g Λ _).2 (by rwa [inv_app]))
-      rwa [← app_inv S g y, hg] at this
-    · intro H x hx
-      have := H _ ((mem_smul S g Λ _).1 hx)
-      rwa [(isomG L S.Hm).inv_mem hg] at this
+  first | exact _root_.GlobalTheory.HL.TermBasic.isSD_smul | exact @_root_.GlobalTheory.HL.TermBasic.isSD_smul | apply _root_.GlobalTheory.HL.TermBasic.isSD_smul <;> assumption
 
 theorem cong {Λ : Submodule L.O S.V} (hΛ : IsSD L S.Hm Λ) {x x' u : S.V} {s t : E}
     (hb : S.InTh Λ (x + x')) (hu : u ∈ Λ) (hs : s • x ∈ Λ)

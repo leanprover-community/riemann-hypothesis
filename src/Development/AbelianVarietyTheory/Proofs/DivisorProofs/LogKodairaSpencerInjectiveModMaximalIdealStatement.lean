@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidBoundaryChartsForFanOfUnitarySeparationStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
@@ -117,8 +118,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubsingletonSpDualNumber", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull\nimport Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt\npublic import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RelAmpleOfGenericIso\npublic import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FamilyFibreEqUniformisedPullbackGenericFibre\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LineBundleIsoTangentPullConstantDeformation\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionDualNumberPointEqConstantCharZero\npublic import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsTorusAndQuotientHom\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsGrpPullbackOfLoc\npublic import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym\npublic import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjPull\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.SubsingletonSpDualNumber\npublic import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ESecCompOfIsGrpPullback\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.DualNumber\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigIsoCongr\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModuliSchemePolarizedAbelianLevel\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open AlgebraicGeometry CategoryTheory MonObj MonoidalCategory CartesianMonoidalCategory
@@ -333,8 +332,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerInjectiveClosedInteriorPoint", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppEqZeroOfValR\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubsingletonSpDualNumber\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WedgeOrdVpBaseChangeOfNeBot\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction\nimport Mathlib.CategoryTheory.Monoidal.Opposite.Mon\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
 open scoped CategoryTheory.Obj Matrix TensorProduct
@@ -1059,8 +1056,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
 open scoped CategoryTheory.Obj Matrix TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
@@ -1142,8 +1137,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LogBack
@@ -1153,31 +1146,8 @@ section Algebra
 open IsLocalRing GlobalTheory.LogDerProj GlobalTheory.LogBasis
 
 theorem prime_X {σ k : Type} [CommRing k] [IsDomain k] (s : σ) : Prime (MvPowerSeries.X s : MvPowerSeries σ k) := by
-  classical
-  let ρ := MvPowerSeries.rescale (σ := σ) (R := k) (fun i => if i = s then 0 else 1)
-  have key : ∀ g, MvPowerSeries.X s ∣ g ↔ ρ g = 0 := by
-    intro g
-    rw [MvPowerSeries.X_dvd_iff, MvPowerSeries.ext_iff]
-    refine forall_congr' fun n => ?_
-    rw [MvPowerSeries.coeff_rescale, map_zero]
-    by_cases hn : n s = 0
-    · have : (n.prod fun i m => (if i = s then (0 : k) else 1) ^ m) = 1 := by
-        refine Finset.prod_eq_one fun i hi => ?_
-        have : i ≠ s := fun h => (Finsupp.mem_support_iff.1 hi) (h ▸ hn)
-        simp [this]
-      simp [hn]
-    · have : (n.prod fun i m => (if i = s then (0 : k) else 1) ^ m) = 0 :=
-        Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hn) (by simp [hn])
-      simp [hn]
-  refine ⟨?_, ?_, fun a b h => ?_⟩
-  · intro h
-    have := congrArg (MvPowerSeries.coeff (Finsupp.single s 1)) h
-    simp [MvPowerSeries.coeff_X] at this
-  · intro h
-    have := h.map (MvPowerSeries.constantCoeff (σ := σ) (R := k))
-    simp at this
-  · rw [key, map_mul, mul_eq_zero, ← key, ← key] at h
-    exact h
+  intros
+  apply _root_.GlobalTheory.BranchSep.prime_mvX <;> assumption
 
 theorem exists_log_of_dvd {R ι : Type} [CommRing R] [IsDomain R] [Algebra ℤ R] [Fintype ι] (I : Ideal R) (δ : Derivation ℤ R R)
     (h0 : ∀ r, δ r ∈ I) (T a : ι → R) (hT : ∀ i, Prime (T i)) (ha : ∀ i, a i ∈ I) (hδ : ∀ i, δ (T i) = a i * T i)
@@ -1514,8 +1484,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.LocM GlobalTheory.PolFan ReciprocityTheory.AnForm.R
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -50,8 +50,6 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.DzCount
 
 lemma pow_pow_pow_add (z : ℂ) (q a b : ℕ) : (z ^ q ^ a) ^ q ^ b = z ^ q ^ (a + b) := by

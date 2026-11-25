@@ -231,7 +231,7 @@ theorem endInt_omega (hInv : Formalism.L2.KerInert.Sigma.InvAlg) (D : D7) (p : �
   obtain ⟨hu, hui, hr, hs, ht⟩ := vc_params h5 (Formalism.L2.Th1.A.shortW g2' g3') rfl rfl rfl hΔ0 (g.C * Cε⁻¹) j1 j2 j3 jΔ
   refine ⟨ι, hι, ?_⟩
   rw [hgW]
-  exact Formalism.L2.KerInert.VC.endInt_varChange _ hcoef0 _ hu.le hui.le hr hs ht _ hE0
+  exact Formalism.L2.KerInert.MC.endInt_varChange _ hcoef0 _ hu.le hui.le hr hs ht _ hE0
 
 
 open Formalism.L2.Th1.C.Pts in

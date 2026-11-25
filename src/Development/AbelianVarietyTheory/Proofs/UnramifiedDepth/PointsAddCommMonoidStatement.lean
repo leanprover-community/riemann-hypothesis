@@ -51,7 +51,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry TensorProduct Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs

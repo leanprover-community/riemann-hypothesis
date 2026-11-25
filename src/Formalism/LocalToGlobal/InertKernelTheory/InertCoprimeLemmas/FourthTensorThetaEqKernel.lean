@@ -776,7 +776,7 @@ theorem algFact_of (hSS : StdStep)
     (hKT : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Ker.Base D cc δ),
       Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc → Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ → KapAlg B ∧ KerTransAlg B) : AlgFact := by
   intro D cc δ B hcc hδ χ hχ p _ hp5 hin N N'
-  have hS : B.StdOK := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.stdOK B hcc hδ
+  have hS : B.StdOK := GlobalTheory.FourthRootStd.stdOK B hcc hδ
   obtain ⟨hK, hT⟩ := hKT D cc δ B hcc hδ
   have h2 : ∀ s : Formalism.MainNotions.TaylorLogMetric.VC D N N',
       Formalism.MainNotions.TaylorLogMetric.TorsPrime D p (Formalism.MainNotions.TaylorLogMetric.La D B.tor (Formalism.MainNotions.StandardLatticesGL3.stdL D N) (Formalism.MainNotions.StandardLatticesGL3.stdL D N')) s →
@@ -860,7 +860,7 @@ theorem algFact_of_trans (hSS : StdStep)
 
 theorem algZero_of_trans (h : KerTransAll) : AlgZero := by
   intro D cc δ B hcc hδ p _ _ _ N N' s hs
-  exact U_thZero_algEnt B (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.stdOK B hcc hδ) (kapAlg_all B) (h D cc δ B hcc hδ) N N' s
+  exact U_thZero_algEnt B (GlobalTheory.FourthRootStd.stdOK B hcc hδ) (kapAlg_all B) (h D cc δ B hcc hδ) N N' s
     (isTors_of_torsPrime B s hs)
 
 theorem algFact_of_kerTrans (h : KerTransAll) : AlgFact :=

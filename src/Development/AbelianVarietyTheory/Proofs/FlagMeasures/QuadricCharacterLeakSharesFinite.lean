@@ -621,10 +621,7 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchim
 private theorem ker_mkQ_comp_mulLeft_pow_eq_span {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) (n k : ℕ) :
     ((Submodule.mkQ (Ideal.span {ϖ ^ (n + k)})).comp (LinearMap.mulLeft 𝒪[F] (ϖ ^ k))).ker =
       Ideal.span {ϖ ^ n} := by
-  ext y
-  simp only [LinearMap.mem_ker, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulLeft_apply,
-    Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton]
-  rw [pow_add, mul_comm (ϖ ^ n), mul_dvd_mul_iff_left (pow_ne_zero _ hϖ.ne_zero)]
+  apply _root_.GlobalTheory.TraceChar.ker_mkQ_comp_mulLeft_pow_eq_span' <;> assumption
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
@@ -632,54 +629,21 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchim
 private theorem card_quotient_pow_succ_eq_resQ_mul {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) (n : ℕ) :
     Nat.card (𝒪[F] ⧸ Ideal.span {ϖ ^ (n + 1)}) =
       _root_.GlobalTheory.HL.resQ ϖ * Nat.card (𝒪[F] ⧸ Ideal.span {ϖ ^ n}) := by
-  rw [add_comm n 1]
-  set f := (Submodule.mkQ (Ideal.span {ϖ ^ (1 + n)})).comp (LinearMap.mulLeft 𝒪[F] (ϖ ^ n))
-  have hS : Nat.card (LinearMap.range f) = _root_.GlobalTheory.HL.resQ ϖ := by
-    unfold _root_.GlobalTheory.HL.resQ
-    have hk := ker_mkQ_comp_mulLeft_pow_eq_span hϖ 1 n
-    rw [pow_one] at hk
-    rw [← hk]
-    exact (Nat.card_congr (f.quotKerEquivRange).toEquiv).symm
-  set g := (Submodule.mkQ (LinearMap.range f)).comp (Submodule.mkQ (Ideal.span {ϖ ^ (1 + n)}))
-  have hg : Function.Surjective g :=
-    (Submodule.mkQ_surjective _).comp (Submodule.mkQ_surjective _)
-  have hker : g.ker = Ideal.span {ϖ ^ n} := by
-    ext y
-    simp only [g, f, LinearMap.mem_ker, LinearMap.coe_comp, Function.comp_apply,
-      Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, LinearMap.mem_range,
-      LinearMap.mulLeft_apply, Ideal.mem_span_singleton]
-    constructor
-    · rintro ⟨z, hz⟩
-      rw [Submodule.Quotient.eq, Ideal.mem_span_singleton] at hz
-      have h2 : ϖ ^ n ∣ ϖ ^ (1 + n) := pow_dvd_pow _ (by omega)
-      have h4 : ϖ ^ n ∣ ϖ ^ n * z := dvd_mul_right _ _
-      simpa using (dvd_sub h4 (h2.trans hz))
-    · rintro ⟨z, rfl⟩
-      exact ⟨z, rfl⟩
-  have e := (g.quotKerEquivOfSurjective hg).toEquiv
-  rw [hker] at e
-  rw [Submodule.card_eq_card_quotient_mul_card (LinearMap.range f), hS, Nat.card_congr e]
+  apply _root_.GlobalTheory.TraceChar.card_quotient_span_pow_succ_eq_resQ_mul <;> assumption
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 private theorem card_quotient_pow_eq_resQ_pow {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) (n : ℕ) :
     Nat.card (𝒪[F] ⧸ Ideal.span {ϖ ^ n}) = _root_.GlobalTheory.HL.resQ ϖ ^ n := by
-  induction n with
-  | zero =>
-    simp only [pow_zero, Ideal.span_singleton_one]
-    exact Nat.card_unique
-  | succ n ih => rw [card_quotient_pow_succ_eq_resQ_mul hϖ, ih, pow_succ, mul_comm]
+  apply _root_.GlobalTheory.TraceChar.card_quotient_span_pow_eq_resQ_pow <;> assumption
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 private theorem resQ_pos_flag_measures {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) :
     0 < _root_.GlobalTheory.HL.resQ ϖ := by
-  unfold _root_.GlobalTheory.HL.resQ
-  have h := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ
-  rw [← h]
-  exact Nat.card_pos (α := 𝓀[F])
+  apply _root_.GlobalTheory.TraceChar.resQ_pos' <;> assumption
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in

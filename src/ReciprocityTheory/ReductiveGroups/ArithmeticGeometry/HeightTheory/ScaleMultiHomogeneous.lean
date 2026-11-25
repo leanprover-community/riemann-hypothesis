@@ -98,17 +98,6 @@ instance (b : Fin (D + 1)) : DecidablePred (InBlock (D := D) (N := N) b) := by
   intro v
   cases v <;> simp only [InBlock, Sum.elim_inl, Sum.elim_inr] <;> infer_instance
 
-private theorem prop_insertNth_of_forall {n : ℕ} {M : Type*} (Q : M → Prop) (j₀ : Fin (n + 1))
-    (a : M) (f : Fin n → M) (ha : Q a) (hf : ∀ k, Q (f k)) (j : Fin (n + 1)) :
-    Q (Fin.insertNth (α := fun _ => M) j₀ a f j) := by
-  by_cases hj : j = j₀
-  · subst hj
-    rw [Fin.insertNth_apply_same]
-    exact ha
-  · obtain ⟨k, rfl⟩ := Fin.exists_succAbove_eq hj
-    rw [Fin.insertNth_apply_succAbove]
-    exact hf k
-
 theorem scale_sImg_expr (b : Fin (D + 1)) (hb : b ≠ 0) (u : Ωˣ) (j₀ : Fin (N + 1))
     (x : Fin N → Ω) (p : TVar D N) :
     scaleEquiv (InBlock (D := D) (N := N) b) u
@@ -146,9 +135,9 @@ theorem scale_sImg_expr (b : Fin (D + 1)) (hb : b ≠ 0) (u : Ωˣ) (j₀ : Fin 
       congr 1
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [map_mul, hX, scaleEquiv_C, mul_assoc]
-  exact prop_insertNth_of_forall
-    (fun m => scaleEquiv (InBlock (D := D) (N := N) b) u m = (if i = b then C (u : Ω) else 1) * m)
-    j₀ _ _ hA hX j
+  rcases j₀.eq_self_or_eq_succAbove j with rfl | ⟨k, rfl⟩
+  · simpa only [Fin.succAbove_cases_eq_insertNth, Fin.insertNth_apply_same] using hA
+  · simpa only [Fin.succAbove_cases_eq_insertNth, Fin.insertNth_apply_succAbove] using hX k
 
 end Blocks
 

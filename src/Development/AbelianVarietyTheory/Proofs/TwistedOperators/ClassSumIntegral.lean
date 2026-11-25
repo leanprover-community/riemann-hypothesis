@@ -49,8 +49,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.DefiniteClassSum
 
 theorem invariant_sup {G X : Type} [Group G] {A B : Subgroup G} {Φ : G → X} (hA : ∀ k ∈ A, ∀ h, Φ (h * k) = Φ h)

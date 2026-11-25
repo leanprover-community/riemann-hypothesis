@@ -62,7 +62,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Lev Formalism.IndefR.Cx GlobalTheory.Chain
 open NumberField Matrix
 open scoped TensorProduct ContDiff Topology ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

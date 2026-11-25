@@ -53,8 +53,6 @@ public import Mathlib.RingTheory.Ideal.BigOperators
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.TB

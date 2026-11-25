@@ -50,8 +50,6 @@ open GlobalTheory.CuspGeneric GlobalTheory.CuspRep GlobalTheory.UnitaryBC Positi
 open GroundTheory.Automorphic GroundTheory.Automorphic.FourierWhittaker GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.Spherical
 open scoped ENNReal ComplexConjugate
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.AdelicQuotientData
 
 def IsWt {G : Type} [Mul G] [MeasurableSpace G] (ν : Measure G) (β : G → ℝ≥0∞) : Prop :=

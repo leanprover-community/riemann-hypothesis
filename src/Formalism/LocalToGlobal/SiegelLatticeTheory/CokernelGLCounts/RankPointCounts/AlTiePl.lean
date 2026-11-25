@@ -29,7 +29,6 @@ section comp
 
 open MonoidWithZeroHom MonoidWithZeroHom.ValueGroup₀
 
-open MonoidWithZeroHom MonoidWithZeroHom.ValueGroup₀
 
 variable {E L : Type} [Field E] [NumberField E] [Field L] [NumberField L]
 

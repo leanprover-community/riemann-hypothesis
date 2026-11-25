@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TopologicalSpace MvPolynomial

@@ -53,7 +53,6 @@ import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.IndefR.Links Formalism.L2.JoinChr Formalism.L2.Host Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ChrEqUnique
 

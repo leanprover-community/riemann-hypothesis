@@ -62,7 +62,7 @@ open scoped ContDiff
 
 namespace PositivityTheory.Rg.Sw.LVs.CK
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {N : ℕ}
 

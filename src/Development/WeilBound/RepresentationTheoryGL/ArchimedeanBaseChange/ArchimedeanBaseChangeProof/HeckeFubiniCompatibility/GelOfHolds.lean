@@ -284,31 +284,37 @@ theorem FA_eq_act (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v
     Units.ext rfl
   simp only [FtA, dif_pos hxt, hm, ιA_mul, mul_assoc]
 
+private theorem continuousOn_gls {n : ℕ} {Y : Type*} [TopologicalSpace Y]
+    {f : Mat n → Y} {g : G n → Y} (hg : Continuous g)
+    (hf : ∀ (x : Mat n) (hx : x ∈ GLs n), f x = g (GeneralLinearGroup.mkOfDetNeZero x hx)) :
+    ContinuousOn f (GLs n) := by
+  rw [continuousOn_iff_continuous_restrict]
+  have hinv : ContinuousOn (fun x : Mat n => x⁻¹) (GLs n) := by
+    have e : (fun x : Mat n => x⁻¹) = fun x => (x.det)⁻¹ • x.adjugate := funext fun x => by
+      rw [Matrix.inv_def, Ring.inverse_eq_inv']
+    rw [e]
+    exact ((continuous_id.matrix_det).continuousOn.inv₀ fun x hx => hx).smul
+      (continuous_id.matrix_adjugate).continuousOn
+  have hm : Continuous fun x : GLs n => GeneralLinearGroup.mkOfDetNeZero x.1 x.2 := by
+    refine Units.continuous_iff.2 ⟨continuous_subtype_val, ?_⟩
+    have e : (fun x : GLs n => ((GeneralLinearGroup.mkOfDetNeZero x.1 x.2)⁻¹ : G n).val) =
+        fun x => x.1⁻¹ := funext fun x => Matrix.coe_units_inv _
+    rw [e]
+    exact hinv.comp_continuous continuous_subtype_val fun x => x.2
+  have ef : (fun x : GLs n => f x.1) =
+      fun x : GLs n => g (GeneralLinearGroup.mkOfDetNeZero x.1 x.2) := funext fun x => hf x.1 x.2
+  change Continuous fun x : GLs n => f x.1
+  rw [ef]
+  exact hg.comp hm
+
 theorem continuousOn_FtA (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ))
     (f : Io Ma Mb κ → H E a b → ℂ) (hf : ∀ i, Continuous (f i))
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))
     (hkb : ∀ w, Continuous (fun t : G b => kb w t.val) ∧ HasCompactSupport (fun t : G b => kb w t.val))
     (hψ : IsFinM ψ) (i : Io Ma Mb κ) (q : Ix (Ma v)) (y : GA E a) (m₂ : GA E b) :
-    ContinuousOn (FtA v μa μb ν ka kb ψ f i q y m₂) (GLs a) := by
-  rw [continuousOn_iff_continuous_restrict]
-  have hinv : ContinuousOn (fun x : Mat a => x⁻¹) (GLs a) := by
-    have e : (fun x : Mat a => x⁻¹) = fun x => (x.det)⁻¹ • x.adjugate := by
-      funext x; rw [Matrix.inv_def, Ring.inverse_eq_inv']
-    rw [e]
-    exact ((continuous_id.matrix_det).continuousOn.inv₀ fun x hx => hx).smul (continuous_id.matrix_adjugate).continuousOn
-  have hm : Continuous fun x : GLs a => GeneralLinearGroup.mkOfDetNeZero x.1 x.2 := by
-    refine Units.continuous_iff.2 ⟨continuous_subtype_val, ?_⟩
-    have e : (fun x : GLs a => ((GeneralLinearGroup.mkOfDetNeZero x.1 x.2)⁻¹ : G a).val) = fun x => x.1⁻¹ :=
-      funext fun x => Matrix.coe_units_inv _
-    rw [e]
-    exact hinv.comp_continuous continuous_subtype_val fun x => x.2
-  show Continuous (fun x : GLs a => FtA v μa μb ν ka kb ψ f i q y m₂ x.1)
-  have e : (fun x : GLs a => FtA v μa μb ν ka kb ψ f i q y m₂ x.1) =
-      fun x : GLs a => St v μa μb ν ka kb ψ f i q ((y, m₂) * ιA v (GeneralLinearGroup.mkOfDetNeZero x.1 x.2)) := by
-    funext x
-    simp only [FtA, dif_pos x.2]
-  rw [e]
-  exact (continuous_St v hf hka hkb hψ i q (y, m₂)).comp hm
+    ContinuousOn (FtA v μa μb ν ka kb ψ f i q y m₂) (GLs a) :=
+  continuousOn_gls (continuous_St (μa := μa) (μb := μb) (ν := ν) v hf hka hkb hψ i q (y, m₂))
+    fun x hx => by simp only [FtA, dite_eq_left hx]
 
 theorem FA_mem_CE (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v : InfinitePlace E) (ka : Kers Ma)
     (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ)) (f : Io Ma Mb κ → H E a b → ℂ) (hT : IsTestM (tens ka kb ψ))
@@ -751,26 +757,9 @@ theorem continuousOn_FB (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ 
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))
     (hkb : ∀ w, Continuous (fun t : G b => kb w t.val) ∧ HasCompactSupport (fun t : G b => kb w t.val))
     (hψ : IsFinM ψ) (i : Io Ma Mb κ) (m₁ : GA E a) (y : GA E b) :
-    ContinuousOn (FB v μa μb ν ka kb ψ f i m₁ y) (GLs b) := by
-  rw [continuousOn_iff_continuous_restrict]
-  have hinv : ContinuousOn (fun x : Mat b => x⁻¹) (GLs b) := by
-    have e : (fun x : Mat b => x⁻¹) = fun x => (x.det)⁻¹ • x.adjugate := by
-      funext x; rw [Matrix.inv_def, Ring.inverse_eq_inv']
-    rw [e]
-    exact ((continuous_id.matrix_det).continuousOn.inv₀ fun x hx => hx).smul (continuous_id.matrix_adjugate).continuousOn
-  have hm : Continuous fun x : GLs b => GeneralLinearGroup.mkOfDetNeZero x.1 x.2 := by
-    refine Units.continuous_iff.2 ⟨continuous_subtype_val, ?_⟩
-    have e : (fun x : GLs b => ((GeneralLinearGroup.mkOfDetNeZero x.1 x.2)⁻¹ : G b).val) = fun x => x.1⁻¹ :=
-      funext fun x => Matrix.coe_units_inv _
-    rw [e]
-    exact hinv.comp_continuous continuous_subtype_val fun x => x.2
-  show Continuous (fun x : GLs b => FB v μa μb ν ka kb ψ f i m₁ y x.1)
-  have e : (fun x : GLs b => FB v μa μb ν ka kb ψ f i m₁ y x.1) =
-      fun x : GLs b => RvB v μa μb ν ka kb ψ f i ((m₁, y) * ιB v (GeneralLinearGroup.mkOfDetNeZero x.1 x.2)) := by
-    funext x
-    simp only [FB, dif_pos x.2]
-  rw [e]
-  exact (continuous_RvB v hf hka hkb hψ i (m₁, y)).comp hm
+    ContinuousOn (FB v μa μb ν ka kb ψ f i m₁ y) (GLs b) :=
+  continuousOn_gls (continuous_RvB (μa := μa) (μb := μb) (ν := ν) v hf hka hkb hψ i (m₁, y))
+    fun x hx => by simp only [FB, dite_eq_left hx]
 
 end Main
 
@@ -1005,26 +994,9 @@ theorem continuousOn_FtB (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))
     (hkb : ∀ w, Continuous (fun t : G b => kb w t.val) ∧ HasCompactSupport (fun t : G b => kb w t.val))
     (hψ : IsFinM ψ) (i : Io Ma Mb κ) (q : Ix (Mb v)) (m₁ : GA E a) (y : GA E b) :
-    ContinuousOn (FtB v μa μb ν ka kb ψ f i q m₁ y) (GLs b) := by
-  rw [continuousOn_iff_continuous_restrict]
-  have hinv : ContinuousOn (fun x : Mat b => x⁻¹) (GLs b) := by
-    have e : (fun x : Mat b => x⁻¹) = fun x => (x.det)⁻¹ • x.adjugate := by
-      funext x; rw [Matrix.inv_def, Ring.inverse_eq_inv']
-    rw [e]
-    exact ((continuous_id.matrix_det).continuousOn.inv₀ fun x hx => hx).smul (continuous_id.matrix_adjugate).continuousOn
-  have hm : Continuous fun x : GLs b => GeneralLinearGroup.mkOfDetNeZero x.1 x.2 := by
-    refine Units.continuous_iff.2 ⟨continuous_subtype_val, ?_⟩
-    have e : (fun x : GLs b => ((GeneralLinearGroup.mkOfDetNeZero x.1 x.2)⁻¹ : G b).val) = fun x => x.1⁻¹ :=
-      funext fun x => Matrix.coe_units_inv _
-    rw [e]
-    exact hinv.comp_continuous continuous_subtype_val fun x => x.2
-  show Continuous (fun x : GLs b => FtB v μa μb ν ka kb ψ f i q m₁ y x.1)
-  have e : (fun x : GLs b => FtB v μa μb ν ka kb ψ f i q m₁ y x.1) =
-      fun x : GLs b => StB v μa μb ν ka kb ψ f i q ((m₁, y) * ιB v (GeneralLinearGroup.mkOfDetNeZero x.1 x.2)) := by
-    funext x
-    simp only [FtB, dif_pos x.2]
-  rw [e]
-  exact (continuous_StB v hf hka hkb hψ i q (m₁, y)).comp hm
+    ContinuousOn (FtB v μa μb ν ka kb ψ f i q m₁ y) (GLs b) :=
+  continuousOn_gls (continuous_StB (μa := μa) (μb := μb) (ν := ν) v hf hka hkb hψ i q (m₁, y))
+    fun x hx => by simp only [FtB, dite_eq_left hx]
 
 theorem FB_mem_CE (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v : InfinitePlace E) (ka : Kers Ma)
     (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ)) (f : Io Ma Mb κ → H E a b → ℂ) (hT : IsTestM (tens ka kb ψ))

@@ -208,7 +208,7 @@ theorem UpperTheory.GalN.V.point_automorphy_w_of_gsp_cusp_sub_rank_four :
   rw [h4] at h3
   obtain ⟨P, hPair⟩ := ptPair K n r hr
   exact _root_.UpperTheory.GalN.V.mkCsd'_alt (_root_.UpperTheory.GalN.V.csdOf0_alt hP (W.Lp T.L) T.L Ω inferInstance l ι 4 (by norm_num) _ K.s.c P K.s.hc h3 hPair) fun _ =>
-    h4 ▸ _root_.UpperTheory.V.Z.Win.WitA.witness_twist_algebraic_character hP.toClassicalTheorems h2 ((twc_cont K n).mul hκ.inv) ⟨π, hreg, hatt⟩ hW
+    h4 ▸ _root_.UpperTheory.V.Z.Win.WitA.witness_twist_algebraic_character hP.toClassicalTheorems h2 hW
 end
 end -- clump:auto
 end -- clump:auto

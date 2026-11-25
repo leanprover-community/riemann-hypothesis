@@ -44,7 +44,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

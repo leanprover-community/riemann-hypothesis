@@ -61,7 +61,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CentralShift
 
@@ -274,10 +273,6 @@ end Adelic
 theorem inner_eq_of_norm {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (T : H →ₗ[ℂ] H)
     (h : ∀ x, ‖T x‖ = ‖x‖) (y y' : H) : ⟪T y, T y'⟫_ℂ = ⟪y, y'⟫_ℂ :=
   LinearIsometry.inner_map_map ⟨T, h⟩ y y'
-
-theorem comm_of_center {G H : Type*} [Group G] [AddCommGroup H] [Module ℂ H] (ρ : Representation ℂ G H) {z : G}
-    (hz : z ∈ Subgroup.center G) (g : G) (y : H) : ρ z (ρ g y) = ρ g (ρ z y) := by
-  rw [← Module.End.mul_apply, ← map_mul, ← Subgroup.mem_center_iff.1 hz g, map_mul, Module.End.mul_apply]
 
 theorem map_center {G H : Type*} [Group G] [Group H] (φ : G ≃* H) {z : G} (hz : z ∈ Subgroup.center G) (x : H) :
     x * φ z = φ z * x := by

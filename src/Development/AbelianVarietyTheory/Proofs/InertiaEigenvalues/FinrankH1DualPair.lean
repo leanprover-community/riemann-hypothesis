@@ -1064,8 +1064,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
 
-set_option autoImplicit false
-
 namespace GlobalTheory.H1Rank
 
 theorem pow_smul_mem_lattice : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL] [TopologicalSpace LL] (O : Type) [CommRing O] [Algebra O LL], GoodO (Qp := ℚ_[l]) LL O → ∀ (A : GRep ↥(GK K) ℚ_[l] LL O) (LA : Lattice (O := O) A.ρ) (x : A.V), ∃ n : ℕ, ((l : ℕ) : O) ^ n • x ∈ LA.T := by
@@ -1221,8 +1219,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
 
-set_option autoImplicit false
-
 namespace GlobalTheory.H1Rank
 
 theorem growth_H1T_dim_H1V : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL] [TopologicalSpace LL] (O : Type) [CommRing O] [Algebra O LL], GoodO (Qp := ℚ_[l]) LL O → ∀ (A : GRep ↥(GK K) ℚ_[l] LL O) (LA : Lattice (O := O) A.ρ), Module.Finite O (LatticeCohomology LA) → Module.Finite LL (H1V A.ρ) ∧ ∃ C : ℕ, 0 < C ∧ ∀ r : ℕ, Nat.card (O ⧸ Ideal.span {((l : ℕ) : O)}) ^ (r * finrank LL (H1V A.ρ)) ≤ Nat.card (LatticeCohomology LA ⧸ (Ideal.span {((l : ℕ) : O) ^ r} • ⊤ : Submodule O (LatticeCohomology LA))) ∧ Nat.card (LatticeCohomology LA ⧸ (Ideal.span {((l : ℕ) : O) ^ r} • ⊤ : Submodule O (LatticeCohomology LA))) ≤ C * Nat.card (O ⧸ Ideal.span {((l : ℕ) : O)}) ^ (r * finrank LL (H1V A.ρ)) := by
@@ -1330,7 +1326,7 @@ namespace GlobalTheory.EulerCharH1
 theorem two_le_card (l : ℕ) [Fact l.Prime] (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
     [TopologicalSpace LL] (O : Type) [CommRing O] [Algebra O LL]
     (hO : GoodO (Qp := ℚ_[l]) LL O) : 2 ≤ Nat.card (O ⧸ Ideal.span {((l : ℕ) : O)}) := by
-  obtain ⟨hint, -, hfin, -⟩ := _root_.GlobalTheory.GoodCoeff.good_coeff_integers l LL O hO
+  obtain ⟨hint, -, hfin, -⟩ := _root_.GlobalTheory.PowerImageOpen.main l LL O hO
   have hf : Finite (O ⧸ Ideal.span {((l : ℕ) : O)}) := by
     simpa using hfin 1
   have : Nontrivial (O ⧸ Ideal.span {((l : ℕ) : O)}) :=

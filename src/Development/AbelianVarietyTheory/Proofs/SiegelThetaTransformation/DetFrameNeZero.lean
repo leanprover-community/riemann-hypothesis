@@ -216,7 +216,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 theorem GlobalTheory.Dict.stab_trivial_mod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ (D : SW.Level X) (𝔐 : Ideal (𝓞 E)) (M : ℕ), D.𝔪 ≤ 𝔐 → 𝔐 * conjI 𝔐 = Ideal.span {(M : 𝓞 E)} → (∀ k ∈ D.J, ∀ i j, ∃ a ∈ 𝔐, ((k : GL (Fin r) (𝓞 E ⧸ D.𝔪)) : Matrix (Fin r) (Fin r) (𝓞 E ⧸ D.𝔪)) i j - (1 : Matrix (Fin r) (Fin r) (𝓞 E ⧸ D.𝔪)) i j = Ideal.Quotient.mk D.𝔪 a) → ∀ ga ∈ D.grp, (∀ i, Cong X 𝔐 ((ga : Matrix (Fin r) (Fin r) E) *ᵥ D.β i) (D.β i)) ∧ ∀ L ∈ D.lats, mapL ga L = L → (∀ u ∈ L, ∃ u' ∈ L, (ga : Matrix (Fin r) (Fin r) E) *ᵥ u = u + M • u') ∧ (∀ u ∈ D.sh L, ∃ u' ∈ D.sh L, (ga : Matrix (Fin r) (Fin r) E) *ᵥ u = u + M • u') ∧ ∀ k : D.J, D.Red (fun i => (ga : Matrix (Fin r) (Fin r) E) *ᵥ D.β i) k → 3 ≤ M → ((k : GL (Fin r) (𝓞 E ⧸ D.𝔪)) : Matrix (Fin r) (Fin r) (𝓞 E ⧸ D.𝔪)).det = 1 := by

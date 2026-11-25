@@ -319,7 +319,6 @@ end Formalism.FourierDecayAlt.P.PBB
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 theorem lift_bound_below_top_all_places : Formalism.FourierDecayAlt.KB.LiftV :=
   fun _ _ _ _ _ _ _ _ _ _ S Λ hpos hL ε hε i s hs1 hsi hir w _ hcnt =>

@@ -98,8 +98,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.R
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ChartGlue GlobalTheory.Mix
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Mix
 
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX isPushout_sections)
@@ -157,8 +155,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.R
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ChartGlue GlobalTheory.Mix
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Mix
 
 theorem exists_chart_dens_bc : ∀ (k K : Type) [CommRing k] [CommRing K] (ρ : k →+* K) (X G : Scheme.{0}) (p : X ⟶ Sp k) (q : G ⟶ Sp K) (j : G ⟶ X) (hp : IsPullback j q p (spMap ρ)) (τ : K →+* ℂ) (D : ℕ) (c : AlgChart p (τ.comp ρ) D) (z : CxPts q τ), bcPt hp.w τ z ∈ c.e.source → ∃ c' : AlgChart q τ D, z ∈ c'.e.source ∧ ∀ w ∈ c'.e.source, bcPt hp.w τ w ∈ c.e.source ∧ c'.e w = c.e (bcPt hp.w τ w) ∧ ∀ L : Fin D → MLine p (τ.comp ρ), dens (fun i => (L i).bc hp.w τ) c' w = dens L c (bcPt hp.w τ w) := by
@@ -207,8 +203,6 @@ open ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.R
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ChartGlue GlobalTheory.Mix
 
 open GlobalTheory.ChartGlue
-
-set_option autoImplicit false
 
 noncomputable section
 

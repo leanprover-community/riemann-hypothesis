@@ -56,27 +56,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 def sb (n : ℕ) (a b c e : ℂ) : M2 n := fromBlocks (a • 1) (b • 1) (c • 1) (e • 1)
 
-theorem sb_mul (n : ℕ) (a b c e a' b' c' e' : ℂ) :
-    sb n a b c e * sb n a' b' c' e' = sb n (a * a' + b * c') (a * b' + b * e') (c * a' + e * c') (c * b' + e * e') := by
-  simp only [sb, fromBlocks_multiply, Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul, ← add_smul]
-  congr 1 <;> congr 1 <;> ring
-
-theorem sb_ct (n : ℕ) (a b c e : ℂ) : (sb n a b c e)ᴴ = sb n (star a) (star c) (star b) (star e) := by
-  simp only [sb, fromBlocks_conjTranspose, conjTranspose_smul, conjTranspose_one]
-
-theorem sb_congr (n : ℕ) {a b c e a' b' c' e' : ℂ} (h1 : a = a') (h2 : b = b') (h3 : c = c') (h4 : e = e') :
-    sb n a b c e = sb n a' b' c' e' := by
-  subst h1 h2 h3 h4; rfl
-
-theorem sb_one (n : ℕ) : (1 : M2 n) = sb n 1 0 0 1 := by
-  simp [sb, fromBlocks_one]
-
-theorem sb_JJ (n : ℕ) : JJ n = sb n 0 1 (-1) 0 := by
-  simp [sb, JJ]
-
-theorem yrotM_sb (n : ℕ) (s : ℤˣ) (t : ℝ) :
-    yrotM n s t = sb n (Real.cos t) (((s : ℤ) : ℂ) * Real.sin t) (-(((s : ℤ) : ℂ) * Real.sin t)) (Real.cos t) := rfl
-
 theorem cs1 (t : ℝ) : (Real.cos t : ℂ) * Real.cos t + (Real.sin t : ℂ) * Real.sin t = 1 := by
   have := Real.cos_sq_add_sin_sq t
   exact_mod_cast (by nlinarith [this] : Real.cos t * Real.cos t + Real.sin t * Real.sin t = 1)

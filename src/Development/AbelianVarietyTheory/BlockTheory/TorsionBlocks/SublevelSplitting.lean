@@ -47,8 +47,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.SublevelSplitting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev Lat (V : HSp D) : Type := Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)

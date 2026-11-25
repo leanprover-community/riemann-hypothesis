@@ -52,7 +52,7 @@ theorem iotaPlus_injective : Function.Injective (iotaPlus K p) := by
     exact congrArg (algebraMap (ACris K p) (BCrisPlus K p)) (iota_injective hi)
 
 theorem iotaM_of (m : ℕ) (y : ACrisZero K p) :
-    embedding₂ K p m (_root_.AdicCompletion.of _ _ y) = iotaZero K p m y :=
+    embedding₂ K p m (algebraMap (ACrisZero K p) (ACris K p) y) = iotaZero K p m y :=
   AdicCompletion.extendRingHom_of _ _ _ _ y
 
 theorem mk_dpow_eq_zero {x : AInf K p} (hx : x ∈ RingHom.ker (fontaineTheta (normInteger K) p))

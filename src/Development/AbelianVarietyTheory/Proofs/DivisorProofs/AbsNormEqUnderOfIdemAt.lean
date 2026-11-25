@@ -52,8 +52,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj.SqNum
 
 namespace GlobalTheory.FunObj.NormLevel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem absNorm_eq_under_of_idemAt {P : HeightOneSpectrum (𝓞 D.host.E)} {e : Formalism.L2.Theta.AE D}

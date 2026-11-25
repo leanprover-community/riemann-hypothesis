@@ -68,8 +68,6 @@ open GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ArInt
 open GlobalTheory.ChartGlue GlobalTheory.Points
 open Topology Filter
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FlatMass

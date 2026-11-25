@@ -49,8 +49,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.R3.Tr
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {B : Base} {C : Cols B} {a : Late B C} (b : Late B C) {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
 
 def rowPsi {V : HSp a.D} {n : ℕ} (P : principalLevelFrame.RowPsi V n) : @principalLevelFrame.RowPsi b.D ((V)) n where

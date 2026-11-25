@@ -48,7 +48,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.HTLat GlobalTheory.Published.AbVarRed GlobalTheory.CechPic GlobalTheory.AV GlobalTheory.AV.AbVar
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AV
 

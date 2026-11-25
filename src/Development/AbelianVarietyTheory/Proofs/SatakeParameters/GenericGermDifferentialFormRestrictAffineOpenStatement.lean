@@ -47,8 +47,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential GlobalTheory GlobalTheory.PD GlobalTheory.CechDR GlobalTheory.HodgeCoh ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-set_option autoImplicit false
-
 namespace GlobalTheory.HodgeCoh
 
 theorem formGermI_res : ∀ (Z : Scheme.{0}) [IsIntegral Z] (p : Z ⟶ Sp ℂ),

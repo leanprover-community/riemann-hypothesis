@@ -57,8 +57,6 @@ open GlobalTheory.NormDict GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.HeckeUChar

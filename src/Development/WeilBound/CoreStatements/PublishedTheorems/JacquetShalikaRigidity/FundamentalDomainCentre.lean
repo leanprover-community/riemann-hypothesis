@@ -13,7 +13,6 @@ open GlobalTheory.CuspGeneric GlobalTheory.CuspRep GlobalTheory.UnitaryBC Global
 open GroundTheory.Automorphic GroundTheory.Automorphic.FourierWhittaker GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.Spherical
 open scoped ENNReal ComplexConjugate
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 attribute [local instance] GlobalTheory.CuspRep.CuspidalL2GL.discreteTopology_latticeGL
 
 namespace PositivityTheory.AdelicQuotientData

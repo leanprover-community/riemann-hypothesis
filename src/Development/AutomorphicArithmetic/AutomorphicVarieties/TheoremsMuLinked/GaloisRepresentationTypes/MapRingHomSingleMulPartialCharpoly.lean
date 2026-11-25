@@ -1311,10 +1311,6 @@ private theorem comap_tr {H : Type} [Group H] (D : GDet n R H) (φ : G →* H)
       | single g r => simp
   simp only [GDet.tr, GDet.lam, hc]
 
-private theorem map_tr {S : Type} [CommRing S] (D : GDet n R G) (f : R →+* S) (z : MonoidAlgebra R G) :
-    f (D.tr z) = (D.map f).tr (MonoidAlgebra.mapRingHom G f z) :=
-  (((UpperTheory.V.CA.d_gmap D).2.2.1 f z).2 1).symm
-
 private theorem ofRep_comap' {H : Type} [Group H] (ρ : G →* Matrix (Fin n) (Fin n) R) (φ : H →* G) :
     (GDet.ofRep ρ).comap φ = GDet.ofRep (ρ.comp φ) := by
   ext B _ _ z
@@ -1362,20 +1358,14 @@ section Der
 
 variable {O R X : Type} [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup X] [Module O X] {x : R →ₐ[O] O}
 
-private theorem der_one {δ : R →ₗ[O] X} (h : IsDer x δ) : δ 1 = 0 := by
-  have := h 1 1
-  simpa using this
-
 private theorem der_sum {ι : Type} [Fintype ι] (d : ι → R →ₗ[O] X) (h : ∀ a, IsDer x (d a)) (t : ι → O) :
     IsDer x (∑ a, t a • d a) := fun a b => by
   simp only [LinearMap.sum_apply, LinearMap.smul_apply, h _ a b, smul_add, Finset.sum_add_distrib, Finset.smul_sum,
     smul_smul, mul_comm]
 
-private theorem der_smul {δ : R →ₗ[O] X} (h : IsDer x δ) (c : O) : IsDer x (c • δ) := fun a b => by
-  simp only [LinearMap.smul_apply, h a b, smul_add, smul_smul, mul_comm]
-
 private theorem der_wt {δ : R →ₗ[O] X} (h : IsDer x δ) (c : O) (a : R) : δ (algebraMap O R c * a - 1) = c • δ a := by
-  rw [map_sub, der_one h, sub_zero, ← Algebra.smul_def, map_smul]
+  have h1 : δ 1 = 0 := by simpa using h 1 1
+  rw [map_sub, h1, sub_zero, ← Algebra.smul_def, map_smul]
 
 end Der
 
@@ -1416,7 +1406,7 @@ theorem UpperTheory.V.Th.count :
   have hβtr : ∀ z, A.β (A.p.D.tr z) =
       u.D.tr (MonoidAlgebra.mapDomainRingHom B (T.h N).p₀ (MonoidAlgebra.mapRingHom _ A.β.toRingHom z)) := fun z => by
     rw [← comap_tr, ← A.β_pair.1]
-    exact map_tr A.p.D A.β.toRingHom z
+    exact (((UpperTheory.V.CA.d_gmap A.p.D).2.2.1 A.β.toRingHom z).2 1).symm
   let δs : A.R →ₗ[O] Om O m := Algebra.linearMap O (Om O m) ∘ₗ δ0 ∘ₗ A.β.toLinearMap
   have hδs_apply : ∀ a, δs a = algebraMap O (Om O m) (δ0 (A.β a)) := fun _ => rfl
   have hδs : IsDer (x.comp A.β) δs := fun a a' => by
@@ -1444,7 +1434,8 @@ theorem UpperTheory.V.Th.count :
     exact ⟨z, hz, funext fun g => (hz' g).trans (hΦ t g).symm⟩
   have hk : ∀ g, (c1 • ∑ a, t a • e a) (A.p.D.tr (MonoidAlgebra.single g 1)) = 0 := fun g =>
     (hΦ t g).symm.trans (congrFun ht g)
-  have hder := der_smul (der_sum e he t) c1
+  have hder : IsDer (x.comp A.β) (c1 • ∑ a, t a • e a) := fun a b => by
+    simp only [LinearMap.smul_apply, der_sum e he t a b, smul_add, smul_smul, mul_comm]
   have hsome : ∀ a, (c1 * c2 * c3 * t (some a)) • (1 : Om O m) = 0 := by
     rintro (k | ⟨j, i⟩)
     · have k1 := h2 _ (T.h N) A.rN A.R A.p _ hmaps _ _ hder hk (b.wt.v k) (b.wt.i k) (b.wt.γ k)

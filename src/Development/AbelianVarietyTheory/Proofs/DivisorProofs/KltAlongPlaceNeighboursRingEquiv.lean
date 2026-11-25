@@ -109,17 +109,7 @@ theorem adjKlt_ringEquiv : ∀ {k K K' : Type} [Field k] [CharZero k] [Field K] 
   have hmax' : Ideal.span {ψ t', ψ u'} = IsLocalRing.maximalIdeal Q := by
     have h1 := congrArg (Ideal.map ψ) hmax
     rw [Ideal.map_span, Set.image_pair] at h1
-    rw [h1]
-    ext z
-    rw [Ideal.mem_map_of_equiv]
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] at hy ⊢
-      rwa [isUnit_map_iff]
-    · intro hz
-      refine ⟨ψ.symm z, ?_, ψ.apply_symm_apply z⟩
-      rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] at hz ⊢
-      rwa [isUnit_map_iff ψ.symm]
+    exact h1.trans (IsLocalRing.map_ringEquiv_maximalIdeal ψ)
   have hdim' : ringKrullDim Q = 2 := by
     rw [← ringKrullDim_eq_of_ringEquiv ψ]
     exact hdim

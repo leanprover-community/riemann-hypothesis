@@ -120,12 +120,6 @@ theorem comb_bound {g : ℕ} (L : List (Pc g)) (hg : 1 ≤ g) (hpos : ∀ p ∈ 
     _ ≤ (g : ℝ) ^ k * (1 + x) ^ degL L := by gcongr
     _ = _ := by rw [mul_comm]
 
-theorem isClass_of_isIrr {G : Type} [Group G] {χ : G → ℂ} (h : IsIrr χ) : IsClass χ := by
-  obtain ⟨V, -, hV⟩ := h
-  intro x y
-  rw [← hV, ← hV]
-  exact FDRep.char_conj V x y
-
 theorem wtC_eJ_le : ∀ (g : ℕ) [Fact g.Prime] (L : LabelDatum g), 5 ≤ g → Green → ∀ (ψ : AddChar (ZMod g) ℂ), ψ ≠ 1 →
     ∀ (N k s : ℕ), N = k + 2 * s + 1 → 1 ≤ k → ∀ f : (ZMod g)[X], f.Monic → f.natDegree = N → f.coeff 0 ≠ 0 →
     Squarefree f → wtC L (eJ g N k s ψ) f ≤ (1 + 1 / (g : ℝ)) ^ N * wtC L (eU g N ψ) f := by
@@ -137,7 +131,7 @@ theorem wtC_eJ_le : ∀ (g : ℕ) [Fact g.Prime] (L : LabelDatum g), 5 ≤ g →
   have hirr : IsIrr τ := by
     have : τ ∈ {χ : Gn g N → ℂ | IsIrr χ ∧ HasLabel L χ f} := by rw [hset]; rfl
     exact this.1
-  have hcl := isClass_of_isIrr hirr
+  have hcl := GlobalTheory.GLq.isClass_of_isIrr hirr
   obtain ⟨d, hdpos, hd1⟩ := (_root_.GlobalTheory.GLq.trIdem (Gn g N) (eU g N ψ) τ).2.1 hirr
   have hL : ∀ p ∈ Q.map Prod.snd, IsCusp p.2 ∧ wh ψ p.2 = 1 := by
     intro p hp

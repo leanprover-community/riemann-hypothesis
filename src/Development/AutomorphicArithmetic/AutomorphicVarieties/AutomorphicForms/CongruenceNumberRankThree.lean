@@ -106,14 +106,6 @@ def EigData.Classifies {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algeb
   ∃ cl : {r // admitted r} → D.S, (∀ r r', cl r = cl r' → RepIso r.1 r'.1) ∧
     ∀ r, FrobEig ι r.1 w ((D.β (cl r)).map (·⁻¹))
 
-def CountK : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] (n : ℕ), 2 ≤ n → ∃ c A : ℕ,
-    ∀ (m : Fin n → ℤ), StrictAnti m → (∀ i, m i + m i.rev = 1 - n) → ∀ H : ℕ, (∀ i, |m i| ≤ H) → ∀ M : ℕ, 1 ≤ M →
-    ∀ (p : ℕ) (w : HeightOneSpectrum (𝓞 K)), p.Prime → (p : 𝓞 K) ∈ w.asIdeal → ¬ p ∣ M → ¬ (p : ℤ) ∣ discr K →
-      ∃ D : EigData n (normV w) m (1 - n), Nat.card D.S ≤ c * (M * (H + 1)) ^ A ∧
-        ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → l ≠ p → ∀ (Ω : Type) [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] (ι : Qbar l ≃+* ℂ),
-          D.Classifies (Ω := Ω) ι w (AdmK ι M m)
-
 def CountQ : Prop :=
   ∀ (n : ℕ), 2 ≤ n → ∃ c A : ℕ,
     ∀ (m : Fin n → ℤ) (wt : ℤ), StrictAnti m → (∀ i, m i + m i.rev = wt) → ∀ H : ℕ, (∀ i, |m i| ≤ H) → ∀ M : ℕ, 1 ≤ M →
@@ -136,29 +128,11 @@ structure Adm3 [IsCMField K] (ι : Qbar l ≃+* ℂ) (e N : ℕ) (ρ : G K Ω �
   aut : IsAutCsd ι (tw ρ (cycBar K Ω l)⁻¹)
   level : Level l N ![(e : ℤ), 0, -(e : ℤ)] ρ
 
-def Adm2 (ι : Qbar l ≃+* ℂ) (e M : ℕ) (ρ : G K Ω →* GL (Fin 3) (Qbar l)) : Prop :=
-  ∃ W : G ℚ Ω →* GL (Fin 2) (Qbar l), IsIrr W ∧ (∃ f : Newform (2 * e + 1), f.Att ι (tw W (cycBar ℚ Ω l ^ (-(e : ℤ))))) ∧
-    Level l M ![(e : ℤ), -(e : ℤ)] W ∧ IsCycWt l 0 (Matrix.GeneralLinearGroup.det.comp W) ∧
-    ∃ g : GL (Fin 3) (Qbar l), ∀ s : G K Ω, ((g * ρ s * g⁻¹ : GL (Fin 3) (Qbar l)) : Matrix (Fin 3) (Fin 3) (Qbar l)) =
-      !![W (s.restrictScalars ℚ) 0 0, 0, W (s.restrictScalars ℚ) 0 1; 0, 1, 0;
-         W (s.restrictScalars ℚ) 1 0, 0, W (s.restrictScalars ℚ) 1 1]
-
 end U3
 
 def eis3 (q e : ℕ) (z : ℂ) : ℂ := ((q : ℂ) ^ e)⁻¹ * z + 1 + (q : ℂ) ^ e * z⁻¹
 
 def eis4 (p e : ℕ) (z₁ z₂ z₃ : ℂ) : ℂ := (p : ℂ) ^ (e + 1) * z₁ + (p : ℂ) ^ e * z₂ + (p : ℂ) * z₃ + 1
-
-def NumberSp4 : Prop :=
-  ∃ c A : ℕ, ∀ e : ℕ, 2 ≤ e → ∀ M : ℕ, 1 ≤ M → ∀ (p : ℕ) (w : HeightOneSpectrum (𝓞 ℚ)), p.Prime → (p : 𝓞 ℚ) ∈ w.asIdeal →
-    5 ≤ p → ¬ p ∣ M → ∀ k : ℕ, 0 < k → ∀ z₁ z₂ z₃ : ℂ, z₁ ^ k = 1 → z₂ ^ k = 1 → z₃ ^ k = 1 →
-    ∃ NN : ℤ, NN ≠ 0 ∧ Real.log |(NN : ℝ)| ≤ c * Nat.totient k * ((M : ℝ) * (e + 1)) ^ A * Real.log p ∧
-      ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → l ≠ p → ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ)
-        (B : ValuationSubring Ω), IsPlaceOver B w → ∀ σ : G ℚ Ω, IsFrob B p σ →
-        ∀ X : Finset (G ℚ Ω →* GL (Fin 4) (Qbar l)),
-          (∀ r ∈ X, AdmR ι M ![(e : ℤ) + 1, e, 1, 0] (e + 1) r) → (∀ r ∈ X, ∀ r' ∈ X, RepIso r r' → r = r') →
-          (∀ r ∈ X, (r σ : Matrix (Fin 4) (Fin 4) (Qbar l)).trace ≠ ι.symm (eis4 p e z₁ z₂ z₃)) ∧
-          ‖((NN : ℤ) : Qbar l)‖ ≤ ∏ r ∈ X, ‖(r σ : Matrix (Fin 4) (Fin 4) (Qbar l)).trace - ι.symm (eis4 p e z₁ z₂ z₃)‖
 
 section Ad
 
@@ -175,23 +149,5 @@ def IsAdOf (r : G F Ω →* GL (Fin n) k) (μ : G F Ω →* kˣ) (ρ : Represent
     ∀ X : Matrix (Fin n) (Fin n) k, ρ c X = -((P⁻¹ : GL (Fin n) k) * Xᵀ * (P : Matrix (Fin n) (Fin n) k))
 
 end Ad
-
-def AdVanishK : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [IsCMField K], Module.finrank ℚ K = 2 → ∀ (n : ℕ), 2 ≤ n →
-    ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [Algebra K Ω] [IsScalarTower ℚ K Ω] [IsAlgClosure K Ω]
-      (ι : Qbar l ≃+* ℂ) (r : G K Ω →* GL (Fin n) (Qbar l)), Continuous r → IsAutCsd ι r →
-      IsIrr (r.comp (cycBar K Ω l).ker.subtype) →
-      ∀ ρ : Representation (Qbar l) (G ℚ Ω) (Matrix (Fin n) (Fin n) (Qbar l)),
-        IsAdOf r (cycBar K Ω l ^ (1 - (n : ℤ))) ρ → BlochKatoSelmerVanishes l ρ
-
-def AdVanishQ : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [IsCMField K], Module.finrank ℚ K = 2 → ∀ (n : ℕ), 2 ≤ n →
-    ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [Algebra K Ω] [IsScalarTower ℚ K Ω] [IsAlgClosure K Ω]
-      (ι : Qbar l ≃+* ℂ) (r : G ℚ Ω →* GL (Fin n) (Qbar l)) (wt : ℤ) (θ : G ℚ Ω →* (Qbar l)ˣ), Continuous r → IsAutQ ι r →
-      IsCycWt l wt θ → DualTw r θ →
-      IsIrr ((r.comp (AlgEquiv.restrictScalarsHom ℚ : G K Ω →* G ℚ Ω)).comp (cycBar K Ω l).ker.subtype) →
-      ∀ ρ : Representation (Qbar l) (G ℚ Ω) (Matrix (Fin n) (Fin n) (Qbar l)),
-        IsAdOf (r.comp (AlgEquiv.restrictScalarsHom ℚ : G K Ω →* G ℚ Ω)) (θ.comp (AlgEquiv.restrictScalarsHom ℚ)) ρ →
-        BlochKatoSelmerVanishes l ρ
 
 end UpperTheory.V.Af

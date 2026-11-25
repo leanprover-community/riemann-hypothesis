@@ -150,7 +150,8 @@ theorem lam0_algebraMap_sW_eq_lam_algebraMap (lam : Acris l →+* A) (w : Ainf l
     lam0 lam (algebraMap (base l).W (base l).Acr0 ((base l).sW w)) = lam (algebraMap (Ainf l) (Acris l) w) := by
   have h : algebraMap (base l).W (base l).Acr0 ((base l).sW w) = (base l).cris0 (algebraMap (Ainf l) (Acris0 l) w) :=
     Subtype.ext (awayW_algebraMap (base l).s w).symm
-  rw [h, lam0_cris0_eq_lam_of, AdicCompletion.algebraMap_apply]
+  rw [h, lam0_cris0_eq_lam_of]
+  rfl
 
 def rho (lam : Acris l →+* A) (n : ℕ) : (base l).Acr n →+* A ⧸ Ideal.span {(l : A) ^ n} :=
   ((base l).cris n).liftOfSurjective ((RL.base_acr (base l) isBase_base).2 n).1
@@ -252,7 +253,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

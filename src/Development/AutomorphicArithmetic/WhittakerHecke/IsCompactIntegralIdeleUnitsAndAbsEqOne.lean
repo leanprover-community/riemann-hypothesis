@@ -47,12 +47,6 @@ open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.RankTwoDesce
 open scoped Classical
 open UpperTheory.ConvolutionTheory.R2.G (FS2 Rw nE row)
 
-private lemma eq_one_of_mul' {Γ : Type*} [LinearOrderedCommGroupWithZero Γ] {a b : Γ}
-    (ha : a ≤ 1) (hb : b ≤ 1) (h : a * b = 1) : a = 1 := by
-  refine le_antisymm ha ?_
-  have := mul_le_mul' (le_refl a) hb
-  rwa [h, mul_one] at this
-
 private lemma mem_UU_iff' (t : IdeleGroup ℚ) :
     t ∈ UU ↔ IdeleGroup.toInfinite ℚ t = 1 ∧ IdeleGroup.toFinite ℚ t ∈ finiteIntegralUnits ℚ := by
   have hinv : ∀ v : H.P ℚ, Valued.v ((((IdeleGroup.toFinite ℚ t)⁻¹ : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ) :
@@ -76,8 +70,9 @@ private lemma mem_UU_iff' (t : IdeleGroup ℚ) :
   · rintro ⟨h1, h2⟩
     refine ⟨congrArg Units.val h1, fun v => ?_⟩
     obtain ⟨ha, hb⟩ := (mem_finiteIntegralUnits ℚ).1 h2 v
-    exact eq_one_of_mul' ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 ha)
-      ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 hb) (by rw [mul_comm]; exact hinv v)
+    exact eq_one_of_one_le_mul_right
+      ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 hb)
+      ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 ha) (hinv v).ge
 
 private lemma ofFinite_toFinite' {t : IdeleGroup ℚ} (h : IdeleGroup.toInfinite ℚ t = 1) :
     IdeleGroup.ofFinite (IdeleGroup.toFinite ℚ t) = t := by

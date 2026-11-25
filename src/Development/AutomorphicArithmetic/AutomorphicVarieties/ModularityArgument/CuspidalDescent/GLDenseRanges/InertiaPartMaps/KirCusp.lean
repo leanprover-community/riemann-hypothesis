@@ -66,8 +66,6 @@ open UpperTheory.V.Z.Desc.V0
 
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.V.Z.Desc.V0.KC
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ} {ψ : AddChar (Ad E) ℂ}

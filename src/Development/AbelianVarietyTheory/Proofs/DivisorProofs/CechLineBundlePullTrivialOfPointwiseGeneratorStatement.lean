@@ -49,8 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent IsGrpPullback)
 open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB)
@@ -202,7 +200,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB)
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.PtExt
 

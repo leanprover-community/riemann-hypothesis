@@ -45,8 +45,6 @@ public import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CompHt
 
 open MvPolynomial NumberField Module GlobalTheory.AllWt GlobalTheory.CompHt ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FlagTan GlobalTheory.FlatLine

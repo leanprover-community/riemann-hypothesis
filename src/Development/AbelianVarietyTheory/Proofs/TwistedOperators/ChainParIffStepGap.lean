@@ -54,8 +54,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilSignShift (NcGapGt NcGapGe minS
 
 namespace GlobalTheory.Chain.ItPairCompare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mem_signed {l₁ l₂ : List ℚ} {c x : ℚ} {s : Bool} :
     (x, s) ∈ signed l₁ l₂ c ↔ (s = true ∧ x - c ∈ l₁) ∨ (s = false ∧ x - c ∈ l₂) := by
   simp only [signed, Finset.mem_union, List.mem_toFinset, List.mem_map, Prod.mk.injEq]

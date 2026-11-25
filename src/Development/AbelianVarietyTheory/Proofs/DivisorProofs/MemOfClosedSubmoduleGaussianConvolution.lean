@@ -621,29 +621,9 @@ open scoped Nat
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem norm_iteratedFDeriv_id_le_one_add' (j : ℕ) (x : E) :
-    ‖iteratedFDeriv ℝ j (id : E → E) x‖ ≤ 1 + ‖x‖ := by
-  rcases j with _ | n
-  · rw [norm_iteratedFDeriv_zero]; simp
-  · rw [← norm_iteratedFDeriv_fderiv,
-      show fderiv ℝ (id : E → E) = fun _ => ContinuousLinearMap.id ℝ E from funext fun _ => fderiv_id]
-    rcases n with _ | n
-    · rw [norm_iteratedFDeriv_zero]
-      exact (ContinuousLinearMap.norm_id_le).trans (by linarith [norm_nonneg x])
-    · rw [iteratedFDeriv_const_of_ne (Nat.succ_ne_zero n)]
-      simp only [Pi.zero_apply, norm_zero]
-      positivity
-
 theorem norm_iteratedFDeriv_diag_le' (B : E →L[ℝ] E →L[ℝ] ℝ) (n : ℕ) (x : E) :
     ‖iteratedFDeriv ℝ n (fun y => B y y) x‖ ≤ ‖B‖ * (2 ^ n * (1 + ‖x‖) ^ 2) := by
   apply PositivityTheory.ThKF0.Lib.norm_iteratedFDeriv_diag_le
-
-theorem norm_iteratedFDeriv_rexp' (i : ℕ) (y : ℝ) : ‖iteratedFDeriv ℝ i Real.exp y‖ = Real.exp y := by
-  rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv]
-  have h := congrFun (iteratedDeriv_exp_const_mul i 1) y
-  simp only [one_mul, one_pow] at h
-  rw [show (fun s => Real.exp s) = Real.exp from rfl] at h
-  rw [h, Real.norm_eq_abs, abs_of_pos (Real.exp_pos y)]
 
 theorem weighted_bound : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (c α : ℝ), 0 < c → α < 1 → ∀ (k m : ℕ),
     ∃ K : ℝ, ∀ y : E, ‖y‖ ^ k * ‖iteratedFDeriv ℝ m (fun y : E => Complex.exp (-((c * ‖y‖ ^ 2 : ℝ) : ℂ))) y‖ *
@@ -667,7 +647,7 @@ theorem weighted_bound : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpac
   rw [hfun, LinearIsometry.norm_iteratedFDeriv_comp_left _ hg.contDiffAt hn]
   have hfb := norm_iteratedFDeriv_comp_le (g := Real.exp) (f := fun y : E => B y y)
     Real.contDiff_exp hq hn x (C := Real.exp (B x x)) (D := 2 * (‖B‖ + 1) * (1 + ‖x‖) ^ 2)
-    (fun i _ => (norm_iteratedFDeriv_rexp' i _).le) (fun i hi _ => by
+    (fun i _ => (PositivityTheory.ThKF0.Lib.norm_iteratedFDeriv_rexp i _).le) (fun i hi _ => by
       have hB0 := norm_nonneg B
       have hx0 := norm_nonneg x
       have a1 : ‖B‖ ≤ (‖B‖ + 1) ^ i :=

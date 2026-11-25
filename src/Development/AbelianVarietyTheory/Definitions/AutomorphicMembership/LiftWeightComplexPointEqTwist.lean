@@ -52,8 +52,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Module
@@ -107,45 +105,6 @@ theorem eOp_eq (a : MonoidAlgebra LL G) : A.eOp (fun g => a.coeff g) = (twRep A)
 
 def supLat : Submodule (𝓞 LL) (Fin n → LL) := Submodule.span (𝓞 LL) (A.MK : Set (Fin n → LL))
 
-
-omit [Fintype G] in
-theorem supLat_isLatIn (h1 : A.IsKsForm) (h2 : A.MKFull) : IsLatIn ⊤ (supLat A) := by
-  constructor
-  · obtain ⟨s, hs⟩ := h2.1
-    refine ⟨s, le_antisymm (Submodule.span_mono ?_) (Submodule.span_le.2 fun x hx => ?_)⟩
-    · rw [← hs]; exact Submodule.subset_span
-    · rw [← hs] at hx
-      induction hx using Submodule.span_induction with
-      | mem x hx => exact Submodule.subset_span hx
-      | zero => exact Submodule.zero_mem _
-      | add x y _ _ hx hy => exact Submodule.add_mem _ hx hy
-      | smul a x _ hx =>
-        have : a • x = (algebraMap (𝓞 Ks) (𝓞 LL) a) • x := by
-          funext i
-          simp only [Pi.smul_apply, Algebra.smul_def]
-          rfl
-        rw [this]; exact Submodule.smul_mem _ _ hx
-  · obtain ⟨m, b, hb, -, -, -, htop⟩ := h1
-    rw [eq_top_iff, ← htop]
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨i, rfl⟩
-    have hi := hb i
-    rw [← h2.2] at hi
-    refine Submodule.span_induction (p := fun x _ => x ∈ Submodule.span LL (supLat A : Set (Fin n → LL)))
-      (fun x hx => Submodule.subset_span (Submodule.subset_span hx)) (Submodule.zero_mem _)
-      (fun x y _ _ hx hy => Submodule.add_mem _ hx hy) (fun a x _ hx => ?_) hi
-    rw [← algebraMap_smul LL a x]
-    exact Submodule.smul_mem _ _ hx
-
-theorem supLat_stable (h : A.MKStable) (g : G) :
-    (supLat A).map ((twRep A g).restrictScalars (𝓞 LL)) ≤ supLat A := by
-  unfold supLat
-  rw [Submodule.map_span, Submodule.span_le]
-  rintro _ ⟨x, hx, rfl⟩
-  have e : ((twRep A g).restrictScalars (𝓞 LL)) x =
-      (⟨_, isIntegral_char A.chi⁻¹ g⟩ : 𝓞 LL) • A.ρ g x := rfl
-  rw [e]
-  exact Submodule.smul_mem _ _ (Submodule.subset_span ((h g x).2 hx))
 
 end Twisted
 
@@ -453,10 +412,6 @@ structure ChainArgs (K : Type) [Field K] [NumberField K] (J : Type) (nZ : J → 
 
   ad : ℕ → ℝ
 
-def ChainArgs.ofObj {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df}
-    {P : Type} [Group P] [Finite P] {c : OnConst} (O : OnObj S P c) : ChainArgs K Bs.J O.nZ :=
-  { O with }
-
 section Objects
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -580,9 +535,6 @@ variable {s : ℕ}
 
 theorem blockHyp (hOk : A.fam.Ok s) (j : Fin D.R.m) (t : T) : BlockHyp (A.fam.L j t) (liftLvl F) A.v0 s :=
   ⟨hOk.conj, hOk.irr, hOk.lifts j t⟩
-
-theorem leafSup (h : R.LIntegral) : LeafSup (onOf R F c a) :=
-  fun j => ⟨supLat_isLatIn _ (h j).1 (h j).2.1, fun g => supLat_stable _ (h j).2.2 (mirIncl R g)⟩
 
 theorem leafMackey (h : R.grp_levels F) : LeafMackey (onOf R F c a) := by
   classical

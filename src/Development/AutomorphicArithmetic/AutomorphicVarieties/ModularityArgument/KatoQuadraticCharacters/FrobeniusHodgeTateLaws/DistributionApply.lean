@@ -142,13 +142,6 @@ private theorem UpperTheory.pow_val_mul_zmod {K : Type*} [Monoid K] {m : ℕ} (z
     (z ^ a.val) ^ b.val = z ^ (a * b).val := by
   rw [← pow_mul, ZMod.val_mul, ← pow_eq_pow_mod _ hz]
 
-private theorem UpperTheory.norm_dirichlet_character_le_one {l : ℕ} [Fact l.Prime] {m : ℕ} [NeZero m] (ψ : DirichletCharacter (Qbar l) m)
-    (b : (ZMod m)ˣ) : ‖ψ b‖ ≤ 1 := by
-  have h1 : (ψ b) ^ (Fintype.card (ZMod m)ˣ) = 1 := by
-    rw [← map_pow, ← Units.val_pow_eq_pow_val, pow_card_eq_one, Units.val_one, map_one]
-  have h2 : ‖ψ b‖ ^ (Fintype.card (ZMod m)ˣ) = 1 := by rw [← norm_pow, h1, norm_one]
-  exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) Fintype.card_ne_zero).1 h2).le
-
 theorem UpperTheory.gaussSum_twist_congr_of_measure :
     ∀ (l : ℕ) [Fact l.Prime] (r : ℕ) (N : (ZMod (l ^ r) → Qbar l) →ₗ[Qbar l] Qbar l) (L : PowerSeries (Qbar l)),
       (∀ g g' : ZMod (l ^ r) → Qbar l, (∀ x, IsUnit x → g x = g' x) → N g = N g') →
@@ -177,7 +170,7 @@ theorem UpperTheory.gaussSum_twist_congr_of_measure :
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun b _ => ?_
   rw [← mul_sub, norm_mul]
   have h1 := hL (z ^ (b : ZMod (l ^ r)).val) (by rw [← pow_mul, mul_comm, pow_mul, hz, one_pow])
-  calc _ ≤ 1 * _ := mul_le_mul (UpperTheory.norm_dirichlet_character_le_one ψ' b) h1 (norm_nonneg _) zero_le_one
+  calc _ ≤ 1 * _ := mul_le_mul (ψ'.norm_le_one b) h1 (norm_nonneg _) zero_le_one
     _ = _ := one_mul _
 end -- clump:auto
 end -- clump:auto
@@ -221,16 +214,6 @@ private theorem norm_int_eq_one (l : ℕ) [Fact l.Prime] (n : ℤ) (h : ¬ (l : 
   have h2 : (n : Qbar l) = algebraMap ℚ_[l] (Qbar l) (n : ℚ_[l]) := by simp
   rw [h2, norm_algebraMap', h1]
 
-private theorem norm_char_le_one (l : ℕ) [Fact l.Prime] (φ : DirichletCharacter (Qbar l) l) (x : ZMod l) :
-    ‖φ x‖ ≤ 1 := by
-  by_cases hx : x = 0
-  · subst hx
-    rw [MulChar.map_zero]; simp
-  · have h1 : x ^ (l - 1) = 1 := ZMod.pow_card_sub_one_eq_one hx
-    have h2 : ‖φ x‖ ^ (l - 1) = 1 := by rw [← norm_pow, ← map_pow, h1, map_one, norm_one]
-    have h3 : l - 1 ≠ 0 := by have := (Fact.out : l.Prime).two_le; omega
-    exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) h3).1 h2).le
-
 theorem UpperTheory.norm_character_pow_difference_estimate :
     ∀ (l : ℕ) [Fact l.Prime] (r e : ℕ) (φ : DirichletCharacter (Qbar l) l) (y : ZMod (l ^ r)) (a : ℕ) (n : ℤ), 1 ≤ r → ¬ l ∣ a → ¬ (l : ℤ) ∣ n →
       y * (a : ZMod (l ^ r)) = (n : ZMod (l ^ r)) →
@@ -268,7 +251,7 @@ theorem UpperTheory.norm_character_pow_difference_estimate :
   have haK : (a : Qbar l) ≠ 0 := by
     intro h; rw [h, norm_zero] at hna; exact zero_ne_one hna
   rw [hφ, ← mul_sub, norm_mul]
-  refine (mul_le_of_le_one_left (norm_nonneg _) (norm_char_le_one l φ _)).trans ?_
+  refine (mul_le_of_le_one_left (norm_nonneg _) (φ.norm_le_one _)).trans ?_
   refine (_root_.UpperTheory.Reformulated.B.Qi18.norm_pow_sub_pow_le _ _ (IsUltrametricDist.norm_natCast_le_one _ _) ?_ e).trans ?_
   · rw [norm_div, hna, div_one]
     exact IsUltrametricDist.norm_intCast_le_one _ _

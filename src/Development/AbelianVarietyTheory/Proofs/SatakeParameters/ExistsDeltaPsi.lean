@@ -252,8 +252,6 @@ end CM
 
 section Host
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev LP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) : Type := P.adicCompletion D.host.E

@@ -181,7 +181,7 @@ theorem mem_bes {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace
     rw [Matrix.map_mul] at eZ
     have hm : p.IsLoc F (dd.emb0 (o.emb (h, 1))) (embX (2 * σ + 1) g₀) := by
       refine ⟨suppAt_wittLeviEmbedding dd (suppAt_emb o hh.1), eq_embX F _ g₀ ((dd.j0 ⬝ o.jA).map p.π * FA.β) (fun r a => ?_)
-        (intertwine p eA hh) fun j => ?_⟩
+        (intertwine p eA hh :) fun j => ?_⟩
       · change ((frameMat B A d.ι).map φ * b) r a = _
         rw [Matrix.map_mul, jA]
       · rcases lt_trichotomy j.val σ with hj | hj | hj
@@ -677,7 +677,7 @@ theorem mem_jac {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace
     have hloc : p.IsLoc F ((jacDec d rfl).emb0 (ψ g₀)) (embX (2 * σ) g₀) := by
       refine ⟨suppAt_wittLeviEmbedding _ (hψ g₀).1, ?_⟩
       refine eq_embX F _ g₀ ((frameMat B A d.ι).map (p.π.comp (incA D)) * b) (fun r a => rfl) ?_ ?_
-      · exact intertwine p (HypDec.wittDecomp_anisotropicEmbedding_inclAnisotropic (d := jacDec d rfl) (g := ψ g₀)) (hψ g₀)
+      · exact (intertwine p (HypDec.wittDecomp_anisotropicEmbedding_inclAnisotropic (d := jacDec d rfl) (g := ψ g₀)) (hψ g₀) :)
       · intro j
         refine fix_col (hfix (ψ g₀)) (u j) j (fun r => ?_)
         show sumCols d p.π b u r (Sum.inr j) = u j * (d.a.map (p.π.comp (incA D))) r j

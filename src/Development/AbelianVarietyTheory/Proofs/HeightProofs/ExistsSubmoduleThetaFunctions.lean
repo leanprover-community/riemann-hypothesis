@@ -47,8 +47,6 @@ open scoped TensorProduct ContDiff ComplexOrder
 
 namespace GlobalTheory.FockCompare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {V W : HSp D}
 
 theorem isThetaFun_zero : IsThetaFun ψ V W 0 := {

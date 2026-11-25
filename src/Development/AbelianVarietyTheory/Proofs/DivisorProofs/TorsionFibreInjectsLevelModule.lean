@@ -94,7 +94,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelM
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TorsSpec
@@ -354,7 +353,6 @@ attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TorsSpec
@@ -501,7 +499,6 @@ attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
-set_option autoImplicit false
 noncomputable section
 open CartesianMonoidalCategory MonObj
 
@@ -864,7 +861,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelM
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
 
-set_option autoImplicit false
 open CartesianMonoidalCategory MonObj
 noncomputable section
 
@@ -966,7 +962,6 @@ attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TorsSpec
@@ -1118,7 +1113,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelM
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TorsSpec
@@ -1182,7 +1176,6 @@ attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TorsSpec
@@ -1299,7 +1292,6 @@ open MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
 
 open CartesianMonoidalCategory MonObj
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TorsSpec
@@ -1461,7 +1453,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
-set_option autoImplicit false
 noncomputable section
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory

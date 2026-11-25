@@ -53,8 +53,6 @@ public import Mathlib.RingTheory.WittVector.Identities
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-set_option autoImplicit false
-
 namespace GlobalTheory.LazardOne
 
 theorem choose_pow_mul_add_modEq_one (p : ℕ) [hp : Fact p.Prime] :

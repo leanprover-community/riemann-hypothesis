@@ -98,8 +98,6 @@ end CM
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WittIndexParallel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 end GlobalTheory.ParallelWitt
 
 end

@@ -64,8 +64,6 @@ noncomputable section
 
 namespace GlobalTheory.CritLevel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem m_eq (R : Ranks) : R.m = 2 * R.rS + 2 := by
   obtain ⟨t, ht⟩ := R.m_even
   have := R.two_le_m

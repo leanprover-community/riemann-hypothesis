@@ -484,19 +484,16 @@ theorem piInf_alg {w : InfinitePlace F} (τ : EmbOver E w) {a b : AF F} (h : a.1
   rw [h]
 
 theorem smul_latHat (X : Spc F E n) {a : AF F} (h : a * a = a) {z} (hz : z ∈ latHat X) : a • z ∈ latHat X := by
-  induction hz using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨b, hb, hv, x, hx, rfl⟩ := hz
-    refine AddSubgroup.subset_closure ⟨a * b, evI_zero_k.2 (show a.1 * b.1 = 0 by rw [evI_zero_k.1 hb, mul_zero]), fun v => ?_, x, hx,
-      smul_smul _ _ _⟩
-    rw [map_mul]
-    refine mul_mem ?_ (hv v)
-    have : IsIdempotentElem (evFin F v a) := by show _ * _ = _; rw [← map_mul, h]
-    rcases IsIdempotentElem.iff_eq_zero_or_one.1 this with e | e <;> rw [e]
-    exacts [zero_mem _, one_mem _]
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | neg x _ hx => rw [smul_neg]; exact neg_mem hx
+  unfold latHat at hz
+  refine (AddSubgroup.closure_le ((latHat X).comap (DistribSMul.toAddMonoidHom _ a))).2 ?_ hz
+  rintro _ ⟨b, hb, hv, x, hx, rfl⟩
+  refine AddSubgroup.subset_closure
+    ⟨a * b, evI_zero_k.2 (show a.1 * b.1 = 0 by rw [evI_zero_k.1 hb, mul_zero]),
+      fun v => ?_, x, hx, smul_smul _ _ _⟩
+  rw [map_mul]; refine mul_mem ?_ (hv v)
+  have : IsIdempotentElem (evFin F v a) := by show _ * _ = _; rw [← map_mul, h]
+  rcases IsIdempotentElem.iff_eq_zero_or_one.1 this with e | e <;> rw [e]
+  exacts [zero_mem _, one_mem _]
 
 theorem PU_mem {B : Base F E} {X : Spc F E n} {K : Subgroup (UA σ X.J)} (hK : IsStab B K) {a : AF F} (ha : Gd a) {g} (hg : g ∈ K) :
     PU σ X.J a g ∈ K := by

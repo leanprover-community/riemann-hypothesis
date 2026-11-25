@@ -623,36 +623,6 @@ namespace GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
 
-theorem analytic_U (B : Base D cc δ) (t : TaylorLogMetric.VC D N N') {G : TaylorLogMetric.VC D N N' → ℂ} (hG : AnalyticOnNhd ℂ G Set.univ) :
-    AnalyticOnNhd ℂ (TaylorLogMetric.U D B.tor t G) Set.univ := by
-  have hadd : AnalyticOnNhd ℂ (fun z : TaylorLogMetric.VC D N N' => z + t) Set.univ := fun z _ => by fun_prop
-  have h1 : AnalyticOnNhd ℂ (fun z : TaylorLogMetric.VC D N N' => G (z + t)) Set.univ :=
-    hG.comp hadd (fun _ _ => Set.mem_univ _)
-  let ℓ : TaylorLogMetric.VC D N N' →ₗ[ℂ] ℂ := (formV (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N').flip t
-  have h2 : AnalyticOnNhd ℂ (fun z : TaylorLogMetric.VC D N N' => ℓ z) Set.univ :=
-    (LinearMap.toContinuousLinearMap ℓ).analyticOnNhd _
-  have h3 : ∀ z : TaylorLogMetric.VC D N N', TaylorLogMetric.Hf D B.tor z t = ℓ z := fun z => by
-    show _ = formV (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N' z t
-    rw [formV_apply]; rfl
-  intro z hz
-  have h4 : AnalyticAt ℂ (fun z : TaylorLogMetric.VC D N N' => Complex.exp (-(Real.pi : ℂ) * ℓ z -
-      (Real.pi : ℂ) * TaylorLogMetric.Hf D B.tor t t / 2)) z := by
-    have := h2 z hz
-    fun_prop
-  have h5 := (h1 z hz).mul h4
-  have e : TaylorLogMetric.U D B.tor t G = (fun z => G (z + t)) * (fun z : TaylorLogMetric.VC D N N' => Complex.exp (-(Real.pi : ℂ) * ℓ z -
-      (Real.pi : ℂ) * TaylorLogMetric.Hf D B.tor t t / 2)) := by
-    funext z
-    simp only [TaylorLogMetric.U, h3, Pi.mul_apply]
-  rw [e]
-  exact h5
-
-end GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d
-
-namespace GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d
-
-variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
-
 theorem term_jets (hIn : GlobalTheory.ThLoc.Inputs) (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ)
     (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) {X : Fields} (s : Seam D X) (hs : s.Ok)
     (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < D.host.d) (lam : ℂ) (hlam : lam ≠ 0) (hcm : CmOK a₀ b₀ c₀ D.host.d)
@@ -681,7 +651,7 @@ theorem term_jets (hIn : GlobalTheory.ThLoc.Inputs) (hcc : TaylorLogMetric.IsCur
       simp
     rw [e]
     exact h2
-  have hGan := analytic_U B t hEan
+  have hGan := GlobalTheory.Proof.shape_normalisedThetaCombinations_dualBases_at_d.analytic_U B t hEan
   have hCo : TaylorLogMetric.CoefIn D (TaylorLogMetric.U D B.tor t (B.eNat χ N N' L₁ L₁')) TaylorLogMetric.Qbar :=
     hIn.algT D cc δ B χ hcc hδ hχ N N' L₁ L₁' hA₁ t ⟨M, hM0, hMm⟩
 

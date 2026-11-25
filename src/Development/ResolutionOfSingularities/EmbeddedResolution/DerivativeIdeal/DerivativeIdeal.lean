@@ -69,25 +69,21 @@ def derivIdeal (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (J : Ideal S) : Ideal S :=
   J ⊔ Ideal.span {x : S | ∃ D : Derivation k S S, ∃ y ∈ J, D y = x}
 
-private theorem derivIdeal_eq_sup_span (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
-    (J : Ideal S) :
-    derivIdeal k J = J ⊔ Ideal.span {x : S | ∃ D : Derivation k S S, ∃ y ∈ J, D y = x} := rfl
-
 theorem le_derivIdeal (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (J : Ideal S) : J ≤ derivIdeal k J := by
-  rw [derivIdeal_eq_sup_span]
+  rw [derivIdeal]
   exact le_sup_left
 
 theorem derivation_apply_mem_derivIdeal (k : Type*) [CommRing k] {S : Type*} [CommRing S]
     [Algebra k S] (J : Ideal S) (D : Derivation k S S) {x : S} (hx : x ∈ J) :
     D x ∈ derivIdeal k J := by
-  rw [derivIdeal_eq_sup_span]
+  rw [derivIdeal]
   exact Submodule.mem_sup_right (Ideal.subset_span ⟨D, x, hx, rfl⟩)
 
 theorem derivIdeal_le_iff (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (J K : Ideal S) :
     derivIdeal k J ≤ K ↔ J ≤ K ∧ ∀ D : Derivation k S S, ∀ x ∈ J, D x ∈ K := by
-  rw [derivIdeal_eq_sup_span, sup_le_iff, Ideal.span_le]
+  rw [derivIdeal, sup_le_iff, Ideal.span_le]
   constructor
   · rintro ⟨h1, h2⟩
     exact ⟨h1, fun D x hx => h2 ⟨D, x, hx, rfl⟩⟩
@@ -223,45 +219,19 @@ private theorem derivation_apply_mem_pow_of_mem_pow_succ {k : Type*} [CommRing k
 theorem derivIdeal_pow_succ_le_pow (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (J : Ideal S) (n : ℕ) : derivIdeal k (J ^ (n + 1)) ≤ J ^ n := by
   rw [derivIdeal_le_iff]
-  refine ⟨?_, ?_⟩
-  · intro x hx
-    rw [pow_succ] at hx
-    refine Submodule.mul_induction_on hx ?_ ?_
-    · intro m hm y _
-      exact Ideal.mul_mem_right _ _ hm
-    · intro a b ha hb
-      exact Submodule.add_mem _ ha hb
-  · intro D x hx
-    exact derivation_apply_mem_pow_of_mem_pow_succ J D n x hx
-
-private theorem pow_succ_le_pow {S : Type*} [CommRing S] (J : Ideal S) (m : ℕ) :
-    J ^ (m + 1) ≤ J ^ m := by
-  rw [pow_succ]
-  exact Ideal.mul_le.mpr fun r hr s _ => Ideal.mul_mem_right s _ hr
+  refine ⟨Ideal.pow_le_pow_right (Nat.le_succ n), fun D x hx => ?_⟩
+  exact derivation_apply_mem_pow_of_mem_pow_succ J D n x hx
 
 theorem derivIdeal_pow_le (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (J : Ideal S) (n : ℕ) : derivIdeal k (J ^ n) ≤ J ^ (n - 1) := by
   obtain _ | m := n
-  · have h : (J ^ (0 - 1 : ℕ) : Ideal S) = ⊤ := by simp
-    exact le_top.trans h.ge
-  · have key : derivIdeal k (J ^ (m + 1)) ≤ J ^ m := by
-      rw [derivIdeal_le_iff]
-      exact ⟨pow_succ_le_pow J m,
-        fun D x hx => derivation_apply_mem_pow_of_mem_pow_succ J D m x hx⟩
-    exact key
+  · rw [Nat.zero_sub, pow_zero, Ideal.one_eq_top]
+    exact le_top
+  · exact derivIdeal_pow_succ_le_pow k J m
 
 theorem derivIdeal_le_pow_of_le_pow (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
-    {I P : Ideal S} {n : ℕ} (h : I ≤ P ^ n) : derivIdeal k I ≤ P ^ (n - 1) := by
-  cases n with
-  | zero =>
-      have hP : P ^ (0 - 1) = (⊤ : Ideal S) := by
-        rw [Nat.zero_sub, pow_zero, Ideal.one_eq_top]
-      exact le_of_le_of_eq le_top hP.symm
-  | succ m =>
-      have h2 : derivIdeal k I ≤ P ^ m :=
-        (derivIdeal_mono k h).trans (derivIdeal_pow_succ_le_pow k P m)
-      have hm : m + 1 - 1 = m := by omega
-      exact le_of_le_of_eq h2 (congrArg (fun i => P ^ i) hm.symm)
+    {I P : Ideal S} {n : ℕ} (h : I ≤ P ^ n) : derivIdeal k I ≤ P ^ (n - 1) :=
+  (derivIdeal_mono k h).trans (derivIdeal_pow_le k P n)
 
 def derivIdealIterate (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S] :
     ℕ → Ideal S → Ideal S

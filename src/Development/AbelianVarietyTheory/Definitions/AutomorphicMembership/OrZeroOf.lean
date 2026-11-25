@@ -50,8 +50,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.Mem.R3.Res
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T T' : Type}
 
 def levCh (L : Formalism.IndefR.Links.LevCh D T) (f : T' → T) : Formalism.IndefR.Links.LevCh D T' where

@@ -189,7 +189,6 @@ theorem recon_right (S S' : SPar) (c : ℚ) (B : List ℚ)
 end GlobalTheory.NegPair
 
 namespace GlobalTheory.NegPair
-open GlobalTheory.Grid
 
 theorem gap_big (D : D7) : 2 * GlobalTheory.Grid.bigN D ^ 3 + 2 * GlobalTheory.Grid.sLen D + 2 < GlobalTheory.Grid.gap D := (GlobalTheory.Grid.isLeast_gap D).1.2.1
 
@@ -283,7 +282,6 @@ theorem loc (D : D7) (τ : D.what₂.Tau) {i : ℕ} (hi : i < D.R.m) {p : ℚ ×
 end GlobalTheory.NegPair
 
 namespace GlobalTheory.NegPair
-open GlobalTheory.Grid
 
 theorem blockC'_le (D : D7) (τ : D.what₂.Tau) {j l : ℕ} {x : ℚ} (hl1 : j + 1 ≤ l) (hl2 : l ≤ D.R.m)
     (hb : x ∈ (GlobalTheory.Grid.grid D τ).blockC' l) : x ≤ (GlobalTheory.Grid.grid D τ).a j := by
@@ -434,7 +432,6 @@ theorem mem_next (D : D7) (τ : D.what₂.Tau) {i : ℕ} (hi : i < D.R.m) (x : �
 end GlobalTheory.NegPair
 
 namespace GlobalTheory.NegPair
-open GlobalTheory.Grid
 
 theorem sLen_odd (D : D7) : ∃ q : ℕ, GlobalTheory.Grid.sLen D = 2 * q + 7 := by
   obtain ⟨a, ha⟩ := D.R.k_even
@@ -562,7 +559,6 @@ theorem card_parPi (D : D7) (τ : D.what₂.Tau) (i : ℕ) :
 end GlobalTheory.NegPair
 
 namespace GlobalTheory.NegPair
-open GlobalTheory.Grid
 
 theorem gapGt_ofBlocks {p q : ℕ} {l₁ l₂ : List ℚ} {h : ℝ} (hp : p ≤ l₁.length) (hq : q ≤ l₂.length)
     (H : ∀ y ∈ l₁, ∀ y' ∈ l₂, h < |((y - y' : ℚ) : ℝ)|) :
@@ -643,7 +639,6 @@ theorem card_negS (D : D7) (τ : D.what₂.Tau) {i : ℕ} (hi : i < D.R.m) :
 end GlobalTheory.NegPair
 
 namespace GlobalTheory.NegPair
-open GlobalTheory.Grid
 
 theorem params : ∀ (D : D7) (i : ℕ), i < D.R.m → ∀ τ : D.what₂.Tau, ∃ al be ga de : List ℚ,
     Formalism.MainNotions.SchurIrreducible.DataAR (GlobalTheory.Grid.sLen D - 1) al be ga de ∧

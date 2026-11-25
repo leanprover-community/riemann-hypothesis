@@ -764,6 +764,7 @@ theorem R_meas (z e : Fin (2 * r + k + 1) → ℂ) :
     Measurable (fun u => (herm (Hpk k r) (vH k r z e u) (vH k r z e u)).re) :=
   (Complex.continuous_re.comp (hermSelf_cont (k := k) (r := r))).measurable.comp (vH_meas (k := k) (r := r) z e)
 
+open scoped Formalism.DoubleCosetMeasures in
 theorem hh_meas (z e : Fin (2 * r + k + 1) → ℂ) : Measurable (hh k r z e) := by
   have hv := vH_meas (k := k) (r := r) z e
   have hR := R_meas (k := k) (r := r) z e

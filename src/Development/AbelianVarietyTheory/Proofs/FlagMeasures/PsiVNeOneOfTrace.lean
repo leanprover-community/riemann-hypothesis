@@ -61,10 +61,6 @@ section Local
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem trace_int_iff (a : F) : (∀ r : 𝓞 F, ∃ k : ℤ, Algebra.trace ℚ F (a * r) = k) ↔
-    ∀ d ∈ differentIdeal ℤ (𝓞 F), ∃ r : 𝓞 F, (r : F) = a * d := by
-  apply _root_.GlobalTheory.SnMass.Inhab.trace_int_iff
-
 theorem fin_conductor (χ : Af F → ℂ) (hc : Continuous χ) (hadd : ∀ x y, χ (x + y) = χ x * χ y)
     (hrat : ∀ a : F, χ (algebraMap F (Af F) a) =
       Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ F (-a) : ℚ) : ℂ))) (z : Af F) :

@@ -46,7 +46,7 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.CoefSmooth
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem coef_smoothOnG (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H))

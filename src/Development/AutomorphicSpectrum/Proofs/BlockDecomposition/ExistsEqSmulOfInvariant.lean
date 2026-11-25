@@ -56,8 +56,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CompanionTheory.OrbUniq
 
 theorem exists_eq_smul_of_invariant {Γ Y : Type*} [MeasurableSpace Γ] [MeasurableSpace Y]

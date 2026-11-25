@@ -55,8 +55,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid
 
 namespace GlobalTheory.FunObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 def levCol (L : LevCh D T) (t : T) (j : ℕ) : Subgroup (GL (Fin (columnBlock L (j + 1)).sp.rank) (Lev.EAf D)) :=

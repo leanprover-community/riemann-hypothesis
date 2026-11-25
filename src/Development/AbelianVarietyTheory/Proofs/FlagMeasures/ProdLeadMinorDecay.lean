@@ -515,14 +515,7 @@ namespace GlobalTheory.GapSum
 
 theorem inP_apply_eq_zero {n : ℕ} {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ}
     (hY : inP ε Y) {a b : Fin n} (hab : ε a = ε b) : Y a b = 0 := by
-  have h := congrFun (congrFun hY.2 a) b
-  simp only [Jm, Matrix.mul_diagonal, Matrix.neg_apply, Matrix.diagonal_mul, hab] at h
-  by_cases hb : ε b = true
-  · simp only [hb, if_true] at h
-    linear_combination h / 2
-  · simp only [hb] at h
-    simp only [Bool.false_eq_true, if_false] at h
-    linear_combination -h / 2
+  apply _root_.GlobalTheory.EigenPartialSum.apply_eq_zero_of_inP <;> assumption
 
 theorem inP_norm_symm {n : ℕ} {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ}
     (hY : inP ε Y) (a b : Fin n) : ‖Y a b‖ = ‖Y b a‖ := by

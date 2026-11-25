@@ -54,7 +54,6 @@ open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.FrameRatioAdj
 

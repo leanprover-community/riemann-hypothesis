@@ -1130,7 +1130,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds (a0)
 namespace GlobalTheory.HilbFam
 
 theorem isIntegral_coord_of_isIntegral (E : Type) [Field E] [NumberField E] [IsCMField E] (θ : E) (D : ℕ)
-    (x : Fin 2 → FR E) (_hD : 0 < D) (hθ : IsIntegral ℤ θ)
+    (x : Fin 2 → FR E) (hθ : IsIntegral ℤ θ)
     (hr : (θ - IsCMField.complexConj E θ) ^ 2 = -(D : E))
     (hu : IsIntegral ℤ ((x 0 : E) * θ + (x 1 : E))) (j : Fin 2) :
     IsIntegral ℤ ((D : FR E) * x j ^ 2) ∧ IsIntegral ℤ ((D : FR E) * x j) := by
@@ -1291,7 +1291,7 @@ theorem passl : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (l : ℕ)
       have h' : (M : E) * y' = (D : E)⁻¹ * (((x 0 : FR E) : E) * θ + ((x 1 : FR E) : E)) := by
         rw [← hxy]; field_simp
       rw [h']; ring
-    have h := _root_.GlobalTheory.HilbFam.isIntegral_coord_of_isIntegral E θ D (fun j => (D : FR E)⁻¹ * x j) hD hθ hθD (by rw [hpt]; exact hMint y' hy') j
+    have h := _root_.GlobalTheory.HilbFam.isIntegral_coord_of_isIntegral E θ D (fun j => (D : FR E)⁻¹ * x j) hθ hθD (by rw [hpt]; exact hMint y' hy') j
     refine ⟨h.1, ?_⟩
     have h2 := h.2
     simp only [mul_inv_cancel_left₀ hDF] at h2

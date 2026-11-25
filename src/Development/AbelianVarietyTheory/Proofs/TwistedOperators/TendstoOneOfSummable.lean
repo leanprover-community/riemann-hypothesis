@@ -150,8 +150,6 @@ section Global
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem split_or_inert (D : D7) (w : HeightOneSpectrum (𝓞 D.host.E)) :
     IsSplit (E := D.host.E) (w.under (𝓞 D.host.F)) ∨ IsInertAt D.host.F D.host.E (w.under (𝓞 D.host.F)) w := by
   haveI := D.host.isCMField_hostE

@@ -11,8 +11,6 @@ namespace Formalism.L2.KerInert.RepComb
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Th1.H
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
 abbrev hK (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (a b : ℕ) : Sesq (TaylorLogMetric.VC D a b) :=

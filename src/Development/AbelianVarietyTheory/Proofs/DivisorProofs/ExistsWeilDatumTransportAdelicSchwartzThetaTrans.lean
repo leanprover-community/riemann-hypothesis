@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilTransportAdelicSchwartzCmExtension
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoMulInvOf
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUSplittingInl
@@ -381,21 +382,7 @@ def contra {A n : Type} [CommRing A] [Fintype n] [DecidableEq n] : GL n A →* G
 theorem contra_rel {A n : Type} [CommRing A] [Fintype n] [DecidableEq n] (c : A →+* A) {G H J : Matrix n n A} {ξ x : A}
     (hGH : G * H = 1) (hx : IsUnit x) (hJ : ξ • J = x • H) (b : GL n A) (h0 : b.1ᵀ * J * b.1.map c = J) :
     (b⁻¹).1.map c * G * (b⁻¹).1ᵀ = G := by
-  have hHG : H * G = 1 := mul_eq_one_comm.1 hGH
-  have h1 : b.1ᵀ * H * b.1.map c = H := by
-    have h2 : b.1ᵀ * (ξ • J) * b.1.map c = ξ • J := by rw [Matrix.mul_smul, Matrix.smul_mul, h0]
-    rw [hJ, Matrix.mul_smul, Matrix.smul_mul] at h2
-    exact hx.smul_left_cancel.1 h2
-  have h3 : (b⁻¹).1.map c * b.1.map c = 1 := by
-    rw [← Matrix.map_mul, Units.inv_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-  have h4 : (b⁻¹).1ᵀ * b.1ᵀ = 1 := by rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
-  have h5 : (b⁻¹).1.map c * G * (b⁻¹).1ᵀ * H = 1 := by
-    conv_lhs => rw [← h1]
-    calc _ = (b⁻¹).1.map c * (G * (((b⁻¹).1ᵀ * b.1ᵀ) * H)) * b.1.map c := by
-          simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [h4, Matrix.one_mul, hGH, Matrix.mul_one, h3]
-  calc _ = (b⁻¹).1.map c * G * (b⁻¹).1ᵀ * H * G := by rw [Matrix.mul_assoc _ H G, hHG, Matrix.mul_one]
-    _ = G := by rw [h5, Matrix.one_mul]
+  apply _root_.GlobalTheory.TransportF.contra_rel <;> assumption
 
 theorem mem_GA_source (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹))
     (b : GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (incM D.host.F JB)) :

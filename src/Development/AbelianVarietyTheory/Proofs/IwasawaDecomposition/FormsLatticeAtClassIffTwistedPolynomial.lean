@@ -442,18 +442,6 @@ theorem fnOf_inv_twSub {E ι : Type} [Field E] [Fintype ι] {n : ℕ} (emb : ι 
   refine Finset.prod_congr rfl fun τ _ => ?_
   rw [mul_comm, ← mul_zpow, det_map_emb, ← Matrix.det_mul, hy]
 
-theorem exists_det_poly {ι : Type} [Fintype ι] {n : ℕ} :
-    ∃ D : MvPolynomial (ι × Fin n × Fin n) ℂ, ∀ x : ι → Matrix (Fin n) (Fin n) ℂ,
-      eval (fun k : ι × Fin n × Fin n => x k.1 k.2.1 k.2.2) D = ∏ τ, (x τ).det := by
-  refine ⟨∏ τ, Matrix.det (Matrix.of fun a b => (X (τ, a, b) : MvPolynomial (ι × Fin n × Fin n) ℂ)), ?_⟩
-  intro x
-  rw [map_prod]
-  refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [RingHom.map_det]
-  congr 1
-  ext a b
-  simp
-
 theorem eq_of_eval_units {ι : Type} [Fintype ι] {n : ℕ} (Q : MvPolynomial (ι × Fin n × Fin n) ℂ)
     (hQ : ∀ x : ι → Matrix (Fin n) (Fin n) ℂ, (∀ τ, IsUnit (x τ).det) →
       eval (fun k : ι × Fin n × Fin n => x k.1 k.2.1 k.2.2) Q = 0) : Q = 0 := by

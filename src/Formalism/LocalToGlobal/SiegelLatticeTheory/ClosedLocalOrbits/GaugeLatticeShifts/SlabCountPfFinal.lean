@@ -265,11 +265,8 @@ theorem orth_span_iff {T : Set (VS D).V} {v : (VS D).V} :
     v ∈ orth (VS D) (Submodule.span D.host.E T) ↔ ∀ y ∈ T, (VS D).hT y v = 0 := by
   rw [mem_orth']
   refine ⟨fun h y hy => h y (Submodule.subset_span hy), fun h y hy => ?_⟩
-  induction hy using Submodule.span_induction with
-  | mem y hy => exact h y hy
-  | zero => simp
-  | add a b _ _ ha hb => rw [map_add (f := _), LinearMap.add_apply, ha, hb, add_zero]
-  | smul c a _ ha => rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, ha, smul_zero]
+  exact (LinearMap.flip_apply _ _ _).symm.trans (LinearMap.mem_ker.mp
+    ((Submodule.span_le (p := LinearMap.ker ((VS D).hT.flip v))).mpr h hy))
 
 variable {X} in
 theorem hconj (x y : (VS D).V) : (VS D).hT y x = starRingEnd D.host.E ((VS D).hT x y) :=
@@ -715,19 +712,17 @@ theorem trace_pos_of_totPos {F : Type} [Field F] [NumberField F] (hF : NumberFie
     (ha : ∀ ι : F →+* ℝ, 0 < ι a) : 0 < Algebra.trace ℚ F a := by
   have := hF
   have h := trace_eq_sum_embeddings (K := ℚ) (L := F) (E := ℂ) (x := a)
-  have hre : ∀ σ : F →ₐ[ℚ] ℂ, 0 < (σ a).re ∧ (σ a).im = 0 := by
-    intro σ
-    have hr : NumberField.ComplexEmbedding.IsReal (σ : F →+* ℂ) := IsTotallyReal.complexEmbedding_isReal _
-    have e := NumberField.ComplexEmbedding.IsReal.coe_embedding_apply hr a
-    have e2 : σ a = ((hr.embedding a : ℝ) : ℂ) := e.symm
-    refine ⟨?_, ?_⟩
-    · simp only [e2, Complex.ofReal_re]; exact ha hr.embedding
-    · simp only [e2, Complex.ofReal_im]
+  have hre : ∀ σ : F →ₐ[ℚ] ℂ, 0 < (σ a).re := fun σ => by
+    have hr : NumberField.ComplexEmbedding.IsReal (σ : F →+* ℂ) :=
+      IsTotallyReal.complexEmbedding_isReal _
+    have e2 : σ a = ((hr.embedding a : ℝ) : ℂ) :=
+      (NumberField.ComplexEmbedding.IsReal.coe_embedding_apply hr a).symm
+    simp only [e2, Complex.ofReal_re]; exact ha hr.embedding
   have hsum : (0 : ℝ) < (∑ σ : F →ₐ[ℚ] ℂ, σ a).re := by
     rw [Complex.re_sum]
     obtain ⟨v⟩ : Nonempty (InfinitePlace F) := inferInstance
     let σ0 : F →ₐ[ℚ] ℂ := v.embedding.toRatAlgHom
-    exact Finset.sum_pos (fun σ _ => (hre σ).1) ⟨σ0, Finset.mem_univ _⟩
+    exact Finset.sum_pos (fun σ _ => hre σ) ⟨σ0, Finset.mem_univ _⟩
   rw [← h] at hsum
   simpa using hsum
 

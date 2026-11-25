@@ -54,8 +54,6 @@ open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.StdUnn PositivityTheory.Rg.Rsw
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Rsw.Kplug
 
 def K0 : Prop :=
@@ -133,7 +131,6 @@ def K4 : Prop :=
 
 section Target
 
-open scoped ComplexConjugate Matrix NNReal
 open IsDedekindDomain NumberField GlobalTheory.Cusp
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta)

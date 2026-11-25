@@ -47,8 +47,6 @@ public import Mathlib.Analysis.Calculus.MeanValue
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory GlobalTheory.CatCoh GlobalTheory.AnPer GlobalTheory.AnPer.Charts TopologicalSpace Filter Topology
 
 namespace GlobalTheory.AnPer.Charts

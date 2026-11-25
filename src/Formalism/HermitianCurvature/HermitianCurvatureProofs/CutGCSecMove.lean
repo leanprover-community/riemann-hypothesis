@@ -53,7 +53,7 @@ open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section
 

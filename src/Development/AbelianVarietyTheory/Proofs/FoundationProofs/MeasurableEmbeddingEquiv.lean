@@ -224,8 +224,6 @@ section Record
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.MainNotions.S
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
 
 theorem exists_frameMat_eq (ρ : D.what₂.Tau) {x : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hx : x ∈ UJset (M.ε ρ)) :

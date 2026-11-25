@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParahoricDatumEigenvectorTwoBlockParahoric
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdelicUnitaryComponentAtPlaceLaws
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUniquePureTensorRestrictedFamily
@@ -447,26 +448,8 @@ theorem residue_eq_zero_iff (x : 𝒪[k]) : IsLocalRing.residue 𝒪[k] x = 0 �
 theorem det_sub_lt {n : Type} [Fintype n] [DecidableEq n] (M N : Matrix n n k)
     (hM : ∀ i j, M i j ∈ 𝒪[k]) (hN : ∀ i j, N i j ∈ 𝒪[k]) (h : ∀ i j, valuation k (M i j - N i j) < 1) :
     valuation k (M.det - N.det) < 1 := by
-  let M' : Matrix n n 𝒪[k] := fun i j => ⟨M i j, hM i j⟩
-  let N' : Matrix n n 𝒪[k] := fun i j => ⟨N i j, hN i j⟩
-  have eM : M.det = ((M'.det : 𝒪[k]) : k) := by
-    have := RingHom.map_det (algebraMap 𝒪[k] k) M'
-    rw [show (algebraMap 𝒪[k] k).mapMatrix M' = M from by ext i j; rfl] at this
-    exact this.symm
-  have eN : N.det = ((N'.det : 𝒪[k]) : k) := by
-    have := RingHom.map_det (algebraMap 𝒪[k] k) N'
-    rw [show (algebraMap 𝒪[k] k).mapMatrix N' = N from by ext i j; rfl] at this
-    exact this.symm
-  have hz : IsLocalRing.residue 𝒪[k] (M'.det - N'.det) = 0 := by
-    rw [map_sub, RingHom.map_det, RingHom.map_det, sub_eq_zero]
-    congr 1
-    ext i j
-    simp only [RingHom.mapMatrix_apply, Matrix.map_apply]
-    rw [← sub_eq_zero, ← map_sub, residue_eq_zero_iff]
-    exact h i j
-  rw [residue_eq_zero_iff] at hz
-  rw [eM, eN]
-  simpa using hz
+  intros
+  apply _root_.GlobalTheory.DatumEigen.val_det_sub_lt <;> assumption
 
 end Alg
 end GlobalTheory.Reidx

@@ -1090,7 +1090,7 @@ theorem coef_sq_mem_monomial : ∀ (N₁ : ℕ), 2 ≤ N₁ → ∀ (V₁ : Type
   intro N₁ hN V₁ _ _ _ hV hunit D hpe htb X C _ e u mo hmo hT K _ _ ev k₀ hk₀ τ₀ m N s ε hs hτ hmo2 W₀ _ ib hB hib mu c
   obtain ⟨θ, b, t, χt, s₀, G, hθ, hb, ht, hχt, hs₀, hG, hGf⟩ :=
     GlobalTheory.T.integral_squaredThetaTerms_torusCoordinates N₁ hN V₁ hV hunit D hpe htb X C e u mo hmo hT τ₀ m N s ε hs hτ hmo2
-  obtain ⟨Λ, hΛ⟩ := GlobalTheory.T.integral_expression_values_at_descended_point N₁ hN V₁ hV hunit D X C e τ₀ θ hθ b hb t ht χt hχt G hGf K ev k₀ hk₀ W₀ ib hB hib
+  obtain ⟨Λ, hΛ⟩ := GlobalTheory.USep.EvG.ev_values N₁ hN V₁ hV hunit D X C e τ₀ θ hθ b hb t ht χt hχt G hGf K ev k₀ hk₀ W₀ ib hB hib
   obtain ⟨-, -, -, -, -, -, -, -, -, c₀, hc₀⟩ := hT
   have hc₀' : u 0 c₀ * mo 0 = 1 := hc₀
   have hm0 : mo 0 ^ 2 = 1 := by

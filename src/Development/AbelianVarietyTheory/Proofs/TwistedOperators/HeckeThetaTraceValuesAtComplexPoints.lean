@@ -57,8 +57,6 @@ open scoped Matrix
 open GlobalTheory.HkFam (admitted)
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ThetaTrace GlobalTheory.HeckeFrCompare GlobalTheory.MoveValues
 
-set_option autoImplicit false
-
 noncomputable section
 
 attribute [local instance] Over.cartesianMonoidalCategory

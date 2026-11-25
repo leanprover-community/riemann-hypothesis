@@ -938,28 +938,12 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   {P : HeightOneSpectrum (𝓞 E)}
 
 theorem intAtA_add {a b : E ⊗[F] FiniteAdeleRing (𝓞 F) F} (ha : IntAtA (F := F) P a) (hb : IntAtA (F := F) P b) :
-    IntAtA (F := F) P (a + b) := by
-  obtain ⟨s, hs, h1⟩ := ha
-  obtain ⟨r, hr, h2⟩ := hb
-  have hi : ∀ x : 𝓞 E, iA F E (algebraMap (𝓞 E) E x) ∈ Formalism.L2.Herm.intAf F E := fun x => (toRInt F E x).2
-  refine ⟨s * r, fun h => (P.isPrime.mem_or_mem h).elim hs hr, ?_⟩
-  have e : iA F E (algebraMap (𝓞 E) E (s * r)) * (a + b) =
-      iA F E (algebraMap (𝓞 E) E r) * (iA F E (algebraMap (𝓞 E) E s) * a) +
-        iA F E (algebraMap (𝓞 E) E s) * (iA F E (algebraMap (𝓞 E) E r) * b) := by
-    rw [map_mul, map_mul]; ring
-  rw [e]
-  exact add_mem (mul_mem (hi r) h1) (mul_mem (hi s) h2)
+    IntAtA (F := F) P (a + b) :=
+  _root_.GlobalTheory.CplPt.intAtA_add ha hb
 
 theorem intAtA_mul {a b : E ⊗[F] FiniteAdeleRing (𝓞 F) F} (ha : IntAtA (F := F) P a) (hb : IntAtA (F := F) P b) :
-    IntAtA (F := F) P (a * b) := by
-  obtain ⟨s, hs, h1⟩ := ha
-  obtain ⟨r, hr, h2⟩ := hb
-  refine ⟨s * r, fun h => (P.isPrime.mem_or_mem h).elim hs hr, ?_⟩
-  have e : iA F E (algebraMap (𝓞 E) E (s * r)) * (a * b) =
-      (iA F E (algebraMap (𝓞 E) E s) * a) * (iA F E (algebraMap (𝓞 E) E r) * b) := by
-    rw [map_mul, map_mul]; ring
-  rw [e]
-  exact mul_mem h1 h2
+    IntAtA (F := F) P (a * b) :=
+  _root_.GlobalTheory.CplPt.intAtA_mul ha hb
 
 theorem intAtA_int (x : 𝓞 E) : IntAtA (F := F) P (iA F E (algebraMap (𝓞 E) E x)) :=
   ⟨1, fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h), by

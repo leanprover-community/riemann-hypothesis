@@ -194,10 +194,6 @@ private theorem one_add_X_mul_derivative_log_eq_one :
   · rw [PowerSeries.coeff_succ_X_mul, hD, hD, PowerSeries.coeff_one, if_neg (Nat.succ_ne_zero n)]
     ring
 
-private theorem constantCoeff_log_eq_zero_wick_vanishing : PowerSeries.constantCoeff (PowerSeries.log k) = 0 := by
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_log]
-  simp
-
 private theorem isAddTorsionFree_coeff_ring : IsAddTorsionFree k := by
   constructor
   intro n hn a b _ hab
@@ -205,22 +201,6 @@ private theorem isAddTorsionFree_coeff_ring : IsAddTorsionFree k := by
   have h : (n : k) * (a - b) = 0 := by
     rw [mul_sub, hab, sub_self]
   exact sub_eq_zero.mp (natCast_mul_eq_zero hn h)
-
-private theorem subst_exp_sub_one_log_eq_X :
-    PowerSeries.subst (PowerSeries.exp k - 1) (PowerSeries.log k) = PowerSeries.X := by
-  haveI := isAddTorsionFree_coeff_ring (k := k)
-  haveI : HasUniqueDiv k := IsAddTorsionFree.hasUniqueDiv
-  have hs : PowerSeries.HasSubst (PowerSeries.exp k - 1) :=
-    PowerSeries.HasSubst.of_constantCoeff_zero' (by simp)
-  apply PowerSeries.derivative.ext
-  · rw [PowerSeries.derivative_subst hs, PowerSeries.derivative_X, map_sub,
-      PowerSeries.derivative_exp, Derivation.map_one_eq_zero, sub_zero]
-    have h1 := congrArg (PowerSeries.subst (PowerSeries.exp k - 1)) (one_add_X_mul_derivative_log_eq_one (k := k))
-    rw [PowerSeries.subst_mul hs, PowerSeries.subst_add hs, powerSeries_subst_one, PowerSeries.subst_X hs] at h1
-    linear_combination h1
-  · rw [PowerSeries.constantCoeff_X]
-    exact PowerSeries.constantCoeff_subst_eq_zero
-      (by rw [map_sub, map_one]; exact sub_eq_zero.mpr PowerSeries.constantCoeff_exp) _ constantCoeff_log_eq_zero_wick_vanishing
 
 private theorem subst_log_subst_exp_sub_one_eq_self {a : MvPowerSeries σ k} (ha : constantCoeff a = 0) :
     PowerSeries.subst (PowerSeries.subst a (PowerSeries.exp k) - 1) (PowerSeries.log k) = a := by
@@ -232,12 +212,12 @@ private theorem subst_log_subst_exp_sub_one_eq_self {a : MvPowerSeries σ k} (ha
     rw [h2]; ring
   have hs : PowerSeries.HasSubst (PowerSeries.exp k - 1) :=
     PowerSeries.HasSubst.of_constantCoeff_zero' (by simp)
-  rw [h1, ← PowerSeries.subst_comp_subst_apply hs ha', subst_exp_sub_one_log_eq_X, PowerSeries.subst_X ha']
+  rw [h1, ← PowerSeries.subst_comp_subst_apply hs ha', PowerSeries.subst_log_exp_sub_one, PowerSeries.subst_X ha']
 
 theorem eq_zero_of_exp_eq_one {c : MvPowerSeries σ k} (hc : constantCoeff c = 0)
     (h : PowerSeries.subst c (PowerSeries.exp k) = 1) : c = 0 := by
   have h1 := subst_log_subst_exp_sub_one_eq_self hc
-  rw [h, sub_self, powerSeries_subst_zero_eq_C_constantCoeff, constantCoeff_log_eq_zero_wick_vanishing, map_zero] at h1
+  rw [h, sub_self, powerSeries_subst_zero_eq_C_constantCoeff, PowerSeries.constantCoeff_log, map_zero] at h1
   exact h1.symm
 
 theorem exp_inj {a b : MvPowerSeries σ k} (ha : constantCoeff a = 0) (hb : constantCoeff b = 0)
@@ -277,33 +257,15 @@ private theorem eq_zero_of_one_add_X_mul_derivative_eq_self' (H : PowerSeries k)
   ext n
   simp [hc n]
 
-theorem exp_log_one_add : PowerSeries.subst (PowerSeries.log k) (PowerSeries.exp k) = 1 + PowerSeries.X := by
-  have hL : PowerSeries.HasSubst (PowerSeries.log k) :=
-    PowerSeries.HasSubst.of_constantCoeff_zero' constantCoeff_log_eq_zero_wick_vanishing
-  have hD : PowerSeries.derivative (R := k) (PowerSeries.subst (PowerSeries.log k) (PowerSeries.exp k)) =
-      PowerSeries.subst (PowerSeries.log k) (PowerSeries.exp k) *
-        PowerSeries.derivative (R := k) (PowerSeries.log k) := by
-    rw [PowerSeries.derivative_subst hL, PowerSeries.derivative_exp]
-  have hE0 : PowerSeries.constantCoeff
-      (PowerSeries.subst (PowerSeries.log k) (PowerSeries.exp k)) = 1 := by
-    have h1 := constantCoeff_psubst (σ := Unit) (a := PowerSeries.log k) constantCoeff_log_eq_zero_wick_vanishing (PowerSeries.exp k)
-    rw [PowerSeries.constantCoeff_exp] at h1
-    exact h1
-  have hH := eq_zero_of_one_add_X_mul_derivative_eq_self' (PowerSeries.subst (PowerSeries.log k) (PowerSeries.exp k) -
-    (1 + PowerSeries.X)) (by simp [hE0]) (by
-      rw [map_sub, map_add (f := _), hD, PowerSeries.derivative_X, Derivation.map_one_eq_zero, zero_add]
-      linear_combination (PowerSeries.subst (PowerSeries.log k) (PowerSeries.exp k)) * one_add_X_mul_derivative_log_eq_one (k := k))
-  exact sub_eq_zero.mp hH
-
 theorem constantCoeff_logS {f : MvPowerSeries σ k} (hf : constantCoeff f = 1) :
-    constantCoeff (PowerSeries.subst (f - 1) (PowerSeries.log k)) = 0 := PowerSeries.constantCoeff_subst_eq_zero (by simp [hf]) _ constantCoeff_log_eq_zero_wick_vanishing
+    constantCoeff (PowerSeries.subst (f - 1) (PowerSeries.log k)) = 0 := PowerSeries.constantCoeff_subst_eq_zero (by simp [hf]) _ PowerSeries.constantCoeff_log
 
 theorem exp_log {f : MvPowerSeries σ k} (hf : constantCoeff f = 1) :
     PowerSeries.subst (PowerSeries.subst (f - 1) (PowerSeries.log k)) (PowerSeries.exp k) = f := by
   have hb : PowerSeries.HasSubst (f - 1) := PowerSeries.HasSubst.of_constantCoeff_zero (by simp [hf])
   have ha : PowerSeries.HasSubst (PowerSeries.log k) :=
-    PowerSeries.HasSubst.of_constantCoeff_zero' constantCoeff_log_eq_zero_wick_vanishing
-  rw [← PowerSeries.subst_comp_subst_apply ha hb, exp_log_one_add, PowerSeries.subst_add hb,
+    PowerSeries.HasSubst.of_constantCoeff_zero' PowerSeries.constantCoeff_log
+  rw [← PowerSeries.subst_comp_subst_apply ha hb, PowerSeries.subst_exp_log, PowerSeries.subst_add hb,
     PowerSeries.subst_X hb, powerSeries_subst_one]
   ring
 

@@ -122,16 +122,6 @@ theorem rowAdd_X [DecidableEq T] (t t' : T) (r r' r'' : Fin p ⊕ Fin q) (s : R)
     rowAddY t a b s (X (yVar t b k) : Poly R T p q κ) = X (yVar t b k) + C s * X (yVar t a k) :=
   rowAdd_X_self _ _ _ _ _
 
-theorem rowAddX_X_of_ne {t t' : T} (a : Fin p) {b b' : Fin p} (s : R) (k : κ)
-    (h : ¬ (t' = t ∧ b' = b)) :
-    rowAddX t a b s (X (xVar t' b' k) : Poly R T p q κ) = X (xVar t' b' k) :=
-  rowAdd_X_of_ne _ _ _ (by simpa using h)
-
-theorem rowAddY_X_of_ne {t t' : T} (a : Fin q) {b b' : Fin q} (s : R) (k : κ)
-    (h : ¬ (t' = t ∧ b' = b)) :
-    rowAddY t a b s (X (yVar t' b' k) : Poly R T p q κ) = X (yVar t' b' k) :=
-  rowAdd_X_of_ne _ _ _ (by simpa using h)
-
 theorem rowAdd_rowForm_self (t : T) (r r' : Fin p ⊕ Fin q) (s : R) (v : κ → R) :
     rowAdd t r r' s (rowForm t r' v) = rowForm t r' v + C s * rowForm t r v := by
   set_option synthInstance.maxHeartbeats 100000 in

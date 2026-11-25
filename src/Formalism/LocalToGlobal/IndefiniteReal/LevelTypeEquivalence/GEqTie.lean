@@ -15,8 +15,6 @@ namespace Formalism.IndefR.Eqv.Act
 
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Links.RealDat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lift
 
 variable {D : D7} (V : HSp D)

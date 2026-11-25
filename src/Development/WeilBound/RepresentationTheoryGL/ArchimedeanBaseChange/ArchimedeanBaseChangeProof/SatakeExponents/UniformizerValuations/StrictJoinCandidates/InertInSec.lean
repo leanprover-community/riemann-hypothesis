@@ -49,8 +49,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.FX
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}

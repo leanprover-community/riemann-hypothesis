@@ -56,8 +56,6 @@ section -- clump:auto
 
 open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 
-set_option autoImplicit false
-
 namespace GlobalTheory.PD.CupAdj
 
 variable {k : Type} [Field k] {E : Type} [AddCommGroup E] [Module k E] {ι : Type} [LinearOrder ι]

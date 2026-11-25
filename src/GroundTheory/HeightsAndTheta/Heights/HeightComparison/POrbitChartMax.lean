@@ -10,6 +10,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsMultiHomogIdealSpanSingleton
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -33,23 +34,8 @@ theorem aeval_mul_of_homog {R : Type*} [CommRing R] [Algebra ℤ R] (t : ι → 
     {G : MvPolynomial (Coord n) ℤ} {b : ι → ℕ} (hG : IsWeightedHomogeneous (coordDeg n) G b) :
     aeval (fun p ↦ t p.1 * z p) G = aeval z G * ∏ k, t k ^ b k := by
   classical
-  conv_lhs => rw [G.as_sum]
-  conv_rhs => rw [G.as_sum]
-
-  rw [map_sum, map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm ↦ ?_
-  have hmb : ∀ k, ∑ i, m ⟨k, i⟩ = b k := fun k ↦ by
-    rw [← weight_coordDeg_apply, hG (mem_support_iff.mp hm)]
-  rw [aeval_monomial, aeval_monomial, mul_assoc]
-  congr 1
-  rw [Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _), Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _)]
-  simp_rw [mul_pow]
-  rw [Finset.prod_mul_distrib, mul_comm]
-  congr 1
-  rw [Fintype.prod_sigma]
-  refine Finset.prod_congr rfl fun k _ ↦ ?_
-  rw [← hmb k]
-  exact Finset.prod_pow_eq_pow_sum Finset.univ (fun i ↦ m ⟨k, i⟩) (t k)
+  rw [mul_comm]
+  exact BlockScaling.eval₂_mul_block_left (algebraMap ℤ R) t z fun _ hm => BlockScaling.sum_eq_of_isWeightedHomogeneous_single hG hm
 
 def homDeg (F : MvPolynomial (Coord n) ℤ) : ι → ℕ :=
   fun k ↦ F.support.sup fun m ↦ Finsupp.weight (coordDeg n) m k

@@ -328,41 +328,32 @@ theorem append_eq (j : ℕ) (σA : Equiv.Perm (blkA (n := n) j)) (τ : Equiv.Per
         (σA ((Fintype.equivFin (blkA (n := n) j)).symm i)) (1 : ℂ)))
       (fun i => embL (blkB (n := n) j) (single ((Fintype.equivFin (blkB (n := n) j)).symm i)
         (τ ((Fintype.equivFin (blkB (n := n) j)).symm i)) (1 : ℂ))) = vv (piP j σA τ) ∘ epsE j := by
+  have hvv : ∀ {S : Finset (Fin n)} (x y : S), piP j σA τ x = (y : Fin n) →
+      embL S (single x y (1 : ℂ)) = vv (piP j σA τ) x := by
+    intro S x y hp
+    ext p q
+    simp only [vv, hp, embL, embOn, Matrix.single_apply,
+      LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
+    by_cases hpq : (x : Fin n) = p ∧ (y : Fin n) = q
+    · obtain ⟨rfl, rfl⟩ := hpq
+      simp
+    · rw [if_neg hpq]
+      split_ifs with h1 h2
+      · exact absurd ⟨by rw [h2.1], by rw [h2.2]⟩ hpq
+      · rfl
+      · rfl
   funext i
   refine Fin.addCases (fun i => ?_) (fun i => ?_) i
   · simp only [Fin.append_left, Function.comp_apply, epsE_left]
     generalize (Fintype.equivFin (blkA (n := n) j)).symm i = a
-    have hp : piP j σA τ a = σA a := by
-      simp [piP, Equiv.Perm.subtypeCongr.left_apply _ _ a.2]
-    ext p q
-    simp only [vv, hp, embL]
-    simp only [embOn, Matrix.single_apply, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
-    by_cases hpq : (a : Fin n) = p ∧ (σA a : Fin n) = q
-    · obtain ⟨rfl, rfl⟩ := hpq
-      simp
-    · rw [if_neg hpq]
-      split_ifs with h1 h2
-      · exact absurd ⟨by rw [h2.1], by rw [h2.2]⟩ hpq
-      · rfl
-      · rfl
+    exact hvv a (σA a) (by simp [piP, Equiv.Perm.subtypeCongr.left_apply _ _ a.2])
   · simp only [Fin.append_right, Function.comp_apply, epsE_right]
     generalize (Fintype.equivFin (blkB (n := n) j)).symm i = b
-    have hp : piP j σA τ b = τ b := by
-      have hb : (b : Fin n) ∉ blkA (n := n) j := by
-        have := b.2; simpa [blkB] using this
-      simp [piP, Equiv.Perm.subtypeCongr.right_apply _ _ hb, eBq]
-      exact Subtype.ext rfl
-    ext p q
-    simp only [vv, hp, embL]
-    simp only [embOn, Matrix.single_apply, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
-    by_cases hpq : (b : Fin n) = p ∧ (τ b : Fin n) = q
-    · obtain ⟨rfl, rfl⟩ := hpq
-      simp
-    · rw [if_neg hpq]
-      split_ifs with h1 h2
-      · exact absurd ⟨by rw [h2.1], by rw [h2.2]⟩ hpq
-      · rfl
-      · rfl
+    refine hvv b (τ b) ?_
+    have hb : (b : Fin n) ∉ blkA (n := n) j := by
+      have := b.2; simpa [blkB] using this
+    simp [piP, Equiv.Perm.subtypeCongr.right_apply _ _ hb, eBq]
+    exact Subtype.ext rfl
 
 private theorem iteratedFDeriv_comp_equiv_eq_of_contDiffOn (hS : IterSymm) {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
     (ψ : V → ℂ) (Ω : Set V) (hΩ : IsOpen Ω) (hψ : ContDiffOn ℂ ∞ ψ Ω) (c : V) (hc : c ∈ Ω)

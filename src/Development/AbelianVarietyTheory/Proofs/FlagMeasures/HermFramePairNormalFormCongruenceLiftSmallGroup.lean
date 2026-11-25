@@ -632,16 +632,7 @@ variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : 
 
 theorem s_Xa (G : FlagD H r) {s : V →ₗ[K] V} (hs : G.InN s) (a : ℕ) {y : V} (hy : y ∈ G.Xa a) :
     s y ∈ G.Xa a := by
-  obtain ⟨-, -, he, -⟩ := hs
-  have key : ∀ b : Fin r, b.val < a → s (G.e b.castSucc) ∈ G.Xa a := by
-    intro b hb
-    have h1 : s (G.e b.castSucc) - G.e b.castSucc ∈ G.Xa a := _root_.GlobalTheory.UnipStab.Xa_mono G hb.le (he b)
-    have h2 : G.e b.castSucc ∈ G.Xa a := Submodule.subset_span ⟨b, hb, rfl⟩
-    simpa using add_mem h1 h2
-  have hle : G.Xa a ≤ (G.Xa a).comap s := Submodule.span_le.2 (by
-    rintro _ ⟨b, hb, rfl⟩
-    exact key b hb)
-  exact hle hy
+  apply _root_.GlobalTheory.UnipStab.map_Xa <;> assumption
 
 theorem exists_lift [FiniteDimensional K V] (N : NF H r) (h0 : II N.F N.F' ⊓ N.F.Xa N.j = ⊥)
     (htop : N.Wt ⊔ (V0 N.F N.F' ⊔ N.Ist) = ⊤) (τ : K) (hτ : τ + star τ = 1) (s : V ≃ₗ[K] V)

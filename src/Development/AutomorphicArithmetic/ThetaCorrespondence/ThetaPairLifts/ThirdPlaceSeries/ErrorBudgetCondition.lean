@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 section
-set_option autoImplicit false
 
 noncomputable section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta

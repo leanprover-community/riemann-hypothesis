@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SchwartzBruhatInvariantIntegralMatrixMul
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -75,18 +76,7 @@ private lemma finsum_quotient_out_eq_relIndex_mul_of_le {W : Type} [AddCommGroup
     (hidx : C.relIndex B ≠ 0) (φ : W → ℂ) (hinv : ∀ w b : W, b ∈ B → φ (w + b) = φ w)
     (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
     ∑ᶠ c : W ⧸ C, φ (Quotient.out c) = (C.relIndex B : ℂ) * ∑ᶠ c : W ⧸ B, φ (Quotient.out c) := by
-  have hfin : Finite (B ⧸ C.addSubgroupOf B) := Nat.finite_of_card_ne_zero hidx
-  have hcls : ∀ c : W ⧸ C, φ (Quotient.out c) =
-      φ (Quotient.out ((AddSubgroup.quotientEquivProdOfLE hCB) c).1) := by
-    intro c
-    rw [quotientEquivProdOfLE_apply_fst]
-    obtain ⟨b, hb⟩ : ∃ b ∈ B, Quotient.out ((Quotient.out c : W) : W ⧸ B) = Quotient.out c + b := by
-      refine ⟨-(Quotient.out c) + Quotient.out ((Quotient.out c : W) : W ⧸ B), ?_, by abel⟩
-      exact QuotientAddGroup.leftRel_apply.mp (Quotient.exact' (QuotientAddGroup.out_eq' _).symm)
-    rw [hb.2, hinv _ _ hb.1]
-  rw [finsum_congr hcls, finsum_comp_equiv (AddSubgroup.quotientEquivProdOfLE hCB)
-      (f := fun p => φ (Quotient.out p.1)), _root_.GlobalTheory.SumRefinement.finsum_fst _ (support_quotient_out_finite_of_image_finite φ hφ)]
-  rfl
+  apply _root_.GlobalTheory.SW.LinChange.finsum_quot_le <;> assumption
 
 open scoped Pointwise Classical in
 open Function in

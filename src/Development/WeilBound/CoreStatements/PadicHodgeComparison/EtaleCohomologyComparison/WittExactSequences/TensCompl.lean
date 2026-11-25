@@ -524,8 +524,6 @@ section -- clump:auto
 open TensorProduct CrystallineSemistableComparison.D
 open scoped LaurentPolynomial
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ColimEx
@@ -631,8 +629,6 @@ section -- clump:auto
 
 open TensorProduct CrystallineSemistableComparison.D
 open scoped LaurentPolynomial
-
-set_option autoImplicit false
 
 namespace GlobalTheory.CompanionTheory.AlgCoproduct
 

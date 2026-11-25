@@ -51,8 +51,6 @@ open IsDedekindDomain NumberField
 
 namespace GlobalTheory.WeilSchrodinger
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 def sesq {k : ℕ} (G : Matrix (Fin k) (Fin k) D.host.E) :

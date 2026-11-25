@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open NumberField MvPowerSeries IsLocalRing ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.FactorDepth GlobalTheory.IndefiniteRowSideFullHecke.TypedPartSplitPrimes GlobalTheory.PrimePart
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.PrimePart

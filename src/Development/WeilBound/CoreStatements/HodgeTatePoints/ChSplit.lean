@@ -120,34 +120,6 @@ theorem split_ses : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommG
   rw [hdeg, hIeq]
   rfl
 
-private theorem isBun_of_linearEquiv {K : Type} [Field K] {C : ACurve K} {V V' : Type} [AddCommGroup V]
-    [Module K V] [FiniteDimensional K V] [AddCommGroup V'] [Module K V'] [FiniteDimensional K V']
-    {L : C.I → AddSubgroup V} {L' : C.I → AddSubgroup V'} (e : V ≃ₗ[K] V') (hL' : IsBun C L')
-    (h : ∀ i x, x ∈ L i ↔ e x ∈ L' i) : IsBun C L := by
-  have hr : Module.finrank K V' = Module.finrank K V := e.finrank_eq.symm
-  have key : ∀ i (b : Module.Basis (Fin (Module.finrank K V')) K V'), IsLatOf C i b (L' i) →
-      IsLatOf C i ((b.map e.symm).reindex (finCongr hr)) (L i) := by
-    intro i b hb x
-    rw [h i x, hb (e x)]
-    simp only [Module.Basis.repr_reindex_apply, Module.Basis.map_repr, LinearEquiv.trans_apply,
-      LinearEquiv.symm_symm]
-    constructor
-    · intro H q
-      exact H _
-    · intro H q
-      simpa using H (finCongr hr q)
-  obtain ⟨h1, b, hb⟩ := hL'
-  refine ⟨fun i => ?_, (b.map e.symm).reindex (finCongr hr), hb.subset fun i hi hl => hi (key i b hl)⟩
-  obtain ⟨b', hb'⟩ := h1 i
-  exact ⟨_, key i b' hb'⟩
-
-private theorem deg_eq_of_linearEquiv' {K : Type} [Field K] {C : ACurve K} {V V' : Type} [AddCommGroup V]
-    [Module K V] [FiniteDimensional K V] [AddCommGroup V'] [Module K V'] [FiniteDimensional K V']
-    {L : C.I → AddSubgroup V} {L' : C.I → AddSubgroup V'} (e : V ≃ₗ[K] V') (hL : IsBun C L)
-    (hL' : IsBun C L') (h : ∀ i x, x ∈ L i ↔ e x ∈ L' i) : deg C L = deg C L' :=
-  le_antisymm (deg_le_of_equiv e hL hL' fun i x hx => (h i x).1 hx)
-    (deg_le_of_equiv e.symm hL' hL fun i x hx => (h i _).2 (by simpa using hx))
-
 private theorem deg_eq_zero_of_finrank_eq_zero {K : Type} [Field K] (C : ACurve K) {V : Type} [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V) (h : Module.finrank K V = 0) :
     deg C L = 0 := by
@@ -263,7 +235,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
       rfl
     have hLK : IsBun C (sub C L K0) := by
       rw [hIeq] at hI
-      exact isBun_of_linearEquiv (Submodule.topEquiv.symm) hI fun i x => Iff.rfl
+      exact (DegEquiv.deg_equiv K C _ _ _ _ Submodule.topEquiv hI fun _ _ => Iff.rfl).1
     have hpresK : ∀ a (x : V), x ∈ K0 → ρ a x ∈ K0 := by
       intro a x hx
       show e s0 (ρ a x) = 0
@@ -376,8 +348,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
 theorem split_deg : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V) (O k S : Type) [CommRing O] [Field k] [Algebra k K] [Fintype S] [DecidableEq S] (χ : S → (O →+* k)), IsSplit χ → (∀ i (c : k), C.v i (algebraMap k K c) ≤ 1) → ∀ ρ : O →+* Module.End K V, IsBun C L → (∀ a, IsHom C L L (ρ a)) → deg C L = ∑ s, subDeg C L (eig (fun a => ρ a) (fun a => algebraMap k K (χ s a))) := by
   intro K _ C V _ _ _ L O k S _ _ _ _ _ χ hχ hv ρ hL hρ
   have htop : subDeg C L ⊤ = deg C L :=
-    deg_eq_of_linearEquiv' Submodule.topEquiv (isBun_of_linearEquiv Submodule.topEquiv hL fun _ _ => Iff.rfl) hL
-      fun _ _ => Iff.rfl
+    (DegEquiv.deg_equiv K C V _ L (sub C L ⊤) Submodule.topEquiv.symm hL fun _ _ => Iff.rfl).2
   rw [← htop]
   exact subDeg_top_eq_sum_subDeg_eig_of_ncard_le K C O k S χ hχ hv _ V L ρ hL hρ le_rfl
 

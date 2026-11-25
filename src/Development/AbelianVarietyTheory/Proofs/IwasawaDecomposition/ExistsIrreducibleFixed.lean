@@ -250,8 +250,6 @@ theorem hasSatake_flip {j : k' →+* k} (hc : Continuous j) (hj : Function.Surje
 
 end Local
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def toRep {G : Type} [Group G] [TopologicalSpace G] (σ : SmIrr G) : IrrRep G := ⟨σ.V, σ.ρ, σ.smooth, σ.irred⟩
 
 def toCl {G : Type} [Group G] [TopologicalSpace G] (σ : Irr G) : IrrCl G :=

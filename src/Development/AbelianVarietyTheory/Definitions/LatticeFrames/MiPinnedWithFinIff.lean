@@ -55,8 +55,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Core.Rk
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure Link (D : D7) (u : D.what₂.Word) (W : Tower D) where
 
   P : W.Lv

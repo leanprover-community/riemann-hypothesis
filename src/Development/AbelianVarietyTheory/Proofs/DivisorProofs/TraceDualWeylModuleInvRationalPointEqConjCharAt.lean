@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymmetricFunctionInverseInvariant
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.Algebra.Module.Equiv.Defs
@@ -559,16 +560,7 @@ theorem exists_eig {n : ℕ} (lam : DomWeight n) (g : GL (Fin n) ℂ) :
 theorem exists_perm_of_map_eq {ι β : Type} [Fintype ι] (g g' : ι → β)
     (h : Finset.univ.val.map g = Finset.univ.val.map g') :
     ∃ π : Equiv.Perm ι, ∀ i, g (π i) = g' i := by
-  classical
-  have hc : ∀ c, Fintype.card {i // g' i = c} = Fintype.card {i // g i = c} := by
-    intro c
-    have := congrArg (Multiset.count c) h
-    rw [Multiset.count_map, Multiset.count_map] at this
-    rw [Fintype.card_subtype, Fintype.card_subtype]
-    simp only [Finset.card, Finset.filter_val]
-    simpa only [eq_comm] using this.symm
-  exact ⟨Equiv.ofFiberEquiv (fun c => Fintype.equivOfCardEq (hc c)),
-    fun i => Equiv.ofFiberEquiv_map _ i⟩
+  apply _root_.GlobalTheory.exists_perm_of_univ_map_eq <;> assumption
 
 def permGL {n : ℕ} (π : Equiv.Perm (Fin n)) : GL (Fin n) ℂ where
   val := π.toPEquiv.toMatrix

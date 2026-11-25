@@ -64,8 +64,6 @@ noncomputable section
 
 namespace GlobalTheory.CoverFrameRead
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lattice
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}

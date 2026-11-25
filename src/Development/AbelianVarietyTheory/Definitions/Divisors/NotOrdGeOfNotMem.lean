@@ -46,8 +46,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Poinc
 
 variable {o : Type} [CommRing o] {ζ : o} {g n : ℕ}

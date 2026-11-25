@@ -45,7 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Mult Formalism.IndefR.Lev
   Formalism.IndefR
 open scoped TensorProduct Topology
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GoodFiniteDim
 

@@ -62,8 +62,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModpFramesPullback
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace MvPolynomial
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -366,7 +364,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt GlobalTheory.MixHt
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.PushDiv

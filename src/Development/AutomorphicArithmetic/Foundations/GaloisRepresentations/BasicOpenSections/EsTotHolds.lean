@@ -855,37 +855,6 @@ open UpperTheory.Gal.crystallineComparison (resPt)
 
 namespace UpperTheory.Gal.Mod
 
-private theorem finsum_single {α : Type*} {s : Set α} {f : α → ℤ} {a : α} (ha : a ∈ s)
-    (h : ∀ b ∈ s, b ≠ a → f b = 0) : ∑ᶠ b ∈ s, f b = f a := by
-  have : ∑ᶠ b ∈ s, f b = ∑ᶠ b ∈ ({a} : Set α), f b := by
-    apply finsum_mem_inter_support_eq
-    ext b
-    simp only [Set.mem_inter_iff, Function.mem_support, Set.mem_singleton_iff]
-    constructor
-    · rintro ⟨hb, hf⟩
-      refine ⟨?_, hf⟩
-      by_contra hne
-      exact hf (h b hb hne)
-    · rintro ⟨rfl, hf⟩
-      exact ⟨ha, hf⟩
-  rw [this, finsum_mem_singleton]
-
-private theorem finsum_count {α : Type*} {s : Set α} (hs : s.Finite) (P : α → Prop) [DecidablePred P] :
-    ∑ᶠ b ∈ s, (if P b then (1 : ℤ) else 0) = ((s ∩ {b | P b}).ncard : ℤ) := by
-  have hB : (s ∩ {b | P b}).Finite := hs.subset Set.inter_subset_left
-  have : ∑ᶠ b ∈ s, (if P b then (1 : ℤ) else 0) = ∑ᶠ b ∈ s ∩ {b | P b}, (if P b then (1 : ℤ) else 0) := by
-    apply finsum_mem_inter_support_eq
-    ext b
-    simp only [Set.mem_inter_iff, Function.mem_support, Set.mem_setOf_eq]
-    by_cases hb : P b <;> simp [hb]
-  rw [this, finsum_mem_eq_finite_toFinset_sum _ hB, Set.ncard_eq_toFinset_card _ hB]
-  rw [Finset.sum_congr rfl (g := fun _ => (1 : ℤ))]
-  · simp
-  · intro b hb
-    have := (hB.mem_toFinset.1 hb).2
-    simp only [Set.mem_setOf_eq] at this
-    simp [this]
-
 theorem wtVal : FibExt → SecGen → ClopenAt → WtVal := by
   intro hF hS hC p Y T w hw V _ _ _ _ _ hp y
   have hTfin : IsFinite T.p := T.fin
@@ -923,13 +892,16 @@ theorem wtVal : FibExt → SecGen → ClopenAt → WtVal := by
 
   have hcl : ψ (pt (resPt V)) = w _ z₀ := by
     rw [hsum]
-    have hmem : z₁ ∈ fib r (resPt V) := hz₁r
-    rw [finsum_single hmem]
+    rw [finsum_mem_eq_sum_of_subset _ (t := {z₁}) _
+      (by rw [Finset.coe_singleton, Set.singleton_subset_iff]; exact hz₁r),
+      Finset.sum_singleton]
     · have : pt z₁ ∈ U := (hUz z₁ hz₁r).2 rfl
       simp [φ, this, hz₁v]
-    · intro b hb hne
+    · rintro b ⟨hb, h0⟩
+      by_contra hne
+      rw [Finset.coe_singleton, Set.mem_singleton_iff] at hne
       have : pt b ∉ U := fun h => hne ((hUz b hb).1 h)
-      simp [φ, this]
+      simp [φ, this] at h0
 
   have hconst : ∀ σ : Spec (CommRingCat.of V) ⟶ pullback T.p y,
       pt (η ≫ σ) ∈ U ↔ pt (resPt V ≫ σ) ∈ U := by
@@ -945,11 +917,11 @@ theorem wtVal : FibExt → SecGen → ClopenAt → WtVal := by
     simpa using h0
   have hfibfin : (fib r η).Finite := (hF r K K (RingHom.id K) η).1
   have hgen : ψ (pt η) = ((fib r η ∩ {z | pt z ∈ U}).ncard : ℤ) := by
-    rw [hsum, ← finsum_count hfibfin]
-    refine finsum_mem_congr rfl ?_
-    intro z _
-    rw [hw.2 K (z ≫ v) hpK]
-    simp [φ]
+    rw [hsum, finsum_mem_congr rfl fun z _ => by rw [hw.2 K (z ≫ v) hpK, one_mul]]
+    rw [finsum_mem_eq_finite_toFinset_sum _ hfibfin,
+      Set.ncard_eq_toFinset_card _ (hfibfin.inter_of_left _)]
+    simp only [φ, Finset.sum_boole]
+    exact congrArg (Nat.cast : ℕ → ℤ) (congrArg Finset.card (Finset.ext fun z => by simp))
 
   let sec : T.Sec y → (Spec (CommRingCat.of V) ⟶ pullback T.p y) := fun s =>
     pullback.lift s.1 (𝟙 _) (by rw [s.2, Category.id_comp])

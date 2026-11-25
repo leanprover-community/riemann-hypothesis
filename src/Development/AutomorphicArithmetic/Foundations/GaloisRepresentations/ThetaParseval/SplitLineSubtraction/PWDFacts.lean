@@ -47,7 +47,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open Formalism.MainNotions.SumRepresentations.At (sumRep)
 open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso tw)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.Gal.TP.Sub
 
 private theorem scaleRoots_X_sub_C' (a d : ℂ) : (X - C a : ℂ[X]).scaleRoots d = X - C (a * d) := by

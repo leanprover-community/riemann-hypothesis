@@ -85,8 +85,6 @@ section -- clump:auto
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.WittStart
@@ -276,8 +274,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveTwoCocycleCoeffRelationsOnePair", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowerSeriesEvalTwoGroupsRules\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -663,8 +659,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
@@ -721,35 +715,8 @@ theorem coc_at {τ : Type} [Finite τ] {c : MvPowerSeries (Fin d ⊕ Fin d) R}
     (hu : ∀ i, constantCoeff (u i) = 0) (hv : ∀ i, constantCoeff (v i) = 0)
     (hw : ∀ i, constantCoeff (w i) = 0) :
     at2 c v w - at2 c (u + v) w + at2 c u (v + w) - at2 c u v = 0 := by
-  set a : Fin d ⊕ (Fin d ⊕ Fin d) → MvPowerSeries τ R := Sum.elim u (Sum.elim v w) with ha_def
-  have ha0 : ∀ t, constantCoeff (a t) = 0 := fun t => by
-    rcases t with t | t | t <;> simp [a, hu, hv, hw]
-  have ha : HasSubst a := hasSubst_of_constantCoeff_zero ha0
-  have h1 : ∀ i, constantCoeff ((x1 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i) = 0 :=
-    fun i => by simp [x1]
-  have h2 : ∀ i, constantCoeff ((x2 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i) = 0 :=
-    fun i => by simp [x2]
-  have h3 : ∀ i, constantCoeff ((x3 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i) = 0 :=
-    fun i => by simp [x3]
-  have e1 : (fun i => subst a ((x1 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i)) = u := by
-    funext i; simp only [x1]; rw [subst_X ha]; rfl
-  have e2 : (fun i => subst a ((x2 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i)) = v := by
-    funext i; simp only [x2]; rw [subst_X ha]; rfl
-  have e3 : (fun i => subst a ((x3 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i)) = w := by
-    funext i; simp only [x3]; rw [subst_X ha]; rfl
-  have hadd : ∀ p q : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R,
-      (fun i => subst a ((p + q) i)) = (fun i => subst a (p i)) + (fun i => subst a (q i)) := by
-    intro p q; funext i; simp only [Pi.add_apply]; rw [subst_add ha]
-  have h12 : ∀ i, constantCoeff ((x1 + x2 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i) = 0 :=
-    fun i => by simp [h1, h2]
-  have h23 : ∀ i, constantCoeff ((x2 + x3 : Fin d → MvPowerSeries (Fin d ⊕ (Fin d ⊕ Fin d)) R) i) = 0 :=
-    fun i => by simp [h2, h3]
-  have key := congrArg (subst a) hc
-  unfold cob2 at key
-  rw [op_addLaw h1 h2, op_addLaw h2 h3] at key
-  rw [subst_sub ha, subst_add ha, subst_sub ha, subst_powerSeriesEvalTwoGroups h2 h3 ha0, subst_powerSeriesEvalTwoGroups h12 h3 ha0,
-    subst_powerSeriesEvalTwoGroups h1 h23 ha0, subst_powerSeriesEvalTwoGroups h1 h2 ha0, hadd, hadd, e1, e2, e3] at key
-  rw [key, ← coe_substAlgHom ha, map_zero]
+  intros
+  apply _root_.GlobalTheory.Katz.CocRel.cocycle_at <;> assumption
 
 end GlobalTheory.SymCocAdd
 
@@ -1081,8 +1048,6 @@ section -- clump:auto
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.Katz.LazardModP
@@ -1142,17 +1107,8 @@ theorem exists_pow_smul_mem {d N : ℕ} (e : MvPowerSeries (Fin d ⊕ Fin d) (Fr
 
 theorem lift_addLaw (d : ℕ) :
     (fun i => Katz.lift p (addLaw k d i)) = addLaw (Fr p k) d := by
-  funext i
-  ext γ
-  rw [coeff_lift]
-  simp only [addLaw, map_add (f := _), coeff_X]
-  by_cases h1 : γ = Finsupp.single (Sum.inl i) 1
-  · have h2 : γ ≠ Finsupp.single (Sum.inr i) 1 := by
-      rw [h1]; intro h; exact Sum.inl_ne_inr ((Finsupp.single_left_inj one_ne_zero).1 h)
-    simp only [if_pos h1, if_neg h2, add_zero, map_one, map_one]
-  · by_cases h2 : γ = Finsupp.single (Sum.inr i) 1
-    · simp only [if_neg h1, if_pos h2, zero_add, map_one, map_one]
-    · simp only [if_neg h1, if_neg h2, add_zero, WittVector.teichmuller_zero, map_zero]
+  intros
+  apply _root_.GlobalTheory.LazardHomog.lift_addLaw <;> assumption
 
 end GlobalTheory.Katz.LazardModP
 
@@ -1268,8 +1224,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
-
-set_option autoImplicit false
 
 namespace GlobalTheory.Katz
 
@@ -1457,8 +1411,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
 namespace GlobalTheory
@@ -1610,8 +1562,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
-
-set_option autoImplicit false
 
 noncomputable section
 

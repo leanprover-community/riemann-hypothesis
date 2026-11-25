@@ -1189,10 +1189,6 @@ theorem continuous_units {O : Type} [Monoid O] [TopologicalSpace O] (φ : Γ →
   rw [this]
   exact h.comp continuous_inv
 
-theorem continuous_unitsMap {A B : Type} [Monoid A] [Monoid B] [TopologicalSpace A] [TopologicalSpace B] (f : A →* B)
-    (hf : Continuous f) : Continuous (Units.map f) :=
-  Units.continuous_iff.2 ⟨hf.comp Units.continuous_val, hf.comp Units.continuous_coe_inv⟩
-
 theorem continuous_of_isOpen_ker {N : Type} [Group N] [TopologicalSpace N] (φ : Γ →* N)
     (h : IsOpen (φ.ker : Set Γ)) : Continuous φ := by
   refine IsLocallyConstant.continuous fun s => ?_
@@ -1209,8 +1205,6 @@ theorem continuous_of_isOpen_ker {N : Type} [Group N] [TopologicalSpace N] (φ :
 
 end Units
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting
-  NumberField IsDedekindDomain Polynomial Formalism.L2.Fam.NPC Formalism.L2.Fam.NPC.BaseC GlobalTheory.HeckeLocN
 
 theorem chiN_continuous : ∀ (D : D7) (M : MtFam D) (C : NChoice D) (hR : HeckeLift0 (mt0 M) C.Q) (X : CoefIn D.what₂) (hS : SplitK (mt0 M) C.Q hR X) (twC : ∀ j w, D.ntw.O0 (C.twI w) →+* OcC X j w) (ψ0 : D.what₂.places.Pl → (G D.host.E D.nd.Om →* (D.what₂.LL)ˣ)) (hP : PsiInt X ψ0), (∀ j w, TwAlgAt C X j w (twC j w)) → (∀ j w, IsOpen ((psN X ψ0 hP j w).ker : Set (G D.host.E D.nd.Om))) → ∀ (i : LocT (base M C hR X hS)) (c : ℕ), Continuous (fun g => ((chiN (base M C hR X hS) C (fun i => twC (jOf _ i) (wOf _ i)) (fun i => psN X ψ0 hP (jOf _ i) (wOf _ i)) i c g : (OOf (base M C hR X hS) i)ˣ) : OOf (base M C hR X hS) i)) := by
   intro D M C hR X hS twC ψ0 hP htw hker i c
@@ -1223,12 +1217,12 @@ theorem chiN_continuous : ∀ (D : D7) (M : MtFam D) (C : NChoice D) (hR : Hecke
   have h2 : Continuous (psN X ψ0 hP (Fam.NPC.jOf (base M C hR X hS) i) (wOf (base M C hR X hS) i)) :=
     continuous_of_isOpen_ker _ (hker _ _)
   have h3 : Continuous (Units.map (twC (Fam.NPC.jOf (base M C hR X hS) i) (wOf (base M C hR X hS) i)).toMonoidHom) :=
-    continuous_unitsMap _ (htwc _ _)
+    Continuous.units_map _ (htwc _ _)
   haveI : Fact (lOf (base M C hR X hS) i).Prime := ⟨D.what₂.places.resChar_prime _⟩
   letI : Algebra ℤ_[lOf (base M C hR X hS) i] (OOf (base M C hR X hS) i) := (base M C hR X hS).algOc _ _
   haveI : Module.Finite ℤ_[lOf (base M C hR X hS) i] (OOf (base M C hR X hS) i) := (base M C hR X hS).finOc _ _
   have h4 : Continuous (Units.map (algebraMap ℤ_[lOf (base M C hR X hS) i] (OOf (base M C hR X hS) i)).toMonoidHom) :=
-    continuous_unitsMap _ (continuous_algebraMap_padicInt _ (hadic _ _))
+    Continuous.units_map _ (continuous_algebraMap_padicInt _ (hadic _ _))
   have h5 := continuous_cycZ D.host.E D.nd.Om (lOf (base M C hR X hS) i)
   refine Units.continuous_val.comp ?_
   change Continuous fun g =>

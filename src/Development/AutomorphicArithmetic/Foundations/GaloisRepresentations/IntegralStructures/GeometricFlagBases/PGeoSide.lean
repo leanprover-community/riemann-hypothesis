@@ -591,7 +591,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1531,7 +1530,7 @@ private theorem etGood : EtGood := pEtGood etnGood
 
 private theorem bcGood : BcGood.{1} := pBcGood bcSplits (pBcGal bcSplits)
 
-private theorem galClosD : GalClosD := pGalClosD (pSplitsPts pIsoPts) (pOrdEx pOrdStep)
+private theorem galClosD : GalClosD := pGalClosD (pSplitsPts pIsoPts) pOrdEx
 
 private theorem hopSpec : HopSpec :=
   pHopSpec etGood bcGood (pGalClos galClosD) (pOpEx pOpTr) pOpTr pOpEt (pOpBc bcSplits (pBcGal bcSplits)) bcSplits
@@ -1629,7 +1628,6 @@ open Module TensorProduct
 
 section Alg
 
-open TensorProduct
 
 private theorem deg_bound {F L : Type*} [Field F] [Field L] [Algebra F L] {A : ℤ → Type*} [∀ n, AddCommGroup (A n)]
     [∀ n, Module F (A n)] (hneg : ∀ n : ℤ, n < 0 → Subsingleton (A n)) (y : L ⊗[F] DirectSum ℤ A) :
@@ -1744,7 +1742,6 @@ end Alg
 
 section Alg2
 
-open TensorProduct
 
 private theorem e_facts {F : Type*} [Field F] {A : ℤ → Type*} [∀ n, AddCommGroup (A n)] [∀ n, Module F (A n)] (N : ℕ)
     (d : Fin N → ℕ) (β : ∀ i : Fin N, Module.Basis (Fin (d i)) F (A ((i : ℕ) : ℤ)))
@@ -1808,7 +1805,6 @@ end Alg2
 
 section Core
 
-open TensorProduct
 
 private theorem core {F L : Type*} [Field F] [Field L] [Algebra F L] [CharZero L] {A : ℤ → Type*} [∀ n, AddCommGroup (A n)]
     [∀ n, Module F (A n)] (hneg : ∀ n : ℤ, n < 0 → Subsingleton (A n)) {W : Type*} [AddCommGroup W] [Module F W]

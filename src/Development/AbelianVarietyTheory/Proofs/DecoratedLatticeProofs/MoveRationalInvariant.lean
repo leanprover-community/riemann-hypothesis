@@ -4,7 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPa
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.WittSmallGroupEmbeddingMemPointwiseStabilizerIso
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ForallEventuallyFinLocIff
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdeleAt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIdeleAt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VacuumCharacterPositiveDefiniteSource
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.EqNegOfCommute
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsFundamentalDomainOfHaar
@@ -57,7 +57,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensio
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Forms Formalism.L2.Ker Formalism.UG
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.MixPer GlobalTheory.Core.Rk GlobalTheory.AdForm
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -182,7 +181,7 @@ theorem rat_data {θ : InfFam D} (hθ : IsInfFam θ) (V : HSp D) (hV : V.gram = 
   refine ⟨γ, hγ, _, hk, U, hU, e1, e2, ?_, fun μ n e h1 h2 h3 h4 x x₀ hx hx₀ => ?_⟩
   · rw [← lat_rat V U hU, finG_congr V (g := r * g) (g' := γ * g) (by rw [map_mul, map_mul, hf])]
   · obtain ⟨b, hb⟩ := (GlobalTheory.Member.isDetRoot_laws D V).2.2.1 γ hγ
-    obtain ⟨y, hy, hv⟩ := GlobalTheory.VacuumCharacter.exists_root hθ V (fun τ => by rw [gramAt_one hV]; simp) _ hk
+    obtain ⟨y, hy, hv⟩ := GlobalTheory.OneMapRef.RealMove.exists_root hθ V (fun τ => by rw [gramAt_one hV]; simp) _ hk
     have r1 := GlobalTheory.Member.isDetRoot_mul V _ _ _ _ hb hx₀
     have r2 := GlobalTheory.Member.isDetRoot_mul V _ _ _ _ hx hy
     rw [← e1] at r2
@@ -243,7 +242,7 @@ theorem xiN_rat {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} (hθ : IsInfFam
       rw [Matrix.mul_smul, Matrix.smul_mul, ← Matrix.mul_assoc, ← Matrix.mul_assoc, map_unitary, Matrix.one_mul,
         Matrix.mul_assoc, map_unitary, Matrix.mul_one]
     refine Matrix.ext fun i j => ?_
-    exact GlobalTheory.VacuumCharacter.adele_ext hθ
+    exact GlobalTheory.OneMapRef.RealMove.adele_ext hθ
       ((congrFun (congrFun s1.1 i) j).trans (congrFun (congrFun t1 i) j).symm)
       fun τ => (congrFun (congrFun (t2 τ) i) j).symm
 

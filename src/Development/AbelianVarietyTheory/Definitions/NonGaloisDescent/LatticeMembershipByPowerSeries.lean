@@ -51,8 +51,6 @@ open GlobalTheory.PhiGam
 section
 variable (k : Type) [Field k]
 
-theorem algebraMap_eq (c : k) : algebraMap k k⸨X⸩ c = HahnSeries.C c := by rw [HahnSeries.algebraMap_apply', ← HahnSeries.ofPowerSeries_C]; rfl
-
 instance towerA : IsScalarTower k k⸨X⸩ k⸨X⸩ := ⟨fun c x y => by
   rw [_root_.GlobalTheory.PhiGam.const_smul_eq, _root_.GlobalTheory.PhiGam.const_smul_eq k c, smul_eq_mul, smul_eq_mul, mul_assoc]⟩
 

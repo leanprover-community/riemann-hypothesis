@@ -1810,56 +1810,6 @@ open MvPolynomial
 
 namespace CompanionTheory.Groth.ChartWirtingerDerivatives
 
-def toZAlg {σ : Type*} (ψ : MvPolynomial σ ℤ →+* MvPolynomial σ ℤ) :
-    MvPolynomial σ ℤ →ₐ[ℤ] MvPolynomial σ ℤ :=
-  AlgHom.mk ψ (by
-    intro r
-    show ψ (algebraMap ℤ (MvPolynomial σ ℤ) r) = algebraMap ℤ (MvPolynomial σ ℤ) r
-    rw [algebraMap_eq, eq_intCast C r]
-    exact map_intCast ψ r)
-
-theorem tri_supported_le {σ : Type*} (w : σ → ℕ) (ψ : MvPolynomial σ ℤ →+* MvPolynomial σ ℤ)
-    (h : ∀ s, ∃ (ε : ℤˣ) (p : MvPolynomial σ ℤ), (∀ t ∈ p.vars, w t < w s) ∧
-      ψ (X s) = (ε : ℤ) • X s + p) (N : ℕ) :
-    supported ℤ {t | w t < N} ≤ (supported ℤ {t | w t < N}).map (toZAlg ψ) := by
-  induction N with
-  | zero =>
-    rw [supported_eq_adjoin_X, Algebra.adjoin_le_iff]
-    rintro _ ⟨t, ht, rfl⟩
-    exact absurd ht (by simp)
-  | succ N ih =>
-    rw [supported_eq_adjoin_X, Algebra.adjoin_le_iff]
-    rintro _ ⟨t, ht, rfl⟩
-    simp only [Set.mem_ofPred_eq] at ht
-    have hmono : (supported ℤ {t | w t < N}).map (toZAlg ψ) ≤
-        (supported ℤ {t | w t < N + 1}).map (toZAlg ψ) :=
-      Subalgebra.map_mono (supported_mono fun t (ht : w t < N) => (Nat.lt_succ_of_lt ht : w t < N + 1))
-    obtain ⟨ε, p, hp, hψ⟩ := h t
-    have hpmem : p ∈ (supported ℤ {t | w t < N + 1}).map (toZAlg ψ) := by
-      apply hmono; apply ih
-      rw [mem_supported]
-      intro u hu
-      have := hp u hu
-      simp only [Set.mem_ofPred_eq]; omega
-    have hXmem : ψ (X t) ∈ (supported ℤ {t | w t < N + 1}).map (toZAlg ψ) :=
-      Subalgebra.mem_map.2 ⟨X t, (X_mem_supported).2 (by simpa using ht), rfl⟩
-    have heq : (X t : MvPolynomial σ ℤ) = (ε : ℤ) • ψ (X t) - (ε : ℤ) • p := by
-      rw [hψ, smul_add, smul_smul, ← Units.val_mul, Int.units_mul_self, Units.val_one, one_smul, add_sub_cancel_right]
-    rw [SetLike.mem_coe, heq]
-    exact Subalgebra.sub_mem _ (Subalgebra.smul_mem _ hXmem _) (Subalgebra.smul_mem _ hpmem _)
-
-theorem tri_surj {σ : Type*} (w : σ → ℕ) (ψ : MvPolynomial σ ℤ →+* MvPolynomial σ ℤ)
-    (h : ∀ s, ∃ (ε : ℤˣ) (p : MvPolynomial σ ℤ), (∀ t ∈ p.vars, w t < w s) ∧
-      ψ (X s) = (ε : ℤ) • X s + p) : Function.Surjective ψ := by
-  intro y
-  have hy : y ∈ supported ℤ {t | w t < y.vars.sup (fun t => w t + 1)} := by
-    rw [mem_supported]
-    intro t ht
-    have := Finset.le_sup (f := fun t => w t + 1) (Finset.mem_coe.1 ht)
-    simp only [Set.mem_ofPred_eq]; omega
-  obtain ⟨x, -, hx⟩ := Subalgebra.mem_map.1 (tri_supported_le w ψ h _ hy)
-  exact ⟨x, hx⟩
-
 theorem tri_bij {σ : Type*} (w : σ → ℕ) (ψ : MvPolynomial σ ℤ →+* MvPolynomial σ ℤ)
     (h : ∀ s, ∃ (ε : ℤˣ) (p : MvPolynomial σ ℤ), (∀ t ∈ p.vars, w t < w s) ∧
       ψ (X s) = (ε : ℤ) • X s + p) : Function.Bijective ψ := by

@@ -77,17 +77,7 @@ variable {B : Type} [CommRing B] (R : Subring B) {n : ℕ}
 theorem glcong_mem_range (A : GL (Fin n) B) (hA : ∀ i j, (A : Matrix (Fin n) (Fin n) B) i j ∈ R)
     (hA' : ∀ i j, ((A⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) i j ∈ R) :
     A ∈ (GeneralLinearGroup.map (n := Fin n) R.subtype).range := by
-  let M : Matrix (Fin n) (Fin n) R := fun i j => ⟨_, hA i j⟩
-  let N : Matrix (Fin n) (Fin n) R := fun i j => ⟨_, hA' i j⟩
-  have hM : R.subtype.mapMatrix M = (A : Matrix (Fin n) (Fin n) B) := by ext i j; rfl
-  have hN : R.subtype.mapMatrix N = ((A⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) := by ext i j; rfl
-  have hinj : Function.Injective (R.subtype.mapMatrix : Matrix (Fin n) (Fin n) R →+* _) := by
-    intro X Y h; ext i j; exact congrFun (congrFun h i) j
-  have h1 : M * N = 1 := hinj (by rw [map_mul, map_one, hM, hN, ← Units.val_mul, mul_inv_cancel, Units.val_one])
-  have h2 : N * M = 1 := hinj (by rw [map_mul, map_one, hM, hN, ← Units.val_mul, inv_mul_cancel, Units.val_one])
-  refine ⟨⟨M, N, h1, h2⟩, ?_⟩
-  ext i j
-  rfl
+  apply _root_.GlobalTheory.TorCls.OpenP.mem_range_map_of_entries <;> assumption
 
 theorem glcong_entries (c : R) (h : GL (Fin n) R)
     (hh : GeneralLinearGroup.map (n := Fin n) (Ideal.Quotient.mk (Ideal.span {c * c})) h = 1)

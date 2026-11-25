@@ -368,6 +368,7 @@ theorem not_isUnit_integers (l : ℕ) [Fact l.Prime] (LL : FinExt l) : ¬ IsUnit
   have hne : (ϖ : ↥LL.1) ≠ 0 := fun h0 => hϖ.ne_zero (Subtype.ext h0)
   exact hϖ.not_isUnit (isUnit_iff_exists_inv.mpr ⟨⟨_, hinv⟩, Subtype.ext (mul_inv_cancel₀ hne)⟩)
 
+set_option synthInstance.maxHeartbeats 200000 in
 theorem adm_classes_of_flat {l : ℕ} [Fact l.Prime] {P : LocPrime l} (S : TopSit P) (hC : S.Closed) (hA : S.StdAdm)
     {M : Type} [AddCommGroup M] [Module S.O M] [Module.Flat S.O M] (W : Representation S.O S.G M)
     (hW : S.CoefAdm W) : S.Lem0 W := by

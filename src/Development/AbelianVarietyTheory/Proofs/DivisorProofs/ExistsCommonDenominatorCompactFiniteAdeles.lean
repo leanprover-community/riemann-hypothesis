@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NcardRationalPointsTranslatedCompactLePow
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
 import Mathlib.Algebra.Order.Floor.Extended
@@ -94,23 +95,6 @@ theorem intAfter_mono {n m : ℕ} (h : n ≤ m) :
 
 theorem exists_common_denom : ∀ (E : Type) [Field E] [NumberField E] (Kf : Set (Af E)), IsCompact Kf →
     ∃ n : ℕ, 0 < n ∧ ∀ ξ : E, algebraMap E (Af E) ξ ∈ Kf → IsIntegral ℤ ((n : E) * ξ) := by
-  intro E _ _ Kf hK
-  have hcov : Kf ⊆ ⋃ n : ℕ, intAfter E ((n.factorial : ℕ) : Af E) := by
-    intro y _
-    obtain ⟨N, hN, h⟩ := exists_nat_mul_integral E y
-    exact Set.mem_iUnion.mpr ⟨N, mem_intAfter_of_dvd E (Nat.dvd_factorial hN le_rfl) h⟩
-  obtain ⟨n, hn⟩ := hK.elim_directed_cover _ (fun n => isOpen_intAfter E _) hcov
-    (Monotone.directed_le fun a b h => intAfter_mono E h)
-  refine ⟨n.factorial, Nat.factorial_pos n, fun ξ hξ => ?_⟩
-  have h := hn hξ
-  have hr : ((n.factorial : ℕ) : E) * ξ ∈ (algebraMap (𝓞 E) E).range := by
-    refine HeightOneSpectrum.mem_integers_of_valuation_le_one E _ fun v => ?_
-    have := h v
-    rw [← map_natCast (algebraMap E (Af E)), ← map_mul] at this
-    rwa [FiniteAdeleRing.algebraMap_apply, HeightOneSpectrum.mem_adicCompletionIntegers,
-      HeightOneSpectrum.valuedAdicCompletion_eq_valuation'] at this
-  obtain ⟨a, ha⟩ := hr
-  rw [← ha]
-  exact ((RingOfIntegers.isIntegral a).map (IsScalarTower.toAlgHom ℤ (𝓞 E) E))
+  apply _root_.GlobalTheory.RatCount.exists_den_of_isCompact <;> assumption
 
 end GlobalTheory.AdeleDenom

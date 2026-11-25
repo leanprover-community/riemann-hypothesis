@@ -104,18 +104,11 @@ private lemma smooth_pow {F : Type} [Field F] [NumberField F] [_root_.NumberFiel
     rw [hγ, this]
     rfl
 
-private lemma single_comm {G : Type} [Group G] {k : ℕ} {i j : Fin k} (hij : i ≠ j) (x y : G) :
-    (Pi.mulSingle i x : Fin k → G) * Pi.mulSingle j y = Pi.mulSingle j y * Pi.mulSingle i x :=
-  by
-  have h : Pairwise fun i j : Fin k => ∀ (x : G) (y : G), Commute (Pi.mulSingle i x : Fin k → G) (Pi.mulSingle j y) :=
-    Pi.mulSingle_commute (f := fun _ => G)
-  exact (h hij x y).eq
-
 private lemma position_comm {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {σ : E ≃ₐ[F] E} {m : ℕ} {D : InfD σ m} {n : ℕ} {s : Fin (m + 1) → archGroup F n →* archGroup E n}
     (hs : IsBlockElement D n s) (hmul : ∀ g h, glueA D n (g * h) = glueA D n g * glueA D n h)
     {i j : Fin (m + 1)} (hij : i ≠ j) (x y : archGroup F n) : s i x * s j y = s j y * s i x := by
-  have hcm := single_comm (G := archGroup F n) hij x y
+  have hcm := (Pi.mulSingle_commute (f := fun _ => archGroup F n) hij x y).eq
   have h1 : s i x * s j y = glueA D n (Pi.mulSingle i x * Pi.mulSingle j y) := by
     rw [hmul, ← hs i x, ← hs j y]
   have h2 : s j y * s i x = glueA D n (Pi.mulSingle j y * Pi.mulSingle i x) := by

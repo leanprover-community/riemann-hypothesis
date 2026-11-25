@@ -64,7 +64,6 @@ open scoped TensorProduct
 open GlobalTheory.ZM GlobalTheory.SiegelTor
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
 noncomputable section
 open IsLocalRing
 open GlobalTheory.AbDual GlobalTheory.AbLaw GlobalTheory.CechPic

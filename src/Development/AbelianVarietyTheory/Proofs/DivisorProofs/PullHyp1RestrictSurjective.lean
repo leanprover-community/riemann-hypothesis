@@ -50,8 +50,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.C
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.CechDR
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CechDR

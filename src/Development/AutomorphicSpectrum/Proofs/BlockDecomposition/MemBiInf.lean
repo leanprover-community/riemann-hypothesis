@@ -135,53 +135,6 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.DisoHm
 
 noncomputable section
-namespace GlobalTheory.CompanionTheory.DisoHm
-section Cmp
-variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
-  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
-
-theorem ev_base {W : X.Opens} (T : Thick (nlFun γ p X q κ)) (h : InU W T) (a : O) (r : R)
-    (hr : κ a = Ideal.Quotient.mk I r) : ev T h (strV q W a) = Ideal.Quotient.mk T.J (T.i r) := by
-  have e := evalAt_base q κ (show PtOver X q κ (T.B ⧸ T.J) from T.y).1.1 (pt T)
-    (show PtOver X q κ (T.B ⧸ T.J) from T.y).2 h a
-  refine e.trans ?_
-  rw [hr]
-  exact T.w r
-
-theorem quot_eq_id {W : X.Opens} {d : ℕ} (c : Chart γ p q κ W d) (hW : IsAffineOpen W)
-    (θ : c.D.B ⧸ c.D.J →+* c.D.B ⧸ c.D.J)
-    (h1 : ∀ r, θ (Ideal.Quotient.mk _ (c.D.i r)) = Ideal.Quotient.mk _ (c.D.i r))
-    (h2 : ∀ f, θ (ev c.D c.inV f) = ev c.D c.inV f) : θ = RingHom.id _ := by
-  have key : ∀ θ' : c.D.B ⧸ c.D.J →+* c.D.B ⧸ c.D.J,
-      (∀ r, θ' (Ideal.Quotient.mk _ (c.D.i r)) = Ideal.Quotient.mk _ (c.D.i r)) →
-      (∀ f, θ' (ev c.D c.inV f) = ev c.D c.inV f) →
-      (ptFun X q κ).map (CommRingCat.ofHom θ') c.D.y = c.D.y := by
-    intro θ' a b
-    refine Subtype.ext (Prod.ext ?_ ?_)
-    · refine RingHom.ext fun z => ?_
-      obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective z
-      have w := c.D.w r
-      change θ' ((show PtOver X q κ (c.D.B ⧸ c.D.J) from c.D.y).1.1 (Ideal.Quotient.mk _ r)) =
-        (show PtOver X q κ (c.D.B ⧸ c.D.J) from c.D.y).1.1 (Ideal.Quotient.mk _ r)
-      have w' : (show PtOver X q κ (c.D.B ⧸ c.D.J) from c.D.y).1.1 (Ideal.Quotient.mk _ r) =
-        Ideal.Quotient.mk _ (c.D.i r) := w
-      rw [w']
-      exact a r
-    · change Spec.map (CommRingCat.ofHom θ') ≫ pt c.D = pt c.D
-      have e : Spec.map (CommRingCat.ofHom (ev c.D c.inV)) ≫ hW.fromSpec = pt c.D :=
-        GlobalTheory.CompanionTheory.ChartAlg.eq_specMap hW (pt c.D) c.inV
-      have e2 : θ'.comp (ev c.D c.inV) = ev c.D c.inV := RingHom.ext b
-      calc Spec.map (CommRingCat.ofHom θ') ≫ pt c.D
-          = Spec.map (CommRingCat.ofHom θ') ≫ Spec.map (CommRingCat.ofHom (ev c.D c.inV)) ≫ hW.fromSpec := by rw [e]
-        _ = Spec.map (CommRingCat.ofHom (θ'.comp (ev c.D c.inV))) ≫ hW.fromSpec := by
-            rw [← Category.assoc, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
-        _ = pt c.D := by rw [e2, e]
-  obtain ⟨g₀, -, hu⟩ := c.rep (CommRingCat.of (c.D.B ⧸ c.D.J)) c.D.y c.inV
-  exact (hu _ (key θ h1 h2)).trans (hu _ (key _ (fun _ => rfl) (fun _ => rfl))).symm
-
-end Cmp
-
-end GlobalTheory.CompanionTheory.DisoHm
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -198,30 +151,6 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris Divided
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.DisoHm
-
-theorem dividedPowerFiltration_bot {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (hJ : J = ⊥) {r : ℕ} (hr : 1 ≤ r) :
-    pdP δ r = ⊥ := by
-  refine le_bot_iff.1 (Ideal.span_le.2 ?_)
-  rintro _ ⟨L, hL, hr', rfl⟩
-  have : ∃ q ∈ L, q.1 ≠ 0 := by
-    by_contra hc
-    push Not at hc
-    have h0 : (L.map Prod.fst).sum = 0 := List.sum_eq_zero (by
-      intro x hx
-      obtain ⟨q, hq, rfl⟩ := List.mem_map.1 hx
-      exact hc q hq)
-    omega
-  obtain ⟨q, hq, hq0⟩ := this
-  have hz : δ.dpow q.1 q.2 = 0 := by
-    have h2 : q.2 = 0 := by
-      have := hL q hq
-      rw [hJ] at this
-      exact this
-    rw [h2]
-    exact δ.dpow_eval_zero hq0
-  have : (L.map fun q => δ.dpow q.1 q.2).prod = 0 := List.prod_eq_zero (List.mem_map.2 ⟨q, hq, hz⟩)
-  rw [this]
-  exact zero_mem _
 
 section Nest
 variable {D : Type 1} [Category.{0} D]
@@ -279,28 +208,6 @@ theorem std0 {b : Base} {L : b.Fun} (Q : ObjectProperty (Thick L)) (T : Q.FullSu
     (IdF.top (sP Q).A).S T = (stdI Q (some 0) 0).S T := by
   have : (sFil Q 0).S T = ⊤ := T.obj.pdPow_zero
   exact (top_le_iff.1 (this.ge.trans le_sup_left)).symm
-
-theorem top_O (hZ : DH.Zar2) (q : X ⟶ Spec (CommRingCat.of O)) (l s : ℕ) (𝒱 : Set X.Opens) (hU : sSup 𝒱 = ⊤) (hle : TO q l s 𝒱 ≤ TO q l s {⊤})
-    (c : O) (j : ℕ) : Function.Bijective ((resO hle c).pull j) := by
-  have z := (hZ (Q₀ := TF l s) (Or.inl ⟨rfl, l, s, rfl⟩) 𝒱 (TO q l s {⊤}) hle
-    (fun T hT => ⟨hT.1, _, rfl, by rw [hU]; exact inU_top T⟩)
-    (fun _ T' _ _ hT' => ⟨hT', ⊤, rfl, inU_top T'⟩) j).2.1 (some 0) none 0 c
-  have t0 := sqLe_bij (b := stdI (TO q l s {⊤}) none c) (b' := stdI (TO q l s {⊤}) none c) (std0 (TO q l s {⊤})) (fun _ => rfl) j
-  have t1 := sqLe_bij (b := stdI (TO q l s 𝒱) none c) (b' := stdI (TO q l s 𝒱) none c) (std0 (TO q l s 𝒱)) (fun _ => rfl) j
-  refine (Function.Bijective.of_comp_iff' t1 _).1 ?_
-  have e : ⇑((sqLe (a := IdF.top (sP (TO q l s 𝒱)).A) (b := stdI (TO q l s 𝒱) none c) (a' := stdI (TO q l s 𝒱) (some 0) 0) (b' := stdI (TO q l s 𝒱) none c) (fun T => (std0 (TO q l s 𝒱) T).le) (fun _ => le_rfl)).pull j) ∘
-      ⇑((resO hle c).pull j) = ⇑(((incl hle).sq (incl_std hle (some 0) 0) (incl_std hle none c)).pull j) ∘
-      ⇑((sqLe (a := IdF.top (sP (TO q l s {⊤})).A) (b := stdI (TO q l s {⊤}) none c) (a' := stdI (TO q l s {⊤}) (some 0) 0) (b' := stdI (TO q l s {⊤}) none c) (fun T => (std0 (TO q l s {⊤}) T).le) (fun _ => le_rfl)).pull j) := by
-    funext x
-    refine ((CrystallineSemistableComparison.P.pull_comp (σ'' := RingHom.id O) (resO hle c) (sqLe (a := IdF.top (sP (TO q l s 𝒱)).A) (b := stdI (TO q l s 𝒱) none c) (a' := stdI (TO q l s 𝒱) (some 0) 0) (b' := stdI (TO q l s 𝒱) none c) (fun T => (std0 (TO q l s 𝒱) T).le) (fun _ => le_rfl)) j x).1).symm.trans
-      (Eq.trans ?_ ((CrystallineSemistableComparison.P.pull_comp (σ'' := RingHom.id O) (sqLe (a := IdF.top (sP (TO q l s {⊤})).A) (b := stdI (TO q l s {⊤}) none c) (a' := stdI (TO q l s {⊤}) (some 0) 0) (b' := stdI (TO q l s {⊤}) none c) (fun T => (std0 (TO q l s {⊤}) T).le) (fun _ => le_rfl)) ((incl hle).sq (incl_std hle (some 0) 0) (incl_std hle none c)) j x).1))
-    refine CrystallineSemistableComparison.P.prism (σ := RingHom.id O) _ _ (𝟙 _) (fun T y => ?_) j x
-    obtain ⟨y, hy⟩ := y
-    obtain ⟨z, rfl⟩ := Ideal.Quotient.mk_surjective y
-    first
-      | rfl
-  rw [e]
-  exact z.comp t0
 
 end Top
 

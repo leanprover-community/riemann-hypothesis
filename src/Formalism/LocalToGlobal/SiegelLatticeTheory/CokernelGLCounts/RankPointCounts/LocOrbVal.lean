@@ -42,20 +42,12 @@ theorem sLow_one {n : ℕ} : Formalism.DoubleCosetMeasures.sLow (1 : Matrix (Fin
   simp [Formalism.DoubleCosetMeasures.sLow, Fin.ext_iff]
 
 theorem sLow_mem (R : Subring K) {n : ℕ} (A : Matrix (Fin n) (Fin n) K) (hA : ∀ i j, A i j ∈ R) :
-    Formalism.DoubleCosetMeasures.sLow A ∈ R := by
-  unfold Formalism.DoubleCosetMeasures.sLow
-  refine Subring.sum_mem R (fun j _ => ?_)
-  split_ifs
-  · exact hA _ _
-  · exact R.zero_mem
+    Formalism.DoubleCosetMeasures.sLow A ∈ R :=
+  Formalism.DoubleCosetMeasures.P.sLow_mem R A hA
 
 theorem sUp_mem (R : Subring K) {n : ℕ} (A : Matrix (Fin n) (Fin n) K) (hA : ∀ i j, A i j ∈ R) :
-    Formalism.DoubleCosetMeasures.sUp A ∈ R := by
-  unfold Formalism.DoubleCosetMeasures.sUp
-  refine Subring.sum_mem R (fun j _ => ?_)
-  split_ifs
-  · exact hA _ _
-  · exact R.zero_mem
+    Formalism.DoubleCosetMeasures.sUp A ∈ R :=
+  Formalism.DoubleCosetMeasures.P.sUp_mem R A hA
 
 end Cast
 

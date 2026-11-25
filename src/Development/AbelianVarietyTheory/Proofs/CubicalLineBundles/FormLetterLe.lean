@@ -61,8 +61,6 @@ import Mathlib.Algebra.Order.Star.Real
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.LamCM
 open scoped CategoryTheory.Obj ComplexOrder

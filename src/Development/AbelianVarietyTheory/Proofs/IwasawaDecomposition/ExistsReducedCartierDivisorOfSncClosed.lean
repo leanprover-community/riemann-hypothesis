@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValRSpMapFro
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH GlobalTheory.Cartier GlobalTheory.FlagBundle

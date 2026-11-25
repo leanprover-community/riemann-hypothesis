@@ -51,7 +51,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands Glo
 open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 open UpperTheory.V.W (Plc Lp)
 open scoped Matrix
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 private theorem regElt_place {Ω : Type} [Field Ω] [CharZero Ω] (p : ℕ) (hp : p.Prime) :
     ∃ A : ValuationSubring Ω, A.valuation (p : Ω) < 1 := by
   have hI : Ideal.span {((p : ℕ) : (Int.castRingHom Ω).range)} ≠ ⊤ := by

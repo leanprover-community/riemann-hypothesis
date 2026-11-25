@@ -18,6 +18,7 @@ public import Mathlib.FieldTheory.PrimitiveElement
 public import Mathlib.RingTheory.Finiteness.Nakayama
 public import Mathlib.RingTheory.Ideal.GoingUp
 public import Mathlib.RingTheory.Jacobson.Ring
+import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
@@ -196,30 +197,14 @@ end Fibre
 
 theorem exists_nat_mul_mem {Ω : Type*} [Field Ω] [CharZero Ω] (R : Subalgebra ℤ Ω) {x : Ω}
     (hx : x ∈ Algebra.adjoin ℚ (R : Set Ω)) : ∃ n : ℕ, 0 < n ∧ (n : Ω) * x ∈ R := by
-  induction hx using Algebra.adjoin_induction with
-  | mem x hx => exact ⟨1, one_pos, by simpa using hx⟩
-  | algebraMap q =>
-    refine ⟨q.den, q.den_pos, ?_⟩
-    have : (q.den : Ω) * algebraMap ℚ Ω q = (q.num : Ω) := by
-      rw [eq_ratCast, ← Rat.cast_natCast, ← Rat.cast_mul, mul_comm, Rat.mul_den_eq_num, Rat.cast_intCast]
-    rw [this]
-    exact Subalgebra.intCast_mem R _
-  | add x y _ _ hx hy =>
-    obtain ⟨n₁, h₁, hx⟩ := hx
-    obtain ⟨n₂, h₂, hy⟩ := hy
-    refine ⟨n₁ * n₂, Nat.mul_pos h₁ h₂, ?_⟩
-    have : ((n₁ * n₂ : ℕ) : Ω) * (x + y) = (n₂ : Ω) * ((n₁ : Ω) * x) + (n₁ : Ω) * ((n₂ : Ω) * y) := by
-      push_cast; ring
-    rw [this]
-    exact R.add_mem (R.mul_mem (Subalgebra.natCast_mem R _) hx) (R.mul_mem (Subalgebra.natCast_mem R _) hy)
-  | mul x y _ _ hx hy =>
-    obtain ⟨n₁, h₁, hx⟩ := hx
-    obtain ⟨n₂, h₂, hy⟩ := hy
-    refine ⟨n₁ * n₂, Nat.mul_pos h₁ h₂, ?_⟩
-    have : ((n₁ * n₂ : ℕ) : Ω) * (x * y) = ((n₁ : Ω) * x) * ((n₂ : Ω) * y) := by
-      push_cast; ring
-    rw [this]
-    exact R.mul_mem hx hy
+  obtain ⟨t, ht⟩ := multiple_mem_adjoin_of_mem_localization_adjoin (nonZeroDivisors ℤ) ℚ (R : Set Ω) x hx
+  refine ⟨t.1.natAbs, Int.natAbs_pos.mpr (nonZeroDivisors.ne_zero t.2), ?_⟩
+  have ht' : (t.1 : Ω) * x ∈ R := by
+    simpa [Submonoid.smul_def, zsmul_eq_mul] using (Algebra.adjoin_le (Set.Subset.refl (R : Set Ω))) ht
+  rcases Int.natAbs_eq t.1 with h | h
+  · rwa [← Int.cast_natCast, ← h]
+  · rw [← Int.cast_natCast, neg_eq_iff_eq_neg.mp h.symm, Int.cast_neg, neg_mul]
+    exact R.neg_mem ht'
 
 theorem exists_primitive {F Ω : Type*} [Field F] [CharZero F] [Field Ω] [Algebra F Ω] (S : Finset Ω)
     (hS : ∀ s ∈ S, IsIntegral F s) :

@@ -48,8 +48,6 @@ namespace GlobalTheory.KerConjMean
 
 open scoped ComplexOrder
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem nrm_one_nonneg {D : D7} {n : ℕ} (lam : D.what₂.Tau → DomWeight n) (v : VV ℂ lam) :
     0 ≤ nrm lam (fun _ => 1) v := by
   by_cases hv : v = 0

@@ -85,9 +85,6 @@ structure Co (K κ : Type) where
 
 attribute [instance] Co.finX
 
-def normAlg {κ X : Type} [Fintype κ] [Fintype X] (G : κ → κ → K) (gam : X → ℕ) (z : X → κ → K) : K :=
-  ∑ x, (gam x : K)⁻¹ * ∑ k, ∑ l, z x k * star (z x l) * G k l
-
 structure Sq (K : Type) where
 
   κ : Type

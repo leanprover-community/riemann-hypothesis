@@ -50,7 +50,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
 open UpperTheory.V.HV (Coef)
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 set_option synthInstance.maxHeartbeats 200000
 private theorem UpperTheory.V.Hi.dense_arithmetic_points {O A B T E : Type} [CommRing O] [CommRing A] [CommRing B] [CommRing T] [CommRing E]
     [Algebra O A] [Algebra O B] [Algebra O T] [Algebra O E] [Algebra A T] (lam : A →ₐ[O] B) (f : B →ₐ[O] T)

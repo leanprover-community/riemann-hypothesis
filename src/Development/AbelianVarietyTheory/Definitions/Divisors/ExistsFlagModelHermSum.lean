@@ -52,8 +52,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsVBAndClsDe
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology Matrix

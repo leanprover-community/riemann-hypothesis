@@ -62,8 +62,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPinnedOfIsUnf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.DictLevel
@@ -144,8 +142,6 @@ open GlobalTheory.Member (FinCong)
 open GlobalTheory.LevelCusp (IsMatch)
 open GlobalTheory.Dict (castFr)
 open scoped TensorProduct Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

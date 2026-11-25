@@ -47,7 +47,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open scoped ComplexConjugate Matrix NNReal ENNReal
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct
 
 noncomputable section

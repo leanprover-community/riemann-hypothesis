@@ -53,8 +53,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 open scoped Matrix CategoryTheory.Obj Topology
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 namespace GlobalTheory.ShFam.Hor.LogCh
 
 theorem IsLatFam.pullback_analytic : ∀ (m n g : ℕ) (B : Set (Fin n → ℂ)) (B' : Set (Fin m → ℂ))

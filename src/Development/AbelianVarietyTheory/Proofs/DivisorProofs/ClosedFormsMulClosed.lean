@@ -47,8 +47,6 @@ open Set Matrix MeasureTheory
 open GlobalTheory.HermFrame
 open scoped ComplexOrder
 
-set_option autoImplicit false
-
 noncomputable section
 
 open ReciprocityTheory.L2DbarEstimates (V)

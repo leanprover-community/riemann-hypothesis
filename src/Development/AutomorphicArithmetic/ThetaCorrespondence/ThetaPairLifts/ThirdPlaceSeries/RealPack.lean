@@ -48,7 +48,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.DivisionValues Forma
   Formalism.IndefR.Links Formalism.L2.SG.PackageTie2 Formalism.L2.SG.KerJoinS Formalism.IndefR.CxPass
 namespace GlobalTheory.MiS
 open Formalism Formalism.IndefR Formalism.IndefR.Mi
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC}
 structure RealPackAlt (ex : Extra D L hT Gi Gl Kc Yd cX) where

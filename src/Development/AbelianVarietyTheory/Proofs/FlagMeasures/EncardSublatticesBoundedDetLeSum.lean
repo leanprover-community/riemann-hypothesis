@@ -70,8 +70,6 @@ import Mathlib.Algebra.Order.Star.Real
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.InertSquareNorm
 
 open NumberField Module IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S.Lat

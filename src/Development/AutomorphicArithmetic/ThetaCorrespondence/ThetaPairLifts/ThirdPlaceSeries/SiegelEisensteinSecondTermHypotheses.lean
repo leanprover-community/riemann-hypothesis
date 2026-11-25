@@ -1519,11 +1519,15 @@ theorem finite_T_of_twArgs {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {
         Set _).Finite :=
       (Set.finite_singleton _).union (tuOf w.I (usedOf w.I T Wt)).finite_toSet
     exact hs.to_subtype
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x, pack, _⟩ := a
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, _⟩ := x
-  dsimp only at pack ⊢
-  cases pack
-  exact hfin
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (w.st Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (w.st Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (w.st Z).toD7) (_ : Algebra C.Q.c.F (w.st Z).toD7.what₂.LL)
+      (R : RealDat3 (w.st Z).toD7 A3 C.Q.c.F) (_ : Face3 (w.st Z).toD7 A3),
+      G0 R.Pg (w.st Z).toD7.R.r ≃* G0g (w.st Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, T0, _, _, _, _, _, _⟩ => Finite T0
+  have hP : P ⟨a.x.G, a.x.grp, a.x.fin, a.x.Pl0, a.x.I0, a.x.T, a.x.A3, a.x.core, a.x.alg, a.x.R, a.x.F, a.x.cG⟩ := by
+    rw [a.pack]; exact hfin
+  exact hP
 
 
 
@@ -1564,14 +1568,18 @@ theorem zscale_f0_of_witness_alt {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {
   letI := a.x.grp
   letI := a.x.fin
   have hX' : ∀ Zs : DefSub a.x.A3.fam3.amb3, HEq (a.x.F.Zsc Zs).F0 (F0K K.s (q.w.D q.Z)) := hX
-  dsimp only
-  clear * - hX'
-  obtain ⟨Dc, Sp, Zsc, lam, err, lam_eq, x', pack, _⟩ := a
-  dsimp only at hX' ⊢
-  obtain ⟨G, grp, fin, Pl0, I0, T0, A3, core, alg, R, F, cG, _⟩ := x'
-  dsimp only at pack hX' ⊢
-  cases pack
-  exact hX' _
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (q.w.st q.Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (q.w.st q.Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (q.w.st q.Z).toD7) (_ : Algebra C.Q.c.F (q.w.st q.Z).toD7.what₂.LL)
+      (R : RealDat3 (q.w.st q.Z).toD7 A3 C.Q.c.F) (_ : Face3 (q.w.st q.Z).toD7 A3),
+      G0 R.Pg (q.w.st q.Z).toD7.R.r ≃* G0g (q.w.st q.Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, _, A3, _, _, _, F, _⟩ =>
+      ∀ Zs : DefSub A3.fam3.amb3, HEq (F.Zsc Zs).F0 (F0K K.s (q.w.D q.Z))
+  have hP : P ⟨_, _, _, _, _, _, R3.famT q.x.what₂, q.x.what₂.r.z.core, q.x.what₂.r.z.alg,
+      (q.x.what₂.r.z.R.updS q.x.what₂.r.z.R.kap a.lam).withErr a.err,
+      R3.reFace q.x.what₂.r.z.F a.Dc a.Sp a.Zsc, q.x.what₂.r.z.cG⟩ := by
+    rw [← a.pack]; exact hX'
+  exact hP (zsOf q.x.what₂.r.z.R q.x.what₂.r.z.F)
 
 theorem weight_one_places_finite_of_witness : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (p : _root_.GlobalTheory.Mem.Top.Bl.Parameters hL) (K : Ctx) (q : WPt p.s K) (c : ℝ)
     (b : _root_.GlobalTheory.Fc.BundleCondition (q.w.D q.Z) q.O c), _root_.GlobalTheory.Mem.Top.Bl.BundleWitness q b → q.O.L.sc = K.s →

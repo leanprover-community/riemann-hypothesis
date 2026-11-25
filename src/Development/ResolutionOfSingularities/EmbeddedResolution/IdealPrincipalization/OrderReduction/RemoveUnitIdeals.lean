@@ -80,32 +80,13 @@ namespace MaxContactFunctoriality
 def removeUnitIdeals {X : Scheme.{u}} (L : List X.IdealSheafData) : List X.IdealSheafData :=
   L.filter (fun D => @decide (D ≠ ⊤) (Classical.propDecidable _))
 
-private theorem removeUnitIdeals_cons_top {X : Scheme.{u}}
-    (L : List X.IdealSheafData) :
-    removeUnitIdeals ((⊤ : X.IdealSheafData) :: L) = removeUnitIdeals L := by
-  simp [removeUnitIdeals]
-
-private theorem removeUnitIdeals_cons_of_ne_top {X : Scheme.{u}} {D : X.IdealSheafData}
-    (hD : D ≠ ⊤) (L : List X.IdealSheafData) :
-    removeUnitIdeals (D :: L) = D :: removeUnitIdeals L := by
-  simp [removeUnitIdeals, hD]
-
 theorem removeUnitIdeals_map_comap_removeUnitIdeals {X Y : Scheme.{u}} (f : Y ⟶ X) (L : List X.IdealSheafData) :
     removeUnitIdeals (List.map (fun D => D.comap f) (removeUnitIdeals L)) =
       removeUnitIdeals (List.map (fun D => D.comap f) L) := by
-  induction L with
-  | nil => rfl
-  | cons D L ih =>
-    by_cases hD : D = ⊤
-    · subst hD
-      rw [removeUnitIdeals_cons_top, ih]
-      simp only [List.map_cons, Scheme.IdealSheafData.comap_top]
-      rw [removeUnitIdeals_cons_top]
-    · rw [removeUnitIdeals_cons_of_ne_top hD]
-      simp only [List.map_cons]
-      by_cases hD' : D.comap f = ⊤
-      · rw [hD', removeUnitIdeals_cons_top, removeUnitIdeals_cons_top, ih]
-      · rw [removeUnitIdeals_cons_of_ne_top hD', removeUnitIdeals_cons_of_ne_top hD', ih]
+  simp only [removeUnitIdeals, List.filter_map, List.filter_filter]
+  congr 1
+  exact List.filter_congr fun D _ => by
+    by_cases hD : D = ⊤ <;> simp [hD, Scheme.IdealSheafData.comap_top]
 
 noncomputable abbrev smoothPullbackTriple (S : MarkedIdealWithBoundary.{u}) {X' : Scheme.{u}} (q : X' ⟶ S.scheme) :
     MarkedIdealWithBoundary.{u} :=
@@ -214,21 +195,11 @@ private theorem dropTrivialBoundary_boundary_eq_removeUnitIdeals (T : MarkedIdea
 
 private theorem removeUnitIdeals_eq_of_sameNontrivialBoundary {X : Scheme.{u}} {L L' : List X.IdealSheafData}
     (hL : MarkedIdealWithBoundary.SameNontrivialBoundary L L') : removeUnitIdeals L = removeUnitIdeals L' := by
-  have hdn : ∀ D : X.IdealSheafData,
-      (@decide (D ≠ ⊤) (Classical.propDecidable _))
-        = !(@decide (D = ⊤) (Classical.propDecidable _)) :=
-    fun D => @decide_not (D = ⊤) (Classical.propDecidable _) (Classical.propDecidable _)
-  have hL' : List.filter (fun D : X.IdealSheafData =>
-        !(@decide (D = ⊤) (Classical.propDecidable _))) L
-      = List.filter (fun D : X.IdealSheafData =>
-        !(@decide (D = ⊤) (Classical.propDecidable _))) L' := hL
-  have h1 : removeUnitIdeals L = List.filter (fun D : X.IdealSheafData =>
-      !(@decide (D = ⊤) (Classical.propDecidable _))) L :=
-    List.filter_congr (fun D _ => hdn D)
-  have h2 : List.filter (fun D : X.IdealSheafData =>
-      !(@decide (D = ⊤) (Classical.propDecidable _))) L' = removeUnitIdeals L' :=
-    List.filter_congr (fun D _ => (hdn D).symm)
-  exact h1.trans (hL'.trans h2)
+  have h : ∀ M : List X.IdealSheafData, removeUnitIdeals M =
+      M.filter (fun D => !@decide (D = ⊤) (Classical.propDecidable _)) := fun _ =>
+    List.filter_congr fun D _ => by by_cases hD : D = ⊤ <;> simp [hD]
+  rw [h L, h L']
+  exact hL
 
 private theorem removeUnitIdeals_map_comap_congr {X Y : Scheme.{u}} (g : X ⟶ Y)
     {L L' : List Y.IdealSheafData}
@@ -456,46 +427,10 @@ theorem smoothPullbackTriple_coverTriple_eq (T : MarkedIdealWithBoundary.{u}) {Y
           congrArg removeUnitIdeals (map_comap_map_comap _ _ _).symm
   exact markedIdealWithBoundary_mk_congr hsm hideal rfl hb
 
-private theorem filter_eq_removeUnitIdeals {X : Scheme.{u}}
-    (p : X.IdealSheafData → Bool) (hp : ∀ D : X.IdealSheafData, p D = true ↔ D ≠ ⊤)
-    (L : List X.IdealSheafData) : L.filter p = removeUnitIdeals L := by
-  induction L with
-  | nil => rfl
-  | cons D L ih =>
-    by_cases hD : D = ⊤
-    · subst hD
-      have hpf : p (⊤ : X.IdealSheafData) = false := by
-        cases hb : p (⊤ : X.IdealSheafData) with
-        | false => rfl
-        | true => exact absurd ((hp ⊤).1 hb) (fun hne => hne rfl)
-      rw [removeUnitIdeals_cons_top]
-      simp [hpf, ih]
-    · have hpt : p D = true := (hp D).2 hD
-      rw [removeUnitIdeals_cons_of_ne_top hD]
-      simp [hpt, ih]
-
 private theorem dropTrivialBoundary_eq_withBoundary_removeUnitIdeals (S : MarkedIdealWithBoundary.{u}) :
     MaxContactReduction.dropTrivialBoundary S = S.withBoundary (removeUnitIdeals S.boundary) := by
   rw [MaxContactReduction.dropTrivialBoundary_def]
-  exact congrArg S.withBoundary
-    (filter_eq_removeUnitIdeals _ (fun D => by simp) S.boundary)
-
-private theorem ne_top_of_mem_removeUnitIdeals {X : Scheme.{u}} (L : List X.IdealSheafData) :
-    ∀ D ∈ removeUnitIdeals L, D ≠ ⊤ := by
-  induction L with
-  | nil =>
-    intro D hD
-    simp [removeUnitIdeals] at hD
-  | cons C L ih =>
-    intro D hD
-    by_cases hC : C = ⊤
-    · subst hC
-      rw [removeUnitIdeals_cons_top] at hD
-      exact ih D hD
-    · rw [removeUnitIdeals_cons_of_ne_top hC] at hD
-      rcases List.mem_cons.1 hD with h1 | h1
-      · subst h1; exact hC
-      · exact ih D h1
+  exact congrArg S.withBoundary (List.filter_congr fun D _ => by by_cases hD : D = ⊤ <;> simp [hD])
 
 private theorem isStrictPullback_coverMarkedSequence_of_eq_of_heq (hinv : ComapIsoInvariance.{u})
     (A : ℕ → PrincipalizationAssignment.{u}) {S₁ S₂ : MarkedIdealWithBoundary.{u}} (hS : S₁ = S₂)
@@ -931,11 +866,11 @@ theorem maxContactPrincipalization_isPullbackBlowupSequence_of_smooth
       (MaxContactCoverData.coverMap (MaxContactReduction.dropTrivialBoundary T) htrimv)
       (MaxContactCoverData.coverMap (dropTrivialBoundaryPullback T qY h E') hpbv)
       hsmc₁ hsmc₂ hsu₁
-    have hbdT : ∀ D ∈ (MaxContactReduction.dropTrivialBoundary T).boundary, D ≠ ⊤ :=
-      boundary_ne_top_of_eq (dropTrivialBoundary_eq_withBoundary_removeUnitIdeals T).symm
-        (fun D hD => ne_top_of_mem_removeUnitIdeals T.boundary D hD)
+    have hbdT : ∀ D ∈ (MaxContactReduction.dropTrivialBoundary T).boundary, D ≠ ⊤ := by
+      rw [dropTrivialBoundary_boundary_eq_removeUnitIdeals]
+      exact fun _ hD => @of_decide_eq_true _ (Classical.propDecidable _) (List.mem_filter.1 hD).2
     have hbdP : ∀ D ∈ (dropTrivialBoundaryPullback T qY h E').boundary, D ≠ ⊤ :=
-      fun D hD => ne_top_of_mem_removeUnitIdeals E' D hD
+      fun _ hD => @of_decide_eq_true _ (Classical.propDecidable _) (List.mem_filter.1 hD).2
     have hmax₁ : MaxOrderEq (MaxContactReduction.dropTrivialBoundary T).ideal (MaxContactReduction.dropTrivialBoundary T).mult :=
       ⟨hypS₁.orderLE, hypS₁.coSupport_nonempty⟩
     have hmax₂ : MaxOrderEq (dropTrivialBoundaryPullback T qY h E').ideal

@@ -53,8 +53,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DefiniteBC GlobalTheory.BcSpeh GlobalTheory.BcSpehProof
 open PositivityTheory.Rg.Rs PositivityTheory.Rg.BcN
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.BaseChangeIdentities
 
 theorem ascEmb_mul_eq {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N a d : ℕ}

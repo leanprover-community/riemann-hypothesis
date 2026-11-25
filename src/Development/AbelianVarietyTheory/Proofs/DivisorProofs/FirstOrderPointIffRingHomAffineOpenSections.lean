@@ -54,7 +54,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.SchRing

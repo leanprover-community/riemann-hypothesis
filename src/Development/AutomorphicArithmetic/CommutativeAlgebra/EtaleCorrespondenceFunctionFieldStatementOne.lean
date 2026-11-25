@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraM
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR GlobalTheory.PD KaehlerDifferential GlobalTheory.W1 GlobalTheory.WH
 
-set_option autoImplicit false
-
 private theorem isIntegral_map_iff {K L : Type} [Field K] [Field L] [Algebra ℂ K] [Algebra ℂ L] [Algebra K L]
     [IsScalarTower ℂ K L] (B : Subalgebra ℂ K) (y : L) :
     IsIntegral (B.map (IsScalarTower.toAlgHom ℂ K L)) y ↔ IsIntegral B y := by

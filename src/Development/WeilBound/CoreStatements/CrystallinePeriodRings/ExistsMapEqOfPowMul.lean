@@ -210,11 +210,6 @@ theorem isUnit_cB_l : IsUnit (Per6.cB l (l : Acris)) := (cB_isFrac l).1
 
 
 variable {l} in
-theorem bcris_surj (x : Per6.Bcris l) : ∃ (m n : ℕ) (y : Acris),
-    Per6.cB l (l : Acris) ^ m * Per6.cB l (Per6.tA l) ^ n * x = Per6.cB l y :=
-  (cB_isFrac l).2.2 x
-
-variable {l} in
 theorem bcris_hom_ext {E : Type} [Semiring E] {f g : Per6.Bcris l →+* E}
     (h : ∀ x, f (Per6.cB l x) = g (Per6.cB l x)) : f = g :=
   (cB_isFrac l).hom_ext h
@@ -283,9 +278,6 @@ def qB : ℚ_[l] →+* Per6.Bcris l := (uB l).comp (algebraMap ℚ_[l] ↥(Maxim
 variable {l} in
 theorem ιCD_qB (q : ℚ_[l]) : ιCD l (qB l q) = oD l (algebraMap ℚ_[l] (Om l) q) :=
   ιCD_uB _
-
-variable {l} in
-theorem uB_algebraMap (q : ℚ_[l]) : uB l (algebraMap ℚ_[l] ↥(MaximalUnramifiedExtension l) q) = qB l q := rfl
 
 def tB : Per6.Bcris l := Per6.cB l (Per6.tA l)
 

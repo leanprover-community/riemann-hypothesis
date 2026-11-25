@@ -1567,18 +1567,8 @@ namespace GlobalTheory.TwV.SerMap
 
 theorem iteratedFDeriv_smul_of_ne {E F : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup F]
     [NormedSpace ℂ F] (c : ℂ) (hc : c ≠ 0) (f : E → F) (n : ℕ) :
-    iteratedFDeriv ℂ n (fun y => c • f y) = c • iteratedFDeriv ℂ n f := by
-  let _ : Invertible c := invertibleOfNonzero hc
-  induction n with
-  | zero =>
-    ext x m
-    simp [iteratedFDeriv_zero_apply]
-  | succ n ih =>
-    rw [iteratedFDeriv_succ_eq_comp_left, iteratedFDeriv_succ_eq_comp_left, ih]
-    funext x
-    simp only [Function.comp_apply]
-    rw [fderiv_const_smul_of_invertible c, map_smul]
-    rfl
+    iteratedFDeriv ℂ n (fun y => c • f y) = c • iteratedFDeriv ℂ n f :=
+  _root_.GlobalTheory.TwU.LawAll.iteratedFDeriv_const_smul_of_ne c hc f n
 
 theorem taylor_mul (D : D7) {N N' : ℕ} (c : ℂ) (G : TaylorLogMetric.VC D N N' → ℂ) (α : TaylorLogMetric.Mono D N N') :
     TaylorLogMetric.taylor D (fun z => c * G z) α = c * TaylorLogMetric.taylor D G α := by

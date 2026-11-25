@@ -64,7 +64,7 @@ namespace PositivityTheory.Rg.Sw.LVs
 
 open PositivityTheory.Rg.Sw
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem inG_one {n : ℕ} : InG (1 : M2 n) := by simp [InG]
 

@@ -260,7 +260,6 @@ end Ext
 
 section Tied
 
-open Formalism.BasicNotions Formalism.L2.Forms
 
 variable {D : D7} {u : D.what₂.Word}
 

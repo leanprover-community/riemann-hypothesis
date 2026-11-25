@@ -79,8 +79,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj
@@ -303,9 +301,6 @@ theorem proj_sub (χ : MulChar F R) (g h : N → C) (x : N) :
     proj χ (g - h) x = proj χ g x - proj χ h x := by
   simp only [proj, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
 
-theorem inv_mul_self (χ : MulChar F R) (a : Fˣ) : χ⁻¹ (a : F) * χ (a : F) = 1 := by
-  rw [MulChar.inv_apply', ← map_mul, inv_mul_cancel₀ a.ne_zero, map_one]
-
 theorem proj_eig (χ : MulChar F R) {g : N → C} (h0 : g 0 = 0) (a : F) (x : N) :
     proj χ g (a • x) = algebraMap R C (χ a) * proj χ g x := by
   apply PositivityTheory.HtPt.Rb.proj_smul_apply <;> assumption
@@ -315,7 +310,7 @@ theorem proj_on (χ : MulChar F R) (hc : (Fintype.card Fˣ : C) ≠ 0) (S : Set 
     proj χ g x = g x := by
   have : ∀ a : Fˣ, algebraMap R C (χ⁻¹ (a : F)) * g ((a : F) • x) = g x := by
     intro a
-    rw [hg a x hx, ← mul_assoc, ← map_mul, inv_mul_self, map_one, one_mul]
+    rw [hg a x hx, ← mul_assoc, ← map_mul, PositivityTheory.HtPt.Rb.inv_mul_apply, map_one, one_mul]
   simp only [proj, this, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
   field_simp
 

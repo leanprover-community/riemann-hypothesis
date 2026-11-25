@@ -48,8 +48,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Zltwo
 
 def EssSqIntUsed : Prop :=

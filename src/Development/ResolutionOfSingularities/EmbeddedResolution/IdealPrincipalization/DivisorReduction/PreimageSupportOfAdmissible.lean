@@ -56,19 +56,6 @@ namespace FunctorialResolution.EmbeddedResolution
 
 namespace DivisorReduction
 
-private theorem isClosed_setOf_connectedComponent_subset {X : Type u} [TopologicalSpace X]
-    (hop : ∀ x : X, IsOpen (connectedComponent x)) (P : Set X) :
-    IsClosed {x : X | connectedComponent x ⊆ P} := by
-  rw [← isOpen_compl_iff, isOpen_iff_forall_mem_open]
-  intro x hx
-  refine ⟨connectedComponent x, ?_, hop x, mem_connectedComponent⟩
-  intro y hy
-  simp only [Set.mem_compl_iff, Set.mem_ofPred_eq] at hx ⊢
-  intro hsub
-  apply hx
-  rw [connectedComponent_eq hy]
-  exact hsub
-
 theorem preimageSupportEqComponentsInOrderLocus_of_isAdmissible (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) (j : ℕ)
     (hj : j < T.boundary.length) : PreimageSupportEqComponentsInOrderLocus T j hj := by
   intro h
@@ -83,8 +70,7 @@ theorem preimageSupportEqComponentsInOrderLocus_of_isAdmissible (T : MarkedIdeal
     intro V _ _
     exact TopologicalSpace.NoetherianSpace.isCompact _
   have hclosed : IsClosed (boundaryComponentsInOrderLocus T j hj) :=
-    isClosed_setOf_connectedComponent_subset
-      (fun x => Blowup.isOpen_connectedComponent_of_noetherianSpace _ x) _
+    TopologicalSpace.NoetherianSpace.isClosed_setOf_connectedComponent_subset _ _
   have hinj : Function.Injective ⇑(T.boundary.get ⟨j, hj⟩).subschemeι :=
     (Scheme.Hom.isClosedEmbedding (T.boundary.get ⟨j, hj⟩).subschemeι).injective
   have himg : IsClosed (⇑(T.boundary.get ⟨j, hj⟩).subschemeι '' boundaryComponentsInOrderLocus T j hj) :=

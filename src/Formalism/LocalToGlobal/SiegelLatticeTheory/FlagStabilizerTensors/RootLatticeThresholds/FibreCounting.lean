@@ -14,8 +14,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.Pf.FibreCounting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}

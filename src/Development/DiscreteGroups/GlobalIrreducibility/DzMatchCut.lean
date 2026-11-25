@@ -58,8 +58,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace DiscreteGroups.sglob.DzType
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def nmChar {g : ℕ} (K : Type) [Field K] [Algebra (ZMod g) K] (χ : (ZMod g)ˣ →* ℂˣ) : Kˣ →* ℂˣ :=
   χ.comp (Units.map (Algebra.norm (ZMod g) : K →* ZMod g))
 

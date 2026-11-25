@@ -16,8 +16,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.ChiNHomPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 alias gB_ne_zero := _root_.Formalism.L2.SG.Pf.modulus_g_ne_zero
@@ -90,8 +88,6 @@ namespace Formalism.L2.SG.NormCut
 
 section CarK
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
   {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)} {F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)}
   {what₂ rows' : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (cs : ColSys X u what₂) (cs' : ColSys X u' rows')
@@ -144,8 +140,6 @@ theorem adm_norm_of_carrier (hTF : FrameTie X u u' F0 F0') (hM : Formalism.L2.SG
 end CarK
 
 section ChiTriv
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open Formalism.L2.SG.TermOp.Vanish in

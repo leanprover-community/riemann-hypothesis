@@ -233,16 +233,8 @@ theorem dualMap_algebraMap (f : R →+* S) :
     (dualMap f).comp (algebraMap R (DualNumber R)) = (algebraMap S (DualNumber S)).comp f := by
   ext x <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
 
-theorem fstHom_dualMap (f : R →+* S) :
-    (TrivSqZeroExt.fstHom S S S).toRingHom.comp (dualMap f) = f.comp (TrivSqZeroExt.fstHom R R R).toRingHom :=
-  RingHom.ext fun x => by simp [dualMap]
-
 theorem dualMap_comp (f : R →+* S) (g : S →+* T) : dualMap (g.comp f) = (dualMap g).comp (dualMap f) := by
   ext x <;> simp [dualMap]
-
-theorem specMap_comp (f : R →+* S) (g : S →+* T) :
-    Spec.map (CommRingCat.ofHom g) ≫ Spec.map (CommRingCat.ofHom f) = Spec.map (CommRingCat.ofHom (g.comp f)) := by
-  rw [← Spec.map_comp]; rfl
 
 end Ring
 
@@ -314,7 +306,7 @@ theorem valAt_up (e : X' ≅ X) {G : Over X} [GrpObj G] {G' : Over X'} [GrpObj G
         (DualNumber (X.presheaf.stalk (e.hom (centre z)))))) =
       Spec.map (CommRingCat.ofHom (algebraMap (X'.presheaf.stalk (centre z))
         (DualNumber (X'.presheaf.stalk (centre z))))) ≫ Spec.map (e.hom.stalkMap (centre z)) := by
-    rw [specMap_comp, dualMap_algebraMap, ← specMap_comp]
+    rw [GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp, dualMap_algebraMap, ← GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp]
     rfl
   let v' : epsAt (R := X'.presheaf.stalk (centre z)) (X'.fromSpecStalk (centre z)) ⟶ G' :=
     Over.homMk (Spec.map (CommRingCat.ofHom (dualMap (e.hom.stalkMap (centre z)).hom)) ≫ v.left ≫ φ.inv) (by
@@ -342,7 +334,7 @@ theorem valAt_up (e : X' ≅ X) {G : Over X} [GrpObj G] {G' : Over X'} [GrpObj G
         Spec.map (e.hom.stalkMap (centre z)) ≫ Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom
         (X.presheaf.stalk (e.hom (centre z))) (X.presheaf.stalk (e.hom (centre z)))
         (X.presheaf.stalk (e.hom (centre z)))).toRingHom) := by
-      rw [specMap_comp, fstHom_dualMap, ← specMap_comp]
+      rw [GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp, GlobalTheory.CompanionTheory.Ar.SqAdd.fst_comp_dualMap, ← GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp]
       rfl
     show Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom (X'.presheaf.stalk (centre z))
         (X'.presheaf.stalk (centre z)) (X'.presheaf.stalk (centre z))).toRingHom) ≫ v'.left =
@@ -355,14 +347,14 @@ theorem valAt_up (e : X' ≅ X) {G : Over X} [GrpObj G] {G' : Over X'} [GrpObj G
       have hg : (genMap ξ' ⟨centre z, h'⟩).comp (e.hom.stalkMap (centre z)).hom =
           genMap (ξ' ≫ e.hom) ⟨e.hom (centre z), h⟩ :=
         RingHom.ext (genMap_stalkMap_eq ξ' e.hom ⟨centre z, h'⟩ h)
-      rw [specMap_comp, ← dualMap_comp, hg]
+      rw [GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp, ← dualMap_comp, hg]
     show (M'.pt b).left = Spec.map (CommRingCat.ofHom (dualMap (genMap ξ' ⟨centre z, h'⟩))) ≫ v'.left
     rw [(Iso.eq_comp_inv φ).2 (hpt b), hve, hv', reassoc_of% k3]
     exact Category.assoc _ _ _
   · have k4 : Spec.map (CommRingCat.ofHom (dualMap (Scheme.stalkClosedPointTo z).hom)) ≫
         Spec.map (CommRingCat.ofHom (dualMap (e.hom.stalkMap (centre z)).hom)) =
         Spec.map (CommRingCat.ofHom (dualMap (Scheme.stalkClosedPointTo (z ≫ e.hom)).hom)) := by
-      refine (specMap_comp (dualMap (e.hom.stalkMap (centre z)).hom) (dualMap (Scheme.stalkClosedPointTo z).hom)).trans ?_
+      refine (GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp (dualMap (e.hom.stalkMap (centre z)).hom) (dualMap (Scheme.stalkClosedPointTo z).hom)).trans ?_
       rw [Scheme.stalkClosedPointTo_comp]
       exact congrArg (fun f => Spec.map (CommRingCat.ofHom f)) (dualMap_comp _ _).symm
     rw [(Iso.eq_comp_inv φ).2 hww, hvw, hv', ← k4]
@@ -518,12 +510,6 @@ theorem gr_one {S S' T : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [Grp
   subst e
   exact congrArg (fun z => z.left) (map_one (pushHom h (Over.mk a)))
 
-theorem gr_dual {R R' : Type} [CommRing R] [CommRing R'] (s : R →+* R') :
-    spMap (dualMap s) ≫ spMap (algebraMap R (DualNumber R)) = spMap (algebraMap R' (DualNumber R')) ≫ spMap s := by
-  rw [← Spec.map_comp, ← Spec.map_comp]
-  congr 1
-  ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-
 theorem gr_core {X : Scheme.{0}} {Ω R : Type} [Field Ω] [CommRing R] {x : Sp R ⟶ X} (hx : Mono x)
     (z : Sp ℂ ⟶ X) (s : R →+* ℂ) (k : R →+* Ω) (hz : spMap s ≫ x = z)
     {G G' : Over X} [GrpObj G] [GrpObj G'] {Gp : Over (Sp R)} [GrpObj Gp]
@@ -541,7 +527,7 @@ theorem gr_core {X : Scheme.{0}} {Ω R : Type} [Field Ω] [CommRing R] {x : Sp R
     ⟨h.1.lift a.left _ (Over.w a), h.1.lift_fst _ _ _, h.1.lift_snd _ _ _⟩
   have w0 : (spMap (dualMap s) ≫ l) ≫ Gp.hom = spMap (algebraMap ℂ (DualNumber ℂ)) ≫ spMap s := by
     rw [Category.assoc, hl2]
-    exact gr_dual _
+    exact PositivityTheory.UnitarySelfGeneration.Isomove.mv_dual_alg _
   have w1 : (l ≫ φ') ≫ G'.hom = spMap (algebraMap R (DualNumber R)) ≫ x := by
     rw [Category.assoc, h'.1.w, ← Category.assoc, hl2]
   have w2 : ((spMap (dualMap s) ≫ l) ≫ φ') ≫ G'.hom = spMap (algebraMap ℂ (DualNumber ℂ)) ≫ z := by
@@ -822,33 +808,6 @@ theorem gramAt_iff_of_tied : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
       rw [InertPlaceConditions, reassoc_of% hl2, hξp, ← F6, Category.assoc, F7]
 
 end GlobalTheory.CompanionTheory.Ar.SpecStalkMap
-
-namespace PositivityTheory.UnitarySelfGeneration
-
-open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
-
-theorem twisted_gram_matrices_match : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l)
-    (c : Coeff l) (O O' : Type) [CommRing O] [CommRing O'] (β : O →+* c.F) (β' : O' →+* c.F)
-    (Y : Model Xo c β) (Y' : Model Xo c β') (g : HostAut H) (Φ : Xo.X ≅ Xo.X)
-    (n : SABMap (twistSAB Xo.univ.t g) Xo.univ.t Φ.hom) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K]
-    (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (A : HodgeCpt Y S y) (A' : HodgeCpt Y' S y)
-    (e : A'.X ≅ A.X) (x x' : Sp Ω ⟶ Xo.XF c),
-    Mono (spMap β) → Mono (spMap β') → Φ.hom ≫ Xo.s = Xo.s → A'.ξ ≫ e.hom = A.ξ → A.ξ ≫ A.f = x ≫ Y.j → A'.ξ ≫ A'.f = x' ≫ Y'.j →
-    x' ≫ pullback.fst _ _ = x ≫ pullback.fst _ _ ≫ Φ.hom → x' ≫ pullback.snd _ _ = x ≫ pullback.snd _ _ →
-    A.cst = A'.cst → x ≫ pullback.snd _ _ = spMap A.cst → (∀ p ∈ S, A'.R p = A.R p) →
-    ∀ (t : SAB H A'.X) (tΩ : SAB H (Sp Ω)) (k : SABMap t A.t e.hom) (m : SABMap tΩ t A'.ξ)
-      (mA' : SABMap (twistSAB tΩ g) A'.t A'.ξ) (u : SABMap tΩ Y.oF.t x)
-      (u' : SABMap (twistSAB tΩ g) Y'.oF.t x') (M₁ : LieModel t.G A'.ξ A.Li) (φ : A.Li ≃ₗ[Ω] A'.Li),
-      m.φ ≫ k.φ ≫ A.m.φ = u.φ ≫ Y.m.φ → mA'.φ ≫ A'.m.φ = u'.φ ≫ Y'.m.φ →
-      u'.φ ≫ Y'.m0.toSABMap.φ = u.φ ≫ Y.m0.toSABMap.φ ≫ n.φ →
-      (∀ v, (M₁.pt v).left ≫ k.φ = (A.M.pt v).left) → (∀ v, ∃ w : epsAt (𝟙 (Sp Ω)) ⟶ tΩ.G, w.left ≫ m.φ = (M₁.pt v).left ∧ w.left ≫ mA'.φ = (A'.M.pt (φ v)).left) → (∀ N, FullTorsion A.t.G A.ξ N → FullTorsion t.G A'.ξ N) → (∀ (q : Cpt A'.ξ) (h : genPt A.ξ ⤳ e.hom q.1), regAt A'.ξ q = regAt A.ξ ⟨e.hom q.1, h⟩ ∧
-        (M₁.lat q : Set A.Li) = A.M.lat ⟨e.hom q.1, h⟩ ∧
-        ∀ N, (M₁.htOm t.PP.L N q : Set (Module.Dual Ω A.Li)) = A.M.htOm A.t.PP.L N ⟨e.hom q.1, h⟩) →
-      ∀ z : Sp ℂ ⟶ A'.X, A'.Interior z → ∀ (r : ℕ) (b : Fin r → A.Li) (Γ : Matrix (Fin r) (Fin r) ℂ),
-        M₁.GramAt t.PP.L z b Γ ↔ A'.M.GramAt A'.t.PP.L z (fun i => φ (b i)) Γ :=
-  @GlobalTheory.CompanionTheory.Ar.SpecStalkMap.gramAt_iff_of_tied
-
-end PositivityTheory.UnitarySelfGeneration
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -879,7 +838,7 @@ theorem cmpHodgeTied : HodgeComparisonCompatibility := by
     PositivityTheory.UnitarySelfGeneration.twisted_bundles_match_models E H D l Xo c O O' β β' Y Y' g Φ n S Ω K J y A A' e x x' hβ hβ' hΦ hξ hx hx' hf hs hc hcx hR t tΩ k m mA' u u' M₁ φ E1' E2 E3 hk htie hT hL hact,
     fun z => ⟨GlobalTheory.T.hodge_component_twist_frame_compat E H D l Xo c O O' β β' Y Y' g Φ n S Ω K J y A A' e x x' hβ hβ' hΦ hξ hx hx' hf hs hc hcx hR z, fun hz r b Γ =>
       (_root_.GlobalTheory.CompanionTheory.Ar.GMove.gramAt_move E H A.X A'.X e Ω A.ξ A'.ξ A.t t k A.Li A.M M₁ hξ hk z r b Γ).symm.trans
-        (PositivityTheory.UnitarySelfGeneration.twisted_gram_matrices_match E H D l Xo c O O' β β' Y Y' g Φ n S Ω K J y A A' e x x' hβ hβ' hΦ hξ hx hx' hf hs hc hcx hR t tΩ k m mA' u u' M₁ φ E1' E2 E3 hk htie hT hL z hz r b Γ)⟩⟩
+        (GlobalTheory.CompanionTheory.Ar.SpecStalkMap.gramAt_iff_of_tied E H D l Xo c O O' β β' Y Y' g Φ n S Ω K J y A A' e x x' hβ hβ' hΦ hξ hx hx' hf hs hc hcx hR t tΩ k m mA' u u' M₁ φ E1' E2 E3 hk htie hT hL z hz r b Γ)⟩⟩
   obtain ⟨w, hw, hw'⟩ := htie v
   have h1 : u'.φ ≫ Y'.oF.t.G.hom = (twistSAB tΩ g).G.hom ≫ x' := u'.cart.1.w
   have h2 : u.φ ≫ Y.oF.t.G.hom = tΩ.G.hom ≫ x := u.cart.1.w

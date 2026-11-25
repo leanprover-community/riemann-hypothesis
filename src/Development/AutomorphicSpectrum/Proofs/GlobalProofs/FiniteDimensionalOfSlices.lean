@@ -51,8 +51,6 @@ open scoped TensorProduct
 
 noncomputable section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 
 open GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.UAut GlobalTheory.StdPar

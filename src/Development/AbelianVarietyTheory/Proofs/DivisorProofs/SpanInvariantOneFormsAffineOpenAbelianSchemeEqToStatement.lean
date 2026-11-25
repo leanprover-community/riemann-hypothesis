@@ -54,8 +54,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.PrimitiveStructureS
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj

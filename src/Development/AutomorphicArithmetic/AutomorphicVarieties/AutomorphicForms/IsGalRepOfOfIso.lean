@@ -58,8 +58,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open TensorProduct Module GlobalTheory.CoeffExt
 open scoped Matrix
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.V.Af.ExLib
 
 theorem eventually_sat (hS : SatLoc) {F : Type} [Field F] [NumberField F] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
@@ -97,10 +95,6 @@ theorem isSst_iff : IsSst P ρ ↔ finrank ℚ_[l] ↥(Dst P ρ) = finrank ℚ_[
   rw [IsSst, ← finrank_mul_finrank ℚ_[l] ↥L.1 V, ← finrank_mul_finrank ℚ_[l] ↥L.1 ↥(Dst P ρ), mul_left_comm]
   exact (Nat.mul_right_inj finrank_pos.ne').symm
 
-private theorem finrank_fun' {k M ι : Type} [Field k] [AddCommGroup M] [Module k M] [Fintype ι] :
-    finrank k (ι → M) = Fintype.card ι * finrank k M := by
-  rw [finrank, rank_fun, Cardinal.toNat_mul, Cardinal.toNat_natCast, finrank]
-
 theorem isSst_of_coord (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (h : IsSst P ρ) : IsSst P ρ' := by
   have hm : ∀ x : V' ⊗[ℚ_[l]] Bst P, x ∈ Dst P ρ' ↔ ∀ i, tensCoord E (Bst P) x i ∈ Dst P ρ := fun x => by
     simp only [mem_Dst]
@@ -117,7 +111,8 @@ theorem isSst_of_coord (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (h : IsSst
       right_inv := fun y => funext fun i =>
         Subtype.ext (congrFun ((tensCoord E (Bst P)).apply_symm_apply fun i => (y i).1) i) }
   rw [isSst_iff] at h ⊢
-  rw [e.finrank_eq, (E.restrictScalars ℚ_[l]).finrank_eq, finrank_fun', finrank_fun', h, mul_left_comm]
+  rw [e.finrank_eq, (E.restrictScalars ℚ_[l]).finrank_eq, finrank_fun' ι, finrank_fun' ι,
+    h, mul_left_comm]
 
 end Coord
 

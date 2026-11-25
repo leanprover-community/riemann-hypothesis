@@ -66,8 +66,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published
 open UpperTheory.Zero.LLC UpperTheory.V.Z.Win
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter ValuativeRel
 
 namespace UpperTheory.Gal.SV

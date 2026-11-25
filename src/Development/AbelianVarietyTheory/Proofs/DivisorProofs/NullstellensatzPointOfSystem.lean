@@ -54,8 +54,6 @@ import ReciprocityTheory.SemistableReduction.DetGramEqProdGramSchmidt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HSCore GlobalTheory.HSChoice

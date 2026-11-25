@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JGenSpeciali
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain TopologicalSpace

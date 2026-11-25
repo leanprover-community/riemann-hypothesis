@@ -685,7 +685,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.Mum
 
@@ -1269,7 +1268,7 @@ theorem intElem_basicOpen_of_mul {X Y : Scheme.{0}} (α : Y ⟶ X) (W : X.Opens)
     rw [← CommRingCat.hom_comp, ← CommRingCat.hom_comp, Scheme.Hom.naturality]; rfl
   have h1 := h.map (Y.presheaf.map (homOfLE (α.preimage_mono (X.basicOpen_le s))).op).hom
   rw [e1, map_mul] at h1
-  have h2 := isIntegralElem_of_comp _ _ h1
+  have h2 := RingHom.isIntegralElem.of_comp _ _ h1
   have e2 := RingHom.congr_fun e1 s
   simp only [RingHom.comp_apply] at e2
   rw [e2] at h2

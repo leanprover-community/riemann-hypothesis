@@ -798,7 +798,7 @@ theorem decompletion : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAi
     (GlobalTheory.EtaleExact.sep_RW LL)
     hl.2.2
     (series_EE R (P.PD_p K))
-    (GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL h Γ R I hI).2.1
+    (GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL Γ R I).2.1
     F
     (fun i j => (mem_fixSub_iff AI K _).2 (hF i j))
     hu

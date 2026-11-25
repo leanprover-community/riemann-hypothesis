@@ -69,7 +69,7 @@ theorem slm_eLpNorm_le {X : Type*} [MeasurableSpace X] {μ : Measure X} [SFinite
 
 section Mat
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {s : Set E} {k : WithTop ℕ∞}
 
@@ -125,7 +125,7 @@ end Mat
 
 section Ret
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {ε : Fin n → Bool}
 

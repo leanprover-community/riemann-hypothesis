@@ -53,7 +53,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Forms Formalism.UG
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.MixPer GlobalTheory.AdForm
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -205,7 +204,6 @@ def StepOk {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a
     (∀ β c, h β c ∈ GfC _ ∧ finM _ (rankN (I.rec7 l Z) i hi) (h β c) = ((K hi β).y c).1.1) ∧
     (∀ β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K hi β).lev.chi κ ^ n = 1) ∧ ∀ v ∈ bad, v ∈ Formalism.L2.Forms.badG (I.rec7 l Z) ∨ I.UnderQ a v
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 
 

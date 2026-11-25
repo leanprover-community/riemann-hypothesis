@@ -48,8 +48,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open GlobalTheory GlobalTheory.DI
 
-set_option autoImplicit false
-
 namespace GlobalTheory.DI
 
 section CupDelta

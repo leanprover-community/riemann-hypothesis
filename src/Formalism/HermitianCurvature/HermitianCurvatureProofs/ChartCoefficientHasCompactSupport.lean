@@ -544,7 +544,7 @@ theorem continuous_gN' : Continuous (fun g : B.Mat k (j + ρ) => B.gN g) := by
 
 theorem chartCoefficient_hasCompactSupport (Bs : B.RealPlaceData k (j + ρ) Wp Wq) (b b' : RC k j ρ → ℝ) (hb : ContDiff ℝ ∞ b)
     (hbc : HasCompactSupport b) (hb' : ContDiff ℝ ∞ b') (hb'c : HasCompactSupport b')
-    (Φ : (Fin j → Fin j → ℂ) → Mt k ρ → (Wq →L[ℂ] Wp)) (V : Set ((Fin j → Fin j → ℂ) × Mt k ρ)) (hV : IsOpen V)
+    (Φ : (Fin j → Fin j → ℂ) → Mt k ρ → (Wq →L[ℂ] Wp)) (V : Set ((Fin j → Fin j → ℂ) × Mt k ρ))
     (hΦ : ∀ q₀ ∈ V, Matrix.of q₀.2 ∈ B.GV k ρ → ∃ (U : Set ((Fin j → Fin j → ℂ) × Mt k ρ))
       (F : (Fin j → Fin j → ℂ) × Mt k ρ → (Wq →L[ℂ] Wp)), IsOpen U ∧ q₀ ∈ U ∧ ContDiffOn ℝ ∞ F U ∧
         ∀ q ∈ U, Matrix.of q.2 ∈ B.GV k ρ → Φ q.1 q.2 = F q)

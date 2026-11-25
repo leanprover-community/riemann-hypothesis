@@ -51,7 +51,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Chart (spMap_comp spMap_id)
 
 namespace PositivityTheory.HtPt.Rf

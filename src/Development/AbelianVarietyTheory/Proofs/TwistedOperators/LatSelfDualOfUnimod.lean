@@ -68,8 +68,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.StdFrames
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Ring
 
 open Formalism.UG

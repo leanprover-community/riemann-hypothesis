@@ -333,8 +333,6 @@ namespace Formalism.L2.KerInert.PullbackComparison
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem emb_star (φ : D.host.E →+* ℂ) (x : D.host.E) : φ (star x) = starRingEnd ℂ (φ x) := by
@@ -468,8 +466,6 @@ noncomputable section
 namespace Formalism.L2.KerInert.PullbackComparison
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -672,8 +668,6 @@ noncomputable section
 namespace Formalism.L2.KerInert
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker Classical PullbackComparison
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem pullback_fact : PullFact := by
   intro D cc δ p _ lam N N' γ γ' M M' t G hAlg hInt

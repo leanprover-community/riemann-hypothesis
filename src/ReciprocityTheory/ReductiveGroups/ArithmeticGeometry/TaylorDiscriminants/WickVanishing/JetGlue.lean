@@ -5,8 +5,6 @@ public import Mathlib.AlgebraicGeometry.Stalk
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory

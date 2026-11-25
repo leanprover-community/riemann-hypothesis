@@ -1287,7 +1287,7 @@ theorem gIdil_of' (hWTC : GlobalTheory.Published.WeilThetaConvergence) (hDecA : 
       ∂autMeasure V ν) = _
     rw [key]; rfl
 
-theorem gIdil_of (hWTC : GlobalTheory.Published.WeilThetaConvergence) (_hGZ : GZSch) (hDecA : DecompAway) (hAway : AwayAct)
+theorem gIdil_of (hWTC : GlobalTheory.Published.WeilThetaConvergence) (hDecA : DecompAway) (hAway : AwayAct)
     (hLF : LocFact) (hGL : GaussLaw) (hAI : AwayIn) (hLL2 : LocalL2Isometry) : GIdil :=
   gIdil_of' hWTC hDecA hAway hLF hGL hAI hLL2 schFP lNe dCalc
 

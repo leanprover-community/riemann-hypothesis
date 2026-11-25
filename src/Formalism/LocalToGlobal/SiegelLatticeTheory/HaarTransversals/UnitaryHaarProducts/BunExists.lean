@@ -885,17 +885,11 @@ theorem Rc_add (w w' : VA I) : Rc I e0 f0 z0 bw bwd (w + w') = Rc I e0 f0 z0 bw 
   simp only [_root_.Formalism.L2.SG.Pf.unitaryCongruence.hA_add_right, add_smul, Finset.sum_add_distrib]
   abel
 
-private theorem hA_smul_right_unitary_haar_products (I : AutInst) (u : VA I) (c : I.E ⊗[I.F] Af I.F) (w : VA I) :
-    hA I u (c • w) = c * hA I u w := by
-  unfold hA Formalism.UG.hform
-  simp only [Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
-
 theorem Rc_smul (c : I.E ⊗[I.F] Af I.F) (w : VA I) :
     Rc I e0 f0 z0 bw bwd (c • w) = c • Rc I e0 f0 z0 bw bwd w := by
   unfold Rc
-  simp only [hA_smul_right_unitary_haar_products, mul_smul, smul_add, smul_sub, Finset.smul_sum]
+  simp only [_root_.Formalism.L2.SG.Pf.unitaryCongruence.hA_smul_right,
+    mul_smul, smul_add, smul_sub, Finset.smul_sum]
 
 theorem Rc_Lf (hm : (∀ a, e0 a ∈ I.Lf ∧ f0 a ∈ I.Lf) ∧ z0 ∈ I.Lf ∧ ∀ i, bw i ∈ I.Lf ∧ bwd i ∈ I.Lf)
     {w : VA I} (hw : w ∈ I.Lf) : Rc I e0 f0 z0 bw bwd w ∈ I.Lf := by

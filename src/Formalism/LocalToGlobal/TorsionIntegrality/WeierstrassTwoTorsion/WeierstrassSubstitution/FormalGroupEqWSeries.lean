@@ -98,9 +98,6 @@ theorem L_mul (φ ψ : MvPowerSeries (Fin 2) R) (i : Fin 2) :
   rw [MvPowerSeries.coeff_mul, Finsupp.antidiagonal_single]
   simp [Finset.Nat.antidiagonal_succ]
 
-theorem L_C (a : R) (i : Fin 2) : (L i) (MvPowerSeries.C a : MvPowerSeries (Fin 2) R) = 0 := by
-  simp [MvPowerSeries.coeff_C]
-
 theorem L_X (i j : Fin 2) :
     (L i) (MvPowerSeries.X j : MvPowerSeries (Fin 2) R) = if i = j then 1 else 0 := by
   simp [MvPowerSeries.coeff_X, Finsupp.single_left_inj one_ne_zero]

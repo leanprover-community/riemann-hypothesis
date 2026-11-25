@@ -54,7 +54,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.isHeckeChar_restrictionEta_inv : ∀ (D : D7) (χ : (AE D)ˣ →* Circle) (m : ℕ), IsHeckeChar D χ → ResEta D χ m → IsHeckeChar D χ⁻¹ ∧ ResEta D χ⁻¹ m := by

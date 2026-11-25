@@ -50,8 +50,6 @@ open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.R3 GlobalTheory.Mem
 
 namespace GlobalTheory.Mem.R3.DatCopy
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}

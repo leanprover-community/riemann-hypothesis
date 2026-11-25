@@ -52,8 +52,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.ExportSeries.DualType
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.StepLaw (ResAt UnrOff)
 
 variable {D : D7} {S T : HSp D}

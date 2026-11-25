@@ -161,8 +161,6 @@ namespace Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
 open Formalism.BasicNotions Formalism.MainNotions.flipTwoThree NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 end Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
 noncomputable section
@@ -170,8 +168,6 @@ noncomputable section
 namespace Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
 open Formalism.BasicNotions NumberField Formalism.MainNotions.flipTwoThree
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 structure ColBase (D : D7) (u : D.what₂.Word) where
   rho : D.what₂.Tau → (D.host.E →+* D.what₂.LL)
@@ -354,7 +350,5 @@ noncomputable section
 namespace Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
 open Formalism.BasicNotions Formalism.MainNotions
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end Formalism.MainNotions.GlobalTheoryTheory.Inhab

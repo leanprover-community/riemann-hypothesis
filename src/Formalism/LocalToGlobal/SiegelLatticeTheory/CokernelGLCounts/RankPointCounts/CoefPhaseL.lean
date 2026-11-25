@@ -66,8 +66,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.LocOrbSumPf Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.TermLoc
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Simple
 
 variable {K : Type} [CommRing K] {n : ℕ}

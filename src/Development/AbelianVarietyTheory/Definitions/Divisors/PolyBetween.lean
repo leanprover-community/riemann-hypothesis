@@ -39,8 +39,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Pj

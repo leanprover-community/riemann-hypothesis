@@ -49,8 +49,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne Neutral.B1
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.LocDict
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]

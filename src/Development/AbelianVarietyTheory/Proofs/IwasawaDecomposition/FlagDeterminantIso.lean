@@ -231,8 +231,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 open GlobalTheory GlobalTheory.Toroidal GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.CxPts GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.Mean4O GlobalTheory.ChernReg
 open scoped TensorProduct ContDiff
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ShFam

@@ -309,8 +309,8 @@ theorem inMul_std (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a))
     rw [lamTie D X s cc δ B χ cD a b N N' hok]
     show s.flatV a b (ω • (((s₂ * s₁ : ℕ) : ℂ) • vecE s.σ₀ (r : X.E) β α)) ∈ TaylorLogMetric.La D (TaylorLogMetric.tor0 D cc δ) (s.lat N) (s.lat N')
     rw [flatV_vecE s hok]
-    refine AddSubgroup.subset_closure ⟨ω, (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.mem_iff B ω).1 hω, _,
-      Submodule.subset_span ⟨1, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.int_mem_inverse_half_different isIntegral_one, _, Submodule.subset_span ?_, (one_smul _ _).symm⟩, rfl⟩
+    refine AddSubgroup.subset_closure ⟨ω, (GlobalTheory.FourthRootStd.mem_iff B ω).1 hω, _,
+      Submodule.subset_span ⟨1, GlobalTheory.FourthRootStd.int_mem_inverse_half_different isIntegral_one, _, Submodule.subset_span ?_, (one_smul _ _).symm⟩, rfl⟩
     intro y hy
     rw [unitM_mulVec]
     obtain ⟨r', hr'⟩ := (s.int_iff (r : X.E)).2 ⟨r, rfl⟩

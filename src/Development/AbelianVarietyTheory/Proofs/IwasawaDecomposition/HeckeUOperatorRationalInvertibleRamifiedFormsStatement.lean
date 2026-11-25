@@ -179,7 +179,6 @@ theorem card_annihilator_mul (k W : Type) [Field k] [Fintype k] [AddCommGroup W]
 
 theorem eq_zero_of_hyperplane_sums (k W M : Type) [Field k] [Fintype k] [DecidableEq k]
     [AddCommGroup W] [Module k W] [Finite W] [AddCommGroup M] [Module ℂ M] (ψ : W → M)
-    (_h0 : ψ 0 = 0)
     (h1 : ∀ g : Module.Dual k W, g ≠ 0 → ∑ᶠ x ∈ {x | g x = 1}, ψ x = 0)
     (h2 : ∀ x, ∑ a : kˣ, ψ ((a : k) • x) = 0) (x0 : W) : ψ x0 = 0 := by
   classical
@@ -397,7 +396,7 @@ theorem eq_zero_of_upSum_of_norm : ∀ (R V k W M : Type) [CommRing R] [AddCommG
     have h0 : ∃ w, Rel res t Λ π q w := rel_ex hs ho hk
     simp only [j, dif_pos h0]
     exact h0.choose_spec
-  have key := _root_.GlobalTheory.FiniteRadon.eq_zero_of_hyperplane_sums k W M ψ (ψ0 _ fun ⟨q, h⟩ => rel_ne ht htf hsat hr q h) (fun g hg => ?_) (fun w => ?_)
+  have key := _root_.GlobalTheory.FiniteRadon.eq_zero_of_hyperplane_sums k W M ψ (fun g hg => ?_) (fun w => ?_)
   · intro q ho hk
     rw [← ψ1 q _ (j1 q ho hk)]
     exact key _

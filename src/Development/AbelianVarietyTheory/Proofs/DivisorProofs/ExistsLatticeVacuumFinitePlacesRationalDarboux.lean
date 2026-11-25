@@ -82,34 +82,6 @@ section -- clump:auto
 
 namespace GlobalTheory.UnitNormRealPartBound
 
-lemma norm_eq_one {z : ℂ} (h : ∀ n : ℕ, ‖z ^ n - (1 : ℂ)‖ < (1 / 2 : ℝ)) : ‖z‖ = 1 := by
-  have hup : ∀ n : ℕ, ‖z‖ ^ n < 3 / 2 := fun n => by
-    have := h n
-    calc ‖z‖ ^ n = ‖(z ^ n - 1) + 1‖ := by rw [sub_add_cancel, norm_pow]
-      _ ≤ ‖z ^ n - 1‖ + ‖(1 : ℂ)‖ := norm_add_le _ _
-      _ < 3 / 2 := by rw [norm_one]; linarith
-  have hlo : ∀ n : ℕ, 1 / 2 < ‖z‖ ^ n := fun n => by
-    have := h n
-    have h2 : ‖(1 : ℂ)‖ ≤ ‖z ^ n - 1‖ + ‖z ^ n‖ := by
-      calc ‖(1 : ℂ)‖ = ‖-(z ^ n - 1) + z ^ n‖ := by ring_nf
-        _ ≤ ‖-(z ^ n - 1)‖ + ‖z ^ n‖ := norm_add_le _ _
-        _ = ‖z ^ n - 1‖ + ‖z ^ n‖ := by rw [norm_neg]
-    rw [norm_one, norm_pow] at h2
-    linarith
-  rcases lt_trichotomy ‖z‖ 1 with h1 | h1 | h1
-  · obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (by norm_num : (0 : ℝ) < 1 / 2) h1
-    linarith [hlo n]
-  · exact h1
-  · obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (3 / 2 : ℝ) h1
-    linarith [hup n]
-
-lemma re_gt {w : ℂ} (hw : ‖w‖ = 1) (h : ‖w - 1‖ < 1 / 2) : 7 / 8 < w.re := by
-  have h1 : ‖w - 1‖ ^ 2 < 1 / 4 := by nlinarith [norm_nonneg (w - 1)]
-  have h2 : ‖w‖ ^ 2 = 1 := by rw [hw]; norm_num
-  rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply] at h1 h2
-  simp at h1
-  nlinarith
-
 theorem main : ∀ {z : ℂ}, (∀ (n : ℕ), ‖z ^ n - (1 : ℂ)‖ < (1 / 2 : ℝ)) → z = (1 : ℂ) := by
   apply Bl.SecondBlockLemmaN.goal1
 
@@ -528,23 +500,7 @@ theorem vacFn_apply_base_add {K κ : Type} [CommRing K] [Invertible (2 : K)] [Fi
     (hY : ∀ y : κ → K, ((0 : κ → K), y) ∈ Λ → χ (0, y) = ψ₀ (x₀ ⬝ᵥ y))
     (u : (κ → K) × (κ → K)) (hu : u ∈ Λ) :
     vacFn ψ₀ Λ χ x₀ (x₀ + u.1) = χ u * ψ₀ (-(x₀ ⬝ᵥ u.2) - ⅟(2 : K) * (u.1 ⬝ᵥ u.2)) := by
-  have h : ∃ u' ∈ Λ, x₀ + u.1 = x₀ + u'.1 := ⟨u, hu, rfl⟩
-  rw [vacFn, dite_eq_left h]
-  obtain ⟨hu', he⟩ := h.choose_spec
-  set u' := h.choose
-  have h1 : u.1 = u'.1 := add_left_cancel he
-  have hd : ((0 : κ → K), u.2 - u'.2) = u - u' := by
-    ext <;> simp [h1]
-  have hdm : ((0 : κ → K), u.2 - u'.2) ∈ Λ := hd ▸ sub_mem hu hu'
-  have hsum : u = u' + ((0 : κ → K), u.2 - u'.2) := by rw [hd]; abel
-  have hχ : χ u = χ u' * ψ₀ (x₀ ⬝ᵥ (u.2 - u'.2)) * ψ₀ (⅟(2 : K) * (u'.1 ⬝ᵥ (u.2 - u'.2) - (0 : κ → K) ⬝ᵥ u'.2)) := by
-    conv_lhs => rw [hsum]
-    rw [hco u' hu' _ hdm, hY _ hdm]
-  rw [hχ, mul_assoc, mul_assoc, ← AddChar.map_add_eq_mul, ← AddChar.map_add_eq_mul]
-  congr 2
-  rw [h1]
-  simp only [dotProduct_sub, zero_dotProduct]
-  ring
+  apply _root_.GlobalTheory.HeisLatVac.lc_val <;> assumption
 
 theorem schr_vacFn : ∀ {K κ : Type} [CommRing K] [Invertible (2 : K)] [Fintype κ] (ψ₀ : AddChar K ℂ)
     (Λ : AddSubgroup ((κ → K) × (κ → K))) (χ : (κ → K) × (κ → K) → ℂ) (x₀ : κ → K),

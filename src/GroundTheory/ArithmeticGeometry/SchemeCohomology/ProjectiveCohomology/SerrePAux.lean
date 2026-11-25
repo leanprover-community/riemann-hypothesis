@@ -156,9 +156,6 @@ def H.δLinear (p : ℕ) :
     (N := Sheaf.H.{w'} (modulesAb S.X₁) (p + 1))
     (H.δ hS p (p + 1) rfl) (H.δ_map_smul A hS p)
 
-lemma H.δLinear_apply (p : ℕ) (x : Sheaf.H.{w'} (modulesAb S.X₃) p) :
-    H.δLinear A hS p x = H.δ hS p (p + 1) rfl x := rfl
-
 end Delta
 
 section Finite

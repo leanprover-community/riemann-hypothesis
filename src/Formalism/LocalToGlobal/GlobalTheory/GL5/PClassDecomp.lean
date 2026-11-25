@@ -736,7 +736,6 @@ end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.StabFin
 namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 
 open Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
-open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

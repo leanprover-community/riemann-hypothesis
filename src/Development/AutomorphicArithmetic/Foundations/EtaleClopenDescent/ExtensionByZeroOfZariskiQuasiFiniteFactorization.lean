@@ -227,9 +227,6 @@ private lemma spec_bot {A B : Type} [CommRing A] [IsDomain A] [CommRing B] [IsDo
   apply PrimeSpectrum.ext
   exact Ideal.comap_bot_of_injective f hf
 
-private lemma spec_field {F : Type} [Field F] (z : PrimeSpectrum F) : z = ⊥ :=
-  PrimeSpectrum.ext (Ideal.eq_bot_of_prime _)
-
 private lemma spec_gen {A : Type} [CommRing A] [IsDomain A] (a : PrimeSpectrum A)
     (h : a ⤳ (⊥ : PrimeSpectrum A)) : a = ⊥ :=
   le_bot_iff.1 ((PrimeSpectrum.le_iff_specializes _ _).2 h)
@@ -259,8 +256,8 @@ theorem UpperTheory.exists_specializes_lift_generic_base_change :
         (pullback.snd w (Spec.map (CommRingCat.ofHom (algebraMap R Ω))) ≫
           Spec.map (CommRingCat.ofHom (algebraMap R Ω))).base y'
       rw [pullback.condition]
-    rw [h2, spec_field (pullback.snd w (Spec.map (CommRingCat.ofHom (algebraMap R Ω))) y'),
-      spec_bot _ hinj] at h1
+    rw [h2, Subsingleton.elim (α := PrimeSpectrum Ω)
+      (pullback.snd w (Spec.map (CommRingCat.ofHom (algebraMap R Ω))) y') ⊥, spec_bot _ hinj] at h1
     exact h1
   obtain ⟨z, hz, -⟩ := Scheme.Pullback.exists_preimage_pullback (f := w)
     (g := Spec.map (CommRingCat.ofHom (algebraMap R (FractionRing R)))) x

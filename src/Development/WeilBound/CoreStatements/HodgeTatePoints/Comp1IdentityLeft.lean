@@ -276,26 +276,6 @@ theorem act_zero_eq (B : FB R d O) : B.A.act 0 = 0 := by
     have h0 : rho B 0 = 0 := by simpa using h
     intro i j
     exact congrFun (congrFun h0 i) j
-  have hdeg1 : ∀ e : Fin 1 × Fin d →₀ ℕ, Finsupp.degree e = 1 → ∃ t, e = Finsupp.single t 1 := by
-    intro e he
-    obtain ⟨t, ht⟩ : ∃ t, e t ≠ 0 := by
-      by_contra hne
-      push_neg at hne
-      have : e = 0 := Finsupp.ext hne
-      simp [this] at he
-    refine ⟨t, ?_⟩
-    have hle : Finsupp.single t 1 ≤ e := by
-      intro s
-      rw [Finsupp.single_apply]
-      split_ifs with hs
-      · subst hs
-        omega
-      · exact Nat.zero_le _
-    have hsum := congrArg Finsupp.degree (tsub_add_cancel_of_le hle)
-    rw [map_add (f := _), Finsupp.degree_single, he] at hsum
-    have hz : Finsupp.degree (e - Finsupp.single t 1) = 0 := by omega
-    rw [Finsupp.degree_eq_zero_iff, tsub_eq_zero_iff_le] at hz
-    exact le_antisymm hz hle
   have hord : ∀ i, (2 : ℕ∞) ≤ (B.A.act 0 i).order := by
     intro i
     apply MvPowerSeries.le_order
@@ -305,7 +285,7 @@ theorem act_zero_eq (B : FB R d O) : B.A.act 0 = 0 := by
     · rw [Nat.lt_one_iff, Finsupp.degree_eq_zero_iff] at h0
       subst h0
       simpa using hc i
-    · obtain ⟨⟨q, j⟩, rfl⟩ := hdeg1 e h1
+    · obtain ⟨⟨q, j⟩, rfl⟩ := (Finsupp.sum_eq_one_iff e).mp h1
       have hq : q = 0 := Subsingleton.elim _ _
       subst hq
       exact hlin i j
@@ -432,36 +412,10 @@ theorem act_zero : ∀ (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O]
   · rw [Nat.cast_succ, B.A.add_act, B.A.one_act]
   · rw [← B.A.mul_act, ← B.A.mul_act, mul_comm]
   · unfold GlobalTheory.CompanionTheory.Ar.Conj.pow1
-    apply axOne_prod
-    intro k
-    have hφ : Z (B.A.act (k : O)) := B.A.const _
-    have ha : ZZ (![comp1 (B.A.act (k : O)) (pt R d 0), pt R d 0, pt R d 1] : Fin 3 → Pt R 2 d) :=
-      zero_constant_triple (Z_comp1 hφ (Z_pt 0)) (Z_pt 0) (Z_pt 1)
-    constructor
-    · rw [ev_ev ha ZZa]
-      convert eval3_axiom_zero B.cocycleLeft_zero_fst (Z_zero (n := 1)) (Z_pt (R := R) (d := d) (n := 1) 0) using 2
-      funext j
-      fin_cases j <;> simp [evalPoints_comp ZZa, evalPoints_coordinatePoint ZZa, germComp1_zero_of_noConstantCoeff hφ, Z_pt]
-    · rw [ev_ev ha ZZb]
-      convert eval3_axiom_two B.cocycleLeft_zero_thd (Z_comp1 hφ (Z_pt (R := R) (d := d) (n := 1) 0))
-        (Z_pt (R := R) (d := d) (n := 1) 0) using 2
-      funext j
-      fin_cases j <;> simp [evalPoints_comp ZZb, evalPoints_coordinatePoint ZZb, Z_pt]
+    refine axOne_prod _ _ fun k => ?_
+    simpa only [comp1_identity_left] using axOne_xxz (ax3_ph1 B) (B.A.const (k : O)) (Z_pt 0)
   · unfold GlobalTheory.CompanionTheory.Ar.Conj.pow2
-    apply axOne_prod
-    intro k
-    have hφ : Z (B.A.act (k : O)) := B.A.const _
-    have ha : ZZ (![pt R d 0, comp1 (B.A.act (k : O)) (pt R d 1), pt R d 1] : Fin 3 → Pt R 2 d) :=
-      zero_constant_triple (Z_pt 0) (Z_comp1 hφ (Z_pt 1)) (Z_pt 1)
-    constructor
-    · rw [ev_ev ha ZZa]
-      convert eval3_axiom_zero B.cocycleRight_zero_fst (Z_comp1 hφ (Z_pt (R := R) (d := d) (n := 1) 0))
-        (Z_pt (R := R) (d := d) (n := 1) 0) using 2
-      funext j
-      fin_cases j <;> simp [evalPoints_comp ZZa, evalPoints_coordinatePoint ZZa, Z_pt]
-    · rw [ev_ev ha ZZb]
-      convert eval3_axiom_one B.cocycleRight_zero_snd (Z_pt (R := R) (d := d) (n := 1) 0) (Z_zero (n := 1)) using 2
-      funext j
-      fin_cases j <;> simp [evalPoints_comp ZZb, evalPoints_coordinatePoint ZZb, germComp1_zero_of_noConstantCoeff hφ, Z_pt]
+    refine axOne_prod _ _ fun k => ?_
+    simpa only [comp1_identity_left] using axOne_xzz (ax3_ph2 B) (B.A.const (k : O)) (Z_pt 0)
 
 end PositivityTheory.HtPt.Ca

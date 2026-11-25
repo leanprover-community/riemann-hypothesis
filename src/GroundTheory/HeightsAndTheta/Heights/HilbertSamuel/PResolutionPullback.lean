@@ -111,28 +111,6 @@ theorem blockRatio_eq_div {k₀ : K} {z z' : (Σ k, ι k) → ℂ} (hzz : SameOr
   rw [blockRatio_eq c ⟨i, hi⟩]
   exact (mul_div_cancel_right₀ _ hi).symm
 
-theorem isConeTangent_of_map {P0 P : Ideal (MRing ι)} (hP0 : P0 ≤ P) {e : ℕ}
-    {γ : (Fin e → ℂ) → (Σ k, ι k) → ℂ} {y : Fin e → ℂ} (hγ : AnalyticAt ℂ γ y)
-    (hpts : ∀ᶠ y' in 𝓝 y, γ y' ∈ mcPts P) (ξ : Fin e → ℂ) :
-    IsConeTangent (Int.castRingHom ℂ) P0 (γ y) (fderiv ℂ γ y ξ) := by
-  intro f hf
-  set F := map (Int.castRingHom ℂ) f
-  have hzero : (fun w => eval w F) ∘ γ =ᶠ[𝓝 y] fun _ => (0 : ℂ) := by
-    filter_upwards [hpts] with w hw
-    exact hw.2 f (hP0 hf)
-  have hd := (adens_hasFDerivAt_eval F (γ y)).comp y hγ.differentiableAt.hasFDerivAt
-  have h0 : HasFDerivAt ((fun w => eval w F) ∘ γ) (0 : (Fin e → ℂ) →L[ℂ] ℂ) y :=
-    (hasFDerivAt_const (0 : ℂ) y).congr_of_eventuallyEq hzero
-  have := congrArg (fun L => L ξ) (hd.unique h0)
-  simpa [_root_.sum_apply, smul_eq_mul] using this
-
-theorem levi_const_mul {κ : Type} [Fintype κ] {f : (κ → ℂ) → ℝ} {z : κ → ℂ} (c : ℝ)
-    (hf : ContDiffAt ℝ 2 f z) (w : κ → ℂ) : levi (fun y => c * f y) z w = c * levi f z w := by
-  have h := levi_add_smul (f := fun _ => (0 : ℝ)) c contDiffAt_const hf w
-  simp only [zero_add] at h
-  rw [h]
-  simp [levi]
-
 end Torus
 
 section Datum
@@ -256,8 +234,8 @@ theorem weight_isSemipositive : (weight d pt hcov).IsSemipositive := by
   have hcomp : (weight d pt hcov).φ l ∘ ((atlas d pt hcov).chart l).symm =
       (fun z => 2 * Real.log (d.A.h z)) ∘
         (fun y p => d.R.lift (pt l) (((atlas d pt hcov).chart l).symm y) p) := rfl
-  rw [hcomp, levi_comp w hG (contDiffAt_const.mul hlog), levi_const_mul 2 hlog]
-  exact mul_nonneg (by norm_num) (d.semipos.2 _ hmem _ (isConeTangent_of_map d.normalForm_baseLattice_le_dualSpan_sup_line hG hpts w))
+  rw [hcomp, levi_comp w hG (contDiffAt_const.mul hlog), GroundTheory.Heights₂.Heights.HilbertSamuel.ResolutionMetricPair.levi_const_mul 2 hlog]
+  exact mul_nonneg (by norm_num) (d.semipos.2 _ hmem _ (GroundTheory.Heights₂.Heights.HilbertSamuel.ResolutionMetricPair.isConeTangent_of_map d.normalForm_baseLattice_le_dualSpan_sup_line hG hpts w))
 
 def smoothVol : SmoothVolume (atlas d pt hcov) where
   μ := d.dV

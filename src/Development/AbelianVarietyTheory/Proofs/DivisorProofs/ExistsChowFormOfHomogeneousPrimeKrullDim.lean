@@ -447,8 +447,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open MvPolynomial GlobalTheory.ChowHt GlobalTheory.CompHt Filter
 open scoped ENNReal
 

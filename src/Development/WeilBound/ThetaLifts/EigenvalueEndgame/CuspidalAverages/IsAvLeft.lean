@@ -673,8 +673,6 @@ section Mult
 variable {X : Type} [AddCommGroup X] [TopologicalSpace X] [IsTopologicalAddGroup X] [LocallyCompactSpace X] [SecondCountableTopology X]
   [T2Space X] {Γ : AddSubgroup X}
 
-instance : LocallyCompactSpace (Multiplicative X) := inferInstanceAs (LocallyCompactSpace X)
-instance : SecondCountableTopology (Multiplicative X) := inferInstanceAs (SecondCountableTopology X)
 instance : T2Space (Multiplicative X) := inferInstanceAs (T2Space X)
 
 theorem lat_mult (h : IsCoLat Γ) : Lat Γ.toSubgroup := by

@@ -15,8 +15,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGHTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def nDelta {E : Type} [Field E] (r : ℕ) (γ : PN.Pts E r) : ℕ :=
   r * (r + 1) + ∑ a : Fin γ.1.length, endIdx γ a * (2 * r + 1 - endIdx γ a)
 

@@ -47,8 +47,6 @@ import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.DiagZEqNegAddY
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.WeierstrassCurve GlobalTheory.AddLaw

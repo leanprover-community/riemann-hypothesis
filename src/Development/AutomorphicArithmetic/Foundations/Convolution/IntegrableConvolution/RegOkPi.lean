@@ -87,35 +87,8 @@ variable {I : Type} {k : I → Type} [∀ i, Field (k i)] {n : ℕ}
 private abbrev ev (i : I) : GL (Fin n) (∀ i, k i) →* GL (Fin n) (k i) :=
   Matrix.GeneralLinearGroup.map (Pi.evalRingHom k i)
 
-private theorem ev_val (i : I) (g : GL (Fin n) (∀ i, k i)) :
-    ((ev i g : GL (Fin n) (k i)) : Matrix (Fin n) (Fin n) (k i)) =
-      (g : Matrix (Fin n) (Fin n) (∀ i, k i)).map (Pi.evalRingHom k i) := rfl
-
-private theorem ev_ext {g h : GL (Fin n) (∀ i, k i)} (e : ∀ i, ev i g = ev i h) : g = h := by
-  refine Units.ext (Matrix.ext fun a b => funext fun i => ?_)
-  have h : ((ev i g : GL (Fin n) (k i)) : Matrix (Fin n) (Fin n) (k i)) a b =
-      ((ev i h : GL (Fin n) (k i)) : Matrix (Fin n) (Fin n) (k i)) a b := by rw [e i]
-  exact h
-
-private def asm (x : ∀ i, GL (Fin n) (k i)) : GL (Fin n) (∀ i, k i) where
-  val := Matrix.of fun a b i => (x i : Matrix (Fin n) (Fin n) (k i)) a b
-  inv := Matrix.of fun a b i => ((x i)⁻¹ : GL (Fin n) (k i)).val a b
-  val_inv := by
-    ext a b i
-    have h := congrFun (congrFun (x i).val_inv a) b
-    simp only [Matrix.mul_apply, Matrix.of_apply, Finset.sum_apply, Pi.mul_apply] at h ⊢
-    rw [show ((x i)⁻¹ : GL (Fin n) (k i)).val = (x i).inv from rfl, h]
-    by_cases hab : a = b <;> simp [Matrix.one_apply, hab]
-  inv_val := by
-    ext a b i
-    have h := congrFun (congrFun (x i).inv_val a) b
-    simp only [Matrix.mul_apply, Matrix.of_apply, Finset.sum_apply, Pi.mul_apply] at h ⊢
-    rw [show ((x i)⁻¹ : GL (Fin n) (k i)).val = (x i).inv from rfl, h]
-    by_cases hab : a = b <;> simp [Matrix.one_apply, hab]
-
-private theorem ev_asm (x : ∀ i, GL (Fin n) (k i)) (i : I) : ev i (asm x) = x i := by
-  refine Units.ext (Matrix.ext fun a b => ?_)
-  rfl
+private def piGL : GL (Fin n) (∀ i, k i) ≃* ∀ i, GL (Fin n) (k i) :=
+  (Units.mapEquiv Matrix.piRingEquiv.toMulEquiv).trans MulEquiv.piUnits
 
 end Pi
 
@@ -123,11 +96,12 @@ private theorem regOk_pi (I : Type) (k : I → Type) [∀ i, Field (k i)] [∀ i
     [∀ i, IsTopologicalRing (k i)] [∀ i, T2Space (k i)] (n : ℕ) : RegOk (∀ i, k i) n := by
   intro γ hs
   have hsi : ∀ i, ((ev i γ : GL (Fin n) (k i)) : Matrix (Fin n) (Fin n) (k i)).charpoly.Separable := fun i => by
-    rw [ev_val, Matrix.charpoly_map]
+    change ((γ : Matrix (Fin n) (Fin n) (∀ i, k i)).map (Pi.evalRingHom k i)).charpoly.Separable
+    rw [Matrix.charpoly_map]
     exact hs.map
   have hc : ∀ i, Continuous (ev (n := n) (k := k) i) := fun i =>
-    Continuous.units_map _ ((continuous_id).matrix_map (continuous_apply i))
-  refine ⟨?_, fun a ha b hb => ev_ext fun i => ?_⟩
+    (continuous_apply i : Continuous (Pi.evalRingHom k i)).generalLinearGroup_map
+  refine ⟨?_, fun a ha b hb => (piGL (k := k)).injective (funext fun i => ?_)⟩
   · have e : {y : GL (Fin n) (∀ i, k i) | ∃ x : GL (Fin n) (∀ i, k i), y = x⁻¹ * γ * x} =
         ⋂ i, (ev i) ⁻¹' {y : GL (Fin n) (k i) | ∃ x : GL (Fin n) (k i), y = x⁻¹ * ev i γ * x} := by
       ext y
@@ -137,8 +111,8 @@ private theorem regOk_pi (I : Type) (k : I → Type) [∀ i, Field (k i)] [∀ i
         exact ⟨ev i x, by simp only [map_mul, map_inv]⟩
       · intro h
         choose x hx using h
-        refine ⟨asm x, ev_ext fun i => ?_⟩
-        simp only [map_mul, map_inv, ev_asm]
+        refine ⟨piGL.symm x, (piGL (k := k)).injective (funext fun i => ?_)⟩
+        simp only [map_mul, map_inv, Pi.mul_apply, Pi.inv_apply, MulEquiv.apply_symm_apply]
         exact hx i
     rw [e]
     exact isClosed_iInter fun i => ((regOk_field (k i) n (ev i γ) (hsi i)).1).preimage (hc i)
@@ -155,7 +129,8 @@ private theorem regOk_pi (I : Type) (k : I → Type) [∀ i, Field (k i)] [∀ i
       Subgroup.mem_centralizer_singleton_iff.mpr hB
     have hab : ev i a * ev i b = ev i b * ev i a :=
       centComm_field (ev i γ) (ev i a) (ev i b) (hsi i) ha' hb'
-    simpa only [map_mul] using hab
+    rw [map_mul, map_mul]
+    exact hab
 
 end UpperTheory.ConvolutionTheory.L1
 

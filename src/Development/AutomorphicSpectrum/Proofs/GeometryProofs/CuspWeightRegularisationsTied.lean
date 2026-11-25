@@ -124,7 +124,7 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 -- Members: Development.WeilBound.CoreStatements.PlurisubharmonicCones.RiemannLatticeConjugateCusp, Development.AutomorphicSpectrum.Proofs.MetricProofs.CuspWeightInvariantUnderConjugation, Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionSystemWeightLeft, Development.WeilBound.CoreStatements.PlurisubharmonicCones.NonemptyComponentModel, Development.WeilBound.CoreStatements.PlurisubharmonicCones.LimsupAddTendsto, Development.WeilBound.CoreStatements.PlurisubharmonicCones.PotentialChartsRegularBound, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsConjInvariantMollifier, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsConjInvariantMollifier, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsCutoffFamilySymmetric, Development.WeilBound.CoreStatements.PlurisubharmonicCones.TiedSettingSymmetricCharts, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsRegularizationSetting, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspWeightRegularisationsTied
 
 -- ===== clump member: Development.WeilBound.CoreStatements.PlurisubharmonicCones.RiemannLatticeConjugateCusp =====
--- clump-header: {"m": "Development.WeilBound.CoreStatements.PlurisubharmonicCones.RiemannLatticeConjugateCusp", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.WeilBound.CoreStatements.PlurisubharmonicCones.RiemannLatticeConjugateCusp", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductConjugate\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -190,12 +190,6 @@ theorem conjB_star (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)) (a : 𝓞 
   show star (ρ a (star (star x))) = _
   rw [star_star]
 
-theorem dot_conj (H : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
-    z ⬝ᵥ H.map (starRingEnd ℂ) *ᵥ star w = conj (star z ⬝ᵥ H *ᵥ star (star w)) := by
-
-  simp only [dotProduct, mulVec, map_sum, map_mul, Matrix.map_apply, Pi.star_apply, Complex.star_def,
-  Complex.conj_conj]
-
 def conjLat (R : RiemLat E g Λ) : RiemLat E g Λ where
   free := R.free
   fin := R.fin
@@ -208,11 +202,11 @@ def conjLat (R : RiemLat E g Λ) : RiemLat E g Λ where
   Hm := R.Hm.map (starRingEnd ℂ)
   herm := R.herm.map _ fun _ => rfl
   pos z hz := by
-    rw [dot_conj, Complex.conj_re]
+    rw [GlobalTheory.CompanionTheory.Ar.HodgeConj.form_conj, Complex.conj_re]
     exact R.pos (star z) (star_ne_zero.2 hz)
   im x y := by
     show (star (R.P x) ⬝ᵥ R.Hm.map (starRingEnd ℂ) *ᵥ star (star (R.P y))).im = ((-(R.form x y) : ℤ) : ℝ)
-    rw [dot_conj]
+    rw [GlobalTheory.CompanionTheory.Ar.HodgeConj.form_conj]
     simp only [star_star (R.P x), star_star (R.P y)]
     rw [Complex.conj_im, R.im, Int.cast_neg]
   B := conjB R.B
@@ -222,7 +216,7 @@ def conjLat (R : RiemLat E g Λ) : RiemLat E g Λ where
 
 theorem conjLat_ip (R : RiemLat E g Λ) (x y : Fin g → ℂ) : (conjLat R).ip (star x) (star y) = conj (R.ip x y) := by
   show star y ⬝ᵥ R.Hm.map (starRingEnd ℂ) *ᵥ star (star x) = conj (y ⬝ᵥ R.Hm *ᵥ star x)
-  rw [dot_conj]
+  rw [GlobalTheory.CompanionTheory.Ar.HodgeConj.form_conj]
   simp only [star_star x, star_star y]
 
 omit [IsCMField E] in

@@ -1249,10 +1249,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open MulAction Fib
 
-private lemma normal_of_center {Γ : Type} [Group Γ] {A : Subgroup Γ} (h : A ≤ Subgroup.center Γ) : A.Normal := ⟨fun n hn g => by
-  rw [Subgroup.mem_center_iff.mp (h hn) g, mul_inv_cancel_right]
-  exact hn⟩
-
 private lemma stab_mk {G : Type} [Group G] (U : Subgroup G) (g : G) :
     stabilizer G (g : G ⧸ U) = U.map (MulAut.conj g).toMonoidHom := by
   ext x
@@ -1287,7 +1283,7 @@ private theorem glue (hM : Master) (hTr : TrKer) (hPair : Pair)
       ∑ i, LinearMap.trace ℂ (B i).Forms ((Base.Tw.one (B i)).R fun g : S => f ((x i)⁻¹ * g * x i)) =
         c * ∑ᶠ i, cl (δ i) * gqOn (ι.comp (φ i)) (Γ₀.comap (φ i)) U' fun y => f (y.out⁻¹ * ι (δ i) * y.out) := by
   classical
-  have hΓ₀n : Γ₀.Normal := normal_of_center h4
+  have hΓ₀n : Γ₀.Normal := Subgroup.normal_of_le_center h4
   have htriv : ∀ z ∈ Γ₀, ∀ y : G ⧸ U', ι z • y = y := fun z hz y =>
     triv_act ι U' z (h5' z hz).1 (h5' z hz).2 y
   have hstab : ∀ y : G ⧸ U', Γ₀.relIndex ((stabilizer G y).comap ι) ≠ 0 := by

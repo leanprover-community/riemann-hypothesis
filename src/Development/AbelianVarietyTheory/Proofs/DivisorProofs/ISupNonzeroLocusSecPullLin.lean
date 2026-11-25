@@ -49,7 +49,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj Pointwise
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.HTLat GlobalTheory.Published GlobalTheory.Published.AbVarRed IsLocalRing
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -77,17 +76,5 @@ theorem iSup_nonzeroLocus_secPull_lin (a : Matrix (Fin (m + 1)) (Fin (N + 1)) R)
 def proj (a : Matrix (Fin (m + 1)) (Fin (N + 1)) R) : (dom a).toScheme ⟶ PSpace R m :=
   toProj ((dom a).ι ≫ PSpace.str R N) (fun i => GlobalTheory.Cartier.secPull (lin a i) (dom a).ι)
     (iSup_nonzeroLocus_secPull_lin a)
-
-def liftDom {X : Scheme.{0}} (a : Matrix (Fin (m + 1)) (Fin (N + 1)) R) (φ : X ⟶ PSpace R N)
-    (h : φ ⁻¹ᵁ dom a = ⊤) : X ⟶ (dom a).toScheme :=
-  IsOpenImmersion.lift (dom a).ι φ (by
-    rintro _ ⟨x, rfl⟩
-    rw [Scheme.Opens.range_ι]
-    have hx : x ∈ φ ⁻¹ᵁ dom a := h.ge trivial
-    exact hx)
-
-theorem liftDom_fac {X : Scheme.{0}} (a : Matrix (Fin (m + 1)) (Fin (N + 1)) R) (φ : X ⟶ PSpace R N)
-    (h : φ ⁻¹ᵁ dom a = ⊤) : liftDom a φ h ≫ (dom a).ι = φ :=
-  IsOpenImmersion.lift_fac _ _ _
 
 end GlobalTheory.SpanVA

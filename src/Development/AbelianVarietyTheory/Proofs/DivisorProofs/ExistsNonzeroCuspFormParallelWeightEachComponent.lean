@@ -41,8 +41,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.S
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore
 
 namespace GlobalTheory.FlatCore.NonzeroCusp

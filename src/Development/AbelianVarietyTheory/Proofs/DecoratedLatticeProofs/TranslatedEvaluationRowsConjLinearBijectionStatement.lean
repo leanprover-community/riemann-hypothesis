@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjugatedIntertwinerHasColumnLevel
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ThetaIdentityOfMapsAll
 public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.DiscreteSeriesClassificationIff
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PiCongrLeftUpdate
@@ -94,25 +95,7 @@ theorem e_left (k : X.B.I.Gf) (hk : k ∈ X.K2) (y : X.B.I.Gf) : X.B.e y = X.chi
 
 theorem R_comp_Re (k : X.B.I.Gf) (hk : k ∈ X.K2) :
     (X.B.R (1, k)).comp X.B.Re = X.chi2 k • X.B.Re := by
-  obtain ⟨R1, Rm, Rn, -⟩ := GlobalTheory.RightRegFund.rightReg_unitary_continuous X.B
-  obtain ⟨-, hT⟩ := X.B.Re_spec
-  have p1 : (fun g : X.B.I.Gf => X.B.R (1, g)) 1 = 1 := R1
-  have pm : ∀ a b : X.B.I.Gf, X.B.R (1, a * b) = X.B.R (1, a) * X.B.R (1, b) := by
-    intro a b; rw [← Rm]; simp
-  have pn : ∀ (g : X.B.I.Gf) v, ‖X.B.R (1, g) v‖ = ‖v‖ := fun g v => Rn _ v
-  refine ContinuousLinearMap.ext fun y => ?_
-  apply ext_inner_left ℂ
-  intro x
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply, inner_smul_right,
-    GlobalTheory.IdemProj.inner_rep (fun g : X.B.I.Gf => X.B.R (1, g)) p1 pm pn, hT, hT, ← integral_const_mul,
-    ← integral_mul_left_eq_self (fun h => X.chi2 k * (X.B.e h * ⟪x, X.B.R (1, h) y⟫_ℂ)) k]
-  congr 1
-  funext h
-  have e1 : ⟪X.B.R (1, k⁻¹) x, X.B.R (1, h) y⟫_ℂ = ⟪x, X.B.R (1, k * h) y⟫_ℂ := by
-    rw [← GlobalTheory.IdemProj.inner_rep (fun g : X.B.I.Gf => X.B.R (1, g)) p1 pm pn, pm]
-    rfl
-  show X.B.e h * ⟪X.B.R (1, k⁻¹) x, X.B.R (1, h) y⟫_ℂ = X.chi2 k * (X.B.e (k * h) * ⟪x, X.B.R (1, k * h) y⟫_ℂ)
-  rw [e1, e_left X k hk h, mul_assoc]
+  first | exact _root_.GlobalTheory.ConjRowLevel.reg_comp_Re | exact @_root_.GlobalTheory.ConjRowLevel.reg_comp_Re | apply _root_.GlobalTheory.ConjRowLevel.reg_comp_Re <;> assumption
 
 end GlobalTheory.ConjRowLev
 

@@ -73,11 +73,9 @@ theorem evI_mul (a b : AF F) : evI F (a * b) = evI F a * evI F b :=
 
 theorem evI_zero : evI F 0 = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
 
-theorem evI_sum {ι : Type} (s : Finset ι) (g : ι → AF F) : evI F (∑ i ∈ s, g i) = ∑ i ∈ s, evI F (g i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using evI_zero
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, evI_add, ih]
+theorem evI_sum {ι : Type} (s : Finset ι) (g : ι → AF F) :
+    evI F (∑ i ∈ s, g i) = ∑ i ∈ s, evI F (g i) :=
+  PositivityTheory.ThKF0.Lib.evI_sum s g
 
 theorem evI_realAd (t : ℝ) : evI F (realAd F t) = algebraMap ℝ (mixedEmbedding.mixedSpace F) t := by
   exact (InfiniteAdeleRing.ringEquiv_mixedSpace F).apply_symm_apply _
@@ -126,35 +124,25 @@ def pt (x : κ → mixedEmbedding.mixedSpace F) (y : κ → FiniteAdeleRing (�
   fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (x i), y i)
 
 theorem evI_pt (x : κ → mixedEmbedding.mixedSpace F) (y : κ → FiniteAdeleRing (𝓞 F) F) :
-    (fun i => evI F (pt x y i)) = x := by
-  funext i
-  exact (InfiniteAdeleRing.ringEquiv_mixedSpace F).apply_symm_apply _
+    (fun i => evI F (pt x y i)) = x :=
+  PositivityTheory.ThKF0.Lib.evI_pt x y
 
 theorem pureA_pt (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ)
     (x : κ → mixedEmbedding.mixedSpace F) (y : κ → FiniteAdeleRing (𝓞 F) F) :
-    pureA F f g (pt x y) = f x * g y := by
-  change f (fun i => evI F (pt x y i)) * g y = _
-  rw [evI_pt]
+    pureA F f g (pt x y) = f x * g y :=
+  PositivityTheory.ThKF0.Lib.pureA_pt f g x y
 
 def rOf (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) : (κ → AF F) → ℂ := fun x => g fun i => (x i).2
 
 theorem tens_rOf (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) :
     tens (evI F) f (rOf g) = pureA F f g := rfl
 
-theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0 := by
-  let u : AF F := (0, 1)
-  have h0 : evI F u = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
-  have h : u * z i = 0 := congrFun (hz u h0) i
-  have h' : (1 : Af F) * (z i).2 = 0 := congrArg Prod.snd h
-  simpa using h'
+theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0 :=
+  PositivityTheory.ThKF0.Lib.snd_eq_zero hz i
 
 theorem rOf_add (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) (x z : κ → AF F) (hz : At (evI F) z) :
-    rOf g (x + z) = rOf g x := by
-  have : (fun i => (x + z) i |>.2) = fun i => (x i).2 := by
-    funext i
-    show (x i).2 + (z i).2 = _
-    rw [snd_eq_zero hz, add_zero]
-  simp only [rOf, this]
+    rOf g (x + z) = rOf g x :=
+  PositivityTheory.ThKF0.Lib.rOf_add g x z hz
 
 end Heis
 

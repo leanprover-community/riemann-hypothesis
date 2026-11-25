@@ -55,8 +55,6 @@ open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels ComplexConj
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def flatDet (ξ : (AE D)ˣ →* Circle) (V : HSp D) (g : GA D V) : ℂ := ξ (GlobalTheory.RecDict.exists_isDetRoot D V g).choose

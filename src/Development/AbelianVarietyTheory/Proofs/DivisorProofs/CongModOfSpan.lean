@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.SiegelToroidalIntegral
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApproximateSeriesLeadingTermFourierSystem
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeadingTermUniqueSupportedBalancedCone, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CongModOfSpan
@@ -219,20 +220,7 @@ theorem unimod_comp (O : Type) [CommRing O] {X₀ X : Type} [AddCommGroup X₀] 
     {N : ℕ} {k : X₀ →ₗ[ℤ] X} (hk : IsUnimodMod O N k) {g : X₀ →ₗ[ℤ] X₀}
     (h1 : ∀ (c : O) x, CongMod N (g (c • x)) (c • g x)) (h2 : (N : ℤ) ∣ LinearMap.det g - 1) :
     IsUnimodMod O N (k ∘ₗ g) := by
-  obtain ⟨hk1, ε, hε⟩ := hk
-  refine ⟨fun c x => ?_, ε, ?_⟩
-  · obtain ⟨w, hw⟩ := h1 c x
-    obtain ⟨w', hw'⟩ := hk1 c (g x)
-    refine ⟨k w + w', ?_⟩
-    simp only [LinearMap.comp_apply]
-    rw [hw, map_add (f := _), map_nsmul, hw', smul_add]; abel
-  · rw [← LinearMap.comp_assoc, LinearMap.det_comp]
-    obtain ⟨u, hu⟩ := hε
-    obtain ⟨v, hv⟩ := h2
-    have e1 : LinearMap.det (ε.toLinearMap ∘ₗ k) = N * u + 1 := by linarith
-    have e2 : LinearMap.det g = N * v + 1 := by linarith
-    rw [e1, e2]
-    exact ⟨u * (N * v + 1) + v, by ring⟩
+  apply _root_.GlobalTheory.Poinc.leadingTermLemmas.unimod_comp <;> assumption
 
 theorem qW_single {s : ℕ} (W : Matrix (Fin (s + 1)) (Fin (s + 1)) ℤ) {X : Type} [AddCommGroup X]
     (β : LinearMap.BilinForm ℤ X) (x : X) : qW W β (fun u => if u = 0 then x else 0) = W 0 0 * β x x := by

@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ToPtsInj
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SemidefG
@@ -94,12 +96,11 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesCompl
 import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.GramJoint
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowTermAmplitudeEqMassMulPhaseStatement
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.WeightConstT
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsGlobalCoordinatesRationalFlagPair, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsGlobalCoordinatesRationalFlagPairStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsScaleNormalisedLocalReadingStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.FinprodEqProdMulFinprodIte, Development.AbelianVarietyTheory.Proofs.FlagMeasures.AmplitudeExpansionOverFinitePlaces, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalDatumOfTermInMovedLatticeOrbit, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalDatumOfTermInMovedLatticeOrbitStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalAmplitudeEqLocalAmplitudes, Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalAmplitudeEqLocalAmplitudesStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermMovesToBaseFramesUpToUnitriangular, Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermMovesToBaseFramesUpToUnitriangularStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.FamilyGroupSumFactorsRowWeightAmplitudeProof
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsGlobalCoordinatesRationalFlagPair =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsGlobalCoordinatesRationalFlagPair", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SemidefG\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanDifferentEqLocalGenerator\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.ExistsDualGen\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseAlgebraMap\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.GoodRDeltaC\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsGlobalCoordinatesRationalFlagPair", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SemidefG\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanDifferentEqLocalGenerator\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.ExistsDualGen\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseAlgebraMap\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.GoodRDeltaC\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc\nimport Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameDualUnipotentGroupActsUnitriangularOnto\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -118,10 +119,6 @@ section Loc
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V]
-
-theorem h_smul_right (H : Formalism.MainNotions.S.Loc.HermSp M V) (c : E) (x y : V) :
-    H.h x (c • y) = M.L.cj c * H.h x y := by
-  rw [H.h_herm (c • y) x, H.h_smul_left, map_mul, ← H.h_herm]
 
 theorem loc_ex (hM : M.OK) (H : Formalism.MainNotions.S.Loc.HermSp M V) (r k : ℕ) (P : Formalism.MainNotions.S.LocNG.FPair H r)
     (hP : P.RelG (Formalism.MainNotions.S.LocNG.theta M)) (b : Module.Basis (Fin (k + 2 * r + 1)) E V) (es es' : Fin r → V)
@@ -276,7 +273,7 @@ theorem gram_bL (Z : LocDat D) (p : PlF D) :
 
 theorem loc_pair (Z : LocDat D) (p : PlF D) (s t : (D.s.atP p).Ep) (x y : (VS D).V) :
     (locH Z p).h (s • baseChange₂ D p x) (t • baseChange₂ D p y) = s * ((Z.M p).L.cj t * (D.s.atP p).ιE (brS (VS D) x y)) := by
-  rw [(locH Z p).h_smul_left, h_smul_right]
+  rw [(locH Z p).h_smul_left, GlobalTheory.LocOver.UnipOnto.h_smul_right]
   congr 2
   exact baseChangeAt_form Z.M p (Z.hcj p) x y
 
@@ -1524,23 +1521,7 @@ namespace GlobalTheory.FamilyNormRational
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem toPts_inj' {K : Type} [Zero K] {i : ℕ} (p q : Point K (i + 1)) (h : toPts p = toPts q) : p = q := by
-  have hb : p.1.map Prod.snd = q.1.map Prod.snd := congrArg (fun x => x.1.blocks) h
-  have hl : p.1.length = q.1.length := by simpa using congrArg List.length hb
-  have hv : ∀ k (hk : k < p.1.length) (hk' : k < q.1.length), (p.1[k]).1 = (q.1[k]).1 := by
-    intro k hk hk'
-    have key := congrArg (fun x : (Σ c : Composition (i + 1), (Fin c.length → K)) =>
-      if hk : k < x.1.length then x.2 ⟨k, hk⟩ else 0) h
-    have e1 : k < (toPts p).1.length := by simpa [toPts, Composition.length] using hk
-    have e2 : k < (toPts q).1.length := by simpa [toPts, Composition.length] using hk'
-    simp only [dif_pos e1, dif_pos e2] at key
-    simpa [toPts] using key
-  apply Subtype.ext
-  apply List.ext_getElem hl
-  intro k hk hk'
-  have hs := congrArg (fun l => l[k]?) hb
-  simp only [List.getElem?_map, List.getElem?_eq_getElem hk, List.getElem?_eq_getElem hk', Option.map_some,
-    Option.some.injEq] at hs
-  exact Prod.ext (hv k hk hk') hs
+  first | exact _root_.Formalism.L2.SG.NGCut.NormalVectorPairings.toPts_inj | exact @_root_.Formalism.L2.SG.NGCut.NormalVectorPairings.toPts_inj | apply _root_.Formalism.L2.SG.NGCut.NormalVectorPairings.toPts_inj <;> assumption
 
 theorem squaredGroupSum_classDoubleCoset_eq_rowWeight : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k →
     ConcTie X Y → ∀ ν, Formalism.L2.SG.RealObj.NuQPin X u u' ν → ∀ s : X.B.I.Ginf → NNReal, (∀ γ, 0 < s γ) →

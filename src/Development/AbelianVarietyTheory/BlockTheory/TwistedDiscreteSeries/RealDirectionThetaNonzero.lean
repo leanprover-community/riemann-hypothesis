@@ -47,8 +47,6 @@ open scoped TensorProduct NNReal ENNReal
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.RealDirectionThetaNonzero
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def l2Sq {S T : HSp D} (μ : Measure (WO S T)) (𝓕 : Set (WO S T)) (f : WO S T → ℂ) : ℝ≥0∞ :=

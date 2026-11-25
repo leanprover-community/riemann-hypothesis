@@ -72,7 +72,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry KaehlerDifferential Opposite GlobalTheory.CatCoh
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi

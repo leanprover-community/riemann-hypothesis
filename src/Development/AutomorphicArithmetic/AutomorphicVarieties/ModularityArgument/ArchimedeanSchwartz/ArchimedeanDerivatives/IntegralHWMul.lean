@@ -107,8 +107,6 @@ open UpperTheory.V.TR (Rinf Lie chart infGL pInf toL rmul invSet CuspSub)
 open scoped ContDiff
 open GlobalTheory.HenQ
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HenQ.DetDParts

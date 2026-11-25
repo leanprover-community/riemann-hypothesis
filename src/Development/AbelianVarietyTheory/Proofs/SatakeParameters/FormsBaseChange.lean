@@ -57,7 +57,6 @@ public import Mathlib.RingTheory.Etale.Basic
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open GlobalTheory.W1 GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 

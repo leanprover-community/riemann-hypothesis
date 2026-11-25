@@ -67,10 +67,6 @@ lemma countable_valueGroupWithZero : Countable (ValueGroupWithZero F) :=
   haveI : Countable (WithZero (Multiplicative ℤ)) := inferInstanceAs (Countable (Option ℤ))
   Countable.of_equiv _ (IsNonarchimedeanLocalField.valueGroupWithZeroIsoInt F).toEquiv.symm
 
-lemma nhds_zero_isCountablyGenerated : (𝓝 (0 : F)).IsCountablyGenerated := by
-  have := countable_valueGroupWithZero F
-  exact (IsValuativeTopology.hasBasis_nhds_zero' F).isCountablyGenerated
-
 lemma sigmaCompactSpace : SigmaCompactSpace F := by
   have := countable_valueGroupWithZero F
   refine SigmaCompactSpace.of_countable

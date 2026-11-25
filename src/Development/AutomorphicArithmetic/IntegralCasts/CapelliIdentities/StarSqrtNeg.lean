@@ -40,8 +40,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 private lemma conj_eq_neg_of_sq {z : ℂ} {n : ℕ} (hn : 0 < n) (h : z ^ 2 = -(n : ℂ)) :
     (starRingEnd ℂ) z = -z := by
   have hre := congrArg Complex.re h

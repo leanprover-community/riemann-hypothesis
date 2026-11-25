@@ -1312,28 +1312,6 @@ namespace GlobalTheory.CoreOnto
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
-theorem coefPlus_is (G : GridData L sc) (θ : InfFam D) (hθ : IsInfFam θ) : (coefPlus G θ).Is := by
-  obtain ⟨hc, hs⟩ := GlobalTheory.CoefModel.realGL_laws hθ (Xp G)
-  haveI := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA D.sp.cm.sig (Xp G).gram
-  refine GlobalTheory.CoefModel.coefOf_is _ _ _ (fun h hh => ?_) (fun h τ => ?_) (fun τ => ?_) (fun g hg => ?_)
-  · have : GlobalTheory.CoefModel.realGL θ (Xp G) h = 1 := funext fun τ => by
-      show Formalism.UG.bc (θ τ) (infHom (Xp G) h) = 1
-      rw [show infHom (Xp G) h = 1 from hh, map_one]
-    rw [MonoidHom.comp_apply, this, map_one]
-  · exact GlobalTheory.CoefModel.invTr_unitary (g := GlobalTheory.CoefModel.realGL θ (Xp G) h τ)
-      (GlobalTheory.RecDictModel.archM_unitary _ (hθ τ) h)
-  · refine ((hc τ).comp continuous_inv).matrix_transpose.congr fun h => ?_
-    show Matrix.transpose (GlobalTheory.CoefModel.realGL θ (Xp G) h⁻¹ τ : Matrix (Fin (Xp G).rank) (Fin (Xp G).rank) ℂ) = _
-    rw [map_inv]
-    rfl
-  · obtain ⟨h, e⟩ := hs (invTrK g) fun τ => by
-      have := GlobalTheory.CoefModel.invTr_unitary (hg τ)
-      rwa [← Matrix.transpose_nonsing_inv, Matrix.nonsing_inv_nonsing_inv _
-        ((Matrix.isUnit_iff_isUnit_det _).1 (posDef_Xp G _).isUnit), Matrix.transpose_transpose] at this
-    refine ⟨h, ?_⟩
-    rw [MonoidHom.comp_apply, e]
-    exact funext fun τ => GlobalTheory.CoefModel.invTr_invTr _
-
 theorem eps_core_m (G : GridData L sc) (M : DSModel (G.V (.core D.R.m)) (Node.par D sc.cGap (.core D.R.m))) :
     ∀ τ a, M.ε τ a = true := by
   intro τ a
@@ -1347,7 +1325,7 @@ theorem eps_core_m (G : GridData L sc) (M : DSModel (G.V (.core D.R.m)) (Node.pa
 theorem topCols : TopCols := by
   intro D _ T L μ0 _ sc G W Mv _ M y hy w
   obtain ⟨pr, hpr⟩ := GlobalTheory.T.exists_dualPair_positiveWeightCoefficientSpace G W.θ W.θ_is M
-  obtain ⟨c, hc, e⟩ := GlobalTheory.T.exists_column_perfectPairing_definiteCoreNode G W.θ W.θ_is M (eps_core_m G M) (coefPlus_is G W.θ W.θ_is) pr hpr y hy
+  obtain ⟨c, hc, e⟩ := GlobalTheory.T.exists_column_perfectPairing_definiteCoreNode G W.θ W.θ_is M (eps_core_m G M) (GlobalTheory.TopLineProof.coefPlus_is G W.θ_is) pr hpr y hy
   refine ⟨c, hc, pr.flip w, ?_⟩
   subst e
   rfl

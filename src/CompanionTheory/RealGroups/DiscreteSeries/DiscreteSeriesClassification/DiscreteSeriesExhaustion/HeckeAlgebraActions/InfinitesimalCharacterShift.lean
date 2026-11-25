@@ -851,7 +851,7 @@ theorem fwdPath (hQ : QdetEq) (hC : StepChar) (hOS : OmScal) (hF : FwdSimple) (h
       have hI1 := hRefl (step X' (χ s)) hS1' (hC n X' χ s hH') hI
       exact hR n X X' χ s hSc hSc' hf hd hI1
 
-theorem hecke_of' (hQ : QdetEq) (hC : StepChar) (_hCH : CayleyHam) (hV : NonVan) (hNS : NonScal) (hB : Back)
+theorem hecke_of' (hQ : QdetEq) (hC : StepChar) (hV : NonVan) (hNS : NonScal) (hB : Back)
     (hOS : OmScal) (hF : FwdSimple) (hR : Reflect) : Hecke := by
   unfold CompanionTheory.RgExh.Hecke
   intro m X χ ss hG hS hH hSc
@@ -1892,7 +1892,7 @@ theorem forward_simple_module : FwdSimple :=
 theorem infinitesimal_character_shift : CompanionTheory.RgExh.StepChar := _root_.GlobalTheory.CompanionTheory.RgExhHecke.StepCharPf.stepChar
 
 theorem hecke_algebra_exhaustion : CompanionTheory.RgExh.Hecke :=
-  hecke_of' GlobalTheory.T.QuantumDeterminantEquality _root_.GlobalTheory.CompanionTheory.RgExhHecke.StepCharPf.stepChar _root_.GlobalTheory.CompanionTheory.RgExhHecke.CayleyOm.cayleyHam _root_.GlobalTheory.CompanionTheory.RgExhHecke.NonVanProof.nonVan _root_.GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal _root_.GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back _root_.GlobalTheory.CompanionTheory.RgExhHecke.OmScalP.omScal
+  hecke_of' GlobalTheory.T.QuantumDeterminantEquality _root_.GlobalTheory.CompanionTheory.RgExhHecke.StepCharPf.stepChar _root_.GlobalTheory.CompanionTheory.RgExhHecke.NonVanProof.nonVan _root_.GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal _root_.GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back _root_.GlobalTheory.CompanionTheory.RgExhHecke.OmScalP.omScal
     forward_simple_module reflection_symmetry
 
 end CompanionTheory.RgExh.Hk

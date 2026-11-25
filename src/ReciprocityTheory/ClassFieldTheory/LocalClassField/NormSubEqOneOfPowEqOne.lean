@@ -38,15 +38,8 @@ theorem isUnit_iff (x : Obar p) : IsUnit x ↔ ‖(x : PadicAlgCl p)‖ = 1 := b
     exact mul_inv_cancel₀ hx0
 
 theorem res_eq_zero_iff (x : Obar p) : res x = 0 ↔ ‖(x : PadicAlgCl p)‖ < 1 := by
-  constructor
-  · intro h
-    by_contra hc
-    have h1 : ‖(x : PadicAlgCl p)‖ = 1 := le_antisymm (norm_le_one x) (not_lt.1 hc)
-    exact (IsLocalRing.residue_ne_zero_iff_isUnit x).2 ((isUnit_iff x).2 h1) h
-  · intro h
-    by_contra hc
-    have := (isUnit_iff x).1 ((IsLocalRing.residue_ne_zero_iff_isUnit x).1 hc)
-    exact absurd this (ne_of_lt h)
+  rw [IsLocalRing.residue_eq_zero_iff, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, isUnit_iff x]
+  exact (norm_le_one x).lt_iff_ne.symm
 
 theorem res_eq_iff (x y : Obar p) : res x = res y ↔ ‖(x : PadicAlgCl p) - (y : PadicAlgCl p)‖ < 1 := by
   rw [← sub_eq_zero, ← map_sub, res_eq_zero_iff]

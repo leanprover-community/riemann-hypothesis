@@ -392,7 +392,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -405,15 +404,6 @@ open PAlg
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem dxi_zero' (A : PAlg l) (n : ℕ) : A.dxi n 0 = 1 := by
-  show A.mkAcr n (A.dxi0 0) = 1
-  rw [← map_one (A.mkAcr n)]
-  congr 1
-  apply Subtype.ext
-  simp [PAlg.dxi0, dpw]
-
-theorem fil_zero' (A : PAlg l) (n : ℕ) : A.Fil n 0 = ⊤ :=
-  (Ideal.eq_top_iff_one _).2 (dxi_zero' A n ▸ Ideal.subset_span ⟨0, le_rfl, rfl⟩)
 
 theorem fil_succ_le' (A : PAlg l) (n r : ℕ) : A.Fil n (r + 1) ≤ A.Fil n r :=
   Ideal.span_mono fun _ ⟨k, hk, hz⟩ => ⟨k, by omega, hz⟩
@@ -580,7 +570,7 @@ def fil0Inclusion (A : PAlg l) (n : ℕ) : (FilF l n 0).obj A →+ (AcrF l n).ob
   map_add' _ _ := rfl
 
 theorem filtration_zero_inclusion_bijective (A : PAlg l) (n : ℕ) : Function.Bijective (fil0Inclusion A n) :=
-  ⟨fun _ _ e => fv_inj e, fun y => ⟨mkF (r := 0) y (by rw [fil_zero']; trivial), rfl⟩⟩
+  ⟨fun _ _ e => fv_inj e, fun y => ⟨mkF (r := 0) y (by rw [GlobalTheory.CompanionTheory.FilMul.Fil_zero]; trivial), rfl⟩⟩
 
 theorem filtration_zero_inclusion_smul (A : PAlg l) (n : ℕ) (a : Acris l) (z : (FilF l n 0).obj A) :
     fil0Inclusion A n (a • z) = RingHom.id (Acris l) a • fil0Inclusion A n z := rfl
@@ -599,7 +589,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -645,7 +634,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

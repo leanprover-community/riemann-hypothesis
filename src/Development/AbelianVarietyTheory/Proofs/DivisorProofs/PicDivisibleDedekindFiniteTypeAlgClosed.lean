@@ -1488,36 +1488,7 @@ namespace GlobalTheory.PicDiv
 theorem injective_of_finite_not_field (k B : Type) [Field k] [IsAlgClosed k] [CommRing B] [IsDomain B]
     [Algebra k B] (y : B) (hfin : (Polynomial.aeval (R := k) y).Finite) (hB : ¬ IsField B) :
     Function.Injective (Polynomial.aeval (R := k) y) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro p hp
-  by_contra hp0
-  have hint : IsIntegral k y := (isAlgebraic_iff_isIntegral).mp ⟨p, hp0, hp⟩
-  have hdeg : (minpoly k y).natDegree = 1 := by
-    have := IsAlgClosed.degree_eq_one_of_irreducible k (minpoly.irreducible hint)
-    exact Polynomial.natDegree_eq_of_degree_eq_some this
-  obtain ⟨r, hr⟩ := (minpoly.natDegree_eq_one_iff).mp hdeg
-  letI : Algebra k[X] B := (Polynomial.aeval y).toRingHom.toAlgebra
-  haveI : Module.Finite k[X] B := hfin
-  have hsmul : ∀ (q : k[X]) (b : B), q • b = (q.eval r) • b := by
-    intro q b
-    rw [Algebra.smul_def, Algebra.smul_def]
-    change Polynomial.aeval y q * b = _
-    rw [← hr, Polynomial.aeval_algebraMap_apply, Polynomial.aeval_def]
-    rfl
-  obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := k[X]) (M := B)
-  have hk : Submodule.span k (s : Set B) = ⊤ := by
-    have key : ∀ b ∈ Submodule.span k[X] (s : Set B), b ∈ Submodule.span k (s : Set B) := by
-      intro b hb
-      induction hb using Submodule.span_induction with
-      | mem x hx => exact Submodule.subset_span hx
-      | zero => exact zero_mem _
-      | add x z _ _ hx hz => exact add_mem hx hz
-      | smul q x _ hx => rw [hsmul]; exact Submodule.smul_mem _ _ hx
-    rw [eq_top_iff]
-    intro b _
-    exact key b (by rw [hs]; trivial)
-  haveI : Module.Finite k B := ⟨⟨s, hk⟩⟩
-  exact hB ((Algebra.IsIntegral.isField_iff_isField (algebraMap k B).injective).mp (Field.toIsField k))
+  apply _root_.GlobalTheory.aeval_injective_of_finite_of_not_isField <;> assumption
 
 end GlobalTheory.PicDiv
 

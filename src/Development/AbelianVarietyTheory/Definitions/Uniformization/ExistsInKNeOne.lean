@@ -49,7 +49,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.UU
@@ -118,16 +117,6 @@ theorem inK_of_push {S' : Scheme.{0}} {f : S' ⟶ S} {B' : Over S'} [GrpObj B'] 
     {Z : Over S'} (x : Z ⟶ B') (hx : InK B L (pushPt h.1.w x)) : InK B' L' x :=
   memKL_of_push h hL hL' hw x hx
 
-
-variable (B) in
-theorem inK_triv (x : T ⟶ B) : InK B (Inh.trivLB B.left) x := by
-  intro p
-  refine ⟨⊤, trivial, ?_⟩
-  refine gen_chartPull (chartPullPull _ _ _ rfl)
-    (⟨fun _ => 1⟩ : LB.Gen (translDiff B (Inh.trivLB B.left) x)) ?_
-  intro i j
-  exact (map_one _).trans
-    ((congrArg₂ (· * ·) (Inh.linComb_triv_g _ _ i j) (map_one _)).trans (_root_.one_mul _)).symm
 
 end GlobalTheory.UU
 end

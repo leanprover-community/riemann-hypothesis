@@ -148,7 +148,6 @@ section Local
 
 open GlobalTheory.SplitFlip GlobalTheory.SplitWeil
 
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL Formalism.DoubleCosetMeasures.instBorelGL Formalism.DoubleCosetMeasures.instMeasMat
 attribute [local instance high] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -358,7 +357,6 @@ theorem valuation_kap (hG : G.IsGood B) (hG₂ : (reG G V V' Z).IsGood B) (v : B
     GlobalTheory.SplitFlip.valuation_gdet_of_mem_KO (mem_KO_of_bases (b₂ := Z.bas v) (hG.hW.bas v) (hG₂.hW.bas v)), one_mul, one_mul]
 
 
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL Formalism.DoubleCosetMeasures.instBorelGL Formalism.DoubleCosetMeasures.instMeasMat in
 attribute [local instance high] GlobalTheory.SplitWeil.matrixMeasurableSpace in
 theorem zeta_rel (hB : B.IsGood σ) (hG : G.IsGood B) (hG₂ : (reG G V V' Z).IsGood B) {X : Chars F E}
     {Rf S : FinMaps F a a'} {v : B.P} (h : IsZetaAt B G X Rf v) (h₂ : IsZetaAt B (reG G V V' Z) X S v)

@@ -284,8 +284,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Cris GlobalTheory.DeRham
 open scoped TensorProduct CategoryTheory.Obj
 
-set_option autoImplicit false
-
 namespace GlobalTheory.DeRhamCharpolyZero
 
 open GlobalTheory.AV
@@ -508,8 +506,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Cris GlobalTheory.DeRham
-
-set_option autoImplicit false
 
 noncomputable section
 

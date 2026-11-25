@@ -339,14 +339,6 @@ def cvO (D : D7) (n : ℕ) : (Fin n → D.host.E) →ₛₗ[cO D] (Fin n → D.h
     first
       | (simp [mul_comm]; exact Or.inl rfl)
 
-def cvE (D : D7) (n : ℕ) : (Fin n → D.host.E) →ₛₗ[starRingEnd D.host.E] (Fin n → D.host.E) where
-  toFun z i := star (z i)
-  map_add' x y := by ext i; simp
-  map_smul' o z := by
-    funext i
-    show star (o * z i) = star o * star (z i)
-    exact star_mul' _ _
-
 def conjLat {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) : Submodule (𝓞 D.host.E) (Fin n → D.host.E) :=
   L.map (cvO D n)
 

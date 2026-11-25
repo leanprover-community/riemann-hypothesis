@@ -183,8 +183,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OnCmp GlobalTheory.BigOn GlobalTheory.RealIndexBound
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
 
-set_option autoImplicit false
-
 noncomputable section
 
 open Classical
@@ -536,8 +534,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -679,8 +675,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShortCentralMove", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.KerDatTuple\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMapOfOfExtends\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TwistTrivialOnRational\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.RealisedChainTorusEq\npublic import Development.AbelianVarietyTheory.Definitions.HeightFunctions.NormComparisonConstants\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ClsAt\npublic import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HeckeTransferRankOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteGroupLevelStructureActionFixedRuns\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LeafDataOfOnTieOfIntegral\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.AdmissibleColumnsLeAndHarmonicMapCover\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CoverMulShortThetaSeriesIndepOfFramedLift\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsQuotEquiv\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortThetaValueUnderLevelMoveStatement\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMapAllComparison\nimport Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ChartIndependenceUnconditional\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDetOfMemSt\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemOfFrame\nimport Development.AbelianVarietyTheory.Definitions.Jets.EmbShortThLeThetaPlain\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.ActLevFullLevelGroupFramedPoints\nimport Formalism.LocalToGlobal.ProjectiveLattices.LiftLaSpec\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCompletedIsometryInducingHalfLevelAutomorp\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsConjLevelMapByLevelMovesStatement\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLevelChangeActionOnCuspForms\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelActionShortThetaSeriesRootOfUnityMul\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelCoverDatumSimilitudeAdjointTransportStatement\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.LiesOverFramedOfSquareLevelMovesStatement\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.ModuliSchemeLevelMapsHeckePoints\nimport Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFramedPointMoveUniversalTriple\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrMoveTransfer\nimport Formalism.LocalToGlobal.IndefiniteReal.FWExist\nimport Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.KernelSpanOverClasses\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1417,8 +1411,6 @@ open scoped TensorProduct Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OnCmp GlobalTheory.BigOn GlobalTheory.RealIndexBound
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
-
-set_option autoImplicit false
 
 noncomputable section
 

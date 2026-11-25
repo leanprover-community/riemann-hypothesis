@@ -66,11 +66,10 @@ import Std.Tactic.BVDecide.Normalize.Prop
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartBaseChangeMapUnique, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartBaseChangeMapUniqueStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartEmptyBaseChange, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartExtendBaseChange, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartFormsBaseChange, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartFormsBaseChangeStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartSingletonBaseChange, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KaehlerFreeConeRing, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeFormsMapInjective, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExPOfCompatibleEquiv, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsetSystemInjectiveExtension, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsetSystemScalarTowerExt, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonLNegOneEMul, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonomialFormsBasis, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PmExactnessOfExP, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsTheta
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartBaseChangeMapUnique =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartBaseChangeMapUnique", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AlgebraMapConeRing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartBaseChangeMapUnique", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AlgebraMapConeRing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMulPowEqIncl\n\n"}
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaUnique
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -87,12 +86,6 @@ theorem mon_congr {M : AddSubmonoid (Gam n d)} {g g' : Gam n d} (h : g = g') (hg
 
 theorem mon_zero (M : AddSubmonoid (Gam n d)) : mon K (0 : Gam n d) M.zero_mem = 1 := rfl
 
-theorem mon_pow {M : AddSubmonoid (Gam n d)} (g : Gam n d) (hg : g ∈ M) (k : ℕ) :
-    mon K g hg ^ k = mon K (k • g) (M.nsmul_mem hg k) := by
-  induction k with
-  | zero => rw [pow_zero]; exact ((mon_congr (zero_nsmul g) _ M.zero_mem).trans (mon_zero M)).symm
-  | succ k ih => rw [pow_succ, ih, mon_mul]; exact mon_congr (succ_nsmul g k).symm _ _
-
 theorem mon_prod {M : AddSubmonoid (Gam n d)} (s : Finset (E n d)) (f : E n d → Gam n d) (hf : ∀ e, f e ∈ M) :
     ∏ e ∈ s, mon K (f e) (hf e) = mon K (∑ e ∈ s, f e) (M.sum_mem fun e _ => hf e) := by
   classical
@@ -106,7 +99,7 @@ theorem poly_monomial (S : Finset (Fin d)) (k : E n d → ℕ) :
     poly n K S (∏ e, MvPolynomial.X e ^ k e) =
       mon K (∑ e, k e • oneE e) ((cone S).sum_mem fun e _ => (cone S).nsmul_mem (oneE_mem S e) (k e)) := by
   rw [map_prod]
-  simp only [map_pow, poly_X, mon_pow]
+  simp only [map_pow, poly_X, GlobalTheory.CompanionTheory.SurjectionOntoH4.Away.mon_pow]
   exact mon_prod _ _ _
 
 theorem poly_tau_pow (S : Finset (Fin d)) (N : ℕ) :
@@ -116,7 +109,7 @@ theorem poly_tau_pow (S : Finset (Fin d)) (N : ℕ) :
   · simp only [Pi.smul_apply, Finset.sum_apply, oneE, Pi.single_apply, Finset.sum_ite_eq, Finset.mem_univ, if_true, nsmul_eq_mul, mul_one]
   · rw [map_pow, tau, map_prod]
     simp only [poly_X]
-    rw [mon_prod, mon_pow]
+    rw [mon_prod, GlobalTheory.CompanionTheory.SurjectionOntoH4.Away.mon_pow]
 
 theorem exists_poly (S : Finset (Fin d)) (y : R0 K n d S) :
     ∃ (N : ℕ) (b : Bp K n d), poly n K S (tau K n d ^ N) * y = poly n K S b := by
@@ -228,7 +221,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaEmpty
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -272,7 +264,6 @@ section -- clump:auto
 
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaLoc
 
@@ -434,7 +425,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4
 open CrystallineSemistableComparison.Onto
@@ -791,7 +781,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaOne
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -989,7 +978,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.FreeOm
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -1110,7 +1098,6 @@ section -- clump:auto
 
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.OmlInj
 open scoped TensorProduct
@@ -1197,7 +1184,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4
 open CrystallineSemistableComparison.Onto
 
@@ -1262,7 +1248,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.Exc
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -1461,7 +1446,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ExFlat
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4 TensorProduct
@@ -1611,7 +1595,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
 
@@ -1727,7 +1710,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.BasisW
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -1785,8 +1767,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
@@ -1833,7 +1813,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4
 open CrystallineSemistableComparison.Onto

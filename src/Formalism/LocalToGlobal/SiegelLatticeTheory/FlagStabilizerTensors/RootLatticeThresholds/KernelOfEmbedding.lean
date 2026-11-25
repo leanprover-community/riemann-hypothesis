@@ -13,8 +13,6 @@ open NumberField Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2
 
 namespace Formalism.L2.SG.Pf.KernelOfEmbedding
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section HS
 
 variable {Wq Wp : Type*} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]

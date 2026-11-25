@@ -51,8 +51,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter
 open GlobalTheory.CuspGeneric GlobalTheory.CuspRep PositivityTheory.jumpWindows
 open scoped ContDiff
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.CutOff
 
 section Row

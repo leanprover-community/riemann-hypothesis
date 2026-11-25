@@ -127,30 +127,6 @@ private theorem gm_pullU_eq_gm_comp' {X Y Z : Scheme.{0}} (f : Y ⟶ X) (r : Z �
   simp
   rfl
 
-private theorem units_ext_of_gm_id_eq_on_open {Y : Scheme.{0}} {W : Y.Opens} (s s' : Γ(Y, W)ˣ)
-    (h : ∀ y : Y, y ∈ W → gm (𝟙 Y) y W s = gm (𝟙 Y) y W s') : s = s' := by
-  apply Units.ext
-  apply TopCat.Presheaf.section_ext Y.sheaf W
-  intro y hy
-  have e := congrArg Units.val (h y hy)
-  unfold gm pullU at e
-  rw [dite_eq_left (by simpa using hy)] at e
-  exact e
-
-private theorem gm_linComb_transition_eq {X' Y Z : Scheme.{0}} (M : LB X') {K : Type} [Fintype K] (φ : K → (Y ⟶ X'))
-    (ε : K → ℤ) (r : Z ⟶ Y) (z : Z) (a b : K → M.ι)
-    (hz : r z ∈ (M.LinComb φ ε).U a ⊓ (M.LinComb φ ε).U b) :
-    gm r z ((M.LinComb φ ε).U a ⊓ (M.LinComb φ ε).U b) ((M.LinComb φ ε).g a b) = trF (L := M) φ ε r z a b := by
-  unfold trF
-  unfold LB.LinComb at *
-  dsimp only at *
-  refine (map_prod _ _ _).trans (Finset.prod_congr rfl fun k _ => ?_)
-  rw [map_zpow]
-  congr 1
-  refine (gm_res_eq_gm r z _ hz _).trans (gm_pullU_eq_gm_comp' (φ k) r z (M.U (a k) ⊓ M.U (b k)) ?_ (M.g (a k) (b k)))
-  unfold LB.wchart at hz
-  exact ⟨Set.mem_iInter.1 hz.1 k, Set.mem_iInter.1 hz.2 k⟩
-
 private theorem mem_pull_wchart_of_mem_linComb_wchart {X X' Y : Scheme.{0}} (L : LB X) {J K : Type} [Fintype J] [Fintype K]
     (F : J → (X' ⟶ X)) (φ : K → (Y ⟶ X')) (y : Y) (jj : K → J → L.ι) (i : J)
     (h : y ∈ (L.LinComb F fun _ => 1).wchart φ jj) : y ∈ (L.pull (F i)).wchart φ (fun k _ => jj k i) := by

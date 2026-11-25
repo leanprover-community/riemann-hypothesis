@@ -162,51 +162,6 @@ variable (S : Sit) [IsTopologicalRing S.LL] [IsDomain S.O] [IsPrincipalIdealRing
   (hp : ∀ g v, p (Yt.ρ g v) = p v) (hint : ∀ v ∈ Yt.L.T, p v ∈ Set.range (algebraMap S.O S.LL))
   (he₀ : e₀ ∈ Yt.L.T) (hinj : Function.Injective (algebraMap S.O S.LL))
 
-def incL : (kerY Yt p e₀ hpe hp hint he₀).V →ₗ[S.LL] Yt.V := (LinearMap.ker p).subtype
-
-theorem incL_cont : Continuous (incL S Yt p e₀ hpe hp hint he₀) :=
-  IsModuleTopology.continuous_of_linearMap _
-
-def projL : Yt.V →ₗ[S.LL] (trivZ S.G S.Qp S.LL S.O hinj).V := p
-
-theorem projL_cont : Continuous (projL S Yt p hinj) :=
-  IsModuleTopology.continuous_of_linearMap _
-
-def incHom : LatHom (kerY Yt p e₀ hpe hp hint he₀).L Yt.L :=
-  { f := incL S Yt p e₀ hpe hp hint he₀
-    equiv := fun _ _ => rfl
-    cont := incL_cont S Yt p e₀ hpe hp hint he₀
-    T_le := fun _ hx => hx }
-
-def projHom : LatHom Yt.L (trivZ S.G S.Qp S.LL S.O hinj).L :=
-  { f := projL S Yt p hinj
-    equiv := fun g x => hp g x
-    cont := projL_cont S Yt p hinj
-    T_le := fun x hx => by
-      obtain ⟨a, ha⟩ := hint x hx
-      exact ⟨a, ha⟩ }
-
-theorem ses : IsSESLat (Qp := S.Qp) (incHom S Yt p e₀ hpe hp hint he₀) (projHom S Yt p hp hint hinj) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
-  · intro a b h
-    exact Subtype.ext h
-  · intro t
-    let s : S.LL := t
-    refine ⟨s • e₀, ?_⟩
-    change p (s • e₀) = s
-    rw [map_smul, hpe, smul_eq_mul, mul_one]
-  · rintro y ⟨a, rfl⟩
-    exact ⟨a • e₀, Yt.L.T.smul_mem a he₀, GlobalTheory.TBLocal.p_smul S Yt p e₀ hpe a⟩
-  · intro x
-    change p x = 0 ↔ ∃ y : LinearMap.ker p, (y : Yt.V) = x
-    constructor
-    · intro h
-      exact ⟨⟨x, h⟩, rfl⟩
-    · rintro ⟨y, rfl⟩
-      exact y.2
-  · intro y hy
-    exact hy
-
 include hinj in
 theorem tb_part1 (E : S.Comparison₂) (hTB : TBat S E) (e M0 h0 cB : ℕ) (Ve : LocLat S.G S.Qp S.LL S.O)
     (h1 : Module.finrank S.LL Ve.V = 1)

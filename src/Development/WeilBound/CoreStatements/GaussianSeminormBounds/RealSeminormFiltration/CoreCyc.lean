@@ -195,23 +195,16 @@ theorem cas_comm {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : Ix r s → Ix 
       · by_cases h : a = c
         · subst h; simp [hcd]
         · simp [h, Ne.symm h]
-    · have t1 : (if b = c then (if sameBlock a d then ρ a d * ρ d b else 0) else 0) = 0 := by
+    · have h0 : ∀ (P Q : Prop) [Decidable P] [Decidable Q] (X : Module.End ℂ M),
+          (P → Q → False) → (if P then (if Q then X else 0) else 0) = 0 := fun P Q _ _ _ h => by
         split_ifs with h1 h2
-        · subst h1; exact absurd (sb_trans (sb_symm hab) h2) hcd
+        · exact absurd h2 (h h1)
         all_goals rfl
-      have t2 : (if a = d then (if sameBlock c a then ρ c b * ρ a c else 0) else 0) = 0 := by
-        split_ifs with h1 h2
-        · subst h1; exact absurd h2 hcd
-        all_goals rfl
-      have t3 : (if b = d then (if sameBlock c a then ρ c b * ρ a c else 0) else 0) = 0 := by
-        split_ifs with h1 h2
-        · subst h1; exact absurd (sb_trans h2 hab) hcd
-        all_goals rfl
-      have t4 : (if a = c then (if sameBlock a d then ρ a d * ρ d b else 0) else 0) = 0 := by
-        split_ifs with h1 h2
-        · subst h1; exact absurd h2 hcd
-        all_goals rfl
-      rw [t1, t2, t3, t4, if_neg hcd]
+      rw [if_neg hcd,
+        h0 (b = c) (sameBlock a d) _ fun h1 h2 => hcd (h1 ▸ sb_trans (sb_symm hab) h2),
+        h0 (a = d) (sameBlock c a) _ fun h1 h2 => hcd (h1 ▸ h2),
+        h0 (b = d) (sameBlock c a) _ fun h1 h2 => hcd (h1 ▸ sb_trans h2 hab),
+        h0 (a = c) (sameBlock a d) _ fun h1 h2 => hcd (h1 ▸ h2)]
       simp
   have h0 : ρ a b * casK ρ - casK ρ * ρ a b = 0 := by
     unfold casK

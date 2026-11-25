@@ -267,15 +267,8 @@ private theorem reps_finsum {K : Type} [Field K] [NumberField K] {n : ℕ} (μ :
 
 private theorem coe_lsum {d : ℕ} {ι : Type} (s : Finset ι) (W : ι → L (Eu d)) :
     ∀ᵐ x : ℝ, (∑ i ∈ s, W i : L (Eu d)) x = ∑ i ∈ s, W i x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    filter_upwards [Lp.coeFn_zero (Eu d) 2 (volume : Measure ℝ)] with x e
-    simpa using e
-  | insert i s hi ih =>
-    rw [Finset.sum_insert hi]
-    filter_upwards [Lp.coeFn_add (W i) (∑ j ∈ s, W j), ih] with x e1 e2
-    rw [e1, Pi.add_apply, e2, Finset.sum_insert hi]
+  filter_upwards [Lp.coeFn_finsetSum s W] with x e
+  rw [e, Finset.sum_apply]
 
 theorem UpperTheory.pseudoEisenstein_section_pfun_inBand_slices_reps :
     ∀ {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure] (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (τ₁ τ₂ : Submodule ℂ (L2 μ₂)) (D : TypeDat K (2 + 2)) {d : ℕ} (A : Line μ τ₁ τ₂ D d), CuspIrr μ₂ τ₁ → CuspIrr μ₂ τ₂ →

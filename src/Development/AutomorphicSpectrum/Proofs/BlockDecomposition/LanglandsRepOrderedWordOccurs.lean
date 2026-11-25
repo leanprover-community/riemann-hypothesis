@@ -73,17 +73,6 @@ theorem isCusp_of_mem_decWord (Γ : Segment k) : ∀ w ∈ Cos.decWord Γ, w.IsC
   obtain ⟨a, rfl⟩ := hw
   exact Γ.isCusp_term a
 
-theorem sum_get_decWord (Γ : Segment k) : ∑ a, ((Cos.decWord Γ).get a).1 = Γ.deg := by
-  have hc : ∀ a, ((Cos.decWord Γ).get a).1 = Γ.d := fun a => by
-    have hm := List.get_mem (Cos.decWord Γ) a
-    simp only [Cos.decWord, List.mem_reverse, List.mem_ofFn] at hm
-    obtain ⟨i, hi⟩ := hm
-    show ((List.ofFn Γ.term).reverse.get a).1 = Γ.d
-    rw [← hi]
-    rfl
-  rw [Finset.sum_congr rfl (fun a _ => hc a), Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul]
-  simp [Cos.decWord, Segment.deg]
-
 theorem nontrivial_of_isIrreducible {G W : Type} [Group G] [AddCommGroup W] [Module ℂ W]
     {σ : Representation ℂ G W} (h : σ.IsIrreducible) : Nontrivial W := by
   by_contra hW
@@ -109,7 +98,7 @@ theorem wd_wtW_of_isL : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSp
     GlobalTheory.CompanionTheory.FrobJm.one_le_jm hA (x ∘ Fin.rev) hd π hsm f
       ⟨v, fun h0 => hv (hfinj (h0.trans (map_zero f).symm))⟩
   have hW : ∀ b, ∑ a, ((Cos.decWord (Δ (Fin.rev b))).get a).1 = ((x ∘ Fin.rev) b).1 := fun b =>
-    (sum_get_decWord _).trans (hx (Fin.rev b)).deg_eq
+    (GlobalTheory.CompanionTheory.FineL.sum_decWord _).trans (hx (Fin.rev b)).deg_eq
   have h2 := _root_.GlobalTheory.CompanionTheory.CsStages.jm_mul_prod_jmL_le hA (x ∘ Fin.rev) hd (fun b => Cos.decWord (Δ (Fin.rev b))) π hsm hfl hW
   have h3 : ∀ b, Cos.jmL (Cos.decWord (Δ (Fin.rev b))) ((x ∘ Fin.rev) b).rep = 1 := fun b =>
     (_root_.GlobalTheory.CompanionTheory.FineL.jmL_cusp_word hA hJ (Δ (Fin.rev b)) _ (hx (Fin.rev b)) _ (isCusp_of_mem_decWord _)).1 rfl

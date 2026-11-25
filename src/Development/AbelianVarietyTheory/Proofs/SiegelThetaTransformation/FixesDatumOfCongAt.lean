@@ -60,8 +60,6 @@ open scoped ComplexConjugate Classical
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict GlobalTheory.Phase GlobalTheory.IndefiniteRowSideFullHecke.UnitaryAdjointCongruence
 
-set_option autoImplicit false
-
 namespace GlobalTheory.ShortMove
 
 section Lattices

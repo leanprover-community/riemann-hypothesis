@@ -117,8 +117,6 @@ theorem kerFT_norm {m n : ℕ} (s : ℂ) (ξ v : Fin m → Fin n → ℂ) : ‖k
     ((2 * Real.pi * (s * Matrix.trace ((Matrix.of ξ)ᴴ * Matrix.of v)).re : ℝ) : ℂ) * Complex.I by push_cast; ring,
     Complex.norm_exp_ofReal_mul_I]
 
-theorem isAddHaarMeasure_vector_volume (n : ℕ) : (volume : Measure (Fin n → ℂ)).IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
-
 theorem sw_cont_int {m n : ℕ} {f : (Fin m → Fin n → ℂ) → ℂ} (hf : IsSw f) : Continuous f ∧ Integrable f := by
   obtain ⟨φ, rfl⟩ := hf
   haveI := _root_.PositivityTheory.SiegelWeilFormula.KFock.volume_isAddHaar m n

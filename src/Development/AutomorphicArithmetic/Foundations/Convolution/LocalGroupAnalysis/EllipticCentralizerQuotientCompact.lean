@@ -189,12 +189,8 @@ private theorem centralizer_compact_fundamental {G : Type*} [Group G] [Topologic
   choose r hrΓ hr using hr
   have hC : IsCompact (⋃ δ ∈ (fun y : G => y * γ * y⁻¹) '' D ∩ (Γ : Set G), (fun y => r δ * y) '' D) :=
     hfin.isCompact_biUnion fun δ _ => hD.image (by fun_prop)
-  have hZ : IsClosed ((Subgroup.centralizer {γ} : Subgroup G) : Set G) := by
-    have : ((Subgroup.centralizer {γ} : Subgroup G) : Set G) = {x | x * γ = γ * x} := by
-      ext x
-      exact Subgroup.mem_centralizer_singleton_iff
-    rw [this]
-    exact isClosed_eq (by fun_prop) (by fun_prop)
+  have hZ : IsClosed ((Subgroup.centralizer {γ} : Subgroup G) : Set G) :=
+    Set.isClosed_centralizer {γ}
   refine ⟨Subtype.val ⁻¹' _, hZ.isClosedEmbedding_subtypeVal.isCompact_preimage hC, fun t => ?_⟩
   obtain ⟨g, hg, y, hy, hty⟩ := h t
   have ht : (t : G) * γ = γ * t := Subgroup.mem_centralizer_singleton_iff.1 t.2

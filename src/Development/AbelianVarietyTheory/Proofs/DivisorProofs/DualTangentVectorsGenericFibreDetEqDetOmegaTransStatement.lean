@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDualTangentBasisPulledCotangentChartFrameStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpMapGermFromSpec
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppLESecEpsZeroEpsFn
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoToBidualOfLocalFrames
@@ -67,20 +68,7 @@ variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] [QuasiSeparated G.
 
 theorem exists_prod (l : List (LieG G)) :
     ∃ z : LieG G, z.1 = (l.map fun x => x.1).prod ∧ tangent z = (l.map tangent).sum := by
-  induction l with
-  | nil =>
-    have h1 : ptMap (TrivSqZeroExt.fstHom R R R) ≫ (1 : specO R (DualNumber R) ⟶ G) = 1 := MonObj.comp_one _
-    refine ⟨⟨1, h1⟩, rfl, ?_⟩
-    have h2 := tangent_mul (G := G) ⟨1, h1⟩ ⟨1, h1⟩ (OmegaGlobal.fst_mul _ _)
-    have h3 : (⟨_, OmegaGlobal.fst_mul (G := G) ⟨1, h1⟩ ⟨1, h1⟩⟩ : LieG G) = ⟨1, h1⟩ :=
-      Subtype.ext (_root_.mul_one _)
-    rw [h3] at h2
-    simpa using h2
-  | cons x l ih =>
-    obtain ⟨z, hz, hz'⟩ := ih
-    refine ⟨⟨_, OmegaGlobal.fst_mul x z⟩, ?_, ?_⟩
-    · rw [List.map_cons, List.prod_cons, ← hz]
-    · rw [tangent_mul, hz', List.map_cons, List.sum_cons]
+  apply _root_.GlobalTheory.KeyVals.DualBasis.exists_prod <;> assumption
 
 theorem isLieComb_of_tangent {n : ℕ} (a : Fin n → R) (v : Fin n → LieG G) (w : LieG G)
     (h : tangent w = ∑ m, cst R (a m) • tangent (v m)) : IsLieComb a (fun m => (v m).1) w.1 := by

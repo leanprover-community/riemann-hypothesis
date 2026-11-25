@@ -713,8 +713,6 @@ section Rec
 
 open Module NumberField Formalism.BasicNotions
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped nonZeroDivisors in
 theorem shortDual_holds (D : D7) : ShortDual D := by
   classical
@@ -821,8 +819,6 @@ end ColAbs
 section ColRec
 
 open Module NumberField Formalism.BasicNotions IsDedekindDomain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem columnHypotheses (D : D7) (u : D.what₂.Word) :
     ColHyp D.what₂.places (D.sp.X 0) D.R.f (D.R.N 0) (Tu D u) (D.clsLat u 0) := by

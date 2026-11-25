@@ -71,67 +71,20 @@ def block (k r : ℕ) (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) �
   (∀ i j : Fin (2 * r + k + 1), (i.val < r ∨ r + k < i.val) → g i j = if i = j then 1 else 0)
 
 theorem nset_iff (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
-    g ∈ Nset k r ↔ g ∈ UH (Hpk k r) ∧ col k r g := by
-  simp only [Nset, Set.mem_setOf_eq]
-  constructor
-  · rintro ⟨hU, h1, h2⟩
-    refine ⟨hU, ?_⟩
-    intro i j hj hij
-    by_cases hjr : j.val < r
-    · have e := h1 ⟨j.val, hjr⟩ i (by show j.val ≤ i.val; omega)
-      have he : eI k r ⟨j.val, hjr⟩ = j := Fin.ext rfl
-      rw [he] at e
-      exact e
-    · exact h2 i j (by omega) hj (by omega)
-  · rintro ⟨hU, hc⟩
-    refine ⟨hU, ?_, ?_⟩
-    · intro a i hai
-      exact hc i (eI k r a) (by show a.val ≤ r + k; have := a.isLt; omega) (Or.inl hai)
-    · intro i j hrj hj hri
-      exact hc i j hj (Or.inr hri)
+    g ∈ Nset k r ↔ g ∈ UH (Hpk k r) ∧ col k r g :=
+  _root_.WlocSk.UnitaryGroupBasics.nset_iff g
 
 theorem col_one : col k r (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) := by
   intro i j _ _
   exact Matrix.one_apply
 
 theorem col_mul {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : col k r g) (hh : col k r h) : col k r (g * h) := by
-  intro i j hj hij
-  rw [Matrix.mul_apply, Fintype.sum_eq_single j]
-  · rw [hg i j hj hij, hh j j hj (Or.inl le_rfl), if_pos rfl, mul_one]
-  · intro p hp
-    by_cases hpj : j.val ≤ p.val ∨ r ≤ p.val
-    · rw [hh p j hj hpj, if_neg hp, mul_zero]
-    · have hz : g i p = 0 := by
-        rw [hg i p (by omega) (by omega), if_neg]
-        intro hip
-        subst hip
-        omega
-      rw [hz, zero_mul]
+    (hg : col k r g) (hh : col k r h) : col k r (g * h) :=
+  _root_.WlocSk.UnitaryGroupBasics.col_mul hg hh
 
 theorem col_of_left_inv {g g' : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : col k r g) (hm : g' * g = 1) : col k r g' := by
-  suffices H : ∀ n : ℕ, ∀ i j : Fin (2 * r + k + 1), j.val = n → j.val ≤ r + k →
-      (j.val ≤ i.val ∨ r ≤ i.val) → g' i j = if i = j then 1 else 0 by
-    intro i j hj hij
-    exact H j.val i j rfl hj hij
-  intro n
-  induction' n using Nat.strong_induction_on with n ih
-  intro i j hjn hj hij
-  have h1 : (g' * g) i j = (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) i j := by
-    rw [hm]
-  rw [Matrix.mul_apply, Fintype.sum_eq_single j] at h1
-  · rw [hg j j hj (Or.inl le_rfl), if_pos rfl, mul_one, Matrix.one_apply] at h1
-    exact h1
-  · intro p hp
-    by_cases hpj : j.val ≤ p.val ∨ r ≤ p.val
-    · rw [hg p j hj hpj, if_neg hp, mul_zero]
-    · have hz : g' i p = 0 := by
-        rw [ih p.val (by omega) i p rfl (by omega) (by omega), if_neg]
-        intro hip
-        subst hip
-        omega
-      rw [hz, zero_mul]
+    (hg : col k r g) (hm : g' * g = 1) : col k r g' :=
+  _root_.WlocSk.UnitaryGroupBasics.col_of_left_inv hg hm
 
 def tau (k r : ℕ) (i : Fin (2 * r + k + 1)) : Fin (2 * r + k + 1) :=
   ⟨if i.val < r ∨ r + k < i.val then 2 * r + k - i.val else i.val, by split_ifs <;> omega⟩
@@ -174,40 +127,20 @@ theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
   | (apply _root_.Formalism.SharedLemmas.upq_hpk_mul_self <;> assumption)
 
 theorem isUnit_of_uh {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : g ∈ UH (Hpk k r)) : IsUnit g.det := by
-  have h1 : gᴴ * Hpk k r * g = Hpk k r := hg
-  have h2 : (Hpk k r * (gᴴ * Hpk k r)) * g = 1 := by
-    calc (Hpk k r * (gᴴ * Hpk k r)) * g = Hpk k r * (gᴴ * Hpk k r * g) := by
-          simp only [mul_assoc]
-      _ = 1 := by rw [h1, hpk_sq]
-  have h3 := congrArg Matrix.det h2
-  rw [Matrix.det_mul, Matrix.det_one, mul_comm] at h3
-  exact ⟨⟨_, _, h3, (mul_comm _ _).trans h3⟩, rfl⟩
+    (hg : g ∈ UH (Hpk k r)) : IsUnit g.det :=
+  _root_.WlocSk.UnitaryGroupBasics.isUnit_of_uh hg
 
 theorem uh_one : (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) ∈ UH (Hpk k r) := by
   show (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)ᴴ * Hpk k r * 1 = Hpk k r
   rw [Matrix.conjTranspose_one, one_mul, mul_one]
 
 theorem uh_mul {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : g ∈ UH (Hpk k r)) (hh : h ∈ UH (Hpk k r)) : g * h ∈ UH (Hpk k r) := by
-  have h1 : gᴴ * Hpk k r * g = Hpk k r := hg
-  have h2 : hᴴ * Hpk k r * h = Hpk k r := hh
-  show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-  rw [Matrix.conjTranspose_mul]
-  calc hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by simp only [mul_assoc]
-    _ = Hpk k r := by rw [h1, h2]
+    (hg : g ∈ UH (Hpk k r)) (hh : h ∈ UH (Hpk k r)) : g * h ∈ UH (Hpk k r) :=
+  _root_.WlocSk.UnitaryGroupBasics.uh_mul hg hh
 
 theorem uh_inv {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) := by
-  have hd := isUnit_of_uh hg
-  have h1 : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hr : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g hd
-  show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
-  calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [h1]
-    _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by
-        rw [Matrix.conjTranspose_mul]
-        simp only [mul_assoc]
-    _ = Hpk k r := by rw [hr, Matrix.conjTranspose_one, one_mul, mul_one]
+    (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) :=
+  _root_.WlocSk.UnitaryGroupBasics.uh_inv hg
 
 theorem mem_n_one : (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) ∈ Nset k r := (nset_iff 1).2 ⟨uh_one, col_one⟩
 
@@ -238,19 +171,8 @@ variable {k r : ℕ}
 theorem mul_apply_add {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hg : col k r g) (hh : col k r h) (i j : Fin (2 * r + k + 1)) (hir : i.val < r)
     (hj : j.val ≤ r + k) (hij : i.val < j.val) (hji : j.val ≤ i.val + 1 ∨ r ≤ i.val + 1) :
-    (g * h) i j = g i j + h i j := by
-  have hij' : j ≠ i := fun e => by subst e; omega
-  rw [Matrix.mul_apply]
-  rw [Fintype.sum_eq_add j i hij']
-  · rw [hh j j hj (Or.inl le_rfl), if_pos rfl, mul_one, hg i i (by omega) (Or.inl le_rfl), if_pos rfl,
-      one_mul]
-  · rintro p ⟨hpj, hpi⟩
-    by_cases h1 : j.val ≤ p.val ∨ r ≤ p.val
-    · rw [hh p j hj h1, if_neg hpj, mul_zero]
-    · by_cases h2 : p.val ≤ i.val
-      · rw [hg i p (by omega) (Or.inl h2), if_neg (Ne.symm hpi), zero_mul]
-      · exfalso
-        omega
+    (g * h) i j = g i j + h i j :=
+  _root_.WlocSk.UnitaryGroupBasics.mul_apply_add hg hh i j hir hj hij hji
 
 theorem ell_mul (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z)
     {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
@@ -352,76 +274,28 @@ theorem tau_out (i : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :
 
 theorem uw_block {z : Fin (2 * r + k + 1) → ℂ}
     {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z) :
-    block k r h := by
-  have hU : h ∈ UH (Hpk k r) := by
-    simp only [UWset, Set.mem_setOf_eq] at hh
-    exact hh.1
-  unfold block
-  refine ⟨fun i j hj => uw_fixed_col hh j hj i, fun i j hi => ?_⟩
-  have hc := uw_fixed_col hh (tau k r i) (tau_out i hi)
-  have e := row_of_fixed_col hU (tau k r i) hc j
-  rw [tau_tau] at e
-  exact e
+    block k r h :=
+  _root_.WlocSk.UnitaryGroupBasics.uw_block hh
 
 theorem uw_inv {z : Fin (2 * r + k + 1) → ℂ}
     {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z) :
-    h⁻¹ ∈ UWset k r z := by
-  simp only [UWset, Set.mem_setOf_eq] at hh ⊢
-  obtain ⟨hU, hfix, hz⟩ := hh
-  have hd := isUnit_of_uh hU
-  have key : ∀ v, h *ᵥ v = v → h⁻¹ *ᵥ v = v := by
-    intro v hv
-    calc h⁻¹ *ᵥ v = h⁻¹ *ᵥ (h *ᵥ v) := by rw [hv]
-      _ = (h⁻¹ * h) *ᵥ v := by rw [Matrix.mulVec_mulVec]
-      _ = v := by rw [Matrix.nonsing_inv_mul h hd, Matrix.one_mulVec]
-  exact ⟨uh_inv hU, fun a => ⟨key _ (hfix a).1, key _ (hfix a).2⟩, key _ hz⟩
+    h⁻¹ ∈ UWset k r z :=
+  _root_.WlocSk.UnitaryGroupBasics.uw_inv hh
 
 theorem uw_mul {z : Fin (2 * r + k + 1) → ℂ}
     {h h' : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z)
-    (hh' : h' ∈ UWset k r z) : h * h' ∈ UWset k r z := by
-  simp only [UWset, Set.mem_setOf_eq] at hh hh' ⊢
-  obtain ⟨hU, hfix, hz⟩ := hh
-  obtain ⟨hU', hfix', hz'⟩ := hh'
-  have key : ∀ v, h *ᵥ v = v → h' *ᵥ v = v → (h * h') *ᵥ v = v := by
-    intro v hv hv'
-    rw [← Matrix.mulVec_mulVec, hv', hv]
-  exact ⟨uh_mul hU hU', fun a => ⟨key _ (hfix a).1 (hfix' a).1, key _ (hfix a).2 (hfix' a).2⟩,
-    key _ hz hz'⟩
+    (hh' : h' ∈ UWset k r z) : h * h' ∈ UWset k r z :=
+  _root_.WlocSk.UnitaryGroupBasics.uw_mul hh hh'
 
 theorem block_mul_col {h g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : block k r h) (hg : col k r g) (i q : Fin (2 * r + k + 1)) (hq : q.val ≤ r + k)
-    (hi : q.val ≤ i.val ∨ r ≤ i.val) : (h * g) i q = h i q := by
-  unfold block at hh
-  rw [Matrix.mul_apply, Fintype.sum_eq_single q]
-  · rw [hg q q hq (Or.inl le_rfl), if_pos rfl, mul_one]
-  · intro p hp
-    by_cases h1 : q.val ≤ p.val ∨ r ≤ p.val
-    · rw [hg p q hq h1, if_neg hp, mul_zero]
-    · have hz : h i p = 0 := by
-        rw [hh.1 i p (Or.inl (by omega)), if_neg]
-        intro hip
-        subst hip
-        omega
-      rw [hz, zero_mul]
+    (hi : q.val ≤ i.val ∨ r ≤ i.val) : (h * g) i q = h i q :=
+  _root_.WlocSk.UnitaryGroupBasics.block_mul_col hh hg i q hq hi
 
 theorem conj_col {h h' g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : block k r h) (hh' : block k r h') (hinv : h * h' = 1) (hg : col k r g) :
-    col k r (h * g * h') := by
-  unfold block at hh hh'
-  intro i j hj hij
-  have key : ∀ p, (h * g) i p * h' p j = h i p * h' p j := by
-    intro p
-    by_cases hpj : p = j
-    · rw [hpj, block_mul_col (by unfold block; exact hh) hg i j hj hij]
-    · by_cases hjm : j.val < r
-      · rw [hh'.1 p j (Or.inl hjm), if_neg hpj, mul_zero, mul_zero]
-      · by_cases hpm : p.val < r ∨ r + k < p.val
-        · rw [hh'.2 p j hpm, if_neg hpj, mul_zero, mul_zero]
-        · rw [block_mul_col (by unfold block; exact hh) hg i p (by omega) (Or.inr (by omega))]
-  have e : (h * g * h') i j = (h * h') i j := by
-    rw [Matrix.mul_apply, Matrix.mul_apply]
-    exact Finset.sum_congr rfl (fun p _ => key p)
-  rw [e, hinv, Matrix.one_apply]
+    col k r (h * g * h') :=
+  _root_.WlocSk.UnitaryGroupBasics.conj_col hh hh' hinv hg
 
 theorem mul_apply_of_row {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (i j : Fin (2 * r + k + 1))

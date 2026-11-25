@@ -51,7 +51,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
-set_option autoImplicit false
 noncomputable section
 
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)

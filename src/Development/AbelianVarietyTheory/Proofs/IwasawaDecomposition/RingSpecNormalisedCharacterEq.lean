@@ -42,8 +42,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.HeightCounting GlobalTheory.TwInputs.Move
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 
 namespace GlobalTheory.HeightCounting.SideCopy

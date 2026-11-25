@@ -43,6 +43,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedSubgroupBesselHaarFiniteCompactPosOpen
 
 @[expose] public section
 
@@ -60,17 +61,7 @@ theorem hpk_ne_zero (k r : ℕ) : Hpk k r ≠ 0 := by
 
 theorem isMatGroup_of_isClosedSub {k r : ℕ} {S : Set (Mat k r)} (hS : IsClosedSub k r S) :
     PI.IsMatGroup S := by
-  obtain ⟨hU, hc, h1, hm, hi⟩ := hS
-  refine ⟨hc, h1, hm, fun a ha => ⟨hi a ha, ?_⟩⟩
-  by_cases hd : IsUnit a.det
-  · exact Matrix.mul_nonsing_inv a hd
-  · exfalso
-    have h0 : a⁻¹ = 0 := Matrix.nonsing_inv_apply_not_isUnit a hd
-    have hmem := hU (hi a ha)
-    rw [h0] at hmem
-    have : (0 : Mat k r)ᴴ * Hpk k r * 0 = Hpk k r := hmem
-    simp at this
-    exact hpk_ne_zero k r this.symm
+  apply _root_.GlobalTheory.SgInf.IsClosedSub.isMatGroup <;> assumption
 
 theorem haarOn_unique : ∀ (k r : ℕ) (S : Set (Mat k r)) (μ μ' : Measure (Mt k r)), IsClosedSub k r S →
     IsHaarOn S μ → IsHaarOn S μ' → ∃ c : ENNReal, 0 < c ∧ c < ⊤ ∧ μ' = c • μ := by

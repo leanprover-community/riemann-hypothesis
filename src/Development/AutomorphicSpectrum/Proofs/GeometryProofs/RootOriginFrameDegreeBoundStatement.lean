@@ -236,33 +236,6 @@ open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open AlgebraicGeometry CategoryTheory
 open scoped Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-private theorem exists_unitary_diagonal_of_isHermitian {X : Scheme.{0}} (T : CDVR) (zV : Spec (CommRingCat.of T.V) ⟶ X)
-    (c : centre (FinRd.Roots.gen T zV) ⤳ centre zV) :
-    X.presheaf.stalkSpecializes c ≫ Scheme.stalkClosedPointTo (FinRd.Roots.gen T zV) =
-      Scheme.stalkClosedPointTo zV ≫ CommRingCat.ofHom (algebraMap T.V T.Fr) := by
-  have c' := IsLocalRing.specializes_closedPoint
-    ((Spec.map (CommRingCat.ofHom (algebraMap T.V T.Fr))) (IsLocalRing.closedPoint T.Fr))
-  have e2 := Scheme.stalkClosedPointTo_comp (Spec.map (CommRingCat.ofHom (algebraMap T.V T.Fr))) zV
-  have e3 := Scheme.germ_stalkClosedPointTo_Spec (CommRingCat.ofHom (algebraMap T.V T.Fr))
-  have e4 := ΓSpecIso_hom_stalkClosedPointIso_inv (CommRingCat.of T.V)
-  have e4' : (stalkClosedPointIso (CommRingCat.of T.V)).inv =
-      (Scheme.ΓSpecIso (CommRingCat.of T.V)).inv ≫
-        (Spec (CommRingCat.of T.V)).presheaf.germ ⊤ (IsLocalRing.closedPoint _) trivial := by
-    rw [← e4, Iso.inv_hom_id_assoc]
-  have e6 := TopCat.Presheaf.germ_stalkSpecializes (Spec (CommRingCat.of T.V)).presheaf
-    (U := ⊤) (y := IsLocalRing.closedPoint _) trivial c'
-  have e5 : (Spec (CommRingCat.of T.V)).presheaf.stalkSpecializes c' ≫
-      Scheme.stalkClosedPointTo (Spec.map (CommRingCat.ofHom (algebraMap T.V T.Fr))) =
-      (stalkClosedPointIso (CommRingCat.of T.V)).hom ≫ CommRingCat.ofHom (algebraMap T.V T.Fr) := by
-    rw [← Iso.inv_comp_eq, e4', Category.assoc]
-    erw [reassoc_of% e6]
-    erw [e3]
-    rw [Iso.inv_hom_id_assoc]
-  change X.presheaf.stalkSpecializes c ≫ Scheme.stalkClosedPointTo (Spec.map (CommRingCat.ofHom (algebraMap T.V T.Fr)) ≫ zV) = _
-  rw [e2]
-  erw [Scheme.Hom.stalkSpecializes_stalkMap_assoc zV _ _ c']
-  rw [e5, Scheme.stalkClosedPointTo, Category.assoc]
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.complete_dvr_lie_model_lattice : ∀ (X : AlgebraicGeometry.Scheme.{0}) (G : CategoryTheory.Over X) [CategoryTheory.GrpObj G] [CategoryTheory.IsCommMonObj G] (Ω : Type) [Field Ω] (ξ : AlgebraicGeometry.Spec (CommRingCat.of Ω) ⟶ X) (L₀ : Type) [AddCommGroup L₀] [Module Ω L₀] (M : LieModel G ξ L₀) (T : CDVR) (zV : AlgebraicGeometry.Spec (CommRingCat.of T.V) ⟶ X) (EC : Type) [AddCommGroup EC] [Module T.Fr EC] [Module T.V EC] [IsScalarTower T.V T.Fr EC] (MC : LieModel G (FinRd.Roots.gen T zV) EC) (A : Subring Ω) (evT : A →+* T.Fr), IsCptGen ξ → AlgebraicGeometry.Smooth G.hom → ∀ (h : genPt ξ ⤳ centre zV), genPt ξ ⤳ centre (FinRd.Roots.gen T zV) → FinRd.Roots.ReadsPt ξ A T evT zV → ∀ (L : Lat ξ L₀) (r : ℕ) (b e : Fin r → L₀) (Tm : Matrix (Fin r) (Fin r) Ω) (w : Fin r → EC) (hT : ∀ i j, Tm i j ∈ A), L.IsFrameAt b ⟨centre zV, h⟩ → (∀ i, b i = ∑ j, Tm i j • e j) → (∀ j, M.ValAt (FinRd.Roots.gen T zV) (e j) (MC.pt (w j))) → M.fibAt L zV MC = Submodule.span T.V (Set.range fun i => ∑ j, evT ⟨Tm i j, hT i j⟩ • w j) := by
   intro X G _ _ Ω _ ξ L₀ _ _ M T zV EC _ _ _ _ MC A evT hX _ h hz hR L r b e Tm w hT hF hb hw
@@ -273,7 +246,8 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.complete_dvr_lie_model_lattice
       (ConcreteCategory.hom (X.presheaf.stalkSpecializes c) s) =
       algebraMap T.V T.Fr ((Scheme.stalkClosedPointTo zV).hom s) := by
     intro s
-    have := DFunLike.congr_fun (CommRingCat.hom_ext_iff.mp (exists_unitary_diagonal_of_isHermitian T zV c)) s
+    have hsb := LieTangent.stalk_base (algebraMap T.V T.Fr) zV
+    have := DFunLike.congr_fun (CommRingCat.hom_ext_iff.mp hsb) s
     first
       | exact this
   have hsc : ∀ {x : L₀} {y : EC}, M.ValAt (FinRd.Roots.gen T zV) x (MC.pt y) →
@@ -857,7 +831,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameLocalBoundStatement =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameTotalBound =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameTotalBound", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFrameVec\npublic import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelSigBijective\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSandwichOfHodgeTateFree\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SandwichPointOverFieldExt\npublic import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PRootsOfUnityValuation\nimport Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PolyGrowthStatementPfB\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginFrameTotalBound", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFrameVec\npublic import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelSigBijective\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSandwichOfHodgeTateFree\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SandwichPointOverFieldExt\npublic import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PRootsOfUnityValuation\nimport Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PolyGrowthStatementPfB\nimport Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsAlgebraMapEqOfValVLeOne\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -877,13 +851,10 @@ section Dvr
 variable {V : Type} {K : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K] [Algebra V K]
   [IsFractionRing V K]
 
-theorem valV_algebraMap_le_one (x : V) : valV V (algebraMap V K x) ≤ 1 :=
-  HeightOneSpectrum.valuation_le_one _ x
-
 theorem vV_unit {u : V} (hu : IsUnit u) : vV V (algebraMap V K u) = 0 := by
   obtain ⟨w, rfl⟩ := hu
-  have h1 : valV V (algebraMap V K (w : V)) ≤ 1 := valV_algebraMap_le_one _
-  have h2 : valV V (algebraMap V K ((w⁻¹ : Vˣ) : V)) ≤ 1 := valV_algebraMap_le_one _
+  have h1 : valV V (algebraMap V K (w : V)) ≤ 1 := GlobalTheory.PlaceCompletion.valV_algebraMap_le_one _
+  have h2 : valV V (algebraMap V K ((w⁻¹ : Vˣ) : V)) ≤ 1 := GlobalTheory.PlaceCompletion.valV_algebraMap_le_one _
   have h3 : valV V (algebraMap V K (w : V)) * valV V (algebraMap V K ((w⁻¹ : Vˣ) : V)) = 1 := by
     rw [← map_mul, ← map_mul]
     simp
@@ -938,7 +909,7 @@ theorem realVal_lt_one_iff {x : K} : realVal V K x < 1 ↔ valV V x < 1 := by
 theorem realVal_integers : (realVal V K).Integers V := by
   refine ⟨IsFractionRing.injective V K, ?_, ?_⟩
   · intro x
-    exact (realVal_le_one_iff (V := V)).2 (valV_algebraMap_le_one x)
+    exact (realVal_le_one_iff (V := V)).2 (GlobalTheory.PlaceCompletion.valV_algebraMap_le_one x)
   · intro x hx
     exact IsDiscreteValuationRing.exists_lift_of_le_one ((realVal_le_one_iff (V := V)).1 hx)
 
@@ -1083,7 +1054,7 @@ theorem lieEig_htDual : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [
   have : CharZero T.Fr := IsFractionRing.charZero T.V
   have hv1 : realVal T.V T.Fr (p : T.Fr) < 1 := by
     refine realVal_lt_one_iff.2 (lt_of_le_of_ne ?_ fun h1 => ?_)
-    · simpa using valV_algebraMap_le_one (K := T.Fr) (p : T.V)
+    · simpa using GlobalTheory.PlaceCompletion.valV_algebraMap_le_one (K' := T.Fr) (p : T.V)
     · have h2 : vV T.V (algebraMap T.V T.Fr (p : T.V)) = 0 := by simp [vV, h1]
       rw [hvp] at h2
       omega

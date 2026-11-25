@@ -419,10 +419,6 @@ namespace GlobalTheory.AscFin.SplitX
 
 variable {D : D7}
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice (D := D)
-
 theorem mem_of_latV_top {S : HSp D} {L : Lat S} (hL : Submodule.IsFullLattice D.host.E L) (r : Fin S.rank → D.host.E)
     (h : (fun i => pairA D.host.F 0 (1 : Af D.host.F) ⊗ₜ[D.host.F] (1 * r i)) ∈ latV S L fun _ => True) : r ∈ L := by
   have h1 := GlobalTheory.LatVHat.latV_mem_hatL D S L _ _ h
@@ -506,7 +502,7 @@ theorem GlobalTheory.AscFin.SplitX.latRow_extX : OnStd fun {D} _ _ {sc} {G} _ F 
     (G.sp.V_is (2 * (σ + 1) + 1) 0 (by omega) (by omega) (Nat.zero_le _)).sd
   have hW : IsSelfDualC (G.V (.grid (2 * σ + 2) 0)) (G.Λ (.grid (2 * σ + 2) 0)) :=
     (G.sp.V_is (2 * σ + 2) 0 (by omega) (by omega) (Nat.zero_le _)).sd
-  have hπ := proj_mem (F.dJ (σ + 1) h) (selfDual_isFullLattice _ _ hV) hmono
+  have hπ := proj_mem (F.dJ (σ + 1) h) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice _ _ hV) hmono
   have hext : (F.dJ (σ + 1) h).extX (G.V (.grid (2 * σ + 2) 0)) (u ⬝ (F.dJ (σ + 1) h).jX) =
       u ⬝ rat ((F.dJ (σ + 1) h).e * (F.dJ (σ + 1) h).qX) := by
     rw [HypDec.extX_apply, rat_mul, Matrix.mul_assoc]; rfl

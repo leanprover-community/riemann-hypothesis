@@ -394,8 +394,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Out
 open GlobalTheory.HomFixMat
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HomFixGerm

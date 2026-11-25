@@ -60,8 +60,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt GlobalTheory.MixHt
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.MixHt
@@ -158,8 +156,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt GlobalTheory.MixHt
 
 namespace GlobalTheory.MixHt
-
-set_option autoImplicit false
 
 theorem mixRecVal_cons_eq_resCyc_sub_resArch {k : Type} [CommRing k] {Y : Scheme.{0}} [IsIntegral Y]
     [IsLocallyNoetherian Y] {q : Y ⟶ Sp k} (hA : IsAmb q) {e : ℕ} (hdim : topologicalKrullDim Y = (e + 1 + 1 : ℕ))

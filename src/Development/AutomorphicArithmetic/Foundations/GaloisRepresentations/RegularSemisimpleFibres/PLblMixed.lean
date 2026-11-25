@@ -46,7 +46,6 @@ open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSel
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.Shin
 open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published UpperTheory.CBC UpperTheory.Gal.InertialTypesAlt
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem perm_lift {α β : Type*} (f : α → β) {m m' : List β} (h : m.Perm m') :
     ∀ l : List α, l.map f = m' → ∃ l' : List α, l'.Perm l ∧ l'.map f = m := by

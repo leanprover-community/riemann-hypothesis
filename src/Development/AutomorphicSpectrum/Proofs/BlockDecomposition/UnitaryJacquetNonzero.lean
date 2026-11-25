@@ -751,14 +751,6 @@ open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.Spherical
 
 namespace GlobalTheory.CompanionTheory.SatPow.RepsGen
 
-private theorem mem_map_conj_iff_inv_mul_mul_mem {G : Type*} [Group G] (I : Subgroup G) (t y : G) :
-    y ∈ I.map (MulAut.conj t).toMonoidHom ↔ t⁻¹ * y * t ∈ I := by
-  constructor
-  · rintro ⟨x, hx, rfl⟩
-    simpa [MulAut.conj_apply, mul_assoc] using hx
-  · intro h
-    exact ⟨t⁻¹ * y * t, h, by simp [MulAut.conj_apply, mul_assoc]⟩
-
 theorem reps_of_quotient_with_property (G : Type) [Group G] (I : Subgroup G) (t : G) (P : G → Prop)
     (hP1 : P 1)
     (hfin : Finite (I ⧸ (I ⊓ I.map (MulAut.conj t).toMonoidHom).subgroupOf I))
@@ -772,7 +764,7 @@ theorem reps_of_quotient_with_property (G : Type) [Group G] (I : Subgroup G) (t 
       t⁻¹ * ((a : G)⁻¹ * b) * t ∈ I := by
     intro a b
     rw [QuotientGroup.eq, hH, Subgroup.mem_subgroupOf, Subgroup.mem_inf,
-      and_iff_right (a⁻¹ * b).2, mem_map_conj_iff_inv_mul_mul_mem]
+      and_iff_right (a⁻¹ * b).2, Subgroup.mem_map_equiv, MulAut.conj_symm_apply]
     simp only [Subgroup.coe_mul, Subgroup.coe_inv]
   have key : ∀ c : I ⧸ H, ∃ r : I, P r ∧ (QuotientGroup.mk r : I ⧸ H) = c ∧
       (c = QuotientGroup.mk 1 → r = 1) := by

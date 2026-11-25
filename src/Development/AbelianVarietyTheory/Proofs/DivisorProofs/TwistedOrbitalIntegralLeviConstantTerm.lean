@@ -336,19 +336,7 @@ theorem absHalf_mul : ∀ (E : Type) [Field E] [NumberField E] (w : Pl E) (x y :
   ring
 
 theorem isClosed_parP : ∀ (E : Type) [Field E] [NumberField E] (a n : ℕ) (w : Pl E), IsClosed (GlobalTheory.LeviDesc.parP a n w : Set (GLw n w)) := by
-  intro E _ _ a n w
-  have : (parP a n w : Set (GLw n w)) = ⋂ i : Fin n, ⋂ j : Fin n,
-      {g : GLw n w | decide (a ≤ (j : ℕ)) < decide (a ≤ (i : ℕ)) → (g : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j = 0} := by
-    ext g
-    simp only [Set.mem_iInter]
-    rfl
-  rw [this]
-  refine isClosed_iInter fun i => isClosed_iInter fun j => ?_
-  by_cases hij : decide (a ≤ (j : ℕ)) < decide (a ≤ (i : ℕ))
-  · simp only [hij, true_implies]
-    exact isClosed_eq (Continuous.matrix_elem (Units.continuous_val (M := Matrix (Fin n) (Fin n) (w.adicCompletion E))) i j) continuous_const
-  · simp only [hij, false_implies, Set.ofPred_true]
-    exact isClosed_univ
+  apply _root_.GlobalTheory.LeviDesc.CptLevi.isClosed_parP' <;> assumption
 
 theorem blk_mem_parP : ∀ (E : Type) [Field E] [NumberField E] (n a b : ℕ) (h : a + b = n) (w : Pl E) (m : GLw a w × GLw b w) (X : Matrix (Fin a) (Fin b) (w.adicCompletion E)), blk h w m X ∈ GlobalTheory.LeviDesc.parP a n w := by
   intro E _ _ n a b h w m X

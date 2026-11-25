@@ -1651,18 +1651,6 @@ attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebr
 def chart (n : ℕ) : (Fin n → Fin n → ℂ) ≃L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
   (Matrix.ofLinearEquiv ℝ).toContinuousLinearEquiv
 
-theorem contDiffOn_chartInv (n : ℕ) :
-    ContDiffOn ℝ ∞ (fun M : Fin n → Fin n → ℂ => (chart n).symm (Ring.inverse (chart n M)))
-      {M | IsUnit (chart n M)} := by
-  haveI : CompleteSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.complete ℝ _
-  intro M hM
-  obtain ⟨u, hu⟩ := hM
-  have h1 : ContDiffAt ℝ ∞ Ring.inverse (GlobalTheory.CompanionTheory.MatInv.chart n M) := by
-    rw [← hu]
-    exact contDiffAt_ringInverse ℝ u
-  exact ((GlobalTheory.CompanionTheory.MatInv.chart n).symm.contDiff.contDiffAt.comp M
-    (h1.comp M (GlobalTheory.CompanionTheory.MatInv.chart n).contDiff.contDiffAt)).contDiffWithinAt
-
 end Norm
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace

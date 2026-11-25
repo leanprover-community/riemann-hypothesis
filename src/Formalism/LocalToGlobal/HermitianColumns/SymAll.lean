@@ -12,8 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Herm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def SymmetricLevelZeroData (D : D7) (H : HermColsCh D) (aT : ∀ u, AtT D u (H.vT u) (H.Fv u)) : Type :=
   ∀ u, ColLevelX (H.lev0 u) (fun x => x ∈ D.host.K) (aT u).piU (H.vT u)
     (fun v c z => (D.fm u).fv 0 v c ((aT u).pr 0 v c z))
@@ -80,11 +78,7 @@ structure ColsHermS (D : D7) where
   base : HermColsCh D
   atT : ∀ u, AtT D u (base.vT u) (base.Fv u)
   levelZeroCompatibility : SymmetricLevelZeroData D base atT
-  ad : SymmetricAdelicCompatibility D base atT
-  cof : SymmetricCofactorCompatibility D base atT
   piG : PiGConstS D base atT levelZeroCompatibility
-  stabMap : SymmetricStabilizerMapCompatibility D base atT
-  fvI : SymmetricResidueFieldLevels D base atT
   std : StdTied D
   baseL : SymmetricBaseCompatibility D base atT
 

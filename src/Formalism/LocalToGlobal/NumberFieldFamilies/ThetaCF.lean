@@ -16,8 +16,6 @@ namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gaps
 
 variable (D : D7)

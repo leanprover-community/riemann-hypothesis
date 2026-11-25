@@ -55,8 +55,6 @@ open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
 open ReciprocityTheory.L2DbarEstimates (V)
 open scoped ContDiff ComplexConjugate Topology
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CxForm.SmoothCoef
 
 theorem contDiffOn_del_dir {n : ℕ} {s : Set (V n)} {f : V n → ℂ} (hs : IsOpen s) (hf : ContDiffOn ℝ ∞ f s) (e : V n) :
@@ -99,8 +97,6 @@ section -- clump:auto
 open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
 open ReciprocityTheory.L2DbarEstimates (V)
 open scoped ContDiff ComplexConjugate Topology
-
-set_option autoImplicit false
 
 namespace GlobalTheory.CxForm.HolAtlas
 

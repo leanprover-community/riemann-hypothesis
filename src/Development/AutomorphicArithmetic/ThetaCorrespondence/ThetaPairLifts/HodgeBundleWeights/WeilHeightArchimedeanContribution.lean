@@ -392,7 +392,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-set_option autoImplicit false
 
 noncomputable section
 
@@ -597,8 +596,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -752,8 +749,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.CompHS
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1572,7 +1567,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.Mean4 GlobalTheory.Mean4O
 open scoped ENNReal Classical
 
-set_option autoImplicit false
 set_option synthInstance.maxHeartbeats 400000
 
 noncomputable section
@@ -1720,7 +1714,6 @@ section -- clump:auto
 section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.Mean4 GlobalTheory.Mean4O
 open scoped ENNReal Classical
-set_option autoImplicit false
 
 noncomputable section
 namespace PositivityTheory.Xj7N

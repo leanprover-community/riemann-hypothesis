@@ -132,17 +132,6 @@ theorem evL_liftOfLE {T T' : Submonoid (MRingOver ℚ ι)} (hle : T ≤ T') (hT'
     rw [IsLocalizedModule.mk_eq_mk', IsLocalizedModule.liftOfLE_mk', ← IsLocalizedModule.mk_eq_mk']
   rw [e, evL_mk hT', evL_mk hT]
 
-theorem cellMon_ne {I : ∀ k, Finset (ι k)} (hI : ∀ k, ∀ i ∈ I k, y ⟨k, i⟩ ≠ 0) :
-    ∀ t ∈ KH.cellMon ℚ I, aeval y t ≠ 0 := by
-  intro t ht
-  induction ht using Submonoid.closure_induction with
-  | mem x hx =>
-    obtain ⟨k, i, hi, rfl⟩ := hx
-    rw [aeval_X]
-    exact hI k i hi
-  | one => simp
-  | mul x x' _ _ hx hx' => rw [map_mul]; exact mul_ne_zero hx hx'
-
 
 variable (y) in
 theorem aeval_div_mem (c : ∀ k, ι k) {g : MRingOver ℚ ι} {d : K → ℕ} (hg : IsMultiHomog g d) :
@@ -207,7 +196,7 @@ theorem locPart_mem {c : ∀ k, ι k} (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {a : K 
     (hx : x ∈ KH.locPart ι (KH.quotPart ℚ (KH.genIdeal y)) (KH.cellMon ℚ (chartCell c).1) a) :
     evL y _ x * ∏ k, y ⟨k, c k⟩ ^ (-a k) ∈ chartRingQ y c := by
   have hT : ∀ t ∈ KH.cellMon ℚ (chartCell c).1, aeval y t ≠ 0 :=
-    cellMon_ne fun k i hi => by rw [Finset.mem_singleton.mp hi]; exact hc k
+    GroundTheory.Heights₂.Heights.HilbertSamuel.ChartLatQCech.cellMon_aevalQ_ne fun k i hi => by rw [Finset.mem_singleton.mp hi]; exact hc k
   induction hx using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨m, t, e, he, hm, rfl⟩ := hx
@@ -320,7 +309,7 @@ theorem val_faces (z : KH.CechC ℚ ι (MRingOver ℚ ι ⧸ KH.genIdeal y) 0)
       exact absurd (Finset.mem_univ k0) h
   have e0 : KH.cechD ℚ ι (MRingOver ℚ ι ⧸ KH.genIdeal y) 0 z I = 0 := by rw [hz]; rfl
   rw [key, hs1, hs2, one_smul, neg_one_smul, ← sub_eq_add_neg, sub_eq_zero] at e0
-  have hT : ∀ t ∈ KH.cellMon ℚ I.1, aeval y t ≠ 0 := cellMon_ne hIy
+  have hT : ∀ t ∈ KH.cellMon ℚ I.1, aeval y t ≠ 0 := GroundTheory.Heights₂.Heights.HilbertSamuel.ChartLatQCech.cellMon_aevalQ_ne hIy
   have e1 := congrArg (evL y (KH.cellMon ℚ I.1)) e0
   rw [GenOnFibres.cellRes_of_le (GenOnFibres.cellMon_mono (hsub i1)),
     GenOnFibres.cellRes_of_le (GenOnFibres.cellMon_mono (hsub i2)), evL_liftOfLE _ hT,
@@ -445,7 +434,7 @@ theorem exists_sections_of_generatedV {n : K → ℤ} (hg : KH.GeneratedV ℚ (K
       rw [val, evL_of_not hT, zero_mul]
       exact zero_mem _
   · have hT : ∀ t ∈ KH.cellMon ℚ (chartCell c).1, aeval y t ≠ 0 :=
-      cellMon_ne fun k i hi => by rw [Finset.mem_singleton.mp hi]; exact hc k
+      GroundTheory.Heights₂.Heights.HilbertSamuel.ChartLatQCech.cellMon_aevalQ_ne fun k i hi => by rw [Finset.mem_singleton.mp hi]; exact hc k
     refine ⟨fun p => if p.1 = c then evL y _ (u (chartCell p.1) p.2) * ∏ k, y ⟨k, c k⟩ ^ (n k) else 0,
       fun p => ?_, ?_⟩
     · obtain ⟨c', j⟩ := p

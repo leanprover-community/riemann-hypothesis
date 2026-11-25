@@ -88,15 +88,10 @@ variable {N A}
 
 theorem RelA.refl {w : PlE H} (x : A.LP w) : RelA N A x x := ⟨rfl, id, fun _ _ _ => rfl⟩
 
-private theorem commutator_le_self' {G : Type*} [Group G] (K : Subgroup G) : ⁅K, K⁆ ≤ K :=
-  Subgroup.commutator_le.mpr fun a ha b hb => by
-    rw [commutatorElement_def]
-    exact K.mul_mem (K.mul_mem (K.mul_mem ha hb) (K.inv_mem ha)) (K.inv_mem hb)
-
 theorem RelA.unr {w : PlE H} {x y : A.LP w} (h : RelA N A x y) (hy : A.unr y) : A.unr x := by
   obtain ⟨hm, hi⟩ := (A.unr_iff_ine y).mp hy
   refine (A.unr_iff_ine x).mpr ⟨h.mono hm, fun σ hσ => ?_⟩
-  rw [h.ine ⟨hm, fun τ hτ => hi τ (commutator_le_self' _ hτ)⟩ σ hσ, hi σ hσ, h.dim]
+  rw [h.ine ⟨hm, fun τ hτ => hi τ (Subgroup.commutator_le_self _ hτ)⟩ σ hσ, hi σ hσ, h.dim]
 
 theorem RelA.sum (hLP : TieLP N A) {w : PlE H} {x y x' y' : A.LP w} (h : RelA N A x y) (h' : RelA N A x' y') :
     RelA N A (A.lpSum x x') (A.lpSum y y') := by
@@ -107,7 +102,7 @@ theorem RelA.sum (hLP : TieLP N A) {w : PlE H} {x y x' y' : A.LP w} (h : RelA N 
     have key : ∀ τ ∈ ⁅Ine (F := H.E) (N.plOm.1 w), Ine (F := H.E) (N.plOm.1 w)⁆,
         A.inePol y τ = (X - 1) ^ A.lpDim y ∧ A.inePol y' τ = (X - 1) ^ A.lpDim y' := by
       intro τ hτ
-      have hτI : τ ∈ Ine (F := H.E) (N.plOm.1 w) := commutator_le_self' _ hτ
+      have hτI : τ ∈ Ine (F := H.E) (N.plOm.1 w) := Subgroup.commutator_le_self _ hτ
       have e := hab τ hτ
       rw [A.inePol_sum, A.lpDim_sum] at e
       have hy := UpperTheory.GalS.inePol_monic hLP y τ hτI
@@ -130,7 +125,7 @@ theorem RelA.char (hLP : TieLP N A) {w : PlE H} {x y : A.LP w} (h : RelA N A x y
   · rw [A.monomial_char_iff _ _ hc] at hm
     have hab' : IneAb N A y := by
       intro τ hτ
-      have hτI : τ ∈ Ine (F := H.E) (N.plOm.1 w) := commutator_le_self' _ hτ
+      have hτI : τ ∈ Ine (F := H.E) (N.plOm.1 w) := Subgroup.commutator_le_self _ hτ
       have e := hab τ hτ
       rw [hch y τ hτI, A.lpDim_char _ _ hc] at e
       exact e

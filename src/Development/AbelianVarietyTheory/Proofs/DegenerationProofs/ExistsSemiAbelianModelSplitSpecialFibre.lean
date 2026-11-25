@@ -156,8 +156,8 @@ theorem exists_semiAbelian_model_split_specialFibre : GlobalTheory.Published.Sem
   haveI := GlobalTheory.ZJ.isAlgClosed_kb (p := p)
   obtain ⟨s, hs, T⟩ := exists_finite_torusExtension_specialFibre (residueEmb K₁) G hG
   obtain ⟨K', h, f', hr⟩ := exists_subset_range K₁ s hs
-  exact ⟨K', h₁.trans h, inferInstance, f', (Over.pullback (spMap (intIncl h))).obj G, inferInstance,
-    IsSemiAbelian.pullback _ G hG, T _ (intIncl h) (residueEmb K') (residueEmb_comp h) hr,
+  exact ⟨K', h₁.trans h, inferInstance, f', (Over.pullback (spMap (intIncl h :))).obj G, inferInstance,
+    IsSemiAbelian.pullback _ G hG, T _ (intIncl h :) (residueEmb K') (residueEmb_comp h) hr,
     exists_isGrpPullback_of_square (algebraMap_comp_intIncl h) (RingHom.ext fun _ => rfl) G P.A hφ⟩
 
 end GlobalTheory

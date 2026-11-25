@@ -236,9 +236,6 @@ instance isIso_closureToClosed (g : W ⟶ Z) (i : Z ⟶ P) [IsClosedImmersion i]
   IsClosedImmersion.isIso_of_ker_eq j.imageι i _ (closureToClosed_comp j g i h)
     (by simp [← h, ker_comp_of_schemeDominant])
 
-theorem isIso_imageι_iff : IsIso j.imageι ↔ IsSchemeTheoreticallyDominant j := by
-  rw [Scheme.isIso_subschemeι_iff_eq_bot, isSchemeTheoreticallyDominant_iff]
-
 theorem isOpenImmersion_toImage [IsImmersion j] [QuasiCompact j] : IsOpenImmersion j.toImage :=
   inferInstance
 

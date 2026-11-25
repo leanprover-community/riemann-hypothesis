@@ -50,8 +50,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.BadPlacesGoodCoefficients
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def badPlaces (D : D7) : Finset (HeightOneSpectrum (𝓞 D.host.F)) :=

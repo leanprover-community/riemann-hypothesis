@@ -48,7 +48,6 @@ import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.RegularHypot
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
 open scoped CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
 
 namespace GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd

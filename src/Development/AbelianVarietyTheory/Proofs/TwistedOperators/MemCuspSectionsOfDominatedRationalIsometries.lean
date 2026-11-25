@@ -184,8 +184,6 @@ open GlobalTheory.Dict (castFr)
 open GlobalTheory.FrameNorm (IsUnitFr)
 open scoped Matrix
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HeckeEx.QFin

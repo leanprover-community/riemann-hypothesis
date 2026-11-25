@@ -738,12 +738,7 @@ variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} [Algebra (FractionR
 theorem thφ_pt (ν : NumOf D ℂ N) (d : AB N.toNumB g) (x y z : Fin g → ℂ) (I : thK.{0}) :
     (lift (ν.eA (d.ex x)) (lift (ν.eA (d.ex y)) (ν.eA (d.ex z)))).left ≫ thφ D.P.A (x3 D.P.A) I =
       (ν.eA (d.ex (∑ i ∈ I.down, ![x, y, z] i))).left := by
-  show _ ≫ (psum D.P.A (x3 D.P.A) I.down).left = _
-  rw [← Over.comp_left, psum_eq_prod, comp_prod]
-  have h3 : ∀ i, lift (ν.eA (d.ex x)) (lift (ν.eA (d.ex y)) (ν.eA (d.ex z))) ≫ x3 D.P.A i =
-      ν.eA (d.ex (![x, y, z] i)) := by
-    intro i; fin_cases i <;> simp [x3]
-  simp_rw [h3, ← map_prod, ← ex_sum]
+  apply _root_.GlobalTheory.MBLow.Cl.CubeVal.pt_thφ <;> assumption
 
 end Pts
 

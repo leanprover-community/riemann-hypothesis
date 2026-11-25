@@ -63,25 +63,21 @@ private theorem tr_apply (g : G) (v : V) : tr e ρ (e g) v = ρ g v := by
   simp [tr, resCoef]
 
 private theorem actVB_tr (g : G) (x : V ⊗[ℚ_[l]] Bcr l) :
-    actVB ((PP l).PD K) (tr e ρ) (e g) x = actC ((GK K).subtype.comp e.toMonoidHom) ρ g x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v b => simp [actVB, actC, tr_apply, (PP l).PD_actB]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    actVB ((PP l).PD K) (tr e ρ) (e g) x = actC ((GK K).subtype.comp e.toMonoidHom) ρ g x :=
+  LinearMap.congr_fun (TensorProduct.ext' (g := actVB ((PP l).PD K) (tr e ρ) (e g))
+    (h := (actC ((GK K).subtype.comp e.toMonoidHom) ρ g).restrictScalars ℚ_[l])
+    fun _ _ => by simp [actVB, actC, tr_apply, (PP l).PD_actB]) x
 
 private theorem actVdR_tr (g : G) (x : V ⊗[ℚ_[l]] Bdr l) :
-    actVdR ((PP l).PD K) (tr e ρ) (e g) x = actD ((GK K).subtype.comp e.toMonoidHom) ρ g x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v b => simp [actVdR, actD, tr_apply, (PP l).PD_actdR]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    actVdR ((PP l).PD K) (tr e ρ) (e g) x = actD ((GK K).subtype.comp e.toMonoidHom) ρ g x :=
+  LinearMap.congr_fun (TensorProduct.ext' (g := actVdR ((PP l).PD K) (tr e ρ) (e g))
+    (h := (actD ((GK K).subtype.comp e.toMonoidHom) ρ g).restrictScalars ℚ_[l])
+    fun _ _ => by simp [actVdR, actD, tr_apply, (PP l).PD_actdR]) x
 
 private theorem actD_res (φ : G →* GQ l) (g : G) (x : V ⊗[ℚ_[l]] Bdr l) :
-    actD φ (resCoef ℚ_[l] ρ) g x = actD φ ρ g x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v b => simp [actD, resCoef]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    actD φ (resCoef ℚ_[l] ρ) g x = actD φ ρ g x :=
+  LinearMap.congr_fun (TensorProduct.ext' (g := actD φ (resCoef ℚ_[l] ρ) g)
+    (h := (actD φ ρ g).restrictScalars ℚ_[l]) fun _ _ => by simp [actD, resCoef]) x
 
 private theorem Ddr_res (φ : G →* GQ l) :
     Ddr φ (resCoef ℚ_[l] ρ) = (Ddr φ ρ).restrictScalars ℚ_[l] := by

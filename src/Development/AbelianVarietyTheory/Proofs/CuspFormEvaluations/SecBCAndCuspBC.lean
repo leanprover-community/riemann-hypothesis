@@ -39,8 +39,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FieldBC
 
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj

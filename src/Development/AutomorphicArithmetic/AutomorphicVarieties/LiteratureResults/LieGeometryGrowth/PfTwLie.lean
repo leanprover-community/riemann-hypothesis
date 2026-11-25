@@ -46,17 +46,6 @@ open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh UpperTheory.V.Af
 open UpperTheory.V.Lit.Dr UpperTheory.V.Lit.Bor
 open scoped TensorProduct
 
-private theorem open_stab {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
-    (ρ : Representation ℂ G V) (v : V) {S : Set G} (hS : IsOpen S) (h1 : (1 : G) ∈ S) (h : ∀ g ∈ S, ρ g v = v) :
-    IsOpen {g | ρ g v = v} := by
-  rw [isOpen_iff_forall_mem_open]
-  intro g hg
-  refine ⟨(fun x => g⁻¹ * x) ⁻¹' S, fun x hx => ?_, hS.preimage (by fun_prop), by simpa using h1⟩
-  have e : x = g * (g⁻¹ * x) := by group
-  have hg' : ρ g v = v := hg
-  show ρ x v = v
-  rw [e, map_mul, Module.End.mul_apply, h _ hx, hg']
-
 private theorem cmp_lT {W : Type} [AddCommGroup W] [Module ℂ W] {d : ℕ} (Q : Matrix (Fin d) (Fin d) ℂ)
     (y : W ⊗[ℂ] (Fin d → ℂ)) (j : Fin d) :
     cmp j ((Matrix.toLin' Q).lTensor W y) = ∑ k, Q j k • cmp k y := by
@@ -87,14 +76,16 @@ private def invSub (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTo
       fun t g => congrArg₂ (· + ·) (h.centre t g) (h'.centre t g), ?_⟩
     have h1 : IsOpen {k | finRep E a k φ = φ} := h.level
     have h2 : IsOpen {k | finRep E a k ψ = ψ} := h'.level
-    refine open_stab (finRep E a) _ (h1.inter h2) ⟨by simp, by simp⟩ ?_
+    refine isOpen_stab_of_mem_nhds (finRep E a) _ (Filter.mem_of_superset
+      ((h1.inter h2).mem_nhds ⟨by simp, by simp⟩) ?_)
     rintro k ⟨e1, e2⟩
     exact (map_add _ _ _).trans (congrArg₂ (· + ·) e1 e2)
   smul_mem' := by
     intro c φ h
     refine ⟨fun γ g => congrArg (c • ·) (h.left γ g), fun t g => congrArg (c • ·) (h.centre t g), ?_⟩
     have h1 : IsOpen {k | finRep E a k φ = φ} := h.level
-    refine open_stab (finRep E a) _ h1 (by simp) ?_
+    refine isOpen_stab_of_mem_nhds (finRep E a) _
+      (Filter.mem_of_superset (h1.mem_nhds (by simp)) ?_)
     intro k e1
     exact (map_smul _ _ _).trans (congrArg (c • ·) e1)
 

@@ -18,8 +18,6 @@ open scoped Matrix
 
 namespace Formalism.L2.SG.InstExistsPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 abbrev Jv : Matrix (Fin (VS D).rank) (Fin (VS D).rank) D.host.E := (VS D).gram

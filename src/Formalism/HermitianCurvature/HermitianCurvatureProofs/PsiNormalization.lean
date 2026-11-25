@@ -74,6 +74,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 end Formalism.FourierDecayAlt.P

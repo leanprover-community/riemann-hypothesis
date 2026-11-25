@@ -53,8 +53,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 noncomputable section
 namespace GlobalTheory.HeightCounting.JumpsAt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem lg_of_forall {K : Ctx} {p : ∀ B : Base, Fr B.toPre → TwDat B → Prop} (h : ∀ B f T, p B f T) : large₂ K p :=
   ⟨fun _ _ _ => ∅, fun _ _ _ _ => ∅, fun _ _ _ _ _ => ∅, fun _ _ _ _ _ => ∅, by simp, by simp, fun B f T _ _ _ _ => h B f T⟩
 

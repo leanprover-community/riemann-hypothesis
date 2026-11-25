@@ -49,8 +49,6 @@ import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -60,8 +58,6 @@ namespace GlobalTheory.HeckeSup
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult
   Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Lev ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Abstract
 

@@ -52,8 +52,6 @@ namespace PositivityTheory.ThK.SplitAsm
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SplitFlip
 open ValuativeRel
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem condLE_add {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {ϖ : kˣ} (hϖ : GlobalTheory.SplitFlip.IsUnif ϖ) {e : ℕ} (f : ℕ) {χ : kˣ →* ℂˣ} (h : CondLE ϖ e χ) : CondLE ϖ (e + f) χ := by
   intro x hx

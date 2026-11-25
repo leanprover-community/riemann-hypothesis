@@ -50,8 +50,6 @@ open scoped Pointwise
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.CompanionTheory.ThTot
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CompanionTheory.ThTot.ProdMeasPf
 
 section Abstract

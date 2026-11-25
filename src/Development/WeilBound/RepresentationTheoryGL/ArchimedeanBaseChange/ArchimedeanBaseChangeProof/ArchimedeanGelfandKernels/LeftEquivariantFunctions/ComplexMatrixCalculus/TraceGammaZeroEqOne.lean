@@ -55,7 +55,7 @@ namespace PositivityTheory.RgBcC
 
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {lam : Fin n → ℤ}
 

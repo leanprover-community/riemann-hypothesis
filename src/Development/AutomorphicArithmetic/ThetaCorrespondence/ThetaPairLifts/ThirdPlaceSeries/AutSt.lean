@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 section
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.FrameAut
 open Formalism.CohomologicalDescent.DepthNonnegative GlobalTheory.ExpFrame
@@ -54,7 +53,6 @@ open Formalism.CohomologicalDescent.LogSmallConstantBounds (Par)
 open Formalism.CohomologicalDescent.ShortWeightBounds (Wts)
 open GlobalTheory.ExpFrame GlobalTheory.ExpTie GlobalTheory.UnitaryBC GlobalTheory.CuspRep GlobalTheory.SmGL
 namespace GlobalTheory.FrameAut
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz)
 def AutStAlt : Prop := _root_.GlobalTheory.ExpTie.InRangeAlt fun _ _ _ _ p j P W w => AutAt p j P W w

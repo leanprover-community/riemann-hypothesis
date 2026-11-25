@@ -56,8 +56,6 @@ import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.OpenDim

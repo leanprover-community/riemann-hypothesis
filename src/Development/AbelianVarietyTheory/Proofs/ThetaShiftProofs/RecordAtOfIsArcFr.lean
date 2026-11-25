@@ -221,40 +221,9 @@ section Sec
 
 variable {X Y : Scheme.{0}}
 
-def mulSec {L : LB X} (r : Γ(X, ⊤)) (s : LB.Sec L) : LB.Sec L where
-  f i := resG X le_top r * s.f i
-  compat i j := by
-    have e : ∀ (U : X.Opens) (h : L.U i ⊓ L.U j ≤ U),
-        (X.presheaf.map (homOfLE h).op).hom (resG X (le_top : U ≤ ⊤) r) = resG X le_top r := fun U h => by
-      rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl
-    rw [map_mul, map_mul, s.compat i j, e, e, mul_left_comm]
-
 theorem res_res {U V : X.Opens} (h : V ≤ U) (r : Γ(X, ⊤)) :
     (X.presheaf.map (homOfLE h).op).hom (resG X (le_top : U ≤ ⊤) r) = resG X le_top r := by
   rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl
-
-theorem appLE_res (f : Y ⟶ X) (U : X.Opens) (V : Y.Opens) (h : V ≤ f ⁻¹ᵁ U) (r : Γ(X, ⊤)) :
-    (f.appLE U V h).hom (resG X le_top r) = resG Y le_top (f.appTop.hom r) := by
-  rw [← CommRingCat.comp_apply, ← CommRingCat.comp_apply, Scheme.Hom.map_appLE]
-  rfl
-
-theorem isoMaps_mul {L M : LB X} {w : LB.Iso L M} {s : LB.Sec L} {s' : LB.Sec M} (h : IsoMaps w s s')
-    (r : Γ(X, ⊤)) : IsoMaps w (mulSec r s) (mulSec r s') := by
-  intro i k
-  have := h i k
-  simp only [mulSec, map_mul, res_res]
-  rw [this, mul_left_comm]
-
-theorem pullSec_mul {L : LB X} {f : Y ⟶ X} {s : LB.Sec L} {s' : LB.Sec (L.pull f)} (h : PullSec f s s')
-    (r : Γ(X, ⊤)) : PullSec f (mulSec r s) (mulSec (f.appTop.hom r) s') := by
-  intro j hj
-  simp only [mulSec, map_mul, appLE_res]
-  rw [h j hj]
-
-theorem appTop_toΓ {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (a : A) :
-    (spMap φ).appTop.hom (toΓ A a) = toΓ B (φ a) := by
-  have := congrArg (fun q => q.hom a) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom φ))
-  exact this.symm
 
 end Sec
 

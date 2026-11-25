@@ -325,8 +325,8 @@ theorem kappa_selfDual_fourth_power_lattice (hcc : TaylorLogMetric.IsCurveIdeal 
   have h := ((B.latAll hcc hδ (base_linkage_nonempty D cc δ B)).1 2 2 _ _
     (Formalism.MainNotions.GlobalTheoryTheory.Inhab.Adm_std D 2 2 even_two even_two)).1
   rw [show TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ) = _ from B.areaOK, show TaylorLogMetric.La D B.tor _ _ = _ from B.lat0OK 2 2] at h
-  have h2 := SO.selfDual_img _ _ (SO.reix D.what₂.Tau) (SO.reix_isom B.L D.what₂.Tau) _ h
-  rw [SO.reix_pow] at h2
+  have h2 := SO.selfDual_img _ _ (GlobalTheory.FourthRootStd.reix D.what₂.Tau) (GlobalTheory.FourthRootStd.reix_isom B.L D.what₂.Tau) _ h
+  rw [GlobalTheory.FourthRootStd.reix_pow] at h2
   exact h2
 
 theorem kap_selfDual_lamM (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) :
@@ -335,8 +335,8 @@ theorem kap_selfDual_lamM (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : Taylo
 
 theorem kap_stable_lamM (b : ℤ) (hb : Odd b) : ∀ x ∈ B.lamM, cmTheta b D.host.d • x ∈ B.lamM := by
   refine kap_stable_of_one _ _ (fun x hx => ?_) b hb
-  have := SO.lamMM_smul (AR.om D) hx
-  rw [← SO.theta_eq] at this
+  have := GlobalTheory.FourthRootStd.lamMM_smul (AR.om D) hx
+  rw [← GlobalTheory.FourthRootStd.theta_eq] at this
   exact this
 
 theorem kap_stable_latA (b : ℤ) (hb : Odd b) : ∀ x ∈ B.latA, cmTheta b D.host.d • x ∈ B.latA := by

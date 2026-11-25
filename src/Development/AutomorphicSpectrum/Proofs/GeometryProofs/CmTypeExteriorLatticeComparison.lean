@@ -232,32 +232,18 @@ theorem frame_change : ∀ (X X' : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [Field
       rw [hb.2]
       exact Submodule.subset_span ⟨a, rfl⟩
   have hjb := hj.2 n b hb.1
-  have hT : ∀ a, ∃ t : Fin n → X'.presheaf.stalk p'.1, j (b a) = ∑ k, genMap ξ' p' (t k) • bp k := by
-    intro a
-    have h1 : j (b a) ∈ V p' := by
-      rw [hle]
-      exact Submodule.subset_span ⟨a, rfl⟩
-    rw [hbp.2] at h1
+  have hcoeff : ∀ (v : F) (w : Fin n → F), v ∈ Submodule.span (regAt ξ' p') (Set.range w) →
+      ∃ t : Fin n → X'.presheaf.stalk p'.1, v = ∑ k, genMap ξ' p' (t k) • w k := by
+    intro v w h1
     obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 h1
     choose t ht using fun k => (c k).2
-    refine ⟨t, ?_⟩
-    rw [← hc]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [ht k]
-    rfl
-  have hS : ∀ k, ∃ t : Fin n → X'.presheaf.stalk p'.1, bp k = ∑ a, genMap ξ' p' (t a) • j (b a) := by
-    intro k
-    have h1 : bp k ∈ V p' := by
-      rw [hbp.2]
-      exact Submodule.subset_span ⟨k, rfl⟩
-    rw [hle] at h1
-    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 h1
-    choose t ht using fun k => (c k).2
-    refine ⟨t, ?_⟩
-    rw [← hc]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [ht k]
-    rfl
+    exact ⟨t, by rw [← hc]; exact Finset.sum_congr rfl fun k _ => by rw [ht k]; rfl⟩
+  have hT := fun a => hcoeff (j (b a)) bp <| by
+    rw [← hbp.2, hle]
+    exact Submodule.subset_span ⟨a, rfl⟩
+  have hS := fun k => hcoeff (bp k) (fun a => j (b a)) <| by
+    rw [← hle, hbp.2]
+    exact Submodule.subset_span ⟨k, rfl⟩
   choose T hT using hT
   choose S hS using hS
   refine ⟨Matrix.of T, Matrix.of S, ?_, hT, hS⟩

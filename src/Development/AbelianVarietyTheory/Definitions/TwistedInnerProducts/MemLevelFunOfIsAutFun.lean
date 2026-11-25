@@ -53,8 +53,6 @@ open GlobalTheory.EmbChart (tensAt atPlace idem)
 open GlobalTheory.StepData (LatFrame reGL)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.LocFrame
 
 section Inst

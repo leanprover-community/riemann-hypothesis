@@ -132,15 +132,6 @@ def IsOpIntG {G : Type*} [Group G] [MeasurableSpace G] (μ : Measure G) {Hp : Ty
     [InnerProductSpace ℂ Hp] (π : G →* (Hp →L[ℂ] Hp)) (φ : G → ℂ) (P : Hp →L[ℂ] Hp) : Prop :=
   Integrable φ μ ∧ ∀ x y : Hp, ⟪x, P y⟫_ℂ = ∫ g, φ g * ⟪x, π g y⟫_ℂ ∂μ
 
-def slopeD {K V : Type} [Field K] [AddCommGroup V] [Module K V] (d : Submodule K V → ℝ) (A B : Submodule K V) : ℝ :=
-  (d B - d A) / ((Module.finrank K B : ℝ) - (Module.finrank K A : ℝ))
-
-def IsChainD {K V : Type} [Field K] [AddCommGroup V] [Module K V] (d : Submodule K V → ℝ) (s : ℕ)
-    (W : ℕ → Submodule K V) : Prop :=
-  FiniteDimensional K V ∧ W 0 = ⊥ ∧ W s = ⊤ ∧ (∀ i < s, W i < W (i + 1)) ∧
-    (∀ i, i + 2 ≤ s → slopeD d (W (i + 1)) (W (i + 2)) < slopeD d (W i) (W (i + 1))) ∧
-    ∀ i < s, ∀ U : Submodule K V, W i < U → U ≤ W (i + 1) → slopeD d (W i) U ≤ slopeD d (W i) (W (i + 1))
-
 theorem IsURep.integrable_coef {G H : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]
     [OpensMeasurableSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] {π : G → (H →L[ℂ] H)} (hπ : IsURep π)
     {μ : Measure G} {φ : G → ℂ} (hφ : Integrable φ μ) (x y : H) :

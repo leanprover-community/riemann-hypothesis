@@ -297,7 +297,6 @@ section
 variable {F : Type} [Field F] [NumberField F]
 
 private theorem cψ : Continuous (ψ : A F → ℂ) := continuous_subtype_val.comp continuous_adelicChar
-private theorem nψ (x : A F) : ‖ψ x‖ = 1 := Circle.norm_coe _
 private theorem cq (δ : F) : Continuous (q4 δ : V4 F → A F) := by
   unfold q4
   fun_prop
@@ -311,7 +310,7 @@ private theorem cb (δ : F) : Continuous fun z : (A F × V4 F) × V4 F => ψ (B4
 private theorem key (δ : F) (φ : S4 F) :
     Continuous fun p : A F × V4 F => ∫ y, ψ (p.1 * q4 δ y) * φ.1 y * ψ (B4 δ y p.2) ∂(adeleMeasurePi F) :=
   cont_param (continuous_of_mem_schwartzBruhatPi φ.2) (integrable_of_mem_schwartzBruhatPi φ.2)
-    (ca δ) (cb δ) (fun _ => nψ _) (fun _ => nψ _)
+    (ca δ) (cb δ) (fun _ => Circle.norm_coe _) (fun _ => Circle.norm_coe _)
 end
 
 theorem UpperTheory.ConvolutionTheory.R2.C.contKer :

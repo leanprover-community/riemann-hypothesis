@@ -956,7 +956,7 @@ theorem discreteSeriesCover_of_classification :
   have hC : GlobalTheory.Published.DiscreteSeriesCoverExists :=
     GlobalTheory.Published.CoverSeries.of_upq
       (GlobalTheory.Published.discreteSeriesUpqExists_iff_dsExists.2 hExists)
-      (fun p q h T U hU => ((_root_.GlobalTheory.HcPort.print_harishChandraModules.1 p q h T).1 U hU).2.1)
+      (fun p q h T U hU => ((_root_.CompanionTheory.D.gk.HC.print_harishChandraModules.1 p q h T).1 U hU).2.1)
   intro p q hn T
   choose D hD using fun lam : {lam : Ix p q → ℚ // IsParam lam} => hC p q T lam.1 lam.2
   refine ⟨D, ?_, ?_⟩

@@ -5,44 +5,7 @@ public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FrameZeroStr
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumMemLaSet
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumPosOfPer
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FamilyDegreesAdmissible
 
 @[expose] public section
@@ -111,7 +74,7 @@ theorem eZ_lt_mul_Qc (hX : X.Hyp p K) (la : Fin n' → Fin (r + K) → ℕ) (e :
   rw [hq] at hmem
   exact hmem.1
 
-theorem sum_la_lt (hX : X.Hyp p K) (la : Fin n' → Fin (r + K) → ℕ) (hla : la ∈ X.LA p K) (j x : ℤ)
+theorem sum_la_lt (la : Fin n' → Fin (r + K) → ℕ) (hla : la ∈ X.LA p K) (j x : ℤ)
     (hx : x ∈ X.toLate j) : ∑ c, la (posOf n' x) c < (r + K) * X.Pz p K j x := by
   classical
   have hmem := Fintype.mem_piFinset.1 hla (posOf n' x)
@@ -158,7 +121,7 @@ theorem restPad : RestPad 1088 := by
     rw [← hPQ]
     unfold Dat.nz
     exact div_mul_sub_le_div_sub_div _ _ _ _ _ (r + K) r (Pz_pos hp _ _) (by unfold Dat.Qc; exact pow_pos hp _)
-      (sum_la_lt hX la hla (j - 1) _ (sum_frlate X hV (j - 1) ⟨i, hi⟩)) (eZ_lt_mul_Qc hX la e he (j - 1) ⟨i, hi⟩)
+      (sum_la_lt la hla (j - 1) _ (sum_frlate X hV (j - 1) ⟨i, hi⟩)) (eZ_lt_mul_Qc hX la e he (j - 1) ⟨i, hi⟩)
   · intro x hx
     have hl := sum_LLsub X hV j x hx
     obtain ⟨h1, h2, -, -⟩ := sum_late_mem hl.1

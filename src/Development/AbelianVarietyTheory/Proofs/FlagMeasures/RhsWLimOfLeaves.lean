@@ -1107,17 +1107,7 @@ theorem inWb_uwb {s : Mat k r} (hs : s ∈ UWb k r) {v : Fin (2 * r + k + 1) →
   exact RI.inWb_emb _ hv
 
 theorem continuous_opVec : Continuous (opVec k r) := by
-  refine continuous_pi fun i => ?_
-  unfold opVec
-  by_cases h : r ≤ i.val ∧ i.val < r + k
-  · simp only [dif_pos h]
-    exact (continuous_apply _).comp continuous_fst
-  · simp only [dif_neg h]
-    by_cases h' : i.val = r + k
-    · simp only [if_pos h']
-      exact continuous_snd
-    · simp only [if_neg h']
-      exact continuous_const
+  apply _root_.GlobalTheory.HypOrbitUnique.continuous_opVec <;> assumption
 
 theorem continuous_opCo : Continuous (opCo k r) :=
   (continuous_pi fun i => continuous_apply (wI k r (Fin.castSucc i))).prodMk

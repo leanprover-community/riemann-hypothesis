@@ -112,10 +112,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CountSys
 import Mathlib.Algebra.Order.Star.Int
 
--- `rulesCommRing` is a high-priority instance on a Pi-type abbrev; it makes searches for
--- `CommRing ?R` with unknown `R` explode.
-attribute [-instance] Formalism.L2.Pj.rulesCommRing
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.BlockConjugateRankThreeRep, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.PowCong, Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.FrobeniusPowResDegPlaceNorm, Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.MapTraceEqSumRootsOfCharpolyMap, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.CrystallineBaseChange.FrobEx, Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.BrCardP, Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.TConjK, Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.VConjP, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.WinSat, Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.FrobeniusTraceCountBoundOfCmEigensystemCount
 
@@ -907,7 +903,6 @@ open scoped Matrix
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published
 open UpperTheory.V.Af.Bc
-open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Br
 def CountKAlt : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] (n : ℕ), 2 ≤ n → ∃ c A : ℕ,
     ∀ (m : Fin n → ℤ), StrictAnti m → (∀ i, m i + m i.rev = 1 - n) → ∀ H : ℕ, (∀ i, |m i| ≤ H) → ∀ M : ℕ, 1 ≤ M →

@@ -60,8 +60,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
 namespace GlobalTheory.CompanionTheory.Ar.QuotLoc.DiffL.Pol
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open scoped CategoryTheory.Obj
 variable {X : Scheme.{0}}
 

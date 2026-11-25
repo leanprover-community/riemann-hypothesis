@@ -51,7 +51,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.S
 
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.ShareEig

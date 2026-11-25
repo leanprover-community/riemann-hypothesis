@@ -57,8 +57,6 @@ import Mathlib.Tactic.ReduceModChar
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace CrystallineSemistableComparison.Onto
@@ -117,7 +115,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4
 open CrystallineSemistableComparison.Onto

@@ -43,8 +43,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntEmbCoe
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry Limits

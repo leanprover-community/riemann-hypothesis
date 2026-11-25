@@ -646,8 +646,6 @@ theorem GlobalTheory.HilbertThetaSeries.th_expansion : ∀ (F : Type) [Field F] 
       exact hall.sigma hfib
   exact ⟨hsum, GlobalTheory.HilbertThetaSeries.QHol.hol F (th G Φ) _ hQ, hgr, hQ⟩
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto

@@ -95,7 +95,7 @@ theorem inj_clause {O X : Type} [CommRing O] [AddCommGroup X] [Module O X]
     (Nst M M' : Submodule O X) (h : M' ≤ M) :
     Function.Injective (Submodule.mapQ (Submodule.comap M'.subtype Nst) (Submodule.comap M.subtype Nst)
       (Submodule.inclusion h) (fun _ hx => hx)) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x
   induction x using Submodule.Quotient.induction_on with
   | H x =>
@@ -2091,7 +2091,7 @@ theorem lc_snf {W Qq : Type} [CommRing W] [IsDomain W] [IsPrincipalIdealRing W] 
   have hφr : LinearMap.range φ = e.tgt := by
     rw [hL, hφ]; exact Fintype.range_linearCombination W _
   have hφi : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have h1 : gL.mulVec (fun c => algebraMap W Qq (x c)) = 0 := by
       funext i
@@ -2368,7 +2368,7 @@ theorem mna_finite_of (G : GAtP p) (hH : RestHfin G) (h2 : G.FinClasses) : Modul
   have : ∀ x : (Σ i : G.comp, ↥(R i)), IsNoetherian G.O ↥(Submodule.span G.O (↑(S x) : Set G.P.Xsp)) :=
     fun x => isNoetherian_of_fg_of_noetherian _ (Submodule.fg_span (Finset.finite_toSet _))
   apply Module.Finite.of_injective f
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro F hF0
   apply Subtype.ext
   funext i L
@@ -3522,7 +3522,7 @@ theorem jm_count {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O
   let ψ : (Fin n → O) →ₗ[O] ({i : Fin nS // a i ∣ q} → O) :=
     (Matrix.of fun (i : {i : Fin nS // a i ∣ q}) (k : Fin n) => X i.1 k).mulVecLin
   have hψ : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have hx' : ∀ i : Fin nS, a i ∣ q → ∑ k, X i k * x k = 0 := by
       intro i hi
@@ -3590,7 +3590,7 @@ theorem jm_basis {I : Type} [Finite I] (b0 : Module.Basis I Kf V) (c : O) (hc : 
       (fun x => hHP x x.2)
   have h2 : Module.finrank O (Submodule.span O (Set.range b0)) ≤ Module.finrank O P := by
     refine LinearMap.finrank_le_finrank_of_injective (f := φ) ?_
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have : c • (x : V) = 0 := congrArg Subtype.val hx
     exact Subtype.ext (jm_tors (Kf := Kf) c hc _ this)
@@ -4077,9 +4077,6 @@ abbrev jr_I (G : GAtP p) (v : Fin G.P.nV) (s : Fin (G.P.n' v)) : Type :=
 instance jr_fin (G : GAtP p) (v : Fin G.P.nV) (s : Fin (G.P.n' v)) : Finite (jr_I G v s) :=
   (sSIdxFinite (G.P.m + 1) (G.P.m + 1) (nuOf (lamAt (G.P.lam0 v) s))).to_subtype
 
-theorem jr_KK (K : Type) [Field K] : IsFractionRing K K :=
-  IsLocalization.of_le_isUnit (fun x hx => IsUnit.mk0 x (nonZeroDivisors.ne_zero hx))
-
 theorem jr_Vsp (G : GAtP p) (v : Fin G.P.nV) : Vsp G.Kf (G.P.lam0 v) = tensorLat G.Kf G.Kf
     (fun s => dualWeyl G.Kf (G.P.m + 1) (G.P.m + 1) (nuOf (lamAt (G.P.lam0 v) s))) := by
   unfold Vsp
@@ -4118,7 +4115,7 @@ theorem jr_dim (G : GAtP p) (v : Fin G.P.nV) :
   classical
   have hb := fun s : Fin (G.P.n' v) => sSBasis G.Kf (G.P.m + 1) (G.P.m + 1) (nuOf (lamAt (G.P.lam0 v) s))
   choose b hb1 _ using hb
-  have := jr_KK G.Kf
+  have := instIsFractionRing (R := G.Kf)
   obtain ⟨hli, hsp⟩ := tensorBasis G.Kf G.Kf (Fin (G.P.n' v)) (G.P.m + 1) (G.P.m + 1)
     (fun s => jr_I G v s)
     (fun s => dualWeyl G.Kf (G.P.m + 1) (G.P.m + 1) (nuOf (lamAt (G.P.lam0 v) s))) b
@@ -4165,7 +4162,7 @@ theorem jr_tuple (G : GAtP p) (v0 : Fin G.P.nV) (L : G.P.Tup) (hL : G.P.IsLatTup
   classical
   have hB := fun v => jr_loc G v (L v) (hL v)
   choose B b3 b4 bH using hB
-  have := jr_KK G.Kf
+  have := instIsFractionRing (R := G.Kf)
   obtain ⟨hli, -⟩ := tensorBasis G.Kf G.Kf (jr_S G) (G.P.m + 1) (G.P.m + 1)
     (fun x => jr_I G x.1 x.2)
     (fun x => dualWeyl G.Kf (G.P.m + 1) (G.P.m + 1) (nuOf (lamAt (G.P.lam0 x.1) x.2)))

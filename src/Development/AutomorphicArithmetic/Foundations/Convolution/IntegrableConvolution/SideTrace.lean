@@ -597,6 +597,7 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.Global.SemiLocal
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets UpperTheory.ConvolutionTheory.L1
 open scoped ComplexConjugate Classical InnerProductSpace
+open UpperTheory.ConvolutionTheory.L1.TY (prj_mem prj_self mem_eigIn)
 namespace UpperTheory.ConvolutionTheory.L1.SideTr
 
 section Hil
@@ -604,12 +605,6 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSp
 
 private theorem prj_mem_cl {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : v ∈ V.topologicalClosure ↔ v ∈ V := by
   rw [hV.submodule_topologicalClosure_eq]
-
-private theorem prj_mem {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : prj V v ∈ V :=
-  (prj_mem_cl hV _).1 (Submodule.starProjection_apply_mem _ v)
-
-private theorem prj_self {V : Submodule ℂ H} {v : H} (hv : v ∈ V) : prj V v = v :=
-  Submodule.starProjection_eq_self_iff.2 (Submodule.le_topologicalClosure V hv)
 
 private theorem prj_adj (V : Submodule ℂ H) : ContinuousLinearMap.adjoint (prj V) = prj V :=
   (isSelfAdjoint_starProjection _).adjoint_eq
@@ -630,10 +625,6 @@ private theorem eigIn_closed {W : Submodule ℂ H} (hW : IsClosed (W : Set H)) (
     simp [eigIn]
   rw [this]
   exact hW.inter (isClosed_eq A.continuous (continuous_const_smul _))
-
-private theorem mem_eigIn {W : Submodule ℂ H} {A : H →L[ℂ] H} {x : ℝ} {v : H} :
-    v ∈ eigIn W A x ↔ v ∈ W ∧ A v = (x : ℂ) • v := by
-  simp [eigIn]
 
 private theorem prj_inf {P X : Submodule ℂ H} (hP : IsClosed (P : Set H)) (hX : IsClosed (X : Set H))
     (h : ∀ v ∈ X, prj P v ∈ X) : prj X * prj P = prj (X ⊓ P) ∧ prj P * prj X = prj (X ⊓ P) := by

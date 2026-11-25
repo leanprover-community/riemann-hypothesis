@@ -47,8 +47,6 @@ open scoped TensorProduct InnerProductSpace Classical
 
 namespace GlobalTheory.Core.Mi
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem castGA_mem_GFset {I I' : Formalism.MainNotions.S.AutInst} (e : I = I') (x : I.GA) :
     Formalism.L2.SG.RowsJoinPinned.castGA e x ∈ I'.GFset ↔ x ∈ I.GFset := by
   subst e; rfl

@@ -236,10 +236,7 @@ open GlobalTheory.SplitUnitary
 and a quadratic extension `E/F`, the two-fold metaplectic cover over the split unitary group
 `U(ν, ν)` splits via a character `χ`, giving a smooth unitary Weil representation `ω` on the
 Schwartz space `S(M_{α × ν}(E))` intertwined with the Heisenberg representation and with explicit
-action on the Siegel Levi subgroup.
-
-Proposed reference:
-[S. S. Kudla, *Splitting metaplectic covers of dual reductive pairs* (Theorem 4.1)][kudla1996]. -/
+action on the Siegel Levi subgroup. -/
 def KudlaSplittingSplitUnitary : Prop :=
   ∀ (F : Type) [Field F] [CharZero F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
     (E : Type) [Field E] [Algebra F E] [TopologicalSpace E] [IsModuleTopology F E]

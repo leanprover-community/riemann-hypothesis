@@ -170,11 +170,7 @@ theorem form_mono (c : ∀ k, J k) (e : K → ℕ) : IsMultiHomog (mono c e) e :
   classical
   have h := form_prod (J := J) Finset.univ (fun k => (X ⟨k, c k⟩ : MRing J) ^ e k)
     (fun k => e k • Pi.single k 1) fun k _ => form_pow (form_X k (c k)) (e k)
-  have e1 : (∑ k, e k • (Pi.single k 1 : K → ℕ)) = e := by
-    funext k'
-    simp [Finset.sum_apply, Pi.single_apply]
-  rw [e1] at h
-  exact h
+  simpa [mono, ← Pi.single_smul', Finset.univ_sum_single] using h
 
 theorem aeval_mono {S : Type} [CommRing S] (v : (Σ k, J k) → S) (c : ∀ k, J k) (e : K → ℕ) :
     aeval v (mono c e) = ∏ k, v ⟨k, c k⟩ ^ e k := by

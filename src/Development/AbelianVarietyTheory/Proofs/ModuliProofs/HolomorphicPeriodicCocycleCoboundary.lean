@@ -276,22 +276,6 @@ private theorem mem_intLattice_iff {n : ℕ} (x : EuclideanSpace ℝ (Fin n)) :
   · rintro ⟨ν, rfl⟩ i
     exact ⟨ν i, by simp⟩
 
-private theorem mem_intLattice_dual_iff {n : ℕ} (x : EuclideanSpace ℝ (Fin n)) :
-    x ∈ LinearMap.BilinForm.dualSubmodule (innerₗ (EuclideanSpace ℝ (Fin n)))
-      (Submodule.span ℤ (Set.range (EuclideanSpace.basisFun (Fin n) ℝ).toBasis)) ↔
-      ∃ ν : Fin n → ℤ, x = WithLp.toLp 2 fun k => (ν k : ℝ) := by
-  simp only [LinearMap.BilinForm.mem_dualSubmodule, Submodule.mem_one, innerₗ_apply_apply]
-  constructor
-  · intro h
-    choose m hm using fun k => h ((EuclideanSpace.basisFun (Fin n) ℝ).toBasis k)
-      (Submodule.subset_span ⟨k, rfl⟩)
-    refine ⟨m, ?_⟩
-    ext k
-    simpa [EuclideanSpace.inner_single_right] using (hm k).symm
-  · rintro ⟨ν, rfl⟩ y hy
-    obtain ⟨μ, rfl⟩ := (mem_intLattice_iff y).1 hy
-    exact ⟨∑ k, μ k * ν k, by simp [PiLp.inner_apply]⟩
-
 theorem exists_rapid_fourierSeries_of_int_periodic :
     ∀ (n : ℕ) (w : (Fin n → ℝ) → ℂ), ContDiff ℝ ∞ w →
       (∀ (ν : Fin n → ℤ) x, w (x + fun k => (ν k : ℝ)) = w x) →

@@ -448,46 +448,37 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.analytic_square_regularized_co
   have ht0 : 0 < Q.SW.t₀ := (Q.SW.reg none).1
   let mm : σ × Fin 2 → Option σ := fun i => if i.2 = 0 then some i.1 else if i.1 = a₀ then none else some i.1
   let c : σ × Fin 2 → ℝ := fun i => 1 / 2 * (ε i.1 : ℝ)
-  have hph : ∀ x, 1 / 2 * ∑ a : σ, (ε a : ℝ) * (SY.ph a (Q.q 0 x) + SY.ph a (Q.q 1 x)) = ∑ i : σ × Fin 2, c i * Q.SW.ph (mm i) x := by
-    intro x
+  have hsum : ∀ (F : σ → SY.X → ℝ) (G : Option σ → Q.SW.X → ℝ),
+      (∀ a x, G (some a) x = F a (Q.q 0 x)) → (∀ x, G none x = F a₀ (Q.q 1 x)) →
+      (∀ a ≠ a₀, ∀ x, F a (Q.q 0 x) = F a (Q.q 1 x)) →
+      ∀ x, 1 / 2 * ∑ a : σ, (ε a : ℝ) * (F a (Q.q 0 x) + F a (Q.q 1 x)) =
+        ∑ i : σ × Fin 2, c i * G (mm i) x := by
+    intro F G h0 h1 hb x
     rw [Fintype.sum_prod_type, Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Fin.sum_univ_two]
-    have e0 : Q.SW.ph (mm (a, 0)) x = SY.ph a (Q.q 0 x) := by simp [mm, Q.ph0]
-    have e1 : Q.SW.ph (mm (a, 1)) x = SY.ph a (Q.q 1 x) := by
+    have e0 : G (mm (a, 0)) x = F a (Q.q 0 x) := by simp [mm, h0]
+    have e1 : G (mm (a, 1)) x = F a (Q.q 1 x) := by
       by_cases ha : a = a₀
-      · subst ha
-        simp [mm, Q.ph1]
-      · simp [mm, ha, Q.ph0]
-        exact congrFun (Q.base_ph a ha) x
-    rw [e0, e1]
-    simp only [c]
-    ring
-  have hphT : ∀ t x, 1 / 2 * ∑ a : σ, (ε a : ℝ) * (SY.phT a t (Q.q 0 x) + SY.phT a t (Q.q 1 x)) = ∑ i : σ × Fin 2, c i * Q.SW.phT (mm i) t x := by
-    intro t x
-    rw [Fintype.sum_prod_type, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [Fin.sum_univ_two]
-    have e0 : Q.SW.phT (mm (a, 0)) t x = SY.phT a t (Q.q 0 x) := by simp [mm, Q.phase_some_eq_comp_first_projection]
-    have e1 : Q.SW.phT (mm (a, 1)) t x = SY.phT a t (Q.q 1 x) := by
-      by_cases ha : a = a₀
-      · subst ha
-        simp [mm, Q.phase_none_eq_comp_second_projection]
-      · simp [mm, ha, Q.phase_some_eq_comp_first_projection]
-        exact congrFun (Q.base_phT a ha t) x
+      · subst ha; simp [mm, h1]
+      · simp [mm, ha, h0, hb a ha x]
     rw [e0, e1]
     simp only [c]
     ring
   have hgH : Q.gH = fun x => logNormSec Q.L' Q.v x + (Q.cst + ∑ i, c i * Q.SW.ph (mm i) x) := by
     funext x
     simp only [AnSq.gH]
-    rw [hph]
+    rw [hsum SY.ph Q.SW.ph (fun a x => by simp [Q.ph0]) (fun x => by simp [Q.ph1])
+      (fun a ha x => congrFun (Q.base_ph a ha) x)]
     ring
   have hgT : ∀ t, Q.gT t = fun x => logNormSec Q.L' Q.v x + (Q.cst + ∑ i, c i * Q.SW.phT (mm i) t x) := by
     intro t
     funext x
     simp only [AnSq.gT]
-    rw [hphT]
+    rw [hsum (SY.phT · t) (Q.SW.phT · t)
+      (fun a x => by simp [Q.phase_some_eq_comp_first_projection])
+      (fun x => by simp [Q.phase_none_eq_comp_second_projection])
+      (fun a ha x => congrFun (Q.base_phT a ha t) x)]
     ring
   obtain ⟨hsI, hsE, hsT⟩ := PositivityTheory.Xgp.sq_limit.singular_part hI Q w
   obtain ⟨hrI, hrT⟩ := PositivityTheory.Xgp.sq_limit.regular hCS Q.SW w mm c Q.cst ht0

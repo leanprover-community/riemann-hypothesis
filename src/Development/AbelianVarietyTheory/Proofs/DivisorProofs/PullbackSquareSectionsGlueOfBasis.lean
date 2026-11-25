@@ -46,8 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-set_option autoImplicit false
-
 namespace GlobalTheory.PinchLift
 
 theorem app_res {X Y : Scheme.{0}} (f : Y ⟶ X) {W W' : X.Opens} (h : W' ≤ W) (s : Γ(X, W)) :

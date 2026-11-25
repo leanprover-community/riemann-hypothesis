@@ -172,13 +172,9 @@ def Pt.fld {Z : Mdl Y i₀} (y : Z.Pt) : Formalism.MainNotions.ModuliIntegralCha
 
 def Pt.gen {Z : Mdl Y i₀} (y : Z.Pt) : Sp ↥y.C.S ⟶ Z.X := spMap (intO ↥y.C.S).subtype ≫ y.z
 
-def inQ (x : Z.X) : Prop := CharZero (Z.X.residueField x)
-
 def abP (x : Z.X) : Prop := Z.π x ∈ abLocus (Y Z.i).t.G
 
 def isGenP (x : Z.X) : Prop := ∀ x' : Z.X, x' ⤳ x → x' = x
-
-def Gen : Type := {x : Z.X // ¬ Z.inQ x ∧ ∀ x' : Z.X, ¬ Z.inQ x' → x' ⤳ x → x' = x}
 
 def free (a m : ℕ) : Z.X.Modules :=
   GlobalTheory.twist (GlobalTheory.QCoh.freeModule Z.X (Fin m)) ((GlobalTheory.ProjSpace.On (Z.i.c.V W) Z.n (-(a : ℤ))).pull Z.I.subschemeι)
@@ -204,8 +200,6 @@ def ofMod (F : Z.X.Modules) : Z.Sh :=
 
 def Idl : Type := {J : Z.X.IdealSheafData // ∀ x ∈ J.support, x ∉ Z.opn}
 
-def powP (J : Z.Idl) : Prop := ∃ k : ℕ, ∀ U : Z.X.affineOpens, ((p : Γ(Z.X, U.1)) ^ k) ∈ J.1.ideal U
-
 end Mdl
 
 def IsTrans (i i₂ : Idx H p) (τ : (Y i₂).X ⟶ (Y i).X) (mu : SABMap (Y i₂).t (Y i).t τ) : Prop :=
@@ -221,33 +215,14 @@ def NatImg (Z₁ Z₂ : Mdl Y i₀) {k : Type} [Field k] (w₁ : Sp k ⟶ Z₁.X
 
 def NatCorr (Z₁ Z₂ : Mdl Y i₀) : Prop := Z₂.i.l.Dvd Z₁.i.l ∧ Z₂.i.c.F ≤ Z₁.i.c.F ∧ ProperLE Dw Z₂.ty Z₁.ty
 
-def IsNatMap (Z₁ Z₂ : Mdl Y i₀) (f : Z₁.X ⟶ Z₂.X) : Prop :=
-  NatCorr Z₁ Z₂ ∧ ∀ (k : Type) [Field k] (w : Sp k ⟶ Z₁.X), Set.range w ⊆ Z₁.opn → NatImg Z₁ Z₂ w (w ≫ f)
-
 def Corr (Z₁ Z₂ : Mdl Y i₀) : Prop := Z₂.i.l.Dvd Z₁.i.l ∧ Z₂.i.c.F ≤ Z₁.i.c.F ∧ ∀ σ, Z₂.ty σ ⊆ Z₁.ty σ
 
 def IsMap (Z₁ Z₂ : Mdl Y i₀) (f : Z₁.X ⟶ Z₂.X) : Prop :=
   Corr Z₁ Z₂ ∧ ∀ (k : Type) [Field k] (w : Sp k ⟶ Z₁.X), Set.range w ⊆ Z₁.opn → NatImg Z₁ Z₂ w (w ≫ f)
 
-def IsNBlow (Z : Mdl Y i₀) (J : Z.Idl) (Z' : Mdl Y i₀) : Prop :=
-  Z'.i = Z.i ∧ Z'.ty = Z.ty ∧ ∃ (X' : Scheme.{0}) (b : X' ⟶ Z.X) (ν : Z'.X ⟶ X'),
-    ReciprocityTheory.AnForm.R.FinalTheorems.Blowup b J.1 ∧ IsFinite ν ∧ IsMap Z' Z (ν ≫ b)
-
-def IsNatDiag (Z₁ Z₂ Z' : Mdl Y i₀) : Prop :=
-  Z'.i = Z₁.i ∧ Z'.ty = Z₁.ty ∧ ∃ (f₁ : Z'.X ⟶ Z₁.X) (f₂ : Z'.X ⟶ Z₂.X), IsMap Z' Z₁ f₁ ∧ IsNatMap Z' Z₂ f₂ ∧
-    IsFinite (prod.lift f₁ f₂)
-
 def IsDiag (Z₁ Z₂ Z' : Mdl Y i₀) : Prop :=
   Z'.i = Z₁.i ∧ Z'.ty = Z₁.ty ∧ ∃ (f₁ : Z'.X ⟶ Z₁.X) (f₂ : Z'.X ⟶ Z₂.X), IsMap Z' Z₁ f₁ ∧ IsMap Z' Z₂ f₂ ∧
     IsFinite (prod.lift f₁ f₂)
-
-
-open Classical in
-def blowUp (Z : Mdl Y i₀) (J : Z.Idl) : Mdl Y i₀ := if h : ∃ Z', IsNBlow Z J Z' then h.choose else Z
-
-
-open Classical in
-def natDiagCl (Z₁ Z₂ : Mdl Y i₀) : Mdl Y i₀ := if h : ∃ Z', IsNatDiag Z₁ Z₂ Z' then h.choose else Z₁
 
 
 open Classical in

@@ -44,7 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.abelian_structure_cohomology_statement : GlobalTheory.AbCoh.OStr := by
   first | exact @GlobalTheory.AbCoh.oStr

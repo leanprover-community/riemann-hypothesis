@@ -422,8 +422,6 @@ section -- clump:auto
 
 open TensorProduct CrystallineSemistableComparison.Onto
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CompanionTheory.OmKun
 
 theorem piCongrRight_single {K ι : Type} [CommRing K] [DecidableEq ι] {X Y : ι → Type}

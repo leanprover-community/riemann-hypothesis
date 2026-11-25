@@ -165,7 +165,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockTriangularMemMinimalParabolicStatement =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMaxEvenAdaptedLattice =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMaxEvenAdaptedLattice", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHermRingRat\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm\nimport Development.WeilBound.ThetaLifts.Reductions.SiegelCore\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMaxEvenAdaptedLattice", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHermRingRat\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm\nimport Development.WeilBound.ThetaLifts.Reductions.SiegelCore\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlagTransitiveOfBase\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -181,19 +181,6 @@ section Lemmas
 
 variable {R : Type} [CommRing R] {c : R →+* R} {𝔬 : Subring R}
   {V : Type} [AddCommGroup V] [Module R V] {h : V → V → R}
-
-theorem herm_zero_right (H : IsHerm c h) (x : V) : h x 0 = 0 := by
-  have := H.smul_right 0 x 0
-  simpa using this
-
-theorem herm_zero_left (H : IsHerm c h) (x : V) : h 0 x = 0 := by
-  rw [H.symm x 0, herm_zero_right H, map_zero]
-
-theorem herm_add_left (H : IsHerm c h) (x y z : V) : h (x + y) z = h x z + h y z := by
-  rw [H.symm z (x + y), H.add_right, map_add (f := _), ← H.symm z x, ← H.symm z y]
-
-theorem herm_smul_left (H : IsHerm c h) (a : R) (x y : V) : h (a • x) y = c a * h x y := by
-  rw [H.symm y (a • x), H.smul_right, map_mul, ← H.symm y x]
 
 def hl (H : IsHerm c h) (w : V) : V →ₗ[R] R where
   toFun := h w
@@ -225,7 +212,7 @@ theorem evenInt_span (H : IsHerm c h) (inv : ∀ a, c (c a) = a) (cm : ∀ a ∈
     intro g hg z hz
     induction hz using Submodule.span_induction with
     | mem x hx => exact h1 g hg x hx
-    | zero => rw [herm_zero_right H]; exact 𝔬.zero_mem
+    | zero => rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_zero_right H]; exact 𝔬.zero_mem
     | add x y _ _ hx hy => rw [H.add_right]; exact 𝔬.add_mem hx hy
     | smul a x _ hx =>
       rw [Subring.smul_def, H.smul_right]
@@ -234,25 +221,25 @@ theorem evenInt_span (H : IsHerm c h) (inv : ∀ a, c (c a) = a) (cm : ∀ a ∈
     intro z hz z' hz'
     induction hz using Submodule.span_induction with
     | mem x hx => exact s1 x hx z' hz'
-    | zero => rw [herm_zero_left H]; exact 𝔬.zero_mem
-    | add x y _ _ hx hy => rw [herm_add_left H]; exact 𝔬.add_mem hx hy
+    | zero => rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_zero_left H]; exact 𝔬.zero_mem
+    | add x y _ _ hx hy => rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_add_left H]; exact 𝔬.add_mem hx hy
     | smul a x _ hx =>
-      rw [Subring.smul_def, herm_smul_left H]
+      rw [Subring.smul_def, GlobalTheory.CompanionTheory.KFin.Flag.herm_smul_left H]
       exact 𝔬.mul_mem (cm _ a.2) hx
   refine ⟨s2, fun z hz => ?_⟩
   induction hz using Submodule.span_induction with
   | mem x hx => exact h2 x hx
-  | zero => exact ⟨0, 𝔬.zero_mem, by simp [herm_zero_right H]⟩
+  | zero => exact ⟨0, 𝔬.zero_mem, by simp [GlobalTheory.CompanionTheory.KFin.Flag.herm_zero_right H]⟩
   | add x y hx' hy' hx hy =>
     obtain ⟨a, ha, ea⟩ := hx
     obtain ⟨b, hb, eb⟩ := hy
     refine ⟨a + b + h x y, 𝔬.add_mem (𝔬.add_mem ha hb) (s2 x hx' y hy'), ?_⟩
-    rw [H.add_right, herm_add_left H, herm_add_left H, ea, eb, H.symm x y, map_add (f := _), map_add (f := _)]
+    rw [H.add_right, GlobalTheory.CompanionTheory.KFin.Flag.herm_add_left H, GlobalTheory.CompanionTheory.KFin.Flag.herm_add_left H, ea, eb, H.symm x y, map_add (f := _), map_add (f := _)]
     ring
   | smul a x _ hx =>
     obtain ⟨b, hb, eb⟩ := hx
     refine ⟨c a * a * b, 𝔬.mul_mem (𝔬.mul_mem (cm _ a.2) a.2) hb, ?_⟩
-    rw [Subring.smul_def, H.smul_right, herm_smul_left H, eb, map_mul, map_mul, inv]
+    rw [Subring.smul_def, H.smul_right, GlobalTheory.CompanionTheory.KFin.Flag.herm_smul_left H, eb, map_mul, map_mul, inv]
     ring
 
 theorem exists_maxEven (Hr : IsHermRing c 𝔬) (H : IsHerm c h) (Hp : IsPerfect h) (L₀ : Submodule 𝔬 V)
@@ -264,7 +251,7 @@ theorem exists_maxEven (Hr : IsHermRing c 𝔬) (H : IsHerm c h) (Hp : IsPerfect
     { carrier := {z | ∀ i, h (g i) z ∈ 𝔬}
       add_mem' := fun {a b} ha hb i => by
         rw [H.add_right]; exact 𝔬.add_mem (ha i) (hb i)
-      zero_mem' := fun i => by rw [herm_zero_right H]; exact 𝔬.zero_mem
+      zero_mem' := fun i => by rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_zero_right H]; exact 𝔬.zero_mem
       smul_mem' := fun a z hz i => by
         rw [Subring.smul_def, H.smul_right]; exact 𝔬.mul_mem a.2 (hz i) }
   let f : D →ₗ[𝔬] (Fin m → 𝔬) :=
@@ -283,16 +270,16 @@ theorem exists_maxEven (Hr : IsHermRing c 𝔬) (H : IsHerm c h) (Hp : IsPerfect
       rw [← hg] at hw
       induction hw using Submodule.span_induction with
       | mem x hx => obtain ⟨i, rfl⟩ := hx; exact h0 i
-      | zero => exact herm_zero_left H _
-      | add x y _ _ hx hy => rw [herm_add_left H, hx, hy, add_zero]
-      | smul a x _ hx => rw [Subring.smul_def, herm_smul_left H, hx, mul_zero]
+      | zero => exact GlobalTheory.CompanionTheory.KFin.Flag.herm_zero_left H _
+      | add x y _ _ hx hy => rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_add_left H, hx, hy, add_zero]
+      | smul a x _ hx => rw [Subring.smul_def, GlobalTheory.CompanionTheory.KFin.Flag.herm_smul_left H, hx, mul_zero]
     have h2 : ∀ w ∈ Submodule.span R (L₀ : Set V), h w z = 0 := by
       intro w hw
       induction hw using Submodule.span_induction with
       | mem x hx => exact h1 x hx
-      | zero => exact herm_zero_left H _
-      | add x y _ _ hx hy => rw [herm_add_left H, hx, hy, add_zero]
-      | smul a x _ hx => rw [herm_smul_left H, hx, mul_zero]
+      | zero => exact GlobalTheory.CompanionTheory.KFin.Flag.herm_zero_left H _
+      | add x y _ _ hx hy => rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_add_left H, hx, hy, add_zero]
+      | smul a x _ hx => rw [GlobalTheory.CompanionTheory.KFin.Flag.herm_smul_left H, hx, mul_zero]
     apply Subtype.ext
     refine Hp.nondeg _ fun w => ?_
     rw [H.symm w, h2 w (by rw [hL.2]; trivial), map_zero]
@@ -394,7 +381,7 @@ theorem exists_maxEven_adapted : ∀ {R : Type} [CommRing R] (c : R →+* R) (�
   have hA : ∀ i j, c s * (s * (h (u i) (u j) * t)) ∈ 𝔬 := fun i j =>
     𝔬.mul_mem (Hr.conj_mem _ hs𝔬) (hs (i, j) (Finset.mem_univ _))
   have hww : ∀ i j, h (w i) (w j) = 2 * (c s * (s * (h (u i) (u j) * t))) := fun i j => by
-    simp only [w, H.smul_right, herm_smul_left H]
+    simp only [w, H.smul_right, GlobalTheory.CompanionTheory.KFin.Flag.herm_smul_left H]
     linear_combination (-(c s * s * h (u i) (u j))) * ht
   have ite𝔬 : ∀ i j : Fin r, (if i = j then (1 : R) else 0) ∈ 𝔬 := fun i j => by
     split_ifs

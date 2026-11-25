@@ -71,8 +71,6 @@ theorem ZhatNAct_holds : ZhatNAct := by
   refine Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun c _ => ?_
   ring
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem FrameAtV_holds : FrameAtV := by
   intro D X u v
   have hc : ∀ p q : (VS D).V, hJ (X.B.I.ε v) (rv X.B.I v (X.crd p)) (rv X.B.I v (X.crd q)) =

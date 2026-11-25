@@ -82,17 +82,7 @@ structure SameHost (D D' : D7) : Prop where
     (D.host.art (ZMod.unitOfCoprime p h)).1 = (D'.host.art (ZMod.unitOfCoprime p h')).1 ∧
       (D.R.iotaInv (D.host.art (ZMod.unitOfCoprime p h)).2).val = (D'.R.iotaInv (D'.host.art (ZMod.unitOfCoprime p h')).2).val
 
-theorem SameHost.condN_eq {D D' : D7} (h : SameHost D D') : D.host.condN = D'.host.condN := by
-  show D.host.QS * D.host.q * D.host.d = D'.host.QS * D'.host.q * D'.host.d
-  rw [h.QS_eq, h.q_eq, h.d_eq]
-
 theorem SameHost.refl (D : D7) : SameHost D D := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, fun _ _ _ => ⟨rfl, rfl⟩⟩
-
-theorem SameHost.trans {D D' D'' : D7} (h : SameHost D D') (h' : SameHost D' D'') : SameHost D D'' :=
-  ⟨h.1.trans h'.1, h.2.trans h'.2, h.3.trans h'.3, h.4.trans h'.4, h.5.trans h'.5, h.6.trans h'.6, h.7.trans h'.7, h.8.trans h'.8,
-    h.9.trans h'.9, fun p k k'' =>
-      have k' : Nat.Coprime p D'.host.condN := h.condN_eq ▸ k
-      ⟨(h.art_eq p k k').1.trans (h'.art_eq p k' k'').1, (h.art_eq p k k').2.trans (h'.art_eq p k' k'').2⟩⟩
 
 structure SameWord (D : D7) (u : D.what₂.Word) (D' : D7) (u' : D'.what₂.Word) : Prop where
   host : SameHost D D'

@@ -47,8 +47,6 @@ namespace GlobalTheory.LevCore
 open scoped TensorProduct
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem dict_transport {D : D7} {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Comp : Type}
     {X : Comp → Data E r} {V W : HSp D} (h : V = W) (dict : GA D V → Σ k, Frame (X k).Ψ r)
     (d : GA D W → Σ k, Frame (X k).Ψ r) (hdd : ∀ g (h' : V = W), d g = dict (h' ▸ g))

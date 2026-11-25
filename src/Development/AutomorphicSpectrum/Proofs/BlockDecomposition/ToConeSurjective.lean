@@ -47,7 +47,6 @@ import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ChartBij
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4

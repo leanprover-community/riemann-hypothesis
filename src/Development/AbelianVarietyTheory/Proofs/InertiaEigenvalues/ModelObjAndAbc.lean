@@ -159,7 +159,7 @@ theorem _root_.GlobalTheory.T.phiGammaModule_saturation_theorem :
         (∀ i, IsLat (N' i)) ∧ CondAB D'.φ w w' N' ∧ ∀ i, CondC (D'.γ i) (N' i) := by
   intro k _ l _ _ R n _ V _ _ _ _ _ _ _ _ W _ _ _ _ _ _ _ _ D D' f hf hφ hγ w w' N hN hAB hC
   refine ⟨fun i => Sat.isLat_comap _ (hf i) (hN i), fun i => ?_, fun i x hx => ?_⟩
-  · have h := Sat.comap_pull D D' i (f (i - 1)) (f i) (hf _) (hf _) (hφ i) (hN (i - 1)).1
+  · have h := Sat.comap_pull D D' i (f (i - 1)) (f i) (hf _) (hφ i) (hN (i - 1)).1
     rw [← h, ← Sat.comap_sh, ← Sat.comap_sh]
     exact ⟨Submodule.comap_mono (hAB i).1, Submodule.comap_mono (hAB i).2⟩
   · rw [← Sat.comap_sh]

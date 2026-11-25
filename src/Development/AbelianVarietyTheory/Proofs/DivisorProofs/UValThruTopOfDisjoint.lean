@@ -52,8 +52,6 @@ open Classical
 
 noncomputable section
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.UPoinc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Geo.Tor.Level H}

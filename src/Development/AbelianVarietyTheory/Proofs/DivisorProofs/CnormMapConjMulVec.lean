@@ -57,8 +57,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HSApp.GramFrame

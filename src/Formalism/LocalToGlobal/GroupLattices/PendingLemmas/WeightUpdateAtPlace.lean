@@ -198,22 +198,6 @@ theorem p_ne_zero_of_place (v : Fin G.P.nV) : (p : G.O) ≠ 0 := by
 
 end Unif
 
-abbrev sysOf {p : ℕ} [Fact p.Prime] (G : GAtP p) (Fl : Fills G) (Lv : Levels Fl) (Ch : Chain Lv)
-    (std : ∀ v, Std p (G.P.n' v) G.P.m Fl.t Fl.mm Fl.c G.P.r (Fl.TT v) (Fl.a v) (Fl.b v) (G.P.lam0 v) (Fl.w v))
-    (hfin : ∀ j c, (Lv.lev j c).FinClasses) (h0 : (p : G.O) ≠ 0) (om : ∀ v, OmBasis p (G.P.n' v)) : Sys p where
-  G := G
-  Fl := Fl
-  Lv := Lv
-  Ch := Ch
-  std := std
-  vp := vpOf G
-  unif := vpOf_irreducible G
-  eO := eOOf G h0
-  eO_spec := eOOf_spec G h0
-  dG := dGOf Lv hfin
-  dG_spec := fun j _ => dG_spec Lv hfin j
-  om := om
-
 theorem update_eq_update_iff {ι : Type} [DecidableEq ι] {β : ι → Type} (u0 : ι) (b : β u0) (A B : ∀ i, β i) :
     Function.update A u0 b = Function.update B u0 b ↔ ∀ u, u ≠ u0 → A u = B u := by
   constructor

@@ -67,6 +67,7 @@ open NumberField
 namespace Formalism.L2.SG.Pf.LatDictZ.Z0.SGB
 
 open ReciprocityTheory.ChartRestriction.L3 ReciprocityTheory.ChartRestriction.L3.WA Formalism.L2.SG.Pf.LatDictZ.Z0.SGA
+open Formalism.HermitianLattices.Ext.L3.WA (IsSelfDualMod IsUnitIn locRing)
 
 variable {K : Type} [Field K] [StarRing K]
 variable {V : Type} [AddCommGroup V] [Module K V]
@@ -256,6 +257,7 @@ open NumberField Module
 namespace Formalism.L2.SG.Pf.LatDictZ.Z0.SGC
 
 open ReciprocityTheory.ChartRestriction.L3 ReciprocityTheory.ChartRestriction.L3.WA Formalism.L2.SG.Pf.LatDictZ.Z0.SGA Formalism.L2.SG.Pf.LatDictZ.Z0.SGB
+open Formalism.HermitianLattices.Ext.L3.WA (IsSelfDualMod IsUnitIn locRing)
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
