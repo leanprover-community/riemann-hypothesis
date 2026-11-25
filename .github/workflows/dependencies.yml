@@ -7,13 +7,16 @@ name: dependencies
 # this repository, at any position in a stack) holds #123, even if #123 was pushed to since, and
 # `- [x] depends on: (main) #123` once #123's head is in main, or #123 was merged into main. Being
 # marked merged is not enough: a pull request merged into a batch's branch is marked merged long
-# before it reaches main. A line that names several pull requests counts once all of them do. A
-# line marked `(batched)` is unticked again, and loses the mark, if one of them leaves every batch
-# before reaching main, and has not been in the record of a batch closed less than an hour ago,
-# since a batch is often closed and opened again under a new number. A line marked `(main)`, and a
-# box ticked by hand, are left as they are. A line that names a batch, or that is in a batch's own
-# description, gets no mark: it is ticked once the batches are on main, and never unticked. Only
-# the box and the mark change, and a ticked line still declares the dependency.
+# before it reaches main, and one that a batch reverted is marked merged when the batch lands,
+# although its changes did not land. The batch queue's record of the batch says which it reverted,
+# and such a pull request counts as closed without landing. A line that names several pull
+# requests counts once all of them do. A line marked `(batched)` is unticked again, and loses the
+# mark, if one of them leaves every batch before reaching main, and has not been in the record of
+# a batch closed less than an hour ago, since a batch is often closed and opened again under a new
+# number. A line marked `(main)`, and a box ticked by hand, are left as they are. A line that names
+# a batch, or that is in a batch's own description, gets no mark: it is ticked once the batches are
+# on main, and never unticked. Only the box and the mark change, and a ticked line still declares
+# the dependency.
 #
 # When a pull request that a description depends on, on a line with a box, is closed without
 # landing, neither on main nor in a batch being built, its box stays empty. The pull request that

@@ -48,6 +48,9 @@ class Fake(ticks.GitHub):
         # edit made meanwhile.
         self.meanwhile = None
         self.left = 5000
+        # The batch that brought each pull request's head to main, by number, and the commits
+        # asked about (see `landed_by`). Otherwise GitHub names the pull request itself, if merged.
+        self.landed, self.asked = {}, []
 
     def add(self, number, body="", *, state="OPEN", labels_=(), head=None, base="main", ref=None, own=False):
         self.pulls[number] = {"number": number, "state": state, "body": body, "labels": set(labels_),
@@ -143,6 +146,18 @@ class Fake(ticks.GitHub):
                 return 404, {"message": "Not Found"}
             inside = head in (self.in_main_heads if base == "main" else self.holds.get(base, set()))
             return 200, {"ahead_by": 0 if inside else 3, "behind_by": 7}
+        match = re.fullmatch(r"commits/(\w+)/pulls\?per_page=100", path)
+        if match and method == "GET":
+            self.asked.append(match.group(1))
+            found = []
+            for number, pr in sorted(self.pulls.items()):
+                if pr["head"] == match.group(1):
+                    by = self.landed.get(number, number if pr["state"] == "MERGED" else None)
+                    if by is not None:
+                        other = self.pulls[by]
+                        found.append({"number": by, "merged_at": "2026-11-25T07:17:13Z", "base": {"ref": other["base"]},
+                                      "head": {"ref": other["ref"], "repo": {"full_name": other["home"]}}})
+            return 200, found
         match = re.fullmatch(r"labels/(.+)", path)
         if match and method == "GET":
             return (404 if match.group(1) in self.missing else 200), {}
@@ -426,6 +441,7 @@ class OnMainOrInABatch(unittest.TestCase):
         self.assertEqual(gh.sent, [])
         # The batch lands.
         gh.pulls[1]["state"] = gh.pulls[900]["state"] = "MERGED"
+        gh.landed[1] = 900
         log = run(gh)
         self.assertEqual(gh.pulls[2]["body"], "Text.\r\n\r\n---\r\n\r\n- [x] depends on: (main) #1\r\n")
         self.assertIn("#2: mark line 5 `(main)`, because #1 was merged into `main`", log)
@@ -460,6 +476,56 @@ class OnMainOrInABatch(unittest.TestCase):
         gh.add(2, "- [ ] depends on: #1\n")
         run(gh)
         self.assertEqual(gh.sent, [])
+
+    def landed_reverted(self, body):
+        """#1 was in the batch #900, which reverted it and then landed: GitHub marks #1 merged."""
+        gh = Fake()
+        gh.add(1)
+        gh.batch(900, 1, latest=True, reverted=[1])
+        gh.add(2, body)
+        gh.pulls[1]["state"] = gh.pulls[900]["state"] = "MERGED"
+        gh.landed[1] = 900
+        return gh
+
+    def test_a_member_a_landed_batch_reverted_is_closed_without_landing(self):
+        # As eight of batch 15's ten reverted pull requests.
+        for body, after in (("- [ ] depends on: #1\n", "- [ ] depends on: #1\n"),
+                            ("- [x] depends on: (batched) #1\n", "- [ ] depends on: #1\n")):
+            with self.subTest(body=body):
+                gh = self.landed_reverted(body)
+                log = run(gh)
+                self.assertEqual(gh.pulls[2]["body"], after)
+                self.assertEqual((gh.told_about(2), gh.pulls[2]["labels"]), ([1], {WAITING}))
+                self.assertIn("tell it that #1 was marked merged when the batch #900 landed, but the batch had "
+                              "reverted it", ";".join(log))
+                self.assertEqual(gh.asked, [gh.pulls[1]["head"]])
+
+    def test_one_request_a_run_for_each_commit(self):
+        gh = self.landed_reverted("- [ ] depends on: #1\n")
+        gh.add(3, "- [ ] depends on: #1\n")
+        run(gh)
+        self.assertEqual((gh.told_about(2), gh.told_about(3), len(gh.asked)), ([1], [1], 1))
+
+    def test_a_member_a_landed_batch_kept_is_on_main(self):
+        gh = self.landed_reverted("- [ ] depends on: #1\n")
+        gh.holds(900, 1)
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (main) #1\n")
+
+    def test_a_record_older_than_what_it_reverts_says_nothing(self):
+        gh = self.landed_reverted("- [ ] depends on: #1\n")
+        note = {"head": gh.pulls[900]["head"], "members": {"1": gh.pulls[1]["head"]}}
+        gh.comments[900] = [(f"<!-- batch-queue-by-hand {json.dumps(note)} -->\nWhile this ...", BOT_AUTHOR)]
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (main) #1\n")
+
+    def test_merged_by_itself_it_is_on_main(self):
+        gh = Fake()
+        gh.add(1, state="MERGED")
+        gh.add(2, "- [ ] depends on: #1\n")
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (main) #1\n")
+        self.assertEqual(gh.asked, [gh.pulls[1]["head"]])
 
     def test_the_batches_being_built_are_read_page_by_page(self):
         gh = Fake()
@@ -700,7 +766,9 @@ class Runs(unittest.TestCase):
         def call(method, path, payload=None):
             found = original(method, path, payload)
             calls.append(path)
-            gh.remaining = gh.left = ticks.RESERVE - 1
+            if method != "GET":
+                # The first write uses up the allowance.
+                gh.remaining = gh.left = ticks.RESERVE - 1
             return found
         gh.call = call
         log = run(gh)

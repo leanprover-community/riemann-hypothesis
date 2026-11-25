@@ -13,15 +13,22 @@ A pull request is on main when its head commit is in main, or when it was merged
 marked merged is not enough: one merged into a batch's branch, or into any other branch, is marked
 merged long before its changes reach main. One compare request answers whether its head is in
 main: the branch is `ahead_by` nothing on the head when the head is in it. A pull request that is
-not open is compared with main, once a run. A pull request is in a batch being built when the
-batch-queue workflow's record of an open pull request labelled `building` that holds a batch (see
-`holds_batch` in `batch-labels.py`) lists it: any batch of a stack, each of which lists what it
-contains of its own. A member pushed to after the batch took it still counts, since the batch
-holds the commit it took, and a member the record says the branch reverts does not. A line marked
-`(batched)` is not unticked while a batch closed without being merged less than an hour ago
-(`GRACE`) held its pull requests: a batch is often closed and opened again, rebuilt, under a new
-number within a minute or two, and a run in between would untick it, and the next one tick it
-again. A line that is not ticked yet is not ticked for such a batch.
+not open is compared with main, once a run. One that is on main this way, and does not hold a
+batch, is not on main after all when a batch landed it that had reverted it: GitHub marks a pull
+request merged when its head commit lands, and the reverted pull request's head is still in the
+batch's branch. One more request asks GitHub which pull requests brought its head to main; for
+each of those that holds a batch, the batch-queue workflow's record on it says whether the batch's
+branch reverted it. If one did, the pull request counts as closed without landing. A record from
+before the workflow wrote down what a branch reverts says nothing either way.
+
+A pull request is in a batch being built when the batch-queue workflow's record of an open pull
+request labelled `building` that holds a batch (see `holds_batch` in `batch-labels.py`) lists it:
+any batch of a stack, each of which lists what it contains of its own. A member pushed to after the
+batch took it still counts, since the batch holds the commit it took, and a member the record says
+the branch reverts does not. A line marked `(batched)` is not unticked while a batch closed without
+being merged less than an hour ago (`GRACE`) held its pull requests: a batch is often closed and
+opened again, rebuilt, under a new number within a minute or two, and a run in between would untick
+it, and the next one tick it again. A line that is not ticked yet is not ticked for such a batch.
 
 GitHub's task boxes have only two states, so a line the workflow ticks says why, in an annotation
 before the pull requests it names, where GitHub shows them as their titles:
@@ -53,30 +60,28 @@ between that last read and the write.
 
 What this cannot tell apart, since it keeps nothing between runs: an annotation typed by hand is
 taken for the workflow's. A `(batched)` typed by hand is removed, along with the tick, when the
-pull requests on its line leave every batch, and a `(main)` typed by hand is trusted for good. And
-a dependency that GitHub marked merged because a batch carrying its head commit landed counts as
-on main even if the batch reverted its changes before it landed: while the batch is open its
-record says so, and the line is not ticked, but afterwards nothing does. Batches should be rebuilt
-without a pull request rather than revert it (see rule 5 of `verification/BATCHES.md`).
+pull requests on its line leave every batch, and a `(main)` typed by hand is trusted for good.
 
 A pull request named on a line whose box is empty may have been closed without landing: neither
-merged nor on main, nor in a batch being built. The pull request that depends on it is then
-labelled `awaiting-author` and sent a comment: its branch probably still carries the closed pull
-request's changes, so its author should merge main and take them out, or take over the work, then
-edit the description and comment `ready`. A hidden marker in the comment names the closed pull
-request, so it is sent once for each. Nothing is said about a dependency that is still open, that
-was merged into a branch other than main, or that holds a batch, since a batch closed without
-landing is usually opened again, rebuilt, under a new number; nor about one named on a line
-without a box, which may be prose such as "Needs #123 first".
+merged nor on main, nor in a batch being built; or a batch reverted it and then landed, as above.
+The pull request that depends on it is then labelled `awaiting-author` and sent a comment: its
+branch probably still carries the closed pull request's changes, so its author should merge main
+and take them out, or take over the work, then edit the description and comment `ready`. A
+hidden marker in the comment names the closed pull request, so it is sent once for each. Nothing
+is said about a dependency that is still open, that was merged into a branch other than main, or
+that holds a batch, since a batch closed without landing is usually opened again, rebuilt, under
+a new number; nor about one named on a line without a box, which may be prose such as "Needs #123
+first".
 
 Pull requests and their descriptions are read through GitHub's GraphQL API, whose allowance is
 separate from the REST requests that the workflow's token shares with every other workflow here.
-What each named pull request is, which batches are being built, a page at a time, and their
-records, and the comments of a pull request about to be told something are each read once a run.
-REST is used for the compares and to write. Writes are spaced a second apart, the run stops when
-few REST requests or GraphQL points are left this hour, and the next run carries on. A write
-counts as done only once GitHub has accepted it. A dependency that cannot be looked up stops only
-the pull requests that name it.
+What each named pull request is, which batches are being built, a page at a time, the records
+of those and of the batches that landed a named pull request, and the comments of a pull request
+about to be told something are each read once a run. REST is used for the compares, to ask which
+pull requests brought a commit to main, and to write. Writes are spaced a second apart, the run
+stops when few REST requests or GraphQL points are left this hour, and the next run carries on. A
+write counts as done only once GitHub has accepted it. A dependency that cannot be looked up
+stops only the pull requests that name it.
 """
 from __future__ import annotations
 
@@ -190,8 +195,8 @@ class Fate:
 
 class GitHub(_rest.GitHub):
     """GitHub's API through `gh` (see `github-rest.py`), with the queries this script reads pull
-    requests with. What it compares, and the batches being built, are kept for the run in `_compares`
-    and `_built`."""
+    requests with. What it compares, the batches being built, the batches that landed a commit and
+    the records read are kept for the run in `_compares`, `_built`, `_landed` and `_records`."""
 
     def check(self):
         """Stop if the hour's allowance is nearly used up."""
@@ -285,6 +290,20 @@ class GitHub(_rest.GitHub):
         """The pull requests that the batch-queue workflow's record on the batch `number` says it
         contains, as a set of numbers, leaving out those it says the branch reverts. Empty when
         there is no record."""
+        members, reverted = self.note(number)
+        return members - reverted
+
+    def note(self, number):
+        """What the batch-queue workflow's record on the batch `number` says it contains and what
+        it says the branch reverts, as two sets of numbers, read once a run. Both are empty when
+        there is no record, and the second when the record is older than what it reverts."""
+        cache = self.__dict__.setdefault("_records", {})
+        if number not in cache:
+            cache[number] = self._note(number)
+        return cache[number]
+
+    def _note(self, number):
+        empty = set(), set()
         after = None
         while True:
             self.check_graphql()
@@ -298,16 +317,33 @@ class GitHub(_rest.GitHub):
                 try:
                     note = json.loads(match.group(1))
                 except ValueError:
-                    return set()
+                    return empty
                 members = note.get("members") if isinstance(note, dict) else None
                 reverted = note.get("reverted") if isinstance(note, dict) else None
                 if not isinstance(members, dict):
-                    return set()
-                return {int(key) for key in members if str(key).isdigit()} - {
-                    int(key) for key in (reverted if isinstance(reverted, dict) else {}) if str(key).isdigit()}
+                    return empty
+                return ({int(key) for key in members if str(key).isdigit()},
+                        {int(key) for key in (reverted if isinstance(reverted, dict) else {}) if str(key).isdigit()})
             if not page["pageInfo"]["hasNextPage"]:
-                return set()
+                return empty
             after = page["pageInfo"]["endCursor"]
+
+    def landed_by(self, head):
+        """The batches that brought the commit `head` to main, as a sorted list of numbers: of the
+        pull requests GitHub associates with a commit on main, those that were merged and hold a
+        batch. GitHub names the batch's pull request for a pull request it landed, not the merge
+        commit it reports for that pull request. Asked once a run for each commit. Raises Stopped
+        when few REST requests are left this hour."""
+        cache = self.__dict__.setdefault("_landed", {})
+        if head not in cache:
+            self.check()
+            status, found = self.call("GET", f"commits/{head}/pulls?per_page=100")
+            if status != 200 or not isinstance(found, list):
+                raise RuntimeError(f"GET commits/{head}/pulls answered {status}")
+            cache[head] = sorted(item["number"] for item in found if isinstance(item, dict) and item.get("merged_at")
+                                 and _labels.holds_batch(self.repo, ((item.get("head") or {}).get("repo") or {})
+                                                         .get("full_name"), (item.get("head") or {}).get("ref") or ""))
+        return cache[head]
 
     def contains(self, base, head):
         """Whether commit `head` is in `base`, a branch or a commit, or None if GitHub does not know
@@ -374,8 +410,9 @@ def resolve(gh, main, numbers, known):
     One merged into main is on it. Any other with a head commit, unless it is open, is compared
     with main; then, unless it holds a batch, it is in a batch being built when the batch-queue
     workflow's record of one says so (see `GitHub.batches`): a member pushed to after the batch
-    took it is still in the batch at the commit taken. Raises Stopped when few REST requests, or
-    GraphQL points, are left this hour.
+    took it is still in the batch at the commit taken. One on main that a batch landed after
+    reverting it is closed without landing (see `reverted`). Raises Stopped when few REST
+    requests, or GraphQL points, are left this hour.
     """
     new = sorted(set(numbers) - set(known))
     if not new:
@@ -385,7 +422,8 @@ def resolve(gh, main, numbers, known):
         if info is None:
             known[number] = Fate(MISSING, f"#{number} is not a pull request")
         elif info["state"] == "MERGED" and info["base"] == main:
-            known[number] = Fate(LANDED, f"#{number} was merged into `{main}`", info["batch"])
+            known[number] = reverted(gh, number, info) or Fate(LANDED, f"#{number} was merged into `{main}`",
+                                                               info["batch"])
         elif not info["head"]:
             known[number] = Fate(UNKNOWN, f"#{number} was closed, and GitHub names no head commit for it",
                                  info["batch"])
@@ -399,7 +437,8 @@ def resolve(gh, main, numbers, known):
                                      info["batch"])
                 continue
             if found:
-                known[number] = Fate(LANDED, f"#{number} was closed, and its head is in `{main}`", info["batch"])
+                known[number] = reverted(gh, number, info) or Fate(
+                    LANDED, f"#{number} was closed, and its head is in `{main}`", info["batch"])
                 continue
         held, recent = gh.batches()
         holder = None if info["batch"] else held.get(number)
@@ -415,6 +454,20 @@ def resolve(gh, main, numbers, known):
                                             f"`{main}` nor in a batch being built", info["batch"])
         else:
             known[number] = Fate(DROPPED, f"#{number} was closed without landing", info["batch"])
+
+
+def reverted(gh, number, info):
+    """The fate of a pull request whose head is on main, when a batch landed it after its branch
+    reverted it, or None. The batch is one that GitHub says brought the head to main (see
+    `GitHub.landed_by`), and it reverted the pull request if its record says so (see
+    `GitHub.note`). A pull request that holds a batch is not asked about."""
+    if info["batch"] or not info["head"]:
+        return None
+    for batch in gh.landed_by(info["head"]):
+        if batch != number and number in gh.note(batch)[1]:
+            return Fate(DROPPED, f"#{number} was marked merged when the batch #{batch} landed, but the batch had "
+                                 "reverted it")
+    return None
 
 
 def target(pr, line, known):
@@ -562,8 +615,8 @@ def sync(gh, number=None, closed=None):
     """Tick and tell on one pull request (`number`), on the open pull requests whose description
     names one that was just closed (`closed`), or on every open pull request. Returns a log."""
     log, known, counts = [], {}, {"changed": 0, "told": 0}
-    # Compares and the batches being built are read at most once a run.
-    gh._compares, gh._built = {}, None
+    # Compares, the batches being built, what landed a commit and records are read at most once a run.
+    gh._compares, gh._built, gh._landed, gh._records = {}, None, {}, {}
     try:
         if number is not None:
             main, found = gh.one(number)
