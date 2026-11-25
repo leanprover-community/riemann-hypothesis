@@ -54,38 +54,25 @@ open Formalism.BasicNotions Formalism.MainNotions.N Formalism.L2.Host NumberFiel
 
 theorem v_strictAnti {R : Ranks} (P : HCParam R) : StrictAnti P.v := by
   have hk := R.m_add_three_le_k
-  have step : ∀ (n : ℕ) (h : n + 1 < R.k - 1), P.v ⟨n + 1, h⟩ < P.v ⟨n, by omega⟩ := fun n h =>
-    (P.u_gt_v ⟨n + 1, h⟩).trans (P.v_gt_u ⟨n, by omega⟩)
-  have key : ∀ (d n : ℕ) (h : n + d + 1 < R.k - 1), P.v ⟨n + d + 1, h⟩ < P.v ⟨n, by omega⟩ := by
-    intro d
-    induction d with
-    | zero => intro n h; exact step n h
-    | succ d ih => intro n h; exact (step (n + d + 1) (by omega)).trans (ih n (by omega))
+  have hm := R.two_le_m
+  have h' : StrictAnti (fun i : Fin ((R.k - 2) + 1) => P.v (i.cast (by omega))) :=
+    Fin.strictAnti_iff_succ_lt.mpr fun i =>
+      (P.u_gt_v ⟨i.1 + 1, by omega⟩).trans (P.v_gt_u ⟨i.1, by omega⟩)
   intro a b hab
-  obtain ⟨a, ha⟩ := a
-  obtain ⟨b, hb⟩ := b
-  have : a < b := hab
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_lt this
-  exact key d a hb
+  simpa [Fin.cast] using h' (a := a.cast (by omega)) (b := b.cast (by omega)) hab
 
 theorem b_strictMono {R : Ranks} (P : HCParam R) : StrictMono P.b := by
   have ht : (0 : ℚ) < ((R.t : ℚ) + 3) / 2 := by positivity
-  have step : ∀ (n : ℕ) (h : n + 1 < R.m), P.b ⟨n, by omega⟩ < P.b ⟨n + 1, h⟩ := fun n h => by
-    have h1 := P.gap_be ⟨n, by omega⟩
-    have h2 := P.gap_eb ⟨n, by omega⟩ h
-    simp only at h2
-    linarith
-  have key : ∀ (d n : ℕ) (h : n + d + 1 < R.m), P.b ⟨n, by omega⟩ < P.b ⟨n + d + 1, h⟩ := by
-    intro d
-    induction d with
-    | zero => intro n h; exact step n h
-    | succ d ih => intro n h; exact (ih n (by omega)).trans (step (n + d + 1) (by omega))
+  have hm := R.two_le_m
+  have h' : StrictMono (fun i : Fin ((R.m - 1) + 1) => P.b (i.cast (by omega))) :=
+    Fin.strictMono_iff_lt_succ.mpr fun i => by
+      have h1 := P.gap_be ⟨i.1, by omega⟩
+      have h2 := P.gap_eb ⟨i.1, by omega⟩ (by simp; omega)
+      simp only at h2
+      change P.b ⟨i.1, by omega⟩ < P.b ⟨i.1 + 1, by omega⟩
+      linarith
   intro a b hab
-  obtain ⟨a, ha⟩ := a
-  obtain ⟨b, hb⟩ := b
-  have : a < b := hab
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_lt this
-  exact key d a hb
+  simpa [Fin.cast] using h' (a := a.cast (by omega)) (b := b.cast (by omega)) hab
 
 theorem neg_b_lt_v {R : Ranks} (P : HCParam R) (i : Fin (R.k - 1)) (j : Fin R.m) : -P.b j < P.v i := by
   have hk := R.m_add_three_le_k
