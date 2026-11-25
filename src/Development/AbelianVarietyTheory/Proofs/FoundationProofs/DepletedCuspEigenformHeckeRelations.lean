@@ -9,8 +9,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.N
 open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
 open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
-noncomputable section
-
 namespace GlobalTheory.EisM.HeckeRel
 
 variable {k N : ℕ} {χ : DirichletCharacter ℂ N} {g : ℕ → ℂ}
@@ -265,5 +263,3 @@ theorem GlobalTheory.EisM.hecke_relations : ∀ (k N : ℕ) (χ : DirichletChara
     ring
   · intro p a b hp
     exact GlobalTheory.EisM.HeckeRel.pp h p a b hp
-
-end

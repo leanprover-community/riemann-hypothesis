@@ -100,19 +100,9 @@ theorem vanishing [Fintype n] [DecidableEq n] (q : Unif k) : Vanishing k n M q :
           rw [e']
           exact L.smul_mem _ h
 
-      have lift : ∀ c : 𝓀[k]ˣ, ∃ s : 𝒪[k]ˣ, (Units.map (residue 𝒪[k]).toMonoidHom s)⁻¹ = c := by
-        intro c
-        obtain ⟨t, ht⟩ := IsLocalRing.residue_surjective ((c⁻¹ : 𝓀[k]ˣ) : 𝓀[k])
-        have hu : IsUnit t := by
-          by_contra hnu
-          have h0 : residue 𝒪[k] t = 0 :=
-            (IsLocalRing.residue_eq_zero_iff t).mpr ((IsLocalRing.mem_maximalIdeal t).mpr hnu)
-          rw [ht] at h0
-          exact (c⁻¹).ne_zero h0
-        refine ⟨hu.unit, ?_⟩
-        rw [inv_eq_iff_eq_inv]
-        ext
-        simp [ht]
+      have lift : ∀ c : 𝓀[k]ˣ, ∃ s : 𝒪[k]ˣ, (Units.map (residue 𝒪[k]).toMonoidHom s)⁻¹ = c := fun c =>
+        (surjective_units_map_of_local_ringHom _ residue_surjective inferInstance c⁻¹).imp
+          fun _ hs => by rw [hs, inv_inv]
       have hθc : ∀ c : 𝓀[k]ˣ, θ (formOf π P v (c • P)) = θ v := by
         intro c
         obtain ⟨s, hs⟩ := lift c

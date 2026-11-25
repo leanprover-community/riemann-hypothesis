@@ -24,7 +24,7 @@ theorem st_one (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x) =
   exact h1.symm
 
 theorem st_half (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x) = x)
-    (hh : h + h = 1) (hc : ∀ x, h * x = x * h) : st h = h := by
+    (hh : h + h = 1) : st h = h := by
   have h2 : st h + st h = 1 := by rw [← map_add (f := _), hh, st_one hm hi]
   have hd : (h - st h) + (h - st h) = 0 := by
     calc (h - st h) + (h - st h) = (h + h) - (st h + st h) := by abel
@@ -98,7 +98,7 @@ theorem elt_mul (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x) 
 theorem st_elt (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x) = x)
     (hh : h + h = 1) (hc : ∀ x, h * x = x * h) (b : S) {w : S} (hw : st w = -w) :
     st (elt st h b w) = elt st h (-b) (-w) := by
-  simp only [elt, map_add (f := _), map_sub, map_neg, st_one hm hi, hi, hm, hw, st_half hm hi hh hc, neg_mul,
+  simp only [elt, map_add (f := _), map_sub, map_neg, st_one hm hi, hi, hm, hw, st_half hm hi hh, neg_mul,
     mul_neg, neg_neg]
   rw [hc (st b * b)]
   abel
@@ -219,7 +219,7 @@ theorem exists_elt (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st 
   · rw [mul_add, mul_add, ← mul_assoc, h11, sb1, ← mul_assoc, ← hc e₁, mul_assoc, ← mul_assoc e₁, sb1]
   · rw [add_mul, add_mul, hYe, sb3, add_zero, mul_assoc h, mul_assoc (st b), hb3']
   · have e : st (e₁ * X + st b + h * (st b * b)) + (e₁ * X + st b + h * (st b * b)) = 0 := by
-      simp only [map_add (f := _), hm, hs, hi, st_half hm hi hh hc]
+      simp only [map_add (f := _), hm, hs, hi, st_half hm hi hh]
       rw [← hc (st b * b)]
       calc st X * e₃ + b + h * (st b * b) + (e₁ * X + st b + h * (st b * b))
           = st b + st X * e₃ + b + e₁ * X + (h * (st b * b) + h * (st b * b)) := by abel
@@ -262,7 +262,7 @@ theorem compact_mod_subring (S : Type) [Ring S] [TopologicalSpace S] [IsTopologi
     refine ⟨?_, ?_, ?_⟩
     · simp only [hpw, ← mul_assoc, h11]
     · simp only [hpw, mul_assoc, he33]
-    · simp only [hpw, hm, he3, hs, map_sub, hi, st_half hm hi hh hc]
+    · simp only [hpw, hm, he3, hs, map_sub, hi, st_half hm hi hh]
       rw [← hc (st y - y)]
       noncomm_ring
   have pb_id : ∀ b, e₁ * b = 0 → e₃ * b = 0 → b * e₃ = b → pb b = b := fun b h1 h3 h3' => by
@@ -332,7 +332,7 @@ theorem compact_mod_subring (S : Type) [Ring S] [TopologicalSpace S] [IsTopologi
     have hw3 : (w + h * (st b * -pb y₁ - st (-pb y₁) * b)) * e₃ = w + h * (st b * -pb y₁ - st (-pb y₁) * b) := by
       rw [add_mul, hw.2.1, mul_assoc, q3]
     have hws : st (w + h * (st b * -pb y₁ - st (-pb y₁) * b)) = -(w + h * (st b * -pb y₁ - st (-pb y₁) * b)) := by
-      rw [map_add (f := _), hm, st_half hm hi hh hc, hw.2.2, qs, ← hc, mul_neg, neg_add]
+      rw [map_add (f := _), hm, st_half hm hi hh, hw.2.2, qs, ← hc, mul_neg, neg_add]
     obtain ⟨y₂, hy₂, hk₂⟩ := hcov (w + h * (st b * -pb y₁ - st (-pb y₁) * b))
     have hb0 := hbx y₁
     have hw0 := hwx y₂

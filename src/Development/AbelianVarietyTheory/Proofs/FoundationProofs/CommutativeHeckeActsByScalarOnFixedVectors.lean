@@ -12,8 +12,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
 
 namespace GlobalTheory.LFun.HeckeScalar
@@ -92,5 +90,3 @@ theorem exists_scalar : ∀ (G V : Type) [Group G] [TopologicalSpace G] [IsTopol
   rwa [idem_of_mem hπ.1 hc hx] at this
 
 end GlobalTheory.LFun.HeckeScalar
-
-end

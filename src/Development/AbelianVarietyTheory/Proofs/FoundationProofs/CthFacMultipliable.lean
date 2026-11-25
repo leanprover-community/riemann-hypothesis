@@ -10,8 +10,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Inv
 open scoped UpperHalfPlane MatrixGroups
 open GlobalTheory.Sieg GlobalTheory.QFam
 
-noncomputable section
-
 
 open scoped UpperHalfPlane MatrixGroups in
 theorem _root_.GlobalTheory.Sieg.cthFac_multipliable : ∀ (c : ℕ) (q t : ℂ), ‖q‖ < 1 → t ≠ 0 →

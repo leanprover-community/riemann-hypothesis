@@ -105,18 +105,7 @@ theorem valuation_det_mul_unif (q : Unif k) (P : Pair k n') (g : GL n' k) (hg : 
     rw [h3, ← h1, ← mul_assoc, mul_inv_cancel₀ (Units.ne_zero _), one_mul]
     rfl
   rw [hdg]
-  have h1 : valuation k ((u : 𝒪[k]) : k) ≤ 1 := (u : 𝒪[k]).2
-  have h2 : valuation k (((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k]) : k) ≤ 1 := ((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k]).2
-  have h3 : valuation k ((u : 𝒪[k]) : k) * valuation k (((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k]) : k) = 1 := by
-    rw [← map_mul]
-    have : ((u : 𝒪[k]) : k) * (((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k]) : k) = 1 := by
-      rw [← Subring.coe_mul, Units.mul_inv]
-      rfl
-    rw [this, map_one]
-  refine le_antisymm h1 ?_
-  calc (1 : ValueGroupWithZero k) = _ := h3.symm
-    _ ≤ _ * 1 := mul_le_mul_right h2 _
-    _ = _ := mul_one _
+  exact (Valuation.integer.integers _).valuation_unit u
 
 end Det
 

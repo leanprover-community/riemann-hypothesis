@@ -284,28 +284,16 @@ theorem exists_finite_field {F E : Type} [Field F] [Field E] [Algebra F E] (t : 
   haveI : IsScalarTower K₀ K' L := IsScalarTower.of_algebraMap_eq fun _ => rfl
   exact Module.Finite.of_restrictScalars_finite K₀ K' L
 
-theorem valuation_eq_one_iff' {K : Type} [Field K] (W : ValuationSubring K) (x : K) :
-    W.valuation x = 1 ↔ x ≠ 0 ∧ x ∈ W ∧ x⁻¹ ∈ W := by
-  rw [← W.valuation_le_one_iff, ← W.valuation_le_one_iff, map_inv₀]
-  constructor
-  · intro h
-    refine ⟨?_, h.le, by rw [h, inv_one]⟩
-    rintro rfl
-    simp at h
-  · rintro ⟨h0, h1, h2⟩
-    have hp : 0 < W.valuation x := zero_lt_iff.2 ((map_ne_zero _).2 h0)
-    exact le_antisymm h1 ((inv_le_one₀ hp).1 h2)
-
 theorem gauss_comap {F E : Type} [Field F] [Field E] [Algebra F E] {t : E} (L : IntermediateField F E) (ht : t ∈ L)
     {V : ValuationSubring F} {W : ValuationSubring E} (h : Gauss t V W) :
     Gauss (⟨t, ht⟩ : L) V (W.comap (algebraMap L E)) := by
   refine ⟨fun a => ?_, fun P hP hu => ?_⟩
   · rw [ValuationSubring.mem_comap, ← IsScalarTower.algebraMap_apply]
     exact h.1 a
-  · have h1 := (valuation_eq_one_iff' _ _).1 (h.2 P hP hu)
+  · have h1 := (GlobalTheory.KZ.UnRoot.val_eq_one_iff _ _).1 (h.2 P hP hu)
     have e : algebraMap L E (Polynomial.aeval (⟨t, ht⟩ : L) P) = Polynomial.aeval t P :=
       (Polynomial.aeval_algHom_apply L.val (⟨t, ht⟩ : L) P).symm
-    rw [valuation_eq_one_iff', ValuationSubring.mem_comap, ValuationSubring.mem_comap, map_inv₀, e]
+    rw [GlobalTheory.KZ.UnRoot.val_eq_one_iff, ValuationSubring.mem_comap, ValuationSubring.mem_comap, map_inv₀, e]
     refine ⟨fun h0 => h1.1 ?_, h1.2⟩
     rw [← e, h0, map_zero]
 
@@ -1065,7 +1053,6 @@ theorem mem_of_fixed {F E : Type} [Field F] [Field E] [Algebra F E] (L : Interme
 
 end GlobalTheory.KZ.ES.Exact
 
-
 open GlobalTheory.KZ.ES.Exact in
 theorem GlobalTheory.KZ.ES.pow_of_gauss_congr_one : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → ∀ (l M₀ : ℕ), l.Prime → 0 < M₀ → l ∣ M₀ → ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ V : ValuationSubring Ω, ((q : ℕ) : Ω) ∈ V.nonunits → ∀ W : ValuationSubring X.K, Gauss X.jK V W → ∀ (n k : ℕ) (U : X.Kˣ), U ∈ X.Un (l ^ n) → Lev X (M₀ * l ^ k) U → W.valuation ((U : X.K) - 1) < 1 → ∃ g : X.Kˣ, U = g ^ (l ^ n) := by
   intro Ω _ _ _ ε X hhol l M₀ hl hM₀ hlM
@@ -1435,7 +1422,6 @@ theorem const_mem_un (X : Tower Ω ε) (m : ℕ) {c : Ω} (hc : algebraMap Ω X.
   exact ⟨hW.1 c, by rw [← map_inv₀]; exact hW.1 _⟩
 
 end GlobalTheory.KZ.ES.Ues
-
 
 open GlobalTheory.KZ.ES.Ues in
 theorem GlobalTheory.KZ.ES.eichlerShimura_unit : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → ∀ (l M₀ : ℕ), l.Prime → 0 < M₀ → l ∣ M₀ → ∃ S : Finset ℕ, ∀ q : ℕ, q.Prime → q ∉ S → ∀ (V : ValuationSubring Ω) (s : Ω ≃ₐ[ℚ] Ω), FrobV V q s → ∀ (n k : ℕ) (f : X.Kˣ), f ∈ X.Un (l ^ n) → Lev X (M₀ * l ^ k) f → ∀ γ : SL(2, ℤ), DiagMod (M₀ * l ^ k) q γ → ∃ g : X.Kˣ, Nq X (M₀ * l ^ k) q f * X.sl (toGQ ((γ : Matrix (Fin 2) (Fin 2) ℤ) * !![(q : ℤ), 0; 0, 1])) (f : X.K) = X.gal s (f : X.K) * (X.gal s.symm (X.sl (ofSL γ) (f : X.K))) ^ q * (g : X.K) ^ (l ^ n) := by

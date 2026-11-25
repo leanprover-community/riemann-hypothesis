@@ -401,7 +401,6 @@ theorem sh_inv_unit {p : ℕ} [Fact p.Prime] (G : HTGroup p) (β : G.Cˣ) (hβ :
         rw [← mul_assoc, Units.inv_mul, one_mul]
     _ = _ := by rw [h, mul_one]
 
-
 end GlobalTheory.LocTriv
 end -- clump:auto
 end -- clump:auto
@@ -742,10 +741,6 @@ namespace GlobalTheory.ResidueNorm
 variable (v : HeightOneSpectrum ℤ) {M : Type} [AddCommGroup M] [Module ℚ M] {κ : Type}
   (b : Module.Basis κ ℚ M)
 
-theorem isIntB_add {x y : v.adicCompletion ℚ ⊗[ℚ] M} (hx : IsIntB v b x) (hy : IsIntB v b y) :
-    IsIntB v b (x + y) := fun i => by
-  rw [map_add (f := _), Finsupp.add_apply]; exact add_mem (hx i) (hy i)
-
 theorem isIntB_neg {x : v.adicCompletion ℚ ⊗[ℚ] M} (hx : IsIntB v b x) : IsIntB v b (-x) := fun i => by
   rw [map_neg, Finsupp.neg_apply]; exact neg_mem (hx i)
 
@@ -781,7 +776,6 @@ theorem norm_expand {R : Type*} [CommRing R] (a b t e : R) :
 
 end GlobalTheory.ResidueNorm
 
-
 open GlobalTheory.ResidueNorm in
 theorem GlobalTheory.ResidueNorm.exists_norm_mod_small : ∀ (v : HeightOneSpectrum ℤ) (L : Type) [Field L] [NumberField L] (c : L →ₐ[ℚ] L), (∀ x, c (c x) = x) →
     ∀ (κ : Type) (bL : Module.Basis κ ℚ L),
@@ -802,7 +796,7 @@ theorem GlobalTheory.ResidueNorm.exists_norm_mod_small : ∀ (v : HeightOneSpect
     { carrier := {x | IsIntB v bL x ∧ σ x = x}
       mul_mem' := fun {a b} ha hb => ⟨hmul a b ha.1 hb.1, by rw [map_mul, ha.2, hb.2]⟩
       one_mem' := ⟨h1, map_one σ⟩
-      add_mem' := fun {a b} ha hb => ⟨isIntB_add v bL ha.1 hb.1, by rw [map_add (f := _), ha.2, hb.2]⟩
+      add_mem' := fun {a b} ha hb => ⟨GlobalTheory.ConjInt.isIntB_add v bL ha.1 hb.1, by rw [map_add (f := _), ha.2, hb.2]⟩
       zero_mem' := ⟨isIntB_zero v bL, map_zero σ⟩
       neg_mem' := fun {a} ha => ⟨isIntB_neg v bL ha.1, by rw [map_neg, ha.2]⟩ }, fun x => Iff.rfl⟩
   have hPi : ∀ x : P, IsIntB v bL (x : v.adicCompletion ℚ ⊗[ℚ] L) := fun x => ((hP _).1 x.2).1
@@ -874,7 +868,7 @@ theorem GlobalTheory.ResidueNorm.exists_norm_mod_small : ∀ (v : HeightOneSpect
     simpa only [map_sub (Ideal.Quotient.mk I), map_mul (Ideal.Quotient.mk I),
       map_pow (Ideal.Quotient.mk I)] using hab
   rw [hmemI] at hmem
-  refine ⟨(a : v.adicCompletion ℚ ⊗[ℚ] L) + (b : v.adicCompletion ℚ ⊗[ℚ] L) * (θ : v.adicCompletion ℚ ⊗[ℚ] L), isIntB_add v bL (hPi a) (hmul _ _ (hPi b) hθ), ?_⟩
+  refine ⟨(a : v.adicCompletion ℚ ⊗[ℚ] L) + (b : v.adicCompletion ℚ ⊗[ℚ] L) * (θ : v.adicCompletion ℚ ⊗[ℚ] L), GlobalTheory.ConjInt.isIntB_add v bL (hPi a) (hmul _ _ (hPi b) hθ), ?_⟩
   have hσz : σ ((a : v.adicCompletion ℚ ⊗[ℚ] L) + (b : v.adicCompletion ℚ ⊗[ℚ] L) * (θ : v.adicCompletion ℚ ⊗[ℚ] L)) = (a : v.adicCompletion ℚ ⊗[ℚ] L) - (b : v.adicCompletion ℚ ⊗[ℚ] L) * (θ : v.adicCompletion ℚ ⊗[ℚ] L) := by
     rw [map_add (f := _), map_mul, hPs a, hPs b, hσθ, mul_neg, ← sub_eq_add_neg]
   rw [hσz, norm_expand]
@@ -1043,8 +1037,6 @@ open scoped TensorProduct Classical
 
 noncomputable section
 namespace GlobalTheory.LocTriv
-
-
 
 theorem ratio_local_norm_dpair : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (Ω : Set G.GAf), IsCompact Ω →
     ∀ (P₁ : GlobalTheory.LKDef.DPair G) (L : Type) [Field L] [NumberField L] (ι : L →ₐ[ℚ] G.C) (c : L →ₐ[ℚ] L),

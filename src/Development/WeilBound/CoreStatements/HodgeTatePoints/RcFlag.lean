@@ -57,14 +57,8 @@ lemma colen_trivial [IsAlgClosed C] [CharZero C] (hv : v.Integers R) {T : Type} 
     (hc : HasColen R v A.carrier c) : c = 1 := by
   obtain ⟨B, hB, rfl⟩ := hc
   rw [Matrix.det_eq_elem_of_subsingleton B 0]
-  have hr : Set.range (fun (j x : T) => B x j) = {fun x => B x 0} := by
-    ext g
-    simp only [Set.mem_range, Set.mem_singleton_iff]
-    constructor
-    · rintro ⟨j, rfl⟩
-      rw [Subsingleton.elim j 0]
-    · rintro rfl
-      exact ⟨0, rfl⟩
+  have hr : Set.range (fun (j x : T) => B x j) = {fun x => B x 0} :=
+    letI := uniqueOfSubsingleton (0 : T); Set.range_unique
   have h1 : (1 : T → C) ∈ Submodule.span R {fun x => B x 0} := by
     rw [← hr, ← hB]
     exact A.one_mem
@@ -112,19 +106,9 @@ lemma flag_ind [IsAlgClosed C] [CharZero C] (hv : v.Integers R) [Fintype F] [Dec
         ext j
         simp
       rw [hu, Set.image_univ, b.span_eq]
-    haveI : Subsingleton Q := by
-      constructor
-      intro x y
+    haveI : Subsingleton Q := subsingleton_of_forall_eq 0 fun x => by
       obtain ⟨x', rfl⟩ := hψ x
-      obtain ⟨y', rfl⟩ := hψ y
-      have hx : x' ∈ LinearMap.ker ψ := by
-        rw [htop]
-        trivial
-      have hy : y' ∈ LinearMap.ker ψ := by
-        rw [htop]
-        trivial
-      rw [LinearMap.mem_ker] at hx hy
-      rw [hx, hy]
+      rw [LinearMap.ker_eq_top.1 htop, LinearMap.zero_apply]
     obtain ⟨AQ, hAQ⟩ := exists_quo hv AA ψ.toAddMonoidHom hψ
     have hc1 : c = 1 := colen_trivial hv AQ c (by rw [hAQ]; exact hc)
     have he : Finset.univ.filter (fun j : Fin n => i ≤ (j : ℕ)) = ∅ := by

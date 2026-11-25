@@ -137,9 +137,9 @@ theorem deg_lower_of_claim : ∀ (T D : ℕ) (n Λ β ΛD ΛT J δ h d deg z l�
   have hLT := Real.log_nonneg hΛT
   have h2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   generalize Real.log (2 + |h|) = L at hρ ⊢
-  have hdP : d ≤ 2 * P := by nlinarith
+  have hdP : d ≤ 2 * P := by linarith [mul_le_mul_of_nonneg_right hz2 hd.le]
   have hP0 : 0 ≤ P := by linarith
-  have hdef : d - P ≤ 2 * z * P := by nlinarith
+  have hdef : d - P ≤ 2 * z * P := by linarith [mul_le_mul_of_nonneg_left hdP hz]
   set A := (T : ℝ) * h - 3 * ((D : ℝ) + 1) * |h| - J - 26 * (D : ℝ) ^ 2 * (ρ + Real.log T)
     - ((T : ℝ) + D + 1) * Real.log β - ((T : ℝ) + (D : ℝ) ^ 2) * (g + 2) with hA
   set B := (T : ℝ) * (Real.log 2 + ρ + Real.log β / 2) + Real.log ΛD + Real.log ΛT with hB
@@ -184,13 +184,13 @@ theorem deg_bound_of_claim_numbers : ∀ (T D : ℕ) (PP kap b z ρ n Λ β ΛD 
   have hs1 : 1 ≤ Real.sqrt b := by
     have := Real.sqrt_le_sqrt (show (1:ℝ) ≤ b from hb)
     rwa [Real.sqrt_one] at this
-  have hsb : Real.sqrt b ≤ b := by nlinarith [mul_le_mul_of_nonneg_left hs1 hs0]
+  have hsb : Real.sqrt b ≤ b := by linarith [mul_le_mul_of_nonneg_left hs1 hs0]
   have hTPPb : (T:ℝ) * PP ≤ b := le_trans hTPP hsb
   have hTPP0 : 0 ≤ (T:ℝ) * PP := by positivity
   have hTPP2 : ((T:ℝ) * PP) ^ 2 ≤ b := by
     calc ((T:ℝ) * PP) ^ 2 ≤ (Real.sqrt b) ^ 2 := pow_le_pow_left₀ hTPP0 hTPP 2
       _ = b := hs2
-  have hTs : (T:ℝ) ≤ Real.sqrt b := le_trans (by nlinarith) hTPP
+  have hTs : (T:ℝ) ≤ Real.sqrt b := le_trans (le_mul_of_one_le_right hTpos.le hPP) hTPP
   have hlogT : Real.log T ≤ PP / 2 := by
     have := Real.log_le_log hTpos hTs
     rw [Real.log_sqrt (by linarith)] at this
@@ -217,7 +217,7 @@ theorem deg_bound_of_claim_numbers : ∀ (T D : ℕ) (PP kap b z ρ n Λ β ΛD 
   have hD2z : (D:ℝ) ^ 2 ≤ z * T / 7 := by
     have e : z * T / 7 = (D:ℝ) ^ 2 + D * ρ * T := by rw [hz]; field_simp
     rw [e]; have := mul_nonneg hDρ hTpos.le; linarith
-  have hD2T : (D:ℝ) ^ 2 ≤ T / 14 := by nlinarith [mul_le_mul_of_nonneg_right hz2 hTpos.le]
+  have hD2T : (D:ℝ) ^ 2 ≤ T / 14 := by linarith [mul_le_mul_of_nonneg_right hz2 hTpos.le]
 
   have hq0 : 0 ≤ kap / T := div_nonneg hkap hTpos.le
   obtain ⟨q, hq⟩ : ∃ q : ℝ, kap / T = q := ⟨_, rfl⟩
@@ -236,7 +236,7 @@ theorem deg_bound_of_claim_numbers : ∀ (T D : ℕ) (PP kap b z ρ n Λ β ΛD 
     linarith [mul_le_mul_of_nonneg_right hD2z hPPq]
   have F2 : (D:ℝ) ^ 2 * PP ≤ b / 14 := by
     linarith [mul_le_mul_of_nonneg_right hD2T (show (0:ℝ) ≤ PP by linarith)]
-  have hDD2 : (D:ℝ) ≤ (D:ℝ) ^ 2 := by nlinarith
+  have hDD2 : (D:ℝ) ≤ (D:ℝ) ^ 2 := le_self_pow₀ hD1r two_ne_zero
   have hDPPq : (D:ℝ) * (PP * q) ≤ b / 7 := by
     linarith [mul_le_mul_of_nonneg_right hDD2 hPPq]
   have hDPP : (D:ℝ) * PP ≤ b := by
@@ -254,7 +254,7 @@ theorem deg_bound_of_claim_numbers : ∀ (T D : ℕ) (PP kap b z ρ n Λ β ΛD 
     have a1 := mul_le_mul_of_nonneg_left hlogn (show (0:ℝ) ≤ D + 1 by linarith)
     have a2 := mul_le_mul_of_nonneg_left hPP (show (0:ℝ) ≤ D by linarith)
     have a3 := mul_le_mul_of_nonneg_right hD1r (show (0:ℝ) ≤ PP by linarith)
-    nlinarith
+    linarith
   have hG0 : 0 ≤ Formalism.NormVectorIdentities.Items.hsG D n + 2 := by
     unfold Formalism.NormVectorIdentities.Items.hsG; positivity
   have hTDPP : (T:ℝ) * D * PP ≤ b := by

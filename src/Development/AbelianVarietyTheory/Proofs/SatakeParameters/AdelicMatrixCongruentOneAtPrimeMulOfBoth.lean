@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TwistEmptyOfC
 
 open NumberField IsDedekindDomain
 
-noncomputable section
-
 namespace GlobalTheory.CongProd
 
 open _root_.Formalism.L2.Col GlobalTheory.TwU

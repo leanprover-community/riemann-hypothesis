@@ -12,8 +12,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace BlowupSequenceData
@@ -95,5 +93,3 @@ theorem pow_ambientDerivIdeal_le_pow_controlledTransform
 end DivisorReduction
 
 end FunctorialResolution.EmbeddedResolution
-
-end

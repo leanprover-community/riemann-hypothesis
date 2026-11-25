@@ -7,8 +7,6 @@ import Mathlib.RingTheory.PiTensorProduct
 
 open Finset
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.KoszulBd
 
 open CompanionTheory.D.DSIC

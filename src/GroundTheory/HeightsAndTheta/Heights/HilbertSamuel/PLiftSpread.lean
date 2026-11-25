@@ -31,27 +31,6 @@ set_option linter.unusedSectionVars false
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 variable {Ω : Type} [Field Ω] [CharZero Ω] {y : (Σ k, ι k) → Ω}
 
-private def evLHom {T : Submonoid (MRingOver ℚ ι)} (hT : ∀ t ∈ T, aeval y t ≠ 0) :
-    LocalizedModule T (MRingOver ℚ ι ⧸ GenOnFibres.idealOver y ℚ) →+* Ω where
-  toFun := ChartLatQCech.val y T
-  map_one' := by
-    rw [show (1 : LocalizedModule T (MRingOver ℚ ι ⧸ GenOnFibres.idealOver y ℚ)) =
-      LocalizedModule.mk 1 1 by rw [OreLocalization.one_def], ChartLatQCech.val_mk hT]
-    simp
-  map_mul' x x' := by
-    induction x using LocalizedModule.induction_on with
-    | h m s =>
-    induction x' using LocalizedModule.induction_on with
-    | h m' s' =>
-    rw [LocalizedModule.mk_mul_mk, ChartLatQCech.val_mk hT, ChartLatQCech.val_mk hT,
-      ChartLatQCech.val_mk hT]
-    simp only [Submonoid.coe_mul, map_mul]
-    field_simp [hT s s.2, hT s' s'.2]
-  map_zero' := by
-    rw [← LocalizedModule.zero_mk 1, ChartLatQCech.val_mk hT]
-    simp
-  map_add' := ChartLatQCech.val_add T
-
 variable [LinearOrder K] [∀ k, LinearOrder (ι k)]
 
 variable (y) in
@@ -98,7 +77,7 @@ theorem exists_sections_of_generatedV {n : K → ℤ} (hg : KH.GeneratedV ℚ (K
       · simp only [h, ite_false]
         exact zero_mem _
     · let f : LocalizedModule (KH.cellMon ℚ (ZeroCocycleSection.chartCell c).1)
-          (MRingOver ℚ ι ⧸ KH.genIdeal y) →+* Ω := evLHom hT
+          (MRingOver ℚ ι ⧸ KH.genIdeal y) →+* Ω := ChartLatQCech.valHom hT
       have e : ∀ j, (if c = c then ChartLatQCech.val y _ (u (ZeroCocycleSection.chartCell c) j) *
             ∏ k, y ⟨k, c k⟩ ^ (n k) else 0) *
           (ChartLatQCech.val y _ (z (ZeroCocycleSection.chartCell c) j (ZeroCocycleSection.chartCell c)) *

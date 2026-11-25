@@ -66,21 +66,16 @@ private theorem isGSp_map (f : R →+* R') {ν : R} {g : M4 R} (h : IsGSp ν g) 
   rw [map_mul, smul_map', map_one, ← adj_map'] at h2
   exact h2
 
-private theorem aeval_map' (f : R →+* R') (X : M4 R) (p : Polynomial R) :
-    Polynomial.aeval (f.mapMatrix X) (p.map f) = f.mapMatrix (Polynomial.aeval X p) := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq => rw [Polynomial.map_add (f := _), map_add (f := _), map_add (f := _), hp, hq, map_add (f := _)]
-  | monomial n a =>
-    rw [Polynomial.map_monomial, Polynomial.aeval_monomial, Polynomial.aeval_monomial, map_mul, map_pow]
-    congr 1
-    ext i j
-    simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.algebraMap_matrix_apply]
-    split_ifs <;> simp
-
 private theorem prj_map (f : R →+* R') (c : Fin 4 → R) (X : M4 R) (i : Fin 4) :
     prj (fun a => f (c a)) (f.mapMatrix X) i = f.mapMatrix (prj c X i) := by
+  have h := Polynomial.map_aeval_eq_aeval_map (S := M4 R) (U := M4 R') (φ := f)
+    (ψ := (f.mapMatrix : M4 R →+* M4 R')) (RingHom.ext fun r => by
+      ext a b
+      simp only [RingHom.comp_apply, RingHom.mapMatrix_apply, Matrix.map_apply,
+        Matrix.algebraMap_matrix_apply]
+      split_ifs <;> simp) (∏ j ∈ Finset.univ.erase i, (Polynomial.X - Polynomial.C (c j))) X
   simp only [prj]
-  rw [← aeval_map']
+  rw [h]
   congr 1
   simp [Polynomial.map_prod]
 

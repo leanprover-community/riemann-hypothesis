@@ -198,11 +198,6 @@ theorem sameGr_push (F : FlagD H r) (hN : F.InN (s : V →ₗ[K] V)) : SameGr F 
   | last => exact hN.2.2.2 _ F.zperp
   | cast a => exact hN.2.2.1 a
 
-theorem flag_vector_mem_base_lattice (F G : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F G := by
-  induction a using Fin.lastCases with
-  | last => exact Submodule.mem_sup_right (Submodule.subset_span (Or.inl rfl))
-  | cast a => exact Submodule.mem_sup_left (Submodule.mem_sup_left (e_mem_xa F a a.2))
-
 theorem jointSpan_comm (F G : FlagD H r) : V0 F G = V0 G F := by
   unfold V0
   rw [sup_comm F.X, Set.pair_comm]
@@ -262,7 +257,7 @@ theorem datOf_move : ∀ (K V W : Type) [Field K] [NumberField K] [StarRing K] [
     have hI' : ∀ x ∈ II G F, ∀ w ∈ V0 G F, H.B w x = 0 := fun x hx w hw =>
       hI x ⟨hx.2, hx.1⟩ w (jointSpan_comm G F ▸ hw)
     have hdec : ∀ y ∈ wSp F G, ∃ w, y - e w ∈ F.X := fun y hy => by
-      have := (hE.2 y).1 fun a => herm_zero ((mem_perp_iff _ _ _).1 hy _ (flag_vector_mem_base_lattice F G a))
+      have := (hE.2 y).1 fun a => herm_zero ((mem_perp_iff _ _ _).1 hy _ (GlobalTheory.DegCnt.SplitLift.flag_vector_mem_base_lattice F G a))
       obtain ⟨_, ⟨w, rfl⟩, x, hx, rfl⟩ := Submodule.mem_sup.1 this
       exact ⟨w, by simpa using hx⟩
     have hker : ∀ y ∈ wSp F G, ∀ y' ∈ wSp F G, y - y' ∈ F.X → y - y' ∈ II F G := fun y hy y' hy' hx =>
@@ -395,9 +390,6 @@ theorem gram_eq {F G : FlagD H r} (hT : F.T = G.T) (a b : Fin (r + 1)) :
   · rw [F.zperp, G.zperp]
   · rw [F.iso, G.iso]
 
-theorem flag_vector_mem_base_lattice (F F' : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F F' :=
-  Fin.lastCases (lastVector_mem_jointSpan_left F F') (fun a => isotropicSpan_le_jointSpan_left _ _ (e_mem_X _ a)) a
-
 theorem hermFlag_secondFrame_mem_frameSpan (F F' : FlagD H r) (a : Fin (r + 1)) : F'.e a ∈ V0 F F' :=
   Fin.lastCases (lastVector_mem_jointSpan_right F F') (fun a => isotropicSpan_le_jointSpan_right _ _ (e_mem_X _ a)) a
 
@@ -409,7 +401,7 @@ theorem perp_transfer {F G : FlagD H r} (h : SameGr F G) {w : V} (hw : ∀ a, H.
 variable [NumberField K]
 
 theorem wt_e (N : NF H r) {w : V} (hw : w ∈ N.Wt) (a : Fin (r + 1)) : H.B (N.F.e a) w = 0 :=
-  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (flag_vector_mem_base_lattice _ _ a))
+  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (GlobalTheory.DegCnt.SplitLift.flag_vector_mem_base_lattice _ _ a))
 
 theorem wt_e' (N : NF H r) {w : V} (hw : w ∈ N.Wt) (a : Fin (r + 1)) : H.B (N.F'.e a) w = 0 :=
   (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (hermFlag_secondFrame_mem_frameSpan _ _ a))
@@ -908,7 +900,6 @@ theorem count_lists (n : ℕ) : ∀ η : ℕ → K, ∃ T : Finset (List (Kˣ ×
 end GlobalTheory.SignedBlockCount
 
 namespace GlobalTheory
-
 
 open Formalism.MainNotions.S.Loc SignedBlockCount in
 theorem signed_block_count : ∀ (K : Type) [Field K] (j : ℕ) (δ : ℕ → K), (({P : Matrix (Fin j) (Fin j) K | (∃ (w : Formalism.MainNotions.S.Loc.Pt K j) (sgn : Fin j → ℤˣ), ∀ a b, P a b = w.mat a b * ((sgn b : ℤ) : K)) ∧ ∀ (l : ℕ) (hl : l ≤ j), (P.submatrix (Fin.castLE hl) (Fin.castLE hl)).det = δ l}).encard : ℕ∞) ≤ 8 ^ j := by
@@ -1438,7 +1429,7 @@ theorem finrank_wt (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {F G : F
   have h3 : N.Wt ⊔ F.X = LinearMap.range e ⊔ F.X := by
     apply le_antisymm
     · refine sup_le (fun x hx => (he.2 x).1 fun a => hlift.1 x hx _ ?_) le_sup_right
-      rw [hV]; exact _root_.GlobalTheory.DegAsm.DatMove.flag_vector_mem_base_lattice F G a
+      rw [hV]; exact _root_.GlobalTheory.DegCnt.SplitLift.flag_vector_mem_base_lattice F G a
     · refine sup_le ?_ le_sup_right
       rintro _ ⟨w, rfl⟩
       obtain ⟨x, hx, hx'⟩ := hfull.2.2.2.2.2.2.2.1 (e w) fun a => by

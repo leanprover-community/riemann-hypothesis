@@ -221,28 +221,9 @@ theorem UpperTheory.V.Fr.ep_tan :
   let φ : ∀ j, derp O σ j →ₗ[ResidueField O] F.Γ → adp (ResidueField O) j := fun j =>
     (LinearMap.compLeft (prp (ResidueField O) j) F.Γ) ∘ₗ (Box.tanCo O B) ∘ₗ (derp O σ j).subtype
   have hbrig : ∀ j (v : F.V) (Y : adp (ResidueField O) j),
-      (∀ s, (h.ad j (F.loc v s)) Y - Y ∈ (B.bar O).bp j v) → Y ∈ (B.bar O).bp j v := by
-    intro j v Y hY
-    have hbar : (B.bar O).Of (ρ.bar O) := by
-      let f : R →+* ResidueField O := res O R
-      refine ⟨?_, ?_, ?_⟩
-      · show ((B.r F.c).mat).map f = 1
-        rw [hOf.atc]
-        exact Matrix.map_one _ (map_zero f) (map_one f)
-      · intro s
-        show ((B.r s).mat).map f = _
-        rw [hOf.res]
-        rfl
-      · intro v i s
-        have e : (((B.map f).g v : GL (Fin 3) (ResidueField O)) : Matrix (Fin 3) (Fin 3) (ResidueField O)) * (ρ.map f).r (F.loc0 v s) *
-            ((((B.map f).g v)⁻¹ : GL (Fin 3) (ResidueField O)) : Matrix (Fin 3) (Fin 3) (ResidueField O)) =
-            f.mapMatrix ((B.g v : Matrix (Fin 3) (Fin 3) R) * ρ.r (F.loc0 v s) *
-              (((B.g v)⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R)) := by
-          rw [map_mul, map_mul]
-          rfl
-        rw [e]
-        exact congrArg f (hOf.psi v i s)
-    exact pr_brig (ResidueField O) (ρ.bar O) (B.bar O) hbar hGood v Y hY
+      (∀ s, (h.ad j (F.loc v s)) Y - Y ∈ (B.bar O).bp j v) → Y ∈ (B.bar O).bp j v :=
+    fun j v Y hY => pr_brig (ResidueField O) (ρ.bar O) (B.bar O)
+      (hOf.map (res O R : R →+* ResidueField O)) hGood v Y hY
   have hsurj : ∀ j, ∀ x ∈ Z1C F.loc (h.ad j) ((B.bar O).bp j),
       ∃ D : derp O σ j, ∃ X, ∀ s, φ j D s = x.1 s + ((h.ad j s) X - X) := by
     intro j x hx

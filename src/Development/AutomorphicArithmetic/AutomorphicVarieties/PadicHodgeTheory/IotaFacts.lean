@@ -41,6 +41,7 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.ConjugateSelfDual Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc Topology NumberField IsDedekindDomain
+open UpperTheory.Reformulated.B.Qk7 (iof_add)
 
 section SlopeTestRemainingChoices
 
@@ -56,9 +57,6 @@ private theorem iof_lt (x : Ω) : (placeJ j).valuation x < 1 ↔ ‖j x‖ < 1 :
 omit [CharZero Ω] in
 private theorem iof_le (x : Ω) : (placeJ j).valuation x ≤ 1 ↔ ‖j x‖ ≤ 1 := by
   rw [ValuationSubring.valuation_le_one_iff, iof_mem]
-
-private theorem iof_add {x y : Om v} (hx : ‖x‖ < 1) (hy : ‖y‖ < 1) : ‖x + y‖ < 1 :=
-  _root_.UpperTheory.Reformulated.B.Qk7.iof_add hx hy
 
 private theorem iof_pow {x y : Om v} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) (h : ‖x - y‖ < 1) (n : ℕ) :
     ‖x ^ n - y ^ n‖ < 1 := by

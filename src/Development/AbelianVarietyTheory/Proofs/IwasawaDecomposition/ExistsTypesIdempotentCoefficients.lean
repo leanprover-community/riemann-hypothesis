@@ -199,20 +199,10 @@ def types0 [IsEmpty N.Loc] (hl : ∀ k w (p : A.LP w), A.items₂ k w p = (X - 1
     {n : ℕ} (e : ∀ k, (ZMod (H.g k))[X] → MonoidAlgebra ℂ (GL (Fin R.r) (ZMod (H.g k))))
     (he : ∀ k, IsSer R.r (H.g k) n (e k)) : NTypes A where
   Mray := H.K
-  Mray_gal := inferInstance
-  Mray_ab := fun σ τ => Subsingleton.elim _ _
-  Mray_unr := fun p _ h => by
-    rw [GaloisStage.discr_K, dvd_neg] at h
-    exact Dvd.dvd.mul_left (by exact_mod_cast h) _
   g_Mray := fun k => GaloisStage.split_K H (H.g_prime k) (hc k)
   g_cond := hc
   BB_disj := hB
   bc := fun _ => {(R.r, 1)}
-  bc_pos := fun _ p hp => by
-    have := GaloisStage.two_le_r R
-    rw [Multiset.mem_singleton.1 hp]
-    exact ⟨by show 0 < R.r; omega, one_pos⟩
-  bc_sum := fun _ => by simp
   rbar := fun _ _ => 1
   rbar_open := fun _ _ => by
     rw [MonoidHom.ker_one]
@@ -244,7 +234,6 @@ def types0 [IsEmpty N.Loc] (hl : ∀ k w (p : A.LP w), A.items₂ k w p = (X - 1
   locPar_dim := fun σ => σ.elim
   labPar_def := fun _ σ => σ.elim
   MtPar := fun _ _ σ => σ.elim
-  AmbPar := fun _ σ => σ.elim
   heckeLoc_gamma_places := fun i => isEmptyElim i
   chiT_tg := fun i => isEmptyElim i
 

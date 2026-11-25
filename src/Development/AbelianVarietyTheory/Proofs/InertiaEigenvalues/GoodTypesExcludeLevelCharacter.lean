@@ -220,7 +220,6 @@ theorem mirSet_inv {g : ℕ} [Fact g.Prime] {r : ℕ} (a : Fin r → ZMod g) (b 
     rw [neg_smul, ← hc]
     abel
 
-
 open Classical in
 theorem zOf_mul_mirEl_eq_zero : ∀ (g : ℕ) [Fact g.Prime] (r : ℕ) (ψ : Gn g r → ℂ), IsIrr ψ →
     ∀ (θ : (ZMod g)ˣ →* ℂˣ) (a : Fin r → ZMod g)
@@ -737,12 +736,6 @@ namespace GlobalTheory.ResTr
 variable {g : ℕ} [Fact g.Prime]
 open Formalism.MainNotions.ArithmeticCylinders
 
-open Classical in
-theorem coeff_mirEl {r : ℕ} (θ : (ZMod g)ˣ →* ℂˣ) (a : Fin r → ZMod g) (b : Bool) (h : Gn g r) :
-    (mirEl θ a b).coeff h = if mirSet a b h then ((θ (Matrix.GeneralLinearGroup.det h) : ℂˣ) : ℂ) else 0 := by
-  unfold mirEl
-  simp [MonoidAlgebra.coeff_single, Finsupp.single_apply]
-
 theorem sum_gl1 (M : Mt g 1) (d : (ZMod g)ˣ) (hM : M.det = d) (F : (ZMod g)ˣ → ℂ) :
     (∑ x : Gn g 1, if M = (x : Mt g 1) then F (Matrix.GeneralLinearGroup.det x) else 0) = F d := by
   have hU : IsUnit M := (Matrix.isUnit_iff_isUnit_det M).2 (by rw [hM]; exact d.isUnit)
@@ -907,7 +900,6 @@ theorem det_tl_zero {n : ℕ} (h : Gn g (n + 1)) (H : RowsId (h : Mt g (n + 1)))
     (tl 1 (h : Mt g (n + 1))).det = ((Matrix.GeneralLinearGroup.det h : (ZMod g)ˣ) : ZMod g) := by
   rw [Matrix.det_unique, tl_zero, Matrix.GeneralLinearGroup.val_det_apply, det_rowsId _ H]
 
-
 open Classical in
 theorem trace_mir (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ) (θ : (ZMod g)ˣ →* ℂˣ) :
     tr (mirEl θ (Pi.single (Fin.last n) 1) false) ψ =
@@ -919,7 +911,7 @@ theorem trace_mir (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ)
     rw [mul_left_comm, mul_inv_cancel_left₀ hg]
   constructor
   · unfold tr res
-    simp_rw [coeff_mirEl, mul_one, Finset.mul_sum, hc]
+    simp_rw [GlobalTheory.MirAvg.mirEl_coeff, mul_one, Finset.mul_sum, hc]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun h _ => ?_)
     by_cases H : ColsId (h : Mt g (n + 1))
@@ -931,7 +923,7 @@ theorem trace_mir (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ)
       refine (Finset.sum_eq_zero (fun x _ => ?_)).symm
       rw [ite_eq_right (fun e => H ((parTl_iff _).1 ⟨e.1, by simpa using e.2.1⟩)), mul_zero]
   · unfold tr res
-    simp_rw [coeff_mirEl, one_mul, Finset.mul_sum, hc]
+    simp_rw [GlobalTheory.MirAvg.mirEl_coeff, one_mul, Finset.mul_sum, hc]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun h _ => ?_)
     by_cases H : RowsId (h : Mt g (n + 1))

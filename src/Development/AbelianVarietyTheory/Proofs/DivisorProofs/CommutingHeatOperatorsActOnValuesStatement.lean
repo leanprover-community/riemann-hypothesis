@@ -563,7 +563,7 @@ theorem core {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianR
   refine ⟨ρU * uU⁻¹, fun k hk σ ω hσ => ?_⟩
   obtain ⟨r₀, σ₀, f₀, F, hr₀, hσ₀, hE₀, hF₀⟩ := exists_integral U k hk σ
   have hsh₀ := shiftEq_of_fam D.toPre k F f₀ r₀ hF₀
-  choose f₁ hf₁ using fun α => GlobalTheory.T.torusInvariant_heatOperator_acts_on_fourierTerms R D O oD Y n vH dd hinv Dr h hbasic k α (f₀ α)
+  choose f₁ hf₁ using fun α => GlobalTheory.Heat.heat_acts_on_terms R D O oD Y n vH dd hinv Dr h hbasic k α (f₀ α)
   have hsh₁ : ∀ mu α, ShiftEq D.toPre k mu α (f₁ α) (f₁ (α + k • mu)) 0 (f₀ (α + k • mu)) :=
     fun mu α => hdef k mu α (f₀ α) (f₁ α) (f₀ (α + k • mu)) (f₁ (α + k • mu)) hk (hsh₀ mu α) (hf₁ α)
       (hf₁ (α + k • mu))

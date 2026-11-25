@@ -554,7 +554,7 @@ theorem mem_Es {μ : ℝ} {v : V} : v ∈ Es ε E μ ↔ Eig ε E μ v :=
   Module.End.mem_eigenspace_iff
 
 theorem fd (h : Mod ε E) (μ : ℝ) : FiniteDimensional ℂ (Es ε E μ) := by
-  haveI := h.fin μ
+  have := h.fin μ
   refine Submodule.finiteDimensional_of_le (S₂ := Submodule.span ℂ {v : V | ∃ μ' ≤ μ, Eig ε E μ' v}) ?_
   intro v hv
   exact Submodule.subset_span ⟨μ, le_rfl, mem_Es.mp hv⟩
@@ -565,7 +565,7 @@ open EigenspaceDecomposition in
 theorem eigenbasis_of_basic : A0 → EigenbasisExists := by
   intro hA n ε V _ _ E h
   obtain ⟨hsym, hnn, -, -⟩ := hA n ε V E h
-  haveI : ∀ μ : ℝ, FiniteDimensional ℂ (Es ε E μ) := fun μ => fd h μ
+  have : ∀ μ : ℝ, FiniteDimensional ℂ (Es ε E μ) := fun μ => fd h μ
   let f : (Σ μ : ℝ, Fin (Module.finrank ℂ (Es ε E μ))) → V :=
     fun i => ((stdOrthonormalBasis ℂ (Es ε E i.1)) i.2 : V)
   have hOF : OrthogonalFamily ℂ (fun μ : ℝ => Es ε E μ) (fun μ => (Es ε E μ).subtypeₗᵢ) :=
@@ -603,13 +603,13 @@ theorem eigenbasis_of_basic : A0 → EigenbasisExists := by
     rw [h0, norm_zero] at this
     exact zero_ne_one this
   · intro R
-    haveI := h.fin R
+    have := h.fin R
     let W := Submodule.span ℂ {v : V | ∃ μ ≤ R, Eig ε E μ v}
     let g : {i : (Σ μ : ℝ, Fin (Module.finrank ℂ (Es ε E μ))) | i.1 ≤ R} → W :=
       fun i => ⟨f i.1, Submodule.subset_span ⟨i.1.1, i.2, heig i.1⟩⟩
     have hg : LinearIndependent ℂ g :=
       LinearIndependent.of_comp W.subtype (hli.comp _ Subtype.val_injective)
-    haveI := hg.finite
+    have := hg.finite
     exact Set.toFinite _
 
 end PositivityTheory.CW

@@ -5,6 +5,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.UnivLift
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.OrdOfFlag
+import Mathlib.Algebra.Ring.Action.ConjAct
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
@@ -33,23 +34,19 @@ private theorem rbar_w {n : ℕ} (i : Fin n) : w n i.rev = - w n i := by
   rw [Fin.val_rev]
   split_ifs with h <;> omega
 
-private theorem rbar_prod {K : Type} [CommRing K] {n : ℕ} (L : List (Fin n → K)) :
-    (L.map fun d => Matrix.diagonal d).prod = Matrix.diagonal L.prod := by
-  induction L with
-  | nil => simp [← Matrix.diagonal_one]
-  | cons a L ih => rw [List.map_cons, List.prod_cons, ih, Matrix.diagonal_mul_diagonal, List.prod_cons]; rfl
-
 private theorem rbar_ord {H K : Type} [CommRing K] {n : ℕ} (ψ : Fin n → H → K) (g : Fin n → H) :
     ordProd (fun s => Matrix.diagonal fun j => ψ j s) ψ g = 0 := by
   unfold ordProd
   have e : (List.ofFn fun i => (Matrix.diagonal fun j => ψ j (g i)) - ψ i (g i) • (1 : Matrix (Fin n) (Fin n) K)) =
-      (List.ofFn fun i => fun j => ψ j (g i) - ψ i (g i)).map fun d => Matrix.diagonal d := by
+      (List.ofFn fun i => fun j => ψ j (g i) - ψ i (g i)).map
+        (Matrix.diagonalRingHom (Fin n) K) := by
     rw [List.map_ofFn]
     congr 1
     funext i
     ext a b
     by_cases h : a = b <;> simp [h]
-  rw [e, rbar_prod, List.prod_ofFn, ← Matrix.diagonal_zero]
+  rw [e, ← map_list_prod (Matrix.diagonalRingHom (Fin n) K), Matrix.diagonalRingHom_apply,
+    List.prod_ofFn, ← Matrix.diagonal_zero]
   congr 1
   funext j
   rw [Finset.prod_apply]
@@ -94,25 +91,20 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 section
 variable {H C : Type} [CommRing C] {n : ℕ}
 
-private theorem conj_prod {R : Type} [Monoid R] (P Q : R) (h : P * Q = 1) (h' : Q * P = 1) (L : List R) :
-    (L.map fun x => Q * x * P).prod = Q * L.prod * P := by
-  induction L with
-  | nil => simp [h']
-  | cons a L ih =>
-    rw [List.map_cons, List.prod_cons, ih, List.prod_cons]
-    simp only [mul_assoc]
-    rw [← mul_assoc P Q, h, one_mul]
-
 private theorem ord_conj (r : H → Matrix (Fin n) (Fin n) C) (ψ : Fin n → H → C) (P Q : Matrix (Fin n) (Fin n) C)
     (h : P * Q = 1) (g : Fin n → H) (ho : ordProd r ψ g = 0) : ordProd (fun s => Q * r s * P) ψ g = 0 := by
   have h' : Q * P = 1 := mul_eq_one_comm.1 h
-  have := conj_prod P Q h h' (List.ofFn fun i => r (g i) - ψ i (g i) • (1 : Matrix (Fin n) (Fin n) C))
+  let U : (Matrix (Fin n) (Fin n) C)ˣ := ⟨Q, P, h', h⟩
+  let φ := MulSemiringAction.toRingHom _ (Matrix (Fin n) (Fin n) C) (ConjAct.toConjAct U)
+  have hφ : ∀ X, φ X = Q * X * P := fun _ => rfl
+  have := map_list_prod φ
+    (List.ofFn fun i => r (g i) - ψ i (g i) • (1 : Matrix (Fin n) (Fin n) C))
   unfold ordProd at ho ⊢
-  rw [ho, mul_zero, zero_mul, List.map_ofFn] at this
-  rw [← this]
+  rw [ho, map_zero, List.map_ofFn] at this
+  rw [this]
   congr 2
   funext i
-  simp [mul_sub, sub_mul, h']
+  simp [hφ, mul_sub, sub_mul, h']
 
 private theorem tri_diag (hn : n = 2 ∨ n = 3) (T : H → Matrix (Fin n) (Fin n) C) (ψ : Fin n → H → C) (g₀ : H)
     (d : Fin n → C) (hd : T g₀ = diagonal d) (hu : ∀ i j, i ≠ j → IsUnit (d i - ψ j g₀))

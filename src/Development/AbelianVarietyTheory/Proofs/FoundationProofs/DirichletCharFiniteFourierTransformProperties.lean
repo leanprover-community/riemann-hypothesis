@@ -11,8 +11,6 @@ public import Mathlib.NumberTheory.GaussSum
 open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
 open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
-noncomputable section
-
 namespace GlobalTheory.EisM
 
 theorem hat_eq_sum_std {N : ℕ} [NeZero N] (φ : ZMod N → ℂ) (d : ℤ) :

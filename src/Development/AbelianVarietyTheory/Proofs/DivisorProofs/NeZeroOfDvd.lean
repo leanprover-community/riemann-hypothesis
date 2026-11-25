@@ -129,14 +129,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace GlobalTheory.EtC.RedChern
 
-private theorem sec_res_map {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
-  simp only [Sec.res, Sec.map]
-  rw [← ModuleCat.comp_apply, ← ModuleCat.comp_apply, φ.hom.naturality]
-
-private theorem sec_res_sub {R : Type} [CommRing R] {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (x y : Sec F U) :
-    Sec.res g (x - y) = Sec.res g x - Sec.res g y := map_sub _ x y
-
 theorem red_chern_deg_one : ∀ (Q q : ℕ) [NeZero Q], q ∣ Q → ∀ (U : Scheme.{0}) (u : (Γ(U, ⊤))ˣ), IsUnit (Q : Γ(U, ⊤)) → ∀ (a : Sec ((res _ (tw Q 1)).X 1) U) (b : Sec ((res _ (tw q 1)).X 1) U), (∀ (V : Scheme.{0}) (g : V ⟶ U) (v : (Γ(V, ⊤))ˣ), v ^ Q = Units.map g.appTop.hom.toMonoidHom u → Sec.res g a = Sec.map ((res _ (tw Q 1)).d 0 1) (kumT Q V v)) → (∀ (V : Scheme.{0}) (g : V ⟶ U) (w : (Γ(V, ⊤))ˣ), w ^ q = Units.map g.appTop.hom.toMonoidHom u → Sec.res g b = Sec.map ((res _ (tw q 1)).d 0 1) (kumT q V w)) → (redMap Q q 1).app U 1 a - b = Sec.map ((res _ (tw q 1)).d 0 1) (GlobalTheory.EtC.RedChern.defectSec Q q U u) := by
   intro Q q _ hqQ U u hQ a b ha hb
   refine (_root_.GlobalTheory.EtC.sec_ext_glue _ _ U).1 _ _ ?_
@@ -144,7 +136,7 @@ theorem red_chern_deg_one : ∀ (Q q : ℕ) [NeZero Q], q ∣ Q → ∀ (U : Sch
   rintro V g ⟨v, hv⟩
   have hw : (v ^ (Q / q)) ^ q = Units.map g.appTop.hom.toMonoidHom u := by
     rw [← pow_mul, Nat.div_mul_cancel hqQ, hv]
-  rw [sec_res_sub, (redMap Q q 1).nat, ha V g v hv, hb V g _ hw, ← (redMap Q q 1).comm, sec_res_map,
+  rw [GlobalTheory.EtC.Stair.res_sub, (redMap Q q 1).nat, ha V g v hv, hb V g _ hw, ← (redMap Q q 1).comm, GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism,
     _root_.GlobalTheory.EtC.RedChern.res_defectSec Q q hqQ U u hQ V g v hv, defect, GlobalTheory.EtC.KummerSplit.smap_sub]
 
 end GlobalTheory.EtC.RedChern
@@ -196,7 +188,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 noncomputable section
 namespace GlobalTheory.EtC.RedChern
-
 
 theorem delta_two_eq : (SimplexCategory.δ (2 : Fin 3) : SimplexCategory.mk 1 ⟶ SimplexCategory.mk 2) =
     SimplexCategory.subinterval 0 1 (by omega) := by
@@ -307,11 +298,6 @@ noncomputable section
 
 namespace GlobalTheory.EtC.SemiTens
 
-theorem res_map {R : Type} [CommRing R] {F G : Shv R} (f : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (z : Sec F U) :
-    Sec.res g (Sec.map f z) = Sec.map f (Sec.res g z) := by
-  have := congrArg (fun k => k.hom z) (f.hom.naturality g.op)
-  simpa using this.symm
-
 theorem map_zero' {R : Type} [CommRing R] {F G : Shv R} {U : Scheme.{0}} (z : Sec F U) :
     Sec.map (0 : F ⟶ G) z = 0 := by
   first
@@ -373,7 +359,6 @@ end GlobalTheory.EtC.SemiTens
 
 namespace GlobalTheory.EtC
 
-
 open SemiTens in
 theorem semiMap_of_tensorPair : ∀ (Q : ℕ) (R : Type) [CommRing R] {I J T : Cx (ZMod Q)} {I' J' K' : Cx R} (τ : Pair I J T),
     τ.IsTensor → ∀ (ν : Pair I' J' K') (ρ₁ : SemiMap I I') (ρ₂ : SemiMap J J'), ∃ σ : SemiMap T K',
@@ -412,7 +397,7 @@ theorem semiMap_of_tensorPair : ∀ (Q : ℕ) (R : Type) [CommRing R] {I J T : C
     obtain ⟨S, hS, hP⟩ := hτ.1 U s y
     refine ⟨S, hS, fun V g hg => ?_⟩
     obtain ⟨x, hx⟩ := hP V g hg
-    rw [res_map, hnat, ← hx, hlift, key, hnat, res_map, ← hx]
+    rw [GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism, hnat, ← hx, hlift, key, hnat, GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism, ← hx]
   · rw [T.shape s t hst, K'.shape s t hst, map_zero', map_zero', map_zero]
 
 end GlobalTheory.EtC
@@ -575,10 +560,6 @@ def liftN {I J K : Cx R} (μ : Pair I J K) (w : ℤ) :
       rw [lift_of, lift_of]
       exact (μ.nat k.unop p.1.1 p.1.2 w p.2 a b).symm
     exact ModuleCat.hom_ext (LinearMap.ext fun x => LinearMap.congr_fun h x)
-
-theorem lift_res {I J K : Cx R} (μ : Pair I J K) {V U : Scheme.{0}} (g : V ⟶ U) (w : ℤ) (x : Tens I J U w) :
-    μ.lift V w (Tens.res g w x) = Sec.res g (μ.lift U w x) :=
-  congr(($((liftN μ w).naturality g.op)).hom x)
 
 end GlobalTheory.EtC.FlatTens
 
@@ -797,7 +778,7 @@ theorem flatS_tens : ∀ (R : Type) [CommRing R] {I J T : Cx R} (τ : Pair I J T
     refine ⟨z, ?_⟩
     rw [NatTrans.comp_app, ModuleCat.hom_comp, LinearMap.comp_apply, hz]
     change τ.lift W w (Tens.res k w x) = _
-    rw [lift_res, hx]
+    rw [GlobalTheory.EtC.Pair.lift_tensRes, hx]
     simp [Sec.res]
   · intro U x hx
     refine loc_trans (loc_mono (fun V g h => ?_) (hτ.2 U w _ hx))
@@ -885,18 +866,13 @@ namespace GlobalTheory.EtC.ScalarExt
 
 alias sec_map_res := _root_.GlobalTheory.EtC.CupSpec.map_res
 
-theorem loc_mono {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : Loc U P)
-    (hP : ∀ V g, P V g → P' V g) : Loc U P' := by
-  obtain ⟨S, hS, hP0⟩ := h
-  exact ⟨S, hS, fun V g hg => hP V g (hP0 V g hg)⟩
-
 theorem agree_on_twist {Q q : ℕ} [NeZero Q] (k : ℤ) {T : Cx (ZMod Q)} {J : Cx (ZMod q)} (ε : sgl (tw Q k) ⟶ T)
     (σ σ' : SemiMap T J)
     (he : ∀ (U : Scheme.{0}) (ζ : Prim Q Γ(U, ⊤)), σ.app U 0 (Sec.map (ε.f 0) (Sec.map (sglι (tw Q k)) (twGen k ζ))) =
       σ'.app U 0 (Sec.map (ε.f 0) (Sec.map (sglι (tw Q k)) (twGen k ζ))))
     (U : Scheme.{0}) (y : Sec (tw Q k) U) :
     σ.app U 0 (Sec.map (ε.f 0) (Sec.map (sglι (tw Q k)) y)) = σ'.app U 0 (Sec.map (ε.f 0) (Sec.map (sglι (tw Q k)) y)) := by
-  refine ((_root_.GlobalTheory.EtC.sec_ext_glue (ZMod q) (J.X 0) U).1 _ _ (loc_mono ((GlobalTheory.T.tateTwist_sections_locally_generated Q k).1 U y) fun V g hg => ?_))
+  refine ((_root_.GlobalTheory.EtC.sec_ext_glue (ZMod q) (J.X 0) U).1 _ _ (GlobalTheory.EtC.Stair.loc_mono ((GlobalTheory.T.tateTwist_sections_locally_generated Q k).1 U y) fun V g hg => ?_))
   rw [σ.nat, σ'.nat, sec_map_res, sec_map_res]
   rcases hg with h0 | ⟨ζ, c, hc⟩
   · rw [h0]; simp
@@ -1120,30 +1096,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace GlobalTheory.EtC
 
-section
-variable {R S : Type} [CommRing R] [CommRing S]
-
-theorem secMap_res' {F G : Shv R} (f : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map f x) = Sec.map f (Sec.res g x) :=
-  (LinearMap.congr_fun (congrArg ModuleCat.Hom.hom (f.hom.naturality g.op)) x).symm
-
-theorem secMap_nsmul' {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} (c : ℕ) (x : Sec F U) :
-    Sec.map f (c • x) = c • Sec.map f x :=
-  map_nsmul (f.hom.app (op U)).hom c x
-
-theorem extSh_hom_ext (φ : R →+* S) {F : Shv R} {M : Shv S} (a b : (extSh φ).obj F ⟶ M)
-    (h : ∀ (U : Scheme.{0}) (y : Sec F U), Sec.map a (extSh.sec φ F U y) = Sec.map b (extSh.sec φ F U y)) : a = b := by
-  apply Sheaf.hom_ext
-  refine sheafify_hom_ext (J := Scheme.etaleTopology) (P := F.obj ⋙ ModuleCat.extendScalars.{1, 1, 1} (uliftHom φ))
-    a.hom b.hom M.property ?_
-  ext U : 2
-  apply ((ModuleCat.extendRestrictScalarsAdj.{1, 1, 1} (uliftHom φ)).homEquiv _ _).injective
-  rw [Adjunction.homEquiv_unit, Adjunction.homEquiv_unit]
-  ext y
-  exact h (unop U) y
-
-end
-
 theorem extAug_comp_ext : ∀ (Q q : ℕ) [NeZero Q] (hq : q ∣ Q) (i : ℤ) (K : Cx (ZMod q))
     (u u' : extCx (ZMod.castHom hq (ZMod q)) (res _ (tw Q i)) ⟶ K),
     (∀ (U : Scheme.{0}) (ζ : Prim Q Γ(U, ⊤)),
@@ -1161,16 +1113,16 @@ theorem extAug_comp_ext : ∀ (Q q : ℕ) [NeZero Q] (hq : q ∣ Q) (i : ℤ) (K
     rfl
   have key : (extSh (ZMod.castHom hq (ZMod q))).map (resι _ (tw Q i)) ≫ u.f 0 =
       (extSh (ZMod.castHom hq (ZMod q))).map (resι _ (tw Q i)) ≫ u'.f 0 := by
-    apply extSh_hom_ext
+    apply GlobalTheory.EtC.FactorExt.extSh_hom_ext
     intro U y
     apply (_root_.GlobalTheory.EtC.sec_ext_glue _ (K.X 0) U).1
     obtain ⟨S, hS, hy⟩ := (GlobalTheory.T.tateTwist_sections_locally_generated Q i).1 U y
     refine ⟨S, hS, fun V g hg => ?_⟩
     dsimp only
-    rw [secMap_res', secMap_res', extSh.sec_res, e, e]
+    rw [GlobalTheory.EtC.FlatExtAcyc.sres_map, GlobalTheory.EtC.FlatExtAcyc.sres_map, extSh.sec_res, e, e]
     rcases hy V g hg with h0 | ⟨ζ, c, hc⟩
     · rw [h0, GlobalTheory.EtC.PicSpec.sec_map_zero, map_zero, GlobalTheory.EtC.PicSpec.sec_map_zero, GlobalTheory.EtC.PicSpec.sec_map_zero]
-    · rw [hc, secMap_nsmul', map_nsmul, secMap_nsmul', secMap_nsmul']
+    · rw [hc, GlobalTheory.EtC.ClsSpec.smap_nsmul, map_nsmul, GlobalTheory.EtC.ClsSpec.smap_nsmul, GlobalTheory.EtC.ClsSpec.smap_nsmul]
       exact congrArg (c • ·) (h V ζ)
   have hv : ∀ v : extCx (ZMod.castHom hq (ZMod q)) (res _ (tw Q i)) ⟶ K, (extAug (ZMod.castHom hq (ZMod q)) (tw Q i) ≫ v).f 0 =
       (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 ((extSh (ZMod.castHom hq (ZMod q))).obj (tw Q i))).hom ≫

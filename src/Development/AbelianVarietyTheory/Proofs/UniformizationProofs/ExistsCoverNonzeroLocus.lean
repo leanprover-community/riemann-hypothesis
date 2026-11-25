@@ -63,7 +63,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.H1.SectionArithmetic ReciprocityTheory.ChartRestriction.G.H1.SquareUnits
 open scoped CategoryTheory.Obj
 
-noncomputable section
 namespace GlobalTheory.CubeFree
 
 section General
@@ -196,4 +195,3 @@ theorem exists_cover_nonzeroLocus : ∀ (K : Type) [Field K] [IsAlgClosed K] (B 
   exact hz
 
 end GlobalTheory.CubeFree
-end

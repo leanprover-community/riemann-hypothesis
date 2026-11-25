@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
 
-noncomputable section
-
 namespace GlobalTheory.RowThetaParam
 
 section Gen

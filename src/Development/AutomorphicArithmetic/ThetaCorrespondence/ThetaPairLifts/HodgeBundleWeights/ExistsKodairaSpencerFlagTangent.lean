@@ -52,7 +52,7 @@ theorem exists_kodaira_spencer_map : _root_.GlobalTheory.CovTop.Hypotheses'' →
     · rw [Category.assoc, Category.assoc, Over.w, hj.1.w, ← Category.assoc, Over.w]
   obtain ⟨ψ, hpol, hiso, hperf, hlag⟩ := GlobalTheory.T.exists_polarizationCrystalForm_perfect_selfAnnihilating P Xo hπ
   have hadj := GlobalTheory.T.polarizationCrystalForm_adjoint_conj_action P Xo hπ a ha hpol
-  have hK := GlobalTheory.T.kodairaSpencerUniqueValue_abelianScheme_field P hj hA' gA'
+  have hK := GlobalTheory.DeRham.ksRegular_of_isAbelianScheme P hj hA' gA'
   obtain ⟨ub, hu, ht, he, hbasis⟩ := GlobalTheory.T.exists_frame_tangentVectors_of_isGrpPullback y hπ a ha
   have hL := (P.2.1 K A _ hA gA).1
   choose hb hbl using fun k : (Σ σ : E →+* ℂ, Fin (Dw.mult σ)) => hL.2 (ub k.1 k.2) (ht k.1 k.2)
@@ -76,4 +76,3 @@ theorem exists_kodaira_spencer_map : _root_.GlobalTheory.CovTop.Hypotheses'' →
 end GlobalTheory.KSExist
 end
 end
-

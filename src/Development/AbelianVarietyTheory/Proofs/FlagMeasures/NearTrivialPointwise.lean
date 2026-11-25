@@ -45,8 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField Matrix
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.NearLowerCompare
 
 open Formalism.MainNotions.S GlobalTheory.Count Formalism.HN

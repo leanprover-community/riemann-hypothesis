@@ -64,24 +64,15 @@ private theorem mem_dualLat {X : Type} [Fintype X] (M : Submodule R (X → C)) (
 private theorem sum_extK {N : Type} [AddCommGroup N] [Fintype N] (K : AddSubgroup N)
     [DecidablePred (· ∈ K)] (u : K → C) (f : N → C) :
     ∑ a, extK (R := R) K u a * f a = ∑ k : K, u k * f k := by
-  obtain ⟨G, hG⟩ : ∃ G : N → C, G = fun a => if h : a ∈ K then u ⟨a, h⟩ * f a else 0 :=
-    ⟨_, rfl⟩
-  have e1 : ∀ a, extK (R := R) K u a * f a = G a := by
-    intro a
-    show (if h : a ∈ K then u ⟨a, h⟩ else 0) * f a = G a
-    by_cases h : a ∈ K
-    · simp [hG, h]
-    · simp [hG, h]
-  have e2 : ∀ k : K, u k * f k = G k := by
-    intro k
-    simp [hG, k.2]
-  simp only [e1, e2]
-  rw [← Finset.sum_subtype (p := (· ∈ K)) (Finset.univ.filter (· ∈ K)) (fun x => by simp) G,
-    Finset.sum_filter]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  by_cases h : a ∈ K
-  · simp [h]
-  · simp [hG, h]
+  have h := Fintype.sum_subtype_add_sum_subtype (· ∈ K) fun a => extK (R := R) K u a * f a
+  have hz : (∑ a : {x : N // x ∉ K}, extK (R := R) K u a * f a) = 0 :=
+    Finset.sum_eq_zero fun a _ => by
+      change (if h : (a : N) ∈ K then u ⟨a, h⟩ else 0) * f a = 0
+      rw [dite_eq_right a.2, zero_mul]
+  rw [hz, add_zero] at h
+  refine h.symm.trans (Fintype.sum_equiv (Equiv.refl K) _ _ fun k => ?_)
+  change (if h : (k : N) ∈ K then u ⟨k, h⟩ else 0) * f k = u k * f k
+  rw [dite_eq_left k.2]
 
 private theorem sum_pushQ {N : Type} [AddCommGroup N] [Fintype N] (K : AddSubgroup N)
     [DecidableEq (N ⧸ K)] [Fintype (N ⧸ K)] (u : N → C) (g : N ⧸ K → C) :

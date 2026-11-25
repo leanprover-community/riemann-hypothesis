@@ -45,15 +45,6 @@ private theorem crtExt {N : ℕ} [NeZero N] (r : ℕ) {u v : (ZMod N)ˣ}
   rw [← ZMod.natCast_zmod_val (u : ZMod N), ← ZMod.natCast_zmod_val (v : ZMod N)]
   exact (ZMod.natCast_eq_natCast_iff _ _ _).2 h3
 
-private theorem dvdCompl {N : ℕ} [NeZero N] {r d : ℕ} (hr : r.Prime) (h : d ∣ N) (hd : ¬ r ∣ d) : d ∣ ordCompl[r] N := by
-  have hc : d.Coprime (ordProj[r] N) := (((Nat.Prime.coprime_iff_not_dvd hr).2 hd).symm).pow_right _
-  apply hc.dvd_of_dvd_mul_left
-  rwa [Nat.ordProj_mul_ordCompl_eq_self]
-
-private theorem mapMap {N M d : ℕ} (h1 : d ∣ M) (h2 : M ∣ N) (u : (ZMod N)ˣ) :
-    ZMod.unitsMap h1 (ZMod.unitsMap h2 u) = ZMod.unitsMap (h1.trans h2) u := by
-  rw [← ZMod.unitsMap_comp h1 h2]; rfl
-
 theorem UpperTheory.V.HV.projFacts :
     ∀ (N : ℕ) [NeZero N] (r : ℕ), r.Prime →
       (∀ u, ZMod.unitsMap (Nat.ordProj_dvd N r) (proj r N u) = ZMod.unitsMap (Nat.ordProj_dvd N r) u) ∧
@@ -66,7 +57,7 @@ theorem UpperTheory.V.HV.projFacts :
   have hA := projA r _ (Nat.ordProj_dvd N r) dvd_rfl
   have hB := projB r _ hr (Nat.ordCompl_dvd N r) dvd_rfl
   have hM : ∀ (r : ℕ), r.Prime → ∀ (M : ℕ) (h : M ∣ N), ¬ r ∣ M → ∀ u, ZMod.unitsMap h (proj r N u) = 1 :=
-    fun r hr M h hM u => projB r M hr h (dvdCompl hr h hM) u
+    fun r hr M h hM u => projB r M hr h (Nat.dvd_ordCompl_of_dvd_not_dvd h hM) u
   refine ⟨hA, hB, fun u => crtExt r (hA _) (by rw [hB, hB]), fun r' hr' hne u => ?_, fun hN u => ?_, ?_, ?_,
     hM r hr, fun M h u => ?_⟩
   · refine crtExt r ?_ (by rw [hB, map_one])
@@ -89,7 +80,10 @@ theorem UpperTheory.V.HV.projFacts :
       exact crtExt r (by rw [hA, hu, map_one]) (by rw [hB, map_one])
   · haveI : NeZero M := ⟨ne_zero_of_dvd_ne_zero (NeZero.ne N) h⟩
     refine crtExt r ?_ ?_
-    · rw [projA r _ _ dvd_rfl, mapMap, mapMap]
+    · rw [projA r _ _ dvd_rfl, ← MonoidHom.comp_apply (ZMod.unitsMap _) (ZMod.unitsMap _),
+        ZMod.unitsMap_comp, ← MonoidHom.comp_apply (ZMod.unitsMap _) (ZMod.unitsMap _),
+        ZMod.unitsMap_comp]
       exact projA r _ _ (Nat.ordProj_dvd_ordProj_of_dvd (NeZero.ne N) h r) u
-    · rw [projB r _ hr _ dvd_rfl, mapMap]
+    · rw [projB r _ hr _ dvd_rfl, ← MonoidHom.comp_apply (ZMod.unitsMap _) (ZMod.unitsMap _),
+        ZMod.unitsMap_comp]
       exact projB r _ hr _ (Nat.ordCompl_dvd_ordCompl_of_dvd h r) u

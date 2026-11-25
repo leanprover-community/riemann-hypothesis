@@ -6,7 +6,6 @@ public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.CartanInt.UnitLog
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower GlobalTheory.CartanInt Matrix MeasureTheory
 open scoped Matrix.Norms.L2Operator

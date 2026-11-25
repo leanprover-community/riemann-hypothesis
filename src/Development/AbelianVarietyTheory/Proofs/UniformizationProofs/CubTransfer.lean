@@ -48,8 +48,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 
-noncomputable section
-
 namespace GlobalTheory.GoodReductionUnif
 
 theorem exists_baseChange (hB : PolBaseChangeSt) {S S' : Scheme.{0}} (f : S' ⟶ S) (P : PolAV S) :
@@ -76,5 +74,3 @@ theorem exists_baseChange (hB : PolBaseChangeSt) {S S' : Scheme.{0}} (f : S' ⟶
 
 
 end GlobalTheory.GoodReductionUnif
-
-end

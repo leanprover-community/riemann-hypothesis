@@ -233,7 +233,6 @@ end GlobalTheory.Desc.UnionFib
 
 namespace GlobalTheory.Desc
 
-
 open UnionFib GroupGlue in
 theorem Emb.hasExt_of_locGrp : ∀ (σ : Setup) (E : Emb σ), σ.Common → (∀ x : Sp σ.R, ∃ g : σ.R, g ∉ x.asIdeal ∧ ∃ (H : Over (Sp (Localization.Away g))) (_ : GrpObj H) (h : H.left ⟶ E.P), E.LocGrp g H h ∧ Set.range h = E.U ∩ E.p ⁻¹' {z : Sp σ.R | g ∉ z.asIdeal}) → HasExt (awayMap σ.f) σ.A := by
   intro σ E hC hloc
@@ -476,7 +475,6 @@ theorem finite_vert (σ : Setup) :
 
 end GlobalTheory.DescSpan
 
-
 open GlobalTheory.DescSpan in
 theorem GlobalTheory.Desc.sec_eq_spanBy_N : ∀ (σ : Setup) (k : ℕ), Sec σ.D k = spanBy (GlobalTheory.Desc.cst σ.A.hom) (σ.N k) := by
   intro σ k
@@ -706,7 +704,6 @@ instance gradedRing (hN : GradedFam c₀ N) : GradedRing (piece hN) :=
 
 section Frac
 
-
 variable (F) in
 def cL : F →+* FractionRing F[X] := (algebraMap F[X] (FractionRing F[X])).comp C
 
@@ -744,7 +741,6 @@ theorem valL_mk (g : NumDenSameDeg (piece hN) P.primeCompl) :
   rw [← map_mul]
   congr 1
   rw [hnum, hden, coeff_monomial_same, coeff_monomial_same, monomial_mul_C, mul_div_cancel₀ _ hs]
-
 
 variable (F) in
 def eqR : F ≃+* (cL F).range :=
@@ -1189,7 +1185,6 @@ theorem exists_ringHom_fnOf_eq {Y P : Scheme.{0}} [IsIntegral Y] [IsIntegral P] 
   · exact (ht (a + b)).trans (((congrArg φ (map_add _ a b)).trans (map_add φ _ _)).trans
       ((congrArg₂ (· + ·) (ht a) (ht b)).symm.trans (map_add (fnOf U hU) (t a) (t b)).symm))
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_hom_of_regAt_fnOf : ∀ (Y P : Scheme.{0}) [IsIntegral Y] [IsIntegral P] (U : Y.Opens), genericPoint Y ∈ U → ∀ (V : P.Opens), IsAffineOpen V → ∀ (hVη : genericPoint P ∈ V) (φ : P.functionField →+* Y.functionField), (∀ s : Γ(P, V), ∀ y ∈ U, RegAt y (φ (fnOf V hVη s))) → ∃ f : U.toScheme ⟶ P, (∀ y : U.toScheme, f y ∈ V) ∧ ∀ l : Sp Y.functionField ⟶ U.toScheme, l ≫ U.ι = gp Y → l ≫ f = spMap φ ≫ gp P := by
   intro Y P _ _ U hU V hV hVη φ h
@@ -1332,7 +1327,6 @@ theorem fnOf_app_eq {Y P : Scheme.{0}} [IsIntegral Y] [IsIntegral P] (m : Y ⟶ 
 
 end GlobalTheory.Desc.StalkMap
 
-
 open GlobalTheory.Desc.StalkMap in
 theorem GlobalTheory.Desc.regAt_map_of_gp : ∀ (Y P : Scheme.{0}) [IsIntegral Y] [IsIntegral P] (m : Y ⟶ P)
     (φ : P.functionField →+* Y.functionField), gp Y ≫ m = spMap φ ≫ gp P → ∀ (y : Y) (v : P.functionField),
@@ -1369,12 +1363,6 @@ theorem sep (R : Type) [CommRing R] (P : Scheme.{0}) (p : P ⟶ Sp R) [IsSeparat
   refine ⟨?_⟩
   rw [terminal.hom_ext (terminal.from P) (p ≫ terminal.from _)]
   infer_instance
-
-theorem regAt_pow {Y : Scheme.{0}} [IsIntegral Y] {y : Y} {x : Y.functionField} (h : RegAt y x) (m : ℕ) :
-    RegAt y (x ^ m) := by
-  induction m with
-  | zero => rw [pow_zero]; exact (unitAt_one y).regAt
-  | succ n ih => rw [pow_succ]; exact ih.mul h
 
 theorem reg_div (Y : Scheme.{0}) [IsIntegral Y] (D : CartierDiv Y) (k m : ℕ) (u a : Y.functionField) (y : Y)
     (ha : a ∈ Sec D (k * m)) (hu : y ∈ locus D k u) : RegAt y (a / u ^ m) := by
@@ -1610,7 +1598,6 @@ theorem onV_of (σ : Setup) (x : Sp σ.R) (P : Scheme.{0}) [IsIntegral P] (p : P
 end GlobalTheory.Desc.EmbeddingLemmas
 
 namespace GlobalTheory.Desc
-
 
 open GlobalTheory.Desc.EmbeddingLemmas in
 theorem nonempty_emb : ∀ σ : Setup, σ.Common → Nonempty (Emb σ) := by

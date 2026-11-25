@@ -561,12 +561,6 @@ section Pow
 
 open Formalism.L2.Host Formalism.ConjugateSelfDual UpperTheory.ConvolutionTheory.T
 
-private theorem pow_loc {K : Type} [Field K] [NumberField K] {χ : HChar K} {s : ℂ} (h : IsPow χ s)
-    (v : HeightOneSpectrum (𝓞 K)) (x : (v.adicCompletion K)ˣ) :
-    ((χ.loc v x : ℂˣ) : ℂ) = ((‖(x : v.adicCompletion K)‖ : ℝ) : ℂ) ^ s := by
-  rw [← GroundTheory.Global.IdeleGroup.ideleModule_finiteEmbedding v x]
-  exact h _
-
 private theorem pow_val {K : Type} [Field K] [NumberField K] {χ : HChar K} {s : ℂ} (h : IsPow χ s)
     (v : HeightOneSpectrum (𝓞 K)) : χ.UnrAt v ∧ ((χ.val v : ℂˣ) : ℂ) = (normV v : ℂ) ^ (-s) := by
   apply _root_.pow_val <;> assumption

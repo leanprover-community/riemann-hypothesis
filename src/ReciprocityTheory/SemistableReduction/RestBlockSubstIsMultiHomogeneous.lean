@@ -35,10 +35,7 @@ theorem blockSphereMeasure_isProbability {B n : ℕ} (hn : 0 < n) :
 
 theorem eval_aeval_alt {σ τ : Type*} (v : σ → MvPolynomial τ ℂ) (x : τ → ℂ)
     (g : MvPolynomial σ ℂ) : eval x (aeval v g) = eval (fun i => eval x (v i)) g := by
-  induction g using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p i hp => simp only [map_mul, aeval_X, eval_X, hp]
+  simpa only [aeval_eq_eval] using comp_aeval_apply v (aeval x) g
 
 theorem measurable_eval_blockCoords {B n : ℕ} (g : MvPolynomial (Fin B × Fin n) ℂ) :
     Measurable fun z : BlockSphere B n => eval (blockPoint z) g := by

@@ -220,45 +220,22 @@ private theorem gen (φ : O →+* K) (hφ : Function.Injective φ) [Finite (Resi
 
 end Gen
 
-private theorem span_unif {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F))
-    (p : w.adicCompletionIntegers F) (hp : Valued.v (p : w.adicCompletion F) = WithZero.exp (-1 : ℤ)) :
-    maximalIdeal (w.adicCompletionIntegers F) = Ideal.span {p} := by
-  have hp0 : (p : w.adicCompletion F) ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hp
-    exact WithZero.exp_ne_zero hp.symm
-  ext x
-  rw [Ideal.mem_span_singleton', IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
-    HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one]
-  constructor
-  · intro h
-    have h1 : Valued.v (x : w.adicCompletion F) < 1 := lt_of_le_of_ne x.2 h
-    have h2 : Valued.v (x : w.adicCompletion F) ≤ WithZero.exp (-1 : ℤ) := by
-      rcases eq_or_ne (Valued.v (x : w.adicCompletion F)) 0 with h0 | h0
-      · rw [h0]; exact zero_le'
-      rw [← WithZero.exp_log h0] at h1 ⊢
-      rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h1
-      rw [WithZero.exp_le_exp]
-      omega
-    refine ⟨⟨(x : w.adicCompletion F) / p, ?_⟩, Subtype.ext (div_mul_cancel₀ _ hp0)⟩
-    rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_div₀, hp]
-    exact div_le_one_of_le₀ h2 zero_le'
-  · rintro ⟨z, rfl⟩ h
-    have hz : Valued.v (z : w.adicCompletion F) ≤ 1 := z.2
-    have h1 : Valued.v ((z : w.adicCompletion F) * p) ≤ WithZero.exp (-1 : ℤ) := by
-      rw [map_mul, hp]; exact mul_le_of_le_one_left' hz
-    have h' : Valued.v ((z : w.adicCompletion F) * p) = 1 := h
-    rw [h', ← WithZero.exp_zero, WithZero.exp_le_exp] at h1
-    omega
-
 theorem UpperTheory.V.Sd.uopSum :
     UpperTheory.V.Sd.UopSum := by
   intro F _ _ w V _ _ ρ c v hv
   haveI := Formalism.UG.P.glint_finite_residueField w
-  have hπ : Valued.v ((atFin w (unif w) : (w.adicCompletion F)ˣ) : w.adicCompletion F) = WithZero.exp (-1 : ℤ) :=
+  have hπ : Valued.v ((atFin w (unif w) : (w.adicCompletion F)ˣ) : w.adicCompletion F) =
+      WithZero.exp (-1 : ℤ) :=
     unif_spec w
-  have hmem : ((atFin w (unif w) : (w.adicCompletion F)ˣ) : w.adicCompletion F) ∈ w.adicCompletionIntegers F := by
+  have hmem : ((atFin w (unif w) : (w.adicCompletion F)ˣ) : w.adicCompletion F) ∈
+      w.adicCompletionIntegers F := by
     rw [HeightOneSpectrum.mem_adicCompletionIntegers, hπ, ← WithZero.exp_zero, WithZero.exp_le_exp]
     omega
-  exact gen (w.adicCompletionIntegers F).subtype Subtype.val_injective c (atFin w (unif w)) ⟨_, hmem⟩ rfl
-    (span_unif w ⟨_, hmem⟩ hπ) V ρ v hv
+  have hunif : Valuation.IsUniformizer
+      (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ)))
+      (⟨_, hmem⟩ : w.adicCompletionIntegers F) := by
+    rw [Valuation.IsUniformizer.iff,
+      Valuation.IsRankOneDiscrete.generator_eq_exp_neg_one_of_mem_range ⟨_, hπ⟩]
+    exact hπ
+  exact gen (w.adicCompletionIntegers F).subtype Subtype.val_injective c
+    (atFin w (unif w)) ⟨_, hmem⟩ rfl (Valuation.IsUniformizer.is_generator hunif) V ρ v hv

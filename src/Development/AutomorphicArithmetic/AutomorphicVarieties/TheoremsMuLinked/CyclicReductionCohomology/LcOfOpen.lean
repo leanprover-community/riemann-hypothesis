@@ -92,20 +92,6 @@ private theorem adEx_ext {l : ℕ} [Fact l.Prime] (F : GFrame l) {M : Type} [Mon
     rw [OneMemClass.coe_one, one_mul, map_one, one_mul] at this
     exact this
 
-private theorem lc_of_open {R Γ M : Type} [CommRing R] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
-    [AddCommGroup M] [Module R M] (ρ : Representation R Γ M) (H : Subgroup Γ) (hH : IsOpen (H : Set Γ))
-    (h : ∀ m, IsLocallyConstant fun g : H => ρ g m) : LC ρ := by
-  apply _root_.lc_of_open <;> assumption
-
-private theorem lc_mat {Γ R : Type} [TopologicalSpace Γ] {n : ℕ} (f : Γ → Matrix (Fin n) (Fin n) R)
-    (h : ∀ i j, IsLocallyConstant fun g => f g i j) : IsLocallyConstant f := by
-  rw [IsLocallyConstant.iff_eventually_eq]
-  intro g0
-  have : ∀ᶠ g in nhds g0, ∀ i j, f g i j = f g0 i j :=
-    Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => (h i j).eventually_eq g0
-  filter_upwards [this] with g hg
-  exact Matrix.ext hg
-
 private theorem lc_padic {l : ℕ} [Fact l.Prime] {R : Type} [CommRing R] (f : ℤ_[l] →+* R) (m : ℕ)
     (hl : (l : R) ^ m = 0) : IsLocallyConstant f := by
   rw [IsLocallyConstant.iff_eventually_eq]
@@ -217,13 +203,15 @@ theorem UpperTheory.V.Th.adExP :
     adP_ex G.frame O _ _ _ _ s h1 hm hPQ hQP hs hP hf (by simp [epsm]) (fun _ _ => by simp [epsm]), ?_⟩
   have hp : Continuous fun g : G.G₀ => h.p₀ g :=
     Continuous.subtype_mk (h.cont.comp continuous_subtype_val) _
-  have h0 : IsLocallyConstant fun g : G0.G₀ => red m (mat y.ρ g) := lc_mat _ fun i j => y.cont i j m
+  have h0 : IsLocallyConstant fun g : G0.G₀ => red m (mat y.ρ g) :=
+    (LocallyConstant.unflip fun i =>
+      LocallyConstant.unflip fun j => ⟨_, y.cont i j m⟩).isLocallyConstant
   have l1 : IsLocallyConstant fun g : G.G₀ => y.ρm h m g := h0.comp_continuous hp
   have l2 : IsLocallyConstant fun g : G.G₀ => y.ρm h m g⁻¹ := l1.comp_continuous continuous_inv
   have main : ∀ (χ : G.Γ → Om O m) (rep : Representation O G.Γ (Mm O n m)), IsLocallyConstant χ →
       IsAdP G.frame (y.ρm h m) (red m y.P) χ rep → LC rep := by
     intro χ rep hχ had
-    refine lc_of_open rep G.η.ker G.η_open fun Z => ?_
+    refine _root_.lc_of_open rep G.η.ker G.η_open fun Z => ?_
     have l3 : IsLocallyConstant fun g : G.G₀ => χ g := hχ.comp_continuous continuous_subtype_val
     rw [IsLocallyConstant.iff_eventually_eq]
     intro g0

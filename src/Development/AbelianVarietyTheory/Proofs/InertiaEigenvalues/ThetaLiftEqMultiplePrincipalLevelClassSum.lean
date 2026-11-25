@@ -19,7 +19,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ HkIdx V0 Fm0 FullRk SgJ BasisOf)
 open scoped TensorProduct
 
-
 noncomputable section
 
 namespace GlobalTheory.LiftClassSumPrinc
@@ -75,7 +74,6 @@ theorem lev_eq_of {F E LL : Type} [Field F] [NumberField F] [Field E] [NumberFie
   rw [mem_lev, mem_lev, hH, hH', Subgroup.mem_bot, Subgroup.mem_bot]
   rfl
 
-
 open GlobalTheory.ConjTwist in
 theorem ser_transl {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m) (t : T0)
@@ -87,7 +85,6 @@ theorem ser_transl {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A 
   rw [GlobalTheory.FiniteFock.pureTensorO_smul, ← GlobalTheory.OrientedHeis.om_fin_pureTensorO R.ψ _ _ _ _ (R.ωP i t) hom R.θ hθ k hk 1
     (one_mem _) _ _ _ _ (R.vP i t) _ hv, map_smul, Pi.smul_apply, ← Module.End.mul_apply, ← map_mul, Prod.mk_mul_mk, mul_one,
     smul_eq_mul]
-
 
 open GlobalTheory.ConjTwist GlobalTheory.FlatVecSum in
 theorem sum_eq_classSum {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
@@ -115,7 +112,6 @@ theorem sum_eq_classSum {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type
     ← mul_assoc c0⁻¹ c0, inv_mul_cancel₀ hc0, one_mul]
   rfl
 
-
 open Classical GlobalTheory.ConjTwist GlobalTheory.FlatVecSum in
 theorem thF_eq_classSum_princ : ∀ (D : D7) (X : RealSide D) (E : IntegralHeckeForms.XD D) (Y : SerSide X E) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) (t : X.T),
     X.R.xi t = (Y.Z.ρ.B i j b).de.chi → X.R.Q t = (Y.Z.ρ.B i j b).de.Q → ∀ (y : (X.R.HV j t).H) (u : ∀ ρ, lowT (X.R.MW j (sg0 D X.A3.A)) ρ),
@@ -137,7 +133,7 @@ theorem thF_eq_classSum_princ : ∀ (D : D7) (X : RealSide D) (E : IntegralHecke
     ⟨by rw [hxi, hone, mul_one], by rw [hQ, he, Finset.union_empty]⟩
   obtain ⟨⟨f, hf⟩, -⟩ := GlobalTheory.FlatVecExist.flatVec_existsUnique D X.Γ X.Pl0 X.T X.A3.A _ X.R.toRealDat X.F.lv2 hC X.guard j t
   obtain ⟨z', c0, hz', hc0, hfz⟩ :=
-    GlobalTheory.T.flatVector_eq_unit_mul_centralTranslate_liftVector D X.Γ X.Pl0 X.T X.A3.A _ X.R.toRealDat X.F.lv2 hC X.guard j t (X.std j) f hf
+    GlobalTheory.FlatLift.flat_eq_unit_smul_om D X.Γ X.Pl0 X.T X.A3.A _ X.R.toRealDat X.F.lv2 hC X.guard j t (X.std j) f hf
   have hflat : f = (princ (Y.Z.ρ.B i j b)).vecFlat (Y.Z.ρ.tw i b 0 ∅ 1) :=
     eq_vecFlat_princ hB htup hC.lev hG hψ hadm hf
 

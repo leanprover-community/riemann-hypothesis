@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOn
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Core.Rk.Exh.Model
 
 open scoped ComplexConjugate Matrix NNReal ComplexOrder Kronecker
@@ -94,5 +92,3 @@ theorem lev_prinDat (A : HSp D) (β : GL (Fin A.rank) (Formalism.IndefR.Lev.EAf 
   exact h3.symm.trans (congrArg Units.val h2)
 
 end GlobalTheory.Core.Rk.Exh.Model
-
-end

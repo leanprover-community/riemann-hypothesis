@@ -571,10 +571,6 @@ open scoped Nat
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem norm_iteratedFDeriv_diag_le' (B : E →L[ℝ] E →L[ℝ] ℝ) (n : ℕ) (x : E) :
-    ‖iteratedFDeriv ℝ n (fun y => B y y) x‖ ≤ ‖B‖ * (2 ^ n * (1 + ‖x‖) ^ 2) := by
-  apply PositivityTheory.ThKF0.Lib.norm_iteratedFDeriv_diag_le
-
 theorem weighted_bound : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (c α : ℝ), 0 < c → α < 1 → ∀ (k m : ℕ),
     ∃ K : ℝ, ∀ y : E, ‖y‖ ^ k * ‖iteratedFDeriv ℝ m (fun y : E => Complex.exp (-((c * ‖y‖ ^ 2 : ℝ) : ℂ))) y‖ *
       Real.exp (c * α * ‖y‖ ^ 2) ≤ K := by
@@ -605,7 +601,7 @@ theorem weighted_bound : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpac
       have a2 : (1 + ‖x‖) ^ 2 ≤ ((1 + ‖x‖) ^ 2) ^ i :=
         le_self_pow₀ (by nlinarith) (by omega)
       calc ‖iteratedFDeriv ℝ i (fun y : E => B y y) x‖ ≤ ‖B‖ * (2 ^ i * (1 + ‖x‖) ^ 2) :=
-            norm_iteratedFDeriv_diag_le' B i x
+            GlobalTheory.GaussSchwartz.norm_iteratedFDeriv_diag_le B i x
         _ = 2 ^ i * ‖B‖ * (1 + ‖x‖) ^ 2 := by ring
         _ ≤ 2 ^ i * (‖B‖ + 1) ^ i * ((1 + ‖x‖) ^ 2) ^ i := by gcongr
         _ = (2 * (‖B‖ + 1) * (1 + ‖x‖) ^ 2) ^ i := by rw [mul_pow, mul_pow])
@@ -678,7 +674,6 @@ theorem continuous_wt {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E
   fun_prop
 
 end CoefNorm
-
 
 open CoefNorm in
 theorem norm_coef_le_integral (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]

@@ -35,7 +35,7 @@ theorem regularisedIntegral_of_const : _root_.GlobalTheory.FunPr.ThetaLocalInput
   set S := algF ψ θ false A₁ B with hSdef
   have hstab : ∀ g ∈ GfC W₁, ∀ Φ ∈ S, ωB (g, 1) Φ ∈ S := hm.mapB.stabM.1
   have hL : ∀ Φ ∈ S, ∀ γ ∈ GQ W₁, ∀ g h, thetaKO ωB (γ * g) h Φ = thetaKO ωB g h Φ :=
-    GlobalTheory.T.thetaKernel_leftInvariant_rational_unitary D ψ θ hθ W₁ X A₁ B α (α / β) ωB hm.weilB
+    GlobalTheory.SquareComm.ThetaLeft.main D ψ θ hθ W₁ X A₁ B α (α / β) ωB hm.weilB
   obtain ⟨Φ₀, h0S, hrel, hmod0, hI⟩ := H ΦB hΦB
   have hp : p' ΦB = p' Φ₀ := by
     have h1 : finRel ωB S ≤ LinearMap.ker p' := by

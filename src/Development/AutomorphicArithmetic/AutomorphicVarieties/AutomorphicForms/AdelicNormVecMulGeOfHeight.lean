@@ -53,20 +53,6 @@ private theorem inf_bound {E : Type*} [NormedField E] {n : ℕ}
         mul_le_mul_of_nonneg_right (by linarith) (by positivity)
     _ = _ := by ring
 
-private theorem finprod_bound {ι : Type*} {a b c : ι → ℝ} (ha : (Function.mulSupport a).Finite)
-    (hb : (Function.mulSupport b).Finite) (hc : (Function.mulSupport c).Finite)
-    (h0 : ∀ i, 0 ≤ a i) (h : ∀ i, a i ≤ b i * c i) :
-    ∏ᶠ i, a i ≤ (∏ᶠ i, b i) * ∏ᶠ i, c i := by
-  classical
-  rw [finprod_eq_prod_of_mulSupport_subset a (s := ((ha.union hb).union hc).toFinset)
-      (fun v hv => by simp only [Set.Finite.coe_toFinset]; exact Or.inl (Or.inl hv)),
-    finprod_eq_prod_of_mulSupport_subset b (s := ((ha.union hb).union hc).toFinset)
-      (fun v hv => by simp only [Set.Finite.coe_toFinset]; exact Or.inl (Or.inr hv)),
-    finprod_eq_prod_of_mulSupport_subset c (s := ((ha.union hb).union hc).toFinset)
-      (fun v hv => by simp only [Set.Finite.coe_toFinset]; exact Or.inr hv),
-    ← Finset.prod_mul_distrib]
-  exact Finset.prod_le_prod₀ (fun i _ => h0 i) fun i _ => h i
-
 private theorem combine {A B C P Q R S : ℝ} (hi : A ≤ C * P * Q) (hf : B ≤ R * S) (hA : 0 ≤ A)
     (hB : 0 ≤ B) : A * B ≤ C * (P * R) * (Q * S) :=
   (mul_le_mul hi hf hB (hA.trans hi)).trans (le_of_eq (by ring))
@@ -84,8 +70,11 @@ private theorem adelic_bound {K : Type} [Field K] [NumberField K] {n : ℕ}
       fun w _ => ?_
     rw [← mul_pow, ← mul_pow, Reduction.infComp_vecMul_GL]
     exact pow_le_pow_left₀ (Reduction.euclidNorm_nonneg _) (inf_bound _ _) _
-  · refine finprod_bound hy.finite_mulSupport (finite_mulSupport_locHeight_finAt g)
-      (hy.vecMul g).finite_mulSupport (fun _ => norm_nonneg _) fun v => ?_
+  · have hb := finite_mulSupport_locHeight_finAt g
+    have hc := (hy.vecMul g).finite_mulSupport
+    rw [← finprod_mul_distrib hb hc]
+    refine finprod_le_finprod₀ hy.finite_mulSupport (fun _ => norm_nonneg _)
+      ((hb.union hc).subset (Function.mulSupport_mul _ _)) fun v => ?_
     rw [Reduction.finComp_vecMul_GL]
     exact fin_bound _ _
 

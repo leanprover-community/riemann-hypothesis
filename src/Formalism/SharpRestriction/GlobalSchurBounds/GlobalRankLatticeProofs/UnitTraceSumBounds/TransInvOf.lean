@@ -13,42 +13,25 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLo
 
 theorem lamOf_lat (HI : IdealLattice) (D : D7) (cc : Ideal (NumberField.RingOfIntegers D.host.K)) (hc : cc ≠ ⊥) (δ : ℂ) (hδ : δ ≠ 0) :
     ∃ w₁ w₂ : ℂ, ((starRingEnd ℂ) w₁ * w₂).im ≠ 0 ∧ lamOf D cc δ = lat2 w₁ w₂ := by
-  have hd : D.host.d ≠ 0 := by
-    intro h0
-    have hs : D.host.sqd = 0 := by
-      have h := D.host.sqd_sq
-      rw [h0] at h
-      simp at h
-      exact h
-    have hK : D.host.K = ⊥ := by
-      show IntermediateField.adjoin ℚ {D.host.sqd} = ⊥
-      rw [hs]
-      exact IntermediateField.adjoin_simple_eq_bot_iff.mpr (zero_mem _)
-    have h1 := (IntermediateField.finrank_eq_one_iff).mpr hK
-    have h2 := Formalism.HC.HostRaw.finrank_K (H := D.host.toHostRaw)
-    omega
-  have hreal : IsEmpty (D.host.K →+* ℝ) := by
-    refine ⟨fun f => ?_⟩
-    have hs : (⟨D.host.sqd, Formalism.HC.HostRaw.sqd_mem_K (H := D.host.toHostRaw)⟩ : D.host.K) ^ 2 =
-        -((D.host.d : ℕ) : D.host.K) := by
-      apply Subtype.ext
-      simpa using D.host.sqd_sq
-    have h2 := congrArg f hs
-    rw [map_pow, map_neg, map_natCast] at h2
-    have h3 := sq_nonneg (f ⟨D.host.sqd, Formalism.HC.HostRaw.sqd_mem_K (H := D.host.toHostRaw)⟩)
-    have h4 : (0 : ℝ) < (D.host.d : ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hd
-    linarith
-  obtain ⟨⟨w₁, w₂, hw, heq⟩, -⟩ :=
-    HI D.host.K (D.host.φ₀.comp (algebraMap D.host.K D.host.E)) (Formalism.HC.HostRaw.finrank_K (H := D.host.toHostRaw))
-      hreal cc δ hc hδ
-  exact ⟨w₁, w₂, hw, heq⟩
+  have hdeg := Formalism.HC.HostRaw.finrank_K (H := D.host.toHostRaw)
+  refine (HI D.host.K (D.host.φ₀.comp (algebraMap D.host.K D.host.E)) hdeg ⟨fun f => ?_⟩ cc δ hc hδ).1
+  suffices hd : D.host.d = 0 by
+    suffices Module.finrank ℚ D.host.K = 1 by omega
+    apply IntermediateField.finrank_eq_one_iff.mpr
+    change IntermediateField.adjoin ℚ {D.host.sqd} = ⊥
+    rw [show D.host.sqd = 0 by simpa [hd] using D.host.sqd_sq]
+    exact IntermediateField.adjoin_simple_eq_bot_iff.mpr (zero_mem _)
+  let s : D.host.K := ⟨D.host.sqd, Formalism.HC.HostRaw.sqd_mem_K (H := D.host.toHostRaw)⟩
+  suffices (f s) ^ 2 = -(D.host.d : ℝ) by
+    apply Nat.eq_zero_of_le_zero
+    exact_mod_cast (show (D.host.d : ℝ) ≤ 0 by linarith [sq_nonneg (f s)])
+  simpa only [map_pow, map_neg, map_natCast] using
+    congrArg f (show s ^ 2 = -((D.host.d : ℕ) : D.host.K) from Subtype.ext (by simpa [s] using D.host.sqd_sq))
 
 theorem delta_ne (HI : IdealLattice) (HD : DiscrNe) (D : D7) (cc : Ideal (NumberField.RingOfIntegers D.host.K)) (hc : cc ≠ ⊥) (δ : ℂ)
     (hδ : IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : δ ≠ 0 := by
   obtain ⟨w₁, w₂, hw, hL⟩ := lamOf_lat HI D cc hc 1 one_ne_zero
-  intro h0
-  have h12 : δ ^ 12 = discr (lamOf D cc 1) := hδ
-  rw [h0, hL] at h12
-  exact HD w₁ w₂ hw (by simpa using h12.symm)
+  rintro rfl
+  exact HD w₁ w₂ hw (by simpa [hL] using (show (0 : ℂ) ^ 12 = discr (lamOf D cc 1) from hδ).symm)
 
 end Formalism.MainNotions.Ext

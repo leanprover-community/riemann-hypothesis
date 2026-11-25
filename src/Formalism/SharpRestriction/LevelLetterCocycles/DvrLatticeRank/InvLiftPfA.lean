@@ -105,11 +105,8 @@ theorem invLiftPf_nzd (π' w : LetA O n) (s' : ℕ) (hw : IsUnit w) (hπ : π' =
     (m : ℕ) (r₀ y : W.DD T) (hr₀ : r₀ ∈ W.N T) (hy : y ∈ W.N T)
     (h : ℓ ^ m • r₀ = π' • y) : ∃ e ∈ W.N T, r₀ = π' • e := by
   classical
-  have hℓm : ∀ k : ℕ, ∀ c : O, ℓ ^ k * c = 0 → c = 0 := by
-    intro k
-    induction k with
-    | zero => intro c hc; simpa using hc
-    | succ k ih => intro c hc; rw [pow_succ, mul_assoc] at hc; exact hℓ _ (ih _ hc)
+  have hℓm : ∀ k : ℕ, ∀ c : O, ℓ ^ k * c = 0 → c = 0 := fun k =>
+    (mem_nonZeroDivisorsLeft_iff O).1 (pow_mem ((mem_nonZeroDivisorsLeft_iff O).2 hℓ) k)
   obtain ⟨a, ha, -⟩ := huniq r₀ hr₀
   obtain ⟨cc, hc, -⟩ := huniq y hy
   have hmem : ℓ ^ m • r₀ ∈ W.N T := by

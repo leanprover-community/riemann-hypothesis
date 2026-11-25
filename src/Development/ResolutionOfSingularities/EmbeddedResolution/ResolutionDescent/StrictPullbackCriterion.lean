@@ -10,8 +10,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry CategoryTheory.Limits
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem apply_eq_self_of_strictMono_of_surjective (L L' : ℕ) (r : ℕ → ℕ)

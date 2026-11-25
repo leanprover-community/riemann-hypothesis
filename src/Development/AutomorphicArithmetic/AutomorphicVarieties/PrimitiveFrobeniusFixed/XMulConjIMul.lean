@@ -48,14 +48,6 @@ private theorem xMul_root (ζ : K) (k : ℕ) (hk : k ≠ 0) (h : ζ ^ k = 1) : �
     simp [h0] at h3
   rw [map_mul, xMul_conj, map_one, ← Complex.inv_eq_conj h3, mul_inv_cancel₀ h0]
 
-private noncomputable def xMul_sp : K →*₀ FractionalIdeal (𝓞 K)⁰ K where
-  toFun x := FractionalIdeal.spanSingleton (𝓞 K)⁰ x
-  map_zero' := FractionalIdeal.spanSingleton_zero
-  map_one' := FractionalIdeal.spanSingleton_one
-  map_mul' x y := (FractionalIdeal.spanSingleton_mul_spanSingleton x y).symm
-
-private theorem xMul_sp_eq (x : K) : FractionalIdeal.spanSingleton (𝓞 K)⁰ x = xMul_sp K x := rfl
-
 end aux
 
 theorem UpperTheory.V.ML.xMul :
@@ -70,7 +62,7 @@ theorem UpperTheory.V.ML.xMul :
   · rintro 𝔞 𝔟 X Y - - ⟨hX, hX'⟩ ⟨hY, hY'⟩
     refine ⟨?_, ?_⟩
     · rw [map_mul, mul_mul_mul_comm, hX, hY, one_mul]
-    · rw [← FractionalIdeal.spanSingleton_mul_spanSingleton, hX', hY', ← Finset.prod_mul_distrib]
+    · rw [map_mul, hX', hY', ← Finset.prod_mul_distrib]
       simp only [xMul_conjI_mul, FractionalIdeal.coeIdeal_mul, mul_zpow]
   · rintro 𝔞 𝔟 Z Y - - ⟨hZ, hZ'⟩ ⟨hY, hY'⟩
     have hY0 : Y ≠ 0 := by
@@ -78,15 +70,14 @@ theorem UpperTheory.V.ML.xMul :
       simp at hY
     refine ⟨?_, ?_⟩
     · rw [map_div₀, div_mul_div_comm, hZ, hY, div_one]
-    · have h0 : xMul_sp K Y ≠ 0 := (map_ne_zero _).2 hY0
-      rw [xMul_sp_eq] at hZ' hY' ⊢
+    · have h0 : FractionalIdeal.spanSingleton (𝓞 K)⁰ Y ≠ 0 :=
+        FractionalIdeal.spanSingleton_ne_zero_iff.2 hY0
       rw [map_div₀, div_eq_iff h0, hZ', hY', ← Finset.prod_mul_distrib]
       simp only [xMul_conjI_mul, FractionalIdeal.coeIdeal_mul, mul_zpow]
   · rintro 𝔞 X n - ⟨hX, hX'⟩
     refine ⟨?_, ?_⟩
     · rw [map_pow, ← mul_pow, hX, one_pow]
-    · rw [xMul_sp_eq] at hX' ⊢
-      rw [map_pow, hX', ← Finset.prod_pow]
+    · rw [map_pow, hX', ← Finset.prod_pow]
       refine Finset.prod_congr rfl fun t _ => ?_
       rw [xMul_conjI_pow, FractionalIdeal.coeIdeal_pow, ← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, mul_comm]
   · rintro 𝔞 X ζ k hk hζ ⟨hX, hX'⟩
@@ -112,7 +103,7 @@ theorem UpperTheory.V.ML.xMul :
       have h2 : (sg M K t)⁻¹ (y : K) ≠ 0 := (map_ne_zero _).2 hy'
       rw [Equiv.neg_apply, map_zpow₀, h1, Units.val_neg, th_neg, zpow_neg]
       exact mul_inv_cancel₀ (zpow_ne_zero _ h2)
-    · rw [xMul_sp_eq, map_prod]
+    · rw [map_prod]
       refine Finset.prod_congr rfl fun t _ => ?_
       rw [map_zpow₀, xMul_conjI_eq, Ideal.map_span, Set.image_singleton, FractionalIdeal.coeIdeal_span_singleton]
       rfl

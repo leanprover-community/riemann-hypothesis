@@ -1299,11 +1299,6 @@ end pointwise
 
 section main
 
-lemma sigmaFinite_haar {k r : ℕ} {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) :
-    SigmaFinite μ := by
-  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => h.finite_compact K hK⟩
-  infer_instance
-
 lemma gN_cont (k r : ℕ) : Continuous (fun x : Mt k r => gN (Matrix.of x : Mat k r)) := by
   unfold gN
   fun_prop
@@ -1361,7 +1356,7 @@ theorem lint_gN_fin (k r : ℕ) (μ : Measure (Mt k r)) (hμ : IsHaarOn (Nset k 
     push_cast at ha'
     have ha0 : 0 < a := by nlinarith
     obtain ⟨μ', hμ'⟩ := unipotent_haar_exists k r'
-    have := sigmaFinite_haar hμ'
+    have := _root_.Formalism.FourierDecayAlt.P.B2x2.sfin hμ'
     obtain ⟨c, hc⟩ := haar_measure_unique_up_to_scalar k (1 + r') (Nset k (1 + r')) _ μ (unipotent_radical_closed k (1 + r'))
       (unipotent_haar_recursion k r' μ' hμ') hμ.conc hμ.left hμ.finite_compact
     have hf : Measurable (fun x : Mt k (1 + r') => ENNReal.ofReal (gN (Matrix.of x : Mat k (1 + r')) ^ (-a))) :=

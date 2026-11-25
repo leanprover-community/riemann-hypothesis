@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafVanStalk
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CochainComplex CochainComplex.HomComplex
 
 namespace LateralTheory.E.LeafVanVPf

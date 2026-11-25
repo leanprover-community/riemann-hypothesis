@@ -3,9 +3,6 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.BlockRetr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SecondValueMul
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ConjSecondFactor
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FCInj
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.BaseAt
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CellRelIff
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IdxRatioConjSub
 public import Mathlib.GroupTheory.Index
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ProdECut
@@ -26,6 +23,304 @@ import Mathlib.Topology.Sheaves.Presheaf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PartnerCount
 import Mathlib.Tactic.TypeStar
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SgnConjIntUp
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CornerFix
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ToCellSurj
+public import Mathlib.Algebra.Group.Subgroup.Ker
+import Mathlib.NumberTheory.Height.NumberField
+
+section
+@[expose] public section
+
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.ProdE Formalism.L2.SG.Pf.ProdEP2Cut
+
+namespace Formalism.L2.SG.Pf.CountAt
+
+variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) {p : PlF D}
+  (a : Loc.Pt (D.s.atP p).Ep (D.R.rS + 1)) (πa : UP p →* UP p)
+  (hker : ∀ x : UP p, πa x = 1 ↔ ((x : GG p).1 : GLp p).val ∈ Va p a) (g : UP p)
+
+theorem fC_inj : Function.Injective (fC M a πa hker g) := by
+  intro X Y hXY
+  induction X using Quotient.inductionOn with
+  | h x =>
+    induction Y using Quotient.inductionOn with
+    | h y =>
+      apply Quotient.sound
+      obtain ⟨⟨l, hl, e1⟩, ⟨ρ, hρ, e2⟩⟩ := Quotient.exact hXY
+      have e1' : (((y : UP p) : GG p).1 : GLp p).val = l * (((x : UP p) : GG p).1 : GLp p).val := e1
+      have e2' : ((((y : UP p) : GG p).2.unop : GLp p)).val = ((((x : UP p) : GG p).2.unop : GLp p)).val * ρ := e2
+      refine ⟨⟨?_, ?_⟩, ?_⟩
+      · show Formalism.MainNotions.S.TieN.IntLow (M p) ((((y : UP p) * (x : UP p)⁻¹ : UP p) : GG p).1 : GLp p).val
+        rw [first_value_mul]
+        have : (((((x : UP p)⁻¹ : UP p) : GG p).1 : GLp p)).val * (((x : UP p) : GG p).1 : GLp p).val = 1 := by
+          rw [← first_value_mul, inv_mul_cancel]; rfl
+        rw [e1', Matrix.mul_assoc]
+        rw [show (((x : UP p) : GG p).1 : GLp p).val * (((((x : UP p)⁻¹ : UP p) : GG p).1 : GLp p)).val = 1 by
+          rw [← first_value_mul, mul_inv_cancel]; rfl, Matrix.mul_one]
+        exact hl
+      · show Formalism.MainNotions.S.TieN.IntUp (M p) (((((y : UP p) * (x : UP p)⁻¹ : UP p) : GG p).2.unop : GLp p)).val
+        rw [second_value_mul, e2', ← Matrix.mul_assoc]
+        rw [show ((((((x : UP p)⁻¹ : UP p) : GG p).2.unop : GLp p))).val *
+            ((((x : UP p) : GG p).2.unop : GLp p)).val = 1 by rw [← second_value_mul, mul_inv_cancel]; rfl, Matrix.one_mul]
+        exact hρ
+      · show (y : UP p) * (x : UP p)⁻¹ ∈ πa.ker
+        rw [MonoidHom.mem_ker, map_mul, map_inv, MonoidHom.mem_ker.1 x.2.1, MonoidHom.mem_ker.1 y.2.1, inv_one,
+          mul_one]
+
+end Formalism.L2.SG.Pf.CountAt
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open scoped Classical
+
+namespace Formalism.L2.SG.Pf.CountAb
+
+variable {G 𝒳 : Type} [Group G] [MulAction G 𝒳]
+variable (W : 𝒳) (S N' K : Subgroup G) (π : G →* G) (g : G)
+
+def Ak : Subgroup K := S.subgroupOf K
+
+def πk (hD : Data W S N' K π) : K →* Ak S K where
+  toFun k := ⟨⟨π k, hD.kπ k k.2⟩, by show π k ∈ S; exact hD.mem k⟩
+  map_one' := by ext; simp
+  map_mul' x y := by ext; simp
+
+theorem πk_id (hD : Data W S N' K π) (a : Ak S K) : πk W S N' K π hD a = a := by
+  obtain ⟨⟨x, hxK⟩, hxS⟩ := a
+  have hxS' : x ∈ S := by simpa [Ak, Subgroup.mem_subgroupOf] using hxS
+  ext
+  simp [πk, hD.id x hxS']
+
+def Hk : Subgroup K := (Hs W K g).subgroupOf K
+
+theorem cellRel_iff (hD : Data W S N' K π) (k₁ k₂ : K) :
+    (cellRel W N' K g).r (toCell W S N' K π g hD k₁) (toCell W S N' K π g hD k₂) ↔
+      ∃ n ∈ (πk W S N' K π hD).ker, ∃ h ∈ Hk W K g, k₂ = n * k₁ * h := by
+  show cell π ((k₂ : G) * g) * (cell π ((k₁ : G) * g))⁻¹ ∈ K ⊓ N' ↔ _
+  constructor
+  · rintro ⟨hK, hN⟩
+    set x := cell π ((k₂ : G) * g) * (cell π ((k₁ : G) * g))⁻¹ with hx
+    refine ⟨⟨x, hK⟩, ?_, k₁⁻¹ * ⟨x, hK⟩⁻¹ * k₂, ?_, ?_⟩
+    · rw [MonoidHom.mem_ker]
+      have h1 : π x = 1 := (hD.ker x).1 hN
+      ext
+      simp [πk, h1]
+    · rw [Hk, Subgroup.mem_subgroupOf, Hs, Subgroup.mem_inf]
+      refine ⟨(k₁⁻¹ * ⟨x, hK⟩⁻¹ * k₂).2, ?_⟩
+      rw [MulAction.mem_stabilizer_iff]
+      have e2 := cell_smul W S N' K π hD ((k₂ : G) * g)
+      have e1 := cell_smul W S N' K π hD ((k₁ : G) * g)
+      calc ((k₁⁻¹ * ⟨x, hK⟩⁻¹ * k₂ : K) : G) • g • W
+          = ((k₁ : G)⁻¹ * cell π ((k₁ : G) * g)) • ((cell π ((k₂ : G) * g))⁻¹ • (((k₂ : G) * g) • W)) := by
+            rw [← mul_smul, ← mul_smul, ← mul_smul]
+            congr 1
+            push_cast
+            rw [hx]
+            group
+        _ = ((k₁ : G)⁻¹ * cell π ((k₁ : G) * g)) • W := by rw [← e2, inv_smul_smul]
+        _ = g • W := by rw [mul_smul, e1, ← mul_smul]; simp
+    · ext
+      push_cast
+      group
+  · rintro ⟨n, hn, h, hh, rfl⟩
+    have hπn : π (n : G) = 1 := by
+      rw [MonoidHom.mem_ker] at hn
+      have := congrArg (fun a : Ak S K => ((a : K) : G)) hn
+      simpa [πk] using this
+    have hh' : (h : G) • g • W = g • W := by
+      rw [Hk, Subgroup.mem_subgroupOf, Hs, Subgroup.mem_inf] at hh
+      exact hh.2
+    have hs : g⁻¹ * (h : G) * g ∈ S := by
+      rw [← hD.stab]
+      rw [mul_smul, mul_smul, hh', ← mul_smul]
+      simp
+    have key : cell π (((n * k₁ * h : K) : G) * g) = (n : G) * cell π ((k₁ : G) * g) := by
+      have e : ((n * k₁ * h : K) : G) * g = (n : G) * ((k₁ : G) * g) * (g⁻¹ * (h : G) * g) := by
+        push_cast
+        group
+      simp only [cell]
+      rw [e, map_mul, map_mul, hπn, hD.id _ hs]
+      group
+    rw [key, mul_inv_cancel_right]
+    exact ⟨n.2, (hD.ker n).2 hπn⟩
+
+end Formalism.L2.SG.Pf.CountAb
+end
+end
+end
+
+
+section
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.ProdE Formalism.L2.SG.Pf.ProdEP2Cut
+  Formalism.L2.SG.Pf.ProdEP2Core
+
+namespace Formalism.L2.SG.Pf.CountAt
+
+variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (p : PlF D)
+
+def sgnU : GLp p :=
+  ⟨Formalism.L2.SG.LsDatumB.sgnP p, Formalism.L2.SG.LsDatumB.sgnP p, Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ p,
+    Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ p⟩
+
+def tau : GG p →* GG p where
+  toFun x := (x.1, MulOpposite.op (sgnU p * x.2.unop * sgnU p))
+  map_one' := by
+    have hs : sgnU p * sgnU p = 1 := Units.ext (Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ p)
+    ext1
+    · rfl
+    · apply MulOpposite.unop_injective
+      show sgnU p * (1 : GLp p) * sgnU p = 1
+      rw [mul_one, hs]
+  map_mul' x y := by
+    have hs : sgnU p * sgnU p = 1 := Units.ext (Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ p)
+    ext1
+    · rfl
+    · apply MulOpposite.unop_injective
+      simp only [Prod.snd_mul, MulOpposite.unop_mul, MulOpposite.unop_op]
+      calc sgnU p * (y.2.unop * x.2.unop) * sgnU p
+          = sgnU p * y.2.unop * (sgnU p * sgnU p) * x.2.unop * sgnU p := by rw [hs]; group
+        _ = _ := by group
+
+theorem tau_tau (x : GG p) : tau p (tau p x) = x := by
+  have hs : sgnU p * sgnU p = 1 := Units.ext (Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ p)
+  ext1
+  · rfl
+  · apply MulOpposite.unop_injective
+    show sgnU p * (sgnU p * x.2.unop * sgnU p) * sgnU p = x.2.unop
+    calc sgnU p * (sgnU p * x.2.unop * sgnU p) * sgnU p = (sgnU p * sgnU p) * x.2.unop * (sgnU p * sgnU p) := by
+          group
+      _ = _ := by rw [hs]; group
+
+end Formalism.L2.SG.Pf.CountAt
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TauTau =====
+
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.ProdE Formalism.L2.SG.Pf.ProdEP2Cut
+
+namespace Formalism.L2.SG.Pf.CountAt
+
+variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (p : PlF D)
+
+theorem sconj_apply (ρ : MP p) (a b : Fin (D.R.rS + 1)) :
+    (Formalism.L2.SG.LsDatumB.sgnP p * ρ * Formalism.L2.SG.LsDatumB.sgnP p) a b =
+      (-1 : (D.s.atP p).Ep) ^ (D.R.rS - a.val) * ρ a b * (-1) ^ (D.R.rS - b.val) := by
+  simp [Formalism.L2.SG.LsDatumB.sgnP, Matrix.mul_diagonal, Matrix.diagonal_mul]
+
+theorem sconj_up {ρ : MP p} (h : IsUpUni ρ) :
+    IsUpUni (Formalism.L2.SG.LsDatumB.sgnP p * ρ * Formalism.L2.SG.LsDatumB.sgnP p) := by
+  intro a b
+  refine ⟨fun hab => ?_, fun hab => ?_⟩
+  · rw [sconj_apply, (h a b).1 hab]; simp
+  · subst hab
+    rw [sconj_apply, (h a a).2 rfl, mul_one, ← pow_add, ← two_mul, pow_mul]; simp
+
+theorem tau_second_value (x : GG p) : (((tau p x).2.unop : GLp p) : MP p) =
+    Formalism.L2.SG.LsDatumB.sgnP p * ((x.2.unop : GLp p) : MP p) * Formalism.L2.SG.LsDatumB.sgnP p := rfl
+
+theorem tau_mem_UP {x : GG p} (hx : x ∈ UP p) : tau p x ∈ UP p :=
+  ⟨hx.1, by rw [tau_second_value]; exact sconj_up p hx.2⟩
+
+theorem tau_mem_KP {x : GG p} (hx : x ∈ KP M p) : tau p x ∈ KP M p := by
+  refine ⟨hx.1, ?_⟩
+  show Formalism.MainNotions.S.TieN.IntUp (M p) (((tau p x).2.unop : GLp p) : MP p)
+  rw [tau_second_value]
+  obtain ⟨h1, h2, h3⟩ := hx.2
+  refine ⟨fun a => ?_, fun a b hab => ?_, fun a b => ?_⟩
+  · rw [sconj_apply, h1 a, mul_one, ← pow_add, ← two_mul, pow_mul]; simp
+  · rw [sconj_apply, h2 a b hab]; simp
+  · rw [sconj_apply]
+    exact Subring.mul_mem _ (Subring.mul_mem _ (Subring.pow_mem _ (Subring.neg_mem _ (Subring.one_mem _)) _) (h3 a b))
+      (Subring.pow_mem _ (Subring.neg_mem _ (Subring.one_mem _)) _)
+
+def phi (δ : ∀ p : PlF D, (D.s.atP p).Fp) (T T' : ℕ) (w : Point D.host.E (D.R.rS + 1)) (Z : MP p) : MP p :=
+  Z * Formalism.L2.SG.LsDatumB.sgnP p + Formalism.L2.SG.Pf.LocOrbSumPf.shM δ T T' p w
+
+theorem phi_smul (δ : ∀ p : PlF D, (D.s.atP p).Fp) (T T' : ℕ) (w : Point D.host.E (D.R.rS + 1)) {x : GG p}
+    (hx : x ∈ UP p) (Z : MP p) : phi p δ T T' w (x • Z) = tau p x • phi p δ T T' w Z := by
+  have hss := Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ (D := D) p
+  have hc : ((x.1 : GLp p) : MP p) * Formalism.L2.SG.Pf.LocOrbSumPf.shM δ T T' p w *
+      (Formalism.L2.SG.LsDatumB.sgnP p * ((x.2.unop : GLp p) : MP p) * Formalism.L2.SG.LsDatumB.sgnP p) =
+      Formalism.L2.SG.Pf.LocOrbSumPf.shM δ T T' p w := by
+    have hu := sconj_up p hx.2
+    refine Formalism.L2.SG.Pf.FibQ.corner_fix p (fun a b h => (hx.1 a b).1 h) (fun a => (hx.1 a a).2 rfl)
+      (fun a b h => (hu a b).1 h) (fun a => (hu a a).2 rfl) (fun a b h => ?_)
+    simp only [Formalism.L2.SG.Pf.LocOrbSumPf.shM, Matrix.of_apply]
+    rw [ite_eq_right h]
+  simp only [phi, smul_def, tau_second_value]
+  show ((x.1 : GLp p) : MP p) * Z * ((x.2.unop : GLp p) : MP p) * Formalism.L2.SG.LsDatumB.sgnP p +
+      Formalism.L2.SG.Pf.LocOrbSumPf.shM δ T T' p w =
+    ((x.1 : GLp p) : MP p) * (Z * Formalism.L2.SG.LsDatumB.sgnP p + Formalism.L2.SG.Pf.LocOrbSumPf.shM δ T T' p w) *
+      (Formalism.L2.SG.LsDatumB.sgnP p * ((x.2.unop : GLp p) : MP p) * Formalism.L2.SG.LsDatumB.sgnP p)
+  rw [Matrix.mul_add, Matrix.add_mul, hc]
+  congr 1
+  simp only [Matrix.mul_assoc]
+  rw [← Matrix.mul_assoc (Formalism.L2.SG.LsDatumB.sgnP p) (Formalism.L2.SG.LsDatumB.sgnP p), hss, Matrix.one_mul]
+
+theorem phi_inj (δ : ∀ p : PlF D, (D.s.atP p).Fp) (T T' : ℕ) (w : Point D.host.E (D.R.rS + 1)) {Z Z' : MP p}
+    (h : phi p δ T T' w Z = phi p δ T T' w Z') : Z = Z' := by
+  have hss := Formalism.L2.SG.Pf.FibQ.permSign_mul_self₂ (D := D) p
+  unfold phi at h
+  have h2 := add_right_cancel h
+  calc Z = Z * Formalism.L2.SG.LsDatumB.sgnP p * Formalism.L2.SG.LsDatumB.sgnP p := by rw [Matrix.mul_assoc, hss, Matrix.mul_one]
+    _ = Z' * Formalism.L2.SG.LsDatumB.sgnP p * Formalism.L2.SG.LsDatumB.sgnP p := by rw [h2]
+    _ = Z' := by rw [Matrix.mul_assoc, hss, Matrix.mul_one]
+
+end Formalism.L2.SG.Pf.CountAt
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TauSecondValue =====
+
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.ProdE Formalism.L2.SG.Pf.ProdEP2Cut
+
+namespace Formalism.L2.SG.Pf.CountAt
+
+variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
+  (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (p : PlF D)
+
+def BaseAt (a : Loc.Pt (D.s.atP p).Ep (D.R.rS + 1)) : Prop :=
+  ∃ c : UP p, phi p δ (D.mem u).A.T (D.mem u').A.T w (Y0 M δ u u' w p) = (c : GG p) • a.mat ∧
+    ∀ x : UP p, ((x : GG p) • phi p δ (D.mem u).A.T (D.mem u').A.T w (Y0 M δ u u' w p) =
+      phi p δ (D.mem u).A.T (D.mem u').A.T w (Y0 M δ u u' w p) ↔ (x : GG p) • a.mat = a.mat)
+
+end Formalism.L2.SG.Pf.CountAt
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.BaseAt =====
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.BlockCounting, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CardCellRel, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ConjugatorMemUnipotent, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FixesBaseIff, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TauKPIff, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CardCells, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IndexEqRelIndex, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CountAtOfParts, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CountBase, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CountBaseT, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CountWt, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.XPEqZzp, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CountAtHolds

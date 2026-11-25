@@ -54,37 +54,32 @@ import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 import Formalism.ConjugateSelfDual.Statement
+import Mathlib.Algebra.Algebra.Operations
+import Mathlib.LinearAlgebra.Matrix.StdBasis
 import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-private theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg_mul {H : Type} [Group H] {K : Type} [Field K] (r : H →* M4 K) {x y : M4 K}
+open scoped Pointwise in
+private theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg_mul {H : Type} [Group H]
+    {K : Type} [Field K] (r : H →* M4 K) {x y : M4 K}
     (hx : x ∈ Submodule.span K (Set.range r)) (hy : y ∈ Submodule.span K (Set.range r)) :
     x * y ∈ Submodule.span K (Set.range r) := by
-  induction hx using Submodule.span_induction with
-  | mem a ha =>
-    induction hy using Submodule.span_induction with
-    | mem b hb =>
-      obtain ⟨g, rfl⟩ := ha
-      obtain ⟨h, rfl⟩ := hb
-      exact Submodule.subset_span ⟨g * h, map_mul r g h⟩
-    | zero => simp
-    | add b c _ _ hb hc => rw [mul_add]; exact add_mem hb hc
-    | smul c b _ hb => rw [mul_smul_comm]; exact Submodule.smul_mem _ _ hb
-  | zero => simp
-  | add b c _ _ hb hc => rw [add_mul]; exact add_mem hb hc
-  | smul c b _ hb => rw [smul_mul_assoc]; exact Submodule.smul_mem _ _ hb
+  have h := Submodule.mul_mem_mul hx hy
+  rw [Submodule.span_mul_span] at h
+  refine Submodule.span_mono ?_ h
+  rintro _ ⟨_, ⟨g, rfl⟩, _, ⟨g', rfl⟩, rfl⟩
+  exact ⟨g * g', map_mul r g g'⟩
 
-private theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg_top {K : Type} [Field K] {n : Type} [Fintype n] [DecidableEq n]
-    (S : Submodule K (Matrix n n K)) (h : ∀ i j, Matrix.single i j (1 : K) ∈ S) : S = ⊤ := by
-  rw [eq_top_iff]
-  intro x _
-  rw [Matrix.matrix_eq_sum_single x]
-  refine Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun j _ => ?_
-  have := S.smul_mem (x i j) (h i j)
-  simpa [Matrix.smul_single] using this
+private theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg_top {K : Type} [Field K]
+    {n : Type} [Fintype n] [DecidableEq n]
+    (S : Submodule K (Matrix n n K)) (h : ∀ i j, Matrix.single i j (1 : K) ∈ S) : S = ⊤ :=
+  eq_top_iff.2 <| (Matrix.stdBasis K n n).span_eq ▸ Submodule.span_le.2 <| by
+    rintro _ ⟨⟨i, j⟩, rfl⟩
+    rw [SetLike.mem_coe, Matrix.stdBasis_eq_single]
+    exact h i j
 
 private theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg_iff {H : Type} [Group H] {K : Type} [Field K] (r : H →* M4 K)
     (he : ∀ i, Matrix.single i i (1 : K) ∈ Submodule.span K (Set.range r)) (i j : Fin 4) :
@@ -97,17 +92,13 @@ private theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg_iff {H : Type}
     simpa [hg] using h2
   · intro h
     by_contra hn
-    have hz : ∀ g, r g i j = 0 := fun g => by
-      by_contra h'
-      exact hn ⟨g, h'⟩
-    have key : ∀ x ∈ Submodule.span K (Set.range r), x i j = 0 := by
-      intro x hx
-      induction hx using Submodule.span_induction with
-      | mem a ha => obtain ⟨g, rfl⟩ := ha; exact hz g
-      | zero => rfl
-      | add b c _ _ hb hc => simp [hb, hc]
-      | smul c b _ hb => simp [hb]
-    simpa using key _ h
+    have key : Submodule.span K (Set.range r) ≤ LinearMap.ker (Matrix.entryLinearMap K K i j) :=
+      Submodule.span_le.2 <| by
+        rintro _ ⟨g, rfl⟩
+        show r g i j = 0
+        by_contra h'
+        exact hn ⟨g, h'⟩
+    simpa using key h
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.geAlg :
     ∀ {H : Type} [Group H] (K : Type) [Field K] (r : H →* M4 K) (ν : H → K), (∀ g, IsGSp (ν g) (r g)) → (∀ i, Matrix.single i i (1 : K) ∈ Submodule.span K (Set.range r)) → (∀ i j, Ge r i j ↔ Matrix.single i j (1 : K) ∈ Submodule.span K (Set.range r)) ∧ (∀ i, Ge r i i) ∧ (∀ i j k, Ge r i j → Ge r j k → Ge r i k) ∧ (∀ i j, Ge r i j → Ge r j.rev i.rev) ∧ (Irr r ↔ ∀ i j, Ge r i j) ∧ (Ge r 0 2 → Ge r 2 0 → (∀ g, IsBlock (r g)) → Submodule.span K (Set.range fun g => (r g).submatrix ixA ixA) = ⊤) := by

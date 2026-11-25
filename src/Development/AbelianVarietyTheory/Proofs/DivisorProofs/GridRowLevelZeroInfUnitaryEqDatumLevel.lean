@@ -182,7 +182,6 @@ open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheor
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
-
 theorem _root_.GlobalTheory.T.latticeStabilizer_reduction_eq_local_reduction : ∀ {D : D7} {n : ℕ} (β x : GL (Fin n) (Lev.EAf D)) (PP : Pl D.host.E), x ∈ St β → ∀ (i j : Fin n) (a : 𝓞 D.host.E), ((redFn β PP x : GL (Fin n) (kP PP)) : Matrix (Fin n) (Fin n) (kP PP)) i j = Ideal.Quotient.mk PP.asIdeal a ↔ valuation (Kw PP) ((inBasis rfl β PP x).1 i j - algebraMap D.host.E (Kw PP) (a : D.host.E)) < 1 := by
   first | exact @GlobalTheory.Adopt.latticeStabilizer_reduction_eq_local_reduction
 end -- clump:auto
@@ -204,9 +203,6 @@ open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheor
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
-
-theorem _root_.GlobalTheory.T.mem_latticeStabilizer_of_local_integral_inBasis : ∀ {D : D7} {n : ℕ} (β x : GL (Fin n) (Lev.EAf D)), (∀ w : Pl D.host.E, inBasis rfl β w x ∈ KO (Kw w) (Fin n)) → x ∈ St β := by
-  first | exact @GlobalTheory.Adopt.mem_latticeStabilizer_of_local_integral_inBasis
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -226,9 +222,6 @@ open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheor
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
-
-theorem _root_.GlobalTheory.T.thetaGridBlockCongruence_offTypePrime_description : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (t : T) (w : Pl D.host.E), w ∉ L.Pg → ∀ (j : ℕ) (g : GL (Fin ((locGrid G t w).rank (0, j))) (Kw w)), g ∈ (stepGroup L t w j).map (reGL (ixFin G t w j)).toMonoidHom ↔ g ∈ KO (Kw w) (Fin ((locGrid G t w).rank (0, j))) ∧ (w ∈ L.Q t → ∀ a b, Formalism.L2.DIV.blk2 D.R.r b < Formalism.L2.DIV.blk2 D.R.r a → valuation (Kw w) (g.1 a b) < 1) := by
-  first | exact @GlobalTheory.Adopt.thetaGridBlockCongruence_offTypePrime_description
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -246,9 +239,6 @@ open IsDedekindDomain NumberField Matrix MeasureTheory
 open scoped TensorProduct nonZeroDivisors ComplexOrder
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV ValuativeRel
 
-
-theorem _root_.GlobalTheory.T.thetaGridBlockCongruence_typePrime_description : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (t : T) (w : Pl D.host.E), w ∈ L.Pg → ∀ (j : ℕ) (g : GL (Fin ((locGrid G t w).rank (0, j))) (Kw w)), g ∈ (stepGroup L t w j).map (reGL (ixFin G t w j)).toMonoidHom ↔ g ∈ KO (Kw w) (Fin ((locGrid G t w).rank (0, j))) ∧ (∀ a b, Formalism.L2.DIV.blkOf D.R.r D.R.t b < Formalism.L2.DIV.blkOf D.R.r D.R.t a → valuation (Kw w) (g.1 a b) < 1) ∧ ∀ a b : Fin ((locGrid G t w).rank (0, j)), a.val < D.R.r → b.val < D.R.r → valuation (Kw w) ((g.1 - 1) a b) < 1 := by
-  first | exact @GlobalTheory.Adopt.thetaGridBlockCongruence_typePrime_description
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -359,7 +349,7 @@ theorem prodLev_inf_UA {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)} {Λ : Subm
     obtain ⟨h1, h2⟩ := Subgroup.mem_inf.1 hx
     have hA : ∀ w : P, LocCond w.1 (w.1 ∈ Ld.Pg) (w.1 ∈ Ld.Q) Ld.r Ld.t (inBasis rfl β w.1 x) :=
       fun w => (hloc w x).1 (Subgroup.mem_iInf.1 h1 w)
-    have hSt : x ∈ St β := GlobalTheory.T.mem_latticeStabilizer_of_local_integral_inBasis β x fun w => by
+    have hSt : x ∈ St β := StabilizerBasis.GlobalTheory.CompanionTheory.StabBasis.mem_St_of_inBasis_mem_KO β x fun w => by
       by_cases hw : ∃ w0 ∈ P, w.under (𝓞 D.host.F) = w0.under (𝓞 D.host.F)
       · obtain ⟨w0, hw0, e⟩ := hw
         have hK0 := (hA ⟨w0, hw0⟩).1
@@ -426,13 +416,13 @@ theorem levRow_zero_eq_lev : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Const
       rw [givenLevel_zero_iff G t w.1 D.R.m hm]
       by_cases hP : w.1 ∈ L.Pg
       · have hnq : w.1 ∉ L.Q t := Finset.disjoint_left.1 hdis hP
-        rw [GlobalTheory.T.thetaGridBlockCongruence_typePrime_description G t w.1 hP]
+        rw [IteratedIwahori.GlobalTheory.CompanionTheory.IterJ.mem_stepGroup_map_iff G t w.1 hP]
         constructor
         · rintro ⟨h1, h2, h3⟩
           exact ⟨h1, fun _ => ⟨h2, h3⟩, fun hq => absurd hq hnq⟩
         · rintro ⟨h1, h2, -⟩
           exact ⟨h1, (h2 hP).1, (h2 hP).2⟩
-      · rw [GlobalTheory.T.thetaGridBlockCongruence_offTypePrime_description G t w.1 hP]
+      · rw [IwahoriGroupOffset.GlobalTheory.CompanionTheory.StepGroupOff.mem_map_stepGroup_iff G t w.1 hP]
         constructor
         · rintro ⟨h1, h2⟩
           exact ⟨h1, fun hp => absurd hp hP, h2⟩

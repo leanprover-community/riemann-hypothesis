@@ -653,7 +653,6 @@ end GlobalTheory.CompanionTheory.SatPow.Triang
 
 namespace GlobalTheory.CompanionTheory.SatPow
 
-
 open Triang in
 theorem cell_triang : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (n : ℕ) (t w w' b r i : GU σ n) (π π' : Equiv.Perm (Fin n)), IsDiagM (t : GL (Fin n) L) → IsStrictDom (t : GL (Fin n) L) → IsPermW w π → IsPermW w' π' → IsBorelU b → r ∈ IwU σ n → i ∈ IwU σ n → w * r * t = b * w' * i → permWt t π' < permWt t π ∨ (π' = π ∧ ∀ a : Fin n, ordL (((b : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) a a) = ordL (((t : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) (π a) (π a))) := by
   intro L _ _ σ n t w w' b r i π π' hD hS hW hW' hb hr hi h
@@ -919,17 +918,13 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qf37.aOp :
-    {G : Type} → [Group G] → Finset G → G → (G → ℂ) → G → ℂ :=
-    fun {G : Type} [Group G] (R : Finset G) (t : G) (φ : G → ℂ) (g : G) ↦ ∑ r ∈ R, φ (g * r * t)
-
 theorem UpperTheory.Reformulated.B.Qf37.aOp_rightInvariant :
     ∀ {G : Type} [inst : Group G] {I : Subgroup G} {t : G} {R : Finset G},
       (∀ r ∈ R, r ∈ I) →
         (∀ i ∈ I, ∃! r : G, r ∈ R ∧ t⁻¹ * (r⁻¹ * i) * t ∈ I) →
           ∀ {φ : G → ℂ},
             (∀ (g i : G), i ∈ I → φ (g * i) = φ g) →
-              ∀ (g i : G), i ∈ I → UpperTheory.Reformulated.B.Qf37.aOp R t φ (g * i) = UpperTheory.Reformulated.B.Qf37.aOp R t φ g := by
+              ∀ (g i : G), i ∈ I → GlobalTheory.CompanionTheory.SatPow.aOp R t φ (g * i) = GlobalTheory.CompanionTheory.SatPow.aOp R t φ g := by
   intro G inst I t R hR hU φ hφ g i hi
   have hex : ∀ r ∈ R, ∃ s, s ∈ R ∧ t⁻¹ * (s⁻¹ * (i * r)) * t ∈ I := fun r hr =>
     (hU (i * r) (I.mul_mem hi (hR r hr))).exists
@@ -946,7 +941,7 @@ theorem UpperTheory.Reformulated.B.Qf37.aOp_rightInvariant :
     have h5 : t⁻¹ * (b⁻¹ * b) * t ∈ I := by
       simp
     exact (hU b (hR b hb)).unique ⟨ha, h4⟩ ⟨hb, h5⟩
-  unfold UpperTheory.Reformulated.B.Qf37.aOp
+  unfold GlobalTheory.CompanionTheory.SatPow.aOp
   refine Finset.sum_bij σ hσR hinj ?_ ?_
   · intro b hb
     obtain ⟨a, ha, hab⟩ := Finset.surj_on_of_inj_on_of_card_le σ hσR
@@ -1595,7 +1590,6 @@ theorem avg_translate (ρ : Representation ℂ G V) (K : Subgroup G) {x : V}
   exact finsum_comp_equiv (Equiv.mulRight (QuotientGroup.mk k : K ⧸ (stab ρ K x).normalCore))
 
 end GlobalTheory.CompanionTheory.KAvg
-
 
 open GlobalTheory.OrbitAvg GlobalTheory.CompanionTheory.KAvg in
 theorem GlobalTheory.CompanionTheory.KAvg.kInvForm : PositivityTheory.SphericalProduct.KInvForm := by

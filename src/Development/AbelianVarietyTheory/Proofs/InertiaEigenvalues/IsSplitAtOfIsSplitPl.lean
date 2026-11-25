@@ -243,7 +243,7 @@ theorem host_unramified (H : Host R) (w : PlE H) :
     Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield H.E)) w.asIdeal := by
   have h : Algebra.Unramified (𝓞 (maximalRealSubfield H.E)) (𝓞 H.E) :=
     Formalism.L2.Pj.unramBridge_holds H.E fun P hP => by
-      letI := H.cmStar
+      let := H.cmStar
       obtain ⟨θ, t, e1, e2⟩ := (GlobalTheory.Mem.host_cmData R H).cmUnram.2.2 P hP
       refine ⟨θ, ?_⟩
       have : RingOfIntegers.mapRingEquiv (IsCMField.complexConj H.E : H.E ≃+* H.E) θ = t :=

@@ -169,7 +169,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.HeightProofs.CompactUnitaryIntegralConjInvariantStatement =====
@@ -355,7 +354,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 
-
 theorem _root_.GlobalTheory.T.compactUnitaryRightDeriv_conjInvariantAverage_eq : ∀ {n : ℕ} (ε : Fin n → Bool) (N : ℕ) (F : List (Mx n) → Mx n → ℂ), IsDerFam ε F → FamGrowth ε N F → ∀ f : Mx n → ℂ, ContinuousOn f (UJset ε) → (∀ g ∈ UJset ε, F [] g = f g) → ∀ e : KG ε → ℂ, Continuous e → (∀ a k : KG ε, e (a * k * a⁻¹) = e k) → ∀ u : List (Mx n), (∀ X ∈ u, inK ε X) → ∀ y ∈ UJset ε, GlobalTheory.KFourier.rder ε u (GlobalTheory.KFourier.avgK ε e f y) 1 = ∫ k, e k * F u (y * toMK k) ∂(muK ε) := by
   first | exact @GlobalTheory.KAvgDeriv.rder_avgK_one
 end -- clump:auto
@@ -370,7 +368,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Matrix
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
-
 
 end -- clump:auto
 end -- clump:auto
@@ -400,10 +397,6 @@ theorem coord_mul_eq_sum (ε : Fin n → Bool) (c : Fin n × Fin n × Bool) (a k
   · rfl
   · rw [star_sum]; exact Finset.sum_congr rfl fun l _ => by rw [star_mul', mul_comm]
 
-theorem integrable_muK_of_continuous {ε : Fin n → Bool} {F : KG ε → ℂ} (hF : Continuous F) :
-    Integrable F (muK ε) :=
-  hF.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace F)
-
 theorem conv_mono_mem (ε : Fin n → Bool) (s : List (Fin n × Fin n × Bool)) :
     ∀ (d : ℕ), s.length ≤ d → ∀ h : KG ε → ℂ, Continuous h →
       (fun k' : KG ε => ∫ k, mono ε s (k'⁻¹ * k) * h k ∂(muK ε)) ∈ polyV ε d := by
@@ -426,7 +419,7 @@ theorem conv_mono_mem (ε : Fin n → Bool) (s : List (Fin n × Fin n × Bool)) 
         simp only [h1, coord_mul_eq_sum, Finset.sum_mul]
         exact Finset.sum_congr rfl fun l _ => by ring
       · intro l _
-        refine integrable_muK_of_continuous (continuous_const.mul ?_)
+        refine GlobalTheory.KFourier.integrable_of_continuousK (continuous_const.mul ?_)
         exact ((continuous_mono ε s).comp (continuous_const.mul continuous_id)).mul
           ((continuous_coord ε _).mul hh)
     rw [e]
@@ -446,7 +439,7 @@ theorem conv_mem {ε : Fin n → Bool} {d : ℕ} {e : KG ε → ℂ} (he : e ∈
     convert add_mem ihx ihy using 1
     funext k'
     simp only [Pi.add_apply, add_mul]
-    refine integral_add (integrable_muK_of_continuous ?_) (integrable_muK_of_continuous ?_)
+    refine integral_add (GlobalTheory.KFourier.integrable_of_continuousK ?_) (GlobalTheory.KFourier.integrable_of_continuousK ?_)
     · exact ((continuous_of_mem (d := d) hx).comp (continuous_const.mul continuous_id)).mul hh
     · exact ((continuous_of_mem (d := d) hy).comp (continuous_const.mul continuous_id)).mul hh
   | smul a x _ ih =>
@@ -587,7 +580,6 @@ open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 open MeasureTheory GlobalTheory.KFourier
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.HeightProofs.EqZeroOfOrthogonalCompactUnitaryPolyFunStatement =====
@@ -674,7 +666,6 @@ open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 open MeasureTheory GlobalTheory.KFourier
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsOrthogonalProjectionPolynomialCompactUnitaStatement =====
@@ -746,7 +737,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 open MeasureTheory GlobalTheory.KFourier
-
 
 end -- clump:auto
 end -- clump:auto
@@ -904,7 +894,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Matrix
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1388,7 +1377,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto

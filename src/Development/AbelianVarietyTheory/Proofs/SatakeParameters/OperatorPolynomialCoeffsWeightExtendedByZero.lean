@@ -10,8 +10,6 @@ import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.LtCNeZer
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.TwV.DelA
 
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G.Pend Formalism.MainNotions Formalism.L2.Ker Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert Formalism.UG Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.KerInert.SecondKernelProjection Formalism.L2.KerInert.QuadraticBaseChangeGL3 Formalism.L2.KerInert.SecondKernelDifference Formalism.L2.KerInert.SecondKernelHermitian GlobalTheory.TwV.DelA
@@ -86,5 +84,3 @@ theorem wt_polDY_framePol : ∀ (D : D7) {N N' : ℕ}, N ≤ N' → ∀ (s : D.w
   exact Submodule.smul_mem _ _ (hc α)
 
 end GlobalTheory.TwV.DelA
-
-end

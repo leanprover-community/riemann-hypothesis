@@ -16,8 +16,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoupledStepChart
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
 
-noncomputable section
-
 namespace GlobalTheory.LevOne
 
 theorem cong_mem_level_chr_one : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E))
@@ -31,5 +29,3 @@ theorem cong_mem_level_chr_one : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (C
   exact GlobalTheory.CplLev.cong_mem_level_chr_one Ch sel mu cst L G m2 hX hPr hL j (Nat.le_succ_of_le hj)
 
 end GlobalTheory.LevOne
-
-end

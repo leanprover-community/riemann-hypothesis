@@ -14,8 +14,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem mem_irreducibleComponents_iff_isIrreducible_and_maximal {α : Type*}
@@ -183,5 +181,3 @@ theorem componentUnionIdeal_support_eq_sUnion (T : MarkedIdealWithBoundary.{u}) 
   exact hclosed.closure_eq
 
 end FunctorialResolution.EmbeddedResolution
-
-end

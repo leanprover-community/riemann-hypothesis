@@ -88,7 +88,6 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.ClosedFibreConn
 
-
 open Classical in
 theorem idem_eq_of_basicOpen {X : Scheme.{0}} {e e' : Γ(X, ⊤)} (he : e * e = e) (he' : e' * e' = e')
     (h : (X.basicOpen e : Set X) = X.basicOpen e') : e = e' := by
@@ -262,7 +261,7 @@ theorem isPreconnected_fibre : ∀ (X Y : Scheme.{0}) (a : X ⟶ Y), IsLocallyNo
     rw [Scheme.Hom.comp_appTop, CommRingCat.hom_comp, RingHom.coe_comp]
     haveI : IsIso e.hom.appTop := inferInstanceAs (IsIso (e.hom.app ⊤))
     exact hres.comp (ConcreteCategory.bijective_of_isIso _)
-  have hp := GlobalTheory.T.app_bijective_of_flat_baseChange_globalFunctions Γ(Y, U) _ _ _ π g (pullback.snd π g) (pullback.fst π g) inferInstance inferInstance hπ
+  have hp := GlobalTheory.Mum.app_bijective_of_flat_baseChange Γ(Y, U) _ _ _ π g (pullback.snd π g) (pullback.fst π g) inferInstance inferInstance hπ
     inferInstance (IsPullback.of_hasPullback π g).flip
   let Z : Scheme.{0} := pullback π g
   let ψ : A →+* Γ(Z, ⊤) :=

@@ -11,8 +11,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem ker_le_ker_of_comp_eq {A B T : Scheme.{u}} (f : A ⟶ T) (g : B ⟶ T) (e : A ⟶ B)
@@ -183,5 +181,3 @@ theorem map_comap_strictTransform_append_exceptionalIdeal {X X₁ S S₁ : Schem
   · rw [comap_exceptionalIdeal_of_commSq π ι ι₁ ρ hsq Z]
 
 end FunctorialResolution.EmbeddedResolution
-
-end

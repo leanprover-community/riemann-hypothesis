@@ -55,13 +55,8 @@ theorem ht_eq_zero {ε : Fin n → Bool} {i : Fin n} : ht ε i = 0 ↔ ε i.rev 
 
 theorem lt_of_sign {ε : Fin n → Bool} (hε : Monotone ε) {i j : Fin n} (hi : ε i = false) (hj : ε j = true) :
     (i : ℤ) < j := by
-  by_contra hc
-  have hji : j ≤ i := by
-    rw [Fin.le_iff_val_le_val]
-    omega
-  have h3 := hε hji
-  rw [hi, hj] at h3
-  exact absurd h3 (by decide)
+  have h : ε i < ε j := by rw [hi, hj]; decide
+  exact_mod_cast hε.reflect_lt h
 
 theorem adapted {ε : Fin n → Bool} (hε : Monotone ε) : Adapted (pr ε) (ht ε) (wt ε) := by
   have hpos : ∀ i : Fin n, ε i = true → ε i.rev = false → 0 < 2 * (i : ℤ) + 1 - n := by

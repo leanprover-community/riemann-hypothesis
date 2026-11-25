@@ -79,6 +79,7 @@ import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasDerivAtHeisenbergOperatorThetaTransformRealLi
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilTransportAdelicSchwartzCmExtension
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.Analysis.Calculus.SmoothSeries
 import Mathlib.Tactic.ReduceModChar
@@ -339,13 +340,13 @@ theorem GlobalTheory.LineDerivTransfer.schr_deriv_of_heisO_deriv : ∀ (D : D7) 
   intro D ψ hψ S T JB ξ hB κ _ co hrat Φ hΦ L L' hL hL0 hL' hL0' c hrel x
   have hR : IsTotallyReal D.host.F := inferInstance
   let σ := Fintype.equivFin κ
-  let e := numCoord co σ
+  let e := GlobalTheory.TransportF.numCoordF co σ
   have he : ∀ w w', symplO S T w w' = symV (e w) (e w') := fun w w' => by
     rw [symplO_eq_symp rfl hB, co.form]
-    simp only [e, symV, numCoord_apply, comp_equiv_dotProduct_comp_equiv]
+    simp only [e, symV, GlobalTheory.TransportF.numCoordF_apply, comp_equiv_dotProduct_comp_equiv]
   obtain ⟨-, -, hfin, -⟩ := GlobalTheory.T.adelicLinearCoordinates_continuous_keep_parts D T.rank S.rank _ e
   have hc : Continuous e := (GlobalTheory.T.adelicLinearCoordinates_continuous_keep_parts D T.rank S.rank _ e).1
-  have hΦσ := comp_mem_schA σ hΦ
+  have hΦσ := GlobalTheory.TransportF.comp_mem_schA σ hΦ
   have key : ∀ L : ℝ →+ WO S T, Continuous L → (∀ t, (L t).map (finPart D) = 0) →
       ∃ Φ' ∈ GlobalTheory.WeilM.schA D.host.F (Fin (Fintype.card κ)),
         (∀ x, HasDerivAt (fun t : ℝ => GlobalTheory.WeilM.schr ψ (co.e (L t)) Φ x) (Φ' (x ∘ σ.symm)) 0) ∧
@@ -359,17 +360,17 @@ theorem GlobalTheory.LineDerivTransfer.schr_deriv_of_heisO_deriv : ∀ (D : D7) 
           fun t => GlobalTheory.WeilM.schr ψ (e.toLinearMap.toAddMonoidHom.comp L t) (fun y => Φ (y ∘ σ)) (x ∘ σ.symm) := by
         funext t
         simp only [GlobalTheory.WeilM.schr, AddMonoidHom.coe_comp, Function.comp_apply, LinearMap.toAddMonoidHom_coe,
-          LinearEquiv.coe_coe, e, numCoord_apply, comp_equiv_dotProduct_comp_equiv]
+          LinearEquiv.coe_coe, e, GlobalTheory.TransportF.numCoordF_apply,comp_equiv_dotProduct_comp_equiv]
         congr 2
         funext i
         simp
       rw [h]
       exact hd _
-    · rw [thetaTr_eq co σ]
+    · rw [GlobalTheory.TransportF.thetaTr_eqF co σ]
       have h : (fun t : ℝ => heisO ψ S T (L t) (thV ψ (fun y => Φ (y ∘ σ)) ∘ e) w) =
           fun t => heisV ψ (e.toLinearMap.toAddMonoidHom.comp L t) (thV ψ (fun y => Φ (y ∘ σ))) (e w) :=
         funext fun t => congrFun (heisO_comp he (L t) _) w
-      rw [show numCoord co σ = e from rfl, h]
+      rw [show GlobalTheory.TransportF.numCoordF co σ = e from rfl, h]
       exact (hasDerivAt_heisV_of ψ hR hψ.1 hΦσ hm hM hd (e w)).deriv
   obtain ⟨Φ₁, hm₁, hd₁, hh₁⟩ := key L hL hL0
   obtain ⟨Φ₂, hm₂, hd₂, hh₂⟩ := key L' hL' hL0'
@@ -379,7 +380,7 @@ theorem GlobalTheory.LineDerivTransfer.schr_deriv_of_heisO_deriv : ∀ (D : D7) 
     funext v
     obtain ⟨w, rfl⟩ := e.surjective v
     exact congrFun hrel w
-  have h3 := thV_injOn hR hψ.1 hm₂ (Submodule.smul_mem _ c hm₁) h2
+  have h3 := GlobalTheory.TransportF.thV_injOn hR hψ.1 hm₂ (Submodule.smul_mem _ c hm₁) h2
   rw [(hd₂ x).deriv, (hd₁ x).deriv, h3]
   rfl
 end -- clump:auto

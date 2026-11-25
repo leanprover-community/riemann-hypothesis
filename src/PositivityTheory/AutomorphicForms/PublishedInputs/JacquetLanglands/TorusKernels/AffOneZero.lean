@@ -17,8 +17,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorsRealP
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory Topology Matrix Neutral.B1 Formalism.L2.Host GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Sd UpperTheory.V.Sd.Eis
 
 namespace UpperTheory.Esk.ArchimedeanConjugationLemmas

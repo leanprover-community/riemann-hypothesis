@@ -36,12 +36,12 @@ theorem formulaF_of (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) {g : Matrix
     inner ℂ (uniformisationL2 ε Ψ v₀ v') (rreg ε g (uniformisationL2 ε Ψ v₀ v)) =
       ((‖uniformisationL2 ε Ψ v₀ T.w‖ ^ 2 : ℝ) : ℂ) * inner ℂ v' (Ψ g v) := by
   obtain ⟨q, hq⟩ := LinearMap.mem_range.1
-    (Submodule.starProjection_apply_mem (LinearMap.range (ffaJ hP v₀)) (rreg ε g (uniformisationL2 ε Ψ v₀ v)))
-  have hxo : rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q ∈ (LinearMap.range (ffaJ hP v₀))ᗮ := by
+    (Submodule.starProjection_apply_mem (LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀)) (rreg ε g (uniformisationL2 ε Ψ v₀ v)))
+  have hxo : rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q ∈ (LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀))ᗮ := by
     rw [← ffaJ_apply hP v₀ q, hq]
-    exact Submodule.sub_starProjection_mem_orthogonal (K := LinearMap.range (ffaJ hP v₀)) _
+    exact Submodule.sub_starProjection_mem_orthogonal (K := LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀)) _
   have hxj : ∀ w, inner ℂ (rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q) (uniformisationL2 ε Ψ v₀ w) = 0 := fun w =>
-    Submodule.inner_left_of_mem_orthogonal (LinearMap.mem_range_self (ffaJ hP v₀) w) hxo
+    Submodule.inner_left_of_mem_orthogonal (LinearMap.mem_range_self (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀) w) hxo
   have hfH : rreg ε g (uniformisationL2 ε Ψ v₀ v) ∈ Hlam ε Ψ v₀ :=
     hstab g hg _ (datumEmbedding_mem_Hlam hP v)
   have hxH : rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q ∈ Hlam ε Ψ v₀ :=

@@ -32,11 +32,7 @@ open Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric Formal
 
 namespace Formalism.MainNotions.Ext
 
-def InertPrime : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 → ∀ (b : K) (d p : ℕ), b ^ 2 = -(d : K) → p.Prime →
-    jacobiSym (-(d : ℤ)) p = -1 → (Ideal.span {(p : 𝓞 K)}).IsPrime
-
-theorem okpInert_of (HO : OkpInertG) (HI : InertPrime) (D : D7) : okpInert D := by
+theorem okpInert_of (HO : OkpInertG) (HI : PI.InertPrime) (D : D7) : okpInert D := by
   intro p _ lam h2 hin
   have := Formalism.MainNotions.UnusedSlot33.HK.isGalK D.host
   obtain ⟨b, hb, -⟩ := exists_gen_K D.host
@@ -574,7 +570,7 @@ namespace Formalism.MainNotions.Ext
 
 theorem okpInertG_holds : OkpInertG := _root_.PI.OkpW.okpInert_main
 
-theorem inertPrime_holds : InertPrime := isPrime_span_of_jacobi_neg_one
+theorem inertPrime_holds : PI.InertPrime := isPrime_span_of_jacobi_neg_one
 
 theorem okpInert_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.GL3Theta.okpInert D := okpInert_of okpInertG_holds inertPrime_holds D
 

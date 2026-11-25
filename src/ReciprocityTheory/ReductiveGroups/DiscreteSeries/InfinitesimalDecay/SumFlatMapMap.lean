@@ -104,9 +104,6 @@ theorem sum_flatMap_map {α β : Type*} (L : List α) (g : α → List β) (f : 
   | nil => simp
   | cons a L ih => simp [List.flatMap_cons, ih]
 
-private lemma toList_map_sum_eq_finset_sum {α : Type*} (s : Finset α) (f : α → ℝ) : (s.toList.map f).sum = ∑ a ∈ s, f a := by
-  rw [Finset.sum_eq_multiset_sum, ← Finset.coe_toList s, Multiset.map_coe, Multiset.sum_coe]
-
 theorem NE_le_nuJ {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
     (hσ : IsURepOn (UJset ε) σ) (j : ℕ) :
     ∃ (Ws : List (List (Matrix (Fin n) (Fin n) ℂ))) (C : ℝ),
@@ -130,7 +127,7 @@ theorem NE_le_nuJ {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H 
       exact lt_inG _ _ _
   · intro x
     rw [one_mul]
-    simp only [nuJ, sum_flatMap_map, List.map_map, Function.comp_def, toList_map_sum_eq_finset_sum]
+    simp only [nuJ, sum_flatMap_map, List.map_map, Function.comp_def, Finset.sum_map_toList]
     unfold NE
     apply Finset.sum_le_sum
     intro l _

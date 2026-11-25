@@ -93,8 +93,6 @@ theorem pt_swap {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
   rw [e] at this
   exact (one_smul _ q : ((1, 1, 1) : UF E n × GLG (E := E) (n := n) (SG := SG) × GLQ E n Q') • q = q) ▸ this
 
-
-
 theorem reads_le {B : Base} {X : PreX B.toPre} (I : TC B X) (u : B.Word) (i : ℕ) {Lb Lb'} {U U' : Subgroup (GA B (B.R.N i))}
     {chi : U →* ℂˣ} {chi' : U' →* ℂˣ} {y y' st st' k k'} (hy : y' = y)
     (h : I.Reads u I.mu0 i (fun _ => ()) (fun _ => Lb) (fun _ => U) (fun _ => chi) y st k)
@@ -139,8 +137,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Forms Formalism.U
 
 variable {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T}
 
-
-
 theorem U_le (Z : w.Lt) (u : B.Word) (F : Forms0 (w.D Z) u) :
     (show Subgroup (GA B (B.R.N 0)) from F.cls0.lev.U) ≤ UAd B.sp.cm (B.R.N 0) := by
   have hg1 : gramN (w.D Z) 0 (Nat.zero_le _) = 1 := ((spaces_in_coordinates w.I w.ok w.pins w.l Z).2.2.2 0 (Nat.zero_le _)).1
@@ -151,13 +147,9 @@ theorem U_le (Z : w.Lt) (u : B.Word) (F : Forms0 (w.D Z) u) :
 abbrev Car (B : Base) : Type :=
   Submodule (𝓞 B.host.E) (Fin (B.R.N 0) → B.host.E) × Σ U : Subgroup (GA B (B.R.N 0)), (U →* ℂˣ)
 
-
-
 def car (Z : w.Lt) (u : B.Word)
     (S : StepLevel (w.D Z).host.F (w.D Z).host.E (sigD (w.D Z)) (gramN (w.D Z) 0 (Nat.zero_le _)) ((w.D Z).mem u).A.T (w.D Z).R.f
       (badG (w.D Z))) : Car B := (S.Lb, ⟨S.U, S.chi⟩)
-
-
 
 theorem car_eq {Z Z' : w.Lt} (t : ColT w Z) (t' : ColT w Z') (u : B.Word) :
     car Z' u (t'.C.forms u).to0.cls0.lev = car Z u (t.C.forms u).to0.cls0.lev := by
@@ -167,17 +159,13 @@ theorem car_eq {Z Z' : w.Lt} (t : ColT w Z) (t' : ColT w Z') (u : B.Word) :
   have e := heq_chi (reads_le w.I u 0 hy.symm h h' (U_le Z u (t.C.forms u).to0)) (reads_le w.I u 0 hy h' h (U_le Z' u (t'.C.forms u).to0))
   exact Prod.ext (Submodule.ext fun x => (h'.lb () x).trans (h.lb () x).symm) (Sigma.ext e.1 e.2)
 
-
 theorem y_eq {Z Z' : w.Lt} (t : ColT w Z) (t' : ColT w Z') (u : B.Word) :
     (t'.C.forms u).to0.cls0.y = ((t.C.forms u).to0.cls0.y) :=
   funext fun c => Subtype.ext (((t'.std u).yE 0 (Nat.zero_le _) (Or.inl rfl) c).trans ((t.std u).yE 0 (Nat.zero_le _) (Or.inl rfl) c).symm)
 
-
 theorem eY_eq {Z Z' : w.Lt} (t : ColT w Z) (t' : ColT w Z') (u : B.Word) :
     (t'.C.forms u).to0.val0.eY = ((t.C.forms u).to0.val0.eY) :=
   Equiv.ext fun c => Subtype.ext (((t'.std u).eY 0 (Nat.zero_le _) (Or.inl rfl) c).trans ((t.std u).eY 0 (Nat.zero_le _) (Or.inl rfl) c).symm)
-
-
 
 theorem sameStd : SameStd := by
   intro B f T w Z Zn col col' F₁ h u
@@ -194,13 +182,10 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 
 variable {D : D7} {F F' : ∀ u, Forms0 D u}
 
-
-
 def trCar (h : SameCar F F') {X : HidaSetting D} {u} (t : Transport X u (F u)) : Transport X u (F' u) :=
   { t with
     hc_rep := fun c => by rw [(h u).2.2.2.1]; exact t.hc_rep c
     J_isom := fun c ξ η => by rw [(h u).2.2.2.2]; exact t.J_isom c ξ η }
-
 
 theorem colDictL_car (h : SameCar F F') {X : HidaSetting D} {u} (t : Transport X u (F u)) (hK : X.LevelSubgroupCharacter) :
     colDictL X (trCar h t) hK = colDictL X t hK := by
@@ -212,15 +197,12 @@ theorem chi_of_heq {G : Type} [Group G] {U U' : Subgroup G} {chi : U →* ℂˣ}
   subst e
   rw [eq_of_heq h]
 
-
 theorem lev_car (h : SameCar F F') {X : HidaSetting D} {u} {t : Transport X u (F u)} {hK : X.LevelSubgroupCharacter} (l : LevelMatch X t hK) :
     LevelMatch X (trCar h t) hK := by
   refine ⟨fun x => ?_, fun g y hr => ⟨?_, fun hk hy => ?_⟩⟩
   · rw [(h u).1]; exact l.1 x
   · rw [(h u).2.1]; exact (l.2 g y hr).1
   · rw [chi_of_heq (h u).2.1 (h u).2.2.1]; exact (l.2 g y hr).2 hk _
-
-
 
 def packCar (h : SameCar F F') (P : SPack D F) : SPack D F' :=
   { P with
@@ -230,8 +212,6 @@ def packCar (h : SameCar F F') (P : SPack D F) : SPack D F' :=
     lev := fun u => lev_car h (P.lev u)
     isom := fun u a b => by rw [colDictL_car]; exact P.isom u a b }
 
-
-
 def restCar (h : SameCar F F') {P : SPack D F} (S : SRest P) : SRest (packCar h P) where
   hI := S.hI
   autTie := S.autTie
@@ -239,8 +219,6 @@ def restCar (h : SameCar F F') {P : SPack D F} (S : SRest P) : SRest (packCar h 
   j := S.j
   rowPin := S.rowPin
   locTied := S.locTied
-
-
 
 def satCar (h : SameCar F F') (p : RowPk D) (s : p.SAt F) : p.SAt F' :=
   { P := packCar h s.P, S := restCar h s.S, t := s.t, c := s.c, c_pos := s.c_pos, see := s.see, ev := s.ev, rowJ := s.rowJ }
@@ -281,10 +259,6 @@ theorem phi_conj (L : LabelDatum g) (x : Fbar g) : GalSer.phi L (starRingAut : �
   rw [h2, Complex.inv_eq_conj h1]
   rfl
 
-theorem roots_reverse {K : Type} [Field K] (s : Multiset K) (hs : (0 : K) ∉ s) :
-    ((s.map fun x => X - C x).prod.reverse).roots = s.map (·⁻¹) := by
-  apply GlobalTheory.DualLabel.roots_reverse_prod <;> assumption
-
 theorem rel_dual (L : LabelDatum g) {f : (ZMod g)[X]} (hm : f.Monic) (h0 : f.coeff 0 ≠ 0) :
     GalSer.Rel L (starRingAut : ℂ ≃+* ℂ) f (C (f.coeff 0)⁻¹ * f.reverse) := by
   refine ⟨?_, ?_⟩
@@ -298,7 +272,7 @@ theorem rel_dual (L : LabelDatum g) {f : (ZMod g)[X]} (hm : f.Monic) (h0 : f.coe
     have hf := (IsAlgClosed.splits (f.map (algebraMap (ZMod g) (Fbar g)))).eq_prod_roots_of_monic (hm.map _)
     rw [rootsBar, Polynomial.map_mul, map_C, roots_C_mul _ (by simpa using h0), e, hf]
     simp only [phi_conj]
-    exact roots_reverse _ hz
+    exact GlobalTheory.DualLabel.roots_reverse_prod _ hz
 
 end Dual
 
@@ -415,8 +389,6 @@ open Formalism.BasicNotions Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem
 
 variable {D : D7} (Z : New D)
 
-
-
 def hermRe_base (B : Formalism.L2.Herm.HermColsCh D) : Formalism.L2.Herm.HermColsCh (reD' D Z) := { B with }
 
 def hermRe_atT {B : Formalism.L2.Herm.HermColsCh D} {u : D.what₂.Word}
@@ -448,20 +420,14 @@ open Formalism.BasicNotions Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem
 
 variable {D : D7} (Z : New D)
 
-
-
 def colsRe (C : ColsTiedSym D) : ColsTiedSym (reD D Z) :=
   ({ C with
     herm := (hermRe Z C.herm : Formalism.L2.Herm.ColsHermS (reD' D Z))
     forms := fun u => (formsRe Z (C.forms u) : FormsTiedSym (reD' D Z) u _ _) } : ColsTiedSym (reD' D Z))
 
-
-
 theorem sameF_colsRe (C : ColsTiedSym D) :
     SameForms0LevelsAndValues Z (fun u => (C.forms u).to0) (fun u => ((colsRe Z C).forms u).to0) :=
   fun _ => ⟨rfl, rfl, rfl⟩
-
-
 
 theorem exists_colsTiedSym (D : D7) (Z : New D) (C : ColsTiedSym D) :
     ∃ C' : ColsTiedSym (reD D Z), SameForms0LevelsAndValues Z (fun u => (C.forms u).to0) (fun u => (C'.forms u).to0) :=
@@ -526,8 +492,6 @@ end Scale
 end GlobalTheory.Mem.R3.RowsLvl
 
 namespace GlobalTheory.Mem.R3.RowsLvl
-
-
 
 theorem range_eE_and_norm : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd) (X0 : BaseLevelRowSide D) (Y : Read (A3 := A3) R.toRealDat F.lv2 X0), Pins R F cG → Holds R F → LinearMap.range Y.eE = (R.toRealDat.EEat (R.toRealDat.levR F.lv2 true)).comap R.HE.e ∧ ∀ x, ‖Y.eE x‖ ^ 2 = RealDat.nP F.lv2 true * ‖x‖ ^ 2 := by
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y hP _
@@ -605,8 +569,6 @@ def RowHyp {D : D7} (p : RowPk D) : Prop :=
     LinearMap.range p.eE = (p.R.EEat (p.R.levR p.F true)).comap p.R.HE.e ∧
     (∀ x, ‖p.eE x‖ ^ 2 = RealDat.nP p.F true * ‖x‖ ^ 2) ∧ DallTie p.R p.F
 
-
-
 theorem rowHyp_read {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3)
     (cG : G0 R.Pg D.R.r ≃* G0g D.nd) {X0 : BaseLevelRowSide D} (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (hP : R3.Pins R F cG)
@@ -616,8 +578,6 @@ theorem rowHyp_read {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} 
   exact ⟨hP.char.base.lev, hP.char.base.grp.levels, ⟨R.eG.trans cG, plg, iso, h⟩, hP.char.base.models, hr.1, hr.2, Y.dall⟩
 
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T}
-
-
 
 theorem rowHyp_pkOf {Z : w.Lt} {Wt : Set B.places.Pl} {p0 : BaseLevelRowSide (w.D Z)} (r : RowsT K w Z Wt p0) : RowHyp (pkOf r) :=
   (by with_unfolding_all exact ((rowHyp_read r.r.z.R r.r.z.F r.r.z.cG r.r.Y r.r.z.pins r.r.intersectionNumber_baseChange) :))
@@ -631,13 +591,10 @@ def SatNew : Prop :=
     ∃ Zs : SNew a.D, ∀ (N : ∀ u, Submodule (𝓞 a.D.what₂.LL) (a.D.div.Nu u).V) (hh : a.D.what₂.Word → ℝ)
       (F₁ : ∀ u, Forms0 (reL a ⟨Zs, N, hh⟩).D u), SameL a ⟨Zs, N, hh⟩ F0 F₁ → Nonempty (SAtL a ⟨Zs, N, hh⟩ p.R p.F p.eE F₁)
 
-
 theorem satOfDiscreteSeries (h1 : GlobalTheory.Dec.DSInfChar) (h2 : GlobalTheory.Published.HarishChandraFinite) (h3 : GlobalTheory.Published.CuspRapidDecay)
     (h4 : GlobalTheory.Published.DiscreteSeriesUpqUnique) (h5 : Formalism.L2.SG.RowsDef.RowsFinDim) : SatNew :=
   fun B C a p F0 P g i l r d e ⟨a1, a2, a3, a4, a5, a6, a7⟩ =>
     _root_.GlobalTheory.Mem.SRe.satOfDiscreteSeries h1 h2 h3 h4 h5 B C a p.G' p.Pl0 p.T p.A p.Ks p.R p.F F0 p.eE P g i l r d a1 a2 a3 e a4 a5 a6 a7
-
-
 
 theorem sat_col (a : w.Lt) (col : ColT w a) (p : RowPk (Late.D a)) (Zs : SNew (Late.D a))
     (H : ∀ (N : ∀ u, Submodule (𝓞 (Late.D a).what₂.LL) ((Late.D a).div.Nu u).V) (hh : (Late.D a).what₂.Word → ℝ)
@@ -659,13 +616,9 @@ def RealOf : Prop := ∀ D : D7, VolTieG D → D.s.cdScale = Vol.trueScale D.cd 
 def PackEx : Prop := ∀ (D : D7) (F : ∀ u, Forms0 D u), GapHyp D → Formalism.L2.SG.Pf.LocCP.LocTied D →
   ∃ P : SPack D F, Integrable P.X.ph (Formalism.L2.SG.ProjRows.muInf P.X.B.I)
 
-
-
 theorem real_of (hR : RealOf) (a : w.Lt) (g : GIs2 K w a.G) (hs : a.S.s.cdScale = Vol.trueScale a.G.cd)
     (hd : ∀ τ, a.S.dsig τ = Vol.trueDsig B.R (B.hc τ)) : RealTied (w.D a) :=
   hR (w.D a) (g a.W a.V a.S a.N).1 ((by with_unfolding_all exact (hs :))) ((by with_unfolding_all exact (hd :)))
-
-
 
 theorem realOf (h1 : Vol.DiscreteSeriesExist) (h2 : Vol.FormalDegreeFormula₂) : RealOf := by
   intro D hv hs hd

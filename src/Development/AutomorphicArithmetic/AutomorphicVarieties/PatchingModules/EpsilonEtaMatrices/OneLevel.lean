@@ -488,19 +488,6 @@ section -- clump:auto
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private theorem bl_le_zl_of_lc {R D M : Type} [CommRing R] [Group D] [AddCommGroup M] [Module R M]
-    [TopologicalSpace D] (ρ : Representation R D M) (hρ : LC ρ) : Bl ρ ≤ Zl ρ := by
-  intro z hz
-  rw [mem_Bl] at hz
-  obtain ⟨y, hy⟩ := hz
-  rw [mem_Zl]
-  have hz : z = fun g => ρ g y - y := funext hy
-  subst hz
-  refine ⟨(hρ y).sub (IsLocallyConstant.const _), ?_⟩
-  intro g g'
-  simp only [map_mul, Module.End.mul_apply, map_sub]
-  abel
-
 private theorem lc_comp_of_lc_of_continuous {R D D' M : Type} [CommRing R] [Group D] [Group D'] [AddCommGroup M]
     [Module R M] [TopologicalSpace D] [TopologicalSpace D'] (ρ : Representation R D M) (hρ : LC ρ)
     (ι : D' →* D) (hι : Continuous ι) : LC (ρ.comp ι) :=
@@ -776,14 +763,16 @@ theorem UpperTheory.V.Pa.oneLevel :
   have h𝓛 : ∀ w, (Bl (rep.comp (a.ι w))).toAddSubgroup ≤ 𝓛 w ∧ 𝓛 w ≤ (Zl (rep.comp (a.ι w))).toAddSubgroup := by
     rintro (v | u | j)
     · rw [h𝓛v]
-      exact ⟨le_sup_left, sup_le (bl_le_zl_of_lc _ (lc_comp_of_lc_of_continuous _ hLC _ (hcont _))) (hZbZl v)⟩
+      exact ⟨le_sup_left,
+        sup_le (block_le₂ _ (lc_comp_of_lc_of_continuous _ hLC _ (hcont _))) (hZbZl v)⟩
     · rw [h𝓛u]
-      refine ⟨fun z hz => ⟨bl_le_zl_of_lc _ (lc_comp_of_lc_of_continuous _ hLC _ (hcont _)) hz, fun g hg => ?_⟩, fun z hz => hz.1⟩
+      refine ⟨fun z hz => ⟨block_le₂ _ (lc_comp_of_lc_of_continuous _ hLC _ (hcont _)) hz,
+        fun g hg => ?_⟩, fun z hz => hz.1⟩
       obtain ⟨y, hy⟩ := (mem_Bl _).1 hz
       rw [hy g, hUnr u g hg]
       simp
     · rw [h𝓛j]
-      exact ⟨bl_le_zl_of_lc _ (lc_comp_of_lc_of_continuous _ hLC _ (hcont _)), le_rfl⟩
+      exact ⟨block_le₂ _ (lc_comp_of_lc_of_continuous _ hLC _ (hcont _)), le_rfl⟩
   obtain ⟨hZfin, hZfin', hGW⟩ := hgw x.A _ _ rep rep' b hLC hdual 𝓛 h𝓛
   obtain ⟨hSelFin, hSel1, hBd⟩ := selN l L G G0 h n x k m rep hl hrep hZfin
   have hT : {y : G.Γ → ↥(k.EpsilonEtaTensorDual (x.Am m)) | y ∈ Zl rep' ∧ ∀ w, 𝓛 w = (Zl (rep.comp (a.ι w))).toAddSubgroup →
@@ -926,7 +915,8 @@ theorem UpperTheory.V.Pa.oneLevel :
   have hNpos : 0 < Nat.card ↥(k.M1 (x.Am m)) := Nat.card_pos
   have hBpos : 0 < Nat.card ↥(Bl rep') := by
     haveI : Finite ↥(Zl rep') := hZfin'
-    haveI : Finite ↥(Bl rep') := Finite.of_injective _ (Submodule.inclusion_injective (bl_le_zl_of_lc rep' hLC'))
+    haveI : Finite ↥(Bl rep') :=
+      Finite.of_injective _ (Submodule.inclusion_injective (block_le₂ rep' hLC'))
     exact Nat.card_pos
   have key : Set.ncard {z : G.Γ → ↥(k.M1 (x.Am m)) | z ∈ Zl rep ∧ ∀ w, z ∘ ⇑(a.ι w) ∈ 𝓛 w} *
       ((Nat.card x.K ^ (m * (n + nu n x.a k.g))) ^ Fintype.card L.Vl * (Nat.card x.K ^ (m * nu n x.a k.g)) ^ d) ≤

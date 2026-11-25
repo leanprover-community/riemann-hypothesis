@@ -610,23 +610,18 @@ theorem glue_hom (f₁ : R →+* S) (f₂ : R →+* T) (q₁ : S →+* U) (q₂ 
   · rw [map_mul, e1, e1, e1, map_mul]
   · rw [map_mul, e2, e2, e2, map_mul]
 
-theorem congOne_iff (f : R →+* S) (n : GL (Fin m) R) :
-    CongOne (RingHom.ker f) n ↔ Matrix.GeneralLinearGroup.map f n = 1 := by
-  have e : ∀ a b, f (((n : Matrix (Fin m) (Fin m) R) - 1) a b) =
-      (Matrix.GeneralLinearGroup.map f n : Matrix (Fin m) (Fin m) S) a b - (1 : Matrix (Fin m) (Fin m) S) a b := by
-    intro a b
-    rw [Matrix.sub_apply, map_sub, Matrix.one_apply, Matrix.one_apply]
-    congr 1
-    split_ifs <;> simp
-  refine ⟨fun h => Units.ext (Matrix.ext fun a b => sub_eq_zero.1 ((e a b).symm.trans (h a b))), fun h a b => ?_⟩
-  rw [RingHom.mem_ker, e, h, Units.val_one, sub_self]
-
 theorem map_sub_one (f : R →+* S) (n : GL (Fin m) R) (a b : Fin m) :
     ((Matrix.GeneralLinearGroup.map f n : Matrix (Fin m) (Fin m) S) - 1) a b =
       f (((n : Matrix (Fin m) (Fin m) R) - 1) a b) := by
   rw [Matrix.sub_apply, Matrix.sub_apply, map_sub, Matrix.one_apply, Matrix.one_apply]
   congr 1
   split_ifs <;> simp
+
+theorem congOne_iff (f : R →+* S) (n : GL (Fin m) R) :
+    CongOne (RingHom.ker f) n ↔ Matrix.GeneralLinearGroup.map f n = 1 := by
+  refine ⟨fun h => Units.ext (Matrix.ext fun a b => ?_), fun h a b => ?_⟩
+  · exact sub_eq_zero.1 ((map_sub_one f n a b).trans (h a b))
+  · rw [RingHom.mem_ker, ← map_sub_one f n a b, h, Units.val_one, sub_self, Matrix.zero_apply]
 
 theorem lift_lower (f : R →+* S) (hf : Function.Surjective f)
     (n' : GL (Fin 3) S) (hn : ∀ a b, 0 ≤ wt a b → ((n' : Matrix (Fin 3) (Fin 3) S) - 1) a b = 0) :

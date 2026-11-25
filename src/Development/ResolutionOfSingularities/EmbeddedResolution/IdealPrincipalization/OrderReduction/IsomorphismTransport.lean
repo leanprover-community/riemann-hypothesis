@@ -12,22 +12,14 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem comap_eq_ker_subschemeι_comp_inv {A B : Scheme.{u}} (f : A ⟶ B) [IsIso f]
-    (I : B.IdealSheafData) :
-    I.comap f = (I.subschemeι ≫ inv f).ker := by
-  have : IsIso (Limits.pullback.snd f I.subschemeι) :=
-    (IsPullback.of_hasPullback f I.subschemeι).flip.isIso_fst_of_isIso
-  have hw : Limits.pullback.fst f I.subschemeι
-      = Limits.pullback.snd f I.subschemeι ≫ I.subschemeι ≫ inv f := by
-    rw [← Category.assoc, ← Limits.pullback.condition, Category.assoc, IsIso.hom_inv_id,
-      Category.comp_id]
-  unfold AlgebraicGeometry.Scheme.IdealSheafData.comap
-  rw [hw, AlgebraicGeometry.Scheme.Hom.ker_comp_of_isIso]
-
 theorem imageIdealSheaf_eq_comap_inv {A B : Scheme.{u}} (f : A ⟶ B) [IsIso f]
     (J : A.IdealSheafData) :
     _root_.FunctorialResolution.Blowup.schemeImageIdeal f J = J.comap (inv f) := by
-  rw [imageIdealSheaf_eq_ker, comap_eq_ker_subschemeι_comp_inv (inv f) J, IsIso.inv_inv]
+  rw [imageIdealSheaf_eq_ker]
+  symm
+  rw [Scheme.IdealSheafData.comap,
+    ← Scheme.Hom.ker_comp_of_isIso (inv (Limits.pullback.snd (inv f) J.subschemeι)),
+    Limits.pullback_inv_snd_fst_of_left_isIso, IsIso.inv_inv]
 
 theorem imageIdealSheaf_comap {A B : Scheme.{u}} (f : A ⟶ B) [IsIso f]
     (I : B.IdealSheafData) :
@@ -46,72 +38,16 @@ theorem ker_comp_eq_imageIdealSheaf_ker {W A B : Scheme.{u}} (g : W ⟶ A) (w : 
   rw [imageIdealSheaf_eq_ker, AlgebraicGeometry.Scheme.Hom.ker_comp,
     AlgebraicGeometry.Scheme.Hom.ker_comp, AlgebraicGeometry.Scheme.IdealSheafData.ker_subschemeι]
 
-private theorem exists_iso_subscheme_comap_of_isIso {A B : Scheme.{u}} (w : A ⟶ B) [IsIso w]
-    (I : B.IdealSheafData) :
-    ∃ θ : (I.comap w).subscheme ≅ I.subscheme,
-      θ.hom ≫ I.subschemeι = (I.comap w).subschemeι ≫ w := by
-  have e1 : ((I.comap w).subschemeι ≫ w).ker = I := by
-    rw [ker_comp_eq_imageIdealSheaf_ker, AlgebraicGeometry.Scheme.IdealSheafData.ker_subschemeι,
-      imageIdealSheaf_comap]
-  have e2 : (I.subschemeι ≫ inv w).ker = I.comap w := by
-    rw [ker_comp_eq_imageIdealSheaf_ker, AlgebraicGeometry.Scheme.IdealSheafData.ker_subschemeι,
-      imageIdealSheaf_eq_comap_inv, IsIso.inv_inv]
-  have h1 : I.subschemeι.ker ≤ ((I.comap w).subschemeι ≫ w).ker :=
-    le_of_eq (by rw [e1, AlgebraicGeometry.Scheme.IdealSheafData.ker_subschemeι])
-  have h2 : (I.comap w).subschemeι.ker ≤ (I.subschemeι ≫ inv w).ker :=
-    le_of_eq (by rw [e2, AlgebraicGeometry.Scheme.IdealSheafData.ker_subschemeι])
-  refine ⟨⟨IsClosedImmersion.lift I.subschemeι ((I.comap w).subschemeι ≫ w) h1,
-    IsClosedImmersion.lift (I.comap w).subschemeι (I.subschemeι ≫ inv w) h2, ?_, ?_⟩, ?_⟩
-  · rw [← cancel_mono (I.comap w).subschemeι, Category.assoc, IsClosedImmersion.lift_fac,
-      ← Category.assoc, IsClosedImmersion.lift_fac, Category.assoc, IsIso.hom_inv_id,
-      Category.comp_id, Category.id_comp]
-  · rw [← cancel_mono I.subschemeι, Category.assoc, IsClosedImmersion.lift_fac,
-      ← Category.assoc, IsClosedImmersion.lift_fac, Category.assoc, IsIso.inv_hom_id,
-      Category.comp_id, Category.id_comp]
-  · exact IsClosedImmersion.lift_fac ..
-
 theorem imageIdealSheaf_comp_comap_of_isIso {A B C : Scheme.{u}} (w : A ⟶ B) [IsIso w] (g : B ⟶ C)
     (I : B.IdealSheafData) :
     _root_.FunctorialResolution.Blowup.schemeImageIdeal (w ≫ g) (I.comap w) = _root_.FunctorialResolution.Blowup.schemeImageIdeal g I := by
-  obtain ⟨θ, hθ⟩ := exists_iso_subscheme_comap_of_isIso w I
+  let θ := I.comapIso w ≪≫ asIso (Limits.pullback.snd w I.subschemeι)
+  have hθ : θ.hom ≫ I.subschemeι = (I.comap w).subschemeι ≫ w := by
+    dsimp only [θ]
+    rw [Iso.trans_hom, asIso_hom, Scheme.IdealSheafData.comapIso_hom_snd,
+      Scheme.IdealSheafData.subschemeMap_subschemeι]
   rw [imageIdealSheaf_eq_ker (w ≫ g) (I.comap w), imageIdealSheaf_eq_ker g I, ← Category.assoc, ← hθ,
     Category.assoc, AlgebraicGeometry.Scheme.Hom.ker_comp_of_isIso]
-
-private theorem compl_support_comap {A B : Scheme.{u}} (v : A ⟶ B) (I : B.IdealSheafData) :
-    (I.comap v).support.compl = (TopologicalSpace.Opens.map v.base).obj I.support.compl := by
-  ext x
-  simp [AlgebraicGeometry.Scheme.IdealSheafData.support_comap]
-
-private theorem opens_map_comp {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C) (U : C.Opens) :
-    (TopologicalSpace.Opens.map (f ≫ g).base).obj U
-      = (TopologicalSpace.Opens.map f.base).obj ((TopologicalSpace.Opens.map g.base).obj U) := by
-  ext x
-  simp
-
-private theorem opens_map_id {B : Scheme.{u}} (W : B.Opens) :
-    (TopologicalSpace.Opens.map (𝟙 B : B ⟶ B).base).obj W = W := by
-  ext x
-  exact Iff.rfl
-
-private theorem exists_iso_opens_preimage {A B : Scheme.{u}} (θ : A ≅ B) (V' : A.Opens) (V : B.Opens)
-    (hVV' : V' = (TopologicalSpace.Opens.map θ.hom.base).obj V) :
-    ∃ c : (↑V' : Scheme.{u}) ≅ (↑V : Scheme.{u}), c.hom ≫ V.ι = V'.ι ≫ θ.hom := by
-  have hcomp : (TopologicalSpace.Opens.map θ.inv.base).obj V'
-      = (TopologicalSpace.Opens.map (θ.inv ≫ θ.hom).base).obj V := by
-    rw [hVV', opens_map_comp]
-  have hle : V ≤ (TopologicalSpace.Opens.map θ.inv.base).obj V' :=
-    le_of_eq (by rw [hcomp, Iso.inv_hom_id, opens_map_id])
-  refine ⟨⟨Scheme.Hom.resLE θ.hom V V' (le_of_eq hVV'),
-    Scheme.Hom.resLE θ.inv V' V hle, ?_, ?_⟩, ?_⟩
-  · rw [← cancel_mono V'.ι, Category.assoc, Scheme.Hom.resLE_comp_ι, ← Category.assoc,
-      Scheme.Hom.resLE_comp_ι, Category.assoc, Iso.hom_inv_id, Category.comp_id, Category.id_comp]
-  · rw [← cancel_mono V.ι, Category.assoc, Scheme.Hom.resLE_comp_ι, ← Category.assoc,
-      Scheme.Hom.resLE_comp_ι, Category.assoc, Iso.inv_hom_id, Category.comp_id, Category.id_comp]
-  · exact Scheme.Hom.resLE_comp_ι ..
-
-private theorem ker_eq_of_iso_comp {P Q T : Scheme.{u}} (c : Q ≅ P) (h₁ : P ⟶ T) (h₂ : Q ⟶ T)
-    (hc : c.hom ≫ h₁ = h₂) : h₁.ker = h₂.ker := by
-  rw [← hc, AlgebraicGeometry.Scheme.Hom.ker_comp_of_isIso]
 
 theorem imageIdealSheaf_strictTransform_of_comm_sq {X X₁ Y Y₁ : Scheme.{u}}
     (φ : X₁ ⟶ X) (ψ : Y₁ ⟶ Y) (u : X ⟶ Y) (u₁ : X₁ ⟶ Y₁) [IsIso u] [IsIso u₁]
@@ -128,21 +64,27 @@ theorem imageIdealSheaf_strictTransform_of_comm_sq {X X₁ Y Y₁ : Scheme.{u}}
     rw [imageIdealSheaf_eq_comap_inv,
       ← AlgebraicGeometry.Scheme.IdealSheafData.comap_comp,
       ← AlgebraicGeometry.Scheme.IdealSheafData.comap_comp, hmaps]
-  obtain ⟨θ, hθ⟩ := exists_iso_subscheme_comap_of_isIso (inv u₁) (D.comap φ)
-  have hVV' : (TopologicalSpace.Opens.map ((D.comap φ).comap (inv u₁)).subschemeι.base).obj
+  let θ := (D.comap φ).comapIso (inv u₁) ≪≫
+    asIso (Limits.pullback.snd (inv u₁) (D.comap φ).subschemeι)
+  have hθ : θ.hom ≫ (D.comap φ).subschemeι =
+      ((D.comap φ).comap (inv u₁)).subschemeι ≫ inv u₁ := by
+    dsimp only [θ]
+    rw [Iso.trans_hom, asIso_hom, Scheme.IdealSheafData.comapIso_hom_snd,
+      Scheme.IdealSheafData.subschemeMap_subschemeι]
+  have hVV' : ((D.comap φ).comap (inv u₁)).subschemeι ⁻¹ᵁ
         ((Z.comap φ).comap (inv u₁)).support.compl
-      = (TopologicalSpace.Opens.map θ.hom.base).obj
-        ((TopologicalSpace.Opens.map (D.comap φ).subschemeι.base).obj
-          (Z.comap φ).support.compl) := by
-    rw [compl_support_comap, ← opens_map_comp, ← opens_map_comp, hθ]
-  obtain ⟨c, hc⟩ := exists_iso_opens_preimage θ _ _ hVV'
+      = θ.hom ⁻¹ᵁ ((D.comap φ).subschemeι ⁻¹ᵁ (Z.comap φ).support.compl) := by
+    rw [← Scheme.Hom.comp_preimage, hθ, Scheme.Hom.comp_preimage]
+    ext x
+    simp [Scheme.IdealSheafData.support_comap]
+  let c := ((D.comap φ).comap (inv u₁)).subscheme.isoOfEq hVV' ≪≫
+    asIso (θ.hom ∣_ ((D.comap φ).subschemeι ⁻¹ᵁ (Z.comap φ).support.compl))
   rw [Blowup.strictTransform_eq_ker, Blowup.strictTransform_eq_ker, Blowup.strictTransformImmersion_eq,
     Blowup.strictTransformImmersion_eq, Blowup.strictTransformOpens_eq, Blowup.strictTransformOpens_eq,
-    hcm Z, hcm D, ← ker_comp_eq_imageIdealSheaf_ker]
-  refine ker_eq_of_iso_comp c _ _ ?_
-  simp only [Category.assoc]
-  rw [← Category.assoc c.hom, hc, Category.assoc, reassoc_of% hθ]
-  simp
+    hcm Z, hcm D, ← ker_comp_eq_imageIdealSheaf_ker, ← Scheme.Hom.ker_comp_of_isIso c.hom]
+  congr 1
+  simp only [c, Iso.trans_hom, asIso_hom, Category.assoc, morphismRestrict_ι_assoc,
+    Scheme.isoOfEq_hom_ι_assoc, reassoc_of% hθ, IsIso.inv_hom_id, Category.comp_id]
 
 namespace IsPushforwardBlowupSeq
 

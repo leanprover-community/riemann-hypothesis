@@ -325,11 +325,7 @@ theorem fg_MK_good (hM : A.MKFull) (J0 : Subgroup G0) (lam0 : J0 →* LLˣ) (eC 
   obtain ⟨hfg, -⟩ := hM
   let N : Submodule (𝓞 Ks) WL :=
     A.MK ⊓ ((A.Wgood J0 lam0 eC).restrictScalars Ks).restrictScalars (𝓞 Ks)
-  have hN : N.FG := by
-    haveI := isNoetherian_of_fg_of_noetherian A.MK hfg
-    have h1 : (N.comap A.MK.subtype).FG := IsNoetherian.noetherian _
-    have h2 := h1.map A.MK.subtype
-    rwa [Submodule.map_comap_subtype, inf_of_le_right inf_le_left] at h2
+  have hN : N.FG := hfg.of_le inf_le_left
   obtain ⟨S, hS⟩ := hN
   exact ⟨S, by rw [hS]; rfl⟩
 

@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.AdelicU
 
 open scoped TensorProduct Matrix RestrictedProduct
@@ -221,5 +219,3 @@ theorem existsUnique_projFinLoc_eq (x : ∀ v, GLoc σ J v) (hx : ∀ᶠ v in co
   exact ⟨⟨u, hu⟩, fun v => matHom_injective _ σ J (Units.ext (hA' v))⟩
 
 end GlobalTheory.AdelicU
-
-end

@@ -123,12 +123,9 @@ theorem BlowUpLocalChart.proof : BlowUpLocalChart.Statement.{u} := by
       (liftForm (J := J) : MRing ι R →ₐ[R] MRing (extIdx ι J) R).toRingHom)
       (fun p hp => Ideal.Quotient.eq_zero_iff_mem.mpr ((liftForm_mem_blowUpOf_iff P u p).mpr hp))
   have hg : ∀ p, g (Ideal.Quotient.mk P p) = Ideal.Quotient.mk (blowUpOf P u) (liftForm p) := fun p => rfl
-  have hg_inj : Function.Injective g := by
-    rw [injective_iff_map_eq_zero]
-    intro a ha
-    obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective a
-    rw [hg, Ideal.Quotient.eq_zero_iff_mem, liftForm_mem_blowUpOf_iff] at ha
-    exact Ideal.Quotient.eq_zero_iff_mem.mpr ha
+  have hg_inj : Function.Injective g := RingHom.lift_injective_of_ker_le_ideal P _ fun p hp =>
+    (liftForm_mem_blowUpOf_iff P u p).1
+      ((Ideal.Quotient.eq_zero_iff_mem (I := blowUpOf P u) (a := liftForm p)).1 (RingHom.mem_ker.1 hp))
   have hcomap : G₀ = W₀.comap g := by
     ext a
     obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective a

@@ -36,11 +36,9 @@ private theorem flat_dvr {O O' : Type} [CommRing O] [IsDomain O] [IsDiscreteValu
     have hm := eq_maximalIdeal (hp.isMaximal hne)
     refine IsDiscreteValuationRing.not_a_field O' ?_
     rw [← h, ← hm, Ideal.map_eq_bot_iff_le_ker]
-  rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout, eq_bot_iff]
-  rintro z ⟨⟨a, ha⟩, hz⟩
-  have h1 : algebraMap O O' a * z = 0 := by rw [← Algebra.smul_def]; exact hz
-  refine (mul_eq_zero.1 h1).resolve_left fun h2 => nonZeroDivisors.ne_zero ha (hinj ?_)
-  rw [h2, map_zero]
+  have : FaithfulSMul O O' := (faithfulSMul_iff_algebraMap_injective O O').mpr hinj
+  rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout, ← Submodule.isTorsionFree_iff_torsion_eq_bot]
+  infer_instance
 
 theorem UpperTheory.V.Fr.loc_flat :
     ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] {F : Frame l (ResidueField O)} {C₀ : ℕ} {n : ℕ}, F.Ok C₀ → (n = 2 ∨ n = 3) → ∀ S : Space O F n, ∀ (x : Ideal S.A) (L : S.Loc x), (L.ι : S.A →+* L.R).Flat ∧ x.IsMaximal ∧ S.mB ≤ S.π x := by

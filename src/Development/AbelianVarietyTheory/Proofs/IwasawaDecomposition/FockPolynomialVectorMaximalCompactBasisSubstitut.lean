@@ -74,11 +74,8 @@ theorem aPlus_dir_zero : aPlus (heisO ψ S T) θ τ (cplxO s t) 0 f = 0 := by
   exact left_eq_add.1 this
 
 theorem aPlus_dir_sum {κ : Type} (F : Finset κ) (z : κ → Matrix (Fin T.rank) (Fin S.rank) ℂ) :
-    aPlus (heisO ψ S T) θ τ (cplxO s t) (∑ b ∈ F, z b) f = ∑ b ∈ F, aPlus (heisO ψ S T) θ τ (cplxO s t) (z b) f := by
-  classical
-  induction F using Finset.induction_on with
-  | empty => simpa using aPlus_dir_zero hψ hθ τ s t hf
-  | insert a F ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, aPlus_dir_add hψ hθ τ s t hf, ih]
+    aPlus (heisO ψ S T) θ τ (cplxO s t) (∑ b ∈ F, z b) f = ∑ b ∈ F, aPlus (heisO ψ S T) θ τ (cplxO s t) (z b) f :=
+  map_sum (AddMonoidHom.mk' (fun z => aPlus (heisO ψ S T) θ τ (cplxO s t) z f) (aPlus_dir_add hψ hθ τ s t hf)) z F
 
 theorem aPlus_dir_smul (e : Bool) (w : ℂ) {u : Matrix (Fin T.rank) (Fin S.rank) ℂ}
     (hu : cplxO s t u = ((if e then 1 else -1 : ℂ) * I) • u) :

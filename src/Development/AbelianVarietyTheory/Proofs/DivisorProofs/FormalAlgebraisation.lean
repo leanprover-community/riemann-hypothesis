@@ -298,7 +298,7 @@ theorem exists_lb_of_generated_system_proper : ∀ (R : Type) [CommRing R] [IsNo
       (by rw [Category.assoc, hc', hc', c₁]) ((isGen_iff _).2 (T.pgen_comp (hH (e + 1)).1 hw' hv)) (hw e)
       (fun j => Rel.comp T (hH (e + 1)).1 (hr (e + 1) j) (hs e j)) (hr e)
   have hPp : IsProper f := GlobalTheory.AbLaw.isProper_of_isProjBy R P f ⟨O, hO, n, t, hva⟩
-  obtain ⟨g, hg, -⟩ := GlobalTheory.T.formalAlgebraisation_morphisms' R I hcI X (Over.mk f) hX (inferInstanceAs (IsSeparated f))
+  obtain ⟨g, hg, -⟩ := GlobalTheory.FormalAlgMorphisms.formalAlgebraisation_morphisms R I hcI X (Over.mk f) hX (inferInstanceAs (IsSeparated f))
     (inferInstanceAs (LocallyOfFiniteType f)) (inferInstanceAs (QuasiCompact f)) Y β b hb hbb
     c hc' hcc
   have hM : (O.pull g.left).IsLB := LB.isLB_pull hO _
@@ -927,7 +927,6 @@ theorem pb_inv_val {Y Z : Scheme.{0}} (f : Z ⟶ Y) (U : Y.Opens) (W : Z.Opens) 
 
 end GenAffine
 
-
 set_option backward.isDefEq.respectTransparency false in
 open GeneratorFunctor GenAffine Opposite in
 theorem generatorScheme_affine_finiteType : ∀ (B : Scheme.{0}) (N : LB B), N.IsLB → ∃ (G : Scheme.{0}) (q : G ⟶ B) (u : ∀ i : N.ι, Γ(G, q ⁻¹ᵁ N.U i)ˣ), IsAffineHom q ∧ LocallyOfFiniteType q ∧ (∀ i i', res (Scheme.Hom.preimage_mono q (inf_le_left : N.U i ⊓ N.U i' ≤ N.U i)) (u i) = pullU q _ (N.g i i') * res (Scheme.Hom.preimage_mono q (inf_le_right : N.U i ⊓ N.U i' ≤ N.U i')) (u i')) ∧ ∀ (Z : Scheme.{0}) (b : Z ⟶ B) (s : ∀ i : N.ι, Γ(Z, b ⁻¹ᵁ N.U i)ˣ), (∀ i i', res (Scheme.Hom.preimage_mono b (inf_le_left : N.U i ⊓ N.U i' ≤ N.U i)) (s i) = pullU b _ (N.g i i') * res (Scheme.Hom.preimage_mono b (inf_le_right : N.U i ⊓ N.U i' ≤ N.U i')) (s i')) → ∃! g : Z ⟶ G, ∃ hg : g ≫ q = b, ∀ i, (g.appLE (q ⁻¹ᵁ N.U i) (b ⁻¹ᵁ N.U i) (by rw [← hg]; exact le_rfl)).hom (u i).val = (s i).val := by
@@ -1116,7 +1115,7 @@ theorem exists_isGen_of_reductions : ∀ (R : Type) [CommRing R] [IsNoetherianRi
         exact appLE_eq_of_gm (β e) (b e) (b (e + 1)) (hβ e) i (s e i) (s (e + 1) i) (hsβ e · i)⟩
       ⟨hfq e, hfu e⟩
   let Z : Over (Spec (CommRingCat.of R)) := Over.mk (q ≫ X.hom)
-  have H := GlobalTheory.T.formalAlgebraisation_morphisms'
+  have H := GlobalTheory.FormalAlgMorphisms.formalAlgebraisation_morphisms
   obtain ⟨g, hg, -⟩ := H R I hI X Z hX (inferInstanceAs (IsSeparated (q ≫ X.hom)))
     (inferInstanceAs (LocallyOfFiniteType (q ≫ X.hom))) (inferInstanceAs (QuasiCompact (q ≫ X.hom)))
     Y β b hb hβ f (fun e => by
@@ -1342,7 +1341,7 @@ section -- clump:auto
 namespace GlobalTheory
 
 theorem formalAlgebraisation : GlobalTheory.Published.FormalAlgebraisation :=
-  ⟨GlobalTheory.T.formalAlgebraisation_morphisms', GlobalTheory.FormalAlg.formalAlgebraisation_schemes⟩
+  ⟨GlobalTheory.FormalAlgMorphisms.formalAlgebraisation_morphisms, GlobalTheory.FormalAlg.formalAlgebraisation_schemes⟩
 
 end GlobalTheory
 end -- clump:auto

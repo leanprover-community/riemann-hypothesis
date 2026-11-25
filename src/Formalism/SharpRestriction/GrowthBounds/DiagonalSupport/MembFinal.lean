@@ -1047,16 +1047,6 @@ theorem lf_fr_per (hV : Fr.Valid L₁ N₁) (j : ℤ) (i : ℕ) (m : ℤ) :
     rw [show j + (-(k : ℤ) - 1) * (Fr.J : ℤ) + Fr.J = j + -(k : ℤ) * Fr.J by ring, ih] at h
     linarith
 
-private theorem fr_mono_of_valid (hV : Fr.Valid L₁ N₁) (j : ℤ) :
-    ∀ i i' : ℕ, i ≤ i' → i' < r → Fr.fr j i ≤ Fr.fr j i' := by
-  intro i i' hii' hi'
-  induction i' with
-  | zero => rw [Nat.le_zero.mp hii']
-  | succ k ih =>
-    rcases Nat.lt_or_ge i (k + 1) with h | h
-    · exact le_trans (ih (by omega) (by omega)) (hV.2.2.1 j k (by omega)).le
-    · rw [le_antisymm hii' h]
-
 private theorem fr_last_mono_in_index_of_valid (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (a : ℤ) :
     ∀ b : ℤ, a ≤ b → Fr.fr a (r - 1) ≤ Fr.fr b (r - 1) := by
   apply _root_.Formalism.MainNotions.G.symbolGeneratorData.ph_z_mono <;> assumption

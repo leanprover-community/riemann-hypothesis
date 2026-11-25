@@ -351,7 +351,6 @@ theorem of_isPullback_openCover (P : MorphismProperty Scheme.{0}) [IsZariskiLoca
   rw [← e]
   exact (P.cancel_left_of_respectsIso _ _).2 (hg i)
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 theorem finite_flat_surjective_of_openCover : ∀ (X T₀ : Scheme.{0}) (p : X ⟶ T₀) (ι : Type) (V : ι → T₀.Opens), iSup V = ⊤ → ∀ (Xi : ι → Scheme.{0}) (m : ∀ i, Xi i ⟶ X) (q : ∀ i, Xi i ⟶ (V i).toScheme), (∀ i, IsPullback (m i) (q i) p (V i).ι) → ∀ (B : Scheme.{0}) (b : B ⟶ X), IsClosedImmersion b → ∀ (A : ι → Scheme.{0}) (a : ∀ i, A i ⟶ Xi i), (∀ i, IsClosedImmersion (a i)) → (∀ (i : ι) (Y : Scheme.{0}) (g : Y ⟶ Xi i), (∃ z : Y ⟶ B, z ≫ b = g ≫ m i) ↔ (∃ z : Y ⟶ A i, z ≫ a i = g)) → (∀ i, IsFinite (a i ≫ q i) ∧ Flat (a i ≫ q i) ∧ Surjective (a i ≫ q i)) → IsFinite (b ≫ p) ∧ Flat (b ≫ p) ∧ Surjective (b ≫ p) := by
   intro X T₀ p ι V hV Xi m q hpb B b hb A a ha hrep hP
@@ -750,11 +749,6 @@ namespace GlobalTheory.QuotDesc
 
 def idq {S : Scheme.{0}} {A B : Over S} (q : A ⟶ B) : A ⊗ A ⟶ A ⊗ B := lift (fst A A) (snd A A ≫ q)
 
-theorem evc_lam {S : Scheme.{0}} {A Y : Over S} [GrpObj A] {L : LB A.left} (hL : L.IsLB) (hΛ : (abelian₂ A L).IsLB)
-    (a b : Y ⟶ A) : evc hΛ a b = lam (cls L hL) a b := by
-  rw [evc, show cls _ hΛ = lam (cls L hL) (fst A A) (snd A A) from cls_cube_two hL _ _ hΛ, pull_lam, lift_fst,
-    lift_snd]
-
 theorem lam_mul_right_sub {S : Scheme.{0}} {A Y : Over S} [GrpObj A] [IsCommMonObj A] (c : Pic A.left)
     (a k y : Y ⟶ A) : lam c a (k * y) - lam c a y = lam c (a * y) k - lam c y k := by
   simp only [lam]
@@ -775,7 +769,7 @@ theorem exists_descent_lam : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (A
   have := hA.comm
   have hΛ : (abelian₂ A L).IsLB := LB.isLB_linComb hL _ _
   have hku : lam (cls L hL) (fst A H) (snd A H ≫ i) = 0 := by
-    rw [← evc_lam hL hΛ, ← triv_ev_iff hΛ]
+    rw [← GlobalTheory.TwistKerFinite.evc_lam hL hΛ, ← triv_ev_iff hΛ]
     exact lam_triv_of_memKL _ A hA L hL H i ((hK H i).2 ⟨𝟙 H, Category.id_comp i⟩)
   have := hB.smooth
   have := hqf
@@ -783,12 +777,12 @@ theorem exists_descent_lam : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (A
   have hlfp : LocallyOfFinitePresentation q.left := inferInstance
   obtain ⟨-, h2⟩ := CompanionTheory.PfDual.rigDescent_holds (Sp R) A A B hA q hqfl hlfp hqs
   have hrig : Triv (ev (abelian₂ A L) (1 : A ⟶ A) (𝟙 A)) := by
-    rw [triv_ev_iff hΛ, evc_lam hL hΛ, lam_one_left]
+    rw [triv_ev_iff hΛ, GlobalTheory.TwistKerFinite.evc_lam hL hΛ, lam_one_left]
   have hinv : ∀ (T : Over (Sp R)) (x x' : T ⟶ A), x ≫ q = x' ≫ q →
       LBIso (ev (abelian₂ A L) (fst A T) (snd A T ≫ x)) (ev (abelian₂ A L) (fst A T) (snd A T ≫ x')) := by
     intro T x x' hxx
     refine (cls_eq_iff (pull_isLB hΛ _) (pull_isLB hΛ _)).1 ?_
-    rw [cls_ev hΛ, cls_ev hΛ, evc_lam hL hΛ, evc_lam hL hΛ]
+    rw [cls_ev hΛ, cls_ev hΛ, GlobalTheory.TwistKerFinite.evc_lam hL hΛ, GlobalTheory.TwistKerFinite.evc_lam hL hΛ]
     obtain ⟨z, hz1, hz2⟩ : ∃ z : T ⟶ H ⊗ A, z ≫ ((fst H A ≫ i) * snd H A) = x ∧ z ≫ snd H A = x' :=
       ⟨_, hpb.lift_fst x x' hxx, hpb.lift_snd x x' hxx⟩
     subst hz1 hz2

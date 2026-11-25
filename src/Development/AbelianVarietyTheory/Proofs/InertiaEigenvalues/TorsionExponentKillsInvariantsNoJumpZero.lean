@@ -732,17 +732,6 @@ open GlobalTheory.DeRhamSymbol
 
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} (J : ThetaL P AI)
 
-theorem theta_sum {ι : Type} (s : Finset ι) (z : ι → P.R.BdR)
-    (hz : ∀ i, z i ∈ (P.PD (botExt l)).Fil 0) : J.θ (∑ i ∈ s, z i) = ∑ i ∈ s, J.θ (z i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    simp only [Finset.sum_empty]
-    exact (J.θ_ker 0 (Submodule.zero_mem _)).2 (Submodule.zero_mem _)
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha,
-      J.θ_add _ (hz a) _ (Submodule.sum_mem _ fun i _ => hz i), ih]
-
 theorem theta_lin {n d : ℕ} (c : Fin n → Fin d → Om l) (y : Fin d → P.R.BdR)
     (hy : ∀ k, y k ∈ (P.PD (botExt l)).Fil 0)
     (h : ∑ j, ∑ k, algebraMap (Om l) P.R.BdR (c j k) * y k ∈ (P.PD (botExt l)).Fil 1) :
@@ -752,10 +741,10 @@ theorem theta_lin {n d : ℕ} (c : Fin n → Fin d → Om l) (y : Fin d → P.R.
     have := (P.PD (botExt l)).Fil_mul _ _ _ _ (om_mem c) (hy k)
     rwa [zero_add] at this
   have h3 := (J.θ_ker _ (Submodule.sum_mem _ fun j _ => Submodule.sum_mem _ fun k _ => hm _ k)).2 h
-  rw [theta_sum J _ _ (fun j => Submodule.sum_mem _ fun k _ => hm _ k)] at h3
+  rw [GlobalTheory.DeRhamSymbolBasis.theta_sum J _ _ (fun j => Submodule.sum_mem _ fun k _ => hm _ k)] at h3
   rw [← h3]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [theta_sum J _ _ (fun k => hm _ k)]
+  rw [GlobalTheory.DeRhamSymbolBasis.theta_sum J _ _ (fun k => hm _ k)]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [J.θ_mul _ (om_mem _) _ (hy k), J.θ_Om]
 
@@ -1197,7 +1186,6 @@ private theorem eq_zero_of_twistedInvariant_offJumps_lemma_5 (hact : _root_.Glob
   rw [← hw']
   simp [hcoef]
 
-
 open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] {act : _root_.Formalism.BasicNotions.Loc.GQ l →* (PadicComplex l ≃+* PadicComplex l)}
   {χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ} in
@@ -1402,13 +1390,6 @@ def imBall {r d : ℕ} (P : Matrix (Fin r) (Fin d) (PadicComplex l)) :
     rintro _ ⟨x, hx, rfl⟩
     exact ⟨-x, fun a => by simpa using hx a, Matrix.mulVec_neg _ _⟩
 
-theorem act_algebraMap' {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} (ha : IsActC act)
-    (g : GQ l) (x : ℚ_[l]) :
-    act g (algebraMap ℚ_[l] (PadicComplex l) x) = algebraMap ℚ_[l] (PadicComplex l) x := by
-  have := ha.1 g (algebraMap ℚ_[l] (Om l) x)
-  rw [AlgEquiv.commutes] at this
-  exact this
-
 theorem invariants_killed : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; H0at S E := by
   intro D HW F h7 l _ K s LL h S E M0 h0 T τ hW hj x hx
   have hell : ell S = l := (D.loc l).PD_p K
@@ -1451,7 +1432,7 @@ theorem invariants_killed : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc
           funext a
 
           simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.map_apply,
-          act_algebraMap' hact]
+          GlobalTheory.Cyc.FrameTorsion.act_algebraMap hact]
         rw [Matrix.mulVec_sub, Matrix.mulVec_mulVec, hPM σ hσ, twAct, e1, Matrix.mulVec_mulVec]
         simp [chiC])
     rw [Finset.erase_eq_of_notMem h0J] at key

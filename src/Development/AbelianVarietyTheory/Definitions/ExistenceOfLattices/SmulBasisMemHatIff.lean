@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.H
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.AdLat.Model
 
 open NumberField IsDedekindDomain

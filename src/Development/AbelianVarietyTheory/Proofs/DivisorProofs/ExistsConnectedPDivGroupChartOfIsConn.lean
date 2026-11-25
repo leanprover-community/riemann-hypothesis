@@ -49,7 +49,6 @@ theorem exists_boxPt {q : ℕ} (β : Fin d →₀ ℕ) (h : ∀ i, β i < q) :
 
 end GlobalTheory.BoxMonomials
 
-
 open GlobalTheory.BoxMonomials in
 theorem GlobalTheory.coeff_eq_zero_of_evA_eq_zero_of_le_finrank :
     ∀ (K A : Type) [Field K] [CommRing A] [Algebra K A] [Module.Finite K A] (d q : ℕ)
@@ -438,14 +437,6 @@ section -- clump:auto
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-namespace GlobalTheory.Katz
-
-theorem cartier_primePow_pairing (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R] (h : (p : R) = 0)
-    (G : PDivGroup p R) (n r : ℕ) (χ : CartierDual R (G.A n)) (a : G.A n) :
-    (χ ^ p ^ r) (a ^ p ^ r) = χ (mulBy R (G.A n) (p ^ r) a) ^ p ^ r :=
-  convPow_primePow_apply_pow p R h G n r χ a
-
-end GlobalTheory.Katz
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierDualPrimePowConvPairing =====
@@ -608,7 +599,7 @@ theorem frobKerIdeal_le_annPowIdeal (h : (p : K) = 0) (G : PDivGroup p K) (r : �
     frobKerIdeal (p ^ r) K (G.dual.A r) ≤ annPowIdeal h G r := by
   refine Ideal.span_le.2 ?_
   rintro _ ⟨χ, hχ, rfl⟩ a
-  have h1 := _root_.GlobalTheory.Katz.cartier_primePow_pairing p K h G r r χ a
+  have h1 := _root_.GlobalTheory.PDivGroup.convPow_primePow_apply_pow p K h G r r χ a
   have hχ' : χ.ofConv 1 = 0 := hχ
   change (χ ^ p ^ r).ofConv (a ^ p ^ r) = 0
   change (χ ^ p ^ r).ofConv (a ^ p ^ r) = χ.ofConv (mulBy K (G.A r) (p ^ r) a) ^ p ^ r at h1

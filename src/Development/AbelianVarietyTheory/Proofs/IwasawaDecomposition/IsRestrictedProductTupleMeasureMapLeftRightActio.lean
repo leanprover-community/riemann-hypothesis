@@ -225,11 +225,9 @@ theorem lrAct_mem (A : AddSubmonoid S) (hA : ∀ y ∈ A, ∀ z ∈ A, y * z ∈
 
 theorem finiteOnCompacts_map {Y : Type*} [TopologicalSpace Y] [MeasurableSpace Y] [BorelSpace Y]
     (e : Y ≃ₜ Y) (m : Measure Y) (hm : IsFiniteMeasureOnCompacts m) :
-    IsFiniteMeasureOnCompacts (m.map e) where
-  lt_top_of_isCompact K hK := by
-    have := e.toMeasurableEquiv.map_apply (μ := m) K
-    rw [show m.map e K = m (e ⁻¹' K) from this]
-    exact (e.isCompact_preimage.2 hK).measure_lt_top
+    IsFiniteMeasureOnCompacts (m.map e) := by
+  have := hm
+  exact Measure.IsFiniteMeasureOnCompacts.map m e
 
 end Lr
 

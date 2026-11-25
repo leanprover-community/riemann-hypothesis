@@ -18,11 +18,8 @@ theorem smod_iff {R : Type} [CommRing R] (p x y : R) (n : ℕ) :
     x ≡ y [SMOD (Ideal.span {p} ^ n • ⊤ : Submodule R R)] ↔ p ^ n ∣ x - y := by
   rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow, Ideal.mem_span_singleton]
 
-theorem l_ne_zero_WCb : ((l : ℕ) : WCb l) ≠ 0 := by
-  intro h
-  have := congrArg (fun x : WCb l => x.coeff 1) h
-  simp only [WittVector.coeff_p_one, WittVector.zero_coeff] at this
-  exact one_ne_zero this
+theorem l_ne_zero_WCb : ((l : ℕ) : WCb l) ≠ 0 :=
+  WittVector.p_ne_zero _ _
 
 theorem l_mul_cancel {x y : WCb l} (h : (l : WCb l) * x = (l : WCb l) * y) : x = y :=
   mul_left_cancel₀ l_ne_zero_WCb h

@@ -208,14 +208,6 @@ open scoped Matrix
 
 namespace GlobalTheory.LimCoc
 
-theorem norm_l_lt_one (l : ℕ) [Fact l.Prime] : ‖((l : ℕ) : Qbar l)‖ < 1 := by
-  have h : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) (l : ℚ_[l]) := by
-    rw [map_natCast]
-  rw [h]
-  have := PadicAlgCl.norm_extends l (l : ℚ_[l])
-  rw [this, Padic.norm_p]
-  exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
-
 theorem ultra3 {K : Type*} [NormedField K] [IsUltrametricDist K] (a b c e : K) (ε : ℝ)
     (ha : ‖a‖ ≤ ε) (hb : ‖b‖ ≤ ε) (hc : ‖c‖ ≤ ε) (he : ‖e‖ ≤ ε) :
     ‖a + b - c - e‖ ≤ ε := by
@@ -250,7 +242,7 @@ theorem limit_cocycle : ∀ (l : ℕ) [Fact l.Prime] {Γ : Type} [Group Γ] (M :
     rw [hdecomp]
     exact ultra3 _ _ _ _ _ (hy r (s * t) i) (hz r s t i) (hy r s i)
       (mulVec_small (M s) (y t - z r t) _ (hM s) (fun j => by simpa using hy r t j) i)
-  have hlim := tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) (norm_l_lt_one l)
+  have hlim := tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) (GlobalTheory.norm_natCast_prime_qbar l)
   exact le_antisymm (ge_of_tendsto' hlim hbound) (norm_nonneg _)
 
 end GlobalTheory.LimCoc
@@ -301,7 +293,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open scoped Matrix
 
 namespace GlobalTheory
-
 
 open Polynomial in
 theorem coefO_dvd_pow_l {l : ℕ} [Fact l.Prime] (c : Coef l) {x : Qbar l} (hx : x ∈ c.O)
@@ -553,19 +544,6 @@ namespace GlobalTheory.KA.TameLim
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem norm_le_one_of_mem (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 := by
-  haveI : Module.Finite ℤ_[l] c.O := c.fin
-  have hi : IsIntegral ℤ_[l] x := by
-    have h := (isIntegral_algHom_iff (c.O.val.restrictScalars ℤ_[l]) Subtype.val_injective).2
-      (Algebra.IsIntegral.isIntegral (⟨x, hx⟩ : c.O))
-    simpa using h
-  have hq : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-  change spectralValue (minpoly ℚ_[l] x) ≤ 1
-  rw [spectralValue_le_one_iff (minpoly.monic hq)]
-  intro k
-  rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hi, Polynomial.coeff_map]
-  exact PadicInt.norm_le_one _
-
 theorem inv_pow_mem (c : Coef l) (e k : ℕ) (h : k = 0 ∨ ¬ l ∣ k) : (((k : ℕ) : Qbar l) ^ e)⁻¹ ∈ c.O := by
   rcases h with rfl | h
   · rcases Nat.eq_zero_or_pos e with rfl | he
@@ -635,7 +613,7 @@ theorem core (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W
     simp only [norm_pow]; exact tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) hq
   have hzero : ∀ z : Qbar l, (∀ r, ‖z‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖) → z = 0 := fun z hz =>
     norm_le_zero_iff.mp (ge_of_tendsto' ht0 hz)
-  have n1 : ∀ {x : Qbar l}, x ∈ c.O → ‖x‖ ≤ 1 := fun hx => norm_le_one_of_mem c hx
+  have n1 : ∀ {x : Qbar l}, x ∈ c.O → ‖x‖ ≤ 1 := fun hx => GlobalTheory.InertCoh.norm_le_one_of_mem_O c hx
   have hMle : ∀ s i j, ‖mat W s i j‖ ≤ 1 := fun s i j => n1 (hWO s i j)
   have hρle : ∀ s i j, ‖ρ s i j‖ ≤ 1 := fun s i j => n1 (hρO s i j)
 
@@ -764,8 +742,8 @@ theorem tame_limit : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebr
     hWO hWρ hρO (fun r x => Subalgebra.mul_mem _ (TameLim.inv_pow_mem c e _ (TameLim.val_unit r x)) (hχO r x))
     (fun r x => ?_) hηa hSh hcont hYO hnc hb hrel
   exact TameLim.mul_sub_mul_le _ _ _ _ _
-    (TameLim.norm_le_one_of_mem c (TameLim.inv_pow_mem c e _ (TameLim.val_unit (r + 1) x)))
-    (TameLim.norm_le_one_of_mem c (hχO r _)) (GlobalTheory.PowCong.powCong l e r x).1 (hχc r x)
+    (GlobalTheory.InertCoh.norm_le_one_of_mem_O c (TameLim.inv_pow_mem c e _ (TameLim.val_unit (r + 1) x)))
+    (GlobalTheory.InertCoh.norm_le_one_of_mem_O c (hχO r _)) (GlobalTheory.PowCong.powCong l e r x).1 (hχc r x)
 
 end GlobalTheory.KA
 end -- clump:auto
@@ -1450,7 +1428,6 @@ open scoped Matrix
 noncomputable section
 
 namespace GlobalTheory.KZ
-
 
 open GlobalTheory.KZGlobAsm in
 theorem glob_of_shapiro_system_noLayer (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]

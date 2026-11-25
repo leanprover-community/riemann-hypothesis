@@ -709,15 +709,6 @@ theorem sw_sigR (hc : CMData (maximalRealSubfield E) E)
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
   | tmul a e => rfl
 
-theorem unramified (hc : CMData (maximalRealSubfield E) E) :
-    Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E) :=
-  Formalism.L2.Pj.unramBridge_holds E fun P hP => by
-    obtain ⟨θ, t, e1, e2⟩ := hc.cmUnram.2.2 P hP
-    refine ⟨θ, ?_⟩
-    have : RingOfIntegers.mapRingEquiv (IsCMField.complexConj E : E ≃+* E) θ = t :=
-      RingOfIntegers.ext e1.symm
-    rwa [this]
-
 theorem exists_frame_cm (hc : CMData (maximalRealSubfield E) E) {r : ℕ}
     (J : Matrix (Fin r) (Fin r) E) (hJ : IsHerm (hc.sig : E →+* E) J) (hd : IsUnit J.det)
     (N : Submodule (𝓞 E) (Fin r → E))
@@ -728,7 +719,7 @@ theorem exists_frame_cm (hc : CMData (maximalRealSubfield E) E) {r : ℕ}
           b.1 = 1 ∧
       ∀ x, x ∈ latS (F := maximalRealSubfield E) (v.adicCompletion (maximalRealSubfield E))
         (intV E v) N ↔ ∀ i, ((b⁻¹).1 *ᵥ x) i ∈ intV E v := by
-  have := unramified hc
+  have := GlobalTheory.PlaceComp.unramified hc
   have hG : ∀ a b, ReciprocityTheory.ChartRestriction.G.FD.cc (Jᵀ a b) = Jᵀ b a :=
     fun a b => congrFun (congrFun hJ a) b
   have hd' : Jᵀ.det ≠ 0 := by
@@ -1586,7 +1577,6 @@ theorem relIndex_level (hp : ∀ i, (gp i).Prime) (hne : gp 0 ≠ gp 1) {f : ℕ
     · exact not_mem_both hT' (hp 1) (hTg 1) v (by simpa using h1) (by simpa using h)
 
 end Record
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.SelfDualStabiliserIndex GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection in
 theorem indexKU_of_selfDualOverBase (H : SelfDualOverBase) : IndexKU := by

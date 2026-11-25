@@ -9,7 +9,6 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DeltaIntegralE
 public import Lemmata.ClearingDenominators.UmonLeUzmon
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.HeisenbergDividedPowerExpansion
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.RaiseLowerPowCommutatorOnWeight
-public import Formalism.SharpRestriction.GrowthBounds.RootWeights.RestAOfHighestVectorIntegrality
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.InvariantDenominatorLinftyBound
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsIntegralWeightProjections
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
@@ -20,6 +19,30 @@ import Mathlib.RingTheory.PicardGroup
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightEntriesBetweenExtremeHighest
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.TraceProjectionIsInvProj
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Finset
+
+namespace Formalism.MainNotions.G.GLWeightTheory
+
+open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
+
+def HighestWeightVectorIntegrality : Prop :=
+  ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
+    AdmissibleDVR p n' O →
+    ∀ (n : ℕ) [NeZero n] (lam : Fin n → ℤ) (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
+      [IsScalarTower O (KK O) V] (E : GLOps n (KK O) V) (v : V), IsIrrHW E lam v →
+      v ∈ Nabla (O := O) E lam v
+
+end Formalism.MainNotions.G.GLWeightTheory
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.RootWeights.HighestWeightLatticeOfFirstPart, Formalism.SharpRestriction.GrowthBounds.RootWeights.GlOperatorMemIntegralEnveloping, Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsScalarMultipleMemDelta, Formalism.SharpRestriction.GrowthBounds.RootWeights.LoweringSpanLowerDividedPowerMem, Formalism.SharpRestriction.GrowthBounds.RootWeights.LoweringSpanHighestComponentIntegral, Formalism.SharpRestriction.GrowthBounds.RootWeights.LinfAdjointLeEllWtHighest

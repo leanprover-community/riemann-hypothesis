@@ -14,8 +14,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem exists_mem_of_isIrreducible_subset_sUnion {W : Type*} [TopologicalSpace W]
@@ -231,5 +229,3 @@ theorem affineDetachedComponentsNotInBoundary (A : PrincipalizationAlgorithm.{u}
     (List.get_mem ..) _ hx hclear
 
 end FunctorialResolution.EmbeddedResolution
-
-end

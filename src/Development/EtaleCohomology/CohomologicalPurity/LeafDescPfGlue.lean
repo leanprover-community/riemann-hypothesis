@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafDescPf
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CochainComplex.HomComplex
 
 namespace LateralTheory.CohomologicalPurity.Cl

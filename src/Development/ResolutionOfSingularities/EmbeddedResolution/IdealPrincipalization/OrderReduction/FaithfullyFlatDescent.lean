@@ -96,14 +96,6 @@ theorem orderAtLeastLocus_comap_eq_empty (T : MarkedIdealWithBoundary.{u}) (hv :
     assumption
   rw [orderAtLeastLocus_comap T.base T.structMap h T.ideal T.mult, hemp, Set.preimage_empty]
 
-private theorem derivedTriple_dim_le (hstar : _root_.FunctorialResolution.EmbeddedResolution.MaxContactCoverProperties.{u})
-    (S : MarkedIdealWithBoundary.{u}) (hV : S.IsAdmissible)
-    (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary)
-    (hft : AlgebraicGeometry.LocallyOfFiniteType (s.proj s.length ≫ S.structMap))
-    (extra : List (s.obj s.length).IdealSheafData) (keep : ℕ) :
-    (MaxContactCoverData.derivedTriple S s hft extra keep).krullDimSucc ≤ S.krullDimSucc :=
-  hstar.schemeDim_level_le S hV s.toMarkedSequenceOfBlowups s.length le_rfl
-
 private theorem appendLowerDimReduction_congr_of_dim_le (hstar : _root_.FunctorialResolution.EmbeddedResolution.MaxContactCoverProperties.{u})
     (hinv : ComapIsoInvariance.{u})
     (A : ℕ → PrincipalizationAssignment.{u}) (T₁ T₂ : MarkedIdealWithBoundary.{u}) (hdim : T₁.krullDimSucc ≤ T₂.krullDimSucc)
@@ -113,8 +105,9 @@ private theorem appendLowerDimReduction_congr_of_dim_le (hstar : _root_.Functori
     MaxContactReduction.appendLowerDimReduction hinv T₁ (lowerDimensionalFamily A T₁) S s extra keep n =
       MaxContactReduction.appendLowerDimReduction hinv T₂ (lowerDimensionalFamily A T₂) S s extra keep n := by
   by_cases hft : AlgebraicGeometry.LocallyOfFiniteType (s.proj s.length ≫ S.structMap)
-  · have h1 : (MaxContactCoverData.derivedTriple S s hft extra keep).krullDimSucc ≤ T₁.krullDimSucc :=
-      le_trans (derivedTriple_dim_le hstar S hV s hft extra keep) hS
+  · have h1 : (MaxContactCoverData.derivedTriple S s hft extra keep).krullDimSucc ≤
+        T₁.krullDimSucc :=
+      hstar.derivedTriple_dim_le hV s hft extra keep hS
     exact (MaxContactCoverData.appendLowerDimReduction_eq_concatOfIsMarked hinv T₁ (lowerDimensionalFamily A T₁) S s extra keep n
         hft h1).trans
       (MaxContactCoverData.appendLowerDimReduction_eq_concatOfIsMarked hinv T₂ (lowerDimensionalFamily A T₂) S s extra keep n

@@ -130,42 +130,6 @@ theorem compactDualityMap_δ {n : ℕ} (t : compactCohomologyRes φ D (n + 1) �
 
 end Sign
 
-section Embedding
-
-variable {Γ : Type u} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] {n : ℕ}
-
-theorem exists_injective_biproduct_coind_le [NeZero n] (U₀ : OpenSubgroup Γ)
-    (M : Rep.{u} (ULift.{u} ℤ) Γ) [IsDiscreteRep M] [Finite M] (hM : ∀ m : M, n • m = 0) :
-    ∃ (W : OpenSubgroup Γ) (_ : W ≤ U₀) (J : Type) (_ : Fintype J)
-      (i : M ⟶ ⨁ fun _ : J => Rep.coind (W : Subgroup Γ).subtype (zmodRep.{u} (W : Subgroup Γ) n)),
-      Function.Injective i.hom := by
-  let W := fixingOpenSubgroup M ⊓ U₀
-  have hW : ∀ w ∈ (W : Subgroup Γ), ∀ m : M, M.ρ w m = m :=
-    fun w hw m => fixingOpenSubgroup_apply M
-      ((inf_le_left : fixingOpenSubgroup M ⊓ U₀ ≤ fixingOpenSubgroup M) hw) m
-  let e := (Finite.equivFin (M →+ ZMod n)).symm
-  let F : ∀ _ : Fin (Nat.card (M →+ ZMod n)),
-      M ⟶ Rep.coind (W : Subgroup Γ).subtype (zmodRep.{u} (W : Subgroup Γ) n) :=
-    fun j => Rep.resCoindToHom (W : Subgroup Γ).subtype M _ (charHom (W : Subgroup Γ) M hW (e j))
-  refine ⟨W, inf_le_right, Fin (Nat.card (M →+ ZMod n)), inferInstance, biproduct.lift F, ?_⟩
-  intro a b hab
-  by_contra hne
-  obtain ⟨χ, hχ⟩ := zmod_exists_apply_ne_zero hM (sub_ne_zero.2 hne)
-  apply hχ
-  have hj := congrArg (biproduct.π (fun _ : Fin (Nat.card (M →+ ZMod n)) =>
-    Rep.coind (W : Subgroup Γ).subtype (zmodRep.{u} (W : Subgroup Γ) n)) (e.symm χ)).hom hab
-  change (biproduct.lift F ≫ biproduct.π _ (e.symm χ)).hom a =
-    (biproduct.lift F ≫ biproduct.π _ (e.symm χ)).hom b at hj
-  rw [biproduct.lift_π] at hj
-  have h1 := congrArg (fun f => ULift.down (f.1 1 : ULift.{u} (ZMod n))) hj
-  simp only [F, Rep.resCoindToHom_hom_apply_coe, map_one, Module.End.one_apply,
-    Equiv.apply_symm_apply] at h1
-  rw [charHom_hom_apply, charHom_hom_apply] at h1
-  change χ a = χ b at h1
-  rw [map_sub, h1, sub_self]
-
-end Embedding
-
 section Core
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]

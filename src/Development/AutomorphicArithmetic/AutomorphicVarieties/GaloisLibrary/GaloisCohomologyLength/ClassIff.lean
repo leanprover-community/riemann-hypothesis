@@ -18,23 +18,15 @@ private theorem ci_pow {Ω : Type*} [Monoid Ω] {m M : ℕ} [NeZero m] [NeZero M
     ζ ^ (a : ZMod M).val = ζ ^ ((ZMod.unitsMap hm a : (ZMod m)ˣ) : ZMod m).val := by
   rw [ZMod.unitsMap_val, ← ZMod.natCast_val, ZMod.val_natCast, ← pow_eq_pow_mod _ hζ]
 
-private theorem ci_hen (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosed Ω] (l : ℕ) [Fact l.Prime] (i : ℕ) :
-    HasEnoughRootsOfUnity Ω (l ^ i) := by
-  have : NeZero (l ^ i) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
-  have : NeZero ((l ^ i : ℕ) : Ω) := ⟨Nat.cast_ne_zero.mpr (NeZero.ne _)⟩
-  infer_instance
-
 private theorem ci_spec {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosed Ω] (l : ℕ) [Fact l.Prime] (n : ℕ)
     (g : Ω ≃+* Ω) (ζ : Ω) (hζ : ζ ^ l ^ n = 1) :
     g ζ = ζ ^ ((KStar.TotallyRealRoots.redPow l n (cyclotomicCharacter Ω l g) : (ZMod (l ^ n))ˣ) : ZMod (l ^ n)).val := by
-  have hen := ci_hen Ω l
   exact cyclotomicCharacter.spec l g ζ hζ
 
 private theorem ci_red {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosed Ω] (l : ℕ) [Fact l.Prime] (n : ℕ)
     (g : Ω ≃+* Ω) (w : (ZMod (l ^ n))ˣ)
     (h : ∀ ζ : Ω, ζ ^ l ^ n = 1 → g ζ = ζ ^ (w : ZMod (l ^ n)).val) :
     w = KStar.TotallyRealRoots.redPow l n (cyclotomicCharacter Ω l g) := by
-  have hen := ci_hen Ω l n
   have : NeZero (l ^ n) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω (l ^ n)
   have h1 := ci_spec l n g ζ hζ.pow_eq_one

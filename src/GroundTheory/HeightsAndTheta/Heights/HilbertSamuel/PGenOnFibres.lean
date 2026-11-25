@@ -395,6 +395,80 @@ theorem cellRes_of_le {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M] {J
 
 variable [LinearOrder K] [∀ k, LinearOrder (ι k)]
 
+theorem cechD_zero_apply_of_pair {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M]
+    (z : KH.CechC S ι M 0) (I : KH.Cell K ι 1) (k0 : K) (i1 i2 : ι k0) (hlt : i1 < i2)
+    (hI : I.1 k0 = {i1, i2}) (hrest : ∀ k ≠ k0, (I.1 k).card = 1) (J1 J2 : KH.Cell K ι 0)
+    (hJ1 : J1.1 = Function.update I.1 k0 ((I.1 k0).erase i1))
+    (hJ2 : J2.1 = Function.update I.1 k0 ((I.1 k0).erase i2)) :
+    KH.cechD S ι M 0 z I = KH.cellRes S M J1.1 I.1 (z J1) - KH.cellRes S M J2.1 I.1 (z J2) := by
+  have hne : ∀ k, (I.1 k).Nonempty := I.2.1
+  have h2 : (I.1 k0).card = 2 := by rw [hI]; exact Finset.card_pair (ne_of_lt hlt)
+  have hface : ∀ i ∈ I.1 k0, (∀ l, (Function.update I.1 k0 ((I.1 k0).erase i) l).Nonempty) ∧
+      ∑ l, ((Function.update I.1 k0 ((I.1 k0).erase i) l).card - 1) = 0 := by
+    intro i hi
+    have hc : ((I.1 k0).erase i).card = 1 := by rw [Finset.card_erase_of_mem hi, h2]
+    refine ⟨fun l => ?_, Finset.sum_eq_zero fun l _ => ?_⟩
+    · by_cases hl : l = k0
+      · subst hl
+        rw [Function.update_self]
+        exact Finset.card_pos.mp (by omega)
+      · rw [Function.update_of_ne hl]
+        exact hne l
+    · by_cases hl : l = k0
+      · subst hl
+        rw [Function.update_self, hc]
+        rfl
+      · rw [Function.update_of_ne hl, hrest l hl]
+        rfl
+  have hsumsign : ∑ l ∈ Finset.univ.filter (· < k0), ((I.1 l).card - 1) = 0 :=
+    Finset.sum_eq_zero fun l hl => by rw [hrest l (ne_of_lt (Finset.mem_filter.mp hl).2)]; rfl
+  have hs1 : KH.faceSign I.1 k0 i1 = 1 := by
+    have f1 : (({i1, i2} : Finset (ι k0)).filter (· < i1)).card = 0 := by
+      simp [Finset.filter_insert, Finset.filter_singleton, not_lt.mpr hlt.le]
+    simp only [KH.faceSign, hsumsign, hI, add_zero, f1]
+    norm_num
+  have hs2 : KH.faceSign I.1 k0 i2 = -1 := by
+    have f2 : (({i1, i2} : Finset (ι k0)).filter (· < i2)).card = 1 := by
+      simp [Finset.filter_insert, Finset.filter_singleton, hlt]
+    simp only [KH.faceSign, hsumsign, hI, add_zero, f2]
+    norm_num
+  have hi1 : i1 ∈ I.1 k0 := by rw [hI]; simp
+  have hi2 : i2 ∈ I.1 k0 := by rw [hI]; simp
+  have key : KH.cechD S ι M 0 z I =
+      KH.faceSign I.1 k0 i1 • KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i1)) I.1
+        (z ⟨_, hface i1 hi1⟩) + KH.faceSign I.1 k0 i2 • KH.cellRes S M
+        (Function.update I.1 k0 ((I.1 k0).erase i2)) I.1 (z ⟨_, hface i2 hi2⟩) := by
+    simp only [KH.cechD, LinearMap.pi_apply, LinearMap.sum_apply]
+    rw [Finset.sum_eq_single k0]
+    · rw [Finset.sum_eq_add_of_mem i1 i2 hi1 hi2 (ne_of_lt hlt)]
+      · rw [dite_eq_left (hface i1 hi1), dite_eq_left (hface i2 hi2)]
+        rfl
+      · intro i hi hne'
+        rw [hI] at hi
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hi
+        rcases hi with rfl | rfl
+        · exact absurd rfl hne'.1
+        · exact absurd rfl hne'.2
+    · intro k _ hk
+      refine Finset.sum_eq_zero fun i hi => ?_
+      split_ifs with hc
+      · exfalso
+        obtain ⟨hn, -⟩ := hc
+        have h3 := hn k
+        rw [Function.update_self] at h3
+        have h4 := Finset.card_erase_of_mem hi
+        rw [hrest k hk] at h4
+        have h5 := Finset.card_pos.mpr h3
+        omega
+      · rfl
+    · intro h
+      exact absurd (Finset.mem_univ k0) h
+  obtain ⟨A1, hA1⟩ := J1
+  obtain ⟨A2, hA2⟩ := J2
+  simp only at hJ1 hJ2
+  subst hJ1 hJ2
+  rw [key, hs1, hs2, one_smul, neg_one_smul, ← sub_eq_add_neg]
+
 theorem cechD_zero_eq_zero {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M] (z : KH.CechC S ι M 0)
     (I : KH.Cell K ι 1)
     (hz : ∀ J J' : KH.Cell K ι 0, (∀ k, J.1 k ⊆ I.1 k) → (∀ k, J'.1 k ⊆ I.1 k) →
@@ -432,69 +506,20 @@ theorem cechD_zero_eq_zero {M : Type} [AddCommGroup M] [Module (MRingOver S ι) 
     have hc : ((I.1 k0).erase i).card = 1 := by rw [Finset.card_erase_of_mem hi, h2]
     refine ⟨fun l => ?_, Finset.sum_eq_zero fun l _ => ?_⟩
     · by_cases hl : l = k0
-      · subst hl
-        rw [Function.update_self]
-        exact Finset.card_pos.mp (by omega)
-      · rw [Function.update_of_ne hl]
-        exact hne l
+      · subst hl; rw [Function.update_self]; exact Finset.card_pos.mp (by omega)
+      · rw [Function.update_of_ne hl]; exact hne l
     · by_cases hl : l = k0
-      · subst hl
-        rw [Function.update_self, hc]
-        rfl
-      · rw [Function.update_of_ne hl, hrest l hl]
-        rfl
+      · subst hl; rw [Function.update_self, hc]; rfl
+      · rw [Function.update_of_ne hl, hrest l hl]; rfl
   have hsub : ∀ i l, Function.update I.1 k0 ((I.1 k0).erase i) l ⊆ I.1 l := by
     intro i l
     by_cases hl : l = k0
-    · subst hl
-      rw [Function.update_self]
-      exact Finset.erase_subset _ _
+    · subst hl; rw [Function.update_self]; exact Finset.erase_subset _ _
     · rw [Function.update_of_ne hl]
-  have hsumsign : ∑ l ∈ Finset.univ.filter (· < k0), ((I.1 l).card - 1) = 0 :=
-    Finset.sum_eq_zero fun l hl => by rw [hrest l (ne_of_lt (Finset.mem_filter.mp hl).2)]; rfl
-  have hs : KH.faceSign I.1 k0 i1 + KH.faceSign I.1 k0 i2 = 0 := by
-    have f1 : (({i1, i2} : Finset (ι k0)).filter (· < i1)).card = 0 := by
-      simp [Finset.filter_insert, Finset.filter_singleton, not_lt.mpr hlt.le, hlt.le]
-    have f2 : (({i1, i2} : Finset (ι k0)).filter (· < i2)).card = 1 := by
-      simp [Finset.filter_insert, Finset.filter_singleton, hlt]
-    simp only [KH.faceSign, hsumsign, hI, add_zero, f1, f2]
-    norm_num
   have hi1 : i1 ∈ I.1 k0 := by rw [hI]; simp
   have hi2 : i2 ∈ I.1 k0 := by rw [hI]; simp
-  have e : KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i1)) I.1 (z ⟨_, hface i1 hi1⟩) =
-      KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i2)) I.1 (z ⟨_, hface i2 hi2⟩) :=
-    hz ⟨_, hface i1 hi1⟩ ⟨_, hface i2 hi2⟩ (hsub i1) (hsub i2)
-  show (KH.cechD S ι M 0 z) I = 0
-  rw [KH.cechD]
-  erw [LinearMap.pi_apply]
-  simp only [LinearMap.sum_apply]
-  rw [Finset.sum_eq_single k0]
-  · rw [Finset.sum_eq_add_of_mem i1 i2 hi1 hi2 (ne_of_lt hlt)]
-    · rw [dite_eq_left (hface i1 hi1), dite_eq_left (hface i2 hi2)]
-      show KH.faceSign I.1 k0 i1 • KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i1)) I.1
-          (z ⟨_, hface i1 hi1⟩) + KH.faceSign I.1 k0 i2 • KH.cellRes S M
-          (Function.update I.1 k0 ((I.1 k0).erase i2)) I.1 (z ⟨_, hface i2 hi2⟩) = 0
-      rw [e, ← add_smul, hs, zero_smul]
-    · intro i hi hne'
-      rw [hI] at hi
-      simp only [Finset.mem_insert, Finset.mem_singleton] at hi
-      rcases hi with rfl | rfl
-      · exact absurd rfl hne'.1
-      · exact absurd rfl hne'.2
-  · intro k _ hk
-    refine Finset.sum_eq_zero fun i hi => ?_
-    split_ifs with hc
-    · exfalso
-      obtain ⟨hn, -⟩ := hc
-      have h3 := hn k
-      rw [Function.update_self] at h3
-      have h4 := Finset.card_erase_of_mem hi
-      rw [hrest k hk] at h4
-      have h5 := Finset.card_pos.mpr h3
-      omega
-    · rfl
-  · intro h
-    exact absurd (Finset.mem_univ k0) h
+  rw [cechD_zero_apply_of_pair z I k0 i1 i2 hlt hI hrest ⟨_, hface i1 hi1⟩ ⟨_, hface i2 hi2⟩ rfl rfl,
+    hz ⟨_, hface i1 hi1⟩ ⟨_, hface i2 hi2⟩ (hsub i1) (hsub i2), sub_self]
 
 end Cells
 

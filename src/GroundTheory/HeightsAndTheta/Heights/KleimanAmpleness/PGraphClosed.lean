@@ -36,26 +36,9 @@ theorem exists_fin_generators (G : LineBundle S x) (hG : G.toSubSystem.Generated
       G.sub I ≤ Submodule.span (chartRing S x I) (F : Set Ω) := by
     intro I
     obtain ⟨t, ht⟩ := G.fg I
-    have hy : ∀ y : Ω, ∃ T : Finset Ω, (T : Set Ω) ⊆ G.toSubSystem.secs ∧
-        (y ∈ G.sub I → y ∈ Submodule.span (chartRing S x I) (T : Set Ω)) := by
-      intro y
-      by_cases hyI : y ∈ G.sub I
-      · have : y ∈ Submodule.span (chartRing S x I) (G.toSubSystem.secs : Set Ω) := by
-          rw [hG I]; exact hyI
-        obtain ⟨T, hT, hyT⟩ := Submodule.mem_span_finite_of_mem_span this
-        exact ⟨T, hT, fun _ => hyT⟩
-      · exact ⟨∅, by simp, fun h => absurd h hyI⟩
-    choose T hT hTy using hy
-    refine ⟨t.biUnion T, ?_, ?_⟩
-    · intro z hz
-      obtain ⟨y, -, hzy⟩ := Finset.mem_biUnion.mp hz
-      exact hT y hzy
-    · rw [← ht, Submodule.span_le]
-      intro y hyt
-      have hyI : y ∈ G.sub I := by rw [← ht]; exact Submodule.subset_span hyt
-      exact Submodule.span_mono (by
-        intro z hz
-        exact Finset.mem_coe.mpr (Finset.mem_biUnion.mpr ⟨y, hyt, hz⟩)) (hTy y hyI)
+    obtain ⟨T, hT, htT⟩ := Submodule.subset_span_finite_of_subset_span (R := chartRing S x I)
+      (s := (G.toSubSystem.secs : Set Ω)) (t := t) (by rw [hG I, ← ht]; exact Submodule.subset_span)
+    exact ⟨T, hT, by rw [← ht, Submodule.span_le]; exact htT⟩
   choose F hF hFI using hloc
   set A := Finset.univ.biUnion F
   let g : Fin (A.card + 1) → Ω := Fin.cons 0 fun i => (A.equivFin.symm i : Ω)

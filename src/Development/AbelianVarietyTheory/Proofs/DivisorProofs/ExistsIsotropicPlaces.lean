@@ -319,9 +319,6 @@ theorem af_zero (y : Af F) (h : ∀ v, evalV F v y = 0) : y = 0 := by
   ext v
   exact congrArg _ (h v)
 
-theorem af_ext {p q : AF F} (h1 : fstA F p = fstA F q) (h2 : sndA F p = sndA F q) : p = q :=
-  Prod.ext h1 h2
-
 def placeAtInf : w.Completion →ₗ[F] AF F :=
   (LinearMap.inl F (Ainf F) (Af F)).comp (LinearMap.single F (fun u : InfinitePlace F => u.Completion) w)
 
@@ -330,7 +327,7 @@ theorem sndA_placeAtInf (a : w.Completion) : sndA F (placeAtInf F w a) = 0 := rf
 
 theorem placeAtInf_mul (a b : w.Completion) :
     placeAtInf F w (a * b) = placeAtInf F w a * placeAtInf F w b := by
-  apply af_ext
+  apply GlobalTheory.CompanionTheory.SaGen.adele_ext
   · have e2 : fstA F (placeAtInf F w a * placeAtInf F w b) =
         fstA F (placeAtInf F w a) * fstA F (placeAtInf F w b) := map_mul (fstA F) _ _
     exact (fstA_placeAtInf F w (a * b)).trans ((ainf_single_mul F w a b).trans
@@ -344,7 +341,7 @@ variable {F w}
 
 theorem idem_mul_placeAtInf {ε : AF F} (hε : IsPlacesIdem {w} ∅ ε) (a : w.Completion) :
     ε * placeAtInf F w a = placeAtInf F w a := by
-  apply af_ext
+  apply GlobalTheory.CompanionTheory.SaGen.adele_ext
   · have e2 : fstA F (ε * placeAtInf F w a) = fstA F ε * fstA F (placeAtInf F w a) := map_mul (fstA F) _ _
     exact e2.trans ((congrArg (fstA F ε * ·) (fstA_placeAtInf F w a)).trans
       ((ainf_idem_mul F w _ (hε.1 w (Finset.mem_singleton_self w))
@@ -354,7 +351,7 @@ theorem idem_mul_placeAtInf {ε : AF F} (hε : IsPlacesIdem {w} ∅ ε) (a : w.C
       ((mul_zero _).trans (sndA_placeAtInf F w a).symm))
 
 theorem placeAtInf_one {ε : AF F} (hε : IsPlacesIdem {w} ∅ ε) : placeAtInf F w 1 = ε := by
-  apply af_ext
+  apply GlobalTheory.CompanionTheory.SaGen.adele_ext
   · refine (fstA_placeAtInf F w 1).trans ?_
     exact ainf_single_one F w _ (hε.1 w (Finset.mem_singleton_self w))
       (fun u hu => hε.2.1 u (by simpa using hu))
@@ -1301,18 +1298,12 @@ namespace GlobalTheory.NormFin
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem af_ext {x y : Af F} (h : ∀ w, evalV F w x = evalV F w y) : x = y :=
-  by
-  apply RestrictedProduct.ext
-  intro w
-  exact h w
-
 def iotaL (v : HeightOneSpectrum (𝓞 F)) : Fv F v →ₗ[F] AF F where
   toFun a := pairA F 0 (singleV F v a)
   map_add' a b := by
     refine Prod.ext (by change (0 : Ainf F) = 0 + 0; simp) ?_
     change singleV F v (a + b) = singleV F v a + singleV F v b
-    refine af_ext fun w => ?_
+    refine GlobalTheory.CompanionTheory.SaGen.finAdele_ext fun w => ?_
     rw [map_add (f := _)]
     by_cases hw : w = v
     · subst hw; simp only [evalV_single_same]
@@ -1320,7 +1311,7 @@ def iotaL (v : HeightOneSpectrum (𝓞 F)) : Fv F v →ₗ[F] AF F where
   map_smul' c a := by
     refine Prod.ext (by change (0 : Ainf F) = c • 0; simp) ?_
     change singleV F v (c • a) = c • singleV F v a
-    refine af_ext fun w => ?_
+    refine GlobalTheory.CompanionTheory.SaGen.finAdele_ext fun w => ?_
     rw [map_smul]
     by_cases hw : w = v
     · subst hw; simp only [evalV_single_same]
@@ -1330,7 +1321,7 @@ theorem iotaL_mul (v : HeightOneSpectrum (𝓞 F)) (a b : Fv F v) :
     iotaL v (a * b) = iotaL v a * iotaL v b := by
   refine Prod.ext (by change (0 : Ainf F) = 0 * 0; simp) ?_
   change singleV F v (a * b) = singleV F v a * singleV F v b
-  refine af_ext fun w => ?_
+  refine GlobalTheory.CompanionTheory.SaGen.finAdele_ext fun w => ?_
   rw [map_mul]
   by_cases hw : w = v
   · subst hw; simp only [evalV_single_same]
@@ -1340,7 +1331,7 @@ theorem idem_mul_iotaL (v : HeightOneSpectrum (𝓞 F)) (ε : AF F) (hε : IsPla
     ε * iotaL v a = iotaL v a := by
   refine Prod.ext (by change fstA F ε * 0 = 0; simp) ?_
   change sndA F ε * singleV F v a = singleV F v a
-  refine af_ext fun w => ?_
+  refine GlobalTheory.CompanionTheory.SaGen.finAdele_ext fun w => ?_
   rw [map_mul]
   by_cases hw : w = v
   · subst hw; rw [hε.2.2.1 w (Finset.mem_singleton_self w), one_mul]
@@ -1352,7 +1343,7 @@ theorem iotaL_one (v : HeightOneSpectrum (𝓞 F)) (ε : AF F) (hε : IsPlacesId
   · funext w
     exact (hε.2.1 w (Finset.notMem_empty w)).symm
   · change singleV F v 1 = sndA F ε
-    refine af_ext fun w => ?_
+    refine GlobalTheory.CompanionTheory.SaGen.finAdele_ext fun w => ?_
     by_cases hw : w = v
     · subst hw; rw [evalV_single_same, hε.2.2.1 w (Finset.mem_singleton_self w)]
     · rw [evalV_single_ne hw, hε.2.2.2 w (fun h => hw (Finset.mem_singleton.1 h))]

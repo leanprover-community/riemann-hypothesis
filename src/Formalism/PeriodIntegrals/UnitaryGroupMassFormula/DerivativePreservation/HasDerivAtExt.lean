@@ -88,14 +88,7 @@ lemma exp_fix (Y : Mx k r) (c : Fin (2 * r + k + 1)) (hY : ∀ x, Y x c = 0) :
     split_ifs with h
     · rw [← h.1, hY, mul_one]
     · exact mul_zero _
-  have hne : NormedSpace.exp Y ≠ 0 := by
-    intro h0
-    have hc : NormedSpace.exp (-Y) * NormedSpace.exp Y = 1 := by
-      rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl Y)), neg_add_cancel,
-        NormedSpace.exp_zero]
-    rw [h0, Matrix.mul_zero] at hc
-    have := congrFun (congrFun hc ⟨0, by omega⟩) ⟨0, by omega⟩
-    simp at this
+  have hne : NormedSpace.exp Y ≠ 0 := (Matrix.isUnit_exp Y).ne_zero
   have hsum : Summable (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • Y ^ n) := by
     by_contra hns
     apply hne

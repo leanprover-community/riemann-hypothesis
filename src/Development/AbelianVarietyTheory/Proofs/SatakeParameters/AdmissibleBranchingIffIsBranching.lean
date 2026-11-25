@@ -5,8 +5,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.InertialTypesCmp
 
 open Formalism.BasicNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
@@ -50,5 +48,3 @@ theorem _root_.GlobalTheory.InertialTypesCmp.lpDim_isoLoc (P : List (_root_.Form
   simp [lpDim_spehLoc_eq_mul]
 
 end GlobalTheory.InertialTypesCmp
-
-end

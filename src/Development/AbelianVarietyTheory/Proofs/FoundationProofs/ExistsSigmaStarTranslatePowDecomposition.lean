@@ -15,8 +15,6 @@ open GlobalTheory.EvenTheta GlobalTheory.ThetaTransl
 open Filter
 open scoped Topology
 
-noncomputable section
-
 namespace GlobalTheory.ThetaTranslDecomp
 
 variable {Λ : AddSubgroup ℂ}

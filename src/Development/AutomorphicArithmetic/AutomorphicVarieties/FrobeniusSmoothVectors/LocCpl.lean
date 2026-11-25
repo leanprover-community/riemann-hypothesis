@@ -48,10 +48,7 @@ private theorem co_pow {O D R : Type} [CommRing O] [IsLocalRing O] [CommRing D] 
   let f' : D ⧸ y ^ N →+* ResidueField O := Ideal.Quotient.lift (y ^ N) f (fun a ha => by
     rw [← RingHom.mem_ker, hker]; exact hyN ha)
   have hf'mk : ∀ d, f' (Ideal.Quotient.mk _ d) = f d := fun d => rfl
-  have hf' : Function.Surjective f' := by
-    intro z
-    obtain ⟨d, rfl⟩ := hf z
-    exact ⟨_, hf'mk d⟩
+  have hf' : Function.Surjective f' := Ideal.Quotient.lift_surjective_of_surjective _ _ hf
   haveI hMmax : (RingHom.ker f').IsMaximal := RingHom.ker_isMaximal_of_surjective f' hf'
   have hMle : RingHom.ker f' ≤ y.map (Ideal.Quotient.mk (y ^ N)) := by
     intro z hz

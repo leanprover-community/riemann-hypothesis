@@ -46,13 +46,8 @@ theorem card_of_involution {k : Type} [Field k] [Finite k] {q : ℕ} [Fact q.Pri
     refine ⟨j, hodd, ?_⟩
     have hd := orderOf_dvd_of_pow_eq_one h2
     rw [ho] at hd
-    have hn : Module.finrank (ZMod q) k = 2 * j := by
-      obtain ⟨c, hc⟩ := hd
-      have hj0 := hodd.pos
-      rcases c with _ | _ | c
-      · omega
-      · omega
-      · nlinarith [Nat.zero_le (Module.finrank (ZMod q) k * c)]
+    have hn : Module.finrank (ZMod q) k = 2 * j :=
+      (Nat.eq_of_dvd_of_lt_two_mul (by have := hodd.pos; lia) hd (by lia)).symm
     rw [Module.natCard_eq_pow_finrank (K := ZMod q), hn, Nat.card_zmod]
   · rintro ⟨c, hc⟩
     have h1 : r ^ 2 = (algebraMap (ZMod q) k c) ^ 2 := by rw [hr, sq, ← map_mul, ← hc, map_intCast]

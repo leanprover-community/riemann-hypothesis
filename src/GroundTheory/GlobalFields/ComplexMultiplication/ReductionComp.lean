@@ -188,16 +188,12 @@ theorem reduceFF_map_genEval
     exact (WeierstrassCurve.Affine.map_equation (W'.map j).toAffine
       (IsFractionRing.injective _ (W.baseChange K).toAffine.FunctionField) x y).mp h₁
   have hx : Function.Injective (eval₂RingHom (ResidueField.map j) (residue _ x)) := by
-    rw [injective_iff_map_eq_zero]
-    intro p hp
-    by_contra hp0
     have hT : Transcendental (ResidueField 𝒪) (gaussResidue W (residue _ x)) := hR''
-    apply hT
-    refine ⟨p, hp0, ?_⟩
-    have key : aeval (gaussResidue W (residue _ x)) p =
-        gaussResidue W (eval₂RingHom (ResidueField.map j) (residue _ x) p) := by
-      rw [aeval_def, coe_eval₂RingHom, Polynomial.hom_eval₂, gaussResidue_comp_residueField_map]
-    rw [key, hp, map_zero]
+    refine Function.Injective.of_comp (f := gaussResidue W) ?_
+    convert transcendental_iff_injective.mp hT using 1
+    funext p
+    rw [Function.comp_apply, aeval_def, coe_eval₂RingHom, Polynomial.hom_eval₂,
+      gaussResidue_comp_residueField_map]
   have hring : (gaussResidue W).comp (fieldEvalRed W' j hxy hx) =
       (genEval (W'.map (residue 𝒪)) _ hR'').toRingHom := by
     apply ringHom_ext_functionField

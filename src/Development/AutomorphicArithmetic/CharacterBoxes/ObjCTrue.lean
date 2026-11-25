@@ -443,43 +443,25 @@ def stdConst (CT2 C8 p m l : ℝ) : FC where
       CY := l, CYL := 9, Cpde := C8, CccK := 1, CF := m }
   T := { CP := p, eP := 12, Cp := 1, Cb := l, cTO := 377, ChT := l, CbN := l }
 
-theorem stdConst_cPre (CT2 C8 p m l c : ℝ) (h : c ∈ (stdConst CT2 C8 p m l).cPre) : c = p := by
-  simpa [FC.cPre, stdConst] using h
-
-theorem stdConst_cMid (CT2 C8 p m l c : ℝ)
-    (h : c ∈ (stdConst CT2 C8 p m l).cMid (stdConst CT2 C8 p m l).P.CF) : c = m := by
-  simpa [FC.cMid, stdConst] using h
-
-theorem stdConst_cLast (CT2 C8 p m l c : ℝ) (h : c ∈ (stdConst CT2 C8 p m l).cLast) : c = l := by
-  simpa [FC.cLast, stdConst] using h
-
-theorem exists_std_large (K K0 : TransportedAlt) (CT2 C8 : ℝ) (h8 : 1 ≤ C8) :
-    ∃ C : FC, Std C ∧ C.CT2 = CT2 ∧ C.P.Cpde = C8 ∧ C.Large K C.P.CF ∧ C.Large K0 C.P.CF ∧ C.GK.Nonneg := by
-  obtain ⟨p, hp1, hpK, hpK0⟩ : ∃ p : ℝ, 1000 ≤ p ∧ K.pre ≤ p ∧ K0.pre ≤ p :=
-    ⟨max 1000 (max K.pre K0.pre), le_max_left _ _, (le_max_left _ _).trans (le_max_right _ _),
-      (le_max_right _ _).trans (le_max_right _ _)⟩
-  obtain ⟨m, hm1, hmK, hmK0⟩ : ∃ m : ℝ, 1 ≤ m ∧ K.mid (stdConst CT2 C8 p 0 0).cOut ≤ m ∧
-      K0.mid (stdConst CT2 C8 p 0 0).cOut ≤ m :=
-    ⟨max 1 (max _ _), le_max_left _ _, (le_max_left _ _).trans (le_max_right _ _),
-      (le_max_right _ _).trans (le_max_right _ _)⟩
-  obtain ⟨l, hl1, hlK, hlK0⟩ : ∃ l : ℝ, 1 ≤ l ∧
-      K.last ((stdConst CT2 C8 p m 0).cOut ++ (stdConst CT2 C8 p m 0).cMid m) ≤ l ∧
-      K0.last ((stdConst CT2 C8 p m 0).cOut ++ (stdConst CT2 C8 p m 0).cMid m) ≤ l :=
-    ⟨max 1 (max _ _), le_max_left _ _, (le_max_left _ _).trans (le_max_right _ _),
-      (le_max_right _ _).trans (le_max_right _ _)⟩
-  have hm0 : 0 ≤ m := by linarith
-  have hl0 : 0 ≤ l := by linarith
-  refine ⟨stdConst CT2 C8 p m l, ⟨?_, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, h8, hp1, ?_, ?_⟩,
-    rfl, rfl, ⟨?_, trivial, ?_, ?_⟩, ⟨?_, trivial, ?_, ?_⟩, ?_⟩
+theorem exists_std_large (K : TransportedAlt) (CT2 C8 : ℝ) (h8 : 1 ≤ C8) :
+    ∃ C : FC, Std C ∧ C.CT2 = CT2 ∧ C.P.Cpde = C8 ∧ C.Large K C.P.CF ∧ C.GK.Nonneg := by
+  let p := max 1000 K.pre
+  let m := max 1 (K.mid (stdConst CT2 C8 p 0 0).cOut)
+  let Cmid := stdConst CT2 C8 p m 0
+  let l := max 1 (K.last (Cmid.cOut ++ Cmid.cMid m))
+  have hm : 1 ≤ m := le_max_left _ _
+  have hl : 1 ≤ l := le_max_left _ _
+  have hm0 : 0 ≤ m := zero_le_one.trans hm
+  have hl0 : 0 ≤ l := zero_le_one.trans hl
+  refine ⟨stdConst CT2 C8 p m l,
+    ⟨?_, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, h8, le_max_left _ _, ?_, ?_⟩,
+    rfl, rfl, ⟨?_, trivial, ?_, ?_⟩, ?_⟩
   · exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, le_rfl, rfl⟩
-  · intro c hc; rw [stdConst_cMid _ _ _ _ _ _ hc]; exact hm1
-  · intro c hc; rw [stdConst_cLast _ _ _ _ _ _ hc]; exact hl1
-  · intro c hc; rw [stdConst_cPre _ _ _ _ _ _ hc]; exact hpK
-  · intro c hc; rw [stdConst_cMid _ _ _ _ _ _ hc]; exact hmK
-  · intro c hc; rw [stdConst_cLast _ _ _ _ _ _ hc]; exact hlK
-  · intro c hc; rw [stdConst_cPre _ _ _ _ _ _ hc]; exact hpK0
-  · intro c hc; rw [stdConst_cMid _ _ _ _ _ _ hc]; exact hmK0
-  · intro c hc; rw [stdConst_cLast _ _ _ _ _ _ hc]; exact hlK0
+  · simpa [FC.cMid, stdConst] using hm
+  · simpa [FC.cLast, stdConst] using hl
+  · simp [FC.cPre, stdConst, p]
+  · simp [FC.cMid, FC.cOut, stdConst, m]
+  · simp [FC.cLast, FC.cMid, FC.cOut, stdConst, Cmid, l]
   · exact ⟨hm0, hl0, hl0, hl0, hl0, hl0, hl0, hl0, hl0, hl0, hl0, by norm_num [stdConst], by norm_num [stdConst],
       by norm_num [stdConst], hl0⟩
 
@@ -527,7 +509,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FixAndWinOfNumAt =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.CharacterBoxes.DesignS =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.CharacterBoxes.DesignS", "h": "module\n\npublic import Development.AutomorphicArithmetic.CharacterBoxes.Supply\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ValidForConstructedPointClassesEventuallyWorking\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsFamPOfKits\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsStdLarge\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FixAndWinOfNumAt\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowNumAt\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.CharacterBoxes.DesignS", "h": "module\n\npublic import Development.AutomorphicArithmetic.CharacterBoxes.Supply\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ValidForConstructedPointClassesEventuallyWorking\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsFamPOfKits\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsStdLarge\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FixAndWinOfNumAt\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowNumAt\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KitExOfHostWeightObj\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -544,7 +526,8 @@ theorem designS : ∀ (Q : Par → PtProp) (cT : ℝ → ℝ → ℝ) (la : ℝ)
   refine ⟨min ε0 (1 / 53), lt_min hε0 (by norm_num), fun eps he hle K => ?_⟩
   have he52 : eps < 1 / 52 := lt_of_le_of_lt (hle.trans (min_le_right _ _)) (by norm_num)
   obtain ⟨CT2, C8, C5, c6, Cb, K0, hC8, hC5, hc6, hCb, hK⟩ := hK eps he (hle.trans (min_le_left _ _)) he52
-  obtain ⟨C, hStd, hCT2, hCp, hLK, hLK0, hGK⟩ := exists_std_large (thrTu K (cT eps 9)) K0 CT2 C8 hC8
+  obtain ⟨C, hStd, hCT2, hCp, hSup, hGK⟩ := exists_std_large ((thrTu K (cT eps 9)).sup K0) CT2 C8 hC8
+  obtain ⟨hLK, hLK0⟩ := fc_large_of_sup hSup
   obtain ⟨c1, hK⟩ := hK C hStd hCT2 hCp hLK0
   obtain ⟨c1', hN⟩ := szRow_numAt eps he he52 C hStd
   obtain ⟨c2, hK⟩ := hK (max c1 c1') (le_max_left _ _)

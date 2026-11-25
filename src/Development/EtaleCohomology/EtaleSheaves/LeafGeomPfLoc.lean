@@ -5,7 +5,6 @@ public import Mathlib.Tactic.ENatToNat
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.D2 LateralTheory.E.LeafGeomPf
 
 namespace LateralTheory.E.LeafGeomPfLoc

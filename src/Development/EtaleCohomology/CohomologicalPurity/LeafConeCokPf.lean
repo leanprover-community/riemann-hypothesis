@@ -5,7 +5,6 @@ public import Mathlib.Algebra.Homology.HomotopyCategory.ShortExact
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits GlobalTheory.EtC CochainComplex
 
 namespace LateralTheory.CohomologicalPurity.Thom.ExcSp

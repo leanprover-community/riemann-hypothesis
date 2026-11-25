@@ -337,26 +337,23 @@ section -- clump:auto
 
 open MvPolynomial Filter Topology
 
-private noncomputable def coeffL1Norm {ι : Type} (p : MvPolynomial ι ℂ) : ℝ :=
-  ∑ α ∈ p.support, ‖p.coeff α‖
-
-private theorem coeffL1Norm_nonneg {ι : Type} (p : MvPolynomial ι ℂ) : 0 ≤ coeffL1Norm p :=
+private theorem coeffL1Norm_nonneg {ι : Type} (p : MvPolynomial ι ℂ) : 0 ≤ nrm p :=
   Finset.sum_nonneg fun _ _ => norm_nonneg _
 
 private theorem coeffL1Norm_mul {ι : Type} (p q : MvPolynomial ι ℂ) :
-    coeffL1Norm (p * q) ≤ coeffL1Norm p * coeffL1Norm q := (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p q).2.1
+    nrm (p * q) ≤ nrm p * nrm q := (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p q).2.1
 
 private theorem coeffL1Norm_C_mul {ι : Type} (c : ℂ) (p : MvPolynomial ι ℂ) :
-    coeffL1Norm (C c * p) = ‖c‖ * coeffL1Norm p := (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p p).2.2.1 c
+    nrm (C c * p) = ‖c‖ * nrm p := (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p p).2.2.1 c
 
 private theorem coeffL1Norm_sum {ι κ : Type} (s : Finset κ) (f : κ → MvPolynomial ι ℂ) :
-    coeffL1Norm (∑ i ∈ s, f i) ≤ ∑ i ∈ s, coeffL1Norm (f i) := by
+    nrm (∑ i ∈ s, f i) ≤ ∑ i ∈ s, nrm (f i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp [coeffL1Norm]
+  | empty => simp [nrm]
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha]
-    have h : coeffL1Norm (f a + ∑ i ∈ s, f i) ≤ coeffL1Norm (f a) + coeffL1Norm (∑ i ∈ s, f i) :=
+    have h : nrm (f a + ∑ i ∈ s, f i) ≤ nrm (f a) + nrm (∑ i ∈ s, f i) :=
       (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι _ _).1
     linarith
 
@@ -378,10 +375,10 @@ theorem UpperTheory.ConvolutionTheory.FX.generators0 :
   obtain ⟨K, hK, hred⟩ := UpperTheory.ConvolutionTheory.FX.gen_reduce τ n
   choose G hG hGb using hred
   choose F hF using fun β : τ × Fin n → Fin n => UpperTheory.ConvolutionTheory.FX.gen_fund τ n (fun u => (β u : ℕ))
-  set M : ℝ := ∑ β, coeffL1Norm (F β) with hM
+  set M : ℝ := ∑ β, nrm (F β) with hM
   have hM0 : 0 ≤ M := Finset.sum_nonneg fun _ _ => coeffL1Norm_nonneg _
-  have hFM : ∀ β, coeffL1Norm (F β) ≤ M := fun β =>
-    Finset.single_le_sum (f := fun β => coeffL1Norm (F β)) (fun _ _ => coeffL1Norm_nonneg _) (Finset.mem_univ β)
+  have hFM : ∀ β, nrm (F β) ≤ M := fun β =>
+    Finset.single_le_sum (f := fun β => nrm (F β)) (fun _ _ => coeffL1Norm_nonneg _) (Finset.mem_univ β)
   clear_value M
   refine ⟨K + M, fun k P hP hinv => ?_⟩
   set N : ℕ := Fintype.card (τ → Equiv.Perm (Fin n)) with hN
@@ -417,14 +414,14 @@ theorem UpperTheory.ConvolutionTheory.FX.generators0 :
     rw [h2, ← mul_assoc, ← C_mul, inv_mul_cancel₀ hNC, C_1, one_mul]
   obtain ⟨G', h1, h2, h3⟩ := UpperTheory.ConvolutionTheory.FX.gen_trunc τ n k _ (by rw [hE]; exact hP)
   refine ⟨G', h1.trans hE, h2, h3.trans ?_⟩
-  change coeffL1Norm _ ≤ _
-  have hb : ∀ α ∈ P.support, coeffL1Norm (∑ β, G α β * F β) ≤ (K + M) ^ (k + 1) := by
+  change nrm _ ≤ _
+  have hb : ∀ α ∈ P.support, nrm (∑ β, G α β * F β) ≤ (K + M) ^ (k + 1) := by
     intro α hα
     have hd : α.degree ≤ k := (le_totalDegree hα).trans hP
-    calc _ ≤ ∑ β, coeffL1Norm (G α β * F β) := coeffL1Norm_sum _ _
-      _ ≤ ∑ β, coeffL1Norm (G α β) * M := Finset.sum_le_sum fun β _ =>
+    calc _ ≤ ∑ β, nrm (G α β * F β) := coeffL1Norm_sum _ _
+      _ ≤ ∑ β, nrm (G α β) * M := Finset.sum_le_sum fun β _ =>
           (coeffL1Norm_mul _ _).trans (mul_le_mul_of_nonneg_left (hFM β) (coeffL1Norm_nonneg _))
-      _ = (∑ β, coeffL1Norm (G α β)) * M := by rw [Finset.sum_mul]
+      _ = (∑ β, nrm (G α β)) * M := by rw [Finset.sum_mul]
       _ ≤ K ^ α.degree * M := mul_le_mul_of_nonneg_right (hGb α) hM0
       _ ≤ K ^ k * M := mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hK hd) hM0
       _ ≤ (K + M) ^ k * (K + M) :=

@@ -65,13 +65,10 @@ theorem bij_resU_of_sq (q : Z ⟶ Spec (CommRingCat.of K)) {Q Q' : ObjectPropert
   · obtain ⟨x, hx⟩ := hb.2 y
     exact ⟨x, (sq_pull_eq_resU q h a n x).symm.trans hx⟩
 
-abbrev StT (q : Z ⟶ Spec (CommRingCat.of K)) (s : ℕ) (𝒱 : Set Z.Opens) : ObjectProperty (Thick (smFun Z q)) :=
-  St (γ := dividedPowersBot K) (p := 0) (q := q) (κ := Ideal.Quotient.mk ⊥) (TF 1 s) 𝒱
-
 abbrev StA (q : Z ⟶ Spec (CommRingCat.of K)) (𝒱 : Set Z.Opens) : ObjectProperty (Thick (smFun Z q)) :=
   St (γ := dividedPowersBot K) (p := 0) (q := q) (κ := Ideal.Quotient.mk ⊥) ⊤ 𝒱
 
-theorem stT_le_stA (q : Z ⟶ Spec (CommRingCat.of K)) (s : ℕ) (𝒱 : Set Z.Opens) : StT q s 𝒱 ≤ StA q 𝒱 :=
+theorem stT_le_stA (q : Z ⟶ Spec (CommRingCat.of K)) (s : ℕ) (𝒱 : Set Z.Opens) : CrystallineSemistableComparison.Pb.KS q s 𝒱 ≤ StA q 𝒱 :=
   fun _ hT => ⟨trivial, hT.2⟩
 
 theorem bij_trunc (q : Z ⟶ Spec (CommRingCat.of K)) (a n : ℕ) (𝒱 : Set Z.Opens) :
@@ -100,7 +97,7 @@ theorem stA_le_cov (q : Z ⟶ Spec (CommRingCat.of K)) {ι : Type} (U : ι → Z
 theorem zarAbs_pf : ZarAbs := by
   intro K _ Z q ι V U hU h a n
 
-  have hTU : StT q (a + 1) (Set.range U) ≤ StT q (a + 1) {V} := by
+  have hTU : CrystallineSemistableComparison.Pb.KS q (a + 1) (Set.range U) ≤ CrystallineSemistableComparison.Pb.KS q (a + 1) {V} := by
     rintro T ⟨hT, W, ⟨α, rfl⟩, hW⟩
     exact ⟨hT, V, rfl, h T ⟨α, hW⟩⟩
   have hc : ∀ W ∈ ({V} : Set Z.Opens), W ≤ sSup (Set.range U) := by
@@ -113,7 +110,7 @@ theorem zarAbs_pf : ZarAbs := by
     bij_resU_of_sq q hTU a n ((Pb.zar (TF 1 (a + 1)) (Or.inl ⟨rfl, 1, a + 1, rfl⟩) (Set.range U) {V} hTU hc n).1
       (a : ℤ) ((a : ℤ) + 1))
 
-  have hPV : (StT q (a + 1) {V}) ≤ inU q V := (stT_le_stA q (a + 1) {V}).trans (stA_le_inU q V)
+  have hPV : (CrystallineSemistableComparison.Pb.KS q (a + 1) {V}) ≤ inU q V := (stT_le_stA q (a + 1) {V}).trans (stA_le_inU q V)
   have hPVb : Function.Bijective ((resU (G q a) hPV).pull n) := by
     have e : ∀ x, (resU (G q a) hPV).pull n x =
         (resU (G q a) (stT_le_stA q (a + 1) {V})).pull n ((resU (G q a) (stA_le_inU q V)).pull n x) :=
@@ -121,7 +118,7 @@ theorem zarAbs_pf : ZarAbs := by
     have hb := (bij_trunc q a n {V}).comp (resU_bij_of_le (G q a) (stA_le_inU q V) (inU_le_stA q V) n)
     exact (funext e : ⇑((resU (G q a) hPV).pull n) = _) ▸ hb
 
-  have hPU : (StT q (a + 1) (Set.range U)) ≤ fun T => ∃ α, inU q (U α) T :=
+  have hPU : (CrystallineSemistableComparison.Pb.KS q (a + 1) (Set.range U)) ≤ fun T => ∃ α, inU q (U α) T :=
     (stT_le_stA q (a + 1) (Set.range U)).trans (stA_le_cov q U)
   have hPUb : Function.Bijective ((resU (G q a) hPU).pull n) := by
     have e : ∀ x, (resU (G q a) hPU).pull n x =

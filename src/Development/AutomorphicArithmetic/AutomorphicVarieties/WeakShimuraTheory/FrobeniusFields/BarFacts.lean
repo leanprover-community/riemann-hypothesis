@@ -12,14 +12,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVa
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-private theorem res_zpow {O : Type} [CommRing O] [IsLocalRing O] (u : Oˣ) (n : ℤ) :
-    residue O ((u ^ n : Oˣ) : O) = residue O (u : O) ^ n := by
-  rcases n with k | k
-  · simp only [Int.ofNat_eq_coe, zpow_natCast, Units.val_pow_eq_pow_val, map_pow]
-  · rw [zpow_negSucc, zpow_negSucc]
-    apply eq_inv_of_mul_eq_one_left
-    rw [← map_pow, ← Units.val_pow_eq_pow_val, ← map_mul, Units.inv_mul, map_one]
-
 private theorem res_ne {O : Type} [CommRing O] [IsLocalRing O] (u : Oˣ) : residue O (u : O) ≠ 0 :=
   (u.isUnit.map (residue O)).ne_zero
 
@@ -31,7 +23,7 @@ private theorem bar_mul_frobenius_fields {Ω : Type} [Field Ω] [CharZero Ω] {l
 private theorem bar_inv' {Ω : Type} [Field Ω] [CharZero Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
     (f : G ℚ Ω →* (c.O)ˣ) (g : G ℚ Ω) : Raw.bar f⁻¹ g = (Raw.bar f g)⁻¹ := by
   unfold Raw.bar
-  rw [MonoidHom.inv_apply, ← zpow_neg_one, res_zpow, zpow_neg_one]
+  rw [MonoidHom.inv_apply, map_units_inv]
 
 private theorem bar_pow' {Ω : Type} [Field Ω] [CharZero Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
     (f : G ℚ Ω →* (c.O)ˣ) (g : G ℚ Ω) (n : ℕ) : Raw.bar (f ^ n) g = Raw.bar f g ^ n := by
@@ -100,14 +92,15 @@ theorem UpperTheory.V.Ws.barFacts :
     have e1 : D.th τ = D.al τ * D.Psi τ := by
       unfold Raw.th
       rfl
-    have hinv : ∀ u : (c.O)ˣ, residue c.O ((u⁻¹ : (c.O)ˣ) : c.O) = (residue c.O (u : c.O))⁻¹ := fun u => by
-      rw [← zpow_neg_one, res_zpow, zpow_neg_one]
+    have hzpow : ∀ (u : (c.O)ˣ) (n : ℤ),
+        residue c.O ((u ^ n : (c.O)ˣ) : c.O) = residue c.O (u : c.O) ^ n :=
+      ((residue c.O).toMonoidHom.comp (Units.coeHom c.O)).map_zpow
     have hal' : residue c.O (D.al τ : c.O) = residue c.O (D.ξ τ : c.O) := hal τ
     have ha := res_ne (D.al τ)
     have hp := res_ne (D.Psi τ)
     unfold Raw.bar
     rw [← hal']
-    cases T.pr <;> simp [lab, Raw.ps, e1, hinv, res_zpow]
+    cases T.pr <;> simp [lab, Raw.ps, e1, hzpow]
   have hm : ∃ m : ℕ, l.Coprime m ∧ ∀ g, Raw.bar D.Psi g ^ m = 1 := by
     refine ⟨Fintype.card (ResidueField c.O) - 1, ?_, fun g => ?_⟩
     · obtain ⟨n, -, hn⟩ := FiniteField.card (ResidueField c.O) l

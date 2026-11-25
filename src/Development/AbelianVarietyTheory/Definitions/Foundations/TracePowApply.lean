@@ -8,8 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Mem.GelfCheck
 
 open MvPolynomial GlobalTheory.Mem.Gelf

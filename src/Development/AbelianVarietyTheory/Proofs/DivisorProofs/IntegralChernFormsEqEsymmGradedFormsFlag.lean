@@ -27,47 +27,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramLowerTri
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHolomorphicUnitMatrixAtRationalMatrixValuesStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernFormFieldDbarCohomologousTwoConnections
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullFlagGradedLineChernFormsSmoothDbarClosed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.WithLp
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
@@ -379,7 +341,6 @@ private theorem isForm_and_integral_finset_sum {ι : Type} (s : Finset ι)
     refine ⟨isForm_add' A hA hs.1, ?_⟩
     rw [integral_add_of_isForm A hA hs.1, hs.2]
 
-
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.CxForm.IntegralSum.integral_sum : ∀ {M : Type} [TopologicalSpace M] [CompactSpace M]
     [T2Space M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] {n : ℕ}
@@ -563,7 +524,7 @@ theorem integral_dbar_fn_mul_eq_zero : ∀ {M : Type} [TopologicalSpace M] [Comp
   have hP : A.IsForm (A.fn χ * γ) :=
     ((_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).2 0 _ _ (A.isForm_fn hχ) hγ).2.1
   have hω : A.IsForm (A.dbar (A.fn χ * γ)) :=
-    (GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A _ hP).2
+    (GlobalTheory.CxForm.isForm_del_dbar M n A _ hP).2
 
   have hnear : ∀ (j : A.ι) (w : V n), w ∈ (A.e j).target → (A.e j).symm w ∉ K →
       A.loc (A.fn χ * γ) j =ᶠ[𝓝 w] fun _ => 0 := by
@@ -1246,7 +1207,7 @@ theorem stokes : ∀ (M : Type) [TopologicalSpace M] [T2Space M] [SecondCountabl
   have hf : ∀ j, A.IsForm (A.fn (χ j) * η) := fun j =>
     FormMul.isForm_mul A _ _ (A.isForm_fn (hs j)) hη
   have hdiff : ∀ j, A.IsForm (A.del (A.fn (χ j) * η)) ∧ A.IsForm (A.dbar (A.fn (χ j) * η)) :=
-    fun j => GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A _ (hf j)
+    fun j => GlobalTheory.CxForm.isForm_del_dbar M n A _ (hf j)
   have hdec := eq_sum_fn_mul A χ hone η
   constructor
   · rw [hdec, _root_.GlobalTheory.CxForm.HolAtlas.del_finset_sum A _ hf,

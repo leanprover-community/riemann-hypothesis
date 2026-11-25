@@ -18,16 +18,6 @@ open scoped BigOperators
 
 namespace GlobalTheory.NormSum.RepInv
 
-section Translates
-
-variable {D : D7} {T : Tor D} {N N' : ℕ}
-
-theorem wd_wd_of_int {x z : VC D N N'} {G : VC D N N' → ℂ} (hx : Wd D T x G = G) (m : ℤ)
-    (hm : (Hf D T x z).im = m) (w : VC D N N') : Wd D T x (Wd D T z G) w = Wd D T z G w := by
-  apply _root_.GlobalTheory.FinWeil.RatTransl.wd_wd_of_int <;> assumption
-
-end Translates
-
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ}
 
 theorem sd_std (D : D7) (N : ℕ) : SD D (stdL D N) := by
@@ -52,7 +42,7 @@ theorem test_mem (hg : admG1 D) (hc : Crv D cc δ) (P : Pair D cc δ t0 Q) (hQ :
     have h1 : ∀ i, Wd D (tor0 D cc δ) (Q • x) (Wd D (tor0 D cc δ) (pt D (tor0 D cc δ) δ (z i)) P.e0) w =
         Wd D (tor0 D cc δ) (pt D (tor0 D cc δ) δ (z i)) P.e0 w := fun i => by
       obtain ⟨m, hm⟩ := hI x hx _ (hz i)
-      exact wd_wd_of_int h0 m (by rw [GlobalTheory.FinWeil.RatTransl.hf_nsmul, hm]) w
+      exact GlobalTheory.FinWeil.RatTransl.wd_wd_of_int h0 m (by rw [GlobalTheory.FinWeil.RatTransl.hf_nsmul, hm]) w
     rw [hF]
     refine Eq.trans ?_ (Finset.sum_congr rfl fun i _ => congrArg ((r i : ℂ) * ·) (h1 i))
     generalize (fun i => Wd D (tor0 D cc δ) (pt D (tor0 D cc δ) δ (z i)) P.e0) = G

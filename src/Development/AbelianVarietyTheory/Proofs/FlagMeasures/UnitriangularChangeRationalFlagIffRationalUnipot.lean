@@ -52,8 +52,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellGe
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
 open scoped Classical
 

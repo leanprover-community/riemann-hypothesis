@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LinMulti
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Formalism.MainNotions.S GlobalTheory.Ell
 open scoped InnerProductSpace
 

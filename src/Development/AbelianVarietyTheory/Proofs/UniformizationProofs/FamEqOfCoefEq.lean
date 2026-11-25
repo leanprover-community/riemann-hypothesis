@@ -54,7 +54,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.CoefDet
 
 theorem fn_ext_of_points {F : Type} [Field F] [IsAlgClosed F] {Y : Scheme.{0}} [IsReduced Y]
@@ -103,4 +102,3 @@ theorem fam_eq_of_coef_eq : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (k : ℕ)
     (sec_trans (s'.s χ) r z hz (hJ.mem _ r)).symm)
 
 end GlobalTheory.UT.CoefDet
-end

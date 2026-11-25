@@ -413,15 +413,11 @@ noncomputable def UpperTheory.Reformulated.B.Qf15.CardLe :
     Type → ℕ → Prop :=
     fun (M : Type) (B : ℕ) ↦ Finite M ∧ Nat.card M ≤ B
 
-noncomputable def UpperTheory.Reformulated.B.Qf15.TorsLe :
-    (M : Type) → [AddCommGroup M] → ℕ → Prop :=
-    fun (M : Type) [AddCommGroup M] (B : ℕ) ↦ Finite ↥(AddCommGroup.torsion M) ∧ Nat.card ↥(AddCommGroup.torsion M) ≤ B
-
 theorem UpperTheory.Reformulated.B.Qf15.torsStep :
     ∀ (A B C : Type) [inst : AddCommGroup A] [inst_1 : AddCommGroup B] [inst_2 : AddCommGroup C] (f : A →+ B) (g : B →+ C)
       (a c : ℕ),
       Function.Exact (⇑f : A → B) (⇑g : B → C) →
-        UpperTheory.Reformulated.B.Qf15.CardLe A a → UpperTheory.Reformulated.B.Qf15.TorsLe C c → UpperTheory.Reformulated.B.Qf15.TorsLe B (a * c) := by
+        UpperTheory.Reformulated.B.Qf15.CardLe A a → UpperTheory.V.KH.TorsLe C c → UpperTheory.V.KH.TorsLe B (a * c) := by
   intro A B C _ _ _ f g a c hfg hA hC
   obtain ⟨hAf, hAc⟩ := hA
   obtain ⟨hCf, hCc⟩ := hC

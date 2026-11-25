@@ -22,8 +22,3 @@ open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
 open GlobalTheory.NormRatio
-
-
-theorem _root_.GlobalTheory.T.standardLattice_selfDual_and_integral_iff_stabilizes : ∀ {D : D7} (V : HSp D) (n : ℕ) (g : GA D V) (x : Formalism.MainNotions.StandardLatticesGL3.GA D n), V.gram = 1 → V.rank = n → GlobalTheory.BotFormula.IsFinPt V g x →
-  IsSelfDualC V (stdLat V) ∧ (x ∈ intG D n ↔ g ∈ openOff V (stdLat V) ∅) := by
-  first | exact @GlobalTheory.NormRatio.selfDual_and_mem_intG_iff

@@ -220,12 +220,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.IwahoriEigenObj
-
-theorem iwahoriEigenvalues : GlobalTheory.IndefiniteRowSideFullHecke.IwahoriSubgroup.IwahoriEigenvalues :=
-  GlobalTheory.IwahoriEigen.iwahoriEigenvalues
-
-end GlobalTheory.IwahoriEigenObj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.IwahoriEigenvalues =====
@@ -357,7 +351,6 @@ theorem isMulCommutative_cent_projArch_ratEmb {γ : GRat σ J} (hγ : IsRegSS γ
     IsMulCommutative (Orb.cent (projArch σ J w (ratEmb σ J γ))) :=
   Orb.isMulCommutative_cent_HA (isRegSS_projArch_ratEmb hγ w)
 
-
 end General
 
 end GlobalTheory.ArchVanish
@@ -365,7 +358,6 @@ end GlobalTheory.ArchVanish
 end
 
 namespace GlobalTheory.ArchVanish
-
 
 end GlobalTheory.ArchVanish
 end -- clump:auto
@@ -1659,7 +1651,6 @@ noncomputable section
 namespace GlobalTheory.PsCo.Plug
 open MainStatements.WeightKernel
 
-
 theorem hyperX : CuspAny → ArchZero → GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.RegularSemisimple → HyperZeroX := by
   intro hCA hAZ hRS D V lam S M T U μa μf μ _ _ fa ff hTD γ hreg hirr hna
   obtain ⟨Φ, L, a, hgood⟩ := exists_isGood V
@@ -1820,7 +1811,7 @@ open GlobalTheory.TrMult
 
 theorem GlobalTheory.PsCo.Plug.ellipticSideDirect : GlobalTheory.Published.CuspTraceClass → EllTraceX := fun tc =>
   GlobalTheory.PsCo.Plug.ellTrace_of_middleX MainStatements.WeightKernel.regClassInt_holds (GlobalTheory.T.siegel_implies_regular_class_finite CompanionTheory.Prw.siegelCore_holds) (GlobalTheory.T.cuspidalOperators_vanishingRadicalIntegrals_unitaryGroup tc)
-    _root_.GlobalTheory.Proof.parabolic_and_constant_term.parabolicAndConstTermX GlobalTheory.IwahoriEigenObj.iwahoriEigenvalues _root_.GlobalTheory.RegSSObj.regularSemisimple _root_.GlobalTheory.NonFieldType.nonFieldTypeVanishingX
+    _root_.GlobalTheory.Proof.parabolic_and_constant_term.parabolicAndConstTermX GlobalTheory.IwahoriEigen.iwahoriEigenvalues _root_.GlobalTheory.RegSSObj.regularSemisimple _root_.GlobalTheory.NonFieldType.nonFieldTypeVanishingX
     (GlobalTheory.PsCo.Plug.hyperZero_of_intX MainStatements.WeightKernel.regClassInt_holds _root_.GlobalTheory.RegSSObj.regularSemisimple)
 
 end

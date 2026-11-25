@@ -6,9 +6,30 @@ public import Development.WeilBound.ThetaLifts.LeviDeterminants.WeilRepRationalS
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.ThetaSumInvariantRationalUnitary
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.WeilRepresentationPointwiseArchimedeanDecayBound
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.ContinuousOfMem
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowFin
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowFinal
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowHt
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowSob
+public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowTr
+
+section
+@[expose] public section
+
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped TensorProduct NNReal Matrix
+open scoped Classical
+
+theorem PositivityTheory.ThKF0.weil_rep_rapid_decay_height : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ), IsPair B M χX χW om r s r' s' → ∀ Φ ∈ schA F (Fin n × Fin d), ∀ N : ℕ, ∃ (C : ℝ) (k : ℕ), ∀ g h (x : Fin n × Fin d → AF F),
+    ‖om (g, h) Φ x‖ * (1 + ‖fun i => evI F (x i)‖) ^ N ≤ C * ((ht g : ℝ) * ht h) ^ k :=
+  PositivityTheory.ThKF0.Grow.weil_rep_rapid_decay_of_growth PositivityTheory.ThKF0.Grow.htBd PositivityTheory.ThKF0.Grow.finInv
+    (PositivityTheory.ThKF0.Grow.sob_of PositivityTheory.ThKF0.Grow.derivOK) PositivityTheory.ThKF0.Grow.trBd
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LeviDeterminants.ThetaGrow, Development.WeilBound.ThetaLifts.LeviDeterminants.ThetaBasicOf, Development.WeilBound.ThetaLifts.LeviDeterminants.ThetaBasic

@@ -38,6 +38,28 @@ def blockOne {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K
     Matrix (Fin (M + 1)) (Fin (M + 1)) K :=
   Matrix.of (Fin.cons (Fin.cons t (fun _ => 0)) (fun i => Fin.cons 0 (A i)))
 
+section BlockOne
+
+variable {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K)
+
+theorem blockOne_zero_zero : blockOne t A 0 0 = t := rfl
+
+theorem blockOne_zero_succ (j : Fin M) : blockOne t A 0 j.succ = 0 := rfl
+
+theorem blockOne_succ_zero (i : Fin M) : blockOne t A i.succ 0 = 0 := rfl
+
+theorem blockOne_succ_succ (i j : Fin M) : blockOne t A i.succ j.succ = A i j := rfl
+
+end BlockOne
+
+theorem det_blockOne {K : Type} [CommRing K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
+    (blockOne t A).det = t * A.det := by
+  have h0 : (blockOne t A).submatrix Fin.succ Fin.succ = A := by
+    ext i j
+    exact blockOne_succ_succ t A i j
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+  simp [blockOne_zero_zero, blockOne_zero_succ, h0]
+
 def consTup {K : Type} [Zero K] [One K] {M n : ℕ} (X : Fin n → Fin M → K) : Fin (n + 1) → Fin (M + 1) → K :=
   Fin.cons (Fin.cons 1 (fun _ => 0)) (fun a => Fin.cons 0 (X a))
 

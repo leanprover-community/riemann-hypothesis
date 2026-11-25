@@ -410,9 +410,6 @@ end Field
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
-theorem sh_mul (x y : G.C) : sh G (x * y) = sh G y * sh G x := by
-  simp only [sh, map_mul, MulOpposite.unop_mul]
-
 theorem sh_add (x y : G.C) : sh G (x + y) = sh G x + sh G y := by
   simp only [sh, map_add (f := _), MulOpposite.unop_add]
 
@@ -437,7 +434,7 @@ theorem conj_law (P : Pair G) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) (h
     rw [map_add (f := _), sh_add, mul_add, hx, hy, map_add (f := _), map_add (f := _), add_mul]
   · intro x y hx hy
     show (P.β : G.C) * sh G (j (x * y)) = j (σ (x * y)) * P.β
-    rw [map_mul, sh_mul, ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
+    rw [map_mul, GlobalTheory.LKMid.Pair.sh_mul', ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
 
 omit [NumberField M] in
 theorem comm_law (γ : G.C) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) (hj : j pb.gen = γ) (y : G.C)
@@ -466,7 +463,6 @@ theorem triv_mul_inv (R : Type) [CommRing R] [Algebra ℚ R] (β β' : G.C) (x U
         ((starT G.star R U).unop * (starT G.star R ((U⁻¹ : (R ⊗[ℚ] G.C)ˣ) : R ⊗[ℚ] G.C)).unop) *
         (starT G.star R x).unop := by simp only [mul_assoc]
     _ = _ := by rw [h1, Units.inv_mul, mul_one, mul_one]
-
 
 omit [NumberField M] in
 theorem exists_basis (ha : G.a = 1) (P : Pair G) (μ : ℂ) (hm : P.Mark μ) (pb : PowerBasis G.F M)
@@ -694,7 +690,7 @@ theorem dconj_law (P : DPair G) (pb : PowerBasis G.F M) (j : M →ₐ[G.F] G.C) 
     rw [map_add (f := _), sh_add, mul_add, hx, hy, map_add (f := _), map_add (f := _), add_mul]
   · intro x y hx hy
     show (P.β : G.C) * sh G (j (x * y)) = j (σ (x * y)) * P.β
-    rw [map_mul, sh_mul, ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
+    rw [map_mul, GlobalTheory.LKMid.Pair.sh_mul', ← mul_assoc, hy, mul_assoc, hx, ← mul_assoc, ← map_mul, ← map_mul, mul_comm y x]
 
 end Fld
 
@@ -745,7 +741,6 @@ theorem dell (Q : DPair G) (φ : G.F →+* ℂ) (z : ℂ) (hz : Q.pol.eval₂ φ
 
 section Fld2
 variable {M : Type} [Field M] [NumberField M] [Algebra G.F M]
-
 
 omit [NumberField M] in
 theorem dexists_basis (Q : DPair G) (pb : PowerBasis G.F M) (hpol : Q.pol = minpoly G.F pb.gen)
@@ -853,7 +848,6 @@ theorem emb_index (pb : PowerBasis G.F M) (w : InfinitePlace G.F) (pol : Polynom
   obtain ⟨i, hi⟩ := hsurj _ h0
   exact ⟨i, emb_ext pb _ _ (fun x => (he i x).trans (hη x).symm) hi⟩
 
-
 omit [NumberField M] in
 theorem dreal_move (ha : G.a = 1) (Q : DPair G) (pb : PowerBasis G.F M) (hpol : Q.pol = minpoly G.F pb.gen)
     (j : M →ₐ[G.F] G.C) (hj : j pb.gen = Q.γ) (v : InfinitePlace G.F) (hv : sigPosH (G.gram_herm v) = 1)
@@ -912,7 +906,6 @@ theorem dreal_move (ha : G.a = 1) (Q : DPair G) (pb : PowerBasis G.F M) (hpol : 
     refine ⟨_, by rw [hx, hi₀], ?_⟩
     rw [quad_conj, hD', quad_single]
     exact mul_pos (hdp i₀ hv) (hi₀ ▸ hb1)
-
 
 omit [NumberField M] in
 theorem real_back (ha : G.a = 1) (P : Pair G) (pb : PowerBasis G.F M) (hpol : P.pol = minpoly G.F pb.gen)
@@ -1107,7 +1100,7 @@ theorem core (ha : G.a = 1) (hn : Odd G.n) (pb : PowerBasis G.F M) (hdeg : (minp
       { β := β'
         γ := Q.γ
         c := Q.c
-        sym := by rw [hβ', sh_mul, Q.sym, hlaw, hσa]
+        sym := by rw [hβ', GlobalTheory.LKMid.Pair.sh_mul', Q.sym, hlaw, hσa]
         sim := by
           rw [hβ', ← mul_assoc, hcomm _ rfl, mul_assoc, mul_assoc, ← mul_assoc (Q.γ : G.C), Q.sim, ← mul_assoc,
             ← mul_assoc, Algebra.commutes]
@@ -1142,7 +1135,7 @@ theorem core (ha : G.a = 1) (hn : Odd G.n) (pb : PowerBasis G.F M) (hdeg : (minp
       { β := β'
         γ := P.γ
         c := P.c
-        sym := by rw [hβ', sh_mul, P.sym, hlawP, map_inv₀, hσa]
+        sym := by rw [hβ', GlobalTheory.LKMid.Pair.sh_mul', P.sym, hlawP, map_inv₀, hσa]
         sim := by
           rw [hβ', ← mul_assoc, hcomm _ rfl, mul_assoc, mul_assoc, ← mul_assoc (P.γ : G.C), P.sim, ← mul_assoc,
             ← mul_assoc, Algebra.commutes]

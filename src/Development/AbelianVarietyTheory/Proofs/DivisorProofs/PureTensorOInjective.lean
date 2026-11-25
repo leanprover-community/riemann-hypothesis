@@ -179,8 +179,13 @@ theorem pi_lineAt {S T : HSp D} {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what
   refine ((isLineAt_lineAt hθ τ z).2.2 1 τ').trans ?_
   rw [Pi.single_apply, Complex.ofReal_one, one_smul]
 
-theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (sV BV : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (s BW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (pV pW : D.what₂.Tau → ℕ), (∀ τ, IsCartanInv (gramAt D V τ) (sV τ)) → (∀ τ, IsCartanInv (gramAt D W τ) (s τ)) → (∀ τ, IsONBasis (gramAt D V τ) (sV τ) (BV τ) (pV τ)) → (∀ τ, IsONBasis (gramAt D W τ) (s τ) (BW τ) (pW τ)) → V.SigOK → W.SigOK → ∀ f, IsThetaFunO ψ V W f → (∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (sV τ) (s τ)) f) → f ≠ 0 → Function.Injective (pureTensorO ψ θ V W sV s BV BW f) := by
-  intro D ψ θ V W hψ hθ sV BV s BW pV pW _ _ hBV hBW _ _ f hf hvac hf0
+theorem pureTensorO_injective_of_on (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D)
+    (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (sV BV : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (s BW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (pV pW : D.what₂.Tau → ℕ)
+    (hBV : ∀ τ, IsONBasis (gramAt D V τ) (sV τ) (BV τ) (pV τ))
+    (hBW : ∀ τ, IsONBasis (gramAt D W τ) (s τ) (BW τ) (pW τ)) (f : WO V W → ℂ) (hf : IsThetaFunO ψ V W f)
+    (hvac : ∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (sV τ) (s τ)) f) (hf0 : f ≠ 0) :
+    Function.Injective (pureTensorO ψ θ V W sV s BV BW f) := by
   obtain ⟨σ, h⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
   choose ε hε hG hs using hBV
   choose ε' hε' hG' hs' using hBW
@@ -274,6 +279,10 @@ theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (�
     simp only [LinearMap.smul_apply, LinearMap.add_apply, Submodule.coe_smul, Submodule.coe_add, hD1]
     rw [h1]
     exact this
+
+theorem pureTensorO_injective : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (V W : HSp D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (sV BV : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (s BW : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (pV pW : D.what₂.Tau → ℕ), (∀ τ, IsCartanInv (gramAt D V τ) (sV τ)) → (∀ τ, IsCartanInv (gramAt D W τ) (s τ)) → (∀ τ, IsONBasis (gramAt D V τ) (sV τ) (BV τ) (pV τ)) → (∀ τ, IsONBasis (gramAt D W τ) (s τ) (BW τ) (pW τ)) → V.SigOK → W.SigOK → ∀ f, IsThetaFunO ψ V W f → (∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (sV τ) (s τ)) f) → f ≠ 0 → Function.Injective (pureTensorO ψ θ V W sV s BV BW f) :=
+  fun _ ψ θ V W hψ hθ sV BV s BW pV pW _ _ hBV hBW _ _ f hf hvac hf0 =>
+    pureTensorO_injective_of_on ψ θ V W hψ hθ sV BV s BW pV pW hBV hBW f hf hvac hf0
 
 end GlobalTheory.FockVecInj
 

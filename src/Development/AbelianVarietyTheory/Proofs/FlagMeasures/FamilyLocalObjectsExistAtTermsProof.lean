@@ -281,7 +281,7 @@ theorem over_local : ∀ (D : D7) (Z : LocDat D), ∀ (u u' : D.what₂.Word) (F
   intro D Z u u' F0 Λ hrow F' hPD hG w F00 F'0 hcell hpt p P hAt
   have hT : ((Tu D u : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (Formalism.L2.SG.GramJoint.Tu_pos D u).ne'
   have hT' : ((Tu D u' : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (Formalism.L2.SG.GramJoint.Tu_pos D u').ne'
-  obtain ⟨-, γ, hγ, hA, hA'⟩ := GlobalTheory.T.rationalFramePairs_differ_isometry_unitriangular D (lf D F0) F00 F' F'0 w hT hT' hG hcell hpt
+  obtain ⟨-, γ, hγ, hA, hA'⟩ := GlobalTheory.LocOver.witt_frames_at_point D (lf D F0) F00 F' F'0 w hT hT' hG hcell hpt
   obtain ⟨g, hext, hgU, -, -, -⟩ := GlobalTheory.T.rational_isometry_extends_local_isometry D Z p γ hγ
   obtain ⟨ht0, htri0⟩ := locU_isTerm D Z u u' F0 Λ hrow F' hPD hG p
   have hOK : (Z.M p).OK := (Z.agree p).1
@@ -564,7 +564,7 @@ theorem existFam : ExistFam := by
     apply ht.1
     show Gt t = 0
     simp [Gt, h0]
-  have hrel : t₀.relevant := (GlobalTheory.T.nonGeneric_family_classes_determine_rows D X Y u u' hTie).2.2 t₀ hv
+  have hrel : t₀.relevant := (GlobalTheory.NGClass.ngClass_rows D X Y u u' hTie).2.2 t₀ hv
   exact _root_.GlobalTheory.FamGen.exists_famTie D X Y u u' TS cls hG hrow t₀ ht₀ hrel
 
 end GlobalTheory.SnFam

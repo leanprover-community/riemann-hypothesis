@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ColPeriod
 
 open NumberField IsDedekindDomain Formalism.L2.Col GlobalTheory.TopStep

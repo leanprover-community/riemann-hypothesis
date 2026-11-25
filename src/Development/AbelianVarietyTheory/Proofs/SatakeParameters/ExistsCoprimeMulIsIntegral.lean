@@ -13,8 +13,6 @@ public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLa
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.L2.DIV Classical
 
-noncomputable section
-
 namespace GlobalTheory.KerTie.MuqUnit
 
 theorem dvd_absNorm_of_mem {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) {p : ℕ} (hp : p.Prime)

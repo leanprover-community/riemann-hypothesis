@@ -27,13 +27,8 @@ theorem words {M : Type} [AddCommGroup M] [Module ℂ M] (S : Submodule ℂ (Mod
     intro N h1 h2
     rw [hW]
     exact sInf_le ⟨h1, h2⟩
-  have hspan : ∀ F ∈ Submodule.span ℂ L, F z ∈ W := by
-    intro F hF
-    induction hF using Submodule.span_induction with
-    | mem F hF => exact hLW F hF z hz0
-    | zero => simp
-    | add F G _ _ h1 h2 => exact W.add_mem h1 h2
-    | smul c F _ h1 => exact W.smul_mem c h1
+  have hspan : ∀ F ∈ Submodule.span ℂ L, F z ∈ W := fun F hF =>
+    (Submodule.span_le (p := W.comap (LinearMap.applyₗ z))).2 (fun F hF => hLW F hF z hz0) hF
   refine ⟨hz0, ?_, ?_⟩
   · have hle : W ≤ W ⊓ ⨅ E ∈ S, W.comap E := by
       refine hmin _ ?_ ?_

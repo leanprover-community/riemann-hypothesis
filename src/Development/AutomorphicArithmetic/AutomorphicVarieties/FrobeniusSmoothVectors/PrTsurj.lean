@@ -160,25 +160,10 @@ theorem UpperTheory.V.Fr.pr_tsurj :
     rfl
   obtain ⟨-, -, hlc⟩ := pr_open (C₀ := C₀) hF O R B hCont
   obtain ⟨B', hB'c, hB'map, hB'snd⟩ := pr_tbox hF O (B.bar O) hlc x hx
-  have hOfbar : (Box.map (p : DualNumber (ResidueField O) →+* ResidueField O) B').Of (ρ.bar O) := by
+  have hOfbar : (Box.map (p : DualNumber (ResidueField O) →+* ResidueField O) B').Of
+      (ρ.bar O) := by
     rw [hB'map]
-    refine ⟨?_, ?_, ?_⟩
-    · show ((B.r F.c).mat).map (res O R) = 1
-      rw [hOf.atc]
-      exact Matrix.map_one _ (map_zero _) (map_one _)
-    · intro s
-      show ((B.r s).mat).map (res O R) = _
-      rw [hOf.res]
-      rfl
-    · intro v i s
-      have e : (((B.bar O).g v : GL (Fin n) (ResidueField O)) : Matrix (Fin n) (Fin n) (ResidueField O)) * (ρ.bar O).r (F.loc0 v s) *
-          ((((B.bar O).g v)⁻¹ : GL (Fin n) (ResidueField O)) : Matrix (Fin n) (Fin n) (ResidueField O)) =
-          (res O R).mapMatrix ((B.g v : Matrix (Fin n) (Fin n) R) * ρ.r (F.loc0 v s) *
-            (((B.g v)⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R)) := by
-        rw [map_mul, map_mul]
-        rfl
-      rw [e]
-      exact congrArg (res O R) (hOf.psi v i s)
+    exact hOf.map (res O R : R →+* ResidueField O)
   have hn := pr_norm hF O (DualNumber (ResidueField O)) (ResidueField O) p (ρ.bar O) B'
   have hker : maximalIdeal (DualNumber (ResidueField O)) * RingHom.ker p = ⊥ := by
     refine eq_bot_iff.2 (Ideal.mul_le.2 fun a ha b hb => ?_)

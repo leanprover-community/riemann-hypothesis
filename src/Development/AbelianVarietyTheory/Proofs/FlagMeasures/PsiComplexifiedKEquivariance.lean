@@ -154,14 +154,6 @@ lemma comm_J_iff (ε : Fin n → Bool) (x : Matrix (Fin n) (Fin n) ℂ) :
     · rw [hij, mul_comm]
     · rw [h i j hij]; simp
 
-lemma isLo_mul {a b : Matrix (Fin n) (Fin n) ℂ} (ha : IsLo a) (hb : IsLo b) : IsLo (a * b) := by
-  intro i j hij
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  by_cases hk : i < k
-  · rw [ha i k hk, zero_mul]
-  · rw [hb k j (lt_of_le_of_lt (not_lt.1 hk) hij), mul_zero]
-
 lemma isLo_inv {a : (Matrix (Fin n) (Fin n) ℂ)ˣ} (ha : IsLo (a : Matrix (Fin n) (Fin n) ℂ)) :
     IsLo ((a⁻¹ : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ) := by
   have hb : Matrix.BlockTriangular (a : Matrix (Fin n) (Fin n) ℂ) (OrderDual.toDual : Fin n → (Fin n)ᵒᵈ) :=
@@ -188,7 +180,7 @@ def BC (ε : Fin n → Bool) : Subgroup (Matrix (Fin n) (Fin n) ℂ)ˣ where
   carrier := {g | g ∈ GC ε ∧ IsLo (g : Matrix (Fin n) (Fin n) ℂ) ∧ ∀ l, 0 < (g : Matrix (Fin n) (Fin n) ℂ) l l}
   mul_mem' := by
     intro g h hg hh
-    refine ⟨mul_mem hg.1 hh.1, isLo_mul hg.2.1 hh.2.1, fun l => ?_⟩
+    refine ⟨mul_mem hg.1 hh.1, GlobalTheory.Dec.IwKC.lo_mul hg.2.1 hh.2.1, fun l => ?_⟩
     rw [Units.val_mul, GlobalTheory.Dec.IwKC.diag_mul_lo hg.2.1 hh.2.1]
     exact mul_pos (hg.2.2 l) (hh.2.2 l)
   one_mem' := ⟨one_mem _, fun i j h => by simp [h.ne], fun l => by simp⟩
@@ -676,7 +668,7 @@ lemma haarBC (ε : Fin n → Bool) :
     (fun g => (inW_iff ε _).2 ⟨g.2.1, g.2.2.1, fun l => (Complex.pos_iff.1 (g.2.2.2 l)).2.symm⟩)
     (fun x y hx hy => by
       rw [inW_iff] at *
-      refine ⟨Commute.mul_left hx.1 hy.1, isLo_mul hx.2.1 hy.2.1, fun l => ?_⟩
+      refine ⟨Commute.mul_left hx.1 hy.1, GlobalTheory.Dec.IwKC.lo_mul hx.2.1 hy.2.1, fun l => ?_⟩
       rw [GlobalTheory.Dec.IwKC.diag_mul_lo hx.2.1 hy.2.1]
       simp [hx.2.2 l, hy.2.2 l])
     (by

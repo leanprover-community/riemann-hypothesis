@@ -123,10 +123,8 @@ theorem indicator_int_mem_SB {κ : Type} [Fintype κ] (v : HeightOneSpectrum (�
     rw [hS']
     haveI := GlobalTheory.AdelicUnitaryTop.compactSpace_adicCompletionIntegers F v
     exact isCompact_univ_pi fun _ => isCompact_iff_compactSpace.2 this
-  refine ⟨(IsLocallyConstant.iff_exists_open _).2 fun x => ?_, HasCompactSupport.intro hcp fun x hx => Set.indicator_of_notMem hx _⟩
-  by_cases hx : x ∈ S
-  · exact ⟨S, hcl.isOpen, hx, fun y hy => by rw [Set.indicator_of_mem hy, Set.indicator_of_mem hx]; rfl⟩
-  · exact ⟨Sᶜ, hcl.compl.isOpen, hx, fun y hy => by rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]⟩
+  exact ⟨(LocallyConstant.indicator (LocallyConstant.const _ 1) hcl).isLocallyConstant,
+    HasCompactSupport.intro hcp fun x hx => Set.indicator_of_notMem hx _⟩
 
 theorem indicator_int_ne_zero {κ : Type} (v : HeightOneSpectrum (𝓞 F)) :
     Set.indicator {x : κ → Fv F v | ∀ k, x k ∈ v.adicCompletionIntegers F} (1 : (κ → Fv F v) → ℂ) ≠ 0 := by

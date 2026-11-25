@@ -49,8 +49,6 @@ import Formalism.SharpRestriction.GrowthBounds.TwistedLevelAgreement.StepInTwK
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.CmpJ.AgreeLv Formalism.MainNotions.G.KAat Formalism.L2.Ker Formalism.L2.PairingIndexBounds.F
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.TwV.LbB
 
 section Inst
@@ -88,5 +86,3 @@ theorem lbAtB_lev0At : ∀ {D : D7} (Gt : GatTies D) (c : LatCmp D) (g : GroupCo
   exact lbAtB_locAt g.cmp.B (g.cmp.fr_B u w hg) _ hJ.Lb_eq
 
 end GlobalTheory.TwV.LbB
-
-end

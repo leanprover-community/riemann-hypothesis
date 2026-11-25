@@ -22,15 +22,9 @@ theorem toE_mono {x y : WithTop ℝ} (h : x ≤ y) : toE x ≤ toE y := WithBot.
 
 theorem le_toE_sum {ι : Type} (S : Finset ι) (g : ι → C) {r : EReal} (h : ∀ i ∈ S, r ≤ toE (v (g i))) :
     r ≤ toE (v (∑ i ∈ S, g i)) := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, v.map_zero]; exact le_top
-  | insert a S ha ih =>
-    rw [Finset.sum_insert ha]
-    have h1 := h a (Finset.mem_insert_self _ _)
-    have h2 := ih fun i hi => h i (Finset.mem_insert_of_mem hi)
-    refine le_trans ?_ (toE_mono (v.map_add _ _))
-    rcases min_choice (v (g a)) (v (∑ i ∈ S, g i)) with e | e <;> rw [e] <;> assumption
+  induction r using WithBot.recBotCoe with
+  | bot => exact bot_le
+  | coe r => exact toE_mono (v.map_le_sum fun i hi => WithBot.coe_le_coe.1 (h i hi))
 
 theorem derivAt0_subst {σ τ : Type} {E : σ → MvPowerSeries τ C} (hE : HasSubst E) (P : MvPolynomial τ C)
     (f : MvPowerSeries σ C) : ∃ S : Finset (σ →₀ ℕ),

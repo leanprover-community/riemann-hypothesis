@@ -110,7 +110,6 @@ open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
 
-
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
 
@@ -220,10 +219,8 @@ open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
 
-
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
-
 
 theorem _root_.GlobalTheory.T.coefficient_lattice_eq_small_coefficient_field : ∀ (D : D7) (S T : HSp D) (B : Base S T), B.Good → ∀ O : Subring ℂ, intLL D ≤ O → ∀ h, B.coefLat D.what₂.embLL (labLL D) O h = B.coefLat (embLL0 D) (labLL0 D) O h := by
   first | exact @GlobalTheory.PlaceSmall.coefLat_eq_small
@@ -241,7 +238,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ)
 open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
-
 
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
@@ -430,10 +426,8 @@ open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
 
-
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
-
 
 theorem _root_.GlobalTheory.T.integral_forms_central_translate_iff : ∀ (D : D7) (j : Fin D.R.m) (B : Base (Vc D j) (Wc D j)), B.Good → ∀ (ψ : Twist D Circle) (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (emb : D.what₂.Tau → (D.host.E →+* K)) (O : Subring ℂ), IsCoefRing σ emb O →
   ∀ (Q : Finset (Pl D.host.E)) (z : GA D (Vc D j)), IsCentAt j Q z → ∀ N : ℕ, N ≠ 0 → (∀ P ∈ Q, (N : 𝓞 D.host.E) ∈ P.asIdeal) → (N : ℂ)⁻¹ ∈ O →
@@ -453,7 +447,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ)
 open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
-
 
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
@@ -563,9 +556,7 @@ open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
 
-
 open GlobalTheory.PlaceRead
-
 
 end -- clump:auto
 end -- clump:auto
@@ -660,7 +651,6 @@ open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
 
-
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
 
@@ -733,7 +723,6 @@ open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
 
-
 open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
 
@@ -780,7 +769,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ)
 open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
-
 
 open GlobalTheory.HeightCounting.Up (PrN)
 
@@ -940,7 +928,7 @@ theorem span_translate (H : AtPlace Y Z c w j) {ι : KE c w →+* ℂ} (hι : �
       Submodule.span (ringOf ι) ((fun x h => (κ⁻¹ • fockOf Y (used_of_tw H.tw) j u (D.what₂.jMt (D.what₂.muTw w) (j.1 + 1) x))
         (h * finPt (Vc D j) z)) '' latS w (j.1 + 1)) := by
   have hB := Z.good.base (c.twI w) j (c.sd w)
-  obtain ⟨hg, ha, -⟩ := GlobalTheory.T.chosen_twist_via_embedding_good_conjugate D c w Z.ρ Z.good H.ok j ι
+  obtain ⟨hg, ha, -⟩ := GlobalTheory.PlaceRead.twVia_good D c w Z.ρ Z.good H.ok j ι
   have hle := intLL_le hι
   obtain ⟨hN0, hNP, o, ho⟩ := _root_.GlobalTheory.PlaceUnit.tupPrime_isUnit D X X0 Y S YS Z c w j H ι hι
   have hNi : ((GlobalTheory.TwistField.tupPrime X.R.toRealDat (Y.tupT (D.what₂.muTw w)) : ℕ) : ℂ)⁻¹ ∈ ringOf ι := by

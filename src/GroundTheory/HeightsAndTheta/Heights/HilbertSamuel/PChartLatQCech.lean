@@ -188,6 +188,26 @@ def valL (T : Submonoid (MRingOver ℚ ι)) : LocalizedModule T (MRingOver ℚ �
   map_add' := val_add T
   map_smul' := fun r x => val_smul T r x
 
+def valHom {T : Submonoid (MRingOver ℚ ι)} (hT : ∀ t ∈ T, aeval y t ≠ 0) :
+    LocalizedModule T (MRingOver ℚ ι ⧸ idealOver y ℚ) →+* Ω where
+  toFun := val y T
+  map_one' := by
+    rw [show (1 : LocalizedModule T (MRingOver ℚ ι ⧸ idealOver y ℚ)) =
+      LocalizedModule.mk 1 1 by rw [OreLocalization.one_def], val_mk hT]
+    simp
+  map_mul' x x' := by
+    induction x using LocalizedModule.induction_on with
+    | h m s =>
+    induction x' using LocalizedModule.induction_on with
+    | h m' s' =>
+    rw [LocalizedModule.mk_mul_mk, val_mk hT, val_mk hT, val_mk hT]
+    simp only [Submonoid.coe_mul, map_mul]
+    field_simp [hT s s.2, hT s' s'.2]
+  map_zero' := by
+    rw [← LocalizedModule.zero_mk 1, val_mk hT]
+    simp
+  map_add' := val_add T
+
 theorem liftOfLE_mk {T T' : Submonoid (MRingOver ℚ ι)} (h : T ≤ T')
     (m : MRingOver ℚ ι ⧸ idealOver y ℚ) (s : T) :
     LocalizedModule.liftOfLE T T' h (LocalizedModule.mk m s) = LocalizedModule.mk m (⟨s.1, h s.2⟩ : T') := by

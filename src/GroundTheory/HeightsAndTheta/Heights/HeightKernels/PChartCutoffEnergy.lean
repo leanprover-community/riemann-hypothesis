@@ -117,11 +117,7 @@ theorem dzb_eq_star_dz {D : ℕ} {v : (Fin D → ℂ) → ℝ} {z : Fin D → �
 theorem norm_dz_le {D : ℕ} {v : (Fin D → ℂ) → ℝ} {z : Fin D → ℂ} (hv : DifferentiableAt ℝ v z)
     (j : Fin D) : ‖dz j (cplx v) z‖ ≤ ‖fderiv ℝ v z‖ := by
   simp only [dz, fderiv_cplx hv]
-  have h1 : ‖(Pi.single j (1 : ℂ) : Fin D → ℂ)‖ ≤ 1 := by
-    refine (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun i => ?_
-    by_cases h : i = j
-    · subst h; simp
-    · simp [h]
+  have h1 : ‖(Pi.single j (1 : ℂ) : Fin D → ℂ)‖ ≤ 1 := by rw [Pi.norm_single, norm_one]
   have h2 : ‖(Complex.I • Pi.single j (1 : ℂ) : Fin D → ℂ)‖ ≤ 1 := by
     rw [norm_smul, Complex.norm_I, one_mul]; exact h1
   have hn := norm_nonneg (fderiv ℝ v z)

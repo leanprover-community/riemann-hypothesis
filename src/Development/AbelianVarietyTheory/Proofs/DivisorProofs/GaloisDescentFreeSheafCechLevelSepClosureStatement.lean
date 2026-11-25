@@ -170,7 +170,6 @@ namespace GlobalTheory.EtC.GalSec.Tens
 
 variable (K Ω : Type) [Field K] [Field Ω] [Algebra K Ω]
 
-
 open Classical in
 def conj (θ : Ω) : Finset Ω := by
   classical
@@ -179,7 +178,6 @@ def conj (θ : Ω) : Finset Ω := by
 def DependsOn (k : ℕ) (θ : Ω) (φ : LCRing K Ω k) : Prop :=
   ∀ g g' : Fin k → (Ω ≃ₐ[K] Ω), (∀ i, g i θ = g' i θ) → φ g = φ g'
 
-
 open Classical in
 def pick (k : ℕ) (θ : Ω) (t : Fin k → Ω) : Fin k → (Ω ≃ₐ[K] Ω) := by
   classical
@@ -187,7 +185,6 @@ def pick (k : ℕ) (θ : Ω) (t : Fin k → Ω) : Fin k → (Ω ≃ₐ[K] Ω) :=
 
 variable {K Ω}
 variable {B : Type} [CommRing B]
-
 
 open Classical in
 def idem (g₀ : Ω →+* B) (θ : Ω) (b : B) (s : conj K Ω θ) : B := by
@@ -914,7 +911,7 @@ theorem gal_sec : ∀ (R : Type) [CommRing R] (F : Shv R), Finitary F → ∀ (K
           ∃ t : Sec F (Spec (CommRingCat.of (LocallyConstant X B))), ∀ x,
             Sec.res (Spec.map (CommRingCat.ofHom (LocallyConstant.evalRingHom x))) t = ψ x := by
     intro R _ F hF X _ _ B _
-    have hfin := (GlobalTheory.T.preservesFilteredColimits_moduleCat_iff_forget_iff_elements
+    have hfin := (GlobalTheory.EtC.FilteredElements.preservesFilteredColimits_modules_iff_elements
       (ULift.{1} R) (onRings F)).2.mp hF _ (LCSec.stage X B) (LCSec.lcCocone X B)
         (LCSec.lcCoconeIsColimit X B)
     have hrep (t : Sec F (Spec (CommRingCat.of (LocallyConstant X B)))) :
@@ -957,7 +954,7 @@ theorem gal_sec : ∀ (R : Type) [CommRing R] (F : Shv R), Finitary F → ∀ (K
           Sec.res (Spec.map (CommRingCat.ofHom (τ : Ω →+* Ω))) x) := by
     intro R _ F hF K Ω _ _ _ _ x
     classical
-    have elements := (GlobalTheory.T.preservesFilteredColimits_moduleCat_iff_forget_iff_elements
+    have elements := (GlobalTheory.EtC.FilteredElements.preservesFilteredColimits_modules_iff_elements
       (ULift.{1} R) (onRings F)).2.mp hF
     obtain ⟨s, y, hy⟩ := (elements (Finset Ω) (GalSmooth.diag Ω) (GalSmooth.cocone Ω)
       (GalSmooth.coconeIsColimit Ω)).1 x

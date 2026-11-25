@@ -80,13 +80,8 @@ theorem opNorm_le_hs (A : Wq →L[ℂ] Wp) :
     ‖A‖ ≤ (Module.finrank ℂ Wq : ℝ) * ‖Formalism.L2.SG.PackageTie.hsEmb A‖ := by
   refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun x => ?_
   let b := stdOrthonormalBasis ℂ Wq
-  have hcomp : ∀ i, ‖A (b i)‖ ≤ ‖Formalism.L2.SG.PackageTie.hsEmb A‖ := by
-    intro i
-    have h1 : ‖A (b i)‖ ^ 2 ≤ ‖Formalism.L2.SG.PackageTie.hsEmb A‖ ^ 2 := by
-      rw [PiLp.norm_sq_eq_of_L2]
-      exact Finset.single_le_sum (f := fun j => ‖(Formalism.L2.SG.PackageTie.hsEmb A) j‖ ^ 2)
-        (fun j _ => by positivity) (Finset.mem_univ i)
-    exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 h1
+  have hcomp : ∀ i, ‖A (b i)‖ ≤ ‖Formalism.L2.SG.PackageTie.hsEmb A‖ := fun i =>
+    PiLp.norm_apply_le (Formalism.L2.SG.PackageTie.hsEmb A) i
   calc ‖A x‖ = ‖∑ i, ⟪b i, x⟫_ℂ • A (b i)‖ := by
         conv_lhs => rw [← b.sum_repr' x]
 

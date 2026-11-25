@@ -186,13 +186,8 @@ theorem neg_quad (d : Fin N → ℝ) (g : Matrix (Fin N) (Fin N) ℂ) (n : ℕ)
 theorem pivot_neg (d : Fin N → ℝ) (g c : Matrix (Fin N) (Fin N) ℂ) (n : ℕ)
     (hneg : (-gramHead d n g).PosDef) (hc : c.BlockTriangular id) (hcu : IsUnit c.det)
     (k : Fin N) (hk : (k : ℕ) < n) : (gramOf d (g * c) k k).re < 0 := by
-  have hy : c *ᵥ (Pi.single k 1 : Fin N → ℂ) ≠ 0 := by
-    intro h
-    have h1 : c⁻¹ *ᵥ (c *ᵥ (Pi.single k 1 : Fin N → ℂ)) = Pi.single k 1 := by
-      rw [mulVec_mulVec, nonsing_inv_mul c hcu, one_mulVec]
-    rw [h, mulVec_zero] at h1
-    have := congrFun h1 k
-    simp at this
+  have hy : c *ᵥ (Pi.single k 1 : Fin N → ℂ) ≠ 0 := fun h => by
+    simpa using mulVec_injective_iff_isUnit.2 ((isUnit_iff_isUnit_det c).2 hcu) (h.trans (mulVec_zero c).symm)
   have hs : ∀ a : Fin N, n ≤ (a : ℕ) → (c *ᵥ (Pi.single k 1 : Fin N → ℂ)) a = 0 := by
     intro a ha
     have hka : k < a := Fin.lt_def.2 (by omega)
@@ -264,12 +259,8 @@ theorem pivot_pos (j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ) (hu : IsUnit h.det)
     refine Finset.sum_congr rfl fun s _ => ?_
     rw [hyx s]
     rfl
-  have hz0 : h *ᵥ y ≠ 0 := by
-    intro h0
-    apply hy0
-    have h1 : h⁻¹ *ᵥ (h *ᵥ y) = y := by
-      rw [mulVec_mulVec, nonsing_inv_mul h hu, one_mulVec]
-    rw [← h1, h0, mulVec_zero]
+  have hz0 : h *ᵥ y ≠ 0 := fun h0 =>
+    hy0 (mulVec_injective_iff_isUnit.2 ((isUnit_iff_isUnit_det h).2 hu) (h0.trans (mulVec_zero h).symm))
   have hpos : 0 < (star y ⬝ᵥ (gramOf (sigForm N j) h *ᵥ y)).re := by
     rw [quad_gramOf, quad_diag_re]
     obtain ⟨a, ha⟩ := Function.ne_iff.1 hz0

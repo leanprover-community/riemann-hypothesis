@@ -89,20 +89,13 @@ private theorem UpperTheory.V.KH.hZero_lift {R G : Type} [CommRing R] [Group G] 
     (he : Function.Surjective e.hom) (y : M)
     (hy : y ∈ Representation.Coinvariants.ker M.ρ) :
     ∃ x ∈ Representation.Coinvariants.ker N.ρ, e.hom x = y := by
-  induction hy using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨⟨g, v⟩, rfl⟩ := hy
-    obtain ⟨u, rfl⟩ := he v
-    exact ⟨N.ρ g u - u, Representation.Coinvariants.sub_mem_ker g u, by
-      rw [map_sub, Rep.hom_comm_apply]⟩
-  | zero => exact ⟨0, Submodule.zero_mem _, map_zero _⟩
-  | add a b _ _ ha hb =>
-    obtain ⟨u, hu, rfl⟩ := ha
-    obtain ⟨v, hv, rfl⟩ := hb
-    exact ⟨u + v, Submodule.add_mem _ hu hv, map_add _ _ _⟩
-  | smul c a _ ha =>
-    obtain ⟨u, hu, rfl⟩ := ha
-    exact ⟨_, Submodule.smul_mem _ c hu, map_smul e.hom c u⟩
+  unfold Representation.Coinvariants.ker at hy
+  refine (Submodule.mem_map (p := Representation.Coinvariants.ker N.ρ)
+    (f := e.hom.toLinearMap)).1 (Submodule.span_le.2 ?_ hy)
+  rintro _ ⟨⟨g, v⟩, rfl⟩
+  obtain ⟨u, rfl⟩ := he v
+  exact Submodule.mem_map.2 ⟨N.ρ g u - u, Representation.Coinvariants.sub_mem_ker g u, by
+    simp [map_sub, Rep.hom_comm_apply]⟩
 
 private theorem UpperTheory.V.KH.hZero_gen {R G : Type} [CommRing R] [Group G] (N M : Rep.{0} R G)
     (e : N ⟶ M) (he : Function.Surjective e.hom) :

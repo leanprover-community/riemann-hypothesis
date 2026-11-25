@@ -33,23 +33,11 @@ theorem sum_addChar_trace_rectMatrix_mul {k : Type} [Field k] [Fintype k] {R : T
     simp [← pow_mul, mul_comm]
   · obtain ⟨i, j, hij⟩ : ∃ i j, m i j ≠ 0 := by
       by_contra h; push Not at h; exact hm (Matrix.ext h)
-    have h1 := hψ hij
-    obtain ⟨c, hc⟩ : ∃ c, ψ (m i j * c) ≠ 1 := by
-      by_contra h; push Not at h; apply h1; ext c; simp [AddChar.mulShift_apply, h]
-    set a₀ : Matrix (Fin r) (Fin t) k := Matrix.single j i c
-    have ha₀ : trace (a₀ * m) = m i j * c := by
-      simp [a₀, Matrix.trace_single_mul, mul_comm]
-    set S := ∑ a : Matrix (Fin r) (Fin t) k, ψ (trace (a * m))
-    have hS : S = ψ (trace (a₀ * m)) * S := by
-      rw [Finset.mul_sum]
-      refine Fintype.sum_equiv (Equiv.subRight a₀) _ _ (fun a => ?_)
-      simp only [Equiv.subRight_apply, ← AddChar.map_add_eq_mul, Matrix.sub_mul, trace_sub]
-      congr 1; ring
-    rw [ha₀] at hS
-    have : (1 - ψ (m i j * c)) * S = 0 := by rw [sub_mul, one_mul, ← hS, sub_self]
-    rcases mul_eq_zero.mp this with h | h
-    · exact absurd (sub_eq_zero.mp h).symm hc
-    · exact h
+    obtain ⟨c, hc⟩ := AddChar.ne_one_iff.1 (hψ hij)
+    refine AddChar.sum_eq_zero_of_ne_one (ψ := ψ.compAddMonoidHom
+      (AddMonoidHom.mk' (fun b : Matrix (Fin r) (Fin t) k => trace (b * m))
+        fun a b => by rw [Matrix.add_mul, trace_add])) (AddChar.ne_one_iff.2 ⟨Matrix.single j i c, ?_⟩)
+    simpa [Matrix.trace_single_mul, mul_comm] using hc
 
 variable {k : Type} [Field k] {r t : ℕ}
 

@@ -15,8 +15,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL
 open GlobalTheory.Cong.AdaptLev
 
-noncomputable section
-
 namespace GlobalTheory.Cong.AdaptLev
 
 open GlobalTheory.BCT.GlobLev GroundTheory.Automorphic

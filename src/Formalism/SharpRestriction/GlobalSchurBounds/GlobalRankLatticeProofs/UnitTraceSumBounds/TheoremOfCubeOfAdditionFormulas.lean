@@ -1,10 +1,8 @@
 module
 
-public import Formalism.PeriodIntegrals.CubicExponentialFactor
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupCommon.ExpLog
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupCommon.CoeffSingleLg
-public import Formalism.PeriodIntegrals.FglChordFactor
 public import Mathlib.RingTheory.PowerSeries.Derivative
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.DvCoeffMulEqZeroOfLtOrder
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupChords.SubstPairSecondVariable
@@ -17,7 +15,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegral
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupTriangles.SubstUpdateVarTwoLiftedThirdRoot
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupTriangles.CoeffSubstUpdZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupTriangles.PairSubstXZero
-public import Formalism.PeriodIntegrals.PhiCubeOfFactor
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.AdditionIdentityOfSigmaFormulaUnit
 public import Formalism.PeriodIntegrals.FglTriFactor
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FormalGroupLawFirstHalfHolds
@@ -30,6 +27,220 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Classical
+
+namespace PI.PhiCubeOfFactor
+
+def IsIntP {p : ℕ} [Fact p.Prime] (x : ℂ_[p]) : Prop := ‖x‖ ≤ 1
+
+def IntegralMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : Prop :=
+  ∀ n, IsIntP (MvPowerSeries.coeff n F)
+
+abbrev Xv {p : ℕ} [Fact p.Prime] {σ : Type*} (i : σ) : MvPowerSeries σ ℂ_[p] := MvPowerSeries.X i
+
+section
+
+variable {p : ℕ} [Fact p.Prime] (l ex : PowerSeries ℂ_[p]) {σ : Type*}
+
+def lg (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := PowerSeries.subst a l
+
+def pt (x : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := PowerSeries.subst x ex
+
+def add (a b : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := pt ex (lg l a + lg l b)
+
+def sub (a b : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := pt ex (lg l a - lg l b)
+
+end
+
+def logMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  fun α => ∑ n ∈ Finset.range ((α.sum fun _ k => k) + 1),
+    if n = 0 then 0 else (-1 : ℂ_[p]) ^ (n + 1) * MvPowerSeries.coeff α ((F - 1) ^ n) / (n : ℂ_[p])
+
+def expMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  fun α => ∑ n ∈ Finset.range ((α.sum fun _ k => k) + 1),
+    MvPowerSeries.coeff α (F ^ n) / (n.factorial : ℂ_[p])
+
+def Simeq {σ : Type*} {p : ℕ} [Fact p.Prime] (f g : MvPowerSeries σ ℂ_[p]) : Prop :=
+  MvPowerSeries.constantCoeff (f - g) = 0 ∧ IntegralMv (expMv (f - g))
+
+def phAt {p : ℕ} [Fact p.Prime] {σ : Type*} (E : PowerSeries ℂ_[p]) (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  PowerSeries.subst a (-logMv E : PowerSeries ℂ_[p])
+
+def eAt {p : ℕ} [Fact p.Prime] {σ : Type*} (E : PowerSeries ℂ_[p]) (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  PowerSeries.subst a E
+
+def Lemma : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (l ex E : PowerSeries ℂ_[p]) (Q : MvPowerSeries (Fin 2) ℂ_[p]),
+    PowerSeries.constantCoeff ex = 0 → PowerSeries.subst ex l = PowerSeries.X →
+    PowerSeries.constantCoeff E = 1 →
+    add l ex (Xv 0) (Xv 1) * sub l ex (Xv 0) (Xv 1) * eAt E (add l ex (Xv 0) (Xv 1)) *
+        eAt E (sub l ex (Xv 0) (Xv 1)) =
+      Q * eAt E (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) ^ 2 * eAt E (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) ^ 2 →
+    (∃ n : MvPowerSeries (Fin 2) ℂ_[p], IntegralMv n ∧ MvPowerSeries.constantCoeff n = 1 ∧
+      Q = add l ex (Xv 0) (Xv 1) * sub l ex (Xv 0) (Xv 1) * n) →
+    Simeq (phAt E (add l ex (Xv 0) (Xv 1)) + phAt E (sub l ex (Xv 0) (Xv 1)) : MvPowerSeries (Fin 2) ℂ_[p])
+      (2 * phAt E (Xv 0) + 2 * phAt E (Xv 1))
+
+end PI.PhiCubeOfFactor
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Classical
+
+namespace PI.FglChordFactor
+
+def IsIntP {p : ℕ} [Fact p.Prime] (x : ℂ_[p]) : Prop := ‖x‖ ≤ 1
+
+def IntegralMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : Prop :=
+  ∀ n, IsIntP (MvPowerSeries.coeff n F)
+
+abbrev Xv {p : ℕ} [Fact p.Prime] {σ : Type*} (i : σ) : MvPowerSeries σ ℂ_[p] := MvPowerSeries.X i
+
+section
+
+variable {p : ℕ} [Fact p.Prime] (l ex : PowerSeries ℂ_[p]) {σ : Type*}
+
+def lg (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := PowerSeries.subst a l
+
+def pt (x : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := PowerSeries.subst x ex
+
+def add (a b : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := pt ex (lg l a + lg l b)
+
+def sub (a b : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := pt ex (lg l a - lg l b)
+
+end
+
+def dX {A : Type*} [CommRing A] (f : PowerSeries A) : PowerSeries A :=
+  PowerSeries.mk fun n => ((n : A) + 1) * PowerSeries.coeff (n + 1) f
+
+def IsWq {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) : Prop :=
+  let c := algebraMap ℂ_[p] (PowerSeries ℂ_[p])
+  let X := (PowerSeries.X : PowerSeries ℂ_[p])
+  wq = 1 + c W.a₁ * X * wq + c W.a₂ * X ^ 2 * wq + c W.a₃ * X ^ 3 * wq ^ 2 +
+    c W.a₄ * X ^ 4 * wq ^ 2 + c W.a₆ * X ^ 6 * wq ^ 3
+
+def omegaW {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) :
+    PowerSeries ℂ_[p] :=
+  let c := algebraMap ℂ_[p] (PowerSeries ℂ_[p])
+  let X := (PowerSeries.X : PowerSeries ℂ_[p])
+  (-(2 : PowerSeries ℂ_[p]) * wq - X * dX wq) * (wq * (c W.a₁ * X + c W.a₃ * X ^ 3 * wq - 2))⁻¹
+
+def flog {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) :
+    PowerSeries ℂ_[p] :=
+  PowerSeries.mk fun n => if n = 0 then 0 else PowerSeries.coeff (n - 1) (omegaW W wq) / n
+
+def Lemma : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq ex : PowerSeries ℂ_[p]),
+    IsIntP W.a₁ → IsIntP W.a₂ → IsIntP W.a₃ → IsIntP W.a₄ → IsIntP W.a₆ → ‖W.Δ‖ = 1 →
+    IsWq W wq → PowerSeries.constantCoeff ex = 0 → PowerSeries.subst ex (flog W wq) = PowerSeries.X →
+    IntegralMv (add (flog W wq) ex (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) →
+    ∃ n : MvPowerSeries (Fin 2) ℂ_[p], IntegralMv n ∧ MvPowerSeries.constantCoeff n = 1 ∧
+      (Xv 0) ^ 2 * (PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) wq)⁻¹ -
+          (Xv 1) ^ 2 * (PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) wq)⁻¹ =
+        add (flog W wq) ex (Xv 0) (Xv 1) * sub (flog W wq) ex (Xv 0) (Xv 1) * n
+
+end PI.FglChordFactor
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open Classical
+
+namespace PI.CubicExponentialFactor
+
+def IsIntP {p : ℕ} [Fact p.Prime] (x : ℂ_[p]) : Prop := ‖x‖ ≤ 1
+
+def IntegralMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : Prop :=
+  ∀ n, IsIntP (MvPowerSeries.coeff n F)
+
+abbrev Xv {p : ℕ} [Fact p.Prime] {σ : Type*} (i : σ) : MvPowerSeries σ ℂ_[p] := MvPowerSeries.X i
+
+section
+
+variable {p : ℕ} [Fact p.Prime] (l ex : PowerSeries ℂ_[p]) {σ : Type*}
+
+def lg (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := PowerSeries.subst a l
+
+def pt (x : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := PowerSeries.subst x ex
+
+def add (a b : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := pt ex (lg l a + lg l b)
+
+def sub (a b : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] := pt ex (lg l a - lg l b)
+
+end
+
+def IsWq {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) : Prop :=
+  let c := algebraMap ℂ_[p] (PowerSeries ℂ_[p])
+  let X := (PowerSeries.X : PowerSeries ℂ_[p])
+  wq = 1 + c W.a₁ * X * wq + c W.a₂ * X ^ 2 * wq + c W.a₃ * X ^ 3 * wq ^ 2 +
+    c W.a₄ * X ^ 4 * wq ^ 2 + c W.a₆ * X ^ 6 * wq ^ 3
+
+def logMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  fun α => ∑ n ∈ Finset.range ((α.sum fun _ k => k) + 1),
+    if n = 0 then 0 else (-1 : ℂ_[p]) ^ (n + 1) * MvPowerSeries.coeff α ((F - 1) ^ n) / (n : ℂ_[p])
+
+def expMv {σ : Type*} {p : ℕ} [Fact p.Prime] (F : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  fun α => ∑ n ∈ Finset.range ((α.sum fun _ k => k) + 1),
+    MvPowerSeries.coeff α (F ^ n) / (n.factorial : ℂ_[p])
+
+def Simeq {σ : Type*} {p : ℕ} [Fact p.Prime] (f g : MvPowerSeries σ ℂ_[p]) : Prop :=
+  MvPowerSeries.constantCoeff (f - g) = 0 ∧ IntegralMv (expMv (f - g))
+
+def phAt {p : ℕ} [Fact p.Prime] {σ : Type*} (E : PowerSeries ℂ_[p]) (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  PowerSeries.subst a (-logMv E : PowerSeries ℂ_[p])
+
+def eAt {p : ℕ} [Fact p.Prime] {σ : Type*} (E : PowerSeries ℂ_[p]) (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
+  PowerSeries.subst a E
+
+def Lemma : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (wq l ex E : PowerSeries ℂ_[p])
+    (T : MvPowerSeries (Fin 3) ℂ_[p]),
+    IsIntP W.a₁ → IsIntP W.a₂ → IsIntP W.a₃ → IsIntP W.a₄ → IsIntP W.a₆ → IsWq W wq →
+    PowerSeries.constantCoeff ex = 0 → PowerSeries.subst ex l = PowerSeries.X →
+    PowerSeries.constantCoeff E = 1 →
+    T * eAt E (Xv 0 : MvPowerSeries (Fin 3) ℂ_[p]) ^ 3 * eAt E (Xv 1 : MvPowerSeries (Fin 3) ℂ_[p]) ^ 3 *
+        eAt E (Xv 2 : MvPowerSeries (Fin 3) ℂ_[p]) ^ 3 =
+      eAt wq (Xv 0 : MvPowerSeries (Fin 3) ℂ_[p]) * eAt wq (Xv 1 : MvPowerSeries (Fin 3) ℂ_[p]) *
+        eAt wq (Xv 2 : MvPowerSeries (Fin 3) ℂ_[p]) *
+        (add l ex (add l ex (Xv 0) (Xv 1)) (Xv 2) * eAt E (add l ex (add l ex (Xv 0) (Xv 1)) (Xv 2))) *
+        (sub l ex (Xv 0) (Xv 1) * eAt E (sub l ex (Xv 0) (Xv 1))) *
+        (sub l ex (Xv 1) (Xv 2) * eAt E (sub l ex (Xv 1) (Xv 2))) *
+        (sub l ex (Xv 2) (Xv 0) * eAt E (sub l ex (Xv 2) (Xv 0))) →
+    (∃ n : MvPowerSeries (Fin 3) ℂ_[p], IntegralMv n ∧ MvPowerSeries.constantCoeff n = 1 ∧
+      T = add l ex (add l ex (Xv 0) (Xv 1)) (Xv 2) * sub l ex (Xv 0) (Xv 1) * sub l ex (Xv 1) (Xv 2) *
+        sub l ex (Xv 2) (Xv 0) * n) →
+    Simeq (phAt E (add l ex (add l ex (Xv 0) (Xv 1)) (Xv 2)) + phAt E (sub l ex (Xv 0) (Xv 1)) +
+        phAt E (sub l ex (Xv 1) (Xv 2)) + phAt E (sub l ex (Xv 2) (Xv 0)) : MvPowerSeries (Fin 3) ℂ_[p])
+      (3 * (phAt E (Xv 0) + phAt E (Xv 1) + phAt E (Xv 2)))
+
+end PI.CubicExponentialFactor
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CubicExponentialFactor.NormAddLeOne, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CubicExponentialFactor.ExpMvAddC, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupChords.DerivativeFlog, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupChords.SubstBivariateSeriesDifferencePair, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupChords.NormDeltaWc, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupChords.FormalGroupChordFactor, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupTriangles.LogThirdPointSum, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupTriangles.CcPrEq, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialFactorIdentity.ExpMvEq, Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TheoremOfCubeOfAdditionFormulas

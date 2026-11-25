@@ -9,8 +9,6 @@ public import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.AbsN
 open NumberField IsDedekindDomain Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.IndefiniteRowSideFullHecke.PolarLatticePairs
 open scoped Pointwise
 
-noncomputable section
-
 namespace GlobalTheory.MatrixLatticeIndex
 
 theorem card_matIn (D : D7) (a d : ℕ) (A B : Submodule (𝓞 D.host.E) D.host.E) :
@@ -89,4 +87,3 @@ theorem coefLat_eq (D : D7) (cc : Ideal (𝓞 D.host.K)) :
       exact Submodule.smul_mem _ r hb
 
 end GlobalTheory.MatrixLatticeIndex
-

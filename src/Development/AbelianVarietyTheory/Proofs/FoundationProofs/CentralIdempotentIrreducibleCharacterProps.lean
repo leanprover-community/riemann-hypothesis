@@ -7,7 +7,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CharacterIdempot
 
 @[expose] public section
 
-noncomputable section
 open Polynomial Classical GlobalTheory.BadShare
 namespace GlobalTheory.BadShare.ZCalc
 

@@ -270,19 +270,14 @@ theorem exists_norm_coeff_lineSer {e : PowerSeries ℂ_[p]} (he : IntSer e)
 
 theorem IntSer.bdd {f : PowerSeries ℂ_[p]} (hf : IntSer f) : BddSer f := ⟨1, hf⟩
 
-theorem intSer_one : IntSer (1 : PowerSeries ℂ_[p]) := by
-  intro n
-  rw [PowerSeries.coeff_one]
-  split_ifs <;> simp
-
 theorem bdd_prod {ι : Type*} (s : Finset ι) (g : ι → PowerSeries ℂ_[p]) (hg : ∀ i, BddSer (g i)) :
     BddSer (∏ i ∈ s, g i) :=
   Finset.prod_induction g BddSer (fun a b ha hb => ((_root_.GlobalTheory.EvenTheta.SerRing.series_ring_laws p).2.1 a b ha hb).2.2)
-    (IntSer.bdd intSer_one) (fun i _ => hg i)
+    (IntSer.bdd GlobalTheory.ThetaUnit.intSer_one) (fun i _ => hg i)
 
 theorem int_pow {g : PowerSeries ℂ_[p]} (hg : IntSer g) (k : ℕ) : IntSer (g ^ k) := by
   induction k with
-  | zero => simpa using intSer_one
+  | zero => simpa using GlobalTheory.ThetaUnit.intSer_one
   | succ k ih => rw [pow_succ]; exact ((_root_.GlobalTheory.EvenTheta.SerRing.series_ring_laws p).1 _ _ ih hg).2.2
 
 theorem subst_lineSer_sub {e h : PowerSeries ℂ_[p]} (h0 : PowerSeries.constantCoeff h = 0)
@@ -648,7 +643,6 @@ theorem atU_th_sq : PowerSeries.constantCoeff (g.atU (GL3Theta.th0 g.abelian₂ 
   rw [← (atU_sq g ha).2, ← (atU_sqTh hok hlat h2 h3 hwp halg hnm ⟨2, two_pos, by exact_mod_cast htwo⟩).2]
   exact congrArg _ (funext hsq)
 
-
 include hok hlat hdisc h2 h3 hwp halg hnm htwo in
 theorem int_th {β : ℂ} {k : ℕ} (hβ : β ∈ Qbar) (hn : ‖lamC g.lam β‖ = 1)
     (hst : ∀ ω ∈ g.abelian₂, β * ω ∈ g.abelian₂) (htr : β + starRingEnd ℂ β = 1)
@@ -734,7 +728,6 @@ theorem exists_tau {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ∃ τ : P
   · rw [map_mul, PowerSeries.constantCoeff_inv, hE, inv_one, one_mul, b]
   · rw [← mul_assoc, PowerSeries.mul_inv_cancel _ (by rw [hE]; exact one_ne_zero), one_mul]
 
-
 include hok hlat hdisc h2 h3 hwp halg htr in
 theorem norm_xAt_tors {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ‖xAt g t‖ ≤ 1 := by
   obtain ⟨-, hw, -, hE, -⟩ := GlobalTheory.EvenTheta.DatumBasic.datum_basic 2 g hok hlat h2 h3 hdisc
@@ -766,7 +759,6 @@ theorem int_E_sq : IntSer (ePhi1 g.lam g.abelian₂ g.C g.wq ^ 2) := by
     simp only [lineSer, map_sub, map_mul, map_pow, PowerSeries.constantCoeff_X, hw0]; simp
   have := hf.sq.mul (((int_line hw).2 hx).inv (by rw [h0, norm_one]))
   rwa [hf2, mul_assoc, PowerSeries.mul_inv_cancel _ (by rw [h0]; exact one_ne_zero), mul_one] at this
-
 
 include hok hlat hdisc h2 h3 hwp halg hnm htwo htr hx in
 theorem transl_sq {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ∃ H : PowerSeries ℂ_[2], IntSer H ∧
@@ -830,7 +822,6 @@ theorem transl_sq {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ∃ H : Pow
       (g.atU (U1 g.abelian₂ t (GL3Theta.th0 g.abelian₂ t₀)) ^ 2 -
         PowerSeries.C κ * ePhi1 g.lam g.abelian₂ g.C g.wq ^ 2 * τ ^ 2) * hcc
 
-
 include hok hlat hdisc h2 h3 hwp halg hnm htwo htr hf hx in
 theorem transl_bdd {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) :
     BddSer (g.atU (U1 g.abelian₂ t (GL3Theta.th0 g.abelian₂ t₀))) := by
@@ -870,7 +861,6 @@ theorem transl_bdd {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) :
   have hb := (((_root_.GlobalTheory.ThetaTransl.bdd_C (lamC g.lam c₁)).mul (hE2.mul b1).bdd).add
     ((_root_.GlobalTheory.ThetaTransl.bdd_C (lamC g.lam c₂)).mul (hE2.mul a1.sq).bdd)).mul (hf.inv (by rw [hf0, norm_one])).bdd
   rwa [e, mul_assoc, PowerSeries.mul_inv_cancel _ (by rw [hf0]; exact one_ne_zero), mul_one] at hb
-
 
 include hok hlat hdisc h2 h3 hwp halg hnm htwo htr hf hx in
 theorem transl_int {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) :

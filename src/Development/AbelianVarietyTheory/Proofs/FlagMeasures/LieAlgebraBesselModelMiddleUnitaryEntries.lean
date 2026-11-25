@@ -4,48 +4,9 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDensityAtIdentity
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Dchart
 
@@ -86,11 +47,6 @@ theorem mem_lieE_iff {m : ℕ} {S : Set (Matrix (Fin m) (Fin m) ℂ)} (P : Submo
     refine Submodule.subset_span ⟨unrealify x, (hP _).2 hx, ?_⟩
     ext ⟨i, j, b⟩
     cases b <;> rfl
-
-open scoped Matrix.Norms.Operator in
-theorem mem_lieOf_UH {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (hH : H * H = 1) (X : Matrix (Fin N) (Fin N) ℂ) :
-    X ∈ lieOf (UH H) ↔ Xᴴ * H + H * X = 0 := by
-  apply GlobalTheory.OmegaFrobenius.mem_lieOf_UH <;> assumption
 
 open scoped Matrix.Norms.Operator in
 theorem exp_mul_eq_iff {N : ℕ} (X E : Matrix (Fin N) (Fin N) ℂ) :
@@ -169,7 +125,7 @@ theorem mem_lieOf_UWb (k r : ℕ) (X : Mat k r) :
   have hH := (hpkFacts k r).2.1
   constructor
   · intro h
-    have hX := (mem_lieOf_UH _ hH X).1 fun t => (h t).1
+    have hX := (GlobalTheory.OmegaFrobenius.mem_lieOf_UH _ hH X).1 fun t => (h t).1
     have hc : ∀ j : Fin (2 * r + k + 1), ¬ (r ≤ j.val ∧ j.val ≤ r + k) → ∀ i, X i j = 0 := by
       intro j hj
       have hjl := j.isLt
@@ -184,7 +140,7 @@ theorem mem_lieOf_UWb (k r : ℕ) (X : Mat k r) :
     · exact hc j (fun hj => hij ⟨hi, hj⟩) i
     · exact rows_zero hX hc i hi j
   · rintro ⟨hX, h0⟩ t
-    refine ⟨(mem_lieOf_UH _ hH X).2 hX t, fun a => ⟨?_, ?_⟩⟩
+    refine ⟨(GlobalTheory.OmegaFrobenius.mem_lieOf_UH _ hH X).2 hX t, fun a => ⟨?_, ?_⟩⟩
     · refine (exp_fix_iff X _).2 (fun i => h0 i _ fun h => ?_) t
       have := h.2.1; have := a.isLt
       simp only [eI] at *; omega
@@ -215,7 +171,7 @@ def midSub (k r : ℕ) : Submodule ℝ (Mat k r) where
 theorem lie_entries : ∀ (k r : ℕ) (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)), (x ∈ lieE (GG k r) ↔ (unrealify x)ᴴ * Hpk k r + Hpk k r * unrealify x = 0) ∧ (x ∈ lieE (Formalism.FourierDecayAlt.B2.UWb k r) ↔ ((unrealify x)ᴴ * Hpk k r + Hpk k r * unrealify x = 0 ∧ ∀ i j : Fin (2 * r + k + 1), ¬ ((r ≤ i.val ∧ i.val ≤ r + k) ∧ (r ≤ j.val ∧ j.val ≤ r + k)) → unrealify x i j = 0)) ∧ (x ∈ lieE (Formalism.FourierDecayAlt.B2.UWb k r) → NormedSpace.exp (unrealify x) ∈ Formalism.FourierDecayAlt.B2.UWb k r) := by
   intro k r x
   have h2 := mem_lieE_iff (S := Formalism.FourierDecayAlt.B2.UWb k r) (skewSub (Hpk k r) ⊓ midSub k r) (mem_lieOf_UWb k r) x
-  refine ⟨mem_lieE_iff (skewSub (Hpk k r)) (mem_lieOf_UH _ (hpkFacts k r).2.1) x, h2, fun hx => ?_⟩
+  refine ⟨mem_lieE_iff (skewSub (Hpk k r)) (GlobalTheory.OmegaFrobenius.mem_lieOf_UH _ (hpkFacts k r).2.1) x, h2, fun hx => ?_⟩
   have h := (mem_lieOf_UWb k r _).2 (h2.1 hx) 1
   simpa using h
 

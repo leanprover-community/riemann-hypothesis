@@ -45,7 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open NumberField
 
-noncomputable section
 namespace GlobalTheory.SnMass.SkewVol
 
 variable {E : Type} [Field E] [NumberField E]

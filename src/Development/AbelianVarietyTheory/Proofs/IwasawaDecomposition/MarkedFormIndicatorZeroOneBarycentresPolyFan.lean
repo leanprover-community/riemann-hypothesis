@@ -36,11 +36,6 @@ variable {O : Type} [CommRing O] {bar : O → O} {ψ lab : InvFun O}
   {X X₁ : Type} [AddCommGroup X] [Module O X] [AddCommGroup X₁] [Module O X₁]
   {r : X →ₗ[O] X₁} {s : X₁ →ₗ[O] X}
 
-def pullHom (r : X →ₗ[O] X₁) : LinearMap.BilinForm ℤ X₁ →ₗ[ℤ] LinearMap.BilinForm ℤ X where
-  toFun := pull r
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-
 theorem pull_pull (h : ∀ a, r (s a) = a) (β : LinearMap.BilinForm ℤ X₁) : pull s (pull r β) = β :=
   LinearMap.ext₂ fun a b => by simp [h]
 
@@ -93,7 +88,7 @@ theorem isMarked_pull_iff' (h : ∀ a, r (s a) = a) (i : ℕ) (β : LinearMap.Bi
   have hsum : ∀ S : Finset (LinearMap.BilinForm ℤ X₁), ∑ x ∈ S.map ⟨pull r, pull_injective h⟩, x = pull r (∑ x ∈ S, x) :=
     fun S => by
       rw [Finset.sum_map]
-      exact (map_sum (pullHom r) (fun x => x) S).symm
+      exact (map_sum (GlobalTheory.PolFan.CarDim.pullLin r) (fun x => x) S).symm
   unfold IsMarked
   rw [evalZ_pull _ hr]
   refine and_congr ⟨fun hx => ?_, pull_mem r⟩ (and_congr (hr.forall (p := fun y => 0 ≤ β y y)).symm
@@ -177,7 +172,6 @@ theorem exists_markFun {O : Type} [CommRing O] (bar : O → O) (ψ lab : InvFun 
       exact absurd this (by positivity)
     · rfl
     · rfl
-
 
 open Classical in
 theorem evalZ_markFun {O : Type} [CommRing O] {bar : O → O} {ψ lab : InvFun O} {i : ℕ} {w : InvFun O}

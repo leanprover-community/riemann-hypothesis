@@ -27,10 +27,6 @@ namespace PositivityTheory.RgHe.SM
 
 open Formalism.REAL Formalism.MainNotions.S PositivityTheory.UnitaryDecomposition Formalism.FourierDecayAlt.P.CapelliAbstractCharacter CompanionTheory.D.DSIC
 
-def wp {V : Type} [AddCommGroup V] [Module ℂ V] {m : ℕ} (E : Fin m → Fin m → Module.End ℂ V) (w : List (Fin m × Fin m)) :
-    Module.End ℂ V :=
-  (w.map fun p => E p.1 p.2).prod
-
 theorem norm_entry_le {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) (i j : Fin m) : ‖M i j‖ ≤ Real.sqrt (hs M) := by
   refine Real.le_sqrt_of_sq_le ?_
   unfold hs
@@ -97,20 +93,20 @@ theorem continuous_um : Continuous fun g : UJ ε => um g := Units.continuous_val
 theorem continuous_um_inv : Continuous fun g : UJ ε => um g⁻¹ := continuous_um.comp continuous_inv
 
 theorem word_growth (hS : IsSmMod ε σ S E) (hU : IsURepOn (UJset ε) σ) (w : List (Fin m × Fin m)) :
-    ∀ v : S, Continuous (fun g : UJ ε => (wp E w ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H)) ∧
-      ∃ C : ℝ, 0 ≤ C ∧ ∀ g : UJ ε, ‖(wp E w ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H)‖ ≤ C * hs (um g) ^ w.length := by
+    ∀ v : S, Continuous (fun g : UJ ε => (CompanionTheory.D.gk.HwAlg.word E w ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H)) ∧
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ g : UJ ε, ‖(CompanionTheory.D.gk.HwAlg.word E w ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H)‖ ≤ C * hs (um g) ^ w.length := by
   induction w using List.reverseRecOn with
   | nil =>
     intro v
     refine ⟨?_, ‖(v : H)‖, norm_nonneg _, fun g => ?_⟩
-    · simp only [wp, List.map_nil, List.prod_nil, Module.End.one_apply]
+    · simp only [CompanionTheory.D.gk.HwAlg.word, List.map_nil, List.prod_nil, Module.End.one_apply]
       exact (hU.2.2 v).comp_continuous continuous_um fun g => g.2
-    · simp only [wp, List.map_nil, List.prod_nil, Module.End.one_apply, List.length_nil, pow_zero, mul_one]
+    · simp only [CompanionTheory.D.gk.HwAlg.word, List.map_nil, List.prod_nil, Module.End.one_apply, List.length_nil, pow_zero, mul_one]
       exact le_of_eq (hU.2.1 _ g.2 v)
   | append_singleton w p ih =>
     intro v
-    have e1 : ∀ g : UJ ε, (wp E (w ++ [p]) ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H) =
-        ∑ c, ∑ d, (um g⁻¹ c p.1 * um g p.2 d) • (wp E w ⟨σ (um g) (E c d v), hS.stab _ g.2 _ (E c d v).2⟩ : H) := by
+    have e1 : ∀ g : UJ ε, (CompanionTheory.D.gk.HwAlg.word E (w ++ [p]) ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H) =
+        ∑ c, ∑ d, (um g⁻¹ c p.1 * um g p.2 d) • (CompanionTheory.D.gk.HwAlg.word E w ⟨σ (um g) (E c d v), hS.stab _ g.2 _ (E c d v).2⟩ : H) := by
       intro g
       have hx : E p.1 p.2 ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ =
           ∑ c, ∑ d, (um g⁻¹ c p.1 * um g p.2 d) • (⟨σ (um g) (E c d v), hS.stab _ g.2 _ (E c d v).2⟩ : S) := by
@@ -119,7 +115,7 @@ theorem word_growth (hS : IsSmMod ε σ S E) (hU : IsURepOn (UJset ε) σ) (w : 
         refine Finset.sum_congr rfl fun c _ => ?_
         rw [Submodule.coe_sum]
         rfl
-      simp only [wp, List.map_append, List.map_cons, List.map_nil, List.prod_append, List.prod_cons, List.prod_nil,
+      simp only [CompanionTheory.D.gk.HwAlg.word, List.map_append, List.map_cons, List.map_nil, List.prod_append, List.prod_cons, List.prod_nil,
         mul_one, Module.End.mul_apply]
 
       rw [hx, map_sum, Submodule.coe_sum]
@@ -182,9 +178,9 @@ theorem span_growth (hm : 1 ≤ m) (hS : IsSmMod ε σ S E) (hU : IsURepOn (UJse
     intro v
     obtain ⟨hc, C, hC0, hC⟩ := word_growth hS hU w v
     refine ⟨?_, C, hC0, fun g => ?_⟩
-    · have e : (fun g : UJ ε => ap (wp E w) (σ (um g) v)) =
-          fun g => (wp E w ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H) := funext fun g => ap_of_mem _ _
-      change Continuous (fun g : UJ ε => ap (wp E w) (σ (um g) v))
+    · have e : (fun g : UJ ε => ap (CompanionTheory.D.gk.HwAlg.word E w) (σ (um g) v)) =
+          fun g => (CompanionTheory.D.gk.HwAlg.word E w ⟨σ (um g) v, hS.stab _ g.2 _ v.2⟩ : H) := funext fun g => ap_of_mem _ _
+      change Continuous (fun g : UJ ε => ap (CompanionTheory.D.gk.HwAlg.word E w) (σ (um g) v))
       rw [e]
       exact hc
     · rw [ap_of_mem _ (hS.stab _ g.2 _ v.2)]
@@ -216,14 +212,14 @@ theorem span_adj (hS : IsSmMod ε σ S E) (L : ℕ) (T : Module.End ℂ S) (hT :
     rw [← inner_conj_symm, ← Submodule.coe_inner, h, map_mul, Submodule.coe_smul, inner_smul_left, Complex.conj_ofReal,
       inner_conj_symm, Submodule.coe_inner]
   have word : ∀ w : List (Fin m × Fin m), ∃ T' : Module.End ℂ S, ∀ x y : S,
-      ⟪(y : H), (wp E w x : H)⟫_ℂ = ⟪(T' y : H), (x : H)⟫_ℂ := by
+      ⟪(y : H), (CompanionTheory.D.gk.HwAlg.word E w x : H)⟫_ℂ = ⟪(T' y : H), (x : H)⟫_ℂ := by
     intro w
     induction w with
-    | nil => exact ⟨1, fun x y => by simp [wp]⟩
+    | nil => exact ⟨1, fun x y => by simp [CompanionTheory.D.gk.HwAlg.word]⟩
     | cons p w ih =>
       obtain ⟨T', hT'⟩ := ih
       refine ⟨T' * ((sgn ε p.1 p.2 : ℂ) • E p.2 p.1), fun x y => ?_⟩
-      simp only [wp, List.map_cons, List.prod_cons, Module.End.mul_apply] at hT' ⊢
+      simp only [CompanionTheory.D.gk.HwAlg.word, List.map_cons, List.prod_cons, Module.End.mul_apply] at hT' ⊢
       rw [gen, hT']
       rfl
   induction hT using Submodule.span_induction with

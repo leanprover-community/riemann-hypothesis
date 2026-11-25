@@ -26,15 +26,10 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SepCentralizer
 
-theorem exists_annihilator_eq {K V : Type} [Field K] [AddCommGroup V] [Module K V]
-    [FiniteDimensional K V] (g : Module.End K V) (hs : g.charpoly.Separable) (d : K[X]) :
-    d ∣ g.charpoly → ∃ e : V, aeval g d e = 0 ∧ ∀ q : K[X], aeval g q e = 0 → d ∣ q := by
-  apply Formalism.IrreducibleCountingLemmas.Z.exists_annihilator_eq <;> assumption
-
 theorem exists_cyclic {K V : Type} [Field K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] (g : Module.End K V) (hs : g.charpoly.Separable) :
     ∃ e : V, ∀ v : V, ∃ q : K[X], aeval g q e = v := by
-  obtain ⟨e, -, he⟩ := exists_annihilator_eq g hs g.charpoly dvd_rfl
+  obtain ⟨e, -, he⟩ := Formalism.IrreducibleCountingLemmas.Z.exists_annihilator_eq g hs g.charpoly dvd_rfl
   refine ⟨e, ?_⟩
   let φ : K[X] →ₗ[K] V := (LinearMap.applyₗ e) ∘ₗ (aeval g).toLinearMap
   let ψ : degreeLT K (Module.finrank K V) →ₗ[K] V := φ ∘ₗ (degreeLT K (Module.finrank K V)).subtype

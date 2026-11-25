@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.UnderT
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.UG Formalism.L2.Col Formalism.L2.Ker Formalism.L2.DIV Formalism.L2.Forms Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat GlobalTheory.TwU GlobalTheory.TwV
 
-noncomputable section
-
 namespace GlobalTheory.TwV
 
 open Matrix
@@ -73,5 +71,3 @@ theorem ratIsometry_unitary : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} 
   exact h
 
 end GlobalTheory.TwV
-
-end

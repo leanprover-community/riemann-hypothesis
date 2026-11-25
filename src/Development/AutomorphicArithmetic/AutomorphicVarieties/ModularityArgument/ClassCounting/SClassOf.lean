@@ -449,20 +449,6 @@ private theorem map_finset_prod_eq_sum_of_add_hom_on_subgroup {F M ι : Type} [F
     rw [Finset.prod_insert ha, Finset.sum_insert ha,
       hf _ (hg a (Finset.mem_insert_self a s)) _ (Subgroup.prod_mem U hs), ih hs]
 
-private theorem sum_eq_sum_range_pow_of_cyclic_generator {G M : Type} [Group G] [Fintype G] [AddCommMonoid M] (γ : G)
-    (hγ : ∀ σ : G, σ ∈ Subgroup.zpowers γ) (g : G → M) :
-    ∑ σ, g σ = ∑ j ∈ Finset.range (orderOf γ), g (γ ^ j) := by
-  classical
-  have hfin : IsOfFinOrder γ := isOfFinOrder_of_finite γ
-  symm
-  refine Finset.sum_nbij (fun j => γ ^ j) (fun _ _ => Finset.mem_univ _) ?_ ?_ (fun _ _ => rfl)
-  · intro i hi j hj hij
-    exact pow_injOn_Iio_orderOf (by simpa using hi) (by simpa using hj) hij
-  · intro σ _
-    have h := hfin.mem_powers_iff_mem_zpowers.mpr (hγ σ)
-    rw [hfin.mem_powers_iff_mem_range_orderOf] at h
-    simpa using h
-
 theorem UpperTheory.V.ZK.Cl.cBetaVal :
     UpperTheory.V.ZK.Cl.CBetaVal := by
   intro L F _ _ _ _ _ l c ν E _ ζ γ hL kap hk U f hU hf α hα p
@@ -536,9 +522,17 @@ theorem UpperTheory.V.ZK.Cl.cBetaVal :
     · intro _ _
       simp
   have hR : f (nrm γ ((1 + l ^ c) ^ E) α) = S := by
+    have he : ∀ j : Fin (orderOf γ),
+        ((finEquivZPowers (isOfFinOrder_of_finite γ)).trans
+          (Equiv.subtypeUnivEquiv hL.gen)) j = γ ^ (j : ℕ) := fun _ => rfl
     simp only [nrm]
-    rw [map_finset_prod_eq_sum_of_add_hom_on_subgroup U f hf hf1 _ _ (fun j _ => U.pow_mem (hUa _) _), hSdef,
-      sum_eq_sum_range_pow_of_cyclic_generator γ hL.gen]
+    rw [map_finset_prod_eq_sum_of_add_hom_on_subgroup U f hf hf1 _ _
+      (fun j _ => U.pow_mem (hUa _) _), hSdef,
+      ← ((finEquivZPowers (isOfFinOrder_of_finite γ)).trans
+        (Equiv.subtypeUnivEquiv hL.gen)).sum_comp]
+    simp_rw [he]
+    rw [Fin.sum_univ_eq_sum_range
+      (fun j => (kap (γ ^ j) : ZMod (l ^ ν)) ^ E * f (actU (γ ^ j) α))]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [hfn _ (hUa _), hkpow]
     push_cast

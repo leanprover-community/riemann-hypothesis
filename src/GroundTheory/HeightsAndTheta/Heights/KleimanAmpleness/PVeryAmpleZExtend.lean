@@ -3,6 +3,7 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsVeryAmpleZFinite
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZTwist
 
 @[expose] public section
 
@@ -35,24 +36,6 @@ theorem prod_mem_pow {r : ℕ} (H : SubSystem S x Ω) {h : Fin (r + 1) → Ω} (
 
 
 omit [Module S E] [IsScalarTower S Ω E] in
-theorem smul_mem_twist_pow (F : SubSystem S x E) (H : SubSystem S x Ω) (I : Chart x) {a b : ℕ} {z : E}
-    {w : Ω} (hz : z ∈ (F.twist (H.pow a)).sub I) (hw : w ∈ (H.pow b).sub I) :
-    w • z ∈ (F.twist (H.pow (a + b))).sub I := by
-  change z ∈ Submodule.span _ _ at hz
-  refine Submodule.span_induction
-    (p := fun z _ => w • z ∈ (F.twist (H.pow (a + b))).sub I) ?_ ?_ ?_ ?_ hz
-  · rintro _ ⟨q, hq, y, hy, rfl⟩
-    refine Submodule.subset_span ⟨q * w, AmpleTwistLocal.mul_mem_pow H I hq b hw, y, hy, ?_⟩
-    rw [smul_smul, mul_comm]
-  · rw [smul_zero]; exact Submodule.zero_mem _
-  · intro z z' _ _ hz hz'; rw [smul_add]; exact Submodule.add_mem _ hz hz'
-  · intro t z _ hz
-    have e : w • (t • z) = t • (w • z) := by
-      rw [Subalgebra.smul_def, Subalgebra.smul_def, smul_smul, smul_smul, mul_comm]
-    rw [e]; exact Submodule.smul_mem _ t hz
-
-
-omit [Module S E] [IsScalarTower S Ω E] in
 theorem gen_smul {r : ℕ} (F : SubSystem S x E) (H : SubSystem S x Ω) {h : Fin (r + 1) → Ω}
     (hh : ∀ l, h l ∈ H.secs) (I : Chart x) (J : Chart h) {j : Fin (r + 1)} (hj : j ∈ J.1) {c : Ω} {a : ℕ}
     (hc : c * h j ^ a ∈ (H.pow a).sub I) {y : E}
@@ -73,7 +56,7 @@ theorem gen_smul {r : ℕ} (F : SubSystem S x E) (H : SubSystem S x Ω) {h : Fin
   have e2 : J.1.card * (m + a) = J.1.card * m + (a + (J.1.erase j).card * a) := by
     rw [← hcard]; ring
   rw [e1, e2]
-  exact smul_mem_twist_pow F H I hm hw
+  exact VeryAmpleZTwist.smul_mem_twist_pow F H I hw hm
 
 theorem proof : VeryAmpleZExtend.Statement.{u, v, w} := by
   intro S _ Ω _ _ N x E _ _ _ _ F H r h hh J j hj c hc K hK f hf
@@ -108,8 +91,8 @@ theorem proof : VeryAmpleZExtend.Statement.{u, v, w} := by
     have hz : (c ^ e * AmpleAffineGen.chartRatio K I * h j ^ n) ^ D •
         (AmpleAffineGen.chartRatio I K ^ D • f) ∈ (F.toSubSystem.twist (H.pow (n * D))).sub I :=
       Submodule.subset_span ⟨_, AmpleTwistLocal.pow_mem_pow H I hn D, _, hρf, rfl⟩
-    have hz2 := smul_mem_twist_pow F.toSubSystem H I hz
-      (AmpleTwistLocal.pow_mem_pow H I hP (n * D))
+    have hz2 := VeryAmpleZTwist.smul_mem_twist_pow F.toSubSystem H I
+      (AmpleTwistLocal.pow_mem_pow H I hP (n * D)) hz
     have h0 : ∃ m : ℕ, xProd J ^ m • (c ^ (e * D) • f) ∈
         (F.toSubSystem.twist (H.pow (J.1.card * m))).sub I := by
       refine ⟨n * D, ?_⟩

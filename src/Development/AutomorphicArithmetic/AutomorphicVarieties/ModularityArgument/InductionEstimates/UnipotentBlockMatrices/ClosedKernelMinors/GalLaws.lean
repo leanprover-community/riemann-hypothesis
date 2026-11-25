@@ -154,13 +154,6 @@ private theorem norm_inf (σ : K ≃+* K) (u : InfinitePlace K) (y : (u.comap σ
   rw [CT.infEquiv_algebraMap, hn, hn]
   rfl
 
-private theorem mem_int (v : HeightOneSpectrum (𝓞 K)) (y : v.adicCompletion K) :
-    y ∈ (ValuativeRel.valuation (v.adicCompletion K)).integer ↔ Valued.v y ≤ 1 := by
-  haveI : (Valued.v : Valuation (v.adicCompletion K) (WithZero (Multiplicative ℤ))).Compatible :=
-    Valuation.Compatible.ofValuation _
-  rw [Valuation.mem_integer_iff, (ValuativeRel.isEquiv (ValuativeRel.valuation (v.adicCompletion K))
-    (Valued.v : Valuation (v.adicCompletion K) (WithZero (Multiplicative ℤ)))).le_one_iff_le_one]
-
 private theorem act_compact (σ : K ≃+* K) {k : AdelicGLn.AdelicGL K n} (hk : k ∈ (maxCompact : Subgroup _)) :
     act σ k ∈ (maxCompact : Subgroup (AdelicGLn.AdelicGL K n)) := by
   refine ⟨fun u y => ?_, fun v => ?_⟩
@@ -177,9 +170,9 @@ private theorem act_compact (σ : K ≃+* K) {k : AdelicGLn.AdelicGL K n} (hk : 
       rfl
     rw [hv, hN, hN, hk.1 (u.comap σ.toRingHom) x]
   · have h : ∀ y : (CT.plMap σ.symm v).adicCompletion K, y ∈ (ValuativeRel.valuation _).integer →
-        (CT.compEquiv σ.symm v).symm y ∈ (ValuativeRel.valuation _).integer := fun y hy => by
-      rw [mem_int] at hy ⊢
-      rwa [← CT.valued_le_one_iff σ.symm v, RingEquiv.apply_symm_apply]
+        (CT.compEquiv σ.symm v).symm y ∈ (ValuativeRel.valuation _).integer := fun y hy =>
+      (mem_valuationInteger_iff v _).2
+        (CT.mapsTo_integers σ v ((mem_valuationInteger_iff _ y).1 hy))
     have hv := (GLnLocal.mem_integralGL_iff _ _).1 (hk.2 (CT.plMap σ.symm v))
     have hf : finAt v (act σ k) =
         Matrix.GeneralLinearGroup.map (CT.compEquiv σ.symm v).symm.toRingHom (finAt (CT.plMap σ.symm v) k) := by

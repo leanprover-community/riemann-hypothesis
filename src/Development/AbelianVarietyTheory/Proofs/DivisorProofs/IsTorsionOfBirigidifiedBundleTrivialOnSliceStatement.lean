@@ -145,14 +145,6 @@ theorem exists_isSquare {S' S : Scheme.{0}} {A' : Over S'} {A : Over S} {f : S' 
     (by rw [Category.assoc, Category.assoc, w, reassoc_of% v₁, reassoc_of% v₂]),
     pullback.lift_fst _ _ _, pullback.lift_snd _ _ _⟩
 
-theorem isSquare_w {S' S : Scheme.{0}} {A' : Over S'} {A : Over S} {f : S' ⟶ S} {φ : A'.left ⟶ A.left}
-    (w : φ ≫ A.hom = A'.hom ≫ f) {φ₂ : (A' ⊗ A').left ⟶ (A ⊗ A).left} (h : Geo.Tor.IsSquare φ φ₂) :
-    φ₂ ≫ (A ⊗ A).hom = (A' ⊗ A').hom ≫ f := by
-  have w₁ : (fst A A).left ≫ A.hom = (A ⊗ A).hom := Over.w _
-  have v₁ : (fst A' A').left ≫ A'.hom = (A' ⊗ A').hom := Over.w _
-  have h₁ := h.1
-  rw [← w₁, reassoc_of% h₁, w, reassoc_of% v₁]
-
 theorem isSquare_comp {S'' S' S : Scheme.{0}} {A'' : Over S''} {A' : Over S'} {A : Over S}
     {ψ : A''.left ⟶ A'.left} {φ : A'.left ⟶ A.left} {χ : A''.left ⟶ A.left} (e : ψ ≫ φ = χ)
     {ψ₂ : (A'' ⊗ A'').left ⟶ (A' ⊗ A').left} {φ₂ : (A' ⊗ A').left ⟶ (A ⊗ A).left}
@@ -175,7 +167,7 @@ theorem isPullback_of_isSquare {S' S : Scheme.{0}} {A' : Over S'} {A : Over S} {
   have v₂ : (snd A' A').left ≫ A'.hom = (A' ⊗ A').hom := Over.w _
   have h₁ := h.1
   have h₂ := h.2
-  refine ⟨⟨isSquare_w hA.w h⟩, ⟨PullbackCone.IsLimit.mk _
+  refine ⟨⟨GlobalTheory.SiegDesc.isSquare_w hA.w h⟩, ⟨PullbackCone.IsLimit.mk _
     (fun s => pullback.lift
       (hA.lift (s.fst ≫ (fst A A).left) s.snd (by rw [Category.assoc, w₁, s.condition]))
       (hA.lift (s.fst ≫ (snd A A).left) s.snd (by rw [Category.assoc, w₂, s.condition]))
@@ -264,7 +256,7 @@ theorem model_exists : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] 
   obtain ⟨φ₂, hsq⟩ := exists_isSquare hφ.1.w
   obtain ⟨P₁, hP₁, hiso⟩ := hSP R₁ h hT
     (A₁ ⊗ A₁).left (A₁ ⊗ A₁).hom φ₂₁ φ₂ (isPullback_of_isSquare hpb₁ hsq₁)
-    (isSquare_comp hφ₁ hsq hsq₁ hsq₀) (isSquare_w hφ.1.w hsq)
+    (isSquare_comp hφ₁ hsq hsq₁ hsq₀) (GlobalTheory.SiegDesc.isSquare_w hφ.1.w hsq)
   exact ⟨R₁, A₁, inferInstance, inferInstance, φ, φ₂, P₁, fun x hx => h (hF hx), hft, hab₁, hφ, hsq, hP₁, hiso⟩
 
 end GlobalTheory.SiegApproxModel
@@ -379,8 +371,6 @@ namespace GlobalTheory.SiegApprox
 open GlobalTheory.SiegelDescent ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison
 
 theorem model_exists : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] [IsCommMonObj A] (F : Finset R), IsAbelianScheme A → ∀ P : LB (G2 A).left, P.IsLB → ∃ (S : Subring R) (B : Over (Sp S)) (_ : GrpObj B) (_ : IsCommMonObj B) (φ : A.left ⟶ B.left) (φ₂ : (G2 A).left ⟶ (G2 B).left) (P₀ : LB (G2 B).left), (F : Set R) ⊆ S ∧ Algebra.FiniteType ℤ S ∧ IsAbelianScheme B ∧ IsGrpPullback A B (spMap S.subtype) φ ∧ IsSquare φ φ₂ ∧ P₀.IsLB ∧ LBIso P (P₀.pull φ₂) := _root_.GlobalTheory.SiegApproxModel.model_exists
-
-
 
 end GlobalTheory.SiegApprox
 end -- clump:auto

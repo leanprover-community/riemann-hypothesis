@@ -53,7 +53,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU GlobalTheory.FormalValue
 
-noncomputable section
 namespace GlobalTheory.NormGen
 
 theorem exists_factor {V W : Type} [CommRing V] [CommRing W] (I : Ideal V) (φ : V →+* W) (e : ℕ) {Z : Scheme.{0}}
@@ -229,4 +228,3 @@ theorem exists_normAt : AllPre fun {V} _ _ _ {D} {_} {G} _ _ U => ∀ (W : Type)
   abel
 
 end GlobalTheory.NormGen
-end

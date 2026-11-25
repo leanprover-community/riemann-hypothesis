@@ -141,12 +141,8 @@ theorem phi_eq_zero_iff (Q : Ideal (MvPolynomial (Σ k, ι k) ℂ)) [Q.IsPrime]
 
 theorem phi_eq_eval₂ (Q : Ideal (MvPolynomial (Σ k, ι k) ℂ)) [Q.IsPrime]
     (f : MvPolynomial (Σ k, ι k) ℂ) :
-    phi Q f = eval₂ ((phi Q).comp C) (fun q => phi Q (X q)) f := by
-  have : phi Q = eval₂Hom ((phi Q).comp C) (fun q => phi Q (X q)) := by
-    apply MvPolynomial.ringHom_ext
-    · intro r; simp
-    · intro q; simp
-  exact DFunLike.congr_fun this f
+    phi Q f = eval₂ ((phi Q).comp C) (fun q => phi Q (X q)) f :=
+  (congrArg (phi Q) (eval₂_eta f)).symm.trans (eval₂_comp_left (phi Q) C X f)
 
 def theta (Q : Ideal (MvPolynomial (Σ k, ι k) ℂ)) [Q.IsPrime] (p : (k : K) → ι k) :
     MvPolynomial (Σ k, ι k) ℂ →+* FractionRing (MvPolynomial (Σ k, ι k) ℂ ⧸ Q) :=

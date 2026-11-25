@@ -38,14 +38,11 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {K' : 
 
 theorem mConeMap_rename {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hv : IsBlockMap κ v)
     (y : (Σ k, ι' k) → Ω) (g : MRing ι) :
-    mConeMap y (rename v g) = rename κ (mConeMap (y ∘ v) g) := by
-  induction g using MvPolynomial.induction_on with
-  | C a => simp [mConeMap]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p n hp =>
-    simp only [map_mul, hp, rename_X]
-    congr 1
-    simp [mConeMap, hv.2.2.1 n]
+    mConeMap y (rename v g) = rename κ (mConeMap (y ∘ v) g) :=
+  RingHom.congr_fun (MvPolynomial.ringHom_ext
+    (f := (mConeMap y).toRingHom.comp (rename v).toRingHom)
+    (g := (rename κ).toRingHom.comp (mConeMap (y ∘ v)).toRingHom)
+    (fun _ => by simp [mConeMap]) fun n => by simp [mConeMap, hv.2.2.1 n]) g
 
 theorem imageZ_mCoordIdeal {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hv : IsBlockMap κ v)
     (y : (Σ k, ι' k) → Ω) : imageZ v (mCoordIdeal y) = mCoordIdeal (y ∘ v) := by
@@ -214,29 +211,19 @@ theorem addOne_mem {y : (Σ k, ι' k) → Ω} {z : (Σ k, ι' k) → ℂ} (h : z
   · let ρ : MRing (Sum.elim ι' SingletonBlock) →ₐ[ℤ] MRing ι' := aeval (addOne fun q => (X q : MRing ι'))
     let τ : MvPolynomial (K' ⊕ Unit) Ω →+* MvPolynomial K' Ω :=
       (aeval (Sum.elim X fun _ => 1) : MvPolynomial (K' ⊕ Unit) Ω →ₐ[Ω] MvPolynomial K' Ω).toRingHom
-    have key : ∀ g, mConeMap y (ρ g) = τ (mConeMap (addOne y) g) := by
-      intro g
-      induction g using MvPolynomial.induction_on with
-      | C a => simp [mConeMap, ρ, τ]
-      | add p q hp hq => simp only [map_add (f := _), hp, hq]
-      | mul_X p n hp =>
-        simp only [map_mul, hp]
-        congr 1
-        obtain ⟨k | u, i⟩ := n
-        · simp [mConeMap, ρ, τ, addOne]
-        · simp [mConeMap, ρ, τ, addOne]
-    have key2 : ∀ g : MRing (Sum.elim ι' SingletonBlock), eval (addOne z) (map (Int.castRingHom ℂ) g) =
-        eval z (map (Int.castRingHom ℂ) (ρ g)) := by
-      intro g
-      induction g using MvPolynomial.induction_on with
-      | C a => simp [ρ]
-      | add p q hp hq => simp only [map_add (f := _), hp, hq]
-      | mul_X p n hp =>
-        simp only [map_mul, hp]
-        congr 1
-        obtain ⟨k | u, i⟩ := n
-        · simp [ρ, addOne]
-        · simp [ρ, addOne]
+    have key : ∀ g, mConeMap y (ρ g) = τ (mConeMap (addOne y) g) := fun g =>
+      RingHom.congr_fun (MvPolynomial.ringHom_ext
+        (f := (mConeMap y).toRingHom.comp ρ.toRingHom)
+        (g := τ.comp (mConeMap (addOne y)).toRingHom)
+        (fun _ => by simp [mConeMap, ρ, τ]) fun n => by
+          rcases n with ⟨k | u, i⟩ <;> simp [mConeMap, ρ, τ, addOne]) g
+    have key2 : ∀ g : MRing (Sum.elim ι' SingletonBlock),
+        eval (addOne z) (map (Int.castRingHom ℂ) g) = eval z (map (Int.castRingHom ℂ) (ρ g)) :=
+      fun g => RingHom.congr_fun (MvPolynomial.ringHom_ext
+        (f := (eval (addOne z)).comp (map (Int.castRingHom ℂ)))
+        (g := ((eval z).comp (map (Int.castRingHom ℂ))).comp ρ.toRingHom)
+        (fun _ => by simp [ρ]) fun n => by
+          rcases n with ⟨k | u, i⟩ <;> simp [ρ, addOne]) g
     rw [key2]
     refine h.2 _ ?_
     show mConeMap y (ρ f) = 0
@@ -313,24 +300,23 @@ theorem ncard_ptsOverPt_addOne [IsEmpty K] (v : (Σ k, ι k) → Σ k, ι' k) (y
       rw [image_orbit, addOne_inlV]
 
 theorem aeval_one_eq {σ R : Type} [CommRing R] (f : MvPolynomial σ ℤ) :
-    aeval (fun _ => (1 : R)) f = ((eval (fun _ => (1 : ℤ)) f : ℤ) : R) := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p n hp => simp [hp]
+    aeval (fun _ => (1 : R)) f = ((eval (fun _ => (1 : ℤ)) f : ℤ) : R) :=
+  RingHom.congr_fun (MvPolynomial.ringHom_ext
+    (f := (aeval (fun _ => (1 : R))).toRingHom)
+    (g := (Int.castRingHom R).comp (eval (fun _ => (1 : ℤ))))
+    (fun _ => by simp) fun _ => by simp) f
 
 theorem one_mem_mcPts [CharZero Ω] :
     (fun _ => (1 : ℂ)) ∈ mcPts (mCoordIdeal (ι := SingletonBlock) (fun _ => (1 : Ω))) := by
   refine ⟨fun _ => ⟨(), one_ne_zero⟩, fun f hf => ?_⟩
-  have hcone : ∀ g : MRing SingletonBlock, aeval (fun _ => (1 : Ω)) (mConeMap (ι := SingletonBlock) (fun _ => (1 : Ω)) g) =
-      aeval (fun _ => (1 : Ω)) g := by
-    intro g
-    induction g using MvPolynomial.induction_on with
-    | C a => simp [mConeMap]
-    | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    | mul_X p n hp =>
-      simp only [map_mul, hp]
-      simp [mConeMap]
+  have hcone : ∀ g : MRing SingletonBlock,
+      aeval (fun _ => (1 : Ω)) (mConeMap (ι := SingletonBlock) (fun _ => (1 : Ω)) g) =
+        aeval (fun _ => (1 : Ω)) g := fun g =>
+    RingHom.congr_fun (MvPolynomial.ringHom_ext
+      (f := (aeval (fun _ => (1 : Ω))).toRingHom.comp
+        (mConeMap (ι := SingletonBlock) (fun _ => (1 : Ω))).toRingHom)
+      (g := (aeval (fun _ => (1 : Ω))).toRingHom)
+      (fun _ => by simp [mConeMap]) fun _ => by simp [mConeMap]) g
   have h1 : aeval (fun _ => (1 : Ω)) f = 0 := by
     rw [← hcone, show mConeMap _ f = 0 from hf, map_zero]
   rw [aeval_one_eq] at h1

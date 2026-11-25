@@ -340,12 +340,4 @@ theorem index_range_powMonoidHom (hn : (n : K) ≠ 0) :
 
 end Units
 
-section Open
-
-theorem isOpen_range_powMonoidHom {n : ℕ} (hn : (n : K) ≠ 0) :
-    IsOpen ((powMonoidHom n : Kˣ →* Kˣ).range : Set Kˣ) := by
-  apply GroundTheory.LocalField.isOpen_range_pow <;> assumption
-
-end Open
-
 end GroundTheory.Global

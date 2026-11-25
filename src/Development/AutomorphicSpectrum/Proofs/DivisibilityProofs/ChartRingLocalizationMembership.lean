@@ -48,16 +48,8 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.mem_chartRing_atPrime_iff : ∀ (K :
       rw [this]
       exact mul_mem ha hb
   · rintro ⟨s, hs, ht⟩
-    have hle : ∀ {a : Ω}, a ∈ chartRing ℤ (segreVec y) c → a ∈ chartRing O (segreVec y) c := by
-      intro a ha
-      induction ha using Algebra.adjoin_induction with
-      | mem a ha => exact Algebra.subset_adjoin ha
-      | algebraMap n =>
-        have : algebraMap ℤ Ω n = algebraMap O Ω (n : O) := by simp
-        rw [this]
-        exact Subalgebra.algebraMap_mem _ _
-      | add a b _ _ ha hb => exact add_mem ha hb
-      | mul a b _ _ ha hb => exact mul_mem ha hb
+    have hle : chartRing ℤ (segreVec y) c ≤ (chartRing O (segreVec y) c).restrictScalars ℤ :=
+      Algebra.adjoin_le fun _ ha => Algebra.subset_adjoin ha
     obtain ⟨u, hu⟩ := IsLocalization.map_units O (⟨s, hs⟩ : m.primeCompl)
     have hu' : (u : O) = algebraMap A O s := hu
     have hinv : algebraMap O Ω ((u⁻¹ : Oˣ) : O) * algebraMap A Ω s = 1 := by

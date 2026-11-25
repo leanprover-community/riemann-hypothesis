@@ -38,8 +38,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.mumfordTensorData_latticeFactor_props : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D D' W) (s : SymUnit r) (i₀ : Fin r), letI := T.mod s; (∀ y, T.xp i₀ (T.xi i₀ y) = y) ∧ (∀ z, T.xi i₀ (T.xp i₀ z) = TensO.idem s i₀ • z) ∧ Function.Injective (fun y => star (TensO.idem s i₀) • TensO.binv s • T.xi i₀ y) ∧ ∀ z, ∃ y, star (TensO.idem s i₀) • z = star (TensO.idem s i₀) • TensO.binv s • T.xi i₀ y := by
-  first | exact @GlobalTheory.Mum.tens_factor_latt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MumfordTensorDataLatticeFactorPropsStatement =====
@@ -54,7 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
-
 
 end -- clump:auto
 end -- clump:auto
@@ -544,8 +541,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.tensor_action_compatible_with_degeneration : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D D' W) (s : SymUnit r), letI := T.mod s; ∀ (a : TensO s) (y : D'.X), D'.c (a • y) = D'.c y ≫ T.act (TensO.mat s a) := by
-  first | exact @GlobalTheory.Mum.Tens.c_smul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorActionCompatibleWithDegenerationStatement =====
@@ -661,7 +656,7 @@ theorem Tens.nonempty_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
   letI := T.mod s
   obtain ⟨hhom, h1, hmul, hadd⟩ := _root_.GlobalTheory.Mum.TensAct.act_ring R D.toPre D'.toPre W T
   obtain ⟨hinc, hip, hpi, hcx⟩ := _root_.GlobalTheory.Mum.tens_inc_pr_facts R D.toPre D'.toPre W T i₀
-  obtain ⟨hxx, hxe, hinj, honto⟩ := GlobalTheory.T.mumfordTensorData_latticeFactor_props R D.toPre D'.toPre W T s i₀
+  obtain ⟨hxx, hxe, hinj, honto⟩ := GlobalTheory.Mum.tens_factor_latt R D.toPre D'.toPre W T s i₀
   obtain ⟨w, hw, htau⟩ := _root_.GlobalTheory.Mum.pairing_factor R hR D D' W hdet hpos T i₀
   have hp : 0 < (s.1 : Matrix (Fin r) (Fin r) ℤ) i₀ i₀ := by
     have h := hpos.diag_pos (i := i₀)
@@ -676,7 +671,7 @@ theorem Tens.nonempty_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
                     map_mul := fun a b => hmul _ _
                     map_add := fun a b => hadd _ _
                     rosati := _root_.GlobalTheory.Mum.rosatiAdj_tens R hR D D' W hdet hpos T }
-           c_lin := GlobalTheory.T.tensor_action_compatible_with_degeneration R D.toPre D'.toPre W T s
+           c_lin := GlobalTheory.Mum.Tens.c_smul R D.toPre D'.toPre W T s
            tau_bal := _root_.GlobalTheory.Mum.TensBal.tauBal_tens R hR D D' W hdet hpos T }
     e := TensO.idem s i₀
     f := TensO.binv s

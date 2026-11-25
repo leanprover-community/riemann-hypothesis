@@ -56,36 +56,15 @@ section SlopeTestRemainingChoices
 
 open Polynomial
 
-private theorem chi_map_ofRep {n : ℕ} {A K G : Type} [CommRing A] [CommRing K] [Group G] (f : A →+* K)
-    (ρ : G →* Matrix (Fin n) (Fin n) A) (g : G) :
-    ((GDet.ofRep ρ).map f).chi (MonoidAlgebra.single g 1) = (ρ g).charpoly.map f := by
-  apply _root_.chi_map_ofRep <;> assumption
-
-private theorem chi_ofRep {n : ℕ} {A G : Type} [CommRing A] [Group G]
-    (ρ : G →* Matrix (Fin n) (Fin n) A) (g : G) :
-    (GDet.ofRep ρ).chi (MonoidAlgebra.single g 1) = (ρ g).charpoly := by
-  apply _root_.UpperTheory.V.AlgebraTools.Det.chi_single <;> assumption
-
-private theorem aeval_mapM {n : ℕ} {A K : Type} [CommRing A] [CommRing K] (f : A →+* K)
-    (M : Matrix (Fin n) (Fin n) A) (q : A[X]) :
-    f.mapMatrix (aeval M q) = aeval (f.mapMatrix M) (q.map f) := by
-  refine Polynomial.map_aeval_eq_aeval_map ?_ q M
-  ext a i j
-  by_cases h : i = j <;> simp [Matrix.algebraMap_eq_diagonal, h]
-
-private theorem aeval_inter {n : ℕ} {K : Type} [CommRing K] (M N Y : Matrix (Fin n) (Fin n) K)
-    (h : N * Y = Y * M) (q : K[X]) : aeval N q * Y = Y * aeval M q := by
-  apply _root_.aeval_inter <;> assumption
-
 private theorem key {n : ℕ} {A K : Type} [CommRing A] [IsDomain A] [Field K] (f : A →+* K)
     (M : Matrix (Fin n) (Fin n) A) (x : A) (c : K) (hc : c ≠ 0) (hx : f x ≠ 1)
     (hM : M.charpoly.map f = (X - C c) ^ n) (Y : Matrix (Fin n) (Fin n) A)
     (hY : x • (M * Y) = Y * M) : Y = 0 := by
-  have h1 := aeval_inter M (x • M) Y (by rw [← hY, ← Matrix.smul_mul]) M.charpoly
+  have h1 := _root_.aeval_inter M (x • M) Y (by rw [← hY, ← Matrix.smul_mul]) M.charpoly
   rw [Matrix.aeval_self_charpoly, mul_zero] at h1
   have hn : IsNilpotent (f.mapMatrix M - algebraMap K _ c) := by
     refine ⟨n, ?_⟩
-    have := aeval_mapM f M M.charpoly
+    have := _root_.aeval_mapM f M M.charpoly
     rw [Matrix.aeval_self_charpoly, map_zero, hM] at this
     simpa using this.symm
   have hu : IsUnit (f.mapMatrix (x • M) - algebraMap K _ c) := by
@@ -100,7 +79,7 @@ private theorem key {n : ℕ} {A K : Type} [CommRing A] [IsDomain A] [Field K] (
   have hd : (aeval (x • M) M.charpoly).det ≠ 0 := by
     intro h0
     have h2 := RingHom.map_det f (aeval (x • M) M.charpoly)
-    rw [h0, map_zero, aeval_mapM, hM, map_pow, map_sub, aeval_X, aeval_C] at h2
+    rw [h0, map_zero, _root_.aeval_mapM, hM, map_pow, map_sub, aeval_X, aeval_C] at h2
     exact ((Matrix.isUnit_iff_isUnit_det _).1 (hu.pow n)).ne_zero h2.symm
   have h3 : (aeval (x • M) M.charpoly).det • Y = 0 := by
     have := congrArg (fun W => (aeval (x • M) M.charpoly).adjugate * W) h1
@@ -126,7 +105,7 @@ theorem UpperTheory.V.Th.Nm.n4 :
     rw [Units.val_one, ← h4]
     exact ((res O O).commutes _).symm
   · have h := congrArg (fun D => GDet.chi D (MonoidAlgebra.single g 1)) hred
-    simp only [Resid.Dbar, chi_map_ofRep, chi_ofRep] at h
+    simp only [Resid.Dbar, _root_.chi_map_ofRep, AlgebraTools.Det.chi_single] at h
     rw [h]
     change (Matrix.diagonal _).charpoly = _
     rw [Matrix.charpoly_diagonal]

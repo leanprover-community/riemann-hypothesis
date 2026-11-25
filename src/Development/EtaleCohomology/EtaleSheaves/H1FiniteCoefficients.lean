@@ -5,7 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
 open LateralTheory.E.StandardEtaleChartsIdempotentGluing
 
 namespace LateralTheory.E.NoetherianChartOverlapFiniteComplement

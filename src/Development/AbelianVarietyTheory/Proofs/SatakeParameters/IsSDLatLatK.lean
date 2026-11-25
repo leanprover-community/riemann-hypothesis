@@ -14,8 +14,6 @@ import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoeffProdRename
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.SDCompan
 
 section Gen

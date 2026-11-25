@@ -526,12 +526,6 @@ theorem resChar_eq_iff {F : Type} [Field F] [NumberField F] (p : HeightOneSpectr
     ← Nat.prime_dvd_prime_iff_eq hp hl]
   rfl
 
-theorem t2Space_isNonarchimedeanLocalField_singleBlock (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
-    [IsNonarchimedeanLocalField K] : T2Space K := by
-  let := IsTopologicalAddGroup.rightUniformSpace K
-  have := isUniformAddGroup_of_addCommGroup (G := K)
-  infer_instance
-
 def smallIdeal {F Ω : Type} [Field F] [NormedField Ω] [IsUltrametricDist Ω] (σ : F →+* Ω) :
     Ideal (𝓞 F) where
   carrier := {x | ‖σ x‖ < 1}
@@ -820,7 +814,7 @@ theorem prod_psi {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
   choose n hn using ha
   simp_rw [ht] at hb
   have hlf : ∀ s : S, IsNonarchimedeanLocalField (A s.1).Fp := fun s => (A s.1).lf
-  have : ∀ s : S, T2Space (A s.1).Fp := fun s => t2Space_isNonarchimedeanLocalField_singleBlock _
+  have : ∀ s : S, T2Space (A s.1).Fp := fun s => PI.CntNotIntW.t2Space_of_nonarchimedeanLocalField' _
   have : ∀ s : S, CharZero (A s.1).Fp := fun s => (A s.1).char0
   have : ∀ s : S, ContinuousSMul ℚ_[l] (A s.1).Fp := fun s =>
     continuousSMul_of_algebraMap _ _ (hc s)

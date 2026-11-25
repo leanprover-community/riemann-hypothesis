@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open UpperHalfPlane ModularForm CongruenceSubgroup MeasureTheory
 open scoped MatrixGroups ModularForm Manifold
 
-noncomputable section
-
 namespace GlobalTheory.Hk
 
 private theorem finiteIndex_lev_of_pos' (N l : ℕ) (hN : 0 < N) (hl : 0 < l) : (lev N l).FiniteIndex := by

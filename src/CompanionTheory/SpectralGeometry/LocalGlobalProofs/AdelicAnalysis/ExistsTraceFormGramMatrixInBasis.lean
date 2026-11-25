@@ -142,11 +142,8 @@ section Number
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem sig_smul (σ : E →ₐ[F] E) (r : F) (a : E) :
-    (σ : E →+* E) (r • a) = r • (σ : E →+* E) a := by
-  simp only [Algebra.smul_def]
-  rw [map_mul]
-  congr 1
-  exact σ.commutes r
+    (σ : E →+* E) (r • a) = r • (σ : E →+* E) a :=
+  σ.map_smul_of_tower r a
 
 theorem sig_sig (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance

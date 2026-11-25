@@ -51,7 +51,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.UU
 open scoped CategoryTheory.Obj
 
-noncomputable section
 namespace GlobalTheory.UU.AmpleZero
 
 theorem isField_quot (V : Type) [CommRing V] [IsLocalRing V] :
@@ -92,4 +91,3 @@ theorem relAmple_zero : (∀ (k : Type) [Field k] [IsAlgClosed k] (B : Over (Sp 
     KerPair.cubWeil_of_gen hL.globalFns _ _ (t.l 0).Q.isAb _ _ n _ x y hx hy hT
 
 end GlobalTheory.UU.AmpleZero
-end

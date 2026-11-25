@@ -701,14 +701,6 @@ noncomputable section
 open Finset
 open scoped Classical
 
-namespace GlobalTheory.KummerEisensteinGalois
-
-theorem gaussSum_mul_gaussSum_inv_prim {K : Type} [Field K] {n : ℕ} [NeZero n]
-    {χ : DirichletCharacter K n} {e : AddChar (ZMod n) K} (hχ : χ.IsPrimitive)
-    (he : e.IsPrimitive) : gaussSum χ e * gaussSum χ⁻¹ e⁻¹ = (n : K) := by
-  apply GlobalTheory.GaussInt.gaussSum_mul_gaussSum_inv_of_isPrimitive <;> assumption
-
-end GlobalTheory.KummerEisensteinGalois
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -758,7 +750,7 @@ theorem gSum_mul_gSum_inv_prim : ∀ (l : ℕ) [Fact l.Prime] (m : ℕ) (z : Qba
     rw [sum_mulChar_eq_sum_units]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [AddChar.inv_apply', AddChar.zmodChar_apply, inv_pow]
-  rw [h1, h2, GlobalTheory.KummerEisensteinGalois.gaussSum_mul_gaussSum_inv_prim hψ he]
+  rw [h1, h2, GlobalTheory.GaussInt.gaussSum_mul_gaussSum_inv_of_isPrimitive hψ he]
   push_cast
   rfl
 

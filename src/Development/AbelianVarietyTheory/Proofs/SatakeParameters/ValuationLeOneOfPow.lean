@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NotDvdCar
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col GlobalTheory.TopStep GlobalTheory.IndefiniteRowSideFullHecke.FourierColumnIndicator GlobalTheory.LastSteps
 
-noncomputable section
-
 namespace GlobalTheory.ColPeriod.TopTwist
 
 theorem valuation_le_one_of_pow {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) {x : K} {k : ℕ}

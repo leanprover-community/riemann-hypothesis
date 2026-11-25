@@ -40,20 +40,17 @@ def push (h : IsGrpPullback A G z φ) {T : Over (Sp ℂ)} (x : T ⟶ A) : Over.m
     rw [Category.assoc, h.1.w, ← Category.assoc, Over.w x]
     rfl)
 
-def lft (h : IsGrpPullback A G z φ) (v : epsAt z ⟶ G) : epsR ℂ ⟶ A :=
-  Over.homMk (h.1.lift v.left (spMap (algebraMap ℂ (DualNumber ℂ))) (Over.w v)) (h.1.lift_snd _ _ _)
-
-theorem lft_left (h : IsGrpPullback A G z φ) (v : epsAt z ⟶ G) : (lft h v).left ≫ φ = v.left :=
+theorem lft_left (h : IsGrpPullback A G z φ) (v : epsAt z ⟶ G) : (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v).left ≫ φ = v.left :=
   h.1.lift_fst _ _ _
 
 theorem lft_unique (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} {v' : epsR ℂ ⟶ A} (e : v'.left ≫ φ = v.left) :
-    v' = lft h v :=
+    v' = GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v :=
   Over.OverMorphism.ext (h.1.hom_ext (e.trans (lft_left h v).symm) (by rw [Over.w, Over.w]))
 
-theorem lft_mul (h : IsGrpPullback A G z φ) (v w : epsAt z ⟶ G) : lft h (v * w) = lft h v * lft h w :=
-  (lft_unique h (h.2 (epsR ℂ) (lft h v) (lft h w) v w (lft_left h v).symm (lft_left h w).symm).symm).symm
+theorem lft_mul (h : IsGrpPullback A G z φ) (v w : epsAt z ⟶ G) : GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (v * w) = GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v * GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h w :=
+  (lft_unique h (h.2 (epsR ℂ) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h w) v w (lft_left h v).symm (lft_left h w).symm).symm).symm
 
-theorem isTangent_lft (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} (hv : IsTanAt G z v) : IsTangent (lft h v) := by
+theorem isTangent_lft (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} (hv : IsTanAt G z v) : IsTangent (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v) := by
   apply GlobalTheory.CompanionTheory.Ar.HodgeUnique.isTangent_lft <;> assumption
 
 variable {L₀ : LB A.left} {g : ℕ}
@@ -61,13 +58,13 @@ variable {L₀ : LB A.left} {g : ℕ}
 theorem exists_coords (h : IsGrpPullback A G z φ) (u₀ : HolUnif A L₀ g) {v : epsAt z ⟶ G} (hv : IsTanAt G z v)
     {A' : Over (Sp ℂ)} [GrpObj A'] {φ' : A'.left ⟶ G.left} (h' : IsGrpPullback A' G z φ') {L' : LB A'.left}
     {g' : ℕ} (u : HolUnif A' L' g') {v' : epsR ℂ ⟶ A'} (e : v'.left ≫ φ' = v.left) {α : Fin g' → ℂ}
-    (d : u.IsDiff α v') : ∃ a, u₀.IsDiff a (lft h v) := by
+    (d : u.IsDiff α v') : ∃ a, u₀.IsDiff a (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v) := by
   obtain ⟨f, _, hf⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HodgeUnique.exists_map h h'
   obtain ⟨F, hF⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HodgeUnique.exists_linear_compare u₀ u f
   have ht : IsTangent v' := by
     rw [lft_unique h' e]
     exact isTangent_lft h' hv
-  have e' : v' ≫ f = lft h v := lft_unique h (by rw [Over.comp_left, Category.assoc, hf, e])
+  have e' : v' ≫ f = GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h v := lft_unique h (by rw [Over.comp_left, Category.assoc, hf, e])
   exact ⟨F α, e' ▸ GlobalTheory.HomLinear.isDiff_comp u u₀ f F hF ht d⟩
 
 theorem forall_of_span {V : Type} [AddCommGroup V] [Module ℂ V] {W : Set V} (hspan : Submodule.span ℂ W = ⊤)
@@ -78,31 +75,31 @@ theorem forall_of_span {V : Type} [AddCommGroup V] [Module ℂ V] {W : Set V} (h
 
 theorem exists_linear_coords {V : Type} [AddCommGroup V] [Module ℂ V] (Mz : LieModel G z V)
     (h : IsGrpPullback A G z φ) (u₀ : HolUnif A L₀ g) {W : Set V} (h0 : (0 : V) ∈ W)
-    (hspan : Submodule.span ℂ W = ⊤) (hW : ∀ a ∈ W, ∃ d, u₀.IsDiff d (lft h (Mz.pt a))) :
-    ∃ D : V →ₗ[ℂ] (Fin g → ℂ), ∀ a, u₀.IsDiff (D a) (lft h (Mz.pt a)) := by
-  have ht : ∀ a, IsTangent (lft h (Mz.pt a)) := fun a => isTangent_lft h (Mz.tan a)
-  have hadd : ∀ a b, lft h (Mz.pt (a + b)) = lft h (Mz.pt a) * lft h (Mz.pt b) := fun a b => by
+    (hspan : Submodule.span ℂ W = ⊤) (hW : ∀ a ∈ W, ∃ d, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a))) :
+    ∃ D : V →ₗ[ℂ] (Fin g → ℂ), ∀ a, u₀.IsDiff (D a) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) := by
+  have ht : ∀ a, IsTangent (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) := fun a => isTangent_lft h (Mz.tan a)
+  have hadd : ∀ a b, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (a + b)) = GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a) * GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt b) := fun a b => by
     rw [Mz.add, lft_mul]
-  have hmul : ∀ {a b d d'}, u₀.IsDiff d (lft h (Mz.pt a)) → u₀.IsDiff d' (lft h (Mz.pt b)) →
-      u₀.IsDiff (d + d') (lft h (Mz.pt (a + b))) := fun {a b d d'} e e' => by
+  have hmul : ∀ {a b d d'}, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) → u₀.IsDiff d' (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt b)) →
+      u₀.IsDiff (d + d') (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (a + b))) := fun {a b d d'} e e' => by
     rw [hadd]
     exact GlobalTheory.UnifDifferential.isDiff_mul u₀ ((Chart.isTan_iff _).2 (ht a)) ((Chart.isTan_iff _).2 (ht b)) e e'
-  have hsm : ∀ (c : ℂ) {a d}, u₀.IsDiff d (lft h (Mz.pt a)) → u₀.IsDiff (c • d) (lft h (Mz.pt (c • a))) :=
+  have hsm : ∀ (c : ℂ) {a d}, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) → u₀.IsDiff (c • d) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))) :=
     fun c {a d} e => by
-      refine GlobalTheory.CMNormIdentity.isDiff_of_isLieComb u₀ e c ⟨![lft h (Mz.pt (c • a))], fun i => ?_, by simp⟩
+      refine GlobalTheory.CMNormIdentity.isDiff_of_isLieComb u₀ e c ⟨![GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))], fun i => ?_, by simp⟩
       have hi : i = 0 := Subsingleton.elim _ _
       subst hi
-      change (lft h (Mz.pt (c • a))).left = spMap (epsScaleR c) ≫ (lft h (Mz.pt a)).left
+      change (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))).left = spMap (epsScaleR c) ≫ (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)).left
       refine h.1.hom_ext ?_ ?_
       · rw [lft_left, Category.assoc, lft_left]
         exact Mz.smul c a
-      · have e1 : (lft h (Mz.pt (c • a))).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
-        have e2 : (lft h (Mz.pt a)).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
+      · have e1 : (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
+        have e2 : (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
         rw [e1, Category.assoc, e2, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
         have : (epsScaleR c).comp (algebraMap ℂ (DualNumber ℂ)) = algebraMap ℂ (DualNumber ℂ) := by
           ext x <;> simp [epsScaleR]
         rw [this]
-  have hall : ∀ a, ∃ d, u₀.IsDiff d (lft h (Mz.pt a)) := forall_of_span hspan (hW 0 h0) hW
+  have hall : ∀ a, ∃ d, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) := forall_of_span hspan (hW 0 h0) hW
     (fun a b ⟨d, e⟩ ⟨d', e'⟩ => ⟨_, hmul e e'⟩) (fun c a ⟨d, e⟩ => ⟨_, hsm c e⟩)
   choose D hD using hall
   exact ⟨{ toFun := D
@@ -119,7 +116,7 @@ theorem hodgeInnerProduct_of_span : ∀ (E : Type) [Field E] [NumberField E] [Is
     exact exists_coords hpb u₀ (Mz.tan a) hpb' u e1 d1
   let T : V → V → ℂ := fun a b => Real.pi * (D b ⬝ᵥ Hm₀.mulVec (star (D a)))
   have hT : ∀ a b, HodgeIP t.G t.PP.L (z₀ ≫ f) (Mz.pt a) (Mz.pt b) (T a b) := fun a b =>
-    ⟨hLB, Mz.tan a, Mz.tan b, A₀, _, φ₀, g, u₀, Hm₀, χ₀, lft hpb _, lft hpb _, D a, D b, hpb, hAH, lft_left hpb _, lft_left hpb _, hD a, hD b,
+    ⟨hLB, Mz.tan a, Mz.tan b, A₀, _, φ₀, g, u₀, Hm₀, χ₀, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb _, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb _, D a, D b, hpb, hAH, lft_left hpb _, lft_left hpb _, hD a, hD b,
       rfl⟩
   have hlift : ∀ v : epsAt (z₀ ≫ f) ⟶ t.G, ∃ v' : epsAt z₀ ⟶ t₀.G, v'.left ≫ m.φ = v.left := fun v =>
     ⟨Over.homMk (m.cart.1.lift v.left (Spec.map (CommRingCat.ofHom (algebraMap ℂ (DualNumber ℂ))) ≫ z₀)

@@ -125,14 +125,8 @@ theorem exists_sub_lt_one (hk : IsAlgClosed (ResidueField O)) {x : AlgebraicClos
   exact hne _
 
 theorem apply_mem_intBar (τ : AlgebraicClosure (FractionRing O) ≃ₐ[FractionRing O] AlgebraicClosure (FractionRing O))
-    (x : AlgebraicClosure (FractionRing O)) : τ x ∈ intBar O ↔ x ∈ intBar O := by
-  rw [mem_intBar, mem_intBar]
-  constructor
-  · intro h
-    have h2 := h.map (τ.symm.toAlgHom.restrictScalars O)
-    simpa using h2
-  · intro h
-    exact h.map (τ.toAlgHom.restrictScalars O)
+    (x : AlgebraicClosure (FractionRing O)) : τ x ∈ intBar O ↔ x ∈ intBar O :=
+  isIntegral_algEquiv (τ.restrictScalars O)
 
 theorem val_apply_sub_lt_one (hk : IsAlgClosed (ResidueField O))
     (τ : AlgebraicClosure (FractionRing O) ≃ₐ[FractionRing O] AlgebraicClosure (FractionRing O))
@@ -191,15 +185,7 @@ theorem exists_inertia (hk : IsAlgClosed (ResidueField O)) {l : ℕ} (hl : l ≠
       simp only [map_natCast]
     rw [e]
     exact val_lt_one hO
-  have hl0 : (l : 𝓞 K) ≠ 0 := by
-    intro h
-    have h2 := congrArg (algebraMap (𝓞 K) K) h
-    rw [map_natCast, map_zero, Nat.cast_eq_zero] at h2
-    exact hl h2
-  have hP0 : P ≠ ⊥ := by
-    intro h
-    rw [h] at hlP
-    exact hl0 ((Submodule.mem_bot _).1 hlP)
+  have hP0 : P ≠ ⊥ := (Submodule.ne_bot_iff P).2 ⟨_, hlP, Nat.cast_ne_zero.2 hl⟩
   haveI : P.IsPrime := Ideal.comap_isPrime f _
   let v : HeightOneSpectrum (𝓞 K) := ⟨P, inferInstance, hP0⟩
   refine ⟨v, A, hlP, fun x => (hPmem x).symm, fun τ => ?_⟩

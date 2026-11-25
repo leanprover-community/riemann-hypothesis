@@ -7,8 +7,6 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.Capelli
 
 @[expose] public section
 
-noncomputable section
-
 open Finset
 
 namespace GlobalTheory.CompanionTheory.RgExhHecke.NonVanProof

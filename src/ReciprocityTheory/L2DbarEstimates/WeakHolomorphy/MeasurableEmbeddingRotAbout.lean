@@ -87,13 +87,7 @@ theorem circle_mean_sq {n : ℕ} {c w : V n} {R : ℝ} {u : V n → ℂ}
       Complex.norm_exp_ofReal_mul_I, one_mul]
     exact hw
   set F : ℝ → ℂ := fun θ => u (c + Complex.exp ((θ : ℂ) * I) • w) with hF
-  have hcont : Continuous F := by
-    refine continuous_iff_continuousAt.2 fun θ => ?_
-    have h1 := (hu.differentiableAt (isOpen_ball.mem_nhds (hmem θ))).continuousAt
-    have h2 : Continuous fun θ : ℝ => c + Complex.exp ((θ : ℂ) * I) • w := by fun_prop
-    show ContinuousAt (u ∘ fun θ : ℝ => c + Complex.exp ((θ : ℂ) * I) • w) θ
-    exact ContinuousAt.comp (f := fun θ : ℝ => c + Complex.exp ((θ : ℂ) * I) • w) (x := θ) h1
-      h2.continuousAt
+  have hcont : Continuous F := hu.continuousOn.comp_continuous (by fun_prop) hmem
   have hpi : (0 : ℝ) ≤ 2 * Real.pi := by positivity
   have hI : ∫ θ in Ioc (0 : ℝ) (2 * Real.pi), F θ = ((2 * Real.pi : ℝ) : ℂ) * u c := by
     rw [← intervalIntegral.integral_of_le hpi]

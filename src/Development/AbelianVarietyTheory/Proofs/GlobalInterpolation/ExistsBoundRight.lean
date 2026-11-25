@@ -351,12 +351,8 @@ theorem exists_height : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZero N] (χ : Di
     have htri : ‖deriv (LFunction χ) s / LFunction χ s‖
         ≤ ‖deriv (LFunction χ) s / LFunction χ s
             - ∑ w ∈ Z, (analyticOrderNatAt (LFunction χ) w : ℂ) / (s - w)‖
-          + ‖∑ w ∈ Z, (analyticOrderNatAt (LFunction χ) w : ℂ) / (s - w)‖ := by
-      calc ‖deriv (LFunction χ) s / LFunction χ s‖
-          = ‖(deriv (LFunction χ) s / LFunction χ s
-            - ∑ w ∈ Z, (analyticOrderNatAt (LFunction χ) w : ℂ) / (s - w))
-            + ∑ w ∈ Z, (analyticOrderNatAt (LFunction χ) w : ℂ) / (s - w)‖ := by rw [sub_add_cancel]
-        _ ≤ _ := norm_add_le _ _
+          + ‖∑ w ∈ Z, (analyticOrderNatAt (LFunction χ) w : ℂ) / (s - w)‖ :=
+      norm_le_norm_sub_add _ _
     have g1 : 0 ≤ C * (L * (2 * L - 1)) :=
       mul_nonneg hC.le (mul_nonneg hL0 (by linarith only [hLhalf]))
     have g2 : 0 ≤ B * L ^ 2 := mul_nonneg hB (sq_nonneg L)

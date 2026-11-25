@@ -9,7 +9,8 @@ import Mathlib.Tactic.Linter.Style
 
 open IsLocalRing Matrix UpperTheory.V.Hi
 
-private theorem relIndex_ne_zero_of_cover_ordinary_hecke_characters {G : Type} [Group G] (H K L : Subgroup G) (hHK : H ≤ K) (hLK : L ≤ K)
+private theorem relIndex_ne_zero_of_cover_ordinary_hecke_characters {G : Type} [Group G]
+    {H K : Subgroup G} (L : Subgroup G) (hLK : L ≤ K)
     (hcov : ∀ k ∈ K, ∃ l ∈ L, ∃ h ∈ H, k = l * h) (hfin : H.relIndex L ≠ 0) : H.relIndex K ≠ 0 := by
   haveI : (H.subgroupOf L).FiniteIndex := ⟨hfin⟩
   let f : L ⧸ H.subgroupOf L → K ⧸ H.subgroupOf K :=
@@ -33,9 +34,7 @@ private theorem iwahori_relIndex_ne_zero {G : Type} [Group G] (I : Iwa G) (c : �
   have hNm : I.Nm c ≤ I.Iw c := le_sup_right
   have hT : I.T ≤ I.Iw c := le_trans le_sup_right le_sup_left
   have hN : I.N ≤ I.Iw c := le_trans le_sup_left le_sup_left
-  refine relIndex_ne_zero_of_cover_ordinary_hecke_characters (I.Iw c) (I.Iw 0) (I.Nm 0) ?_ le_sup_right ?_ ?_
-  · show I.N ⊔ I.T ⊔ I.Nm c ≤ I.N ⊔ I.T ⊔ I.Nm 0
-    exact sup_le_sup_left (I.Nm_anti (Nat.zero_le c)) _
+  refine relIndex_ne_zero_of_cover_ordinary_hecke_characters (I.Nm 0) le_sup_right ?_ ?_
   · intro g hg
     obtain ⟨x, hx, t, ht, y, hy, e⟩ := ((iwMem G I 0 g⁻¹).1).1 (inv_mem hg)
     refine ⟨y⁻¹, inv_mem hy, t⁻¹ * x⁻¹, mul_mem (hT (inv_mem ht)) (hN (inv_mem hx)), ?_⟩
@@ -59,7 +58,7 @@ private theorem iwahori_pro_unipotent_finite_index {G : Type} [Group G] (I : Iwa
     show I.N ⊔ I.T ⊔ I.Nm c ≤ I.N ⊔ I.T ⊔ I.Nm 0
     exact sup_le_sup_left (I.Nm_anti (Nat.zero_le c)) _
   have h1 : (I.I1 c).relIndex (I.Iw c) ≠ 0 := by
-    refine relIndex_ne_zero_of_cover_ordinary_hecke_characters (I.I1 c) (I.Iw c) I.T hle hT ?_ ?_
+    refine relIndex_ne_zero_of_cover_ordinary_hecke_characters I.T hT ?_ ?_
     · intro g hg
       obtain ⟨x, hx, t, ht, y, hy, e⟩ := ((iwMem G I c g).1).1 hg
       have hx' : t⁻¹ * x * t ∈ I.N := by

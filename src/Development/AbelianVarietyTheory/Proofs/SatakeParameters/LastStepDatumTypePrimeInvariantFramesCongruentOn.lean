@@ -13,8 +13,6 @@ import Formalism.LocalToGlobal.Columns.XtSumSingle
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 
-noncomputable section
-
 namespace GlobalTheory.TwV.AwayTopG
 
 open GlobalTheory.TopStep GlobalTheory.LastSteps GlobalTheory.TopLaw
@@ -132,5 +130,3 @@ theorem topDat_frames_vGs : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A 
     rw [h0, h1]
 
 end GlobalTheory.TwV.AwayTopG
-
-end

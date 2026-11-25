@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Exists
 
 open NumberField IsDedekindDomain Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Ker
 
-noncomputable section
-
 namespace GlobalTheory.ColPeriod
 
 theorem valuation_finOrder_apply {G K : Type} [Group G] [Field K] [NumberField K] (ξ : G →* Kˣ) (hξ : IsOfFinOrder ξ)

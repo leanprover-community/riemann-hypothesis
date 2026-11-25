@@ -72,8 +72,6 @@ private theorem conj_left {G R : Type} [Group G] [CommRing R] (r : G →* GG (m 
   rw [e, SemidirectProduct.mul_left, SemidirectProduct.mul_left, SemidirectProduct.left_inl,
     SemidirectProduct.left_inl, SemidirectProduct.right_inl, sgnAct_one, SemidirectProduct.mul_right,
     SemidirectProduct.right_inl, hg, mul_one, sgnAct_one]
-open Matrix in
-private alias matIrr_conj := _root_.UpperTheory.Reformulated.B.G5.matIrr_conj
 private theorem val_of_even {Ω : Type} [Field Ω] (B : ValuationSubring Ω) {M : ℕ} (hM : Even M)
     (h : B.valuation ((4 : ℕ) : Ω) < 1) : B.valuation (M : Ω) < 1 := by
   obtain ⟨m, rfl⟩ := hM.two_dvd
@@ -160,7 +158,7 @@ theorem UpperTheory.V.Z.J.hostUnlE_alt :
     rw [show ρ s = (r (toGS Ω _ (Base.galEmb ℚ K Ω s))).left from Units.ext (hρ s)]
     exact hle _ (hker s)⟩
   have key := hU Ω l c N e ψ (UnitaryThreeInertia.eta4 Ω) σ g (A F.vl) _ hk hd.N_even hΨ hfr B _ ho
-    (fun V hV hVη => matIrr_conj (tor _ t) (fun s hs => by
+    (fun V hV hVη => _root_.UpperTheory.Reformulated.B.G5.matIrr_conj (tor _ t) (fun s hs => by
       rw [mats, GG.mat, GG.mat, hle s (hVη hs), ← Units.val_mul, ← Units.val_mul]
       congr 1
       group) (hopen V hV hVη)) K hK.1 (by rw [← Base.range_galEmb]; exact hrg.symm) ρ' (fun s => rfl)

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.JSmu
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.Present
 open scoped LaurentSeries PowerSeries
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions GlobalTheory.PhiGam GlobalTheory.AdmLoc GlobalTheory.Models

@@ -2,7 +2,7 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RootVectorActionCutoff
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ResGContDiffAt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainX1
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainFirstIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialRaisingTopOfParts
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 
@@ -157,7 +157,7 @@ theorem claim (hRR : RightRuleE) (hLR : LeftRuleCell) (hTC : TorusCell) (hGP : G
       · subst hqm
         simp
       · rw [ite_eq_right (by simp; omega), ite_eq_right hqm]
-    have hX := Formalism.FourierDecayAlt.P.PBN.chainX1' k r c (EA (E := E) hD) LaP (EA_gl (E := E) hD) m hm2 u hR0 hR1 hL
+    have hX := Formalism.FourierDecayAlt.P.SignAntidiagonal.chainX1' k r c (EA (E := E) hD) LaP (EA_gl (E := E) hD) m hm2 u hR0 hR1 hL
 
     set T := Tm (EA (E := E) hD) (u - ((m + 1 : ℕ) : ℂ)) (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩) with hT
     have hTmem : T ∈ Tor hD (m + 1) := by

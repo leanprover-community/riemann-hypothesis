@@ -15,8 +15,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace DivisorReduction
@@ -261,5 +259,3 @@ end GoingUpInvariant
 end DivisorReduction
 
 end FunctorialResolution.EmbeddedResolution
-
-end

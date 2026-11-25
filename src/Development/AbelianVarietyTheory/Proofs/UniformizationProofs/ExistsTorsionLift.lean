@@ -59,7 +59,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open scoped CategoryTheory.Obj
 
-noncomputable section
 namespace GlobalTheory.UT.ExactTerm
 
 theorem exists_ringHom_lift (F : Type) [Field F] [IsAlgClosed F] {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O]
@@ -187,4 +186,3 @@ theorem exists_torsion_lift {F : Type} [Field F] [IsAlgClosed F] (O : ValuationS
     rw [← Category.assoc, hq2, pullback.lift_fst]
 
 end GlobalTheory.UT.ExactTerm
-end

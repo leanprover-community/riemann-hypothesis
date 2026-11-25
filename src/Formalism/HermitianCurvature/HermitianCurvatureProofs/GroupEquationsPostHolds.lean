@@ -30,14 +30,11 @@ variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 def gpMulR (X : B.Mat k r) : B.Mat k r →L[ℝ] B.Mat k r :=
   LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ X)
 
-def gpMulL (X : B.Mat k r) : B.Mat k r →L[ℝ] B.Mat k r :=
-  LinearMap.toContinuousLinearMap (LinearMap.mulLeft ℝ X)
-
 theorem gpMulR_apply (X Y : B.Mat k r) : gpMulR X Y = Y * X := by
   simp [gpMulR]
 
-theorem gpMulL_apply (X Y : B.Mat k r) : gpMulL X Y = X * Y := by
-  simp [gpMulL]
+theorem gpMulL_apply (X Y : B.Mat k r) : Formalism.FourierDecayAlt.P.B4.mulL X Y = X * Y := by
+  simp [Formalism.FourierDecayAlt.P.B4.mulL]
 
 theorem gp_rdV (X g : B.Mat k r) (f : B.Mat k r → E) (hf : DifferentiableAt ℝ f g) :
     Formalism.REAL.RdV X f g = fderiv ℝ f g (g * X) := by
@@ -97,8 +94,8 @@ theorem gp_LZ (ℓ : E →L[ℂ] ℂ) (H Z : B.Mat k r) (m : ℕ) (f : B.Mat k r
   have hd : ∀ g, DifferentiableAt ℝ f g := fun g => hf.differentiable (by simp) g
   have hdl : ∀ g, DifferentiableAt ℝ (fun x => ℓ (f x)) g :=
     fun g => (ℓ.restrictScalars ℝ).differentiableAt.comp g (hd g)
-  have e : Q.LZ H Z f = fun g => fderiv ℝ f g (gpMulL (hpart1 H Z) g) +
-      Complex.I • fderiv ℝ f g (gpMulL (hpart2 H Z) g) := by
+  have e : Q.LZ H Z f = fun g => fderiv ℝ f g (Formalism.FourierDecayAlt.P.B4.mulL (hpart1 H Z) g) +
+      Complex.I • fderiv ℝ f g (Formalism.FourierDecayAlt.P.B4.mulL (hpart2 H Z) g) := by
     funext g
     simp only [Q.LZ, gpMulL_apply]
     rw [gp_ldV _ _ f (hd g), gp_ldV _ _ f (hd g)]

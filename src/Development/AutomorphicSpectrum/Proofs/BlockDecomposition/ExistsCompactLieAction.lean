@@ -349,13 +349,7 @@ theorem single_bracket (a b c d : Fin n) :
     split_ifs with h
     · subst h
       rw [Matrix.single_mul_single_same, mul_one]
-    · ext i j
-      rw [Matrix.mul_apply]
-      refine Finset.sum_eq_zero fun x _ => ?_
-      simp only [Matrix.single_apply]
-      split_ifs with h3 h4
-      · exact absurd (h3.2.trans h4.1.symm) h
-      all_goals simp
+    · exact Matrix.single_mul_single_of_ne _ _ _ _ h _
   rw [m, m]
 
 theorem derivative_of_rep : ∀ {n : ℕ} (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [FiniteDimensional ℂ H]

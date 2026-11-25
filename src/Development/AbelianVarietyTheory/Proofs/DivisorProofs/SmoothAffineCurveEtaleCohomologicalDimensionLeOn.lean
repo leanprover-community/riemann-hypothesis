@@ -264,17 +264,11 @@ namespace GlobalTheory.EtC.NatRef
 
 variable {R : Type} [CommRing R]
 
-theorem cpull_comp {K L M : Cx R} (f : K ⟶ L) (g : L ⟶ M) (I : Cx R) (n : ℤ) (x : CohomologyClass M I n) :
-    cpull (f ≫ g) I n x = cpull f I n (cpull g I n x) := by
-  obtain ⟨x, rfl⟩ := x.mk_surjective
-  change CohomologyClass.mk _ = CohomologyClass.mk _
-  congr 1; ext1; simp [zcomp, Cochain.ofHom_comp, Cochain.comp_assoc_of_first_is_zero_cochain]
-
 theorem cpull_inr_map {K₁ L₁ K₂ L₂ : Cx R} (φ₁ : K₁ ⟶ L₁) (φ₂ : K₂ ⟶ L₂) (a : K₁ ⟶ K₂) (b : L₁ ⟶ L₂)
     (comm : φ₁ ≫ b = a ≫ φ₂) (I : Cx R) (n : ℤ) (x : CohomologyClass (mappingCone φ₂) I n) :
     cpull (mappingCone.inr φ₁) I n (cpull (mappingCone.map φ₁ φ₂ a b comm) I n x) =
       cpull b I n (cpull (mappingCone.inr φ₂) I n x) := by
-  rw [← cpull_comp, ← cpull_comp]
+  rw [← GlobalTheory.EtC.ZcFun.cpull_comp, ← GlobalTheory.EtC.ZcFun.cpull_comp]
   congr 2
   simp [mappingCone.map]
 
@@ -342,7 +336,7 @@ theorem abstract_nat {K L K' L' : Cx R} (φ : K ⟶ L) (φ' : K' ⟶ L') (a : K'
     have hr : e.symm (cpre (mappingCone.fst φ') I n (n + 1) (by omega) w) =
         cpre (mappingCone.fst φ) I n (n + 1) (by omega) c := by
       apply hinj
-      rw [cpull_map_fst, ← hwc, hM, cpull_comp, he, cpull_map_fst]
+      rw [cpull_map_fst, ← hwc, hM, GlobalTheory.EtC.ZcFun.cpull_comp, he, cpull_map_fst]
     change cpull (mappingCone.inr φ) I (n + 1) (e.symm (cpre (mappingCone.fst φ') I n (n + 1) _ w)) = 0
     rw [hr]
     exact (P3φ _).2 ⟨c, rfl⟩
@@ -350,7 +344,6 @@ theorem abstract_nat {K L K' L' : Cx R} (φ : K ⟶ L) (φ' : K' ⟶ L') (a : K'
 end GlobalTheory.EtC.NatRef
 
 namespace GlobalTheory.EtC
-
 
 open NatRef in
 theorem excision_boundary_natural_refine : ∀ (q : ℕ) (A A' : Type) [CommRing A] [CommRing A'] [Algebra A A'] (f : A), IsExcisionNbhd A A' f → ∀ (n i : ℤ), ∃ δ : Ht q (sp (Localization.Away (algebraMap A A' f))) n i →+ Ht q (sp A) (n + 1) i, Function.Exact δ (fun x : Ht q (sp A) (n + 1) i => (pull _ (spMap (algebraMap A (Localization.Away f))) _ _ x, pull _ (spMap (algebraMap A A')) _ _ x)) ∧ ∀ (A₂ : Type) [CommRing A₂] [Algebra A A₂] [Algebra A' A₂] [IsScalarTower A A' A₂], IsExcisionNbhd A A₂ f → ∀ (φ : Localization.Away (algebraMap A A' f) →+* Localization.Away (algebraMap A A₂ f)), φ.comp (algebraMap A' _) = (algebraMap A₂ _).comp (algebraMap A' A₂) → ∀ (w : Ht q (sp (Localization.Away (algebraMap A A' f))) n i) (b : Ht q (sp (Localization.Away f)) n i), pull _ (spMap φ) _ _ w = pull _ (spMap (Localization.awayMap (algebraMap A A₂) f)) _ _ b → δ w = 0 := by
@@ -574,7 +567,7 @@ namespace GlobalTheory.EtC.MVEtale
 theorem mv_etale_mid : ∀ (q : ℕ) (A A' : Type) [CommRing A] [CommRing A'] [Algebra A A'] [Algebra.Etale A A'] (f : A), (∀ a' : A', ∃ a : A, a' - algebraMap A A' a ∈ Ideal.span {algebraMap A A' f}) → (∀ a : A, algebraMap A A' a ∈ Ideal.span {algebraMap A A' f} → a ∈ Ideal.span {f}) → ∀ (n i : ℤ) (x : Ht q (sp (Localization.Away f)) n i) (y : Ht q (sp A') n i), pull _ (spMap (Localization.awayMap (algebraMap A A') f)) _ _ x = pull _ (spMap (algebraMap A' (Localization.Away (algebraMap A A' f)))) _ _ y → ∃ b : Ht q (sp A) n i, pull _ (spMap (algebraMap A (Localization.Away f))) _ _ b = x ∧ pull _ (spMap (algebraMap A A')) _ _ b = y := by
   intro q A A' _ _ _ _ f h1 h2 n i x y hxy
   obtain ⟨w, hS⟩ := chains_shortExact (ZMod q) A A' f h1 h2
-  obtain ⟨d, hd, -⟩ := GlobalTheory.T.hypercohomology_longExact_first_of_injective (ZMod q) (res (ZMod q) (tw q i)) (_root_.GlobalTheory.EtC.ResBasic.res_basic (ZMod q) (tw q i)).2.1
+  obtain ⟨d, hd, -⟩ := GlobalTheory.EtC.longExact_first_of_injective (ZMod q) (res (ZMod q) (tw q i)) (_root_.GlobalTheory.EtC.ResBasic.res_basic (ZMod q) (tw q i)).2.1
   obtain ⟨e1, -, -⟩ := hd _ hS n
   have hb := cpull_biprod_bijective (ZMod q) ((chains (ZMod q)).obj (sp (Localization.Away f)))
     ((chains (ZMod q)).obj (sp A')) (res (ZMod q) (tw q i))

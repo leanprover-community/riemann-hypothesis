@@ -289,7 +289,7 @@ theorem γQ_finOrd {T' : ℕ} (F' : LFlag S r ((T' : ℕ) : E)) (hT : 0 < T')
     ∃ n : ℕ, 0 < n ∧ γQ F' γ hU hX ^ n = 1 := by
   have hc : star (2 / ((T' : ℕ) : E)) = 2 / ((T' : ℕ) : E) := by
     rw [star_div₀, star_natCast, star_ofNat]
-  have hfin := Formalism.HermitianLatticesTheory.autFinite E (Qt F') (hQ F' (2 / ((T' : ℕ) : E))) (hQ_symm F' _ hc)
+  have hfin := Formalism.HermitianLatticesTheory.autFinite E (Qt F') (hQ F' (2 / ((T' : ℕ) : E)))
     (hQ_trace_pos F' hT hτ hpos) (Lb F' Λ) (Lb_lattice F' Λ hΛ)
   have hmem : ∀ k : ℕ, γQ F' γ hU hX ^ k ∈ {g | g ∈ Formalism.HermitianLatticesTheory.isom (hQ F' (2 / ((T' : ℕ) : E))) ∧
       Formalism.HermitianLatticesTheory.gmap g (Lb F' Λ) = Lb F' Λ} := by

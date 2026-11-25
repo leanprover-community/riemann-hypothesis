@@ -270,11 +270,8 @@ theorem isCompact_annihilator {N : ℕ} (ψ : AddChar (AF F) ℂ) [IsTotallyReal
     intro v t ht
     have hy : (Pi.single l ((n : Af F) * singleV F v t) : Fin N → Af F) ∈ L := by
       have e : (Pi.single l ((n : Af F) * singleV F v t) : Fin N → Af F) =
-          (n : Af F) • (Pi.single l (singleV F v t) : Fin N → Af F) := by
-        funext l'
-        rcases eq_or_ne l' l with rfl | h
-        · simp
-        · simp [Pi.single_eq_of_ne h]
+          (n : Af F) • (Pi.single l (singleV F v t) : Fin N → Af F) :=
+        Pi.single_smul' l (n : Af F) (singleV F v t)
       rw [e]
       refine hnL _ fun l' => ?_
       rcases eq_or_ne l' l with rfl | h

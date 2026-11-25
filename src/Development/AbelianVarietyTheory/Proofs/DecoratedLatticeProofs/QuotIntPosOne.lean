@@ -144,7 +144,7 @@ theorem quotInt_posOne : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalS
     apply hh
     simp only at h0
     rw [hflat, h0, PosOneCell.app_zero, LinearMap.zero_apply]
-  obtain ⟨-, hiff⟩ := _root_.GlobalTheory.CellQuotInt.isQuotInt_cells k n c 1 le_rfl hc ν (rescale ν b m) μG L.J hJ _ hinv hmod T hcov
+  have hiff := _root_.GlobalTheory.CellQuotInt.isQuotInt_cells k n c 1 le_rfl hc ν (rescale ν b m) μG L.J hJ _ hinv hmod T hcov
   refine (hiff _).2 (Finset.sum_congr rfl fun h _ => ?_)
   obtain ⟨-, -, -, -, hm⟩ := GlobalTheory.UnfoldedEntries.cosetMeasure (ν := ν) n c hc L.J hJ h
   obtain ⟨-, -, -, hresc, -⟩ := hm m inferInstance

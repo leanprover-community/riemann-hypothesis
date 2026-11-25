@@ -123,7 +123,7 @@ theorem NormalLocusRep.proof : NormalLocusRep.Statement := by
     intro c
     by_cases hc : ∀ k, y ⟨k, c k⟩ ≠ 0
     · obtain ⟨a, ha, ha0, hcond⟩ := exists_conductor y hbir c hc
-      obtain ⟨N, H, hH, he⟩ := LocalRep.exists_form_of_mem_chartRingZ y c hc ha
+      obtain ⟨N, H, hH, he⟩ := SectionBounded.exists_form_of_mem_chartRingZ y c hc ha
       have hP : ∀ N' : K → ℕ, (∏ k, y ⟨k, c k⟩ ^ N' k) ≠ 0 := fun N' =>
         Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hc k)
       have hHa : aeval y H * ∏ k, y ⟨k, c k⟩ ^ (-(N k : ℤ)) = a := by
@@ -154,7 +154,7 @@ theorem NormalLocusRep.proof : NormalLocusRep.Statement := by
     rw [map_prod, map_prod] at hfz
     exact (Finset.prod_ne_zero_iff.mp hfz) c (Finset.mem_univ c)
   have hx := hcond c hyc _ (hs c hyc)
-  obtain ⟨M, G, hG, hGe⟩ := LocalRep.exists_form_of_mem_chartRingZ y c hyc hx
+  obtain ⟨M, G, hG, hGe⟩ := SectionBounded.exists_form_of_mem_chartRingZ y c hyc hx
   refine ⟨M + (N c + fun k => ((τ : ℤ) * a k).toNat), N c + (M + fun k => (-((τ : ℤ) * a k)).toNat),
     G * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ (N c + fun k => ((τ : ℤ) * a k).toNat) k,
     H c * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ (M + fun k => (-((τ : ℤ) * a k)).toNat) k,

@@ -71,19 +71,10 @@ open Formalism.UG Formalism.RankGapBounds.FormsTensorLocalization Formalism.Grad
 
 theorem isUnit_intCast_of_not_dvd' (R : Type) [CommRing R] (l : ℕ) (hu : ∀ m : ℕ, ¬ l ∣ m → IsUnit (m : R))
     (m : ℤ) (hm : ¬ (l : ℤ) ∣ m) : IsUnit (m : R) := by
-  have h1 : ¬ l ∣ m.natAbs := fun h => hm (Int.natCast_dvd.mpr h)
-  have h2 := hu _ h1
-  rcases Int.natAbs_eq m with h | h
-  · have e : (m : R) = ((m.natAbs : ℕ) : R) := by
-      conv_lhs => rw [h]
-      simp
-    rw [e]
-    exact h2
-  · have e : (m : R) = -((m.natAbs : ℕ) : R) := by
-      conv_lhs => rw [h]
-      simp
-    rw [e]
-    exact h2.neg
+  have h := hu _ fun h => hm (Int.natCast_dvd.mpr h)
+  rcases Int.natAbs_eq m with e | e <;> rw [e]
+  · simpa using h
+  · simpa using h.neg
 
 theorem pow_smul_weighted_component_mem_weyl (R : Type) [CommRing R] [IsDomain R] (l r : ℕ) (ν μ : Fin r → ℕ) (e : ℕ)
     (hu : ∀ m : ℕ, ¬ l ∣ m → IsUnit (m : R)) (hE : ExpLe l r ν μ e)

@@ -6,7 +6,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
 open Polynomial Classical
 namespace GlobalTheory.BadShare.Basic
 

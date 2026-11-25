@@ -918,15 +918,6 @@ theorem zkey (a b c d : Matrix (Fin n) (Fin n) ℂ) (E1 : aᴴ * c - cᴴ * a = 
   simp only [smul_add]
   abel
 
-private theorem eq_zero_of_star_dotProduct_self_eq_zero (v : Fin n → ℂ) (h : star v ⬝ᵥ v = 0) : v = 0 := by
-  have e : star v ⬝ᵥ v = ((∑ i, ‖v i‖ ^ 2 : ℝ) : ℂ) := by
-    simp [dotProduct, Complex.conj_mul']
-  rw [e] at h
-  have h' : ∑ i, ‖v i‖ ^ 2 = 0 := by exact_mod_cast h
-  have h'' := (Finset.sum_eq_zero_iff_of_nonneg (fun i _ => sq_nonneg ‖v i‖)).1 h'
-  funext i
-  simpa using h'' i (Finset.mem_univ i)
-
 private theorem card_fromBlocks_cayley_eq_mul (M : M2 n) (h : InG M) :
     -((M.toBlocks₂₁)ᴴ * M.toBlocks₁₁) + (M.toBlocks₁₁)ᴴ * M.toBlocks₂₁ = 0 ∧
     -((M.toBlocks₂₁)ᴴ * M.toBlocks₁₂) + (M.toBlocks₁₁)ᴴ * M.toBlocks₂₂ = 1 ∧
@@ -939,32 +930,6 @@ private theorem card_fromBlocks_cayley_eq_mul (M : M2 n) (h : InG M) :
   have h22 := congrArg toBlocks₂₂ h
   simp [JJ, fromBlocks_multiply, fromBlocks_conjTranspose] at h11 h12 h22
   exact ⟨h11, h12, h22⟩
-
-private theorem conjTranspose_I_smul_add_sub_eq_two_I (a b c d : Matrix (Fin n) (Fin n) ℂ) (E1 : -(cᴴ * a) + aᴴ * c = 0)
-    (E2 : -(cᴴ * b) + aᴴ * d = 1) (E3 : -(dᴴ * b) + bᴴ * d = 0) :
-    (Complex.I • c + d)ᴴ * (Complex.I • a + b) - (Complex.I • a + b)ᴴ * (Complex.I • c + d) =
-      (2 * Complex.I) • (1 : Matrix (Fin n) (Fin n) ℂ) := by
-  have E2' : dᴴ * a - bᴴ * c = 1 := by
-    have := congrArg conjTranspose E2
-    simp [conjTranspose_add, conjTranspose_neg, conjTranspose_mul] at this
-    rw [sub_eq_neg_add]
-    exact this
-  have h1 : aᴴ * c = cᴴ * a := by
-    rw [← sub_eq_zero, sub_eq_neg_add]
-    exact E1
-  have h3 : bᴴ * d = dᴴ * b := by
-    rw [← sub_eq_zero, sub_eq_neg_add]
-    exact E3
-  have h2 : aᴴ * d = 1 + cᴴ * b := by
-    rw [← E2]
-    abel
-  have h4 : dᴴ * a = 1 + bᴴ * c := by
-    rw [← E2']
-    abel
-  simp [Matrix.add_mul, Matrix.mul_add, smul_smul]
-  rw [h1, h3, h2, h4]
-  simp only [smul_add]
-  module
 
 private theorem det_u2_ne_zero_of_inG (M : M2 n) (h : InG M) : (u2 M).det ≠ 0 := by
   have e : u2 M = u1 (epsM n * M * epsM n) := by

@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ThK.Check
 
 open scoped TensorProduct NNReal Matrix
@@ -41,5 +39,3 @@ theorem isPair_of_isTriple {a a' : ℕ} {B : Base F E} {G : Geo σ a a'} {Y : Ch
 
 
 end GlobalTheory.ThK.Check
-
-end

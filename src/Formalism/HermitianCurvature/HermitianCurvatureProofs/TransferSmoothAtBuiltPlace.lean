@@ -389,15 +389,6 @@ private lemma Hpk_apply_wI_right_eq_ite (i : Fin (2 * r + k + 1)) (m : Fin (k + 
   simp only [Formalism.QuantumDeterminants.Hpk, Formalism.QuantumDeterminants.Hb, Matrix.diagonal_apply_eq, wI, Fin.ext_iff, Fin.val_mk, Fin.val_last]
   split_ifs <;> first | rfl | omega
 
-private lemma Hpk_wI_apply_left_eq_ite (j : Fin (2 * r + k + 1)) (m : Fin (k + 1)) :
-    Hpk k r (wI k r m) j = if j = wI k r m then Hb k m m else 0 := by
-  have hH : (Hpk k r)ᴴ = Hpk k r := (Formalism.QuantumDeterminants.hpkFacts k r).1
-  rw [← hH, Matrix.conjTranspose_apply, Hpk_apply_wI_right_eq_ite]
-  by_cases h : j = wI k r m
-  · simp only [h, ite_true, Formalism.QuantumDeterminants.Hb, Matrix.diagonal_apply_eq]
-    split_ifs <;> simp
-  · simp [h]
-
 lemma Hpk_mulVec_e0 (X : Mb k) : Hpk k r * e0 k r X = e0 k r (Hb k * X) := by
   unfold Dc.e0
   simp only [← Matrix.mul_assoc, Formalism.FourierDecayAlt.P.B2x3.Hpk_Em]

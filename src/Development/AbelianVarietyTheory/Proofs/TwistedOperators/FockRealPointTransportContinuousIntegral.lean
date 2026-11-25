@@ -176,16 +176,9 @@ theorem fockPt_transport : ∀ (D : D7) (θ : InfFam D) (σ : (D.what₂.Tau →
   have hic : Continuous (fockInv θ A B) := continuous_pi fun τ =>
     (continuous_fockInvMat A B τ).comp ((continuous_apply τ).comp (GlobalTheory.FockCompare.continuous_pi' h.inf T S))
   have hl : Function.LeftInverse (fockInv θ A B) (fockPt σ A B) := fun z => fockInv_fockPt h A B z
-  have hr : Set.range (fockPt σ A B) = {w | fockPt σ A B (fockInv θ A B w) = w} := by
-    ext w
-    constructor
-    · rintro ⟨z, rfl⟩
-      exact congrArg (fockPt σ A B) (hl z)
-    · intro hw
-      exact ⟨_, hw⟩
   have hme : MeasurableEmbedding (fockPt σ A B) :=
     MeasurableEmbedding.of_measurable_inverse hc.measurable
-      (by rw [hr]; exact (isClosed_eq (hc.comp hic) continuous_id).measurableSet) hic.measurable hl
+      (hl.isClosed_range hic hc).measurableSet hic.measurable hl
   refine ⟨hc, fun w hw => ⟨_, fockPt_fockInv h A B hw⟩, fun g hg => ?_⟩
   haveI : SigmaFinite (volume : Measure (Fin S.rank → ℂ)) := inferInstance
   haveI : SigmaFinite (volume : Measure (Fin T.rank → Fin S.rank → ℂ)) := inferInstance

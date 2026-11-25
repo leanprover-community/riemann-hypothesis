@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KernelSpanOverCl
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.OnCmp
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.Indef Formalism.L2.Indef.Tree
@@ -43,5 +41,3 @@ theorem readsOnly_omegaFree (Q : Finset (Pl D.host.E)) (ξR : ∀ PP : Pl D.host
       rw [dite_eq_right H, dite_eq_right H']
 
 end GlobalTheory.OnCmp
-
-end

@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.IntegralNormalization
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.t_E2Cut Polynomial
 
 namespace LateralTheory.E.NormPf.FFPf
@@ -58,5 +57,3 @@ theorem ffAlg : FFAlg := by
   exact algClosed_of_aic Γ(Z, V) Z.functionField (hZ.2 V hV ⟨x, hxV⟩)
 
 end LateralTheory.E.NormPf.FFPf
-
-end

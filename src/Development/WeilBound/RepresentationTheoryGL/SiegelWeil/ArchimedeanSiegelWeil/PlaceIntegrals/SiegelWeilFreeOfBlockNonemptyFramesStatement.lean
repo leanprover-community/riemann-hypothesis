@@ -1801,7 +1801,7 @@ theorem swFree_singular : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
         ((Matrix.isUnit_iff_isUnit_det _).1 g.isUnit).ne_zero
       have hd₁ : T₁.det = 0 := by
         have h := congrArg Matrix.det hb
-        rw [BlockAlg.det_blockOne, Matrix.det_mul, Matrix.det_mul, hd] at h
+        rw [det_blockOne,Matrix.det_mul, Matrix.det_mul, hd] at h
         simp only [mul_zero, zero_mul] at h
         exact (mul_eq_zero.1 h).resolve_left hta
       have hX₁ := frames_right σ J T g X hX

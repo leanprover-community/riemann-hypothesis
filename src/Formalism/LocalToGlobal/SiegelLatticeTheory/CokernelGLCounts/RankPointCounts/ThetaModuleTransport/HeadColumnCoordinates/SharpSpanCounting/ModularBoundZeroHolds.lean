@@ -24,18 +24,10 @@ theorem col_eq_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (j : Fin (r + 1
 
 theorem mulVec_mem_headCols (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (w : Fin (r + 1) → R)
     (hw : w (Fin.last r) = 0) : Z.mulVec w ∈ headCols Z := by
-  have hw' : w = ∑ j, w j • Pi.single j (1 : R) := by
-    funext i
-    simp [Finset.sum_apply, Pi.single_apply]
-  have hsum : Z.mulVec w = ∑ j, w j • Z.mulVec (Pi.single j 1) := by
-    conv_lhs => rw [hw']
-
-    rw [← Matrix.mulVecLin_apply, map_sum]
-    simp only [map_smul, Matrix.mulVecLin_apply]
-  rw [hsum, Fin.sum_univ_castSucc, hw, zero_smul, add_zero]
-  refine Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ ?_
-  rw [← col_eq_mulVec]
-  exact col_mem_headCols Z a
+  rw [Matrix.mulVec_eq_sum, Fin.sum_univ_castSucc, hw, MulOpposite.op_zero, zero_smul, add_zero]
+  refine Submodule.sum_mem _ fun a _ => ?_
+  rw [op_smul_eq_smul]
+  exact Submodule.smul_mem _ _ (col_mem_headCols Z a)
 
 theorem mk_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (w : Fin (r + 1) → R) :
     (Submodule.Quotient.mk (Z.mulVec w) : MbMod Z) = w (Fin.last r) • bCls Z := by

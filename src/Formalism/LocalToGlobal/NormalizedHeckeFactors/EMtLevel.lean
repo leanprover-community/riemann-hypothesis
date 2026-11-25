@@ -36,7 +36,6 @@ structure AUTied (D : D7) (M : MtFam D) (A : AVTied D M) where
   surj : ∀ j h1 h2, Function.Surjective (cls j h1 h2)
   iso : ∀ j h1 h2 π π', cls j h1 h2 π = cls j h1 h2 π' ↔ π.Iso π'
 
-  mult : ∀ j h1 h2 π, D.nbc.multAU j (cls j h1 h2 π) = π.mult
 
   sph : ∀ j h1 h2 π (w : PlE D.host) v, ¬ IsSplitPl D.host w → NG.OverPl w v →
     (D.nbc.sphAU j (cls j h1 h2 π) w ↔ π.SphAt v)

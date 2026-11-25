@@ -6,8 +6,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Doubling
 
 open scoped TensorProduct
@@ -71,5 +69,3 @@ theorem HasIwasawa.adelic (hf : ∀ v : HeightOneSpectrum (𝓞 F), HasIwasawa �
     exact hl w
 
 end GlobalTheory.Doubling
-
-end

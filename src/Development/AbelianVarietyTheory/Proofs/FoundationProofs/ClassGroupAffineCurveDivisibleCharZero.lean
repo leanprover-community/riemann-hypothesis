@@ -94,7 +94,6 @@ open Polynomial
 
 namespace GlobalTheory
 
-
 open Polynomial in
 theorem _root_.GlobalTheory.exists_integral_norm_natDegree_mod_eq_one :
     ∀ (k K : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field K] [Algebra k[X] K] [Algebra (RatFunc k) K]
@@ -190,32 +189,6 @@ section -- clump:auto
 
 open Polynomial
 
-namespace GlobalTheory.FormalDeform
-
-theorem constantCoeff_subst_eq {k : Type} [Field k] (a φ : PowerSeries k)
-    (ha : PowerSeries.constantCoeff a = 0) :
-    PowerSeries.constantCoeff (φ.subst a : PowerSeries k) = PowerSeries.constantCoeff φ := by
-  have hs := PowerSeries.HasSubst.of_constantCoeff_zero' ha
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_subst' hs,
-    finsum_eq_single _ 0]
-  · simp
-  · intro d hd
-    rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, ha, zero_pow hd, smul_zero]
-
-theorem not_mem_pow_succ {A : Type} [CommRing A] [IsDedekindDomain A] {N : ℕ} {I : Type}
-    [Fintype I] {D P₀ : Ideal A} {Q : I → Ideal A} {f₀ : A} (hP₀ : P₀.IsMaximal)
-    (hQmax : ∀ i, (Q i).IsMaximal) (hQinj : Function.Injective Q) (hQP : ∀ i, Q i ≠ P₀)
-    (hDQ : ∀ i, ¬ D ≤ Q i) (hf₀ : f₀ ≠ 0)
-    (hspan : Ideal.span {f₀} = P₀ * D * ∏ i, Q i ^ N) (i : I) : f₀ ∉ Q i ^ (N + 1) := by
-  apply GlobalTheory.PicDiv.FormalDeformHasse.not_mem_pow_succ <;> assumption
-
-theorem coeff_map_sum {k A : Type} [Field k] [CommRing A] [Algebra k A] {m : ℕ}
-    (σ : A →ₐ[k] PowerSeries k) (v : Fin m → A) (c : Fin m → k) (l : ℕ) :
-    ∑ j, c j * PowerSeries.coeff l (σ (v j)) = PowerSeries.coeff l (σ (∑ j, c j • v j)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, map_smul]
-
-end GlobalTheory.FormalDeform
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFormalDeformationPowerSeriesSolution =====

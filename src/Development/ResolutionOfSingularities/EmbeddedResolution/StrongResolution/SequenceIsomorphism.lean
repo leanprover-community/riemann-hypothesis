@@ -11,8 +11,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem mem_specMap_asIdeal {A B : CommRingCat.{u}} (ψ : A ⟶ B)
@@ -281,5 +279,3 @@ theorem IsStrongResolution.of_isomorphic (k : Type u) [Field k] (X : Scheme.{u})
   exact ⟨q1, q2, q3, q4, q5, q6⟩
 
 end FunctorialResolution.EmbeddedResolution
-
-end

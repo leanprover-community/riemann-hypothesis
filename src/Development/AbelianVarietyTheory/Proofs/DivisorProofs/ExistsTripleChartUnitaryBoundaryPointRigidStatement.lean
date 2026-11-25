@@ -335,12 +335,10 @@ open GlobalTheory.TorusExt GlobalTheory.QkNumberField GlobalTheory.ArcPull
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 
-
 end Level2
 section Main
 
 open GlobalTheory.TorusExt GlobalTheory.QkNumberField GlobalTheory.ArcPull
-
 
 end Main
 
@@ -558,11 +556,6 @@ theorem spMap_sq {A B C D : Type} [CommRing A] [CommRing B] [CommRing C] [CommRi
   ext a
   exact h a
 
-theorem spMap_comp_ {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap (g.comp f) = spMap g ≫ spMap f := by
-  rw [← Spec.map_comp]
-  rfl
-
 theorem exists_monoFam_through : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H} (Xo : Moduli Dw l) (c : Coeff l) (φ : InvFun (𝓞 E)), 1 ≤ Dw.p + Dw.q → IsPolFan H.bar (min Dw.p Dw.q) φ → NoSelfInt H.bar (min Dw.p Dw.q) φ → ∀ {Z : Scheme.{0}} (zs : Z ⟶ Sp c.F) (i : Xo.XF c ⟶ Z) (OZ : LB Z) (N d : ℕ) (J : Z.IdealSheafData) {S : Scheme.{0}} (π : S ⟶ Z) (j : Xo.XF c ⟶ S) [IsOpenImmersion j] (BD : EffCartierData S), GlobalTheory.UPoinc.UPoinOnX Xo c φ zs i OZ N d J π j BD → SepB Xo c φ j → ∀ x : S, x ∉ Set.range j → ∃ (V : Type) (_ : CommRing V) (_ : IsDomain V) (_ : IsLocalRing V) (C : MonoFam Xo c φ V) (ξV : Sp V ⟶ S), GlobalTheory.Mum.Base V ∧ C.y ≫ j = jK V ≫ ξV ∧ ξV (closedPoint V) = x := by
   intro E _ _ _ H Dw l Xo c φ hpq hpol hnsi Z zs i OZ N d J S π j _ BD hU hsep x hx
   obtain ⟨⟨-, -, -, -, hizs, -, -⟩, -, -, -, ⟨-, hproj, -, hdense, hjπ, -, -, -⟩, -⟩ := hU
@@ -600,7 +593,7 @@ theorem exists_monoFam_through : ∀ {E : Type} [Field E] [NumberField E] [IsCMF
     rw [hT₂y, hTy]
     simp only [Category.assoc]
     rw [hy0s, reassoc_of% hW₁, reassoc_of% hT₁]
-    simp only [bb, spMap_comp_]
+    simp only [bb, GlobalTheory.Cris.spMap_comp]
   have hev : ∀ i z, gm i z z = 2 * gm i (H.w0 • z) z := fun i z => bal_diag_eq (hgm.mem i) z
   have hnn : ∀ i z, 0 ≤ gm i (H.w0 • z) z := fun i z => by
     have := hgm.nonneg i z
@@ -658,7 +651,7 @@ theorem exists_monoFam_through : ∀ {E : Type} [Field E] [NumberField E] [IsCMF
     show T₂.y ≫ j = _
     rw [hT₂y, hTy]
     simp only [Category.assoc]
-    rw [hy₀, reassoc_of% hW₁, reassoc_of% hT₁, spMap_comp_]
+    rw [hy₀, reassoc_of% hW₁, reassoc_of% hT₁, GlobalTheory.Cris.spMap_comp]
     simp only [Category.assoc]
   have hcl : (spMap (g.comp f₁) ≫ a) (closedPoint T₂.V) = x := by
     have h1 : spMap (g.comp f₁) (closedPoint T₂.V) = closedPoint W := IsLocalRing.comap_closedPoint (g.comp f₁)
@@ -728,8 +721,6 @@ theorem nontrivial_of_not_mem_range {V : Type} [CommRing V] [IsDomain V] [IsLoca
 end GlobalTheory.UChartGeo
 
 namespace GlobalTheory.UChartGeo
-
-
 
 theorem exists_monoFam_algClosed : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H} (Xo : Moduli Dw l) (c : Coeff l) (φ : InvFun (𝓞 E)), 1 ≤ Dw.p + Dw.q → IsPolFan H.bar (min Dw.p Dw.q) φ → NoSelfInt H.bar (min Dw.p Dw.q) φ → ∀ {Z : Scheme.{0}} (zs : Z ⟶ Sp c.F) (i : Xo.XF c ⟶ Z) (OZ : LB Z) (N d : ℕ) (J : Z.IdealSheafData) {S : Scheme.{0}} (π : S ⟶ Z) (j : Xo.XF c ⟶ S) [IsOpenImmersion j] (BD : GlobalTheory.EffCartierData S), GlobalTheory.UPoinc.UPoinOnX Xo c φ zs i OZ N d J π j BD → SepB Xo c φ j → ∀ x : S, x ∉ Set.range j → ∃ (V : Type) (_ : CommRing V) (_ : IsDomain V) (_ : IsLocalRing V) (C : MonoFam Xo c φ V) (ξV : Sp V ⟶ S), GlobalTheory.Mum.Base V ∧ IsAlgClosed (ResidueField V) ∧ Nontrivial C.P.D.toPre.X ∧ C.y ≫ j = jK V ≫ ξV ∧ ξV (closedPoint V) = x := by
   intro E _ _ _ H Dw l Xo c φ hpq hpf hns Z zs i OZ N d J S π j _ BD hU hS x hx
@@ -1322,10 +1313,6 @@ theorem bdParam_ne_zero (k : Type) [Field k] (m e : ℕ) (i : Fin m) : bdParam k
   have := congrArg (MvPowerSeries.coeff (Finsupp.single (Sum.inl i : Fin m ⊕ Fin e) 1)) h
   simp [bdParam, MvPowerSeries.coeff_X] at this
 
-theorem exists_fractionRing_map {A B : Type} [CommRing A] [IsDomain A] [CommRing B] [IsDomain B] (ψ : A →+* B)
-    (hψ : Function.Injective ψ) : ∃ fK : FractionRing A →+* FractionRing B, spMap fK ≫ jK A = jK B ≫ spMap ψ := by
-  apply _root_.GlobalTheory.TautEtaleB.exists_fracMap <;> assumption
-
 theorem exists_lift_normBl {X Z S : Scheme.{0}} (i : X ⟶ Z) (π : S ⟶ Z) (j : X ⟶ S) (J : Z.IdealSheafData)
     (hN : GlobalTheory.Poinc.IsNormBl π J) (hji : j ≫ π = i) (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
     [IsIntegrallyClosed R] (a : Sp R ⟶ Z) (y : Sp (FractionRing R) ⟶ X) (hy : jK R ≫ a = y ≫ i) (f : R) (hf : f ≠ 0)
@@ -1373,9 +1360,9 @@ theorem taut_exists_map : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E]
       rw [hs i] at this
       exact bdParam_ne_zero k m e _ this
     choose w hw using fun i => IsDiscreteValuationRing.associated_pow_irreducible (hne i) hϖ
-    obtain ⟨fK, hκ⟩ := exists_fractionRing_map ψ hψi
+    obtain ⟨fK, hκ⟩ := GlobalTheory.TautEtaleB.exists_fracMap ψ hψi
     obtain ⟨t, tK, P, h1, h2, be, hbe, hmono, hφ⟩ :=
-      GlobalTheory.T.monomialBoundaryFamily_pull_unitaryTrait_form Xo c φ _ hBase C W hW ψ hψi hψl ϖ hϖ w hw (spMap fK) hκ
+      GlobalTheory.UChart.pull_trait Xo c φ _ hBase C W hW ψ hψi hψl ϖ hϖ w hw (spMap fK) hκ
     obtain ⟨n, hn, hIn⟩ := hval W hW ϖ hϖ (spMap ψ ≫ ξZ) (spMap fK ≫ C.y)
       (by rw [Category.assoc, ← hξZ, ← Category.assoc, hκ, Category.assoc]) t tK h1 h2 P be hbe hmono
     rw [← GlobalTheory.TraitOrder.idlAlong_comp, hIn, hprod, map_prod]
@@ -1703,7 +1690,7 @@ theorem boundary_eq : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H 
     have hκ : spMap (GlobalTheory.ArcPull.fracMap hψ) ≫ jK _ = jK W ≫ spMap ψ :=
       (GlobalTheory.ArcPull.fracMap_sq hψ).symm.trans (Category.id_comp _)
     obtain ⟨t, tK, P, h₁, h₂, be, hbe, hmon, hev⟩ :=
-      GlobalTheory.T.monomialBoundaryFamily_pull_unitaryTrait_form Xo c φ _ ⟨hA, inferInstance⟩ C W hW ψ hψ hψl ϖ hϖ w hw _ hκ
+      GlobalTheory.UChart.pull_trait Xo c φ _ ⟨hA, inferInstance⟩ C W hW ψ hψ hψl ϖ hϖ w hw _ hκ
     obtain ⟨n, hn, hI⟩ := hval W hW ϖ hϖ (spMap ψ ≫ ξ) _ (by rw [Category.assoc, hy, reassoc_of% hκ]) t tK h₁ h₂ P be hbe hmon
     have hn' : n = ∑ i, w i * a i := by
       apply Nat.cast_injective (R := ℝ)

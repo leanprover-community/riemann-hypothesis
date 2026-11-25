@@ -11,8 +11,6 @@ public import Mathlib.Algebra.Order.Chebyshev
 
 @[expose] public section
 
-noncomputable section
-
 open Finset MeasureTheory Matrix
 open scoped InnerProductSpace
 

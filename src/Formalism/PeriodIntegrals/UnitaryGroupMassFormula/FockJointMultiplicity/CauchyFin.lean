@@ -298,10 +298,6 @@ open MvPolynomial FockH1Action
 
 namespace PI.FJMF
 
-def BlockAntitone : Prop := ∀ (σ : Type) (m n : ℕ) (ι : Fin m × Fin n → σ), Function.Injective ι →
-  ∀ (α : Fin m → ℕ) (P : MvPolynomial σ ℂ), P ≠ 0 → (∀ a b : Fin m, a < b → PI.FJM.bRow ι a b P = 0) →
-    (∀ e ∈ P.support, ∀ i, ∑ k : Fin n, e (ι (i, k)) = α i) → Antitone α
-
 section Block
 
 variable {σ : Type} {m n : ℕ} (ι : Fin m × Fin n → σ)
@@ -417,7 +413,7 @@ theorem bRow_adj {σ : Type} {m n : ℕ} (ι : Fin m × Fin n → σ) (a b : Fin
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [inner_X_left, inner_pd_left]
 
-theorem block_degree_antitone : BlockAntitone := by
+theorem block_degree_antitone : PI.FJMB.HypAnti := by
   intro σ m n ι hι α P hP hE hdeg a b hab
   rcases eq_or_lt_of_le hab with h | h
   · rw [h]

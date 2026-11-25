@@ -32,10 +32,7 @@ def rootOf : ZMod N →+ Additive (rootsOfUnity N L) where
   map_zero' := by simp
   map_add' a b := by
     show Additive.ofMul (w ^ (a + b).val) = Additive.ofMul (w ^ a.val) + Additive.ofMul (w ^ b.val)
-    rw [← ofMul_mul, ← pow_add, ZMod.val_add]
-    congr 1
-    conv_rhs => rw [← Nat.mod_add_div (a.val + b.val) N, pow_add, pow_mul, rootsOfUnity_pow_N w,
-      one_pow, mul_one]
+    rw [← ofMul_mul, ← pow_add, ZMod.val_add, ← pow_eq_pow_mod _ (rootsOfUnity_pow_N w)]
 
 theorem rootOf_apply (c : ZMod N) : rootOf w c = Additive.ofMul (w ^ c.val) := rfl
 
@@ -140,8 +137,7 @@ theorem gsRoots_act_rootOf (Kf : FiniteSubfield) [NumberField Kf.1] [IsAlgClosur
     cyclotomicCharacter.spec (L := AlgebraicClosure ℚ) l
       (MulSemiringAction.toRingAut (G Kf.1 (AlgebraicClosure ℚ)) (AlgebraicClosure ℚ) τ) ζ hζ.pow_eq_one
   have hζN : ζ ^ (l ^ r) = 1 := hζ.pow_eq_one
-  have hmod : ∀ k : ℕ, ζ ^ (k % (l ^ r)) = ζ ^ k := fun k => by
-    conv_rhs => rw [← Nat.mod_add_div k (l ^ r), pow_add, pow_mul, hζN, one_pow, mul_one]
+  have hmod : ∀ k : ℕ, ζ ^ (k % (l ^ r)) = ζ ^ k := fun k => (pow_eq_pow_mod k hζN).symm
   show (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)).ρ
       (e (toGS (AlgebraicClosure ℚ) (S : Set (HeightOneSpectrum (𝓞 Kf.1))) τ)) (rootOf w c) =
     rootOf w (((μ (toGS (AlgebraicClosure ℚ) (S : Set (HeightOneSpectrum (𝓞 Kf.1))) τ) :

@@ -112,10 +112,6 @@ private theorem fix_tw {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Meas
   filter_upwards [D.supp] with k hk
   simp [hs.2 k hk]
 
-private theorem reps_uniq {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
-    {v w : L2 μ} {φ : G1 K n → ℂ} (hv : Reps μ v φ) (hw : Reps μ w φ) : v = w := by
-  apply _root_.reps_ext' <;> assumption
-
 private theorem reps_tw {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
     (θ : Twist μ) {v : L2 μ} {φ : G1 K n → ℂ} (hv : Reps μ v φ) : Reps μ (θ.U v) fun x => φ (θ.e.symm x) := by
   have hp : MeasurePreserving θ.e.symm μ μ := θ.pres.symm θ.e.toHomeomorph.toMeasurableEquiv
@@ -214,7 +210,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.convU :
     have r2 := A'.spec β (s v) (S u) hβ hβc (by
       filter_upwards [hS u, hu] with x a b
       rw [a, b, map_smul])
-    refine reps_uniq r1 ?_
+    refine _root_.reps_ext' r1 ?_
     have : theta β (A'.sec (s v)) = fun x => theta β (A.sec v) (θ.e.symm x) := by
       funext x
       rw [theta_eq, theta_eq, ← th_tw θ.e θ.mem_gam gP _ hb, hsec]

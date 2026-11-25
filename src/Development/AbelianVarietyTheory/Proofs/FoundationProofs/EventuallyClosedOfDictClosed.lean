@@ -10,8 +10,6 @@ public import Formalism.SharpRestriction.ParConsts
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Cmp.JumpDict
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module TensorProduct
@@ -205,5 +203,3 @@ end Periods
 variable (D : D7)
 
 end GlobalTheory.Cmp.JumpDict
-
-end

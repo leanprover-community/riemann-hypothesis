@@ -55,8 +55,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open GlobalTheory.Count Formalism.MainNotions.S Formalism.REAL Matrix NumberField
 open scoped Matrix.Norms.L2Operator
 
-noncomputable section
-
 namespace GlobalTheory.Count.Cartan
 
 variable {n : ℕ}

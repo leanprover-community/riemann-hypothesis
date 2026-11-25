@@ -26,10 +26,7 @@ variable {K : Type} [Field K] {ι : Type} {m : ℕ}
 theorem jetAug_mk (p : MvPolynomial ι K) :
     (jetAug : Jet K ι m →ₐ[K] K) (Ideal.Quotient.mk _ p) = MvPolynomial.constantCoeff p := by
   show (MvPolynomial.aeval fun _ : ι => (0 : K)) p = MvPolynomial.constantCoeff p
-  induction p using MvPolynomial.induction_on with
-  | C c => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p i hp => simp only [map_mul, hp, MvPolynomial.aeval_X, MvPolynomial.constantCoeff_X]
+  simp only [MvPolynomial.aeval_zero', Algebra.algebraMap_self, RingHom.id_apply]
 
 theorem constantCoeff_of_mem_orig {p : MvPolynomial ι K} (hp : p ∈ orig K ι) : MvPolynomial.constantCoeff p = 0 := by
   have hle : orig K ι ≤ RingHom.ker (MvPolynomial.constantCoeff : MvPolynomial ι K →+* K) := by
@@ -70,19 +67,15 @@ theorem isUnit_of_jetAug (a : Jet K ι m) (h : (jetAug : Jet K ι m →ₐ[K] K)
 
 theorem jetAug_jetMap {ι' : Type} (φ : ι → MvPolynomial ι' K) (hφ : ∀ i, φ i ∈ orig K ι') (a : Jet K ι m) :
     (jetAug : Jet K ι' m →ₐ[K] K) (jetMap φ hφ a) = (jetAug : Jet K ι m →ₐ[K] K) a := by
-  have hcc : ∀ {ι' : Type} (φ : ι → MvPolynomial ι' K), (∀ i, φ i ∈ orig K ι') →
-      ∀ q : MvPolynomial ι K, MvPolynomial.constantCoeff (MvPolynomial.aeval φ q) = MvPolynomial.constantCoeff q := by
-    intro ι' φ hφ q
-    induction q using MvPolynomial.induction_on with
-    | C c => simp
-    | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    | mul_X p i hp =>
-      simp only [map_mul, MvPolynomial.aeval_X, hp, MvPolynomial.constantCoeff_X, mul_zero,
-        constantCoeff_of_mem_orig (hφ i)]
   obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective a
   have hmap : jetMap (m := m) φ hφ (Ideal.Quotient.mk _ p) =
       Ideal.Quotient.mk _ (MvPolynomial.aeval φ p) := rfl
-  rw [hmap, jetAug_mk, jetAug_mk, hcc φ hφ p]
+  rw [hmap, jetAug_mk, jetAug_mk]
+  have h0 : ∀ q : MvPolynomial ι' K, MvPolynomial.constantCoeff q =
+      (MvPolynomial.aeval fun _ : ι' => (0 : K)) q := fun q => by simp
+  rw [h0, MvPolynomial.comp_aeval_apply]
+  simp only [← h0, constantCoeff_of_mem_orig (hφ _), MvPolynomial.aeval_zero',
+    Algebra.algebraMap_self, RingHom.id_apply]
 
 theorem jetMap_congr {ι' : Type} (φ φ' : ι → MvPolynomial ι' K) (hφ : ∀ i, φ i ∈ orig K ι')
     (hφ' : ∀ i, φ' i ∈ orig K ι')

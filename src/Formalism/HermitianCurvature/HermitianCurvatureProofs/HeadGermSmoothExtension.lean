@@ -380,7 +380,6 @@ theorem pg_sum (hℓ : Continuous ℓ) {ι : Type*} (s : Finset ι) (f : ι → 
 
 variable {S : Type} [Fintype S] [DecidableEq S]
 
-
 variable (μ ℓ) in
 def EntrywiseClass (M : Wd.SlopeTestRemainingChoices S (Q.Pr (V1 E))) : Prop := ∀ a b, PG μ ℓ (M a b)
 
@@ -897,18 +896,12 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselWordSmoothness
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.PBQ
 
-def ProperDomPH : Prop :=
-  ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : KB.Pl P Wp Wq)
-    (j : ℕ) (hj : j ≤ P.r) (Cs : Set (B.Mat P.k P.r)), IsCompact Cs →
-    PartialBesselProperness.Proper (p.T.bs j) p.T.base (by omega : j + (P.r - j) = P.r) Cs (domP P.k P.r j p.T.base.z p.T.base.z')
-
 section
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
 
-theorem smooth_pbT (hP : ProperDomPH) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
+theorem smooth_pbT (hP : Formalism.FourierDecayAlt.P.PBQ.ProperDomP) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     (j : ℕ) (hj : j ≤ P.r) (hF : KB.CptCoef p.T.base F) :
     Q.SmoothLev P.k P.r 0 (domP P.k P.r j p.T.base.z p.T.base.z') (pbT p j hj F) := by
   obtain ⟨hck, ⟨R, hR⟩, -⟩ := hF
@@ -921,7 +914,7 @@ theorem smooth_pbT (hP : ProperDomPH) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat
   exact Formalism.FourierDecayAlt.P.partial_bessel_smooth_compact_support P.k j (P.r - j) P.r Wp Wq (p.T.bs j) p.T.base (by omega) hzl F _ hck hCs hz
     _ (isOpen_domP P.k P.r j p.T.base.z p.T.base.z') (hP Wp Wq P p j hj _ hCs) x hx.2 hx.1.1
 
-theorem word_smooth_partial_bessel_induction (hP : ProperDomPH) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
+theorem word_smooth_partial_bessel_induction (hP : Formalism.FourierDecayAlt.P.PBQ.ProperDomP) (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     (j : ℕ) (hj : j + 1 ≤ P.r) (hF : KB.CptCoef p.T.base F) :
     ∀ (w : List C.Letter) (e : Wd.Ix (Fin w.length)),
       Q.SmoothLev P.k P.r 0 (domP P.k P.r j p.T.base.z p.T.base.z')
@@ -935,7 +928,7 @@ theorem word_smooth_partial_bessel_induction (hP : ProperDomPH) (P : M.Par) (p :
 
 end
 
-theorem wordSmooth_of (hP : ProperDomPH) : CutHB.WordSmooth := by
+theorem wordSmooth_of (hP : Formalism.FourierDecayAlt.P.PBQ.ProperDomP) : CutHB.WordSmooth := by
   intro Wp Wq _ _ _ _ _ _ P p F j hj w hF _ e
   exact word_smooth_partial_bessel_induction hP P p F j hj hF w e
 

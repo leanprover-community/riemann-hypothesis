@@ -62,7 +62,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.CoefVal
 open TWM TWO SectionScalarValuation
 
@@ -166,4 +165,3 @@ theorem finite_sublevel {Q : D.toPre.X → ℤ} (hQ : QForm.IsQ D.toPre ϖ Q) {k
   field_simp
 
 end GlobalTheory.UT.CoefVal
-end

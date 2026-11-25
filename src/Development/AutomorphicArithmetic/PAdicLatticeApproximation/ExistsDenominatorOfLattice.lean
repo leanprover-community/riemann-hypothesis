@@ -111,14 +111,10 @@ open NumberField
 open GlobalTheory GlobalTheory.PELU GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKGeo UpperTheory.Gal.W2.Wit
 open scoped TensorProduct
 
-private lemma exists_den_finset {p : ℕ} [Fact p.Prime] (D : Datum p) (s : Finset (VQ D)) :
-    ∃ k : ℕ, 0 < k ∧ ∀ x ∈ s, ∃ a : D.La, k • x = (1 : ℚ) ⊗ₜ[ℤ] a :=
-  _root_.UpperTheory.Reformulated.B.Qh61.exists_den_finset D s
-
 private lemma exists_den_closure {p : ℕ} [Fact p.Prime] (D : Datum p) (s : Finset (VQ D)) :
     ∃ k : ℕ, 0 < k ∧ ∀ x ∈ AddSubgroup.closure (s : Set (VQ D)),
       ∃ a : D.La, k • x = (1 : ℚ) ⊗ₜ[ℤ] a := by
-  obtain ⟨k, hk, hs⟩ := exists_den_finset D s
+  obtain ⟨k, hk, hs⟩ := _root_.UpperTheory.Reformulated.B.Qh61.exists_den_finset D s
   refine ⟨k, hk, fun x hx => ?_⟩
   induction hx using AddSubgroup.closure_induction with
   | mem x hx => exact hs x hx

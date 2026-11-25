@@ -716,16 +716,6 @@ open Formalism.MainNotions.StandardLatticesGL3 (stdL pt La0 Wd wdPh Crv)
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-theorem heisO_comm (x y : WO S T) (f : WO S T → ℂ) :
-    heisO ψ S T x (heisO ψ S T y f) = ψ (symplO S T x y) • heisO ψ S T y (heisO ψ S T x f) := by
-  have e : symplO S T x y + symplOH S T y x = symplOH S T x y := by
-    have h2 : algebraMap D.host.F (AF D.host.F) (1 / 2) * 2 = 1 := by
-      rw [← map_ofNat (algebraMap D.host.F (AF D.host.F)) 2, ← map_mul]; norm_num
-    unfold symplOH
-    rw [GlobalTheory.OrientedHeis.symplO_skew x y]
-    linear_combination (-symplO S T x y) * h2
-  rw [GlobalTheory.OrientedHeis.heisO_heisO, GlobalTheory.OrientedHeis.heisO_heisO, smul_smul, ← AddChar.map_add_eq_mul, e, add_comm]
-
 theorem ip_heisO_eq_zero {ΛS : Lat S} {ΛT : Lat T} (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT)
     {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (hv : IsLatVac (heisO ψ S T) (latO S T ΛS ΛT fun _ => True) f)
     {μ : Measure (WO S T)} {𝓕 : Set (WO S T)} (hμ : IsCovolOne (ratL T S) μ 𝓕) {u u' : WO S T}
@@ -745,7 +735,7 @@ theorem ip_heisO_eq_zero {ΛS : Lat S} {ΛT : Lat T} (hψ : IsStdChar D ψ (-1))
   have t1 := GlobalTheory.FinTranslate.isThetaFunO_heisO hψ.1.1 hψ.1.2.1 hf hu
   have t2 := GlobalTheory.FinTranslate.isThetaFunO_heisO hψ.1.1 hψ.1.2.1 hf hu'
   have e := GlobalTheory.Size.ipO_heisO hψ hμ.1 hμ.2.1 t1 t2 l
-  rw [heisO_comm l u, heisO_comm l u', hεf f hv, _root_.GlobalTheory.ThetaAllChar.heisO_smul, _root_.GlobalTheory.ThetaAllChar.heisO_smul, GlobalTheory.Size.ipO_smul_left, GlobalTheory.Size.ipO_smul_left,
+  rw [GlobalTheory.ThetaStalk.heisO_comm l u, GlobalTheory.ThetaStalk.heisO_comm l u', hεf f hv, _root_.GlobalTheory.ThetaAllChar.heisO_smul, _root_.GlobalTheory.ThetaAllChar.heisO_smul, GlobalTheory.Size.ipO_smul_left, GlobalTheory.Size.ipO_smul_left,
     GlobalTheory.Size.ipO_smul_right, GlobalTheory.Size.ipO_smul_right] at e
   have hεε : ε * starRingEnd ℂ ε = 1 := by rcases hε with rfl | rfl <;> simp
   have n1 := GlobalTheory.HeisOrtho.mul_conj_of_norm_one (hψ.1.2.1 (symplO S T l u'))
@@ -910,15 +900,6 @@ open GlobalTheory.StdLoc (glVol blockIdx)
 
 open GlobalTheory.NormRatio
 
-theorem _root_.GlobalTheory.T.thetaCosetIndicatorReading_spherical_off_modulus : ∀ {D : D7} {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (X : Data P) (r : D.host.E), IsExact P X r →
-  ∀ (𝔪 : Ideal (𝓞 D.host.E)) (Sf : Finset (FinPl D)) (o : ℕ), GoodMod D 𝔪 Sf →
-  ∀ LB : Lat X.B, IsSelfDualC X.B LB →
-    (∀ z : Matrix (Fin P.d) (Fin P.a) D.host.E, z ∈ Formalism.MainNotions.TaylorLogMetric.YYl D (Formalism.MainNotions.StandardLatticesGL3.stdL D P.a) (Formalism.MainNotions.StandardLatticesGL3.stdL D P.d) ↔
-      finPt X.rkA X.rkB r z ∈ latO X.A X.B (stdLat X.A) LB fun _ => True) →
-  ∀ f₀ φ, Reads X.ψ X.θ X.rkA X.rkB ⊤ δ r P.e0 f₀ → IsSphOff X.ψ X.A X.B (stdLat X.A) LB ∅ f₀ →
-    Reads X.ψ X.θ X.rkA X.rkB ⊤ δ r (cosetVec P 𝔪 o) φ →
-    IsSphOff X.ψ X.A X.B (stdLat X.A) LB Sf φ :=
-  @GlobalTheory.NormRatio.SphCoset.sph
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaCosetIndicatorReadingSphericalOffModulusStatement =====
@@ -1451,7 +1432,7 @@ theorem exists_reads_vacuum (h : IsExact P X r) : ∃ f₀, Reads X.ψ X.θ X.rk
 
 theorem mem_openOff (h : IsExact P X r) {x : Formalism.MainNotions.StandardLatticesGL3.GA D P.a} (hx : x ∈ intG D P.a) (Sf : Finset (FinPl D)) :
     X.ιA x ∈ openOff X.A (stdLat X.A) Sf := fun v _ =>
-  (GlobalTheory.T.standardLattice_selfDual_and_integral_iff_stabilizes X.A P.a (X.ιA x) x h.std.frame.gramA X.rkA (h.std.ptA x)).2.1 hx v (Finset.notMem_empty v)
+  (GlobalTheory.NormRatio.selfDual_and_mem_intG_iff X.A P.a (X.ιA x) x h.std.frame.gramA X.rkA (h.std.ptA x)).2.1 hx v (Finset.notMem_empty v)
 
 theorem norm_transl (h : IsExact P X r) {𝔪 : Ideal (𝓞 D.host.E)} {Sf : Finset (FinPl D)}
     {R : Finset (Formalism.MainNotions.StandardLatticesGL3.GA D P.a)} (hR : ∀ y ∈ R, y ∈ intG D P.a)
@@ -1488,9 +1469,9 @@ theorem finite_data (hI : GlobalTheory.NormSum.Inp D) (h : IsExact P X r) {𝔪 
   refine (exists_reads_vacuum h).elim fun f₀ hf₀ => ?_
   refine (GlobalTheory.T.exists_selfDualLattice_vacuumReading X.ψ X.θ X.A X.B X.rkA X.rkB δ r h.setup).elim fun LB ⟨hLB, hz, hsph⟩ => ?_
   have hs₀ := hsph P.e0 P.vac.1 f₀ hf₀
-  have hsd := (GlobalTheory.T.standardLattice_selfDual_and_integral_iff_stabilizes X.A P.a (X.ιA 1) 1 h.std.frame.gramA X.rkA (h.std.ptA 1)).1
+  have hsd := (GlobalTheory.NormRatio.selfDual_and_mem_intG_iff X.A P.a (X.ιA 1) 1 h.std.frame.gramA X.rkA (h.std.ptA 1)).1
   have hv := vac_eq_sum hI h hm.1 hF hφ
-  have hsφ := GlobalTheory.T.thetaCosetIndicatorReading_spherical_off_modulus P X r h 𝔪 Sf o hm LB hLB hz f₀ φ hf₀ hs₀ hφ
+  have hsφ := GlobalTheory.NormRatio.SphCoset.sph P X r h 𝔪 Sf o hm LB hLB hz f₀ φ hf₀ hs₀ hφ
   have hs := isSphOff_sum R (fun y => X.om (X.ιA y, 1) φ) fun y hy =>
     _root_.GlobalTheory.SphMove.isSphOff_om X.ψ X.A X.B X.χA X.χB X.om h.weil _ _ hsd hLB Sf _ (mem_openOff h (hR y hy) Sf) φ hφ.1 hsφ
   refine ⟨⟨LB, hLB, by rw [hv]; exact hs⟩, fun ν 𝓕 hν => ?_⟩

@@ -106,17 +106,12 @@ theorem vAdd_zpow' (w : HeightOneSpectrum (𝓞 K)) (x : K) (m : ℤ) : vAdd w (
 
 theorem vAdd_prod_zpow (w : HeightOneSpectrum (𝓞 K)) {S : Type} (T : Finset S) (x : S → K) (hx : ∀ s, x s ≠ 0) (a : S → ℤ) :
     vAdd w (∏ s ∈ T, x s ^ a s) = ∑ s ∈ T, a s * vAdd w (x s) := by
-  have hm : ∀ y z : K, y ≠ 0 → z ≠ 0 → vAdd w (y * z) = vAdd w y + vAdd w z := by
-    intro y z hy hz
-    simp only [vAdd, map_mul]
-    rw [WithZero.log_mul ((map_ne_zero _).2 hy) ((map_ne_zero _).2 hz)]
-    ring
   induction T using Finset.cons_induction with
   | empty => simp [vAdd]
   | cons s T hs ih =>
     have h1 : x s ^ a s ≠ 0 := zpow_ne_zero _ (hx s)
     have h2 : ∏ i ∈ T, x i ^ a i ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => zpow_ne_zero _ (hx i)
-    rw [Finset.prod_cons, Finset.sum_cons, hm _ _ h1 h2, ih, vAdd_zpow']
+    rw [Finset.prod_cons, Finset.sum_cons, Examples₂.PlacesToy.vAdd_mul w h1 h2, ih, vAdd_zpow']
 
 theorem log_prod_zpow {S : Type} (T : Finset S) (x : S → ℝ) (hx : ∀ s, 0 < x s) (a : S → ℤ) :
     Real.log (∏ s ∈ T, x s ^ a s) = ∑ s ∈ T, (a s : ℝ) * Real.log (x s) := by

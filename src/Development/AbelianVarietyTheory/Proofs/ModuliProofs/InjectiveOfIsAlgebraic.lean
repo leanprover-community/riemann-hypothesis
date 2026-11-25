@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.BlockTheory.CMModuli.TorusGraphMaps
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
   CartesianMonoidalCategory MonObj NumberField
 open scoped TensorProduct

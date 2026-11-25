@@ -45,7 +45,7 @@ theorem beBessel_of (hGS : Formalism.FourierDecayAlt.ThreeDimData.GrowthS) : Com
     have := hb w hw x hx
     simpa only [dsigW_eq] using this
   have hB : Formalism.MainNotions.S.IsBesselMapSm (k := k) (r := r) z (psi k r z c) σ π
-      (fun x => (∫ p, Formalism.MainNotions.DoubleDerivativeSmoothness.FI z c π σ x v p ∂(μW.prod μN)) ξ) := by
+      (fun x => (∫ p, PI.WBL.beF z c π σ x v p ∂(μW.prod μN)) ξ) := by
     rcases hv with hvD | hvK
     · have h0 : PtB σ a w0 := hK w0 (Formalism.MainNotions.DoubleDerivativeSmoothness.kfinHpk_of_lowUnitH hw0')
       exact Formalism.MainNotions.BeBesselW.beBessel_DD (u := u) z c π μW μN σ w0 a hds' hz hT hπ' hM hgr ha1 h0 v hvD ξ

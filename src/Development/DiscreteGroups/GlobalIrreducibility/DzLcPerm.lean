@@ -11,8 +11,6 @@ public import Mathlib.Basic.PEquiv
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix
 
 namespace DiscreteGroups.sglob.DzLc

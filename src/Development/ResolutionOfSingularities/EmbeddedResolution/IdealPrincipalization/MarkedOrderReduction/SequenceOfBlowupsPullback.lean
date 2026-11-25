@@ -206,33 +206,10 @@ private theorem pullback_condition_base_apply {Y Z W : Scheme.{u}} (f : Y ⟶ W)
     rw [pullback.condition]
   simpa using h
 
-private theorem exists_mem_support_of_ne_top {Y : Scheme.{u}} (J : Y.IdealSheafData) (h : J ≠ ⊤) :
-    ∃ x : ↥Y, x ∈ J.support := by
-  by_contra hc
-  push Not at hc
-  have hb : J.support = ⊥ := by
-    ext y
-    simpa using hc y
-  exact h ((AlgebraicGeometry.Scheme.IdealSheafData.support_eq_bot_iff J).mp hb)
-
-private def isoPullback {s' : SequenceOfBlowups X'} {s : SequenceOfBlowups X} (c : SequenceOfBlowupsPullback φ s' s)
-    (i : ℕ) (hi : i ≤ s'.length) : s'.schemeAt i ≅ pullback φ (s.projectionToBase (c.idx i)) :=
-  ((c.isPullback i hi).flip).isoPullback
-
-private theorem pullbackIso_hom_fst {s' : SequenceOfBlowups X'} {s : SequenceOfBlowups X}
-    (c : SequenceOfBlowupsPullback φ s' s) (i : ℕ) (hi : i ≤ s'.length) :
-    (isoPullback c i hi).hom ≫ pullback.fst φ (s.projectionToBase (c.idx i)) = s'.projectionToBase i :=
-  IsPullback.isoPullback_hom_fst _
-
-private theorem pullbackIso_hom_snd {s' : SequenceOfBlowups X'} {s : SequenceOfBlowups X}
-    (c : SequenceOfBlowupsPullback φ s' s) (i : ℕ) (hi : i ≤ s'.length) :
-    (isoPullback c i hi).hom ≫ pullback.snd φ (s.projectionToBase (c.idx i)) = c.map i hi :=
-  IsPullback.isoPullback_hom_snd _
-
 theorem isPullbackSequenceOfBlowups {s' : SequenceOfBlowups X'} {s : SequenceOfBlowups X}
     (c : SequenceOfBlowupsPullback φ s' s) : IsPullbackBlowupSequence φ s' s := by
-  refine ⟨c.idx, fun i hi => isoPullback c i hi, c.idx_lt, index_lt_index_of_lt c, c.idx_length,
-    ?_, ?_, ?_, ?_⟩
+  refine ⟨c.idx, fun i hi => (c.isPullback i hi).flip.isoPullback, c.idx_lt,
+    index_lt_index_of_lt c, c.idx_length, ?_, ?_, ?_, ?_⟩
   · intro i hi
     constructor
     · rintro ⟨x, hx⟩
@@ -241,23 +218,26 @@ theorem isPullbackSequenceOfBlowups {s' : SequenceOfBlowups X'} {s : SequenceOfB
       exact c.omitted i hi hcon _ (Scheme.IdealSheafData.mem_support_comap.mp hx) _
         (pullback_condition_base_apply φ (s.projectionToBase i) x)
     · rintro ⟨j, hj, rfl⟩
-      refine exists_mem_support_of_ne_top _ ?_
+      refine (Scheme.IdealSheafData.support_nonempty_iff_ne_top _).mpr ?_
       intro htop
       refine c.center_ne_top j hj ?_
-      rw [c.center_comap j hj, ← pullbackIso_hom_snd c j (le_of_lt hj),
+      rw [c.center_comap j hj, ← (c.isPullback j (le_of_lt hj)).flip.isoPullback_hom_snd,
         Scheme.IdealSheafData.comap_comp, htop,
         AlgebraicGeometry.Scheme.IdealSheafData.comap_top]
   · intro i hi
-    exact pullbackIso_hom_fst c i hi
+    exact IsPullback.isoPullback_hom_fst _
   · intro i hi hr
     refine pullback.hom_ext ?_ ?_
-    · rw [Category.assoc, pullbackIso_hom_fst, Category.assoc, SequenceOfBlowups.pullbackTransitionMap_comp_fst,
-        pullbackIso_hom_fst, SequenceOfBlowups.blowupMorphism_eq_transitionMap, SequenceOfBlowups.transitionMap_comp_projectionToBase]
-    · rw [Category.assoc, pullbackIso_hom_snd, Category.assoc, SequenceOfBlowups.pullbackTransitionMap_comp_snd,
-        ← Category.assoc, pullbackIso_hom_snd]
+    · rw [Category.assoc, IsPullback.isoPullback_hom_fst, Category.assoc,
+        SequenceOfBlowups.pullbackTransitionMap_comp_fst, IsPullback.isoPullback_hom_fst,
+        SequenceOfBlowups.blowupMorphism_eq_transitionMap,
+        SequenceOfBlowups.transitionMap_comp_projectionToBase]
+    · rw [Category.assoc, IsPullback.isoPullback_hom_snd, Category.assoc,
+        SequenceOfBlowups.pullbackTransitionMap_comp_snd, ← Category.assoc,
+        IsPullback.isoPullback_hom_snd]
       exact c.step i hi
   · intro i hi
-    rw [pullbackIso_hom_snd]
+    rw [IsPullback.isoPullback_hom_snd]
     exact c.center_comap i hi
 
 theorem blowupSequenceData_index_lt_length {d' : BlowupSequenceData X'} {d : BlowupSequenceData X}
@@ -546,18 +526,12 @@ private def mapOverLastMap {s' : BlowupSequenceData X'} {s : BlowupSequenceData 
     (e : SequenceOfBlowupsPullback c.lastMap t'.toSequenceOfBlowups t.toSequenceOfBlowups) (i : ℕ) (hi : i ≤ t'.length) :
     t'.obj i ⟶ t.obj (e.idx i) := e.map i hi
 
+@[reassoc]
 private theorem blowupMorphism_comp_lowerMap {s' : BlowupSequenceData X'} {s : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ s'.toSequenceOfBlowups s.toSequenceOfBlowups) (j : ℕ) (hj : j < s'.length) :
     s'.map j ≫ mapOfToSequenceOfBlowups c j (le_of_lt hj) =
       mapOfToSequenceOfBlowups c (j + 1) hj ≫ s.transitionMap (le_of_lt (c.blowupSequenceData_index_lt_index_succ j hj)) :=
   c.blowupSequenceData_blowupMorphism_comp_map j hj
-
-private theorem blowupMorphism_comp_lowerMap_assoc {s' : BlowupSequenceData X'} {s : BlowupSequenceData X}
-    (c : SequenceOfBlowupsPullback φ s'.toSequenceOfBlowups s.toSequenceOfBlowups) (j : ℕ) (hj : j < s'.length)
-    {W : Scheme.{u}} (g : s.obj (c.idx j) ⟶ W) :
-    s'.map j ≫ mapOfToSequenceOfBlowups c j (le_of_lt hj) ≫ g =
-      mapOfToSequenceOfBlowups c (j + 1) hj ≫ s.transitionMap (le_of_lt (c.blowupSequenceData_index_lt_index_succ j hj)) ≫ g := by
-  rw [← Category.assoc, blowupMorphism_comp_lowerMap, Category.assoc]
 
 private theorem lowerMap_congr {s' : BlowupSequenceData X'} {s : BlowupSequenceData X}
     (c : SequenceOfBlowupsPullback φ s'.toSequenceOfBlowups s.toSequenceOfBlowups) {a b : ℕ} (hab : a = b)
@@ -572,6 +546,7 @@ private theorem lastMap_eq_lowerMap {s' : BlowupSequenceData X'} {s : BlowupSequ
     (E : s.obj (c.idx s'.length) = s.obj s.length) :
     c.lastMap = mapOfToSequenceOfBlowups c s'.length le_rfl ≫ eqToHom E := rfl
 
+@[reassoc]
 private theorem blowupMorphism_comp_upperMap {s' : BlowupSequenceData X'} {s : BlowupSequenceData X}
     {t' : BlowupSequenceData (s'.obj s'.length)} {t : BlowupSequenceData (s.obj s.length)}
     {c : SequenceOfBlowupsPullback φ s'.toSequenceOfBlowups s.toSequenceOfBlowups}
@@ -579,15 +554,6 @@ private theorem blowupMorphism_comp_upperMap {s' : BlowupSequenceData X'} {s : B
     t'.map i ≫ mapOverLastMap e i (le_of_lt hi) =
       mapOverLastMap e (i + 1) hi ≫ t.transitionMap (le_of_lt (e.blowupSequenceData_index_lt_index_succ i hi)) :=
   e.blowupSequenceData_blowupMorphism_comp_map i hi
-
-private theorem blowupMorphism_comp_upperMap_assoc {s' : BlowupSequenceData X'} {s : BlowupSequenceData X}
-    {t' : BlowupSequenceData (s'.obj s'.length)} {t : BlowupSequenceData (s.obj s.length)}
-    {c : SequenceOfBlowupsPullback φ s'.toSequenceOfBlowups s.toSequenceOfBlowups}
-    (e : SequenceOfBlowupsPullback c.lastMap t'.toSequenceOfBlowups t.toSequenceOfBlowups) (i : ℕ) (hi : i < t'.length)
-    {W : Scheme.{u}} (g : t.obj (e.idx i) ⟶ W) :
-    t'.map i ≫ mapOverLastMap e i (le_of_lt hi) ≫ g =
-      mapOverLastMap e (i + 1) hi ≫ t.transitionMap (le_of_lt (e.blowupSequenceData_index_lt_index_succ i hi)) ≫ g := by
-  rw [← Category.assoc, blowupMorphism_comp_upperMap, Category.assoc]
 
 private theorem upperMap_zero_comp_isoObjZero {s' : BlowupSequenceData X'} {s : BlowupSequenceData X}
     {t' : BlowupSequenceData (s'.obj s'.length)} {t : BlowupSequenceData (s.obj s.length)}
@@ -651,6 +617,7 @@ private theorem append_transitionMap_of_le_length {Y : Scheme.{u}} (s : BlowupSe
         ← BlowupSequenceData.transitionMap_succ s m]
       simp
 
+@[reassoc]
 private theorem concatObjAddIso_inv_comp_transitionMap {Y : Scheme.{u}} (s : BlowupSequenceData Y)
     (t : BlowupSequenceData (s.obj s.length)) {a b : ℕ} (h : a ≤ b) (hd : s.length + a ≤ s.length + b) :
     (BlowupSequenceData.concatObjAddIso s t b).inv ≫ (s.append t).transitionMap hd =
@@ -665,13 +632,7 @@ private theorem concatObjAddIso_inv_comp_transitionMap {Y : Scheme.{u}} (s : Blo
             (BlowupSequenceData.concatObjAddIso s t a).inv := by rw [key]
     _ = t.transitionMap h ≫ (BlowupSequenceData.concatObjAddIso s t a).inv := by simp
 
-private theorem concatObjAddIso_inv_comp_transitionMap_assoc {Y : Scheme.{u}} (s : BlowupSequenceData Y)
-    (t : BlowupSequenceData (s.obj s.length)) {a b : ℕ} (h : a ≤ b) (hd : s.length + a ≤ s.length + b)
-    {W : Scheme.{u}} (g : (s.append t).obj (s.length + a) ⟶ W) :
-    (BlowupSequenceData.concatObjAddIso s t b).inv ≫ (s.append t).transitionMap hd ≫ g =
-      t.transitionMap h ≫ (BlowupSequenceData.concatObjAddIso s t a).inv ≫ g := by
-  rw [← Category.assoc, concatObjAddIso_inv_comp_transitionMap s t h hd, Category.assoc]
-
+@[reassoc]
 private theorem concatObjAddIso_inv_comp_transitionMap_of_le_length {Y : Scheme.{u}} (s : BlowupSequenceData Y)
     (t : BlowupSequenceData (s.obj s.length)) {m i : ℕ} (hm : m ≤ s.length) (h : m ≤ s.length + i) :
     (BlowupSequenceData.concatObjAddIso s t i).inv ≫ (s.append t).transitionMap h =
@@ -697,15 +658,6 @@ private theorem concatObjAddIso_inv_comp_transitionMap_of_le_length {Y : Scheme.
           eqToHom (BlowupSequenceData.append_schemeAt_of_le_length s t hm).symm := by
         rw [h2, h3]
         simp
-
-private theorem concatObjAddIso_inv_comp_transitionMap_of_le_length_assoc {Y : Scheme.{u}} (s : BlowupSequenceData Y)
-    (t : BlowupSequenceData (s.obj s.length)) {m i : ℕ} (hm : m ≤ s.length) (h : m ≤ s.length + i)
-    {W : Scheme.{u}} (g : (s.append t).obj m ⟶ W) :
-    (BlowupSequenceData.concatObjAddIso s t i).inv ≫ (s.append t).transitionMap h ≫ g =
-      t.transitionMap (Nat.zero_le i) ≫ t.isoZero.hom ≫ s.transitionMap hm ≫
-        eqToHom (BlowupSequenceData.append_schemeAt_of_le_length s t hm).symm ≫ g := by
-  rw [← Category.assoc, concatObjAddIso_inv_comp_transitionMap_of_le_length s t hm h]
-  simp
 
 private theorem concatObjAddIso_zero_hom {Y : Scheme.{u}} (s : BlowupSequenceData Y)
     (t : BlowupSequenceData (s.obj s.length)) :
@@ -996,7 +948,7 @@ private theorem append_center_eq_comap_concatMap (s : BlowupSequenceData X) (t :
 
 private theorem comap_iso_hom_ne_top {Y Z : Scheme.{u}} (g : Y ≅ Z) (J : Z.IdealSheafData)
     (hJ : J ≠ ⊤) : J.comap g.hom ≠ ⊤ := by
-  obtain ⟨x, hx⟩ := exists_mem_support_of_ne_top J hJ
+  obtain ⟨x, hx⟩ := (Scheme.IdealSheafData.support_nonempty_iff_ne_top J).mpr hJ
   have h1 : (g.inv ≫ g.hom).base x ∈ J.support := by
     rw [g.inv_hom_id]
     simpa using hx
@@ -1032,21 +984,6 @@ private theorem append_center_ne_top (s : BlowupSequenceData X) (t : BlowupSeque
       e.center_ne_top (j - s'.length) (by rw [BlowupSequenceData.toSequenceOfBlowups_length]; exact hsub)
     rw [BlowupSequenceData.append_center_of_length_lt s' t' h]
     exact comap_eqToHom_ne_top _ _ hne
-
-private theorem exists_preimage_of_isPullback {A A' Z Z' : Scheme.{u}} {p : A' ⟶ A} {q : A' ⟶ Z'}
-    {f : A ⟶ Z} {g : Z' ⟶ Z} (h : IsPullback p q f g) (a : ↥A) (b : ↥Z')
-    (hab : f.base a = g.base b) : ∃ a' : ↥A', p.base a' = a := by
-  obtain ⟨w, hw1, _hw2⟩ := AlgebraicGeometry.Scheme.Pullback.exists_preimage_pullback a b hab
-  refine ⟨h.isoPullback.inv.base w, ?_⟩
-  have h2 : h.isoPullback.hom ≫ pullback.fst f g = p := h.isoPullback_hom_fst
-  have key : h.isoPullback.inv ≫ p = pullback.fst f g := by
-    calc h.isoPullback.inv ≫ p
-        = h.isoPullback.inv ≫ h.isoPullback.hom ≫ pullback.fst f g := by rw [h2]
-      _ = pullback.fst f g := by rw [Iso.inv_hom_id_assoc]
-  calc p.base (h.isoPullback.inv.base w)
-      = (h.isoPullback.inv ≫ p).base w := rfl
-    _ = (pullback.fst f g).base w := by rw [key]
-    _ = a := hw1
 
 private theorem mem_toSequenceOfBlowups_center_support {Y : Scheme.{u}} (d : BlowupSequenceData Y) (i : ℕ)
     (w : ↥(d.toSequenceOfBlowups.schemeAt i)) (hw : w ∈ (d.center i).support) :
@@ -1102,8 +1039,7 @@ private theorem append_projectionToBase_ne_of_forall_concatIndex_ne (s : BlowupS
       (congrArg (fun m : s.obj s.length ⟶ X =>
           m.base ((t.projectionToBase n).base (((BlowupSequenceData.concatObjAddIso s t n).hom).base z)))
         (BlowupSequenceData.toSequenceOfBlowups_projectionToBase s s.toSequenceOfBlowups.length)).trans heq2.symm
-    obtain ⟨a', ha'⟩ := exists_preimage_of_isPullback c.isPullback_lastMap
-      ((t.projectionToBase n).base (((BlowupSequenceData.concatObjAddIso s t n).hom).base z)) x' hsm
+    obtain ⟨a', ha', -⟩ := Scheme.exists_preimage_of_isPullback c.isPullback_lastMap _ x' hsm
     refine e.omitted n ?_ ?_ (((BlowupSequenceData.concatObjAddIso s t n).hom).base z) ?_ a' ?_
     · rw [BlowupSequenceData.toSequenceOfBlowups_length]
       exact hn

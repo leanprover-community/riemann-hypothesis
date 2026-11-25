@@ -13,8 +13,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.FlatTors GlobalTheory.IndefiniteRowSideFullHecke.FlatIsoUnitGenerator
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.TorusTorsion
 
 open ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.TorusModel

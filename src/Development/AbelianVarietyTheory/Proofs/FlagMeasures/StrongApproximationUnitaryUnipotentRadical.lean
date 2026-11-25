@@ -7,50 +7,8 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TwoStepUnipot
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
 
@@ -115,7 +73,7 @@ theorem exists_idem {st : S →+ S} {p h : S} (hm : ∀ x y, st (x * y) = st y *
     ∃ e, e * e = e ∧ e * st e = 0 ∧ st e * e = 0 ∧ e * p = p ∧ p * e = e := by
   have hq : st p * st p = st p := by rw [← hm, hp]
   have hs : st (p * (1 - h * st p)) = (1 - h * p) * st p := by
-    rw [hm, map_sub, hm, hi, st_one hm hi, st_half hm hi hh hc, hc]
+    rw [hm, map_sub, hm, hi, st_one hm hi, st_half hm hi hh, hc]
   have e1 : p * (1 - h * st p) * p = p := by
     rw [mul_assoc, sub_mul, mul_assoc, h0, mul_zero, sub_zero, one_mul, hp]
   refine ⟨p * (1 - h * st p), by rw [← mul_assoc, e1], ?_, ?_, e1, by rw [← mul_assoc, hp]⟩
@@ -139,7 +97,7 @@ theorem exists_param [TopologicalSpace S] [IsTopologicalRing S]
   have hs' : st e₃ = e₁ := by rw [← hs, hi]
   have h33 : e₃ * e₃ = e₃ := by rw [← hs, ← hm, h11]
   have he3 : e₃ ∈ S₀ := hs ▸ h0 _ he
-  have hsh : st h = h := st_half hm hi hh hc
+  have hsh : st h = h := st_half hm hi hh
   obtain ⟨B, hB⟩ : ∃ B : S → S, ∀ x, B x = (1 - e₁ - e₃) * x * e₃ := ⟨_, fun _ => rfl⟩
   obtain ⟨Wd, hW⟩ : ∃ Wd : S → S, ∀ y, Wd y = h * (e₁ * (y - st y) * e₃) := ⟨_, fun _ => rfl⟩
   have Bc : Continuous B := by

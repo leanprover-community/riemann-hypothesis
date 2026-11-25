@@ -599,32 +599,15 @@ private theorem T_vline (hH : THeis_k) (R : RD_k d) {g : Yf_k d → ℂ} {Ω : d
     simp only [Matrix.map_apply, Matrix.smul_apply, smul_eq_mul]
     rw [star_mul', Complex.star_def, Complex.conj_ofReal]; rfl
   have harcA (A B : d.MxE) : arc_k R (A + B) = arc_k R A + arc_k R B := by
-    unfold arc_k
-    rw [show (fun i : Iw_k d => if i.2.2.2 then (R.loc i.1 (A + B) i.2.1 i.2.2.1).re else
-        (R.loc i.1 (A + B) i.2.1 i.2.2.1).im) =
-      (fun i : Iw_k d => if i.2.2.2 then (R.loc i.1 A i.2.1 i.2.2.1).re else (R.loc i.1 A i.2.1 i.2.2.1).im) +
-      (fun i : Iw_k d => if i.2.2.2 then (R.loc i.1 B i.2.1 i.2.2.1).re else (R.loc i.1 B i.2.1 i.2.2.1).im) from
-      funext fun i => by simp only [hlocA, Pi.add_apply]; split_ifs <;> simp]
-    exact map_add (EuclideanSpace.equiv (Iw_k d) ℝ).symm _ _
+    ext i; simp only [PiLp.add_apply, OswGen.arc_apply_k, hlocA]; split_ifs <;> simp
   have harcS (t : ℝ) (A : d.MxE) : arc_k R (realAd F t • A) = t • arc_k R A := by
-    unfold arc_k
-    rw [show (fun i : Iw_k d => if i.2.2.2 then (R.loc i.1 (realAd F t • A) i.2.1 i.2.2.1).re else
-        (R.loc i.1 (realAd F t • A) i.2.1 i.2.2.1).im) =
-      t • (fun i : Iw_k d => if i.2.2.2 then (R.loc i.1 A i.2.1 i.2.2.1).re else (R.loc i.1 A i.2.1 i.2.2.1).im) from
-      funext fun i => by simp only [hlocS, Pi.smul_apply, smul_eq_mul]; split_ifs <;> simp]
-    exact map_smul (EuclideanSpace.equiv (Iw_k d) ℝ).symm _ _
+    ext i; simp only [PiLp.smul_apply, OswGen.arc_apply_k, hlocS, smul_eq_mul]; split_ifs <;> simp
   have hfinA : fin_k d (X + realAd F z.re • W) = fin_k d X := by
     have h0 : fin_k d (realAd F z.re • W) = 0 := (fin_eq_zero_iff_k _).2 (by rw [smul_comm, hW, smul_zero])
     funext k; show (d.crd (X + realAd F z.re • W) k).2 = (d.crd X k).2
     rw [TBij_k.Adp.crd_add]; change (d.crd X k).2 + fin_k d (realAd F z.re • W) k = _; rw [h0, Pi.zero_apply, add_zero]
   have hgau (Y : d.MxE) : gau_k R Y = (Real.exp (-(2 * Real.pi * ‖arc_k R Y‖ ^ 2)) : ℂ) := by
-    have hn : ‖arc_k R Y‖ ^ 2 = ∑ w, ∑ a, ∑ i, ‖R.loc w Y a i‖ ^ 2 := by
-      rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)]
-      simp only [Fintype.sum_prod_type, Fintype.sum_bool, arc_k, Real.norm_eq_abs, sq_abs]
-      refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
-      simp only [EuclideanSpace.equiv]; rw [Complex.sq_norm, Complex.normSq_apply]; simp [sq]
-    simp only [gau_k, fP, evX, map_one, one_mul, gs]; rw [hn, ← Complex.exp_sum, Complex.ofReal_exp]
-    congr 1; push_cast; rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
+    rw [OswGen.gauss_eq_k]; simp only [gau_k, fP, evX, map_one, one_mul]
   unfold vline_k
   rw [T_rho_sum'_k hH hΩ, psi_sp'_k R hW, psi_tw'_k R hW, hTΩ]; simp only [vac_k]
   rw [hgau, harcA, harcS, hfinA, show star (Complex.exp _) = Complex.exp (conj _) from (Complex.exp_conj _).symm,
@@ -757,16 +740,14 @@ private theorem exists_embU_loc (d : SD_k σ) (R : RD_k d) (w : InfinitePlace F)
         Matrix.transpose_smul, Matrix.transpose_one, ← Krd.fin_mul, ← Krd.fin_mul, Matrix.mul_one, Matrix.one_mul]
   let k : UA σ d.A.J := ⟨⟨Krd.atM_k d w Z, Krd.atM_k d w Z', by rw [← Krd.atM_mul_k, hZZ, Krd.atM_one_k],
     by rw [← Krd.atM_mul_k, hZZ', Krd.atM_one_k]⟩, hmem⟩
-  have hcwm (w' : InfinitePlace F) (A : Matrix (Fin d.m) (Fin d.m) (AE F E)) (B : d.MxE) :
-      d.cw w' (A * B) = d.cw w' A * d.cw w' B := Matrix.map_mul
   refine ⟨k⁻¹, fun X => ⟨?_, fun w' hw' => ?_, ?_⟩⟩
   · rw [inv_inv]; show (fri * d.cw w (Krd.atM_k d w Z * X)).map star = u * (fri * d.cw w X).map star
-    rw [hcwm, Krd.cw_atM_k]; simp only [Krd.fam, ite_true, Z]
+    rw [Krd.cw_mul_k, Krd.cw_atM_k]; simp only [Krd.fam, ite_true, Z]
     rw [show fri * (fr * h * fri * d.cw w X) = (fri * fr) * h * (fri * d.cw w X) by simp only [Matrix.mul_assoc],
       hb', Matrix.one_mul, mapStar_mul', hhs]
   · rw [inv_inv]; show d.cw w' (Krd.atM_k d w Z * X - X) = 0
     rw [show ∀ A B : d.MxE, d.cw w' (A - B) = d.cw w' A - d.cw w' B from fun _ _ => by ext _ _; simp [SD_k.cw],
-      hcwm, Krd.cw_atM_k]
+      Krd.cw_mul_k, Krd.cw_atM_k]
     simp only [Krd.fam, ite_eq_right hw', Matrix.one_mul, sub_self]
   · rw [inv_inv]; show finOne F • (Krd.atM_k d w Z * X - X) = 0
     rw [smul_sub, ← Matrix.smul_mul, Krd.fin_atM_k, Matrix.smul_mul, Matrix.one_mul, sub_self]

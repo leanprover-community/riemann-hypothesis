@@ -47,7 +47,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 
-noncomputable section
 namespace GlobalTheory.UU
 
 theorem exists_lift_unit_tensor {S Z : Scheme.{0}} (X : Over S) (q : Z ⟶ X.left) :
@@ -91,4 +90,3 @@ theorem expandsAt_of_expT : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal 
     exact H₂
 
 end GlobalTheory.UU
-end

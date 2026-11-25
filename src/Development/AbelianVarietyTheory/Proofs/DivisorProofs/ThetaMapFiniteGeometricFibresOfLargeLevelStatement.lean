@@ -497,14 +497,14 @@ theorem exists_thetaData (Xo : Moduli Dw l) (c : Coeff l) {o : Type} [CommRing o
   obtain ⟨P, α, hPg, hpb, hPL⟩ := GlobalTheory.T.universalTriple_fibre_principallyPolarised_dimension E H Dw l Xo c K (y ≫ pullback.fst _ _)
   rw [← hg] at hPg
   have hfib : PolFib Xo.univ.t.G Xo.univ.t.PP.L g (y ≫ pullback.fst _ _) := ⟨P, α, hPg, hpb, hPL⟩
-  obtain ⟨⟨θ, hθ⟩, -⟩ := GlobalTheory.T.principallyPolarisedFibre_exists_generator_stable _ Xo.univ.t.G Xo.univ.t.PP.L hLB g K _ hfib
-  obtain ⟨pt, cy, hcy⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed _ Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig hLB hρ g (3 ^ j * 81) (n + 1) K
+  obtain ⟨⟨θ, hθ⟩, -⟩ := GlobalTheory.UMin.gen_of_polFib _ Xo.univ.t.G Xo.univ.t.PP.L hLB g K _ hfib
+  obtain ⟨pt, cy, hcy⟩ := GlobalTheory.UMin.exists_thList _ Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig hLB hρ g (3 ^ j * 81) (n + 1) K
     _ θ hodd hm0 hn hfib
   have hH : HasTh Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig (3 ^ j * 81) (y ≫ pullback.fst _ _) cy :=
     ⟨θ, pt, hθ, hcy⟩
   have hP1 : PCrd (y ≫ f) (symTup cy) := hth K y cy hH
   rw [hy] at hP1
-  obtain ⟨a, ha0, ha⟩ := (GlobalTheory.T.projectiveHomogeneousCoords_field_determine_descend).2.1 o K n (x ≫ f) e (symTup cy) he hP1
+  obtain ⟨a, ha0, ha⟩ := (GlobalTheory.UMin.CrdUniq.main).2.1 o K n (x ≫ f) e (symTup cy) he hP1
   obtain ⟨mu, hmu0, hmuT⟩ := hT cy a ha0 ha
   haveI := P.isAb.comm
   obtain ⟨rig, hrig⟩ := P.rigid

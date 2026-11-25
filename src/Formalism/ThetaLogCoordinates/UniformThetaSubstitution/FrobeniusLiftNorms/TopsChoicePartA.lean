@@ -122,12 +122,8 @@ theorem powq_inj {p : ℕ} (hp : 2 ≤ p) {i j : ℕ} (h : (p ^ 2) ^ i = (p ^ 2)
 theorem ppowq_inj {p : ℕ} (hp : 2 ≤ p) {i j : ℕ} (h : p * (p ^ 2) ^ i = p * (p ^ 2) ^ j) : i = j := by
   exact powq_inj hp (Nat.eq_of_mul_eq_mul_left (by omega) h)
 
-private lemma lt_pow_self_of_two_le {b : ℕ} (hb : 2 ≤ b) (j : ℕ) : j < b ^ j := by
-  induction j with
-  | zero => simp
-  | succ k ih =>
-    rw [pow_succ]
-    nlinarith
+private lemma lt_pow_self_of_two_le {b : ℕ} (hb : 2 ≤ b) (j : ℕ) : j < b ^ j :=
+  Nat.lt_pow_self hb
 
 theorem lt_powq {p : ℕ} (hp : 2 ≤ p) (j : ℕ) : j < (p ^ 2) ^ j + 1 := by
   have := lt_pow_self_of_two_le (b := p ^ 2) (by nlinarith) j

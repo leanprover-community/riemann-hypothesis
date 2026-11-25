@@ -124,7 +124,7 @@ theorem toSub_cLoc_continuous_of_mem {E : Type} [Field E] [NumberField E] [IsCMF
 theorem toSub_cLoc_fin_continuous : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ,
     ∀ w : Pl E, Continuous (fun x : finU (E := E) (n := n) => toSub (UL n w) (cLoc w (x : UA E n))) := by
   intro E _ _ _ hE n w
-  exact toSub_cLoc_continuous_of_mem w (GlobalTheory.T.finiteAdelicUnitaryPoint_localComponent_mem_localUnitary E hE n w)
+  exact toSub_cLoc_continuous_of_mem w (GlobalTheory.BCT.cLoc_mem_UL E hE n w)
 
 end GlobalTheory.BCT
 end -- clump:auto
@@ -164,8 +164,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-theorem _root_.GlobalTheory.T.localComponent_definiteUnitaryFinitePart_eq_localPoint : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, ∀ (γ : UE E n) (w : Pl E), toSub (UL n w) (cLoc w ((finPt γ : finU (E := E) (n := n)) : UA E n)) = locPt w γ := by
-  first | exact @GlobalTheory.BCT.locPt_finPt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalComponentDefiniteUnitaryFinitePartEqLocalPoStatement =====
@@ -844,13 +842,13 @@ theorem twOrb_globFn_eq_finprod : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   have hKo : ∀ w : Pl E, IsOpen (KL n w : Set (UL n w)) := fun w => (hTB w).2.2.2.2.2.2.1
   have hKc : ∀ w : Pl E, IsCompact (KL n w : Set (UL n w)) := fun w => (hTB w).2.2.2.2.2.2.2.1
   let p : ∀ i : S, finU (E := E) (n := n) →* UL n i.1 := fun i =>
-    ((cLoc i.1).comp (finU (E := E) (n := n)).subtype).codRestrict (UL n i.1) (fun x => GlobalTheory.T.finiteAdelicUnitaryPoint_localComponent_mem_localUnitary E hU n i.1 x)
+    ((cLoc i.1).comp (finU (E := E) (n := n)).subtype).codRestrict (UL n i.1) (fun x => GlobalTheory.BCT.cLoc_mem_UL E hU n i.1 x)
   have hp : ∀ (i : S) (x : finU (E := E) (n := n)), p i x = toSub (UL n i.1) (cLoc i.1 (x : UA E n)) := by
     intro i x
     unfold toSub
-    rw [dite_eq_left (GlobalTheory.T.finiteAdelicUnitaryPoint_localComponent_mem_localUnitary E hU n i.1 x)]
+    rw [dite_eq_left (GlobalTheory.BCT.cLoc_mem_UL E hU n i.1 x)]
     rfl
-  have hδ : ∀ i : S, p i (finPt γ) = locPt i.1 γ := fun i => (hp i _).trans (GlobalTheory.T.localComponent_definiteUnitaryFinitePart_eq_localPoint E hU n γ i.1)
+  have hδ : ∀ i : S, p i (finPt γ) = locPt i.1 γ := fun i => (hp i _).trans (GlobalTheory.BCT.locPt_finPt E hU n γ i.1)
   have hsep : ∀ w : Pl E, (locPt w γ).1.val.charpoly.Separable := by
     intro w
     rw [_root_.GlobalTheory.BCT.LocVal.main E hU n γ w]

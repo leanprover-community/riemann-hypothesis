@@ -23,18 +23,7 @@ section SlopeTestRemainingChoices
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (Ideal.span {(p : O)}) O]
 
-
-variable (p O) in
-def ghostHom (n : ℕ) : Ainf p O →+* O where
-  toFun := ghost p O n
-  map_one' := by
-    show WittVector.fontaineTheta O p (_ ^[n] 1) = 1
-    rw [iterate_map_one, map_one]
-  map_mul' := ghost_mul n
-  map_zero' := ghost_zero n
-  map_add' := ghost_add n
-
-theorem ghostHom_apply (n : ℕ) (a : Ainf p O) : ghostHom p O n a = ghost p O n a := rfl
+theorem ghostHom_apply (n : ℕ) (a : Ainf p O) : GlobalTheory.GhostKer.ghostHom p O n a = ghost p O n a := rfl
 
 def dotLin {R : Type} [CommRing R] {h : ℕ} (v : Fin h → R) : (Fin h → R) →ₗ[R] R where
   toFun w := v ⬝ᵥ w
@@ -79,14 +68,14 @@ theorem rowMap_apply {G : PDivGroup p O} {h : ℕ} (F : Matrix (Fin h) (Fin h) (
 theorem F_map_ghost {ε : PreTilt O p} {h : ℕ} (D : Datum ε h ℤ_[p])
     (hphi : ∀ n a, ghost p O (n + 1) (phiInv p O a) = ghost p O n a) (n : ℕ) :
     ∃ X : Matrix (Fin h) (Fin h) O,
-      D.F.map (ghostHom p O n) = X * D.F.map (WittVector.fontaineTheta O p) := by
+      D.F.map (GlobalTheory.GhostKer.ghostHom p O n) = X * D.F.map (WittVector.fontaineTheta O p) := by
   induction n with
   | zero => exact ⟨1, by rw [Matrix.one_mul]; rfl⟩
   | succ n ih =>
     obtain ⟨X, hX⟩ := ih
-    refine ⟨D.Ψ.map (ghostHom p O (n + 1)) * X, ?_⟩
-    have e1 : D.F.map (ghostHom p O (n + 1)) =
-        D.Ψ.map (ghostHom p O (n + 1)) * D.F.map (ghostHom p O n) := by
+    refine ⟨D.Ψ.map (GlobalTheory.GhostKer.ghostHom p O (n + 1)) * X, ?_⟩
+    have e1 : D.F.map (GlobalTheory.GhostKer.ghostHom p O (n + 1)) =
+        D.Ψ.map (GlobalTheory.GhostKer.ghostHom p O (n + 1)) * D.F.map (GlobalTheory.GhostKer.ghostHom p O n) := by
       conv_lhs => rw [D.F_eq]
       rw [Matrix.map_mul, Matrix.map_map]
       congr 1
@@ -98,14 +87,14 @@ theorem G_map_ghost {ε : PreTilt O p} {h : ℕ} (D : Datum ε h ℤ_[p])
     (hG : D.G = D.G.map (phiInv p O) * D.Ψ')
     (hphi : ∀ n a, ghost p O (n + 1) (phiInv p O a) = ghost p O n a) (n : ℕ) :
     ∃ Y : Matrix (Fin h) (Fin h) O,
-      D.G.map (ghostHom p O n) = D.G.map (WittVector.fontaineTheta O p) * Y := by
+      D.G.map (GlobalTheory.GhostKer.ghostHom p O n) = D.G.map (WittVector.fontaineTheta O p) * Y := by
   induction n with
   | zero => exact ⟨1, by rw [Matrix.mul_one]; rfl⟩
   | succ n ih =>
     obtain ⟨Y, hY⟩ := ih
-    refine ⟨Y * D.Ψ'.map (ghostHom p O (n + 1)), ?_⟩
-    have e1 : D.G.map (ghostHom p O (n + 1)) =
-        D.G.map (ghostHom p O n) * D.Ψ'.map (ghostHom p O (n + 1)) := by
+    refine ⟨Y * D.Ψ'.map (GlobalTheory.GhostKer.ghostHom p O (n + 1)), ?_⟩
+    have e1 : D.G.map (GlobalTheory.GhostKer.ghostHom p O (n + 1)) =
+        D.G.map (GlobalTheory.GhostKer.ghostHom p O n) * D.Ψ'.map (GlobalTheory.GhostKer.ghostHom p O (n + 1)) := by
       conv_lhs => rw [hG]
       rw [Matrix.map_mul, Matrix.map_map]
       congr 1
@@ -143,15 +132,15 @@ theorem latt_eq_rowSpace : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [Is
     rw [Datum.bb, Datum.al, toLin'_apply, toLin'_apply]
     exact hzero _ _ hFG u
 
-  have hghostA : ∀ n t, (ghostHom p O n) ∘ toA e t = toO e t := fun n t =>
+  have hghostA : ∀ n t, (GlobalTheory.GhostKer.ghostHom p O n) ∘ toA e t = toO e t := fun n t =>
     funext fun i => hofP n _
   have hmem : ∀ r, rowMap D.F e r ∈ latt G := by
     intro r n
     obtain ⟨X, hX⟩ := F_map_ghost D hphi n
-    refine ⟨dotLin ((ghostHom p O n ∘ r) ᵥ* X) ∘ₗ (D.Fil.subtype ∘ₗ fil.toLinearMap),
+    refine ⟨dotLin ((GlobalTheory.GhostKer.ghostHom p O n ∘ r) ᵥ* X) ∘ₗ (D.Fil.subtype ∘ₗ fil.toLinearMap),
       fun t => ?_⟩
     rw [rowMap_apply, ← ghostHom_apply, RingHom.map_dotProduct]
-    have e1 : (ghostHom p O n) ∘ (D.F *ᵥ toA e t) = X *ᵥ D.al (toO e t) := by
+    have e1 : (GlobalTheory.GhostKer.ghostHom p O n) ∘ (D.F *ᵥ toA e t) = X *ᵥ D.al (toO e t) := by
       funext i
       rw [Function.comp_apply, RingHom.map_mulVec, hghostA, hX, ← mulVec_mulVec, Datum.al,
         toLin'_apply]
@@ -193,7 +182,7 @@ theorem latt_eq_rowSpace : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [Is
       intro j
       refine _root_.GlobalTheory.GhostKer.mu_dvd_of_ghost p C v O hv ε hε _ fun n => ?_
       obtain ⟨x, hx⟩ := y.2 n
-      set gs : Fin h → O := ghostHom p O n ∘ s with hgs
+      set gs : Fin h → O := GlobalTheory.GhostKer.ghostHom p O n ∘ s with hgs
       have hgt : ∀ t, gs ⬝ᵥ toO e t = x (hodgeTate G t) := by
         intro t
         rw [← hx, hy, ← ghostHom_apply, RingHom.map_dotProduct, hghostA]

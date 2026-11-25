@@ -8,8 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open Matrix
 
-noncomputable section
-
 namespace GlobalTheory.Hk3.HoweDuality
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
@@ -143,5 +141,3 @@ theorem latIdx_le_of_ker : ∀ (L : Type) [Field L] [Valued L (WithZero (Multipl
   exact (Set.ncard_le_ncard hsub (hfin.image h)).trans (Set.ncard_image_le hfin)
 
 end GlobalTheory.Hk3.HoweDuality
-
-end

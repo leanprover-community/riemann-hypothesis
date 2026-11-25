@@ -543,7 +543,6 @@ theorem isCompact_Kres (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDim
   rw [e]
   exact Units.isClosedEmbedding_embedProduct.isCompact_preimage (hBc.prod hB')
 
-
 open Polynomial in
 theorem rho_charpoly_sep (G : HTGroup p) (w : Fin G.m) (y : G.C) (hdeg : (minpoly G.F y).natDegree = G.n)
     (hsep : (minpoly G.F y).Separable) : (G.rho w y).charpoly.Separable := by
@@ -804,16 +803,6 @@ theorem repr_mul_mem (hc : ∀ i j k, algebraMap ℚ R (b.repr (b i * b j) k) �
 
 end General
 
-theorem eventually_rat_mem (p : ℕ) [Fact p.Prime] (q : ℚ) :
-    ∀ᶠ v in (Filter.cofinite : Filter (AwayP p)),
-      algebraMap ℚ (Qv v) q ∈ v.1.adicCompletionIntegers ℚ := by
-  have h := (show Πʳ v : AwayP p, [v.1.adicCompletion ℚ, v.1.adicCompletionIntegers ℚ] from
-    algebraMap ℚ (AfP p) q).2
-  filter_upwards [h] with v hv
-  have e : (AfP.eval v) (algebraMap ℚ (AfP p) q) = algebraMap ℚ (Qv v) q := (AfP.eval v).commutes q
-  rw [← e]
-  exact hv
-
 theorem mul_mem_IntV_eventually : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p),
     ∀ᶠ v in (Filter.cofinite : Filter (AwayP p)), ∀ a ∈ IntV G v, ∀ b ∈ IntV G v, a * b ∈ IntV G v := by
   intro p _ G
@@ -822,7 +811,7 @@ theorem mul_mem_IntV_eventually : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p),
         (Module.finBasis ℚ G.C i * Module.finBasis ℚ G.C j) k) ∈ v.1.adicCompletionIntegers ℚ := by
     simp only [Filter.eventually_all]
     intro i j k
-    exact eventually_rat_mem p _
+    exact GlobalTheory.OrbFinAf.ratCast_mem_intV_eventually p _
   filter_upwards [hall] with v hv
   intro a ha a' ha'
   obtain ⟨h1, h2, h3, h4⟩ := ha
@@ -1223,17 +1212,6 @@ namespace GlobalTheory.OrbFinAf
 theorem finiteAdeleRingAway_eq_of_forall_eval_eq {p : ℕ} {x y : AfP p} (h : ∀ v : AwayP p, AfP.eval v x = AfP.eval v y) : x = y :=
   RestrictedProduct.ext (R := fun v : AwayP p => v.1.adicCompletion ℚ) _ h
 
-theorem basV_repr_map {p : ℕ} [Fact p.Prime] (G : HTGroup p) (v : AwayP p) (x : AfP p ⊗[ℚ] G.C)
-    (i : Fin (Module.finrank ℚ G.C)) :
-    (basV G v).repr (Algebra.TensorProduct.map (AfP.eval v) (AlgHom.id ℚ G.C) x) i =
-      AfP.eval v ((Algebra.TensorProduct.basis (AfP p) (Module.finBasis ℚ G.C)).repr x i) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a c =>
-    simp only [basV, Algebra.TensorProduct.map_tmul, AlgHom.id_apply, Algebra.TensorProduct.basis_repr_tmul,
-      Finsupp.smul_apply, Finsupp.mapRange_apply, smul_eq_mul, map_mul, AlgHom.commutes]
-  | add x y hx hy => simp only [map_add (f := _), Finsupp.add_apply, hx, hy]
-
 theorem ext_of_piV : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (g g' : G.GAf),
     (∀ v : AwayP p, piV G v g = piV G v g') → g = g' := by
   intro p _ G g g' h
@@ -1252,7 +1230,7 @@ theorem ext_of_piV : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (g g' : G.GAf)
     intro i
     apply finiteAdeleRingAway_eq_of_forall_eval_eq
     intro v
-    rw [← basV_repr_map, ← basV_repr_map, h1 v]
+    rw [← GlobalTheory.OrbFinAf.repr_map_eval, ← GlobalTheory.OrbFinAf.repr_map_eval, h1 v]
   · apply Units.ext
     exact finiteAdeleRingAway_eq_of_forall_eval_eq h2
 

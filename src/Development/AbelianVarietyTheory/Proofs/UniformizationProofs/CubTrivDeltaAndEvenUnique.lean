@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 
-noncomputable section
-
 namespace GlobalTheory.CubTrivTorus
 
 variable {S : Scheme.{0}} {X : Type} [AddCommGroup X]

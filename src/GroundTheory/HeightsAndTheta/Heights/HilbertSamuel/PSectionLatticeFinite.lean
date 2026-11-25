@@ -6,6 +6,7 @@ import Mathlib.Data.Finsupp.Interval
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -65,26 +66,6 @@ theorem homog_X (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 
 end Homog
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
-
-theorem aeval_scale {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d) (μ : K → Ω)
-    (y : (Σ k, ι k) → Ω) :
-    aeval (fun p => μ p.1 * y p) g = (∏ k, μ k ^ d k) * aeval y g := by
-  classical
-  conv_lhs => rw [g.as_sum]
-  conv_rhs => rw [g.as_sum]
-
-  rw [map_sum, map_sum, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  rw [aeval_monomial, aeval_monomial, Finsupp.prod, Finsupp.prod]
-  simp only [mul_pow, Finset.prod_mul_distrib]
-  have hμ : ∏ p ∈ m.support, μ p.1 ^ m p = ∏ k, μ k ^ d k := by
-    rw [Finset.prod_subset (Finset.subset_univ m.support)
-      (fun p _ hp => by rw [Finsupp.notMem_support_iff.mp hp, pow_zero]), Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, μ k ^ m ⟨k, i⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hg m hm k]
-  rw [hμ]
-  ring
 
 theorem secM_fg (y : (Σ k, ι k) → Ω) (d : K → ℕ) : (secM y d).FG := by
   classical
@@ -200,7 +181,8 @@ theorem coe_aeval_yr (g : MRing ι) :
 
 theorem coe_aeval_yr_homog {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d) :
     ((aeval (yr y c0 hc0) g : fnField y) : Ω) = (∏ k, (y ⟨k, c0 k⟩)⁻¹ ^ d k) * aeval y g := by
-  have h := aeval_scale hg (fun k => (y ⟨k, c0 k⟩)⁻¹) y
+  have h : aeval (fun p => (y ⟨p.1, c0 p.1⟩)⁻¹ * y p) g = (∏ k, (y ⟨k, c0 k⟩)⁻¹ ^ d k) * aeval y g :=
+    BlockScaling.eval₂_mul_block_left (algebraMap ℤ Ω) (fun k => (y ⟨k, c0 k⟩)⁻¹) y hg
   have hf : (fun p : Σ k, ι k => (fun k => (y ⟨k, c0 k⟩)⁻¹) p.1 * y p) =
       fun p => y p / y ⟨p.1, c0 p.1⟩ := funext fun p => (div_eq_inv_mul _ _).symm
   rw [hf] at h

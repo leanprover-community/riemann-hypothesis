@@ -586,18 +586,14 @@ def nAut (N : NData R H what₂) [IsEmpty N.Loc] (pl : ∀ k, N.PlG k → PlE H)
 
 def nBC {N : NData R H what₂} [IsEmpty N.Loc] (A : NAut N) : NBC A where
   AU := fun _ => Empty
-  multAU := fun _ x => x.elim
   sphAU := fun _ x => x.elim
   locAU := fun _ x => x.elim
   satAU := fun _ x => x.elim
-  satAU_card := fun _ x => x.elim
   Wt := fun _ => Empty
   infW := fun _ x => x.elim
-  infW_card := fun _ x => x.elim
   wtAU := fun _ x => x.elim
   infW_alg := fun _ x => x.elim
   embAV := fun i => isEmptyElim i
-  embAV_inj := fun i => isEmptyElim i
   embAV_loc := fun i => isEmptyElim i
   embAV_sat := fun i => isEmptyElim i
   embAV_sph := fun i => isEmptyElim i
@@ -887,20 +883,10 @@ def nTypes (N : NData R H what₂) [IsEmpty N.Loc] (pl : ∀ k, N.PlG k → PlE 
     (tg : ∀ k, N.PlG k → G H.E N.Om) (htg : ∀ k v, TameGenAt (N.plOm.1 (pl k v)) (tg k v)) :
     NTypes (nAut N pl h1 h2 h3) where
   Mray := H.K
-  Mray_gal := inferInstance
-  Mray_ab := fun σ τ => Subsingleton.elim _ _
-  Mray_unr := fun p _ h => by
-    rw [discr_K, dvd_neg] at h
-    exact Dvd.dvd.mul_left (by exact_mod_cast h) _
   g_Mray := fun k => split_K H (H.g_prime k) (hc k)
   g_cond := hc
   BB_disj := hB
   bc := fun _ => {(R.r, 1)}
-  bc_pos := fun _ p hp => by
-    have := two_le_r R
-    rw [Multiset.mem_singleton.1 hp]
-    exact ⟨by show 0 < R.r; omega, one_pos⟩
-  bc_sum := fun _ => by simp
   rbar := fun _ _ => 1
   rbar_open := fun _ _ => by
     rw [MonoidHom.ker_one]
@@ -946,7 +932,6 @@ def nTypes (N : NData R H what₂) [IsEmpty N.Loc] (pl : ∀ k, N.PlG k → PlE 
     show _ = (X - 1 : (ZMod (H.g k))[X]) ^ Multiset.card (Multiset.replicate R.r (1 : ℂ))
     rw [Multiset.card_replicate]
   MtPar := fun _ _ _ => ⊤
-  AmbPar := fun _ _ => ⊤
   heckeLoc_gamma_places := fun i => isEmptyElim i
   chiT_tg := fun i => isEmptyElim i
 

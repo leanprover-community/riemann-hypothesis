@@ -223,7 +223,6 @@ theorem tTool1_of [NeZero n] (hinj : Function.Injective (algebraMap O LL))
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
@@ -238,7 +237,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR}
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
-
 
 theorem l_reg [IsDomain O] (hl : ((PD.p : ℕ) : O) ≠ 0) (k : ℕ) {x y : LetA O n}
     (h : ((PD.p : ℕ) : LetA O n) ^ k * x = ((PD.p : ℕ) : LetA O n) ^ k * y) : x = y := by
@@ -862,7 +860,6 @@ theorem uniformizer_dvd_of_frobenius_power [NeZero n] [IsDomain O] (hinj : Funct
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
@@ -1150,7 +1147,6 @@ theorem bound2 (hπ : W.π₀ ∈ W.AΔ)
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
@@ -1196,7 +1192,6 @@ theorem trunc_ex [NeZero n] [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximal
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
@@ -1212,10 +1207,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-def Zspan (T : LocLat G Qp LL O) (i : ZMod n) (j M X σ : ℕ) : Submodule (LetA O n) (W.DD T) :=
-  Submodule.span (LetA O n) {z | ∃ w, w ∈ W.N T ∧ Formalism.MainNotions.CrystallineLiftingInputs.InI W T i w ∧
-    Formalism.MainNotions.CrystallineLiftingInputs.IsTrunc W T i j M X σ w z}
-
 theorem span_gen [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMap O LL))
     (hO2 : ∀ x : LL, 0 ≤ v x → ∃ o : O, algebraMap O LL o = x) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
     (hH : Formalism.MainNotions.LiftingTheory.coreH W) (hR : Formalism.MainNotions.LiftingTheory.lifta_Ring W) (hsp : Formalism.MainNotions.ArcLiftingSetup.SATPcore W)
@@ -1227,11 +1218,10 @@ theorem span_gen [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMap 
     (hrs : ∀ y, Formalism.MainNotions.CrystallineLiftingInputs.IsRem W j M X y (r y) ∧
       ((PD.p : ℕ) : LetA O n) ^ Formalism.MainNotions.CrystallineLiftingInputs.eY PD.p y * s y = ((PD.p : ℕ) : LetA O n) ^ σ * r y) :
     ∀ p ∈ Formalism.MainNotions.CrystallineLiftingInputs.pullJ W T i j, ∃ p' ∈ Formalism.MainNotions.CrystallineLiftingInputs.pullJ W T i j,
-      ((PD.p : ℕ) : O) ^ (2 * σ) • p - Formalism.MainNotions.CrystallineLiftingInputs.fMX W M X • p' ∈ Zspan W T i j M X σ :=
+      ((PD.p : ℕ) : O) ^ (2 * σ) • p - Formalism.MainNotions.CrystallineLiftingInputs.fMX W M X • p' ∈ UpperTheory.Reformulated.B.IntegerSpanGenerators.Zspan W T i j M X σ :=
   by apply _root_.UpperTheory.Reformulated.B.IntegerSpanGenerators.span_gen <;> assumption
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
-
 
 noncomputable section
 

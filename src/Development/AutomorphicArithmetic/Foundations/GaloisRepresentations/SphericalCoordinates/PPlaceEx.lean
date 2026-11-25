@@ -522,12 +522,8 @@ open GlobalTheory GlobalTheory.AV GlobalTheory.AV.AbVar GlobalTheory.PDivGroup G
 attribute [local instance] Over.cartesianMonoidalCategory
 open UpperTheory.ComplexUniformization
 
-private def Pz {R : Type} [Ring R] [Algebra ℝ R] (t : R) : Prop :=
-  ∃ s : Finset ℝ, (∀ l ∈ s, 0 < l) ∧
-    Polynomial.aeval t (∏ l ∈ s, (Polynomial.X - Polynomial.C l)) = 0
-
 private theorem Pz_map_iff {R R' : Type} [Ring R] [Algebra ℝ R] [Ring R'] [Algebra ℝ R']
-    (f : R →ₐ[ℝ] R') (hf : Function.Injective f) (t : R) : Pz (f t) ↔ Pz t := by
+    (f : R →ₐ[ℝ] R') (hf : Function.Injective f) (t : R) : UpperTheory.Reformulated.B.Qh60.Pz (f t) ↔ UpperTheory.Reformulated.B.Qh60.Pz t := by
   constructor
   · rintro ⟨s, hs, h⟩
     refine ⟨s, hs, hf ?_⟩
@@ -537,7 +533,7 @@ private theorem Pz_map_iff {R R' : Type} [Ring R] [Algebra ℝ R] [Ring R'] [Alg
     rw [Polynomial.aeval_algHom_apply, h, map_zero]
 
 private theorem Pz_pi {I M : Type} [Fintype I] [Ring M] [Algebra ℝ M] (t : I → M) :
-    Pz t ↔ ∀ i, Pz (t i) := by
+    UpperTheory.Reformulated.B.Qh60.Pz t ↔ ∀ i, UpperTheory.Reformulated.B.Qh60.Pz (t i) := by
   constructor
   · rintro ⟨s, hs, h⟩ i
     refine ⟨s, hs, ?_⟩
@@ -562,7 +558,7 @@ private theorem Pz_pi {I M : Type} [Fintype I] [Ring M] [Algebra ℝ M] (t : I �
 private theorem Pz_iff_pos {W : Type} [AddCommGroup W] [Module ℝ W] [FiniteDimensional ℝ W]
     (Q : W →ₗ[ℝ] W →ₗ[ℝ] ℝ) (hsym : ∀ x y, Q x y = Q y x) (hpos : ∀ x, x ≠ 0 → 0 < Q x x)
     (T : Module.End ℝ W) (hT : ∀ x y, Q (T x) y = Q x (T y)) :
-    Pz T ↔ ∀ x, x ≠ 0 → 0 < Q (T x) x :=
+    UpperTheory.Reformulated.B.Qh60.Pz T ↔ ∀ x, x ≠ 0 → 0 < Q (T x) x :=
   _root_.UpperTheory.Reformulated.B.Qh60.Pz_iff_pos Q hsym hpos T hT
 
 private theorem actOn_tmul {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V]
@@ -647,7 +643,7 @@ private theorem herm_conj {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsH
   rw [Matrix.star_dotProduct, star_star, Matrix.star_mulVec, hA.eq, Matrix.dotProduct_mulVec]
 
 private theorem Pz_matrix {n : ℕ} (H M : Matrix (Fin n) (Fin n) ℂ) (hH : H.PosDef)
-    (hS : (H * M).IsHermitian) : Pz M ↔ (H * M).PosDef := by
+    (hS : (H * M).IsHermitian) : UpperTheory.Reformulated.B.Qh60.Pz M ↔ (H * M).PosDef := by
   let π : Matrix (Fin n) (Fin n) ℂ →ₐ[ℝ] Module.End ℝ (Fin n → ℂ) :=
     AlgHom.ofLinearMap
       { toFun := fun m => (Matrix.mulVecLin m).restrictScalars ℝ
@@ -719,7 +715,7 @@ theorem UpperTheory.positivity_iff_gram_posDef :
     rw [hQ, hQ, adjJ, E_anti D x, neg_neg]
   have hT : ∀ x y, Q (actOn L.rep ℝ a x) y = Q x (actOn L.rep ℝ a y) := fun x y => by
     rw [hQ, hQ, hJaX, adjJ, hJaX, adjb]
-  have hL : (∀ x : ℝ ⊗[ℚ] VQ D, x ≠ 0 → 0 < (D.EF.baseChange ℚ).baseChange ℝ (actOn L.rep ℝ b x) x) ↔ Pz a := by
+  have hL : (∀ x : ℝ ⊗[ℚ] VQ D, x ≠ 0 → 0 < (D.EF.baseChange ℚ).baseChange ℝ (actOn L.rep ℝ b x) x) ↔ UpperTheory.Reformulated.B.Qh60.Pz a := by
     rw [← Pz_map_iff (actOn L.rep ℝ) (actOn_inj L.rep L.rep_inj) a, Pz_iff_pos Q hsym hJp _ hT]
     simp only [hQ, hJaX]
   let Ψ : ℝ ⊗[ℚ] G.C →ₐ[ℝ] (InfinitePlace G.F → Matrix (Fin G.n) (Fin G.n) ℂ) :=
@@ -933,7 +929,6 @@ private lemma trace_mul_finrank_eq_finrank_mul_trace {A M : Type} [Ring A] [Alge
   rw [hA1, hA2, hM1, hM2]
   push_cast
   ring
-
 
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.QTrace.q_trace : ∀ {F A V : Type} [Field F] [NumberField F] [Ring A] [Algebra F A] [FiniteDimensional F A] [Algebra.IsCentral F A]

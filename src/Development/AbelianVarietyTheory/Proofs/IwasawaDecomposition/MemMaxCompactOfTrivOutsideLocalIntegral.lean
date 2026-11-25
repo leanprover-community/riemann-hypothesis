@@ -156,10 +156,8 @@ theorem mem_Umax_of_trivOutside_of_loc_integral : ∀ (L : Type) [Field L] [Numb
     · exact one_mem _
     · exact zero_mem _
   have hc : ∀ u, compAt L u ((1 : Matrix (Fin n) (Fin n) (AL L)) i j) =
-      (1 : Matrix (Fin n) (Fin n) _) i j := by
-    intro u
-    simp only [Matrix.one_apply]
-    split_ifs <;> simp
+      (1 : Matrix (Fin n) (Fin n) _) i j := fun u =>
+    congrFun (congrFun (map_one (compAt L u).mapMatrix) i) j
   have hd : (z.1 : Matrix (Fin n) (Fin n) (AL L)) i j - (1 : Matrix (Fin n) (Fin n) (AL L)) i j ∈
       ALint L := by
     apply mem_ALint_of_supported L v

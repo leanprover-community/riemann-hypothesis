@@ -38,10 +38,6 @@ theorem mul_self_of_re_eq_zero {R : Type*} [CommRing R] {a b : R} (p : ℍ[R, a,
     p * p = algebraMap R ℍ[R, a, b] (a * p.imI ^ 2 + b * p.imJ ^ 2 - a * b * p.imK ^ 2) := by
   ext <;> simp [QuaternionAlgebra.algebraMap_eq, hp] <;> ring
 
-theorem exists_completion_hom_of_real {K : Type} [Field K] (σ : K →+* ℝ) :
-    ∃ (w : InfinitePlace K) (f : w.Completion →+* ℝ), ∀ x : K, f (algebraMap K w.Completion x) = σ x := by
-  apply _root_.GlobalTheory.QuadSymbol.exists_completion_hom_real
-
 variable {F : Type} [Field F] [NumberField F]
 
 theorem isotropic_of_ringHom {a b c : F} (q : DA F a b) (hq0 : q.re = 0)
@@ -67,7 +63,7 @@ variable {F : Type} [Field F] [NumberField F]
 theorem isotropic_real {a b c : F} (q : DA F a b) (hq0 : q.re = 0)
     (hqq : q * q = algebraMap (AF F) (DA F a b) (algebraMap F (AF F) c)) (σ : F →+* ℝ) :
     ∃ x : Fin 4 → ℝ, x ≠ 0 ∧ ∑ i, σ (![a, b, -(a * b), -c] i) * x i ^ 2 = 0 := by
-  obtain ⟨w, f, hf⟩ := exists_completion_hom_of_real σ
+  obtain ⟨w, f, hf⟩ := GlobalTheory.QuadSymbol.exists_completion_hom_real σ
   refine isotropic_of_ringHom q hq0 hqq
     (f.comp ((Pi.evalRingHom (fun v : InfinitePlace F => v.Completion) w).comp (fstA F).toRingHom)) σ
     (fun x => ?_)
@@ -604,7 +600,6 @@ private lemma nrm_apply_eq_nrm_finAdele_loc {a b : F}
   simp only [_root_.GlobalTheory.QSA.nrm]
   rfl
 
-
 open NumberField IsDedekindDomain in
 open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
@@ -788,7 +783,6 @@ theorem continuous_glue [∀ i, TopologicalSpace (R i)] :
 
 end TraceOpenPi
 
-
 open TraceOpenPi in
 theorem traceOpen_pi : ∀ (ι : Type) [Fintype ι] (R : ι → Type) [∀ i, CommRing (R i)]
     [∀ i, TopologicalSpace (R i)] (a b : ∀ i, R i),
@@ -877,7 +871,6 @@ end GlobalTheory.QSA.TraceOpenProd
 
 namespace GlobalTheory.QSA
 
-
 open TraceOpenProd in
 theorem traceOpen_prod : ∀ (R₁ R₂ : Type) [CommRing R₁] [TopologicalSpace R₁] [CommRing R₂] [TopologicalSpace R₂]
     (a₁ b₁ : R₁) (a₂ b₂ : R₂), TraceOpen R₁ a₁ b₁ → TraceOpen R₂ a₂ b₂ → TraceOpen (R₁ × R₂) (a₁, a₂) (b₁, b₂) := by
@@ -926,7 +919,7 @@ theorem sqOpen_and_nhdsNE_zero_neBot_adicCompletion :
     have h' : algebraMap F (v.adicCompletion F) 2 = algebraMap F (v.adicCompletion F) 0 := by
       rw [map_ofNat, map_zero]; exact h
     exact two_ne_zero ((algebraMap F (v.adicCompletion F)).injective h')
-  refine ⟨GlobalTheory.T.squaringOpenAtOne_of_complete_two_ne_zero (v.adicCompletion F) h2, ?_⟩
+  refine ⟨GlobalTheory.sqOpen_of_two_ne_zero (v.adicCompletion F) h2, ?_⟩
   infer_instance
 
 end GlobalTheory.QSA
@@ -961,7 +954,7 @@ theorem traceOpen_inf (F : Type) [Field F] [NumberField F] (a b : F) (ha : a ≠
   have h2 : (2 : w.Completion) ≠ 0 := by
     have := (map_ne_zero (algebraMap F w.Completion)).2 (two_ne_zero : (2 : F) ≠ 0)
     rwa [map_ofNat] at this
-  exact traceOpen_field _ h2 (_root_.GlobalTheory.QSA.infinitePlace_completion_nhdsNE_neBot F w) (GlobalTheory.T.squaringOpenAtOne_of_complete_two_ne_zero _ h2) _ _ ((map_ne_zero (algebraMap F w.Completion)).2 ha)
+  exact traceOpen_field _ h2 (_root_.GlobalTheory.QSA.infinitePlace_completion_nhdsNE_neBot F w) (GlobalTheory.sqOpen_of_two_ne_zero _ h2) _ _ ((map_ne_zero (algebraMap F w.Completion)).2 ha)
 
 theorem traceOpen_fin (F : Type) [Field F] [NumberField F] (a b : F) (ha : a ≠ 0) (hb : b ≠ 0) :
     TraceOpen (FiniteAdeleRing (𝓞 F) F) (algebraMap F (FiniteAdeleRing (𝓞 F) F) a)

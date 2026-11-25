@@ -291,12 +291,9 @@ theorem eq_zero_of_evalAt {n : ℕ} {K : Type} [Field K] [Infinite K] (p : Pol n
     · rw [h _ hw, zero_mul]
   exact (mul_eq_zero.mp h1).resolve_right hd
 
-def blockDet (K : Type) [CommRing K] {T : Type} (N : T → ℕ) (t : T) : MvPolynomial (FrVar N) K :=
-  (Matrix.of fun i k : Fin (N t) => (X ⟨t, (k, i)⟩ : MvPolynomial (FrVar N) K)).det
-
 theorem evalFr_blockDet {K T : Type} [CommRing K] {N : T → ℕ} (t : T) (y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) K) :
-    evalFr (blockDet K N t) y = (y t).det := by
-  unfold evalFr blockDet
+    evalFr (GlobalTheory.LamT.FieldPoly.blockDetPoly K N t) y = (y t).det := by
+  unfold evalFr GlobalTheory.LamT.FieldPoly.blockDetPoly
   rw [RingHom.map_det]
   congr 1
   ext i k
@@ -306,14 +303,14 @@ theorem eq_zero_of_evalFr {T : Type} [Fintype T] {N : T → ℕ} {K : Type} [Fie
     (P : MvPolynomial (FrVar N) K)
     (h : ∀ y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) K, (∀ t, (y t).det ≠ 0) → evalFr P y = 0) : P = 0 := by
   have hev : ∀ (Q : MvPolynomial (FrVar N) K) (y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) K),
-      evalFr (Q * ∏ t, blockDet K N t) y = evalFr Q y * ∏ t, (y t).det := fun Q y => by
+      evalFr (Q * ∏ t, GlobalTheory.LamT.FieldPoly.blockDetPoly K N t) y = evalFr Q y * ∏ t, (y t).det := fun Q y => by
     simp only [← evalFr_blockDet (K := K) (N := N) _ y]
     simp only [evalFr, map_mul, map_prod]
-  have hd : (∏ t, blockDet K N t) ≠ 0 := fun h0 => by
+  have hd : (∏ t, GlobalTheory.LamT.FieldPoly.blockDetPoly K N t) ≠ 0 := fun h0 => by
     have h1 := hev 1 (fun _ => 1)
     rw [h0, mul_zero] at h1
     simp [evalFr] at h1
-  have h1 : P * ∏ t, blockDet K N t = 0 := MvPolynomial.funext fun v => by
+  have h1 : P * ∏ t, GlobalTheory.LamT.FieldPoly.blockDetPoly K N t = 0 := MvPolynomial.funext fun v => by
     let y : ∀ t, Matrix (Fin (N t)) (Fin (N t)) K := fun t => Matrix.of fun i j => v ⟨t, (j, i)⟩
     have hy : ∀ Q : MvPolynomial (FrVar N) K, eval v Q = evalFr Q y := fun Q => rfl
     rw [map_zero, hy, hev]

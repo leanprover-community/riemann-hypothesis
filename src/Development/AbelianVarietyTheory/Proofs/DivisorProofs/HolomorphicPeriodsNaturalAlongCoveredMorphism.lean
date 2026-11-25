@@ -262,8 +262,8 @@ theorem isPeriod_pull1_eq_comap : ∀ {I₁ : Type} [Fintype I₁] {g₁ : ℕ} 
   intro I₁ _ g₁ Λ₁ _ F₁ B₁ _ X₁ s₁ σ₁ I₂ _ g₂ Λ₂ _ F₂ B₂ _ X₂ s₂ σ₂ u₁ u₂ h₁ h₂ b hb hbV M A hτ β φ m hσ hE
     c per₂ per₁ hp₂ hp₁ l
   obtain ⟨K₁, K₂, κ, hR, hs₁, hs₂, hW, hle⟩ := GlobalTheory.T.exists_small_chart_pair_along_linear_map u₁ u₂ b hb hbV M A hτ
-  obtain ⟨r₁, hr₁, -⟩ := GlobalTheory.T.exists_analyticChartsRealization_of_affine u₁ h₁ K₁ hs₁
-  obtain ⟨r₂, hr₂, -⟩ := GlobalTheory.T.exists_analyticChartsRealization_of_affine u₂ h₂ K₂ hs₂
+  obtain ⟨r₁, hr₁, -⟩ := GlobalTheory.AnPer.exists_real_isFor u₁ h₁ K₁ hs₁
+  obtain ⟨r₂, hr₂, -⟩ := GlobalTheory.AnPer.exists_real_isFor u₂ h₂ K₂ hs₂
   have hΦ : ∀ k, AnalyticOnNhd ℂ (fun p : Tot I₁ g₁ ↦ ((b p.1, M p.2) : Tot I₂ g₂)) (K₁.W k) := fun k p hp ↦
     ((hb _ (K₁.base k p hp)).comp analyticAt_fst).prod
       (((LinearMap.toContinuousLinearMap M).analyticAt p.2).comp analyticAt_snd)

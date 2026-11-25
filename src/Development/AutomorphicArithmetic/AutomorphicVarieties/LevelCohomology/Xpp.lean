@@ -187,11 +187,7 @@ private theorem sq_neg_one {O : Type} [CommRing O] {N : ℕ} (χ : DirichletChar
 
 private theorem pow_app {O : Type} [CommRing O] {N : ℕ} (χ : DirichletCharacter O N) (k : ℕ) (a : ℤ)
     (ha : IsCoprime a (N : ℤ)) : (χ ^ k) (a : ZMod N) = χ a ^ k := by
-  obtain ⟨u, v, huv⟩ := ha
-  have h := congrArg (fun x : ℤ => (x : ZMod N)) huv
-  simp only [Int.cast_add, Int.cast_mul, Int.cast_natCast, ZMod.natCast_self, mul_zero, add_zero,
-    Int.cast_one] at h
-  rw [← show ((⟨_, _, (mul_comm _ _).trans h, h⟩ : (ZMod N)ˣ) : ZMod N) = ((a : ℤ) : ZMod N) from rfl]
+  rw [← ZMod.coe_unitOfIsCoprime a ha]
   exact MulChar.pow_apply_coe χ k _
 
 theorem UpperTheory.V.X.dirData :
@@ -210,12 +206,6 @@ theorem UpperTheory.V.X.dirData :
   have hdiv : f * 2 ^ (c2 ψ - 1) ∣ l * N * N :=
     mul_dvd_mul (dvd_trans hfd (mul_dvd_mul_left l (DirichletCharacter.conductor_dvd_level _)))
       (dvd_trans (pow_dvd_pow 2 (Nat.sub_le _ 1)) h2N)
-  have unitOf : ∀ (m : ℕ) (a : ℤ), IsCoprime a (m : ℤ) → IsUnit ((a : ZMod m)) := by
-    rintro m a ⟨u, v, huv⟩
-    have h := congrArg (fun x : ℤ => (x : ZMod m)) huv
-    simp only [Int.cast_add, Int.cast_mul, Int.cast_natCast, ZMod.natCast_self, mul_zero, add_zero,
-      Int.cast_one] at h
-    exact ⟨⟨_, _, (mul_comm _ _).trans h, h⟩, rfl⟩
   refine ⟨f0 l ψ, f, c2 ψ - 1, φ, ξ, ?_, hdiv, ?_⟩
   · have hT : ((ω ^ e) ^ 2) ^ (l ^ f0 l ψ - 1) = 1 := by
       obtain ⟨t, ht⟩ := hl1
@@ -265,7 +255,7 @@ theorem UpperTheory.V.X.dirData :
         (Int.natCast_dvd_natCast.2 (dvd_trans (dvd_mul_right l N) (dvd_mul_right (l * N) N)))
     have had : IsCoprime a ((f * 2 ^ (c2 ψ - 1) : ℕ) : ℤ) :=
       ha.of_isCoprime_of_dvd_right (Int.natCast_dvd_natCast.2 hdiv)
-    obtain ⟨u, hu⟩ := unitOf _ a had
+    obtain ⟨u, hu⟩ := (ZMod.isUnit_intCast_iff_isCoprime a _).2 had.symm
     rw [UpperTheory.V.X.prodX, MulChar.coeToFun_mul, Pi.mul_apply, ← hu,
       DirichletCharacter.changeLevel_eq_cast_of_dvd, DirichletCharacter.changeLevel_eq_cast_of_dvd, hu,
       ZMod.cast_intCast (R := ZMod f) (Dvd.intro _ rfl : f ∣ f * 2 ^ (c2 ψ - 1)) a,

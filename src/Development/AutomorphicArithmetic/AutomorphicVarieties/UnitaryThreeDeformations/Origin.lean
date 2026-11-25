@@ -52,26 +52,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
 
-private theorem UpperTheory.V.UnitaryThreeInertia.map_eq_zero_of_cc {O A σ : Type} [CommRing O] [CommRing A] [Fintype σ]
-    (φ : MvPowerSeries σ O →+* A) (hφ : ∀ i, φ (MvPowerSeries.X i) = 0) (p : MvPowerSeries σ O)
-    (hp : MvPowerSeries.constantCoeff p = 0) : φ p = 0 := by
-  apply _root_.UpperTheory.V.UnitaryThreeInertia.Tan.map_eq_zero_of_cc <;> assumption
-
-private theorem UpperTheory.V.UnitaryThreeInertia.map_eq_cc {O σ : Type} [CommRing O] [Fintype σ]
-    (φ : MvPowerSeries σ O →ₐ[O] O) (hφ : ∀ i, φ (MvPowerSeries.X i) = 0) (p : MvPowerSeries σ O) :
-    φ p = MvPowerSeries.constantCoeff p := by
-  have h0 : MvPowerSeries.constantCoeff
-      (p - algebraMap O (MvPowerSeries σ O) (MvPowerSeries.constantCoeff p)) = 0 := by
-    rw [map_sub]
-    exact sub_eq_zero.mpr rfl
-  have h := UpperTheory.V.UnitaryThreeInertia.map_eq_zero_of_cc (φ : MvPowerSeries σ O →+* O) (fun i => hφ i) _ h0
-  rw [map_sub, sub_eq_zero] at h
-  have h2 : φ (algebraMap O (MvPowerSeries σ O) (MvPowerSeries.constantCoeff p))
-      = MvPowerSeries.constantCoeff p := by
-    rw [AlgHom.commutes]
-    rfl
-  exact h.trans h2
-
 theorem UpperTheory.V.UnitaryThreeInertia.hasOrigin :
     ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]
       {G Γ ι : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
@@ -95,7 +75,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.hasOrigin :
   haveI := W.fin
   let ψ : MvPowerSeries W.σ O →ₐ[O] O := f.comp W.π
   have hψ : ∀ p, ψ p = MvPowerSeries.constantCoeff p :=
-    UpperTheory.V.UnitaryThreeInertia.map_eq_cc ψ (fun i => hz i)
+    _root_.UpperTheory.V.UnitaryThreeInertia.Tan.map_eq_cc ψ (fun i => hz i)
   have hO : W.HasOrigin := by
     intro p hp
     rw [← hψ]

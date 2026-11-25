@@ -89,8 +89,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_lattice_stabiliser_subgroup_outside_places : ∀ (D : D7) (V : HSp D) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))), ∃ K : Subgroup (GA D V), (K : Set (GA D V)) = KsphC V S ∧ ∀ S', S ⊆ S' → KsphC V S' ⊆ KsphC V S := by
-  first | exact @GlobalTheory.Mem.Ksph.exists_subgroup_ksph
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLatticeStabiliserSubgroupOutsidePlacesStatement =====
@@ -217,25 +215,6 @@ open GlobalTheory.BesselCompare
 
 variable {D : D7} {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
-theorem emb_fix {γ : GA D B} {h : GA D A} (hγ : EmbRel B A ι γ h) {v : B.V} (hv : ∀ x, B.hD v (ι x) = 0) :
-    (mt B γ).mulVec (vecA B v) = vecA B v :=
-  hγ.2 (co B v) (by funext i; rw [frameMat_eq, cT_mulVec]; exact hv _)
-
-theorem emb_iA {γ : GA D B} {h : GA D A} (hγ : EmbRel B A ι γ h) (t : Fin A.rank → AE D) :
-    (mt B γ).mulVec (iA ι t) = iA ι ((mt A h).mulVec t) := by
-  unfold iA
-  rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec]
-  exact congrArg (fun M => Matrix.mulVec M t) hγ.1
-
-theorem vecA_add (v w : B.V) : vecA B (v + w) = vecA B v + vecA B w := by
-  funext k; simp [vecA]
-
-theorem vecA_emb (a : A.V) : vecA B (ι a) = iA ι (vecA A a) := by
-  funext k
-  have h1 := RingHom.map_mulVec (incA D) (frameMat B A ι) (A.frame.repr a) k
-  rw [frameMat, LinearMap.toMatrix_mulVec_repr] at h1
-  exact h1
-
 theorem emb_move (hι : HSpace.IsIsomEmb A B ι) {γ : GA D B} {h : GA D A} (hγ : EmbRel B A ι γ h) (x : B.V) :
     ∃ t, (mt B γ).mulVec (vecA B x) = vecA B x + iA ι t := by
   obtain ⟨a, ha⟩ := exists_rep A ((B.hT x).comp ι)
@@ -243,11 +222,10 @@ theorem emb_move (hι : HSpace.IsIsomEmb A B ι) {γ : GA D B} {h : GA D A} (hγ
     show B.hT (x - ι a) (ι y) = 0
     rw [map_sub, LinearMap.sub_apply, hι a y, ha, LinearMap.comp_apply, sub_self])
   have h2 : vecA B x = vecA B (x - ι a) + iA ι (vecA A a) := by
-    rw [← vecA_emb, ← vecA_add, sub_add_cancel]
+    rw [← GlobalTheory.BesselDecomp.vecA_iota, ← GlobalTheory.BesselDecomp.vecA_add, sub_add_cancel]
   refine ⟨(mt A h).mulVec (vecA A a) + -vecA A a, ?_⟩
-  rw [h2, Matrix.mulVec_add, emb_fix hγ h1, emb_iA hγ, iA_add, iA_neg]
+  rw [h2, Matrix.mulVec_add, GlobalTheory.BesselConvDefinite.embRel_fix hγ h1, GlobalTheory.BesselConvDefinite.embRel_iA hγ, iA_add, iA_neg]
   abel
-
 
 theorem conj_NSet (d : BesselDatum A B ι) {γ : GA D B} {h h' : GA D A} (hγ : EmbRel B A ι γ h)
     (hγ' : EmbRel B A ι γ⁻¹ h') {n : GA D B} (hn : n ∈ d.NSet) : γ * n * γ⁻¹ ∈ d.NSet := by
@@ -265,7 +243,7 @@ theorem psiN_conj (d : BesselDatum A B ι) (ψ : AddChar (AF D.host.F) ℂ) {γ 
   unfold BesselDatum.psiN BesselDatum.simpleSum actV
   congr 3
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [mulVec_mul, mulVec_mul, emb_fix hγ (besselDatum_auxiliaryVector_orthogonal_image d _), hA_mt_left, inv_inv, emb_fix hγ (d.fA i)]
+  rw [mulVec_mul, mulVec_mul, GlobalTheory.BesselConvDefinite.embRel_fix hγ (besselDatum_auxiliaryVector_orthogonal_image d _), hA_mt_left, inv_inv, GlobalTheory.BesselConvDefinite.embRel_fix hγ (d.fA i)]
 
 end Conj
 
@@ -498,9 +476,6 @@ theorem exL_left (d : BesselDatum A B ι) (ψ) (ε : AE D) (m) {β : GA D B → 
     rw [e2]
     exact hn _ (mul_mem hb hu)
 
-theorem isK_unique {v y : Fin B.rank → AE D} {k k' : GA D B} (h : IsK B v y k) (h' : IsK B v y k') : k = k' :=
-  mt_ext fun x => by rw [h x, h' x]
-
 theorem continuous_iA : Continuous (iA (A := A) (B := B) ι) := by
   haveI : IsTopologicalRing (AE D) := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.isTopRing
   unfold iA
@@ -561,7 +536,7 @@ theorem exch_finite (d : BesselDatum A B ι) {ψ} (hψ : IsStdChar D ψ (-1)) {�
     (hK₀.subtype_mk _)) fun u hu => ?_
   by_contra hne
   obtain ⟨t₀, ht₀, hu₀⟩ := (GlobalTheory.RootExch.ExStruct.mem_Ex_iff D A B ι d ε hε _ _).1 u.2
-  refine hu ⟨⟨t₀, ht₀⟩, hCm t₀ ht₀ fun t htV ht => ?_, Subtype.ext (isK_unique (hK₀k _) hu₀)⟩
+  refine hu ⟨⟨t₀, ht₀⟩, hCm t₀ ht₀ fun t htV ht => ?_, Subtype.ext (GlobalTheory.RootExch.ExStruct.isK_unique (hK₀k _) hu₀)⟩
   obtain ⟨k1, k2⟩ := _root_.GlobalTheory.RootExch.Mirror.mirror D A B ι d ψ ε hε j t₀ t u (K ⟨t, ht⟩) ht₀ ht hu₀ (hKk _)
   have e1 := exL_left d ψ ε m h2 (j.1 + 2) _ l hl _ k2 (u * g)
   have hn : (GfC B).Normal := MonoidHom.normal_ker _
@@ -833,13 +808,12 @@ def trE (hθ : IsInfFam θ) (V : HSp D) (k : GA D V) (hk : ∀ φ, IsAutFunSm θ
 
 theorem trE_cusp (hθ : IsInfFam θ) (V : HSp D) (k hk) (F : AFs θ V) (hF : F ∈ cuspIn θ V) : trE hθ V k hk F ∈ cuspIn θ V := by
   rw [mem_cuspIn hθ] at hF ⊢
-  exact (GlobalTheory.T.isCuspFunction_closed_under_operations D V _ _ (aut hθ F).toIsAutFun (aut hθ F).toIsAutFun hF hF).2.2.1 k
+  exact (GlobalTheory.Mem.Th.isCuspFun_closed D V _ _ (aut hθ F).toIsAutFun (aut hθ F).toIsAutFun hF hF).2.2.1 k
 
 def actFin (hθ : IsInfFam θ) (V : HSp D) : GfC V →* Module.End ℂ (AFs θ V) where
-  toFun k := trE hθ V k fun φ h => GlobalTheory.T.smoothAutomorphicForm_rightTranslate_finiteAdelic D θ hθ V φ h k k.2
+  toFun k := trE hθ V k fun φ h => GlobalTheory.Mem.FinTranslate.isAutFunSm_rTr_fin D θ hθ V φ h k k.2
   map_one' := LinearMap.ext fun φ => Subtype.ext (funext fun g => congrArg φ.1 (mul_one g))
   map_mul' a b := LinearMap.ext fun φ => Subtype.ext (funext fun g => congrArg φ.1 (mul_assoc g a b).symm)
-
 
 open Classical in
 def actReal (hθ : IsInfFam θ) (V : HSp D) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) :
@@ -852,23 +826,22 @@ theorem actReal_apply (hθ : IsInfFam θ) (V : HSp D) (τ) {g} (h : g ∈ Formal
 
 alias mul_mem_UH := _root_.GlobalTheory.PointAtPlaceHom.mul_mem_UH
 
-def chrGrp (D : D7) : Subgroup (IdC D) := (GlobalTheory.T.heckeCharacter_infinityExponent_group_laws D).1.choose
+def chrGrp (D : D7) : Subgroup (IdC D) := (GlobalTheory.Mem.HeckeExp.hecke_exp_laws D).1.choose
 
-theorem mem_chrGrp {χ : IdC D} : χ ∈ chrGrp D ↔ IsHC D χ := (GlobalTheory.T.heckeCharacter_infinityExponent_group_laws D).1.choose_spec χ
+theorem mem_chrGrp {χ : IdC D} : χ ∈ chrGrp D ↔ IsHC D χ := (GlobalTheory.Mem.HeckeExp.hecke_exp_laws D).1.choose_spec χ
 
 def expo (χ : chrGrp D) (τ : D.what₂.Tau) : ℚ := ((mem_chrGrp.1 χ.2).2 τ).choose
 
 theorem expo_spec (χ : chrGrp D) (τ : D.what₂.Tau) : HasInfExp D χ.1 τ (expo χ τ) := ((mem_chrGrp.1 χ.2).2 τ).choose_spec
 
 theorem expo_eq {χ : chrGrp D} {τ : D.what₂.Tau} {a : ℚ} (h : HasInfExp D χ.1 τ a) : expo χ τ = a :=
-  (GlobalTheory.T.heckeCharacter_infinityExponent_group_laws D).2.1 _ _ _ _ (expo_spec χ τ) h
+  (GlobalTheory.Mem.HeckeExp.hecke_exp_laws D).2.1 _ _ _ _ (expo_spec χ τ) h
 
 def ksph (V : HSp D) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Subgroup (GfC V) :=
-  (GlobalTheory.T.exists_lattice_stabiliser_subgroup_outside_places D V S).choose.subgroupOf (GfC V)
+  (GlobalTheory.Mem.Ksph.exists_subgroup_ksph D V S).choose.subgroupOf (GfC V)
 
 theorem mem_ksph {V : HSp D} {S} {g : GfC V} : g ∈ ksph V S ↔ (g : GA D V) ∈ KsphC V S := by
-  rw [← (GlobalTheory.T.exists_lattice_stabiliser_subgroup_outside_places D V S).choose_spec.1]; rfl
-
+  rw [← (GlobalTheory.Mem.Ksph.exists_subgroup_ksph D V S).choose_spec.1]; rfl
 
 open Classical in
 def transp {ψ : AddChar (AF D.host.F) ℂ} {V W : HSp D} (Φ : ThS ψ V W) : ThS ψ W V :=
@@ -934,7 +907,6 @@ variable (hP : PetInt D) (hT : TopInt D) (hB : BesInt D) (hL : LiftAut D) (hθ :
 def per1 (u : D.what₂.Word) : Ses θ (D.sp.X 0) (D.sp.Y 0) :=
   ((_root_.GlobalTheory.RootExch.PosLinear.posLin D).2.2 θ hθ ψ hψ _ _ _ (Rc.per1.dat u) (D.sp.X_sig 0) (D.sp.X_def 0 (Nat.zero_le _))).choose
 
-
 open Classical in
 def perT (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) : PosT A B ι → Ses θ A B
   | .inl f => if ho : Odd (B.rank - A.rank) then (exists_bes hB hθ hψ (f ho).1).choose else 0
@@ -990,8 +962,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.isSmoothAutomorphicFunction_star : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp D) (φ : GA D V → ℂ), IsAutFunSm θ V φ → IsAutFunSm θ V (fun g => star (φ g)) := by
-  first | exact @GlobalTheory.Mem.AutConj.isAutFunSm_star
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionStarStatement =====
@@ -1156,7 +1126,7 @@ abbrev recXE : ThetaX D where
     rw [actReal, dite_eq_left hg]; exact trE_cusp hθ V _ _ F hF
   Gf V := GfC V
   actF := actFin hθ
-  actF_cusp V g F hF := trE_cusp hθ V g (fun φ h => GlobalTheory.T.smoothAutomorphicForm_rightTranslate_finiteAdelic D θ hθ V φ h g g.2) F hF
+  actF_cusp V g F hF := trE_cusp hθ V g (fun φ h => GlobalTheory.Mem.FinTranslate.isAutFunSm_rTr_fin D θ hθ V φ h g g.2) F hF
   actF_actR V g τ h := by
     unfold actReal
     split_ifs with hh
@@ -1165,11 +1135,11 @@ abbrev recXE : ThetaX D where
       rw [mul_assoc, mul_assoc, (GlobalTheory.PointAtPlaceHom.atTau_laws D θ hθ V τ).2.2.2.1 h g g.2]
     · rw [mul_one, one_mul]
   Ksph := ksph
-  Ksph_mono V S S' h g hg := mem_ksph.2 ((GlobalTheory.T.exists_lattice_stabiliser_subgroup_outside_places D V S).choose_spec.2 S' h (mem_ksph.1 hg))
+  Ksph_mono V S S' h g hg := mem_ksph.2 ((GlobalTheory.Mem.Ksph.exists_subgroup_ksph D V S).choose_spec.2 S' h (mem_ksph.1 hg))
   typ V P := (TypS θ V P).comap (AFs θ V).subtype
   Chr := chrGrp D
   infTy := expo
-  infTy_mul χ χ' τ := expo_eq ((GlobalTheory.T.heckeCharacter_infinityExponent_group_laws D).2.2 _ _ _ _ _ (expo_spec χ τ) (expo_spec χ' τ))
+  infTy_mul χ χ' τ := expo_eq ((GlobalTheory.Mem.HeckeExp.hecke_exp_laws D).2.2 _ _ _ _ _ (expo_spec χ τ) (expo_spec χ' τ))
   chrOf μ j := ⟨Rc.chr μ j, mem_chrGrp.2 (Rc.chr_hc μ j)⟩
   chrOf_inf μ j τ := expo_eq (Rc.chr_inf μ j τ)
   etaT := ⟨Rc.eta, mem_chrGrp.2 ⟨Rc.eta_hc, fun τ => ⟨_, Rc.eta_inf τ⟩⟩⟩
@@ -1193,13 +1163,13 @@ abbrev recXE : ThetaX D where
   YsLow_zero := Tw.YsLow_zero
   Xs_rec := Tw.Xs_rec
   Ys_rec := Tw.Ys_rec
-  conjAF V F := ⟨fun g => star (F.1 g), Submodule.subset_span (GlobalTheory.T.isSmoothAutomorphicFunction_star D θ hθ V _ (aut hθ F))⟩
+  conjAF V F := ⟨fun g => star (F.1 g), Submodule.subset_span (GlobalTheory.Mem.AutConj.isAutFunSm_star D θ hθ V _ (aut hθ F))⟩
   conjAF_add V F F' := Subtype.ext (funext fun g => star_add _ _)
   conjAF_smul V c F := Subtype.ext (funext fun g => star_mul' _ _)
   conjAF_conjAF V F := Subtype.ext (funext fun g => star_star _)
   conjAF_cusp V F hF := by
     rw [mem_cuspIn hθ] at hF ⊢
-    exact (GlobalTheory.T.isCuspFunction_closed_under_operations D V _ _ (aut hθ F).toIsAutFun (aut hθ F).toIsAutFun hF hF).2.2.2
+    exact (GlobalTheory.Mem.Th.isCuspFun_closed D V _ _ (aut hθ F).toIsAutFun (aut hθ F).toIsAutFun hF hF).2.2.2
   Pos A B ι := PosT A B ι
   FJd _ _ _ := ℂ
   Bper A B ι p _ φ F := (Rc.petC A : ℂ) * perT hB hθ hψ Rc A B ι p φ (cuspEq θ B F)

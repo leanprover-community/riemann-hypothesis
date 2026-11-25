@@ -86,7 +86,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 noncomputable section
 namespace GlobalTheory.EtC.ConeConn
 
-
 theorem cone_connecting_class : ∀ (R : Type) [CommRing R] (S : ShortComplex (Shv R))
     (hc : (CochainComplex.singleFunctor (Shv R) 0).map S.f ≫ resAug S.X₂ = resAug S.X₁ ≫ resMap R S.f)
     (φ : S.X₂ ⟶ (res R S.X₁).X 0) (ψ : S.X₃ ⟶ (res R S.X₁).X 1),
@@ -151,11 +150,6 @@ namespace GlobalTheory.EtC.ConeClass
 
 variable {R : Type} [CommRing R]
 
-theorem mk_ofHom_comp {K L M : Cx R} (f : K ⟶ L) (g : L ⟶ M) :
-    CohomologyClass.mk (Cocycle.ofHom (f ≫ g)) = cpull f M 0 (CohomologyClass.mk (Cocycle.ofHom g)) := by
-  refine congrArg CohomologyClass.mk (Cocycle.ext ?_)
-  simp [zcomp, Cochain.ofHom_comp]
-
 theorem mk_injective_sgl (X : Shv R) (I : Cx R) [I.IsStrictlyGE 0] :
     Function.Injective (CohomologyClass.mk : Cocycle (sgl X) I 0 → CohomologyClass (sgl X) I 0) := by
   intro a b h
@@ -194,7 +188,7 @@ theorem cpull_single_injective {X Y : Shv R} (g : X ⟶ Y) [Epi g] (I : Cx R) [I
 theorem mk_ofHom_eq_of_homotopy {K L : Cx R} (f g : K ⟶ L) (h : Homotopy f g) :
     CohomologyClass.mk (Cocycle.ofHom f) = CohomologyClass.mk (Cocycle.ofHom g) := by
   have e := congrArg (fun φ => φ (CohomologyClass.mk (Cocycle.ofHom (𝟙 L)))) ((_root_.GlobalTheory.EtC.ZcFun.main R).2.2.2.2 f g ⟨h⟩ L 0).1
-  simpa only [← mk_ofHom_comp, Category.comp_id] using e
+  simpa only [← GlobalTheory.EtC.ConeRes.mk_ofHom_comp, Category.comp_id] using e
 
 end GlobalTheory.EtC.ConeClass
 
@@ -219,7 +213,7 @@ theorem cone_class_eq : ∀ (R : Type) [CommRing R] (S : ShortComplex (Shv R)), 
   have hbij := _root_.GlobalTheory.EtC.cpull_bijective_of_quasiIso R (mappingCone.descShortComplex (S.map (CochainComplex.singleFunctor (Shv R) 0))) (res R S.X₃) 0
   obtain ⟨c, hc'⟩ := hbij.2 (CohomologyClass.mk (Cocycle.ofHom
     (mappingCone.map _ (resMap R S.f) (resAug S.X₁) (resAug S.X₂) hc ≫ e.hom)))
-  refine (mk_ofHom_comp _ _).trans (Eq.trans ?_ hc')
+  refine (GlobalTheory.EtC.ConeRes.mk_ofHom_comp _ _).trans (Eq.trans ?_ hc')
   refine congrArg _ ?_
   have hinr : mappingCone.inr (S.map (CochainComplex.singleFunctor (Shv R) 0)).f ≫
       mappingCone.map _ (resMap R S.f) (resAug S.X₁) (resAug S.X₂) hc = resAug S.X₂ ≫ mappingCone.inr (resMap R S.f) := by
@@ -235,7 +229,7 @@ theorem cone_class_eq : ∀ (R : Type) [CommRing R] (S : ShortComplex (Shv R)), 
     calc cpull ((CochainComplex.singleFunctor (Shv R) 0).map S.g) (res R S.X₃) 0
             (CohomologyClass.mk (Cocycle.ofHom (resAug S.X₃)))
         = CohomologyClass.mk (Cocycle.ofHom ((CochainComplex.singleFunctor (Shv R) 0).map S.g ≫ resAug S.X₃)) :=
-          (mk_ofHom_comp _ _).symm
+          (GlobalTheory.EtC.ConeRes.mk_ofHom_comp _ _).symm
       _ = CohomologyClass.mk (Cocycle.ofHom (resAug S.X₂ ≫ resMap R S.g)) := by rw [hres]
       _ = CohomologyClass.mk (Cocycle.ofHom (resAug S.X₂ ≫ mappingCone.inr (resMap R S.f) ≫ e.hom)) :=
           (mk_ofHom_eq_of_homotopy _ _ (hh.compLeft (resAug S.X₂))).symm
@@ -243,7 +237,7 @@ theorem cone_class_eq : ∀ (R : Type) [CommRing R] (S : ShortComplex (Shv R)), 
         mappingCone.map _ (resMap R S.f) (resAug S.X₁) (resAug S.X₂) hc ≫ e.hom)) =
       cpull (mappingCone.inr (S.map (CochainComplex.singleFunctor (Shv R) 0)).f) (res R S.X₃) 0
           (cpull (mappingCone.descShortComplex (S.map (CochainComplex.singleFunctor (Shv R) 0))) (res R S.X₃) 0 c) := by
-    rw [hc', mk_ofHom_comp]
+    rw [hc', GlobalTheory.EtC.ConeRes.mk_ofHom_comp]
   have hB2 : cpull (mappingCone.inr (S.map (CochainComplex.singleFunctor (Shv R) 0)).f) (res R S.X₃) 0
           (cpull (mappingCone.descShortComplex (S.map (CochainComplex.singleFunctor (Shv R) 0))) (res R S.X₃) 0 c) =
       cpull ((CochainComplex.singleFunctor (Shv R) 0).map S.g) (res R S.X₃) 0 c := by
@@ -398,7 +392,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC GlobalTheory.EtC.KumPic
-
 
 noncomputable section
 namespace GlobalTheory.EtC.KumPic
@@ -1074,11 +1067,6 @@ instance instWLBKumCoker (R : Type) [CommRing R] :
   have : EssentiallySmall.{1} Scheme.{0} := inferInstance
   exact GrothendieckTopology.WEqualsLocallyBijective.ofEssentiallySmall _
 
-theorem isSheaf_forget {R : Type} [CommRing R] (F : Shv R) :
-    Presieve.IsSheaf Scheme.etaleTopology (F.obj ⋙ forget (ModuleCat.{1} (ULift.{1} R))) :=
-  (isSheaf_iff_isSheaf_of_type _ _).1
-    ((Presheaf.isSheaf_iff_isSheaf_forget _ _ (forget (ModuleCat.{1} (ULift.{1} R)))).1 F.property)
-
 theorem sec_res_zero {R : Type} [CommRing R] (F : Shv R) {V U : Scheme.{0}} (g : V ⟶ U) : Sec.res g (0 : Sec F U) = 0 :=
   map_zero _
 
@@ -1087,16 +1075,6 @@ theorem sec_map_comp {R : Type} [CommRing R] {F G H : Shv R} (f : F ⟶ G) (g : 
 
 theorem sec_map_zero {R : Type} [CommRing R] {F G : Shv R} {U : Scheme.{0}} (x : Sec F U) :
     Sec.map (0 : F ⟶ G) x = 0 := rfl
-
-theorem sec_nat {R : Type} [CommRing R] {F G : Shv R} (f : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map f x) = Sec.map f (Sec.res g x) := by
-  have e := congrArg (fun φ => φ.hom x) (f.hom.naturality g.op)
-  simp only [ModuleCat.hom_comp, LinearMap.comp_apply] at e
-  exact e.symm
-
-theorem sec_res_comp {R : Type} [CommRing R] (F : Shv R) {W V U : Scheme.{0}} (h : W ⟶ V) (g : V ⟶ U) (x : Sec F U) :
-    Sec.res h (Sec.res g x) = Sec.res (h ≫ g) x := by
-  simp only [Sec.res, op_comp, Functor.map_comp, ModuleCat.hom_comp, LinearMap.comp_apply]
 
 theorem unit_res {q : ℕ} {V U : Scheme.{0}} (hU : IsUnit (q : Γ(U, ⊤))) (g : V ⟶ U) : IsUnit (q : Γ(V, ⊤)) := by
   simpa using hU.map g.appTop.hom
@@ -1123,7 +1101,7 @@ theorem GlobalTheory.EtC.kumCoker_bijective : ∀ (q : ℕ) [NeZero q] (κ : (re
     obtain ⟨b, hb⟩ := hg
     have hb' : Sec.map (cokernel.π κ) b = Sec.res g c := hb
     have hz : Sec.map ((q : ℤ) • 𝟙 Gm) b = 0 := by
-      rw [← key, hb', ← sec_nat, hc', sec_res_zero]
+      rw [← key, hb', ← GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism, hc', sec_res_zero]
     obtain ⟨a, rfl⟩ := H1 V (unit_res hU g) b hz
     rw [← hb', ← sec_map_comp, cokernel.condition, sec_map_zero]
   intro U hU
@@ -1137,14 +1115,14 @@ theorem GlobalTheory.EtC.kumCoker_bijective : ∀ (q : ℕ) [NeZero q] (κ : (re
     apply inj Z (unit_res hU (f₁ ≫ g₁))
     change Sec.map qb (Sec.res f₁ (Sec.map (cokernel.π κ) (c _ g₁ hg₁))) =
       Sec.map qb (Sec.res f₂ (Sec.map (cokernel.π κ) (c _ g₂ hg₂)))
-    rw [← sec_nat, ← sec_nat, key, key, hc, hc, sec_res_comp, sec_res_comp, w]
-  obtain ⟨t, ht, -⟩ := isSheaf_forget (cokernel κ) S hS x hx
+    rw [← GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism, ← GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism, key, key, hc, hc, GlobalTheory.EtC.SecGlueLoc.res_comp, GlobalTheory.EtC.SecGlueLoc.res_comp, w]
+  obtain ⟨t, ht, -⟩ := GlobalTheory.EtC.SecGlueLoc.isSheaf_forget (cokernel κ) S hS x hx
   refine ⟨t, sub_eq_zero.1 (GlobalTheory.EtC.KummerSplit.sec_eq_zero_of_loc Gm _ ⟨S, hS, fun V g hg => ?_⟩)⟩
   have ht' : Sec.res g t = Sec.map (cokernel.π κ) (c V g hg) := ht g hg
   change (Gm.obj.map g.op).hom (Sec.map qb t - b) = 0
   rw [map_sub]
   change Sec.res g (Sec.map qb t) - Sec.res g b = 0
-  rw [sec_nat, ht', key, hc, sub_self]
+  rw [GlobalTheory.EtC.Sec.res_map_of_sheaf_morphism, ht', key, hc, sub_self]
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

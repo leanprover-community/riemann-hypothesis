@@ -10,15 +10,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open scoped TensorProduct NNReal Matrix
 open scoped Classical
-namespace PositivityTheory.ThKF0.LatSum
-
-open mixedEmbedding
-
-noncomputable abbrev latPi (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] :
-    Submodule ℤ (κ → mixedSpace F) :=
-  Submodule.span ℤ (Set.range (Pi.basis (fun _ : κ => latticeBasis F)))
-
-end PositivityTheory.ThKF0.LatSum
 
 namespace PositivityTheory.ThKF0.LatSum
 

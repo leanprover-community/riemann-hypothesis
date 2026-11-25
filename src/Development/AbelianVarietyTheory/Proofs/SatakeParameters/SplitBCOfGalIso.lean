@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.SplitDetermines
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain

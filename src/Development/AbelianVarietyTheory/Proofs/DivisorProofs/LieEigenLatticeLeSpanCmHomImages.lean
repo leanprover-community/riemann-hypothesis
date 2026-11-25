@@ -286,20 +286,6 @@ variable {P : Out.PolAV (Sp (𝓞 K))} {P' : Out.PolAV (Sp (𝓞 K'))} {ξ : P'.
 
 local notation "F₁" => (GenFib.mk (withDim Q (Out.PolAV.g (GenFib.P₀ F)) hd) φ' fib v' basis : GenFib P')
 
-theorem isCoord_over (hξ : IsGrpPullback P'.A P.A (spMap (RingOfIntegers.mapRingHom j)) ξ)
-    (hψ : IsGrpPullback Q.A F.P₀.A (spMap j) ψ) (w : ψ ≫ F.φ = φ' ≫ ξ) (hv : ∀ i, IsVecOver j ψ (F.v i) (v' i))
-    {u : epsR (𝓞 K) ⟶ P.A} {c : Fin F.P₀.g → K} (hc : F.IsCoord u c) {u' : epsR (𝓞 K') ⟶ P'.A}
-    (hu : IsVecOver (RingOfIntegers.mapRingHom j) ξ u u') : (F₁).IsCoord u' (fun i => j (c i)) :=
-  GlobalTheory.CM.LieBaseChange.isCoord_over (fib := fib) (basis := basis) hξ hψ w hv hc hu
-
-theorem eigLat_eq_span (hB : Out.PolBaseChangeSt) (hξ : IsPolFibre (RingOfIntegers.mapRingHom j) P P' ξ)
-    (hψ : IsGrpPullback Q.A F.P₀.A (spMap j) ψ) (w : ψ ≫ F.φ = φ' ≫ ξ) (hv : ∀ i, IsVecOver j ψ (F.v i) (v' i))
-    {O : Type} [CommRing O] (act : OAct O P.A) (act' : OAct O P'.A)
-    (hact : ∀ a, (act'.act a).left ≫ ξ = ξ ≫ (act.act a).left) (τ : O →+* 𝓞 K) :
-    (F₁).eigLat act' ((RingOfIntegers.mapRingHom j).comp τ) =
-      Submodule.span (𝓞 K') ((fun c i => j (c i)) '' (F.eigLat act τ : Set (Fin F.P₀.g → K))) :=
-  GlobalTheory.CM.LieBaseChange.eigLat_eq_span (fib := fib) (basis := basis) hB hξ hψ w hv act act' hact τ
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
   {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] {j : K →+* K'}
 
@@ -995,7 +981,6 @@ section Diff
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {K : Type} [Field K] [NumberField K]
   {A B : PAT H (Sp (𝓞 K))} {FA : GenFib A.pol} {FB : GenFib B.pol}
-
 
 open IntCoord in
 theorem smul_diff_eq {p : ℕ} {φ : Fin p → (A.t.G ⟶ B.t.G)}

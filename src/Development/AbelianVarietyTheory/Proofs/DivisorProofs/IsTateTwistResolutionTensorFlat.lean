@@ -191,16 +191,6 @@ namespace GlobalTheory.EtC.TensZero
 
 variable {R : Type} [CommRing R]
 
-theorem sec_eq_zero_of_isZero {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (a : Sec F U) : a = 0 := by
-  have h : 𝟙 F = 0 := hF.eq_of_src _ _
-  have : Sec.map (𝟙 F) a = Sec.map (0 : F ⟶ F) a := by rw [h]
-  have h1 : Sec.map (𝟙 F) a = a := rfl
-  have h2 : Sec.map (0 : F ⟶ F) a = 0 := by
-    simp only [Sec.map]
-    rfl
-  rw [h1, h2] at this
-  exact this
-
 theorem isZero_of_sec {F : Shv R} (h : ∀ (U : Scheme.{0}) (a : Sec F U), a = 0) : IsZero F := by
   rw [IsZero.iff_id_eq_zero]
   refine ((GlobalTheory.EtC.mono_epi_sections R (𝟙 F)).2.2.2 0 fun U a => ?_)
@@ -215,11 +205,11 @@ theorem tens_eq_zero {I J : Cx R} (hI : ∀ s : ℤ, s ≠ 0 → IsZero (I.X s))
   · have h2 : p.1.2 ≠ 0 := by omega
     induction x p using TensorProduct.induction_on with
     | zero => rfl
-    | tmul a b => rw [sec_eq_zero_of_isZero (hJ _ h2) b, TensorProduct.tmul_zero]
+    | tmul a b => rw [GlobalTheory.EtC.TensUniv.sec_zero_of_isZero (hJ _ h2) b, TensorProduct.tmul_zero]
     | add a b ha hb => rw [ha, hb, add_zero]
   · induction x p using TensorProduct.induction_on with
     | zero => rfl
-    | tmul a b => rw [sec_eq_zero_of_isZero (hI _ h1) a, TensorProduct.zero_tmul]
+    | tmul a b => rw [GlobalTheory.EtC.TensUniv.sec_zero_of_isZero (hI _ h1) a, TensorProduct.zero_tmul]
     | add a b ha hb => rw [ha, hb, add_zero]
 
 end GlobalTheory.EtC.TensZero
@@ -507,9 +497,6 @@ theorem loc_bind {U : Scheme.{0}} {P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} {
   rintro W _ ⟨V, k, g, hg, hk, rfl⟩
   exact (h' V g (hP V g hg)).choose_spec.2 W k hk
 
-theorem map_comp_apply {F G H : Shv R} (f : F ⟶ G) (g : G ⟶ H) {U : Scheme.{0}} (x : Sec F U) :
-    Sec.map (f ≫ g) x = Sec.map g (Sec.map f x) := rfl
-
 theorem map_id_apply {F : Shv R} {U : Scheme.{0}} (x : Sec F U) : Sec.map (𝟙 F) x = x := rfl
 
 theorem res_map {F G : Shv R} (f : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
@@ -518,9 +505,6 @@ theorem res_map {F G : Shv R} (f : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x 
   simpa using this.symm
 
 alias res_comp := _root_.GlobalTheory.TwSec.res_comp
-
-theorem smap_add {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} (x y : Sec F U) :
-    Sec.map f (x + y) = Sec.map f x + Sec.map f y := map_add _ x y
 
 theorem smap_nsmul {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} (n : ℕ) (x : Sec F U) :
     Sec.map f (n • x) = n • Sec.map f x := map_nsmul _ n x
@@ -531,9 +515,6 @@ theorem smap_zero {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} : Sec.map f (0 : 
 
 theorem map_zero_hom {F G : Shv R} {U : Scheme.{0}} (x : Sec F U) : Sec.map (0 : F ⟶ G) x = 0 := by
   rfl
-
-theorem eq_zero_of_isZero {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (x : Sec F U) : x = 0 := by
-  rw [← map_id_apply x, hF.eq_of_src (𝟙 F) 0, map_zero_hom]
 
 def Good {F G : Shv R} (φ : F ⟶ G) (U : Scheme.{0}) (x : Sec G U) : Prop :=
   Loc U fun V g => ∃ z : Sec F V, Sec.map φ z = Sec.res g x
@@ -550,14 +531,13 @@ theorem good_bind {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (x : Sec G U) {P
 
 theorem good_add {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} {x x' : Sec G U} (h : Good φ U x) (h' : Good φ U x') :
     Good φ U (x + x') :=
-  loc_mono (_root_.GlobalTheory.TwSec.loc_and h h') fun _ g ⟨⟨z, hz⟩, ⟨z', hz'⟩⟩ => ⟨z + z', by rw [smap_add, _root_.GlobalTheory.TwSec.res_add, hz, hz']⟩
+  loc_mono (_root_.GlobalTheory.TwSec.loc_and h h') fun _ g ⟨⟨z, hz⟩, ⟨z', hz'⟩⟩ => ⟨z + z', by rw [GlobalTheory.EtC.TensUniv.map_add', _root_.GlobalTheory.TwSec.res_add, hz, hz']⟩
 
 theorem good_zero {F G : Shv R} (φ : F ⟶ G) (U : Scheme.{0}) : Good φ U 0 := good_of φ ⟨0, smap_zero _⟩
 
 end GlobalTheory.EtC.TwMulSurj
 
 namespace GlobalTheory.EtC
-
 
 open TwMulSurj in
 theorem tw_mul_locSurj : ∀ (q : ℕ) [NeZero q] (i j k : ℤ), i + j = k → ∀ {K : Cx (ZMod q)}
@@ -601,15 +581,15 @@ theorem tw_mul_locSurj : ∀ (q : ℕ) [NeZero q] (i j k : ℤ), i + j = k → �
         · subst hs
           obtain rfl : t' = 0 := by omega
           have ea : Sec.map (sglι _) (Sec.map (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 (tw q i)).hom a) = a := by
-            refine (map_comp_apply _ (sglι _) a).symm.trans ?_
+            refine (GlobalTheory.EtC.TensUniv.map_comp' _ (sglι _) a).symm.trans ?_
             simp [sglι]; rfl
           have eb : Sec.map (sglι _) (Sec.map (HomologicalComplex.singleObjXSelf (ComplexShape.up ℤ) 0 (tw q j)).hom b) = b := by
-            refine (map_comp_apply _ (sglι _) b).symm.trans ?_
+            refine (GlobalTheory.EtC.TensUniv.map_comp' _ (sglι _) b).symm.trans ?_
             simp [sglι]; rfl
           rw [← ea, ← eb]
           exact key_gen V _ _
         · have h0 : τ.mul V s t' 0 hst a b = 0 := by
-            rw [eq_zero_of_isZero (F := (sgl (tw q i)).X s) (HomologicalComplex.isZero_single_obj_X _ _ _ _ hs) a]
+            rw [GlobalTheory.EtC.TensUniv.sec_zero_of_isZero (F := (sgl (tw q i)).X s) (HomologicalComplex.isZero_single_obj_X _ _ _ _ hs) a]
             simp
           rw [h0]
           exact good_zero φ V
@@ -738,7 +718,6 @@ theorem ker_tensor_loc {A B C : Shv R} (f : A ⟶ B) (g : B ⟶ C)
     exact ⟨y₁ + y₂, by simp only [map_add (f := _), e₁, e₂]⟩
 
 end TensFlat
-
 
 open TensFlat in
 theorem tensor_flat_loc_exact : ∀ (R : Type) [CommRing R] (M : Shv R), FlatS M → ∀ {A B C : Shv R} (f : A ⟶ B) (g : B ⟶ C), f ≫ g = 0 → (∀ U (b : Sec B U), Sec.map g b = 0 → Loc U fun V k => ∃ a : Sec A V, Sec.map f a = Sec.res k b) → ∀ U (x : TensorProduct (ULift.{1} R) (Sec B U) (Sec M U)), (Loc U fun V k => LinearMap.rTensor _ (g.hom.app (op V)).hom (TensorProduct.map (B.obj.map k.op).hom (M.obj.map k.op).hom x) = 0) → Loc U fun V k => ∃ y : TensorProduct (ULift.{1} R) (Sec A V) (Sec M V), LinearMap.rTensor _ (f.hom.app (op V)).hom y = TensorProduct.map (B.obj.map k.op).hom (M.obj.map k.op).hom x := by
@@ -1003,10 +982,6 @@ namespace GlobalTheory.EtC
 variable {R : Type} [CommRing R]
 open scoped DirectSum TensorProduct
 
-theorem Sec.eq_zero_of_isZero {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (x : Sec F U) : x = 0 := by
-  have h : Sec.map (𝟙 F) x = Sec.map (0 : F ⟶ F) x := by rw [hF.eq_of_src (𝟙 F) 0]
-  exact h
-
 theorem tensor_eq_zero_left {S M N : Type*} [CommRing S] [AddCommGroup M] [Module S M] [AddCommGroup N] [Module S N]
     (h : ∀ m : M, m = 0) (y : M ⊗[S] N) : y = 0 := by
   induction y using TensorProduct.induction_on with
@@ -1056,7 +1031,7 @@ theorem Tens.cycle_loc_boundary {C J : Cx R} (a b : ℤ) [C.IsStrictlyGE a] [J.I
       rw [← hu, Tens.upper_apply]
       split_ifs with hp
       · have hs : p.1.1 < a := by have := p.2; omega
-        exact tensor_eq_zero_left (fun m => Sec.eq_zero_of_isZero (C.isZero_of_isStrictlyGE a p.1.1 hs) m) _
+        exact tensor_eq_zero_left (fun m => GlobalTheory.EtC.TensUniv.sec_zero_of_isZero (C.isZero_of_isStrictlyGE a p.1.1 hs) m) _
       · rfl
     refine L_all _ _ fun V g => ⟨0, ?_⟩
     rw [hx0, map_zero, map_zero]
@@ -1125,7 +1100,7 @@ theorem Tens.cycle_loc_boundary {C J : Cx R} (a b : ℤ) [C.IsStrictlyGE a] [J.I
   split_ifs with hp
   · rfl
   · have ht : p.1.2 < b := by omega
-    exact (tensor_eq_zero_right (fun m => Sec.eq_zero_of_isZero (J.isZero_of_isStrictlyGE b p.1.2 ht) m) _).symm
+    exact (tensor_eq_zero_right (fun m => GlobalTheory.EtC.TensUniv.sec_zero_of_isZero (J.isZero_of_isStrictlyGE b p.1.2 ht) m) _).symm
 
 theorem acyclic_of_isTensor : ∀ (R : Type) [CommRing R] {C J T : Cx R} (a b : ℤ) [C.IsStrictlyGE a] [J.IsStrictlyGE b]
     (τ : Pair C J T), τ.IsTensor → (∀ t, FlatS (J.X t)) → C.Acyclic → T.Acyclic := by
@@ -1173,8 +1148,6 @@ theorem sm_zero {F G : Shv R} {U : Scheme.{0}} (x : Sec F U) : Sec.map (0 : F �
 theorem sm_id {F : Shv R} {U : Scheme.{0}} (x : Sec F U) : Sec.map (𝟙 F) x = x := rfl
 theorem sm_madd {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (x y : Sec F U) : Sec.map φ (x + y) = Sec.map φ x + Sec.map φ y := map_add _ _ _
 theorem sm_mzero {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} : Sec.map φ (0 : Sec F U) = 0 := map_zero _
-theorem sm_munits {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (e : ℤˣ) (x : Sec F U) : Sec.map φ (e • x) = e • Sec.map φ x := by
-  rw [Units.smul_def, Units.smul_def]; exact map_zsmul _ _ _
 theorem rs_madd {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (x y : Sec F U) : Sec.res g (x + y) = Sec.res g x + Sec.res g y := map_add _ _ _
 
 section Cone
@@ -1240,10 +1213,10 @@ def conePair (τ : Pair I J T) (τ' : Pair I' J T') (f : I ⟶ I') (u : T ⟶ T'
     intro U s t w h c b
     apply cone_ext u
     · rw [← _root_.GlobalTheory.EtC.exactIff_map_comp, mappingCone.d_fst_v u w (w + 1) (w + 1 + 1) rfl rfl, sm_neg, _root_.GlobalTheory.EtC.exactIff_map_comp]
-      simp only [coneMul_apply, sm_madd, sm_munits, fst_inl, fst_inr, add_zero, fst_d, map_neg, LinearMap.neg_apply, τ.leibniz]
+      simp only [coneMul_apply, sm_madd, GlobalTheory.EtC.TensUniv.map_usmul, fst_inl, fst_inr, add_zero, fst_d, map_neg, LinearMap.neg_apply, τ.leibniz]
       rw [Int.negOnePow_succ, Units.neg_smul, neg_add, neg_neg]
     · rw [← _root_.GlobalTheory.EtC.exactIff_map_comp, mappingCone.d_snd_v u w (w + 1) rfl, sm_add, _root_.GlobalTheory.EtC.exactIff_map_comp, _root_.GlobalTheory.EtC.exactIff_map_comp]
-      simp only [coneMul_apply, sm_madd, sm_munits, snd_inl, snd_inr, fst_inl, fst_inr, zero_add, add_zero, snd_d,
+      simp only [coneMul_apply, sm_madd, GlobalTheory.EtC.TensUniv.map_usmul, snd_inl, snd_inr, fst_inl, fst_inr, zero_add, add_zero, snd_d,
         LinearMap.map_add₂, τ'.leibniz]
       rw [hc U (s + 1) t (w + 1) (by omega), HomologicalComplex.id_f, sm_id]
       abel

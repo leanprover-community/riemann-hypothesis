@@ -65,21 +65,6 @@ noncomputable section
 
 open Classical
 
-namespace Formalism.ZetaNonvanishing.EisensteinCokernelLengthsFacts
-
-open Formalism.WachCohomologyFacts Formalism.WachCohomologyFacts.V2
-
-def LenBound2 : Prop :=
-  ∀ (O M : Type) [CommRing O] [AddCommGroup M] [Module O M] (ℓ g g₀ e e' : ℕ)
-    (Z Bc I : Submodule O M) (s s₀ : Finset M),
-    s.card ≤ g → Submodule.span O (s : Set M) ⊔ Bc = Z → Bc ≤ I →
-    s₀.card ≤ g₀ → (s₀ : Set M) ⊆ Z →
-    (∀ p ∈ Z, (ℓ ^ e : ℕ) • p ∈ Submodule.span O (s₀ : Set M) ⊔ I) →
-    (∀ p ∈ Submodule.span O (s₀ : Set M), (ℓ ^ e' : ℕ) • p ∈ I) →
-    Module.length O (↥Z ⧸ I.comap Z.subtype) ≤
-      ((g : ℕ∞) * (e : ℕ∞) + (g₀ : ℕ∞) * (e' : ℕ∞)) * Module.length O (O ⧸ Ideal.span {(ℓ : O)})
-
-end Formalism.ZetaNonvanishing.EisensteinCokernelLengthsFacts
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -143,7 +128,7 @@ theorem key {O M : Type} [CommRing O] [AddCommGroup M] [Module O M] (Z Z₀ I : 
           have := I.neg_mem hw; simpa using this
   exact Module.length_eq_add_of_exact f' g hf' hg hex
 
-theorem lenBound2 : Formalism.ZetaNonvanishing.EisensteinCokernelLengthsFacts.LenBound2 := by
+theorem lenBound2 : Formalism.IrreducibleCountingLemmas.WindowSums.ColengthTwoStep := by
   intro O M _ _ _ ℓ g g₀ e e' Z Bc I s s₀ hs hZ hBc hs₀ hs₀Z hke hke'
   have hZ₀Z : Submodule.span O (s₀ : Set M) ≤ Z := Submodule.span_le.mpr hs₀Z
   have h1 := quotientLengthBound_holds O M ℓ g e Z Bc (Submodule.span O (s₀ : Set M) ⊔ I) s hs hZ

@@ -18,29 +18,25 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 
-def secP (X : PJ D B P j) {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL) (i : Fin (WeightFamilies.dimY D j + 1)) :
-    MvPolynomial (Idx D j N) X.Forms :=
-  ∑ k, MvPolynomial.X (i, k) * MvPolynomial.C (X.inc wL (w k))
-
 section Weights
 
 variable {X : PJ D B P j} {N : ℕ} {wL : WeightFamilies.Wt D j} {w : Fin N → B.Cusp j wL}
 
-theorem ofWt_pow_mul (hs : ∀ i, OfWt X wL (secP X w i))
+theorem ofWt_pow_mul (hs : ∀ i, OfWt X wL (GlobalTheory.Shares.BasisVals.secPoly X w i))
     (hm : ∀ u u' (p q : MvPolynomial (Idx D j N) X.Forms), OfWt X u p → OfWt X u' q → OfWt X (wadd u u') (p * q))
     (i : Fin (WeightFamilies.dimY D j + 1)) (u : WeightFamilies.Wt D j) (n m : ℕ) {p : MvPolynomial (Idx D j N) X.Forms}
-    (hp : OfWt X (addL u wL n) p) : OfWt X (addL u wL (n + m)) (secP X w i ^ m * p) := by
+    (hp : OfWt X (addL u wL n) p) : OfWt X (addL u wL (n + m)) (GlobalTheory.Shares.BasisVals.secPoly X w i ^ m * p) := by
   induction m with
   | zero => simpa using hp
   | succ m ih =>
     rw [pow_succ', mul_assoc, ← add_assoc, ← wadd_addL]
     exact hm _ _ _ _ (hs i) ih
 
-theorem ofWt_prod_mul (hs : ∀ i, OfWt X wL (secP X w i))
+theorem ofWt_prod_mul (hs : ∀ i, OfWt X wL (GlobalTheory.Shares.BasisVals.secPoly X w i))
     (hm : ∀ u u' (p q : MvPolynomial (Idx D j N) X.Forms), OfWt X u p → OfWt X u' q → OfWt X (wadd u u') (p * q))
     (α : Fin (WeightFamilies.dimY D j) → ℕ) (u : WeightFamilies.Wt D j) (n : ℕ) {p : MvPolynomial (Idx D j N) X.Forms}
     (hp : OfWt X (addL u wL n) p) (s : Finset (Fin (WeightFamilies.dimY D j))) :
-    OfWt X (addL u wL (n + ∑ i ∈ s, α i)) ((∏ i ∈ s, secP X w i.succ ^ α i) * p) := by
+    OfWt X (addL u wL (n + ∑ i ∈ s, α i)) ((∏ i ∈ s, GlobalTheory.Shares.BasisVals.secPoly X w i.succ ^ α i) * p) := by
   classical
   induction s using Finset.induction_on with
   | empty => simpa using hp
@@ -54,9 +50,9 @@ theorem inContainMR_of_anFacts : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : M
   intro D B P j X ka wL wF G R t T CR c δ xs hgen hA hka hDT S hTh la hB
   obtain ⟨hsec, hC, hCw, hmul, -, -, hsp, -⟩ := _root_.GlobalTheory.Shares.polyDictionary D B P j X R la G.N wL G.w t
   obtain ⟨hli, hdel⟩ := (_root_.GlobalTheory.Shares.inBasis_iff_vals D B P j X ka wL wF G R t T _ δ xs hgen hA hka la).1 hB
-  have hs1 : ∀ i, toRp X la G.N (secP X G.w i) = sec X la G.w i := fun i => (hsec i).1
-  have hs2 : ∀ i, R.toFn t (secP X G.w i) = R.s G.w t i := fun i => (hsec i).2.1
-  have hs3 : ∀ i, OfWt X wL (secP X G.w i) := fun i => (hsec i).2.2
+  have hs1 : ∀ i, toRp X la G.N (GlobalTheory.Shares.BasisVals.secPoly X G.w i) = sec X la G.w i := fun i => (hsec i).1
+  have hs2 : ∀ i, R.toFn t (GlobalTheory.Shares.BasisVals.secPoly X G.w i) = R.s G.w t i := fun i => (hsec i).2.1
+  have hs3 : ∀ i, OfWt X wL (GlobalTheory.Shares.BasisVals.secPoly X G.w i) := fun i => (hsec i).2.2
   have hspan : Submodule.span ℂ (Set.range (vals xs fun i => R.ev (X.inc wF (G.th' i)))) = ⊤ :=
     hli.span_eq_top_of_card_eq_finrank' (by simp [hdel])
   have hcon := hA.contain G.del (fun i => R.ev (X.inc wF (G.th' i)))
@@ -70,7 +66,7 @@ theorem inContainMR_of_anFacts : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : M
       R.deep G.w t (X.wF0 wL wF) (a0 D j T) ≤ Submodule.span ℂ (R.toFn t '' Sp) := by
     refine sup_le (Submodule.span_mono ?_) (Submodule.span_le.2 ?_)
     · rintro _ ⟨⟨⟨al, hal⟩, i⟩, rfl⟩
-      refine ⟨(∏ k, secP X G.w k.succ ^ al k) * (secP X G.w 0 ^ (T - ∑ k, al k) *
+      refine ⟨(∏ k, GlobalTheory.Shares.BasisVals.secPoly X G.w k.succ ^ al k) * (GlobalTheory.Shares.BasisVals.secPoly X G.w 0 ^ (T - ∑ k, al k) *
         MvPolynomial.C (X.inc wF (G.th' i))), ⟨?_, Or.inl ⟨al, i, hal, ?_⟩⟩, ?_⟩
       · have h0 : OfWt X (addL wF wL 0) (MvPolynomial.C (X.inc wF (G.th' i)) : MvPolynomial (Idx D j G.N) X.Forms) := by
           rw [_root_.Formalism.MainNotions.Gaps.EtaleWeightGaps.addL_zero]; exact hCw _ _
@@ -89,7 +85,7 @@ theorem inContainMR_of_anFacts : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : M
       induction hf' using Submodule.span_induction with
       | mem x hx =>
         obtain ⟨θ, hθ, rfl⟩ := hx
-        refine Submodule.subset_span ⟨(∏ k, secP X G.w k.succ ^ al k) * MvPolynomial.C (X.inc _ θ),
+        refine Submodule.subset_span ⟨(∏ k, GlobalTheory.Shares.BasisVals.secPoly X G.w k.succ ^ al k) * MvPolynomial.C (X.inc _ θ),
           ⟨?_, Or.inr ⟨al, θ, hal, hθ, ?_⟩⟩, ?_⟩
         · have h0 : OfWt X (addL wF wL (WeightFamilies.dimY D j))
               (MvPolynomial.C (X.inc _ θ) : MvPolynomial (Idx D j G.N) X.Forms) := hCw _ θ

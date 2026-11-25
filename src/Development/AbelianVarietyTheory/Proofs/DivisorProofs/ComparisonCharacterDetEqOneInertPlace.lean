@@ -169,15 +169,8 @@ theorem mulVec_mem_latAt {d : ℕ} (W : Spc F E d) (g : Matrix (Fin d) (Fin d) (
     rw [e]
     exact Submodule.smul_mem _ _ hx
 
-theorem valued_eq_one_of_isUnit {c : Formalism.UG.Ov E w} (hc : IsUnit c) : Valued.v (c : w.adicCompletion E) = 1 := by
-  obtain ⟨c', hc'⟩ := hc.exists_right_inv
-  have h1 : Valued.v (c : w.adicCompletion E) ≤ 1 := c.2
-  have h2 : Valued.v (c' : w.adicCompletion E) ≤ 1 := c'.2
-  have h3 : Valued.v (c : w.adicCompletion E) * Valued.v (c' : w.adicCompletion E) = 1 := by
-    rw [← map_mul, ← Subring.coe_mul, hc']; simp
-  refine le_antisymm h1 ?_
-  calc (1 : _) = _ := h3.symm
-    _ ≤ Valued.v (c : w.adicCompletion E) := mul_le_of_le_one_right' h2
+theorem valued_eq_one_of_isUnit {c : Formalism.UG.Ov E w} (hc : IsUnit c) : Valued.v (c : w.adicCompletion E) = 1 :=
+  Valuation.Integers.one_of_isUnit' hc fun x => x.2
 
 theorem valued_det_eq_one (hw : Formalism.UG.IsInertAt F E v w) {d : ℕ} (W : Spc F E d) (hL : W.L.IsFullLattice E)
     (t : GL (Fin d) (AE F E))

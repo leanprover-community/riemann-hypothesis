@@ -10,8 +10,6 @@ public import Mathlib.MeasureTheory.Measure.Haar.Basic
 open MeasureTheory MeasureTheory.Measure Matrix TopologicalSpace Set
 open scoped ENNReal NNReal Pointwise
 
-noncomputable section
-
 namespace CompanionTheory.D.Upq.Quot
 
 section Abstract
@@ -73,5 +71,3 @@ theorem IsHaarOnM.lt_top_of_isCompact (hG : IsMatGroup G) {μ : Measure (MtM m)}
   exact ((MG.isClosedEmbedding_mat (hG := hG)).isCompact_preimage hK).measure_lt_top
 
 end CompanionTheory.D.Upq.Quot
-
-end

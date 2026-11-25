@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JetLL
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Forms GlobalTheory.KerJ NumberField Classical
 
-noncomputable section
-
 namespace GlobalTheory.KerWtStep
 
 open Formalism.MainNotions.GL3Columns

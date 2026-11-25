@@ -372,11 +372,8 @@ namespace GlobalTheory.FlagBundle.QuotDual
 
 variable {ι : Type} {m k : ι → ℕ} {K : Type} [Field K]
 
-abbrev restBlock (k : ι → ℕ) (τ : ι) (g : Mat m K) : Matrix (Rest m k τ) (Rest m k τ) K :=
-  (g τ).submatrix Subtype.val Subtype.val
-
 theorem restBlock_mul {O : Subring K} (τ : ι) (g : Mat m K) {h : Mat m K} (hh : Par k O h) :
-    restBlock k τ (g * h) = restBlock k τ g * restBlock k τ h := by
+    GlobalTheory.FlagBundle.StepLoc.blk k τ (g * h) = GlobalTheory.FlagBundle.StepLoc.blk k τ g * GlobalTheory.FlagBundle.StepLoc.blk k τ h := by
   ext i j
   simp only [Matrix.submatrix_apply, Pi.mul_apply, Matrix.mul_apply]
   rw [← Finset.sum_subtype (Finset.univ.filter fun l : Fin (m τ) => k τ ≤ (l : ℕ)) (by simp)
@@ -386,15 +383,15 @@ theorem restBlock_mul {O : Subring K} (τ : ι) (g : Mat m K) {h : Mat m K} (hh 
   have hj := j.2
   rw [(hh τ).2.2.2 l j.1 hl' (by show (l : ℕ) < j.1; omega), mul_zero]
 
-theorem restBlock_one (τ : ι) : restBlock k τ (1 : Mat m K) = 1 :=
+theorem restBlock_one (τ : ι) : GlobalTheory.FlagBundle.StepLoc.blk k τ (1 : Mat m K) = 1 :=
   Matrix.submatrix_one _ Subtype.val_injective
 
 theorem restBlock_inv_mul {O : Subring K} (τ : ι) {g : Mat m K} (hg : Par k O g) :
-    restBlock k τ g⁻¹ * restBlock k τ g = 1 := by
+    GlobalTheory.FlagBundle.StepLoc.blk k τ g⁻¹ * GlobalTheory.FlagBundle.StepLoc.blk k τ g = 1 := by
   rw [← restBlock_mul τ _ hg, Mat.inv_mul hg.det_ne, restBlock_one]
 
 theorem restBlock_inv {O : Subring K} (τ : ι) {g : Mat m K} (hg : Par k O g) :
-    (restBlock k τ g)⁻¹ = restBlock k τ g⁻¹ :=
+    (GlobalTheory.FlagBundle.StepLoc.blk k τ g)⁻¹ = GlobalTheory.FlagBundle.StepLoc.blk k τ g⁻¹ :=
   Matrix.inv_eq_left_inv (restBlock_inv_mul τ hg)
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω]
@@ -418,7 +415,7 @@ theorem det_dualBlock_ne (τ : ι) (h₀ : A₀ ∈ S.S (genericPoint M.Z)) {z :
   have h := par_generic h₀ hA
   have e := congrArg Matrix.det (restBlock_inv_mul τ h)
   rw [Matrix.det_mul, Matrix.det_one] at e
-  show ((restBlock k τ (A * A₀⁻¹))⁻¹).transpose.det ≠ 0
+  show ((GlobalTheory.FlagBundle.StepLoc.blk k τ (A * A₀⁻¹))⁻¹).transpose.det ≠ 0
   rw [Matrix.det_transpose, restBlock_inv τ h]
   exact left_ne_zero_of_mul_eq_one e
 
@@ -428,8 +425,8 @@ theorem span_dualBlock_le (τ : ι) (h₀ : A₀ ∈ S.S (genericPoint M.Z)) {z 
   have hg := (Fr.mem_iff hA).1 hA'
   have e : A' * A₀⁻¹ = (A' * A⁻¹) * (A * A₀⁻¹) := by
     rw [← mul_assoc, mul_assoc A', Mat.inv_mul (Fr.det_ne hA), mul_one]
-  have e2 : dualBlock k τ A₀ A' = (restBlock k τ (A' * A⁻¹)⁻¹).transpose * dualBlock k τ A₀ A := by
-    show ((restBlock k τ (A' * A₀⁻¹))⁻¹).transpose = _ * ((restBlock k τ (A * A₀⁻¹))⁻¹).transpose
+  have e2 : dualBlock k τ A₀ A' = (GlobalTheory.FlagBundle.StepLoc.blk k τ (A' * A⁻¹)⁻¹).transpose * dualBlock k τ A₀ A := by
+    show ((GlobalTheory.FlagBundle.StepLoc.blk k τ (A' * A₀⁻¹))⁻¹).transpose = _ * ((GlobalTheory.FlagBundle.StepLoc.blk k τ (A * A₀⁻¹))⁻¹).transpose
     rw [e, restBlock_mul τ _ (par_generic h₀ hA), Matrix.mul_inv_rev, Matrix.transpose_mul, restBlock_inv τ hg]
   rw [e2]
   exact span_mul_le _ _ _ fun i j => (hg.inv τ).1 _ _

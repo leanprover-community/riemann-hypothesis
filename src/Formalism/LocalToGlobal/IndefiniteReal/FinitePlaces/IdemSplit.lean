@@ -290,10 +290,8 @@ theorem idemAt_split {P : HeightOneSpectrum (𝓞 D.host.E)} {e : AE D} (he : Fo
   obtain ⟨y, hy1, hy2⟩ := approx_int w ι hint
   rw [hk, ← finPart_cA, hkc, zero_sub, Valuation.map_neg] at *
   have hyv : Valued.v (ι (y : D.host.E)) = 1 := by
-    have : Valued.v (1 - ι (y : D.host.E)) < Valued.v (1 : w.adicCompletion D.host.F) := by rw [Valuation.map_one]; exact hy1
-    have h' := Valuation.map_sub_eq_of_lt_left (Valued.v) this
-    rw [Valuation.map_one] at h'
-    rw [← h', sub_sub_cancel]
+    rw [← sub_sub_cancel 1 (ι (y : D.host.E))]
+    exact Valuation.map_one_sub_of_lt _ hy1
   have hy0 : y ≠ 0 := by
     intro h; rw [h] at hyv; simp at hyv
   have hsy0 : starO y ≠ 0 := by

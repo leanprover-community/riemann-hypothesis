@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 
 @[expose] public section
 
-noncomputable section
-
 open Finset ArithmeticFunction NumberField IsDedekindDomain
 open scoped nonZeroDivisors
 

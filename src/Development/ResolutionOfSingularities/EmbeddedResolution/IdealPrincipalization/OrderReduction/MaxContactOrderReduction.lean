@@ -92,31 +92,6 @@ private theorem boundaryLocus_eq_iUnion_support {k : Type u} [Field k] {X : Sche
     obtain ⟨D, hD, hx⟩ := Set.mem_iUnion₂.1 hx
     exact ⟨D, hD, hx⟩
 
-private theorem boundary_eq_map_comap_strictPullbackComparisonMap_of_flat {k : Type u} [Field k] {X' X : Scheme.{u}}
-    {q : X' ⟶ Spec (CommRingCat.of k)} {g : X' ⟶ X} {I : X.IdealSheafData} {m : ℕ}
-    {E : List X.IdealSheafData} {d : BlowupSequenceData X}
-    (hf : AlgebraicGeometry.Flat g)
-    (s : MarkedBlowupSequenceData q (I.comap g) m (List.map (fun A => A.comap g) E))
-    (D : StrictPullbackBlowupSeq g s.toMarkedSequenceOfBlowups.toSequenceOfBlowups d.toSequenceOfBlowups)
-    (hNd : ∀ i ≤ d.length, AlgebraicGeometry.IsLocallyNoetherian (d.obj i))
-    (hNt : ∀ i ≤ s.length, AlgebraicGeometry.IsLocallyNoetherian (s.obj i))
-    (i : ℕ) (hi : i ≤ s.length) :
-    s.boundary i = List.map (fun A => A.comap (s.strictPullbackComparisonMap D i hi)) (d.boundaryFrom E i) := by
-  have := hf
-  exact MarkedBlowupSequenceData.boundary_eq_comap_strictPullbackComparisonMap s D hNd hNt i hi
-
-private theorem surjective_strictPullbackComparisonMap_of_flat_of_surjective {k : Type u} [Field k] {X' X : Scheme.{u}}
-    {q : X' ⟶ Spec (CommRingCat.of k)} {g : X' ⟶ X} {I : X.IdealSheafData} {m : ℕ}
-    {E : List X.IdealSheafData} {d : BlowupSequenceData X}
-    (hf : AlgebraicGeometry.Flat g) (hs : AlgebraicGeometry.Surjective g)
-    (s : MarkedBlowupSequenceData q (I.comap g) m (List.map (fun A => A.comap g) E))
-    (D : StrictPullbackBlowupSeq g s.toMarkedSequenceOfBlowups.toSequenceOfBlowups d.toSequenceOfBlowups)
-    (i : ℕ) (hi : i ≤ s.length) :
-    AlgebraicGeometry.Surjective (s.strictPullbackComparisonMap D i hi) := by
-  have := hf
-  have := hs
-  exact MarkedBlowupSequenceData.surjective_strictPullbackComparisonMap s D i hi
-
 theorem iUnion_support_comap_eq_preimage {X Y : Scheme.{u}} (f : X ⟶ Y)
     (l : List Y.IdealSheafData) :
     (⋃ J ∈ l.map (fun D => D.comap f), (↑J.support : Set ↥X)) =
@@ -210,7 +185,8 @@ theorem orderCertificate_of_isStrictPullbackBlowupSeq (hstar : CoverSequenceProp
     (MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)) hstrictPullback hdiv t htu
   have hctr := MarkedBlowupSequenceData.center_eq_comap_strictPullbackComparisonMap
     (MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)) hstrictPullback t htlt
-  have hbd := boundary_eq_map_comap_strictPullbackComparisonMap_of_flat hflat
+  have hbd := @MarkedBlowupSequenceData.boundary_eq_comap_strictPullbackComparisonMap
+    _ _ _ _ _ _ _ _ _ _ hflat
     (MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)) hstrictPullback hN.1 hN.2 t htu
   have hstr := isPullback_projectionToBase_of_isPullback_blowupMorphism (MaxContactCoverData.coverMap T h.valid)
     (MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)).toMarkedSequenceOfBlowups.toSequenceOfBlowups d.toSequenceOfBlowups
@@ -271,7 +247,8 @@ theorem orderCertificate_of_isStrictPullbackBlowupSeq (hstar : CoverSequenceProp
       ((MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)).strictPullbackComparisonMap hstrictPullback t htu) ?_ ?_
       _ _ _ _ ?_
   · exact hd.comp_openImmersion T h d hstrictPullback t htu
-  · exact surjective_strictPullbackComparisonMap_of_flat_of_surjective hflat hsurjc
+  · exact @MarkedBlowupSequenceData.surjective_strictPullbackComparisonMap
+      _ _ _ _ _ _ _ _ _ _ hflat hsurjc
       (MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)) hstrictPullback t htu
   · have hc : OrderCertificate
         ((MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (lowerDimensionalFamily A T)).toMarkedSequenceOfBlowups.schemeAt t)
@@ -388,11 +365,6 @@ private theorem isBalanced_of_mult_eq_one (T : MarkedIdealWithBoundary.{u})
   unfold MarkedIdealWithBoundary.IsBalanced
   simp only [h]
   apply isDerivBalanced_one
-
-private theorem toSequenceOfBlowups_heq_of_eq {S₁ S₂ : MarkedIdealWithBoundary.{u}} (h : S₁ = S₂)
-    (L : PrincipalizationAssignment.{u}) : HEq (L S₁).toSequenceOfBlowups (L S₂).toSequenceOfBlowups := by
-  cases h
-  rfl
 
 namespace MaxContactFunctoriality
 
@@ -564,7 +536,7 @@ theorem isPushforward_of_isSmoothDivisor
         (_root_.FunctorialResolution.Blowup.schemeImageIdeal (kerSubschemeIso e).inv J) []).pullbackAlong Y q
           (kerSubschemeIso e).inv).withBoundary [])).toSequenceOfBlowups
         = (L (T.withSchemeIdealBoundary Y q J [])).toSequenceOfBlowups :=
-      eq_of_heq (toSequenceOfBlowups_heq_of_eq htripleeq L)
+      eq_of_heq (L.toSequenceOfBlowups_heq_of_eq htripleeq)
     have hstrict2 : IsStrictPullbackBlowupSeq ((kerSubschemeIso e).inv)
         (L (T.withSchemeIdealBoundary Y q J [])).toSequenceOfBlowups
         (L (T.withSchemeIdealBoundary (Scheme.Hom.ker e).subscheme

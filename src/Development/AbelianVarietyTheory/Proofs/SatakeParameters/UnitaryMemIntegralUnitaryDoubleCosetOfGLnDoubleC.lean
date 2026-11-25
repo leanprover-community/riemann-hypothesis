@@ -19,8 +19,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
 open scoped TensorProduct Matrix
 
-noncomputable section
-
 namespace GlobalTheory.UnitaryDoubleCoset
 
 section Abstract

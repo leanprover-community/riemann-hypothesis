@@ -151,7 +151,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ha
 
 open scoped GlobalTheory.VacAny
 
-
 theorem _root_.GlobalTheory.T.exists_schwartzBruhat_schroedingerFixed_localField : ∀ {F : Type} [Field F] [NumberField F] (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (ψ : AddChar (Fv F v) ℂ),
     Continuous ψ → ∀ {κ : Type} [Fintype κ], ∃ φ₁ ∈ GlobalTheory.WeilM.SB (κ → Fv F v), φ₁ ≠ 0 ∧
       ∃ U ∈ nhds (0 : (κ → Fv F v) × (κ → Fv F v)), ∀ w ∈ U, GlobalTheory.WeilM.schr ψ w φ₁ = φ₁ := by
@@ -178,7 +177,6 @@ open scoped GlobalTheory.VacAny
 noncomputable section
 
 namespace GlobalTheory.SympDualNbhd
-
 
 open IsDedekindDomain NumberField MeasureTheory Matrix in
 open Classical in
@@ -291,7 +289,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ha
 
 open scoped GlobalTheory.VacAny
 
-
 theorem _root_.GlobalTheory.T.exists_subgroup_symplecticAnnihilator_localField : ∀ {F : Type} [Field F] [NumberField F] (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (ψ : AddChar (Fv F v) ℂ),
     Continuous ψ → ψ ≠ 1 → ∀ {κ : Type} [Fintype κ] (N : Set ((κ → Fv F v) × (κ → Fv F v))), N ∈ nhds 0 →
     ∃ Y : AddSubgroup ((κ → Fv F v) × (κ → Fv F v)),
@@ -317,11 +314,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ha
 
 open scoped GlobalTheory.VacAny
 
-
-theorem _root_.GlobalTheory.T.schroedinger_mem_schwartzBruhat_finitePlace : ∀ {F : Type} [Field F] [NumberField F] (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (ψ : AddChar (Fv F v) ℂ),
-    Continuous ψ → ∀ {κ : Type} [Fintype κ] (w : (κ → Fv F v) × (κ → Fv F v)) (φ : (κ → Fv F v) → ℂ),
-    φ ∈ GlobalTheory.WeilM.SB (κ → Fv F v) → GlobalTheory.WeilM.schr ψ w φ ∈ GlobalTheory.WeilM.SB (κ → Fv F v) := by
-  first | exact @GlobalTheory.SchrSBFin.schr_mem_SB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchroedingerMemSchwartzBruhatFinitePlaceStatement =====
@@ -438,8 +430,6 @@ theorem schr_comm (v w : (κ → R) × (κ → R)) (φ : (κ → R) → ℂ) :
   · congr 1; abel
 
 end Schr
-
-
 
 theorem exists_schr_eigen : ∀ {F : Type} [Field F] [NumberField F] (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (ψ : AddChar (Fv F v) ℂ), Continuous ψ → ψ ≠ 1 →
     ∀ {κ M : Type} [Fintype κ] [Fintype M] (u : M → (κ → Fv F v) × (κ → Fv F v))
@@ -588,7 +578,7 @@ theorem exists_schr_eigen : ∀ {F : Type} [Field F] [NumberField F] (v : Global
     ?_, ?_, fun a => ?_⟩
   · refine Submodule.sum_mem _ fun q _ => ?_
     rw [hπ]
-    exact Submodule.smul_mem _ _ (GlobalTheory.T.schroedinger_mem_schwartzBruhat_finitePlace v ψ hψc _ _ (GlobalTheory.T.schroedinger_mem_schwartzBruhat_finitePlace v ψ hψc _ _ hφ₁SB))
+    exact Submodule.smul_mem _ _ (GlobalTheory.SchrSBFin.schr_mem_SB v ψ hψc _ _ (GlobalTheory.SchrSBFin.schr_mem_SB v ψ hψc _ _ hφ₁SB))
   · rw [← hsum]
     intro h0
     apply hw₀

@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafChartCut
 
 @[expose] public section
 
-noncomputable section
 open TensorProduct
 
 namespace LateralTheory.CohomologicalPurity.LeafSpanPf

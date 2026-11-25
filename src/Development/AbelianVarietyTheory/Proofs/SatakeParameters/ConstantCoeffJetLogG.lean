@@ -12,8 +12,6 @@ import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.FrobeniusOrbits GlobalTheory.TwU Classical
 
-noncomputable section
-
 namespace GlobalTheory.BeProps
 
 open MvPowerSeries GlobalTheory.ThStr Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric

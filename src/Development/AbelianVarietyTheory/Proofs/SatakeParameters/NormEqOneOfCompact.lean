@@ -19,8 +19,6 @@ import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmb
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.XiOver
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.RowTie GlobalTheory.SplitRead

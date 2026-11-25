@@ -90,14 +90,9 @@ theorem isMultiHomog_add {f g : MRingOver F ι} {a : K → ℕ} (hf : IsMultiHom
   · exact hg m h k
 
 theorem isMultiHomog_sum {β : Type*} (s : Finset β) (f : β → MRingOver F ι) {a : K → ℕ}
-    (h : ∀ b ∈ s, IsMultiHomog (f b) a) : IsMultiHomog (∑ b ∈ s, f b) a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using isMultiHomog_zero (F := F) (ι := ι) a
-  | insert b s hb ih =>
-    rw [Finset.sum_insert hb]
-    exact isMultiHomog_add (h b (Finset.mem_insert_self b s))
-      (ih fun b' hb' => h b' (Finset.mem_insert_of_mem hb'))
+    (h : ∀ b ∈ s, IsMultiHomog (f b) a) : IsMultiHomog (∑ b ∈ s, f b) a :=
+  Finset.sum_induction f (IsMultiHomog · a) (fun _ _ => isMultiHomog_add)
+    (isMultiHomog_zero a) h
 
 theorem isMultiHomog_prod {β : Type*} (s : Finset β) (f : β → MRingOver F ι) (a : β → K → ℕ)
     (h : ∀ b ∈ s, IsMultiHomog (f b) (a b)) : IsMultiHomog (∏ b ∈ s, f b) (∑ b ∈ s, a b) := by

@@ -50,16 +50,10 @@ theorem UpperTheory.V.AlgebraTools.lag_coi :
     intro i
     have := hq X i
     rwa [aeval_X, eval_X] at this
-  have hcomm : ∀ y i, Commute y P → Commute y (lag a P i) := by
-    intro y i hy
-    rw [hL]
-    generalize L i = f
-    induction f using Polynomial.induction_on' with
-    | add p q hp hq => rw [map_add (f := _)]; exact hp.add_right hq
-    | monomial n c =>
-      rw [aeval_monomial]
-      exact Commute.mul_right (show Commute y (algebraMap R E c) from (Algebra.commutes c y).symm)
-        (hy.pow_right n)
+  have hcomm : ∀ y i, Commute y P → Commute y (lag a P i) := fun y i hy => by
+    rw [hL, aeval_def, eval₂_eq_sum_range]
+    exact Commute.sum_right _ _ _ fun k _ =>
+      (Algebra.commute_algebraMap_right _ y).mul_right (hy.pow_right k)
   have hsum : ∑ i, lag a P i = 1 := by
     have h1 : ∏ i, (X - C (a i)) ∣ 1 - ∑ i, L i := by
       apply Finset.prod_dvd_of_coprime

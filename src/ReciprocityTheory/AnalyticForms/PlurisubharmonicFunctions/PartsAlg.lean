@@ -77,13 +77,7 @@ theorem leviC_smul_snd (H : (Fin e → ℂ) →L[ℝ] (Fin e → ℂ) →L[ℝ] 
 
 theorem sum_leviC_mul (H : (Fin e → ℂ) →L[ℝ] (Fin e → ℂ) →L[ℝ] ℝ) (a x : Fin e → ℂ) :
     ∑ j, leviC H a (Pi.single j 1) * x j = leviC H a (star x) := by
-  have hx : star x = ∑ j, star (x j) • (Pi.single j 1 : Fin e → ℂ) := by
-    conv_lhs => rw [← Finset.univ_sum_single (star x)]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    ext k
-    by_cases h : k = j
-    · subst h; simp
-    · simp [h]
+  have hx : star x = ∑ j, star (x j) • (Pi.single j 1 : Fin e → ℂ) := pi_eq_sum_univ' (star x)
   let ℓ : (Fin e → ℂ) →+ ℂ := AddMonoidHom.mk' (fun b => leviC H a b) (leviC_add_snd H a)
   rw [hx]
   show _ = ℓ _

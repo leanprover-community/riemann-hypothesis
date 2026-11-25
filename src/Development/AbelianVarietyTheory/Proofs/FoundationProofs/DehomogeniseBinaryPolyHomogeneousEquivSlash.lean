@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BinaryMon
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups
 

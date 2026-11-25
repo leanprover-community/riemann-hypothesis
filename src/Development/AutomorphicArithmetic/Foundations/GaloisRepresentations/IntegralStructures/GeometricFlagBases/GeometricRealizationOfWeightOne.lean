@@ -219,12 +219,10 @@ theorem commComm_tmul (G : HTGroup p) (K : Type) [Field K] [Algebra ℚ K] (γ :
     exact h2 x hx'
   have hcomm : ∀ a b : K ⊗[ℚ] Z, a * b = b * a := by
     intro a b
-    induction a using TensorProduct.induction_on with
-    | zero => simp
+    induction a using TensorProduct.inductionOn with
     | add x y hx hy => rw [add_mul, mul_add, hx, hy]
     | tmul r x =>
-      induction b using TensorProduct.induction_on with
-      | zero => simp
+      induction b using TensorProduct.inductionOn with
       | add x y hx hy => rw [add_mul, mul_add, hx, hy]
       | tmul s y => simp [Algebra.TensorProduct.tmul_mul_tmul, mul_comm r s, hZ x y]
   have hcen := Subalgebra.centralizer_coe_image_includeRight_eq_center_tensorProduct ℚ K G.C ({γ} : Set G.C)
@@ -359,7 +357,7 @@ theorem card_eq_of_conj {Γ : Type} [Group Γ] (S T : Subgroup Γ) (v : Γ) (h :
     Nat.card T = Nat.card S :=
   Nat.card_congr
     { toFun := fun w => ⟨v⁻¹ * w * v, (h w).1 w.2⟩
-      invFun := fun w => ⟨v * w * v⁻¹, (h _).2 (by simpa [mul_assoc] using w.2)⟩
+      invFun := fun w => ⟨v * w * v⁻¹, (h _).2 (by simp [mul_assoc])⟩
       left_inv := fun w => by ext; simp [mul_assoc]
       right_inv := fun w => by ext; simp [mul_assoc] }
 
@@ -594,7 +592,7 @@ theorem finite_supp_cent (ι : Γ →* H) (hι : Function.Injective ι) (K : Sub
     fun wd => DoubleCoset.mk _ K (ι (cj wd.1) * Quotient.out wd.2)
   refine ((hW.prod (Set.finite_univ (α := D))).image g).subset ?_
   intro q hq
-  simp only [Set.mem_setOf_eq] at hq
+  simp only [Set.mem_ofPred_eq] at hq
   set x := Quotient.out q
   obtain ⟨h, hh, k, hk, hd⟩ := DoubleCoset.mk_out_eq_mul ι.range K x
   obtain ⟨γ₀, rfl⟩ := hh
@@ -608,7 +606,7 @@ theorem finite_supp_cent (ι : Γ →* H) (hι : Function.Injective ι) (K : Sub
   have hF : F₀ ((Quotient.out d)⁻¹ * ι w * Quotient.out d) ≠ 0 := by
     rw [hconj, hbi k hk _ (K.inv_mem hk)] at hq; exact hq
   have hwW : w ∈ W := by
-    simp only [W, Set.mem_iUnion, Set.mem_setOf_eq]
+    simp only [W, Set.mem_iUnion, Set.mem_ofPred_eq]
     refine ⟨d, QuotientGroup.mk ((Quotient.out d)⁻¹ * ι w * Quotient.out d), ?_, rfl⟩
     simp only [Function.mem_support]
     obtain ⟨k', hk'⟩ := QuotientGroup.mk_out_eq_mul K ((Quotient.out d)⁻¹ * ι w * Quotient.out d)
@@ -666,7 +664,7 @@ theorem toAfF_injective (G : HTGroup p) (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ
     exact (algebraMap ℚ (AfP p)).injective this
   exact Subtype.ext (Prod.ext e1 e2)
 
-theorem emb_injective (G : HTGroup p) (B : GlobalTheory.LKDef.DForm G) : Function.Injective B.emb := fun a b h =>
+theorem emb_injective (G : HTGroup p) (B : GlobalTheory.LKDef.DForm G) : Function.Injective B.emb := fun _ _ h =>
   toAfF_injective G B.β _ _ _ (congrArg Prod.fst h)
 
 end GlobalTheory.DefVanish
@@ -888,7 +886,7 @@ theorem mark_unique : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) 
   have e := GlobalTheory.LKCx.PsiBound.form_conj (G.psi v P.γ) (G.gram v * G.psi v ((P.β⁻¹ : G.Cˣ) : G.C)) x x'
   rw [hlaw, hx, hx', Matrix.mulVec_smul, Matrix.smul_mulVec, star_smul, smul_dotProduct,
     dotProduct_smul, dotProduct_smul, smul_eq_mul, smul_eq_mul, smul_eq_mul] at e
-  have hc0 : ((P.c : ℚ) : ℝ) ≠ 0 := by exact_mod_cast P.c.ne_zero
+  have hc0 : ((P.c : ℚ) : ℝ) ≠ 0 := by simp
   have hμ : star μ * μ = (((P.c : ℚ) : ℂ)) := by
     rw [show star μ = (starRingEnd ℂ) μ from rfl, Complex.conj_mul', ← Complex.ofReal_pow, hn, Complex.ofReal_ratCast]
   have hμ0 : star μ ≠ 0 := by

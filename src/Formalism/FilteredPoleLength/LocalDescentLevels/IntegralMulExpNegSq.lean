@@ -13,10 +13,6 @@ namespace Formalism.LatticeBaseChangeAlt
 
 open Finset MeasureTheory Filter Topology Set
 
-private theorem pow_le_pow_left_of_nonneg {x y : ℝ} (hx : 0 ≤ x) (hxy : x ≤ y) (n : ℕ) :
-    x ^ n ≤ y ^ n := by
-  exact pow_le_pow_left₀ hx hxy n
-
 theorem ballVolume : BallVolume := by
   intro D rr hr
   rcases Nat.eq_zero_or_pos D with hD | hD
@@ -92,10 +88,10 @@ private theorem gaussian_tail_pow_mul_exp_le {g : ℕ} {R0 s t : ℝ} (hR0 : 0 <
       rw [mul_assoc]
       exact mul_le_mul_of_nonneg_left ht2 (sq_nonneg _)
     have h2 : ((3 / R0) ^ 2 * t ^ 2) ^ g ≤ (((3 / R0) ^ 2 * s ^ 2) * (1 + v)) ^ g :=
-      pow_le_pow_left_of_nonneg (by positivity) h1 g
+      pow_le_pow_left₀ (by positivity) h1 g
     have h3 : (1 + v) ^ g ≤ E := by
       have hexp : (1 + v) ^ g ≤ (Real.exp v) ^ g :=
-        pow_le_pow_left_of_nonneg (by linarith) (by linarith [Real.add_one_le_exp v]) g
+        pow_le_pow_left₀ (by linarith) (by linarith [Real.add_one_le_exp v]) g
       have hnat : (Real.exp v) ^ g = Real.exp (g * v) := by
         exact (Real.exp_natCast_mul g v).symm
       have hle : Real.exp (g * v) ≤ E := by

@@ -103,6 +103,23 @@ private lemma unitsMap_trans {a b c : ℕ} (hab : a ∣ b) (hbc : b ∣ c) (x : 
     ZMod.unitsMap hab (ZMod.unitsMap hbc x) = ZMod.unitsMap (hab.trans hbc) x := by
   rw [← ZMod.unitsMap_comp hab hbc]; rfl
 
+private lemma conductor_dvd_pow_mul_ordCompl_iff (ψ : DirichletCharacter ℂ N) (t : ℕ) :
+    ψ.conductor ∣ l ^ t * ordCompl[l] N ↔ condExp l ψ ≤ t := by
+  rw [condExp]
+  have hl : l.Prime := Fact.out
+  have hc : ψ.conductor ≠ 0 := ψ.conductor_ne_zero
+  have hN' : ordCompl[l] N ≠ 0 := (Nat.ordCompl_pos l (NeZero.ne N)).ne'
+  have hlt : l ^ t ≠ 0 := pow_ne_zero _ hl.ne_zero
+  constructor
+  · intro h
+    have := (Nat.factorization_le_iff_dvd hc (mul_ne_zero hlt hN')).2 h l
+    rw [Nat.factorization_mul hlt hN', Nat.factorization_ordCompl, hl.factorization_pow] at this
+    simpa using this
+  · intro h
+    rw [← Nat.ordProj_mul_ordCompl_eq_self ψ.conductor l]
+    exact Nat.mul_dvd_mul (pow_dvd_pow l h)
+      (Nat.ordCompl_dvd_ordCompl_of_dvd ψ.conductor_dvd_level l)
+
 private lemma conductor_localPart_dvd_iff (ψ : DirichletCharacter ℂ N) (t : ℕ)
     (ht : t ≤ N.factorization l) :
     (localPart N l ψ).conductor ∣ l ^ t ↔ condExp l ψ ≤ t := by
@@ -137,19 +154,8 @@ private lemma conductor_localPart_dvd_iff (ψ : DirichletCharacter ℂ N) (t : �
       rw [MonoidHom.mem_ker, hker]
       refine ⟨?_, compl_localUnits l u⟩
       rw [← unitsMap_trans h1 (Nat.ordProj_dvd N l), proj_localUnits, hu]
-  rw [key, condExp]
-  have hc : ψ.conductor ≠ 0 := conductor_ne_zero ψ
-  have hcN : ψ.conductor ∣ N := conductor_dvd_level ψ
-  have hN' : ordCompl[l] N ≠ 0 := (Nat.ordCompl_pos l hN).ne'
-  have hlt : l ^ t ≠ 0 := pow_ne_zero _ hl.ne_zero
-  constructor
-  · intro h
-    have := (Nat.factorization_le_iff_dvd hc (mul_ne_zero hlt hN')).2 h l
-    rw [Nat.factorization_mul hlt hN', Nat.factorization_ordCompl, hl.factorization_pow] at this
-    simpa using this
-  · intro h
-    rw [← Nat.ordProj_mul_ordCompl_eq_self ψ.conductor l]
-    exact Nat.mul_dvd_mul (pow_dvd_pow l h) (Nat.ordCompl_dvd_ordCompl_of_dvd hcN l)
+  rw [key]
+  exact conductor_dvd_pow_mul_ordCompl_iff l ψ t
 
 theorem localPart_eq_one_iff (ψ : DirichletCharacter ℂ N) :
     (localPart N l ψ = 1 ↔ ∀ u ∈ inertiaUnits N l, ψ (u : ZMod N) = 1) ∧
@@ -290,27 +296,23 @@ private theorem differentIdeal_eq_span_of_prod (A F : Type*) {L : Type*} [CommRi
     minpoly.isIntegrallyClosed_eq_field_fractions F L hint, derivative_map, aeval_map_algebraMap,
     aeval_algebraMap_apply]
 
+private theorem adjoin_eq_top_of_le {R A B : Type*} [CommRing R] [CommRing A] [CommRing B]
+    [Algebra R A] [Algebra A B] [Algebra R B] [IsScalarTower R A B] {s : Set B}
+    (h : Algebra.adjoin R s = ⊤) : Algebra.adjoin A s = ⊤ :=
+  eq_top_iff.2 fun y _ =>
+    (Algebra.adjoin_le (S := (Algebra.adjoin A s).restrictScalars R)
+      (fun _ hx => Algebra.subset_adjoin hx))
+      (show y ∈ Algebra.adjoin R s from h ▸ Algebra.mem_top)
+
 private theorem adjoin_root_eq_top (E : Type*) [Field E] [Algebra ℚ E] [Algebra E K]
     [IsScalarTower ℚ E K] {ζ : K} (hζ : IsPrimitiveRoot ζ N) :
-    Algebra.adjoin E {ζ} = ⊤ := by
-  have h := IsCyclotomicExtension.adjoin_primitive_root_eq_top (A := ℚ) hζ
-  rw [eq_top_iff]
-  intro y _
-  have hy : y ∈ Algebra.adjoin ℚ {ζ} := h ▸ Algebra.mem_top
-  have : Algebra.adjoin ℚ {ζ} ≤ (Algebra.adjoin E {ζ}).restrictScalars ℚ :=
-    Algebra.adjoin_le (by simp)
-  exact this hy
+    Algebra.adjoin E {ζ} = ⊤ :=
+  adjoin_eq_top_of_le (IsCyclotomicExtension.adjoin_primitive_root_eq_top (A := ℚ) hζ)
 
 private theorem adjoin_toInteger_eq_top (A : Type*) [CommRing A] [Algebra A (𝓞 K)]
     {ζ : K} (hζ : IsPrimitiveRoot ζ N) :
-    Algebra.adjoin A {hζ.toInteger} = ⊤ := by
-  have h := adjoin_singleton_eq_top hζ
-  rw [eq_top_iff]
-  intro y _
-  have hy : y ∈ Algebra.adjoin ℤ {hζ.toInteger} := h ▸ Algebra.mem_top
-  have : Algebra.adjoin ℤ {hζ.toInteger} ≤ (Algebra.adjoin A {hζ.toInteger}).restrictScalars ℤ :=
-    Algebra.adjoin_le (by simp)
-  exact this hy
+    Algebra.adjoin A {hζ.toInteger} = ⊤ :=
+  adjoin_eq_top_of_le (adjoin_singleton_eq_top hζ)
 
 
 open scoped Classical in
@@ -475,19 +477,8 @@ private lemma filt_mem_ann {t : ℕ} (ht : t ≤ N.factorization l) (ψ : Dirich
     refine forall_congr' fun a => imp_congr Iff.rfl ?_
     rw [MonoidHom.mem_ker, Units.ext_iff]
     simp
-  rw [h1, filt_gcd_eq l ht, condExp]
-  have hc := ψ.conductor_ne_zero
-  have hN' : ordCompl[l] N ≠ 0 := (Nat.ordCompl_pos l (NeZero.ne N)).ne'
-  have hp : l ^ t ≠ 0 := pow_ne_zero _ hl.ne_zero
-  constructor
-  · intro h
-    have := (Nat.factorization_le_iff_dvd hc (mul_ne_zero hN' hp)).mpr h l
-    rw [Nat.factorization_mul hN' hp] at this
-    simpa [Nat.factorization_ordCompl, hl.factorization_pow] using this
-  · intro h
-    rw [← Nat.ordProj_mul_ordCompl_eq_self ψ.conductor l, mul_comm]
-    exact Nat.mul_dvd_mul (Nat.ordCompl_dvd_ordCompl_of_dvd ψ.conductor_dvd_level l)
-      (pow_dvd_pow _ h)
+  rw [h1, filt_gcd_eq l ht, mul_comm]
+  exact conductor_dvd_pow_mul_ordCompl_iff l ψ t
 
 private lemma filt_card_ann (H : Subgroup (ZMod N)ˣ) :
     Nat.card (annihilator ℂ (H : Set (ZMod N)ˣ)) = H.index := by

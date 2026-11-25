@@ -471,30 +471,17 @@ private theorem exists_pair_disjoint {Y : ℝ} {r : ℕ} (hY : 2 ≤ Y) (hr : 1 
 
 private theorem poly_le_exp (eps : ℝ) (he : 0 < eps) :
     ∃ x₀ : ℝ, ∀ x ≥ x₀, 1 ≤ x ∧ 21 * x ^ 15 ≤ Real.exp (x ^ eps) := by
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, 16 ≤ eps * n := by
-    refine ⟨⌈16 / eps⌉₊, ?_⟩
-    have := Nat.le_ceil (16 / eps)
-    rw [div_le_iff₀ he] at this
-    linarith
-  refine ⟨21 * (n.factorial : ℝ), fun x hx => ?_⟩
-  have hf : (1:ℝ) ≤ n.factorial := Nat.one_le_cast.mpr (Nat.factorial_pos n)
-  have hx1 : 1 ≤ x := by linarith
-  refine ⟨hx1, ?_⟩
-  have hx0 : 0 ≤ x := by linarith
-  have h1 := Real.pow_div_factorial_le_exp (x := x ^ eps) (Real.rpow_nonneg hx0 eps) n
-  have h2 : x ^ 16 ≤ (x ^ eps) ^ n := by
-    rw [← Real.rpow_natCast (x ^ eps), ← Real.rpow_mul hx0, ← Real.rpow_natCast x 16]
-    exact Real.rpow_le_rpow_of_exponent_le hx1 (by push_cast; linarith)
-  have hfpos : (0:ℝ) < n.factorial := by linarith
-  have h3 : 21 * x ^ 15 ≤ x ^ 16 / n.factorial := by
-    rw [le_div_iff₀ hfpos]
-    have hx15 : 0 ≤ x ^ 15 := by positivity
-    have e : x ^ 16 = x * x ^ 15 := by ring
-    rw [e]
-    nlinarith [mul_le_mul_of_nonneg_right hx hx15]
-  calc 21 * x ^ 15 ≤ x ^ 16 / n.factorial := h3
-    _ ≤ (x ^ eps) ^ n / n.factorial := by gcongr
-    _ ≤ Real.exp (x ^ eps) := h1
+  have h1 := ((isLittleO_rpow_exp_atTop (15 / eps)).comp_tendsto
+    (tendsto_rpow_atTop he)).bound (by norm_num : (0 : ℝ) < 1 / 21)
+  obtain ⟨x₀, hx⟩ := Filter.eventually_atTop.1 (h1.and (Filter.eventually_ge_atTop (1 : ℝ)))
+  refine ⟨x₀, fun x hxx => ?_⟩
+  obtain ⟨b1, b2⟩ := hx x hxx
+  have hx15 : 0 ≤ x ^ 15 := by positivity
+  have hxp : (x ^ eps) ^ (15 / eps) = x ^ 15 := by
+    rw [← Real.rpow_mul (by linarith), mul_div_cancel₀ _ he.ne', Real.rpow_ofNat]
+  simp only [Function.comp_apply] at b1
+  rw [hxp, Real.norm_of_nonneg hx15, Real.norm_of_nonneg (Real.exp_pos _).le] at b1
+  exact ⟨b2, by linarith⟩
 
 theorem typePrimesN :
     ShortNorm → ∀ eps : ℝ, 0 < eps → ∃ x₀ : ℝ, ∀ x ≥ x₀, ∀ N d k r : ℕ, ModAt x eps N d → 1 ≤ k → 1 ≤ r → (r : ℝ) ≤ x ^ (5 : ℝ) →
@@ -564,28 +551,20 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Fo
 private theorem mod_small (C eps : ℝ) (hC : 1 ≤ C) (he : 0 < eps) :
     ∃ x₀ : ℝ, ∀ x ≥ x₀, 3 * x ^ (eps / 5) * Real.log x ^ 2 * C < x ^ eps := by
   have hc : 0 < 1 / (4 * C) := by positivity
-  have h1 := (isLittleO_log_rpow_atTop (show 0 < eps / 5 by positivity)).bound hc
+  have h1 := (isLittleO_log_rpow_rpow_atTop (2 : ℝ)
+    (show 0 < 4 * eps / 5 by positivity)).bound hc
   obtain ⟨x₀, hx⟩ := Filter.eventually_atTop.1 (h1.and (Filter.eventually_ge_atTop (1 : ℝ)))
   refine ⟨x₀, fun x hxx => ?_⟩
   obtain ⟨ha, hb⟩ := hx x hxx
   have hx0 : 0 < x := by linarith
-  have hl0 : 0 ≤ Real.log x := Real.log_nonneg hb
-  rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg hx0.le _), abs_of_nonneg hl0] at ha
-  have hu : 1 ≤ x ^ (eps / 5) := Real.one_le_rpow hb (by positivity)
-  have he5 : x ^ eps = (x ^ (eps / 5)) ^ 5 := by
-    rw [← Real.rpow_natCast, ← Real.rpow_mul hx0.le]; congr 1; push_cast; ring
-  rw [he5]
-  generalize x ^ (eps / 5) = u at ha hu ⊢
-  generalize Real.log x = l at ha hl0 ⊢
-  have h2 : 4 * C * l ≤ u := by
-    have := mul_le_mul_of_nonneg_left ha (show 0 ≤ 4 * C by positivity)
-    rwa [← mul_assoc, mul_one_div_cancel (by positivity), one_mul] at this
-  have h3 : l ≤ u := by nlinarith
-  have h4 : 4 * C * l * l ≤ u * u := mul_le_mul h2 h3 hl0 (by linarith)
-  have h5 : u ^ 3 ≤ u ^ 5 := pow_le_pow_right₀ hu (by norm_num)
-  have h6 : 0 < u ^ 3 := by positivity
-  have h7 := mul_le_mul_of_nonneg_left h4 (show 0 ≤ u by linarith)
-  nlinarith
+  have hC0 : C ≠ 0 := by linarith
+  rw [Real.rpow_ofNat, Real.norm_of_nonneg (sq_nonneg _),
+    Real.norm_of_nonneg (Real.rpow_pos_of_pos hx0 _).le] at ha
+  calc 3 * x ^ (eps / 5) * Real.log x ^ 2 * C
+      ≤ 3 * x ^ (eps / 5) * (1 / (4 * C) * x ^ (4 * eps / 5)) * C := by gcongr
+    _ = 3 / 4 * (x ^ (eps / 5) * x ^ (4 * eps / 5)) := by field_simp
+    _ = 3 / 4 * x ^ eps := by rw [← Real.rpow_add hx0, show eps / 5 + 4 * eps / 5 = eps by ring]
+    _ < x ^ eps := by linarith [Real.rpow_pos_of_pos hx0 eps]
 
 theorem UpperTheory.T3.levelData :
     UpperTheory.T3.ShortNorm → UpperTheory.T3.SmallOne → ∃ C8 : ℝ, 1 ≤ C8 ∧ ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ x0 : ℝ,

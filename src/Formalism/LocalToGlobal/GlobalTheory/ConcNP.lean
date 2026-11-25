@@ -241,12 +241,8 @@ theorem epsilon_bound_large_x : EpsilonBoundLargeX := by
     rw [div_le_iff₀ hc] at hxc; linarith
   have hcx2 : 1 ≤ c * x ^ 2 := by linarith [mul_le_mul_of_nonneg_left (le_self_pow₀ hx1 two_ne_zero) hc.le]
   have hN' : (100 : ℝ) ≤ N := by exact_mod_cast hN
-  have hlog : 1 ≤ Real.log N := by
-    have h1 : Real.exp 1 ≤ (N : ℝ) := by
-      have := Real.exp_one_lt_d9
-      linarith
-    have h2 := Real.log_le_log (Real.exp_pos 1) h1
-    rwa [Real.log_exp] at h2
+  have hlog : 1 ≤ Real.log N :=
+    (Real.le_log_iff_exp_le (by linarith)).2 (by linarith [Real.exp_one_lt_d9])
   have h2 : 1 ≤ c * f := le_trans hcx2 (mul_le_mul_of_nonneg_left hf hc.le)
   have h3 : 1 ≤ (N : ℝ) * Real.log N := one_le_mul_of_one_le_of_one_le (by linarith) hlog
   have key : 1 ≤ c * (N : ℝ) * (f : ℝ) * Real.log (N : ℝ) := by

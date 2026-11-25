@@ -2,19 +2,12 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.PresDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.PrSqz
+import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
-
-private theorem upT_mul {C : Type} [CommRing C] {n : ℕ} {M N : Matrix (Fin n) (Fin n) C} (hM : UpT M) (hN : UpT N) :
-    UpT (M * N) := fun i j h => by
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun c _ => ?_
-  by_cases hc : c < i
-  · rw [hM i c hc, zero_mul]
-  · rw [hN c j (lt_of_lt_of_le h (not_lt.1 hc)), mul_zero]
 
 theorem UpperTheory.V.Fr.pr_correct :
     ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] {F : Frame l k} {C₀ n : ℕ}, F.Ok C₀ → ∀ (O : Type) [CommRing O] [IsLocalRing O], ∀ (C' : Type) [CommRing C'] [Algebra O C'] [IsCO O C'] (C : Type) [CommRing C] [Algebra O C] [IsCO O C] (p : C' →ₐ[O] C) (B : Box F n C) (D : SetLift p B) (μ : ResidueField O →+ C'), IsSq O μ → (∀ c, p (μ c) = 0) → ∀ (β : F.Γ → Matrix (Fin n) (Fin n) (ResidueField O)) (Y : F.V → Matrix (Fin n) (Fin n) (ResidueField O)) (a : ∀ v, F.Gv v → Matrix (Fin n) (Fin n) (ResidueField O)), IsLocallyConstant β → (∀ x, D.om x = (dOne (B.bar O).ad β x).map μ) → (∀ v s, D.a v s = (a v s).map μ) → (∀ v s, a v s - (β (F.loc v s) - ((B.bar O).ad (F.loc v s) (Y v) - Y v)) ∈ (B.bar O).b v) → ∃ B' : Box F n C', B'.Cont (maximalIdeal C') ∧ B'.map (p : C' →+* C) = B ∧ ∀ s, (B'.r s).mat = (1 - (β s).map μ) * (D.r s : Matrix (Fin n) (Fin n) C') := by
@@ -152,9 +145,9 @@ theorem UpperTheory.V.Fr.pr_correct :
       rw [← (hGbar v).1, ← (hGbar v).2]
       exact hb v s
     rw [hmat, ← Units.val_mul, ← Units.val_mul, key, Units.val_mul, he1]
-    apply upT_mul _ (D.t_tri v s)
-    intro i j hij
-    rw [Matrix.add_apply, Matrix.one_apply_ne (ne_of_gt hij), Matrix.map_apply, hW i j hij, map_zero, add_zero]
+    exact fun _ _ h => ((Matrix.blockTriangular_one (b := id)).add
+      (Matrix.BlockTriangular.map μ fun _ _ h' => hW _ _ h')).mul
+      (fun _ _ h' => D.t_tri v s _ _ h') h
   · intro i j N
     have hB : IsLocallyConstant fun s =>
         (D.r s : Matrix (Fin n) (Fin n) C').map (Ideal.Quotient.mk (maximalIdeal C' ^ N)) := by

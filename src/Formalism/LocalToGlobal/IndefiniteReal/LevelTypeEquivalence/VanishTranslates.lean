@@ -60,11 +60,6 @@ section Gen
 variable {V : HSp D} {S : D.what₂.Tau → SPar} (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
   (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ)
 
-def KfLow (τ : D.what₂.Tau) : Submodule ℂ (M.sm τ) :=
-  Submodule.span ℂ {w | ∃ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∃ w0 : lowT M τ,
-    (w : M.H τ) = M.rep τ g ((w0 : M.sm τ) : M.H τ)}
-
-
 open Classical in
 theorem mult_equiv {T : MMap M} (hT : T ∈ Mult θ M J χ) (τ : D.what₂.Tau) {g : Matrix (Fin V.rank) (Fin V.rank) ℂ}
     (hg : g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ)) (v : M.Vec) (w : M.sm τ) (hw : (w : M.H τ) = M.rep τ g (v τ)) :
@@ -79,11 +74,10 @@ theorem mult_equiv {T : MMap M} (hT : T ∈ Mult θ M J χ) (τ : D.what₂.Tau)
     simp only [_root_.smul_apply, h]
     rfl
 
-
 open Classical in
 theorem vanish_KfLow {T : MMap M} (hT : T ∈ Mult θ M J χ)
     (hlow : ∀ v : ∀ ρ, lowT M ρ, T (fun ρ => v ρ) = 0) :
-    ∀ (s : Finset D.what₂.Tau) (v : M.Vec), (∀ τ ∈ s, v τ ∈ KfLow M τ) →
+    ∀ (s : Finset D.what₂.Tau) (v : M.Vec), (∀ τ ∈ s, v τ ∈ UpperTheory.Reformulated.B.LowTypeThetaMapVanishing.KfLow M τ) →
       (∀ τ ∉ s, ∃ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∃ w0 : lowT M τ,
         (v τ : M.H τ) = M.rep τ g ((w0 : M.sm τ) : M.H τ)) → T v = 0 :=
   by apply _root_.UpperTheory.Reformulated.B.LowTypeThetaMapVanishing.vanish_KfLow <;> assumption
@@ -96,14 +90,14 @@ variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : 
 def DensLow : Prop :=
   ∀ i τ (ℓ : (R.MW i (sg0 D A)).H τ →ₗ[ℂ] ℂ),
     Sobolev₂ (lieAt (Wc D i) τ) ((R.MW i (sg0 D A)).rep τ) ℓ →
-      (∀ w ∈ KfLow (R.MW i (sg0 D A)) τ, ℓ (w : (R.MW i (sg0 D A)).H τ) = 0) →
+      (∀ w ∈ UpperTheory.Reformulated.B.LowTypeThetaMapVanishing.KfLow (R.MW i (sg0 D A)) τ, ℓ (w : (R.MW i (sg0 D A)).H τ) = 0) →
         ∀ w : (R.MW i (sg0 D A)).sm τ, ℓ (w : (R.MW i (sg0 D A)).H τ) = 0
 
 open Classical in
 theorem spanP_of (h : DensLow R) : Formalism.IndefR.Eqv.Act.SpanP R := by
   intro i F hS hlow
   let M := R.MW i (sg0 D A)
-  let Kf : ∀ τ, Submodule ℂ (M.sm τ) := fun τ => KfLow M τ
+  let Kf : ∀ τ, Submodule ℂ (M.sm τ) := fun τ => UpperTheory.Reformulated.B.LowTypeThetaMapVanishing.KfLow M τ
   let Tm : ℂ →ₗ[ℂ] (⨂[ℂ] τ, Kf τ) →ₗ[ℂ] (⨂[ℂ] τ, M.sm τ) :=
     LinearMap.smulRight (LinearMap.id : ℂ →ₗ[ℂ] ℂ) (PiTensorProduct.map fun τ => (Kf τ).subtype)
   have hS' : F ∈ Mult R.θ M (levS _ (R.βW i) (R.datWp i R.triv)) (levChi _ (R.βW i) (R.datWp i R.triv)) := hS

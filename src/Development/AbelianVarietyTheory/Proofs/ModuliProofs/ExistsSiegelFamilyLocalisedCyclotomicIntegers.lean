@@ -53,7 +53,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj TensorProduct
 open GlobalTheory.ZM GlobalTheory.SiegelRingChange
 
-noncomputable section
 namespace GlobalTheory.SiegelFamilyBaseChange
 
 theorem pb_iff {h k : ℕ} {B B' B'' : Type} [CommRing B] [CommRing B'] [CommRing B''] {ζ : B} {ζ' : B'} {ζ'' : B''}
@@ -143,4 +142,3 @@ theorem exists_siegelFamily : Out.Laws → Out.Laws2 → ∀ (h k p : ℕ) (o : 
     exact Ideal.comap_bot_of_injective j hinj
 
 end GlobalTheory.SiegelFamilyBaseChange
-end

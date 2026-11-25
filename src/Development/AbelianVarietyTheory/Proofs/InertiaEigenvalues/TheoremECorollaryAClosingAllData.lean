@@ -91,9 +91,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (ρ : Representation LL G V)
 
-theorem fil_mono {a c : ℤ} (h : a ≤ c) : PD.Fil c ≤ PD.Fil a := by
-  exact antitone_int_of_succ_le PD.Fil_anti h
-
 theorem nontrivial_B (PD : PeriodData G Qp K₀ K B BdR) : Nontrivial B := by
   by_contra h
   rw [not_nontrivial_iff_subsingleton] at h
@@ -104,7 +101,7 @@ theorem const_not_fil (a : ℤ) (ha : 1 ≤ a) (c : K) (hc : algebraMap K BdR c 
   have h1 : (1 : BdR) ∈ PD.Fil 1 := by
     have := (PD.Fil a).smul_mem c⁻¹ hc
     rw [Algebra.smul_def, ← map_mul, inv_mul_cancel₀ h0, map_one] at this
-    exact fil_mono PD ha this
+    exact GlobalTheory.NL.JumpsSES.fil_anti PD ha this
   have := PD.Fil_mul 1 1 _ _ PD.mem_filtration_one h1
   rw [mul_one] at this
   exact PD.not_mem_filtration_two this
@@ -211,7 +208,7 @@ theorem DdR_le_FilV [Module.Finite Qp V] (hρ : ∀ g x, ρ g x = x) {a : ℤ} (
   choose c hc using fun i => crd_DdR PD hρ b hx i
   have hmem : ∀ i, crd b i BdR x ∈ (PD.Fil a).restrictScalars Qp := fun i => by
     rw [← hc i, Submodule.restrictScalars_mem, Algebra.algebraMap_eq_smul_one]
-    exact fil_mono PD ha ((PD.Fil 0).smul_mem _ PD.one_mem)
+    exact GlobalTheory.NL.JumpsSES.fil_anti PD ha ((PD.Fil 0).smul_mem _ PD.one_mem)
   refine ⟨∑ i, b i ⊗ₜ[Qp] (⟨crd b i BdR x, hmem i⟩ : (PD.Fil a).restrictScalars Qp), ?_⟩
   conv_rhs => rw [← sum_crd b x]
 

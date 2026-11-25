@@ -62,8 +62,6 @@ import Mathlib.Topology.Sheaves.Init
 open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL NumberField IsDedekindDomain
 open scoped Pointwise ENNReal Classical
 
-noncomputable section
-
 namespace GlobalTheory.HL.GlobalOrbits
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}

@@ -221,26 +221,6 @@ variable {K V ι : Type} [Field K] [NumberField K] [StarRing K] [_root_.NumberFi
   [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Fintype ι] [DecidableEq ι]
   (b : Module.Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
 
-
-omit [_root_.NumberField.IsTotallyComplex K] in
-theorem le_of_subset_span (hX : ∀ v, IsUnit (X v).det) {L S N : Submodule (𝓞 K) V} (hL : L.FG)
-    (hS : IsSat (Formalism.HermitianLatticesTheory.realize b X) L S) (hN : N ≤ L)
-    (h : (N : Set V) ⊆ Submodule.span K (S : Set V)) : N ≤ S := by
-  have hle : S ⊔ N ≤ L := sup_le hS.1 hN
-  have hsp : Submodule.span K ((S ⊔ N : Submodule (𝓞 K) V) : Set V) = Submodule.span K (S : Set V) := by
-    apply le_antisymm
-    · rw [Submodule.span_le]
-      intro y hy
-      obtain ⟨s, hs, n, hn, rfl⟩ := Submodule.mem_sup.1 hy
-      exact Submodule.add_mem _ (Submodule.subset_span hs) (h hn)
-    · exact Submodule.span_mono (SetLike.coe_subset_coe.2 le_sup_left)
-  have h1 := (plLat K V ι b X hX _ (Submodule.FG.of_le hL hle)).2.1
-  have h2 := (plLat K V ι b X hX _ (Submodule.FG.of_le hL hS.1)).2.1
-  have h3 : rkK (S ⊔ N) = rkK S := by unfold rkK; rw [hsp]
-  have h4 := (satBasic _ _ _ (Formalism.HermitianLatticesTheory.realize b X) L (plLat K V ι b X hX L hL).1).2.2.1 S (S ⊔ N) hS
-    le_sup_left hle (by rw [h1, h2, h3])
-  exact sup_eq_left.1 h4
-
 theorem exists_frames_subspace (hX : ∀ v, IsUnit (X v).det) (U : Submodule K V) :
     ∃ (m : ℕ) (e : Module.Basis (Fin m) K U) (Y : InfinitePlace K → Matrix (Fin m) (Fin m) ℂ),
       (∀ v, IsUnit (Y v).det) ∧
@@ -325,7 +305,7 @@ theorem size_ineq_to_quot (hX : ∀ v, IsUnit (X v).det) (φ : V →ₗ[K] V) {A
     rw [h0, Submodule.mem_bot] at h1
     have h2 : φ y₀ ∈ W := (Submodule.Quotient.mk_eq_zero W).1 h1
     have h3 : B ⊓ W.restrictScalars (𝓞 K) ≤ B' :=
-      le_of_subset_span b X hX hB hS inf_le_left fun z hz => hz.2
+      GlobalTheory.NearLower.le_of_le_span b X hX hB hS inf_le_left fun z hz => hz.2
     exact hy₀' (h3 ⟨hAB _ hy₀, h2⟩)
   have hA0 : A₀ ≠ ⊥ := fun h => h0 (by rw [h, Submodule.map_bot])
   have hB0 : Bq ≠ ⊥ := fun h => h0 (le_bot_iff.1 (h ▸ hABq))

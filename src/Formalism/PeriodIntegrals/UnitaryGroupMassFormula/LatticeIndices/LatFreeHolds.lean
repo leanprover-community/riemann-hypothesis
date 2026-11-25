@@ -139,10 +139,7 @@ theorem int_mem (a : 𝓞 E) : ι (a : E) ∈ O := by
   rw [← hy]
   exact y.2
 
-def Mι (L : Submodule (𝓞 E) (n → E)) : Submodule O (n → K) :=
-  Submodule.span O ((fun l : n → E => fun j => ι (l j)) '' (L : Set (n → E)))
-
-theorem fg (L : Submodule (𝓞 E) (n → E)) (hL : L.FG) : (Mι O ι L).FG := by
+theorem fg (L : Submodule (𝓞 E) (n → E)) (hL : L.FG) : (UpperTheory.Reformulated.B.SpanTopFamily.Mι O ι L).FG := by
   classical
   obtain ⟨S, hS⟩ := hL
   refine ⟨S.image (fun l : n → E => fun j => ι (l j)), ?_⟩
@@ -170,7 +167,7 @@ theorem fg (L : Submodule (𝓞 E) (n → E)) (hL : L.FG) : (Mι O ι L).FG := b
         beta_reduce; rw [this]; exact Submodule.smul_mem _ _ hx
 
 theorem span_top (L : Submodule (𝓞 E) (n → E)) (hL : Submodule.span E (L : Set (n → E)) = ⊤) :
-    Submodule.span K (Mι O ι L : Set (n → K)) = ⊤ :=
+    Submodule.span K (UpperTheory.Reformulated.B.SpanTopFamily.Mι O ι L : Set (n → K)) = ⊤ :=
   by apply _root_.UpperTheory.Reformulated.B.SpanTopFamily.span_top <;> assumption
 
 end MassDataIdxLatFree

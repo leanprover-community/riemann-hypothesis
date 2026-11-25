@@ -29,7 +29,7 @@ theorem range_w0C_type : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T
   have hs : ∀ a, cj (twAt D.what₂.embLL A3.A.v0) (A3.A.fam.v0.embedding a) = sg0 D A3.A a := fun a => by
     show cj _ (A3.A.v0.embedding a) = _
     rw [emb_eq D.what₂.embLL A3.A.v0 a, cj_cj]
-  rw [GlobalTheory.T.range_complex_points_level_forms_eq_good_forms R F hOk hW hU false i]
+  rw [GlobalTheory.LevelRange.range_w0C_eq R F hOk hW hU false i]
   ext x
   have hw := GlobalTheory.WatType.wat_iff_type R.toRealDat F.lv2 hOk.ok2 hC false i (Tw.out x)
   have hL : x ∈ Tw.sub (twAt D.what₂.embLL A3.A.v0) ((R.toRealDat.Wat i (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A))).comap (R.HW i (sg0 D A3.A)).e) ↔ (R.HW i (sg0 D A3.A)).e (Tw.out x) ∈ R.toRealDat.Wat i (sg0 D A3.A) (R.toRealDat.levL F.lv2 false (sg0 D A3.A)) := Iff.rfl

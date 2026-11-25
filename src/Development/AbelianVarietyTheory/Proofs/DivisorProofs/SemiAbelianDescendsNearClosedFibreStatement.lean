@@ -264,8 +264,6 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.Mum
 
-
-
 theorem chart_transition_descends : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] (S X : Scheme.{0}) (π : S ⟶ Sp R), IsProper π → Surjective π → IsIntegral S → ∀ (U : Over (Sp R)), Flat U.hom → ∀ (J : Type) (e : J → (pullback U.hom π ⟶ X)), (∀ j, IsOpenImmersion (e j)) → (∀ (i j : J) (T : Scheme.{0}) (w₁ w₂ h₁ : T ⟶ pullback U.hom π), w₁ ≫ pullback.fst _ _ = w₂ ≫ pullback.fst _ _ → h₁ ≫ e j = w₁ ≫ e i → ∃ h₂ : T ⟶ pullback U.hom π, h₂ ≫ e j = w₂ ≫ e i ∧ h₂ ≫ pullback.fst _ _ = h₁ ≫ pullback.fst _ _) → ∀ (i j : J) (V : U.left.Opens), (∀ a : ↥(pullback U.hom π), pullback.fst U.hom π a ∈ V ↔ e i a ∈ Set.range (e j)) → ∃ τ : V.toScheme ⟶ U.left, ∀ (T : Scheme.{0}) (a b : T ⟶ pullback U.hom π) (v : T ⟶ V.toScheme), a ≫ e i = b ≫ e j → v ≫ V.ι = a ≫ pullback.fst _ _ → v ≫ τ = b ≫ pullback.fst _ _ := by
   intro R _ _ _ _ S X π hπ hs hS U hU J e he hkey i j V hV
   have hpb0 : IsPullback (pullback.fst U.hom π ∣_ V) (pullback.fst U.hom π ⁻¹ᵁ V).ι V.ι
@@ -293,7 +291,7 @@ theorem chart_transition_descends : ∀ (R : Type) [CommRing R] [IsDomain R] [Is
       rw [← cancel_mono (e j), h₂e]; simp only [Category.assoc, hZe]
     subst this
     simpa only [Category.assoc] using h₂p.symm
-  obtain ⟨τ, hτ, -⟩ := GlobalTheory.T.exists_descent_of_equalised_proper_cover_normal R S V.toScheme (pullback.fst U.hom π ⁻¹ᵁ V).toScheme U.left π
+  obtain ⟨τ, hτ, -⟩ := GlobalTheory.MorDescent.descend R S V.toScheme (pullback.fst U.hom π ⁻¹ᵁ V).toScheme U.left π
     (V.ι ≫ U.hom) p' _ hπ hs hS hflat hpb _ heq
   refine ⟨τ, fun T a b v hab hv => ?_⟩
   let a' := hpb0.lift v a hv
@@ -373,7 +371,7 @@ theorem GlobalTheory.MumDescent.cocycle : ∀ (R : Type) [CommRing R] [IsDomain 
   haveI := hU
   have heq : pullback.fst p' p' ≫ c ≫ pP = pullback.snd p' p' ≫ c ≫ pP := by
     rw [← h2, pullback.condition_assoc]
-  obtain ⟨h₀, -, huniq⟩ := GlobalTheory.T.exists_descent_of_equalised_proper_cover_normal R S O.toScheme FinalForm.toScheme U.left π (O.ι ≫ U.hom) p'
+  obtain ⟨h₀, -, huniq⟩ := GlobalTheory.MorDescent.descend R S O.toScheme FinalForm.toScheme U.left π (O.ι ≫ U.hom) p'
     (FinalForm.ι ≫ pullback.snd U.hom π) hπp hπs hS inferInstance hsq (c ≫ pP) heq
   have E : w₀ ≫ τ j k = m₂ ≫ τ i k := (huniq _ h3).trans (huniq _ h2).symm
 
@@ -455,8 +453,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.Mum
 
 namespace GlobalTheory.Mum
-
-
 
 theorem descend_transition_diag_over : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] (S X : Scheme.{0}) (π : S ⟶ Sp R) (f : X ⟶ S), IsProper π → Surjective π → IsIntegral S → ∀ (U : Over (Sp R)), Flat U.hom → ∀ (J : Type) (e : J → (pullback U.hom π ⟶ X)), (∀ j, IsOpenImmersion (e j)) → (∀ j, e j ≫ f = pullback.snd _ _) → ∀ (V : J → J → U.left.Opens) (τ : ∀ i j, (V i j).toScheme ⟶ U.left), (∀ (i j : J) (a : ↥(pullback U.hom π)), pullback.fst U.hom π a ∈ V i j ↔ e i a ∈ Set.range (e j)) → (∀ (i j : J) (T : Scheme.{0}) (a b : T ⟶ pullback U.hom π) (v : T ⟶ (V i j).toScheme), a ≫ e i = b ≫ e j → v ≫ (V i j).ι = a ≫ pullback.fst _ _ → v ≫ τ i j = b ≫ pullback.fst _ _) → (∀ i, τ i i = (V i i).ι) ∧ (∀ i j, τ i j ≫ U.hom = (V i j).ι ≫ U.hom) := by
   intro R _ _ _ _ S X π f hprop hsurj hint U hU J e he hef V τ hV hτ
@@ -999,8 +995,8 @@ theorem unit_descends : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
   have heq : pullback.fst π π ≫ h = pullback.snd π π ≫ h := by
     rw [← hy1, hy, Category.assoc]
   have sq : IsPullback π (𝟙 S) (𝟙 (Sp R)) π := IsPullback.of_vert_isIso ⟨by simp⟩
-  obtain ⟨e, he, -⟩ := GlobalTheory.T.exists_descent_of_equalised_proper_cover_normal R S (Sp R) S N.U.left π (𝟙 _) π (𝟙 S) hP hS hI inferInstance sq h heq
-  obtain ⟨e₁, -, huniq⟩ := GlobalTheory.T.exists_descent_of_equalised_proper_cover_normal R S (Sp R) S (Sp R) π (𝟙 _) π (𝟙 S) hP hS hI inferInstance sq π
+  obtain ⟨e, he, -⟩ := GlobalTheory.MorDescent.descend R S (Sp R) S N.U.left π (𝟙 _) π (𝟙 S) hP hS hI inferInstance sq h heq
+  obtain ⟨e₁, -, huniq⟩ := GlobalTheory.MorDescent.descend R S (Sp R) S (Sp R) π (𝟙 _) π (𝟙 S) hP hS hI inferInstance sq π
     pullback.condition
   refine ⟨e, ?_, x₀, he.symm, hx₀s, hx₀u⟩
   rw [huniq (e ≫ N.U.hom) (show π ≫ e ≫ N.U.hom = π by rw [← Category.assoc, he, hh]),

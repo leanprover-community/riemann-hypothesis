@@ -167,7 +167,7 @@ theorem formCalculus : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtl
   refine ⟨(_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).1, fun c α β hα hβ => ?_, fun w β hw hβ => _root_.GlobalTheory.CxForm.HolAtlas.del_dbar_even_mul M n A w β hw hβ, fun ι w P hw => ?_,
     fun M' _ n' A' f hf => ?_⟩
   · obtain ⟨h1, h2, h3⟩ := (_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).2 c α β hα hβ
-    obtain ⟨d1, d2⟩ := GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A α hα
+    obtain ⟨d1, d2⟩ := GlobalTheory.CxForm.isForm_del_dbar M n A α hα
     obtain ⟨e1, e2, e3, e4⟩ := (_root_.GlobalTheory.CxForm.HolAtlas.del_dbar_linear M n A).2 c α β hα hβ
     exact ⟨h1, h2, h3, d1, d2, e1, e2, e3, e4⟩
   · induction P using MvPolynomial.induction_on with
@@ -211,7 +211,7 @@ theorem formCalculus : ∀ (M : Type) [TopologicalSpace M] (n : ℕ) (A : HolAtl
         rw [hp3 h, h i, zero_mul, mul_zero, add_zero]
   · refine ⟨funext fun x => map_one _, fun c α β => ⟨funext fun x => map_add _ _ _, funext fun x => map_mul _ _ _,
       funext fun x => map_smul (pull _) c _, fun hα => ?_⟩⟩
-    obtain ⟨d1, d2⟩ := GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A α hα
+    obtain ⟨d1, d2⟩ := GlobalTheory.CxForm.isForm_del_dbar M n A α hα
     exact ⟨_root_.GlobalTheory.PullbackForm.isForm_pullback M M' n n' A A' f α hf hα, _root_.GlobalTheory.CxForm.HolAtlas.del_dbar_comm_pullback M M' n n' A A' f α hf hα d1 d2⟩
 
 end GlobalTheory

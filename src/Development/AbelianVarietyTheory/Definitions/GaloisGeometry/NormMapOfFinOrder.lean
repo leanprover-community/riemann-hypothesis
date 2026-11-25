@@ -11,8 +11,6 @@ public import Mathlib.Analysis.Normed.Ring.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.GO
 
 open NumberField IsDedekindDomain Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Ker

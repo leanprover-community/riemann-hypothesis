@@ -220,15 +220,8 @@ theorem c4p'_comm (a b c d : Fin 4) :
     lift_triple_comm_pullback m (L4 m) _ _ _ _ _ _ (pullback_proj_fourth m a) hq (pullback_proj_fourth m d)]
 
 lemma tb_inv {T : Over S'} (y : T ⟶ G') : tb m (y ≫ ι[G']) = tb m y ≫ ι[G] := by
-  have hm : ∀ {T0 : Over S} (a b : T0 ⟶ G), padd G a b = pzero G T0 → b = a ≫ ι[G] := by
-    intro T0 a b hab
-    have h1 : (a ≫ ι[G]) * a = 1 := by
-      change lift (a ≫ ι[G]) a ≫ μ = toUnit _ ≫ η
-      simp
-    have h2 : a * b = 1 := by
-      change lift a b ≫ μ = toUnit _ ≫ η
-      exact hab
-    exact (left_inv_eq_right_inv h1 h2).symm
+  have hm : ∀ {T0 : Over S} (a b : T0 ⟶ G), padd G a b = pzero G T0 → b = a ≫ ι[G] :=
+    fun a b hab => eq_inv_of_mul_eq_one_right (show a * b = 1 from hab)
   apply hm
   rw [← tb_padd, ← tb_pzero]
   congr 1

@@ -54,8 +54,6 @@ import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.Eigenfunctio
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.Jet
 open scoped InnerProductSpace ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.Jet.KType
 
 theorem cdom_step {n : ℕ} {ε : Fin n → Bool} {ν μ : Fin n → ℝ} (h : CDom ε ν μ) {a b : Fin n}

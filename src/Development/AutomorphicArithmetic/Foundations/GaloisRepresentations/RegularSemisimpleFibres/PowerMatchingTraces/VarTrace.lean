@@ -6,7 +6,6 @@ public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.Integr
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.MatchPowAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor
 public import Development.WeilBound.CuspidalAdmissibility.OccursIff
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.TrBasic
 public import Development.AutomorphicArithmetic.TwistedTraces.ExistsUniqueEigenlineOfRankOneOccurs
 public import Development.AutomorphicArithmetic.TwistedTraces.IntegralOpEigenlineScalarOfTwist
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExCusp
@@ -15,13 +14,11 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.NormCharPowHolds
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OccursIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.CarryLift
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.IsIntegralOpUntw
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.LocTw
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdUnique
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalAdEq
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.NormTriv
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.ClassChar2
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.ChiBasic
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.MatchCut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.PowIndep
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExTwist
@@ -73,6 +70,84 @@ end -- clump:auto
 -- ===== clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.BaseTw =====
 -- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.BaseTw", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.MatchPowAlt\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.SummandFactor\npublic import Development.WeilBound.CuspidalAdmissibility.OccursIff\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.TrBasic\npublic import Development.AutomorphicArithmetic.TwistedTraces.ExistsUniqueEigenlineOfRankOneOccurs\npublic import Development.AutomorphicArithmetic.TwistedTraces.IntegralOpEigenlineScalarOfTwist\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal\n\n"}
 section -- clump:auto
+
+section
+@[expose] public section
+
+open MeasureTheory NumberField IsDedekindDomain Filter
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.Global.SemiLocal
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.L1 Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets
+open Formalism.L2.Host UpperTheory.V.Published UpperTheory.CBC
+open scoped Classical
+open UpperTheory.Gal.InertialTypesAlt.G
+
+namespace UpperTheory.Gal.InertialTypesAlt.G.FiniteTraces
+
+private theorem finTrace_zero {V : Type} [AddCommGroup V] [Module ℂ V] :
+    HasFinTrace (0 : V →ₗ[ℂ] V) 0 := by
+  have key : ∀ (R : Submodule ℂ V) (h : ∀ v ∈ R, (0 : V →ₗ[ℂ] V) v ∈ R),
+      LinearMap.trace ℂ R ((0 : V →ₗ[ℂ] V).restrict h) = 0 := by
+    intro R h
+    have e : (0 : V →ₗ[ℂ] V).restrict h = 0 := rfl
+    rw [e, map_zero]
+  exact ⟨by rw [LinearMap.range_zero]; infer_instance, key _ _⟩
+
+private theorem finTrace_smul {V : Type} [AddCommGroup V] [Module ℂ V] (A : V →ₗ[ℂ] V) {c : ℂ} (b : ℂ)
+    (h : HasFinTrace A c) : HasFinTrace (b • A) (b * c) := by
+  by_cases hb : b = 0
+  · subst hb
+    rw [zero_smul, zero_mul]
+    exact finTrace_zero
+  obtain ⟨hf, rfl⟩ := h
+  have key : ∀ (R : Submodule ℂ V) (_ : R = LinearMap.range A) (h1 : ∀ v ∈ R, (b • A) v ∈ R)
+      (h2 : ∀ v ∈ LinearMap.range A, A v ∈ LinearMap.range A),
+      LinearMap.trace ℂ R ((b • A).restrict h1) = b * LinearMap.trace ℂ (LinearMap.range A) (A.restrict h2) := by
+    intro R hR h1 h2
+    subst hR
+    have e : (b • A).restrict h1 = b • A.restrict h2 := rfl
+    rw [e, map_smul, smul_eq_mul]
+  have hr : LinearMap.range (b • A) = LinearMap.range A := LinearMap.range_smul _ _ hb
+  exact ⟨by rw [hr]; exact hf, key _ hr _ _⟩
+
+private theorem isInt_smul {G V : Type} [Group G] [MeasurableSpace G] [AddCommGroup V] [Module ℂ V]
+    {m : Measure G} {ρ : Representation ℂ G V} {f : G → ℂ} {A : V →ₗ[ℂ] V} (d : ENNReal) (hdt : d ≠ ⊤)
+    (hA : IsIntegralOp m ρ f A) : IsIntegralOp (d • m) ρ f ((d.toReal : ℂ) • A) := fun v l =>
+  ⟨(hA v l).1.smul_measure hdt, by
+    rw [integral_smul_measure, LinearMap.smul_apply, map_smul, (hA v l).2, Complex.real_smul, smul_eq_mul]⟩
+
+private theorem finite_comp {V : Type} [AddCommGroup V] [Module ℂ V] (A : V →ₗ[ℂ] V) (I : V ≃ₗ[ℂ] V)
+    (h : FiniteDimensional ℂ (LinearMap.range A)) :
+    FiniteDimensional ℂ (LinearMap.range (A ∘ₗ (I : V →ₗ[ℂ] V))) := by
+  have e : LinearMap.range (A ∘ₗ (I : V →ₗ[ℂ] V)) = LinearMap.range A :=
+    LinearMap.range_comp_of_range_eq_top A (LinearEquiv.range I)
+  rw [e]
+  exact h
+
+end UpperTheory.Gal.InertialTypesAlt.G.FiniteTraces
+
+open UpperTheory.Gal.InertialTypesAlt.G.FiniteTraces in
+theorem UpperTheory.Gal.InertialTypesAlt.G.trBasic :
+    UpperTheory.Gal.InertialTypesAlt.G.TrBasic := by
+  intro G _ _ _ m τ I f
+  refine ⟨?_, ?_, ?_⟩
+  · rintro z ⟨A, hA, hF⟩
+    exact ⟨_, A, hA, finite_comp A I hF.1, rfl⟩
+  · rintro t t' ⟨A, hA, -, rfl⟩ ⟨B, hB, -, rfl⟩
+    obtain rfl := hA.unique hB
+    rfl
+  · intro d hd
+    refine ⟨?_, ?_⟩
+    · rintro z ⟨A, hA, hF⟩
+      exact ⟨_, isInt_smul d hd hA, finTrace_smul A _ hF⟩
+    · rintro t ⟨B, hB, hF⟩
+      refine ⟨_, isInt_smul d hd hB, ?_⟩
+      have e : ((d.toReal : ℂ) • B) ∘ₗ (I : τ.V →ₗ[ℂ] τ.V) = (d.toReal : ℂ) • (B ∘ₗ (I : τ.V →ₗ[ℂ] τ.V)) := rfl
+      rw [e]
+      exact finTrace_smul _ _ hF
+end
+end
+
 @[expose] public section
 
 open MeasureTheory NumberField IsDedekindDomain Filter
@@ -173,6 +248,91 @@ end -- clump:auto
 -- ===== clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.FibTrace =====
 -- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.FibTrace", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.MatchPowAlt\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExCusp\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.IsoEq\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocIff\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.NormCharPowHolds\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OccursIff\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.CarryLift\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.IsIntegralOpUntw\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.LocTw\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
+
+section
+@[expose] public section
+
+open MeasureTheory NumberField IsDedekindDomain Filter
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.Global.SemiLocal
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.L1 Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets
+open Formalism.L2.Host UpperTheory.V.Published UpperTheory.CBC
+open scoped Classical
+open UpperTheory.Gal.InertialTypesAlt.G
+
+private theorem hasFinTrace_conj {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
+    (e : V ≃ₗ[ℂ] W) {A : V →ₗ[ℂ] V} {c : ℂ} (h : HasFinTrace A c) :
+    HasFinTrace ((e : V →ₗ[ℂ] W) ∘ₗ A ∘ₗ (e.symm : W →ₗ[ℂ] V)) c := by
+  obtain ⟨hfd, rfl⟩ := h
+  set B : W →ₗ[ℂ] W := (e : V →ₗ[ℂ] W) ∘ₗ A ∘ₗ (e.symm : W →ₗ[ℂ] V) with hB
+  have hr : (LinearMap.range A).map (e : V →ₗ[ℂ] W) = LinearMap.range B := by
+    ext y
+    constructor
+    · rintro ⟨_, ⟨x, rfl⟩, rfl⟩
+      exact ⟨e x, by simp [hB]⟩
+    · rintro ⟨y, rfl⟩
+      exact ⟨A (e.symm y), ⟨_, rfl⟩, by simp [hB]⟩
+  let f : LinearMap.range A ≃ₗ[ℂ] LinearMap.range B :=
+    (e.submoduleMap (LinearMap.range A)).trans (LinearEquiv.ofEq _ _ hr)
+  refine ⟨f.finiteDimensional, ?_⟩
+  rw [← LinearMap.trace_conj' _ f]
+  congr 1
+
+private theorem isIntegralOp_tw {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G] {m : Measure G}
+    {χ : G → ℂ} {τ τ₁ : SmIrr G} {e : τ.V ≃ₗ[ℂ] τ₁.V} (hT : TwOf χ τ τ₁ e) {f : G → ℂ} {A : τ.V →ₗ[ℂ] τ.V}
+    (hA : IsIntegralOp m τ.ρ (fun g => f g * χ g) A) :
+    IsIntegralOp m τ₁.ρ f ((e : τ.V →ₗ[ℂ] τ₁.V) ∘ₗ A ∘ₗ (e.symm : τ₁.V →ₗ[ℂ] τ.V)) := by
+  intro w l
+  have key : (fun g => f g * l (τ₁.ρ g w)) =
+      fun g => f g * χ g * (l ∘ₗ (e : τ.V →ₗ[ℂ] τ₁.V)) (τ.ρ g (e.symm w)) := by
+    funext g
+    have := hT g (e.symm w)
+    rw [LinearEquiv.apply_symm_apply] at this
+    rw [← this, map_smul, map_smul, smul_eq_mul]
+    simp [mul_assoc]
+  obtain ⟨h₁, h₂⟩ := hA (e.symm w) (l ∘ₗ (e : τ.V →ₗ[ℂ] τ₁.V))
+  rw [key]
+  refine ⟨h₁, ?_⟩
+  rw [← h₂]
+  simp
+
+private theorem isIntegralOp_untw {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G] {m : Measure G}
+    {χ : G → ℂ} {τ τ₁ : SmIrr G} {e : τ.V ≃ₗ[ℂ] τ₁.V} (hT : TwOf χ τ τ₁ e) {f : G → ℂ} {B : τ₁.V →ₗ[ℂ] τ₁.V}
+    (hB : IsIntegralOp m τ₁.ρ f B) :
+    IsIntegralOp m τ.ρ (fun g => f g * χ g) ((e.symm : τ₁.V →ₗ[ℂ] τ.V) ∘ₗ B ∘ₗ (e : τ.V →ₗ[ℂ] τ₁.V)) := by
+  intro v l
+  have key : (fun g => f g * χ g * l (τ.ρ g v)) =
+      fun g => f g * (l ∘ₗ (e.symm : τ₁.V →ₗ[ℂ] τ.V)) (τ₁.ρ g (e v)) := by
+    funext g
+    rw [← hT g v]
+    simp [mul_assoc]
+  obtain ⟨h₁, h₂⟩ := hB (e v) (l ∘ₗ (e.symm : τ₁.V →ₗ[ℂ] τ.V))
+  rw [key]
+  refine ⟨h₁, ?_⟩
+  rw [← h₂]
+  simp
+
+theorem UpperTheory.Gal.InertialTypesAlt.G.trTw :
+    UpperTheory.Gal.InertialTypesAlt.G.TrTw := by
+  intro G _ _ _ m χ τ τ₁ e hT f z
+  refine ⟨⟨?_, ?_⟩, fun I => ⟨?_, ?_⟩⟩
+  · rintro ⟨A, hA, hF⟩
+    exact ⟨_, isIntegralOp_tw hT hA, hasFinTrace_conj e hF⟩
+  · rintro ⟨B, hB, hF⟩
+    exact ⟨_, isIntegralOp_untw hT hB, hasFinTrace_conj e.symm hF⟩
+  · rintro ⟨A, hA, hF⟩
+    refine ⟨_, isIntegralOp_tw hT hA, ?_⟩
+    convert hasFinTrace_conj e hF using 1
+    ext x
+    simp
+  · rintro ⟨B, hB, hF⟩
+    refine ⟨_, isIntegralOp_untw hT hB, ?_⟩
+    convert hasFinTrace_conj e.symm hF using 1
+    ext x
+    simp
+end
+end
+
 @[expose] public section
 
 open MeasureTheory NumberField IsDedekindDomain Filter
@@ -417,6 +577,54 @@ end -- clump:auto
 -- ===== clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.NormOpen =====
 -- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.NormOpen", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.MatchPowAlt\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.ClassChar2\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.NormCharPowHolds\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.ChiBasic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
+
+section
+@[expose] public section
+
+noncomputable section
+
+open MeasureTheory NumberField IsDedekindDomain Filter
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.Global.SemiLocal
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.L1 Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets
+open Formalism.L2.Host UpperTheory.V.Published UpperTheory.CBC
+open scoped Classical
+
+namespace UpperTheory.Gal.InertialTypesAlt.G
+
+private theorem isOpen_ker_chiAt {K : Type} [Field K] [NumberField K] (n : ℕ) (χ : HChar K) (v : Pl K) :
+    IsOpen {g : Gw n v | χ.loc v (Matrix.GeneralLinearGroup.det g) = 1} := by
+  have h := (isOpen_ker_finIdele K (χ.1.comp (finId K)) (χ.2.1.comp (continuous_finId K))).preimage
+    ((Matrix.GeneralLinearGroup.continuous_det (n := Fin n)).comp (CuspSub.continuous_locGL (a := n) v))
+  convert h using 1
+  ext g
+  exact Iff.of_eq (congrArg (fun u => χ.1 u = 1) (finId_det_locGL v g).symm)
+
+private theorem isLocallyConstant_chiAt {K : Type} [Field K] [NumberField K] (n : ℕ) (χ : HChar K) (v : Pl K) :
+    IsLocallyConstant (chiAt n χ v) := by
+  rw [IsLocallyConstant.iff_eventually_eq]
+  intro x
+  have hc : Continuous fun y : Gw n v => x⁻¹ * y := continuous_const.mul continuous_id
+  have hm : (fun y : Gw n v => x⁻¹ * y) ⁻¹' {g : Gw n v | χ.loc v (Matrix.GeneralLinearGroup.det g) = 1} ∈ nhds x :=
+    ((isOpen_ker_chiAt n χ v).preimage hc).mem_nhds (by simp)
+  filter_upwards [hm] with y hy
+  have hy' : χ.loc v (Matrix.GeneralLinearGroup.det (x⁻¹ * y)) = 1 := hy
+  rw [map_mul, map_mul, map_inv, map_inv] at hy'
+  have e : χ.loc v (Matrix.GeneralLinearGroup.det y) = χ.loc v (Matrix.GeneralLinearGroup.det x) :=
+    (inv_mul_eq_one.1 hy').symm
+  simp only [chiAt, e]
+
+theorem chiBasic : ChiBasic := by
+  intro K _ _ n χ v
+  refine ⟨isLocallyConstant_chiAt n χ v, fun g => ?_, fun f hf => ?_⟩
+  · simp [chiAt, HChar.loc]
+  · exact ⟨hf.1.mul (isLocallyConstant_chiAt n χ v), hf.2.mul_right⟩
+
+end UpperTheory.Gal.InertialTypesAlt.G
+end
+end
+end
+
 @[expose] public section
 
 open MeasureTheory NumberField IsDedekindDomain Filter

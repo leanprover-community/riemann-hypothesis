@@ -41,8 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TilX Matrix
 
-noncomputable section
-
 namespace GlobalTheory.Mem.Col2.TopPtModel
 
 section Gen
@@ -78,5 +76,3 @@ theorem topPt_base {u : B.Word} {a : I.ι} {k : GA B (B.R.N B.R.m)} [NeZero (B.R
   rwa [one_mul] at this
 
 end GlobalTheory.Mem.Col2.TopPtModel
-
-end

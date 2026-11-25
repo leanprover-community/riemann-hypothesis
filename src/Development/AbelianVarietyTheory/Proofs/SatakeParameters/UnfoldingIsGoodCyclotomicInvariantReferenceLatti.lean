@@ -11,8 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LastTwoSt
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col GlobalTheory.TopStep GlobalTheory.IndefiniteRowSideFullHecke.FourierColumnIndicator GlobalTheory.LastSteps
 
-noncomputable section
-
 namespace GlobalTheory.ColPeriod
 
 section Unfold

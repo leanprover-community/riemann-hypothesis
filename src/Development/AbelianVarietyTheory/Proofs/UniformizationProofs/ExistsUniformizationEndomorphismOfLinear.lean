@@ -50,8 +50,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
-
 namespace GlobalTheory.UT.OLinEnd
 
 variable {R : Type} [CommRing R] [IsDomain R]
@@ -152,5 +150,3 @@ theorem main : LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => ∀ (O : Type) [
       exact (val_pull hJ _ _ _).trans (k χ z J hJ).symm
 
 end GlobalTheory.UT.OLinEnd
-
-end

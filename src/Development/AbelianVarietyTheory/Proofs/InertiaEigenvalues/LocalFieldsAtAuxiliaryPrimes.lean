@@ -264,17 +264,6 @@ namespace GlobalTheory.PrimesQD
 open Formalism.FrobeniusOrbits Formalism.MainNotions.EmbeddingTypeJumps
 open scoped Pointwise
 
-theorem liesOver_span {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime)
-    {v : HeightOneSpectrum (𝓞 E)} (hv : v ∈ placesOver E p) :
-    v.asIdeal.LiesOver (Ideal.span {(p : ℤ)}) := by
-  constructor
-  have hmax : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hp).irreducible
-  have hle : Ideal.span {(p : ℤ)} ≤ Ideal.comap (algebraMap ℤ (𝓞 E)) v.asIdeal := by
-    rw [Ideal.span_singleton_le_iff_mem, Ideal.mem_comap]
-    simpa [placesOver] using hv
-  exact hmax.eq_of_le (Ideal.comap_ne_top _ v.isPrime.ne_top) hle
-
 theorem ramIdx_eq_two (D : D7) {l : ℕ} (hl : l.Prime) (v : HeightOneSpectrum (𝓞 D.host.E))
     (hv : v ∈ placesOver D.host.E l) (g : D.R.GG) (hg : g ≠ 1)
     (hin : ∀ σ : D.host.E ≃ₐ[ℚ] D.host.E, σ ∈ ineG D v ↔
@@ -283,7 +272,7 @@ theorem ramIdx_eq_two (D : D7) {l : ℕ} (hl : l.Prime) (v : HeightOneSpectrum (
   have hgal := D.host.hostE_isGalois
   have : IsGaloisGroup Gal(D.host.E/ℚ) ℤ (𝓞 D.host.E) :=
     IsGaloisGroup.of_isFractionRing _ _ _ ℚ D.host.E
-  have := liesOver_span hl hv
+  have := GlobalTheory.HubLoc.liesOver_of_mem hl hv
   have := v.isPrime
   have : Fact l.Prime := ⟨hl⟩
   have hp : (Ideal.span {(l : ℤ)}).IsPrime :=
@@ -335,7 +324,7 @@ theorem ramification_two_and_conjugation_at_q_and_d : ∀ D : D7, EmbeddingTypeJ
   have hlp : l.Prime := by rcases hl' with rfl | rfl <;> assumption
   refine ⟨by rcases hl' with rfl | rfl <;> omega, ?_⟩
   intro v hv
-  have hlo := liesOver_span hlp hv
+  have hlo := GlobalTheory.HubLoc.liesOver_of_mem hlp hv
   have := v.isPrime
   have hmemI : ∀ σ : D.host.E ≃ₐ[ℚ] D.host.E, σ ∈ ineG D v ↔ ∀ x : 𝓞 D.host.E, σ • x - x ∈ v.asIdeal :=
     fun σ => AddSubgroup.mem_inertia

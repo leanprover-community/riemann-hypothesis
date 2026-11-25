@@ -679,8 +679,8 @@ theorem UpperTheory.V.Z.Sym.Glob.classG :
     exact UpperTheory.semilinear_coords_eq_mulVec_star K Δ τ d δ N e v hA hδe hδv hNv x
   have hinv : ∀ x y, herm (c : K) m' (semi d x) (semi d y) = star (herm (c : K) m' x y) := by
     intro x y
-    rw [hform', hform', hsemi, hsemi, unitary_form']
-    simp [star_sum, mul_comm]
+    rw [hform', hform', hsemi, hsemi, unitary_form', star_sum]
+    exact Finset.sum_congr rfl fun i _ => (star_mul' _ _).symm
   have hsig := UpperTheory.sigL_eq_of_herm_semilinear_eq_star K Δ τ (c : K) d m' hreg hinv
   have hD' : IsDat (c : K) d m' := ⟨hreg, c.ne_zero, hnorm, hm'u, hm's, hsig⟩
   obtain ⟨t, ht⟩ := UpperTheory.hermitian_datum_unique_up_to_scalar K Δ τ 1 (c : K) d m m' hD hD'

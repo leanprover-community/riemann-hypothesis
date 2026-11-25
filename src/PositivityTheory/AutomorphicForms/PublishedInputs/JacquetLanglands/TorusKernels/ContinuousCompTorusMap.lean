@@ -161,14 +161,8 @@ theorem UpperTheory.Esk.pf_Osg : UpperTheory.Esk.Osg := by
   let g : (Fin n → ℂ) → ℂ := fun w => f (Φ w)
   let V : Set (Fin n → ℂ) := Φ ⁻¹' U
   have hV : IsOpen V := hU.preimage hΦ
-  have hupd : ∀ (w : Fin n → ℂ) (j : Fin n) (t : ℂ), Φ (Function.update w j t) = Function.update (Φ w) (e.symm j) t := by
-    intro w j t
-    funext i
-    by_cases h : i = e.symm j
-    · subst h
-      simp [Φ]
-    · have h' : e i ≠ j := fun h' => h (by rw [← h']; simp)
-      simp [Φ, h, h']
+  have hupd : ∀ (w : Fin n → ℂ) (j : Fin n) (t : ℂ), Φ (Function.update w j t) = Function.update (Φ w) (e.symm j) t :=
+    fun w j t => Function.update_comp_equiv w e j t
   have hg : SepHol g V := by
     refine ⟨hf.comp hΦ.continuousOn (fun w hw => hw), fun w hw j => ?_⟩
     have h1 := hsep (Φ w) hw (e.symm j)

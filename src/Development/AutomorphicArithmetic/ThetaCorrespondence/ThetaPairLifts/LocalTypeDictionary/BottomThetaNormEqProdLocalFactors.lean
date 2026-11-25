@@ -97,7 +97,6 @@ theorem thetaKO_zero {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.E
     thetaKO om g h 0 = 0 := by
   simp [thetaKO]
 
-
 end GlobalTheory.BottomFactor
 
 end
@@ -127,7 +126,7 @@ theorem bottom_theta_norm_factorization_aux : GlobalTheory.Published.HoweDuality
   intro hH hP hK hM
   have hLM := _root_.GlobalTheory.SquareLM.twisted_square_local_matching hH hP hK hM
   have hTA := _root_.GlobalTheory.T.twisted_square_theta_integrals_eq hP hK hM
-  obtain ⟨CF1, H1⟩ := GlobalTheory.T.definiteBottom_dictionary_frames_exponents_kernel
+  obtain ⟨CF1, H1⟩ := GlobalTheory.BotDict.bottom_dictionary
   obtain ⟨CF2, H2⟩ := _root_.GlobalTheory.T.theta_bottom_finite_place_matching hH hP hK hM
   refine ⟨max CF1 CF2, fun ε CF hCF => ?_⟩
   obtain ⟨C1, x1, G1⟩ := H1 ε CF (le_trans (le_max_left _ _) hCF)

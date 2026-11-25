@@ -205,11 +205,8 @@ theorem stable_lattice_eq_zpow_std : ∀ (E : Type) [Field E] [NumberField E] (P
       ⟨single_mem_swap σ L hU i i0 t, single_mem_swap σ L hU i0 i t⟩
     have hmul : ∀ a : P.adicCompletion E, Valued.v a ≤ 1 → ∀ t ∈ I, a * t ∈ I := by
       intro a ha t ht
-      have e : Pi.single i0 (a * t) = a • (Pi.single i0 t : Fin n → P.adicCompletion E) := by
-        funext j
-        by_cases hj : j = i0
-        · rw [hj, Pi.smul_apply, Pi.single_eq_same, Pi.single_eq_same, smul_eq_mul]
-        · rw [Pi.smul_apply, Pi.single_eq_of_ne hj, Pi.single_eq_of_ne hj, smul_zero]
+      have e : Pi.single i0 (a * t) = a • (Pi.single i0 t : Fin n → P.adicCompletion E) :=
+        Pi.single_smul' i0 a t
       show Pi.single i0 (a * t) ∈ L
       rw [e]
       exact hO a ha _ ht
@@ -219,10 +216,7 @@ theorem stable_lattice_eq_zpow_std : ∀ (E : Type) [Field E] [NumberField E] (P
         · rw [hi, Pi.single_eq_same, map_one]
         · rw [Pi.single_eq_of_ne hi, map_zero]; exact zero_le
       have e : N • (Pi.single i0 1 : Fin n → P.adicCompletion E) = Pi.single i0 N := by
-        funext j
-        by_cases hj : j = i0
-        · rw [hj, Pi.smul_apply, Pi.single_eq_same, Pi.single_eq_same, smul_eq_mul, mul_one]
-        · rw [Pi.smul_apply, Pi.single_eq_of_ne hj, Pi.single_eq_of_ne hj, smul_zero]
+        rw [← Pi.single_smul', smul_eq_mul, mul_one]
       show Pi.single i0 N ∈ L
       rw [← e]
       exact h1

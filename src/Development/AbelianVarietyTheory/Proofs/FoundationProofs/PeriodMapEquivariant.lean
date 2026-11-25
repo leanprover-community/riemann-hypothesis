@@ -134,9 +134,6 @@ lemma slash_toGL (k : ℤ) (g : Matrix (Fin 2) (Fin 2) ℤ) (h : 0 < g.det) (f :
   rw [ModularForm.slash_apply, σ, ite_eq_left hpos, abs_of_pos hpos, toGL_det g h.ne', denom_toGL g h.ne']
   simp
 
-lemma eichler_I (w : ℕ) (h : ℍ → ℂ) : eichler w h UpperHalfPlane.I = 0 := by
-  simp [eichler]
-
 theorem polySlash_eichler_toGL_smul : ∀ (k : ℕ), 2 ≤ k → ∀ (f : ℍ → ℂ), MDifferentiable 𝓘(ℂ) 𝓘(ℂ) f →
     ∀ (β : Matrix (Fin 2) (Fin 2) ℤ), 0 < β.det → ∀ τ : ℍ,
       slP (k - 2) β (eichler (k - 2) f (toGL β • τ)) = eichler (k - 2) (f ∣[(k : ℤ)] toGL β) τ +
@@ -218,7 +215,7 @@ theorem polySlash_eichler_toGL_smul : ∀ (k : ℕ), 2 ≤ k → ∀ (f : ℍ �
     isOpen_upperHalfPlaneSet.is_const_of_deriv_eq_zero (convex_halfSpace_im_gt 0).isPreconnected
       (fun z hz => (hder z hz).differentiableAt.differentiableWithinAt)
       (fun z hz => (hder z hz).deriv) τ.im_pos (I : ℍ).im_pos
-  rw [hΦ1, hΦ1, eichler_I, coeff_zero] at hconst
+  rw [hΦ1, hΦ1, GlobalTheory.HeckeFamilyMatrices.PerCoc.eichler_I, coeff_zero] at hconst
   rw [coeff_add]
   linear_combination hconst
 

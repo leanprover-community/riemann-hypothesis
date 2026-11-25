@@ -5,7 +5,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LZProperCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.StandardEtaleChartsIdempotentGluing
 
 namespace LateralTheory.E.AlgGlue₂

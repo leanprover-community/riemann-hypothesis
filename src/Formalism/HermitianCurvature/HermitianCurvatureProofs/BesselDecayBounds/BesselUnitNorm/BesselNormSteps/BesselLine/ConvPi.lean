@@ -82,20 +82,6 @@ theorem hpk_in_col {i m : Fin (2 * r + k + 1)} (hm : inB k r m) : Hpk k r i m = 
   simp only [Hpk, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-private theorem Hpk_apply_wp_eq_ite {i : Fin (2 * r + k + 1)} (hi : ¬ inB k r i) :
-    ∃ l : Fin (2 * r + k + 1), ¬ inB k r l ∧ ∃ s : ℂ, s ≠ 0 ∧ ∀ b, Hpk k r l b = if b = i then s else 0 := by
-  unfold inB at hi
-  have hil := i.isLt
-  by_cases h : i.val = r + k
-  · refine ⟨i, by unfold inB; omega, -1, by norm_num, fun b => ?_⟩
-    have hbl := b.isLt
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  · refine ⟨⟨2 * r + k - i.val, by omega⟩, by unfold inB; simp only; omega, 1, one_ne_zero, fun b => ?_⟩
-    have hbl := b.isLt
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | rfl | (exfalso; omega)
-
 theorem eq_blockW {c : Mx k r} (hc : c ∈ UH (Hpk k r))
     (hfix : ∀ l, ¬ inB k r l → c *ᵥ bvec l = bvec l) : c = blockW k r (ub c) := by
   apply _root_.WlocSk.UnitaryRepLocal.eq_blockW <;> assumption

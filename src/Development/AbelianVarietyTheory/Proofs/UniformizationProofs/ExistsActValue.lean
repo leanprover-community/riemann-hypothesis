@@ -58,7 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.EvalLevel
 open GlobalTheory.UT.CoefBasic
 
@@ -188,4 +187,3 @@ theorem value_at_level : LL → AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} h
   exact h₄
 
 end GlobalTheory.UT.EvalLevel
-end

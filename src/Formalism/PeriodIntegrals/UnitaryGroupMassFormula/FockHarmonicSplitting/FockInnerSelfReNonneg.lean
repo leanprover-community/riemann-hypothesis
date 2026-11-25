@@ -189,23 +189,6 @@ lemma wt_add_single [Fintype σ] [DecidableEq σ] (β : σ →₀ ℕ) (l : σ) 
   push_cast
   ring
 
-private theorem X_mul_monomial_eq_monomial_add_single (l : σ) (a : σ →₀ ℕ) (c : ℂ) :
-    X l * monomial a c = monomial (a + Finsupp.single l 1) c := by
-  rw [add_comm]
-  rw [MvPolynomial.monomial_single_add, pow_one]
-
-private theorem fockInner_monomial_monomial_self (a : σ →₀ ℕ) (c d : ℂ) :
-    FockH1Action.fockInner (monomial a c) (monomial a d) = (starRingEnd ℂ) c * d * wt a := by
-  classical
-  rw [fockInner_eq_sum_left _ _ {a} support_monomial_subset, Finset.sum_singleton]
-  simp [coeff_monomial]
-
-private theorem fockInner_monomial_monomial_of_ne (a b : σ →₀ ℕ) (c d : ℂ) (h : b ≠ a) :
-    FockH1Action.fockInner (monomial a c) (monomial b d) = 0 := by
-  classical
-  rw [fockInner_eq_sum_left _ _ {a} support_monomial_subset, Finset.sum_singleton]
-  simp [coeff_monomial, h]
-
 lemma fockInner_X_mul [Fintype σ] (l : σ) (P Q : MvPolynomial σ ℂ) :
     FockH1Action.fockInner (X l * P) Q = FockH1Action.fockInner P (pderiv l Q) := by
   apply _root_.FockRaiseLowInner.fockInner_X_mul <;> assumption

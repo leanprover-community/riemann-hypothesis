@@ -274,12 +274,6 @@ private theorem ls_core {A T K ι ι' : Type} [CommRing A] [IsLocalRing A] [IsNo
   rw [this, hf0, add_zero]
   exact Ideal.mul_mem_right _ _ h1e0
 
-private theorem ls_restr_pow {A M : Type} [CommRing A] [AddCommGroup M] [Module A M] {Y : Submodule A M}
-    {t : Module.End A Y} {φ : Module.End A M} (h : Restr t φ) (n : ℕ) : Restr (t ^ n) (φ ^ n) := by
-  induction n with
-  | zero => intro y; simp
-  | succ n ih => intro y; rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ih, h]
-
 private theorem ls_mem {A M ι : Type} [CommRing A] [IsLocalRing A] [AddCommGroup M] [Module A M]
     {Y : Submodule A M} {op : ι → Module.End A M} {a : ι → A} (u : ι → Module.End A Y)
     (hu : ∀ i, Restr (u i) (op i - algebraMap A _ (a i))) (y : Y) :

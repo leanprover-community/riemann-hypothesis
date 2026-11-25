@@ -7,8 +7,6 @@ public import Mathlib.RepresentationTheory.FinGroupCharZero
 
 open CategoryTheory
 
-noncomputable section
-
 namespace DiscreteGroups.sglob.DzType.Kon
 
 variable {G : Type} [Group G] [Fintype G]

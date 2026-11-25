@@ -14,8 +14,6 @@ import Mathlib.Tactic.Linter.Style
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker NumberField IsDedekindDomain Classical
 
-noncomputable section
-
 namespace GlobalTheory
 
 open Module Matrix

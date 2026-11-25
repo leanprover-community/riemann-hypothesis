@@ -55,24 +55,14 @@ theorem killNone_toWtS {Ψ : Type} {N : ℕ} (Q : MvPolynomial (Option (Ψ × Fi
 
 theorem eval_toWt_gap {Ψ : Type} {N : ℕ} (Q : MvPolynomial (Ψ × Fin N) ℝ) (lam : Ψ × Fin N → ℝ) :
     eval lam (toWt Q) = eval (gap lam) Q := by
-  induction Q using MvPolynomial.induction_on with
-  | C r => simp [toWt]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p i hp => rw [map_mul, map_mul, map_mul, hp]; simp [toWt, gap]
+  rw [toWt, ← aeval_eq_eval, comp_aeval_apply]
+  simp only [aeval_eq_eval]; rfl
 
 theorem eval_toWtS_gapS {Ψ : Type} {N : ℕ} (Q : MvPolynomial (Option (Ψ × Fin N)) ℝ) (lam : Ψ × Fin N → ℝ)
     (s : ℝ) : eval (fun o => o.elim s lam) (toWtS Q) = eval (gapS lam s) Q := by
-  induction Q using MvPolynomial.induction_on with
-  | C r => simp [toWtS]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p i hp =>
-    rw [map_mul, map_mul, map_mul, hp]
-    congr 1
-    cases i with
-    | none => simp [toWtS, gapS]
-    | some q =>
-      simp only [toWtS, gapS, gap, aeval_X, eval_X, Option.elim_some, eval_rename]
-      rfl
+  rw [toWtS, ← aeval_eq_eval, comp_aeval_apply, aeval_eq_eval]
+  exact congrArg (eval · Q) (funext fun o => by
+    cases o <;> simp [aeval_eq_eval, gapS, gap, eval_rename, Function.comp_def])
 
 theorem poly_s_zero : ∀ (Ψ : Type) [Fintype Ψ] (N n : ℕ),
     (∀ (a : (Fin n → Option (Ψ × Fin N)) → ℝ),

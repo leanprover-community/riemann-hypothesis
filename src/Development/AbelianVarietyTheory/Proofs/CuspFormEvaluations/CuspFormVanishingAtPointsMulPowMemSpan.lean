@@ -422,7 +422,6 @@ open GlobalTheory.Up GlobalTheory.Up.DivMetricPf
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data E r}
 
-
 open Classical in
 noncomputable def Wfree (Xa : ArchInM X) (Fl : FlatM X Xa) (G : Wt X.Ψ r) (n : ℕ) (x : Frame X.Ψ r) : ℝ≥0∞ :=
   if x ∈ X.dom then ENNReal.ofReal (Real.exp (-phla X G x)) *
@@ -661,7 +660,6 @@ theorem exists_s_ne_zero {Xa : ArchInM X} (Fl : FlatM X Xa) {x0 : Frame X.Ψ r} 
 
 end DivLeviPf
 
-
 end GlobalTheory.Up
 end -- clump:auto
 end -- clump:auto
@@ -676,7 +674,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.Chart
 open scoped ContDiff ENNReal Matrix
 
 namespace GlobalTheory.Shares
-
 
 open GlobalTheory.Up.DivLeviPf in
 theorem divLevi_freeWeight : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (G : Wt X.Ψ r) (n : ℕ), 1 ≤ n → ∀ x0, IsOrth X x0 → (∃ k0, ∃ z ∈ OmF X x0, Fl.s k0 (cpt X x0 z) ≠ 0) ∧ ∀ k0 : Fin (nd X), ContDiffOn ℝ ∞ (fun z => (fun x => phla X G x + (1 / 2) * Real.log (∑ k, ‖Xa.w k x‖ ^ 2) + ((n : ℝ) - 1 / 2) * Real.log (∑ k, ‖Fl.s k x‖ ^ 2)) (cpt X x0 z)) {z | z ∈ OmF X x0 ∧ Fl.s k0 (cpt X x0 z) ≠ 0} ∧ ∀ z ∈ OmF X x0, Fl.s k0 (cpt X x0 z) ≠ 0 → ∀ ξ : Fin (nd X) → ℂ, leviO X x0 (phla X G) z ξ - leviDens X x0 z ξ ≤ (leviV (nd X) (fun w => (((fun x => phla X G x + (1 / 2) * Real.log (∑ k, ‖Xa.w k x‖ ^ 2) + ((n : ℝ) - 1 / 2) * Real.log (∑ k, ‖Fl.s k x‖ ^ 2)) (cpt X x0 w) - Real.log (densF X x0 w) : ℝ) : ℂ)) z ξ).re := by
@@ -849,7 +846,6 @@ theorem lintegral_ball_lt_top_of_localInverse {n : ℕ} (η θ : V n → V n) {U
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-
 open ExtFPf in
 theorem zOf_zOf {r : ℕ} {X : Data E r} {x1 b c : Frame X.Ψ r} (D : LUData X x1) (ho : IsOrth X x1)
     (hbc : ∀ τ, mat b τ * mat c τ = 1) {z : V (nd X)} (hz : z ∈ OmF X x1)
@@ -883,7 +879,6 @@ theorem cpt_zero_cell {r : ℕ} {X : Data E r} {x1 b : Frame X.Ψ r} (D : LUData
   rw [IW.cpt_zero] at h
   rw [IW.cpt_zero]
   exact ⟨⟨OrthogonalFrameDomain.rmul_mem_dom X (IW.orth_mem_dom X x1 ho) hb, h.1⟩, h.2.1⟩
-
 
 open ExtFPf in
 theorem chart_change : ∀ (r : ℕ) (X : Data E r) (x1 b : Frame X.Ψ r), IsOrth X x1 → b ∈ Bor X.Ψ r →
@@ -1104,22 +1099,15 @@ open Filter GlobalTheory.Up GlobalTheory.Up.DivInFFPf
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data E r}
 variable (Xa : ArchInM X) (Fl : FlatM X Xa) (G : Wt X.Ψ r)
 
-
-open Classical in
-noncomputable def Wfree (n : ℕ) (x : Frame X.Ψ r) : ℝ≥0∞ :=
-  if x ∈ X.dom then ENNReal.ofReal (Real.exp (-phla X G x)) *
-    ENNReal.ofReal (∑ k, ‖Xa.w k x‖ ^ 2) ^ (-(1 / 2 : ℝ)) *
-    ENNReal.ofReal (∑ k, ‖Fl.s k x‖ ^ 2) ^ (-((n : ℝ) - 1 / 2)) else 0
-
 theorem Wfree_of_mem (n : ℕ) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
-    Wfree Xa Fl G n x = ENNReal.ofReal (Real.exp (-phla X G x)) *
+    GlobalTheory.FreeDivMetric.Wfree Xa Fl G n x = ENNReal.ofReal (Real.exp (-phla X G x)) *
       ENNReal.ofReal (∑ k, ‖Xa.w k x‖ ^ 2) ^ (-(1 / 2 : ℝ)) *
       ENNReal.ofReal (∑ k, ‖Fl.s k x‖ ^ 2) ^ (-((n : ℝ) - 1 / 2)) := by
-  unfold Wfree
+  unfold GlobalTheory.FreeDivMetric.Wfree
   rw [ite_eq_left hx]
 
 theorem Wfree_eq_pnorm (n : ℕ) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
-    Wfree Xa Fl G n x = ENNReal.ofReal (Real.exp (-phla X (G + n • Xa.L) x)) *
+    GlobalTheory.FreeDivMetric.Wfree Xa Fl G n x = ENNReal.ofReal (Real.exp (-phla X (G + n • Xa.L) x)) *
       ENNReal.ofReal (∑ k, X.pnorm Xa.L (Xa.w k) x ^ 2) ^ (-(1 / 2 : ℝ)) *
       ENNReal.ofReal (∑ k, X.pnorm Xa.L (Fl.s k) x ^ 2) ^ (-((n : ℝ) - 1 / 2)) := by
   have hw : ∑ k, X.pnorm Xa.L (Xa.w k) x ^ 2 = Real.exp (-phla X Xa.L x) * ∑ k, ‖Xa.w k x‖ ^ 2 := by
@@ -1195,7 +1183,7 @@ theorem phiW_inv (hN : NfacRmulStatement (E := E)) (hN' : NfacLactStatement (E :
 
 theorem phiW_eq (n : ℕ) (h : Frame X.Ψ r → ℂ) {x : Frame X.Ψ r} (hx : x ∈ X.dom)
     (hs : ∃ k, Fl.s k x ≠ 0) :
-    phiW Xa Fl G n h x = ENNReal.ofReal (‖h x‖ ^ 2) * Wfree Xa Fl G n x := by
+    phiW Xa Fl G n h x = ENNReal.ofReal (‖h x‖ ^ 2) * GlobalTheory.FreeDivMetric.Wfree Xa Fl G n x := by
   have hw := GlobalTheory.Up.DivInFFPf.sum_pnorm_pos (la := Xa.L) hx (Xa.w_nz x hx)
   have hs' := GlobalTheory.Up.DivInFFPf.sum_pnorm_pos (la := Xa.L) hx hs
   rw [phiW_of_mem Xa Fl G n h hx, Wfree_eq_pnorm Xa Fl G n hx,
@@ -1280,7 +1268,7 @@ theorem inFF_sub {T : ℕ} (hT1 : 1 ≤ T) (hnT : nd X ≤ T) {x0 : Frame X.Ψ r
     {C : ℝ} (hC : ∀ x ∈ X.dom,
       X.pnorm (G + T • Xa.L) g x ^ 2 ≤ C * (∑ k, X.pnorm Xa.L (Xa.w k) x ^ 2) ^ T)
     (hvan : VanS X Fl.xs Fl.s (T - nd X) (fun x => f x - g x)) :
-    InFF X x0 (Wfree Xa Fl G T) FF (fun x => f x - g x) := by
+    InFF X x0 (GlobalTheory.FreeDivMetric.Wfree Xa Fl G T) FF (fun x => f x - g x) := by
   have hM := GlobalTheory.FrameMeasureClosed.measInv_holds (E := E)
   have hN := GlobalTheory.NormFactor.nfacRmul_holds (E := E)
   have hN' := GlobalTheory.NormFactor.nfacLact_holds (E := E)
@@ -1336,7 +1324,7 @@ theorem inFF_sub {T : ℕ} (hT1 : 1 ≤ T) (hnT : nd X ≤ T) {x0 : Frame X.Ψ r
   obtain ⟨K, hK⟩ := Fl.family_le_coords U hUo hxsU hsat
   have hAo : IsOpen (cpt X x0 ⁻¹' U) := hUo.preimage (ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.cpt_cont X x0)
 
-  have hae : (fun z => ENNReal.ofReal (‖f (cpt X x0 z) - g (cpt X x0 z)‖ ^ 2) * Wfree Xa Fl G T (cpt X x0 z))
+  have hae : (fun z => ENNReal.ofReal (‖f (cpt X x0 z) - g (cpt X x0 z)‖ ^ 2) * GlobalTheory.FreeDivMetric.Wfree Xa Fl G T (cpt X x0 z))
       =ᵐ[(muF X x0).restrict FF] fun z => phiW Xa Fl G T (fun x => f x - g x) (cpt X x0 z) := by
     filter_upwards [ae_restrict_of_ae (GlobalTheory.Up.DivInFFPf.ae_exists_ne Xa Fl ho), ae_restrict_mem hF.1]
       with z hz hzF
@@ -1398,7 +1386,7 @@ theorem inFF_sub {T : ℕ} (hT1 : 1 ≤ T) (hnT : nd X ≤ T) {x0 : Frame X.Ψ r
           setLIntegral_const]
       _ < ⊤ := ENNReal.add_lt_top.2 ⟨ENNReal.mul_lt_top ENNReal.ofReal_lt_top hfi,
           ENNReal.mul_lt_top ENNReal.ofReal_lt_top (GlobalTheory.Up.DivInFFPf.muF_lt_top hM hfin ho hF)⟩
-  show ∫⁻ z in FF, ENNReal.ofReal (‖f (cpt X x0 z) - g (cpt X x0 z)‖ ^ 2) * Wfree Xa Fl G T (cpt X x0 z)
+  show ∫⁻ z in FF, ENNReal.ofReal (‖f (cpt X x0 z) - g (cpt X x0 z)‖ ^ 2) * GlobalTheory.FreeDivMetric.Wfree Xa Fl G T (cpt X x0 z)
     ∂muF X x0 < ⊤
   rw [lintegral_congr_ae hae]
   calc _ = ∫⁻ z in FF ∩ cpt X x0 ⁻¹' U ∪ FF \ cpt X x0 ⁻¹' U,

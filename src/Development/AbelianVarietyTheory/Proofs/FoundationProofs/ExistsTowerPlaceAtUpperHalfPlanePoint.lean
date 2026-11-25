@@ -11,8 +11,6 @@ public import Mathlib.Analysis.Complex.CauchyIntegral
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.KZ.H3
 
 open Filter Topology

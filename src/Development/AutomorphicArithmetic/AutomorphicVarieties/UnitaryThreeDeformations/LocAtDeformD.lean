@@ -35,66 +35,42 @@ private theorem Kl.ent_mul {I : Ideal R} {N A : Matrix (Fin 3) (Fin 3) R} (hN : 
   simp only [Matrix.mul_apply, Matrix.zero_apply]
   exact Finset.sum_eq_zero fun k _ => hN k j _ (hA i k)
 
-private theorem ent_mul_r {I : Ideal R} {B : Matrix (Fin 3) (Fin 3) R} (hB : EntIn I B) (A : Matrix (Fin 3) (Fin 3) R) :
-    EntIn I (B * A) := by
-  intro a b
-  simp only [Matrix.mul_apply]
-  exact Ideal.sum_mem _ fun k _ => Ideal.mul_mem_right _ _ (hB a k)
-
-private theorem ent_mul_l {I : Ideal R} {B : Matrix (Fin 3) (Fin 3) R} (hB : EntIn I B) (A : Matrix (Fin 3) (Fin 3) R) :
-    EntIn I (A * B) := by
-  intro a b
-  simp only [Matrix.mul_apply]
-  exact Ideal.sum_mem _ fun k _ => Ideal.mul_mem_left _ _ (hB k b)
-
-private theorem ent_add {I : Ideal R} {A B : Matrix (Fin 3) (Fin 3) R} (hA : EntIn I A) (hB : EntIn I B) :
-    EntIn I (A + B) := by
-  intro a b
-  rw [Matrix.add_apply]
-  exact I.add_mem (hA a b) (hB a b)
-
-private theorem ent_sub {I : Ideal R} {A B : Matrix (Fin 3) (Fin 3) R} (hA : EntIn I A) (hB : EntIn I B) :
-    EntIn I (A - B) := by
-  intro a b
-  rw [Matrix.sub_apply]
-  exact I.sub_mem (hA a b) (hB a b)
+private theorem entIn_iff {I : Ideal R} {A : Matrix (Fin 3) (Fin 3) R} :
+    EntIn I A ↔ (Ideal.Quotient.mk I).mapMatrix A = 0 := by
+  rw [RingHom.mapMatrix_apply]
+  exact ⟨fun h => Matrix.ext fun i j => Ideal.Quotient.eq_zero_iff_mem.2 (h i j),
+    fun h i j => Ideal.Quotient.eq_zero_iff_mem.1 (congrFun (congrFun h i) j)⟩
 
 private theorem key {I : Ideal R} {h h' ρ D γ N : Matrix (Fin 3) (Fin 3) R} (hh : h' * h = 1)
-    (h1 : EntIn I (h - 1)) (hρ : EntIn I (ρ - D)) (hγ : Kl I γ) (hγ' : EntIn I γ) (hN : Kl I N) (hN' : EntIn I N) :
+    (h1 : EntIn I (h - 1)) (hρ : EntIn I (ρ - D)) (hγ : Kl I γ) (hγ' : EntIn I γ)
+    (hN : Kl I N) (hN' : EntIn I N) :
     (1 + N) * h' * ((1 + γ) * ρ) * (h * (1 - N)) = h' * ρ * h + (γ * D + N * D - D * N) := by
-  have hE' : EntIn I (h' - 1) := by
-    have e : h' - 1 = h' * (0 - (h - 1)) := by
-      rw [zero_sub, mul_neg, mul_sub, hh, mul_one]
-      abel
-    rw [e]
-    exact ent_mul_l (ent_sub (fun _ _ => by simp) h1) h'
-  have hγρ : γ * ρ = γ * D := by
-    rw [← sub_eq_zero]
-    calc γ * ρ - γ * D = γ * (ρ - D) := by noncomm_ring
-      _ = 0 := Kl.mul_ent hγ hρ
-  have hh'γ : h' * γ = γ := by
-    rw [← sub_eq_zero]
-    calc h' * γ - γ = (h' - 1) * γ := by noncomm_ring
-      _ = 0 := Kl.ent_mul hγ hE'
-  have hγDh : γ * D * h = γ * D := by
-    rw [← sub_eq_zero]
-    calc γ * D * h - γ * D = γ * (D * (h - 1)) := by noncomm_ring
-      _ = 0 := Kl.mul_ent hγ (ent_mul_l h1 D)
-  have hY : EntIn I (h' * ρ * h - D) := by
-    have e : h' * ρ * h - D = (h' - 1) * (ρ * h) + ρ * (h - 1) + (ρ - D) := by noncomm_ring
-    rw [e]
-    exact ent_add (ent_add (ent_mul_r hE' _) (ent_mul_l h1 _)) hρ
-  have hNA : N * (h' * ρ * h) = N * D := by
-    rw [← sub_eq_zero]
-    calc N * (h' * ρ * h) - N * D = N * (h' * ρ * h - D) := by noncomm_ring
-      _ = 0 := Kl.mul_ent hN hY
-  have hAN : h' * ρ * h * N = D * N := by
-    rw [← sub_eq_zero]
-    calc h' * ρ * h * N - D * N = (h' * ρ * h - D) * N := by noncomm_ring
-      _ = 0 := Kl.ent_mul hN hY
+  let q := (Ideal.Quotient.mk I).mapMatrix (m := Fin 3)
+  have hqh : q h = 1 :=
+    sub_eq_zero.1 (by simpa only [map_sub, map_one] using (entIn_iff.1 h1 : q (h - 1) = 0))
+  have hqρ : q ρ = q D :=
+    sub_eq_zero.1 (by simpa only [map_sub] using (entIn_iff.1 hρ : q (ρ - D) = 0))
+  have hqh' : q h' = 1 := by
+    have e := congrArg q hh
+    rwa [map_mul, map_one, hqh, mul_one] at e
+  have hqN : q N = 0 := entIn_iff.1 hN'
+  have hγρ : γ * ρ = γ * D := sub_eq_zero.1 (by rw [← mul_sub]; exact Kl.mul_ent hγ hρ)
+  have hh'γ : h' * γ = γ := sub_eq_zero.1 (by
+    rw [show h' * γ - γ = (h' - 1) * γ by noncomm_ring]
+    exact Kl.ent_mul hγ (entIn_iff.2 (show q (h' - 1) = 0 by
+      rw [map_sub, map_one, hqh', sub_self])))
+  have hγDh : γ * D * h = γ * D := sub_eq_zero.1 (by
+    rw [show γ * D * h - γ * D = γ * (D * (h - 1)) by noncomm_ring]
+    exact Kl.mul_ent hγ (entIn_iff.2 (show q (D * (h - 1)) = 0 by
+      rw [map_mul, map_sub, map_one, hqh, sub_self, mul_zero])))
+  have hY : EntIn I (h' * ρ * h - D) := entIn_iff.2 (show q (h' * ρ * h - D) = 0 by
+    rw [map_sub, map_mul, map_mul, hqh', hqρ, hqh, one_mul, mul_one, sub_self])
+  have hNA : N * (h' * ρ * h) = N * D := sub_eq_zero.1 (by rw [← mul_sub]; exact Kl.mul_ent hN hY)
+  have hAN : h' * ρ * h * N = D * N := sub_eq_zero.1 (by rw [← sub_mul]; exact Kl.ent_mul hN hY)
   have hNγ : N * γ = 0 := Kl.mul_ent hN hγ'
-  have hγDN : γ * (D * N) = 0 := Kl.mul_ent hγ (ent_mul_l hN' D)
-  have hNDN : N * (D * N) = 0 := Kl.mul_ent hN (ent_mul_l hN' D)
+  have hDN : EntIn I (D * N) := entIn_iff.2 (show q (D * N) = 0 by rw [map_mul, hqN, mul_zero])
+  have hγDN : γ * (D * N) = 0 := Kl.mul_ent hγ hDN
+  have hNDN : N * (D * N) = 0 := Kl.mul_ent hN hDN
   have hM : h' * ((1 + γ) * ρ) * h = h' * ρ * h + γ * D := by
     rw [show h' * ((1 + γ) * ρ) * h = h' * ρ * h + h' * γ * ρ * h by noncomm_ring, hh'γ, hγρ, hγDh]
   calc (1 + N) * h' * ((1 + γ) * ρ) * (h * (1 - N))
@@ -202,11 +178,12 @@ private theorem condD_of (η : D →* ℤˣ) (Ψ : D →* Oˣ) (I : Subgroup D) 
       add_zero]
   refine ⟨h * U, ?_, ⟨?_, ?_⟩, ?_⟩
   · show EntIn (maximalIdeal R) (((h * U : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) - 1)
-    rw [Units.val_mul, hUv]
-    have e : (h : Matrix (Fin 3) (Fin 3) R) * (1 - N) - 1 = ((h : Matrix (Fin 3) (Fin 3) R) - 1) - (h : Matrix (Fin 3) (Fin 3) R) * N := by
-      noncomm_ring
-    rw [e]
-    exact ent_sub hh (ent_mul_l hNE _)
+    let q := (Ideal.Quotient.mk (maximalIdeal R)).mapMatrix (m := Fin 3)
+    have hqh : q h.1 = 1 :=
+      sub_eq_zero.1 (by simpa only [map_sub, map_one] using (entIn_iff.1 hh : q (h.1 - 1) = 0))
+    exact entIn_iff.2 (show q ((h * U).1 - 1) = 0 by
+      rw [Units.val_mul, hUv, map_sub, map_mul, map_sub, map_one, hqh,
+        (entIn_iff.1 hNE : q N = 0), sub_zero, mul_one, sub_self])
   · intro g hg a b hab
     have hne : a ≠ b := by
       rintro rfl

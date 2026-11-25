@@ -19,8 +19,6 @@ import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoeffProdRename
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G.Pend Formalism.MainNotions Formalism.L2.Ker Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert Formalism.UG Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.KerInert.SecondKernelInstances GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct Matrix
 
-noncomputable section
-
 namespace GlobalTheory.TwV.HalfDiffInt
 
 theorem prime_not_dvd_discr (D : D7) {p : ℕ} (hp : p.Prime) (h2 : p ∉ D.host.small) (hq : p ≠ D.host.q) (hd : p ≠ D.host.d) :
@@ -74,5 +72,3 @@ theorem halfDiffInv_integral_at_split : ∀ (D : D7) (T p : ℕ), GIdx D.host T 
   exact HalfDiffInt.inv_integral_off D hg.1 h2 hq hd
 
 end GlobalTheory.TwV
-
-end

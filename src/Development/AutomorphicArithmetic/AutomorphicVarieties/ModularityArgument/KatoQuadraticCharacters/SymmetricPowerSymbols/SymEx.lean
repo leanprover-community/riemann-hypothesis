@@ -848,20 +848,6 @@ private theorem nr_two (X : Tower Ω ε) {f g : X.K} (hf : Nr X f) (hg : Nr X g)
   exact ⟨A ∪ B, fun s hs => ⟨hA s fun z hz => hs z (Finset.mem_union_left _ hz),
     hB s fun z hz => hs z (Finset.mem_union_right _ hz)⟩⟩
 
-private theorem nr_adj (X : Tower Ω ε) (f : X.K) (hf : f ∈ IntermediateField.adjoin Ω {X.jK}) : Nr X f := by
-  induction hf using IntermediateField.adjoin_induction with
-  | mem x hx => rw [Set.mem_singleton_iff.1 hx]; exact nr_j X
-  | algebraMap c => exact nr_c X c
-  | add x y _ _ hx hy =>
-    obtain ⟨T, hT⟩ := nr_two X hx hy
-    exact ⟨T, fun s hs => by rw [map_add (f := _), (hT s hs).1, (hT s hs).2]⟩
-  | inv x _ hx =>
-    obtain ⟨T, hT⟩ := hx
-    exact ⟨T, fun s hs => by rw [map_inv₀, hT s hs]⟩
-  | mul x y _ _ hx hy =>
-    obtain ⟨T, hT⟩ := nr_two X hx hy
-    exact ⟨T, fun s hs => by rw [map_mul, (hT s hs).1, (hT s hs).2]⟩
-
 end
 
 theorem UpperTheory.V.Z.Kato.Sym.PC.galNear :

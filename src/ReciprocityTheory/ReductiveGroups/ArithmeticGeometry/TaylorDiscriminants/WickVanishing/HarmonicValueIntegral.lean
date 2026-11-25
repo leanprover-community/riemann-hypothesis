@@ -15,14 +15,6 @@ namespace ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Val
 
 open ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab
 
-
-private theorem mvPowerSeries_subst_C {σ τ k : Type} [CommRing k] {a : σ → MvPowerSeries τ k} (hs : HasSubst a) (c : k) :
-    subst a (C c : MvPowerSeries σ k) = (C c : MvPowerSeries τ k) := by
-  have e : ∀ (ρ : Type), (C c : MvPowerSeries ρ k) = c • (1 : MvPowerSeries ρ k) := fun ρ => by
-    first
-    | rw [MvPowerSeries.smul_eq_C_mul, mul_one]
-  rw [e σ, e τ, ← coe_substAlgHom hs, map_smul, map_one]
-
 theorem const_subst {σ τ k : Type} [CommRing k] [Finite σ] {a : σ → MvPowerSeries τ k}
     (ha : ∀ s, constantCoeff (a s) = 0) (G : MvPowerSeries σ k) : constantCoeff (subst a G) = constantCoeff G := by
   have hs : HasSubst a := MvPowerSeries.hasSubst_of_constantCoeff_zero ha
@@ -31,7 +23,7 @@ theorem const_subst {σ τ k : Type} [CommRing k] [Finite σ] {a : σ → MvPowe
     first
     | (apply constantCoeff_subst_eq_zero <;> assumption)
   have e : subst a (G - C (constantCoeff G)) = subst a G - C (constantCoeff G) := by
-    rw [← coe_substAlgHom hs, map_sub, coe_substAlgHom hs, mvPowerSeries_subst_C hs]
+    rw [← coe_substAlgHom hs, map_sub, coe_substAlgHom hs, MvPowerSeries.subst_C]
   rw [e, map_sub, constantCoeff_C, sub_eq_zero] at h1
   exact h1
 
@@ -137,7 +129,7 @@ theorem E_nablaPoly (B : FB R d O) (h : PS k 2 d) (hax : ev (n := 1) ![0, pt k d
 
   rw [← coe_substAlgHom hb, map_sum]
   refine Finset.sum_congr rfl (fun n _ => ?_)
-  rw [map_mul, coe_substAlgHom hb, mvPowerSeries_subst_C hb, E_foldr B h hax m u n]
+  rw [map_mul, coe_substAlgHom hb, MvPowerSeries.subst_C, E_foldr B h hax m u n]
 
 end Inter
 

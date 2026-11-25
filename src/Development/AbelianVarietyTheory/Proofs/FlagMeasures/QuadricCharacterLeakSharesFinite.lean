@@ -168,7 +168,6 @@ theorem exists_norm_one_orth (S : Subring E) (σ : E →+* E) (φ : o →+* E) (
   · simp only [map_mul, map_sub]
     ring
 
-
 omit [IsLocalRing o] in
 theorem exists_primitive [IsArtinianRing E] [IsReduced E] (S : Subring E) [IsPrincipalIdealRing S]
     (hid : ∀ e : E, e * e = e → e ∈ S) {y0 y1 y2 : E} (hy0 : y0 ∈ S) (hy1 : y1 ∈ S)
@@ -549,7 +548,6 @@ private theorem exists_nat_mul_mem_integer (x : F) : ∃ N : ℕ, 0 < N ∧ (N :
   rw [this]
   exact (w * ((u⁻¹ : (𝒪[F])ˣ) : 𝒪[F])).2
 
-
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.TraceChar.exists_trace_char : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∃ ψ : AddChar F ℂ, (∀ x : F, ‖ψ x‖ = 1) ∧ (∀ x : F, (∀ y : 𝒪[F], ψ (x * y) = 1) ↔ x ∈ 𝒪[F]) ∧ ∀ (y : E) (c : F), y + L.cj y = algebraMap F E c → L.psi0 y = ψ c := by
@@ -782,7 +780,6 @@ private theorem card_filter_pow_dvd_rep_eq_resQ_pow {ϖ : 𝒪[F]} (hϖ : Irredu
   change Nat.card (LinearMap.range f) = _
   rw [← Nat.card_congr (f.quotKerEquivRange).toEquiv, ker_mkQ_comp_mulLeft_pow_eq_span hϖ n k, card_quotient_pow_eq_resQ_pow hϖ]
 
-
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
@@ -913,14 +910,8 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
 
-theorem hf_add_left (x y z : Fin n → E) : hf L Hm (x + y) z = hf L Hm x z + hf L Hm y z := by
-  simp [hf, add_mul, Finset.sum_add_distrib]
-
 theorem hf_add_right (x y z : Fin n → E) : hf L Hm x (y + z) = hf L Hm x y + hf L Hm x z := by
   simp [hf, mul_add, Finset.sum_add_distrib]
-
-theorem hf_smul_left (c : E) (x z : Fin n → E) : hf L Hm (c • x) z = c * hf L Hm x z := by
-  simp [hf, Finset.mul_sum, mul_assoc]
 
 theorem hf_smul_right (c : E) (x z : Fin n → E) : hf L Hm x (c • z) = L.cj c * hf L Hm x z := by
   simp only [hf, Finset.mul_sum, Pi.smul_apply, smul_eq_mul, map_mul]
@@ -933,14 +924,7 @@ theorem hf_sum_left {ι : Type*} (s : Finset ι) (x : ι → Fin n → E) (z : F
     hf L Hm (∑ a ∈ s, x a) z = ∑ a ∈ s, hf L Hm (x a) z := by
   induction s using Finset.induction_on with
   | empty => simp [hf_zero_left]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, hf_add_left, ih]
-
-theorem cj_hf (h : IsHerm L Hm) (x y : Fin n → E) : L.cj (hf L Hm x y) = hf L Hm y x := by
-  have h' : ∀ i j, L.cj (Hm j i) = Hm i j := fun i j => congrFun (congrFun h i) j
-
-  simp only [hf, map_sum, map_mul, L.cj_cj, h']
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, GlobalTheory.HL.Eichler.hf_add_l, ih]
 
 end
 
@@ -978,12 +962,12 @@ theorem norm_gauss_sum_le : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologic
   let φ : UU →+ (Fin d → L.O) :=
     { toFun := fun m a => ⟨hf L Hm m (e a), hUU _ m.2 _ (heU a)⟩
       map_zero' := funext fun a => Subtype.ext (hf_zero_left L Hm _)
-      map_add' := fun x y => funext fun a => Subtype.ext (hf_add_left L Hm _ _ _) }
+      map_add' := fun x y => funext fun a => Subtype.ext (GlobalTheory.HL.Eichler.hf_add_l L Hm _ _ _) }
   have hφ : Function.Surjective φ := fun c => by
     refine ⟨⟨∑ b, (c b : E) • e b, UU.sum_mem fun b _ => hsm _ (c b).2 _ (heU b)⟩,
       funext fun a => Subtype.ext ?_⟩
     show hf L Hm (∑ b, (c b : E) • e b) (e a) = c a
-    simp [hf_sum_left, hf_smul_left, hee]
+    simp [hf_sum_left, GlobalTheory.HL.Eichler.hf_smul_l, hee]
   let Q : AddSubgroup UU := P₀.comap φ
   have hQ : ∀ x : UU, x ∈ Q ↔
       ∀ a, ∃ c ∈ L.O, hf L Hm x (e a) = algebraMap F E ((ϖ : F) ^ i) * c := fun x => hP₀ (φ x)
@@ -1005,7 +989,7 @@ theorem norm_gauss_sum_le : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologic
     obtain ⟨y, hy, h⟩ := (hP x).1 hx
     refine ⟨algebraMap F E ((ϖ : F) ^ k) * hf L Hm y (e a),
       L.O.mul_mem (hO (ϖ ^ k)) (hUU _ hy _ (heU a)), ?_⟩
-    rw [h, hf_smul_left, pow_add, map_mul, mul_assoc]
+    rw [h, GlobalTheory.HL.Eichler.hf_smul_l, pow_add, map_mul, mul_assoc]
   have hιinj : Function.Injective (Subtype.val : UU → Fin n → E) := Subtype.val_injective
   have hrange : ∀ u ∈ R, u ∈ Set.range (Subtype.val : UU → Fin n → E) :=
     fun u hu => ⟨⟨u, hRO u hu⟩, rfl⟩
@@ -1035,10 +1019,10 @@ theorem norm_gauss_sum_le : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologic
           = algebraMap F E ((u₀ : 𝒪[F]) : F) * algebraMap F E ((ϖ : F) ^ k)
             * (hf L Hm c (u + p) + hf L Hm u c) := by
         have e1 : hf L Hm p (u + p) = algebraMap F E ((ϖ : F) ^ (i + k)) * hf L Hm c (u + p) := by
-          rw [← hf_smul_left, ← hpc]
+          rw [← GlobalTheory.HL.Eichler.hf_smul_l, ← hpc]
         have e2 : hf L Hm u p = algebraMap F E ((ϖ : F) ^ (i + k)) * hf L Hm u c := by
           rw [hpc, hf_smul_right, AlgEquiv.commutes]
-        rw [hf_add_left, e1, hf_add_right L Hm u u p, e2, ← hτ, pow_add, map_mul]
+        rw [GlobalTheory.HL.Eichler.hf_add_l, e1, hf_add_right L Hm u u p, e2, ← hτ, pow_add, map_mul]
         ring
       rw [this]
       exact L.O.mul_mem (L.O.mul_mem (hO _) (hO (ϖ ^ k)))
@@ -1073,13 +1057,13 @@ theorem norm_gauss_sum_le : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologic
         = s * y + (t * nrm (u + h) - t * nrm u) := by
       apply hinj
       have h3 : hf L Hm v h = algebraMap F E y * b * L.cj z := by
-        rw [hz, cj_hf L Hm hH.1]
-        exact hf_smul_left L Hm _ _ _
+        rw [hz, GlobalTheory.HL.DivisibleGauss.form_cj L Hm hH.1]
+        exact GlobalTheory.HL.Eichler.hf_smul_l L Hm _ _ _
       have h3' : hf L Hm h v = algebraMap F E y * L.cj b * z := by
-        rw [← cj_hf L Hm hH.1, h3]
+        rw [← GlobalTheory.HL.DivisibleGauss.form_cj L Hm hH.1, h3]
         simp only [map_mul, AlgEquiv.commutes, L.cj_cj]
       simp only [map_mul, AlgEquiv.commutes, L.cj_cj] at hs
-      simp only [map_sub, map_add (algebraMap F E), map_mul, hnrm, hs, hf_add_left, hf_add_right,
+      simp only [map_sub, map_add (algebraMap F E), map_mul, hnrm, hs, GlobalTheory.HL.Eichler.hf_add_l, hf_add_right,
         h3, h3']
       ring
     have h4 : (u : Fin n → E) + v + h - (u + v) = u + h - u := by abel
@@ -1374,7 +1358,6 @@ private lemma ideal_le_pi_or_le_cj_pi_of_proper (L : _root_.Formalism.MainNotion
   show (z : E) * y = 1
   rw [hzE, hy1]
 
-
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.UnramOrder.proper_ideals : ∀ {F : Type} [Field F] [ValuativeRel F]
@@ -1568,7 +1551,7 @@ theorem exists_norm (hH : IsHermND L Hm) (ϖ : 𝒪[F]) (hϖ : Irreducible ϖ)
       ∀ (a : ℕ), ∀ u ∈ UU, (ϖ ^ a ∣ Q u ↔ ∃ c : 𝒪[F], hf L Hm u u = algebraMap F E ((ϖ : F) ^ a * c)) := by
   obtain ⟨-, -, -, -, hint, -, -, -⟩ := GlobalTheory.UnramOrder.order_facts L ϖ hϖ
   have hinj := GlobalTheory.UnramOrder.algebraMap_inj L
-  choose nrm hnrm using fun u : Fin n → E => (L.cj_fix _).1 (cj_hf L Hm hH.1 u u)
+  choose nrm hnrm using fun u : Fin n → E => (L.cj_fix _).1 (GlobalTheory.HL.DivisibleGauss.form_cj L Hm hH.1 u u)
   have hQ : ∀ u ∈ UU, nrm u ∈ 𝒪[F] := fun u hu => (hint _).1 (by rw [hnrm]; exact hUU u hu u hu)
   refine ⟨nrm, fun u => if h : nrm u ∈ 𝒪[F] then ⟨nrm u, h⟩ else 0, hnrm, fun u hu => ?_,
     fun a u hu => ?_⟩
@@ -1779,7 +1762,7 @@ theorem integral_of_reps (ϖ : 𝒪[F]) (hϖ : Irreducible ϖ) (Λ : Submodule L
       ring
   refine key M fun u hu => ?_
   have h1 := (hΛ.2 u).2 (hUΛ hu) _ hMy
-  rw [hf_smul_left] at h1
+  rw [GlobalTheory.HL.Eichler.hf_smul_l] at h1
   rw [mul_left_comm]
   exact L.O.mul_mem (L.O.pow_mem hp N) h1
 

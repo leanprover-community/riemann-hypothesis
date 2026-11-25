@@ -210,19 +210,20 @@ theorem charHom_hom_apply (W : Subgroup Γ) (M : Rep.{u} (ULift.{u} ℤ) Γ)
     (charHom W M hW χ).hom m = (ULift.up (χ m) : zmodRep.{u} W n) :=
   rfl
 
-theorem exists_injective_biproduct_coind [NeZero n] (M : Rep.{u} (ULift.{u} ℤ) Γ)
-    [IsDiscreteRep M] [Finite M] (hM : ∀ m : M, n • m = 0) :
-    ∃ (W : OpenSubgroup Γ) (J : Type) (_ : Fintype J)
+theorem exists_injective_biproduct_coind_le [NeZero n] (U₀ : OpenSubgroup Γ)
+    (M : Rep.{u} (ULift.{u} ℤ) Γ) [IsDiscreteRep M] [Finite M] (hM : ∀ m : M, n • m = 0) :
+    ∃ (W : OpenSubgroup Γ) (_ : W ≤ U₀) (J : Type) (_ : Fintype J)
       (i : M ⟶ ⨁ fun _ : J => Rep.coind (W : Subgroup Γ).subtype (zmodRep.{u} (W : Subgroup Γ) n)),
       Function.Injective i.hom := by
-  let W := fixingOpenSubgroup M
+  let W := fixingOpenSubgroup M ⊓ U₀
   have hW : ∀ w ∈ (W : Subgroup Γ), ∀ m : M, M.ρ w m = m :=
-    fun w hw m => fixingOpenSubgroup_apply M hw m
+    fun w hw m => fixingOpenSubgroup_apply M
+      ((inf_le_left : fixingOpenSubgroup M ⊓ U₀ ≤ fixingOpenSubgroup M) hw) m
   let e := (Finite.equivFin (M →+ ZMod n)).symm
   let F : ∀ _ : Fin (Nat.card (M →+ ZMod n)),
       M ⟶ Rep.coind (W : Subgroup Γ).subtype (zmodRep.{u} (W : Subgroup Γ) n) :=
     fun j => Rep.resCoindToHom (W : Subgroup Γ).subtype M _ (charHom (W : Subgroup Γ) M hW (e j))
-  refine ⟨W, Fin (Nat.card (M →+ ZMod n)), inferInstance, biproduct.lift F, ?_⟩
+  refine ⟨W, inf_le_right, Fin (Nat.card (M →+ ZMod n)), inferInstance, biproduct.lift F, ?_⟩
   intro a b hab
   by_contra hne
   obtain ⟨χ, hχ⟩ := zmod_exists_apply_ne_zero hM (sub_ne_zero.2 hne)
@@ -238,6 +239,14 @@ theorem exists_injective_biproduct_coind [NeZero n] (M : Rep.{u} (ULift.{u} ℤ)
   rw [charHom_hom_apply, charHom_hom_apply] at h1
   change χ a = χ b at h1
   rw [map_sub, h1, sub_self]
+
+theorem exists_injective_biproduct_coind [NeZero n] (M : Rep.{u} (ULift.{u} ℤ) Γ)
+    [IsDiscreteRep M] [Finite M] (hM : ∀ m : M, n • m = 0) :
+    ∃ (W : OpenSubgroup Γ) (J : Type) (_ : Fintype J)
+      (i : M ⟶ ⨁ fun _ : J => Rep.coind (W : Subgroup Γ).subtype (zmodRep.{u} (W : Subgroup Γ) n)),
+      Function.Injective i.hom :=
+  let ⟨W, _, J, hJ, i, hi⟩ := exists_injective_biproduct_coind_le ⊤ M hM
+  ⟨W, J, hJ, i, hi⟩
 
 end Embedding
 

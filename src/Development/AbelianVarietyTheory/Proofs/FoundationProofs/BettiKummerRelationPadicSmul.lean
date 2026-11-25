@@ -7,8 +7,6 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 @[expose] public section
 
-noncomputable section
-
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ GlobalTheory.KZ.BettiB
 

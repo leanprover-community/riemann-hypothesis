@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NatCastMe
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.TaylorLogMetric GlobalTheory.KerStd Classical
 
 namespace GlobalTheory.KerStd

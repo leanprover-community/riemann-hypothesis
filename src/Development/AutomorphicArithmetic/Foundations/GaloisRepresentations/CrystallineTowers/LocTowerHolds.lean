@@ -129,7 +129,7 @@ theorem UpperTheory.Gal.Seam.crysStep :
   intro hCS hNB hLT hBC hIM hGO hMI hSA hGC E Ω _ _ _ _ _ l _ H θ hN dd ρ hc hp w hw C hOn P AI hT A hA O _ _ _ Bw hj
   obtain ⟨ρ₀, hM, hG⟩ := hp
   obtain ⟨φ, hφ, -⟩ := hIM E Ω l w A hA O Bw hj
-  haveI := Bw.Kw.2
+  have := Bw.Kw.2
   have hN' := hNB E _ (kOf Bw) H hN
   obtain ⟨ρ₁, hM₁, hρ⟩ := hLT l E ↥Bw.Kw.1 Ω (PadicAlgCl l) (kOf Bw) Bw.j (fun _ => rfl) H hN (Om l) θ dd ρ₀ hM
   obtain ⟨C', u, -, -, hOn', -, -⟩ := hBC E ↥Bw.Kw.1 (Ow w) ↥(OK l Bw.Kw.1) (Om l) (kOf Bw) φ hφ H θ C
@@ -444,7 +444,7 @@ private theorem core {Q L : Type*} [Field Q] [Field L] [Algebra Q L] {V : ℤ �
     push_cast at hn
     omega
   have hnegπ : ∀ (n : ℤ) w, n < 0 → π n w = 0 := fun n w hn => by
-    haveI := hneg n hn
+    have := hneg n hn
     generalize π n w = u
     induction u using TensorProduct.induction_on with
     | zero => rfl
@@ -522,16 +522,16 @@ theorem UpperTheory.Gal.Seam.matInS :
   intro hV hP hN l _ K H θ hH C hC d ρ₁ hM
   obtain ⟨hinj, hle, heq⟩ := hP l K.1 (Om l) H θ hH C hC
   obtain ⟨b, hb⟩ := hM
-  haveI hpr : IsProper C.p := by
+  have hpr : IsProper C.p := by
     obtain ⟨n, i, hi, e⟩ := C.proj
-    haveI := hi
-    haveI := ReciprocityTheory.ChartRestriction.G.Geo.Tor.isProper_str ↥(OK l K.1) n
+    have := hi
+    have := ReciprocityTheory.ChartRestriction.G.Geo.Tor.isProper_str ↥(OK l K.1) n
     rw [← e]
     infer_instance
-  haveI hq : IsProper (mod C).q := by
+  have hq : IsProper (mod C).q := by
     change IsProper (pullback.snd C.p _)
     infer_instance
-  haveI hg : IsProper (pullback.snd (mod C).q (Spec.map (CommRingCat.ofHom (algebraMap ↥K.1 (PadicAlgCl l))))) := inferInstance
+  have hg : IsProper (pullback.snd (mod C).q (Spec.map (CommRingCat.ofHom (algebraMap ↥K.1 (PadicAlgCl l))))) := inferInstance
   have hunit : IsUnit ((l : ℕ) : PadicAlgCl l) :=
     (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero).isUnit
   have hfin := fun n : ℤ => (hV l (PadicAlgCl l) hunit
@@ -569,7 +569,7 @@ open UpperTheory.Gal.Seam
 private theorem tot_inj (hV : VInv) (l : ℕ) [Fact l.Prime] {W Z : Scheme.{0}} (c : W ⟶ Z) (G : Type) [Group G] [Finite G]
     (a : G → (W ⟶ W)) (h : IsGalois c G a) : Function.Injective (pullTot l (sch.map c)) := by
   obtain ⟨h1, h2, h3, -, -, hs, hi⟩ := h
-  letI : Fintype G := Fintype.ofFinite G
+  let : Fintype G := Fintype.ofFinite G
   exact (DirectSum.lmap_injective _).2 fun n => (hV l c G a hs hi n 0).1
 
 private theorem tot_range (hV : VInv) (l : ℕ) [Fact l.Prime] {W Z : Scheme.{0}} (c : W ⟶ Z) (G : Type) [Group G] [Finite G]
@@ -577,7 +577,7 @@ private theorem tot_range (hV : VInv) (l : ℕ) [Fact l.Prime] {W Z : Scheme.{0}
     (hx : ∀ g, pullTot l (sch.map (a g)) x = x) : x ∈ LinearMap.range (pullTot l (sch.map c)) := by
   classical
   obtain ⟨h1, h2, h3, -, -, hs, hi⟩ := h
-  letI : Fintype G := Fintype.ofFinite G
+  let : Fintype G := Fintype.ofFinite G
   have key : ∀ n : ℤ, x n ∈ LinearMap.range (pullHQ l (sch.map c) n 0) := fun n => by
     rw [(hV l c G a hs hi n 0).2]
     refine (Submodule.mem_iInf _).2 fun g => ?_
@@ -606,7 +606,7 @@ private theorem corr_iso (hV : VInv) (l : ℕ) [Fact l.Prime] {Z Y : Scheme.{0}}
     have : σ j = c ≫ inv s := by rw [← hσ j]; simp
     change pt ≫ σ j = pt ≫ c ≫ inv s
     rw [this])
-  haveI : Unique J := ⟨⟨j₀⟩, hall⟩
+  have : Unique J := ⟨⟨j₀⟩, hall⟩
   refine LinearMap.ext fun x => hinj ?_
   rw [hx x, Fintype.sum_unique]
   have e : σ default ≫ s ≫ b = c ≫ b := by rw [← Category.assoc, hσ]
@@ -646,8 +646,8 @@ private theorem inv_mem (hV : VInv) (l : ℕ) [Fact l.Prime] {W Z : Scheme.{0}} 
     (b : G → (W ⟶ W)) (hG : IsGalois f G b) (L : Type) [Field L] [Algebra ℚ_[l] L] (y : L ⊗[ℚ_[l]] Htot l (sch.obj W))
     (hinv : ∀ δ, (pullTot l (sch.map (b δ))).baseChange L y = y) :
     y ∈ LinearMap.range ((pullTot l (sch.map f)).baseChange L) := by
-  letI : Fintype G := Fintype.ofFinite G
-  haveI : CharZero L := charZero_of_injective_algebraMap (algebraMap ℚ_[l] L).injective
+  let : Fintype G := Fintype.ofFinite G
+  have : CharZero L := charZero_of_injective_algebraMap (algebraMap ℚ_[l] L).injective
   have hmul : ∀ δ δ' m, pullTot l (sch.map (b δ')) (pullTot l (sch.map (b δ)) m) = pullTot l (sch.map (b (δ' * δ))) m := by
     intro δ δ' m
     rw [hG.2.2.2.2.1, Functor.map_comp, pullTot_comp]
@@ -669,10 +669,10 @@ private theorem inv_mem (hV : VInv) (l : ℕ) [Fact l.Prime] {W Z : Scheme.{0}} 
 private theorem empty_mem (l : ℕ) [Fact l.Prime] {W Z : Scheme.{0}} [IsEmpty ↑W] (f : W ⟶ Z) (hs : Surjective f) (L : Type)
     [Field L] [Algebra ℚ_[l] L] (y : L ⊗[ℚ_[l]] Htot l (sch.obj W)) :
     y ∈ LinearMap.range ((pullTot l (sch.map f)).baseChange L) := by
-  haveI : IsEmpty ↑Z := ⟨fun z => by
+  have : IsEmpty ↑Z := ⟨fun z => by
     obtain ⟨w, -⟩ := hs.surj z
     exact isEmptyElim w⟩
-  haveI : IsIso f := isIso_of_isEmpty _
+  have : IsIso f := isIso_of_isEmpty _
   have hsur : ∀ m, (LinearMap.id : Htot l (sch.obj W) →ₗ[ℚ_[l]] _) m ∈ LinearMap.range (pullTot l (sch.map f)) := fun m => by
     refine ⟨pullTot l (sch.map (inv f)) m, ?_⟩
     have e : pullTot l (sch.map f) ∘ₗ pullTot l (sch.map (inv f)) = LinearMap.id := by
@@ -701,7 +701,7 @@ theorem UpperTheory.Gal.Seam.pieceInS :
     by_cases hZ : Nonempty ↑(H.geomZ (PadicAlgCl l))
     · have hop' : ∀ δ, ∃ g, hop l H (PadicAlgCl l) g = pullTot l (sch.map (b δ)) ∧ θ g = 1 := fun δ => by
         obtain ⟨g, hiso, ht, hθ⟩ := C.fix δ
-        haveI : IsIso (H.sΩ (PadicAlgCl l) g) := GlobalTheory.GalV.GaloisTowerConditions.geomMap_isIso (PadicAlgCl l) (H.s g) rfl
+        have : IsIso (H.sΩ (PadicAlgCl l) g) := GlobalTheory.GalV.GaloisTowerConditions.geomMap_isIso (PadicAlgCl l) (H.s g) rfl
         have b1 : b δ ≫ pullback.fst H.q g₀ = pullback.fst H.q g₀ ≫ C.a δ := UpperTheory.Gal.G3.bcMap_fst g₀ (C.a δ) (ha δ)
         have b2 : b δ ≫ pullback.snd H.q g₀ = pullback.snd H.q g₀ := UpperTheory.Gal.G3.bcMap_snd g₀ (C.a δ) (ha δ)
         have t' : H.tΩ (PadicAlgCl l) g = UpperTheory.Gal.G3.bcMap g₀ (H.t g) (H.comm g) := rfl
@@ -720,7 +720,7 @@ theorem UpperTheory.Gal.Seam.pieceInS :
         rw [hθ, one_smul, e] at h1
         exact h1
       exact inv_mem hV l _ C.Δ b hG L y hinv
-    · haveI : IsEmpty ↑(H.geomZ (PadicAlgCl l)) := not_nonempty_iff.1 hZ
+    · have : IsEmpty ↑(H.geomZ (PadicAlgCl l)) := not_nonempty_iff.1 hZ
       exact empty_mem l _ hG.2.2.1 L y
   · change pullTot l (sch.map _) ∘ₗ pullTot l (sch.map _) = pullTot l (sch.map _) ∘ₗ pullTot l (sch.map _)
     rw [← pullTot_comp, ← pullTot_comp, ← Functor.map_comp, ← Functor.map_comp]
@@ -792,7 +792,7 @@ theorem UpperTheory.Gal.Seam.subAdm : UpperTheory.Gal.Seam.SubAdm := by
     rw [h0]
     exact isAdmP_block P (GK Bw.Kw) e R (fun n => (hR n).2.2)
   let L : FinExt l := Bw.LL
-  haveI := L.2
+  have := L.2
   let r' : ↥(GK Bw.Kw) →* GL (Fin D) ↥L.1 :=
     (Units.map (RingHom.mapMatrix (algebraMap ℚ_[l] ↥L.1)).toMonoidHom).comp ρ
   have hr' : ∀ σ i j, (r' σ).val i j = algebraMap ℚ_[l] ↥L.1 ((ρ σ).val i j) := fun σ i j => rfl
@@ -914,9 +914,9 @@ theorem comp (hA : A11) {l : ℕ} [Fact l.Prime] {E : Spc} {n i : ℤ} (y : Hl l
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
   clear h
   induction d with
-  | zero => haveI := nz l m; exact (hA (l ^ m) (l ^ m) dvd_rfl E).2.2.1 n i (y.1 m)
+  | zero => have := nz l m; exact (hA (l ^ m) (l ^ m) dvd_rfl E).2.2.1 n i (y.1 m)
   | succ d ih =>
-    haveI := nz l (m + (d + 1))
+    have := nz l (m + (d + 1))
     rw [← (hA (l ^ (m + (d + 1))) (l ^ (m + d)) (pow_dvd_pow l (by omega)) E).2.2.2 (l ^ m)
       (pow_dvd_pow l (by omega)) n i (y.1 _)]
     rw [show red (l ^ (m + (d + 1))) (l ^ (m + d)) E n i (y.1 (m + (d + 1))) = y.1 (m + d) from y.2 (m + d)]

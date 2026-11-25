@@ -14,8 +14,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsRowFrame
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.TopStep
 
-noncomputable section
-
 namespace GlobalTheory.TopLawSym
 
 open GlobalTheory.DatumLaw GlobalTheory.TwU
@@ -196,5 +194,3 @@ theorem phiTop_target_sym : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : C
   exact phiGS_target hq _ _ hm (rank_X'_eq R) (r_le_X' R) ht a4.le j h x
 
 end GlobalTheory.TopLawSym
-
-end

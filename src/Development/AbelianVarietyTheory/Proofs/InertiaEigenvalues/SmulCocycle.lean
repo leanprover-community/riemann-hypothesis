@@ -68,12 +68,6 @@ theorem zl_wcb_injective : Function.Injective (algebraMap ℤ_[l] (WCb l)) := by
   · exact ((PadicInt.unitCoeff h0).isUnit.map _).ne_zero h
   · exact WittVector.p_nonzero l (Cb l) (eq_zero_of_pow_eq_zero h)
 
-theorem ol_rw_injective (LL : FinExt l) : Function.Injective (algebraMap ↥(OL LL) (RW LL)) :=
-  by
-    haveI := GlobalTheory.Cyc.FontW.free_OL LL
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact Algebra.TensorProduct.includeLeft_injective (S := ↥(OL LL)) zl_wcb_injective
-
 theorem fixed_RW (LL : FinExt l) (b : RW LL) (hb : φRW LL b = b) :
     ∃ x : ↥(OL LL), b = algebraMap ↥(OL LL) (RW LL) x :=
   by
@@ -131,7 +125,7 @@ end Gen
 
 theorem main : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; ∀ (e : W.DD W.one) (t : ↥W.one.L.T), W.N W.one = Submodule.span (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) {e} → W.φD W.one e = e → Submodule.span ↥(OL LL) {(t : W.one.V)} = W.one.L.T → ∃ u : (↥(OL LL))ˣ, E.jD W.one e = ((u : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (1 : WCb l) : RW LL) ⊗ₜ[↥(OL LL)] t := by
   intro D HW F l _ K s LL h W E e t hN hφ ht
-  exact of_tie E Subtype.val_injective (ol_rw_injective LL) (fixed_RW LL)
+  exact of_tie E Subtype.val_injective (GlobalTheory.Cyc.DictKs.algebraMap_RW_inj LL) (fixed_RW LL)
     (GlobalTheory.Cyc.FontW.as_TW LL W.one).2 e t hN hφ ht
 
 end GlobalTheory.Cyc.UnitGen

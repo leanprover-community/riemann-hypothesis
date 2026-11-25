@@ -13,29 +13,12 @@ section SlopeTestRemainingChoices
 variable {O : Type} [CommRing O] [IsLocalRing O] {C : Type} [CommRing C] [Algebra O C]
   {K : Ideal C} (u : K →ₗ[O] ResidueField O)
 
-private theorem evk_add {x y : C} (hx : x ∈ K) (hy : y ∈ K) :
-    evK K u (x + y) = evK K u x + evK K u y := by
-  rw [evK_of_mem u hx, evK_of_mem u hy, evK_of_mem u (K.add_mem hx hy), ← map_add (f := _)]
-  rfl
-
-private theorem evk_sub {x y : C} (hx : x ∈ K) (hy : y ∈ K) :
-    evK K u (x - y) = evK K u x - evK K u y := by
-  rw [evK_of_mem u hx, evK_of_mem u hy, evK_of_mem u (K.sub_mem hx hy), ← map_sub]
-  rfl
-
-private theorem evk_neg {x : C} (hx : x ∈ K) : evK K u (-x) = - evK K u x := by
-  rw [evK_of_mem u hx, evK_of_mem u (K.neg_mem hx), ← map_neg]
-  rfl
-
 private theorem evk_sum {ι : Type} (s : Finset ι) (f : ι → C) (hf : ∀ i, f i ∈ K) :
     evK K u (∑ i ∈ s, f i) = ∑ i ∈ s, evK K u (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    rw [Finset.sum_empty, Finset.sum_empty, evK_of_mem u K.zero_mem]
-    exact map_zero u
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, evk_add u (hf a) (K.sum_mem fun i _ => hf i), ih]
+  have hsum : (⟨∑ i ∈ s, f i, K.sum_mem fun i _ => hf i⟩ : K) = ∑ i ∈ s, ⟨f i, hf i⟩ :=
+    Subtype.ext (Submodule.coe_sum K (fun i => ⟨f i, hf i⟩) s).symm
+  rw [evK_of_mem u (K.sum_mem fun i _ => hf i), hsum, map_sum]
+  exact Finset.sum_congr rfl fun i _ => (evK_of_mem u (hf i)).symm
 
 private theorem evk_mul [IsCO O C] (hK : maximalIdeal C * K = ⊥) (a : C) {x : C} (hx : x ∈ K) :
     evK K u (a * x) = res O C a * evK K u x := by
@@ -98,7 +81,9 @@ private theorem map_thetaLie [IsCO O C] (hK : maximalIdeal C * K = ⊥) {Z : Mat
   unfold thetaLie
   rw [← e]
   ext i j
-  exact evk_neg u (mem_right (mem_left hT _) _ i j)
+  have h := mem_right (mem_left hT (Jmat C n)) (Jmat C n) i j
+  simp only [Matrix.map_apply, Matrix.neg_apply, evK_of_mem u (K.neg_mem h), evK_of_mem u h]
+  exact map_neg u ⟨_, h⟩
 
 end SlopeTestRemainingChoices
 
@@ -115,9 +100,13 @@ theorem UpperTheory.V.Fr.pr_evk :
     fun A => ⟨fun i j => ⟨mem_left hZ A i j, mem_right hZ A i j⟩, map_left u hK hZ A, map_right u hK hZ A⟩,
     fun x => ?_⟩
   · ext i j
-    exact evk_add u (hZ i j) (hZ' i j)
+    simp only [Matrix.map_apply, Matrix.add_apply, evK_of_mem u (K.add_mem (hZ i j) (hZ' i j)),
+      evK_of_mem u (hZ i j), evK_of_mem u (hZ' i j)]
+    exact map_add u ⟨_, hZ i j⟩ ⟨_, hZ' i j⟩
   · ext i j
-    exact evk_sub u (hZ i j) (hZ' i j)
+    simp only [Matrix.map_apply, Matrix.sub_apply, evK_of_mem u (K.sub_mem (hZ i j) (hZ' i j)),
+      evK_of_mem u (hZ i j), evK_of_mem u (hZ' i j)]
+    exact map_sub u ⟨_, hZ i j⟩ ⟨_, hZ' i j⟩
   have hY : ∀ i j, (if x.right = 1 then Z else thetaLie Z) i j ∈ K := fun i j => by
     split_ifs
     · exact hZ i j

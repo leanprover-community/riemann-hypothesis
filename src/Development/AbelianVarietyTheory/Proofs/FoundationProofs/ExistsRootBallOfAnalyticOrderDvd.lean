@@ -19,7 +19,6 @@ public import Mathlib.Analysis.Meromorphic.Divisor
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups TensorProduct
 
-noncomputable section
 namespace GlobalTheory.KZ.RootDisc
 
 open Metric Filter Topology

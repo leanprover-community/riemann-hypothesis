@@ -28,15 +28,6 @@ theorem hermForm_conj_symm_of_isHermitian {g : ℕ} (Hm : Matrix (Fin g) (Fin g)
   simp only [star_star, Pi.star_apply]
   ring
 
-noncomputable def hermFormImBilin {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
-    (Fin g → ℂ) →ₗ[ℝ] (Fin g → ℂ) →ₗ[ℝ] ℝ :=
-  LinearMap.mk₂ ℝ (fun y w => (hermForm Hm y w).im)
-    (fun a b w => by simp [hermForm, add_dotProduct])
-    (fun c a w => by simp [hermForm, smul_dotProduct, Complex.smul_im])
-    (fun y a b => by simp [hermForm, Matrix.mulVec_add, dotProduct_add])
-    (fun c y a => by
-      simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, Complex.smul_im])
-
 theorem hermForm_periods_alternating_nondeg :
     ∀ (g r : ℕ) (x : Fin r → Fin g → ℂ) (M : Matrix (Fin r) (Fin r) ℝ) (Hm : Matrix (Fin g) (Fin g) ℂ), LinearIndependent ℝ x → Submodule.span ℝ (Set.range x) = ⊤ → Hm.IsHermitian → (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re) → (∀ i j, (hermForm Hm (x i) (x j)).im = M i j) → Mᵀ = -M ∧ M.det ≠ 0 ∧ r = 2 * g := by
   intro g r x M Hm hli hsp hH hpos hM
@@ -54,9 +45,9 @@ theorem hermForm_periods_alternating_nondeg :
       apply hv0
       funext j
       exact Fintype.linearIndependent_iff.mp hli v h0 j
-    have hxi : ∀ i, hermFormImBilin Hm (x i) z = 0 := by
+    have hxi : ∀ i, GlobalTheory.PeriodCoord.imForm Hm (x i) z = 0 := by
       intro i
-      have : hermFormImBilin Hm (x i) z = ∑ j, v j * M i j := by
+      have : GlobalTheory.PeriodCoord.imForm Hm (x i) z = ∑ j, v j * M i j := by
 
         rw [hz, map_sum]
         refine Finset.sum_congr rfl fun j _ => ?_
@@ -65,8 +56,8 @@ theorem hermForm_periods_alternating_nondeg :
       rw [this]
       have := congrFun hv i
       simpa [Matrix.mulVec, dotProduct, mul_comm] using this
-    have hall : ∀ y, hermFormImBilin Hm y z = 0 := by
-      have hle : Submodule.span ℝ (Set.range x) ≤ LinearMap.ker ((hermFormImBilin Hm).flip z) := by
+    have hall : ∀ y, GlobalTheory.PeriodCoord.imForm Hm y z = 0 := by
+      have hle : Submodule.span ℝ (Set.range x) ≤ LinearMap.ker ((GlobalTheory.PeriodCoord.imForm Hm).flip z) := by
         rw [Submodule.span_le]
         rintro _ ⟨i, rfl⟩
         simpa using hxi i
@@ -74,7 +65,7 @@ theorem hermForm_periods_alternating_nondeg :
       have hy : y ∈ Submodule.span ℝ (Set.range x) := by rw [hsp]; trivial
       simpa using hle hy
     have h1 := hall (Complex.I • z)
-    have h2 : hermFormImBilin Hm (Complex.I • z) z = (hermForm Hm z z).re := by
+    have h2 : GlobalTheory.PeriodCoord.imForm Hm (Complex.I • z) z = (hermForm Hm z z).re := by
       show (hermForm Hm (Complex.I • z) z).im = _
       simp [hermForm, smul_dotProduct]
     have := hpos z hz0

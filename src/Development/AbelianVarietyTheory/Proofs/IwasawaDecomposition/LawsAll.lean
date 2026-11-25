@@ -86,7 +86,6 @@ section
 
 variable {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι] {n : ℕ}
 
-
 omit [NumberField K] [StarRing K] in
 theorem GStep.lsh_eq_map (S : GStep E K n) (h : S.Ok) (b : S.β) (g : S.G b) (d : S.D b) :
     S.Lsh b (g • d) = (S.Lsh b d).map
@@ -100,7 +99,6 @@ theorem GStep.lsh_eq_map (S : GStep E K n) (h : S.Ok) (b : S.β) (g : S.G b) (d 
     exact ⟨_, (h.lsh_smul b g d _).1 (by rw [e]; exact hy), e⟩
   · rintro ⟨x, hx, rfl⟩
     exact (h.lsh_smul b g d x).2 hx
-
 
 omit [StarRing K] [Fintype ι] in
 theorem GStep.tauLat_smul (S : GStep E K n) (h : S.Ok) (emb : ι → E →+* K) [Fintype ι] (b : S.β) (g : S.G b) (d : S.D b) (τ : ι) :
@@ -385,7 +383,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formal
 
 namespace GlobalTheory.Mem.Col2.LRank
 
-
 open scoped TensorProduct in
 theorem natCard_quot {R N : Type} [CommRing R] [IsDomain R] [AddCommGroup N] [Module R N]
     [Module.Finite R N] [Module.Projective R N] (I : Ideal R) [Finite (R ⧸ I)] :
@@ -401,8 +398,6 @@ theorem finrank_of_card {F V : Type} [Field F] [Finite F] [AddCommGroup V] [Modu
   rw [h] at h2
   exact (Nat.pow_right_injective h1 h2).symm
 
-
-
 theorem finrank_red {E : Type} [Field E] [NumberField E] {n : ℕ} (N : Submodule (𝓞 E) (Fin n → E))
     (hN : Submodule.IsFullLattice E N) (P : HeightOneSpectrum (𝓞 E)) :
     Module.finrank (Res P) (TDat.Red N P) = n := by
@@ -417,8 +412,6 @@ theorem finrank_red {E : Type} [Field E] [NumberField E] {n : ℕ} (N : Submodul
   have h := natCard_quot (R := 𝓞 E) (N := N) P.asIdeal
   rw [hr] at h
   exact finrank_of_card (F := Res P) h
-
-
 
 theorem ranks : ∀ {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {n : ℕ} {S : GStep E K n} {ST : Finset (HeightOneSpectrum (𝓞 E))} (A : TDat S ST) (T : ℕ), S.Ok → A.Ok T → (∀ P c, Module.finrank (Res P.1) (A.lv P c) = n) ∧ ∀ P c, Module.finrank (Res P.1) (A.lk P c) = n := by
   intro E K _ _ _ _ n S ST A T _ h
@@ -438,8 +431,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Forms GlobalTheory.Mem.Col2
 
 namespace GlobalTheory.Mem.Col2
-
-
 
 theorem TDat.laws_of_ok : ∀ {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {n : ℕ} {S : GStep E K n}
     {ST : Finset (HeightOneSpectrum (𝓞 E))} (A : TDat S ST) (T : ℕ), S.Ok → A.Ok T → A.Laws T := by
@@ -546,10 +537,6 @@ theorem tr_mul_apply (b : S.β) (g h : S.G b) (F : Fr emb σ n → ℂ) :
   unfold GStep.tr
   rw [map_mul, map_mul, trFr_mul_apply]
 
-theorem tr_one_apply (b : S.β) (F : Fr emb σ n → ℂ) : S.tr emb σ b 1 F = F := by
-  unfold GStep.tr
-  rw [map_one, map_one, trFr_one_apply]
-
 theorem mk_smul (b : S.β) (g : S.G b) (d : S.D b) :
     Quotient.mk (MulAction.orbitRel (S.G b) (S.D b)) (g • d) = Quotient.mk _ d :=
   Quotient.sound ⟨g, rfl⟩
@@ -584,7 +571,7 @@ theorem evPt_rep (hf : S.Free) (φ : S.Cl → Fr emb σ n → ℂ) (c : S.Cl) :
     evPt S emb σ φ c.1 (S.rep c) = φ c := by
   obtain ⟨b, q⟩ := c
   show S.tr emb σ b (S.mv b (S.rp b q)) (φ ⟨b, Quotient.mk _ (S.rp b q)⟩) = φ ⟨b, q⟩
-  rw [mv_rp S hf, tr_one_apply, S.rp_spec]
+  rw [mv_rp S hf, GlobalTheory.Mem.Col2.DiaStab.tr_one, S.rp_spec]
 
 end Step
 
@@ -681,8 +668,6 @@ theorem exists_smul_mem_latOf {E K ι : Type} [Field E] [NumberField E] [StarRin
   refine ⟨∏ c, d c, Finset.prod_ne_zero_iff.2 fun c _ => hd c, fun c => ?_⟩
   exact smul_mem_of_dvd (Finset.dvd_prod_of_mem d (Finset.mem_univ c)) (hdM c)
 
-
-
 theorem span_locW_BLat : ∀ {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι] {R : Ranks} (I : ChainIn E K ι R) (J : AtIn I) (emb : ι → E →+* K) (σ : K →+* ℂ) (hc : ι → HCParam R), FOk emb σ → ∀ (hI : I.Ok), J.Ok → ∀ (Pl : Rows.Places K) i (hF : ((I.S i).fam emb (lamT hc i)).Ok) (w : Pl.Pl) P, Submodule.span K (locW Pl w (BLat J emb hc i hF P) : Set ((I.S i).hlat emb (lamT hc i) hF).V) = ⊤ := by
   intro E K ι _ _ _ _ _ _ _ R I J emb σ hc _ hI hJ Pl i hF w P
   haveI := (hI.step i).fin_orb
@@ -753,8 +738,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Forms GlobalTheory.Mem.Col2
 
 namespace GlobalTheory.Mem.Col2
-
-
 
 theorem laws_all : ∀ {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι] {R : Ranks} (I : ChainIn E K ι R) (J : AtIn I) (emb : ι → E →+* K) (σ : K →+* ℂ) (hc : ι → HCParam R), FOk emb σ → ∀ (hI : I.Ok), J.Ok → ∀ (Q : PerIn I) (hQ : Q.Ok) (Pl : Rows.Places K), J.Laws emb σ hc ∧ FmLaws J Q emb σ hc Pl hI hQ := by
   intro E K ι _ _ _ _ _ _ _ R I J emb σ hc hF hI hJ Q hQ Pl

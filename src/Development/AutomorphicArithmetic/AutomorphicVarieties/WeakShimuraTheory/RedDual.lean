@@ -31,9 +31,6 @@ private theorem rd_sp {n n' m : M4 R} (h1 : n * m = 1) (h : adj n' * n + adj n *
     exact eq_neg_of_add_eq_zero_left this
   rw [rd_adj_mul, e, mul_neg, ← mul_assoc, ← rd_adj_mul, h1, rd_adj_one, one_mul]
 
-private theorem rd_up_mul {X Y : M4 R} (hX : IsUp X) (hY : IsUp Y) : IsUp (X * Y) := by
-  apply _root_.bd_up_mul <;> assumption
-
 end
 
 section
@@ -89,12 +86,9 @@ theorem UpperTheory.V.Ws.redDual :
   have n2 : ∀ v, c.n v * adj (c.n v) = 1 := fun v => mul_eq_one_comm.1 (n1 v)
   have n3 : ∀ v, adj ((Q.n v).map TrivSqZeroExt.snd) * c.n v + adj (c.n v) * (Q.n v).map TrivSqZeroExt.snd = 0 :=
     fun v => en v ▸ rd_gsp rfl (hP.low v).1
-  have hl : IsLocallyConstant fun g => Q.r g := by
-    rw [IsLocallyConstant.iff_eventually_eq]
-    intro x
-    have : ∀ᶠ y in nhds x, ∀ i j, Q.r y i j = Q.r x i j :=
-      Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => (hlc i j).eventually_eq x
-    exact this.mono fun y hy => Matrix.ext hy
+  have hl : IsLocallyConstant fun g => Q.r g :=
+    (LocallyConstant.unflip fun i =>
+      LocallyConstant.unflip fun j => ⟨_, hlc i j⟩).isLocallyConstant
   refine ⟨?_, fun g => ?_, fun g h => ?_, fun g hg => ?_, ?_, fun g i j hij hw => ?_, fun v => ⟨rd_sp (n2 v) (n3 v), fun i j hij => ?_⟩,
     fun v s hs => ?_⟩
   · have h1 := hl.comp fun X : M4 (DualNumber k) => X.map TrivSqZeroExt.snd
@@ -142,7 +136,7 @@ theorem UpperTheory.V.Ws.redDual :
       rw [Matrix.map_apply, hP.flag v s hs i j hij]; rfl
     have u2 : IsUp ((adj (Q.n v) * Q.r s⁻¹ * Q.n v).map TrivSqZeroExt.fst) := fun i j hij => by
       rw [Matrix.map_apply, hP.flag v _ (inv_mem hs) i j hij]; rfl
-    have u := rd_up_mul u1 u2
+    have u := _root_.bd_up_mul u1 u2
     simp only [rd_snd_mul, rd_fst_mul, rd_snd_adj, rd_fst_adj, er, en] at u
     convert u using 1
     have k1 : ∀ X : M4 k, c.n v * (adj (c.n v) * X) = X := fun X => by rw [← mul_assoc, n2, one_mul]

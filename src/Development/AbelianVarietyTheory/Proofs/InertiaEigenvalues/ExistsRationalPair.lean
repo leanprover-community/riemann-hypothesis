@@ -105,21 +105,14 @@ private theorem eq_of_left_comp_eq_of_isGrpPullback {S S' : Scheme.{0}} {G' : Ov
 
 private theorem one_left_comp_of_isGrpPullback' {S S' : Scheme.{0}} {G' : Over S'} {G : Over S} [GrpObj G'] [GrpObj G]
     {f : S' ⟶ S} {φ : G'.left ⟶ G.left} (hp : IsGrpPullback G' G f φ) (T : Over S') :
-    (1 : T ⟶ G').left ≫ φ = (1 : Over.mk (T.hom ≫ f) ⟶ G).left := by
-  let e : Over.mk (T.hom ≫ f) ⟶ G := Over.homMk ((1 : T ⟶ G').left ≫ φ)
-    (by show _ = T.hom ≫ f; rw [Category.assoc, hp.1.w, ← Category.assoc, Over.w])
-  have h := hp.2 T 1 1 e e rfl rfl
-  rw [_root_.mul_one] at h
-  have he : e * e = e := Over.OverMorphism.ext h
-  have he1 : e = 1 := by simpa using congrArg (e⁻¹ * ·) he
-  exact congrArg CommaMorphism.left he1
+    (1 : T ⟶ G').left ≫ φ = (1 : Over.mk (T.hom ≫ f) ⟶ G).left :=
+  congrArg CommaMorphism.left (map_one (pushHom hp T))
 
 private theorem pow_left_comp_of_isGrpPullback {S S' : Scheme.{0}} {G' : Over S'} {G : Over S} [GrpObj G'] [GrpObj G]
     {f : S' ⟶ S} {φ : G'.left ⟶ G.left} (hp : IsGrpPullback G' G f φ) {T : Over S'} {x : T ⟶ G'}
     {y : Over.mk (T.hom ≫ f) ⟶ G} (h : x.left ≫ φ = y.left) (n : ℕ) : (x ^ n).left ≫ φ = (y ^ n).left := by
-  induction n with
-  | zero => rw [pow_zero, pow_zero]; exact one_left_comp_of_isGrpPullback' hp T
-  | succ n ih => rw [pow_succ, pow_succ]; exact (hp.2 T _ _ _ _ ih.symm h.symm).symm
+  rw [← (Over.OverMorphism.ext h : pushHom hp T x = y), ← map_pow]
+  rfl
 
 end Id
 

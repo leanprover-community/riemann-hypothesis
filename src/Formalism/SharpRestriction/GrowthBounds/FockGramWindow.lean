@@ -1508,14 +1508,6 @@ namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
 open MvPolynomial
 
-def OrthMin : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime] (σ : Type) (B : MvPolynomial σ ℚ_[p] → MvPolynomial σ ℚ_[p] → ℚ_[p])
-    (L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p])) (W : Submodule ℚ_[p] (MvPolynomial σ ℚ_[p])),
-    p ≠ 2 → FiniteDimensional ℚ_[p] W → (∀ x ∈ L, x ∈ W) → L.FG →
-    (∀ (c : ℚ_[p]) u v, B (c • u) v = c * B u v) → (∀ u u' v, B (u + u') v = B u v + B u' v) →
-    (∀ u ∈ L, ∀ v ∈ L, B u v = B v u) → (∃ u ∈ L, ∃ v ∈ L, B u v ≠ 0) →
-    ∃ x ∈ L, B x x ≠ 0 ∧ ∀ u ∈ L, ∃ c : ℤ_[p], B u x = (c : ℚ_[p]) * B x x
-
 def SplitRank : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (σ : Type) (L L' : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p]))
     (W : Submodule ℚ_[p] (MvPolynomial σ ℚ_[p])) (x : MvPolynomial σ ℚ_[p]),
@@ -1526,7 +1518,7 @@ def SplitRank : Prop :=
 theorem zsmul_eq' {p : ℕ} [Fact p.Prime] {σ : Type} (c : ℤ_[p]) (u : MvPolynomial σ ℚ_[p]) :
     c • u = (c : ℚ_[p]) • u := rfl
 
-theorem orthSplit_of (hM : OrthMin) (hR : SplitRank) : OrthSplit := by
+theorem orthSplit_of (hM : PI.LatMin) (hR : SplitRank) : OrthSplit := by
   intro p _ σ B L W hp hW hLW hfg hsm hadd hsym hne
   obtain ⟨x, hxL, hxx, hdiv⟩ := hM p σ B L W hp hW hLW hfg hsm hadd hsym hne
   have hB0 : ∀ v, B 0 v = 0 := by
@@ -1616,7 +1608,7 @@ theorem splitRank_proved : SplitRank := by
   rw [Module.finrank_prod, Module.finrank_self] at he
   omega
 
-theorem orthSplit_of_min (hM : OrthMin) : OrthSplit := by
+theorem orthSplit_of_min (hM : PI.LatMin) : OrthSplit := by
   exact orthSplit_of hM splitRank_proved
 
 end Formalism.MainNotions.G.SymmetricFormBlocks
@@ -1675,7 +1667,7 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
-theorem closed_of_minimal_vector (D : Formalism.BasicNotions.D7) (hO : OrthMin) (hM : GoodLeSmallMat) (h : RestWinE D) :
+theorem closed_of_minimal_vector (D : Formalism.BasicNotions.D7) (hO : PI.LatMin) (hM : GoodLeSmallMat) (h : RestWinE D) :
     Formalism.MainNotions.flipOneThree.IntegralityFromMetricForLargeConstants D :=
   closed_of_splitting_matrix D (orthSplit_of_min hO) hM h
 

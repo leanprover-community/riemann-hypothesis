@@ -8,8 +8,6 @@ public import Mathlib.MeasureTheory.Function.L2Space
 open MeasureTheory
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace CompanionTheory.D.gk.admitted
 
 section

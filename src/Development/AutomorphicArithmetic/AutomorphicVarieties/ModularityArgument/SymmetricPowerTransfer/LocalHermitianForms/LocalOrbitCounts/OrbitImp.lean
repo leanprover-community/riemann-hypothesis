@@ -272,31 +272,18 @@ private theorem cint_zk (h : IsLoc O Δ) (j : Etau K τ →ₐ[K] Matrix (Fin 2)
       QuadraticAlgebra.trace_algebraMap, smul_eq_mul, smul_eq_mul, ← hc, htw, hnw] at h2
     simp only [map_mul, map_add (f := _), map_ofNat]
     linear_combination h2)
-  have hm : ∀ x : O, ¬ IsUnit x → x ∈ IsLocalRing.maximalIdeal O := fun x hx => hx
+  have hP := (IsLocalRing.maximalIdeal.isMaximal O).isPrime
   have hnu : IsUnit n := by
     by_contra hn'
-    have hnm := hm _ hn'
-    have ht2 : t * t ∈ IsLocalRing.maximalIdeal O := key ▸ Ideal.mul_mem_left _ _ hnm
-    have htm : t ∈ IsLocalRing.maximalIdeal O := by
-      rcases (IsLocalRing.maximalIdeal.isMaximal O).isPrime.mem_or_mem ht2 with h' | h' <;> exact h'
+    have ht2 : t * t ∈ IsLocalRing.maximalIdeal O := key ▸ Ideal.mul_mem_left _ _ hn'
     have hb2 : (τ₀ ^ 2 - 4) * (b * b) ∈ IsLocalRing.maximalIdeal O := by
-      have : (τ₀ ^ 2 - 4) * (b * b) = t * t - 4 * n := by rw [hn, htdef]; ring
-      rw [this]
-      exact Ideal.sub_mem _ ht2 (Ideal.mul_mem_left _ _ hnm)
-    have hbb : b * b ∈ IsLocalRing.maximalIdeal O := by
-      rcases (IsLocalRing.maximalIdeal.isMaximal O).isPrime.mem_or_mem hb2 with h' | h'
-      · exact absurd hu h'
-      · exact h'
-    have hbm : b ∈ IsLocalRing.maximalIdeal O := by
-      rcases (IsLocalRing.maximalIdeal.isMaximal O).isPrime.mem_or_mem hbb with h' | h' <;> exact h'
+      rw [show (τ₀ ^ 2 - 4) * (b * b) = t * t - 4 * n by rw [hn, htdef]; ring]
+      exact Ideal.sub_mem _ ht2 (Ideal.mul_mem_left _ _ hn')
+    have hbm := ((hP.mem_or_mem hb2).resolve_left (not_not_intro hu) |> hP.mem_or_mem).elim id id
     have h2a : 2 * a ∈ IsLocalRing.maximalIdeal O := by
-      have : 2 * a = t - τ₀ * b := by rw [htdef]; ring
-      rw [this]
-      exact Ideal.sub_mem _ htm (Ideal.mul_mem_left _ _ hbm)
-    have ham : a ∈ IsLocalRing.maximalIdeal O := by
-      rcases (IsLocalRing.maximalIdeal.isMaximal O).isPrime.mem_or_mem h2a with h' | h'
-      · exact absurd h.two h'
-      · exact h'
+      rw [show 2 * a = t - τ₀ * b by rw [htdef]; ring]
+      exact Ideal.sub_mem _ ((hP.mem_or_mem ht2).elim id id) (Ideal.mul_mem_left _ _ hbm)
+    have ham := (hP.mem_or_mem h2a).resolve_left (not_not_intro h.two)
     rcases hab with rfl | rfl
     · exact ham isUnit_one
     · exact hbm isUnit_one

@@ -361,9 +361,6 @@ namespace GlobalTheory.BSP.StratCocycle
 
 variable {l : ℕ} {R : Type} [CommRing R]
 
-theorem comp_assoc {P P' P'' P''' : Obj l R} (h : Hom P'' P''') (g : Hom P' P'') (f : Hom P P') :
-    (h.comp g).comp f = h.comp (g.comp f) := Hom.ext' rfl
-
 theorem comp_id {P P' : Obj l R} (f : Hom P P') : f.comp (Hom.id P) = f := Hom.ext' rfl
 
 theorem map_comp {P P' P'' : Obj l R} {d : ℕ} (ε : Matrix (Fin d) (Fin d) P.A) (g : Hom P' P'') (f : Hom P P') :
@@ -378,8 +375,8 @@ theorem unit_of_codiag {P Q B : Obj l R} {d : ℕ} (inl inr : Hom P Q)
   obtain ⟨Δ, ⟨hΔl, hΔr⟩, -⟩ := univ P (Hom.id _) (Hom.id _)
   have hk' : k = (k.comp inl).comp Δ := by
     refine (univ B (k.comp inl) (k.comp inr)).unique ⟨rfl, rfl⟩ ⟨?_, ?_⟩
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔl).trans (comp_id _))
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔr).trans ((comp_id _).trans hk))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔl).trans (comp_id _))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp (k.comp inl)) hΔr).trans ((comp_id _).trans hk))
   calc ε.map k.f = ε.map ((k.comp inl).comp Δ).f := congrArg (fun k : Hom Q B => ε.map k.f) hk'
     _ = (ε.map Δ.f).map (k.comp inl).f := map_comp ε _ Δ
     _ = (1 : Matrix (Fin d) (Fin d) P.A).map (k.comp inl).f :=
@@ -401,14 +398,14 @@ theorem cocycle_of_triple {P Q Q₂ B : Obj l R} {d : ℕ} (inl inr : Hom P Q)
   obtain ⟨m, ⟨hml, hmr⟩, -⟩ := univ₂ B k₁ (k₂.comp inr)
   have e₂ : k₂ = m.comp k₂₃ := by
     refine (univ B (k₂.comp inl) (k₂.comp inr)).unique ⟨rfl, rfl⟩ ⟨?_, ?_⟩
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃l).trans
-        ((comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inr) hml).trans h12)))
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃r).trans hmr)
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃l).trans
+        ((GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inr) hml).trans h12)))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₂₃r).trans hmr)
   have e₃ : k₃ = m.comp k₁₃ := by
     refine (univ B (k₃.comp inl) (k₃.comp inr)).unique ⟨rfl, rfl⟩ ⟨?_, ?_⟩
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃l).trans
-        ((comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inl) hml).trans h13)))
-    · exact (comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃r).trans (hmr.trans h23))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃l).trans
+        ((GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).symm.trans ((congrArg (fun q => Hom.comp q inl) hml).trans h13)))
+    · exact (GlobalTheory.BSP.CoverBC.comp_assoc _ _ _).trans ((congrArg (Hom.comp m) h₁₃r).trans (hmr.trans h23))
   subst e₂ e₃ hml
   rw [map_comp ε m i₁, map_comp ε m k₂₃, map_comp ε m k₁₃, ← Matrix.map_mul, hc']
 
@@ -446,10 +443,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 open scoped Formalism.Per NNReal
 
 namespace GlobalTheory.BSP.RelEx
-
-theorem map_smul_ring {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {m n : Type} (a : R)
-    (M : Matrix m n R) : (a • M).map φ = φ a • M.map φ := by
-  ext i j; simp
 
 theorem alg {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n] (N : ℕ)
     (A Zf Zfi G Y Zg : Matrix n n R) (gE fE wi c lam : R) (hZ : Zf * Zfi = 1) (hAG : A * G = lam • Y)
@@ -522,7 +515,7 @@ theorem rel_exists_of {B : Obj l ↥(OL K)} (u : B.A) (f g : Hom bk.prism B)
       (toDisc l u bk.ρ₀ (BK.hf g bk.E)) (toDisc l u bk.ρ₀ (BK.hf f bk.E))
       (toDisc l u bk.ρ₀ (↑w⁻¹ : B.A)) (li ^ m) (toDisc l u bk.ρ₀ ((l : B.A) ^ m))
       (by rw [← Matrix.map_mul, hZ', Matrix.map_one _ (map_zero _) (map_one _)])
-      (by rw [← Matrix.map_mul, hAG, map_smul_ring])
+      (by rw [← Matrix.map_mul, hAG, GlobalTheory.BSP.LocalizedLatticeBasis.matMapSmul])
       (map_unit_eq _ _ _ w hw)
       (inv_pow_map _ _ li hli m)
     exact (congrArg (fun M => toDisc l u bk.ρ₀ (BK.hf g bk.E) ^ s.N • (M *
@@ -559,7 +552,7 @@ theorem rel_exists : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (d 
   obtain ⟨k, hk⟩ := s.nopole f g
   choose G hGc using hk
   have hXX : s.X.map (BK.hf f) * s.X'.map (BK.hf f) = ((l : B.A) ^ s.c₂ * BK.hf f bk.E ^ (2 * s.N)) • 1 := by
-    rw [← Matrix.map_mul, s.X_mul, map_smul_ring, Matrix.map_one _ (map_zero _) (map_one _)]
+    rw [← Matrix.map_mul, s.X_mul, GlobalTheory.BSP.LocalizedLatticeBasis.matMapSmul, Matrix.map_one _ (map_zero _) (map_one _)]
     simp
   have hGm : BK.hf f bk.E ^ (2 * s.N) • Matrix.of G = (l : B.A) ^ k • (s.X'.map (BK.hf f) * s.X.map (BK.hf g)) := by
     ext i j
@@ -1161,7 +1154,6 @@ theorem realises_of {M : FCrys l ↥(OL K)} {P P' : Obj l ↥(OL K)} {e : P.A �
     exact (congrArg j' e0).trans (hj.j_act g (M.tr c x))
 
 end GlobalTheory.Prism.ModelChange
-
 
 open GlobalTheory.Prism.ModelChange in
 theorem GlobalTheory.Prism.realisation_indep_model : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P₀ : Obj l ↥(OL K)) (e₀ : P₀.A ≃+* Ainf l), IsAinf K P₀ e₀ → ∃ a : Hom P₀ (ainfObj K), ∀ (M : FCrys l ↥(OL K)), Function.Bijective (M.tr a) ∧ ∀ (T : Type) [AddCommGroup T] [Module ℤ_[l] T] (ρ : ↥(GK K) → (T →ₗ[ℤ_[l]] T)), (∀ j₀ : M.M (ainfObj K) →ₛₗ[(inclW l).comp (ainfId K).toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M (ainfObj K) (ainfId K) T ρ j₀ → ∃ j : M.M P₀ →ₛₗ[(inclW l).comp e₀.toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M P₀ e₀ T ρ j) ∧ (∀ j : M.M P₀ →ₛₗ[(inclW l).comp e₀.toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M P₀ e₀ T ρ j → ∃ j₀ : M.M (ainfObj K) →ₛₗ[(inclW l).comp (ainfId K).toRingHom] (WCb l ⊗[ℤ_[l]] T), Realises K M (ainfObj K) (ainfId K) T ρ j₀ ∧ ∀ x, j₀ (M.tr a x) = j x) := by

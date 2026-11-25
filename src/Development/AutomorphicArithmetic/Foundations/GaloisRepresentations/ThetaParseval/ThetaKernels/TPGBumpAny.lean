@@ -565,8 +565,8 @@ private theorem mem_UAt_of_locGrp_pk {F E : Type} [Field F] [NumberField F] [Fie
 
 theorem _root_.UpperTheory.TP.bumpAny_k : Tools_k → BumpAny_k := by
   intro T F E _ _ _ _ _ σ B n d X W M χX χW om hP hn hd v N hN
-  obtain ⟨ω, ρ, L⟩ := PositivityTheory.ThKH.Locrep.locRepEx_k F E σ n d B X W M om
-    ⟨hP.base, ⟨n, 0, hP.herm⟩, ⟨d, 0, hP.skew⟩, hP.good, χX, χW, hP.weil⟩ v
+  obtain ⟨ω, ρ, L, _⟩ := PositivityTheory.ThKH.Locrep.exists_smooth_local_rep hP.base.std
+    (IsUWeilPair.isUSplitting hP.weil) v
   obtain ⟨Λ, x₁, r, ϖ, D⟩ := UpperTheory.exists_weilLatticeDatum F E σ B n d X W n 0 d 0 hP.base hP.herm hP.skew hd v
   obtain ⟨hvS, hv0, θ, hθ, hvac⟩ := hP.good.vac v
   have hat : ∀ γ ∈ latAtV X W v, At (evFin F v) γ := (latAtV_at_stable X W v).1

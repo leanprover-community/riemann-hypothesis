@@ -788,23 +788,13 @@ namespace LawUp
 
 variable {R S : Type} [CommRing R] [CommRing S] {d : ℕ} {τ : Type}
 
-theorem mvPowerSeriesMap_evalTwoGroups (φ : R →+* S) (c : MvPowerSeries (Fin d ⊕ Fin d) R)
-    {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
-    (hv : ∀ i, constantCoeff (v i) = 0) :
-    map φ (at2 c u v) = at2 (map φ c) (fun i => map φ (u i)) (fun i => map φ (v i)) := by
-  unfold at2
-  rw [map_subst (CobCob.elim_has hu hv)]
-  congr 1
-  funext j
-  cases j <;> rfl
-
 theorem map_op (φ : R →+* S) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R)
     {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
     (hv : ∀ i, constantCoeff (v i) = 0) :
     (fun i => map φ (op μ u v i)) =
       op (fun i => map φ (μ i)) (fun i => map φ (u i)) (fun i => map φ (v i)) := by
   funext i
-  exact mvPowerSeriesMap_evalTwoGroups φ (μ i) hu hv
+  exact GlobalTheory.CobSymCoc.mvPowerSeriesMap_evalTwoGroups φ (μ i) hu hv
 
 theorem isLaw_map (φ : R →+* S) {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (h : IsLaw μ) :
     IsLaw (fun i => map φ (μ i)) := by
@@ -817,7 +807,7 @@ theorem isLaw_map (φ : R →+* S) {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin 
     rw [h.unit] at e
     simp only [map_X, map_zero] at e
     exact e.symm
-  · have e := mvPowerSeriesMap_evalTwoGroups φ (μ i) (τ := Fin d ⊕ Fin d)
+  · have e := GlobalTheory.CobSymCoc.mvPowerSeriesMap_evalTwoGroups φ (μ i) (τ := Fin d ⊕ Fin d)
       (u := fun i => (X (Sum.inr i) : MvPowerSeries (Fin d ⊕ Fin d) R))
       (v := fun i => X (Sum.inl i)) (fun _ => constantCoeff_X _) (fun _ => constantCoeff_X _)
     simp only [map_X] at e

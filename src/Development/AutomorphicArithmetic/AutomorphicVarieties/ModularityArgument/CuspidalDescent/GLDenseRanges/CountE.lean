@@ -24,56 +24,14 @@ public import GroundTheory.AutomorphicForms.SmoothRep
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.SubalgebraIntegrality.DualDual
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.SubalgebraIntegrality.PrimeNotMemSectionBasePlace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.SubalgebraIntegrality.PrimeNotMemSectionBasePlaceBis
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIrreducibleSmallRepUnitary
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ArchimedeanUnitaryPointsEquivUnitaryGroup
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WeightEqOfFinitePartNeBot
 import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 import Mathlib.LinearAlgebra.PiTensorProduct.Generators
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.LocalFields.PadicLogSeries
@@ -95,7 +53,7 @@ section SlopeTestRemainingChoices
 variable {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
 private theorem box_apply (ρ : Representation ℂ G W) (τ : Representation ℂ H W') (g : G) (h : H) :
-    box ρ τ (g, h) = TensorProduct.map (ρ g) (τ h) := rfl
+    GlobalTheory.LGrp.extProd ρ τ (g, h) = TensorProduct.map (ρ g) (τ h) := rfl
 
 private theorem irr_eq {ρ : Representation ℂ G W} (h : ρ.IsIrreducible) (S : Submodule ℂ W)
     (hS : ∀ g, ∀ v ∈ S, ρ g v ∈ S) {v : W} (hv : v ∈ S) (h0 : v ≠ 0) : S = ⊤ := by
@@ -269,7 +227,7 @@ theorem boxIrr : BoxIrr := by
   have hct₀ : ∀ u, ct (w₀ ⊗ₜ[ℂ] u) = u := fun u => by rw [hct, hφ₀, one_smul]
   have hne : w₀ ⊗ₜ[ℂ] u₀ ≠ 0 := fun h0 => hu₀ (by rw [← hct₀ u₀, h0, map_zero])
   refine ⟨?_, ?_⟩
-  · haveI : Nontrivial (Subrepresentation (box ρ τ)) := ⟨⊥, ⊤, fun h => hne (by
+  · haveI : Nontrivial (Subrepresentation (GlobalTheory.LGrp.extProd ρ τ)) := ⟨⊥, ⊤, fun h => hne (by
       have h1 : (⊥ : Submodule ℂ (W ⊗[ℂ] W')) = ⊤ := congrArg Subrepresentation.toSubmodule h
       have h2 : w₀ ⊗ₜ[ℂ] u₀ ∈ (⊥ : Submodule ℂ (W ⊗[ℂ] W')) := by
         rw [h1]
@@ -355,14 +313,14 @@ namespace UpperTheory.V.Z.J.D
 private lemma box_tmul {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ G W) (τ : Representation ℂ H W')
     (a : G) (b : H) (w : W) (v : W') :
-    box ρ τ (a, b) (w ⊗ₜ[ℂ] v) = ρ a w ⊗ₜ[ℂ] τ b v := by
-  simp [box, Representation.tprod_apply]
+    GlobalTheory.LGrp.extProd ρ τ (a, b) (w ⊗ₜ[ℂ] v) = ρ a w ⊗ₜ[ℂ] τ b v := by
+  simp [GlobalTheory.LGrp.extProd, Representation.tprod_apply]
 
 private lemma isot_factor {G H W W' X Y : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y]
     [Nontrivial W] (ρ : Representation ℂ G W) (τ : Representation ℂ H W')
     (κ : Representation ℂ (G × H) X) (κ' : Representation ℂ H Y) (f : W ⊗[ℂ] Y ≃ₗ[ℂ] X)
-    (hf : Intw (box ρ κ') κ f.toLinearMap) (h2 : Isot (κ.comp (MonoidHom.inr G H)) τ) :
+    (hf : Intw (GlobalTheory.LGrp.extProd ρ κ') κ f.toLinearMap) (h2 : Isot (κ.comp (MonoidHom.inr G H)) τ) :
     Isot κ' τ := by
   obtain ⟨w0, hw0⟩ := _root_.exists_ne (0 : W)
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ W, φ w0 ≠ 0 := by
@@ -404,12 +362,12 @@ private lemma isot_tensor {G H W W' X Y : Type} [Group G] [Group H] [AddCommGrou
     [AddCommGroup W'] [Module ℂ W'] [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y]
     (ρ : Representation ℂ G W) (τ : Representation ℂ H W')
     (κ : Representation ℂ (G × H) X) (κ' : Representation ℂ H Y) (f : W ⊗[ℂ] Y ≃ₗ[ℂ] X)
-    (hf : Intw (box ρ κ') κ f.toLinearMap) (h : Isot κ' τ) : Isot κ (box ρ τ) := by
+    (hf : Intw (GlobalTheory.LGrp.extProd ρ κ') κ f.toLinearMap) (h : Isot κ' τ) : Isot κ (GlobalTheory.LGrp.extProd ρ τ) := by
   unfold Isot
   set T : Submodule ℂ X :=
-    ⨆ F : {F : W ⊗[ℂ] W' →ₗ[ℂ] X // Intw (box ρ τ) κ F}, LinearMap.range F.1 with hT
+    ⨆ F : {F : W ⊗[ℂ] W' →ₗ[ℂ] X // Intw (GlobalTheory.LGrp.extProd ρ τ) κ F}, LinearMap.range F.1 with hT
   have hF : ∀ g : W' →ₗ[ℂ] Y, Intw τ κ' g →
-      Intw (box ρ τ) κ (f.toLinearMap ∘ₗ TensorProduct.map LinearMap.id g) := by
+      Intw (GlobalTheory.LGrp.extProd ρ τ) κ (f.toLinearMap ∘ₗ TensorProduct.map LinearMap.id g) := by
     intro g hg ab t
     obtain ⟨a, b⟩ := ab
     induction t using TensorProduct.induction_on with
@@ -428,7 +386,7 @@ private lemma isot_tensor {G H W W' X Y : Type} [Group G] [Group H] [AddCommGrou
         T.comap (f.toLinearMap ∘ₗ TensorProduct.mk ℂ W Y w) := by
       refine le_trans h (iSup_le fun g => ?_)
       rintro _ ⟨a, rfl⟩
-      exact (le_iSup (fun F : {F : W ⊗[ℂ] W' →ₗ[ℂ] X // Intw (box ρ τ) κ F} =>
+      exact (le_iSup (fun F : {F : W ⊗[ℂ] W' →ₗ[ℂ] X // Intw (GlobalTheory.LGrp.extProd ρ τ) κ F} =>
         LinearMap.range F.1) ⟨_, hF g.1 g.2⟩) ⟨w ⊗ₜ[ℂ] a, by simp⟩
     exact hle (Submodule.mem_top (x := y))
   intro x _
@@ -647,7 +605,7 @@ theorem step :
   refine ⟨intwSub τ (ρ.comp (MonoidHom.inl G H)), inferInstance, inferInstance, kap ρ τ,
     LinearEquiv.ofBijective (evl τ _) ⟨evl_inj hτ, evl_surj hI⟩, ?_⟩
   rintro ⟨g, h⟩ z
-  show evl τ _ (box τ (kap ρ τ) (g, h) z) = ρ (g, h) (evl τ _ z)
+  show evl τ _ (GlobalTheory.LGrp.extProd τ (kap ρ τ) (g, h) z) = ρ (g, h) (evl τ _ z)
   induction z using TensorProduct.induction_on with
   | zero => simp
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
@@ -675,7 +633,6 @@ open UpperTheory.V.HV (Coef)
 open UpperTheory.V.Z.J.D
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 section Abs
 variable {G X D Y : Type} [Group G] [AddCommGroup X] [Module ℂ X] [AddCommGroup D] [Module ℂ D] [AddCommGroup Y] [Module ℂ Y]
@@ -1192,11 +1149,11 @@ private lemma split_intw [Fintype I] {Gi Wi : I → Type} [∀ i, Group (Gi i)] 
     [∀ i, Module ℂ (Wi i)] (τ : ∀ i, Representation ℂ (Gi i) (Wi i)) (i₀ : I) (g : ∀ i, Gi i)
     (t : ⨂[ℂ] i, Wi i) :
     split Wi i₀ (piRep τ g t) =
-      box (τ i₀) (piRep fun j : {i // i ≠ i₀} => τ j.1) (g i₀, fun j => g j.1) (split Wi i₀ t) := by
+      GlobalTheory.LGrp.extProd (τ i₀) (piRep fun j : {i // i ≠ i₀} => τ j.1) (g i₀, fun j => g j.1) (split Wi i₀ t) := by
   induction t using PiTensorProduct.induction_on with
   | smul_tprod r m =>
     rw [map_smul, map_smul, map_smul, map_smul, piRep_tprod, split_tprod, split_tprod]
-    simp only [box, Representation.tprod_apply, TensorProduct.map_tmul, MonoidHom.comp_apply,
+    simp only [GlobalTheory.LGrp.extProd, Representation.tprod_apply, TensorProduct.map_tmul, MonoidHom.comp_apply,
       MonoidHom.coe_fst, MonoidHom.coe_snd, piRep_tprod]
   | add a b ha hb => simp only [map_add (f := _), ha, hb]
 
@@ -1390,18 +1347,18 @@ private lemma Pp_unit : Pp PUnit := by
 
 private lemma Pp_sum (hB : BoxIrr) {α β : Type} (ha : Pp α) (hb : Pp β) : Pp (α ⊕ β) := by
   intro Gi Wi _ _ _ τ hτ
-  refine transfer (box (piRep fun a => τ (.inl a)) (piRep fun b => τ (.inr b))) (piRep τ)
+  refine transfer (GlobalTheory.LGrp.extProd (piRep fun a => τ (.inl a)) (piRep fun b => τ (.inr b))) (piRep τ)
     (fun g => (fun a => g (.inl a), fun b => g (.inr b)))
     (fun p => ⟨fun s => Sum.rec (motive := Gi) p.1 p.2 s, rfl⟩)
     (PiTensorProduct.tmulEquivDep ℂ Wi).symm (fun g x => ?_)
     (hB _ _ _ _ _ _ (ha _ _ _ fun a => hτ _) (hb _ _ _ fun b => hτ _))
   refine pt_eq ((PiTensorProduct.tmulEquivDep ℂ Wi).symm.toLinearMap ∘ₗ piRep τ g)
-    ((box (piRep fun a => τ (.inl a)) (piRep fun b => τ (.inr b))
+    ((GlobalTheory.LGrp.extProd (piRep fun a => τ (.inl a)) (piRep fun b => τ (.inr b))
         (fun a => g (.inl a), fun b => g (.inr b))) ∘ₗ
       (PiTensorProduct.tmulEquivDep ℂ Wi).symm.toLinearMap) (fun m => ?_) x
   simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, _root_.piRep_tprod,
     PiTensorProduct.tmulEquivDep_symm_apply]
-  simp only [box, Representation.tprod_apply, MonoidHom.comp_apply, TensorProduct.map_tmul]
+  simp only [GlobalTheory.LGrp.extProd, Representation.tprod_apply, MonoidHom.comp_apply, TensorProduct.map_tmul]
   simp [_root_.piRep_tprod]
 
 theorem UpperTheory.V.Z.J.D.piIrr :
@@ -1435,8 +1392,6 @@ open UpperTheory.V.Z.J.D
 open scoped Matrix TensorProduct
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 
 namespace UpperTheory.V.Z.J.D.IsotropicFormFiniteness
 

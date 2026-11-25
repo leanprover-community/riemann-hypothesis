@@ -307,7 +307,6 @@ open GlobalTheory.BotClassDict (finQ)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinitePartQuadraticPhaseEqCmThetaExpStatement =====
@@ -899,8 +898,8 @@ theorem exists_prime_mem {R : Type} [CommRing R] {P : Ideal R} (hP : P.IsPrime) 
 
 theorem zeroAt_half {ε : AE D} (hε : GlobalTheory.RatAut.IsHalfIdem D ε) {q : ℕ} (hq : q.Prime) (hi : Formalism.MainNotions.StandardLatticesGL3.InertQ D q)
     (b : AE D) : Formalism.MainNotions.StandardLatticesGL3.ZeroAt D q (finQ D (ε * b)) :=
-  (GlobalTheory.T.finitePartRationalTensor_zeroAtPrime_iff_placeIdem D q hq _).2 fun v η hv hqv => by
-    rw [← mul_assoc, hε.2.2.2.2 v η ((GlobalTheory.T.inertPrime_iff_nonSplitPlaceIdempotent D q hq v η hv hqv).1 hi), zero_mul]
+  (GlobalTheory.ZeroAtPlaces.zeroAt_finQ_iff D q hq _).2 fun v η hv hqv => by
+    rw [← mul_assoc, hε.2.2.2.2 v η ((GlobalTheory.InertPlace.inertQ_iff_nonSplitAt D q hq v η hv hqv).1 hi), zero_mul]
 
 theorem half_supp {ε : AE D} (hε : GlobalTheory.RatAut.IsHalfIdem D ε) {a : AE D} (h0 : infPart D a = 0)
     (ha : ∀ q : ℕ, q.Prime → Formalism.MainNotions.StandardLatticesGL3.InertQ D q → Formalism.MainNotions.StandardLatticesGL3.ZeroAt D q (finQ D a)) : (ε + cA D ε) * a = a := by
@@ -911,7 +910,7 @@ theorem half_supp {ε : AE D} (hε : GlobalTheory.RatAut.IsHalfIdem D ε) {a : A
     by_cases hn : GlobalTheory.WeilParts.NonSplitAt D (Q.under (𝓞 D.host.F)) η
     · obtain ⟨q, hq, hqv⟩ := exists_prime_mem (Q.under (𝓞 D.host.F)).isPrime _
         (Ideal.absNorm_eq_zero_iff.not.2 (Q.under (𝓞 D.host.F)).ne_bot) (Ideal.absNorm_mem _)
-      have := (GlobalTheory.T.finitePartRationalTensor_zeroAtPrime_iff_placeIdem D q hq a).1 (ha q hq ((GlobalTheory.T.inertPrime_iff_nonSplitPlaceIdempotent D q hq _ η hη hqv).2 hn)) _ η hη hqv
+      have := (GlobalTheory.ZeroAtPlaces.zeroAt_finQ_iff D q hq a).1 (ha q hq ((GlobalTheory.InertPlace.inertQ_iff_nonSplitAt D q hq _ η hη hqv).2 hn)) _ η hη hqv
       rw [mul_left_comm, this, mul_zero]
     · obtain ⟨e, he, hs⟩ : ∃ e : AE D, IsSplitIdem D e ∧ e + cA D e = algebraMap (AF D.host.F) (AE D) η := by
         by_contra h
@@ -939,8 +938,6 @@ theorem cut_sub_one {R : Type} [CommRing R] {e z u : R} (h : u = e * z + (1 - e)
 theorem cut_conj {R : Type} [CommRing R] {e e' z z' : R} (h : (1 - (e + e')) * z = 1 - (e + e')) (h' : z' * z = 1) :
     e * z + (1 - e) = z * (e' * z' + (1 - e')) := by
   linear_combination -h - e' * h'
-
-
 
 theorem exists_half_det {ε : AE D} (hε : GlobalTheory.RatAut.IsHalfIdem D ε) (V : HSp D) (gV : V.gram = 1) {g : GA D V}
     {x : Formalism.MainNotions.StandardLatticesGL3.GA D V.rank} (hg : IsFinPt V g x) (sx : Formalism.MainNotions.StandardLatticesGL3.SuppSplit D (x : GL (Fin V.rank) (Formalism.MainNotions.StandardLatticesGL3.AE D))) :
@@ -1122,8 +1119,6 @@ theorem mul_mem_inertInt {f : AE D} (hf : finPart D f ∈ intAE D) : ∀ z ∈ i
   fun z hz => ⟨by rw [RingHom.map_mul, hz.1, mul_zero], by rw [RingHom.map_mul]; exact GlobalTheory.HostAdeleIso.intAE_mul_mem D hf hz.2.1,
     fun v ε h h' => by rw [mul_left_comm, hz.2.2 v ε h h', mul_zero]⟩
 
-
-
 theorem congrGroup_le (V : HSp D) (H : Subgroup (GA D V)) (hH : IsClosed (H : Set (GA D V)))
     (hpl : ∀ v ε, NonSplitAt D v ε → ∀ g ∈ congrGroup V (inertInt D), SuppPl ε V g → g ∈ H) :
     congrGroup V (inertInt D) ≤ H := by
@@ -1217,11 +1212,11 @@ theorem unramAt_of_hasFinPart {χ : (AE D)ˣ →* Circle} {N : ℕ} {c : HeckeU 
     refine c.unr _ ⟨(finQ_mem_iff _).2 h1, (finQ_mem_iff _).2 h2⟩ fun q hq hn => ?_
     have e1 : ((Units.map (finQ D).toMonoidHom x : (Formalism.MainNotions.StandardLatticesGL3.AE D)ˣ) : Formalism.MainNotions.StandardLatticesGL3.AE D) - 1 = finQ D ((x : AE D) - 1) := by
       rw [RingHom.map_sub, RingHom.map_one]; rfl
-    rw [e1, GlobalTheory.T.finitePartRationalTensor_zeroAtPrime_iff_placeIdem D q hq]
+    rw [e1, GlobalTheory.ZeroAtPlaces.zeroAt_finQ_iff D q hq]
     intro w η hη hw
     have hne : w ≠ v := by
       rintro rfl
-      exact hn ((GlobalTheory.T.inertPrime_iff_nonSplitPlaceIdempotent D q hq w ε hv.1 hw).2 hv)
+      exact hn ((GlobalTheory.InertPlace.inertQ_iff_nonSplitAt D q hq w ε hv.1 hw).2 hv)
     rw [← hx, ← mul_assoc, place_orth hΦ hη hv.1 hne, zero_mul]
   have := h x (Units.map (finQ D).toMonoidHom x) ⟨hi, by
     rw [← GlobalTheory.BotClassDict.finAdEquiv_toAfE]
@@ -1296,8 +1291,8 @@ theorem mem_congrGroup {V : HSp D} (hV : V.gram = 1) {g : GA D V} {x : Formalism
   have sp : ∀ v ε, IsPlaceIdem D v ε → ¬ NonSplitAt D v ε →
       g ∈ suppGroup V (1 - algebraMap (AF D.host.F) (AE D) ε) := fun v ε hε hn i j => by
     obtain ⟨q, hq, hqv⟩ := exists_prime_mem v
-    have h1 := hs q hq (fun h => hn ((GlobalTheory.T.inertPrime_iff_nonSplitPlaceIdempotent D q hq v ε hε hqv).1 h)) i j
-    rw [← e1, Matrix.map_apply, ← one, ← RingHom.map_sub, GlobalTheory.T.finitePartRationalTensor_zeroAtPrime_iff_placeIdem D q hq] at h1
+    have h1 := hs q hq (fun h => hn ((GlobalTheory.InertPlace.inertQ_iff_nonSplitAt D q hq v ε hε hqv).1 h)) i j
+    rw [← e1, Matrix.map_apply, ← one, ← RingHom.map_sub, GlobalTheory.ZeroAtPlaces.zeroAt_finQ_iff D q hq] at h1
     rw [sub_mul, one_mul, Matrix.sub_apply, h1 v ε hε hqv, sub_zero]
   have sp' : ∀ (k : GA D V) (a : AE D), k ∈ suppGroup V (1 - a) → ∀ i j, a * (mt V k - 1) i j = 0 := fun k a hk i j => by
     have := hk i j
@@ -1513,7 +1508,6 @@ open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.weil_datum_finite_part_moves_vacuum_as_theta_model : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d)
   (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (r : D.host.E), Setup ψ θ S T cc δ r →

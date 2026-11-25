@@ -151,18 +151,11 @@ private theorem w3_lemma_4 {ℓ : ℕ} [Fact ℓ.Prime] {A : Type} [CommRing A] 
       have hsd : s - d = (s - (d + 1)) + 1 := by omega
       rw [hsd] at h1
       have h2 := w3_lemma_3 G P _ (s - (d + 1)) h1
-      have hmem : s - (d + 1) + 1 ∈ Finset.Ioc (s - (d + 1)) s := by
-        simp only [Finset.mem_Ioc]
-        omega
       have hprod : ∏ k ∈ Finset.Ioc (s - (d + 1)) s, ((G.u : ℤ_[ℓ]) ^ k - 1) =
           (∏ k ∈ Finset.Ioc (s - (d + 1) + 1) s, ((G.u : ℤ_[ℓ]) ^ k - 1)) *
             ((G.u : ℤ_[ℓ]) ^ (s - (d + 1) + 1) - 1) := by
-        rw [← Finset.mul_prod_erase _ _ hmem, mul_comm]
-        congr 1
-        apply Finset.prod_congr _ (fun _ _ => rfl)
-        ext x
-        simp only [Finset.mem_erase, Finset.mem_Ioc]
-        omega
+        rw [← Finset.prod_Ioc_consecutive _ (Nat.le_succ _) (by omega : s - (d + 1) + 1 ≤ s),
+          Nat.Ioc_succ_singleton, Finset.prod_singleton, mul_comm]
       rw [hprod]
       exact h2
   have := main (s - j) le_rfl
@@ -235,17 +228,8 @@ theorem second_descent_free_part_holds : Stat2Free := by
     rintro _ ⟨y₁, hy₁, rfl⟩ _ ⟨y₂, hy₂, rfl⟩
     exact ⟨y₁ + y₂, fun k => S.P'.add_mem (hy₁ k) (hy₂ k), by
       simp [map_add (f := _), smul_add, Finset.sum_add_distrib]⟩
-  have hTsum : ∀ (s : Finset (Fin ℓ)) (f : Fin ℓ → D'), (∀ k ∈ s, f k ∈ T) → ∑ k ∈ s, f k ∈ T := by
-    intro s f
-    induction s using Finset.induction_on with
-    | empty =>
-      intro _
-      simpa using hT0
-    | insert a s ha ih =>
-      intro hf
-      rw [Finset.sum_insert ha]
-      exact hTadd _ (hf a (Finset.mem_insert_self a s)) _
-        (ih (fun k hk => hf k (Finset.mem_insert_of_mem hk)))
+  have hTsum : ∀ (s : Finset (Fin ℓ)) (f : Fin ℓ → D'), (∀ k ∈ s, f k ∈ T) → ∑ k ∈ s, f k ∈ T :=
+    fun s f => Finset.sum_induction f (· ∈ T) (fun a b ha hb => hTadd a ha b hb) hT0
   have hL : ∀ (g : A) (y : D), y ∈ S.P' → g • S.φ y ∈ T := by
     intro g y hy
     obtain ⟨e, he⟩ := hgen g

@@ -139,7 +139,6 @@ theorem cocycle_zero (hU : ∀ α, Cosieve (U α)) (α : C → ι) (hα : ∀ T,
 
 end GlobalTheory.CompanionTheory.CechRowExact
 
-
 open GlobalTheory.CompanionTheory.CechRowExact in
 theorem GlobalTheory.CompanionTheory.CechRowExact.cech_rows : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ ModuleCat.{w} R) {ι : Type} (U : ι → ObjectProperty C), (∀ α, Cosieve (U α)) → (∀ T, ∃ α, U α T) → ∀ q, ((cechCC F U).dcx.row q).ResUpTo 1 ((cechAugRowU F U).ε q) := by
   intro R _ C _ F ι U hU hc q
@@ -1020,15 +1019,10 @@ theorem carry_form (Λ : LiftsT q) {m n : ℕ} (s : ComposableArrows (Thick (smF
   refine congrArg₂ (· * ·) rfl (Finset.prod_congr rfl fun k _ => ?_)
   rw [map_sub, carry, carry]
 
-def someLifts (q : X ⟶ Spec (CommRingCat.of K)) : LiftsT q where
-  v T g := Function.surjInv Ideal.Quotient.mk_surjective
-    (ev (γ := dividedPowersBot K) (p := 0) (q := q) (κ := Ideal.Quotient.mk ⊥) T (inTop q T) g)
-  hv T g := Function.surjInv_eq _ _
-
 theorem isFormT_unique {a : ℕ} {g₀ : Γ(X, ⊤)} {g : Fin a → Γ(X, ⊤)} {c c' : Hdg q a a}
     (h : IsFormT q g₀ g c) (h' : IsFormT q g₀ g c') : c = c' := by
-  obtain ⟨f, hf, e, hz⟩ := h (someLifts q)
-  obtain ⟨f', hf', e', hz'⟩ := h' (someLifts q)
+  obtain ⟨f, hf, e, hz⟩ := h (GlobalTheory.CompanionTheory.OmCls.liftsTopBot q)
+  obtain ⟨f', hf', e', hz'⟩ := h' (GlobalTheory.CompanionTheory.OmCls.liftsTopBot q)
   have : f = f' := funext fun s => Subtype.ext ((hz s).trans (hz' s).symm)
   subst this
   exact e.trans e'.symm

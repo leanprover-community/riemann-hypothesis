@@ -6,8 +6,6 @@ public import GroundTheory.AutomorphicForms.WhittakerGroups
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
 
 namespace CompanionTheory.rg.gu.whit

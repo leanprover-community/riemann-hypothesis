@@ -106,8 +106,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.HTLat GlobalTheory.Published.AbVarRed GlobalTheory.CechPic GlobalTheory.AV GlobalTheory.AV.AbVar
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.eq_of_norm_prod_aeval_eq' : ∀ (l : ℕ) [Fact l.Prime] (P Q : Polynomial ℚ_[l]), P.Monic → Q.Monic → P.natDegree = Q.natDegree → (∀ F : Polynomial ℤ, ‖((P.aroots (PadicAlgCl l)).map (fun a => Polynomial.aeval a F)).prod‖ = ‖((Q.aroots (PadicAlgCl l)).map (fun a => Polynomial.aeval a F)).prod‖) → P = Q := by
-  first | exact @GlobalTheory.PadicRootNorm.eq_of_norm_prod_aeval_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfNormProdAevalEqStatement =====
@@ -351,7 +349,6 @@ theorem finrank_coker_lieMap_congr {A B A' B' : PDivGroup p k} (eA : A ≅ A') (
 
 end GlobalTheory.Dieu.ColengthHtOne
 
-
 open GlobalTheory.Dieu.ColengthHtOne in
 theorem GlobalTheory.Dieu.le_colength_of_htOne : ∀ (p : ℕ) [Fact p.Prime] (T : GlobalTheory.Dieu.Theory p) (k : Type) [Field k] [CharP k p]
     [PerfectRing k p] (G H : PDivGroup p k) (q : G ⟶ H) (q' : H ⟶ G) (e : ℕ), q ≫ q' = (p : ℤ_[p]) • 𝟙 G →
@@ -418,14 +415,12 @@ theorem colen_iso {X Y : PDivGroup p k} (i : X ≅ Y) :
   rw [LinearMap.range_eq_top.2 (map_iso_bijective T i).2]
   exact Module.length_eq_zero_iff.2 inferInstance
 
-
 omit [PerfectRing k p] in
 theorem omegaMap_surjective_of_isIso {X Y : PDivGroup p k} (f : X ⟶ Y) [IsIso f] :
     Function.Surjective (omegaMap X Y f) := by
   intro w
   refine ⟨omegaMap Y X (inv f) w, ?_⟩
   rw [← LinearMap.comp_apply, ← omegaMap_comp, IsIso.hom_inv_id, omegaMap_id, LinearMap.id_apply]
-
 
 omit [PerfectRing k p] in
 theorem exists_step {X Y : PDivGroup p k} (f : X ⟶ Y) (hω : ¬ Function.Surjective (omegaMap X Y f)) :
@@ -453,7 +448,6 @@ theorem exists_step {X Y : PDivGroup p k} (f : X ⟶ Y) (hω : ¬ Function.Surje
   rw [← LinearMap.range_eq_top, eq_top_iff]
   intro x _
   exact (Submodule.Quotient.mk_eq_zero _).1 (Subsingleton.elim _ _)
-
 
 omit [PerfectRing k p] in
 theorem one_le_deg {X Q : PDivGroup p k} (q₁ : X ⟶ Q) (q₁' : Q ⟶ X)
@@ -609,8 +603,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open scoped CategoryTheory.MonObj
 attribute [local instance] CategoryTheory.Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_isogeny_kernel_finite_algebra_finrank_eq_degree : ∀ (k : Type) [Field k] (A B : AbVar k) (f : A ⟶ B), IsIsogeny f → ∃ (H : Type) (_ : CommRing H) (_ : Algebra k H) (i : ptOver k H ⟶ A.X), KerPow f 0 H i ∧ Module.finrank k H = deg f := by
-  first | exact @GlobalTheory.AV.KerPart.exists_kerPow_zero_finrank_eq_deg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsogenyKernelFiniteAlgebraFinrankEqDegreeStatement =====
@@ -625,8 +617,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open scoped CategoryTheory.MonObj
 attribute [local instance] CategoryTheory.Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_kernelPart_order_prime_to_p : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (A B : AbVar k) (f : A ⟶ B) (m : ℕ), 0 < m → ¬ p ∣ m → ∃ (H : Type) (_ : CommRing H) (_ : Algebra k H) (i : ptOver k H ⟶ A.X), KerPow f m H i ∧ ¬ p ∣ Module.finrank k H := by
-  first | exact @GlobalTheory.AV.KerPart.exists_kerPow_not_dvd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsKernelPartOrderPrimeToPStatement =====
@@ -644,7 +634,6 @@ attribute [local instance] CategoryTheory.Over.cartesianMonoidalCategory
 noncomputable section
 
 namespace GlobalTheory.Dieu
-
 
 open GlobalTheory.AV.KerPart in
 theorem isIsog_hasLogDeg_map : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (A B : AbVar k) (G H : PDivGroup p k) (t : G.TorsionTower A.X) (t' : H.TorsionTower B.X) (f : A ⟶ B), IsIsogeny f → IsIsog (t.map t' f.hom) ∧ HasLogDeg (t.map t' f.hom) (padicValNat p (deg f)) := by
@@ -681,8 +670,8 @@ theorem isIsog_hasLogDeg_map : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k]
     refine ⟨a, (↑u⁻¹ : ℤ_[p]) • t'.map t g.hom, ?_, ?_⟩
     · rw [Linear.comp_smul, h1, smul_smul, hs]
     · rw [Linear.smul_comp, h2, smul_smul, hs]
-  · obtain ⟨H₀, _, _, i₀, hK₀, hdeg⟩ := GlobalTheory.T.exists_isogeny_kernel_finite_algebra_finrank_eq_degree k A B f hf
-    obtain ⟨Hm, _, _, im, hKm, hpm⟩ := GlobalTheory.T.exists_kernelPart_order_prime_to_p p k A B f m hm0 hm
+  · obtain ⟨H₀, _, _, i₀, hK₀, hdeg⟩ := GlobalTheory.AV.KerPart.exists_kerPow_zero_finrank_eq_deg k A B f hf
+    obtain ⟨Hm, _, _, im, hKm, hpm⟩ := GlobalTheory.AV.KerPart.exists_kerPow_not_dvd p k A B f m hm0 hm
     have hcop : (p ^ a).Coprime m := (Nat.Coprime.pow_left a ((Nat.coprime_comm.1 ((Nat.Prime.coprime_iff_not_dvd hp).2 hm)).symm))
     obtain ⟨H₁, _, _, i₁, hK₁, hrank⟩ := GlobalTheory.T.kernelPart_mul_of_coprime_abelianVariety k A B f (p ^ a) m hcop _ _ _ _ (kerPow_kerPt t t' f a) hKm
     have h01 : Module.finrank k H₁ = deg f := (finrank_eq_of_kerPow hK₁ hK₀ fun R _ _ x hx =>
@@ -985,8 +974,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.HTLat GlobalTheory.Published.AbVarRed GlobalTheory.CechPic GlobalTheory.AV GlobalTheory.AV.AbVar
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.abVar_hom_eq_zero_of_nsmul_eq_zero : ∀ (K : Type) [Field K] (A B : AbVar K) (n : ℤ) (f : A ⟶ B), n ≠ 0 → n • f = 0 → f = 0 := by
-  first | exact @GlobalTheory.AV.AbVar.hom_torsionFree
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomTorsionFreeStatement =====
@@ -1023,7 +1010,7 @@ theorem toEnd0_injective_and_fraction : ∀ (K : Type) [Field K] (A : AbVar K),
       simpa [Submonoid.smul_def] using hc
     apply sub_eq_zero.1
     apply End.addEquiv.injective
-    apply GlobalTheory.T.abVar_hom_eq_zero_of_nsmul_eq_zero K A A (c : ℤ) _ hc0
+    apply GlobalTheory.AV.AbVar.hom_torsionFree K A A (c : ℤ) _ hc0
     have hh := congrArg (End.addEquiv (X := A)) h1
     rw [map_zsmul, map_zero] at hh
     exact hh
@@ -1403,8 +1390,6 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory GlobalTheory.PD
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 attribute [local instance] CategoryTheory.Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_torsionTower_and_height_eq_two_dim : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (A : AbVar k), (∃ G : PDivGroup p k, Nonempty (G.TorsionTower A.X)) ∧ ∀ (G : PDivGroup p k) (t : G.TorsionTower A.X), G.height = 2 * A.dim := by
-  first | exact @GlobalTheory.AVTower.exists_tower_and_height_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTorsionTowerAndHeightEqTwoDimStatement =====
@@ -1556,13 +1541,13 @@ theorem charpoly_map_eq : ∀ (p : ℕ) [Fact p.Prime] (T : Theory p) (k : Type)
     have hpn : ((p : WittVector p k)) ^ x.valuation ≠ 0 := pow_ne_zero _ (WittVector.p_nonzero p k)
     exact hpn ((hu.mul_right_eq_zero).1 hx)
   have hrank : Module.finrank (WittVector p k) (T.M G) = 2 * A.dim :=
-    hfun.2.2.2.2.2.2.2.1.trans ((GlobalTheory.T.exists_torsionTower_and_height_eq_two_dim p k A).2 G t)
+    hfun.2.2.2.2.2.2.2.1.trans ((GlobalTheory.AVTower.exists_tower_and_height_eq p k A).2 G t)
   obtain ⟨P, hPm, hP⟩ := _root_.GlobalTheory.DieuCharpoly.exists_monic_map_eq_charpoly p k (T.M G) (T.F G) ψ (T.map (t.map t f.asHom.hom)) hFinj (hFc f)
   obtain ⟨⟨hQm, hQdeg, -⟩, -⟩ := GlobalTheory.T.abelianVarietyEndCharpoly_spec k A f
   have hPdeg : P.natDegree = 2 * A.dim := by
     rw [← hPm.natDegree_map ψ, hP, LinearMap.charpoly_natDegree, hrank]
   have key : P.map (algebraMap ℤ_[p] ℚ_[p]) = (charpoly f).map (Int.castRingHom ℚ_[p]) := by
-    refine GlobalTheory.T.eq_of_norm_prod_aeval_eq' p _ _ (hPm.map _) (hQm.map _) ?_ ?_
+    refine GlobalTheory.PadicRootNorm.eq_of_norm_prod_aeval_eq p _ _ (hPm.map _) (hQm.map _) ?_ ?_
     · rw [hPm.natDegree_map, hQm.natDegree_map, hPdeg, hQdeg]
     · intro R
       obtain ⟨PR, -, hPR⟩ := _root_.GlobalTheory.DieuCharpoly.exists_monic_map_eq_charpoly p k (T.M G) (T.F G) ψ

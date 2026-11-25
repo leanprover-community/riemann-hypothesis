@@ -1,6 +1,7 @@
 module
 
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBoundedMul
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockVeronese
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSmallSectionsNonzero
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -62,34 +63,6 @@ theorem exists_chartForm (y : (Σ k, ι k) → Ω) (a : K → ℤ) (n : ℕ) {s 
       aeval y g = s * aeval y (chartMono c N) :=
   SectionBoundedMul.exists_chartForm y a n hs c hc
 
-omit [∀ k, Fintype (ι k)] in
-theorem one_mem_chartLat (y : (Σ k, ι k) → Ω) (a : K → ℤ) : (1 : Ω) ∈ chartLat y a 0 := by
-  intro c _
-  simp only [Nat.cast_zero, zero_mul, neg_zero, zpow_zero, Finset.prod_const_one, mul_one]
-  exact one_mem _
-
-omit [∀ k, Fintype (ι k)] in
-theorem mul_mem_chartLat {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n j : ℕ} {s t : Ω} (hs : s ∈ chartLat y a n)
-    (ht : t ∈ chartLat y a j) : s * t ∈ chartLat y a (n + j) := by
-  intro c hc
-  have h : ∏ k, y ⟨k, c k⟩ ^ (-(((n + j : ℕ) : ℤ) * a k)) =
-      (∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k)) := by
-    rw [← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    rw [← zpow_add₀ (hc k)]
-    congr 1
-    push_cast
-    ring
-  rw [h, show s * t * ((∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) =
-      (s * ∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * (t * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) by ring]
-  exact mul_mem (hs c hc) (ht c hc)
-
-omit [∀ k, Fintype (ι k)] in
-theorem pow_mem_chartLat {y : (Σ k, ι k) → Ω} {a : K → ℤ} {w : Ω} (hw : w ∈ chartLat y a 1) :
-    ∀ j : ℕ, w ^ j ∈ chartLat y a j
-  | 0 => by rw [pow_zero]; exact one_mem_chartLat y a
-  | j + 1 => by rw [pow_succ]; exact mul_mem_chartLat (pow_mem_chartLat hw j) hw
-
 theorem isSmallH_one (y : (Σ k, ι k) → Ω) (A : HermLine ι) : IsSmallH (mCoordIdeal y) y A 0 1 := by
   intro dg dh g h z hg hh hdeg he hz
   have hd : dg = dh := funext fun k => by simpa using hdeg k
@@ -114,7 +87,7 @@ theorem isSmallH_pow {y : (Σ k, ι k) → Ω} {A : HermLine ι} {w : Ω} (hw : 
   | 0 => by rw [pow_zero]; exact isSmallH_one y A
   | j + 1 => by
     rw [pow_succ]
-    exact isSmallH_mul (pow_mem_chartLat hw j) hw (isSmallH_pow hw hs j) hs
+    exact isSmallH_mul (by simpa using PowerBlockVeronese.pow_mem_chartLat hw j) hw (isSmallH_pow hw hs j) hs
 
 end SmallSectionsNonzero
 
@@ -131,7 +104,7 @@ theorem SmallSectionsNonzero.proof : SmallSectionsNonzero.Statement := by
     by_contra hne
     simp only [not_exists, not_not] at hne
     simp [hne] at hsum
-  exact ⟨w i ^ j, pow_mem_chartLat (hw i) j, pow_ne_zero j hi, isSmallH_pow (hw i) (hsm i) j⟩
+  exact ⟨w i ^ j, by simpa using PowerBlockVeronese.pow_mem_chartLat (hw i) j, pow_ne_zero j hi, isSmallH_pow (hw i) (hsm i) j⟩
 
 end
 

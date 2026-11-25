@@ -9,8 +9,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem BlowupSequenceData.iteratedStrictTransform_top {X : Scheme.{u}} (d : BlowupSequenceData X) (i : ℕ) :
@@ -23,5 +21,3 @@ theorem BlowupSequenceData.iteratedStrictTransform_top {X : Scheme.{u}} (d : Blo
       rw [BlowupSequenceData.iteratedStrictTransform_succ, ih, _root_.FunctorialResolution.EmbeddedResolution.strictTransform_top]
 
 end FunctorialResolution.EmbeddedResolution
-
-end

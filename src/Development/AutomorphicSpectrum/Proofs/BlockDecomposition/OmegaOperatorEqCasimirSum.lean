@@ -132,15 +132,8 @@ theorem trace_Mt (i j : Fin a) (x : Cinf E) (Y : (isExpLieAlgebra E a).lieSubalg
     · simp
   rw [archTraceForm_apply, h, mixedTraceL_apply]
   simp only [Prod.fst_mul, Pi.mul_apply, cInv, Pi.zero_apply, zero_mul, Finset.sum_const_zero, zero_add, Prod.snd_mul]
-  refine Finset.sum_bij (fun v _ => v.1) ?_ ?_ ?_ ?_
-  · intro _ _
-    exact Finset.mem_univ _
-  · intro _ _ _ _ h
-    exact Subtype.ext h
-  · intro w _
-    exact ⟨⟨w, IsTotallyComplex.isComplex w⟩, by simp, rfl⟩
-  · intro v _
-    rfl
+  exact Finset.sum_equiv (Equiv.subtypeUnivEquiv fun w => IsTotallyComplex.isComplex w) (by simp)
+    fun _ _ => rfl
 
 open Classical in
 theorem toL_single_atEmb (i j p q : Fin a) (w v : InfinitePlace E) (z : ℂ) :

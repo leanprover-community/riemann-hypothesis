@@ -5,8 +5,6 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 
 @[expose] public section
 
-noncomputable section
-
 open Finset MeasureTheory Matrix
 open scoped InnerProductSpace
 

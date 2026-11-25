@@ -144,13 +144,7 @@ theorem exists_eq_mul_diagPow_mul_levi {m : GL (Fin n) F} (hm : m ∈ levi F n �
 
   have hblk : blocks β F (m : Matrix (Fin n) (Fin n) F) *
       blocks β F ((m⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) = 1 := by
-    rw [← blocks_mul hm0 hminv0, Units.mul_inv]
-    funext a
-    ext i j
-    show (1 : Matrix (Fin n) (Fin n) F) i.1 j.1 = (1 : Matrix (Fiber β a) (Fiber β a) F) i j
-    by_cases hij : i = j
-    · rw [hij, one_apply_eq, one_apply_eq]
-    · rw [one_apply_ne hij, one_apply_ne (fun e => hij (Subtype.ext e))]
+    rw [← blocks_mul hm0 hminv0, Units.mul_inv, ← map_one (blockAssemble β F), blocks_blockAssemble]
   have hdet : ∀ a, (blocks β 𝒪[F] A a).det ≠ 0 := by
     intro a h
     have h1 := congrArg (𝒪[F]).subtype h

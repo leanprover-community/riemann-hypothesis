@@ -6,8 +6,6 @@ public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.LocFv
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology

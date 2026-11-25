@@ -12,25 +12,13 @@ section
 variable {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A E] (D : Det n A E) {E' : Type} [Ring E'] [Algebra A E']
   (f : E →ₐ[A] E')
 
-private theorem map_eq_lTensor (S : Type) [CommRing S] [Algebra A S] (z : S ⊗[A] E) :
-    Algebra.TensorProduct.map (AlgHom.id S S) f z = f.toLinearMap.lTensor S z := by
-  induction z with
-  | tmul s x => simp
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
-
-private theorem map_surj (hf : Function.Surjective f) (S : Type) [CommRing S] [Algebra A S] :
-    Function.Surjective (Algebra.TensorProduct.map (AlgHom.id S S) f) := by
-  intro y
-  obtain ⟨x, hx⟩ := LinearMap.lTensor_surjective S (g := f.toLinearMap) hf y
-  exact ⟨x, (map_eq_lTensor f S x).trans hx⟩
-
 private theorem eq_of_map_eq (hf : Function.Surjective f) (hk : ∀ x, f x = 0 → x ∈ D.ker)
     (S : Type) [CommRing S] [Algebra A S] (x y : S ⊗[A] E)
     (h : Algebra.TensorProduct.map (AlgHom.id S S) f x = Algebra.TensorProduct.map (AlgHom.id S S) f y) :
     D.D S x = D.D S y := by
   have hex := lTensor_exact S (LinearMap.exact_subtype_ker_map f.toLinearMap) hf
-  have h0 : f.toLinearMap.lTensor S (x - y) = 0 := by
-    rw [← map_eq_lTensor, map_sub, h, sub_self]
+  have h0 : f.toLinearMap.lTensor S (x - y) = 0 :=
+    (map_sub (Algebra.TensorProduct.map (AlgHom.id S S) f) x y).trans (sub_eq_zero.2 h)
   obtain ⟨w, hw⟩ := (hex _).1 h0
   have key : ∀ (w : S ⊗[A] (LinearMap.ker f.toLinearMap)) (y : S ⊗[A] E),
       D.D S (y + (LinearMap.ker f.toLinearMap).subtype.lTensor S w) = D.D S y := by
@@ -56,7 +44,8 @@ end
 theorem UpperTheory.V.CA.d_factor :
     ∀ {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A E] (D : Det n A E) {E' : Type} [Ring E'] [Algebra A E'] (f : E →ₐ[A] E'), Function.Surjective f → (∀ x, f x = 0 → x ∈ D.ker) → ∃! D' : Det n A E', D'.pull f = D := by
   intro n A E _ _ _ D E' _ _ f hf hk
-  have hs := map_surj f hf
+  have hs (S : Type) [CommRing S] [Algebra A S] :=
+    Algebra.TensorProduct.map_surjective (AlgHom.id S S) f Function.surjective_id hf
   have he := eq_of_map_eq D f hf hk
   have hσ : ∀ (S : Type) [CommRing S] [Algebra A S] (x : S ⊗[A] E),
       D.D S (Function.surjInv (hs S) (Algebra.TensorProduct.map (AlgHom.id S S) f x)) = D.D S x :=

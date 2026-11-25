@@ -4,8 +4,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Non
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
 
 namespace UpperTheory.TNZ.Grp

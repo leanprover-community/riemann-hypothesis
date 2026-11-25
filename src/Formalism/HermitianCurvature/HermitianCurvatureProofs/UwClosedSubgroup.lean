@@ -145,11 +145,8 @@ theorem muW_lev {ρ : ℕ} (z0 : Fin (2 * ρ + k + 1) → ℂ)
           B.Mat k (ρ + 1)) = D.castM (Nat.add_comm 1 ρ) (ιLev k 1 ρ (a0 * Matrix.of x))
       rw [lev_mul']
     rw [hν, Measure.map_map hl hm, e, ← Measure.map_map hm hl0, h0.left a0 ha0]
-  have hfin : ∀ K : Set (Mt k (ρ + 1)), IsCompact K → ν K < ⊤ := by
-    intro K _
-    calc ν K ≤ ν Set.univ := measure_mono (Set.subset_univ _)
-      _ = 1 := hνu
-      _ < ⊤ := ENNReal.one_lt_top
+  have hfin : ∀ K : Set (Mt k (ρ + 1)), IsCompact K → ν K < ⊤ := fun K _ =>
+    measure_lt_top_of_subset (Set.subset_univ K) (by rw [hνu]; exact ENNReal.one_ne_top)
   obtain ⟨c, hc⟩ := Formalism.FourierDecayAlt.P.haar_measure_unique_up_to_scalar k (ρ + 1) U1 μ1 ν (uw_closedSubgroup (ρ + 1) _) h1 hconc hleft hfin
   have hc1 : (c : ENNReal) = 1 := by
     have := congrArg (fun μ : Measure (Mt k (ρ + 1)) => μ Set.univ) hc

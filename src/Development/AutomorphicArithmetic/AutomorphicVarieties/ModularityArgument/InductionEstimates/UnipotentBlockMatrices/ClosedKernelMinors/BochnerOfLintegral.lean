@@ -6,45 +6,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.PkLaws
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.IwaInt
 import GroundTheory.GlobalFields.Adele.Topology
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
 
@@ -318,15 +282,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.unf :
     rw [tower μ E hE hEu Ψ hΨ hinv, ← coordUnf μ₂ κ E hE hEu Ψ hΨ hinv, ← hI _ (hΨ.indicator hE),
       lintegral_indicator hE]
   refine ⟨c, hc, hL, fun Ψ hΨ hinv hint => ?_⟩
-  have hpt : Measurable (pt (K := K)) := by
-    have : OpensMeasurableSpace (G1 K 2 × ℝ) := inferInstance
-    have : OpensMeasurableSpace (G1 K 2 × G1 K 2 × ℝ) := inferInstance
-    have h1 := ((blkLaws (K := K)).2.2.2.1).measurable
-    have h2 : Measurable (unipOne (K := K) (n := 2 + 2) 2) := (continuous_unipOne 2).measurable
-    have h3 : Measurable fun p : Par K => (p.1, p.2.1, p.2.2.1) :=
-      measurable_fst.prodMk (measurable_snd.fst.prodMk measurable_snd.snd.fst)
-    exact ((h2.comp measurable_snd.snd.snd.snd).mul (h1.comp h3)).mul
-      (measurable_subtype_coe.comp measurable_snd.snd.snd.fst)
   have hmk : Measurable (RightCosetSpace.mk (PK K)) := measurable_quotient_mk''
   let h : RightCosetSpace (PK K) → ℂ := Quotient.lift Ψ fun a b hab => by
     obtain ⟨γ, hγ⟩ := MulAction.orbitRel_apply.1 hab
@@ -336,7 +291,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.unf :
   exact bochner_of_lintegral (fd μ) (parM μ₂ κ)
     (fun (q : Cos K) y => RightCosetSpace.mk (PK K) ((q.out : G1 K (2 + 2)) * y))
     (fun p => RightCosetSpace.mk (PK K) (pt p))
-    (fun q => hmk.comp (measurable_const_mul _)) (hmk.comp hpt) c hc.le
+    (fun q => hmk.comp (measurable_const_mul _)) (hmk.comp pt_meas) c hc.le
     (fun φ hφ => hL (fun g => φ (RightCosetSpace.mk (PK K) g)) (hφ.comp hmk)
       (fun γ hγ g => congrArg φ (RightCosetSpace.mk_mul_of_mem hγ g)))
     h hh hint

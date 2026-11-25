@@ -79,7 +79,6 @@ def Mv.sideA {cf : CharFrame D} {jE : D.host.E →+* Qb} (A : SideA D cf jE) : S
       (cls := (A.au.cls))
       (surj := (A.au.surj))
       (iso := (A.au.iso))
-      (mult := (A.au.mult))
       (sph := (A.au.sph))
       (sat := (A.au.sat))
       (clsWt := (A.au.clsWt))

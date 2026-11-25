@@ -30,16 +30,13 @@ section Alg
 variable {D : Datum H} {k : Type} [Field k] {Q : Type} [CommGroup Q] {act : 𝓞 E → Q → Q}
   {e : ℕ → Q → Q → kˣ → Prop} (I : TateIso D k Q act e)
 
-def evA (p : ℕ) : D.La →+ Additive Q :=
-  AddMonoidHom.mk' (fun a => Additive.ofMul (I.ev p a)) fun a b => by rw [I.add]; rfl
-
-theorem ker_evA {p : ℕ} (hp : 0 < p) : (evA I p).ker = pLat D p := by
+theorem ker_evA {p : ℕ} (hp : 0 < p) : (GlobalTheory.HeckeTate.evHom I p).ker = pLat D p := by
   ext a
   rw [AddMonoidHom.mem_ker, mem_pLat, ← I.ker p hp a]
   exact ofMul_eq_zero
 
 theorem relIndex_eq {p : ℕ} (hp : 0 < p) (N : AddSubgroup D.La) :
-    (pLat D p).relIndex N = Nat.card (N.map (evA I p)) := by
+    (pLat D p).relIndex N = Nat.card (N.map (GlobalTheory.HeckeTate.evHom I p)) := by
   rw [← ker_evA I hp, AddSubgroup.relIndex, AddSubgroup.addSubgroupOf, AddMonoidHom.comap_ker,
     AddSubgroup.index_ker, AddMonoidHom.range_comp, AddSubgroup.range_subtype]
 
@@ -59,7 +56,7 @@ def datumEquiv {p : ℕ} (hp : 0 < p) (hnat : ∀ x, act (p : 𝓞 E) x = x ^ p)
     (hpJ : (p : 𝓞 E) ∈ J) {m : ℕ} (hm : m ≠ 0) :
     {C₀ : Subgroup Q // (∀ a, ∀ x ∈ C₀, act a x ∈ C₀) ∧ (∀ x ∈ C₀, ∀ a ∈ J, act a x = 1) ∧ Finite C₀ ∧
       Nat.card C₀ = m} ≃ LatCount D p J m where
-  toFun C := ⟨C.1.toAddSubgroup.comap (evA I p), by
+  toFun C := ⟨C.1.toAddSubgroup.comap (GlobalTheory.HeckeTate.evHom I p), by
       rw [← ker_evA I hp]; exact AddMonoidHom.ker_le_comap _ _,
     fun a x hx => by
       show (I.ev p (a • x)) ∈ C.1
@@ -69,13 +66,13 @@ def datumEquiv {p : ℕ} (hp : 0 < p) (hnat : ∀ x, act (p : 𝓞 E) x = x ^ p)
       show Additive.ofMul (I.ev p (a • x)) = 0
       rw [I.lin, show act a (I.ev p x) = 1 from C.2.2.1 _ hx a ha]; rfl,
     by
-      have hle : C.1.toAddSubgroup ≤ (evA I p).range := fun x hx => by
+      have hle : C.1.toAddSubgroup ≤ (GlobalTheory.HeckeTate.evHom I p).range := fun x hx => by
         have h1 : x.toMul ^ p = 1 := (hnat _).symm.trans (C.2.2.1 _ hx _ hpJ)
         obtain ⟨a, ha⟩ := (I.onto p hp _).1 h1
         exact ⟨a, ha⟩
       rw [relIndex_eq I hp, AddSubgroup.map_comap_eq, inf_eq_right.2 hle, card_toAdd]
       exact C.2.2.2.2⟩
-  invFun N := ⟨Subgroup.toAddSubgroup.symm (N.1.map (evA I p)), by
+  invFun N := ⟨Subgroup.toAddSubgroup.symm (N.1.map (GlobalTheory.HeckeTate.evHom I p)), by
       rintro a _ ⟨x, hx, rfl⟩
       exact ⟨a • x, N.2.2.1 a x hx, I.lin p a x⟩,
     by
@@ -85,7 +82,7 @@ def datumEquiv {p : ℕ} (hp : 0 < p) (hnat : ∀ x, act (p : 𝓞 E) x = x ^ p)
       show act a (I.ev p x) = 1
       rw [← I.lin]; exact h,
     by
-      have : Nat.card (Subgroup.toAddSubgroup.symm (N.1.map (evA I p))) ≠ 0 := by
+      have : Nat.card (Subgroup.toAddSubgroup.symm (N.1.map (GlobalTheory.HeckeTate.evHom I p))) ≠ 0 := by
         rw [← card_toAdd, OrderIso.apply_symm_apply, ← relIndex_eq I hp, N.2.2.2.2]; exact hm
       exact Nat.finite_of_card_ne_zero this,
     by rw [← card_toAdd, OrderIso.apply_symm_apply, ← relIndex_eq I hp]; exact N.2.2.2.2⟩
@@ -99,7 +96,7 @@ def datumEquiv {p : ℕ} (hp : 0 < p) (hnat : ∀ x, act (p : 𝓞 E) x = x ^ p)
     exact ⟨a, ha⟩
   right_inv N := by
     apply Subtype.ext
-    show AddSubgroup.comap (evA I p) (Subgroup.toAddSubgroup (Subgroup.toAddSubgroup.symm (N.1.map (evA I p)))) = N.1
+    show AddSubgroup.comap (GlobalTheory.HeckeTate.evHom I p) (Subgroup.toAddSubgroup (Subgroup.toAddSubgroup.symm (N.1.map (GlobalTheory.HeckeTate.evHom I p)))) = N.1
     rw [OrderIso.apply_symm_apply, AddSubgroup.comap_map_eq, ker_evA I hp]
     exact sup_eq_left.2 N.2.1
 
@@ -114,7 +111,6 @@ section Fibre
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
 variable {B : Type} [CommRing B] {b : Base l B} {k : Type} [Field k] {s : Sp k ⟶ Sp B}
   [IsAlgClosed k] [CharZero k] (hL : Out.Laws) (o : Obj D l b s) {p : ℕ} {P : Ideal (𝓞 E)}
-
 
 include hL in
 theorem map_pow_eq (h : IsSplitPrimeOff l p P) {i : ℕ} {C : Subgroup (Pts o.t)}

@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafTubeCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.CohomologicalPurity.TubeCut

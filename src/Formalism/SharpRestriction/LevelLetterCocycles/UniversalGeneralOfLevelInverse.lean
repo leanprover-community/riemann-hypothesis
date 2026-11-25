@@ -137,16 +137,6 @@ section ThetaShiftProofs
 
 open Formalism.MainNotions.LocalTheoryWindows
 
-def mmF (A : ArcP n) : LT → ℕ
-  | .thin => A.G₀
-  | .up b => b + A.S
-  | .down _ => 0
-
-def dnF : LT → ℕ
-  | .thin => 0
-  | .up _ => 0
-  | .down b => b
-
 def nnNF (A : ArcP n) : LT → ℕ
   | .thin => A.G₀
   | .up _ => 0
@@ -158,13 +148,13 @@ def nnDF : LT → ℕ
   | .down _ => 0
 
 theorem mmDen_eq (A : ArcP n) (c : ZMod n) :
-    mmDen W A c = ∏ s ∈ Finset.range (A.len c), ps W s ^ mmF A (A.ty (c - (s : ZMod n))) := by
+    mmDen W A c = ∏ s ∈ Finset.range (A.len c), ps W s ^ Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (s : ZMod n))) := by
   unfold mmDen prodTy
   refine Finset.prod_congr rfl fun s _ => ?_
   cases A.ty (c - (s : ZMod n)) <;> rfl
 
 theorem downB_eq (A : ArcP n) (c : ZMod n) :
-    downB W A c = ∏ s ∈ Finset.range (A.len c), ps W s ^ dnF (A.ty (c - (s : ZMod n))) := by
+    downB W A c = ∏ s ∈ Finset.range (A.len c), ps W s ^ Formalism.MainNotions.UnusedSlot80.UnivF.eDB (A.ty (c - (s : ZMod n))) := by
   unfold downB prodTy
   refine Finset.prod_congr rfl fun s _ => ?_
   cases A.ty (c - (s : ZMod n)) <;> rfl
@@ -218,7 +208,7 @@ theorem G_le_H (A : ArcP n) (hOK : A.OK) (c : ZMod n) (s : ℕ) : A.G₀ ≤ A.H
   · exact hOK.2.2.2.2.2.1
 
 theorem mmF_le_H (A : ArcP n) (hOK : A.OK) {c : ZMod n} (hc : c ∈ A.cuts) {s : ℕ} (hs : s < A.len c) :
-    mmF A (A.ty (c - (s : ZMod n))) ≤ A.Hs c (A.len c) s := by
+    Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (s : ZMod n))) ≤ A.Hs c (A.len c) s := by
   have hG := G_le_H A hOK c s
   cases hty : A.ty (c - (s : ZMod n)) with
   | thin => exact hG
@@ -492,7 +482,7 @@ theorem inFr_Lam {A : ArcP n} {c : ZMod n} {e : ℕ} {f : W.EE}
   simp only [pow_zero, Finset.prod_const_one] at h'
   exact h'
 
-private theorem nnDF_le_mmF (A : ArcP n) (τ : Formalism.MainNotions.LocalTheoryWindows.LT) : nnDF τ ≤ mmF A τ := by
+private theorem nnDF_le_mmF (A : ArcP n) (τ : Formalism.MainNotions.LocalTheoryWindows.LT) : nnDF τ ≤ Formalism.MainNotions.UnusedSlot80.UnivF.eMM A τ := by
   cases τ with
   | thin => exact Nat.zero_le _
   | up b => exact Nat.le_add_right b A.S
@@ -504,14 +494,14 @@ theorem part_b (hKL : KillerLevCore W) (hCA : Formalism.MainNotions.LiftingTheor
     (h2 : InFr W c 1 (mmDen W A c) f) :
     InFr W c 1 (nnDen W A c) (PPγ W (A.len c) (A.JS c) f) := by
   obtain ⟨α, hα_def⟩ : ∃ α : ℕ → ℤ,
-      α = fun t : ℕ => ((0 : ℕ) : ℤ) - (mmF A (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
+      α = fun t : ℕ => ((0 : ℕ) : ℤ) - (Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
   obtain ⟨E, hE_def⟩ : ∃ E : ℕ → ℤ,
       E = fun t : ℕ => ((0 : ℕ) : ℤ) - (nnDF (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
-  have hαt : ∀ t : ℕ, α t = ((0 : ℕ) : ℤ) - (mmF A (A.ty (c - (t : ZMod n))) : ℕ) := fun t => by rw [hα_def]
+  have hαt : ∀ t : ℕ, α t = ((0 : ℕ) : ℤ) - (Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))) : ℕ) := fun t => by rw [hα_def]
   have hEt : ∀ t : ℕ, E t = ((0 : ℕ) : ℤ) - (nnDF (A.ty (c - (t : ZMod n))) : ℕ) := fun t => by rw [hE_def]
   have hf2 : InId W c (A.len c) α f := by
     rw [hα_def]
-    refine inId_of_inFr W (A.len c) (fun _ => 0) (fun t => mmF A (A.ty (c - (t : ZMod n))))
+    refine inId_of_inFr W (A.len c) (fun _ => 0) (fun t => Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))))
       (fun _ _ => Or.inl rfl) ?_
     simp only [pow_zero, Finset.prod_const_one]
     rw [mmDen_eq] at h2
@@ -531,11 +521,11 @@ theorem part_b (hKL : KillerLevCore W) (hCA : Formalism.MainNotions.LiftingTheor
         (ps W s ^ (-(E s)).toNat * ∏ t ∈ (Finset.range (A.len c)).erase s, ps W t ^ A.Hs c (A.len c) t) f₁ ∧
       InFr W c (W.π₀ * abelian₂ W A c (A.len c)) 1 f₂ := by
     intro s hs
-    have hq : α s + ((mmF A (A.ty (c - (s : ZMod n))) - nnDF (A.ty (c - (s : ZMod n))) : ℕ) : ℤ) = E s := by
+    have hq : α s + ((Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (s : ZMod n))) - nnDF (A.ty (c - (s : ZMod n))) : ℕ) : ℤ) = E s := by
       have := nnDF_le_mmF A (A.ty (c - (s : ZMod n)))
       rw [hαt, hEt]
       omega
-    have hT : Finset.Ico (α s) (α s + ((mmF A (A.ty (c - (s : ZMod n))) - nnDF (A.ty (c - (s : ZMod n))) : ℕ) : ℤ)) ⊆
+    have hT : Finset.Ico (α s) (α s + ((Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (s : ZMod n))) - nnDF (A.ty (c - (s : ZMod n))) : ℕ) : ℤ)) ⊆
         (A.JS c).erase 0 := by
       intro i hi
       rw [Finset.mem_Ico, hαt] at hi
@@ -543,15 +533,15 @@ theorem part_b (hKL : KillerLevCore W) (hCA : Formalism.MainNotions.LiftingTheor
       cases hty : A.ty (c - (s : ZMod n)) with
       | thin =>
         rw [hty] at hi
-        simp only [mmF, nnDF] at hi
+        simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eMM, nnDF] at hi
         exact ⟨by omega, mem_JS_thin A hs hty (by omega) (by omega)⟩
       | up b =>
         rw [hty] at hi
-        simp only [mmF, nnDF] at hi
+        simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eMM, nnDF] at hi
         exact ⟨by omega, mem_JS_up A hs hty (Finset.mem_Ico.2 ⟨by omega, by omega⟩)⟩
       | down b =>
         rw [hty] at hi
-        simp only [mmF, nnDF] at hi
+        simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eMM, nnDF] at hi
         exfalso; omega
     obtain ⟨κ, hκ⟩ := raise W hKL hCA hS hg hs _ _ hT
     rw [hq] at hκ
@@ -605,7 +595,7 @@ theorem xsub_ppo (e : ℕ) (JS : Finset ℤ) :
   rw [hP, Finset.prod_insert (by simp), fac_zero]
   linear_combination (∏ i ∈ JS.erase 0, fac W e i) * hg
 
-private theorem dnF_eq_zero_or_mmF_eq_zero (A : ArcP n) (τ : Formalism.MainNotions.LocalTheoryWindows.LT) : dnF τ = 0 ∨ mmF A τ = 0 := by
+private theorem dnF_eq_zero_or_mmF_eq_zero (A : ArcP n) (τ : Formalism.MainNotions.LocalTheoryWindows.LT) : Formalism.MainNotions.UnusedSlot80.UnivF.eDB τ = 0 ∨ Formalism.MainNotions.UnusedSlot80.UnivF.eMM A τ = 0 := by
   cases τ with
   | thin => exact Or.inl rfl
   | up b => exact Or.inl rfl
@@ -631,15 +621,15 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
       F = W.γE W.gam (PPγ W (A.len c) (A.JS c) f) - PPγ W (A.len c) (A.JS c) f := ⟨_, rfl⟩
   rw [← hFdef]
   obtain ⟨α₂, hα₂_def⟩ : ∃ α : ℕ → ℤ,
-      α = fun t : ℕ => ((0 : ℕ) : ℤ) - (mmF A (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
+      α = fun t : ℕ => ((0 : ℕ) : ℤ) - (Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
   obtain ⟨α₃, hα₃_def⟩ : ∃ α : ℕ → ℤ, α = fun t : ℕ =>
-      (dnF (A.ty (c - (t : ZMod n))) : ℤ) - (mmF A (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
+      (Formalism.MainNotions.UnusedSlot80.UnivF.eDB (A.ty (c - (t : ZMod n))) : ℤ) - (Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
   obtain ⟨E, hE_def⟩ : ∃ E : ℕ → ℤ, E = fun t : ℕ =>
       (nnNF A (A.ty (c - (t : ZMod n))) : ℤ) - (nnDF (A.ty (c - (t : ZMod n))) : ℕ) := ⟨_, rfl⟩
-  have hα₂t : ∀ t : ℕ, α₂ t = ((0 : ℕ) : ℤ) - (mmF A (A.ty (c - (t : ZMod n))) : ℕ) :=
+  have hα₂t : ∀ t : ℕ, α₂ t = ((0 : ℕ) : ℤ) - (Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))) : ℕ) :=
     fun t => by rw [hα₂_def]
   have hα₃t : ∀ t : ℕ, α₃ t =
-      (dnF (A.ty (c - (t : ZMod n))) : ℤ) - (mmF A (A.ty (c - (t : ZMod n))) : ℕ) := fun t => by rw [hα₃_def]
+      (Formalism.MainNotions.UnusedSlot80.UnivF.eDB (A.ty (c - (t : ZMod n))) : ℤ) - (Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))) : ℕ) := fun t => by rw [hα₃_def]
   have hEt : ∀ t : ℕ, E t =
       (nnNF A (A.ty (c - (t : ZMod n))) : ℤ) - (nnDF (A.ty (c - (t : ZMod n))) : ℕ) := fun t => by rw [hE_def]
   have hF1 : F = Polynomial.aeval (γL W) (∏ i ∈ insert 0 ((A.JS c).erase 0), fac W (A.len c) i) f := by
@@ -660,7 +650,7 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
     exact inFr_Lam W h'
   have hf2 : InId W c (A.len c) α₂ f := by
     rw [hα₂_def]
-    refine inId_of_inFr W (A.len c) (fun _ => 0) (fun t => mmF A (A.ty (c - (t : ZMod n))))
+    refine inId_of_inFr W (A.len c) (fun _ => 0) (fun t => Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n))))
       (fun _ _ => Or.inl rfl) ?_
     simp only [pow_zero, Finset.prod_const_one]
     have h2' := h2
@@ -674,8 +664,8 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
     have h3'' := inFr_num_drop W hπ h3'
     rw [downB_eq, mmDen_eq] at h3''
     rw [hα₃_def]
-    exact inId_of_inFr W (A.len c) (fun t => dnF (A.ty (c - (t : ZMod n))))
-      (fun t => mmF A (A.ty (c - (t : ZMod n)))) (fun t _ => dnF_eq_zero_or_mmF_eq_zero A (A.ty (c - (t : ZMod n)))) h3''
+    exact inId_of_inFr W (A.len c) (fun t => Formalism.MainNotions.UnusedSlot80.UnivF.eDB (A.ty (c - (t : ZMod n))))
+      (fun t => Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (t : ZMod n)))) (fun t _ => dnF_eq_zero_or_mmF_eq_zero A (A.ty (c - (t : ZMod n)))) h3''
   have hg3 : InId W c (A.len c) α₃ (Polynomial.aeval (γL W)
       (∑ k ∈ Finset.range (PD.p ^ A.len c), (Polynomial.X : Polynomial O) ^ k) (W.γE W.gam f - f)) :=
     Formalism.MainNotions.UnusedSlot80.KL.inId_aeval (W := W) hS _ _ hf3
@@ -702,7 +692,7 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
     rw [hnum3, hden3, e]
     congr 1; ring
   have hLamM : abelian₂ W A c (A.len c) = mmDen W A c *
-      ∏ s ∈ Finset.range (A.len c), ps W s ^ (A.Hs c (A.len c) s - mmF A (A.ty (c - (s : ZMod n)))) := by
+      ∏ s ∈ Finset.range (A.len c), ps W s ^ (A.Hs c (A.len c) s - Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (s : ZMod n)))) := by
     unfold abelian₂
     rw [mmDen_eq, ← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun t ht => ?_
@@ -717,7 +707,7 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
     rw [hnum3, hden3] at e
     unfold InFr
     refine ⟨(∏ s ∈ Finset.range (A.len c),
-        ps W s ^ (A.Hs c (A.len c) s - mmF A (A.ty (c - (s : ZMod n))))) * downB W A c * u,
+        ps W s ^ (A.Hs c (A.len c) s - Formalism.MainNotions.UnusedSlot80.UnivF.eMM A (A.ty (c - (s : ZMod n))))) * downB W A c * u,
       mul_mem (mul_mem (prod_ps_mem W hπ _ _) hdn) hu, ?_⟩
     rw [hF2', hLamM, map_mul, mul_right_comm, e, ← map_mul]
     congr 1; ring
@@ -745,19 +735,19 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
       refine step s hs α₂ f _ (2 * A.G₀) hf2 ?_ ?_ hH2 hF1
       · intro i hi
         rw [Finset.mem_Ico, hα₂t, hty] at hi
-        simp only [mmF] at hi
+        simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eMM] at hi
         by_cases h0 : i = 0
         · rw [h0]; exact Finset.mem_insert_self _ _
         · exact Finset.mem_insert_of_mem
             (Finset.mem_erase.2 ⟨h0, mem_JS_thin A hs hty (by omega) (by omega)⟩)
-      · rw [hα₂t, hEt, hty]; simp only [mmF, nnNF, nnDF]; omega
+      · rw [hα₂t, hEt, hty]; simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eMM, nnNF, nnDF]; omega
     | up b =>
       refine step s hs α₃ _ _ A.S hg3 ?_ ?_ hH3 hF2
       · intro i hi
         rw [Finset.mem_Ico, hα₃t, hty] at hi
-        simp only [dnF, mmF] at hi
+        simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eDB, Formalism.MainNotions.UnusedSlot80.UnivF.eMM] at hi
         exact Finset.mem_erase.2 ⟨by omega, mem_JS_up A hs hty (Finset.mem_Ico.2 ⟨by omega, by omega⟩)⟩
-      · rw [hα₃t, hEt, hty]; simp only [dnF, mmF, nnNF, nnDF]; omega
+      · rw [hα₃t, hEt, hty]; simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eDB, Formalism.MainNotions.UnusedSlot80.UnivF.eMM, nnNF, nnDF]; omega
     | down b =>
       have hb : 1 ≤ b := by
         have h' := size_pos A hOK (c - (s : ZMod n)) (by rw [hty]; rfl)
@@ -766,9 +756,9 @@ theorem part_a [IsDomain O] (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.Ring
       refine step s hs α₃ _ _ A.S hg3 ?_ ?_ hH3 hF2
       · intro i hi
         rw [Finset.mem_Ico, hα₃t, hty] at hi
-        simp only [dnF, mmF] at hi
+        simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eDB, Formalism.MainNotions.UnusedSlot80.UnivF.eMM] at hi
         exact Finset.mem_erase.2 ⟨by omega, mem_JS_down A hs hty (Finset.mem_Ico.2 ⟨by omega, by omega⟩)⟩
-      · rw [hα₃t, hEt, hty]; simp only [dnF, mmF, nnNF, nnDF]; omega
+      · rw [hα₃t, hEt, hty]; simp only [Formalism.MainNotions.UnusedSlot80.UnivF.eDB, Formalism.MainNotions.UnusedSlot80.UnivF.eMM, nnNF, nnDF]; omega
   have hE : ∀ s < A.len c, -(A.Hs c (A.len c) s : ℤ) ≤ E s ∧ E s ≤ A.Hs c (A.len c) s := by
     intro s hs
     have h₁ := nnDF_le_H A hOK hc hs

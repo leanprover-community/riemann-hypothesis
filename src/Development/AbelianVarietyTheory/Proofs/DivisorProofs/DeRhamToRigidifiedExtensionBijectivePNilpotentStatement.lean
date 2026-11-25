@@ -172,10 +172,6 @@ noncomputable section
 
 namespace GlobalTheory.PtExt
 
-theorem comp_pow_pt {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A] {T T' : Over (Sp R)} (ρ : T' ⟶ T)
-    (x : T ⟶ A) (m : ℕ) : ρ ≫ x ^ m = (ρ ≫ x) ^ m :=
-  MonObj.comp_pow x m ρ
-
 theorem chi_eq_of_torsion : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] [IsCommMonObj A] (n : ℕ),
     (n : R) = 0 → HasRoots (A := A) n → ∀ b : Fn0 A, IsTorsChar n b → ∀ S : SecFam A,
     (∀ (D : Type) [CommRing D] [Algebra R D] (x : Pt A D), IsSec n b x (S D x)) → ∀ g : Fn2 A, IsSecAdd n S g →
@@ -186,7 +182,7 @@ theorem chi_eq_of_torsion : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpOb
   change ψ (chi n g D x) = ψ (b D x)
   have hpow : ∀ i : ℕ, (z ^ i) ^ n = spOver ψ ≫ x ^ i := by
     intro i
-    rw [← pow_mul, mul_comm, pow_mul, hz, comp_pow_pt]
+    rw [← pow_mul, mul_comm, pow_mul, hz, GlobalTheory.SecMul.comp_pow_pt]
 
   have hterm : ∀ i : ℕ, ψ (g D (x ^ i) x) =
       (S D (x ^ (i + 1)) E ψ (z ^ (i + 1)) - S D (x ^ i) E ψ (z ^ i)) - S D x E ψ z := by
@@ -422,14 +418,12 @@ variable (hb : IsTorsChar n b) (ψ : D →ₐ[R] D₁) (x : Pt A D) (z₀ : Pt A
   (ha : ∀ (E : Type) [CommRing E] [Algebra R E] (α β : D₁ →ₐ[R] E), α.comp ψ = β.comp ψ →
     b E ((spOver β ≫ z₀) * (spOver α ≫ z₀)⁻¹) = β a - α a)
 
-
 include hz₀ in
 theorem val_tors {D' F : Type} [CommRing D'] [Algebra R D'] [CommRing F] [Algebra R F] (φ : D →ₐ[R] D')
     (z : Pt A D') (hz : (z ^ n : Pt A D') = spOver φ ≫ x) (ρ : D' →ₐ[R] F) (φ' : D₁ →ₐ[R] F)
     (h : ρ.comp φ = φ'.comp ψ) :
     ((spOver ρ ≫ z) * (spOver φ' ≫ z₀)⁻¹) ^ n = 1 :=
   pow_mul_inv_eq_one (root_map φ ρ x z hz) (by rw [root_map ψ φ' x z₀ hz₀, h])
-
 
 include hb hz₀ in
 theorem map_val {D' F G : Type} [CommRing D'] [Algebra R D'] [CommRing F] [Algebra R F] [CommRing G] [Algebra R G]
@@ -440,7 +434,6 @@ theorem map_val {D' F G : Type} [CommRing D'] [Algebra R D'] [CommRing F] [Algeb
   rw [map_add (f := _), ← hb.1 F G g₁ _ (val_tors ψ x z₀ hz₀ φ z hz ρ φ' h), MonObj.comp_mul, GrpObj.comp_inv,
     ← Category.assoc, ← Category.assoc, spOver_comp, spOver_comp]
   rfl
-
 
 include hb hz₀ ha in
 theorem val_indep {D' F : Type} [CommRing D'] [Algebra R D'] [CommRing F] [Algebra R F] (φ : D →ₐ[R] D')
@@ -460,7 +453,6 @@ theorem val_indep {D' F : Type} [CommRing D'] [Algebra R D'] [CommRing F] [Algeb
 def IsVal {D' : Type} [CommRing D'] [Algebra R D'] (φ : D →ₐ[R] D') (z : Pt A D') (e : D') : Prop :=
   ∀ (F : Type) [CommRing F] [Algebra R F] (ρ : D' →ₐ[R] F) (φ' : D₁ →ₐ[R] F), ρ.comp φ = φ'.comp ψ →
     ρ e = val b z₀ a ρ φ' z
-
 
 include hb hz₀ ha in
 theorem exists_isVal (hψ : (ψ : D →+* D₁).FaithfullyFlat) {D' : Type} [CommRing D'] [Algebra R D']
@@ -499,7 +491,6 @@ variable {n : ℕ} {b : Fn0 A} {D D₁ : Type} [CommRing D] [Algebra R D] [CommR
   (ha : ∀ (E : Type) [CommRing E] [Algebra R E] (α β : D₁ →ₐ[R] E), α.comp ψ = β.comp ψ →
     b E ((spOver β ≫ z₀) * (spOver α ≫ z₀)⁻¹) = β a - α a)
   (hψ : (ψ : D →+* D₁).FaithfullyFlat)
-
 
 open Classical in
 def sec : RootFn A D := fun D' _ _ φ z ↦
@@ -945,7 +936,6 @@ namespace GlobalTheory.PtExt
 
 variable {p : ℕ} {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A] {G : PDivGroup p R}
   (t : PDivGroup.TorsionTower G A) (N : ℕ)
-
 
 open Classical in
 def torsVal (b : G.A N) : Fn0 A := fun _ _ _ x ↦

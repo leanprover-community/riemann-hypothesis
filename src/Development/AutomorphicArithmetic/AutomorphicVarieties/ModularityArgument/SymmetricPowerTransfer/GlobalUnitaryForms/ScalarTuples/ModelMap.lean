@@ -68,9 +68,6 @@ private lemma starL_alg (r : K) : star (algebraMap K (Lsq K Δ) r) = algebraMap 
 private lemma sigL_add (x y : EL Δ τ) : sigL (x + y) = sigL x + sigL y := by
   ext <;> simp [sigL]
 
-private lemma sigL_mul (x y : EL Δ τ) : sigL (x * y) = sigL x * sigL y := by
-  ext <;> simp [sigL, starL_alg]
-
 private lemma sigL_smul (a : Lsq K Δ) (x : EL Δ τ) : sigL (a • x) = star a • sigL x := by
   ext <;> simp [sigL]
 
@@ -118,12 +115,6 @@ private lemma ofE_mul (x y : Etau K τ) : ofE Δ (x * y) = ofE Δ x * ofE Δ y :
 
 private lemma ofE_one : ofE Δ (1 : Etau K τ) = 1 := by
   ext <;> simp [ofE, QuadraticAlgebra.re_one, QuadraticAlgebra.im_one]
-
-private lemma sigL_ofE (x : Etau K τ) : sigL (ofE Δ x) = ofE Δ x := by
-  ext <;> simp [sigL, ofE, starL_alg]
-
-private lemma star_ofE (x : Etau K τ) : star (ofE Δ x) = ofE Δ (star x) := by
-  ext <;> simp [ofE]
 
 private lemma quo_mul (a b : (Etau K τ)ˣ) : quo (a * b) = quo a * quo b := by
   simp only [quo, _root_.mul_inv_rev, Units.val_mul, star_mul]; ring

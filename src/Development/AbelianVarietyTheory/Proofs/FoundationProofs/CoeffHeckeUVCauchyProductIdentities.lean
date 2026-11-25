@@ -8,8 +8,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.N
 open UpperHalfPlane Complex MeasureTheory CongruenceSubgroup GlobalTheory.EisM UpperTheory.V.Af Filter Topology
 open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
-noncomputable section
-
 namespace GlobalTheory.EisM.FormalId
 
 variable {R : Type} [CommRing R]

@@ -114,29 +114,6 @@ theorem inv_eq_ring_inverse (A : Q.Mx k r) : A⁻¹ = Ring.inverse A := by
   first
     | exact Matrix.nonsing_inv_eq_ringInverse A
 
-def lieU (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : Submodule ℝ (Q.Mx k r) where
-  carrier := {X | InLieW k r z X}
-  zero_mem' := ⟨⟨by simp, fun a _ => ⟨by simp, by simp⟩⟩, by simp⟩
-  add_mem' := by
-    rintro X Y ⟨⟨hX1, hX2⟩, hX3⟩ ⟨⟨hY1, hY2⟩, hY3⟩
-    refine ⟨⟨?_, fun a ha => ⟨?_, ?_⟩⟩, ?_⟩
-    · rw [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add,
-        show Xᴴ * Hpk k r + Yᴴ * Hpk k r + (Hpk k r * X + Hpk k r * Y) =
-          (Xᴴ * Hpk k r + Hpk k r * X) + (Yᴴ * Hpk k r + Hpk k r * Y) by abel, hX1, hY1, add_zero]
-    · rw [Matrix.add_mulVec, (hX2 a ha).1, (hY2 a ha).1, add_zero]
-    · rw [Matrix.add_mulVec, (hX2 a ha).2, (hY2 a ha).2, add_zero]
-    · rw [Matrix.add_mulVec, hX3, hY3, add_zero]
-  smul_mem' := by
-    rintro c X ⟨⟨hX1, hX2⟩, hX3⟩
-    rw [RCLike.real_smul_eq_coe_smul (K := ℂ)]
-    refine ⟨⟨?_, fun a ha => ⟨?_, ?_⟩⟩, ?_⟩
-    · rw [Matrix.conjTranspose_smul]
-      simp only [RCLike.star_def, RCLike.conj_ofReal]
-      rw [Matrix.smul_mul, Matrix.mul_smul, ← smul_add, hX1, smul_zero]
-    · rw [Matrix.smul_mulVec, (hX2 a ha).1, smul_zero]
-    · rw [Matrix.smul_mulVec, (hX2 a ha).2, smul_zero]
-    · rw [Matrix.smul_mulVec, hX3, smul_zero]
-
 theorem cinv_eq (g : Q.Mx k r) : cinv g = Ring.inverse (g + 1) * (g - 1) := by
   rw [cinv, inv_eq_ring_inverse]
 
@@ -216,7 +193,7 @@ theorem locLogOp (z : Fin (2 * r + k + 1) → ℂ) :
       ∀ g ∈ O, g ∈ UWset k r z → InLieW k r z (Λ g) ∧ NormedSpace.exp (Λ g) = g := by
   classical
 
-  let L := lieU k r z
+  let L := Formalism.FourierDecayAlt.P.NFRadRedR.lieW k r z
   haveI : FiniteDimensional ℝ (Q.Mx k r) := inferInstance
   haveI : CompleteSpace L := (Submodule.complete_of_finiteDimensional L).completeSpace_coe
   obtain ⟨p, hp⟩ := LinearMap.exists_leftInverse_of_injective L.subtype (Submodule.ker_subtype L)

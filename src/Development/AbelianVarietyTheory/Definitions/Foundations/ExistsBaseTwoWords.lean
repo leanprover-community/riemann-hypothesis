@@ -8,8 +8,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions NumberField IsDedekindDomain GlobalTheory.Mem
 
 namespace GlobalTheory.Mem.BaseField
@@ -35,5 +33,3 @@ theorem exists_gens (E : Type) [Field E] [NumberField E] : ∃ S : Finset ℂ, (
     exact K.smul_mem (hK _ (Finset.mem_image.2 ⟨(τ, i), Finset.mem_univ _, rfl⟩))
 
 end GlobalTheory.Mem.BaseField
-
-end

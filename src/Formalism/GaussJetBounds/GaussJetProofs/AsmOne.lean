@@ -4,6 +4,7 @@ public import Formalism.GaussJetBounds.GenLogInverse
 public import Formalism.GaussJetBounds.GaussJetProofs.AsmRDotAddRight
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Normed.Group.Ultra
+import Mathlib.Analysis.Normed.Ring.Ultra
 
 @[expose] public section
 
@@ -20,20 +21,13 @@ theorem asmOne_one_le_norm_two {K : Type u} [NormedField K] [IsUltrametricDist K
     (hodd : Odd l) (hpi : ‖(l : K)‖ < 1) : 1 ≤ ‖(2 : K)‖ := by
   by_contra! h
   obtain ⟨m, rfl⟩ := hodd
-  have hnat : ∀ k : ℕ, ‖(k : K)‖ ≤ 1 := by
-    intro k
-    induction k with
-    | zero => simp
-    | succ k ih =>
-      push_cast
-      exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ih (by simp))
   have h1 : (1 : K) = ((2 * m + 1 : ℕ) : K) - 2 * (m : K) := by
     push_cast
     ring
   have h2 : ‖(2 : K) * (m : K)‖ < 1 := by
     rw [norm_mul]
     calc ‖(2 : K)‖ * ‖(m : K)‖ ≤ ‖(2 : K)‖ * 1 :=
-          mul_le_mul_of_nonneg_left (hnat m) (norm_nonneg _)
+          mul_le_mul_of_nonneg_left (IsUltrametricDist.norm_natCast_le_one K m) (norm_nonneg _)
       _ < 1 := by rw [mul_one]; exact h
   have h3 : ‖(1 : K)‖ < 1 := by
     rw [h1, sub_eq_add_neg]
@@ -141,26 +135,6 @@ theorem oneLetterR_of (hS : LemmaS.{u}) (hG : GenLogWeight.{u, 0}) (hB : LogBrid
       rw [map_add (f := _)]
       exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 h2)
 
-  have cc_subst : ∀ (a : ZMod 2 → MvPowerSeries ι K), (∀ s, MvPowerSeries.constantCoeff (a s) = 0) →
-      ∀ f : MvPowerSeries (ZMod 2) K, MvPowerSeries.constantCoeff f = 0 →
-      MvPowerSeries.constantCoeff (MvPowerSeries.subst a f) = 0 := by
-    intro a ha f hf
-    have hs : MvPowerSeries.HasSubst a := by
-      first
-        | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-    rw [MvPowerSeries.constantCoeff_subst hs]
-    apply finsum_eq_zero_of_forall_eq_zero
-    intro d
-    by_cases hd : d = 0
-    · subst hd
-      rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf, zero_smul]
-    · obtain ⟨s, hs'⟩ : ∃ s, d s ≠ 0 := by
-        by_contra! h
-        exact hd (Finsupp.ext h)
-      have h0 : MvPowerSeries.constantCoeff (d.prod fun s e => a s ^ e) = 0 := by
-        rw [Finsupp.prod, map_prod]
-        exact Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hs') (by rw [map_pow, ha, zero_pow hs'])
-      rw [h0, smul_zero]
   have hbe0 : MvPowerSeries.constantCoeff be = 0 := by
     by_contra h
     have h' := hbe.2.2.1 0 (by rwa [MvPowerSeries.coeff_zero_eq_constantCoeff_apply])
@@ -247,7 +221,8 @@ theorem oneLetterR_of (hS : LemmaS.{u}) (hG : GenLogWeight.{u, 0}) (hB : LogBrid
     refine asmOne_smul_const _ ?_
 
     rw [map_sum]
-    exact Finset.sum_eq_zero fun x _ => cc_subst _ (hac x) be hbe0
+    exact Finset.sum_eq_zero fun x _ => MvPowerSeries.constantCoeff_subst_eq_zero
+      (MvPowerSeries.hasSubst_of_constantCoeff_zero (hac x)) (hac x) hbe0
   have hExp := hE K l hl hpi ι (fun _ => gam l) κ _ hBc (fun n _ => hBw n)
   have hMul := hMW K π hπ0 ι (fun _ => gam l) 0 0 κ _ _ (fun n _ => hA n) hExp
   have hk := hMul κ le_rfl

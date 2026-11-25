@@ -58,11 +58,6 @@ noncomputable section
 
 namespace GlobalTheory.AV.AmpleTopPos
 
-theorem inter_comp_equiv {K : Type} [Field K] (A : AbVar K) {J J' : Type} [Fintype J] [Fintype J']
-    (e : J' ≃ J) (c : J → Pic A.X.left) : inter A (c ∘ e) = inter A c := by
-  unfold inter
-  rw [GlobalTheory.multiDiff_comp_equiv]
-
 theorem inter_top_pos : ∀ (K : Type) [Field K] (A : AbVar K) (c : Pic A.X.left), IsAmpleCls c →
     ∀ (J : Type) [Fintype J], Fintype.card J = A.dim → 0 < inter A (fun _ : J => c) := by
   intro K _ A c hc J _ hJ

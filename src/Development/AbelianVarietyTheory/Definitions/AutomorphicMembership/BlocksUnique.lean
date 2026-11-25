@@ -93,8 +93,7 @@ def setAut (D : D7) (hE : IsEmpty D.nd.Loc) (lab : ∀ k, D.what₂.FT → D.nd.
     ntypes := { D.ntypes with
       tg_mem := tg_mem, tg_gen := tg_gen, heckeLoc_gamma_places := fun i => hE.elim i, inertiaCharpoly_type := hl, chiT_tg := fun i => hE.elim i
       Par := PEmpty, labPar := fun _ a => a.elim, labPar_monic := fun _ a => a.elim, locPar := fun a => a.elim
-      locPar_dim := fun a => a.elim, labPar_def := fun _ a => a.elim, MtPar := fun _ _ a => a.elim
-      AmbPar := fun _ a => a.elim }
+      locPar_dim := fun a => a.elim, labPar_def := fun _ a => a.elim, MtPar := fun _ _ a => a.elim }
     nStage_trivialCharacter_compat := D.nStage_trivialCharacter_compat, nStage_trivialCharacter_coeff_eq := D.nStage_trivialCharacter_coeff_eq, ntwbr := D.ntwbr, ntwbr_ind := D.ntwbr_ind
     nbr := fun i => hE.elim i, nbr_ind := fun i => hE.elim i, self_good := fun i => hE.elim i
     loc_tie := fun i => hE.elim i, bc_tie := fun i => hE.elim i, rbar_tie := fun i => hE.elim i

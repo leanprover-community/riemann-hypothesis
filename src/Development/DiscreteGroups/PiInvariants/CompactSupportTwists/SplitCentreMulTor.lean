@@ -15,8 +15,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DegreePairingId
 
 set_option linter.all false
 
-noncomputable section
-
 open NumberField Matrix MeasureTheory Filter Set
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.CuspRep.CuspidalL2GL PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.Desc PositivityTheory.Rg.Rs
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Global GlobalTheory.CuspBoundSiegel
@@ -284,5 +282,3 @@ theorem cp_decay_wt (ψ : Sm E n) (hψ : IsCuspForm ψ) (hA : ∀ t g, ψ.1 (spl
           _ = _ := by rw [this, mul_one]
 
 end DiscreteGroups.T1.G.Dcy
-
-end

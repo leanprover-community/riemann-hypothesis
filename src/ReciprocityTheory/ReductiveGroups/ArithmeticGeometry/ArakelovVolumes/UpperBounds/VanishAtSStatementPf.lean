@@ -76,11 +76,8 @@ theorem crit_div {n : ℕ} (hn : 0 < n) {δ : ℝ} (hδ : 0 < δ) :
   have h2 : ∫⁻ y in ball (0 : V n) 1, ENNReal.ofReal (‖y‖ ^ (-2 * (n : ℝ))) ≤
       (∫⁻ y in ball (0 : V n) δ, ENNReal.ofReal (‖y‖ ^ (-2 * (n : ℝ)))) +
         ∫⁻ y in ball (0 : V n) 1 \ ball (0 : V n) δ, ENNReal.ofReal (‖y‖ ^ (-2 * (n : ℝ))) := by
-    have hsub : ball (0 : V n) 1 ⊆ ball (0 : V n) δ ∪ (ball (0 : V n) 1 \ ball (0 : V n) δ) := by
-      intro y hy
-      by_cases h : y ∈ ball (0 : V n) δ
-      · exact Or.inl h
-      · exact Or.inr ⟨hy, h⟩
+    have hsub : ball (0 : V n) 1 ⊆ ball (0 : V n) δ ∪ (ball (0 : V n) 1 \ ball (0 : V n) δ) :=
+      Set.sdiff_subset_iff.1 subset_rfl
     exact (lintegral_mono_set (μ := volume) (f := fun y : V n => ENNReal.ofReal (‖y‖ ^ (-2 * (n : ℝ)))) hsub).trans
       (lintegral_union_le (μ := volume) (fun y : V n => ENNReal.ofReal (‖y‖ ^ (-2 * (n : ℝ))))
         (ball (0 : V n) δ) (ball (0 : V n) 1 \ ball (0 : V n) δ))

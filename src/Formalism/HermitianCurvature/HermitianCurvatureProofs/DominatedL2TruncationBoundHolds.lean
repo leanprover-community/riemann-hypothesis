@@ -195,29 +195,6 @@ theorem Gp_bigPt_eq (p : KB.Pl P Wp Wq) (c : Fin (P.r + 1) → ℂ) :
     ofFn_getD_eq_apply c i (by omega)
   simp only [h1, h2]
 
-private theorem isLocPt_bigPt_of_ne_zero (r : ℕ) (c : Fin (r + 1) → ℂ) (hd : ∀ a, c a ≠ 0) :
-    D.IsLocPt (TBB.bigPt r c) (r + 1) := by
-  refine ⟨fun b hb => ?_, ?_⟩
-  · rw [TBB.bigPt, List.mem_ofFn] at hb
-    obtain ⟨l, rfl⟩ := hb
-    exact ⟨le_rfl, hd l⟩
-  · simp [D.ptSize, TBB.bigPt, List.map_ofFn, Function.comp_def]
-    omega
-
-private theorem bcWeight_eq_zero_of_normSq_le {k r : ℕ} (hk : 2 ≤ k) (T T' : ℝ) (q : (Fin r → ℂ) × ℂ)
-    (hq : Complex.normSq q.2 ≤ T * T') : bcWeight k r T T' q = 0 := by
-  unfold bcWeight
-  split_ifs with h
-  · have h0 : Complex.normSq q.2 - T * T' = 0 := by linarith
-    rw [h0, zero_pow (by omega), mul_zero]
-  · rfl
-
-private theorem gp_bigPt_eq_normSq_prod_mul_sub (p : KB.Pl P Wp Wq) (c : Fin (P.r + 1) → ℂ) :
-    TBB.Gp p (TBB.bigPt P.r c) = Complex.normSq (∏ i : Fin P.r, c i.castSucc) *
-      (Complex.normSq (c (Fin.last P.r)) - TBB.TTp p) := by
-  rw [Gp_bigPt_eq, Fin.prod_univ_castSucc, Complex.normSq_mul]
-  ring
-
 theorem ew_eq_weight (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (c : Fin (P.r + 1) → ℂ)
     (hd : ∀ a, c a ≠ 0) :
     TBB.Ew p (fun _ => 1) F (P.r + 1) [] (TBB.bigPt P.r c) =

@@ -31,22 +31,14 @@ private theorem isIso_appLE_of_image_eq {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpen
   rw [← Scheme.Hom.appIso_hom']
   infer_instance
 
-private theorem exists_affineOpen_mem_le {X : Scheme.{u}} (x : X) (W : X.Opens) (hx : x ∈ W) :
-    ∃ V : X.affineOpens, x ∈ (V : X.Opens) ∧ (V : X.Opens) ≤ W := by
-  obtain ⟨Vs, hVs, hxV, hVW⟩ :=
-    (Scheme.isBasis_affineOpens X).exists_subset_of_mem_open
-      (show x ∈ (W : Set X) from hx) W.isOpen
-  obtain ⟨V, hVmem, rfl⟩ := hVs
-  exact ⟨⟨V, hVmem⟩, hxV, fun y hy => hVW hy⟩
-
 theorem IsLocallyGeneratedByNonZeroDivisor.comap_of_isOpenImmersion {X U : Scheme.{u}}
     {I : X.IdealSheafData} (hI : IsLocallyGeneratedByNonZeroDivisor I) (f : U ⟶ X) [IsOpenImmersion f] :
     IsLocallyGeneratedByNonZeroDivisor (I.comap f) := by
   intro x
   obtain ⟨V, g, hxV, hg, hVg⟩ := hI (f.base x)
   have hVa : IsAffineOpen (V : X.Opens) := V.2
-  obtain ⟨W, hxW, hWle⟩ := exists_affineOpen_mem_le x (f ⁻¹ᵁ (V : X.Opens)) hxV
-  have hWa : IsAffineOpen (W : U.Opens) := W.2
+  obtain ⟨W, hWa, hxW, (hWle : W ≤ f ⁻¹ᵁ (V : X.Opens))⟩ :=
+    exists_isAffineOpen_mem_and_subset (U := f ⁻¹ᵁ (V : X.Opens)) (x := x) hxV
   have hximg : f.base x ∈ (f ''ᵁ (W : U.Opens)) := ⟨x, hxW, rfl⟩
   obtain ⟨r, hr1, hr2⟩ := hVa.exists_basicOpen_le (⟨f.base x, hximg⟩ : (f ''ᵁ (W : U.Opens))) hxV
   have hW'le : f ⁻¹ᵁ (X.basicOpen r) ≤ (W : U.Opens) := by
@@ -143,30 +135,13 @@ theorem IsBlowupAlongIdealSheaf.restrict {X X' : Scheme.{u}} {π : X' ⟶ X} {I 
       show (y ≫ (π ⁻¹ᵁ U).ι) ≫ π = g ≫ U.ι
       rw [Category.assoc, ← morphismRestrict_ι, ← Category.assoc, hy']
 
-private theorem exists_pullback_fst_base_eq {W U X : Scheme.{u}} (g : W ⟶ X) (f : U ⟶ X)
-    [IsOpenImmersion f] (w : W) (hw : g.base w ∈ Set.range ⇑f.base) :
-    ∃ z : ↥(pullback g f), (pullback.fst g f).base z = w := by
-  have hrange : Set.range ⇑((g ⁻¹ᵁ f.opensRange).ι ≫ g).base ⊆ Set.range ⇑f.base := by
-    rintro _ ⟨v, rfl⟩
-    exact v.2
-  have hl : IsOpenImmersion.lift f ((g ⁻¹ᵁ f.opensRange).ι ≫ g) hrange ≫ f
-      = (g ⁻¹ᵁ f.opensRange).ι ≫ g := IsOpenImmersion.lift_fac _ _ _
-  have hm := pullback.lift_fst (g ⁻¹ᵁ f.opensRange).ι
-    (IsOpenImmersion.lift f ((g ⁻¹ᵁ f.opensRange).ι ≫ g) hrange) hl.symm
-  refine ⟨(pullback.lift (g ⁻¹ᵁ f.opensRange).ι
-    (IsOpenImmersion.lift f ((g ⁻¹ᵁ f.opensRange).ι ≫ g) hrange) hl.symm).base
-      ⟨w, show w ∈ g ⁻¹ᵁ f.opensRange from hw⟩, ?_⟩
-  have h3 := congrArg (fun t : (g ⁻¹ᵁ f.opensRange).toScheme ⟶ W => t.base
-    ⟨w, show w ∈ g ⁻¹ᵁ f.opensRange from hw⟩) hm
-  exact h3
-
 private noncomputable def pullbackOpenCoverOfCovers {X W : Scheme.{u}} {ι : Type v} (U : ι → Scheme.{u})
     (f : ∀ i, U i ⟶ X) [∀ i, IsOpenImmersion (f i)]
     (hcover : ∀ x : X, ∃ i, x ∈ Set.range ⇑(f i).base) (g : W ⟶ X) : W.OpenCover :=
   Scheme.Cover.mkOfCovers ι (fun i => pullback g (f i)) (fun i => pullback.fst g (f i))
     (fun w => by
       obtain ⟨i, hi⟩ := hcover (g.base w)
-      obtain ⟨z, hz⟩ := exists_pullback_fst_base_eq g (f i) w hi
+      obtain ⟨z, hz⟩ := (Scheme.Pullback.range_fst g (f i)).superset hi
       exact ⟨i, z, hz⟩)
     (fun i => inferInstance)
 
@@ -226,7 +201,7 @@ theorem IsBlowupAlongIdealSheaf.of_comap_of_isOpenImmersion_cover {X X' : Scheme
   · refine IsLocallyGeneratedByNonZeroDivisor.of_isOpenImmersion_cover (I.comap π) (fun i => pullback π (f i))
       (fun i => pullback.fst π (f i)) (fun x' => ?_) ?_
     · obtain ⟨i, hi⟩ := hcover (π.base x')
-      obtain ⟨z, hz⟩ := exists_pullback_fst_base_eq π (f i) x' hi
+      obtain ⟨z, hz⟩ := (Scheme.Pullback.range_fst π (f i)).superset hi
       exact ⟨i, z, hz⟩
     · intro i
       have hq : (I.comap π).comap (pullback.fst π (f i))

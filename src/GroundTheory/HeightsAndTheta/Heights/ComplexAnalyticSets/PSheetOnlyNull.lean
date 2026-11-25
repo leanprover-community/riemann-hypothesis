@@ -82,17 +82,20 @@ theorem exists_sheet_nhds {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fi
   · exact ⟨fun _ => x, ∅, ∅, isOpen_empty, isOpen_empty, differentiableOn_empty,
       by simp, fun h => absurd h hx⟩
 
-theorem exists_sheet_of_det_ne_zero {J : Ideal (MvPolynomial (Fin n) ℂ)}
-    {A A' : Matrix (Fin d) (Fin n) ℂ} {x : Fin n → ℂ} {s : (Fin d → ℂ) → Fin n → ℂ}
-    (hs : IsSheetAt J A x s)
-    (hdet : (ReciprocityTheory.AnForm.A.jacC (fun w => A' *ᵥ s w) (A *ᵥ x)).det ≠ 0) :
-    ∃ s', IsSheetAt J A' x s' := by
-  obtain ⟨U, hU, hyU, hsd, hsx, hsec, V, hV, hVs⟩ := hs
-  set F : (Fin d → ℂ) → Fin d → ℂ := fun w => A' *ᵥ s w with hFdef
-  have hFa := analyticOnNhd_of_differentiableOn hU (differentiableOn_mulVec A' hsd)
-  set G : Set (Fin d → ℂ) := U ∩ (fun w => (ReciprocityTheory.AnForm.A.jacC F w).det) ⁻¹' {0}ᶜ with hGdef
-  have hG : IsOpen G := (analyticOnNhd_det_jacC hU (differentiableOn_mulVec A' hsd)).continuousOn
-    |>.isOpen_inter_preimage hU isOpen_compl_singleton
+theorem exists_sheet_of_det_ne_zero_of {J' : Ideal (MvPolynomial (Fin n) ℂ)}
+    {A' : Matrix (Fin d) (Fin n) ℂ} {D : Set (Fin d → ℂ)} (hD : IsOpen D) {y₀ : Fin d → ℂ}
+    (hy₀ : y₀ ∈ D) {f : (Fin d → ℂ) → Fin n → ℂ} (hf : DifferentiableOn ℂ f D) {x' : Fin n → ℂ}
+    (hfx : f y₀ = x') (hmem : ∀ w ∈ D, f w ∈ zeroSet J')
+    (hdet : (ReciprocityTheory.AnForm.A.jacC (fun w => A' *ᵥ f w) y₀).det ≠ 0)
+    (hloc : ∀ S : Set (Fin d → ℂ), IsOpen S → y₀ ∈ S → S ⊆ D →
+      ∃ N ∈ 𝓝 x', ∀ x'' ∈ zeroSet J' ∩ N, ∃ w ∈ S, x'' = f w) :
+    ∃ s', IsSheetAt J' A' x' s' := by
+  set F : (Fin d → ℂ) → Fin d → ℂ := fun w => A' *ᵥ f w with hFdef
+  have hFd : DifferentiableOn ℂ F D := differentiableOn_mulVec A' hf
+  have hFa := analyticOnNhd_of_differentiableOn hD hFd
+  set G : Set (Fin d → ℂ) := D ∩ (fun w => (ReciprocityTheory.AnForm.A.jacC F w).det) ⁻¹' {0}ᶜ with hGdef
+  have hG : IsOpen G := (analyticOnNhd_det_jacC hD hFd).continuousOn
+    |>.isOpen_inter_preimage hD isOpen_compl_singleton
   have hinj : ∀ w, (ReciprocityTheory.AnForm.A.jacC F w).det ≠ 0 → Function.Injective (fderiv ℂ F w) :=
     fun w hw => (injective_iff_det_ne_zero _).2 (by rwa [← ReciprocityTheory.AnForm.A.det_jacC])
   have hequiv : ∀ w ∈ G, ∃ e : (Fin d → ℂ) ≃L[ℂ] (Fin d → ℂ),
@@ -100,32 +103,71 @@ theorem exists_sheet_of_det_ne_zero {J : Ideal (MvPolynomial (Fin n) ℂ)}
     intro w hw
     refine ⟨(LinearEquiv.ofInjectiveEndo _ (hinj w hw.2)).toContinuousLinearEquiv, ?_⟩
     exact (hFa w hw.1).hasStrictFDerivAt.congr_fderiv (ContinuousLinearMap.ext fun v => rfl)
-  obtain ⟨e, he⟩ := hequiv _ ⟨hyU, hdet⟩
+  obtain ⟨e, he⟩ := hequiv _ ⟨hy₀, hdet⟩
   set φ := he.toOpenPartialHomeomorph F with hφdef
   have hφ : ∀ w, φ w = F w := fun w => by rw [hφdef, HasStrictFDerivAt.toOpenPartialHomeomorph_coe]
-  have hysrc : A *ᵥ x ∈ φ.source := he.mem_toOpenPartialHomeomorph_source
-  have hFx : F (A *ᵥ x) = A' *ᵥ x := by simp only [hFdef, hsx]
-  have hsym : φ.symm (A' *ᵥ x) = A *ᵥ x := by rw [← hFx, ← hφ, φ.left_inv hysrc]
-  refine ⟨s ∘ φ.symm, φ.target ∩ φ.symm ⁻¹' G, φ.isOpen_inter_preimage_symm hG,
-    ⟨by rw [← hFx, ← hφ]; exact φ.map_source hysrc, by rw [Set.mem_preimage, hsym]; exact ⟨hyU, hdet⟩⟩,
-    ?_, by simp only [Function.comp_apply, hsym, hsx], fun z hz => ⟨?_, (hsec _ hz.2.1).2⟩, ?_⟩
+  have hysrc : y₀ ∈ φ.source := he.mem_toOpenPartialHomeomorph_source
+  have hFx : F y₀ = A' *ᵥ x' := by simp only [hFdef, hfx]
+  have hsym : φ.symm (A' *ᵥ x') = y₀ := by rw [← hFx, ← hφ, φ.left_inv hysrc]
+  obtain ⟨N, hN, hNloc⟩ := hloc (φ.source ∩ D) (φ.open_source.inter hD) ⟨hysrc, hy₀⟩ Set.inter_subset_right
+  refine ⟨f ∘ φ.symm, φ.target ∩ φ.symm ⁻¹' G, φ.isOpen_inter_preimage_symm hG,
+    ⟨by rw [← hFx, ← hφ]; exact φ.map_source hysrc, by rw [Set.mem_preimage, hsym]; exact ⟨hy₀, hdet⟩⟩,
+    ?_, by simp only [Function.comp_apply, hsym, hfx], fun z hz => ⟨?_, hmem _ hz.2.1⟩, N, hN, ?_⟩
   · intro z ⟨hzT, hzG⟩
     obtain ⟨e', he'⟩ := hequiv _ hzG
     have hsymd : HasFDerivAt φ.symm _ z :=
       φ.hasFDerivAt_symm hzT (f' := e') (by
         have : (φ : (Fin d → ℂ) → Fin d → ℂ) = F := funext hφ
         rw [this]; exact he'.hasFDerivAt)
-    exact ((hsd.differentiableAt (hU.mem_nhds hzG.1)).comp z
+    exact ((hf.differentiableAt (hD.mem_nhds hzG.1)).comp z
       hsymd.differentiableAt).differentiableWithinAt
   · show F (φ.symm z) = z
     rw [← hφ, φ.right_inv hz.1]
-  · refine ⟨V ∩ (fun z => A *ᵥ z) ⁻¹' (φ.source ∩ U), inter_mem hV
-      (((φ.open_source.inter hU).preimage (by fun_prop)).mem_nhds ⟨hysrc, hyU⟩), ?_⟩
-    rintro x'' ⟨hx''Z, hx''V, hx''src, hx''U⟩ -
-    have hx'' : x'' = s (A *ᵥ x'') := hVs x'' ⟨hx''Z, hx''V⟩ hx''U
-    have hA' : A' *ᵥ x'' = φ (A *ᵥ x'') := by rw [hφ, hFdef]; exact congrArg _ hx''
-    rw [Function.comp_apply, hA', φ.left_inv hx''src]
-    exact hx''
+  · rintro x'' hx'' -
+    obtain ⟨w, hw, hx''w⟩ := hNloc x'' hx''
+    have hA' : A' *ᵥ x'' = φ w := by rw [hφ, hFdef, hx''w]
+    rw [Function.comp_apply, hA', φ.left_inv hw.1, hx''w]
+
+theorem exists_sheet_of_det_ne_zero {J : Ideal (MvPolynomial (Fin n) ℂ)}
+    {A A' : Matrix (Fin d) (Fin n) ℂ} {x : Fin n → ℂ} {s : (Fin d → ℂ) → Fin n → ℂ}
+    (hs : IsSheetAt J A x s)
+    (hdet : (ReciprocityTheory.AnForm.A.jacC (fun w => A' *ᵥ s w) (A *ᵥ x)).det ≠ 0) :
+    ∃ s', IsSheetAt J A' x s' := by
+  obtain ⟨U, hU, hyU, hsd, hsx, hsec, V, hV, hVs⟩ := hs
+  refine exists_sheet_of_det_ne_zero_of hU hyU hsd hsx (fun w hw => (hsec w hw).2) hdet fun S hS hyS hSU => ?_
+  refine ⟨V ∩ (fun z => A *ᵥ z) ⁻¹' S,
+    inter_mem hV ((hS.preimage (by fun_prop)).mem_nhds hyS), ?_⟩
+  rintro x'' ⟨hx''Z, hx''V, hx''S⟩
+  exact ⟨A *ᵥ x'', hx''S, hVs x'' ⟨hx''Z, hx''V⟩ (hSU hx''S)⟩
+
+theorem exists_det_ne_zero_of (h₁ : IndefiniteRowSideFullHecke.ComplexSets.FiniteMapOpen.Statement)
+    (h₂ : IndefiniteRowSideFullHecke.ComplexSets.CriticalImageNull.Statement) {J' : Ideal (MvPolynomial (Fin n) ℂ)}
+    {A' : Matrix (Fin d) (Fin n) ℂ} (hJ' : J'.IsPrime) (hA' : IsFiniteProjection J' A')
+    {D : Set (Fin d → ℂ)} (hD : IsOpen D) {f : (Fin d → ℂ) → Fin n → ℂ} (hf : DifferentiableOn ℂ f D)
+    {W₀ : Set (Fin d → ℂ)} {x' : Fin n → ℂ} (hx' : x' ∈ zeroSet J') {N : Set (Fin n → ℂ)} (hN : N ∈ 𝓝 x')
+    (hsub : ∀ z ∈ zeroSet J' ∩ N, ∃ w ∈ W₀ ∩ D, f w = z) :
+    ∃ w ∈ W₀, (ReciprocityTheory.AnForm.A.jacC (fun w => A' *ᵥ f w) w).det ≠ 0 := by
+  set F : (Fin d → ℂ) → Fin d → ℂ := fun w => A' *ᵥ f w with hFdef
+  by_contra hall
+  push Not at hall
+  have hcrit : F '' (W₀ ∩ D) ⊆ F '' {w | w ∈ D ∧ ¬ Function.Injective (fderiv ℂ F w)} :=
+    Set.image_mono fun w hw => ⟨hw.2, fun hinj => (injective_iff_det_ne_zero _).1 hinj
+      (by rw [← ReciprocityTheory.AnForm.A.det_jacC]; exact hall w hw.1)⟩
+  have hnull := measure_mono_null hcrit (h₂ d d D F hD (differentiableOn_mulVec A' hf))
+  have hnhds := h₁ n d J' (linPoly A') hJ' hA'.injective hA'.finite x' hx' N hN
+  have hev : ∀ z : Fin n → ℂ, (fun i => eval z (linPoly A' i)) = A' *ᵥ z := fun z => by
+    ext i
+    simp [linPoly, Matrix.mulVec, dotProduct]
+  simp only [hev] at hnhds
+  have hsub' : (fun z => A' *ᵥ z) '' (IndefiniteRowSideFullHecke.ComplexSets.zeroLocus J' ∩ N) ⊆
+      F '' (W₀ ∩ D) := by
+    rintro _ ⟨z, hz, rfl⟩
+    obtain ⟨w, hw, hfw⟩ := hsub z hz
+    exact ⟨w, hw, by simp only [hFdef, hfw]⟩
+  have hpos := Measure.measure_pos_of_mem_nhds (μ := μH[(Module.finrank ℝ (Fin d → ℂ) : ℝ)])
+    (Filter.mem_of_superset hnhds hsub')
+  rw [finrank_real_fin_complex] at hpos
+  exact hpos.ne' hnull
 
 theorem exists_det_ne_zero (h₁ : IndefiniteRowSideFullHecke.ComplexSets.FiniteMapOpen.Statement)
     (h₂ : IndefiniteRowSideFullHecke.ComplexSets.CriticalImageNull.Statement) {J : Ideal (MvPolynomial (Fin n) ℂ)}
@@ -134,32 +176,10 @@ theorem exists_det_ne_zero (h₁ : IndefiniteRowSideFullHecke.ComplexSets.Finite
     {W₀ : Set (Fin d → ℂ)} (hW₀ : IsOpen W₀) (hxW₀ : A *ᵥ x ∈ W₀) :
     ∃ w ∈ W₀, (ReciprocityTheory.AnForm.A.jacC (fun w => A' *ᵥ s w) w).det ≠ 0 := by
   obtain ⟨U, hU, hyU, hsd, hsx, hsec, V, hV, hVs⟩ := hs
-  set F : (Fin d → ℂ) → Fin d → ℂ := fun w => A' *ᵥ s w with hFdef
-  by_contra hall
-  push Not at hall
-  have hcrit : F '' (W₀ ∩ U) ⊆ F '' {w | w ∈ U ∧ ¬ Function.Injective (fderiv ℂ F w)} :=
-    Set.image_mono fun w hw => ⟨hw.2, fun hinj => (injective_iff_det_ne_zero _).1 hinj
-      (by rw [← ReciprocityTheory.AnForm.A.det_jacC]; exact hall w hw.1)⟩
-  have hnull := measure_mono_null hcrit (h₂ d d U F hU (differentiableOn_mulVec A' hsd))
-  have hxZ : x ∈ zeroSet J := hsx ▸ (hsec _ hyU).2
-  have hAc : Continuous fun z : Fin n → ℂ => A *ᵥ z := by fun_prop
-  have hnhds := h₁ n d J (linPoly A') hJ hA'.injective hA'.finite x hxZ
-    (V ∩ (fun z => A *ᵥ z) ⁻¹' (W₀ ∩ U))
-    (inter_mem hV (((hW₀.inter hU).preimage hAc).mem_nhds ⟨hxW₀, hyU⟩))
-  have hev : ∀ z : Fin n → ℂ, (fun i => eval z (linPoly A' i)) = A' *ᵥ z := fun z => by
-    ext i
-    simp [linPoly, Matrix.mulVec, dotProduct]
-  simp only [hev] at hnhds
-  have hsub : (fun z => A' *ᵥ z) '' (IndefiniteRowSideFullHecke.ComplexSets.zeroLocus J ∩
-      (V ∩ (fun z => A *ᵥ z) ⁻¹' (W₀ ∩ U))) ⊆ F '' (W₀ ∩ U) := by
-    rintro _ ⟨z, ⟨hzZ, hzV, hzW⟩, rfl⟩
-    refine ⟨A *ᵥ z, hzW, ?_⟩
-    simp only [hFdef]
-    rw [← hVs z ⟨hzZ, hzV⟩ hzW.2]
-  have hpos := Measure.measure_pos_of_mem_nhds (μ := μH[(Module.finrank ℝ (Fin d → ℂ) : ℝ)])
-    (Filter.mem_of_superset hnhds hsub)
-  rw [finrank_real_fin_complex] at hpos
-  exact hpos.ne' hnull
+  refine exists_det_ne_zero_of h₁ h₂ hJ hA' hU hsd (hsx ▸ (hsec _ hyU).2)
+    (inter_mem hV (((hW₀.inter hU).preimage (by fun_prop)).mem_nhds ⟨hxW₀, hyU⟩)) ?_
+  rintro z ⟨hzZ, hzV, hzW⟩
+  exact ⟨A *ᵥ z, hzW, (hVs z ⟨hzZ, hzV⟩ hzW.2).symm⟩
 
 end SheetOnlyNull
 

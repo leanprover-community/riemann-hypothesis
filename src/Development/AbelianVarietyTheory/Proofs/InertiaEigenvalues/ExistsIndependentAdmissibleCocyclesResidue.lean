@@ -84,7 +84,6 @@ private theorem apply_sub_self_eq_vv_smul_nab (f : V →ₗ[k] V) (x : V) :
   rw [_root_.GlobalTheory.PhiGam.nab_apply_eq, smul_smul, mul_inv_cancel₀ (_root_.GlobalTheory.PhiGam.vv_ne_zero k),
     one_smul]
 
-
 open scoped LaurentSeries PowerSeries in
 theorem _root_.GlobalTheory.PhiGam.Gauge.main : ∀ {k : Type} [Field k] {l : ℕ} [Fact l.Prime] [CharP k l]
     (R : _root_.GlobalTheory.PhiGam.RingPG k l) {n : ℕ} [NeZero n] {V : Type} [AddCommGroup V] [Module k⸨X⸩ V]
@@ -653,7 +652,6 @@ theorem card_le_sum {k V ι : Type} [Field k] [AddCommGroup V] [Module k V] [Fin
 
 variable {k : Type} [Field k] {l n m : ℕ} [Fact l.Prime] [CharP k l] [NeZero n] {R : RingPG k l}
 
-
 omit [Fact l.Prime] [CharP k l] [NeZero n] in
 theorem cob_mem (D : ModPG R n (Vc k m)) (y : ZMod n → Vc k m) :
     ((fun i => D.φ i (y (i - 1)) - y i, fun i => D.γ i (y i) - y i) :
@@ -723,7 +721,6 @@ theorem gauge_one (D : ModPG R n (Vc k m)) (Dt : TopData n m) (N : Lats k n m)
   · beta_reduce
     rw [hc]
     exact Submodule.sub_mem _ hdeep (hxB i h)
-
 
 omit [Fact l.Prime] [CharP k l] [NeZero n] in
 theorem span_prop {s : ℕ} (c : Fin s → Vc k m) (g : Vc k m →ₗ[k] Vc k m) (P Q : Submodule k⟦X⟧ (Vc k m))
@@ -834,10 +831,6 @@ namespace GlobalTheory.Models.SupModel
 
 variable {k G : Type} [Field k] [Group G]
 
-theorem isHom_comp {A B C : Ob k G} {f : (Fin A.m → k) →ₗ[k] (Fin B.m → k)}
-    {g : (Fin B.m → k) →ₗ[k] (Fin C.m → k)} (hf : IsHom A B f) (hg : IsHom B C g) : IsHom A C (g ∘ₗ f) :=
-  fun s x => by simp only [LinearMap.comp_apply]; rw [hf, hg]
-
 theorem isHom_add {A B : Ob k G} {f g : (Fin A.m → k) →ₗ[k] (Fin B.m → k)}
     (hf : IsHom A B f) (hg : IsHom A B g) : IsHom A B (f + g) :=
   fun s x => by simp only [LinearMap.add_apply, map_add (f := _)]; rw [hf, hg]
@@ -910,8 +903,8 @@ theorem model_sup : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Pri
   have oS := F.obj_sum _ _ _ _ _ ha ha' hab.2 o1 o2
   have oA := F.obj_quot _ _ _ hp hps o1
   have hJ : IsHom S C (i ∘ₗ j ∘ₗ q + i' ∘ₗ j' ∘ₗ q') :=
-    isHom_add (isHom_comp (isHom_comp hq hj) hi) (isHom_comp (isHom_comp hq' hj') hi')
-  have hP : IsHom S A (p ∘ₗ q + p' ∘ₗ q') := isHom_add (isHom_comp hq hp) (isHom_comp hq' hp')
+    isHom_add (GlobalTheory.Models.SubModel.IsHom.comp' (GlobalTheory.Models.SubModel.IsHom.comp' hq hj) hi) (GlobalTheory.Models.SubModel.IsHom.comp' (GlobalTheory.Models.SubModel.IsHom.comp' hq' hj') hi')
+  have hP : IsHom S A (p ∘ₗ q + p' ∘ₗ q') := isHom_add (GlobalTheory.Models.SubModel.IsHom.comp' hq hp) (GlobalTheory.Models.SubModel.IsHom.comp' hq' hp')
   refine ⟨C, _, S, _, _, hC, hJ, ?_, hP, ?_, ?_⟩
   · rw [injective_iff_map_eq_zero]
     intro x hx
@@ -957,7 +950,7 @@ theorem model_sup : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Pri
         map_comp_apply F (h := j' ∘ₗ q') oS oC oB' hJ hπ' (fun x => by simp [e3, e4]),
         ← map_comp_apply F oS o2 oB' hq' hj' (fun _ => rfl), zero_add, LinearMap.id_apply] at h2
       change F.map S A _ t s ∈ _
-      rw [F.map_add S A _ _ oS oA (isHom_comp hq hp) (isHom_comp hq' hp'),
+      rw [F.map_add S A _ _ oS oA (GlobalTheory.Models.SubModel.IsHom.comp' hq hp) (GlobalTheory.Models.SubModel.IsHom.comp' hq' hp'),
         ← map_comp_apply F oS o1 oA hq hp (fun _ => rfl), ← map_comp_apply F oS o2 oA hq' hp' (fun _ => rfl)]
       refine Submodule.add_mem_sup ⟨_, ?_, rfl⟩ ⟨_, ?_, rfl⟩
       · change F.map A₁ B j t _ ∈ Nb t
@@ -1129,10 +1122,6 @@ theorem sh_sup_le {P Q : Submodule k⟦X⟧ V} {m : ℕ} (h : sh ((m + 1 : ℕ) 
   refine sup_le ?_ (by exact_mod_cast h)
   simpa [sh_zero_eq] using sh_le_sh_of_le (Int.natCast_nonneg m) Q
 
-omit [Module k V] [IsScalarTower k k⸨X⸩ V] [IsScalarTower k k⟦X⟧ V] in
-theorem sh_one_le (P : Submodule k⟦X⟧ V) : sh 1 P ≤ P := by
-  simpa [sh_zero_eq] using sh_le_sh_of_le (zero_le_one' ℤ) P
-
 theorem fin_lat (m : ℕ) : ∀ P Q : Submodule k⟦X⟧ V, P.FG → Q.FG → sh (m : ℤ) P ≤ Q →
     FiniteDimensional k ((P.restrictScalars k).map (Q.restrictScalars k).mkQ) := by
   induction m with
@@ -1185,7 +1174,7 @@ theorem shift_of_le {l : ℕ} (R : RingPG k l) {g : V →ₗ[k] V} (hg : Semi R.
     rw [le_antisymm hle h, qmult, qmult, GlobalTheory.PhiGam.Range.gmult_self, GlobalTheory.PhiGam.Range.gmult_self]
   | succ m ih =>
     intro P Q hP hQ hle cP cQ h
-    have hle' : Q ⊔ sh 1 P ≤ P := sup_le hle (sh_one_le P)
+    have hle' : Q ⊔ sh 1 P ≤ P := sup_le hle (GlobalTheory.PhiGam.SenAdd.sh_one_le P)
     have cQ' : CondC g (Q ⊔ sh 1 P) := by
       rw [condC_iff_nab_mem]
       intro y hy
@@ -1294,11 +1283,6 @@ theorem exists_le_sup_sh {N : Submodule k⟦X⟧ V} (hN : IsLat N) (m : ℕ) :
     rw [sup_assoc, Nat.cast_succ]
     exact sup_le_sup_left h' _
 
-theorem graded_inj {l : ℕ} (R : RingPG k l) {g : V →ₗ[k] V} (hg : Semi R.γ g) {N : Submodule k⟦X⟧ V}
-    (hN : N.FG) (hC : CondC g N) (b : ℤ) (x : k) (h : sen g N (x + b) = 0) :
-    ∀ y ∈ sh b N, nab g y - x • y ∈ sh (b + 1) N → y ∈ sh (b + 1) N := by
-  apply GlobalTheory.PhiGam.Compare.graded_inj <;> assumption
-
 theorem window_inj {l : ℕ} (R : RingPG k l) {g : V →ₗ[k] V} (hg : Semi R.γ g) {N : Submodule k⟦X⟧ V}
     (hN : N.FG) (hC : CondC g N) (x : k) (s : ℕ) (h : ∀ j : ℕ, 1 ≤ j → j ≤ s → sen g N (x - j) = 0) :
     ∀ y ∈ sh (-s) N, nab g y - x • y ∈ N → y ∈ N := by
@@ -1308,7 +1292,7 @@ theorem window_inj {l : ℕ} (R : RingPG k l) {g : V →ₗ[k] V} (hg : Semi R.�
     intro y hy hy'
     refine ih (fun j h1 h2 => h j h1 (Nat.le_succ_of_le h2)) y ?_ hy'
     have e : (-((s + 1 : ℕ) : ℤ)) + 1 = -(s : ℤ) := by push_cast; ring
-    have := graded_inj R hg hN hC (-((s + 1 : ℕ) : ℤ)) x (by
+    have := GlobalTheory.PhiGam.Compare.graded_inj R hg hN hC (-((s + 1 : ℕ) : ℤ)) x (by
       rw [Int.cast_neg, Int.cast_natCast, ← sub_eq_add_neg]; exact h _ (Nat.succ_pos s) le_rfl) y hy
     rw [e] at this
     refine this (sh_le_sh_of_le (a := 0) (by omega) N ?_)
@@ -1795,7 +1779,6 @@ theorem exists_ext_Ea (hs : Function.Surjective (algebraMap O k)) (hk : ∀ x, a
   rw [h1]
   change e (φ _, ψ _) = E.ρ g (e (φ _, ψ _))
   rw [he, map_add (f := _), hφ, map_smul, hψ, algebraMap_smul]
-
 
 omit [TopologicalSpace G] in
 theorem exists_coef_equiv {M : Type} [AddCommGroup M] [Module O M] (W : Representation O G M)

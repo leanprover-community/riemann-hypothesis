@@ -896,7 +896,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points Gl
 
 namespace GlobalTheory.Mix
 
-
 open GlobalTheory.Mean4O.CombForm in
 theorem exists_subAtlas : ∀ (k : Type) [CommRing k] (X Y : Scheme.{0}) (p : X ⟶ Sp k) (q : Y ⟶ Sp k) (σ : k →+* ℂ), IsProjOver p → ∀ (π : Y ⟶ X) [IsClosedImmersion π] (hπ : π ≫ p = q) (e : ℕ) (A : FinHolAtlas (e + 1) (CxPts p σ)), IsAlgAtlas A → SmoothOfRelativeDimension e q → ∃ B : FinHolAtlas e (Set.range (ptMap π hπ σ)), HoloMap B A Subtype.val ∧ ∀ (L : Fin e → MLine p σ) (v : CxPts p σ → ℝ), Continuous v → mInt B (fun i => (L i).φ.locPot.pullback Subtype.val continuous_subtype_val) (v ∘ Subtype.val) = Mix.int (fun i => (L i).pull π hπ) (fun y => v (ptMap π hπ σ y)) := by
   intro k _ X Y p q σ hp π _ hπ e A hA hs
@@ -1418,7 +1417,7 @@ open ReciprocityTheory.AnForm.R
 namespace GlobalTheory.SncLocal
 
 theorem mem_comps_of_compList {X : Scheme.{0}} {B : Set X} {m : ℕ} {C : Fin m → Closeds X}
-    (hC : FinalTheorems.CompList B C) (i : Fin m) : (C i : Set X) ∈ ReciprocityTheory.AnForm.R.comps B := by
+    (hC : FinalTheorems.CompList B C) (i : Fin m) : (C i : Set X) ∈ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH B := by
   classical
   refine ⟨⟨hC.1 i, hC.2.1 ▸ Set.subset_iUnion (fun j => (C j : Set X)) i⟩, fun D hD hiD => ?_⟩
   obtain ⟨z, hz, hDz⟩ := (isIrreducible_iff_sUnion_isClosed.1 hD.1)
@@ -1442,16 +1441,16 @@ theorem lSncAt_of_snc (X : Scheme.{0}) [IsNoetherian X] (B : Closeds X) (m : ℕ
   have hs : ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) = B := by simp
   obtain ⟨O, hxO, -, hO⟩ := exists_open_comps x U hx f J hrsp hZU
   have key : ∀ i : {i : Fin m // x ∈ C i}, ∃ j ∈ J,
-      ReciprocityTheory.AnForm.R.IsBranch ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) (f j) x (C i.1) ∧
+      ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) (f j) x (C i.1) ∧
       stalkId (Scheme.IdealSheafData.vanishingIdeal (C i.1)) x =
         Ideal.span {X.presheaf.germ U.1 x hx (f j)} := by
     rintro ⟨i, hxi⟩
     have hCi : ((C i : Closeds X) : Set X) ∈
-        ReciprocityTheory.AnForm.R.comps ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) :=
+        ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X) :=
       hs ▸ mem_comps_of_compList hC i
     have hO' := hO _ hCi
     have hq : ∀ q : PrimeSpectrum (X.presheaf.stalk x), X.fromSpecStalk x q ∈ (C i : Set X) ↔
-        ∃ j ∈ J, ReciprocityTheory.AnForm.R.IsBranch ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X)
+        ∃ j ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH ((Scheme.IdealSheafData.vanishingIdeal B).support : Set X)
           (f j) x (C i) ∧ X.presheaf.germ U.1 x hx (f j) ∈ q.asIdeal := by
       intro q
       have hqO : X.fromSpecStalk x q ∈ (O : Set X) := by

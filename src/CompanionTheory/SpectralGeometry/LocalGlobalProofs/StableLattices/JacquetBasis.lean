@@ -5,8 +5,6 @@ public import Mathlib.Analysis.Matrix.Spectrum
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix CompanionTheory.RgExh CompanionTheory.RgExh.Dec CompanionTheory.RgExh.Dec.J Formalism.REAL GlobalTheory.SmGL
 
 namespace GlobalTheory.CompanionTheory.GradEig

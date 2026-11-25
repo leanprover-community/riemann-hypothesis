@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdelicOne
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.DefPt.Model
 
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.DualWeyl MvPolynomial GlobalTheory.DefPt
@@ -30,5 +28,3 @@ theorem rhoMat_scalar (la : Fin n → ℕ) {K : Type} [Field K] [CharZero K] (t 
 end Tensor
 
 end GlobalTheory.DefPt.Model
-
-end

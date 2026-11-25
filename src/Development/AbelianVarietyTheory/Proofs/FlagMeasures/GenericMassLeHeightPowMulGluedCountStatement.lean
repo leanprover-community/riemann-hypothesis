@@ -1410,7 +1410,7 @@ theorem genericMass_le_heightPow_mul_glueSum : ∀ (D : D7) (X : HidaSetting D) 
     exact ⟨wp, h0, h1, h2⟩
 
   have hTu : ((Tu D u : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (D.mem u).A.T_prime.ne_zero
-  have fc := GlobalTheory.T.unitriangularChange_rationalFlag_iff_rationalUnipotent D (lf D (X.Fu u)) hTu
+  have fc := GlobalTheory.FlagChange.flag_change D (lf D (X.Fu u)) hTu
   have hTri1 : Tri D.host.E (frame (lf D (X.Fu u))) (frame F) := (fc.2 F).2 hFn
   obtain ⟨m, hm, hGm⟩ := (fc.2 G).1 (tri_trans _ _ _ _ _ _ hTri1 hStd.1)
   have hmI : m ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := hm.1

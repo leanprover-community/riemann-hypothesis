@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open NumberField IsDedekindDomain Formalism.UG Formalism.L2.Col
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.VanishAwayInt
 
 theorem exists_away {F : Type} [Field F] [NumberField F] (p : Ideal (𝓞 F)) [hp : p.IsPrime] (N : 𝓞 F) (hN : N ≠ 0) :

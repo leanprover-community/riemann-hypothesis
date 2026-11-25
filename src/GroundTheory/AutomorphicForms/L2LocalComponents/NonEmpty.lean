@@ -240,16 +240,6 @@ open Reduction AutomorphicForm RightCosetSpace CuspidalSpectrum FourierWhittaker
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-def openSubgroupOf (U : Subgroup (AdelicGLn.integralFiniteGL K n))
-    (hU : IsOpen (U : Set (AdelicGLn.integralFiniteGL K n))) :
-    OpenSubgroup (AdelicGLn.FiniteAdelicGL K n) where
-  toSubgroup := U.map (AdelicGLn.integralFiniteGL K n).subtype
-  isOpen' := by
-    change IsOpen ((U.map (AdelicGLn.integralFiniteGL K n).subtype : Subgroup _) :
-      Set (AdelicGLn.FiniteAdelicGL K n))
-    rw [Subgroup.coe_map, Subgroup.coe_subtype]
-    exact (AdelicGLn.isOpen_integralFiniteGL K n).isOpenMap_subtype_val _ hU
-
 def IsSmoothTest (f : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ) : Prop :=
   ∃ (ν : Measure (ArchUnits K n)) (_ : ν.IsHaarMeasure) (U : Subgroup (AdelicGLn.integralFiniteGL K n))
     (hU : IsOpen (U : Set (AdelicGLn.integralFiniteGL K n)))
@@ -358,7 +348,7 @@ theorem exists_fixedSubspace_ne_bot (μ : Measure (normOneGL (K := K) (n := n)))
     (hσ : σ.IsIrreducible) :
     ∃ (U : Subgroup (AdelicGLn.integralFiniteGL K n))
       (hU : IsOpen (U : Set (AdelicGLn.integralFiniteGL K n))),
-      fixedSubspace σ (openSubgroupOf U hU : Subgroup (AdelicGLn.FiniteAdelicGL K n)) ≠ ⊥ := by
+      fixedSubspace σ (GroundTheory.Automorphic.CuspidalSpectrum.finOpenSubgroup U hU : Subgroup (AdelicGLn.FiniteAdelicGL K n)) ≠ ⊥ := by
   have := hσ.1
   obtain ⟨v, hv⟩ := exists_ne (0 : H)
   obtain ⟨g, hg⟩ := UnitaryRep.exists_integrated_ne_zero σ μ hv
@@ -370,7 +360,7 @@ theorem exists_fixedSubspace_ne_bot (μ : Measure (normOneGL (K := K) (n := n)))
   obtain ⟨U, hU, hinv⟩ := hf.exists_finOne_mul
   refine ⟨U, hU, fun hbot => hfv ?_⟩
   have hmem : σ.integrated μ (UnitaryRep.ccToL1 μ f) v ∈
-      fixedSubspace σ (openSubgroupOf U hU : Subgroup (AdelicGLn.FiniteAdelicGL K n)) := by
+      fixedSubspace σ (GroundTheory.Automorphic.CuspidalSpectrum.finOpenSubgroup U hU : Subgroup (AdelicGLn.FiniteAdelicGL K n)) := by
     rintro _ ⟨u, hu, rfl⟩
     rw [Subgroup.coe_subtype, finProj_eq_finOne]
     refine map_integrated_of_left_invariant (fun x => ?_) v
@@ -459,8 +449,6 @@ theorem archRepT_comm_starProjection {V : Submodule ℂ (CuspL2 μ)} [CompleteSp
   ext y
   have := congrArg (fun T : CuspL2 μ →L[ℂ] CuspL2 μ => T y) h
   exact this.symm
-
-
 
 theorem exists_isZKFinite_of_summand (V : Submodule ℂ (CuspL2 μ)) [CompleteSpace V]
     (hV : (cuspRepT μ).IsInvariant V) (hirr : ((cuspRepT μ).restrict V hV).IsIrreducible) :

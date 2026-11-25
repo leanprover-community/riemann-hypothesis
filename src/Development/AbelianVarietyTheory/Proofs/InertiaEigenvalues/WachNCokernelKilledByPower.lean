@@ -198,12 +198,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     (W : LocWach PD LL O v n)
 
-theorem φD_smulA (T : LocLat G Qp LL O) (a : LetA O n) (y : W.DD T) :
-    W.φD T (a • y) = W.φA a • W.φD T y := by
-  have := W.φD_smul T (algebraMap (LetA O n) W.EE a) y
-  rw [algebraMap_smul, W.φE_ext, algebraMap_smul] at this
-  exact this
-
 theorem φD_map_Q {T₁ T₂ : LocLat G Qp LL O} (π : LatHom T₁.L T₂.L) (y : W.DD T₂)
     (hy : y ∈ (W.N T₁).map (mapA W π)) : ∃ j : ℕ, W.Q ^ j • W.φD T₂ y ∈ (W.N T₁).map (mapA W π) := by
   obtain ⟨n₁, hn₁, rfl⟩ := hy
@@ -247,12 +241,12 @@ theorem φD_satM_gen (l : ℕ) (hlp : l.Prime) (hp : PD.p = l) {T₁ T₂ : LocL
   have hl : ((l : ℕ) : LetA O n) ^ k ∈ J := by
     obtain ⟨j, hj⟩ := φD_map_Q W π _ hk1
     refine ⟨j, ?_⟩
-    rw [φD_smulA, map_pow, map_natCast] at hj
+    rw [GlobalTheory.NL.InvX.φD_smulA, map_pow, map_natCast] at hj
     exact hj
   have hπq : (letπ * W.q) ^ k ∈ J := by
     obtain ⟨j, hj⟩ := φD_map_Q W π _ hk2
     refine ⟨j, ?_⟩
-    rw [φD_smulA, map_pow, W.φA_π] at hj
+    rw [GlobalTheory.NL.InvX.φD_smulA, map_pow, W.φA_π] at hj
     exact hj
   obtain ⟨r, hr⟩ := exists_add_pow_prime_eq hlp (letπ : LetA O n) 1
   have hq : letπ * W.q = (letπ + 1 : LetA O n) ^ l - 1 := by
@@ -485,8 +479,6 @@ end GlobalTheory.NL.SatFree
 
 namespace GlobalTheory.NL.SatFree
 
-
-
 theorem satM_free_loc {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW l P) (K : FinExt l)
     (s : ℕ) (LL : FinExt l) (h : Good K s LL) (T₁ T₂ : Lt K LL) (π : LatHom T₁.L T₂.L)
     (c1 : IsCrys (P.PD K) T₁.ρ) (c2 : IsCrys (P.PD K) T₂.ρ)
@@ -617,9 +609,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     (W : LocWach PD LL O v n)
 
-theorem isUnit_Q : IsUnit (algebraMap (LetA O n) W.EE W.Q) := by
-  apply GlobalTheory.WachLettersCompare.isUnit_Q
-
 variable {W}
 
 def basisS {T : LocLat G Qp LL O} {S : Submodule (LetA O n) (W.DD T)} {r : ℕ}
@@ -681,7 +670,7 @@ theorem span_phi_eq_top {T : LocLat G Qp LL O} {r : ℕ} (β : Module.Basis (Fin
   obtain ⟨m, hm⟩ := hβ j
   have h1 : algebraMap (LetA O n) W.EE (W.Q ^ m) • β j ∈ P := by
     rw [algebraMap_smul]; exact hrange hm
-  obtain ⟨u, hu⟩ := (isUnit_Q W).pow m
+  obtain ⟨u, hu⟩ := (GlobalTheory.WachLettersCompare.isUnit_Q W).pow m
   rw [map_pow, ← hu] at h1
   have := P.smul_mem ((u⁻¹ : W.EEˣ) : W.EE) h1
   rwa [smul_smul, Units.inv_mul, one_smul] at this
@@ -878,8 +867,6 @@ section -- clump:auto
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
 
 namespace GlobalTheory.NL.CokerFin
-
-
 
 theorem coker_killed : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; let C := Cm l; ∀ (T₀ T₁ T₂ : Lt K LL) (ι : LatHom T₀.L T₁.L) (π : LatHom T₁.L T₂.L), IsCrys ((D.loc l).PD K) T₀.ρ → IsCrys ((D.loc l).PD K) T₁.ρ → IsCrys ((D.loc l).PD K) T₂.ρ → IsSESLat (Qp := ℚ_[l]) ι π → ∃ c : ℕ, ∀ z ∈ W.N T₂, (∃ y ∈ W.N T₁, W.map π y = ((l : ℕ) : AA K LL) ^ c • z) ∧ ∃ y ∈ W.N T₁, W.map π y = (letπ : AA K LL) ^ c • z := by
   intro D HW F Cm l _ K s LL h W E C T₀ T₁ T₂ ι π h0 h1 h2 hs

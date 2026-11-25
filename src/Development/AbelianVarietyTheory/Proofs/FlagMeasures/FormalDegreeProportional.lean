@@ -57,8 +57,6 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 open BranchingSupport GlobalTheory.CellAmp GlobalTheory.Amp Formalism.BasicNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Matrix MeasureTheory Finset
 open scoped InnerProductSpace ENNReal
 
-noncomputable section
-
 namespace GlobalTheory.DegreeTie
 
 open Formalism.FourierDecayAlt.P.HaarUniquenessConjugation
@@ -120,5 +118,3 @@ theorem map_phi_eq {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {P Q : MatKR 
     exact (measurable_const_mul m).mul_const m⁻¹), hinv]
 
 end GlobalTheory.DegreeTie
-
-end

@@ -16,11 +16,9 @@ noncomputable section
 
 namespace GlobalTheory.Mem.R3.Rw
 
-
-
 theorem chT_tr : ∀ (B : Base) (C : Cols B) (a b : Late B C) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (Ks : Type) [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL] (A : FamIn a.D.what₂.LL G Pl0 T a.D.R.m) (R : RealDat a.D A Ks) (F : Face a.D A) (y : Hd R) (y' : HdB b R), Same b y y' → ∀ (bb : Bool) (Φ : Type) (rep : Φ → _) (Top : C.Tup → Hs) (c : ChD C.Tup Φ B.R.m Top) jA (t : ChT y F bb rep (Top := Top) jA c) jA', HEq jA' jA → ∃ t' : @ChT b.D G _ _ Pl0 T (famM b A) Ks _ _ (alg b iK) (real b R) y' (face b F) bb Φ ((rep)) Top jA' c, letI := alg b iK; HEq t'.jE t.jE ∧ HEq t'.jM t.jM ∧ HEq t'.jX t.jX := by
   intro B C a b G iG iFin Pl0 T Ks iField iNumber iK A R F y y' hS bb Φ rep Top c jA t jA' hjA
-  have hP := (@GlobalTheory.T.typeRepresentativesParts_otherLaterStages B C a b G iG iFin
+  have hP := (@GlobalTheory.Mem.R3.Tr.reps_parts_tr B C a b G iG iFin
     Pl0 T Ks iField iNumber iK A R F y y' hS).2.1
   have htup := hS.tup
   have htupT := hS.tupT

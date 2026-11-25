@@ -13,8 +13,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ColPeriodCompare
 
 open NumberField IsDedekindDomain

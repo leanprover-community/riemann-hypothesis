@@ -311,7 +311,7 @@ theorem genusMassW_of (h1 : JordanExists) (h5 : AlphaDisc) : GenusMassW := by
       rw [e]
   · intro T hT _
     obtain ⟨N, rfl⟩ : ∃ N, push (orthK h U) N = T := ⟨_, push_pull (mem_of_isLatIn hT)⟩
-    have hfin := Formalism.HermitianLatticesTheory.autFinite K ↥(orthK h U) (formOn h (orthK h U)) hWs (StabilizerLattices.trace_pos hWd) N
+    have hfin := Formalism.HermitianLatticesTheory.autFinite K ↥(orthK h U) (formOn h (orthK h U)) (StabilizerLattices.trace_pos hWd) N
       ((isLatIn_push_iff_isLattice N).1 hT)
     have : Finite ↥(Formalism.ThetaLiftIndependence.autL (formOn h (orthK h U)) N) := hfin.to_subtype
     exact Set.finite_coe_iff.mp (Finite.of_equiv _ (stabEquivW hs hc N).symm)

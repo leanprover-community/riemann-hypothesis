@@ -98,10 +98,8 @@ variable {k E O O' : Type} [Field k] [Field E] [Algebra k E] [CommRing O] [CommR
 
 theorem pow_compat (j : O' →ₐ[O] E) (σ : E ≃ₐ[k] E) (τ : O' ≃ₐ[O] O')
     (hτ : ∀ x, σ (j x) = j (τ x)) (i : ℕ) (x : O') : (σ ^ i) (j x) = j ((τ ^ i) x) := by
-  induction i generalizing x with
-  | zero => simp
-  | succ i ih =>
-    rw [pow_succ, pow_succ, AlgEquiv.mul_apply, AlgEquiv.mul_apply, hτ, ih]
+  rw [AlgEquiv.coe_pow, AlgEquiv.coe_pow]
+  exact (Function.Semiconj.iterate_right (f := j) (ga := τ) (gb := σ) (fun y => (hτ y).symm) i x).symm
 
 theorem exists_norm_eval (j : O' →ₐ[O] E) (σ : E ≃ₐ[k] E) (τ : O' ≃ₐ[O] O')
     (hτ : ∀ x, σ (j x) = j (τ x)) (S : Subring E) (hS : ∀ x, j x ∈ S) {n : ℕ}

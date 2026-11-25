@@ -285,15 +285,12 @@ theorem UpperTheory.Esk.finite_system_proof : UpperTheory.Esk.Sys → UpperTheor
       exact List.mem_map.2 ⟨j, Finset.mem_toList.2 hj, hj0⟩
   let Cinv : ℂ := (L.toList.map fun j => (s j)⁻¹).prod
   have hCinv : ν Cinv = 1 := by
-    have : ∀ l' : List J, (∀ j ∈ l', j ∈ L) → ν (l'.map fun j => (s j)⁻¹).prod = 1 := by
-      intro l' hl'
-      induction l' with
-      | nil => simp
-      | cons j l' ih =>
-        rw [List.map_cons, List.prod_cons, Valuation.map_mul, map_inv₀, hsL j (hl' j List.mem_cons_self),
-          ih fun i hi => hl' i (List.mem_cons_of_mem _ hi)]
-        simp
-    exact this _ fun j hj => Finset.mem_toList.1 hj
+    dsimp only [Cinv]
+    rw [map_list_prod]
+    refine List.prod_eq_one fun x hx => ?_
+    obtain ⟨y, hy, rfl⟩ := List.mem_map.1 hx
+    obtain ⟨j, hj, rfl⟩ := List.mem_map.1 hy
+    simp [hsL j (Finset.mem_toList.1 hj)]
 
   let cong : Finset (J → ℂ) := S.filter fun u => ∀ j, ν (u j - s j) < 1
   have hcong : ∀ u ∈ cong, ν (Cinv * G u - 1) < 1 := by

@@ -8,60 +8,17 @@ public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.Co
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsDualBasisOfUnimodularLatticeAtPrime
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.JetsAreBoundedMeasureMomentsPadicIntMatrixChange
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LatticeJetsAreBoundedMomentsOfSpanImagQuadratic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsMahlerExpansion, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MeasureEqOfMoments, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MomentMeasureNormLeOneIffLatticeIntegral
@@ -78,16 +35,13 @@ open GlobalTheory.MultiMahler
 
 variable {p : ℕ} [Fact p.Prime]
 
-noncomputable def incl (p : ℕ) [Fact p.Prime] : ℤ_[p] →+* ℂ_[p] :=
-  (algebraMap ℚ_[p] ℂ_[p]).comp PadicInt.Coe.ringHom
-
-theorem continuous_incl : Continuous (incl p) :=
+theorem continuous_incl : Continuous (GlobalTheory.MomOne.OKArith.zcHom p) :=
   (continuous_algebraMap ℚ_[p] ℂ_[p]).comp continuous_subtype_val
 
 theorem factorial_mul_binomC (k : ℕ) (x : ℤ_[p]) :
     (k.factorial : ℂ_[p]) * binomC k x
-      = incl p (Polynomial.aeval x (descPochhammer ℤ k)) := by
-  have h1 : binomC k x = incl p (Ring.choose x k) := rfl
+      = GlobalTheory.MomOne.OKArith.zcHom p (Polynomial.aeval x (descPochhammer ℤ k)) := by
+  have h1 : binomC k x = GlobalTheory.MomOne.OKArith.zcHom p (Ring.choose x k) := rfl
   have h2 := Ring.descPochhammer_eq_factorial_smul_choose x k
   rw [← Polynomial.aeval_eq_smeval] at h2
   rw [h1, h2, nsmul_eq_mul, map_mul, map_natCast]
@@ -105,9 +59,9 @@ variable {Z : Type} [TopologicalSpace Z] [CompactSpace Z]
 
 omit [CompactSpace Z] in
 theorem binomC_comp_mem (S : Subalgebra ℂ_[p] C(Z, ℂ_[p])) (φ : C(Z, ℤ_[p]))
-    (X : C(Z, ℂ_[p])) (hX : ∀ z, X z = incl p (φ z)) (hS : X ∈ S) (k : ℕ) :
+    (X : C(Z, ℂ_[p])) (hX : ∀ z, X z = GlobalTheory.MomOne.OKArith.zcHom p (φ z)) (hS : X ∈ S) (k : ℕ) :
     (binomC k).comp φ ∈ S := by
-  have hmem : ∀ P : Polynomial ℤ, ∃ G ∈ S, ∀ z, G z = incl p (Polynomial.aeval (φ z) P) := by
+  have hmem : ∀ P : Polynomial ℤ, ∃ G ∈ S, ∀ z, G z = GlobalTheory.MomOne.OKArith.zcHom p (Polynomial.aeval (φ z) P) := by
     intro P
     induction P using Polynomial.induction_on' with
     | add P Q hP hQ =>
@@ -139,7 +93,7 @@ noncomputable def evalAlong {Y : Type} [TopologicalSpace Y] [CompactSpace Y] [T2
 
 theorem comp_mem (S : Subalgebra ℂ_[p] C(Z, ℂ_[p])) (hS : IsClosed (S : Set C(Z, ℂ_[p])))
     (g : ℕ) : ∀ (φ : C(Z, Fin g → ℤ_[p])),
-      (∀ i, ∃ X ∈ S, ∀ z, X z = incl p (φ z i)) →
+      (∀ i, ∃ X ∈ S, ∀ z, X z = GlobalTheory.MomOne.OKArith.zcHom p (φ z i)) →
       ∀ F : C(Fin g → ℤ_[p], ℂ_[p]), F.comp φ ∈ S := by
   induction g with
   | zero =>
@@ -175,7 +129,7 @@ theorem comp_mem (S : Subalgebra ℂ_[p] C(Z, ℂ_[p])) (hS : IsClosed (S : Set 
 theorem eq_zero_of_monomials : ∀ (p r : ℕ) [Fact p.Prime] (μ : C(Fin r → ℤ_[p], ℂ_[p]) →L[ℂ_[p]] ℂ_[p]), (∀ (m : ℕ) (k : Fin m → Fin r) (g : C(Fin r → ℤ_[p], ℂ_[p])), (∀ a, g a = ∏ j, zc (a (k j))) → μ g = 0) → μ = 0 := by
   intro p r _ μ hμ
   let X : Fin r → C(Fin r → ℤ_[p], ℂ_[p]) := fun i =>
-    ⟨fun a => incl p (a i), continuous_incl.comp (continuous_apply i)⟩
+    ⟨fun a => GlobalTheory.MomOne.OKArith.zcHom p (a i), continuous_incl.comp (continuous_apply i)⟩
   let A : Subalgebra ℂ_[p] C(Fin r → ℤ_[p], ℂ_[p]) := Algebra.adjoin ℂ_[p] (Set.range X)
   have hA : ∀ f ∈ A, μ f = 0 := by
     intro f hf
@@ -414,7 +368,6 @@ theorem exists_zc_inv (s : ℕ) (hs : Nat.Coprime s q) : ∃ u : ℤ_[q], zc u =
 end GlobalTheory.MomN.Bridge
 
 namespace GlobalTheory.MomN
-
 
 open Bridge in
 theorem norm_le_one_iff_latInt : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (lam : Qbar →+* ℂ_[q]) (δ₀ : ℂ) (Ω : ℂ_[q])

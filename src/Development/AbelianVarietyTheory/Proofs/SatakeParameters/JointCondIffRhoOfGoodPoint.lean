@@ -9,8 +9,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ParamRepCompare
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
@@ -52,5 +50,3 @@ theorem _root_.GlobalTheory.ParamRepCompare.conj_mem_Ine_of_smul_eq {A A' : Valu
 end Inertia
 
 end GlobalTheory.ParamRepCompare
-
-end

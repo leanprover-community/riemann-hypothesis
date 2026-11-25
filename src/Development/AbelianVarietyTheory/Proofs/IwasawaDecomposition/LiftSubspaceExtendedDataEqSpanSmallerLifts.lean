@@ -43,26 +43,6 @@ private theorem span_range_le_comap_span_image {κ : Type} (x : κ → V') :
   rintro _ ⟨k, rfl⟩
   exact Submodule.subset_span ⟨k, rfl⟩
 
-private theorem linearIndependent_image_basis_of_linearIndependent {ι' : Type} [Fintype ι'] (b' : Basis ι' K' V')
-    (hb : LinearIndependent ℂ fun i => j' (b' i)) {κ : Type} [Fintype κ] (c : Basis κ K' V') :
-    LinearIndependent ℂ fun k => j' (c k) := by
-  have := Module.Finite.of_basis b'
-  have hcard : Fintype.card ι' = Fintype.card κ := by
-    rw [← Module.finrank_eq_card_basis b', ← Module.finrank_eq_card_basis c]
-  have hle : Submodule.span ℂ (Set.range fun i => j' (b' i)) ≤
-      Submodule.span ℂ (Set.range fun k => j' (c k)) := by
-    rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    have hi : b' i ∈ Submodule.span K' (Set.range c) := by rw [c.span_eq]; trivial
-    exact span_range_le_comap_span_image j' c hi
-  have : Module.Finite ℂ (Submodule.span ℂ (Set.range fun k => j' (c k))) :=
-    Module.Finite.span_of_finite ℂ (Set.finite_range _)
-  rw [linearIndependent_iff_card_eq_finrank_span]
-  apply le_antisymm
-  · rw [← hcard, linearIndependent_iff_card_eq_finrank_span.mp hb]
-    exact Submodule.finrank_mono hle
-  · exact finrank_range_le_card _
-
 theorem linInd_comp {ι' : Type} [Fintype ι'] (b' : Basis ι' K' V') (hb : LinearIndependent ℂ fun i => j' (b' i))
     {κ : Type} {x : κ → V'} (hx : LinearIndependent K' x) : LinearIndependent ℂ fun k => j' (x k) := by
   intros

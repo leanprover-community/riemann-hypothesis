@@ -49,11 +49,8 @@ def hInfR (σ : E →ₐ[F] E) {n : ℕ} (S : HermR (AF F) σ n) : HermR (Ainf F
 def hFinR (σ : E →ₐ[F] E) {n : ℕ} (S : HermR (AF F) σ n) : HermR (Af F) σ n := hermFin σ S
 
 theorem sigmaFinite_of_mp {X Y : Type*} [MeasurableSpace X] [MeasurableSpace Y] (e : X ≃ᵐ Y) {μ : Measure X}
-    {ν : Measure Y} [SigmaFinite ν] (h : MeasurePreserving e μ ν) : SigmaFinite μ := by
-  have h2 : μ = ν.map e.symm := by
-    rw [← h.map_eq, MeasurableEquiv.map_symm_map]
-  rw [h2]
-  exact e.symm.measurableEmbedding.sigmaFinite_map
+    {ν : Measure Y} [SigmaFinite ν] (h : MeasurePreserving e μ ν) : SigmaFinite μ :=
+  h.sigmaFinite
 
 
 omit [NumberField E] in

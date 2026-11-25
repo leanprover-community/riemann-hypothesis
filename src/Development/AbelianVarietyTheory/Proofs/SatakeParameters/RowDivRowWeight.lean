@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelP
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ValCmp
 
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.LvT.KerLat

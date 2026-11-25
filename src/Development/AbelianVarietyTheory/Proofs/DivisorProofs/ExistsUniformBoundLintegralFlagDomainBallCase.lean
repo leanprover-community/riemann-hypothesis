@@ -182,7 +182,6 @@ theorem colGram_blkW_last (r p0 : ℕ) (w : Low r → ℂ) :
   rw [this, Matrix.submatrix_id_id, Matrix.det_mul, Matrix.det_conjTranspose, blkW_det_eq_one]
   simp
 
-
 end GlobalTheory.IntBall
 end -- clump:auto
 end -- clump:auto
@@ -1395,11 +1394,6 @@ theorem gram_eq_transpose (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x :
     Finset.sum_mul]
   rw [Finset.sum_comm]
 
-theorem gram_mul_right (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (M N : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G (M * N) = Nᵀ * gram τ G M * N.map (starRingEnd ℂ) := by
-  rw [gram_eq_transpose, gram_eq_transpose, Matrix.transpose_mul, Matrix.map_mul]
-  simp only [Matrix.mul_assoc]
-
 def eR (r : ℕ) (hr : 1 ≤ r) : Fin 1 ⊕ Fin (r - 1) ≃ Fin r :=
   finSumFinEquiv.trans (finCongr (by omega))
 
@@ -1434,7 +1428,7 @@ theorem zDet_mul_colGram_le_norm_dmin : ∀ (E : Type) [Field E] [NumberField E]
   set D : Matrix (Fin r) (Fin r) ℂ := Matrix.diagonal fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ) with hD
   have hgram : gram τ.1 X.Gm (mat (point X x0 z) τ) = Lᵀ * D * L.map (starRingEnd ℂ) := by
     have : mat (point X x0 z) τ = mat x0.1 τ * mat (nFrame X z) τ := rfl
-    rw [this, gram_mul_right, x0.2 τ, mat_nFrame X hp]
+    rw [this, ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_mul, x0.2 τ, mat_nFrame X hp]
   set f : Fin 1 ⊕ Fin k → Fin r := fun j => Fin.castLE hk (eC k j) with hf
   set A : Matrix (Fin 1 ⊕ Fin (r - 1)) (Fin 1 ⊕ Fin k) ℂ := L.submatrix (eR r hr) f with hA
   set D' : Matrix (Fin 1 ⊕ Fin (r - 1)) (Fin 1 ⊕ Fin (r - 1)) ℂ := D.submatrix (eR r hr) (eR r hr) with hD'

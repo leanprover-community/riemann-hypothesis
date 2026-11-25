@@ -129,14 +129,10 @@ def dmass (A C : Subgroup H) : ℚ :=
 
 theorem mem_stab_iff (A C : Subgroup H) (g : H) (a : A) :
     a ∈ MulAction.stabilizer A ((g : H ⧸ C)) ↔ (a : H) ∈ C.map (MulAut.conj g).toMonoidHom := by
-  rw [MulAction.mem_stabilizer_iff]
-  change (((a : H) * g : H) : H ⧸ C) = g ↔ _
-  rw [QuotientGroup.eq, Subgroup.mem_map_equiv, MulAut.conj_symm_apply]
-  constructor <;> intro h
-  · have h' := C.inv_mem h
-    simpa [mul_assoc] using h'
-  · have h' := C.inv_mem h
-    simpa [mul_assoc] using h'
+  have h := MulAction.stabilizer_smul_eq_stabilizer_map_conj g ((1 : H) : H ⧸ C)
+  rw [MulAction.stabilizer_quotient, MulAction.Quotient.smul_coe, smul_eq_mul, mul_one] at h
+  rw [← h]
+  exact Iff.rfl
 
 def stabEquivInf (A C : Subgroup H) (g : H) :
     MulAction.stabilizer A ((g : H ⧸ C)) ≃ (A ⊓ C.map (MulAut.conj g).toMonoidHom : Subgroup H) where

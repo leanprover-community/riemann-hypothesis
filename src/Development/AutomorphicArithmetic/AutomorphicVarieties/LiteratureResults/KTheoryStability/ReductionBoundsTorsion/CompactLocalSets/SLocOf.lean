@@ -669,17 +669,13 @@ lemma pt_eq {q : ℕ} (t : Fin q → ℝ) (y : Fin (q + 1) → V) :
   simp only [bary, Fin.cons_zero, Fin.cons_succ, smul_sub, Finset.sum_sub_distrib, sub_smul, one_smul, ← Finset.sum_smul]
   abel
 
-def KS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) (B : Set V) : Set V :=
-  {p | ∃ τ : Fin (q + 1) → ℝ, (∀ j, 0 ≤ τ j) ∧ ∑ j, τ j = 1 ∧
-    ∃ y : Fin (q + 1) → V, (∀ j, y j ∈ B) ∧ p = ∑ j, τ j • A j (y j)}
-
 lemma mem_KS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) (B : Set V) {t : Fin q → ℝ} (ht : t ∈ Sx q)
     {y : Fin (q + 1) → V} (hy : ∀ j, y j ∈ B) :
-    A 0 (y 0) + ∑ j, t j • (A j.succ (y j.succ) - A 0 (y 0)) ∈ KS A B :=
+    A 0 (y 0) + ∑ j, t j • (A j.succ (y j.succ) - A 0 (y 0)) ∈ PositivityTheory.KB.LocalOverlapAverage.Kset A B :=
   ⟨bary t, bary_nonneg ht, bary_sum t, y, hy, pt_eq t (fun j => A j (y j))⟩
 
 lemma isCompact_KS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) {B : Set V} (hB : IsCompact B) :
-    IsCompact (KS A B) := by
+    IsCompact (PositivityTheory.KB.LocalOverlapAverage.Kset A B) := by
   have hSc : IsClosed {τ : Fin (q + 1) → ℝ | (∀ j, 0 ≤ τ j) ∧ ∑ j, τ j = 1} := by
     simp only [Set.setOf_and, Set.setOf_forall]
     exact (isClosed_iInter fun j => isClosed_le continuous_const (continuous_apply j)).inter
@@ -690,7 +686,7 @@ lemma isCompact_KS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) {B : Set V} (hB
     refine ⟨hτ.1 j, ?_⟩
     calc τ j ≤ ∑ i, τ i := Finset.single_le_sum (fun i _ => hτ.1 i) (Finset.mem_univ j)
       _ = 1 := hτ.2
-  have hK : KS A B = (fun p : (Fin (q + 1) → ℝ) × (Fin (q + 1) → V) => ∑ j, p.1 j • A j (p.2 j)) ''
+  have hK : PositivityTheory.KB.LocalOverlapAverage.Kset A B = (fun p : (Fin (q + 1) → ℝ) × (Fin (q + 1) → V) => ∑ j, p.1 j • A j (p.2 j)) ''
       ({τ : Fin (q + 1) → ℝ | (∀ j, 0 ≤ τ j) ∧ ∑ j, τ j = 1} ×ˢ Set.univ.pi fun _ => B) := by
     ext p
     constructor
@@ -753,7 +749,7 @@ lemma ae_mem_pi (μ : Measure V) {B : Set V} (hB : MeasurableSet B) (hBt : μ B 
   exact ae_all_iff.2 fun i => Measure.tendsto_eval_ae_ae.eventually h
 
 lemma cont_iS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) {B : Set V} (hB : IsCompact B)
-    (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (hω : ContinuousOn ω (KS A B)) :
+    (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (hω : ContinuousOn ω (PositivityTheory.KB.LocalOverlapAverage.Kset A B)) :
     ContinuousOn (fun y : Fin (q + 1) → V => iS ω fun j => A j (y j)) (Set.univ.pi fun _ => B) ∧
       ∃ M : ℝ, ∀ y ∈ Set.univ.pi (fun _ : Fin (q + 1) => B), |iS ω fun j => A j (y j)| ≤ M := by
   have hKc : IsCompact (Sx q ×ˢ Set.univ.pi (fun _ : Fin (q + 1) => B)) :=
@@ -764,7 +760,7 @@ lemma cont_iS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) {B : Set V} (hB : Is
       fun j : Fin q => A j.succ (p.2 j.succ) - A 0 (p.2 0)) := by fun_prop
   have hmaps : Set.MapsTo (fun p : (Fin q → ℝ) × (Fin (q + 1) → V) =>
       A 0 (p.2 0) + ∑ j, p.1 j • (A j.succ (p.2 j.succ) - A 0 (p.2 0)))
-      (Sx q ×ˢ Set.univ.pi (fun _ : Fin (q + 1) => B)) (KS A B) := by
+      (Sx q ×ˢ Set.univ.pi (fun _ : Fin (q + 1) => B)) (PositivityTheory.KB.LocalOverlapAverage.Kset A B) := by
     rintro ⟨t, y⟩ ⟨ht, hy⟩
     exact mem_KS A B ht fun j => hy j (Set.mem_univ j)
   have hg : ContinuousOn (fun p : (Fin q → ℝ) × (Fin (q + 1) → V) =>
@@ -795,7 +791,7 @@ lemma cont_iS {q : ℕ} (A : Fin (q + 1) → V →L[ℝ] V) {B : Set V} (hB : Is
     simpa [Real.norm_eq_abs] using this
 
 lemma integ_iS {q : ℕ} (μ : Measure V) [IsFiniteMeasureOnCompacts μ] (A : Fin (q + 1) → V →L[ℝ] V) {B : Set V} (hB : IsCompact B)
-    (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (hω : ContinuousOn ω (KS A B))
+    (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (hω : ContinuousOn ω (PositivityTheory.KB.LocalOverlapAverage.Kset A B))
     (w : (Fin (q + 1) → V) → Fin (q + 1) → V) (hw : Continuous w)
     (hwB : ∀ y ∈ Set.univ.pi (fun _ : Fin (q + 1) => B), w y ∈ Set.univ.pi fun _ => B) :
     Integrable (fun y => iS ω fun j => A j (w y j)) (Measure.pi fun _ : Fin (q + 1) => nm μ B) := by
@@ -889,7 +885,7 @@ lemma exists_big {q : ℕ} (τ : Fin (q + 1) → ℝ) (hs : ∑ j, τ j = 1) : �
   exact lt_irrefl _ hlt
 
 private theorem exists_ne_zero_smul_mem_of_mem_span' (μ : Measure V) [μ.IsAddHaarMeasure] {q : ℕ} (A : Fin (q + 1) → V ≃L[ℝ] V) {B : Set V}
-    (hB : IsCompact B) (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (hω : ContinuousOn ω (KS (fun j => (A j : V →L[ℝ] V)) B))
+    (hB : IsCompact B) (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (hω : ContinuousOn ω (PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B))
     (b : Fin (q + 1) → Bool) (y₀ : V) (hy₀ : y₀ ∈ B) :
     Integrable (fun y : Fin (q + 1) → V => iS ω fun j => A j (if b j then y j else y₀))
       (Measure.pi fun _ => nm μ B) := by
@@ -925,12 +921,12 @@ private theorem main_lemma_2 {q : ℕ} (f : V [⋀^Fin q]→L[ℝ] ℝ) (m : Fin
 
 theorem main (μ : Measure V) [μ.IsAddHaarMeasure] (q : ℕ) (A : Fin (q + 1) → V ≃L[ℝ] V) (B : Set V)
     (hB : IsCompact B) : ∃ C : ℝ, ∀ ω : V → V [⋀^Fin q]→L[ℝ] ℝ,
-      ContinuousOn ω (KS (fun j => (A j : V →L[ℝ] V)) B) →
+      ContinuousOn ω (PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B) →
       (∀ (b : Fin (q + 1) → Bool) (y₀ : V), y₀ ∈ B →
         Integrable (fun y : Fin (q + 1) → V => iS ω fun j => A j (if b j then y j else y₀))
           (Measure.pi fun _ => nm μ B)) ∧
       ENNReal.ofReal (∫ y, |iS ω fun j => A j (y j)| ∂(Measure.pi fun _ => nm μ B)) ≤
-        ENNReal.ofReal C * ∫⁻ p in KS (fun j => (A j : V →L[ℝ] V)) B, ‖ω p‖₊ ∂μ := by
+        ENNReal.ofReal C * ∫⁻ p in PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B, ‖ω p‖₊ ∂μ := by
   classical
   have hBm : MeasurableSet B := hB.isClosed.measurableSet
   have hBt : μ B ≠ ⊤ := hB.measure_lt_top.ne
@@ -978,15 +974,15 @@ theorem main (μ : Measure V) [μ.IsAddHaarMeasure] (q : ℕ) (A : Fin (q + 1) �
     (ENNReal.mul_ne_top (ENNReal.inv_ne_top.2 h0) hSt)) (vol_Sx q).ne
   refine ⟨Cε.toReal, fun ω hω => ⟨fun b y₀ hy₀ => exists_ne_zero_smul_mem_of_mem_span' μ A hB ω hω b y₀ hy₀, ?_⟩⟩
   rw [ENNReal.ofReal_toReal hCt]
-  obtain ⟨G, hGdef⟩ : ∃ G : V → ℝ≥0∞, G = (KS (fun j => (A j : V →L[ℝ] V)) B).indicator
+  obtain ⟨G, hGdef⟩ : ∃ G : V → ℝ≥0∞, G = (PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B).indicator
       (fun p => (‖ω p‖₊ : ℝ≥0∞)) := ⟨_, rfl⟩
-  have hKSm : MeasurableSet (KS (fun j => (A j : V →L[ℝ] V)) B) :=
+  have hKSm : MeasurableSet (PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B) :=
     (isCompact_KS _ hB).isClosed.measurableSet
   have hGm : Measurable G := by
     rw [hGdef, ← Set.piecewise_eq_indicator]
     exact ContinuousOn.measurable_piecewise
       ((ENNReal.continuous_coe.comp continuous_nnnorm).comp_continuousOn hω) continuousOn_const hKSm
-  have hGint : ∫⁻ x, G x ∂μ = ∫⁻ p in KS (fun j => (A j : V →L[ℝ] V)) B, ‖ω p‖₊ ∂μ := by
+  have hGint : ∫⁻ x, G x ∂μ = ∫⁻ p in PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B, ‖ω p‖₊ ∂μ := by
     rw [hGdef]
     exact lintegral_indicator hKSm _
   have hpt : ∀ y ∈ Set.univ.pi (fun _ : Fin (q + 1) => B),
@@ -1002,7 +998,7 @@ theorem main (μ : Measure V) [μ.IsAddHaarMeasure] (q : ℕ) (A : Fin (q + 1) �
         (by fun_prop)).measurable)
     · intro t ht
       have hmem : A 0 (y 0) + ∑ j, t j • (A j.succ (y j.succ) - A 0 (y 0)) ∈
-          KS (fun j => (A j : V →L[ℝ] V)) B := mem_KS _ B ht hy'
+          PositivityTheory.KB.LocalOverlapAverage.Kset (fun j => (A j : V →L[ℝ] V)) B := mem_KS _ B ht hy'
       rw [hGdef, Set.indicator_of_mem hmem]
       exact main_lemma_2 _ _ K hK0 (hprod y hy)
   have h1 : ENNReal.ofReal (∫ y, |iS ω fun j => A j (y j)| ∂(Measure.pi fun _ => nm μ B)) ≤

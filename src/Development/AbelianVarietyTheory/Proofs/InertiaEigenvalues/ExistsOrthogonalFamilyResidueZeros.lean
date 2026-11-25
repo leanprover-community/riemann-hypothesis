@@ -1552,7 +1552,6 @@ theorem untilt_ext_sum_sub_le : ∀ (l : ℕ) [Fact l.Prime] (F : Type) [NormedF
   have hsa : ∀ a ∈ s, sh (x a) = tsh c * tsh (z a) := fun a ha => by
     rw [← hι, hxa a ha, map_mul]
   have hss : sh (∑ a ∈ s, x a) = tsh c * tsh (∑ a ∈ s, z a) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [← hι, map_sum, Finset.sum_congr rfl hxa, ← Finset.mul_sum, map_mul]
   have hbd : ∀ a ∈ s, ‖sh (x a)‖ ≤ ‖c‖ * R := fun a ha => by
     rw [hsa a ha, norm_mul, hn, hn]

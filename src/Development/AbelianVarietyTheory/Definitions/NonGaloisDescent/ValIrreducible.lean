@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Unit
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.UnitLemma.Basic
 
 variable {K : UQ} (B : InvAlg K)

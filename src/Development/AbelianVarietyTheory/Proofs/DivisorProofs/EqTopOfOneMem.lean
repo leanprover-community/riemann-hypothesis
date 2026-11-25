@@ -294,14 +294,9 @@ theorem isCoprime_conj {e : Formalism.L2.Theta.AE D} {P : Finset (Formalism.L2.D
   exact Ideal.isCoprime_iff_sup_eq.2
     (eq_top_of_one_mem (fun h => modul_ne_bot P c (le_bot_iff.1 (le_sup_right.trans h.le))) h6)
 
-theorem toEAf_surj : Function.Surjective (toEAf D) := fun z => by
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨0, RingHom.map_zero _⟩
-  | tmul a α => exact ⟨pairA D.host.F 0 α ⊗ₜ[D.host.F] a, rfl⟩
-  | add x y hx hy =>
-    obtain ⟨u, rfl⟩ := hx
-    obtain ⟨v, rfl⟩ := hy
-    exact ⟨u + v, RingHom.map_add _ _ _⟩
+theorem toEAf_surj : Function.Surjective (toEAf D) :=
+  (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).surjective.comp
+    (LinearMap.rTensor_surjective D.host.E (g := (sndA D.host.F).toLinearMap) fun y => ⟨(0, y), rfl⟩)
 
 theorem half_ext {S T : HSp D} {a : Formalism.L2.Theta.AE D} (ha : infPart D a = 0) {x y : WO S T} (hx : IsHalf a x) (hy : IsHalf a y)
     (h : ∀ i j, toEAf D (x i j) = toEAf D (y i j)) : x = y := by

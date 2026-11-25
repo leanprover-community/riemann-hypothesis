@@ -7,7 +7,6 @@ import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 
 @[expose] public section
 
-noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep ValuativeRel
 
 namespace GlobalTheory.CohomologicalConjSelfDualTempered.UnrModel

@@ -17,9 +17,7 @@ private theorem unif_lt {x : kˣ} (hx : IsUnif x) (y : k) :
     valuation k y < 1 ↔ valuation k y ≤ valuation k (x : k) := by
   obtain ⟨p, hp, e⟩ := hx
   have hI := Valuation.integer.integers (valuation k)
-  have h1 : valuation k (x : k) < 1 := by
-    rw [← e]
-    refine lt_of_le_of_ne p.2 fun h => hp.not_isUnit (hI.isUnit_iff_valuation_eq_one.2 h)
+  have h1 : valuation k (x : k) < 1 := e ▸ hI.valuation_irreducible_lt_one hp
   refine ⟨fun h => ?_, fun h => h.trans_lt h1⟩
   let z : 𝒪[k] := ⟨y, h.le⟩
   have hz : z ∈ IsLocalRing.maximalIdeal 𝒪[k] := fun hu => h.ne (hI.isUnit_iff_valuation_eq_one.1 hu)

@@ -153,15 +153,41 @@ def botSub {ι : Type} {n : ℕ} {P : Type} [AddCommGroup P] [Module ℂ P] (ε 
   smul_mem' := fun c a ha τ => ⟨fun g hg hl => by rw [map_smul, (ha τ).1 g hg hl],
     fun θ => by rw [map_smul, (ha τ).2 θ, smul_comm]⟩
 
-theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Tau → SPar) (M : DSModel W Sp)
-    (c : CoefA V) (lam : D.what₂.Tau → DomWeight V.rank) (c0 : VV D.what₂.LL lam →ₛₗ[D.what₂.embLL] c.coef.W)
-    (hθ : IsInfFam θ) (hc : c.Is) (h0 : Bridge.CoefMapTie V c.coef c0 (rhoVr (labLL D) lam))
-    (BS : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (hBS : ∀ τ, IsUnit (BS τ))
+theorem mulSingle_relabel {ι : Type} {n : ℕ} (l : ι ≃ ι) (τ : ι) (g : Matrix (Fin n) (Fin n) ℂ) :
+    (fun ρ => (Pi.mulSingle τ g : ι → Matrix (Fin n) (Fin n) ℂ) (l.symm ρ)) = Pi.mulSingle (l τ) g := by
+  funext ρ
+  by_cases h : ρ = l τ
+  · subst h; rw [Equiv.symm_apply_apply, Pi.mulSingle_eq_same, Pi.mulSingle_eq_same]
+  · rw [Pi.mulSingle_eq_of_ne h, Pi.mulSingle_eq_of_ne fun h' => h (by rw [← h', Equiv.apply_symm_apply])]
+
+theorem isHolFam_relabel {ι : Type} {n : ℕ} {P : Type} [AddCommGroup P] [Module ℂ P]
+    (l : ι ≃ ι) {ε : Fin n → Bool} {B : P →ₗ⋆[ℂ] P →ₗ[ℂ] ℂ}
+    {ϖ : (ι → Matrix (Fin n) (Fin n) ℂ) → Module.End ℂ P} (h : IsHolFam (fun _ => ε) B ϖ) :
+    IsHolFam (fun _ => ε) B fun u => ϖ fun ρ => u (l.symm ρ) := by
+  refine ⟨h.1, h.2.1, fun a b ha hb => h.2.2.1 _ _ (fun _ => ha _) (fun _ => hb _), fun τ => ?_⟩
+  simp only [mulSingle_relabel]
+  exact h.2.2.2 (l τ)
+
+theorem isBotFam_relabel {ι : Type} {n : ℕ} {P : Type} [AddCommGroup P] [Module ℂ P]
+    (l : ι ≃ ι) {ε : Fin n → Bool} {ϖ : (ι → Matrix (Fin n) (Fin n) ℂ) → Module.End ℂ P}
+    {μ : ι → Fin n → ℝ} {x : P} (h : IsBotFam (fun _ => ε) ϖ μ x) :
+    IsBotFam (fun _ => ε) (fun u => ϖ fun ρ => u (l.symm ρ)) (fun τ => μ (l τ)) x := by
+  intro τ
+  simp only [mulSingle_relabel]
+  exact h (l τ)
+
+theorem exists_io_poly_relabel (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Tau → SPar) (M : DSModel W Sp)
+    (c : CoefA V) (lam : D.what₂.Tau → DomWeight V.rank) (l : D.what₂.Tau ≃ D.what₂.Tau)
+    (BS : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
+    (j : c.W →ₗ[ℂ] Pol ℂ D.what₂.Tau V.rank) (hj1 : LinearMap.range j = VV ℂ lam)
+    (hj2 : ∀ u ∈ GinfC V, ∀ w, j (c.ρ u w) = vact lam
+      (fun τ => (BS (l.symm τ))⁻¹ * compAt θ (l.symm τ) (Formalism.L2.Theta.mt V u) * BS (l.symm τ)) (j w))
     (p q : D.what₂.Tau → ℕ) (ap am : D.what₂.Tau → ℕ → ℕ) (x₁ x₂ x₃ : D.what₂.Tau → ℤ) (hr : W.rank ≤ V.rank)
     (hpq : ∀ τ, p τ + q τ = W.rank) (hε : ∀ τ a, M.ε τ a = decide ((a : ℕ) < p τ))
     (hap : ∀ τ a b, a ≤ b → b < p τ → ap τ b ≤ ap τ a) (ham : ∀ τ a b, a ≤ b → b < q τ → am τ b ≤ am τ a)
     (hK : ∀ τ a, Formalism.QuantumDeterminants.lowK (M.ε τ) (M.lam τ) a = (wtK (p τ) (ap τ) (am τ) (x₁ τ) (x₂ τ) a : ℝ))
-    (hU : ∀ τ j, wtU (p τ) (q τ) (ap τ) (am τ) (x₃ τ) j = -(lam τ).w j) :
+    (hU : ∀ τ j, wtU (p τ) (q τ) (ap τ) (am τ) (x₃ τ) j = -(lam (l τ)).w j)
+    (k₀ : D.what₂.Tau → Matrix (Fin W.rank) (Fin W.rank) ℂ) (hk₀ : ∀ τ, k₀ τ ∈ Formalism.REAL.Kset (M.ε τ)) :
     ∃ io : LowT M →ₗ[ℂ] c.W →ₗ[ℂ] PolF D W.rank V.rank,
       (∀ u ∈ GinfC V, (∀ τ, (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ ∈ Matrix.unitaryGroup (Fin V.rank) ℂ) →
         ∀ x w, fact M.ε x₁ x₂ x₃ 1 (fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ) (io x w) =
@@ -171,31 +197,39 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
           fact M.ε x₁ x₂ x₃ (Pi.mulSingle τ k) 1 (io (PiTensorProduct.tprod ℂ v) w) =
             io (PiTensorProduct.tprod ℂ (Function.update v τ u)) w) ∧
       ∃ (v : ∀ ρ, lowT M ρ) (w : c.W), (∀ ρ, ‖((v ρ : M.sm ρ) : M.H ρ)‖ = 1) ∧ ‖w‖ = 1 ∧
-        io (PiTensorProduct.tprod ℂ v) w = delta p q ap am := by
+        io (PiTensorProduct.tprod ℂ v) w = fact M.ε x₁ x₂ x₃ k₀ 1 (delta p q ap am) := by
   obtain ⟨hhK, hhU⟩ := _root_.GlobalTheory.FockHol.main D W.rank V.rank M.ε x₁ x₂ x₃
   obtain ⟨κ, Δ', hκ, hΔ, hbK, hbU⟩ := _root_.GlobalTheory.JointHarm.MinorBottom.exists_joint_bottom D W.rank V.rank M.ε p q ap am x₁ x₂ x₃ hr hpq hε hap ham
   obtain ⟨m, hm1, hm2, hm3⟩ := _root_.GlobalTheory.JointHarm.MultiOp.lowest_types_act D W Sp M _ _ _ hhK
-  obtain ⟨hv1, hv2, hv3, hv4⟩ := _root_.GlobalTheory.JointHarm.vact_isHolFam_isBotFam D.what₂.Tau V.rank lam
+  obtain ⟨hv1', hv2', hv3, hv4⟩ := _root_.GlobalTheory.JointHarm.vact_isHolFam_isBotFam D.what₂.Tau V.rank lam
+  obtain ⟨ϖ, hϖ⟩ : ∃ ϖ : (D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) → Module.End ℂ (Pol ℂ D.what₂.Tau V.rank),
+      ϖ = fun u => vact lam fun ρ => u (l.symm ρ) := ⟨_, rfl⟩
+  have hv1 := isHolFam_relabel l hv1'
+  have hv2 := isBotFam_relabel l hv2'
+  rw [← hϖ] at hv1 hv2
   have eK : (fun τ a => -(wtK (p τ) (ap τ) (am τ) (x₁ τ) (x₂ τ) a : ℝ)) =
       fun τ => -Formalism.QuantumDeterminants.lowK (M.ε τ) (M.lam τ) := by
     funext τ a; rw [Pi.neg_apply, hK]
   have eU : (fun τ (j : Fin V.rank) => (wtU (p τ) (q τ) (ap τ) (am τ) (x₃ τ) j : ℝ)) =
-      fun τ j => -((lam τ).w j : ℝ) := by
+      fun τ j => -((lam (l τ)).w j : ℝ) := by
     funext τ j; rw [hU]; push_cast; rfl
   rw [eK] at hbK
   rw [eU] at hbU
   obtain ⟨ψ, hψ⟩ := _root_.GlobalTheory.JointHarm.OrbitMap.exists_orbit_map _ _ _ _ _ _ _ _ _ _ _ _ hhU hv1 hbU hv2 hv3
-  obtain ⟨j, hj1, hj2⟩ := _root_.GlobalTheory.CoefReal.exists_poly_model D V θ c lam c0 hθ hc h0 BS hBS
   have key : ∀ F ∈ VV ℂ lam,
       ψ F ∈ botSub M.ε (factK V.rank M.ε x₁ x₂ x₃) (fun τ => -Formalism.QuantumDeterminants.lowK (M.ε τ) (M.lam τ)) ∧
       ∀ u : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ, (∀ τ, u τ ∈ Formalism.REAL.Kset (allPos V.rank)) →
-        ψ (vact lam u F) = factU M.ε x₁ x₂ x₃ u (ψ F) := by
+        ψ (ϖ u F) = factU M.ε x₁ x₂ x₃ u (ψ F) := by
     intro F hF
     have hF' := _root_.GlobalTheory.JointHarm.VV_le_span_vact_extremal D.what₂.Tau V.rank lam hF
     clear hF
     induction hF' using Submodule.span_induction with
     | mem F h =>
-      obtain ⟨u, hu, rfl⟩ := h
+      obtain ⟨u₀, hu₀, rfl⟩ := h
+      obtain ⟨u, hu, e⟩ : ∃ u : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ,
+          (∀ τ, u τ ∈ Formalism.REAL.Kset (allPos V.rank)) ∧ vact lam u₀ = ϖ u :=
+        ⟨fun τ => u₀ (l τ), fun τ => hu₀ _, by simp only [hϖ, Equiv.apply_symm_apply]⟩
+      rw [e]
       refine ⟨?_, fun u' hu' => ?_⟩
       · rw [hψ u hu]
         exact hbK.map_of_commute fun g hg => commute_factU_factK _ _ _ _ (fun τ => (GlobalTheory.Dec.FormF.K_KC (hu τ)).1) hg
@@ -208,7 +242,8 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
     | smul s a _ ha =>
       exact ⟨by rw [map_smul]; exact Submodule.smul_mem _ _ ha.1, fun u hu => by simp only [map_smul, ha.2 u hu]⟩
   have hjm : ∀ w, j w ∈ VV ℂ lam := fun w => hj1 ▸ LinearMap.mem_range_self j w
-  obtain ⟨v0, hv0, hmv⟩ := hm2 κ hκ
+  have hκ' : ∀ τ, (k₀ * κ) τ ∈ Formalism.REAL.Kset (M.ε τ) := fun τ => K_mul (hk₀ τ) (hκ τ)
+  obtain ⟨v0, hv0, hmv⟩ := hm2 (k₀ * κ) hκ'
   obtain ⟨w0, hw0⟩ : (ten fun τ => extremal ℂ V.rank (lam τ)) ∈ LinearMap.range j := hj1 ▸ hv4
   have hw0' : w0 ≠ 0 := by
     rintro rfl
@@ -232,7 +267,9 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
     have hcm := hm1 (factU M.ε x₁ x₂ x₃ fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ)
       (fun k hk => commute_factU_factK _ _ _ _ (fun τ => (GlobalTheory.Dec.FormF.K_KC (mem_K_allPos (hun τ))).1)
         fun τ => GlobalTheory.Dec.FormF.K_KC (hk τ)) x
-    rw [hj2 u hu, (key _ (hjm w)).2 _ fun τ => mem_K_allPos (hun τ)]
+    have h2 : j (c.ρ u w) = ϖ (fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ) (j w) := by
+      rw [hϖ]; exact hj2 u hu w
+    rw [h2, (key _ (hjm w)).2 _ fun τ => mem_K_allPos (hun τ)]
     exact LinearMap.congr_fun hcm.eq _
   · rw [hio, hio, map_smul]
     refine congrArg (HSMul.hSMul _) ?_
@@ -249,12 +286,40 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
   · rw [norm_smul, norm_inv, Complex.norm_real, norm_norm, inv_mul_cancel₀ hw1]
   · rw [MultilinearMap.map_smul_univ]
     rw [map_smul, map_smul, LinearMap.smul_apply, hio, smul_smul, smul_smul, hψ0, hmv _ hbK, factK]
-    have : (fun τ => (((κ τ).map star)⁻¹)ᵀ) = κ := funext fun τ => invT_conj (hκ τ).1
-    rw [this, hΔ]
+    have : (fun τ => ((((k₀ * κ) τ).map star)⁻¹)ᵀ) = k₀ * κ := funext fun τ => invT_conj (hκ' τ).1
+    have hm := (_root_.GlobalTheory.JointHarm.fact_one_mul_adj D W.rank V.rank M.ε x₁ x₂ x₃).2.1 k₀ κ 1 1 (fun τ => GlobalTheory.Dec.FormF.K_KC (hk₀ τ))
+      (fun τ => GlobalTheory.Dec.FormF.K_KC (hκ τ)) (fun _ => isUnit_one) (fun _ => isUnit_one)
+    rw [mul_one] at hm
+    rw [this, hm, Module.End.mul_apply, hΔ]
     simp only [RingHom.id_apply, Finset.prod_inv_distrib]
     have hP : (∏ ρ, N ρ) ≠ 0 := Finset.prod_ne_zero_iff.2 fun ρ _ => hN' ρ
     convert one_smul ℂ _ using 2
     field_simp
+
+theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Tau → SPar) (M : DSModel W Sp)
+    (c : CoefA V) (lam : D.what₂.Tau → DomWeight V.rank) (c0 : VV D.what₂.LL lam →ₛₗ[D.what₂.embLL] c.coef.W)
+    (hθ : IsInfFam θ) (hc : c.Is) (h0 : Bridge.CoefMapTie V c.coef c0 (rhoVr (labLL D) lam))
+    (BS : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (hBS : ∀ τ, IsUnit (BS τ))
+    (p q : D.what₂.Tau → ℕ) (ap am : D.what₂.Tau → ℕ → ℕ) (x₁ x₂ x₃ : D.what₂.Tau → ℤ) (hr : W.rank ≤ V.rank)
+    (hpq : ∀ τ, p τ + q τ = W.rank) (hε : ∀ τ a, M.ε τ a = decide ((a : ℕ) < p τ))
+    (hap : ∀ τ a b, a ≤ b → b < p τ → ap τ b ≤ ap τ a) (ham : ∀ τ a b, a ≤ b → b < q τ → am τ b ≤ am τ a)
+    (hK : ∀ τ a, Formalism.QuantumDeterminants.lowK (M.ε τ) (M.lam τ) a = (wtK (p τ) (ap τ) (am τ) (x₁ τ) (x₂ τ) a : ℝ))
+    (hU : ∀ τ j, wtU (p τ) (q τ) (ap τ) (am τ) (x₃ τ) j = -(lam τ).w j) :
+    ∃ io : LowT M →ₗ[ℂ] c.W →ₗ[ℂ] PolF D W.rank V.rank,
+      (∀ u ∈ GinfC V, (∀ τ, (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ ∈ Matrix.unitaryGroup (Fin V.rank) ℂ) →
+        ∀ x w, fact M.ε x₁ x₂ x₃ 1 (fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ) (io x w) =
+          io x (c.ρ u w)) ∧
+      (∀ τ, ∀ k ∈ Formalism.REAL.Kset (M.ε τ), ∀ (v : ∀ ρ, lowT M ρ) (u : lowT M τ),
+        ((u : M.sm τ) : M.H τ) = M.σ τ k ((v τ : M.sm τ) : M.H τ) → ∀ w,
+          fact M.ε x₁ x₂ x₃ (Pi.mulSingle τ k) 1 (io (PiTensorProduct.tprod ℂ v) w) =
+            io (PiTensorProduct.tprod ℂ (Function.update v τ u)) w) ∧
+      ∃ (v : ∀ ρ, lowT M ρ) (w : c.W), (∀ ρ, ‖((v ρ : M.sm ρ) : M.H ρ)‖ = 1) ∧ ‖w‖ = 1 ∧
+        io (PiTensorProduct.tprod ℂ v) w = delta p q ap am := by
+  obtain ⟨j, hj1, hj2⟩ := _root_.GlobalTheory.CoefReal.exists_poly_model D V θ c lam c0 hθ hc h0 BS hBS
+  obtain ⟨io, h1, h2, v, w, hv, hw, h3⟩ := exists_io_poly_relabel D V W θ Sp M c lam (Equiv.refl _) BS j hj1 hj2
+    p q ap am x₁ x₂ x₃ hr hpq hε hap ham hK hU 1 (fun _ => one_mem_K)
+  rw [(_root_.GlobalTheory.JointHarm.fact_one_mul_adj D W.rank V.rank M.ε x₁ x₂ x₃).1, Module.End.one_apply] at h3
+  exact ⟨io, h1, h2, v, w, hv, hw, h3⟩
 
 end GlobalTheory.JointHarm
 
@@ -283,6 +348,60 @@ theorem conj_mem_UH {D : D7} {W : HSp D} {Sp : D.what₂.Tau → SPar} (M : DSMo
   calc _ = (M.fr τ)ᴴ * (kᴴ * (((M.fr τ)⁻¹)ᴴ * (M.fr τ)ᴴ) * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) * k) * M.fr τ := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = _ := by rw [h2, Matrix.mul_inv_of_invertible, Matrix.mul_one, Matrix.mul_one, h1]
+
+theorem isIoW_of_fact {D : D7} {V W : HSp D} {S' : D.what₂.Tau → SPar} {θ : InfFam D} (hθ : IsInfFam θ)
+    {M : DSModel W S'} {c : CoefA V} {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)}
+    {pt : PolF D W.rank V.rank → (WO V W → ℂ)} {Δ : PolF D W.rank V.rank}
+    {io : LowT M →ₗ[ℂ] c.W →ₗ[ℂ] PolF D W.rank V.rank} {x₁ x₂ x₃ : D.what₂.Tau → ℤ}
+    {BS : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ} (hBu : ∀ τ, IsUnit (BS τ))
+    (hact : ∀ g ∈ GinfC V, ∀ h ∈ GinfC W,
+      (∀ τ, M.fr τ * compAt θ τ (Formalism.L2.Theta.mt W h) * (M.fr τ)⁻¹ ∈ Formalism.REAL.Kset (M.ε τ)) →
+      (∀ τ, (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V g) * BS τ ∈ Matrix.unitaryGroup (Fin V.rank) ℂ) ∧
+      ∀ P : PolF D W.rank V.rank, ω (g, h) (pt P) =
+        pt (fact M.ε x₁ x₂ x₃ (fun τ => M.fr τ * compAt θ τ (Formalism.L2.Theta.mt W h) * (M.fr τ)⁻¹)
+          (fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V g) * BS τ) P))
+    (h1 : ∀ u ∈ GinfC V, (∀ τ, (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ ∈ Matrix.unitaryGroup (Fin V.rank) ℂ) →
+        ∀ x w, fact M.ε x₁ x₂ x₃ 1 (fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ) (io x w) =
+          io x (c.ρ u w))
+    (h2 : ∀ τ, ∀ k ∈ Formalism.REAL.Kset (M.ε τ), ∀ (v : ∀ ρ, lowT M ρ) (u : lowT M τ),
+        ((u : M.sm τ) : M.H τ) = M.σ τ k ((v τ : M.sm τ) : M.H τ) → ∀ w,
+          fact M.ε x₁ x₂ x₃ (Pi.mulSingle τ k) 1 (io (PiTensorProduct.tprod ℂ v) w) =
+            io (PiTensorProduct.tprod ℂ (Function.update v τ u)) w)
+    (h3 : ∃ (v : ∀ ρ, lowT M ρ) (w : c.W), (∀ ρ, ‖((v ρ : M.sm ρ) : M.H ρ)‖ = 1) ∧ ‖w‖ = 1 ∧
+        io (PiTensorProduct.tprod ℂ v) w = Δ) : IsIoW θ M c ω pt Δ io := by
+  have hfr : ∀ τ, M.fr τ * (M.fr τ)⁻¹ = 1 := fun τ =>
+    Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ))
+  refine ⟨fun u hu x w => ?_, fun τ k hk v u hu w => ?_, h3⟩
+  · have e : (fun τ => M.fr τ * compAt θ τ (Formalism.L2.Theta.mt W 1) * (M.fr τ)⁻¹) = 1 := by
+      funext τ; rw [compAt_mt_one', Matrix.mul_one, hfr]; rfl
+    obtain ⟨a, b⟩ := hact u hu 1 (one_mem _) fun τ => by rw [congrFun e τ]; exact one_mem_K
+    rw [← h1 u hu a x w]
+    have := b (io x w)
+    rw [e] at this
+    exact this
+  · have hs := GlobalTheory.PointAtPlaceHom.atTau_spec hθ W τ (conj_mem_UH M τ hk)
+    have e : (fun ρ => M.fr ρ * compAt θ ρ (Formalism.L2.Theta.mt W (atTau θ W τ ((M.fr τ)⁻¹ * k * M.fr τ))) *
+        (M.fr ρ)⁻¹) = Pi.mulSingle τ k := by
+      funext ρ
+      rw [GlobalTheory.WeilDeriv.compAt_mt_eq_infMat]
+      by_cases h : ρ = τ
+      · subst h
+        rw [hs.2.1, Pi.mulSingle_eq_same]
+        calc _ = (M.fr ρ * (M.fr ρ)⁻¹) * k * (M.fr ρ * (M.fr ρ)⁻¹) := by simp only [Matrix.mul_assoc]
+          _ = k := by rw [hfr, Matrix.one_mul, Matrix.mul_one]
+      · rw [hs.2.2 ρ h, Pi.mulSingle_eq_of_ne h, Matrix.mul_one, hfr]
+    have e' : (fun ρ => (BS ρ)⁻¹ * compAt θ ρ (Formalism.L2.Theta.mt V 1) * BS ρ) = 1 := by
+      funext ρ
+      rw [compAt_mt_one', Matrix.mul_one, Matrix.nonsing_inv_mul _ ((Matrix.isUnit_iff_isUnit_det _).1 (hBu ρ))]; rfl
+    obtain ⟨-, b⟩ := hact 1 (one_mem _) _ hs.1 fun ρ => by
+      rw [congrFun e ρ]
+      by_cases h : ρ = τ
+      · subst h; rwa [Pi.mulSingle_eq_same]
+      · rw [Pi.mulSingle_eq_of_ne h]; exact one_mem_K
+    rw [← h2 τ k hk v u hu w]
+    have := b (io (PiTensorProduct.tprod ℂ v) w)
+    rw [e, e'] at this
+    exact this
 
 theorem exists_ioP : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks), R.toLevCh.Is A.μ0 → R.IsFam → R.IsModels → R.thP_ωP → R.thP_vP → R.thP_pt_theta ∧ ∃ io, ({ R with ioP := io } : RealDat D A Ks).thP_ioP := by
   intro D G _ _ Pl0 T A Ks _ _ _ R hL hF hM hω hv
@@ -316,42 +435,7 @@ theorem exists_ioP : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type
     (fun τ => (GlobalTheory.T.thetaLiftInfinityTypes_atRealPlace D T R.toLevCh A.μ0 hL i t τ).chiW) x₁ x₂ x₃ (fun τ => (hx τ).1) (fun τ => (hx τ).2.1)
     (fun τ => (hx τ).2.2.1) _ (hth i t)
     (GlobalTheory.DatumFock.isFockVacAt_thPVec _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (hv i t) (hth i t))
-  have hfr : ∀ τ, (R.MW i (sg0 D A)).fr τ * ((R.MW i (sg0 D A)).fr τ)⁻¹ = 1 := fun τ =>
-    Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 ((R.MW i (sg0 D A)).fr_unit τ))
-  refine ⟨fun u hu x w => ?_, fun τ k hk v u hu w => ?_, h3⟩
-  · have e : (fun τ => (R.MW i (sg0 D A)).fr τ * compAt R.θ τ (Formalism.L2.Theta.mt (Wc D i) 1) *
-        ((R.MW i (sg0 D A)).fr τ)⁻¹) = 1 := by
-      funext τ; rw [compAt_mt_one', Matrix.mul_one, hfr]; rfl
-    obtain ⟨a, b⟩ := hact u hu 1 (one_mem _) fun τ => by rw [congrFun e τ]; exact one_mem_K
-    rw [← h1 u hu a x w]
-    have := b (io x w)
-    rw [e] at this
-    exact this
-  · have hs := GlobalTheory.PointAtPlaceHom.atTau_spec hθ (Wc D i) τ (conj_mem_UH (R.MW i (sg0 D A)) τ hk)
-    have e : (fun ρ => (R.MW i (sg0 D A)).fr ρ * compAt R.θ ρ (Formalism.L2.Theta.mt (Wc D i)
-        (atTau R.θ (Wc D i) τ (((R.MW i (sg0 D A)).fr τ)⁻¹ * k * (R.MW i (sg0 D A)).fr τ))) *
-        ((R.MW i (sg0 D A)).fr ρ)⁻¹) = Pi.mulSingle τ k := by
-      funext ρ
-      rw [GlobalTheory.WeilDeriv.compAt_mt_eq_infMat]
-      by_cases h : ρ = τ
-      · subst h
-        rw [hs.2.1, Pi.mulSingle_eq_same]
-        calc _ = ((R.MW i (sg0 D A)).fr ρ * ((R.MW i (sg0 D A)).fr ρ)⁻¹) * k *
-            ((R.MW i (sg0 D A)).fr ρ * ((R.MW i (sg0 D A)).fr ρ)⁻¹) := by simp only [Matrix.mul_assoc]
-          _ = k := by rw [hfr, Matrix.one_mul, Matrix.mul_one]
-      · rw [hs.2.2 ρ h, Pi.mulSingle_eq_of_ne h, Matrix.mul_one, hfr]
-    have e' : (fun ρ => (R.BV i ρ)⁻¹ * compAt R.θ ρ (Formalism.L2.Theta.mt (Vc D i) 1) * R.BV i ρ) = 1 := by
-      funext ρ
-      rw [compAt_mt_one', Matrix.mul_one, Matrix.nonsing_inv_mul _ ((Matrix.isUnit_iff_isUnit_det _).1 (hBu ρ))]; rfl
-    obtain ⟨-, b⟩ := hact 1 (one_mem _) _ hs.1 fun ρ => by
-      rw [congrFun e ρ]
-      by_cases h : ρ = τ
-      · subst h; rwa [Pi.mulSingle_eq_same]
-      · rw [Pi.mulSingle_eq_of_ne h]; exact one_mem_K
-    rw [← h2 τ k hk v u hu w]
-    have := b (io (PiTensorProduct.tprod ℂ v) w)
-    rw [e, e'] at this
-    exact this
+  exact isIoW_of_fact hθ hBu hact h1 h2 h3
 
 end GlobalTheory.JointHarm
 

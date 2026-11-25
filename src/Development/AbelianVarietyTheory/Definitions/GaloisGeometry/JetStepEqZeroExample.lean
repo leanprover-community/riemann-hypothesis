@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.Subst
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.GO
 
 open NumberField Formalism.L2.Col Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Forms

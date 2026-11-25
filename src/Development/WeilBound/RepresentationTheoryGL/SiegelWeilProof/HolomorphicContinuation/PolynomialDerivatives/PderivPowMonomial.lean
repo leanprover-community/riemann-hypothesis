@@ -106,11 +106,8 @@ theorem op_zero (f : PX m n) : op (0 : Sym m n) f = 0 := by
   simp [op]
 
 theorem op_sum {ι : Type*} (S : Finset ι) (g : ι → Sym m n) (f : PX m n) :
-    op (∑ i ∈ S, g i) f = ∑ i ∈ S, op (g i) f := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simp [op_zero]
-  | insert a S ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, op_add, ih]
+    op (∑ i ∈ S, g i) f = ∑ i ∈ S, op (g i) f :=
+  map_sum (AddMonoidHom.mk' (fun s : Sym m n => op s f) fun a b => op_add a b f) g S
 
 theorem op_monomial (t : σ ⊕ σ →₀ ℕ) (c : ℂ) (f : PX m n) : op (monomial t c) f = c • opMono t f := by
   classical
@@ -205,13 +202,8 @@ theorem sf_smul {s : Sym m n} (c : ℂ) (h : SymbolInFirstFamily ε s) : SymbolI
 theorem sf_sub {s₁ s₂ : Sym m n} (h₁ : SymbolInFirstFamily ε s₁) (h₂ : SymbolInFirstFamily ε s₂) : SymbolInFirstFamily ε (s₁ - s₂) := by
   rw [sub_eq_add_neg, ← neg_one_smul ℂ s₂]; exact sf_add ε h₁ (sf_smul ε _ h₂)
 
-theorem sf_sum {ι : Type*} (S : Finset ι) (g : ι → Sym m n) (h : ∀ i ∈ S, SymbolInFirstFamily ε (g i)) : SymbolInFirstFamily ε (∑ i ∈ S, g i) := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simpa using sf_zero ε
-  | insert a S ha ih =>
-    rw [Finset.sum_insert ha]
-    exact sf_add ε (h a (Finset.mem_insert_self _ _)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
+theorem sf_sum {ι : Type*} (S : Finset ι) (g : ι → Sym m n) (h : ∀ i ∈ S, SymbolInFirstFamily ε (g i)) : SymbolInFirstFamily ε (∑ i ∈ S, g i) :=
+  Finset.sum_induction g (SymbolInFirstFamily ε) (fun _ _ => sf_add ε) (sf_zero ε) h
 
 theorem goodT_add_inl (t : σ ⊕ σ →₀ ℕ) (μ : σ →₀ ℕ) (ht : GoodT ε t) (hμ : ∀ k ∈ μ.support, inF1 ε k) :
     GoodT ε (Finsupp.mapDomain Sum.inl μ + t) := by

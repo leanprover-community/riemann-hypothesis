@@ -9,8 +9,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace HasSmoothCoordCodim
@@ -100,5 +98,3 @@ theorem iso_hom_comp {X X' X₀ : Scheme.{u}}
 end HasSmoothCoordCodim
 
 end FunctorialResolution.EmbeddedResolution
-
-end

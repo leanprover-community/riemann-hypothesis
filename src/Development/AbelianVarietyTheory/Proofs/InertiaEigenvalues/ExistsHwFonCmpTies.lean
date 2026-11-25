@@ -573,20 +573,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n s : ℕ}
     {RW : Type} [CommRing RW] [Algebra O RW]
 
-theorem act_smul (f : RW →ₐ[O] RW) (T : LocLat G Qp LL O) (g : G) (r : RW) (y : TW RW T) :
-    TWact f T g (r • y) = f r • TWact f T g y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a t => simp [TWact, TensorProduct.smul_tmul']
-  | add a b ha hb => simp only [smul_add, map_add (f := _), ha, hb]
-
-theorem phi_smul (f : RW →ₐ[O] RW) (T : LocLat G Qp LL O) (r : RW) (y : TW RW T) :
-    TWmap f T (r • y) = f r • TWmap f T y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a t => simp [TWmap, TensorProduct.smul_tmul']
-  | add a b ha hb => simp only [smul_add, map_add (f := _), ha, hb]
-
 theorem act_mul (f f' f'' : RW →ₐ[O] RW) (hf : ∀ x, f x = f' (f'' x)) (T : LocLat G Qp LL O) (g h : G)
     (y : TW RW T) : TWact f T (g * h) y = TWact f' T g (TWact f'' T h y) := by
   induction y using TensorProduct.induction_on with
@@ -681,7 +667,7 @@ theorem span_phi (φ : RW →ₐ[O] RW) (T : LocLat G Qp LL O) {r : ℕ}
 
     rw [this, ← e.sum_repr ((1 : RW) ⊗ₜ[O] t), map_sum]
     refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun i _ => ?_)
-    rw [phi_smul]
+    rw [GlobalTheory.TorsionBoundCompare.TWmap_smul]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
   | add a b ha hb => exact Submodule.add_mem _ ha hb
 
@@ -715,12 +701,12 @@ theorem exists_et (I : WIo R RA RW inclR φR gR πA)
     intro T q x Bm hB hx hφx j i
     refine hrat _ q (Matrix.of (A T)) Bm (Matrix.of fun i j => (e T).repr (x j) i) (hAu T) hB ?_ ?_ i j
     · intro i j g hg
-      have h := repr_semi (e T) (TWact (gR g) T g) (gR g) (act_smul _ T g) (x j) i
+      have h := repr_semi (e T) (TWact (gR g) T g) (gR g) (GlobalTheory.TorsionBoundCompare.TWact_smul _ T g) (x j) i
       simp only [hx g hg, hfix T g hg, Module.Basis.repr_self, Finsupp.single_apply, ite_mul, one_mul,
         zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
       exact h.symm
     · ext i j
-      have h := repr_semi (e T) (TWmap φR T) φR (phi_smul _ T) (x j) i
+      have h := repr_semi (e T) (TWmap φR T) φR (GlobalTheory.TorsionBoundCompare.TWmap_smul _ T) (x j) i
       rw [hφx] at h
 
       simp only [map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply,
@@ -731,10 +717,10 @@ theorem exists_et (I : WIo R RA RW inclR φR gR πA)
   have hφe : ∀ T j, TWmap φR T (e T j) = ∑ k, I.ioE (A T k j) • e T k := fun T j => by
     simp only [hA, Module.Basis.sum_repr]
   have h1 := fun T => exists_lift I.ioE hinj (e T) (e T) (TWmap φR T) R.φE
-    (fun a y => by rw [phi_smul, I.ioE_φ]) (fun j i => ⟨_, hA T i j⟩)
+    (fun a y => by rw [GlobalTheory.TorsionBoundCompare.TWmap_smul, I.ioE_φ]) (fun j i => ⟨_, hA T i j⟩)
   choose φD hφD using h1
   have h2 := fun T g => exists_lift I.ioE hinj (e T) (e T) (TWact (gR g) T g) (R.γE (Γ.resΓ g))
-    (fun a y => by rw [act_smul, I.ioE_γ])
+    (fun a y => by rw [GlobalTheory.TorsionBoundCompare.TWact_smul, I.ioE_γ])
     (key T _ _ ((R.γE (Γ.resΓ g)).mapMatrix (Matrix.of (A T))) ((hAu T).map _)
       (fun h hh j => by
         rw [← act_mul _ _ _ (hmul h g), show h * g = g * (g⁻¹ * h * g) by group,
@@ -742,7 +728,7 @@ theorem exists_et (I : WIo R RA RW inclR φR gR πA)
       (fun j => by
 
         rw [phi_act _ _ (hφ g), hφe, map_sum]
-        simp only [act_smul, ← I.ioE_γ]
+        simp only [GlobalTheory.TorsionBoundCompare.TWact_smul, ← I.ioE_γ]
         rfl))
   choose γG hγG using h2
   have h3 := fun (T T' : LocLat G Qp LL O) (f : LatHom T.L T'.L) =>
@@ -759,7 +745,7 @@ theorem exists_et (I : WIo R RA RW inclR φR gR πA)
   have hker : ∀ T h, Γ.resΓ h = 1 → ∀ x, TWact (gR h) T h (jB I.ioE (e T) x) = jB I.ioE (e T) x := by
     intro T h hh x
 
-    simp only [jB_apply, map_sum, act_smul, ← I.ioE_γ, hh, hfix T h hh, map_one, AlgHom.one_apply]
+    simp only [jB_apply, map_sum, GlobalTheory.TorsionBoundCompare.TWact_smul, ← I.ioE_γ, hh, hfix T h hh, map_one, AlgHom.one_apply]
   choose sec hsec using Γ.resΓ_onto
   have hact : ∀ T g x, jB I.ioE (e T) (γG T (sec (Γ.resΓ g)) x) =
       TWact (gR g) T g (jB I.ioE (e T) x) := by
@@ -772,10 +758,10 @@ theorem exists_et (I : WIo R RA RW inclR φR gR πA)
   exact ⟨{
     DD := fun T => Fin (Module.finrank O ↥T.L.T) → R.EE
     φD := φD
-    φD_smul := fun T a x => hj T (by rw [hφD, jB_smul, jB_smul, phi_smul, hφD, I.ioE_φ])
+    φD_smul := fun T a x => hj T (by rw [hφD, jB_smul, jB_smul, GlobalTheory.TorsionBoundCompare.TWmap_smul, hφD, I.ioE_φ])
     γD := fun T g => γG T (sec g)
     γD_smul := fun T g a x => hj T (by
-      rw [hγG, jB_smul, jB_smul, act_smul, hγG, ← I.ioE_γ, hsec])
+      rw [hγG, jB_smul, jB_smul, GlobalTheory.TorsionBoundCompare.TWact_smul, hγG, ← I.ioE_γ, hsec])
     γD_one := fun T x => hj T (by rw [hγG, hker T _ (hsec 1)])
     γD_mul := fun T g h x => hj T (by
       rw [hγG T (sec g), hγG T (sec h), ← act_mul _ _ _ (hmul _ _), ← hact, map_mul, hsec, hsec])
@@ -814,29 +800,7 @@ end Generic
 
 section Concrete
 
-theorem map_id_comm {Z O W : Type} [CommRing Z] [CommRing O] [CommRing W] [Algebra Z O]
-    [Algebra Z W] (f g f' g' : W →ₐ[Z] W) (h : ∀ w, f (g w) = f' (g' w)) (x : O ⊗[Z] W) :
-    Algebra.TensorProduct.map (AlgHom.id O O) f (Algebra.TensorProduct.map (AlgHom.id O O) g x) =
-    Algebra.TensorProduct.map (AlgHom.id O O) f' (Algebra.TensorProduct.map (AlgHom.id O O) g' x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul a w => simp [h]
-
-theorem map_id_comp {Z O W : Type} [CommRing Z] [CommRing O] [CommRing W] [Algebra Z O]
-    [Algebra Z W] (f f' g' : W →ₐ[Z] W) (h : ∀ w, f w = f' (g' w)) (x : O ⊗[Z] W) :
-    Algebra.TensorProduct.map (AlgHom.id O O) f x =
-    Algebra.TensorProduct.map (AlgHom.id O O) f' (Algebra.TensorProduct.map (AlgHom.id O O) g' x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul a w => simp [h]
-
 variable {l : ℕ} [Fact l.Prime]
-
-theorem gRW_mul {P : LocPrime l} (AI : LocAinf l P) (LL : FinExt l) (g h : GQ l) (x : RW LL) :
-    AI.gRW LL (g * h) x = AI.gRW LL g (AI.gRW LL h x) :=
-  map_id_comp _ _ _ (fun w => by simp) x
 
 theorem res_eq_one_iff {P : LocPrime l} {K : FinExt l} {s : ℕ} {LL : FinExt l} (Γ : GamS P K s LL)
     (g : ↥(GK K)) : Γ.resΓ g = 1 ↔ P.χQ (g : GQ l) = 1 := by
@@ -856,13 +820,11 @@ theorem res_eq_one_iff {P : LocPrime l} {K : FinExt l} {s : ℕ} {LL : FinExt l}
     apply Units.ext
     exact Subtype.ext h
 
-
-
 theorem nonempty_wEt : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → (∀ (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)), ∃ e : Module.Basis (Fin (Module.finrank ↥(OL LL) ↥T.L.T)) (RW LL) (TW (RW LL) T), EtBasis I T e) → Nonempty (WEt I) := by
   intro l _ P AI K s LL hg Γ R I hI h
   choose e he using h
   obtain ⟨h1, h2, -⟩ := _root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL Γ R I
-  refine exists_et I (fun g h x => gRW_mul AI LL _ _ x) (fun g x => GlobalTheory.EtaleBasis.frob_comm_gal AI LL _ x) h1 h2
+  refine exists_et I (fun g h x => GlobalTheory.HerrClassMaps.gRW_mul AI LL _ _ x) (fun g x => GlobalTheory.EtaleBasis.frob_comm_gal AI LL _ x) h1 h2
     (fun p q A A' U hA hA' hU hφ => GlobalTheory.T.fixedByCyclotomicKernel_etalePhi_solution_mem_wach l P AI K s LL hg Γ R I hI p q A A' 0 U hA hA'
       (fun i j g hgK hχ => hU i j ⟨g, hgK⟩ ((res_eq_one_iff Γ _).2 hχ)) ?_) e
     (fun T g hg => (he T).1 g ((res_eq_one_iff Γ g).1 hg)) (fun T => (he T).2)
@@ -916,8 +878,6 @@ theorem γ₀_X_eq {K : FinExt l} {s : ℕ} {LL : FinExt l} {Γ : GamS P K s LL}
   have hact := (GlobalTheory.Cyc.act_unique l ↥(OL LL) hl0 hlu (R.γ₀ (Γ.resΓ g)) R.φ₀ c h0
     (R.γ₀_comm _) (R.γ₀_X _).1 ((R.γ₀_X _).2.trans hlin)).2
   rw [hact, (_root_.GlobalTheory.Cyc.act_laws l ↥(OL LL)).1, GlobalTheory.Cyc.cyc]
-
-
 
 theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ), ∃ I : IoS AI R, IoW I := by
   intro l _ P AI K s LL hG Γ R

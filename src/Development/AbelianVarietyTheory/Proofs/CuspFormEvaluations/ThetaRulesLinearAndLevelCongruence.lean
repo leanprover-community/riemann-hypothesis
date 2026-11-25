@@ -33,12 +33,10 @@ theorem monomial_degree_of_mem_harm {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ}
 
 theorem totalDegree_of_mem_harm {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {P : MvPolynomial (LtN Dw n) c.F}
     (hP : P ∈ harmA (Dw := Dw) c a n) (h0 : P ≠ 0) :
-    P.totalDegree = ∑ τ : E →+* ℂ, ∑ i : Fin (Dw.mult τ), a (τ, i) := by
-  obtain ⟨m0, hm0⟩ := Finset.nonempty_iff_ne_empty.2 (mt MvPolynomial.support_eq_empty.1 h0)
-  unfold MvPolynomial.totalDegree
-  refine le_antisymm (Finset.sup_le fun m hm => (monomial_degree_of_mem_harm hP hm).le) ?_
-  rw [← monomial_degree_of_mem_harm hP hm0]
-  exact Finset.le_sup (f := fun s : LtN Dw n →₀ ℕ => s.sum fun _ e => e) hm0
+    P.totalDegree = ∑ τ : E →+* ℂ, ∑ i : Fin (Dw.mult τ), a (τ, i) :=
+  MvPolynomial.IsHomogeneous.totalDegree (fun m hm => by
+    simpa [Finsupp.weight_apply] using
+      monomial_degree_of_mem_harm hP (MvPolynomial.mem_support_iff.2 hm)) h0
 
 theorem thExpr_eq_sum_superset (nab : NabV Xo c) {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S)
     {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ}

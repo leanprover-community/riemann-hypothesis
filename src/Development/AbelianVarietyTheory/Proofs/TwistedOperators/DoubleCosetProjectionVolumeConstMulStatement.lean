@@ -89,12 +89,9 @@ open GlobalTheory.RootEx GlobalTheory.SplitWeil GlobalTheory.SplitFlip Valuative
 section Loc
 variable {k : Type} [Field k] {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
 
-def symStep (n : Type) (c : ℕ) : n ⊕ Fin c → ℕ :=
-  if Even c then Sum.elim (fun _ => 2 * (c / 2) + 1) (fun i : Fin c => 2 * (i.val + 1)) else RootEx.lev (c / 2 + 1)
-
 theorem mem_symN_iff (hc : 1 ≤ c) (g : GL (n ⊕ Fin c) k) : g ∈ symN k n c ↔
-    ∀ r s, symStep n c s ≤ symStep n c r → g.val r s = (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r s := by
-  unfold symStep
+    ∀ r s, RowRep.symStep n c s ≤ RowRep.symStep n c r → g.val r s = (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r s := by
+  unfold RowRep.symStep
   split_ifs with h
   · obtain ⟨ρ, rfl⟩ := h
     have e1 : (ρ + ρ) / 2 = ρ := by omega
@@ -107,7 +104,7 @@ theorem mem_symN_iff (hc : 1 ≤ c) (g : GL (n ⊕ Fin c) k) : g ∈ symN k n c 
 
 theorem symN_block (hc : 1 ≤ c) {u : GL (n ⊕ Fin c) k} (hu : u ∈ symN k n c) (a b : n) :
     u.val (.inl a) (.inl b) = (1 : Matrix n n k) a b := by
-  rw [(mem_symN_iff hc u).1 hu (.inl a) (.inl b) (by unfold symStep; split_ifs <;> exact le_rfl)]
+  rw [(mem_symN_iff hc u).1 hu (.inl a) (.inl b) (by unfold RowRep.symStep; split_ifs <;> exact le_rfl)]
   simp [Matrix.one_apply]
 
 theorem diag_props {y : GL (n ⊕ Fin c) k} {f : n ⊕ Fin c → k} (hy : y.val = diagonal f) (hf : ∀ a, f (.inl a) = 1) :
@@ -211,17 +208,7 @@ def Blocks (M : Mx D S.rank S.rank) : Prop :=
   (∀ i j, j ≤ i → π ((d.pX ⬝ M ⬝ d.jX) i j) = 0) ∧ (d.p0 ⬝ M ⬝ d.jX).map π = 0 ∧ (d.pY ⬝ M ⬝ d.jX).map π = 0 ∧
     (d.p0 ⬝ M ⬝ d.j0).map π = 0 ∧ (d.pY ⬝ M ⬝ d.j0).map π = 0 ∧ ∀ i j, i ≤ j → π ((d.pY ⬝ M ⬝ d.jY) i j) = 0
 
-def Adapted {Y : Type} (F : Matrix (Fin S.rank) Y K) (l : Y → ℕ) : Prop :=
-  ∃ (Y₀ : Type) (_ : Fintype Y₀) (_ : DecidableEq Y₀) (b : Matrix (Fin S₀.rank) Y₀ K) (b' : Matrix Y₀ (Fin S₀.rank) K)
-    (τ : Y₀ ⊕ (Fin ρ ⊕ Fin ρ) → Y) (t : Y₀ ⊕ (Fin ρ ⊕ Fin ρ) → K), b' * b = 1 ∧ b * b' = 1 ∧ Function.Surjective τ ∧
-    (∀ r z, F r (τ z) = t z * wCols π d b r z) ∧ ∀ z z', l (τ z') ≤ l (τ z) ↔ wlev Y₀ ρ z' ≤ wlev Y₀ ρ z
-
 variable {π d} {Y : Type} [Fintype Y] [DecidableEq Y] {F : Matrix (Fin S.rank) Y K} {Γ : Matrix Y (Fin S.rank) K} {l : Y → ℕ}
-
-theorem Adapted.uni (h : Adapted π d F l) (h1 : Γ * F = 1) (h2 : F * Γ = 1) {g : GA D S} (hg : g ∈ flagN d) (r s : Y)
-    (hrs : l s ≤ l r) : (Γ * ((mt S g).map π * F)) r s = (1 : Matrix Y Y K) r s := by
-  obtain ⟨Y₀, _, _, b, b', τ, t, hb, -, hτ, ht, hl⟩ := h
-  exact uni_flag π d b b' hb h1 h2 τ hτ t ht l (fun z z' => (hl z z').1) hg r s hrs
 
 theorem Adapted.blocks (h : Adapted π d F l) (h1 : Γ * F = 1) (h2 : F * Γ = 1) {M : Mx D S.rank S.rank}
     (hM : ∀ r s, l s ≤ l r → (Γ * (M.map π * F)) r s = (1 : Matrix Y Y K) r s) : Blocks π d (M - 1) := by
@@ -303,119 +290,17 @@ def Shape {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtens
 theorem shape_jac {A B : HSp D} {c σ : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B c ε) (h : c = 2 * σ) :
     Shape d (flagN (jacDec d h)) (jacDec d h).emb0 := by
   subst h
-  have hσ : σ ≤ 2 * σ := by omega
-  refine ⟨⟨_, _, _, rfl, fun K _ π b b' u hb => ⟨Fin A.rank, inferInstance, inferInstance, b, b',
-      (Sum.map id (Sum.elim (fun i : Fin σ => Fin.castLE hσ i) fun i : Fin σ => (Fin.castLE hσ i).rev)),
-      (Sum.elim (fun _ => 1) (Sum.elim (fun i => u (Fin.castLE hσ i)) fun i => u (Fin.castLE hσ i).rev)),
-      mul_eq_one_comm.1 hb, hb, ?_, ?_, ?_⟩⟩, fun K _ π x => ⟨?_, fun p => ?_⟩,
+  exact ⟨⟨_, _, _, rfl, fun _ _ π b b' u hb => jac_adapted π d b b' u hb⟩,
+    fun _ _ π x => jac_emb_cols π d x,
     fun x hx => GlobalTheory.Core.Mi.CenAct.witt_embedding_mem_finite_unitary_points _ hx⟩
-  · rintro (a | j)
-    · exact ⟨Sum.inl a, rfl⟩
-    · by_cases h : j.val < σ
-      · exact ⟨Sum.inr (Sum.inl ⟨j.val, h⟩), rfl⟩
-      · exact ⟨Sum.inr (Sum.inr ⟨2 * σ - 1 - j.val, by omega⟩), congrArg Sum.inr (Fin.ext (by
-          simp only [Sum.elim_inr, Fin.val_rev, Fin.val_castLE]; omega))⟩
-  · rintro r (a | i | i)
-    · exact (one_mul _).symm
-    · exact (mul_diagonal u _ _ _).trans (mul_comm _ _)
-    · exact (mul_diagonal u _ _ _).trans (mul_comm _ _)
-  · rw [symStep, ite_eq_left (even_two_mul σ), show 2 * σ / 2 = σ by omega]
-    rintro (a | i | i) (a' | j | j) <;>
-      simp only [wlev, Sum.map_inl, Sum.map_inr, Sum.elim_inl, Sum.elim_inr, Fin.val_rev, Fin.val_castLE] <;> omega
-  · exact (Matrix.map_mul (f := π)).symm.trans ((congrArg (·.map π) ((jacDec d rfl).wittDecomp_anisotropicEmbedding_inclAnisotropic x)).trans Matrix.map_mul)
-  · have eX := (Matrix.map_mul (f := π)).symm.trans (congrArg (·.map π) ((jacDec d rfl).wittDecomp_anisotropicEmbedding_inclX x))
-    have eY := (Matrix.map_mul (f := π)).symm.trans (congrArg (·.map π) ((jacDec d rfl).wittDecomp_anisotropicEmbedding_inclY x))
-    by_cases h : p.val < σ
-    · exact fix_col eX 1 ⟨p.val, h⟩ fun r => (one_mul _).symm
-    · obtain ⟨q, rfl⟩ : ∃ q : Fin σ, p = (Fin.castLE hσ q).rev :=
-        ⟨⟨2 * σ - 1 - p.1, by omega⟩, Fin.ext (by simp only [Fin.val_rev, Fin.val_castLE]; omega)⟩
-      exact fix_col eY 1 q fun r => (one_mul _).symm
 
 theorem shape_bes {A B : HSp D} {c σ : ℕ} (d : HermitianOrthogonalExtensionData A B c (-1)) (hc : c = 2 * σ + 1) (l : Fin σ → D.host.E) (hl : ∀ a, l a ≠ 0) :
     Shape d (flagN (diagDec (besDec d hc) l hl))
       (GlobalTheory.MixPer.embA (diagDec (besDec d hc) l hl) (GlobalTheory.OrthSumExists.orthDecHsum D _ _)) := by
   subst hc
-  have hσ : σ ≤ 2 * σ + 1 := by omega
-  have hσ' : σ < 2 * σ + 1 := by omega
-  let E : Fin A.rank ⊕ Fin 1 ≃ Fin (GlobalTheory.Doubling.hsum A (GlobalTheory.SeeSaw.Model.nLine D)).rank := finSumFinEquiv
-  have vX : ∀ {K : Type} [Field K] (π : AE D →+* K) r (i : Fin σ), π.comp (incA D) (d.a r (Fin.castLE hσ i)) =
-      π.comp (incA D) (l i)⁻¹ * ((diagDec (besDec d rfl) l hl).jX.map π) r i := fun π r i => by
-    change _ = _ * π.comp (incA D) (((besDec d rfl).e * diagonal l) r i)
-    rw [mul_diagonal, ← map_mul, mul_left_comm, inv_mul_cancel₀ (hl i), mul_one]; rfl
-  have vY : ∀ {K : Type} [Field K] (π : AE D →+* K) r (i : Fin σ), π.comp (incA D) (d.a r (Fin.castLE hσ i).rev) =
-      π.comp (incA D) (star (l i)) * ((diagDec (besDec d rfl) l hl).jY.map π) r i := fun π r i => by
-    change _ = _ * π.comp (incA D) (((besDec d rfl).e' * diagonal fun a => (star (l a))⁻¹) r i)
-    rw [mul_diagonal, ← map_mul, mul_left_comm, mul_inv_cancel₀ (star_ne_zero.2 (hl i)), mul_one]; rfl
-  have core : ∀ {K : Type} [Field K] (π : AE D →+* K) {Z : Type} (X : Matrix (Fin A.rank ⊕ Fin 1) Z K),
-      (diagDec (besDec d rfl) l hl).j0.map π * X.submatrix E.symm id =
-        fromCols ((frameMat B A d.ι).map (π.comp (incA D))) ((midCol d rfl).map (π.comp (incA D))) * X := fun π _ X => by
-    have e : (diagDec (besDec d rfl) l hl).j0.map π =
-        (fromCols ((frameMat B A d.ι).map (π.comp (incA D))) ((midCol d rfl).map (π.comp (incA D)))).submatrix id E.symm := by
-      rw [← fromCols_map]; rfl
-    exact (congrArg (· * X.submatrix E.symm id) e).trans (submatrix_mul_equiv _ _ _ E.symm _)
-  refine ⟨⟨_, _, _, rfl, fun K _ π b b' u hb => ⟨Fin A.rank ⊕ Fin 1, inferInstance, inferInstance,
-      (fromBlocks b 0 0 (1 : Matrix (Fin 1) (Fin 1) K)).submatrix E.symm id,
-      (fromBlocks b' 0 0 (1 : Matrix (Fin 1) (Fin 1) K)).submatrix id E.symm,
-      (Sum.elim (Sum.map id fun _ => ⟨σ, by omega⟩)
-        (Sum.elim (fun i : Fin σ => Sum.inr (Fin.castLE hσ i)) fun i : Fin σ => Sum.inr (Fin.castLE hσ i).rev)),
-      (Sum.elim (Sum.elim (fun _ => 1) fun _ => u ⟨σ, by omega⟩)
-        (Sum.elim (fun i => u (Fin.castLE hσ i) * π.comp (incA D) (l i)⁻¹)
-          fun i => u (Fin.castLE hσ i).rev * π.comp (incA D) (star (l i)))), ?_, ?_, ?_, ?_, ?_⟩⟩, fun K _ π x => ?_,
+  exact ⟨⟨_, _, _, rfl, fun _ _ π b b' u hb => bes_adapted π d l hl b b' u hb⟩,
+    fun _ _ π x => bes_emb_cols π d l hl x,
     fun x hx => GlobalTheory.Core.Mi.CenAct.embA_mem_GfC _ _ hx⟩
-  · refine (submatrix_mul_equiv _ _ _ E.symm _).trans ?_
-    rw [fromBlocks_multiply]
-    simp [mul_eq_one_comm.1 hb]
-  · refine (submatrix_mul_equiv _ _ _ (Equiv.refl _) _).trans ?_
-    rw [fromBlocks_multiply]
-    simp [hb]
-  · rintro (a | j)
-    · exact ⟨Sum.inl (Sum.inl a), rfl⟩
-    · rcases lt_trichotomy j.val σ with h | h | h
-      · exact ⟨Sum.inr (Sum.inl ⟨j.val, h⟩), rfl⟩
-      · exact ⟨Sum.inl (Sum.inr 0), congrArg Sum.inr (Fin.ext h.symm)⟩
-      · exact ⟨Sum.inr (Sum.inr ⟨2 * σ - j.val, by omega⟩), congrArg Sum.inr (Fin.ext (by
-          simp only [Fin.val_rev, Fin.val_castLE]; omega))⟩
-  · have e := core π (fromBlocks b 0 0 (1 : Matrix (Fin 1) (Fin 1) K))
-    rw [fromCols_mul_fromBlocks, Matrix.mul_zero, Matrix.mul_zero, add_zero, zero_add, Matrix.mul_one] at e
-    rintro r ((a | a) | i | i)
-    · exact (congrFun (congrFun e r) (Sum.inl a)).symm.trans (one_mul _).symm
-    · exact (mul_diagonal u _ _ _).trans ((mul_comm _ _).trans (congrArg (u _ * ·) (congrFun (congrFun e r) (Sum.inr a)).symm))
-    · exact (mul_diagonal u _ _ _).trans ((mul_comm _ _).trans ((congrArg (u _ * ·) (vX π r i)).trans (mul_assoc _ _ _).symm))
-    · exact (mul_diagonal u _ _ _).trans ((mul_comm _ _).trans ((congrArg (u _ * ·) (vY π r i)).trans (mul_assoc _ _ _).symm))
-  · rw [symStep, ite_eq_right (Nat.not_even_iff_odd.2 (odd_two_mul_add_one σ)), show (2 * σ + 1) / 2 = σ by omega]
-    rintro ((a | a) | i | i) ((a' | a') | j | j) <;>
-      simp only [wlev, RootEx.lev, Sum.map_inl, Sum.map_inr, Sum.elim_inl, Sum.elim_inr, Fin.val_rev, Fin.val_castLE] <;> omega
-  · rw [embA_apply]
-    set h := diagDec (besDec d rfl) l hl
-    set o := GlobalTheory.OrthSumExists.orthDecHsum D A (GlobalTheory.SeeSaw.Model.nLine D)
-    let φ : D.host.E →+* K := π.comp (incA D)
-    have eX := (Matrix.map_mul (f := π)).symm.trans (congrArg (·.map π) (h.wittDecomp_anisotropicEmbedding_inclX (o.emb (x, 1))))
-    have eY := (Matrix.map_mul (f := π)).symm.trans (congrArg (·.map π) (h.wittDecomp_anisotropicEmbedding_inclY (o.emb (x, 1))))
-    have e0 := (Matrix.map_mul (f := π)).symm.trans ((congrArg (·.map π) (h.wittDecomp_anisotropicEmbedding_inclAnisotropic (o.emb (x, 1)))).trans Matrix.map_mul)
-    have eA := (Matrix.map_mul (f := π)).symm.trans ((congrArg (·.map π) (o.emb_jA x 1)).trans Matrix.map_mul)
-    have eB := (Matrix.map_mul (f := π)).symm.trans ((congrArg (·.map π) (o.emb_jB x 1)).trans Matrix.map_mul)
-    rw [GlobalTheory.MixModel.mt_one, Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one] at eB
-    have jA : h.j0.map π * o.jA.map π = (frameMat B A d.ι).map φ := by
-      have e : o.jA.map π = (fromRows (1 : Matrix (Fin A.rank) (Fin A.rank) K) (0 : Matrix (Fin 1) (Fin A.rank) K)).submatrix E.symm id := by
-        rw [← Matrix.map_one φ (map_zero _) (map_one _), ← Matrix.map_zero φ (map_zero _), ← fromRows_map]; rfl
-      rw [e, core, fromCols_mul_fromRows, Matrix.mul_one, Matrix.mul_zero, add_zero]
-    have jB : h.j0.map π * o.jB.map π = (midCol d rfl).map φ := by
-      have e : o.jB.map π = (fromRows (0 : Matrix (Fin A.rank) (Fin 1) K) (1 : Matrix (Fin 1) (Fin 1) K)).submatrix E.symm id := by
-        rw [← Matrix.map_one φ (map_zero _) (map_one _), ← Matrix.map_zero φ (map_zero _), ← fromRows_map]; rfl
-      refine (congrArg (h.j0.map π * ·) e).trans ((core π _).trans ?_)
-      rw [fromCols_mul_fromRows, Matrix.mul_one, Matrix.mul_zero, zero_add]
-    refine ⟨?_, fun p => ?_⟩
-    · change _ * (frameMat B A d.ι).map φ = (frameMat B A d.ι).map φ * _
-      rw [← jA, ← Matrix.mul_assoc, e0, Matrix.mul_assoc, eA, Matrix.mul_assoc]
-    rcases lt_trichotomy p.val σ with hp | hp | hp
-    · exact fix_col eX _ ⟨p.val, hp⟩ fun r => vX π r ⟨p.val, hp⟩
-    · obtain rfl : p = ⟨σ, hσ'⟩ := Fin.ext hp
-      have eZ : (mt B (h.emb0 (o.emb (x, 1)))).map π * (h.j0.map π * o.jB.map π) = h.j0.map π * o.jB.map π := by
-        rw [← Matrix.mul_assoc, e0, Matrix.mul_assoc, eB]
-      exact fix_col eZ 1 (0 : Fin 1) fun r => ((one_mul _).trans (congrFun (congrFun jB r) (0 : Fin 1))).symm
-    · obtain ⟨q, rfl⟩ : ∃ q : Fin σ, p = (Fin.castLE hσ q).rev :=
-        ⟨⟨2 * σ - p.1, by omega⟩, Fin.ext (by simp only [Fin.val_rev, Fin.val_castLE]; omega)⟩
-      exact fix_col eY _ q fun r => vY π r q
 
 variable {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)
 
@@ -425,33 +310,6 @@ theorem shape_row {j : ℕ} (hj : j < D.R.m) : Shape (G.rowDec j hj) (GlobalTheo
   · exact shape_jac (G.rowDec j hj) _
   · exact shape_bes (G.rowDec j hj) _ _ _
   · omega
-
-
-variable {G} in
-theorem tilt_cols {j : ℕ} (hj₁ : j < D.R.m) {δ : GA D (G.V (.grid D.R.m j))} (h : GlobalTheory.RowVal.IsTilt G j δ) :
-    ∃ l : Fin (D.R.m - 1 - j) → D.host.E,
-      HMul.hMul (mt _ δ) (rat (frameMat _ _ (G.rowDec j hj₁).ι)) = rat (frameMat _ _ (G.rowDec j hj₁).ι) ∧
-      HMul.hMul (mt _ δ) (rat (G.rowDec j hj₁).a) = rat ((G.rowDec j hj₁).a * diagonal l) := by
-  rcases Nat.even_or_odd j with e | ⟨i, hi⟩
-  · rw [h.2.1 e, GlobalTheory.MixModel.mt_one]
-    exact ⟨fun _ => 1, Matrix.one_mul _, by rw [Matrix.one_mul, diagonal_one, Matrix.mul_one]⟩
-  · obtain ⟨n, hn⟩ := D.R.m_even
-    obtain ⟨σ, hσ⟩ : ∃ σ, D.R.m - 1 - j = 2 * σ := ⟨(D.R.m - 1 - j) / 2, by omega⟩
-    obtain ⟨a, b, c⟩ := h.2.2 σ hj₁ hσ
-    refine ⟨fun p => if p.1 < σ then (D.host.xi0 ^ p.1)⁻¹ else star (D.host.xi0 ^ (2 * σ - 1 - p.1)), a,
-      Matrix.ext fun r p => ?_⟩
-    have hp := p.2
-    have hc : σ ≤ D.R.m - 1 - j := by clear hp; omega
-    refine Eq.trans ?_ (congrArg (incA D) (mul_diagonal _ _ _ _).symm)
-    by_cases hp' : p.1 < σ
-    · rw [ite_eq_left hp']
-      exact (congrFun (congrFun b r) ⟨p.1, hp'⟩).trans (congrArg (incA D) (mul_diagonal _ _ _ _))
-    · rw [ite_eq_right hp']
-      obtain ⟨q, rfl⟩ : ∃ q : Fin σ, p = (Fin.castLE hc q).rev :=
-        ⟨⟨2 * σ - 1 - p.1, by omega⟩, Fin.ext (by simp only [Fin.val_rev, Fin.val_castLE]; omega)⟩
-      rw [show 2 * σ - 1 - (Fin.castLE hc q).rev.1 = q.1 by
-        have := q.2; simp only [Fin.val_rev, Fin.val_castLE]; omega]
-      exact (congrFun (congrFun c r) q).trans (congrArg (incA D) (mul_diagonal _ _ _ _))
 
 end GlobalTheory.PrLevel
 end -- clump:auto
@@ -544,7 +402,7 @@ theorem blocks_of_phi (hc : 1 ≤ c) {S₀ : HSp D} {ρ : ℕ} {h : HypDec B S�
     (hab : a + c = b) {n : GA D B} (hn : phi hb hab β' w n ∈ symN (Kw w) (Fin a) c) : Blocks (piAt w) h (mt B n - 1) := by
   subst ha hb
   obtain ⟨Γ, h1, h2, e⟩ := frame_val d w hF
-  exact (hA _ (piAt w) _ _ u (GlobalTheory.StdFrames.loc w β).mul_inv).blocks h1 h2 fun r s hrs =>
+  exact Adapted.blocks (hA _ (piAt w) _ _ u (GlobalTheory.StdFrames.loc w β).mul_inv) h1 h2 fun r s hrs =>
     (congrFun (congrFun (e n) r) s).symm.trans ((mem_symN_iff hc _).1 hn r s hrs)
 
 end Frame

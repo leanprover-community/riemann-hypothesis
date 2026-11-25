@@ -114,20 +114,6 @@ private theorem chi_one (T : ℝ) {x : ℝ} (h : T < x) : ∀ᶠ n : ℕ in atTo
   rw [min_eq_left h3, min_eq_left (by linarith)]
   exact max_eq_right zero_le_one
 
-private theorem sum_ae {α ι E : Type*} {m : MeasurableSpace α} {ν : Measure α} [NormedAddCommGroup E]
-    (s : Finset ι) (f : ι → Lp E 2 ν) :
-    ∀ᵐ x ∂ν, ((∑ i ∈ s, f i : Lp E 2 ν) : α → E) x = ∑ i ∈ s, (f i : α → E) x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    filter_upwards [Lp.coeFn_zero E 2 ν] with x hx
-    rw [Finset.sum_empty, hx]
-    simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    filter_upwards [Lp.coeFn_add (f a) (∑ i ∈ s, f i), ih] with x h1 h2
-    rw [h1, Pi.add_apply, h2, Finset.sum_insert ha]
-
 private theorem eu_sum {d : ℕ} (v : Eu d) : ∑ i, v i • (EuclideanSpace.single i (1 : ℂ) : Eu d) = v := by
   have := (EuclideanSpace.basisFun (Fin d) ℂ).sum_repr v
   simpa using this
@@ -245,11 +231,13 @@ private theorem rep_chi {K : Type} [Field K] [NumberField K] (μ : Measure (G1 K
   have hex := fun i => (denseCc d).2.1 _ (EuclideanSpace.single i (1 : ℂ)) (hβ i) (hβc i)
   choose u hu using hex
   refine ⟨∑ i, u i, ?_, ?_⟩
-  · filter_upwards [sum_ae Finset.univ u, ae_all_iff.2 hu] with x h1 h2
+  · filter_upwards [Lp.coeFn_fun_finsetSum Finset.univ u, ae_all_iff.2 hu] with x h1 h2
     rw [h1, Finset.sum_congr rfl fun i _ => h2 i]
     simp only [mul_smul, ← Finset.smul_sum, eu_sum]
   · have h2 := ae_all_iff.2 fun i => A.spec _ _ (u i) (hβ i) (hβc i) (hu i)
-    have h3 := MeasureTheory.QuasiMeasurePreserving.ae (quasiMeasurePreserving_mk (Gam K (2 + 2)) μ) (sum_ae Finset.univ fun i => A.J (u i))
+    have h3 := MeasureTheory.QuasiMeasurePreserving.ae
+      (quasiMeasurePreserving_mk (Gam K (2 + 2)) μ)
+      (Lp.coeFn_fun_finsetSum Finset.univ fun i => A.J (u i))
     unfold Reps
     filter_upwards [h2, h3] with y a b
 

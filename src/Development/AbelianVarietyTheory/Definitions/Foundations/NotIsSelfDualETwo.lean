@@ -9,8 +9,6 @@ open NumberField
 open Formalism.BasicNotions Formalism.L2.DIV
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.TestLat.Model
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] {n N : ℕ} {C : Type}

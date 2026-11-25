@@ -8,7 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open Formalism.BasicNotions IsDedekindDomain NumberField
 
-noncomputable section
 namespace GlobalTheory.InertOfConj
 
 theorem unram (D : D7) : Algebra.Unramified (𝓞 D.host.F) (𝓞 D.host.E) := by

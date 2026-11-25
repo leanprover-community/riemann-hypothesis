@@ -118,16 +118,6 @@ theorem norm_N {h n : HA R σ J} (hh : h ∈ Hsub R σ J P) (hn : n ∈ Nsub R �
 variable (hσσ : ∀ x, σ (σ x) = x) (hJ : IsHermND σ J) (hP : P.IsStd σ J T)
 include hσσ hJ hP
 
-private theorem spanR_of_last_not_mem (s : Set (Fin (r + 1))) (hs : Fin.last r ∉ s) :
-    spanR (F := F) R (F0 P) s ≤ Submodule.span (R ⊗[F] E) (Set.range (datR R σ J P T).e) := by
-  unfold spanR
-  refine Submodule.span_le.mpr ?_
-  rintro x ⟨b, hb, rfl⟩
-  refine Submodule.subset_span ?_
-  induction b using Fin.lastCases with
-  | last => exact absurd hb hs
-  | cast b' => exact ⟨b', by simp [F0, datR]⟩
-
 theorem Pi_lin_mul {g g' : HA R σ J} (hg : g ∈ Ssub R σ J P) (hg' : g' ∈ Ssub R σ J P) :
     (datR R σ J P T).Pi (lin R σ J (g * g')) =
       (datR R σ J P T).Pi (lin R σ J g) ∘ₗ (datR R σ J P T).Pi (lin R σ J g') := by

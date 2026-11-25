@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 
 
 
-noncomputable section
-
 namespace GlobalTheory.Reg.PChartModel
 
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj

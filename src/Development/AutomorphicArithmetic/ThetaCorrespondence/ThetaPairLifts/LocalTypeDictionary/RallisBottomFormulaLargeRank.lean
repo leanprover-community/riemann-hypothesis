@@ -181,18 +181,6 @@ open Classical
 
 noncomputable section
 
-namespace GlobalTheory.BotFormula.ClassSumMonotone
-open GlobalTheory.SqTop
-
-theorem gbig_mono' {Q Q' : GP} (h : GBig Q) (H : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts}
-    (G : GridData Lc sc) (μ₀ : T) (C x b : ℝ), Q G μ₀ C x b → Q' G μ₀ C x b) : GBig Q' := by
-  obtain ⟨CF0, h⟩ := h
-  refine ⟨CF0, fun ε CF hCF => ?_⟩
-  obtain ⟨C0, x₀, h⟩ := h ε CF hCF
-  exact ⟨C0, x₀, fun C hC D large₂ he hx hR T Lc μ₀ hL G => H _ _ _ _ _ (h C hC D large₂ he hx hR T Lc μ₀ hL G)⟩
-
-end GlobalTheory.BotFormula.ClassSumMonotone
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -368,9 +356,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
 
-
-
-
 noncomputable section
 
 namespace GlobalTheory.BotBigLevel
@@ -530,7 +515,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
-
 
 noncomputable section
 theorem GlobalTheory.BotBigLevel.bottom_kernel_mul_large_level : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
@@ -760,7 +744,7 @@ theorem GlobalTheory.BotFormula.bottom_thetaIntegral_eq_classSum : _root_.Global
               v * ∑ᶠ x : GlobalTheory.NormSum.Cls D P.a (GlobalTheory.NormSum.intG D P.a),
                 ((GlobalTheory.NormSum.gam D (GlobalTheory.NormSum.intG D P.a) x.out : ℂ))⁻¹ * X.ker W.ψ W.θ s (GlobalTheory.BotFormula.minorF ea ed T) g (pt x.out) := by
   intro hPr hTA hLM hInp hBS
-  refine GlobalTheory.BotFormula.ClassSumMonotone.gbig_mono' (GlobalTheory.BottomIPData.gbig_and (_root_.GlobalTheory.BotBigLevel.bottom_kernel_mul_large_level hPr hTA hLM hInp hBS) (_root_.GlobalTheory.T.bottom_kernel_real_invariant hPr hTA hLM hInp hBS)) ?_
+  refine GlobalTheory.BottomIPData.gbig_mono (GlobalTheory.BottomIPData.gbig_and (_root_.GlobalTheory.BotBigLevel.bottom_kernel_mul_large_level hPr hTA hLM hInp hBS) (_root_.GlobalTheory.T.bottom_kernel_real_invariant hPr hTA hLM hInp hBS)) ?_
   intro D T Lc sc G μ₀ C x b H
   obtain ⟨H3, H4⟩ := H
   intro W hW i j A A' WW X δ t0 hX
@@ -789,15 +773,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
 
-theorem _root_.GlobalTheory.T.bottomTriple_thetaKernel_minors_eq_const_conjJet : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (W : G.Weil),
-    IsStdChar D W.ψ (-1) → ∀ (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW), IsBottomTri W i j X →
-    ∀ (r : ℂ) (rc : ℝ), r ≠ 0 → (∀ τ, rc * ‖r‖ ^ 2 = 2 * ‖tauE D τ D.host.xi0‖) → ∀ n₀ : D.what₂.Tau → ℕ,
-    ∃ Ω : ℂ, Ω ≠ 0 ∧ ∀ (a d : ℕ) (n : D.what₂.Tau → ℕ) (ea : a = A.rank) (ed : d = WW.rank), n = n₀ →
-      ∀ (s : T) (g : GA D WW) (y : GA D A), g ∈ GfC WW → y ∈ GfC A → ∀ Tu : Tup D a d n,
-        X.ker W.ψ W.θ s (GlobalTheory.BotFormula.minorF ea ed Tu) g y =
-          Ω * starRingEnd ℂ (Formalism.MainNotions.GL3Theta.applyAt0 D (GlobalTheory.NormSum.minorPol D Tu)
-            (GlobalTheory.AdForm.xiN W.θ A WW ea.symm ed.symm r rc fun w => starRingEnd ℂ (X.ω s (y, g) (X.f s) w))) := by
-  first | exact @GlobalTheory.BotFormula.ConjJet.ker_minorF_eq_conj_jet
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BottomTripleThetaKernelMinorsEqConstConjJetStatement =====
@@ -924,8 +899,8 @@ theorem bottom_finParts {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Co
     HasFinPart ((G.ch.chi (D.R.m - i) * L.eta ^ (rankV D i j % 2)) /
       (L.mu s (j + 1) * L.eta ^ (rankV D i j % 2)))⁻¹ P.W.chV' (-P.W.ep') := by
   refine ⟨fun x y hxy => ?_, fun x y hxy => ?_⟩
-  · have h1 := GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ (G.ch.chi_eq (D.R.m - i) (by omega) (by omega)) x y hxy
-    have h2 := GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ hL.eta x y hxy
+  · have h1 := GlobalTheory.FinIdlRead.chr_finIdl _ _ (G.ch.chi_eq (D.R.m - i) (by omega) (by omega)) x y hxy
+    have h2 := GlobalTheory.FinIdlRead.chr_finIdl _ _ hL.eta x y hxy
     have e : (betaH G i j)⁻¹.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) =
         ((G.ch.chiH (D.R.m - i)).1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) *
           L.C.eta.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) ^ (rankV D i j % 2))⁻¹ := rfl
@@ -938,7 +913,7 @@ theorem bottom_finParts {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Co
     have e : (nuH G s i j)⁻¹.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) =
         ((nuH G s i j).1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y))⁻¹ := rfl
     rw [eν, zpow_neg, hB.chars.2 y, e, inv_inv]
-    exact GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ (chrEq_nu G s i j hL) x y hxy
+    exact GlobalTheory.FinIdlRead.chr_finIdl _ _ (chrEq_nu G s i j hL) x y hxy
 
 end GlobalTheory.BotIntertw
 
@@ -1093,7 +1068,7 @@ theorem bottomTheta_kernel_finite : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
   intro D T Lc sc G μ₀ C x b q2 q3 W hW i j A A' WW X δ t0 hX hβ
   obtain ⟨r, rc, κ, hr, hrc, hκ, H2⟩ := q2 W hW i j A A' WW X δ t0 hX hβ
   obtain ⟨n₀, H3⟩ := q3 i j δ t0
-  obtain ⟨Ω, hΩ, H1⟩ := GlobalTheory.T.bottomTriple_thetaKernel_minors_eq_const_conjJet G W hW i j A A' WW X hX r rc hr hrc n₀
+  obtain ⟨Ω, hΩ, H1⟩ := GlobalTheory.BotFormula.ConjJet.ker_minorF_eq_conj_jet G W hW i j A A' WW X hX r rc hr hrc n₀
   refine ⟨Ω * starRingEnd ℂ κ, mul_ne_zero hΩ ((map_ne_zero _).2 hκ), fun s Q P P' hB => ?_⟩
   obtain ⟨u, hu0, huQ, huU, hEq⟩ := H2 s Q P P' hB
   refine ⟨u, hu0, huQ, huU, fun ea ed h g x y hg hy Tu => ?_⟩

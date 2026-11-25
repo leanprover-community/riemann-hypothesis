@@ -81,15 +81,10 @@ private theorem isUnit_nat (w : HeightOneSpectrum (𝓞 F)) {M : ℕ} (hM : (M :
   have h1 : Valued.v (M : w.adicCompletion F) = 1 := by
     have : (M : w.adicCompletion F) = algebraMap F _ (algebraMap (𝓞 F) F M) := by simp
     rw [this]
-    have h2 := HeightOneSpectrum.valuedAdicCompletion_eq_valuation' w (algebraMap (𝓞 F) F M)
-    refine h2.trans ?_
+    refine (HeightOneSpectrum.valuedAdicCompletion_eq_valuation' w (algebraMap (𝓞 F) F M)).trans ?_
     rw [HeightOneSpectrum.valuation_of_algebraMap]
-    exact (HeightOneSpectrum.intValuation_eq_one_iff).2 hM
-  have h0 : (M : w.adicCompletion F) ≠ 0 := fun h => by simp [h] at h1
-  refine IsUnit.of_mul_eq_one ⟨(M : w.adicCompletion F)⁻¹, ?_⟩ (Subtype.ext ?_)
-  · change Valued.v (M : w.adicCompletion F)⁻¹ ≤ 1
-    rw [map_inv₀, h1, inv_one]
-  · simpa using mul_inv_cancel₀ h0
+    exact HeightOneSpectrum.intValuation_eq_one_iff.2 hM
+  exact HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one.2 (by simpa using h1)
 
 theorem locGL_mem_KLev (n : ℕ) (w : HeightOneSpectrum (𝓞 F)) {M : ℕ} (hM : (M : 𝓞 F) ∉ w.asIdeal)
     {k : GL (Fin n) (w.adicCompletion F)} (hk : k ∈ GlobalTheory.LFun.KGL w (n := n)) : locGL F n w k ∈ KLev F n M := by

@@ -116,17 +116,13 @@ theorem face_three_mk3 : face 3 (mk₃ φ ψ χ) = mk₂ φ ψ := by
 
 end Faces
 
-private theorem mp_id_apply (X : C) (x : F.obj X) : mp F (𝟙 X) x = x := by
-  rw [mp, CategoryTheory.Functor.map_id]
-  rfl
-
 theorem L1_dn_zero_eq_d0_L0 (f : Cn F 0) : L1 F (dn F 0 f) = d0 F (L0 F f) := by
   funext T T' φ
   show dn F 0 f (mk₁ φ) = L0 F f T' - mp F φ (L0 F f T)
   rw [dn0, cof_eq F (n := 0) 0 (mk₁ φ) (mk₀ T') (cech_nerve_face_one_zero φ) (𝟙 T') HEq.rfl f,
     cof_eq F (n := 0) 1 (mk₁ φ) (mk₀ T) (cech_nerve_face_one_one φ) φ HEq.rfl f]
   show mp F (𝟙 T') (f (mk₀ T')) - mp F φ (f (mk₀ T)) = _
-  rw [mp_id_apply F T' (f (mk₀ T'))]
+  rw [mp_id F T' (f (mk₀ T'))]
   rfl
 
 theorem L2_dn_one_eq_d1_L1 (f : Cn F 1) : L2 F (dn F 1 f) = d1 F (L1 F f) := by
@@ -137,7 +133,7 @@ theorem L2_dn_one_eq_d1_L1 (f : Cn F 1) : L2 F (dn F 1 f) = d1 F (L1 F f) := by
     cof_eq F (n := 1) 2 (mk₂ φ ψ) (mk₁ φ) (cech_nerve_face_two_two φ ψ) ψ HEq.rfl f]
   conv_lhs => rw [sub_add_comm]
   show mp F ψ (f (mk₁ φ)) - mp F (𝟙 T'') (f (mk₁ (φ ≫ ψ))) + mp F (𝟙 T'') (f (mk₁ ψ)) = _
-  rw [mp_id_apply F T'' (f (mk₁ (φ ≫ ψ))), mp_id_apply F T'' (f (mk₁ ψ))]
+  rw [mp_id F T'' (f (mk₁ (φ ≫ ψ))), mp_id F T'' (f (mk₁ ψ))]
   rfl
 
 theorem L3_dn_two_eq_d2_L2 (f : Cn F 2) : L3 F (dn F 2 f) = d2 F (L2 F f) := by
@@ -150,8 +146,8 @@ theorem L3_dn_two_eq_d2_L2 (f : Cn F 2) : L3 F (dn F 2 f) = d2 F (L2 F f) := by
     cof_eq F (n := 2) 3 (mk₃ φ ψ χ) (mk₂ φ ψ) (face_three_mk3 φ ψ χ) χ HEq.rfl f]
   show mp F (𝟙 T''') (f (mk₂ ψ χ)) - mp F (𝟙 T''') (f (mk₂ (φ ≫ ψ) χ)) +
     mp F (𝟙 T''') (f (mk₂ φ (ψ ≫ χ))) - mp F χ (f (mk₂ φ ψ)) = _
-  rw [mp_id_apply F T''' (f (mk₂ ψ χ)), mp_id_apply F T''' (f (mk₂ (φ ≫ ψ) χ)),
-    mp_id_apply F T''' (f (mk₂ φ (ψ ≫ χ)))]
+  rw [mp_id F T''' (f (mk₂ ψ χ)), mp_id F T''' (f (mk₂ (φ ≫ ψ) χ)),
+    mp_id F T''' (f (mk₂ φ (ψ ≫ χ)))]
   rfl
 
 theorem dictSt : DictSt := by

@@ -80,12 +80,8 @@ private lemma det_one_add_sub_mul_degree_submatrix_eq_one (deg : Ix → ℕ) (D 
   have hblock : ∀ n : ℕ, ((1 : Matrix Ix Ix R) + k * D).submatrix
       (Subtype.val : {p // deg p = n} → Ix) (Subtype.val : {p // deg p = n} → Ix)
         = 1 + (k * D).submatrix (Subtype.val : {p // deg p = n} → Ix)
-          (Subtype.val : {p // deg p = n} → Ix) := by
-    intro n
-    ext i j
-    by_cases hij : i = j
-    · subst hij; simp
-    · simp [Matrix.one_apply_ne hij, Matrix.one_apply_ne (Subtype.val_injective.ne hij)]
+          (Subtype.val : {p // deg p = n} → Ix) := fun n => by
+    rw [Matrix.submatrix_add, Pi.add_apply, Pi.add_apply, Matrix.submatrix_one _ Subtype.val_injective]
   induction d with
   | zero =>
     rw [hblock]
@@ -211,10 +207,7 @@ theorem _root_.GlobalTheory.TorsionUnique.torsSq_unique : ∀ (R Ix : Type) [Com
   have hbc : b * c = 1 := by
     rw [← Matrix.det_mul, hprod h' hd']
     exact det_even_submatrix_homotopy_product_eq_one deg D h h' hD hDD hd hd' hc hc'
-  have hba : b = a := by
-    calc b = b * (a * c) := by rw [hac, mul_one]
-      _ = a * (b * c) := by ring
-      _ = a := by rw [hbc, mul_one]
+  have hba : b = a := left_inv_eq_right_inv hbc (by rw [mul_comm]; exact hac)
   have hsq : ∀ (g : Matrix Ix Ix R) (f : {p // Even (deg p)} ≃ {p // ¬ Even (deg p)}),
       ((g.submatrix (fun p : {p // Even (deg p)} => (p : Ix)) fun p => (f p : Ix)).det) ^ 2
         = ((g.submatrix (fun p : {p // Even (deg p)} => (p : Ix)) fun p => (e' p : Ix)).det) ^ 2 := by

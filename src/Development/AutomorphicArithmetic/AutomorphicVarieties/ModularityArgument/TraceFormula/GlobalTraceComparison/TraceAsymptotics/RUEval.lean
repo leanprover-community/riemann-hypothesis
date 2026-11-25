@@ -1,6 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GlobalTraceComparison.TraceAsymptotics.SplitLineAlt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevOpMemFixed
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueAdmissibleLocalComponentDefiniteUnit
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
@@ -64,15 +65,6 @@ section Generic
 
 variable {G H V : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V]
 
-private theorem levOp_self (ρ : Representation ℂ G V) (K : Subgroup G) (f : G → ℂ)
-    (hfs : (Function.support fun q : G ⧸ K => f q.out).Finite) (x : V) :
-    levOp ρ K K f LinearMap.id x = ∑ᶠ q : G ⧸ K, f q.out • ρ q.out x := by
-  have hs : (Function.support fun q : G ⧸ K => f q.out • (ρ q.out ∘ₗ (LinearMap.id : V →ₗ[ℂ] V))).Finite :=
-    hfs.subset fun q hq h0 => hq (by simp [h0])
-  have h := (LinearMap.applyₗ (R := ℂ) (M := V) (M₂ := V) x).toAddMonoidHom.map_finsum hs
-  simp only [levOp, Subgroup.relIndex_self, Nat.cast_one, inv_one, one_smul]
-  exact h
-
 private theorem levOp_ind (ρ : Representation ℂ G V) (K : Subgroup G) {x : V} (hx : x ∈ fixed ρ K) :
     levOp ρ K K ((K : Set G).indicator 1) LinearMap.id x = x := by
   let q₁ : G ⧸ K := QuotientGroup.mk 1
@@ -83,10 +75,12 @@ private theorem levOp_ind (ρ : Representation ℂ G V) (K : Subgroup G) {x : V}
   have h1 : Quotient.out q₁ ∈ K := by
     have := QuotientGroup.eq.1 (QuotientGroup.out_eq' q₁).symm
     simpa [q₁] using this
-  rw [levOp_self ρ K _ ((Set.finite_singleton q₁).subset fun q hq => by
-    by_contra hne
-    exact hq (hz q hne)), finsum_eq_single _ q₁ fun q hq => by rw [hz q hq, zero_smul]]
-  rw [Set.indicator_of_mem h1]
+  rw [GlobalTheory.TwTrLevel.levOp_apply ρ K K _ LinearMap.id x
+    ((Set.finite_singleton q₁).subset fun q hq => by
+      by_contra hne
+      exact hq (hz q hne)), Subgroup.relIndex_self, Nat.cast_one, inv_one, one_smul,
+    finsum_eq_single _ q₁ fun q hq => by rw [hz q hq, zero_smul]]
+  rw [Set.indicator_of_mem h1, LinearMap.id_apply]
   simpa using GlobalTheory.LGrp.mem_fixed.1 hx _ h1
 
 private theorem twTr_line (ρ : Representation ℂ G V) (K : Subgroup G) (f : G → ℂ) (c : ℂ)
@@ -111,15 +105,6 @@ private theorem twTr_ind (ρ : Representation ℂ G V) (K : Subgroup G) (h1 : Mo
     (hne : fixed ρ K ≠ ⊥) : twTr ρ K K ((K : Set G).indicator 1) LinearMap.id = 1 := by
   obtain ⟨x, hx, h0⟩ := (Submodule.ne_bot_iff _).1 hne
   exact twTr_line ρ K _ 1 h1 hx h0 (by rw [levOp_ind ρ K hx, one_smul])
-
-private theorem finite_supp [TopologicalSpace G] [IsTopologicalGroup G] (K : Subgroup G)
-    (hK : IsOpen (K : Set G)) (f : G → ℂ) (hc : HasCompactSupport f) :
-    (Function.support fun q : G ⧸ K => f q.out).Finite := by
-  haveI : DiscreteTopology (G ⧸ K) := QuotientGroup.discreteTopology hK
-  have himg : IsCompact ((QuotientGroup.mk : G → G ⧸ K) '' tsupport f) :=
-    IsCompact.image hc continuous_quot_mk
-  refine himg.finite_of_discrete.subset fun q hq => ?_
-  exact ⟨q.out, subset_tsupport _ hq, QuotientGroup.out_eq' q⟩
 
 private theorem levOp_comp (e : G ≃* H) (ρ : Representation ℂ H V) (K : Subgroup H) (K₁ : Subgroup G)
     (hK : ∀ g, g ∈ K₁ ↔ e g ∈ K) (F : G → ℂ) (f : H → ℂ) (hFf : ∀ g, F g = f (e g))
@@ -150,7 +135,10 @@ private theorem levOp_comp (e : G ≃* H) (ρ : Representation ℂ H V) (K : Sub
   have hfin' : (Function.support fun q : G ⧸ K₁ => F q.out).Finite := by
     refine (hfin.preimage hφ.1.injOn).subset fun q hq => ?_
     simpa [hval q] using hq
-  rw [levOp_self _ K₁ F hfin', levOp_self ρ K f hfin, ← finsum_comp_equiv (Equiv.ofBijective φ hφ)]
+  rw [GlobalTheory.TwTrLevel.levOp_apply _ K₁ K₁ F LinearMap.id x hfin',
+    GlobalTheory.TwTrLevel.levOp_apply ρ K K f LinearMap.id x hfin,
+    ← finsum_comp_equiv (Equiv.ofBijective φ hφ)]
+  simp only [Subgroup.relIndex_self, Nat.cast_one, inv_one, one_smul, LinearMap.id_apply]
   refine finsum_congr fun q => ?_
   obtain ⟨k, hk, h⟩ := hrep q
   simp only [Equiv.ofBijective_apply]
@@ -238,7 +226,8 @@ private theorem trace_test_function_eq (hE : ExAct) (hU : GlobalTheory.BCT.Unr E
   refine twTr_line σ.ρ (KL n w) _ _ h1 hfix hx.1 ?_
   rw [← levOp_comp (eSp hs) σ.ρ (KL n w) (KGL w (n := n)) (fun g => Iff.rfl) (fn1 n w e)
     (fun y : UL n w => fn1 n w e y.1) (fun _ => rfl) (fun y k hk => (hHU.2 k hk y).2)
-    (finite_supp _ (GlobalTheory.BCT.LocCompU.isOpen_isCompact_KL hU n w).1 _ hHU.1) hfix]
+    (GlobalTheory.TwTrLevel.finite_supp _
+      (GlobalTheory.BCT.LocCompU.isOpen_isCompact_KL hU n w).1 _ hHU.1) hfix]
   exact hop
 
 end Local

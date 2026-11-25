@@ -79,22 +79,15 @@ theorem diagEnergy_mul (hI : ChartEnergyLinearInvariant.Statement) (hC : ChartEn
 
 theorem diagEnergy_perm (hI : ChartEnergyLinearInvariant.Statement) {e : ℕ} {l : Fin (e + 1) → ℝ}
     (hl : ∀ j, 0 < l j) (σ : Equiv.Perm (Fin (e + 1))) : diagEnergy (l ∘ σ) = diagEnergy l := by
-  set C : Matrix (Fin (e + 1)) (Fin (e + 1)) ℂ := σ.symm.toPEquiv.toMatrix with hCdef
-  have hCH : Cᴴ = σ.toPEquiv.toMatrix := by
-    ext i j
-    rw [hCdef, conjTranspose_apply, PEquiv.toMatrix_apply, PEquiv.toMatrix_apply]
-    simp only [Equiv.toPEquiv_apply, Option.mem_def, Option.some.injEq, Equiv.symm_apply_eq]
-    by_cases h : σ i = j
-    · simp [h]
-    · simp [h, Ne.symm h]
+  set C : Matrix (Fin (e + 1)) (Fin (e + 1)) ℂ := σ⁻¹.permMatrix ℂ with hCdef
+  have hCH : Cᴴ = σ.permMatrix ℂ := by simp [C]
   have hconj : ∀ A : Matrix (Fin (e + 1)) (Fin (e + 1)) ℂ, Cᴴ * A * C = A.submatrix σ σ := by
     intro A
-    rw [hCH, PEquiv.toMatrix_toPEquiv_mul, hCdef, PEquiv.mul_toMatrix_toPEquiv, Equiv.symm_symm]
+    rw [hCH, PEquiv.toMatrix_toPEquiv_mul, hCdef, PEquiv.mul_toMatrix_toPEquiv]
     rfl
   have hCd : C.det ≠ 0 := by
-    rw [hCdef, show (σ.symm.toPEquiv.toMatrix : Matrix (Fin (e + 1)) (Fin (e + 1)) ℂ) =
-      Equiv.Perm.permMatrix ℂ σ.symm from rfl, det_permutation]
-    rcases Int.units_eq_one_or (Equiv.Perm.sign σ.symm) with h | h <;> simp [h]
+    rw [hCdef, det_permutation]
+    exact Int.cast_ne_zero.2 (Units.ne_zero _)
   have hterm : ∀ k, chartMixedEnergy (Matrix.diagonal fun j => (l j : ℂ)) 1 k =
       chartMixedEnergy (Matrix.diagonal fun j => ((l ∘ σ) j : ℂ)) 1 k := by
     intro k

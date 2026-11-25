@@ -23,11 +23,6 @@ namespace Formalism.FourierDecayAlt.P.LongWeylElement
 
 section PartL
 
-theorem conjM_cont {k r : ℕ} (a : Mat k r) : Continuous (conjM a : Mt k r → Mt k r) := by
-  first
-    | (show Continuous fun x : Mt k r => (a * Matrix.of x * a⁻¹ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
-       exact (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const)
-
 def mid (k r' : ℕ) (p : Fin (2 * (1 + r') + k + 1)) : Prop := 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
 
 theorem mid_levPos (k r' : ℕ) (s : Fin (2 * r' + k + 1)) : mid k r' (levPos k 1 r' s) := by
@@ -45,15 +40,6 @@ theorem mid_iff (k r' : ℕ) (p : Fin (2 * (1 + r') + k + 1)) : mid k r' p ↔ p
   · rintro ⟨s, rfl⟩
     exact mid_levPos k r' s
 
-theorem levPos_inj (k r' : ℕ) : Function.Injective (levPos k 1 r') := by
-  intro a b h
-  have h' : a.val + 1 = b.val + 1 := congrArg Fin.val h
-  exact Fin.ext (by omega)
-
-theorem lev_mm (k r' : ℕ) (g : Mat k r') (s t : Fin (2 * r' + k + 1)) :
-    ιLev k 1 r' g (levPos k 1 r' s) (levPos k 1 r' t) = g s t := by
-  apply _root_.Formalism.FourierDecayAlt.P.B2x9.lev_mid <;> assumption
-
 theorem lev_mn (k r' : ℕ) (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1)) (hp : mid k r' p) (hq : ¬ mid k r' q) :
     ιLev k 1 r' g p q = 0 := by
   have hp' : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1 := hp
@@ -64,11 +50,6 @@ theorem lev_n (k r' : ℕ) (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1)) (hp
     ιLev k 1 r' g p q = if p = q then 1 else 0 := by
   have hp' : ¬ (1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1) := hp
   simp only [ιLev, dite_eq_right hp']
-
-theorem lev_one (k r' : ℕ) : ιLev k 1 r' 1 = 1 := by
-  ext p q
-  simp only [ιLev, Matrix.one_apply, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem lev_mul (k r' : ℕ) (g h : Mat k r') : ιLev k 1 r' (g * h) = ιLev k 1 r' g * ιLev k 1 r' h := by
   first
@@ -236,7 +217,7 @@ lemma lev_conjT (g : Mat k r') : (ιLev k 1 r' g)ᴴ = ιLev k 1 r' gᴴ := by
 lemma lev_inj {g h : Mat k r'} (e : ιLev k 1 r' g = ιLev k 1 r' h) : g = h := by
   ext s t
   have := congrFun (congrFun e (levPos k 1 r' s)) (levPos k 1 r' t)
-  rwa [lev_mm, lev_mm] at this
+  rwa [_root_.Formalism.FourierDecayAlt.P.B2x2.lev_mm, _root_.Formalism.FourierDecayAlt.P.B2x2.lev_mm] at this
 
 lemma Hpk_eq (k r' : ℕ) : Hpk k (1 + r') = w0 k r' 1 * ιLev k 1 r' (Hpk k r') := by
   ext i j
@@ -259,7 +240,7 @@ lemma Hpk_eq (k r' : ℕ) : Hpk k (1 + r') = w0 k r' 1 * ιLev k 1 r' (Hpk k r')
       by_cases hmj : mid k r' j
       · obtain ⟨s, rfl⟩ := (mid_iff k r' i).1 hmi
         obtain ⟨t, rfl⟩ := (mid_iff k r' j).1 hmj
-        rw [lev_mm, Formalism.FourierDecayAlt.P.B2x4.Hpk_levPos]
+        rw [_root_.Formalism.FourierDecayAlt.P.B2x2.lev_mm, Formalism.FourierDecayAlt.P.B2x4.Hpk_levPos]
       · rw [lev_col_n (Hpk k r') i j hmj, ite_eq_right (fun h => by subst h; exact hmj hmi)]
         have hj' : ¬ (1 ≤ j.val ∧ j.val < 2 * r' + k + 1 + 1) := hmj
         simp only [Hpk, Fin.ext_iff]
@@ -309,14 +290,14 @@ lemma lev_col_iff (g : Mat k r') (t : Fin (2 * r' + k + 1)) :
   constructor
   · intro h s
     have := h (levPos k 1 r' s)
-    rw [lev_mm] at this
+    rw [_root_.Formalism.FourierDecayAlt.P.B2x2.lev_mm] at this
     rw [this]
-    exact if_congr (levPos_inj k r').eq_iff rfl rfl
+    exact if_congr (_root_.Formalism.FourierDecayAlt.P.B2x2.levPos_inj k r').eq_iff rfl rfl
   · intro h p
     by_cases hp : mid k r' p
     · obtain ⟨s, rfl⟩ := (mid_iff k r' p).1 hp
-      rw [lev_mm, h s]
-      exact if_congr (levPos_inj k r').eq_iff.symm rfl rfl
+      rw [_root_.Formalism.FourierDecayAlt.P.B2x2.lev_mm, h s]
+      exact if_congr (_root_.Formalism.FourierDecayAlt.P.B2x2.levPos_inj k r').eq_iff.symm rfl rfl
     · exact lev_n k r' g p _ hp
 
 lemma eI_succ (a : Fin r') : eI k (1 + r') (Fin.natAdd 1 a) = levPos k 1 r' (eI k r' a) := by
@@ -388,7 +369,7 @@ theorem uWbRec : Formalism.FourierDecayAlt.B2.UWbRec := by
       · by_cases hq : mid k r' q
         · obtain ⟨s, rfl⟩ := (mid_iff k r' p).1 hp
           obtain ⟨t, rfl⟩ := (mid_iff k r' q).1 hq
-          rw [lev_mm]
+          rw [_root_.Formalism.FourierDecayAlt.P.B2x2.lev_mm]
           rfl
         · rw [lev_mn k r' _ p q hp hq]
           rcases (not_mid_iff q).1 hq with rfl | rfl
@@ -640,18 +621,8 @@ theorem invM_smul : (invM : Mt k r → Mt k r) = fun x => (detF x)⁻¹ • adjF
     | (show ((Matrix.of x : Mat k r)⁻¹ : Mat k r) = ((Matrix.of x : Mat k r).det)⁻¹ • (Matrix.of x : Mat k r).adjugate
        rw [Matrix.inv_def, Ring.inverse_eq_inv'])
 
-theorem invM_meas : Measurable (invM : Mt k r → Mt k r) := by
-  rw [invM_smul]
-  first
-    | exact (detF_cont.measurable.inv).smul adjF_cont.measurable
-
-theorem mulM_cont : Continuous (mulM : Mt k r × Mt k r → Mt k r) := by
-  first
-    | (show Continuous fun p : Mt k r × Mt k r => (Matrix.of p.1 * Matrix.of p.2 : Mat k r)
-       exact continuous_fst.matrix_mul continuous_snd)
-
 theorem mulM_meas : Measurable (mulM : Mt k r × Mt k r → Mt k r) := by
-  exact mulM_cont.measurable
+  exact _root_.Formalism.FourierDecayAlt.P.B2x2.mulM_cont.measurable
 
 theorem mm_meas {α : Type*} [MeasurableSpace α] {A B : α → Mt k r} (hA : Measurable A) (hB : Measurable B) :
     Measurable (fun t => mulM (A t, B t)) := by
@@ -661,42 +632,10 @@ theorem mm_meas {α : Type*} [MeasurableSpace α] {A B : α → Mt k r} (hA : Me
 theorem levM_meas : Measurable (levM k r') := by
   exact (levM_cont k r').measurable
 
-lemma continuous_herm {ι : Type*} [Fintype ι] (H : Matrix ι ι ℂ) :
-    Continuous fun p : (ι → ℂ) × (ι → ℂ) => herm H p.1 p.2 := by
-  first
-    | (unfold herm; fun_prop)
-
-lemma continuous_lift (k r' : ℕ) : Continuous (liftVec k 1 r') := by
-  refine continuous_pi fun p => ?_
-  show Continuous fun v : Fin (2 * r' + k + 1) → ℂ => liftVec k 1 r' v p
-  simp only [liftVec]
-  split_ifs <;> first | exact continuous_const | exact continuous_apply _
-
-lemma continuous_hb (k r' : ℕ) : Continuous fun x : HPar k r' => hb k r' x.1 x.2 := by
-  have h1 : Continuous fun x : HPar k r' => herm (Hpk k r') x.1 x.1 := by
-    first
-      | exact (continuous_herm (Hpk k r')).comp (continuous_fst.prodMk continuous_fst)
-  unfold hb
-  first
-    | fun_prop
-
-lemma continuous_heis0 (k r' : ℕ) : Continuous (heis0 k r') := by
-  have hv : Continuous fun x : HPar k r' => liftVec k 1 r' x.1 := (continuous_lift k r').comp continuous_fst
-  have hb' : Continuous fun x : HPar k r' => hb k r' x.1 x.2 := continuous_hb k r'
-  have hh : ∀ j, Continuous fun x : HPar k r' => herm (Hpk k (1 + r')) (bvec j) (liftVec k 1 r' x.1) := by
-    intro j
-    first
-      | exact (continuous_herm _).comp (continuous_const.prodMk hv)
-  refine continuous_pi fun p => continuous_pi fun q => ?_
-  simp only [heis0, heisG, Matrix.sub_apply, Matrix.add_apply, Matrix.vecMulVec_apply, Matrix.one_apply, Pi.add_apply,
-    Pi.smul_apply, smul_eq_mul]
-  have hvp : Continuous fun x : HPar k r' => liftVec k 1 r' x.1 p := (continuous_apply p).comp hv
-  fun_prop
-
 def heisF (k r' : ℕ) (x : HPar k r') : Mt k (1 + r') := heis0 k r' x
 
 theorem heisF_meas : Measurable (heisF k r') := by
-  have hc : Continuous (heisF k r') := continuous_heis0 k r'
+  have hc : Continuous (heisF k r') := _root_.Formalism.FourierDecayAlt.P.B2x5.continuous_heis0 k r'
   exact hc.measurable
 
 def bcF (k r : ℕ) (c : Fin r → ℂ) : Mt k r := bigCell k r c 1
@@ -718,22 +657,22 @@ theorem long_weyl_element_measurable : Measurable (w0F k r') := by
 theorem cell_meas {α : Type*} [MeasurableSpace α] {N T M N' : α → Mt k r} (hN : Measurable N) (hT : Measurable T)
     (hM : Measurable M) (hN' : Measurable N') :
     Measurable (β := Mt k r) (fun t => ((Matrix.of (N t))⁻¹ * Matrix.of (T t) * Matrix.of (M t) * Matrix.of (N' t) : Mat k r)) := by
-  exact mm_meas (mm_meas (mm_meas (invM_meas.comp hN) hT) hM) hN'
+  exact mm_meas (mm_meas (mm_meas (_root_.Formalism.FourierDecayAlt.P.B2x2.invM_meas.comp hN) hT) hM) hN'
 
 theorem os_meas {α : Type*} [MeasurableSpace α] {X X' : α → HPar k r'} {C : α → ℂ} {Gm : α → Mt k r'}
     (hX : Measurable X) (hC : Measurable C) (hG : Measurable Gm) (hX' : Measurable X') :
     Measurable (β := Mt k (1 + r')) (fun t => oneStep k r' (X t) (C t) (Matrix.of (Gm t)) (X' t)) := by
-  exact mm_meas (mm_meas (mm_meas (invM_meas.comp (heisF_meas.comp hX)) (long_weyl_element_measurable.comp hC)) (levM_meas.comp hG))
+  exact mm_meas (mm_meas (mm_meas (_root_.Formalism.FourierDecayAlt.P.B2x2.invM_meas.comp (heisF_meas.comp hX)) (long_weyl_element_measurable.comp hC)) (levM_meas.comp hG))
     (heisF_meas.comp hX')
 
 theorem lev_inv (n : Mat k r') (hn : IsUnit n.det) : ιLev k 1 r' n⁻¹ = (ιLev k 1 r' n)⁻¹ := by
   have h1 : ιLev k 1 r' n * ιLev k 1 r' n⁻¹ = 1 := by
-    rw [← lev_mul, Matrix.mul_nonsing_inv n hn, lev_one]
+    rw [← lev_mul, Matrix.mul_nonsing_inv n hn, _root_.Formalism.FourierDecayAlt.P.B2x2.lev_one]
   exact (Matrix.inv_eq_right_inv h1).symm
 
 theorem lev_unit (n : Mat k r') (hn : IsUnit n.det) : IsUnit (ιLev k 1 r' n).det := by
   have h1 : ιLev k 1 r' n * ιLev k 1 r' n⁻¹ = 1 := by
-    rw [← lev_mul, Matrix.mul_nonsing_inv n hn, lev_one]
+    rw [← lev_mul, Matrix.mul_nonsing_inv n hn, _root_.Formalism.FourierDecayAlt.P.B2x2.lev_one]
   exact Matrix.isUnit_det_of_right_inverse h1
 
 theorem os_cell (x x' : HPar k r') (c : ℂ) (B n n' m : Mat k r') (hn : IsUnit n.det) :
@@ -784,10 +723,10 @@ theorem nuN_eq (hC : HeisConjLevMeas) (hN : ClosedN) (μ' : Measure (Mt k r')) (
       = ∫⁻ y, F (mulM (y, levM k r' n)) ∂((μHeis k r').map (conjM (ιLev k 1 r' (Matrix.of n)))) := by
         rw [hC k r' _ hn.1]
     _ = ∫⁻ y, F (mulM (conjM (ιLev k 1 r' (Matrix.of n)) y, levM k r' n)) ∂(μHeis k r') :=
-        lintegral_map hm (conjM_cont _).measurable
+        lintegral_map hm (_root_.Formalism.FourierDecayAlt.P.B2x2.conjM_cont _).measurable
     _ = ∫⁻ x, F (mulM (conjM (ιLev k 1 r' (Matrix.of n)) (heisF k r' x), levM k r' n)) := by
         rw [μHeis_eq]
-        exact lintegral_map (hm.comp (conjM_cont _).measurable) heisF_meas
+        exact lintegral_map (hm.comp (_root_.Formalism.FourierDecayAlt.P.B2x2.conjM_cont _).measurable) heisF_meas
     _ = ∫⁻ x, F (thetaF k r' (x, n)) := by
         refine lintegral_congr fun x => ?_
         congr 1

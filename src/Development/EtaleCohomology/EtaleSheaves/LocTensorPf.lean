@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.SHTensorPf
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC
 
 namespace LateralTheory.E.LocTensorPf

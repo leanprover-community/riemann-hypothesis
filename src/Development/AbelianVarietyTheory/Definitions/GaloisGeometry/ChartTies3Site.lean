@@ -43,8 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 section
 namespace GlobalTheory.Port
 
@@ -109,7 +107,5 @@ theorem hypTJ_site (Z : SiteD X0 u w hg M) (Fl : Fills (D.gat u w hg)) (ht : Fl.
 variable {Tw : TwForms D} {μ : D.what₂.Tup}
 
 end GlobalTheory.Port
-
-end
 
 end

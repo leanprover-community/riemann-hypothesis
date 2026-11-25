@@ -2,49 +2,11 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PartClosed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
 import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Algebra.Module.Torsion.Basic
 
 @[expose] public section
@@ -71,20 +33,15 @@ private theorem chain_stab {R : Type} [CommRing R] [IsLocalRing R] [IsNoetherian
   haveI : IsArtinian (R ⧸ maximalIdeal R) K := isArtinian_of_fg_of_artinian'
   haveI : IsArtinian R K := isArtinian_of_surjective_algebraMap (R := R ⧸ maximalIdeal R)
     (Ideal.Quotient.mk_surjective (I := maximalIdeal R))
-  let G : ℕ → Submodule R K := fun n => Submodule.comap (Submodule.subtype K) (F n)
-  have hG : Antitone G := fun a b h => Submodule.comap_mono (hF h)
-  obtain ⟨_, ⟨N, rfl⟩, hmin⟩ :=
-    (wellFounded_lt (α := Submodule R K)).has_min (Set.range G) ⟨_, 0, rfl⟩
-  refine ⟨N, fun n => ?_⟩
-  have hle2 : G (max N n) ≤ G N := hG (le_max_left _ _)
-  have heq : G (max N n) = G N := by
-    by_contra hne
-    exact hmin _ ⟨_, rfl⟩ (lt_of_le_of_ne hle2 hne)
-  intro x hx
-  have hxK : x ∈ K := hle N hx
-  have h2 : (⟨x, hxK⟩ : K) ∈ G N := hx
-  rw [← heq] at h2
-  exact hF (le_max_right N n) h2
+  let G : ℕ →o (Submodule R K)ᵒᵈ :=
+    { toFun := fun n => OrderDual.toDual (Submodule.comap (Submodule.subtype K) (F n))
+      monotone' := fun _ _ h => Submodule.comap_mono (hF h) }
+  obtain ⟨N, hN⟩ := IsArtinian.monotone_stabilizes G
+  refine ⟨N, fun n x hx => ?_⟩
+  have hmem : (⟨x, hle N hx⟩ : K) ∈ OrderDual.ofDual (G (max N n)) := by
+    rw [← hN (max N n) (le_max_left _ _)]
+    exact hx
+  exact hF (le_max_right N n) hmem
 
 private theorem mul_mem_of_mem_ideal_killed_by_maximalIdeal {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R]
     [IsCO O R] (J : Ideal R) (hJ : maximalIdeal R * J = ⊥) (S : Submodule O R) (r k : R)

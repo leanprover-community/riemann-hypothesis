@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Flat.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.NL.Model
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.NL

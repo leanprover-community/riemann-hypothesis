@@ -197,8 +197,8 @@ theorem _root_.GlobalTheory.T.fockF_image_eq_zero_or_exists_eq_smul : GlobalTheo
       G.nu t i (j + 1) := mul_div_mul_right_eq_div _ _ _
   have e' : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.alpha G t i j / GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.beta G i j = G.nu t i (j + 1) := mul_div_mul_right_eq_div _ _ _
   refine _root_.GlobalTheory.BotMatch.bottom_matching_of_triangle hH hPr hLM W.ψ_std W.θ_is X hX.is t (hd t).1 (e ▸ chrEq_nu G t i j hL)
-    (GlobalTheory.T.exists_embedding_splitPrime_gridLocalTensorPlaces hL t) (fun w hw hu => ?_) (fun w hw => ?_) (GlobalTheory.T.gridLocalTensorPlaces_splitIdempotent_sum hL t).1
-    ((GlobalTheory.T.gridLocalTensorPlaces_splitIdempotent_sum hL t).2 _ (hX.is.idem t)).1 FA FA' FW hf hf'
+    (GlobalTheory.LocPlTau.exists_splitPrime_locPl hL t) (fun w hw hu => ?_) (fun w hw => ?_) (GlobalTheory.IdemAtPl.main hL t).1
+    ((GlobalTheory.IdemAtPl.main hL t).2 _ (hX.is.idem t)).1 FA FA' FW hf hf'
   · have hu' : GlobalTheory.LFun.UnrAt (F := D.host.F) (E := D.host.E)
         (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.alpha G t i j / GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.beta G i j) w := by
       rw [e', ← e]; exact hu
@@ -214,7 +214,7 @@ theorem _root_.GlobalTheory.T.fockF_image_eq_zero_or_exists_eq_smul : GlobalTheo
   · obtain ⟨ε, hε⟩ := GlobalTheory.StabDense.exists_placeIdem (D := D) (w.under (𝓞 D.host.F))
     have hs : w.under (𝓞 D.host.F) ∉ G.pl.S0 := fun hs =>
       hw (G.pl.w _) (Finset.mem_union_left _ (by unfold Places.W0; exact Finset.mem_image_of_mem _ hs)) (G.pl.under_w hs)
-    have h1 := GlobalTheory.BasePairChar.unrAt_of_unramAt hε (GlobalTheory.T.level_character_unramified_mu G μ₀ hL t _ ε hε hs (fun P hP => hw P (Finset.mem_union_right _ hP)) j) rfl
+    have h1 := GlobalTheory.BasePairChar.unrAt_of_unramAt hε (GlobalTheory.BotTripleUnr.unramAt_mu G μ₀ hL t _ ε hε hs (fun P hP => hw P (Finset.mem_union_right _ hP)) j) rfl
     have h2 := GlobalTheory.BasePairChar.unrAt_of_unramAt hε (GlobalTheory.T.grid_characters_unramified G μ₀ hL t _ ε hε hs i).1 rfl
     have h3 := GlobalTheory.BasePairChar.unrAt_of_unramAt hε (GlobalTheory.T.grid_characters_unramified G μ₀ hL t _ ε hε hs i).2 rfl
     have h4 : ∀ n : ℕ, GlobalTheory.LFun.UnrAt (F := D.host.F) (E := D.host.E) (Lc.eta ^ n) w := fun n => by
@@ -464,7 +464,7 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem _root_.GlobalTheory.T.theta_bottomLevel_uniqueness : GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching → GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW), IsBottomTri W i j X → ∀ (FA : GlobalTheory.ChainFr.Fr A) (FA' : GlobalTheory.ChainFr.Fr A') (FW : GlobalTheory.ChainFr.Fr WW) (t : T), ∀ (Pi₀ : ModuleCat.{0} ℂ) rf₀ rl₀ p₀ p₀' (Pi : ModuleCat.{0} ℂ) rf rl p p', IsMatch W.ψ W.θ FA FA' FW (Lc.mu t (j + 1) * Lc.eta ^ (rankV D i j % 2)) (G.ch.chi (D.R.m - i) * Lc.eta ^ (rankV D i j % 2)) (X.ω t) (X.ω' t) Pi₀ rf₀ rl₀ p₀ p₀' → IsMatch W.ψ W.θ FA FA' FW (Lc.mu t (j + 1) * Lc.eta ^ (rankV D i j % 2)) (G.ch.chi (D.R.m - i) * Lc.eta ^ (rankV D i j % 2)) (X.ω t) (X.ω' t) Pi rf rl p p' → ∃ (E : Pi₀ ≃ₗ[ℂ] Pi) (c : ℂ), c ≠ 0 ∧ (∀ Φ ∈ algF W.ψ W.θ true FA FW, p Φ = c • E (p₀ Φ)) ∧ ∀ Φ' ∈ algF W.ψ W.θ false FA' FW, p' Φ' = E (p₀' Φ') := by
   intro hH hP hK hL
-  obtain ⟨CF0, h⟩ := GlobalTheory.T.definiteBottom_dictionary_frames_exponents_kernel
+  obtain ⟨CF0, h⟩ := GlobalTheory.BotDict.bottom_dictionary
   refine ⟨CF0, fun ε CF hCF => ?_⟩
   obtain ⟨C0, x0, h⟩ := h ε CF hCF
   refine ⟨C0, x0, fun C hC D large₂ he hx hr T Lc μ hμ G => ?_⟩

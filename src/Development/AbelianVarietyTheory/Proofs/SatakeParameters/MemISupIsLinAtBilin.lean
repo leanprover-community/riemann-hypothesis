@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaM
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
 
-noncomputable section
-
 namespace GlobalTheory.ThetaLoc
 
 open GlobalTheory.SplitWeil
@@ -26,5 +24,3 @@ theorem isLinAt_comp {Θ Ω : Type} [AddCommGroup Θ] [Module ℂ Θ] [AddCommGr
   rw [← hT _ _ (hP Φ), hι h g hh hg Φ Φ' hΦ, map_smul]
 
 end GlobalTheory.ThetaLoc
-
-end

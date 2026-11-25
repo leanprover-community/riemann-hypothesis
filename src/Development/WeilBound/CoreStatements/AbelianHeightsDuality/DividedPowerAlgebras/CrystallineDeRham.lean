@@ -958,37 +958,6 @@ theorem acyc_toSmall (hinf : ∀ k l, ∃ m, U m = U k ⊓ U l) (T : (IsSmall γ
 end Comma
 
 
-private theorem pull2_restrict_isSmall_bijective_of_cover (hcov : ⨆ k, U k = ⊤) :
-    Function.Bijective (CoefMap.restrict (O γ s) (IsSmall γ s U).ι).pull2 := by
-  apply Desc.pull2_bijective
-  · intro T b
-    obtain ⟨L, l, hl⟩ := SmallDescent.exists_isLoc T b
-    obtain ⟨hu, hsurj, hker, hfac⟩ := hl
-    refine ⟨L, l, hu, ?_, hker, ?_⟩
-    · intro y
-      obtain ⟨n, N, h⟩ := hsurj y
-      exact ⟨N, n, h⟩
-    · intro S u hu'
-      obtain ⟨ψ, hψ⟩ := hfac S u hu'
-      exact ⟨ψ, hψ, fun ψ' h' =>
-        SmallDescent.IsLoc.hom_ext ⟨hu, hsurj, hker, hfac⟩ (h'.trans hψ.symm)⟩
-  · intro S S' a hS
-    exact SmallDescent.isSmall_of_hom a hS
-  · intro T
-    obtain ⟨σ, hσ, hσs⟩ := SmallDescent.exists_cover hcov T
-    refine ⟨σ.card, fun i => (σ.equivFin.symm i : T.B), ?_, ?_⟩
-    · have hr : Set.range (fun i => (σ.equivFin.symm i : T.B)) = (σ : Set T.B) := by
-        ext x
-        constructor
-        · rintro ⟨i, rfl⟩
-          exact (σ.equivFin.symm i).2
-        · intro hx
-          exact ⟨σ.equivFin ⟨x, hx⟩, by simp⟩
-      rw [hr]
-      exact hσ
-    · intro i S u hu
-      exact hσs _ (σ.equivFin.symm i).2 S u hu
-
 
 end FubiniStudyChowHeightFormula₂.Adr
 end -- clump:auto

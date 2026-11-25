@@ -297,7 +297,7 @@ theorem qmul_last {m : Type*} (x : U.RC k j (1 + ρ)) (M : Matrix (Fin (j + 1)) 
 
 theorem qL_inv (x : U.RC k j (1 + ρ)) : (qL x)⁻¹ = U.blk2 1 (-(Matrix.of (aC x))ᴴ) 0 1 := by
   apply Matrix.inv_eq_right_inv
-  rw [qL, Ux3.symmetricScalarBlockMatrix_mul]
+  rw [qL, _root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul]
   simp [U.blk2, Matrix.fromBlocks_one]
 
 theorem conj_inverse_block_apply (x : U.RC k j (1 + ρ)) (a b : Fin (j + 1)) :
@@ -576,7 +576,7 @@ def Z1 (c : ℂ) : G.Mat 1 := fun _ _ => c
 theorem block_diagonal_inv {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (D' : Matrix (Fin s) (Fin s) ℂ) (hA : IsUnit A.det)
     (hD : IsUnit D'.det) : (U.blk2 A 0 0 D')⁻¹ = U.blk2 A⁻¹ 0 0 D'⁻¹ := by
   apply Matrix.inv_eq_right_inv
-  rw [Ux3.symmetricScalarBlockMatrix_mul]
+  rw [_root_.Formalism.FourierDecayAlt.P.Ux2.symmetricScalarBlockMatrix_mul]
   simp [Matrix.mul_nonsing_inv _ hA, Matrix.mul_nonsing_inv _ hD, U.blk2, Matrix.fromBlocks_one]
 
 theorem block_diagonal_conjTranspose {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (D' : Matrix (Fin s) (Fin s) ℂ) :

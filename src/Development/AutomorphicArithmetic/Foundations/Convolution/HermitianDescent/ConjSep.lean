@@ -146,19 +146,16 @@ namespace UpperTheory.ConvolutionTheory.D
 section
 variable {R : Type} [CommRing R] {n : ℕ}
 
-private def kry (g : Matrix (Fin n) (Fin n) R) (v : Fin n → R) : Matrix (Fin n) (Fin n) R :=
-  Matrix.of fun i j => (g ^ (j : ℕ) *ᵥ v) i
-
 private noncomputable def pol (c : Fin n → R) : R[X] := ∑ j : Fin n, monomial (j : ℕ) (c j)
 
 private theorem kry_mulVec (g : Matrix (Fin n) (Fin n) R) (v c : Fin n → R) :
-    kry g v *ᵥ c = aeval g (pol c) *ᵥ v := by
+    UpperTheory.Reformulated.B.G8.kry g v *ᵥ c = aeval g (pol c) *ᵥ v := by
 
   rw [pol, map_sum, Matrix.sum_mulVec]
   funext i
   rw [Finset.sum_apply]
   simp only [aeval_monomial, ← Algebra.smul_def, Matrix.smul_mulVec, Pi.smul_apply, smul_eq_mul]
-  simp only [Matrix.mulVec, dotProduct, kry, Matrix.of_apply]
+  simp only [Matrix.mulVec, dotProduct, UpperTheory.Reformulated.B.G8.kry, Matrix.of_apply]
   exact Finset.sum_congr rfl fun j _ => mul_comm _ _
 
 private theorem pol_coeff (p : R[X]) (h : p.degree < n) : pol (fun i : Fin n => p.coeff i) = p := by
@@ -166,13 +163,13 @@ private theorem pol_coeff (p : R[X]) (h : p.degree < n) : pol (fun i : Fin n => 
   exact sum_fin (fun i a => monomial i a) (by simp) h |>.trans (sum_monomial_eq p)
 
 private theorem aeval_mulVec [Nontrivial R] (g : Matrix (Fin n) (Fin n) R) (v : Fin n → R) (p : R[X]) :
-    aeval g p *ᵥ v = kry g v *ᵥ fun i : Fin n => (p %ₘ g.charpoly).coeff i := by
+    aeval g p *ᵥ v = UpperTheory.Reformulated.B.G8.kry g v *ᵥ fun i : Fin n => (p %ₘ g.charpoly).coeff i := by
   rw [kry_mulVec, pol_coeff, ← Matrix.aeval_eq_aeval_mod_charpoly]
   have := degree_modByMonic_lt p g.charpoly_monic
   rwa [Matrix.charpoly_degree_eq_dim, Fintype.card_fin] at this
 
 private theorem mul_kry [Nontrivial R] (g : Matrix (Fin n) (Fin n) R) (v : Fin n → R) :
-    g * kry g v = kry g v * Matrix.of fun i j : Fin n => ((X ^ ((j : ℕ) + 1) : R[X]) %ₘ g.charpoly).coeff i := by
+    g * UpperTheory.Reformulated.B.G8.kry g v = UpperTheory.Reformulated.B.G8.kry g v * Matrix.of fun i j : Fin n => ((X ^ ((j : ℕ) + 1) : R[X]) %ₘ g.charpoly).coeff i := by
   ext i j
   have := congrFun (aeval_mulVec g v (X ^ ((j : ℕ) + 1))) i
   rw [map_pow, aeval_X, pow_succ', ← Matrix.mulVec_mulVec] at this
@@ -181,7 +178,7 @@ private theorem mul_kry [Nontrivial R] (g : Matrix (Fin n) (Fin n) R) (v : Fin n
 end
 
 private theorem exists_kry {R : Type} [CommRing R] [Finite (MaximalSpectrum R)] {n : ℕ}
-    (g : Matrix (Fin n) (Fin n) R) (h : g.charpoly.Separable) : ∃ v, IsUnit (kry g v).det :=
+    (g : Matrix (Fin n) (Fin n) R) (h : g.charpoly.Separable) : ∃ v, IsUnit (UpperTheory.Reformulated.B.G8.kry g v).det :=
   _root_.UpperTheory.Reformulated.B.G8.exists_kry g h
 
 end UpperTheory.ConvolutionTheory.D
