@@ -72,8 +72,6 @@ attribute [instance] RowSideFamily.grp RowSideFamily.fin
 
 variable {ex : Extra D L hT Gi Gl Kc Y cX}
 
-def cjS (b : Bool) : ℂ →+* ℂ := Formalism.IndefR.Links.cj b
-
 
 open Classical in
 structure RowSideDetermined (T : TiedDataSK ex) (P : RowSideFamily ex) : Prop where

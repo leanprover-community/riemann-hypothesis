@@ -14,7 +14,9 @@ import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.Exi
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.HermitianSemidefiniteNullRadicalStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.IsCompactSupAddSubgroupStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.IsOpenAdditiveCharacterKernelStatement
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.RelIndexOpenCompactNeZeroStatement
+import Mathlib.GroupTheory.Index
+import Mathlib.Topology.Algebra.Group.Defs
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelIndexOpenCompactNeZero
 
 noncomputable section
 
@@ -208,9 +210,6 @@ theorem exists_ne_one {ψ : Ch k} (hψ1 : ψ ≠ 1) : ∃ x, ψ x ≠ 1 := by
 theorem exists_lat_mem (n : ℕ) (x : Fin n → k) :
     ∃ A : AddSubgroup (Fin n → k), IsCompact (A : Set (Fin n → k)) ∧ IsOpen (A : Set (Fin n → k)) ∧ x ∈ A :=
   GlobalTheory.T.exists_compact_open_subgroup_mem n x
-theorem relIndex_ne_zero' {X : Type} [AddCommGroup X] [TopologicalSpace X] [IsTopologicalAddGroup X]
-    (A H : AddSubgroup X) (hA : IsCompact (A : Set X)) (hH : IsOpen (H : Set X)) (hHA : H ≤ A) :
-    H.relIndex A ≠ 0 := GlobalTheory.T.relIndex_open_compact_ne_zero A H hA hH hHA
 theorem apply_eq_zero_of_isotropic {V : Type} [AddCommGroup V] [Module ℂ V] (B : SForm V)
     (hB : ∀ v w, B w v = cJ (B v w)) (hB' : ∀ v, 0 ≤ (B v v).re) (x : V) (hx : (B x x).re = 0) (w : V) : B x w = 0 :=
   GlobalTheory.T.hermitian_semidefinite_null_radical B hB hB' x hx w

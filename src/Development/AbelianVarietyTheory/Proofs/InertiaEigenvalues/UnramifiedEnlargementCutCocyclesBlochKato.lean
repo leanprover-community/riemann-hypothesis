@@ -290,7 +290,6 @@ private theorem chi_mul_inv_eq_one {D : D7} {i : D.nd.Loc} {w : HeightOneSpectru
     chiOC C (chiU D.nd i 1 * (chiU D.nd i 1)⁻¹) g = 1 := by
   simp [chiOC]
 
-attribute [-instance] GlobalTheory.AdmLoc.modFun in
 theorem _root_.GlobalTheory.T.cocycleExtension_twistedWeilCoefficients_admissible : ∀ (D : D7) (HW : HWOf D.loc) (i : D.nd.Loc)
     (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i)))
     (π : D.nd.X i) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))

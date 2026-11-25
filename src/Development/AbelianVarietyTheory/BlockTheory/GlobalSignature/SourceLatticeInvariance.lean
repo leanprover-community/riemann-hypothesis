@@ -77,16 +77,8 @@ theorem intAt_neg {P : HeightOneSpectrum (𝓞 E)} {a : E} (ha : IntAt P a) : In
   obtain ⟨r, s, hs, h⟩ := ha
   exact ⟨-r, s, hs, by rw [map_neg, ← h]; ring⟩
 
-theorem intAt_algebraMap (P : HeightOneSpectrum (𝓞 E)) (r : 𝓞 E) : IntAt P (algebraMap (𝓞 E) E r) :=
-  ⟨r, 1, one_notMem P, by simp⟩
-
 def DegOneUnram (P : HeightOneSpectrum (𝓞 E)) : Prop :=
   (qOf P).Prime ∧ ((qOf P : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2
-
-def IsLatAt (P : HeightOneSpectrum (𝓞 E)) {N : ℕ} (abelian₂ : Submodule (𝓞 E) (Fin N → E)) : Prop :=
-  (∀ u : E, IntAt P u → ∀ v ∈ abelian₂, u • v ∈ abelian₂) ∧
-    ∃ m : ℕ, (∀ v : Fin N → E, (∀ l, IntAt P (v l)) → ((qOf P : E) ^ m) • v ∈ abelian₂) ∧
-      ∀ v ∈ abelian₂, ∀ l, IntAt P ((qOf P : E) ^ m * v l)
 
 def depthSub (P : HeightOneSpectrum (𝓞 E)) (D : ℕ) : AddSubgroup E where
   carrier := {a | IntAt P ((qOf P : E) ^ D * a)}

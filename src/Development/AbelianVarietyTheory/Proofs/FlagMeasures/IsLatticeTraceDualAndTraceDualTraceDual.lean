@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TranslatedLatticeAtInfinityFullCovolumeDual
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableSetDetNormPos
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -124,18 +125,7 @@ private theorem smul_mem_span_rat_restrictScalars (Λ : Submodule (𝓞 E) (Fin 
 
 theorem isLattice_restrict (Λ : Submodule (𝓞 E) (Fin j → E)) (h : Submodule.IsFullLattice E Λ) :
     Submodule.IsFullLattice ℚ (Λ.restrictScalars ℤ) := by
-  refine { toIsLattice := Submodule.IsLattice.of_fg ℚ
-             (Submodule.FG.restrictScalars (Submodule.IsLattice.fg E Λ)),
-           span_eq_top := ?_ }
-  refine Submodule.eq_top_iff'.mpr fun v => ?_
-  have hv : v ∈ Submodule.span E (Λ : Set (Fin j → E)) := by
-    rw [h.span_eq_top]
-    trivial
-  induction hv using Submodule.span_induction with
-  | mem y hy => exact Submodule.subset_span hy
-  | zero => exact zero_mem _
-  | add y z _ _ hy hz => exact add_mem hy hz
-  | smul a y _ hy => exact smul_mem_span_rat_restrictScalars E j Λ a hy
+  first | exact _root_.GlobalTheory.LatFacts.isLattice_int | exact @_root_.GlobalTheory.LatFacts.isLattice_int | apply _root_.GlobalTheory.LatFacts.isLattice_int <;> assumption
 
 theorem exists_basis (Λ : Submodule (𝓞 E) (Fin j → E)) (h : Submodule.IsFullLattice E Λ) :
     ∃ (n : ℕ) (b : Module.Basis (Fin n) ℚ (Fin j → E)),

@@ -470,9 +470,6 @@ theorem img_mem (h : Half B e π) {L : Submodule K.O B.A} (hL : L ∈ B.X 1) :
   · rintro _ ⟨w, hw, rfl⟩
     exact ⟨B.g * w, hg w hw, map_mul π B.g w⟩
 
-private theorem sigma_smul' (B : InvAlg K) (a : K.E) (y : B.A) : B.σ (a • y) = K.c a • B.σ y := by
-  rw [Algebra.smul_def, map_mul, B.σ_alg, ← Algebra.smul_def]
-
 private theorem dual_dual_eq_and_isLat_dual (hB : (Algebra.traceForm K.E C).Nondegenerate) (M : Submodule K.O C)
     (hM : IsLat K.O K.E M) : dual (dual M) = M ∧ IsLat K.O K.E (dual M) := by
   classical
@@ -564,7 +561,7 @@ theorem lift_mem (h : Half B e π) (hs : B.P.Separable) (hu : B.g * B.σ B.g = 1
       · intro x hx'; exact Submodule.subset_span (hσsD x hx')
       · simp
       · intro x x' _ _ h1 h2; rw [map_add (f := _), map_add (f := _)]; exact add_mem h1 h2
-      · intro a x _ h1; rw [map_smul, sigma_smul']; exact Submodule.smul_mem _ _ h1
+      · intro a x _ h1; rw [map_smul, GlobalTheory.UnitLemma.Desc.sigma_smul]; exact Submodule.smul_mem _ _ h1
   ·
     have hσg : B.σ B.g * B.g = 1 := by rw [mul_comm]; exact hu
     have hvint : IsIntegral K.O (π (B.σ B.g)) := (sigma_integral B hi).map (π.restrictScalars K.O)

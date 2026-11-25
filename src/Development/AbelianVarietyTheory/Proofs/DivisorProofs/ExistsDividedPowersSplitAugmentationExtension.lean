@@ -49,8 +49,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.SplitDP

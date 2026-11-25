@@ -103,14 +103,6 @@ theorem orthSum_apply (V W : HSpace E) (x y : V.V × W.V) :
 
 theorem gram_hneg (V : HSpace E) : (hneg V).gram = -V.gram := rfl
 
-theorem frame_hsum_inl (V W : HSpace E) (i : Fin V.rank) :
-    (hsum V W).frame (finSumFinEquiv (.inl i)) = (V.frame i, 0) := by
-  simp [Module.Basis.prod_apply]
-
-theorem frame_hsum_inr (V W : HSpace E) (i : Fin W.rank) :
-    (hsum V W).frame (finSumFinEquiv (.inr i)) = (0, W.frame i) := by
-  simp [Module.Basis.prod_apply]
-
 theorem gram_hsum (V W : HSpace E) : (hsum V W).gram = blkMat finSumFinEquiv V.gram W.gram := by
   ext i j
   obtain ⟨a, rfl⟩ := finSumFinEquiv.surjective i

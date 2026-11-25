@@ -296,25 +296,13 @@ def IsPiece (S : Finset (Fin D.n)) (g : (Fin D.n → ℂ) → (Σ k, J k) → �
       g y = torusSmul c (g y') → y = y') ∧
     ∀ y ∈ Metric.ball (0 : Fin D.n → ℂ) 2, g y ∈ D.Bd ↔ y ∈ coordDiv S
 
-private theorem star_mem_ball_lemma_2 {e : ℕ} {y : Fin e → ℂ} (hy : y ∈ Metric.ball (0 : Fin e → ℂ) 2) :
-    star y ∈ Metric.ball (0 : Fin e → ℂ) 2 := by
-  rw [mem_ball_zero_iff] at hy ⊢
-  rw [pi_norm_lt_iff (by norm_num)] at hy ⊢
-  intro i
-  simpa [Pi.star_apply, Complex.star_def, Complex.norm_conj] using hy i
-
-private theorem conjVec_torusSmul_lemma_4 {K : Type} {κ : K → Type} (c : K → ℂ) (z : (Σ k, κ k) → ℂ) :
-    conjVec (torusSmul c z) = torusSmul (fun k => starRingEnd ℂ (c k)) (conjVec z) := by
-  funext p
-  simp [conjVec, torusSmul]
-
 theorem IsPiece.conj {S : Finset (Fin D.n)} {g : (Fin D.n → ℂ) → (Σ k, J k) → ℂ} (h : IsPiece D S g) :
     IsPiece D S fun y => conjVec (g (star y)) := by
   obtain ⟨h1, h2, h3, h4⟩ := h
   refine ⟨?_, ?_, ?_, ?_⟩
   · have hd : DifferentiableOn ℂ (fun y => conjVec (g (star y))) (Metric.ball 0 2) := by
       intro y hy
-      have h0 : DifferentiableAt ℂ g (star y) := (h1 _ (star_mem_ball_lemma_2 hy)).differentiableAt
+      have h0 : DifferentiableAt ℂ g (star y) := (h1 _ (Charts.star_mem_ball.2 hy)).differentiableAt
       have h5 := h0.star_star
       rw [star_star] at h5
       exact h5.differentiableWithinAt
@@ -324,23 +312,26 @@ theorem IsPiece.conj {S : Finset (Fin D.n)} {g : (Fin D.n → ℂ) → (Σ k, J 
       (fun y hy => (differentiableAt_pi.1 ((hd y hy).differentiableAt
         (Metric.isOpen_ball.mem_nhds hy)) p).differentiableWithinAt)
   · intro y hy
-    exact _root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_mem (h2 _ (star_mem_ball_lemma_2 hy))
+    exact _root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_mem
+      (h2 _ (Charts.star_mem_ball.2 hy))
   · intro y hy y' hy' c hc hyy
     have h6 := congrArg conjVec hyy
-    rw [_root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_conj, conjVec_torusSmul_lemma_4, _root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_conj] at h6
-    have h7 := h3 _ (star_mem_ball_lemma_2 hy) _ (star_mem_ball_lemma_2 hy') _
+    rw [_root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_conj, Charts.conj_torus,
+      _root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_conj] at h6
+    have h7 := h3 _ (Charts.star_mem_ball.2 hy) _ (Charts.star_mem_ball.2 hy') _
       (fun k => by simpa using hc k) h6
     simpa using congrArg star h7
   · intro y hy
     constructor
     · intro hm
       have h8 := D.bd_conj _ hm
-      rw [_root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_conj, h4 _ (star_mem_ball_lemma_2 hy)] at h8
+      rw [_root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.conj_conj,
+        h4 _ (Charts.star_mem_ball.2 hy)] at h8
       obtain ⟨i, hi, hi0⟩ := h8
       exact ⟨i, hi, by simpa using hi0⟩
     · intro hm
       apply D.bd_conj
-      rw [h4 _ (star_mem_ball_lemma_2 hy)]
+      rw [h4 _ (Charts.star_mem_ball.2 hy)]
       obtain ⟨i, hi, hi0⟩ := hm
       exact ⟨i, hi, by simp [hi0]⟩
 

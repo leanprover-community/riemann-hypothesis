@@ -51,8 +51,6 @@ open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PackageTie2
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict Formalism.L2.SG.RowDict Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure SPack (D : D7) (F : ∀ u, Forms0 D u) where
   X : HidaSetting D
   hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I

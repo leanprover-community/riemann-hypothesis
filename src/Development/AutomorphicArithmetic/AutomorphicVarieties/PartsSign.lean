@@ -112,21 +112,6 @@ theorem twScal_conj {σ : Ω ≃+* Ω} (h : IsConjOm σ) (e : ℕ) : twScal l σ
   rw [twScal, h.cyc (E := E), zpow_neg, zpow_natCast, ← inv_pow, inv_neg, inv_one]
   simp
 
-private theorem mem_eig (D : LData E Ω l) (e : ℕ) {σ : Ω ≃+* Ω} (h : IsConjOm σ) (z : Z1 (qzTw D (e : ℤ))) (s : ℤ_[l]) :
-    (Submodule.Quotient.mk z : H1 (qzTw D (e : ℤ))) ∈ (cAct D e).eigenspace ((-1) ^ e * s) ↔
-      ∃ m, ∀ g, z.1 (conjGS D h.isLift g) - s • z.1 g = qzTw D e g m - m := by
-  obtain ⟨z₁, e₁, f₁⟩ := exists_cocycle_h1TwistConjByLift_mk_eq_mk D e h.isLift z
-  have hs : (-1 : ℤ_[l]) ^ e * (-1) ^ e = 1 := by rw [← mul_pow]; simp
-  rw [Module.End.mem_eigenspace_iff, cAct, galois_action_cohomology_eq_conj D e h.isLift, e₁, ← Submodule.Quotient.mk_smul]
-  refine (mk_eq_mk_iff _ _ _).trans ?_
-  have key : ∀ g, z₁.1 g - (((-1 : ℤ_[l]) ^ e * s) • z).1 g =
-      (-1 : ℤ_[l]) ^ e • (z.1 (conjGS D h.isLift g) - s • z.1 g) := fun g => by
-    rw [f₁, twScal_conj (E := E) h, smul_sub, smul_smul]; rfl
-  simp only [key]
-  refine ⟨fun ⟨m, hm⟩ => ⟨(-1 : ℤ_[l]) ^ e • m, fun g => ?_⟩, fun ⟨m, hm⟩ => ⟨(-1 : ℤ_[l]) ^ e • m, fun g => ?_⟩⟩
-  · rw [map_smul, ← smul_sub, ← hm, smul_smul, hs, one_smul]
-  · rw [map_smul, ← smul_sub, ← hm]
-
 end UpperTheory.V
 
 end

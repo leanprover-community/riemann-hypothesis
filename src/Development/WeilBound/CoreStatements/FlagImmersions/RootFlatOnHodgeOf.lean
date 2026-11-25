@@ -853,14 +853,8 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem mem_abLocus_of_map {X Y : Scheme.{0}} {G : Over X} {G' : Over Y} {f : X ⟶ Y} {φ : G.left ⟶ G'.left}
-    (h : IsPullback φ G.hom G'.hom f) {x : X} (hx : f x ∈ abLocus G') : x ∈ abLocus G := by
-  intro K _ _ t hxt
-  obtain ⟨u, rfl⟩ := hxt
-  have hp : IsProper (pullback.snd G'.hom (t ≫ f)) := hx K (t ≫ f) ⟨u, by simp⟩
-  have sq : IsPullback (pullback.fst G.hom t ≫ φ) (pullback.snd G.hom t) G'.hom (t ≫ f) :=
-    (IsPullback.of_hasPullback G.hom t).paste_horiz h
-  rw [← sq.isoPullback_hom_snd]
-  infer_instance
+    (h : IsPullback φ G.hom G'.hom f) {x : X} (hx : f x ∈ abLocus G') : x ∈ abLocus G :=
+  _root_.GlobalTheory.CompanionTheory.Ar.HodgeBasic.mem_abLocus_of_map h hx
 
 theorem genPt_max {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (h : IsCptGen ξ) (z : X)
     (hz : z ⤳ genPt ξ) : z = genPt ξ := by

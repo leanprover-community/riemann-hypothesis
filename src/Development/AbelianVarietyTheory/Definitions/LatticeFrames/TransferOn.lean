@@ -50,8 +50,6 @@ open GlobalTheory.AdelicU (frameLat)
 
 namespace GlobalTheory.ChainOnto
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def TransferOn (D : D7) (C : HeightOneSpectrum (𝓞 D.host.F) → Prop) : Prop :=
   ∀ (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle)
     (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ t : ℕ, T.rank = S.rank + t →

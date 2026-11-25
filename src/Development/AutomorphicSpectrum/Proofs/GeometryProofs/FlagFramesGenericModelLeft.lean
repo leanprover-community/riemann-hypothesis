@@ -470,7 +470,7 @@ theorem mul_inv_apply_eq_det_div {K : Type} [Field K] {n r m : ℕ} (F : Matrix 
 theorem split_of_regular_ratios (K : Type) [Field K] (R : Subring K) (n r : ℕ) (A : Matrix (Fin n) (Fin r) K)
     (B : Matrix (Fin r) (Fin n) K) (G : Matrix (Fin r) (Fin r) K) (a : K) (k : Fin r)
     (J : Fin ((k : ℕ) + 1) → Fin n) (hA : ∀ j l, A j l ∈ R) (hB : ∀ l j, B l j ∈ R) (hBA : B * A = 1)
-    (_ha : a ≠ 0) (hdet : ((a • (A * G)).submatrix J (Fin.castLE k.2)).det ≠ 0)
+    (hdet : ((a • (A * G)).submatrix J (Fin.castLE k.2)).det ≠ 0)
     (hR : ∀ l j, ((a • (A * G)).submatrix (Function.update J l j) (Fin.castLE k.2)).det /
       ((a • (A * G)).submatrix J (Fin.castLE k.2)).det ∈ R) :
     ∃ D Ee : Fin ((k : ℕ) + 1) → Fin r → K, (∀ l i, D l i ∈ R) ∧ (∀ l i, Ee l i ∈ R) ∧
@@ -589,7 +589,7 @@ theorem pull_isFlagVB_genB : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : S
   haveI : IsLocalRing (regAt ξ' p') := EigSplit.isLocalRing_regAt p'
   obtain ⟨P, hPreg, hP0, hPinv, hPflag⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FlagBun.Adapted.exists_adapted (GenField Ω r) (regAt ξ' p') (r s) (fun c i => G i c) (fun k =>
     _root_.GlobalTheory.CompanionTheory.Ar.FlagBun.split_of_regular_ratios (GenField Ω r) (regAt ξ' p') (n s) (r s) A B G a k (J ⟨s, k⟩)
-      (fun j l => hreg _ (hAreg j l)) (fun l j => hreg _ (hBreg l j)) hBA' ha
+      (fun j l => hreg _ (hAreg j l)) (fun l j => hreg _ (hBreg l j)) hBA'
       (by have := (hmin ⟨s, k⟩).1; rwa [show flagMat φ c (⟨s, k⟩ : Σ s, Fin (r s)).1 = a • (A * G) from hF] at this)
       (by have := (hmin ⟨s, k⟩).2; rwa [show flagMat φ c (⟨s, k⟩ : Σ s, Fin (r s)).1 = a • (A * G) from hF] at this))
   have hext := isExtOver_mk Ω (GenField Ω r) E

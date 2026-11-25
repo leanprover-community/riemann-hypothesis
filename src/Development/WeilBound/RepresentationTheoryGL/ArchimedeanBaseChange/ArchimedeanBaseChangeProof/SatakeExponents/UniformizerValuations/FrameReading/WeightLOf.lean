@@ -53,7 +53,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.FG
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 def GoodL : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], GlobalTheory.BCT.Unr E → ∀ (n a : ℕ) (ha : a ≤ n)
   (π : Submodule ℂ (UA E n → ℂ)), IsAutRepU π → ∀ (μ : HChar E) (e : InfinitePlace E → ℤ), IsMu μ e →

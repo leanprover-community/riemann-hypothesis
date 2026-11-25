@@ -202,17 +202,11 @@ theorem div_col (c : ℕ) (y : Fin (0 + 1) → F)
 
 theorem exists_unit_of_one_add (y : F) (hy : y ∈ 𝒪[F]) :
     ∃ e : (𝒪[F])ˣ, ((e : 𝒪[F]) : F) = 1 + (uniformizer F : F) * y := by
-  have hp := irreducible_uniformizer F
-  have hm : uniformizer F * (⟨y, hy⟩ : 𝒪[F]) ∈ IsLocalRing.maximalIdeal 𝒪[F] :=
-    Ideal.mul_mem_right _ _ ((IsLocalRing.mem_maximalIdeal _).2 hp.not_isUnit)
-  have hu : IsUnit (1 + uniformizer F * (⟨y, hy⟩ : 𝒪[F])) := by
-    by_contra hne
-    have h1 : (1 + uniformizer F * (⟨y, hy⟩ : 𝒪[F])) ∈ IsLocalRing.maximalIdeal 𝒪[F] :=
-      (IsLocalRing.mem_maximalIdeal _).2 hne
-    have h2 := (IsLocalRing.maximalIdeal 𝒪[F]).sub_mem h1 hm
-    rw [add_sub_cancel_right] at h2
-    exact (Ideal.ne_top_iff_one _).1 (IsLocalRing.maximalIdeal.isMaximal _).ne_top h2
-  obtain ⟨e, he⟩ := hu
+  have hm := Ideal.mul_mem_right (⟨y, hy⟩ : 𝒪[F]) _
+    ((IsLocalRing.mem_maximalIdeal _).2 (irreducible_uniformizer F).not_isUnit)
+  obtain ⟨e, he⟩ := IsLocalRing.isUnit_one_sub_self_of_mem_nonunits _
+    ((IsLocalRing.mem_maximalIdeal _).1 ((Ideal.neg_mem_iff _).2 hm))
+  rw [sub_neg_eq_add] at he
   exact ⟨e, by rw [he]; rfl⟩
 
 end Local

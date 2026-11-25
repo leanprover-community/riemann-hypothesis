@@ -65,8 +65,6 @@ open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.KS
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.KSUniq

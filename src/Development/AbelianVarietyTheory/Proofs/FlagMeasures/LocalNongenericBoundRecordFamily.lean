@@ -654,25 +654,12 @@ variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
 theorem mass_mono (d : S.Datum) (P Q : Submodule L.O S.V → Prop)
     (h : ∀ Λ, S.IsTerm d Λ → P Λ → Q Λ) : S.mass d P ≤ S.mass d Q := by
-  unfold Frames.mass
-  refine ENNReal.tsum_le_tsum fun o => ?_
-  by_cases ho : S.IsTerm d o.out ∧ P o.out
-  · rw [if_pos ho, if_pos ⟨ho.1, h _ ho.1 ho.2⟩]
-  · rw [if_neg ho]; exact bot_le
+  apply _root_.GlobalTheory.HL.NoCancellation.mass_mono <;> assumption
 
 theorem mass_le_sum {ι : Type} (s : Finset ι) (d : S.Datum) (P : Submodule L.O S.V → Prop)
     (Q : ι → Submodule L.O S.V → Prop)
     (h : ∀ Λ, S.IsTerm d Λ → P Λ → ∃ m ∈ s, Q m Λ) : S.mass d P ≤ ∑ m ∈ s, S.mass d (Q m) := by
-  unfold Frames.mass
-  rw [← Summable.tsum_finsetSum (fun _ _ => ENNReal.summable)]
-  refine ENNReal.tsum_le_tsum fun o => ?_
-  by_cases ho : S.IsTerm d o.out ∧ P o.out
-  · obtain ⟨m, hm, hq⟩ := h _ ho.1 ho.2
-    rw [if_pos ho]
-    refine le_trans ?_ (Finset.single_le_sum (f := fun m =>
-      if S.IsTerm d o.out ∧ Q m o.out then ENNReal.ofReal (S.mu o.out) else 0) (fun _ _ => bot_le) hm)
-    rw [if_pos ⟨ho.1, hq⟩]
-  · rw [if_neg ho]; exact bot_le
+  apply _root_.GlobalTheory.HL.NoCancellation.mass_le_sum <;> assumption
 
 theorem sumData_mono (φ ψ : S.Datum → ℝ≥0∞) (h : ∀ d, φ d ≤ ψ d) : S.sumData φ ≤ S.sumData ψ := by
   unfold Frames.sumData
@@ -763,12 +750,7 @@ open scoped Pointwise ENNReal Classical
 namespace GlobalTheory.HL.FirstType
 
 theorem geom_le (x : ℝ) (hx : 2 ≤ x) (n : ℕ) : ∑ i ∈ Finset.range (n + 1), x ^ i ≤ 2 * x ^ n := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [Finset.sum_range_succ, pow_succ]
-    have : 0 ≤ x ^ n := by positivity
-    nlinarith
+  apply _root_.GlobalTheory.HL.FamilyBound.geom_le <;> assumption
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : LocE F E} {r k : ℕ}

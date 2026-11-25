@@ -285,18 +285,4 @@ theorem IsTopLift.inv_mul_mem_geo {X : Tower Ω ε} {M : ℕ} {σ : Ω ≃ₐ[�
 
 def topT (l s N : ℕ) : ℕ := (((l : ZMod N) ^ s)⁻¹).val
 
-def topU (X : Tower Ω ε) (l s N : ℕ) (x : ZMod N) (c : ℕ) : X.K :=
-  siegel X c ![1 / (l : ℚ) ^ s, (x.val : ℚ) * (topT l s N : ℚ) / N]
-
-def topV (X : Tower Ω ε) (l s N : ℕ) (d : ℕ) : X.K :=
-  siegel X d ![0, 1 / (l : ℚ) ^ s + (topT l s N : ℚ) / N]
-
-def wkTop (X : Tower Ω ε) (l n r N : ℕ) (x : ZMod N) (c d : ℕ) (σ : Ω ≃ₐ[ℚ] Ω) : X.K :=
-  ((topW (K := topL X (l ^ (r + n) * N)) (topZeta X (l ^ (r + n) * N) l n)
-    (topChar X (l ^ (r + n) * N) l n (topU X l (r + n) N x c))
-    (topChar X (l ^ (r + n) * N) l n (topV X l (r + n) N d))
-    (topEta X (l ^ (r + n) * N) (topChar X (l ^ (r + n) * N) l n (topU X l (r + n) N x c))
-      (topChar X (l ^ (r + n) * N) l n (topV X l (r + n) N d)))
-    (topLift X (l ^ (r + n) * N) σ)⁻¹ : topL X (l ^ (r + n) * N)) : X.K)
-
 end GlobalTheory.K4

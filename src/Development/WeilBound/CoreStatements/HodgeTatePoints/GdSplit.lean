@@ -62,20 +62,12 @@ noncomputable section
 
 namespace PositivityTheory.HtPt.Gd
 
-private theorem isTorsionFree_of_projective {A P : Type*} [CommRing A] [AddCommGroup P] [Module A P]
-    [Module.Projective A P] : Module.IsTorsionFree A P := by
+private theorem isTorsionFree_of_projective {A P : Type*} [CommRing A] [AddCommGroup P]
+    [Module A P] [Module.Projective A P] : Module.IsTorsionFree A P := by
   obtain ⟨s, hs⟩ := Module.projective_def'.mp ‹Module.Projective A P›
-  have hinj : Function.Injective s :=
-    Function.LeftInverse.injective (g := Finsupp.linearCombination A id)
-      (fun x => LinearMap.congr_fun hs x)
-  refine ⟨fun r hr p p' h => hinj ?_⟩
-  have h' : r • s p = r • s p' := by
-    rw [← map_smul, ← map_smul]
-    exact congrArg s h
-  ext x
-  have hx := congrArg (fun g => g x) h'
-  simp only [Finsupp.smul_apply, smul_eq_mul] at hx
-  exact hr.left hx
+  exact Function.Injective.moduleIsTorsionFree s
+    (Function.LeftInverse.injective (g := Finsupp.linearCombination A id)
+      (LinearMap.congr_fun hs)) s.map_smul
 
 theorem inj_mod_of_surj_mod {A : Type} [CommRing A] [IsDomain A] {P : Type} [AddCommGroup P]
     [Module A P] [Module.Finite A P] [Module.IsTorsionFree A P] {N : ℕ} (a : A)

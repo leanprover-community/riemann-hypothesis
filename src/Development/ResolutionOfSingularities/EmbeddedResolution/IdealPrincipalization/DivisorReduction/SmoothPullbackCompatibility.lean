@@ -58,59 +58,20 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem cons_take_succ_inj {α : Type*} (j : ℕ) (a b : α) (t₁ t₂ : List α)
-    (h : List.take (j + 1) (a :: t₁) = List.take (j + 1) (b :: t₂)) :
-    a = b ∧ List.take j t₁ = List.take j t₂ :=
-  Eq.mp (List.cons.injEq a (List.take j t₁) b (List.take j t₂)) h
-
-private theorem get_eq_get_of_take_add_one_eq {α : Type*} :
-    ∀ (j : ℕ) (l₁ l₂ : List α), List.take (j + 1) l₁ = List.take (j + 1) l₂ →
-      ∀ (h₁ : j < l₁.length) (h₂ : j < l₂.length), l₁.get ⟨j, h₁⟩ = l₂.get ⟨j, h₂⟩ := by
-  intro j
-  induction j with
-  | zero =>
-    intro l₁ l₂ htake h₁ h₂
-    cases l₁ with
-    | nil => exact absurd h₁ (Nat.not_lt_zero 0)
-    | cons a t₁ =>
-      cases l₂ with
-      | nil => exact absurd h₂ (Nat.not_lt_zero 0)
-      | cons b t₂ => exact (cons_take_succ_inj 0 a b t₁ t₂ htake).1
-  | succ j ih =>
-    intro l₁ l₂ htake h₁ h₂
-    cases l₁ with
-    | nil => exact absurd h₁ (Nat.not_lt_zero (j + 1))
-    | cons a t₁ =>
-      cases l₂ with
-      | nil => exact absurd h₂ (Nat.not_lt_zero (j + 1))
-      | cons b t₂ =>
-        exact ih t₁ t₂ (cons_take_succ_inj (j + 1) a b t₁ t₂ htake).2
-          (Nat.lt_of_succ_lt_succ h₁) (Nat.lt_of_succ_lt_succ h₂)
-
 theorem get_eq_get_of_take_succ_eq {α : Type*} (l₁ l₂ : List α) (j : ℕ)
     (htake : List.take (j + 1) l₁ = List.take (j + 1) l₂)
     (h₁ : j < l₁.length) (h₂ : j < l₂.length) :
-    l₁.get ⟨j, h₁⟩ = l₂.get ⟨j, h₂⟩ :=
-  get_eq_get_of_take_add_one_eq j l₁ l₂ htake h₁ h₂
-
-private theorem nontrivialPart_map_comap {X Y : Scheme.{u}} (f : Y ⟶ X)
-    (l : List X.IdealSheafData) :
-    MarkedIdealWithBoundary.nontrivialPart (l.map fun D => D.comap f) =
-      MarkedIdealWithBoundary.nontrivialPart ((MarkedIdealWithBoundary.nontrivialPart l).map fun D => D.comap f) := by
-  unfold MarkedIdealWithBoundary.nontrivialPart
-  induction l with
-  | nil => simp
-  | cons D l ih =>
-    by_cases hD : D = ⊤
-    · subst hD
-      simp [AlgebraicGeometry.Scheme.IdealSheafData.comap_top, ih]
-    · simp [List.filter_cons, hD, ih]
+    l₁.get ⟨j, h₁⟩ = l₂.get ⟨j, h₂⟩ := by
+  have h := congrArg (·[j]?) htake
+  rw [List.getElem?_take_of_succ, List.getElem?_take_of_succ,
+    List.getElem?_eq_getElem h₁, List.getElem?_eq_getElem h₂] at h
+  exact Option.some.inj h
 
 theorem MarkedIdealWithBoundary.SameNontrivialBoundary.comap {X Y : Scheme.{u}} (f : Y ⟶ X)
     {E E' : List X.IdealSheafData} (h : MarkedIdealWithBoundary.SameNontrivialBoundary E E') :
-    MarkedIdealWithBoundary.SameNontrivialBoundary (E.map fun D => D.comap f) (E'.map fun D => D.comap f) := by
-  rw [MarkedIdealWithBoundary.sameNontrivialBoundary_iff] at h ⊢
-  rw [nontrivialPart_map_comap f E, nontrivialPart_map_comap f E', h]
+    MarkedIdealWithBoundary.SameNontrivialBoundary
+      (E.map fun D => D.comap f) (E'.map fun D => D.comap f) :=
+  h.map (fun D => D.comap f) (Scheme.IdealSheafData.comap_top f)
 
 private theorem nontrivialPart_cons_congr {X : Scheme.{u}} {a : X.IdealSheafData}
     {s t : List X.IdealSheafData}
@@ -219,24 +180,17 @@ theorem comap_subschemeMapOfComap {X Y : Scheme.{u}} (h : Y ⟶ X) (D : X.IdealS
     (I₀.comap D.subschemeι).comap (subschemeMapOfComap h D D' hD) = (I₀.comap h).comap D'.subschemeι :=
   (exists_subscheme_hom_comp_subschemeι_eq h D D' hD).choose_spec.2 I₀
 
-private theorem map_comap_comap_subschemeι {X Y : Scheme.{u}} (h : Y ⟶ X)
-    (D : X.IdealSheafData) (D' : Y.IdealSheafData) (hD : D' = D.comap h)
-    (M : List X.IdealSheafData) :
-    ((M.map fun I => I.comap h).map fun I => I.comap D'.subschemeι)
-      = (M.map fun I => I.comap D.subschemeι).map fun I => I.comap (subschemeMapOfComap h D D' hD) := by
-  induction M with
-  | nil => rfl
-  | cons I t ih =>
-    simp only [List.map_cons]
-    rw [comap_subschemeMapOfComap h D D' hD I, ih]
-
 theorem sameNontrivialBoundary_comap_subschemeι {X Y : Scheme.{u}} (h : Y ⟶ X) (D : X.IdealSheafData)
     (D' : Y.IdealSheafData) (hD : D' = D.comap h) (M : List X.IdealSheafData)
     (M' : List Y.IdealSheafData)
     (hM : MarkedIdealWithBoundary.SameNontrivialBoundary M' (M.map fun I => I.comap h)) :
     MarkedIdealWithBoundary.SameNontrivialBoundary (M'.map fun I => I.comap D'.subschemeι)
       ((M.map fun I => I.comap D.subschemeι).map fun I => I.comap (subschemeMapOfComap h D D' hD)) := by
-  rw [← map_comap_comap_subschemeι h D D' hD M]
+  have hmap : ((M.map fun I => I.comap h).map fun I => I.comap D'.subschemeι) =
+      (M.map fun I => I.comap D.subschemeι).map fun I =>
+        I.comap (subschemeMapOfComap h D D' hD) := by
+    simp only [List.map_map, Function.comp_def, comap_subschemeMapOfComap]
+  rw [← hmap]
   exact hM.comap D'.subschemeι
 
 def componentsInOrderLocusIdeal {X : Scheme.{u}} (I : X.IdealSheafData) (m : ℕ) (D : X.IdealSheafData) :
@@ -341,11 +295,6 @@ theorem get_eq_comap_get_boundary (T : MarkedIdealWithBoundary.{u}) (j : ℕ) (h
     (List.map (fun D : T.scheme.IdealSheafData => D.comap h) T.boundary) j htake' hjE hlen]
   simp
 
-private theorem componentsInOrderLocusIdeal_congr {X : Scheme.{u}} (I : X.IdealSheafData) (m : ℕ)
-    {D D' : X.IdealSheafData} (hD : D = D') :
-    componentsInOrderLocusIdeal I m D = componentsInOrderLocusIdeal I m D' := by
-  rw [hD]
-
 theorem containedComponentsIdeal_withBoundary (T : MarkedIdealWithBoundary.{u}) (j : ℕ) (Y : Scheme.{u})
     (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme) (E' : List Y.IdealSheafData)
     (hjE : j < E'.length) (hj' : j < (T.pullbackAlong Y q h).boundary.length)
@@ -356,7 +305,7 @@ theorem containedComponentsIdeal_withBoundary (T : MarkedIdealWithBoundary.{u}) 
     get_eq_get_of_take_succ_eq E' ((T.pullbackAlong Y q h).boundary) j htake hjE hj'
   rw [containedComponentsIdeal_eq_componentsInOrderLocusIdeal ((T.pullbackAlong Y q h).withBoundary E') j hjE,
     containedComponentsIdeal_eq_componentsInOrderLocusIdeal (T.pullbackAlong Y q h) j hj']
-  exact componentsInOrderLocusIdeal_congr _ _ hget
+  exact congrArg _ hget
 
 theorem comap_ne_top_of_surjective (hbc : SmoothPullbackCompatibility.{u}) {X Y : Scheme.{u}} (h : Y ⟶ X)
     [AlgebraicGeometry.Surjective h] (Z : X.IdealSheafData) (hZ : Z ≠ ⊤) : Z.comap h ≠ ⊤ :=

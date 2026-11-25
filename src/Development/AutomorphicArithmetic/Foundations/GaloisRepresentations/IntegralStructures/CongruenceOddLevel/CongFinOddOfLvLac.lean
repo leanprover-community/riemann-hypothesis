@@ -746,24 +746,8 @@ variable {R : Type} [CommRing R]
 
 theorem mem_ker_reduction_iff {a : ℕ} (I : Ideal R) (g : GL (Fin a) R) :
     g ∈ (Matrix.GeneralLinearGroup.map (n := Fin a) (Ideal.Quotient.mk I)).ker ↔
-      ∀ i j, (g : Matrix (Fin a) (Fin a) R) i j - (1 : Matrix (Fin a) (Fin a) R) i j ∈ I := by
-  rw [MonoidHom.mem_ker, Units.ext_iff]
-  constructor
-  · intro h i j
-    have := congrFun (congrFun h i) j
-    rw [GeneralLinearGroup.map_apply] at this
-    rw [← Ideal.Quotient.eq, this]
-    by_cases hij : i = j
-    · subst j; simp
-    · simp [hij]
-  · intro h
-    ext i j
-    rw [GeneralLinearGroup.map_apply]
-    have := Ideal.Quotient.eq.2 (h i j)
-    rw [this]
-    by_cases hij : i = j
-    · subst j; simp
-    · simp [hij]
+      ∀ i j, (g : Matrix (Fin a) (Fin a) R) i j - (1 : Matrix (Fin a) (Fin a) R) i j ∈ I :=
+  _root_.GlobalTheory.CuspType.mem_ker_map_mk_iff I g
 
 theorem exists_eq_one_add_smul' {a : ℕ} (c : R) (g : GL (Fin a) R)
     (hg : g ∈ (Matrix.GeneralLinearGroup.map (n := Fin a) (Ideal.Quotient.mk (Ideal.span {c}))).ker) :
@@ -790,14 +774,8 @@ theorem powChar_apply (n : ℕ) [NeZero n] (ζ : ℂˣ) (hζ : ζ ^ n = 1) (x : 
 theorem conj_vecMulVec {K : Type} [Field K] {a : ℕ} (W : Submodule K (Fin a → K))
     (g g' : Matrix (Fin a) (Fin a) K) (hgg' : g * g' = 1) (p q : Fin a → K)
     (hp : g *ᵥ p ∈ W) (hq : ∀ y, g *ᵥ y ∈ W → q ⬝ᵥ y = 0) :
-    (∀ v, (g * vecMulVec p q * g') *ᵥ v ∈ W) ∧ ∀ v ∈ W, (g * vecMulVec p q * g') *ᵥ v = 0 := by
-  have key : ∀ v, (g * vecMulVec p q * g') *ᵥ v = (q ⬝ᵥ (g' *ᵥ v)) • (g *ᵥ p) := by
-    intro v
-    rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, vecMulVec_mulVec, op_smul_eq_smul,
-      Matrix.mulVec_smul]
-  refine ⟨fun v => ?_, fun v hv => ?_⟩
-  · rw [key]; exact W.smul_mem _ hp
-  · rw [key, hq _ (by rw [Matrix.mulVec_mulVec, hgg', Matrix.one_mulVec]; exact hv), zero_smul]
+    (∀ v, (g * vecMulVec p q * g') *ᵥ v ∈ W) ∧ ∀ v ∈ W, (g * vecMulVec p q * g') *ᵥ v = 0 :=
+  _root_.GlobalTheory.CuspType.conj_vecMulVec W g g' hgg' p q hp hq
 
 
 open GlobalTheory.CongW.TypeExists in

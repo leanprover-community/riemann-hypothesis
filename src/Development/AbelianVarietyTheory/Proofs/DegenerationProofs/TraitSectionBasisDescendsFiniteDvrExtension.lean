@@ -58,8 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.LN GlobalTheory.Ex GlobalTheory.OneBasis
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.OneBasis.TraitDescent

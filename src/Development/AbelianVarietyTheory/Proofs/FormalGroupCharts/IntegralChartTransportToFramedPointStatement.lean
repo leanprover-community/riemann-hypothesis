@@ -135,8 +135,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1 FGLaw)
 open MvPolynomial (X)
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.Chart.FrameUp
@@ -497,7 +495,8 @@ theorem frame_adj_up : Laws → ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
       rw [← Over.comp_left, GermD.homAt_comp, aug_subst]
     have hj : ∀ i : Fin 2, ρ ≫ jptG t' (𝟙 (Sp S)) d x' 0 i = 1 := fun i => by
       rw [jptG, ← Category.assoc, GermD.homAt_comp, GermB.aug_copy, h0]
-    have hl : ρ.left ≫ (lift (jptG t' (𝟙 (Sp S)) d x' 0 (0 : Fin 2)) (jptG t' (𝟙 (Sp S)) d x' 0 (1 : Fin 2))).left =
+    have hl : @Eq (Sp S ⟶ _)
+        (ρ.left ≫ (lift (jptG t' (𝟙 (Sp S)) d x' 0 (0 : Fin 2)) (jptG t' (𝟙 (Sp S)) d x' 0 (1 : Fin 2))).left)
         (GermB.zz t').left := by
       rw [← Over.comp_left, comp_lift, hj, hj]
       refine (congrArg Over.Hom.left (comp_lift (toUnit (overAt (𝟙 (Sp S)) S)) η[t'.G] η[t'.G]).symm).trans ?_
@@ -865,8 +864,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1 FGLaw)
 open MvPolynomial (X)
 open TopologicalSpace Opposite Formalism.MainNotions.ModuliIntegralCharts.H1.ChartFrameTrA
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -71,6 +71,12 @@ in a batch being built, a workflow ticks its box and marks it `(main)` or `(batc
 `- [x] depends on: (batched) #123`. A line that names a batch is ticked, without a mark, once the
 batch is on `main`. Leave the ticked line there; it still declares the dependency.
 
+## Batches
+
+If you assemble a batch of pull requests, leave out every pull request labelled `deferred`: it
+should not be merged for now. If a batch already contains one, take it out before the batch is
+merged, by rebuilding the batch without it or by reverting the merge commit that brought it in.
+
 ## Do not
 
 - change the Comparator challenge files: `src/Challenge.lean`, `comparator.json`,
@@ -84,6 +90,10 @@ batch is on `main`. Leave the ticked line there; it still declares the dependenc
 - report the results of your own builds or Comparator runs in a pull request. Check that your
   change compiles, but don't write that it builds on your machine; maintainers build pull
   requests themselves.
+- add references to the literature, in docstrings or in `docs/references.bib`. Many of the
+  references agents have added were wrong: the wrong title, no theorem number in a long book, or
+  a result credited to a paper that doesn't prove it. A wrong reference is worse than none. We
+  will say here when we have a way to check them.
 
 ## Mistakes we keep seeing
 

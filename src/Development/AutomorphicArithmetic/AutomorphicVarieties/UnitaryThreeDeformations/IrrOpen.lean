@@ -280,7 +280,10 @@ private theorem diagonalise (T : Matrix (Fin 3) (Fin 3) K) (hT : T.BlockTriangul
       · linear_combination -hr
     rw [Matrix.mul_assoc, this, ← Matrix.mul_assoc, e, Matrix.one_mul]
 
-private theorem core' (H U : Subgroup G) (hUH : U ≤ H) [U.Normal] (a : G → Matrix (Fin 3) (Fin 3) K)
+/-- Under the triangularity hypotheses, reducibility on `U` gives one `g ∈ H`
+for which `a (g * x ^ n)` has trace zero for every `n`. -/
+theorem UpperTheory.V.U3.exists_trace_mul_pow_eq_zero_of_reducible_restriction
+    (H U : Subgroup G) (hUH : U ≤ H) [U.Normal] (a : G → Matrix (Fin 3) (Fin 3) K)
     (hm : ∀ g ∈ H, ∀ h ∈ H, a (g * h) = a g * a h) (h1 : a 1 = 1) {M M' : Matrix (Fin 3) (Fin 3) K}
     (h : M * M' = 1) (h' : M' * M = 1) {u : G} (hu : u ∈ U) (hut : (M' * a u * M).BlockTriangular id)
     (hd : Function.Injective (M' * a u * M).diag) (hH : MatIrr H a) (hU : ¬MatIrr U a)
@@ -361,7 +364,8 @@ private theorem frame {O K G Γ ι : Type} [CommRing O] [IsLocalRing O] [Field K
     have h1 : y ≠ 1 := fun h => hu' (by rw [h, one_pow])
     have h2 : y ≠ y⁻¹ := fun h => hu' (by rw [sq, ← eq_inv_iff_mul_eq_one]; exact h)
     fin_cases i <;> fin_cases j <;> simp [wt1, h1, h2, h1.symm, h2.symm] at e ⊢
-  obtain ⟨g, hg, hz⟩ := core' (F.η.comp F.π).ker U hU (fun s => (r (F.π s)).mat) (fun a ha b _ => by
+  obtain ⟨g, hg, hz⟩ := exists_trace_mul_pow_eq_zero_of_reducible_restriction
+    (F.η.comp F.π).ker U hU (fun s => (r (F.π s)).mat) (fun a ha b _ => by
       have : (r (F.π a)).right = 1 := (hm _).trans ha
       simp [GG.mat, this]) (by simp [GG.mat]) P.inv_mul P.mul_inv huU (tri u hu1) hinj
     (fun W hW => hI W fun g hg v hv => by

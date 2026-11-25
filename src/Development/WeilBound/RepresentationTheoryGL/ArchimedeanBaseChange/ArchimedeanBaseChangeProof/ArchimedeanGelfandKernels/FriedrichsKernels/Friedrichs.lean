@@ -53,7 +53,7 @@ namespace PositivityTheory.RgBcC.Fc
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 structure FCalc (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (M : Submodule ℂ H) (Ω : M →ₗ[ℂ] M) (T : H →L[ℂ] H) where

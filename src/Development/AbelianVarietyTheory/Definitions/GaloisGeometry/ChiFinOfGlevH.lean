@@ -53,8 +53,6 @@ open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotio
 open Formalism.BasicNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Formalism.MainNotions.G.CmpJ
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem unit_of_root {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K]
     (x : K) (n : ℕ) (hn : 0 < n) (hx : x ^ n = 1) : ∃ o : Oˣ, algebraMap O K (o : O) * x = 1 := by
   have hint : IsIntegral O x :=
@@ -181,8 +179,6 @@ open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotio
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.ChartsLv
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -267,8 +263,6 @@ open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotio
 
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.ChartsLv Formalism.L2.G.Cmp
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Gen
 

@@ -59,27 +59,8 @@ theorem valAt_const {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRing
     {O : Type} [CommRing O] [Algebra O Ω] (s : X ⟶ Spec (CommRingCat.of O))
     (hs : ξ ≫ s = Spec.map (CommRingCat.ofHom (algebraMap O Ω))) {R : Type} [CommRing R] [IsLocalRing R]
     (z : Spec (CommRingCat.of R) ⟶ X) (ρ : O →+* R) (hz : z ≫ s = Spec.map (CommRingCat.ofHom ρ)) (o : O) (r : R)
-    (h : ValAt ξ z (algebraMap O Ω o) r) : r = ρ o := by
-  obtain ⟨hsp, t, ht, rfl⟩ := h
-  have hg' := ConstReg.genMap_germ_const ξ s hs ⟨centre z, hsp⟩ o
-  have ht' := hg.inj ⟨centre z, hsp⟩ (ht.trans hg'.symm)
-  rw [ht']
-  have h1 : X.presheaf.germ ⊤ (centre z) trivial ≫ Scheme.stalkClosedPointTo z =
-      z.appTop ≫ (Scheme.ΓSpecIso (CommRingCat.of R)).hom := by
-    refine (Scheme.germ_stalkClosedPointTo z ⊤ trivial).trans ?_
-    simp only [Iso.trans_hom, Functor.mapIso_hom, Iso.op_hom, Scheme.Hom.appTop]
-    congr 1
-  have h1' := congrArg (fun q => q.hom (s.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o))) h1
-  refine h1'.trans ?_
-  have h2 : z.appTop.hom (s.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o)) =
-      (Spec.map (CommRingCat.ofHom ρ)).appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o) := by
-    rw [← hz]; simp only [Scheme.Hom.comp_appTop]; rfl
-  have h3 := congrArg (fun q => q.hom o) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom ρ))
-  have h3' : (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom (ρ o) =
-      (Spec.map (CommRingCat.ofHom ρ)).appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o) := h3
-  show (Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom (z.appTop.hom (s.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o))) = ρ o
-  rw [h2, ← h3']
-  simp
+    (h : ValAt ξ z (algebraMap O Ω o) r) : r = ρ o :=
+  LabPt.valAt_unique ξ hg z h.1 h (LabPt.valAt_of_const ξ s hs z ρ hz h.1 o)
 
 theorem const_of_root {n : ℕ} (f : (Fin n → ℂ) → ℂ) (hf : DifferentiableOn ℂ f (Metric.ball 0 1))
     (p : Polynomial ℤ) (hp : p.Monic)

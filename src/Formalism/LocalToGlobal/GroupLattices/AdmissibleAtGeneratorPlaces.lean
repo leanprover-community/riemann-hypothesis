@@ -468,6 +468,11 @@ theorem admissible_away_from_twist {K : Consts} {Dx : DivX D} {T : TwForms D} {l
   rw [show lowFE L u w + 1 * vDG D u w - vDG D u w = lowFE L u w by ring] at h1
   exact h1
 
+/-- Prove the level-two period bound and its complement. For the period bound, use
+the twist-place estimate when the residue characteristic is the twist prime.
+At the remaining places, use the generator-place estimate at the two generator
+primes and the Weil–Jacquet–Shalika service estimate elsewhere. Apply
+`valuation_bound_of_unrounded` to pass to the floor in `adm2`. -/
 theorem admissible_level_two {X : Inst D L} {Y : LatInst D} {K : Consts} {c : LatCmp D} {Dx : DivX D} {T : TwForms D}
     {lev : LevelData D} {Xe : ErrX D} {ce : ErrC} {C : ℝ}
     (h0 : MemberChainIntegral D) (hT : TwistedPointIntegral D T) (hp0 : PeriodClassSumWeyl D) (hpT : TwistedPeriodAdmissible D Dx T)

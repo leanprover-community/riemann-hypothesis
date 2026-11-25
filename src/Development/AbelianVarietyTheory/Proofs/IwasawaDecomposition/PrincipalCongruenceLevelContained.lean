@@ -63,38 +63,6 @@ theorem exists_nat_mul_integral {E : Type} [Field E] [NumberField E] (c : E) :
     ∃ (n : ℕ) (a : 𝓞 E), 0 < n ∧ (a : E) = (n : E) * c := by
   apply GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.exists_nat_mul_integer
 
-theorem exists_nat_smul_mem {E W : Type} [Field E] [NumberField E] [AddCommGroup W] [Module E W]
-    [Module (𝓞 E) W] [IsScalarTower (𝓞 E) E W] (L : Submodule (𝓞 E) W)
-    (hL : Submodule.span E (L : Set W) = ⊤) (v : W) :
-    ∃ d : ℕ, 0 < d ∧ (d : 𝓞 E) • v ∈ L := by
-  have hv : v ∈ Submodule.span E (L : Set W) := hL ▸ Submodule.mem_top
-  induction hv using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_pos, by simpa using hx⟩
-  | zero => exact ⟨1, one_pos, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨a, ha, hx⟩ := hx
-    obtain ⟨b, hb, hy⟩ := hy
-    refine ⟨a * b, Nat.mul_pos ha hb, ?_⟩
-    rw [smul_add, Nat.cast_mul]
-    refine L.add_mem ?_ ?_
-    · rw [mul_comm, mul_smul]
-      exact L.smul_mem _ hx
-    · rw [mul_smul]
-      exact L.smul_mem _ hy
-  | smul c x _ hx =>
-    obtain ⟨a, ha, hx⟩ := hx
-    obtain ⟨n, e, hn, he⟩ := exists_nat_mul_integral c
-    refine ⟨a * n, Nat.mul_pos ha hn, ?_⟩
-    have key : ((a * n : ℕ) : 𝓞 E) • c • x = e • (a : 𝓞 E) • x := by
-      rw [← algebraMap_smul E e, ← algebraMap_smul E (a : 𝓞 E),
-        ← algebraMap_smul E ((a * n : ℕ) : 𝓞 E), smul_smul, smul_smul]
-      congr 1
-      have he' : algebraMap (𝓞 E) E e = (n : E) * c := he
-      rw [he', map_natCast, map_natCast, Nat.cast_mul]
-      ring
-    rw [key]
-    exact L.smul_mem _ hx
-
 theorem exists_nat_smul_mem_lattice {D : Formalism.BasicNotions.D7} (V : Formalism.BasicNotions.TH.HSp D) (v : Formalism.BasicNotions.HSpace.V V) :
     ∃ d : ℕ, 0 < d ∧ (d : 𝓞 (Formalism.BasicNotions.D7.host D).E) • v ∈ Formalism.BasicNotions.HSpace.L0 V :=
   by

@@ -49,8 +49,6 @@ open GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting 
 
 namespace GlobalTheory.Mem.LiteralAutomorphy
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev GKey (P : Pre) : Type :=
   HeightOneSpectrum (𝓞 P.host.F) × HeightOneSpectrum (𝓞 P.host.E) × (Fin P.R.m → HChar P.host.E)
 

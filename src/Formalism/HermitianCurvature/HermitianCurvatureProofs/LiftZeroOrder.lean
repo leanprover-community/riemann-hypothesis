@@ -60,7 +60,7 @@ open scoped ComplexConjugate
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem lift_zero_order : TL.LiftZero := by
   intro Wp Wq _ _ _ _ _ _ P Bs κ i j c Pol E a

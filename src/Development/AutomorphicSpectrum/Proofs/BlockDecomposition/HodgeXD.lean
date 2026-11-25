@@ -43,7 +43,6 @@ import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 

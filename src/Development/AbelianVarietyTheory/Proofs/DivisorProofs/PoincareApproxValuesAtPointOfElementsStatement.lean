@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApproximateSeriesLeadingTermFourierSystem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCorrectionApproximateIdealSections
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothConeInteriorDefiniteBalancedForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothConeFaceOfInteriorCommonPoint
@@ -480,21 +482,7 @@ open IsLocalRing in
 variable {V : Type} [CommRing V] [IsLocalRing V] [IsNoetherianRing V] in
 private theorem mem_of_forall_mem_sup_maximalIdeal_pow' (N : Ideal V) (x : V)
     (hx : ∀ e : ℕ, x ∈ N ⊔ maximalIdeal V ^ e) : x ∈ N := by
-  have hbot := Ideal.iInf_pow_smul_eq_bot_of_isLocalRing (R := V) (M := V ⧸ N) (maximalIdeal V)
-    (maximalIdeal.isMaximal V).ne_top
-  rw [← Ideal.Quotient.eq_zero_iff_mem]
-  have hmem : Ideal.Quotient.mk N x ∈
-      ⨅ i : ℕ, (maximalIdeal V ^ i • ⊤ : Submodule V (V ⧸ N)) := by
-    refine Submodule.mem_iInf _ |>.2 fun e => ?_
-    obtain ⟨a, ha, y, hy, rfl⟩ := Submodule.mem_sup.1 (hx e)
-    have h1 : Ideal.Quotient.mk N (a + y) = y • Ideal.Quotient.mk N 1 := by
-      rw [map_add (f := _), Ideal.Quotient.eq_zero_iff_mem.2 ha, zero_add, Algebra.smul_def, map_one,
-        mul_one]
-      rfl
-    rw [h1]
-    exact Submodule.smul_mem_smul hy Submodule.mem_top
-  rw [hbot] at hmem
-  exact hmem
+  apply _root_.GlobalTheory.ApproxCorr.mem_of_forall_mem_sup <;> assumption
 
 open IsLocalRing in
 variable {V : Type} [CommRing V] [IsLocalRing V] [IsNoetherianRing V] in
@@ -688,15 +676,7 @@ theorem lin_smul {s l : ℕ} (W : Matrix (Fin s) (Fin s) ℤ) {X : Type} [AddCom
 theorem prod_mono {s l m : ℕ} (W : Matrix (Fin s) (Fin s) ℤ) {X V : Type} [AddCommGroup X] [CommRing V] (t : Fin m → V)
     (δ : Fin m → LinearMap.BilinForm ℤ X) (h : ∀ i y, 0 ≤ qW W (δ i) y) (a : Fin l × Fin s → X) :
     ∏ i, mono W t δ (fun v => a (i, v)) = ∏ j, t j ^ (lin W a (δ j)).toNat := by
-  simp only [mono]
-  rw [Finset.prod_comm]
-  refine Finset.prod_congr rfl fun j _ => ?_
-  rw [Finset.prod_pow_eq_pow_sum]
-  congr 1
-  have h0 : 0 ≤ lin W a (δ j) := Finset.sum_nonneg fun i _ => h j _
-  apply Int.natCast_inj.1
-  rw [Int.toNat_of_nonneg h0, lin, Nat.cast_sum]
-  exact Finset.sum_congr rfl fun i _ => Int.toNat_of_nonneg (h j _)
+  apply _root_.GlobalTheory.Poinc.leadingTermLemmas.prod_mono <;> assumption
 
 end GlobalTheory.Poinc.ValuationRepresentative
 

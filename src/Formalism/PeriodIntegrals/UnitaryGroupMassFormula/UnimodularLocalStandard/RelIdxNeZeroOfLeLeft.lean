@@ -156,10 +156,6 @@ lemma comm_smul {S X : AddSubgroup V} {w : ℂ} (hw : w ≠ 0) {N : ℕ} (hN : N
 
 end Idx
 
-private theorem mem_lattice_iff_exists_int_comb (L : PeriodPair) (z : ℂ) :
-    z ∈ L.lattice ↔ ∃ p q : ℤ, (p : ℂ) * L.ω₁ + (q : ℂ) * L.ω₂ = z := by
-  exact PeriodPair.mem_lattice
-
 lemma stdLat_smul_idx (L : PeriodPair) (m : Type*) [Fintype m] {N : ℕ} (hN : N ≠ 0) :
     ((stdLat L m).map (smulHom (N : ℂ))).relIndex (stdLat L m) ≠ 0 := by
   have hN0 : (0 : ℤ) < N := by exact_mod_cast Nat.pos_of_ne_zero hN
@@ -169,18 +165,18 @@ lemma stdLat_smul_idx (L : PeriodPair) (m : Type*) [Fintype m] {N : ℕ} (hN : N
   · intro f
     simp only [PI.ULS.stdLat, AddSubgroup.mem_pi]
     intro j _
-    exact (mem_lattice_iff_exists_int_comb L _).mpr ⟨_, _, rfl⟩
+    exact (PeriodPair.mem_lattice (L := L)).mpr ⟨_, _, rfl⟩
   · intro b hb
     simp only [PI.ULS.stdLat, AddSubgroup.mem_pi] at hb
     have hb' : ∀ j, ∃ p q : ℤ, (p : ℂ) * L.ω₁ + (q : ℂ) * L.ω₂ = b j :=
-      fun j => (mem_lattice_iff_exists_int_comb L (b j)).mp (hb j (Set.mem_univ _))
+      fun j => (PeriodPair.mem_lattice (L := L) (x := b j)).mp (hb j (Set.mem_univ _))
     choose p q hpq using hb'
     refine ⟨fun j => (⟨p j % N, Set.mem_Ico.mpr ⟨Int.emod_nonneg _ hN1, Int.emod_lt_of_pos _ hN0⟩⟩,
       ⟨q j % N, Set.mem_Ico.mpr ⟨Int.emod_nonneg _ hN1, Int.emod_lt_of_pos _ hN0⟩⟩), ?_⟩
     refine ⟨fun j => ((p j / N : ℤ) : ℂ) * L.ω₁ + ((q j / N : ℤ) : ℂ) * L.ω₂, ?_, ?_⟩
     · simp only [PI.ULS.stdLat]
       intro j _
-      exact (mem_lattice_iff_exists_int_comb L _).mpr ⟨_, _, rfl⟩
+      exact (PeriodPair.mem_lattice (L := L)).mpr ⟨_, _, rfl⟩
     · funext j
       simp only [smulHom_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
       rw [← hpq j]

@@ -55,7 +55,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LabelTorsion
 

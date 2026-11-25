@@ -217,99 +217,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
-namespace GlobalTheory.LatStabAct
-
-open GlobalTheory.AdelicLatMove
-
-variable {D : D7}
-
-def latCoord (V : HSp D) : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E) where
-  carrier := L0c D V
-  add_mem' := by
-    intro a b ha hb
-    show ∑ i, (a i + b i) • V.frame i ∈ V.L0
-    simp only [add_smul, Finset.sum_add_distrib]
-    exact V.L0.add_mem ha hb
-  zero_mem' := by
-    show ∑ i, (0 : D.host.E) • V.frame i ∈ V.L0
-    simp
-  smul_mem' := by
-    intro c a ha
-    show ∑ i, (c • a i) • V.frame i ∈ V.L0
-    simp only [smul_assoc, ← Finset.smul_sum]
-    exact V.L0.smul_mem c ha
-
-def swapF (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E →+* EAf D :=
-  (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).toAlgHom.toRingHom
-
-theorem swap_mem_hatL {n : ℕ} (Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
-    (y : Fin n → Af D.host.F ⊗[D.host.F] D.host.E)
-    (hy : y ∈ latHat D.host.F D.host.E (Λ : Set (Fin n → D.host.E))) :
-    (fun i => swapF D (y i)) ∈ Formalism.L2.Herm.hatL (F := D.host.F) Λ := by
-  induction hy using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨a, ha, x, hx, rfl⟩ := hy
-    exact pure_mem_hatL Λ a ha x hx
-  | zero => simp only [Pi.zero_apply, map_zero]; exact Submodule.zero_mem _
-  | add a b _ _ ha hb => simp only [Pi.add_apply, map_add (f := _)]; exact Submodule.add_mem _ ha hb
-  | neg a _ ha => simp only [Pi.neg_apply, map_neg]; exact Submodule.neg_mem _ ha
-
-theorem mulVec_pure_mem (V : HSp D) (g : GA D V) (hg : g ∈ KsphC V ∅) (x : Fin V.rank → D.host.E)
-    (hx : x ∈ L0c D V) :
-    (mt V g).map (toEAf D) *ᵥ (fun i => x i ⊗ₜ[D.host.F] (1 : Af D.host.F)) ∈
-      Formalism.L2.Herm.hatL (F := D.host.F) (latCoord V) := by
-  have h1 : (fun i => (1 : Af D.host.F) ⊗ₜ[D.host.F] x i) ∈ latHat D.host.F D.host.E (L0c D V) :=
-    AddSubgroup.subset_closure ⟨1, fun v => by rw [map_one]; exact one_mem _, x, hx, rfl⟩
-  have h2 := swap_mem_hatL (latCoord V) _ ((hg.2.1 _).1 h1)
-  convert h2 using 1
-  funext i
-  rw [RingHom.map_mulVec]
-  congr 1
-
-variable {S T : HSp D} {LS : Set (Fin S.rank → D.host.E)} {LT : Set (Fin T.rank → D.host.E)}
-
-theorem fin_smul_gen (β α : Af D.host.F) (M : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
-    algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 β) •
-      (Matrix.of fun i j => (pairA D.host.F 0 α) ⊗ₜ[D.host.F] M i j : WO S T) =
-      Matrix.of fun i j => (pairA D.host.F 0 (β * α)) ⊗ₜ[D.host.F] M i j := by
-  ext i j
-  change (pairA D.host.F 0 β ⊗ₜ[D.host.F] (1 : D.host.E)) * (_ ⊗ₜ _) = _ ⊗ₜ _
-  rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-  congr 1
-  exact Prod.ext (mul_zero _) rfl
-
-theorem fin_smul_mem {P : HeightOneSpectrum (𝓞 D.host.F) → Prop} {β : Af D.host.F} (hβ : β ∈ intAf D.host.F)
-    (h0 : ∀ v, ¬ P v → evalV D.host.F v β = 0) {u : WO S T} (hu : u ∈ latO S T LS LT fun _ => True) :
-    algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 β) • u ∈ latO S T LS LT P := by
-  induction hu using AddSubgroup.closure_induction with
-  | mem w hw =>
-    obtain ⟨α, hα, -, a, ha, s, hs, t, ht, rfl⟩ := hw
-    refine AddSubgroup.subset_closure ⟨β * α, fun w => ?_, fun w hw => ?_, a, ha, s, hs, t, ht,
-      fin_smul_gen β α (fun i j => a * t i * ∑ k, star (s k) * S.gram k j)⟩
-    · rw [map_mul]; exact mul_mem (hβ w) (hα w)
-    · rw [map_mul, h0 w hw, zero_mul]
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add x x' _ _ h h' => rw [smul_add]; exact add_mem h h'
-  | neg x _ h => rw [smul_neg]; exact neg_mem h
-
-theorem actO_mem_latO_of_stab : ∀ (D : D7) (S T : HSp D), ∀ g ∈ KsphC S ∅, ∀ h ∈ KsphC T ∅, ∀ (P : HeightOneSpectrum (𝓞 D.host.F) → Prop), ∀ u ∈ latO S T (L0c D S) (L0c D T) P, actO S T g h u ∈ latO S T (L0c D S) (L0c D T) P := by
-  intro D S T g hg h hh P u hu
-  induction hu using AddSubgroup.closure_induction with
-  | mem u hu =>
-    obtain ⟨α, hα, h0, a, ha, s, hs, t, ht, rfl⟩ := hu
-    have e := rankOne_pure S T a s t 1 1
-    have e2 := fin_smul_gen (S := S) (T := T) α (1 * 1) (fun i j => a * t i * ∑ k, star (s k) * S.gram k j)
-    rw [← e, mul_one, mul_one] at e2
-    have e3 : ∀ (c : AE D) (x : WO S T), actO S T g h (c • x) = c • actO S T g h x := fun c x => by
-      simp only [actO, Matrix.mul_smul, Matrix.smul_mul]
-    rw [← e2, e3, actO_rankOne]
-    exact fin_smul_mem hα h0 (rankOne_mem_latO S T (latCoord S) (latCoord T) a ha _
-      (mulVec_pure_mem S g hg s hs) _ (mulVec_pure_mem T h hh t ht))
-  | zero => simp only [actO, Matrix.mul_zero, Matrix.zero_mul]; exact zero_mem _
-  | add y z _ _ hy hz => simp only [actO, Matrix.mul_add, Matrix.add_mul] at hy hz ⊢; exact add_mem hy hz
-  | neg y _ hy => simp only [actO, Matrix.mul_neg, Matrix.neg_mul] at hy ⊢; exact neg_mem hy
-
-end GlobalTheory.LatStabAct
 
 end
 end -- clump:auto
@@ -325,29 +232,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-namespace GlobalTheory.SplitHecke
-
-theorem om_eq_self_of_lattice_stable : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ (e : AE D), IsSplitIdem D e → ∀ (g : GA D S) (h : GA D T), SuppAt e S g → SuppAt e T h → ∀ x y, IsDetAt e S g x → IsDetAt e T h y → splitFacO χS χT x y = 1 → (∀ u ∈ latO S T (L0c D S) (L0c D T) (fun _ => True), actO S T g⁻¹ h⁻¹ u ∈ latO S T (L0c D S) (L0c D T) (fun _ => True)) → ∀ f, IsThetaFunO ψ S T f → (∀ u ∈ latO S T (L0c D S) (L0c D T) (fun _ => True), IsHalf e u ∨ IsHalf (cA D e) u → heisO ψ S T u f = f) → om (g, h) f = f := by
-  intro D ψ S T χS χT om hW e he g h hg hh x y hx hy h1 hL f hf hfix
-  have hdual := (GlobalTheory.LatVac.latO_selfDual_approx_sign D ψ S T _ _ hW.std (GlobalTheory.PlaceModel.isSelfDualC_latFrame S)
-    (GlobalTheory.PlaceModel.isSelfDualC_latFrame T)).1
-  rw [GlobalTheory.PlaceModel.coe_latFrame, GlobalTheory.PlaceModel.coe_latFrame] at hdual
-  have hfin := @GlobalTheory.SplitScalar.latO_fin D S T (L0c D S) (L0c D T)
-  have key := om_eq_sum hW he hf hfix hg hh hx hy (R := {0})
-    (fun u hu => by
-      rw [Finset.mem_singleton.1 hu]
-      exact ⟨hL 0 (zero_mem _), GlobalTheory.SplitScalar.isHalf_zero e⟩)
-    (fun w hw hwe => by
-      refine ⟨0, ⟨Finset.mem_singleton_self _, ?_⟩, fun v hv => Finset.mem_singleton.1 hv.1⟩
-      rw [sub_zero, hdual w (GlobalTheory.SplitScalar.half_fin he hwe)]
-      intro u hu
-      rw [← symplO_actO S T g⁻¹ h⁻¹]
-      exact (hdual _ (hfin hw)).1 hw _ (hL u hu))
-    (fun w hw _ => hL w hw)
-  rw [key, h1, Finset.sum_singleton, Finset.card_singleton, GlobalTheory.SplitScalar.heisO_zero]
-  simp
-
-end GlobalTheory.SplitHecke
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmEqSelfOfLatticeStable =====
@@ -426,127 +310,10 @@ theorem unique (hψ : IsStdChar D ψ (-1)) {V W : HSp D} {χ χ' : IdC D} (ha : 
   have := twist hψ ha (isHC_one D) (isHC_one D) (resEta_one D) (resEta_one D) H (by simpa only [mul_one] using H') hx hy
   simpa using this
 
-theorem map_eq_one_of_supp {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R') {a x : R} (ha : φ a = 0)
-    (hx : a * (x - 1) = x - 1) : φ x = 1 := by
-  have := congrArg φ hx
-  rw [map_mul, ha, zero_mul, map_sub, map_one] at this
-  exact sub_eq_zero.1 this.symm
-
-theorem unramAt_of_outside {χ : IdC D} {Z : Finset (HeightOneSpectrum (𝓞 D.host.F))} (h : UnramOutside D χ Z)
-    {v : HeightOneSpectrum (𝓞 D.host.F)} (hv : v ∉ Z) {ε : AF D.host.F} (hε : IsPlaceIdem D v ε) : UnramAt ε χ := by
-  obtain ⟨β, rfl, -, h0⟩ := hε
-  intro x hx i1 i2
-  refine h x (map_eq_one_of_supp (infPart D) (TensorProduct.zero_tmul _ _) hx) i1 i2 fun w hw => ?_
-  refine map_eq_one_of_supp
-    ((Algebra.TensorProduct.map (evalV D.host.F w) (AlgHom.id D.host.F D.host.E)).toRingHom.comp (finPart D)) ?_ hx
-  change evalV D.host.F w β ⊗ₜ[D.host.F] (1 : D.host.E) = 0
-  rw [h0 w fun e => hv (e ▸ hw), TensorProduct.zero_tmul]
-
-theorem fixes_local {S T : HSp D} {χS χT : IdC D} {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
-    (H : IsWeilDatumO ψ S T χS χT om) {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : AF D.host.F} (hε : IsPlaceIdem D v ε)
-    (uS : UnramAt ε χS) (uT : UnramAt ε χT) {g : GA D S} {h : GA D T} (hg : g ∈ KsphC S ∅) (hh : h ∈ KsphC T ∅)
-    (sg : SuppPl ε S g) (sh : SuppPl ε T h) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
-    (hv : ∀ u ∈ latO S T (L0c D S) (L0c D T) (fun w => w = v), heisO ψ S T u f = f) : om (g, h) f = f := by
-  obtain ⟨KS, hKS, -⟩ := GlobalTheory.Mem.Ksph.exists_subgroup_ksph D S ∅
-  obtain ⟨KT, hKT, -⟩ := GlobalTheory.Mem.Ksph.exists_subgroup_ksph D T ∅
-  have hg' : g⁻¹ ∈ KsphC S ∅ := by rw [← hKS] at hg ⊢; exact KS.inv_mem hg
-  have hh' : h⁻¹ ∈ KsphC T ∅ := by rw [← hKT] at hh ⊢; exact KT.inv_mem hh
-  by_cases hs : ∃ e : AE D, IsSplitIdem D e ∧ e + cA D e = algebraMap (AF D.host.F) (AE D) ε
-  · obtain ⟨e, he, heq⟩ := hs
-    obtain ⟨x, hx, hx1⟩ := GlobalTheory.Mem.DetUnit.exists_isDetAt_unram D S ε e he heq g hg
-    obtain ⟨y, hy, hy1⟩ := GlobalTheory.Mem.DetUnit.exists_isDetAt_unram D T ε e he heq h hh
-    have he' : cA D e * cA D e = cA D e := by rw [← map_mul, he.1]
-    have heε : algebraMap (AF D.host.F) (AE D) ε * e = e := by rw [← heq]; linear_combination he.1 + he.2.1
-    have heε' : algebraMap (AF D.host.F) (AE D) ε * cA D e = cA D e := by rw [← heq]; linear_combination he' + he.2.1
-    refine GlobalTheory.SplitHecke.om_eq_self_of_lattice_stable D ψ S T χS χT om H e he g h (fun i j => by rw [heq]; exact sg i j)
-      (fun i j => by rw [heq]; exact sh i j) x y hx hy (by rw [splitFacO, hx1 _ uT, hy1 _ uS, inv_one, mul_one])
-      (GlobalTheory.LatStabAct.actO_mem_latO_of_stab D S T _ hg' _ hh' _) f hf fun u hu hh => hv u ?_
-    rcases hh with hh | hh
-    · have := (GlobalTheory.PlaceModel.idem_smul_mem hε he.1 heε hu).1
-      rwa [show e • u = u from Matrix.ext hh] at this
-    · have := (GlobalTheory.PlaceModel.idem_smul_mem hε he' heε' hu).1
-      rwa [show cA D e • u = u from Matrix.ext hh] at this
-  · obtain ⟨η, e1, e2, e3, e4⟩ := GlobalTheory.Mem.EtaTilde.exists_etaTilde D
-    have k := GlobalTheory.T.weilDatum_fixes_vacuum_nonSplitPlace_unramified D ψ H.std S T _ _ (GlobalTheory.PlaceModel.isSelfDualC_latFrame S) (GlobalTheory.PlaceModel.isSelfDualC_latFrame T)
-      χS χT om ⟨η, e1, e4, e3, e2⟩ H v ε ⟨hε, hs⟩ uS uT g h sg sh
-    rw [GlobalTheory.PlaceModel.coe_latFrame, GlobalTheory.PlaceModel.coe_latFrame] at k
-    refine k (fun u => ⟨GlobalTheory.LatStabAct.actO_mem_latO_of_stab D S T _ hg _ hh _ u, fun hu => ?_⟩) f hf hv
-    have := GlobalTheory.LatStabAct.actO_mem_latO_of_stab D S T _ hg' _ hh' _ _ hu
-    have e := GlobalTheory.AdelicLatMove.actO_actO_inv S T g⁻¹ h⁻¹ u
-    rw [inv_inv, inv_inv] at e
-    rwa [e] at this
-
-theorem latO_mono {S T : HSp D} {LS : Set (Fin S.rank → D.host.E)} {LT : Set (Fin T.rank → D.host.E)}
-    {P Q : HeightOneSpectrum (𝓞 D.host.F) → Prop} (h : ∀ w, P w → Q w) : latO S T LS LT P ≤ latO S T LS LT Q :=
-  AddSubgroup.closure_mono fun _ ⟨α, hα, h0, k⟩ => ⟨α, hα, fun w hw => h0 w fun e => hw (h w e), k⟩
-
-theorem fixes_oriented {S T : HSp D} {χS χT : IdC D} {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
-    (H : IsWeilDatumO ψ S T χS χT om) {Z : Finset (HeightOneSpectrum (𝓞 D.host.F))}
-    (uS : UnramOutside D χS Z) (uT : UnramOutside D χT Z) {g : GA D S} {h : GA D T} (hg : g ∈ KsphC S Z) (hh : h ∈ KsphC T Z)
-    {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
-    (hv : ∀ u ∈ latO S T (L0c D S) (L0c D T) (fun w => w ∉ Z), heisO ψ S T u f = f) : om (g, h) f = f := by
-  let K : Subgroup (GA D S × GA D T) :=
-    { carrier := {p | om p f = f}
-      one_mem' := by simp
-      mul_mem' := fun {a b} ha hb => by
-        change om (a * b) f = f
-        rw [map_mul, Module.End.mul_apply, show om b f = f from hb, show om a f = f from ha]
-      inv_mem' := fun {a} ha => by
-        change om a⁻¹ f = f
-        conv_lhs => rw [← show om a f = f from ha]
-        rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
-  have hK : IsClosed (K : Set (GA D S × GA D T)) :=
-    isClosed_eq (continuous_pi fun w => H.om_cont f hf w) continuous_const
-  have hl : ∀ v, v ∉ Z → ∀ u ∈ latO S T (L0c D S) (L0c D T) (fun w => w = v), heisO ψ S T u f = f := fun v hvZ u hu =>
-    hv u (latO_mono (fun w (e : w = v) => e ▸ hvZ) hu)
-  have one : ∀ V : HSp D, (1 : GA D V) ∈ KsphC V ∅ := fun V => by
-    obtain ⟨KV, hKV, -⟩ := GlobalTheory.Mem.Ksph.exists_subgroup_ksph D V ∅
-    rw [← hKV]; exact KV.one_mem
-  have sone : ∀ (V : HSp D) ε, SuppPl ε V 1 := fun V ε i j => by simp [Formalism.L2.Theta.mt]
-  have k1 : g ∈ K.comap (MonoidHom.inl _ _) :=
-    GlobalTheory.LevelClosure.ksph_le_of_isClosed D S Z _ (hK.preimage (continuous_id.prodMk continuous_const))
-      (fun v hvZ ε hε g hg sg => fixes_local H hε (unramAt_of_outside uS hvZ hε) (unramAt_of_outside uT hvZ hε) hg (one T) sg
-        (sone T ε) hf (hl v hvZ)) g hg
-  have k2 : h ∈ K.comap (MonoidHom.inr _ _) :=
-    GlobalTheory.LevelClosure.ksph_le_of_isClosed D T Z _ (hK.preimage (continuous_const.prodMk continuous_id))
-      (fun v hvZ ε hε h hh sh => fixes_local H hε (unramAt_of_outside uS hvZ hε) (unramAt_of_outside uT hvZ hε) (one S) hh
-        (sone S ε) sh hf (hl v hvZ)) h hh
-  have : (g, h) ∈ K := by simpa using K.mul_mem k1 k2
-  exact this
-
-theorem fixes_small (hψ : IsStdChar D ψ (-1)) {V W : HSp D} {χ χ' : IdC D} (ha : admitted V W χ χ') (hr : V.rank < W.rank)
-    {om : GA D V × GA D W →* Module.End ℂ (ThS ψ V W)} (H : IsWeilOn ψ V W χ χ' om)
-    {Z : Finset (HeightOneSpectrum (𝓞 D.host.F))} (u1 : UnramOutside D χ Z) (u2 : UnramOutside D χ' Z)
-    {g : GA D V} {h : GA D W} (hg : g ∈ KsphC V Z) (hh : h ∈ KsphC W Z) (Φ : ThS ψ V W)
-    (hv : ∀ u ∈ latVWS V W Z, Heisenberg₂ ψ V W u Φ.1 = Φ.1) : om (g, h) Φ = Φ := by
-  obtain ⟨o, ho, e⟩ := GlobalTheory.Mem.WeilOriented.exists_isWeilDatumO D ψ hψ V W χ χ' om ha hr H
-  obtain ⟨c, -, -, hc, -, -, hhe, hth, hl⟩ := GlobalTheory.OrientedCoord.exists_coord D V W hr.le
-  have k := fixes_oriented ho u1 u2 hg hh ((hth ψ Φ.1).2 (mem_ThS.1 Φ.2)) fun u hu => by
-    rw [hhe, hv _ (hl Z u hu)]
-  simp only [hc] at k
-  rw [e] at k
-  refine Subtype.ext (funext fun w => ?_)
-  obtain ⟨u, rfl⟩ := c.surjective w
-  rw [hc]
-  exact congrFun k u
-
-theorem transpose_mem_latVWS {V W : HSp D} (hne : V.rank ≠ W.rank) (Z : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    {u : WA V W} (hu : u ∈ latVWS V W Z) : u.transpose ∈ latVWS W V Z := by
-  have : latVWS V W Z ≤ (latVWS W V Z).comap (Matrix.transposeAddEquiv _ _ _).toAddMonoidHom := by
-    refine (AddSubgroup.closure_le _).2 ?_
-    rintro _ ⟨α, hα, h0, a, ha, x, hx, y, hy, rfl⟩
-    refine AddSubgroup.subset_closure ⟨α, hα, h0, a, ha, y, hy, x, hx, Matrix.ext fun i j => ?_⟩
-    change _ ⊗ₜ _ = _ ⊗ₜ _
-    congr 1
-    rcases hne.lt_or_gt with hr | hr
-    · rw [if_pos hr.le, if_neg hr.not_ge]; ring
-    · rw [if_neg hr.not_ge, if_pos hr.le]; ring
-  exact this hu
-
 theorem weilRules : ∀ D : D7, WeilRules D := by
   intro D ψ hψ Wc
   refine ⟨fun V W χ χ' ν ha h1 r1 g h x hx => ?_, fun V W χ χ' ν ha h1 r1 g h y hy => ?_,
-    fun V W χ χ' ha g h Φ Φ' e x => ?_, fun V W χ χ' ha Z u1 u2 g hg h hh Φ hv => ?_⟩
+    fun V W χ χ' ha g h Φ Φ' e x => ?_⟩
   · obtain ⟨y, hy⟩ := GlobalTheory.RecDict.exists_isDetRoot D W h
     have := twist hψ ha (isHC_one D) h1 (resEta_one D) r1 (Wc.weil V W χ χ' ha)
       (Wc.weil V W _ _ (isAdmissibleSplittingCharPair_mul_twist ha (isHC_one D) h1 (resEta_one D) r1)) hx hy
@@ -558,15 +325,6 @@ theorem weilRules : ∀ D : D7, WeilRules D := by
   · obtain ⟨o, ho, k⟩ := WeilSwap.exists_isWeilOn_swap D ψ hψ V W χ χ' _ ha.1 (Wc.weil V W χ χ' ha)
     rw [unique hψ (isAdmissibleSplittingCharPair_symm ha) ho (Wc.weil W V χ' χ (isAdmissibleSplittingCharPair_symm ha))]
     exact k g h Φ Φ' e x
-  · rcases ha.1.lt_or_gt with hr | hr
-    · exact fixes_small hψ ha hr (Wc.weil V W χ χ' ha) u1 u2 hg hh Φ hv
-    · obtain ⟨o, ho, k⟩ := exists_swap hψ ha.1 (Wc.weil V W χ χ' ha)
-      refine (WeilSwap.trEquiv ψ ha.1).injective ?_
-      rw [← k]
-      refine fixes_small hψ (isAdmissibleSplittingCharPair_symm ha) hr ho u2 u1 hh hg _ fun u hu => ?_
-      refine (WeilSwap.heis_transpose ψ ha.1.symm u Φ.1).symm.trans ?_
-      rw [hv _ (transpose_mem_latVWS ha.1.symm Z hu)]
-      rfl
 
 end GlobalTheory.Mem.WeilRule
 
@@ -662,7 +420,7 @@ theorem exists_weilFun_eqRank : ∀ D : D7, WeilEx D → WeilOnEqEx D → WeilTw
     · exact ⟨W₀.om V W χ χ', fun _ => rfl, fun k => absurd k h⟩
   choose om hne heq using key
   refine ⟨⟨om, fun V W χ χ' ha => ?_, fun V W χ χ' ha => ?_, fun V W χ χ' ha => ?_, fun V W χ χ' ha => ?_,
-    fun V W χ χ' ha => ?_, fun V W χ χ' ν ha => ?_, fun V W χ χ' ν ha => ?_, fun V W χ χ' ha => ?_,
+    fun V W χ χ' ha => ?_, fun V W χ χ' ν ha => ?_, fun V W χ χ' ν ha => ?_,
     fun V W χ χ' ha => ?_⟩, heq, fun V W χ χ' ν ha hν h0 => ?_, fun V W χ χ' ν ha hν h0 => ?_⟩
   · rw [hne V W χ χ' ha.1]; exact W₀.om_heis V W χ χ' ha
   · rw [hne V W χ χ' ha.1]; exact W₀.om_aut V W χ χ' ha
@@ -672,7 +430,6 @@ theorem exists_weilFun_eqRank : ∀ D : D7, WeilEx D → WeilOnEqEx D → WeilTw
   · rw [hne V W χ χ' ha.1, hne V W χ (χ' * ν) ha.1]; exact W₀.twW V W χ χ' ν ha
   · rw [hne V W χ χ' ha.1, hne V W (χ * ν) χ' ha.1]; exact W₀.twV V W χ χ' ν ha
   · rw [hne V W χ χ' ha.1, hne W V χ' χ ha.1.symm]; exact W₀.om_swap V W χ χ' ha
-  · rw [hne V W χ χ' ha.1]; exact W₀.om_unr V W χ χ' ha
   · exact (h3 ψ hψ V W χ χ' ν ha hν h0 _ (heq V W χ χ' ha)).1 _ (heq V W χ (χ' * ν) (equalRankSplittingCharsAdmissible_mul_right ha hν h0))
   · exact (h3 ψ hψ V W χ χ' ν ha hν h0 _ (heq V W χ χ' ha)).2 _ (heq V W (χ * ν) χ' (equalRankSplittingCharsAdmissible_mul_left ha hν h0))
 
@@ -1094,7 +851,7 @@ theorem exists_allTied_eqTied_on_of_realised {D : D7} (ht : TypAdd D)
   obtain ⟨X, T, W, B, rfl, h⟩ := hX θ hθ ψ hψ Wf hE Tw Rc
   obtain ⟨A, hA⟩ := hA
   obtain ⟨K, -⟩ := h.kfin
-  refine ⟨X, h.tieIo hio, fun μ hμ j hj x y => ?_, A, ⟨T, h.afTiedSm, h.typTied ht, W, h.weilUnrTied, K, h.phiUp, B, hr, hA⟩,
+  refine ⟨X, h.tieIo hio, fun μ hμ j hj x y => ?_, A, ⟨T, h.afTiedSm, h.typTied ht, W, K, h.phiUp, B, hr, hA⟩,
     h.eqTied, fun nch Tp e => ?_⟩
   · obtain ⟨⟨m, hm⟩, h2⟩ := hi μ hμ j hj x y
     have e := T.pet _ (D.sp.Y_sig j) m.1 m.2 hm (X.rowAF μ j x) (X.rowAF μ j y)
@@ -1501,7 +1258,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.Mem.Th
 
 theorem weilTiedEq_of_eqTied : ∀ (D : D7) (X : ThetaX D) (T : ThetaTied D X) (W : WeilTied D X T), WeilThetaCompatibility W → WeilCompatibleEquivariance W :=
-  fun _ _ _ _ h => ⟨h.range, h.Heisenberg₂, h.aut, h.cont, h.unit, h.split, ⟨h.twW, h.twV⟩, h.th⟩
+  fun _ _ _ _ _ => ⟨⟩
 
 end GlobalTheory.Mem.Th
 end -- clump:auto

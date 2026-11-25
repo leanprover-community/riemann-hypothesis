@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.FlagBundle
 open Classical
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FlagBundle.Transfer

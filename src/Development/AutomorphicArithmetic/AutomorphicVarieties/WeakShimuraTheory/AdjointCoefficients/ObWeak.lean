@@ -637,19 +637,10 @@ private theorem ex_mu {O A : Type} [CommRing O] [IsLocalRing O] [CommRing A] [Al
     rw [mul_smul_comm, e2, smul_smul]
     exact k _ _ (by rw [map_mul, hs, hs, e, mul_comm])
 
-private theorem mmap {O R S : Type} [CommRing O] [CommRing R] [CommRing S] [Algebra O R] [Algebra O S]
-    (f : R →ₐ[O] S) (A B : M4 R) : (A * B).map f = A.map f * B.map f :=
-  Matrix.map_mul (f := (f : R →+* S))
-
 private theorem smap {O R S : Type} [CommRing O] [CommRing R] [CommRing S] [Algebra O R] [Algebra O S]
     (f : R →ₐ[O] S) (A B : M4 R) : (A - B).map f = A.map f - B.map f := by
   ext i j
   simp
-
-private theorem amap {O R S : Type} [CommRing O] [CommRing R] [CommRing S] [Algebra O R] [Algebra O S]
-    (f : R →ₐ[O] S) (A : M4 R) : (adj A).map f = adj (A.map f) := by
-  ext i j
-  rw [Matrix.map_apply, adj_apply, adj_apply, map_zsmul, Matrix.map_apply]
 
 theorem UpperTheory.V.Ws.X1.obWeak :
     ∀ {Λ : Type} [CommRing Λ] [IsLocalRing Λ] [IsNoetherianRing Λ] [IsAdicComplete (maximalIdeal Λ) Λ], IsUnit (2 : Λ) → ∀ {Γ V : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] {Gv : V → Type} [∀ v, Group (Gv v)] [∀ v, TopologicalSpace (Gv v)] [∀ v, IsTopologicalGroup (Gv v)] (loc : ∀ v, Gv v →* Γ), (∀ v, Continuous (loc v)) → ∀ {R : Type} [CommRing R] [Algebra Λ R] [IsCO Λ R], ∀ (ν : Γ →* Λˣ) (r : Γ →* M4 R) (n : V → M4 R), AdicCont (maximalIdeal Λ) (fun g => (ν g : Λ)) → WP loc (fun g => algebraMap Λ R (ν g)) r n → (∀ i j, AdicCont (maximalIdeal R) fun g => r g i j) → ∀ (rb : Γ →* M4 (ResidueField Λ)) (nb : V → M4 (ResidueField Λ)) (hb : ∀ g, ∃ x, IsGSp x (rb g)), (∀ g, (r g).map (res Λ R) = rb g) → (∀ v, (n v).map (res Λ R) = nb v) → Obs Λ R (Fr.coneH2 loc (adSp rb hb) fun v => bor (nb v)) fun A' _ _ _ q => Function.Surjective q ∧ maximalIdeal A' * RingHom.ker q = ⊥ ∧ WLift loc ν r n q := by
@@ -660,14 +651,14 @@ theorem UpperTheory.V.Ws.X1.obWeak :
   choose z z0 z1 z2 using fun u : κ =>
     X1.obCoc loc hloc p hp hs ν r n hν hw hr rb nb hb hrb hnb D (co u) (k1 u) (k2 u)
   have d1 : ∀ s t, (D.om s t).map p = 0 := fun s t => by
-    rw [SL.om, smap, mmap, D.rt_map, D.rt_map, D.rt_map, map_mul, sub_self]
+    rw [SL.om, smap, map_mul_alg, D.rt_map, D.rt_map, D.rt_map, map_mul, sub_self]
   have d2 : ∀ v s, (D.de v s).map p = 0 := fun v s => by
     have e1 : adj (n v) * n v = 1 := by
       have := hw.sp v
       rwa [IsGSp, one_smul] at this
     have e2 : n v * adj (n v) = 1 := mul_eq_one_comm.1 e1
-    rw [SL.de, smap, mmap, mmap, amap, D.rt_map, D.nt_map, D.t_map, ← mul_assoc, ← mul_assoc, e2, one_mul,
-      mul_assoc, e2, mul_one, sub_self]
+    rw [SL.de, smap, map_mul_alg, map_mul_alg, map_adj_alg, D.rt_map, D.nt_map, D.t_map,
+      ← mul_assoc, ← mul_assoc, e2, one_mul, mul_assoc, e2, mul_one, sub_self]
   refine ⟨fun u => Submodule.Quotient.mk ⟨z u, z0 u⟩, ?_⟩
   intro c hc A' _ _ _ p' p'' η hp' hpp hη hη0 e1
   have hx : ∑ u, residue O (c u) • z u ∈ Fr.continuousCoboundaries2 loc (adSp rb hb) (fun v => bor (nb v)) := by

@@ -52,7 +52,7 @@ namespace PositivityTheory.Rg.Sw.LVs.TC
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def IterAffine : Prop :=
   ∀ (V W : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup W] [NormedSpace ℂ W]

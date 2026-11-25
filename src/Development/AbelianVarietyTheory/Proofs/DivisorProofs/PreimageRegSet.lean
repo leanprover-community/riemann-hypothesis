@@ -52,8 +52,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.Toroidal GlobalTheory.LocM G
 open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Desc.GaussPt
 
 variable {Y X : Scheme.{0}} [IsIntegral Y] [IsIntegral X]

@@ -53,11 +53,6 @@ open Formalism.BasicNotions Formalism.L2.DIV
 
 variable {ι : Type} [Fintype ι] {n n' : ℕ}
 
-theorem fockF_eq_fockS {σ : Type} (f : MvPolynomial σ ℂ) : Formalism.REAL.fockF f f = fockS f f := by
-  unfold Formalism.REAL.fockF fockS mfact
-  refine Finset.sum_congr rfl fun m _ => ?_
-  ring
-
 theorem fockS_self_nonneg {σ : Type} (f : MvPolynomial σ ℂ) : ∃ r : ℝ, 0 ≤ r ∧ fockS f f = r := by
   refine ⟨∑ m ∈ f.support, ‖f.coeff m‖ ^ 2 * (mfact m : ℝ), by positivity, ?_⟩
   unfold fockS

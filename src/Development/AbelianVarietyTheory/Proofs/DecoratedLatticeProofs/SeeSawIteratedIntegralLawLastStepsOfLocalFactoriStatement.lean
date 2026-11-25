@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsJointlySmoothBiThetaTwoVarCombination
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationDisjointPlacesCommuteVacua
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastSeeSawDoubleLiftAdditive
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastTwoStepsDoubleLiftPeriodEqIntegral
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage
@@ -562,34 +564,14 @@ variable {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
 theorem biTheta_left (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {A S A' : HSp D} {C : WO A S → WO S A' → ℂ}
     (hC : IsBiTheta ψ A S A' C) (c : WO A S →₀ ℂ) :
     IsBiTheta ψ A S A' (fun u v => comb ψ A S c (fun u' => C u' v) u) := by
-  let d := GlobalTheory.BiTransfer.sumDec A (GlobalTheory.ChiGrid.negSp A')
-  rw [GlobalTheory.BiTransfer.isBiTheta_iff_join d] at hC ⊢
-  have e : GlobalTheory.BiTransfer.join d S (fun u v => comb ψ A S c (fun u' => C u' v) u) =
-      fun w => ∑ x ∈ c.support, c x * heisO ψ _ S (GlobalTheory.BiTransfer.inlH d S x) (GlobalTheory.BiTransfer.join d S C) w := by
-    funext w
-    simp only [GlobalTheory.BiTransfer.join_apply, comb, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, heisO]
-    refine Finset.sum_congr rfl fun x _ => ?_
-    simp only [GlobalTheory.BiTransfer.symplOH_split d, map_add (GlobalTheory.BiTransfer.fstH d S), map_add (GlobalTheory.BiTransfer.sndH d S),
-      GlobalTheory.BiTransfer.fst_inl, GlobalTheory.BiTransfer.snd_inl, add_zero, GlobalTheory.FinTranslate.symplOH_zero_right]
-  rw [e]
-  exact GlobalTheory.SeeSawFold.theta_sum' c.support _ fun x _ =>
-    GlobalTheory.SeeSawFold.theta_const_mul' (c x) (GlobalTheory.Unf.MatCoef.theta_heisO_any hψ hθ hC _)
+  intros
+  apply _root_.GlobalTheory.FrCombAny.biTheta_combL <;> assumption
 
 theorem biTheta_right (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {A S A' : HSp D} {C : WO A S → WO S A' → ℂ}
     (hC : IsBiTheta ψ A S A' C) (c : WO S A' →₀ ℂ) :
     IsBiTheta ψ A S A' (fun u v => comb ψ S A' c (C u) v) := by
-  let d := GlobalTheory.BiTransfer.sumDec A (GlobalTheory.ChiGrid.negSp A')
-  rw [GlobalTheory.BiTransfer.isBiTheta_iff_join d] at hC ⊢
-  have e : GlobalTheory.BiTransfer.join d S (fun u v => comb ψ S A' c (C u) v) =
-      fun w => ∑ y ∈ c.support, c y * heisO ψ _ S (GlobalTheory.BiTransfer.inrH d S y) (GlobalTheory.BiTransfer.join d S C) w := by
-    funext w
-    simp only [GlobalTheory.BiTransfer.join_apply, comb, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, heisO]
-    refine Finset.sum_congr rfl fun y _ => ?_
-    simp only [GlobalTheory.BiTransfer.symplOH_split d, map_add (GlobalTheory.BiTransfer.fstH d S), map_add (GlobalTheory.BiTransfer.sndH d S),
-      GlobalTheory.BiTransfer.fst_inr, GlobalTheory.BiTransfer.snd_inr, add_zero, GlobalTheory.FinTranslate.symplOH_zero_right, zero_add]
-  rw [e]
-  exact GlobalTheory.SeeSawFold.theta_sum' c.support _ fun y _ =>
-    GlobalTheory.SeeSawFold.theta_const_mul' (c y) (GlobalTheory.Unf.MatCoef.theta_heisO_any hψ hθ hC _)
+  intros
+  apply _root_.GlobalTheory.FrCombAny.biTheta_combR <;> assumption
 
 theorem biTheta_biComb_any (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {A S A' : HSp D} {C : WO A S → WO S A' → ℂ}
     (hC : IsBiTheta ψ A S A' C) (c : WO A S →₀ ℂ) (c' : WO S A' →₀ ℂ) :
@@ -853,26 +835,7 @@ noncomputable section
 namespace GlobalTheory.QLastCore
 
 theorem symplO_eq_zero_of_disj : ∀ (D : D7) (S T : HSp D) (P P' : GlobalTheory.FinPl.Pl D → Prop), (∀ x, P x → ¬ P' x) → ∀ x y : WO S T, GlobalTheory.FinPl.MxAt P x → GlobalTheory.FinPl.MxAt P' y → symplO S T x y = 0 := by
-  intro D S T P P' hPP x y hx hy
-  have hz : ∀ a b : AE D, a ∈ GlobalTheory.FinPl.idAt D P → b ∈ GlobalTheory.FinPl.idAt D P' → b * a = 0 := by
-    intro a b ha hb
-    have m1 : b * a ∈ GlobalTheory.FinPl.idAt D P := Ideal.mul_mem_left _ _ ha
-    have m2 : b * a ∈ GlobalTheory.FinPl.idAt D P' := Ideal.mul_mem_right _ _ hb
-    rw [GlobalTheory.FinPl.mem_supportedOnPlacesIdeal_iff_components_zero_elsewhere] at m1 m2
-    refine GlobalTheory.FinPl.CMAdele_eq_zero_of_infinite_and_finite_components_zero D _ m1.1 fun w => ?_
-    by_cases hw : P w
-    · exact m2.2 w (hPP w hw)
-    · exact m1.2 w hw
-  have hh : hO S T x y = 0 := by
-    unfold hO
-    refine Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => Finset.sum_eq_zero fun c _ =>
-      Finset.sum_eq_zero fun d _ => ?_
-    have h0 : cA D (y c b) * x d a = 0 := hz _ _ (hx d a) (GlobalTheory.LastOpPf.cA_mem_idAt (hy c b))
-    calc incA D (S.gram⁻¹ a b) * cA D (y c b) * incA D (T.gram c d) * x d a
-        = incA D (S.gram⁻¹ a b) * incA D (T.gram c d) * (cA D (y c b) * x d a) := by ring
-      _ = 0 := by rw [h0, mul_zero]
-  unfold symplO
-  rw [hh, mul_zero, map_zero]
+  first | exact _root_.GlobalTheory.DisjComb.symplO_disj | exact @_root_.GlobalTheory.DisjComb.symplO_disj | apply _root_.GlobalTheory.DisjComb.symplO_disj <;> assumption
 
 theorem half_one_sub_of_ne : ∀ (D : D7) (k k' : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k'] (q : GlobalTheory.FinPl.SplitPt D k) (q' : GlobalTheory.FinPl.SplitPt D k'), q.v ≠ q'.v → ∀ (m n : ℕ) (u : Mx D m n), IsHalf (q'.e + cA D q'.e) u → IsHalf (1 - (q.e + cA D q.e)) u := by
   intro D k k' _ _ _ _ _ _ _ _ q q' hne m n u hu i j
@@ -948,20 +911,8 @@ theorem sum_conv_cons : ∀ (D : D7) (S T : HSp D) (om : GA D S × GA D T →* M
   rfl
 
 theorem comb_aconv_cons : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (a : WO S T →₀ ℂ) (l : List (WO S T →₀ ℂ)) (f : WO S T → ℂ), (∀ x ∈ a.support, ∀ y ∈ (aconv l).support, symplO S T x y = 0) → comb ψ S T (aconv (a :: l)) f = comb ψ S T a (comb ψ S T (aconv l) f) := by
-  intro D ψ S T a l f hs
-  change (a.sum fun g x => (aconv l).sum fun h y => Finsupp.single (g + h) (x * y)).sum (fun u b => b • heisO ψ S T u f) =
-    a.sum fun g x => x • heisO ψ S T g ((aconv l).sum fun h y => y • heisO ψ S T h f)
-  rw [Finsupp.sum_sum_index (h := fun u b => b • heisO ψ S T u f) (fun _ => zero_smul ℂ _) (fun _ _ _ => add_smul _ _ _)]
-  refine Finsupp.sum_congr fun g hg => ?_
-  rw [Finsupp.sum_sum_index (h := fun u b => b • heisO ψ S T u f) (fun _ => zero_smul ℂ _) (fun _ _ _ => add_smul _ _ _)]
-  simp only [Finsupp.sum_single_index, zero_smul]
-  simp only [Finsupp.sum]
-  rw [GlobalTheory.HeisComb.heisO_finset_sum, Finset.smul_sum]
-  refine Finset.sum_congr rfl fun h hh => ?_
-  rw [GlobalTheory.WeilVacMove.heisO_heisO, smul_smul, smul_smul]
-  have h0 : symplOH S T g h = 0 := by unfold symplOH; rw [hs g hg h hh, mul_zero]
-  rw [h0, AddChar.map_zero_eq_one]
-  simp
+  intros
+  apply _root_.GlobalTheory.QFinLaw.comb_aconv_cons <;> assumption
 
 theorem sum_om_comb_comm : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ (b : GA D S →₀ ℂ) (e : WO S T →₀ ℂ) (f : WO S T → ℂ), IsThetaFunO ψ S T f → (∀ g ∈ b.support, ∀ u ∈ e.support, actO S T g 1 u = u) → ∑ g ∈ b.support, b g • om (g, 1) (comb ψ S T e f) = comb ψ S T e (∑ g ∈ b.support, b g • om (g, 1) f) := by
   intro D ψ S T χS χT om hw b e f hf hact

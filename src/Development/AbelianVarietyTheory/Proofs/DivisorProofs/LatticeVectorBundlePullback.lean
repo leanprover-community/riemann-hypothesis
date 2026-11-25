@@ -50,8 +50,6 @@ open ReciprocityTheory.DiscreteGroups.LocalClassField
 open scoped TensorProduct
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LKGeo.LatDiv

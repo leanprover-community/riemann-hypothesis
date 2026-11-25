@@ -58,33 +58,14 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem le_natCast_iff_not_succ_le (a : ℕ∞) (m : ℕ) :
-    a ≤ (m : ℕ∞) ↔ ¬ ((m + 1 : ℕ) : ℕ∞) ≤ a := by
-  induction a using ENat.recTopCoe with
-  | top =>
-      refine iff_of_false ?_ ?_
-      · intro h
-        have h1 : ((m + 1 : ℕ) : ℕ∞) ≤ (m : ℕ∞) := le_trans le_top h
-        have h2 : m + 1 ≤ m := by exact_mod_cast h1
-        omega
-      · exact fun h => h le_top
-  | coe n =>
-      constructor
-      · intro h h'
-        have h1 : n ≤ m := by exact_mod_cast h
-        have h2 : m + 1 ≤ n := by exact_mod_cast h'
-        omega
-      · intro h
-        have h2 : n ≤ m := by
-          by_contra hc
-          exact h (by exact_mod_cast (by omega : m + 1 ≤ n))
-        exact_mod_cast h2
-
 theorem orderAt_le_iff_notMem_orderAtLeastLocus {X : Scheme.{u}} (I : X.IdealSheafData) (m : ℕ)
     (x : X) :
     orderAt I x ≤ (m : ℕ∞) ↔ x ∉ orderAtLeastLocus I (m + 1) := by
   rw [mem_orderAtLeastLocus_iff]
-  exact le_natCast_iff_not_succ_le (orderAt I x) m
+  generalize orderAt I x = a
+  induction a using ENat.recTopCoe with
+  | top => simp
+  | coe n => norm_cast; omega
 
 theorem notMem_support_derivIdealSheafIterate_iff_orderAt_le (k : Type u) [Field k] [CharZero k]
     {X : Scheme.{u}} (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]

@@ -57,7 +57,7 @@ import Mathlib.Topology.Sheaves.Init
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardPreimageHom, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCharacterOrthogonality, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianRepCountFourierExpansion, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedFormulaPolynomialGen
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardPreimageHom =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardPreimageHom", "h": "module\n\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\npublic import Mathlib.RingTheory.Ideal.Quotient.Index\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardPreimageHom", "h": "module\n\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\npublic import Mathlib.RingTheory.Ideal.Quotient.Index\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeriesEqDens\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -81,9 +81,6 @@ theorem cT_smul (σ : R →+* R) {a b : ℕ} (r : R) (x : Matrix (Fin a) (Fin b)
     cT σ (r • x) = σ r • cT σ x := by
   ext i j; simp [cT]
 
-theorem cT_one (σ : R →+* R) {a : ℕ} : cT σ (1 : Matrix (Fin a) (Fin a) R) = 1 := by
-  ext i j; simp [cT, Matrix.one_apply, eq_comm]
-
 theorem red_mul (ϖ : R) (k : ℕ) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
     red ϖ k (x * y) = red ϖ k x * red ϖ k y := by
   simp [red, Matrix.map_mul]
@@ -91,9 +88,6 @@ theorem red_mul (ϖ : R) (k : ℕ) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) 
 theorem red_add (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     red ϖ k (x + y) = red ϖ k x + red ϖ k y := by
   ext i j; simp [red]
-
-theorem red_one (ϖ : R) (k : ℕ) {a : ℕ} : red ϖ k (1 : Matrix (Fin a) (Fin a) R) = 1 := by
-  simp [red]
 
 theorem red_eq_iff (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     red ϖ k x = red ϖ k y ↔ ∀ i j, ϖ ^ k ∣ x i j - y i j := by
@@ -143,12 +137,12 @@ theorem inv_mod (ϖ : R) (k : ℕ) {a : ℕ} (N : Matrix (Fin a) (Fin a) R) :
     rw [h1, mul_neg_geom_sum, smul_pow]
     have : (1 - ϖ ^ k • (-N) ^ k : Matrix (Fin a) (Fin a) R) = 1 + ϖ ^ (k + 0) • (-(-N) ^ k) := by
       simp [sub_eq_add_neg]
-    rw [this, red_add, red_pow_smul, red_one, add_zero]
+    rw [this, red_add, red_pow_smul, GlobalTheory.CompanionTheory.SiegCov.red_one, add_zero]
   · have h1 : (1 + ϖ • N) = 1 - ϖ • (-N) := by simp
     rw [h1, geom_sum_mul_neg, smul_pow]
     have : (1 - ϖ ^ k • (-N) ^ k : Matrix (Fin a) (Fin a) R) = 1 + ϖ ^ (k + 0) • (-(-N) ^ k) := by
       simp [sub_eq_add_neg]
-    rw [this, red_add, red_pow_smul, red_one, add_zero]
+    rw [this, red_add, red_pow_smul, GlobalTheory.CompanionTheory.SiegCov.red_one, add_zero]
 
 def gr (σ : R →+* R) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R) :
     Matrix (Fin n) (Fin n) R := cT σ x * S * x
@@ -178,8 +172,8 @@ theorem solCount_congr {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) {m n : ℕ} 
     (T g h : Matrix (Fin n) (Fin n) R) (k : ℕ) (hgh : red ϖ k (g * h) = 1) (hhg : red ϖ k (h * g) = 1) :
     solCount σ ϖ S (cT σ g * T * g) k = solCount σ ϖ S T k := by
   have hc : red ϖ k (cT σ (g * h)) = 1 := by
-    have h1 : red ϖ k (g * h) = red ϖ k 1 := by rw [hgh, red_one]
-    rw [red_cT_congr hσ k h1, cT_one, red_one]
+    have h1 : red ϖ k (g * h) = red ϖ k 1 := by rw [hgh, GlobalTheory.CompanionTheory.SiegCov.red_one]
+    rw [red_cT_congr hσ k h1, GlobalTheory.CompanionTheory.SiegCov.cT_one, GlobalTheory.CompanionTheory.SiegCov.red_one]
   have himg : sol σ ϖ S (cT σ g * T * g) k = (fun y => y * red ϖ k g) '' sol σ ϖ S T k := by
     ext y
     constructor
@@ -221,7 +215,7 @@ theorem twist {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) {n : ℕ} {T T' H : M
   refine ⟨_, h, hgh, hhg, ?_⟩
   have hs : σ t = 1 - t := by rw [← ht]; ring
   have hcg : cT σ (1 + ϖ • (ϖ ^ b * t) • (T' * H)) = 1 + (ϖ ^ (b + 1) * (1 - t)) • (H * cT σ T') := by
-    rw [cT_add, cT_one, cT_smul, cT_smul, cT_mul, hH, hσ, map_mul, map_pow, hσ, hs, smul_smul, pow_succ]
+    rw [cT_add, GlobalTheory.CompanionTheory.SiegCov.cT_one, cT_smul, cT_smul, cT_mul, hH, hσ, map_mul, map_pow, hσ, hs, smul_smul, pow_succ]
     congr 2
     ring
   have e1 : (1 + (ϖ ^ (b + 1) * (1 - t)) • (H * cT σ T')) * T
@@ -551,7 +545,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCharacterOrthogonality =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianRepCountFourierExpansion =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianRepCountFourierExpansion", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedNondeg\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianRepCountFourierExpansion", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedNondeg\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeriesEqDens\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -565,11 +559,6 @@ theorem cT_mul (σ : R →+* R) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y 
     cT σ (x * y) = cT σ y * cT σ x := by
   unfold cT
   rw [Matrix.map_mul, Matrix.transpose_mul]
-
-theorem cT_cT (σ : R →+* R) (h : ∀ a, σ (σ a) = a) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
-    cT σ (cT σ x) = x := by
-  ext i j
-  exact h (x i j)
 
 theorem cT_sub (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     cT σ (x - y) = cT σ x - cT σ y := by
@@ -591,11 +580,6 @@ theorem red_neg (ϖ : R) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
   ext i j
   exact map_neg (Ideal.Quotient.mk (lev ϖ k)) (x i j)
 
-theorem red_cT (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
-    red ϖ k (cT σ x) = cT (barσ σ ϖ h k) (red ϖ k x) := by
-  ext i j
-  exact (barσ_mk σ ϖ h k (x j i)).symm
-
 theorem red_surj (ϖ : R) (k : ℕ) {a b : ℕ} :
     Function.Surjective (red ϖ k : Matrix (Fin a) (Fin b) R → _) := by
   intro y
@@ -606,7 +590,7 @@ theorem red_surj (ϖ : R) (k : ℕ) {a b : ℕ} :
 theorem red_gram (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
     (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R) :
     red ϖ k (cT σ x * S * x) = cT (barσ σ ϖ h k) (red ϖ k x) * red ϖ k S * red ϖ k x := by
-  rw [red_mul, red_mul, red_cT σ ϖ h]
+  rw [red_mul, red_mul, GlobalTheory.CompanionTheory.SiegCov.red_cT σ ϖ h]
 
 theorem image_sol (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
     (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) :
@@ -633,7 +617,7 @@ theorem gram_sub_mem (σ : R →+* R) (ϖ : R) (hinv : ∀ a, σ (σ a) = a) (h 
   unfold hermMod
   refine ⟨cT σ x * S * x - T, ?_, ?_⟩
   · show cT σ (cT σ x * S * x - T) = cT σ x * S * x - T
-    rw [cT_sub, cT_mul, cT_mul, cT_cT σ hinv, hS, hT, Matrix.mul_assoc]
+    rw [cT_sub, cT_mul, cT_mul, GlobalTheory.CompanionTheory.SiegCov.cT_cT σ hinv, hS, hT, Matrix.mul_assoc]
   · show red ϖ k (cT σ x * S * x - T) = _
     rw [red_sub, red_gram σ ϖ h]
 
@@ -785,7 +769,7 @@ theorem densAt_succ {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hU : IsUnrQu
     rw [Matrix.mul_smul, Matrix.mul_adjugate, smul_smul, hc]
   have h2 : cT σ (c • T.adjugate) * T = ϖ ^ 0 • (1 : Matrix (Fin n) (Fin n) R) := by
     have := congrArg (cT σ) h1
-    rw [cT_mul, hTc, cT_smul σ (ϖ ^ 0), cT_one, map_pow, hσ] at this
+    rw [cT_mul, hTc, cT_smul σ (ϖ ^ 0), GlobalTheory.CompanionTheory.SiegCov.cT_one, map_pow, hσ] at this
     exact this
   obtain ⟨t, ht⟩ : ∃ t, t + σ t = 1 := by
     obtain ⟨u, hu, -⟩ := hU.basis
@@ -842,7 +826,7 @@ theorem densAt_eq_of_isDens {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hU :
   exact tendsto_nhds_unique h1 hα
 
 theorem isUnimod_one (σ : R →+* R) (m : ℕ) : IsUnimod σ (1 : Matrix (Fin m) (Fin m) R) :=
-  ⟨cT_one σ, by simp⟩
+  ⟨GlobalTheory.CompanionTheory.SiegCov.cT_one σ, by simp⟩
 
 theorem unrPoly : PositivityTheory.PfSWUS.Loc.UnrFormula → PositivityTheory.SiegelWeilFormula.Gen.UnrPoly := by
   intro hF R _ σ ϖ q ε hR ψ hψ n T hT k hk t

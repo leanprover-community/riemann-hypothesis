@@ -58,7 +58,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.RealPlaceImaginaryGenera
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum NumberField Matrix Complex
 open scoped Real Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FockIndep
 

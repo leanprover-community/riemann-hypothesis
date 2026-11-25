@@ -22,8 +22,6 @@ namespace Formalism.L2.SG.Pf.IndexCocycleOrbits
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.PairVal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def IdxRatio {G : Type} [Group G] (A B : Subgroup G) : ℝ :=
   (B.relIndex A : ℝ) / (A.relIndex B : ℝ)
 

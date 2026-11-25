@@ -51,8 +51,6 @@ open GlobalTheory.Chain GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringO
 
 namespace GlobalTheory.VacuumCharacter
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem signBlockDeterminant_diagonalPhases_zpow {n : ℕ} (ε : Fin n → Bool) (t : Fin n → ℝ) (x : Bool → ℤ) :
     signBlockDeterminant ε true (diagonal fun j => Complex.exp (Complex.I * t j)) ^ x true *
       signBlockDeterminant ε false (diagonal fun j => Complex.exp (Complex.I * t j)) ^ x false =

@@ -619,7 +619,7 @@ omit [AlgebraicGeometry.Smooth p] in
 theorem exists_unlabeled_index_partialDeriv_notMem_primeIdealOf
     (hV : IsAffineOpen V) (c : EtaleChart p V n) {x : X} (hx : x ∈ V)
     (N : List X.IdealSheafData) (γ : ℕ → Option (Fin n)) (H : X.IdealSheafData)
-    (g : Γ(X, V)) (hγ : IsCoordLabeling c γ N) (_hinj : LabelingInjective γ N.length)
+    (g : Γ(X, V)) (hγ : IsCoordLabeling c γ N)
     (hsnc : InStrictNormalCrossingPositionAt p (H :: N) x) (hg : H.ideal ⟨V, hV⟩ = Ideal.span {g})
     (hxH : x ∈ H.support)
     (hxN : ∀ i : ℕ, ∀ hi : i < N.length, ∀ j : Fin n,

@@ -601,48 +601,6 @@ private theorem getElem_eq_of_list_eq {α : Type*} {L L' : List α} (h : L = L')
   subst h
   rfl
 
-private theorem getElem_map_of_lt {α β : Type*} (f : α → β) :
-    ∀ (L : List α) (n : ℕ) (hn : n < L.length) (hn' : n < (L.map f).length),
-      (L.map f)[n]'hn' = f (L[n]'hn) := by
-  intro L
-  induction L with
-  | nil =>
-      intro n hn _
-      exact absurd hn (Nat.not_lt_zero n)
-  | cons a L ih =>
-      intro n hn hn'
-      cases n with
-      | zero => rfl
-      | succ r =>
-          have h1 : r < L.length := by
-            simp only [List.length_cons] at hn
-            omega
-          have h2 : r < (L.map f).length := by
-            simp only [List.length_map, List.length_cons] at hn' ⊢
-            omega
-          exact ih r h1 h2
-
-private theorem getElem_map_append_of_lt {α β : Type*} (f : α → β) :
-    ∀ (L : List α) (R : List β) (n : ℕ) (hn : n < L.length)
-      (hn' : n < (L.map f ++ R).length), (L.map f ++ R)[n]'hn' = f (L[n]'hn) := by
-  intro L
-  induction L with
-  | nil =>
-      intro R n hn _
-      exact absurd hn (Nat.not_lt_zero n)
-  | cons a L ih =>
-      intro R n hn hn'
-      cases n with
-      | zero => rfl
-      | succ r =>
-          have h1 : r < L.length := by
-            simp only [List.length_cons] at hn
-            omega
-          have h2 : r < (L.map f ++ R).length := by
-            simp only [List.length_append, List.length_map, List.length_cons] at hn' ⊢
-            omega
-          exact ih R r h1 h2
-
 private theorem boundary_getElem_eq_iteratedStrictTransform {k : Type u} [Field k] {X : Scheme.{u}}
     {p : X ⟶ Spec (CommRingCat.of k)} {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData}
     (u : MarkedBlowupSequenceData p I m E) (i : ℕ) (hi : i ≤ u.length) (n : ℕ) (hn : n < E.length)
@@ -654,9 +612,8 @@ private theorem boundary_getElem_eq_iteratedStrictTransform {k : Type u} [Field 
   have h2 : n < (E.map (u.iteratedStrictTransform i) ++ u.boundaryFrom ([] : List X.IdealSheafData) i).length := by
     rw [← h1]
     exact hn'
-  rw [getElem_eq_of_list_eq h1 n hn' h2]
-  exact getElem_map_append_of_lt (u.iteratedStrictTransform i) E
-    (u.boundaryFrom ([] : List X.IdealSheafData) i) n hn h2
+  rw [getElem_eq_of_list_eq h1 n hn' h2, List.getElem_append_left (by simpa using hn),
+    List.getElem_map]
 
 private theorem orderAtLeastLocus_append_succ_subset_preimage (hstar : MaxContactCoverProperties.{u}) {k : Type u} [Field k]
     {X : Scheme.{u}}
@@ -748,10 +705,7 @@ private theorem separateBoundaryInvariant_append (hstar : MaxContactCoverPropert
         (fun D => D.comap (eqToHom hobj0))).length := by simpa using hiS
     have hbeli : ((s.append t hinv).boundary s.length)[i]'hiU
         = ((s.boundary s.length)[i]'hiS).comap (eqToHom hobj0) :=
-      (getElem_eq_of_list_eq hbd0 i hiU himap).trans
-        (getElem_map_of_lt
-          (fun D : (s.obj s.length).IdealSheafData => D.comap (eqToHom hobj0))
-          (s.boundary s.length) i hiS himap)
+      (getElem_eq_of_list_eq hbd0 i hiU himap).trans (List.getElem_map _)
     exact orderAtLeastLocus_inter_support_eq_empty_of_eq hid0 hbeli
       (orderAtLeastLocus_comap_eqToHom_inter_support_eq_empty hinv hobj0 (s.ideal s.length)
         ((s.boundary s.length)[i]'hiS) S.mult hsep)
@@ -790,10 +744,7 @@ private theorem separateBoundaryInvariant_append (hstar : MaxContactCoverPropert
           (fun D => D.comap (eqToHom hobjT))).length := by simpa using hjtt
       have hbelT : ((s.append t hinv).boundary (s.length + t.length))[j]'hjU
           = ((t.boundary t.length)[j]'hjtt).comap (eqToHom hobjT) :=
-        (getElem_eq_of_list_eq hbdT j hjU hjmapT).trans
-          (getElem_map_of_lt
-            (fun D : (t.obj t.length).IdealSheafData => D.comap (eqToHom hobjT))
-            (t.boundary t.length) j hjtt hjmapT)
+        (getElem_eq_of_list_eq hbdT j hjU hjmapT).trans (List.getElem_map _)
       have hbel : (t.boundary t.length)[j]'hjtt
           = t.iteratedStrictTransform t.length ((s.boundary s.length)[j]'hbj) :=
         boundary_getElem_eq_iteratedStrictTransform t t.length (le_refl t.length) j hbj hjtt
@@ -1011,21 +962,9 @@ theorem separateBoundaryInvariant_separateBoundarySeq (hstar : MaxContactCoverPr
 private theorem forall_mem_take_of_forall_lt {α : Type*} (Q : α → Prop) :
     ∀ (L : List α) (n : ℕ),
       (∀ i : ℕ, i < n → ∀ hi : i < L.length, Q (L.get ⟨i, hi⟩)) → ∀ a ∈ L.take n, Q a := by
-  intro L
-  induction L with
-  | nil =>
-      intro n _ a ha
-      simp at ha
-  | cons b L ih =>
-      intro n hQ a ha
-      cases n with
-      | zero => simp at ha
-      | succ m =>
-          have ha' : a ∈ b :: L.take m := ha
-          rcases List.mem_cons.mp ha' with rfl | ha''
-          · exact hQ 0 (Nat.succ_pos m) (by simp)
-          · exact ih m
-              (fun i him hi => hQ (i + 1) (Nat.succ_lt_succ him) (Nat.succ_lt_succ hi)) a ha''
+  intro L n hQ a ha
+  obtain ⟨i, hi, rfl⟩ := List.mem_take_iff_getElem.1 ha
+  simpa using hQ i (Nat.lt_min.1 hi).1 (Nat.lt_min.1 hi).2
 
 theorem exists_cover_eq_separateAllBoundary_append (hstar : MaxContactCoverProperties.{u}) (hinv : ComapIsoInvariance.{u}) (P : ℕ → Prop)
     (hmono : ∀ a b : ℕ, a ≤ b → P b → P a) (A : ℕ → PrincipalizationAssignment.{u})

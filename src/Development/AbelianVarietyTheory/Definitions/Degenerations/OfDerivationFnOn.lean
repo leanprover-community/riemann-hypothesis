@@ -173,18 +173,6 @@ def Defect {R B R' : Type} [CommRing R] [CommRing B] [Algebra R B] [CommRing R']
 def Unr {R : Type} [CommRing R] (π : R) (R' : Type) [CommRing R'] [Algebra R R'] : Prop :=
   ∃ _ : IsDomain R', IsDiscreteValuationRing R' ∧ Irreducible (algebraMap R R' π)
 
-def Model.ofAlgebra (R : Type) [CommRing R] (K : Type) [Field K] [Algebra R K] (B : Type) [CommRing B] [Algebra R B]
-    [Algebra.Smooth R B] :
-    Model R ((Over.pullback (spMap (algebraMap R K))).obj (Over.mk (spMap (algebraMap R B)))) where
-  Y := Over.mk (spMap (algebraMap R B))
-  e := Iso.refl _
-  smooth := by
-    show Smooth (Spec.map (CommRingCat.ofHom (algebraMap R B)))
-    rw [HasRingHomProperty.Spec_iff (P := @Smooth)]
-    exact RingHom.smooth_algebraMap.mpr inferInstance
-  sep := by show IsSeparated (Spec.map _); infer_instance
-  qc := by show QuasiCompact (Spec.map _); infer_instance
-
 theorem Model.j_hom (M : Model R A) : M.j ≫ M.Y.hom = A.hom ≫ spMap (algebraMap R K) := by
   unfold Model.j
   rw [Category.assoc, pullback.condition, ← Category.assoc]

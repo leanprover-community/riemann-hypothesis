@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArithIntersectionDivisorSupport
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToVInjective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianPositivityInvariant
 import Mathlib.Algebra.Order.Floor.Extended
@@ -94,17 +95,7 @@ theorem smul_line_eq_iff (y : grp G β) (z : Fin G.n → ℂ) (hz : z ≠ 0) :
 
 theorem fixL_smul_iff (y : grp G β) (z : Fin G.n → ℂ) (c : ℂ) (hc : c ≠ 0) :
     FixL G v β y (c • z) ↔ FixL G v β y z := by
-  constructor
-  · rintro ⟨e, he⟩
-    refine ⟨e, ?_⟩
-    rw [Matrix.mulVec_smul, smul_smul] at he
-    have := congrArg (fun w => c⁻¹ • w) he
-    simp only [smul_smul, inv_mul_cancel₀ hc, one_smul] at this
-    rw [this]
-    congr 1
-    field_simp
-  · rintro ⟨e, he⟩
-    exact ⟨e, by rw [Matrix.mulVec_smul, he, smul_comm]⟩
+  apply _root_.GlobalTheory.CxUnfold.fixL_smul_iff <;> assumption
 
 variable (G v β)
 

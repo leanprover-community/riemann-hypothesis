@@ -92,9 +92,6 @@ noncomputable def comb (b : Fin r →₀ ℕ) (m : Fin N × Fin r →₀ ℕ) : 
   ext c
   simp
 
-private theorem fin_castSucc_ne_last (i : Fin N) : Fin.castSucc i ≠ Fin.last N :=
-  (Fin.castSucc_lt_last i).ne
-
 private theorem fin_eq_last_or_exists_castSucc (i : Fin (N + 1)) : i = Fin.last N ∨ ∃ j : Fin N, i = Fin.castSucc j := by
   refine Fin.lastCases ?_ (fun j => ?_) i
   · exact Or.inl rfl
@@ -126,7 +123,7 @@ private theorem llPart_single_castSucc (i : Fin N) (c : Fin r) (k : ℕ) :
 private theorem etaPart_single_castSucc (i : Fin N) (c : Fin r) (k : ℕ) :
     etaPart (Finsupp.single (Fin.castSucc i, c) k) = 0 := by
   ext c'
-  simp [fin_castSucc_ne_last i]
+  simp [Fin.castSucc_ne_last i]
 
 private theorem llPart_single_last (c : Fin r) (k : ℕ) :
     llPart (Finsupp.single (Fin.last N, c) k) = 0 := by
@@ -682,7 +679,7 @@ theorem diff_gen (LL : Letters N) (ρ c : Fin r) (hc : c ≠ ρ) (x : Fin N × F
     X (Fin.last N, ρ) * pderiv (Fin.last N, c) (freezeSub p LL ρ x) =
       aeval (freezeSub p LL ρ) (glAct p LL N c ρ (X x)) := by
   obtain ⟨b, d⟩ := x
-  have n1 : Fin.last N ≠ Fin.castSucc b := (fin_castSucc_ne_last b).symm
+  have n1 : Fin.last N ≠ Fin.castSucc b := (Fin.castSucc_ne_last b).symm
   rw [glAct_full_X, freezeSub_apply]
   split_ifs <;> (try (exfalso; exact hc ((‹d = c›).symm.trans ‹d = ρ›))) <;>
     (try (have hcd : c ≠ d := Ne.symm ‹¬d = c›)) <;>
@@ -773,7 +770,7 @@ theorem kill_freezeSub (LL : Letters N) (ρ : Fin r) :
   apply MvPolynomial.algHom_ext
   rintro ⟨i, c⟩
   rw [AlgHom.comp_apply, aeval_X, aeval_X, freezeSub_apply]
-  have n2 : ∀ i : Fin N, Fin.castSucc i ≠ Fin.last N := fun i => fin_castSucc_ne_last i
+  have n2 : ∀ i : Fin N, Fin.castSucc i ≠ Fin.last N := fun i => Fin.castSucc_ne_last i
   cases hv : LL.vec i <;> by_cases hc : c = ρ <;>
     simp [kill, emb, hc, n2, mul_ite, Finset.sum_ite_eq'] <;> ring
 
@@ -806,7 +803,7 @@ private theorem etaPart_mapDomain_emb (m : Fin N × Fin r →₀ ℕ) :
   rw [etaPart_apply]
   apply Finsupp.mapDomain_notin_range
   rintro ⟨⟨i, c'⟩, h⟩
-  simp [emb, fin_castSucc_ne_last i] at h
+  simp [emb, Fin.castSucc_ne_last i] at h
 
 theorem coeffη_base (LL : Letters N) (ρ : Fin r) (t : ℕ) (f : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     coeffη (Finsupp.single ρ t) (aeval (freezeSub p LL ρ) f) = homogeneousComponent t f := by
@@ -1038,7 +1035,7 @@ theorem freeze_pol (LL : Letters N) (ρ : Fin r) (n : ℕ) (hn : LL.total ≤ n)
               (if Fin.last N = Fin.castSucc i0 then 1 else 0)) =
             fun x => if x.1 = i0 then 1 else 0 := by
           funext x
-          simp [(fin_castSucc_ne_last i0).symm]
+          simp [(Fin.castSucc_ne_last i0).symm]
         rw [e, weight_row]
         exact hf' m (mem_support_iff.2 hm) i0
       have hA := hom_aeval _ _ (Formalism.GM.M.freezeSub p LL ρ)
@@ -1047,7 +1044,7 @@ theorem freeze_pol (LL : Letters N) (ρ : Fin r) (n : ℕ) (hn : LL.total ≤ n)
         (isWeightedHomogeneous_X' (K := ℚ_[p]) (fun y : Fin (N + 1) × Fin r => if y.1 = Fin.castSucc i0 then 1 else 0) (Fin.last N, ρ))
         (n - LL.total)
       refine isWeightedHomogeneous_of_eq_deg (hX.mul hA) ?_
-      (simp [snoc_deg_castSucc, (fin_castSucc_ne_last i0).symm])
+      (simp [snoc_deg_castSucc, (Fin.castSucc_ne_last i0).symm])
   intro m hm
   show Formalism.GM.M.MultiDeg (LL.snoc n) m
   intro i'

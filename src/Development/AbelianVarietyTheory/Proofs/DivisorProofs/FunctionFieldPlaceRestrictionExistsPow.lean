@@ -50,8 +50,6 @@ import Mathlib.Topology.Sheaves.Init
 open scoped IntermediateField Polynomial RatFunc
 open GlobalTheory.Nef
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.Nef.PlaceResiduePowerBound

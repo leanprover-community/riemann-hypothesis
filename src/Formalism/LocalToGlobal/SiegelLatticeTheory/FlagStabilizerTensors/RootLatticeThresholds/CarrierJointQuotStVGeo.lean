@@ -124,8 +124,6 @@ end Tri
 
 variable {D : D7}
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def extC (w : Point D.host.E (D.R.rS + 1)) (c : FreeE w → ℂ) (a b : Fin (D.R.rS + 1)) : ℂ :=
   if h : a < b ∧ blkOf w.1 a.1 = blkOf w.1 b.1 then c ⟨(a, b), h⟩ else 0
 

@@ -85,7 +85,6 @@ theorem tendsto_of_forall_integral {L : Type} [Field L] [NumberField L] {ι : Ty
 
 end GlobalTheory.TendstoOfIntegrals
 
-alias GlobalTheory.TendstoOfIntegrals.target_check := _root_.GlobalTheory.TendstoOfIntegrals.tendsto_of_forall_integral
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TendstoOfForallIntegral =====

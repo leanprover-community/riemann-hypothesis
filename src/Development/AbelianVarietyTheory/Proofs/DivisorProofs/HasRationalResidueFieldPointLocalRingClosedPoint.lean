@@ -46,8 +46,6 @@ open CategoryTheory AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FieldPair GlobalTheory.Cartier
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FieldPair
 
 theorem ratRes_locRing_of_isClosed : ∀ (Z : Scheme.{0}) [IsIntegral Z] (q : Z ⟶ Sp ℂ)

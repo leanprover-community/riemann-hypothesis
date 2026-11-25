@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsRealStructure
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
@@ -149,12 +150,8 @@ def dop (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) : 𝓢(V, ℂ) :=
   ∂_{a} f + (-(2 * Real.pi * Complex.I)) • SchwartzMap.smulLeftCLM ℂ L f
 
 theorem dop_apply (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (x : V) :
-    dop a L f x = fderiv ℝ f x a + (-(2 * Real.pi * Complex.I) * (L x : ℂ)) * f x := by
-  have hT := L.hasTemperateGrowth
-  simp only [dop, SchwartzMap.add_apply, SchwartzMap.smul_apply, SchwartzMap.smulLeftCLM_apply_apply hT,
-    SchwartzMap.lineDerivOp_apply_eq_fderiv]
-  simp only [Complex.real_smul, smul_eq_mul]
-  ring
+    dop a L f x = fderiv ℝ f x a + (-(2 * Real.pi * Complex.I) * (L x : ℂ)) * f x :=
+  _root_.GlobalTheory.ThK.Dbl.Dense.dop_apply a L f x
 
 theorem hasDerivAt_hl (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (x : V) :
     HasDerivAt (fun t : ℝ => hl a L t f x) (dop a L f x) 0 := by
@@ -187,16 +184,8 @@ theorem chirp_one (q : V → ℝ) (x : V) : chirp (-1) q x * chirp 1 q x = 1 := 
   rw [mul_comm, chirp_mul]
   simp
 
-theorem hl_schwartz (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (t : ℝ) : ∃ G : 𝓢(V, ℂ), ∀ x, G x = hl a L t f x := by
-  have hq : (fun x => t * L x + t ^ 2 * (L a / 2)).HasTemperateGrowth :=
-    ((Function.HasTemperateGrowth.const t).mul L.hasTemperateGrowth).add (Function.HasTemperateGrowth.const _)
-  refine ⟨SchwartzMap.smulLeftCLM ℂ (chirp 1 fun x => t * L x + t ^ 2 * (L a / 2))
-    (SchwartzMap.compSubConstCLM ℂ (-(t • a)) f), fun x => ?_⟩
-  rw [SchwartzMap.smulLeftCLM_apply_apply (chirp_tg 1 hq), SchwartzMap.compSubConstCLM_apply, sub_neg_eq_add, hl, chirp]
-  simp only [smul_eq_mul]
-  congr 2
-  push_cast
-  ring
+theorem hl_schwartz (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (t : ℝ) : ∃ G : 𝓢(V, ℂ), ∀ x, G x = hl a L t f x :=
+  _root_.GlobalTheory.ThK.Dbl.Dense.hl_schwartz a L f t
 
 theorem hl_line_deriv (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) :
     ∃ G : ℝ → 𝓢(V, ℂ), (∀ t x, G t x = hl a L t f x) ∧
@@ -303,45 +292,16 @@ open scoped Classical in
 theorem phase_line (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (a b x : κ → AF F) (hb : At (evI F) b) (t : ℝ) :
     ψ (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) =
       Complex.exp (-(2 * Real.pi * Complex.I) * ((t * linForm (fun i => evI F (b i)) (fun i => evI F (x i)) +
-        t ^ 2 * Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (evI F ⅟(2 : AF F) * ∑ i, evI F (a i) * evI F (b i)) : ℝ) : ℂ)) := by
-  have hz : At (evI F) (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) := by
-    intro s hs
-    have hsb : ∀ i, s * b i = 0 := fun i => by simpa using congrFun (hb s hs) i
-    have e1 : ∀ i, s * (x i * (realAd F t * b i)) = x i * realAd F t * (s * b i) := fun i => by ring
-    have e2 : ∀ i, s * (⅟(2 : AF F) * (realAd F t * a i * (realAd F t * b i))) =
-        ⅟(2 : AF F) * (realAd F t * a i * realAd F t) * (s * b i) := fun i => by ring
-    simp only [dotProduct, Pi.smul_apply, smul_eq_mul, mul_add, Finset.mul_sum, e1, e2, hsb, mul_zero, Finset.sum_const_zero,
-      add_zero]
-  rw [hψ.2.2 _ hz]
-  congr 3
-  have ev : evI F (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) =
-      t • (∑ i, evI F (x i) * evI F (b i)) + (t ^ 2) • (evI F ⅟(2 : AF F) * ∑ i, evI F (a i) * evI F (b i)) := by
-    simp only [dotProduct, Pi.smul_apply, smul_eq_mul, evI_add, evI_mul, evI_sum, evI_realAd, Algebra.smul_def, map_pow,
-      Finset.mul_sum]
-    congr 1
-    · exact Finset.sum_congr rfl fun i _ => by ring
-    · exact Finset.sum_congr rfl fun i _ => by ring
-  rw [ev, map_add (f := _), map_smul, map_smul, linForm_apply]
-  simp [smul_eq_mul]
+        t ^ 2 * Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (evI F ⅟(2 : AF F) * ∑ i, evI F (a i) * evI F (b i)) : ℝ) : ℂ)) :=
+  _root_.GlobalTheory.ThK.Dbl.Dense.phase_line ψ hψ a b x hb t
 
 theorem evI_half_trace (S : mixedEmbedding.mixedSpace F) :
     Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (evI F ⅟(2 : AF F) * S) =
-      Algebra.trace ℝ (mixedEmbedding.mixedSpace F) S / 2 := by
-  have h1 : evI F ⅟(2 : AF F) + evI F ⅟(2 : AF F) = 1 := by
-    rw [← evI_add, invOf_two_add_invOf_two]
-    exact map_one (InfiniteAdeleRing.ringEquiv_mixedSpace F)
-  have h2 : S = evI F ⅟(2 : AF F) * S + evI F ⅟(2 : AF F) * S := by
-    rw [← add_mul, h1, one_mul]
-  have h3 := congrArg (Algebra.trace ℝ (mixedEmbedding.mixedSpace F)) h2
-  rw [map_add (f := _)] at h3
-  linarith
+      Algebra.trace ℝ (mixedEmbedding.mixedSpace F) S / 2 :=
+  _root_.GlobalTheory.ThK.Dbl.Dense.evI_half_trace S
 
-theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0 := by
-  let u : AF F := (0, 1)
-  have h0 : evI F u = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
-  have h : u * z i = 0 := congrFun (hz u h0) i
-  have h' : (1 : Af F) * (z i).2 = 0 := congrArg Prod.snd h
-  rwa [one_mul] at h'
+theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0 :=
+  _root_.GlobalTheory.ThK.Dbl.Dense.snd_eq_zero hz i
 
 
 open scoped Classical in

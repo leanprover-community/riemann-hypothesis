@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaLiftVanishesSingleCoefficientOfKernelKills
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
 import Mathlib.Algebra.Order.Floor.Extended
@@ -64,20 +65,7 @@ namespace GlobalTheory.CoefRealSchur
 theorem scalar_of_comm {W : Type} [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] [Nontrivial W]
     (P : Module.End ℂ W → Prop) (hirr : ∀ U : Submodule ℂ W, (∀ a, P a → U.map a ≤ U) → U = ⊥ ∨ U = ⊤)
     (T₀ : Module.End ℂ W) (hT : ∀ a, P a → a * T₀ = T₀ * a) : ∃ c : ℂ, T₀ = c • 1 := by
-  obtain ⟨c, hc⟩ := Module.End.exists_eigenvalue T₀
-  refine ⟨c, ?_⟩
-  have hU : ∀ a, P a → (T₀.eigenspace c).map a ≤ T₀.eigenspace c := by
-    intro a ha
-    rintro _ ⟨v, hv, rfl⟩
-    rw [SetLike.mem_coe, Module.End.mem_eigenspace_iff] at hv
-    rw [Module.End.mem_eigenspace_iff, ← Module.End.mul_apply, ← hT a ha, Module.End.mul_apply, hv, map_smul]
-  rcases hirr _ hU with h | h
-  · exact absurd h (Module.End.hasEigenvalue_iff.1 hc)
-  · refine LinearMap.ext fun v => ?_
-    have hv : v ∈ T₀.eigenspace c := h ▸ Submodule.mem_top
-    rw [Module.End.mem_eigenspace_iff] at hv
-    rw [hv]
-    rfl
+  first | exact _root_.GlobalTheory.GenRealSchur.schur_scalar | exact @_root_.GlobalTheory.GenRealSchur.schur_scalar | apply _root_.GlobalTheory.GenRealSchur.schur_scalar <;> assumption
 
 def repOp {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]
     (B : W →ₗ⋆[ℂ] W →ₗ[ℂ] ℂ) : Module.End ℂ W where

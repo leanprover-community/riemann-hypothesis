@@ -142,7 +142,7 @@ theorem eH_val {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} (X : nilrad W₁ W₂
 
 section Haar
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {W₁ W₂ : Submodule ℂ (Fin n → ℂ)}
 

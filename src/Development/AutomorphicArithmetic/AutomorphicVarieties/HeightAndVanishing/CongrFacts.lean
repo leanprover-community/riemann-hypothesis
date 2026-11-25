@@ -52,10 +52,6 @@ section Loc
 
 variable {O : Type} [CommRing O] [IsLocalRing O]
 
-private theorem sub_mem_iff (x y : O) :
-    x - y ∈ IsLocalRing.maximalIdeal O ↔ IsLocalRing.residue O x = IsLocalRing.residue O y := by
-  exact (Ideal.Quotient.eq).symm
-
 private theorem res_eq_one (l : ℕ) [hl : Fact l.Prime] (h : ¬ IsUnit (l : O)) (x : O) (s : ℕ) (hx : x ^ l ^ s = 1) :
     IsLocalRing.residue O x = 1 := by
   have h0 : (l : IsLocalRing.ResidueField O) = 0 := by
@@ -84,9 +80,6 @@ private theorem eq_of_res_eq [IsDomain O] (x y : Oˣ) (m : ℕ) (hm : IsUnit (m 
   have h1 : x * y⁻¹ = 1 := Units.ext (by rw [Units.val_one]; exact sub_eq_zero.mp hz1)
   exact mul_inv_eq_one.mp h1
 
-private theorem res_inv (x : Oˣ) : IsLocalRing.residue O ((x⁻¹ : Oˣ) : O) = (IsLocalRing.residue O x)⁻¹ := by
-  exact map_units_inv (IsLocalRing.residue O) x
-
 end Loc
 
 theorem UpperTheory.V.HV.congrFacts :
@@ -106,10 +99,11 @@ theorem UpperTheory.V.HV.congrFacts :
     exact PadicInt.p_nonunit (IsLocalHom.map_nonunit _ hu')
   have cr : ∀ a b : G ℚ Ω →* c.Oˣ, Congr c a b ↔
       ∀ σ, IsLocalRing.residue c.O (a σ : c.O) = IsLocalRing.residue c.O (b σ : c.O) :=
-    fun a b => forall_congr' fun σ => sub_mem_iff _ _
+    fun a b => forall_congr' fun σ => (Ideal.Quotient.eq).symm
   have p4 : ∀ (x y : c.Oˣ) (m : ℕ), ¬ l ∣ m → x ^ m = 1 → y ^ m = 1 →
       (x : c.O) - y ∈ IsLocalRing.maximalIdeal c.O → x = y :=
-    fun x y m hm hx hy hxy => eq_of_res_eq x y m (hF.2.2.2.2.2.2.2.2 m hm) hx hy ((sub_mem_iff _ _).mp hxy)
+    fun x y m hm hx hy hxy => eq_of_res_eq x y m (hF.2.2.2.2.2.2.2.2 m hm) hx hy
+      (Ideal.Quotient.eq.symm.mp hxy)
   have papp : ∀ (a : G ℚ Ω →* c.Oˣ) (n : ℕ), a ^ n = 1 → ∀ σ, (a σ) ^ n = 1 := by
     intro a n ha σ
     rw [← MonoidHom.pow_apply, ha, MonoidHom.one_apply]
@@ -129,7 +123,7 @@ theorem UpperTheory.V.HV.congrFacts :
     simp only [MonoidHom.mul_apply, Units.val_mul, map_mul, ha σ, hb σ]
   · rw [cr] at ha ⊢
     intro σ
-    simp only [MonoidHom.inv_apply, res_inv, ha σ]
+    simp only [MonoidHom.inv_apply, map_units_inv, ha σ]
   · rw [cr]
     intro σ
     have e' : ((a σ : c.O)) ^ l ^ s = 1 := by

@@ -65,25 +65,6 @@ namespace LatEmb
 
 variable (C : LatEmb F)
 
-theorem perExt_eq_sum (R : RiemLat E g Λ) (y : Ψ → Fin (j + j') → ℂ) :
-    C.perExt R y = ∑ k, C.bas.repr y k • R.P (C.lam k) := by
-  simp [perExt, Module.Basis.constr_apply_fintype]
-
-
-omit [IsCMField E] in
-theorem form_antisymm {M : Type} [AddCommGroup M] (f : M →ₗ[ℤ] M →ₗ[ℤ] ℤ) (hf : ∀ x, f x x = 0) (x y : M) :
-    f x y = - f y x := by
-  have h := hf (x + y)
-  simp only [map_add (f := _), LinearMap.add_apply, hf] at h
-  linarith
-
-theorem exists_dual (R : RiemLat E g Λ) (i : Fin (2 * g)) :
-    ∃ z : Λ, ∀ k, R.form (C.lam k) z = if k = i then 1 else 0 := by
-  obtain ⟨x, hx⟩ := R.unimod.2 (C.lam.coord i)
-  refine ⟨-x, fun k => ?_⟩
-  rw [map_neg, form_antisymm R.form R.alt, neg_neg, hx]
-  simp [Module.Basis.coord_apply, Finsupp.single_apply]
-
 theorem perExt_injective (R : RiemLat E g Λ) : Function.Injective (C.perExt R) := by
   apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.perExt_injective
 

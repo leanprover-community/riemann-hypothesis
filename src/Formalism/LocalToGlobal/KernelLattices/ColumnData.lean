@@ -786,7 +786,6 @@ end Base
 
 end Fam
 
-open Formalism.MainNotions
 
 section HostFacts
 
@@ -835,7 +834,6 @@ open IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.DIV Formali
 
 section Seam
 
-open Formalism.MainNotions
 
 structure Seam (D : Car) (X : Fields) where
   iE : X.E ≃+* D.host.E

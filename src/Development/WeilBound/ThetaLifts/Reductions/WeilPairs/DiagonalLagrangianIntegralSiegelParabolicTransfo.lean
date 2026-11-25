@@ -179,12 +179,6 @@ theorem core {V G T : Type} [AddCommGroup V] [Module ℂ V] [Group G] [Topologic
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem modu_ne_zero (u : (AF F)ˣ) : (adeleClass F).modu u ≠ 0 := by
-  intro h0
-  have := map_mul (adeleClass F).modu u u⁻¹
-  rw [mul_inv_cancel, map_one, h0, zero_mul] at this
-  exact one_ne_zero this
-
 alias mfac_pos := _root_.PositivityTheory.ThKW.NormModulusHeisenberg.mfac_pos'
 
 theorem mfac_mul {nT : ℕ} (nS : ℕ) (s t : GL (Fin nT) (AF F ⊗[F] E)) :

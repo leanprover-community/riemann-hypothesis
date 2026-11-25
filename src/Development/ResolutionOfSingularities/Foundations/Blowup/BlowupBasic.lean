@@ -102,15 +102,6 @@ private noncomputable def sectionsIsoPreimage {A B : Scheme.{u}} (e : A ≅ B) (
     rw [Scheme.Hom.appLE_comp_appLE]
     exact appLE_eq_id_of_eq_id _ e.hom_inv_id _ _
 
-private theorem isLocallyGeneratedByNonZeroDivisor_comap_id {X : Scheme.{u}} {I : X.IdealSheafData}
-    (hI : IsLocallyGeneratedByNonZeroDivisor I) : IsLocallyGeneratedByNonZeroDivisor (I.comap (𝟙 X)) := by
-  intro x
-  obtain ⟨U, f, hxU, hf, hIspan⟩ := hI x
-  refine ⟨U, f, hxU, hf, ?_⟩
-  rw [Scheme.IdealSheafData.comap_ideal_eq_map_appLE I (𝟙 X) U U le_rfl,
-    appLE_eq_id_of_eq_id (𝟙 X) rfl (U : X.Opens) le_rfl, hIspan]
-  simp
-
 theorem isLocallyGeneratedByNonZeroDivisor_top (X : Scheme.{u}) :
     IsLocallyGeneratedByNonZeroDivisor (⊤ : X.IdealSheafData) := by
   intro x
@@ -156,7 +147,7 @@ theorem IsBlowupAlongIdealSheaf.hom_ext_of_comp_eq {X X' : Scheme.{u}} {π : X' 
 
 theorem IsBlowupAlongIdealSheaf.isIso_of_isLocallyGeneratedByNonZeroDivisor {X X' : Scheme.{u}} {π : X' ⟶ X} {I : X.IdealSheafData}
     (h : IsBlowupAlongIdealSheaf π I) (hI : IsLocallyGeneratedByNonZeroDivisor I) : IsIso π := by
-  obtain ⟨s, hs, -⟩ := h.2 X (𝟙 X) (isLocallyGeneratedByNonZeroDivisor_comap_id hI)
+  obtain ⟨s, hs, -⟩ := h.2 X (𝟙 X) (by rwa [Scheme.IdealSheafData.comap_id])
   refine ⟨⟨s, ?_, hs⟩⟩
   exact h.hom_ext_of_comp_eq h.1 (by rw [Category.assoc, hs, Category.comp_id]) (Category.id_comp π)
 

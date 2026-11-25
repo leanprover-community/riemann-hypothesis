@@ -46,8 +46,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SmoothForms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def BddDen (V : HSp D) (d : ℕ) (g : GA D V) : Prop :=

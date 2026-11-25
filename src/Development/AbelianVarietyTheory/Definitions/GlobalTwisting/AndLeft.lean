@@ -44,8 +44,6 @@ namespace GlobalTheory.Fc.Cv
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {B : Base} {f : Fr B.toPre} {T : TwDat B}
 
 structure ColView (w : ColW B f T) (Z : w.Lt) (tw : TwForms (w.D Z)) (nch : NChoice (w.D Z)) : Prop where

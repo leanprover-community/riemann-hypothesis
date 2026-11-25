@@ -190,24 +190,13 @@ def monomialPartAlongDivisor [TopologicalSpace.NoetherianSpace ↥X] (I D : X.Id
 theorem monomialPartAlongDivisor_eq_inf_componentPowerIdeal [TopologicalSpace.NoetherianSpace ↥X] (I D : X.IdealSheafData) :
     monomialPartAlongDivisor I D = (supportComponentsFinset D).inf (fun C => componentPowerIdeal I D C) := rfl
 
-private theorem idealSheafData_mul_le_left (a b : X.IdealSheafData) : a * b ≤ a := by
-  rw [le_iff_forall_stalkIdeal_le]
-  intro x
-  rw [stalkIdeal_mul]
-  exact Ideal.mul_le.mpr fun r hr s _ => Ideal.mul_mem_right s _ hr
-
-private theorem idealSheafData_mul_le_right (a b : X.IdealSheafData) : a * b ≤ b := by
-  rw [le_iff_forall_stalkIdeal_le]
-  intro x
-  rw [stalkIdeal_mul]
-  exact Ideal.mul_le.mpr fun r _ s hs => Ideal.mul_mem_left _ r hs
-
 private theorem stalkIdeal_inf_eq_top (a b : X.IdealSheafData) (x : X)
     (ha : stalkIdeal a x = ⊤) (hb : stalkIdeal b x = ⊤) :
     stalkIdeal (a ⊓ b) x = ⊤ := by
   refine le_antisymm le_top ?_
-  have hmono := stalkIdeal_mono
-    (le_inf (idealSheafData_mul_le_left a b) (idealSheafData_mul_le_right a b)) x
+  have hab : a * b ≤ a ⊓ b :=
+    le_inf (fun _ => Ideal.mul_le_left) (fun _ => Ideal.mul_le_right)
+  have hmono := stalkIdeal_mono hab x
   rw [stalkIdeal_mul, ha, hb] at hmono
   have htop : (⊤ : Ideal (X.presheaf.stalk x)) * ⊤ = ⊤ := by
     rw [← Ideal.one_eq_top, one_mul]
@@ -248,41 +237,8 @@ private theorem idealSheafData_listProd_le_of_mem :
       rw [List.prod_cons]
       rcases List.mem_cons.mp ha with h | h
       · rw [h]
-        exact idealSheafData_mul_le_left _ _
-      · exact le_trans (idealSheafData_mul_le_right _ _) (ih a h)
-
-private theorem prod_map_eq_one_of_forall_eq_one {α : Type*} {M : Type*} [CommMonoid M]
-    (g : α → M) (L : List α) (h : ∀ b ∈ L, g b = 1) : (L.map g).prod = 1 :=
-  List.prod_eq_one fun x hx => by
-    obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hx
-    exact h a ha
-
-private theorem prod_map_eq_apply_of_nodup_of_forall_ne {α : Type*} {M : Type*} [CommMonoid M]
-    (g : α → M) : ∀ (L : List α) (a : α), L.Nodup → a ∈ L →
-      (∀ b ∈ L, b ≠ a → g b = 1) → (L.map g).prod = g a := by
-  intro L
-  induction L with
-  | nil =>
-      intro a _ ha _
-      simp at ha
-  | cons b L ih =>
-      intro a hnd ha hone
-      rw [List.map_cons, List.prod_cons]
-      rcases List.mem_cons.mp ha with h | h
-      · have hL : (L.map g).prod = 1 := by
-          refine prod_map_eq_one_of_forall_eq_one g L ?_
-          intro c hc
-          refine hone c (List.mem_cons.mpr (Or.inr hc)) ?_
-          intro hca
-          exact absurd (show b ∈ L by rw [← h, ← hca]; exact hc) (List.nodup_cons.mp hnd).1
-        rw [hL, mul_one, h]
-      · have hb : g b = 1 := by
-          refine hone b (List.mem_cons.mpr (Or.inl rfl)) ?_
-          intro hba
-          exact absurd (show b ∈ L by rw [hba]; exact h) (List.nodup_cons.mp hnd).1
-        rw [hb, one_mul]
-        exact ih a (List.nodup_cons.mp hnd).2 h
-          (fun c hc => hone c (List.mem_cons.mpr (Or.inr hc)))
+        exact fun _ => Ideal.mul_le_left
+      · exact le_trans (fun _ => Ideal.mul_le_right) (ih a h)
 
 theorem stalkIdeal_monomialPartAlongDivisor_of_mem [TopologicalSpace.NoetherianSpace ↥X]
     (p : X ⟶ Spec (CommRingCat.of k)) (I : X.IdealSheafData) {D : X.IdealSheafData}
@@ -314,10 +270,10 @@ theorem stalkIdeal_monomialPartAlongDivisor_of_mem [TopologicalSpace.NoetherianS
         ((supportComponentsFinset D).toList.map (fun C' => componentPowerIdeal I D C')).prod x
         = stalkIdeal (componentPowerIdeal I D C) x := by
       rw [stalkIdeal_listProd, List.map_map]
-      refine prod_map_eq_apply_of_nodup_of_forall_ne (fun C' => stalkIdeal (componentPowerIdeal I D C') x)
-        ((supportComponentsFinset D).toList) C (Finset.nodup_toList _)
-        (Finset.mem_toList.mpr hCS) ?_
-      intro C' hC' hne
+      dsimp only [Function.comp_def]
+      rw [List.prod_map_eq_pow_single C
+        (fun C' => stalkIdeal (componentPowerIdeal I D C') x) (fun C' hne hC' => ?_),
+        List.count_eq_one_of_mem (Finset.nodup_toList _) (Finset.mem_toList.mpr hCS), pow_one]
       show stalkIdeal (componentPowerIdeal I D C') x = 1
       have hC'comp : IsIrreducibleComponentOfSupport D C' := (hmemiff C').mp (Finset.mem_toList.mp hC')
       have hdisj : Disjoint C C' := hC.disjoint hC'comp p hD (Ne.symm hne)
@@ -445,10 +401,10 @@ private theorem exists_nhds_ideal_monomialPartAlongDivisor_eq_span [TopologicalS
     have hprodideal : (((supportComponentsFinset D).toList.map
         (fun C => componentPowerIdeal I D C)).prod).ideal W = (componentPowerIdeal I D C₀).ideal W := by
       rw [idealSheafData_ideal_listProd, List.map_map]
-      refine prod_map_eq_apply_of_nodup_of_forall_ne (fun C => (componentPowerIdeal I D C).ideal W)
-        ((supportComponentsFinset D).toList) C₀ (Finset.nodup_toList _)
-        (Finset.mem_toList.mpr hC₀mem) ?_
-      intro C' hC' hne
+      dsimp only [Function.comp_def]
+      rw [List.prod_map_eq_pow_single C₀
+        (fun C => (componentPowerIdeal I D C).ideal W) (fun C' hne hC' => ?_),
+        List.count_eq_one_of_mem (Finset.nodup_toList _) (Finset.mem_toList.mpr hC₀mem), pow_one]
       show (componentPowerIdeal I D C').ideal W = 1
       rw [Ideal.one_eq_top]
       exact hother C' hC' hne
@@ -485,8 +441,7 @@ private theorem exists_nhds_ideal_monomialPartAlongDivisor_eq_span [TopologicalS
       have hprodtop : (((supportComponentsFinset D).toList.map
           (fun C => componentPowerIdeal I D C)).prod).ideal W = ⊤ := by
         rw [idealSheafData_ideal_listProd, List.map_map, ← Ideal.one_eq_top]
-        exact prod_map_eq_one_of_forall_eq_one (fun C => (componentPowerIdeal I D C).ideal W)
-          ((supportComponentsFinset D).toList) hall
+        exact List.prod_eq_one (List.forall_mem_map.mpr hall)
       refine le_antisymm le_top ?_
       rw [← hprodtop]
       exact hprodle W
@@ -533,11 +488,6 @@ theorem isLocallyGeneratedByNonZeroDivisor_monomialFactorIdeal [TopologicalSpace
   rw [monomialFactorIdeal_eq_prod_monomialPartAlongDivisor]
   exact hgeq
 
-private theorem natCast_add_one_le_of_not_le (n : ℕ) (b : ℕ∞) (h : ¬ b ≤ (n : ℕ∞)) :
-    ((n + 1 : ℕ) : ℕ∞) ≤ b := by
-  rw [Nat.cast_succ]
-  exact ENat.natCast_add_one_le_iff.2 (not_le.mp h)
-
 private theorem prod_map_eq_apply_getElem_of_forall_ne {α : Type*} {M : Type*} [CommMonoid M] (g : α → M) :
     ∀ (L : List α) (i : ℕ) (hi : i < L.length),
       (∀ (j : ℕ) (hj : j < L.length), j ≠ i → g L[j] = 1) → (L.map g).prod = g L[i] := by
@@ -551,8 +501,7 @@ private theorem prod_map_eq_apply_getElem_of_forall_ne {α : Type*} {M : Type*} 
       cases i with
       | zero =>
           have h1 : (L.map g).prod = 1 := by
-            refine prod_map_eq_one_of_forall_eq_one g L ?_
-            intro y hy
+            refine List.prod_eq_one (List.forall_mem_map.mpr fun y hy => ?_)
             obtain ⟨j, hj, hjy⟩ := List.getElem_of_mem hy
             have h2 := hone (j + 1) (by simp only [List.length_cons]; omega) (by omega)
             rw [← hjy]
@@ -731,8 +680,9 @@ theorem orderAt_monomialFactorIdeal_genericPoint [TopologicalSpace.NoetherianSpa
   refine le_antisymm ?_ ((le_orderAt_iff _ _ _).mpr (le_of_eq hmono))
   by_contra hcon
   have h2 : ((orderAlongComponent I hC.isIrreducible + 1 : ℕ) : ℕ∞)
-      ≤ orderAt (monomialFactorIdeal E I) hC.isIrreducible.genericPoint :=
-    natCast_add_one_le_of_not_le (orderAlongComponent I hC.isIrreducible) _ hcon
+      ≤ orderAt (monomialFactorIdeal E I) hC.isIrreducible.genericPoint := by
+    rw [Nat.cast_succ]
+    exact ENat.natCast_add_one_le_iff.2 (not_le.mp hcon)
   rw [le_orderAt_iff, hmono] at h2
   exact not_stalkIdeal_le_pow_succ_genericPoint p D hloc hC.isIrreducible hC.subset_support
     hC.maximal I (orderAlongComponent I hC.isIrreducible) hordI
@@ -985,25 +935,6 @@ private theorem comap_ι_eq_of_forall_affineOpens_ideal_eq (A B : X.IdealSheafDa
     obtain ⟨W, e, hW, hform⟩ := exists_affineOpens_ideal_comap_ι_eq_map Ω V
     rw [hform A, hform B, h W hW]
 
-private theorem idealSheafData_comap_one (Ω : X.Opens) :
-    (1 : X.IdealSheafData).comap Ω.ι = 1 := by
-  rw [Scheme.IdealSheafData.one_eq_top]
-  exact Scheme.IdealSheafData.comap_top _
-
-private theorem idealSheafData_comap_prod (Ω : X.Opens) :
-    ∀ (n : ℕ) (J : Fin n → X.IdealSheafData),
-      (∏ i, J i).comap Ω.ι = ∏ i, (J i).comap Ω.ι := by
-  intro n
-  induction n with
-  | zero =>
-      intro J
-      simp only [Finset.univ_eq_empty, Finset.prod_empty]
-      exact idealSheafData_comap_one Ω
-  | succ n ih =>
-      intro J
-      rw [Fin.prod_univ_succ, Scheme.IdealSheafData.comap_mul, ih (fun i => J i.succ),
-        Fin.prod_univ_succ]
-
 private theorem exists_nhds_ideal_monomialPartAlongDivisor_eq_pow [TopologicalSpace.NoetherianSpace ↥X]
     (p : X ⟶ Spec (CommRingCat.of k)) (I D : X.IdealSheafData)
     (hD : IsEtaleLocallyCoordinateDivisor p D) (x : X) :
@@ -1058,10 +989,10 @@ private theorem exists_nhds_ideal_monomialPartAlongDivisor_eq_pow [TopologicalSp
     have hprodideal : (((supportComponentsFinset D).toList.map
         (fun C => componentPowerIdeal I D C)).prod).ideal W = (componentPowerIdeal I D C₀).ideal W := by
       rw [idealSheafData_ideal_listProd, List.map_map]
-      refine prod_map_eq_apply_of_nodup_of_forall_ne (fun C => (componentPowerIdeal I D C).ideal W)
-        ((supportComponentsFinset D).toList) C₀ (Finset.nodup_toList _)
-        (Finset.mem_toList.mpr hC₀mem) ?_
-      intro C' hC' hne
+      dsimp only [Function.comp_def]
+      rw [List.prod_map_eq_pow_single C₀
+        (fun C => (componentPowerIdeal I D C).ideal W) (fun C' hne hC' => ?_),
+        List.count_eq_one_of_mem (Finset.nodup_toList _) (Finset.mem_toList.mpr hC₀mem), pow_one]
       show (componentPowerIdeal I D C').ideal W = 1
       rw [Ideal.one_eq_top]
       exact hother C' hC' hne
@@ -1098,8 +1029,7 @@ private theorem exists_nhds_ideal_monomialPartAlongDivisor_eq_pow [TopologicalSp
       have hprodtop : (((supportComponentsFinset D).toList.map
           (fun C => componentPowerIdeal I D C)).prod).ideal W = ⊤ := by
         rw [idealSheafData_ideal_listProd, List.map_map, ← Ideal.one_eq_top]
-        exact prod_map_eq_one_of_forall_eq_one (fun C => (componentPowerIdeal I D C).ideal W)
-          ((supportComponentsFinset D).toList) hall
+        exact List.prod_eq_one (List.forall_mem_map.mpr hall)
       refine le_antisymm le_top ?_
       rw [← hprodtop]
       exact hprodle W
@@ -1150,8 +1080,7 @@ theorem exists_isMonomialSplitting [TopologicalSpace.NoetherianSpace ↥X] [IsLo
       exact ⟨D, hD, hmem⟩
     have htop : stalkIdeal (monomialFactorIdeal E I) z = ⊤ := by
       rw [stalkIdeal_monomialFactorIdeal, ← Ideal.one_eq_top]
-      refine prod_map_eq_one_of_forall_eq_one (fun D => stalkIdeal (monomialPartAlongDivisor I D) z) E ?_
-      intro D hD
+      refine List.prod_eq_one (List.forall_mem_map.mpr fun D hD => ?_)
       rw [stalkIdeal_monomialPartAlongDivisor_of_not_mem_support I D (hnot D hD), Ideal.one_eq_top]
     have hz' : z ∈ (monomialFactorIdeal E I).support := hz
     exact (mem_support_iff_stalkIdeal_ne_top (monomialFactorIdeal E I) z).mp hz' htop
@@ -1172,7 +1101,9 @@ theorem exists_isMonomialSplitting [TopologicalSpace.NoetherianSpace ↥X] [IsLo
       rw [hlist] at hW'
       rw [monomialFactorIdeal_eq_prod_monomialPartAlongDivisor]
       exact hW'
-    rw [hcongr, idealSheafData_comap_prod Ω E.length (fun i => E.get i ^ a i)]
+    rw [hcongr, Fin.prod_univ_def, Scheme.IdealSheafData.comap_listProd, List.map_map]
+    dsimp only [Function.comp_def]
+    rw [← Fin.prod_univ_def]
     exact Finset.prod_congr rfl
       (fun i _ => Scheme.IdealSheafData.comap_pow (E.get i) Ω.ι (a i))
   · intro D hD C hCirr hCsub hCmax hCN

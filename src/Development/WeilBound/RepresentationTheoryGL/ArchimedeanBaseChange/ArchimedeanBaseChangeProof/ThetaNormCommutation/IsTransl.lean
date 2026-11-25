@@ -42,11 +42,9 @@ import Mathlib.Tactic.NormNum.RealSqrt
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Polynomial Filter
-open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open scoped Classical TensorProduct
 open GlobalTheory.BCT
-open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.G8
 

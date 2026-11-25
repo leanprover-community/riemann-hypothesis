@@ -55,6 +55,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.InertPrimeDepthContentBoundProof
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.OrbitLabellings.FnumEqRhoMulSumOfDemandRatioLe, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ForcedContentBoundsProgrammeValueGoodPrime
@@ -87,54 +88,11 @@ private lemma gam_sub_inv (hl : 2 ≤ l) : gam l - 1 / ((l : ℝ) + 1) = rho l :
   field_simp
   ring
 
-private lemma sum_incoming (x : ZMod d → ℕ → ℝ) :
-    ∑ s : ZMod d, ∑ i ∈ oddLevels d, x (s - (i : ZMod d)) i =
-      ∑ s : ZMod d, ∑ i ∈ oddLevels d, x s i := by
-  rw [Finset.sum_comm]
-  conv_rhs => rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun i _ =>
-    Equiv.sum_comp (Equiv.subRight (i : ZMod d)) (fun s => x s i)
-
-private lemma flowVal_mul_le (hl : 1 ≤ l) {D : ZMod d → ℝ} {x : ZMod d → ℕ → ℝ} (hx : IsFlow l d D x) :
-    ((l : ℝ) + 1) * flowVal d x ≤ ∑ s, D s := by
-  have hl' : (1 : ℝ) ≤ l := by exact_mod_cast hl
-  have h1 : ∑ s : ZMod d, ((∑ i ∈ oddLevels d, (l : ℝ) ^ i * x s i) +
-      ∑ i ∈ oddLevels d, x (s - (i : ZMod d)) i) ≤ ∑ s, D s :=
-    Finset.sum_le_sum fun s _ => hx.2 s
-  rw [Finset.sum_add_distrib, sum_incoming] at h1
-  refine le_trans ?_ h1
-  unfold flowVal
-  rw [Finset.mul_sum, ← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun s _ => ?_
-  rw [Finset.mul_sum, ← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun i hi => ?_
-  have hx0 := hx.1 s i
-  have hli : (l : ℝ) ≤ (l : ℝ) ^ i := by
-    calc (l : ℝ) = (l : ℝ) ^ 1 := (pow_one _).symm
-      _ ≤ (l : ℝ) ^ i := pow_le_pow_right₀ hl' (oddLevels_one_le hi)
-  nlinarith [mul_nonneg (sub_nonneg.2 hli) hx0]
-
-private lemma zero_isFlow {D : ZMod d → ℝ} (hD : 0 ≤ D) : IsFlow l d D (0 : ZMod d → ℕ → ℝ) :=
-  ⟨fun _ _ => le_refl _, fun s => by simpa using hD s⟩
-
 private lemma maxFlow_le (hl : 1 ≤ l) {D : ZMod d → ℝ} (hD : 0 ≤ D) :
-    maxFlow l d D ≤ (∑ s, D s) / ((l : ℝ) + 1) := by
-  have hpos : (0 : ℝ) < l + 1 := by positivity
-  apply csSup_le
-  · exact ⟨0, (0 : ZMod d → ℕ → ℝ), zero_isFlow hD, by simp [flowVal]⟩
-  · rintro t ⟨x, hx, rfl⟩
-    rw [le_div_iff₀ hpos]
-    linarith [flowVal_mul_le hl hx]
-
-private lemma le_maxFlow (hl : 1 ≤ l) {D : ZMod d → ℝ} {x : ZMod d → ℕ → ℝ} (hx : IsFlow l d D x) :
-    flowVal d x ≤ maxFlow l d D := by
-  have hpos : (0 : ℝ) < l + 1 := by positivity
-  apply le_csSup
-  · refine ⟨(∑ s, D s) / ((l : ℝ) + 1), ?_⟩
-    rintro t ⟨y, hy, rfl⟩
-    rw [le_div_iff₀ hpos]
-    linarith [flowVal_mul_le hl hy]
-  · exact ⟨x, hx, rfl⟩
+    maxFlow l d D ≤ (∑ s, D s) / ((l : ℝ) + 1) :=
+  GlobalTheory.FlowScaling.maxFlow_le hD fun _ hx =>
+    (le_div_iff₀ (by positivity)).2
+      (by linarith [GlobalTheory.FlowProgrammeFacts.succ_mul_flowVal_le hl hx])
 
 private noncomputable def altNum (l d : ℕ) (D : ZMod d → ℝ) (s : ZMod d) : ℝ :=
   ∑ r ∈ Finset.range (2 * d), (-1 : ℝ) ^ r * ((l : ℝ) ^ (r + 1))⁻¹ * D (s - (r : ZMod d))
@@ -242,7 +200,7 @@ theorem UpperTheory.fnum_eq_rho_mul_sum_of_demand_ratio_le :
   have hmax : maxFlow l d D = (∑ s, D s) / ((l : ℝ) + 1) := by
     apply le_antisymm (maxFlow_le hl1 hD)
     rw [← hval, mul_div_cancel_left₀ _ hlpos.ne']
-    exact le_maxFlow hl1 hflow
+    exact GlobalTheory.FlowScaling.le_maxFlow hl1 hflow
   unfold Fnum
   rw [hmax, ← gam_sub_inv (by omega)]
   ring

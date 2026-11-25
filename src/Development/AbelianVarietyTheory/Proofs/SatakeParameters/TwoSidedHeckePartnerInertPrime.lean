@@ -51,8 +51,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.Inde
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.Hk3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Hk3.TwoSidedInert
 
 theorem dualC_dualC (c : List ℤ →₀ ℂ) : dualC (dualC c) = c := by

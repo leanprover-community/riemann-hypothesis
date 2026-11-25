@@ -125,7 +125,6 @@ noncomputable section
 
 namespace GlobalTheory.MiTop.AtReal
 
-open Formalism.IndefR.Links
 
 section Gen
 
@@ -1053,7 +1052,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.MiTop
 noncomputable section
 namespace GlobalTheory.MiTop.AtReal
-open Formalism.IndefR.Links
 section Gen
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K}
 end Gen

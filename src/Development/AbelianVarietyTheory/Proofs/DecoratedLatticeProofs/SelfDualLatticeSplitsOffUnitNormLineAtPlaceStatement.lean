@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemSpanSingletonMulIdealCompletionIff
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NormOneAtOne
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.LineLatAt
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticeCompletionSelfAnnihilatorAtPlaces
@@ -121,16 +122,7 @@ theorem eps_mem_idV (v : GlobalTheory.FinPl.Pl D) :
 
 theorem incA_mul_mem_idV (c : D.host.E) {𝔞 : FI D} {v : GlobalTheory.FinPl.Pl D} {x : AE D} (hx : x ∈ idV 𝔞 v) :
     incA D c * x ∈ idV (FractionalIdeal.spanSingleton _ c * 𝔞) v := by
-  induction hx using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨α, h1, h2, a, ha, rfl⟩ := hy
-    apply AddSubgroup.subset_closure
-    refine ⟨α, h1, h2, c * a, FractionalIdeal.mul_mem_mul (FractionalIdeal.mem_spanSingleton_self _ _) ha, ?_⟩
-    change ((1 : AF D.host.F) ⊗ₜ[D.host.F] c) * (_ ⊗ₜ[D.host.F] _) = _
-    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-  | zero => rw [mul_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [mul_add]; exact add_mem hx hy
-  | neg x _ hx => rw [mul_neg]; exact neg_mem hx
+  first | exact _root_.GlobalTheory.SeeSaw.idV_incA_mul | exact @_root_.GlobalTheory.SeeSaw.idV_incA_mul | apply _root_.GlobalTheory.SeeSaw.idV_incA_mul <;> assumption
 
 theorem natInv_mul_mem_intAt {T : ℕ} {v : GlobalTheory.FinPl.Pl D} (hT : (T : 𝓞 D.host.F) ∉ v.asIdeal) {x : AE D}
     (hx : x ∈ intAt D (· = v)) : incA D ((T : D.host.E)⁻¹) * x ∈ intAt D (· = v) := by

@@ -52,8 +52,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formal
 open GlobalTheory.TwU (StepCharts ChainCharts AdData AdPins AdTie latCo)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Site
 
 variable {D : D7} {X0 : Formalism.L2.Herm.Herm0 D} {u : D.what₂.Word} {w : D.what₂.places.Pl}

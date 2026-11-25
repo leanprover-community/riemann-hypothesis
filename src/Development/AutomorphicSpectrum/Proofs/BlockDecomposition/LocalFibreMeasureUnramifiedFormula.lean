@@ -60,15 +60,8 @@ namespace GlobalTheory.CompanionTheory.AvgFree.FibMass
 theorem gram_mem {F E : Type} [Field F] [Field E] [Algebra F E] {σ : E →ₐ[F] E} (R : Type) [CommRing R]
     [Algebra F R] (hs : ∀ x, σ (σ x) = x) {M n : ℕ} {J : Matrix (Fin M) (Fin M) E}
     (hJ : ∀ i j, σ (J j i) = J i j) (X : Fin n → Fin M → R ⊗[F] E) :
-    gramR R σ J X ∈ HermR R σ n := by
-  intro a c
-  have hi : ∀ y : E, sigR R σ (inclR R y) = inclR R (σ y) := fun y => by simp [sigR, inclR]
-  change sigR R σ (hR R σ J (X c) (X a)) = hR R σ J (X a) (X c)
-
-  simp only [hR, hform, JR, map_sum, map_mul, Matrix.map_apply, sigR_sigR R σ hs, hi, hJ]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
-  ring
+    gramR R σ J X ∈ HermR R σ n :=
+  PI.VolStabS.gramR_mem R σ hs J hJ X
 
 end GlobalTheory.CompanionTheory.AvgFree.FibMass
 

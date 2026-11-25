@@ -211,30 +211,8 @@ private theorem rq_pir {k A : Type*} [Field k] [CommRing A] [Algebra k A] [Finit
     [IsReduced A] (χ : k[X]) (q : ℕ) : IsPrincipalIdealRing (Rq A χ q) := by
   classical
   have : IsArtinianRing A := IsArtinianRing.of_finite k A
-  have : Fintype (MaximalSpectrum A) := Fintype.ofFinite _
-  have hPI : IsPrincipalIdealRing ((I : MaximalSpectrum A) → (A ⧸ I.asIdeal)[X]) := ⟨fun J => by
-    have hsurj : ∀ I : MaximalSpectrum A,
-        Function.Surjective (Pi.evalRingHom (fun I : MaximalSpectrum A => (A ⧸ I.asIdeal)[X]) I) :=
-      fun I y => ⟨Pi.single I y, by simp⟩
-    have hgen : ∀ I : MaximalSpectrum A, ∃ a : (A ⧸ I.asIdeal)[X],
-        J.map (Pi.evalRingHom (fun I : MaximalSpectrum A => (A ⧸ I.asIdeal)[X]) I) = Ideal.span {a} :=
-      fun I => by
-        have := I.isMaximal; let : Field (A ⧸ I.asIdeal) := Ideal.Quotient.field _
-        exact (IsPrincipalIdealRing.principal (R := (A ⧸ I.asIdeal)[X]) _).principal
-    choose g hg using hgen
-    choose h hh he using fun I => (Ideal.mem_map_iff_of_surjective _ (hsurj I)).mp
-      (hg I ▸ Ideal.subset_span rfl)
-    have hgJ : g ∈ J := by
-      have e : g = ∑ I, Pi.single I (1 : (A ⧸ I.asIdeal)[X]) * h I := by
-        funext L; simp only [Finset.sum_apply, Pi.mul_apply]
-        rw [Finset.sum_eq_single L (fun I _ hI => by simp [Ne.symm hI])
-          (fun h => absurd (Finset.mem_univ L) h)]
-        simp only [Pi.single_eq_same, one_mul]; exact (he L).symm
-      rw [e]; exact J.sum_mem fun I _ => J.mul_mem_left _ (hh I)
-    refine ⟨g, le_antisymm (fun x hx => ?_) (Ideal.span_le.2 (Set.singleton_subset_iff.2 hgJ))⟩
-    choose c hc using fun I => Ideal.mem_span_singleton'.mp
-      (hg I ▸ Ideal.mem_map_of_mem (Pi.evalRingHom _ I) hx)
-    exact Ideal.mem_span_singleton'.mpr ⟨c, funext hc⟩⟩
+  have : ∀ I : MaximalSpectrum A, IsPrincipalIdealRing (A ⧸ I.asIdeal)[X] := fun I => by
+    have := I.isMaximal; let : Field (A ⧸ I.asIdeal) := Ideal.Quotient.field _; infer_instance
   have hPI' : IsPrincipalIdealRing ((∀ I : MaximalSpectrum A, A ⧸ I.asIdeal)[X]) :=
     IsPrincipalIdealRing.of_surjective (Polynomial.piEquiv _).symm (Polynomial.piEquiv _).symm.surjective
   have hAX : IsPrincipalIdealRing A[X] :=

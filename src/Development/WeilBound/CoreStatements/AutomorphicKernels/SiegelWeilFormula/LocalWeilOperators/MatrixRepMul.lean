@@ -62,10 +62,6 @@ theorem incM_one' {p : Type} [DecidableEq p] : incM F (1 : Matrix p p E) = 1 := 
   unfold incM
   exact Matrix.map_one _ (map_zero _) (map_one _)
 
-theorem matrixRep_mul (x y : d.G) : mat2 (x * y) = mat2 x * mat2 y := rfl
-
-theorem matrixRep_one : mat2 (1 : d.G) = 1 := rfl
-
 end SD
 
 end PositivityTheory.SiegelWeilFormula

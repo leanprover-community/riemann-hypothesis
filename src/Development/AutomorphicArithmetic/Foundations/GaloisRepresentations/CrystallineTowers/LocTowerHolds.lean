@@ -404,7 +404,7 @@ private theorem hopSpec : UpperTheory.Gal.G3.HopSpec :=
     (UpperTheory.Gal.G3.pEtGood (UpperTheory.Gal.G3.pEtnGood (UpperTheory.Gal.G3.pFEtBasic UpperTheory.Gal.G3.pPtsOfSplits) UpperTheory.Gal.G3.pEtTr))
     (UpperTheory.Gal.G3.pBcGood bcSplits (UpperTheory.Gal.G3.pBcGal bcSplits))
     (UpperTheory.Gal.G3.pGalClos (UpperTheory.Gal.G3.pGalClosD (UpperTheory.Gal.G3.pSplitsPts UpperTheory.Gal.G3.pIsoPts)
-      (UpperTheory.Gal.G3.pOrdEx UpperTheory.Gal.G3.pOrdStep)))
+      (UpperTheory.Gal.G3.pOrdEx)))
     (UpperTheory.Gal.G3.pOpEx UpperTheory.Gal.G3.pOpTr) UpperTheory.Gal.G3.pOpTr UpperTheory.Gal.G3.pOpEt
     (UpperTheory.Gal.G3.pOpBc bcSplits (UpperTheory.Gal.G3.pBcGal bcSplits)) bcSplits
 
@@ -963,12 +963,6 @@ theorem comp (hA : A11) {l : ℕ} [Fact l.Prime] {E : Spc} {n i : ℤ} (y : Hl l
       (pow_dvd_pow l (by omega)) n i (y.1 _)]
     rw [show red (l ^ (m + (d + 1))) (l ^ (m + d)) E n i (y.1 (m + (d + 1))) = y.1 (m + d) from y.2 (m + d)]
     exact ih
-
-theorem smul_pow {l : ℕ} [Fact l.Prime] {E : Spc} {n i : ℤ} (m b : ℕ) (v : HtL l m E n i) :
-    ((l : ℤ_[l]) ^ b) • v = (show Ht (l ^ m) E n i from (l ^ b : ℕ) • v) := by
-  change PadicInt.toZModPow m ((l : ℤ_[l]) ^ b) • (show Ht (l ^ m) E n i from v) = _
-  rw [map_pow, map_natCast, ← Nat.cast_pow, Nat.cast_smul_eq_nsmul]
-  rfl
 
 end LateralTheory.EWeil.AdicKerPf
 end -- clump:auto

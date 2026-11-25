@@ -168,29 +168,37 @@ theorem exists_nhds_compact (p₀ : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n
   filter_upwards [h1, h2] with p hp1 hp2
   exact ⟨hp1, hp2.1, hp2.2⟩
 
-theorem continuous_tsum_ratMat {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
-    (hΦ : Φ ∈ matrixSchwartzBruhat K n) :
+private theorem continuous_tsum_of {ι : Type*} {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
+    (hΦ : Φ ∈ matrixSchwartzBruhat K n) (f : ι → Matrix (Fin n) (Fin n) K)
+    (hf : Function.Injective f) :
     Continuous (fun p : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n × AdelicGLn.AdelicGL K n =>
-      ∑' ξ : Matrix (Fin n) (Fin n) K, Φ (((Reduction.centralSection K n p.1 * p.2.1 :
-        AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * ratMat ξ *
+      ∑' ξ : ι, Φ (((Reduction.centralSection K n p.1 * p.2.1 :
+        AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * ratMat (f ξ) *
           (p.2.2 : Matrix (Fin n) (Fin n) 𝔸[K]))) := by
-  have hΦc := continuous_of_mem_matrixSchwartzBruhat hΦ
   refine continuous_iff_continuousAt.2 fun p₀ => ?_
   obtain ⟨A, B, hA, hB, hU⟩ := exists_nhds_compact (K := K) (n := n) p₀
   obtain ⟨u, hu, hbd⟩ := exists_summable_bound hΦ ⟨(p₀.1 : ℝ) / 2, half_pos p₀.1.2⟩ hA hB
   refine (continuousOn_tsum (s := {p : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n ×
       AdelicGLn.AdelicGL K n | (p₀.1 : ℝ) / 2 < p.1 ∧ p.2.1 ∈ A ∧ p.2.2 ∈ B})
-    (fun ξ => ?_) hu (fun ξ p hp => hbd p.1 hp.1.le p.2.1 hp.2.1 p.2.2
-    hp.2.2 ξ)).continuousAt hU
-  exact (hΦc.comp ((continuous_centralSection_mul_coe.matrix_mul continuous_const).matrix_mul
-    continuous_snd_snd_coe)).continuousOn
+    (fun ξ => ((continuous_of_mem_matrixSchwartzBruhat hΦ).comp
+      ((continuous_centralSection_mul_coe.matrix_mul continuous_const).matrix_mul
+        continuous_snd_snd_coe)).continuousOn)
+    (hu.comp_injective hf) (fun ξ p hp => hbd p.1 hp.1.le p.2.1 hp.2.1 p.2.2
+    hp.2.2 (f ξ))).continuousAt hU
+
+theorem continuous_tsum_ratMat {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
+    (hΦ : Φ ∈ matrixSchwartzBruhat K n) :
+    Continuous (fun p : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n × AdelicGLn.AdelicGL K n =>
+      ∑' ξ : Matrix (Fin n) (Fin n) K, Φ (((Reduction.centralSection K n p.1 * p.2.1 :
+        AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) * ratMat ξ *
+          (p.2.2 : Matrix (Fin n) (Fin n) 𝔸[K]))) :=
+  continuous_tsum_of hΦ id Function.injective_id
 
 theorem continuous_tsum_GL {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
     (hΦ : Φ ∈ matrixSchwartzBruhat K n) :
     Continuous (fun p : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n × AdelicGLn.AdelicGL K n =>
       ∑' γ : GL (Fin n) K, Φ ((Reduction.centralSection K n p.1 * p.2.1 * AdelicGLn.diagonal K n γ *
         p.2.2 : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K])) := by
-  have hΦc := continuous_of_mem_matrixSchwartzBruhat hΦ
   have heq : ∀ (p : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n × AdelicGLn.AdelicGL K n)
       (γ : GL (Fin n) K), ((Reduction.centralSection K n p.1 * p.2.1 * AdelicGLn.diagonal K n γ *
         p.2.2 : AdelicGLn.AdelicGL K n) : Matrix (Fin n) (Fin n) 𝔸[K]) =
@@ -199,16 +207,7 @@ theorem continuous_tsum_GL {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
           (p.2.2 : Matrix (Fin n) (Fin n) 𝔸[K]) := fun p γ => by
     simp only [Units.val_mul, coe_diagonal]
   simp_rw [heq]
-  refine continuous_iff_continuousAt.2 fun p₀ => ?_
-  obtain ⟨A, B, hA, hB, hU⟩ := exists_nhds_compact (K := K) (n := n) p₀
-  obtain ⟨u, hu, hbd⟩ := exists_summable_bound hΦ ⟨(p₀.1 : ℝ) / 2, half_pos p₀.1.2⟩ hA hB
-  refine (continuousOn_tsum (s := {p : {r : ℝ // 0 < r} × AdelicGLn.AdelicGL K n ×
-      AdelicGLn.AdelicGL K n | (p₀.1 : ℝ) / 2 < p.1 ∧ p.2.1 ∈ A ∧ p.2.2 ∈ B})
-    (u := fun γ : GL (Fin n) K => u (γ : Matrix (Fin n) (Fin n) K))
-    (fun γ => ?_) (hu.comp_injective (fun _ _ h => Units.ext h))
-    (fun γ p hp => hbd p.1 hp.1.le p.2.1 hp.2.1 p.2.2 hp.2.2 _)).continuousAt hU
-  exact (hΦc.comp ((continuous_centralSection_mul_coe.matrix_mul continuous_const).matrix_mul
-    continuous_snd_snd_coe)).continuousOn
+  exact continuous_tsum_of hΦ _ (fun _ _ h => Units.ext h)
 
 end GJGlobal
 

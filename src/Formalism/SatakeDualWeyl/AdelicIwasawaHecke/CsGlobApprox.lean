@@ -111,20 +111,6 @@ theorem csGlobApprox_local (v : HeightOneSpectrum (𝓞 F)) (D : 𝓞 F) (hD : D
 
 end
 
-private theorem exists_not_mem_asIdeal_pow_of_ne_zero {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) (z : 𝓞 F) (hz : z ≠ 0) :
-    ∃ n : ℕ, z ∉ w.asIdeal ^ n := by
-  by_contra h
-  push_neg at h
-  have hmem : z ∈ ⨅ i : ℕ, w.asIdeal ^ i := Submodule.mem_iInf _ |>.2 h
-  rw [Ideal.iInf_pow_eq_bot_of_isDomain] at hmem
-  · exact hz ((Submodule.mem_bot _).1 hmem)
-  · exact w.isPrime.ne_top
-
-private theorem intValuation_lt_of_mem_pow_of_not_mem_pow {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) {z D : 𝓞 F} {n : ℕ}
-    (hDn : D ∉ w.asIdeal ^ n) (hz : z ∈ w.asIdeal ^ n) : w.intValuation z < w.intValuation D :=
-  lt_of_le_of_lt ((w.intValuation_le_pow_iff_mem z n).2 hz)
-    (not_le.1 fun h => hDn ((w.intValuation_le_pow_iff_mem D n).1 h))
-
 theorem csGlob_intAdApprox : Formalism.UG.CS.IntAdApprox := by
   apply Formalism.UG.P.integral_adele_approximation_holds
 

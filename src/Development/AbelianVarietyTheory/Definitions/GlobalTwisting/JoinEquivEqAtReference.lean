@@ -46,8 +46,6 @@ namespace GlobalTheory.EX
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Forms Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.RecTie
 open NumberField IsDedekindDomain Matrix GlobalTheory.BigTop GlobalTheory.Mem.R3 GlobalTheory.Core.Rk.Top
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Conj
 
 variable {ι : Type} [Fintype ι] {n : ℕ}

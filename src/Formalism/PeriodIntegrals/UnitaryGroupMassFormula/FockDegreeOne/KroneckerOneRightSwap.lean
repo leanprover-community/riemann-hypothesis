@@ -42,7 +42,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.OmEDiagMonomial
 
 @[expose] public section
 
@@ -52,7 +51,7 @@ open Matrix FockH1Action MvPolynomial
 
 namespace PI.FockOneDegW.Swap
 
-open PI.FockOneDegW PI.FockOneDegW.Diag
+open PI.FockOneDegW
 
 section Transport
 

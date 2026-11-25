@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open Filter Topology GlobalTheory.VolBr
 
-set_option autoImplicit false
-
 namespace GlobalTheory.VolBr
 
 theorem encard_mul_le_of_quot_embed : ∀ (G : Type) [AddCommGroup G] (Λ Λ' Λ₀ Λ₀' : AddSubgroup G) (B E : ℝ → Set G)

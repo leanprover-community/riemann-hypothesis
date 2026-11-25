@@ -47,8 +47,6 @@ open scoped Classical
 
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem UpperTheory.HeckeLevelFrameExistence.muVal :
     UpperTheory.HeckeLevelFrameExistence.MuVal := by
   intro E _ _ _ μ e hμ w hw k

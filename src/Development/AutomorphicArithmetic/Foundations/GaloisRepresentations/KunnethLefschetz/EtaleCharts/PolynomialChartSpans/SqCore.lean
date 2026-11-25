@@ -1468,7 +1468,7 @@ private theorem stdSmooth_of_bijective {A B σ : Type} [CommRing A] [CommRing B]
     φ.IsStandardSmoothOfRelativeDimension d := by
   have h0 : (algebraMap A (MvPolynomial (Fin d) A)).IsStandardSmoothOfRelativeDimension d :=
     (RingHom.isStandardSmoothOfRelativeDimension_algebraMap (n := d)).mpr
-      (GlobalTheory.CompanionTheory.Ar.LieInh.stdSmooth_mvPolynomial A d)
+      (Algebra.IsStandardSmoothOfRelativeDimension.mvPolynomial_fin (R := A) (n := d))
   let e₁ : MvPolynomial (Fin d) A ≃+* MvPolynomial σ A :=
     (MvPolynomial.renameEquiv A (Fintype.equivFinOfCardEq hd).symm).toRingEquiv
   let e₂ : MvPolynomial σ A ≃+* B := RingEquiv.ofBijective _ hb

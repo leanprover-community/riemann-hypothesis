@@ -15,8 +15,6 @@ namespace Formalism.L2.SG.Pf.ZsVolGrp
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.ZsVolCut Matrix
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Uni
 
 variable {R : Type*} [CommRing R] {n : ℕ}

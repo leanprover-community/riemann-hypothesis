@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOfIsBlockEmb
 public import Mathlib.MeasureTheory.Group.FundamentalDomain
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLv
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactSpaceAxis
@@ -552,16 +553,7 @@ theorem inclR_alg (c : F) : inclR (F := F) (AF F) (algebraMap F E c) = algebraMa
   (Algebra.TensorProduct.includeRight (R := F) (A := AF F) (B := E)).commutes c
 
 theorem continuous_sigR (σ : E →ₐ[F] E) : Continuous (sigR (AF F) σ) := by
-  haveI : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
-  haveI := GlobalTheory.Doubling.isTopologicalRing_tens (F := F) (E := E) (R := AF F)
-  have : (sigR (AF F) σ : AF F ⊗[F] E → AF F ⊗[F] E) = LinearMap.baseChange (AF F) σ.toLinearMap := by
-    funext z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a e => simp [sigR]
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  rw [this]
-  exact IsModuleTopology.continuous_of_linearMap _
+  apply _root_.GlobalTheory.BlockLevel.continuous_sigR_ad <;> assumption
 
 theorem cT_apply {A : Type} [CommRing A] (s : A →+* A) {m p : Type} (M : Matrix m p A) (i : p) (k : m) :
     cT s M i k = s (M k i) := rfl

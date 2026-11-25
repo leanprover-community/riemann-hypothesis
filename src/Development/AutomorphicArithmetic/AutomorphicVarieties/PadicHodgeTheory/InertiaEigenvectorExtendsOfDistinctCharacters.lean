@@ -67,7 +67,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N GlobalTheory.WeilDeligne GlobalTheory.Pst Polynomial Module Matrix UpperTheory.V.W UpperTheory.V.Hi
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.inertia_eigenvector_extends_of_distinct_characters :
     ∀ {Γ I W : Type} [Group Γ] [Group I] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] {n : ℕ} (i : I →* Γ) (ρ : Γ →* Module.End ℂ W) (μ : Fin n → Γ →* ℂˣ), (∀ σ s, ∃ t, σ * i s = i t * σ) → (Set.range fun s => ρ (i s)).Finite → (∀ σ, (ρ σ).charpoly = ∏ j, (X - C (μ j σ : ℂ))) → (∀ j k, j ≠ k → ∃ s, μ j (i s) ≠ μ k (i s)) → (∀ N : Module.End ℂ W, IsNilpotent N → (∀ s, ρ (i s) * N = N * ρ (i s)) → N = 0) ∧ ∀ j, (∃ y : W, y ≠ 0 ∧ ∀ s, ρ (i s) y = (μ j (i s) : ℂ) • y) ∧ ∀ y : W, (∀ s, ρ (i s) y = (μ j (i s) : ℂ) • y) → ∀ σ, ρ σ y = (μ j σ : ℂ) • y := by

@@ -528,7 +528,6 @@ theorem exists_hcType_of_irred : ∀ {k : ℕ} {Wp : Type} [NormedAddCommGroup W
 
 end UpperTheory.Lit.Bur.HWSpanType
 
-open Matrix GlobalTheory.RealBessel GlobalTheory.BesselMapOne Formalism.L2.Theta GlobalTheory.SmVec
 
 end -- clump:auto
 end -- clump:auto

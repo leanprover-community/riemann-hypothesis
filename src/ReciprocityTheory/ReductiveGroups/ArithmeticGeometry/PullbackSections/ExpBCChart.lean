@@ -6,8 +6,6 @@ import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.G.PullbackSections

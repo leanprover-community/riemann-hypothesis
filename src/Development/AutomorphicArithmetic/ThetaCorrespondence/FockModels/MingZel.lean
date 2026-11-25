@@ -927,13 +927,8 @@ namespace PositivityTheory.Rg.Ming.UniqX
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem valSet_eq (a : k) (c : kˣ) :
-    {y : k | valuation k (y - a) ≤ valuation k (c : k)} = (fun y => -a + y) ⁻¹' (c • (𝒪[k] : Set k)) := by
-  ext y
-  have hc : 0 < valuation k (c : k) := by
-    rw [zero_lt_iff]; simp
-  simp only [Set.mem_setOf_eq, Set.mem_preimage]
-  rw [Set.mem_smul_set_iff_inv_smul_mem, SetLike.mem_coe, Valuation.mem_integer_iff, Units.smul_def,
-    Units.val_inv_eq_inv_val, smul_eq_mul, map_mul, map_inv₀, neg_add_eq_sub, inv_mul_le_one₀ hc]
+    {y : k | valuation k (y - a) ≤ valuation k (c : k)} = (fun y => -a + y) ⁻¹' (c • (𝒪[k] : Set k)) :=
+  _root_.PositivityTheory.Rg.Ming.GermX.valSet_eq a c
 
 theorem isOpen_valSet (a : k) (c : kˣ) : IsOpen {y : k | valuation k (y - a) ≤ valuation k (c : k)} := by
   rw [valSet_eq]

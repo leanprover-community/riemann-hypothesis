@@ -58,22 +58,13 @@ namespace FunctorialResolution.EmbeddedResolution
 
 variable {Y : Scheme.{u}}
 
-private theorem mul_ideal_apply {Y' : Scheme.{u}} (F G : Y'.IdealSheafData)
-    (U : Y'.affineOpens) : (F * G).ideal U = F.ideal U * G.ideal U := rfl
-
-private theorem pow_ideal_apply {Y' : Scheme.{u}} (F : Y'.IdealSheafData) (n : ℕ)
-    (U : Y'.affineOpens) : (F ^ n).ideal U = F.ideal U ^ n := by
-  induction n with
-  | zero => simp
-  | succ m ih => rw [pow_succ, pow_succ, mul_ideal_apply, ih]
-
 theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.pow {F : Y.IdealSheafData} (hF : FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor F) (n : ℕ) :
     FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor (F ^ n) := by
   unfold FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor at hF ⊢
   intro x
   obtain ⟨U, f, hxU, hf, hFU⟩ := hF x
   refine ⟨U, f ^ n, hxU, pow_mem hf n, ?_⟩
-  rw [EmbeddedResolution.pow_ideal_apply, hFU, Ideal.span_singleton_pow]
+  rw [Scheme.IdealSheafData.ideal_pow, Pi.pow_apply, hFU, Ideal.span_singleton_pow]
 
 private theorem le_of_forall_ideal_le {Y : Scheme.{u}} {I J : Y.IdealSheafData}
     (H : ∀ U : Y.affineOpens, I.ideal U ≤ J.ideal U) : I ≤ J := H
@@ -178,52 +169,6 @@ private theorem exists_affineOpen_mem_subset (Z : Scheme.{u}) (x : Z) (W : Z.Ope
     TopologicalSpace.Opens.isBasis_iff_nbhd.mp Z.isBasis_affineOpens hx
   exact ⟨⟨V, hV⟩, hxV, hVW⟩
 
-private theorem coe_image_of_isOpenImmersion {X' Y' : Scheme.{u}} (f : X' ⟶ Y')
-    [IsOpenImmersion f] (V : X'.Opens) :
-    ((f ''ᵁ V : Y'.Opens) : Set Y') = f.base '' (V : Set X') := rfl
-
-private theorem coe_preimage_opens {X' Y' : Scheme.{u}} (f : X' ⟶ Y') (V : Y'.Opens) :
-    ((f ⁻¹ᵁ V : X'.Opens) : Set X') = f.base ⁻¹' (V : Set Y') := rfl
-
-private theorem range_opensι {Y' : Scheme.{u}} (U : Y'.Opens) :
-    Set.range U.ι.base = (U : Set Y') := U.range_ι
-
-private theorem image_opensι_le {Y' : Scheme.{u}} (U : Y'.Opens) (V : U.toScheme.Opens) :
-    (U.ι ''ᵁ V : Y'.Opens) ≤ U := by
-  intro z hz
-  have hz' : z ∈ U.ι.base '' (V : Set U.toScheme) := hz
-  obtain ⟨w, -, rfl⟩ := hz'
-  have hr : U.ι.base w ∈ Set.range U.ι.base := Set.mem_range_self w
-  rw [range_opensι] at hr
-  exact hr
-
-private theorem image_preimage_opensι {Y' : Scheme.{u}} (U : Y'.Opens) (D : Y'.Opens)
-    (hD : D ≤ U) : U.ι ''ᵁ (U.ι ⁻¹ᵁ D) = D := by
-  apply TopologicalSpace.Opens.ext
-  rw [coe_image_of_isOpenImmersion, coe_preimage_opens, Set.image_preimage_eq_inter_range,
-    range_opensι]
-  exact Set.inter_eq_self_of_subset_left hD
-
-private theorem basicOpen_appLE {X' Y' : Scheme.{u}} (f : X' ⟶ Y') {U : Y'.Opens}
-    {V : X'.Opens} (h : V ≤ f ⁻¹ᵁ U) (r : Γ(Y', U)) :
-    X'.basicOpen ((f.appLE U V h).hom r) = V ⊓ f ⁻¹ᵁ (Y'.basicOpen r) := by
-  have h1 : (f.appLE U V h).hom r
-      = (X'.presheaf.map (homOfLE h).op).hom ((f.app U).hom r) := rfl
-  rw [h1, Scheme.basicOpen_res, Scheme.preimage_basicOpen]
-
-private noncomputable def sectionsOpensImageIso {Y' : Scheme.{u}} (U : Y'.Opens)
-    (V : U.toScheme.Opens) : Γ(Y', U.ι ''ᵁ V) ≅ Γ(U.toScheme, V) := U.ι.appIso V
-
-private theorem restrictAppIso_hom {Y' : Scheme.{u}} (U : Y'.Opens) (V : U.toScheme.Opens) :
-    (sectionsOpensImageIso U V).hom
-      = U.ι.appLE (U.ι ''ᵁ V) V (U.ι.preimage_image_eq V).ge :=
-  Scheme.Hom.appIso_hom' U.ι V
-
-private theorem map_comp_appLE {X' Y' : Scheme.{u}} (f : X' ⟶ Y') {U₁ U₂ : Y'.Opens}
-    (e : U₁ ≤ U₂) {V : X'.Opens} (h : V ≤ f ⁻¹ᵁ U₁) (h' : V ≤ f ⁻¹ᵁ U₂) :
-    Y'.presheaf.map (homOfLE e).op ≫ f.appLE U₁ V h = f.appLE U₂ V h' :=
-  Scheme.Hom.map_appLE f h (homOfLE e).op
-
 theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.comap_opensι {F : Y.IdealSheafData} (hF : FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor F)
     (U : Y.Opens) : FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor (F.comap U.ι) := by
   intro x
@@ -238,7 +183,8 @@ theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.co
   have hDD₀ : Y.basicOpen a ≤ U.ι ''ᵁ (V₀ : U.toScheme.Opens) := by
     rw [hab]
     exact Y.basicOpen_le b
-  have hDU : Y.basicOpen a ≤ U := hDD₀.trans (EmbeddedResolution.image_opensι_le U (V₀ : U.toScheme.Opens))
+  have hDU : Y.basicOpen a ≤ U :=
+    hDD₀.trans ((U.ι.image_le_opensRange _).trans_eq U.opensRange_ι)
   have hDW : Y.basicOpen a ≤ (W : Y.Opens) := Y.basicOpen_le a
   have hpreV₀ : U.ι ⁻¹ᵁ (Y.basicOpen a) ≤ (V₀ : U.toScheme.Opens) := by
     intro z hz
@@ -246,14 +192,13 @@ theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.co
     rwa [U.ι.preimage_image_eq] at h2
   have hV₁eq : U.toScheme.basicOpen
       ((U.ι.appLE (W : Y.Opens) (V₀ : U.toScheme.Opens) hV₀).hom a)
-      = U.ι ⁻¹ᵁ (Y.basicOpen a) := by
-    rw [_root_.FunctorialResolution.EmbeddedResolution.basicOpen_appLE]
-    exact inf_eq_right.mpr hpreV₀
+      = U.ι ⁻¹ᵁ (Y.basicOpen a) :=
+    (Scheme.basicOpen_appLE U.ι _ _ hV₀ a).trans (inf_eq_right.mpr hpreV₀)
   have hV₁aff : IsAffineOpen (U.ι ⁻¹ᵁ (Y.basicOpen a)) := by
     rw [← hV₁eq]
     exact V₀.2.basicOpen _
-  have himg : U.ι ''ᵁ (U.ι ⁻¹ᵁ (Y.basicOpen a)) = Y.basicOpen a :=
-    EmbeddedResolution.image_preimage_opensι U (Y.basicOpen a) hDU
+  have himg : U.ι ''ᵁ (U.ι ⁻¹ᵁ (Y.basicOpen a)) = Y.basicOpen a := by
+    rw [U.ι.image_preimage_eq_opensRange_inf, U.opensRange_ι, inf_eq_right.mpr hDU]
   have himgW : (U.ι ''ᵁ (U.ι ⁻¹ᵁ (Y.basicOpen a))) ≤ (W : Y.Opens) := by
     rw [himg]
     exact hDW
@@ -265,23 +210,23 @@ theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.co
         ∈ nonZeroDivisors Γ(Y, Y.basicOpen a) :=
       IsLocalization.nonZeroDivisors_le_comap (.powers a) Γ(Y, Y.basicOpen a) ht
     have hmor : Y.presheaf.map (homOfLE hDW).op ≫ Y.presheaf.map (eqToHom himg).op ≫
-        (_root_.FunctorialResolution.EmbeddedResolution.sectionsOpensImageIso U (U.ι ⁻¹ᵁ (Y.basicOpen a))).hom
+        (U.ι.appIso (U.ι ⁻¹ᵁ (Y.basicOpen a))).hom
         = U.ι.appLE (W : Y.Opens) (U.ι ⁻¹ᵁ (Y.basicOpen a)) hleW := by
-      rw [EmbeddedResolution.restrictAppIso_hom, ← Category.assoc, ← Functor.map_comp]
+      rw [Scheme.Hom.appIso_hom', ← Category.assoc, ← Functor.map_comp]
       have h3 : eqToHom himg ≫ homOfLE hDW = homOfLE himgW := Subsingleton.elim _ _
       have h3' : (homOfLE hDW).op ≫ (eqToHom himg).op = (homOfLE himgW).op := by
         rw [← op_comp, h3]
       rw [h3']
-      exact EmbeddedResolution.map_comp_appLE U.ι himgW _ hleW
+      exact Scheme.Hom.map_appLE U.ι _ (homOfLE himgW).op
     have hfin : (U.ι.appLE (W : Y.Opens) (U.ι ⁻¹ᵁ (Y.basicOpen a)) hleW).hom t
-        = (_root_.FunctorialResolution.EmbeddedResolution.sectionsOpensImageIso U (U.ι ⁻¹ᵁ (Y.basicOpen a))).hom.hom
+        = (U.ι.appIso (U.ι ⁻¹ᵁ (Y.basicOpen a))).hom.hom
             ((Y.presheaf.map (eqToHom himg).op).hom
               ((Y.presheaf.map (homOfLE hDW).op).hom t)) := by
       rw [← hmor]
       rfl
     rw [hfin]
     exact FunctorialResolution.Blowup.map_mem_nonZeroDivisors_of_iso
-      (Y.presheaf.mapIso (eqToIso himg).op ≪≫ _root_.FunctorialResolution.EmbeddedResolution.sectionsOpensImageIso U (U.ι ⁻¹ᵁ (Y.basicOpen a))) ht'
+      (Y.presheaf.mapIso (eqToIso himg).op ≪≫ U.ι.appIso (U.ι ⁻¹ᵁ (Y.basicOpen a))) ht'
   · rw [Scheme.IdealSheafData.comap_ideal_eq_map_appLE F U.ι W
       ⟨U.ι ⁻¹ᵁ (Y.basicOpen a), hV₁aff⟩ hleW, hFW, Ideal.map_span, Set.image_singleton]
 
@@ -289,19 +234,6 @@ theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.eq
     (hF : FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor F) (U : Y.Opens) {J J' : U.toScheme.IdealSheafData}
     (h : F.comap U.ι * J = F.comap U.ι * J') : J = J' :=
   (hF.comap_opensι U).eq_of_mul_eq_mul h
-
-private theorem mem_colon_span {R : Type*} [CommRing R] (I : Ideal R) (s : Set R)
-    (x : R) (h : ∀ g ∈ s, x * g ∈ I) : x ∈ I.colon (Submodule.span R s) := by
-  refine Submodule.mem_colon.2 ?_
-  intro p hp
-  rw [smul_eq_mul]
-  induction hp using Submodule.span_induction with
-  | mem g hg => exact h g hg
-  | zero => rw [mul_zero]; exact zero_mem I
-  | add y z _ _ ihy ihz => rw [mul_add]; exact add_mem ihy ihz
-  | smul c y _ ih =>
-    rw [smul_eq_mul, ← mul_assoc, mul_comm x c, mul_assoc]
-    exact I.mul_mem_left c ih
 
 private theorem map_colon_eq_colon_map_away {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
     (r : R) [IsLocalization.Away r S] (I J : Ideal R) (hJ : J.FG) :
@@ -338,9 +270,9 @@ private theorem map_colon_eq_colon_map_away {R S : Type*} [CommRing R] [CommRing
       exact exists_pow_mul_mem_of_algebraMap_mem_map r I (w.1 * g) h2
     choose! n hn using key
     have hNa : r ^ (s.sup n) * w.1 ∈ I.colon J := by
-      rw [← hs]
-      refine mem_colon_span I (↑s) (r ^ (s.sup n) * w.1) ?_
+      rw [← hs, Submodule.colon_span, Submodule.mem_colon]
       intro g hg
+      rw [smul_eq_mul]
       have hle : n g ≤ s.sup n := Finset.le_sup (Finset.mem_coe.mp hg)
       have hg' := hn g hg
       have hpow : r ^ (s.sup n - n g) * r ^ (n g) = r ^ (s.sup n) := by
@@ -401,14 +333,7 @@ private theorem span_singleton_mul_colon {R : Type*} [CommRing R] {P J : Ideal R
     exact hb'
   · intro y hy
     obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.mp (hJ hy)
-    have hc : c ∈ J.colon (Ideal.span {f}) := by
-      refine Submodule.mem_colon.2 ?_
-      intro p hp
-      obtain ⟨d, rfl⟩ := Ideal.mem_span_singleton'.mp hp
-      rw [smul_eq_mul]
-      have hre : c * (d * f) = d * (c * f) := by ring
-      rw [hre]
-      exact J.mul_mem_left d hy
+    have hc : c ∈ J.colon (Ideal.span {f}) := Ideal.mem_colon_span_singleton.mpr hy
     have hmem := Ideal.mul_mem_mul (Ideal.mem_span_singleton_self f) hc
     rwa [mul_comm f c] at hmem
 
@@ -470,7 +395,7 @@ theorem _root_.FunctorialResolution.Blowup.IsLocallyGeneratedByNonZeroDivisor.mu
   have hIle : ∀ U : Y.affineOpens, I'.ideal U ≤ F.ideal U := fun U => hI U
   refine Scheme.IdealSheafData.ext (funext ?_)
   intro U
-  rw [EmbeddedResolution.mul_ideal_apply, EmbeddedResolution.idealSheafColon_ideal]
+  rw [Scheme.IdealSheafData.ideal_mul, Pi.mul_apply, EmbeddedResolution.idealSheafColon_ideal]
   refine le_antisymm ?_ ?_
   · rw [Ideal.mul_le]
     intro a ha b hb

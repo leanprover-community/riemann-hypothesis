@@ -74,15 +74,11 @@ instance instIsClosedImmersionCoprodInl (X Y : Scheme.{u}) :
   exact ⟨(coprod.inl : X ⟶ X ⨿ Y).isOpenEmbedding.toIsEmbedding,
     isClosed_range_coprod_inl X Y⟩
 
-private theorem isClosedEmbedding_coprod_inl_base (X Y : Scheme.{u}) :
-    Topology.IsClosedEmbedding ⇑(coprod.inl : X ⟶ X ⨿ Y).base :=
-  ⟨(coprod.inl : X ⟶ X ⨿ Y).isOpenEmbedding.toIsEmbedding, isClosed_range_coprod_inl X Y⟩
-
 instance instQuasiCompactCoprodInl (X Y : Scheme.{u}) :
     QuasiCompact (coprod.inl : X ⟶ X ⨿ Y) := by
   constructor
   intro U _ hU
-  exact (isClosedEmbedding_coprod_inl_base X Y).isCompact_preimage hU
+  exact (coprod.inl : X ⟶ X ⨿ Y).isClosedEmbedding.isCompact_preimage hU
 
 section
 
@@ -93,46 +89,12 @@ theorem sigmaι_base_ne {i j : ι} (hij : i ≠ j) (x : ↥(X i)) (y : ↥(X j))
   intro h
   exact hij (congrArg Sigma.fst ((sigmaι_eq_iff X i j x y).mp h))
 
-private noncomputable def iSupOpensRangeSigmaι {κ : Type u} (Y : κ → Scheme.{u}) [HasCoproduct Y] : (∐ Y).Opens :=
-  ⟨⋃ i, Set.range ⇑(Sigma.ι Y i).base,
-    isOpen_iUnion fun i => (Sigma.ι Y i).isOpenEmbedding.isOpen_range⟩
-
-private theorem range_sigmaι_subset_iUnion {κ : Type u} (Y : κ → Scheme.{u}) [HasCoproduct Y]
-    (i : κ) : Set.range ⇑(Sigma.ι Y i).base ⊆ Set.range ⇑(iSupOpensRangeSigmaι Y).ι.base := by
-  rw [Scheme.Opens.range_ι]
-  intro z hz
-  show z ∈ ⋃ i, Set.range ⇑(Sigma.ι Y i).base
-  exact Set.mem_iUnion.mpr ⟨i, hz⟩
-
-private theorem surjective_base_of_comp_eq_id {A B : Scheme.{u}} (g : A ⟶ B) (h : B ⟶ A)
-    (hgh : g ≫ h = 𝟙 A) : Function.Surjective ⇑h.base := by
-  intro x
-  refine ⟨g.base x, ?_⟩
-  have h1 := congrArg (fun m : A ⟶ A => m.base x) hgh
-  simpa using h1
-
-private theorem exists_sigmaι_base_eq {κ : Type u} (Y : κ → Scheme.{u}) [HasCoproduct Y]
-    (x : ↥(∐ Y)) : ∃ (i : κ) (y : ↥(Y i)), (Sigma.ι Y i).base y = x := by
-  have hid : (Sigma.desc fun i =>
-      IsOpenImmersion.lift (iSupOpensRangeSigmaι Y).ι (Sigma.ι Y i) (range_sigmaι_subset_iUnion Y i)) ≫
-        (iSupOpensRangeSigmaι Y).ι = 𝟙 (∐ Y) := by
-    apply Sigma.hom_ext
-    intro i
-    have hfac := IsOpenImmersion.lift_fac (iSupOpensRangeSigmaι Y).ι (Sigma.ι Y i)
-      (range_sigmaι_subset_iUnion Y i)
-    simp [hfac]
-  obtain ⟨w, hw⟩ := surjective_base_of_comp_eq_id _ _ hid x
-  have hmem : x ∈ Set.range ⇑(iSupOpensRangeSigmaι Y).ι.base := ⟨w, hw⟩
-  rw [Scheme.Opens.range_ι] at hmem
-  have hmem2 : x ∈ ⋃ i, Set.range ⇑(Sigma.ι Y i).base := hmem
-  obtain ⟨i, y, hy⟩ := Set.mem_iUnion.mp hmem2
-  exact ⟨i, y, hy⟩
-
 theorem isClosed_range_sigmaι (j : ι) : IsClosed (Set.range ⇑(Sigma.ι X j).base) := by
   rw [← isOpen_compl_iff, isOpen_iff_forall_mem_open]
   intro x hx
   rw [Set.mem_compl_iff] at hx
-  obtain ⟨i, y, rfl⟩ := exists_sigmaι_base_eq X x
+  obtain ⟨⟨i, y⟩, hxy⟩ := (sigmaMk X).surjective x
+  obtain rfl : (Sigma.ι X i).base y = x := (sigmaMk_mk X i y).symm.trans hxy
   have hij : i ≠ j := by
     intro h
     subst h
@@ -146,15 +108,12 @@ theorem isClosed_range_sigmaι (j : ι) : IsClosed (Set.range ⇑(Sigma.ι X j).
   obtain ⟨w, hw⟩ := hmem
   exact sigmaι_base_ne X hij z w hw.symm
 
-private theorem isClosedEmbedding_sigmaι_base {κ : Type u} (Y : κ → Scheme.{u})
-    [HasCoproduct Y] (j : κ) (hc : IsClosed (Set.range ⇑(Sigma.ι Y j).base)) :
-    Topology.IsClosedEmbedding ⇑(Sigma.ι Y j).base :=
-  ⟨(Sigma.ι Y j).isOpenEmbedding.toIsEmbedding, hc⟩
-
 theorem quasiCompact_sigmaι (j : ι) : QuasiCompact (Sigma.ι X j) := by
   constructor
   intro U _ hU
-  exact (isClosedEmbedding_sigmaι_base X j (isClosed_range_sigmaι X j)).isCompact_preimage hU
+  have hce : Topology.IsClosedEmbedding ⇑(Sigma.ι X j).base :=
+    ⟨(Sigma.ι X j).isOpenEmbedding.toIsEmbedding, isClosed_range_sigmaι X j⟩
+  exact hce.isCompact_preimage hU
 
 instance instQuasiCompactSigmaι (j : ι) : QuasiCompact (Sigma.ι X j) :=
   quasiCompact_sigmaι X j

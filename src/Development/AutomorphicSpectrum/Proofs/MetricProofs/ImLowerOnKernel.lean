@@ -52,11 +52,6 @@ open scoped BigOperators ComplexOrder
 
 namespace GlobalTheory.CompanionTheory.ChartBlockLower
 
-private theorem dotProduct_sum' {g a : ℕ} (v : Fin g → ℝ) (w : Fin a → Fin g → ℝ) :
-    v ⬝ᵥ (∑ j, w j) = ∑ j, v ⬝ᵥ w j := by
-  simp only [dotProduct, Finset.sum_apply, Finset.mul_sum]
-  exact Finset.sum_comm
-
 theorem quad_im_add_sum {a g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ)
     (B : Fin a → Matrix (Fin g) (Fin g) ℤ) (s : Fin a → ℂ) (v : Fin g → ℝ) :
     v ⬝ᵥ (((τ + ∑ j, s j • (B j).map (fun x : ℤ => (x : ℂ))).map Complex.im) *ᵥ v)
@@ -66,7 +61,7 @@ theorem quad_im_add_sum {a g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ)
       = τ.map Complex.im + ∑ j, (s j).im • (B j).map (fun x : ℤ => (x : ℝ)) := by
     ext i k
     simp [Matrix.sum_apply, Complex.im_sum]
-  rw [h, Matrix.add_mulVec, dotProduct_add, Matrix.sum_mulVec, dotProduct_sum']
+  rw [h, Matrix.add_mulVec, dotProduct_add, Matrix.sum_mulVec, dotProduct_sum]
   congr 1
   refine Finset.sum_congr rfl ?_
   intro j _

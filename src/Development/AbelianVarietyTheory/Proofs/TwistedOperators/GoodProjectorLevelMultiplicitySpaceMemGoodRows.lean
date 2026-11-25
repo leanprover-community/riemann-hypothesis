@@ -54,8 +54,6 @@ open scoped TensorProduct Pointwise
 
 namespace GlobalTheory.ProjLift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem not_isConjPl_of_div {D : D7} (P : Formalism.L2.Host.PiBar D.host) {k k' : Fin 2} {w w' : Pl D.host.E}
     (hw : P.Div k w) (hw' : P.Div k' w') : ¬ IsConjPl w w' := by
   intro hc

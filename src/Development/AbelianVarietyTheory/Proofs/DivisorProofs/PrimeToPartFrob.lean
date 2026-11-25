@@ -85,15 +85,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 theorem theta_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {x : Fbar p} (hx : x ^ (p ^ d - 1) = 1)
     (n : ℕ) : GlobalTheory.GLq.thetaOf L d x (L.gen d ^ n) = L.teich x ^ n := by
-  have h : ∃ m : ℕ, L.gen d ^ n = L.gen d ^ m := ⟨n, rfl⟩
-  unfold GlobalTheory.GLq.thetaOf
-  rw [dite_eq_left h]
-  have hp : IsPrimitiveRoot (L.gen d) (p ^ d - 1) := L.gen_order d hd ▸ IsPrimitiveRoot.orderOf _
-  have hfin : IsOfFinOrder (L.gen d) := isOfFinOrder_iff_pow_eq_one.2 ⟨_, _root_.GlobalTheory.GoodCharsCompare.g_pow_sub_pos hd, hp.pow_eq_one⟩
-  have hm : n ≡ h.choose [MOD p ^ d - 1] := by
-    rw [← L.gen_order d hd]; exact hfin.pow_eq_pow_iff_modEq.1 h.choose_spec
-  have h1 : L.teich x ^ (p ^ d - 1) = 1 := by rw [← map_pow, hx, map_one]
-  rw [pow_eq_pow_mod h.choose h1, pow_eq_pow_mod n h1, hm]
+  apply _root_.GlobalTheory.ParamLabel.Congr.thetaOf_gen <;> assumption
 
 theorem exists_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {z : Fbar p} (hz : z ^ (p ^ d - 1) = 1) :
     ∃ n : ℕ, z = L.gen d ^ n := by

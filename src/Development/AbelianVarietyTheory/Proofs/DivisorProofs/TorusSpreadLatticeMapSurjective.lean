@@ -62,7 +62,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.Poinc.Eq8 GlobalTheory.Poinc.Sep.Spz Classical
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.Poinc.Sep.Spz

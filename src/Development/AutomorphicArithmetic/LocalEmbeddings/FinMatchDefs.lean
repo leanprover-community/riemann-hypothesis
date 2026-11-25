@@ -48,8 +48,6 @@ open Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum GlobalTheory.Gri
 open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.FinMatch
 
 section Generic

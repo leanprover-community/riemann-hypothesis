@@ -57,7 +57,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formali
 open GlobalTheory.ArcQ
 open scoped ContDiff
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.ModelExpCoord

@@ -102,16 +102,6 @@ private theorem inv_op (A : H →L[ℂ] H) (hA : 0 ≤ A) (η : ℝ) (hη : 0 < 
       cfc_mul (fun x : ℝ => x) (fun x : ℝ => (max x (η / 2))⁻¹) A continuous_id.continuousOn hg.continuousOn,
       cfc_id' ℝ A]
 
-private theorem norm_pow_apply_le (T : H →L[ℂ] H) (c : ℝ) (hc : 0 ≤ c) (hT : ‖T‖ ≤ c) (k : ℕ) (v : H) :
-    ‖(T ^ k) v‖ ≤ c ^ k * ‖v‖ := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [pow_succ', ContinuousLinearMap.mul_apply]
-    calc ‖T ((T ^ k) v)‖ ≤ ‖T‖ * ‖(T ^ k) v‖ := T.le_opNorm _
-      _ ≤ c * (c ^ k * ‖v‖) := mul_le_mul hT ih (norm_nonneg _) hc
-      _ = c ^ (k + 1) * ‖v‖ := by ring
-
 end SlopeTestRemainingChoices
 
 open MeasureTheory GlobalTheory.CuspRep GroundTheory.Automorphic UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.BW UpperTheory.ConvolutionTheory.C in
@@ -192,7 +182,10 @@ theorem UpperTheory.ConvolutionTheory.BW.bandRep :
   refine ⟨|B| * (2 / η) * ‖v₀‖, fun α g => ?_⟩
   obtain ⟨w, hw, hzw⟩ := hpow _ α rfl ((T ^ (α.degree + 1)) v₀)
   rw [← hφ α.degree, hzw]
-  have hy := norm_pow_apply_le T (2 / η) hη2 hT (α.degree + 1) v₀
+  have hy : ‖(T ^ (α.degree + 1)) v₀‖ ≤ (2 / η) ^ (α.degree + 1) * ‖v₀‖ :=
+    ((T ^ (α.degree + 1)).le_opNorm v₀).trans (mul_le_mul_of_nonneg_right
+      ((norm_pow_le' T (Nat.succ_pos _)).trans (pow_le_pow_left₀ (norm_nonneg _) hT _))
+      (norm_nonneg _))
   have hh : 0 ≤ AutomorphicForm.height g ^ N := pow_nonneg (AutomorphicForm.height_pos g).le _
   have hw2 : ‖w‖ ≤ (D * (2 / η)) ^ α.degree * (2 / η) * ‖v₀‖ := by
     calc ‖w‖ ≤ D ^ α.degree * ‖(T ^ (α.degree + 1)) v₀‖ := hw

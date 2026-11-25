@@ -1131,25 +1131,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 theorem label_eq_iff {e' : (Σ j, m' j) ≃ Fin N} {γ : Fin N → ℕ}
     (hγ : ∀ x y, γ x < γ y ↔ blk e' x < blk e' y) (x y : Fin N) :
     γ x = γ y ↔ blk e' x = blk e' y := by
-  refine ⟨fun h => ?_, fun h => ?_⟩
-  · have a1 : ¬ blk e' x < blk e' y := fun hl => by
-      have := (hγ x y).mpr hl
-      rw [h] at this
-      exact lt_irrefl _ this
-    have a2 : ¬ blk e' y < blk e' x := fun hl => by
-      have := (hγ y x).mpr hl
-      rw [h] at this
-      exact lt_irrefl _ this
-    exact le_antisymm (not_lt.mp a2) (not_lt.mp a1)
-  · have a1 : ¬ γ x < γ y := fun hl => by
-      have := (hγ x y).mp hl
-      rw [h] at this
-      exact lt_irrefl _ this
-    have a2 : ¬ γ y < γ x := fun hl => by
-      have := (hγ y x).mp hl
-      rw [h] at this
-      exact lt_irrefl _ this
-    exact le_antisymm (not_lt.mp a2) (not_lt.mp a1)
+  simp only [le_antisymm_iff, ← not_lt, hγ]
 
 theorem unipRad_eq {e' : (Σ j, m' j) ≃ Fin N} {γ : Fin N → ℕ}
     (hγ : ∀ x y, γ x < γ y ↔ blk e' x < blk e' y) :

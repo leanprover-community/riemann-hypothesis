@@ -50,8 +50,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKr
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -99,20 +97,5 @@ theorem interNum_one_nonneg {k : Type} [Field k] {V : Scheme.{0}} [Algebra k Γ(
         fun i => by fin_cases i; exact hM).ge
       rw [Fintype.card_fin]
       exact (QCoh.suppDim_le G).trans_lt h1
-
-theorem degOfRank_nonneg : ∀ (p : ℕ) [Fact p.Prime] (V : Scheme.{0}) [Algebra (ZMod p) Γ(V, ⊤)], IsProjOver (strHom (ZMod p) (X := V)) → topologicalKrullDim V ≤ 1 → ∀ N : LB V, N.IsLB → (∀ (Z : Scheme.{0}) (i : Z ⟶ V) [IsClosedImmersion i] [IsIntegral Z] [Algebra (ZMod p) Γ(Z, ⊤)], topologicalKrullDim Z = 1 → 0 ≤ topSelfIntersection (ZMod p) (N.pull i) 1) → 0 ≤ degOfRank (ZMod p) (toMod N) 1 := by
-  intro p _ V _ hp hd N hN h
-  have := Twist.isFiniteQC_twist (F := structureModule V) hN
-  have h1 := interNum_one_nonneg hp hd hN (fun Z i _ _ _ _ hZ => h Z i hZ)
-    (twist (structureModule V) N) this
-  have h2 := interNum_twist_cons (ZMod p) (structureModule V) (P := ![]) hN isEmptyElim
-  have h3 : chi (ZMod p) (twist (structureModule V) N) = chi (ZMod p) (toMod N) :=
-    chi_congr _ (Twist.unitTwistIso N)
-  have h4 : interNum (ZMod p) (twist (structureModule V) N) ![N] =
-    chi (ZMod p) (twist (structureModule V) N) - chi (ZMod p) (structureModule V) :=
-    h2.trans (congrArg₂ (· - ·) (interNum_of_isEmpty _ _ _) (interNum_of_isEmpty _ _ _))
-  rw [degOfRank]
-  push_cast
-  linarith
 
 end GlobalTheory.CurveDevissage

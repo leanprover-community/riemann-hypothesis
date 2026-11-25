@@ -1246,22 +1246,6 @@ lemma herm_bvec_right (u : Fin (2 * r + k + 1) → ℂ) (j : Fin (2 * r + k + 1)
     ⟪u, bvec j⟫ = (Hpk k r *ᵥ u) j := by
   simp [herm, bvec, Pi.star_single]
 
-lemma herm_e_right (u : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : ⟪u, bvec (eI k r a)⟫ = u (esI k r a) := by
-  rw [herm_bvec_right, B2x6.hpk_mulVec]
-  have h1 : WeylGroupFacts.tau k r (eI k r a) = esI k r a := by
-    apply Fin.ext; rw [B2x6.tau_out _ (by simp only [eI]; omega)]; simp [eI, esI]
-  have h2 : WeylGroupFacts.sgn k r (eI k r a) = 1 := by
-    unfold WeylGroupFacts.sgn; rw [if_neg (by simp only [eI]; omega)]
-  rw [h1, h2, one_mul]
-
-lemma herm_es_right (u : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : ⟪u, bvec (esI k r a)⟫ = u (eI k r a) := by
-  rw [herm_bvec_right, B2x6.hpk_mulVec]
-  have h1 : WeylGroupFacts.tau k r (esI k r a) = eI k r a := by
-    apply Fin.ext; rw [B2x6.tau_out _ (by simp only [esI]; omega)]; simp only [eI, esI]; omega
-  have h2 : WeylGroupFacts.sgn k r (esI k r a) = 1 := by
-    unfold WeylGroupFacts.sgn; rw [if_neg (by simp only [esI]; omega)]
-  rw [h1, h2, one_mul]
-
 lemma eI_ne_esI (a b : Fin r) : eI k r a ≠ esI k r b := by
   intro h; have := congrArg Fin.val h; simp only [eI, esI] at this; omega
 
@@ -1273,59 +1257,10 @@ lemma esI_inj {a b : Fin r} : esI k r a = esI k r b ↔ a = b := by
   · intro h; have := congrArg Fin.val h; simp only [esI] at this; exact Fin.ext (by omega)
   · rintro rfl; rfl
 
-lemma h_e_e (a b : Fin r) : ⟪bvec (eI k r a), bvec (eI k r b)⟫ = 0 := by
-  rw [herm_e_right]; exact Pi.single_eq_of_ne (eI_ne_esI a b).symm _
-lemma h_es_es (a b : Fin r) : ⟪bvec (esI k r a), bvec (esI k r b)⟫ = 0 := by
-  rw [herm_es_right]; exact Pi.single_eq_of_ne (eI_ne_esI b a) _
-lemma h_e_es (a b : Fin r) : ⟪bvec (eI k r a), bvec (esI k r b)⟫ = if a = b then 1 else 0 := by
-  rw [herm_es_right]; simp only [bvec, Pi.single_apply, eI_inj]
-  by_cases h : a = b
-  · simp [h]
-  · rw [if_neg h, if_neg (Ne.symm h)]
-lemma h_es_e (a b : Fin r) : ⟪bvec (esI k r a), bvec (eI k r b)⟫ = if a = b then 1 else 0 := by
-  rw [herm_e_right]; simp only [bvec, Pi.single_apply, esI_inj]
-  by_cases h : a = b
-  · simp [h]
-  · rw [if_neg h, if_neg (Ne.symm h)]
-
 variable {l : Fin r}
 
 local notation "𝐞" => bvec (eI k r l)
 local notation "𝐬" => bvec (esI k r l)
-
-lemma weyl_cell_apply_dual_basis (c : ℂ) (q : Fin (2 * r + k + 1)) :
-    w1 k r l c (esI k r l) q = if q = eI k r l then c else 0 := by
-  unfold w1
-  by_cases h : q = eI k r l <;> simp [h, (eI_ne_esI l l).symm]
-
-lemma weyl_cell_apply_basis (c : ℂ) (q : Fin (2 * r + k + 1)) :
-    w1 k r l c (eI k r l) q = if q = esI k r l then (star c)⁻¹ else 0 := by
-  unfold w1
-  by_cases h : q = esI k r l <;> simp [h, eI_ne_esI l l]
-
-lemma weyl_cell_apply_other (c : ℂ) {p : Fin (2 * r + k + 1)} (h1 : p ≠ eI k r l) (h2 : p ≠ esI k r l)
-    (q : Fin (2 * r + k + 1)) : w1 k r l c p q = if q = p then 1 else 0 := by
-  unfold w1
-  by_cases h : q = p
-  · simp [h, h1, h2]
-  · simp [h1, h2, h, Ne.symm h]
-
-lemma weyl_cell_mulVec (c : ℂ) (y : Fin (2 * r + k + 1) → ℂ) :
-    w1 k r l c *ᵥ y = y + (c * ⟪y, 𝐬⟫ - ⟪y, 𝐞⟫) • 𝐬 + ((conj c)⁻¹ * ⟪y, 𝐞⟫ - ⟪y, 𝐬⟫) • 𝐞 := by
-  ext p
-  rw [herm_e_right, herm_es_right]
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, bvec, Pi.single_apply, mulVec, dotProduct]
-  by_cases h2 : p = esI k r l
-  · subst h2
-    simp only [weyl_cell_apply_dual_basis, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, (eI_ne_esI l l).symm, if_false]
-    ring
-  · by_cases h1 : p = eI k r l
-    · subst h1
-      simp only [weyl_cell_apply_basis, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, eI_ne_esI l l, if_false]
-      rw [Complex.star_def]; ring
-    · simp only [weyl_cell_apply_other c h1 h2, ite_mul, zero_mul, one_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, h1, h2,
-        if_false]
-      ring
 
 lemma weyl_cell_mem_level_group {c : ℂ} (hc : c ≠ 0) : w1 k r l c ∈ Glev k r l.castSucc := by
   apply PI.IsotropicReflections.reflection_mem_Glev_castSucc <;> assumption

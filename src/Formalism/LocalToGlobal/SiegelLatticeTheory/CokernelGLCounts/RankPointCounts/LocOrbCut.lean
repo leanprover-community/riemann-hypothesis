@@ -456,6 +456,7 @@ theorem mem_iff_orb (M : Loc.Model F E) {n : ℕ} (Z0 : Matrix (Fin n) (Fin n) E
     rw [← orbR_eq M h]
     exact ⟨l, ρ, hl, hρ, rfl⟩
 
+open scoped Formalism.DoubleCosetMeasures in
 theorem wt_gen (M : Loc.Model F E) (hOK : M.OK) {m : ℕ} (a : Loc.Pt E (m + 1)) (Z0 : Matrix (Fin (m + 1)) (Fin (m + 1)) E)
     (hZ0 : ∀ i j, Z0 i j ∈ M.R) :
     (Function.support (fun q : Formalism.FourierDecayAlt.A5.Cos M.R (Formalism.MainNotions.LocalModelPeriodLattices.tr a) =>

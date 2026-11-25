@@ -58,17 +58,6 @@ section Bridge
 
 variable {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I)
 
-def evInf (v : InfinitePlace X.B.I.F) : Ainf X.B.I.F →+* ℂ :=
-  (InfinitePlace.Completion.extensionEmbedding v).comp
-    (Pi.evalRingHom (fun w : InfinitePlace X.B.I.F => w.Completion) v)
-
-def thetaInf (v : InfinitePlace X.B.I.F) : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E →+* ℂ :=
-  letI : Algebra X.B.I.F ℂ := v.embedding.toAlgebra
-  (Algebra.TensorProduct.lift
-    ({ evInf X v with commutes' := fun a => evV_algebraMap X.B.I v a } : Ainf X.B.I.F →ₐ[X.B.I.F] ℂ)
-    ({ X.B.I.φ v with commutes' := X.B.I.φ_over v } : X.B.I.E →ₐ[X.B.I.F] ℂ)
-    (fun _ _ => Commute.all _ _)).toRingHom
-
 theorem toInf_mul (s t : X.B.I.Ginf) : X.toInf hb (s * t) = X.toInf hb s * X.toInf hb t := by
   unfold HidaSetting.toInf
   rw [show ((s * t, 1) : X.B.I.GA) = (s, 1) * (t, 1) by simp, map_mul, map_mul]

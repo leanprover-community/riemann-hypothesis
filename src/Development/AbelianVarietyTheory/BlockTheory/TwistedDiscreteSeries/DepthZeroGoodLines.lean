@@ -99,12 +99,6 @@ section Examples
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem isDatum_detRep (r : ℕ) {χ χW χV : kˣ →* ℂˣ} (h : IsUnram χ) (hu : IsUnitaryChar χ)
-    (hW : IsUnitaryChar χW) (hV : IsUnitaryChar χV) (ht : IsTame χW) (hr : IsUnram (χW * χV⁻¹)) :
-    IsDatum (detRep (Fin r) χ) χW χV :=
-  ⟨⟨isIrreducible_ofChar _, (isSmooth_ofChar_iff _).2 (GlobalTheory.SmGL.isSmoothChar_of_isUnram h).detChar,
-    (isUnitarisable_ofChar_iff _).2 fun _ => hu _⟩, hW, hV, ht, hr⟩
-
 end Examples
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CuspidalSupportClasses

@@ -907,36 +907,8 @@ theorem comap_originIdeal (A T : Type) [CommRing A] [IsLocalRing A] [CommRing T]
     isUnit_map_iff]
 
 theorem isIntegrallyClosed_of_absIntClosed (T : Type) [CommRing T] [IsDomain T]
-    (hT : GlobalTheory.LocAcyc.AbsIntClosed T) : IsIntegrallyClosed T := by
-  rw [isIntegrallyClosed_iff (FractionRing T)]
-  intro x hx0
-  obtain ⟨p, hpm, hpx⟩ := hx0
-  suffices H : ∀ n : ℕ, ∀ p : Polynomial T, p.Monic → p.natDegree = n → Polynomial.eval₂ (algebraMap T (FractionRing T)) x p = 0 →
-      ∃ y, algebraMap T (FractionRing T) y = x from H _ p hpm rfl hpx
-  intro n
-  induction n with
-  | zero =>
-    intro p hp hd hx
-    have h1 := Polynomial.eq_one_of_monic_natDegree_zero hp hd
-    subst h1
-    simp at hx
-  | succ n ih =>
-    intro p hp hd hx
-    obtain ⟨r, hr⟩ := hT p hp (by omega)
-    have hroot : p.IsRoot r := hr
-    have hdec := Polynomial.mul_divByMonic_eq_iff_isRoot.mpr hroot
-    set p' := p /ₘ (Polynomial.X - Polynomial.C r)
-    have hp' : p'.Monic := (Polynomial.monic_X_sub_C r).of_mul_monic_left (by rw [hdec]; exact hp)
-    have hd' : p'.natDegree = n := by
-      have := congrArg Polynomial.natDegree hdec
-      rw [(Polynomial.monic_X_sub_C r).natDegree_mul hp', Polynomial.natDegree_X_sub_C] at this
-      omega
-    rw [← hdec, Polynomial.eval₂_mul] at hx
-    rcases mul_eq_zero.mp hx with h | h
-    · refine ⟨r, ?_⟩
-      simp at h
-      exact (sub_eq_zero.mp h).symm
-    · exact ih p' hp' hd' h
+    (hT : GlobalTheory.LocAcyc.AbsIntClosed T) : IsIntegrallyClosed T :=
+  _root_.GlobalTheory.LocAcycEmbed.isIntegrallyClosed_of_absIntClosed T hT
 
 theorem norm_finiteType {T : Type} [CommRing T] [IsDomain T] [IsIntegrallyClosed T] (S : Finset T) :
     Algebra.FiniteType ℤ (GlobalTheory.NormalApprox.norm S) := by

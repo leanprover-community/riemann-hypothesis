@@ -509,14 +509,6 @@ theorem lie_tensorForms : ∀ (E : Type) [Field E] [NumberField E] [_root_.Numbe
       (infGL E N (Unitary.toUnits k) * finGL E N g))) ∈ tensorForms π :=
   _root_.GlobalTheory.LieTensor.lie_tensorForms
 
-theorem qdet_sub_blocks_mem : ∀ (A : Type) [Ring A] [Algebra ℂ A] {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N)
-    (X : Fin N → Fin N → A), Formalism.REAL.GlRel X → ∀ u : ℂ,
-    Formalism.REAL.qdet X (u + ((N : ℂ) - 1) / 2) -
-              (List.ofFn fun i : Fin c => Formalism.REAL.qdet (fun p q : Fin (n i) => X (stdBlocks n h ⟨i, p⟩) (stdBlocks n h ⟨i, q⟩))
-                (u + ((n i : ℂ) - 1) / 2 - (modExp (fun i => Fin (n i)) i : ℂ) / 2)).prod ∈
-      Submodule.span ℂ {y : A | ∃ (p q : Fin N) (w : A), blk (stdBlocks n h) p < blk (stdBlocks n h) q ∧ y = X p q * w} :=
-  _root_.GlobalTheory.CapHC.qdet_blocks_congr
-
 theorem exists_iwasawa : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {c N : ℕ} (n : Fin c → ℕ)
     (h : ∑ i, n i = N) (x : GA E N), ∃ u ∈ unipRad (Ad E) (stdBlocks n h), ∃ (m : ∀ i, GA E (n i)) (k : Kinf E N)
       (g : GL (Fin N) (Af E)), x = u * leviEmb (Ad E) (stdBlocks n h) m * (infGL E N (Unitary.toUnits k) * finGL E N g) :=
@@ -704,52 +696,6 @@ theorem cap_commute_act {a : ℕ} (τ : E →+* ℂ) (u : ℂ) (o : Op E a) : Co
   | fin k => exact commute_cap_finRep τ u k
   | cpt k => exact GlobalTheory.CapAdInv.cap_commute_rt_infGL E a τ u _
   | lie X => exact commute_cap_lie τ u X
-
-theorem hasInfCharGL_of_isSpehOf {N a d : ℕ} {V : Submodule ℂ (Sm E N)} {π : CuspSub E a} (hV : IsSpehOf V π d)
-    (τ : E →+* ℂ) : ∃ m, π.HasInfChar τ m ∧ HasInfCharGL V τ (GlobalTheory.SphGal.spehInf d m) := by
-  have hm : π.HasInfChar τ ((CG.mk π).infChar τ) :=
-    hasInfChar_infChar_of_commute E a (fun τ u o => cap_commute_act τ u o) (CG.mk π) τ
-  refine ⟨(CG.mk π).infChar τ, hm, ?_, fun u ψ hψ => ?_⟩
-  · have hN := hV.mul_eq
-    simp only [GlobalTheory.SphGal.spehInf, Multiset.card_sum, Multiset.card_map, hm.1, Finset.sum_const, Finset.card_univ,
-      Fintype.card_fin, smul_eq_mul]
-    exact hN
-  obtain ⟨hs, ν, hν, f, hfV, hf⟩ := hV
-  set m := (CG.mk π).infChar τ
-  have hI : ∀ X, ∀ φ ∈ indForms hs (fun i => π.twist (ν i)), lie E N X φ ∈ indForms hs (fun i => π.twist (ν i)) :=
-    fun X φ hφ => lie_mem_indForms _ hs _ X φ hφ
-  rw [← hfV] at hψ
-  obtain ⟨φ, hφ, rfl⟩ := hψ
-  have hexpo : ∀ i : Fin d, expo (ν i) τ = ((spehExp d i + a * spehExp d i : ℝ) : ℂ) := fun i =>
-    (GlobalTheory.CuspRep.InfType.expo_of_infType E (ν i)).2.1 _ (hν i) τ
-  have hmod : ∀ i : Fin d, ((modExp (fun _ : Fin d => Fin a) i : ℤ) : ℂ) / 2 = ((a * spehExp d i : ℝ) : ℂ) := fun i => by
-    rw [mul_spehExp]
-    push_cast
-    rfl
-  have hc := cap_indForms (fun _ : Fin d => a) hs (fun i => π.twist (ν i)) τ (fun i => m.map (· + expo (ν i) τ))
-    (fun i => hm.twist (ν i)) u φ hφ
-  rw [cap_comm_quot hI f hf τ u φ hφ |>.symm, hc, map_smul]
-  congr 1
-  rw [GlobalTheory.SphGal.spehInf, prod_map_finset_sum]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  rw [Multiset.map_map, Multiset.map_map]
-  congr 1
-  refine Multiset.map_congr rfl fun x _ => ?_
-  simp only [Function.comp_apply]
-  have h1 := hexpo i
-  have h2 := hmod i
-  have h3 : ((spehExp d i : ℝ) : ℂ) = ((d : ℂ) - 1) / 2 - ((i : ℕ) : ℂ) := by
-    simp [spehExp]
-  change u + (x + expo (ν i) τ) - ((modExp (fun _ : Fin d => Fin a) i : ℤ) : ℂ) / 2 = u + (x + (((d : ℂ) - 1) / 2 - ((i : ℕ) : ℂ)))
-  rw [h1, h2, ← h3]
-  push_cast
-  ring
-
-theorem discreteSpectrumGL_of_residual : GlobalTheory.Published.DiscreteSpectrumResidual → GlobalTheory.Published.DiscreteSpectrumGL := by
-  intro H E _ _ _ N hN
-  obtain ⟨h1, h2, h3, h4, h5⟩ := H E N hN
-  exact ⟨h1, h2, h3, h4, fun V hV a d π hn e => ⟨fun w => (h5 V hV a d π hn e w).1, fun w => (h5 V hV a d π hn e w).2,
-    hasInfCharGL_of_isSpehOf e⟩⟩
 
 end GlobalTheory.SpehInfChar
 end -- clump:auto

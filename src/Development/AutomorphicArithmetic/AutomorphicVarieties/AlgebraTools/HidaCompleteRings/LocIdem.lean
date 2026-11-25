@@ -53,11 +53,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing UpperTheory.V.Hi
 
-private theorem coe_mem_smul_iff {A M : Type} [CommRing A] [AddCommGroup M] [Module A M]
-    (Y : Submodule A M) (J : Ideal A) (y : Y) :
-    (y : M) ∈ J • Y ↔ y ∈ J • (⊤ : Submodule A Y) :=
-  (Submodule.mem_smul_top_iff J Y y).symm
-
 private theorem restr_pow {A M : Type} [CommRing A] [AddCommGroup M] [Module A M]
     {Y : Submodule A M} {t : Module.End A Y} {f : Module.End A M} (h : Restr t f) (n : ℕ) :
     Restr (t ^ n) (f ^ n) := by
@@ -90,7 +85,7 @@ private theorem mem_iSup_iff {A M : Type} [CommRing A] [AddCommGroup M] [Module 
     exact hf _ hx
   rw [Submodule.mem_iSup_of_directed _ hmono.directed_le]
   refine exists_congr fun n => ?_
-  rw [Submodule.mem_comap, ← restr_pow h n y, coe_mem_smul_iff]
+  rw [Submodule.mem_comap, ← restr_pow h n y, ← Submodule.mem_smul_top_iff]
 
 theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.locIdem :
     ∀ (A M ι : Type) [CommRing A] [IsCNL A] [AddCommGroup M] [Module A M] (Y : Submodule A M) [Module.Finite A Y] (op : ι → Module.End A M) (a : ι → A), CommOn Y op → ∃ e ∈ heckeAlg Y op, IsIdempotentElem e ∧ (∀ y : Y, (y : M) ∈ locPart Y op a ↔ e y = y) ∧ ∀ φ : Module.End A Y, (∀ i t, Restr t (op i) → φ * t = t * φ) → φ * e = e * φ := by

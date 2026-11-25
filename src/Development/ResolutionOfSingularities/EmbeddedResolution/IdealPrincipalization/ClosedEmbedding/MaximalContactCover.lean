@@ -88,20 +88,7 @@ theorem EtaleChart.coordIdeal_mono {Y : Scheme.{u}} {k : Type u} [Field k]
 
 private theorem coe_support_ker_eq_range {X X' : Scheme.{u}} (τ : X ⟶ X') [IsClosedImmersion τ] :
     (↑(Scheme.Hom.ker τ).support : Set X') = Set.range τ.base := by
-  have h1 : ∀ z, ((FunctorialResolution.EmbeddedResolution.kerSubschemeIso τ).hom ≫ τ).base z
-      = (Scheme.Hom.ker τ).subschemeι.base z := by
-    intro z
-    rw [FunctorialResolution.EmbeddedResolution.kerSubschemeIso_hom_comp τ]
-  have h2 : ∀ x, ((FunctorialResolution.EmbeddedResolution.kerSubschemeIso τ).inv ≫ (Scheme.Hom.ker τ).subschemeι).base x
-      = τ.base x := by
-    intro x
-    rw [FunctorialResolution.EmbeddedResolution.kerSubschemeIso_inv_comp τ]
-  rw [← Scheme.IdealSheafData.range_subschemeι]
-  apply Set.Subset.antisymm
-  · rintro y ⟨z, rfl⟩
-    exact ⟨(FunctorialResolution.EmbeddedResolution.kerSubschemeIso τ).hom.base z, h1 z⟩
-  · rintro y ⟨x, rfl⟩
-    exact ⟨(FunctorialResolution.EmbeddedResolution.kerSubschemeIso τ).inv.base x, h2 x⟩
+  rw [Scheme.Hom.support_ker, τ.isClosedEmbedding.isClosed_range.closure_eq]
 
 theorem restrictIdeal_ker_eq_top_of_not_mem {X X' : Scheme.{u}} (τ : X ⟶ X')
     [IsClosedImmersion τ] (U : X'.Opens) (h : ∀ x : X, τ.base x ∉ U) :
@@ -159,9 +146,7 @@ theorem exists_disjointEtaleChart {X X' : Scheme.{u}} {k : Type u} [Field k]
     (hcharts : HasLocalEtaleCharts p) (y : X') (hy : ∀ x : X, τ.base x ≠ y) :
     ∃ F : DisjointEtaleChart p τ, y ∈ F.opens := by
   obtain ⟨W, hyW, n, ⟨ch⟩⟩ := hcharts y
-  have hclosed : IsClosed (Set.range τ.base) := by
-    rw [← coe_support_ker_eq_range τ]
-    exact (Scheme.Hom.ker τ).support.2
+  have hclosed : IsClosed (Set.range τ.base) := τ.isClosedEmbedding.isClosed_range
   have hopen : IsOpen ((W : Set X') ∩ (Set.range τ.base)ᶜ) :=
     W.isOpen.inter hclosed.isOpen_compl
   have hynot : y ∉ Set.range τ.base := by

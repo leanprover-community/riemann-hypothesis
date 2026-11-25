@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetNeOfSig
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EqPlaceIdemOfIsPrimeIdem
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
@@ -71,17 +72,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem det_ne_zero_of_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.HasSig M r s) :
     M.det ≠ 0 := by
-  obtain ⟨hn, A, hA⟩ := h
-  let e : Fin r ⊕ Fin s ≃ Fin n := finSumFinEquiv.trans (finCongr hn)
-  have key : (A.submatrix id e.symm)ᵀ * M * (A.submatrix id e.symm).map star =
-      (Aᵀ * M * A.map star).submatrix e.symm e.symm := by
-    ext i j; rfl
-  have hd := congrArg Matrix.det key
-  rw [Matrix.det_submatrix_equiv_self, hA, Matrix.det_mul, Matrix.det_mul] at hd
-  intro h0
-  rw [h0] at hd
-  simp [Matrix.det_fromBlocks_zero₂₁, Matrix.det_neg] at hd
-  exact pow_ne_zero _ (by norm_num) hd.symm
+  apply _root_.GlobalTheory.ThetaRatPair.det_ne_of_hasSig <;> assumption
 
 theorem det_ne_zero_of_map {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (f : E →+* ℂ) (h : (J.map f).det ≠ 0) :
     J.det ≠ 0 := by

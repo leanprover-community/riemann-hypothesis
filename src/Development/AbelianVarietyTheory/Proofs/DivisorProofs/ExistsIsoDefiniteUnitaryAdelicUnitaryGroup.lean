@@ -541,9 +541,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 local notation3 "F₀" => maximalRealSubfield E
 local notation3 "σ₀" => (IsCMField.complexConj E : E →ₐ[F₀] E)
 
-theorem conj_eq_one_iff {G : Type} [Group G] (a x : G) : a * x * a⁻¹ = 1 ↔ x = 1 := by
-  rw [mul_inv_eq_one, mul_eq_left]
-
 theorem bc_eq_one_iff {R S : Type} [CommRing R] [CommRing S] (φ : R ≃+* S) (x : GL (Fin n) R) :
     bc φ.toRingHom x = 1 ↔ x = 1 := by
   refine ⟨fun h => Units.ext ((φ.mapMatrix (m := Fin n)).injective ?_), fun h => by rw [h, map_one]⟩

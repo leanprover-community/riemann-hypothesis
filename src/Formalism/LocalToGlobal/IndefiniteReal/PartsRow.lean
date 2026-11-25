@@ -15,8 +15,6 @@ open IsDedekindDomain NumberField MeasureTheory
 
 namespace Formalism.IndefR.RecTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section FromLinks
 
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Datum

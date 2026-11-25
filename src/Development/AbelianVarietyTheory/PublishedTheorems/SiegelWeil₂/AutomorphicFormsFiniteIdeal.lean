@@ -48,8 +48,6 @@ open scoped TensorProduct DirectSum Classical
 
 namespace GlobalTheory.AutFinLit
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Compact
 
 variable {K : Type} [Group K] [TopologicalSpace K]

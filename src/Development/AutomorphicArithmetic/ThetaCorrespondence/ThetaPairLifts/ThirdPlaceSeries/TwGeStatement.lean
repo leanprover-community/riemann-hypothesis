@@ -112,7 +112,6 @@ open scoped TensorProduct
 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.BigOn.Exp
 section Generic
@@ -237,8 +236,6 @@ open scoped TensorProduct
 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -440,7 +437,6 @@ open scoped TensorProduct
 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.BigOn.Exp
 theorem adForm_eq_levelTrace_singleSeries' : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels.SeriesRat → _root_.GlobalTheory.BigOn.Exp.TwistConditions fun Fm x hx i p w j => ∀ h ∈ GfC (Vc (Fm.D x i) j), ∀ w' : ((R2 p).cV j).W, InCoefLat (R2 p) j h w' →
@@ -521,7 +517,6 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.BigOn.Exp
@@ -640,7 +635,6 @@ open scoped TensorProduct
 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.BigOn.Exp
 section ScalarGeneric

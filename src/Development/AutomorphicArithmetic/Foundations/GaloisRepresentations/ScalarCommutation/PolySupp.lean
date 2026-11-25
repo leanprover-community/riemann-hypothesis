@@ -41,8 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open Formalism.UG (Hecke conv IsCommensurated)
 open UpperTheory.Gal.LocalSmoothExtension (wordFn polyFn)
 

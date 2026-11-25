@@ -40,6 +40,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HopfOrderPullbackAlongHom
 
 @[expose] public section
 
@@ -60,20 +61,7 @@ theorem natCast_mem_int (v : HeightOneSpectrum ℤ) (n : ℕ) :
 
 theorem exists_nat_local (v : HeightOneSpectrum ℤ) (x : v.adicCompletion ℚ) :
     ∃ n : ℕ, 0 < n ∧ (n : v.adicCompletion ℚ) * x ∈ v.adicCompletionIntegers ℚ := by
-  obtain ⟨b, hb, hbx⟩ := adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers v x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  refine ⟨b.natAbs, Int.natAbs_pos.mpr hb0, ?_⟩
-  rcases Int.natAbs_eq b with h | h
-  · have e : ((b.natAbs : ℕ) : v.adicCompletion ℚ) = algebraMap ℤ (v.adicCompletion ℚ) b := by
-      conv_rhs => rw [h]
-      simp
-    rw [e, mul_comm]
-    exact hbx
-  · have e : ((b.natAbs : ℕ) : v.adicCompletion ℚ) = -algebraMap ℤ (v.adicCompletion ℚ) b := by
-      conv_rhs => rw [h]
-      simp
-    rw [e, neg_mul, mul_comm]
-    exact neg_mem hbx
+  apply _root_.GlobalTheory.DenAway.exists_nat_local <;> assumption
 
 theorem exists_nat_adele {p : ℕ} (a : AfP p) :
     ∃ n : ℕ, 0 < n ∧ (n : AfP p) * a ∈ LevelExists.intAfP p := by

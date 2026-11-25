@@ -36,35 +36,6 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] {ι : K → Type} [∀ k
 
 section Homog
 
-theorem isMultiHomog_zero (a : K → ℕ) : IsMultiHomog (0 : MRingOver S ι) a := by
-  intro m hm
-  simp at hm
-
-theorem isMultiHomog_C (r : S) : IsMultiHomog (C r : MRingOver S ι) 0 := by
-  intro m hm k
-  rw [C_apply] at hm
-  rw [Finset.mem_singleton.mp (support_monomial_subset hm)]
-  simp
-
-theorem isMultiHomog_add {p q : MRingOver S ι} {a : K → ℕ} (hp : IsMultiHomog p a)
-    (hq : IsMultiHomog q a) : IsMultiHomog (p + q) a := by
-  classical
-  intro m hm k
-  rcases Finset.mem_union.mp (support_add hm) with h | h
-  · exact hp m h k
-  · exact hq m h k
-
-theorem isMultiHomog_smul {p : MRingOver S ι} {a : K → ℕ} (s : S) (hp : IsMultiHomog p a) :
-    IsMultiHomog (s • p) a :=
-  fun m hm k => hp m (support_smul hm) k
-
-theorem isMultiHomog_mul {p q : MRingOver S ι} {a b : K → ℕ} (hp : IsMultiHomog p a)
-    (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m₁, h₁, m₂, h₂, rfl⟩ := Finset.mem_add.mp (support_mul p q hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hp m₁ h₁ k, hq m₂ h₂ k]
-
 theorem isMultiHomog_X_pow [DecidableEq K] (k : K) (i : ι k) (n : ℕ) :
     IsMultiHomog ((X ⟨k, i⟩ : MRingOver S ι) ^ n) (Pi.single k n) := by
   classical
@@ -93,10 +64,10 @@ theorem isMultiHomog_prod_X (c : ∀ k, ι k) (e : K → ℕ) :
       (∑ k ∈ s, Pi.single k (e k)) := by
     intro s
     induction s using Finset.induction_on with
-    | empty => simpa using isMultiHomog_C (S := S) (ι := ι) 1
+    | empty => simpa using CellLocEval.isMultiHomog_C (S := S) (ι := ι) 1
     | insert k s hk ih =>
       rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      exact isMultiHomog_mul (isMultiHomog_X_pow k (c k) (e k)) ih
+      exact CellLocEval.isMultiHomog_mul (isMultiHomog_X_pow k (c k) (e k)) ih
   simpa [Finset.univ_sum_single] using h Finset.univ
 
 end Homog
@@ -219,8 +190,8 @@ theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
     obtain ⟨g, hg, hd, rfl⟩ := exists_homog_of_mem_quotPart hm
     exact ⟨g, t, a, ht, hg, hd, rfl⟩
   | zero =>
-    refine ⟨0, 1, 0, ?_, isMultiHomog_zero _, Or.inr rfl, ?_⟩
-    · simpa using isMultiHomog_C (S := S) (ι := ι) 1
+    refine ⟨0, 1, 0, ?_, CellLocEval.isMultiHomog_zero _, Or.inr rfl, ?_⟩
+    · simpa using CellLocEval.isMultiHomog_C (S := S) (ι := ι) 1
     · rw [map_zero, LocalizedModule.zero_mk]
   | add x x' _ _ h h' =>
     obtain ⟨g, t, a, ht, hg, hd, rfl⟩ := h
@@ -232,7 +203,7 @@ theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
     swap
     · exact ⟨g, t, a, ht, hg, Or.inl hd, by rw [map_zero, LocalizedModule.zero_mk, add_zero]⟩
     refine ⟨(t' : MRingOver S ι) * g + (t : MRingOver S ι) * g', t * t', a + a', ?_, ?_, Or.inl ?_, ?_⟩
-    · simpa using isMultiHomog_mul ht ht'
+    · simpa using CellLocEval.isMultiHomog_mul ht ht'
     · have e1 : (fun k => (β k + ((a + a') k : ℕ)).toNat) = a' + (fun k => (β k + a k).toNat) := by
         funext k
         have := hd k
@@ -243,9 +214,9 @@ theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
         have := hd' k
         simp only [Pi.add_apply, Nat.cast_add]
         omega
-      refine isMultiHomog_add ?_ ?_
-      · rw [e1]; exact isMultiHomog_mul ht' hg
-      · rw [e2]; exact isMultiHomog_mul ht hg'
+      refine CellLocEval.isMultiHomog_add ?_ ?_
+      · rw [e1]; exact CellLocEval.isMultiHomog_mul ht' hg
+      · rw [e2]; exact CellLocEval.isMultiHomog_mul ht hg'
     · intro k
       have := hd k
       simp only [Pi.add_apply, Nat.cast_add]
@@ -254,7 +225,7 @@ theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
       congr 1
   | smul s x _ h =>
     obtain ⟨g, t, a, ht, hg, hd, rfl⟩ := h
-    refine ⟨s • g, t, a, ht, isMultiHomog_smul s hg, ?_, ?_⟩
+    refine ⟨s • g, t, a, ht, CellLocEval.isMultiHomog_smul s hg, ?_, ?_⟩
     · rcases hd with hd | rfl
       · exact Or.inl hd
       · exact Or.inr (smul_zero s)
@@ -325,20 +296,20 @@ theorem exists_of_mem_chartRing (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ �
     · intro h
       exact absurd (Finset.mem_univ _) h
   | algebraMap r =>
-    exact ⟨0, C r, isMultiHomog_C r, by simp⟩
+    exact ⟨0, C r, CellLocEval.isMultiHomog_C r, by simp⟩
   | add x x' _ _ h h' =>
     obtain ⟨b, p, hp, rfl⟩ := h
     obtain ⟨b', p', hp', rfl⟩ := h'
     refine ⟨b + b', p * ∏ k, X ⟨k, c k⟩ ^ b' k + p' * ∏ k, X ⟨k, c k⟩ ^ b k, ?_, ?_⟩
-    · refine isMultiHomog_add (isMultiHomog_mul hp (isMultiHomog_prod_X c b')) ?_
+    · refine CellLocEval.isMultiHomog_add (CellLocEval.isMultiHomog_mul hp (isMultiHomog_prod_X c b')) ?_
       rw [add_comm b b']
-      exact isMultiHomog_mul hp' (isMultiHomog_prod_X c b)
+      exact CellLocEval.isMultiHomog_mul hp' (isMultiHomog_prod_X c b)
     · rw [map_add (f := _), map_mul, map_mul, aeval_prod_X, aeval_prod_X, prod_pow_add]
       field_simp [hP b, hP b']
   | mul x x' _ _ h h' =>
     obtain ⟨b, p, hp, rfl⟩ := h
     obtain ⟨b', p', hp', rfl⟩ := h'
-    refine ⟨b + b', p * p', isMultiHomog_mul hp hp', ?_⟩
+    refine ⟨b + b', p * p', CellLocEval.isMultiHomog_mul hp hp', ?_⟩
     rw [map_mul, prod_pow_add, div_mul_div_comm]
 
 section Point
@@ -367,16 +338,6 @@ theorem subsingleton_of_bad {I : ∀ k, Finset (ι k)} {k : K} {i : ι k} (hi : 
       simp only [Submonoid.smul_def]
       rw [hz, hz]
 
-theorem cellRes_smul {J I : ∀ k, Finset (ι k)} (s : S)
-    (x : LocalizedModule (cellMon S J) (MRingOver S ι ⧸ mIdealOver S y)) :
-    cellRes S _ J I (s • x) = s • cellRes S _ J I x := by
-  by_cases h : cellMon S J ≤ cellMon S I
-  · induction x using LocalizedModule.induction_on with
-    | h m t => rw [LocalizedModule.smul'_mk, cellRes_mk h, cellRes_mk h, LocalizedModule.smul'_mk]
-  · unfold cellRes
-    rw [dite_eq_right h]
-    simp
-
 theorem cellRes_mem_locPart {J I : ∀ k, Finset (ι k)} (h : cellMon S J ≤ cellMon S I) (β : K → ℤ)
     {x : LocalizedModule (cellMon S J) (MRingOver S ι ⧸ mIdealOver S y)}
     (hx : x ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S J) β) :
@@ -388,7 +349,7 @@ theorem cellRes_mem_locPart {J I : ∀ k, Finset (ι k)} (h : cellMon S J ≤ ce
     exact Submodule.subset_span ⟨m, ⟨t.1, h t.2⟩, a, ht, hm, rfl⟩
   | zero => rw [map_zero]; exact Submodule.zero_mem _
   | add x₁ x₂ _ _ h₁ h₂ => rw [map_add]; exact add_mem h₁ h₂
-  | smul s x _ h' => rw [cellRes_smul]; exact Submodule.smul_mem _ s h'
+  | smul s x _ h' => rw [CellLocEval.cellRes_smul]; exact Submodule.smul_mem _ s h'
 
 theorem cechD_mem_locPart (β : K → ℤ) (n : ℕ) {f : CechC S ι (MRingOver S ι ⧸ mIdealOver S y) n}
     (hf : f ∈ cechCc ι (quotPart S (mIdealOver S y)) β n) (I : Cell K ι (n + 1)) :
@@ -697,7 +658,7 @@ theorem exists_lift {I : ∀ k, Finset (ι k)} (hI : Good y I) {c : ∀ k, ι k}
     refine ⟨_, ⟨fun k => ?_, ?_⟩, rfl⟩
     · show 0 ≤ n k + ((b k + (-n k).toNat : ℕ) : ℤ)
       omega
-    · convert isMultiHomog_mul hh (isMultiHomog_prod_X (S := S) c e) using 1
+    · convert CellLocEval.isMultiHomog_mul hh (isMultiHomog_prod_X (S := S) c e) using 1
       funext k
       simp only [Pi.add_apply, e, a]
       push_cast

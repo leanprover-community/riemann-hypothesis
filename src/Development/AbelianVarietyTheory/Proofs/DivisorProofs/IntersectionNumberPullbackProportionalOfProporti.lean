@@ -77,8 +77,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open GlobalTheory.Discrepancy GlobalTheory.QCoh
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.NumPull

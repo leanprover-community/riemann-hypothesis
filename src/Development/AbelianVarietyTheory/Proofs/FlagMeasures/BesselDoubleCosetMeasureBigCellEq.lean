@@ -122,18 +122,7 @@ theorem emb_eq (a : Mb k) : embWb k r a = pad k r a + embWb k r 0 := by
     · rw [emb_out_row _ _ _ hi, emb_out_row _ _ _ hi]
 
 theorem emb_one : embWb k r 1 = 1 := by
-  ext i j
-  by_cases hi : mid k r i
-  · by_cases hj : mid k r j
-    · rw [emb_mid _ _ _ hi hj, Matrix.one_apply, Matrix.one_apply]
-      have h1 := hi.1; have h2 := hj.1
-      congr 1
-      apply propext
-      rw [Fin.ext_iff, Fin.ext_iff]
-      simp only
-      omega
-    · rw [emb_out_col _ _ _ hj, Matrix.one_apply]
-  · rw [emb_out_row _ _ _ hi, Matrix.one_apply]
+  first | exact _root_.Formalism.FourierDecayAlt.P.B2x3.emb_one | exact @_root_.Formalism.FourierDecayAlt.P.B2x3.emb_one | apply _root_.Formalism.FourierDecayAlt.P.B2x3.emb_one <;> assumption
 
 theorem emb_inj : Function.Injective (embWb k r) := by
   intro a b h

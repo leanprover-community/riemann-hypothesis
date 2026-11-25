@@ -58,7 +58,7 @@ namespace LateralTheory.E.SysFMPfAlg
 
 open LateralTheory.E.BuildCut
 
-theorem prime_of_filter {W : Type} [CommRing W] (hW : ProdACF W) (F : Set W) (hF : ∀ e ∈ F, IsIdempotentElem e)
+theorem prime_of_filter {W : Type} [CommRing W] (hW : ProdACF W) (F : Set W)
     (h0 : (0 : W) ∉ F) (hu : ∀ e, IsIdempotentElem e → e ∈ F ∨ 1 - e ∈ F) (hm : ∀ e ∈ F, ∀ f ∈ F, e * f ∈ F) :
     ∃ q : PrimeSpectrum W, ∀ e, IsIdempotentElem e → (e ∉ q.asIdeal ↔ e ∈ F) := by
   have h1 : (1 : W) ∈ F := by
@@ -184,7 +184,7 @@ theorem Sys_of (hI : IdemSec) : Sys := by
   have hFm : ∀ e ∈ F, ∀ f ∈ F, e * f ∈ F := by
     rintro e ⟨he, s, rfl, hs⟩ f ⟨hf, t, rfl, ht⟩
     exact ⟨he.mul hf, s * t, map_mul _ _ _, by rw [Scheme.basicOpen_mul]; exact ⟨hs, ht⟩⟩
-  obtain ⟨q, hq⟩ := prime_of_filter hW F (fun e h => h.1) hF0 hFu hFm
+  obtain ⟨q, hq⟩ := prime_of_filter hW F hF0 hFu hFm
   let J : Type := {s : Γ(w.normalization, ⊤) // IsIdempotentElem (phi w s) ∧ phi w s ∉ q.asIdeal}
   letI : Preorder J := Preorder.lift (fun s : J => w.normalization.basicOpen s.1)
   have hmono : Monotone (fun s : J => w.normalization.basicOpen s.1) := fun _ _ h => h

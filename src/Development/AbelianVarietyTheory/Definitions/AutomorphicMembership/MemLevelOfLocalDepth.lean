@@ -105,8 +105,6 @@ end Base
 
 section Record
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px)
 
 theorem grpAt_iff (h : I.Ok) : GrpAt X I ↔ ∀ k v, I.C.P.Div k (X.toD7.naut.plGw k v) := by

@@ -64,12 +64,7 @@ private theorem charP_res (c : Coef l) : CharP (ResidueField c.O) l := by
 private theorem pow_inj {x y : ResidueField c.O} (j : ℕ) (h : x ^ l ^ j = y ^ l ^ j) : x = y := by
   haveI := charP_res c
   haveI : ExpChar (ResidueField c.O) l := ExpChar.prime Fact.out
-  induction j with
-  | zero => simpa using h
-  | succ n ih =>
-    apply ih
-    apply frobenius_inj (ResidueField c.O) l
-    simpa [frobenius_def, pow_succ, pow_mul] using h
+  exact iterateFrobenius_inj (ResidueField c.O) l j h
 
 private theorem pow_one_inj {x : ResidueField c.O} (j : ℕ) (h : x ^ l ^ j = 1) : x = 1 := by
   exact pow_inj j (by simpa using h)

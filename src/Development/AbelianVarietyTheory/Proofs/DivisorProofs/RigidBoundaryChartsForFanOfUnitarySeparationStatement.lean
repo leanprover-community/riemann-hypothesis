@@ -1064,31 +1064,7 @@ theorem not_X_dvd_X {σ k : Type} [Field k] {a b : σ} (hab : a ≠ b) :
 variable (k : Type) [Field k] (m e : ℕ)
 
 theorem prime_mvX {σ k : Type} [CommRing k] [IsDomain k] (s : σ) : Prime (MvPowerSeries.X s : MvPowerSeries σ k) := by
-  classical
-  let ρ := MvPowerSeries.rescale (σ := σ) (R := k) (fun i => if i = s then 0 else 1)
-  have key : ∀ g, MvPowerSeries.X s ∣ g ↔ ρ g = 0 := by
-    intro g
-    rw [MvPowerSeries.X_dvd_iff, MvPowerSeries.ext_iff]
-    refine forall_congr' fun n => ?_
-    rw [MvPowerSeries.coeff_rescale, map_zero]
-    by_cases hn : n s = 0
-    · have : (n.prod fun i m => (if i = s then (0 : k) else 1) ^ m) = 1 := by
-        refine Finset.prod_eq_one fun i hi => ?_
-        have : i ≠ s := fun h => (Finsupp.mem_support_iff.1 hi) (h ▸ hn)
-        simp [this]
-      simp [hn]
-    · have : (n.prod fun i m => (if i = s then (0 : k) else 1) ^ m) = 0 :=
-        Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hn) (by simp [hn])
-      simp [hn]
-  refine ⟨?_, ?_, fun a b h => ?_⟩
-  · intro h
-    have := congrArg (MvPowerSeries.coeff (Finsupp.single s 1)) h
-    simp [MvPowerSeries.coeff_X] at this
-  · intro h
-    have := h.map (MvPowerSeries.constantCoeff (σ := σ) (R := k))
-    simp at this
-  · rw [key, map_mul, mul_eq_zero, ← key, ← key] at h
-    exact h
+  apply _root_.GlobalTheory.UCanonBd.prime_X <;> assumption
 
 instance isPrime_span_bdParam (i : Fin m) : (Ideal.span {bdParam k m e i}).IsPrime :=
   (Ideal.span_singleton_prime (prime_mvX (k := k) _).ne_zero).2 (prime_mvX _)

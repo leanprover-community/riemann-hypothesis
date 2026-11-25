@@ -5,8 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
@@ -19,12 +17,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Out.InhVV
 open Semi Inh
 
 variable (S : Scheme.{0}) (T : Over S)
-
-def rig1 : LB.Gen ((zeroPolAV S).L.pull (eSec (zeroPolAV S).A)) := ⟨fun _ => 1⟩
-
-def one1 (x : T ⟶ (zeroPolAV S).A) (k : ℤ) :
-    LB.Gen (LB.LinComb (zeroPolAV S).L (Y := T.left) (K := Fin 1) (fun _ => x.left) (fun _ => k)) :=
-  ⟨fun _ => 1⟩
 
 def theta1 (k : ℤ) : ThetaGrp (zeroPolAV S).A (zeroPolAV S).L k T where
   pt := 1

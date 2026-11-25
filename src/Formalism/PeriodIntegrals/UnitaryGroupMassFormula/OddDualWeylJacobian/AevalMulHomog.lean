@@ -73,11 +73,6 @@ lemma sbs_X (A : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) R)) (v : 
   first
   | simp [sbs]
 
-lemma sbs_C (A : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) R)) (r : R) :
-    sbs A (C r) = C r := by
-  first
-  | simp [sbs]
-
 lemma sbs_sbs (A B : Matrix (Fin k) (Fin k) (MvPolynomial (Fin k × Fin k) R))
     (p : MvPolynomial (Fin k × Fin k) R) : sbs A (sbs B p) = sbs (B.map (sbs A)) p := by
   have h : (sbs A).comp (sbs B) = sbs (B.map (sbs A)) := by

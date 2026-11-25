@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.Hypotheses.GalCohDefs
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedH1CardInvariants
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -181,91 +182,10 @@ private theorem eq_zero_of (ρ : Representation k D M) {I : Subgroup D} {φ : D}
         simpa using this.symm }
   exact all_of_closed hcl H (isClosed_eq hd0.1 continuous_const) hI hφ g
 
-private def Z0 (ρ : Representation k D M) (I : Subgroup D) : Submodule k (Z1 ρ) where
-  carrier := {z | ∀ s ∈ I, z.1 s = 0}
-  zero_mem' := fun _ _ => rfl
-  add_mem' := fun {a b} ha hb s hs => by
-    change a.1 s + b.1 s = 0
-    rw [ha s hs, hb s hs, add_zero]
-  smul_mem' c a ha s hs := by
-    change c • a.1 s = 0
-    rw [ha s hs, smul_zero]
-
-private theorem val_mem (ρ : Representation k D M) (I : Subgroup D) [hI : I.Normal] (z : Z0 ρ I) (g : D) :
-    z.1.1 g ∈ NI ρ I := by
-  intro s hs
-  have h1 := z.1.2.2 s g
-  have h2 := z.1.2.2 g (g⁻¹ * s * g)
-  rw [z.2 s hs, zero_add] at h1
-  rw [z.2 (g⁻¹ * s * g) (by simpa using hI.conj_mem s hs g⁻¹), map_zero, add_zero,
-    show g * (g⁻¹ * s * g) = s * g by group] at h2
-  rw [← h1, h2]
-
-private theorem card_range_ker {k A B : Type} [CommRing k] [AddCommGroup A] [Module k A] [AddCommGroup B]
-    [Module k B] (f : A →ₗ[k] B) :
-    Nat.card A = Nat.card (LinearMap.ker f) * Nat.card (LinearMap.range f) := by
-  rw [Submodule.card_eq_card_quotient_mul_card (LinearMap.ker f),
-    Nat.card_congr f.quotKerEquivRange.toEquiv]
-
 end UpperTheory.V.Ws.Bl.UnramifiedCardinality
 
-open UpperTheory.V.Ws.Bl.UnramifiedCardinality in
 theorem UpperTheory.V.Ws.Bl.urCard :
     ∀ (R D M : Type) [CommRing R] [Group D] [TopologicalSpace D] [IsTopologicalGroup D] [AddCommGroup M] [Module R M] [Finite M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation R D M), ContAction ρ → ∀ (I : Subgroup D) [I.Normal] (φ : D), (I ⊔ Subgroup.zpowers φ).topologicalClosure = ⊤ →
           (∀ n : ℕ, 0 < n → ∃ d : D →* Multiplicative (ZMod n), IsLocallyConstant d ∧ (∀ s ∈ I, d s = 1) ∧ d φ = Multiplicative.ofAdd 1) → Nat.card (H1ur ρ I) = Nat.card (H0 ρ) := by
   intro k D M _ _ _ _ _ _ _ _ _ ρ hρ I _ φ hcl hd
-  let ev : Z0 ρ I →ₗ[k] NI ρ I :=
-    { toFun := fun z => ⟨z.1.1 φ, val_mem ρ I z φ⟩
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  have hev : Function.Bijective ev := by
-    refine ⟨(injective_iff_map_eq_zero ev).2 fun z hz => ?_, fun x => ?_⟩
-    · exact Subtype.ext (Subtype.ext (funext
-        (eq_zero_of ρ hcl z.1.2 z.2 (congrArg Subtype.val hz))))
-    · obtain ⟨z, hz, hzI, hzφ⟩ := exists_cocycle ρ hρ hcl hd x.2
-      exact ⟨⟨⟨z, hz⟩, hzI⟩, Subtype.ext hzφ⟩
-  let E := LinearEquiv.ofBijective ev hev
-  haveI : Finite (Z0 ρ I) := Finite.of_equiv _ E.symm.toEquiv
-  let p : Z0 ρ I →ₗ[k] H1 ρ := (Submodule.mkQ _).comp (Z0 ρ I).subtype
-  let δ : NI ρ I →ₗ[k] Z0 ρ I :=
-    { toFun := fun m => ⟨⟨d0 ρ m, coboundaries_le_cocycles ρ hρ ⟨m, rfl⟩⟩, fun s hs => sub_eq_zero.2 (m.2 s hs)⟩
-      map_add' := fun a b => Subtype.ext (Subtype.ext (map_add (d0 ρ) _ _))
-      map_smul' := fun c a => Subtype.ext (Subtype.ext (map_smul (d0 ρ) _ _)) }
-  have h1 : LinearMap.range p = H1ur ρ I := by
-    apply le_antisymm
-    · rintro _ ⟨z, rfl⟩
-      refine (Submodule.Quotient.mk_eq_zero _).2 ((mem_coboundaries1 _ _).2 ⟨0, fun s => ?_⟩)
-      rw [map_zero, sub_zero]
-      exact z.2 s s.2
-    · intro c hc
-      obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-      obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 hc)
-      refine ⟨⟨z - ⟨d0 ρ m, coboundaries_le_cocycles ρ hρ ⟨m, rfl⟩⟩, fun s hs =>
-        sub_eq_zero.2 (show z.1 s = d0 ρ m s from hm ⟨s, hs⟩)⟩, ?_⟩
-      refine (Submodule.Quotient.eq _).2 ?_
-      rw [Submodule.subtype_apply, sub_sub_cancel_left]
-      exact neg_mem ⟨m, rfl⟩
-  have h2 : LinearMap.range δ = LinearMap.ker p := by
-    apply le_antisymm
-    · rintro _ ⟨m, rfl⟩
-      exact (Submodule.Quotient.mk_eq_zero _).2 ⟨m, rfl⟩
-    · intro z hz
-      obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 hz)
-      refine ⟨⟨m, fun s hs => sub_eq_zero.1 ((hm s).symm.trans (z.2 s hs))⟩, ?_⟩
-      exact Subtype.ext (Subtype.ext (funext fun g => (hm g).symm))
-  have h3 : (LinearMap.ker δ).map (NI ρ I).subtype = H0 ρ := by
-    apply le_antisymm
-    · rintro _ ⟨m, hm, rfl⟩ g
-      exact sub_eq_zero.1 (congrFun (congrArg (fun z : Z0 ρ I => z.1.1) hm) g)
-    · intro m hm
-      exact ⟨⟨m, fun s _ => hm s⟩, Subtype.ext (Subtype.ext (funext fun g => sub_eq_zero.2 (hm g))), rfl⟩
-  have a1 := card_range_ker p
-  have a2 := card_range_ker δ
-  have a3 : Nat.card (Z0 ρ I) = Nat.card (NI ρ I) := Nat.card_congr E.toEquiv
-  have a4 : Nat.card (H0 ρ) = Nat.card (LinearMap.ker δ) := by
-    rw [← h3]
-    exact (Nat.card_congr (Submodule.equivMapOfInjective _ (NI ρ I).injective_subtype _).toEquiv).symm
-  have a5 : 0 < Nat.card (LinearMap.ker p) := Nat.card_pos
-  rw [h2, ← a3, a1, mul_comm] at a2
-  rw [← h1, a4]
-  exact Nat.eq_of_mul_eq_mul_right a5 a2
+  exact _root_.GlobalTheory.Ord2.UrCard.card_H1ur ρ I hρ φ hcl hd

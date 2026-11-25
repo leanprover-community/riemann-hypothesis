@@ -52,9 +52,6 @@ section Adelic
 
 variable {L : Type} [Field L] [NumberField L]
 
-def adDeg (r : HeightOneSpectrum (𝓞 L) → ℝ) (N : (L →+* ℂ) → ℝ) : ℝ :=
-  (∑ᶠ 𝔭, r 𝔭 * Real.log (Ideal.absNorm 𝔭.asIdeal) - (1 / 2) * ∑ σ, Real.log (N σ)) / Module.finrank ℚ L
-
 end Adelic
 
 section Eigen
@@ -73,12 +70,6 @@ section Local
 
 variable {L : Type} [Field L] [NumberField L] (A : Over (Sp L)) [GrpObj A] {m : ℕ}
 
-def IsArchSq (𝓛 : LB A.left) (v : Fin m → (epsR L ⟶ A)) (σ : L →+* ℂ) (N : ℝ) : Prop :=
-  ∃ (A' : Over (Sp ℂ)) (_ : GrpObj A') (φ : A'.left ⟶ A.left) (g : ℕ) (u : HolUnif A' (𝓛.pull φ) g)
-    (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ) (v' : Fin m → (epsR ℂ ⟶ A')) (W : Fin m → Fin g → ℂ),
-    IsGrpPullback A' A (spMap σ) φ ∧ u.IsAH Hm χ ∧ (∀ i, IsVecOver σ φ (v i) (v' i) ∧ u.IsDiff (W i) (v' i)) ∧
-    0 < N ∧ (N : ℂ) = (Matrix.of fun i k => (Real.pi : ℂ) * (W i ⬝ᵥ Hm.mulVec (star (W k)))).det
-
 end Local
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
@@ -95,9 +86,6 @@ def ordTwist (H : Host E) (τ : E →+* L) (𝔭 : HeightOneSpectrum (𝓞 L)) :
   (ordIdeal τ (differentIdeal ℤ (𝓞 E)) 𝔭 - ordIdeal τ (Ideal.span {H.rt}) 𝔭) - ordIdeal τ (Ideal.span {H.rt}) 𝔭
 
 end Lines
-
-def cOne (H : Host E) (p q : ℕ) (logOm : ℝ) : ℝ :=
-  -(((p : ℝ) - q) / 2 * logOm) - q * (2 * Real.log √(H.d : ℝ) - Real.log (rootDiscr E))
 
 def IsHostField (H : Host E) : Prop :=
   IsAbelianGalois ℚ E ∧

@@ -64,6 +64,7 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfE
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
+public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.LevelValueSmul
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfC, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfD, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfI, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfJ, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfK, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfA, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfL, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPf
@@ -184,7 +185,6 @@ theorem eat_mem (E : ZMod n → Polynomial O) (hπ : π' ∈ W.AΔ) : Formalism.
   simp only [Formalism.MainNotions.DeltaInvariantLattices.Eat]
   rw [← Polynomial.aeval_algHom_apply, hi]
 
-
 open PowerSeries in
 theorem filtration_value_local (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (Eπ : LetA O n) (h' : ℕ)
     (hEΔ : Eπ ∈ W.AΔ)
@@ -257,7 +257,6 @@ theorem lattice_contains_power_local (Pt : ZMod n → LL → (K →ₐ[Qp] LL) �
 
 end Local
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
 theorem val_fil (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
@@ -293,9 +292,6 @@ theorem val_fil (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : Cmp
   · exact Submodule.smul_mem _ _ (key _ _)
   · exact Submodule.zero_mem _
 
-
-
-
 open PowerSeries in
 theorem lev_eat_zero (D : D7) (HW : HWOf D.loc) {l : ℕ} [Fact l.Prime] (K LL : FinExt l)
     (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))
@@ -313,7 +309,6 @@ theorem lev_eat_zero (D : D7) (HW : HWOf D.loc) {l : ℕ} [Fact l.Prime] (K LL :
   have hwu : IsUnit (constantCoeff (((HW l).W K 1 LL hG).lev c ζ (w : LetA ↥(OL LL) _))) :=
     (PowerSeries.isUnit_iff_constantCoeff).mp (w.isUnit.map _)
   exact (hwu.mul_right_eq_zero).mp h1.symm
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
@@ -333,9 +328,6 @@ theorem model_lattice_filtration (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.l
     (fun τ ζ hpt => lev_eat_zero D HW K LL hG π' E hr c ζ τ hpt)
     (fun τ ζ hpt y hy => val_fil D HW F Cm hA.1 K LL hG T hT h' hJ π' c ζ τ hpt y hy)
     (fun τ a' a h => u3upPf_FilC_anti (PD := (D.loc l).PD K) T τ h)
-
-
-
 
 theorem model_lattice_power (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (CA CB CK : ℝ) (hA : Adm1 D HW F Cm CA CB CK) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
@@ -535,8 +527,6 @@ namespace Formalism.MainNotions.N.Ln34.MLK
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module
 
-
-
 theorem lev_Eat_simple (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
     (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))
     (E : ZMod (finrank ℚ_[l] ↥(K0 K)) → Polynomial ↥(OL LL))
@@ -624,7 +614,7 @@ end -- clump:auto
 -- ===== end clump member: Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfK =====
 
 -- ===== clump member: Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfA =====
--- clump-header: {"m": "Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfA", "h": "module\n\npublic import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition\npublic import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfLoc\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfA", "h": "module\n\npublic import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition\npublic import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfLoc\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.LevelValueSmul\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -633,27 +623,7 @@ noncomputable section
 namespace Formalism.MainNotions.N.Ln34.MLA
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
-
-theorem expwd_core {O A E L X Y : Type*} [CommRing O] [AddCommGroup A] [Module O A]
-    [AddCommGroup E] [Module O E] [AddCommGroup L] [Module O L] [AddCommGroup X] [Module O X]
-    [AddCommGroup Y] [Module O Y] [Module.Flat O X]
-    (j : A →ₗ[O] E) (hj : Function.Injective j) (g : L →ₗ[O] X) (μ : A ⊗[O] X →ₗ[O] Y)
-    {m m' : ℕ} (a : Fin m → A) (s : Fin m → L) (b : Fin m' → A) (t : Fin m' → L)
-    (h : ∑ i, j (a i) ⊗ₜ[O] s i = ∑ k, j (b k) ⊗ₜ[O] t k) :
-    ∑ i, μ (a i ⊗ₜ g (s i)) = ∑ k, μ (b k ⊗ₜ g (t k)) := by
-  have hinjX : Function.Injective (LinearMap.rTensor X j) :=
-    Module.Flat.rTensor_preserves_injective_linearMap j hj
-  have h2 := congrArg (LinearMap.lTensor E g) h
-
-  simp only [map_sum, LinearMap.lTensor_tmul] at h2
-  have h3 : LinearMap.rTensor X j (∑ i, a i ⊗ₜ[O] g (s i)) =
-      LinearMap.rTensor X j (∑ k, b k ⊗ₜ[O] g (t k)) := by
-
-    simp only [map_sum, LinearMap.rTensor_tmul]
-    exact h2
-  have h5 := congrArg μ (hinjX h3)
-
-  simpa only [map_sum] using h5
+open Formalism.MainNotions.N.Ln34.LevelExpansions.V (expwd_core lev_letE_mul PtHyp XO valQ muL)
 
 theorem flat_compHom {O LL X : Type*} [CommRing O] [IsDomain O] [IsDedekindDomain O] [Field LL]
     [Algebra O LL] (hinj : Function.Injective (algebraMap O LL)) [AddCommGroup X] [Module LL X] :
@@ -688,60 +658,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {E : EtTie W (O ⊗[Zl] Ai) RW inclR φR gR πA} {ιdR : Ai →+* BdR} {p1 : Ai} {tS zS : BdR}
     (Ct : CmpTie W E ιdR p1 tS zS) (T : LocLat G Qp LL O)
 
-theorem lev_letE_mul (c : ZMod n) (ζ : LL) (a : LetA O n) :
-    W.lev c ζ ((letE c : LetA O n) * a) = W.lev c ζ a := by
-  have h0 : ((letE c : LetA O n) * a - a) c = 0 := by
-    first
-    | (simp [letE]; done)
-  have h1 := W.79 c ζ _ h0
-  rw [map_sub, sub_eq_zero] at h1
-  exact h1
-
-theorem levN_smul_alg (i : ZMod n) (ζ : LL) (o : O) (x : ↥(W.N T)) (k : ℤ) :
-    W.levN T i ζ ((algebraMap O (LetA O n) o) • x) k = algebraMap O LL o • W.levN T i ζ x k := by
-  rw [W.levN_smul, finsum_eq_single _ 0]
-  · rw [AlgHom.commutes]
-    first
-    | (simp; done)
-    | (simp [PowerSeries.algebraMap_apply, PowerSeries.coeff_C]; done)
-  · intro j hj
-    rw [AlgHom.commutes]
-    first
-    | (simp; done)
-    | (simp [PowerSeries.algebraMap_apply, PowerSeries.coeff_C, hj]; done)
-
-theorem levB_smul_alg (i : ZMod n) (ζ : LL) (o : O) (x : ↥(W.N T)) (k : ℤ) :
-    Ct.levB T i ζ ((algebraMap O (LetA O n) o) • x) k = algebraMap O LL o • Ct.levB T i ζ x k := by
-  apply framepf_ιV_inj (PD := PD) T
-  rw [← Ct.levN_eq, levN_smul_alg, Ct.levN_eq, map_smul]
-
-def val1 (c : ZMod n) (x : ↥(W.N T)) : T.V ⊗[Qp] BdR :=
-  ιV PD (LL := LL) (V := T.V) (φVB PD (LL := LL) (V := T.V) (Ct.levB T (c - 1) 1 x 0))
-
-theorem level_value_add (c : ZMod n) (x y : ↥(W.N T)) : val1 Ct T c (x + y) = val1 Ct T c x + val1 Ct T c y := by
-  first
-  | (simp only [val1, map_add (f := _), Pi.add_apply]; done)
-
-theorem level_value_smul (c : ZMod n) (o : O) (x : ↥(W.N T)) :
-    val1 Ct T c ((algebraMap O (LetA O n) o) • x) = algebraMap O LL o • val1 Ct T c x := by
-  first
-  | (simp only [val1, levB_smul_alg, map_smul]; done)
-
-def PtHyp (c : ZMod n) (ζ : LL) : Prop :=
-  IsCrys PD T.ρ ∧ (∃ j : ℕ, IsPrimitiveRoot ζ (PD.p ^ j)) ∧ ζ ^ PD.p = 1 ∧
-    PowerSeries.constantCoeff (W.lev c ζ W.Q) = 0 ∧ PowerSeries.coeff 1 (W.lev c ζ W.Q) ≠ 0 ∧
-    (∀ (x : ↥(W.N T)) (k : ℤ), k < 0 → W.levN T (c - 1) 1 x k = 0) ∧
-    ∀ x ∈ W.N T, ∃ k : ℕ, W.Q ^ k • W.φD T x ∈ W.N T
-
-theorem valAt_eq {c : ZMod n} {ζ : LL} (hP : PtHyp (W := W) T c ζ) (x : ↥(W.N T)) :
-    valAt W T c ζ (x : W.DD T) = val1 Ct T c x := by
-  obtain ⟨hc, hζ, hζ1, hQ0, hQ1, hneg, hex⟩ := hP
-  refine framepf_valAt Ct T hc c ζ hζ hζ1 hQ0 hQ1 x (fun r hr => ?_) (hex _ x.2)
-  apply framepf_ιV_inj (PD := PD) T
-  rw [← Ct.levN_eq, hneg x r hr, map_zero]
-
-def XO (BdR : Type) [CommRing BdR] [Algebra Qp BdR] (T : LocLat G Qp LL O) : Type := T.V ⊗[Qp] BdR
-
 instance (BdR : Type) [CommRing BdR] [Algebra Qp BdR] (T : LocLat G Qp LL O) :
     AddCommGroup (XO BdR T) := inferInstanceAs (AddCommGroup (T.V ⊗[Qp] BdR))
 
@@ -750,80 +666,6 @@ instance (BdR : Type) [CommRing BdR] [Algebra Qp BdR] (T : LocLat G Qp LL O) :
 
 instance (BdR : Type) [CommRing BdR] [Algebra Qp BdR] (T : LocLat G Qp LL O) :
     Module O (XO BdR T) := Module.compHom _ (algebraMap O LL)
-
-theorem smul_XO (o : O) (x : XO BdR T) : o • x = algebraMap O LL o • x := rfl
-
-def valL {c : ZMod n} {ζ : LL} (hP : PtHyp (W := W) T c ζ) :
-    ↥(NcS W T (c - 1)) →ₗ[O] XO BdR T where
-  toFun x := (valAt W T c ζ (x : W.DD T) : T.V ⊗[Qp] BdR)
-  map_add' x y := by
-    have hx : (x : W.DD T) ∈ W.N T := x.2.1.1
-    have hy : (y : W.DD T) ∈ W.N T := y.2.1.1
-    have e := valAt_eq Ct T hP (⟨x, hx⟩ + ⟨y, hy⟩)
-    rw [level_value_add, ← valAt_eq Ct T hP ⟨x, hx⟩, ← valAt_eq Ct T hP ⟨y, hy⟩] at e
-    exact e
-  map_smul' o x := by
-    have hx : (x : W.DD T) ∈ W.N T := x.2.1.1
-    have e := valAt_eq Ct T hP ((algebraMap O (LetA O n) o) • ⟨x, hx⟩)
-    rw [level_value_smul, ← valAt_eq Ct T hP ⟨x, hx⟩] at e
-    have e2 : valAt W T c ζ ((algebraMap O (LetA O n) o) • (x : W.DD T)) =
-        algebraMap O LL o • valAt W T c ζ (x : W.DD T) := e
-    rw [algebraMap_smul] at e2
-    change valAt W T c ζ (o • (x : W.DD T)) = algebraMap O LL o • valAt W T c ζ (x : W.DD T)
-    exact e2
-
-theorem valL_ker {c : ZMod n} {ζ : LL} (hP : PtHyp (W := W) T c ζ) (π' : LetA O n)
-    (hπ : PowerSeries.constantCoeff (W.lev (c - 1) 1 π') = 0) :
-    (PiNS W T π' 1).comap (NcS W T (c - 1)).subtype ≤ LinearMap.ker (valL Ct T hP) := by
-  intro x hx
-  rw [Submodule.mem_comap] at hx
-  obtain ⟨z, hz, hzx⟩ := Submodule.mem_map.1 hx.1
-  have hxN : (x : W.DD T) ∈ W.N T := x.2.1.1
-  rw [LinearMap.mem_ker]
-  change valAt W T c ζ (x : W.DD T) = 0
-  rw [valAt_eq Ct T hP ⟨x, hxN⟩]
-  have hzx' : (π' ^ 1) • z = (x : W.DD T) := hzx
-  have hxe : (⟨x, hxN⟩ : ↥(W.N T)) = (π' ^ 1) • ⟨z, hz⟩ := by
-    apply Subtype.ext
-    exact hzx'.symm
-  have hneg := hP.2.2.2.2.2.1
-  have h0 : Ct.levB T (c - 1) 1 ⟨x, hxN⟩ 0 = 0 := by
-    apply framepf_ιV_inj (PD := PD) T
-    rw [← Ct.levN_eq, hxe, W.levN_smul, map_zero, pow_one]
-    apply finsum_eq_zero_of_forall_eq_zero
-    intro j
-    rcases Nat.eq_zero_or_pos j with rfl | hj
-    · rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, hπ, zero_smul]
-    · rw [hneg ⟨z, hz⟩ _ (by omega), smul_zero]
-  simp only [val1, h0, map_zero]
-
-def valQ {c : ZMod n} {ζ : LL} (hP : PtHyp (W := W) T c ζ) (π' : LetA O n)
-    (hπ : PowerSeries.constantCoeff (W.lev (c - 1) 1 π') = 0) : LcQ W T π' c →ₗ[O] XO BdR T :=
-  Submodule.liftQ _ (valL Ct T hP) (valL_ker Ct T hP π' hπ)
-
-def muL (c : ZMod n) (ζ : LL) : LetA O n ⊗[O] XO BdR T →ₗ[O] (ℤ → XO BdR T) :=
-  TensorProduct.lift (LinearMap.mk₂ O (fun a d => serC (W.lev c ζ a) d)
-    (fun a a' d => by
-      funext i
-      simp only [serC, map_add (f := _), Pi.add_apply]
-      split_ifs <;> simp [add_smul])
-    (fun o a d => by
-      funext i
-      simp only [serC, map_smul, Pi.smul_apply]
-      split_ifs
-      · rw [smul_XO, PowerSeries.coeff_smul, Algebra.smul_def, mul_smul]
-      · rw [smul_zero])
-    (fun a d d' => by
-      funext i
-      simp only [serC, Pi.add_apply]
-      split_ifs <;> simp [smul_add])
-    (fun o a d => by
-      funext i
-      simp only [serC, Pi.smul_apply]
-      split_ifs
-      · rw [smul_XO, smul_XO, smul_comm]
-      · rw [smul_zero]))
-
 
 include Ct in
 theorem expS_wd [IsDomain O] [IsDedekindDomain O] (hinj : Function.Injective (algebraMap O LL))
@@ -908,7 +750,7 @@ theorem rec_WD (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpO
     obtain ⟨w, hw⟩ := hr.2.2.1
     rw [hw, map_mul, map_pow, map_mul, map_pow, hπ1, zero_pow (by omega), mul_zero]
   have hQ := framepf_Q_at ((HW l).W K 1 LL hG) hs c ζ hprim'
-  have hP : MLA.PtHyp (W := (HW l).W K 1 LL hG) T c ζ := by
+  have hP : Formalism.MainNotions.N.Ln34.LevelExpansions.V.PtHyp (W := (HW l).W K 1 LL hG) T c ζ := by
     refine ⟨hT, ⟨1, by rw [pow_one]; exact hprim'⟩, hprim'.pow_eq_one, hQ.1, hQ.2, ?_, ?_⟩
     · intro x k hk
       have h4 := ((h4W T hT).1 (c - 1) 1 ⟨0, by simp⟩ (by rw [hX]; exact hπ1)).1 x k
@@ -916,7 +758,6 @@ theorem rec_WD (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpO
     · intro x hx
       exact ((HW l).W K 1 LL hG).N_φ T x hx
   exact MLA.expS_wd ((Cm l).C K 1 LL hG).tie T hinj hP π' hπ a y hy b z hz h
-
 
 theorem exists_mul_gamma_Eat_pow_eq_Eat_pow (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (CA CB CK : ℝ) (hA : Adm1 D HW F Cm CA CB CK) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
@@ -952,7 +793,6 @@ theorem exists_mul_gamma_Eat_pow_eq_Eat_pow (D : D7) (HW : HWOf D.loc) (F : FonO
   refine ⟨((hu.unit⁻¹ : (LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))ˣ) : LetA _ _) ^ h', Subalgebra.pow_mem _ hu'Δ h', ?_⟩
   rw [hgam, map_pow, hγ, mul_pow, ← mul_assoc, ← mul_pow, hu.val_inv_mul, one_pow, one_mul]
 
-
 theorem rec_lev (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l) (hG : Good K 1 LL)
     (c : ZMod (finrank ℚ_[l] ↥(K0 K))) (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (ζ : ↥LL.1)
@@ -972,7 +812,6 @@ theorem rec_lev (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : Cmp
     rw [hgam, Nat.cast_one (R := ↥LL.1), ((HW l).W K 1 LL hG).gam_gen, hs]
   have := ((Cm l).C K 1 LL hG).tie.lev_Γ ((HW l).W K 1 LL hG).gamK c ζ ζ 1 1 hprim hv (by rw [pow_one]) a
   exact this
-
 
 theorem rec_u (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
     (hG : Good K 1 LL) :

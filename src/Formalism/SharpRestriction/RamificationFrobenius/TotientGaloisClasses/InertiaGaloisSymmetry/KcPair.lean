@@ -86,15 +86,10 @@ private theorem prime_mulEquiv_ideal_apply {S : Type*} [CommRing S] [IsDedekindD
       have := map_dvd f h1
       rwa [MulEquiv.apply_symm_apply] at this
 
-private theorem prod_normalizedFactors_ideal_eq_self {S : Type*} [CommRing S] [IsDedekindDomain S]
-    {I : Ideal S} (hI : I ≠ ⊥) : (normalizedFactors I).prod = I := by
-  have hI0 : I ≠ 0 := by rw [Ideal.zero_eq_bot]; exact hI
-  exact associated_iff_eq.mp (prod_normalizedFactors hI0)
-
 theorem kc_nf_map {S : Type*} [CommRing S] [IsDedekindDomain S] (I : Ideal S) (hI : I ≠ ⊥)
     (f : Ideal S ≃* Ideal S) : normalizedFactors (f I) = (normalizedFactors I).map f := by
   calc normalizedFactors (f I) = normalizedFactors ((normalizedFactors I).map f).prod := by
-        rw [← map_multiset_prod f, prod_normalizedFactors_ideal_eq_self hI]
+        rw [← map_multiset_prod f, Ideal.prod_normalizedFactors_eq_self hI]
     _ = (normalizedFactors I).map f := by
         apply normalizedFactors_prod_of_prime
         intro Q hQ
@@ -123,7 +118,7 @@ theorem kc_pairing {S : Type*} [CommRing S] [IsDedekindDomain S] (D : Ideal S) (
     rw [hg] at this
     rw [hFdef]
     exact this.symm
-  have hFprod : F.prod = D := by rw [hFdef]; exact prod_normalizedFactors_ideal_eq_self hD0
+  have hFprod : F.prod = D := by rw [hFdef]; exact Ideal.prod_normalizedFactors_eq_self hD0
   have hmap : (F.filter p).map f = F.filter (fun P => ¬ p P) := by
     have e1 : F.filter (fun P => ¬ p P) = (F.map f).filter (fun P => ¬ p P) := by
       rw [hinv f hfD]
@@ -186,7 +181,7 @@ theorem kc_pairing {S : Type*} [CommRing S] [IsDedekindDomain S] (D : Ideal S) (
       obtain ⟨R, hR, rfl⟩ := Multiset.mem_map.mp hQ
       have hRF : R ∈ F := by rw [hF']; exact Multiset.mem_add.mpr (Or.inl hR)
       exact fun h => ((hpF R hRF).mp h) (hpB' R hR)
-    rw [hfilt, prod_normalizedFactors_ideal_eq_self hB'0]
+    rw [hfilt, Ideal.prod_normalizedFactors_eq_self hB'0]
 
 end
 

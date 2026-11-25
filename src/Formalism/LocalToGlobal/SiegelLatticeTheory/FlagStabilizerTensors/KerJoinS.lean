@@ -16,8 +16,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.KerJoinS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section SSide
 
 variable {D : D7} {X : HidaSetting D} {Y : Formalism.L2.SG.Full.Full X} (hF : FinX Y) (I : SIso D.s (sOf hF))

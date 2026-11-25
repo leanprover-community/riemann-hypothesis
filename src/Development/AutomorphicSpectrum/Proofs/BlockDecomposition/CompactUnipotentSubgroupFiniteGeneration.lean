@@ -99,15 +99,8 @@ theorem mem_span_openFns_of_mem_twKer : ∀ (k : Type) [Field k] [ValuativeRel k
       refine Subgroup.mem_subgroupOf.2 (hsL ?_)
       simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe]
       exact ⟨x, hx, rfl⟩
-    · rw [Subtype.isCompact_iff]
-      have himg : ((↑) : Q → GL (Fin N) k) '' (L.subgroupOf Q : Set Q) = (L : Set (GL (Fin N) k)) := by
-        ext x
-        constructor
-        · rintro ⟨y, hy, rfl⟩
-          exact Subgroup.mem_subgroupOf.1 hy
-        · intro hx
-          exact ⟨⟨x, hLQ hx⟩, Subgroup.mem_subgroupOf.2 hx, rfl⟩
-      rw [himg]
+    · rw [Subtype.isCompact_iff, show Subtype.val '' (L.subgroupOf Q : Set Q) =
+        (L : Set (GL (Fin N) k)) from Subtype.coe_image_of_subset hLQ]
       exact hLc
   have hle : twKer (parInd (stdBlocks d hd) ρ) Q θ ≤ twKer σ ⊤ θ' :=
     Submodule.span_le.2 (by

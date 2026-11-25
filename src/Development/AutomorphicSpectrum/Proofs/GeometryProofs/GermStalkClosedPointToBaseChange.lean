@@ -63,12 +63,9 @@ theorem germ_stalkClosedPointTo_baseChange (ξ : Spec (CommRingCat.of Ω) ⟶ X)
   have e : ζ = Spec.map (Scheme.stalkClosedPointTo ξ ≫ CommRingCat.ofHom i) ≫
       X.fromSpecStalk (ξ (IsLocalRing.closedPoint Ω)) := by
     rw [hζ, Spec.map_comp, Category.assoc, Scheme.Spec_stalkClosedPointTo_fromSpecStalk]
-  have hl : IsLocalHom (Scheme.stalkClosedPointTo ξ ≫ CommRingCat.ofHom i).hom := by
-    refine ⟨fun a ha => ?_⟩
-    have h1 : IsUnit (i ((Scheme.stalkClosedPointTo ξ).hom a)) := ha
-    have h2 : IsUnit ((Scheme.stalkClosedPointTo ξ).hom a : Ω) :=
-      isUnit_iff_ne_zero.2 fun h0 => by simp [h0] at h1
-    exact isUnit_of_map_unit (Scheme.stalkClosedPointTo ξ).hom a h2
+  have hl : IsLocalHom (Scheme.stalkClosedPointTo ξ ≫ CommRingCat.ofHom i).hom :=
+    @RingHom.isLocalHom_comp _ _ _ _ _ _ i _ inferInstance
+      (inferInstanceAs (IsLocalHom (Scheme.stalkClosedPointTo ξ).hom))
   subst e
   exact Scheme.germ_stalkClosedPointTo_Spec_fromSpecStalk _ U hU
 

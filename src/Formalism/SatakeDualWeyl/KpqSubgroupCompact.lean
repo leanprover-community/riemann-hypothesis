@@ -891,19 +891,6 @@ section -- clump:auto
 
 namespace Formalism.UG.Final
 
-private theorem quotient_out_mem_iff_eq_one {G : Type} [Group G] (K : Subgroup G) (x : G ⧸ K) :
-    x.out ∈ K ↔ x = (QuotientGroup.mk (1 : G) : G ⧸ K) := by
-  have hx : (QuotientGroup.mk x.out : G ⧸ K) = x := by
-    first
-      | exact QuotientGroup.out_eq' x
-  constructor
-  · intro h
-    rw [← hx]
-    exact QuotientGroup.eq.mpr (by simpa using h)
-  · intro h
-    have h2 : (QuotientGroup.mk x.out : G ⧸ K) = QuotientGroup.mk 1 := hx.trans h
-    simpa using QuotientGroup.eq.mp h2
-
 alias HeckeActMem := _root_.Formalism.UG.P.hecke_act_mem
 alias HeckeActMul := _root_.Formalism.UG.P.hecke_act_mul
 alias HeckeAssoc := _root_.Formalism.UG.P.hecke_assoc
@@ -992,14 +979,14 @@ theorem HeckeUnit : Formalism.UG.HeckeUnit := by
   · funext g
     unfold conv
     rw [finsum_eq_single _ (QuotientGroup.mk 1 : G ⧸ K)]
-    · have hmem : (QuotientGroup.mk 1 : G ⧸ K).out ∈ K := (quotient_out_mem_iff_eq_one K _).mpr rfl
+    · have hmem : (QuotientGroup.mk 1 : G ⧸ K).out ∈ K := (QuotientGroup.out_mem_iff (s := K)).mpr rfl
       have h1 : dosetInd k K 1 (QuotientGroup.mk 1 : G ⧸ K).out = 1 := by
         simp [dosetInd, (_root_.Formalism.UG.P.mem_dc_one K _).mpr hmem]
       simp only [h1, one_mul]
       have h2 := hbi ⟨_, K.inv_mem hmem⟩ 1 g
       simpa using h2
     · intro x hx
-      have hn : x.out ∉ K := fun h => hx ((quotient_out_mem_iff_eq_one K x).mp h)
+      have hn : x.out ∉ K := fun h => hx ((QuotientGroup.out_mem_iff (s := K) (a := x)).mp h)
       have h0 : dosetInd k K 1 x.out = 0 := by
         simp [dosetInd, (_root_.Formalism.UG.P.mem_dc_one K _).not.mpr hn]
       simp only [h0, zero_mul]
@@ -1035,13 +1022,13 @@ theorem HeckeActOne : Formalism.UG.HeckeActOne := by
     simpa using h2
   unfold hAct
   rw [finsum_eq_single _ (QuotientGroup.mk 1 : G ⧸ K)]
-  · have hmem : (QuotientGroup.mk 1 : G ⧸ K).out ∈ K := (quotient_out_mem_iff_eq_one K _).mpr rfl
+  · have hmem : (QuotientGroup.mk 1 : G ⧸ K).out ∈ K := (QuotientGroup.out_mem_iff (s := K)).mpr rfl
     have h1 : dosetInd k K 1 (QuotientGroup.mk 1 : G ⧸ K).out = 1 := by
       simp [dosetInd, (_root_.Formalism.UG.P.mem_dc_one K _).mpr hmem]
     simp only [h1, one_smul]
     exact hright ⟨_, hmem⟩
   · intro x hx
-    have hn : x.out ∉ K := fun h => hx ((quotient_out_mem_iff_eq_one K x).mp h)
+    have hn : x.out ∉ K := fun h => hx ((QuotientGroup.out_mem_iff (s := K) (a := x)).mp h)
     have h0 : dosetInd k K 1 x.out = 0 := by
       simp [dosetInd, (_root_.Formalism.UG.P.mem_dc_one K _).not.mpr hn]
     simp only [h0, zero_smul]

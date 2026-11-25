@@ -53,7 +53,6 @@ section -- clump:auto
 
 open CrystallineSemistableComparison CrystallineSemistableComparison.Onto
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 noncomputable section
@@ -333,7 +332,6 @@ section -- clump:auto
 
 open CrystallineSemistableComparison CrystallineSemistableComparison.Onto
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris

@@ -48,8 +48,6 @@ open GlobalTheory.GalLift
 
 namespace GlobalTheory.GalLift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem ringHom_eq_on_adjoin_simple {E : Type} [Field E] [Algebra ℚ E] (f g : E →+* ℂ) (s : E) (h : f s = g s) (x : E)
     (hx : x ∈ IntermediateField.adjoin ℚ ({s} : Set E)) : f x = g x := by
   induction hx using IntermediateField.adjoin_induction with

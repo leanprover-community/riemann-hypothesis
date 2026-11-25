@@ -968,15 +968,7 @@ namespace GlobalTheory.NormPowerTwoUnity
 
 lemma norm_sq_sub_one_ge (w : ℂ) (h : ‖w - 1‖ < (1 / 2 : ℝ)) :
     (3 / 2 : ℝ) * ‖w - 1‖ ≤ ‖w ^ 2 - 1‖ := by
-  have e : w ^ 2 - 1 = (w + 1) * (w - 1) := by ring
-  have h2 : ‖(2 : ℂ)‖ ≤ ‖w + 1‖ + ‖w - 1‖ := by
-    have : (2 : ℂ) = (w + 1) - (w - 1) := by ring
-    rw [this]
-    exact norm_sub_le _ _
-  have h3 : ‖(2 : ℂ)‖ = 2 := by simp
-  rw [e, norm_mul]
-  apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
-  linarith
+  apply _root_.GlobalTheory.PositiveFormRecursion.step <;> assumption
 
 theorem eq_one_of_norm_pow_two_pow_sub_one_lt (z : ℂ)
     (h : ∀ (m : ℕ), ‖z ^ (2 : ℕ) ^ m - (1 : ℂ)‖ < (1 / 2 : ℝ)) : z = (1 : ℂ) := by

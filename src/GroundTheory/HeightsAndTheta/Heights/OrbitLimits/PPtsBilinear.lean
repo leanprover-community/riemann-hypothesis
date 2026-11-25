@@ -171,15 +171,8 @@ theorem integrable_fibreSum (hInt : PtsIntegrableStatement) {P : Ideal (MRing ι
   have hlog : logNorm (HermLine.ofWeight g hg.2) 1 = g := by
     funext z
     simp [logNorm, HermLine.ofWeight, Real.log_exp]
-  have h1 : (1 : MRing ι) ∉ P := fun h => hP.2.1.1.ne_top ((Ideal.eq_top_iff_one P).mpr h)
-  have hm : IsMultiHomog (1 : MRing ι) (fun _ => 0) := by
-    intro m hm k
-    rw [MvPolynomial.support_one] at hm
-    simp only [Finset.mem_singleton] at hm
-    subst hm
-    simp
   have hsec : IsSectionOn P (HermLine.ofWeight g hg.2) 1 :=
-    ⟨fun _ => 0, fun k => by simp [HermLine.ofWeight], hm, h1⟩
+    _root_.ReciprocityTheory.ChartRestriction.G.Geo.isSectionOn_one hP.2.1.1 rfl
   have := hInt K ι P (n + 1) Ψ _ _ 1 hP hΨ hLF hG hsec
   rwa [hpot, hlog] at this
 

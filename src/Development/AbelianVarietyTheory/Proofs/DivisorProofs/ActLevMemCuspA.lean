@@ -56,8 +56,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
   Formalism.L2.Pj Formalism.IndefR.FWT
 open scoped InnerProductSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.GeoLevel
 
 section Core

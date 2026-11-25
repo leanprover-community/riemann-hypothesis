@@ -5,6 +5,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeInd
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 
@@ -27,29 +28,8 @@ abbrev locAt (𝔭 : Ideal (𝓞 K)) [𝔭.IsPrime] : Subalgebra (𝓞 K) K :=
 theorem exists_smul_mem (𝔭 : Ideal (𝓞 K)) [𝔭.IsPrime] (L : Submodule (𝓞 K) (Fin i → K)) {x : Fin i → K}
     (hx : x ∈ Submodule.span (locAt 𝔭) (L : Set (Fin i → K))) :
     ∃ s ∈ 𝔭.primeCompl, s • x ∈ L := by
-  induction hx using Submodule.span_induction with
-  | mem x hx => exact ⟨1, 𝔭.primeCompl.one_mem, by rwa [one_smul]⟩
-  | zero => exact ⟨1, 𝔭.primeCompl.one_mem, by rw [smul_zero]; exact L.zero_mem⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨s₁, hs₁, hx⟩ := hx
-    obtain ⟨s₂, hs₂, hy⟩ := hy
-    refine ⟨s₁ * s₂, 𝔭.primeCompl.mul_mem hs₁ hs₂, ?_⟩
-    rw [smul_add]
-    refine add_mem ?_ ?_
-    · rw [mul_comm, mul_smul]
-      exact L.smul_mem _ hx
-    · rw [mul_smul]
-      exact L.smul_mem _ hy
-  | smul a x _ hx =>
-    obtain ⟨s, hs, hx⟩ := hx
-    obtain ⟨⟨p, q⟩, rfl⟩ := IsLocalization.mk'_surjective 𝔭.primeCompl a
-    refine ⟨q * s, 𝔭.primeCompl.mul_mem q.2 hs, ?_⟩
-    have hq : (q : 𝓞 K) • (IsLocalization.mk' (locAt 𝔭) p q) = algebraMap (𝓞 K) (locAt 𝔭) p := by
-      rw [Algebra.smul_def, mul_comm, IsLocalization.mk'_spec]
-    have e : (q * s) • (IsLocalization.mk' (locAt 𝔭) p q • x) = p • (s • x) := by
-      rw [mul_comm, mul_smul, ← smul_assoc (q : 𝓞 K), hq, algebraMap_smul, smul_comm]
-    rw [e]
-    exact L.smul_mem _ hx
+  obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span 𝔭.primeCompl (locAt 𝔭) (L : Set (Fin i → K)) x hx
+  exact ⟨t, t.2, by simpa only [Submodule.span_eq, Submonoid.smul_def] using ht⟩
 
 theorem span_dual_eq_top (F : HermLattice K i) :
     Submodule.span K (DualLatticeIndexAlt.dual F.lattice : Set (Fin i → K)) = ⊤ := by

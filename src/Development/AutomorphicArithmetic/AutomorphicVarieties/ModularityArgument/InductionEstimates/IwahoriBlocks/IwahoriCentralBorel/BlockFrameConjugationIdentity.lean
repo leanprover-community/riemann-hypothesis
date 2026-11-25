@@ -54,8 +54,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 private lemma fixA_comb {K : Type} [Field K] [NumberField K] {n : ℕ} {κ : Measure (archCompact K n)}
     {e : archCompact K n → ℂ} (he : IdemA κ e) (hc : CompactSpace (archCompact K n))
     (ha : Continuous (arc1 : archCompact K n → G1 K n)) {f f' : G1 K n → ℂ} (hf : Continuous f)

@@ -71,21 +71,11 @@ end Continuity
 theorem hasProd_compl_of_hasProd {ι : Type*} {f : ι → ℂ} {a : ℂ} (h : HasProd f a) (S : Finset ι)
     (hS : ∀ i ∈ S, f i ≠ 0) :
     HasProd (fun i : {i // i ∉ S} ↦ f i) (a / ∏ i ∈ S, f i) := by
-  set g : ι → ℂ := (S : Set ι).mulIndicator fun i ↦ (f i)⁻¹ with hg
-  have hgp : HasProd g (∏ i ∈ S, (f i)⁻¹) := by
-    have : HasProd g (∏ i ∈ S, g i) := hasProd_prod_of_ne_finset_one fun i hi ↦ by
-      rw [hg, Set.mulIndicator_of_notMem (by simpa using hi)]
-    rwa [Finset.prod_congr rfl fun i hi ↦ by rw [hg, Set.mulIndicator_of_mem (by simpa using hi)]] at this
-  have hfg := h.mul hgp
-  have heq : (fun i ↦ f i * g i) = ({i | i ∉ S} : Set ι).mulIndicator f := by
-    funext i
-    by_cases hi : i ∈ S
-    · rw [hg, Set.mulIndicator_of_mem (by simpa using hi),
-        Set.mulIndicator_of_notMem (by simpa using hi), mul_inv_cancel₀ (hS i hi)]
-    · rw [hg, Set.mulIndicator_of_notMem (by simpa using hi),
-        Set.mulIndicator_of_mem (by simpa using hi), mul_one]
-  rw [heq, Finset.prod_inv_distrib, ← div_eq_mul_inv] at hfg
-  exact (hasProd_subtype_iff_mulIndicator (s := {i | i ∉ S})).2 hfg
+  have hg := h.congr_cofinite₀ (s := S) (g := ({i | i ∉ S} : Set ι).mulIndicator f) hS
+    fun i hi ↦ (Set.mulIndicator_of_mem hi f).symm
+  rw [Finset.prod_eq_one fun i hi ↦ Set.mulIndicator_of_notMem (by simpa using hi) f,
+    ← div_eq_mul_one_div] at hg
+  exact (hasProd_subtype_iff_mulIndicator (s := {i | i ∉ S})).2 hg
 
 section Partial
 

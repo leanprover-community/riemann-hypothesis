@@ -56,8 +56,6 @@ namespace Formalism.MainNotions
 
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem two_le_absNorm (D : D7) (p : HeightOneSpectrum (𝓞 D.host.F)) : 2 ≤ Ideal.absNorm p.asIdeal := by
   have h0 : Ideal.absNorm p.asIdeal ≠ 0 := by
     rw [Ne, Ideal.absNorm_eq_zero_iff]
@@ -765,8 +763,6 @@ section S8c
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.CayleySignature
 
 namespace Formalism.MainNotions.ConjugationAmplitude
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : ThetaX D)
 

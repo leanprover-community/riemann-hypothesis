@@ -65,6 +65,7 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ThetaNormSqSu
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.CocompactTensor
 import Mathlib.Topology.LocallyConstant.Algebra
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselCharacterLocalElementEqSimpleEntrySum
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjSplitLocalModelBySupportedPair, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsScalarPreservesIntegralMatricesSubst, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSplitLocalSupportedScalarComponent, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LinearLawLocalModelInv, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LinearLawLocalModelMulClosed, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IndexIntegralMatricesInSubstitutionImage, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilVacuumLocalModelIntegralMatrixPair, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDatumLocalModelFormula
@@ -287,23 +288,8 @@ theorem place_π_e {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSp
   rw [← place_ι_one, p.π_ι]
 
 theorem exists_isLoc_scalar : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k) (V : HSp D) (Z : Type) [Fintype Z] [DecidableEq Z] (F : Frame k V.rank Z) (c : kˣ) (zk : GL Z k), (zk : Matrix Z Z k) = (c : k) • (1 : Matrix Z Z k) → ∃ z : GA D V, p.IsLoc F z zk := by
-  intro D k _ _ _ _ p V Z _ _ F c zk hzk
-  have he := p.split
-  obtain ⟨g, h1, h2, h3⟩ := GlobalTheory.SplitOnto.exists_unitary (c := cA D) GlobalTheory.SplitOnto.cA_cA (GlobalTheory.SplitOnto.gram_mul_inv V)
-    (GlobalTheory.SplitOnto.gram_conj V) he.1 he.2.1 (p.ι (c : k) • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)))
-    (p.ι ((c⁻¹ : kˣ) : k) • 1) (by
-      rw [Matrix.smul_mul, Matrix.one_mul, smul_smul (p.ι _), ← place_ι_mul, Units.inv_mul, place_ι_one, smul_smul, he.1])
-  let z : GA D V := ⟨g, h1⟩
-  refine ⟨z, fun i j => congrFun (congrFun h2 i) j, ?_⟩
-  rw [hzk, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, F.βγ]
-  ext i j
-  have := congrFun (congrFun h3 i) j
-  simp only [Matrix.smul_apply, smul_eq_mul] at this
-  change p.π (g.1 i j) = _
-  rw [← one_mul (p.π (g.1 i j)), ← place_π_e p, ← map_mul, this, map_mul, place_π_e, one_mul]
-  by_cases hij : i = j
-  · subst hij; simp [p.π_ι]
-  · simp [hij]
+  intros
+  apply _root_.GlobalTheory.LocMod.Witness.exists_isLoc <;> assumption
 
 end GlobalTheory.LocScalar
 end -- clump:auto
@@ -659,16 +645,7 @@ theorem map_mt_inv_loc {D : D7} {k : Type} [Field k] [ValuativeRel k] [Topologic
     (p : Place D k) {V : HSp D} {Z : Type} [Fintype Z] [DecidableEq Z] (F : Frame k V.rank Z) (a : GA D V) (ak : GL Z k)
     (ha : (mt V a).map p.π = F.β * (ak : Matrix Z Z k) * F.γ) :
     (mt V a⁻¹).map p.π = F.β * ((ak⁻¹ : GL Z k) : Matrix Z Z k) * F.γ := by
-  have h1 : (mt V a⁻¹).map p.π * (mt V a).map p.π = 1 := by
-    rw [← Matrix.map_mul, ← mt_mul, inv_mul_cancel, mt_one, Matrix.map_one _ (map_zero _) (map_one _)]
-  have h2 : (F.β * (ak : Matrix Z Z k) * F.γ) * (F.β * ((ak⁻¹ : GL Z k) : Matrix Z Z k) * F.γ) = 1 := by
-    simp only [Matrix.mul_assoc]
-    rw [← Matrix.mul_assoc F.γ F.β, F.γβ, Matrix.one_mul, ← Matrix.mul_assoc (ak : Matrix Z Z k), ← Units.val_mul,
-      mul_inv_cancel, Units.val_one, Matrix.one_mul, F.βγ]
-  rw [ha] at h1
-  calc (mt V a⁻¹).map p.π = (mt V a⁻¹).map p.π * ((F.β * (ak : Matrix Z Z k) * F.γ) *
-        (F.β * ((ak⁻¹ : GL Z k) : Matrix Z Z k) * F.γ)) := by rw [h2, Matrix.mul_one]
-    _ = _ := by rw [← Matrix.mul_assoc, h1, Matrix.one_mul]
+  apply _root_.GlobalTheory.LocBesChar.map_mt_inv <;> assumption
 
 theorem actO_up_of_map {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (p : Place D k) {S T : HSp D} {Y Y' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y']

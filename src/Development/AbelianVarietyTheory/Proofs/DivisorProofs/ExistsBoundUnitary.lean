@@ -54,7 +54,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.LocalCountingBounds
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum NumberField Matrix
 open scoped TensorProduct ComplexOrder MatrixOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.DefiniteQuotient
 

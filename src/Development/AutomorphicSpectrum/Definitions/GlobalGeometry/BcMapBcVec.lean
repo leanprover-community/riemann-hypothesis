@@ -51,8 +51,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Rec.Lat
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section BC
 
 variable {K L Rl : Type} [Field K] [Field L] [AddCommGroup Rl] [Module K Rl]

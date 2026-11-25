@@ -109,10 +109,6 @@ theorem isClass_of_isChar {G : Type} [Group G] {χ : G → ℂ} (h : IsChar χ) 
   rw [← hV, ← hV]
   exact FDRep.char_conj V x y
 
-theorem isChar_of_isIrr {G : Type} [Group G] {χ : G → ℂ} (h : IsIrr χ) : IsChar χ := by
-  obtain ⟨V, _, hV⟩ := h
-  exact ⟨V, hV⟩
-
 theorem wh_der_nat (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (N i : ℕ) (hi : i ≤ N)
     (χ : Gn g N → ℂ) (hχ : IsChar χ) : ∃ n : ℕ, wh ψ (der ψ i χ) = n := by
   obtain ⟨L, hL, hLeq⟩ := (_root_.GlobalTheory.GLq.HCChar.hc_isChar_and_res_decomp g i (N - i) N (by omega)).2 χ hχ
@@ -126,7 +122,7 @@ theorem wh_der_nat (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (N i : �
   show ∃ n : ℕ, tr (eU g i ψ) (fun h => wh ψ (res i (N - i) χ h)) = n
   rw [hres]
   exact tr_tr_list_nat _ _ (_root_.GlobalTheory.Adopt.whittakerJacquetIdempotents_properties_primeField g i 0 0 ψ).1 (_root_.GlobalTheory.Adopt.whittakerJacquetIdempotents_properties_primeField g (N - i) 0 0 ψ).1 L
-    (fun p hp => ⟨isChar_of_isIrr (hL p hp).1, isChar_of_isIrr (hL p hp).2⟩)
+    (fun p hp => ⟨GlobalTheory.CharDec.isChar_of_isIrr (hL p hp).1, GlobalTheory.CharDec.isChar_of_isIrr (hL p hp).2⟩)
 
 theorem wh_der_zero (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (N : ℕ) (χ : Gn g N → ℂ) :
     wh ψ (der ψ 0 χ) = wh ψ χ := by

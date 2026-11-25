@@ -57,31 +57,21 @@ section Ep
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n : ℕ}
 
-private theorem sum_a {ι : Type} (s : Finset ι) (f : ι → DD X g) : (∑ i ∈ s, f i).a = ∑ i ∈ s, (f i).a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi ih => simp [Finset.sum_insert hi, ih]
+private theorem sum_a {ι : Type} (s : Finset ι) (f : ι → DD X g) :
+    (∑ i ∈ s, f i).a = ∑ i ∈ s, (f i).a :=
+  map_sum (AddMonoidHom.mk' (fun y : DD X g => y.a) fun _ _ => rfl) f s
 
 private theorem sum_ep {ι : Type} (s : Finset ι) (f : ι → DD X g) (j) :
-    (∑ i ∈ s, f i).ep j = ∑ i ∈ s, (f i).ep j := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi ih => simp [Finset.sum_insert hi, ih]
+    (∑ i ∈ s, f i).ep j = ∑ i ∈ s, (f i).ep j :=
+  map_sum (AddMonoidHom.mk' (fun y : DD X g => y.ep j) fun _ _ => rfl) f s
 
 private theorem sum_ep' {ι : Type} (s : Finset ι) (f : ι → DD X g) (j) :
-    (∑ i ∈ s, f i).ep' j = ∑ i ∈ s, (f i).ep' j := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi ih => simp [Finset.sum_insert hi, ih]
+    (∑ i ∈ s, f i).ep' j = ∑ i ∈ s, (f i).ep' j :=
+  map_sum (AddMonoidHom.mk' (fun y : DD X g => y.ep' j) fun _ _ => rfl) f s
 
-private theorem sum_eta {ι : Type} (s : Finset ι) (f : ι → DD X g) : (∑ i ∈ s, f i).eta = ∑ i ∈ s, (f i).eta := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi ih => simp [Finset.sum_insert hi, ih]
+private theorem sum_eta {ι : Type} (s : Finset ι) (f : ι → DD X g) :
+    (∑ i ∈ s, f i).eta = ∑ i ∈ s, (f i).eta :=
+  map_sum (AddMonoidHom.mk' (fun y : DD X g => y.eta) fun _ _ => rfl) f s
 
 private theorem alg_eq (c : A) : algebraMap A (DD X g) c = DD.C (algebraMap A X c) := rfl
 

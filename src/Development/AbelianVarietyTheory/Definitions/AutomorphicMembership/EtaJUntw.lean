@@ -48,8 +48,6 @@ namespace GlobalTheory.Mem.Top
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Host Formalism.L2.DIV Formalism.L2.Pj Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT GlobalTheory.Mem NumberField IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Sub
 
 @[reducible] def subFam {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
@@ -375,8 +373,6 @@ structure RowT (D : D7) (fr : CharFrame D) (xi : D.what₂.Tup → HChar D.host.
   eQ : ∀ t, X.QPl (tie.tup t) ≃ R.Q t
 
   qv_eq : ∀ t v, X.qv (tie.tup t) v = Nat.card (kP (eQ t v).1)
-
-  nu_eq : ∀ t v (i : Fin D.R.m), X.nu (tie.tup t) v ((i : ℕ) + 1) = (((fr.mu0 i * xi (tie.tup t)).val (eQ t v).1 : ℂˣ) : ℂ)
 
   vdd_eq : ∀ (p : ℕ) τ (P : HeightOneSpectrum (𝓞 D.host.E)), p.Prime → (p : 𝓞 D.host.E) ∈ P.asIdeal →
     X.vdd p τ = (multiplicity P.asIdeal (differentIdeal ℤ (𝓞 D.host.E)) : ℝ) / (eWL D.host.E P : ℝ)

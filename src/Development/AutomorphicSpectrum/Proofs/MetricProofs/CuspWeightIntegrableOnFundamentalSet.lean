@@ -616,12 +616,6 @@ theorem comp_bijective : Function.Bijective (fun s : E →+* ℂ => s.comp (alge
 
 variable [IsCMField E]
 
-theorem conj_comp_injective : Function.Injective (fun s : 𝓞 E →+* ℂ => (starRingEnd ℂ).comp s) := by
-  intro s s' h
-  ext a
-  have := congrArg (fun t : 𝓞 E →+* ℂ => starRingEnd ℂ (t a)) h
-  simpa using this
-
 theorem finrank_eq_two_mul {Ψ : Type} [Fintype Ψ] {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) :
     Module.finrank ℚ E = 2 * Fintype.card Ψ := by
   apply GlobalTheory.CompanionTheory.Ar.Cusp.IsoCovol.finrank_eq_two_card <;> assumption
@@ -983,20 +977,6 @@ theorem lintegral_logPlus_le_of_mass {X : Type} [MeasurableSpace X] (μ : Measur
 section Card
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-theorem ringOfIntegers_hom_injective (s : 𝓞 E →+* ℂ) : Function.Injective s := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  have hk : RingHom.ker s = ⊥ := by
-    refine Ideal.eq_bot_of_comap_eq_bot (R := ℤ) ?_
-    rw [eq_bot_iff]
-    intro m hm
-    have h1 : s (algebraMap ℤ (𝓞 E) m) = 0 := hm
-    have h2 : ((m : ℤ) : ℂ) = 0 := by simpa using h1
-    simpa using (Int.cast_eq_zero.1 h2)
-  intro a ha
-  have : a ∈ RingHom.ker s := ha
-  rw [hk] at this
-  simpa using this
 
 theorem finrank_real_eq_card {Ψ : Type} [Fintype Ψ] {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) :
     Module.finrank ℚ (maximalRealSubfield E) = Fintype.card Ψ := by

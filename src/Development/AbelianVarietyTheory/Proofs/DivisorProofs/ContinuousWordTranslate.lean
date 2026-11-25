@@ -204,8 +204,6 @@ end Transport
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Mult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sm_eq {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (τ : D.what₂.Tau) :
     M.sm τ = smSub (M.ε τ) (M.σ τ) := by
   rw [← Submodule.span_eq (smSub (M.ε τ) (M.σ τ))]

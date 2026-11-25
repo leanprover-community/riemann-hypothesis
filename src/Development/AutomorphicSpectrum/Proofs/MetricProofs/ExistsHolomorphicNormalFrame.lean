@@ -65,11 +65,8 @@ theorem xiPot_logSin_change_of_frame : ∀ (G g : Matrix (Fin 2) (Fin 2) ℂ), G
   have herm2_smul_lemma_2 : ∀ (s t : ℂ) (u w : Fin 2 → ℂ),
       herm2 G (s • u) (t • w) = star s * t * herm2 G u w := by
     intro s t u w
-    have hsu : star (s • u) = star s • star u := by
-      ext i
-      simp [star_mul']
     unfold herm2
-    rw [Matrix.mulVec_smul, hsu, dotProduct_smul, smul_dotProduct]
+    rw [Matrix.mulVec_smul, star_smul, dotProduct_smul, smul_dotProduct]
     simp only [smul_eq_mul]
     ring
   have ratio_lemma_3 : ∀ (x y p q r : ℝ), x ≠ 0 → y ≠ 0 →

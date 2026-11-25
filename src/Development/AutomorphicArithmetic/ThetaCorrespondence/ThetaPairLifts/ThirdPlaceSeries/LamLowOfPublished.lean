@@ -771,8 +771,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField
@@ -895,8 +893,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Module
@@ -996,8 +992,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Module MeasureTheory Matrix
@@ -1022,46 +1016,6 @@ theorem g_mem_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) {PP : Pl D.host
   rw [← hk] at h1
   have h2 : algebraMap (𝓞 D.host.K) (𝓞 D.host.E) (D.host.g k : ℕ) ∈ PP.asIdeal := h1
   simpa using h2
-
-
-open Classical in
-theorem isConjChars_base_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T) :
-    IsConjChars R i t (RingEquiv.refl ℂ) (R.toLevCh.mu t ((i : ℕ) + 1)) R.eta
-      (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) := by
-  refine ⟨_, _, isGalConj_refl _ _, isGalConj_refl _ _, ⟨(h.thP.ωP i t).hecS, ?_⟩, h.lev.eta, ?_⟩
-  · intro P e he k x hx
-    have a := (h.lev.mu0 i).2 P e he k x hx
-    have b := (h.lev.xi t).2 P e he k x hx
-    show (((R.mu0 ((i : ℕ) + 1) x * R.xi t x : Circle)) : ℂ) = (((R.C.mu0 i).locK P k * (R.xiH t).locK P k : ℂˣ) : ℂ)
-    rw [Circle.coe_mul, a, b, Units.val_mul]
-  · intro PP hPP a k u hk hu
-    have ha : a ∉ PP.asIdeal := fun ha => u.ne_zero (hu.trans (Ideal.Quotient.eq_zero_iff_mem.2 ha))
-    show _ = (R.C.mu0 i).locK PP k * (R.xiH t).locK PP k
-    by_cases hg : PP ∈ R.Pg
-    · obtain ⟨l, hl⟩ := g_mem_six R h hg
-      have hun : (R.xiH t).UnrAt PP := by
-        by_contra hn
-        rcases (h.lev.Q_ram t PP).1 hn with hq | ⟨PP', hq, hc⟩
-        · obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hq
-          exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-        · obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP' hq
-          obtain ⟨c', hc1, hc2⟩ := hc _ (q_mem hq2)
-          have : c' = (q : 𝓞 D.host.E) := by
-            apply NumberField.RingOfIntegers.coe_injective
-            rw [map_natCast]
-            have h3 : (c' : D.host.E) = (q : D.host.E) := by simpa using hc2
-            exact h3
-          exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (this ▸ hc1)
-      simp only [if_pos hg]
-      rw [locK_eq_one hun a k hk ha, mul_one]
-      exact h.lev.chi i PP hg a k u hk hu
-    · have hq : PP ∈ R.Q t := hPP.resolve_left hg
-      obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hq
-      have hun : (R.C.mu0 i).UnrAt PP := (R.C.isMu0 i).unr PP fun l hl =>
-        not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-      simp only [if_neg hg]
-      rw [locK_eq_one hun a k hk ha, one_mul]
-      exact h.lev.xiR t PP hq a k u hk hu
 
 
 open Classical in
@@ -1099,7 +1053,7 @@ theorem isConjChars_at_six (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) {σ :
     IsConjChars R i A.μ0 s μ' η' (conjChar s (blkChar R i)) := by
   obtain ⟨μH, a1, a2⟩ := GlobalTheory.T.principalLevel_eigenparts_and_conjugate_characters.2.2.1 R F (GlobalTheory.Core5.of_core h) i σ s hσ μ' hμ
   obtain ⟨ηH, b1, b2⟩ := GlobalTheory.T.principalLevel_eigenparts_and_conjugate_characters.2.2.2 R F (GlobalTheory.Core5.of_core h) σ s hσ η' hη
-  obtain ⟨μB, -, c1, -, -, -, c2⟩ := isConjChars_base_six R h i A.μ0
+  obtain ⟨μB, -, c1, -, -, -, c2⟩ := GlobalTheory.LowTopCore.isConjChars_base_ofCore R h i A.μ0
   refine ⟨μH, ηH, a1, b1, a2, b2, fun PP hP a k u hk hu => Units.ext ?_⟩
   have e1 := a1 PP k
   have e2 := c1 PP k

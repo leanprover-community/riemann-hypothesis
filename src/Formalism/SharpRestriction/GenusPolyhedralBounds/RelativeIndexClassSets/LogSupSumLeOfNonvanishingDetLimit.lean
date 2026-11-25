@@ -1667,7 +1667,6 @@ theorem zPoly_cf (X : PJ D B P j) {wL w0 : WeightFamilies.Wt D j} {N : ℕ} (w :
 
 end GPPacket
 
-open Module
 
 theorem len_sat_le {R F : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field F] [Algebra R F]
     [IsFractionRing R F] {V1 : Type} [AddCommGroup V1] [Module F V1] [Module R V1] [IsScalarTower R F V1]

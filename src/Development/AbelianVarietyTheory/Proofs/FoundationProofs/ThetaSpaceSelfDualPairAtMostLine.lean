@@ -71,23 +71,11 @@ alias sq_smul_left := _root_.GlobalTheory.ConjNorm.Line.sq_smul_left
 alias sq_smul_right := _root_.GlobalTheory.ConjNorm.Line.sq_smul_right
 alias sq_add_left := _root_.GlobalTheory.ConjNorm.Line.sq_add_left
 alias sq_add_right := _root_.GlobalTheory.ConjNorm.Line.sq_add_right
-alias sq_neg_left := _root_.GlobalTheory.ConjNorm.Line.sq_neg_left
-alias sq_neg_right := _root_.GlobalTheory.ConjNorm.Line.sq_neg_right
-alias sq_zero_left := _root_.GlobalTheory.ConjNorm.Line.sq_zero_left
-alias sq_zero_right := _root_.GlobalTheory.ConjNorm.Line.sq_zero_right
 alias sq_self_im := _root_.GlobalTheory.ConjNorm.Line.sq_self_im
-alias continuous_sq := _root_.GlobalTheory.ConjNorm.Line.continuous_sq
-alias embV_apply := _root_.GlobalTheory.ConjNorm.Line.embV_apply
-alias sq_embV := _root_.GlobalTheory.ConjNorm.Line.sq_embV
 alias embV_smul := _root_.GlobalTheory.ConjNorm.Line.embV_smul
 alias embV_sum := _root_.GlobalTheory.ConjNorm.Line.embV_sum
-alias span_embT := _root_.GlobalTheory.ConjNorm.Line.span_embT
 alias expand := _root_.GlobalTheory.ConjNorm.Line.expand
 alias lam_mul := _root_.GlobalTheory.ConjNorm.Line.lam_mul
-alias of_dual_families := _root_.GlobalTheory.ConjNorm.Line.of_dual_families
-alias hYY_smul := _root_.GlobalTheory.ConjNorm.Line.hYY_smul
-alias hYY_add := _root_.GlobalTheory.ConjNorm.Line.hYY_add
-alias onB_expand := _root_.GlobalTheory.ConjNorm.Line.onB_expand
 alias theta_line := _root_.GlobalTheory.ConjNorm.Line.theta_line
 
 end GlobalTheory.ThetaLine

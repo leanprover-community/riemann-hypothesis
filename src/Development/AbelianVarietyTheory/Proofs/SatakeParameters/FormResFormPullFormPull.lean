@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory AlgebraicGeometry Opposite ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.HodgeCoh GlobalTheory.CechDR
 
-set_option autoImplicit false
-
 noncomputable section
 namespace GlobalTheory.HodgeCoh
 

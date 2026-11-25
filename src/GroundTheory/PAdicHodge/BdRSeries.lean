@@ -254,17 +254,6 @@ theorem logOnePlus_sub_sum_mem {z : B} (hz : z ∈ I) (n : ℕ) :
   rw [hs]
   exact seriesEval_sub_sum_mem hz (log ℚ) n
 
-theorem logOnePlus_eq_mul {z : B} (hz : z ∈ I) : ∃ u, u - 1 ∈ I ∧ logOnePlus I z hz = z * u := by
-  set h : ℚ⟦X⟧ := mk fun n => coeff (n + 1) (log ℚ)
-  have hlog : log ℚ = X * h := by
-    conv_lhs => rw [eq_X_mul_shift_add_const (log ℚ)]
-    rw [constantCoeff_log, map_zero, add_zero]
-  refine ⟨seriesEval I z hz h, ?_, ?_⟩
-  · have h1 := seriesEval_sub_sum_mem hz h 1
-    rwa [Finset.sum_range_one, pow_zero, mul_one, pow_one, coeff_mk, zero_add, coeff_one_log,
-      map_one] at h1
-  · rw [logOnePlus, hlog, map_mul, seriesEval_X]
-
 theorem logOnePlus_pow {z : B} (hz : z ∈ I) (k : ℕ) (hk : (1 + z) ^ k - 1 ∈ I) :
     logOnePlus I ((1 + z) ^ k - 1) hk = k * logOnePlus I z hz := by
   have hg : constantCoeff ((1 + X) ^ k - 1 : ℚ⟦X⟧) = 0 := by simp

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorTypeIffPulledBackIdentityStatement
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLatBasisHtLatIffSpanEq
@@ -75,17 +76,7 @@ namespace GlobalTheory.FlatModel.LiftW
 theorem one_left_comp_of_isGrpPullback {S S' : Scheme.{0}} {G' : Over S'} [GrpObj G'] {G : Over S} [GrpObj G]
     {f : S' ⟶ S} {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) (T : Over S') :
     (1 : T ⟶ G').left ≫ φ = (1 : Over.mk (T.hom ≫ f) ⟶ G).left := by
-  have hw : ((1 : T ⟶ G').left ≫ φ) ≫ G.hom = (Over.mk (T.hom ≫ f)).hom := by
-    rw [Category.assoc, h.1.w, ← Category.assoc, Over.w]
-    rfl
-  let x₀ : Over.mk (T.hom ≫ f) ⟶ G := Over.homMk ((1 : T ⟶ G').left ≫ φ) hw
-  have e := h.2 T 1 1 x₀ x₀ rfl rfl
-  rw [_root_.mul_one] at e
-  have hxx : x₀ * x₀ = x₀ := by
-    ext
-    exact e
-  have h1 : x₀ = 1 := mul_eq_right.mp hxx
-  exact congrArg Over.Hom.left h1
+  apply _root_.GlobalTheory.UPel.HT.ES.tjAt_pull_one_left <;> assumption
 
 end GlobalTheory.FlatModel.LiftW
 end -- clump:auto

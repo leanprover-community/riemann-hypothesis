@@ -105,19 +105,6 @@ def rkC : ℕ := Module.finrank ℂ (LinearMap.range (PhiC C A P))
 
 def RKC : Prop := A.du < 2 * rkC C A P
 
-theorem finiteDimensional_Mram : FiniteDimensional ℂ A.Mram :=
-  haveI := A.Mu0_fd
-  Submodule.finiteDimensional_of_le (inf_le_left : A.Mram ≤ A.Mu0)
-
-theorem rkC_add_ker : rkC C A P + finrank ℂ (LinearMap.ker (PhiC C A P)) = A.du :=
-  haveI := finiteDimensional_Mram C A
-  LinearMap.finrank_range_add_finrank_ker _
-
-theorem rkc_iff_ker : RKC C A P ↔ 2 * finrank ℂ (LinearMap.ker (PhiC C A P)) < A.du := by
-  have := rkC_add_ker C A P
-  unfold RKC
-  omega
-
 end Member
 
 def dualH {K : Type} [Field K] [NumberField K] [StarRing K] (A : HLat K) : HLat K where
@@ -141,27 +128,6 @@ def IsPhi (Φ : (D.div.Nu u).V →ₗ[D.what₂.LL] (MtDual D Am).V) : Prop :=
   ∀ (x : (D.div.Nu u).V) (z : (Mt D Am).V),
     D.what₂.embLL ((show Module.Dual D.what₂.LL (Mt D Am).V from Φ x) z) =
       D.what₂.perCol u D.what₂.mu0 (D.jN u x) (Am.jAmb D.what₂.mu0 z)
-
-def PhiRat : Prop := ∃ Φ, IsPhi D Am u Φ
-
-
-open Classical in
-def Phi : (D.div.Nu u).V →ₗ[D.what₂.LL] (MtDual D Am).V := if h : PhiRat D Am u then h.choose else 0
-
-theorem isPhi_Phi (h : PhiRat D Am u) : IsPhi D Am u (Phi D Am u) := by
-  unfold Phi; rw [dite_eq_left h]; exact h.choose_spec
-
-theorem isPhi_unique {Φ Ψ} (h : IsPhi D Am u Φ) (h' : IsPhi D Am u Ψ) : Φ = Ψ := by
-  ext x : 1
-  apply LinearMap.ext
-  intro z
-  exact D.what₂.embLL.injective ((h x z).trans (h' x z).symm)
-
-theorem IsPhi.eq_Phi {Φ} (h : IsPhi D Am u Φ) : Φ = Phi D Am u :=
-  isPhi_unique D Am u h (isPhi_Phi D Am u ⟨Φ, h⟩)
-
-def PhiInt (N : Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) : Prop :=
-  PhiRat D Am u ∧ ∀ x ∈ N, Phi D Am u x ∈ (MtDual D Am).L
 
 end GlobalTheory.Core.Rk
 

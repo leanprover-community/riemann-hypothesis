@@ -57,8 +57,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace Limits Filter
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.CechPic
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GenFinite

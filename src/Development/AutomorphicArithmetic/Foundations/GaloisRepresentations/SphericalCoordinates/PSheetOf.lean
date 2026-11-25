@@ -59,23 +59,6 @@ private theorem refl_marked {Λ : Type} (N : ℕ) (D : PLat O bar) (t : Λ → D
     IsMarkedIsom N D D t t (LinearEquiv.refl O D.La) :=
   ⟨fun _ _ => rfl, fun a => ⟨0, by simp⟩⟩
 
-private theorem commutes_rho {D : PLat O bar} {P P' : D.La →+ (Fin g → ℂ)}
-    (hP : IsPeriod D ρ P) (hP' : IsPeriod D ρ P') (w : D.La ≃ₗ[O] D.La)
-    (h : (Fin g → ℂ) ≃ₗ[ℂ] (Fin g → ℂ)) (hw : ∀ x, P' (w x) = h (P x)) (a : O) (z : Fin g → ℂ) :
-    h (ρ a *ᵥ z) = ρ a *ᵥ h z := by
-  have hz : z ∈ Submodule.span ℝ (Set.range P) := by
-    rw [hP.2.2.2.1]; trivial
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨u, rfl⟩ := hx
-    rw [← hP.1, ← hw, ← hw, map_smul, hP'.1]
-  | zero => simp
-  | add x y _ _ hx hy => simp only [Matrix.mulVec_add, map_add (f := _), hx, hy]
-  | smul c x _ hx =>
-    have e : ∀ v : Fin g → ℂ, h (c • v) = c • h v := fun v =>
-      (h.toLinearMap.restrictScalars ℝ).map_smul c v
-    rw [Matrix.mulVec_smul, e, e, hx, Matrix.mulVec_smul]
-
 theorem sheetOf_of : SheetOf := by
   intro O _ bar g ρ Λ F N Cl U i hN hfull
   have hN0 : 0 < N := by omega
@@ -105,7 +88,7 @@ theorem sheetOf_of : SheetOf := by
     have hPb := hP.1 b₀ hb'
     obtain rfl : i' = i := U.disj i' i (P b₀) P₀ hPb hP₀ ((hu b₀ hb').trans hyb)
     obtain ⟨w, h, hw, hwx⟩ := (U.fibre i' (P b₀) P₀ hPb hP₀).1 ((hu b₀ hb').trans hyb)
-    have hc := commutes_rho hPb hP₀ w h hwx
+    have hc := GlobalTheory.DimEq.comm_of_rel hPb hP₀ w h hwx
     let P' : (Fin _ → ℂ) → ((U.Di i').La →+ (Fin g → ℂ)) := fun b =>
       (h.toLinearMap.toAddMonoidHom.comp (P b)).comp w.symm.toLinearMap.toAddMonoidHom
     have ev : ∀ b x, P' b x = h (P b (w.symm x)) := fun _ _ => rfl

@@ -46,7 +46,6 @@ open scoped Classical ENNReal
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf
 namespace GlobalTheory.TypeAsm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {X : HidaSetting D}
 
 abbrev GT (Y : Full X) (u : D.what₂.Word) : Type := GTerm X u u (X.Fu u) (X.Fu u) (Y.what₂ u) (Y.what₂ u)

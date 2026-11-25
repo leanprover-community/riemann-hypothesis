@@ -1083,18 +1083,7 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem isPlacesIdem_idem {S₁ : Finset (InfinitePlace F)} {S₂ : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F}
     (h : IsPlacesIdem S₁ S₂ ε) : ε * ε = ε := by
-  refine Prod.ext ?_ ?_
-  · funext w
-    change fstA F ε w * fstA F ε w = fstA F ε w
-    by_cases hw : w ∈ S₁
-    · rw [h.1 w hw, one_mul]
-    · rw [h.2.1 w hw, zero_mul]
-  · refine RestrictedProduct.ext _ _ fun u => ?_
-    change evalV F u (sndA F (ε * ε)) = evalV F u (sndA F ε)
-    rw [map_mul, map_mul]
-    by_cases hu : u ∈ S₂
-    · rw [h.2.2.1 u hu, one_mul]
-    · rw [h.2.2.2 u hu, zero_mul]
+  apply _root_.GlobalTheory.QSAStep.idem_of_isPlacesIdem <;> assumption
 
 theorem continuous_smul_const {R : Type*} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] {a b : R}
     (x : ℍ[R, a, b]) : Continuous fun t : R => t • x := by

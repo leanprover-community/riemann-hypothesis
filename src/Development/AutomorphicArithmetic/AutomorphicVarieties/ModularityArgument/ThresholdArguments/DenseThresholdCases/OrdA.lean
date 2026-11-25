@@ -60,7 +60,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 private theorem ordA_lin {W ι : Type} [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
     (f : ι → Module.End ℂ W) (hc : ∀ i j, Commute (f i) (f j)) (l : W →ₗ[ℂ] ℂ) (μ : ι → ℂ)
     (hl : ∀ i v, l (f i v) = μ i * l v) {w : W} (hw : l w ≠ 0) : ∃ v, v ≠ 0 ∧ ∀ i, f i v = μ i • v := by

@@ -17,8 +17,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGLocModel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 open Formalism.MainNotions.S.LocNG Formalism.MainNotions.S.Loc

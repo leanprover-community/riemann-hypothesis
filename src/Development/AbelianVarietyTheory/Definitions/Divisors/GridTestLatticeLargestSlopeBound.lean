@@ -60,8 +60,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace GlobalTheory.FunObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Delta
 
 variable {Γ A K M : Type} [Group Γ] [Group A] [Field K] [AddCommGroup M] [Module K M]

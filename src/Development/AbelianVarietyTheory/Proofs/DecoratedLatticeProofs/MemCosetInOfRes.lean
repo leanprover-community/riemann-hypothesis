@@ -1,5 +1,7 @@
 module
 
+
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiamondOperatorsOnCharts
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsTwIffCanonEq
@@ -55,7 +57,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdAbsNormD
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemberRepresentativeMovedAtTwistEqTupleFrames
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivFr
 import Mathlib.Tactic.Linter.Style
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.SameCosetOfMemCosetIn, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemCosetInOfRes
 
@@ -137,24 +138,7 @@ theorem normal_rep {G D A : Type} [Group G] [MulAction G D] (f : D → A) (pref 
     (d d' : D) (hd : ∀ g : G, f (g • d') = f (g • d)) :
     f (GlobalTheory.Mem.Col2.prefRep pref (Quotient.mk (MulAction.orbitRel G D) d')) =
       f (GlobalTheory.Mem.Col2.prefRep pref (Quotient.mk (MulAction.orbitRel G D) d)) := by
-  have h1 : ∀ (q : D) (g₀ : G), (fun r => ∃ g : G, r = f (g • g₀ • q)) = fun r => ∃ g : G, r = f (g • q) := fun q g₀ => by
-    funext r
-    refine propext ⟨fun ⟨g, e⟩ => ⟨g * g₀, by rw [mul_smul]; exact e⟩, fun ⟨g, e⟩ => ⟨g * g₀⁻¹, by
-      rw [mul_smul, inv_smul_smul]; exact e⟩⟩
-  have h2 : ∀ q : D, f (GlobalTheory.Mem.Col2.prefRep pref (Quotient.mk (MulAction.orbitRel G D) q)) =
-      Classical.epsilon (p := fun r => ∃ g : G, r = f (g • q)) (h := ⟨f q⟩) := fun q => by
-    have hex : ∃ p, Quotient.mk (MulAction.orbitRel G D) p = Quotient.mk (MulAction.orbitRel G D) q ∧ pref p := by
-      obtain ⟨g, hg⟩ := Classical.epsilon_spec (p := fun r => ∃ g : G, r = f (g • q)) ⟨f q, 1, by rw [one_smul]⟩
-      refine ⟨g • q, Quotient.sound ⟨g, rfl⟩, (h _).2 ?_⟩
-      rw [h1]
-      exact hg.symm
-    unfold GlobalTheory.Mem.Col2.prefRep
-    rw [dite_eq_left hex]
-    obtain ⟨g, hg⟩ : ∃ g : G, g • q = hex.choose := Quotient.exact hex.choose_spec.1
-    have h3 := (h _).1 hex.choose_spec.2
-    rw [h3, ← hg, h1]
-  rw [h2, h2]
-  simp only [hd]
+  first | exact _root_.GlobalTheory.Mem.Col2.DiaChart.normal_rep | exact @_root_.GlobalTheory.Mem.Col2.DiaChart.normal_rep | apply _root_.GlobalTheory.Mem.Col2.DiaChart.normal_rep <;> assumption
 
 section Local
 

@@ -54,7 +54,7 @@ open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.B3 PositivityTheory.Rg.
 
 namespace UpperTheory.BaseChangeIdentities.FrameWordIdentity
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 def heckeLevelWordBase : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (d : LocData E n), d.Ok → ∀ a (ha : a ≤ n) (p : LL d),
   (locL d a ha p).Ok d.P ∧ ((d.eL a).mul (locL d a ha p)).Eqv d.P (locL d a ha p) ∧ d.IsLetter a ha (locL d a ha p)

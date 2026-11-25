@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDeRhamSheaf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open Module TensorProduct GlobalTheory.DeRham

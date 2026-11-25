@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockHeisenbergOperatorISignatureConjApplyOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,15 +58,7 @@ theorem jm_mul_jm_apply {P Q R S : ℕ} (c : Matrix (Ix P Q) (Ix R S) ℂ) (i : 
 
 theorem heisOp_one {P Q R S : ℕ} (c : Matrix (Ix P Q) (Ix R S) ℂ) :
     heisOp (Complex.I • (Jm P Q * c * Jm R S)) (1 : Formalism.BasicNotions.TH.Pol P Q R S) = Complex.I • heisOp c 1 := by
-  simp only [heisOp, LinearMap.smul_apply, LinearMap.sum_apply, LinearMap.sub_apply]
-  rw [smul_comm Complex.I]
-  congr 1
-  rw [Finset.smul_sum]
-  refine Finset.sum_congr rfl ?_
-  rintro ⟨i, j⟩ -
-  rw [Matrix.smul_apply, jm_mul_jm_apply]
-  rcases i with i | i <;> rcases j with j | j <;>
-    simp [raiB, lowB, linePos, lineSign, smul_smul]
+  apply _root_.GlobalTheory.RealLift.heisOp_twist_one <;> assumption
 
 theorem atPl_tprod {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
     (w : ι) (L : Module.End ℂ (V w)) (v : ∀ i, V i) :

@@ -259,8 +259,6 @@ theorem val_compAt_detIdl {SB : Finset (HeightOneSpectrum (𝓞 E))} (hSB : ∀ 
 
 end Glob
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mk_eq_detPt (R : Ranks) (H : Formalism.BasicNotions.Host R) (n : ℕ) (ST SG Q SQ : Finset (HeightOneSpectrum (𝓞 H.E)))
     (p : DecoF H.E n ST SG Q) (g : GL (Fin n) (AfE H.F H.E)) (a : Ideles H.E) (hl : LevOk H SG SQ)
     (hp : IsPtOf (host_cmData R H) g (extTo SQ p)) (ha : IsDetLift (host_cmData R H) g a) :

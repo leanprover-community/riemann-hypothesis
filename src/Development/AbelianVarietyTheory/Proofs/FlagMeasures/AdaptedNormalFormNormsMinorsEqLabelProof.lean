@@ -48,7 +48,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc
 namespace GlobalTheory.TypeAsm.HasLabelling
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem frameExp_cast (r l : ℕ) (hl : l ≤ r + 1) :
     ((frameExp r l : ℕ) : ℤ) = ∑ a ∈ Finset.range l, ((r : ℤ) - a) := by
@@ -110,7 +109,6 @@ end GlobalTheory.TypeAsm.HasLabelling
 
 namespace GlobalTheory.TypeAsm
 open GlobalTheory.TypeAsm.HasLabelling
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem labC : LabC := by
   intro D large₂ X Y u hS t N hN

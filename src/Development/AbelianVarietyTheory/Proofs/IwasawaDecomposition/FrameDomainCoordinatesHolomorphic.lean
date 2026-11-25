@@ -47,8 +47,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formali
 open Formalism.DegreeFormula Formalism.MJ GlobalTheory.HodgeDomain GlobalTheory.TrueCx
 open scoped ComplexOrder ContDiff
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ShFam.SecFrame

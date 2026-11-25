@@ -314,12 +314,7 @@ theorem integrableOn_mul_star {X : Type} [TopologicalSpace X] [MeasurableSpace X
 theorem isBiTheta_left {A S A' : HSp D} {χA χS : (AE D)ˣ →* Circle} {oma : Om A S}
     (hA : IsWeilDatumO ψ A S χA χS oma) {C : WO A S → WO S A' → ℂ} (hC : IsBiTheta ψ A S A' C) (p : GA D A × GA D S) :
     IsBiTheta ψ A S A' fun u v => oma p (fun u' => C u' v) u := by
-  let d := GlobalTheory.BiTransfer.sumDec A (GlobalTheory.ChiGrid.negSp A')
-  have hF := GlobalTheory.BiTransfer.isThetaFunO_join d hC
-  have h := (_root_.GlobalTheory.WeilSuperpos.weil_comm_superpos D ψ _ A (GlobalTheory.ChiGrid.negSp A') S d χA χS oma hA _ hF Unit (0 : Measure Unit)
-    (fun _ => 0) (fun _ => 0) measurable_const (integrable_zero _ _ _) p).1
-  simp only [GlobalTheory.BiTransfer.join_symm] at h
-  exact GlobalTheory.BiTransfer.isBiTheta_of_join (C := fun u v => oma p (fun u' => C u' v) u) d h
+  apply _root_.GlobalTheory.BiTransfer.isBiTheta_act_left <;> assumption
 
 theorem slice_right {A S A' : HSp D} {K : WO A S → WO S A' → ℂ} (hK : IsBiTheta ψ A S A' K) (u : WO A S) :
     IsThetaFunO ψ S A' (K u) := by

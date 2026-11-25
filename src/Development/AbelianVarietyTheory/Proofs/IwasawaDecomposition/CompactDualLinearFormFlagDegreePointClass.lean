@@ -1328,8 +1328,6 @@ section -- clump:auto
 open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.GoodMetric GlobalTheory.LieBase GlobalTheory.GrassTop
 open Classical
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GrassKernel

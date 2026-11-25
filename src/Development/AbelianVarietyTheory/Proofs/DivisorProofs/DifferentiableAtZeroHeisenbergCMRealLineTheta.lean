@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffDerivHeisenbergCMRealLineTheta
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 import Mathlib.Algebra.Order.Floor.Extended
@@ -102,19 +103,7 @@ variable (σ : E →ₐ[F] E) {nS nT : ℕ} (JS : Matrix (Fin nS) (Fin nS) E) (J
 
 theorem sndA_symplOHF (ξ₀ : E) (w y : WOF F E nS nT) (hy : y.map (finPartF F E) = 0) :
     sndA F (symplOHF σ JS JT ξ₀ w y) = 0 := by
-  have hk : ∀ a b c d, finPartF F E (incAF F E (JS⁻¹ a b) * cAF σ (y c b) * incAF F E (JT c d) * w d a) = 0 := by
-    intro a b c d
-    have h0 : finPartF F E (y c b) = 0 := congrFun (congrFun hy c) b
-    rw [map_mul, map_mul, map_mul, finPartF_sigR, h0, map_zero, mul_zero, zero_mul, zero_mul]
-  have hh : finPartF F E (hOF σ JS JT w y) = 0 := by
-    unfold hOF
-
-    simp only [map_sum, hk, Finset.sum_const_zero]
-  unfold symplOHF symplOF
-  rw [map_mul, map_trace_tens]
-  have e : (Algebra.TensorProduct.map (sndA F) (AlgHom.id F E)) (incAF F E ξ₀ * hOF σ JS JT w y) =
-      finPartF F E (incAF F E ξ₀ * hOF σ JS JT w y) := rfl
-  rw [e, map_mul, hh, mul_zero, map_zero, mul_zero]
+  apply _root_.GlobalTheory.ThetaLineSmoothF.snd_symplOHF <;> assumption
 
 theorem symplOHF_add_right (ξ₀ : E) (x y y' : WOF F E nS nT) :
     symplOHF σ JS JT ξ₀ x (y + y') = symplOHF σ JS JT ξ₀ x y + symplOHF σ JS JT ξ₀ x y' := by

@@ -1,6 +1,6 @@
 module
 
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.OrbRing
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.ExStabOrb
 public import Formalism.SatakeDualWeyl.Statement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -91,7 +91,7 @@ theorem hform_eq_sum (x y : Fin M → A) :
 theorem exists_mem_UJ (hdet : IsUnit J.det) (g : Matrix (Fin M) (Fin M) A)
     (hg : ∀ y z, hform c J (g *ᵥ y) (g *ᵥ z) = hform c J y z) :
     ∃ G ∈ UJ c J, (G : Matrix (Fin M) (Fin M) A) = g := by
-  apply PI.VolStabSW.OrbR.mem_UJ_of <;> assumption
+  apply PI.VolStabS.OrbR.mem_UJ_of <;> assumption
 
 theorem exists_reflection (hc : ∀ a, c (c a) = a) (hJ : ∀ i j, c (J j i) = J i j)
     (hdet : IsUnit J.det) (x x' : Fin M → A) (hx : hform c J x x = hform c J x' x')

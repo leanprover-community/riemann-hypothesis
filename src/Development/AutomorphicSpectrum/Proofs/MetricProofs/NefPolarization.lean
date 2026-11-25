@@ -562,11 +562,6 @@ theorem exists_ne_zero_of_relevant {K : Type} [Fintype K] {ι : K → Type} [∀
   rw [RingHom.mem_ker]
   simp [mConeMap, h0]
 
-theorem fin_one_const {α : Type} (a : α) : (fun _ : Fin 1 => a) = ![a] := by
-  funext j
-  fin_cases j
-  rfl
-
 end GlobalTheory.CompanionTheory.Ar.PB.NefPolProof
 
 namespace GlobalTheory.CompanionTheory.Ar.PB
@@ -589,7 +584,7 @@ theorem nefPol : NefPol := by
     rw [hWmap] at h1
     have h2 : (0 : ℝ) ≤ (I W 1 fun _ => (combLine Re.ref n).a : ℤ) := by
       rw [← h1]; exact h0
-    rw [← fin_one_const]
+    rw [← Matrix.const_fin1_eq]
     exact_mod_cast h2
   refine ⟨hnef, ?_⟩
   intro hpos β dβ _ _

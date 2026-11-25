@@ -75,7 +75,6 @@ noncomputable section
 namespace GlobalTheory.LevGeo.RankBd
 variable {D : D7} {r : ℕ} {Comp : Type} [Fintype Comp] {X : Comp → Data D.host.E r}
 open scoped TensorProduct
-open scoped TensorProduct
 variable {D : D7} {r : ℕ} {Comp : Type} [Fintype Comp] {X : Comp → Data D.host.E r}
 open Module
 end GlobalTheory.LevGeo.RankBd
@@ -85,7 +84,6 @@ section
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2.Theta Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.AllWt GlobalTheory.LevGeo
 open scoped ENNReal
 namespace GlobalTheory.LamPet
-open scoped ENNReal
 end GlobalTheory.LamPet
 end
 section

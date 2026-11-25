@@ -47,8 +47,6 @@ noncomputable section
 
 open MeasureTheory
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.SeeSaw.Scale
 
 variable {D : D7}

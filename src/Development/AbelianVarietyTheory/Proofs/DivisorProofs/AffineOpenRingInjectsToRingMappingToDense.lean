@@ -78,8 +78,6 @@ open GlobalTheory.HSApp
 open Filter Topology
 open GlobalTheory.ShFam GlobalTheory.ShFam.BdArc GlobalTheory.Toroidal
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.AffineDense

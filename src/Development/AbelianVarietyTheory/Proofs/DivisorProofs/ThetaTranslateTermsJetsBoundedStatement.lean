@@ -718,28 +718,7 @@ namespace GlobalTheory.IntGaugePull
 
 theorem top_le_of_redE {A : Type} [CommRing A] {X : Scheme.{0}} (x : Sp (DualNumber A) ⟶ X) (U : X.Opens)
     (h : ⊤ ≤ (redE A ≫ x) ⁻¹ᵁ U) : ⊤ ≤ x ⁻¹ᵁ U := by
-  intro z _
-  let w : Sp A := (Spec.map (CommRingCat.ofHom (algebraMap A (DualNumber A)))).base z
-  have hw : (redE A).base w = z := by
-    simp only [w, redE, spMap, Spec.map_base]
-    refine PrimeSpectrum.ext (Ideal.ext fun t => ?_)
-    simp only [CommRingCat.hom_ofHom]
-    have hn : TrivSqZeroExt.inr (TrivSqZeroExt.snd t) ∈ z.asIdeal := by
-      apply z.isPrime.mem_of_pow_mem 2
-      rw [pow_two, TrivSqZeroExt.inr_mul_inr]; exact z.asIdeal.zero_mem
-    have ht : t = algebraMap A (DualNumber A) ((TrivSqZeroExt.fstHom A A A).toRingHom t) +
-        TrivSqZeroExt.inr (TrivSqZeroExt.snd t) := by
-      rw [TrivSqZeroExt.algebraMap_eq_inl]; exact (TrivSqZeroExt.inl_fst_add_inr_snd_eq t).symm
-    constructor
-    · intro h1; rw [ht]; exact z.asIdeal.add_mem h1 hn
-    · intro h1
-      have e : algebraMap A (DualNumber A) ((TrivSqZeroExt.fstHom A A A).toRingHom t) =
-          t - TrivSqZeroExt.inr (TrivSqZeroExt.snd t) := eq_sub_of_add_eq ht.symm
-      change algebraMap A (DualNumber A) ((TrivSqZeroExt.fstHom A A A).toRingHom t) ∈ z.asIdeal
-      rw [e]; exact z.asIdeal.sub_mem h1 hn
-  have := h (show w ∈ (⊤ : (Sp A).Opens) from trivial)
-  rw [← hw]
-  exact this
+  apply _root_.GlobalTheory.MBLow.TranslBound.top_le_of_redE <;> assumption
 
 theorem sep_unique {C : Type} [Field C] (S : ValuationSubring C) {X Y : Scheme.{0}} (p : X ⟶ Y) [IsSeparated p]
     (x₁ x₂ : Sp S ⟶ X) (h₁ : x₁ ≫ p = x₂ ≫ p) (h : spMap S.subtype ≫ x₁ = spMap S.subtype ≫ x₂) : x₁ = x₂ := by

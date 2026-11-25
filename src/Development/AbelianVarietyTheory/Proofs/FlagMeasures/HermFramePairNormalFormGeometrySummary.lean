@@ -51,6 +51,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairIdealKillsDiscriminantModules
 
 @[expose] public section
 
@@ -72,17 +73,7 @@ variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [M
 theorem _root_.GlobalTheory.DegCnt.NFGeom.Dl_ne :
     _root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' N.j
       (N.j_le.trans (Nat.le_succ r)) ≠ 0 := by
-  rw [_root_.Formalism.HermitianLatticeCounting.P.Dl_eq]
-  have hmat : (Matrix.of fun a b => H.B (N.F.e
-      (Fin.castLE (N.j_le.trans (Nat.le_succ r)) a))
-      (N.F'.e (Fin.castLE (N.j_le.trans (Nat.le_succ r)) b))) =
-      N.w.mat *
-        Matrix.diagonal (fun b => (((N.sgn b : ℤˣ) : ℤ) : K)) := by
-    ext a b
-    simp [Matrix.mul_diagonal, N.pair]
-  rw [hmat, Matrix.det_mul, Matrix.det_diagonal]
-  refine mul_ne_zero (_root_.GlobalTheory.SgLoc.PtAlg.isUnit_det _).ne_zero (Finset.prod_ne_zero_iff.2 fun b _ => ?_)
-  exact_mod_cast (N.sgn b).ne_zero
+  apply _root_.GlobalTheory.DegCnt.Kill.Dj_ne <;> assumption
 
 open NumberField in
 open scoped Pointwise ENNReal Classical in

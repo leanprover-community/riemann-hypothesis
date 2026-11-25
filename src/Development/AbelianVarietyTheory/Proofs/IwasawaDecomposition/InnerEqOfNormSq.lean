@@ -47,8 +47,6 @@ namespace GlobalTheory.Mem.Df
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 
 
 theorem inner_eq_of_norm_sq {K V E M : Type} [Field K] [AddCommGroup V] [Module ℂ V] [NormedAddCommGroup E] [InnerProductSpace ℂ E]

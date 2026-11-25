@@ -9,8 +9,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace ReciprocityTheory.ChartRestriction.G.Out.KrullAlg
 
 variable {A : Type*} [CommRing A] [IsDomain A] {K : Type*} [Field K] [Algebra A K]

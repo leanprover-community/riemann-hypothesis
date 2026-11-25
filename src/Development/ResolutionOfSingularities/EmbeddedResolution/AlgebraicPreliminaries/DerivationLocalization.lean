@@ -56,31 +56,12 @@ variable [IsScalarTower R S N] [IsScalarTower S S' N] [IsScalarTower R S' N]
 
 namespace Derivation
 
-private theorem isUnit_algebraMap_moduleEnd (M : Submonoid S) [IsLocalization M S'] (y : M) :
-    IsUnit ((algebraMap S (Module.End S N)) (y : S)) := by
-  obtain ⟨u, hu⟩ := IsLocalization.map_units (M := M) S' y
-  have hcomm : ∀ (s : S) (c : S') (n : N), c • s • n = s • c • n := by
-    intro s c n
-    rw [← IsScalarTower.algebraMap_smul S' s n, ← IsScalarTower.algebraMap_smul S' s (c • n),
-      smul_smul, smul_smul, mul_comm]
-  have h1 : ∀ n : N, (y : S) • (((u⁻¹ : S'ˣ) : S') • n) = n := by
-    intro n
-    rw [← IsScalarTower.algebraMap_smul S' (y : S) (((u⁻¹ : S'ˣ) : S') • n), ← hu, smul_smul,
-      u.mul_inv, one_smul]
-  have h2 : ∀ n : N, ((u⁻¹ : S'ˣ) : S') • ((y : S) • n) = n := by
-    intro n
-    rw [← IsScalarTower.algebraMap_smul S' (y : S) n, ← hu, smul_smul, u.inv_mul, one_smul]
-  exact ⟨⟨(algebraMap S (Module.End S N)) (y : S),
-    { toFun := fun n => ((u⁻¹ : S'ˣ) : S') • n
-      map_add' := fun a b => smul_add _ _ _
-      map_smul' := fun s n => hcomm s ((u⁻¹ : S'ˣ) : S') n },
-    LinearMap.ext fun n => h1 n, LinearMap.ext fun n => h2 n⟩, rfl⟩
-
 private theorem exists_liftToLocalization (D : Derivation R S N) (M : Submonoid S)
     [IsLocalization M S'] :
     ∃ D' : Derivation R S' N, ∀ s : S, D' (algebraMap S S' s) = D s := by
-  have hu : ∀ y : M, IsUnit ((algebraMap S (Module.End S N)) (y : S)) := fun y =>
-    isUnit_algebraMap_moduleEnd (S' := S') M y
+  have hu : ∀ y : M, IsUnit ((algebraMap S (Module.End S N)) (y : S)) := fun y => by
+    rw [← (Algebra.lsmul S (A := S') S N).commutes (y : S)]
+    exact (IsLocalization.map_units (M := M) S' y).map (Algebra.lsmul S (A := S') S N).toMonoidHom
   have : IsLocalizedModule M (KaehlerDifferential.map R R S S') := inferInstance
   refine ⟨(LinearMap.extendScalarsOfIsLocalization M S'
       (IsLocalizedModule.lift M (KaehlerDifferential.map R R S S')

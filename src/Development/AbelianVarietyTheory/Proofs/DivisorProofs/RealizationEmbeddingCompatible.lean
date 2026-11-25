@@ -65,9 +65,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.BigOn.Exp

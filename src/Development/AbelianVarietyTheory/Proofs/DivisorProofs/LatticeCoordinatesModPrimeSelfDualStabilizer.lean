@@ -51,7 +51,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull
 
 @[expose] public section
 
-set_option autoImplicit false
 set_option maxHeartbeats 800000
 set_option synthInstance.maxHeartbeats 400000
 

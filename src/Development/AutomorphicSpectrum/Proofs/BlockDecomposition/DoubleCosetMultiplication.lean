@@ -51,8 +51,6 @@ open GlobalTheory.BCT GlobalTheory.UnitaryBC PositivityTheory.Rg.Bc.ArchbcB.B Po
 open PositivityTheory.Rg.BcN.F2 (mconv)
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.DcosProduct
 
 section Abstract

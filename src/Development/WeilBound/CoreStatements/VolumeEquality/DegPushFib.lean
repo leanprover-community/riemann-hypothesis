@@ -383,19 +383,24 @@ private theorem vdeg_ne_zero' {L : Type} [Field L] {J : Type} [Fintype J] {κ : 
   intro b _
   exact zpow_ne_zero _ (sup_valuation_ne_zero_of_exists_ne_zero O z hz b)
 
+private theorem valEq_sub (hy : ∀ b, ∃ i, y ⟨b, i⟩ ≠ 0) (hy' : ∀ b, ∃ i, y' ⟨b, i⟩ ≠ 0)
+    {a c : K → ℤ} {a' c' : K' → ℤ} (ha : ValEq k y a y' a') (hc : ValEq k y c y' c') :
+    ValEq k y (a - c) y' (a' - c') := by
+  obtain ⟨ρ₁, hρ₁, h₁⟩ := ha
+  obtain ⟨ρ₂, hρ₂, h₂⟩ := hc
+  refine ⟨ρ₁ / ρ₂, div_ne_zero hρ₁ hρ₂, fun O hO => ?_⟩
+  rw [vdeg_sub' O y hy, vdeg_sub' O y' hy', h₁ O hO, h₂ O hO, map_div₀]
+  have hv : O.valuation ρ₂ ≠ 0 := by
+    rw [Valuation.ne_zero_iff]
+    exact hρ₂
+  have hw := vdeg_ne_zero' O y' hy' c'
+  field_simp
+
 theorem valEq_dif (hy : ∀ b, ∃ i, y ⟨b, i⟩ ≠ 0) (hy' : ∀ b, ∃ i, y' ⟨b, i⟩ ≠ 0) {n : ℕ} {st : Fin n → K → ℤ}
     {st' : Fin n → K' → ℤ} (h : ∀ m, ValEq k y (st m) y' (st' m)) (m : Fin n) : ValEq k y (dif st m) y' (dif st' m) := by
   unfold dif
   split_ifs with hm
-  · obtain ⟨ρ₁, hρ₁, h₁⟩ := h m
-    obtain ⟨ρ₂, hρ₂, h₂⟩ := h ⟨(m : ℕ) - 1, by omega⟩
-    refine ⟨ρ₁ / ρ₂, div_ne_zero hρ₁ hρ₂, fun O hO => ?_⟩
-    rw [vdeg_sub' O y hy, vdeg_sub' O y' hy', h₁ O hO, h₂ O hO, map_div₀]
-    have hv : O.valuation ρ₂ ≠ 0 := by
-      rw [Valuation.ne_zero_iff]
-      exact hρ₂
-    have hw := vdeg_ne_zero' O y' hy' (st' ⟨(m : ℕ) - 1, by omega⟩)
-    field_simp
+  · exact valEq_sub hy hy' (h m) (h ⟨(m : ℕ) - 1, by omega⟩)
   · simpa using h m
 
 private theorem vdeg_neg' {L : Type} [Field L] {J : Type} [Fintype J] {κ : J → Type} [∀ b, Fintype (κ b)]
@@ -420,21 +425,6 @@ end
 
 def uConst (Ψ : Type) [Fintype Ψ] (p q : ℕ) : ℤ :=
   uNum (rk Ψ p q) fun j => fibDeg (rootOf fun s m => plDeg ⟨s, m⟩) ((Finite.equivFin (PairIx Ψ p q)).symm j)
-
-private theorem valEq_sub {k : Type} [Field k] {Ω : Type} [Field Ω] [Algebra k Ω] {K : Type} [Fintype K]
-    {ι : K → Type} [∀ b, Fintype (ι b)] {K' : Type} [Fintype K'] {ι' : K' → Type} [∀ b, Fintype (ι' b)]
-    {y : (Σ b, ι b) → Ω} {y' : (Σ b, ι' b) → Ω}
-    (hy : ∀ b, ∃ i, y ⟨b, i⟩ ≠ 0) (hy' : ∀ b, ∃ i, y' ⟨b, i⟩ ≠ 0) {a c : K → ℤ} {a' c' : K' → ℤ}
-    (ha : ValEq k y a y' a') (hc : ValEq k y c y' c') : ValEq k y (a - c) y' (a' - c') := by
-  obtain ⟨ρ₁, hρ₁, h₁⟩ := ha
-  obtain ⟨ρ₂, hρ₂, h₂⟩ := hc
-  refine ⟨ρ₁ / ρ₂, div_ne_zero hρ₁ hρ₂, fun O hO => ?_⟩
-  rw [vdeg_sub' O y hy, vdeg_sub' O y' hy', h₁ O hO, h₂ O hO, map_div₀]
-  have hv : O.valuation ρ₂ ≠ 0 := by
-    rw [Valuation.ne_zero_iff]
-    exact hρ₂
-  have hw := vdeg_ne_zero' O y' hy' c'
-  field_simp
 
 theorem num_eq (hN : NumEq) [Fintype Ψ] (k : Type) [Field k] [CharZero k] (Ω : Type) [Field Ω] [Algebra k Ω] [Fintype K]
     (ι : K → Type) [∀ b, Fintype (ι b)] (y : (Σ b, ι b) → Ω) (u : ∀ s, Matrix (Fin (rk Ψ p q s)) (Fin (rk Ψ p q s)) Ω)

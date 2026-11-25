@@ -75,10 +75,6 @@ theorem pw_nat (n : ℕ) (x : Fl l) : pw (n : ℤ) x = x ^ l ^ n := by
   | zero => simp [pw_zero]
   | succ n ih => rw [Nat.cast_succ, pw_succ, ih, ← pow_mul, pow_succ]
 
-theorem sh_pow (x : Fl l) (n : ℕ) : sh (x ^ n) = sh x ^ n := by
-  unfold sh
-  rw [map_pow]; push_cast; rfl
-
 theorem l_pos : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
 theorem two_le_l : (2 : ℝ) ≤ l := by exact_mod_cast (Fact.out : l.Prime).two_le
 

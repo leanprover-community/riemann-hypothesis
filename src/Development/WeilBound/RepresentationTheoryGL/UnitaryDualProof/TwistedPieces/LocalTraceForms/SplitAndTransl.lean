@@ -332,8 +332,8 @@ private theorem unimod_pf (hT : TraceForm k) : Unimod (k := k) := by
   obtain ⟨c1, hc1⟩ := hcore
   refine ⟨c0 + c1, fun m hm m' hm' => ?_⟩
   obtain ⟨r, rfl⟩ : ∃ r, m' = m + r := ⟨m' - m, by omega⟩
-  refine ⟨Lc_le Z g hg c0 hc0 (by omega) (by omega), ?_, ?_⟩
-  · rw [relIndex_Lc_conj Z g hg c0 hc0 (by omega) (by omega) (by omega), relIndex_Lc Z (by omega) (by omega),
+  refine ⟨Lc_le Z g c0 hc0 (by omega) (by omega), ?_, ?_⟩
+  · rw [relIndex_Lc_conj Z g c0 hc0 (by omega) (by omega) (by omega), relIndex_Lc Z (by omega) (by omega),
       Bi.relIndex_lat_conj, Bi.relIndex_lat]
     exact (hc1 r (by omega)).1
   · rw [relIndex_Lc Z (by omega) (by omega), Bi.relIndex_lat]

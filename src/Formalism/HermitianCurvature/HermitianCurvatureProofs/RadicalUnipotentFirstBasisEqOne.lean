@@ -694,15 +694,6 @@ theorem M3 {n : ℕ} (q q' Z : Matrix (Fin n) (Fin n) ℂ) (hq : IsUnit q.det) (
     simp only [Matrix.mul_assoc]
     rw [← Matrix.mul_assoc (G.wMat n) (G.wMat n), Ux3.wMat_mul_self, Matrix.one_mul]
 
-theorem block_two_zero_size_eq {p : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B' : Matrix (Fin p) (Fin 0) ℂ) (C : Matrix (Fin 0) (Fin p) ℂ)
-    (D' : Matrix (Fin 0) (Fin 0) ℂ) : U.blk2 A B' C D' = A := by
-  ext i l
-  have hi : i = Fin.castAdd 0 i := rfl
-  have hl : l = Fin.castAdd 0 l := rfl
-  simp only [U.blk2, Matrix.reindex_apply, Matrix.submatrix_apply]
-  rw [hi, hl, finSumFinEquiv_symm_apply_castAdd, finSumFinEquiv_symm_apply_castAdd]
-  rfl
-
 theorem mMap_sand {n ρ' : ℕ} (Z : Matrix (Fin n) (Fin n) ℂ) (A M C : B.Mat k ρ') :
     U.mMap k n ρ' Z (A * M * C) = U.embG k n ρ' A * U.mMap k n ρ' Z M * U.embG k n ρ' C := by
   rw [U.mMap, U.mMap, U.embG, U.embG, Ux3.block3_mul, Ux3.block3_mul]

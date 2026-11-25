@@ -57,7 +57,6 @@ open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open ReciprocityTheory.L2DbarEstimates (V)
 open scoped GlobalTheory.ProjSpace
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.StdProjChart

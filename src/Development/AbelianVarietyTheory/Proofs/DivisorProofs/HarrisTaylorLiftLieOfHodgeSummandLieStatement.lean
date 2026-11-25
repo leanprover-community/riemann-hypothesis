@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitTwoMulRhoSubTr
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceOfSection
@@ -190,7 +191,8 @@ theorem lieAt_id_of_liftFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPe
     haveI := act.hom c
     exact crysToDR_push (divided₂ hsq) h h (o₀.act.act c) (act.act c) (hact c).symm d
   have hq := epsPt_hq C
-  have one_left := one_left_eq A (spMap (RingHom.id C)) (Spec.map_id _)
+  have one_left : @Eq (Sp C ⟶ A.left) (1 : Over.mk (spMap (RingHom.id C)) ⟶ A).left η[A].left :=
+    one_left_eq A (spMap (RingHom.id C)) (Spec.map_id _)
   intro v hv
   obtain ⟨hv1, hv2⟩ := hv
   let v' : epsR C ⟶ A := overId _ _ hq ≫ v
@@ -365,17 +367,7 @@ theorem mat_ext {n : ℕ} {C : Type} [CommRing C] {A B : Matrix (Fin n) (Fin n) 
 
 theorem isUnit_two_rho_sub {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R]
     (b : GlobalTheory.UPel.HT.Base D R) : IsUnit (2 * b.ρ - (D.tr : R)) := by
-  have hsq : (2 * b.ρ - (D.tr : R)) ^ 2 = ((D.tr ^ 2 - 4 * D.nm : ℤ) : R) := by
-    have := b.ρ_root; push_cast; linear_combination 4 * this
-  have hd : D.tr ^ 2 - 4 * D.nm = -(((D.tr ^ 2 - 4 * D.nm).natAbs : ℕ) : ℤ) := by
-    have := D.disc_neg; omega
-  have hcop : ((D.tr ^ 2 - 4 * D.nm).natAbs).Coprime p := by
-    rw [Nat.coprime_comm, Nat.Prime.coprime_iff_not_dvd (Fact.out)]
-    intro h; exact D.disc_p (Int.natCast_dvd.mpr h)
-  have hu := b.unit _ hcop
-  rw [← isUnit_pow_iff (n := 2) two_ne_zero, hsq, hd]
-  rw [Int.cast_neg, Int.cast_natCast]
-  exact hu.neg
+  apply _root_.GlobalTheory.UPel.HT.LieLin.RankIdeal.isUnit_two_mul_rho_sub_tr <;> assumption
 
 def TangentCoordinatesSmoothCommGroupLocalRing : Prop :=
   ∀ (W : Type) [CommRing W] [IsLocalRing W] (G : Over (Sp W)) [GrpObj G] [IsCommMonObj G], Smooth G.hom →

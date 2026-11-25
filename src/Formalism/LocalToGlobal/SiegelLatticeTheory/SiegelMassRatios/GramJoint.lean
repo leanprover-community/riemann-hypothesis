@@ -63,8 +63,6 @@ def DNeZeroAt : Prop :=
 
 section Record
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.MainNotions.S.Lat
 
 end Record
@@ -188,8 +186,6 @@ theorem dNeZeroAt_of (h : GNonnegAt) : DNeZeroAt := by
   exact hG (by rw [hG', hD0]; simp)
 
 section Record
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.MainNotions.S.Lat
 

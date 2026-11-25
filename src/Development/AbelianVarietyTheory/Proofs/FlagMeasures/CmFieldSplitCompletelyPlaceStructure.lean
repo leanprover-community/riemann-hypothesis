@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletelySplitPrimeHostPlaceProperties
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SelfDualAt
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
 public import Formalism.LocalToGlobal.HermitianForms.PsiZeroNontrivialCharacter
@@ -81,22 +82,7 @@ private theorem liesOver_span_of_natCast_mem_flag_measures {K : Type} [Field K] 
 private theorem ncard_places_dvd_eq_ncard_primesOver (K : Type) [Field K] [NumberField K] (p : ℕ) (hp : p.Prime) :
     {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard =
       ((Ideal.span {(p : ℤ)}).primesOver (𝓞 K)).ncard := by
-  have hpz : Prime (p : ℤ) := Nat.prime_iff_prime_int.mp hp
-  rw [← Set.ncard_image_of_injective _ (fun a b h => HeightOneSpectrum.ext h)]
-  congr 1
-  ext Q
-  constructor
-  · rintro ⟨v, hv, rfl⟩
-    exact ⟨v.isPrime, liesOver_span_of_natCast_mem_flag_measures p hp v.asIdeal hv⟩
-  · rintro ⟨hQ, hl⟩
-    have hne : Q ≠ ⊥ := by
-      rintro rfl
-      have h1 := hl.over
-      rw [Ideal.under_bot] at h1
-      exact (by simpa [Ideal.span_singleton_eq_bot] using hpz.ne_zero : Ideal.span {(p : ℤ)} ≠ ⊥) h1
-    refine ⟨⟨Q, hQ, hne⟩, ?_, rfl⟩
-    have h2 : ((p : ℤ)) ∈ Q.under ℤ := hl.over ▸ Ideal.subset_span rfl
-    simpa [Ideal.mem_comap] using h2
+  apply _root_.GlobalTheory.Mem.Chr.ncard_places_eq_primesOver <;> assumption
 
 private theorem sum_ramificationIdx_mul_inertiaDeg_primesOver (K : Type) [Field K] [NumberField K] (p : ℕ) (hp : p.Prime) :
     (fun (_ : (Ideal.span {(p : ℤ)}).IsMaximal) =>

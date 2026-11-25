@@ -437,23 +437,7 @@ private theorem mem_complementLattice_of_mem_term (d : S.Datum)
     (Λ : Submodule L.O S.V) (hT : S.IsTerm d Λ) (w : S.V)
     (hw : w ∈ S.W0) (hΛ : w ∈ Λ) :
     w ∈ S.complementLatticeOfDatum d ∧ S.TauRel d Λ w 0 := by
-  obtain ⟨⟨n, n'⟩, hA, hA', hn, hn', hΛn, hΛn', -, hgr⟩ := hT
-  have hME : ∀ x ∈ S.ME, S.h w x = 0 := hw
-  have hXo : w ∈ _root_.GlobalTheory.HL.perp L S.Hm S.X := fun x hx =>
-    hME x (le_sup_of_le_left (_root_.GlobalTheory.HL.TermBasic.spanTo_mono S S.f (Nat.le_succ r)) hx)
-  have hXo' : w ∈ _root_.GlobalTheory.HL.perp L S.Hm S.X' := fun x hx =>
-    hME x (le_sup_of_le_right (_root_.GlobalTheory.HL.TermBasic.spanTo_mono S S.f' (Nat.le_succ r)) hx)
-  refine ⟨⟨hw, ?_, ?_, ?_⟩, ⟨0, Submodule.zero_mem _, 0, Submodule.zero_mem _, by simpa using hΛ,
-    by simpa using hΛ, ⟨0, Λ.zero_mem, by simp⟩, by simpa using Submodule.zero_mem _⟩⟩
-  · refine ((_root_.GlobalTheory.HL.StdLat.stdLat_spec L r k S S.f S.es (Or.inl ⟨rfl, rfl⟩) _ hA).2.2 w).2 ?_
-    refine (_root_.GlobalTheory.HL.TermBasic.inner_smul S hn w).2 ⟨w, ?_, hXo, by simpa using Submodule.zero_mem _⟩
-    rw [← hΛn]; exact hΛ
-  · refine ((_root_.GlobalTheory.HL.StdLat.stdLat_spec L r k S S.f' S.es' (Or.inr ⟨rfl, rfl⟩) _ hA').2.2 w).2 ?_
-    refine (_root_.GlobalTheory.HL.TermBasic.inner_smul S hn' w).2 ⟨w, ?_, hXo', by simpa using Submodule.zero_mem _⟩
-    rw [← hΛn']; exact hΛ
-  · rw [hgr]
-    exact ⟨w, hΛ, w, hΛ, hXo', hXo, by simpa using Submodule.zero_mem _,
-      by simpa using Submodule.zero_mem _, 0, Λ.zero_mem, by simp⟩
+  apply _root_.GlobalTheory.HL.CompLat.mem_complementLattice_and_tauRel_of_isTerm <;> assumption
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in

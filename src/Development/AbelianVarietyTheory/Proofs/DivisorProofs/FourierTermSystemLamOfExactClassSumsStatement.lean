@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCorrectionApproximateIdealSections
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsChartMemberP
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeastVectorUniqueInClassModStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedLatticeQuadraticSumGeDiagonal
@@ -60,21 +61,8 @@ namespace GlobalTheory.Poinc.SepLam
 
 theorem mem_of_forall_mem_sup_pow {V : Type} [CommRing V] [IsNoetherianRing V] [IsLocalRing V] (I : Ideal V) (hI : I ≠ ⊤)
     (z : V) (h : ∀ j : ℕ, z ∈ I ⊔ maximalIdeal V ^ j) : z ∈ I := by
-  haveI : Nontrivial (V ⧸ I) := Ideal.Quotient.nontrivial_iff.mpr hI
-  haveI : IsLocalRing (V ⧸ I) := IsLocalRing.of_surjective' (Ideal.Quotient.mk I) Ideal.Quotient.mk_surjective
-  haveI : IsLocalHom (Ideal.Quotient.mk I) := Function.Surjective.isLocalHom _ Ideal.Quotient.mk_surjective
-  have hmax : (maximalIdeal V).map (Ideal.Quotient.mk I) ≤ maximalIdeal (V ⧸ I) :=
-    Ideal.map_le_iff_le_comap.mpr fun x hx hu => hx (isUnit_of_map_unit (Ideal.Quotient.mk I) x hu)
-  have hbot := Ideal.iInf_pow_eq_bot_of_isLocalRing (maximalIdeal (V ⧸ I)) (Ideal.IsMaximal.ne_top inferInstance)
-  have hz : Ideal.Quotient.mk I z ∈ ⨅ j : ℕ, maximalIdeal (V ⧸ I) ^ j := by
-    refine Ideal.mem_iInf.mpr fun j => ?_
-    obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp (h j)
-    rw [map_add (f := _), Ideal.Quotient.eq_zero_iff_mem.mpr ha, zero_add]
-    refine pow_le_pow_left' hmax j ?_
-    rw [← Ideal.map_pow]
-    exact Ideal.mem_map_of_mem _ hb
-  rw [hbot, Ideal.mem_bot, Ideal.Quotient.eq_zero_iff_mem] at hz
-  exact hz
+  intros
+  apply _root_.GlobalTheory.ApproxCorr.mem_of_forall_mem_sup <;> assumption
 
 end GlobalTheory.Poinc.SepLam
 

@@ -56,8 +56,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.BesselCompare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def co (B : HSp D) (v : B.V) : Fin B.rank → D.host.E := fun k => B.frame.repr v k

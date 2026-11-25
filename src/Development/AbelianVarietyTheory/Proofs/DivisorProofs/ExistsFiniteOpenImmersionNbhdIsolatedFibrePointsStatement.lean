@@ -781,7 +781,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits Scheme.AffineZariskiSite
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory

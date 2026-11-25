@@ -51,8 +51,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SepRows
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 def KF {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) : Submodule ℂ (SmT M) :=

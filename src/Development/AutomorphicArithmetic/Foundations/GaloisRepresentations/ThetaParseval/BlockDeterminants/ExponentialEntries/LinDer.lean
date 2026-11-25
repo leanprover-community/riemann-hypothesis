@@ -218,15 +218,12 @@ theorem linDer_locFin (T : Matrix σ σ ℂ) :
     LocFin ((linDer T : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ)) : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ) := by
   have hst0 : ∀ y ∈ Submodule.span ℂ (Set.range (X : σ → MvPolynomial σ ℂ)),
       linDer T y ∈ Submodule.span ℂ (Set.range (X : σ → MvPolynomial σ ℂ)) := by
-    intro y hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨i, rfl⟩ := hy
-      rw [linDer_X]
-      exact Submodule.sum_mem _ fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
-    | zero => simp
-    | add a b _ _ ha hb => simpa using Submodule.add_mem _ ha hb
-    | smul c a _ ha => simpa using Submodule.smul_mem _ c ha
+    refine (Submodule.span_le.2 ?_ :
+      _ ≤ (Submodule.span ℂ (Set.range (X : σ → MvPolynomial σ ℂ))).comap
+        (linDer T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ))
+    rintro _ ⟨i, rfl⟩
+    rw [SetLike.mem_coe, Submodule.mem_comap, Derivation.coeFn_coe, linDer_X]
+    exact Submodule.sum_mem _ fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
   have hfd0 : (Submodule.span ℂ (Set.range (X : σ → MvPolynomial σ ℂ))).FG :=
     Submodule.fg_span (Set.finite_range _)
   intro v

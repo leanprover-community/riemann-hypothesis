@@ -5,8 +5,6 @@ public import Mathlib.GroupTheory.FiniteAbelian.Basic
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField

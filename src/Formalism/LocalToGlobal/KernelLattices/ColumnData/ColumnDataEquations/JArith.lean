@@ -20,8 +20,6 @@ open Formalism.L2.PairingIndexBounds.Eq.J Formalism.L2.PairingIndexBounds.Eq For
 
 open Formalism.MainNotions Formalism.L2.Th1.H Formalism.L2.Ker.Cd.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds.Eq
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Car}
 
 def NegOneNorm (D : Car) : Prop :=

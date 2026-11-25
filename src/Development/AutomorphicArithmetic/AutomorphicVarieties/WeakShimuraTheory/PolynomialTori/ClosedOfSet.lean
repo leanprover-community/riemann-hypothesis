@@ -321,6 +321,16 @@ theorem phi_dec (hP : Loc.LocalPublishedTheorems) (v : ℕ) [Fact v.Prime] (A : 
   obtain ⟨-, φ, hφ, -⟩ := (Loc.decEmb (F := ℚ) (Ω := Ω) (v := v)).2 j
   exact phi_emb φ hφ (Loc.phiCond hP v l)
 
+theorem fin_res (c : Coef l) : Finite (ResidueField c.O) ∧ CharP (ResidueField c.O) l := by
+  haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
+  haveI : Finite (ResidueField ℤ_[l]) :=
+    Finite.of_equiv _ (PadicInt.residueField (p := l)).symm.toEquiv
+  refine ⟨Module.finite_of_finite (ResidueField ℤ_[l]), ?_⟩
+  rw [CharP.charP_iff_prime_eq_zero hl.out, ← map_natCast (residue c.O), residue_eq_zero_iff,
+    mem_maximalIdeal, mem_nonunits_iff, ← map_natCast (algebraMap ℤ_[l] c.O)]
+  intro hu
+  exact PadicInt.prime_p.not_unit (isUnit_of_map_unit _ _ hu)
+
 theorem rep_ex (hD : D.Good) (hP : Loc.LocalPublishedTheorems) (v : ℕ) (hv : v.Prime) (P : Cond c.O (D.rbarAt v))
     (hc : P.IsClosed) (ρ₀ : Lift c.O (D.rbarAt v) c.O) (h0 : P _ ρ₀) :
     ∃ (R : Type) (_ : CommRing R) (_ : Algebra c.O R) (_ : IsCO c.O R) (ρ : Lift c.O (D.rbarAt v) R),
@@ -328,14 +338,8 @@ theorem rep_ex (hD : D.Good) (hP : Loc.LocalPublishedTheorems) (v : ℕ) (hv : v
   haveI : Fact v.Prime := ⟨hv⟩
   haveI : IsGalois ℚ Ω := {}
   haveI : CompactSpace (D.Gp v) := isCompact_iff_compactSpace.1 (isClosed_Dec _).isCompact
-  haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
-  haveI : Finite (ResidueField ℤ_[l]) := Finite.of_equiv _ (PadicInt.residueField (p := l)).symm.toEquiv
-  haveI : Finite (ResidueField c.O) := Module.finite_of_finite (ResidueField ℤ_[l])
-  haveI : CharP (ResidueField c.O) l := by
-    rw [CharP.charP_iff_prime_eq_zero hl.out, ← map_natCast (residue c.O), residue_eq_zero_iff,
-      mem_maximalIdeal, mem_nonunits_iff, ← map_natCast (algebraMap ℤ_[l] c.O)]
-    intro hu
-    exact PadicInt.prime_p.not_unit (isUnit_of_map_unit _ _ hu)
+  haveI : Finite (ResidueField c.O) := (fin_res c).1
+  haveI : CharP (ResidueField c.O) l := (fin_res c).2
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hk, -⟩ := facts D hD
   have hlc : IsLocallyConstant (D.rbarAt v) := by
     refine IsLocallyConstant.comp_continuous (g := D.rbar) ?_ continuous_subtype_val
@@ -421,15 +425,6 @@ theorem compP (hD : D.Good) (hP : Loc.LocalPublishedTheorems) (p : ℕ) (hp : p 
   refine ⟨R, inferInstance, inferInstance, inferInstance, ρ, P, hrep, fun C _ _ _ f => ?_⟩
   rw [← hx]
   exact Loc.compKer (l := l) (FractionRing c.O) _ _ R ρ hrep x P φ hφ hy C f
-
-theorem fin_res (c : Coef l) : Finite (ResidueField c.O) ∧ CharP (ResidueField c.O) l := by
-  haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
-  haveI : Finite (ResidueField ℤ_[l]) := Finite.of_equiv _ (PadicInt.residueField (p := l)).symm.toEquiv
-  refine ⟨Module.finite_of_finite (ResidueField ℤ_[l]), ?_⟩
-  rw [CharP.charP_iff_prime_eq_zero hl.out, ← map_natCast (residue c.O), residue_eq_zero_iff,
-    mem_maximalIdeal, mem_nonunits_iff, ← map_natCast (algebraMap ℤ_[l] c.O)]
-  intro hu
-  exact PadicInt.prime_p.not_unit (isUnit_of_map_unit _ _ hu)
 
 end Main
 

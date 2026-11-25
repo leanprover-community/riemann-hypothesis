@@ -44,8 +44,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 private theorem UpperTheory.Reformulated.B.EmbeddingTypes.core {R K V : Type*} [CommRing R] [Field K] [Algebra R K]
     [IsFractionRing R K] [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
     (L : Submodule R V) (hL : Submodule.span K (L : Set V) = ⊤) (y : V) :

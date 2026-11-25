@@ -13,8 +13,6 @@ open Formalism.BasicNotions IsDedekindDomain NumberField Formalism.L2.Theta
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 

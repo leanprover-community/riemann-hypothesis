@@ -17,8 +17,6 @@ namespace Formalism.IndefR.Fock.Der
 
 open Formalism.IndefR.Fock.Sk
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Defs

@@ -61,8 +61,6 @@ open Formalism.BasicNotions (D7 ThetaX)
 open Formalism.BasicNotions.TH (tauE)
 open scoped Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev HS (D : D7) : Type 1 := Formalism.BasicNotions.TH.HSp D
 
 abbrev FF (D : D7) : Type := ↥D.host.F

@@ -20,8 +20,6 @@ theorem not_dvd_absNorm_different (K : Type) [Field K] [NumberField K] (p : ℕ)
     ¬ p ∣ Ideal.absNorm (differentIdeal ℤ (𝓞 K)) := by
   apply GlobalTheory.FrameIntegral.not_dvd_absNorm_different <;> assumption
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem coprime_gi (i : Fin 2) : Nat.Coprime (Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F))) (D.host.g i) := by

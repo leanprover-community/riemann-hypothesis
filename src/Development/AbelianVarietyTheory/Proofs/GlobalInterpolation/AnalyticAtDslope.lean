@@ -63,12 +63,6 @@ open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
 
 namespace GlobalTheory.ExplicitRect
 
-theorem analyticAt_dslope {f : ℂ → ℂ} {p : ℂ} (hf : AnalyticAt ℂ f p) :
-    AnalyticAt ℂ (dslope f p) p := hf.dslope p
-
-theorem eq_add_dslope (f : ℂ → ℂ) (p s : ℂ) : f s = f p + (s - p) * dslope f p s := by
-  simpa only [smul_eq_mul, add_comm] using (eq_add_of_sub_eq (sub_smul_dslope f p s).symm)
-
 theorem logDeriv_pole {f : ℂ → ℂ} {p : ℂ} (hf : AnalyticAt ℂ f p)
     (hn : analyticOrderAt f p ≠ ⊤) : ∃ g : ℂ → ℂ, AnalyticAt ℂ g p ∧ ∀ᶠ s in 𝓝[≠] p,
       deriv f s / f s = ((analyticOrderNatAt f p : ℕ) : ℂ) / (s - p) + g s := by
@@ -112,10 +106,6 @@ theorem expand_zero {φ h : ℂ → ℂ} {m : ℂ} {u : ℝ} (hu : 0 < u)
 theorem analyticOff {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) :
     AnalyticOnNhd ℂ (LFunction χ) ({1}ᶜ : Set ℂ) := by
   exact GlobalTheory.Mem.An.ZeroWindow.analyticOff χ
-
-theorem exists_entire {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) :
-    ∃ F : ℂ → ℂ, Differentiable ℂ F ∧ F 1 ≠ 0 ∧ ∀ s, s ≠ 1 → LFunction χ s = 0 → F s = 0 := by
-  exact GlobalTheory.Mem.An.ZeroWindow.exists_entire χ
 
 theorem finite_zeros {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (T : ℝ) :
     {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < T ∧ LFunction χ ρ = 0}.Finite := by

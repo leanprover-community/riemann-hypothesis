@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKr
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.TrueGeo Formalism.BasicNotions
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 

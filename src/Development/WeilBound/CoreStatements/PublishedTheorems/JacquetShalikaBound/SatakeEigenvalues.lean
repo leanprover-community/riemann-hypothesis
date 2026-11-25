@@ -51,8 +51,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.LFun GroundTheory.Automorphic GroundTheory.Automorphic.Spherical
 open scoped ValuativeRel
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.JacquetShalikaLocal
 
 namespace SatakeEigenvalues

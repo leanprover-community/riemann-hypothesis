@@ -326,63 +326,13 @@ theorem isBlowupAlongIdealSheaf_of_isIso_comp {X A B : Scheme.{u}} (f : A ⟶ X)
         exact hy'
       rw [← hye, Category.assoc, IsIso.hom_inv_id, Category.comp_id]
 
-private theorem isCompact_of_subset_noetherianSpace {α : Type u} [TopologicalSpace α] (s : Set α)
-    [NoetherianSpace s] (t : Set α) (ht : t ⊆ s) : IsCompact t := by
-  have h1 : IsCompact ((Subtype.val : s → α) ⁻¹' t) := NoetherianSpace.isCompact _
-  have h2 := h1.image continuous_subtype_val
-  have h3 : (Subtype.val : s → α) '' ((Subtype.val : s → α) ⁻¹' t) = t := by
-    apply Set.Subset.antisymm
-    · rintro x ⟨y, hy, rfl⟩
-      exact hy
-    · intro x hx
-      exact ⟨⟨x, ht hx⟩, hx, rfl⟩
-  rwa [h3] at h2
-
-private theorem isCompact_of_subset_isCompact {B : Scheme.{u}} [IsLocallyNoetherian B]
-    {U : Set B} (hc : IsCompact U) {T : Set B} (hT : T ⊆ U) : IsCompact T := by
-  have hcov : U ⊆ ⋃ W : B.affineOpens, (W.1 : Set B) := by
-    intro x _
-    have hx : x ∈ (⊤ : B.Opens) := Set.mem_univ x
-    rw [← iSup_affineOpens_eq_top B] at hx
-    obtain ⟨W, hW⟩ := Opens.mem_iSup.mp hx
-    exact Set.mem_iUnion.mpr ⟨W, hW⟩
-  obtain ⟨s, hs⟩ := hc.elim_finite_subcover
-    (fun W : B.affineOpens => (W.1 : Set B)) (fun W => W.1.isOpen) hcov
-  have hTeq : T = ⋃ W ∈ (s : Set B.affineOpens), (T ∩ (W.1 : Set B)) := by
-    apply Set.Subset.antisymm
-    · intro x hx
-      obtain ⟨W, hWs, hxW⟩ := Set.mem_iUnion₂.mp (hs (hT hx))
-      exact Set.mem_biUnion (show W ∈ (s : Set B.affineOpens) from hWs) ⟨hx, hxW⟩
-    · intro x hx
-      obtain ⟨W, -, hx'⟩ := Set.mem_iUnion₂.mp hx
-      exact hx'.1
-  rw [hTeq]
-  refine (Finset.finite_toSet s).isCompact_biUnion ?_
-  intro W _
-  have : IsNoetherianRing (B.presheaf.obj (Opposite.op (W.1 : B.Opens))) :=
-    IsLocallyNoetherian.component_noetherian W
-  have : NoetherianSpace (W.1 : Set B) := noetherianSpace_of_isAffineOpen W.1 W.2
-  exact isCompact_of_subset_noetherianSpace (W.1 : Set B) (T ∩ (W.1 : Set B)) Set.inter_subset_right
-
-private theorem quasiCompact_of_isInducing {A B : Scheme.{u}} [IsLocallyNoetherian B]
-    (f : A ⟶ B) (hf : Topology.IsInducing ⇑f.base) : QuasiCompact f := by
-  refine ⟨fun U _ hU' => ?_⟩
-  refine hf.isCompact_iff.mpr ?_
-  exact isCompact_of_subset_isCompact hU' (Set.image_preimage_subset _ _)
-
 theorem quasiCompact_strictTransformι_of_isLocallyNoetherian {X X₁ : Scheme.{u}} (π : X₁ ⟶ X)
     (Z D : X.IdealSheafData) [IsLocallyNoetherian X₁] :
     QuasiCompact (strictTransformι π Z D) := by
-  refine quasiCompact_of_isInducing _ ?_
-  have h1 : Topology.IsInducing ⇑(Scheme.Opens.ι (strictTransformOpens π Z D)).base :=
-    (Scheme.Opens.ι (strictTransformOpens π Z D)).isEmbedding.toIsInducing
-  have h2 : Topology.IsInducing ⇑(D.comap π).subschemeι.base :=
-    (D.comap π).subschemeι.isEmbedding.toIsInducing
-  have heq : ⇑(strictTransformι π Z D).base
-      = ⇑(D.comap π).subschemeι.base ∘
-        ⇑(Scheme.Opens.ι (strictTransformOpens π Z D)).base := rfl
-  rw [heq]
-  exact h2.comp h1
+  have : IsLocallyNoetherian (D.comap π).subscheme :=
+    LocallyOfFiniteType.isLocallyNoetherian (D.comap π).subschemeι
+  rw [strictTransformι_eq_ι_comp_subschemeι]
+  infer_instance
 
 instance instQuasiCompactStrictTransformMorphism {X X₁ : Scheme.{u}} (π : X₁ ⟶ X)
     (Z D : X.IdealSheafData) [IsLocallyNoetherian X₁] :

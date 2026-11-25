@@ -50,7 +50,7 @@ namespace PositivityTheory.RgBcC.LfSt.Kchain
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.LfSt
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def HalfOne : Prop :=
   ∀ (n : ℕ) (lam : Fin n → ℤ) E Fr ε ι S Γ T, CxData lam E Fr ε ι S Γ T →

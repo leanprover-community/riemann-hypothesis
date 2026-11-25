@@ -432,13 +432,8 @@ variable {k K : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarch
     [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
     [Algebra k K] [ValuativeExtension k K] [FiniteDimensional k K]
 
-private theorem int_mem (s : K ≃ₐ[k] K) (x : 𝒪[K]) : s (x : K) ∈ 𝒪[K] := by
-  have hx := x.2
-  rw [Valuation.mem_integer_iff] at hx ⊢
-  rwa [GroundTheory.LocalField.valuation_algEquiv_apply k K s (x : K)]
-
 private def rs (s : K ≃ₐ[k] K) : 𝒪[K] →+* 𝒪[K] :=
-  (s.toAlgHom.toRingHom.comp (algebraMap 𝒪[K] K)).codRestrict 𝒪[K] fun x => int_mem s x
+  (s.toAlgHom.toRingHom.comp (algebraMap 𝒪[K] K)).codRestrict 𝒪[K] fun x => mem_int' s x
 
 private theorem unit_of_red {F : Type} [Field F] (rd : 𝒪[K] →+* F) (hrd : Function.Surjective rd)
     {x : 𝒪[K]} (hx : rd x ≠ 0) : IsUnit x := by
@@ -958,36 +953,6 @@ private theorem intEl_of_conj (n : ℕ) (γ : GL (Fin n) k) (g : GL (Fin n) K)
 
 end Int
 
-section Norm
-
-variable {k K : Type} [Field k] [Field K] [Algebra k K]
-
-private theorem aut_pow_finrank [FiniteDimensional k K] (s : K ≃ₐ[k] K) :
-    s ^ Module.finrank k K = 1 := by
-  have h1 := IntermediateField.finrank_fixedField_eq_card (F := k) (E := K) (Subgroup.zpowers s)
-  rw [Nat.card_zpowers] at h1
-  rw [← (letI : Module.Free (IntermediateField.fixedField (Subgroup.zpowers s)) K := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank k (IntermediateField.fixedField (Subgroup.zpowers s)) K), h1,
-    pow_mul', pow_orderOf_eq_one, one_pow]
-
-private theorem ofFn_twConj (s : K ≃ₐ[k] K) (n : ℕ) (δ g : GL (Fin n) K) (m : ℕ) :
-    (List.ofFn fun j : Fin m => galAct (s ^ (j : ℕ)) n (g⁻¹ * δ * galAct s n g)).prod =
-      g⁻¹ * (List.ofFn fun j : Fin m => galAct (s ^ (j : ℕ)) n δ).prod * galAct (s ^ m) n g := by
-  induction m with
-  | zero => simp [galAct_one]
-  | succ m ih =>
-    simp only [List.ofFn_succ', List.prod_concat, Fin.coe_castSucc, Fin.val_last]
-    rw [ih]
-    simp only [map_mul, map_inv]
-    rw [pow_succ, galAct_mul, MonoidHom.comp_apply]
-    group
-
-private theorem norm_twConj [FiniteDimensional k K] (s : K ≃ₐ[k] K) (n : ℕ) (δ g : GL (Fin n) K) :
-    GlobalTheory.LBC.norm k s (g⁻¹ * δ * galAct s n g) = g⁻¹ * GlobalTheory.LBC.norm k s δ * g := by
-  unfold GlobalTheory.LBC.norm
-  rw [ofFn_twConj, aut_pow_finrank, galAct_one, MonoidHom.id_apply]
-
-end Norm
-
 section Lift
 
 variable {K : Type} [Field K] [ValuativeRel K] {k F₀ F₁ : Type} [Field k] [Algebra k K] [Field F₀]
@@ -1045,7 +1010,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.L.redNorm :
     rintro β ⟨y, rfl⟩
     obtain ⟨z, hz, -⟩ := lift_prod hlift y (Module.finrank k K)
     exact ⟨z, hz⟩
-  refine ⟨fun h => incl_mem_iff n h, hnormKO, fun β g => norm_twConj s n β g,
+  refine ⟨fun h => incl_mem_iff n h, hnormKO, fun β g => norm_tw s n β g,
     fun γ g hg => intEl_of_conj n γ g hg, ?_⟩
   intro fb hfb
   obtain ⟨hlv1, hlv2⟩ := liftVal F₀ F₁ sb hres.frob n fb hfb

@@ -82,9 +82,6 @@ theorem mem_saturation_iff [IsDomain R] {N : Submodule R M} {x : M} :
   rw [mem_saturation_iff']
   simp only [mem_nonZeroDivisors_iff_ne_zero]
 
-theorem mem_saturation_of_smul_mem [IsDomain R] {N : Submodule R M} {a : R} {x : M} (ha : a ≠ 0)
-    (hx : a • x ∈ N) : x ∈ saturation N := mem_saturation_iff.2 ⟨a, ha, hx⟩
-
 theorem le_saturation (N : Submodule R M) : N ≤ saturation N := fun x hx => mem_saturation_iff'.2 ⟨1, one_mem _, by rwa [one_smul]⟩
 
 @[gcongr]
@@ -189,9 +186,6 @@ section Relative
 variable {R : Type*} [CommRing R] {V V' : Type*} [AddCommGroup V] [Module R V]
   [AddCommGroup V'] [Module R V']
 
-def saturationIn (M N : Submodule R V) : Submodule R V :=
-  M ⊓ saturation N
-
 end Relative
 
 section Localisation
@@ -200,21 +194,6 @@ variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]
   (S : Type*) [CommRing S] [Algebra R S] (p : Submonoid R) [IsLocalization p S]
   {Mp : Type*} [AddCommGroup Mp] [Module R Mp] [Module S Mp] [IsScalarTower R S Mp]
   (f : M →ₗ[R] Mp) [IsLocalizedModule p f]
-
-theorem mk'_mem_localized'_iff (N : Submodule R M) (x : M) (s : p) :
-    IsLocalizedModule.mk' f x s ∈ N.localized' S p f ↔ ∃ a ∈ p, a • x ∈ N := by
-  rw [Submodule.mem_localized']
-  constructor
-  · rintro ⟨m, hm, t, ht⟩
-    obtain ⟨c, hc⟩ := (IsLocalizedModule.mk'_eq_mk'_iff f m x t s).1 ht
-    refine ⟨((c * t : p) : R), (c * t).2, ?_⟩
-    have e : ((c * t : p) : R) • x = ((c * s : p) : R) • m := by
-      simp only [Submonoid.coe_mul, mul_smul]
-      simpa only [Submonoid.smul_def] using hc
-    rw [e]
-    exact N.smul_mem _ hm
-  · rintro ⟨a, ha, hax⟩
-    exact ⟨a • x, hax, ⟨a, ha⟩ * s, IsLocalizedModule.mk'_cancel_left f x ⟨a, ha⟩ s⟩
 
 end Localisation
 
@@ -266,12 +245,6 @@ variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]
   (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]
   {V : Type*} [AddCommGroup V] [Module R V] [Module K V] [IsScalarTower R K V]
   (f : M →ₗ[R] V) [IsLocalizedModule R⁰ f]
-
-theorem saturation_eq_comap_localized' (N : Submodule R M) :
-    saturation N = ((N.localized' K R⁰ f).restrictScalars R).comap f := by
-  ext x
-  rw [Submodule.mem_comap, Submodule.restrictScalars_mem, ← IsLocalizedModule.mk'_one R⁰ f x,
-    mk'_mem_localized'_iff, mem_saturation_iff']
 
 end GenericFibre
 

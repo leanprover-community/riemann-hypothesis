@@ -17,8 +17,6 @@ open scoped ENNReal
 
 namespace Formalism.L2.SG.Pf.ThmBChainG
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D}
 
 theorem jointAmplitudeRotated_generic (Y : Full X) (u : D.what₂.Word) (large₂ : SizeData₂ D) (C1 : ℝ) {θ : ℝ} (C : Choice X θ)

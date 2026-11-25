@@ -292,11 +292,6 @@ theorem commute_AB (σ : Fin k ⊕ Fin l ≃ Fin n) (a : MonoidAlgebra ℂ (Gn g
   unfold Commute SemiconjBy
   simp [single_mul_single, inA, inB, par_mul, mul_comm]
 
-theorem isClass_of_isIrr {G : Type} [Group G] {χ : G → ℂ} (h : IsIrr χ) : IsClass χ := by
-  obtain ⟨V, -, hV⟩ := h
-  intro x y
-  rw [← hV, ← hV, FDRep.char_conj]
-
 open MonoidAlgebra in
 theorem irr_vanish (σ : Fin k ⊕ Fin l ≃ Fin n) (χ : Gn g n → ℂ) (α : Gn g k → ℂ) (β : Gn g l → ℂ)
     (hχ : IsIrr χ) (hα : IsIrr α) (hβ : IsIrr β) (h : ip χ (hc k l α β n) = 0) :
@@ -317,7 +312,7 @@ theorem irr_vanish (σ : Fin k ⊕ Fin l ≃ Fin n) (χ : Gn g n → ℂ) (α : 
   refine eq_zero_of_idem _ hi ?_
   rw [(_root_.GlobalTheory.GLq.trIdem _ _ χ).2.2]
   refine mul_eq_zero_of_right _ ?_
-  rw [hc, _root_.GlobalTheory.GLq.FrobRecHC.hcT_adjoint g k l n hn χ _ (isClass_of_isIrr hχ), ip, mul_eq_zero] at h
+  rw [hc, _root_.GlobalTheory.GLq.FrobRecHC.hcT_adjoint g k l n hn χ _ (GlobalTheory.GLq.ResCuspProd.isClass_of_isIrr hχ), ip, mul_eq_zero] at h
   have h' := h.resolve_left (inv_ne_zero (Nat.cast_ne_zero.2 Fintype.card_ne_zero))
   rw [Fintype.sum_prod_type] at h'
   rw [map_zOf, map_zOf, mul_assoc, Finset.sum_mul_sum, Finset.mul_sum, tr_sum]

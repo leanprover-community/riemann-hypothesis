@@ -450,8 +450,6 @@ section Place
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 
-attribute [local instance] GlobalTheory.LocalData.complRel
-
 local instance locFieldPl {F : Type} [Field F] [NumberField F] (v : Pl F) : IsNonarchimedeanLocalField (Fv F v) :=
   GlobalTheory.LocalData.isLocalField v
 

@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraM
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR GlobalTheory.PD KaehlerDifferential GlobalTheory.W1
 
-set_option autoImplicit false
-
 namespace UpperTheory.A
 
 theorem generic_map {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] (c : Y ⟶ Z) [Etale c] :

@@ -118,17 +118,13 @@ instance instIsClosedImmersionAffineSpaceOrigin (k : Type u) [Field k] (m : ℕ)
     IsClosedImmersion (affineSpaceOrigin k m) :=
   isClosedImmersion_affineSpaceOrigin k m
 
-private theorem appTop_id (X : Scheme.{u}) :
-    Scheme.Hom.appTop (𝟙 X) = 𝟙 (X.presheaf.obj (Opposite.op ⊤)) := by
-  simp [Scheme.Hom.appTop]
-
 private theorem appTop_hom_appTop_inv_apply {X Y : Scheme.{u}} (e : X ≅ Y)
     (x : ↑(X.presheaf.obj (Opposite.op ⊤))) :
     CommRingCat.Hom.hom (Scheme.Hom.appTop e.hom)
         (CommRingCat.Hom.hom (Scheme.Hom.appTop e.inv) x) = x := by
   have h : Scheme.Hom.appTop e.inv ≫ Scheme.Hom.appTop e.hom =
       𝟙 (X.presheaf.obj (Opposite.op ⊤)) := by
-    rw [← Scheme.Hom.comp_appTop, e.hom_inv_id, appTop_id]
+    rw [← Scheme.Hom.comp_appTop, e.hom_inv_id, Scheme.Hom.id_appTop]
   have h2 := congrArg (fun φ => CommRingCat.Hom.hom φ x) h
   simpa using h2
 
@@ -239,18 +235,6 @@ private theorem ker_eq_span_range_X {σ : Type u} {K : Type u} [Field K] {T : Ty
   rw [hpe]
   exact hsub
 
-private theorem ker_eq_span_image_of_surjective {A B C : Type u} [CommRing A] [CommRing B]
-    [CommRing C] (ψ : A →+* B) (hsurj : Function.Surjective ψ) (g : B →+* C) (s : Set A)
-    (h : RingHom.ker (g.comp ψ) = Ideal.span s) :
-    RingHom.ker g = Ideal.span (ψ '' s) := by
-  have h1 : Ideal.comap ψ (RingHom.ker g) = Ideal.span s := by
-    rw [← h]
-    ext x
-    simp [RingHom.mem_ker, Ideal.mem_comap]
-  have h2 : Ideal.map ψ (Ideal.comap ψ (RingHom.ker g)) = RingHom.ker g :=
-    Ideal.map_comap_of_surjective ψ hsurj _
-  rw [← h2, h1, Ideal.map_span]
-
 private theorem ker_appTop_affineSpaceOrigin (k : Type u) [Field k] (m : ℕ) :
     RingHom.ker (CommRingCat.Hom.hom (Scheme.Hom.appTop (affineSpaceOrigin k m))) =
       Ideal.span (Set.range fun i : Fin m =>
@@ -265,9 +249,12 @@ private theorem ker_appTop_affineSpaceOrigin (k : Type u) [Field k] (m : ℕ) :
     intro i
     rw [RingHom.comp_apply, mvPolynomialToSections_X k m i]
     exact affineSpaceOrigin_appTop_coord k m i
-  have main := ker_eq_span_image_of_surjective (mvPolynomialFinToAffineSpaceGlobalSections k m)
-    (mvPolynomialToSections_surjective k m)
-    (CommRingCat.Hom.hom (Scheme.Hom.appTop (affineSpaceOrigin k m))) _ hcomp
+  have main : RingHom.ker (CommRingCat.Hom.hom (Scheme.Hom.appTop (affineSpaceOrigin k m))) =
+      Ideal.span ((mvPolynomialFinToAffineSpaceGlobalSections k m) ''
+        Set.range (MvPolynomial.X : ULift.{u, 0} (Fin m) →
+          MvPolynomial (ULift.{u, 0} (Fin m)) k)) := by
+    rw [← Ideal.map_comap_of_surjective _ (mvPolynomialToSections_surjective k m)
+        (RingHom.ker _), RingHom.comap_ker, hcomp, Ideal.map_span]
   rw [main]
   congr 1
   ext y

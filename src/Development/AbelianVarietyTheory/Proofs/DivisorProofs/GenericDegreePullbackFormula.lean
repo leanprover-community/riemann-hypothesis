@@ -64,8 +64,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 
 noncomputable section
 
@@ -98,8 +96,6 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G Recip
 open scoped Classical
 open MeasureTheory GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.Points
 open scoped ENNReal
-
-set_option autoImplicit false
 
 noncomputable section
 

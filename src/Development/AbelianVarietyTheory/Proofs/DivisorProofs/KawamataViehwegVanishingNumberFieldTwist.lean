@@ -58,8 +58,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RadicalPowers
 open GlobalTheory.HSCore GlobalTheory.QCoh
 open GlobalTheory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HSCore.VanishNumberField
@@ -83,41 +81,11 @@ theorem subsingleton_coh_of_pull {k E : Type} [Field k] [Field E] [Algebra k E] 
   have := isAffineHom_diagonal_of_isSeparated f
   obtain ⟨m, D, hD, hc⟩ := exists_fin_affine_cover (X := X) (V := ⊤) isCompact_univ
   have hD' := isAffineOpen_finset_biInf hD
-  have cechIso {R : Type} [CommRing R] {Z : Scheme.{0}} (g : Z ⟶ Spec (CommRingCat.of R))
-      (N : LB Z) {κ : Type} [LinearOrder κ] (U : κ → Z.Opens) :
-      letI := algebraΓOfHom g
-      cechLB g N U ≅ cech R (LB.toMod N) ⊤ U := by
-    letI := algebraΓOfHom g
-    exact (cechFunctor κ R).mapIso (Cube.isoMk (fun s => LinearEquiv.ofBijective
-      (M := SecOnR g N (⨅ i ∈ s, U i)) (M₂ := sectionsOn (LB.toMod N) (⊤ ⊓ ⨅ i ∈ s, U i))
-      (SecOnR.restrict g N (inf_le_right : ⊤ ⊓ (⨅ i ∈ s, U i) ≤ ⨅ i ∈ s, U i))
-      (SecOnR.restrict_bijective g _ (le_inf le_top le_rfl)))
-      fun {s t} ht x => (SecOnR.restrict_restrict g _ inf_le_right x).trans
-        (SecOnR.restrict_restrict g inf_le_right (cechOpen_anti ⊤ U ht) x).symm)
-  have cohEquiv {R : Type} [CommRing R] {Z : Scheme.{0}} (g : Z ⟶ Spec (CommRingCat.of R))
-      {N : LB Z} (hN : N.IsLB) {κ : Type} [LinearOrder κ] [Finite κ] {U : κ → Z.Opens}
-      (hu : ⨆ i, U i = ⊤) (hU : ∀ s : Finset κ, s.Nonempty → IsAffineOpen (⨅ i ∈ s, U i)) (i : ℕ) :
-      letI := algebraΓOfHom g
-      Nonempty ((cechLB g N U).homology i ≃ₗ[R] coh (twist (structureModule Z) N) i) := by
-    letI := algebraΓOfHom g
-    haveI := LB.isQuasicoherent_toMod hN
-    exact ⟨((HomologicalComplex.homologyFunctor _ _ i).mapIso (cechIso g N U)).toLinearEquiv ≪≫ₗ
-      cechHEquivCoh R hu hU (LB.toMod N) i ≪≫ₗ (cohOn.mapIso R ⊤ i (Twist.unitTwistIso N)).symm⟩
-  have homologyEquiv {R : Type} (O : Type) [CommRing R] [CommRing O] [Algebra R O] [Module.Flat R O]
-      (C : CochainComplex (ModuleCat.{0} R) ℕ) (i : ℕ) :
-      Nonempty ((((ModuleCat.extendScalars.{0, 0, 0} (algebraMap R O)).mapHomologicalComplex _).obj
-        C).homology i ≃ₗ[O] TensorProduct R O (C.homology i)) := by
-    have := ModuleCat.preservesFiniteLimits_extendScalars_of_flat
-      (RingHom.flat_algebraMap_iff.2 (inferInstance : Module.Flat R O))
-    have : (ModuleCat.extendScalars.{0, 0, 0} (algebraMap R O)).IsLeftAdjoint :=
-      (ModuleCat.extendRestrictScalarsAdj (algebraMap R O)).isLeftAdjoint
-    obtain ⟨e⟩ := Semicont.nonempty_extendScalars_obj_equiv O (C.homology i)
-    exact ⟨((C.sc i).mapHomologyIso
-      (ModuleCat.extendScalars.{0, 0, 0} (algebraMap R O))).toLinearEquiv ≪≫ₗ e⟩
-  obtain ⟨e₁⟩ := cohEquiv f hM hc hD' n
-  obtain ⟨e₂⟩ := cohEquiv f' (LB.isLB_pull hM π) (U := fun i => π ⁻¹ᵁ D i)
+  obtain ⟨e₁⟩ := FieldChangeInter.nonempty_coh_equiv f hM hc hD' n
+  obtain ⟨e₂⟩ := FieldChangeInter.nonempty_coh_equiv f' (LB.isLB_pull hM π)
+    (D := fun i => π ⁻¹ᵁ D i)
     (by rw [← Scheme.Hom.preimage_iSup, hc]; rfl) (fun s hs => isAffineOpen_biInf_preimage H (hD' s hs)) n
-  obtain ⟨e₃⟩ := homologyEquiv E (cechLB f M D) n
+  obtain ⟨e₃⟩ := FieldChangeInter.nonempty_homology_equiv E (cechLB f M D) n
   have bcIso (g : k →+* E)
       (H' : IsPullback π f' f (Spec.map (CommRingCat.ofHom g))) :
       ((ModuleCat.extendScalars g).mapHomologicalComplex _).obj (cechLB f M D) ≅

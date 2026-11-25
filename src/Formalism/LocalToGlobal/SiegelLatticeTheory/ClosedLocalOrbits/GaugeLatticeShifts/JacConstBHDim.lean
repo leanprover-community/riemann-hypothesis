@@ -587,25 +587,10 @@ theorem mid_or (j : Fin (2 * r + k + 1)) (h : ¬ Mid k r j) :
     show (j : ℕ) = 2 * r + k - (2 * r + k - j)
     omega
 
-private theorem mul_hpk_apply_lemma (A : Mat k r) (i j : Fin (2 * r + k + 1)) :
-    (A * Hpk k r) i j = A i (tau k r j) * sgn k r j := by
-  rw [Matrix.mul_apply]
-  simp_rw [Formalism.QuantumDeterminants.WeylGroupFacts.hpk_row]
-  rw [Finset.sum_eq_single (tau k r j)]
-  · rw [tau_tau, if_pos rfl, sgn_tau]
-  · intro m _ hm
-    rw [if_neg (fun h => hm (by rw [h, tau_tau])), mul_zero]
-  · simp
-
-private theorem adjH_apply_lemma_2 (X : Mat k r) (i j : Fin (2 * r + k + 1)) :
-    (Hpk k r * Xᴴ * Hpk k r) i j = sgn k r i * star (X (tau k r j) (tau k r i)) * sgn k r j := by
-  rw [mul_hpk_apply_lemma, Formalism.QuantumDeterminants.WeylGroupFacts.hpk_mul_apply, Matrix.conjTranspose_apply]
-
 theorem lieWb_set : Formalism.MainNotions.S.lieOf (Formalism.FourierDecayAlt.B2.UWb k r) = (uWb k r : Set (Mat k r)) := by
   rw [BH.lieWb k r]
   ext X
   change _ ↔ (adjH X + X = 0 ∧ ∀ i j, ¬(Mid k r i ∧ Mid k r j) → X i j = 0)
-  rw [adjH_def]
   constructor
   · rintro ⟨hX, hc⟩
     have hcol : ∀ i j, ¬ Mid k r j → X i j = 0 := by
@@ -617,11 +602,11 @@ theorem lieWb_set : Formalism.MainNotions.S.lieOf (Formalism.FourierDecayAlt.B2.
     rcases not_and_or.1 hij with hi | hj
     · have h := congrFun (congrFun hX i) j
       simp only [Matrix.add_apply, Matrix.zero_apply] at h
-      rw [adjH_apply_lemma_2] at h
+      rw [← adjH_def, adjH_apply] at h
       have htau : ¬ Mid k r (tau k r i) := by
         have := tau_out i (by simp only [Mid, not_and_or, not_le] at hi; exact hi)
         simp only [Mid, not_and_or, not_le]; exact this
-      rw [hcol _ _ htau, star_zero, mul_zero, zero_mul, zero_add] at h
+      simp only [hcol _ _ htau, star_zero, mul_zero, zero_mul, zero_add] at h
       exact h
     · exact hcol i j hj
   · rintro ⟨hX, hz⟩
@@ -666,14 +651,6 @@ theorem finrank_prodS {R M N : Type*} [Field R] [AddCommGroup M] [Module R M] [A
     Module.finrank R ↥(p.prod q) = Module.finrank R p + Module.finrank R q := by
   rw [(prodEquiv p q).finrank_eq, Module.finrank_prod]
 
-private theorem eq_zero_of_RL_lemma_3 (M : Mat k r) (h : ‖RL (k := k) (r := r) M‖ ^ 2 = 0) : M = 0 := by
-  rw [RL_sq] at h
-  ext i j
-  have h1 := (Finset.sum_eq_zero_iff_of_nonneg
-    (fun i _ => Finset.sum_nonneg (fun j _ => sq_nonneg ‖M i j‖))).1 h i (Finset.mem_univ _)
-  have h2 := (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => sq_nonneg ‖M i j‖)).1 h1 j (Finset.mem_univ _)
-  simpa using h2
-
 theorem lm_inj {v : Mat k r × (Fin r → ℂ) × Mat k r × Mat k r} (hv : v ∈ Vs k r) (h : Lm k r v = 0) : v = 0 := by
   have hn := lm_norm hv
   rw [h, map_zero, norm_zero] at hn
@@ -689,8 +666,9 @@ theorem lm_inj {v : Mat k r × (Fin r → ℂ) × Mat k r × Mat k r} (hv : v �
     funext a
     have := (Finset.sum_eq_zero_iff_of_nonneg (fun a _ => sq_nonneg ‖v.2.1 a‖)).1 e2 a (Finset.mem_univ _)
     simpa using this
-  exact Prod.ext (eq_zero_of_RL_lemma_3 _ e1)
-    (Prod.ext hx (Prod.ext (eq_zero_of_RL_lemma_3 _ e3) (eq_zero_of_RL_lemma_3 _ e4)))
+  have h0 : ∀ {M : Mat k r}, ‖RL (k := k) (r := r) M‖ ^ 2 = 0 → M = 0 := fun h =>
+    (map_eq_zero_iff _ RL_injective).1 (norm_eq_zero.1 (sq_eq_zero_iff.1 h))
+  exact Prod.ext (h0 e1) (Prod.ext hx (Prod.ext (h0 e3) (h0 e4)))
 
 def lmEquiv (k r : ℕ) : ↥(Vs k r) ≃ₗ[ℝ] ↥(uH k r) :=
   LinearEquiv.ofBijective ((Lm k r).toLinearMap.restrict fun v hv => lm_mem hv)

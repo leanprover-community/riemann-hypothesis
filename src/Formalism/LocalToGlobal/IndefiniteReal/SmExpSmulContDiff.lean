@@ -19,7 +19,7 @@ namespace Formalism.IndefR.PeterssonHilbertSpace
 
 section Gen
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
@@ -101,8 +101,6 @@ section MultSec
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S
 open Formalism.L2.Theta Formalism.IndefR.Mult
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
 

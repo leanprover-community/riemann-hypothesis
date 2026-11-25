@@ -55,7 +55,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section
@@ -70,9 +69,6 @@ theorem evI_eq (a : AF F) : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMo
 
 def embI (F : Type) [Field F] [NumberField F] : F →+* mixedEmbedding.mixedSpace F :=
   (evIHom F).comp (algebraMap F (AF F))
-
-theorem countable_F : Countable F :=
-  (Module.finBasis ℚ F).equivFun.injective.countable
 
 def infAd (m : mixedEmbedding.mixedSpace F) : AF F :=
   (((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm m, 0) : InfiniteAdeleRing F × FiniteAdeleRing (𝓞 F) F)
@@ -166,7 +162,7 @@ theorem coeff_zero {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ} (hψ : Glo
   classical
   letI : MeasurableSpace (κ → F) := ⊤
   haveI : MeasurableSingletonClass (κ → F) := ⟨fun _ => MeasurableSpace.measurableSet_top⟩
-  haveI : Countable F := countable_F
+  haveI : Countable F := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableE
   have hint : Integrable c Measure.count := integrable_count_iff.mpr hc
   have hp : Measurable (pI (F := F) (κ := κ)) := fun _ _ => MeasurableSpace.measurableSet_top
   have key := GlobalTheory.FourierPush.setIntegral_preimage_eq_zero (κ → F) Measure.count c hint

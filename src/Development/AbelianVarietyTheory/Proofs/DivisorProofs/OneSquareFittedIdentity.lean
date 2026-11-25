@@ -49,8 +49,6 @@ open Formalism.L2.Indef.Tree
 
 namespace GlobalTheory.BigTop.Fun.OneSqTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem big_std : GlobalTheory.RowClaim.Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => Formalism.L2.Theta.IsStdChar D ch.W.ψ (-1) :=
   ⟨0, fun _ _ _ => ⟨0, fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ s _ hi _ => by
     show Formalism.L2.Theta.IsStdChar _ _ (-1)

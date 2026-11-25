@@ -19,8 +19,6 @@ open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
 
 namespace PtRepPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem hJ_crd (v : InfinitePlace X.B.I.F) (x y : (VS D).V) :

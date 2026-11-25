@@ -435,28 +435,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
 
 theorem inv_natCast_mem {p : ℕ} (hp : p.Prime) {q : Cpt 𝔐.ξ} (hq : InFibre 𝔐.ξ p q) (b : ℕ) (hb : ¬ p ∣ b) :
     ((b : Ω))⁻¹ ∈ regAt 𝔐.ξ q := by
-  have hZ : OverZp 𝔐 p q := by
-    intro r hr hrq
-    by_contra hne
-    have hloc : IsLocalRing (GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q) :=
-      IsLocalRing.of_surjective' (GlobalTheory.CompanionTheory.Ar.genMap 𝔐.ξ q).rangeRestrict
-        (GlobalTheory.CompanionTheory.Ar.genMap 𝔐.ξ q).rangeRestrict_surjective
-    have key : ∀ m : ℕ, GlobalTheory.CompanionTheory.Ar.InFibre 𝔐.ξ m q → ¬ IsUnit ((m : GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q)) := by
-      intro m hm hu
-      apply hm
-      obtain ⟨u, hu'⟩ := hu
-      have h1 : (m : Ω) * (((u⁻¹ : (GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q)ˣ) : GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q) : Ω) = 1 := by
-        have h2 := congrArg (fun x : GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q => (x : Ω)) u.mul_inv
-        simpa [hu'] using h2
-      have h0 : (m : Ω) ≠ 0 := left_ne_zero_of_mul_eq_one h1
-      refine ⟨h0, natCast_mem _ m, ?_⟩
-      rw [← eq_inv_of_mul_eq_one_right h1]
-      exact SetLike.coe_mem _
-    have hcop : Nat.Coprime r p := (Nat.coprime_primes hr hp).2 hne
-    obtain ⟨a, b, hab⟩ := (Nat.isCoprime_iff_coprime.2 hcop).map (Int.castRingHom (GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q))
-    rcases IsLocalRing.isUnit_or_isUnit_of_add_one hab with h | h
-    · exact key r hrq (by simpa using isUnit_of_mul_isUnit_right h)
-    · exact key p hq (by simpa using isUnit_of_mul_isUnit_right h)
+  have hZ : OverZp 𝔐 p q :=
+    _root_.GlobalTheory.CompanionTheory.Ar.HT.ModelTest.overZp_of_inFibre 𝔐 hp q hq
   induction b using Nat.recOnMul with
   | zero => exact absurd (dvd_zero p) hb
   | one => simpa using (regAt 𝔐.ξ q).one_mem
@@ -497,28 +477,8 @@ end Model
 theorem mem_V_inl_iff : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (p : ℕ) [Fact p.Prime] (o : Type) [CommRing o] [Algebra o Ω] (ho : ∀ x : Ω, x ∈ (algebraMap o Ω).range ↔ ∃ (a : ℤ) (b : ℕ), ¬ p ∣ b ∧ x = (a : Ω) / (b : Ω)) (Dc : ∀ s : {s : ∀ k, J k // mseg y s ≠ 0}, HTChart (chartRing o (mseg y) s.1) Ω (cmConj E) p (𝔐.R p) (D.p + D.q) (Module.Dual Ω 𝔐.Li)), IsHTFamily 𝔐 p o Dc → p ∈ S → ∀ (τ : CMType H) (σ : E →+* Ω), (∀ a : 𝓞 E, σ (a : E) = 𝔐.emb (Sum.inl τ) a) → ∀ (s : {s : ∀ k, J k // mseg y s ≠ 0}) (ds : chartRing o (mseg y) s.1), GeneratesDiff σ ds → ∀ q : Cpt 𝔐.ξ, InChart 𝔐.ξ (mseg y) s.1 q → InFibre 𝔐.ξ p q → ∀ e : 𝔐.Li, e ∈ 𝔐.V (Sum.inl τ) q ↔ e ∈ HTL.latOn (Dc s) (GlobalTheory.CompanionTheory.Ar.HT.eigSp 𝔐.ρ σ) (ds : Ω) (regAt 𝔐.ξ q) := by
   intro E _ _ _ H D l Xo c O _ β Y S Ω _ K _ J _ y 𝔐 p _ o _ _ ho Dc hD hpS τ σ hσ s ds hds q hs hq e
   have hp : p.Prime := Fact.out
-  have hZ : OverZp 𝔐 p q := by
-    intro r hr hrq
-    by_contra hne
-    have hloc : IsLocalRing (GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q) :=
-      IsLocalRing.of_surjective' (GlobalTheory.CompanionTheory.Ar.genMap 𝔐.ξ q).rangeRestrict
-        (GlobalTheory.CompanionTheory.Ar.genMap 𝔐.ξ q).rangeRestrict_surjective
-    have key : ∀ m : ℕ, GlobalTheory.CompanionTheory.Ar.InFibre 𝔐.ξ m q → ¬ IsUnit ((m : GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q)) := by
-      intro m hm hu
-      apply hm
-      obtain ⟨u, hu'⟩ := hu
-      have h1 : (m : Ω) * (((u⁻¹ : (GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q)ˣ) : GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q) : Ω) = 1 := by
-        have h2 := congrArg (fun x : GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q => (x : Ω)) u.mul_inv
-        simpa [hu'] using h2
-      have h0 : (m : Ω) ≠ 0 := left_ne_zero_of_mul_eq_one h1
-      refine ⟨h0, natCast_mem _ m, ?_⟩
-      rw [← eq_inv_of_mul_eq_one_right h1]
-      exact SetLike.coe_mem _
-    have hcop : Nat.Coprime r p := (Nat.coprime_primes hr hp).2 hne
-    obtain ⟨a, b, hab⟩ := (Nat.isCoprime_iff_coprime.2 hcop).map (Int.castRingHom (GlobalTheory.CompanionTheory.Ar.regAt 𝔐.ξ q))
-    rcases IsLocalRing.isUnit_or_isUnit_of_add_one hab with h | h
-    · exact key r hrq (by simpa using isUnit_of_mul_isUnit_right h)
-    · exact key p hq (by simpa using isUnit_of_mul_isUnit_right h)
+  have hZ : OverZp 𝔐 p q :=
+    _root_.GlobalTheory.CompanionTheory.Ar.HT.ModelTest.overZp_of_inFibre 𝔐 hp q hq
   have hV : 𝔐.V (Sum.inl τ) q = 𝔐.HT p (Sum.inl τ) q :=
     Lat.patch_of_unique S _ _ hpS hq fun p' hp' h =>
       hZ p' (𝔐.S_prime p' hp') h

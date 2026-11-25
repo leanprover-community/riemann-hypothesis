@@ -57,8 +57,6 @@ open GlobalTheory.LogPole
 open scoped Classical
 open GlobalTheory.CechKS
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CechKS
 
 theorem dlog_of_mul_eq {B : Type} [CommRing B] (a₁ a₂ l g : DualNumber B) (i₁ i₂ il ig : B)

@@ -643,8 +643,7 @@ variable {D : D7} (Λ : Raw D)
 
 @[reducible] def errTr (x : ErrX D) : ErrX Λ.rec' := { x with }
 
-open DivX (md) in
-@[reducible] def divTr (X : DivX D) : DivX Λ.rec' := { X with md := fun S κ p _ la z => { md X S κ p la z with } }
+@[reducible] def divTr (X : DivX D) : DivX Λ.rec' := { X with }
 section Local
 
 variable {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (a b : G.HH D → ℤ) (p j : ℕ)

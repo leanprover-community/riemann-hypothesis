@@ -227,6 +227,13 @@ theorem split_all {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup 
     have h2 : f₂ (σ y.2) ≠ 0 := right_ne_zero_of_mul hy
     exact ⟨subset_tsupport _ h1, σ y.2, subset_tsupport _ h2, hσ _⟩
 
+private lemma split_pair_facts {w : Pl E} (hs : IsSplitAt w) (δ₁ : GL (Fin a) E) (δ₂ : GL (Fin b) E) :
+    (ratW a w δ₁, ratW b w δ₂) * sgP a b w
+      (ratW a w (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₁),
+       ratW b w (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₂)) =
+      (locEl a w δ₁, locEl b w δ₂) ∧ (thL a w).prodMap (thL b w) = MonoidHom.id _ :=
+  ⟨Prod.ext (norm_split E a w δ₁ hs) (norm_split E b w δ₂ hs), by simp only [thL, if_pos hs]; rfl⟩
+
 theorem locConds_split (hC : CjEx) (hU : Unr E) {S : Set (Pl E)} (hS : IsSection S)
     {φ₁ φ₂ : ∀ w : Pl E, GLw a w × GLw b w → ℂ} (h₁ : IsTestP φ₁) (h₂ : IsTestP φ₂) (δ₁ : GL (Fin a) E) (δ₂ : GL (Fin b) E)
     (he₁ : polE δ₁ ∈ Ell E a) (he₂ : polE δ₂ ∈ Ell E b) (v : PlF E) (w : Above v) (hw : w.1 ∈ S) (hs : IsSplitAt w.1) :
@@ -241,18 +248,11 @@ theorem locConds_split (hC : CjEx) (hU : Unr E) {S : Set (Pl E)} (hS : IsSection
   obtain ⟨K₂, hKo₂, -, hH₂, -⟩ := test_facts h₂
   obtain ⟨hKo, hKc⟩ := GlobalTheory.CompanionTheory.TwistOrbit.isOpen_isCompact_pair_integral_points (E := E) a b w.1
   rw [hr]
-  have hN : (ratW a w.1 δ₁, ratW b w.1 δ₂) * sgP a b w.1 (ratW a w.1 (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₁),
-    ratW b w.1 (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₂)) = (locEl a w.1 δ₁, locEl b w.1 δ₂) :=
-    Prod.ext (norm_split E a w.1 δ₁ hs) (norm_split E b w.1 δ₂ hs)
+  obtain ⟨hN, hid⟩ := split_pair_facts hs δ₁ δ₂
   have s₁ := sep_locEl hC E a w.1 δ₁ he₁
   have s₂ := sep_locEl hC E b w.1 δ₂ he₂
   have hG := _root_.GlobalTheory.CompanionTheory.LocGoodProof.locGood E hU a b w.1 (locEl a w.1 δ₁, locEl b w.1 δ₂) s₁ s₂
   have hL := (GlobalTheory.CompanionTheory.TwistOrbit.locSupp E hU a b w.1 (locEl a w.1 δ₁, locEl b w.1 δ₂) s₁ s₂).1
-  have hid : (thL a w.1).prodMap (thL b w.1) = MonoidHom.id _ := by
-    have e₁ : thL a w.1 = MonoidHom.id _ := by rw [thL, if_pos hs]
-    have e₂ : thL b w.1 = MonoidHom.id _ := by rw [thL, if_pos hs]
-    rw [e₁, e₂]
-    rfl
   rw [hid, ← hN] at hG hL
   exact split_all _ _ (K₁ w.1) (K₂ w.1) _ _ _ _ hσc hσ hσK hKo hKc (hKo₁ _) (hKo₂ _) (hH₁ _) (hH₂ _) hG hL
 
@@ -302,14 +302,7 @@ theorem unitConds_split (hC : CjEx) {S : Set (Pl E)} (hS : IsSection S)
   · rw [fv_eq hS φ₁ φ₂ v w hw, if_pos hs, ← he, ← he, hθ]
     rfl
   rw [hr]
-  have hN : (ratW a w.1 δ₁, ratW b w.1 δ₂) * sgP a b w.1 (ratW a w.1 (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₁),
-    ratW b w.1 (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₂)) = (locEl a w.1 δ₁, locEl b w.1 δ₂) :=
-    Prod.ext (norm_split E a w.1 δ₁ hs) (norm_split E b w.1 δ₂ hs)
-  have hid : (thL a w.1).prodMap (thL b w.1) = MonoidHom.id _ := by
-    have e₁ : thL a w.1 = MonoidHom.id _ := by rw [thL, if_pos hs]
-    have e₂ : thL b w.1 = MonoidHom.id _ := by rw [thL, if_pos hs]
-    rw [e₁, e₂]
-    rfl
+  obtain ⟨hN, hid⟩ := split_pair_facts hs δ₁ δ₂
   rw [hid, ← hN] at hy
   obtain ⟨hc, hp⟩ := split_unit (sgP a b w.1) (K2 a b w.1) _ _ hσc hσ hσK hd hd' hy.2 hy.1
   exact ⟨split_ind _ _ hσ hσK _ _ hφ₁ hφ₂, ⟨hd, hd'⟩, hc, hp⟩

@@ -570,7 +570,7 @@ private theorem typeLaw_fwd (P : PlaceIso A w A' w' φ j i) (rc : IrrGL (k := w.
   obtain ⟨T, hT1, -⟩ := GlobalTheory.transport_irrGL_bijective _ _ i.symm hs
   obtain ⟨σ₀, e, h2, he⟩ := exists_of_repRel σ' ((hT1 _ _).2 rfl)
   have hR' : RepRel i.symm (cls σ') (cls σ₀) := h2 ▸ (hT1 _ _).2 rfl
-  have hR : RepRel i (cls σ₀) (cls σ') := repRel_symm hR'
+  have hR : RepRel i (cls σ₀) (cls σ') := (repRel_symm hR' :)
   have W := hrel _ _ hR
   have hinf : GlobalTheory.SerSys.TameGen.Inflates (σ₀.ρ.comp (Matrix.GeneralLinearGroup.map (ii.trans i.symm).toRingHom)) τ := by
     obtain ⟨f, hf0, hf⟩ := hσ'
@@ -658,7 +658,7 @@ private theorem isRecT_fwd (P : PlaceIso A w A' w' φ j i) (rc : IrrGL (k := w.a
     rw [MonoidHom.comp_apply, MonoidHom.comp_apply, MonoidHom.comp_apply, hart σ σ' hσ]
   · let f : Segment (w'.adicCompletion E') → Segment (w.adicCompletion E) := fun Δ =>
       Segment.ofFirst (T.symm Δ.first) ((hcusp _).2 Δ.isCusp_first) Δ.len Δ.len_pos
-    have hl := GlobalTheory.T.isLanglandsData_transport_localFieldIso _ _ i.symm hs l (l.map f) x' (T.symm x')
+    have hl := _root_.GlobalTheory.LocLanglands.isL_transport _ _ i.symm hs l (l.map f) x' (T.symm x')
       (by rw [List.forall₂_map_right_iff, List.forall₂_same]; exact fun Δ _ => ⟨repRel_symm (hrel _), rfl⟩)
       (repRel_symm (hrel x')) hx
     rw [key, L.langlands _ _ hl]

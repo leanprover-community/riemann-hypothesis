@@ -45,14 +45,8 @@ def epsConj (M : Matrix (Fin (r + 1)) (Fin (r + 1)) E) : Matrix (Fin (r + 1)) (F
   fun c b => (-1) ^ (r - c.val) * M c b * (-1) ^ (r - b.val)
 
 theorem zhatOM_mul (A Z M : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
-    ZhatOM (A * Z * M) = A * ZhatOM Z * epsConj M := by
-  ext a b
-  simp only [ZhatOM, epsConj, Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  refine Finset.sum_congr rfl fun d _ => ?_
-  have h : ((-1 : E) ^ (r - c.val)) * (-1) ^ (r - c.val) = 1 := by
-    rw [← pow_add, ← two_mul, pow_mul]; simp
-  linear_combination (-(A a d * Z d c * M c b * (-1 : E) ^ (r - b.val))) * h
+    ZhatOM (A * Z * M) = A * ZhatOM Z * epsConj M :=
+  Formalism.L2.SG.Pf.zhatOM_mul A Z M
 
 theorem isUpUni_epsConj {M : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (h : IsUpUni M) : IsUpUni (epsConj M) := by
   intro i j

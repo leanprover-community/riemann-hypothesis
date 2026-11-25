@@ -55,8 +55,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 namespace GlobalTheory.AdelicScalar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem form_of_classSums {B X W I κ HV HW : Type} [MeasurableSpace B] [MeasurableSpace X] [Fintype I] [Fintype κ]

@@ -120,6 +120,10 @@ theorem awayW_dpw (f : R →+* S) (k : ℕ) (h : IsUnit (k.factorial : WL l R)) 
 
 end Away
 
+theorem dpow_eq_dpw (k : ℕ) (x : Ainf l) : ACris.dpow (K := ℂ_[l]) (p := l) k x = dpw k x := by
+  rw [ACris.dpow_eq_iff, dpw, ← mul_assoc,
+    Ring.mul_inverse_cancel _ (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero), one_mul]
+
 namespace PAlg
 
 variable (A B C : PAlg l)
@@ -194,7 +198,9 @@ theorem awayW_s_mem {y : WL l (Ob l)} (hy : y ∈ ACris.ACrisZero ℂ_[l] l) : a
   | mem y hy =>
     obtain ⟨k, rfl⟩ := hy
     have := awayW_dpw A.s k (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero) (xi0 l)
-    exact this ▸ A.dpw_xi_mem k
+    show awayW A.s (ACris.dpow k (xi0 l)) ∈ _
+    rw [dpow_eq_dpw, this]
+    exact A.dpw_xi_mem k
   | algebraMap x => rw [awayW_algebraMap]; exact Subalgebra.algebraMap_mem _ _
   | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
   | mul x y _ _ hx hy => rw [map_mul]; exact mul_mem hx hy
@@ -216,11 +222,15 @@ def cris (n : ℕ) : Acris l →+* A.Acr n :=
     (AdicCompletion.evalₐ (Ideal.span {(l : Acris0 l)}) n).toRingHom
 
 theorem cris_of (n : ℕ) (y : Acris0 l) : A.cris n (AdicCompletion.of _ _ y) = A.mkAcr n (A.cris0 y) := by
-  simp only [cris, RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, AdicCompletion.evalₐ_of,
-    Ideal.Quotient.lift_mk]
+  rfl
+
+theorem cris_of' (n : ℕ) (y : Acris0 l) :
+    A.cris n (algebraMap (Acris0 l) (Acris l) y) = A.mkAcr n (A.cris0 y) := by
+  rfl
 
 theorem cris_algebraMap (n : ℕ) (x : Ainf l) : A.cris n (algebraMap (Ainf l) (Acris l) x) = A.toAcr n (A.sW x) := by
-  rw [AdicCompletion.algebraMap_apply, cris_of]
+  change A.cris n (algebraMap (Acris0 l) (Acris l) (algebraMap (Ainf l) (Acris0 l) x)) = _
+  rw [cris_of']
   exact congrArg (A.mkAcr n) (Subtype.ext (awayW_algebraMap A.s x))
 
 instance (n : ℕ) : Algebra (Acris l) (A.Acr n) := (A.cris n).toAlgebra
@@ -284,14 +294,16 @@ theorem pdOk_of_over {f : A.A →+* B.A} {τ : Ob l →+* Ob l} (hf : f.comp A.s
   have e : WittVector.map f A.xi = WittVector.map B.s (WittVector.map τ (xi0 l)) := by
     rw [← wmap_comp, ← hf, wmap_comp]; rfl
   rw [e, ← awayW_dpw B.s k (ACris.isUnit_natCast (K := ℂ_[l]) (p := l) k.factorial_ne_zero)]
-  exact B.awayW_s_mem (hτ k)
+  have hk := hτ k
+  rw [dpow_eq_dpw] at hk
+  exact B.awayW_s_mem hk
 
 theorem PdOk.acr_cris {f : A.A →+* B.A} (h : PdOk f) {τ : Ob l →+* Ob l} (hf : f.comp A.s = B.s.comp τ)
     (g : Acris0 l →+* Acris0 l) (hg : ∀ y : Acris0 l, (g y).1 = awayW τ y.1) (n : ℕ) (a : Acris l) :
     h.acr n (A.cris n a) = B.cris n (ACris.extendEndo g a) := by
   refine RingHom.congr_fun (ACris.ringHom_ext (F := (h.acr n).comp (A.cris n))
     (G := (B.cris n).comp (ACris.extendEndo g)) fun y => ?_) a
-  rw [RingHom.comp_apply, RingHom.comp_apply, ACris.extendEndo_of, cris_of, cris_of, acr_mk]
+  rw [RingHom.comp_apply, RingHom.comp_apply, ACris.extendEndo_of, cris_of', cris_of', acr_mk]
   refine congrArg (B.mkAcr n) (Subtype.ext ?_)
   change awayW f (awayW A.s y.1) = awayW B.s (g y).1
   rw [hg, ← RingHom.comp_apply, ← awayW_comp, hf, awayW_comp]; rfl
@@ -422,7 +434,7 @@ abbrev FilF (n r : ℕ) : PAlg l ⥤ ModuleCat.{0} (Acris l) := (FilS l n r).fn
 def redF {m n : ℕ} (h : n ≤ m) : AcrF l m ⟶ AcrF l n where
   app A := ModuleCat.ofHom (AlgHom.toLinearMap (R := Acris l) ⟨A.red h, fun a =>
     RingHom.congr_fun (ACris.ringHom_ext (F := (A.red h).comp (A.cris m)) (G := A.cris n) fun y => by
-      rw [RingHom.comp_apply, cris_of, cris_of, red_mk]) a⟩)
+      rw [RingHom.comp_apply, cris_of', cris_of', red_mk]) a⟩)
   naturality _ _ f := ModuleCat.hom_ext (LinearMap.ext fun x => (pdOk_hom f).red_acr h x)
 
 def UnF (n : ℕ) : PAlg l ⥤ ModuleCat.{0} (Ainf l) where

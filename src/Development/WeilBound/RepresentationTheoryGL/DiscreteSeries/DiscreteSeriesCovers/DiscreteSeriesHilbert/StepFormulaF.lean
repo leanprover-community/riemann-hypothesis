@@ -74,18 +74,6 @@ def StepWtSpan : Prop :=
     Formalism.MainNotions.S.IsKStableOn ε (rreg ε) S → ∀ (N : Type) [AddCommGroup N] [Module ℂ N] (e : S →ₗ[ℂ] N), e ≠ 0 →
       ∃ (ν : Fin n → ℝ) (x : S), Formalism.MainNotions.S.IsWtOn (Formalism.REAL.Kset ε) (rreg ε) ν (x : L2 ε) ∧ e x ≠ 0
 
-def StepCone : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (T : S7.KType ε (lowK ε lam))
-    (Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)), S7.IsHCParam lam → IsPsiFor ε lam T Ψ →
-      KeyFor ε lam T Ψ → ∀ (η : Fin n → ℝ) (S : Submodule ℂ (L2 ε)), S ≤ Hlam ε Ψ T.w →
-        Formalism.MainNotions.S.IsKTypeOf ε (rreg ε) η S → InCone (lowK ε lam) η
-
-def StepLowEq : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (T : S7.KType ε (lowK ε lam))
-    (Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)), S7.IsHCParam lam → IsPsiFor ε lam T Ψ →
-      KeyFor ε lam T Ψ → ∀ S : Submodule ℂ (L2 ε), S ≤ Hlam ε Ψ T.w →
-        Formalism.MainNotions.S.IsKTypeOf ε (rreg ε) (lowK ε lam) S → S = V1 ε Ψ
-
 def StepIrred : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (T : S7.KType ε (lowK ε lam))
     (Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)), IsPsiFor ε lam T Ψ →

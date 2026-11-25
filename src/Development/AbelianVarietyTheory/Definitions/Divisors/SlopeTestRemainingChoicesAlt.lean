@@ -45,8 +45,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 
 namespace GlobalTheory.BigTop.Fun
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Numbers
 
 variable {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (μ₀ : T)

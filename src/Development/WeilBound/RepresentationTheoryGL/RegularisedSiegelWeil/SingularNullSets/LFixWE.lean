@@ -50,8 +50,6 @@ open IsDedekindDomain NumberField Formalism.BasicNotions Formalism.BasicNotions.
   GlobalTheory.MixModel GlobalTheory.StdUnn GlobalTheory.Doubling Filter MeasureTheory
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Rsw.L.LFixW
 
 variable {D : D7} {n : ℕ}

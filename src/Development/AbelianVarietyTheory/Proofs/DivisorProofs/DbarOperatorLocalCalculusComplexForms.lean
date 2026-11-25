@@ -42,8 +42,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open Filter Topology
 open ReciprocityTheory.L2DbarEstimates (V)
 open GlobalTheory GlobalTheory.CxForm

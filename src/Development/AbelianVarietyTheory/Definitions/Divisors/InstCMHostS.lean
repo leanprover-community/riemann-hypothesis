@@ -46,8 +46,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.StdFrame
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 local instance instCMHostS (D : Formalism.BasicNotions.D7) : IsCMField D.host.E := D.host.isCMField_hostE
 
 def tensCastR {E : Type} [Field E] [NumberField E] {F1 F2 : Subfield E} (h : F1 = F2) :

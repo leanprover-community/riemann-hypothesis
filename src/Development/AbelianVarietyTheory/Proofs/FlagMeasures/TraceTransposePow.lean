@@ -51,6 +51,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.LieOperatorConjHolds
 
 @[expose] public section
 
@@ -234,32 +235,6 @@ lemma word_apply {ε : Fin n → Bool} (w : List (Fin n × Fin n)) (F : smoothSp
     simp only [List.map_cons, List.prod_cons, Module.End.mul_apply, Formalism.REAL.Eword]
     rw [eabEnd_apply p.1 p.2 _ ih hg, Formalism.REAL.eabV_eq]
 
-private lemma matrix_of_pow_succ_apply_eq_sum_prod {A : Type} [Ring A] (E : Fin n → Fin n → A) (k : ℕ) :
-    ∀ i j : Fin n, (Matrix.of E ^ (k + 1)) i j = ∑ a : Fin (k + 1) → Fin n, if a 0 = i then
-      (List.ofFn fun t : Fin (k + 1) =>
-        E ((Fin.snoc a j : Fin (k + 2) → Fin n) t.castSucc) ((Fin.snoc a j : Fin (k + 2) → Fin n) t.succ)).prod
-      else 0 := by
-  induction k with
-  | zero =>
-    intro i j
-    rw [pow_succ, pow_zero, Matrix.one_mul, Matrix.of_apply]
-    rw [Fintype.sum_equiv (Equiv.funUnique (Fin 1) (Fin n)) _ (fun c => if c = i then E c j else 0)
-      (fun a => by simp [Fin.snoc, Equiv.funUnique, Fin.default_eq_zero])]
-    simp
-  | succ k ih =>
-    intro i j
-    rw [pow_succ, Matrix.mul_apply]
-    simp_rw [ih, Finset.sum_mul, ite_mul, zero_mul]
-    rw [← (Fin.snocEquiv (fun _ => Fin n)).sum_comp, Fintype.sum_prod_type]
-    refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun a _ => ?_
-    have h0 : (Fin.snoc a c : Fin (k + 2) → Fin n) 0 = a 0 := by
-      simpa only [Fin.castSucc_zero] using Fin.snoc_castSucc (α := fun _ => Fin n) c a 0
-    simp only [Fin.snocEquiv, Equiv.coe_fn_mk, h0]
-    split_ifs with hi
-    · conv_rhs => rw [List.ofFn_succ', List.prod_concat]
-      simp only [Fin.snoc_castSucc, Fin.succ_castSucc, Fin.snoc_last, Fin.succ_last, Matrix.of_apply]
-    · rfl
-
 lemma sum_cycWord {A : Type} [Ring A] (E : Fin n → Fin n → A) (m : ℕ) :
     ∑ a : Fin (m + 1) → Fin n, ((cycWord a).map fun p => E p.1 p.2).prod = ∑ c, (Matrix.of E ^ (m + 1)) c c := by
   apply GlobalTheory.PhiEigenfun.sum_cycWord
@@ -312,14 +287,7 @@ lemma Rd_conj (X : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fin n) ℂ �
 
 lemma Jm_single (ε : Fin n → Bool) (a b : Fin n) :
     Jm ε * (Matrix.single a b (1 : ℂ))ᴴ * Jm ε = ((Formalism.REAL.sgn ε a b : ℝ) : ℂ) • Matrix.single b a (1 : ℂ) := by
-  ext i j
-  simp only [Formalism.REAL.Jm, Matrix.diagonal_mul, Matrix.mul_diagonal, Matrix.conjTranspose_apply,
-    Matrix.smul_apply, Matrix.single_apply, Formalism.REAL.sgn, smul_eq_mul]
-  by_cases h : b = i ∧ a = j
-  · obtain ⟨rfl, rfl⟩ := h
-    by_cases ha : ε a <;> by_cases hb : ε b <;> simp [ha, hb]
-  · have h' : ¬ (a = j ∧ b = i) := fun h'' => h ⟨h''.2, h''.1⟩
-    simp [h, h']
+  apply _root_.Formalism.REAL.p0auxiliary_theta_single <;> assumption
 
 private lemma rd_smul_sign_eq_mul (Y : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fin n) ℂ → ℂ)
     (g : Matrix (Fin n) (Fin n) ℂ) (r : ℝ) (hr : r = 1 ∨ r = -1) :

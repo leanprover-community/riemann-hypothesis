@@ -50,8 +50,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.DivisionValues Forma
 namespace GlobalTheory.MiS
 open Formalism Formalism.IndefR Formalism.IndefR.Mi
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC}
 

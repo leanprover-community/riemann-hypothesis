@@ -71,8 +71,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.Inde
 
 namespace GlobalTheory.RowsNonzero
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Abstract
 
 variable {K G X H E : Type} [Field K] [Group G] [Fintype G] [AddCommGroup X] [Module K X]

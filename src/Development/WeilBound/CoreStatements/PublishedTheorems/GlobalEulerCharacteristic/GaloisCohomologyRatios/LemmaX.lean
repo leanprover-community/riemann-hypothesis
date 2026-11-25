@@ -1259,7 +1259,6 @@ end Main
 
 end PositivityTheory.Lit1.GEN.X.RealC
 
-open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheory.Global
 
 namespace PositivityTheory.Lit1.GEN.X
 

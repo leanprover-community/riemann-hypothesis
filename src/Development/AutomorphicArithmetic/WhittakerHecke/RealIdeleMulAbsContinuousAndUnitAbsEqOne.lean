@@ -50,10 +50,6 @@ private noncomputable def cu (y : ℝ) (h : y ≠ 0) : (TR.Rinf ℚ)ˣ :=
 
 private theorem iy_eq {y : ℝ} (h : y ≠ 0) : iy y = TR.infId ℚ (cu y h) := dif_neg h
 
-private theorem nrm_unit {v : H.P ℚ} {x : H.Kv v} (h : Valued.v x = 1) : ‖x‖ = 1 :=
-  le_antisymm ((Valued.toNormedField.norm_le_one_iff (x := x)).2 h.le)
-    ((Valued.toNormedField.one_le_norm_iff (x := x)).2 h.ge)
-
 theorem UpperTheory.realIdele_mul_abs_continuous_and_unit_abs_eq_one :
     (∀ y y' : ℝ, y ≠ 0 → y' ≠ 0 → iy (y * y') = iy y * iy y') ∧ (∀ y : ℝ, y ≠ 0 → ab (iy y) = |y|) ∧ Continuous (fun t : ℝ => iy (Real.exp t)) ∧ ∀ u ∈ UU, ab u = 1 := by
   refine ⟨fun y y' hy hy' => ?_, fun y hy => ?_, ?_, fun u hu => ?_⟩
@@ -76,7 +72,7 @@ theorem UpperTheory.realIdele_mul_abs_continuous_and_unit_abs_eq_one :
     rw [IdeleGroup.ideleModule_eq]
     have h1 : ((u : A ℚ)).1 = 1 := hu.1
     have h2 : ∏ᶠ v : HeightOneSpectrum (𝓞 ℚ), ‖((u : A ℚ)).2 v‖ = 1 :=
-      finprod_eq_one_of_forall_eq_one fun v => nrm_unit (hu.2 v)
+      finprod_eq_one_of_forall_eq_one fun v => Valued.toNormedField.norm_eq_one_iff.2 (hu.2 v)
     rw [h1, h2, mul_one]
     exact Finset.prod_eq_one fun w _ => by
       rw [show (1 : InfiniteAdeleRing ℚ) w = 1 from rfl, norm_one, one_pow]

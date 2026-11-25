@@ -627,7 +627,6 @@ end General
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.SmGL UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-attribute [local instance high] UpperTheory.V.W.coefLocal
 private theorem Uc_anti (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {a b : ℕ} (h : a ≤ b) : Uc k b ≤ Uc k a := by
   refine Subgroup.map_mono fun u hu => ?_

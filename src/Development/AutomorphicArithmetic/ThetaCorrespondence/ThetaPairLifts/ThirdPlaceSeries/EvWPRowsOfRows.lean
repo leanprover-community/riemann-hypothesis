@@ -640,7 +640,6 @@ variable {O K K'' Fm : Type} [CommRing O] [Field K] [Algebra O K] [IsFractionRin
 end Ext
 end GlobalTheory.CompanionTheory.LatSpan
 noncomputable section
-open scoped TensorProduct
 open Module NumberField
 namespace GlobalTheory.CompanionTheory.LatSpan
 section Main
@@ -699,16 +698,12 @@ variable {c w}
 end PiLocalization₂
 end GlobalTheory.CompanionTheory.LatSpan
 noncomputable section
-open scoped TensorProduct
-open Module NumberField
 namespace GlobalTheory.CompanionTheory.LatSpan
 section Alg
 variable {k A G : Type} [Field k] [Ring A] [Algebra k A] [Group G]
 end Alg
 end GlobalTheory.CompanionTheory.LatSpan
 noncomputable section
-open scoped TensorProduct
-open Module NumberField
 namespace GlobalTheory.CompanionTheory.LatSpan
 open GlobalTheory.IndefiniteRowSideFullHecke.SemilinearExtensionBases GlobalTheory.IndefiniteRowSideFullHecke.FractionalBaseInclusion Formalism.BasicNotions Formalism.IndefR.NX Formalism.IndefR.Arith
 section Stage2
@@ -718,7 +713,6 @@ end Stage2
 end GlobalTheory.CompanionTheory.LatSpan
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.IndefR.NX Formalism.L2.Pj
 open Formalism.L2.Rows
-open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.CompanionTheory.LatSpan
 attribute [local instance] algKK

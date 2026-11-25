@@ -53,15 +53,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem le_natCast_or_succ_le (a : ℕ∞) (r : ℕ) :
-    a ≤ (r : ℕ∞) ∨ ((r + 1 : ℕ) : ℕ∞) ≤ a := by
-  rcases eq_or_ne a ⊤ with rfl | ha
-  · exact Or.inr le_top
-  · obtain ⟨m, rfl⟩ := ENat.ne_top_iff_exists.1 ha
-    rcases Nat.lt_or_ge r m with hm | hm
-    · exact Or.inr (by exact_mod_cast hm)
-    · exact Or.inl (by exact_mod_cast hm)
-
 private theorem germ_comp_appLE {X Y : Scheme.{u}} (h : Y ⟶ X) (U : X.Opens) (V : Y.Opens)
     (e : V ≤ h ⁻¹ᵁ U) (y : Y) (hy : y ∈ V) :
     (Y.presheaf.germ V y hy).hom.comp (h.appLE U V e).hom
@@ -122,12 +113,12 @@ theorem orderAt_comap (k : Type u) [Field k] [CharZero k] {X Y : Scheme.{u}}
   · rw [hI]; exact le_top
   obtain ⟨r, hr⟩ := ENat.ne_top_iff_exists.1 hI
   rw [← hr]
-  rcases le_natCast_or_succ_le (orderAt (I.comap h) y) r with hle | hlt
+  rcases le_or_gt (orderAt (I.comap h) y) r with hle | hlt
   · exact hle
   exfalso
   have h1 : ((1 : ℕ) : ℕ∞) ≤ orderAt (derivIdealSheafIterate k (h ≫ p) r (I.comap h)) y :=
     le_orderAt_derivIdealSheafIterate k (h ≫ p) (I.comap h) y 1 r (by
-      rw [Nat.add_comm]; exact hlt)
+      rw [Nat.add_comm, Nat.cast_add, Nat.cast_one]; exact ENat.natCast_add_one_le_iff.2 hlt)
   rw [derivIdealSheafIterate_comap k p h r I] at h1
   have h2 : (1 : ℕ∞) ≤ orderAt ((derivIdealSheafIterate k p r I).comap h) y := by exact_mod_cast h1
   have h3 := one_le_orderAt_of_one_le_orderAt_comap h (derivIdealSheafIterate k p r I) y h2

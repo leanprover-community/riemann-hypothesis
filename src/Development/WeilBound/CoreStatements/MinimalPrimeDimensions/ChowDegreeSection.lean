@@ -163,7 +163,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option linter.style.haveILetI false
 
 noncomputable section
@@ -378,7 +377,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option linter.style.haveILetI false
 
 noncomputable section
@@ -565,7 +563,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option linter.style.haveILetI false
 
 noncomputable section

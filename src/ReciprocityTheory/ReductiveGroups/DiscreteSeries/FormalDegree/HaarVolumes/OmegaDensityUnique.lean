@@ -423,24 +423,6 @@ variable (n) in
 def logM : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ :=
   (exp_strict (n := n)).localInverse _ _ _
 
-theorem logM_exp : ∀ᶠ X in 𝓝 (0 : Matrix (Fin n) (Fin n) ℂ), logM n (NormedSpace.exp X) = X := by
-  exact (exp_strict (n := n)).eventually_left_inverse
-
-theorem exp_logM : ∀ᶠ h in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), NormedSpace.exp (logM n h) = h := by
-  have h := (exp_strict (n := n)).eventually_right_inverse
-  rw [NormedSpace.exp_zero] at h
-  exact h
-
-theorem logM_one : logM n 1 = 0 := by
-  have h := (exp_strict (n := n)).localInverse_apply_image
-  rw [NormedSpace.exp_zero] at h
-  exact h
-
-theorem logM_strict : HasStrictFDerivAt (logM n) (ContinuousLinearMap.id ℝ _) 1 := by
-  have h := (exp_strict (n := n)).to_localInverse
-  rw [NormedSpace.exp_zero] at h
-  exact h
-
 end Log
 
 theorem Jm_inv (ε : Fin n → Bool) : (Jm ε)⁻¹ = Jm ε := by

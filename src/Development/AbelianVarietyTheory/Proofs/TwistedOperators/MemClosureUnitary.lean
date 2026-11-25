@@ -732,7 +732,6 @@ private theorem exists_adelic_point_of_mem_unitaryGroup (F E : Type) [Field F] [
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Mult Formalism.IndefR.Lev Formalism.IndefR.Datum
 open scoped ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem weak_approx_real : ∀ {D : D7} (V : HSp D) (u : GA D V), u ∈ GinfC V → ∀ U : Set (GA D V), IsOpen U → u ∈ U → ∃ γ ∈ GQ V, ∃ k ∈ GfC V, γ * k ∈ U ∧ γ * k ∈ GinfC V := by
   intro D V u hu U hU huU

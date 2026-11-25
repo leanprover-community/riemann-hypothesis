@@ -1,6 +1,6 @@
 module
 
-import Mathlib
+import Mathlib.AlgebraicGeometry.AffineSpace
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Mathlib.RingTheory.RegularLocalRing.Polynomial
 public import Development.AbelianVarietyTheory.Definitions.Divisors.GalRigidOfSurjective

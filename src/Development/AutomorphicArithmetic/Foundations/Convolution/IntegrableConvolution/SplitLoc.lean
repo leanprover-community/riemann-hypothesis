@@ -72,9 +72,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 private theorem ef_eq_one (hs : Function.Surjective (completionMap v w)) :
     w.asIdeal.ramificationIdx (𝓞 F) * w.asIdeal.inertiaDeg (𝓞 F) = 1 := by
   rw [← finrank_eq_ramificationIdx_mul_inertiaDeg E v w]
-  have hb : Function.Bijective (Algebra.linearMap (v.adicCompletion F) (w.adicCompletion E)) :=
-    ⟨(completionMap v w).injective, hs⟩
-  rw [← (LinearEquiv.ofBijective _ hb).finrank_eq, Module.finrank_self]
+  exact Module.finrank_of_bijective_algebraMap ⟨(completionMap v w).injective, hs⟩
 
 private theorem val_map (hs : Function.Surjective (completionMap v w)) (x : v.adicCompletion F) :
     Valued.v (completionMap v w x) = Valued.v x := by
@@ -139,10 +137,6 @@ private theorem cont_symm (hs : Function.Surjective (completionMap v w))
 
 variable (n : ℕ)
 
-private theorem map_inj : Function.Injective (mapGL n (completionMap v w)) := fun a b h =>
-  Units.ext (Matrix.ext fun i j => (completionMap v w).injective
-    (congrArg (fun g : GL (Fin n) (w.adicCompletion E) => g i j) h))
-
 private theorem integral_iff (hs : Function.Surjective (completionMap v w)) (g : GL (Fin n) (v.adicCompletion F)) :
     mapGL n (completionMap v w) g ∈ GLnLocal.integralGL (w.adicCompletion E) n ↔
       g ∈ GLnLocal.integralGL (v.adicCompletion F) n := by
@@ -194,15 +188,15 @@ private theorem diag_fac (hs : Function.Surjective (completionMap v w)) (ν : Fi
   rw [← mul_zpow, mul_div_cancel₀ _ ha0]
 
 private theorem coset_iff (hs : Function.Surjective (completionMap v w)) (ν : Fin n → ℤ)
-    (hsurj : Function.Surjective (mapGL n (completionMap v w))) (g : GL (Fin n) (v.adicCompletion F)) :
+    (hb : Function.Bijective (mapGL n (completionMap v w))) (g : GL (Fin n) (v.adicCompletion F)) :
     mapGL n (completionMap v w) g ∈ GM.iwCoset w ν ↔ g ∈ GM.iwCoset v ν := by
   obtain ⟨d, hd, hD⟩ := diag_fac v w n hs ν
   constructor
-  · rintro ⟨a, ha, b, hb, h⟩
-    obtain ⟨a', rfl⟩ := hsurj a
-    obtain ⟨b', hb'⟩ := hsurj (d * b)
-    refine ⟨a', (iw_iff v w n hs _).1 ha, b', (iw_iff v w n hs _).1 (hb' ▸ mul_mem hd hb), map_inj v w n ?_⟩
-    rw [h, map_mul, map_mul, hb', hD]
+  · rintro ⟨a, ha, b, hb', h⟩
+    obtain ⟨a', rfl⟩ := hb.2 a
+    obtain ⟨b', hb''⟩ := hb.2 (d * b)
+    refine ⟨a', (iw_iff v w n hs _).1 ha, b', (iw_iff v w n hs _).1 (hb'' ▸ mul_mem hd hb'), hb.1 ?_⟩
+    rw [h, map_mul, map_mul, hb'', hD]
     simp only [mul_assoc]
   · rintro ⟨a, ha, b, hb, rfl⟩
     refine ⟨mapGL n (completionMap v w) a, (iw_iff v w n hs _).2 ha, d⁻¹ * mapGL n (completionMap v w) b,
@@ -227,25 +221,16 @@ private theorem main (hs : Function.Surjective (completionMap v w)) :
     Ideal.absNorm w.asIdeal = Ideal.absNorm v.asIdeal := by
   let φ : v.adicCompletion F ≃+* w.adicCompletion E :=
     RingEquiv.ofBijective (completionMap v w) ⟨(completionMap v w).injective, hs⟩
-  have hφ : ∀ x, φ x = completionMap v w x := fun _ => rfl
   have hc : Continuous (completionMap v w) := continuous_completionMap v w
-  have hc' : Continuous φ.symm := cont_symm v w hs φ hφ
-  have hl : ∀ g, mapGL n (φ.symm : w.adicCompletion E →+* v.adicCompletion F) (mapGL n (completionMap v w) g) = g :=
-    fun g => Units.ext (Matrix.ext fun i j => φ.symm_apply_apply _)
-  have hr : ∀ g, mapGL n (completionMap v w) (mapGL n (φ.symm : w.adicCompletion E →+* v.adicCompletion F) g) = g :=
-    fun g => Units.ext (Matrix.ext fun i j => φ.apply_symm_apply _)
-  have hsurj : Function.Surjective (mapGL n (completionMap v w)) := fun y => ⟨_, hr y⟩
-  refine ⟨⟨{ toFun := mapGL n (completionMap v w)
-             invFun := mapGL n (φ.symm : w.adicCompletion E →+* v.adicCompletion F)
-             left_inv := hl
-             right_inv := hr
-             map_mul' := map_mul _
+  have hc' : Continuous φ.symm := cont_symm v w hs φ fun _ => rfl
+  let e := Matrix.GeneralLinearGroup.mapEquiv (Fin n) φ
+  refine ⟨⟨{ e with
              continuous_toFun := Units.continuous_iff.2
                ⟨Units.continuous_val.matrix_map hc, Units.continuous_coe_inv.matrix_map hc⟩
              continuous_invFun := Units.continuous_iff.2
                ⟨Units.continuous_val.matrix_map hc', Units.continuous_coe_inv.matrix_map hc'⟩ },
-      fun _ => rfl⟩, integral_iff v w n hs, iw_iff v w n hs, fun ν => coset_iff v w n hs ν hsurj,
-    norm_eq v w hs⟩
+      fun _ => rfl⟩, integral_iff v w n hs, iw_iff v w n hs,
+    fun ν => coset_iff v w n hs ν e.bijective, norm_eq v w hs⟩
 
 end Main
 

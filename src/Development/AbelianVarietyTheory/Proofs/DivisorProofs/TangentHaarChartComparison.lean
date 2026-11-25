@@ -13,7 +13,7 @@ open NumberField MeasureTheory Matrix Filter Topology Metric Set GlobalTheory.SU
 open Formalism.BasicNotions
 open scoped ENNReal NNReal
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 noncomputable section
 

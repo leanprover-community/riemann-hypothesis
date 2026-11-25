@@ -113,7 +113,6 @@ theorem le_one_of_map (i : K →+* K') (hi : Continuous i) {y : K} (h : valuatio
 end Val
 
 section
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
@@ -187,6 +186,5 @@ end GlobalTheory.SphLoc
 end
 
 section
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 end

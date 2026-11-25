@@ -60,7 +60,7 @@ theorem sum_lt_indicator (N m : ℕ) (h : m ≤ N) :
     omega
   rw [hf, Finset.card_range, Nat.cast_id]
 
-theorem sum_ge_indicator (N m : ℕ) (_h : m ≤ N) :
+theorem sum_ge_indicator (N m : ℕ) :
     (∑ i : Fin N, if m ≤ (i : ℕ) then 1 else 0) = N - m := by
   rw [Fin.sum_univ_eq_sum_range (fun i => if m ≤ i then 1 else 0) N, Finset.sum_boole]
   have hf : (Finset.range N).filter (fun i => m ≤ i) = Finset.Ico m N := by
@@ -98,7 +98,7 @@ theorem gap_count (N : ℕ) (c j : ℕ) (hj : j + 1 ≤ N) :
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.mul_sum]
     _ = c * ((j + 1) * (N - (j + 1))) := by
-        rw [sum_lt_indicator N (j + 1) hj, sum_ge_indicator N (j + 1) hj]
+        rw [sum_lt_indicator N (j + 1) hj, sum_ge_indicator N (j + 1)]
 
 theorem lamOf_antitone_gap_sum (N : ℕ) (g : Fin (N - 1) → ℕ) :
     Antitone (Zls.lamOf g) ∧

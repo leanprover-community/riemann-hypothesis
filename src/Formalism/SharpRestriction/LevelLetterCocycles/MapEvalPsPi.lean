@@ -102,12 +102,10 @@ theorem toZModPow_eq_one_iff (k : ℕ) (x : ℤ_[l]) (hx : x - 1 ≠ 0) :
   rw [h1, ← RingHom.mem_ker, PadicInt.ker_toZModPow, Ideal.mem_span_singleton,
     pow_dvd_iff_le_valuation _ hx]
 
-private theorem prime_natCast_padicInt : Prime (l : ℤ_[l]) := PadicInt.prime_p
-
 theorem factV (hl2 : l ≠ 2) (u : ℤ_[l]) (hu : (u - 1).valuation = 1) (m : ℕ) (hm : m ≠ 0) :
     (u ^ m - 1).valuation = 1 + padicValNat l m := by
   have hl := (Fact.out : l.Prime)
-  have hprime : Prime (l : ℤ_[l]) := prime_natCast_padicInt
+  have hprime : Prime (l : ℤ_[l]) := PadicInt.prime_p
   have hu0 : u - 1 ≠ 0 := by
     intro h
     rw [h, PadicInt.valuation_zero] at hu

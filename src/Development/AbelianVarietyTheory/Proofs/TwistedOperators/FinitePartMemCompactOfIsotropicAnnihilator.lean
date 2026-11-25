@@ -194,7 +194,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TwistCoords
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 theorem trace_tmul_base {F E R : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
     [CommRing R] [Algebra F R] (r : R) (x : E) :

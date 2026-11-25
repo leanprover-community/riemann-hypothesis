@@ -189,21 +189,11 @@ theorem Mm_herm (a b : Fin N) (ε : Bool) : (Mm a b ε).IsHermitian := by
 
 theorem sd1 (f : Fin N → Fin N → ℂ) (i j : Fin N) :
     ∑ a, ∑ b, (if i = a ∧ j = b then f a b else 0) = f i j := by
-  rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-  · simp
-  · intro b _ hb; simp [Ne.symm hb]
-  · simp
-  · intro b _ hb; exact Finset.sum_eq_zero fun y _ => by simp [Ne.symm hb]
-  · simp
+  simp [ite_and, Finset.sum_ite_eq]
 
 theorem sd2 (f : Fin N → Fin N → ℂ) (i j : Fin N) :
     ∑ a, ∑ b, (if i = b ∧ j = a then f a b else 0) = f j i := by
-  rw [Finset.sum_eq_single j, Finset.sum_eq_single i]
-  · simp
-  · intro b _ hb; simp [Ne.symm hb]
-  · simp
-  · intro b _ hb; exact Finset.sum_eq_zero fun y _ => by simp [Ne.symm hb]
-  · simp
+  simp [ite_and, Finset.sum_ite_eq]
 
 def MH (k : K L N) : HS L N :=
   mkHS (fun w => if w = k.1 then Mm k.2.1 k.2.2.1 k.2.2.2 else 0) fun w => by
@@ -236,12 +226,7 @@ def lc (k : K L N) (B : Matrix (Ix (InfinitePlace L) N) (Ix (InfinitePlace L) N)
 theorem sum_delta (p p' : Ix (InfinitePlace L) N) (c : ℂ)
     (B : Matrix (Ix (InfinitePlace L) N) (Ix (InfinitePlace L) N) ℂ) :
     ∑ x, ∑ y, (if x = p ∧ y = p' then c else 0) * B x y = c * B p p' := by
-  rw [Finset.sum_eq_single p, Finset.sum_eq_single p']
-  · simp
-  · intro b _ hb; simp [hb]
-  · simp
-  · intro b _ hb; exact Finset.sum_eq_zero fun y _ => by simp [hb]
-  · simp
+  simp [ite_mul, ite_and, Finset.sum_ite_eq']
 
 theorem lc_eq (k : K L N) (B : Matrix (Ix (InfinitePlace L) N) (Ix (InfinitePlace L) N) ℂ) :
     lc k B = c1 k.2.2.2 * B (k.1, k.2.1) (k.1, k.2.2.1) + c2 k.2.2.2 * B (k.1, k.2.2.1) (k.1, k.2.1) := by

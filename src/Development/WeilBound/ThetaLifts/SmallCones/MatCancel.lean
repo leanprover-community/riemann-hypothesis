@@ -100,49 +100,10 @@ theorem eps_sq (ε : ℤˣ) : ((ε : ℤ) : E) * ((ε : ℤ) : E) = 1 := by
 
 theorem isFr (hB : B.IsGood σ) (hY : Y.IsHerm σ B r s ∨ Y.IsSkew σ B r s) (hH : H.IsAdapted σ B Y Y₁ i₀ i₁) :
     ∃ (ε : E) (A' : Matrix (Fin n₁ ⊕ Fin 2) (Fin n) E), IsFr (σ : E →+* E) ε Y.J Y₁.J H.ι H.x H.y A' := by
-  obtain ⟨ε, hε, hL⟩ := exists_eps hY
+  obtain ⟨ε, hε, -⟩ := exists_eps hY
   have hsk : ∀ x y, form σ Y.J x y = ((ε : ℤ) : E) * σ (form σ Y.J y x) := fun x y => by
     rw [form_eps (sig_sig hB.cm) hε, ← mul_assoc, eps_sq, one_mul]
-  have hFull : Y.L.IsFullLattice E := by
-    let := hL
-    refine { span_eq_top := ?_ }
-    let W := Submodule.span E (Y.L : Set (Fin n → E))
-    change W = ⊤
-    by_contra hW
-    let g : (Fin n → E) →ₗ[E] Module.Dual E W :=
-      ((dotProductBilin E E).compl₂ (Matrix.mulVecLin Y.Jᵀ)).domRestrict₂ W
-    have hdim : Module.finrank E (Module.Dual E W) < Module.finrank E (Fin n → E) := by
-      rw [Subspace.dual_finrank_eq]
-      exact Submodule.finrank_lt hW
-    obtain ⟨z, hz, hz₀⟩ :=
-      Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hdim)
-    let y : Fin n → E := fun i => σ (z i)
-    have hy₀ : y ≠ 0 := by
-      intro hy
-      apply hz₀
-      exact funext fun i => σ.injective ((congrFun hy i).trans (map_zero σ).symm)
-    have horth (x : Fin n → E) (hx : x ∈ Y.L) : form σ Y.J y x = 0 := by
-      have hz' : z ⬝ᵥ Y.Jᵀ *ᵥ x = 0 :=
-        congrArg (fun f : Module.Dual E W => f ⟨x, Submodule.subset_span hx⟩)
-          (LinearMap.mem_ker.mp hz)
-      have hzero : form σ Y.J x y = 0 := by
-        rw [Matrix.dotProduct_transpose_mulVec] at hz'
-        simpa only [form, y, sig_sig hB.cm] using hz'
-      rw [hsk, hzero, map_zero, mul_zero]
-    have hline (a : E) : a • y ∈ Y.L := by
-      have hzform (x : Fin n → E) (hx : x ∈ Y.L) : form σ Y.J (a • y) x = 0 := by
-        simpa only [form, smul_dotProduct, smul_eq_mul] using
-          (show a * form σ Y.J y x = 0 by rw [horth x hx, mul_zero])
-      rcases hY with h | h
-      · exact (h.dual _).2 fun x hx => by rw [hzform x hx]; exact isIntegral_zero
-      · exact (h.dual _).2 fun x hx o => by rw [hzform x hx, mul_zero, map_zero]; exact isIntegral_zero
-    let i : E →ₗ[𝓞 E] Y.L :=
-      ((LinearMap.toSpanSingleton E _ y).restrictScalars (𝓞 E)).codRestrict Y.L hline
-    let : Module.Finite (𝓞 E) Y.L := Module.Finite.iff_fg.mpr hL.fg
-    let : Module.Finite (𝓞 E) E := Module.Finite.of_injective i fun a b hab =>
-      smul_left_injective E hy₀ (congrArg Subtype.val hab)
-    exact RingOfIntegers.not_isField E
-      (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 E) E) (Field.toIsField E))
+  have hFull : Y.L.IsFullLattice E := hY.elim (fun h => h.lat) (fun h => h.lat)
   have ent : ∀ a b, ((fr H.ι H.x H.y)ᵀ * Y.J * (fr H.ι H.x H.y).map (σ : E →+* E)) a b =
       form σ Y.J (fun i => fr H.ι H.x H.y i a) (fun i => fr H.ι H.x H.y i b) := fun a b => by
     rw [Matrix.mul_assoc]; rfl

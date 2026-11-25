@@ -50,8 +50,6 @@ namespace GlobalTheory.FunObj.SumModel
 
 open GlobalTheory.ChiGrid Formalism.L2.Host Formalism.L2.DIV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 theorem readOK {ι : Type} [Fintype ι] {n : ℕ} (σ : ι → DomWeight n) : ReadOK σ := by

@@ -59,21 +59,7 @@ theorem bijective_appLE_of_image_eq {A B : Scheme.{u}} (f : A ⟶ B) [IsOpenImme
   have : IsIso (Scheme.Hom.appLE f (f ''ᵁ S) S e) := by
     rw [← Scheme.Hom.appIso_hom' f S]
     infer_instance
-  constructor
-  · intro a b hab
-    have h1 : (CommRingCat.Hom.hom (Scheme.Hom.appLE f (f ''ᵁ S) S e ≫
-          inv (Scheme.Hom.appLE f (f ''ᵁ S) S e))) a
-        = (CommRingCat.Hom.hom (Scheme.Hom.appLE f (f ''ᵁ S) S e ≫
-          inv (Scheme.Hom.appLE f (f ''ᵁ S) S e))) b := by
-      simp only [CommRingCat.hom_comp, RingHom.comp_apply, hab]
-    rw [IsIso.hom_inv_id] at h1
-    simpa only [CommRingCat.hom_id, RingHom.id_apply] using h1
-  · intro y
-    refine ⟨(CommRingCat.Hom.hom (inv (Scheme.Hom.appLE f (f ''ᵁ S) S e))) y, ?_⟩
-    have h3 := congrArg (fun mm => (CommRingCat.Hom.hom mm) y)
-      (IsIso.inv_hom_id (Scheme.Hom.appLE f (f ''ᵁ S) S e))
-    simpa only [CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.hom_id,
-      RingHom.id_apply] using h3
+  exact ConcreteCategory.bijective_of_isIso (Scheme.Hom.appLE f (f ''ᵁ S) S e)
 
 end IsOpenImmersion
 

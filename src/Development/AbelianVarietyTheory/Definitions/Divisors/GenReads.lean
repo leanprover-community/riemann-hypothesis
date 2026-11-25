@@ -50,8 +50,6 @@ namespace GlobalTheory.AdTh
 
 noncomputable section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def IdxIs {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
     {l : Geo.Tor.Level H} (c : Coeff l) (σ : c.F →+* ℂ) {r g : ℕ} (X : Data E r) (idx : Fin g ≃ X.Ψ × Fin r)
     (e : Fin g ≃ Lt1 Dw) : Prop :=

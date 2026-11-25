@@ -95,12 +95,8 @@ theorem Intw.mul {S T : Sch l →L[ℂ] Sch l} {p q p' q' p'' q'' : Eu l} (hS : 
     Intw (S * T) p q p'' q'' := fun f g h => hS _ _ (hT f g h)
 
 theorem Intw.smul {S : Sch l →L[ℂ] Sch l} {p q p' q' : Eu l} (hS : Intw S p q p' q') (c : ℂ) :
-    Intw (c • S) p q p' q' := fun f g h => by
-  funext x
-  have := congrFun (hS f g h) x
-  simp only [rf, ContinuousLinearMap.smul_apply, smul_eq_mul] at this ⊢
-  rw [this]
-  ring
+    Intw (c • S) p q p' q' :=
+  _root_.CompanionTheory.ThKR.LL.Intw.smul hS c
 
 theorem Iso.mul {S T : Sch l →L[ℂ] Sch l} (hS : Iso S) (hT : Iso T) : Iso (S * T) := fun f => (hS _).trans (hT f)
 
@@ -116,17 +112,8 @@ def ph (S : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
   smulLeftCLM ℂ fun x : Eu l => exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I)
 
 theorem ph_apply (S : Eu l →L[ℝ] Eu l) (f : Sch l) (x : Eu l) :
-    ph S f x = exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I) * f x := by
-  have h2 : Function.HasTemperateGrowth fun x : Eu l => (-2⁻¹ : ℝ) * ⟪x, S x⟫ :=
-    (Function.HasTemperateGrowth.const _).mul (temperate_quad S)
-  have h3 : Function.HasTemperateGrowth fun x : Eu l => exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I) := by
-    convert GlobalTheory.Published.Metaplectic.hasTemperateGrowth_eChar.comp h2 using 1
-    funext x
-    simp only [Function.comp_apply, GlobalTheory.Published.Metaplectic.eChar_apply]
-    congr 1
-    push_cast
-    ring
-  rw [ph, smulLeftCLM_apply_apply h3, smul_eq_mul]
+    ph S f x = exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I) * f x :=
+  _root_.CompanionTheory.ThKR.LL.ph_apply S f x
 
 theorem ph_mul (S T : Eu l →L[ℝ] Eu l) : ph S * ph T = ph (S + T) :=
   CompanionTheory.ThKR.LL.ph_mul S T
@@ -172,17 +159,7 @@ theorem intw_dil {B : Eu l →L[ℝ] Eu l} (hB : IsUnit B) {p q p' q' : Eu l} (h
   simp only [rf, dil_apply hB, h, map_add (f := _), hp, real_inner_comm q' p', hq, real_inner_comm q p]
 
 theorem iso_dil {B : Eu l →L[ℝ] Eu l} (hB : IsUnit B) {c : ℝ} (hc : c ^ 2 = |B.det|) : Iso ((c : ℂ) • dil B) :=
-  iso_of_integral fun f => by
-    have hd : LinearMap.det (B : Eu l →ₗ[ℝ] Eu l) ≠ 0 :=
-      ((hB.map ContinuousLinearMap.toLinearMapRingHom).map LinearMap.det).ne_zero
-    have h1 := integral_map (μ := volume) (φ := (B : Eu l →ₗ[ℝ] Eu l)) (f := fun x => ‖f x‖ ^ (2 : ℝ))
-      B.continuous.aemeasurable (f.continuous.norm.rpow_const fun _ => Or.inr (by norm_num)).aestronglyMeasurable
-    rw [Measure.map_linearMap_addHaar_eq_smul_addHaar _ hd, integral_smul_measure,
-      ENNReal.toReal_ofReal (abs_nonneg _)] at h1
-    simp only [ContinuousLinearMap.smul_apply, dil_apply hB, norm_smul, norm_real, Real.rpow_two,
-      mul_pow, Real.norm_eq_abs, sq_abs, hc, integral_const_mul] at h1 ⊢
-    erw [← h1]
-    rw [smul_eq_mul, ← mul_assoc, ← abs_mul, ContinuousLinearMap.det, mul_inv_cancel₀ hd, abs_one, one_mul]
+  _root_.CompanionTheory.ThKR.LL.iso_dil hB hc
 
 def fou (l : Type) [Fintype l] : Sch l →L[ℂ] Sch l := FourierTransform.fourierCLM ℂ (Sch l)
 

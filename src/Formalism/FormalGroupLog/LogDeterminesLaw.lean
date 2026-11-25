@@ -53,23 +53,6 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.G
 
-private lemma constantCoeff_powerSeries_subst_eq_zero' {R : Type*} [CommRing R] {τ : Type*} {a : MvPowerSeries τ R}
-    (ha : MvPowerSeries.constantCoeff a = 0) (p : PowerSeries R)
-    (hp : PowerSeries.constantCoeff p = 0) :
-    MvPowerSeries.constantCoeff (PowerSeries.subst a p) = 0 := by
-  rw [PowerSeries.constantCoeff_subst (PowerSeries.HasSubst.of_constantCoeff_zero ha)]
-  apply finsum_eq_zero_of_forall_eq_zero
-  intro d
-  rcases Nat.eq_zero_or_pos d with rfl | hd
-  · simp [PowerSeries.coeff_zero_eq_constantCoeff_apply, hp]
-  · simp [ha, hd.ne']
-
-private lemma mvPowerSeries_subst_powerSeries_subst_eq_subst_subst {R : Type*} [CommRing R] {σ τ : Type*} {a : σ → MvPowerSeries τ R}
-    (ha : MvPowerSeries.HasSubst a) {b : MvPowerSeries σ R} (hb : PowerSeries.HasSubst b)
-    (p : PowerSeries R) :
-    MvPowerSeries.subst a (PowerSeries.subst b p) = PowerSeries.subst (MvPowerSeries.subst a b) p :=
-  MvPowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.const hb) ha p
-
 theorem homComp : HomComp := by
   apply Formalism.G.homComp_statement
 theorem logIffHomGa : LogIffHomGa := by

@@ -50,8 +50,6 @@ open MeasureTheory
 open GlobalTheory.Mem.Isom
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri Rig)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.TriMove
 
 variable {D : D7}

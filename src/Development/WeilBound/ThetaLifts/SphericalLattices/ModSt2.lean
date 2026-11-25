@@ -1668,9 +1668,6 @@ theorem asm_relIndex {G : Type} [Group G] (K : Subgroup G) (p : G) :
   rw [e] at h
   exact h.symm
 
-theorem asm_conj_self {G : Type} [Group G] (K : Subgroup G) {k : G} (hk : k ∈ K) : MulAut.conj k • K = K :=
-  Subgroup.conj_smul_eq_self_of_mem hk
-
 theorem locMod_of (h1 : LocCommSt) (h2 : ZCountSt) (h3 : GenSt) : LocModSt := by
   intro L _ _ ϖ c q hU m p hp
   have hq : (0 : ℝ) < q := by
@@ -1686,7 +1683,7 @@ theorem locMod_of (h1 : LocCommSt) (h2 : ZCountSt) (h3 : GenSt) : LocModSt := by
       ring)
     (fun a ha => mul_pos (hpos a ha) (zpow_pos hq _))
     (fun k hk => by
-      rw [asm_conj_self _ hk, asm_ord_K hk, GlobalTheory.HL.invVol, Subgroup.relIndex_self]
+      rw [Subgroup.conj_smul_eq_self_of_mem hk, asm_ord_K hk, GlobalTheory.HL.invVol, Subgroup.relIndex_self]
       simp)
     (fun x hx => by
       obtain ⟨hle, hi⟩ := h2 L ϖ c q hU m x hx

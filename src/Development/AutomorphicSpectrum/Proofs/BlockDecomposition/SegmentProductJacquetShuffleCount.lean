@@ -194,19 +194,6 @@ theorem leviEmb_eq (hm : StrictMono o) (he : ∀ a t, e' ⟨a, t⟩ = e ⟨o a, 
     exact h1.trans h2.symm
 
 
-omit [Fintype n] [DecidableEq n] in
-theorem modExp_drop (hm : StrictMono o) (hne : ∀ j, d j ≠ 0 → j ∈ Set.range o) (a : Fin r') :
-    modExp (fun b => Fin (d (o b))) a = modExp (fun j => Fin (d j)) (o a) := by
-  unfold GlobalTheory.SmGL.modExp
-  congr 1
-  all_goals
-    rw [Finset.sum_filter, Finset.sum_filter]
-    refine Fintype.sum_of_injective o hm.injective _ _ (fun j hj => ?_) (fun b => ?_)
-    · by_cases hd : d j = 0
-      · simp [hd]
-      · exact absurd (hne j hd) hj
-    · simp [hm.lt_iff_lt]
-
 end Blocks
 
 section Local

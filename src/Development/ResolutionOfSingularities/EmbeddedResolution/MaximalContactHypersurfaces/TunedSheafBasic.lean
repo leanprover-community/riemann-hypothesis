@@ -57,39 +57,6 @@ open AlgebraicGeometry CategoryTheory
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem mul_le_mul_idealSheafData {X : Scheme.{u}} {A B C D : X.IdealSheafData}
-    (h1 : A ≤ B) (h2 : C ≤ D) : A * C ≤ B * D := by
-  have h : ∀ U : X.affineOpens, (A * C).ideal U ≤ (B * D).ideal U := by
-    intro U
-    rw [Scheme.IdealSheafData.ideal_mul, Scheme.IdealSheafData.ideal_mul]
-    exact Ideal.mul_mono (h1 U) (h2 U)
-  exact h
-
-private theorem idealSheafData_pow_antitone_of_le {X : Scheme.{u}} (I : X.IdealSheafData) {a b : ℕ}
-    (h : b ≤ a) : I ^ a ≤ I ^ b := by
-  have hU : ∀ U : X.affineOpens, (I ^ a).ideal U ≤ (I ^ b).ideal U := by
-    intro U
-    rw [Scheme.IdealSheafData.ideal_pow, Scheme.IdealSheafData.ideal_pow]
-    exact Ideal.pow_le_pow_right h
-  exact hU
-
-private theorem listProd_map_le_listProd_map {X : Scheme.{u}} (f g : ℕ → X.IdealSheafData) :
-    ∀ L : List ℕ, (∀ j ∈ L, f j ≤ g j) → (L.map f).prod ≤ (L.map g).prod := by
-  intro L
-  induction L with
-  | nil =>
-      intro _
-      exact le_rfl
-  | cons a L ih =>
-      intro h
-      simp only [List.map_cons, List.prod_cons]
-      exact mul_le_mul_idealSheafData (h a (by simp)) (ih fun j hj => h j (by simp [hj]))
-
-private theorem listProd_map_range_one {X : Scheme.{u}} (f : ℕ → X.IdealSheafData) :
-    ((List.range 1).map f).prod = f 0 := by
-  have h : List.range 1 = [0] := rfl
-  rw [h, List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one]
-
 private def extendExponentsByZero (m s : ℕ) (t : Fin m → Fin (s + 1)) (j : ℕ) : ℕ :=
   if h : j < m then (t ⟨j, h⟩ : ℕ) else 0
 
@@ -153,9 +120,9 @@ private theorem tunedSheaf_eq_iSup_fin (k : Type u) [Field k] [IsNoetherianRing 
         ((List.range m).map (fun j => derivIdealSheafIterate k p j I ^
           extendExponentsByZero m s (fun i : Fin m =>
             (⟨min (c i.1) s, Nat.lt_succ_of_le (min_le_right _ _)⟩ : Fin (s + 1))) j)).prod := by
-      refine listProd_map_le_listProd_map _ _ (List.range m) fun j hj => ?_
+      refine List.prod_le_prod fun j hj => ?_
       rw [hex j (List.mem_range.mp hj)]
-      exact idealSheafData_pow_antitone_of_le _ (min_le_left _ _)
+      exact pow_le_pow_right_of_le_one' le_top (min_le_left _ _)
     exact le_iSup_of_le ⟨_, hconstr⟩ hprod
   · rintro ⟨t, ht⟩
     exact le_iSup_of_le ⟨extendExponentsByZero m s t, ht⟩ le_rfl
@@ -176,12 +143,12 @@ theorem tunedSheaf_one_one (k : Type u) [Field k] [IsNoetherianRing k] {X : Sche
   · rintro ⟨c, hc⟩
     have hc1 : 1 ≤ c 0 := by simpa using hc
     have key : ((List.range 1).map (fun j => derivIdealSheafIterate k p j I ^ c j)).prod ≤ I := by
-      rw [listProd_map_range_one]
+      simp only [List.range_one, List.map_singleton, List.prod_cons, List.prod_nil, mul_one]
       exact idealSheafData_pow_le_self I hc1
     exact key
   · have key : I ≤ ((List.range 1).map
         (fun j => derivIdealSheafIterate k p j I ^ ((fun _ : ℕ => 1) j))).prod := by
-      rw [listProd_map_range_one]
+      simp only [List.range_one, List.map_singleton, List.prod_cons, List.prod_nil, mul_one]
       exact le_of_eq (pow_one I).symm
     exact le_trans key (le_iSup
       (fun c : {c : ℕ → ℕ // 1 ≤ ∑ j ∈ Finset.range 1, (1 - j) * c j} =>

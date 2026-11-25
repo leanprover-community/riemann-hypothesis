@@ -49,7 +49,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
