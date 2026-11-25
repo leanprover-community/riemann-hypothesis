@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TsumOneDivRpowLe
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmulRight
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 public import Mathlib.NumberTheory.LSeries.Basic
@@ -749,68 +750,13 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalPositivityEulerFactorPrime =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ProdPrimesBelowInvOneSubOneDivRpowLe =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.ProdPrimesBelowInvOneSubOneDivRpowLe", "h": "module\n\npublic import Mathlib.Analysis.SpecialFunctions.Pow.Real\npublic import Mathlib.NumberTheory.PrimeCounting\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\npublic import Mathlib.Analysis.PSeries\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\npublic import Mathlib.NumberTheory.EulerProduct.Basic\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Analysis.Normed.Module.FiniteDimension\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.ProdPrimesBelowInvOneSubOneDivRpowLe", "h": "module\n\nimport Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TsumOneDivRpowLe\npublic import Mathlib.Analysis.SpecialFunctions.Pow.Real\npublic import Mathlib.NumberTheory.PrimeCounting\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\npublic import Mathlib.Analysis.PSeries\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\npublic import Mathlib.NumberTheory.EulerProduct.Basic\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Analysis.Normed.Module.FiniteDimension\n\n"}
 section -- clump:auto
 @[expose] public section
 
 open Filter Topology
 
 namespace GlobalTheory
-
-theorem one_div_succ_rpow_one_add_le_telescope {s x : ℝ} (hs : 0 < s) (hx : 0 < x) :
-    1 / (x + 1) ^ (1 + s) ≤ (1 / x ^ s - 1 / (x + 1) ^ s) / s := by
-  have hx1 : 0 < x + 1 := by linarith
-  have hq : 0 < (x + 1) / x := div_pos hx1 hx
-  have h1 : 1 - ((x + 1) / x)⁻¹ ≤ Real.log ((x + 1) / x) := Real.one_sub_inv_le_log_of_pos hq
-  have h2 : 1 - ((x + 1) / x)⁻¹ = 1 / (x + 1) := by field_simp; ring
-  have h3 : 1 + s * (1 / (x + 1)) ≤ ((x + 1) / x) ^ s := by
-    rw [Real.rpow_def_of_pos hq]
-    have h4 := Real.add_one_le_exp (Real.log ((x + 1) / x) * s)
-    have h5 : s * (1 / (x + 1)) ≤ Real.log ((x + 1) / x) * s := by
-      rw [mul_comm]
-      exact mul_le_mul_of_nonneg_right (h2 ▸ h1) hs.le
-    linarith
-  rw [Real.div_rpow hx1.le hx.le] at h3
-  rw [Real.rpow_add hx1, Real.rpow_one]
-  have hA : 0 < x ^ s := Real.rpow_pos_of_pos hx _
-  have hB : 0 < (x + 1) ^ s := Real.rpow_pos_of_pos hx1 _
-  generalize x ^ s = A at *
-  generalize (x + 1) ^ s = B at *
-  rw [le_div_iff₀ hs]
-  have h6 : (1 + s * (1 / (x + 1))) / B ≤ B / A / B := by gcongr
-  have h7 : B / A / B = 1 / A := by field_simp
-  have h8 : (1 + s * (1 / (x + 1))) / B = 1 / B + 1 / ((x + 1) * B) * s := by field_simp
-  linarith
-
-theorem sum_range_one_div_rpow_one_add_le {s : ℝ} (hs : 0 < s) (k : ℕ) :
-    ∑ n ∈ Finset.range (k + 2), 1 / (n : ℝ) ^ (1 + s)
-      ≤ 1 + (1 - 1 / ((k : ℝ) + 1) ^ s) / s := by
-  induction k with
-  | zero =>
-    have : (1 + s) ≠ 0 := by linarith
-    simp [Finset.sum_range_succ, Real.zero_rpow this]
-  | succ k ih =>
-    rw [show k + 1 + 2 = (k + 2) + 1 from rfl, Finset.sum_range_succ]
-    have h := one_div_succ_rpow_one_add_le_telescope (x := (k : ℝ) + 1) hs (by positivity)
-    have e : ((k + 2 : ℕ) : ℝ) = (k : ℝ) + 1 + 1 := by push_cast; ring
-    have e' : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by push_cast; ring
-    rw [e, e']
-    have : (1 - 1 / ((k : ℝ) + 1 + 1) ^ s) / s = (1 - 1 / ((k : ℝ) + 1) ^ s) / s
-        + (1 / ((k : ℝ) + 1) ^ s - 1 / ((k : ℝ) + 1 + 1) ^ s) / s := by ring
-    linarith
-
-theorem tsum_one_div_rpow_one_add_le {s : ℝ} (hs : 0 < s) :
-    ∑' n : ℕ, 1 / (n : ℝ) ^ (1 + s) ≤ 1 + 1 / s := by
-  refine Real.tsum_le_of_sum_range_le (fun n => by positivity) fun k => ?_
-  calc ∑ n ∈ Finset.range k, 1 / (n : ℝ) ^ (1 + s)
-      ≤ ∑ n ∈ Finset.range (k + 2), 1 / (n : ℝ) ^ (1 + s) :=
-        Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (by omega))
-          (fun n _ _ => by positivity)
-    _ ≤ 1 + (1 - 1 / ((k : ℝ) + 1) ^ s) / s := sum_range_one_div_rpow_one_add_le hs k
-    _ ≤ 1 + 1 / s := by
-        have : 0 ≤ 1 / ((k : ℝ) + 1) ^ s := by positivity
-        gcongr
-        linarith
 
 theorem prod_primesBelow_inv_one_sub_one_div_rpow_le :
     ∀ (s : ℝ), 0 < s → ∀ N : ℕ, ∏ p ∈ N.primesBelow, (1 - 1 / (p : ℝ) ^ (1 + s))⁻¹ ≤ 1 + 1 / s := by
@@ -834,8 +780,12 @@ theorem prod_primesBelow_inv_one_sub_one_div_rpow_le :
     rw [Nat.cast_pow, ← Real.rpow_natCast (p : ℝ) e, ← Real.rpow_mul hp0, mul_comm,
       Real.rpow_mul hp0, Real.rpow_natCast, one_div_pow]
   rw [hP, hE]
-  exact (Summable.tsum_subtype_le _ _ (fun n => by positivity) hsum).trans
-    (tsum_one_div_rpow_one_add_le hs)
+  refine (Summable.tsum_subtype_le _ _ (fun n => by positivity) hsum).trans ?_
+  rw [hsum.tsum_eq_zero_add]
+  simp only [Nat.cast_zero, Real.zero_rpow (by positivity : 1 + s ≠ 0), div_zero, zero_add,
+    Nat.cast_add, Nat.cast_one]
+  refine (LLower.tsum_one_div_rpow_le (σ := 1 + s) (by linarith)).trans_eq ?_
+  simp [add_div, hs.ne', add_comm]
 
 end GlobalTheory
 end -- clump:auto
