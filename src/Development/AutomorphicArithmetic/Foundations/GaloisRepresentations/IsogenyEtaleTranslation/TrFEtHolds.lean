@@ -551,34 +551,6 @@ open AlgebraicGeometry CategoryTheory
 
 namespace UpperTheory.Gal.FixZ
 
-private lemma relDim_eq_of_ringHom {R S : Type} [CommRing R] [CommRing S] [Nontrivial S] (f : R →+* S)
-    {m n : ℕ} (hm : f.IsStandardSmoothOfRelativeDimension m)
-    (hn : f.IsStandardSmoothOfRelativeDimension n) : m = n := by
-  letI := f.toAlgebra
-  have e₁ : Module.rank S Ω[S⁄R] = m :=
-    @Algebra.IsStandardSmoothOfRelativeDimension.rank_kaehlerDifferential R S _ _ _ _ m hm
-  have e₂ : Module.rank S Ω[S⁄R] = n :=
-    @Algebra.IsStandardSmoothOfRelativeDimension.rank_kaehlerDifferential R S _ _ _ _ n hn
-  exact_mod_cast e₁.symm.trans e₂
-
-private lemma exists_nontrivial_away {S : Type} [CommRing S] [Nontrivial S] (s : Set S)
-    (hs : Ideal.span s = ⊤) : ∃ t ∈ s, Nontrivial (Localization.Away t) := by
-  by_contra hne
-  push_neg at hne
-  have hsub : s ⊆ nilradical S := by
-    intro t ht
-    haveI : Subsingleton (Localization.Away t) := hne t ht
-    have h0 : algebraMap S (Localization.Away t) 1 = algebraMap S (Localization.Away t) 0 :=
-      Subsingleton.elim _ _
-    obtain ⟨⟨c, hc⟩, hc'⟩ := (IsLocalization.eq_iff_exists (Submonoid.powers t) _).1 h0
-    obtain ⟨k, rfl⟩ := hc
-    exact ⟨k, by simpa using hc'⟩
-  have hle := Ideal.span_le.2 hsub
-  rw [hs, top_le_iff] at hle
-  have h1 : (1 : S) ∈ nilradical S := hle ▸ Submodule.mem_top
-  obtain ⟨k, hk⟩ := h1
-  simp at hk
-
 theorem dimUniq_of : DimUniq := by
   intro Z s d d' hd hd' hZ
   obtain ⟨z⟩ := hZ

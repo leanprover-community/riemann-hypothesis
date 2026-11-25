@@ -100,17 +100,6 @@ noncomputable def dual.{u_1, u_2, u_3} : {R : Type u_1} →
       [IsScalarTower R K V] h L =>
     hdual h L
 
-theorem aux6 : ∀ {K : Type} [inst : Field K],
-  RingHomInvPair (RingHom.id K) (RingHom.id K) := by
-  intros; infer_instance
-
-theorem aux7 : ∀ {K : Type} [inst : Field K], SMulCommClass K K K := by
-  intros; infer_instance
-
-theorem aux8 : ∀ {K : Type} [inst : Field K] {n : ℕ},
-  SMulCommClass K K ((Fin n → K) →ₗ[K] K) := by
-  intros; infer_instance
-
 noncomputable def hform : {K : Type} →
   [inst : Field K] →
     [inst_1 : StarRing K] → {n : ℕ} → Matrix (Fin n) (Fin n) K → (Fin n → K) →ₗ⋆[K] (Fin n → K) →ₗ[K] K :=
@@ -147,14 +136,6 @@ noncomputable def IsLocBasis : {K : Type} →
       loc (K := K) w.asIdeal
           (Submodule.span (NumberField.RingOfIntegers K) (Set.range e)) =
         loc (K := K) w.asIdeal L
-
-theorem complex_normed_instance_compat : ∀ {K : Type} [inst : Field K],
-  RingHomSurjective (RingHom.id (NumberField.RingOfIntegers K)) := by
-  intros; infer_instance
-
-theorem padic_embedding_algebra_compat : ∀ {K : Type} [inst : Field K]
-  {d d' : ℕ}, LinearMap.CompatibleSMul (Fin d → K) (Fin d' → K) (NumberField.RingOfIntegers K) K := by
-  intros; infer_instance
 
 noncomputable def matLat : {K : Type} →
   [inst : Field K] →

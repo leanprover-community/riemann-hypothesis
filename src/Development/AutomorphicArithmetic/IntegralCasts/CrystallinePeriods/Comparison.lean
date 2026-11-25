@@ -375,7 +375,6 @@ theorem toRange_algebraMap (n : ℕ) (a : AcrisZero p R) :
   refine (congrArg (AdicCompletion.ofAlgEquiv _).symm this).trans ?_
   exact (AdicCompletion.ofAlgEquiv _).symm.commutes _
 
-
 omit [IsDomain R] [ValuationRing R] [CharZero R] [IsAlgClosed (FractionRing R)] in
 def rangeMap {m n : ℕ} (g : AinfInv p R ⧸ AinfInv.kerTheta p R ^ n →+*
       AinfInv p S ⧸ AinfInv.kerTheta p S ^ m) (e : AcrisZero p R →+* AcrisZero p S)
@@ -536,13 +535,6 @@ variable (p R) in
 def toBdR : Bst p R →+* BdR p R :=
   lift (Bcris.toBdR p R) (fun ϖ => algebraMap _ _ (BdRPlus.logFlat ϖ)) (fun η ϖ => by
     rw [BdRPlus.logFlat_twist, map_add (f := _), Bcris.toBdR_logTeich])
-
-@[simp] theorem toBdR_algebraMap (x : Bcris p R) :
-    toBdR p R (algebraMap _ _ x) = Bcris.toBdR p R x := lift_algebraMap _ _ _ x
-
-@[simp] theorem toBdR_algebraMap_padic (a : ℚ_[p]) :
-    toBdR p R (algebraMap _ _ a) = algebraMap _ _ a := by
-  rw [IsScalarTower.algebraMap_apply _ (Bcris p R), toBdR_algebraMap, Bcris.toBdR_algebraMap_padic]
 
 end Bst
 

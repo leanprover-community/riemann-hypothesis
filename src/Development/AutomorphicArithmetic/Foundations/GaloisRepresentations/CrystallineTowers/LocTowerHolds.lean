@@ -811,7 +811,6 @@ private theorem isAdmP_block (P : LocPrime l) (G : Subgroup (PadicAlgCl l ≃ₐ
 
 end UpperTheory.Gal.Seam
 
-
 open UpperTheory.Gal.Seam in
 theorem UpperTheory.Gal.Seam.subAdm : UpperTheory.Gal.Seam.SubAdm := by
   intro l _ P AI hT E Ω _ _ _ Gw O _ _ _ Bw N d a R r hR M hM hint
@@ -947,24 +946,6 @@ section -- clump:auto
 noncomputable section
 open CategoryTheory Opposite GlobalTheory.EtC LateralTheory.KummerTheory
 
-namespace LateralTheory.EWeil.AdicKerPf
-
-theorem nz (l : ℕ) [Fact l.Prime] (k : ℕ) : NeZero (l ^ k) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
-
-theorem comp (hA : A11) {l : ℕ} [Fact l.Prime] {E : Spc} {n i : ℤ} (y : Hl l E n i) (M m : ℕ) (h : m ≤ M) :
-    red (l ^ M) (l ^ m) E n i (y.1 M) = y.1 m := by
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
-  clear h
-  induction d with
-  | zero => haveI := nz l m; exact (hA (l ^ m) (l ^ m) dvd_rfl E).2.2.1 n i (y.1 m)
-  | succ d ih =>
-    haveI := nz l (m + (d + 1))
-    rw [← (hA (l ^ (m + (d + 1))) (l ^ (m + d)) (pow_dvd_pow l (by omega)) E).2.2.2 (l ^ m)
-      (pow_dvd_pow l (by omega)) n i (y.1 _)]
-    rw [show red (l ^ (m + (d + 1))) (l ^ (m + d)) E n i (y.1 (m + (d + 1))) = y.1 (m + d) from y.2 (m + d)]
-    exact ih
-
-end LateralTheory.EWeil.AdicKerPf
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

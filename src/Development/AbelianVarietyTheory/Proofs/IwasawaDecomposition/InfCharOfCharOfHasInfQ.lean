@@ -106,7 +106,6 @@ theorem idelic_of_loc (χ : HChar L)
 
 end GlobalTheory.CuspRep.CsdFin
 
-
 open GlobalTheory.CuspRep.CsdFin in
 theorem GlobalTheory.CuspRep.csdFin_iff : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E), haveI := host_isCMField H;
     (∀ u : (Af H.E)ˣ, χ.1 (finId H.E (Units.map (conjFin (IsCMField.complexConj H.E).toRingEquiv).toMonoidHom u)⁻¹) =
@@ -217,7 +216,6 @@ theorem field_iff (χ : HChar L) :
 
 end GlobalTheory.CuspRep.CsdInf
 
-
 open GlobalTheory.CuspRep.CsdInf in
 theorem GlobalTheory.CuspRep.csdInf_iff : ∀ {R : Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E), haveI := host_isCMField H;
     (∀ z, dchi χ (-star z) = dchi χ z) ↔
@@ -249,54 +247,6 @@ open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.SmGL Global
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Char
-
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] [_root_.NumberField.IsTotallyComplex E]
-  {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)}
-
-theorem locPar_unr (hL : GlobalTheory.Published.LocalLanglandsGL) (χ : HChar E) (h : IsPlaceOver A w) (hu : χ.UnrAt w) :
-    (ParLaws.locPar hL (CG.ofChar χ) h).unr ∧
-      (ParLaws.locPar hL (CG.ofChar χ) h).frobEig = {(((χ.val w)⁻¹ : ℂˣ) : ℂ)} := by
-  have e : χ.loc w = SmGL.unrChar (w.adicCompletion E) (χ.val w) := by
-    refine MonoidHom.ext fun x => ?_
-    have h2 := unif_spec w
-    have h0 : Valued.v (x : w.adicCompletion E) ≠ 0 := by simp
-    have h1 : IsUnitAt w (x * (atFin w (unif w) ^ ord (w.adicCompletion E) x)⁻¹) := by
-      unfold IsUnitAt IsUnifAt at *
-      rw [Units.val_mul, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val, map_mul,
-        map_inv₀, map_zpow₀, h2, ← WithZero.exp_zsmul, SphCompletion.ord_completion]
-      simp only [smul_eq_mul, mul_neg, mul_one, neg_neg]
-      rw [WithZero.exp_log h0, mul_inv_cancel₀ h0]
-    have h3 := hu _ h1
-    rw [map_mul, map_inv, map_zpow, mul_inv_eq_one] at h3
-    exact h3
-  obtain ⟨a, ha, ε, -, H⟩ := ParLaws.isRec_locRec hL h
-  have e2 : ParLaws.locPar hL (CG.ofChar χ) h = WD.mk (WDRep.diag h fun _ : Fin 1 => (χ.val w)⁻¹) := by
-    rw [ParLaws.locPar_ofChar, H.one]
-    have : ∀ (ξ : (w.adicCompletion E)ˣ →* ℂˣ) (hξ : WeilDeligne.IsSmooth (ξ.comp a)),
-        ξ = SmGL.unrChar (w.adicCompletion E) (χ.val w) →
-        WD.lpOfChar h (ξ.comp a) hξ = WD.mk (WDRep.diag h fun _ : Fin 1 => (χ.val w)⁻¹) := by
-      rintro ξ hξ rfl
-      exact Test.lpOfChar_unrChar ha _ _
-    exact this _ _ e
-  rw [e2, WD.frobEig_diag]
-  exact ⟨(WD.unr_mk _).2 (WDRep.unr_diag _), by simp⟩
-
-theorem locPar_unr_iff (hL : GlobalTheory.Published.LocalLanglandsGL) (χ : HChar E) (h : IsPlaceOver A w) :
-    (ParLaws.locPar hL (CG.ofChar χ) h).unr ↔ χ.UnrAt w := by
-  obtain ⟨a, ha, ε, -, H⟩ := ParLaws.isRec_locRec hL h
-  rw [ParLaws.locPar_ofChar, H.one, Test.unr_lpOfChar_iff ha (ParLaws.isSmoothChar_loc χ w)]
-  refine forall_congr' fun x => imp_congr_left ?_
-  have h0 : Valued.v (x : w.adicCompletion E) ≠ 0 := by simp
-  rw [← ord_eq_zero_iff, SphCompletion.ord_completion, neg_eq_zero, IsUnitAt]
-  constructor
-  · intro hl
-    rw [← WithZero.exp_log h0, hl, WithZero.exp_zero]
-  · intro hv
-    rw [hv, WithZero.log_one]
-
-end Char
-
 section Eta
 
 variable {R : Ranks} {H : Formalism.BasicNotions.Host R} {χ : HChar H.E}
@@ -318,7 +268,6 @@ theorem prod_val (h : IsEtaT H χ) (v : HeightOneSpectrum (𝓞 H.F)) :
   refine Finset.prod_congr rfl fun P hP => ?_
   have hP' : P.under (𝓞 H.F) = v := by simpa [aboveF] using hP
   rw [MonoidHom.comp_apply, GlobalTheory.HeckeProduct.locK_unr χ (h.unr P), hr, hP', ordF_unif, zpow_one]
-
 
 open Classical in
 theorem above_eq {w w' : PlE H} (hc : IsConjPl H w w') : aboveF (L := H.E) H.F (w.under (𝓞 H.F)) = {w, w'} := by
@@ -392,14 +341,6 @@ theorem ofU_spec {χ : HChar D.host.E} (h : χ.IsUnitary) {w} (hu : χ.UnrAt w) 
   have h1 := locPar_unr hL χ (D.nd.plOm.2 w) hu
   exact ⟨(unr_symm T w _).2 h1.1, (frob_symm T w _ h1.1).trans h1.2⟩
 
-theorem ofU_unr_iff {χ : HChar D.host.E} (h : χ.IsUnitary) (w) :
-    D.naut.unr ((T.e w).symm (ParLaws.locG hL D.nd.plOm (ofU χ h) w)) ↔ χ.UnrAt w := by
-  have := host_isCMField D.host
-  exact (unr_symm T w _).trans (locPar_unr_iff hL χ (D.nd.plOm.2 w))
-
-
-
-
 def trueK {η : HChar D.host.E} (hη : IsEtaT D.host η) : CGK D.naut :=
   haveI := host_isCMField D.host
   have L := ParLaws.laws hL hF D.host D.nd.Om D.nd.plOm
@@ -440,9 +381,6 @@ def trueK {η : HChar D.host.E} (hη : IsEtaT D.host η) : CGK D.naut :=
     etaT_split := fun w w' hw hc a b ha hb => by
       rw [(ofU_spec hL T hη.unitary (hη.unr _)).2, Multiset.singleton_inj] at ha hb
       rw [← ha, ← hb, ← Units.val_mul, ← mul_inv, val_split hη hw hc, inv_one, Units.val_one] }
-
-
-
 
 def trueCG (hE : IsEmpty D.nd.Loc) {η : HChar D.host.E} (hη : IsEtaT D.host η) :
     CGTrue hL (setCG D hE (trueK hL hF T hη)) (wdCG hE _ T) where
@@ -508,9 +446,6 @@ theorem equivChar_ofU {R : Ranks} {H : Formalism.BasicNotions.Host R} (χ : HCha
 theorem exists_ofU {R : Ranks} {H : Formalism.BasicNotions.Host R} (σ : HostCGu H 1) : ∃ χ h, σ = ofU χ h :=
   ⟨_, _, eq_ofU σ⟩
 
-
-
-
 def trueSide (hE : IsEmpty D.nd.Loc) (cf : CharFrame D) (hP : ∀ k v, cf.P.Div k (D.naut.plGw k v)) :
     CharSide (setCG D hE (trueK hL hF T cf.isEta)) (cfCG hE _ cf) :=
   haveI := host_isCMField D.host
@@ -547,18 +482,6 @@ def trueSide (hE : IsEmpty D.nd.Loc) (cf : CharFrame D) (hP : ∀ k v, cf.P.Div 
 end Main
 
 end GlobalTheory.HeightCounting.TrueSide
-
-namespace GlobalTheory.HeightCounting
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host NumberField IsDedekindDomain Polynomial
-
-theorem exists_cgTrue_charSide : ∀ hL : GlobalTheory.Published.LocalLanglandsGL, GlobalTheory.Published.AutomorphicFormsFiniteGL → ∀ (D : D7)
-    (hE : IsEmpty D.nd.Loc) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (cf : CharFrame D), (∀ k v, cf.P.Div k (D.naut.plGw k v)) →
-    ∃ K : CGK D.naut, Nonempty (CGTrue hL (setCG D hE K) (wdCG hE K T)) ∧ Nonempty (CharSide (setCG D hE K) (cfCG hE K cf)) :=
-  fun hL hF D hE T cf hP =>
-    ⟨TrueSide.trueK hL hF T cf.isEta, ⟨TrueSide.trueCG hL hF T hE cf.isEta⟩, ⟨TrueSide.trueSide hL hF T hE cf hP⟩⟩
-
-end GlobalTheory.HeightCounting
 
 end
 end -- clump:auto

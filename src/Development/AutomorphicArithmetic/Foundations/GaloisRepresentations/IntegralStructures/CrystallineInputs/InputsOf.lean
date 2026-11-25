@@ -119,13 +119,6 @@ section -- clump:auto
 namespace UpperTheory.Gal.Int.Inp
 
 theorem js : GlobalTheory.Published.JacquetShalikaRigidity := PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity
-theorem gk : GlobalTheory.Published.GelfandKazhdanDual := UpperTheory.Gal.AbelianGaloisNormality.gk_holds
-theorem adm : GlobalTheory.Published.IrreducibleAdmissibleGL := UpperTheory.Zero.LLC.Pr.adm
-theorem len : GlobalTheory.Published.StandardFunctorsFiniteLength := PositivityTheory.Tls2.BZGL.standardFunctorsFiniteLength_top
-theorem exh : GlobalTheory.Published.LanglandsExhaustionGL := UpperTheory.Zero.LLC.Pr.exh
-theorem zel : GlobalTheory.Published.ZelevinskyPolynomialRing := UpperTheory.Zero.LLC.Pr.zel
-theorem gen : GlobalTheory.Published.GenericUnitaryDualGL := PositivityTheory.Gud.Fin.genericUnitaryDualGL_holds
-theorem ac : GlobalTheory.Published.ArthurClozelStrongTC := UpperTheory.Gal.AbelianGaloisNormality.strongTC_holds
 
 theorem inp_holds : Inp := ⟨_root_.PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity, _root_.UpperTheory.Gal.AbelianGaloisNormality.gk_holds, _root_.PositivityTheory.Tls2.BZGL.irreducibleAdmissibleGL_top, _root_.PositivityTheory.Tls2.BZGL.standardFunctorsFiniteLength_top, _root_.PositivityTheory.Exh.langlandsExhaustionGL_holds, _root_.UpperTheory.Zero.LLC.Pr.zel, _root_.PositivityTheory.Gud.Fin.genericUnitaryDualGL_holds, _root_.UpperTheory.Gal.AbelianGaloisNormality.strongTC_holds, hk, alg, _root_.GlobalTheory.deRham_potentiallySemistable⟩
 

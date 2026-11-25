@@ -85,12 +85,6 @@ private theorem norm_prod [FiniteDimensional k E] [IsGalois k E] (σ : E ≃ₐ[
   · intro j _
     exact iter_eq σ j x
 
-private theorem map_diag {F : Type} [Field F] (f : E →+* F) (u : Fin n → Eˣ) :
-    Matrix.GeneralLinearGroup.map f (diagT E (Fin n) u) = diagT F (Fin n) fun i => Units.map (f : E →* F) (u i) := by
-  ext i j
-  simp [GlobalTheory.SmGL.val_diagT, Matrix.diagonal_apply]
-  split_ifs <;> simp
-
 private theorem nrm_diag (σ : E ≃+* E) (q : ℕ) (u : Fin n → Eˣ) :
     (UpperTheory.ConvolutionTheory.Loc.nrm σ q (diagT E (Fin n) u)).val = Matrix.diagonal fun i => ∏ j ∈ Finset.range q, σ^[j] (u i) := by
   induction q with

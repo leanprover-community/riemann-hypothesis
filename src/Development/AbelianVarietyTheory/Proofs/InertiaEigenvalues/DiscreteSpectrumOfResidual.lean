@@ -75,7 +75,6 @@ namespace GlobalTheory.LieTensor
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
-
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem exists_curve {a : ℕ} (Z : Matrix (Fin a) (Fin a) (Cinf E)) :
     ∃ c : ℝ → GL (Fin a) (Cinf E), c 0 = 1 ∧ HasDerivAt (fun t => toL (c t).val) (toL Z) 0 ∧
@@ -187,7 +186,6 @@ theorem lie_block_tensor {c N : ℕ} (n : Fin c → ℕ)
   refine h1.unique ?_
   simp only [infGL_leviEmb, ← map_mul]
   exact h m
-
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem exists_decomp {c N : ℕ} {n : Fin c → ℕ} (e : (Σ i, Fin (n i)) ≃ Fin N)
@@ -394,13 +392,11 @@ theorem cornerGL_mem_unipRad (s : R →ₙ+* S) (e : (Σ a, m a) ≃ Fin N) {g :
     · have hne : e ⟨a, i⟩ ≠ e ⟨a, j⟩ := fun h => hij (by simpa using e.injective h)
       simp [Matrix.one_apply_ne hne, Matrix.one_apply_ne hij]
 
-
 omit [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] in
 def tv {p q : Fin N} (hpq : p ≠ q) (c : R) : GL (Fin N) R :=
   ⟨transvection p q c, transvection p q (-c),
     (transvection_mul_transvection_same p q hpq c (-c)).trans (by rw [add_neg_cancel, transvection_zero]),
     (transvection_mul_transvection_same p q hpq (-c) c).trans (by rw [neg_add_cancel, transvection_zero])⟩
-
 
 omit [Fintype α] [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] in
 theorem ne_of_blk_lt (e : (Σ a, m a) ≃ Fin N) {p q : Fin N} (hpq : blk e p < blk e q) : p ≠ q := by
@@ -470,7 +466,6 @@ theorem lieD_single_leviEmb {c : ℕ} {n : Fin c → ℕ} (h : ∑ i, n i = N) (
 
 end Adelic
 
-
 open Complex in
 theorem eop_leviEmb_eq_zero (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {c N : ℕ} (n : Fin c → ℕ)
     (h : ∑ i, n i = N) (ψ : Sm E N) (hψ : ∀ u ∈ unipRad (Ad E) (stdBlocks n h), ∀ g, ψ.1 (u * g) = ψ.1 g)
@@ -498,16 +493,6 @@ open NumberField IsDedekindDomain Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
 
 namespace GlobalTheory.SpehInfChar
-
-theorem lie_mem_finVec : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ} (X : Lie E N)
-    (φ : Sm E N), φ ∈ finVec (cptRep E N) → lie E N X φ ∈ finVec (cptRep E N) :=
-  _root_.GlobalTheory.LieFin.lie_mem_finVec
-
-theorem lie_tensorForms : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {c N : ℕ} (n : Fin c → ℕ)
-    (h : ∑ i, n i = N) (π : ∀ i, CuspSub E (n i)) (X : Lie E N) (φ : Sm E N), φ ∈ indForms h π →
-    ∀ (k : Kinf E N) (g : GL (Fin N) (Af E)), (fun m => (lie E N X φ).1 (leviEmb (Ad E) (stdBlocks n h) m *
-      (infGL E N (Unitary.toUnits k) * finGL E N g))) ∈ tensorForms π :=
-  _root_.GlobalTheory.LieTensor.lie_tensorForms
 
 theorem exists_iwasawa : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {c N : ℕ} (n : Fin c → ℕ)
     (h : ∑ i, n i = N) (x : GA E N), ∃ u ∈ unipRad (Ad E) (stdBlocks n h), ∃ (m : ∀ i, GA E (n i)) (k : Kinf E N)

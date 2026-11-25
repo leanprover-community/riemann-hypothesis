@@ -123,7 +123,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL in
 theorem PositivityTheory.Exh.exists_class_isLSeg (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (Δ : Segment k) : ∃ x : IrrGL (k := k), IsLSeg Δ x.rep := by
@@ -162,12 +161,10 @@ end Comp
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {V : Type} [AddCommGroup V] [Module ℂ V]
 
-
 omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
 theorem isSmooth_comp {n : ℕ} {π : Representation ℂ (GL (Fin n) k) V} (h : IsSmooth π) :
     IsSmooth (π.comp (invTranspose n) : Representation ℂ (GL (Fin n) k) V) :=
   fun v => (h v).preimage (continuous_invTranspose n)
-
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem isIrreducible_comp {n : ℕ} {π : Representation ℂ (GL (Fin n) k) V} (h : π.IsIrreducible) :
@@ -177,12 +174,10 @@ theorem isIrreducible_comp {n : ℕ} {π : Representation ℂ (GL (Fin n) k) V} 
 def dual (x : IrrGL (k := k)) : IrrGL (k := k) :=
   IrrGL.of (x.rep.comp (invTranspose x.1)) (isSmooth_comp x.2.rep.smooth) (isIrreducible_comp x.2.rep.irr)
 
-
 omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
 theorem dual_of {n : ℕ} (π : Representation ℂ (GL (Fin n) k) V) (hs : IsSmooth π) (hi : π.IsIrreducible) :
     dual (IrrGL.of π hs hi) = IrrGL.of (π.comp (invTranspose n)) (isSmooth_comp hs) (isIrreducible_comp hi) :=
   IrrGL.of_eq_of.2 ⟨compEquiv (IrrGL.equivOf π hs hi).symm (invTranspose n)⟩
-
 
 omit [IsNonarchimedeanLocalField k] in
 theorem dual_dual (x : IrrGL (k := k)) : dual (dual x) = x := by
@@ -378,34 +373,6 @@ theorem revRep_leviProj (e : (Σ a, Fin (d a)) ≃ Fin n)
   exact LinearMap.congr_fun key v
 
 end Local
-
-theorem multiProd_comp_invTranspose : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (h n : ℕ) (d : Fin h → ℕ) (e : (Σ a, Fin (d a)) ≃ Fin n) (e' : (Σ a, Fin (d (Fin.rev a))) ≃ Fin n) (X : Fin h → Type) [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)] (π : ∀ a, Representation ℂ (GL (Fin (d a)) k) (X a)), (∀ a, IsSmooth (π a)) → Nonempty (Representation.Equiv ((multiProd e π).comp (GlobalTheory.TypeTame.invTranspose n)) (multiProd e' fun a => ((π (Fin.rev a)).comp (GlobalTheory.TypeTame.invTranspose (d (Fin.rev a))) : Representation ℂ (GL (Fin (d (Fin.rev a))) k) (X (Fin.rev a))))) := by
-  intro k _ _ _ _ h n d e e' X _ _ π _
-  set π' : ∀ a, Representation ℂ (GL (Fin (d (Fin.rev a))) k) (X (Fin.rev a)) :=
-    fun a => (π (Fin.rev a)).comp (invTranspose (d (Fin.rev a))) with hπ'
-  have key : ∀ (q : parab k e) (hq : invTranspose n (q : GL (Fin n) k) ∈ parab k (revPlace e)),
-      ((SmGL.twist (revRep π') (deltaHalf k _)).comp (leviProj k (revPlace e))) ⟨invTranspose n q, hq⟩ =
-        ((SmGL.twist (piTensor π) (deltaHalf k _)).comp (leviProj k e)) q := by
-    intro q hq
-    refine LinearMap.ext fun v => ?_
-    rw [MonoidHom.comp_apply, MonoidHom.comp_apply, SmGL.twist_apply, SmGL.twist_apply, deltaHalf_revPlace e q hq,
-      hπ', revRep_leviProj e π q hq]
-  obtain ⟨A⟩ : Nonempty ((parInd (revPlace e) (revRep π')).Equiv
-      ((multiProd e π).comp (invTranspose n))) := by
-    refine Relabel.smInd_equiv_comp (P := parab k (revPlace e)) (Q := parab k e)
-      (σ := (SmGL.twist (revRep π') (deltaHalf k _)).comp (leviProj k (revPlace e)))
-      (τ := (SmGL.twist (piTensor π) (deltaHalf k _)).comp (leviProj k e))
-      (invTranspose n) (invTranspose n) (continuous_invTranspose n) (continuous_invTranspose n)
-      (invTranspose_invTranspose n) (invTranspose_invTranspose n)
-      (fun q => ⟨⟨_, mem_parab_revPlace e q.2⟩, rfl, key q _⟩) (fun p => ?_)
-    have hp : invTranspose n (invTranspose n (p : GL (Fin n) k)) ∈ parab k (revPlace e) := by
-      rw [invTranspose_invTranspose]
-      exact p.2
-    refine ⟨⟨_, mem_parab_of_revPlace e p.2⟩, rfl, ?_⟩
-    refine (key ⟨_, mem_parab_of_revPlace e p.2⟩ hp).symm.trans ?_
-    exact congrArg _ (Subtype.ext (invTranspose_invTranspose n (p : GL (Fin n) k)))
-  obtain ⟨B⟩ := _root_.GlobalTheory.PlacingProd.multiProd_placing_equiv k h n (fun a => d (Fin.rev a)) (revPlace e) e' (fun a => X (Fin.rev a)) π'
-  exact ⟨A.symm.trans ((parIndEquiv (revPlace e) (revRepEquiv π')).trans B)⟩
 
 end GlobalTheory.InvTransposeProd
 end -- clump:auto

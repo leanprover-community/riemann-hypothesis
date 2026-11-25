@@ -161,8 +161,6 @@ attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
 
-
-
 theorem GlobalTheory.Mem.R3.Rw.chiR_of_enlarged : ∀ (B B' : Base) (f : Fr B.toPre) (f' : Fr B'.toPre) (T : TwDat B) (T' : TwDat B') (w : ColW B f T) (w' : ColW B' f' T'),
     B'.toPre = B.toPre → ∀ (Z : w.Lt) (hX : B.fields.Ok) (Wt : Set B.places.Pl) (z : Dat (w.st Z) w.I hX T Wt) (Z' : w'.Lt) (hX' : B'.fields.Ok)
     (Wt' : Set B'.places.Pl) (core' : Formalism.L2.Pj.CoreJ (w'.st Z').toD7) (alg' : Algebra core'.Q.c.F (w'.st Z').toD7.what₂.LL),
@@ -258,10 +256,7 @@ attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
 
-
 namespace GlobalTheory.Mem.R3.Rw.FwBase
-
-
 
 private theorem isModelBaseFrameFamily_of_pre
     (B B' : Base) (f : Fr B.toPre) (f' : Fr B'.toPre) (T : TwDat B) (T' : TwDat B') (w : ColW B f T) (w' : ColW B' f' T')
@@ -381,60 +376,6 @@ theorem exists_extend {L L' : Type} [Field L] [Field L'] (ι : L →+* L') (σ' 
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smulₛₗ, h.2 k k rfl]
     rfl
-
-theorem NoEvAtOne.congr {D : D7} (T T' : CoreJ D) (h1 : HEq T'.Q.H T.Q.H) (h2 : HEq T'.Q.l T.Q.l) (h3 : HEq T'.Q.c T.Q.c)
-    (h4 : HEq T'.Q.Dw T.Q.Dw) (h5 : HEq T'.Q.Xo T.Q.Xo) (h6 : HEq T'.U T.U) (h7 : HEq T'.V T.V) (h8 : HEq T'.dict T.dict)
-    (h9 : HEq T'.mu T.mu) (h10 : HEq T'.cE T.cE) (j : ℕ) (w w' : WeightFamilies.Wt D j) (hP : HEq w'.aP w.aP) (hM : HEq w'.aM w.aM)
-    (hn : w'.n = w.n) (s : T.Q.c.F →+* ℂ) (s' : T'.Q.c.F →+* ℂ)
-    (hs : ∀ (y : T.Q.c.F) (y' : T'.Q.c.F), (y' : ℂ) = (y : ℂ) → s' y' = s y)
-    {W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSModel W S) (M' : DSModel W S') (hMM : ModelSame M M')
-    (Hm : Links.HMod (MMap M)) (Hm' : Links.HMod (MMap M')) (hH : HEq Hm' Hm) (v : M.Vec) (v' : M'.Vec) (hv : HEq v' v)
-    {L L' : Type} [Field L] [Field L'] (ι : L →+* L') (σ' : L' →+* ℂ) {n n' : ℕ} (hnn : n = n')
-    (c : T.cuspA j (wtA w) w.n → Fin n → L) (c' : T'.cuspA j (wtA w') w'.n → Fin n' → L')
-    (hc : ∀ f f', HEq f' f → CrdOver ι (c f) (c' f')) {Z Z' : Prop} (hZ : Z → Z') :
-    NoEvAtOne T j w s M Hm v (σ'.comp ι) c Z → NoEvAtOne T' j w' s' M' Hm' v' σ' c' Z' := by
-  obtain ⟨⟨⟨H, l, cc, Dw, Xo, eO⟩, U, V, dict, mu, Kf, pb⟩, cE, chiW, x₀, iota⟩ := T
-  obtain ⟨⟨⟨H', l', cc', Dw', Xo', eO'⟩, U', V', dict', mu', Kf', pb'⟩, cE', chiW', x₀', iota'⟩ := T'
-  dsimp only at h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
-  cases h1
-  cases h2
-  cases h3
-  cases h4
-  cases h5
-  cases h6
-  cases h7
-  cases h8
-  cases h9
-  cases h10
-  obtain ⟨aP, aM, _, _, m, _⟩ := w
-  obtain ⟨aP', aM', _, _, m', _⟩ := w'
-  dsimp only at hP hM hn
-  cases hP
-  cases hM
-  cases hn
-  have hs' : s' = s := RingHom.ext fun y => hs y y rfl
-  subst hs'
-  obtain ⟨X, σ, lam, ε, fr, _, _, _, _⟩ := M
-  obtain ⟨X', σ'', lam', ε', fr', _, _, _, _⟩ := M'
-  obtain ⟨m1, m2, m3, m4, m5, m6, m7⟩ := hMM
-  dsimp only at m1 m2 m3 m4 m5 m6 m7
-  cases m1
-  cases m2
-  cases m3
-  cases m4
-  cases m5
-  cases m6
-  cases m7
-  have hH' : Hm' = Hm := eq_of_heq hH
-  subst hH'
-  have hv' : v' = v := eq_of_heq hv
-  subst hv'
-  subst hnn
-  intro h hg hV hno
-  refine hZ (h hg hV ?_)
-  rintro ⟨j₀, hj₀⟩
-  obtain ⟨j', hj'⟩ := exists_extend ι σ' j₀
-  exact hno ⟨j', fun f => by rw [hj' _ _ (hc f f HEq.rfl)]; exact hj₀ f⟩
 
 private theorem noEvAtOne_core {α β L L' : Type} [Field L] [Field L'] (ι : L →+* L') (σ' : L' →+* ℂ)
     {n : ℕ} {A : Type} [AddCommGroup A] [Module ℂ A] (ev : A → β) (phi : α → β)
@@ -711,7 +652,6 @@ theorem ksForm_baseChange_crd {LL LL' Ks : Type} [Field LL] [Field LL'] [Field K
 
 end GlobalTheory
 
-
 private theorem ksForm_of_pre
     (B B' : Base) (f : Fr B.toPre) (f' : Fr B'.toPre) (T : TwDat B) (T' : TwDat B') (w : ColW B f T) (w' : ColW B' f' T')
     (hPre : B'.toPre = B.toPre) (Z : w.Lt) (Z' : w'.Lt)
@@ -852,7 +792,6 @@ open scoped TensorProduct InnerProductSpace ComplexOrder
 attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
-
 
 private theorem dsModel_vec_of_pre
     (B B' : Base) (f : Fr B.toPre) (f' : Fr B'.toPre) (T : TwDat B) (T' : TwDat B') (w : ColW B f T) (w' : ColW B' f' T')
@@ -1247,7 +1186,6 @@ attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
 
-
 noncomputable section
 
 private def UpperTheory.HasUnitPureTensorPairing {D : D7} {W : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel W S) {V : HSp D} (c : CoefA V)
@@ -1510,7 +1448,6 @@ attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
 
-
 private theorem ex_equiv_moved {m : ℕ} {L : Type} (P P' Q : Fin m → L → Type) (h : ∀ i, HEq (P' i) (P i))
     (e : ∀ i la, P i la ≃ Q i la) :
     ∃ e' : ∀ i la, P' i la ≃ Q i la, ∀ (i i' : Fin m), (i : ℕ) = i' → ∀ la la', HEq la' la → ∀ y' y, HEq y' y →
@@ -1588,7 +1525,6 @@ attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult GlobalTheory.RealGeo
 attribute [local instance high] Submodule.addCommGroup Submodule.module
-
 
 namespace UpperTheory.Mem.GeoExt
 
@@ -1762,4 +1698,3 @@ end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.SemilinearForms.GeoExtFW =====
-

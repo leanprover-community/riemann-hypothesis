@@ -65,8 +65,6 @@ def chs (s : Multiset (IrrGL (k := k))) : Multiset (kˣ →* ℂˣ) :=
 def vals (c : Multiset (kˣ →* ℂˣ)) (θ : kˣ →* ℂˣ) : Multiset ℂˣ :=
   (c.filter fun ξ => IsUnram (ξ * θ)).map fun ξ => (ξ * θ) (unif k)
 
-theorem chs_zero : chs (0 : Multiset (IrrGL (k := k))) = 0 := rfl
-
 end Loc
 
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {v : HeightOneSpectrum (𝓞 K)}

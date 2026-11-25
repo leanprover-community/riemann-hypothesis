@@ -55,7 +55,6 @@ def algNorm {w : HeightOneSpectrum (𝓞 E)} (σ : SmIrr (GL (Fin a) (w.adicComp
     IrrGL (k := w.adicCompletion E) :=
   (IrrGL.of σ.ρ σ.smooth σ.irred).nu (((1 - (a : ℝ)) / 2 : ℝ) : ℂ)
 
-
 omit [NumberField E] in
 def IsSstAt (P : LocPrime l) {Gw : Subgroup (Ω ≃ₐ[E] Ω)} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
     (Bw : LocBridge l E Ω Gw O) (r : ↥Gw →* GL (Fin a) (Om l)) : Prop :=
@@ -128,12 +127,6 @@ end GlobalTheory.Published
 namespace GlobalTheory.GalOfCusp
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {a : ℕ}
-
-theorem rec_algNorm {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-    {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : IsRec h rc) (σ : SmIrr (GL (Fin a) (w.adicCompletion E))) :
-    rc (algNorm σ) = (rc (IrrGL.of σ.ρ σ.smooth σ.irred)).lpTw ((1 - (a : ℝ)) / 2) := by
-  obtain ⟨_, _, _, -, H⟩ := H
-  exact H.nu_eq _ _
 
 variable [IsCMField E] {π : CuspSub E a} {χ : HChar (maximalRealSubfield E)} {ι : Qbar l ≃+* ℂ}
   {r : G E Ω →* GL (Fin a) (Qbar l)} {wt : ℤ} {HT : (E →+* Qbar l) → Multiset ℤ}

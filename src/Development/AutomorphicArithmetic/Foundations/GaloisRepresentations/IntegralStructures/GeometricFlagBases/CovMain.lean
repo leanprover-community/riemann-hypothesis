@@ -380,7 +380,6 @@ namespace UpperTheory.Gal.Int.Geo.CRT
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p}
 
-
 private theorem mulF_tmul (c : 𝓞 D.F) (a : AfP p) (t : ℚ) (x : D.La) :
     mulF D c (a ⊗ₜ (t ⊗ₜ x)) = a ⊗ₜ (t ⊗ₜ (algebraMap (𝓞 D.F) D.O c • x)) := by
   simp [mulF, actQ]
@@ -462,7 +461,6 @@ private theorem actOn_comm (L : Link D G) (y : AfP p ⊗[ℚ] G.C) (b : D.O) :
       rw [map_mul, map_mul] at this
       exact this
     rw [e, smul_mul_assoc, mul_smul_comm, h2]
-
 
 private theorem wSub_inAf {𝔞 : Ideal (𝓞 D.F)} {y : D.La} (hy : y ∈ wSub D 𝔞 1) : inAf D y ∈ idHat D 𝔞 := by
   have key : ∀ b : D.O, inAf D (b • y) ∈ idHat D 𝔞 := by
@@ -1180,8 +1178,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen GlobalTheory.UPel.HT.EtLev GlobalTheory.LKTrip GlobalTheory.LKGeo
 open UpperTheory.Gal.Int.Geo
 
-
-
 theorem UpperTheory.quotient_invariant_of_trace_unit_crt :
     NumEx → QComp → QIso → ClsEx → TrEta → TrUnit → CongCRT → BaseInv := by
   intro hNumEx hQComp hQIso hClsEx hTrEta hTrUnit hCRT p _ D G L E _ _ gb w q _ r 𝔴 𝔫 S k T K₀ hLev N' N t c a hN't hNum C' C u hu W
@@ -1238,7 +1234,6 @@ section -- clump:auto
 open UpperTheory.Gal.Int.Geo
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen GlobalTheory.UPel.HT.EtLev GlobalTheory.LKTrip GlobalTheory.LKGeo
-
 
 theorem UpperTheory.quotient_separated_of_trace_unit_crt :
     GPull → QComp → QIso → QUniq → TrEta → TrEtaPt → TrUnit → CongCRT → BaseSep := by
@@ -1456,7 +1451,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits
 open UpperTheory.Gal.Int.Geo
-
 
 theorem UpperTheory.tower_finiteEtale_of_trivial_powerCartesian :
     PiZero → PowCart → PiFet := by
@@ -1849,8 +1843,6 @@ theorem liftSep_of (I : MIn) : LiftSep := UpperTheory.hecke_lift_separated_of_la
 theorem count_of (I : MIn) : Count := UpperTheory.tower_point_count_statement
 
 theorem tjLies_of (I : MIn) : TjLies := UpperTheory.heckeCorrespondence_lies_in_tower_of_lift_count I (numEx_of I) (clsEx_of I) (powCart_of I) (piInv_of I) (piFet_of I) (liftEx_of I) (liftSep_of I) (count_of I)
-
-theorem stdEx_of (I : MIn) : StdEx := UpperTheory.standard_datum_exists
 
 theorem kSCong_of (I : MIn) : KSCong := UpperTheory.tower_covering_congruence_of_hecke_lies I (siteEx_of I) (numEx_of I) (clsEx_of I) (kSCover_of I) (tjLies_of I)
 

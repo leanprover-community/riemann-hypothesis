@@ -1710,7 +1710,6 @@ open GlobalTheory.CechPic GlobalTheory.AbLaw
 
 variable {S : Scheme.{0}} {A T Y : Over S} [GrpObj A] {P : LB (A ⊗ A).left}
 
-
 end Dual
 
 section Down
@@ -1721,10 +1720,6 @@ variable {R R' : Type} [CommRing R] [CommRing R'] {A : Over (Sp R)} [GrpObj A] {
 def down (m : GrpMor (dp0 R) (𝟙 _) A (dp0 R') (𝟙 _) A' σ (spMap σ) φ) {Y : Over (Sp R')} (x : Y ⟶ A') :
     Over.mk (Y.hom ≫ spMap σ) ⟶ A :=
   Over.homMk (x.left ≫ φ) (by simp [m.w])
-
-theorem down_mul (m : GrpMor (dp0 R) (𝟙 _) A (dp0 R') (𝟙 _) A' σ (spMap σ) φ) {Y : Over (Sp R')} (x y : Y ⟶ A') :
-    down m (x * y) = down m x * down m y :=
-  Over.OverMorphism.ext (m.mul Y x y (down m x) (down m y) rfl rfl).symm
 
 end Down
 

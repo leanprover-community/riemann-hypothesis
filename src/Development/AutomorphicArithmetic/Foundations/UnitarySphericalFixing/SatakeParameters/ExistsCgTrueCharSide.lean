@@ -64,18 +64,11 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {a : ℕ} [_root_.NumberField.IsTotallyComplex E]
   (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
 
-
-
 end Twist
 
 namespace Old
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut}
-
-theorem cgGood (s : Sw) (C : CGTrue hL D T) : ∀ a (π : D.naut.CG a), GoodAll (C.e a π) := s.elim
-
-theorem cgSurj (C : CGTrue hL D T) : ∀ a, 0 < a → ∀ ρ : HostCGu D.host a, GoodAll ρ → ∃ π, C.e a π = ρ :=
-  fun a h ρ _ => C.surj a h ρ
 
 def cgMk (s : Sw) (e : ∀ a, D.naut.CG a ↪ HostCGu D.host a) (_good : ∀ a (π : D.naut.CG a), GoodAll (e a π))
     (_surj : ∀ a, 0 < a → ∀ ρ : HostCGu D.host a, GoodAll ρ → ∃ π, e a π = ρ) (_zero : IsEmpty (D.naut.CG 0))
@@ -115,9 +108,6 @@ theorem locParT_unr_iff {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Alge
     rw [← WithZero.exp_log h0, hl, WithZero.exp_zero]
   · intro hv
     rw [hv, WithZero.log_one]
-
-
-
 
 theorem exists_cgTrue_charSide : ∀ hL : RecTExists, GlobalTheory.Published.AutomorphicFormsFiniteGL → ∀ (D : D7)
     (hE : IsEmpty D.nd.Loc) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (cf : CharFrame D), (∀ k v, cf.P.Div k (D.naut.plGw k v)) →

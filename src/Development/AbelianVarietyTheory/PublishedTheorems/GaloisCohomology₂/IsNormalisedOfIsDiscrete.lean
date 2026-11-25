@@ -103,16 +103,11 @@ def IsSpehOf (V : Submodule ℂ (Sm E N)) (π : CuspSub E a) (d : ℕ) : Prop :=
 
 def IsNormalised (π : CuspSub E a) : Prop := ∀ φ ∈ π.V, ∀ t g, φ.1 (splitCentre E a t * g) = φ.1 g
 
-
 structure HasSpehComp (V : Submodule ℂ (Sm E N)) (π : CuspSub E a) (d : ℕ) : Prop where
   exLoc : ∀ w, ∃ σ σ', π.IsLocComp w σ ∧ IsLocCompGL V w σ'
   loc : ∀ w σ σ', π.IsLocComp w σ → IsLocCompGL V w σ' →
     GlobalTheory.LocGL.IsSpeh (GlobalTheory.LocGL.IrrGL.of σ.ρ σ.smooth σ.irred) d σ'.ρ
   inf : ∀ τ, ∃ m, π.HasInfChar τ m ∧ HasInfCharGL V τ (GlobalTheory.SphGal.spehInf d m)
-
-theorem IsSpehOf.mul_eq {V : Submodule ℂ (Sm E N)} {π : CuspSub E a} (h : IsSpehOf V π d) : d * a = N := by
-  obtain ⟨h, -⟩ := h
-  simpa using h
 
 theorem mul_spehExp (a d : ℕ) (i : Fin d) : a * spehExp d i = (modExp (fun _ : Fin d => Fin a) i : ℝ) / 2 := by
   have h1 : Finset.univ.filter (fun b => i < b) = Finset.Ioi i := by ext; simp
@@ -194,11 +189,6 @@ def DiscreteSpectrumGL : Prop :=
     (∀ V V' : Submodule ℂ (Sm E N), IsDiscrete V → IsDiscrete V' → IsIsoGL V V' → V = V') ∧
     ∀ V : Submodule ℂ (Sm E N), IsDiscrete V → ∀ (a d : ℕ) (π : CuspSub E a),
       IsNormalised π → IsSpehOf V π d → HasSpehComp V π d
-
-theorem DiscreteSpectrumGL.iso (H : DiscreteSpectrumGL) {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-    {N a d : ℕ} (hN : 1 ≤ N) {V : Submodule ℂ (Sm E N)} (hV : IsDiscrete V) {π π' : CuspSub E a} (h : IsNormalised π)
-    (h' : IsNormalised π') (e : IsSpehOf V π d) (e' : IsSpehOf V π' d) : π.Iso π' :=
-  Quotient.exact (eq_of_heq (Sigma.mk.inj ((H E N hN).2.2.1 V hV a d a d π π' h h' e e').2).2)
 
 end GlobalTheory.Published
 

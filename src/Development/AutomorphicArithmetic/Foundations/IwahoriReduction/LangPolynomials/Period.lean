@@ -25,18 +25,6 @@ variable {p : ℕ} [hp : Fact p.Prime] {k : Type} [Field k] [CharP k p] [IsAlgCl
 
 end Field
 
-section Witt
-
-variable {p : ℕ} [hp : Fact p.Prime] {k : Type} [Field k] [CharP k p]
-
-variable [IsAlgClosed k]
-
-theorem map_add' {R S : Type} [Ring R] [Ring S] (f : R →+* S) {d : ℕ}
-    (A B : Matrix (Fin d) (Fin d) R) : (A + B).map f = A.map f + B.map f :=
-  map_add f.mapMatrix A B
-
-end Witt
-
 end GlobalTheory.LangWitt
 end -- clump:auto
 end -- clump:auto

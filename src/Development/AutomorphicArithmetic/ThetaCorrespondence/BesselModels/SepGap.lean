@@ -228,8 +228,6 @@ namespace GlobalTheory.BesselCoords
 
 open GlobalTheory.BesselChar
 
-
-
 theorem besChar_atTau_coords : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) (d : BesDat A B ι) (τ : D.what₂.Tau) (u : Matrix (Fin B.rank) (Fin B.rank) ℂ),
   u ∈ GlobalTheory.RealBessel.unipRad (gramAt D B τ) (d.e.map (tauE D τ)) →
   ∀ a : Fin d.ρ → Fin d.ρ → ℂ, (∀ j : Fin d.ρ, (u - 1) *ᵥ GlobalTheory.RealBessel.flagVec (d.e.map (tauE D τ)) (fun k => tauE D τ (d.z k)) j.succ = d.e.map (tauE D τ) *ᵥ a j) →
@@ -561,9 +559,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix
 open scoped TensorProduct
 
-
-
-
 theorem GlobalTheory.PhaseReal.psi_trace_single : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (θ : InfFam D), IsInfFam θ → ∀ (τ : D.what₂.Tau) (t : AE D),
   finPart D t = 0 → (∀ ρ, ρ ≠ τ → θ ρ (infPart D t) = 0) →
   ψ (Algebra.trace (AF D.host.F) (AE D) t) = Complex.exp (Complex.I * (((-(4 * Real.pi : ℂ)) * θ τ (infPart D t)).re : ℂ)) := by
@@ -702,9 +697,6 @@ theorem e_add_le_b {l : ℕ} (h1 : 1 ≤ l) (h2 : l + 1 ≤ D.R.m) :
     (D.hc τ).gap_eb ⟨a, by omega⟩ (by simpa using h2)
   rw [e_spec D C τ (by omega), b_spec D C τ (by omega)] at h
   linarith
-
-theorem b_lt {l l' : ℕ} (h1 : 1 ≤ l) (h2 : l < l') (h3 : l' ≤ D.R.m) : ((num D C τ).b l : ℚ) < (num D C τ).b l' := by
-  exact_mod_cast (num D C τ).b_mono l l' h1 h2 h3
 
 theorem cloud_gt {x : ℚ} (h : x ∈ (num D C τ).cloud) : -((num D C τ).b 1 : ℚ) < x := by
   obtain ⟨i, h1, h2, rfl⟩ := GlobalTheory.SignedHC.GridData.mem_cloud.1 h
@@ -1125,8 +1117,6 @@ theorem lastVertex_besselDatum_isFrame_isGeneric {D : D7} {T : Type} {L : LevCh 
     show besChar W.ψ G.besTop (atTau W.θ _ τ u) = _
     rw [h4, GlobalTheory.T.standardChar_trace_single_realPlace D W.ψ W.ψ_std W.θ W.θ_is τ t h1 h2, h3, Finset.mul_sum]
     simp only [mul_assoc]
-
-
 
 theorem topLine_gap (hB : BurGapPos) (hCT : CoefTensor) (hTS : TopSep) :
     All fun {D} _ _ _ {G} W M => ∀ (S : D.what₂.Tau → SPar) (MB : DSModel (G.V (.grid D.R.m 0)) S), HasGap MB →

@@ -184,12 +184,6 @@ section -- clump:auto
 namespace UpperTheory.Gal.KunnethLefschetz
 open GlobalTheory.EtC
 
-theorem upTo {P : Prop} (h : A1 → A2 → A3 → A4 → A5 → A7 → A8 → A9 → A10 → A11 → B1 → B2 → B3 → B4 → B5 → B7 → C1 → C2 → C3 → C4 →
-    C5 → D1 → P) : P :=
-  h _root_.GlobalTheory.EtC.quasiIso_hypercohomology_bijective' _root_.GlobalTheory.EtC.smooth_surjective_cech_descent_cohomology _root_.GlobalTheory.EtC.levelwise_eqv _root_.GlobalTheory.MayerVietorisEqv.a4 _root_.GlobalTheory.EtC.classes_die_on_etale_cover _root_.GlobalTheory.EtC.coefSeq_exact _root_.GlobalTheory.EtC.a8 _root_.GlobalTheory.EtC.etale_cohomology_vanishing_negative_degree_zero
-    _root_.GlobalTheory.EtC.a10 RedCoef.a11 _root_.GlobalTheory.EtC.pairingProperties _root_.GlobalTheory.T.strictlyHenselianLocalRing_acyclic_every_sheaf _root_.GlobalTheory.EtC.tateTwist_local_to_global_strictlyHenselian _root_.GlobalTheory.EtC.b4 _root_.GlobalTheory.EtC.b5 _root_.GlobalTheory.EtC.FieldTw.field_tw_coh_eq_galois
-    GlobalTheory.EtC.gaugeSplitting_holds GlobalTheory.EtC.etC_c2 UpperTheory.Cb.etale_cohomology_ind_etale_base_change HomotopyInv.homotopy_invariance_etale GlobalTheory.EtC.laurentPolynomial_cohomology_strictlyHenselian_vanishing projectiveBundleFormula_vectorBundle_any_space
-
 theorem duality_diagonalClass_of_affineProperBaseChange (e1 : E1) : E2 :=
   UpperTheory.Et.E2.main ⟨GlobalTheory.T.quasiIso_hypercohomology_bijective, _root_.GlobalTheory.EtC.smooth_surjective_cech_descent_cohomology, GlobalTheory.T.levelwiseEquivalence_isEquivalence, GlobalTheory.T.mayerVietoris_equivalence_of_cover, _root_.GlobalTheory.EtC.classes_die_on_etale_cover, GlobalTheory.T.etaleCohomology_coefficient_longExactSequence, _root_.GlobalTheory.EtC.a8,
     _root_.GlobalTheory.EtC.etale_cohomology_vanishing_negative_degree_zero, GlobalTheory.T.etaleCohomology_bijective_of_support_bijective, GlobalTheory.T.etaleCohomology_twisted_filtered_colimit_continuity, _root_.GlobalTheory.T.strictlyHenselianLocalRing_acyclic_every_sheaf, GlobalTheory.T.etC_b3, _root_.GlobalTheory.EtC.b4, GlobalTheory.T.absolutelyIntegrallyClosed_domain_tateTwistAcyclic, e1⟩
@@ -843,7 +837,6 @@ theorem hl_sub (hA9 : A9) (l : ℕ) [Fact l.Prime] (E : Spc) (m j : ℤ) (hm : m
   apply Subtype.ext
   funext k
   exact ((hA9 (ZMod (l ^ k)) (tw (l ^ k) j)).1 E m hm).elim _ _
-
 
 theorem limRatAssemble : LimRatAssemble := by
   intro hA9 l _ X Y S pX pY n i M r c hnM hB e Φ hΦ hbij

@@ -91,11 +91,8 @@ def IrrArithPointsAutomorphicAway : Prop :=
 
 variable {B ι J}
 
-theorem end2o (_ : r.V0ok) (H : B.arithmeticPointClassicality ι J) (x : B.Pt) (h : s.Wt n) (ρ : G L Ω →* GL (Fin n) (Qbar l)) :
-    J ≤ RingHom.ker x → x.Arith h → x.IsRep ρ → Af.IsIrr ρ → AutOff s.v0 ι ρ := H x h ρ
 theorem end2oN (_ : r.V0ok) (H : IrrArithPointsAutomorphicAway B ι J) (x : B.Pt) (h : s.Wt n) (ρ : G L Ω →* GL (Fin n) (Qbar l)) :
     J ≤ RingHom.ker x → x.Arith h → x.IsRep ρ → Af.IsIrr ρ → AutOffN s.v0 ι ρ := H x h ρ
-
 
 omit [IsAlgClosure L Ω] in
 theorem v0_ne {s s' : HidaSetting l L Ω} (h : ¬ s'.p ∣ s.p) : s.v0 ≠ s'.v0 := fun e =>

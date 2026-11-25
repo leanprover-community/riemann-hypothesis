@@ -157,33 +157,6 @@ theorem eigC_eq (i : (cut D c).nd.Loc) (x : (cut D c).nd.X i) :
   unfold eigC
   rw [e]; rfl
 
-theorem res_eq {O X : Type} [CommRing O] [IsLocalRing O] (T : Subalgebra O (X → O)) [IsLocalRing T] (f : T) (x y : X) :
-    IsLocalRing.residue O ((f : X → O) x) = IsLocalRing.residue O ((f : X → O) y) := by
-  let g : T := f - algebraMap O T ((f : X → O) x)
-  have hx : (g : X → O) x = 0 := by simp [g]
-  have hg : ¬ IsUnit g := fun h => by
-    have := h.map ((Pi.evalRingHom (fun _ : X => O) x).comp T.val.toRingHom)
-    have e : ((Pi.evalRingHom (fun _ : X => O) x).comp T.val.toRingHom) g = 0 := hx
-    rw [e] at this
-    exact not_isUnit_zero this
-  have hy : ¬ IsUnit ((g : X → O) y) := fun h => by
-    obtain ⟨u, hu⟩ := h
-    let k : T := 1 - algebraMap O T (↑u⁻¹ : O) * g
-    have hk : IsUnit k := by
-      rcases IsLocalRing.isUnit_or_isUnit_one_sub_self (algebraMap O T (↑u⁻¹ : O) * g) with h | h
-      · exact absurd (isUnit_of_mul_isUnit_right h) hg
-      · exact h
-    have := hk.map ((Pi.evalRingHom (fun _ : X => O) y).comp T.val.toRingHom)
-    have e : ((Pi.evalRingHom (fun _ : X => O) y).comp T.val.toRingHom) k = 0 := by
-      show (1 : O) - (↑u⁻¹ : O) * (g : X → O) y = 0
-      rw [← hu, Units.inv_mul, sub_self]
-    rw [e] at this
-    exact not_isUnit_zero this
-  have e : (g : X → O) y = (f : X → O) y - (f : X → O) x := by simp [g]
-  rw [e] at hy
-  rw [eq_comm, ← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff]
-  exact hy
-
 theorem atM_iff (i : (cut D c).nd.Loc) (σ : D.what₂.FT) : AtM (cut D c).nd (cut D c).naut i σ ↔ AtM D.nd D.naut i.1 σ := by
   refine exists_congr fun Sig => and_congr Iff.rfl ⟨fun ⟨x, h⟩ => ⟨x.1, h⟩, fun ⟨x, h⟩ => ?_⟩
   obtain ⟨y⟩ := (cut D c).nd.neX i
@@ -233,8 +206,6 @@ theorem rowsC_cut (hc : c.Good) (h : RowsC D) : RowsC (cut D c) :=
       have e : {Sig | HasParamX (cut D c).nd (cut D c).naut i x Sig} = {Sig | HasParamX D.nd D.naut i.1 x.1 Sig} :=
         Set.ext fun Sig => par_iff i x Sig
       rw [e]; rfl }
-
-
 
 def ledBack (L : SizeData₂ (cut D c)) : SizeData₂ D := { L with }
 

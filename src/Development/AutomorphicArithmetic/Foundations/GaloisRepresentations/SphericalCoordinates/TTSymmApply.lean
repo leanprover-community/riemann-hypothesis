@@ -245,9 +245,6 @@ private noncomputable def TT {P : Type} (v : P) (S : Matrix (Fin n) (Fin n) ℂ)
       simp [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hS.isUnit]
     · simp [h]
 
-private theorem TT_apply {P : Type} (v : P) (S : Matrix (Fin n) (Fin n) ℂ) (hS : S.det ≠ 0) (x : P → Fin n → ℂ) :
-    TT v S hS x = Function.update x v (S⁻¹ *ᵥ x v) := rfl
-
 private theorem TT_symm_apply {P : Type} (v : P) (S : Matrix (Fin n) (Fin n) ℂ) (hS : S.det ≠ 0)
     (x : P → Fin n → ℂ) : (TT v S hS).symm x = Function.update x v (S *ᵥ x v) := rfl
 

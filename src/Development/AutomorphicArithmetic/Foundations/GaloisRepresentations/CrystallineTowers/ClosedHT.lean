@@ -296,9 +296,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits GroundTheory.Arith.SchemeCoh GlobalTheory.SheafPull CrystallineSemistableComparison CrystallineSemistableComparison.Om CrystallineSemistableComparison.Om.Cech
 
-theorem _root_.GlobalTheory.T.forms_to_cech_smul :
-    type_of% @GlobalTheory.CompanionTheory.OmBridge.formToCO_smul :=
-  @GlobalTheory.CompanionTheory.OmBridge.formToCO_smul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FormsToCechSmulStatement =====
@@ -316,20 +313,6 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers GlobalT
 
 universe w
 
-namespace CrystallineSemistableComparison.Om.Glob
-
-theorem glob_iso (h : ∀ (K : Type) [Field K] [CharZero K],
-    ∃ e : ∀ {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q] (U : Cov q) (a j : ℕ),
-      HT.Hdg q a (a + j) ≃ₗ[K] (formCos q U.U a).cx.H j,
-    ∀ {X Y : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (p : Y ⟶ Spec (CommRingCat.of K)) [Smooth q] [Smooth p]
-      (u : X ⟶ Y) (hu : u ≫ p = q) (U : Cov q) (W : Cov p) (τ : U.ι → W.ι)
-      (hτ : ∀ n (i : Fin (n + 1) → U.ι), capO U.U i ≤ u ⁻¹ᵁ capO W.U (τ ∘ i)) (a j : ℕ) (c : (formCos p W.U a).X j)
-      (h0 : (formCos p W.U a).cx.d j c = 0)
-      (h1 : (formCos q U.U a).cx.d j (fun i => formRes q (hτ j i) a (formPull hu (capO W.U (τ ∘ i)) a (c (τ ∘ i)))) = 0),
-      HT.pullH u hu a (a + j) ((e p W a j).symm ((formCos p W.U a).cx.cls c h0)) =
-        (e q U a j).symm ((formCos q U.U a).cx.cls _ h1)) : type_of% @h := @h
-
-end CrystallineSemistableComparison.Om.Glob
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -346,16 +329,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers GlobalTheory.CechDR GlobalTheory.HodgeCoh
 
-namespace CrystallineSemistableComparison.Om
-
-theorem hdg_iso (h : ∀ (K : Type) [Field K] [CharZero K],
-    ∃ e : ∀ {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q] [IsProper q] (a j : ℕ),
-      HT.Hdg q a (a + j) ≃ₗ[K] HodgeC q a j,
-    ∀ {X Y : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (p : Y ⟶ Spec (CommRingCat.of K)) [Smooth q] [IsProper q]
-      [Smooth p] [IsProper p] (u : X ⟶ Y) (hu : u ≫ p = q) (a j : ℕ) (x : HT.Hdg p a (a + j)),
-      e q a j (HT.pullH u hu a (a + j) x) = pullC u hu a j (e p a j x)) : type_of% @h := @h
-
-end CrystallineSemistableComparison.Om
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -483,8 +456,6 @@ def isoI (hG : type_of% (@CrystallineSemistableComparison.Om.Glob.glob_iso _)) (
     (a j : ℕ) : HT.Hdg q a (a + j) ≃ₗ[K] HodgeC q a j :=
   ((Classical.choose (hG K) q U a j).trans (bridgeI hB hS q U a j)).trans (lerayI hA q U a j)
 
-
-
 theorem isoI_nat (hG : type_of% (@CrystallineSemistableComparison.Om.Glob.glob_iso _)) (hB : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_bijective _))
     (hS : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_smul _)) (hA : type_of% (@CrystallineSemistableComparison.Om.Cech.cechOmAdd_smul _))
     (hP : type_of% (@CrystallineSemistableComparison.Om.Cech.cechOm_pull _)) (hC : type_of% (@CrystallineSemistableComparison.Om.Cech.formCoch_pull _))
@@ -562,11 +533,6 @@ theorem hdg_iso_of_ing (hG : type_of% (@CrystallineSemistableComparison.Om.Glob.
     rwa [hH, hCi] at this
   rw [← e1]
   exact isoI_nat hG hB hS hA hP hC q p u hu U' (covX p) (fun α => (k α).2) (fun α => (hk α).trans inf_le_right) a j x
-
-theorem formToCO_bijective_i : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_bijective _) := _root_.GlobalTheory.CompanionTheory.OmCech.formToCO_bijective
-theorem formToCO_smul_i : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_smul _) := GlobalTheory.T.forms_to_cech_smul
-theorem cechOmAdd_smul_i : type_of% (@CrystallineSemistableComparison.Om.Cech.cechOmAdd_smul _) := _root_.GlobalTheory.CompanionTheory.OmCech.cechOmAdd_smul
-theorem formCoch_pull_i : type_of% (@CrystallineSemistableComparison.Om.Cech.formCoch_pull _) := CrystallineSemistableComparison.Om.Cech.formCoch_pull_pf
 
 end CrystallineSemistableComparison.Om.Nt2F
 end -- clump:auto

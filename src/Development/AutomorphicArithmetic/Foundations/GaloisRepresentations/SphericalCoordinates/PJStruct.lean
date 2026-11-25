@@ -171,17 +171,9 @@ private theorem hv_add_l (M : Matrix (Fin n) (Fin n) ℂ) (a b c : Fin n → ℂ
     hv M (a + b) c = hv M a c + hv M b c := by
   simp [hv, Matrix.mulVec_add, dotProduct_add]
 
-private theorem hv_add_r (M : Matrix (Fin n) (Fin n) ℂ) (a b c : Fin n → ℂ) :
-    hv M a (b + c) = hv M a b + hv M a c := by
-  simp [hv, star_add, add_dotProduct]
-
 private theorem hv_smul_l (M : Matrix (Fin n) (Fin n) ℂ) (t : ℂ) (a b : Fin n → ℂ) :
     hv M (t • a) b = t * hv M a b := by
   simp only [hv, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
-
-private theorem hv_smul_r (M : Matrix (Fin n) (Fin n) ℂ) (t : ℂ) (a b : Fin n → ℂ) :
-    hv M a (t • b) = (starRingEnd ℂ) t * hv M a b := by
-  simp only [hv, star_smulC, smul_dotProduct, smul_eq_mul]
 
 private noncomputable def hBil {X : Type} [AddCommGroup X] [Module ℝ X] (R : X ≃ₗ[ℝ] (Fin g → ℂ))
     (Hm : Matrix (Fin g) (Fin g) ℂ) : X →ₗ[ℝ] X →ₗ[ℝ] ℝ :=

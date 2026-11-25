@@ -69,13 +69,6 @@ theorem aux2 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)],
   [hl : Fact (Nat.Prime l)] → (K : Type) → [Field K] → Type :=
   fun l [Fact (Nat.Prime l)] K [Field K] => Localization (Ml l K)
 
-theorem aux5 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (K : Type)
-  [inst : Field K],
-  IsLocalization (Ml l K)
-    (Localization (Ml l K)) := by
-  intro l hl K inst
-  exact Localization.isLocalization
-
 theorem aux6 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (K : Type)
   [inst : Field K] [NumberField K] (y : ↥(Ml l K)),
   IsUnit ((Algebra.algebraMap (NumberField.RingOfIntegers K) K) ↑y) := by

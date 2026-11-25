@@ -71,13 +71,6 @@ def FieldGT : Prop :=
     (rc : IrrGL (k := w.adicCompletion E) → WD h) (rc' : IrrGL (k := w'.adicCompletion E') → WD h'),
     IsRecT h rc → IsRecT h' rc' → FieldG rc rc'
 
-namespace Old
-
-theorem twist (H : Laws a ha ε rc) : ∀ x χ hχ, Good x → rc (x.tw χ hχ) = (rc x).lpChar (rc (.ofChar χ hχ)) :=
-  fun x χ hχ _ => H.twist x χ hχ
-
-end Old
-
 namespace New
 
 end New
