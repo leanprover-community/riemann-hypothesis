@@ -127,12 +127,14 @@ Which pull requests a batch contains is read from its branch, never from its des
 should do for all this to work.
 
 The description is also compared with the branch, in a comment of its own on the batch's pull
-request. It names the pull requests listed under any other heading, as included, that are closed,
-and which of those the branch still holds, or whose head commit is not in the branch; those in the
-branch that the description does not list, unless it lists nothing as included; those in the branch
-that it lists as left out; and those the branch merged and then reverted, read from the messages and
-parents of its commits. Each one reverted is told once that the batch would land it although its
-changes did not. The comment is posted once there is something to say, and edited in place after
+request. It names the pull requests listed under any other heading, as included, that are merged
+already, or closed without being merged, and which of those the branch still holds, or whose head
+commit is not in the branch, apart from those the batch's own merge commit brought in at another
+commit, which it names for information only; those in the branch that the description does not
+list, unless it lists nothing as included; those in the branch that it lists as left out; and those
+the branch merged and then reverted, read from the messages and parents of its commits. Each one
+reverted is told once that the batch would land it although its changes did not, unless it is
+labelled `deferred`. The comment is posted once there is something to say, and edited in place after
 that, also to say that all is well again. The note remembers a digest of it, so a run that would say
 the same costs nothing.
 
@@ -267,6 +269,7 @@ REVERTED = "<!-- batch-queue-reverted {number} {sha} -->"
 CHECK, CONFLICT_HEADING = _description.CHECK, _description.CONFLICT_HEADING
 left_out, entry_digest, left_out_digest = _description.left_out, _description.entry_digest, _description.left_out_digest
 reverts, description_check = _description.reverts, _description.description_check
+absorbed = _description.absorbed
 # The workflow that labels conflicts, started when a batch is first labelled `building` or
 # `latest batch`: those labels are put on with the workflow's token, which starts no run of it by
 # itself.
@@ -701,6 +704,13 @@ def read_record(gh, number):
 #             `look_through` list the branch again.
 #   warned    {number: commit}: the members told that the branch reverts them, in that commit
 #             (see `tell_reverted`).
+#   absorbed  {number: commit}: the pull requests that a batch's merge commit brought in at another
+#             commit than any `members` holds (see `absorbed` in `batch-description.py`). Read
+#             with `reverted`, and missing in a note from before it was written down, which
+#             makes `look_through` list the branch again.
+#   fates     {number: "merged" or "closed"}: what became of the pull requests the description
+#             lists as included that are not open, each asked of GitHub once (see
+#             `check_description`).
 #   check     a digest of what the comment comparing the description with the branch says (see
 #             `check_description`), or "" before there is one.
 #   telling   true from just before the first comment of a round of telling (`tell_members` and
@@ -724,6 +734,9 @@ def dump_note(note):
     """A note as it is kept on GitHub: compact JSON, with only the keys the note has."""
     found = note.get("members") or {}
     kept = {name: note[name] for name in ("head", "members", "left", "reverted", "check") if name in note}
+    for name in ("absorbed", "fates"):
+        if note.get(name):
+            kept[name] = note[name]
     if note.get("below"):
         kept["below"] = note["below"]
 
@@ -774,9 +787,12 @@ def load_note(text):
         return {str(key): value for key, value in kept[name].items()}
 
     note = {"head": kept["head"]} if "head" in kept else {}
-    for name in ("members", "left", "reverted"):
+    for name in ("members", "left", "reverted", "absorbed", "fates"):
         if isinstance(kept.get(name), dict):
             note[name] = mapping(name)
+    if "reverted" in note:
+        # Written down along with `reverted`, and left out when empty.
+        note.setdefault("absorbed", {})
     if isinstance(kept.get("check"), str):
         note["check"] = kept["check"]
     if isinstance(kept.get("below"), dict) and kept["below"]:
@@ -1118,7 +1134,7 @@ def look_through(gh, batch, by, pulls, before, gone, log):
     # A batch labelled `building` just now was looked through already, and is looked at afresh.
     commits = None
     if note.get("head") != batch["sha"] or note.get("below", {}) != below or batch.get("commits") is not None \
-            or "reverted" not in note:
+            or "reverted" not in note or "absorbed" not in note:
         commits = batch.get("commits")
         if commits is None:
             if gh.short():
@@ -1153,6 +1169,7 @@ def look_through(gh, batch, by, pulls, before, gone, log):
         batch["note"]["below"] = below
     if commits is not None:
         batch["note"]["reverted"] = reverts(commits, found)
+        batch["note"]["absorbed"] = absorbed(commits, found)
 
 
 def keep_in_step(gh, batch, pulls, held, main, log):
@@ -1224,6 +1241,9 @@ def keep_in_step(gh, batch, pulls, held, main, log):
                    f"its {len(told)} pull request(s) are labelled but not told")
     # What the branch reverts is read with its commits (see `look_through`); otherwise it stands.
     reverted = note.get("reverted", {key: undo for key, undo in kept(old, "reverted").items() if key in found})
+    note.setdefault("absorbed", {key: commit for key, commit in kept(old, "absorbed").items() if key not in found})
+    # What became of a pull request stands while it is not open: one reopened is asked again.
+    note["fates"] = {key: fate for key, fate in kept(old, "fates").items() if int(key) not in pulls}
     note.update(labelled=labelled, told=told, left=left, reverted=reverted,
                 waiting=unwait(gh, batch, pulls, log),
                 pushed={key: commit for key, commit in kept(old, "pushed").items() if found.get(key) == commit},
@@ -1530,7 +1550,9 @@ def tell_reverted(gh, batch, pulls, main, log):
     that it will be taken to have landed with the batch although its changes did not.
 
     Only one whose head is still the commit the batch holds is told: GitHub would mark it merged,
-    or this workflow would close it if it targets another branch. The note's `warned` remembers
+    or this workflow would close it if it targets another branch. One labelled `deferred` is told
+    nothing: the maintainers took it out themselves, and the batch's pull request is where the
+    revert is named (see `check_description`). The note's `warned` remembers
     who was told, so this costs nothing until the branch reverts another one. Before telling one,
     its comments are read once, so that a note that was lost does not make it hear this twice.
     """
@@ -1538,7 +1560,7 @@ def tell_reverted(gh, batch, pulls, main, log):
     warned = note["warned"]
     for key, undo in sorted(note["reverted"].items(), key=lambda entry: int(entry[0])):
         pr, commit = pulls.get(int(key)), note["members"].get(key)
-        if warned.get(key) == undo or pr is None or by_hand(pr) or pr["sha"] != commit:
+        if warned.get(key) == undo or pr is None or by_hand(pr) or pr["sha"] != commit or DEFERRED in pr["labels"]:
             continue
         if gh.short():
             log.append(f"only {gh.remaining} requests left this hour: stopped telling what the batch #{number} "
@@ -1567,12 +1589,25 @@ def check_description(gh, batch, pulls, held, log):
     The comment is posted once there is something to say, and edited in place after that, also
     to say that all is well again. The note's `check` remembers a digest of what it says, so a
     run that would say the same thing makes no request at all. Nothing is posted just to say
-    that all is well.
+    that all is well. A pull request the description lists as included that is not open is
+    asked about once, a request, to say whether it was merged or closed; the note's `fates`
+    remembers the answer.
     """
     note, number = batch["note"], batch["number"]
     under = set(batch.get("below", ()))
     below = {int(key) for key, owners in held.items() if owners & under}
-    text, clear = description_check(number, pulls[number]["body"], gh.repo, note, pulls, below)
+    fates = note.setdefault("fates", {})
+    for entry in sorted({entry for entry, heading, _ in _description.list_entries(pulls[number]["body"], gh.repo)
+                         if heading and not _description.leaves_out(heading)} - {number}):
+        if entry in pulls or str(entry) in fates:
+            continue
+        if gh.short():
+            break
+        status, data = gh.call("GET", f"pulls/{entry}")
+        if status == 200 and isinstance(data, dict):
+            fates[str(entry)] = "merged" if data.get("merged") or data.get("merged_at") else "closed"
+    text, clear = description_check(number, pulls[number]["body"], gh.repo, note, pulls, below,
+                                    {int(key): fate for key, fate in fates.items()})
     digest = hashlib.sha256(text.encode()).hexdigest()[:16]
     comment = batch.get("check")
     if note["check"] == digest:
