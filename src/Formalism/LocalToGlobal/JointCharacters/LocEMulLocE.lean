@@ -23,12 +23,6 @@ def IsPlIdem (e : AE D) (P : HeightOneSpectrum (𝓞 D.host.E)) : Prop :=
     ((e * cA D e = 0 ∧ e + cA D e = algebraMap (AF D.host.F) (AE D) ε) ∨ e = algebraMap (AF D.host.F) (AE D) ε)) ∧
   ∀ x : 𝓞 D.host.E, x ≠ 0 → (x ∈ P.asIdeal ↔ finPart D (e * incA D ((x : D.host.E)⁻¹)) ∉ intAE D)
 
-def plOf (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (τ : D.what₂.Tau) : InfinitePlace D.host.E :=
-  InfinitePlace.mk ((θ τ).comp ((infPart D).comp (incA D)))
-
-def IsInfLoc (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (τ : D.what₂.Tau) (k : D.host.E) (x : AE D) : Prop :=
-  finPart D x = 1 ∧ (∀ τ', τ' ≠ τ → θ τ' (infPart D x) = 1) ∧ θ τ (infPart D x) = θ τ (infPart D (incA D k))
-
 variable {D}
 
 theorem locE_mul_locE {e : AE D} (he : e * e = e) (k l : D.host.E) : locE D e k * locE D e l = locE D e (k * l) := by

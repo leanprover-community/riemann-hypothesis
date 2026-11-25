@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsInertTop
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValRingLocRing
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMkTauE
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfExpIffHasInfQ
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
