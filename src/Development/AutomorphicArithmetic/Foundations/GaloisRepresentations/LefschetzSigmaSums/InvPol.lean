@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.MarkWeig
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open Matrix NumberField Polynomial GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCx GlobalTheory.LKDef GlobalTheory.RootSumWeights GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen

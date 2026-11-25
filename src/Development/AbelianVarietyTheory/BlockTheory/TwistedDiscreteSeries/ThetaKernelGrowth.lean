@@ -46,8 +46,6 @@ open scoped ENNReal NNReal
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.ThetaKernelGrowth
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def KernelBound {D : D7} (V W : HSp D) (A d : ℕ) : Prop :=
   ∀ (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsInfFam θ →
     ∀ U : AddSubgroup (WO V W), IsOpen (U : Set (WO V W)) →

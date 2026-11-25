@@ -51,8 +51,6 @@ open Formalism.UG (IsInertAt)
 
 namespace PT
 
-attribute [local instance] GlobalTheory.LocalData.complRel
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
 
 local instance locField (v : Pl F) : IsNonarchimedeanLocalField (Fv F v) := GlobalTheory.LocalData.isLocalField v

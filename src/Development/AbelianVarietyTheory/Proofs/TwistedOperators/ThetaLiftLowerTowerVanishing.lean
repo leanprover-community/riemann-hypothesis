@@ -58,8 +58,6 @@ open scoped ENNReal NNReal
 
 namespace GlobalTheory.LowVanishObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Kernel

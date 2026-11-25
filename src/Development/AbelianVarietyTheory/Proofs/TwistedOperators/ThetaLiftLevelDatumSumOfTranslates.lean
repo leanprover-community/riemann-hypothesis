@@ -814,7 +814,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplementaryIdempotentInIntegralClosureStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LiftVectorDatumEqSumLevelClassIndicators =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.LiftVectorDatumEqSumLevelClassIndicators", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RedMFrMapAdjZero\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThPDatumEq\npublic import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO\npublic import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.CompletedTensorLatticeStrongApproxOpenCompact\npublic import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointFrameMatrixAddIntegralReduction\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplementaryIdempotentInIntegralClosureStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos\nimport Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.LiftVectorDatumEqSumLevelClassIndicators", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RedMFrMapAdjZero\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThPDatumEq\npublic import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulMemLatO\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO\npublic import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.CompletedTensorLatticeStrongApproxOpenCompact\npublic import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointFrameMatrixAddIntegralReduction\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplementaryIdempotentInIntegralClosureStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos\nimport Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjugatePlacesLiftLevelDatumEqStatement\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -840,14 +840,8 @@ theorem actO_partAt (S T : HSp D) (g : GA D S) (h : GA D T) (c : AE D) (w : WO S
 theorem isHalf_partAt {S T : HSp D} {c : AE D} (hc : c * c = c) (w : WO S T) : IsHalf c (partAt c w) :=
   fun i j => by simp only [partAt, Matrix.map_apply, ← mul_assoc, hc]
 
-theorem partAt_of_isHalf {S T : HSp D} {c : AE D} {w : WO S T} (h : IsHalf c w) : partAt c w = w :=
-  Matrix.ext fun i j => h i j
-
 theorem partAt_add_one_sub {S T : HSp D} (c : AE D) (w : WO S T) : partAt c w + partAt (1 - c) w = w :=
   Matrix.ext fun i j => by simp only [partAt, Matrix.add_apply, Matrix.map_apply]; ring
-
-theorem partAt_neg {S T : HSp D} (c : AE D) (w : WO S T) : partAt c (-w) = -partAt c w := by
-  simp only [partAt_eq_smul, smul_neg]
 
 theorem partAt_sub {S T : HSp D} (c : AE D) (w w' : WO S T) : partAt c (w - w') = partAt c w - partAt c w' := by
   simp only [partAt_eq_smul, smul_sub]
@@ -881,40 +875,6 @@ theorem frMapAdj_neg (S T : HSp D) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fi
   unfold frMapAdj
   simp [Matrix.map_neg, Matrix.transpose_neg, Matrix.mul_neg, Matrix.neg_mul]
 
-theorem partAt_mem_hatA (S T : HSp D) (I : Ideal (𝓞 D.host.E)) (L : Lt D.host.E T.rank) (w : AE D)
-    (hw : finPart D w ∈ AddSubgroup.closure {y | ∃ a ∈ intAf D.host.F, ∃ x : 𝓞 D.host.E, x ∈ I ∧
-      y = a ⊗ₜ[D.host.F] (x : D.host.E)})
-    {u : WO S T} (hu : u ∈ hatA S T (tens (stdL D.host.E S.rank) L)) :
-    partAt w u ∈ hatA S T (tens (stdL D.host.E S.rank) (I • L)) := by
-  let Ψ : WO S T →+ WO S T := AddMonoidHom.mk' (fun u => partAt w u)
-    fun x y => Matrix.ext fun i j => mul_add w (x i j) (y i j)
-  have main : hatA S T (tens (stdL D.host.E S.rank) L) ≤
-      (hatA S T (tens (stdL D.host.E S.rank) (I • L))).comap Ψ := by
-    refine (AddSubgroup.closure_le _).2 ?_
-    rintro _ ⟨α, hα, y, hy, rfl⟩
-    let Φ : Af D.host.F ⊗[D.host.F] D.host.E →+ WO S T := AddMonoidHom.mk'
-      (fun z => Matrix.of fun a k => GlobalTheory.LatticeStable.liftMul D (α ⊗ₜ[D.host.F] y k a) z)
-      fun z z' => Matrix.ext fun a k => (GlobalTheory.LatticeStable.liftMul D _).map_add z z'
-    have hle : AddSubgroup.closure {y | ∃ a ∈ intAf D.host.F, ∃ x : 𝓞 D.host.E, x ∈ I ∧
-        y = a ⊗ₜ[D.host.F] (x : D.host.E)} ≤ (hatA S T (tens (stdL D.host.E S.rank) (I • L))).comap Φ := by
-      refine (AddSubgroup.closure_le _).2 ?_
-      rintro _ ⟨β, hβ, o, ho, rfl⟩
-      refine AddSubgroup.subset_closure ⟨β * α, fun v => ?_, (o : D.host.E) • y, ?_, ?_⟩
-      · rw [map_mul]; exact mul_mem (hβ v) (hα v)
-      · rw [GlobalTheory.SW.TensLat.mem_tens_stdL] at hy ⊢
-        intro k
-        have := Submodule.smul_mem_smul ho (hy k)
-        exact this
-      · ext a k
-        change GlobalTheory.LatticeStable.liftFin D ((β ⊗ₜ[D.host.F] (o : D.host.E)) * (α ⊗ₜ[D.host.F] y k a)) = _
-        rw [Algebra.TensorProduct.tmul_mul_tmul, GlobalTheory.LatticeStable.liftFin_tmul]
-        simp [Matrix.smul_apply]
-    have e : Ψ (Matrix.of fun a k => pairA D.host.F 0 α ⊗ₜ[D.host.F] y k a) = Φ (finPart D w) :=
-      Matrix.ext fun a k => GlobalTheory.LatticeStable.mul_pair_tmul D w α _
-    rw [SetLike.mem_coe, AddSubgroup.mem_comap, e]
-    exact hle hw
-  exact main hu
-
 end GlobalTheory.LiftLevel.DatSum
 
 noncomputable section
@@ -935,13 +895,7 @@ theorem tr_sub (S T : HSp D) (e : AE D) (k₀ : GA D S) (y y' : Matrix (Fin S.ra
 
 theorem tr_neg (S T : HSp D) (e : AE D) (k₀ : GA D S) (y : Matrix (Fin S.rank) (Fin T.rank) D.host.E) :
     tr S T e k₀ (-y) = -tr S T e k₀ y := by
-  simp only [tr, finW_neg, actO_neg, partAt_neg]
-
-theorem intAE_le_top : intAE D ≤ AddSubgroup.closure {y | ∃ a ∈ intAf D.host.F, ∃ x : 𝓞 D.host.E,
-    x ∈ (⊤ : Ideal (𝓞 D.host.E)) ∧ y = a ⊗ₜ[D.host.F] (x : D.host.E)} :=
-  (AddSubgroup.closure_le _).2 (by
-    rintro _ ⟨a, ha, x, rfl⟩
-    exact AddSubgroup.subset_closure ⟨a, ha, x, Submodule.mem_top, rfl⟩)
+  simp only [tr, finW_neg, actO_neg, GlobalTheory.LiftLevel.TrOff.partAt_neg]
 
 theorem tens_inter {n r : ℕ} {I J : Ideal (𝓞 D.host.E)} (h : IsCoprime I J) {L : Lt D.host.E r}
     {y : Matrix (Fin n) (Fin r) D.host.E} (hI : y ∈ tens (stdL D.host.E n) (I • L))
@@ -955,30 +909,6 @@ theorem tens_inter {n r : ℕ} {I J : Ideal (𝓞 D.host.E)} (h : IsCoprime I J)
   refine add_mem ?_ ?_
   · rw [Submodule.mul_smul]; exact Submodule.smul_mem_smul hi (hJ k)
   · rw [mul_comm, Submodule.mul_smul]; exact Submodule.smul_mem_smul hj (hI k)
-
-theorem nsmul_mem_hatA (S T : HSp D) {𝔪 : Ideal (𝓞 D.host.E)} {N : ℕ} (hN : (N : 𝓞 D.host.E) ∈ 𝔪)
-    (L : Lt D.host.E T.rank) {u : WO S T} (hu : u ∈ hatA S T (tens (stdL D.host.E S.rank) L)) :
-    N • u ∈ hatA S T (tens (stdL D.host.E S.rank) (𝔪 • L)) := by
-  have main : hatA S T (tens (stdL D.host.E S.rank) L) ≤
-      (hatA S T (tens (stdL D.host.E S.rank) (𝔪 • L))).comap (nsmulAddMonoidHom N) := by
-    refine (AddSubgroup.closure_le _).2 ?_
-    rintro _ ⟨α, hα, y, hy, rfl⟩
-    refine AddSubgroup.subset_closure ⟨α, hα, N • y, ?_, ?_⟩
-    · rw [GlobalTheory.SW.TensLat.mem_tens_stdL] at hy ⊢
-      intro k
-      have := Submodule.smul_mem_smul hN (hy k)
-      rwa [Nat.cast_smul_eq_nsmul] at this
-    · ext a k
-      change N • (pairA D.host.F 0 α ⊗ₜ[D.host.F] y k a) = pairA D.host.F 0 α ⊗ₜ[D.host.F] (N • y k a)
-      exact (map_nsmul (TensorProduct.mk D.host.F (AF D.host.F) D.host.E (pairA D.host.F 0 α)) N (y k a)).symm
-  exact main hu
-
-theorem fullStd (n : ℕ) : (stdL D.host.E n).FG ∧
-    Submodule.span D.host.E (stdL D.host.E n : Set (Fin n → D.host.E)) = ⊤ := by
-  refine ⟨Submodule.fg_span (Set.finite_range _), ?_⟩
-  rw [stdL, Submodule.span_span_of_tower]
-  convert (Pi.basisFun D.host.E (Fin n)).span_eq
-  simp
 
 theorem fullSmul {r : ℕ} {𝔞 : Ideal (𝓞 D.host.E)} (h : 𝔞 ≠ ⊥) {N : Lt D.host.E r}
     (hN : N.FG ∧ Submodule.span D.host.E (N : Set (Fin r → D.host.E)) = ⊤) :
@@ -1003,11 +933,11 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
     Lv.dat hn (-(c.out : Matrix (Fin S.rank) (Fin T.rank) D.host.E)) *
       indL (liftL S T βS βT Pg Q e) (x + tr S T e k₀ (c.out : Matrix (Fin S.rank) (Fin T.rank) D.host.E))
   have hc : cA D e * cA D e = cA D e := by rw [← map_mul, GlobalTheory.PlaceVec.idemSum_mul_self he]
-  have hcI := intAE_le_top (GlobalTheory.AdIdem.idempotent_mem_intAE D (finPart D (cA D e)) (by rw [← map_mul, hc]))
+  have hcI := GlobalTheory.RowOnto.intAE_le_top' (GlobalTheory.AdIdem.idempotent_mem_intAE D (finPart D (cA D e)) (by rw [← map_mul, hc]))
   have hP : ∀ (L : Lt D.host.E T.rank) (u : WO S T), u ∈ hatA S T (tens (stdL D.host.E S.rank) L) →
       partAt (cA D e) u ∈ hatA S T (tens (stdL D.host.E S.rank) L) := by
     intro L u hu
-    have := partAt_mem_hatA S T ⊤ L (cA D e) hcI hu
+    have := GlobalTheory.RowOnto.partAt_mem_hatA' S T ⊤ L (cA D e) hcI hu
     rwa [Submodule.top_smul] at this
   have hfinW : ∀ (L : Lt D.host.E T.rank) y, y ∈ tens (stdL D.host.E S.rank) L →
       finW S T y ∈ hatA S T (tens (stdL D.host.E S.rank) L) :=
@@ -1030,8 +960,8 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
     obtain ⟨h1, h3⟩ := (hgen _ (hz y)).2.2 (by rw [← h𝔪]; exact hP _ _ (hfinW _ y (tmono hA2 hy)))
     exact ⟨isHalf_partAt hc _, by rw [hF]; exact h1, fun PP hPP => by rw [hF]; exact h3 PP hPP⟩
   have hcop : IsCoprime (Ideal.span {2} * conjI Lv.𝔪) Lv.𝔪 := IsCoprime.mul_left Lv.odd.symm Lv.cop.symm
-  have hfull := GlobalTheory.Ker.HatLat.hatA_tens D S T C _ _ (fullStd S.rank) (fullSmul Lv.ne_bot ⟨C.X.Λ_fg, C.X.Λ_span⟩)
-  have hfull0 := GlobalTheory.Ker.HatLat.hatA_tens D S T C _ _ (fullStd S.rank) ⟨C.X.Λ_fg, C.X.Λ_span⟩
+  have hfull := GlobalTheory.Ker.HatLat.hatA_tens D S T C _ _ (GlobalTheory.RowOnto.fullStd' S.rank) (fullSmul Lv.ne_bot ⟨C.X.Λ_fg, C.X.Λ_span⟩)
+  have hfull0 := GlobalTheory.Ker.HatLat.hatA_tens D S T C _ _ (GlobalTheory.RowOnto.fullStd' S.rank) ⟨C.X.Λ_fg, C.X.Λ_span⟩
   have hKer : ∀ y ∈ tens (stdL D.host.E S.rank) ((Ideal.span {2} * conjI Lv.𝔪) • C.X.Λ),
       tr S T e k₀ y ∈ liftL S T βS βT Pg Q e →
       y ∈ tens (stdL D.host.E S.rank) ((Ideal.span {2} * conjI Lv.𝔪 * Lv.𝔪) • C.X.Λ) := by
@@ -1040,7 +970,7 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
     have h1 : partAt (cA D e) (finW S T y) ∈ hatA S T (tens (stdL D.host.E S.rank) (liftI Pg Q • C.X.Λ)) :=
       (hgen _ (hz y)).2.1 ⟨by rw [← hF]; exact hL2, fun PP hPP => by rw [← hF]; exact hL3 PP hPP⟩
     have h2 : partAt (1 - cA D e) (finW S T y) ∈ hatA S T (tens (stdL D.host.E S.rank) (liftI Pg Q • C.X.Λ)) :=
-      partAt_mem_hatA S T _ _ _ (GlobalTheory.T.complementary_idempotent_in_integral_closure D Pg Q e he) (hfinW _ y (tmono hA1 hy))
+      GlobalTheory.RowOnto.partAt_mem_hatA' S T _ _ _ (GlobalTheory.T.complementary_idempotent_in_integral_closure D Pg Q e he) (hfinW _ y (tmono hA1 hy))
     have h3 := add_mem h1 h2
     rw [partAt_add_one_sub, ← h𝔪] at h3
     exact tens_inter hcop hy ((hfull.2.1 y).1 h3)
@@ -1060,7 +990,7 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
     have hz0h : IsHalf (cA D e) z₀ := by
       have e3 : z₀ = partAt (cA D e) z₀ := by
         rw [hz₀]
-        conv_lhs => rw [← partAt_of_isHalf hneg]
+        conv_lhs => rw [← GlobalTheory.RowOnto.partAt_of_isHalf' hneg]
         rw [actO_partAt]
       rw [e3]; exact isHalf_partAt hc _
     have hadj : adjA S T βS βT a z₀ = -frMapAdj S T βS βT x := by
@@ -1070,7 +1000,7 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
     have hN : 0 < Ideal.absNorm Lv.𝔪 :=
       Nat.pos_of_ne_zero (by rw [Ne, Ideal.absNorm_eq_zero_iff]; exact Lv.ne_bot)
     obtain ⟨y₁, hy₁, u', hu', hzu⟩ := (hfull0.2.2.1 z₀ hz0mem).2 _ hN
-    have hNu := nsmul_mem_hatA S T (Ideal.absNorm_mem Lv.𝔪) C.X.Λ hu'
+    have hNu := GlobalTheory.RowOnto.nsmul_mem_hatA' S T (Ideal.absNorm_mem Lv.𝔪) C.X.Λ hu'
     obtain ⟨g, hg, m, hm, hgm⟩ : ∃ g ∈ Ideal.span {2} * conjI Lv.𝔪, ∃ m ∈ Lv.𝔪, g + m = 1 := by
       have h0 := hcop
       rw [Ideal.isCoprime_iff_sup_eq] at h0
@@ -1093,7 +1023,7 @@ theorem thPDatum_eq_levelSum : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (hn : T.
           hatA S T (tens (stdL D.host.E S.rank) (Lv.𝔪 • C.X.Λ)) := by
         have e4 : partAt (cA D e) (finW S T ((g : D.host.E) • y₁)) - z₀ =
             partAt (cA D e) (-finW S T ((m : D.host.E) • y₁) - Ideal.absNorm Lv.𝔪 • u') := by
-          conv_lhs => rw [← partAt_of_isHalf hz0h]
+          conv_lhs => rw [← GlobalTheory.RowOnto.partAt_of_isHalf' hz0h]
           rw [← partAt_sub, hzu, ← finW_neg, ← hyg, finW_sub]
           congr 1; abel
         rw [e4]

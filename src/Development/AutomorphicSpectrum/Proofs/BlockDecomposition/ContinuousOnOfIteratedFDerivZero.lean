@@ -50,7 +50,7 @@ noncomputable section
 open MeasureTheory Set Filter
 open scoped ContDiff Topology
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace GlobalTheory.CompanionTheory.ParamInt
 

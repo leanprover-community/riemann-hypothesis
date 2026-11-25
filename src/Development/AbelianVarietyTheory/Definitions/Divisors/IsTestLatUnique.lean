@@ -54,8 +54,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace GlobalTheory.FunObj.TestLatModel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GlobalTheory.ChiGrid.GridData L sc}
 
 theorem finE_rat (γ : GQ (Xp G)) (γE : UR D.sp.cm (Xp G).gram) (h : Bridge.IsRatMat (Xp G) γ γE.1) :

@@ -880,53 +880,6 @@ theorem th_Aw_posAdd {w : WW p} (hper : (sigW p)^[n'] w = w) (s : Fin n') (d : �
   congr 1
   exact Function.IsPeriodicPt.iterate_mod_apply hper _
 
-private theorem intR_C_of_mem {ι F : Type} [Field F] (R : Subring F) {c : F} (hc : c ∈ R) :
-    IntR R (MvPowerSeries.C c : MvPowerSeries ι F) := by
-  classical
-  intro n
-  rw [MvPowerSeries.coeff_C]
-  split_ifs
-  · exact hc
-  · exact R.zero_mem
-
-private theorem intR_add' {ι F : Type} [Field F] (R : Subring F) {f g : MvPowerSeries ι F}
-    (hf : IntR R f) (hg : IntR R g) : IntR R (f + g) := by
-  intro n
-  rw [map_add (f := _)]
-  exact R.add_mem (hf n) (hg n)
-
-private theorem intR_mul' {ι F : Type} [Field F] (R : Subring F) {f g : MvPowerSeries ι F}
-    (hf : IntR R f) (hg : IntR R g) : IntR R (f * g) := by
-  classical
-  intro n
-  rw [MvPowerSeries.coeff_mul]
-  exact R.sum_mem fun x _ => R.mul_mem (hf _) (hg _)
-
-private theorem intR_pow {ι F : Type} [Field F] (R : Subring F) {f : MvPowerSeries ι F}
-    (hf : IntR R f) (k : ℕ) : IntR R (f ^ k) := by
-  induction k with
-  | zero =>
-    classical
-    intro n
-    rw [pow_zero, MvPowerSeries.coeff_one]
-    split_ifs
-    · exact R.one_mem
-    · exact R.zero_mem
-  | succ k ih =>
-    rw [pow_succ]
-    exact intR_mul' R ih hf
-
-private theorem intR_sum' {ι F α : Type} [Field F] (R : Subring F) (s : Finset α)
-    (f : α → MvPowerSeries ι F) (h : ∀ i ∈ s, IntR R (f i)) : IntR R (∑ i ∈ s, f i) := by
-  intro n
-
-  rw [map_sum]
-  exact R.sum_mem fun i hi => h i hi n
-
-private theorem cg_of_eq' {ι F : Type} [Field F] (R : Subring F) (pp : F)
-    {f g : MvPowerSeries ι F} (h : f = g) : Cg R pp f g :=
-  ⟨0, fun n => by rw [map_zero]; exact R.zero_mem, by rw [h, mul_zero, add_zero]⟩
-
 private theorem cg_sub_multiset_valuation {ι F : Type} [Field F] (R : Subring F) (pp : F)
     {f g f' g' : MvPowerSeries ι F} (h : Cg R pp f g) (h' : Cg R pp f' g') :
     Cg R pp (f - f') (g - g') := by
@@ -936,46 +889,16 @@ private theorem cg_sub_multiset_valuation {ι F : Type} [Field F] (R : Subring F
   rw [map_sub]
   exact R.sub_mem (hY n) (hY' n)
 
-private theorem cg_trans' {ι F : Type} [Field F] (R : Subring F) (pp : F)
-    {f g k : MvPowerSeries ι F} (h : Cg R pp f g) (h' : Cg R pp g k) : Cg R pp f k := by
-  obtain ⟨Y, hY, rfl⟩ := h
-  obtain ⟨Y', hY', rfl⟩ := h'
-  exact ⟨Y' + Y, intR_add' R hY' hY, by ring⟩
-
-private theorem cg_mul' {ι F : Type} [Field F] (R : Subring F) (pp : F) (hpp : pp ∈ R)
-    {f g f' g' : MvPowerSeries ι F} (h : Cg R pp f g) (h' : Cg R pp f' g')
-    (hg : IntR R g) (hf' : IntR R f') : Cg R pp (f * f') (g * g') := by
-  obtain ⟨Y, hY, rfl⟩ := h
-  obtain ⟨Y', hY', rfl⟩ := h'
-  exact ⟨g * Y' + Y * (g' + MvPowerSeries.C pp * Y'),
-    intR_add' R (intR_mul' R hg hY') (intR_mul' R hY hf'), by ring⟩
-
-private theorem cg_pow' {ι F : Type} [Field F] (R : Subring F) (pp : F) (hpp : pp ∈ R)
-    {f g : MvPowerSeries ι F} (h : Cg R pp f g) (hf : IntR R f) (hg : IntR R g) (k : ℕ) :
-    Cg R pp (f ^ k) (g ^ k) := by
-  induction k with
-  | zero => exact cg_of_eq' R pp (by rw [pow_zero, pow_zero])
-  | succ k ih =>
-    rw [pow_succ, pow_succ]
-    exact cg_mul' R pp hpp ih h (intR_pow R hg k) hf
-
-private theorem cg_sum' {ι F α : Type} [Field F] (R : Subring F) (pp : F) (s : Finset α)
-    {f g : α → MvPowerSeries ι F} (h : ∀ i, Cg R pp (f i) (g i)) :
-    Cg R pp (∑ i ∈ s, f i) (∑ i ∈ s, g i) := by
-  choose Y hY heq using h
-  exact ⟨∑ i ∈ s, Y i, intR_sum' R s Y (fun i _ => hY i), by
-    rw [Finset.sum_congr rfl (fun i _ => heq i), Finset.sum_add_distrib, Finset.mul_sum]⟩
-
 private theorem cg_C_mul' {ι F : Type} [Field F] (R : Subring F) (pp : F) {c : F} (hc : c ∈ R)
     {f g : MvPowerSeries ι F} (h : Cg R pp f g) :
     Cg R pp (MvPowerSeries.C c * f) (MvPowerSeries.C c * g) := by
   obtain ⟨Y, hY, rfl⟩ := h
-  exact ⟨MvPowerSeries.C c * Y, intR_mul' R (intR_C_of_mem R hc) hY, by ring⟩
+  exact ⟨MvPowerSeries.C c * Y, IntR_mul (IntR_C (R := R) hc) hY, by ring⟩
 
 private theorem intR_of_cg_of_intR {ι F : Type} [Field F] (R : Subring F) (pp : F) (hpp : pp ∈ R)
     {f g : MvPowerSeries ι F} (h : Cg R pp f g) (hg : IntR R g) : IntR R f := by
   obtain ⟨Y, hY, rfl⟩ := h
-  exact intR_add' R hg (intR_mul' R (intR_C_of_mem R hpp) hY)
+  exact IntR_add hg (IntR_mul (IntR_C (R := R) hpp) hY)
 
 theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
     (hF : ∀ (n' r0 r1 : ℕ) (K' : Type) [Field K'] (R : Subring K'), FrobSumH p n' r0 r1 K' R) (hW : FrobWH p) :
@@ -990,8 +913,8 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
     fun t a b => th_sSer_int _ t a b
   have hLin0 : ∀ (w : WW p) (P : Finset (Fin n)) (e : Fin n → ℕ) (a : Fin r0) (b : Fin r1),
       IntR (Rp p L vp) (∑ t ∈ P, MvPowerSeries.C (Aw L w (e t)) * sSer p L t a b) :=
-    fun w P e a b => intR_sum' _ P _ fun t _ =>
-      intR_mul' _ (intR_C_of_mem _ (th_Aw_mem vp w _)) (hsI t a b)
+    fun w P e a b => IntR_sum P _ fun t _ =>
+      IntR_mul (IntR_C (R := Rp p L vp) (th_Aw_mem vp w _)) (hsI t a b)
   have hEv1 : ∀ s ∈ Pev n, ∀ d, posAdd s (2 * d) ∈ Pev n := by
     intro s hs d
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hs ⊢
@@ -1031,12 +954,12 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
     intro r a b
     have hZi : IntR (Rp p L vp) (sOf B L μ (Sum.inr (r, a, b))) :=
       intR_of_cg_of_intR _ _ hpR (hZ r a b) (hLin0 (B.om r) (Pod n) (fun t => t.val) a b)
-    have hZp := cg_pow' _ _ hpR (hZ r a b) hZi (hLin0 (B.om r) (Pod n) (fun t => t.val) a b) p
+    have hZp := cg_pow hZi (hLin0 (B.om r) (Pod n) (fun t => t.val) a b) (hZ r a b) p
     have hF1 := th_frob_lin vp hFS hW (B.om r) (Pod n) (fun t => t.val) (fun t => sSer p L t a b)
       (fun t => hsI t a b)
-    have hZB := cg_trans' _ _ hZp hF1
-    have hXZ := cg_mul' _ _ hpR (hX r a b) hZB
-      (hLin0 (B.omS r) (Pev n) (fun t => t.val) a b) (intR_pow _ hZi p)
+    have hZB := cg_trans hZp hF1
+    have hXZ := cg_mul (IntR_pow hZi p)
+      (hLin0 (B.omS r) (Pev n) (fun t => t.val) a b) (hX r a b) hZB
     exact cg_C_mul' _ _ hc0 hXZ
   have hT2' : ∀ (r : Fin (n / 2)) (a : Fin r0) (b : Fin r1),
       Cg (Rp p L vp) (p : L)
@@ -1048,15 +971,15 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
     intro r a b
     have hXi : IntR (Rp p L vp) (sOf B L μ (Sum.inl (r, a, b))) :=
       intR_of_cg_of_intR _ _ hpR (hX r a b) (hLin0 (B.omS r) (Pev n) (fun t => t.val) a b)
-    have hXp := cg_pow' _ _ hpR (hX r a b) hXi (hLin0 (B.omS r) (Pev n) (fun t => t.val) a b) p
+    have hXp := cg_pow hXi (hLin0 (B.omS r) (Pev n) (fun t => t.val) a b) (hX r a b) p
     have hF2 := th_frob_lin vp hFS hW (B.omS r) (Pev n) (fun t => t.val) (fun t => sSer p L t a b)
       (fun t => hsI t a b)
-    have hXA := cg_trans' _ _ hXp hF2
-    have hZX := cg_mul' _ _ hpR (hZ r a b) hXA
-      (hLin0 (B.om r) (Pod n) (fun t => t.val) a b) (intR_pow _ hXi p)
+    have hXA := cg_trans hXp hF2
+    have hZX := cg_mul (IntR_pow hXi p)
+      (hLin0 (B.om r) (Pod n) (fun t => t.val) a b) (hZ r a b) hXA
     exact cg_C_mul' _ _ hc1 hZX
-  have hAll := cg_sum' _ _ (Finset.univ : Finset (Eidx n r0 r1))
-    fun e : Eidx n r0 r1 => cg_sub_multiset_valuation _ _ (hT1' e.1 e.2.1 e.2.2) (hT2' e.1 e.2.1 e.2.2)
+  have hAll := cg_sum (Finset.univ : Finset (Eidx n r0 r1)) _ _
+    fun e _ => cg_sub_multiset_valuation _ _ (hT1' e.1 e.2.1 e.2.2) (hT2' e.1 e.2.1 e.2.2)
   obtain ⟨Y, hY, heq⟩ := hAll
   obtain ⟨u, hu_def⟩ : ∃ u : Fin n → L,
       u = fun s => if IsOddPos s then wK' p L c else -wK' p L (sigW p c) := ⟨_, rfl⟩

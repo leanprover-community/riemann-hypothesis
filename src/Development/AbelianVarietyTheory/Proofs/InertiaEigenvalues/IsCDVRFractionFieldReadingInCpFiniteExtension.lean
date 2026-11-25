@@ -51,8 +51,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open NumberField IsDedekindDomain Formalism.L2.Pj GlobalTheory.GeoTie GlobalTheory.GoodPts
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GeoTie.ReadExt

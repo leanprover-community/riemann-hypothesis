@@ -119,15 +119,10 @@ private theorem coeff_algHom_eq_sum_range_of_lt (σ : PowerSeries O →ₐ[O] Po
   first
   | rw [map_smul, smul_eq_mul, PowerSeries.coeff_trunc, if_pos hi]
 
-private theorem hasSubst_of_constantCoeff_eq_zero_level_letter_cocycles {Y : PowerSeries O}
-    (hY : constantCoeff Y = 0) : PowerSeries.HasSubst Y := by
-  first
-  | exact PowerSeries.HasSubst.of_constantCoeff_zero' hY
-
 private theorem coeff_subst_eq_sum_range_of_lt {Y : PowerSeries O} (hY : constantCoeff Y = 0)
     (a : PowerSeries O) {m N : ℕ} (hN : m < N) :
     coeff m (a.subst Y) = ∑ n ∈ Finset.range N, coeff n a * coeff m (Y ^ n) := by
-  have hs := hasSubst_of_constantCoeff_eq_zero_level_letter_cocycles hY
+  have hs := PowerSeries.HasSubst.of_constantCoeff_zero' hY
   let σ : PowerSeries O →ₐ[O] PowerSeries O := PowerSeries.substAlgHom hs
   have h1 : ∀ f : PowerSeries O, σ f = f.subst Y := fun f => by
     first

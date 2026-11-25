@@ -20,7 +20,7 @@ namespace Formalism.L2.SG.Pf.Carrier
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut Formalism.L2.SG.Pf.Carrier.JointQuot
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 section Gen
 

@@ -47,8 +47,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open TensorProduct CrystallineSemistableComparison.D
 open scoped LaurentPolynomial
 

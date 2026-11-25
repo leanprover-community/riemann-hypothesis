@@ -60,7 +60,6 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G Recip
 open scoped Classical
 open Formalism.BasicNotions.DV Formalism.MainNotions.WeightThresholdDefs GlobalTheory.FlagAr GlobalTheory.ShFam.Pad GlobalTheory.VB
 
-set_option autoImplicit false
 namespace GlobalTheory.SmoothDimTotal
 open IsLocalRing
 

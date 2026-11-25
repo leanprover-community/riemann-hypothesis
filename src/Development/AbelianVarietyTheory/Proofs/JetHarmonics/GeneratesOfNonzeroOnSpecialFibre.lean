@@ -1,10 +1,8 @@
 module
 
-import Mathlib
+import Mathlib.Algebra.Category.AlgCat.Monoidal
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArcTheta
@@ -422,15 +420,6 @@ theorem flat_of_injective {A V : Type} [CommRing A] [IsDomain A] [IsPrincipalIde
   have : FaithfulSMul A V := (faithfulSMul_iff_algebraMap_injective A V).2 hf
   show Module.Flat A V
   infer_instance
-
-theorem isTan_iff_isTangent {V : Type} [CommRing V] {G : Over (Sp V)} [GrpObj G] (w : epsR V ⟶ G) :
-    IsTan (V := V) (R := V) (G := G) w ↔ IsTangent w := by
-  have : (1 : ptOver V V ⟶ G).left = η[G].left := by
-    show spMap (algebraMap V V) ≫ _ = _
-    rw [show spMap (algebraMap V V) = 𝟙 _ from Spec.map_id _]
-    exact Category.id_comp _
-  unfold IsTan IsTangent
-  rw [this]
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 

@@ -58,7 +58,7 @@ namespace PositivityTheory.RgBcC.LfSt.GelfandReading
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.LfSt
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

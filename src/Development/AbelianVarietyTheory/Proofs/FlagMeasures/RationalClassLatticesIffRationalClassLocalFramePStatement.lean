@@ -1086,7 +1086,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalInnerLatticeEqOfInnerPreimageEqStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.NonGenericDatumLatticeEqPerpQuotientImageTerm =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.NonGenericDatumLatticeEqPerpQuotientImageTerm", "h": "module\n\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Formalism.SharpRestriction.CuspSpanNormBounds.Point\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.NonGenericDatumLatticeEqPerpQuotientImageTerm", "h": "module\n\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Formalism.SharpRestriction.CuspSpanNormBounds.Point\nimport Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsUnimodularOfLocalStandardLatticeTranslates\nimport Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1102,20 +1102,9 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 
 def hL (y : V) : V →+ E := ⟨⟨fun x => H.h x y, H.h_zero_left y⟩, fun x x' => H.h_add_left x x' y⟩
 
-lemma h_add_right (x y z : V) : H.h x (y + z) = H.h x y + H.h x z := by
-  rw [H.h_herm (y + z) x, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
-
-lemma h_smul_right (c : E) (x y : V) : H.h x (c • y) = M.L.cj c * H.h x y := by
-  rw [H.h_herm (c • y) x, H.h_smul_left, map_mul, ← H.h_herm]
-
 lemma h_zero_right (x : V) : H.h x 0 = 0 := by
-  have := h_smul_right H 0 x 0
+  have := GlobalTheory.Unfold.StdDual.h_smul_right H 0 x 0
   simpa using this
-
-lemma h_sub_left (x y z : V) : H.h (x - y) z = H.h x z - H.h y z := map_sub (hL H z) x y
-
-lemma h_sum_left {ι : Type} (s : Finset ι) (u : ι → V) (y : V) :
-    H.h (∑ i ∈ s, u i) y = ∑ i ∈ s, H.h (u i) y := map_sum (hL H y) u s
 
 lemma mkW_eq {r : ℕ} {f : Fin (r + 1) → V} (x y : ↥(H.perp (H.X f))) (h : (x : V) - y ∈ H.X f) :
     H.mkW f x = H.mkW f y := by
@@ -1185,8 +1174,8 @@ lemma mem_perp_iff (v : V) : v ∈ H.perp (H.X Fr.f) ↔ ∀ a, H.h v (Fr.e a) =
       obtain ⟨a, rfl⟩ := hx
       exact h a
     | zero => exact h_zero_right H v
-    | add x y _ _ hx hy => rw [h_add_right, hx, hy, add_zero]
-    | smul c x _ hx => rw [h_smul_right, hx, mul_zero]
+    | add x y _ _ hx hy => rw [GlobalTheory.Unfold.StdDual.h_add_right, hx, hy, add_zero]
+    | smul c x _ hx => rw [GlobalTheory.Unfold.StdDual.h_smul_right, hx, mul_zero]
 
 lemma X_le_perp : H.X Fr.f ≤ H.perp (H.X Fr.f) := by
   intro x hx
@@ -1202,19 +1191,17 @@ lemma X_le_perp : H.X Fr.f ≤ H.perp (H.X Fr.f) := by
 
 lemma prF_e (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.e b) = 0 := by
   unfold FrameD.prF
-  rw [h_sub_left, h_sub_left, h_sum_left, h_sum_left]
+  rw [GlobalTheory.Unfold.StdDual.h_sub_left, GlobalTheory.Unfold.StdDual.h_sub_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left]
   simp only [H.h_smul_left, h_ee, h_es_e, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
     Finset.sum_ite_eq, Finset.mem_univ, if_true]
   ring
 
 lemma prF_es (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.es b) = 0 := by
   unfold FrameD.prF
-  rw [h_sub_left, h_sub_left, h_sum_left, h_sum_left]
+  rw [GlobalTheory.Unfold.StdDual.h_sub_left, GlobalTheory.Unfold.StdDual.h_sub_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left, Formalism.L2.SG.Pf.ScalarFramePf.h_sum_left]
   simp only [H.h_smul_left, h_e_es, Fr.h_ss, mul_zero, Finset.sum_const_zero, mul_ite, mul_one,
     Finset.sum_ite_eq', Finset.mem_univ, if_true]
   ring
-
-lemma prF_perp (v : V) : Fr.prF v ∈ H.perp (H.X Fr.f) := (mem_perp_iff Fr _).2 (prF_e Fr v)
 
 lemma prF_add (x y : V) : Fr.prF (x + y) = Fr.prF x + Fr.prF y := by
   unfold FrameD.prF
@@ -1243,37 +1230,37 @@ theorem Lset_LamStd (L : Submodule M.L.O (H.Wb Fr.f)) :
   ext w
   constructor
   · rintro ⟨x, hxΛ, rfl⟩
-    have hQ : ∀ v ∈ Fr.LamStd L, H.mkW Fr.f ⟨Fr.prF v, prF_perp Fr v⟩ ∈ L := by
+    have hQ : ∀ v ∈ Fr.LamStd L, H.mkW Fr.f ⟨Fr.prF v, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr v⟩ ∈ L := by
       intro v hv
       induction hv using Submodule.span_induction with
       | mem v hv =>
         obtain ⟨-, -, w, hw, hwL⟩ := hv
-        have e : (⟨Fr.prF v, prF_perp Fr v⟩ : ↥(H.perp (H.X Fr.f))) = w := Subtype.ext hw.symm
+        have e : (⟨Fr.prF v, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr v⟩ : ↥(H.perp (H.X Fr.f))) = w := Subtype.ext hw.symm
         rw [e]; exact hwL
       | zero =>
-        have e : (⟨Fr.prF 0, prF_perp Fr 0⟩ : ↥(H.perp (H.X Fr.f))) = 0 :=
+        have e : (⟨Fr.prF 0, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr 0⟩ : ↥(H.perp (H.X Fr.f))) = 0 :=
           Subtype.ext (by simpa using prF_smul Fr 0 0)
         rw [e, map_zero]; exact L.zero_mem
       | add x y _ _ hx hy =>
-        have e : (⟨Fr.prF (x + y), prF_perp Fr _⟩ : ↥(H.perp (H.X Fr.f))) =
-            ⟨Fr.prF x, prF_perp Fr x⟩ + ⟨Fr.prF y, prF_perp Fr y⟩ := Subtype.ext (prF_add Fr x y)
+        have e : (⟨Fr.prF (x + y), GlobalTheory.Unfold.StdDual.prF_mem_perp Fr _⟩ : ↥(H.perp (H.X Fr.f))) =
+            ⟨Fr.prF x, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr x⟩ + ⟨Fr.prF y, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr y⟩ := Subtype.ext (prF_add Fr x y)
         rw [e, map_add (f := _)]; exact L.add_mem hx hy
       | smul c x _ hx =>
-        have e : (⟨Fr.prF (c • x), prF_perp Fr _⟩ : ↥(H.perp (H.X Fr.f))) =
-            (c : E) • ⟨Fr.prF x, prF_perp Fr x⟩ := Subtype.ext (prF_smul Fr (c : E) x)
+        have e : (⟨Fr.prF (c • x), GlobalTheory.Unfold.StdDual.prF_mem_perp Fr _⟩ : ↥(H.perp (H.X Fr.f))) =
+            (c : E) • ⟨Fr.prF x, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr x⟩ := Subtype.ext (prF_smul Fr (c : E) x)
         rw [e, map_smul]
         exact L.smul_mem c hx
     have := hQ x hxΛ
-    rwa [mkW_eq H ⟨Fr.prF x, prF_perp Fr x⟩ x (by
+    rwa [mkW_eq H ⟨Fr.prF x, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr x⟩ x (by
       have := (H.X Fr.f).neg_mem (sub_prF_mem Fr x x.2); simpa using this)] at this
   · intro hw
     obtain ⟨x0, rfl⟩ := Submodule.mkQ_surjective _ w
-    refine ⟨⟨Fr.prF x0, prF_perp Fr x0⟩, ?_, ?_⟩
+    refine ⟨⟨Fr.prF x0, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr x0⟩, ?_, ?_⟩
     · have hp : Fr.prF (Fr.prF x0) = Fr.prF x0 := prF_of Fr _ (prF_es Fr x0) (prF_e Fr x0)
-      refine Submodule.subset_span ⟨fun a => ?_, fun a => ?_, ⟨Fr.prF x0, prF_perp Fr x0⟩, hp.symm, ?_⟩
+      refine Submodule.subset_span ⟨fun a => ?_, fun a => ?_, ⟨Fr.prF x0, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr x0⟩, hp.symm, ?_⟩
       · change H.h (Fr.prF x0) (Fr.es a) ∈ _; rw [prF_es]; exact zero_mem _
       · change H.h (Fr.prF x0) (Fr.e a) ∈ _; rw [prF_e]; exact zero_mem _
-      · rw [mkW_eq H ⟨Fr.prF x0, prF_perp Fr x0⟩ x0 (by
+      · rw [mkW_eq H ⟨Fr.prF x0, GlobalTheory.Unfold.StdDual.prF_mem_perp Fr x0⟩ x0 (by
           have := (H.X Fr.f).neg_mem (sub_prF_mem Fr x0 x0.2); simpa using this)]
         exact hw
     · have := (H.X Fr.f).neg_mem (sub_prF_mem Fr x0 x0.2)

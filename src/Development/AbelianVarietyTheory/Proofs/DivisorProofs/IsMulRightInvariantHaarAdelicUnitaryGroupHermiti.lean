@@ -330,7 +330,6 @@ end GlobalTheory.AdelicPointsUnimod
 
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta in
-attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 theorem GlobalTheory.AdelicPointsUnimod.isMulRightInvariant_of_isHaarMeasure :
     ∀ (D : D7) (V : HSp D) (μ : Measure (GA D V)), μ.IsHaarMeasure → μ.IsMulRightInvariant := by
   intro D V μ hμ

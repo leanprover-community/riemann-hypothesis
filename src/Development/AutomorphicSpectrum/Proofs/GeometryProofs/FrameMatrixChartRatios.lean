@@ -104,7 +104,7 @@ theorem genU_of_lt (s : S) {l k : Fin (r s)} (h : l < k) : genU Ω r s l k = 0 :
 theorem genU_self (s : S) (k : Fin (r s)) : genU Ω r s k k = 1 := by
   simp [genU]
 
-theorem det_genU_rows (s : S) (k l : Fin (r s)) (_hkl : k ≤ l) :
+theorem det_genU_rows (s : S) (k l : Fin (r s)) :
     ((genU Ω r s).submatrix
       (fun i : Fin ((k : ℕ) + 1) => if (i : ℕ) = k then l else Fin.castLE k.2 i) (Fin.castLE k.2)).det
       = genU Ω r s l k := by
@@ -177,7 +177,7 @@ theorem exists_minor_ne_zero (φ : ∀ s, Fin (n s) → Module.Dual Ω E) (c : �
   push Not at hall
   have h1 := det_genU_submatrix φ c s B hB k.2
     (fun i : Fin ((k : ℕ) + 1) => if (i : ℕ) = k then k else Fin.castLE k.2 i)
-  rw [det_genU_rows s k k le_rfl, genU_self, Finset.sum_eq_zero (fun f _ => by rw [hall f, mul_zero])] at h1
+  rw [det_genU_rows s k k, genU_self, Finset.sum_eq_zero (fun f _ => by rw [hall f, mul_zero])] at h1
   exact one_ne_zero h1
 
 theorem genU_mem (L : Subfield (GenField Ω r)) (hbase : ∀ b : Ω, algebraMap Ω (GenField Ω r) b ∈ L)
@@ -197,9 +197,9 @@ theorem genU_mem (L : Subfield (GenField Ω r)) (hbase : ∀ b : Ω, algebraMap 
     rw [mul_div_assoc]
     exact mul_mem (prod_mem fun i _ => hbase _) (hminor f)
   have h1 := hrows (fun i : Fin ((k : ℕ) + 1) => if (i : ℕ) = k then l else Fin.castLE k.2 i)
-  rw [det_genU_rows s k l hkl] at h1
+  rw [det_genU_rows s k l] at h1
   have h0 := hrows (fun i : Fin ((k : ℕ) + 1) => if (i : ℕ) = k then k else Fin.castLE k.2 i)
-  rw [det_genU_rows s k k le_rfl, genU_self] at h0
+  rw [det_genU_rows s k k, genU_self] at h0
   have := div_mem h1 h0
   rwa [div_div_div_cancel_right₀ hρ, div_one] at this
 

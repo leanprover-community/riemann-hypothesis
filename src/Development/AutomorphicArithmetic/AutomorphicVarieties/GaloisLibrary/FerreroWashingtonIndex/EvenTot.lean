@@ -63,13 +63,6 @@ private theorem even_tot (l : ℕ) [hl : Fact l.Prime] : Even (Nat.totient (l ^ 
 private theorem pos_tot (l : ℕ) [hl : Fact l.Prime] : 0 < Nat.totient (l ^ ee l) :=
   Nat.totient_pos.2 (pow_pos hl.out.pos _)
 
-private theorem neg_ne (l : ℕ) [Fact l.Prime] (r : ℤ_[l]ˣ) : r ≠ -r := by
-  intro h
-  have h1 : (r : ℤ_[l]) = -(r : ℤ_[l]) := by
-    have := congrArg Units.val h
-    simpa using this
-  exact r.ne_zero (self_eq_neg.1 h1)
-
 theorem UpperTheory.V.FW.reps :
     ∀ (l : ℕ) [Fact l.Prime], ∃ R : Finset ℤ_[l]ˣ, R.Nonempty ∧ (∀ r ∈ R, r ∈ WW l) ∧ (∀ r ∈ R, ∀ r' ∈ R, r ≠ r' → ∀ a b : ℤ, (a : ℤ_[l]) * r = (b : ℤ_[l]) * r' → a = 0) ∧ (∀ r ∈ R, -r ∉ R) ∧ (∀ w ∈ WW l, w ∈ R ∨ -w ∈ R) ∧ (-1 : ℤ_[l]ˣ) ∈ WW l ∧ ∀ n, 2 ≤ n → ∀ w ∈ WW l, redU l n w = 1 → w = 1 := by
   intro l _
@@ -96,7 +89,7 @@ theorem UpperTheory.V.FW.reps :
     rw [neg_neg] at h2
     exact lt_asymm h1 h2
   have h5 : ∀ w ∈ WW l, w ∈ R ∨ -w ∈ R := fun w hw => by
-    rcases lt_or_gt_of_ne (neg_ne l w) with h | h
+    rcases lt_or_gt_of_ne (units_ne_neg_self w) with h | h
     · exact Or.inl ((hR _).2 ⟨hw, h⟩)
     · exact Or.inr ((hR _).2 ⟨hneg w hw, by rwa [neg_neg]⟩)
   refine ⟨R, ?_, fun r hr => ((hR r).1 hr).1, ?_, h4, h5, hm1, ?_⟩

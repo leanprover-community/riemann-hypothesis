@@ -147,19 +147,6 @@ theorem mem_dualLat {V' : Type} [AddCommGroup V'] [Module C V'] [Module O V']
     [IsScalarTower O C V'] {B : V →ₗ[C] V' →ₗ[C] C} {L : Submodule O V} {y : V'} :
     y ∈ dualLat B L ↔ ∀ x ∈ L, B x y ∈ (algebraMap O C).range := Iff.rfl
 
-theorem latNorm_eq (L : Submodule O V) (x : V) : latNorm v L x = GlobalTheory.HTLat.latNorm v L x := by
-  unfold latNorm GlobalTheory.HTLat.latNorm
-  congr 1
-  ext r
-  simp only [Set.mem_setOf_eq, GlobalTheory.HTLat.mem_scaleLat]
-  constructor
-  · rintro ⟨a, h, y, hy, e⟩; exact ⟨a, ⟨y, hy, e.symm⟩, h⟩
-  · rintro ⟨a, ⟨y, hy, e⟩, h⟩; exact ⟨a, h, y, hy, e.symm⟩
-
-
-theorem latNorm_span (hv : v.Integers O) {g : V} (hg : g ≠ 0) (c : C) :
-    latNorm v (Submodule.span O {g}) (c • g) = v c := by
-  rw [latNorm_eq, GlobalTheory.HTLat.latNorm_span_singleton hv hg]
 
 theorem exists_smul_mem (hv : v.Integers O) {L : Submodule O V} {x : V}
     (hx : x ∈ Submodule.span C (L : Set V)) : ∃ a : C, a ≠ 0 ∧ a • x ∈ L := by
@@ -183,32 +170,6 @@ theorem exists_smul_mem (hv : v.Integers O) {L : Submodule O V} {x : V}
     by_cases hc : c = 0
     · exact ⟨1, one_ne_zero, by simp [hc]⟩
     · exact ⟨a / c, div_ne_zero ha hc, by rwa [smul_smul, div_mul_cancel₀ _ hc]⟩
-
-theorem grLog_of_eq_span (hv : v.Integers O) {n : ℕ} {L : Submodule O V} {b : Basis (Fin n) C V}
-    {i : Fin n} {c : C} (hc : c ≠ 0) (h : grLat L b i = Submodule.span O {c}) :
-    grLog v L b i = -Real.log (v c) := by
-  have h1 := latNorm_span v hv hc c⁻¹
-  rw [smul_eq_mul, inv_mul_cancel₀ hc] at h1
-  rw [grLog, h, h1, map_inv₀, NNReal.coe_inv, Real.log_inv]
-
-theorem grLat_diag {n : ℕ} (b : Basis (Fin n) C V) (c : Fin n → C) (i : Fin n) :
-    grLat (Submodule.span O (Set.range fun j => c j • b j)) b i = Submodule.span O {c i} := by
-  apply le_antisymm
-  · rintro _ ⟨x, ⟨hx, -⟩, rfl⟩
-    change b.coord i x ∈ _
-    induction hx using Submodule.span_induction with
-    | mem x h =>
-      obtain ⟨j, rfl⟩ := h
-      by_cases hj : j = i
-      · subst hj; simp
-      · simp [hj]
-    | zero => simp
-    | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-    | smul a x _ hx =>
-      rw [LinearMap.map_smul_of_tower]; exact Submodule.smul_mem _ a hx
-  · rw [Submodule.span_singleton_le_iff_mem]
-    refine ⟨c i • b i, ⟨Submodule.subset_span ⟨i, rfl⟩, ?_⟩, by simp⟩
-    exact Submodule.smul_mem (b.flag i.succ) _ (b.self_mem_flag Fin.castSucc_lt_succ)
 
 end Norms
 

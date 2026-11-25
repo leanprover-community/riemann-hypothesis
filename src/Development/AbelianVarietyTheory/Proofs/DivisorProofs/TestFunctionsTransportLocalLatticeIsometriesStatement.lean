@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrreducibleAdmissibleDecomposableCompEquiv
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ForallEventuallyFinLocIff
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
@@ -272,16 +273,8 @@ theorem typeIdem_map {Q Q' W : Type} [Group Q] [Group Q'] [AddCommGroup W] [Modu
 theorem isIrreducible_comp_mulEquiv {H H' X : Type} [Group H] [Group H'] [AddCommGroup X] [Module ℂ X]
     (ρ : Representation ℂ H' X) (φ : H ≃* H') (h : ρ.IsIrreducible) :
     Representation.IsIrreducible (ρ.comp φ.toMonoidHom : Representation ℂ H X) := by
-  haveI : IsSimpleOrder (Subrepresentation ρ) := h
-  let e : Subrepresentation (ρ.comp φ.toMonoidHom : Representation ℂ H X) ≃o Subrepresentation ρ :=
-    { toFun := fun U => ⟨U.toSubmodule, fun g v hv => by
-        have h := U.apply_mem_toSubmodule (φ.symm g) hv
-        simpa using h⟩
-      invFun := fun U => ⟨U.toSubmodule, fun g v hv => U.apply_mem_toSubmodule (φ g) hv⟩
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      map_rel_iff' := Iff.rfl }
-  exact e.isSimpleOrder
+  intros
+  apply _root_.GlobalTheory.CuspMult.isIrreducible_comp_mulEquiv <;> assumption
 
 end General
 

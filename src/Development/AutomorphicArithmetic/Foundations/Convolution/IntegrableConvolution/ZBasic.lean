@@ -134,11 +134,6 @@ private theorem under_of_over {v : Pl F} (u : PlacesOver E v) : u.1.under (𝓞 
   ext1
   exact (Ideal.over_def u.1.asIdeal v.asIdeal).symm
 
-private theorem finite_over (v : Pl F) : {w : Pl E | w.under (𝓞 F) = v}.Finite := by
-  refine (Set.finite_range fun u : PlacesOver E v => u.1).subset fun w hw => ?_
-  subst hw
-  exact ⟨⟨w, ⟨rfl⟩⟩, rfl⟩
-
 private theorem mem_Z (T : Ty σ n q w₀) (V : Submodule ℂ (LL μ)) (O : Fin (m + 1) → LL μ →L[ℂ] LL μ) (y : ℝ) (v : LL μ) :
     v ∈ T.Z μ V O y ↔ v ∈ V ∧ (∀ i, O i v = (y : ℂ) • v) ∧ ∀ w ∉ T.marked, v ∈ eigL μ w (T.J w) (T.χ w) := by
   simp only [Ty.Z, archEig, eigIn, Submodule.mem_inf, Submodule.mem_iInf, Submodule.mem_top, true_and,
@@ -230,14 +225,7 @@ private theorem Z_fin (hn : 0 < n) (μ : Measure (normOneGL (K := E) (n := n))) 
   have hop : Oinf μ (Measure.map (glueA D n) (Measure.pi fun _ => νF)) β =
       (List.ofFn fun i => OComponent μ (s i) (hs i) νF a).prod :=
     UpperTheory.ConvolutionTheory.L1.tensOp F E σ m D n (Measure.map (glueA D n) (Measure.pi fun _ => νF)) νF rfl s hs hposition (LL μ) _ (fun _ => a) β hβ
-  have hfin : {w : Pl E | w.under (𝓞 F) ∈ insert q T.S}.Finite := by
-    have : {w : Pl E | w.under (𝓞 F) ∈ insert q T.S} = ⋃ v ∈ insert q T.S, {w : Pl E | w.under (𝓞 F) = v} := by
-      ext w
-      simp
-    rw [this]
-    exact (Finset.finite_toSet _).biUnion fun v _ => finite_over v
-  set P : Finset (Pl E) := hfin.toFinset with hP
-  have hPm : ∀ w, w ∈ P ↔ w.under (𝓞 F) ∈ insert q T.S := fun w => by simp [hP]
+  obtain ⟨P, hPm⟩ := (_root_.GlobalTheory.QNorm.places_over F E).1 (insert q T.S)
   let U' : ∀ w : Pl E, Subgroup (Gw n w) := fun w =>
     if w ∈ T.marked then U w else kerS (T.J w) (T.χ w) (T.chr w)
   have hU' : ∀ w ∈ P, CO (U' w) := fun w _ => by

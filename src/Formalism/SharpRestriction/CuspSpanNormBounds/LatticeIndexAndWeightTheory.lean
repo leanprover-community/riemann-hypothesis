@@ -54,8 +54,6 @@ export Formalism.MainNotions.S.UnitaryVolumeMass (KTwoParameterConditions Kpp)
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Hyps
 
 variable (D : D7) (large₂ : SizeData₂ D)

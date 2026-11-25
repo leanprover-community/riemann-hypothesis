@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudeActionAde
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField Matrix IsDedekindDomain

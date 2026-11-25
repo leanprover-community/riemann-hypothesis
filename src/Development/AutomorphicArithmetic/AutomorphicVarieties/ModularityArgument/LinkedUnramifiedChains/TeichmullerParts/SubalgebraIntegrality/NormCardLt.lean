@@ -47,7 +47,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj)
 open UpperTheory.V.HV (Coef)
 open UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 open UpperTheory.V.Z.J.D
 

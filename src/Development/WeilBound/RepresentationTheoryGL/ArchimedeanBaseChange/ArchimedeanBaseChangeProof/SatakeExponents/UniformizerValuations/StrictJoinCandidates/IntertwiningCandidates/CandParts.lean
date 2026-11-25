@@ -47,8 +47,6 @@ open scoped Classical
 
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo.CandidateLeafDecomposition
 
 open PositivityTheory.Rg.BcB.F

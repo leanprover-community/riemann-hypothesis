@@ -48,8 +48,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.SplittingKernelQuotients
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 structure IsSplitting (A B : HSp D) (χA χB : (AE D)ˣ →* Circle) : Prop where

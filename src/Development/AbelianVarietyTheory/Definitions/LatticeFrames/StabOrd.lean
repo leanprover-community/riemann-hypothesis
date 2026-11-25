@@ -48,7 +48,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.KJInf Formalism.L2.Forms
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SeeSaw
 
@@ -71,8 +70,6 @@ structure IsReps (V : HSp D) (U : Subgroup (GA D V)) {cl : Type} (h : cl → GA 
   fin : ∀ c, h c ∈ GfC V
   dec : ∀ g, ∃ γ ∈ GQ V, ∃ c, ∃ k ∈ GinfC V, ∃ κ ∈ U, g = γ * (h c * k) * κ
   uniq : ∀ c c', ∀ γ ∈ GQ V, ∀ k ∈ GinfC V, ∀ κ ∈ U, h c' = γ * (h c * k) * κ → c = c'
-
-abbrev Comm.r (c : Comm D) (j : ℕ) (g : GA D (c.X j)) := inB c.θ (c.X j) (c.x j).B g
 
 structure ClsDat {c : Comm D} (t : Tup c) where
   cl : ∀ j, t.Ch j → Type

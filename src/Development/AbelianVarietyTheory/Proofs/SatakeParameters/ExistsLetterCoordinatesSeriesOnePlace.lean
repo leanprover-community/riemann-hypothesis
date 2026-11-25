@@ -465,13 +465,11 @@ theorem exists_coords_and_series (h5 : 5 ≤ l) {σ : ℂ_[l] →+* ℂ_[l]} (h�
       zOm σ (fun r => (MaximalUnramifiedExtension l).subtype (o r)) (fun r => (MaximalUnramifiedExtension l).subtype (o' r)) s := fun s => by
     unfold zXY zOm
     by_cases hs : s.val % 2 = 0
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [if_pos hs, if_pos (Nat.even_iff.2 hs), subst_sum hRs, map_sum]
+    · rw [if_pos hs, if_pos (Nat.even_iff.2 hs), subst_sum hRs, map_sum]
       refine Finset.sum_congr rfl fun r _ => ?_
       rw [subst_mul hRs, subst_C, hRat, map_mul, map_C, map_lg, map_iterate hτ]
       rfl
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [if_neg hs, if_neg (fun h => hs (Nat.even_iff.1 h)), subst_sum hRs, map_sum]
+    · rw [if_neg hs, if_neg (fun h => hs (Nat.even_iff.1 h)), subst_sum hRs, map_sum]
       refine Finset.sum_congr rfl fun r _ => ?_
       rw [subst_mul hRs, subst_C, hRat, map_mul, map_C, map_lg, map_iterate hτ]
       rfl

@@ -48,8 +48,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 open AlgebraicGeometry CategoryTheory MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ProjVar GlobalTheory.FlagBundle GlobalTheory.GoodMetric
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.BlockSymm

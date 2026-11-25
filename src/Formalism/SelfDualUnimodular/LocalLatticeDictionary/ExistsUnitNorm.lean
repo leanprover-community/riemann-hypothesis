@@ -1,9 +1,10 @@
 module
 
-public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.AlgebraMapNeZeroOfMemHcompl
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapNeZeroOfMemHcompl
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.ExistsIsomFrame
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
-public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.IsHermSemilocalLocRing
+public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.IsHermSemilocalLocRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -61,6 +62,8 @@ open NumberField
 namespace Formalism.L2.SG.Pf.LatDictZ.Z0.SGA
 
 open ReciprocityTheory.ChartRestriction.L3 ReciprocityTheory.ChartRestriction.L3.WA
+open Formalism.HermitianLattices.Ext.L3.WA (IsHermSemilocal IsSelfDualMod IsUnitIn algebraMap_conjO algebraMap_ne_zero_of_mem_hcompl conjO_mem_hcompl exists_norm_one_mul_mem exists_norm_one_of_pair exists_trace_eq frac_locRing isUnitIn_div_iff locRing mem_conjIdeal_iff mem_hcompl_iff mem_locR_iff mem_locRing principal_locRing star_mem_locRing unit_or_locRing unram_locRing)
+open Formalism.HermitianLattices.Ext.L3 (conjO)
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 

@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam

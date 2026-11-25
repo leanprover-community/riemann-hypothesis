@@ -1552,6 +1552,8 @@ theorem main_alt_alt : Hypotheses₂ → ∀ (D : D7) (L : SizeData₂ D) (P : P
   haveI : IsFractionRing ↥(OL C.LL) ↥C.LL.1 := Formalism.BasicNotions.Examples₂.LB.OL_frac C.LL
   refine EmbeddingTypes.len_le_of_kill (Br.PD D.loc D.nbr i w hw) L2.T hstd _ (X.c0 i u) ?_
   intro x hx
+  -- Searching for this module structure times out, so it is supplied directly.
+  letI : Module ↥(OL C.LL) ((Fin D.R.r → ↥C.LL.1) ⧸ L2.T) := Submodule.Quotient.module L2.T
   exact pow_smul_eq_zero_of_le _ hc0 (hkill x fun g => hx g)
 end GlobalTheory.NLink.PowerSmulVanishing
 end
@@ -1740,7 +1742,7 @@ theorem rowsAD_in_setting_alt : Hypotheses₂ → ∀ (D : D7) (L : SizeData₂ 
     { a09 := _root_.GlobalTheory.NLink.InertStep.main_alt_alt hP D L P nch HW F Cm X C₂ hS hC hp2 hBCD
       a78 := _root_.GlobalTheory.NLink.splitPrime_hyps_alt hP D L P nch HW F Cm X C₂ hS
       goodR := hS.canon.fam.good }
-  have hst1 : TruncatedSeriesCountingIdentities.IntegralityFromMetric D := GlobalTheory.T.integralityFromMetric_of_designConditionAll hP.artin hP.bk hP.tate hP.euler D hS.facts.duties.2.2.1
+  have hst1 : TruncatedSeriesCountingIdentities.IntegralityFromMetric D := _root_.GlobalTheory.LocalisationBoundAtPoint.boundAtPoint_all_localisations_of_objectConditions hP.artin hP.bk hP.tate hP.euler D hS.facts.duties.2.2.1
   have h78 := _root_.GlobalTheory.splitCase_bound_at_point_of_admitted_items hP.artin hP.tate hP.euler D
   have hG2 : ∀ i, D.nd.l i ∉ TwistedPlaces.gset D → ∀ π ∈ D.nd.Zgood i, TruncatedSeriesCountingIdentities.admG2 i (X.r i) (X.ρ i) π :=
     fun i hi π hπ => (_root_.GlobalTheory.T.set_pt_of_setup_not_twisted hP D L P nch HW F Cm X C₂ hS i hi π hπ).2.1

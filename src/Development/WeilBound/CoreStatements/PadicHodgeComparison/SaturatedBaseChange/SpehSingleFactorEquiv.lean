@@ -56,8 +56,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DefiniteBC GlobalTheory.BcSpeh GlobalTheory.LFun GlobalTheory.PRep Formalism.UG
 open GlobalTheory.LocGL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.AutomorphicGaloisHodgeTate.SaturatedBaseChange
 
 theorem compUnique : CompUnique := by

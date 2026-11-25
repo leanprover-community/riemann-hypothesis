@@ -1206,7 +1206,7 @@ theorem fixed_mem_range : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : Lo
     fun p F U hF hU hE => GlobalTheory.T.fixedByCyclotomicKernel_etalePhi_solution_mem_wach l P AI K s LL hG Γ R I hI p q F A 0 U hF hA
       (fun i j g hg h1 => hU i j ⟨g, hg⟩ h1)
       (by simpa only [Matrix.map_zero, map_zero, add_zero] using hE)
-  exact mem_range E T (fun g => P.χQ (g : GQ l) = 1) h1 (_root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL hG Γ R I hI).2.1 q x A
+  exact mem_range E T (fun g => P.χQ (g : GQ l) = 1) h1 (_root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL Γ R I).2.1 q x A
     h2 hx hφ
 
 end GlobalTheory.HWL.EtMem
@@ -1399,7 +1399,7 @@ theorem main : GlobalTheory.Published.BhattScholzeCrystallineLattices →
   intro BS l _ P AI tied K s LL hG Γ R I hW E
   obtain ⟨PS, PW, ev, ioH, gH, a, z, π, Q, ha, hio, -, hγ, hioH, hev, hπ, -, hker, hI, hQ, hz, hloc, -, hS, hA⟩ :=
     _root_.GlobalTheory.PrismS.exists_prism l P AI K s LL hG Γ R I hW
-  obtain ⟨hinj, hunit, -, -⟩ := _root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL hG Γ R I hW
+  obtain ⟨hinj, hunit, -, -⟩ := _root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL Γ R I
   obtain ⟨d, ⟨o⟩⟩ := exists_basis_OL LL
   have := LL.2
   have := Module.Free.of_basis o

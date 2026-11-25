@@ -116,29 +116,6 @@ theorem at_iff (z : κ → AF F) : At (evI F) z ↔ ∀ i, (z i).2 = 0 := by
     · show u.2 * (z i).2 = 0
       rw [h i, mul_zero]
 
-theorem rest_of_SB (f : SInf F κ) {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) :
-    Rest (evI F) f (fun x => g fun i => (x i).2) := by
-  refine ⟨fun x z hz => ?_, Submodule.subset_span ⟨f, g, hg, rfl⟩⟩
-  rw [at_iff] at hz
-  refine congrArg g (funext fun i => ?_)
-  show (x i).2 + (z i).2 = (x i).2
-  rw [hz i, add_zero]
-
-theorem exists_of_rest {f : SInf F κ} (hf : f ≠ 0) {r : (κ → AF F) → ℂ} (hr : Rest (evI F) f r) :
-    ∃ g ∈ SB (κ → Af F), r = fun x => g fun i => (x i).2 := by
-  obtain ⟨a, ha⟩ : ∃ a, f a ≠ 0 := by
-    by_contra h
-    push Not at h
-    exact hf (SchwartzMap.ext h)
-  have key : ∀ x : κ → AF F, r x = r (pt a fun i => (x i).2) := by
-    intro x
-    have h := hr.1 (pt a fun i => (x i).2) (x - pt a fun i => (x i).2) ((at_iff _).2 fun i => sub_self (x i).2)
-    rwa [add_sub_cancel] at h
-  refine ⟨(f a)⁻¹ • fun y => tens (evI F) f r (pt a y), Submodule.smul_mem _ _ (slice_mem hr.2 a), funext fun x => ?_⟩
-  rw [key x]
-  simp only [tens, evI, pt, RingEquiv.apply_symm_apply, Pi.smul_apply, smul_eq_mul]
-  rw [← mul_assoc, inv_mul_cancel₀ ha, one_mul]
-
 theorem eval_adm (x : κ → AF F) : (LinearMap.proj x : ((κ → AF F) → ℂ) →ₗ[ℂ] ℂ) ∈ (adeleClass F).adm κ := by
   intro g _
   refine ⟨g (fun i => (x i).2) • (BoundedContinuousFunction.evalCLM ℂ (fun i => evI F (x i))).comp
@@ -153,10 +130,6 @@ theorem eq_of_pureA {f₁ f₂ : SInf F κ} (h : ∀ g ∈ SB (κ → Af F), ∀
   rwa [pureA_pt, pureA_pt, hy, mul_one, mul_one] at this
 
 theorem pureA_zero (g : (κ → Af F) → ℂ) : pureA F (0 : SInf F κ) g = 0 := by
-  funext x
-  exact zero_mul _
-
-theorem tens_zero (r : (κ → AF F) → ℂ) : tens (evI F) (0 : SInf F κ) r = 0 := by
   funext x
   exact zero_mul _
 

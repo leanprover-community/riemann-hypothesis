@@ -218,11 +218,6 @@ abbrev IsCsd {L : Type} [Field L] [NumberField L] [IsCMField L] (π : CGu L a) :
 
 def centChar : {χ : HChar E // χ.IsUnitary} := ⟨π.2.choose, π.2.choose_spec.1⟩
 
-theorem hasCentChar_centChar : π.1.HasCentChar π.centChar.1 := π.2.choose_spec.2
-
-theorem centChar_twist (χ : {χ : HChar E // χ.IsUnitary}) : (π.twist χ).centChar.1 = π.centChar.1 * χ.1 ^ a :=
-  (π.twist χ).hasCentChar_centChar.unique (π.hasCentChar_centChar.twist χ.1)
-
 
 variable (E) in
 def equivChar : CGu E 1 ≃ {χ : HChar E // χ.IsUnitary} where

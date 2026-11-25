@@ -3,7 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdmissibleEmptyOfGood
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PureTensorLIntertwine
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdeleAt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIdeleAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaPureTensorO
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumRealPlacesFockVacuumCharacterStatement
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryActionAtRealPlace
@@ -62,9 +62,8 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.IndefR.Links (PolF)
-open GlobalTheory.VacuumCharacter
+open GlobalTheory.OneMapRef.RealMove (adele_ext detPlus_one exists_root hasInfExp_twist)
 open scoped TensorProduct ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RealFockAction
 

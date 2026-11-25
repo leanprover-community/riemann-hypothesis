@@ -191,6 +191,4 @@ theorem isometry_order_p : ∀ (F : Type) [Field F] [NumberField F] (p : ℕ), p
 
 end GlobalTheory.HilbertThetaSeries.IsoP
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 

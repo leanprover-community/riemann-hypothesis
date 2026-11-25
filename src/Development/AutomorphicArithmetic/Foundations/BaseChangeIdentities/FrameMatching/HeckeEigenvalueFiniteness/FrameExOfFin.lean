@@ -1240,20 +1240,8 @@ end StandardSymmetricSums
 
 open StandardSymmetricSums
 
-theorem coneTwo : ConeTwo := by
-  intro n x _ hx
-  have hx' : ∀ p q : Fin n, p < q → x q + 2 ≤ x p := hx
-  unfold Cone
-  refine ⟨fun i j hij => ?_, fun i => ?_⟩
-  · have hi' := i.isLt; have hj' := j.isLt
-    rw [lOf_eq, lOf_eq]
-    have c1 : loF n i < loF n j := show i.val < j.val by omega
-    have c4 : hiF n j < hiF n i := show n - 1 - j.val < n - 1 - i.val by omega
-    have := hx' _ _ c1; have := hx' _ _ c4; linarith
-  · have hi' := i.isLt
-    rw [lOf_eq]
-    have c : loF n i < hiF n i := show i.val < n - 1 - i.val by omega
-    have := hx' _ _ c; linarith
+theorem coneTwo : ConeTwo :=
+  _root_.PositivityTheory.Rg.BcB.F.Choice.IndefiniteRowSideFullHecke.coneTwo'
 
 end PositivityTheory.Rg.BcB.F.Choice
 

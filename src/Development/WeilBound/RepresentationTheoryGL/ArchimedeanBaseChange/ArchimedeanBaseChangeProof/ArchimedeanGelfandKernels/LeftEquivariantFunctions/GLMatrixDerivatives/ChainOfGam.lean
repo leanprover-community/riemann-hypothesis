@@ -56,7 +56,7 @@ open PositivityTheory.RgBcC
 open PositivityTheory.RgTw (Mat G th tw hb)
 open PositivityTheory.RgBcC.LfSt.ChainPf.Eq PositivityTheory.RgBcC.LfSt.ChainPf.Loc
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

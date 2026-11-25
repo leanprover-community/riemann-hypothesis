@@ -73,8 +73,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open GlobalTheory.Adelic
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.SectionsFieldChange

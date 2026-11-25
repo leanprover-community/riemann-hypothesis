@@ -65,7 +65,7 @@ theorem smul_mem_of_toZModPow {n : ℕ} {a : ℤ_[l]} (ha : PadicInt.toZModPow n
     a • m ∈ (idl l) ^ n • (⊤ : Submodule ℤ_[l] (ℤ_[l] ⊗[ℤ] G)) :=
   Submodule.smul_mem_smul (by rw [idl_pow_eq_ker]; exact ha) trivial
 
-instance neZero_pow (n : ℕ) : NeZero (l ^ n) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
+scoped instance neZero_pow (n : ℕ) : NeZero (l ^ n) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
 
 theorem mk_tmul (n : ℕ) (c : ℤ_[l]) (g : G) :
     (Submodule.Quotient.mk (c ⊗ₜ[ℤ] g) : Q l n G) =

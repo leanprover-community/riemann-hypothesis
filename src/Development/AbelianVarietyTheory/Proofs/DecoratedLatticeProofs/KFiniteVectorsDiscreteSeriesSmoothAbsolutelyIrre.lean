@@ -53,7 +53,6 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsBlockOr
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

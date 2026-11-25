@@ -43,8 +43,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Numb
 
 namespace GlobalTheory.Mem.R3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι)
   (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px)
 

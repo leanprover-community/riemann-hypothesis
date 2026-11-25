@@ -13,8 +13,6 @@ namespace Formalism.L2.SG.Pf.Cnt
 
 open Formalism.HermitianLattices.Ext.L3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def LocSelfDual : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
     (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),

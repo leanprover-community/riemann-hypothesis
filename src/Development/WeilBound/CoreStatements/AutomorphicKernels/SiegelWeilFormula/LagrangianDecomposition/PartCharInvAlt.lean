@@ -232,37 +232,6 @@ theorem norm_iteratedFDeriv_B_le (β : (κ'' → W) → ℝ) (hβ : ContDiff ℝ
   calc _ ≤ ‖iteratedFDeriv ℝ i β (L x)‖ * 1 := mul_le_mul_of_nonneg_left hp (norm_nonneg _)
     _ = _ := mul_one _
 
-private theorem differentiable_integral_Ioc_of_contDiff {V E : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    (G : V × ℝ → E) (hG : ContDiff ℝ 1 G) :
-    Differentiable ℝ (fun x => ∫ s in Ioc (0 : ℝ) 1, G (x, s)) := by
-  intro x₀
-  have hK : IsCompact (Metric.closedBall x₀ 1 ×ˢ Icc (0 : ℝ) 1) :=
-    (isCompact_closedBall x₀ 1).prod isCompact_Icc
-  have hGd : Continuous (fderiv ℝ G) := hG.continuous_fderiv one_ne_zero
-  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hGd.continuousOn
-  have hGc : Continuous G := hG.continuous
-  have hd : ∀ p, HasFDerivAt G (fderiv ℝ G p) p := fun p =>
-    (hG.differentiable (by simp) p).hasFDerivAt
-  refine (hasFDerivAt_integral_of_dominated_of_fderiv_le (𝕜 := ℝ)
-    (μ := volume.restrict (Ioc (0 : ℝ) 1))
-    (F := fun x s => G (x, s))
-    (F' := fun x s => (fderiv ℝ G (x, s)).comp (ContinuousLinearMap.inl ℝ V ℝ))
-    (bound := fun _ => C * ‖ContinuousLinearMap.inl ℝ V ℝ‖)
-    (Metric.closedBall_mem_nhds x₀ one_pos) ?_ ?_ ?_ ?_ ?_ ?_).differentiableAt
-  · exact Filter.Eventually.of_forall fun x =>
-      (hGc.comp (Continuous.prodMk continuous_const continuous_id)).aestronglyMeasurable
-  · exact ((hGc.comp (Continuous.prodMk continuous_const continuous_id)).integrableOn_Icc).mono_set
-      Ioc_subset_Icc_self
-  · exact ((hGd.comp (Continuous.prodMk continuous_const continuous_id)).clm_comp
-      continuous_const).aestronglyMeasurable
-  · refine ae_restrict_of_forall_mem measurableSet_Ioc fun s hs x hx => ?_
-    refine (ContinuousLinearMap.opNorm_comp_le _ _).trans ?_
-    exact mul_le_mul_of_nonneg_right (hC _ ⟨hx, Ioc_subset_Icc_self hs⟩) (norm_nonneg _)
-  · exact (continuous_const.integrableOn_Icc).mono_set Ioc_subset_Icc_self
-  · exact Filter.Eventually.of_forall fun s x _ =>
-      (hd (x, s)).comp x (hasFDerivAt_prodMk_left x s)
-
 theorem near_schwartz (h : SchwartzMap (κ' ⊕ κ'' → W) ℂ) (β : (κ'' → W) → ℝ) (hβ : ContDiff ℝ ∞ β)
     (hβc : HasCompactSupport β) :
     ∃ g : SchwartzMap (κ' ⊕ κ'' → W) ℂ, ∀ x, g x = (β (x ∘ Sum.inr) : ℂ) * ∫ s in Ioc (0 : ℝ) 1, h (Ain s x) := by
@@ -277,7 +246,10 @@ theorem near_schwartz (h : SchwartzMap (κ' ⊕ κ'' → W) ℂ) (β : (κ'' →
           pder m (fun p : (κ' ⊕ κ'' → W) × ℝ => h (Ain p.2 p.1)) (x, s)
       from funext (hIF m)]
     set_option synthInstance.maxSize 256 in
-    exact differentiable_integral_Ioc_of_contDiff _ ((contDiff_pder m hc).of_le (by exact_mod_cast le_top))
+    exact (ContDiff.parametric_integral (f := fun x s =>
+        pder m (fun p : (κ' ⊕ κ'' → W) × ℝ => h (Ain p.2 p.1)) (x, s))
+      isCompact_Icc Ioc_subset_Icc_self measure_Ioc_lt_top.ne
+      ((contDiff_pder m hc).of_le (by exact_mod_cast le_top))).differentiable one_ne_zero
   have hB : ContDiff ℝ ∞ (fun y : κ' ⊕ κ'' → W => (β (y ∘ Sum.inr) : ℂ)) := by
     have hL : ContDiff ℝ ∞ (fun y : κ' ⊕ κ'' → W => y ∘ Sum.inr) :=
       contDiff_pi.2 fun j => by

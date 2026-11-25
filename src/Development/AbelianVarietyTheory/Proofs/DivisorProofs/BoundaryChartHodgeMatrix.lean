@@ -60,8 +60,6 @@ public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential

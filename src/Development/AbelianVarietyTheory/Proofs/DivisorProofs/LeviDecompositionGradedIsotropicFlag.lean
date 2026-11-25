@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusElementActsOnFrameColumns
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsotropicUnipotentRadicalsRationalCocompact
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
 import Mathlib.Algebra.Order.Floor.Extended
@@ -428,18 +429,8 @@ theorem prodTens_ext {F E A B : Type} [Field F] [Field E] [Algebra F E] [CommRin
       Algebra.TensorProduct.map (AlgHom.fst F A B) (AlgHom.id F E) z')
     (b : Algebra.TensorProduct.map (AlgHom.snd F A B) (AlgHom.id F E) z =
       Algebra.TensorProduct.map (AlgHom.snd F A B) (AlgHom.id F E) z') : z = z' := by
-  have key : ∀ x : (A × B) ⊗[F] E, TensorProduct.prodLeft F F A B E x =
-      (Algebra.TensorProduct.map (AlgHom.fst F A B) (AlgHom.id F E) x,
-        Algebra.TensorProduct.map (AlgHom.snd F A B) (AlgHom.id F E) x) := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp <;> rfl
-    | tmul p e =>
-      obtain ⟨p₁, p₂⟩ := p
-      simp
-    | add x y hx hy => simp [hx, hy]
-  apply (TensorProduct.prodLeft F F A B E).injective
-  rw [key, key, a, b]
+  intros
+  apply _root_.GlobalTheory.TorusMat.prod_tens_ext <;> assumption
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ}

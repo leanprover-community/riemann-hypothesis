@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalFormFlagZeroMiddleInverseMinorOrthogonal
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsFundOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairCommonUnipotentStabiliserSummary
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -63,15 +64,7 @@ variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [M
   {H : HermSpace K V} {k r : ℕ} {σ : K →+* ℂ} {Φ : V → Fin (2 * r + k + 1) → ℂ}
 
 theorem herm_eI (u : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : herm (Hpk k r) u (bvec (eI k r a)) = u (esI k r a) := by
-  have ha := a.2
-  have ht : WeylGroupFacts.tau k r (eI k r a) = esI k r a := by
-    apply Fin.ext; exact if_pos (Or.inl ha)
-  have hs : WeylGroupFacts.sgn k r (eI k r a) = 1 := by
-    exact if_neg (by show ¬ a.val = r + k; omega)
-  unfold herm bvec
-  rw [← Pi.single_star, star_one, single_one_dotProduct]
-  simp only [mulVec, dotProduct, WeylGroupFacts.hpk_row, ht, hs]
-  simp
+  apply _root_.GlobalTheory.Amp.NfMid.herm_e <;> assumption
 
 theorem herm_add_left (M : Mat k r) (u v w : Fin (2 * r + k + 1) → ℂ) : herm M (u + v) w = herm M u w + herm M v w := by
   simp [herm, mulVec_add, dotProduct_add]

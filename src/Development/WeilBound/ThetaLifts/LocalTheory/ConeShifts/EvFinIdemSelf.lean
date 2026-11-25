@@ -205,14 +205,11 @@ theorem partU_real_mem (g : UA σ X.J) : partU real_mul_self g ∈ UAt σ X (evI
   rw [partU_sub_one]; exact at_real _
 
 theorem latHat_smul {a : AF F} (ha : ∀ v, evFin F v a ∈ v.adicCompletionIntegers F) {z} (hz : z ∈ latHat X) : a • z ∈ latHat X := by
-  induction hz using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨b, h0, hb, x, hx, rfl⟩ := hz
-    exact AddSubgroup.subset_closure ⟨a * b, by rw [evI_mul, h0, mul_zero], fun v => by
-      rw [map_mul]; exact mul_mem (ha v) (hb v), x, hx, smul_smul _ _ _⟩
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | neg x _ hx => rw [smul_neg]; exact neg_mem hx
+  unfold latHat at hz
+  refine (AddSubgroup.closure_le ((latHat X).comap (DistribSMul.toAddMonoidHom _ a))).2 ?_ hz
+  rintro _ ⟨b, h0, hb, x, hx, rfl⟩
+  exact AddSubgroup.subset_closure ⟨a * b, by rw [evI_mul, h0, mul_zero], fun v => by
+    rw [map_mul]; exact mul_mem (ha v) (hb v), x, hx, smul_smul _ _ _⟩
 
 theorem piInf_idem {w : InfinitePlace F} (τ : EmbOver E w) (v : Pl F) (x : AE F E) : piInf τ (idem F v • x) = 0 := by
   rw [Algebra.smul_def, map_mul]

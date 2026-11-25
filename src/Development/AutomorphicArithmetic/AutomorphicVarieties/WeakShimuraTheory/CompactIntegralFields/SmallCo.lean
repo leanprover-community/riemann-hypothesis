@@ -251,6 +251,7 @@ theorem UpperTheory.V.Ws.smallCo :
   obtain ⟨S, hSmem, -, hco, hpow⟩ := UpperTheory.V.CA.cl_sub c'.O A' hcl'
   letI : Algebra c'.O S := SubalgebraClass.toAlgebra (R := c'.O) (A := A') S
   haveI := hco
+  haveI : IsLocalRing S := UpperTheory.V.Alg.IsCO.toIsLocalRing c'.O
   have hmV : ∀ u : A', u ∈ maximalIdeal A' → f' u ∈ maximalIdeal 𝔞.V := fun u hu => map_nonunit f' u hu
   have hmS : ∀ u : S, u ∈ maximalIdeal S → f' u ∈ maximalIdeal 𝔞.V := by
     intro u hu

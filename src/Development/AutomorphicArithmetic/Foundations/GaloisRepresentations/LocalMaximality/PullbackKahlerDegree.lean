@@ -54,8 +54,6 @@ import Mathlib.Tactic.ReduceModChar
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 section Forms
 variable {k K L : Type} [Field k] [Field K] [Field L] [Algebra k K] [Algebra k L] [Algebra K L] [IsScalarTower k K L]
 

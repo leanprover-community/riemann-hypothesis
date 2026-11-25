@@ -235,7 +235,6 @@ private theorem gmap_surj {K L : Type} [Field K] [Field L] (i : K ≃+* L) :
   ext a b
   simp
 
-attribute [-instance] GlobalTheory.AdmLoc.modFun in
 theorem UpperTheory.ConvolutionTheory.R2.I.fin :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [IsTotallyReal F] (π : TR.CuspSub F 2) (v : P F) (w : P E) (i : Kv v ≃+* Kv w), Continuous i →
       ∀ σ (σ' : SmIrr (GLv w)), π.IsLocComp v σ → ∀ T : σ'.V →ₗ[ℂ] (GLv v → ℂ), T ≠ 0 →

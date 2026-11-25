@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SliceColMem
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EntryAgree
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsGLExistsUnique
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnfoldingIntegralTwistPrimeEqDeepFiniteSum
@@ -292,11 +293,7 @@ open GlobalTheory.SymBridge GlobalTheory.TwBridge.MatGL
 
 theorem val_unif {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {ϖ : kˣ} (hϖ : GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsUnif ϖ) : valuation k (ϖ : k) = uniformizer k := by
-  apply le_antisymm
-  · rw [le_uniformizer_iff]; exact (hϖ _).2 le_rfl
-  · obtain ⟨x, hx⟩ := ValuativeRel.valuation_surjective (uniformizer k)
-    rw [← hx]
-    exact (hϖ x).1 (by rw [hx]; exact uniformizer_lt_one)
+  apply _root_.GlobalTheory.TwNormalReps.val_unif_of <;> assumption
 
 theorem denseRange_toLoc {E k : Type} [Field E] [Field k] [TopologicalSpace k] {ι : E →+* k} (hι : DenseRange ι)
     {A B : Type} {a b : ℕ} (e : A ≃ Fin a) (e' : B ≃ Fin b) : DenseRange (toLoc ι e e') := by
@@ -696,15 +693,7 @@ theorem adapted_of_normal (hϖ : valuation k (ϖ : k) = uniformizer k) (hb : ∀
     · exact r.elim0
 
 theorem continuous_of_cond {ψ : AddChar k Circle} (h : HasConductor ψ 1) : Continuous ψ := by
-  have h0 : ∀ x ∈ (𝒪[k] : Set k), ψ x = 1 := fun x hx =>
-    (h x).2 (by simpa [Valuation.mem_integer_iff] using hx) x le_rfl
-  refine continuous_iff_continuousAt.2 fun x => ?_
-  have h1 : ∀ᶠ y in nhds x, ψ y = ψ x := by
-    have h2 : (fun y => y - x) ⁻¹' (𝒪[k] : Set k) ∈ nhds x :=
-      ((isOpen_int k).preimage (by fun_prop)).mem_nhds (by simp)
-    filter_upwards [h2] with y hy
-    rw [← sub_add_cancel y x, AddChar.map_add_eq_mul, h0 _ hy, one_mul]
-  exact (continuousAt_const (y := ψ x)).congr (h1.mono fun _ e => e.symm)
+  apply _root_.GlobalTheory.LocMod.GValProof.cont_of_cond <;> assumption
 
 end Normal
 

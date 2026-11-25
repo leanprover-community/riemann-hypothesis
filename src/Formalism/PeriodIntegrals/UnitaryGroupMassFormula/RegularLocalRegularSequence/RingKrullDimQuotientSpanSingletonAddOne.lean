@@ -182,10 +182,6 @@ theorem eq_natCast_and_add_one_eq_of_le {a : WithBot ℕ∞} {d n : ℕ}
       subst hkd hn
       exact ⟨rfl, (Nat.cast_succ k).symm⟩
 
-private theorem spanFinrank_maximalIdeal_eq_ringKrullDim (R : Type*) [CommRing R] [IsRegularLocalRing R] :
-    ((Submodule.spanFinrank (maximalIdeal R) : ℕ) : WithBot ℕ∞) = ringKrullDim R :=
-  IsRegularLocalRing.spanFinrank_maximalIdeal
-
 private theorem finrank_cotangentSpace_le_spanFinrank (R : Type*) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] :
     Module.finrank (ResidueField R) (CotangentSpace R) ≤ Submodule.spanFinrank (maximalIdeal R) := by
   exact (IsLocalRing.spanFinrank_maximalIdeal_eq_finrank_cotangentSpace R).ge
@@ -216,7 +212,7 @@ theorem spanFinrank_quotient_eq_and_ringKrullDim_add_one (R : Type*) [CommRing R
     ((Submodule.spanFinrank (maximalIdeal (R ⧸ Ideal.span ({x} : Set R))) : ℕ) : WithBot ℕ∞)
         = ringKrullDim (R ⧸ Ideal.span ({x} : Set R)) ∧
       ringKrullDim (R ⧸ Ideal.span ({x} : Set R)) + 1 = ringKrullDim R := by
-  have hreg := spanFinrank_maximalIdeal_eq_ringKrullDim R
+  have hreg := IsRegularLocalRing.spanFinrank_maximalIdeal (R := R)
   have h5 := spanFinrank_maximalIdeal_quotient_succ_le R hx hx2
   have hfr := finrank_cotangentSpace_le_spanFinrank R
   have hA := ringKrullDim_le_quot_span_add_one hx
@@ -345,7 +341,7 @@ theorem isDomain_of_forall_spanFinrank_lt (R : Type u) [CommRing R]
   have hlt : Submodule.spanFinrank (maximalIdeal (R ⧸ Ideal.span ({x} : Set R))) <
       Submodule.spanFinrank (maximalIdeal R) := by
     have e := h7.2
-    rw [← h7.1, ← spanFinrank_maximalIdeal_eq_ringKrullDim R, ← Nat.cast_succ] at e
+    rw [← h7.1, ← IsRegularLocalRing.spanFinrank_maximalIdeal (R := R), ← Nat.cast_succ] at e
     have := natCast_withBot_enat_eq_iff.mp e
     omega
   have hQ : IsDomain (R ⧸ Ideal.span ({x} : Set R)) := IH _ hlt

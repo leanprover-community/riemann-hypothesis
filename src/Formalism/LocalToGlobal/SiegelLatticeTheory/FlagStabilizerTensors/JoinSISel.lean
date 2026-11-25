@@ -16,8 +16,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.Top4
 
 namespace Formalism.L2.SG.JoinSISel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section At
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}

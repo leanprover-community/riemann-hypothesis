@@ -867,7 +867,7 @@ theorem hasDerivAt_curve (c : ℝ) (X : Matrix (Fin m) (Fin m) ℂ) (P : PX m n)
     rintro ⟨a, i, b⟩
     have hlin : HasDerivAt (fun t => u t a i) (matL X x a i) 0 := by
       have hs := HasDerivAt.fun_sum (u := Finset.univ)
-        (fun c (_ : c ∈ Finset.univ) => (_root_.Formalism.MainNotions.LowestKTypeMultiplicity.exp_entry X a c).mul_const (x c i))
+        (fun c (_ : c ∈ Finset.univ) => (_root_.PI.WUN.exp_entry X a c).mul_const (x c i))
       simpa only [hu, matL_apply] using hs
     rw [eval_xyP]
     cases b

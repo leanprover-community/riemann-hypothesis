@@ -135,9 +135,9 @@ theorem tf_diff (u u' : D.what₂.Word) (v : PlX X) (g : ℕ) (i j : Fin (D.R.rS
   split_ifs with h
   · rw [VolTU.sc_mul]
     congr 1
-    rw [VolUTr.TrW.sc_eq, map_sub, map_natCast, map_natCast, map_neg, map_neg, map_natCast, map_natCast]
+    rw [Formalism.L2.SG.Pf.NcVal.TrW.sc_eq, map_sub, map_natCast, map_natCast, map_neg, map_neg, map_natCast, map_natCast]
     ring
-  · rw [sub_self, zero_mul, VolUTr.TrW.sc_eq, map_zero]
+  · rw [sub_self, zero_mul, Formalism.L2.SG.Pf.NcVal.TrW.sc_eq, map_zero]
 
 theorem sigR_sc (v : PlX X) (x : Fv X.B.I.F v) :
     sigR (Fv X.B.I.F v) X.B.I.cm.sig (sc (E := X.B.I.E) v x) = sc (E := X.B.I.E) v x := by
@@ -165,9 +165,9 @@ theorem volTTFCong_of {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (v : 
   · simp only
     rw [VolUF.tf_diff]
     split_ifs
-    · rw [hk, VolUTr.TrW.sc_eq]
-      exact VolUTr.TrW.alg_mem v (_root_.intCast_mem _ m)
-    · rw [VolUTr.TrW.sc_eq, map_zero]
+    · rw [hk, Formalism.L2.SG.Pf.NcVal.TrW.sc_eq]
+      exact Formalism.L2.SG.Pf.NcVal.TrW.alg_mem v (_root_.intCast_mem _ m)
+    · rw [Formalism.L2.SG.Pf.NcVal.TrW.sc_eq, map_zero]
       exact Submodule.zero_mem _
 
 end Formalism.L2.SG.Pf.NcVal

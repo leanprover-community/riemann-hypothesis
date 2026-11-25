@@ -151,15 +151,7 @@ omit [NumberField E] in
 theorem tmul_smul_mem (L : Set (Fin n → E)) {α : FiniteAdeleRing (𝓞 F) F}
     (hα : ∀ v, α v ∈ v.adicCompletionIntegers F) {z : Fin n → RA F E} (hz : z ∈ hat F L) :
     (α ⊗ₜ[F] (1 : E) : RA F E) • z ∈ hat F L := by
-  induction hz using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨a, ha, x, hx, rfl⟩ := hz
-    refine AddSubgroup.subset_closure ⟨α * a, fun v => mul_mem (hα v) (ha v), x, hx, ?_⟩
-    funext i
-    simp
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add y z _ _ hy hz => rw [smul_add]; exact add_mem hy hz
-  | neg y _ hy => rw [smul_neg]; exact neg_mem hy
+  apply _root_.GlobalTheory.AdLat.Translate.hat_smul_int <;> assumption
 
 omit [NumberField E] in
 theorem hat_mono {L L' : Set (Fin n → E)} (h : L ⊆ L') : hat F L ≤ hat F L' :=

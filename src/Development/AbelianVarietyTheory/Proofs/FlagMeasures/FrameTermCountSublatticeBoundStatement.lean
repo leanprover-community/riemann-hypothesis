@@ -749,7 +749,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardExactGramIntegralFrameClassesLeStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsExactGramFrameInTermClass =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsExactGramFrameInTermClass", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EncardBiUnionLe\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralOfUnimodular\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LinearFormsBoundedRepresentatives\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceOneIntegerConjDiffPrimeTo\nimport Mathlib.Algebra.AffineMonoid.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsExactGramFrameInTermClass", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EncardBiUnionLe\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralOfUnimodular\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LinearFormsBoundedRepresentatives\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceOneIntegerConjDiffPrimeTo\nimport Mathlib.Algebra.AffineMonoid.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardIntegralFramesFixedLiftLeStatement\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -767,12 +767,6 @@ section Gen
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
   {Λ : Submodule (𝓞 E) S.V} {F : LFlag S r T}
 
-theorem frame_cast (F : LFlag S r T) (a : Fin r) : frame F a.castSucc = F.fl.e a := by
-  simp [frame, FlagG.fvec]
-
-theorem frame_last (F : LFlag S r T) : frame F (Fin.last r) = F.fl.z := by
-  simp [frame, FlagG.fvec]
-
 theorem ext_Xflag {W : Type} [AddCommGroup W] [Module E W] (f g : S.V →ₗ[E] W) (j : ℕ)
     (h : ∀ a : Fin (r + 1), a.val < j → f (frame F a) = g (frame F a)) :
     ∀ x ∈ Xflag F j, f x = g x := by
@@ -780,7 +774,7 @@ theorem ext_Xflag {W : Type} [AddCommGroup W] [Module E W] (f g : S.V →ₗ[E] 
   refine LinearMap.eqOn_span (s := F.fl.e '' {i | i.1 < j}) ?_ hx
   rintro _ ⟨a, ha, rfl⟩
   have := h a.castSucc ha
-  rwa [frame_cast] at this
+  rwa [GlobalTheory.LoopC.FixedLift.frame_castSucc] at this
 
 theorem Xflag_le_X (j : ℕ) : Xflag F j ≤ Xsp F := Submodule.span_mono (Set.image_subset_range _ _)
 
@@ -790,14 +784,14 @@ theorem Xflag_mono' {i j : ℕ} (h : i ≤ j) : Xflag F i ≤ Xflag F j :=
 theorem X_orth_frame {w : S.V} (hw : w ∈ Xsp F) (j : Fin (r + 1)) : S.hT w (frame F j) = 0 := by
   induction j using Fin.lastCases with
   | last =>
-    rw [frame_last]
+    rw [GlobalTheory.LoopC.FixedLift.frame_last]
     induction hw using Submodule.span_induction with
     | mem x hx => obtain ⟨a, rfl⟩ := hx; exact F.fl.z_orth a
     | zero => simp
     | add x y _ _ h1 h2 => simp [h1, h2]
     | smul c x _ h => simp [h]
   | cast a =>
-    rw [frame_cast]
+    rw [GlobalTheory.LoopC.FixedLift.frame_castSucc]
     exact iso_X S F hw (Submodule.subset_span ⟨a, rfl⟩)
 
 theorem frame_indep (hT : T ≠ 0) : LinearIndependent E (frame F) := by
@@ -809,9 +803,9 @@ theorem frame_indep (hT : T ≠ 0) : LinearIndependent E (frame F) := by
       rw [herm S, F.fl.z_orth, star_zero]
     rw [Fin.sum_univ_castSucc] at this
 
-    simpa [frame_cast, frame_last, map_sum, h0, F.fl.z_norm, hT] using this
+    simpa [GlobalTheory.LoopC.FixedLift.frame_castSucc, GlobalTheory.LoopC.FixedLift.frame_last, map_sum, h0, F.fl.z_norm, hT] using this
   rw [Fin.sum_univ_castSucc, h1, zero_smul, add_zero] at hc
-  simp only [frame_cast] at hc
+  simp only [GlobalTheory.LoopC.FixedLift.frame_castSucc] at hc
   have h2 := Fintype.linearIndependent_iff.1 F.fl.e_indep _ hc
   intro i
   induction i using Fin.lastCases with
@@ -991,7 +985,7 @@ theorem exists_frame_op (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat
     split_ifs with hab
     · have ha : a.val < r := by have := b.2; have : a.val < b.val := hab; omega
       have : a = Fin.castSucc ⟨a.val, ha⟩ := rfl
-      rw [this, frame_cast]
+      rw [this, GlobalTheory.LoopC.FixedLift.frame_castSucc]
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, hab, rfl⟩)
     · simp
   obtain ⟨n, hn, h⟩ := exists_cols w hw fun b => exists_col θ hθ hlat hΛ hT aa h0 hc b (w b) (hw b) (by
@@ -1020,11 +1014,11 @@ theorem coord_iff (aa : Fin (r + 1) → FractionalIdeal (nonZeroDivisors (𝓞 E
     (hX : XLam Λ F = Submodule.span (𝓞 E) {y | ∃ (a : Fin r) (x : E), x ∈ aa a.castSucc ∧ y = x • F.fl.e a})
     (c : Fin (r + 1) → E) : ∑ j, c j • frame F j ∈ Λ ↔ ∀ j, c j ∈ aa j := by
   have hsum : ∑ j, c j • frame F j = ∑ a : Fin r, c a.castSucc • F.fl.e a + c (Fin.last r) • F.fl.z := by
-    rw [Fin.sum_univ_castSucc]; simp only [frame_cast, frame_last]
+    rw [Fin.sum_univ_castSucc]; simp only [GlobalTheory.LoopC.FixedLift.frame_castSucc, GlobalTheory.LoopC.FixedLift.frame_last]
   have hx : ∑ a : Fin r, c a.castSucc • F.fl.e a ∈ Xsp F :=
     Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
   have hzo : ∀ t : E, t • F.fl.z ∈ orth S (Xsp F) := fun t => Submodule.smul_mem _ _
-    ((mem_orth S).2 fun x hx => by rw [← frame_last]; exact X_orth_frame hx _)
+    ((mem_orth S).2 fun x hx => by rw [← GlobalTheory.LoopC.FixedLift.frame_last]; exact X_orth_frame hx _)
   constructor
   · intro h
     rw [hsum] at h
@@ -1083,7 +1077,7 @@ theorem exists_moved (hT : T ≠ 0) (n : S.V ≃ₗ[E] S.V) (hn : n ∈ Formalis
     refine ⟨∑ a : Fin r, (B a.castSucc b : E) • F.fl.e a,
       Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩), ?_⟩
     simp only [hg, frameAct]
-    rw [Fin.sum_univ_castSucc]; simp only [frame_cast, frame_last]
+    rw [Fin.sum_univ_castSucc]; simp only [GlobalTheory.LoopC.FixedLift.frame_castSucc, GlobalTheory.LoopC.FixedLift.frame_last]
   have he : ∀ a : Fin r, g a.castSucc ∈ Xsp F := by
     intro a
     obtain ⟨x, hx, e⟩ := hX a.castSucc
@@ -1118,7 +1112,7 @@ theorem exists_moved (hT : T ≠ 0) (n : S.V ≃ₗ[E] S.V) (hn : n ∈ Formalis
   · rw [hn]
     obtain ⟨x, hx, e⟩ := hX (Fin.last r)
     have e1 := ho x hx (Fin.last r)
-    have e2 : S.hT x F.fl.z = 0 := by rw [← frame_last]; exact X_orth_frame hx _
+    have e2 : S.hT x F.fl.z = 0 := by rw [← GlobalTheory.LoopC.FixedLift.frame_last]; exact X_orth_frame hx _
     have e3 : S.hT F.fl.z x = 0 := by rw [herm S, e2, star_zero]
     rw [h2] at e
     have e' : g (Fin.last r) = x + F.fl.z := by simpa using e
@@ -1127,13 +1121,13 @@ theorem exists_moved (hT : T ≠ 0) (n : S.V ≃ₗ[E] S.V) (hn : n ∈ Formalis
   · rw [← map_frameAct]
     funext b
     induction b using Fin.lastCases with
-    | last => rw [frame_last]
-    | cast a => rw [frame_cast]
+    | last => rw [GlobalTheory.LoopC.FixedLift.frame_last]
+    | cast a => rw [GlobalTheory.LoopC.FixedLift.frame_castSucc]
 
 theorem orth_X_of_frame {x : S.V} (h : ∀ b, S.hT (frame F b) x = 0) : x ∈ orth S (Xsp F) := by
   refine (mem_orth S).2 fun y hy => ?_
   induction hy using Submodule.span_induction with
-  | mem y hy => obtain ⟨a, rfl⟩ := hy; rw [← frame_cast]; exact h _
+  | mem y hy => obtain ⟨a, rfl⟩ := hy; rw [← GlobalTheory.LoopC.FixedLift.frame_castSucc]; exact h _
   | zero => simp
   | add y z _ _ h1 h2 => simp [h1, h2]
   | smul c y _ h => simp [h]
@@ -1152,15 +1146,15 @@ theorem mem_Hp_iff {T' : E} {G : LFlag S r T'} (hF : F.zt = F.fl.z) (hG : G.zt =
       apply h'
       refine Submodule.mem_sup_left (Submodule.mem_sup_left ?_)
       induction b using Fin.lastCases with
-      | last => rw [frame_last, hF]; exact Submodule.mem_sup_right (Submodule.subset_span rfl)
+      | last => rw [GlobalTheory.LoopC.FixedLift.frame_last, hF]; exact Submodule.mem_sup_right (Submodule.subset_span rfl)
       | cast a =>
-        rw [frame_cast]; exact Submodule.mem_sup_left ⟨hFe a, Submodule.subset_span ⟨a, rfl⟩⟩
+        rw [GlobalTheory.LoopC.FixedLift.frame_castSucc]; exact Submodule.mem_sup_left ⟨hFe a, Submodule.subset_span ⟨a, rfl⟩⟩
     · intro b
       apply h'
       induction b using Fin.lastCases with
-      | last => rw [frame_last, hG]; exact Submodule.mem_sup_right (Submodule.subset_span rfl)
+      | last => rw [GlobalTheory.LoopC.FixedLift.frame_last, hG]; exact Submodule.mem_sup_right (Submodule.subset_span rfl)
       | cast a =>
-        rw [frame_cast]
+        rw [GlobalTheory.LoopC.FixedLift.frame_castSucc]
         exact Submodule.mem_sup_left (Submodule.mem_sup_right ⟨hGe a, Submodule.subset_span ⟨a, rfl⟩⟩)
   · rintro ⟨h1, h2⟩
     let K : Submodule E S.V :=
@@ -1171,9 +1165,9 @@ theorem mem_Hp_iff {T' : E} {G : LFlag S r T'} (hF : F.zt = F.fl.z) (hG : G.zt =
     have : UU Λ F G ≤ toO S K := by
       refine sup_le (sup_le (sup_le ?_ ?_) ?_) ?_
       · exact fun y hy => (mem_orth S).1 (orth_X_of_frame h1) y hy.2
-      · rw [Submodule.span_le, Set.singleton_subset_iff, hF, ← frame_last]; exact h1 _
+      · rw [Submodule.span_le, Set.singleton_subset_iff, hF, ← GlobalTheory.LoopC.FixedLift.frame_last]; exact h1 _
       · exact fun y hy => (mem_orth S).1 (orth_X_of_frame h2) y hy.2
-      · rw [Submodule.span_le, Set.singleton_subset_iff, hG, ← frame_last]; exact h2 _
+      · rw [Submodule.span_le, Set.singleton_subset_iff, hG, ← GlobalTheory.LoopC.FixedLift.frame_last]; exact h2 _
     exact fun y hy => (Submodule.span_le (p := K)).2 this hy
 
 end Gen
@@ -1227,15 +1221,15 @@ theorem exists_exact_frame : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) 
   have he' : ∀ a, F'.fl.e a ∈ Λ := fun a => (hX'.symm ▸ e_mem_XS D F'.fl a : F'.fl.e a ∈ XLam Λ F').1
   have hf' : ∀ b, frame F' b ∈ Λ := fun b => by
     induction b using Fin.lastCases with
-    | last => rw [frame_last]; exact hlift'.1
-    | cast a => rw [frame_cast]; exact he' a
+    | last => rw [GlobalTheory.LoopC.FixedLift.frame_last]; exact hlift'.1
+    | cast a => rw [GlobalTheory.LoopC.FixedLift.frame_castSucc]; exact he' a
   have hGΛ : ∀ b, frame G b ∈ Λ := fun b => by
     rw [hG]
     exact Submodule.sum_mem _ fun a _ => smul_mem_of _ ⟨_, rfl⟩ ((aut_mem_iff hn.1 _).2 (hf' a))
-  have hGe : ∀ a, G.fl.e a ∈ Λ := fun a => by rw [← frame_cast]; exact hGΛ _
+  have hGe : ∀ a, G.fl.e a ∈ Λ := fun a => by rw [← GlobalTheory.LoopC.FixedLift.frame_castSucc]; exact hGΛ _
   have hadj : ∀ x y, (hS D).hT x (m.symm y) = (hS D).hT (m x) y := fun x y => by
     rw [← hm.1.1 x, LinearEquiv.apply_symm_apply]
-  refine ⟨G, ⟨⟨by rw [← frame_last]; exact hGΛ _, hGz⟩, hGe, ?_, hP.trans ?_⟩, m.symm, hn, B, hB1, hB2, hG⟩
+  refine ⟨G, ⟨⟨by rw [← GlobalTheory.LoopC.FixedLift.frame_last]; exact hGΛ _, hGz⟩, hGe, ?_, hP.trans ?_⟩, m.symm, hn, B, hB1, hB2, hG⟩
   · rw [hZ]
     refine Matrix.ext fun a b => ?_
     change (hS D).hT (frame (lf D F0) a) (frame G b) = _

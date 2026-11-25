@@ -334,16 +334,6 @@ theorem ideleModule_posIdele (ρ : ℝ) (hρ : 0 < ρ) :
   simp only [norm_posIdele_infinite, posIdele_finite, norm_one, finprod_one, mul_one]
   rw [Finset.prod_pow_eq_pow_sum, InfinitePlace.sum_mult_eq]
 
-private theorem finprod_le_finprod_of_nonneg' {ι : Type*} {f g : ι → ℝ} (hf : (Function.mulSupport f).Finite)
-    (hg : (Function.mulSupport g).Finite) (h0 : ∀ i, 0 ≤ f i) (hfg : ∀ i, f i ≤ g i) :
-    ∏ᶠ i, f i ≤ ∏ᶠ i, g i := by
-  classical
-  rw [finprod_eq_prod_of_mulSupport_subset f (s := hf.toFinset ∪ hg.toFinset)
-      (fun i hi => Finset.mem_coe.2 (Finset.mem_union_left _ (hf.mem_toFinset.2 hi))),
-    finprod_eq_prod_of_mulSupport_subset g (s := hf.toFinset ∪ hg.toFinset)
-      (fun i hi => Finset.mem_coe.2 (Finset.mem_union_right _ (hg.mem_toFinset.2 hi)))]
-  exact Finset.prod_le_prod₀ (fun i _ => h0 i) fun i _ => hfg i
-
 theorem euclidNorm_two_le {E : Type*} [NormedField E] (y : Fin 2 → E) :
     euclidNorm y ≤ ‖y 0‖ + ‖y 1‖ := by
   rw [euclidNorm, Fin.sum_univ_two]
@@ -537,8 +527,8 @@ theorem exists_adelicNorm_vecMul_le : ∃ C : ℝ, 0 < C ∧ ∀ (α δ : IdeleG
           _ = (A * s) ^ d := by rw [Finset.prod_pow_eq_pow_sum, InfinitePlace.sum_mult_eq]
       · calc ∏ᶠ v : HeightOneSpectrum (𝓞 K), ‖finComp v z‖
             ≤ ∏ᶠ v : HeightOneSpectrum (𝓞 K), max 1 ‖(σ : 𝔸[K]).2 v‖ :=
-              finprod_le_finprod_of_nonneg' hzc.finite_mulSupport (finite_mulSupport_max_one_norm σ)
-                (fun _ => norm_nonneg _) hfinv
+              finprod_le_finprod₀ hzc.finite_mulSupport (fun _ => norm_nonneg _)
+                (finite_mulSupport_max_one_norm σ) hfinv
           _ ≤ P := hP σ hμ
     have hsq : Real.sqrt (ideleModule K r : ℝ) = s ^ d := by
       rw [← hspow, show s ^ (2 * d) = (s ^ d) ^ 2 by ring, Real.sqrt_sq (by positivity)]

@@ -149,8 +149,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.FR
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section HidaSetting
 
 variable {D : D7} (X : HidaSetting D)
@@ -194,8 +192,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.FR
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section HidaSetting
 
@@ -323,12 +319,8 @@ def Lmap (M : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : (CIdx r k → ℝ) →�
     (Psi r k).toLinearMap
 
 theorem det_vecMulLinear (M : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : LinearMap.det (Matrix.vecMulLinear M) = M.det := by
-  have h : Matrix.vecMulLinear M = Matrix.toLin' Mᵀ := by
-    apply LinearMap.ext
-    intro v
-    funext i
-    simp [Matrix.vecMul, Matrix.mulVec, dotProduct, mul_comm]
-  rw [h, LinearMap.det_toLin', Matrix.det_transpose]
+  rw [← Matrix.mulVecLin_transpose, ← Matrix.toLin'_apply', LinearMap.det_toLin',
+    Matrix.det_transpose]
 
 theorem det_Lmap (M : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
     LinearMap.det (Lmap (r := r) M) = Complex.normSq M.det ^ r := by
@@ -346,8 +338,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.FR
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut Formalism.L2.SG.Pf.LsNc5
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Final
 

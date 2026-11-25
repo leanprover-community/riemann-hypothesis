@@ -49,8 +49,6 @@ import Development.AbelianVarietyTheory.Definitions.HeightFunctions.FiniteDimens
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField IsDedekindDomain GlobalTheory.FieldSize Pointwise
 open scoped IntermediateField nonZeroDivisors
 

@@ -49,8 +49,6 @@ open Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.Form
 open GlobalTheory.TwU (StepCharts ChainCharts AdData ratA ssRec toStdCo pPow scal0 xiM)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {D : D7}

@@ -348,11 +348,7 @@ abbrev IsIwasawaUp : Prop := IsIwasawa (ν.comp (aUp R σ Q)) K
 
 def hgtUp : HA R σ Q → ℝ≥0 := iwAbs (ν.comp (aUp R σ Q)) K
 
-def psUp [TopologicalSpace R] (μ : (R ⊗[F] E)ˣ →* Circle) (s : ℂ) : Submodule ℂ (HA R σ Q → ℂ) :=
-  indSpace (ν.comp (aUp R σ Q)) K (μ.comp (aUp R σ Q)) (s + (n : ℂ) / 2)
-
 def sphUp (s : ℂ) : HA R σ Q → ℂ := fun g => npow (hgtUp R σ Q ν K g) (s + (n : ℂ) / 2)
-
 
 variable {Q} in
 def intwLoc [TopologicalSpace R] (hQ : Q = StdUnn.blk4 0 1 (-1) 0) (db : Measure (HermR R σ n)) (f : ℂ → HA R σ Q → ℂ)

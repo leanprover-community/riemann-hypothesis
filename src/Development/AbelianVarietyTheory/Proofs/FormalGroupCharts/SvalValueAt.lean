@@ -53,7 +53,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.Leve
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj

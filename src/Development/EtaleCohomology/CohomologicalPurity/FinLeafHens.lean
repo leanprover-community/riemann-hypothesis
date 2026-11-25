@@ -553,7 +553,7 @@ theorem hens_eval_sub_mem {B : Type} [CommRing B] (J : Ideal B) (p : B[X]) (x y 
   obtain ⟨k, hk⟩ := Polynomial.sub_dvd_eval_sub x y p
   rw [hk]; exact J.mul_mem_right k h
 
-theorem hens_q_eval {A : Type} [CommRing A] (f : A[X]) (a : A) (hf : f.Monic) :
+theorem hens_q_eval {A : Type} [CommRing A] (f : A[X]) (a : A) :
     (f /ₘ (X - C a)).eval a = f.derivative.eval a := by
   have h : C (f.eval a) + (X - C a) * (f /ₘ (X - C a)) = f := by
     rw [← Polynomial.modByMonic_X_sub_C_eq_C_eval]; exact Polynomial.modByMonic_add_div f _
@@ -582,7 +582,7 @@ theorem LeafRootHens_of : LeafRootHens := by
     rw [← e0]; exact hens_eval_sub_mem J _ c (ψ a) hca
   have hc2 : IsUnit (((f /ₘ (X - C a)).map ψ).eval c) := by
     apply hens_isUnit_of_sub J hjac _ (ψ (f.derivative.eval a)) _ (hmk _ hu)
-    rw [← hens_q_eval f a hf, ← e0]; exact hens_eval_sub_mem J _ c (ψ a) hca
+    rw [← hens_q_eval f a, ← e0]; exact hens_eval_sub_mem J _ c (ψ a) hca
   refine ⟨c, hc, hca, hc1, hc2, ?_⟩
   intro c' hc' hc'a
   have hd : c' - c ∈ J := by

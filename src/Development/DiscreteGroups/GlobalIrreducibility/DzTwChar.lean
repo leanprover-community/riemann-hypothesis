@@ -49,8 +49,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.SmGL GlobalTheory.Sp
 
 namespace DiscreteGroups.sglob.DzTw
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {g : ℕ} [Fact g.Prime]
   (i : ℚ_[g] ≃+* w.adicCompletion E) (hi : Continuous i)
 

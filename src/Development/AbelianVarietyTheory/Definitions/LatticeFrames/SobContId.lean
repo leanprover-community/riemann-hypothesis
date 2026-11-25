@@ -61,7 +61,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVe
 open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
 open GlobalTheory.Size (sobO thetaLevel)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ThetaDens
 

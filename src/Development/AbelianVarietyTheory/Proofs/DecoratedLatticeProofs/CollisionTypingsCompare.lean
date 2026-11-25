@@ -53,8 +53,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formal
 
 namespace GlobalTheory.CollCompare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.Core.Deg
 
 theorem splits_level (D : D7) (w : D.what₂.Word) : SplitsE D (D.mem w).A.T :=

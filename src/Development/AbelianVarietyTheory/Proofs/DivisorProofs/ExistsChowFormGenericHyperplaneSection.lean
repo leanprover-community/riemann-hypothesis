@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemCon
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPolynomial GlobalTheory.ChowHt GlobalTheory.CompHt Filter

@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RankTwoDimensionFormula.FlagLevelCharacterEqPsiDivN
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -46,13 +46,11 @@ import Mathlib.Topology.Sheaves.Init
 noncomputable section
 
 open scoped Classical ComplexConjugate TensorProduct
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting PI.UnitaryDimensionFormula.unitaryCongruence Matrix
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.unitaryCongruence Matrix
 
 namespace PI.UnitaryDimensionFormula.NormCutK
 
 section Dual
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

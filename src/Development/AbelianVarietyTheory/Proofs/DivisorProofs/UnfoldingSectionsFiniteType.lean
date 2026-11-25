@@ -46,8 +46,6 @@ import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.DegCmp
 
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Indef.Tree

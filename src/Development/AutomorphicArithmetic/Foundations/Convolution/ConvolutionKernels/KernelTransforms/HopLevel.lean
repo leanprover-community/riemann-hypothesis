@@ -156,13 +156,6 @@ private theorem coset_sum {G L ι : Type*} [Group G] [Group L] [Fintype ι] (loc
   · rw [Set.indicator_of_notMem hh]
     exact Finset.sum_eq_zero fun i _ => Set.indicator_of_notMem (fun hm => hh (hA i h hm)) _
 
-private theorem cc_sum_apply {X ι : Type*} [TopologicalSpace X] (s : Finset ι)
-    (f : ι → CompactlySupportedContinuousMap X ℂ) (h : X) : (∑ i ∈ s, f i) h = ∑ i ∈ s, f i h := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, CompactlySupportedContinuousMap.add_apply, ih]
-
 theorem UpperTheory.ConvolutionTheory.Tf.hopLevel :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (m : Measure (AdelicGLn.FiniteAdelicGL K n)) [m.IsHaarMeasure] (w : Pl K) (J : Subgroup (GL (Fin n) (w.adicCompletion K))) (x : GL (Fin n) (w.adicCompletion K))
       (U : Subgroup (AdelicGLn.FiniteAdelicGL K n)), IsOpen (J : Set (GL (Fin n) (w.adicCompletion K))) → IsCompact (J : Set (GL (Fin n) (w.adicCompletion K))) →
@@ -230,7 +223,7 @@ theorem UpperTheory.ConvolutionTheory.Tf.hopLevel :
       exact ⟨⟨c, hc⟩, hy _⟩
   obtain ⟨-, hadd, -⟩ := UpperTheory.ConvolutionTheory.Tf.opAlg K n μ (Measure.haar : Measure (archGroup K n)) m
   refine ⟨∑ i, leftT (AdelicGLn.localEmbedding w (y i)) e0, fun h => ?_, ?_⟩
-  · rw [cc_sum_apply]
+  · rw [CompactlySupportedContinuousMap.sum_apply]
     simp only [leftT_apply, he0]
     exact coset_sum (AdelicGLn.localEmbedding w) (fun g => finAt w (finEmb K n g)) hp hl1 hl5 J x U hJU hUJ y inj rng _ h
   · have hs : Ofin μ m (∑ i, leftT (AdelicGLn.localEmbedding w (y i)) e0) =

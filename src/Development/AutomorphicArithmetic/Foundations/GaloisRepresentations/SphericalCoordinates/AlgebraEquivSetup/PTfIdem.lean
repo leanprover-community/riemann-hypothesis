@@ -118,31 +118,16 @@ private theorem finsum_cosets (K K₀ : Subgroup X) (hle : K₀ ≤ K) (hi : K�
     (G : X ⧸ K₀ → ℂ) (h1 : ∀ z : X ⧸ K₀, z.out ∈ K → G z = c)
     (h0 : ∀ z : X ⧸ K₀, z.out ∉ K → G z = 0) :
     ∑ᶠ z, G z = ((K₀.relIndex K : ℕ) : ℂ) * c := by
-  let φ : K ⧸ K₀.subgroupOf K → X ⧸ K₀ :=
-    Quotient.map' (fun k : K => (k : X)) (fun a b hab => QuotientGroup.leftRel_apply.mpr (by
-      have hab' := QuotientGroup.leftRel_apply.mp hab
-      simpa [Subgroup.mem_subgroupOf] using hab'))
-  have hφ : ∀ k : K, φ (k : K ⧸ K₀.subgroupOf K) = ((k : X) : X ⧸ K₀) := fun k => rfl
-  have hinj : Function.Injective φ := by
-    intro a b hab
-    induction a using QuotientGroup.induction_on with | H a => ?_
-    induction b using QuotientGroup.induction_on with | H b => ?_
-    rw [hφ, hφ, QuotientGroup.eq] at hab
-    rw [QuotientGroup.eq]
-    simpa [Subgroup.mem_subgroupOf] using hab
-  have hrange : ∀ z : X ⧸ K₀, z ∈ Set.range φ ↔ z.out ∈ K := by
-    intro z
-    constructor
-    · rintro ⟨w, rfl⟩
-      induction w using QuotientGroup.induction_on with | H k => ?_
-      rw [hφ]
-      obtain ⟨c, hc⟩ := QuotientGroup.mk_out_eq_mul K₀ (k : X)
-      rw [hc]
-      exact K.mul_mem k.2 (hle c.2)
-    · intro hz
-      refine ⟨((⟨z.out, hz⟩ : K) : K ⧸ K₀.subgroupOf K), ?_⟩
-      rw [hφ]
-      exact QuotientGroup.out_eq' z
+  let e := Subgroup.quotientEquivProdOfLE hle
+  let φ : K ⧸ K₀.subgroupOf K → X ⧸ K₀ := fun q => e.symm (((1 : X) : X ⧸ K), q)
+  have hinj : Function.Injective φ := e.symm.injective.comp fun _ _ h => (Prod.mk.inj h).2
+  have hrange : ∀ z : X ⧸ K₀, z ∈ Set.range φ ↔ z.out ∈ K := fun z => by
+    have h1' : (e z).1 = (z.out : X ⧸ K) := by
+      conv_lhs => rw [← QuotientGroup.out_eq' z]
+      rfl
+    rw [← QuotientGroup.mk_eq_one_iff, ← h1']
+    exact ⟨fun ⟨q, hq⟩ => hq ▸ congrArg Prod.fst (e.apply_symm_apply (((1 : X) : X ⧸ K), q)),
+      fun h => ⟨(e z).2, e.injective ((e.apply_symm_apply _).trans (Prod.ext h.symm rfl))⟩⟩
   have hG : G = (Set.range φ).indicator (fun _ => c) := by
     funext z
     by_cases hz : z.out ∈ K

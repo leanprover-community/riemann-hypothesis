@@ -73,7 +73,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option maxSynthPendingDepth 1
 
@@ -180,7 +179,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -287,8 +285,6 @@ section -- clump:auto
 @[expose] public section
 
 open DividedPowers CrystallineSemistableComparison.Pb
-
-set_option autoImplicit false
 
 namespace GlobalTheory.CompanionTheory.LatIdeal
 
@@ -461,8 +457,6 @@ section -- clump:auto
 
 open DividedPowers CrystallineSemistableComparison.Pb
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CompanionTheory.LatDP
 
 variable {B : Type} [CommRing B] [Algebra ℚ B]
@@ -544,7 +538,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -577,7 +570,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -633,8 +625,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
@@ -677,8 +667,6 @@ section -- clump:auto
 
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CompanionTheory.LatLevel
 
 theorem dk_fk (l : ℕ) [Fact l.Prime] (k : ℕ) (w : Ainf l) :
@@ -715,7 +703,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -971,7 +958,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1071,7 +1057,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -1108,7 +1093,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1180,7 +1164,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1237,7 +1220,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1387,7 +1369,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1455,7 +1436,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1529,7 +1509,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -1537,23 +1516,6 @@ noncomputable section
 
 open DividedPowers
 
-namespace CrystallineSemistableComparison.Pb.Lat
-
-section Lat
-variable {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (f : W →+* B) (ξ : W) (l M : ℕ)
-
-theorem dp_ι (hc : DPClosed (ι f ξ l M) (γB f ξ)) : IsDPMorphism (γ f ξ l M hc) (γB f ξ) (ι f ξ l M) :=
-  ⟨Ideal.map_le_iff_le_comap.2 fun _ hx => hx, fun {n} a ha => (ι_γ f ξ l M hc ha).symm⟩
-
-end Lat
-
-section Map
-variable {W B W' B' : Type} [CommRing W] [CommRing B] [Algebra ℚ B] [CommRing W'] [CommRing B'] [Algebra ℚ B']
-  (f : W →+* B) (ξ : W) (f' : W' →+* B') (ξ' : W') (l M : ℕ)
-
-end Map
-
-end CrystallineSemistableComparison.Pb.Lat
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1564,7 +1526,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1610,7 +1571,7 @@ theorem lev_good (h : LevHyp l K M) (k : ℕ) (hk : 1 ≤ k) : (lev h k).Good :=
     toB_ker := _root_.GlobalTheory.CompanionTheory.LatC.lev_toB_ker h k
     toB_K := _root_.GlobalTheory.CompanionTheory.LatC.toB_on_K h k
     ι_inj := ι_injective (fk l k) (xi0 l) l M
-    ι_dp := dp_ι (fk l k) (xi0 l) l M (h.hc k)
+    ι_dp := GlobalTheory.CompanionTheory.LatNil.isDPMorphism_ι (fk l k) (xi0 l) l M (h.hc k)
     ι_I := rfl
     IB_eq := _root_.GlobalTheory.CompanionTheory.LatC.lev_IB_eq_map h k
     ι_O := _root_.GlobalTheory.CompanionTheory.LatC.iota_algebraMap_OK h k

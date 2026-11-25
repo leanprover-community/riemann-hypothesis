@@ -51,8 +51,6 @@ open GlobalTheory.GoodMetric (coordVec)
 open GlobalTheory.CxForm
 open scoped ComplexConjugate ContDiff
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CxForm.PullClosed

@@ -867,24 +867,7 @@ theorem uni_inl_inl {ρ : ℕ} {M : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k} (h : U
   simp [Matrix.one_apply]
 
 theorem embX_mem_KO {g : GL n k} (hg : g ∈ KO k n) : embX c g ∈ KO k (n ⊕ Fin c) := by
-  rw [GlobalTheory.SplitFlip.mem_KO_iff] at hg ⊢
-  have one_int : ∀ (i j : Fin c), (1 : Matrix (Fin c) (Fin c) k) i j ∈ 𝒪[k] := fun i j => by
-    rw [Matrix.one_apply]; split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  refine ⟨fun i j => ?_, fun i j => ?_⟩
-  · rw [embX_val]
-    rcases i with i | i <;> rcases j with j | j
-    · exact hg.1 i j
-    · exact zero_mem _
-    · exact zero_mem _
-    · exact one_int i j
-  · rw [← map_inv, embX_val]
-    rcases i with i | i <;> rcases j with j | j
-    · exact hg.2 i j
-    · exact zero_mem _
-    · exact zero_mem _
-    · exact one_int i j
+  first | exact _root_.GlobalTheory.HaarR.rootExchangeEmbedGL_mem_integralGL | exact @_root_.GlobalTheory.HaarR.rootExchangeEmbedGL_mem_integralGL | apply _root_.GlobalTheory.HaarR.rootExchangeEmbedGL_mem_integralGL <;> assumption
 
 theorem colE_mem_KO (p : ℕ) {β : n → k} (hβ : ∀ i, β i ∈ 𝒪[k]) : colE c p β ∈ KO k (n ⊕ Fin c) := by
   rw [GlobalTheory.SplitFlip.mem_KO_iff]

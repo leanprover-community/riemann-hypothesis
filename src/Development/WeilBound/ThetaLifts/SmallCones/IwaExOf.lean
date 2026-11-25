@@ -256,53 +256,9 @@ theorem iwa_glob {n₁ : ℕ} {H : Plane E n n₁} (hB : B.IsGood σ) (hX : X.Is
     (h0 : form σ X.J H.x H.x = 0) (hl : LocIwa σ X H.x) {K : Subgroup (UA σ X.J)} (hK : IsStab B K) (g : UA σ X.J) :
     ∃ (p k : UA σ X.J) (l : (AE F E)ˣ), k ∈ K ∧ mat p *ᵥ incV F H.x = l.1 • incV F H.x ∧ g = p * k := by
   obtain ⟨q, t, h1, h2⟩ := exists_arch hB hX hx h0 g
-  have hFull : X.L.IsFullLattice E := by
-    let := hX.lat
-    refine { span_eq_top := ?_ }
-    let W := Submodule.span E (X.L : Set (Fin n → E))
-    change W = ⊤
-    by_contra hW
-    let g : (Fin n → E) →ₗ[E] Module.Dual E W :=
-      ((dotProductBilin E E).compl₂ (Matrix.mulVecLin X.Jᵀ)).domRestrict₂ W
-    have hdim : Module.finrank E (Module.Dual E W) < Module.finrank E (Fin n → E) := by
-      rw [Subspace.dual_finrank_eq]
-      exact Submodule.finrank_lt hW
-    obtain ⟨z, hz, hz₀⟩ :=
-      Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hdim)
-    let y : Fin n → E := fun i => σ (z i)
-    have hy₀ : y ≠ 0 := by
-      intro hy
-      apply hz₀
-      exact funext fun i => σ.injective ((congrFun hy i).trans (map_zero σ).symm)
-    have hJ : X.Jᵀ.map σ = X.J := Matrix.ext hX.herm
-    -- Self-duality puts every scalar multiple of an orthogonal vector in the lattice.
-    have hline (a : E) : a • y ∈ X.L := (hX.dual _).2 fun x hx => by
-      have hz' : z ⬝ᵥ X.Jᵀ *ᵥ x = 0 :=
-        congrArg (fun f : Module.Dual E W => f ⟨x, Submodule.subset_span hx⟩)
-          (LinearMap.mem_ker.mp hz)
-      have horth : form σ X.J y x = 0 := by
-        have he := σ.toRingHom.map_dotProduct z (X.Jᵀ *ᵥ x)
-        rw [hz', map_zero] at he
-        have hm : σ.toRingHom ∘ (X.Jᵀ *ᵥ x) = X.J *ᵥ (fun i => σ (x i)) := by
-          funext i
-          rw [Function.comp_apply, σ.toRingHom.map_mulVec]
-          exact congrFun (congrArg (fun M => M *ᵥ (fun j => σ (x j))) hJ) i
-        rw [hm] at he
-        exact he.symm
-      have : form σ X.J (a • y) x = 0 := by
-        simpa only [form, smul_dotProduct, smul_eq_mul] using
-          (show a * form σ X.J y x = 0 by rw [horth, mul_zero])
-      rw [this]
-      exact isIntegral_zero
-    let i : E →ₗ[𝓞 E] X.L :=
-      ((LinearMap.toSpanSingleton E _ y).restrictScalars (𝓞 E)).codRestrict X.L hline
-    let : Module.Finite (𝓞 E) X.L := Module.Finite.iff_fg.mpr hX.lat.fg
-    let : Module.Finite (𝓞 E) E := Module.Finite.of_injective i fun a b hab =>
-      smul_left_injective E hy₀ (congrArg Subtype.val hab)
-    exact RingOfIntegers.not_isField E
-      (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 E) E) (Field.toIsField E))
   have hf : ∀ᶠ v in cofinite, IntAt v (q⁻¹ * g) := by
-    filter_upwards [ae_mulVec hFull (mat (q⁻¹ * g)), ae_mulVec hFull (mat (q⁻¹ * g)⁻¹)] with v a b z hz h
+    filter_upwards [ae_mulVec hX.lat (mat (q⁻¹ * g)), ae_mulVec hX.lat (mat (q⁻¹ * g)⁻¹)] with v
+      a b z hz h
     exact ⟨a z hz h, b z hz h⟩
   obtain ⟨p, t', e1, e2, e3⟩ := exists_fin B hl (Set.Finite.toFinset hf) (q⁻¹ * g) fun v hv =>
     not_not.1 fun c => hv ((Set.Finite.mem_toFinset hf).2 c)

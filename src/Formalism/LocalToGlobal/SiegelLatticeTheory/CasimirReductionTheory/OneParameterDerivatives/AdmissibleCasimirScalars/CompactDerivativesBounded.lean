@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCPX
 open MeasureTheory Matrix Filter Topology
 open scoped InnerProductSpace
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.admitted

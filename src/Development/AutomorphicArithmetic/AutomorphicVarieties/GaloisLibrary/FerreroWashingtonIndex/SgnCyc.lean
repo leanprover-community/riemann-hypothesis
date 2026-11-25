@@ -400,10 +400,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base UpperTheory.V.Kum UpperTheory.V.Stick UpperTheory.V.FW
 open scoped nonZeroDivisors
 
-private theorem norm_eq_mul_cE (K : Type) [Field K] [NumberField K] [IsCMField K] (y : K) :
-    algebraMap (maximalRealSubfield K) K (Algebra.norm (maximalRealSubfield K) y) = y * cE K y :=
-  _root_.UpperTheory.Reformulated.B.Qh29.norm_eq_mul_cE K y
-
 private def prI {K : Type} [Field K] [NumberField K] (b : 𝓞 K) (hb : b ≠ 0) : (Ideal (𝓞 K))⁰ :=
   ⟨Ideal.span {b}, mem_nonZeroDivisors_of_ne_zero (by simpa using hb)⟩
 
@@ -432,7 +428,7 @@ theorem UpperTheory.V.FW.hasse :
     (Algebra.IsQuadraticExtension.finrank_eq_two _ _) (Units.mk0 _ hx0)).2
     ⟨locFin K _ a I hU hax hI, locInf K _ fun φ => hax ▸ hpos φ⟩
   have hβ' : (β : K) * cE K β = a := by
-    rw [← norm_eq_mul_cE, hax, ← hβ]
+    erw [← _root_.UpperTheory.Reformulated.B.Qh29.norm_eq_mul_cE, hax, ← hβ]
     rfl
   obtain ⟨b, d, hd, hbd⟩ := IsFractionRing.div_surjective (A := 𝓞 K) (β : K)
   have hd0 : d ≠ 0 := nonZeroDivisors.ne_zero hd
@@ -465,9 +461,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base UpperTheory.V.Kum UpperTheory.V.Stick UpperTheory.V.FW
 open scoped nonZeroDivisors
-
-private theorem real_eq_one_of_nonneg_of_mul_self_eq_one (x : ℝ) (h0 : 0 ≤ x) (h : x * x = 1) : x = 1 := by
-  nlinarith
 
 theorem UpperTheory.V.FW.realGen :
     ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] (x : Cl K), Function.Surjective (IsCMField.unitsMulComplexConjInv K) → x ∈ minK (clMap (cE K)) → ∃ (I : (Ideal (𝓞 K))⁰) (a : 𝓞 K), ClassGroup.mk0 I = x ∧ a ≠ 0 ∧ cE K (a : K) = a ∧ (I * idMap (cE K) I).1 = Ideal.span {a} := by
@@ -523,7 +516,8 @@ theorem UpperTheory.V.FW.realGen :
       exact_mod_cast congrArg (fun y : 𝓞 K => (y : K)) hσt
     have hprod := congrArg w hK
     rw [map_mul, map_one, hw] at hprod
-    exact real_eq_one_of_nonneg_of_mul_self_eq_one _ (AbsoluteValue.nonneg _ _) hprod
+    have h0 : 0 ≤ w ((t : 𝓞 K) : K) := AbsoluteValue.nonneg _ _
+    exact (mul_self_eq_one_iff.1 hprod).resolve_right fun h1 => by linarith
   obtain ⟨v, hv⟩ := hsurj ⟨t⁻¹, htor⟩
   have hv2 : v * ((IsCMField.unitsComplexConj K) v)⁻¹ = t⁻¹ := by
     have hv1 := congrArg Subtype.val hv

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BtOrderIsHopfOrderNoetherian
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianFormNegOnOrthogonalOfPositiveIndexOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegDefOfHermitianMatrixPositiveIndexEqZero
@@ -98,47 +99,8 @@ theorem natDegree_minpoly_le_tmul {F A : Type} [Field F] [Ring A] [Algebra F A] 
 theorem eigA : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (g : G.C) (v : InfinitePlace G.F) (z : ℂ),
     (minpoly G.F g).natDegree = G.n → (minpoly G.F g).eval₂ v.embedding z = 0 →
     ∃ x : Fin G.n → ℂ, x ≠ 0 ∧ G.psi v g *ᵥ x = z • x := by
-  intro p _ G g v z hdeg hz
-  letI alg : Algebra G.F ℂ := v.embedding.toAlgebra
-  have halg : ∀ a : G.F, algebraMap G.F ℂ a = v.embedding a := fun a => rfl
-  let ψF : G.C →ₐ[G.F] Matrix (Fin G.n) (Fin G.n) ℂ :=
-    { G.psi v with
-      commutes' := fun a => by
-        change G.psi v (algebraMap G.F G.C a) = _
-        rw [G.psi_F]
-        ext i j
-        simp [Matrix.algebraMap_matrix_apply, Matrix.scalar_apply, Matrix.diagonal_apply, halg] }
-  let Θ : ℂ ⊗[G.F] G.C →ₐ[ℂ] Matrix (Fin G.n) (Fin G.n) ℂ :=
-    Algebra.TensorProduct.lift (Algebra.ofId ℂ _) ψF (fun a _ => Algebra.commute_algebraMap_left a _)
-  have hinj : Function.Injective Θ :=
-    (IsSimpleRing.injective_ringHom_or_subsingleton_codomain Θ.toRingHom).resolve_right
-      (by haveI : Nonempty (Fin G.n) := ⟨⟨0, G.n_pos⟩⟩; exact not_subsingleton _)
-  set x : ℂ ⊗[G.F] G.C := (1 : ℂ) ⊗ₜ[G.F] g with hx
-  have hxi : IsIntegral ℂ x := IsIntegral.of_finite ℂ x
-  have hge := natDegree_minpoly_le_tmul ℂ g hxi
-  have hΘx : Θ x = G.psi v g := by
-    rw [hx]
-    first
-      | (erw [Algebra.TensorProduct.lift_tmul, map_one, one_mul]; rfl)
-  have hmin : minpoly ℂ (G.psi v g) = minpoly ℂ x := by rw [← hΘx]; exact minpoly.algHom_eq Θ hinj x
-  have hgi : IsIntegral G.F g := IsIntegral.of_finite G.F g
-  have hdvd : minpoly ℂ (G.psi v g) ∣ (minpoly G.F g).map (algebraMap G.F ℂ) := by
-    apply minpoly.dvd
-    rw [Polynomial.aeval_map_algebraMap]
-    change Polynomial.aeval (ψF g) (minpoly G.F g) = 0
-    rw [Polynomial.aeval_algHom_apply, minpoly.aeval, map_zero]
-  have hmon : ((minpoly G.F g).map (algebraMap G.F ℂ)).Monic := (minpoly.monic hgi).map _
-  have heq : (minpoly G.F g).map (algebraMap G.F ℂ) = minpoly ℂ (G.psi v g) := by
-    refine Polynomial.eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic ?_) hmon hdvd ?_
-    · exact IsIntegral.of_finite ℂ _
-    · rw [Polynomial.natDegree_map, hmin]; exact hge
-  have hroot : (minpoly ℂ (Matrix.toLin' (G.psi v g))).IsRoot z := by
-    rw [Matrix.minpoly_toLin', ← heq, Polynomial.IsRoot, Polynomial.eval_map]
-    exact hz
-  obtain ⟨y, hy⟩ := (Module.End.hasEigenvalue_iff_isRoot.mpr hroot).exists_hasEigenvector
-  refine ⟨y, hy.2, ?_⟩
-  have := hy.apply_eq_smul
-  rwa [Matrix.toLin'_apply] at this
+  intros
+  apply _root_.GlobalTheory.LKCx.PolyArch.roots_eig_any <;> assumption
 
 theorem normSq_of_eigenvector {p : ℕ} [Fact p.Prime] (G : HTGroup p) (P : Pair G) (μ : ℂ) (ha : G.a = 1)
     (hm : P.Mark μ) (v : InfinitePlace G.F) (x : Fin G.n → ℂ) (hx0 : x ≠ 0) (w : ℂ)

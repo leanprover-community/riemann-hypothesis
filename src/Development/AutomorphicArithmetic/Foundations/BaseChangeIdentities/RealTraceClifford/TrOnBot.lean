@@ -52,16 +52,6 @@ open PositivityTheory.RgTw (Mat)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD UpperTheory.RealTr
 open Formalism.REAL (GlRel IsWeight KHighest Cas)
 
--- The trace of any endomorphism on the zero submodule vanishes.
-private theorem trOn_bot' {V : Type} [AddCommGroup V] [Module ℂ V] (L : V →ₗ[ℂ] V) :
-    trOn (⊥ : Submodule ℂ V) L = 0 := by
-  unfold trOn
-  split_ifs with h
-  · have : Subsingleton (⊥ : Submodule ℂ V) := inferInstance
-    have h0 : L.restrict h = 0 := Subsingleton.elim _ _
-    rw [h0, map_zero]
-  · rfl
-
 private theorem cf_sum {n : ℕ} (s : Finset (Wt n)) (g : Wt n → ℂ) (μ : Wt n) :
     cf (∑ x ∈ s, g x • ex x) μ = if μ ∈ s then g μ else 0 := by
   classical
@@ -75,4 +65,4 @@ theorem UpperTheory.RealTr.chEx :
   rw [cf_sum]
   split_ifs with h
   · rfl
-  · rw [hs μ h, trOn_bot']
+  · rw [hs μ h, trOn_bot]

@@ -68,17 +68,6 @@ theorem map_sum_toFr {k m : ℕ} (M : Fin m → Matrix (Fin k) (Fin k) O) :
   ext i j
   simp [Matrix.sum_apply]
 
-private theorem sum_mulVec_eq {K : Type} [CommRing K] {k m : ℕ} (A : Fin m → Matrix (Fin k) (Fin k) K)
-    (v : Fin k → K) : (∑ i, A i).mulVec v = ∑ i, (A i).mulVec v := by
-  ext a
-  simp only [Matrix.mulVec, dotProduct, Matrix.sum_apply, Finset.sum_apply, Finset.sum_mul]
-  exact Finset.sum_comm
-
-private theorem smul_mulVec_eq' {K : Type} [CommRing K] {k : ℕ} (a : K) (A : Matrix (Fin k) (Fin k) K)
-    (v : Fin k → K) : (a • A).mulVec v = a • A.mulVec v := by
-  ext i
-  simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
-
 theorem actsAs_sum
     (e : (Fin n → FractionRing O) ≃ₗ[FractionRing O] ((Fin r → FractionRing O) × (Fin t → FractionRing O)))
     {m : ℕ} (c : Fin m → O) (M : Fin m → Matrix (Fin n) (Fin n) O) (P : Fin m → Matrix (Fin r) (Fin r) O)
@@ -88,7 +77,7 @@ theorem actsAs_sum
   intro u
   rw [map_sum_toFr, map_sum_toFr]
 
-  simp only [map_smul_toFr, sum_mulVec_eq, smul_mulVec_eq', map_sum, map_smul, h]
+  simp only [map_smul_toFr, Matrix.sum_mulVec, Matrix.smul_mulVec, map_sum, map_smul, h]
   refine Prod.ext ?_ ?_
   · simp [Prod.fst_sum]
   · funext j

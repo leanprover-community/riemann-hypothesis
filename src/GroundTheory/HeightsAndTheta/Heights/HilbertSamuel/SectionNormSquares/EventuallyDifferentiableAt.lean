@@ -132,16 +132,6 @@ theorem leviForm_add {f g : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffA
   simp only [ContinuousLinearMap.add_apply]
   ring
 
-theorem leviForm_sub {f g : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffAt ℝ 2 f z) (hg : ContDiffAt ℝ 2 g z)
-    (w : J → ℂ) : leviForm (fun x => f x - g x) z w = leviForm f z w - leviForm g z w := by
-  have hfd : fderiv ℝ (fun x => f x - g x) =ᶠ[𝓝 z] fun y => fderiv ℝ f y - fderiv ℝ g y := by
-    filter_upwards [eventually_differentiableAt hf, eventually_differentiableAt hg] with y h1 h2
-    exact fderiv_fun_sub h1 h2
-  unfold leviForm
-  rw [hfd.fderiv_eq, fderiv_fun_sub (differentiableAt_fderiv hf) (differentiableAt_fderiv hg)]
-  simp only [ContinuousLinearMap.sub_apply]
-  ring
-
 theorem leviForm_const_mul {f : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffAt ℝ 2 f z) (c : ℝ) (w : J → ℂ) :
     leviForm (fun x => c * f x) z w = c * leviForm f z w := by
   have hfd : fderiv ℝ (fun x => c * f x) =ᶠ[𝓝 z] fun y => c • fderiv ℝ f y := by
@@ -150,6 +140,12 @@ theorem leviForm_const_mul {f : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContD
   unfold leviForm
   rw [hfd.fderiv_eq, fderiv_fun_const_smul (differentiableAt_fderiv hf) c]
   simp only [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  ring
+
+theorem leviForm_sub {f g : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffAt ℝ 2 f z) (hg : ContDiffAt ℝ 2 g z)
+    (w : J → ℂ) : leviForm (fun x => f x - g x) z w = leviForm f z w - leviForm g z w := by
+  have he : (fun x => f x - g x) = fun x => f x + (-1 : ℝ) * g x := funext fun x => by ring
+  rw [he, leviForm_add hf (contDiffAt_const.mul hg) w, leviForm_const_mul hg (-1) w]
   ring
 
 def IsFlat (u : (J → ℂ) → ℝ) (z w : J → ℂ) : Prop :=

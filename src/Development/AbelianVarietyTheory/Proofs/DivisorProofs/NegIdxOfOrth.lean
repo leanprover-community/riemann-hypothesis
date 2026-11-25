@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHasLocalSmall
 public import Formalism.LocalRingCardinality.DataSpaces
 public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
@@ -160,42 +161,8 @@ section Idem
 open Formalism.IndefR.Lev in
 theorem idem_exists {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) {μ₀ : T}
     (hL : Lc.Is μ₀) (W : G.Weil) (t : T) : ∃ e : AE D, IsIdemSum e (locPl G t) := by
-  classical
-  obtain ⟨e0, he0, -⟩ := W.cosVec_is
-  have hW := GlobalTheory.ChainOnto.FlagAct.not_isConjPl_of_idemSum he0
-  have hQ := hL.Q_pl t
-  have key : ∀ P ∈ Lc.Q t, ∀ P' ∈ G.pl.W0, (IsConjPl P P' ∨ IsConjPl P' P) → P ∈ G.pl.W0 := by
-    intro P hPQ P' hP' hc
-    have hu : P.under (𝓞 D.host.F) = P'.under (𝓞 D.host.F) := by
-      rcases hc with hc | hc
-      · exact GlobalTheory.LevelPlaces.under_eq_of_isConjPl hc
-      · exact (GlobalTheory.LevelPlaces.under_eq_of_isConjPl hc).symm
-    obtain ⟨v, hv, rfl⟩ := Finset.mem_image.1 hP'
-    rw [G.pl.under_w hv] at hu
-    rcases G.pl.mem_S0_of_sum_eq.1 hv with rfl | h1
-    · exact absurd hu (G.pl.levelPlace_ne_basePlace t P hPQ)
-    · rw [G.pl.w_Q t P hPQ (hu ▸ h1), hu]
-      exact Finset.mem_image_of_mem _ hv
-  have hnc : ∀ P ∈ locPl G t, ∀ P' ∈ locPl G t, ¬ IsConjPl P P' := by
-    intro P hP1 P' hP2 hc
-    simp only [locPl, Finset.mem_union] at hP1 hP2
-    rcases hP1 with h1 | h1 <;> rcases hP2 with h2 | h2
-    · exact hW P h1 P' h2 hc
-    · exact hW P h1 P' (key P' h2 P h1 (Or.inr hc)) hc
-    · exact hW P (key P h1 P' h2 (Or.inl hc)) P' h2 hc
-    · exact (hQ P h1).2 P' h2 hc
-  let es : Formalism.L2.DIV.Pl D.host.E → AE D := fun PP =>
-    if h : ¬ IsConjPl PP PP then (Formalism.IndefR.Fin.idem_exists_at PP h).choose else 0
-  have hes : ∀ PP ∈ locPl G t, Formalism.L2.NTheta.IsIdemAt (es PP) PP := by
-    intro PP hPP
-    have h := hnc PP hPP PP hPP
-    simp only [es, dif_pos h]
-    exact (Formalism.IndefR.Fin.idem_exists_at PP h).choose_spec.1
-  refine ⟨∑ PP ∈ locPl G t, es PP, ⟨es, hes, rfl⟩, ?_⟩
-
-  rw [map_sum, Finset.sum_mul_sum]
-  refine Finset.sum_eq_zero fun PP hPP => Finset.sum_eq_zero fun PP' hPP' => ?_
-  exact Formalism.IndefR.Fin.idem_orth_conj (hnc PP hPP PP hPP) (hes PP hPP) (hes PP' hPP') (hnc PP hPP PP' hPP')
+  intros
+  apply _root_.GlobalTheory.FunObj.LocTensor.exists_idemSum_locPl <;> assumption
 
 end Idem
 

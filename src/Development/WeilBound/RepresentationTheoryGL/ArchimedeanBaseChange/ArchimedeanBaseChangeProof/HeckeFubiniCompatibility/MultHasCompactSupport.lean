@@ -49,7 +49,7 @@ open MeasureTheory Matrix
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace PositivityTheory.Rg.BcB.CG
 

@@ -53,16 +53,6 @@ variable {A Amb : Type*} [AddCommGroup A] [Module ℂ A] [AddCommGroup Amb] [Mod
 
 end ThetaP
 
-section Kap
-
-variable {N : Type*} [AddCommGroup N] [Module ℂ N]
-
-def IsKap {Tup Sig : Type*} (m : ℕ) (dnup : Tup → N →ₗ[ℂ] N) (partE : Sig → Submodule ℂ N)
-    (lam : Tup → ℕ → Sig → ℝ) (κ : ℝ) : Prop :=
-  ∀ μ σ, ∀ x ∈ partE σ, dnup μ x = ((κ * ∏ j ∈ Finset.Icc 1 m, lam μ j σ : ℝ) : ℂ) • x
-
-end Kap
-
 section Bu
 
 variable {M N Mu : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]

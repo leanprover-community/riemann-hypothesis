@@ -48,30 +48,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-namespace DegreeOneCoeffSubstitution
-open MvPowerSeries Finsupp
-
-private lemma deg_one {σ : Type} [DecidableEq σ] (d : σ →₀ ℕ) (h : d.degree = 1) :
-    ∃ s, d = Finsupp.single s 1 := by
-  have hd : d ≠ 0 := by rintro rfl; simp at h
-  obtain ⟨s, hs⟩ := Finsupp.support_nonempty_iff.mpr hd
-  refine ⟨s, ?_⟩
-  have hsum : d s + ∑ i ∈ d.support.erase s, d i = 1 := by
-    rw [Finset.add_sum_erase _ _ hs, ← degree_apply, h]
-  have hs0 : d s ≠ 0 := Finsupp.mem_support_iff.mp hs
-  have hds : d s = 1 := by omega
-  have hrest : ∑ i ∈ d.support.erase s, d i = 0 := by omega
-  rw [Finset.sum_eq_zero_iff] at hrest
-  ext i
-  by_cases his : i = s
-  · subst his; simp [hds]
-  · rw [Finsupp.single_apply, if_neg (Ne.symm his)]
-    by_cases hi : i ∈ d.support
-    · exact hrest i (Finset.mem_erase.mpr ⟨his, hi⟩)
-    · exact Finsupp.notMem_support_iff.mp hi
-
-end DegreeOneCoeffSubstitution
-
 open MvPowerSeries Finsupp in
 theorem UpperTheory.Reformulated.B.LinearTermOfSubstitution.main :
     ∀ {S : Type}
@@ -93,7 +69,7 @@ theorem UpperTheory.Reformulated.B.LinearTermOfSubstitution.main :
       simp [coeff_one]
     have h1 : d.degree ≠ 1 := by
       intro h
-      obtain ⟨s, rfl⟩ := DegreeOneCoeffSubstitution.deg_one d h
+      obtain ⟨s, rfl⟩ := (Finsupp.sum_eq_one_iff d).mp h
       exact hd (by simp)
     have h2 : 2 ≤ d.degree := by
       have : d.degree ≠ 0 := fun h => h0 ((degree_eq_zero_iff d).mp h)

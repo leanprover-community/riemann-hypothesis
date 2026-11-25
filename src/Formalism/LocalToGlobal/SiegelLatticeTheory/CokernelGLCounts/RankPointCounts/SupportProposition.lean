@@ -19,8 +19,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.
 open scoped BigOperators ComplexOrder
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section AbsSums
 
 theorem posSemidef_of_hasSum {ι J : Type*} [Fintype ι] (f : J → ι → ℂ) (b : J → ℝ) (hb : ∀ j, 0 ≤ b j)

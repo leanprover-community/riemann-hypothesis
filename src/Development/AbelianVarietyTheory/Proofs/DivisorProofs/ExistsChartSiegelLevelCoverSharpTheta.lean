@@ -61,8 +61,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.PoincChart

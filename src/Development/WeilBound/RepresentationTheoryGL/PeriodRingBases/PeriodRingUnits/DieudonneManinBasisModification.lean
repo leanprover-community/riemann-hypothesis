@@ -83,8 +83,6 @@ def t : B l := cB l (tA l)
 
 def aB : AInf ℂ_[l] l →+* B l := (cB l).comp (algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l))
 
-def Ainf' : Subring (B l) := Subring.closure (Set.range (aB l) ∪ {qB l ((l : ℚ_[l])⁻¹)})
-
 def Plus : Subring (BdR l) := (algebraMap (BdRp l) (BdR l)).range
 
 
@@ -101,8 +99,6 @@ def χ (g : GQ l) : ℚ_[l] := ((DeRhamTwist.Twist.chi0 l g : ℤ_[l]) : ℚ_[l]
 
 def κ (g : GQ l) : ℚ_[l] :=
   (kummerC (untilt_epsilon (p := l)) untilt_frobeniusEquiv_symm_epsilon_ne_one (toBot g) : ℤ_[l])
-
-def Eig (h : ℕ) (m : ℤ) (x : B l) : Prop := (φ l ^ h) x = qB l ((l : ℚ_[l]) ^ m) * x
 
 structure Base (l : ℕ) [Fact l.Prime] : Prop where
   ι_σ : ∀ (g : GQ l) x, ι l (σB g x) = σD g (ι l x)

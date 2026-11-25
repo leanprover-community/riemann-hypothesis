@@ -1204,7 +1204,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.UCanon.RankZero
 
 theorem nonempty_moduli : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H), D.p + D.q = 0 → Nonempty (Moduli D l) :=
-  fun H D l hD => (GlobalTheory.Models.RankZero.main _ H D hD).1.map fun X => X l
+  fun H D l hD => (GlobalTheory.Models.RankZero.main _ H D hD).map fun X => X l
 
 end GlobalTheory.UCanon.RankZero
 end -- clump:auto
@@ -1292,8 +1292,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open scoped CategoryTheory.Obj TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Serre
 attribute [local instance] Over.cartesianMonoidalCategory
-
-set_option autoImplicit false
 
 namespace GlobalTheory.TensorDualDim
 

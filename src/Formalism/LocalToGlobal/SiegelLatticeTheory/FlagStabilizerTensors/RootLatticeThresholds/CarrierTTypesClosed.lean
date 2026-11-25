@@ -219,21 +219,14 @@ namespace Formalism.L2.SG.Pf.CarrierT
 
 open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built
 
-private theorem list_prod_apply_eq_foldr {W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W]
-    (l : List (Module.End ℂ W)) (v : W) :
-    l.prod v = List.foldr (fun (T : W → W) (h : W) => T h) v
-      (l.map (fun (T : Module.End ℂ W) => (T : W → W))) := by
-  induction l with
-  | nil => rfl
-  | cons a l ih => simp [List.prod_cons, ih]
-
 private theorem qmF_eq_qdet_apply {W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W] {m : ℕ}
     (E : Fin m → Fin m → Module.End ℂ W) (w : ℂ) (v : W) :
     Formalism.FourierDecayAlt.Q.qmF (fun a b => (E a b : W → W)) id id w v = (Formalism.REAL.qdet E w) v := by
   simp only [Formalism.FourierDecayAlt.Q.qmF, Formalism.REAL.qdet, Formalism.REAL.qminor]
   rw [LinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun σ _ => ?_)
-  rw [Module.End.mul_apply, Module.End.intCast_apply, list_prod_apply_eq_foldr, List.map_ofFn]
+  rw [Module.End.mul_apply, Module.End.intCast_apply,
+    ← Formalism.FourierDecayAlt.P.LieListProducts.list_prod_apply, List.map_ofFn]
   rw [← Int.cast_smul_eq_zsmul ℂ]
   congr 2
   congr 1

@@ -560,11 +560,6 @@ theorem locToCompl_algebraMap (a : R) :
     locToCompl K v (algebraMap R (Localization.AtPrime v.asIdeal) a) = algebraMap R (v.adicCompletionIntegers K) a := by
   exact IsLocalization.lift_eq (M := v.asIdeal.primeCompl) _ a
 
-private lemma irreducible_algebraMap_int_lemma (x : v.adicCompletionIntegers K) :
-    IsUnit x ↔ Valued.v (x : v.adicCompletion K) = 1 := by
-  rw [ValuationSubring.valuation_eq_one_iff]
-  exact (Valuation.isEquiv_valuation_valuationSubring Valued.v).symm.eq_one_iff_eq_one
-
 theorem irreducible_algebraMap_int {π : R} (h : v.intValuation π = WithZero.exp (-1)) :
     Irreducible (algebraMap R (v.adicCompletionIntegers K) π) := by
   have hv : Valued.v ((algebraMap R (v.adicCompletionIntegers K) π : v.adicCompletionIntegers K) :
@@ -572,7 +567,7 @@ theorem irreducible_algebraMap_int {π : R} (h : v.intValuation π = WithZero.ex
     rw [valued_algebraMap_int]
     exact h
   refine ⟨fun hu => ?_, ?_⟩
-  · rw [irreducible_algebraMap_int_lemma, hv] at hu
+  · rw [IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one, hv] at hu
     have h1 : (-1 : ℤ) = 0 := WithZero.exp_inj.mp (hu.trans WithZero.exp_zero.symm)
     omega
   · intro y z hyz
@@ -601,10 +596,10 @@ theorem irreducible_algebraMap_int {π : R} (h : v.intValuation π = WithZero.ex
     rw [← WithZero.exp_log hy0, ← WithZero.exp_log hz0, ← WithZero.exp_add, WithZero.exp_inj] at hyz'
     by_cases hm0 : (Valued.v (y : v.adicCompletion K)).log = 0
     · left
-      rw [irreducible_algebraMap_int_lemma, ← WithZero.exp_log hy0, hm0, WithZero.exp_zero]
+      rw [IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one, ← WithZero.exp_log hy0, hm0, WithZero.exp_zero]
     · right
       have hn0 : (Valued.v (z : v.adicCompletion K)).log = 0 := by omega
-      rw [irreducible_algebraMap_int_lemma, ← WithZero.exp_log hz0, hn0, WithZero.exp_zero]
+      rw [IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one, ← WithZero.exp_log hz0, hn0, WithZero.exp_zero]
 
 theorem exists_irreducible_locToCompl :
     ∃ ϖ : Localization.AtPrime v.asIdeal, Irreducible ϖ ∧ Irreducible (locToCompl K v ϖ) := by

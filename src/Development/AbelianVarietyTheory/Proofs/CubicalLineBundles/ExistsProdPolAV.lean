@@ -49,8 +49,6 @@ import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain

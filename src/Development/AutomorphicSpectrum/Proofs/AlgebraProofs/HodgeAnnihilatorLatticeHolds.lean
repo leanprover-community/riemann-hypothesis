@@ -51,10 +51,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Num
 
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
-theorem mem_stdLat_iff_algebra (R : Subalgebra o Ω) {ι : Type} (v : ι → Ω) :
-    v ∈ stdLat R ι ↔ ∀ i, v i ∈ R := by
-  simp [stdLat, AddSubgroup.mem_pi]
-
 theorem linMap_mem_stdLat {F : Type} [Zero F] [Fintype F] {n : ℕ} (R : Subalgebra o Ω) (χ : F → Ω)
     (hχ : ∀ a, χ a ∈ R) (v : Fin n → Ω) (hv : v ∈ stdLat R (Fin n)) :
     linMap n χ v ∈ stdLat R (Fin n → F) := by
@@ -73,7 +69,7 @@ theorem hodge_annihilator_lattice {o Ω : Type} [CommRing o] [Field Ω] [Algebra
   obtain ⟨hp0, hwR, -, -, hχ⟩ := hC
   intro x hx
   obtain ⟨u, hu, rfl⟩ := AddSubgroup.mem_map.mp hx
-  have hu' : ∀ i, u i ∈ R := (mem_stdLat_iff_algebra R u).mp hu
+  have hu' : ∀ i, u i ∈ R := (PositivityTheory.Xgn.GoodLatticeBaseChange.mem_stdLat R u).mp hu
   refine _root_.GlobalTheory.CompanionTheory.Ar.Num.HaLattice.main R p hp hp0 hN hF hI n (D.af R p (χ τ)) (H.1 τ).1 _ ⟨1, ?_⟩ ?_
   · have hy : linMap n (χ τ) (w • u) ∈ stdLat R (Fin n → F) :=
       linMap_mem_stdLat R (χ τ) (hχ τ).2.2 _ ((_root_.PositivityTheory.Xgn.GoodLatticeBaseChange.mem_stdLat R _).mpr fun i => by

@@ -58,8 +58,6 @@ open scoped TensorProduct ComplexConjugate ComplexOrder Classical ENNReal
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.VacuumCharacterDeterminant
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev Fam (D : D7) (m n : ℕ) : Type := D.what₂.Tau → Matrix (Fin m) (Fin n) ℂ

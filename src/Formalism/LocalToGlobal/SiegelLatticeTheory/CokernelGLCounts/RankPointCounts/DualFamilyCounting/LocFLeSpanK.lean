@@ -58,9 +58,6 @@ private theorem star_jK_eq_of_mem_closure_prime_compl (hF : IsFixF K F) {𝔭 : 
   | one => simp
   | mul y z _ _ hy hz => rw [map_mul, star_mul', hy, hz]
 
-private theorem star_mem_HU_SP (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} [𝔭.IsPrime] {a : K}
-    (ha : a ∈ HU.SP K 𝔭) : star a ∈ HU.SP K 𝔭 :=
-  HU.InP.conj hF ha
 
 theorem smul_eq_jK (c : 𝓞 K) (v : V) : c • v = jK c • v := (algebraMap_smul K c v).symm
 
@@ -181,7 +178,7 @@ theorem mem_locF_dualIn_iff (hF : IsFixF K F) (h𝔭 : 𝔭.IsMaximal) (hL : IsL
       rw [coords hbX hloc horth hdiag ha h𝔭.isPrime hL hyX, map_sum, LinearMap.sum_apply]
       refine Subring.sum_mem _ fun i _ => ?_
       rw [LinearMap.map_smulₛₗ₂, starRingEnd_apply, smul_eq_mul]
-      exact Subring.mul_mem _ (star_mem_HU_SP hF (hc i)) (hq i)
+      exact Subring.mul_mem _ (HU.InP.conj hF (hc i)) (hq i)
     obtain ⟨S, hS⟩ := hL.1
     have hex : ∀ g : S, ∃ t : 𝓞 F, t ∉ 𝔭 ∧ ∃ z : 𝓞 K, jK z = jK (ι t) * h g x := fun g =>
       HU.mem_SP.mp (hgx g (hS ▸ Submodule.subset_span g.2))

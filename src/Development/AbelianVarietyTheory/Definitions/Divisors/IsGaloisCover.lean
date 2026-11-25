@@ -42,8 +42,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR KaehlerDifferential
@@ -84,22 +82,7 @@ theorem mk' (hG : Finite G) (hfin : IsFinite π) (het : Etale π) (hon : Surject
     simpa only [inv_inv] using congrArg Inv.inv (hu a⁻¹ ha.symm)
 
 theorem finite (h : IsGal π hπ G act) : Finite G := GlobalTheory.ZM.IsGaloisCover.finite h
-theorem etale (h : IsGal π hπ G act) : Etale π := GlobalTheory.ZM.IsGaloisCover.etale h
 theorem surjective (h : IsGal π hπ G act) : Surjective π := GlobalTheory.ZM.IsGaloisCover.onto h
-
-theorem act_comp (h : IsGal π hπ G act) (g : G) : act g ≫ π = π := by
-  simpa using GlobalTheory.ZM.IsGaloisCover.inv h g⁻¹
-
-theorem fibre (h : IsGal π hπ G act) (K : Type) [Field K] [IsAlgClosed K] (a b : Sp K ⟶ W) :
-    a ≫ π = b ≫ π ↔ ∃! g : G, b = a ≫ act g := by
-  constructor
-  · intro e
-    obtain ⟨g, hg, hu⟩ := GlobalTheory.ZM.IsGaloisCover.fibre h K a b e
-    refine ⟨g⁻¹, hg.symm, fun g' hg' => ?_⟩
-    have := hu g'⁻¹ (by simpa using hg'.symm)
-    simp [← this]
-  · rintro ⟨g, hg, -⟩
-    rw [hg, Category.assoc, h.act_comp]
 
 end IsGal
 

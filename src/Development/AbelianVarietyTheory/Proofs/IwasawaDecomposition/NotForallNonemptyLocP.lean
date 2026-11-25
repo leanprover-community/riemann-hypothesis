@@ -167,8 +167,6 @@ section Collapse
 
 open MeasureTheory
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 end Collapse
 
 end GlobalTheory.SmallThetaModules

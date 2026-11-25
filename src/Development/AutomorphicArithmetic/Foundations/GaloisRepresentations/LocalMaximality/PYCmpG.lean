@@ -51,8 +51,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 section Abs
 variable {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (act : S →ₐ[ℂ] Module.End ℂ E)
 

@@ -50,8 +50,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.
 
 namespace GlobalTheory.BigTop.Fun
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.FunObj.SqNum GlobalTheory.SignedHC
 
 section Arith

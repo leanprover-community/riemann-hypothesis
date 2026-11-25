@@ -7,53 +7,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelP
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.BasisEApply
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.DenEqOneOfForallPadicNormLeOne
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.Integral
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -192,8 +147,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def DeltaUnitCof : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
     (∀ p, Agree δ M p) → ∀ᶠ p in Filter.cofinite, δ p ∈ 𝒪[(D.s.atP p).Fp] ∧ (δ p)⁻¹ ∈ 𝒪[(D.s.atP p).Fp]
@@ -259,8 +212,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def DiffTrivCof : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
     (∀ p, Agree δ M p) → ∀ᶠ p in Filter.cofinite, ∀ z : (D.s.atP p).Ep,
@@ -320,8 +271,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def EpDualCof : Prop :=
   ∀ D : Formalism.BasicNotions.D7, ∀ᶠ p in Filter.cofinite, ∀ z : (D.s.atP p).Ep,
@@ -396,8 +345,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem memO_iff {K : Type} [Field K] [ValuativeRel K] (x : K) : x ∈ 𝒪[K] ↔ x ≤ᵥ 1 := by
   simp only [Valuation.mem_integer_iff]
@@ -534,8 +481,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem t2Space_of_nonarchimedeanLocalField' (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] :
     T2Space K :=
@@ -744,8 +689,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7}
 
 theorem ιE_int_mem_O (p : PlF D) (a : 𝓞 D.host.E) : (D.s.atP p).ιE (a : D.host.E) ∈ (D.s.atP p).O := iotaE_mem_of_int D p (NumberField.RingOfIntegers.isIntegral_coe a)
@@ -792,8 +735,6 @@ namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem resCard_loc {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : Loc.LocAt F E sig p) :
@@ -860,8 +801,6 @@ namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section PtUnit
 
@@ -952,8 +891,6 @@ namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section PtUnit2
 

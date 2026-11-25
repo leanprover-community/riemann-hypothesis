@@ -39,13 +39,6 @@ def BergmanExistsStatement (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M
 def ev {M : Type*} (n : ℕ) (g : Fin n → M → ℂ) (ph : M → ℝ) (r : ℝ) (x : M) : ℝ :=
   (∑ i, ‖g i x‖ ^ 2) * Real.exp (-ph x) / r ^ 2
 
-def shell {M : Type*} (n : ℕ) (g : Fin n → M → ℂ) (ph : M → ℝ) (r ε : ℝ) : Set M :=
-  {x | ε ^ 2 / 2 ≤ ev n g ph r x ∧ ev n g ph r x ≤ ε ^ 2}
-
-def IsCutoff (χ : ℝ → ℝ) : Prop :=
-  ContDiff ℝ ∞ χ ∧ (∀ t, t ≤ 1 / 2 → χ t = 1) ∧ (∀ t, 1 ≤ t → χ t = 0) ∧
-    (∀ t, 0 ≤ χ t ∧ χ t ≤ 1) ∧ ∀ t, |deriv χ t| ≤ 3
-
 def PolarStatement (n : ℕ) : Prop :=
   1 ≤ n → ∀ a b : ℝ, 0 < a → a ≤ b →
     ∫⁻ y in {y : V n | a ≤ ‖y‖ ^ 2 ∧ ‖y‖ ^ 2 ≤ b}, ENNReal.ofReal ((‖y‖ ^ 2) ^ (-(n : ℝ))) =

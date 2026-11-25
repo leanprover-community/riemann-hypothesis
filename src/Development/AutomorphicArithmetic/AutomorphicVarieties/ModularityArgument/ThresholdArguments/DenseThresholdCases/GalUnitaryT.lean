@@ -385,7 +385,7 @@ private theorem jumps_sum {τ : E →+* Om l} {J J' : Multiset ℤ}
   have n₂ := m₂.enlarge l₂
   have t : IsInduced Bw τ (LL' := supExt L₁ L₂) ((IntermediateField.inclusion l₁).comp τ₁) := t₁
   have S := GlobalTheory.T.sumRep_deRham_iff_and_multiplicity_add l _ _ (UpperTheory.V.Loc.tiedP l) E Ω Gw O Bw _ a b
-    (mapRep (IntermediateField.inclusion l₁).toRingHom r₁) (mapRep (IntermediateField.inclusion l₂).toRingHom r₂)
+    (mapRep (IntermediateField.inclusion l₁).toRingHom r₁ :) (mapRep (IntermediateField.inclusion l₂).toRingHom r₂ :)
   refine ⟨_, _, model_sum n₁ n₂, S.1.2 ⟨(n₁.isdRAt_iff _).1 ⟨_, _, m₁, d₁⟩, (n₂.isdRAt_iff _).1 ⟨_, _, m₂, d₂⟩⟩,
     _, t, fun c => ?_⟩
   rw [S.2, ← h.count_eq _ n₁ t, ← h'.count_eq _ n₂ t, Multiset.count_add, Nat.cast_add]

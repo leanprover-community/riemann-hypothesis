@@ -79,15 +79,9 @@ theorem UpperTheory.V.FW.cardTors :
     ∀ (C : Type) [CommGroup C] [Finite C], (∀ n : ℕ, (powR (C := C) n).index = Nat.card (torK (C := C) n)) ∧ ∀ (l : ℕ) [Fact l.Prime], Nat.card (C →* Multiplicative (ZMod l)) = (powR (C := C) l).index := by
   intro C _ _
   refine ⟨fun n => ?_, fun l _ => ?_⟩
-  · have h1 := Subgroup.card_mul_index (powR (C := C) n)
-    have h2 := Subgroup.card_mul_index (torK (C := C) n)
-    have h3 : (torK (C := C) n).index = Nat.card (powR (C := C) n) := Subgroup.index_ker _
-    rw [h3] at h2
-    have hpos : 0 < Nat.card (powR (C := C) n) := Nat.card_pos
-    have h4 : Nat.card (powR (C := C) n) * (powR (C := C) n).index
-        = Nat.card (powR (C := C) n) * Nat.card (torK (C := C) n) := by
-      rw [h1, ← h2, mul_comm]
-    exact Nat.eq_of_mul_eq_mul_left hpos h4
+  · exact Nat.eq_of_mul_eq_mul_left Nat.card_pos (by
+      rw [Subgroup.card_mul_index, ← Subgroup.card_ker_mul_card_range (powMonoidHom n : C →* C),
+        mul_comm])
   · set N := powR (C := C) l
     have hle : ∀ f : C →* Multiplicative (ZMod l), N ≤ f.ker := by
       intro f x hx

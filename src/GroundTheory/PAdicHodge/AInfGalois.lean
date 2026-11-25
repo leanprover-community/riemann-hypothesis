@@ -203,41 +203,6 @@ theorem preTiltMap_comp :
 
 end Functor
 
-section Density
-
-variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
-variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p]
-
-
-end Density
-
-section Algebra
-
-variable {K C : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
-  [NontriviallyNormedField C] [IsUltrametricDist C] [NormedAlgebra K C]
-variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p] [IsPerfectoidField C p]
-
-end Algebra
-
-section IntermediateField
-
-variable {K C : Type*} [NontriviallyNormedField K] [NormedField C] [NormedAlgebra K C]
-
-end IntermediateField
-
-section TiltIntermediate
-
-variable {K C : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
-  [NontriviallyNormedField C] [IsUltrametricDist C] [NormedAlgebra K C]
-variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p] [IsPerfectoidField C p]
-
-variable (F : IntermediateField K C) [IsPerfectoidField F p]
-
-
-
-
-end TiltIntermediate
-
 end GroundTheory.PAdicHodge
 end -- clump:auto
 end -- clump:auto

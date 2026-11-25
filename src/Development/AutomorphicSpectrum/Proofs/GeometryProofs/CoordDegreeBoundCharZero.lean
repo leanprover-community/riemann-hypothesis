@@ -90,11 +90,6 @@ theorem dualMap_comp {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R'']
     (dualMap ψ).comp (dualMap φ) = dualMap (ψ.comp φ) := by
   refine RingHom.ext fun a => TrivSqZeroExt.ext ?_ ?_ <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap]
 
-theorem spec_dualMap {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] (φ : R →+* R') (ψ : R' →+* R'') :
-    spMap (dualMap ψ) ≫ spMap (dualMap φ) = spMap (dualMap (ψ.comp φ)) := by
-  rw [← dualMap_comp]
-  exact spec_comp _ _
-
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : Sp Ω ⟶ X} {E : Type}
   [AddCommGroup E] [Module Ω E]
 
@@ -203,7 +198,7 @@ theorem exists_integral_form : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsC
     have h2 := hj x
     rw [Category.comp_id] at h1 h2 ⊢
     change (ML.pt (k (j x))).left = _
-    rw [h1, h2, ← Category.assoc, spec_dualMap, ← IsScalarTower.algebraMap_eq]
+    rw [h1, h2, ← Category.assoc, GlobalTheory.CompanionTheory.Ar.LieFin.spMap_dual_comp, ← IsScalarTower.algebraMap_eq]
   have hbA : IsBaseChange A j := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_isBaseChange X G (𝓞 L) A z B.carrier EA MB MA j hj
   have hbL : IsBaseChange L jL := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_isBaseChange X G (𝓞 L) L z B.carrier EL MB ML jL hjL
   haveI : IsLocalizedModule 𝔭.primeCompl j := (isLocalizedModule_iff_isBaseChange 𝔭.primeCompl A j).2 hbA

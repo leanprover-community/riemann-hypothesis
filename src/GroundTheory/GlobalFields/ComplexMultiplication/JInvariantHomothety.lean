@@ -220,17 +220,6 @@ lemma weierstrassLaurentCoeff_recursion (n : ℕ) :
   apply mul_left_cancel₀ (mul_ne_zero hK hf)
   linear_combination e
 
-theorem hasSum_weierstrassP_laurent {z : ℂ} (hz : ∀ l : L.lattice, (l : ℂ) ≠ 0 → ‖z‖ < ‖(l : ℂ)‖) :
-    HasSum (fun j ↦ weierstrassLaurentCoeff (L := L) j * z ^ j) (℘[L] z - 1 / z ^ 2) := by
-  have h := L.weierstrassPExceptSeries_hasSum 0 z 0 (fun l hl ↦ by simpa using hz l hl)
-  rw [weierstrassP_eq_except_zero z, add_sub_cancel_right]
-  convert h using 2 with j
-  rw [sub_zero, PeriodPair.weierstrassPExceptSeries, FormalMultilinearSeries.coeff_ofScalars,
-    weierstrassLaurentCoeff]
-  rcases eq_or_ne j 0 with rfl | hj
-  · simp
-  · simp [hj, L.lattice.zero_mem, L.sumInvPow_zero]
-
 lemma weierstrassLaurentCoeff_two_mul {n : ℕ} (hn : n ≠ 0) :
     weierstrassLaurentCoeff (L := L) (2 * n) = (2 * n + 1) * L.G (2 * n + 2) := by
   rw [weierstrassLaurentCoeff, if_neg (by omega)]

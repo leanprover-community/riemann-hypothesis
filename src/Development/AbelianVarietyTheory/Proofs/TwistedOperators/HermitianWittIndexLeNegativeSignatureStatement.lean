@@ -64,7 +64,6 @@ open GlobalTheory.SquareComm
 
 namespace GlobalTheory.WittSig
 
-open Matrix
 open scoped ComplexOrder
 
 theorem le_of_isotropic {n : Type} [Fintype n] [DecidableEq n] {q p r : ℕ} (J : Matrix n n ℂ)

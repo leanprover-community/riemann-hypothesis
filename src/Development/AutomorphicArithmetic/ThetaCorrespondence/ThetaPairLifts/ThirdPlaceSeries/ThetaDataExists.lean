@@ -48,7 +48,6 @@ noncomputable section
 namespace GlobalTheory.HeightCounting.Up
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.IndefR.NX ReciprocityTheory.Aut Formalism.AUTREP NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting
   GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 abbrev LayPAlt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) : Type 1 :=
   ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (Wt : Set B.places.Pl)
     (p0 : BaseLevelRowSide (w.D Z)) (t : RowsT K w Z Wt p0) (nch : NChoice (w.D Z)) (n : NchT w Z Wt nch), _root_.GlobalTheory.Mem.Top.Bl.NormChoiceCore hL t n → Prop

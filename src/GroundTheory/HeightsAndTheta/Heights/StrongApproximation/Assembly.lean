@@ -192,7 +192,7 @@ theorem of_placeMaps (hP : PlaceMaps.Statement) : AENeighbourhoods.Statement := 
   intro F E _ _ _ _ _ c h2 hc _ _
   exact ⟨fun N U hU => nhds_of_sep (hP F E c h2 hc).1 N U hU, int_cofinite⟩
 
-theorem proof (_hT : AETopologicalRing.Statement) (hP : PlaceMaps.Statement) :
+theorem proof (hP : PlaceMaps.Statement) :
     AENeighbourhoods.Statement :=
   of_placeMaps hP
 
@@ -1233,7 +1233,7 @@ theorem intersectionNumber_baseChange : PlaceMaps.Statement := by
       rw [form_map_compAt, inclA_map_compAt] at this
       exact this
 
-theorem proof (_h : LocalRingHypotheses.Statement) : PlaceMaps.Statement := intersectionNumber_baseChange
+theorem proof : PlaceMaps.Statement := intersectionNumber_baseChange
 
 end PlaceMaps
 
@@ -1304,7 +1304,7 @@ theorem SAHolds.of_neighbourhoods_truncation (hNb : AENeighbourhoods.Statement)
       · exact zero_mem _
   simpa using hmem
 
-theorem SAHolds.proof (_hHyp : HypPairExists.Statement) (hNb : AENeighbourhoods.Statement)
+theorem SAHolds.proof (hNb : AENeighbourhoods.Statement)
     (hTr : Truncation.Statement) : SAHolds.Statement :=
   SAHolds.of_neighbourhoods_truncation hNb hTr
 
@@ -1598,10 +1598,10 @@ theorem LocalInClosure.full : LocalInClosure.Statement :=
 theorem Truncation.full : Truncation.Statement := Truncation.proof LocalInClosure.full
 
 theorem AENeighbourhoods.full : AENeighbourhoods.Statement :=
-  AENeighbourhoods.proof AETopologicalRing.full PlaceMaps.full
+  AENeighbourhoods.proof PlaceMaps.full
 
 theorem SAHolds.full : ReciprocityTheory.ChartRestriction.G.SA.SAStatement :=
-  SAHolds.proof HypPairExists.full AENeighbourhoods.full Truncation.full
+  SAHolds.proof AENeighbourhoods.full Truncation.full
 
 theorem SAOpenHolds.full : ReciprocityTheory.ChartRestriction.G.SA.SAOpenStatement :=
   SAOpenHolds.proof SAHolds.full AETopologicalRing.full

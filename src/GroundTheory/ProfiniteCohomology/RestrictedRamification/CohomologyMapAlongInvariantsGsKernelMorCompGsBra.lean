@@ -37,7 +37,7 @@ theorem gsQuotientEquiv_symm_mk (σ : K.1.fixingSubgroup) :
   rw [MulEquiv.symm_apply_eq, gsQuotientEquiv_gsRestrict]
 
 theorem isQuotientMap_gsRestrict : Topology.IsQuotientMap (gsRestrict K S) := by
-  have : T2Space (galUnramifiedOutside K.1 ℚ̄ S) := galois_t2Space K.1 (maxUnramifiedOutside K.1 ℚ̄ S)
+  have : T2Space (galUnramifiedOutside K.1 ℚ̄ S) := krullTopology_t2 (K := K.1) (L := maxUnramifiedOutside K.1 ℚ̄ S)
   exact ((continuous_gsRestrict K S).isClosedMap).isQuotientMap (continuous_gsRestrict K S)
     (gsRestrict_surjective K S)
 

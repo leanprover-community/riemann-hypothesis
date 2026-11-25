@@ -61,15 +61,6 @@ theorem tpjet_jetAt0_superset {σ : Type} (P : MvPolynomial σ C) (G : MvPowerSe
   refine Finset.sum_subset hS fun m _ hm => ?_
   rw [MvPolynomial.notMem_support_iff.1 hm, zero_mul, zero_mul]
 
-private theorem mem_support_or_of_mem_support_add {σ : Type} (P Q : MvPolynomial σ C)
-    (a : σ →₀ ℕ) (ha : a ∈ (P + Q).support) : a ∈ P.support ∨ a ∈ Q.support := by
-  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_add] at ha
-  rw [MvPolynomial.mem_support_iff, MvPolynomial.mem_support_iff]
-  by_cases hP : AddMonoidAlgebra.coeff P a = 0
-  · right
-    rwa [hP, zero_add] at ha
-  · exact Or.inl hP
-
 theorem tpjet_jetAt0_add {σ : Type} (P Q : MvPolynomial σ C) (G : MvPowerSeries σ C) :
     jetAt0 (P + Q) G = jetAt0 P G + jetAt0 Q G := by
   apply GlobalTheory.MinorShiftJet.jetAt0_add_left

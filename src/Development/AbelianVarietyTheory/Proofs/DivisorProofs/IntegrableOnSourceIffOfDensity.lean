@@ -50,8 +50,6 @@ import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfC
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology MeasureTheory

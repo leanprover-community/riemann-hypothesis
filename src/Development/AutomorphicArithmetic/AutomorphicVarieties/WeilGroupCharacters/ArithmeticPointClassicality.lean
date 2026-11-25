@@ -161,12 +161,6 @@ end UniversalOrdinaryDeterminantRing
 
 end U
 
-def ModU : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
-    (s : HidaSetting l L Ω) (V : s.Lev), V.S' = s.S → (¬ ∃ ζ : L, IsPrimitiveRoot ζ l) →
-    ∀ (c : Coef l), Large L c → ∀ (n : ℕ), 1 ≤ n → ∀ (r : Resid V.frame c.O n) (B : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r) (ι : Qbar l ≃+* ℂ),
-      ∃ J : Ideal B.B, B.Modular ι J Λ
-
 def LevEx : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
     (s : HidaSetting l L Ω) (S' : Set (Plc (Lp L))), S'.Finite → s.S ⊆ S' →

@@ -280,7 +280,6 @@ end General
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links
 open IsDedekindDomain NumberField Matrix
 open scoped TensorProduct nonZeroDivisors Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem mem_hatMx_iff (D : D7) {m n : ℕ} (M : Submodule (𝓞 D.host.E) (Matrix (Fin m) (Fin n) D.host.E)) (z : Mx D m n) :
     z ∈ GlobalTheory.ChiGrid.hatMx M ↔ (∀ i j, infPart D (z i j) = 0) ∧ z.map (toEAf D) ∈ genGrp D.host.F M := by

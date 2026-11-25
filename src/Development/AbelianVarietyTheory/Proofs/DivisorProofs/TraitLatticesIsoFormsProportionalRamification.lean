@@ -435,8 +435,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.ShFam GlobalTheory.Models GlobalTheory.LN GlobalTheory
 open scoped CategoryTheory.Obj
 
-set_option autoImplicit false
-
 noncomputable section
 
 attribute [local instance] Over.cartesianMonoidalCategory

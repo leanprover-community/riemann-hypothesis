@@ -139,7 +139,7 @@ private theorem gsp_map {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R'
   ext i j
   by_cases hij : i = j <;> simp [hij]
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
-private theorem aut_conj (ι : PadicAlgCl l ≃+* ℂ) {r r' : G ℚ Ω →* M4 (PadicAlgCl l)} (h : IsConj4 r r') (_hi : Irr r)
+private theorem aut_conj (ι : PadicAlgCl l ≃+* ℂ) {r r' : G ℚ Ω →* M4 (PadicAlgCl l)} (h : IsConj4 r r')
     (ha : _root_.UpperTheory.V.Aut.IsAut4Alt ι r') : _root_.UpperTheory.V.Aut.IsAut4Alt ι r := by
   exact _root_.UpperTheory.GalN.V.autQIsoN ℚ Ω l ι 4 _ _ (((irrIff (PadicAlgCl l)).2 r r').1 h) ha
 private theorem cont_small (𝔞 : Amb l) (e : 𝔞.K ≃+* PadicAlgCl l) (he : 𝔞.IsZero e) {ι Γ : Type} [Group Γ] [TopologicalSpace Γ]
@@ -284,6 +284,6 @@ theorem UpperTheory.V.Ws.aut_n_alt :
   have hr : (mapRep f r₁).comp (resQ T.F) = (X.P.map (y' : X.A →+* PadicAlgCl l)).r := by
     ext g i j
     exact congrArg f (congrFun (congrFun (DFunLike.congr_fun hres g) i) j)
-  exact aut_conj ι hc1 hi (hPM.aut y' (fun b hb => by rw [hy', hJ b hb, map_zero]) hw (mapRep f r₁) hr (cont_conj hc1 hcont) hm
+  exact aut_conj ι hc1 (hPM.aut y' (fun b hb => by rw [hy', hJ b hb, map_zero]) hw (mapRep f r₁) hr (cont_conj hc1 hcont) hm
     (irr_conj (conj_comp hc1 _) hiL))
 end

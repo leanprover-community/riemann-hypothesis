@@ -64,8 +64,6 @@ open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
 open ReciprocityTheory.L2DbarEstimates (V)
 open scoped ContDiff ComplexConjugate Topology
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CxForm.HolAtlas
@@ -203,8 +201,6 @@ open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxForm GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Cartier GlobalTheory.CovTest GlobalTheory.LineForm
 open scoped Classical
-
-set_option autoImplicit false
 
 namespace GlobalTheory
 

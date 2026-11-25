@@ -56,8 +56,6 @@ open Formalism.MainNotions.TaylorLogMetric (VC embT tor0 Hf lamOf area)
 
 namespace GlobalTheory.NormExact
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {r : D.host.E}
 
 theorem delta_ne_zero (h : Formalism.MainNotions.StandardLatticesGL3.Crv D cc δ) : δ ≠ 0 :=

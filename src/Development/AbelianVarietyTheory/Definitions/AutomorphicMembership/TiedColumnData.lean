@@ -54,8 +54,6 @@ namespace GlobalTheory.Mem.Top.Bl
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top.GroupRetwisting NumberField IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Rec
 
 open Formalism.MainNotions.G Formalism.UG Formalism.L2.Forms Formalism.L2.G

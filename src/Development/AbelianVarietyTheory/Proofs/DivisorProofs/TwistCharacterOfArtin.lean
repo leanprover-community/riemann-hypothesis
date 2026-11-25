@@ -40,8 +40,6 @@ import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host GlobalTheory.HeckeGal
@@ -49,7 +47,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 
 namespace GlobalTheory.TwistChr
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 10000] GlobalTheory.GalChar.isTorsionFree_field
 
 

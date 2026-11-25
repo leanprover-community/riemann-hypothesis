@@ -862,10 +862,6 @@ theorem archBetween_mono {Ψ : Type} [Fintype Ψ] {N : ℕ} {M R : Top.RootModel
     Ht.ArchBetween M R i u t lam s lo' hi' :=
   fun z hz val hv => Set.Icc_subset_Icc hl hh (h z hz val hv)
 
-theorem spMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap (g.comp f) = spMap g ≫ spMap f := by
-  simp [spMap, CommRingCat.ofHom_comp]
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)}
   {Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))} {Fx : FixedData Y Sys}
@@ -915,7 +911,7 @@ theorem genUnit_some (o : RootOrigin Y S M Fx) (o₀ : RootOrigin Y S₀ R Fx) (
     (hi : i.comp o₀.g = o.g) (r : RootIx D) :
     Ht.GenUnit (Ht.joinOf M R i) (Ht.joinDeg M R (some r)) (i (o₀.e r) / o.e r) := by
   refine _root_.GlobalTheory.CompanionTheory.Ar.Ht.CloseGen.genUnit_join E H D l Xo c Y S S₀ M R o.𝔐 o₀.𝔐 o.Fl o₀.Fl i o.e o₀.e ?_ ?_ o.lines o₀.lines r
-  · rw [o.g_over, o₀.g_over, ← hi, spMap_comp, Category.assoc]
+  · rw [o.g_over, o₀.g_over, ← hi, ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc]
   · intro s k
     rw [o.g_flag, o₀.g_flag, ← hi, _root_.GlobalTheory.CompanionTheory.Ar.FlagPull.dualMap_comp, _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc]
 

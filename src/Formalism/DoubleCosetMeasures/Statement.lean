@@ -263,8 +263,8 @@ section Integral
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
-instance instMeasGL (n : ℕ) : MeasurableSpace (GL (Fin n) K) := borel _
-instance instBorelGL (n : ℕ) : BorelSpace (GL (Fin n) K) := ⟨rfl⟩
+scoped instance instMeasGL (n : ℕ) : MeasurableSpace (GL (Fin n) K) := borel _
+scoped instance instBorelGL (n : ℕ) : BorelSpace (GL (Fin n) K) := ⟨rfl⟩
 
 
 open Classical in

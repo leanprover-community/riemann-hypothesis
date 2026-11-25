@@ -116,16 +116,7 @@ include gram in
 theorem exists_matrix (n : S.GLV) (hn : n ∈ S.Nof g) :
     ∃ s : Matrix (Fin (r + 1)) (Fin (r + 1)) E, ((∀ i j, j < i → s i j = 0) ∧ (∀ i, s i i = 1)) ∧
       ∀ j, n (g j) = ∑ i, s i j • g i := by
-  have key : ∀ j : Fin (r + 1), n (g j) - g j ∈ S.spanTo g j := by
-    intro j
-    refine Fin.lastCases ?_ (fun j => ?_) j
-    · exact hn.2.2 _ (mem_perp S g T gram _)
-    · exact (Subgroup.mem_iInf.1 hn.1.2 j).2 _ (mem_spanTo S g (by simp))
-  choose c hc hc' using fun j => coords S g (key j)
-  refine ⟨fun i j => c j i + if i = j then 1 else 0, ⟨fun i j hij => ?_, fun i => ?_⟩, fun j => ?_⟩
-  · simp [hc j i hij.le, hij.ne']
-  · simp [hc i i le_rfl]
-  · simp [add_smul, Finset.sum_add_distrib, ← hc' j]
+  apply _root_.GlobalTheory.HL.FrameTri.exists_tri <;> assumption
 
 include gram dual in
 theorem exists_dual (j : Fin (r + 1)) : ∃ u : S.V, ∀ i, hf L S.Hm (g i) u = if i = j then 1 else 0 := by

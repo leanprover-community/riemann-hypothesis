@@ -1,7 +1,7 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.OneDegOfHalves
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.OmEDiagMonomial
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockWeightDegree.ExistsMonomialWeight
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.EqZeroOfFockInnerSelfRe
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -59,7 +59,8 @@ open Matrix FockH1Action MvPolynomial
 
 namespace PI.FockOneDegW.Core
 
-open PI.FockOneDegW PI.FockOneDegW.Inner PI.FockOneDegW.Diag
+open PI.FockOneDegW PI.FockOneDegW.Inner
+open PI.FockWtDegWork (W1 coeff_of_diag fockAct1_monomial lw wt_of_isHW)
 
 theorem pd_comm {σ : Type*} (i j : σ) (P : MvPolynomial σ ℂ) :
     pderiv i (pderiv j P) = pderiv j (pderiv i P) := by

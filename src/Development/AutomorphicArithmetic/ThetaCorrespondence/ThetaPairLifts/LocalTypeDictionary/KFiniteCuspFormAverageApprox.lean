@@ -45,7 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp
 namespace GlobalTheory.KFinCuspApprox
 theorem isCuspForm_kFinite_average : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (N : GlobalTheory.Grid.Node D)

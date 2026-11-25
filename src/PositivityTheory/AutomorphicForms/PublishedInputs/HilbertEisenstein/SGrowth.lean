@@ -9,6 +9,7 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ex
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.FinalH
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.AbsPInfModuleSection, PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.PFinInvModuleSectionMul, PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.EisensteinGrowth, PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SGrowth
@@ -805,7 +806,7 @@ theorem UpperTheory.HilbertEisensteinWeightOne.moderate_growth_holds : SPois →
     have hnorm : ‖eisInt ω (Phi c) h t u‖ = ‖thetaS (Phi c) (Matrix.GeneralLinearGroup.scalar (Fin 2)
         (moduleSection (w0 F) t * (u : Ideles F)) * h)‖ * t * absD h ^ ((1 : ℝ) / 2) := by
       unfold eisInt
-      rw [norm_mul, norm_mul, norm_mul, norm_inv, norm_omega_eq_one hyp.fin, inv_one, mul_one,
+      rw [norm_mul, norm_mul, norm_mul, norm_inv, UpperTheory.Esk.HyperbolicKernelContinuity.norm_omega hyp.fin, inv_one, mul_one,
         Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos ht0,
         abs_of_nonneg (Real.rpow_nonneg hpos.le _)]
     rw [hnorm]

@@ -108,17 +108,6 @@ theorem dvd_of_dvd_ev (x : bk.S) (h : (l : Ainf l) ∣ bk.ev x) : (l : bk.S) ∣
   obtain ⟨z, hz⟩ := h
   simp only [evRed, RingHom.comp_apply, hz, map_mul, map_natCast, CharP.cast_eq_zero, zero_mul]
 
-theorem eq_zero_of_forall_pow_dvd (w : Wq l bk.a) (h : ∀ n : ℕ, (l : Wq l bk.a) ^ n ∣ w) : w = 0 := by
-  by_contra hw
-  obtain ⟨m, b, hb0, hb⟩ := WittVector.exists_eq_pow_p_mul w hw
-  obtain ⟨c, hc⟩ := h (m + 1)
-  have hbc : b = (l : Wq l bk.a) * c := by
-    apply mul_left_cancel₀ (pow_ne_zero m (WittVector.p_nonzero l (Fq l bk.a)))
-    rw [← hb, hc]; ring
-  apply hb0
-  have := congrArg (WittVector.constantCoeff (p := l) (R := Fq l bk.a)) hbc
-  rwa [map_mul, map_natCast, CharP.cast_eq_zero, zero_mul, WittVector.constantCoeff_apply] at this
-
 theorem ev_injective : Function.Injective bk.ev := by
   apply GlobalTheory.BSP.BK.ev_injective_galPer
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCompactParahoric
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsLevMeas
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FinitePartMemFrameStabilizerIffLocalStabilizerStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticeReductionEqOneOfLocalComponentOneStatement
@@ -135,22 +136,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
   {A D : Type} [Fintype A] [DecidableEq A] [Fintype D] [DecidableEq D]
 
 theorem det_lower_ne {j : GL (A ⊕ D) k} (hj : j ∈ parahoric k A D) : j.1.toBlocks₂₂.det ≠ 0 := by
-  obtain ⟨h, hh, rfl⟩ := hj
-  intro h0
-  have e1 : (GeneralLinearGroup.map (n := A ⊕ D) (algebraMap 𝒪[k] k) h).1.toBlocks₂₂ =
-      (algebraMap 𝒪[k] k).mapMatrix h.1.toBlocks₂₂ := rfl
-  rw [e1, ← RingHom.map_det] at h0
-  have h1 : h.1.toBlocks₂₂.det = 0 := Subtype.ext h0
-  set u := GeneralLinearGroup.map (n := A ⊕ D) (IsLocalRing.residue 𝒪[k]) h with hu
-  have h21 : u.1.toBlocks₂₁ = 0 := by
-    ext i j
-    exact hh (i := .inr i) (j := .inl j) (show false < true by decide)
-  have h22 : u.1.toBlocks₂₂.det = 0 := by
-    have : u.1.toBlocks₂₂ = (IsLocalRing.residue 𝒪[k]).mapMatrix h.1.toBlocks₂₂ := rfl
-    rw [this, ← RingHom.map_det, h1, map_zero]
-  have := u.det_ne_zero
-  rw [← fromBlocks_toBlocks u.1, h21, det_fromBlocks_zero₂₁, h22, mul_zero] at this
-  exact this rfl
+  first | exact _root_.GlobalTheory.ParHecke.Model.det_lower_ne | exact @_root_.GlobalTheory.ParHecke.Model.det_lower_ne | apply _root_.GlobalTheory.ParHecke.Model.det_lower_ne <;> assumption
 
 theorem det_lower_conj_mtor (ϖ : kˣ) (e : D → ℤ) (m : GL (A ⊕ D) k) :
     ((mtor ϖ e)⁻¹ * m * mtor ϖ e : GL (A ⊕ D) k).1.toBlocks₂₂.det = m.1.toBlocks₂₂.det := by

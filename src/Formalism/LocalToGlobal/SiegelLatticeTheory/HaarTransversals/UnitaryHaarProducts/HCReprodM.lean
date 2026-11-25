@@ -11,7 +11,7 @@ noncomputable section
 open MeasureTheory Formalism.MainNotions.S Formalism.MainNotions.BridgeCPX
 open scoped InnerProductSpace
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace Formalism.L2.SG.HCReprodM
 

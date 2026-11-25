@@ -12,55 +12,11 @@ public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ConstantCoeffFirstTwoOfThree
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.Normed.Ring.Ultra
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Init
 import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
-import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder
@@ -409,7 +365,7 @@ theorem FirstDeriv_of (hL : LawSymm) : FirstDeriv := by
   exact LogarithmEquivalence.integral_mul' (integral_single_log_derivative hp hnp 0) hI
 
 open GramFrameCompositionLinFacts MvPowerSeries in
-theorem CobLin_of (_hL : LawSymm) : CobLin := by
+theorem CobLin_of : CobLin := by
   intro K _ _ _ p _ _ F hF G hG hS
   obtain ⟨hF0, -, -⟩ := hF
   obtain ⟨hD0, hDi⟩ := hS
@@ -937,18 +893,6 @@ theorem embDomain_two (e : Fin 2 →₀ ℕ) : Finsupp.embDomain Fin.castSuccEmb
   simp at h1
   omega
 
-private theorem coeff_rename_map_lemma {σ τ : Type} (f : σ → τ) [Filter.TendstoCofinite f]
-    (hf : Function.Injective f) (g : MvPowerSeries σ K) (u : σ →₀ ℕ) :
-    MvPowerSeries.coeff (Finsupp.mapDomain f u) (MvPowerSeries.rename f g) = MvPowerSeries.coeff u g := by
-  classical
-  rw [MvPowerSeries.coeff_rename, Finset.sum_eq_single_of_mem u]
-  · simp
-  · intro b hb hne
-    exfalso
-    apply hne
-    simp only [Set.Finite.mem_toFinset, Set.mem_preimage, Set.mem_singleton_iff] at hb
-    exact Finsupp.mapDomain_injective hf hb
-
 theorem coeff_include_three_mul (g : MvPowerSeries (Fin 2) K) (e : Fin 2 →₀ ℕ) (m j : ℕ) :
     MvPowerSeries.coeff (ext3 e m) (in3 g * MvPowerSeries.X 2 ^ j) =
       if j = m then MvPowerSeries.coeff e g else 0 := by
@@ -956,9 +900,8 @@ theorem coeff_include_three_mul (g : MvPowerSeries (Fin 2) K) (e : Fin 2 →₀ 
   rw [include_three_eq_rename]
   by_cases h : j = m
   · subst h
-    rw [if_pos rfl, MvPowerSeries.X_pow_eq, ext3, MvPowerSeries.coeff_add_mul_monomial, mul_one,
-      Finsupp.embDomain_eq_mapDomain]
-    exact coeff_rename_map_lemma _ (Fin.castSuccEmb (n := 2)).injective g e
+    rw [if_pos rfl, MvPowerSeries.X_pow_eq, ext3, MvPowerSeries.coeff_add_mul_monomial, mul_one]
+    exact MvPowerSeries.coeff_embDomain_rename (Fin.castSuccEmb (n := 2)) g e
   · rw [if_neg h, MvPowerSeries.coeff_mul]
     apply Finset.sum_eq_zero
     rintro ⟨a, b⟩ hab
@@ -1100,7 +1043,7 @@ theorem coeff_swap2 (H : MvPowerSeries (Fin 2) K) (i k : ℕ) :
     rw [Finsupp.mapDomain_add, Finsupp.mapDomain_single, Finsupp.mapDomain_single]
     simp only [Equiv.coe_toEmbedding, Equiv.swap_apply_left, Equiv.swap_apply_right]
     exact add_comm _ _
-  rw [← hu, coeff_rename_map_lemma _ (Equiv.swap (0 : Fin 2) 1).toEmbedding.injective]
+  rw [← hu, ← Finsupp.embDomain_eq_mapDomain, MvPowerSeries.coeff_embDomain_rename]
 
 theorem pow_parity {p : ℕ} (hp : 2 ≤ p) (i j : ℕ) : p * (p ^ 2) ^ i ≠ (p ^ 2) ^ j := by
   intro h
@@ -1917,10 +1860,10 @@ theorem lemmaTwo : LemmaTwo := LemmaTwo_of lemmaOne _root_.Formalism.InvariantFa
 theorem lamModule : LamModule := LamModule_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable
 theorem zeroCondition : StepZero := StepZero_of lamModule simeqRules _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
 theorem firstDeriv : FirstDeriv := FirstDeriv_of _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
-theorem cobLin : CobLin := CobLin_of _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
+theorem cobLin : CobLin := CobLin_of
 theorem stepI : StepI := StepI_of lemmaOne firstDeriv cobLin
 theorem stepII : StepII := StepII_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable _root_.Formalism.InvariantFactorPaths.G7.divided_derivative deIntegral _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
-theorem stepH : StepH := StepH_of lemmaTwo _root_.Formalism.InvariantFactorPaths.G7.swap_rules _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
+theorem stepH : StepH := StepH_of lemmaTwo _root_.Formalism.InvariantFactorPaths.G7.swap_rules
 theorem stepIV : StepIV := StepIV_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable
 theorem betaIsG : BetaIsG :=
   BetaIsG_of zeroCondition stepI stepII stepH _root_.Formalism.InvariantFactorPaths.G7.c_add_sigma_c_eq_zero stepIV _root_.Formalism.InvariantFactorPaths.G7.swap_rules simeqRules

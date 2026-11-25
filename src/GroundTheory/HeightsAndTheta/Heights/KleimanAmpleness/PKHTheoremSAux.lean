@@ -49,35 +49,24 @@ theorem exists_mem_of_surjective {M M'' : Type} [AddCommGroup M] [Module (MRingO
     (h𝓜 : KH.IsMGraded S ι 𝓜) (h𝓜'' : KH.IsMGraded S ι 𝓜'') {h : M →ₗ[MRingOver S ι] M''}
     (hh : KH.IsMGradedMap S ι 𝓜 𝓜'' h) (hs : Function.Surjective h) {c : K → ℤ} {m'' : M''}
     (hm : m'' ∈ 𝓜'' c) : ∃ m ∈ 𝓜 c, h m = m'' := by
-  classical
   obtain ⟨x, rfl⟩ := hs m''
-  have key : ∃ y ∈ 𝓜 c, h x - h y ∈ ⨆ (j) (_ : j ≠ c), 𝓜'' j := by
-    have hx : x ∈ ⨆ j, 𝓜 j := by
-      rw [h𝓜.1.submodule_iSup_eq_top]
-      exact Submodule.mem_top
-    refine Submodule.iSup_induction (motive := fun x => ∃ y ∈ 𝓜 c, h x - h y ∈ ⨆ (j) (_ : j ≠ c), 𝓜'' j)
-      𝓜 hx ?_ ?_ ?_
-    · intro j x hx
-      by_cases hj : j = c
-      · subst hj
-        exact ⟨x, hx, by rw [sub_self]; exact zero_mem _⟩
-      · refine ⟨0, zero_mem _, ?_⟩
-        rw [map_zero, sub_zero]
-        exact Submodule.mem_iSup_of_mem j (Submodule.mem_iSup_of_mem hj (hh j x hx))
-    · exact ⟨0, zero_mem _, by rw [map_zero, sub_zero]; exact zero_mem _⟩
-    · intro x₁ x₂ h₁ h₂
-      obtain ⟨y₁, hy₁, e₁⟩ := h₁
-      obtain ⟨y₂, hy₂, e₂⟩ := h₂
-      refine ⟨y₁ + y₂, add_mem hy₁ hy₂, ?_⟩
-      have : h (x₁ + x₂) - h (y₁ + y₂) = (h x₁ - h y₁) + (h x₂ - h y₂) := by
-        simp only [map_add (f := _)]
-        abel
-      rw [this]
-      exact add_mem e₁ e₂
-  obtain ⟨y, hy, hd⟩ := key
-  have hc : h x - h y ∈ 𝓜'' c := sub_mem hm (hh c y hy)
-  have h0 : h x - h y = 0 := Submodule.disjoint_def.mp (h𝓜''.1.submodule_iSupIndep c) _ hc hd
-  exact ⟨y, hy, (sub_eq_zero.mp h0).symm⟩
+  obtain ⟨d, hd⟩ := h𝓜.1.2 x
+  let f : ∀ j, 𝓜 j →+ 𝓜'' j := fun j =>
+    { toFun := fun a => ⟨h a.1, hh j a.1 a.2⟩,
+      map_zero' := Subtype.ext (map_zero h),
+      map_add' := fun a b => Subtype.ext (map_add h a.1 b.1) }
+  have hcomm : h.toAddMonoidHom.comp (DirectSum.coeAddMonoidHom 𝓜) =
+      (DirectSum.coeAddMonoidHom 𝓜'').comp (DirectSum.map f) :=
+    DirectSum.addHom_ext fun j a => by
+      simp only [AddMonoidHom.comp_apply, DirectSum.coeAddMonoidHom_of, DirectSum.map_of]; rfl
+  have heq : DirectSum.map f d = DirectSum.of (fun j => 𝓜'' j) c ⟨h x, hm⟩ := h𝓜''.1.1 <| by
+    have h1 := DFunLike.congr_fun hcomm d
+    simp only [AddMonoidHom.comp_apply, hd] at h1
+    rw [← h1, DirectSum.coeAddMonoidHom_of]
+    rfl
+  have hc := congrArg (fun z => (z c : M'')) heq
+  simp only [DirectSum.map_apply, DirectSum.of_eq_same] at hc
+  exact ⟨(d c : M), (d c).2, hc⟩
 
 abbrev lmap {M N : Type} [AddCommGroup M] [Module (MRingOver S ι) M] [AddCommGroup N] [Module (MRingOver S ι) N]
     (T : Submonoid (MRingOver S ι)) (g : M →ₗ[MRingOver S ι] N) :

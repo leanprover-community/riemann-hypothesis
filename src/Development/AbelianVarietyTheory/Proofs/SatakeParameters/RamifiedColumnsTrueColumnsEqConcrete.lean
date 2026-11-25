@@ -206,7 +206,7 @@ theorem embF_colForm_mem_Mram (l : I.Laws) (φ : ColsK I u) :
     refine ⟨StepZero.embF_mem_Fi _ _ _ _ hf _, (Submodule.mem_iInf _).2 fun P => ?_⟩
     exact (key P).trans ((hz _).2 ((Submodule.mem_iInf _).1 hm P))
 
-theorem isCol_mem_ramSub_iff {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X) (h : I.Ok) (_hX : B.fields.Ok) (l : I.Laws)
+theorem isCol_mem_ramSub_iff {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X) (h : I.Ok) (l : I.Laws)
     (u : B.Word) (a : I.ι) (x : ((I.fm l u a).lat 0).V) (φ : ColsK I u) (hc : IsCol I u a l x φ) :
     x ∈ (I.fm l u a).ramSub ↔ φ ∈ MramV (Pr := B.primes X) B.wts I.Ch u := by
   have hx : x = colForm I h u a ((l.fmL u a).fam 0) φ := Subtype.ext (funext hc)
@@ -352,7 +352,7 @@ theorem ramCols_true : ∀ {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.Pre
   obtain ⟨κ, hκ⟩ := GlobalTheory.Core.ColZero.exists_colEquiv I h hX l u I.mu0
   have hκc : ∀ φ, κ φ = GlobalTheory.Mem.Col2.KerRat.colForm I l h u I.mu0 φ := fun φ => Subtype.ext (funext (hκ φ))
   have hram : ∀ φ, κ φ ∈ (I.fm l u I.mu0).ramSub ↔ φ ∈ Formalism.L2.Col.MramV (Pr := B.primes X) B.wts I.Ch u := fun φ =>
-    GlobalTheory.Core.ColRam.isCol_mem_ramSub_iff I h hX l u I.mu0 (κ φ) φ (hκ φ)
+    GlobalTheory.Core.ColRam.isCol_mem_ramSub_iff I h l u I.mu0 (κ φ) φ (hκ φ)
   have hrange : ∀ x, (I.rec7 l Z).nuIn u x ∈ (I.fm l u I.mu0).ramSub := fun x =>
     (I.rec7 l Z).nuIn_range u ▸ ⟨x, rfl⟩
   have hinj := (I.rec7 l Z).nuIn_inj u

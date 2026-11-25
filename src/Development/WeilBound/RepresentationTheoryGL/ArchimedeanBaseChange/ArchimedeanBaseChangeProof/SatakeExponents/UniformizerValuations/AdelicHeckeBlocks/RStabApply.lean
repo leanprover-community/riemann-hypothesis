@@ -77,17 +77,13 @@ theorem ind_mul {H : Type} [Group H] (K : Subgroup H) {k : H} (hk : k ∈ K) (x 
   · rw [Set.indicator_of_notMem (show x * k ∉ (K : Set H) from fun h => hx ((K.mul_mem_cancel_right hk).1 h)),
       Set.indicator_of_notMem (show x ∉ (K : Set H) from hx)]
 
-theorem out_mem {H : Type} [Group H] (K : Subgroup H) (q : H ⧸ K) : q.out ∈ K ↔ q = ((1 : H) : H ⧸ K) := by
-  conv_rhs => rw [← QuotientGroup.out_eq' q]
-  rw [QuotientGroup.eq, mul_one, inv_mem_iff]
-
 theorem hint_ind {H : Type} [Group H] (K : Subgroup H) : hint K ((K : Set H).indicator 1) = 1 := by
   have hle : K ≤ rStab ((K : Set H).indicator (1 : H → ℂ)) := fun k hk => mem_rStab (ind_mul K hk)
   rw [hint, inf_eq_right.2 hle, Subgroup.relIndex_self, Nat.cast_one, inv_one, one_mul,
     finsum_eq_single _ ((1 : H) : H ⧸ K)]
-  · exact Set.indicator_of_mem (show _ ∈ (K : Set H) from (out_mem K _).2 rfl) _
+  · exact Set.indicator_of_mem (show _ ∈ (K : Set H) from (QuotientGroup.out_mem_iff (s := K)).2 rfl) _
   · intro q hq
-    exact Set.indicator_of_notMem (show q.out ∉ (K : Set H) from fun h => hq ((out_mem K q).1 h)) _
+    exact Set.indicator_of_notMem (show q.out ∉ (K : Set H) from fun h => hq ((QuotientGroup.out_mem_iff (s := K) (a := q)).1 h)) _
 
 theorem idx_eq {H : Type} [Group H] (K L : Subgroup H) (hLK : L ≤ K) (hidx : L.relIndex K ≠ 0) :
     ∑ᶠ q : H ⧸ L, (K : Set H).indicator (1 : H → ℂ) q.out = ((L.relIndex K : ℕ) : ℂ) := by

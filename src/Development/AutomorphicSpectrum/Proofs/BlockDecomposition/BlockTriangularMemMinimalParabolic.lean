@@ -273,13 +273,6 @@ end Abstract
 
 section Place
 
-theorem sigma_invol {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨_, _, _, hτ⟩ := h
-  obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
-  apply w.embedding.injective
-  rw [hτ, hτ, star_star]
-
 theorem sigR_invol {F E : Type} [Field F] [Field E] [Algebra F E] (A : Type) [CommRing A] [Algebra F A]
     {σ : E →ₐ[F] E} (h : ∀ x, σ (σ x) = x) (x : A ⊗[F] E) : sigR A σ (sigR A σ x) = x := by
   induction x using TensorProduct.induction_on with
@@ -298,7 +291,7 @@ theorem cT_map_inclR {F E : Type} [Field F] [Field E] [Algebra F E] (A : Type) [
 
 theorem exists_levi : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}, IsCMExt F E σ → IsHermND σ J → IsWittFrame σ J X Y → ∀ (A : Type) [CommRing A] [Algebra F A] [TopologicalSpace A] (p : HA A σ J) (B : Matrix (Fin r) (Fin r) (A ⊗[F] E)), B.BlockTriangular id → (matHom A σ J p).1 * X.map (inclR (F := F) A) = X.map (inclR (F := F) A) * B → ∃ m : HA A σ J, (matHom A σ J m).1 = leviMat σ J A X Y (matHom A σ J p).1 ∧ (∃ d : Fin r → A ⊗[F] E, (matHom A σ J m).1 * X.map (inclR (F := F) A) = X.map (inclR (F := F) A) * diagonal d) ∧ (∃ d' : Fin r → A ⊗[F] E, (matHom A σ J m).1 * Y.map (inclR (F := F) A) = Y.map (inclR (F := F) A) * diagonal d') ∧ (∃ B' : Matrix (Fin r) (Fin r) (A ⊗[F] E), B'.BlockTriangular id ∧ (∀ i, B' i i = 1) ∧ (matHom A σ J (m⁻¹ * p)).1 * X.map (inclR (F := F) A) = X.map (inclR (F := F) A) * B') ∧ ∀ z : Fin n → A ⊗[F] E, ((cT (σ : E →+* E) X * J).map (inclR (F := F) A)) *ᵥ z = 0 → ∃ a : Fin r → A ⊗[F] E, ((matHom A σ J (m⁻¹ * p)).1 - 1) *ᵥ z = X.map (inclR (F := F) A) *ᵥ a := by
   intro F E _ _ _ _ _ σ n J r X Y hCM hJ hW A _ _ _ p B hBt hB
-  have hc := sigR_invol A (sigma_invol hCM)
+  have hc := sigR_invol A (GlobalTheory.AdelicU.cm_conj_conj hCM)
   have hJh : cT (sigR A σ) (J.map (inclR (F := F) A)) = J.map (inclR (F := F) A) := by
     rw [cT_map_inclR]; congr 1; ext i j; exact hJ.1 i j
   have hmap0 : ((0 : Matrix (Fin r) (Fin r) E)).map (inclR (F := F) A) = 0 := by simp

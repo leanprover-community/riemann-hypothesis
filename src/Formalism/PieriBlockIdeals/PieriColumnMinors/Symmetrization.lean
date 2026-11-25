@@ -312,7 +312,6 @@ theorem integral_quotient_holds : IntegralQuotient := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -675,7 +674,6 @@ theorem AAComm_of (h1 : SymCommAbstract) (h2 : JMCommAbstract) : AAComm := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1233,7 +1231,6 @@ theorem one_step_invariance_holds : OneStepInv := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1241,8 +1238,6 @@ section
 variable {k R P M : Type*} [CommRing k] [AddCommGroup M] [Module k M] {n : ℕ}
 
 theorem permOnTensor_apply (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g) : perm k σ z g = z (g ∘ σ) := rfl
-theorem permSecond_apply_formula (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g) :
-    permY k σ z g = z (fun s => ((g (σ s)).1, (g s).2)) := rfl
 theorem contract_apply_eq_insertNth (j : Fin (n + 1)) (v : R × P) (z : Tens R P M (n + 1)) (g) :
     contr k j v z g = z (j.insertNth v g) := rfl
 theorem contract_last_apply_snoc (v : R × P) (z : Tens R P M (n + 1)) (g) :
@@ -1274,7 +1269,7 @@ theorem jucysMurphy_apply (EM : R → R → Module.End k M) (j : Fin n) (z : Ten
       ∑ j' ∈ Finset.univ.filter (· < j), z (fun s => ((g (Equiv.swap j' j s)).1, (g s).2)) := by
   unfold xJM
   simp only [LinearMap.add_apply, LinearMap.sum_apply, Pi.add_apply, Finset.sum_apply, mixedCasimir_apply,
-    permSecond_apply_formula]
+    permSecond_apply]
 
 theorem filter_lt_castSucc_eq_map (j : Fin n) :
     (Finset.univ.filter (· < j.castSucc) : Finset (Fin (n + 1))) =
@@ -1430,7 +1425,6 @@ theorem Iteration_of (h1 : OneStepInv) (h2 : AAComm) (h3 : MuEquivariant) : Iter
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1637,7 +1631,6 @@ end Fld
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1808,7 +1801,6 @@ theorem coefficient_operators_hold : CoeffOps := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -1972,7 +1964,6 @@ theorem ActLattice_of (h3 : MuEquivariant) (h4 : WordSpec) : ActLattice := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -2027,7 +2018,6 @@ theorem casimir_content_holds : CasimirContent := by
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 
@@ -2120,7 +2110,6 @@ theorem LemmaDSkeleton_of (hCo : CoeffOps) (hXL : XLattice) (hXW : XWeight) (hIW
 
 end Formalism.CohomologicalDescent.Symmetrization
 
-open Polynomial
 
 namespace Formalism.CohomologicalDescent.Symmetrization
 

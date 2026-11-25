@@ -57,8 +57,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits Polynomial
@@ -467,12 +465,3 @@ theorem isProjOver_of_isProper {k : Type} [Field k] (f : C ⟶ Sp k) [IsProper f
 end Geometry
 
 end GlobalTheory.ProperCurve
-
-namespace GlobalTheory.VB
-
-theorem IsProperCurve.isProjCurve (k : Type) [Field k] (C : Scheme.{0}) [Algebra k Γ(C, ⊤)]
-    [IsIntegral C] (h : IsProperCurve k C) : IsProjCurve k C :=
-  have := h.isProper
-  ⟨h.isIntegral, h.dim_eq, ProperCurve.isProjOver_of_isProper _ h.dim_eq⟩
-
-end GlobalTheory.VB

@@ -208,10 +208,6 @@ section Record
 
 open Formalism.MainNotions.Gaps.LG
 
-theorem finrank_hostE_eq {R : Ranks} (H : Host R) : Module.finrank ℚ H.E = 2 * R.f := by
-  rw [H.finrank_cmField, Ranks.f, Ranks.n]
-  ring
-
 end Record
 
 end Formalism.MainNotions.Gaps.LevGap

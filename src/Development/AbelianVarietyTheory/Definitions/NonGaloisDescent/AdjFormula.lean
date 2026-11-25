@@ -45,20 +45,11 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RawLift
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-def ThetaSchur (D : D7) : Prop :=
-  ∀ (ψ : AddChar (AF D.host.F) ℂ) (S T' : HSp D), IsStdChar D ψ (-1) →
-    ∀ (μ : Measure (WO S T')) (𝓕 : Set (WO S T')), IsCovolOne (ratL T' S) μ 𝓕 →
-    ∀ L : Module.End ℂ (WO S T' → ℂ), (∀ f, IsThetaFunO ψ S T' f → IsThetaFunO ψ S T' (L f)) →
-      (∃ C : ℝ, ∀ f, IsThetaFunO ψ S T' f → nrm2 μ 𝓕 (L f) ≤ C * nrm2 μ 𝓕 f) →
-      (∀ w f, IsThetaFunO ψ S T' f → L (heisO ψ S T' w f) = heisO ψ S T' w (L f)) →
-      ∃ c : ℂ, ∀ f, IsThetaFunO ψ S T' f → L f = c • f
 
 abbrev levW (R : RealDat D A Ks) (i : Fin D.R.m) : Subgroup (GA D (Wc D i)) := levG _ (R.βW i) (R.datWp i R.triv)
 

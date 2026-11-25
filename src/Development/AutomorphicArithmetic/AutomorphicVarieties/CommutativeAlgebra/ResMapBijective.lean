@@ -71,6 +71,10 @@ class IsCO (O R : Type) [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] 
 
 attribute [instance] IsCO.complete IsCO.isLocalHom
 
+/- `O` cannot be read off a goal `IsLocalRing R` or `IsNoetherianRing R`, so these two parent
+projections apply to every such goal. Keep them behind the instances that do not need `IsCO`. -/
+attribute [instance low] IsCO.toIsLocalRing IsCO.toIsNoetherian
+
 instance IsCO.self (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O]
     [IsAdicComplete (maximalIdeal O) O] : IsCO O O where
   complete := inferInstance

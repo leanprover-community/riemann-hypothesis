@@ -200,36 +200,14 @@ theorem mem_support_of_ideal_le_primeIdealOf {X : Scheme.{u}} (D : X.IdealSheafD
   refine le_trans (Ideal.map_mono h) ?_
   exact le_of_eq (map_germ_primeIdealOf_eq_maximalIdeal hU hx)
 
-private theorem appLE_top_eq_topIso_inv {X₁ : Scheme.{u}} (V : X₁.Opens)
-    (e : (⊤ : (V.toScheme).Opens) ≤ V.ι ⁻¹ᵁ V) :
-    V.ι.appLE V ⊤ e = V.topIso.inv := by
-  simp
-  exact Scheme.presheaf_map_eq_of_parallel ..
-
-private theorem eq_of_ideal_map_topIso_inv_eq {X₁ : Scheme.{u}} (V : X₁.Opens)
-    {J₁ J₂ : Ideal Γ(X₁, V)}
-    (hJ : Ideal.map V.topIso.inv.hom J₁ = Ideal.map V.topIso.inv.hom J₂) : J₁ = J₂ := by
-  have hid : (V.topIso.hom.hom).comp (V.topIso.inv.hom) = RingHom.id _ := by
-    ext x
-    exact V.topIso.inv_hom_id_apply x
-  have key : ∀ J : Ideal Γ(X₁, V),
-      Ideal.map V.topIso.hom.hom (Ideal.map V.topIso.inv.hom J) = J := by
-    intro J
-    rw [Ideal.map_map, hid, Ideal.map_id]
-  rw [← key J₁, hJ, key J₂]
-
 theorem ideal_eq_span_image_map_of_le {X : Scheme.{u}} (D : X.IdealSheafData) {U U' : X.Opens}
     (hU : IsAffineOpen U) (hU' : IsAffineOpen U') (h : U' ≤ U) (s : Set Γ(X, U))
     (hs : D.ideal ⟨U, hU⟩ = Ideal.span s) :
     D.ideal ⟨U', hU'⟩ = Ideal.span ((X.presheaf.map (homOfLE h).op).hom '' s) := by
   have hU'aff : IsAffine U'.toScheme := hU'
   have htop : IsAffineOpen (⊤ : (U'.toScheme).Opens) := isAffineOpen_top U'.toScheme
-  have e2 : (⊤ : (U'.toScheme).Opens) ≤ U'.ι ⁻¹ᵁ U' := by
-    intro x _
-    exact x.2
-  have e1 : (⊤ : (U'.toScheme).Opens) ≤ U'.ι ⁻¹ᵁ U := by
-    intro x _
-    exact h x.2
+  have e2 : (⊤ : (U'.toScheme).Opens) ≤ U'.ι ⁻¹ᵁ U' := fun x _ => x.2
+  have e1 : (⊤ : (U'.toScheme).Opens) ≤ U'.ι ⁻¹ᵁ U := fun x _ => h x.2
   have key1 : (D.comap U'.ι).ideal ⟨⊤, htop⟩
       = Ideal.map (U'.ι.appLE U ⊤ e1).hom (D.ideal ⟨U, hU⟩) :=
     D.comap_ideal_eq_map_appLE U'.ι ⟨U, hU⟩ ⟨⊤, htop⟩ e1
@@ -238,11 +216,18 @@ theorem ideal_eq_span_image_map_of_le {X : Scheme.{u}} (D : X.IdealSheafData) {U
     D.comap_ideal_eq_map_appLE U'.ι ⟨U', hU'⟩ ⟨⊤, htop⟩ e2
   have happ : U'.ι.appLE U ⊤ e1 = X.presheaf.map (homOfLE h).op ≫ U'.ι.appLE U' ⊤ e2 := by
     rw [Scheme.Hom.map_appLE]
-  have hmain : D.ideal ⟨U', hU'⟩
-      = Ideal.map (X.presheaf.map (homOfLE h).op).hom (D.ideal ⟨U, hU⟩) := by
-    refine eq_of_ideal_map_topIso_inv_eq U' ?_
-    rw [← appLE_top_eq_topIso_inv U' e2, ← key2, key1, happ, CommRingCat.hom_comp,
-      ← Ideal.map_map]
+  have happ2 : U'.ι.appLE U' ⊤ e2 = U'.topIso.inv := by
+    simp
+    exact Scheme.presheaf_map_eq_of_parallel ..
+  have hmap : Ideal.map U'.topIso.inv.hom (D.ideal ⟨U', hU'⟩) =
+      Ideal.map U'.topIso.inv.hom
+        (Ideal.map (X.presheaf.map (homOfLE h).op).hom (D.ideal ⟨U, hU⟩)) := by
+    rw [← happ2, ← key2, key1, happ, CommRingCat.hom_comp, ← Ideal.map_map]
+  have hid : (U'.topIso.hom.hom).comp (U'.topIso.inv.hom) = RingHom.id _ := by
+    ext x
+    exact U'.topIso.inv_hom_id_apply x
+  have hmain := congrArg (Ideal.map U'.topIso.hom.hom) hmap
+  simp only [Ideal.map_map, ← RingHom.comp_assoc, hid, RingHom.id_comp, Ideal.map_id] at hmain
   rw [hmain, hs, Ideal.map_span]
 
 def IsCoordLabeling {X : Scheme.{u}} {k : Type u} [Field k] {p : X ⟶ Spec (CommRingCat.of k)}
@@ -313,34 +298,6 @@ theorem exists_etaleCharts_of_inStrictNormalCrossingPosition_cons {X : Scheme.{u
     have hzero := hinj₂ (i + 1) hi' 0 hlen0 j0 hcon hj0
     omega
 
-private theorem exists_coeffs_of_mem_span_image {R : Type*} [CommRing R] {ι : Type*}
-    [DecidableEq ι] (y : ι → R) (S : Finset ι) (z : R)
-    (hz : z ∈ Ideal.span (y '' (S : Set ι))) :
-    ∃ a : ι → R, z = ∑ j ∈ S, a j * y j := by
-  classical
-  have hle : Ideal.span (y '' (S : Set ι)) ≤
-      ({ carrier := {w : R | ∃ a : ι → R, w = ∑ j ∈ S, a j * y j}
-         add_mem' := by
-           rintro u v ⟨au, rfl⟩ ⟨av, rfl⟩
-           refine ⟨fun i => au i + av i, ?_⟩
-           rw [← Finset.sum_add_distrib]
-           exact Finset.sum_congr rfl fun i _ => by ring
-         zero_mem' := ⟨0, by simp⟩
-         smul_mem' := by
-           rintro r u ⟨au, rfl⟩
-           refine ⟨fun i => r * au i, ?_⟩
-           rw [smul_eq_mul, Finset.mul_sum]
-           exact Finset.sum_congr rfl fun i _ => by ring } : Ideal R) := by
-    rw [Ideal.span_le]
-    rintro w ⟨j, hj, rfl⟩
-    have hjS : j ∈ S := Finset.mem_coe.mp hj
-    refine ⟨fun i => if i = j then 1 else 0, ?_⟩
-    rw [Finset.sum_eq_single_of_mem j hjS]
-    · simp
-    · intro i _ hij
-      simp [hij]
-  exact hle hz
-
 private theorem ideal_eq_span_coord_of_restrictIdeal_eq {X : Scheme.{u}} {k : Type u} [Field k]
     {p : X ⟶ Spec (CommRingCat.of k)} {U : X.Opens} (hU : IsAffineOpen U) {m : ℕ}
     (c : EtaleChart p U m) (I : X.IdealSheafData) (j : Fin m)
@@ -398,11 +355,12 @@ theorem exists_coord_eq_sum_coeff_not_mem_of_le {X : Scheme.{u}} {k : Type u} [F
   have hHideal : H.ideal ⟨U, hU⟩ = Ideal.span ({c'.coord j0} : Set Γ(X, U)) :=
     ideal_eq_span_coord_of_restrictIdeal_eq hU c' H j0 hHU
   obtain ⟨a, ha⟩ : ∃ a : Fin m → Γ(X, U), c'.coord j0 = ∑ j ∈ S, a j * c.coord j := by
-    refine exists_coeffs_of_mem_span_image c.coord S (c'.coord j0) ?_
-    rw [← hZideal]
-    refine hHZ ⟨U, hU⟩ ?_
-    rw [hHideal]
-    exact Ideal.subset_span rfl
+    have hmem : c'.coord j0 ∈ Ideal.span (c.coord '' (S : Set (Fin m))) := by
+      rw [← hZideal]
+      exact hHZ ⟨U, hU⟩ (by rw [hHideal]; exact Ideal.subset_span rfl)
+    obtain ⟨a, ha⟩ := (Submodule.mem_span_image_finset_iff_exists_fun' Γ(X, U)).1 hmem
+    simp only [smul_eq_mul] at ha
+    exact ⟨a, ha.symm⟩
   refine ⟨a, ha, ?_⟩
   by_cases hex : ∃ j ∈ S, a j ∉ (hU.primeIdealOf ⟨x, hx⟩).asIdeal ∧
       ∀ i : ℕ, i < N.length → lab i ≠ some j

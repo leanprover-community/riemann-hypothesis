@@ -62,7 +62,6 @@ open GroundTheory.Global.SemiLocal
 open scoped Classical
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 private theorem unr_mul {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {a b : kˣ →* ℂˣ} (ha : IsUnram a) (hb : IsUnram b) : IsUnram (a * b⁻¹) := by

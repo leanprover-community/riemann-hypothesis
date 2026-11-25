@@ -1244,7 +1244,7 @@ theorem toB_algebraMap (x : AInf K p) :
   IsLocalization.lift_eq _ x
 
 theorem toB_injective : Function.Injective (toB K p) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro z hz
   obtain ⟨⟨y, s⟩, hs⟩ := IsLocalization.surj (Submonoid.powers (p : AInf K p)) z
   simp only at hs
@@ -1490,7 +1490,8 @@ theorem gn_dpow_le (hp0 : ‖(p : K)‖ ≤ ρ) (hρ0 : 0 < ρ) (hρ1 : ρ < 1) 
 
 theorem gn_acrisZero_le_one (hp0 : ‖(p : K)‖ ≤ ρ) (hρ0 : 0 < ρ) (hρ1 : ρ < 1) {z : 𝔸}
     (hz : z ∈ ACris.ACrisZero K p) : gn K p ρ z ≤ 1 := by
-  have hz' : z ∈ Algebra.adjoin (AInf K p) {y | ∃ n : ℕ, ∃ x ∈ RingHom.ker θ, ACris.dpow n x = y} := hz
+  have hz' : z ∈ Algebra.adjoin (AInf K p) {y | ∃ n : ℕ, ∃ x ∈ RingHom.ker θ, ACris.dpow n x = y} :=
+    ACris.acrisZero_eq_adjoin_dpow (K := K) (p := p) ▸ hz
   clear hz
   induction hz' using Algebra.adjoin_induction with
   | mem x hx =>

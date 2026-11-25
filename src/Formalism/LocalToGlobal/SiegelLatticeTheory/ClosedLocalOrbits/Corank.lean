@@ -38,8 +38,6 @@ def ScalarEquivG : Prop :=
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem finrank_VS : finrank D.host.E (VS D).V = D.R.k + 2 * D.R.rS + 1 := by

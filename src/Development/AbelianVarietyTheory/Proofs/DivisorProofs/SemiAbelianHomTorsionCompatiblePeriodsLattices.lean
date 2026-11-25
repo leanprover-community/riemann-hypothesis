@@ -425,15 +425,7 @@ theorem prod_cmp (f₁ g₁ : P₀.A ⟶ P₁.A) (f₂ g₂ : P₀.A ⟶ P₂.A)
         (h ((b ≫ g₂).left ≫ coprod.inr))⁻¹ * h ((1 : T ⟶ P₂.A).left ≫ coprod.inr)) *
       (h (((a ≫ f₁) * (b ≫ g₁)).left ≫ coprod.inl) * (h ((a ≫ f₁).left ≫ coprod.inl))⁻¹ *
         (h ((b ≫ g₁).left ≫ coprod.inl))⁻¹ * h ((1 : T ⟶ P₁.A).left ≫ coprod.inl))⁻¹ := by
-  have c₂ := prod_cube₂ (fst P₀.A P₀.A ≫ f₂) (snd P₀.A P₀.A ≫ g₂) (fun q => h ((lift a b).left ≫ q ≫ coprod.inr))
-  have c₁ := prod_neg _ _ (prod_cube₂ (fst P₀.A P₀.A ≫ f₁) (snd P₀.A P₀.A ≫ g₁)
-    (fun q => h ((lift a b).left ≫ q ≫ coprod.inl)))
-  have e : ∀ {Q : Over S} (q : P₀.A ⊗ P₀.A ⟶ Q) (t : Q.left ⟶ P₁.A.left ⨿ P₂.A.left),
-      (lift a b).left ≫ q.left ≫ t = (lift a b ≫ q).left ≫ t := fun q t => by rw [Over.comp_left, Category.assoc]
-  rw [Fintype.prod_sum_type]
-  refine congrArg₂ (· * ·) (c₂.trans ?_) (c₁.trans ?_)
-  · simp only [e, MonObj.comp_mul, lift_fst_assoc, lift_snd_assoc, MonObj.comp_one]
-  · simp only [e, MonObj.comp_mul, lift_fst_assoc, lift_snd_assoc, MonObj.comp_one]
+  apply _root_.GlobalTheory.Mum.Two.WeilCmp.AddFst.prod_cmp <;> assumption
 
 end GlobalTheory.Mum.Two.WeilCmp
 

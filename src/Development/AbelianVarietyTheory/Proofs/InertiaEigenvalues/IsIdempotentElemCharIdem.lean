@@ -185,13 +185,6 @@ theorem levelZeroMap_injective {f : π.IntertwiningMap σ} (hf : Function.Inject
     Function.Injective (levelZeroMap f) :=
   fun _ _ h => Subtype.ext (hf (congrArg Subtype.val h))
 
-theorem levelZeroMap_surjective (hπ : IsSmooth π) {f : π.IntertwiningMap σ} (hf : Function.Surjective f) :
-    Function.Surjective (levelZeroMap f) := by
-  rintro ⟨x, hx⟩
-  obtain ⟨v, rfl⟩ := hf x
-  obtain ⟨u, hu, h⟩ := exists_mem_fixed_map_eq hπ (levelPre_bot (k := k) (n := n) ▸ isCompact_levelPre ⊥) f hx
-  exact ⟨⟨u, hu⟩, Subtype.ext h⟩
-
 end LevelZero
 
 end GlobalTheory.LocGL

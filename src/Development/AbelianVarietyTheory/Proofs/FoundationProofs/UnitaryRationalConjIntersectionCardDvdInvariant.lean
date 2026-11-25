@@ -60,13 +60,10 @@ section General
 
 variable {E : Type} [Field E] [NumberField E] {N : ℕ}
 
-theorem loc_int : IsLocalization (Algebra.algebraMapSubmonoid (𝓞 E) ℤ⁰) E :=
-  IsIntegralClosure.isLocalization ℤ ℚ E (𝓞 E)
-
 theorem exists_int_smul_mem (L : Submodule (𝓞 E) (Fin N → E))
     (hs : Submodule.span E (L : Set (Fin N → E)) = ⊤) (x : Fin N → E) :
     ∃ n : ℤ, n ≠ 0 ∧ n • x ∈ L := by
-  haveI := loc_int (E := E)
+  haveI := NumberField.RingOfIntegers.instIsLocalizationAlgebraMapSubmonoidIntNonZeroDivisors E
   obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span
     (Algebra.algebraMapSubmonoid (𝓞 E) ℤ⁰) E (L : Set (Fin N → E)) x (hs ▸ Submodule.mem_top)
   obtain ⟨t, n, hn, rfl⟩ := t
@@ -76,7 +73,7 @@ theorem exists_int_smul_mem (L : Submodule (𝓞 E) (Fin N → E))
 
 theorem exists_int_denominator (L : Submodule (𝓞 E) (Fin N → E)) (hf : L.FG) :
     ∃ n : ℤ, n ≠ 0 ∧ ∀ x ∈ L, ∀ i, IsIntegral ℤ ((n : E) * x i) := by
-  haveI := loc_int (E := E)
+  haveI := NumberField.RingOfIntegers.instIsLocalizationAlgebraMapSubmonoidIntNonZeroDivisors E
   obtain ⟨s, rfl⟩ := hf
   obtain ⟨⟨t, n, hn, rfl⟩, ht⟩ := IsLocalization.exist_integer_multiples_of_finite
     (Algebra.algebraMapSubmonoid (𝓞 E) ℤ⁰) (fun p : s × Fin N => (p.1 : Fin N → E) p.2)

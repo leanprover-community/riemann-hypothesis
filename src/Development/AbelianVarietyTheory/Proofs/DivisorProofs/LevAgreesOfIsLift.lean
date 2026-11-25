@@ -56,7 +56,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum Formalism.L2.Pj
 open scoped TensorProduct ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LiftAgrees
 

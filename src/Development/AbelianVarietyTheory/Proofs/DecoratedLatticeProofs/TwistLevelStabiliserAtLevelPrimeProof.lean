@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSelfDualStabilizerWithPrescribedSplitPlaceStatement
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.LevChiEqOne
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TwTrans
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ChartCharacterTrivialOnStandardPairStabilizer
@@ -319,30 +320,7 @@ namespace GlobalTheory.AdForm.OffPlace
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem pr_of_idOff (p : SplitPt D k) {a : Formalism.L2.Theta.AE D} (ha : a ∈ idOff D (· = p.v)) : p.pr a = 0 := by
-
-  have hv : compAt D p.v a = 0 := by
-    rw [idOff, Submodule.mem_iInf] at ha
-    exact ha ⟨p.v, rfl⟩
-  obtain ⟨ε, hε, hsum⟩ := p.above
-  obtain ⟨hee, hec, -⟩ := p.split
-  obtain ⟨α, hα, hαv, hαw⟩ := hε
-  have hparts := placeIdempotent_infinite_and_finite_components D p.v ε α hα
-
-  have hεa : algebraMap (AF D.host.F) (AE D) ε * a = 0 := by
-    apply CMAdele_eq_zero_of_infinite_and_finite_components_zero
-    · rw [map_mul, hparts.1, zero_mul]
-    · intro w
-      rw [map_mul, hparts.2 w]
-      by_cases hw : w = p.v
-      · subst hw
-        rw [hv, mul_zero]
-      · rw [hαw w hw, TensorProduct.zero_tmul, zero_mul]
-
-  have hea : p.e * a = 0 := by
-    have : p.e * algebraMap (AF D.host.F) (AE D) ε = p.e := by
-      rw [← hsum, mul_add, hee, hec, add_zero]
-    rw [← this, mul_assoc, hεa, mul_zero]
-  rw [← p.pr_sec (p.pr a), p.sec_pr, hea, map_zero]
+  apply _root_.GlobalTheory.SplitOnto.pr_off <;> assumption
 
 theorem map_pr_of_off : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (S : HSp D) (n : Type) [Fintype n] [DecidableEq n] (β : Frame p S n) (κ : GA D S) (g : GL n k), κ * (β.gl g)⁻¹ ∈ grpOff S (· = p.v) → (mt S κ).map p.pr = β.b * g.val * β.b' := by
   intro D k _ _ _ _ p S n _ _ β κ g h
@@ -847,21 +825,7 @@ theorem cop_local (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (t t' ca
 
 theorem sigR_mem_intV (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (x : E ⊗[F] v.adicCompletion F) (hx : x ∈ intV E v) :
     sigR σ (v.adicCompletion F) x ∈ intV E v := by
-  have hle : intV E v ≤ (intV E v).comap (sigR σ (v.adicCompletion F)) := by
-    show tensInt (F := F) (v.adicCompletion F) (intOE E) (v.adicCompletionIntegers F).toSubring ≤ _
-    unfold tensInt
-    rw [Subring.closure_le]
-    rintro _ (⟨⟨s, c, rfl⟩, rfl⟩ | ⟨⟨s, hs⟩, rfl⟩)
-    · show sigR σ (v.adicCompletion F) (((algebraMap (𝓞 E) E) c) ⊗ₜ[F] (1 : v.adicCompletion F)) ∈ intV E v
-      have e : sigR σ (v.adicCompletion F) (((algebraMap (𝓞 E) E) c) ⊗ₜ[F] (1 : v.adicCompletion F)) =
-          inclE (F := F) (v.adicCompletion F) ((RingOfIntegers.mapRingHom (σ : E →+* E) c : 𝓞 E) : E) := rfl
-      rw [e]; exact Formalism.MainNotions.Gaps.LG.fm_incl_mem v _
-    · show sigR σ (v.adicCompletion F) ((1 : E) ⊗ₜ[F] s) ∈ intV E v
-      have e : sigR σ (v.adicCompletion F) ((1 : E) ⊗ₜ[F] s) = (1 : E) ⊗ₜ[F] s := by
-        show (Algebra.TensorProduct.map σ (AlgHom.id F (v.adicCompletion F))) ((1 : E) ⊗ₜ[F] s) = _
-        rw [Algebra.TensorProduct.map_tmul, map_one]; rfl
-      rw [e]; exact Formalism.MainNotions.Gaps.LG.fm_one_tmul_mem v ⟨s, hs⟩
-  exact hle hx
+  apply _root_.GlobalTheory.sigR_mem_intV_adic <;> assumption
 
 end Lat
 

@@ -97,7 +97,7 @@ lemma U_bound (E : Fin n → Fin n → Module.End ℂ V) (k : ℕ) (u : Module.E
       _ ≤ ‖a‖ * (c * N E k v) := mul_le_mul_of_nonneg_left (h v) (norm_nonneg _)
       _ = ‖a‖ * c * N E k v := by ring
 
-lemma quad {x y P Q : ℝ} (_hx : 0 ≤ x) (hy : 0 ≤ y) (hP : 0 ≤ P) (hQ : 0 ≤ Q)
+lemma quad {x y P Q : ℝ} (hy : 0 ≤ y) (hP : 0 ≤ P) (hQ : 0 ≤ Q)
     (h : x ^ 2 ≤ P * y ^ 2 + Q * x * y) : x ≤ (Q + Real.sqrt P) * y := by
   by_contra hc
   push Not at hc
@@ -178,7 +178,7 @@ lemma step (E : Fin n → Fin n → Module.End ℂ V) (ε : Fin n → Bool) (κ 
     have h0 := mul_nonneg hM0 (Real.sqrt_nonneg ((2 * μ + |κ| + 1) * y ^ 2 + 2 * c * x * y))
     nlinarith
   have hA : 0 ≤ 2 * μ + |κ| + 1 := by positivity
-  have hq := quad (P := M ^ 2 * (2 * μ + |κ| + 1)) (Q := 2 * M ^ 2 * c) hx hy (by positivity) (by positivity)
+  have hq := quad (x := x) (P := M ^ 2 * (2 * μ + |κ| + 1)) (Q := 2 * M ^ 2 * c) hy (by positivity) (by positivity)
     (by linarith)
   rw [Real.sqrt_mul (sq_nonneg M), Real.sqrt_sq hM0] at hq
   have ha : Real.sqrt (2 * μ + |κ| + 1) ≤ Real.sqrt (2 + |κ|) * Real.sqrt (1 + μ) := by

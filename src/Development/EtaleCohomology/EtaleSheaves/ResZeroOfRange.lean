@@ -70,9 +70,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.E.E8.TwSec
 
-theorem jointlySurj_prec (P : MorphismProperty Scheme.{0}) : Scheme.JointlySurjective (Scheme.precoverage P) :=
-  inferInstance
-
 theorem LeafOfRingsLocInj_of : LeafOfRingsLocInj := by
   intro R _ M U t ht u
   have h0 : (toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)).app (op U) t =
@@ -84,7 +81,7 @@ theorem LeafOfRingsLocInj_of : LeafOfRingsLocInj := by
   have hS := Presheaf.equalizerSieve_mem Scheme.etaleTopology
     (toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)) t 0 h0
   obtain ⟨𝒰, hle⟩ := Scheme.exists_cover_of_mem_grothendieckTopology hS
-  have := jointlySurj_prec @Etale
+  have := AlgebraicGeometry.Scheme.instJointlySurjectivePrecoverage (P := @Etale)
   obtain ⟨i, y, hy⟩ := 𝒰.exists_eq u
   refine ⟨𝒰.X i, 𝒰.f i, 𝒰.map_prop i, ⟨y, hy⟩, ?_⟩
   have hm := hle _ _ (Presieve.ofArrows.mk i)

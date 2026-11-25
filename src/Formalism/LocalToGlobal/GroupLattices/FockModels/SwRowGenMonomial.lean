@@ -161,13 +161,7 @@ theorem sw_euler (R : Type) [CommRing R] {r n : ℕ} (a : Fin r) (μ : Fin r →
 theorem sw_bidet_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {r n K : ℕ} (sz : Fin K → ℕ)
     (hsz : ∀ k, sz k ≤ n) (I : ∀ k, Fin (sz k) → Fin r) :
     map φ (bideterminant R sz hsz I) = bideterminant S sz hsz I := by
-  unfold bideterminant initMinor
-  rw [map_prod]
-  refine Finset.prod_congr rfl fun k _ => ?_
-  rw [RingHom.map_det]
-  congr 1
-  ext p q
-  simp
+  exact _root_.Formalism.GradedWeylDivisibility.ldlat_map_bidet φ sz hsz I
 
 theorem sw_weyl_map {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {r n : ℕ} (hn : n ≤ r)
     (ν : Fin n → ℕ) (f : MvPolynomial (Fin r × Fin n) R) (hf : f ∈ weyl R r n hn ν) :

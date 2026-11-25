@@ -412,11 +412,7 @@ private theorem ext_inj {R S K : Type} [CommRing R] [CommRing S] [IsDomain S]
   haveI : FaithfulSMul R S := (faithfulSMul_iff_algebraMap_injective _ _).mpr hf
   haveI : FaithfulSMul R K := (faithfulSMul_iff_algebraMap_injective _ _).mpr hg
   haveI : Algebra.IsIntegral R S := ⟨hfi⟩
-  haveI : Module.IsTorsionFree R S := Module.isTorsionFree_iff_algebraMap_injective.mpr hf
-  haveI : Module.IsTorsionFree R K := Module.isTorsionFree_iff_algebraMap_injective.mpr hg
-  haveI : Nontrivial R := IsDomain.toNontrivial
-  haveI : Algebra.IsAlgebraic R S := Algebra.IsIntegral.isAlgebraic
-  let l :=IsAlgClosed.lift (R := R) (S := S) (M := K)
+  let l := IsAlgClosed.lift (R := R) (S := S) (M := K)
   exact ⟨(l : S →+* K), RingHom.ext fun x => l.commutes x⟩
 
 private theorem ext_integral {R S K : Type} [CommRing R] [CommRing S] [IsDomain S]
@@ -424,8 +420,6 @@ private theorem ext_integral {R S K : Type} [CommRing R] [CommRing S] [IsDomain 
     (y : R →+* K) :
     ∃ ξ : S →+* K, ξ.comp f = y := by
   letI : Algebra R S := f.toAlgebra
-  haveI : Nontrivial S := IsDomain.toNontrivial
-  haveI : FaithfulSMul R S := (faithfulSMul_iff_algebraMap_injective _ _).mpr hinj
   haveI : Algebra.IsIntegral R S := ⟨hfi⟩
   haveI hp : (RingHom.ker y).IsPrime := RingHom.ker_isPrime y
   obtain ⟨Q, -, hQp, hQc⟩ := Ideal.exists_ideal_over_prime_of_isIntegral (S := S)
@@ -459,9 +453,6 @@ private theorem gen_alg {A B K : Type} [CommRing A] [IsDomain A] [CommRing B] [I
     (f : B[X]) (hf : f ≠ 0) (hft : aeval t f = 0) (y : B →+* K) (hy : y f.leadingCoeff ≠ 0) :
     ∃ ξ : A →+* K, ξ.comp (algebraMap B A) = y := by
   have hc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf
-  haveI : Nontrivial A := IsDomain.toNontrivial
-  haveI : Nontrivial B := IsDomain.toNontrivial
-  haveI : FaithfulSMul B A := (faithfulSMul_iff_algebraMap_injective _ _).mpr hinj
   let M : Submonoid B := Submonoid.powers f.leadingCoeff
   have hM : M ≤ nonZeroDivisors B := powers_le_nonZeroDivisors_of_noZeroDivisors hc
   let M' : Submonoid A := M.map (algebraMap B A)

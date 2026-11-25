@@ -26,8 +26,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf.SatGram
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Red
 
 variable {D : D7} (X : HidaSetting D)
@@ -501,8 +499,6 @@ end GramInv
 section Sat
 
 open Formalism.L2.SG.NormCut Formalism.MainNotions.S.Lat
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : HidaSetting D} {u u' : D.what₂.Word}
   {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)} {F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)}

@@ -53,7 +53,7 @@ namespace UpperTheory.RealTr
 open PositivityTheory.RgTw (Mat G th IsThetaOp)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselToJacobiFlatMapVacuumAtGoodPlace
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.VacOfShape
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 import Mathlib.Algebra.Order.Floor.Extended
@@ -44,7 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -55,28 +55,7 @@ variable {D : D7}
 theorem mul_mem_latA {S : HSp D} {L : Lat S} {P : Pl D → Prop} {a : D.host.E} (ha : a ∈ D.host.AA)
     {z : Fin S.rank → AE D} (hz : z ∈ latV S L P) :
     (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * z i) ∈ latA S L P := by
-  induction hz using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨β, hβi, hβ, c, hc, x, hx, rfl⟩ := hy
-    rw [Set.mem_singleton_iff] at hc
-    subst hc
-    refine AddSubgroup.subset_closure ⟨β, hβi, hβ, a, ha, x, hx, ?_⟩
-    funext i
-    simp only [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-  | zero =>
-    have : (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * (0 : Fin S.rank → AE D) i) = 0 := by
-      funext i; simp
-    rw [this]; exact zero_mem _
-  | add z z' _ _ hz hz' =>
-    have : (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * (z + z') i) =
-        (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * z i) + (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * z' i) := by
-      funext i; simp [mul_add]
-    rw [this]; exact add_mem hz hz'
-  | neg z _ hz =>
-    have : (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * (-z) i) =
-        -(fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * z i) := by
-      funext i; simp
-    rw [this]; exact neg_mem hz
+  first | exact _root_.GlobalTheory.FinPl.VacFlat.smul_mem_latA | exact @_root_.GlobalTheory.FinPl.VacFlat.smul_mem_latA | apply _root_.GlobalTheory.FinPl.VacFlat.smul_mem_latA <;> assumption
 
 theorem latA_le_of_latV_le {S : HSp D} {L L' : Lat S} {P : Pl D → Prop} (h : latV S L P ≤ latV S L' P) :
     latA S L P ≤ latA S L' P := by

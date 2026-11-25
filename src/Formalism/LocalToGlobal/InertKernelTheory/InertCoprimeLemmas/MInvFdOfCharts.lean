@@ -21,8 +21,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.KerInert.ScalM
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.PairingIndexBounds.F
 
 section lamC
@@ -78,8 +76,6 @@ end Formalism.L2.KerInert.ScalM
 namespace Formalism.L2.KerInert.ScalM
 
 open Formalism.L2.G Formalism.L2.G.Cmp Formalism.MainNotions.G.CmpJ Formalism.L2.Forms Formalism.L2.KerInert.SecondKernelInstances Formalism.L2.PairingIndexBounds.F
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section inst
 

@@ -212,10 +212,6 @@ alias ord_nsmul_A := _root_.Formalism.MainNotions.Inhab.ord_nsmul_eq_zero
 end BaseA
 
 
-open Classical in
-def offC (D : D7) (sc : Scale) (_j : ℕ) (z : Bool × G.HH D) : ℝ :=
-  if G.IsTopPl D z then sc.b' / sc.x else if G.IsThickPl D z then sc.b else sc.w'' D.R.n
-
 section InstW
 
 variable (D : D7)
@@ -267,33 +263,6 @@ end InstW
 section Comparison₂
 
 variable {D : D7} (L0 : SizeData₂ D) (X0 : G.Inst D L0) (K : G.Consts)
-
-theorem one_le_fill (hw : 1 ≤ L0.sc.w'' D.R.n) (j : ℕ) (z : Bool × G.HH D) :
-    1 ≤ G.fill X0 (G.bL L0) j z := by
-  have hs := scale_w''_le L0.sc D.R.n (ranks_one_le_n D.R)
-  have hb' := scale_b'_nonneg L0.sc
-  unfold G.fill
-  by_cases htop : G.IsTopPl D z
-  · have ho := (X0.off_top j z htop).1
-    have hc : z.1 = false ∧ z.2 ∈ D.host.TT := htop
-    rw [if_pos hc]
-    have hbl : (0 : ℝ) ≤ (G.bL L0 z.2 : ℝ) := by
-      unfold G.bL
-      rw [dite_eq_left hc.2]
-      exact hb'.trans (L0.bT_ge _)
-    linarith [hs.1]
-  · have hc : ¬ (z.1 = false ∧ z.2 ∈ D.host.TT) := htop
-    rw [if_neg hc, zero_add]
-    by_cases hthick : G.IsThickPl D z
-    · linarith [(X0.off_thick j z hthick).1, hs.2]
-    · linarith [(X0.off_thin j z ⟨htop, hthick⟩).1]
-
-theorem TTP_subset (a b : G.HH D → ℤ) (p : ℕ) : ∀ t ∈ G.TTP X0 K a b p, t ∈ D.host.TT := by
-  intro t ht
-  unfold G.TTP at ht
-  split at ht
-  · exact ht
-  · exact (Finset.mem_filter.1 ht).1
 
 
 

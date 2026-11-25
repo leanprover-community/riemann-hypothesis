@@ -636,12 +636,6 @@ attribute [local instance] MvPolynomial.gradedAlgebra
 
 open MvPolynomial
 
-theorem finite_adjoin_range_X (ι : Type*) :
-    Module.Finite (Algebra.adjoin K (Set.range (MvPolynomial.X : ι → MvPolynomial ι K)))
-      (MvPolynomial ι K) :=
-  Module.Finite.of_surjective (Algebra.linearMap _ _) fun p =>
-    ⟨⟨p, by rw [adjoin_range_X]; trivial⟩, rfl⟩
-
 end PolynomialRing
 
 end GlobalTheory

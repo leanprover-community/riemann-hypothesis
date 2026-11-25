@@ -85,10 +85,6 @@ theorem strictTransform_eq_ker {X' X : Scheme.{u}} (f : X' ⟶ X) (Z J : X.Ideal
 def schemeImageIdeal {X Y : Scheme.{u}} (f : X ⟶ Y) (I : X.IdealSheafData) : Y.IdealSheafData :=
   (I.subschemeι ≫ f).ker
 
-private theorem isClosedImmersion_lift_comp {X Y Z : Scheme.{u}} (f : X ⟶ Z) [IsClosedImmersion f] (g : Y ⟶ Z)
-    (h : Scheme.Hom.ker f ≤ Scheme.Hom.ker g) : IsClosedImmersion.lift f g h ≫ f = g := by
-  simp
-
 private theorem ker_le_ker_pullbackFst {X Y W Z : Scheme.{u}} (f : X ⟶ Y) [Mono f] (g : Z ⟶ Y)
     (ι : W ⟶ X) (m : Z ⟶ W) (hfac : m ≫ ι ≫ f = g) :
     Scheme.Hom.ker ι ≤ Scheme.Hom.ker (pullback.fst f g) := by
@@ -115,7 +111,7 @@ theorem comap_ker_subschemeι_comp {X Y : Scheme.{u}} (f : X ⟶ Y)
   refine le_trans (le_of_eq (Scheme.IdealSheafData.ker_subschemeι I).symm) ?_
   exact ker_le_ker_pullbackFst f (I.map f).subschemeι I.subschemeι
     (IsClosedImmersion.lift (I.subschemeι ≫ f) (I.map f).subschemeι hle)
-    (isClosedImmersion_lift_comp (I.subschemeι ≫ f) (I.map f).subschemeι hle)
+    (IsClosedImmersion.lift_fac (I.subschemeι ≫ f) (I.map f).subschemeι hle)
 
 theorem comap_schemeImageIdeal {X Y : Scheme.{u}} (f : X ⟶ Y) [IsClosedImmersion f]
     (I : X.IdealSheafData) : (schemeImageIdeal f I).comap f = I :=

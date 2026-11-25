@@ -651,43 +651,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 theorem exists_lam (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r)
     (hx : ∀ τ, (mat x τ).det ≠ 0) :
     ∃ lam : Measure (realLie Ψ G), lam.IsAddHaarMeasure ∧ lam.map Subtype.val = riemLie Ψ G x := by
-  set W := (realLie Ψ G).comap (fromFrame x)
-  let Φ : W →ₗ[ℝ] realLie Ψ G :=
-    ((fromFrame x).comp W.subtype).codRestrict (realLie Ψ G) (fun v => v.2)
-  have key2 : ∀ τ (A : Matrix (Fin r) (Fin r) ℂ),
-      mat x τ * ((mat x τ)⁻¹ * A * mat x τ) * (mat x τ)⁻¹ = A := fun τ A => by
-    rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_right _ _ (hx τ).isUnit,
-      Matrix.mul_nonsing_inv_cancel_left _ _ (hx τ).isUnit]
-  have hsurj : Function.Surjective Φ := by
-    intro X
-    let Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r) := WithLp.toLp 2 (fun p : Ψ × Fin r × Fin r =>
-      ((mat x p.1)⁻¹ * Matrix.of (X.1 p.1) * mat x p.1) p.2.1 p.2.2)
-    have hY : fromFrame x Y = X.1 := by
-      funext τ
-      have e : Matrix.of (fun a b => Y (τ, a, b)) = (mat x τ)⁻¹ * Matrix.of (X.1 τ) * mat x τ := by
-        ext a b; simp [Y]
-      change (mat x τ * Matrix.of _ * (mat x τ)⁻¹ : Matrix (Fin r) (Fin r) ℂ) = X.1 τ
-      rw [e, key2]; rfl
-    exact ⟨⟨Y, show fromFrame x Y ∈ realLie Ψ G by rw [hY]; exact X.2⟩, Subtype.ext hY⟩
-  have key1 : ∀ τ (A : Matrix (Fin r) (Fin r) ℂ),
-      (mat x τ)⁻¹ * (mat x τ * A * (mat x τ)⁻¹) * mat x τ = A := fun τ A => by
-    rw [Matrix.mul_assoc, Matrix.nonsing_inv_mul_cancel_right _ _ (hx τ).isUnit,
-      Matrix.nonsing_inv_mul_cancel_left _ _ (hx τ).isUnit]
-  have hinj : Function.Injective Φ := by
-    intro Y Z h
-    have h' : fromFrame x Y.1 = fromFrame x Z.1 := congrArg Subtype.val h
-    have hτ : ∀ τ, Matrix.of (fun a b => Y.1 (τ, a, b)) = Matrix.of (fun a b => Z.1 (τ, a, b)) := by
-      intro τ
-      have h1 : mat x τ * Matrix.of (fun a b => Y.1 (τ, a, b)) * (mat x τ)⁻¹ =
-          mat x τ * Matrix.of (fun a b => Z.1 (τ, a, b)) * (mat x τ)⁻¹ := congrFun h' τ
-      rw [← key1 τ (Matrix.of (fun a b => Y.1 (τ, a, b))), h1, key1]
-    refine Subtype.ext (PiLp.ext fun p => ?_)
-    obtain ⟨τ, a, b⟩ := p
-    exact congrFun (congrFun (hτ τ) a) b
-  let φ : W ≃L[ℝ] realLie Ψ G := (LinearEquiv.ofBijective Φ ⟨hinj, hsurj⟩).toContinuousLinearEquiv
-  refine ⟨(stdOrthonormalBasis ℝ W).toBasis.addHaar.map φ, φ.isAddHaarMeasure_map _, ?_⟩
-  rw [Measure.map_map measurable_subtype_coe φ.continuous.measurable]
-  rfl
+  apply _root_.GlobalTheory.CovTop.VolUp.UpBall.exists_lam <;> assumption
 
 theorem exists_conj_bound (Ψ : Finset (E →+* ℂ)) (x : Frame Ψ r) (hx : ∀ τ, (mat x τ).det ≠ 0) :
     ∃ C : ℝ, 0 < C ∧ ∀ (t : ℝ) (X : Ψ → Fin r → Fin r → ℂ), 0 ≤ t →

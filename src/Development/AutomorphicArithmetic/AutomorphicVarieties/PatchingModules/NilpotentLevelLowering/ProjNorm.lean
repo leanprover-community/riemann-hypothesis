@@ -67,7 +67,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil
 open UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Hi UpperTheory.V.AlgebraTools UpperTheory.V.Pa UpperTheory.V.Pa.Lev
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem coeffSum (Λ G : Type) [CommRing Λ] [Group G] [Fintype G] (x : MonoidAlgebra Λ G) :
     ∑ g : G, (MonoidAlgebra.single g (1:Λ)) * MonoidAlgebra.single (1:G) (((MonoidAlgebra.single g⁻¹ (1:Λ)) * x).coeff 1) = x := by

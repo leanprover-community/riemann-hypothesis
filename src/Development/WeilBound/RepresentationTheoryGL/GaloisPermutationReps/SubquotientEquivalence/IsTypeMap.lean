@@ -47,8 +47,6 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.DzCount
 
 def Lab (K : Type) [Field K] (n : ℕ) : Set K[X] := {P | P.Monic ∧ Irreducible P ∧ P ≠ X ∧ P.natDegree = n}

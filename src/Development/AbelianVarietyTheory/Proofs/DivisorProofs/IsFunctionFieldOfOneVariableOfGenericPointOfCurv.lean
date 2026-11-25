@@ -61,8 +61,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FGFun
 
 theorem fg_functionField : ∀ (F : Type) [Field F] (G : Scheme.{0}) [IsIntegral G] (sG : G ⟶ Sp F), IsProjOver sG → ∀ (P Ω : Type) [Field P] [Field Ω] (φ : P →+* G.functionField) (t : Sp P ⟶ Sp F) (ι : G.functionField →+* Ω), spMap ι ≫ G.fromSpecStalk (genericPoint G) ≫ sG = spMap ι ≫ spMap φ ≫ t → (letI := φ.toAlgebra; (⊤ : IntermediateField P G.functionField).FG) := by
@@ -134,7 +132,6 @@ open GlobalTheory GlobalTheory.VB GlobalTheory.LieVB GlobalTheory.QCoh GlobalThe
 open GlobalTheory.Twist (resM)
 open scoped CategoryTheory.Obj RatFunc IntermediateField
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.Nef.CurveFF
 

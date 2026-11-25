@@ -44,8 +44,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.MS
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n a b : ℕ}

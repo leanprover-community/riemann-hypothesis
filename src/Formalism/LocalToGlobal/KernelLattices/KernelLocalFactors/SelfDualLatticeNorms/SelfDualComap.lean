@@ -186,7 +186,7 @@ theorem La_theta {x : TaylorLogMetric.VC D a b} (hx : x ∈ TaylorLogMetric.La D
   induction hx using AddSubgroup.closure_induction with
   | mem x hx =>
     obtain ⟨w, hw, A, hA, rfl⟩ := hx
-    refine AddSubgroup.subset_closure ⟨cmTheta 1 D.host.d * w, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.lam_theta hw, A, hA, ?_⟩
+    refine AddSubgroup.subset_closure ⟨cmTheta 1 D.host.d * w, GlobalTheory.FourthRootStd.lam_theta hw, A, hA, ?_⟩
     rw [smul_smul]
   | zero => rw [smul_zero]; exact zero_mem _
   | add x y _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2

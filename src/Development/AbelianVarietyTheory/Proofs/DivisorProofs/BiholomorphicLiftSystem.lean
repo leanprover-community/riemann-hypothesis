@@ -86,26 +86,6 @@ theorem Datum.algebraMap_injective (D : Datum p) (hm : D.m = 1) :
   · exact hy0 h
   · exact one_ne_zero h
 
-theorem Datum.exists_zsmul_eq_algebraMap (D : Datum p) (hm : D.m = 1) (x : D.O) :
-    ∃ e : ℤ, e ≠ 0 ∧ ∃ a : 𝓞 D.F, e • x = algebraMap (𝓞 D.F) D.O a := by
-  haveI := D.freeO
-  haveI := D.finO
-  let f : 𝓞 D.F →ₗ[ℤ] D.O := (algebraMap (𝓞 D.F) D.O).toAddMonoidHom.toIntLinearMap
-  have hf : Function.Injective f := D.algebraMap_injective hm
-  let M := LinearMap.range f
-  have h1 := rank_quotient_add_rank_of_isDomain M
-  rw [rank_range_of_injective f hf, ← Module.finrank_eq_rank (R := ℤ) (M := 𝓞 D.F),
-    ← Module.finrank_eq_rank (R := ℤ) (M := D.O), RingOfIntegers.rank, D.rankO, hm, one_pow,
-    _root_.one_mul] at h1
-  obtain ⟨k, hk⟩ := Cardinal.lt_aleph0.mp (Module.rank_lt_aleph0 (R := ℤ) (M := D.O ⧸ M))
-  rw [hk] at h1
-  norm_cast at h1
-  have h0 : Module.rank ℤ (D.O ⧸ M) = 0 := by rw [hk]; norm_cast; omega
-  obtain ⟨e, he, hex⟩ := (rank_eq_zero_iff.mp h0) (Submodule.Quotient.mk x)
-  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero] at hex
-  obtain ⟨a, ha⟩ := hex
-  exact ⟨e, he, a, ha.symm⟩
-
 theorem Datum.algebraMap_surjective_of_m_eq_one :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p), D.m = 1 → Function.Surjective (algebraMap (𝓞 D.F) D.O) := by
   apply UpperTheory.Gal.Ord.surjO

@@ -304,63 +304,7 @@ theorem exists_trait_point {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] 
     (hx : M.π x = closedPoint R) :
     ∃ (W : Type) (_ : CommRing W) (_ : IsDomain W) (_ : IsLocalRing W) (φ : R →+* W) (ξ : Sp W ⟶ M.S),
       GlobalTheory.LN.CDvr W ∧ Function.Injective φ ∧ IsLocalHom φ ∧ ξ ≫ M.π = spMap φ ∧ ξ (closedPoint W) = x := by
-  have : IsNoetherianRing R := hR.1.1
-  have : CharZero R := hR.2
-  have := M.proper
-  have := M.integral
-  have := M.dominant
-  have : IsLocallyNoetherian M.S := LocallyOfFiniteType.isLocallyNoetherian M.π
-  obtain ⟨ψ, hψ⟩ := Spec.map_surjective (M.S.fromSpecStalk x ≫ M.π)
-  have hψp : ∀ q : Spec (M.S.presheaf.stalk x), Spec.map ψ q = M.π (M.S.fromSpecStalk x q) := fun q => by
-    rw [hψ, Scheme.Hom.comp_apply]
-  have hloc : IsLocalHom ψ.hom := by
-    rw [isLocalHom_iff_comap_closedPoint]
-    have := hψp (closedPoint _)
-    rw [Scheme.fromSpecStalk_closedPoint, hx] at this
-    exact this
-
-  let t₀ : Sp (FractionRing R) := closedPoint (FractionRing R)
-  have hsp : M.gp t₀ ⤳ x := by
-    rw [specializes_iff_mem_closure]
-    have h1 : Set.range M.gp ⊆ {M.gp t₀} := by
-      rintro _ ⟨t, rfl⟩
-      rw [Subsingleton.elim t t₀]; rfl
-    exact closure_mono h1 ((IsDominant.denseRange (f := M.gp)).closure_eq ▸ Set.mem_univ x)
-  have hr : M.gp t₀ ∈ Set.range (M.S.fromSpecStalk x) := by
-    rw [Scheme.range_fromSpecStalk]; exact hsp
-  obtain ⟨q, hq⟩ := hr
-  have e1 : Spec.map ψ q = jK R t₀ := by
-    rw [hψp, hq, ← Scheme.Hom.comp_apply, M.gp_π]
-  have h2 : Ideal.comap ψ.hom q.asIdeal = ⊥ := by
-    have := congrArg (fun p : Sp R => (p : PrimeSpectrum R).asIdeal) e1
-    change Ideal.comap ψ.hom q.asIdeal = Ideal.comap (algebraMap R (FractionRing R)) t₀.asIdeal at this
-    rw [this, @Ideal.eq_bot_of_prime _ _ t₀.asIdeal t₀.isPrime]
-    exact Ideal.comap_bot_of_injective _ (IsFractionRing.injective _ _)
-  have hinj : Function.Injective ψ.hom := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-    intro a ha
-    have : a ∈ Ideal.comap ψ.hom q.asIdeal := by
-      rw [Ideal.mem_comap, ha]; exact q.asIdeal.zero_mem
-    rw [h2] at this
-    exact this
-  have : CharZero (M.S.presheaf.stalk x) := charZero_of_injective_ringHom hinj
-  have key : ∃ (W : Type) (_ : CommRing W) (_ : IsDomain W) (_ : IsLocalRing W) (χ : M.S.presheaf.stalk x →+* W),
-      GlobalTheory.LN.CDvr W ∧ Function.Injective χ ∧ IsLocalHom χ := by
-    by_cases h : IsField (M.S.presheaf.stalk x)
-    · letI := h.toField
-      refine ⟨PowerSeries (M.S.presheaf.stalk x), inferInstance, inferInstance, inferInstance, PowerSeries.C,
-        ⟨inferInstance, ?_, ?_⟩, PowerSeries.C_injective, inferInstance⟩
-      · rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance
-      · exact charZero_of_injective_ringHom (f := PowerSeries.C (R := M.S.presheaf.stalk x)) (RingHom.injective _)
-    · obtain ⟨O, _, _, _, _, χ, h1, h2⟩ := GlobalTheory.exists_complete_discreteValuationRing_dominating _ h
-      have : CharZero O := charZero_of_injective_ringHom h1
-      exact ⟨O, inferInstance, inferInstance, inferInstance, χ, ⟨inferInstance, inferInstance, inferInstance⟩, h1, h2⟩
-  obtain ⟨W, _, _, _, χ, hW, hχ, hχl⟩ := key
-  refine ⟨W, inferInstance, inferInstance, inferInstance, χ.comp ψ.hom, Spec.map (CommRingCat.ofHom χ) ≫ M.S.fromSpecStalk x,
-    hW, hχ.comp hinj, RingHom.isLocalHom_comp _ _, ?_, ?_⟩
-  · rw [Category.assoc, ← hψ, ← Spec.map_comp]; rfl
-  · exact (Scheme.Hom.comp_apply _ _ _).trans
-      (Eq.trans (congrArg (M.S.fromSpecStalk x) (IsLocalRing.comap_closedPoint χ)) Scheme.fromSpecStalk_closedPoint)
+  apply _root_.GlobalTheory.Mum.exists_trait_over_closedPoint <;> assumption
 
 end GlobalTheory.Mum.SecEmb
 

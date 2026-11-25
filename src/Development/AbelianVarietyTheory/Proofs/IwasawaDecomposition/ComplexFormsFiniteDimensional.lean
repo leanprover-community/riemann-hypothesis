@@ -66,7 +66,7 @@ theorem valC_finiteDimensional {E K ι : Type} [Field E] [Field K] [CharZero K] 
 
 theorem GStep.fi_finiteDimensional {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K]
     [StarRing K] [Fintype ι] {n : ℕ} (S : GStep E K n) (emb : ι → E →+* K) (σ : K →+* ℂ) (lam : ι → DomWeight n)
-    (_hF : FOk emb σ) (hS : S.Ok) : FiniteDimensional ℂ (S.Fi emb σ lam) := by
+    (hS : S.Ok) : FiniteDimensional ℂ (S.Fi emb σ lam) := by
   haveI := hS.fin_orb
   haveI := valC_finiteDimensional emb σ lam
   let f : S.Fi emb σ lam →ₗ[ℂ] (S.Cl → ValC (Gr emb σ n) lam) :=

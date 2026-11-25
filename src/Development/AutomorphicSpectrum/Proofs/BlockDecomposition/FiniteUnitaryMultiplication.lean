@@ -54,8 +54,6 @@ open NumberField IsDedekindDomain Matrix Polynomial
 open GlobalTheory.BCT GlobalTheory.UnitaryBC PositivityTheory.Rg.Bc.ArchbcB.B PositivityTheory.Rg.BcB.F.MT Formalism.UG
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.FUMulPf
 
 section Abstract

@@ -66,15 +66,10 @@ theorem finsum_orbits_stabilizer_mass {K Z : Type} [Group K] [Finite K] [MulActi
   classical
   let ρ : Z → orbitRel.Quotient K Z := fun z => Quotient.mk'' z
 
-  have hmem : ∀ (o : orbitRel.Quotient K Z) (a : Z), ρ a = o ↔ a ∈ orbit K (Quotient.out o) := by
-    intro o a
-    constructor
-    · intro h
-      have : ρ a = ρ (Quotient.out o) := by rw [h]; exact (Quotient.out_eq' o).symm
-      exact Quotient.exact this
-    · intro h
-      have : ρ a = ρ (Quotient.out o) := Quotient.sound h
-      rw [this]; exact Quotient.out_eq' o
+  have hmem : ∀ (o : orbitRel.Quotient K Z) (a : Z), ρ a = o ↔ a ∈ orbit K (Quotient.out o) :=
+    fun o a => by
+      rw [← orbitRel.Quotient.orbit_eq_orbit_out o Quotient.out_eq',
+        orbitRel.Quotient.mem_orbit]
   have hfib : ∀ o : orbitRel.Quotient K Z,
       (∑ᶠ a : {a // ρ a = o}, f a.1) = (Nat.card (orbit K (Quotient.out o)) : ℂ) * f (Quotient.out o) := by
     intro o

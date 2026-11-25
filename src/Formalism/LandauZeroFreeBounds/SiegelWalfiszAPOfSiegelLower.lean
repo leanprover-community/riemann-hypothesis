@@ -1,5 +1,7 @@
 module
 
+import Formalism.ZeroFreeRegion.PerronKernelBounds
+
 public import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf
 public import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Formalism.LandauZeroFreeBounds.NoZeroComplexOf
@@ -1455,7 +1457,7 @@ theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftCh
     refine Formalism.ZF.norm_integral_compl_le (fun t : ℝ => Fchi χ y ((σ₀ : ℂ) + t * I)) _ T hAnn hT0 (fun t ht => ?_)
     show ‖Fchi χ y ((σ₀ : ℂ) + t * I)‖ ≤ _
     rw [hσ₀e]
-    exact perron_right_line_bound χ C₀ hR y T t hy1' hT0 ht
+    exact PerronKernel.norm_right_le (negLD χ) hy1' (hT0.trans_le ht) hR
 
   have hHnn : 0 ≤ (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 := by
     have hCL : 0 ≤ C * L ^ 2 + 1 := by

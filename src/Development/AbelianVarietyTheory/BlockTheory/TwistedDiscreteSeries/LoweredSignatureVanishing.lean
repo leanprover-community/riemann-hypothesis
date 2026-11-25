@@ -46,8 +46,6 @@ open GlobalTheory.Chain
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.LoweredSignatureVanishing
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def signCard (S : SPar) (b : Bool) : ℕ := (S.filter fun x => x.2 = b).card

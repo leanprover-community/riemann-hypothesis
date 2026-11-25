@@ -230,8 +230,6 @@ end Gen
 
 section Terms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp
 
 variable {D : D7} {X : HidaSetting D} {u u' : D.what₂.Word}

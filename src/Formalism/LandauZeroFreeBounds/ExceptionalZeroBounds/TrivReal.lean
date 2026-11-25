@@ -53,46 +53,6 @@ noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
 
-lemma one_sub_prime_cpow_neg_ne_zero (p : ℕ) (hp : p.Prime) {s : ℂ} (hs : 0 < s.re) :
-    (1 : ℂ) - (p : ℂ) ^ (-s) ≠ 0 := by
-  intro h
-  have h1 : (p : ℂ) ^ (-s) = 1 := (sub_eq_zero.1 h).symm
-  have h2 := congrArg norm h1
-  rw [norm_natCast_cpow_of_pos hp.pos, norm_one, neg_re] at h2
-  have h3 : (p : ℝ) ^ (-s.re) < 1 :=
-    Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast hp.one_lt) (by linarith)
-  linarith
-
-theorem trivialCharZerosOfZeta : TrivZeros := by
-  intro q _ s hs hs1 h0
-  have hmul := DirichletCharacter.LFunctionTrivChar_eq_mul_riemannZeta (N := q) hs1
-  have h0' : (∏ p ∈ q.primeFactors, (1 - (p : ℂ) ^ (-s))) * riemannZeta s = 0 := by
-    rw [← hmul]
-    exact h0
-  rcases mul_eq_zero.1 h0' with h | h
-  · exfalso
-    obtain ⟨p, hp, hp0⟩ := Finset.prod_eq_zero_iff.1 h
-    exact one_sub_prime_cpow_neg_ne_zero p (Nat.prime_of_mem_primeFactors hp) hs hp0
-  · exact h
-
-lemma conj_apply_of_sq_eq_one {q : ℕ} (χ : DirichletCharacter ℂ q) (hχ : χ ^ 2 = 1) (a : ZMod q) :
-    starRingEnd ℂ (χ a) = χ a := by
-  by_cases ha : IsUnit a
-  · have h2 : χ a * χ a = 1 := by
-      rw [← sq, ← MulChar.pow_apply' χ two_ne_zero, hχ, MulChar.one_apply ha]
-    rcases mul_self_eq_one_iff.1 h2 with h | h
-    · rw [h, map_one]
-    · rw [h, map_neg, map_one]
-  · rw [MulChar.map_nonunit χ ha, map_zero]
-
-lemma conj_LFunction_conj_of_sq_eq_one {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ^ 2 = 1)
-    (z : ℂ) : (hz : 1 < z.re) →
-    starRingEnd ℂ (DirichletCharacter.LFunction χ (starRingEnd ℂ z)) =
-      DirichletCharacter.LFunction χ z := by
-  intro _
-  have hinv : χ⁻¹ = χ := (isSelfInv_iff_sq_eq_one.mpr hχ).inv_eq
-  simpa only [hinv, Complex.conj_conj] using (Deduction.LFunction_conj χ (starRingEnd ℂ z)).symm
-
 theorem realCharConj : RealConj := by
   intro q _ χ hχ _ s
   have hinv : χ⁻¹ = χ := (isSelfInv_iff_sq_eq_one.mpr hχ).inv_eq

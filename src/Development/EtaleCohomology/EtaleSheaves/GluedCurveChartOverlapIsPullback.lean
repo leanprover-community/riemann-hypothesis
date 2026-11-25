@@ -149,7 +149,6 @@ theorem away {Ω L : Type} [Field Ω] [Field L] [Algebra Ω L] (B D : Subalgebra
       exact h2
     simp [Subtype.ext this]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem glued_curve_chart_overlap_is_pullback : LeafGluePullback := by
   intro Ω L _ _ _ A B u h G
   haveI := G.hiA; haveI := G.hiB

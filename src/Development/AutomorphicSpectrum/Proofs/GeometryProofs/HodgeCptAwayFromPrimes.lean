@@ -70,10 +70,6 @@ section -- clump:auto
 
 namespace UpperTheory.Reformulated.B.RegularUnitPoints
 
-theorem aux1 : ∀ {Ω : Type} [inst : Field Ω], IsLocalRing Ω := by
-  intro Ω inst
-  infer_instance
-
 noncomputable def genPt : {X : AlgebraicGeometry.Scheme} →
   {Ω : Type} → [inst : Field Ω] → (AlgebraicGeometry.Spec ↧Ω ⟶ X) → ↥X :=
   fun {X} {Ω} [Field Ω] ξ => ξ (IsLocalRing.closedPoint Ω)

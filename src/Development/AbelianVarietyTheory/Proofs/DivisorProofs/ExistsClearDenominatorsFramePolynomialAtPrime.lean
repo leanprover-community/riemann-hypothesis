@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralClosureTorsorEtaleHeightOneAbhyankarStatement
 public import Development.AbelianVarietyTheory.Definitions.CMLattices.IntegralOf
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsCmPointLocalModelOverDvr
@@ -75,16 +76,7 @@ namespace GlobalTheory.CoeffDenom
 
 theorem dvd_pow_of_ne_zero_of_not_isUnit {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
     {d π : V} (hd : d ≠ 0) (hπ : π ≠ 0) (hπu : ¬ IsUnit π) : ∃ N : ℕ, d ∣ π ^ N := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible V
-  obtain ⟨a, u, hu⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hd hϖ
-  obtain ⟨b, u', hu'⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hπ hϖ
-  have hb : b ≠ 0 := by
-    rintro rfl
-    exact hπu (by rw [hu', pow_zero, mul_one]; exact u'.isUnit)
-  refine ⟨a, ?_⟩
-  rw [hu, hu', mul_pow, ← pow_mul]
-  refine (Units.isUnit u).mul_left_dvd.2 (Dvd.dvd.mul_left ?_ _)
-  exact pow_dvd_pow ϖ (Nat.le_mul_of_pos_left a (Nat.pos_of_ne_zero hb))
+  apply _root_.GlobalTheory.KeyOriginTransport.exists_dvd_pow <;> assumption
 
 end GlobalTheory.CoeffDenom
 

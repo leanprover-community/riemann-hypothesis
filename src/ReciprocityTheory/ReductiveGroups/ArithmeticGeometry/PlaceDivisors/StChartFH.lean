@@ -4,7 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open MvPowerSeries
 

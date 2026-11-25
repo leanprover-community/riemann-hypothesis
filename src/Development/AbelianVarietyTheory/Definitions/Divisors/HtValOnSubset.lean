@@ -40,8 +40,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemCon
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FlatCore

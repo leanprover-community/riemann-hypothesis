@@ -48,7 +48,7 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.AdeleApproximation.AdeleIntA
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.AdeleApproximation.AdeleIntA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentApproximation.MemZeroLocusGLIff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentApproximation.AddDense
@@ -80,111 +80,15 @@ noncomputable section
 namespace PI.UnipApproxD.IntegersDenseFiniteAdeles
 
 open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
+open ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA (exists_approx exists_approx_adele)
 
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K]
-
-def IsInt (b : FiniteAdeleRing R K) : Prop := ∀ v, b v ∈ v.adicCompletionIntegers K
 
 private theorem val_K_lemma (v : HeightOneSpectrum R) (k : K) :
     Valued.v (algebraMap K (v.adicCompletion K) k) = v.valuation K k := by
   first
   | exact valuedAdicCompletion_eq_valuation' v k
-
-theorem int_R (v : HeightOneSpectrum R) (r : R) :
-    algebraMap K (v.adicCompletion K) (algebraMap R K r) ∈ v.adicCompletionIntegers K := by
-  rw [mem_adicCompletionIntegers, val_K_lemma, valuation_of_algebraMap]
-  first
-  | exact v.intValuation_le_one r
-
-theorem val_R (v : HeightOneSpectrum R) (r : R) :
-    Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) = v.intValuation r := by
-  rw [val_K_lemma]
-  first
-  | exact valuation_of_algebraMap v r
-
-theorem exists_near (v : HeightOneSpectrum R) (y : v.adicCompletion K) :
-    ∃ k : K, y - algebraMap K (v.adicCompletion K) k ∈ v.adicCompletionIntegers K := by
-  have hU : IsOpen ((fun z => z - y) ⁻¹' (v.adicCompletionIntegers K : Set (v.adicCompletion K))) :=
-    (Valued.isOpen_valuationSubring _).preimage (continuous_sub_right y)
-  obtain ⟨k, hk⟩ := (denseRange_algebraMap (R := R) (K := K) v).exists_mem_open hU
-    ⟨y, by simp⟩
-  refine ⟨k, ?_⟩
-  have hk' : algebraMap K (v.adicCompletion K) k - y ∈ v.adicCompletionIntegers K := hk
-  have := neg_mem hk'
-  simpa [neg_sub] using this
-
-theorem exists_den_local (v : HeightOneSpectrum R) (y : v.adicCompletion K) :
-    ∃ s : R, s ≠ 0 ∧
-      algebraMap K (v.adicCompletion K) (algebraMap R K s) * y ∈ v.adicCompletionIntegers K := by
-  obtain ⟨b, hb, h⟩ := adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers (R := R) (K := K) v y
-  refine ⟨b, nonZeroDivisors.ne_zero hb, ?_⟩
-  first
-  | (rw [← IsScalarTower.algebraMap_apply, mul_comm]; exact h)
-
-theorem exists_den (b : FiniteAdeleRing R K) :
-    ∃ r : R, r ≠ 0 ∧ IsInt (algebraMap R (FiniteAdeleRing R K) r * b) := by
-  classical
-  have hfin : {v : HeightOneSpectrum R | b v ∉ v.adicCompletionIntegers K}.Finite := by
-    first
-    | exact Filter.eventually_cofinite.mp b.2
-  choose s hs0 hs using fun v => exists_den_local (R := R) (K := K) v (b v)
-  refine ⟨∏ v ∈ hfin.toFinset, s v, Finset.prod_ne_zero_iff.mpr fun v _ => hs0 v, ?_⟩
-  intro w
-  have hc : (algebraMap R (FiniteAdeleRing R K) (∏ v ∈ hfin.toFinset, s v) * b) w
-      = algebraMap K (w.adicCompletion K) (algebraMap R K (∏ v ∈ hfin.toFinset, s v)) * b w := by
-    first
-    | rfl
-  rw [hc]
-  by_cases hw : w ∈ hfin.toFinset
-  · rw [← Finset.mul_prod_erase _ _ hw, map_mul, map_mul, mul_assoc, mul_left_comm]
-    exact mul_mem (int_R w _) (hs w)
-  · have hbw : b w ∈ w.adicCompletionIntegers K := by
-      simpa using hw
-    exact mul_mem (int_R w _) hbw
-
-theorem exists_approx_local (v : HeightOneSpectrum R) (c : v.adicCompletion K)
-    (hc : c ∈ v.adicCompletionIntegers K) (r : R) (hr : r ≠ 0) :
-    ∃ a : R, Valued.v (c - algebraMap K _ (algebraMap R K a)) ≤ v.intValuation r := by
-  exact ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.exists_approx_local v c hc r hr
-
-theorem exists_approx (c : FiniteAdeleRing R K) (hc : IsInt c) (r : R) (hr : r ≠ 0) :
-    ∃ a : R, ∀ v, Valued.v (c v - algebraMap K _ (algebraMap R K a)) ≤ v.intValuation r := by
-  exact ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.exists_approx c hc r hr
-
-theorem exists_approx_adele (b : FiniteAdeleRing R K) :
-    ∃ u : K, IsInt (b - algebraMap K (FiniteAdeleRing R K) u) := by
-  obtain ⟨r, hr, hc⟩ := exists_den (R := R) (K := K) b
-  obtain ⟨a, ha⟩ := exists_approx (R := R) (K := K) _ hc r hr
-  refine ⟨algebraMap R K a / algebraMap R K r, fun v => ?_⟩
-  have hinj : Function.Injective (algebraMap R K) := by
-    first
-    | exact IsFractionRing.injective R K
-  have hrK : algebraMap R K r ≠ 0 := fun h => hr (hinj (by rw [h, map_zero]))
-  have hx : algebraMap K (v.adicCompletion K) (algebraMap R K r) ≠ 0 := (map_ne_zero _).mpr hrK
-  have e1 : (b - algebraMap K (FiniteAdeleRing R K) (algebraMap R K a / algebraMap R K r)) v
-      = b v - algebraMap K (v.adicCompletion K) (algebraMap R K a / algebraMap R K r) := by
-    first
-    | rfl
-  have e2 : (algebraMap R (FiniteAdeleRing R K) r * b) v
-      = algebraMap K (v.adicCompletion K) (algebraMap R K r) * b v := by
-    first
-    | rfl
-  have h1 := ha v
-  rw [e2] at h1
-  have e3 : b v - algebraMap K (v.adicCompletion K) (algebraMap R K a / algebraMap R K r)
-      = (algebraMap K (v.adicCompletion K) (algebraMap R K r))⁻¹ *
-        (algebraMap K (v.adicCompletion K) (algebraMap R K r) * b v
-          - algebraMap K (v.adicCompletion K) (algebraMap R K a)) := by
-    rw [map_div₀]
-    field_simp
-  rw [e1, e3, mem_adicCompletionIntegers, map_mul, map_inv₀, val_R]
-  have hne : v.intValuation r ≠ 0 := by
-    rw [← val_R (K := K) v r]
-    exact (Valuation.ne_zero_iff _).mpr hx
-  calc (v.intValuation r)⁻¹ * Valued.v _ ≤ (v.intValuation r)⁻¹ * v.intValuation r :=
-        by gcongr
-    _ = 1 := inv_mul_cancel₀ hne
 
 theorem exists_small (v : HeightOneSpectrum R) {U : Set (v.adicCompletion K)}
     (hU : U ∈ nhds (0 : v.adicCompletion K)) :

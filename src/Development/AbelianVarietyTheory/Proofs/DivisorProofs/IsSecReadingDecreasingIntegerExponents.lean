@@ -70,8 +70,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KchMul
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits NumberField
@@ -120,7 +118,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.IndefiniteRowSideFullHecke.ComponentMassSum GlobalTheory.ShFam GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.FlatTw.Hol

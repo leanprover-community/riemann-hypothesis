@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibrePreconnected
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalAlgebraisationMorphisms
@@ -301,19 +302,7 @@ open GlobalTheory.Mum
 namespace GlobalTheory.ZConn
 
 theorem preconnectedSpace_of_isLocalRing (Z : Scheme.{0}) [IsLocalRing Γ(Z, ⊤)] : PreconnectedSpace Z := by
-  rw [preconnectedSpace_iff_clopen]
-  intro s hs
-  obtain ⟨e, he, hes⟩ := GlobalTheory.exists_idempotent_basicOpen_eq_of_isClopen Z s hs
-  rcases IsLocalRing.isUnit_or_isUnit_one_sub_self e with hu | hu
-  · right
-    rw [← hes, Z.basicOpen_of_isUnit hu]
-    simp
-  · left
-    have h0 : e = 0 := by
-      have : e * (1 - e) = 0 := by rw [mul_sub, _root_.mul_one, he, sub_self]
-      exact hu.mul_left_eq_zero.1 this
-    rw [← hes, h0, Z.basicOpen_zero]
-    simp
+  apply _root_.GlobalTheory.ZariskiConn.preconnectedSpace_of_isLocalRing <;> assumption
 
 theorem exists_complete_flat (R : Type) [CommRing R] [IsNoetherianRing R] (P : PrimeSpectrum R) :
     ∃ (A : Type) (_ : CommRing A) (_ : IsNoetherianRing A) (_ : IsLocalRing A) (φ : R →+* A),

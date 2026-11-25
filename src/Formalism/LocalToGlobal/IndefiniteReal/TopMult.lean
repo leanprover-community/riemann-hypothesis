@@ -16,8 +16,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace Formalism.IndefR.TopMult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Adelic
 
 variable {D : D7} {V : HSp D}

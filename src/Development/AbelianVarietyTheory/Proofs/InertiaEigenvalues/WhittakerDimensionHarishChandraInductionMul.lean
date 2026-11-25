@@ -196,7 +196,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueShuffle =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsUnitOfUniUp =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsUnitOfUniUp", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsUnitOfUniUp", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -208,15 +208,6 @@ open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq Globa
 open scoped Classical
 
 variable {g : ℕ} [Fact g.Prime]
-
-open Polynomial in
-open scoped Classical in
-variable {g : ℕ} [Fact g.Prime] in
-theorem _root_.GlobalTheory.GLm.OpenCell.coe_toG {n : ℕ} {M : _root_.GlobalTheory.GLq.Mt g n} (h : IsUnit M) :
-    ((_root_.GlobalTheory.GLq.toG M : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n) = M := by
-  unfold _root_.GlobalTheory.GLq.toG
-  rw [dite_eq_left h]
-  rfl
 
 open Polynomial in
 open scoped Classical in
@@ -275,7 +266,7 @@ private lemma coe_pm_inv_mul_mul_pm {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : _ro
     rw [← Matrix.det_mul, hPm, permMatrix_mul_transpose_eq_one, Matrix.det_one]
   have hP : ((_root_.GlobalTheory.GLm.pm g σ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n) = Pm := by
     unfold _root_.GlobalTheory.GLm.pm
-    exact _root_.GlobalTheory.GLm.OpenCell.coe_toG hunit
+    exact GlobalTheory.GLm.ParBasic.toG_val hunit
   have hPinv : (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n) =
       Matrix.transpose Pm := by
     calc _ = (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n) *
@@ -562,17 +553,17 @@ theorem _root_.GlobalTheory.GLm.OpenCell.openCell : ∀ (g : ℕ) [Fact g.Prime]
       (p.2 : _root_.GlobalTheory.GLq.Mt g b))
   have hfst : ∀ x ∈ S, ((toPair x).1 : _root_.GlobalTheory.GLq.Mt g a) =
       _root_.GlobalTheory.GLq.tl a ((x : _root_.GlobalTheory.GLq.Mt g (a + b)).submatrix σ σ) := fun x hx =>
-    _root_.GlobalTheory.GLm.OpenCell.coe_toG
+    GlobalTheory.GLm.ParBasic.toG_val
       (isUnit_of_isUniUp' (isUniUp_tl_of_good hσ ((hmem x).1 hx)))
   have hsnd : ∀ x ∈ S, ((toPair x).2 : _root_.GlobalTheory.GLq.Mt g b) =
       _root_.GlobalTheory.GLq.br a b ((x : _root_.GlobalTheory.GLq.Mt g (a + b)).submatrix σ σ) := fun x hx =>
-    _root_.GlobalTheory.GLm.OpenCell.coe_toG
+    GlobalTheory.GLm.ParBasic.toG_val
       (isUnit_of_isUniUp' (isUniUp_br_of_good hσ ((hmem x).1 hx)))
   have hof : ∀ p ∈ UA ×ˢ UB, ((ofPair p : _root_.GlobalTheory.GLq.Gn g (a + b)) : _root_.GlobalTheory.GLq.Mt g (a + b)) =
       _root_.GlobalTheory.GLm.OpenCell.bd (a + b) (p.1 : _root_.GlobalTheory.GLq.Mt g a) (p.2 : _root_.GlobalTheory.GLq.Mt g b) := by
     intro p hp
     rw [hmemT] at hp
-    exact _root_.GlobalTheory.GLm.OpenCell.coe_toG
+    exact GlobalTheory.GLm.ParBasic.toG_val
       (isUnit_of_isUniUp' (good_bd_of_isUniUp hσ hp.1 hp.2).1)
   have hi : ∀ x ∈ S, toPair x ∈ UA ×ˢ UB := by
     intro x hx
@@ -957,22 +948,22 @@ theorem wh_hcT : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ), ψ �
       rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
     have iA : (((toG (tl a (k : Mt g (a + b))))⁻¹ : Gn g a) : Mt g a) = tl a ((k⁻¹ : Gn g (a + b)) : Mt g (a + b)) := by
       apply Units.inv_eq_of_mul_eq_one_right
-      rw [OpenCell.coe_toG uk, ← m1.2.1, e0, tl_one]
+      rw [GlobalTheory.GLm.ParBasic.toG_val uk, ← m1.2.1, e0, tl_one]
     have iB : (((toG (br a b (k : Mt g (a + b))))⁻¹ : Gn g b) : Mt g b) = br a b ((k⁻¹ : Gn g (a + b)) : Mt g (a + b)) := by
       apply Units.inv_eq_of_mul_eq_one_right
-      rw [OpenCell.coe_toG vk, ← m1.2.2, e0, br_one]
+      rw [GlobalTheory.GLm.ParBasic.toG_val vk, ← m1.2.2, e0, br_one]
     have cA : toG (tl a ((k * x * k⁻¹ : Gn g (a + b)) : Mt g (a + b))) =
         toG (tl a (k : Mt g (a + b))) * toG (tl a (x : Mt g (a + b))) * (toG (tl a (k : Mt g (a + b))))⁻¹ := by
       apply Units.ext
-      rw [OpenCell.coe_toG uc]
+      rw [GlobalTheory.GLm.ParBasic.toG_val uc]
       simp only [Units.val_mul] at m3 ⊢
-      rw [iA, OpenCell.coe_toG uk, OpenCell.coe_toG ux, m3.2.1, m2.2.1]
+      rw [iA, GlobalTheory.GLm.ParBasic.toG_val uk, GlobalTheory.GLm.ParBasic.toG_val ux, m3.2.1, m2.2.1]
     have cB : toG (br a b ((k * x * k⁻¹ : Gn g (a + b)) : Mt g (a + b))) =
         toG (br a b (k : Mt g (a + b))) * toG (br a b (x : Mt g (a + b))) * (toG (br a b (k : Mt g (a + b))))⁻¹ := by
       apply Units.ext
-      rw [OpenCell.coe_toG vc]
+      rw [GlobalTheory.GLm.ParBasic.toG_val vc]
       simp only [Units.val_mul] at m3 ⊢
-      rw [iB, OpenCell.coe_toG vk, OpenCell.coe_toG vx, m3.2.2, m2.2.2]
+      rw [iB, GlobalTheory.GLm.ParBasic.toG_val vk, GlobalTheory.GLm.ParBasic.toG_val vx, m3.2.2, m2.2.2]
     show Φ _ _ = Φ _ _
     rw [cA, cB]
     have h1 := hΦ1 (toG (br a b (k : Mt g (a + b))) * toG (br a b (x : Mt g (a + b))) * (toG (br a b (k : Mt g (a + b))))⁻¹)

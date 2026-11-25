@@ -13,8 +13,6 @@ namespace Formalism.L2.SG.TermOp
 
 section Stmt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
@@ -151,8 +149,6 @@ theorem ggBound (h : Formalism.L2.SG.GGMirabolic.TermsGGBound) (hψ : ∀ v, TR.
 end Stmt
 
 section IdCell
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting
 

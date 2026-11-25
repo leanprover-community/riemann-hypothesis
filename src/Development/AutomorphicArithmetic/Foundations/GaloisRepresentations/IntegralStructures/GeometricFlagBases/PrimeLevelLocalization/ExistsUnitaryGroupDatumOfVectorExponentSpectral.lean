@@ -105,8 +105,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField IsDedekindDomain GlobalTheory.UPel.HT GlobalTheory.LKTrip GlobalTheory.LKGeo
 open UpperTheory.Gal.CertificateRingHomMap (GUf Plc)
 open UpperTheory.Gal.W2.Seed (Arith Setup)

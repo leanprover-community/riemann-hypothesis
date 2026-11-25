@@ -1259,26 +1259,11 @@ section FrAlg
 
 variable {R K : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
 
-theorem fr_li {S V V' V'' : Type} [CommRing S] [Algebra R S] [AddCommGroup V] [Module R V] [Module K V]
-    [IsScalarTower R K V] [AddCommGroup V'] [Module R V'] [Module S V'] [IsScalarTower R S V'] [AddCommGroup V'']
-    [Module R V''] (hRS : RingHom.ker (algebraMap R S) ≠ ⊤) (f : V'' →ₗ[R] V) (hf : Function.Injective f)
-    (f' : V'' →ₗ[R] V') {ι : Type} {b : ι → V''} (hb' : LinearIndependent S (f' ∘ b)) :
-    LinearIndependent K (f ∘ b) := by
-  apply (config := { allowSynthFailures := true }) GlobalTheory.latticeFrame.modLI_li <;> assumption
-
-theorem fr_gen_mod (P : Ideal R) [hP : P.IsMaximal] {n : ℕ} (L : Submodule R (Fin n → K)) (hfg : L.FG) :
-    ∃ g : Fin n → (Fin n → K), (∀ i, g i ∈ L) ∧ L ≤ Submodule.span R (Set.range g) ⊔ P • L := by
-  apply GlobalTheory.latticeFrame.modLI_gen <;> assumption
-
 end FrAlg
 
 section FrNF
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
-
-theorem fr_coprime (I : Ideal (𝓞 E)) (hI : I ≠ ⊥) (D : ℕ) (h : I ⊔ Ideal.span {(D : 𝓞 E)} = ⊤) :
-    Nat.Coprime (Ideal.absNorm I) D := by
-  apply GlobalTheory.latticeFrame.absNorm_coprime_of_sup <;> assumption
 
 theorem fr_good_basis (L : Submodule (𝓞 E) (Fin n → E)) (hfg : L.FG) (D : ℕ) (hD : D ≠ 0) (P0 : Pl E)
     (hP0 : (D : 𝓞 E) ∈ P0.asIdeal) :

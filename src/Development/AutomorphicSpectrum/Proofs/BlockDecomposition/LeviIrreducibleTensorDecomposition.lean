@@ -197,7 +197,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EqZeroOfSumApplyEqZero =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIrreducibleOfFixed =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIrreducibleOfFixed", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable\npublic import Mathlib.Basic.Complex.Basic\npublic import Mathlib.RepresentationTheory.Irreducible\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIrreducibleOfFixed", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable\npublic import Mathlib.Basic.Complex.Basic\npublic import Mathlib.RepresentationTheory.Irreducible\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleOfFiniteLengthSubquotients\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -209,12 +209,6 @@ namespace GlobalTheory.CompanionTheory.ProdSub
 section Abstract
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
-
-theorem mem_fixed_iff_forall {π : Representation ℂ G V} {K : Subgroup G} {x : V} :
-    x ∈ fixed π K ↔ ∀ k ∈ K, π k x = x := by
-  show (∀ h : K, π h x = ((1 : K →* ℂˣ) h : ℂ) • x) ↔ _
-  simp only [MonoidHom.one_apply, Units.val_one, one_smul]
-  exact ⟨fun h k hk => h ⟨k, hk⟩, fun h k => h k k.2⟩
 
 theorem fixed_sup_eq_zero [TopologicalSpace G] [IsTopologicalGroup G] {π : Representation ℂ G V}
     (hπ : IsSmooth π) {K : Subgroup G} (hK : IsCompact (K : Set G)) {A B : Submodule ℂ V}
@@ -233,7 +227,7 @@ theorem fixed_sup_eq_zero [TopologicalSpace G] [IsTopologicalGroup G] {π : Repr
   have hinv : ∀ h ∈ K, ((A.mkQ).comp B.subtype) (S.toRepresentation h ⟨b, hb⟩) =
       ((A.mkQ).comp B.subtype) ⟨b, hb⟩ := by
     intro h hh
-    have hx' := (mem_fixed_iff_forall.mp hf) h hh
+    have hx' := (GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff.mp hf) h hh
     rw [map_add (f := _)] at hx'
     have e : (S.toRepresentation h ⟨b, hb⟩ : V) = π h b := rfl
     have e2 : π h b - b = a - π h a := by
@@ -243,7 +237,7 @@ theorem fixed_sup_eq_zero [TopologicalSpace G] [IsTopologicalGroup G] {π : Repr
     exact A.sub_mem ha (hA h ha)
   obtain ⟨v, hvK, hv⟩ := GlobalTheory.SmGL.IwahoriOnto.exists_fixed_map_eq hS hK ((A.mkQ).comp B.subtype) ⟨b, hb⟩ hinv
   have hvK' : (v : V) ∈ fixed π K := by
-    rw [mem_fixed_iff_forall] at hvK ⊢
+    rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff] at hvK ⊢
     intro k hk
     exact congrArg Subtype.val (hvK k hk)
   have hv0 : (v : V) = 0 := hB0 v v.2 hvK'
@@ -343,7 +337,7 @@ theorem exists_irreducible_of_fixed {π : Representation ℂ G V} {K : Subgroup 
       have hy : y ∈ fixed S.toRepresentation K := hy0
       refine ⟨hM0W (hS1M0 y.2), ?_⟩
       show (y : V) ∈ fixed π K
-      rw [mem_fixed_iff_forall] at hy ⊢
+      rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff] at hy ⊢
       intro k hk
       exact congrArg Subtype.val (hy k hk)
     haveI : FiniteDimensional ℂ ↥((fixed S.toRepresentation K).map S1.subtype) :=
@@ -389,7 +383,7 @@ theorem exists_fixed_of_ne_bot (ρ : Representation ℂ (G × H) V) (hi : ρ.IsI
   have hT0 : ∀ h, ∀ x ∈ T h, x ∈ fixed (ρ.comp (MonoidHom.inl G H)) K → x = 0 := by
     rintro h _ ⟨a, ha, rfl⟩ hxK
     have haK : a ∈ fixed (ρ.comp (MonoidHom.inl G H)) K := by
-      rw [mem_fixed_iff_forall] at hxK ⊢
+      rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff] at hxK ⊢
       intro k hk
       have e := hxK k hk
       rw [hinl, inl_inr_comm] at e
@@ -475,7 +469,7 @@ theorem exists_irreducible_sub_inl : ∀ {G H V : Type} [Group G] [TopologicalSp
     intro g x hx
     have hx' : x ∈ fixed (ρ.comp (MonoidHom.inr G H)) K2 := hx
     show _ ∈ fixed (ρ.comp (MonoidHom.inr G H)) K2
-    rw [mem_fixed_iff_forall] at hx' ⊢
+    rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff] at hx' ⊢
     intro k hk
     have e := hx' k hk
     show ρ (1, k) (ρ (g, 1) x) = ρ (g, 1) x
@@ -483,7 +477,7 @@ theorem exists_irreducible_sub_inl : ∀ {G H V : Type} [Group G] [TopologicalSp
     exact congrArg (ρ (g, 1)) e
   have hvW : v ∈ W := by
     show v ∈ fixed (ρ.comp (MonoidHom.inr G H)) K2
-    rw [mem_fixed_iff_forall]
+    rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff]
     intro k hk
     exact hfix 1 (one_mem K1) k hk
   have hW0 : W ≠ ⊥ := by
@@ -493,7 +487,7 @@ theorem exists_irreducible_sub_inl : ∀ {G H V : Type} [Group G] [TopologicalSp
     rw [h] at hvW'
     exact (Submodule.mem_bot ℂ).mp hvW'
   have hvK : v ∈ fixed (ρ.comp (MonoidHom.inl G H)) K1 := by
-    rw [mem_fixed_iff_forall]
+    rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff]
     intro k hk
     exact hfix k hk 1 (one_mem K2)
   have hprodO : IsOpen ((K1.prod K2 : Subgroup (G × H)) : Set (G × H)) := by
@@ -509,7 +503,7 @@ theorem exists_irreducible_sub_inl : ∀ {G H V : Type} [Group G] [TopologicalSp
     have hxW : x ∈ fixed (ρ.comp (MonoidHom.inr G H)) K2 := hxW0
     have hxK : x ∈ fixed (ρ.comp (MonoidHom.inl G H)) K1 := hxK0
     show x ∈ fixed ρ (K1.prod K2)
-    rw [mem_fixed_iff_forall] at hxW hxK ⊢
+    rw [GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff] at hxW hxK ⊢
     rintro ⟨k1, k2⟩ ⟨hk1, hk2⟩
     have e : ((k1, k2) : G × H) = (k1, 1) * (1, k2) := Prod.ext (by simp) (by simp)
     rw [e, map_mul, Module.End.mul_apply]
@@ -524,7 +518,7 @@ theorem exists_irreducible_sub_inl : ∀ {G H V : Type} [Group G] [TopologicalSp
       ∃ x ∈ A, x ∈ fixed (ρ.comp (MonoidHom.inl G H)) K1 ∧ x ≠ 0 :=
     fun A hA hA0 => exists_fixed_of_ne_bot ρ hi hs hK1c hv0 hvK A hA hA0
   obtain ⟨S, u, huS, hu0, huK, hSirr, hSfin⟩ := exists_irreducible_of_fixed hW hW0 hfin hnz
-  exact ⟨K1, S, u, hK1o, hK1c, huS, hu0, fun x hx => (mem_fixed_iff_forall.mp huK) x hx, hSirr, hSfin⟩
+  exact ⟨K1, S, u, hK1o, hK1c, huS, hu0, fun x hx => (GlobalTheory.CompanionTheory.AdmFL.mem_fixed_iff.mp huK) x hx, hSirr, hSfin⟩
 
 end GlobalTheory.CompanionTheory.ProdSub
 end -- clump:auto

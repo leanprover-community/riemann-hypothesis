@@ -46,8 +46,6 @@ import Mathlib.Tactic.Polynomial.Basic
 open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
 open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HSShort.DeepStep

@@ -54,7 +54,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.BC
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 def Chi {E : Type} [Field E] [NumberField E] [IsCMField E] {B : Block E} {Γ : Type} (g : Γ → BGen B) (X : B.Hb →L[ℂ] B.Hb)
     (c : Γ → ℂ) (χ : Rd.ChAlg g X →⋆ₐ[ℂ] ℂ) : Prop :=

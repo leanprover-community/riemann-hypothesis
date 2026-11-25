@@ -67,8 +67,6 @@ open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheo
 open GlobalTheory.LocM GlobalTheory.PolFan ReciprocityTheory.AnForm.R
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ChartDer

@@ -50,8 +50,6 @@ open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Globa
 
 namespace PositivityTheory.SiegelWeilFormula.TBij
 
-attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
-
 section Gen
 
 variable {R E' : Type} [CommRing R] [CommRing E'] [Algebra R E'] (c : E' →ₐ[R] E') {α β : Type} [Fintype α]

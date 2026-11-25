@@ -162,10 +162,6 @@ def compatibleJetsEquiv (R κ : Type) [CommRing R] :
     ext e
     exact jetOfSeries_coeff g e.degree ⟨e, le_rfl⟩
 
-theorem compatibleJetsEquiv_coeff (p : CompatibleJets R κ) (m : ℕ) (e : JetExponent κ m) :
-    coeff e.val ((compatibleJetsEquiv R κ p).val) = jetMonomialEquiv R κ m (p.val m) e :=
-  seriesOfJets_coeff p m e
-
 /-- The algebra of compatible jets, with componentwise operations. -/
 def compatibleJetSubalgebra (R κ : Type) [CommRing R] : Subalgebra R (∀ m, JetR R κ m) where
   carrier := {p | ∀ m, jetTruncR R κ m (p (m + 1)) = p m}
@@ -253,20 +249,6 @@ def compatibleJetsAlgEquiv (R κ : Type) [CommRing R] :
 theorem compatibleJetsAlgEquiv_coeff (p : compatibleJetSubalgebra R κ) (m : ℕ) (e : JetExponent κ m) :
     coeff e.val (compatibleJetsAlgEquiv R κ p).val = jetMonomialEquiv R κ m (p.val m) e :=
   seriesOfJets_coeff p m e
-
-/-- A jet component vanishes exactly when the corresponding power series has order above it. -/
-theorem compatibleJetsAlgEquiv_order (p : compatibleJetSubalgebra R κ) (m : ℕ) :
-    p.val m = 0 ↔ (m + 1 : ℕ) ≤ (compatibleJetsAlgEquiv R κ p).val.order := by
-  constructor
-  · intro hp
-    apply MvPowerSeries.nat_le_order
-    intro d hd
-    rw [compatibleJetsAlgEquiv_coeff p m ⟨d, Nat.le_of_lt_succ hd⟩, hp, map_zero, Finsupp.zero_apply]
-  · intro h
-    apply (jetMonomialEquiv R κ m).injective
-    ext e
-    rw [← compatibleJetsAlgEquiv_coeff p m e, map_zero, Finsupp.zero_apply]
-    exact coeff_of_lt_order ((by exact_mod_cast Nat.lt_succ_of_le e.prop : (e.val.degree : ℕ∞) < m + 1).trans_le h)
 
 variable [Finite κ]
 
@@ -486,18 +468,6 @@ theorem compatibleJetMapsEquiv_symm_zR {σ : Type} [Finite σ]
     (a : {a : σ → MvPowerSeries κ R // ∀ j, constantCoeff (a j) = 0}) (m : ℕ) (j : σ) :
     ((compatibleJetMapsEquiv R σ κ).symm a).val m (zR m j) = toJet m (a.val j) :=
   jetSubstitutionAt_zR a.val a.property m j
-
-/-- The induced map of power series is substitution by the coordinate images. -/
-theorem compatibleJetSeriesHom_eq_subst {σ : Type} [Finite σ] (ψ : CompatibleJetMaps R σ κ) :
-    compatibleJetSeriesHom ψ =
-      substAlgHom (hasSubst_of_constantCoeff_zero (compatibleJetMapsEquiv R σ κ ψ).property) := by
-  apply AlgHom.ext
-  intro g
-  apply eq_of_toJet_eq
-  intro m
-  rw [toJet_compatibleJetSeriesHom, substAlgHom_apply]
-  exact jetHom_toJet (compatibleJetMapsEquiv R σ κ ψ).val (compatibleJetMapsEquiv R σ κ ψ).property
-    m (ψ.val m) (fun j => (compatibleJetMapsEquiv_toJet ψ m j).symm) g
 
 theorem jetAlg : JetAlgSt := fun R _ κ _ =>
   ⟨fun m => ⟨toJetHom R κ m, fun _ => rfl, fun j => toJet_X m j⟩,

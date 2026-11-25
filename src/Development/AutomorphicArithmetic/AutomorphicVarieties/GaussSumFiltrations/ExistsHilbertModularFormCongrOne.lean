@@ -615,8 +615,6 @@ theorem GlobalTheory.HilbertThetaSeries.lift_hasExp : ∀ (F : Type) [Field F] [
   rw [Function.comp_apply, Function.update_of_ne (ne_zero_of_tp ξ.2), coefAt_eq_coef hΨ ha c hc yf ξ.1 ξ.2]
   rfl
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -799,8 +797,6 @@ theorem main : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p : �
 
 end GlobalTheory.QPow
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -963,8 +959,6 @@ theorem finite_index : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
 
 end GlobalTheory.HilbertThetaSeries.StabFin
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -1132,8 +1126,6 @@ theorem orbit_seed_finite_congr : ∀ (F : Type) [Field F] [NumberField F] [IsTo
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -1313,8 +1305,6 @@ theorem avg_pow : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p 
 
 end GlobalTheory.HilbertThetaSeries.OrbitAvg
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -1437,8 +1427,6 @@ theorem main : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : �
 
 end GlobalTheory.HilbertThetaSeries.SysOfStab
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -1525,8 +1513,6 @@ theorem GlobalTheory.HilbertThetaSeries.finite_reps : ∀ (F : Type) [Field F] [
       generalize (Units.map (algebraMap F (Af F)).toMonoidHom) (ξf y0) = b
       rw [mul_comm a⁻¹ b, mul_assoc b, ← mul_assoc a⁻¹, ← mul_assoc a⁻¹, inv_mul_cancel, one_mul, ← mul_assoc]
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto
@@ -1693,8 +1679,6 @@ theorem cusp_inf_one : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
 
 end GlobalTheory.HilbertThetaSeries.CuspOne
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 end -- clump:auto
 end -- clump:auto

@@ -429,30 +429,6 @@ section Final
 
 variable {k : Type u} [Field k] {Ω : Type w} [Field Ω] [Algebra k Ω] {N : ℕ}
 
-private theorem span_homog (Gs : Set (Poly k N)) (h : ∀ f ∈ Gs, ∃ c : ℕ, f.IsHomogeneous c) :
-    ∀ p ∈ Ideal.span Gs, ∀ d : ℕ, homogeneousComponent d p ∈ Ideal.span Gs := by
-  classical
-  letI : GradedAlgebra (homogeneousSubmodule (Fin (N + 1)) k) := gradedAlgebra
-  have hh : (Ideal.span Gs).IsHomogeneous (homogeneousSubmodule (Fin (N + 1)) k) :=
-    Ideal.homogeneous_span _ _ fun f hf => by
-      obtain ⟨c, hc⟩ := h f hf
-      exact ⟨c, (mem_homogeneousSubmodule c f).mpr hc⟩
-  intro p hp d
-  have := hh d hp
-  have e : ((DirectSum.decompose (homogeneousSubmodule (Fin (N + 1)) k) p d :
-      homogeneousSubmodule (Fin (N + 1)) k d) : Poly k N) = homogeneousComponent d p :=
-    decomposition.decompose'_apply p d
-  rwa [e] at this
-
-private theorem sup_homog {A B : Ideal (Poly k N)}
-    (hA : ∀ p ∈ A, ∀ d : ℕ, homogeneousComponent d p ∈ A)
-    (hB : ∀ p ∈ B, ∀ d : ℕ, homogeneousComponent d p ∈ B) :
-    ∀ p ∈ A ⊔ B, ∀ d : ℕ, homogeneousComponent d p ∈ A ⊔ B := by
-  intro p hp d
-  obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hp
-  rw [map_add (f := _)]
-  exact add_mem (Ideal.mem_sup_left (hA a ha d)) (Ideal.mem_sup_right (hB b hb d))
-
 open Classical in
 private theorem sum_eq_finsum (x : Fin (N + 1) → Ω) (n : ℕ) (J : Ideal (Poly k N))
     (Ls : Fin n → SubSystem k x Ω) (m : ℕ) (P : Fin m → Ideal (Poly k N))
@@ -504,8 +480,15 @@ private theorem main : CycleSplit.Filt.Statement.{u, w} → CutRestrLenExact.Sta
   have hfJ : f ∈ pp ⊔ zeroIdeal Lc.toSubSystem s := Ideal.mem_sup_right hfZ
   haveI := hsub.isPrime
   have hJh : ∀ p ∈ pp ⊔ zeroIdeal Lc.toSubSystem s, ∀ d : ℕ,
-      homogeneousComponent d p ∈ pp ⊔ zeroIdeal Lc.toSubSystem s :=
-    sup_homog hsub.homog (span_homog _ fun f ⟨c, hc, _⟩ => ⟨c, hc⟩)
+      homogeneousComponent d p ∈ pp ⊔ zeroIdeal Lc.toSubSystem s := by
+    letI : GradedAlgebra (homogeneousSubmodule (Fin (N + 1)) k) := gradedAlgebra
+    have hpp : Ideal.IsHomogeneous (homogeneousSubmodule (Fin (N + 1)) k) pp := fun d p hp => by
+      change (decomposition.decompose' p d : Poly k N) ∈ pp
+      rw [decomposition.decompose'_apply]
+      exact hsub.homog p hp d
+    have hz : (zeroIdeal Lc.toSubSystem s).IsHomogeneous (homogeneousSubmodule (Fin (N + 1)) k) :=
+      Ideal.homogeneous_span _ _ fun f ⟨c, hc, _⟩ => ⟨c, (mem_homogeneousSubmodule c f).mpr hc⟩
+    exact fun p hp d => homogeneousComponent_mem_of_mem (hpp.sup hz) hp d
   obtain ⟨m, P, d, hP, hcard, hsplit⟩ := hCyc k Ω N x ⊥ Ideal.bot_isMaximal _ hJh
     (hsub.le.trans hle) (by rw [Ideal.map_bot]; exact bot_le)
   have hdim : ∀ q : Ideal (Poly k N), q.IsPrime → pp ⊔ zeroIdeal Lc.toSubSystem s ≤ q →

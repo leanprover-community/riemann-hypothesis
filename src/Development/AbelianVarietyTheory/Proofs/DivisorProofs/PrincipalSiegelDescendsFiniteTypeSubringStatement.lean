@@ -187,8 +187,6 @@ open GlobalTheory.ZM GlobalTheory.SiegLev GlobalTheory.SiegelTor
 open scoped CategoryTheory.Obj
 open GlobalTheory.IndefiniteRowSideFullHecke.SiegelFamilyZetaUnit GlobalTheory.SiegelTypings
 
-set_option autoImplicit false
-
 noncomputable section
 
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -257,8 +255,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.ZM GlobalTheory.SiegLev GlobalTheory.SiegelTor
 open scoped CategoryTheory.Obj
 open GlobalTheory.IndefiniteRowSideFullHecke.SiegelFamilyZetaUnit GlobalTheory.SiegelTypings
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1403,8 +1399,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.IndefiniteRowSideFullHecke.SiegelFamilyZetaUnit GlobalTheory.SiegelTypings
 
 open GlobalTheory.EighthPower GlobalTheory.CechPic GlobalTheory.MatrixBundle GlobalTheory.ZM
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -48,7 +48,6 @@ open GlobalTheory.Unf GlobalTheory.Grow GlobalTheory.FinPl ValuativeRel IsLocalR
 open scoped TensorProduct Pointwise
 
 namespace GlobalTheory.AdForm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def StdEx' : Prop :=
   ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (ψ : AddChar (AF (I.rec7 l Z).host.F) ℂ), IsStdChar (I.rec7 l Z) ψ (-1) →

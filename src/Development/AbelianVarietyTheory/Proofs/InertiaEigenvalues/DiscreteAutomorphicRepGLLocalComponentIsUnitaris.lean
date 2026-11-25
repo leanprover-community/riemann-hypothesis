@@ -183,8 +183,6 @@ theorem left_latticeGL {φ : Sm E N} (h : IsAutForm φ) (h' : IsSqInt φ.1) :
     exact h.left γ) (Subgroup.zpowers_le.2 (h'.1 1))
   exact this
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem isUnitarisable_of_isLocCompGL : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (N : ℕ)
     (V : Submodule ℂ (Sm E N)), IsDiscrete V → ∀ (w : HeightOneSpectrum (𝓞 E)) (σ : LocIrr w N),
     IsLocCompGL V w σ → IsUnitarisable σ.ρ := by

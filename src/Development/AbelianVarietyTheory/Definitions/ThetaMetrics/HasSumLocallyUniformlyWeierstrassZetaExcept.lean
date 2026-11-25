@@ -792,26 +792,6 @@ theorem sigmaSign_of_notMem {w : ℂ} (h : w / 2 ∉ L.lattice) : sigmaSign L w 
 theorem sigmaSign_ne_zero (w : ℂ) : sigmaSign L w ≠ 0 := by
   unfold sigmaSign; split_ifs <;> simp
 
-theorem sigmaSign_int (m n : ℤ) :
-    sigmaSign L (m * L.ω₁ + n * L.ω₂) = (-1 : ℂ) ^ (m + n + m * n) := by
-  have h : (m * L.ω₁ + n * L.ω₂) / 2 ∈ L.lattice ↔ Even m ∧ Even n := by
-    constructor
-    · intro h
-      obtain ⟨a, b, e⟩ := mem_lattice.1 h
-      have := LinearIndependent.pair_iff.1 L.indep (m - 2 * a) (n - 2 * b) (by
-        simp only [real_smul]; push_cast; linear_combination (-2) * e)
-      simp only [sub_eq_zero] at this
-      norm_cast at this
-      exact ⟨⟨a, by omega⟩, ⟨b, by omega⟩⟩
-    · rintro ⟨⟨a, rfl⟩, ⟨b, rfl⟩⟩
-      exact mem_lattice.2 ⟨a, b, by push_cast; ring⟩
-  by_cases h' : Even m ∧ Even n
-  · rw [sigmaSign_of_mem L (h.2 h'), Even.neg_one_zpow ((h'.1.add h'.2).add (h'.1.mul_right _))]
-  · rw [sigmaSign_of_notMem L (h.not.2 h'), Odd.neg_one_zpow]
-    rw [← Int.not_even_iff_odd]
-    simp only [Int.even_add, Int.even_mul]
-    tauto
-
 theorem exists_weierstrassSigma_add {w : ℂ} (hw : w ∈ L.lattice) : ∃ C : ℂ, C ≠ 0 ∧ ∀ z,
     weierstrassSigma L (z + w) = C * cexp (quasiPeriod L w * (z + w / 2)) * weierstrassSigma L z := by
   set x := L.ω₁ / 2
@@ -1204,20 +1184,5 @@ def periodsOfUpperHalfPlane (τ : UpperHalfPlane) : PeriodPair where
 theorem latticeArea_periodsOfUpperHalfPlane (τ : UpperHalfPlane) :
     latticeArea (periodsOfUpperHalfPlane τ) = τ.im := by
   simp [latticeArea_eq, periodsOfUpperHalfPlane, abs_of_pos τ.im_pos]
-
-theorem isHomothetic_I_gaussian : IsHomothetic I (periodsOfUpperHalfPlane UpperHalfPlane.I)
-    (periodsOfUpperHalfPlane UpperHalfPlane.I) := by
-  intro x
-  simp only [mem_lattice, periodsOfUpperHalfPlane, UpperHalfPlane.coe_I]
-  constructor
-  · rintro ⟨m, n, h⟩
-    exact ⟨n, -m, by push_cast; linear_combination -I * h + (n - x) * I_mul_I⟩
-  · rintro ⟨m, n, h⟩
-    exact ⟨-n, m, by push_cast; linear_combination I * h - n * I_mul_I⟩
-
-theorem sTwo_gaussian : sTwo (periodsOfUpperHalfPlane UpperHalfPlane.I) = 0 := by
-  have := isHomothetic_I_gaussian.sTwo_eq
-  rw [I_sq] at this
-  linear_combination this / 2
 
 end GlobalTheory

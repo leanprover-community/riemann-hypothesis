@@ -58,12 +58,6 @@ namespace PositivityTheory.SiegelWeilFormula.Khead
 
 variable {X : Type} [TopologicalSpace X] {h : X → ℝ}
 
-private theorem regOn_mono {g : ℂ → X → ℂ} {S T : Set ℂ} (hg : An.RegOn h g S) (hT : T ⊆ S) :
-    An.RegOn h g T := by
-  obtain ⟨C, N, hC⟩ := hg.grow
-  exact ⟨fun x => (hg.hol x).mono hT, hg.cont.mono (prod_mono hT subset_rfl),
-    ⟨C, N, fun s hs x => hC s (hT hs) x⟩⟩
-
 private theorem regOn_congr {g G : ℂ → X → ℂ} {S : Set ℂ} (hg : An.RegOn h g S)
     (he : ∀ s ∈ S, ∀ x, G s x = g s x) : An.RegOn h G S := by
   obtain ⟨C, N, hC⟩ := hg.grow
@@ -93,13 +87,13 @@ private theorem exists_local_regularization_of_reg_right_half {g : ℂ → X →
   by_cases hz : t < z.re
   · obtain ⟨S, hS, hR⟩ := hr z hz
     obtain ⟨ρ, hρ, hsub⟩ := Metric.mem_nhds_iff.mp hS
-    exact ⟨0, g, ρ, hρ, regOn_mono hR hsub, fun s _ _ x => by simp⟩
+    exact ⟨0, g, ρ, hρ, hR.mono hsub, fun s _ _ x => by simp⟩
   · obtain ⟨k, H, ⟨S, hS, hR⟩, hev⟩ := hp z
     obtain ⟨ρ1, hρ1, hsub⟩ := Metric.mem_nhds_iff.mp hS
     rw [eventually_nhdsWithin_iff, Metric.eventually_nhds_iff] at hev
     obtain ⟨ε, hε, hE⟩ := hev
     refine ⟨k, H, min ρ1 ε, lt_min hρ1 hε,
-      regOn_mono hR ((Metric.ball_subset_ball (min_le_left _ _)).trans hsub), fun s hs hne x => ?_⟩
+      hR.mono ((Metric.ball_subset_ball (min_le_left _ _)).trans hsub), fun s hs hne x => ?_⟩
     exact hE (lt_of_lt_of_le (Metric.mem_ball.mp hs) (min_le_right _ _)) (hne.resolve_right hz) x
 
 theorem strip (h1 : ∀ x, 1 ≤ h x) {g : ℂ → X → ℂ}
@@ -193,7 +187,9 @@ theorem strip (h1 : ∀ x, 1 ≤ h x) {g : ℂ → X → ℂ}
     · obtain ⟨S, hS, hR⟩ := hr s hst
       refine ⟨S ∩ Metric.ball s 1 ∩ rightOf t,
         inter_mem (inter_mem hS (Metric.ball_mem_nhds s one_pos)) (hRopen.mem_nhds hst), ?_⟩
-      exact regOn_congr (regOn_polynomial_mul_of_subset_ball (S := S ∩ Metric.ball s 1 ∩ rightOf t) (regOn_mono hR fun w hw => hw.1.1) s 1 (fun w hw => hw.1.2) p)
+      exact regOn_congr
+        (regOn_polynomial_mul_of_subset_ball (S := S ∩ Metric.ball s 1 ∩ rightOf t)
+          (hR.mono fun w hw => hw.1.1) s 1 (fun w hw => hw.1.2) p)
         fun w hw x => hright w hw.2 x
     · have hs1 := hs.resolve_right hst
       obtain ⟨r, hr0, hmem⟩ := mem_iUnion₂.mp hs1

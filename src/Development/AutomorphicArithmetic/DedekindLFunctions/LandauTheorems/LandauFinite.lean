@@ -68,6 +68,19 @@ theorem landau_finite {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w i
   · rw [h]; exact hw
   · exact absurd hvZ (hvw h)
 
+/-- If `d < cap` and `d < f w` for every `w` in the finite set `S`, some `r` with `d < r ≤ cap` is
+at most every `f w`. Taking the minimum over `S` together with `cap` covers the case where `S` is
+empty. -/
+theorem exists_capped_radius {α : Type*} {S : Set α} (hS : S.Finite) (f : α → ℝ)
+    {d cap : ℝ} (hcap : d < cap) (h : ∀ w ∈ S, d < f w) :
+    ∃ r, d < r ∧ r ≤ cap ∧ ∀ w ∈ S, r ≤ f w := by
+  obtain ⟨r, hr, hmin⟩ := Set.exists_min_image (insert cap (f '' S)) id
+    ((hS.image f).insert cap) ⟨cap, by simp⟩
+  refine ⟨r, ?_, hmin cap (by simp), fun w hw => hmin (f w) (Set.mem_insert_of_mem _ ⟨w, hw, rfl⟩)⟩
+  rcases Set.mem_insert_iff.mp hr with rfl | ⟨w, hw, rfl⟩
+  · exact hcap
+  · exact h w hw
+
 end Deduction
 
 end

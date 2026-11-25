@@ -57,7 +57,7 @@ open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

@@ -13,7 +13,7 @@ open MeasureTheory NumberField Formalism.BasicNotions
 
 namespace Formalism.L2.SG.Pf.Carrier
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 open Formalism.L2.SG.RealObj
 

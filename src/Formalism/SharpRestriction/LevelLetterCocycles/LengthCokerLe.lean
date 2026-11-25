@@ -3,6 +3,7 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
 public import Formalism.JumpKernelCokernel.JumpShiftProofs.TorsKerSum
 public import Formalism.JumpKernelCokernel.LengthTheoremsWithEarlier
+public import Formalism.JumpKernelCokernel.JumpShiftProofs.DetLen
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -77,7 +78,7 @@ theorem length_coker_le {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuatio
     intro h0
     rw [h0, zero_dvd_iff] at hd
     exact pow_ne_zero V hl hd
-  have hL := Formalism.KernelCokernelLengths.length_theorems_all_hold.1 O (Fin r → O) (Matrix.toLin' QQ) (by rwa [LinearMap.det_toLin'])
+  have hL := Formalism.KernelCokernelLengths.determinant_length_formula O (Fin r → O) (Matrix.toLin' QQ) (by rwa [LinearMap.det_toLin'])
   rw [hL, LinearMap.det_toLin', ← Formalism.KernelCokernelLengths.TorsionKernelSumLemmas.len_pow l hl V]
   have hle : Ideal.span {l ^ V} ≤ Ideal.span {QQ.det} := Ideal.span_singleton_le_span_singleton.2 hd
   first

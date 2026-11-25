@@ -49,7 +49,7 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB Formalism.QuantumDe
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def uPlus (u : ℕ → ℝ) (l n₀ : ℕ) : ℕ → ℝ := fun i => if i = l + 1 then u i + n₀ else u i
 

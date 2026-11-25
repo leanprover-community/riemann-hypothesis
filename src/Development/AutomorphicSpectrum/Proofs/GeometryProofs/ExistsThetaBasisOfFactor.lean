@@ -214,17 +214,10 @@ theorem theta_differentiable (hL : L.IsLB) {N : ℕ} {s : LB.Sec (Out.powOver A 
   obtain ⟨ho, hd⟩ := hol_lp u _ (s.f j)
   have hn := ho.mem_nhds hj
   have hF : DifferentiableOn ℂ (fun w => ∏ k, u.fr (j k) w)
-      {w | ⊤ ≤ (lp (u.ex w)) ⁻¹ᵁ (Out.powOver A L ⊤ N).U j} :=
-    by
-    have key : ∀ t : Finset (Fin N), DifferentiableOn ℂ (fun w => ∏ k ∈ t, u.fr (j k) w)
-        {w | ⊤ ≤ (lp (u.ex w)) ⁻¹ᵁ (Out.powOver A L ⊤ N).U j} := by
-      intro t
-      induction t using Finset.induction_on with
-      | empty => simpa using differentiableOn_const (1 : ℂ)
-      | insert a t ha ih =>
-        simp only [Finset.prod_insert ha]
-        exact ((u.fr_hol _).mono fun w hw => (chart_iff _ j).1 hw a).mul ih
-    exact key _
+      {w | ⊤ ≤ (lp (u.ex w)) ⁻¹ᵁ (Out.powOver A L ⊤ N).U j} := fun w hw =>
+    (HasFDerivWithinAt.finsetProd fun a _ =>
+      (((u.fr_hol _).mono fun x hx => (chart_iff _ j).1 hx a) w hw).hasFDerivWithinAt
+    ).differentiableWithinAt
   have hq := (hd.differentiableAt hn).mul ((hF.differentiableAt hn).inv (frame_ne u z j hj))
   refine hq.congr_of_eventuallyEq ?_
   filter_upwards [hn] with w hw

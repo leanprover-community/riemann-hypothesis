@@ -263,7 +263,6 @@ end Formalism.LatticeIndexTer.LatticeIndexDeterminant
 
 namespace Formalism.LatticeIndexTer
 
-open Module
 
 theorem lattice_index_eq_det_valuation : IdxDet := by
   intro O K X Y ι _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ bX bY f a b ha hb h

@@ -64,7 +64,6 @@ namespace GlobalTheory.ShareOn.WhitBase
 
 section SlopeTestRemainingChoices
 
-open Formalism.L2.DIV
 
 variable {κ κ' : Type} [CommRing κ] [CommRing κ'] {r : ℕ}
 
@@ -131,7 +130,6 @@ end SlopeTestRemainingChoices
 
 section Comparison₂
 
-open Formalism.L2.DIV Formalism.BasicNotions
 
 variable {D : D7} {G : Type} [Group G] {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ} {Ps : Subgroup G}
   {ψs : Ps →* D.what₂.LLˣ} {eG : G ≃* G0g D.nd} {Pg : Finset (Pl D.host.E)}
@@ -190,11 +188,9 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.D
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.ShareOn Formalism.MainNotions.ArithmeticCylinders
 namespace GlobalTheory.ShareOn.WhitBase
 section SlopeTestRemainingChoices
-open Formalism.L2.DIV
 variable {κ κ' : Type} [CommRing κ] [CommRing κ'] {r : ℕ}
 end SlopeTestRemainingChoices
 section Comparison₂
-open Formalism.L2.DIV Formalism.BasicNotions
 variable {D : D7} {G : Type} [Group G] {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ} {Ps : Subgroup G}
   {ψs : Ps →* D.what₂.LLˣ} {eG : G ≃* G0g D.nd} {Pg : Finset (Pl D.host.E)}
   {pl : (Σ k : Fin 2, D.nd.PlG k) ≃ ↥Pg} {res : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), kP (pl kv).1 ≃+* ZMod (D.host.g kv.1)}

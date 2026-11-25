@@ -51,8 +51,6 @@ namespace PI.PairValDefs
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef MeasureTheory
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Phase
 
 variable {E : Type} [Field E] [NumberField E]

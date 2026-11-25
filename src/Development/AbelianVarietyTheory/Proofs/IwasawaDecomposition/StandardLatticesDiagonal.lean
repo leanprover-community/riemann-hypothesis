@@ -51,8 +51,6 @@ namespace GlobalTheory.Mem.HostFrames
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.FrobeniusOrbits Formalism.L2.Host Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem log_add_rpow_le (eps : ℝ) (he : 0 < eps) :
     ∃ x0 : ℝ, ∀ x : ℝ, x0 ≤ x → 24 * Real.log x + x ^ (eps / 3) ≤ x ^ eps := by
   have h1 : ∀ᶠ x : ℝ in Filter.atTop, ‖Real.log x‖ ≤ (1 / 48) * ‖x ^ eps‖ :=

@@ -107,6 +107,4 @@ def twistIrr {n : ℕ} (π : Irr k n) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar 
 
 end Local
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 end GlobalTheory.SplitRead.BlockParam

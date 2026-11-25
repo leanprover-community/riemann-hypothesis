@@ -204,8 +204,7 @@ theorem exists_coeff_of_mem_step {L Li : Type} [Field L] [AddCommGroup Li] [Modu
 
 theorem adapted_triangular (L Li : Type) [Field L] [AddCommGroup Li] [Module L Li] (r : ℕ)
     (f b g : Fin r → Li) (v w : Matrix (Fin r) (Fin r) L)
-    (_hf : LinearIndependent L f) (hb : LinearIndependent L b)
-    (_hv1 : ∀ k, v k k = 1) (_hv0 : ∀ l k, l < k → v l k = 0)
+    (hb : LinearIndependent L b)
     (hw0 : ∀ l k, k < l → w l k = 0) (hwd : ∀ k, w k k ≠ 0)
     (hg : ∀ k, g k = ∑ j, (v * w) j k • f j)
     (hflag : ∀ i : ℕ, flagStep L b i = flagStep L g i) :
@@ -862,7 +861,7 @@ theorem lin_core {Ω₀ Ω Li₀ Li : Type} [Field Ω₀] [Field Ω] [Algebra Ω
     refine _root_.GlobalTheory.CompanionTheory.FieldGen.algebraicIndependent_of_adjoin_eq Ω₀ Ω _ _ _ hind ?_
     rw [← adjoin_all_eq_strict u hu1 hu0, ← adjoin_all_eq_strict v hv1 hv0, hall]
   have hTm := fun s => _root_.GlobalTheory.CompanionTheory.Ar.FlagChange.adapted_triangular Ω Li (r s) (fun k => j (ec s k)) (b s)
-    (fun k => ∑ l, u s l k • j (cc s l)) (v s) (w s) (hf s) (hb s) (hv1 s) (hv0 s) (hw0 s) (hw s) (fun k => by
+    (fun k => ∑ l, u s l k • j (cc s l)) (v s) (w s) (hb s) (hw0 s) (hw s) (fun k => by
       rw [← hvw s]
       simp only [Matrix.mul_apply, Matrix.map_apply, Matrix.transpose_apply, Finset.sum_smul, smul_smul]
       rw [Finset.sum_comm]

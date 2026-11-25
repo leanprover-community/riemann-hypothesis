@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory.DI GlobalTheory.LogDR GlobalTheory.Cartier
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.RoundEqn

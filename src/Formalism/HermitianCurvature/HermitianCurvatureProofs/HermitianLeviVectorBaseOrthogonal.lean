@@ -249,17 +249,6 @@ lemma levPos_mid (i : Fin (2 * r' + k + 1)) : 1 ≤ (levPos k 1 r' i).val ∧ (l
   have hi := i.isLt
   exact ⟨show 1 ≤ i.val + 1 by omega, show i.val + 1 < 2 * r' + k + 1 + 1 by omega⟩
 
-private lemma iotaLev_levPos_apply_of_col_outside (g : Mat k r') (i : Fin (2 * r' + k + 1)) (m : Fin (2 * (1 + r') + k + 1))
-    (hm : ¬ (1 ≤ m.val ∧ m.val < 2 * r' + k + 1 + 1)) : ιLev k 1 r' g (levPos k 1 r' i) m = 0 := by
-  unfold ιLev
-  rw [dif_pos (levPos_mid i), dif_neg hm]
-
-private lemma iotaLev_apply_of_first_index_outside (g : Mat k r') (p : Fin (2 * (1 + r') + k + 1))
-    (hp : ¬ (1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1)) (m : Fin (2 * (1 + r') + k + 1)) :
-    ιLev k 1 r' g p m = if p = m then 1 else 0 := by
-  unfold ιLev
-  rw [dif_neg hp]
-
 lemma lev_mul (g h : Mat k r') : ιLev k 1 r' (g * h) = ιLev k 1 r' g * ιLev k 1 r' h := by
   apply ReciprocityTheory.ChartRestriction.DS.Xi.StepA.lev_mul
 

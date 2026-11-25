@@ -61,17 +61,8 @@ open PositivityTheory.Rg.Sw
 variable {m n : ℕ}
 
 theorem pderiv_comm' {σ : Type*} (i j : σ) (f : MvPolynomial σ ℂ) :
-    pderiv i (pderiv j f) = pderiv j (pderiv i f) := by
-  classical
-  induction f using MvPolynomial.induction_on' with
-  | add p q hp hq => simp [hp, hq]
-  | monomial s a =>
-    simp only [pderiv_monomial]
-    by_cases h : i = j
-    · subst h; rfl
-    · congr 1
-      · rw [tsub_right_comm]
-      · simp [h, Ne.symm h]; ring
+    pderiv i (pderiv j f) = pderiv j (pderiv i f) :=
+  MvPolynomial.pderiv_comm i j f
 
 theorem prod_map_pow_single {M : Type*} [Monoid M] {ι : Type*} [DecidableEq ι] (P : ι → M)
     (hP : ∀ i j, Commute (P i) (P j)) (e : ι → ℕ) (k : ι) :

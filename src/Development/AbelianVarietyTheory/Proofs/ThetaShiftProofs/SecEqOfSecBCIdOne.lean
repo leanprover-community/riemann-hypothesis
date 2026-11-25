@@ -72,12 +72,6 @@ namespace GlobalTheory.JointModelGuards
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-theorem mem_of_eq_mul_inv_pow (W : ValuationSubring ℂ) {x a : ℂ} (ha : a ∈ W) (n : ℕ) (h : x = a * x⁻¹ ^ n) :
-    x ∈ W := by
-  rcases W.mem_or_inv_mem x with hx | hx
-  · exact hx
-  · rw [h]; exact mul_mem ha (pow_mem hx n)
-
 theorem exists_root_and_zeta (l : Level H) (c : Coeff l) (W : ValuationSubring ℂ) :
     ∃ r z : c.V W, (((c.V W).subtype r : c.F) : ℂ) = H.rt0 ∧ (((c.V W).subtype z : c.F) : ℂ) = zeta l.A := by
   apply GlobalTheory.MatchRigid.exists_rt_zeta

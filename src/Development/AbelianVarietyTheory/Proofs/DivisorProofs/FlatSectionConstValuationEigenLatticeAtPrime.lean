@@ -1149,8 +1149,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Semi NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore GlobalTheory.Frames
 open Limits MonObj
 
@@ -1263,7 +1261,7 @@ theorem isTan_isEigV {l : Level H} (c : Coeff l) {K : Type} [Field K] [NumberFie
     (u₀ : epsR (𝓞 K) ⟶ B.t.G) (hu : IsTangent u₀) (he : ∀ a, IsLieComb ![tt a] ![u₀] (u₀ ≫ B.t.act.act a))
     (W : epsOver T.V T.V ⟶ G.G) (hW : W.left ≫ n.φ = spMap (Formalism.L2.Pj.dualMap ρV) ≫ u₀.left) :
     IsTan W ∧ IsEigV c (iK.comp (algebraMap c.F K)) G ρ W := by
-  have hB1 : (1 : ptOver (𝓞 K) (𝓞 K) ⟶ B.t.G).left = η[B.t.G].left := by
+  have hB1 : @Eq (Sp (𝓞 K) ⟶ B.t.G.left) (1 : ptOver (𝓞 K) (𝓞 K) ⟶ B.t.G).left η[B.t.G].left := by
     have e : (1 : ptOver (𝓞 K) (𝓞 K) ⟶ B.t.G) = CartesianMonoidalCategory.toUnit _ ≫ η[B.t.G] := rfl
     rw [e, Over.comp_left]
     have e2 : (CartesianMonoidalCategory.toUnit (ptOver (𝓞 K) (𝓞 K))).left = 𝟙 (Sp (𝓞 K)) := by

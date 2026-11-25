@@ -55,7 +55,7 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunKilled
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 open ReciprocityTheory.Aut Formalism.AUTREP
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.TypeRec.factG
 
 noncomputable section
 
@@ -89,10 +89,6 @@ def tinv (B : GL (Fin n) ℂ) : GL (Fin n) ℂ :=
   ⟨(B⁻¹ : GL (Fin n) ℂ).valᵀ, B.valᵀ, by rw [← transpose_mul, Units.mul_inv, transpose_one],
     by rw [← transpose_mul, Units.inv_mul, transpose_one]⟩
 
-omit [NumberField L] [IsCMField L] in
-theorem conj_conj (τ : L →+* ℂ) : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ := by
-  ext x; simp
-
 theorem evPt_eq_tinv (τ : L →+* ℂ) (B : GL (Fin n) ℂ) :
     evPt τ B = evPt (ComplexEmbedding.conjugate τ) (tinv B) := by
   have hne := _root_.GlobalTheory.AlgWtHW.conjugate_ne_self τ
@@ -104,7 +100,7 @@ theorem evPt_eq_tinv (τ : L →+* ℂ) (B : GL (Fin n) ℂ) :
   · by_cases h2 : σ = ComplexEmbedding.conjugate τ
     · subst h2
       simp [NG.evPt, tinv, hne]
-    · have h3 : σ ≠ ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) := by rwa [conj_conj]
+    · have h3 : σ ≠ ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) := by rwa [GlobalTheory.CMLattice.conjugate_conjugate]
       simp [NG.evPt, h1, h2]
 
 theorem inv_upper {B : GL (Fin n) ℂ} (hB : B.val.BlockTriangular id) : (B⁻¹).val.BlockTriangular id := by
@@ -203,8 +199,6 @@ end GlobalTheory.LiftInfRef
 namespace GlobalTheory.LiftInfRef
 
 open GlobalTheory.LiftRef
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem lg_of_forall {K : Ctx} {p : ∀ B : Base, Fr B.toPre → TwDat B → Prop} (h : ∀ B f T, p B f T) : large₂ K p :=
   ⟨fun _ _ _ => ∅, fun _ _ _ _ => ∅, fun _ _ _ _ _ => ∅, fun _ _ _ _ _ => ∅, by simp, by simp, fun B f T _ _ _ _ => h B f T⟩

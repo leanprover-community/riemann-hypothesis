@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrI
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open scoped BigOperators

@@ -1944,7 +1944,7 @@ theorem bd_orbit_interval {n' : ℕ} [NeZero n'] (TT : Finset (Fin n')) (L₂ K 
 
 theorem bd_orbit_next {n' : ℕ} [NeZero n'] (TT : Finset (Fin n')) (L₂ K r : ℕ) (de h x : ℝ) (hn : Even n')
     (hr : 1 ≤ r) (hde : 0 < de) (h3 : 3 * goodG' r de h x ≤ n') (hg : IsGoodOrbit n' TT L₂ K r de h x)
-    (y z : ℤ) (_hyz : y < z) (_hy : posOf n' y ∈ TT) (_hye : Even y) (_hz : posOf n' z ∈ TT) (_hze : Even z)
+    (y z : ℤ)
     (hno : ∀ t : ℤ, y < t → t < z → ¬ (posOf n' t ∈ TT ∧ Even t)) :
     z - y ≤ goodG' r de h x ∧ ((Finset.Ioo y z).filter fun t => posOf n' t ∈ TT).card ≤ orbitWindowCount r de h x := by
   obtain ⟨c1, c2, c3⟩ := bd_core_hyps TT r de h x h3
@@ -2119,7 +2119,7 @@ theorem good_orbits_of_frames (D : Formalism.BasicNotions.D7) (hR : bd_RestOrbit
   intro u G' N₁ T ell
   exact ⟨fun s _ hm => _root_.Formalism.G0.marked_run _ r _ s (bd_goodU_pos hde) hm,
     hR r h hr hh n' TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg,
-    fun y z hyz a b c d e => bd_orbit_next TT L₂ (r - 1) r de h x hn (by omega) hde h3 hg y z hyz a b c d e,
+    fun y z _ _ _ _ _ hno => bd_orbit_next TT L₂ (r - 1) r de h x hn (by omega) hde h3 hg y z hno,
     hcnt.1, hcnt.2, fun y => bd_orbit_interval TT L₂ (r - 1) r de h x hL2n hg y⟩
 
 theorem bd_letters_card {n' r : ℕ} [NeZero n'] (F : Frames n' r) (L₂ K r' : ℕ) (de h x : ℝ)
@@ -5530,7 +5530,7 @@ theorem glCoordMap_inv_det : glCoordRingMap R0 n (IsLocalization.Away.invSelf (g
     _ = _ := by rw [h3, one_mul]
 
 theorem laurent_coordinate_embedding_injective : Function.Injective (glCoordRingMap R0 n) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨a, s, rfl⟩ := IsLocalization.exists_mk'_eq (Submonoid.powers (genMat R0 n).det) x
   have h1 := IsLocalization.mk'_spec (GLCoord R0 n) a s
@@ -5561,7 +5561,7 @@ theorem laurentCoordinateMap_support (x : GLLaurent R0 n) : (laurentRingMap R0 n
   exact map_ne_zero_iff _ (laurent_coordinate_embedding_injective R0 n)
 
 theorem laurentRingMap_injective : Function.Injective (laurentRingMap R0 n) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   have h := laurentCoordinateMap_support R0 n x
   rw [hx] at h

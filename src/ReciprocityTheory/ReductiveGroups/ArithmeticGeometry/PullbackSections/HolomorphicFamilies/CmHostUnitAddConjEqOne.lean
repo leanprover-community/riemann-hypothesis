@@ -5,8 +5,6 @@ import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.G.PullbackSections.CVA

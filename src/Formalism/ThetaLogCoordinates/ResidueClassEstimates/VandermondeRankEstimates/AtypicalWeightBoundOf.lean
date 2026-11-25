@@ -109,18 +109,10 @@ namespace TTyp
 
 def lat (q : ℕ → Bool) (B : ℕ → ℕ) (i : ℕ) : List ℕ := (((List.range' 1 i).filter q).reverse).map B
 
-private theorem list_range'_succ_eq_append_singleton (s n : ℕ) : List.range' s (n + 1) = List.range' s n ++ [s + n] := by
-  induction n generalizing s with
-  | zero => rfl
-  | succ n ih =>
-    show s :: List.range' (s + 1) (n + 1) = (s :: List.range' (s + 1) n) ++ [s + (n + 1)]
-    rw [ih (s + 1), show s + 1 + n = s + (n + 1) by omega]
-    rfl
-
 lemma lat_succ (q : ℕ → Bool) (B : ℕ → ℕ) (i : ℕ) :
     lat q B (i + 1) = if q (i + 1) = true then B (i + 1) :: lat q B i else lat q B i := by
   unfold lat
-  rw [list_range'_succ_eq_append_singleton, show (1 : ℕ) + i = i + 1 from Nat.add_comm 1 i, List.filter_append]
+  rw [List.range'_1_concat, show (1 : ℕ) + i = i + 1 from Nat.add_comm 1 i, List.filter_append]
   by_cases hq : q (i + 1) = true
   · simp [hq]
   · simp [hq]

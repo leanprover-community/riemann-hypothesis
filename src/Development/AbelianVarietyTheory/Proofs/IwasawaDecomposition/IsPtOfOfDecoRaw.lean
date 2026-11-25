@@ -236,7 +236,6 @@ structure Cmp {σ : E →ₐ[F] E} {gp : Fin 2 → ℕ} (G : GLoc F E σ gp) (SG
   e_eq : ∀ j v h s, IsLocalRing.residue _ (ρ j v h s) = e j v h (resS F (W j v h).1 s)
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 theorem nonempty_cmp {R : Ranks} (H : Formalism.BasicNotions.Host R) (hc : CMData H.F H.E) {SG : Finset (HeightOneSpectrum (𝓞 H.E))}
     (hl : LevOk H SG ∅) (G : GLoc H.F H.E hc.sig H.g) (hne : H.g 0 ≠ H.g 1)
     (h1 : ∀ w ∈ SG, ∃ j, (H.g j : 𝓞 H.E) ∈ w.asIdeal)

@@ -68,7 +68,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 open scoped Matrix
@@ -161,7 +160,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 open scoped Matrix
@@ -279,7 +277,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 open scoped Matrix
@@ -384,7 +381,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 open scoped Matrix
@@ -460,7 +456,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

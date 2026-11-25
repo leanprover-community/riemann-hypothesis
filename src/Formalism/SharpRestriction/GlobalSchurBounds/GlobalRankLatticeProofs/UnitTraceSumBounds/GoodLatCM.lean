@@ -50,7 +50,6 @@ namespace Formalism.MainNotions.Ext
 
 end Formalism.MainNotions.Ext
 
-open Formalism.MainNotions.TaylorLogMetric Formalism.BasicNotions NumberField
 
 namespace Formalism.MainNotions.Ext
 

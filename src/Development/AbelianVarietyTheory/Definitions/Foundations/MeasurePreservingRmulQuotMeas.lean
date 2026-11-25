@@ -372,9 +372,6 @@ def orbInt (dh : Measure H) (γ : H) (dt : Measure (cent γ)) (f : H → ℂ) : 
 def HasOrbInt (dh : Measure H) (γ : H) (dt : Measure (cent γ)) (f : H → ℂ) (c : ℂ) : Prop :=
   HasQuotInt (cent γ) dt dh (conjFn γ f) c
 
-def wOrbInt (T : Subgroup H) (dt : Measure T) (dh : Measure H) (γ : H) (b f : H → ℂ) : ℂ :=
-  quotInt T dt dh fun x => b x * conjFn γ f x
-
 variable {dh : Measure H} {γ : H} {dt : Measure (cent γ)} {f f' : H → ℂ} {c c' : ℂ}
 
 theorem HasOrbInt.orbInt_eq (h : HasOrbInt dh γ dt f c) : orbInt dh γ dt f = c := h.2

@@ -152,7 +152,7 @@ theorem span_pair_mono_left {a a' f x : R} (h : a' ∣ a) (hx : x ∈ Ideal.span
 theorem rem_M (l : ℕ) (hl : 1 ≤ l) (π₀ : R) (y M η c : ℕ) (hc : c + η + M ≤ l * y) :
     (π₀ * (π₀ + (l : R)) ^ (l - 1)) ^ y ∈
       Ideal.span {(l : R) ^ c, π₀ ^ M * (π₀ + (l : R)) ^ η} := by
-  have hQ := Formalism.KernelCokernelLengths.length_theorems_all_hold.2.2.2.2.2.2.2.2.2.2.1
+  have hQ := Formalism.KernelCokernelLengths.ideal_power_sum_mem
   obtain ⟨k, rfl⟩ : ∃ k, l = k + 1 := ⟨l - 1, by omega⟩
   simp only [Nat.add_sub_cancel]
   set q : R := π₀ + ((k + 1 : ℕ) : R) with hq
@@ -198,7 +198,7 @@ theorem rem_2 (l : ℕ) (hl : 1 ≤ l) (π₀ q u ε : R) (y X c : ℕ) (hy : 1 
     (hc : c + (X - 1) / l ≤ (l - 1) * y) :
     (π₀ * q ^ (l - 1) * (u * q ^ l + (l : R) * ε) ^ (l - 1)) ^ y ∈
       Ideal.span {(l : R) ^ c, π₀ * q ^ X} := by
-  have hP := Formalism.KernelCokernelLengths.length_theorems_all_hold.2.2.2.2.2.2.2.2.1
+  have hP := Formalism.KernelCokernelLengths.power_binomial_bound
   have e1 : π₀ ^ y = π₀ * π₀ ^ (y - 1) := by rw [← pow_succ']; congr 1; omega
   rw [mul_pow, mul_pow, ← pow_mul, ← pow_mul, e1]
   rcases Nat.eq_zero_or_pos X with rfl | hX
@@ -357,7 +357,7 @@ theorem kills_q (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F : La
     (i : ZMod n) (A r N : ℕ) (hN : A + r - 1 ≤ N) (ha : Formalism.MainNotions.LiftingTheory.Kills W F i (W.π₀ ^ A))
     (hb : Formalism.MainNotions.LiftingTheory.Kills W F i (Formalism.MainNotions.LiftingTheory.lp W r)) :
     Formalism.MainNotions.LiftingTheory.Kills W F i (Formalism.MainNotions.LiftingTheory.qp W ^ N) := by
-  have hQ := Formalism.KernelCokernelLengths.length_theorems_all_hold.2.2.2.2.2.2.2.2.2.2.1 (LetA O n) W.π₀ ((PD.p : ℕ) : LetA O n) A r
+  have hQ := Formalism.KernelCokernelLengths.ideal_power_sum_mem (LetA O n) W.π₀ ((PD.p : ℕ) : LetA O n) A r
   have h1 : Formalism.MainNotions.LiftingTheory.Kills W F i (Formalism.MainNotions.LiftingTheory.qp W ^ (A + r - 1)) :=
     kills_of_mem_span W F i ha hb hQ
   obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le hN
@@ -559,7 +559,7 @@ theorem trunc_floor_one (A : Type) [CommRing A] (l : ℕ) [Fact l.Prime] (hl : 3
   have hl' : (3 : ℝ) ≤ l := by exact_mod_cast hl
   have h0 : 0 ≤ ((M : ℝ) + η) / ((l : ℝ) - 1) := div_nonneg (by positivity) (by linarith)
   rw [Nat.floor_add_one h0]
-  exact Formalism.KernelCokernelLengths.length_theorems_with_earlier.2.2.2.2.1 A l hl X u M η y hM
+  exact Formalism.ZetaNonvanishing.ZetaNonvanishingCriteria.linearFactorPowMemSpanXPow A l hl X u M η y hM
 
 end Formalism.MainNotions.CrystallineLiftingInputs
 end -- clump:auto

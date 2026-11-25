@@ -50,6 +50,17 @@ public import Mathlib.FieldTheory.Extension
 
 open IsLocalRing
 
+private theorem mem_of_adjoin {R S T P : Type} [CommRing R] [CommRing S] [CommRing T] [Algebra R S]
+    [SetLike P T] [SubringClass P T] (M : P) (f : S →+* T) {ι : Type} {u : ι → S}
+    (hu : Algebra.adjoin R (Set.range u) = ⊤) (hm : ∀ i, f (u i) ∈ M)
+    (ha : ∀ r, f (algebraMap R S r) ∈ M) (s : S) : f s ∈ M := by
+  have hs : s ∈ Algebra.adjoin R (Set.range u) := hu ▸ Algebra.mem_top
+  induction hs using Algebra.adjoin_induction with
+  | mem y hy => obtain ⟨i, rfl⟩ := hy; exact hm i
+  | algebraMap r => exact ha r
+  | add y z _ _ hy hz => rw [map_add f]; exact add_mem hy hz
+  | mul y z _ _ hy hz => rw [map_mul]; exact mul_mem hy hz
+
 private theorem exists_field_lift {R S F K L : Type} [CommRing R] [CommRing S] [Algebra R S]
     [Field F] [Field K] [Field L] (c : F →+* K) (d : F →+* L) (a : R →+* F) (b : S →+* K)
     (hab : b.comp (algebraMap R S) = c.comp a)
@@ -73,16 +84,9 @@ private theorem exists_field_lift {R S F K L : Type} [CommRing R] [CommRing S] [
     rw [← Polynomial.map_map] at h3
     exact h3.of_dvd ((h1.map a).map _).ne_zero (Polynomial.map_dvd _ (minpoly.dvd F _ h4))
   obtain ⟨φ⟩ := IntermediateField.nonempty_algHom_adjoin_of_splits hT
-  have hmem : ∀ s : S, b s ∈ IntermediateField.adjoin F (Set.range (fun i => b (u i))) := by
-    intro s
-    have hs : s ∈ Algebra.adjoin R (Set.range u) := hu ▸ Algebra.mem_top
-    induction hs using Algebra.adjoin_induction with
-    | mem y hy =>
-      obtain ⟨i, rfl⟩ := hy
-      exact IntermediateField.subset_adjoin _ _ ⟨i, rfl⟩
-    | algebraMap r => rw [hab']; exact IntermediateField.algebraMap_mem _ _
-    | add y z _ _ hy hz => rw [map_add b]; exact add_mem hy hz
-    | mul y z _ _ hy hz => rw [map_mul]; exact mul_mem hy hz
+  have hmem : ∀ s : S, b s ∈ IntermediateField.adjoin F (Set.range (fun i => b (u i))) :=
+    mem_of_adjoin _ b hu (fun i => IntermediateField.subset_adjoin _ _ ⟨i, rfl⟩)
+      fun r => by rw [hab']; exact IntermediateField.algebraMap_mem _ _
   let b' : S →+* IntermediateField.adjoin F (Set.range (fun i => b (u i))) :=
     b.codRestrict _ hmem
   refine ⟨φ.toRingHom.comp b', ?_, ?_⟩
@@ -140,26 +144,18 @@ theorem UpperTheory.V.AlgebraTools.exists_lift_ker_eq :
     ⟨(hf i).1, (hf i).2.1, by rw [h2, ← Polynomial.map_map]; exact (hf i).2.2.map j⟩)
   rw [h2] at hψ1
   rw [hb] at hψ2
-  have hmem : ∀ s : S, ψ s ∈ j.range := by
-    intro s
-    have hs : s ∈ Algebra.adjoin R (Set.range u) := hu ▸ Algebra.mem_top
-    induction hs using Algebra.adjoin_induction with
-    | mem y hy =>
-      obtain ⟨i, rfl⟩ := hy
-      obtain ⟨hm, h0, hsp⟩ := hf i
-      have h4 : Polynomial.eval₂ j (ψ (u i)) ((f i).map x) = 0 := by
-        rw [Polynomial.eval₂_map, ← hψ1, ← Polynomial.hom_eval₂,
-          ← Polynomial.aeval_def, h0, map_zero]
-      rw [hsp.eq_prod_roots_of_monic (hm.map x), Polynomial.eval₂_multiset_prod,
-        Multiset.prod_eq_zero_iff, Multiset.map_map, Multiset.mem_map] at h4
-      obtain ⟨c, -, hc⟩ := h4
-      refine ⟨c, ?_⟩
-      simp only [Function.comp_apply, Polynomial.eval₂_sub, Polynomial.eval₂_X,
-        Polynomial.eval₂_C] at hc
-      exact (sub_eq_zero.1 hc).symm
-    | algebraMap r => exact ⟨x r, (RingHom.congr_fun hψ1 r).symm⟩
-    | add y z _ _ hy hz => rw [map_add ψ]; exact add_mem hy hz
-    | mul y z _ _ hy hz => rw [map_mul]; exact mul_mem hy hz
+  have hmem : ∀ s : S, ψ s ∈ j.range := mem_of_adjoin j.range ψ hu (fun i => by
+    obtain ⟨hm, h0, hsp⟩ := hf i
+    have h4 : Polynomial.eval₂ j (ψ (u i)) ((f i).map x) = 0 := by
+      rw [Polynomial.eval₂_map, ← hψ1, ← Polynomial.hom_eval₂,
+        ← Polynomial.aeval_def, h0, map_zero]
+    rw [hsp.eq_prod_roots_of_monic (hm.map x), Polynomial.eval₂_multiset_prod,
+      Multiset.prod_eq_zero_iff, Multiset.map_map, Multiset.mem_map] at h4
+    obtain ⟨c, -, hc⟩ := h4
+    refine ⟨c, ?_⟩
+    simp only [Function.comp_apply, Polynomial.eval₂_sub, Polynomial.eval₂_X,
+      Polynomial.eval₂_C] at hc
+    exact (sub_eq_zero.1 hc).symm) fun r => ⟨x r, (RingHom.congr_fun hψ1 r).symm⟩
   choose g hg using hmem
   let x' : S →+* A :=
     { toFun := g

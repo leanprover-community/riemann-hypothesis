@@ -590,12 +590,12 @@ theorem exists_open_pull_eq_zero {O K : Type} [CommRing O] [IsDomain O] [Valuati
     (⟨(IsLocalRing.maximalIdeal O).map (AbLaw.cst f V), hp⟩ : PrimeSpectrum Γ(X, V))
   have hy' : (hV.primeIdealOf y).asIdeal = (IsLocalRing.maximalIdeal O).map (AbLaw.cst f V) :=
     congrArg PrimeSpectrum.asIdeal hy
-  refine ⟨X.basicOpen b', ⟨y.1, (mem_basicOpen_iff hV y b').2 (hy' ▸ hb'), ?_⟩,
+  refine ⟨X.basicOpen b', ⟨y.1, (AlgebraicGeometry.IsAffineOpen.mem_basicOpen_iff_notMem_primeIdealOf hV y b').2 (hy' ▸ hb'), ?_⟩,
     pull_eq_zero_of_mem W _ (fun z => ?_) hW⟩
   · refine PrimeSpectrum.ext (((IsLocalRing.maximalIdeal.isMaximal O).eq_of_le (f y.1).isPrime.ne_top
       fun a ha => ?_).symm)
     by_contra h
-    exact (mem_basicOpen_iff hV y _).1 ((mem_basicOpen_cst f V a y.2).2 h) (hy' ▸ Ideal.mem_map_of_mem _ ha)
+    exact (AlgebraicGeometry.IsAffineOpen.mem_basicOpen_iff_notMem_primeIdealOf hV y _).1 ((mem_basicOpen_cst f V a y.2).2 h) (hy' ▸ Ideal.mem_map_of_mem _ ha)
   · have hz : j z.1 ∈ X.basicOpen b' := z.2
     have hzV : z.1 ∈ j ⁻¹ᵁ V := X.basicOpen_le b' hz
     have hz' : z.1 ∈ XK.basicOpen ((j.app V).hom b') := by
@@ -967,7 +967,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor

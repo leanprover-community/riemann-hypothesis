@@ -1106,13 +1106,6 @@ def cutEmb (p : Prop) (K : Type) [CommRing K] [Algebra R K] {V : Type} [AddCommG
 theorem cutEmb_inj {f : M →ₗ[R] V} (hf : Function.Injective f) : Function.Injective (cutEmb p K f) :=
   fun _ _ h => Subtype.ext (hf (congrArg Subtype.val h))
 
-theorem cut_comap_span (S : Set V) (h0 : (0 : V) ∈ S) :
-    (Submodule.span R S).comap (cutVal p R K V) = Submodule.span R (Subtype.val ⁻¹' S : Set ↥(cut p K V)) := by
-  by_cases h : p
-  · exact (Submodule.span_preimage_eq (f := cutVal p R K V) ⟨0, h0⟩ fun x _ => ⟨⟨x, fun hn => absurd h hn⟩, rfl⟩).symm
-  · haveI := cut_subsingleton (R := K) (M := V) h
-    exact Subsingleton.elim _ _
-
 theorem cut_span_top (S : Set M) (h0 : (0 : M) ∈ S) (hS : Submodule.span R S = ⊤) :
     Submodule.span R (Subtype.val ⁻¹' S : Set ↥(cut p R M)) = ⊤ := by
   by_cases h : p

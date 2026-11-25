@@ -169,6 +169,5 @@ end Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
 
 namespace Formalism.MainNotions.DIV.Proofs
 open Formalism.BasicNotions Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end Formalism.MainNotions.DIV.Proofs

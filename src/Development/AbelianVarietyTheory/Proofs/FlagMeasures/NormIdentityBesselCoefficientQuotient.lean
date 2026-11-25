@@ -56,6 +56,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselOpNormPowerInt
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousOnMajorantFlagLengths
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFunctionalEquivariantUnipotentCharacter, Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselFunctionalEquivariantUnipotentCharacterStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSchurTranslatedMatrixCoefficient, Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselSubgroupIntegralEqInnerBesselForm, Development.AbelianVarietyTheory.Proofs.FlagMeasures.InnerBesselFunctionalEqIntegralSubgroup, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrableBesselFubiniIntegrandProd, Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrableMatrixCoefficientQuotientMeasure, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MatrixCoeffMulInnerBesselFunctionalEqIntegral, Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormIdentityBesselCoefficientQuotient
@@ -343,14 +344,7 @@ noncomputable section
 namespace GlobalTheory.SgInf.QuotInt
 
 theorem opn_continuous {n : ℕ} : Continuous (opn : Matrix (Fin n) (Fin n) ℂ → ℝ) := by
-  have h : Continuous fun g : Matrix (Fin n) (Fin n) ℂ =>
-      Matrix.toEuclideanCLM (𝕜 := ℂ) (n := Fin n) g :=
-    LinearMap.continuous_of_finiteDimensional
-      ({ toFun := fun g => Matrix.toEuclideanCLM (𝕜 := ℂ) (n := Fin n) g
-         map_add' := fun a b => map_add _ a b
-         map_smul' := fun c a => map_smul _ c a } :
-        Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] (EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n)))
-  exact h.norm
+  apply _root_.GlobalTheory.Amp.LenCont.opn_continuous <;> assumption
 
 end GlobalTheory.SgInf.QuotInt
 

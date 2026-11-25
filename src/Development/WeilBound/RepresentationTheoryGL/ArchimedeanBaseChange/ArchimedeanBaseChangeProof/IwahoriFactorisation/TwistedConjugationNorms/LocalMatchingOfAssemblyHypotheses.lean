@@ -44,8 +44,6 @@ open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4.Tw
 
 def P_contr_id : Prop := ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (n : ℕ) (y : Fin n → ℤ)

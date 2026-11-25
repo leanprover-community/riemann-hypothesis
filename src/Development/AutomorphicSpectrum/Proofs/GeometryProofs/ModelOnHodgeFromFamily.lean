@@ -631,8 +631,6 @@ open AlgebraicGeometry CategoryTheory NumberField MvPolynomial ReciprocityTheory
 open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame IsFlagPair SameGenericFibre IsModelOver divCycle)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
 
-set_option autoImplicit false
-
 
 noncomputable section
 

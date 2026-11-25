@@ -359,29 +359,6 @@ theorem finite_projective_of_smooth [Smooth G.hom] :
 
 end Cotangent
 
-section Characters
-
-variable {O : Type} [CommRing O] {G : Over (Spec (CommRingCat.of O))} [GrpObj G]
-
-variable [IsCommMonObj G]
-
-
-end Characters
-
-section HodgeTate
-
-variable {O : Type} [CommRing O] [IsLocalRing O] {G : Over (Spec (CommRingCat.of O))} [GrpObj G]
-
-variable [IsCommMonObj G] {p : ℕ}
-
-end HodgeTate
-
-section Valued
-
-variable {C : Type} [Field C] {v : Valuation C NNReal} {O : Type} [CommRing O] [Algebra O C]
-
-end Valued
-
 end
 
 end GlobalTheory.HodgeTateCompare

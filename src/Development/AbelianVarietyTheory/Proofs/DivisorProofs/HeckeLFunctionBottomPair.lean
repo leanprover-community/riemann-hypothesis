@@ -1152,13 +1152,7 @@ open Formalism.MainNotions.StandardLatticesGL3 (stdL La0)
 variable {D : D7}
 
 theorem selfDual_std (V : HSp D) (hG : V.gram = 1) : IsSelfDualC V (stdLat V) := by
-  have e : stdLat V = GlobalTheory.SW.stdL D.host.E V.rank := by
-    ext x
-    rw [GlobalTheory.SW.Base.mem_stdL]
-    simp only [stdLat, Formalism.MainNotions.StandardLatticesGL3.stdL, Submodule.mem_pi, Set.mem_univ, true_imp_iff, Submodule.mem_one]
-    refine forall_congr' fun i => ?_
-    exact ⟨fun ⟨y, hy⟩ => hy ▸ y.2, fun h => ⟨⟨x i, h⟩, rfl⟩⟩
-  rw [e]; exact GlobalTheory.Ker.Base.selfDualC_stdL hG
+  apply _root_.GlobalTheory.NormRatio.CosetNorm.selfDual_stdLat <;> assumption
 
 theorem discreteTopology_unitCurvePeriodLattice (δ : ℂ) (a d : ℕ) (hc : Formalism.MainNotions.StandardLatticesGL3.Crv D ⊤ δ) : DiscreteTopology (La0 D (tor0 D ⊤ δ) a d) := by
   have hSD0 : ∀ N : ℕ, Formalism.MainNotions.StandardLatticesGL3.SD D (stdL D N) := by

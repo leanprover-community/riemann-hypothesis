@@ -128,7 +128,7 @@ theorem ae_mem_sk {S : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) �
   simpa [ae_iff] using h.2.2.1
 
 theorem ae_mem_haarLieN (κ : ℝ≥0∞) : ∀ᵐ x ∂(haarLie (Nset k r) κ), Matrix.of x ∈ Nset k r := by
-  simpa [ae_iff] using Formalism.MainNotions.LowestKTypeMultiplicity.muN_conc (k := k) (r := r) κ
+  simpa [ae_iff] using PI.WUN.muN_conc (k := k) (r := r) κ
 
 end Local
 

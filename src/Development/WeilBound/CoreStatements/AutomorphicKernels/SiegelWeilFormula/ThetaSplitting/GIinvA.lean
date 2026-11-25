@@ -62,27 +62,10 @@ namespace PositivityTheory.SiegelWeilFormula.KSplitA
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-theorem A_sym (d : SD σ) : ∃ ε : ℤˣ, ∀ i j, σ (d.A.J j i) = ((ε : ℤ) : E) * d.A.J i j := by
-  rcases d.ok.sign with ⟨h, -⟩ | ⟨h, -⟩
-  · exact ⟨1, fun i j => by rw [h.herm]; simp⟩
-  · exact ⟨-1, fun i j => by rw [h.skew]; simp⟩
-
 theorem det_ne_of_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) : M.det ≠ 0 := by
   first
   | exact _root_.PositivityTheory.ThKG.Tow.Pln.det_ne_zero_of_hasSig
   | (apply _root_.PositivityTheory.ThKG.Tow.Pln.det_ne_zero_of_hasSig <;> assumption)
-
-theorem A_det (d : SD σ) : d.A.J.det ≠ 0 := by
-  obtain ⟨w⟩ : Nonempty (InfinitePlace F) := inferInstance
-  have key : (d.A.J.map (d.B.emb w).1).det ≠ 0 := by
-    rcases d.ok.sign with ⟨h, -⟩ | ⟨h, -⟩
-    · exact det_ne_of_hasSig (h.sig w)
-    · have := det_ne_of_hasSig (h.sig w)
-      rw [Matrix.det_smul] at this
-      exact right_ne_zero_of_mul this
-  intro h0
-  apply key
-  rw [show d.A.J.map (d.B.emb w).1 = ((d.B.emb w).1 : E →+* ℂ).mapMatrix d.A.J from rfl, ← RingHom.map_det, h0, map_zero]
 
 theorem fP_unitary {m n : ℕ} (u : Matrix (Fin m) (Fin m) ℂ) (hu : u ∈ Matrix.unitaryGroup (Fin m) ℂ) (P : PX m n)
     (v : Matrix (Fin m) (Fin n) ℂ) : fP P (u * v) = fP (actU u P) v := by

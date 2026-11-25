@@ -344,7 +344,6 @@ private theorem all_norm (S : Setup A n p) (y : Gam0 E n)
     rw [h2, norm_mul, rat_norm]
     exact mul_le_one₀ (sim_norm S y hy) (norm_nonneg _) h1
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 private theorem mem_KGL_of_entries {w : Plc E} {g : GL (Fin n) (w.adicCompletion E)}
     (h1 : ∀ i j, Valued.v (g.val i j) ≤ 1) (h2 : ∀ i j, Valued.v (g⁻¹.val i j) ≤ 1) : g ∈ KGL w (n := n) :=
   GlobalTheory.StabInt.mem_KGL_of_mem_integralGL ((GroundTheory.Automorphic.GLnLocal.mem_integralGL_iff _ _).2

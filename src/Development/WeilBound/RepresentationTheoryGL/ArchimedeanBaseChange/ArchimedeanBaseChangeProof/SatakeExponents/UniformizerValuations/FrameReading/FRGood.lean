@@ -51,7 +51,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.FG
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 def LevRead : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (S : Set (Pl E)) (d : LocData E n) (a : ℕ),
   a ≤ n → IsSection S → d.Ok → (↑d.P : Set (Pl E)) ⊆ S → IsLev (d.lev a) ∧ IsLev (d.lev₂ a) ∧

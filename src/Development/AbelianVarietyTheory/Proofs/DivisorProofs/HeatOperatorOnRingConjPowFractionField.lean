@@ -53,8 +53,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Heat
 
 theorem fractionField_derivation_pow_logDeriv {Ω : Type} [CommRing Ω] [IsDomain Ω] (D : Derivation ℤ (FractionRing Ω) (FractionRing Ω)) {c : FractionRing Ω} (hc : c ≠ 0) (k : ℕ) :

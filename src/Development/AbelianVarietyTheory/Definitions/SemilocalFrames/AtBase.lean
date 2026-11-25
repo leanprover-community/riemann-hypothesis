@@ -47,8 +47,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace GlobalTheory.LocOver
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def Uni {K : Type} [Zero K] [One K] {n : ℕ} (A : Matrix (Fin n) (Fin n) K) : Prop :=
   (∀ a b, b < a → A a b = 0) ∧ ∀ a, A a a = 1
 

@@ -1111,32 +1111,8 @@ theorem expU_add' (X : Matrix (Fin n) (Fin n) ℂ) (hX : Xᴴ = -X) (s t : ℝ) 
   exact ((Commute.refl X).smul_left _).smul_right _
 
 theorem expU_two_pi (a : Fin n) (hX : (Matrix.single a a Complex.I)ᴴ = -(Matrix.single a a Complex.I)) :
-    expU (Matrix.single a a Complex.I) hX (2 * Real.pi) = 1 := by
-  apply Subtype.ext
-  show NormedSpace.exp (((2 * Real.pi : ℝ) : ℂ) • (Matrix.single a a Complex.I : Matrix (Fin n) (Fin n) ℂ)) = 1
-  have e : (((2 * Real.pi : ℝ) : ℂ)) • (Matrix.single a a Complex.I : Matrix (Fin n) (Fin n) ℂ) =
-      diagonal (fun c => if c = a then ((2 * Real.pi : ℝ) : ℂ) * Complex.I else 0) := by
-    ext i j
-    by_cases hij : i = j
-    · subst hij
-      by_cases hc : i = a
-      · subst hc
-        simp
-      · simp [hc, Ne.symm hc]
-    · rw [Matrix.diagonal_apply_ne _ hij, Matrix.smul_apply, Matrix.single_apply,
-        if_neg (fun hh => hij (hh.1.symm.trans hh.2)), smul_zero]
-  rw [e, Matrix.exp_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext c
-  have hh : NormedSpace.exp (fun c => if c = a then ((2 * Real.pi : ℝ) : ℂ) * Complex.I else 0) c =
-      if c = a then Complex.exp (((2 * Real.pi : ℝ) : ℂ) * Complex.I) else 1 := by
-    split_ifs with hc <;> simp [hc, Complex.exp_eq_exp_ℂ]
-  rw [hh]
-  have h2 : Complex.exp (((2 * Real.pi : ℝ) : ℂ) * Complex.I) = 1 := by
-    push_cast
-    exact Complex.exp_two_pi_mul_I
-  rw [h2]
-  simp
+    expU (Matrix.single a a Complex.I) hX (2 * Real.pi) = 1 :=
+  _root_.GlobalTheory.CompanionTheory.RealCountG.WtInt.expU_two_pi a hX
 
 theorem weight_int (h : IsDerivK σ Kf) (a : Fin n) (r : ℝ) {v : V} (hv : v ≠ 0)
     (hr : Kf a a v = (r : ℂ) • v) : ∃ m : ℤ, r = m := by

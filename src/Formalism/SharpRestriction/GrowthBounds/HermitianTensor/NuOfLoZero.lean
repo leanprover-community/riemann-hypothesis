@@ -1,46 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CoeffSumMonomialLinear
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -234,105 +194,14 @@ theorem rowA_map {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {k n : 
   rw [coeff_map] at hu
   exact hf u (fun h => hu (by rw [h, map_zero]))
 
-private theorem rowA_zero_lemma {K : Type} [CommRing K] {k n : ℕ} (a : Fin k) (d : ℕ) :
-    RowA a (0 : MvPolynomial (Fin k × Fin n) K) d := by
-  intro u hu
-  simp at hu
-
-private theorem rowA_C_lemma_2 {K : Type} [CommRing K] {k n : ℕ} (a : Fin k) (c : K) :
-    RowA a (C c : MvPolynomial (Fin k × Fin n) K) 0 := by
-  intro u hu
-  rw [coeff_C] at hu
-  split_ifs at hu with h
-  · subst h
-    simp [rowDeg]
-  · exact absurd rfl hu
-
-private theorem rowA_X_lemma_3 {K : Type} [CommRing K] {k n : ℕ} (a : Fin k) (v : Fin k × Fin n) :
-    RowA a (X v : MvPolynomial (Fin k × Fin n) K) (if v.1 = a then 1 else 0) := by
-  intro u hu
-  rw [coeff_X'] at hu
-  split_ifs at hu with h
-  · subst h
-    obtain ⟨b, t⟩ := v
-    by_cases hb : b = a
-    · subst hb
-      simp [rowDeg, Finsupp.single_apply, Prod.mk.injEq]
-    · simp [rowDeg, Prod.mk.injEq, hb]
-  · exact absurd rfl hu
-
-private theorem rowA_add_lemma_4 {K : Type} [CommRing K] {k n : ℕ} (a : Fin k)
-    (f g : MvPolynomial (Fin k × Fin n) K) (d : ℕ) (hf : RowA a f d) (hg : RowA a g d) :
-    RowA a (f + g) d := by
-  intro u hu
-  rw [MvPolynomial.coeff_add] at hu
-  by_cases h : AddMonoidAlgebra.coeff f u = 0
-  · rw [h, zero_add] at hu
-    exact hg u hu
-  · exact hf u h
-
-private theorem rowA_sum_lemma_5 {K : Type} [CommRing K] {k n : ℕ} {ι : Type} (a : Fin k) (s : Finset ι)
-    (f : ι → MvPolynomial (Fin k × Fin n) K) (d : ℕ) (hf : ∀ i ∈ s, RowA a (f i) d) :
-    RowA a (∑ i ∈ s, f i) d :=
-  Finset.sum_induction f (fun g => RowA a g d) (fun g h hg hh => rowA_add_lemma_4 a g h d hg hh)
-    (rowA_zero_lemma a d) hf
-
-private theorem rowA_prod_lemma_6 {K : Type} [CommRing K] {k n : ℕ} {ι : Type} (a : Fin k) (s : Finset ι)
-    (f : ι → MvPolynomial (Fin k × Fin n) K) (d : ι → ℕ) (hf : ∀ i ∈ s, RowA a (f i) (d i)) :
-    RowA a (∏ i ∈ s, f i) (∑ i ∈ s, d i) := by
-  induction s using Finset.cons_induction with
-  | empty => simpa using rowA_C_lemma_2 (K := K) (n := n) a 1
-  | cons i s hi ih =>
-    rw [Finset.prod_cons, Finset.sum_cons]
-    exact rowA_mul a _ _ _ _ (hf i (Finset.mem_cons_self i s)) (ih (fun j hj => hf j (Finset.mem_cons_of_mem hj)))
-
-private theorem rowA_pow_lemma_7 {K : Type} [CommRing K] {k n : ℕ} (a : Fin k)
-    (f : MvPolynomial (Fin k × Fin n) K) (d m : ℕ) (hf : RowA a f d) : RowA a (f ^ m) (m * d) := by
-  induction m with
-  | zero => simpa using rowA_C_lemma_2 (K := K) (n := n) a 1
-  | succ m ih =>
-    rw [pow_succ, Nat.succ_mul]
-    exact rowA_mul a _ _ _ _ ih hf
-
-private theorem rowA_minor_lemma_8 (K : Type) [CommRing K] {k : ℕ} (a : Fin k) (s : ℕ) (hr hn : s ≤ k) :
-    RowA a (lpMinor K s hr hn) (∑ p : Fin s, if Fin.castLE hr p = a then 1 else 0) := by
-  unfold lpMinor
-  rw [Matrix.det_apply']
-  apply rowA_sum_lemma_5
-  intro σ _
-  have hσ : (∑ p : Fin s, if Fin.castLE hr p = a then 1 else 0) =
-      0 + ∑ i : Fin s, if Fin.castLE hr (σ i) = a then 1 else 0 := by
-    rw [zero_add]
-    exact (Equiv.sum_comp σ (fun p => if Fin.castLE hr p = a then 1 else 0)).symm
-  rw [hσ]
-  apply rowA_mul
-  · rw [← map_intCast (C : K →+* MvPolynomial (Fin k × Fin k) K)]
-    exact rowA_C_lemma_2 a _
-  · apply rowA_prod_lemma_6
-    intro i _
-    exact rowA_X_lemma_3 a _
-
-private theorem cnt_lemma_9 {k : ℕ} (a : Fin k) (s : ℕ) (hr : s ≤ k) :
-    (∑ p : Fin s, if Fin.castLE hr p = a then 1 else 0) = if a.val < s then 1 else 0 := by
-  split_ifs with h
-  · rw [Finset.sum_eq_single ⟨a.val, h⟩]
-    · simp
-    · intro b _ hb
-      rw [if_neg]
-      intro hc
-      apply hb
-      ext
-      have := congrArg Fin.val hc
-      simpa using this
-    · simp
-  · apply Finset.sum_eq_zero
-    intro p _
-    have hp := p.isLt
-    rw [if_neg]
-    intro hc
-    have := congrArg Fin.val hc
-    simp at this
-    omega
+private theorem weight_rowW_apply {k n : ℕ} (u : Fin k × Fin n →₀ ℕ) (a : Fin k) :
+    Finsupp.weight (rowW k n) u a = rowDeg u a := by
+  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp), Fintype.sum_prod_type,
+    Finset.sum_apply, Finset.sum_eq_single a]
+  · simp [rowDeg, rowW, Finset.sum_apply]
+  · intro b _ hb
+    simp [rowW, Finset.sum_apply, Ne.symm hb]
+  · simp
 
 private theorem tele_lemma_10 {k : ℕ} (ν : Fin k → ℕ) (hν : Antitone ν) (a : Fin k) :
     ν a = ∑ s : Fin k, (ν s - nuNext ν s) * (if a.val < s.val + 1 then 1 else 0) := by
@@ -377,13 +246,14 @@ private theorem tele_lemma_10 {k : ℕ} (ν : Fin k → ℕ) (hν : Antitone ν)
 
 theorem rowA_hw (K : Type) [CommRing K] (k : ℕ) (ν : Fin k → ℕ) (hν : Antitone ν) (a : Fin k) :
     RowA a (hw K (le_refl k) ν) (ν a) := by
-  rw [tele_lemma_10 ν hν a]
-  unfold hw
-  apply rowA_prod_lemma_6
-  intro s _
-  have hm := rowA_minor_lemma_8 K a (s.val + 1) s.isLt s.isLt
-  rw [cnt_lemma_9] at hm
-  exact rowA_pow_lemma_7 a _ _ _ hm
+  have h : IsWeightedHomogeneous (rowW k k) (hw K (le_refl k) ν)
+      (∑ s : Fin k, (ν s - nuNext ν s) • fun b : Fin k => if b.val < s.val + 1 then 1 else 0) := by
+    unfold hw
+    exact IsWeightedHomogeneous.prod _ _ _ fun s _ =>
+      (lpMinor_rowHom K (s.val + 1) s.isLt s.isLt).pow _
+  intro u hu
+  rw [← weight_rowW_apply u a, h hu, Finset.sum_apply, tele_lemma_10 ν hν a]
+  simp only [Pi.smul_apply, smul_eq_mul]
 
 theorem rowA_lam (hC : LamCoeffP) (hR : SubRowP) (K : Type) [Field K] (r : ℕ)
     (L : MvPolynomial (Bool × (Fin r × Fin r)) K →ₗ[K] K) (a : Fin (r + 1 + 1))

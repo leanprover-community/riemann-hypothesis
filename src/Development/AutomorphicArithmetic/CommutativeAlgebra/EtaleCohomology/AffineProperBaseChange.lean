@@ -979,10 +979,6 @@ open GlobalTheory.EtC
 
 namespace LateralTheory.E.CoverIntegralClosure
 
-theorem inj_sub (P : Type) [CommRing P] [IsDomain P] :
-    Function.Injective (algebraMap (integralClosure P (AlgebraicClosure (FractionRing P))) (AlgebraicClosure (FractionRing P))) :=
-  Subtype.val_injective
-
 theorem aic_integralClosure (P : Type) [CommRing P] [IsDomain P] :
     AIC (integralClosure P (AlgebraicClosure (FractionRing P))) := by
   apply GlobalTheory.aic_integralClosure_algebraicClosure

@@ -129,14 +129,7 @@ theorem rootSum_eq {A : Type} [CommRing A] {n ρ k : ℕ} (hn : n = 2 * ρ + k +
       rw [if_neg (by omega), if_neg (by omega)]
 
 theorem hatL_eq_Lf (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  show Submodule.span _ _ = Submodule.span _ _
-  congr 1
-  ext y
-  constructor
-  · rintro ⟨z, hz, rfl⟩
-    exact ⟨⟨z, hz⟩, rfl⟩
-  · rintro ⟨z, rfl⟩
-    exact ⟨z.1, z.2, rfl⟩
+  apply _root_.GlobalTheory.LiftFrameMod.hatL_eq_Lf <;> assumption
 
 def colOf (I : AutInst) (β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) (j : Fin I.n) : VA I :=
   fun l => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) l j
@@ -447,12 +440,7 @@ namespace GlobalTheory.FlagBasis.GramLift
 open Formalism.L2.SG.Pf.unitaryCongruence
 
 theorem hatL_eq (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  show Submodule.span _ _ = Submodule.span _ _
-  congr 1
-  ext x
-  constructor
-  · rintro ⟨y, hy, rfl⟩; exact ⟨⟨y, hy⟩, rfl⟩
-  · rintro ⟨⟨y, hy⟩, rfl⟩; exact ⟨y, hy, rfl⟩
+  apply _root_.GlobalTheory.FlagChi.hatL_eq_Lf <;> assumption
 
 theorem col_mem (I : AutInst) {β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)} (hF : IsFrame β I.L) (j : Fin I.n) :
     (fun i => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) i j) ∈ I.Lf := by
@@ -881,12 +869,7 @@ theorem col_iff (B C m X : Matrix (Fin n) (Fin n) A) (hCB : C * B = 1) (hX : X *
 end Gen
 
 theorem hatL_eq (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  show Submodule.span _ _ = Submodule.span _ _
-  congr 1
-  ext y
-  constructor
-  · rintro ⟨x, hx, rfl⟩; exact ⟨⟨x, hx⟩, rfl⟩
-  · rintro ⟨x, rfl⟩; exact ⟨x.1, x.2, rfl⟩
+  apply _root_.GlobalTheory.FlagChi.hatL_eq_Lf <;> assumption
 
 theorem mem_mL_iff (I : AutInst) (g : ℕ) (β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) (hβ : IsFrame β I.L) (y : VA I) :
     y ∈ mL I g ↔ ∀ i, ∃ t ∈ IntAf I.F I.E,

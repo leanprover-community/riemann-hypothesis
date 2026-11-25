@@ -843,6 +843,7 @@ theorem UpperTheory.V.Fr.fib_dim :
   intro l _ O _ _ _ _ F C₀ n hF hn S x L hx
   obtain ⟨hCO, hmB⟩ := co_B hF hn S
   haveI := hCO
+  haveI : IsLocalRing S.B := UpperTheory.V.Alg.IsCO.toIsLocalRing O
   obtain ⟨-, -, -, -, hft, -, -⟩ := gr_A hF hn S
   haveI := hft
   have hl42 := finrank_frameSpace_eq hF hn S

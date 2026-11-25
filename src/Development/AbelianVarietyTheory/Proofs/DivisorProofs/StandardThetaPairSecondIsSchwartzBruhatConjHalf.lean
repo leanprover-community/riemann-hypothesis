@@ -55,7 +55,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta
 
 variable {D : D7}
@@ -219,7 +218,5 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 alias _root_.GlobalTheory.T.standardThetaPair_second_isSchwartzBruhat_conjHalf := _root_.GlobalTheory.StdSndSB.main

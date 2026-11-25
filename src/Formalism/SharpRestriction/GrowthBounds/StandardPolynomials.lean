@@ -113,14 +113,6 @@ open MvPolynomial
 
 noncomputable section
 
-namespace Formalism.MainNotions.ColumnSystems.Pf
-
-open Formalism.MainNotions.G Formalism.GradedWeylDivisibility Formalism.MainNotions.G.LatticeSystems Formalism.L2.G.Model
-
-theorem letterWt_anti (m d : ℕ) (vec : Bool) : Antitone (letterWt m d vec) := by
-  apply Formalism.MainNotions.flipOneThree.Pf.letterWt_anti
-
-end Formalism.MainNotions.ColumnSystems.Pf
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

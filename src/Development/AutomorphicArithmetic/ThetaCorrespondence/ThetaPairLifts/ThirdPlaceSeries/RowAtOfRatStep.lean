@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 section
-set_option autoImplicit false
 noncomputable section
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
@@ -50,7 +49,6 @@ open scoped TensorProduct
 
 
 namespace GlobalTheory.BigOn.Exp
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Sets
 variable {D : D7} {ρ : Setup D.ntw} (hρ : ρ.Good) {i : D.ntw.Tw} {j : Fin D.R.m} {b : Bool} (rd : Rd ρ D.nexp i j b)
 end Sets

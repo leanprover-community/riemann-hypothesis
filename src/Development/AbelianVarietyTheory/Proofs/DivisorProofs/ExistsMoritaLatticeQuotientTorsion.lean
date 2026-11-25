@@ -393,7 +393,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open NumberField GlobalTheory.UPel.HT GlobalTheory.UPel.HT.EtLev
 open scoped TensorProduct

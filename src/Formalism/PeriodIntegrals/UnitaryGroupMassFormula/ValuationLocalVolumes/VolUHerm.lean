@@ -69,7 +69,7 @@ theorem sigR_mem {x : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) : sigR (Fv F 
   | mem a ha =>
     obtain ⟨a, -, rfl⟩ := ha
     rw [sigR_inclR]
-    exact VolUTr.TrW.inclR_mem' (E := E) v ⟨σ a, (a.2).map σ.toRingHom.toIntAlgHom⟩
+    exact Formalism.L2.SG.Pf.NcVal.TrW.inclR_mem' (E := E) v ⟨σ a, (a.2).map σ.toRingHom.toIntAlgHom⟩
   | zero => rw [map_zero]; exact Submodule.zero_mem _
   | add x y _ _ h1 h2 => rw [map_add (f := _)]; exact Submodule.add_mem _ h1 h2
   | smul c x _ h =>

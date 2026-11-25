@@ -47,9 +47,6 @@ open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.RankTwoDesce
 open scoped Classical ENNReal NNReal
 open UpperTheory.ConvolutionTheory.R2.G (FS2 Rw nE row)
 
-private theorem mult_eq_one (w : InfinitePlace ℚ) : w.mult = 1 := by
-  simp [InfinitePlace.mult, IsTotallyReal.isReal w]
-
 private theorem lint_real (w : InfinitePlace ℚ) {s : ℝ} (hs : 1 < s) :
     ∫⁻ z, ENNReal.ofReal ((1 + ‖z‖) ^ (-s)) ∂infinitePlaceMeasure w < ∞ := by
   have hw : w.IsReal := IsTotallyReal.isReal w
@@ -76,7 +73,7 @@ private theorem int_place (w : InfinitePlace ℚ) {x : ℝ} (h1 : 1 < x) {r : �
     (g := fun z ↦ ENNReal.ofReal (‖z‖ ^ x / (1 + ‖z‖) ^ r))
     (ENNReal.measurable_ofReal.comp hG.measurable)).trans_lt ?_
   refine lt_of_le_of_lt (lintegral_mono fun z ↦ ?_) (lint_real w (s := r - x + 1) (by linarith))
-  rw [← ENNReal.ofReal_mul (by positivity), mult_eq_one, pow_one]
+  rw [← ENNReal.ofReal_mul (by positivity), (IsTotallyReal.isReal w).mult_eq_one, pow_one]
   refine ENNReal.ofReal_le_ofReal ?_
   set t := ‖z‖
   have ht : 0 ≤ t := norm_nonneg _
@@ -135,7 +132,7 @@ theorem UpperTheory.lintegral_idele_rat_polyDecay_mul_norm_rpow_lt_top :
       hL hy
     rw [finiteZetaBound, if_pos hb, hInf, ab, ideleModule_rpow_eq, abs_re,
       Fintype.prod_subsingleton _ Rat.infinitePlace, Fintype.prod_subsingleton _ Rat.infinitePlace,
-      mult_eq_one]
+      (IsTotallyReal.isReal Rat.infinitePlace).mult_eq_one]
     simp only [Nat.cast_one, one_mul]
     rw [div_eq_mul_inv]
     ring_nf

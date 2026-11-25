@@ -134,6 +134,8 @@ def dualSet {E : Type} [Field E] [NumberField E] {n : Type} [Fintype n] (σ : E 
     (J : Matrix n n E) (L : Submodule (𝓞 E) (n → E)) : Set (n → E) :=
   {y | ∀ x ∈ L, hform σ J x y ∈ (algebraMap (𝓞 E) E).range}
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure ColLevel (R : Ranks) (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [StarRing E] [Algebra F E] (sp : Spaces R F E) (gp : Fin 2 → ℕ)
     {ι : Type} [Fintype ι] {hc : ι → HCParam R} (C : ColumnChain R ι hc) (A : ColumnsAtT R C)

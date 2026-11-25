@@ -64,12 +64,6 @@ theorem mem_fixed_iff {α : Representation ℂ G X} {K : Subgroup G} {x : X} :
   simp only [MonoidHom.one_apply, Units.val_one, one_smul]
   exact ⟨fun h g hg => h ⟨g, hg⟩, fun h g => h g g.2⟩
 
-private theorem finiteDimensional_fixed_of_exact_lemma {α : Representation ℂ G X}
-    {β : Representation ℂ G Y} (i : α.IntertwiningMap β) (g : G) (x : X) :
-    i (α g x) = β g (i x) := by
-  have h := LinearMap.congr_fun (i.isIntertwining' g) x
-  simpa [LinearMap.comp_apply] using h
-
 theorem finiteDimensional_fixed_of_exact {α : Representation ℂ G X} {β : Representation ℂ G Y}
     {γ : Representation ℂ G Z} (i : α.IntertwiningMap β) (p : β.IntertwiningMap γ)
     (hi : Function.Injective i) (hker : ∀ y, p y = 0 → ∃ x, i x = y) (K : Subgroup G)
@@ -77,12 +71,12 @@ theorem finiteDimensional_fixed_of_exact {α : Representation ℂ G X} {β : Rep
     FiniteDimensional ℂ (fixed β K) := by
   let j : fixed α K →ₗ[ℂ] fixed β K :=
     { toFun := fun x => ⟨i x, mem_fixed_iff.2 fun g hg => by
-        rw [← finiteDimensional_fixed_of_exact_lemma i g x, mem_fixed_iff.1 x.2 g hg]⟩
+        simpa [i.isIntertwining] using congrArg i (mem_fixed_iff.1 x.2 g hg)⟩
       map_add' := fun x y => by ext; simp
       map_smul' := fun c x => by ext; simp }
   let q : fixed β K →ₗ[ℂ] fixed γ K :=
     { toFun := fun y => ⟨p y, mem_fixed_iff.2 fun g hg => by
-        rw [← finiteDimensional_fixed_of_exact_lemma p g y, mem_fixed_iff.1 y.2 g hg]⟩
+        simpa [p.isIntertwining] using congrArg p (mem_fixed_iff.1 y.2 g hg)⟩
       map_add' := fun x y => by ext; simp
       map_smul' := fun c x => by ext; simp }
   have hK : LinearMap.ker q ≤ LinearMap.range j := by
@@ -91,7 +85,7 @@ theorem finiteDimensional_fixed_of_exact {α : Representation ℂ G X} {β : Rep
     have hpy : p (y : Y) = 0 := congrArg Subtype.val hy
     obtain ⟨x, hx⟩ := hker _ hpy
     have hxfix : x ∈ fixed α K := mem_fixed_iff.2 fun g hg => hi (by
-      rw [finiteDimensional_fixed_of_exact_lemma i, hx, mem_fixed_iff.1 y.2 g hg])
+      rw [i.isIntertwining, hx, mem_fixed_iff.1 y.2 g hg])
     exact ⟨⟨x, hxfix⟩, Subtype.ext hx⟩
   refine ⟨?_⟩
   apply Submodule.fg_of_fg_map_of_fg_inf_ker (f := q)

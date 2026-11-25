@@ -536,12 +536,12 @@ theorem core (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D 
   have n0' : i A₀ / i t₀ ^ rootSgn D r ≠ 0 := by
     rw [← map_zpow₀, ← map_div₀]
     exact (map_ne_zero i).2 n0
-  rcases hsg with hsg | hsg <;> rw [hsg] at v1 v2 v3 v4 n1 n0'
-  · simp only [zpow_one] at v1 v2 v3 v4 n1 n0'
-    have a0 : A ≠ 0 := fun h => n1 (by simp [h])
-    have t0 : t ≠ 0 := fun h => n1 (by simp [h])
-    have a1 : i A₀ ≠ 0 := fun h => n0' (by simp [h])
-    have t1 : i t₀ ≠ 0 := fun h => n0' (by simp [h])
+  have a0 : A ≠ 0 := fun h => n1 (by simp [h])
+  have t0 : t ≠ 0 := fun h => n1 (by rcases hsg with hsg | hsg <;> simp [h, hsg])
+  have a1 : i A₀ ≠ 0 := fun h => n0' (by simp [h])
+  have t1 : i t₀ ≠ 0 := fun h => n0' (by rcases hsg with hsg | hsg <;> simp [h, hsg])
+  rcases hsg with hsg | hsg <;> rw [hsg] at v1 v2 v3 v4
+  · simp only [zpow_one] at v1 v2 v3 v4
     constructor
     · have e : (((m₁ * Dn : ℕ) : M.Ω) * κ) * (i A₀ / A) =
           (i A₀ / i t₀) * (A / t)⁻¹ * ((((m₁ * Dn : ℕ) : M.Ω) * κ) * (i t₀ / t)) := by
@@ -553,11 +553,7 @@ theorem core (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D 
         field_simp
       rw [e]
       exact mul_mem (mul_mem v1 v4) x2
-  · simp only [zpow_neg_one] at v1 v2 v3 v4 n1 n0'
-    have a0 : A ≠ 0 := fun h => n1 (by simp [h])
-    have t0 : t ≠ 0 := fun h => n1 (by simp [h])
-    have a1 : i A₀ ≠ 0 := fun h => n0' (by simp [h])
-    have t1 : i t₀ ≠ 0 := fun h => n0' (by simp [h])
+  · simp only [zpow_neg_one] at v1 v2 v3 v4
     constructor
     · have e : (((m₁ * Dn : ℕ) : M.Ω) * κ) * (i A₀ / A) =
           (i A₀ / (i t₀)⁻¹) * (A / t⁻¹)⁻¹ * ((((m₁ * Dn : ℕ) : M.Ω) * κ) * (t / i t₀)) := by
@@ -622,22 +618,19 @@ theorem or_vert : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Ho
       rw [map_div₀]
       exact hW ⟨Sum.inr k, j⟩
     obtain ⟨κ, hκ, a1, a2⟩ := hcore S M o i hi hS r (fun k => cc (Sum.inl k)) (fun k => cc (Sum.inr k)) W h1 h2 h3 h4
+    have n1 : (∏ k, M.y ⟨k, cc (Sum.inl k)⟩ ^ M.xdeg r k) ≠ 0 :=
+      Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (h1 k)
+    have n2 : i (∏ k, R.y ⟨k, cc (Sum.inr k)⟩ ^ R.xdeg r k) ≠ 0 :=
+      (map_ne_zero i).2 (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (h2 k))
+    have n3 : i (o₀.e r) ≠ 0 := (map_ne_zero i).2 he₀
     refine ⟨κ, hκ, ?_, ?_⟩
     · rw [prod_neg', hP cc]
       convert a1 using 2
       rw [map_mul]
-      have n1 : (∏ k, M.y ⟨k, cc (Sum.inl k)⟩ ^ M.xdeg r k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (h1 k)
-      have n2 : i (∏ k, R.y ⟨k, cc (Sum.inr k)⟩ ^ R.xdeg r k) ≠ 0 :=
-        (map_ne_zero i).2 (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (h2 k))
-      have n3 : i (o₀.e r) ≠ 0 := (map_ne_zero i).2 he₀
       field_simp
     · rw [prod_neg'', hP cc]
       convert a2 using 2
       rw [map_mul]
-      have n1 : (∏ k, M.y ⟨k, cc (Sum.inl k)⟩ ^ M.xdeg r k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (h1 k)
-      have n2 : i (∏ k, R.y ⟨k, cc (Sum.inr k)⟩ ^ R.xdeg r k) ≠ 0 :=
-        (map_ne_zero i).2 (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (h2 k))
-      have n3 : i (o₀.e r) ≠ 0 := (map_ne_zero i).2 he₀
       field_simp
   refine ⟨hu, q, m, hq, hm, hlog.trans ?_, ?_, ?_⟩
   · refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg q)

@@ -51,17 +51,7 @@ noncomputable def leastPrimeMod (a q : ℕ) : ℕ := sInf (primesInProgression a
 
 /-- **Linnik's theorem**, in its qualitative form: there are positive constants `C` and `L` such
 that, for all coprime `a, q ≥ 1`, the least prime congruent to `a` modulo `q` is at most
-`C * q ^ L`. No value of `L` and no effectivity of the constants is asserted.
-
-The theorem is due to
-[U. V. Linnik, *On the least prime in an arithmetic progression. I. The basic theorem*][linnik1944].
-It is recalled in this form, with effectively computable constants, at the start of
-[T. Xylouris, *On the least prime in an arithmetic progression and estimates for the zeros of
-Dirichlet L-functions* (Section 1, p. 65)][xylouris2011], which proves the bound with `L = 5.18`
-(Theorem 1.1). The same statement is equation (1.5) of the earlier text
-[T. Xylouris, *On Linnik's constant*][xylouris2009], which has `L = 5.2`. Linnik's paper was not
-read in preparing this reference. This reference is a reader's proposal and has not been checked
-by a mathematician. -/
+`C * q ^ L`. No value of `L` and no effectivity of the constants is asserted. -/
 @[wikidata Q2703389]
 def Linnik : Prop :=
   ∃ C L : ℝ, 0 < C ∧ 0 < L ∧ ∀ a q : ℕ, 1 ≤ a → 1 ≤ q → a.Coprime q →

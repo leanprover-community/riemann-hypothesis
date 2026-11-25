@@ -62,24 +62,18 @@ private noncomputable def pushK {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') {p : Z' ⟶
     pullback h A.v ⟶ pullback h B.v :=
   pullback.lift (pullback.fst h A.v) (pullback.snd h A.v ≫ t.k) (pushK_w h t)
 
-private theorem pushK_fst {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') {p : Z' ⟶ S} {A B : Sq p} (t : A.To B) :
-    pushK h t ≫ pullback.fst h B.v = pullback.fst h A.v := pullback.lift_fst _ _ _
-
-private theorem pushK_snd {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') {p : Z' ⟶ S} {A B : Sq p} (t : A.To B) :
-    pushK h t ≫ pullback.snd h B.v = pullback.snd h A.v ≫ t.k := pullback.lift_snd _ _ _
-
 private theorem pushK_r {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') {p : Z' ⟶ S} {A B : Sq p} (t : A.To B) :
     pushK h t ≫ pullback.snd h B.v ≫ B.r = (pullback.snd h A.v ≫ A.r) ≫ t.g := by
-  rw [← Category.assoc, pushK_snd, Category.assoc, t.hr, Category.assoc]
+  dsimp only [pushK]; rw [← Category.assoc, pullback.lift_snd, Category.assoc, t.hr, Category.assoc]
 
 private noncomputable def toPush {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') (p : Z' ⟶ S) {A B : Sq p} (t : A.To B) :
     (sqPush h p A).To (sqPush h p B) :=
-  ⟨t.g, pushK h t, t.hu, pushK_fst h t, pushK_r h t⟩
+  ⟨t.g, pushK h t, t.hu, pullback.lift_fst _ _ _, pushK_r h t⟩
 
 private theorem res_pushK {R : Type} [CommRing R] {F : Shv R} {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') {p : Z' ⟶ S}
     {A B : Sq p} (t : A.To B) (a : Sec F B.V) :
     Sec.res (pushK h t) (Sec.res (pullback.snd h B.v) a) = Sec.res (pullback.snd h A.v) (Sec.res t.k a) := by
-  rw [res_res, res_res, pushK_snd]
+  rw [res_res, res_res]; dsimp only [pushK]; rw [pullback.lift_snd]
 
 private noncomputable def familyPushforward {Z Z' S : Scheme.{0}} (h : Z ⟶ Z') (p : Z' ⟶ S) {R' R : Type} [CommRing R']
     [CommRing R] {F : Shv R'} {G : Shv R} (τ : Fam0 (h ≫ p) F G) : Fam0 p F G where

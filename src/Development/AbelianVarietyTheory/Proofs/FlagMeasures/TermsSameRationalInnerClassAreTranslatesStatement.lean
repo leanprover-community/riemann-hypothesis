@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameAdaptedIsometryOfFixingBothFrames
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesSameInnerDifferByRationalUnipotentStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowRepresentativesUpToFrameAdaptedIsometryStatement
@@ -559,18 +560,7 @@ theorem adapt_mul {T : D.host.E} {F G H : LFlag (D.sp.Y 0) D.R.rS T} {g g' : GV 
 
 theorem adapt_inv {T : D.host.E} {F G : LFlag (D.sp.Y 0) D.R.rS T} {g : GV D} (hg : Adapt g F G) :
     Adapt g⁻¹ G F := by
-  refine ⟨inv_mem hg.1, fun a => ?_⟩
-  have hm := map_xflag hg a.val
-  have h2 := hg.2 a
-  rw [← hm] at h2
-  obtain ⟨y, hy, hye⟩ := h2
-  have e : g⁻¹ (frame G a) - frame F a = -y := by
-    have : g (frame F a - y) = frame G a := by
-      rw [map_sub]; simp only [LinearEquiv.coe_coe] at hye; rw [hye]; abel
-    rw [← this]
-    show g.symm (g (frame F a - y)) - frame F a = -y
-    rw [LinearEquiv.symm_apply_apply]; abel
-  rw [e]; exact neg_mem hy
+  first | exact _root_.GlobalTheory.StabCnt.adapt_inv | exact @_root_.GlobalTheory.StabCnt.adapt_inv | apply _root_.GlobalTheory.StabCnt.adapt_inv <;> assumption
 
 theorem z_mem_orth {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) : F.fl.z ∈ orth (VS D) (Xsp F) := by
   simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
@@ -787,18 +777,7 @@ theorem gmap_inv_of {a : GV D} {M N : LV D} (h : Formalism.HermitianLatticesTheo
 
 theorem adapt_mul {T : D.host.E} {F G H : LFlag (D.sp.Y 0) D.R.rS T} {g g' : GV D} (hg : Adapt g F G)
     (hg' : Adapt g' G H) : Adapt (g' * g) F H := by
-  refine ⟨mul_mem hg'.1 hg.1, fun a => ?_⟩
-  have hmap := (GlobalTheory.T.frameAdaptedIsometry_map_flagSpaces D T G H g' hg').1 a.val
-  have h1 : g' (g (frame F a) - frame G a) ∈ Xflag H a.val := by
-    rw [← hmap]
-    exact Submodule.mem_map_of_mem (hg.2 a)
-  have h2 := hg'.2 a
-  have e : (g' * g) (frame F a) - frame H a =
-      g' (g (frame F a) - frame G a) + (g' (frame G a) - frame H a) := by
-    rw [map_sub, LinearEquiv.mul_apply]
-    abel
-  rw [e]
-  exact add_mem h1 h2
+  apply _root_.GlobalTheory.Unfold.SideEq.adapt_mul <;> assumption
 
 theorem adapt_fix {T : D.host.E} {F : LFlag (D.sp.Y 0) D.R.rS T} {h : GV D} (hi : h ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
     (hf : ∀ a, h (frame F a) = frame F a) : Adapt h F F := by

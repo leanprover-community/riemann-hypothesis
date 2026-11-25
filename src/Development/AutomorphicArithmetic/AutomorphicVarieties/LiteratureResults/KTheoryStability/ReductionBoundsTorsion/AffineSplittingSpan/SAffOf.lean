@@ -146,9 +146,6 @@ namespace PositivityTheory.KB.SplitAffineSpectral.unitAtAlt
 
 variable {L : Type} [Field L] [NumberField L]
 
-omit [NumberField L] in
-theorem place_pos (v : (𝓞 L)ˣ) (w : InfinitePlace L) : 0 < w (algebraMap (𝓞 L) L (v : 𝓞 L)) := w.pos_iff.mpr (by simp)
-
 def lchar (a : InfinitePlace L → ℕ) : (𝓞 L)ˣ →* Multiplicative ℝ where
   toFun v := Multiplicative.ofAdd (∑ w, (a w : ℝ) * Real.log (w (algebraMap (𝓞 L) L (v : 𝓞 L))))
   map_one' := by simp
@@ -156,13 +153,13 @@ def lchar (a : InfinitePlace L → ℕ) : (𝓞 L)ˣ →* Multiplicative ℝ whe
     rw [← ofAdd_add, ← Finset.sum_add_distrib]
     congr 1
     refine Finset.sum_congr rfl fun w _ => ?_
-    rw [Units.val_mul, map_mul, map_mul, Real.log_mul (place_pos x w).ne' (place_pos y w).ne']
+    rw [Units.val_mul, map_mul, map_mul, Real.log_mul (NumberField.Units.pos_at_place x w).ne' (NumberField.Units.pos_at_place y w).ne']
     ring
 
 theorem lchar_eq_one_iff (a : InfinitePlace L → ℕ) (v : (𝓞 L)ˣ) :
     lchar a v = 1 ↔ ∏ w, (w (algebraMap (𝓞 L) L (v : 𝓞 L))) ^ a w = 1 := by
   have hpos : ∀ w : InfinitePlace L, 0 < w (algebraMap (𝓞 L) L (v : 𝓞 L)) ^ a w :=
-    fun w => pow_pos (place_pos v w) _
+    fun w => pow_pos (NumberField.Units.pos_at_place v w) _
   have hP : 0 < ∏ w, w (algebraMap (𝓞 L) L (v : 𝓞 L)) ^ a w :=
     Finset.prod_pos fun w _ => hpos w
   have hlog : Real.log (∏ w, w (algebraMap (𝓞 L) L (v : 𝓞 L)) ^ a w) =

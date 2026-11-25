@@ -41,8 +41,6 @@ import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 namespace GlobalTheory.RunJoin.Inh
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.MainNotions.Gaps.EtaleWeightGaps.Num GlobalTheory.RunJoin

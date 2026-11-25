@@ -41,6 +41,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointMajorantFramesGiveMajorants
 
 @[expose] public section
 
@@ -238,18 +239,7 @@ section Rational
 variable (I : AutInst) (x a : I.GA) (γ : GL (Fin I.n) I.E)
 
 theorem frm_det (w : InfinitePlace I.E) : IsUnit (frm I x w).det := by
-  have h1 : IsUnit (I.P (w.comap (algebraMap I.F I.E)) * uMat (x.1 (w.comap (algebraMap I.F I.E)))).det := by
-    rw [Matrix.det_mul]
-    exact ((Matrix.isUnit_iff_isUnit_det _).1 (I.P_unit _)).mul
-      ((Matrix.isUnit_iff_isUnit_det _).1 (Units.isUnit _))
-  simp only [frm]
-  split_ifs
-  · exact h1
-  · have e := RingHom.map_det (starRingEnd ℂ)
-      (I.P (w.comap (algebraMap I.F I.E)) * uMat (x.1 (w.comap (algebraMap I.F I.E))))
-    rw [RingHom.mapMatrix_apply] at e
-    rw [← e]
-    exact h1.map _
+  apply _root_.GlobalTheory.Count.FrameMajorant.frm_unit <;> assumption
 
 theorem frm_mul (k : I.GA) (w : InfinitePlace I.E) :
     frm I (x * k) w = frm I x w * uMat (k.1 (w.comap (algebraMap I.F I.E))) ∨

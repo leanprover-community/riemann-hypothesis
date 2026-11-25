@@ -52,8 +52,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Filter Topology
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Rig
 
 section Unram

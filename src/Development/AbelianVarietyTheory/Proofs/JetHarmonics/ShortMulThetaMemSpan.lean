@@ -283,8 +283,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.BetaOfSum
@@ -457,8 +455,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.JetHarmonics.ShortSeriesBlockProduct", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.BlockPolyLevelMove\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2\npublic import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsFramedPointBaseChangeAlgHom\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortThetaSumEqOfWitnessesCommonAlgebra\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortThetaValueExistsUniqueNaturalOfLaws\npublic import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.BlockHarmLevOfBlockHarm\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -999,90 +995,6 @@ theorem finsum_block {K S Q J J₁ J₂ : Type} [Field K] [CommRing S] [Algebra 
   rw [hJ, map_mul]
   ring
 
-private theorem PPx_le_preimage {S T : Type} [CommRing S] [CommRing T] (x : Sp S ⟶ Xo.X) (x' : Sp T ⟶ Xo.X)
-    (pm : (Over.mk x' ⊗ Xo.univ.t.G).left ⟶ (Over.mk x ⊗ Xo.univ.t.G).left)
-    (h : pm ≫ Over.Hom.left (snd (Over.mk x) Xo.univ.t.G) = Over.Hom.left (snd (Over.mk x') Xo.univ.t.G))
-    (i : Fin 1 → Xo.univ.t.PP.L.ι) : (PPx x').U i ≤ pm ⁻¹ᵁ (PPx x).U i := by
-  unfold PPx LPow LB.LinComb
-  dsimp only
-  unfold LB.wchart
-  intro p hp
-  rw [← h] at hp
-  simp only [Scheme.Hom.comp_base, TopologicalSpace.Opens.mem_mk, Set.mem_iInter, Set.mem_preimage] at hp
-  simpa using hp
-
-private theorem frMap_comp' {S T U : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T]
-    [CommRing U] [Algebra c.F U] {φ : S →ₐ[c.F] T} {ψ : T →ₐ[c.F] U} {y : FrPt Xo c S} {y' : FrPt Xo c T}
-    {y'' : FrPt Xo c U} (h₁ : FrMap φ y y') (h₂ : FrMap ψ y' y'') : FrMap (ψ.comp φ) y y'' := by
-  obtain ⟨hx₁, hu₁, pm₁, hs₁, hf₁, ha₁⟩ := h₁
-  obtain ⟨hx₂, hu₂, pm₂, hs₂, hf₂, ha₂⟩ := h₂
-  refine ⟨?_, ?_, pm₂ ≫ pm₁, ?_, ?_, ?_⟩
-  · rw [hx₂, hx₁, ← Category.assoc, FramedBaseChange.spMap_spMap]
-    rfl
-  · intro τ i
-    rw [hu₂, hu₁, ← Category.assoc, FramedBaseChange.spMap_spMap, ← _root_.GlobalTheory.FramedBaseChange.dual_comp]
-    rfl
-  · rw [Category.assoc, hs₁, hs₂]
-  · rw [Category.assoc, hf₁, ← Category.assoc, hf₂, Category.assoc, FramedBaseChange.spMap_spMap]
-    rfl
-  · intro i h
-    have e₁ := PPx_le_preimage y.x y'.x pm₁ hs₁ i
-    have e₂ := PPx_le_preimage y'.x y''.x pm₂ hs₂ i
-    rw [← Scheme.Hom.appLE_comp_appLE pm₂ pm₁ _ _ _ e₁ e₂, CommRingCat.hom_comp, RingHom.comp_apply,
-      ha₁ i e₁, ha₂ i e₂]
-
-private theorem frMap_cancel' {S T U : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T]
-    [CommRing U] [Algebra c.F U] {φ : S →ₐ[c.F] T} {ψ : T →ₐ[c.F] U} {y : FrPt Xo c S} {y' : FrPt Xo c T}
-    {y'' : FrPt Xo c U} (h₁ : FrMap φ y y') (h₂ : FrMap (ψ.comp φ) y y'') : FrMap ψ y' y'' := by
-  obtain ⟨hx₁, hu₁, pm₁, hs₁, hf₁, ha₁⟩ := h₁
-  obtain ⟨hx₂, hu₂, pm₂, hs₂, hf₂, ha₂⟩ := h₂
-  have hx : y''.x = spMap ψ.toRingHom ≫ y'.x := by
-    rw [hx₂, hx₁, ← Category.assoc, FramedBaseChange.spMap_spMap]
-    rfl
-  refine ⟨hx, ?_, ?_⟩
-  · intro τ i
-    rw [hu₂, hu₁, ← Category.assoc, FramedBaseChange.spMap_spMap, ← _root_.GlobalTheory.FramedBaseChange.dual_comp]
-    rfl
-  · have tf : ∀ {R : Type} [CommRing R] (x : Sp R ⟶ Xo.X),
-        Over.Hom.left (fst (Over.mk x) Xo.univ.t.G) = Limits.pullback.fst x Xo.univ.t.G.hom := fun _ => rfl
-    have ts : ∀ {R : Type} [CommRing R] (x : Sp R ⟶ Xo.X),
-        Over.Hom.left (snd (Over.mk x) Xo.univ.t.G) = Limits.pullback.snd x Xo.univ.t.G.hom := fun _ => rfl
-    rw [tf, tf] at hf₁ hf₂
-    rw [ts, ts] at hs₁ hs₂
-    let pm : Gx y''.x ⟶ Gx y'.x := Limits.pullback.lift
-      (Limits.pullback.fst y''.x Xo.univ.t.G.hom ≫ spMap ψ.toRingHom) (Limits.pullback.snd y''.x Xo.univ.t.G.hom)
-      (by
-        change (Limits.pullback.fst y''.x Xo.univ.t.G.hom ≫ spMap ψ.toRingHom) ≫ y'.x = _
-        rw [Category.assoc, ← hx]
-        exact Limits.pullback.condition)
-    have hsn : pm ≫ Limits.pullback.snd y'.x Xo.univ.t.G.hom = Limits.pullback.snd y''.x Xo.univ.t.G.hom :=
-      Limits.pullback.lift_snd _ _ _
-    have hfn : pm ≫ Limits.pullback.fst y'.x Xo.univ.t.G.hom =
-        Limits.pullback.fst y''.x Xo.univ.t.G.hom ≫ spMap ψ.toRingHom :=
-      Limits.pullback.lift_fst _ _ _
-    have hpm : pm ≫ pm₁ = pm₂ := by
-      apply Limits.pullback.hom_ext
-      · simp only [Over.mk_hom]
-        rw [Category.assoc, hf₁, ← Category.assoc, hfn, Category.assoc, FramedBaseChange.spMap_spMap, hf₂]
-        rfl
-      · simp only [Over.mk_hom]
-        rw [Category.assoc, hs₁, hsn, hs₂]
-    refine ⟨pm, ?_, ?_, ?_⟩
-    · rw [ts, ts]
-      exact hsn
-    · rw [tf, tf]
-      exact hfn
-    · intro i h
-      have e₁ := PPx_le_preimage y.x y'.x pm₁ (by rw [ts, ts]; exact hs₁) i
-      have e₂ := PPx_le_preimage y.x y''.x pm₂ (by rw [ts, ts]; exact hs₂) i
-      rw [← ha₁ i e₁, ← ha₂ i e₂, ← RingHom.comp_apply, ← CommRingCat.hom_comp, Scheme.Hom.appLE_comp_appLE]
-      have key : ∀ (g : Gx y''.x ⟶ Gx y.x) (hg : g = pm₂) (hh : (PPx y''.x).U i ≤ g ⁻¹ᵁ (PPx y.x).U i),
-          (Scheme.Hom.appLE g ((PPx y.x).U i) ((PPx y''.x).U i) hh).hom (y.s.f i) =
-            (Scheme.Hom.appLE pm₂ ((PPx y.x).U i) ((PPx y''.x).U i) e₂).hom (y.s.f i) := by
-        rintro g rfl hh
-        rfl
-      exact key _ hpm _
-
 private theorem exists_faithfullyFlat_refinement {S S₁ S₂ : Type} [CommRing S] [Algebra c.F S] [CommRing S₁] [Algebra c.F S₁]
     [CommRing S₂] [Algebra c.F S₂] (φ₁ : S →ₐ[c.F] S₁) (φ₂ : S →ₐ[c.F] S₂) (h₁ : φ₁.FaithfullyFlat)
     (h₂ : φ₂.FaithfullyFlat) :
@@ -1143,8 +1055,10 @@ theorem shortValAt_mul (hC : ChartIndepSt2) [StarRing (𝓞 E)] (nab : NabV Xo c
   obtain ⟨S₂, _, _, φ₂, y₂, z₂, tp₂, F₂, hφ₂, hm₂, hz₂, hg₂, ht₂, hF₂, hv₂⟩ := h₂
   obtain ⟨T, _, _, ψ₁, ψ₂, heq, hff⟩ := exists_faithfullyFlat_refinement φ₁ φ₂ hφ₁ hφ₂
   obtain ⟨yT, hyT⟩ := FramedBaseChange.exists_frMap abelianSchemeLaws_all.1 E H Dw l Xo c S₁ T ψ₁ y₁
-  have hmT : FrMap (ψ₁.comp φ₁) y yT := frMap_comp' hm₁ hyT
-  have hyT₂ : FrMap ψ₂ y₂ yT := frMap_cancel' hm₂ (heq ▸ hmT)
+  have hmT : FrMap (ψ₁.comp φ₁) y yT :=
+    _root_.ReciprocityTheory.ChartRestriction.G.PullbackSections.frMap_trans φ₁ ψ₁ hm₁ hyT
+  have hyT₂ : FrMap ψ₂ y₂ yT :=
+    _root_.Formalism.L2.Pj.frMap_cancel _ _ _ φ₂ ψ₂ y y₂ yT hm₂ (heq ▸ hmT)
   obtain ⟨z₁', tp₁', F₁', hz₁', hg₁', ht₁', hF₁', hs₁'⟩ :=
     ShortCompare.exists_pull hC nab hn Λ₁ N a₁ P₁ hH₁ ψ₁ y₁ yT hyT z₁ tp₁ F₁ hz₁ hg₁ ht₁ hF₁
   obtain ⟨z₂', tp₂', F₂', hz₂', hg₂', ht₂', hF₂', hs₂'⟩ :=
@@ -1242,8 +1156,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.JetHarmonics.StandardCoverShortValueEqThetaValue", "h": "module\n\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2\npublic import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointsLiftToLevelCover\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsIsUUOver\npublic import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.AdmissibleColumnsLeAndHarmonicMapCover\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsFramedPointBaseChangeAlgHom\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HarmonicValuesInvariantUniversalEndomorphism\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsLocallyNoetherian\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ModuliUnivEtaKilled\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaValueNaturalAlgebraMap\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AlphaFormHarmonicValueAtFramedPoint\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsUniqueNormalisedPullbackRationalNorm\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsUniqueSymmetricTranslateOddLevel\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.HarmonicValueChainRuleNormalizedPullback\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.HarmonicValueEqChartValue\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.IsNormalisedPullbackSectionMul\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.LatticeTrivialAtPrimeIndicesAndUnits\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.NormalisedPullbackCommutesSymmetricTranslations\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ShortThetaValueFieldEqMapSubfieldData\nimport Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SumSupportCMul\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.SymmetricTranslatesMultiplicationPullbackDescrip\nimport Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsoEqOfMapsAlongSection\nimport Formalism.SharpRestriction.Divisibility.GeneratorPowers.PrimUniqPf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FrMapComp\nimport Mathlib.CategoryTheory.Monoidal.Opposite.Mon\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1589,8 +1501,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.JetHarmonics.ShortMulThetaMemSpan", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Jets.EmbShortThLeThetaPlain\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2\npublic import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.BlockPolyLevelMove\npublic import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot\npublic import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.BaseClassMove\npublic import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ZeroNotAdmissibleOfRankPos\npublic import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CardLatticeQuotientHalfLevel\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.EqOfForallAlgClosed\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HarmAMemSpanShort\npublic import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaRuleExistsAndEval\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CoeffMoreColumns\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsSimInducing\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsBetaUnitBlock\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ShortSeriesBlockProduct\npublic import Formalism.LocalToGlobal.ProjectiveLattices.ThShort\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StandardCoverShortValueEqThetaValue\npublic import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.TotalDegreeLeOfRowDeg\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortThetaValueExistsUniqueNaturalOfLaws\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaRuleMemSec\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.LinearAlgebra.FreeModule.IdealQuotient\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 

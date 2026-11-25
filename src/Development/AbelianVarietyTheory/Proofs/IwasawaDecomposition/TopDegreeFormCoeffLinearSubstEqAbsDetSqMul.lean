@@ -57,8 +57,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts G
 open GlobalTheory.PointChern Filter Topology
 open scoped Matrix
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GoodMetric

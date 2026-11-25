@@ -898,8 +898,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UU
 
-set_option autoImplicit false
-
 noncomputable section
 namespace GlobalTheory.UU
 
@@ -1142,8 +1140,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UU
-
-set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.UU

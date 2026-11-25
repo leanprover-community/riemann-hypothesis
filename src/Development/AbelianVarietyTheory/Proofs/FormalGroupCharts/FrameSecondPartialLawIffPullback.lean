@@ -51,8 +51,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1 FGLaw)
 open MvPolynomial (X)
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FramePartialLawTwo

@@ -43,7 +43,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsSplitOfMe
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.ExportSeries GlobalTheory.SeriesTie
 open Formalism.IndefR.Links
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.Lev Formalism.L2.DIV Formalism.IndefR.Mult
 
 

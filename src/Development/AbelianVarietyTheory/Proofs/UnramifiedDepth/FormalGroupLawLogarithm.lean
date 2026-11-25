@@ -47,8 +47,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.Pt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh

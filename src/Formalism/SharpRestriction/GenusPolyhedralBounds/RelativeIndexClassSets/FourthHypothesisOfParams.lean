@@ -324,9 +324,6 @@ theorem dimY_m (D : D7) : WeightFamilies.dimY D D.R.m = D.R.f * D.R.r.choose 2 :
   rw [Nat.choose_two_right]
   simp [WeightFamilies.dimY, Ranks.sigW, Ranks.r]
 
-theorem baseDegree_at_lift_index (D : D7) : n0 D D.R.m = D.R.r + 2 * g0 D := by
-  simp [n0, Ranks.sigW]
-
 theorem size_apW_m (l g n : ℕ) (hn : Even n) :
     (apW D D.R.m l g n hn).size = D.R.f * sA D.R.r l g + (D.R.f : ℝ) * D.R.r * n + 1 := by
   unfold WeightFamilies.Wt.size

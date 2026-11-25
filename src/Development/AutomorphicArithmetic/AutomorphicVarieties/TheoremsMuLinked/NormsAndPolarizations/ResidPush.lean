@@ -51,19 +51,6 @@ private theorem inc_local {l : ℕ} [Fact l.Prime] {c c' : Coef l} (h : c.O ≤ 
     exact RingHom.IsIntegral.tower_top _ _ h0
   exact RingHom.IsIntegral.isLocalHom hint (Subalgebra.inclusion_injective h)
 
-private theorem pushCh_ker {H A B : Type} [Group H] [CommRing A] [CommRing B] (f : A →+* B) (hf : Function.Injective f)
-    (χ : H →* Aˣ) : (pushCh f χ).ker = χ.ker := by
-  ext g
-  simp only [MonoidHom.mem_ker, MonoidHom.comp_apply]
-  constructor
-  · intro hg
-    apply Units.ext
-    apply hf
-    have := congrArg Units.val hg
-    simpa using this
-  · intro hg
-    rw [hg, map_one]
-
 private theorem polar_push {l : ℕ} [Fact l.Prime] {n : ℕ} (F : GFrame l) {O O' k k' : Type} [CommRing O] [CommRing O']
     [CommRing k] [CommRing k'] [Algebra ℤ_[l] O] [Algebra ℤ_[l] O'] [Algebra O k] [Algebra O' k']
     (i : O →+* O') (f : k →+* k') (hi : ∀ a, i (algebraMap ℤ_[l] O a) = algebraMap ℤ_[l] O' a)
@@ -106,23 +93,23 @@ theorem UpperTheory.V.Th.Nm.residPush :
   haveI := inc_local h
   let f : ResidueField c.O →+* ResidueField c'.O := ResidueField.map (inc h)
   have hfi : Function.Injective f := f.injective
+  have hmu := Units.map_injective (f := f.toMonoidHom) hfi
+  have hker : ∀ {H : Type} [Group H] (χ : H →* (ResidueField c.O)ˣ), (pushCh f χ).ker = χ.ker :=
+    fun χ => MonoidHom.ker_comp_of_injective χ _ hmu
   have hf : ∀ a, f (residue c.O a) = residue c'.O (inc h a) := fun a => ResidueField.map_residue _ a
   refine ⟨{ chib := fun i => pushCh f (r.chib i)
-            chib_open := fun i => by rw [pushCh_ker f hfi]; exact r.chib_open i
+            chib_open := fun i => by rw [hker]; exact r.chib_open i
             chib_inj := fun i j hij => r.chib_inj ?_
             polar := polar_push F (inc h) f (fun _ => rfl) hf r.chib r.polar
             psib := fun v i => pushCh f (r.psib v i)
-            psib_open := fun v i => by rw [pushCh_ker f hfi]; exact r.psib_open v i
+            psib_open := fun v i => by rw [hker]; exact r.psib_open v i
             th := fun v i => pushCh (inc h) (r.th v i)
             th_comm := fun v i g hg => by
               rw [MonoidHom.comp_apply, r.th_comm v i g hg, map_one] },
     ⟨f, hf, fun _ => rfl, fun _ _ => rfl, fun _ _ => rfl⟩, fun u => ?_, fun hv => ⟨fun i => ?_, fun g hg i j => ?_, ?_⟩⟩
-  · ext g
-    apply hfi
-    have := congrArg Units.val (DFunLike.congr_fun hij g)
-    simpa using this
-  · simp only [Resid.Ip, pushCh_ker f hfi]
-  · rw [pushCh_ker f hfi]; exact hv.1 i
+  · exact MonoidHom.ext fun g => hmu (DFunLike.congr_fun hij g)
+  · simp only [Resid.Ip, hker]
+  · rw [hker]; exact hv.1 i
   · change Units.map _ (r.chib i g) = Units.map _ (r.chib j g)
     rw [hv.2.1 g hg i j]
   · obtain ⟨g, hg, hne⟩ := hv.2.2

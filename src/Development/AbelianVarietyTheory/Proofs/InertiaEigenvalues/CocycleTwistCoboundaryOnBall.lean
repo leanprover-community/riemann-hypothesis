@@ -557,13 +557,6 @@ theorem norm_mulVec_le {r : ℕ} (B : Matrix (Fin r) (Fin r) C) {c : ℝ} (hc : 
   exact mul_le_mul (hB a b) (norm_le_pi_norm v b) (norm_nonneg _) hc
 
 omit [IsUltrametricDist C] in
-theorem mulVec_mem {r : ℕ} (X : AddSubgroup C) (B : Matrix (Fin r) (Fin r) C)
-    (hB : ∀ a b, ∀ x ∈ X, B a b * x ∈ X) (v : Fin r → C) (hv : ∀ a, v a ∈ X) (a : Fin r) :
-    B.mulVec v a ∈ X := by
-  simp only [Matrix.mulVec, dotProduct]
-  exact X.sum_mem fun b _ => hB a b _ (hv b)
-
-omit [IsUltrametricDist C] in
 theorem map_mulVec {r : ℕ} (X : AddSubgroup C) (O : Set C) (hOX : ∀ o ∈ O, ∀ x ∈ X, o * x ∈ X)
     (T : C → C) (hadd : ∀ x ∈ X, ∀ x' ∈ X, T (x + x') = T x + T x')
     (hlin : ∀ o ∈ O, ∀ x ∈ X, T (o * x) = o * T x)
@@ -595,7 +588,7 @@ theorem eq_zero_of_small {r : ℕ} (X : AddSubgroup C) (hX1 : ∀ x ∈ X, ‖x�
     | succ n ih =>
       obtain ⟨i1, i2, i3⟩ := ih
       simp only [Function.iterate_succ_apply']
-      refine ⟨mulVec_mem X B hBX _ i1, (pi_norm_le_iff_of_nonneg (by positivity)).2 fun a => ?_, ?_⟩
+      refine ⟨CycPerturb.mulVec_mem X B hBX _ i1, (pi_norm_le_iff_of_nonneg (by positivity)).2 fun a => ?_, ?_⟩
       · rw [pow_succ']
         exact (norm_mulVec_le B hc hB _ a).trans (mul_le_mul_of_nonneg_left i2 hc)
       · rw [map_mulVec X O hOX T hadd hlin B hBO _ i1, i3]
@@ -617,27 +610,9 @@ end Abstract
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-theorem rho_lt_one : rho1 l < 1 := by
-  have h1 : (1 : ℝ) < l := by exact_mod_cast hl.1.one_lt
-  rw [rho1]
-  apply Real.rpow_lt_one_of_one_lt_of_neg h1
-  exact div_neg_of_neg_of_pos (by norm_num) (by linarith)
-
-theorem norm_root_sub_one {ζ : PadicComplex l} (h : IsPrimitiveRoot ζ l) : ‖ζ - 1‖ = rho1 l := by
-  have := GlobalTheory.Cyc.norm_primitiveRoot_sub_one l 1 le_rfl ζ (by rwa [pow_one])
-  simpa [rho1] using this
-
-theorem mem_inC_iff (F : IntermediateField ℚ_[l] (Om l)) (y : PadicComplex l) :
-    y ∈ inC F ↔ y ∈ F.toSubfield.map (algebraMap (Om l) (PadicComplex l)) := by
-  simp [inC, PadicComplex.coe_eq]
-
 theorem root_mem_inC (K : FinExt l) {j : ℕ} (hj : 1 ≤ j) {ζ : PadicComplex l}
     (h : IsPrimitiveRoot ζ l) : ζ ∈ inC (Ks K j) :=
   GlobalTheory.CycPerturb.root_mem_inC K hj h
-
-theorem chiC_mem_inC (χ : GQ l →* ℚ_[l]ˣ) (i : ℤ) (g : GQ l)
-    (F : IntermediateField ℚ_[l] (Om l)) : chiC χ i g ∈ inC F :=
-  ⟨algebraMap ℚ_[l] (Om l) _, F.algebraMap_mem _, rfl⟩
 
 theorem exists_quot {χ : GQ l →* ℚ_[l]ˣ} {K : FinExt l} {j : ℕ} (hj : Lev l j) {g : GQ l}
     (hg : IsGen χ K j g) {r : ℕ} (U : Matrix (Fin r) (Fin r) (PadicComplex l))
@@ -683,11 +658,11 @@ theorem twAct_fixed_eq_zero {act : GQ l →* (PadicComplex l ≃+* PadicComplex 
   obtain ⟨S, hS, hadd, hlin⟩ := GlobalTheory.Cyc.exists_tate_operator l act χ hact hχ K j hj g hg ζ hζ
   obtain ⟨B, c, hc0, hc1, hB, hBO, hBe⟩ := exists_quot hj hg (U g) hU hU1 i hζ
   have hBO' : ∀ a b, (-B) a b ∈ intC (Ks K j) := fun a b =>
-    ⟨(mem_inC_iff _ _).2 (neg_mem ((mem_inC_iff _ _).1 (hBO a b).1)), by
+    ⟨(CycPerturb.mem_inC_iff _ _).2 (neg_mem ((CycPerturb.mem_inC_iff _ _).1 (hBO a b).1)), by
       rw [Matrix.neg_apply, norm_neg]; exact (hBO a b).2⟩
   have hp : ζ - 1 ∈ intC (Ks K j) :=
-    ⟨(mem_inC_iff _ _).2 (sub_mem ((mem_inC_iff _ _).1 (root_mem_inC K hj.1 hζ)) (one_mem _)), by
-      rw [norm_root_sub_one hζ]; exact rho_lt_one.le⟩
+    ⟨(CycPerturb.mem_inC_iff _ _).2 (sub_mem ((CycPerturb.mem_inC_iff _ _).1 (root_mem_inC K hj.1 hζ)) (one_mem _)), by
+      rw [CycPerturb.norm_root_sub_one hζ]; exact CycPerturb.rho_lt_one.le⟩
   have hp0 : ζ - 1 ≠ 0 := sub_ne_zero.2 (hζ.ne_one hl.1.one_lt)
   refine eq_zero_of_small (Xj K j) (fun x hx => ohat_norm K (hO x hx)) _ hmul
     (fun x => S (act g x)) (fun x hx => (hS _ (hgX x hx)).1)
@@ -702,7 +677,7 @@ theorem twAct_fixed_eq_zero {act : GQ l →* (PadicComplex l ≃+* PadicComplex 
     rw [Matrix.neg_mulVec, Pi.neg_apply]
     linear_combination -this
   have h2 := (hS _ (hy a)).2.2
-  rw [h1, hlin _ hp _ (mulVec_mem (Xj K j) (-B) (fun a b => hmul _ (hBO' a b)) _
+  rw [h1, hlin _ hp _ (CycPerturb.mulVec_mem (Xj K j) (-B) (fun a b => hmul _ (hBO' a b)) _
     (fun b => hgX _ (hy b)) a)] at h2
   exact (mul_left_cancel₀ hp0 h2).symm
 
@@ -780,7 +755,7 @@ theorem eigen_of_norm_le {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)}
       funext a; rw [hsum a, map_add (f := _)]; rfl
     simp only [twAct]
     rw [e, Matrix.mulVec_add, smul_add]
-  have hc : chiC χ u g ∈ intC (Ks K m) := ⟨chiC_mem_inC χ u g _, (norm_chiC hχ u g).le⟩
+  have hc : chiC χ u g ∈ intC (Ks K m) := ⟨CycPerturb.chiC_mem_inC χ u g _, (norm_chiC hχ u g).le⟩
   have hX : ∀ a, twAct act χ u U g x a ∈ Xj K m := by
     intro a
     simp only [twAct, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct]
@@ -788,11 +763,11 @@ theorem eigen_of_norm_le {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)}
       hmul _ (hU g hg.1 a b) _ (hstab g (gj_le K m hg.1) _ (hx b)))
   have hK : ∀ a, twAct act χ u U g y0 a - y0 a ∈ inC (Ks K m) := by
     intro a
-    rw [mem_inC_iff]
+    rw [CycPerturb.mem_inC_iff]
     simp only [twAct, hfix, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct]
-    exact sub_mem (mul_mem ((mem_inC_iff _ _).1 hc.1) (sum_mem fun b _ =>
-      mul_mem ((mem_inC_iff _ _).1 (hU g hg.1 a b).1) ((mem_inC_iff _ _).1 (hy0 b).1)))
-      ((mem_inC_iff _ _).1 (hy0 a).1)
+    exact sub_mem (mul_mem ((CycPerturb.mem_inC_iff _ _).1 hc.1) (sum_mem fun b _ =>
+      mul_mem ((CycPerturb.mem_inC_iff _ _).1 (hU g hg.1 a b).1) ((CycPerturb.mem_inC_iff _ _).1 (hy0 b).1)))
+      ((CycPerturb.mem_inC_iff _ _).1 (hy0 a).1)
   have hrel : ∀ a, twAct act χ u U g y0 a - y0 a = x a - twAct act χ u U g x a := by
     intro a
     have h1 := congrFun (hadd.symm.trans (hy g hg.1)) a

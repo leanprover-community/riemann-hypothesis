@@ -3,50 +3,8 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.TMemLaurentFiltration
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.AlmostEverywhereSpherical
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.MaxTwistDegreePderivLeAddOne
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -129,7 +87,7 @@ theorem wCoeff_add (w : Set ι) (M : ι × Fin n →₀ ℕ) (P Q : MvPolynomial
   simp only [MvPolynomial.coeff_add, coeff_wCoeff]
   split_ifs <;> simp
 
-theorem wCoeff_mem {Fl : Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_Fil R} (w : Set ι) (M : ι × Fin n →₀ ℕ) {t : ℤ}
+theorem wCoeff_mem {Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil R} (w : Set ι) (M : ι × Fin n →₀ ℕ) {t : ℤ}
     {P : MvPolynomial (ι × Fin n) R} (hP : P ∈ (Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_lift Fl 0).F t) :
     wCoeff w M P ∈ (Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_lift Fl 0).F t := by
   intro ν
@@ -324,7 +282,7 @@ theorem sum_wCoeff (w : Set ι) (F : MvPolynomial (ι × Fin n) R) :
         congr 1
         rw [← (Finset.mem_filter.1 hμ).2, Finsupp.filter_pos_add_filter_neg]
 
-def trivFil (B : Type*) [CommRing B] : Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_Fil B where
+def trivFil (B : Type*) [CommRing B] : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B where
   F t := if t ≤ 0 then ⊤ else ⊥
   mul_mem := by
     intro t u a b ha hb
@@ -506,7 +464,7 @@ theorem valS_wCoeff_ge (w : Set ι) (hw : ∀ l ∈ w, LL.vec l = true) (hd : Di
 
 theorem valS_wCoeff_of_disj (w : Set ι) (hd : Disjoint S w) (F : MvPolynomial (ι × Fin n) R) (M : ι × Fin n →₀ ℕ) :
     valS LL S F ≤ valS LL S (wCoeff w M F) := by
-  have h := Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_withTop_le (a := valS LL S F) (b := valS LL S (wCoeff w M F)) (N := 0) (by
+  have h := Formalism.MainNotions.G.GLWeightTheory.flt_withTop_le (a := valS LL S F) (b := valS LL S (wCoeff w M F)) (N := 0) (by
     intro t ht
     rw [sub_zero, Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_le_valS] at *
     rw [twistSub_wCoeff LL S w hd]

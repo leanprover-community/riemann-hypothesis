@@ -113,7 +113,6 @@ theorem form_dot_corr (γ : List ((Fin N → R) × (Fin N → R))) (hγ : γ ∈
 end GlobalTheory.SeqCx.RowLink
 
 section
-open GlobalTheory.SeqCx Matrix
 theorem _root_.GlobalTheory.T.exists_splitSeq_linkIn_orthogonal_eq_linkIn : ∀ (R : Type) [CommRing R] (N : ℕ) (γ σ : List ((Fin N → R) × (Fin N → R))), γ ∈ splitSeq R N → σ ∈ splitSeq R N → (∀ y ∈ σ, ∀ z ∈ γ, y.2 ⬝ᵥ z.1 = 0) → ∃ ρ ∈ splitSeq R N, ρ.length = γ.length + σ.length ∧ linkIn {x | x ∈ splitSeq R N ∧ ∀ y ∈ x, ∀ z ∈ γ, y.2 ⬝ᵥ z.1 = 0} {y | ∀ z ∈ γ, z.2 ⬝ᵥ y.1 = 0} σ = linkIn (splitSeq R N) Set.univ ρ := by
   intro R _ N γ σ hγ hσ hσγ
   obtain ⟨σ', hσ'eq⟩ : ∃ s, s = σ.map (fun y => (GlobalTheory.SeqCx.RowLink.corr γ y.1, y.2)) := ⟨_, rfl⟩

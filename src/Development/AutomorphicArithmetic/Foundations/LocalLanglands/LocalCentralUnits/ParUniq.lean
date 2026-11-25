@@ -51,8 +51,6 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocGL GlobalTheory.LocLanglands GlobalTheory.GLq
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem UpperTheory.Zero.LLC.parUniq :
     UpperTheory.Zero.LLC.ParUniq := by
   intro E Ω _ _ _ _ _ A w h a ha g _ i hi y hy hdz V hV

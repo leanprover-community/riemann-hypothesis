@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 section
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.ExpFrame
 open Formalism.CohomologicalDescent.DepthNonnegative
@@ -49,7 +48,6 @@ variable (O : Type) [CommRing O] (N : ℕ) {ι : Type} [DecidableEq ι] (lam : �
 end Tests
 end GlobalTheory.ExpFrame
 end
-set_option autoImplicit false
 noncomputable section
 open NumberField IsDedekindDomain TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.L2.Pj GlobalTheory.BigTop GlobalTheory.BigOn
@@ -57,7 +55,6 @@ open Formalism.CohomologicalDescent.LogSmallConstantBounds (Par)
 open Formalism.CohomologicalDescent.ShortWeightBounds (Wts HidaSetting WInputsLink h0)
 open GlobalTheory.ExpFrame
 namespace GlobalTheory.ExpTie
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz)
 def InRangeAlt (Q : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (_ : Pt Fm x hx i) (_ : Fin (Fm.D x i).R.m) (_ : Par)

@@ -850,7 +850,7 @@ theorem log_relIndex_le {κ : Type} [Fintype κ] [DecidableEq κ] (G₀ : MvPoly
   set b := bG G S e with hbdef
   set Φ := phiB b with hΦdef
   have hΦ : Function.Injective Φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro p hp
     have hli := linInd_bG G hG' S T e hST
     rw [Fintype.linearIndependent_iff] at hli

@@ -175,14 +175,11 @@ theorem stalkIdeal_mul (I J : X.IdealSheafData) (x : X) :
   rw [stalkIdeal_eq_map_germ (I * J) x U hxU, stalkIdeal_eq_map_germ I x U hxU,
     stalkIdeal_eq_map_germ J x U hxU, hmul, Ideal.map_mul]
 
-private theorem idealSheafData_one_eq_top {X : Scheme.{u}} :
-    (1 : X.IdealSheafData) = ⊤ := rfl
-
 theorem stalkIdeal_pow (I : X.IdealSheafData) (n : ℕ) (x : X) :
     stalkIdeal (I ^ n) x = stalkIdeal I x ^ n := by
   induction n with
   | zero =>
-    rw [pow_zero, pow_zero, idealSheafData_one_eq_top, stalkIdeal_top, Ideal.one_eq_top]
+    rw [pow_zero, pow_zero, AlgebraicGeometry.Scheme.IdealSheafData.one_eq_top, stalkIdeal_top, Ideal.one_eq_top]
   | succ n ih =>
     rw [pow_succ, pow_succ, stalkIdeal_mul, ih]
 

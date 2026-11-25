@@ -50,8 +50,6 @@ open GlobalTheory.Grow GlobalTheory.Mem.AutSpace GlobalTheory.Mem.RealTranslate 
 
 namespace GlobalTheory.Size
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {θ : InfFam D} {V : HSp D}
 
 theorem adAt_mem_lieAt (hθ : IsInfFam θ) (k : GA D V) {τ : D.what₂.Tau} {X : Matrix (Fin V.rank) (Fin V.rank) ℂ}

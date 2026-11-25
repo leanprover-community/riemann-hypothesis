@@ -55,10 +55,6 @@ open scoped Classical
 
 namespace GlobalTheory.GLq.LabelMul
 
-theorem ip_add_right {G : Type} [Group G] [Fintype G] (χ φ ψ : G → ℂ) :
-    ip χ (φ + ψ) = ip χ φ + ip χ ψ := by
-  simp only [ip, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
 alias isChar_of_isIrr := _root_.GlobalTheory.CharDec.isChar_of_isIrr
 
 theorem ip_sum_eq_count {G : Type} [Group G] [Fintype G] {χ : G → ℂ} (hχ : IsIrr χ) (L : List (G → ℂ))
@@ -66,7 +62,7 @@ theorem ip_sum_eq_count {G : Type} [Group G] [Fintype G] {χ : G → ℂ} (hχ :
   induction L with
   | nil => simp [ip]
   | cons ρ L ih =>
-    rw [List.sum_cons, ip_add_right, ih (fun σ hσ => hL σ (List.mem_cons_of_mem _ hσ)),
+    rw [List.sum_cons, GlobalTheory.CharDec.ip_add_right, ih (fun σ hσ => hL σ (List.mem_cons_of_mem _ hσ)),
       (_root_.GlobalTheory.GLq.ZOrth.zorth G χ ρ hχ (hL ρ List.mem_cons_self)).2.2, List.count_cons]
     by_cases h : χ = ρ
     · subst h
@@ -161,7 +157,7 @@ theorem hasLabel_mul : ∀ (g : ℕ) [Fact g.Prime] (L : LabelDatum g) (a b n : 
   · rw [List.map_append, degL_append, hn]
   · rw [List.map_append, List.prod_append]
   · rw [List.map_append, hcL_append _ _ cP cQ n hn, eA, eB, hc_add_left, hc_add_right, hc_add_right,
-      ip_add_right, ip_add_right, ip_add_right]
+      GlobalTheory.CharDec.ip_add_right, GlobalTheory.CharDec.ip_add_right, GlobalTheory.CharDec.ip_add_right]
     have H := (_root_.GlobalTheory.GLq.HCChar.hc_isChar_and_res_decomp g _ _ n hn).1
     obtain ⟨k₁, e₁⟩ := ip_nat hχ (H _ _ (isChar_of_isIrr hα) (isChar_of_isIrr hβ))
     obtain ⟨k₂, e₂⟩ := ip_nat hχ (H _ _ (isChar_of_isIrr hα) hB)

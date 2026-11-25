@@ -133,7 +133,6 @@ def CuspidalGeneric : Prop :=
     GlobalTheory.Whittaker.IsGeneric ψ (π.locRep w)
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 open GlobalTheory.CuspGeneric GlobalTheory.CuspRep.Generic in
 theorem cuspidalGeneric_holds : CuspidalGeneric := by
   intro E _ _ _ a _ P w ψ' hc' h1'

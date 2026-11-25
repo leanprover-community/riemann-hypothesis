@@ -66,8 +66,6 @@ open PositivityTheory.Rg.BcN.F2 (mconv)
 open Formalism.UG (qV)
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.MatchPow
 
 section Generic

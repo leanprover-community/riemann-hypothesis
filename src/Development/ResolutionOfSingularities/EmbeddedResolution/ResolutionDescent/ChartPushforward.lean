@@ -248,41 +248,16 @@ theorem strictTransformIso_zero_hom_comp_strictTransformZeroIso_hom (P : ChartPu
           rw [P.emb_ambientMap]
   exact (cancel_mono S'.emb).mp key
 
-private theorem range_subset_range_of_ker_le {U V W : Scheme.{u}} (f : U ⟶ W) (g : V ⟶ W)
-    [AlgebraicGeometry.IsClosedImmersion f] [AlgebraicGeometry.IsClosedImmersion g]
-    (hle : Scheme.Hom.ker g ≤ Scheme.Hom.ker f) :
-    Set.range ⇑f ⊆ Set.range ⇑g := by
-  obtain ⟨e, he⟩ : ∃ e : U ⟶ V, e ≫ g = f :=
-    ⟨AlgebraicGeometry.IsClosedImmersion.lift g f hle, by rw [IsClosedImmersion.lift_fac]⟩
-  rintro y ⟨x, rfl⟩
-  refine ⟨e.base x, ?_⟩
-  have hx : ⇑(e ≫ g) x = ⇑f x := by rw [he]
-  exact hx
-
-private theorem support_ker_eq_range {U W : Scheme.{u}} (h : U ⟶ W)
-    [AlgebraicGeometry.IsClosedImmersion h] :
-    ((Scheme.Hom.ker h).support : Set ↥W) = Set.range ⇑h := by
-  have hker : Scheme.Hom.ker ((Scheme.Hom.ker h).subschemeι) = Scheme.Hom.ker h :=
-    Scheme.IdealSheafData.ker_subschemeι _
-  have h1 : Set.range ⇑((Scheme.Hom.ker h).subschemeι)
-      = ((Scheme.Hom.ker h).support : Set ↥W) :=
-    Scheme.IdealSheafData.range_subschemeι _
-  rw [← h1]
-  exact Set.Subset.antisymm (range_subset_range_of_ker_le _ h (le_of_eq hker.symm))
-    (range_subset_range_of_ker_le h _ (le_of_eq hker))
-
 theorem support_ambientCenter_eq_image (P : ChartPushforward S S') (i : ℕ) (hi : i < S'.length) :
     ((S'.ambientCenter i).support : Set ↥(S'.schemeAt i)) =
       ⇑(P.levelMap i hi.le) '' ((S.ambientCenter i).support : Set ↥(S.schemeAt i)) := by
-  have hJ := P.ambientCenter_eq i hi
-  rw [imageIdealSheaf_eq_ker] at hJ
-  have hI : ((S.ambientCenter i).support : Set ↥(S.schemeAt i))
-      = Set.range ⇑((S.ambientCenter i).subschemeι) := by
-    have h2 := support_ker_eq_range ((S.ambientCenter i).subschemeι)
-    rwa [Scheme.IdealSheafData.ker_subschemeι] at h2
-  have hcomp : ⇑((S.ambientCenter i).subschemeι ≫ P.levelMap i hi.le)
-      = ⇑(P.levelMap i hi.le) ∘ ⇑((S.ambientCenter i).subschemeι) := rfl
-  rw [hJ, support_ker_eq_range, hI, hcomp, Set.range_comp]
+  have hJ : S'.ambientCenter i = (S.ambientCenter i).map (P.levelMap i hi.le) := by
+    rw [P.ambientCenter_eq i hi, imageIdealSheaf_eq_ker, ← map_eq_ker_subschemeι_comp]
+  have hcl : IsClosed
+      (⇑(P.levelMap i hi.le) '' ((S.ambientCenter i).support : Set ↥(S.schemeAt i))) :=
+    (Scheme.Hom.isClosedEmbedding (P.levelMap i hi.le)).isClosedMap _
+      (S.ambientCenter i).support.isClosed
+  rw [hJ, Scheme.IdealSheafData.support_map, TopologicalSpace.Closeds.coe_closure, hcl.closure_eq]
 
 end
 

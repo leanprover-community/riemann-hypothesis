@@ -49,7 +49,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.WeilDeligne GlobalTheory.GalOfCusp GlobalTheory.HeckeGal GlobalTheory.LocLanglands GlobalTheory.Published UpperTheory.V.W UpperTheory.V.Hi
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 open Formalism.L2.Host in
 private theorem loc_unr {F : Type} [Field F] [NumberField F] {w : HeightOneSpectrum (𝓞 F)} (χ : HChar F)

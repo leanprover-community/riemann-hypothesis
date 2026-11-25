@@ -56,8 +56,6 @@ open GlobalTheory.RegSch (ikS projS Lvl)
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 open GlobalTheory.CompanionTheory.ColumnSplitting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CompanionTheory.ColumnSplitting
 
 theorem eventually_cv_mem_intLoc {D : D7} (a : AE D) :

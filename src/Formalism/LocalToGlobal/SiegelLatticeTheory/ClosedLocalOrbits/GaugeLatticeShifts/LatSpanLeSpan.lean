@@ -15,7 +15,6 @@ namespace Formalism.L2.SG.Pf.Act
 
 open Formalism.L2.SG.Pf Formalism.L2.SG.Saturated
 
-open Formalism.L2.SG.Pf Formalism.L2.SG.Saturated
 
 section Levi
 
@@ -390,8 +389,6 @@ theorem frame_witt {T : E} (hT : T ≠ 0) (F1 F2 : FlagG S r T) :
 end Witt
 
 section Lift
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.TermOp Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full
 

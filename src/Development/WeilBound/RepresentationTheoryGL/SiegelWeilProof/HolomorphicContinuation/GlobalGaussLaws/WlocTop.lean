@@ -886,7 +886,7 @@ theorem locFact : LocFact := locFact_of decomp (opGen_of fTfact)
 theorem localRepresentationL2 : LocalL2Isometry := local_L2_isometry fTfact
 
 theorem gIdil_gen (h : GlobalTheory.Published.WeilThetaConvergence) (hG : GenA) : GIdil :=
-  gIdil_of h gZSch decompAway (awayAct_gen hG) locFact gaussLaw awayIn localRepresentationL2
+  gIdil_of h decompAway (awayAct_gen hG) locFact gaussLaw awayIn localRepresentationL2
 
 end PositivityTheory.Rg.Sw.Glob
 end -- clump:auto

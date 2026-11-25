@@ -1086,9 +1086,6 @@ open UpperTheory.ConvolutionTheory.R2
 open scoped Classical
 open UpperTheory.ConvolutionTheory.R2.C
 
-private lemma psi_zero {F : Type} [Field F] [NumberField F] : ψ (0 : A F) = 1 := by
-  simp [ψ]
-
 private lemma psi_add {F : Type} [Field F] [NumberField F] (x y : A F) : ψ (x + y) = ψ x * ψ y := by
   simp [ψ, AddChar.map_add_eq_mul]
 

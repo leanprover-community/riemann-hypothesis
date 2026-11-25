@@ -56,8 +56,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace GlobalTheory.PlaceTensor.PureScalar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem wAt_neg_wAt_self {m n : ℕ} (q : Place D) (w : Mx D m n) : wAt q (-(wAt q w)) = -(wAt q w) := by

@@ -111,7 +111,6 @@ section Cent
 end Cent
 section Record
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.MainNotions.S
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} (V : HSp D)
 variable {V} {S : D.what₂.Tau → SPar} (M : DSModel V S)
 
@@ -146,7 +145,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open MeasureTheory IsDedekindDomain NumberField GlobalTheory.AdelicU GlobalTheory.Cusp GlobalTheory.Orb
 open GlobalTheory.AutomorphicL2Unitary (starFn)
 open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (HypH)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def TestFnConstTermVanishX : Prop :=
   ∀ (D : D7) (V : HSp D), Odd V.rank → ∀ (S : D.what₂.Tau → SPar) (M : DSModel V S)
@@ -178,7 +176,6 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {n 
 variable {σ J γ}
 end TypeOf
 section Record
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {V : HSp D}
 
 def NonFieldTypeVanishingX : Prop :=
@@ -231,7 +228,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 end Global
 section Record
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 def IsTestDataX (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) {S : D.what₂.Tau → SPar} (M : DSModel V S)
@@ -277,7 +273,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestDataX PP
 open GlobalTheory.PRep (IsAdmissible)
 noncomputable section
 namespace GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 def SpecTraceX : Prop :=

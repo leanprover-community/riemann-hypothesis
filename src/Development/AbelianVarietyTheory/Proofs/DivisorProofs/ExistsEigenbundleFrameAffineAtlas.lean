@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.FlagMod.LowRank (ECh Proj str)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem valF_eq_ev {K : Type} [Field K] {X : Scheme.{0}} (w : Sp K ⟶ X) (V : X.Opens) (hV : ⊤ ≤ w ⁻¹ᵁ V)
     (f : Γ(X, V)) : valF w V f = ev w V hV f :=
   GlobalTheory.Points.valR_eq w V hV f

@@ -45,8 +45,6 @@ open GlobalTheory.FlagTan (dimFlag psiSet TIx HIx VIx IsTanFrame IsDef IsVert KS
 open GlobalTheory.AllWt (exOf)
 open scoped Classical
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.TanJac

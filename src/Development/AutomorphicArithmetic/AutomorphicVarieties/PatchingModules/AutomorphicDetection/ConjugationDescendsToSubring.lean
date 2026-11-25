@@ -107,20 +107,6 @@ section -- clump:auto
 
 open Polynomial Matrix IsLocalRing TensorProduct
 
-private theorem sum_matrix_single_diag_one_eq_one {F : Type} [Field F] {n : Type} [Fintype n] [DecidableEq n] :
-    ∑ i : n, Matrix.single i i (1 : F) = 1 := by
-  ext u v
-  by_cases h : u = v
-  · subst h
-    simp [Matrix.sum_apply, Matrix.single_apply]
-  · simp [Matrix.sum_apply, Matrix.single_apply, h]
-    have he : (Finset.univ.filter fun w : n => w = u ∧ w = v) = ∅ := by
-      rw [Finset.filter_eq_empty_iff]
-      rintro w - ⟨rfl, rfl⟩
-      exact h rfl
-    rw [he]
-    simp
-
 private theorem intertwiner_of_ker {F : Type} [Field F] {σ : Type} (d : σ → Type)
     [∀ s, Fintype (d s)] [∀ s, DecidableEq (d s)] [∀ s, Nonempty (d s)]
     (S : Subalgebra F (∀ s, Matrix (d s) (d s) F)) (s t : σ)
@@ -146,7 +132,7 @@ private theorem intertwiner_of_ker {F : Type} [Field F] {σ : Type} (d : σ → 
       (by
         rw [Finset.sum_apply]
         simp only [Pi.mul_apply, hxt, hzt, Matrix.single_mul_single_same, one_mul, Pi.one_apply]
-        exact sum_matrix_single_diag_one_eq_one)
+        exact Matrix.sum_single_one)
     rw [Finset.sum_apply] at h1
     simp only [Pi.mul_apply, hx0, zero_mul, Finset.sum_const_zero, Pi.one_apply] at h1
     exact zero_ne_one h1

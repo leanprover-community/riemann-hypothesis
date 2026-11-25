@@ -664,7 +664,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameChartNonzeroDenominatorStatement =====
 
 -- ===== clump member: Development.WeilBound.CoreStatements.CommonZeroEvaluation.DualMapRComp =====
--- clump-header: {"m": "Development.WeilBound.CoreStatements.CommonZeroEvaluation.DualMapRComp", "h": "module\n\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
+-- clump-header: {"m": "Development.WeilBound.CoreStatements.CommonZeroEvaluation.DualMapRComp", "h": "module\n\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaFamilyPelSmoothGenericFibre\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -676,17 +676,9 @@ open AlgebraicGeometry CategoryTheory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Chart (dualMapR)
 
-theorem spMap_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g :=
-  congrArg CommRingCat.Hom.hom (Spec.map_injective h)
-
 theorem chart_inj {X : Scheme.{0}} {U : X.Opens} (hU : IsAffineOpen U) {B : Type} [CommRing B] {f g : Γ(X, U) →+* B}
     (h : spMap f ≫ hU.fromSpec = spMap g ≫ hU.fromSpec) : f = g :=
-  spMap_inj ((cancel_mono hU.fromSpec).1 h)
-
-theorem dualMapR_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    dualMapR (g.comp f) = (dualMapR g).comp (dualMapR f) := by
-  refine RingHom.ext fun x => ?_
-  ext <;> simp [dualMapR]
+  GlobalTheory.ZM.GenericTrdeg.spMap_inj ((cancel_mono hU.fromSpec).1 h)
 
 theorem exists_spread {X : Scheme.{0}} {U : X.Opens} (hU : IsAffineOpen U) {S K : Type} [CommRing S] [Field K]
     (x : Sp S ⟶ X) (ψ : S →+* K) (f : Γ(X, U) →+* K) (hf : spMap ψ ≫ x = spMap f ≫ hU.fromSpec) :
@@ -820,14 +812,6 @@ theorem IsChart.crd_bor (hC : IsChart Y hU v₀) [Algebra c.F R] {t : Ix Dw → 
   ext j i
   exact congrFun ((hC.isBas f).unique ((hC.isBas f).comb hg (h3 i)) (hu i)) j
 
-theorem isTan_iff {A : Over (Sp R)} [GrpObj A] (w : epsR R ⟶ A) : IsTan (V := R) (R := R) w ↔ IsTangent w := by
-  have e : (1 : ptOver R R ⟶ A).left = η[A].left := by
-    show spMap (RingHom.id R) ≫ η[A].left = _
-    have : spMap (RingHom.id R) = 𝟙 _ := Spec.map_id _
-    rw [this, Category.id_comp]
-  unfold IsTan IsTangent
-  rw [e]
-
 theorem IsChart.integral (hExt : GlobalTheory.Published.SemiAbelianHomExtension) (hC : IsChart Y hU v₀) {T : CDVR}
     {io : c.F →+* T.Fr} (y : IntFr Xo c T io) (f₀ : Γ(Y.X, U) →+* T.V)
     (hf : letI := io.toAlgebra; Small.ptY Y y.1 = spMap ((algebraMap T.V T.Fr).comp f₀) ≫ hU.fromSpec)
@@ -861,8 +845,8 @@ theorem IsChart.integral (hExt : GlobalTheory.Published.SemiAbelianHomExtension)
   obtain ⟨u, hu, hp⟩ := exists_prim hb
     (I := {q : 𝓞 E × T.V // algebraMap T.V T.Fr q.2 = io (embK c τ q.1)})
     (fun q => G.act.act q.1.1) (fun q => G.act.hom _) (fun q => q.1.2) (ub τ)
-    (fun i => (isTan_iff _).1 (htan τ i)) (fun i q => heig τ i _ _ q.2)
-    (fun w hw he => hbasis τ w ((isTan_iff _).2 hw) fun a z hz => he ⟨(a, z), hz⟩)
+    (fun i => (isTan_iff_isTangent _).1 (htan τ i)) (fun i q => heig τ i _ _ q.2)
+    (fun w hw he => hbasis τ w ((isTan_iff_isTangent _).2 hw) fun a z hz => he ⟨(a, z), hz⟩)
   refine ⟨u, hp, fun i => ?_⟩
   have h1 : Crd Y hU v₀ f₀ (fun j => u j i) ((ub τ i).left ≫ Ψ) := by
     have := (gc_iff hΨ _ _ _).1 (hu i)
@@ -937,7 +921,7 @@ theorem ModelDimension.integral_frame_over_cdvr : Top.Given → ∀ (E : Type) [
     refine ⟨?_, fun τ i => ?_⟩
     · rw [Small.ptY_map Y hz', ← hχ, Tor.spMap_comp _ χ, Tor.spMap_comp fh χ, Category.assoc, Category.assoc, hfh]
     · have h1 := (hcv τ i).bc χ
-      rw [← Category.assoc, ← Tor.spMap_comp, ← dualMapR_comp, hχ] at h1
+      rw [← Category.assoc, ← Tor.spMap_comp, ← ReciprocityTheory.ChartRestriction.G.Chart.dualMapR_comp, hχ] at h1
       rw [Small.tanY_map Y hz']
       exact h1
   let χ₀ : Localization.Away h →+* T.Fr := IsLocalization.Away.lift h (Ne.isUnit hh)
@@ -972,7 +956,7 @@ theorem ModelDimension.integral_frame_over_cdvr : Top.Given → ∀ (E : Type) [
   have hχ' : χ.comp (algebraMap S _) = ψ'.toRingHom := hχ ▸ ext_comp χ₀ q1
   obtain ⟨k3, k4⟩ := key ψ' z' hz' χ hχ'
   have hα' : (χ.comp fh).comp α = (algebraMap T.V T.Fr).comp b := by
-    apply spMap_inj
+    apply GlobalTheory.ZM.GenericTrdeg.spMap_inj
     rw [Tor.spMap_comp, ← hα, ← Category.assoc, ← k3, Small.ptY_over, hb]
   obtain ⟨f', hf'⟩ := GlobalTheory.Reg.GenInt.exists_factor (algebraMap T.V T.Fr) hinj (χ.comp fh)
     (hgens ((algebraMap T.V T.Fr).range.comap (χ.comp fh)) (fun o => ⟨b o, (RingHom.congr_fun hα' o).symm⟩) q2)

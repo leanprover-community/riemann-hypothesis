@@ -53,7 +53,7 @@ open Matrix
 
 namespace PositivityTheory.Rg.Sw.LVs
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem analyticAt_det {ι : Type} [Fintype ι] [DecidableEq ι] (X : Matrix ι ι ℂ) :
     AnalyticAt ℂ (fun T : Matrix ι ι ℂ => T.det) X := by

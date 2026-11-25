@@ -1,51 +1,7 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BundleObjects
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 
 @[expose] public section
@@ -73,13 +29,9 @@ theorem chartPow_add {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k} (hY : ∀ k, y 
   simp [chartPow, zpow_add₀ (hY _), Finset.prod_mul_distrib]
 
 omit [∀ k, Fintype (ι k)] in
-private theorem chartPow_ne_zero_of_coordinates {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k} (hY : ∀ k, y ⟨k, c k⟩ ≠ 0) (d : K → ℤ) :
+theorem chartPow_ne_zero {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k} (hY : ∀ k, y ⟨k, c k⟩ ≠ 0) (d : K → ℤ) :
     chartPow y c d ≠ 0 :=
   Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hY k)
-
-theorem chartPow_ne_zero {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k} (hY : ∀ k, y ⟨k, c k⟩ ≠ 0) (d : K → ℤ) :
-    chartPow y c d ≠ 0 := by
-  apply chartPow_ne_zero_of_coordinates <;> assumption
 
 theorem chartPow_natCast (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (α : K → ℕ) :
     chartPow y c (fun k => (α k : ℤ)) = ∏ k, y ⟨k, c k⟩ ^ α k := by
@@ -100,7 +52,7 @@ theorem exists_flag_dual_of_frame (y : (Σ k, ι k) → Ω) (B : ChartBundle F (
     ∃ ψ : Module.Dual Ω E, (∀ v ∈ B.lat c, ψ v ∈ chartRing F (segreVec y) c) ∧
       (∀ j, j < i → ψ (w j) = 0) ∧ ψ (w i) = (chartPow y c (b i))⁻¹ := by
   have hY : ∀ k, y ⟨k, c k⟩ ≠ 0 := fun k => (Finset.prod_ne_zero_iff.1 hc) k (Finset.mem_univ _)
-  have hp : ∀ j, chartPow y c (b j) ≠ 0 := fun j => chartPow_ne_zero_of_coordinates hY _
+  have hp : ∀ j, chartPow y c (b j) ≠ 0 := fun j => chartPow_ne_zero hY _
   have hgr : ∀ (j : Fin N) (s : Ω), (∃ v ∈ B.lat c, (∀ m, j < m → w.repr v m = 0) ∧ w.repr v j = s) ↔
       ∃ r ∈ chartRing F (segreVec y) c, s = r * chartPow y c (b j) := fun j s => by
     have h := hfl.graded c hc j
@@ -224,7 +176,7 @@ def chartMono (M : ℕ) (c : ∀ k, ι k) (α : K → ℕ) : MRing (bundleIdx ι
   ∏ k, X (⟨some k, c k⟩ : Σ o, bundleIdx ι M o) ^ α k
 
 omit [∀ k, Fintype (ι k)] in
-private theorem chartMono_homog_aux (M : ℕ) (c : ∀ k, ι k) (α : K → ℕ) :
+theorem chartMono_homog (M : ℕ) (c : ∀ k, ι k) (α : K → ℕ) :
     IsMultiHomog (chartMono (F := F) M c α) (liftNat α) := by
   have h := IsWeightedHomogeneous.prod (R := F) Finset.univ
     (fun k => X (⟨some k, c k⟩ : Σ o, bundleIdx ι M o) ^ α k)
@@ -238,22 +190,12 @@ private theorem chartMono_homog_aux (M : ℕ) (c : ∀ k, ι k) (α : K → ℕ)
   rw [IsMultiHomog, chartMono, hw]
   exact h
 
-theorem chartMono_homog (M : ℕ) (c : ∀ k, ι k) (α : K → ℕ) :
-    IsMultiHomog (chartMono (F := F) M c α) (liftNat α) := by
-  apply chartMono_homog_aux
-
 omit [∀ k, Fintype (ι k)] in
-private theorem eval_chartMono_aux (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin N) Ω E) (φ : Fin M → Module.Dual Ω E)
-    (t : Fin N → Φ) (c : ∀ k, ι k) (α : K → ℕ) :
-    eval₂ ((algebraMap Ω Φ).comp (algebraMap F Ω)) (projCoord y w φ t) (chartMono M c α) =
-      algebraMap Ω Φ (∏ k, y ⟨k, c k⟩ ^ α k) := by
-  simp [chartMono, eval₂_prod, eval₂_pow, eval₂_X, projCoord, map_prod]
-
 theorem eval_chartMono (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin N) Ω E) (φ : Fin M → Module.Dual Ω E)
     (t : Fin N → Φ) (c : ∀ k, ι k) (α : K → ℕ) :
     eval₂ ((algebraMap Ω Φ).comp (algebraMap F Ω)) (projCoord y w φ t) (chartMono M c α) =
       algebraMap Ω Φ (∏ k, y ⟨k, c k⟩ ^ α k) := by
-  apply eval_chartMono_aux
+  simp [chartMono, eval₂_prod, eval₂_pow, eval₂_X, projCoord, map_prod]
 
 omit [∀ k, Fintype (ι k)] in
 theorem chartRing_forms_of_mem (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin N) Ω E)
@@ -267,12 +209,12 @@ theorem chartRing_forms_of_mem (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin 
   have hQ : ∀ n : ℕ, eval₂ ((algebraMap Ω Φ).comp (algebraMap F Ω)) (projCoord y w φ t)
       (chartMono M c (fun _ => n)) = algebraMap Ω Φ (segreVec y c ^ n) := by
     intro n
-    rw [eval_chartMono_aux, segreVec, Finset.prod_pow]
+    rw [eval_chartMono, segreVec, Finset.prod_pow]
   induction hu using Algebra.adjoin_induction with
   | mem z hz =>
     obtain ⟨j, rfl⟩ := hz
-    refine ⟨1, chartMono M j (fun _ => 1), chartMono_homog_aux M j _, ?_⟩
-    rw [eval_chartMono_aux, pow_one, div_mul_cancel₀ _ hc]
+    refine ⟨1, chartMono M j (fun _ => 1), chartMono_homog M j _, ?_⟩
+    rw [eval_chartMono, pow_one, div_mul_cancel₀ _ hc]
     simp [segreVec]
   | algebraMap r =>
     refine ⟨0, C r, ?_, ?_⟩
@@ -285,9 +227,9 @@ theorem chartRing_forms_of_mem (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin 
     obtain ⟨n', U', hU', hUe'⟩ := hz'
     refine ⟨n + n', U * chartMono M c (fun _ => n') + U' * chartMono M c (fun _ => n), ?_, ?_⟩
     · rw [hlift]
-      refine (hU.mul (chartMono_homog_aux M c _)).add ?_
+      refine (hU.mul (chartMono_homog M c _)).add ?_
       rw [add_comm]
-      exact hU'.mul (chartMono_homog_aux M c _)
+      exact hU'.mul (chartMono_homog M c _)
     · rw [eval₂_add, eval₂_mul, eval₂_mul, hUe, hUe', hQ, hQ, ← map_mul, ← map_mul, ← map_add (f := _)]
       congr 1
       ring

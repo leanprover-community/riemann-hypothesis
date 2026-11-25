@@ -70,20 +70,6 @@ private lemma iy_snd {y : ℝ} (h : y ≠ 0) : ((iy y : (A ℚ)ˣ) : A ℚ).2 = 
 private lemma real_infEq (y : ℝ) : RationalIdeles.realEquiv (TR.infEq ℚ fun _ => y) = y :=
   (InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal default)).apply_symm_apply y
 
-private lemma val_eq_one {w : IdeleGroup ℚ} (hw : w ∈ IdeleGroup.standardOpenSubgroup ℚ) (v : H.P ℚ) :
-    Valued.v (((w : A ℚ)).2 v) = 1 := by
-  obtain ⟨h1, h2⟩ := (IdeleGroup.mem_standardOpenSubgroup ℚ).1 hw v
-  have a1 := (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 h1
-  have a2 := (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 h2
-  have hm : Valued.v (((w : A ℚ)).2 v) * Valued.v ((((w⁻¹ : IdeleGroup ℚ) : A ℚ)).2 v) = 1 := by
-    rw [← map_mul]
-    have e : ((w : A ℚ)).2 v * (((w⁻¹ : IdeleGroup ℚ) : A ℚ)).2 v = 1 :=
-      congrArg (fun z : A ℚ => z.2 v) (Units.mul_inv w)
-    rw [e, map_one]
-  refine le_antisymm a1 ?_
-  have := mul_le_mul' (le_refl (Valued.v (((w : A ℚ)).2 v))) a2
-  rwa [hm, mul_one] at this
-
 theorem UpperTheory.exists_rat_idele_eq_exp_unit_principal :
     ∀ x : IdeleGroup ℚ, ∃ (t : ℝ) (u : IdeleGroup ℚ) (α : ℚˣ), u ∈ UU ∧ x = Un.cov t u α := by
   intro x
@@ -124,7 +110,10 @@ theorem UpperTheory.exists_rat_idele_eq_exp_unit_principal :
     rw [e, hPi]
     change Valued.v ((1 : v.adicCompletion ℚ) * ((w : A ℚ)).2 v) = 1
     rw [one_mul]
-    exact val_eq_one hw1 v
+    exact Valued.toNormedField.norm_eq_one_iff.1
+      (IdeleGroup.norm_eq_one_of_mul_eq_one (IdeleGroup.finite_mul_inv w v)
+        ((IdeleGroup.mem_standardOpenSubgroup ℚ).1 hw1 v).1
+        ((IdeleGroup.mem_standardOpenSubgroup ℚ).1 hw1 v).2)
   · rw [Un.cov, ← hP, mul_assoc, mul_inv_cancel_left, mul_comm]
 end -- clump:auto
 end -- clump:auto

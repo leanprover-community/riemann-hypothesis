@@ -66,14 +66,12 @@ section SlopeTestRemainingChoices
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-private alias prime_prime_padicInt := _root_.PadicInt.prime_p
-
 private theorem not_prime_dvd_padicInt_unit (w : ℤ_[p]ˣ) : ¬ (p : ℤ_[p]) ∣ (w : ℤ_[p]) :=
-  fun h => prime_prime_padicInt.not_unit (isUnit_of_dvd_unit h (Units.isUnit _))
+  fun h => PadicInt.prime_p.not_unit (isUnit_of_dvd_unit h (Units.isUnit _))
 
 lemma emult_eq_valuation {x : ℤ_[p]} (hx : x ≠ 0) :
     emultiplicity (p : ℤ_[p]) x = x.valuation := by
-  have hP : Prime (p : ℤ_[p]) := prime_prime_padicInt
+  have hP : Prime (p : ℤ_[p]) := PadicInt.prime_p
   conv_lhs => rw [PadicInt.unitCoeff_spec hx]
   rw [emultiplicity_mul hP, emultiplicity_eq_zero.mpr (not_prime_dvd_padicInt_unit _), zero_add,
     emultiplicity_pow_self_of_prime hP]
@@ -100,7 +98,7 @@ lemma p_dvd_of_valuation_one {x : ℤ_[p]} (hx : x ≠ 0) (h1 : x.valuation = 1)
 lemma not_dvd_of_dvd_sub_one {u : ℤ_[p]} (h : (p : ℤ_[p]) ∣ u - 1) : ¬ (p : ℤ_[p]) ∣ u := by
   intro hu
   have h1 : (p : ℤ_[p]) ∣ 1 := by simpa using dvd_sub hu h
-  exact prime_prime_padicInt.not_unit (isUnit_of_dvd_one h1)
+  exact PadicInt.prime_p.not_unit (isUnit_of_dvd_one h1)
 
 lemma dvd_of_natCast_dvd_natCast {m : ℕ} (h : (p : ℤ_[p]) ∣ (m : ℤ_[p])) : p ∣ m := by
   have h1 := (PadicInt.norm_lt_one_iff_dvd _).mpr h
@@ -110,7 +108,7 @@ lemma dvd_of_natCast_dvd_natCast {m : ℕ} (h : (p : ℤ_[p]) ∣ (m : ℤ_[p]))
 lemma emult_pow_sub_one (hodd : p ≠ 2) {u : ℤ_[p]} (hdvd : (p : ℤ_[p]) ∣ u - 1)
     (he : emultiplicity (p : ℤ_[p]) (u - 1) = 1) {k : ℕ} (hk : k ≠ 0) :
     emultiplicity (p : ℤ_[p]) (u ^ k - 1) = ((1 + padicValNat p k : ℕ) : ℕ∞) := by
-  have hP : Prime (p : ℤ_[p]) := prime_prime_padicInt
+  have hP : Prime (p : ℤ_[p]) := PadicInt.prime_p
   have hp1 : Odd p := hp.out.odd_of_ne_two hodd
   have hu : ¬ (p : ℤ_[p]) ∣ u := not_dvd_of_dvd_sub_one hdvd
   obtain ⟨e, m, hm, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hk p hp.out.ne_one
@@ -140,7 +138,7 @@ lemma emult_zpow_sub_one (hodd : p ≠ 2) (u : ℤ_[p]ˣ) (hdvd : (p : ℤ_[p]) 
     (he : emultiplicity (p : ℤ_[p]) ((u : ℤ_[p]) - 1) = 1) {i : ℤ} (hi : i ≠ 0) :
     emultiplicity (p : ℤ_[p]) (((u ^ i : ℤ_[p]ˣ) : ℤ_[p]) - 1)
       = ((1 + padicValNat p i.natAbs : ℕ) : ℕ∞) := by
-  have hP : Prime (p : ℤ_[p]) := prime_prime_padicInt
+  have hP : Prime (p : ℤ_[p]) := PadicInt.prime_p
   obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg i
   · have hn : n ≠ 0 := by
       rintro rfl
@@ -169,7 +167,7 @@ theorem val_prod_one_sub_zpow {p : ℕ} [Fact p.Prime] (hodd : p ≠ 2)
     (Ω : Finset ℤ) (h0 : (0 : ℤ) ∉ Ω) :
     (∏ i ∈ Ω, (1 - ((u ^ i : ℤ_[p]ˣ) : ℤ_[p]))).valuation
       = ∑ i ∈ Ω, (1 + padicValNat p i.natAbs) := by
-  have hP : Prime (p : ℤ_[p]) := prime_prime_padicInt
+  have hP : Prime (p : ℤ_[p]) := PadicInt.prime_p
   have hdvd := p_dvd_of_valuation_one hu0 hu1
   have he := emult_of_valuation_one hu0 hu1
   have key : ∀ i ∈ Ω, emultiplicity (p : ℤ_[p]) (1 - ((u ^ i : ℤ_[p]ˣ) : ℤ_[p]))

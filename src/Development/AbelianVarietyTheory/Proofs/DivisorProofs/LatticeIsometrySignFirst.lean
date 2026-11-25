@@ -80,7 +80,6 @@ import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.ClassSumProbe
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj MvPolynomial

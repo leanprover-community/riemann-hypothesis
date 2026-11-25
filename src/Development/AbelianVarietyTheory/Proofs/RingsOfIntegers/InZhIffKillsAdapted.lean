@@ -50,8 +50,6 @@ open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PlaceInt
 
-set_option autoImplicit false
-
 namespace GlobalTheory.ZPart
 
 section Mod

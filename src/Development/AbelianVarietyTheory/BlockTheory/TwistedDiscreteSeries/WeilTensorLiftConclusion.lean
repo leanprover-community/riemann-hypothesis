@@ -52,17 +52,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorLiftConclusion
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-def IsUnitaryCharacter (μ : kˣ →* ℂˣ) : Prop := IsSmoothChar μ ∧ IsUnitaryChar μ
-
-def IsIrredUnitary {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (GL (Fin n) k) V) : Prop :=
-  IsSmooth π ∧ π.IsIrreducible ∧ IsUnitarisable π
-
-def SupportCondition {a : ℕ} (t : ℕ) (μ : kˣ →* ℂˣ) {V : Type} [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (GL (Fin a) k) V) : Prop :=
-  ∀ j : ℕ, ¬ InSupport π (μ * absPow k (((t : ℂ) + 1) / 2 + j)) ∧
-    ¬ InSupport π (μ * absPow k (-(((t : ℂ) + 1) / 2 + j)))
-
 
 
 def invTranspose (n : ℕ) (R : Type) [CommRing R] : GL (Fin n) R →* GL (Fin n) R where

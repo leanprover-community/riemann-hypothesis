@@ -47,8 +47,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.HomogCob

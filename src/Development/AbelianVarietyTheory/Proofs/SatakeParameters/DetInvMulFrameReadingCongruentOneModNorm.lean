@@ -150,8 +150,6 @@ end Rat
 
 section Frame
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Fields} (s : Seam D X)
 
 theorem det_seamGL {n : ℕ} (g : Sp X.E n ≃ₗ[X.E] Sp X.E n) :

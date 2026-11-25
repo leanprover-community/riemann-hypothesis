@@ -259,13 +259,7 @@ theorem cv_dot (M N : Fin g → ℤ) : cv N ⬝ᵥ cv M = ((N ⬝ᵥ M : ℤ) : 
   simp [cv, dotProduct]
 
 theorem half_dot {a : Fin g → ℂ} (ha : Half a) (M : Fin g → ℤ) : ∃ n : ℤ, 2 * (a ⬝ᵥ cv M) = n := by
-  have h : ∀ i, ∃ e : ℤ, 2 * a i = e := fun i => by
-    rcases ha i with h | h
-    · exact ⟨0, by simp [h]⟩
-    · exact ⟨1, by simp [h]⟩
-  choose e he using h
-  refine ⟨e ⬝ᵥ M, ?_⟩
-  simp only [dotProduct, cv, Finset.mul_sum, Int.cast_sum, Int.cast_mul, ← he, _root_.mul_assoc]
+  apply _root_.GlobalTheory.MBLow.Cl.MulFrame.exists_two_mul_dot <;> assumption
 
 theorem perV_neg (τ : Matrix (Fin g) (Fin g) ℂ) (M N : Fin g → ℤ) : perV τ (-M) (-N) = -perV τ M N := by
   have h : ∀ K : Fin g → ℤ, cv (-K) = -cv K := fun K => funext fun i => by simp [cv]
@@ -411,15 +405,7 @@ theorem Reads.act (hL : L.IsLB) (hx : p ≫ Θ.pt = u.ex x) (hr : Reads u p Θ.�
 
 theorem fnT_iff {P : PolAV (Sp ℂ)} (u : HolUnif P.A P.L g) (k : ℕ) (t : LB.Sec (LPow P.A P.L (k : ℤ) (baseOver (Sp ℂ))))
     (f : (Fin g → ℂ) → ℂ) : FnT u k t f ↔ IsFnAt u basePt k t f := by
-  constructor
-  · intro h j z hj
-    obtain ⟨i, rfl⟩ : ∃ i, j = fun _ => i := ⟨j 0, funext fun k => congrArg j (Subsingleton.elim _ _)⟩
-    rw [zpow_natCast]
-    exact h i z ((exAt_mem_chart_iff u basePt _ _ z).1 hj)
-  · intro h i z hi
-    have := h (fun _ => i) z ((exAt_mem_chart_iff u basePt _ _ z).2 hi)
-    rw [zpow_natCast] at this
-    exact this
+  apply _root_.GlobalTheory.MBLow.Cl.MulFrame.fnT_iff <;> assumption
 
 variable {τ : Matrix (Fin g) (Fin g) ℂ} {a b : Fin g → ℂ}
 

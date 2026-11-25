@@ -64,7 +64,6 @@ import Mathlib.Tactic.ReduceModChar
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ModFree

@@ -192,8 +192,6 @@ namespace GlobalTheory.Cusp
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.Mem.Th
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem cocompact_flag : ∀ (D : D7) (V : HSp D) (𝔉 : IsoFlag V), Cocompact (GQ V) (NA 𝔉) := fun D V 𝔉 => by
   rw [AutFunCompare.GQ_eq]
   exact FlagCocompact.unip_cocompact D.sp.cm 𝔉

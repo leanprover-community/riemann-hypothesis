@@ -369,24 +369,18 @@ def BC (N : ℕ) : Act where
 def Um.join {N : ℕ} {A : Type} [CommRing A] (x : Um N A × Um 2 A) : Um (N + 1) A :=
   ⟨Fin.snoc (α := fun _ => A) (fun i => x.2.1 0 * x.1.1 i) (x.2.1 1), by
     set I := Ideal.span (Set.range (Fin.snoc (α := fun _ => A) (fun i => x.2.1 0 * x.1.1 i) (x.2.1 1))) with hI
-    have h0 : ∀ y ∈ Ideal.span (Set.range x.1.1), x.2.1 0 * y ∈ I := fun y hy => by
-      refine Submodule.span_induction ?_ ?_ ?_ ?_ hy
-      · rintro _ ⟨i, rfl⟩
-        refine Ideal.subset_span ⟨Fin.castSucc i, ?_⟩
-        simp
-      · simp
-      · intro a b _ _ ha hb
-        rw [mul_add]
-        exact I.add_mem ha hb
-      · intro r a _ ha
-        rw [smul_eq_mul, mul_left_comm]
-        exact I.mul_mem_left r ha
+    have h0 : x.2.1 0 ∈ I := by
+      have hm : x.2.1 0 * 1 ∈ I := (Ideal.span_le.2 (by
+        rintro _ ⟨i, rfl⟩
+        exact Ideal.subset_span ⟨Fin.castSucc i, by simp⟩) :
+          Ideal.span (Set.range x.1.1) ≤ Submodule.comap (LinearMap.mulLeft A (x.2.1 0)) I)
+        (by rw [x.1.2]; trivial)
+      rwa [mul_one] at hm
     have h1 : x.2.1 1 ∈ I := Ideal.subset_span ⟨Fin.last N, by simp⟩
     refine top_le_iff.1 (le_trans (le_of_eq x.2.2.symm) (Ideal.span_le.2 ?_))
     rintro _ ⟨j, rfl⟩
     fin_cases j
-    · have := h0 1 (by rw [x.1.2]; trivial)
-      simpa using this
+    · exact h0
     · exact h1⟩
 
 theorem Um.join_map {N : ℕ} {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (x : Um N A × Um 2 A) :

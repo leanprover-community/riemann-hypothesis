@@ -97,15 +97,11 @@ theorem real_ae_zero (μ : Measure X) (e : A → X →ᵇ ℂ) (h1 : ∃ a, e a 
       rintro _ ⟨_, ⟨a, rfl⟩, _, ⟨b, rfl⟩, rfl⟩
       exact hmul a b
     exact this (Submodule.mul_mem_mul hp hq)
-  have hVstar : ∀ p ∈ V, star p ∈ V := by
-    intro p hp
-    induction hp using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨a, rfl⟩ := hx
-      exact Submodule.subset_span (hstar a)
-    | zero => rw [star_zero]; exact V.zero_mem
-    | add x y _ _ hx hy => rw [star_add]; exact V.add_mem hx hy
-    | smul c x _ hx => rw [star_smul]; exact V.smul_mem _ hx
+  have hVstar : ∀ p ∈ V, star p ∈ V := fun p hp =>
+    (Submodule.span_le (p := V.comap
+      ({ toFun := star, map_add' := star_add, map_smul' := fun c x => star_smul c x } :
+        (X →ᵇ ℂ) →ₛₗ[starRingEnd ℂ] (X →ᵇ ℂ)))).2
+      (by rintro _ ⟨a, rfl⟩; exact Submodule.subset_span (hstar a)) hp
   let S : StarSubalgebra ℂ (X →ᵇ ℂ) :=
     { toSubalgebra := V.toSubalgebra hV1 (fun p q hp hq => hVmul p hp q hq)
       star_mem' := fun {p} hp => hVstar p hp }
@@ -113,19 +109,16 @@ theorem real_ae_zero (μ : Measure X) (e : A → X →ᵇ ℂ) (h1 : ∃ a, e a 
     intro k hk g
     exact hk.smul_bdd ‖g‖ g.continuous.aestronglyMeasurable
       (Filter.Eventually.of_forall fun x => g.norm_coe_le_norm x)
-  have hV0 : ∀ g ∈ V, ∫ x, h x • g x ∂μ = 0 := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨a, rfl⟩ := hx
-      exact h0 a
-    | zero => simp
-    | add p q _ _ hp hq =>
-      simp only [BoundedContinuousFunction.add_apply, smul_add]
-      rw [integral_add (hint hi p) (hint hi q), hp, hq, add_zero]
-    | smul c p _ hp =>
-      simp only [BoundedContinuousFunction.smul_apply, smul_comm (h _) c]
-      rw [integral_smul, hp, smul_zero]
+  have hV0 : ∀ g ∈ V, ∫ x, h x • g x ∂μ = 0 := fun g hg =>
+    (Submodule.span_le (p := LinearMap.ker
+      ({ toFun := fun g : X →ᵇ ℂ => ∫ x, h x • g x ∂μ
+         map_add' := fun p q => by
+           simp only [BoundedContinuousFunction.add_apply, smul_add]
+           exact integral_add (hint hi p) (hint hi q)
+         map_smul' := fun c p => by
+           simp only [BoundedContinuousFunction.smul_apply, smul_comm (h _) c, RingHom.id_apply]
+           exact integral_smul c _ } : (X →ᵇ ℂ) →ₗ[ℂ] ℂ))).2
+      (by rintro _ ⟨a, rfl⟩; exact h0 a) hg
   have hfin : ∀ {k : X → ℝ}, Integrable k μ → IsFiniteMeasure (μ.withDensity fun x => ENNReal.ofReal (k x)) :=
     fun hk => isFiniteMeasure_withDensity_ofReal hk.2
   have hwd : ∀ {k : X → ℝ}, Integrable k μ → ∀ g : X →ᵇ ℂ,

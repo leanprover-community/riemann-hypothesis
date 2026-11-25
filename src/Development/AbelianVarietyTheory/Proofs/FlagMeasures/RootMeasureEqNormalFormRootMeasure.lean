@@ -56,7 +56,7 @@ import Mathlib.CategoryTheory.Countable
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsRadicalNormalFormPairOfFlags, Development.AbelianVarietyTheory.Proofs.FlagMeasures.RootMeasureEqNormalFormRootMeasure
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsRadicalNormalFormPairOfFlags =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsRadicalNormalFormPairOfFlags", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsRadicalNormalFormPairOfFlags", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti\npublic import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalFormFlagZeroMiddleInverseMinorOrthogonal\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -189,11 +189,6 @@ theorem herm_split (v w : Fin (2 * r + k + 1) → ℂ) :
   simp only [herm, dotProduct, Matrix.mulVec, sum3 (k := k) (r := r)]
   simp [H_ee, H_ew, H_es, H_we, H_ww, H_ws, H_se, H_sw, H_ss]
 
-theorem herm_eI (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
-    herm (Hpk k r) v (bvec (eI k r a)) = v (esI k r a) := by
-  rw [herm_split, herm_Hb]
-  simp [bvec_apply, eI_inj, wI_ne_eI, esI_ne_eI, apply_ite (starRingEnd ℂ)]
-
 theorem eI_herm (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     herm (Hpk k r) (bvec (eI k r a)) v = star (v (esI k r a)) := by
   rw [herm_split, herm_Hb]
@@ -323,7 +318,7 @@ theorem normal_form : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g�
     simp [fvec]
   have hfl : fvec k r z' (Fin.last r) = z' := by simp [fvec]
   have hZ : ∀ a b : Fin r, Formalism.QuantumDeterminants.Zhat k r z z' g a.castSucc b.castSucc = Zr k r g a b := fun a b => by
-    simp only [Formalism.QuantumDeterminants.Zhat, hf, herm_eI, mulVec_bvec, Zr]
+    simp only [Formalism.QuantumDeterminants.Zhat, hf, GlobalTheory.Amp.NfMid.herm_e, mulVec_bvec, Zr]
   have hdet : (Zr k r g).det ≠ 0 := by
     intro h
     apply hD
@@ -340,13 +335,13 @@ theorem normal_form : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g�
   have hgi : ∀ v, g *ᵥ (g⁻¹ *ᵥ v) = v := fun v => by
     rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hu, Matrix.one_mulVec]
   have hee : ∀ a b : Fin r, herm (Hpk k r) (bvec (eI k r a)) (bvec (eI k r b)) = 0 := fun a b => by
-    rw [herm_eI, bvec_apply, if_neg (esI_ne_eI _ _)]
+    rw [GlobalTheory.Amp.NfMid.herm_e, bvec_apply, if_neg (esI_ne_eI _ _)]
   obtain ⟨q₁, h1, -⟩ := graph' (fun b => g *ᵥ bvec (eI k r b)) (fun a b => by rw [herm_isom hg, hee])
     (Zr k r g) hdet (fun a b => mulVec_bvec _ _ _)
   obtain ⟨q₀, h2, h3⟩ := graph' (fun b => g⁻¹ *ᵥ bvec (eI k r b))
     (fun a b => by rw [← herm_isom hg, hgi, hgi, hee]) (Zr k r g)ᴴ
     (by rw [Matrix.det_conjTranspose]; exact star_ne_zero.2 hdet) (fun a b => by
-      refine (herm_eI _ a).symm.trans ?_
+      refine (GlobalTheory.Amp.NfMid.herm_e _ a).symm.trans ?_
       rw [← herm_isom hg, hgi, eI_herm, mulVec_bvec]; rfl)
   have hZe : Zr k r (pOf k r q₁ * g * (pOf k r q₀)⁻¹) = Zr k r g := by
     unfold pOf

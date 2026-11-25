@@ -58,8 +58,6 @@ namespace PositivityTheory.KCo
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
 open PositivityTheory.Member.ZakTransform GlobalTheory.CompanionTheory.Ar.SvN GlobalTheory.EmbChart
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] {v : Pl F}
 
 theorem schr_inst (ψ : AddChar (Fv F v) ℂ) :

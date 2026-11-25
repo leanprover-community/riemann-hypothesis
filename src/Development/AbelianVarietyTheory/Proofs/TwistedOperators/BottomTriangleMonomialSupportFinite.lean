@@ -5,7 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PureTe
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsCentralRealPointUnitScalarSinglePlace
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PureTensorFockUnitScaledBasisMonomial
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SetIntegralFundamentalDomainRightTranslateInvari
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdeleAt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIdeleAt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsEtaTildeUnramified
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumRealPlacesFockVacuumCharacter
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.APlusComm
@@ -63,13 +63,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.RowEx MeasureTheory
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
-open Formalism.L2.Host (HChar)
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 noncomputable section
 
@@ -155,7 +148,7 @@ theorem scalar_exists {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L s
     have := (cS τ).2.2.det_pos.ne'
     rw [Matrix.det_mul, h0, zero_mul] at this
     exact this rfl
-  obtain ⟨r, hr, -⟩ := GlobalTheory.VacuumCharacter.exists_root hθ (neg A) hdet z' hz'
+  obtain ⟨r, hr, -⟩ := GlobalTheory.OneMapRef.RealMove.exists_root hθ (neg A) hdet z' hz'
   have hy1 : IsDetRoot WW 1 1 := by
     show _ = _
     rw [Units.val_one, RingHom.map_one, mul_one]

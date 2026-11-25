@@ -44,7 +44,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR GlobalTheory.UnitaryBC GlobalTheory.FrameAut Formalism.CohomologicalDescent.DepthNonnegative
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 private theorem UpperTheory.infinite_matrix_rational {D : D7} {V : HSp D}
     (θ : D.what₂.Tau → (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (hθ : IsInfFam θ)

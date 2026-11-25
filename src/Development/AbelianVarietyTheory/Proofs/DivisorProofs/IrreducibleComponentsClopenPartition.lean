@@ -89,16 +89,3 @@ theorem isOpen_of_mem {Z : Scheme.{0}} [NoetherianSpace Z] (hd : ∀ x : Z, IsDo
     isClosed_of_mem_irreducibleComponents D hD.1
 
 end GlobalTheory.CompPart
-
-theorem GlobalTheory.irreducibleComponents_clopen_partition : ∀ (n : ℕ) (Z : Scheme.{0}) (z : Z ⟶ Sp (cycAway n)),
-    IsProjOver z → GlobalTheory.IsNormalScheme Z → ∃ (ι : Type) (_ : Fintype ι) (W : ι → Set Z),
-      (∀ c, IsClopen (W c)) ∧ (∀ c, IsIrreducible (W c)) ∧ ∀ x, ∃! c, x ∈ W c := by
-  intro n Z z hz hN
-  haveI : IsNoetherianRing (cycAway n) :=
-    is_noetherian_subring_closure _ (Set.toFinite _)
-  haveI : AlgebraicGeometry.IsNoetherian Z := GlobalTheory.isNoetherian_of_isProjOver hz
-  have hd : ∀ x : Z, IsDomain (Z.presheaf.stalk x) := fun x => hN.isDomain_stalk x
-  have hfin : (irreducibleComponents Z).Finite := NoetherianSpace.finite_irreducibleComponents
-  exact ⟨irreducibleComponents Z, hfin.fintype, fun C => (C : Set Z),
-    fun C => ⟨isClosed_of_mem_irreducibleComponents _ C.2, GlobalTheory.CompPart.isOpen_of_mem hd C.2⟩,
-    fun C => C.2.1, GlobalTheory.CompPart.existsUnique_mem hd⟩

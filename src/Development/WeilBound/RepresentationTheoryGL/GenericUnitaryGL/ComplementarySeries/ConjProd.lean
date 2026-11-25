@@ -79,49 +79,6 @@ section Tensor
 variable {α : Type} [Fintype α] {X Y : α → Type} [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)]
   [∀ a, AddCommGroup (Y a)] [∀ a, Module ℂ (Y a)]
 
-omit [Fintype α] in
-theorem update_comp (φ : ∀ a, X a →ₛₗ[starRingEnd ℂ] Y a) [DecidableEq α] (x : ∀ a, X a) (i : α) (w : X i) :
-    (fun a => φ a (Function.update x i w a)) = Function.update (fun a => φ a (x a)) i (φ i w) := by
-  funext a
-  exact Function.apply_update (fun a => φ a) x i w a
-
-def mlin (φ : ∀ a, X a →ₛₗ[starRingEnd ℂ] Y a) : MultilinearMap (RingHom.id ℂ) X (Cj (⨂[ℂ] a, Y a)) where
-  toFun x := (PiTensorProduct.tprod ℂ (fun a => φ a (x a)) : ⨂[ℂ] a, Y a)
-  map_update_add' x i u v := by
-    show (PiTensorProduct.tprod ℂ (fun a => φ a (Function.update x i (u + v) a)) : ⨂[ℂ] a, Y a) =
-      PiTensorProduct.tprod ℂ (fun a => φ a (Function.update x i u a)) +
-        PiTensorProduct.tprod ℂ (fun a => φ a (Function.update x i v a))
-    rw [update_comp, update_comp, update_comp, map_add (f := _), MultilinearMap.map_update_add]
-  map_update_smul' x i c u := by
-    show (PiTensorProduct.tprod ℂ (fun a => φ a (Function.update x i (c • u) a)) : ⨂[ℂ] a, Y a) =
-      starRingEnd ℂ c • PiTensorProduct.tprod ℂ (fun a => φ a (Function.update x i u a))
-    rw [update_comp, update_comp, map_smulₛₗ, MultilinearMap.map_update_smul, RingHom.id_apply]
-
-def tmap (φ : ∀ a, X a →ₛₗ[starRingEnd ℂ] Y a) : (⨂[ℂ] a, X a) →ₛₗ[starRingEnd ℂ] (⨂[ℂ] a, Y a) where
-  toFun t := (PiTensorProduct.lift (mlin φ) t : Cj (⨂[ℂ] a, Y a))
-  map_add' s t := by
-    show (PiTensorProduct.lift (mlin φ) (s + t) : Cj (⨂[ℂ] a, Y a)) = _
-    rw [map_add (f := _)]
-    rfl
-  map_smul' c t := by
-    show (PiTensorProduct.lift (mlin φ) (c • t) : Cj (⨂[ℂ] a, Y a)) = _
-    rw [map_smul]
-    rfl
-
-theorem tmap_tprod (φ : ∀ a, X a →ₛₗ[starRingEnd ℂ] Y a) (x : ∀ a, X a) :
-    tmap φ (PiTensorProduct.tprod ℂ x) = PiTensorProduct.tprod ℂ (fun a => φ a (x a)) := by
-  show (PiTensorProduct.lift (mlin φ) (PiTensorProduct.tprod ℂ x) : Cj (⨂[ℂ] a, Y a)) = _
-  rw [PiTensorProduct.lift.tprod]
-  rfl
-
-theorem tmap_comp (φ : ∀ a, X a →ₛₗ[starRingEnd ℂ] Y a) (ψ : ∀ a, Y a →ₛₗ[starRingEnd ℂ] X a)
-    (h : ∀ a (x : X a), ψ a (φ a x) = x) (t : ⨂[ℂ] a, X a) : tmap ψ (tmap φ t) = t := by
-  induction t using PiTensorProduct.induction_on with
-  | smul_tprod r x =>
-    rw [map_smulₛₗ, map_smulₛₗ, tmap_tprod, tmap_tprod]
-    simp [h]
-  | add s t hs ht => rw [map_add (f := _), map_add (f := _), hs, ht]
-
 end Tensor
 
 theorem conjEquiv_piTensor {α : Type} [Fintype α] {Γ X Y : α → Type} [∀ a, Group (Γ a)]
@@ -163,10 +120,6 @@ def indMap (e : (Σ a, m a) ≃ n) {ρ : Representation ℂ (Levi k m) V} {τ : 
   map_smul' c f := by
     apply Subtype.ext; apply Subtype.ext; funext g
     exact map_smulₛₗ φ c (f.1.1 g)
-
-theorem indMap_apply (e : (Σ a, m a) ≃ n) {ρ : Representation ℂ (Levi k m) V} {τ : Representation ℂ (Levi k m) W}
-    (φ : V →ₛₗ[starRingEnd ℂ] W) (hφ : ∀ g v, φ (ρ g v) = τ g (φ v)) (f : IndSp e ρ) (g : GL n k) :
-    (indMap e φ hφ f).1.1 g = φ (f.1.1 g) := rfl
 
 theorem conjEquiv_parInd (e : (Σ a, m a) ≃ n) (ρ : Representation ℂ (Levi k m) V)
     (τ : Representation ℂ (Levi k m) W) (h : ConjEquiv ρ τ) : ConjEquiv (parInd e ρ) (parInd e τ) := by

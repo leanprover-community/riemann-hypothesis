@@ -45,8 +45,6 @@ import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 
 @[expose] public section
 
-set_option autoImplicit false
-
 
 noncomputable section
 

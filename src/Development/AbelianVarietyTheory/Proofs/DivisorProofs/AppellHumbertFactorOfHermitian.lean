@@ -57,8 +57,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsHolFormC
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField

@@ -45,8 +45,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 
 namespace GlobalTheory.SumSize.OppConj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Coef
 
 variable {ι : Type} [Fintype ι] {n : ℕ}

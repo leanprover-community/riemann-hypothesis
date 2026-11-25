@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasSignatureComplement
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GaugeUnfold
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFrameOfHasSignature
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LamXEquivariant
@@ -134,29 +135,7 @@ theorem form_mulVec {E : Type} [Field E] [StarRing E] {n : ℕ} (J G : Matrix (F
 
 theorem hasSignature_all (I : AutInst) {P Q : ℕ} (h : HasSig I P Q) (φ : I.E →+* ℂ) :
     Formalism.UG.HasSignature (I.J.map φ) P Q := by
-  have key : ∃ v, φ = I.φ v ∨ φ = ComplexEmbedding.conjugate (I.φ v) := by
-    refine ⟨(InfinitePlace.mk φ).comap (algebraMap I.F I.E), ?_⟩
-    rcases GlobalTheory.Count.Test.embedding_cases I (InfinitePlace.mk φ) with h | h <;>
-      rcases InfinitePlace.embedding_mk_eq φ with h' | h'
-    · exact Or.inl (h'.symm.trans h)
-    · right
-      rw [← h, h']; simp
-    · exact Or.inr (h'.symm.trans h)
-    · left
-      exact star_injective (h'.symm.trans h)
-  obtain ⟨v, rfl | rfl⟩ := key
-  · rw [← (h v).1, ← (h v).2]; exact hasSignature_inst I v
-  · rw [← (h v).1, ← (h v).2]
-    refine hasSignature_of_frame (P := (I.P v).map (starRingEnd ℂ)) ((I.P_unit v).map (starRingEnd ℂ).mapMatrix) ?_
-    have h1 := congrArg (fun M => Matrix.map M (starRingEnd ℂ)) (I.P_spec v)
-    simp only [Matrix.map_mul] at h1
-    have h2 : (Formalism.REAL.Jm (I.ε v)).map (starRingEnd ℂ) = Formalism.REAL.Jm (I.ε v) := by
-      rw [Formalism.REAL.Jm, Matrix.diagonal_map (map_zero _)]
-      congr 1
-      funext a
-      split_ifs <;> simp
-    rw [h2] at h1
-    exact h1
+  first | exact _root_.GlobalTheory.AdaptedExists.hasSignature_map | exact @_root_.GlobalTheory.AdaptedExists.hasSignature_map | apply _root_.GlobalTheory.AdaptedExists.hasSignature_map <;> assumption
 
 theorem exists_point (I : AutInst) (ε : Fin I.n → Bool) (γ : GL (Fin I.n) I.E)
     (hγ : (γ : Matrix (Fin I.n) (Fin I.n) I.E)ᴴ * I.J * (γ : Matrix (Fin I.n) (Fin I.n) I.E) = signMat I.E ε) :
@@ -1418,10 +1397,6 @@ theorem exists_rat (I : AutInst) : ∃ Γ : Subgroup I.GA, (Γ : Set I.GA) = I.G
   have hn : ((fun γ : Γ => (γ : I.GA)) ⁻¹' C) ∈ nhds (1 : Γ) :=
     continuous_subtype_val.continuousAt.preimage_mem_nhds hC1
   exact discreteTopology_of_isOpen_singleton_one (isOpen_singleton_of_finite_mem_nhds _ hn hfin)
-
-theorem gauge_pos {n : ℕ} {ε : Fin n → Bool} {c : ℝ} (h : IsGauge ε c) : 0 < c := by
-  obtain ⟨c₀, h0, -, hu⟩ := _root_.GlobalTheory.GaugeConst.gauge_exists_pos_unique n ε
-  exact hu c h ▸ h0
 
 theorem haar_muA (I : AutInst) (μf : Measure I.Gf) [SigmaFinite μf] [μf.IsHaarMeasure] :
     (I.muA μf).IsHaarMeasure ∧ (I.muA μf).IsMulRightInvariant := by

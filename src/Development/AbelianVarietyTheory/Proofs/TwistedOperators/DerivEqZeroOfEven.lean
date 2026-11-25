@@ -375,7 +375,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsWeilDatumOneParameterGeneratorCommutatorsStatement =====
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockOperatorActsByNoncompactQuadraticOps =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockOperatorActsByNoncompactQuadraticOps", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable\npublic import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRealPlaceSymplecticFormPositiveComplexStru\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealSymplecticFormAlternatingInvariantDefinite\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PureTensorOInjective\nimport Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectionalDerivFormulaAndSmooth\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasDerivAtHeisenbergMatrixCoeffRealLineSkewStatement\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaInnerProductHermitianStatement\nimport Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrictedTensorBasePointNormSq\npublic import Mathlib.RingTheory.MvPolynomial\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockOperatorActsByNoncompactQuadraticOps", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfPderivStable\npublic import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRealPlaceSymplecticFormPositiveComplexStru\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealSymplecticFormAlternatingInvariantDefinite\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PureTensorOInjective\nimport Development.AbelianVarietyTheory.Proofs.HeightProofs.HeisenbergDirectionalDerivFormulaAndSmooth\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasDerivAtHeisenbergMatrixCoeffRealLineSkewStatement\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaInnerProductHermitianStatement\nimport Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrictedTensorBasePointNormSq\npublic import Mathlib.RingTheory.MvPolynomial\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.VacuumFockOfThetaSquareIntegrable\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -697,15 +697,6 @@ theorem fockScale_sq (τ : D.what₂.Tau) :
     rw [fockScale, h2]; linear_combination 4 * h3
   exact_mod_cast congrArg (fun x : ℝ => (x : ℂ)) h4
 
-theorem fockScale_ne (τ : D.what₂.Tau) : (fockScale D τ : ℂ) ≠ 0 := by
-  intro h
-  have h1 := fockScale_sq (D := D) τ
-  have h2 := xi_zero_im_pos D τ
-  rw [h, mul_zero] at h1
-  have h3 : (0 : ℝ) = 8 * Real.pi * (tauE D τ D.host.xi0).im := by exact_mod_cast h1
-  have : (0 : ℝ) < 8 * Real.pi * (tauE D τ D.host.xi0).im := by positivity
-  exact this.ne h3
-
 
 variable (V W) in
 def thetaSub (ψ : AddChar (AF D.host.F) ℂ) : Submodule ℂ (WO V W → ℂ) where
@@ -838,7 +829,7 @@ theorem ccr (k l : FVar D T.rank S.rank) {g : WO S T → ℂ} (hg : IsThetaFunO 
       Prod.mk.injEq, true_and]
     have hre := GlobalTheory.RealSymplForm.realPlace_imaginaryGenerator_re_eq_zero D τ
     have h1 := fockScale_sq (D := D) τ
-    have h2 := fockScale_ne (D := D) τ
+    have h2 := GlobalTheory.VacuumFockLaws.fockScale_ne (D := D) τ
     by_cases e : a = c ∧ b = d
     · rw [if_pos e, if_pos e, inv_mul_eq_iff_eq_mul₀ h2, mul_neg, h1]
       unfold sg
@@ -902,7 +893,7 @@ theorem acts_by_fockP : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF
     (fun ρ t z => LinearMap.ext fun g => Subtype.ext (by
       rw [hd, Matrix.mul_smul, Matrix.smul_mul]
       exact dRho_dir_smul hψ hθ ρ t _ g.2))
-    (fun ρ => inv_ne_zero (fockScale_ne ρ))
+    (fun ρ => inv_ne_zero (GlobalTheory.VacuumFockLaws.fockScale_ne ρ))
     (fun N g => Subtype.ext (by
       rw [Submodule.coe_add, hGc, hd, hd, hd, hGc, ← act_conj (onb_diag (bS τ)).2.2 (onb_diag (bT τ)).2.2]
       exact eq_add_of_sub_eq' ((hG g g.2).2.1 _)))
@@ -913,7 +904,7 @@ theorem acts_by_fockP : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF
     (fun k Q => Subtype.ext (by
       have := annih_pure hψ hθ hS hT bS bT hf hv k Q
       rw [unitMap] at this
-      rw [Submodule.coe_smul, hann, hE, hE, this, smul_smul, neg_mul_neg, inv_mul_cancel₀ (fockScale_ne _), one_smul]))
+      rw [Submodule.coe_smul, hann, hE, hE, this, smul_smul, neg_mul_neg, inv_mul_cancel₀ (GlobalTheory.VacuumFockLaws.fockScale_ne _), one_smul]))
   refine fun P => congrArg Subtype.val (k2 ?_ P)
   rw [← sub_eq_zero]
   have e1 : (G (E 1) : WO S T → ℂ) = Gn f := congrArg Gn (pure_one f)

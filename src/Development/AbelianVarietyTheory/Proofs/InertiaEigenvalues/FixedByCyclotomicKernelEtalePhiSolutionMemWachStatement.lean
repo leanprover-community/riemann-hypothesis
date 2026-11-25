@@ -653,7 +653,7 @@ theorem mem_fixSub_iff (x : RW LL) :
 theorem vec (hG : Good K s LL) (I : IoS AI R) (hW : IoW I) (d : ℕ) (Pm : Matrix (Fin d) (Fin d) R.EE)
     (z : Fin d → RW LL) (hz : ∀ i, FixH AI K (z i))
     (h : ∀ i, ∃ e, ∑ k, I.ioE (Pm i k) * φRW LL (z k) - z i = I.ioE e) : ∀ i, ∃ e, z i = I.ioE e := by
-  obtain ⟨hinj, -, hs, -⟩ := GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL hG Γ R I hW
+  obtain ⟨hinj, -, hs, -⟩ := GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL Γ R I
   obtain ⟨f1, f2, f3⟩ := FixL.fixSub_ladic l P AI LL {g | g ∈ GK K ∧ P.χQ g = 1}
   obtain ⟨p1, p2, -, -⟩ := GlobalTheory.DecomplFrob.frobenius_and_constants l P AI LL s
   obtain ⟨l1, l2, -⟩ := LAdic.ladic_RW l LL

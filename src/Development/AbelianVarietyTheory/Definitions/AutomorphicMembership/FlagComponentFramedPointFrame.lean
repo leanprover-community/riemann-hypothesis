@@ -108,18 +108,6 @@ theorem isCombAtG_single {X0 : Scheme.{0}} (t : SAB H X0) {R : Type} [CommRing R
   show spMap (epsMul ((Pi.single j 1 : Fin m → R) j)) ≫ v j = _
   rw [Pi.single_eq_same, h1, Category.id_comp]
 
-theorem EigFrame.tri_refl {Z : Model Xo c β} {R : Type} [CommRing R] {φ : c.F →+* R} {x : Sp R ⟶ Z.X}
-    (f : EigFrame Z φ x) : f.Tri (RingHom.id R) f 1 := by
-  have h1 : spMap (dualMap (RingHom.id R)) = 𝟙 _ := by
-    rw [← Spec.map_id]
-    congr 1
-    ext r <;> simp [dualMap]
-  have h2 : spMap (RingHom.id R) = 𝟙 _ := Spec.map_id _
-  refine ⟨by rw [h2, Category.id_comp], rfl, fun τ i => ⟨Pi.single i 1, by simp,
-    fun k hk => Pi.single_eq_of_ne hk.ne' _, ?_⟩⟩
-  simp only [h1, Category.id_comp]
-  exact isCombAtG_single Z.t x (f.tan τ) i
-
 variable {F : Type} [Field F]
 
 def constF (e : F ≃+* c.F) (Y : GlobalTheory.ProjVar.Var F) : c.F →+* Y.Fn := (algebraMap F Y.Fn).comp e.symm.toRingHom

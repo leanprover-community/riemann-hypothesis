@@ -49,7 +49,7 @@ noncomputable section
 
 open scoped Classical ComplexConjugate TensorProduct
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Matrix Formalism.L2.SG.TermOp Formalism.L2.SG.HidaSetting
-  PI.UnitaryDimensionFormula.unitaryCongruence
+  Formalism.L2.SG.Pf.unitaryCongruence
 
 namespace PI.UnitaryDimensionFormula.NormCutK
 
@@ -119,13 +119,6 @@ theorem mem_mL_of_Kset {x : X.B.I.Gf} (hx : x ∈ X.B.I.Kset) (m : ℕ) {y : VA 
   | smul c a _ ha =>
     rw [Subring.smul_def, Matrix.mulVec_smul, ← Subring.smul_def]
     exact Submodule.smul_mem _ c ha
-
-theorem congG_of_Kset {x : X.B.I.Gf} (hx : x ∈ X.B.I.Kset) {δ : VA X.B.I} (hδ : InAt X.B.I X.B.g X.B.g δ) :
-    InAt X.B.I X.B.g X.B.g (X.B.I.fmat x *ᵥ δ - δ) := by
-  obtain ⟨c, hc, hcδ⟩ := hδ
-  refine ⟨c, hc, ?_⟩
-  rw [smul_sub, ← Matrix.mulVec_smul]
-  exact Submodule.sub_mem _ (mem_mL_of_Kset X hx _ hcδ) hcδ
 
 end FixAux
 

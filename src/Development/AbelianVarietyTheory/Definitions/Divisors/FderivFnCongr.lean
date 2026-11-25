@@ -51,8 +51,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open TopologicalSpace Filter Topology

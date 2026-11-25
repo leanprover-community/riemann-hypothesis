@@ -42,7 +42,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open scoped Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 noncomputable section
 
 namespace GlobalTheory.RestCofactor

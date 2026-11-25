@@ -109,7 +109,7 @@ theorem isCompact_lg (R : ℝ) : IsCompact {y : G n | lg y.val ≤ R} := by
 
 section Nrm
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem isMult_cts [MeasurableSpace (G n)] {μ : Measure (G n)} {M : KMod n} {k : Mat n → (M.V →L[ℂ] M.V)}
     {val : Inf n → ℂ} {T : ℝ} (h : IsMult μ M k val T) :

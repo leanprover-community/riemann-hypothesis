@@ -48,8 +48,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.InfinityTypes
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Arith
 
 variable (D : D7) (i : Fin D.R.m) (τ : D.what₂.Tau)

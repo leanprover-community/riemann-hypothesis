@@ -16,10 +16,6 @@ noncomputable section
 
 namespace Formalism.L2.Geo.ExtensionFiltration
 
-theorem dense_emb {K : Type} [Field K] [NumberField K] (v : InfinitePlace K) (hv : v.IsComplex) :
-    DenseRange v.embedding := by
-  apply Formalism.IndefR.LatticeTransfer.BlockMetrics.dense_emb <;> assumption
-
 theorem dense_fcoord {K V ι : Type} [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K]
     [AddCommGroup V] [Module K V] [Fintype ι] [DecidableEq ι] (b : Basis ι K V)
     (X : InfinitePlace K → Matrix ι ι ℂ) (hX : ∀ v, IsUnit (X v).det) (v : InfinitePlace K) :

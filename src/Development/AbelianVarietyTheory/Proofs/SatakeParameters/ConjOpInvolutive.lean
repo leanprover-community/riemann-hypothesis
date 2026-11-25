@@ -1057,8 +1057,8 @@ namespace GlobalTheory
 
 theorem functional_fixed_by_idempotent_represented
     {V : Type} [AddCommGroup V] [Module ℂ V] (B : V →ₗ[ℂ] V →ₗ[ℂ] ℂ)
-    (hL : ∀ φ, (∀ ψ, B φ ψ = 0) → φ = 0) (_hR : ∀ ψ, (∀ φ, B φ ψ = 0) → ψ = 0)
-    (P P' : Module.End ℂ V) (_hP : P ∘ₗ P = P) (hfin : FiniteDimensional ℂ (LinearMap.range P))
+    (hL : ∀ φ, (∀ ψ, B φ ψ = 0) → φ = 0)
+    (P P' : Module.End ℂ V) (hfin : FiniteDimensional ℂ (LinearMap.range P))
     (hadj : ∀ φ ψ, B (P φ) ψ = B φ (P' ψ)) (f : V →ₗ[ℂ] ℂ) (hf : f ∘ₗ P = f) :
     ∃ ψ, ∀ φ, B φ ψ = f φ := by
   set U := LinearMap.range P
@@ -1139,8 +1139,8 @@ theorem isCsd_of_paired : GlobalTheory.Published.AutomorphicFormsFiniteGL → �
     push_neg at h
     exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ (P v)).1 h)
   have hf : (g ∘ₗ P) ∘ₗ P = g ∘ₗ P := by rw [LinearMap.comp_assoc, hPP]
-  obtain ⟨ψ₁, hψ₁⟩ := _root_.GlobalTheory.functional_fixed_by_idempotent_represented B₁ l1 r1 P P₁ hPP hfin e1 (g ∘ₗ P) hf
-  obtain ⟨ψ₂, hψ₂⟩ := _root_.GlobalTheory.functional_fixed_by_idempotent_represented B₂ l2 r2 P P₂ hPP hfin e2 (g ∘ₗ P) hf
+  obtain ⟨ψ₁, hψ₁⟩ := _root_.GlobalTheory.functional_fixed_by_idempotent_represented B₁ l1 P P₁ hfin e1 (g ∘ₗ P) hf
+  obtain ⟨ψ₂, hψ₂⟩ := _root_.GlobalTheory.functional_fixed_by_idempotent_represented B₂ l2 P P₂ hfin e2 (g ∘ₗ P) hf
   have hne : ψ₁ ≠ 0 := by
     rintro rfl
     apply hg

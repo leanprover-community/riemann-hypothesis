@@ -1030,7 +1030,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.LatticeBoundTests
 open NumberField
@@ -1110,7 +1109,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.TraceLattice
 

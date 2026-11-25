@@ -78,12 +78,8 @@ private theorem opP_eq' {M a : ℕ} (hM : M ≠ 0) {δ : G ℚ Ω} (hδ : Pows M
 
 private theorem zeta_inj' {M : ℕ} [NeZero M] {ζ : Ω} (hζ : IsPrimitiveRoot ζ M) {i j k : ZMod M}
     (h : ζ ^ i.val = ζ ^ j.val * ζ ^ k.val) : i = j + k := by
-  rw [← pow_add] at h
-  have h2 : ζ ^ (j.val + k.val) = ζ ^ ((j + k).val) := by
-    rw [ZMod.val_add]
-    conv_lhs => rw [← Nat.mod_add_div (j.val + k.val) M, pow_add, pow_mul, hζ.pow_eq_one,
-      one_pow, mul_one]
-  exact ZMod.val_injective M (hζ.pow_inj (ZMod.val_lt _) (ZMod.val_lt _) (h.trans h2))
+  rw [← pow_add, _root_.pow_eq_pow_mod (j.val + k.val) hζ.pow_eq_one, ← ZMod.val_add] at h
+  exact ZMod.val_injective M (hζ.pow_inj (ZMod.val_lt _) (ZMod.val_lt _) h)
 
 end
 

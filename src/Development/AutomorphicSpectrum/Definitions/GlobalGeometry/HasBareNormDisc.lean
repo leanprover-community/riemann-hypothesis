@@ -52,8 +52,6 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLineGenOn
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.EigenbasisGramSquares

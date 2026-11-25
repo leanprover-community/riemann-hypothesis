@@ -51,7 +51,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotions.ModuliIntegralCharts.H1.BidegreeTwoJet GlobalTheory GlobalTheory.PowGerm
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.LinkLaw
 

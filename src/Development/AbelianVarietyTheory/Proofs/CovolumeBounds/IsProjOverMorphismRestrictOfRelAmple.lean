@@ -442,8 +442,6 @@ theorem isProjOver_of_isIso_comp (g : Z ⟶ Y) [IsIso g] {f : Y ⟶ Sp R} (h : I
 
 section Group
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem isProjOver_morphismRestrict_of_relAmple {S : Scheme.{0}} {A : Over S} [GrpObj A] {B : LB A.left}
     (h : RelAmple A B) {U : S.Opens} (hU : IsAffineOpen U) :
     IsProjOver (R := Γ(S, U)) (A.hom ∣_ U ≫ hU.isoSpec.hom) := by

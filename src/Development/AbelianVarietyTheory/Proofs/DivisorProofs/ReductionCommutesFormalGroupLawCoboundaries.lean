@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
-set_option autoImplicit false
-
 namespace GlobalTheory.Katz.RedCob
 
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] {σ τ : Type} {d : ℕ}

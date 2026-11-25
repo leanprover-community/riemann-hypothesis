@@ -43,8 +43,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open GlobalTheory.ShFam.Hor.LogCh
 
-set_option autoImplicit false
-
 open Topology
 
 namespace GlobalTheory.LatReal

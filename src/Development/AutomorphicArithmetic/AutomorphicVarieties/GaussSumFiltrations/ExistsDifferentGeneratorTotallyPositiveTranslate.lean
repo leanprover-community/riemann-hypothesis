@@ -110,6 +110,4 @@ theorem GlobalTheory.HilbertThetaSeries.del_exists_and_move : ∀ (F : Type) [Fi
       show Valued.v ((a : w.adicCompletion F) * pLoc F w (y : Af F)) * w.valuation F δ = 1
       rw [map_mul, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', ha w hw', mul_assoc, inv_mul_cancel₀ (hne w hw')]
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 

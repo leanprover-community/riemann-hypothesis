@@ -46,8 +46,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation Posi
 open scoped Classical TensorProduct
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Choice
 
 theorem qh_ne_zero' {E : Type} [Field E] [NumberField E] (w : Pl E) : qh w ≠ 0 := by
