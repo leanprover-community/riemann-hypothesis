@@ -199,16 +199,9 @@ noncomputable def stdField : ArchMetric K K :=
       ext i j
       simp)
 
-@[simp]
-theorem stdField_form (σ : K →+* ℂ) (x y : K) : (stdField K).form σ x y = σ x * conj (σ y) := rfl
-
 variable (h : ArchMetric K V)
 
 def gram (σ : K →+* ℂ) {ι : Type*} (e : ι → V) : Matrix ι ι ℂ := sesqGram (h.form σ) e
-
-@[simp]
-theorem gram_apply (σ : K →+* ℂ) {ι : Type*} (e : ι → V) (i j : ι) :
-    h.gram σ e i j = h.form σ (e i) (e j) := rfl
 
 section GramDet
 
@@ -219,11 +212,6 @@ noncomputable def gramDet (e : ι → V) : ℝ := (h.gram σ e).det.re
 end GramDet
 
 noncomputable def norm (σ : K →+* ℂ) (x : V) : ℝ := Real.sqrt (h.form σ x x).re
-
-@[simp]
-theorem stdField_norm (σ : K →+* ℂ) (x : K) : (stdField K).norm σ x = ‖σ x‖ := by
-  rw [norm, stdField_form, Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq,
-    Real.sqrt_sq (_root_.norm_nonneg _)]
 
 section Comap
 
@@ -272,7 +260,6 @@ theorem finrank_lattice_eq_finrank_span (A : Submodule (𝓞 K) V) :
     finrank (𝓞 K) A = finrank K (Submodule.span K (A : Set V)) := by
   rw [Module.finrank, Module.finrank, rank_eq_rank_span K]
 
-
 omit [NumberField K] in
 theorem finiteDimensional_span_of_fg {A : Submodule (𝓞 K) V} (hA : A.FG) :
     FiniteDimensional K (Submodule.span K (A : Set V)) := by
@@ -314,55 +301,6 @@ structure IsLatticeFrame {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Mod
 
   mem_span : ∀ x ∈ A, x ∈ Submodule.span K (Set.range e)
 
-namespace IsLatticeFrame
-
-variable {A : Submodule (𝓞 K) V} {ι κ : Type*} {e : ι → V}
-
-
-omit [NumberField K] [IsScalarTower (𝓞 K) K V] in
-theorem span_eq (he : IsLatticeFrame A e) :
-    Submodule.span K (Set.range e) = Submodule.span K (A : Set V) :=
-  le_antisymm (Submodule.span_mono (Set.range_subset_iff.2 he.mem))
-    (Submodule.span_le.2 he.mem_span)
-
-
-omit [NumberField K] [IsScalarTower (𝓞 K) K V] in
-theorem span_le (he : IsLatticeFrame A e) : Submodule.span (𝓞 K) (Set.range e) ≤ A :=
-  Submodule.span_le.2 (Set.range_subset_iff.2 he.mem)
-
-omit [NumberField K] [IsScalarTower (𝓞 K) K V] in
-theorem of_le {B : Submodule (𝓞 K) V} (he : IsLatticeFrame A e) (hAB : A ≤ B)
-    (hB : ∀ x ∈ B, x ∈ Submodule.span K (A : Set V)) : IsLatticeFrame B e :=
-  ⟨fun i => hAB (he.mem i), he.linearIndependent, fun x hx => he.span_eq ▸ hB x hx⟩
-
-
-omit [NumberField K] in
-theorem map (he : IsLatticeFrame A e) (f : V →ₗ[K] V') (hf : Function.Injective f) :
-    IsLatticeFrame (A.map (f.restrictScalars (𝓞 K))) (f ∘ e) := by
-  refine ⟨fun i => ⟨e i, he.mem i, rfl⟩,
-    he.linearIndependent.map' f (LinearMap.ker_eq_bot.2 hf), ?_⟩
-  rintro _ ⟨x, hx, rfl⟩
-  rw [Set.range_comp, ← Submodule.map_span]
-  exact ⟨x, he.mem_span x hx, rfl⟩
-
-
-omit [NumberField K] in
-theorem smul (he : IsLatticeFrame A e) {d : ι → 𝓞 K} (hd : ∀ i, d i ≠ 0) :
-    IsLatticeFrame A fun i => d i • e i := by
-  have hd' : ∀ i, (d i : K) ≠ 0 := fun i => by simpa using hd i
-  have hs : ∀ i, d i • e i = (d i : K) • e i := fun i => (algebraMap_smul K (d i) (e i)).symm
-  refine ⟨fun i => A.smul_mem _ (he.mem i), ?_, fun x hx => ?_⟩
-  · simp only [hs]
-    exact he.linearIndependent.units_smul fun i => Units.mk0 _ (hd' i)
-  · refine Submodule.span_le.2 ?_ (he.mem_span x hx)
-    rintro _ ⟨i, rfl⟩
-    have : e i = (d i : K)⁻¹ • d i • e i := by rw [hs, inv_smul_smul₀ (hd' i)]
-    rw [this]
-    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-
-end IsLatticeFrame
-
-
 theorem exists_isLatticeFrame {A : Submodule (𝓞 K) V} (hA : A.FG) :
     ∃ e : Fin (finrank (𝓞 K) A) → V, IsLatticeFrame A e := by
   haveI := finiteDimensional_span_of_fg hA
@@ -384,7 +322,6 @@ noncomputable def frameDeg (A : Submodule (𝓞 K) V) {ι : Type*} [Fintype ι] 
     (e : ι → V) : ℝ :=
   Real.log (Nat.card (A ⧸ (Submodule.span (𝓞 K) (Set.range e)).submoduleOf A)) -
     ∑ σ : K →+* ℂ, 1 / 2 * Real.log (h.gramDet σ e)
-
 
 open Classical in
 noncomputable def arDeg (A : Submodule (𝓞 K) V) : ℝ := by
@@ -434,7 +371,6 @@ theorem idx_sum {R W : Type} [CommRing R] [AddCommGroup W] [Module R W] {A A' B 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : HermSpace K V} {r : ℕ}
 
-
 omit [StarRing K] in
 theorem idx_ipow {𝔡 : Ideal (𝓞 K)} (h : 𝔡 ≠ ⊥) (n : ℤ) (hn : 0 ≤ n) :
     (1 : K) ∈ ipow 𝔡 (-n) ∧ (idx (ipow 𝔡 (-n)) 1 : ℝ) = (Ideal.absNorm 𝔡 : ℝ) ^ n := by
@@ -453,7 +389,6 @@ theorem idx_ipow {𝔡 : Ideal (𝓞 K)} (h : 𝔡 ≠ ⊥) (n : ℤ) (hn : 0 �
     (by exact_mod_cast fun e => h (Ideal.absNorm_eq_zero_iff.1 e)))] at this
   have := congrArg (fun q : ℚ => (q : ℝ)) this
   simpa [idx] using this.symm
-
 
 omit [NumberField K] in
 theorem norm_star [NumberField K] (x : K) : Algebra.norm ℚ (star x) = Algebra.norm ℚ x :=
@@ -532,7 +467,6 @@ theorem idx_free {ι : Type} [Fintype ι] [DecidableEq ι] (x x' : ι → V) (hx
   · rw [rep (x p) (Submodule.subset_span ⟨p, rfl⟩)]
     simp only [← hg, algebraMap_smul, Matrix.of_apply]
 
-
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 theorem Xa_succ (F : FlagD H r) (a : Fin r) :
     F.Xa (a.val + 1) = F.Xa a.val ⊔ Submodule.span K {F.e a.castSucc} := by
@@ -543,14 +477,12 @@ theorem Xa_succ (F : FlagD H r) (a : Fin r) :
   simp only [Set.mem_ofPred_eq, Set.mem_union, Set.mem_singleton_iff, Fin.ext_iff]
   omega
 
-
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 theorem eq_zero_of_smul_mem (F : FlagD H r) (a : Fin r) {t : K} (h : t • F.e a.castSucc ∈ F.Xa a.val) : t = 0 := by
   by_contra ht
   have := (F.Xa a.val).smul_mem t⁻¹ h
   rw [inv_smul_smul₀ ht] at this
   exact F.indep.notMem_span_image (s := {b | b.val < a.val}) (x := a) (lt_irrefl a.val) this
-
 
 omit [NumberField K] in
 theorem idx_flag (F : FlagD H r) (Λ : Submodule (𝓞 K) V) (y : Fin r → V) (hy : ∀ a, y a ∈ Λ)
@@ -650,7 +582,6 @@ theorem idx_flag (F : FlagD H r) (Λ : Submodule (𝓞 K) V) (y : Fin r → V) (
       idx_sup le_sup_right, ← e2]
     exact (AddSubgroup.relIndex_comap T.toAddSubgroup f.toAddMonoidHom (lead F Λ a.castSucc).toAddSubgroup).symm
 
-
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 theorem exists_unitri (F : FlagD H r) (y : Fin r → V) (he : ∀ a, F.e a.castSucc - y a ∈ F.Xa a.val) {l : ℕ}
     (hr : l ≤ r) (hl : l ≤ r + 1) : ∃ M : Matrix (Fin l) (Fin l) K, M.det = 1 ∧
@@ -700,7 +631,6 @@ theorem exists_unitri (F : FlagD H r) (y : Fin r → V) (he : ∀ a, F.e a.castS
   · simp only [Matrix.sub_apply, Matrix.of_apply, sub_smul, Finset.sum_sub_distrib, ← h2 a, Matrix.one_apply,
       ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
     exact (sub_sub_cancel _ _).symm
-
 
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 theorem iso_Xa (F : FlagD H r) (l : ℕ) {v w : V} (hv : v ∈ F.Xa l) (hw : w ∈ F.Xa l) : H.B v w = 0 := by

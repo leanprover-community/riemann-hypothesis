@@ -119,9 +119,6 @@ variable {p : Y ⟶ Sp k} {p' : Y' ⟶ Sp k'} {σ : k →+* k'} {B : LB Y} {B' :
   {I : Y.IdealSheafData} {I' : Y'.IdealSheafData} {n : ℕ}
   (hI : ∀ z, stalkId I' z = (stalkId I (φ z)).map (φ.stalkMap z).hom)
 
-
-
-
 end Order
 
 section On
@@ -135,18 +132,6 @@ variable {p : Y ⟶ Sp k} {p' : Y' ⟶ Sp k'} {σ : k →+* k'} {O : Y.Opens} {W
 
 end On
 
-theorem LeadAt.map {R S R' S' : Type*} [CommRing R] [CommRing S] [CommRing R'] [CommRing S']
-    {ι : Type} [Finite ι] {π : R →+* S} {π' : R' →+* S'} {x : ι → R} {a : ℕ} {f : R}
-    {γ : MonoDeg ι a → S} (h : LeadAt π x f γ) (θ : R →+* R') (η : S →+* S')
-    (e : ∀ r, π' (θ r) = η (π r)) : LeadAt π' (fun i => θ (x i)) (θ f) fun α => η (γ α) := by
-  obtain ⟨m, hm, hf⟩ := h
-  refine ⟨fun α => θ (m α), fun α => by rw [e, hm], ?_⟩
-  have := Ideal.mem_map_of_mem θ hf
-  rw [Ideal.map_pow, Ideal.map_span, ← Set.range_comp] at this
-
-  simp only [map_sub, map_sum, map_mul, map_monoVal] at this
-  exact this
-
 section Lead
 
 variable {p : Y ⟶ Sp k} {p' : Y' ⟶ Sp k'} {σ : k →+* k'} {L M : LB Y} {L' M' : LB Y'}
@@ -158,9 +143,6 @@ section Symbol
 
 variable {p : Y ⟶ Sp k} {p' : Y' ⟶ Sp k'} {σ : k →+* k'} (H : IsPullback φ p' p (spMap σ))
 
-
-
-
 variable {D : ℕ} [SmoothOfRelativeDimension D p] [SmoothOfRelativeDimension D p'] (K : CanonLB p D)
   {L A B : LB Y} {L' A' B' : LB Y'} (l : ChartPull L' L φ) (a : ChartPull A' A φ)
   (b : ChartPull B' B φ) (s : Fin D → L.Sec)
@@ -170,7 +152,6 @@ abbrev pullQuotSec (e : (LB.div A (tw B L D)).Sec) : (LB.div A' (tw B' L' D)).Se
 
 variable (hL : L.IsLB) (hA : A.IsLB) (hB : B.IsLB) (hL' : L'.IsLB) (hA' : A'.IsLB) (hB' : B'.IsLB)
   (e : (LB.div A (tw B L D)).Sec)
-
 
 variable (hS : Etale ((cutIdeal hL s).subschemeι ≫ p))
   (hS' : Etale ((cutIdeal hL' fun t => chartSec l (s t)).subschemeι ≫ p'))
@@ -188,9 +169,6 @@ section Field
 
 variable {E E' : Type} [Field E] [Field E'] {σ : E →+* E'} {p : Y ⟶ Sp E} {p' : Y' ⟶ Sp E'}
   (H : IsPullback φ p' p (spMap σ)) {L : LB Y} (hL : L.IsLB)
-
-
-
 
 section Order
 

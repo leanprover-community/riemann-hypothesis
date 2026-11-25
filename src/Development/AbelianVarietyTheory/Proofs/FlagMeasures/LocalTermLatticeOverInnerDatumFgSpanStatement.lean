@@ -74,8 +74,6 @@ def hl (H : HermSp M V) (y : V) : V →ₗ[E] E where
   map_add' x x' := H.h_add_left x x' y
   map_smul' a x := H.h_smul_left a x y
 
-@[simp] theorem hl_apply (H : HermSp M V) (y v : V) : hl H y v = H.h v y := rfl
-
 theorem h_sub (H : HermSp M V) (x x' y : V) : H.h (x - x') y = H.h x y - H.h x' y :=
   (hl H y).map_sub x x'
 

@@ -262,43 +262,6 @@ section -- clump:auto
 
 open NumberField Matrix GlobalTheory.Mass Formalism.HermitianLatticesTheory
 open scoped ENNReal Classical
-private theorem full_of_unimodular {K V : Type} [Field K] [NumberField K] [StarRing K]
-    [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
-    [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm)
-    {L : Submodule (𝓞 K) V} (hL : Submodule.IsLattice K L) (hu : IsUnimodular h L) :
-    Submodule.IsFullLattice K L := by
-  letI := hL
-  refine { span_eq_top := ?_ }
-  let W := Submodule.span K (L : Set V)
-  change W = ⊤
-  by_contra hw
-  let b := Module.finBasis K V
-  let e : V ≃ₗ⋆[K] V := (b.equivFun.trans (starLinearEquiv K)).trans b.equivFun.symm
-  let g : V →ₗ[K] Module.Dual K W :=
-    (LinearMap.domRestrict' W).comp (h.comp e.toLinearMap)
-  have hd : Module.finrank K (Module.Dual K W) < Module.finrank K V := by
-    rw [Subspace.dual_finrank_eq]
-    exact Submodule.finrank_lt hw
-  obtain ⟨x, hx, hx0⟩ :=
-    Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hd)
-  have hm (a : K) : a • e x ∈ L := by
-    rw [← hu, dualBasic_mem_dual]
-    intro y hy
-    have hz : h (e x) y = 0 :=
-      congrArg (fun f : Module.Dual K W => f ⟨y, Submodule.subset_span hy⟩)
-        (LinearMap.mem_ker.mp hx)
-    have hz' : h y (e x) = 0 := by
-      exact hs.eq_iff.mp hz
-    simp [hz']
-  let i : K →ₗ[𝓞 K] L :=
-    ((LinearMap.toSpanSingleton K _ (e x)).restrictScalars (𝓞 K)).codRestrict L hm
-  letI : Module.Finite (𝓞 K) L := Module.Finite.iff_fg.mpr hL.fg
-  letI : Module.Finite (𝓞 K) K := Module.Finite.of_injective i fun a b hab =>
-    smul_left_injective K (fun hzero => hx0 (e.map_eq_zero_iff.mp hzero))
-      (congrArg Subtype.val hab)
-  exact RingOfIntegers.not_isField K
-    (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 K) K) (Field.toIsField K))
-
 
 end -- clump:auto
 end -- clump:auto
@@ -373,7 +336,6 @@ theorem over_smul (h : V →ₗ⋆[K] V →ₗ[K] K) (𝔓 : Ideal (𝓞 K)) (g 
     exact ⟨y.1, hy, congrArg Subtype.val hxy⟩
   · rintro ⟨y, hy, hxy⟩
     exact ⟨⟨y, h3 hy⟩, hy, Subtype.ext hxy⟩
-
 
 noncomputable def up (h : V →ₗ⋆[K] V →ₗ[K] K) (𝔓 : Ideal (𝓞 K)) (L : Submodule (𝓞 K) V) :
     Submodule (𝓞 K) V := sSup {M | Over h 𝔓 L M}

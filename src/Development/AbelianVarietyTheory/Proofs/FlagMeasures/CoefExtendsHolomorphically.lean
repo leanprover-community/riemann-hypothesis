@@ -71,12 +71,6 @@ def Hol (ε : Fin n → Bool) (a : KG ε → ℂ) : Prop :=
 lemma Hol.const (c : ℂ) : Hol ε (fun _ => c) :=
   ⟨fun _ => c, differentiableOn_const c, fun _ => rfl⟩
 
-lemma Hol.add {a b : KG ε → ℂ} (ha : Hol ε a) (hb : Hol ε b) : Hol ε (fun k => a k + b k) := by
-  obtain ⟨F, hF, hFa⟩ := ha
-  obtain ⟨G, hG, hGb⟩ := hb
-  refine ⟨fun y => F y + G y, hF.add hG, fun k => ?_⟩
-  simp only [hFa, hGb]
-
 lemma Hol.mul {a b : KG ε → ℂ} (ha : Hol ε a) (hb : Hol ε b) : Hol ε (fun k => a k * b k) := by
   obtain ⟨F, hF, hFa⟩ := ha
   obtain ⟨G, hG, hGb⟩ := hb

@@ -61,12 +61,6 @@ namespace GlobalTheory.IdxInt.Lin
 variable {W : Type} [AddCommGroup W]
 
 open scoped Pointwise Classical in
-open Function in
-private lemma quotientEquivProdOfLE_mk_fst {W : Type} [AddCommGroup W] {C B : AddSubgroup W}
-    (h : C ≤ B) (w : W) : ((AddSubgroup.quotientEquivProdOfLE h) (w : W ⧸ C)).1 = (w : W ⧸ B) :=
-  rfl
-
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in
 private lemma exists_fine_fine_of_nice_nice {W : Type} [AddCommGroup W] {A : AddSubgroup W} {φ ψ : W → ℂ}
     (hφ : _root_.GlobalTheory.IdxInt.Nice A φ) (hψ : _root_.GlobalTheory.IdxInt.Nice A ψ) :
@@ -94,7 +88,6 @@ private lemma finite_support_quotient_out_of_finite_image {W : Type} [AddCommGro
     (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
     (support fun c : W ⧸ B => φ (Quotient.out c)).Finite := by
   refine hφ.subset fun c hc => ⟨Quotient.out c, hc, QuotientAddGroup.out_eq' c⟩
-
 
 open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in

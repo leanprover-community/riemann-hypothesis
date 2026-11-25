@@ -49,11 +49,6 @@ open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotio
 
 namespace GlobalTheory.CovDom
 
-theorem rank_eq (D : D7) : D.R.r = 2 * D.R.rS + D.R.k + 1 := by
-  have := rank_base_space D.R
-  simp only [Ranks.N, zero_mul, add_zero] at this
-  omega
-
 variable {D : D7} (X : HidaSetting D)
 
 def ci : Fin (2 * D.R.rS + D.R.k + 1) ≃ Fin X.B.I.n := finCongr (X.n_eq.trans (rank_eq D)).symm

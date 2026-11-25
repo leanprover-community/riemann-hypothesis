@@ -354,46 +354,6 @@ theorem archimedean_map_add (a b : mixedEmbedding.mixedSpace F) :
   · exact map_add _ a b
   · exact (add_zero (0 : FiniteAdeleRing (𝓞 F) F)).symm
 
-theorem adeleOfMixedSpaceComponent_finsetSum (f : κ → mixedEmbedding.mixedSpace F) :
-    GlobalTheory.WeilL2Words.arch1 F (∑ k, f k) = ∑ k, GlobalTheory.WeilL2Words.arch1 F (f k) :=
-  map_sum (AddMonoidHom.mk' (GlobalTheory.WeilL2Words.arch1 F) (archimedean_map_add F)) f Finset.univ
-
-theorem adeleJoin_mul_arch1 (x : κ → mixedEmbedding.mixedSpace F) (y : κ → FiniteAdeleRing (𝓞 F) F) (k : κ)
-    (b : mixedEmbedding.mixedSpace F) :
-    GlobalTheory.WeilCont.adeleJoin F x y k * GlobalTheory.WeilL2Words.arch1 F b = GlobalTheory.WeilL2Words.arch1 F (x k * b) := by
-  unfold GlobalTheory.WeilL2Words.arch1 GlobalTheory.WeilCont.adeleJoin
-  refine Prod.ext ?_ ?_
-  · exact (map_mul _ (x k) b).symm
-  · exact mul_zero (y k)
-
-theorem adeleOfMixedSpaceComponent_mul (a b : mixedEmbedding.mixedSpace F) :
-    GlobalTheory.WeilL2Words.arch1 F a * GlobalTheory.WeilL2Words.arch1 F b = GlobalTheory.WeilL2Words.arch1 F (a * b) := by
-  unfold GlobalTheory.WeilL2Words.arch1
-  refine Prod.ext ?_ ?_
-  · exact (map_mul _ a b).symm
-  · exact mul_zero (0 : FiniteAdeleRing (𝓞 F) F)
-
-theorem adeleJoin_add_arch (x v : κ → mixedEmbedding.mixedSpace F) (y : κ → FiniteAdeleRing (𝓞 F) F) :
-    GlobalTheory.WeilCont.adeleJoin F x y + GlobalTheory.WeilL2Words.arch F v = GlobalTheory.WeilCont.adeleJoin F (x + v) y := by
-  funext i
-  refine Prod.ext ?_ ?_
-  · exact (map_add _ (x i) (v i)).symm
-  · exact add_zero (y i)
-
-theorem adeleJoin_dot_arch (x w : κ → mixedEmbedding.mixedSpace F) (y : κ → FiniteAdeleRing (𝓞 F) F) :
-    GlobalTheory.WeilCont.adeleJoin F x y ⬝ᵥ GlobalTheory.WeilL2Words.arch F w = GlobalTheory.WeilL2Words.arch1 F (∑ k, x k * w k) := by
-  rw [adeleOfMixedSpaceComponent_finsetSum]
-  unfold dotProduct
-  refine Finset.sum_congr rfl fun k _ => ?_
-  exact adeleJoin_mul_arch1 F x y k (w k)
-
-theorem arch_dot_arch (v w : κ → mixedEmbedding.mixedSpace F) :
-    GlobalTheory.WeilL2Words.arch F v ⬝ᵥ GlobalTheory.WeilL2Words.arch F w = GlobalTheory.WeilL2Words.arch1 F (∑ k, v k * w k) := by
-  rw [adeleOfMixedSpaceComponent_finsetSum]
-  unfold dotProduct
-  refine Finset.sum_congr rfl fun k _ => ?_
-  exact adeleOfMixedSpaceComponent_mul F (v k) (w k)
-
 theorem mul_arch1 [Invertible (2 : AdeleRing (𝓞 F) F)] (b : mixedEmbedding.mixedSpace F) :
     ⅟(2 : AdeleRing (𝓞 F) F) * GlobalTheory.WeilL2Words.arch1 F b =
       GlobalTheory.WeilL2Words.arch1 F (InfiniteAdeleRing.ringEquiv_mixedSpace F (⅟(2 : AdeleRing (𝓞 F) F)).1 * b) := by
@@ -771,7 +731,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped Classical
-
 
 end -- clump:auto
 end -- clump:auto

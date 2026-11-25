@@ -1,6 +1,5 @@
 module
 
-
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsDatumOfTwoCongruentFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPrincipalIdealRingOfHenselian
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
@@ -94,7 +93,6 @@ theorem unif_mem_maximal {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace
 end GlobalTheory.LocOver.InnerDual
 
 namespace GlobalTheory.LocOver.InnerDual
-
 
 open GlobalTheory.LocOver.UnipOnto in
 theorem exists_inner_lattice_vector_anisotropic' : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
@@ -682,19 +680,6 @@ lemma img_mul (g k : V ≃ₗ[E] V) (Λ : Submodule M.L.O V) : img (g * k) Λ = 
   constructor
   · rintro ⟨u, hu, rfl⟩; exact ⟨k u, ⟨u, hu, rfl⟩, rfl⟩
   · rintro ⟨w, ⟨u, hu, rfl⟩, rfl⟩; exact ⟨u, hu, rfl⟩
-
-lemma prF_e (Fr : FrameD H r) (a : Fin r) : Fr.prF (Fr.f a.castSucc) = 0 := by
-  first | exact _root_.GlobalTheory.UnipFrame.prF_e | exact @_root_.GlobalTheory.UnipFrame.prF_e | apply _root_.GlobalTheory.UnipFrame.prF_e <;> assumption
-
-lemma frame_projection_last_eq_self (Fr : FrameD H r) : Fr.prF (Fr.f (Fin.last r)) = Fr.f (Fin.last r) := by
-  unfold FrameD.prF
-  have h1 : ∑ c, H.h (Fr.f (Fin.last r)) (Fr.es c) • Fr.e c = 0 :=
-    Finset.sum_eq_zero (fun c _ => by rw [H.h_herm (Fr.es c) _, Fr.h_sz, map_zero, zero_smul])
-  have h2 : ∑ c, H.h (Fr.f (Fin.last r)) (Fr.e c) • Fr.es c = 0 :=
-    Finset.sum_eq_zero (fun c _ => by
-      show H.h (Fr.f (Fin.last r)) (Fr.f c.castSucc) • Fr.es c = _
-      rw [Fr.h_iso _ _ (Or.inr (Fin.castSucc_lt_last c).ne), zero_smul])
-  rw [h1, h2]; simp
 
 lemma frame_mem (Fr : FrameD H r) {L : Submodule M.L.O (H.Wb Fr.f)} (hL : Fr.IsInner L) (b : Fin (r + 1)) :
     Fr.f b ∈ Fr.LamStd L := by

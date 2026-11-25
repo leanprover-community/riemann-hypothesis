@@ -748,7 +748,6 @@ theorem one_tmul_mem (a : v.adicCompletionIntegers F) :
     (1 : E) ⊗ₜ[F] (a : v.adicCompletion F) ∈ intV E v :=
   Subring.subset_closure (Or.inr ⟨⟨a, a.2⟩, rfl⟩)
 
-
 variable (E) in
 def baseMap : v.adicCompletionIntegers F →+* intV E v :=
   (((Algebra.TensorProduct.includeRight : v.adicCompletion F →ₐ[F] E ⊗[F] v.adicCompletion F) :
@@ -952,12 +951,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.IntSmulIsIntegral
-
-theorem exists_int_smul_isIntegral {E : Type} [Field E] [NumberField E] (a : E) :
-    ∃ d : ℤ, d ≠ 0 ∧ IsIntegral ℤ (d • a) := by
-  have h : IsAlgebraic ℤ a :=
-    (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic a)
-  exact h.exists_integral_multiple
 
 theorem exists_int_smul_mem {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
     (M : Submodule (NumberField.RingOfIntegers E) (Fin n → E))

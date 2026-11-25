@@ -231,7 +231,6 @@ section Eps
 
 variable {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A]
 
-
 omit [GrpObj A] in
 def epsHom {P Q : GPt A} (φ : P.Hom Q) : P.eps ⟶ Q.eps :=
   letI := P.eps.alg
@@ -530,8 +529,6 @@ theorem ιMulti_two_swap {K V : Type*} [CommRing K] [AddCommGroup V] [Module K V
   have e : (![v, u] ∘ Equiv.swap (0 : Fin 2) 1) = ![u, v] := by
     ext i; fin_cases i <;> rfl
   rw [← e, AlternatingMap.map_swap _ _ (by decide)]
-
-
 
 theorem chern_eq_sum_cup_form : GlobalTheory.Published.AbelianDeRham → ∀ (K : Type) [Field K] (A : Over (Sp K)) [GrpObj A] (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → ∀ (L : LB A.left), L.IsLB → ∀ ψ : LinearMap.BilinForm K (HdR A), IsPolForm (dp0 K) (𝟙 _) A L ψ → ∃ (I : Type) (_ : Fintype I) (c : I → primDR A) (ω : I → Form (A.hom ≫ 𝟙 (Sp K))) (hω : ∀ k, Form.cl _ (ω k) ∈ primDR A), IsChern (dp0 K) (A.hom ≫ 𝟙 (Sp K)) L (∑ k, cup _ (c k).1 (Form.cl _ (ω k))) ∧ ∀ f ∈ Fil A, ∀ x : HdR A, ψ f x = ∑ k, f (c k) * x ⟨_, hω k⟩ := by
   intro H K _ A _ g hA hg L hL ψ hψ
@@ -929,7 +926,6 @@ theorem aff_in (V : A.left.affineOpens) : (Pt.aff (A.hom ≫ 𝟙 (Sp K)) V).In 
 
 def Idx {I : Type} (U : I → A.left.Opens) : Type := {p : I × A.left.affineOpens // p.2.1 ≤ U p.1}
 
-
 omit [GrpObj A] in
 theorem iSup_idx {I : Type} (U : I → A.left.Opens) (hU : ⨆ i, U i = ⊤) : ⨆ a : Idx U, a.1.2.1 = ⊤ := by
   rw [eq_top_iff]
@@ -939,7 +935,6 @@ theorem iSup_idx {I : Type} (U : I → A.left.Opens) (hU : ⨆ i, U i = ⊤) : �
   obtain ⟨_, ⟨V, hV, rfl⟩, hxV, hVU⟩ :=
     A.left.isBasis_affineOpens.exists_subset_of_mem_open hi (U i).2
   exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨(i, ⟨V, hV⟩), hVU⟩, hxV⟩
-
 
 open Classical in
 def βa {I : Type} {U : I → A.left.Opens} (β : ∀ P Q : GPt A, P.Hom Q → Q.B) (a : Idx U) :
@@ -954,7 +949,6 @@ theorem βa_step {I : Type} {U : I → A.left.Opens} {β : ∀ P Q : GPt A, P.Ho
   simp only [βa, dif_pos h, dif_pos hQ]
   rw [← affVal_comp a.1.2 h φ]
   exact hβ _ P Q _ φ ⟨a.1.1, (aff_in a.1.2).mono a.2⟩
-
 
 open Classical in
 theorem exists_coboundary_snd_tr : ∀ (K : Type) [Field K] (A : Over (Sp K)) [GrpObj A], IsAbelianScheme A → ∀ (I : Type) (U : I → A.left.Opens), ⨆ i, U i = ⊤ → ∀ β : ∀ P Q : GPt A, P.Hom Q → Q.B, (∀ (P Q T : GPt A) (φ : P.Hom Q) (ψ : Q.Hom T), (∃ i, P.In (U i)) → β P T (φ.comp ψ) = ψ.ρ (β P Q φ) + β Q T ψ) → ∀ v : epsR K ⟶ A, IsTangent v → ∃ G : PtFn (A.hom ≫ 𝟙 (Sp K)), ∀ (i : I) (V : A.left.affineOpens), V.1 ≤ U i → ∀ (P Q : GPt A) (φ : P.Hom Q), P.In V.1 → TrivSqZeroExt.snd (R := Q.B) (β (P.tr v) (Q.tr v) (φ.tr v)) = G Q - φ.ρ (G P) := by
@@ -1143,11 +1137,6 @@ theorem prismContractionTwoCochain_coboundary (β : C1 (OSmall U)) {v : epsR K �
   rw [prism, k1, k2, k3, k4, triv_sec φ, triv_tan φ hv]
   simp only [hs, ht, hd, cochainTangentDiffCoeff, dif_pos h, dif_pos hQ]
   exact snd_d1_lemma φ.ρ _ _ _ _ _ _ _ _ _
-
-private theorem ev2_pullback_cupZ (c : Z1 (O (dp0 K) (A.hom ≫ 𝟙 (Sp K)))) (ω : Form (A.hom ≫ 𝟙 (Sp K)))
-    {T T' T'' : Thick (dp0 K) (A.hom ≫ 𝟙 (Sp K))} (a : T ⟶ T') (b : T' ⟶ T'') (hT : ∃ i, ⊤ ≤ T.x ⁻¹ᵁ U i) :
-    ev2 ((CoefMap.restrict (O (dp0 K) (A.hom ≫ 𝟙 (Sp K))) (IsSmall (dp0 K) (A.hom ≫ 𝟙 (Sp K)) U).ι).pullbackTwoCocycle
-      (cupZ _ c ω.1)).1 a b hT = b.φ (ev c a) * ev ω.1 b := rfl
 
 private theorem snd_cup_difference_eq {R B C : Type} [CommRing R] [CommRing B] [CommRing C] [Algebra R B]
     [Algebra R C] (ρ : B →ₐ[R] C) (a t : C) (sQ τQ σQ θQ e w b : DualNumber C) (sP τP θP : DualNumber B)
@@ -1360,8 +1349,6 @@ open TopologicalSpace
 
 namespace GlobalTheory.CechKS
 
-
-
 theorem exists_isRep_eps {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A] {A' : Over (Sp (DualNumber K))}
     [GrpObj A'] {i : A.left ⟶ A'.left} (h : IsGrpPullback A A' (DeRham.epsRed K) i) (hA : IsAbelianScheme A)
     (L : LB A.left) {n : ℕ} (u : Fin n → (epsR K ⟶ A)) (θ : Matrix (Fin n) (Fin n) K) (hu : ∀ a, IsTangent (u a))
@@ -1415,8 +1402,6 @@ theorem eval_eq_zero {K M I : Type*} [Field K] [AddCommGroup M] [Module K M] [Fi
     Finset.sum_congr rfl fun a _ ↦ Finset.sum_congr rfl fun b _ ↦ by ring
   rw [e7]
   linear_combination e3 - e1
-
-
 
 theorem isKSValue_of_isCechKS (P : GlobalTheory.Published.AbelianDeRham) {K : Type} [Field K] {A : Over (Sp K)} [GrpObj A]
     {A' : Over (Sp (DualNumber K))} [GrpObj A'] {i : A.left ⟶ A'.left} (h : IsGrpPullback A A' (DeRham.epsRed K) i)
@@ -1481,32 +1466,6 @@ end GlobalTheory.CechKS
 
 end
 
-section
-open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
-open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
-open GlobalTheory.FlagMod (ev frX frVec)
-open GlobalTheory.FlagTan (psiSet HIx VIx TIx IsDef IsVert KSIso)
-open ReciprocityTheory.ChartRestriction.G.PullbackSections (tv)
-open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
-open GlobalTheory.LogPole
-open scoped Classical
-
-theorem GlobalTheory.CechKS.exists_const_isKSValue : GlobalTheory.CovTop.Hypotheses₂ → ∃ s : ℚ, s ≠ 0 ∧ ∀ (K : Type) [Field K] [CharZero K] (A : Over (Sp K)) [GrpObj A] (A' : Over (Sp (DualNumber K))) [GrpObj A'] (i : A.left ⟶ A'.left) (h : IsGrpPullback A A' (GlobalTheory.DeRham.epsRed K) i) (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → IsAbelianScheme A' → SmoothOfRelativeDimension g A'.hom → ∀ (L : LB A.left), L.IsLB → ∀ ψ : LinearMap.BilinForm K (GlobalTheory.DeRham.HdR A), GlobalTheory.DeRham.IsPolForm (GlobalTheory.Cris.dp0 K) (𝟙 _) A L ψ → ∀ (n : ℕ) (u : Fin n → (epsR K ⟶ A)) (θ : Matrix (Fin n) (Fin n) K), (∀ a, IsTangent (u a)) → GlobalTheory.CechKS.IsCechKS A A' i L u θ → ∀ (hb : Fin n → GlobalTheory.DeRham.HdR A), (∀ b, GlobalTheory.DeRham.IsLieImage (hb b) (u b)) → ∀ f ∈ GlobalTheory.DeRham.Fil A, ∀ w : epsR K ⟶ A, IsLieComb (fun a => (s : K) * ∑ b, θ a b * ψ f (hb b)) u w → GlobalTheory.DeRham.IsKSValue h f w := by
-  intro P
-  refine ⟨1, one_ne_zero, ?_⟩
-  intro K _ _ A _ A' _ i h g hA hg hA' hg' L hL ψ hψ n u θ hu H hb hhb f hf w hw
-  obtain ⟨u', hu', rfl⟩ := hw
-  have := GlobalTheory.CechKS.isKSValue_of_isCechKS P.p5 h hA hg hA' hg' L hL ψ hψ u θ hu H hb hhb hf
-  convert this using 1
-  rw [GlobalTheory.FlagTan.lieComb]
-  congr 2
-  funext a
-  refine Over.OverMorphism.ext ((hu' a).trans ?_)
-  simp only [Rat.cast_one, one_mul]
-  rfl
-
-end
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

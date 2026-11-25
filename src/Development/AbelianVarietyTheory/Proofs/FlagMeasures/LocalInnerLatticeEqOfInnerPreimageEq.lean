@@ -56,9 +56,6 @@ variable {D : D7}
 def phiG {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) : (VS D).V →ₗ[D.host.E] (Fin D.R.rS → D.host.E) :=
   LinearMap.pi fun a => (VS D).hT (G.fl.e a)
 
-theorem phiG_apply {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) (x : (VS D).V) (a : Fin D.R.rS) :
-    phiG G x a = (VS D).hT (G.fl.e a) x := rfl
-
 theorem mem_orth_of_phiG {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) (x : (VS D).V) (h : phiG G x = 0) :
     x ∈ orth (VS D) (Xsp G) := by
   simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]

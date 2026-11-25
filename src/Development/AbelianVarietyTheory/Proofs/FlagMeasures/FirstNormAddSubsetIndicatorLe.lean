@@ -221,14 +221,6 @@ theorem firstNorm_add_subsetIndicator_le {n l : ℕ} {ν : Fin n → ℤ} {q : �
   rw [GlobalTheory.TensExists.n1_eZ_eq_card, I.2] at this
   omega
 
-omit [FiniteDimensional ℂ Wp] in
-theorem dg_eq {lam u b bv ga h R l dg} (hS : Setup (k := k) (r := r) lam u b bv ga h q0 z π μW μN μG νq R l dg) {c : ℝ}
-    (hc : ∀ mu (R : Rep k r), R.IsDS (PI.BesselPeriodGGP.eps48 k r) mu → ∀ w, w ≠ 0 →
-      PI.BesselPeriodGGP.fdegH μG R.σ w = c * fdegHC mu) {ν} (hν : n1 ν ≤ q0) :
-    dg ν = c * fdegHC fun a => lam a + (ν a : ℝ) := by
-  obtain ⟨w, -, hw⟩ := GlobalTheory.exists_isLowUnitH_of_isDSHpk (hS.2.1 ν hν).2
-  rw [← (hS.2.2.2 ν hν).2.2 w (ne_zero_of_low hw), hc _ _ (hS.2.1 ν hν) w (ne_zero_of_low hw)]
-
 end side
 
 theorem pow_le_rpow {b x α β : ℝ} {j : ℕ} (hb : 1 ≤ b) (hx : 0 ≤ x) (h : x ≤ b ^ α) (hα : 0 ≤ α) (hj : (j : ℝ) ≤ β) :

@@ -82,51 +82,6 @@ namespace GlobalTheory.AdmWitChar
 open Formalism.L2.SG.Pf.unitaryCongruence Matrix
 open scoped TensorProduct
 
-private theorem coprime_absNorm_of_isCoprime_span {K : Type} [Field K] [NumberField K] (J : Ideal (𝓞 K)) (g : ℕ)
-    (hJ : J ⊔ Ideal.span {((g : ℕ) : 𝓞 K)} = ⊤) : Nat.Coprime (Ideal.absNorm J) g := by
-  have h1mem : (1 : 𝓞 K) ∈ J ⊔ Ideal.span {((g : ℕ) : 𝓞 K)} := by rw [hJ]; exact Submodule.mem_top
-  obtain ⟨j, hj, y, hy, hjy⟩ := Submodule.mem_sup.1 h1mem
-  obtain ⟨r, rfl⟩ := Ideal.mem_span_singleton'.1 hy
-  apply Nat.coprime_of_dvd
-  intro p hp hpc hpg
-  obtain ⟨k, rfl⟩ := hpg
-  by_cases hJb : J = ⊥
-  · have hj0 : j = 0 := (Submodule.mem_bot _).1 (hJb ▸ hj)
-    have h1 : ((p * k : ℕ) : 𝓞 K) * r = 1 := by rw [← hjy, hj0, zero_add, mul_comm]
-    have h2 := congrArg (Algebra.norm ℤ) h1
-    rw [map_mul, map_one, ← map_natCast (algebraMap ℤ (𝓞 K)), Algebra.norm_algebraMap] at h2
-    have hd : 0 < Module.finrank ℤ (𝓞 K) := Module.finrank_pos
-    have h3 : ((p : ℤ)) ∣ 1 := by
-      rw [← h2]
-      apply Dvd.dvd.mul_right
-      apply Dvd.dvd.pow _ hd.ne'
-      push_cast
-      exact dvd_mul_right _ _
-    have h4 := Int.eq_one_of_dvd_one (by positivity) h3
-    norm_cast at h4
-    exact hp.one_lt.ne' h4
-  · haveI : Finite (𝓞 K ⧸ J) := J.finiteQuotientOfFreeOfNeBot hJb
-    haveI : Fintype (𝓞 K ⧸ J) := Fintype.ofFinite _
-    haveI := Fact.mk hp
-    have hcard : p ∣ Fintype.card (𝓞 K ⧸ J) := by
-      rw [← Nat.card_eq_fintype_card, ← Submodule.cardQuot_apply, ← Ideal.absNorm_apply]
-      exact hpc
-    obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card p hcard
-    have hpx : ((p : ℕ) : 𝓞 K ⧸ J) * x = 0 := by
-      rw [← nsmul_eq_mul, ← hx, addOrderOf_nsmul_eq_zero]
-    have hunit : ((p : ℕ) : 𝓞 K ⧸ J) * Ideal.Quotient.mk J ((k : 𝓞 K) * r) = 1 := by
-      rw [← map_natCast (Ideal.Quotient.mk J), ← map_mul, ← map_one (Ideal.Quotient.mk J), Ideal.Quotient.eq]
-      have : ((p : ℕ) : 𝓞 K) * ((k : 𝓞 K) * r) - 1 = -j := by
-        rw [← hjy]; push_cast; ring
-      rw [this]
-      exact J.neg_mem hj
-    have hx0 : x = 0 := by
-      calc x = (((p : ℕ) : 𝓞 K ⧸ J) * Ideal.Quotient.mk J ((k : 𝓞 K) * r)) * x := by rw [hunit, one_mul]
-        _ = Ideal.Quotient.mk J ((k : 𝓞 K) * r) * (((p : ℕ) : 𝓞 K ⧸ J) * x) := by ring
-        _ = 0 := by rw [hpx, mul_zero]
-    rw [hx0, addOrderOf_zero] at hx
-    exact hp.one_lt.ne hx
-
 private theorem psiEf_divN_eq {D : D7} (X : HidaSetting D) (y : X.B.I.E) :
     X.psiEf (Formalism.L2.SG.HidaSetting.divN X.B.I X.B.g (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) y)) =
       (Formalism.L2.SG.PairVal.psiInf (gS D) (X.ιE y))⁻¹ := by
@@ -301,7 +256,6 @@ theorem exists_admissibleWitness_rowTerm {D : D7} {X : HidaSetting D} {Y : Full 
 end GlobalTheory.AmpTerm
 
 namespace GlobalTheory.AmpTerm
-
 
 open Formalism.L2.SG.PairVal in
 theorem amp_eq_mass_phase : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ ν, Formalism.L2.SG.RealObj.NuQPin X u u' ν → ∀ (t₀ : TauC Y u u') (ρ : ((VS D).V ≃ₗ[D.host.E] (VS D).V)) (U U' : Formalism.L2.SG.PairVal.MatR D), MovesTo F00 F'0 (lf D (X.Fu u)) t₀.frame ρ U U' → t₀.relevant → Formalism.L2.SG.PairVal.ptOf t₀.toTerm = w → ∃ T : X.Vpi u' →L[ℂ] X.Vpi u, ‖Formalism.L2.SG.PackageTie.hsEmb T‖ = ‖Formalism.L2.SG.PackageTie.hsEmb (Jw Y u u' ν w)‖ ∧ ∀ (t : TauC Y u u') (n m : ((VS D).V ≃ₗ[D.host.E] (VS D).V)), (Y.tO u u').rowOf t = (Y.tO u u').rowOf t₀ → n ∈ NRat (lf D (X.Fu u)) ∧ m ∈ NRat (lf D (X.Fu u')) ∧ t.lin = n⁻¹ * t₀.lin * m → ampN (Y.cs u) (Y.cs u') (Y.FN u) (Y.FN u') t = ((((((X.B.g : ℝ) ^ (D.R.f * Fintype.card (Formalism.L2.SG.RealObj.FreeE w)))⁻¹) * G.mu (c.lat (ρ * n) t.lam) : ℝ) : ℂ) * G.om (G.datOf (c.lat ρ t₀.lam)) (c.lat (ρ * n) t.lam)) • T := by

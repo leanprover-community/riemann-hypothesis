@@ -141,18 +141,6 @@ end Smul
 section Star
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-theorem star_integral (y : 𝓞 K) : ∃ y' : 𝓞 K, (y' : K) = star (y : K) := by
-  have h : IsIntegral ℤ (star (y : K)) := by
-    exact (RingOfIntegers.isIntegral_coe y).map ((starRingEnd K).toIntAlgHom)
-  exact ⟨⟨star (y : K), h⟩, rfl⟩
-
-theorem star_mem_one {x : K} (hx : x ∈ (1 : FractionalIdeal (𝓞 K)⁰ K)) :
-    star x ∈ (1 : FractionalIdeal (𝓞 K)⁰ K) := by
-  rw [FractionalIdeal.mem_one_iff] at *
-  obtain ⟨y, rfl⟩ := hx
-  obtain ⟨y', hy'⟩ := star_integral y
-  exact ⟨y', hy'⟩
-
 theorem star_mem_ipow {𝔡 : Ideal (𝓞 K)} (h𝔡 : 𝔡 ≠ ⊥)
     (h𝔡s : ∀ x ∈ 𝔡, ∃ y ∈ 𝔡, (y : K) = star (x : K)) (n : ℤ) {x : K} (hx : x ∈ ipow 𝔡 n) :
     star x ∈ ipow 𝔡 n := by

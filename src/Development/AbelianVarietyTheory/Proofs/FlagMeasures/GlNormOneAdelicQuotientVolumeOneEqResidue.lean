@@ -522,11 +522,6 @@ theorem torsion_mul_covol (hE : IsTotallyComplex E) (Λ : Submodule (𝓞 E) (Fi
 
 end Transport
 
-open InfinitePlace in
-private theorem denseRange_embeddings {E : Type} [Field E] [NumberField E]
-    (hE : IsTotallyComplex E) : DenseRange (fun (a : E) (w : InfinitePlace E) => w.embedding a) := by
-  apply _root_.GlobalTheory.UnitsDense.denseRange_embeddings' <;> assumption
-
 theorem glVol_one : ∀ (E : Type) [Field E] [NumberField E], IsTotallyComplex E →
     glVol E 1 = ENNReal.ofReal (dedekindZeta_residue E * Formalism.HermitianLatticesTheory.vInv E ^ Formalism.HermitianLatticesTheory.fDeg E) := by
   intro E _ _ hE
