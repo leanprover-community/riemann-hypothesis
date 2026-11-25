@@ -71,10 +71,11 @@ the workflow does").
    against the branch (see below):
    - A heading is a line of its own, not part of a list, that ends with a colon. Pull requests
      listed under a heading that contains "left out" or "not included" (in any letter case) are
-     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts,
-     such as `Left out because they conflict with a PR earlier in the batch:`, are not told
-     anything from the description: the conflict-labels workflow finds conflicts from the
-     branches and tells them itself (see below). Those listed under any other heading, such as
+     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts
+     with the batch, one that says "conflict with" and later "batch", such as `Left out because
+     they conflict with a PR earlier in the batch:`, are not told anything from the description:
+     the conflict-labels workflow finds conflicts from the branches and tells them itself (see
+     below). A heading about conflicts with `main` is told like any other. Those listed under any other heading, such as
      `Included:`, are included: the batch carries their changes. A pull request listed as
      included is never told it conflicts with the batch or with `main`, even when its own head
      is not in the branch, as when `main` was merged into it for the batch and the push to its
@@ -192,8 +193,8 @@ name some of them as well.
 
 *Switched off until a maintainer switches it on:* the workflow below runs only when the
 repository variable `CONFLICT_LABELS` is `on`. Until then, it writes nothing, and the batch queue
-tells pull requests listed under a heading about conflicts what the description says, as it does
-for any other heading. To switch it on, start the workflow by hand (Actions → conflict labels →
+tells pull requests listed under a heading about conflicts with the batch what the description
+says, as it does for any other heading. To switch it on, start the workflow by hand (Actions → conflict labels →
 Run workflow) with `dry_run` ticked, as it is by default, and no pull request number. Its summary
 lists every label and comment a real run would add. If that looks right, set the variable to `on`
 (Settings → Secrets and variables → Actions → Variables). A dry run can be started whether or not
@@ -224,7 +225,7 @@ until the author comments `ready`. `batch-conflict` keeps a pull request out of 
 The workflow finds these conflicts from the branches alone, whatever the batch's description says.
 A pull request that the description leaves out because it conflicts is told only by this
 workflow, and only if it still conflicts: the batch queue does not repeat entries under a
-heading about conflicts.
+heading about conflicts with the batch.
 
 ### If your pull request is labelled `batch-conflict`
 
@@ -275,8 +276,11 @@ A pull request that merged a batch's branch carries the batch's commits. If the 
 rebuilt without one of its pull requests, your branch still carries that one's commits: when
 your pull request lands, they land too, and GitHub marks the pull request that was taken out
 merged. Every sweep of the workflow looks for this in the pull requests that depend on an open
-batch, or share commits with a batch's branch. Your pull request is then labelled
-`awaiting-author` and told, once for each head of the batch, which pull requests it carries. Make a
+batch, or share commits with a batch's branch: their branches are searched for the batch's merge
+commits, `Merge PR #123 into batch` or `Merge #123 head (...) into batch/...`, for pull requests
+that the batch's current branch no longer has. Your pull request is then labelled
+`awaiting-author` and told which pull requests it carries, once for each such set: a batch rebuilt
+again, or under a new number, tells it nothing new while it carries the same ones. Make a
 new branch from the batch's current branch, copy only your own commits onto it with
 `git cherry-pick`, push that to your pull request and comment `ready`. From then on, merge the
 batch's branch into yours; never rebase onto it.

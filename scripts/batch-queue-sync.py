@@ -1442,7 +1442,8 @@ def tell_left_out(gh, batch, pulls, held, main, log):
     and taken off the note. What a batch being built contains, this one or another, as `held`
     says, is never told it is left out: the lower batch of a stack usually lists as left out what
     the batch on top of it takes. Neither is a pull request into `main` that is not a draft and is
-    listed under a heading about conflicts, while the conflict labels are switched on (see
+    listed under a heading about conflicts with the batch (`CONFLICT_HEADING`), while the conflict
+    labels are switched on (see
     `conflict_labels_on` in `batch-labels.py`): the conflict-labels workflow tells those itself, if
     git finds the conflict. The note's `left` remembers, for each pull request, a digest of the entry
     it was last told about for this batch, and is brought up to date as each is told.
@@ -2127,7 +2128,7 @@ def assemble(gh, now):
     found, leftover = batches(gh, pulls)
     hand = built_by_hand(gh, pulls, log)
     # A batch labelled `building` just now.
-    started = any(batch["commits"] is not None for batch in hand) and start_conflict_labels(gh, main, log)
+    new_batch = any(batch["commits"] is not None for batch in hand)
     closed_building = gh.pages(f"issues?state=closed&labels={quoted(BUILDING)}")
     closed = closed_building + [item for label in (MEMBER, FROZEN)
                                 for item in gh.pages(f"issues?state=closed&labels={quoted(label)}")]
@@ -2159,7 +2160,10 @@ def assemble(gh, now):
     requeued |= more
     unlabel_closed(gh, closed, cleared, log)
     stranded(gh, done, hand, pulls, log)
-    if mark_latest(gh, hand, pulls, log) and not started:
+    # The sweep compares pull requests with the batch labelled `latest batch`, so it is started
+    # only once that label has moved. A run cut short before this leaves the new batch to the
+    # next half-hourly sweep.
+    if mark_latest(gh, hand, pulls, log) or new_batch:
         start_conflict_labels(gh, main, log)
 
     if not ASSEMBLE:
