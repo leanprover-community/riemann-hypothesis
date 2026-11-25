@@ -1106,8 +1106,7 @@ theorem ballM_eq_pi (c : kˣ) (x₀ : Matrix (Fin n) (Fin r) k) :
   exact ⟨fun h i _ l _ => h i l, fun h i l => h i trivial l trivial⟩
 
 theorem mem_ballM_self (c : kˣ) (x : Matrix (Fin n) (Fin r) k) : x ∈ ballM c x := by
-  intro i l
-  simp
+  exact PositivityTheory.Rg.Ming.GermX.mem_ballM_self c x
 
 theorem ballM_mono {c c' : kˣ} (h : valuation k (c : k) ≤ valuation k (c' : k)) (x : Matrix (Fin n) (Fin r) k) :
     ballM c x ⊆ ballM c' x := fun _ hy i l => (hy i l).trans h
@@ -1162,9 +1161,7 @@ theorem indicator_mem_SB (c : kˣ) (x₀ : Matrix (Fin n) (Fin r) k) :
       (fun x hx => Set.indicator_of_notMem hx _)
 
 theorem KO_entry {N : ℕ} {h : GL (Fin N) k} (hh : h ∈ KO k (Fin N)) (i j : Fin N) :
-    valuation k (h.val i j) ≤ 1 := by
-  obtain ⟨H, rfl⟩ := hh
-  exact (H.val i j).2
+    valuation k (h.val i j) ≤ 1 := PositivityTheory.Rg.Ming.GermX.KO_entry hh i j
 
 theorem left_le {m p q : ℕ} (h : Matrix (Fin m) (Fin p) k) (y : Matrix (Fin p) (Fin q) k)
     {γ : ValueGroupWithZero k} (hh : ∀ i j, valuation k (h i j) ≤ 1) (hy : ∀ i j, valuation k (y i j) ≤ γ) :
@@ -1384,8 +1381,7 @@ theorem ballM_mono_loc {c c' : kˣ} (h : valuation k (c : k) ≤ valuation k (c'
   fun _ hy i l => (hy i l).trans h
 
 theorem mem_ballM_self_loc (c : kˣ) (x : Matrix (Fin n) (Fin r) k) : x ∈ ballM c x := by
-  intro i l
-  simp
+  exact PositivityTheory.Rg.Ming.GermX.mem_ballM_self c x
 
 theorem isCompact_support_SB (Φ : SB (Matrix (Fin n) (Fin r) k)) :
     IsCompact (Function.support Φ.1) := by
@@ -1493,8 +1489,7 @@ theorem conj_cancel' (h : GL (Fin n) k) (g : GL (Fin r) k) (x : Matrix (Fin n) (
   simp [← Matrix.mul_assoc]
 
 theorem mem_ballM_self (c : kˣ) (x : Matrix (Fin n) (Fin r) k) : x ∈ ballM c x := by
-  intro i l
-  simp
+  exact PositivityTheory.Rg.Ming.GermX.mem_ballM_self c x
 
 theorem tr_mem (h : GL (Fin n) k) (g : GL (Fin r) k) (Ψ : SB (Matrix (Fin n) (Fin r) k)) :
     (fun y => Ψ.1 (h.val * y * g.val)) ∈ SB (Matrix (Fin n) (Fin r) k) := by

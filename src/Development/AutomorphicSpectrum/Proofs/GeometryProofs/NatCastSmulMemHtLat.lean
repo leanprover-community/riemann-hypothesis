@@ -255,7 +255,7 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G]
 
 theorem valAt_congr {B : Type} [CommRing B] {Y : Scheme.{0}} {y y' : Spec (CommRingCat.of B) ⟶ Y} (e : y = y') (W : Y.Opens)
     (h : ⊤ ≤ y ⁻¹ᵁ W) (h' : ⊤ ≤ y' ⁻¹ᵁ W) (f : Γ(Y, W)) : BT.valAt y W h f = BT.valAt y' W h' f := by
-  subst e; rfl
+  exact GlobalTheory.CompanionTheory.Ar.BT.valAt_congr_point e W h h' f
 
 theorem one_left {S : Over X} : (1 : S ⟶ G).left = S.hom ≫ (η[G]).left := by
   simp [Hom.one_def]

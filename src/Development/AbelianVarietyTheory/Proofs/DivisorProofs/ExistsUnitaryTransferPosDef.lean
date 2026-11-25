@@ -308,9 +308,7 @@ theorem exists_GLint {g g' : Matrix (Fin n) (Fin n) K} (hg : ∀ i j, g i j ∈ 
   exact ⟨_, ⟨⟨G, G', e, mul_eq_one_comm.1 e⟩, rfl⟩, rfl⟩
 
 theorem entry_mem {a : GL (Fin n) K} (ha : a ∈ GLint (Fin n) O) (i j : Fin n) :
-    (a : Matrix (Fin n) (Fin n) K) i j ∈ O := by
-  obtain ⟨b, rfl⟩ := ha
-  exact ((b : Matrix (Fin n) (Fin n) O) i j).2
+    (a : Matrix (Fin n) (Fin n) K) i j ∈ O := GlobalTheory.DualDivU.entry_mem O ha i j
 
 def LocBasis (O : Subring K) (x : Matrix (Fin n) (Fin n) K) (τ : Fin n → K) (g : Matrix (Fin n) (Fin n) K) : Prop :=
   (∀ z : Fin n → K, (∀ i, z i ∈ O) → ∀ i, (g *ᵥ z) i ∈ O) ∧

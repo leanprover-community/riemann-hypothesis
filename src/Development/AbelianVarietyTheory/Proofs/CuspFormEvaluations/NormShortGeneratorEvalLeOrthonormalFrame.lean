@@ -110,7 +110,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r g q0 n : ℕ} {X 
   {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ}
 
 theorem isSB_smul (c : ℂ) {φ : TF n g} (h : IsSB φ) : IsSB (c • φ) :=
-  (_root_.GlobalTheory.SW.isSB_algebra_haar_linear ℚ _ _ φ φ h h).2.1 c
+  GlobalTheory.Dict.ShortVal.isSB_smul c h
 
 theorem theta_sum₂ (hr : X.p0 + q0 = r) (idx : Fin g ≃ X.Ψ × Fin r) (hs : IsSympl X bas) {x : Frame X.Ψ r}
     (hx : x ∈ X.dom) {T : Type} (s : Finset T) (W : T → ℂ) (f : T → TF n g) (hf : ∀ i, IsSB (f i))

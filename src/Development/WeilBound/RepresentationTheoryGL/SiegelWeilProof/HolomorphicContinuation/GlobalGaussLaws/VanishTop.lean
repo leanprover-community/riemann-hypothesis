@@ -1209,7 +1209,7 @@ variable {D : D7} {n : ℕ}
 -- `reidx_mul` and `reidx_one` are provided by `ValZeroOfTens` (same namespace).
 
 theorem reidx_conjTranspose (a : M2 n) : reidx aᴴ = (reidx a)ᴴ := by
-  simp only [reidx, Matrix.conjTranspose_submatrix]
+  exact PositivityTheory.Rg.Sw.Glob.reidx_ct a
 
 theorem continuous_reidx : Continuous (fun a : M2 n => reidx a) :=
   continuous_id.matrix_submatrix _ _

@@ -1397,8 +1397,7 @@ theorem length_quot_map_of_flat {A L : Type*} [CommRing A] [IsLocalRing A] [Comm
 
 theorem map_linForm {R S : Type*} [CommRing R] [CommRing S] {n : ℕ} (φ : R →+* S) (u : Fin n → R) :
     (linForm u).map φ = linForm (fun j => φ (u j)) := by
-
-  simp only [linForm, map_sum, map_mul, MvPolynomial.map_C, MvPolynomial.map_X]
+  exact GroundTheory.Heights₂.Heights.Vertical.GenSecDomain.map_linForm φ u
 
 theorem secLin_eq_mk_map {K : Type*} [Field K] [NumberField K] {n e : ℕ}
     (I : Ideal (MvPolynomial (Fin n) K)) (v : HeightOneSpectrum (𝓞 K)) (u : Fin n → 𝓞 K) :

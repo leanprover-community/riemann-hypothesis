@@ -59,8 +59,7 @@ variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 theorem sh_mul' (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
   simp only [sh, map_mul, MulOpposite.unop_mul]
 
-theorem sh_one' : sh G (1 : G.C) = 1 := by
-  simp only [sh, map_one, MulOpposite.unop_one]
+theorem sh_one' : sh G (1 : G.C) = 1 := GlobalTheory.LKMid.sh_one_eq G
 
 theorem rel_equivalence : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), Equivalence (Pair.Rel (G := G)) := by
   intro p _ G

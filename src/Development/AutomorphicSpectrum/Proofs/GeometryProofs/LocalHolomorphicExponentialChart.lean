@@ -944,8 +944,7 @@ theorem le_dual {X : Scheme.{0}} {v : Sp (DualNumber C) ⟶ X} {x : Sp C ⟶ X}
 alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
 
 theorem dualMap_comp (β : R →+* C) (κ : C →+* D) : dualMap (κ.comp β) = (dualMap κ).comp (dualMap β) := by
-  refine RingHom.ext fun x => ?_
-  ext <;> simp [dualMap]
+  exact GlobalTheory.CompanionTheory.Ar.InvDer.dualMap_comp β κ
 
 variable (G : Over (Sp R)) [GrpObj G]
 

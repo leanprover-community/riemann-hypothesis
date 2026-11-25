@@ -104,9 +104,7 @@ theorem app_smul {X V : Type} [TopologicalSpace X] [AddCommGroup V] [Module ℂ 
 omit [MeasurableSpace k] [BorelSpace k] in
 theorem om_smul' {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] (μ : kˣ →* ℂˣ) (g : GL a k) (h : GL b k)
     (z : ℂ) (Φ : Matrix b a k → ℂ) : om μ g h (z • Φ) = z • om μ g h Φ := by
-  funext x
-  simp only [om, Pi.smul_apply, smul_eq_mul]
-  ring
+  exact GlobalTheory.LocOm.LawMul.om_smul μ g h z Φ
 
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [BorelSpace k] in

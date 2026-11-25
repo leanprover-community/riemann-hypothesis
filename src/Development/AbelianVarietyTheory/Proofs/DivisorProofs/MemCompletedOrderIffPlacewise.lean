@@ -57,8 +57,7 @@ namespace GlobalTheory.CMVal.HatPlace
 variable {E : Type} [Field E] [NumberField E]
 
 theorem isOpen_integral : IsOpen {y : Af E | ∀ w, Valued.v (y w) ≤ 1} :=
-  RestrictedProduct.isOpen_forall_mem (R := fun v : HeightOneSpectrum (𝓞 E) => v.adicCompletion E)
-    (A := fun v => v.adicCompletionIntegers E) fun _ => Valued.isOpen_valuationSubring _
+  GlobalTheory.IntegralOpen.isOpen_integral E
 
 theorem exists_approx {S : Set (Af E)} {z : Af E} (hz : z ∈ closure S) {n : OF E} (hn : n ≠ 0) :
     ∃ x ∈ S, ∃ y : Af E, (∀ w, Valued.v (y w) ≤ 1) ∧ z = x + iota n * y := by

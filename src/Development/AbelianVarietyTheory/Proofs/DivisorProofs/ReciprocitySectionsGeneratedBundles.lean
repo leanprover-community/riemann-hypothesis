@@ -1258,11 +1258,7 @@ noncomputable section
 namespace GlobalTheory.Mix.LogLim
 
 theorem compactSpace_of_proj {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
-    (h : IsProjOver f) : CompactSpace X := by
-  obtain ⟨m, i, hi, rfl⟩ := h
-  have := isProper_str R m
-  have : IsProper (i ≫ PSpace.str R m) := inferInstance
-  exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R m)
+    (h : IsProjOver f) : CompactSpace X := GlobalTheory.MetricIndep.compactSpace_of_projOver h
 
 theorem nsq_nonneg {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {σ : k →+* ℂ}
     (N : MLine p σ) (t : N.B.Sec) (y : CxPts p σ) : 0 ≤ N.φ.nsq (secVal p σ t) y := by

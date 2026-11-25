@@ -940,8 +940,7 @@ theorem intAtA_mul {a b : E ⊗[F] FiniteAdeleRing (𝓞 F) F} (ha : IntAtA (F :
   _root_.GlobalTheory.CplPt.intAtA_mul ha hb
 
 theorem intAtA_int (x : 𝓞 E) : IntAtA (F := F) P (iA F E (algebraMap (𝓞 E) E x)) :=
-  ⟨1, fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h), by
-    rw [map_one, map_one, one_mul]; exact (toRInt F E x).2⟩
+  GlobalTheory.CplPt.intAtA_int x
 
 def intAtSub (P : HeightOneSpectrum (𝓞 E)) :
     Subring (E ⊗[F] FiniteAdeleRing (𝓞 F) F) where

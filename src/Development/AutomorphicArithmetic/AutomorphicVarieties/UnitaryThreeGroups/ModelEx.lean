@@ -135,12 +135,7 @@ private theorem unitaryEmbedding_residualRep_eq_zero_of_weight_ne {G R : Type} [
 
 private theorem map_reducible_three_dim {O : Type} [CommRing O] [IsLocalRing O] {G : Type} [Group G] (η : G →* ℤˣ) (Ψ : G →* Oˣ)
     (g : G) : GG.map (residue O) (r0 η Ψ g) = rbar O η Ψ g := by
-  refine SemidirectProduct.ext (Units.ext ?_) rfl
-  show (tor O (Ψ g) : Matrix (Fin 3) (Fin 3) O).map (residue O) = tor _ (barChar O Ψ g)
-  rw [tor_val, tor_val, Matrix.diagonal_map (map_zero _)]
-  congr 1
-  funext i
-  exact congrArg Units.val (map_zpow (Units.map (residue O).toMonoidHom) (Ψ g) (wt1 i))
+  exact UpperTheory.V.U3.baseLift_map_residue η Ψ g
 
 private theorem res_zpow {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R]
     (t : Rˣ) (ht : res O R t = 1) (j : ℤ) : res O R ((t ^ j : Rˣ) : R) = 1 := by

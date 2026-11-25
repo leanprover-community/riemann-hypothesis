@@ -316,9 +316,7 @@ theorem rmul_cong (L : LocE F E) {ϖ : 𝒪[F]} {n m i : ℕ} {Λ : Submodule L.
   simp only [rmul, Finset.smul_sum, smul_smul, ← h, sub_smul, Finset.sum_sub_distrib]
 
 theorem cT_mul (L : LocE F E) {m : ℕ} (A B : Matrix (Fin m) (Fin m) E) :
-    cT L (A * B) = cT L B * cT L A := by
-  ext a b
-  simp [cT, Matrix.mul_apply, mul_comm]
+    cT L (A * B) = cT L B * cT L A := by apply GlobalTheory.CongTrans.cT_mul
 
 theorem cT_one (L : LocE F E) {m : ℕ} : cT L (1 : Matrix (Fin m) (Fin m) E) = 1 := by
   ext a b

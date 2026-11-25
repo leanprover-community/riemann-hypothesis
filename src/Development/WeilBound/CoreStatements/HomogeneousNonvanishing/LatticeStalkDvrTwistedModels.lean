@@ -88,7 +88,7 @@ theorem spMap_genMap_fromSpecStalk (p : Cpt ξ) : spMap (genMap ξ p) ≫ X.from
 
 theorem dualMap_comp_algebraMap {R R' : Type} [CommRing R] [CommRing R'] (k : R →+* R') :
     (dualMap k).comp (algebraMap R (DualNumber R)) = (algebraMap R' (DualNumber R')).comp k := by
-  ext r <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  exact GlobalTheory.CompanionTheory.Ar.SqAdd.dualMap_comp_algebraMap k
 
 theorem spec_dualMap_comp {R R' : Type} [CommRing R] [CommRing R'] (k : R →+* R') :
     Spec.map (CommRingCat.ofHom (dualMap k)) ≫ Spec.map (CommRingCat.ofHom (algebraMap R (DualNumber R))) =

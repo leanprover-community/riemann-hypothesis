@@ -135,7 +135,7 @@ open GlobalTheory.CompanionTheory.IwaAd GlobalTheory.CompanionTheory.HermVol
 variable {D : D7} {n : ℕ}
 
 theorem cA_incA (D : D7) (x : D.host.E) : cA D (incA D x) = incA D (D.sp.cm.sig x) := by
-  simp [cA, sigR, incA, inclR]
+  exact GlobalTheory.IndefiniteRowSideFullHecke.SymplecticTensorMeasures.cA_inc x
 
 theorem hermPart_anti {c : AE D} (hc : cA D c = -c) {s : Mx D n n} (hs : s ∈ hermA D n) :
     hermPart D n (c • s) = 0 := by

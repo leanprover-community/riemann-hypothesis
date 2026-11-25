@@ -572,8 +572,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.Desc.CommonChart
 
 theorem spc {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp]; rfl
+    spMap g ≫ spMap f = spMap (g.comp f) := GlobalTheory.spMap_comp_ring f g
 
 theorem flat_generic {X Y : Scheme.{0}} [IsIntegral X] [IsIntegral Y] (φ : Y ⟶ X) [Flat φ] :
     φ (genericPoint Y) = genericPoint X := by

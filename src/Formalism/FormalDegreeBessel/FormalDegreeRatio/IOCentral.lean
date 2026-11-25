@@ -34,11 +34,7 @@ section Core
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 lemma io_inUJ_mul {A B : Matrix (Fin n) (Fin n) ℂ} (hA : inUJ ε A) (hB : inUJ ε B) :
-    inUJ ε (A * B) := by
-  unfold inUJ at hA hB ⊢
-  calc (A * B)ᴴ * Jm ε * (A * B) = Bᴴ * (Aᴴ * Jm ε * A) * B := by
-        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Jm ε := by rw [hA, hB]
+    inUJ ε (A * B) := Formalism.REAL.indefinite_unitary_mul_mem ε hA hB
 
 lemma ioExt_at {φ : IOPt ε → E} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     ioExt ε φ g = φ ⟨g, hg⟩ := by

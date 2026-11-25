@@ -123,7 +123,7 @@ variable {D : D7}
 
 theorem selfDual_full (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
     (hΛ : IsSelfDualC V Λ) : Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
+  GlobalTheory.FinPl.PlacesAdeles.selfDual_isFull V Λ hΛ
 
 
 theorem smul_mem_hatMx_of_fr {m n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}

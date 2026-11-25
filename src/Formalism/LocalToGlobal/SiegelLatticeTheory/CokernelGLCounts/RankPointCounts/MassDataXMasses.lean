@@ -230,7 +230,7 @@ theorem kset_mul {x y : X.B.I.Gf} (hx : x ∈ X.B.I.Kset) (hy : y ∈ X.B.I.Kset
   (Formalism.UG.stabGL X.B.I.Lf).mul_mem hx hy
 
 theorem kset_inv {x : X.B.I.Gf} (hx : x ∈ X.B.I.Kset) : x⁻¹ ∈ X.B.I.Kset :=
-  (Formalism.UG.stabGL X.B.I.Lf).inv_mem hx
+  Formalism.L2.SG.Pf.kset_inv X hx
 
 theorem gf_eq_one (hb : AdBridgeIso X.B.I) (δ : X.B.I.GA) (hδ : δ ∈ X.B.I.GFset) (h1 : δ.1 = 1) : δ = 1 := by
   obtain ⟨g, -, hinf, hfin⟩ := hδ

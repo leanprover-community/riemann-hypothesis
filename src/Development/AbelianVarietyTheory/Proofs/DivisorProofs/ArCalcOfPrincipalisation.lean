@@ -426,11 +426,7 @@ noncomputable section
 namespace GlobalTheory.DefectAdd
 
 theorem compactSpace_of_projOver {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
-    (h : IsProjOver f) : CompactSpace X := by
-  obtain ⟨m, i, hi, rfl⟩ := h
-  have := isProper_str R m
-  have : IsProper (i ≫ PSpace.str R m) := inferInstance
-  exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R m)
+    (h : IsProjOver f) : CompactSpace X := GlobalTheory.MetricIndep.compactSpace_of_projOver h
 
 theorem int_eq_add_of_ae {k : Type} [CommRing k] {Y : Scheme.{0}} {q : Y ⟶ Sp k} {σ : k →+* ℂ} {D : ℕ}
     (L : Fin D → MLine q σ) {f g h : CxPts q σ → ℝ} (hf : Intg L f) (hg : Intg L g)

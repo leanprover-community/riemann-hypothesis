@@ -121,10 +121,7 @@ private theorem minus_positive_of_parts_lemma {k r : ℕ} {E : Type} [NormedAddC
   rw [h1, h2]
 
 private theorem minus_positive_of_parts_lemma_2 {k r : ℕ} {g : Mx k r} (hg : g ∈ B.GV k r) :
-    g ∈ Glev k r 0 := by
-  refine ⟨hg, ?_⟩
-  intro a ha
-  simp at ha
+    g ∈ Glev k r 0 := Formalism.FourierDecayAlt.P.SingleEntryHermitianProducts.glev0 hg
 
 private theorem minus_positive_of_parts_lemma_3 {k r m : ℕ} (hm : m + 2 ≤ r) (z' : Fin (2 * r + k + 1) → ℂ)
     {B' M : Type} [Ring B'] [Algebra ℂ B'] [AddCommGroup M] [Module ℂ M] (S : Subalgebra ℂ B')

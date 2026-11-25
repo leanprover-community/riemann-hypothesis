@@ -1281,9 +1281,7 @@ theorem gLab_of {X : USetup C} {p : ℕ} [Fact p.Prime] {z : X.M.Z} {ct : UCTrai
 theorem normal (X : USetup C) : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X.M.Z := GlobalTheory.IsNormalScheme.pred _ (h := X.normal)
 
 theorem be_pos (T : UTrait Xo cf) (x : T.P.D.toPre.X) (hx : x ≠ 0) : 0 < T.be x x := by
-  obtain ⟨j, hj⟩ := IsMonomial.exists_pos (IsLocalRing.maximalIdeal.isMaximal T.V).ne_top T.mono hx
-  fin_cases j
-  simpa using hj
+  exact GlobalTheory.UPoinc.UGalLab.be_pos T x hx
 
 theorem be_nonneg (T : UTrait Xo cf) (x : T.P.D.toPre.X) : 0 ≤ T.be x x := by
   by_cases hx : x = 0

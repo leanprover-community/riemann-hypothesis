@@ -252,9 +252,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem det_ratA (g : GL (Fin n) E) :
     ((Matrix.GeneralLinearGroup.det (ratA F g) : (E ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ) : E ⊗[F] FiniteAdeleRing (𝓞 F) F) =
-      iA F E ((Matrix.GeneralLinearGroup.det g : Eˣ) : E) := by
-  rw [Matrix.GeneralLinearGroup.val_det_apply, Matrix.GeneralLinearGroup.val_det_apply, RingHom.map_det]
-  rfl
+      iA F E ((Matrix.GeneralLinearGroup.det g : Eˣ) : E) := GlobalTheory.FramesDet.det_ratA g
 
 end Rat
 

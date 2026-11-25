@@ -250,11 +250,10 @@ private theorem continuous_form {R : Type} [CommRing R] [TopologicalSpace R] [Is
   fun_prop
 
 private theorem continuous_psi {F : Type} [Field F] [NumberField F] : Continuous (ψ : A F → ℂ) :=
-  continuous_subtype_val.comp (continuous_adelicChar (K := F))
+  UpperTheory.ConvolutionTheory.R2.continuous_ψ
 
 private theorem psi_add {F : Type} [Field F] [NumberField F] (x y : A F) :
-    ψ (x + y) = ψ x * ψ y := by
-  simp [ψ, AddChar.map_add_eq_mul]
+    ψ (x + y) = ψ x * ψ y := UpperTheory.ConvolutionTheory.R2.ψ_add x y
 
 private theorem continuous_quaternaryForm_left {F : Type} [Field F] [NumberField F] (δ : F) (Z : V4 F) :
     Continuous fun y : V4 F => B4 δ y Z :=

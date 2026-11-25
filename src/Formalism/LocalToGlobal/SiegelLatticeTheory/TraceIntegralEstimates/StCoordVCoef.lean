@@ -27,7 +27,7 @@ namespace Formalism.L2.S.Pv.Chart
 variable {n r : ℕ} (ε : Fin n → Bool)
 
 theorem hJ_add (x y y' : Fin n → ℂ) : hJ ε x (y + y') = hJ ε x y + hJ ε x y' := by
-  simp only [hJ, Matrix.mulVec_add, dotProduct_add]
+  exact Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right ε x y y'
 
 theorem hJ_smul (x y : Fin n → ℂ) (c : ℂ) : hJ ε x (c • y) = c * hJ ε x y := by
   simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]

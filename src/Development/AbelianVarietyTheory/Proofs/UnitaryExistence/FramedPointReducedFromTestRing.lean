@@ -223,7 +223,7 @@ theorem base_ext {S : Type} [CommRing S] {Y : Scheme.{0}} {n : ℕ} {h : Fin n �
 theorem fst_dual {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) :
     (TrivSqZeroExt.fstHom T T T).toRingHom.comp (dualMap ψ) =
       ψ.comp (TrivSqZeroExt.fstHom S S S).toRingHom :=
-  RingHom.ext fun x => by simp [dualMap]
+  GlobalTheory.Frames.EigenBaseChange.fst_comp_dualMap ψ
 
 theorem eps_alg {S : Type} [CommRing S] (a : S) :
     (epsMul a).comp (algebraMap S (DualNumber S)) = algebraMap S (DualNumber S) :=

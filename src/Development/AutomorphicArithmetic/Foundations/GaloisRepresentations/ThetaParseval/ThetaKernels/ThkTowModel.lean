@@ -305,15 +305,11 @@ private theorem supported_sum {F : Type} [Field F] [NumberField F]
 private theorem supported_neg {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} {x : AF F}
     (h : At (GlobalTheory.AdelicU.evFin F v) x) :
-    At (GlobalTheory.AdelicU.evFin F v) (-x) := by
-  intro u hu
-  rw [smul_neg, h u hu, neg_zero]
+    At (GlobalTheory.AdelicU.evFin F v) (-x) := GlobalTheory.VacAny.at_neg h
 private theorem supported_atPlace {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} (t : Fv F v) :
     At (GlobalTheory.AdelicU.evFin F v)
-      (GlobalTheory.EmbChart.atPlace v t) := by
-  intro u hu
-  rw [smul_eq_mul, mul_comm, GlobalTheory.EmbChart.atPlace_mul_right, hu, mul_zero, map_zero]
+      (GlobalTheory.EmbChart.atPlace v t) := GlobalTheory.VacAny.at_atPlace t
 
 private theorem supported_sub {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} {x y : AF F}
@@ -326,17 +322,13 @@ private theorem supported_sub {F : Type} [Field F] [NumberField F]
 private theorem evFin_invOf_two_local {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} :
     GlobalTheory.AdelicU.evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := by
-  refine (invOf_eq_right_inv ?_).symm
-  have h : GlobalTheory.AdelicU.evFin F v (2 * ⅟(2 : AF F)) = 1 := by
-    rw [mul_invOf_self, map_one]
-  rwa [map_mul, map_ofNat] at h
+  exact GlobalTheory.VacAny.evFin_invOf_two
 
 private theorem supported_mul_right {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} {x : AF F}
     (hx : At (GlobalTheory.AdelicU.evFin F v) x) (y : AF F) :
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (GlobalTheory.AdelicU.evFin F v) (x * y) := by
-  intro u hu
-  rw [smul_eq_mul, ← mul_assoc, show u * x = 0 from hx u hu, zero_mul]
+  exact GlobalTheory.VacAny.at_mul_right hx y
 
 private theorem supported_mul_left {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} (x : AF F) {y : AF F}

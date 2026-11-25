@@ -98,10 +98,10 @@ theorem inj_add (hp : IsPair B M χX χW om r s r' s') {𝓒} (hc : Cls0 M om �
 theorem inj_smul (c : ℂ) (Φ : Fn F n d) : M.I om (c • Φ) = c • M.I om Φ := funext fun h => PositivityTheory.ThKG.I_smul M om c Φ h
 
 theorem inj_right (Φ : Fn F n d) (h₀ h : UA σ W.J) : M.I om (om (1, h₀) Φ) h = M.I om Φ (h * h₀) := by
-  simp only [Model.I, theta, ← Module.End.mul_apply, ← map_mul, Prod.mk_mul_mk, mul_one]
+  exact PositivityTheory.ThKF.I_right Φ h₀ h
 
 theorem inj_at {m : ℕ} {Y : Spc F E m} {R : Type} [Zero R] (ev : AF F → R) : (1 : UA σ Y.J) ∈ UAt σ Y ev :=
-  fun u _ => by simp [mat]
+  PositivityTheory.ThKF.one_at' ev
 
 theorem inj_kinf {m : ℕ} {Y : Spc F E m} (τ) : (1 : UA σ Y.J) ∈ KInf σ Y τ :=
   ⟨inj_at _, fun w => by

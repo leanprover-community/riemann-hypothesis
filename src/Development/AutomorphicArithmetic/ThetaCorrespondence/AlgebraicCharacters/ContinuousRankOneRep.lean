@@ -1021,9 +1021,7 @@ private theorem ord_zero [Nonempty (Emb l w)] (u : (w.adicCompletion F)ˣ) (hu :
 
 private theorem continuous_rank_one_rep {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [TopologicalSpace K] (μ : Γ →* Kˣ)
     (hμ : Continuous μ) : Continuous fun g => ((rk1 μ g : GL (Fin 1) K) : Matrix (Fin 1) (Fin 1) K) := by
-  refine continuous_matrix fun i j => ?_
-  fin_cases i; fin_cases j
-  simpa [rk1, Function.comp_def] using Units.continuous_val.comp hμ
+  exact _root_.continuous_rank_one_rep μ hμ
 
 variable (ι : Qbar l ≃+* ℂ) (h : IsPlaceOver A w)
   {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l F Ω (Dec (F := F) A) O)

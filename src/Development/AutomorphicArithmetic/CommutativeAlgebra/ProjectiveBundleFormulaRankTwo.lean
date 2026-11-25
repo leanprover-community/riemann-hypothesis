@@ -421,7 +421,7 @@ theorem sec_map_neg {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Sc
     Sec.map φ (-a) = -Sec.map φ a := map_neg (φ.hom.app (op U)).hom a
 
 theorem sec_map_zero {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} :
-    Sec.map φ (0 : Sec F U) = 0 := map_zero (φ.hom.app (op U)).hom
+    Sec.map φ (0 : Sec F U) = 0 := GlobalTheory.EtC.SuppAcyc.map_zero' φ
 
 theorem neg2 : Int.negOnePow 2 = 1 := by decide
 
@@ -840,12 +840,10 @@ theorem bd (hc : Cover2 (ZMod q) f₁ f₂) (ξ : Ht q X (1 + 1) 1) (κ : Ht q (
     exact Or.inl h2
 
 theorem cast_add' {E : Spc} {n i n' i' : ℤ} (hn : n = n') (hi : i = i') (x y : Ht q E n i) :
-    (x + y).cast hn hi = x.cast hn hi + y.cast hn hi := by
-  subst hn hi; rfl
+    (x + y).cast hn hi = x.cast hn hi + y.cast hn hi := by apply GlobalTheory.EtC.GmPhi.cast_add
 
 theorem cast_zero' {E : Spc} {n i n' i' : ℤ} (hn : n = n') (hi : i = i') :
-    (0 : Ht q E n i).cast hn hi = 0 := by
-  subst hn hi; rfl
+    (0 : Ht q E n i).cast hn hi = 0 := by apply GlobalTheory.EtC.GmPhi.cast_zero
 
 theorem pull_cast {E E' : Spc} (f : E ⟶ E') {n i n' i' : ℤ} (hn : n = n') (hi : i = i') (x : Ht q E' n i) :
     pull _ f _ _ (x.cast hn hi) = Ht.cast hn hi (pull _ f _ _ x) := by

@@ -313,9 +313,7 @@ theorem det_mem_OhE {n : ℕ} (M : Matrix (Fin n) (Fin n) (AE D)) (hM : ∀ i j,
   exact sum_mem fun σ _ => mul_mem (intCast_mem _ _) (prod_mem fun i _ => hM _ _)
 
 theorem one_mem_OhE {n : ℕ} (i j : Fin n) : (1 : Matrix (Fin n) (Fin n) (AE D)) i j ∈ OhE D := by
-  rw [Matrix.one_apply]; split_ifs
-  · exact one_mem _
-  · exact zero_mem _
+  exact GlobalTheory.UnitaryFactor.one_mem_ohE D i j
 
 theorem adjugate_mem_OhE {n : ℕ} (M : Matrix (Fin n) (Fin n) (AE D)) (hM : ∀ i j, M i j ∈ OhE D) (i j : Fin n) :
     M.adjugate i j ∈ OhE D := by

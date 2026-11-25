@@ -253,8 +253,7 @@ theorem qm_inj {α β : Type} {X Y : Matrix α β ℚ} (h : qm X = qm Y) : X = Y
   simpa [qm] using this
 
 theorem qm_one {α : Type} [DecidableEq α] : qm (1 : Matrix α α ℚ) = 1 := by
-  ext i j
-  by_cases h : i = j <;> simp [qm, Matrix.one_apply, h]
+  exact GlobalTheory.SW.TransComp.qm_one
 
 theorem qm_J {α : Type} [DecidableEq α] : qm (Matrix.J α ℚ) = Matrix.J α ℂ := by
   ext (i | i) (j | j) <;> by_cases h : i = j <;> simp [qm, Matrix.J, h]

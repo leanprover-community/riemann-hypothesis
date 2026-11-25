@@ -142,7 +142,7 @@ theorem spMap_comp' {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] 
   simp [spMap, ← Spec.map_comp]
 
 theorem spMap_id' (R : Type) [CommRing R] : spMap (RingHom.id R) = 𝟙 _ := by
-  simp [spMap]
+  exact GlobalTheory.Frames.ChgBC.spMap_id R
 
 section
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] {L : LB G.left}

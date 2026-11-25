@@ -770,7 +770,7 @@ theorem sesq_eq_herm {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ
   ring
 
 theorem sgI_sq (j j' : ℕ) : sgI j j' * sgI j j' = 1 := by
-  simp [sgI, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
+  exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.AdaptedLen.sgI_mul_self
 
 theorem stdModel_of (h : StdZ) : StdModel := by
   intro E _ _ _ Ψ _ _ j j' n g Λ _ _ H F ξ c₀ hc₀ hξ

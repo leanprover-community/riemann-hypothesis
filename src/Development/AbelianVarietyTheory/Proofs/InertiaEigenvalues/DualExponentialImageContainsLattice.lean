@@ -587,10 +587,7 @@ theorem sum_ind {R : Type*} [CommRing R] [IsDomain R] (l : ℕ) (hl : 0 < l) (x 
     · rw [h4, mul_zero]
 
 theorem pow_shift {M : Type*} [Monoid M] (l : ℕ) (ζ : ℕ → M) (h : ∀ j, ζ (j + 1) ^ l = ζ j)
-    (i j : ℕ) : ζ (i + j) ^ l ^ j = ζ i := by
-  induction j with
-  | zero => simp
-  | succ j ih => rw [pow_succ', pow_mul, ← add_assoc, h, ih]
+    (i j : ℕ) : ζ (i + j) ^ l ^ j = ζ i := GlobalTheory.MemLoc.zeta_pow_iter h i j
 
 theorem pow_eq_one_iff_le {M : Type*} [Monoid M] (l : ℕ) (ζ : ℕ → M) (h0 : ζ 0 = 1) (h1 : ζ 1 ≠ 1)
     (h : ∀ j, ζ (j + 1) ^ l = ζ j) (i j : ℕ) : ζ i ^ l ^ j = 1 ↔ i ≤ j := by

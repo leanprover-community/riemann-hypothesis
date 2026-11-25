@@ -795,12 +795,10 @@ theorem few_roots {m p M : ℕ} {Ω : Fin m → Type} [∀ i, Field (Ω i)] [∀
 
 theorem submatrix_fromBlocks_mul {R : Type} [CommRing R] {n : ℕ} (a b c d a' b' c' d' : Matrix (Fin n) (Fin n) R) :
     blk4 a b c d * blk4 a' b' c' d' = blk4 (a * a' + b * c') (a * b' + b * d') (c * a' + d * c') (c * b' + d * d') := by
-  unfold blk4
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
+  exact GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul a b c d a' b' c' d'
 
 theorem block_matrix_one {R : Type} [CommRing R] {n : ℕ} : blk4 (1 : Matrix (Fin n) (Fin n) R) 0 0 1 = 1 := by
-  unfold blk4
-  rw [Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]
+  exact GlobalTheory.StdUnn.Frame.block_matrix_one
 
 variable {D : D7} {p : ℕ}
 

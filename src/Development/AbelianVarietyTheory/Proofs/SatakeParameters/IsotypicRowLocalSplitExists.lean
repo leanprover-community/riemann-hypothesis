@@ -241,8 +241,7 @@ def single (v : HeightOneSpectrum (𝓞 L⁺)) (a : v.adicCompletion L⁺) : AFp
     exact zero_mem _⟩
 
 theorem single_self (v : HeightOneSpectrum (𝓞 L⁺)) (a : v.adicCompletion L⁺) : single v a v = a := by
-  classical
-  exact Pi.single_eq_same (M := fun u : HeightOneSpectrum (𝓞 L⁺) => u.adicCompletion L⁺) v a
+  apply GlobalTheory.InertUmax.sgl_same
 
 theorem single_ne {v u : HeightOneSpectrum (𝓞 L⁺)} (h : u ≠ v) (a : v.adicCompletion L⁺) : single v a u = 0 := by
   classical

@@ -104,13 +104,7 @@ theorem split_move {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {n : �
 variable {D : D7}
 
 theorem finPart_surj (z : Af D.host.F ⊗[D.host.F] D.host.E) : ∃ a : AE D, finPart D a = z := by
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨0, RingHom.map_zero _⟩
-  | tmul α x => exact ⟨pairA D.host.F 0 α ⊗ₜ[D.host.F] x, rfl⟩
-  | add x y hx hy =>
-    obtain ⟨a, rfl⟩ := hx
-    obtain ⟨b, rfl⟩ := hy
-    exact ⟨a + b, RingHom.map_add _ _ _⟩
+  apply GlobalTheory.SplitDualLat.finPart_surjective
 
 theorem idem_mul_mem (V : HSp D) {a : AE D} (ha : a * a = a) {y : Fin V.rank → AE D}
     (hy : (fun i => finPart D (y i)) ∈ LamHat V) : (fun i => finPart D (a * y i)) ∈ LamHat V := by

@@ -91,8 +91,8 @@ theorem sum_cmType_eq_trace {F E ι : Type} [Field F] [NumberField F] [Field E] 
   push_cast at h4
   linear_combination h4 / 2
 
-theorem tauE_injective (D : D7) : Function.Injective (tauE D) := fun _ _ h =>
-  D.eTau.injective (Subtype.ext ((factEmb D.R D.host).1.1 h))
+theorem tauE_injective (D : D7) : Function.Injective (tauE D) :=
+  GlobalTheory.SmoothForms.RealPts.tauE_injective D
 
 theorem tauE_cm (D : D7) (σ : D.host.E →+* ℂ) :
     (∃ τ, tauE D τ = σ) ↔ ¬ ∃ τ, tauE D τ = ComplexEmbedding.conjugate σ := by

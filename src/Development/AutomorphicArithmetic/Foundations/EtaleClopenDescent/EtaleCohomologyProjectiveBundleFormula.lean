@@ -328,15 +328,13 @@ private theorem cast_cast' {E : Spc} {n i n' i' n'' i'' : ℤ} (h1 : n = n') (h2
 
 private theorem pull_cast' {E E' : Spc} (s : E ⟶ E') {n i n' i' : ℤ} (h1 : n = n') (h2 : i = i') (x : Ht q E' n i) :
     pull _ s _ _ (x.cast h1 h2) = Ht.cast h1 h2 (pull _ s _ _ x) := by
-  subst h1 h2; rfl
+  exact GlobalTheory.EtC.GmPhiNat.pull_cast q s h1 h2 x
 
 private theorem cast_add' {E : Spc} {n i n' i' : ℤ} (h1 : n = n') (h2 : i = i') (x y : Ht q E n i) :
-    (x + y).cast h1 h2 = x.cast h1 h2 + y.cast h1 h2 := by
-  subst h1 h2; rfl
+    (x + y).cast h1 h2 = x.cast h1 h2 + y.cast h1 h2 := GlobalTheory.EtC.GmPhi.cast_add h1 h2 x y
 
 private theorem cast_zero' {E : Spc} {n i n' i' : ℤ} (h1 : n = n') (h2 : i = i') :
-    (0 : Ht q E n i).cast h1 h2 = 0 := by
-  subst h1 h2; rfl
+    (0 : Ht q E n i).cast h1 h2 = 0 := GlobalTheory.EtC.GmPhi.cast_zero h1 h2
 
 private theorem cup_cast_left {E : Spc} {n i n' i' m j : ℤ} (h1 : n = n') (h2 : i = i') (x : Ht q E n i) (y : Ht q E m j) :
     cup q (x.cast h1 h2) y = (cup q x y).cast (by rw [h1]) (by rw [h2]) := by

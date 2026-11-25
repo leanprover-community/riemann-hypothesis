@@ -89,7 +89,7 @@ end Abstract
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem ePG_true_val (i t : ℕ) (b : Fin t) : ((ePG i t ⟨true, b⟩ : Fin (i + t + 1)) : ℕ) = i + b := by
-  simp [ePG]
+  exact GlobalTheory.CompanionTheory.BZPhiPG.Cells.ePG_true_val i t b
 
 theorem dEmb_zero (i t : ℕ) : dEmb k i t 0 = 1 := by
   apply Subtype.ext

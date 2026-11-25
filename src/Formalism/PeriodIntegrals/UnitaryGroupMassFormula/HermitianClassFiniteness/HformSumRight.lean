@@ -25,12 +25,11 @@ theorem Frame.J'_eq (fr : Frame I S) : fr.J' = fr.Jt.toBlocks₂₂ := rfl
 
 theorem hform_add_right {A : Type} [CommRing A] {n : Type} [Fintype n] (σ : A →+* A)
     (J : Matrix n n A) (x y y' : n → A) : hform σ J x (y + y') = hform σ J x y + hform σ J x y' := by
-  simp only [hform, Pi.add_apply, mul_add, Finset.sum_add_distrib]
+  exact Formalism.UG.P.csScale_hform_add_right σ J x y y'
 
 theorem hform_smul_right {A : Type} [CommRing A] {n : Type} [Fintype n] (σ : A →+* A)
     (J : Matrix n n A) (c : A) (x y : n → A) : hform σ J x (c • y) = c * hform σ J x y := by
-  simp only [hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+  exact Formalism.UG.P.csScale_hform_smul_right σ J c x y
 
 theorem hform_sum_right {A : Type} [CommRing A] {n ι : Type} [Fintype n] (σ : A →+* A)
     (J : Matrix n n A) (x : n → A) (s : Finset ι) (y : ι → n → A) :

@@ -420,9 +420,7 @@ theorem inv_of_mem {a : Mat k r} (ha : a ∈ GG k r) : a * a⁻¹ = 1 ∧ a⁻¹
   apply _root_.Formalism.FourierDecayAlt.P.S3dx6.unit_of_uh <;> assumption
 
 theorem continuous_lmul (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) := by
-  refine continuous_pi fun i => continuous_pi fun j => ?_
-  simp only [lmulM, Matrix.mul_apply, Matrix.of_apply]
-  fun_prop
+  exact Formalism.FourierDecayAlt.P.RankOneEmbeddings.Wb.lmulM_cont a
 
 theorem measurableEmbedding_lmul {a b : Mat k r} (hab : a * b = 1) (hba : b * a = 1) :
     MeasurableEmbedding (lmulM a : Mt k r → Mt k r) := by

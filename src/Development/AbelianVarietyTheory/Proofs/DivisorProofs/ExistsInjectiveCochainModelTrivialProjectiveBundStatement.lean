@@ -712,8 +712,7 @@ theorem map_map {E E' E'' : Spc} (f : E ⟶ E') (f' : E' ⟶ E'') {p : ℕ} {U :
     Sx.map f' (Sx.map f x) = Sx.map (f ≫ f') x := rfl
 
 theorem res_res {F : Shv R} {W V U : Scheme.{0}} (g : W ⟶ V) (f : V ⟶ U) (a : Sec F U) :
-    Sec.res g (Sec.res f a) = Sec.res (g ≫ f) a := by
-  simp [Sec.res]
+    Sec.res g (Sec.res f a) = Sec.res (g ≫ f) a := GlobalTheory.EtC.ClsSpec.res_comp g f a
 
 theorem ev_smul {E : Spc} {I : Cx R} {n : ℤ} (r : ULift.{1} R) (α : Cochain ((chains R).obj E) I n) (p : ℕ) (s : ℤ)
     (h : -(p : ℤ) + n = s) (U : Scheme.{0}) (x : Sx E p U) : ev (R := R) (r • α) p s h U x = r • ev (R := R) α p s h U x := by

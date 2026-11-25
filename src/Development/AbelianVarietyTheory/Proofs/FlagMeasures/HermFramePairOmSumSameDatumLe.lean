@@ -716,8 +716,7 @@ variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [M
 section Geometry
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-theorem flip_zero {x y : V} (h : H.B x y = 0) : H.B y x = 0 := by
-  rw [← H.herm, h, star_zero]
+theorem flip_zero {x y : V} (h : H.B x y = 0) : H.B y x = 0 := GlobalTheory.DegCnt.PosJ.B_symm0 H h
 
 theorem mem_wSp_iff (F F' : FlagD H r) (w : V) : w ∈ wSp F F' ↔ ∀ y ∈ V0 F F', H.B y w = 0 := by
   rw [wSp, mem_perp_iff]

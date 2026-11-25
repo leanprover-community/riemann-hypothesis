@@ -616,7 +616,7 @@ namespace GlobalTheory.FinPl.LineAct.ConjModul
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem e_mul_sec (p : SplitPt D k) (a : k) : p.e * p.sec a = p.sec a := by
-  rw [← p.sec_pr, p.pr_sec]
+  exact GlobalTheory.FinPl.FrameLat.e_mul_sec p a
 
 theorem pr_trace (p : SplitPt D k) {m : ℕ} (M : Mx D m m) : p.pr M.trace = (M.map p.pr).trace := by
   set_option synthInstance.maxHeartbeats 100000 in
@@ -790,7 +790,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule (ofAdj)
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem e_mul_sec (p : SplitPt D k) (x : k) : p.e * p.sec x = p.sec x := by
-  rw [← p.sec_pr, p.pr_sec]
+  exact GlobalTheory.FinPl.FrameLat.e_mul_sec p x
 
 theorem map_pr_rat (p : SplitPt D k) {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) :
     (rat M : Mx D m n).map p.pr = M.map (iota p) := by
@@ -964,7 +964,7 @@ theorem trace_half {n : ℕ} {f : AE D} {M : Mx D n n} (h : IsHalf f M) : f * M.
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem e_mul_sec (p : GlobalTheory.FinPl.SplitPt D k) (a : k) : p.e * p.sec a = p.sec a := by
-  rw [← p.sec_pr, p.pr_sec]
+  exact GlobalTheory.FinPl.FrameLat.e_mul_sec p a
 
 theorem wRow_half {n : Type} [Fintype n] [DecidableEq n] (p : GlobalTheory.FinPl.SplitPt D k) {W₀ L' : HSp D}
     (ζ' : Fin L'.rank → D.host.E) (β : GlobalTheory.FinPl.Frame p W₀ n) (t : n → k) :

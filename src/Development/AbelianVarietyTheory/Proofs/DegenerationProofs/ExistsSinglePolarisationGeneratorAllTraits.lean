@@ -306,8 +306,7 @@ theorem exists_fractionMap {W W' : Type} [CommRing W] [IsDomain W] [CommRing W']
 
 theorem appTop_inv {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (x : R) :
     (spMap f).appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom x) =
-      (Scheme.ΓSpecIso (CommRingCat.of R')).inv.hom (f x) :=
-  (congrArg (fun q => q.hom x) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom f))).symm
+      (Scheme.ΓSpecIso (CommRingCat.of R')).inv.hom (f x) := GlobalTheory.SecSpread.spMap_appTop f x
 
 theorem inv_bijective (R : Type) [CommRing R] :
     Function.Bijective (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom :=

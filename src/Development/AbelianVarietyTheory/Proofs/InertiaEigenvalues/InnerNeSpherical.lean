@@ -865,7 +865,7 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.w
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
 theorem rep_mem_locSet {R : RealDat D A Ks} {i : Fin D.R.m} {v : HeightOneSpectrum (𝓞 D.host.F)} (x : LX R i v) :
-    rep x ∈ locSet R i v := (Quotient.out x).2
+    rep x ∈ locSet R i v := GlobalTheory.RawLift.FamSum.rep_supp x
 
 theorem rep_commute {R : RealDat D A Ks} {i : Fin D.R.m} {v w : HeightOneSpectrum (𝓞 D.host.F)} (h : v ≠ w)
     (x : LX R i v) (y : LX R i w) : Commute (rep x) (rep y) :=
@@ -1054,7 +1054,7 @@ def mkLX (R : RealDat D A Ks) (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.hos
   Quotient.mk _ ⟨g, hg⟩
 
 theorem levelCosetRepresentative_mem_supportedSet {R : RealDat D A Ks} {i : Fin D.R.m} {v : HeightOneSpectrum (𝓞 D.host.F)} (x : LX R i v) :
-    rep x ∈ locSet R i v := (Quotient.out x).2
+    rep x ∈ locSet R i v := GlobalTheory.RawLift.FamSum.rep_supp x
 
 theorem placeSupportedLevelCoset_representative_eq {R : RealDat D A Ks} {i : Fin D.R.m} {v : HeightOneSpectrum (𝓞 D.host.F)} (x : LX R i v) :
     mkLX R i v (rep x) (levelCosetRepresentative_mem_supportedSet x) = x := Quotient.out_eq x

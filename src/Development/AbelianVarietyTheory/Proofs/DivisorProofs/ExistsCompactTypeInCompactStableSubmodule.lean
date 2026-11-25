@@ -72,11 +72,7 @@ section Smooth
 open scoped Matrix.Norms.Elementwise
 
 theorem inUJ_mul {n : ℕ} {ε : Fin n → Bool} {g h : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) (hh : inUJ ε h) :
-    inUJ ε (g * h) := by
-  unfold inUJ at *
-  calc (g * h)ᴴ * Jm ε * (g * h) = hᴴ * (gᴴ * Jm ε * g) * h := by
-        simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = Jm ε := by rw [hg, hh]
+    inUJ ε (g * h) := Formalism.REAL.indefinite_unitary_mul_mem ε hg hh
 
 theorem exists_smooth_equivariant {n : ℕ} {ε : Fin n → Bool} {B : Type} [NormedRing B] [NormedAlgebra ℂ B]
     [CompleteSpace B] {σ : Matrix (Fin n) (Fin n) ℂ → B} (h1 : σ 1 = 1)

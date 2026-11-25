@@ -74,7 +74,7 @@ theorem at_pairA (x : Ainf F) : At (evI F) (pairA F x 0) := by
 theorem psi_pairA {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : Ainf F) :
     ψ (pairA F x 0) = Complex.exp (-(2 * Real.pi * Complex.I) *
       (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (InfiniteAdeleRing.ringEquiv_mixedSpace F x) : ℝ)) :=
-  hψ.2.2 _ (at_pairA x)
+  PositivityTheory.ThKEst.W.psi_pairA hψ x
 
 theorem norm_psi_inf {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : Ainf F) : ‖ψ (pairA F x 0)‖ = 1 := by
   rw [psi_pairA hψ]; exact PositivityTheory.ThKEst.W.norm_exp_real _

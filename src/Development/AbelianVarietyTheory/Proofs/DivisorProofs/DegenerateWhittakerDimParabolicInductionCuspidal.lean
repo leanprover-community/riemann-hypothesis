@@ -414,7 +414,7 @@ open GlobalTheory.FinGL Formalism.L2.DIV Module
 
 theorem mem_eig' {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (τ : Representation ℂ G V) (S : Set G)
     (χ : G → ℂ) (v : V) : v ∈ eig τ S χ ↔ ∀ g ∈ S, τ g v = χ g • v := by
-  simp [eig, Submodule.mem_iInf, sub_eq_zero]
+  exact GlobalTheory.FinGL.SortWh.mem_eig τ S χ v
 
 variable {G : Type} [Group G] {P U : Subgroup G} {V : Type} [AddCommGroup V] [Module ℂ V]
   (σ : Representation ℂ P V) (χ : G → ℂ)

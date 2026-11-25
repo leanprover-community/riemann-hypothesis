@@ -749,7 +749,7 @@ namespace GlobalTheory.OddThetaTranslate
 
 theorem coordB_add (D : D7) (T : Tor D) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (k : Fin r)
     (z x : VC D N N') : coordB D T b k (z + x) = coordB D T b k z + coordB D T b k x := by
-  simp only [coordB, Pi.add_apply, add_mul, Finset.sum_add_distrib]
+  exact GlobalTheory.OnCoord.coord_add T b k z x
 
 theorem coordB_nsmul (D : D7) (T : Tor D) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (k : Fin r)
     (n : ℕ) (z : VC D N N') : coordB D T b k (n • z) = n * coordB D T b k z := by

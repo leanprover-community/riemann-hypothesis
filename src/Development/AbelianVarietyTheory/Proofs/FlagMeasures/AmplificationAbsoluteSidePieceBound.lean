@@ -788,9 +788,7 @@ theorem HH : Hpk k r * Hpk k r = 1 := by
       eI_inj, wI_inj, esI_inj, eI_ne_wI, eI_ne_esI, wI_ne_esI, wI_ne_eI, esI_ne_eI, esI_ne_wI]
   unfold sg; split_ifs <;> simp_all
 
-theorem HbHb : Hb k * Hb k = 1 := by
-  unfold Hb; rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1; funext j; split_ifs <;> simp
+theorem HbHb : Hb k * Hb k = 1 := GlobalTheory.Amp.Iwa.Hb_sq
 
 theorem unit_of_UH {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hH : H * H = 1) (hg : g ∈ UH H) : IsUnit g.det := by
   have hm' : gᴴ * H * g = H := hg
@@ -1523,8 +1521,7 @@ namespace GlobalTheory.Amp.FibreVolumeGen
 
 variable {k r : ℕ}
 
-theorem hpk_unit : IsUnit (Hpk k r).det :=
-  Matrix.isUnit_det_of_right_inverse (hpkFacts k r).2.1
+theorem hpk_unit : IsUnit (Hpk k r).det := Formalism.FourierDecayAlt.P.B2x5.isUnit_det_Hpk k r
 
 theorem GG_mul {a b : Mat k r} (ha : a ∈ GG k r) (hb : b ∈ GG k r) : a * b ∈ GG k r :=
   (uHGroup _ (Hpk k r) hpk_unit).2.1 a ha b hb

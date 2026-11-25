@@ -231,7 +231,7 @@ variable {R S T : Type} [CommRing R] [CommRing S] [CommRing T]
 
 theorem dualMap_algebraMap (f : R →+* S) :
     (dualMap f).comp (algebraMap R (DualNumber R)) = (algebraMap S (DualNumber S)).comp f := by
-  ext x <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  exact GlobalTheory.CompanionTheory.Ar.SqAdd.dualMap_comp_algebraMap f
 
 theorem dualMap_comp (f : R →+* S) (g : S →+* T) : dualMap (g.comp f) = (dualMap g).comp (dualMap f) := by
   ext x <;> simp [dualMap]

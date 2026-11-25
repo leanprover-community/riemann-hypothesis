@@ -441,7 +441,7 @@ theorem loc_true (U : Scheme.{0}) : Loc U fun _ _ => True :=
   ⟨⊤, Scheme.etaleTopology.top_mem U, fun _ _ _ => trivial⟩
 
 theorem isSheaf_types (G : Shv R) : Presieve.IsSheaf Scheme.etaleTopology (G.obj ⋙ forget _) :=
-  (isSheaf_iff_isSheaf_of_type _ _).1 ((Presheaf.isSheaf_iff_isSheaf_forget _ _ (forget _)).1 G.property)
+  CrystallineSemistableComparison.WeightedPowerFormIntegrability.isSheaf_types G
 
 theorem sec_eq_of_loc {F : Shv R} {U : Scheme.{0}} (x y : Sec F U)
     (h : Loc U fun V g => Sec.res g x = Sec.res g y) : x = y := by

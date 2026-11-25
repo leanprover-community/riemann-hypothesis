@@ -249,7 +249,7 @@ theorem frame_inv (M : Matrix α α ℂ) (A : Matrix α ι ℂ) (J : Matrix ι �
 end Frame
 
 theorem jm_mul_self (P Q : ℕ) : Jm P Q * Jm P Q = 1 := by
-  simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
+  exact GlobalTheory.RealLift.KLineProof.Jm_mul_Jm P Q
 
 section Main
 

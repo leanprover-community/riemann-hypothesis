@@ -863,7 +863,7 @@ theorem idx_cases (p : Fin (2 * r + k + 1)) :
       simp [esI]; have := p.isLt; omega
 
 theorem mulVec_bvec_apply (Z : Q.Mx k r) (p q : Fin (2 * r + k + 1)) : (Z *ᵥ bvec q) p = Z p q := by
-  simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
+  exact Formalism.FourierDecayAlt.P.Qx6.cell_mulVec_bvec Z p q
 
 theorem kl_entry_col {Z : Q.Mx k r} (h : Kl Z) (p : Fin (2 * r + k + 1)) (a : Fin r) :
     Z p (eI k r a) = 0 ∧ Z p (esI k r a) = 0 := by

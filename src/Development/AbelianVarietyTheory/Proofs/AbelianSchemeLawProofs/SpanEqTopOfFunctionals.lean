@@ -104,8 +104,7 @@ variable {S : Scheme.{0}} (A : Over S) [GrpObj A] {L : LB A.left}
 
 omit [GrpObj A] in
 theorem whisker_snd_left {T T' : Over S} (h : T' ⟶ T) :
-    (h ▷ A).left ≫ (snd T A).left = (snd T' A).left := by
-  rw [← Over.comp_left, whiskerRight_snd]
+    (h ▷ A).left ≫ (snd T A).left = (snd T' A).left := GlobalTheory.VVCompare.whisker_snd_left A h
 
 def pullS (a : ℤ) {T T' : Over S} (h : T' ⟶ T) (s : LB.Sec (LPow A L a T)) : LB.Sec (LPow A L a T') :=
   pullTo (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => a) s (h ▷ A).left

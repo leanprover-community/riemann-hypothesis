@@ -62,7 +62,7 @@ variable {l : ℕ} [Fact l.Prime]
 theorem unramified_subfield_le_Ks (K : FinExt l) (j : ℕ) : K0 K ≤ Ks K j := le_sup_left
 
 theorem Ks_le_Kinf (K : FinExt l) (j : ℕ) : Ks K j ≤ Kinf K :=
-  sup_le_sup_left (IntermediateField.adjoin.mono _ _ _ (fun _ hx => Exists.intro j hx)) _
+  GlobalTheory.TateDecomp.Ks_le_Kinf K j
 
 theorem cyclotomicTowerLevelGaloisSubgroup_le_fixingUnramified (K : FinExt l) (j : ℕ) : Gj K j ≤ (K0 K).fixingSubgroup :=
   fun _ hg x => hg ⟨x.1, unramified_subfield_le_Ks K j x.2⟩

@@ -839,7 +839,7 @@ private theorem et_of_pb {A B C D : Scheme.{0}} {u : A ⟶ B} {s : A ⟶ C} {p :
 
 private theorem pullQ_comp (l : ℕ) [Fact l.Prime] {E E' E'' : Spc} (f : E ⟶ E') (g : E' ⟶ E'') (n i : ℤ) :
     pullHQ l (f ≫ g) n i = pullHQ l f n i ∘ₗ pullHQ l g n i := by
-  unfold pullHQ; rw [pullHl_comp]; exact LinearMap.baseChange_comp _ _
+  exact UpperTheory.Gal.Mod.FixedDescent.pullQ_comp l f g n i
 
 private theorem gm_fst {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {X Y : Scheme.{0}}
     (p : X ⟶ Spec (CommRingCat.of k)) {q : Y ⟶ Spec (CommRingCat.of k)} (u : X ⟶ Y)
@@ -935,7 +935,7 @@ private theorem wt_one {Z S : Scheme.{0}} (p : Z ⟶ S) [IsFinite p] [Etale p] :
 
 private theorem pq_comp (l : ℕ) [Fact l.Prime] {E E' E'' : Spc} (f : E ⟶ E') (g : E' ⟶ E'') (n i : ℤ) :
     pullHQ l (f ≫ g) n i = pullHQ l f n i ∘ₗ pullHQ l g n i := by
-  unfold pullHQ; rw [pullHl_comp]; exact LinearMap.baseChange_comp _ _
+  exact UpperTheory.Gal.Mod.FixedDescent.pullQ_comp l f g n i
 
 private theorem pq_id (l : ℕ) [Fact l.Prime] (E : Spc) (n i : ℤ) : pullHQ l (𝟙 E) n i = LinearMap.id := by
   unfold pullHQ; rw [pullHl_id]; exact LinearMap.baseChange_id

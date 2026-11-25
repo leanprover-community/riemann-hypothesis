@@ -67,7 +67,7 @@ namespace GlobalTheory.FinPl.SetCut
 variable {D : D7}
 
 theorem continuous_mt_cutTop (V : HSp D) : Continuous (fun g : GA D V => Formalism.L2.Theta.mt V g) :=
-  Units.continuous_val.comp continuous_subtype_val
+  GlobalTheory.LatNhds.continuous_mt V
 
 theorem continuous_mt_cutG (V : HSp D) (ε : AF D.host.F) (hε : ε * ε = ε) :
     Continuous (fun g : GA D V => Formalism.L2.Theta.mt V (cutG V ε hε g)) := by

@@ -281,7 +281,7 @@ theorem valAt_sub' {B : Type} [CommRing B] {X : Scheme.{0}} (x : Spec (CommRingC
 
 theorem valAt_mul {B : Type} [CommRing B] {X : Scheme.{0}} (x : Spec (CommRingCat.of B) ⟶ X) (U : X.Opens)
     (h : ⊤ ≤ x ⁻¹ᵁ U) (a b : Γ(X, U)) : valAt x U h (a * b) = valAt x U h a * valAt x U h b := by
-  simp [valAt]
+  exact PositivityTheory.HtPt.Htat.StalkDivisibility.valAt_mul x U h a b
 
 end GlobalTheory.CompanionTheory.Ar.BT.TranslateEq
 end -- clump:auto

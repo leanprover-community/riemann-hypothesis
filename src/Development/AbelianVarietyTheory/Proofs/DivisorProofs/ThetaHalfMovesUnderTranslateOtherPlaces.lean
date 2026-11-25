@@ -71,9 +71,7 @@ variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE 
   {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
 
 theorem heisO_smul' (u : WO S T) (c : ℂ) (g : WO S T → ℂ) : heisO ψ S T u (c • g) = c • heisO ψ S T u g := by
-  funext w
-  simp only [heisO, Pi.smul_apply, smul_eq_mul]
-  ring
+  exact GlobalTheory.WeilChange.heisO_smul ψ S T u c g
 
 theorem isPlaceModel_move (hW : IsWeilDatumO ψ S T χS χT om) {e : AE D} {Λ : AddSubgroup (WO S T)} {f₀ : WO S T → ℂ}
     {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)} (hTm : IsPlaceModel ψ (symplO S T) (heisO ψ S T) e Λ 1 f₀ Tm)

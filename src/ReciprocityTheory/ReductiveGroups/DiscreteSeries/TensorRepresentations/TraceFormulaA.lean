@@ -137,7 +137,7 @@ section Form
 def tfSgn (ε : Fin n → Bool) (c : Fin n) : ℂ := if ε c then 1 else -1
 
 theorem tfSgn_mul_self (ε : Fin n → Bool) (c : Fin n) : tfSgn ε c * tfSgn ε c = 1 := by
-  unfold tfSgn; split_ifs <;> norm_num
+  exact ReciprocityTheory.ChartRestriction.DS.adjSg_mul_self ε c
 
 theorem tf_star_sgn (ε : Fin n → Bool) (c : Fin n) : star (tfSgn ε c) = tfSgn ε c := by
   unfold tfSgn; split_ifs <;> simp

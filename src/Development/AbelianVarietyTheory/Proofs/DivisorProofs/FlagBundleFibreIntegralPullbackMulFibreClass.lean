@@ -579,8 +579,7 @@ open scoped ComplexConjugate
 namespace GlobalTheory.SecForm
 
 theorem coordVec_expand {n : ℕ} (w : V n) : w = ∑ a, w a • coordVec a := by
-  ext i
-  simp [coordVec, Pi.single_apply]
+  exact GlobalTheory.LineForm.chain_sum_coordVec w
 
 theorem sesq_sum_left {n : ℕ} {α : V n → V n → ℂ} (hα : IsSesq α) {ι : Type} (s : Finset ι) (c : ι → ℂ)
     (x : ι → V n) (y : V n) : α (∑ i ∈ s, c i • x i) y = ∑ i ∈ s, c i * α (x i) y := by

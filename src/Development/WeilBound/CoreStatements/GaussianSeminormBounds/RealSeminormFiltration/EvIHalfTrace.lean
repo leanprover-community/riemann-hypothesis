@@ -259,10 +259,10 @@ end LineProof
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
 theorem evI_add (a b : AF F) : evI F (a + b) = evI F a + evI F b :=
-  map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F) a.1 b.1
+  GlobalTheory.ThK.Dbl.Dense.evI_add a b
 
 theorem evI_mul (a b : AF F) : evI F (a * b) = evI F a * evI F b :=
-  map_mul (InfiniteAdeleRing.ringEquiv_mixedSpace F) a.1 b.1
+  GlobalTheory.ThK.Dbl.Dense.evI_mul a b
 
 theorem evI_zero : evI F 0 = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
 

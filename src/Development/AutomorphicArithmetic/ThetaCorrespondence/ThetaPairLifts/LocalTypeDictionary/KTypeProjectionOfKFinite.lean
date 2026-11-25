@@ -263,8 +263,7 @@ theorem kGrp_le : kGrp θ M ≤ GinfC V :=
   (Subgroup.closure_le _).2 fun _ ⟨τ, g, _, e⟩ => e ▸ GlobalTheory.FinTranslate.atTau_mem θ V τ g
 
 theorem rTr_mul (x y : GA D V) (f : GA D V → ℂ) : rTr V (x * y) f = rTr V x (rTr V y f) := by
-  funext g
-  simp only [rTr, mul_assoc]
+  exact GlobalTheory.RegSch.CentreRight.rTr_mul x y f
 
 theorem rTr_inv_rTr (x : GA D V) (f : GA D V → ℂ) : rTr V x⁻¹ (rTr V x f) = f := by
   funext g

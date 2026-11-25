@@ -504,7 +504,7 @@ theorem xflag_top {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) : Xflag F D.R.r
   rw [this, Set.image_univ]
 
 theorem xflag_mono {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) {i j : ℕ} (h : i ≤ j) : Xflag F i ≤ Xflag F j := by
-  exact Submodule.span_mono (Set.image_mono fun k (hk : k.1 < i) => (lt_of_lt_of_le hk h : k.1 < j))
+  exact GlobalTheory.NRatInv.xflag_mono F h
 
 theorem xflag_eq_range {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (j : ℕ) :
     Xflag F j = Submodule.span D.host.E (Set.range fun i : {i : Fin D.R.rS // i.1 < j} => F.fl.e i.1) := by

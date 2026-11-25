@@ -63,7 +63,7 @@ namespace GlobalTheory.AdLat.Translate
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ}
 
 lemma fv_add (x y : Fin n → E) : fv F (x + y) = fv F x + fv F y := by
-  ext i; simp [fv, TensorProduct.tmul_add]
+  exact GlobalTheory.AdLat.cap_fv_add F x y
 
 lemma fv_zero : fv F (0 : Fin n → E) = 0 := by
   ext i; simp [fv]

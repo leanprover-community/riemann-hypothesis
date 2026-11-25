@@ -59,8 +59,8 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNot
 
 variable {D : D7}
 
-theorem tauE_injective : Function.Injective (tauE D) := fun _ _ h =>
-  D.eTau.injective (Subtype.ext ((factEmb D.R D.host).1.1 h))
+theorem tauE_injective : Function.Injective (tauE D) :=
+  GlobalTheory.SmoothForms.RealPts.tauE_injective D
 
 theorem tauE_cm (σ : D.host.E →+* ℂ) :
     (∃ ρ, tauE D ρ = σ) ↔ ¬ ∃ ρ, tauE D ρ = ComplexEmbedding.conjugate σ := by

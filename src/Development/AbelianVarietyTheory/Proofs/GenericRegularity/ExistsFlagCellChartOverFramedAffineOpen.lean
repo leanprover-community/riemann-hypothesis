@@ -325,8 +325,7 @@ theorem reframe_scal_mul (x : Sp S ⟶ Xo.X) (a b : S) (i : (PPx x).ι) :
   simp only [map_mul]
 
 theorem reframe_scal_one (x : Sp S ⟶ Xo.X) (i : (PPx x).ι) : scal x (1 : S) i = 1 := by
-  unfold scal Out.liftFun
-  simp only [map_one]
+  exact GlobalTheory.Frames.Model.scal_one x i
 
 theorem generators_unit {x : Sp S ⟶ Xo.X} (s s' : LB.Sec (PPx x))
     (hs : ∀ r : LB.Sec (PPx x), ∃! a : S, ∀ i, r.f i = scal x a i * s.f i)

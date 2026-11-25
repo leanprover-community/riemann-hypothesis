@@ -465,10 +465,7 @@ theorem be_dil' (L : LocBessel k r) (ka : ℝ) (hka : 0 < ka) [SigmaFinite L.μN
   rfl
 
 theorem bcWeight_nonneg' (k r : ℕ) (T T' : ℝ) (p : (Fin r → ℂ) × ℂ) : 0 ≤ bcWeight k r T T' p := by
-  unfold Formalism.QuantumDeterminants.bcWeight
-  split_ifs with h
-  · exact mul_nonneg (Finset.prod_nonneg fun a _ => by positivity) (pow_nonneg (sub_nonneg.2 h) _)
-  · exact le_refl 0
+  exact Formalism.FourierDecayAlt.P.B7.boundary_weight_nonneg T T' p
 
 theorem normSq_ne_of_beta {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (D : Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) (F : Mx k r → (Wq →L[ℂ] Wp))

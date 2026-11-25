@@ -137,7 +137,7 @@ theorem inclE_mem {a : I.E} (ha : a ∈ Formalism.UG.intOE I.E) :
   exact Subring.subset_closure (Or.inl ⟨⟨a, ha⟩, rfl⟩)
 
 theorem hA_add_right (u v w : VA I) : hA I u (v + w) = hA I u v + hA I u w := by
-  simp only [hA, Formalism.UG.hform, Pi.add_apply, mul_add, Finset.sum_add_distrib]
+  exact PIW.NormChiNBi.hA_add_right I u v w
 
 theorem hA_smul_right (u v : VA I) (c : I.E ⊗[I.F] Af I.F) : hA I u (c • v) = c * hA I u v := by
   simp only [hA, Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
@@ -145,7 +145,7 @@ theorem hA_smul_right (u v : VA I) (c : I.E ⊗[I.F] Af I.F) : hA I u (c • v) 
   ring
 
 theorem hA_add_left (u u' v : VA I) : hA I (u + u') v = hA I u v + hA I u' v := by
-  simp only [hA, Formalism.UG.hform, Pi.add_apply, map_add (f := _), add_mul, Finset.sum_add_distrib]
+  exact PIW.NormChiNBi.hA_add_left I u u' v
 
 theorem hA_smul_left (u v : VA I) (c : I.E ⊗[I.F] Af I.F) : hA I (c • u) v = sigA I c * hA I u v := by
   simp only [hA, Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
@@ -186,7 +186,7 @@ theorem hA_int {u v : VA I} (hu : u ∈ I.Lf) (hv : v ∈ I.Lf) : hA I u v ∈ I
   apply PIW.NormChiNBi.hA_int <;> assumption
 
 theorem hA_sub_right (u v w : VA I) : hA I u (v - w) = hA I u v - hA I u w := by
-  simp only [hA, Formalism.UG.hform, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
+  exact PIW.NormChiNBi.hA_sub_right I u v w
 
 end Gen
 

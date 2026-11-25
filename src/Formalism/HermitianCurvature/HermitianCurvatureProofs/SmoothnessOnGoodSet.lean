@@ -26,7 +26,8 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 variable {k r : ℕ}
 
 lemma ckOn_zero {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (m : ℕ∞) :
-    CkOn m (GV k r) (fun _ : Mat k r => (0 : E)) := fun _ _ => ⟨Set.univ, fun _ => 0, isOpen_univ, Set.mem_univ _, contDiffOn_const, fun _ _ _ => rfl⟩
+    CkOn m (GV k r) (fun _ : Mat k r => (0 : E)) :=
+  Formalism.FourierDecayAlt.P.BetaSesquilinearity.CkOn_zero
 
 lemma dLR_zero {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (u v : List (Mat k r)) :
     dLR u v (fun _ : Mat k r => (0 : E)) = fun _ => 0 := by

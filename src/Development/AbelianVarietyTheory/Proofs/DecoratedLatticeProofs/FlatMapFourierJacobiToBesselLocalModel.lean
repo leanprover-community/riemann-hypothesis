@@ -870,8 +870,7 @@ theorem frame_row {N : ℕ} {Y : Type} [Fintype Y] [DecidableEq Y] (F : Frame k 
   rfl
 
 theorem pr_mul {l m n : ℕ} (M : Matrix (Fin l) (Fin m) D.host.E) (N : Matrix (Fin m) (Fin n) D.host.E) :
-    (M * N).map p.pr = M.map p.pr * N.map p.pr :=
-  Matrix.map_mul (f := p.π.comp (incA D))
+    (M * N).map p.pr = M.map p.pr * N.map p.pr := GlobalTheory.LocMod.MulRow.pr_map_mul p M N
 
 theorem pr_zero : p.pr 0 = 0 := map_zero (p.π.comp (incA D))
 

@@ -139,10 +139,7 @@ theorem sigma_sigma {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
 
 theorem sigR_sigR {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
     (σ : E →ₐ[F] E) (h : ∀ x, σ (σ x) = x) (y : R ⊗[F] E) : sigR R σ (sigR R σ y) = y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul r e => simp [sigR, h]
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
+  exact GlobalTheory.CompanionTheory.SW.GramAlg.sigR_invol R h y
 
 theorem mulVec_mem {R : Type} [CommRing R] (O : Subring R) {m : ℕ} (P : Matrix (Fin m) (Fin m) R)
     (hP : ∀ i j, P i j ∈ O) (x : Fin m → R) (hx : ∀ i, x i ∈ O) (i : Fin m) : P.mulVec x i ∈ O := by

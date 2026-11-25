@@ -875,7 +875,7 @@ theorem thickMap_fst (e : ℕ) (A : Over (Sp T)) :
 
 theorem thickMap_hom (e : ℕ) (A : Over (Sp T)) :
     thickMap T I e A ≫ (thickObj T I (e + 1) A).hom = (thickObj T I e A).hom ≫ thickTrans T I e :=
-  pullback.lift_snd _ _ _
+  GlobalTheory.GrpAlg.thickMap_hom I e A
 
 theorem isGrpPullback_thickMap (e : ℕ) (A : Over (Sp T)) [GrpObj A] :
     IsGrpPullback (thickObj T I e A) (thickObj T I (e + 1) A) (thickTrans T I e) (thickMap T I e A) :=

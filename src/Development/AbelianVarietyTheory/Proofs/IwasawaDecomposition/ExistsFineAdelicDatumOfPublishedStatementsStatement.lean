@@ -1331,8 +1331,8 @@ namespace GlobalTheory.RealGeo.BaseFrame
 
 variable {D : D7}
 
-theorem tauE_injective : Function.Injective (tauE D) := fun _ _ h =>
-  D.eTau.injective (Subtype.ext ((factEmb D.R D.host).1.1 h))
+theorem tauE_injective : Function.Injective (tauE D) :=
+  GlobalTheory.SmoothForms.RealPts.tauE_injective D
 
 theorem gram_x0Mat {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) {r : ℕ} (hr : V.rank = r) (ρ : D.what₂.Tau)
     {p q : ℕ} (hpq : r = p + q) (hε : ∀ a, M.ε ρ a = decide ((a : ℕ) < p)) :

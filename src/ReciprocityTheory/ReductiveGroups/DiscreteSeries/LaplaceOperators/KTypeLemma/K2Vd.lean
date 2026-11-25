@@ -39,11 +39,11 @@ theorem tensVd_apply' (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) (
 
 theorem eeV_apply' (E : Fin n → Fin n → Module.End ℂ M) (f : Fin n → M) (d : Fin n) :
     eeV E f d = ∑ c, E c d (f c) := by
-  simp [eeV, prj, LinearMap.sum_apply]
+  exact ReciprocityTheory.ChartRestriction.DS.Lap.LemK.vk_eeV_apply E f d
 
 theorem eeVd_apply' (E : Fin n → Fin n → Module.End ℂ M) (f : Fin n → M) (d : Fin n) :
     eeVd E f d = -∑ c, E d c (f c) := by
-  simp [eeVd, prj, LinearMap.sum_apply]
+  exact ReciprocityTheory.ChartRestriction.DS.Lap.LemK.TensK.eeVd_apply' E f d
 
 def twT (ε : Fin n → Bool) : (Fin n → M) →ₗ[ℂ] (Fin n → M) :=
   LinearMap.pi fun c => sg ε (Fin.rev c) • prj (Fin.rev c)

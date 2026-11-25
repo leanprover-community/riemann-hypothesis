@@ -211,7 +211,7 @@ end Val
 
 private theorem comp_mem_pow_iff {R : Type} [CommRing R] (a : R) (n : ℕ) (x : R) :
     x ∈ (Ideal.span {a} ^ n • ⊤ : Submodule R R) ↔ a ^ n ∣ x := by
-  rw [Ideal.span_singleton_pow, smul_eq_mul, Ideal.mul_top, Ideal.mem_span_singleton]
+  exact GlobalTheory.HTLat.OmegaRank.mem_pow_iff a n x
 
 private theorem comp_dual_dvd_iff {O : Type} [CommRing O] (p n : ℕ) (x : DualNumber O) :
     (p : DualNumber O) ^ n ∣ x ↔ (p : O) ^ n ∣ x.fst ∧ (p : O) ^ n ∣ x.snd := by

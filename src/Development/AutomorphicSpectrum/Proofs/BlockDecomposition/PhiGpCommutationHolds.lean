@@ -163,8 +163,7 @@ variable {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [AddCommGroup W] [Module ℂ W]
 
 theorem cIndSpace_ext {H : Subgroup G} {τ : Representation ℂ H W} {a b : cIndSpace H τ}
-    (h : ∀ g, a.1.1.1 g = b.1.1.1 g) : a = b :=
-  Subtype.ext (Subtype.ext (Subtype.ext (funext h)))
+    (h : ∀ g, a.1.1.1 g = b.1.1.1 g) : a = b := GlobalTheory.CompanionTheory.CIndCongr.ext_fun h
 
 theorem mul_mem_indSpace {H : Subgroup G} {τ τ' : Representation ℂ H W} {ψ : G →* ℂˣ}
     (hτ : ∀ (h : H) (w : W), τ' h w = ((ψ h : ℂˣ) : ℂ) • τ h w) (f : cIndSpace H τ) :
@@ -496,8 +495,7 @@ variable {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [AddCommGroup W] [Module ℂ W]
 
 theorem cInd_ext {H : Subgroup G} {σ : Representation ℂ H W} {a b : cIndSpace H σ}
-    (h : ∀ g, a.1.1.1 g = b.1.1.1 g) : a = b :=
-  Subtype.ext (Subtype.ext (Subtype.ext (funext h)))
+    (h : ∀ g, a.1.1.1 g = b.1.1.1 g) : a = b := GlobalTheory.CompanionTheory.CIndCongr.ext_fun h
 
 theorem cInd_left {H : Subgroup G} {σ : Representation ℂ H W} (a : cIndSpace H σ) {h : G}
     (hh : h ∈ H) (g : G) : a.1.1.1 (h * g) = σ ⟨h, hh⟩ (a.1.1.1 g) :=
@@ -1172,7 +1170,7 @@ theorem glEmbMat_castSucc (k : Type) [Field k] (n : ℕ) (A : Matrix (Fin n) (Fi
 
 theorem glEmbMat_last_castSucc (k : Type) [Field k] (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (b : Fin n) :
     glEmbMat k n A (Fin.last n) (Fin.castSucc b) = 0 := by
-  simp [GlobalTheory.BZMir.glEmbMat]
+  exact GlobalTheory.CompanionTheory.LeibPhi.Closed.glEmbMat_last_cast n A b
 
 theorem glEmbMat_castSucc_last (k : Type) [Field k] (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (a : Fin n) :
     glEmbMat k n A (Fin.castSucc a) (Fin.last n) = 0 := by

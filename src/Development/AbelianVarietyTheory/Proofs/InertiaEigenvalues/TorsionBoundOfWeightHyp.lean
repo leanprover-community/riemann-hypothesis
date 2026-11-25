@@ -769,8 +769,7 @@ theorem theta_alg (θ : Ainf l →+* OC l) (z : ℤ_[l]) :
   rw [norm_mul, norm_mul, norm_lpow]
   nlinarith
 
-theorem inclW_inj : Function.Injective (inclW l) :=
-  WittVector.map_injective _ (IsFractionRing.injective (OCb l) (Cb l))
+theorem inclW_inj : Function.Injective (inclW l) := GlobalTheory.AinfCont.inclW_injective
 
 variable {P : LocPrime l} (AI : LocAinf l P)
 

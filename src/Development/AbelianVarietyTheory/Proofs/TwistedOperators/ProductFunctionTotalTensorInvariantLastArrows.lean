@@ -372,7 +372,7 @@ theorem rows_of_block {K ι : Type} [Field K] {n a c : ℕ} (fr : Fin a ⊕ Fin 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 
 theorem cpt_incA (w : Pl D.host.E) (x : D.host.E) : ((cpt w).comp (toEAf D)) (incA D x) = algebraMap D.host.E (Kw w) x :=
-  congrArg (fun z : FiniteAdeleRing (𝓞 D.host.E) D.host.E => z w) (GlobalTheory.AdeleBaseChange.map_tmul_one (toAd_spec D) x)
+  GlobalTheory.FunObj.Comparison₂.cpt_tmul w x
 
 theorem cpt_eq_finAdEquiv (w : Pl D.host.E) (z : AE D) :
     cpt w (toEAf D z) = GlobalTheory.LFun.finAdEquiv D.host.F D.host.E (GlobalTheory.LFun.finTens D.host.F D.host.E z) w := by

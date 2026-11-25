@@ -421,14 +421,10 @@ theorem exists_clear (I : Ideal (𝓞 F)) (β : Af F)
       exact mul_mem (algebraMap_ringOfIntegers_mem_intAf s v) hβv
 
 private theorem mul_mem_intAf' {a b : Af F} (ha : a ∈ intAf F) (hb : b ∈ intAf F) : a * b ∈ intAf F := by
-  intro v
-  rw [map_mul]
-  exact mul_mem (ha v) (hb v)
+  exact GlobalTheory.LatVac.mul_mem_intAf ha hb
 
 private theorem one_mem_intAf_siegel_theta_transformation : (1 : Af F) ∈ intAf F := by
-  intro v
-  rw [map_one]
-  exact one_mem _
+  exact GlobalTheory.LatVac.one_mem_intAf F
 
 omit [NumberField E] in
 theorem tmul_smul_mem {N N' : Set (Fin r → E)} {a : Af F} (ha : a ∈ intAf F) {c : E} (hc : ∀ x ∈ N, c • x ∈ N')

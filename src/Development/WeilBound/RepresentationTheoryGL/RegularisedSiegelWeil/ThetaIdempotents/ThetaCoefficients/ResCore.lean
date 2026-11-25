@@ -967,7 +967,7 @@ open GlobalTheory.CompanionTheory.PcFc (chn)
 variable {D : D7} {n : ℕ}
 
 theorem conj_psi {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (t : AF D.host.F) : conj (ψ t) = ψ (-t) := by
-  rw [AddChar.map_neg_eq_inv, Complex.inv_eq_conj (hψ.2.1 t)]
+  exact GlobalTheory.CompanionTheory.PcFc.conj_psi hψ t
 
 theorem cutR_left {nb : hermA D n → G D n} {v : Pl D} (C : Cut D n v) {F : G D n → ℂ} (hinv : LeftInv (GF D n) F) :
     LeftInv (GF D n) (cutR nb C F) := fun γ hγ g => by

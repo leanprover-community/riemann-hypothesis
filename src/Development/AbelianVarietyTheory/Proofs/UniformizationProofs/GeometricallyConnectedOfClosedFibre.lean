@@ -84,10 +84,7 @@ def fnSec (π : X' ⟶ X) (s : Γ(X', ⊤)) : LB.Sec ((Inh.trivLB X).pull π) wh
     rw [Inh.linComb_triv_g, Units.val_one, _root_.one_mul]
     exact (rs_rs _ _ s).trans (rs_rs _ _ s).symm
 
-theorem triv_pull (π : X' ⟶ X) : Triv ((Inh.trivLB X).pull π) :=
-  ⟨⟨fun _ => 1⟩, fun i j => by
-    erw [Inh.linComb_triv_g, _root_.one_mul]
-    exact (map_one _).trans (map_one _).symm⟩
+theorem triv_pull (π : X' ⟶ X) : Triv ((Inh.trivLB X).pull π) := GlobalTheory.AlgGroup.triv_pull π
 
 theorem preconnectedSpace_of_line {R F : Type} [CommRing R] [Field F]
     {f : X ⟶ Spec (CommRingCat.of R)} (P : Perf f (Inh.trivLB X)) {g : R →+* F} {π : X' ⟶ X}

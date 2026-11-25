@@ -157,8 +157,7 @@ theorem exists_c (hk : (PD.p : k) = 0) (u : Oˣ) (hu : (u : O) = 1 + (PD.p : O))
   exact ⟨c, hc, hc'⟩
 
 theorem γD_smulA (T : LocLat G Qp LL O) (g : W.Gam) (a : LetA O n₀) (x : W.DD T) :
-    W.γD T g (a • x) = W.γA g a • W.γD T g x := by
-  rw [← algebraMap_smul W.EE a x, W.γD_smul, W.γE_ext, algebraMap_smul]; rfl
+    W.γD T g (a • x) = W.γA g a • W.γD T g x := GlobalTheory.WachTie.MatF.γD_smulA W T g a x
 
 theorem sum_Del {M : Type} [AddCommMonoid M] (f : W.Gam → M) {δ : W.Gam} (hδ : δ ∈ W.DelF) :
     ∑ ε ∈ W.DelF, f (δ * ε) = ∑ ε ∈ W.DelF, f ε := GlobalTheory.Present.RedLat.sum_del W f hδ
@@ -798,9 +797,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {W : LocWach PD LL O v n₀} {k : Type} [Field k] [Algebra O k]
 
 theorem γD_smulA (T : LocLat G Qp LL O) (g : W.Gam) (a : LetA O n₀) (x : W.DD T) :
-    W.γD T g (a • x) = W.γA g a • W.γD T g x := by
-  rw [← algebraMap_smul W.EE a x, W.γD_smul, W.γE_ext, algebraMap_smul]
-  rfl
+    W.γD T g (a • x) = W.γA g a • W.γD T g x := GlobalTheory.WachTie.MatF.γD_smulA W T g a x
 
 theorem φD_smulA (T : LocLat G Qp LL O) (a : LetA O n₀) (x : W.DD T) :
     W.φD T (a • x) = W.φA a • W.φD T x := by

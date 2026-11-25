@@ -633,9 +633,7 @@ theorem symplO_neg_right (S T : HSp D) (x y : WO S T) : symplO S T x (-y) = -sym
   exact (neg_eq_of_add_eq_zero_right h.symm).symm
 
 theorem mxAt_mul {P : GlobalTheory.FinPl.Pl D → Prop} {m n k : ℕ} {a : Mx D m n} (ha : MxAt P a) (M : Mx D n k) : MxAt P (a ⬝ M) :=
-  fun i j => by
-    rw [Matrix.mul_apply]
-    exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_right _ _ (ha i l)
+  GlobalTheory.AscFinWit.mxAt_mul' ha M
 
 theorem mxAt_zero {P : GlobalTheory.FinPl.Pl D → Prop} {m n : ℕ} : MxAt P (0 : Mx D m n) := fun _ _ => zero_mem _
 

@@ -325,7 +325,7 @@ variable {D : D7}
 
 theorem form_eq (S : HSp D) (x y : Fin S.rank → D.host.E) :
     ∑ i, ∑ j, star (x i) * S.gram i j * y j = star x ⬝ᵥ S.gram *ᵥ y := by
-  simp only [dotProduct, mulVec, Finset.mul_sum, Pi.star_apply, mul_assoc]
+  exact GlobalTheory.OrthSumLat.dsum_eq' x y
 
 variable {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ)
 

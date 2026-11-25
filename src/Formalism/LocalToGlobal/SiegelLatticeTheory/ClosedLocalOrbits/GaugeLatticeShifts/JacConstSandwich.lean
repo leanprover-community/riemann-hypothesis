@@ -174,13 +174,13 @@ theorem lv_sg (i : Fin (2 * r + k + 1)) : lv k r (sg k r i) = 2 * r - lv k r i :
   have := i.isLt; unfold lv; rw [sg_val]; split_ifs <;> omega
 
 theorem lv_le (i : Fin (2 * r + k + 1)) : lv k r i ≤ 2 * r := by
-  have := i.isLt; unfold lv; split_ifs <;> omega
+  exact Formalism.MainNotions.BridgeCSB.dg_le i
 
 theorem sn_sg (i : Fin (2 * r + k + 1)) : sn k r (sg k r i) = sn k r i := by
   have := i.isLt; unfold sn; rw [sg_val]; split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem sn_mul_self (i : Fin (2 * r + k + 1)) : sn k r i * sn k r i = 1 := by
-  unfold sn; split_ifs <;> norm_num
+  exact Formalism.QuantumDeterminants.WeylGroupFacts.sgn_mul_self i
 
 theorem sn_ne_zero (i : Fin (2 * r + k + 1)) : sn k r i ≠ 0 := by
   unfold sn; split_ifs <;> norm_num

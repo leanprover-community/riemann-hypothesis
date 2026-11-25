@@ -58,8 +58,7 @@ namespace GlobalTheory.CompanionTheory.Ar.BT.HTBaseChange
 
 theorem valAt_comp_top {B : Type} [CommRing B] {X Y : Scheme.{0}} (x : Spec (CommRingCat.of B) ⟶ X) (f : X ⟶ Y)
     (s : Γ(Y, ⊤)) : valAt (x ≫ f) ⊤ le_top s = valAt x ⊤ le_top (f.appTop.hom s) := by
-  unfold valAt
-  congr 1
+  exact PositivityTheory.HtPt.Htat.HTBaseChange.valAt_comp_top x f s
 
 theorem valAt_spec_map {B C : Type} [CommRing B] [CommRing C] {X : Scheme.{0}} (ψ : B →+* C)
     (y : Spec (CommRingCat.of B) ⟶ X) (s : Γ(X, ⊤)) :

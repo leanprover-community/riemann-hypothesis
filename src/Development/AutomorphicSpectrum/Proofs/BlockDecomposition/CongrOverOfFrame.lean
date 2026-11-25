@@ -357,7 +357,7 @@ open PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctio
 variable {D : D7}
 
 theorem gram_herm (V : HSp D) : ∀ i j, D.sp.cm.sig (V.gram i j) = V.gram j i := by
-  exact fun i j => V.herm.eq _ _
+  exact GlobalTheory.DualPairCheck.gram_star V
 
 theorem frame_of_free {R : Type*} [CommRing R] (π : AE D →+* R) (c : R →+* R) (inc : D.host.E →+* R)
     (hc : ∀ x, c (c x) = x) (hπc : ∀ x, π (cA D x) = c (π x)) (hπi : ∀ x, π (incA D x) = inc x)

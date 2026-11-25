@@ -486,13 +486,10 @@ theorem loc_mono {P Q : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : ∀ V g, P 
   exact ⟨S, hS, fun V g hg => h V g (hP V g hg)⟩
 
 theorem loc_of_forall {P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : ∀ V g, P V g) : Loc U P :=
-  ⟨⊤, Scheme.etaleTopology.top_mem U, fun V g _ => h V g⟩
+  GlobalTheory.EtC.loc_of_forall U P h
 
 theorem loc_and {P Q : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (hP : Loc U P) (hQ : Loc U Q) :
-    Loc U fun V g => P V g ∧ Q V g := by
-  obtain ⟨S, hS, hP⟩ := hP
-  obtain ⟨T, hT, hQ⟩ := hQ
-  exact ⟨S ⊓ T, Scheme.etaleTopology.intersection_covering hS hT, fun V g hg => ⟨hP V g hg.1, hQ V g hg.2⟩⟩
+    Loc U fun V g => P V g ∧ Q V g := GlobalTheory.EtC.RedChern.loc_and hP hQ
 
 theorem loc_trans {P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop}
     (h : Loc U fun V g => Loc V fun W k => P W (k ≫ g)) : Loc U P := GlobalTheory.TwSec.loc_trans h
@@ -900,9 +897,7 @@ namespace GlobalTheory.EtC.ScalarExt
 alias sec_map_res := _root_.GlobalTheory.EtC.CupSpec.map_res
 
 theorem loc_mono {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : Loc U P)
-    (hP : ∀ V g, P V g → P' V g) : Loc U P' := by
-  obtain ⟨S, hS, hP0⟩ := h
-  exact ⟨S, hS, fun V g hg => hP V g (hP0 V g hg)⟩
+    (hP : ∀ V g, P V g → P' V g) : Loc U P' := GlobalTheory.EtC.exactIff_loc_mono h hP
 
 theorem agree_on_twist {Q q : ℕ} [NeZero Q] (k : ℤ) {T : Cx (ZMod Q)} {J : Cx (ZMod q)} (ε : sgl (tw Q k) ⟶ T)
     (σ σ' : SemiMap T J)
@@ -1148,8 +1143,7 @@ theorem secMap_res' {F G : Shv R} (f : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U)
   (LinearMap.congr_fun (congrArg ModuleCat.Hom.hom (f.hom.naturality g.op)) x).symm
 
 theorem secMap_nsmul' {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} (c : ℕ) (x : Sec F U) :
-    Sec.map f (c • x) = c • Sec.map f x :=
-  map_nsmul (f.hom.app (op U)).hom c x
+    Sec.map f (c • x) = c • Sec.map f x := GlobalTheory.EtC.Sec.map_nsmul_of_sheaf_morphism f c x
 
 theorem secMap_zero' {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} :
     Sec.map f (0 : Sec F U) = 0 :=

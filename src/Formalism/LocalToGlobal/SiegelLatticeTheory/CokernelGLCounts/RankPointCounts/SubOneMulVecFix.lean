@@ -308,7 +308,7 @@ theorem uMat_mul_inv'' {n : ℕ} {ε : Fin n → Bool} (a : Formalism.REAL.UJ ε
 
 theorem uMat_unit {n : ℕ} {ε : Fin n → Bool} (a : Formalism.REAL.UJ ε) :
     (uMat a)ᴴ * Formalism.REAL.Jm ε * uMat a = Formalism.REAL.Jm ε := by
-  exact a.2
+  exact Formalism.MainNotions.BridgeCSchur.umat_mem a
 
 theorem sub_one_mulVec_fix {n : ℕ} {g : Matrix (Fin n) (Fin n) ℂ} {y : Fin n → ℂ} (h : g *ᵥ y = y) :
     (g - 1) *ᵥ y = 0 := by

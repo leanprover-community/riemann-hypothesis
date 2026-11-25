@@ -580,7 +580,7 @@ theorem abel_abstract :
 
 theorem mem_eigSp_iff {R M O : Type} [CommRing R] [AddCommGroup M] [Module R M] [CommRing O]
     (ρ : O →+* Module.End R M) (σ : O →+* R) (x : M) : x ∈ eigSp ρ σ ↔ ∀ a, ρ a x = σ a • x := by
-  simp [eigSp, Submodule.mem_iInf, sub_eq_zero]
+  exact PositivityTheory.HtPt.Gh.mem_eig
 
 def intLift {E L : Type} [Field E] [Field L] (σ : 𝓞 E →+* L) : 𝓞 E →+* 𝓞 L where
   toFun a := ⟨σ a, map_isIntegral_int σ (RingOfIntegers.isIntegral a)⟩

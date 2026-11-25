@@ -243,8 +243,7 @@ variable {K : Type} [Field K] {n ρ p : ℕ}
 theorem block_matrix_mul {m : ℕ} (a b c d a' b' c' d' : Matrix (Fin m) (Fin m) K) :
     blk4 a b c d * blk4 a' b' c' d' =
       blk4 (a * a' + b * c') (a * b' + b * d') (c * a' + d * c') (c * b' + d * d') := by
-  simp only [blk4]
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
+  exact GlobalTheory.CompanionTheory.ZUnf.ClassRep.blkMul a b c d a' b' c' d'
 
 theorem blockMatrix_mul_blockMatrix (hn : ρ + p = n) (a a' : Matrix (Fin ρ) (Fin ρ) K) (b b' : Matrix (Fin ρ) (Fin p) K)
     (c c' : Matrix (Fin p) (Fin ρ) K) (d d' : Matrix (Fin p) (Fin p) K) :

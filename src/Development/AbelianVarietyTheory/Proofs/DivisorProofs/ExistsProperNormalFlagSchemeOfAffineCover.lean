@@ -526,9 +526,7 @@ open Formalism.MainNotions.DIV.Cons (intO)
 namespace GlobalTheory.FlagEmb.CellClosed
 
 theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp only [spMap, ← Spec.map_comp]
-  rfl
+    spMap g ≫ spMap f = spMap (g.comp f) := GlobalTheory.TanMod.spMap_comp' f g
 
 theorem sp_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g := by
   have e := Spec.map_injective h
@@ -1058,8 +1056,7 @@ open Formalism.MainNotions.DIV.Cons (intO)
 namespace GlobalTheory.FlagEmb.Overlap
 
 theorem spMap_spMap {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] (f : R →+* R') (g : R' →+* R'') :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
+    spMap g ≫ spMap f = spMap (g.comp f) := GlobalTheory.CompIdem.spMap_comp f g
 
 theorem exists_fieldPoint {A : Type} [CommRing A] (y : Sp A) :
     ∃ (k : Type) (_ : Field k) (ψ : A →+* k), ∀ q : Sp k, spMap ψ q = y := by

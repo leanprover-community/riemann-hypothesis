@@ -115,7 +115,8 @@ private theorem mulVec_col_eq_single_of_mul_eq_one {k m n : Type} [Field k] [Fin
   show ∑ l, b' i l * b l j = _
   rw [← Matrix.mul_apply, hb, Matrix.one_apply, Pi.single_apply]
 private theorem cA_incA_eq_incA_sig (D : D7) (x : D.host.E) :
-    cA D (incA D x) = incA D ((D.sp.cm.sig : D.host.E →+* D.host.E) x) := rfl
+    cA D (incA D x) = incA D ((D.sp.cm.sig : D.host.E →+* D.host.E) x) :=
+  GlobalTheory.IdemSupport.cA_incA x
 end GlobalTheory.FrameZero
 
 theorem GlobalTheory.FrameZero.xclauses : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m), ∀ v ∈ G.pl.S0, ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

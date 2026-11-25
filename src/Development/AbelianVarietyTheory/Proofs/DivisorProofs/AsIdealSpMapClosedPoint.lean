@@ -167,7 +167,7 @@ theorem val_restr' {k : Type} [CommRing k] {T : Scheme.{0}} {p : T ⟶ Sp k} {B 
   evalPt_res x (inf_le_inf_right _ h) (GlobalTheory.FlagMod.le_preimage_inf hO hi) (GlobalTheory.FlagMod.le_preimage_inf hO' hi) _
 
 theorem valR_eq_evalPt {A : Type} [CommRing A] {T : Scheme.{0}} (x : Sp A ⟶ T) (O : T.Opens) (h : ⊤ ≤ x ⁻¹ᵁ O)
-    (f : Γ(T, O)) : valR x O f = evalPt x O h f := dite_eq_left h
+    (f : Γ(T, O)) : valR x O f = evalPt x O h f := GlobalTheory.Points.valR_eq x O h f
 
 theorem chartFr_congr {S : Type} [CommRing S] [Algebra c.F S] {k : X.F.J} {z z' : Sp S ⟶ X.YY} (e : z = z')
     {hz : ⊤ ≤ z ⁻¹ᵁ X.F.U k} {hz' : ⊤ ≤ z' ⁻¹ᵁ X.F.U k} {Q : FrPt Xo c S} (h : X.F.ChartFr k z hz Q) :

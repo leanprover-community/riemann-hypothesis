@@ -67,8 +67,7 @@ namespace GlobalTheory.CellRed
 
 variable {k r : ℕ}
 
-theorem det_Hpk : IsUnit (Hpk k r).det :=
-  Matrix.isUnit_det_of_right_inverse (hpkFacts k r).2.1
+theorem det_Hpk : IsUnit (Hpk k r).det := Formalism.FourierDecayAlt.P.B2x5.isUnit_det_Hpk k r
 
 theorem unit_det {g : MatKR k r} (hg : g ∈ UH (Hpk k r)) : IsUnit g.det :=
   ((uHGroup _ _ det_Hpk).2.2 g hg).1

@@ -303,7 +303,7 @@ variable {S T : HSp D} {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E
   {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
 
 lemma intAf_mul' {a a' : Af D.host.F} (ha : a ∈ intAf D.host.F) (ha' : a' ∈ intAf D.host.F) :
-    a * a' ∈ intAf D.host.F := fun w => by rw [map_mul]; exact mul_mem (ha w) (ha' w)
+    a * a' ∈ intAf D.host.F := Formalism.IndefR.Fin.intAf_mul ha ha'
 
 lemma intAE_mul' {z z' : Af D.host.F ⊗[D.host.F] D.host.E} (hz : z ∈ intAE D) (hz' : z' ∈ intAE D) :
     z * z' ∈ intAE D := by

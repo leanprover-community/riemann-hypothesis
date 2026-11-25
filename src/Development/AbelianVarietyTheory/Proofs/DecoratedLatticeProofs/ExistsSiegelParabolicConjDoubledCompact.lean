@@ -768,10 +768,7 @@ namespace GlobalTheory.StdUnn
 theorem compFin_cA_scal {D : D7} (v : HeightOneSpectrum (𝓞 D.host.F)) (z : AE D) :
     GlobalTheory.AdelicU.compFin D.host.F D.host.E v (cA D z) =
       sigR _ D.sp.cm.sig (GlobalTheory.AdelicU.compFin D.host.F D.host.E v z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul a x => rfl
+  exact GlobalTheory.StdUnn.Frame.compFin_cA v z
 
 theorem map_units_inv_eq_scal {R S : Type*} [Ring R] [Ring S] (f : R →+* S) (a b : Rˣ) (h : f a = f b) :
     f ((a⁻¹ : Rˣ) : R) = f ((b⁻¹ : Rˣ) : R) := by

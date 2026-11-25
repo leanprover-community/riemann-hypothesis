@@ -748,9 +748,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat
 noncomputable section
 
 theorem spMap_comp' {A B C' : Type} [CommRing A] [CommRing B] [CommRing C'] (f : A →+* B) (g : B →+* C') :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp only [spMap, ← Spec.map_comp]
-  rfl
+    spMap g ≫ spMap f = spMap (g.comp f) := GlobalTheory.TanMod.spMap_comp' f g
 
 theorem dualMap_comp' {A B C' : Type} [CommRing A] [CommRing B] [CommRing C'] (f : A →+* B) (g : B →+* C') :
     (dualMap g).comp (dualMap f) = dualMap (g.comp f) := by

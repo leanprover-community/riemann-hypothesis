@@ -91,13 +91,11 @@ section Mat
 
 theorem rorth_actM_add {M : Type*} [AddCommGroup M] [Module ℂ M]
     (E : Fin n → Fin n → Module.End ℂ M) (X Y : Matrix (Fin n) (Fin n) ℂ) :
-    actM E (X + Y) = actM E X + actM E Y := by
-  simp only [actM, Matrix.add_apply, add_smul, Finset.sum_add_distrib]
+    actM E (X + Y) = actM E X + actM E Y := ReciprocityTheory.ChartRestriction.DS.actM_add' E X Y
 
 theorem rorth_actM_smul {M : Type*} [AddCommGroup M] [Module ℂ M]
     (E : Fin n → Fin n → Module.End ℂ M) (c : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) :
-    actM E (c • X) = c • actM E X := by
-  simp only [actM, Matrix.smul_apply, smul_eq_mul, Finset.smul_sum, mul_smul]
+    actM E (c • X) = c • actM E X := ReciprocityTheory.ChartRestriction.DS.actM_smul' E c X
 
 theorem rorth_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M]
     (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) :

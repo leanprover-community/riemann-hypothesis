@@ -47,8 +47,7 @@ theorem opn_mul_le {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) : opn (A * B) �
 theorem opn_nonneg {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ opn A := norm_nonneg _
 
 theorem continuous_uMat {n : ℕ} {ε : Fin n → Bool} :
-    Continuous (fun g : Formalism.REAL.UJ ε => uMat g) :=
-  Units.continuous_val.comp continuous_subtype_val
+    Continuous (fun g : Formalism.REAL.UJ ε => uMat g) := Formalism.REAL.continuous_coeMatrix ε
 
 theorem weight_exponent_nonneg : 0 ≤ N1 X := by
   unfold N1; positivity

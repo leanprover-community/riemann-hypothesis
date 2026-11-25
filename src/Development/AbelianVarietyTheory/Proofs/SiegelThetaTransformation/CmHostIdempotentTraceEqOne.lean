@@ -606,7 +606,7 @@ open Matrix Complex in
 open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_one_siegel_theta_transformation : _root_.GlobalTheory.SW.qm (1 : Matrix ι ι ℚ) = 1 := by
-  ext i j; by_cases h : i = j <;> simp [_root_.GlobalTheory.SW.qm, Matrix.one_apply, h]
+  apply GlobalTheory.SW.TransComp.qm_one
 
 open Matrix Complex in
 open scoped ComplexConjugate Real in

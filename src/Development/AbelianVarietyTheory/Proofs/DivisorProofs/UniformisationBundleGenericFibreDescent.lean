@@ -78,8 +78,7 @@ theorem mono_jK (R : Type) [CommRing R] : Mono (jK R) := by
   infer_instance
 
 theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp]; rfl
+    spMap g ≫ spMap f = spMap (g.comp f) := GlobalTheory.spMap_comp_ring f g
 
 end GenericBundleDescent
 

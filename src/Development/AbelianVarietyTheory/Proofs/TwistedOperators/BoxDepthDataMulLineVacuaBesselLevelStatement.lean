@@ -1289,9 +1289,7 @@ open GlobalTheory.AscFin
 namespace GlobalTheory.AscFin.BoxBF
 
 theorem isHalf_mul {D : D7} {m n k : ℕ} {e : AE D} {u : Mx D m n} (h : IsHalf e u) (M : Mx D n k) : IsHalf e (u ⬝ M) := by
-  intro i j
-  simp only [Matrix.mul_apply, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun l _ => by rw [← mul_assoc, h i l]
+  exact GlobalTheory.KapVac.half_mul_right h M
 
 theorem main : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ Ξ₁ Ξ₂, VacG W.ψ _ _ (latCore G (2 * ρ + 1)) Ξ₁ → IsThetaFunO W.ψ _ _ Ξ₂ →
     VacG W.ψ _ _ (lineLat F ρ) (fun w => star (Ξ₂ ((F.lnk ρ).κ _ w))) → VacG W.ψ _ _ (pcBF W F ρ h).Γ₀ ((F.oB ρ h).boxS _ Ξ₁ Ξ₂) := by

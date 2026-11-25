@@ -78,8 +78,7 @@ theorem inPar_eq (a : ℕ) {n : ℕ} (x : GL (Fin n) F) :
     InPar a x ↔ InParM a (x : Matrix (Fin n) (Fin n) F) := Iff.rfl
 
 theorem gal_id (n : ℕ) (y : GL (Fin n) F) : gal (RingHom.id F) n y = y := by
-  ext i j
-  simp [gal]
+  exact GlobalTheory.Shin.gal_id_eq n y
 
 theorem inPar_one (a n : ℕ) : InPar a (1 : GL (Fin n) F) := by
   intro i j hj hi
@@ -509,9 +508,7 @@ theorem aflipG_conj {n : ℕ} (x : GL (Fin n) F) : ∃ p : GL (Fin n) F, aflipG 
   exact Units.ext (by simp only [Units.val_mul, aflipG_coe, IsUnit.unit_spec, h])
 
 theorem toG_coe' {n : ℕ} (x : GL (Fin n) F) : toG (x : Matrix (Fin n) (Fin n) F) = x := by
-  unfold toG
-  rw [dite_eq_left x.isUnit]
-  exact Units.ext (IsUnit.unit_spec _)
+  exact GlobalTheory.Shin.HcUnit.toG_val x
 
 theorem cl_conj {n : ℕ} {α : GL (Fin n) F → ℂ} (hα : IsCl α) (p x : GL (Fin n) F) :
     α (p * x * p⁻¹) = α x := by
@@ -559,7 +556,7 @@ theorem br_aflip {a b : ℕ} (M : Matrix (Fin (a + b)) (Fin (a + b)) F) : br b a
   congr 1 <;> apply Fin.ext <;> simp only [Fin.val_rev] <;> omega
 
 theorem gal_id (n : ℕ) (y : GL (Fin n) F) : gal (RingHom.id F) n y = y := by
-  ext i j; simp [gal]
+  exact GlobalTheory.Shin.gal_id_eq n y
 
 end GlobalTheory.HCCommF
 end -- clump:auto

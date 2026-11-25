@@ -469,7 +469,7 @@ section
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
 theorem mem_orth {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x ∈ U, S.hT x v = 0 := by
-  simp [orth, Submodule.mem_iInf]
+  exact Formalism.MainNotions.mem_orth_iff U v
 
 theorem exists_mul_mem {Λ : Submodule (𝓞 E) S.V} (hΛ : Submodule.IsFullLattice E Λ) (v : S.V) :
     ∃ d : 𝓞 E, d ≠ 0 ∧ d • v ∈ Λ := by
@@ -1091,7 +1091,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : �
   {Λ : Submodule (𝓞 E) S.V} {g : ℕ}
 
 theorem mem_orth {U : Submodule E S.V} {x : S.V} : x ∈ orth S U ↔ ∀ u ∈ U, S.hT u x = 0 := by
-  simp [orth, Submodule.mem_iInf, LinearMap.mem_ker]
+  exact Formalism.MainNotions.mem_orth_iff U x
 
 theorem hT_z_X (F : LFlag S r T) {x : S.V} (hx : x ∈ Xsp F) : S.hT F.fl.z x = 0 := by
   induction hx using Submodule.span_induction with

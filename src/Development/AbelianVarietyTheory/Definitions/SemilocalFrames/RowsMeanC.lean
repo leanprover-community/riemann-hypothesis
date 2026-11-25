@@ -76,7 +76,7 @@ def frF (F : FlagG S r T) (hT : T ≠ 0) : Formalism.HermitianLatticeCounting.S6
 end Gen
 
 theorem tu_ne (D : D7) (u : D.what₂.Word) : ((Tu D u : ℕ) : D.host.E) ≠ 0 :=
-  Nat.cast_ne_zero.2 (D.mem u).A.T_prime.ne_zero
+  Formalism.L2.SG.Corank.tu_ne_zero u
 section Obj
 variable {D : D7} {X : HidaSetting D}
 

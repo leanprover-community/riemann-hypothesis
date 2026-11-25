@@ -140,9 +140,7 @@ theorem int_zeta_inv (T : Tower p Ω) (n : ℕ) : IsInt (p := p) (T.ζ n)⁻¹ :
 
 alias kummerTower_qq_pow_level_eq_q := _root_.GlobalTheory.K5.Basic.qq_pow
 
-theorem isUnit_qO : IsUnit (qO p) := by
-  refine IsUnit.map _ (IsUnit.of_mul_eq_one (HahnSeries.single (-1 : ℤ) (1 : ℤ_[p])) ?_)
-  rw [HahnSeries.single_mul_single]; simp
+theorem isUnit_qO : IsUnit (qO p) := GlobalTheory.K5.Basic.isUnit_qO p
 
 theorem int_qq (T : Tower p Ω) (n : ℕ) : IsInt (p := p) (T.qq n) :=
   int_of_pow (ppow_pos n) (by rw [kummerTower_qq_pow_level_eq_q]; exact int_alg _)

@@ -58,7 +58,7 @@ theorem spMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : B
   simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
 
 theorem spMap_id' (A : Type) [CommRing A] : spMap (RingHom.id A) = 𝟙 _ := by
-  simp only [spMap, CommRingCat.ofHom_id, Spec.map_id]
+  exact GlobalTheory.Frames.ChgBC.spMap_id A
 
 theorem scal_mul' {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (a b : S) (i : (PPx x).ι) :
     scal x (a * b) i = scal x a i * scal x b i := by

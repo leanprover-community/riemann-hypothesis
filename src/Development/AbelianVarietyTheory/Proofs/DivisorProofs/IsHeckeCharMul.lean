@@ -60,8 +60,7 @@ namespace GlobalTheory.SquareChars
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 theorem isHeckeChar_mul' {c c' : (AE D)ˣ →* Circle} (h : IsHeckeChar D c) (h' : IsHeckeChar D c') :
-    IsHeckeChar D (c * c') :=
-  ⟨h.1.mul h'.1, fun x => by rw [MonoidHom.mul_apply, h.2 x, h'.2 x, mul_one]⟩
+    IsHeckeChar D (c * c') := GlobalTheory.WeilChange.hecke_mul h h'
 
 theorem chi_hecke_res (G : GridData L sc) {μ₀ : T} (hL : L.Is μ₀) (i : Fin D.R.m) :
     IsHeckeChar D (G.ch.chi (D.R.m - i)) ∧ ResEta D (G.ch.chi (D.R.m - i)) 0 := by
