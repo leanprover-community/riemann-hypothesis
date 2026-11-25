@@ -108,8 +108,6 @@ namespace ColDat
 
 variable (d : ColDat) (a : ColArgs d)
 
-theorem f_eq : d.X.f = d.R.f := d.what₂.card_Tau
-
 @[reducible] def chain (u : d.what₂.Word) : ColumnChain d.R d.what₂.Tau (d.hcW u) :=
   recChain (Pr := d.Pr) (W := d.W) (Λ := d.lev) d.hX d.σ₀ a.G u (a.A u)
 
@@ -129,7 +127,6 @@ def crd (i : ℕ) (hi : i ≤ d.R.m) : (d.sp.X i).V ≃ₗ[d.host.E] (Fin (d.R.N
 
 def repr (u : d.what₂.Word) (i : ℕ) (c : StCl (Pr := d.Pr) d.W d.lev u i) : DecoSet (E := d.X.E) (n := d.R.N i) (ST := d.Pr.vT u) (SG := d.Pr.vGs) :=
   (stepGSD (Pr := d.Pr) d.W d.lev u i).outSec.rep c
-
 
 open Classical in
 def clsLat (u : d.what₂.Word) (i : ℕ) (c : StCl (Pr := d.Pr) d.W d.lev u i) : Submodule (𝓞 d.host.E) (d.sp.X i).V :=

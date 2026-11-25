@@ -67,17 +67,6 @@ abbrev autU (N : UniLat E n) : Subgroup (UF E n) := MulAction.stabilizer (UF E n
 
 variable {E n}
 
-theorem finite_autU (hE : PosStar E) (N : UniLat E n) : Finite (autU E n N) := by
-  have hA := final_autFinite E (Sp E n) (hStd E n) hStd_isSymm (hStd_pos hE) N.1
-    (hcnt_isFullLattice_of_unimodular N.2.1 N.2.2)
-  have : Finite {g : Sp E n ≃ₗ[E] Sp E n | g ∈ isom (hStd E n) ∧ gmap g N.1 = N.1} := hA
-  refine Finite.of_injective
-    (fun a : autU E n N => (⟨a.1.1, a.1.2, congrArg Subtype.val a.2⟩ :
-      {g : Sp E n ≃ₗ[E] Sp E n | g ∈ isom (hStd E n) ∧ gmap g N.1 = N.1})) ?_
-  intro a b hab
-  exact Subtype.ext (Subtype.ext (show a.1.1 = b.1.1 from
-    congrArg (fun g : {g : Sp E n ≃ₗ[E] Sp E n | g ∈ isom (hStd E n) ∧ gmap g N.1 = N.1} => g.1) hab))
-
 end Mass
 
 section Count
@@ -85,7 +74,6 @@ section Count
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
 def DecoSet.lat (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : UniLat E n := ⟨d.1.N, d.2.lat, d.2.uni⟩
-
 
 end Count
 

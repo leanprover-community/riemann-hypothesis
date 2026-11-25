@@ -746,20 +746,6 @@ def DivisionPackage.colBr {D : D7} {L : SizeData₂ D} {Rw : DivisionRows L} {C 
   Dc := Rw.Dc P.Pk.Zs
   I := P.I
 
-theorem DivisionPackage.colBr_tied {D : D7} {L : SizeData₂ D} {Rw : DivisionRows L} {C Cabs : ℝ} (P : DivisionPackage Rw C Cabs) : P.colBr.Tied := by
-  refine ⟨⟨Rw.s, Rw.hOk⟩, ?_, P.tied.sharp, P.dcPt⟩
-  intro w
-  show D.what₂.muAt w = P.I.tup (P.Pk.core.cols.toIndefData.μ (D.plEq w))
-  rw [P.tied.tup.muAt w, P.tied.mu1]
-
-theorem DivisionPackage.val2 {D : D7} {L : SizeData₂ D} {Rw : DivisionRows L} {C Cabs : ℝ} (P : DivisionPackage Rw C Cabs) (h2 : Formalism.MainNotions.LocalQuadraticParts.adm2 D L)
-    (hcut : ∀ μ, Formalism.BasicNotions.DV.Used D μ → Formalism.L2.G.ServJoint.CutUp D μ) (hN : Formalism.BasicNotions.DV.NprimeDef D L) (u : D.what₂.Word) (w : HeightOneSpectrum (𝓞 D.what₂.LL)) :
-    ∀ φ ∈ P.Nu u, ∀ F ∈ (Rw.A.side Rw.P1 Rw.ψ1 P.Pk.Zs).Mt (P.Pk.core.cols.μ w),
-      (Rw.Dc P.Pk.Zs).Pt (P.I.wU u) (P.Pk.core.cols.μ w) φ F = 0 ∨
-        sgRec L u w ≤ (vw w ((Rw.Dc P.Pk.Zs).Pt (P.I.wU u) (P.Pk.core.cols.μ w) φ F) : ℝ) :=
-  Formalism.L2.G.ServJoint.val2AllAtR D L P.colBr P.colBr_tied hcut h2 u (P.Nu u)
-    (Formalism.L2.G.ServJoint.nu_into L hN u (P.I.eNu u) (P.NuC (P.I.wU u)) (P.Nu u) (P.tied.cols.Nu u).lat (P.shift u)) w
-
 theorem WordFacts.mono {D : D7} {L : SizeData₂ D} {C C' Cabs Cabs' : ℝ} {u : D.what₂.Word} (h : WordFacts L C Cabs u)
     (hC : C ≤ C') (hC0 : 0 ≤ C') (hA : Cabs ≤ Cabs') (hLa : 0 ≤ L.La) : WordFacts L C' Cabs' u := by
   refine ⟨h.1, h.2.1, h.2.2.trans ?_⟩

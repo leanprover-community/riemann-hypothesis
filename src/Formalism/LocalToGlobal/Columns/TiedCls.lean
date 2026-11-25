@@ -85,28 +85,6 @@ section Rec
 
 variable {d : ColDat} (a : ColArgs d)
 
-theorem badG_eq : CF.badG (d.colRec a) = plUnder d.X.F d.Pr.vGs := by
-  exact Set.ext fun v => (plUnder_vGs d.sp.cm d.hPr v).symm
-
-private theorem selfDual_map_crd_eq_std (hS : SpStd d.toColBase) (i : ℕ) (hi : i ≤ d.R.m) :
-    (d.sp.X i).L0.map ((d.crd i hi).toLinearMap.restrictScalars (𝓞 d.host.E)) = stdLat d.X.E (d.R.N i) := by
-  rw [hS.selfDual_span_frame_X i hi, Submodule.map_span, ← Set.range_comp, stdLat_eq_span]
-  have hfr : ∀ b, (d.crd i hi) ((d.sp.X i).frame b) = Pi.single (finCongr (d.sp.X_rank i hi) b) (1 : d.host.E) := by
-    intro b
-    funext j
-    show (d.sp.X i).frame.equivFun ((d.sp.X i).frame b) ((finCongr (d.sp.X_rank i hi)).symm j) = _
-    rw [Basis.equivFun_self, Pi.single_apply]
-    congr 1
-    exact propext ⟨fun h => by rw [h, Equiv.apply_symm_apply], fun h => by rw [h, Equiv.symm_apply_apply]⟩
-  change Submodule.span _ (Set.range fun b => (d.crd i hi) ((d.sp.X i).frame b)) = _
-  simp_rw [hfr]
-  exact congrArg (Submodule.span (𝓞 d.host.E))
-    ((finCongr (d.sp.X_rank i hi)).surjective.range_comp (fun j => Pi.single j (1 : d.host.E)))
-
-theorem selfDualLatticeCoords_eq_std (hS : SpStd d.toColBase) (i : ℕ) (hi : i ≤ d.R.m) :
-    CF.selfDualLatticeCoords (d.colRec a) i hi = stdLat d.X.E (d.R.N i) :=
-  selfDual_map_crd_eq_std hS i hi
-
 def stepCrd (hS : SpStd d.toColBase) (hH : HostHyp d) (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m) :
     StepCrd d.Pr d.σ₀ (d.R.N i) fun c : StCl (Pr := d.Pr) d.W d.lev u i => (d.repr u i c).1.L where
   J := CF.gramN (d.colRec a) i hi

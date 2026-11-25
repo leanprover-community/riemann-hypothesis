@@ -32,34 +32,4 @@ structure HostHyp (d : ColDat) : Prop where
 
 variable {d : ColDat} (a : ColArgs d)
 
-theorem gramN_eq (hS : SpStd d.toColBase) (i : ℕ) (hi : i ≤ d.R.m) : CF.gramN (d.colRec a) i hi = 1 := by
-  refine Matrix.ext fun x y => ?_
-  show (d.sp.X i).hT ((d.sp.X i).frame _) ((d.sp.X i).frame _) = _
-  rw [hS.X_on i hi, Matrix.one_apply]
-  simp only [EmbeddingLike.apply_eq_iff_eq]
-
-theorem gramP_eq (hS : SpStd d.toColBase) : CF.gramP (d.colRec a) = 1 := by
-  refine Matrix.ext fun x y => ?_
-  show d.sp.X'.hT (d.sp.X'.frame _) (d.sp.X'.frame _) = _
-  rw [hS.P_on, Matrix.one_apply]
-  simp only [EmbeddingLike.apply_eq_iff_eq]
-
-private theorem map_clsLat_crd (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m)
-    (c : StCl (Pr := d.Pr) d.W d.lev u i) :
-    (d.clsLat u i c).map ((d.crd i hi).toLinearMap.restrictScalars (𝓞 d.host.E)) = (d.repr u i c).1.L := by
-  unfold ColDat.clsLat
-  rw [dite_eq_left hi, ← Submodule.map_comp, ← LinearMap.restrictScalars_comp,
-    LinearEquiv.comp_symm, LinearMap.restrictScalars_id, Submodule.map_id]
-
-theorem clsCrd_eq (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m) (c : StCl (Pr := d.Pr) d.W d.lev u i) :
-    CF.clsCrd (d.colRec a) u i hi c = (d.repr u i c).1.L :=
-  map_clsLat_crd u i hi c
-
-theorem embT_eq (hH : HostHyp d) : CF.embT (d.colRec a) = d.X.embC d.σ₀ := by
-  funext τ
-  show d.host.φ₀.comp _ = (d.what₂.embLL).comp (d.embE.comp _)
-  rw [← hH.embE_φ₀, RingHom.comp_assoc]
-
-theorem T_eq (u : d.what₂.Word) : ((d.colRec a).mem u).A.T = d.T u := rfl
-
 end Formalism.L2.Col

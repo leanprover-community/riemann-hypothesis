@@ -460,7 +460,6 @@ theorem opMat_adj (hH : B.OkH) (i : B.Pl × ℕ) : ∃ i', (B.opMat i)ᴴ * B.S.
 
 end CyclotomicLifting
 
-
 namespace DefFam
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
@@ -477,17 +476,6 @@ theorem etaJ_units (P : Subgroup G) (ψ : P →* Kˣ) (Zs : DefSub F.amb) (j : J
     F.etaJ P ψ Zs j t w * (Col.eW w : ℚ) = (F.etaJW P ψ Zs j t w : ℚ) := eta_units _ _ _ (F.L j t) (F.lvlA P ψ) (Zs.Zl j t) w
 
 end DefFam
-
-namespace FamIn
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
-  {Pl0 T : Type} {m : ℕ} (A : FamIn K G Pl0 T m)
-
-theorem side_WF {s : ℕ} (h : A.fam.Ok s) (P : Subgroup G) (ψ : P →* Kˣ) (Zs : DefSub A.fam.amb)
-    (hst : Zs.Stable) (hin : Zs.InBlock) (hsep : A.fam.TypesSep) : (A.side P ψ Zs).WF :=
-  A.fam.side_WF h P ψ Zs hst hin hsep
-
-end FamIn
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef
 

@@ -83,7 +83,6 @@ section Pair
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-
 end Pair
 
 section Concrete
@@ -356,8 +355,6 @@ end UniformCovolumeTail
 
 namespace UniformCovolumeTail
 
-
-
 theorem stepDiSharp (J Pl Emb : Type) [Fintype J] [Fintype Pl] [Fintype Emb] [Nonempty Emb] (r : ℕ)
     (ν : J → Pl → Fin r → ℝ) (g0 : J → ℝ)
     (logK MainNotions : J → Emb → ℝ) (logOmτ : Pl → Emb → ℝ) (logth0 : Emb → ℝ) (logh logh' hK : J → ℝ)
@@ -482,8 +479,6 @@ theorem stepDiSharp (J Pl Emb : Type) [Fintype J] [Fintype Pl] [Fintype Emb] [No
   linarith
 
 end UniformCovolumeTail
-
-
 
 theorem height_bound_at_set : HeightS := by
   intro J Pl Emb _ _ _ _ TT _ nr hu hP mlam logT hK aT logH Ch nV L' ν x eps L b a rd La m f k N S η b'
@@ -701,8 +696,6 @@ lemma absE_dsum_le {J Pl : Type} [Fintype J] [Fintype Pl] (g : J → Pl → ℝ)
   calc ∑ ρ, g j ρ ≤ ∑ _ρ : Pl, c := Finset.sum_le_sum (fun ρ _ => hg j ρ)
     _ = (Fintype.card Pl : ℝ) * c := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     _ ≤ f * c := mul_le_mul_of_nonneg_right hP hc
-
-
 
 theorem error_absorption : AbsorbE := by
   intro J Pl _ _ TT _ x eps L b a rd La B0 Nc xe m f k N S t η w'' b' dC lam0 C0 Lpass Eb e6 eP
@@ -1102,7 +1095,6 @@ namespace DivisorInequalityBounds
 
 end DivisorInequalityBounds
 
-
 namespace DivisorInequalityBounds
 
 end DivisorInequalityBounds
@@ -1391,12 +1383,6 @@ theorem Nn_ge : 1 ≤ R.Nn := by
   linarith [R.p1, R.p2, R.p6, R.p11, R.p14, R.p15, R.p16, R.p17, R.p18, R.p19, R.p20, R.p24, R.p25, R.p26, R.p27, R.p28,
     R.p29, R.p30, R.p31, R.p32, R.p33, R.p34, R.p35, R.p36, R.p37, R.p38, R.c1, R.c3, R.c4, R.c5]
 
-theorem La_eq : R.La = Real.log R.x + R.L + Real.log R.rd := by
-  have hx : 0 < R.x := R.x_pos
-  have hb : 0 < R.b := by rw [R.p4]; exact Real.exp_pos _
-  have hrd : 0 < R.rd := by linarith [R.p6]
-  rw [R.p9, R.p5, Real.log_mul (mul_pos hx hb).ne' hrd.ne', Real.log_mul hx.ne' hb.ne', R.p4, Real.log_exp]
-
 theorem unit_nonneg : 0 ≤ R.x ^ R.eps * (R.B0 + R.Nc) := by
   have hx : 0 ≤ R.x := le_of_lt R.x_pos
   have hf : 0 ≤ R.f := le_trans (Nat.cast_nonneg _) R.p13
@@ -1640,7 +1626,6 @@ theorem ChainTie.cpl_norm (T : ChainTie ch Q) (v : InfinitePlace K) (x : Fin (ch
 def ChainTie.First (T : ChainTie ch Q) (f : (Fin (ch.c 0) → K) →ₗ[K] (Q.F 0).Forms) : Prop :=
   ∀ x, T.coF 0 (Nat.zero_le _) x = f x
 
-
 end Comparison₂
 
 section ColFace
@@ -1861,7 +1846,6 @@ abbrev kerRec {Bs : DefBase X.K} {P : LevFam X.E X.K Rk.r Pr.vGs} {m2 : ℕ} (mu
     ∀ t x, ChKer W Ch sel (mu t) (cst t) (L t) P (wd x) m2 (b t x) (hY t x) :=
   fun t x => Formalism.L2.Ker.chKerC W Ch sel (mu t) (cst t) (L t) Am (wd x) m2 (b t x) (hY t x) P (hK t x)
 
-
 end ConcreteCol
 
 end Formalism.L2.DIV
@@ -1870,10 +1854,6 @@ namespace Formalism.L2.DIV.Inst
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef Formalism.L2.Indef.Examples₂ Formalism.L2.DIV
 open Formalism.LatticeIndexTer (ph)
-
-
-
-
 
 def kk : Fin 2 → K3 := ![2, 2⁻¹]
 

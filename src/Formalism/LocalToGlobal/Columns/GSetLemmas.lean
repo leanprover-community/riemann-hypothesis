@@ -78,12 +78,6 @@ theorem coordOf_mem_nabLat (h : S.Ok) (s : S.Sec) (φ : S.EqFun) :
   rw [Submodule.mem_comap, LinearMap.restrictScalars_apply, S.I_coordOf h s φ, Submodule.mem_pi, S.mem_intNab_iff h s φ]
   exact ⟨fun H c => H c (Set.mem_univ c), fun H c _ => H c⟩
 
-theorem coordOf_mem_delLat (h : S.Ok) (s : S.Sec) (φ : S.EqFun) :
-    S.coordOf h s φ ∈ (S.toCSDOf h s).delLat ↔ φ ∈ S.intDel := by
-  unfold CSD.delLat valLatF
-  rw [Submodule.mem_comap, LinearMap.restrictScalars_apply, S.I_coordOf h s φ, Submodule.mem_pi, S.mem_intDel_iff h s φ]
-  exact ⟨fun H c => H c (Set.mem_univ c), fun H c _ => H c⟩
-
 theorem map_intNab (h : S.Ok) (s : S.Sec) :
     S.intNab.map ((S.coordOf h s : S.EqFun →ₗ[K] (Fin (S.toCSDOf h s).dim → K)).restrictScalars (𝓞 K)) =
       (S.toCSDOf h s).nabLat := by
@@ -95,20 +89,6 @@ theorem map_intNab (h : S.Ok) (s : S.Sec) :
   · intro hx
     refine Submodule.mem_map.mpr ⟨(S.coordOf h s).symm x, ?_, ?_⟩
     · rw [← S.coordOf_mem_nabLat h s, LinearEquiv.apply_symm_apply]
-      exact hx
-    · simp
-
-theorem map_intDel (h : S.Ok) (s : S.Sec) :
-    S.intDel.map ((S.coordOf h s : S.EqFun →ₗ[K] (Fin (S.toCSDOf h s).dim → K)).restrictScalars (𝓞 K)) =
-      (S.toCSDOf h s).delLat := by
-  ext x
-  constructor
-  · intro hx
-    obtain ⟨φ, hφ, rfl⟩ := Submodule.mem_map.mp hx
-    exact (S.coordOf_mem_delLat h s φ).mpr hφ
-  · intro hx
-    refine Submodule.mem_map.mpr ⟨(S.coordOf h s).symm x, ?_, ?_⟩
-    · rw [← S.coordOf_mem_delLat h s, LinearEquiv.apply_symm_apply]
       exact hx
     · simp
 
@@ -170,39 +150,6 @@ theorem card_stab (d : S.D) :
     Nat.card (MulAction.stabilizer S'.G (e.eD d)) = Nat.card (MulAction.stabilizer S.G d) := by
   exact Nat.card_congr (e.stabEquiv d).symm
 
-theorem iso_integral_structure_equivariant (N : S.D → Submodule (𝓞 K) S.V) (N' : S'.D → Submodule (𝓞 K) S'.V)
-    (hN : ∀ (g : S.G) (d : S.D), N (g • d) = (N d).map ((S.ρ g).restrictScalars (𝓞 K)))
-    (hc : ∀ d : S.D, N' (e.eD d) = (N d).map ((e.eV : S.V →ₗ[K] S'.V).restrictScalars (𝓞 K)))
-    (g' : S'.G) (d' : S'.D) : N' (g' • d') = (N' d').map ((S'.ρ g').restrictScalars (𝓞 K)) := by
-  obtain ⟨d, rfl⟩ := e.eD.surjective d'
-  obtain ⟨g, rfl⟩ := e.eG.surjective g'
-  rw [← e.smul, hc, hc, hN, ← Submodule.map_comp, ← Submodule.map_comp]
-  congr 1
-  ext x
-  simp only [LinearMap.comp_apply, LinearMap.restrictScalars_apply, LinearEquiv.coe_coe]
-  exact e.rho g x
-
-
-include e in
-theorem ok (h : S.Ok) : S'.Ok := by
-  refine
-    { fin_orb := ?_
-      fin_stab := ?_
-      nab_smul := e.iso_integral_structure_equivariant S.Nab S'.Nab h.nab_smul e.nab
-      del_smul := e.iso_integral_structure_equivariant S.Del S'.Del h.del_smul e.del
-      inv := ?_ }
-  · have := h.fin_orb
-    exact Finite.of_equiv _ e.onCl
-  · intro d'
-    obtain ⟨d, rfl⟩ := e.eD.surjective d'
-    have := h.fin_stab d
-    exact Finite.of_equiv _ (e.stabEquiv d)
-  · intro g' x' y'
-    obtain ⟨g, rfl⟩ := e.eG.surjective g'
-    obtain ⟨x, rfl⟩ := e.eV.surjective x'
-    obtain ⟨y, rfl⟩ := e.eV.surjective y'
-    rw [← e.rho, ← e.rho, e.pair, e.pair, h.inv]
-
 theorem iso_onForms_mem_integral_iff (N : S.D → Submodule (𝓞 K) S.V) (N' : S'.D → Submodule (𝓞 K) S'.V)
     (hc : ∀ d : S.D, N' (e.eD d) = (N d).map ((e.eV : S.V →ₗ[K] S'.V).restrictScalars (𝓞 K))) (φ : S.EqFun) :
     e.onForms φ ∈ S'.intOf N' ↔ φ ∈ S.intOf N := by
@@ -243,7 +190,6 @@ theorem ipOf_onForms (h : S.Ok) (h' : S'.Ok) (s : S.Sec) (s' : S'.Sec) (φ ψ : 
     S'.pair (e.eV ((φ : S.D → S.V) (e.eD.symm (e.eD (s.rep (e.onCl.symm c'))))))
       (e.eV ((ψ : S.D → S.V) (e.eD.symm (e.eD (s.rep (e.onCl.symm c')))))) = _
   rw [e.card_stab, Equiv.symm_apply_apply, e.pair]
-
 
 def refl (S : GSD K) : GSD.Iso S S where
   eG := MulEquiv.refl _
@@ -459,54 +405,10 @@ namespace GFam
 
 variable (F : GFam K)
 
-theorem wt_eq (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (c : F.Cl) :
-    (F.toCSDOf h s).wt c = ((F.mem c.1).toCSDOf (h c.1) (s c.1)).wt c.2 := rfl
-
-theorem ipOf_indep (h : F.Ok) (s s' : ∀ b, (F.mem b).Sec) (φ ψ : F.Forms) : F.ipOf h s φ ψ = F.ipOf h s' φ ψ := by
-  unfold ipOf
-  exact Finset.sum_congr rfl fun b _ => (F.mem b).ipOf_indep (h b) (s b) (s' b) (φ b) (ψ b)
-
-theorem mem_intNab (φ : F.Forms) : φ ∈ F.intNab ↔ ∀ b, φ b ∈ (F.mem b).intNab := by
-  unfold intNab
-  rw [Submodule.mem_pi]
-  exact ⟨fun H b => H b (Set.mem_univ b), fun H b _ => H b⟩
-
-theorem mem_intDel (φ : F.Forms) : φ ∈ F.intDel ↔ ∀ b, φ b ∈ (F.mem b).intDel := by
-  unfold intDel
-  rw [Submodule.mem_pi]
-  exact ⟨fun H b => H b (Set.mem_univ b), fun H b _ => H b⟩
-
 def coordOf (h : F.Ok) (s : ∀ b, (F.mem b).Sec) : F.Forms ≃ₗ[K] (Fin (F.toCSDOf h s).dim → K) :=
   (F.resOf h s).trans (F.toCSDOf h s).basis.equivFun
 
-theorem I_coordOf (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (φ : F.Forms) :
-    (F.toCSDOf h s).I (F.coordOf h s φ) = (F.resOf h s φ).1 := by
-  show (((F.toCSDOf h s).basis.equivFun.symm ((F.toCSDOf h s).basis.equivFun (F.resOf h s φ)) :
-    (F.toCSDOf h s).Forms) : F.Cl → F.V) = _
-  rw [LinearEquiv.symm_apply_apply]
-
-theorem coordOf_mem_nabLat (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (φ : F.Forms) :
-    F.coordOf h s φ ∈ (F.toCSDOf h s).nabLat ↔ φ ∈ F.intNab := by
-  unfold CSD.nabLat valLatF
-  rw [Submodule.mem_comap, LinearMap.restrictScalars_apply, F.I_coordOf h s φ, Submodule.mem_pi, F.mem_intNab]
-  simp only [Set.mem_univ, true_implies, Sigma.forall]
-  exact forall_congr' fun b => ((F.mem b).mem_intNab_iff (h b) (s b) (φ b)).symm
-
-theorem coordOf_mem_delLat (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (φ : F.Forms) :
-    F.coordOf h s φ ∈ (F.toCSDOf h s).delLat ↔ φ ∈ F.intDel := by
-  unfold CSD.delLat valLatF
-  rw [Submodule.mem_comap, LinearMap.restrictScalars_apply, F.I_coordOf h s φ, Submodule.mem_pi, F.mem_intDel]
-  simp only [Set.mem_univ, true_implies, Sigma.forall]
-  exact forall_congr' fun b => ((F.mem b).mem_intDel_iff (h b) (s b) (φ b)).symm
-
 def Good (n : ℕ) : Prop := ∀ b, (F.mem b).Good n
-
-theorem toCSDOf_rat [Nonempty F.β] (h : F.Ok) (R : ∀ b, (F.mem b).Rat) (s : ∀ b, (F.mem b).Sec) :
-    (F.toCSDOf h s).Rat := by
-  exact
-    { pair_rat := (R (Classical.arbitrary F.β)).pair_rat
-      act_rat := fun c γ i j => (R c.1).act_rat (γ : F.G c.1) i j
-      pos := (R (Classical.arbitrary F.β)).pos }
 
 end GFam
 
