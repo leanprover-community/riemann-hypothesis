@@ -154,14 +154,6 @@ lemma linearIndependent_basisTableau {ι : Type} [Fintype ι] [DecidableEq ι] {
   -- `BasisTableau ι M k` is the subtype of the members of the chosen set.
   exact (isTableauBasis_epsilon (ι := ι) (M := M) (k := k)).linearIndepOn R
 
-/-- The minor product of any filling is a linear combination of those of the standard fillings. -/
-lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
-    (R : Type) [CommRing R] (T : Tableau ι M k) :
-    ∃ c : BasisTableau ι M k → R,
-      ∑ U : BasisTableau ι M k, c U • tableauPoly R id U.val = tableauPoly R id T := by
-  -- The chosen set of fillings spans all minor products.
-  exact (mem_span_image_finset_iff_exists_fun R).mp (isTableauBasis_epsilon.mem_span R T)
-
 /-- The character formula for the standard fillings: the sum of their monomials, times the
 alternant of weight zero, is the alternant of the weight whose `i`-th entry counts the columns of
 height greater than `i`. -/
@@ -306,7 +298,7 @@ lemma nabla_le_span_nablaBasis_mul_detPow (e : Φ → ℕ) :
   have h_expand (τ : Φ) : ∃ a : BasisTableau (n τ) (rankAt n τ) (κ τ) → R,
       ∑ U : BasisTableau (n τ) (rankAt n τ) (κ τ), a U • tableauPoly R id U.val =
         tableauPoly R id fun h j ↦ T (.inl ⟨τ, h, j⟩) :=
-    exists_sum_basisTableau_smul_eq R _
+    (mem_span_image_finset_iff_exists_fun R).mp (isTableauBasis_epsilon.mem_span R _)
   choose a ha using h_expand
   -- A minor of full height is a multiple of the determinant (`rowSubst_minor` with `z = 1`).
   have h_full (j : Σ τ : Φ, Fin (e τ)) : ∃ b_j : R,
