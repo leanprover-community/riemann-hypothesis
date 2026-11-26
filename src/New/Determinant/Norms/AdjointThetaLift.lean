@@ -169,9 +169,9 @@ noncomputable def DescentPair.thetaLift [Nonempty r] {l : NumberField.InfinitePl
     -- The level on `V` acts on the datum through the character of `O.FormV`.
     refine mem_levelSpace.2 fun k ↦ ?_
     have h_datum := O.omega_fockDatum_star 1 k (highestVector O.columnCount O.paramV)
-    simp only [map_one, Module.End.one_apply, star_highestVector] at h_datum
+    simp only [map_one, one_apply_eq_self, star_highestVector] at h_datum
     rw [LinearMap.comp_apply, LinearEquiv.coe_coe, ← toAlgForm_formRep,
-      hfit.isArrow_fockDatum.formRep_formLift_of_eq_smul h_datum, map_one, Module.End.one_apply,
+      hfit.isArrow_fockDatum.formRep_formLift_of_eq_smul h_datum, map_one, one_apply_eq_self,
       map_smul]
 
 /-- The function on the adelic group of `V` attached to the algebraic form `Θ_W y` is the theta lift

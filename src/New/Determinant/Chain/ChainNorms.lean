@@ -297,7 +297,7 @@ lemma exists_squareLaw_triangleReversedLift {P : Parameters} (D : Data P) {i n :
   case signs => rw [negCount_sumElim, add_comm, ← negCount_gridSigns_add, add_comm]
   case range =>
     rw [h_ranks, negCount_sumElim, add_comm (negCount _), ← negCount_gridSigns_add]
-    linarith [D.negCount_gridSigns_add_lt false (i := i) (n := n)]
+    linarith only [D.negCount_gridSigns_add_lt false (i := i) (n := n)]
   case weight => grind [D.card_gridIndex_le_quotientPair_negWeight false ⟨n + 1, hn⟩ τ]
   case chars =>
     intro ϑ p q _ _ h_card

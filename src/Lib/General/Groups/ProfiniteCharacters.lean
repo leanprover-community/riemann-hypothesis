@@ -282,7 +282,6 @@ lemma exists_eval_eq_on_finset (t : QZChar G →+ QZ) (S : Finset (QZChar G)) :
   -- `E` is the group of the homomorphisms `T →+ QZ` that are evaluation at a point of `G`.
   let pair : QZChar G →+ Additive G →+ QZ := .mk' (fun χ ↦ toAdditiveLeft (toHom χ)) fun _ _ ↦ rfl
   let ev : Additive G →+ T →+ QZ := (pair.domRestrict T).flip
-  have ev_apply (g : Additive G) (χ : T) : ev g χ = (χ : QZChar G).val g.toMul := rfl
   let E : AddSubgroup (T →+ QZ) := ev.range
   -- Evaluations separate characters, so `T` embeds in the dual of `E`. As a finite group and
   -- its dual have the same order, `E` is all of the dual of `T`.

@@ -259,7 +259,7 @@ lemma aeval_linearFrob_extensionLattice_eq_zero {p : ℕ} [ThePrime p] [Γ : Gro
   calc aeval β (q * (X - 1)) y
       = aeval β q (ι.baseChange Bmax x) := by simp [hx]
     _ = ι.baseChange Bmax (aeval (linearFrob S.ρ d.tameGen 0) q x) := by
-      simp [aeval_eq_sum_range, End.pow_apply, h_comm.iterate_right _ x]
+      simp [aeval_eq_sum_range, pow_apply_eq_iterate, h_comm.iterate_right _ x]
     _ = 0 := by simp [hqY]
 
 /-- A tame chart `d` has an exponent `e`, prime to `p`, and an element `ξ = d.tameMultiplier` of
@@ -578,60 +578,44 @@ Then there is a tame chart for `Γ` of exponent (ramification index) `e`. -/
 lemma exists_tameChart {p e : ℕ} [hp : ThePrime p] [Γ : GroupOverGp p]
     (hsurj : Surjective Γ.overGp.toGp) (f : ℕ+) (hf : ¬p ∣ f) (he : e ∣ p ^ f.val - 1) :
     ∃ d : TameChart Γ, d.e = e := by
-  -- Idea: take the chart at a root `ϖ` of `X ^ e - p` and let `U` be the fixer of `ϖ` and of the
-  -- constants. Inertia permutes the towers of roots of `p`; this gives the Kummer elements and the
-  -- tame generator `s`.
+  -- Take the chart at a root `ϖ` of `X ^ e - p` and let `U` be the fixer of `ϖ` and the constants.
+  -- Inertia permutes the towers of roots of `p`, giving the Kummer elements and tame generator `s`.
   have : NeZero e := ⟨ne_zero_of_dvd_ne_zero (NeZero.ne (p ^ f.val - 1)) he⟩
-  obtain ⟨ϖ, hϖ⟩ : ∃ ϖ : PadicAlgCl p, ϖ ^ e = p := IsSepClosed.exists_pow_nat_eq _ e
-  obtain ⟨a, ha⟩ : ∃ a : flatFq f, IsPrimitiveRoot a e :=
-    (HasEnoughRootsOfUnity.of_dvd (flatFq f) he).prim
-  obtain ⟨U, hU, U_normal, index_coprime⟩ : ∃ U : OpenSubgroup (Gp p),
-      (∀ g : Gp p, g ∈ U ↔ FixesLambda f g ∧ g ϖ = ϖ) ∧ U.Normal ∧ U.index.Coprime p :=
-    exists_normal_fixer_index_coprime hf he hϖ
-  obtain ⟨ϖ', h_coe, hϖ'⟩ : ∃ ϖ' : OC, ϖ'.val = ϖ ∧ ϖ' ^ e = p :=
-    exists_coe_eq_of_pow_eq_p (NeZero.ne e) hϖ
-  obtain ⟨c, rfl, rfl, h_untilt⟩ : ∃ c : Chart, c.f = f ∧ c.e = e ∧ c.varpiFlat.untilt = ϖ' :=
-    exists_chart_untilt_varpiFlat_eq f hϖ'
-  have hc_untilt_pow : c.varpiFlat.untilt ^ c.e = p := by rw [h_untilt, hϖ']
-  have mem_U {g : Gp p} : g ∈ U ↔ c.FixesThetaZ g := by
-    rw [hU g]
-    exact and_congr_right' (by simp [c.z_eq_teichmuller, h_untilt, h_coe, Subtype.ext_iff])
-  -- An inertial `t` with `t z = [ε] ^ l z` fixes the constants, and `θ z` since `θ [ε] = 1`.
-  have exists_kummer (l : ℕ) :
-      ∃ t : Γ, toGp t ∈ U ∧ toGp t • c.z.val = teichmuller p epsTilt ^ l * c.z := by
-    obtain ⟨t, ht_inertia, ht⟩ := hsurj.exists.1
-      (exists_inertia_smul_z_eq_teichmuller c hc_untilt_pow
-        (x := epsTilt ^ l * c.varpiFlat) (by simp [hc_untilt_pow]))
-    have hz : toGp t • c.z.val = teichmuller p epsTilt ^ l * c.z := by
-      rw [ht, map_mul, map_pow, c.z_eq_teichmuller]
-    exact ⟨t, mem_U.2 ⟨fixesLambda_of_mem_inertiaGroup c.f ht_inertia,
-      by simp [← theta_smul, hz]⟩, hz⟩
-  let kummer : KummerChart Γ :=
-    { chart := c
-      subgroup := .comap toGp U
-      index_coprime := by rwa [U.index_comap_of_surjective hsurj]
-      fixes g := mem_U.1 g.property
-      isChartOf := hsurj.forall.2 fun g hg ↦ ⟨⟨g, mem_U.2 hg⟩, rfl⟩
-      nearOne_le := by
-        rw [Filter.map_top, Filter.le_principal_iff, Subgroup.coe_subtype, Subtype.range_coe]
-        exact Filter.preimage_mem_comap U.mem_nhds_one
-      exists_smul_z l := by simpa using exists_kummer l }
+  obtain ⟨ϖ, hϖ⟩ := IsSepClosed.exists_pow_nat_eq (p : PadicAlgCl p) e
+  obtain ⟨a, ha⟩ := (HasEnoughRootsOfUnity.of_dvd (flatFq f) he).prim
+  obtain ⟨U, hU, U_normal, index_coprime⟩ := exists_normal_fixer_index_coprime hf he hϖ
+  obtain ⟨ϖ', h_coe, hϖ'⟩ := exists_coe_eq_of_pow_eq_p (NeZero.ne e) hϖ
+  obtain ⟨c, rfl, rfl, h_untilt⟩ := exists_chart_untilt_varpiFlat_eq f hϖ'
+  have hc_untilt_pow : c.varpiFlat.untilt ^ c.e = p := h_untilt ▸ hϖ'
+  have mem_U {g : Gp p} : g ∈ U ↔ c.FixesThetaZ g :=
+    (hU g).trans (and_congr_right' (by simp [c.z_eq_teichmuller, h_untilt, h_coe, Subtype.ext_iff]))
   -- The tame generator `s` multiplies `z` by the root of unity `[a]` of order `e`.
-  obtain ⟨s, hs_inertia, hz⟩ : ∃ s : Γ, toGp s ∈ inertiaGroup (Gp p) (intQpBar p) ∧
-      toGp s • c.z.val = algebraMap (WittFq c.f) Ainf (teichmuller p a) * c.z.val :=
-    hsurj.exists.1 (exists_inertia_smul_z_eq_teichmuller_mul c hc_untilt_pow ha.pow_eq_one)
-  have h_pow_z (n : ℕ) :
-      toGp (s ^ n) • c.z.val = algebraMap (WittFq c.f) Ainf (teichmuller p a ^ n) * c.z.val := by
-    simpa using pow_smul_z_eq_pow_mul (fixesLambda_of_mem_inertiaGroup c.f hs_inertia) hz n
-  exact ⟨{ kummer with
+  obtain ⟨s, hs_inertia, hz⟩ := hsurj.exists.1
+    (exists_inertia_smul_z_eq_teichmuller_mul c hc_untilt_pow ha.pow_eq_one)
+  refine ⟨{
+    chart := c
+    subgroup := .comap toGp U
+    index_coprime := by rwa [U.index_comap_of_surjective hsurj]
+    fixes g := mem_U.1 g.property
+    isChartOf := hsurj.forall.2 fun g hg ↦ ⟨⟨g, mem_U.2 hg⟩, rfl⟩
+    nearOne_le := by
+      rw [Filter.map_top, Filter.le_principal_iff, Subgroup.coe_subtype, Subtype.range_coe]
+      exact Filter.preimage_mem_comap U.mem_nhds_one
+    exists_smul_z l := by
+      obtain ⟨t, ht_in, ht⟩ := hsurj.exists.1 (exists_inertia_smul_z_eq_teichmuller c
+        hc_untilt_pow (x := epsTilt ^ l * c.varpiFlat) (by simp [hc_untilt_pow]))
+      have ht' : toGp t • c.z.val = teichmuller p epsTilt ^ l * c.z :=
+        ht.trans (by simp [c.z_eq_teichmuller])
+      exact ⟨⟨t, mem_U.2 ⟨fixesLambda_of_mem_inertiaGroup c.f ht_in,
+        by simp [← theta_smul, ht']⟩⟩, ht'⟩
     tameMultiplier := teichmuller p a
     tameGen := s
     isPrimitiveRoot_tameMultiplier := ha
-    tameGen_pow_smul_z := h_pow_z
+    tameGen_pow_smul_z n := by
+      simpa using pow_smul_z_eq_pow_mul (fixesLambda_of_mem_inertiaGroup c.f hs_inertia) hz n
     isWeilPair_tameGen := isWeilPair_zero_iff.2 hs_inertia
     fixesLambda_tameGen_pow n := by
-      rw [map_pow]
-      exact fixesLambda_of_mem_inertiaGroup c.f (pow_mem hs_inertia n)
+      simpa using fixesLambda_of_mem_inertiaGroup c.f (pow_mem hs_inertia n)
     ϖ := ϖ
     apply_varpi g := ((hU (toGp g.val)).1 g.property).2
     varpi_pow_eq := hϖ

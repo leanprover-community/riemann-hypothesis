@@ -267,7 +267,7 @@ lemma integrable_exp_mul_realVac (C : ℝ) :
   -- As `realVac u = exp (-|u|² / 2)`, the bound on exponents `C ‖u‖ - |u|² / 2 ≤ C² - |u|² / 4`
   -- follows from `C ‖u‖ ≤ C² + ‖u‖² / 4 ≤ C² + |u|² / 4` (sup norm against Euclidean norm).
   have h_exponent_le : C * ‖u‖ - (star u ⬝ᵥ u).re / 2 ≤ C ^ 2 - 4⁻¹ * (star u ⬝ᵥ u).re := by
-    linarith [norm_sq_le_re_star_dotProduct_self u, sq_nonneg (‖u‖ - 2 * C)]
+    linarith only [norm_sq_le_re_star_dotProduct_self u, sq_nonneg (‖u‖ - 2 * C)]
   calc
     ‖Real.exp (C * ‖u‖) * ‖realVac u‖‖ = Real.exp (C * ‖u‖ - (star u ⬝ᵥ u).re / 2) := by
       simp [realVac, norm_exp, ← Real.exp_add, neg_div, ← sub_eq_add_neg]

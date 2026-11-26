@@ -603,8 +603,8 @@ lemma hasPartitions_locConstCoeff {Λ : Ab} : HasPartitions testIncl (locConstCo
     all_goals
       refine congrArg x.down ?_
       ext
-      -- `erw`: `primeSpectrumProdHomeo.symm` is `primeSpectrumProd.symm` only after unfolding
-      erw [mem_prod]
+      -- `primeSpectrumProdHomeo.symm` is `primeSpectrumProd.symm` after unfolding
+      refine (mem_prod ..).trans ?_
       simp
 
 end New.Variety

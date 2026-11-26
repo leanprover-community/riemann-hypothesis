@@ -682,36 +682,29 @@ lemma smul_mem_baseLattice_of_trace_int {d : 𝓞 E} (h_diff : d ∈ differentId
     {a : n → E} (h_trace : ∀ ξ : n → E, ξ ∈ V.baseLattice →
       ∃ k : ℤ, (Algebra.trace ℚ E (star ξ ⬝ᵥ V.J *ᵥ a) : ℝ) = k) :
     d.val • a ∈ V.baseLattice := by
-  intro i
-  change (V.vecAtPoint (d.val • a) i).2 ∈ Ô E
   -- The character `ψf` kills the pairing of `a` with every integral finite adelic vector `y`: the
   -- condition is closed, so the dense rational vectors suffice.
-  have h_dense : DenseRange fun (ξ : n → E) (i : n) ↦ (V.vecAtPoint ξ i).2 := by
-    have h_factor : (fun (ξ : n → E) (i : n) ↦ (V.vecAtPoint ξ i).2) =
-        (fun y : n → 𝔸f E ↦ V.xFin⁻¹ • y) ∘ Pi.map fun _ : n ↦ algebraMap E (𝔸f E) := by
-      funext ξ i
-      -- `-coe_units_inv` keeps the inverse of the point in the form that `map_inv` produces.
-      simp [-coe_units_inv, xFin, ← map_inv, mulVec, vecAtPoint, dotProduct, snd_sum,
-        Units.smul_def]
-    rw [h_factor]
-    exact (MulAction.surjective V.xFin⁻¹).denseRange.comp
-      (.piMap fun _ ↦ denseRange_algebraMap_finAdele) (by fun_prop)
   have h_char : ∀ y : n → 𝔸f E, (∀ i ∈ Set.univ, y i ∈ (Ô E : Set (𝔸f E))) →
-      ψf E (star y ⬝ᵥ snd ∘ V.vecAtPoint a) = 1 := by
-    refine isClosed_property h_dense
+      ψf E (star y ⬝ᵥ snd ∘ V.vecAtPoint a) = 1 :=
+    isClosed_property (by
+      have h_eq : (fun (ξ : n → E) (i : n) ↦ (V.vecAtPoint ξ i).2) =
+          (fun y : n → 𝔸f E ↦ V.xFin⁻¹ • y) ∘ Pi.map fun _ : n ↦ algebraMap E (𝔸f E) := by
+        funext ξ i
+        simp [-coe_units_inv, xFin, ← map_inv, mulVec, vecAtPoint, dotProduct, snd_sum,
+          Units.smul_def]
+      exact h_eq ▸ (MulAction.surjective V.xFin⁻¹).denseRange.comp
+        (.piMap fun _ ↦ denseRange_algebraMap_finAdele) (by fun_prop))
       (isClosed_imp (isOpen_set_pi Set.finite_univ fun _ _ ↦ isOpen_Ô)
-        (isClosed_eq (by fun_prop) continuous_one)) fun ξ hξ ↦ ?_
-    obtain ⟨k, hk⟩ := h_trace ξ fun j ↦ hξ j trivial
-    have h_pair : (star fun j : n ↦ (V.vecAtPoint ξ j).2) ⬝ᵥ snd ∘ V.vecAtPoint a =
-        algebraMap E (𝔸f E) (star ξ ⬝ᵥ V.J *ᵥ a) := by
-      rw [← toAdele_apply_snd, ← stdForm_vecAtPoint]
-      simp [dotProduct, stdForm, mulVec_diagonal, snd_sum]
-    rw [h_pair, ψf_coe]
-    exact fourierChar_eq_one_iff.2 ⟨k, hk⟩
+        (isClosed_eq (by fun_prop) continuous_one)) fun ξ hξ ↦ by
+      have h_pair : (star fun j : n ↦ (V.vecAtPoint ξ j).2) ⬝ᵥ snd ∘ V.vecAtPoint a =
+          algebraMap E (𝔸f E) (star ξ ⬝ᵥ V.J *ᵥ a) := by
+        rw [← toAdele_apply_snd, ← stdForm_vecAtPoint]
+        simp [dotProduct, stdForm, mulVec_diagonal, snd_sum]
+      simpa [h_pair, ψf_coe, fourierChar_eq_one_iff] using h_trace ξ fun j ↦ hξ j trivial
   -- So the finite part of each coordinate of `V.vecAtPoint a` lies in the inverse different.
-  have h_inv_diff (u : 𝔸f E) (hu : u ∈ Ô E) : ψf E (u * (V.vecAtPoint a i).2) = 1 := by
+  intro i
+  refine (by simpa [↓map_smulₛₗ] using forall_ψf_mul_eq_one_iff.1 · d h_diff) fun u hu ↦ by
     simpa using h_char (Pi.single i (star u)) (by simp [star_mem_Ô, hu, Pi.single_apply, apply_ite])
-  simpa [↓map_smulₛₗ] using forall_ψf_mul_eq_one_iff.1 h_inv_diff d h_diff
 
 /-- For `d` in `E` and a vector `x` of the archimedean coordinate space, the real inner product of
 `x` with the coordinates of `(2 / d) ξ`, written with the components `(V.vecAtPoint ξ i).1 w` at the

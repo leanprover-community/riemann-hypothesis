@@ -794,7 +794,7 @@ lemma RealPlaceSizes.norm_le_of_mem_productDifferences (hF : RealPlaceSizes 𝔰
       ‖star u ⬝ᵥ 𝔰.J₁ *ᵥ v‖ ≤ (‖toLp 2 u‖ ^ 2 + ‖toLp 2 v‖ ^ 2) / 2 := by
     rw [dotProduct_comm]
     refine (norm_inner_J₁_le (v := toLp 2 u) (w := toLp 2 v)).trans ?_
-    linarith [two_mul_le_add_sq ‖toLp 2 u‖ ‖toLp 2 v‖]
+    linarith only [two_mul_le_add_sq ‖toLp 2 u‖ ‖toLp 2 v‖]
   change ‖toLp 2 ω₁‖ ^ 2 + ‖toLp 2 ω₂‖ ^ 2 < 1 at h_close
   change ‖toLp 2 ω₁'‖ ^ 2 + ‖toLp 2 ω₂'‖ ^ 2 < 1 at h_close'
   simp only [complexData_levelUnit, inv_one, Units.val_one, one_mul]
@@ -877,7 +877,7 @@ lemma volume_le_of_subset_closedBall {W : Set ℂ} {t : ℝ} (ht : 0 < t)
         ring_nf
     _ ≤ ENNReal.ofReal (36 / t) := by
         gcongr
-        linarith [pi_le_four]
+        linarith only [pi_le_four]
     _ = (ENNReal.ofReal (t / 36))⁻¹ := by
         rw [← ofReal_inv_of_pos (by positivity), inv_div]
 

@@ -96,7 +96,8 @@ while true; do
     -p WorkingDirectory="$H/runner" -p EnvironmentFile="$RUN/job.env" \
     -p Environment="HOME=$H" -p Environment="USER=$U" -p Environment="LANG=C.UTF-8" \
     -p Environment="PATH=/usr/local/bin:/usr/bin:/bin" \
-    -p PrivateTmp=yes -p NoNewPrivileges=yes -p ProtectSystem=strict -p ProtectHome=tmpfs \
+    -p PrivateTmp=yes -p ProtectProc=invisible -p NoNewPrivileges=yes -p ProtectSystem=strict \
+    -p ProtectHome=tmpfs \
     -p BindPaths="$H" -p InaccessiblePaths=/srv -p InaccessiblePaths=-/etc/rh-buildq \
     -p PrivateDevices=yes -p ProtectKernelTunables=yes -p ProtectKernelModules=yes \
     -p ProtectKernelLogs=yes -p ProtectControlGroups=yes -p ProtectClock=yes -p RestrictSUIDSGID=yes \

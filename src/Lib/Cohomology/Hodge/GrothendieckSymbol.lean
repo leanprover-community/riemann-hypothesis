@@ -502,7 +502,8 @@ lemma symbolClass_one :
     .symm (hω c _ _ ⟨⟦.of ⟨(v.1, fun _ ↦ l), fun _ ↦ hl⟩⟧, ?_, ?_⟩)⟩
   · rw [smul_smul, mul_comm, hl_one, one_smul]
   · -- the boundary of `v` with the one witness `l` is `v` with no witness
-    with_unfolding_all congrm .of ⟨⟨_, $(funext nofun)⟩, _⟩
+    simp [boundaryFromCoker, boundary, freeAb, noWitness, abCoker.desc, reindexWitness]
+    congrm .of ⟨⟨_, $(funext nofun)⟩, _⟩
   · -- the cocycle sends it to `det l • volumeForm v = l • ι m`
     refine congrArg ULift.up ?_
     simp [volumeForm]

@@ -62,7 +62,7 @@ middle of the string. Let `vec` have the component `x` in `n₀ ⊕ Unit`, the c
 and `0` at the other vectors of the string. If `c`, `π̄ * x e` and the other entries of `x` are
 integral, then `vec` lies in that lattice. -/
 lemma inv_xFin_mulVec_mem_of_spansLattice {E : Type} [Field E] [CMType E]
-    [DecidableEq n] [Fintype n₀] [DecidableEq n₀]
+    [DecidableEq n] [Finite n₀] [DecidableEq n₀]
     {s : n → ℤˣ} {N : E} {m : ℕ} {a π : (𝔸f E)ˣ} {u : unitary (𝔸f E)} {V : Space E n s}
     {Y : Grading V N (n₀ ⊕ Unit) m} (hL : Y.SpansLattice a π u) (hm : Odd m) {x : n₀ ⊕ Unit → 𝔸f E}
     {c : 𝔸f E} (hx_int : ∀ i : n₀, x (Sum.inl i) ∈ Ô E)
@@ -72,6 +72,7 @@ lemma inv_xFin_mulVec_mem_of_spansLattice {E : Type} [Field E] [CMType E]
     (h_string : ∀ b : Fin m, vec (Y.indexEquiv (Sum.inr b)) =
       if 2 * b.val + 1 = m then u * (↑π⁻¹ * x (Sum.inr ()) + c) else 0) :
     V.xFin⁻¹.val *ᵥ vec ∈ stdLattice E n := by
+  have := Fintype.ofFinite n₀
   obtain ⟨k, hk, h_point⟩ : ∃ k ∈ intGL n (Ô E),
       V.xFin.val = gradedLatticeBasis Y.indexEquiv a π u * k.val := hL
   -- The coordinates of `vec` in `gradedLatticeBasis`: `x` on `n₀`, `π̄ * x e` at the glue vector,
@@ -161,13 +162,14 @@ def _root_.New.Grading.gradeZeroRows (Y' : Grading V' N (X' ⊕ Unit) m') :
     Matrix (X' ⊕ Unit) ι' (𝔸f E) :=
   (inclMatrix (𝔸f E) (Y'.indexEquiv ∘ Sum.inl))ᵀ * V'.xFin.val
 
-omit [WeilData E] in
+omit [WeilData E] [Fintype X'] in
 /-- Let `Y'` present `V'` as `X' ⊕ Unit` plus a string of even length `m'`, and suppose that the
 finite point of `V'` spans the lattice of `gradedLatticeBasis` for `a`, `π`, `u`. For even length
 this basis is the identity on `X' ⊕ Unit` and scales the string vectors by `u a⁻¹` or `u ā`. Then
 the rows of the point at `X' ⊕ Unit` are integral. -/
-lemma _root_.New.Grading.isIntMatrix_gradeZeroRows {a π : (𝔸f E)ˣ} {u : unitary (𝔸f E)}
+lemma _root_.New.Grading.isIntMatrix_gradeZeroRows [Finite X'] {a π : (𝔸f E)ˣ} {u : unitary (𝔸f E)}
     (hL : Y'.SpansLattice a π u) (h_even : ¬Odd m') : IsIntMatrix (Ô E) Y'.gradeZeroRows := by
+  have := Fintype.ofFinite X'
   obtain ⟨k, hk, h_point⟩ : ∃ k ∈ intGL ι' (Ô E),
       V'.xFin.val = gradedLatticeBasis Y'.indexEquiv a π u * k.val := hL
   intro l j
@@ -179,11 +181,13 @@ lemma _root_.New.Grading.isIntMatrix_gradeZeroRows {a π : (𝔸f E)ˣ} {u : uni
   rw [h_row]
   exact (mem_intGL.1 hk).1 _ j
 
-omit [WeilData E] in
+omit [WeilData E] [Fintype X'] in
 /-- The adjoint of the rows of the point of `V'` at `X' ⊕ Unit` consists of the columns of the
 inverse point at these basis vectors, since the form of `V'` is `1` on them. -/
-lemma _root_.New.Grading.conjTranspose_gradeZeroRows (Y' : Grading V' N (X' ⊕ Unit) m') :
+lemma _root_.New.Grading.conjTranspose_gradeZeroRows
+    [Finite X'] (Y' : Grading V' N (X' ⊕ Unit) m') :
     Y'.gradeZeroRowsᴴ = V'.xFin⁻¹.val * inclMatrix (𝔸f E) (Y'.indexEquiv ∘ Sum.inl) := by
+  have := Fintype.ofFinite X'
   -- The inverse of the point is its adjoint times the Gram matrix, which is `1` on `X' ⊕ Unit`.
   simp [gradeZeroRows, inv_eq_left_inv V'.gram_xFin, ← Matrix.ext_iff, Matrix.mul_apply, Y'.gram_eq,
     gradedGram, inclMatrix, Matrix.one_apply, reindex_equiv Y'.indexEquiv]
@@ -243,14 +247,16 @@ def latticeLift : Matrix ((ι ⊕ ι'') × ι') (PairIndex X X'' × (X' ⊕ Unit
 
 variable {P π u κ} {a : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
 
+omit [Fintype X'] in
 /-- For a finite set of places `P`, an idele `π`, a unitary adele `u` and scaling factors `κ`, let
 `B = latticeLift` be the matrix of `x ↦ A x R`. Here the columns of `A` are the lifts to `V⁻ ⊕ V''`
 of the columns of `neighbourMatrix`, and `R` consists of the rows of the point of `V'` at
 `X' ⊕ Unit`. Then `Bᴴ` kills `stackedStringMapFin`, the finite coordinates of the map
 `V' → V⁻ ⊕ V''` made of the adjoint of `stringMap` for `V → V'` and of `stringMap` for `V' → V''`;
 these maps only move vectors of the strings. -/
-lemma conjTranspose_latticeLift_mulVec_stackedStringMapFin :
+lemma conjTranspose_latticeLift_mulVec_stackedStringMapFin [Finite X'] :
     (D.latticeLift P π u κ)ᴴ *ᵥ stackedStringMapFin Y Y' Y'' = 0 := by
+  have := Fintype.ofFinite X'
   -- `Bᴴ` first restricts a map to `X' ⊕ Unit`. There the shift vanishes, as the two string maps
   -- only move vectors of the strings.
   have h_vanish : (stackedStringMap Y Y' Y'').map Prod.snd *
@@ -325,14 +331,17 @@ lemma latticeLift_eq_latticeUnitary_add_isotropic (hP : IsSplitLevel P N)
     transpose_mul, transpose_transpose]
   simp [M, R, Matrix.mul_add, Matrix.mul_assoc, add_kronecker, ← mul_kronecker_mul]
 
+omit [Fintype X'] in
 /-- Let `P` contain one place of each conjugate pair above `N`, let `π` be the matching idele and
 `κ` scaling factors with values `1` or `δ`. Suppose that the point of `V'` spans the lattice of
 its grading `Y'` and that all neighbour vectors lift to the lattice of `V⁻ ⊕ V''`. Then the matrix
 `B = latticeLift` of the pair of edges `D : Y → Y' → Y''` is integral:
 its columns lie in the lattice `L` of the vacuum of `Hom (V', V⁻ ⊕ V'')`. -/
-lemma isIntMatrix_latticeLift (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π)
+lemma isIntMatrix_latticeLift
+    [Finite X'] (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π)
     (hκ : IsScalingAtM N β δ κ) {u' : unitary (𝔸f E)} (hL : Y'.SpansLattice a π u')
     (h_lift : D.LiftsNeighbours π u κ δ) : IsIntMatrix (Ô E) (D.latticeLift P π u κ) := by
+  have := Fintype.ofFinite X'
   intro i j
   have h_entry : D.neighbourLift P π u κ i.1 j.1 ∈ Ô E :=
     h_lift _ _ (isNeighbourVector_col_neighbourMatrix hP hπ hκ j.1) i.1

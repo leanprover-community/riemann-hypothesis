@@ -682,7 +682,7 @@ lemma exists_analyticFamily_positiveBall (e : (D.Index → ℂ) ≃L[ℂ] ℂ ×
               Function.comp_apply, LinearEquiv.refl_symm, comp_id, id_comp, star_def,
               LinearMap.ext_iff, ContinuousLinearMap.coe_coe, IsPeriodMap.complexMul_apply_apply,
               h_smul, ContinuousLinearEquiv.apply_symm_apply, smul_eq_mul, prodMap_apply,
-              LinearMap.smul_apply, Module.End.one_apply, coe_piMap, LinearMap.coe_smul,
+              LinearMap.smul_apply, one_apply_eq_self, coe_piMap, LinearMap.coe_smul,
               Prod.ext_iff, funext_iff, Pi.map_apply, Pi.smul_apply, implies_true, and_self]⟩ }
       analyticAt b hb w := analyticAt_of_eventually_differentiableAt
         (.mono (ball_open.mem_nhds hb) fun b' hb' ↦ (hderiv b' hb').differentiableAt)
@@ -1019,9 +1019,10 @@ theorem exists_isBallFamily {ν : ℕ} (o : ModuliPoint E D.Index ν) :
     simpa [hμ, ← he (_ ᵥ* _), ← he (e.symm _), hu₀.ne', hμ_ne, mulVec_smul, mulVec_transpose] using
       hform (e.symm (0, w)) u₀
   obtain ⟨N, hN, hN_roots⟩ := exists_charpoly_roots_eq_erase (star μ) _ h_first h_second
-  -- `erw`: `ᴴᵀ` is the entrywise conjugate only after unfolding, which `rw` does not do.
+  -- `ᴴᵀ` is the entrywise conjugate after unfolding.
   have h_roots : N.charpoly.roots = (z.val.charpoly.map (star (Φ v₀))).roots.erase (star μ) := by
-    erw [hN_roots, e.charpoly_conj, charpoly_toLin', z.val.charpoly_map (star _)]
+    rw [hN_roots, e.charpoly_conj, charpoly_toLin',
+      show (z.val.map (Φ v₀))ᴴᵀ = z.val.map ⇑(star (Φ v₀)) from rfl, z.val.charpoly_map]
   -- `fibreEnd μ N z a` is the action of `a • z` on periods; `ballEnd μ N z α` moves the base
   -- point by `(star μ)⁻¹ • N`.
   refine ⟨ballEnd μ N z α, ?_, eval_localTerm_eq_mul_det hz rfl hμ_ne

@@ -553,10 +553,14 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
     refine ⟨h_succ_meas.aemeasurable, h_form_meas.aemeasurable, ext_of_lintegral _ fun f hf ↦ ?_⟩
     rw [lintegral_map hf h_succ_meas, lintegral_map hf h_form_meas]
     -- Write both sides as iterated integrals over `x`, `g`, `σ` and the remaining variables.
-    -- (As a discharger, `fun_prop` needs `with_unfolding_all` to treat the inner integrals.)
-    simp (disch := with_unfolding_all fun_prop) only [μ_succ, μ_form, ν, lintegral_prod,
-      lintegral_mconv_symm]
-    refine lintegral_congr fun x ↦ lintegral_congr fun g ↦ ?_
+    dsimp only [μ_succ, μ_form, ν]
+    rw [lintegral_prod _ (by fun_prop), lintegral_prod _ (by fun_prop),
+      lintegral_prod _ (by fun_prop), lintegral_prod _ (by fun_prop),
+      lintegral_prod _ (by fun_prop)]
+    refine lintegral_congr fun x ↦ ?_
+    rw [lintegral_mconv_symm (by fun_prop)]
+    refine lintegral_congr fun g ↦ ?_
+    rw [lintegral_mconv_symm (by fun_prop)]
     exact lintegral_congr_of_ae_imp ae_floorMeasure_mem fun σ hσ ↦ h_fiber hf x g hσ
   -- As `‖χ‖ ≤ 1`, the integral of `‖formTerm‖` is at most that of `F.formMajorant`.
   have h_form_le : ∫⁻ z : ((T.G × T.G) × T.G) × T.G, ‖formTerm z‖ₑ ∂μ_form ≤
@@ -564,7 +568,9 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
     have hχ_le (y : T.G) : ‖χ y‖ₑ ≤ 1 := by
       rw [← ofReal_norm]
       exact ofReal_le_one.2 (hφ_le _)
-    simp (disch := with_unfolding_all fun_prop) only [μ_form, lintegral_prod]
+    dsimp only [μ_form]
+    rw [lintegral_prod _ (by fun_prop), lintegral_prod _ (by fun_prop),
+      lintegral_prod _ (by fun_prop)]
     refine lintegral_mono fun x ↦ lintegral_mono fun g ↦ ?_
     simp only [formTerm, eNorm_mul]
     grw [hχ_le]

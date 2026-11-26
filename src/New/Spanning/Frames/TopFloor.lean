@@ -589,7 +589,6 @@ form `latticeMiddleGram 𝔰 N`, whose last frame vector `z` has norm `-N`. Then
 lemma continuous_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m + 1)}
     (Z : F.IntermediateGroup) [h : P.IsLargeLatticeData F] [IsOpenUnits A] (hN : π * star ↑π = N) :
     Continuous (lastEntryDensity π Z).uncurry := by
-  classical
   -- Near `(p, q)` the fiber pairing does not change, and its step function `Φ` does not see the
   -- change of the last entry. What moves is the sphere; the fiber measures are weakly continuous.
   refine continuous_iff_continuousAt.2 fun (p, q) ↦ ?_

@@ -101,7 +101,7 @@ lemma IsOpenElement.leadingMinor_ne_zero {c c' : S.Classes} {s : S.ResidueGL}
 
 /-- With `f` the number of infinite places, the factor `(1 + S.b⁻¹ ^ 10) ^ f` of the sieve is at
 most `1 + S.b⁻¹ ^ 9`, because `f ≤ S.b / 1000` by the hypothesis `S.IsAdmissible`. -/
-lemma one_add_inv_pow_ten_pow_le [S.IsAdmissible] :
+lemma one_add_inv_pow_ten_pow_le :
     (1 + S.b⁻¹ ^ 10) ^ Core.numInfPlaces E ≤ 1 + S.b⁻¹ ^ 9 := by
   have hb_one : 1 ≤ S.b := le_trans (by norm_num) S.thousand_le_b
   set u : ℝ := S.b⁻¹ ^ 9 / 1000 with hu_def
@@ -242,8 +242,7 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
     generalize x⁻¹ ^ 𝔰.n ^ 7 = y
     simp only [x, Q, D, Shape.openCellConst, Shape.scaledVolumeRatio, sphereDensity, one_pow,
       mul_pow, div_pow]
-    field_simp [(volU_pos _).ne']
-    ring
+    field [(volU_pos _).ne']
   -- Those factors are at most `b ^ n⁹`: `2 / s²` is at most `b`, `s / s^(2ϱ)` at most `1` and
   -- `x⁻¹` at most a power of `b`.
   have h_factor : (2 / s ^ 2) ^ (𝔰.n + 2 * 𝔰.ϱ ^ 2) * (s / s ^ (2 * 𝔰.ϱ)) /
@@ -369,7 +368,7 @@ groups and `(S.besselSystem v).Index` indexes a basis of the value space of the 
 product is `S.normalizingConst kPred`, with `kPred = 𝔰.k - 1`, times the square root of (∏ (‖t‖² -
 N²))^(𝔰.k - 1). By the product formula the powers of `p` cancel; the constant collects
 √`openCellConst`, the powers of the squared scales and the numbers of indices. -/
-lemma gramScalar_mul_headDensity [WeilData E]
+lemma gramScalar_mul_headDensity
     [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable] {P : Floors.IntegralPlace (LocProd T)}
     {G : Floors.PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T))
       (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)} {kPred : ℕ} (hk : 𝔰.k = kPred + 1)
@@ -423,7 +422,7 @@ over `v` of `bandLimit 𝔰.n`, the top one of the forms on pairs of heads that 
 each weighted by the product over `v` of the scalar of `normalizedOrbitalIntegral`, √c_G · (|x_ϱ|² -
 1)^((k - 1)/2) · |I|⁻¹ · ∏_{a<ϱ} |x_a|^(k + 1 + 2(ϱ - a - 1)), where `x = x v p`, `k = 𝔰.k`,
 `c_G = 𝔰.openCellConst` and `I` is the index set of the Bessel system at `v`. -/
-lemma prod_bandLimit_eq_gram [S.IsAdmissible] {T₀ : Finset Eˣ} {σ : S.G E} {t : Eˣ}
+lemma prod_bandLimit_eq_gram {T₀ : Finset Eˣ} {σ : S.G E} {t : Eˣ}
     (hσ : σ ∈ Shape.Form.floorGroup 𝔰.ϱ) (h_tail : S.frameProducts σ 𝔰.top 𝔰.top = t) :
     let x (v : NumberField.InfinitePlace E) (p : Fin 𝔰.ϱ → T₀) (a : ℕ) : ℂˣ :=
       unitOrOne (S.frameScaleSq v a * Φ v (padTuple (fun b : Fin 𝔰.ϱ ↦ (p b).val) t a).val)
@@ -643,8 +642,8 @@ theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chose
   -- `S.entrySet`. These entries are units off the set `T` of places, and the inverses of the level
   -- and of `N` are integral there.
   obtain ⟨T, _, hT₀, hT_M, hT_basis, hT_N⟩ := S.exists_places_integralOff S.entrySet
-  simp_rw [linkSecondMoment, ← ENNReal.tsum_prod]
-  refine (tsum_subtype_support _).ge.trans (ENNReal.summable.tsum_le_of_sum_le fun F ↦ ?_)
+  simp_rw [linkSecondMoment, ← tsum_prod]
+  refine (tsum_subtype_support _).ge.trans (CompleteLattice.summable.tsum_le_of_sum_le fun F ↦ ?_)
   -- a block `j` has two classes, a reduction and a link
   let block (j : F) : S.Classes × S.Classes × {s | s ∈ S.fixer Sg D ∧ S.IsOpenElement s} ×
       Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E) := j.val.val

@@ -142,7 +142,7 @@ lemma snd_mem_Z1 [Nonempty X] {p : (X → V) × (G → V)} (hp : p ∈ V.trivial
   -- Compute the action of `g * k` on the trivialisation at any point `y` in two ways.
   obtain ⟨y⟩ : Nonempty X := inferInstance
   have h_two_ways : f ((g * k) • y) + z (g * k) = f ((g * k) • y) + (z g + V.ρ g (z k)) := by
-    rw [← h_triv, map_mul, Module.End.mul_apply, h_triv, map_add, h_triv, mul_smul, add_assoc]
+    rw [← h_triv, map_mul, mul_apply_eq_comp, h_triv, map_add, h_triv, mul_smul, add_assoc]
   exact add_left_cancel h_two_ways
 
 /-- Let the points `x i` represent the orbits of `G` on `X`, and let `z` be a cocycle that vanishes
@@ -163,7 +163,7 @@ lemma exists_mem_of_orbit_reps {κ : Sort*} {x : κ → X}
       V.ρ a (m j) - z a = V.ρ b (m j) - z b := by
     have h_fixes : (b⁻¹ * a) • x j = x j := by rw [mul_smul, hab, inv_smul_smul]
     have h_cocycle : z a = z b + V.ρ b (z (b⁻¹ * a)) := by rw [← hz_cocycle, mul_inv_cancel_left]
-    rw [h_cocycle, h_stab j _ h_fixes, map_sub, ← Module.End.mul_apply, ← map_mul,
+    rw [h_cocycle, h_stab j _ h_fixes, map_sub, ← mul_apply_eq_comp, ← map_mul,
       mul_inv_cancel_left]
     abel
   obtain ⟨i, s, hs⟩ : ∃ (i : X → κ) (s : X → G), ∀ y : X, s y • x (i y) = y := by
@@ -176,7 +176,7 @@ lemma exists_mem_of_orbit_reps {κ : Sort*} {x : κ → X}
     have h_same_point : s (g • y) • x (i y) = (g * s y) • x (i y) := by rw [h_point, ← h_index, hs]
     have h_value : V.ρ (s (g • y)) (m (i y)) - z (s (g • y)) =
         V.ρ (g * s y) (m (i y)) - z (g * s y) := h_well (i y) _ _ h_same_point
-    simp only [h_index, h_value, hz_cocycle, map_mul, map_sub, Module.End.mul_apply]
+    simp only [h_index, h_value, hz_cocycle, map_mul, map_sub, mul_apply_eq_comp]
     abel
   · have h_index : j = i (x j) := index_unique _ _ (s (x j)) (hs _)
     have h_fix : s (x j) • x j = x j := by simpa only [← h_index] using hs (x j)
@@ -225,8 +225,8 @@ lemma corestrict_mem [IsTopologicalGroup G] (P : OpenSubgroup G) [Fintype (G ⧸
       rw [← h_point]
       exact h_triv ⟨x.out⁻¹ * g * (g⁻¹ • x).out, out_inv_mul_mul_out_mem P.toSubgroup g x⟩
         ((g⁻¹ • x).out⁻¹ • y)
-    rw [← map_add, ← h_term, ← Module.End.mul_apply, ← map_mul, mul_assoc,
-      mul_inv_cancel_left, map_mul, Module.End.mul_apply, toPerm_apply]
+    rw [← map_add, ← h_term, ← mul_apply_eq_comp, ← map_mul, mul_assoc,
+      mul_inv_cancel_left, map_mul, mul_apply_eq_comp, toPerm_apply]
   · -- All conjugates of `g` lie in `I`, hence in `P`: `g` fixes every coset and each term is `0`.
     have h_fix (x : G ⧸ P.toSubgroup) : g⁻¹ • x = x := by
       induction x using QuotientGroup.induction_on with
@@ -687,7 +687,7 @@ family `liftToFixedField s`, and of order `cyclotomicCharMod Ω m g * f (i, g)` 
 `(i, g)`. Then `z = κ x • a` is trivialised at the places above `N` and infinity, and its
 corestriction to `G` has the values `z (γ i) = ∑ g, g (f (i, g) • a)`. -/
 private lemma IsLargeLevel.SplitPlaces.exists_mem_trivialisedCocycles_of_valuation {γ : ι → G}
-    (hγ : ∀ i : ι, IsTameGeneratorFor m (s.valuationSubring i) (γ i)) [Fintype ι]
+    (hγ : ∀ i : ι, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
     (h_triv : V.TrivialOn U.toOpenSubgroup.toSubgroup)
     [IsTotallyComplex (fixedFieldOf U.toOpenSubgroup.toSubgroup)]
     {κ : (unitsModule U.toOpenSubgroup.toSubgroup).H0 →+

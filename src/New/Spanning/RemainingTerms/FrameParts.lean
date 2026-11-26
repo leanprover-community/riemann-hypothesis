@@ -154,7 +154,7 @@ basis `B = y a`, where `Bᴴ B` is integral. The rows of the products of `B` wit
 are the integral combinations of the rows of `Bᴴ B`. Their index among all integral rows, that is
 the index of `L` in its dual lattice, is the square of `discriminant r L`, which is by definition
 the square root of the generalised index of the Gram determinant `det (Bᴴ B)`. -/
-lemma submoduleIndex_colLattice_gram_transpose {κ : Type} [Fintype κ] [DecidableEq κ] {r : ℕ}
+lemma submoduleIndex_colLattice_gram_transpose {κ : Type} [Fintype κ] {r : ℕ}
     {y : Matrix κ (Fin r) E} (hy : HasLeftInv y) (a : GL (Fin r) (𝔸f E))
     (h_int : IsIntMatrix (Ô E) ((finAdeleMatrix y * a.val)ᴴ * (finAdeleMatrix y * a.val))) :
     (submoduleIndex (colLattice (Ô E) ((finAdeleMatrix y * a.val)ᴴ * (finAdeleMatrix y * a.val))ᵀ)
@@ -552,6 +552,7 @@ lemma HasCellRank.sum_norm_sq_sub_mul_inv_lt_one (hγ : S.HasCellRank j γ)
       rw [← Finset.mul_sum, Finset.sum_add_distrib]
       linarith
 
+omit [HasPrimitiveRoot5040 E] in
 /-- Let `E` contain a primitive 5040th root of unity, and let `S` have the congruence level
 `M = S.M`. Let `γ` and `γ'` have the same integral matrix `Z = S.frameProducts γ` of products of the
 standard frame with its image, with the leading minor `δ` of order `j`. Let both have the cell rank
@@ -657,7 +658,7 @@ lemma IsNear.genIndex_M_mul_leadingMinor_le {γ : S.G E} (j : Fin (𝔰.ϱ + 2))
         rw [← pow_mul, ← pow_add]
         exact pow_le_pow_right₀ S.one_le_b h_exponent
 
-omit [S.IsAdmissible] in
+omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- If `Z` has integral entries, then the modulus `S.frameModulus j Z = M det (Y Yᴴ)` is integral,
 where `M = S.M` and `Y` consists of the first `j` rows of `Z` completed by rows of `1`. -/
 lemma frameModulus_mem_integralAdeles_of_isIntegral {j : Fin (𝔰.ϱ + 2)}

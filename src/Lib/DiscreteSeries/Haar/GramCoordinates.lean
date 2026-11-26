@@ -150,6 +150,7 @@ variable [Fintype ι] [DecidableEq n]
 
 /-! ### Measurability and linear changes of variables -/
 
+omit [DecidableEq n] in
 /-- The product of two measurable families of complex matrices is measurable. -/
 @[fun_prop]
 theorem _root_.Measurable.matrix_mul [Fintype n] {X : Type} [MeasurableSpace X] [Fintype n₁]

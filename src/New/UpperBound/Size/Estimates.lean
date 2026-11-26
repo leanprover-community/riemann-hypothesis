@@ -349,7 +349,7 @@ lemma sum_allowedLoss_mul_log_le (U : Finset ℕ) :
       calc 2 * D.loss p * Real.log p
         _ ≤ 2 * (D.f * D.logB ^ 2 * (D.a / p * (↑(2 * p) / c))) * D.logX₁ := by
           grw [loss, h_factor, h_log_p, cast_div_le]
-        _ = T / c := by simp [T, field]
+        _ = T / c := by simp [field]
         _ ≤ _ := h_single hc_pos (hc_le.trans (le_floor hp_lt.le)) hr h_served
     · -- The level `N` takes `c = 1`.
       calc 2 * D.m * D.f * D.b * Real.log p

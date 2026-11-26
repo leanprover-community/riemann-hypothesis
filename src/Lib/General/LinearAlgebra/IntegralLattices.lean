@@ -360,7 +360,7 @@ lemma IsHeckeFunction.heckeFun_adjoint (hf : IsHeckeFunction (intGL n O.toSubrin
       simpa using mem_levelSpace.1 hv ⟨_, inv_mem hk'⟩
     have fix_v' : π' k v' = v' := by simpa using mem_levelSpace.1 hv' ⟨k, hk⟩
     exact ⟨by simp [hg, hf_inv, hk, hk'],
-      by simp only [hg, map_mul, Module.End.mul_apply, fix_v', move, fix_v, inv_inv]⟩
+      by simp only [hg, map_mul, mul_apply_eq_comp, fix_v', move, fix_v, inv_inv]⟩
   obtain ⟨adjoint_finite, sum_eq⟩ : HasFiniteCosets K (fun g : GL n F ↦ σ (f g⁻¹)) ∧
       heckeFun π' K (fun g : GL n F ↦ σ (f g⁻¹)) v' = ∑ q ∈ hf_fin.toFinset,
         σ (f (invTransposeGL q.out)⁻¹) • π' (invTransposeGL q.out) v' :=

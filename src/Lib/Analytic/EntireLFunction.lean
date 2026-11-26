@@ -168,8 +168,7 @@ lemma LSeriesHasSum_mul_vonMangoldt (hs : 1 < s.re) :
   obtain rfl | hχ := eq_or_ne χ 1
   · rw [ite_eq_left rfl, ite_eq_left rfl, deriv_LFunctionTrivChar₁_apply_of_ne_one N hs_ne,
       LFunctionTrivChar₁, Function.update_of_ne hs_ne, LFunctionTrivChar]
-    field_simp [sub_ne_zero.2 hs_ne]
-    ring
+    field [sub_ne_zero.2 hs_ne]
   · simp [hχ, neg_div]
 
 /-- A function continuous at `s` has residue zero there. -/

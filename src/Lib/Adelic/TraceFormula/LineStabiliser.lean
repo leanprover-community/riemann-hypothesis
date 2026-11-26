@@ -93,7 +93,7 @@ lemma apply_of_mem_levelSpace (hy : y ∈ levelSpace ρ J) {g : G} (hg : g ∈ J
 /-- The translate `ρ g y` of a vector fixed by `J` depends only on the coset `g J`. -/
 lemma apply_eq_of_inv_mul_mem (hy : y ∈ levelSpace ρ J) {g h : G} (h_mem : g⁻¹ * h ∈ J) :
     ρ h y = ρ g y := by
-  rw [← mul_inv_cancel_left g h, map_mul, Module.End.mul_apply, apply_of_mem_levelSpace hy h_mem]
+  rw [← mul_inv_cancel_left g h, map_mul, mul_apply_eq_comp, apply_of_mem_levelSpace hy h_mem]
 
 /-- Membership in `J t J` is unchanged by right multiplication with an element of `J`. -/
 lemma mul_mem_doubleCoset_iff_of_mem {g k : G} (hk : k ∈ J) :
@@ -495,7 +495,7 @@ lemma lineTranslate_eq_self (hy : y ∈ levelSpace ρ (lineStabilizer w i)) (hz 
     rw [inv_smul_smul₀ (left_ne_zero_of_smul hz), ← mulVec_single_one,
       show reduceGL (1 : localIntGL n w) = 1 from reduceGL.map_one, Units.val_one, one_mulVec]
   rw [lineTranslate_eq_apply_of_col_eq_smul hy hz h_col, Subgroup.coe_one, map_one,
-    Module.End.one_apply]
+    one_apply_eq_self]
 
 /-- For a vector `y` fixed by the stabiliser `J_line` of the line of `e_i` modulo `w`, a vector
 `z ≠ 0` and `k` in `GL_n(𝒪) = localIntGL n w`, the translate of `y[z] = lineTranslate i ρ y z` by
@@ -513,7 +513,7 @@ lemma apply_lineTranslate (hy : y ∈ levelSpace ρ (lineStabilizer w i)) (hz : 
       mulVec_mulVec]
   rw [lineTranslate_eq_apply_of_col_eq_smul hy hz (one_smul _ _).symm,
     lineTranslate_eq_apply_of_col_eq_smul hy h_ne h_col, Subgroup.coe_mul,
-    map_mul, Module.End.mul_apply]
+    map_mul, mul_apply_eq_comp]
 
 /-- Let `y` be fixed by `J_line`, let `k` be in `GL_n(𝒪)` and let `S`, `S'` be sets of vectors with
 `0 ∉ S` such that `z ∈ S` exactly when `k z ∈ S'` modulo `w`. Then `k` takes the sum of the
@@ -554,7 +554,7 @@ lemma sphericalMean_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
       ρ k.1 (ρ (liftMatrix g.1).1 y) = ρ (liftMatrix (reduceGL k * g).1).1 y := by
     have h_reduce : reduceGL (k * liftMatrix g.1) = reduceGL k * g := by
       rw [reduceGL_mul, reduceGL_liftMatrix_val]
-    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
+    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
   -- Left multiplication by the reduction of `k` permutes the terms of the mean.
   rw [sphericalMean_apply, map_smul, map_sum, MonoidHom.one_apply, one_smul,
     Fintype.sum_equiv (Equiv.mulLeft (reduceGL k)) _
@@ -569,7 +569,7 @@ lemma sphericalMean_apply_translate (hy : y ∈ levelSpace ρ (lineStabilizer w 
       ρ (liftMatrix g.1).1 (ρ k.1 y) = ρ (liftMatrix (g * reduceGL k).1).1 y := by
     have h_reduce : reduceGL (liftMatrix g.1 * k) = g * reduceGL k := by
       rw [reduceGL_mul, reduceGL_liftMatrix_val]
-    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
+    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
   -- Right multiplication by the reduction of `k` permutes the terms of the mean.
   rw [sphericalMean_apply, sphericalMean_apply,
     Fintype.sum_equiv (Equiv.mulRight (reduceGL k)) _
@@ -652,7 +652,7 @@ lemma raiseCosetRep_apply_lineLower [Fintype (ResField w)] [DecidableEq (ResFiel
     have h_col : (reduceGL (liftMatrix (updateCol 1 i z))).1.col i = (1 : ResField w) • z := by
       rw [col_reduceGL_liftMatrix_updateCol hz_one, one_smul]
     have hz_ne : z ≠ 0 := Function.ne_iff.2 ⟨i, hz_one.trans_ne one_ne_zero⟩
-    rw [lineTranslate_eq_apply_of_col_eq_smul hy hz_ne h_col, lowerCosetRep, ← Module.End.mul_apply,
+    rw [lineTranslate_eq_apply_of_col_eq_smul hy hz_ne h_col, lowerCosetRep, ← mul_apply_eq_comp,
       ← map_mul,
       mul_inv_cancel_left]
   have h_move : ρ b.1 (∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z) =
@@ -662,7 +662,7 @@ lemma raiseCosetRep_apply_lineLower [Fintype (ResField w)] [DecidableEq (ResFiel
       Function.update_self]
   calc ρ (raiseCosetRep i ξ) (lineLower i ρ y)
     _ = ρ b.1⁻¹ (ρ (lineElement w i) (lineLower i ρ y)) := by
-      rw [raiseCosetRep, ← hb, map_mul, Module.End.mul_apply]
+      rw [raiseCosetRep, ← hb, map_mul, mul_apply_eq_comp]
     _ = ρ b.1⁻¹ (ρ b.1 (∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z)) := by
       rw [h_lower, h_move]
     _ = ∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z := ρ.inv_self_apply b.1 _

@@ -290,7 +290,8 @@ instance isAdicComplete_prodRing : IsAdicComplete (span {(p : c.ProdRing)}) c.Pr
   have h_smodEq (x y : c.ProdRing) (n : ℕ) :
       x ≡ y [SMOD (span {(p : c.ProdRing)} ^ n • ⊤ : Ideal c.ProdRing)] ↔
         ∀ i : c.Index, x i ≡ y i [SMOD (span {(p : c.Cell i)} ^ n • ⊤ : Ideal (c.Cell i))] := by
-    simp only [smodEq_span_pow_iff_dvd, pi_dvd_iff, Pi.pow_apply, Pi.natCast_apply, Pi.sub_apply]
+    simp only [TauCeti.sModEq_span_singleton_pow_iff, pi_dvd_iff, Pi.pow_apply, Pi.natCast_apply,
+      Pi.sub_apply]
   refine { haus' := fun x hx ↦ funext fun i ↦ ?_, prec' := fun f hf ↦ ?_ }
   · exact (c.isCell i).haus (x i) fun n ↦ (h_smodEq x 0 n).mp (hx n) i
   · have h_lim (i : c.Index) : ∃ L : c.Cell i, ∀ n : ℕ,

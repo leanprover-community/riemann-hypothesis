@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.Probability.Kernel.Composition.IntegralCompProd
 public import Lib.DiscreteSeries.Bruhat.FloorMeasures
 public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
 

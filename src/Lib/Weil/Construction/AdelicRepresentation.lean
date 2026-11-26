@@ -491,7 +491,7 @@ lemma beta_vecAtPoint_eq_one (x y : n → E) :
 Heisenberg operators: ℓ(ρ(γ)v) = ℓ(v) for all v and all γ in `V.ratVectors`, where ρ(γ) =
 `heisenbergOp γ` is the Heisenberg operator of γ. -/
 def IsRatInvariant : Prop :=
-  ∀ᵉ (γ ∈ V.ratVectors) (v : Model (adelicHeisenberg E s)), ℓ (heisenbergOp γ v) = ℓ v
+  ∀ γ ∈ V.ratVectors, ∀ v : Model (adelicHeisenberg E s), ℓ (heisenbergOp γ v) = ℓ v
 
 /-- A theta functional of V: a bounded functional θ on `Model (adelicHeisenberg E s)` such that
 (1) θ is invariant under the rational Heisenberg operators (`IsRatInvariant`), and

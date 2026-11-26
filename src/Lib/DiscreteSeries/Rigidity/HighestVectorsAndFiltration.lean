@@ -294,10 +294,11 @@ theorem IsKInvariantForm.mul_E (hρ : IsUnitaryCasimirGe l ρ) (hJ : IsKInvarian
     fun a b hab ↦ ρ.commute_E_sum_E_mul_mul_E (· * ·) hab (hD_comm a b hab), fun u v ↦ ?_⟩
   suffices ∑ p : n, ∑ q : n, ⟪ρ.E q p u, D (ρ.E q p v)⟫_ℂ =
       ⟪u, (∑ c, ∑ d, ((ε c : ℂ) * ε d) • (ρ.E c d * D * ρ.E d c)) v⟫_ℂ by
-    simpa only [End.mul_apply, sum_prod_type, LinearMap.coe_sum, LinearMap.coe_smul,
+    simpa only [mul_apply_eq_comp, sum_prod_type, LinearMap.coe_sum, LinearMap.coe_smul,
       Finset.sum_apply, Pi.smul_apply, inner_sum, inner_smul_right, ← hD_form]
   simp only [hρ.inner_E_left, mul_comm, Units.val_mul, cast_mul, LinearMap.coe_sum,
-    LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, End.mul_apply, inner_sum, inner_smul_right]
+    LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, mul_apply_eq_comp, inner_sum,
+    inner_smul_right]
 
 /-- Assume `New.IsUnitaryCasimirGe l ρ`, which gives `E_ab` the adjoint `ε_a ε_b E_ba`, and let `J`
 satisfy `New.IsKInvariantForm`: its form is given by an operator commuting with `𝔨`. Then the
@@ -311,7 +312,7 @@ theorem IsKInvariantForm.sum_inner_casimirK (hρ : IsUnitaryCasimirGe l ρ)
   -- For a compact pair (c, d), `E c d` commutes with `D` and has adjoint `E d c`.
   have h_move (c d : n) (hcd : ε c = ε d) (z : H) :
       ⟪u, D (ρ.E c d z)⟫_ℂ = ⟪ρ.E d c u, D z⟫_ℂ := by
-    simp [← End.mul_apply D, ← (hD_comm c d hcd).eq, hρ.inner_E_left, hcd]
+    simp [← mul_apply_eq_comp D, ← (hD_comm c d hcd).eq, hρ.inner_E_left, hcd]
   suffices h_sum : ∑ c : n, ∑ d : n with ε c = ε d, ⟪u, D (ρ.E c d (ρ.E d c v))⟫_ℂ =
       ∑ c : n, ∑ d : n with ε c = ε d, ⟪ρ.E d c u, D (ρ.E d c v)⟫_ℂ by
     simpa [sum_comm (γ := I), GlModule.casimir, hD_form] using h_sum
@@ -605,11 +606,11 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
     have h_form : ∑ p : n, ∑ q : n, re ⟪P (ρ.E q p y), P (ρ.E q p (ρ.casimirK ε y))⟫_ℂ =
         ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 := by
       -- the family `(p, q, i) ↦ ![P] i * ρ.E q p` has the single index `i = 0`
-      simpa only [Matrix.cons_val_fin_one, Module.End.mul_apply, sum_prod_type, univ_unique,
+      simpa only [Matrix.cons_val_fin_one, mul_apply_eq_comp, sum_prod_type, univ_unique,
         sum_const, card_singleton, one_smul, re_sum, inner_self_eq_norm_sq_to_K, coe_algebraMap,
         ← ofReal_pow, ofReal_re] using
         congrArg re ((P_adj.mul_E h).sum_inner_casimirK h y y)
-    simpa only [N, Matrix.cons_val_fin_one, Module.End.mul_apply, sum_prod_type, univ_unique,
+    simpa only [N, Matrix.cons_val_fin_one, mul_apply_eq_comp, sum_prod_type, univ_unique,
       sum_const, card_singleton, one_smul, re_sum, h_form, one_mul] using
       hx.casimirK_bound_of_highest h 1 (l.casimirKValue l.lowestKType + 4 * card n + 2)
         inf_le_left hU_stable (P_adj.mul_E h) ⟨hy, ha⟩ fun w ⟨u, hu, hu_high, h_inner⟩ hw ↦ by
@@ -701,7 +702,7 @@ theorem New.IsDetectingFamily.mul_E {n : Type} [Fintype n] [DecidableEq n] {H : 
       hJ.apply_eq_zero (ρ X a) (map_mem_orthogonal_filtration h ha) i
     have h_swap (Y : Matrix n n ℂ) : J i (ρ Y (ρ.E q p a)) = J i (ρ.E q p (ρ Y a)) := by
       rw [ρ.apply_apply_eq_swap_add_bracket, map_add, h_kill, add_zero]
-    simpa only [Module.End.mul_apply, lie_def, ← map_bracket, h_swap] using
+    simpa only [mul_apply_eq_comp, lie_def, ← map_bracket, h_swap] using
       hJ.cross_term_bound (ρ.E q p a) (map_mem_orthogonal_filtration h ha) i
   · -- All `ρ.E q p a` are orthogonal to step `k`, so `a` is orthogonal to step `k + 1`.
     have h_image (p q : n) : a ∈ ((ρ.filtration ε x k).map (ρ.E p q))ᗮ := by
@@ -728,7 +729,7 @@ theorem New.IsDetectingFamily.mul_E {n : Type} [Fintype n] [DecidableEq n] {H : 
             2 * re ⟪ρ.E d c (J i (ρ.E q p a)), J i (⁅ρ.E q p, ρ.E d c⁆ a)⟫_ℂ := by
       simp [lie_def, norm_sub_sq (𝕜 := ℂ)]
       ring
-    simp only [sum_prod_type, Module.End.mul_apply, h_expand, sum_add_distrib]
+    simp only [sum_prod_type, mul_apply_eq_comp, h_expand, sum_add_distrib]
     -- Add the two bounds, after moving the sum over `i` in `h_cross` inside.
     have h_comm (f : I → n → n → ℝ) : ∑ i, ∑ p, ∑ q, f i p q = ∑ p, ∑ q, ∑ i, f i p q := by
       rw [sum_comm]

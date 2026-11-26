@@ -647,7 +647,6 @@ theorem secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [hS : S.IsAdmissi
     secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ)
       {s : S.ResidueGL | ∃ t ∈ S.reducedImage besselS, s i = t i} ≤ (S.b ^ 12)⁻¹ *
         S.identitySecondMoment := by
-  classical
   have hb : 1000 ≤ S.b := S.thousand_le_b
   have h_id_nonneg : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   have h_main_nonneg : 0 ≤ S.mainSecondMoment := mainSecondMoment_nonneg

@@ -561,7 +561,7 @@ every linear form `Ψ` with values in `O / p` on coordinate vectors that kills t
 `K`, the function `Ψ ∘ z` is a cocycle for `ξ` in the sense of `IsCharacterCocycle`: it obeys the
 linear relations among the families `(u x g - 1)_x`, vanishes at the `δ w`, and if it vanishes at
 `γ` then every `ξ g - 1` kills its value at `a`. -/
-lemma isCharacterCocycle_of_tiedRows [DVR O] {ξ : G →* O}
+lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
     [Fintype W] {δ : W → G} {ι' : Type} [Fintype ι'] {gen' : ι' → G} {z : G → W ⊕ ι' → O}
     (hz : AreCoordinates u (δ ⊕ᵥ gen') z)
     {γ a : G} (hξγ : ξ γ = 1) (c₁ : O) {r' : Type}

@@ -142,7 +142,7 @@ theorem star_inequality {P : Parameters} (D : Data P) :
   let err : ℝ := 4 * loss + 2 * indexPerDim
   have h_both : n * (D.m * D.totalRemainder) ≤ D.targetDim * err := by
     simp only [logNormSq, err] at h_long ⊢
-    linarith [h_long, h_main]
+    linarith only [h_long, h_main]
   -- Divide by `n ≥ targetDim / 2 > 0`.
   have h_half : (D.targetDim : ℝ) ≤ n * 2 := by
     have h_share : 4 / D.b ^ 2 ≤ 2⁻¹ := D.le_of_hasLogBound

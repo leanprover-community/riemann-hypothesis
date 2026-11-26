@@ -2,6 +2,7 @@ module
 
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
 public import Lib.General.Analysis.HolomorphicIntegrals
+public import TauCeti.LinearAlgebra.Matrix.Triangular
 import TauCeti.Analysis.ExteriorPower.Plucker
 import TauCeti.Analysis.InnerProductSpace.Gram.Hadamard
 import TauCeti.Analysis.Matrix.GramFactorization
@@ -207,14 +208,6 @@ theorem weightMinors_diagonal (hd : ∀ i : n, d i ≠ 0) :
 
 /-! ### Invertible triangular matrices -/
 
-/-- A matrix that is block triangular for an injective `o` (so with blocks of size one) has as
-determinant the product of its diagonal entries. -/
-theorem DiscreteSeries.det_eq_prod_diag_of_blockTriangular (ho : o.Injective)
-    (h_tri : b.BlockTriangular o) : b.det = ∏ i : n, b i i := by
-  -- order the indices by the injective `o`; then block triangular means upper triangular
-  let _ : LinearOrder n := LinearOrder.lift' o ho
-  exact det_of_isUpperTriangular h_tri
-
 theorem IsBorelMatrix.mul (hb : IsBorelMatrix o b) (hb' : IsBorelMatrix o b') :
     IsBorelMatrix o (b * b') := ⟨hb.1.mul hb'.1, by simp [hb.2, hb'.2]⟩
 
@@ -224,7 +217,7 @@ theorem IsBorelMatrix.inv (hb : IsBorelMatrix o b) : IsBorelMatrix o b⁻¹ := b
 
 theorem IsBorelMatrix.diag_ne_zero (ho : o.Injective) (hb : IsBorelMatrix o b) (i : n) :
     b i i ≠ 0 :=
-  prod_ne_zero_iff.1 ((det_eq_prod_diag_of_blockTriangular ho hb.1).symm.trans_ne hb.2) i
+  prod_ne_zero_iff.1 ((hb.1.det_eq_prod_diag ho).symm.trans_ne hb.2) i
     (mem_univ i)
 
 /-- For injective `o`, diagonal entries of matrices with `New.IsBorelMatrix o` multiply. -/

@@ -343,7 +343,7 @@ lemma IsLaplaceDatum.norm_laplaceIntegrand_le_mul_re_add (h_datum : IsLaplaceDat
       h_datum.exists_laplaceIntegrand_eq_and_norm_subOnePair_le ρ hB hρ_pos hρ_le s h_near
     rw [hθ]
     exact h_datum.norm_laplaceIntegrand_le_mul_re_add_of_near hl hk hl_le hk_le hβ_le h_log_β hT
-      (by nlinarith : 4 * ρ * T ≤ 1e-12) h_fst h_snd
+      (by linarith : 4 * ρ * T ≤ 1e-12) h_fst h_snd
   · -- Away from the maximal compact subgroups the gap makes the value itself small.
     have h_small : ‖l.laplaceIntegrand k j φ s‖ ≤ rexp (-100 * T) :=
       h_datum.norm_laplaceIntegrand_le_of_far hl hk hT_one hρ hh h_far
@@ -383,7 +383,7 @@ lemma norm_le_two_mul_re_add_mul {z : ℂ} {E G : ℝ} (hE : 0 ≤ E) (hG : 0 �
   have h_sq : (‖z‖ - 2 * z.re) * (‖z‖ - 2 * z.re) ≤ 12 * E ^ 2 * (3 * G ^ 2) :=
     mul_le_mul (by linarith) (by linarith [neg_le_of_abs_le (abs_re_le_norm z)]) (by linarith)
       (by positivity)
-  nlinarith [mul_self_lt_mul_self h_nonneg (by linarith : 6 * E * G < ‖z‖ - 2 * z.re)]
+  linarith [mul_self_lt_mul_self h_nonneg (by linarith : 6 * E * G < ‖z‖ - 2 * z.re)]
 
 /-- **The cone with a decaying error.** Let `j` and `φ` satisfy `IsLaplaceDatum` with `B ≥ 1`. Let
 the entries of `l` and `k` be bounded by `L`, let `log β ≥ 1` and `card n + card m + L ≤ β`, and put
@@ -472,7 +472,7 @@ lemma measure_large_ball_le_pow_mul_small_ball {ι : Type} [Fintype ι] [Decidab
   have h_radii : 3 * (200 * β ^ 5) * (β + 1) ^ 2 ≤ β ^ 8 := by
     field_simp
     nlinarith
-  have h_one : 1 ≤ 200 * β ^ 5 := by nlinarith [one_le_pow₀ (n := 5) (by linarith : 1 ≤ β)]
+  have h_one : 1 ≤ 200 * β ^ 5 := by linarith [one_le_pow₀ (n := 5) (by linarith : 1 ≤ β)]
   simpa only [mul_one, ← pow_mul, ← mul_assoc, Nat.reduceMul] using
     measure_ball_le_covering ν J 1 h_one (by linarith) h_radii
 

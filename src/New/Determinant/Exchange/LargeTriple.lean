@@ -98,9 +98,7 @@ lemma RepresentedBy.of_conjTranspose_mul_mul {t' : b → ℤˣ} {T : Matrix b b 
     _ = (q⁻¹.valᴴ * (q.valᴴ * T * q.val) * q⁻¹.val).map (evalInf u) := by
         rw [Matrix.map_mul, Matrix.map_mul]
         rfl
-    _ = atRealPlace T u := by
-        rw [h_inv]
-        rfl
+    _ = atRealPlace T u := congrArg (fun M ↦ M.map (evalInf u)) h_inv
 
 variable {W₁} in
 /-- The real slice of `v` along `D` vanishes at every adelic matrix `x` whose Gram matrix for the

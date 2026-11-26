@@ -288,8 +288,8 @@ lemma exists_isBranchingPairing [DecidableEq n'] [DecidableEq n] [Nonempty n]
     grw [Int.natAbs_add_le, Int.natAbs_natCast, h_row, h_term]
   · calc ‖v' ⬝ᵥ (A * b).map (↑) *ᵥ v‖
         ≤ √(weylNormSq v' * weylNormSq (b.map (↑) *ᵥ v)) := by
-          rw [map_intCast_mul_mulVec]
-          exact norm_dotProduct_mulVec_le_of_isDualPairing hA v' _
+          simpa only [map_intCast_mul_mulVec] using
+            norm_dotProduct_mulVec_le_of_isDualPairing hA v' (b.map (↑) *ᵥ v)
       _ ≤ √(weylNormSq v' * (((M ^ M) ^ 3) ^ 2 * weylNormSq v)) := by
           grw [hb_norm M (by simpa using h_boxes.trans hM) v]
           simp
@@ -620,8 +620,8 @@ residue fields that gives it on integral finite points, is `gridTamePart ϑ z j`
 lemma gridChar_hasWeight_lastPathDetExp :
     (gridChar ϑ z j (D.LastPathIndex z j)).HasWeight (D.lastPathDetExp z (j + 1))
       (gridTamePart ϑ z j) := by
-  rw [← D.gridWeight_eq_lastPathDetExp z j]
-  exact gridChar_hasWeight ϑ z j (D.LastPathIndex z j)
+  simpa only [D.gridWeight_eq_lastPathDetExp z j] using
+    gridChar_hasWeight ϑ z j (D.LastPathIndex z j)
 
 /-- The theta kernel of the edge from `(z, j, m)` to `(z, j + 1, m)`, for the characters `gridChar`
 at the two ends and the level at `(z, j, m)`. The derivatives in the Taylor series of the theta

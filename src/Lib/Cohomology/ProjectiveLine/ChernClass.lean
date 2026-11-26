@@ -676,8 +676,7 @@ lemma affinePt_eq_map (x : B')
     simp only [unimodularRow, map_add, map_mul, map_one] at h_ratio
     change (1 + (x - 1) * 1) * f q.down.out.snd = 1 * (1 + f q.down.out.fst * f q.down.out.snd)
     linear_combination -h_ratio
-  rw [map_eq_mk_map_out]
-  exact congrArg ULift.up (Quotient.sound h_rel)
+  simpa only [map_eq_mk_map_out] using! congrArg ULift.up (Quotient.sound h_rel)
 
 /-- If `f` sends the first coordinate of the row of `q` to a unit, then the row of the image point
 also has a unit as first coordinate. -/

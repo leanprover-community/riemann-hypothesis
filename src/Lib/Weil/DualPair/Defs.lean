@@ -23,8 +23,7 @@ and a function modulo an ideal at the finite places.
   from `New.Ô E`.
 * `New.modDatum`: the vector in the data space of `New.Space.hom S T` with real part `v`, with `Ψ`
   at the primes dividing `𝔪` (`New.Space.schrodingerOp`) and the vacuum elsewhere.
-* `New.modKernel`: its theta kernel `New.pairTheta`, for `v` the Fock vector of a polynomial;
-  `New.stdKernel`: this kernel for the standard characters `New.stdChar` of `S` and `T`.
+* `New.modKernel`: its theta kernel `New.pairTheta`, for `v` the Fock vector of a polynomial.
 
 Notions from other files:
 * `New.Space`: a hermitian space over a CM field E with `CMType E` (a chosen embedding at each
@@ -60,8 +59,6 @@ namespace New
   divided by the `k`-th power of the fixed splitting character `υ` of `New.WeilData`.
 * `New.rankTwist`: the product of `a` with the `⌊n/2⌋`-th power of `υ` on norm-one ideles, for an
   index type of size `n`.
-* `New.stdChar`: the standard character of a space, the power of `υ` on `[U(1)]` by the number
-  of negative signs.
 -/
 
 section PairDefs
@@ -155,10 +152,6 @@ def AutChar.spaceChar (k : ℕ) : HeckeChar E := a.baseChange * υ⁻¹ ^ k
 /-- For a character a of [U(1)] and a finite index set of size n, the character a·υ^⌊n/2⌋ of [U(1)],
 where υ is restricted to the norm-one ideles (`upsilonU1`). -/
 def rankTwist (n : Type*) [Fintype n] : AutChar E := a * upsilonU1 ^ (Fintype.card n / 2)
-
-/-- The standard character of a space with signs s: the character υ^{n₋} of [U(1)], where υ is
-restricted to the norm-one ideles (`upsilonU1`) and n₋ is the number of signs −1. -/
-def stdChar {n : Type*} [Fintype n] (s : n → ℤˣ) : AutChar E := upsilonU1 ^ Exchange.negCount s
 
 /-- For characters a, b of [U(1)], the complex character (g, h) ↦ a(det h) b(det g)⁻¹ of
 G(s) × G(s′). -/
@@ -265,12 +258,6 @@ def modKernel (a b : AutChar E) (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.Residu
     (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) : G E s → G E s' → ℂ :=
   fun g h ↦
     pairTheta S T a b (modDatum S T 𝔪 Ψ (Fock.polyVector (realSigns E (homSigns s s')) P)) (g, h)
-
-/-- The theta kernel θ^{S,T}[Ψ, P]: the kernel `New.modKernel` of a function Ψ on n′ × n matrices
-modulo 𝔪 and a polynomial P, for the standard characters (`New.stdChar`) of S and T. -/
-abbrev stdKernel (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) : G E s → G E s' → ℂ :=
-  modKernel S T (stdChar s) (stdChar s') 𝔪 Ψ P
 
 end ModulusKernel
 

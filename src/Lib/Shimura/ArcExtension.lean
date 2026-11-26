@@ -469,7 +469,8 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   have hA : IsSeparatingFamily (atGeneric u.expMap) :=
     isSeparatingFamily_atGeneric_of_surjective u.surjective
   -- `Γ → A` is proper and its image holds the dense points `atGeneric u.expMap z`
-  have h_surj : AlgebraicGeometry.Surjective (p ≫ π.left) := hA.2.surjective _ P (by grind)
+  have h_surj : AlgebraicGeometry.Surjective (p ≫ π.left) :=
+    hA.2.surjective _ P fun z ↦ by rw [← Category.assoc, hP, ← hπ]
   -- a coordinate `i₀` of `M` whose theta function does not vanish at `0`
   obtain ⟨i₀, hi₀⟩ := (hf.hasFieldCoords 0).exists_ne_zero
   have hf_ne : (fun z : V ↦ f z i₀) ≠ 0 := ne_of_apply_ne (fun g ↦ g 0) hi₀
@@ -483,7 +484,7 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   -- times their quotient `f (n • z) θ(z) ^ m / (θ (n • z) f(z) ^ m)` (`hw_val`).
   have hθ := h.pull 1 hπ fun _ ↦ id
   have hn_mem (l) (hl : l ∈ u.lattice) : (n : V →L[ℂ] V) l ∈ u.lattice := by
-    simpa using nsmul_mem hl n
+    simpa only [ContinuousLinearMap.natCast_apply, nsmul_eq_mul] using nsmul_mem hl n
   obtain ⟨-, -, c, hw_val⟩ :=
     ((hθ.pull _ hν hn_mem).mul (hf.pow _)).riemannForm_eq_of_isFrame
       ((hf.pull _ hν hn_mem).mul (hθ.pow _)) hw (hf.holomorphicAt hM)
@@ -516,8 +517,13 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
     -- points `P z`, hence on `Γ`.
     let φ (b : κ) (i : ι) (j : κ) : PointFn A'.left :=
       w ((i', fun _ ↦ b), b', fun _ ↦ i) * ((r j : N.H0 O).val i ^ m).pull π.left
-    simp [IsHomogeneousCoords, hTπ, Q, IsFrame, IsSection, IsRegularOn, pow,
-      landsIn_iInf] at hw hr_reg hM_reg hw_unit h_lifts h_zero ha hb
+    simp [IsFrame, IsSection, IsRegularOn, pow, landsIn_iInf] at hw
+    simp [IsRegularOn] at hr_reg hM_reg
+    simp [pow, landsIn_iInf] at hw_unit
+    simp [IsHomogeneousCoords] at h_lifts
+    push Not at h_zero
+    simp [hTπ] at ha
+    simp [Q] at hb
     have key : (φ b i b * (M.transition b₁ j ^ m).pull T).pull p _ ζ =
         (φ b₁ a j).pull (p ≫ T) _ ζ := by
       -- Both sides are regular on the open `U` of `Γ` and agree at the `P z` in it; `ζ` is in `U`.
@@ -544,8 +550,10 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   obtain ⟨e, he, heM⟩ :=
     hA.exists_map_of_coords (ProjSpace.isLinearSystem_hyperplaneBundle.pull W) hM h_lifts
       hf.hasFieldCoords
-  exact ⟨e, fun z ↦ bijective_restrict_genericPt.injective (he z), by rw [heM, hW_cls],
-    hA.hom_ext (by grind)⟩
+  have he' (z : V) : u.expMap z ≫ e = s' z := bijective_restrict_genericPt.injective (he z)
+  exact ⟨e, he', by rw [heM, hW_cls],
+    hA.hom_ext fun z ↦ by
+      simp only [Category.assoc, reassoc_of% (he' z), h_lift, Category.comp_id]⟩
 
 /-- Let `u` uniformise the abelian scheme `A` over `O`, and let `N` be a projective embedding of `A`
 with theta coordinates of type `(B, χ)` along `u`, where `B` is positive. Let `n` be a unit of `O`
@@ -574,7 +582,7 @@ lemma exists_hom_of_hasThetaCoords (hN : N.IsProjEmbedding A.hom)
     by_contra! h_none
     simpa [← one_add_one_eq_two] using
       (IsLocalRing.maximalIdeal O).sub_mem (h_none 2 nofun) (h_none 1 nofun)
-  have : NeZero (μ + k) := ⟨by lia⟩
+  have : NeZero (μ + k) := ⟨by omega⟩
   let S := AddMonoidHom.mk' (fun z ↦ lift (u.expMap z) (s' z)) fun a b ↦ by
     ext1 <;> simp [add_comp]
   let Q := (M.pull (snd A A').1).mul ((N.pow k).pull (fst A A').1)

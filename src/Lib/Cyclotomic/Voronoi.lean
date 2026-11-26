@@ -294,7 +294,7 @@ lemma abs_bernoulliFun_lt (he_ne : e ≠ 0) {x : ℝ} (hx : x ∈ Set.Icc 0 1) :
     _ ≤ (e + 1)! * π ^ 2 := h_bound
     _ < (e + 1)! * 17 := by
       gcongr
-      nlinarith [pi_le_four, pi_pos]
+      nlinarith only [pi_le_four, pi_pos]
 
 omit [NeZero N] in
 /-- For a prime `l`, one of `c = 1 + N` and `c = 1 + 2 N` is prime to `l`. This `c` is `≡ 1 mod N`,

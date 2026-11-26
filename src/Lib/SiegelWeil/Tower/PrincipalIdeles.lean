@@ -52,47 +52,33 @@ lemma piUnits_val_apply_ne_zero (a : (ι → ℂ)ˣ) (x : ι) : a.val x ≠ 0 :=
 `(ι → ℂ)ˣ` is integrable for Haar measure. -/
 lemma integrable_prod_inv_one_add_log_sq [Fintype ι] :
     Integrable (fun a : (ι → ℂ)ˣ ↦ ∏ x : ι, (1 + Real.log ‖a.val x‖ ^ 2)⁻¹) haar := by
-  -- Push Haar measure forward along the map `L` sending `a` to `fun x ↦ log |a x|`. The image is
-  -- translation invariant and finite on compact sets, hence a multiple of Lebesgue measure on
-  -- `ι → ℝ`, for which `t ↦ ∏ x, (1 + t x ^ 2)⁻¹` is integrable.
+  -- Push Haar measure forward along `L : a ↦ (x ↦ log |a x|)`. The image is translation invariant
+  -- and finite on compact sets, hence a multiple of Lebesgue measure on `ι → ℝ`.
   let L (a : (ι → ℂ)ˣ) (x : ι) : ℝ := Real.log ‖a.val x‖
-  have h_unit (t : ι → ℝ) (θ : ι → Circle) :
-      IsUnit fun x : ι ↦ exp (t x : ℝ) * (θ x : Circle) := by simp [Pi.isUnit_iff]
-  -- polar coordinates: the unit with moduli `exp (t x)` and phases `θ x`
-  let polar (t : ι → ℝ) (θ : ι → Circle) : (ι → ℂ)ˣ := (h_unit t θ).unit
-  have hL : Measurable L := by
-    refine measurable_pi_iff.2 fun x ↦ ?_
-    have h_eval : Measurable fun a : (ι → ℂ)ˣ ↦ a.val x := .eval (by fun_prop)
-    exact h_eval.norm.log
-  have h_polar : Continuous polar.uncurry := by
+  -- polar coordinates: the unit with moduli `exp (p.1 x)` and phases `p.2 x`
+  let polar (p : (ι → ℝ) × (ι → Circle)) : (ι → ℂ)ˣ :=
+    (by simp [Pi.isUnit_iff] : IsUnit fun x : ι ↦ exp (p.1 x : ℝ) * (p.2 x : Circle)).unit
+  have hL : Measurable L := measurable_pi_iff.2 fun _ ↦ .log (.norm (.eval (by fun_prop)))
+  have h_polar : Continuous polar := by
     rw [Units.isOpenEmbedding_val.isInducing.continuous_iff]
-    simp only [polar, Function.comp_def, Function.uncurry_def, IsUnit.unit_spec]
+    simp only [polar, Function.comp_def, IsUnit.unit_spec]
     fun_prop
-  -- `L` turns multiplication by `polar t 1` into translation by `t`
-  have h_conj (t : ι → ℝ) : Function.Semiconj L (polar t 1 * ·) (t + ·) := by
-    simp [Function.Semiconj, funext_iff, L, polar, Real.log_mul]
-  have h_inv : (haar.map L).IsAddLeftInvariant := by
-    refine ⟨fun t ↦ ?_⟩
-    have h_mul : MeasurePreserving (polar t 1 * ·) haar haar := measurePreserving_mul_left haar _
-    have h_add : Measurable fun s : ι → ℝ ↦ t + s := by fun_prop
-    exact ((hL.measurePreserving haar).of_semiconj h_mul (h_conj t) h_add).map_eq
+  -- `L` turns multiplication by `polar (t, 1)` into translation by `t`
+  have h_inv : (haar.map L).IsAddLeftInvariant := ⟨fun t ↦
+    ((hL.measurePreserving haar).of_semiconj (measurePreserving_mul_left haar (polar (t, 1)))
+      (by simp [Function.Semiconj, funext_iff, L, polar, Real.log_mul])
+      (by fun_prop)).map_eq⟩
   -- the preimage of a compact `K` lies in the image under `polar` of `K × (ι → Circle)`
-  have h_fin : IsFiniteMeasureOnCompacts (haar.map L) := by
-    refine ⟨fun K hK ↦ ?_⟩
-    have h_sub : L ⁻¹' K ⊆ polar.uncurry '' K ×ˢ Set.univ := by
-      intro a ha
-      refine ⟨(L a, fun x ↦ Circle.exp (arg (a.val x))), ⟨ha, trivial⟩, ?_⟩
-      ext x
-      simp [polar, L, exp_log, ofReal_log]
+  have h_fin : IsFiniteMeasureOnCompacts (haar.map L) := ⟨fun K hK ↦ by
     rw [map_apply hL hK.measurableSet]
-    have h_compact : IsCompact (polar.uncurry '' K ×ˢ Set.univ) :=
-      (hK.prod isCompact_univ).image h_polar
-    exact (measure_mono h_sub).trans_lt h_compact.measure_lt_top
-  have h_int : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹) (haar.map L) := by
-    rw [(haar.map L).isAddLeftInvariant_eq_smul volume]
-    have h_volume : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹) :=
-      Integrable.fintype_prod fun _ ↦ integrable_inv_one_add_sq
-    exact h_volume.smul_measure_nnreal
-  exact h_int.comp_measurable hL
+    refine (measure_mono fun a ha ↦ ?_).trans_lt
+      ((hK.prod isCompact_univ).image h_polar).measure_lt_top
+    refine ⟨(L a, fun x ↦ Circle.exp (arg (a.val x))), ⟨ha, trivial⟩, ?_⟩
+    ext x
+    simp [polar, L, exp_log, ofReal_log]⟩
+  refine (?_ : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹)
+    (haar.map L)).comp_measurable hL
+  rw [(haar.map L).isAddLeftInvariant_eq_smul volume]
+  exact (Integrable.fintype_prod fun _ ↦ integrable_inv_one_add_sq).smul_measure_nnreal
 
 end New

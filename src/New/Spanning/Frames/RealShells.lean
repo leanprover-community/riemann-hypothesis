@@ -412,7 +412,7 @@ whose `loss` is L². The dyadic shell of index `i` is a shell of height H = `2 ^
 It is covered by the positions `x` with `x - 1` of size 1 for at most 2 H ^ (9 n) gauges of loss at
 most L² H². If σ < 1 and L ^ (2400 n²) ≤ σ ^ (400 n²) H, then at each of its positions every active
 point has a vector e_a, `a ≥ j`, of depth at least σ⁻². -/
-lemma isShell_dyadicShell [Nonempty I]
+lemma isShell_dyadicShell
     (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) {hL : ρ ≤ L}
     (hp : (hF.gauge hL).IsHead j p) (hq : (hF.gauge hL).IsHead j q) (i : ℕ) :
     (hF.gauge hL).IsShell j p q F (dyadicShell 𝔰 i) (2 ^ i) := by

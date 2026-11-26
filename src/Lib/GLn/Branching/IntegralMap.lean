@@ -102,10 +102,14 @@ lemma exists_cyclic_lower_triangular (κ : Φ → ℕ → ℕ) :
       if a = c then M τ (ι τ (.inr ())) c - ∑ d with E τ d < E τ c, M τ d c else 0
   have hU₀_linear : IsLinearMap ℂ U₀ := by
     constructor
-    · simp [U₀, funext_iff, sum_add_distrib]
-      grind
-    · simp [U₀, funext_iff, ← mul_sum]
-      grind
+    · simp only [Pi.add_apply, Matrix.add_apply, sum_add_distrib, funext_iff, of_add_of,
+      EmbeddingLike.apply_eq_iff_eq, U₀]
+      intro x y τ a c
+      split_ifs <;> ring
+    · simp only [Pi.smul_apply, Matrix.smul_apply, smul_eq_mul, ← mul_sum, funext_iff, smul_of,
+      EmbeddingLike.apply_eq_iff_eq, U₀]
+      intro c x τ a c'
+      split_ifs <;> ring
   let U : (∀ τ : Φ, Matrix (N τ) (N τ) ℂ) →L[ℂ] ∀ τ : Φ, Matrix (N τ) (N τ) ℂ :=
     (hU₀_linear.mk' U₀).toContinuousLinearMap
   refine ⟨schur κ u *ᵥ v, fun r hr ↦ ?_⟩
@@ -115,16 +119,40 @@ lemma exists_cyclic_lower_triangular (κ : Φ → ℕ → ℕ) :
       ∃ g : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ, (∀ τ : Φ, (g τ)ᵀ.BlockTriangular (rowEquivFin n τ)) ∧
         u + (1 - u • U) M = blockScalar ι g 1 * u := by
     refine ⟨fun τ ↦ ((1 + M - U M) τ).submatrix (ι τ ∘ .inl) (ι τ ∘ .inl), ?_⟩
-    simp [funext_iff, ← ext_iff, Matrix.mul_apply, reindex_equiv (ι _), u, U, U₀, E, newRowOrder,
-      sum_filter, BlockTriangular, Fin.top_eq_last, Matrix.one_apply, sub_eq_zero,
-      blockScalar.eq_unfold, sum_add_distrib]
-    grind -order
+    simp only [BlockTriangular, newRowOrder, Pi.top_apply, Fin.top_eq_last, Equiv.optionCongr_symm,
+      Equiv.symm_trans, Equiv.symm_symm, finCongr_symm, Equiv.trans_apply, Equiv.optionCongr_apply,
+      finCongr_apply, Fin.cast_lt_cast, sum_filter, reindex_equiv (ι _), Equiv.symm_apply_apply,
+      sum_sum_type, Equiv.optionEquivSumPUnit_symm_inl, Option.map_some, finSuccEquiv'_symm_some,
+      Fin.succAbove_last, univ_unique, PUnit.default_eq_unit, Equiv.optionEquivSumPUnit_symm_inr,
+      Option.map_none, finSuccEquiv'_symm_none, sum_singleton, LinearMap.coe_toContinuousLinearMap',
+      IsLinearMap.mk'_apply, Pi.sub_apply, Pi.add_apply, Pi.one_apply, transpose_apply,
+      submatrix_apply, Function.comp_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.one_apply,
+      EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, of_apply, Fin.castSucc_lt_castSucc_iff,
+      sub_eq_zero, sub_apply, one_apply_eq_self, smul_apply, smul_eq_mul, blockScalar.eq_unfold,
+      reindex_apply, diagonal_one, funext_iff, Pi.mul_apply, ← ext_iff, Matrix.mul_apply, ite_mul,
+      one_mul, zero_mul, or_self, sum_ite_irrel, sum_add_distrib, sum_const_zero, mul_ite, mul_one,
+      mul_zero, reduceCtorEq, false_or, true_or, ↓reduceIte, Sum.forall, add_zero,
+      Finset.sum_ite_eq', mem_univ, Fin.castSucc_lt_last, lt_self_iff_false, zero_add,
+      Finset.sum_ite_eq, fromBlocks_apply₁₁, fromBlocks_apply₁₂, Matrix.zero_apply, sub_self,
+      implies_true, and_true, or_false, fromBlocks_apply₂₁, fromBlocks_apply₂₂, add_eq_left,
+      add_sub_cancel, U, U₀, E, u]
+    refine ⟨fun τ i j hlt ↦ ?_, fun x ↦ ⟨fun a a₁ ↦ (add_sub_assoc _ _ _).symm,
+      fun b a ↦ ?_⟩⟩
+    · have hne : j ≠ i := fun h ↦ by subst h; exact lt_irrefl _ hlt
+      simp only [hne, ↓reduceIte, zero_add, hlt, add_zero]
+    · cases b
+      ring
   -- The upper triangular second factor only scales `v`.
   have h_eigen (M : ∀ τ : Φ, Matrix (N τ) (N τ) ℂ) : schur κ (fun τ : Φ ↦ 1 + U M τ) *ᵥ v =
       (∏ τ : Φ, ∏ a : N τ, (1 + U M) τ a a ^ diagramWeight (rankAt N) κ (τ, E τ a)) • v := by
     have h_upper (τ : Φ) : (1 + U M τ)ᵀᵀ.BlockTriangular (E τ) := by
-      simp [U, U₀, BlockTriangular, Matrix.one_apply]
-      grind
+      simp only [BlockTriangular, LinearMap.coe_toContinuousLinearMap', IsLinearMap.mk'_apply,
+        transpose_add, transpose_one, transpose_of, transpose_apply, Matrix.add_apply,
+        Matrix.one_apply, of_apply, U, U₀]
+      intro i j hlt
+      have hne : j ≠ i := fun h ↦ by subst h; exact lt_irrefl _ hlt
+      have hnot : ¬ E τ i < E τ j := not_lt_of_gt hlt
+      simp only [Function.swap, hne, hne.symm, hnot, ↓reduceIte, add_zero]
     -- Both sides are coordinates of the kernel at `permArray E`, substituted by `1 + U M`.
     exact toPoly_injective (by simpa [v] using rowSubst_weylKernel_permArray E _ h_upper)
   let P : MvPolynomial ((τ : Φ) × N τ × N τ) ℂ := C ∘ r ⬝ᵥ schur κ (genericMatrixAt ℂ N) *ᵥ C ∘ v
@@ -168,8 +196,13 @@ private lemma map_branchKernel {S T : Type} [CommRing S] [CommRing T] (φ : S �
     (x : Sigma n × ℕ → S) (y : Sigma N × ℕ → S) :
     φ (branchKernel ι γ κ' x y) =
       branchKernel ι γ κ' (fun p : Sigma n × ℕ ↦ φ (x p)) fun p : Sigma N × ℕ ↦ φ (y p) := by
-  simp [branchKernel, branchVector, weylKernel, eval_rowSubst, reindex_equiv (ι _), map_eval,
-    apply_ite, blockScalar.eq_unfold, squarePart, permArray, Function.comp_def]
+  simp only [branchKernel, blockScalar.eq_unfold, reindex_apply, squarePart, transpose_of,
+    Pi.one_apply, diagonal_one, branchVector, weylKernel, permArray, map_mul, eval_rowSubst,
+    submatrix_apply, reindex_equiv (ι _), Equiv.symm_apply_apply, sum_sum_type, univ_unique,
+    PUnit.default_eq_unit, sum_singleton, of_apply, ite_mul, one_mul, zero_mul, fromBlocks_apply₁₁,
+    fromBlocks_apply₁₂, Matrix.zero_apply, add_zero, fromBlocks_apply₂₁, sum_const_zero,
+    fromBlocks_apply₂₂, one_apply_eq, zero_add, apply_ite, map_eval, Function.comp_def, map_add,
+    map_sum, map_zero, map_highestPoly]
 
 omit [∀ τ : Φ, DecidableEq (N τ)] [∀ τ : Φ, DecidableEq (n τ)] in
 /-- In `y`, `branchKernel` is a semi-invariant of the upper triangular group: replacing `y` by
@@ -245,12 +278,25 @@ private lemma exists_eval_detPowToPoly_eq_mul_branchKernel {c : ℤ} {η : WeylI
   rw [map_smul, detPowToPoly_smul_schur_mulVec, detPowToPoly, LinearMap.comp_apply]
   -- Expand both sides into minors. The flags `↓←` and `-finRotate_symm_apply` keep `toPoly` and
   -- `finRotate.symm` in the form that `hη` has, for `← hη`.
-  simp [↓← map_toPoly, ← hη, branchKernel, branchVector, weylKernel, rowSubst_highestPoly,
-    rankAt_eq_succ ι, detPow, eval_rowSubst, mul_comm _ (x _), prod_range_succ' (_ ^ γ _ ·),
-    prod_range_succ, Matrix.map, g, -finRotate_symm_apply, minor, map_det, mul_assoc,
-    blockScalar.eq_unfold, squarePart, prod_mul_distrib]
-  simp [det_succ_row_zero, Fin.sum_univ_succ, reindex_equiv (ι _), newRowOrder, mul_pow,
-    submatrix, hy, -finRotate_symm_apply, permArray, mul_assoc, prod_mul_distrib, Fin.top_eq_last]
+  simp only [transpose_of, detPow, minor, ↓← map_toPoly, ← hη, weylKernel, rowSubst_highestPoly,
+    zsmul_eq_mul, map_mul, map_intCast, map_prod, map_pow, map_det, mapMatrix_apply, Matrix.map,
+    of_apply, map_sum, map_X, LinearMap.mulRight_apply, mul_assoc, smul_eval, eval_rowSubst,
+    mul_comm _ (x _), eval_X, branchKernel, blockScalar.eq_unfold, reindex_apply, squarePart,
+    Pi.one_apply, diagonal_one, branchVector, rankAt_eq_succ ι, prod_range_succ' (_ ^ γ _ ·),
+    det_fin_zero, one_pow, mul_one, prod_range_succ, prod_mul_distrib, submatrix_apply, g]
+  simp only [permArray, Int.cast_ite, Int.cast_one, Int.cast_zero, ite_mul, one_mul, zero_mul,
+    newRowOrder, Pi.zero_apply, Equiv.optionCongr_symm, Equiv.symm_trans, Equiv.symm_symm,
+    finCongr_symm, Equiv.trans_apply, Equiv.optionCongr_apply, finCongr_apply, Fin.val_cast,
+    reindex_equiv (ι _), Equiv.symm_apply_apply, sum_sum_type, univ_unique, PUnit.default_eq_unit,
+    sum_singleton, Equiv.optionEquivSumPUnit_symm_inl, Option.map_some, finSuccEquiv'_symm_some,
+    Fin.zero_succAbove, Fin.val_succ, fromBlocks_apply₁₁, of_apply, fromBlocks_apply₁₂,
+    Matrix.zero_apply, add_zero, Equiv.optionEquivSumPUnit_symm_inr, Option.map_none,
+    finSuccEquiv'_symm_none, Fin.coe_ofNat_eq_mod, Nat.zero_mod, fromBlocks_apply₂₁, sum_const_zero,
+    fromBlocks_apply₂₂, one_apply_eq, zero_add, sum_ite_irrel, det_succ_row_zero,
+    Nat.succ_eq_add_one, Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte, submatrix,
+    Nat.add_right_cancel_iff, Nat.right_eq_add, mul_assoc, Fin.sum_univ_succ, pow_zero, hy,
+    mul_zero, mul_pow, prod_mul_distrib, Pi.top_apply, Fin.top_eq_last, Fin.succAbove_last,
+    Fin.val_castSucc, Fin.val_last]
   rw [mul_left_comm]
   -- The minors on both sides agree up to transposition and the numbering of the rows: `congr!`
   -- pairs the factors, and each pair is closed by the same call. The hypotheses are cleared because
@@ -300,7 +346,11 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
   let β : Φ × ℕ × ℕ → MatrixPoly (Sigma N) ℤ := fun (τ, i, j) ↦
     (if i = j then 1 else if i = 0 then -1 else 0) * X (⟨τ, ι τ (.inr ())⟩, j - i)
   have h_new_row (τ : Φ) (j : ℕ) : borelMul Sigma.fst β X (⟨τ, ι τ (.inr ())⟩, j + 1) = 0 := by
-    simp [β, borelMul, sum_range_succ', mul_comm]
+    simp only [borelMul, ite_mul, one_mul, neg_mul, zero_mul, mul_ite, mul_neg, mul_comm,
+      sum_range_succ', Nat.add_right_cancel_iff, Nat.reduceSubDiff, Nat.add_eq_zero_iff,
+      one_ne_zero, and_false, ↓reduceIte, Finset.sum_ite_eq', Finset.mem_range,
+      lt_add_iff_pos_right, Order.lt_one_iff, tsub_self, Nat.right_eq_add, tsub_zero,
+      add_neg_cancel, β]
   obtain ⟨θ, μ, hθ⟩ : ∃ (θ : WeylIndexFamily n κ₀ → MatrixPoly (Sigma N) ℤ) (μ : Sigma N × ℕ →₀ ℕ),
       ∀ x : Sigma n × ℕ → MatrixPoly (Sigma N) ℤ,
         eval x (detPowToPoly n κ₀ κ' (MatrixPoly (Sigma N) ℤ) θ) =
@@ -308,16 +358,20 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
     obtain ⟨θ, hθ⟩ := exists_eval_detPowToPoly_eq_mul_branchKernel ι hη _ h_new_row
     -- `μ` is the exponent of the monomial that `branchKernel_borelMul` gives for `β`; it is found
     -- by unification in the `simpa`, so it is left as a hole.
-    exact ⟨θ, _, by simpa [β, branchKernel_borelMul, Int.cast_comm, X_pow_eq_monomial,
-      Finsupp.prod, ← monomial_sum_one, sum_add_distrib, mul_assoc] using hθ⟩
+    exact ⟨θ, _, by simpa only [ite_mul, one_mul, neg_mul, zero_mul, branchKernel_borelMul,
+      Finsupp.prod, ↓reduceIte, tsub_self, Finsupp.coe_add, Pi.add_apply, X_pow_eq_monomial,
+      Finsupp.single_add, ← monomial_sum_one, sum_add_distrib, Int.cast_comm, mul_assoc,
+      β] using hθ⟩
   -- `c` times the kernel at generic `x` and `y` is a polynomial in `y` over `ℤ[x]`. As a
   -- semi-invariant it is a combination of the basis `nablaBasis`, with coordinates `f`. The weight
   -- is written with the zero sum that `nabla_le_span_nablaBasis_mul_detPow 0` expects.
   have h_semi : c • branchKernel ι γ κ' (C ∘ (X : Sigma n × ℕ → MatrixPoly (Sigma n) ℤ)) X ∈
       nabla (MatrixPoly (Sigma n) ℤ) Sigma.fst (diagramWeight (rankAt N) (γ + κ') +
         ∑ τ : Φ, (0 : Φ → ℕ) τ • ∑ i ∈ range (rankAt N τ), Finsupp.single (τ, i) 1) := by
-    simp [mem_nabla, map_branchKernel, branchKernel_borelMul, mul_left_comm, diagramWeight_add,
-      aeval_def, ← coe_eval₂Hom]
+    simp only [diagramWeight_add, Pi.zero_apply, zero_nsmul, sum_const_zero, add_zero, zsmul_eq_mul,
+      mem_nabla, aeval_def, eval₂_mul, ← coe_eval₂Hom, map_intCast, map_branchKernel,
+      Function.comp_apply, eval₂Hom_C, eval₂Hom_X', branchKernel_borelMul, mul_left_comm,
+      implies_true]
   obtain ⟨f, hf⟩ := LinearMap.mem_range.mp (nabla_le_span_nablaBasis_mul_detPow 0 h_semi)
   -- Compare the coefficients of `y ^ (μ + δ)` in `hθ`: the coefficient of `y ^ δ` in that
   -- polynomial lies in the range of `detPowToPoly n κ₀ κ' ℤ`. By `coord_mem_of_coeff_mem` so do the
@@ -332,9 +386,13 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
       rw [hθ, coeff_monomial_mul, one_mul]
       -- On `ℤ` the map `C` is the cast by definition.
       rfl
-    simpa [← map_nablaBasis C, ← map_detPow C, detPowToPoly, weylEval, dotProduct, mulVec,
-      -map_nablaBasis, -map_detPow, map_branchKernel, coeff_sum, mul_comm (eval x _), eval_toPoly,
-      ← Int.cast_comm, ← zsmul_eq_mul, ← coeff_map, ← eval₂_comp] using h_shift
+    simpa only [detPowToPoly, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulRight_apply,
+      map_mul, eval_toPoly, dotProduct, weylEval, mulVec, map_apply, Int.cast_eq,
+      mul_comm (eval x _), AddMonoidAlgebra.coeff_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eval,
+      ← coeff_map, map_branchKernel, map_C, eval_X, eq_intCast, map_X, ← map_detPow C,
+      ← map_nablaBasis C, eval_map, ← eval₂_comp, ← zsmul_eq_mul, ← Int.cast_comm,
+      AddMonoidAlgebra.coeff_sum, Finsupp.coe_finsetSum, Finset.sum_apply, Int.zsmul_eq_mul]
+      using h_shift
   have h_coord : ∀ j : WeylIndexFamily N (γ + κ'), ∃ b : WeylIndexFamily n κ₀ → ℤ,
       detPowToPoly n κ₀ κ' ℤ b = f j :=
     coord_mem_of_coeff_mem _ _ hf h_coeff
@@ -343,16 +401,25 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
   have hB_kernel {T : Type} [CommRing T] (y : Sigma N × ℕ → T) (x : Sigma n × ℕ → T) :
       eval x (detPowToPoly n κ₀ κ' T ((of B)ᵀ.map (↑) *ᵥ weylEval N (γ + κ') y)) =
         c * branchKernel ι γ κ' x y := by
-    simpa [← eval_map, dotProduct, detPowToPoly, ← hB, map_branchKernel, weylEval, mulVec_eq_sum,
-      smul_eq_C_mul, mul_comm (eval y _), linearCombination_apply, eval_toPoly, aeval_def] using
-      congrArg (eval₂ (aeval x).toRingHom y) hf
+    simpa only [detPowToPoly, transpose_of, mulVec_eq_sum, weylEval, op_smul_eq_smul, map_sum,
+      map_smul, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulRight_apply, smul_eq_C_mul,
+      map_mul, eval_C, eval_toPoly, dotProduct, transpose_apply, map_apply, of_apply,
+      MulOpposite.op_intCast, Finset.sum_apply, Pi.smul_apply, MulOpposite.smul_eq_mul_unop,
+      MulOpposite.unop_intCast, mul_comm (eval y _), AlgHom.toRingHom_eq_coe, detPow_zero, mul_one,
+      linearCombination_apply, ← hB, C_mul, ← eval_map, map_C, coe_coe, aeval_def,
+      algebraMap_int_eq, map_toPoly, Int.coe_castRingHom, map_intCast, map_detPow, map_nablaBasis,
+      zsmul_eq_mul, map_branchKernel, map_X, eval_X] using congrArg (eval₂ (aeval x).toRingHom y) hf
   refine ⟨(of B)ᵀ, MvPolynomial.funext fun y ↦ ?_, ?_⟩
   · -- For `x` the identity matrix, `det x = 1` and the kernel is `branchVector` evaluated at `y`.
-    simpa [linearCombination_apply, branchKernel, detPowToPoly, detPow, ← dotProduct.eq_1,
-      dotProduct_mulVec, Fin.val_inj, map.eq_1 (of _), vecMul_mulVec, ← transpose_map,
-      weylGram_isSymm.eq, ← weylEval.eq_1, minor, eval_toPoly, map_det, permArray, ← diagonal.eq_1,
-      blockScalar.eq_unfold, squarePart] using
-      hB_kernel y (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))
+    simpa only [transpose_of, map.eq_1 (of _), of_apply, vecMul_mulVec, ← transpose_map,
+      weylGram_isSymm.eq, linearCombination_apply, map_sum, smul_eval, ← weylEval.eq_1,
+      ← dotProduct.eq_1, detPowToPoly, detPow, minor, LinearMap.coe_comp, Function.comp_apply,
+      LinearMap.mulRight_apply, map_mul, eval_toPoly, mulVec_mulVec, dotProduct_mulVec, map_prod,
+      map_pow, map_det, mapMatrix_apply, eval_X, permArray, Equiv.apply_symm_apply, Fin.val_inj,
+      ← diagonal.eq_1, diagonal_one, det_one, one_pow, prod_const_one, mul_one, branchKernel,
+      blockScalar.eq_unfold, reindex_apply, squarePart, EmbeddingLike.apply_eq_iff_eq,
+      transpose_one, Pi.one_apply, fromBlocks_one, submatrix_one_equiv, rowSubst_one]
+      using hB_kernel y (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))
   intro S _ _ g s
   -- It suffices to compare the two sides on the vectors `ev_y`, and there after applying
   -- `detPowToPoly n κ₀ κ' S`, which is injective because the product of the powers
@@ -364,9 +431,11 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
   refine MvPolynomial.funext fun x ↦ ?_
   -- By `hB_kernel` the left side is `c` times the kernel at `x` and `diag(g, s) y`, and the right
   -- side is a power of `s` times `c` times the kernel at `gᵀ x` and `y`.
-  simp [schur_mulVec_weylEval_of_schurDetExp_eq_zero, hB_kernel, branchKernel_blockScalar ι g s x y,
-    detPowToPoly_smul_schur_mulVec g, mul_smul, eval_rowSubst, mul_left_comm, prod_mul_distrib,
-    -mulVec_mulVec, -transpose_of]
+  simp only [toLin'_mul, LinearMap.coe_comp, Function.comp_apply, toLin'_apply, FitsRanks.refl,
+    schurDetExp_self, schur_mulVec_weylEval_of_schurDetExp_eq_zero, hB_kernel,
+    branchKernel_blockScalar ι g s x y, transpose_apply, prod_mul_distrib, mul_smul, map_smul,
+    LinearMap.smul_apply, detPowToPoly_smul_schur_mulVec g, smul_eval, eval_rowSubst,
+    mul_left_comm]
 
 /-- Let `v` be the Gram matrix `weylGramOver` times the evaluation vector at the permutation array
 of `rowEquivFin`. Let `B` be an integral matrix such that `nablaCombination` (ξ ↦ Σ ξ_i b_i over the
@@ -410,7 +479,9 @@ lemma spansBranchingMaps_of_equivariant {c : ℤ} (hc : c ≠ 0) {e e₀ : Φ �
       T' = 0 := by
     have h_row (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) :
         x ᵥ* T' ᵥ* schur (γ + κ') (blockScalar ι g 1) = d g • x ᵥ* schur κ₀ g ᵥ* T' := by
-      simpa [D, d, sub_eq_zero, vecMul_sub, vecMul_smul] using congrArg (x ᵥ* ·) (hT' g)
+      simpa only [D, d, vecMul_vecMul, Pi.add_apply, LinearMap.sub_apply, mulRightLinearMap_apply,
+        LinearMap.smul_apply, mulLeftLinearMap_apply, vecMul_sub, vecMul_smul, vecMul_zero,
+        sub_eq_zero] using congrArg (x ᵥ* ·) (hT' g)
     -- `x` is an eigenvector of the lower triangular group, under which `v` is cyclic.
     have x_mul_T : x ᵥ* T' = 0 := by
       refine v_cyclic _ fun g hg ↦ ?_
@@ -419,13 +490,17 @@ lemma spansBranchingMaps_of_equivariant {c : ℤ} (hc : c ≠ 0) {e e₀ : Φ �
       obtain ⟨a, ha⟩ : ∃ a : ℂ, x ᵥ* schur κ₀ g = a • x :=
         ⟨_, by simpa [vecMul_schur_eq_iff, x, G₀, nablaCombination_weylGramOver_mulVec] using
           rowSubst_weylKernel_permArray _ _ hg⟩
-      simp [h_row, h_value_zero, dotProduct_mulVec, ha, smul_vecMul]
+      simp only [dotProduct_mulVec, h_row, ha, smul_vecMul, smul_dotProduct, h_value_zero,
+        smul_eq_mul, mul_zero]
     -- By `h_row`, `T'` kills all `x ᵥ* schur κ₀ g` with `g` invertible, and these span.
     have T_mul_gram : T'ᵀ * G₀ = 0 := by
       refine toLin'.injective (ext_schur_weylEval (rowEquivFin n) fun g ↦ ?_)
-      simpa [mulVec_mulVec _ weylGramOver, x_mul_T, d, G₀, mulVec_transpose, weylGramOver_mul_schur,
-        ← mulVec_mulVec, prod_eq_zero_iff, GeneralLinearGroup.det_ne_zero] using
-        (h_row fun τ ↦ (g τ).valᵀ).symm
+      simpa only [d, G₀, toLin'_mul, LinearMap.coe_comp, Function.comp_apply, toLin'_apply,
+        mulVec_mulVec _ weylGramOver, weylGramOver_mul_schur, ← mulVec_mulVec, mulVec_transpose,
+        vecMul_vecMul, map_zero, LinearMap.zero_apply, det_transpose, x_mul_T, zero_vecMul,
+        isUnit_iff_ne_zero, ne_eq, prod_eq_zero_iff, mem_univ, pow_eq_zero_iff',
+        GeneralLinearGroup.det_ne_zero, false_and, and_false, exists_false, not_false_eq_true,
+        IsUnit.smul_eq_zero] using (h_row fun τ ↦ (g τ).valᵀ).symm
     have G₀_invertible : Invertible G₀ := weylGramOver_posDef.isUnit.invertible (a := G₀)
     simpa using congrArg (fun M ↦ M * ⅟G₀) T_mul_gram
   -- `T` is equivariant for unitary `g`, hence for all `g` by Zariski density: an entry of the
@@ -434,14 +509,25 @@ lemma spansBranchingMaps_of_equivariant {c : ℤ} (hc : c ≠ 0) {e e₀ : Φ �
     ext i j
     have h_eval (z : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) :
         evalMatrix z (D (genericMatrixAt ℂ n) (T.map C) i j) = D z T i j := by
-      simp [D, blockScalar.eq_unfold, map_matrix_mul, Function.comp_def, ← submatrix_map,
-        fromBlocks_map, map_det]
+      simp only [Pi.add_apply, blockScalar.eq_unfold, reindex_apply, Pi.one_apply, diagonal_one,
+        LinearMap.sub_apply, mulRightLinearMap_apply, LinearMap.smul_apply, mulLeftLinearMap_apply,
+        Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, map_sub, map_matrix_mul, Matrix.map_map,
+        Function.comp_def, eval_C, map_id', FitsRanks.refl, ← schur_map, ← submatrix_map,
+        fromBlocks_map, genericMatrixAt_map_evalMatrix, map_zero, Matrix.map_zero, map_one,
+        Matrix.map_one, map_mul, map_prod, map_pow, map_det, mapMatrix_apply, D]
     have h_unitary (z : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) (hz : ∀ τ : Φ, (z τ)ᴴ * z τ = 1) :
         D z T i j = 0 := by
       obtain ⟨y, hy, h_equiv⟩ := hT (fun τ ↦ ⟨z τ, (z τ)ᴴ, mul_eq_one_symm (hz τ), hz τ⟩) hz
-      simpa [D, he₀, hy, det_ne_zero_of_left_inverse (hz _), blockScalar.eq_unfold, sub_eq_zero,
-        weylRep, Units.smul_def, _root_.zpow_add, prod_mul_distrib, mul_assoc, prod_eq_zero_iff,
-        zpow_ne_zero] using congrFun₂ h_equiv i j
+      simpa only [D, Pi.add_apply, blockScalar.eq_unfold, reindex_apply, Pi.one_apply, diagonal_one,
+        LinearMap.sub_apply, mulRightLinearMap_apply, LinearMap.smul_apply, mulLeftLinearMap_apply,
+        Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, sub_eq_zero, weylRep, Units.smul_def,
+        Units.coe_prod, Units.val_zpow_eq_zpow_val, GeneralLinearGroup.val_det_apply,
+        MonoidHom.coe_mk, OneHom.coe_mk, hy, det_submatrix_equiv_self, det_fromBlocks_one₂₂,
+        Matrix.mul_zero, sub_zero, Matrix.mul_smul, he₀, _root_.zpow_add, zpow_natCast,
+        prod_mul_distrib, Units.val_mul, Units.val_pow_eq_pow_val, smul_mul, mul_assoc,
+        mul_eq_mul_left_iff, prod_eq_zero_iff, mem_univ, ne_eq, det_ne_zero_of_left_inverse (hz _),
+        not_false_eq_true, zpow_ne_zero, and_false, exists_false, or_false]
+        using congrFun₂ h_equiv i j
     rw [← h_eval]
     exact zariski_dense_unitary g _ fun z hz ↦ (h_eval z).trans (h_unitary z hz)
   have B_defect (g : (τ : Φ) → Matrix (n τ) (n τ) ℂ) : D g (B.map (Int.cast : ℤ → ℂ)) = 0 :=

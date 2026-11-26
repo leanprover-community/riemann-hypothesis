@@ -359,12 +359,6 @@ lemma continuous_realPairWeil :
   simp [realPairWeil]
   fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero, zpow_ne_zero])
 
-/-- The principal minor of `y` on the indices of sign `σ` is the determinant of the diagonal block
-of `y` for `σ` in the partition of the indices by sign. -/
-private lemma principalMinor_eq_det_toSquareBlock {ι : Type} [Fintype ι] [DecidableEq ι]
-    (y : Matrix ι ι ℂ) (ε : ι → ℤˣ) (σ : ℤˣ) :
-    principalMinor y (ε · = σ) = (y.toSquareBlock ε σ).det := rfl
-
 /-- Let the isometry `u` of signs `s` be block diagonal for the partition of the indices by sign
 (it lies in `New.blockDiagAlg s`, the matrices that commute with the sign matrix). Then its
 determinant is the product, over the signs `σ`, of its principal minors on the indices of
@@ -375,7 +369,7 @@ lemma det_eq_prod_principalMinor {u : USign s}
   -- `u` is block diagonal, hence block triangular, for the partition of the indices by sign.
   have h_tri : BlockTriangular (u : Matrix n n ℂ) s :=
     fun i j h_lt ↦ mem_blockDiagAlg.mp hu i j h_lt.ne'
-  simp only [h_tri.det_fintype, principalMinor_eq_det_toSquareBlock]
+  exact h_tri.det_fintype
 
 /-- For a block diagonal isometry `u = diag(γ, z)` of the form with signs `ε` (`z` is the block on
 the negative coordinates), the multiplier of the real Weil representation is `det z⁻¹`. -/

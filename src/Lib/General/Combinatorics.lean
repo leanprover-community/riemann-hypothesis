@@ -274,17 +274,19 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
   -- `coord (i, σ)` is `σ (2 αᵢ)` as a linear form in the coordinates of `αᵢ`.
   let coord : ι × (E →+* ℂ) → MvPolynomial (ι × I) ℂ :=
     fun (i, σ) ↦ 2 • ∑ k : I, .X (i, k) * .C (b k σ)
-  have h_nat (z : ι × I → ℕ) : MvPolynomial.aeval (fun p ↦ (z p : ℂ)) (P.bind₁ coord) = 0 := by
+  have h_nat (z : ι × I → ℕ) :
+      MvPolynomial.aeval (fun p ↦ (z p : ℂ)) (MvPolynomial.aeval coord P) = 0 := by
     let α (i : ι) : 𝓞 E := ∑ k : I, (z (i, k) : 𝓞 E) * basis E k
     have hPα : MvPolynomial.aeval (fun p : ι × (E →+* ℂ) ↦ p.2 (2 * α p.1 : 𝓞 E)) P = 0 := by
       simpa [comp_aeval_apply] using congrArg (Pi.evalAlgHom ℂ _ α) hP
     have hb (k : I) (σ : E →+* ℂ) : b k σ = σ (basis E k) := by simp [b, I]
-    simpa [aeval_bind₁, α, hb, coord, two_mul] using hPα
-  have h_zero : P.bind₁ coord = 0 := by
+    simpa [comp_aeval_apply, α, hb, coord, two_mul] using hPα
+  have h_zero : MvPolynomial.aeval coord P = 0 := by
     refine funext_set (fun _ ↦ Set.range (Nat.cast : ℕ → ℂ))
       (fun _ ↦ infinite_range_of_injective Nat.cast_injective) fun x hx ↦ ?_
     choose z hz using fun p : ι × I ↦ hx p (Set.mem_univ p)
-    simpa [← _root_.funext hz, ← aeval_eq_eval] using h_nat z
+    rw [← _root_.funext hz, ← aeval_eq_eval, _root_.map_zero]
+    exact h_nat z
   -- To evaluate `P` at `v`, take as coordinates those of `v (i, ·) / 2` in the basis `b`.
   refine MvPolynomial.funext fun v ↦ ?_
   let y (p : ι × I) : ℂ := b.repr (fun σ ↦ v (p.1, σ) / 2) p.2
@@ -292,7 +294,7 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
     have h_repr : ∑ k : I, y (p.1, k) * b k p.2 = v p / 2 := by
       simpa [y] using congrFun (b.sum_repr fun σ ↦ v (p.1, σ) / 2) p.2
     simp [coord, two_mul, h_repr]
-  simpa [aeval_bind₁, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
+  simpa [comp_aeval_apply, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
 
 /-- Let the functions `c (i, σ) : A → K` be algebraically independent over `K`, let each polynomial
 `q σ` have total degree at most `card ι`, and let each multiset `x j σ` have `a` elements. If a

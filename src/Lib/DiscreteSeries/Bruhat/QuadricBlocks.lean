@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.Probability.Kernel.Composition.MeasureCompProd
 public import Lib.DiscreteSeries.Bruhat.FloorGroups
 public import Lib.General.Measure.QuadricDisintegration
 
@@ -186,8 +185,8 @@ lemma submatrix_eq_fromBlocks_one_of_orthonormal [DecidableEq B] [DecidableEq κ
 /-- Let T be block diagonal along e, with blocks T₂ and 1. In the flat chart of the quadric of index
 β of a hyperbolic plane plus T, the part z in the second block is free, and the rest is the flat
 chart of the quadric of index β − (index of h(z, z)) of the plane plus T₂. -/
-lemma flatChart_sumElim_comp_symm [DecidableEq B] [DecidableEq κ] {κ₂ : Type} [Fintype κ₂]
-    [DecidableEq κ₂] {T : Matrix κ κ A} {T₂ : Matrix κ₂ κ₂ A} {e : κ₂ ⊕ B ≃ κ}
+lemma flatChart_sumElim_comp_symm [DecidableEq B] {κ₂ : Type} [Fintype κ₂]
+    {T : Matrix κ κ A} {T₂ : Matrix κ₂ κ₂ A} {e : κ₂ ⊕ B ≃ κ}
     (h_split : T.submatrix e e = fromBlocks T₂ 0 0 1) (β : skewAdjoint A) (t : A) (w : κ₂ → A)
     (z : B → A) (a : skewAdjoint A) :
     flatChart T β ((t, (w ⊕ᵥ z) ∘ e.symm), a) =

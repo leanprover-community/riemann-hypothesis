@@ -448,17 +448,17 @@ abbrev Monomials : Type := ↥((univ : Finset σ).finsuppAntidiag a)
 
 omit [DecidableEq σ] in
 /-- `linSubst A` substitutes for each variable the linear form of the matching row of `Aᵀ`. -/
-lemma linSubst_eq_bind₁ : linSubst A = bind₁ Aᵀ.toMvPolynomial := by
+lemma linSubst_eq_bind₁ : linSubst A = aeval Aᵀ.toMvPolynomial := by
   ext s : 1
-  simp [linSubst, MvPolynomial.bind₁, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
+  simp [linSubst, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
 
 @[simp]
 lemma linSubst_one : linSubst 1 f = f := by
-  simp [linSubst_eq_bind₁, MvPolynomial.bind₁, aeval_X_left_apply]
+  simp [linSubst_eq_bind₁, aeval_X_left_apply]
 
 omit [DecidableEq σ] in
 lemma linSubst_mul : linSubst (A * B) f = linSubst A (linSubst B f) := by
-  simp [linSubst_eq_bind₁, MvPolynomial.bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
+  simp [linSubst_eq_bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
 
 omit [DecidableEq σ] in
 lemma map_linSubst :
@@ -471,7 +471,7 @@ lemma Monomials.degree_eq : α.val.degree = a := by
   simpa [degree_eq_sum] using (mem_finsuppAntidiag.mp α.property).left
 
 lemma Monomials.isHomogeneous_linSubst : (linSubst A (monomial α 1)).IsHomogeneous a := by
-  rw [linSubst_eq_bind₁, ← aeval_eq_bind₁]
+  rw [linSubst_eq_bind₁]
   simpa only [one_mul] using
     (isHomogeneous_monomial (1 : R) α.degree_eq).aeval _ Aᵀ.toMvPolynomial_isHomogeneous
 

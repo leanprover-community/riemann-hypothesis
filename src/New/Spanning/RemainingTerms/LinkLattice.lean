@@ -102,7 +102,6 @@ lemma classCoord_orthogonal (ht : u.toCols₁ᴴ * S.ratGram * t = 0)
     (a : GL (IndexNotBelow j) (𝔸f E)) :
     (S.classCoord c * finAdeleMatrix u.toCols₁ * a.val)ᴴ * (S.latticeMiddle (𝔸f E)).splitGram *
       (S.classCoord c * finAdeleMatrix t) = 0 := by
-  classical
   rw [conjTranspose_mul, Matrix.mul_assoc a.valᴴ, Matrix.mul_assoc a.valᴴ, classCoord_gram, ht]
   simp
 
@@ -118,7 +117,6 @@ lemma gram_classOf
     (ht : u.toCols₁ᴴ * S.ratGram * t = 0) (ht' : u.toCols₁ᴴ * S.ratGram * t' = 0) :
     (classOf c q t)ᴴ * (Bᴴ * (S.latticeMiddle (𝔸f E)).splitGram * B) * classOf c q t' =
       finAdeleMatrix (tᴴ * S.ratGram * t') := by
-  classical
   have h_herm : (S.latticeMiddle (𝔸f E)).splitGramᴴ = (S.latticeMiddle (𝔸f E)).splitGram :=
     (S.isUnimodular_latticeMiddle.splitGram (R := Ô E)).1
   rw [hq.gram_coord h_herm (classCoord_orthogonal ht a) (classCoord_orthogonal ht' a),
@@ -521,7 +519,6 @@ lemma HasLevelLifts.hasIntegralLifts (h_lift : HasLevelLifts c γ m) : HasIntegr
 every integral `V`. -/
 lemma HasLevelLifts.mul (h_lift : HasLevelLifts c γ m) {V : Matrix τ σ (𝔸f E)}
     (hV : IsIntMatrix (Ô E) V) : HasLevelLifts c γ (m * V) := by
-  classical
   obtain ⟨ρ, _, t, w, h_orth, h_int, h_level, rfl⟩ := h_lift
   refine ⟨ρ, inferInstance, t, w * V, h_orth, ?_, ?_, (Matrix.mul_assoc ..).symm⟩
   · rw [← Matrix.mul_assoc]
@@ -586,7 +583,7 @@ lemma submoduleIndex_inf_of_le (h_le : M ≤ N) : submoduleIndex (N ⊓ K) M = s
 
 /-- If `M ≤ N`, the index in `M` of the elements of `N` that `f` maps into `L` is the index of `L`
 in the image `f M`. -/
-lemma submoduleIndex_inf_comap [HasPrimitiveRoot5040 E] {L : Submodule (Ô E) (l → 𝔸f E)}
+lemma submoduleIndex_inf_comap {L : Submodule (Ô E) (l → 𝔸f E)}
     (f : (n → 𝔸f E) →ₗ[Ô E] l → 𝔸f E) (h_le : M ≤ N) :
     submoduleIndex (N ⊓ L.comap f) M = submoduleIndex L (M.map f) := by
   rw [submoduleIndex_inf_of_le h_le]
@@ -645,7 +642,6 @@ lemma IsOrthogonalLift.eq_mul_of_isotropicRows_mul_eq_zero {σ : Type}
     (hω : (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ * ω = 0) :
     ω = finAdeleMatrix u.toCols₁.toRows₁ * ω.submatrix (fun a : IndexNotBelow j ↦ a.1) id := by
   -- The difference has no coordinates at the indices `≥ j`, and the leading minor is not `0`.
-  classical
   set d : Matrix (Fin 𝔰.ϱ) σ (𝔸f E) :=
     ω - finAdeleMatrix u.toCols₁.toRows₁ * ω.submatrix (fun a : IndexNotBelow j ↦ a.1) id with hd
   have h_above (a : Fin 𝔰.ϱ) (ha : ¬a.1 < j) (b : σ) : d a b = 0 := by
@@ -698,7 +694,6 @@ lemma hasLevelLifts_of_col_mem (hj : S.HasCellRank j γ) {ρ : Type} [Fintype ρ
         (S.classCoord c * finAdeleMatrix t * w).toRows₁.col b ∈
       S.ideleM • colLattice (Ô E) (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ) :
     HasLevelLifts c γ (finAdeleMatrix (linkMatrix γ * t) * w) := by
-  classical
   obtain ⟨v, -, hv⟩ : ∃ v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex)
       (Fin (Module.finrank E (link γ))) E, HasLeftInv v ∧ colSpan v = link γ :=
     exists_hasLeftInv_colSpan_eq (link γ)

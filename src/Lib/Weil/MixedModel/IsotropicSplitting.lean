@@ -78,20 +78,14 @@ noncomputable def hyperbolicSpace : Space E (p ⊕ p) (hyperbolicSigns p) :=
   let ϵ : 𝔸f E := stdLattice.traceOneAdele
   { J := fromBlocks 0 1 1 0
     x := mkAdelicGL
-      (fun _ ↦
-        { val := (√2 : ℂ)⁻¹ • fromBlocks 1 (-1) 1 1
-          inv := (√2 : ℂ)⁻¹ • fromBlocks 1 1 (-1) 1
-          val_inv := by
-            simp [fromBlocks_multiply, ← ext_iff, ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul,
-              Matrix.one_apply]
-            grind
-          inv_val := by
-            simp [fromBlocks_multiply, ← ext_iff, ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul,
-              Matrix.one_apply]
-            grind },
-        { val := fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1)
-          inv := fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1)
-          val_inv := by
+      (fun _ ↦ Units.mkOfMulEqOne
+        ((√2 : ℂ)⁻¹ • fromBlocks 1 (-1) 1 1) ((√2 : ℂ)⁻¹ • fromBlocks 1 1 (-1) 1) (by
+          simp [fromBlocks_multiply, ← ext_iff, ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul,
+            Matrix.one_apply]
+          grind),
+        Units.mkOfMulEqOne
+          (fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1))
+          (fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1)) (by
             -- Block by block the product is a scalar matrix; compare the scalars.
             have hc : star c * c = -1 := star_normNegOne_mul_self
             have hϵ : ϵ + star ϵ = 1 := traceOneAdele_add_star
@@ -100,17 +94,7 @@ noncomputable def hyperbolicSpace : Space E (p ⊕ p) (hyperbolicSigns p) :=
             · linear_combination hϵ - ϵ * hc
             · linear_combination hc
             · linear_combination ϵ * star ϵ * hc
-            · linear_combination hϵ - star ϵ * hc
-          inv_val := by
-            -- Block by block, as for `val_inv`.
-            have hc : star c * c = -1 := star_normNegOne_mul_self
-            have hϵ : ϵ + star ϵ = 1 := traceOneAdele_add_star
-            simp only [fromBlocks_multiply, Matrix.mul_one, Matrix.mul_smul, ← fromBlocks_one]
-            congr 1 <;> match_scalars
-            · linear_combination hϵ
-            · ring
-            · ring
-            · linear_combination hϵ - (ϵ + star ϵ) * hc })
+            · linear_combination hϵ - star ϵ * hc))
     gram_point := by
       refine gram_mkAdelicGL ?_ ?_
       · simp [signMatrix, fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply, ← ext_iff,
@@ -153,10 +137,10 @@ lemma Exchange.isOrthoIntegral_hyperbolicSpace_x_inv :
     IsOrthoIntegral (hyperbolicSpace E p).x⁻¹.val := by
   have h_half : (2⁻¹ : ℂ) + 2⁻¹ = 1 := by norm_num
   refine ⟨fun w ↦ ?_, ?_⟩
-  · simp [hyperbolicSpace, ← map_inv, ← ext_iff, Matrix.mul_apply, Matrix.one_apply, ← mul_inv,
-      ← Complex.ofReal_mul, ite_add_ite, h_half, eq_comm]
-  · simp [hyperbolicSpace, ← map_inv, ite_mem, star_mem_Ô, traceOneAdele_mem, mul_mem,
-      Matrix.one_apply]
+  · simp [hyperbolicSpace, Units.mkOfMulEqOne, ← map_inv, ← ext_iff, Matrix.mul_apply,
+      Matrix.one_apply, ← mul_inv, ← Complex.ofReal_mul, ite_add_ite, h_half, eq_comm]
+  · simp [hyperbolicSpace, Units.mkOfMulEqOne, ← map_inv, ite_mem, star_mem_Ô, traceOneAdele_mem,
+      mul_mem, Matrix.one_apply]
 
 /-- For the hyperbolic space `hyperbolicSpace E p` of rank `2 p` (Gram matrix with blocks
 `(0, 1; 1, 0)`), consider its adelic frame `x`, which carries the Gram matrix to the signed standard
@@ -216,25 +200,19 @@ lemma block_diag {B : Matrix p q (𝔸 E)} (hB : IsOrthoIntegral B) :
     simp [Sum.forall, hA.snd_mem_Ô, hB.snd_mem_Ô]
 
 /-- If `B = A.submatrix id e * C`, that is, the matrix of the columns `e j` of `A` times `C`, where
-`e` is injective, and `A` and `C` are orthonormal at infinity and integral, then so is `B`. -/
-lemma of_eq_submatrix_mul_of_injective {C : Matrix p q (𝔸 E)} (e : p → n)
-    (h_injective : e.Injective) (hC : IsOrthoIntegral C) {B : Matrix m q (𝔸 E)}
-    (h_eq : B = A.submatrix id e * C) : IsOrthoIntegral B := by
+`e` is injective, and `A` and `C` are orthonormal at infinity and integral, then so is `B`. When
+`he` is not given, `simp` proves that `e` is injective. -/
+lemma of_eq_submatrix_mul {C : Matrix p q (𝔸 E)} (e : p → n) (hC : IsOrthoIntegral C)
+    {B : Matrix m q (𝔸 E)} (h_eq : B = A.submatrix id e * C)
+    (he : e.Injective := by simp [Function.Injective]) : IsOrthoIntegral B := by
   -- Selecting distinct columns of `A` keeps them orthonormal and integral: at `w` the Gram matrix
   -- of the chosen columns is the `(e, e)` block of that of `A`, which is `1` as `e` is injective.
   have h_cols : IsOrthoIntegral (A.submatrix id e) := by
     refine ⟨fun w ↦ ?_, fun i j ↦ hA.snd_mem_Ô i (e j)⟩
     rw [← submatrix_map, conjTranspose_submatrix, ← submatrix_mul _ _ e id e Function.bijective_id,
-      hA.conjTranspose_map_mul_map w, submatrix_one e h_injective]
+      hA.conjTranspose_map_mul_map w, submatrix_one e he]
   subst h_eq
   exact h_cols.mul hC
-
-/-- `of_eq_submatrix_mul_of_injective`, where `simp` proves that `e` is injective when `he` is not
-given. -/
-lemma of_eq_submatrix_mul {C : Matrix p q (𝔸 E)} (e : p → n) (hC : IsOrthoIntegral C)
-    {B : Matrix m q (𝔸 E)} (h_eq : B = A.submatrix id e * C)
-    (he : e.Injective := by simp [Function.Injective]) : IsOrthoIntegral B :=
-  hA.of_eq_submatrix_mul_of_injective e he hC h_eq
 
 end
 
@@ -711,10 +689,8 @@ def radicalElement : G E s :=
     -- `cᴴ * c` as `2⁻¹ + 2⁻¹ = 1`.
     simp [↓coord_mul_frame_mul, iCoord, lCoord, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul,
       Matrix.sub_mul, Matrix.mul_sub]
-    have h_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 := by
-      rw [← toAdele.map_add, ← two_mul, mul_inv_cancel₀ two_ne_zero, toAdele.map_one]
     -- Each coefficient identity is a ring identity, except the one for `cᴴ * c`.
-    match_scalars <;> first | ring1 | linear_combination -h_half
+    match_scalars <;> first | ring1 | linear_combination -(toAdele_half_add_half (E := E))
 
 /-- The unipotent element `radicalElement c b` depends continuously on the pair `(c, b)`. -/
 @[fun_prop]
@@ -750,9 +726,7 @@ lemma radicalElement_mul (c' : Matrix n₀ p (𝔸 E)) (b' : Matrix p p (𝔸 E)
   -- The coefficients agree by `j⁻¹ j = 1` and `2⁻¹ + 2⁻¹ = 1`.
   have hj : toAdele (j⁻¹ : E) * toAdele (j : E) = 1 := by
     rw [← toAdele.map_mul, inv_mul_cancel₀ j_ne_zero, toAdele.map_one]
-  have h_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 := by
-    rw [← toAdele.map_add, ← two_mul, mul_inv_cancel₀ two_ne_zero, toAdele.map_one]
-  match_scalars <;> simp only [hj, mul_one, h_half, neg_add_cancel, neg_zero]
+  match_scalars <;> simp only [hj, mul_one, (toAdele_half_add_half (E := E)), neg_add_cancel, neg_zero]
 
 lemma radicalElement_inv : (D.radicalElement c b)⁻¹ = D.radicalElement (-c) (-b) :=
   inv_eq_of_mul_eq_one_right (ext_adeleMatrix (by simp [Matrix.mul_assoc]))
@@ -869,10 +843,8 @@ lemma exists_eq_radicalElement_mul_levi (hk : D.ActsOnFrame g a) :
       -- `2⁻¹ + 2⁻¹ = 1`.
       have hj : toAdele (j⁻¹ : E) * toAdele (j : E) = 1 := by
         rw [← toAdele.map_mul, inv_mul_cancel₀ j_ne_zero, toAdele.map_one]
-      have h_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 := by
-        rw [← toAdele.map_add, ← two_mul, mul_inv_cancel₀ two_ne_zero, toAdele.map_one]
       match_scalars <;>
-        simp only [hj, mul_one, ← neg_add, neg_neg, h_half, neg_add_cancel, neg_zero]
+        simp only [hj, mul_one, ← neg_add, neg_neg, (toAdele_half_add_half (E := E)), neg_add_cancel, neg_zero]
   · -- The matrix of `g₀` is the `V₀`-block of `g`.
     simp [g₀, hg, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_add]
 
@@ -990,8 +962,8 @@ lemma exists_isAdapted_and_frame_eq :
     rw [← h_cancel]
     simp [frameAt, m, fromCols_mul_fromBlocks, Matrix.mul_assoc]
   refine ⟨γ, ?_, e, h_sign, hγ⟩
-  exact .of_eq_submatrix_mul_of_injective .one e e.injective
-    (isOrthoIntegral_hyperbolicSpace_x_inv.block_diag .one) h_frame
+  exact .of_eq_submatrix_mul .one e
+    (isOrthoIntegral_hyperbolicSpace_x_inv.block_diag .one) h_frame e.injective
 
 /-! ### Rational elements -/
 

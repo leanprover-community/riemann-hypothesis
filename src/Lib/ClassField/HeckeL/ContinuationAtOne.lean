@@ -938,7 +938,7 @@ lemma eulerProd_ne_zero (h : IsHeckeOfType ψ n) (hS : S.Finite) (hψ_sq : ψ ^ 
     have h_sum_re : (∑ i : Fin 2, ![4, 1] i * a i v).re = 4 * z.re + (z.re ^ 2 - z.im ^ 2) := by
       simp [a, sq, heckeCoeff, hv, z]
     rw [h_sum_re, show (-3 : ℂ).re = -3 by norm_num]
-    nlinarith [sq_nonneg (z.re + 1)]
+    linarith [sq_nonneg (z.re + 1)]
   -- An inequality at almost all primes passes to the means.
   have h_mean_re : (-3 : ℂ).re ≤ (∑ i : Fin 2, ![4, 1] i * ![-(m₁ : ℂ), -(m₂ : ℂ)] i).re :=
     (hasPrimeDensity_const (-3)).re_le_re (.sum ![4, 1] h_dens)

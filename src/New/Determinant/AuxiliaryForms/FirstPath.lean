@@ -225,15 +225,10 @@ lemma map_transposedChain_le_gridLevelForms :
 `Ỹ^m_0` onto those on `Ỹ^0_0`. -/
 lemma gridLevelForms_eq_map_transposedChain :
     D.gridLevelForms 0 = (D.gridLevelForms D.m).map (D.transposedChain 1 true 0) := by
-  -- The image of `Θ^♭` lies in `D.gridLevelForms 0`, so it suffices that a form `z` of this level
-  -- orthogonal to the image vanishes. The chain of lifts is the transpose of `Θ^♭`
-  -- (`integral_transposedChain_mul_weightedChain`), so the lift `U` of `conj z` has
-  -- `‖U‖ ^ 2 = ⟪z, Θ^♭ (conj U)⟫ = 0`; and the chain is injective.
-  have : Module.Finite ℂ (D.gridLevelForms D.m) :=
-    finite_levelSpace (isConjKernelPair_gridKernel (by simp) _).1
-      ⟨_, isOpen_principalLevel Fact.out⟩
-  suffices orth_le : ((D.gridLevelForms D.m).map (D.transposedChain 1 true 0))ᗮ ⊓ D.gridLevelForms 0
-    ≤ ⊥ by
+  have : Module.Finite ℂ (D.gridLevelForms D.m) := finite_levelSpace
+    (isConjKernelPair_gridKernel (by simp) _).1 ⟨_, isOpen_principalLevel Fact.out⟩
+  suffices orth_le :
+      ((D.gridLevelForms D.m).map (D.transposedChain 1 true 0))ᗮ ⊓ D.gridLevelForms 0 ≤ ⊥ by
     simpa [le_bot_iff.1 orth_le] using
       (sup_orthogonal_inf_of_hasOrthogonalProjection D.map_transposedChain_le_gridLevelForms).symm
   rintro z ⟨hz_orth, hz_level⟩
@@ -241,28 +236,19 @@ lemma gridLevelForms_eq_map_transposedChain :
   let y : D.triangleBase true := ⟨conjForm (isConjKernelPair_gridKernel (by simp) true).2 z,
     mem_levelSpace_formRep_iff.2 fun k hk g ↦
       congrArg star (mem_levelSpace_formRep_iff.1 hz_level k hk g)⟩
-  let U : D.TriangleForm true 0 D.m :=
-    Exchange.weightedChain (D.triangleGLCard true) (D.triangleLift true) 1 0 D.m y
-  let φ : D.GridForm true 0 D.m := conjForm (isConjKernelPair_gridKernel (by simp) false).2 U
-  have φ_mem : φ ∈ D.gridLevelForms D.m := by
-    refine mem_levelSpace_formRep_iff.2 fun k hk g ↦ ?_
-    have h_fixed : D.triangleRep true 0 D.m k U = U :=
+  let U := Exchange.weightedChain (D.triangleGLCard true) (D.triangleLift true) 1 0 D.m y
+  let φ := conjForm (isConjKernelPair_gridKernel (by simp) false).2 U
+  have φ_mem : φ ∈ D.gridLevelForms D.m := mem_levelSpace_formRep_iff.2 fun k hk g ↦
+    congrArg star <| congrFun (congrArg Subtype.val <|
       D.triangleRep_weightedChain_eq_self true 1 (NeZero.ne D.m) le_rfl y ⟨k, hk.1⟩
-        ((mem_principalLevel_iff gridModulus_one_ideal _).1 hk)
-    exact congrArg star (congrFun (congrArg Subtype.val h_fixed) g)
-  -- The transposition identity at `φ`; `transposedChain ϑ z D.m` is the identity.
-  have h_integral : ∫ g, φ.1 g * U.1 g ∂(D.gridSpace 0 true 0 D.m).quotMeasure =
-      ∫ g, y.1.1 g * (D.transposedChain 1 true 0 φ).1 g ∂(D.gridSpace 0 true 0 0).quotMeasure := by
-    simpa [transposedChain_self, mul_comm (D.transposedChain 1 true 0 φ _)] using
-      D.integral_transposedChain_mul_weightedChain true 1 le_rfl y φ
-  -- As `φ` and `y` are the conjugates of `U` and `z`, both integrals are inner products.
-  have transpose : inner ℂ U U = inner ℂ z (D.transposedChain 1 true 0 φ) := h_integral
-  -- The right side vanishes, as `z` is orthogonal to the image.
-  have U_zero : U = 0 := by
-    simpa [inner_eq_zero_symm.1 (hz_orth _ ⟨φ, φ_mem, rfl⟩)] using transpose
-  have h_conj : conjForm (isConjKernelPair_gridKernel (by simp) true).2 z = 0 :=
-    congrArg Subtype.val (D.eq_zero_of_weightedChain_triangleLift_eq_zero U_zero)
-  exact Subtype.ext (star_eq_zero.1 (congrArg Subtype.val h_conj))
+        ((mem_principalLevel_iff gridModulus_one_ideal _).1 hk)) g
+  -- By transposition, `⟪U, U⟫ = ⟪z, Θ^♭ φ⟫ = 0`, so `U = 0` and hence `z = 0`.
+  have h := D.integral_transposedChain_mul_weightedChain true 1 le_rfl y φ
+  simp only [transposedChain_self, mul_comm (D.transposedChain 1 true 0 φ _)] at h
+  have hU : inner ℂ U U = 0 :=
+    (h : inner ℂ U U = _).trans (inner_eq_zero_symm.1 (hz_orth _ ⟨φ, φ_mem, rfl⟩))
+  exact Subtype.ext <| star_eq_zero.1 <| congrArg (fun x ↦ x.1.1)
+    (D.eq_zero_of_weightedChain_triangleLift_eq_zero (inner_self_eq_zero.1 hU))
 
 end DescentOnto
 

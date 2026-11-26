@@ -241,25 +241,19 @@ lemma radicalPoint_hermitianPart (c : Matrix r Unit (𝔸 E)) (b : Matrix Unit U
 /-- The coordinates `radicalPoint X` embed a column and a hermitian scalar as a closed subset of
 the adelic unitary group of `V'`. -/
 lemma isClosedEmbedding_radicalPoint : Topology.IsClosedEmbedding (radicalPoint X) := by
-  -- The coordinates are read off from the blocks of the matrix, by a continuous left inverse.
-  let blocks (g : G E t') : RadicalCoord E r := (-X.iCoord * g.adeleMatrix * X.lAdelic,
-    hermitianPart (-toAdele (j : E) • X.kCoord * g.adeleMatrix * X.lAdelic))
-  refine LeftInverse.isClosedEmbedding (f := blocks) ?_
-    (by fun_prop [hermitianPart]) (by fun_prop [radicalPoint])
+  -- Read off the coordinates from the matrix blocks via a continuous left inverse.
+  refine LeftInverse.isClosedEmbedding (f := fun g : G E t' =>
+      (-X.iCoord * g.adeleMatrix * X.lAdelic,
+        hermitianPart (-toAdele (j : E) • X.kCoord * g.adeleMatrix * X.lAdelic)))
+    ?_ (by fun_prop [hermitianPart]) (by fun_prop [radicalPoint])
   rintro ⟨c, b, hb⟩
-  have hb_eq : bᴴ = b := IsHermitian.eq hb
-  have h_iBlock : -X.iCoord * (X.radicalElement c b).adeleMatrix * X.lAdelic = c := by
-    simp [radicalElement, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub,
-      G.adeleMatrix_ofMatrix]
-  have h_kBlock : -toAdele (j : E) • X.kCoord * (X.radicalElement c b).adeleMatrix * X.lAdelic =
-      b + toAdele (2⁻¹ * j : E) • (cᴴ * stdForm E t * c) := by
-    simp [radicalElement, hb_eq, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub,
-      Matrix.sub_mul, G.adeleMatrix_ofMatrix]
-    match_scalars <;> grind
+  refine Prod.ext (by simp [radicalPoint, radicalElement, Matrix.mul_assoc, Matrix.mul_add,
+      Matrix.add_mul, Matrix.mul_sub, G.adeleMatrix_ofMatrix]) (Subtype.ext ?_)
+  simp [radicalPoint, radicalElement, IsHermitian.eq hb, Matrix.mul_assoc, Matrix.mul_add,
+    Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, G.adeleMatrix_ofMatrix]
   -- The second summand is skew-hermitian, as `star j = -j`.
-  refine Prod.ext h_iBlock (Subtype.ext ?_)
-  simp only [blocks, radicalPoint, h_kBlock, coe_hermitianPart]
-  simp [hb_eq, Matrix.mul_assoc, star_toAdele, star_j, conjTranspose_stdForm]
+  simp [coe_hermitianPart, IsHermitian.eq hb, Matrix.mul_assoc, star_toAdele, star_j,
+    conjTranspose_stdForm]
   match_scalars <;> grind
 
 /-- The group law of the radical in coordinates: the columns add, and the hermitian scalars add
@@ -406,7 +400,7 @@ lemma lintegral_levi_unfold (f : (𝔸 E)ˣ × G E t → ENNReal) (hf : Measurab
   rw [lintegral_prod _ (by fun_prop), lintegral_prod _ (by fun_prop),
     ← lintegral_orbitMeasure_lintegral (ν := count (α := principalAdeleUnits E)) (by fun_prop)]
   refine lintegral_congr fun u ↦ ?_
-  rw [lintegral_count, lintegral_tsum (by fun_prop), ENNReal.tsum_prod']
+  rw [lintegral_count, lintegral_tsum (by fun_prop), tsum_prod']
   simp [h_unitary, Subgroup.smul_def]
 
 /-- The rational isotropic line of the splitting `X`: the span of the vector `X.k`. -/

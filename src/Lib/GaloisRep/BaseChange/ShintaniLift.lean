@@ -157,13 +157,6 @@ variable [Algebra E E'] [CMTypeOver E E'] {u : FinPlace E'}
 include h_unique hμ_trivial h_residue h_degree
 
 omit h_unique hμ_trivial h_residue h_degree in
-/-- The Galois action on `GL n` of the residue field applies the automorphism to the entries. -/
-private lemma galActionGL_apply {k k' : Type} [Field k] [Field k'] [Algebra k k']
-    (φ : Gal(k'/k)) (x : GL n k') :
-    galActionGL k k' n φ x = Matrix.GeneralLinearGroup.map (φ : k' →+* k') x :=
-  rfl
-
-omit h_unique hμ_trivial h_residue h_degree in
 /-- Let `σ` in `Gal(E'/E)` fix the finite place `u` of `E'` and induce `φ` on the residue field of
 `u`, where `φ` is an automorphism over the residue field of the place `w` of `E`. Let `a` be an
 element of the finite adelic unitary group over `E'` whose component at `u` lies in `GL n 𝒪_u`.
@@ -207,7 +200,8 @@ lemma exists_mk_reduceGL_pow_eq_mk_reduceGL_twistedNorm {σ : Gal(E'/E)} (hσ_u 
       rw [← hσN_reduce, ← map_mul]
       exact congrArg reduceGL (Subtype.ext h_succ)
     refine ⟨h_int, ?_⟩
-    rw [pow_succ', h_pow, h_reduce, pow_succ', SemidirectProduct.mul_def, galActionGL_apply]
+    rw [pow_succ', h_pow, h_reduce, pow_succ', SemidirectProduct.mul_def]
+    rfl
 
 omit hμ_trivial h_residue h_degree in
 include hμ in

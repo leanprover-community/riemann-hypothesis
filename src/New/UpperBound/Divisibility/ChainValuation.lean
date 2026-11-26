@@ -380,7 +380,7 @@ lemma weylNormSq_restrictToY_le (σ : ℂ →+* ℂ) (φ : D.FormX D.m) (h : Gf 
     simpa [Real.log_pow] using congrArg Real.log h_sq
   have res_eq : weylNormSq (σ ∘ (D.restrictToY φ).val h) =
       ‖σ c‖ ^ 2 * weylNormSq (D.branching.map (↑) *ᵥ σ ∘ φ.val (D.borderU h)) :=
-    (weylNormSq_comp_smul _ σ c).trans (by simp [c, Function.comp_def, σ.map_mulVec])
+    (weylNormSq_comp_smul _ σ c).trans (by simp [Function.comp_def, σ.map_mulVec])
   have log_c : Real.log (‖σ c‖ ^ 2) = -((∑ τ, D.branchExponent τ : ℝ) * Real.log D.N) := by
     have h_norm_c : ‖σ c‖ = ∏ τ : D.Φ, ‖weightEmbedding σ τ D.piN‖ ^ (-D.branchExponent τ) := by
       simp [c, starRingEnd_apply (R := D.E)]

@@ -327,8 +327,12 @@ lemma isTraceIdeal_withConjInv (hw : IsTameGeneratorFamily ν w τ φ)
 
 /-- A subalgebra over the integers of `ℚ̄_ℓ`, read as a subalgebra over a coefficient ring. -/
 abbrev restrictToCoeffRing {A : Type} [CommRing A] [Algebra (PadicAlgCl ℓ) A]
+    [Algebra (intQpBar ℓ) A] [IsScalarTower (intQpBar ℓ) (PadicAlgCl ℓ) A]
     (S : Subalgebra (intQpBar ℓ) A) (O : CoeffRing ℓ) : Subalgebra O A :=
-  ⟨S.toSubsemiring, fun a ↦ S.algebraMap_mem ⟨a, norm_le_one a⟩⟩
+  ⟨S.toSubsemiring, fun a ↦ by
+    have h := S.algebraMap_mem ⟨a, norm_le_one a⟩
+    rw [IsScalarTower.algebraMap_apply (intQpBar ℓ) (PadicAlgCl ℓ) A] at h
+    exact h⟩
 
 /-- Let `w j` be new places: `w j` is not above `ℓ`, `τ j` is a tame generator at `w j`, and `φ j`
 fixes the `ℓ ^ ν`-th roots of unity. Let `u' x` be lattices over `O` in the conjugate self-dual

@@ -215,11 +215,11 @@ lemma IsStep.exists_gal_ne_one (hμ : IsStep E' μ) : ∃ σ : Gal(E'/E), σ ≠
 
 lemma adeleMap_pow_finrank_eq_one [IsGalois E E'] :
     adeleMap (σ : E' →+* E') ^ finrank E E' = 1 := by
-  -- `σ ^ [E' : E] = 1`, as the order of the Galois group is the degree. The `erw` matches the
-  -- identity ring map with the image of `1 : Gal(E'/E)`.
-  ext
+  -- `σ ^ [E' : E] = 1`, as the order of the Galois group is the degree. The image of
+  -- `1 : Gal(E'/E)` is the identity ring map up to unfolding.
+  ext x v
   simp [adeleMap_gal_pow, ← card_aut_eq_finrank]
-  erw [adeleMap_id]
+  exact congrArg (fun y ↦ (y v).toCompletion) (adeleMap_id x)
 
 end BaseChangePlaces
 
@@ -411,7 +411,7 @@ lemma isCommutingHeckeFamily_of_isLocalRetraction {N : Subgroup (Gf E n)}
     have h_fix_local : π (a (r k)) v = v := by
       simpa [ρ] using mem_levelSpace.1 hv_local ⟨r k, hk_local⟩
     calc π k v = π (k * (a (r k))⁻¹) (π (a (r k)) v) := by
-          rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel_right]
+          rw [← mul_apply_eq_comp, ← map_mul, inv_mul_cancel_right]
       _ = π (k * (a (r k))⁻¹) v := by rw [h_fix_local]
       _ = (1 : ℂ) • v := mem_levelSpace.1 hv_off ⟨k * (a (r k))⁻¹, hk_off⟩
   have h_le_local : levelSpace π L ≤ levelSpace ρ L₀ := h_fixed.le.trans inf_le_left

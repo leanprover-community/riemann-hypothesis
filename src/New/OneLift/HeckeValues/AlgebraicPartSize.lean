@@ -457,7 +457,7 @@ lemma CriticalPair.IsMainPair.negWeight_sub_z_mem_Icc {p : D.CriticalPair} {j : 
   have hc_ge : D.liftWeight j τ + D.r ≤ p.negWeight τ + D.t := hp.le_negWeight τ
   have h_gap : D.weight τ + D.t ≤ D.liftWeight j τ := by
     rw [D.liftWeight_eq j τ]
-    linarith [D.k_add_t_add_one_le_halfGap, Nat.zero_le (j * D.gap), Nat.zero_le D.k]
+    linarith only [D.k_add_t_add_one_le_halfGap, Nat.zero_le (j * D.gap), Nat.zero_le D.k]
   exact ⟨Nat.cast_le.2 (by omega),
     (Nat.cast_le.2 (by omega : p.negWeight τ - p.z ≤ D.liftWeight j τ)).trans
       (D.liftWeight_le_weight_add (by linarith [hp.j_mem.2]) τ)⟩

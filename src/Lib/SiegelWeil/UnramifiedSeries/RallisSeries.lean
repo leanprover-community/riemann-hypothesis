@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.LinearAlgebra.Projectivization.Cardinality
 public import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
 
 /-!
@@ -101,7 +100,7 @@ lemma induction_on_stepWeight {M : ℕ} (h_rank : 2 * card n < M) {P : Set (FinP
       ((ENNReal.tendsto_tsum_compl_atTop_zero
         (summable_stepWeight h_rank).tsum_ofReal_ne_top).eventually
           (ge_mem_nhds (by norm_num))).exists
-    exact h_induct T A ((ENNReal.tsum_mono_subtype weight (Set.sdiff_subset_compl _ _)).trans hT)
+    exact h_induct T A ((tsum_mono_subtype weight (Set.sdiff_subset_compl _ _)).trans hT)
   intro T
   induction T using Finset.induction_on with
   | empty =>
@@ -123,9 +122,9 @@ lemma induction_on_stepWeight {M : ℕ} (h_rank : 2 * card n < M) {P : Set (FinP
       · exact ⟨.inl huA, h_off huW huT⟩
       · exact ⟨.inr huA, h_off ((h_star u).not.1 huW) huT⟩
     have h_inter : P (A ∩ W) :=
-      h_small _ ((ENNReal.tsum_mono_subtype weight h_left).trans
+      h_small _ ((tsum_mono_subtype weight h_left).trans
         (tsum_stepWeight_conjClosure_singleton_le h_rank w))
-    have h_diff : P (A \ W) := ih _ ((ENNReal.tsum_mono_subtype weight h_right).trans h_le)
+    have h_diff : P (A \ W) := ih _ ((tsum_mono_subtype weight h_right).trans h_le)
     rw [← Set.inter_union_sdiff A W]
     exact h_union _ _ (Set.disjoint_sdiff_right.mono_left h_left) h_inter h_diff
 

@@ -167,7 +167,7 @@ lemma New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj {G n : Typ
         ∑ a : Fin (card n), (∑ k, c (a, k) * μ l ^ (k : ℕ)) • (τ φ ^ (a : ℕ)) v = 0 := by
       apply hφ_inj l
       simpa [w, sum_prod_type, Finset.sum_smul, mul_smul, (h_eig l).pow_apply,
-        ← Module.End.mul_apply (_ ^ (l : ℕ)), pow_mul_comm _ l] using
+        ← mul_apply_eq_comp (_ ^ (l : ℕ)), pow_mul_comm _ l] using
         LinearMap.congr_fun hc ((τ φ ^ (l : ℕ)) v)
     -- The eigenvectors are independent, so a polynomial of degree `< card n` vanishes at all `μ l`.
     have h_poly (l : Fin (card n)) : ∑ k, c (a, k) * μ l ^ (k : ℕ) = 0 := linearIndependent_iff.mp

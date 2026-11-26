@@ -496,7 +496,7 @@ lemma iInf_ker_sum_pow_eq_range {G V ι : Type*} [CommGroup G] [AddCommGroup V] 
       | cons w s hw ih =>
         have h_factor : ρ (↑r - σ w) φ = (r : ℂ) • φ := by
           simp [(h_mem φ).1 hφ w, Nat.cast_smul_eq_nsmul]
-        simp only [prod_cons, map_mul, Module.End.mul_apply, ih, map_smul, h_factor, card_cons,
+        simp only [prod_cons, map_mul, mul_apply_eq_comp, ih, map_smul, h_factor, card_cons,
           pow_succ, mul_smul]
     have h_dvd (w : ι) : 1 - y w ∣ ↑r - σ w := by
       have h_sum : ↑r - σ w = ∑ i ∈ range r, (1 - y w ^ i) := by simp [σ]
@@ -505,14 +505,14 @@ lemma iInf_ker_sum_pow_eq_range {G V ι : Type*} [CommGroup G] [AddCommGroup V] 
     have h_dvd' : ∀ w ∈ (univ : Finset ι), 1 - y w ∣ ↑r - σ w := fun w _ ↦ h_dvd w
     obtain ⟨q, hq⟩ := prod_dvd_prod_of_dvd _ _ h_dvd'
     rw [← smul_mem_iff _ (pow_ne_zero _ hr), ← h_scalar univ, hq, map_mul]
-    exact ⟨ρ q φ, (Module.End.mul_apply _ _ φ).symm⟩
+    exact ⟨ρ q φ, (mul_apply_eq_comp _ _ φ).symm⟩
   · -- `σ w * (1 - z w) = 1 - z w ^ r` acts as `0`.
     rintro _ ⟨ψ, rfl⟩
     refine (h_mem _).2 fun w ↦ ?_
     have h_zero : ρ (σ w * (1 - y w)) = 0 := by
       rw [geom_sum_mul_neg, map_sub, map_one, map_pow, Representation.asAlgebraHom_of, hz,
         sub_self]
-    rw [← Module.End.mul_apply, ← map_mul, prod_eq_mul_prod_compl w, ← mul_assoc, map_mul, h_zero,
+    rw [← mul_apply_eq_comp, ← map_mul, prod_eq_mul_prod_compl w, ← mul_assoc, map_mul, h_zero,
       zero_mul, LinearMap.zero_apply]
 
 /-- For levels `K' ≤ K` such that `classAut stdRatPoints K g` and `classAut stdRatPoints K' g` are

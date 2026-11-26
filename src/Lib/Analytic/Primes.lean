@@ -382,7 +382,6 @@ lemma New.analyticOnNhd_sub_mul_sum_term (q : ℕ) [NeZero q] (N : ℕ) {r : ℝ
         z * ∑ n ∈ .range N, term (fun n : ℕ ↦ (residueClass (1 : ZMod q) n : ℂ)) (1 + z) n)
       (Metric.closedBall 0 r) := by
   intro z hz
-  have hz_ne (χ : DirichletCharacter ℂ q) : entireL χ (1 + z) ≠ 0 := h_ne z (by simpa using hz) χ
   have h_term (i : ℕ) : AnalyticAt ℂ
       (fun s : ℂ ↦ term (fun n : ℕ ↦ (residueClass (1 : ZMod q) n : ℂ)) s i) (1 + z) :=
     Differentiable.analyticAt (fun s ↦ (hasDerivAt_term _ i s).differentiableAt) _

@@ -159,7 +159,6 @@ lemma SieveSystem.pi (K : SieveSystem u ι n J ψ B₀ Λ β) [SFinite (volume :
       ((∏ v : τ, B₀' v) * B₀)
       (fun (i : ℕ) (p : ℕ → (τ → ℂˣ) × U) ↦ (∏ v : τ, Λ' i (headAt v p)) * Λ i (Prod.snd ∘ p))
       fun x : (τ → ℂ) × C ↦ (∏ v : τ, γ v (x.1 v)) * β x.2 := by
-  classical
   -- Everything is checked factor by factor: Fubini for `integrable_and_integral_update`, Schur's
   -- product theorem for `posSemidef`, and products of the local bounds for
   -- `integrable_and_integral_update`, `norm_bot_le` and `norm_le_of_isUnit_sub`.

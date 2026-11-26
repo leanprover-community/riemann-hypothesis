@@ -528,7 +528,7 @@ lemma isInvariant_seesawDatum (ϑ : D.TameChar) : (seesawDatum ϑ).IsInvariant �
   have h_top : bY (2 * D.ϱ + 2) = (D.lastGrading D.m_eq_two_mul_varrho_add_two).inclXFin 1 := by
     simp [bY]
   simp only [evaluatedDatum, translatedPointDatumY, smul_eq_mul, ← Prod.mk_mul_mk, map_mul,
-    Module.End.mul_apply]
+    mul_apply_eq_comp]
   rcases Nat.lt_succ_iff_lt_or_eq.1 hi with hi' | rfl
   · -- An earlier double lift is evaluated by a middle pair, which commutes with its three groups.
     simp (disch := lia) only [doubleLiftEvalY, dite_eq_left, h_lower]

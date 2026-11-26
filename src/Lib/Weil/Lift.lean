@@ -571,7 +571,7 @@ theorem integral_mul_lift_eq_lift_piTensor {T : InfinitePlace E → FockDualPair
     rw [← hL, lift_piTensor_integratedRep hp hΦ hΩ_left Θ hΘ hy]
   simpa only [h_translate, h_target] using h_mean
 
-omit [WeilData E] in
+omit [WeilData E] [Nonempty n'] in
 /-- Let `s`, `t` be the signs of two real unitary groups over the infinite places of `E`. At each
 place `w`, let `π w`, `π' w` be commuting oscillator representations of `U(diag s)`, `U(diag t)` on
 the rows and columns of the dual pair data `T w`, and let `Φ w` be a joint harmonic for `T w` of

@@ -310,7 +310,7 @@ lemma New.Period.mem_span_fixed {G Γ A V R : Type*} [Group G] [Group Γ] [Field
     have h_right_inv : ∀ᵉ (x : Γ) (u ∈ U'), τ (x * u) ((b : A) • y) = τ x ((b : A) • y) := by
       intro x u hu
       have h_b_fixed : j u • (b : A) = b := b.property ⟨j u, hu⟩
-      rw [map_mul, Module.End.mul_apply, h_semilin u, h_b_fixed, hy u hu]
+      rw [map_mul, mul_apply_eq_comp, h_semilin u, h_b_fixed, hy u hu]
     calc τ g (Λ fun q ↦ χ q b) = ∑ q : Γ ⧸ U', τ (g * q.out) ((b : A) • y) := by simp [h_Λ]
       _ = ∑ q : Γ ⧸ U', τ q.out ((b : A) • y) :=
           sum_mul_out U' (fun γ : Γ ↦ τ γ ((b : A) • y)) h_right_inv g

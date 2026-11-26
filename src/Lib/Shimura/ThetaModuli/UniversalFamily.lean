@@ -510,29 +510,23 @@ theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
   -- The base is the closure `C` of the theta coordinates of the level points at all parameters.
   -- Finitely many generic points are dense in it, so it carries a family `X`. It is smooth near
   -- each of the arcs `α z`, and these neighbourhoods cover it.
-  have h_finite : Finite D.levelTorsion := finite_torsionBy ⟨_, by simp [D.level_ne_zero]⟩
-  have h_fintype := Fintype.ofFinite D.levelTorsion
-  have h_dedekind : IsDedekindDomain R := IsLocalization.isDedekindDomain (𝓞 E) hM_le R
+  have : Finite D.levelTorsion := finite_torsionBy ⟨_, by simp [D.level_ne_zero]⟩
+  have := Fintype.ofFinite D.levelTorsion
+  have := IsLocalization.isDedekindDomain (𝓞 E) hM_le R
   obtain ⟨C⟩ : Nonempty (ThetaClosure (D := D) R id) := inferInstance
   obtain ⟨ι, hι, a, h_generic, h_dense⟩ := C.exists_finite_isDenseFamily M hR_good
   obtain ⟨X, hX⟩ := C.exists_hasThetaFibres M hR_good h_dense
   choose i v α hα h_spec h_good using C.exists_arc_isGoodAt hR_good h_dense
-  choose U hU hU_smooth using fun z : C.scheme.left ↦
+  choose U hU hU_smooth using fun z ↦
     C.exists_smooth_near_arc hX (h_generic (i z)) (hα z) (h_good z)
-  have h_cover : ⨆ z, U z = ⊤ :=
-    top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩))
-  have h_smooth : SmoothOfRelativeDimension (Fintype.card D.Index - 1) C.scheme.hom :=
-    HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U h_cover hU_smooth
   choose m hθ using hX
-  exact ⟨{ isDedekindDomain := h_dedekind
-           base := C.scheme
-           family := X
-           hasProjEmbedding := C.hasProjEmbedding
-           smooth := h_smooth
-           obj := C.point
-           model := m
-           holomorphic := C.holomorphicAt_uniformisation m hθ
-           dense := C.isSeparatingFamily.right }⟩
+  exact ⟨{
+    isDedekindDomain := inferInstance, base := C.scheme, family := X
+    hasProjEmbedding := C.hasProjEmbedding, obj := C.point, model := m
+    holomorphic := C.holomorphicAt_uniformisation m hθ, dense := C.isSeparatingFamily.right
+    smooth := HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U
+      (top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩)))
+      hU_smooth }⟩
 
 end New.Variety.ThetaNull
 

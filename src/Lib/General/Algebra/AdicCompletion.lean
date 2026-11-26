@@ -2,6 +2,7 @@ module
 
 public import Lib.Base
 public import TauCeti.NumberTheory.Padics.Complex.Basic
+import TauCeti.RingTheory.AdicCompletion.Pi
 
 /-!
 # Adic completeness: p-adic tools, extension by continuity, topological bases
@@ -51,9 +52,8 @@ noncomputable section
 * `New.PadicField`: normed fields over `ℚ_[p]`. `New.norm_p_eq_inv` gives the norm of `p` there,
   and `Nat.Coprime.norm_natCast_eq_one` that of natural numbers prime to `p`.
 * `New.valRingCp`: the ring of integers of `ℂ_p`, a valuation ring with fraction field `ℂ_p`.
-* `New.pow_dvd_of_map`, `New.smodEq_span_pow_iff_dvd`, `New.eq_of_forall_pow_dvd_sub`,
-  `New.isUnit_of_dvd_sub`: divisibility by powers of `π`, and its use in `π`-adically separated or
-  complete rings.
+* `New.pow_dvd_of_map`, `New.eq_of_forall_pow_dvd_sub`, `New.isUnit_of_dvd_sub`: divisibility by
+  powers of `π`, and its use in `π`-adically separated or complete rings.
 -/
 
 namespace New
@@ -149,26 +149,20 @@ lemma pow_dvd_of_map {ϖ : S} {T : R → S} (hT : ∀ a : R, T (π * a) = ϖ * T
     rw [hT, pow_succ', dvd_cancel_left_mem_nonZeroDivisors hϖ] at h_pow
     simpa [pow_succ'] using mul_dvd_mul_left π (ih h_pow)
 
-/-- In a commutative ring, x and y are congruent modulo the submodule (π)^n of the ring if and only
-if π^n divides x − y. -/
-lemma smodEq_span_pow_iff_dvd :
-    x ≡ y [SMOD ((span {π} : Ideal R) ^ n • ⊤ : Ideal R)] ↔ π ^ n ∣ x - y := by
-  simp [SModEq.sub_mem, span_singleton_pow, mem_span_singleton]
-
 /-- In a ring that is separated for `(π)`, two elements congruent modulo every power of `π` are
 equal. -/
 lemma eq_of_forall_pow_dvd_sub (π : R) [IsHausdorff (span {π}) R]
     (h_dvd : ∀ n : ℕ, π ^ n ∣ x - y) : x = y :=
-  IsHausdorff.eq_iff_smodEq.2 fun n ↦ smodEq_span_pow_iff_dvd.2 (h_dvd n)
+  IsHausdorff.eq_iff_smodEq.2 fun n ↦ (TauCeti.sModEq_span_singleton_pow_iff ..).2 (h_dvd n)
 
 /-- In a ring that is complete for `(π)`, an element congruent to a unit modulo `π` is a unit. -/
 @[stacks 05GI "(1), for a ring complete for a principal ideal"]
 lemma isUnit_of_dvd_sub [IsAdicComplete (span {π}) R] (hy : IsUnit y) (h_dvd : π ∣ x - y) :
     IsUnit x := by
   -- `x - y` lies in the Jacobson radical, so `(x - y) * y⁻¹ + 1 = x * y⁻¹` is a unit
-  have h_jac : x - y ∈ jacobson ⊥ :=
-    IsAdicComplete.le_jacobson_bot (span {π}) (mem_span_singleton.2 h_dvd)
-  simpa [sub_mul] using mem_jacobson_bot.1 h_jac ↑hy.unit⁻¹
+  have h_jac : x - y ∈ Ring.jacobson _ :=
+    IsAdicComplete.le_jacobson (span {π}) (mem_span_singleton.2 h_dvd)
+  simpa [sub_mul] using Ring.mem_jacobson_iff.1 h_jac ↑hy.unit⁻¹
 
 omit [Fact p.Prime] in
 /-- An `S`-algebra that is `p`-adically complete as a ring is `p`-adically complete as an

@@ -808,7 +808,7 @@ lemma OFlat.isHausdorff_span_singleton_of_not_isUnit (h : ¬IsUnit t) :
   choose N hN using exists_pow_coeff_eq_zero h
   refine ⟨fun x hx ↦ Perfection.ext fun k ↦ ?_⟩
   have h_coeff_dvd : PreTilt.coeff k (t ^ N k) ∣ PreTilt.coeff k (x - 0) :=
-    map_dvd (PreTilt.coeff k) (smodEq_span_pow_iff_dvd.mp (hx (N k)))
+    map_dvd (PreTilt.coeff k) ((TauCeti.sModEq_span_singleton_pow_iff ..).mp (hx (N k)))
   rw [map_pow, hN k, zero_dvd_iff, sub_zero] at h_coeff_dvd
   exact h_coeff_dvd.trans (map_zero (PreTilt.coeff k)).symm
 
@@ -885,7 +885,7 @@ lemma mu_dvd_of_theta_frobEnd {a : Ainf} (h_theta : ∀ j : ℕ, theta (frobEnd^
     (pow_dvd_pow c (n.lt_pow_self (Fact.out : p.Prime).one_lt).le).trans
       (pow_pow_dvd_constantCoeff_mu_of_eq_mul n x hx_theta c h_eq)
   have h_smod (n : ℕ) : constantCoeff mu ≡ 0 [SMOD (span {c} ^ n • ⊤ : Ideal OFlat)] :=
-    smodEq_span_pow_iff_dvd.mpr (by simpa using h_dvd n)
+    (TauCeti.sModEq_span_singleton_pow_iff ..).mpr (by simpa using h_dvd n)
   exact constantCoeff_mu_ne_zero
     ((OFlat.isHausdorff_span_singleton_of_not_isUnit hc).haus' _ h_smod)
 

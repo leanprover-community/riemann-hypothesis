@@ -180,7 +180,7 @@ lemma coeff_top_of_isConeSeriesMultiple {ε : n → ℤˣ} {l : HCParam ε} {o a
           sum_eq_single (k • δ) (fun β _ hβ ↦ only_top β hβ) (by simp +contextual)
       _ = 1 := by rw [coeff_top, one_mul, ← hab, add_comm a, neg_add_cancel_left, t_a]
   · obtain ⟨β, -, hβ⟩ := exists_ne_zero_of_sum_ne_zero hγ
-    exact (exists_perm_level_le γ β hβ).imp fun w hw ↦ by grind
+    exact (exists_perm_level_le γ β hβ).imp fun w hw ↦ by lia
 
 /-- The product of the compact roots that are positive for `l` times that of the noncompact ones is
 the product of all positive roots, which is the Weyl denominator of the compact form. -/

@@ -215,23 +215,16 @@ lemma skewMeasure_le_of_sub_mem_ofSize {S : Set (skewAdjoint A)} (u : Aˣ)
   -- times the volume of the numbers of size `j + 3`.
   refine skewMeasure_le_of_sub_mem u⁻¹ (C := Γ.ofSize (1 + (j + 1) + 1)) ?_ ?_
   · rintro ⟨β₁, β₂⟩ ⟨hβ₁, hβ₂⟩ ⟨β₁', β₂'⟩ ⟨hβ₁', hβ₂'⟩
-    have h_eq : u⁻¹ * (element * skewUnit⁻¹.val * (β₁ - β₁').val + (β₂ - β₂').val) =
-        element * skewUnit⁻¹.val * (u⁻¹ * (β₁ - β₁').val) - u⁻¹ * (β₂' - β₂).val := by
-      push_cast
-      ring
-    rw [Prod.mk_sub_mk, h_eq]
-    exact sub_mem_ofSize (Γ.mul_mem_ofSize Γ.traceOne_div_mem_ofSize (h_diff β₁ hβ₁ β₁' hβ₁'))
-      (mem_ofSize_mono (h_diff β₂' hβ₂' β₂ hβ₂))
-  · calc (Place.modulus u⁻¹.val)⁻¹ * volume (Γ.ofSize (1 + (j + 1) + 1))
-        ≤ Place.modulus u.val * Γ.loss ^ (1 + (j + 1) + 1 + 1) := by
-          grw [volume_ofSize_le]
-          simp
-      _ ≤ Place.modulus u.val * Γ.loss ^ ((j + 2) * 2) := by
-          gcongr
-          · exact Γ.one_le_loss
-          · lia
-      _ = (Place.modulus u.val ^ (2⁻¹ : ℝ) * Γ.loss ^ (j + 2)) ^ 2 := by
-          simp [mul_pow, ← rpow_mul_natCast, ← pow_mul]
+    rw [Prod.mk_sub_mk]
+    convert sub_mem_ofSize (Γ.mul_mem_ofSize Γ.traceOne_div_mem_ofSize (h_diff β₁ hβ₁ β₁' hβ₁'))
+      (mem_ofSize_mono (h_diff β₂' hβ₂' β₂ hβ₂)) using 1
+    push_cast
+    ring
+  · grw [volume_ofSize_le]
+    simp [mul_pow, ← rpow_mul_natCast, ← pow_mul]
+    gcongr
+    · exact Γ.one_le_loss
+    · lia
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in

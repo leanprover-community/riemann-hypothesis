@@ -189,7 +189,7 @@ lemma mapRel_image_cocycleRelations [Mul Γ] (ev : Λ →+* O) (ρ : Γ → Matr
       .single (g * g') 1 - .single g 1 - .single g' ((ρ g).map ev) := by
     simp [mapRel, Finsupp.mapRange_sub']
   simp only [Set.ext_iff, Set.mem_image, cocycleRelations, Set.mem_ofPred_eq]
-  grind
+  aesop
 
 /-- The linear equations that a set `R` of relations imposes on the functions on `Γ` that factor
 through `π : Γ → 𝒢`. The unknowns are the coordinates of the values on `𝒢`, and there is one

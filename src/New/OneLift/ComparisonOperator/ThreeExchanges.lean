@@ -119,7 +119,7 @@ the `j`-th lift at an infinite place `v` is at most `4 b`, where `b = D.b` is th
 `exp D.logB` of the data. -/
 lemma liftWeight_le_four_mul_b (v : D.Φ) : D.liftWeight j v ≤ 4 * D.b := by
   have hb_pos : 0 < D.b := Real.exp_pos D.logB
-  linarith [D.liftWeight_le_two_mul_b (j := j) (by grind) v]
+  linarith only [D.liftWeight_le_two_mul_b (j := j) (by grind) v]
 
 /-- For a lift index `j`, let `n = j + (t - 11 m - 1) / 2`; this is the exponent of the splitting
 character `υ` in the character `ν_j = μ_j⁰ υ ^ n` of `exchangePair`. At every infinite place `v`,

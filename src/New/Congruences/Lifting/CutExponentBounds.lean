@@ -265,7 +265,7 @@ lemma killsCokernel_zero_of_next_le {s β : k.Letter → ℕ} {W X δ κ b n J s
   refine killsCokernel_zero_of_jumps_le h_jump_all h_jump_next h_sizes.ramification_le ?_
   have hp : 1 < p := (Fact.out : p.Prime).one_lt
   have h_step : k.differentBound * G + n ≤ X := by
-    linarith [h_sizes.le_cost, Nat.zero_le ((J + 1 + k.differentBound) * W)]
+    linarith only [h_sizes.le_cost, Nat.zero_le ((J + 1 + k.differentBound) * W)]
   have h_different : (k.differentBound * G : ℝ) ≤ X := mod_cast le_of_add_le_left h_step
   have h_thin : (G : ℝ) / (p - 1) ≤ X := by
     have h_nat : G ≤ (p - 1) * X :=
@@ -275,7 +275,7 @@ lemma killsCokernel_zero_of_next_le {s β : k.Letter → ℕ} {W X δ κ b n J s
   have h_depth : (k.e * (2 * b : ℕ) : ℝ) / p ^ (J + 1) ≤ δ :=
     (div_le_iff₀' (by positivity)).2 (mod_cast h_sizes.ramification_mul_le)
   have h_total : 2 * J * X + (2 * J + 4) * X + 8 * δ ≤ κ := by
-    linarith [h_sizes.cost_lt, Nat.zero_le (J * X)]
+    linarith only [h_sizes.cost_lt, Nat.zero_le (J * X)]
   calc _ = (2 * J * (k.differentBound * G) : ℝ) + (2 * J + 4) * (G / (p - 1)) +
           8 * (k.e * (2 * b : ℕ) / p ^ (J + 1)) := by ring
     _ ≤ 2 * J * X + (2 * J + 4) * X + 8 * δ := by gcongr

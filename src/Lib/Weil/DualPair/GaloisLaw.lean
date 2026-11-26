@@ -327,7 +327,7 @@ lemma _root_.New.map_schrodingerAct_boxIndicator {a : 𝔸f E} {R : Set (FinPlac
   have h_cut (z : n → 𝔸f E) : idem R • (z + a • y) = idem R • (z + y) := by simp [smul_smul, ha]
   have h_box : σ (boxIndicator n R (x + y)) = boxIndicator n R (x + a • y) := by
     classical
-    simp [integralBox, smul_smul, ha, apply_ite σ]
+    simp [integralBox, smul_smul, ha]
   have h_phase : a * star a * (half * star y ⬝ᵥ idem R • (x + (x + y))) =
       half * star (a • y) ⬝ᵥ idem R • (x + (x + a • y)) := by
     rw [← add_assoc, ← add_assoc, h_cut, star_smul, smul_dotProduct, dotProduct_smul]

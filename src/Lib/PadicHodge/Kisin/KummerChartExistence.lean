@@ -398,7 +398,7 @@ lemma exists_kummerChart (Γ : Type) [Group Γ] [𝒥 : OverGp Γ p] :
   have h_sep : IsHausdorff (span {κ π}) OC := by
     refine ⟨fun x h ↦ eq_of_forall_pow_dvd_sub ↑p fun n ↦ ?_⟩
     grw [← map_natCast κ, neg_dvd.mp (Associated.dvd' ⟨v, hv⟩), map_pow, ← pow_mul,
-      smodEq_span_pow_iff_dvd.mp (h _)]
+      (TauCeti.sModEq_span_singleton_pow_iff ..).mp (h _)]
   -- `θ` maps `Λ` into the integers of `K` (by `τ`), and every integer of `K` is a Teichmüller
   -- constant modulo `π` (`using!` below: the fact bounds `‖·‖`, the goal `‖·‖₊`)
   let τ : WittFq f →+* valRingBelow (localFieldOf Γ) (intQpBar p) :=

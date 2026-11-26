@@ -94,7 +94,7 @@ lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapt
         symm_homSource_zeroTerm_eq_integral D V' _
       _ = ∫ x,
           (W₁.hom V').integrated v ((D.homSource V').slice x ((X.hom V').projReal f)) := by
-        simpa [hc, ν, term, integral_domSMul, star, -coe_units_inv] using congrArg (c • ·) h
+        simpa [hc, ν, integral_domSMul, star, -coe_units_inv] using congrArg (c • ·) h
       _ = (W₁.hom V').integrated v ((D.symm.homSource V').zeroTerm ((X.hom V').projReal f)) := by
         rw [symm_homSource_zeroTerm_eq_integral,
           ← (integrated _ v).integral_comp_comm (by fun_prop)]

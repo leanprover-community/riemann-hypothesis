@@ -184,7 +184,6 @@ lemma exists_period_map [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S] [IsSc
   -- bijective on cohomology as soon as `primitiveMap` is modulo `p`, given flat base change
   -- and finiteness (`hγ_bij`).
   obtain ⟨γ, hγ, hγ_bij⟩ := exists_primitive_period_comparison K θ hS
-  have := Flat.trans ℤ_[p] ℚ_[p] K
   algebraize [(algebraMap _ ℂ_[p]).comp e]
   let α (Y : Over (Spec R)) :
       freeAb (testPoints Y) ⟶ genericTest ⋙ freeAb (testIncl ⋙ geomPoints R Ω Y) :=
@@ -238,8 +237,8 @@ lemma exists_period_map [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S] [IsSc
         · exact congrArg ULift.up (Spec.map_comp_assoc (𝟙 _) ..)
         · -- `genericStructureMap_twist` matches the structure map of the twisted test only up to
           -- instances
-          erw [eq_comm, genericStructureMap_twist, UniformSpace.Completion.algEquiv_smul_coe, hj]
-          rfl
+          exact .symm ((c.genericStructureMap_twist (j g) _).trans (congrArg c.genericStructureMap
+            ((UniformSpace.Completion.algEquiv_smul_coe ..).trans (congrArg _ (hj ..)))))
   · -- For `Y` proper and charted each of the three factors is bijective: `E Y` as a linear
     -- equivalence, `baseChangeMap` by flat base change, the pull-back by
     -- `finite_and_primitive_comparison`. The acyclicity hypothesis of the latter is almost descent,
@@ -347,10 +346,11 @@ lemma New.Variety.exists_hasHodgeTateWeight {p h : ℕ} {R : CommRingCat} {E k :
       _ = (Comparison.of _ (twistGenericCoeff (toGp g))).pull
           (freeAbMap (toTwistPoints (fun _ ↦ rfl) hj g Y)) (q + h) (J Y v) := by
         refine J_twist Y g _ (twistGenericCoeff _) (fun c a w _ ↦ ?_) v
-        unfold periodTmul
         -- `hθ` and `genericStructureMap_twist` match the twisted test only up to instances
-        erw [hθ, hθ, genericStructureMap_twist]
-        rfl
+        exact (congrArg (fun t ↦ (twistGenericCoeff (toGp g)).app c ⟨t⟩)
+          ((hθ ((PadicTest.twist (toGp g)).obj c) a w).trans
+            (congrArg (· * _) (c.genericStructureMap_twist (toGp g) a)))).trans
+              (congrArg ULift.up (hθ c _ w).symm)
       _ = B Y (ε (algebraMap _ _ (cyclotomicGp (toGp g)⁻¹).val) ^ h • ξ) := by
         -- `g` multiplies `ξ` by this scalar
         have h_weight := h_den.injective_restrictToPairs

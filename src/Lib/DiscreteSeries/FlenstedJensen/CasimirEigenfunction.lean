@@ -683,7 +683,7 @@ theorem exists_equiv_fin_lt_iff {l : n → ℤ} (hl : l.Injective) :
 the value `casimirKValue` that the Casimir operator takes on a lowest weight vector of weight
 `λ + ρ`, that is, a highest vector for the roots positive for `-l`, all pairs of indices counting
 as compact (`compactForm`). -/
-theorem casimirValue_eq_casimirKValue_paramAddRho [DecidableEq n] {l : HCParam (n := n) ε}
+theorem casimirValue_eq_casimirKValue_paramAddRho {l : HCParam (n := n) ε}
     (hl : l.HasGap h) :
     (l.casimirValue : ℂ) = (-l).compactForm.casimirKValue (paramAddRho l) := by
   -- Substitute `l = 2 (λ + ρ) - 2ρ`; the positive roots for `-l` are the negatives of those of `l`.

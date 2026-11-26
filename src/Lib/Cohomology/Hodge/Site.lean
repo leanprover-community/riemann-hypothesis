@@ -85,11 +85,6 @@ instance : Category (HodgeTest k) where
   id _ := ⟨𝟙 _, .id⟩
   comp f g := ⟨f.1 ≫ g.1, g.2.toAddHom.comp f.2.toAddHom, by simp⟩
 
-private lemma HodgeTest.id_fst (P : HodgeTest k) : (𝟙 P : P ⟶ P).1 = 𝟙 P.baseAlg := rfl
-
-private lemma HodgeTest.id_snd_apply (P : HodgeTest k) (x : P.Index → P.baseAlg) :
-    (𝟙 P : P ⟶ P).2 x = x := rfl
-
 private lemma HodgeTest.comp_fst {P Q R : HodgeTest k} (f : P ⟶ Q) (g : Q ⟶ R) :
     (f ≫ g).1 = f.1 ≫ g.1 := rfl
 

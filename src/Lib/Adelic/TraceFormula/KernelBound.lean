@@ -58,7 +58,7 @@ lemma tsum_mul_measure_le_lintegral {G I : Type*} [Group G] [MeasurableSpace G] 
     rw [← measure_preimage_mul μ (y i)⁻¹ B, ← setLIntegral_const]
     exact setLIntegral_mono' (hS i) fun x hx ↦ by simpa using h_le (y i) _ hx
   calc (∑' i : I, f (y i)) * μ B ≤ ∑' i : I, ∫⁻ x in S i, c * f x ∂μ :=
-        ENNReal.tsum_mul_right.ge.trans (ENNReal.tsum_le_tsum h_term)
+        ENNReal.tsum_mul_right.ge.trans (tsum_le_tsum h_term)
     _ = ∫⁻ x in ⋃ i : I, S i, c * f x ∂μ := (lintegral_iUnion hS hS_disjoint _).symm
     _ ≤ ∫⁻ x, c * f x ∂μ := setLIntegral_le_lintegral _ _
     _ = c * ∫⁻ x, f x ∂μ := lintegral_const_mul' _ _ hc
@@ -137,23 +137,17 @@ lemma exists_le_mul_volume_levelBox {J : Subgroup (Gf E n)} (hJ : IsOpen (J : Se
       ((12 * D) ^ (2 * card n ^ 2 * Core.numInfPlaces E)) * volume (levelBox E s D⁻¹ J) := by
   -- The set `‖z‖ ≤ 2` is covered by `(12 D) ^ (2 n²)` translates of the set `‖z - 1‖ ≤ D⁻¹`.
   let bigVol : ℝ≥0∞ := volume {z : USign s | ‖z.val.val‖ ≤ 2}
-  have h_bigVol : bigVol ≠ 0 :=
-    measure_sublevel_ne_zero volume (norm_one.trans_lt one_lt_two) (by fun_prop)
   refine ⟨bigVol ^ Core.numInfPlaces E * volume (J : Set (Gf E n)),
-    mul_ne_zero (pow_ne_zero _ h_bigVol) (hJ.measure_ne_zero _ ⟨1, J.one_mem⟩), fun D hD ↦ ?_⟩
-  set count : ℝ≥0∞ := .ofReal ((12 * D) ^ (2 * card n ^ 2))
-  set smallVol : ℝ≥0∞ := volume {z : USign s | ‖z.val.val - 1‖ ≤ D⁻¹}
-  have h_cover : bigVol ≤ count * smallVol := by
-    simpa using DiscreteSeries.measure_ball_le_covering volume
-      (MonoidHom.id (USign s)) 1 hD one_le_two (K := 12 * D) (by linarith)
-  have h_box : volume (levelBox E s D⁻¹ J) =
-      smallVol ^ Core.numInfPlaces E * volume (J : Set (Gf E n)) := by
-    simp [levelBox, Measure.volume_eq_prod, volume_pi_pi, smallVol]
-  calc bigVol ^ Core.numInfPlaces E * volume (J : Set (Gf E n))
-      ≤ (count * smallVol) ^ Core.numInfPlaces E * volume (J : Set (Gf E n)) := by gcongr
-    _ = ENNReal.ofReal ((12 * D) ^ (2 * card n ^ 2 * Core.numInfPlaces E)) *
-          volume (levelBox E s D⁻¹ J) := by
-      rw [h_box, pow_mul, ENNReal.ofReal_pow (by positivity), mul_pow, mul_assoc]
+    mul_ne_zero (pow_ne_zero _
+      (measure_sublevel_ne_zero volume (norm_one.trans_lt one_lt_two) (by fun_prop)))
+      (hJ.measure_ne_zero _ ⟨1, J.one_mem⟩), fun D hD ↦ ?_⟩
+  rw [show volume (levelBox E s D⁻¹ J) = volume {z : USign s | ‖z.val.val - 1‖ ≤ D⁻¹} ^
+        Core.numInfPlaces E * volume (J : Set (Gf E n)) by
+      simp [levelBox, Measure.volume_eq_prod, volume_pi_pi],
+    pow_mul, ENNReal.ofReal_pow (by positivity), ← mul_assoc, ← mul_pow]
+  gcongr
+  simpa using DiscreteSeries.measure_ball_le_covering volume
+    (MonoidHom.id (USign s)) 1 hD one_le_two (K := 12 * D) (by linarith)
 
 namespace Space
 

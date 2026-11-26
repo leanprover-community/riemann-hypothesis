@@ -491,7 +491,7 @@ lemma New.Patching.chain_lemma (hB : IsUnitary ρ.ρ B)
     rw [← avg_T, ← dual_last]
     simp [u, mulSingle_inv, avg_x, t_last]
   have U_last : u ϖ (T n) = (w.q : ℂ) ^ n • t n.succ • x := by
-    simp only [u, LinearMap.smul_apply, End.mul_apply, avg_T]
+    simp only [u, LinearMap.smul_apply, mul_apply_eq_comp, avg_T]
     simp [← dual_last, avg_x]
   have ht_zero : t 0 • x = x := by rw [← ht, heckeGL_zero hx]
   have linear := chain_lemma_of_adjoint (u ϖ) (u ϖ⁻¹) T hB.pos (adj ϖ) (adj ϖ⁻¹) hP_eq (by simp)

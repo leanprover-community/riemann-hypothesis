@@ -247,7 +247,7 @@ lemma norm_inv_sqrt_one_sub_invCorner_mul_le {Z W : 𝔰.FrameMatrix} (hZ : Z �
     ‖(1 - invCorner Z * invCorner W).sqrt⁻¹‖ ≤ 2 * (√(oneSubNormSqInvCorner Z))⁻¹ := by
   have h_lower : oneSubNormSqInvCorner Z / 2 ^ 2 ≤ ‖1 - invCorner Z * invCorner W‖ := by
     grw [← norm_sub_norm_le, norm_mul, (mem_openCell.1 hW).2, norm_one, oneSubNormSqInvCorner]
-    nlinarith [(mem_openCell.1 hZ).2]
+    nlinarith only [(mem_openCell.1 hZ).2]
   have hν_pos : 0 < oneSubNormSqInvCorner Z := oneSubNormSqInvCorner_pos hZ
   grw [norm_inv, norm_complex_sqrt_eq_sqrt_norm, ← h_lower]
   simp [div_eq_mul_inv]

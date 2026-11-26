@@ -390,7 +390,6 @@ and `New.Variety.sliceEquiv` passes from S ⊗ ℤ[X] to S over the category of 
 
 section TiltedLineFormula
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace New.Variety
 
@@ -604,21 +603,17 @@ lemma TorsionCoeff.sliceEquiv_mulClass (v : TotalH S M.functor) :
     comp_id
   -- Restriction to the points of the line commutes with the product by η, and η restricts to η.
   have h_res : TotalH.map (restrictAlong π) (M.mulClass (etaClass g).toTotalH v) =
-      M.onElements.mulClass (S := π ⋙ S) η (TotalH.map (restrictAlong π) v) :=
-    calc TotalH.map (restrictAlong π) (M.mulClass (etaClass g).toTotalH v)
-      _ = M.onElements.mulClass (S := π ⋙ S) (TotalH.map (restrictAlong π) (etaClass g).toTotalH)
-          (mapThenComp (restrictAlong π) (homClass (𝟙 (π ⋙ M.functor))) v) :=
-        (h_id _).symm.trans (M.mulClass_naturality π M.onElements _ _ v)
-      _ = M.onElements.mulClass (S := π ⋙ S) η (TotalH.map (restrictAlong π) v) :=
-        congrArg₂ (fun ξ y ↦ M.onElements.mulClass (S := π ⋙ S) ξ y)
-          (map_restrictAlong_etaClass ..) (h_id v)
+      M.onElements.mulClass (S := π ⋙ S) η (TotalH.map (restrictAlong π) v) := by
+    have h_natural := M.mulClass_naturality π M.onElements (homClass (𝟙 (π ⋙ M.functor)))
+      (etaClass g).toTotalH v
+    erw [h_id, h_id, map_restrictAlong_etaClass] at h_natural
+    exact h_natural
   -- Restricting and then evaluating at the tautological point is the definition of `sliceEquiv`.
-  calc sliceEquiv (M.mulClass (etaClass g).toTotalH v)
-    _ = pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S))
-        (M.onElements.mulClass (S := π ⋙ S) η (TotalH.map (restrictAlong π) v)) :=
-      congrArg _ h_res
-    _ = comp (TotalH.map (restrictAlong π) v) M.cupClass.toTotalH :=
-      M.onElements.mulClass_eq_comp_etaAt (S := π ⋙ S) η _ rfl _
+  change pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S))
+    (TotalH.map (restrictAlong π) (M.mulClass (etaClass g).toTotalH v)) = _
+  erw [h_res]
+  exact M.onElements.mulClass_eq_comp_etaAt (S := π ⋙ S) η _ rfl _
+
 
 /-- Let `Θ` be a theory along `g` with coefficient `F` (an `ℓ`-torsion coefficient with Zariski
 descent that behaves well on closed loci), `S` a functor with flat ℤ-module values, and `x` a class
@@ -717,19 +712,15 @@ lemma isLerayHirschBasis_lineBasis_of_injective
           (comp (TotalH.map (restrictAlong π₁) x) Θ.cupClass.toTotalH) =
         comp x' (Θ.onElements.onElements.etaAt (freeAbSectionMap a)).toTotalH :=
       (map_comp _).trans (congrArg (comp x') (Θ.onElements.map_etaAt_onElements _ _))
-    calc sliceEquiv (Θ.onElements.mulClass (S := π₁ ⋙ S) (etaClass (π₁ ⋙ g)).toTotalH
-          (sliceEquiv x))
-      _ = comp (TotalH.map (restrictAlong π₂) (sliceEquiv x)) Θ.onElements.cupClass.toTotalH :=
-        Θ.onElements.sliceEquiv_mulClass (S := π₁ ⋙ S) _
-      _ = comp (pullbackAlong (tensorPoint (freeAbSectionMap a) (π₂ ⋙ π₁ ⋙ S)) x')
-          (Θ.onElements.onElements.etaAt (freeAbSectionMap b)).toTotalH :=
-        congrArg (fun ξ ↦ comp ξ Θ.onElements.cupClass.toTotalH) map_pullbackAlong
-      _ = comp (pullbackAlong (tensorPoint (freeAbSectionMap b) (π₂ ⋙ π₁ ⋙ S)) x')
-          (Θ.onElements.onElements.etaAt (freeAbSectionMap a)).toTotalH :=
-        etaAt_swap Θ.onElements.onElements x' h_inf' a b
-      _ = sliceEquiv (N := π₁ ⋙ S) (X := projLineAlong (π₁ ⋙ g))
-          (comp (TotalH.map (restrictAlong π₁) x) Θ.cupClass.toTotalH) :=
-        (comp_assoc ..).trans (congrArg (pullbackAlong _) h_cup.symm)
+    refine (Θ.onElements.sliceEquiv_mulClass (S := π₁ ⋙ S) (sliceEquiv x)).trans ?_
+    have h_first :
+        comp (TotalH.map (restrictAlong π₂) (sliceEquiv x)) Θ.onElements.cupClass.toTotalH =
+          comp (pullbackAlong (tensorPoint (freeAbSectionMap a) (π₂ ⋙ π₁ ⋙ S)) x')
+            (Θ.onElements.onElements.etaAt (freeAbSectionMap b)).toTotalH :=
+      congrArg (fun ξ ↦ comp ξ Θ.onElements.cupClass.toTotalH) map_pullbackAlong
+    exact h_first.trans ((etaAt_swap Θ.onElements.onElements x' h_inf' a b).trans
+      ((comp_assoc ..).trans (congrArg (pullbackAlong _) h_cup.symm)))
+
   -- Restriction `r` from the points of the line to the base point undoes the pull-back, and it
   -- corresponds to `at_inf` under `sliceEquiv`.
   let r {N : AbFunctor C} : TotalH (elementsProj (projLineAlong g) ⋙ N)
@@ -754,11 +745,15 @@ lemma isLerayHirschBasis_lineBasis_of_injective
   refine (Comparison.bijective_iff_of_comm_sq (fun p ↦ ?_) pair.symm.bijective
     sliceEquiv.bijective).1 split.bijective
   -- Both sides are the sum of `π^* p.2` and `π^* p.1 · η`, with `π^*` the restriction to the points
-  -- of the line, in opposite orders (`using!` unfolds `restrictAlong` in the type of the groups).
-  simpa [split, pair, pull, lerayHirsch, sum_fintype, mapThenComp, TorsionCoeff.lineBasis,
-    Θ.sliceEquiv_mulClass, Exact.splitSurjectiveEquiv] using!
-    add_comm (TotalH.map (restrictAlong (elementsProj (projLineAlong g))) p.2)
-      (comp (TotalH.map (restrictAlong (elementsProj (projLineAlong g))) p.1) Θ.cupClass.toTotalH)
+  -- of the line, in opposite orders.
+  simp [split, pair, pull, lerayHirsch, sum_fintype, mapThenComp, TorsionCoeff.lineBasis,
+    Exact.splitSurjectiveEquiv]
+  let π := elementsProj (projLineAlong g)
+  change _ = sliceEquiv
+    (Θ.mulClass (etaClass g).toTotalH p.1 + sliceEquiv.symm (TotalH.map (restrictAlong π) p.2))
+  erw [map_add, Θ.sliceEquiv_mulClass, AddEquiv.apply_symm_apply]
+  exact add_comm _ _
+
 
 -- Keeps definitional checks from unfolding the group structure of the Ext groups.
 seal addCommGroupH in
@@ -820,7 +815,8 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
           Θ.cupClass.toTotalH := by rw [hw]
     rw [h_eta]
     -- `using!`: restriction along the points of `ℙ¹` matches `Φ` only up to unfolding.
-    simpa -dsimp [Φ, s, map_comp_assoc, TotalH.map_map, Ext.mapExactFunctor_mk₀] using! h_restrict
+    erw [map_pullbackAlong, comp_assoc, map_comp_assoc, TotalH.map_map] at h_restrict
+    exact h_restrict
   -- Acyclicity over the points of `ℙ¹` is that of `h_c × ℙ¹`, after swapping two tensor factors.
   have h_acyclic_Φ (n : ℕ) : Subsingleton (H (Φ (cokernel i)) Θ.onElements.functor n) := by
     let swap : abTensor (abTensor S L) (cokernel i) ≅
@@ -829,7 +825,9 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
         refine addCommGrp_tensor_hom_ext fun t ↦ ?_
         induction t using TensorProduct.inductionOn with
         | tmul x l => exact fun r ↦ rfl
-        | add x x' h₁ h₂ => exact fun r ↦ by simp only [add_tmul, map_add, h₁ r, h₂ r]
+        | add x x' h₁ h₂ =>
+          intro r
+          erw [add_tmul, _root_.map_add, _root_.map_add, h₁ r, h₂ r]
     have h_line (k : ℕ) : Subsingleton (H (abTensor (abTensor S L) (cokernel i)) Θ.functor k) :=
       h_acyclic (abTensor S L) k
     have h_swapped : Subsingleton (TotalH (abTensor (abTensor S (cokernel i)) L) Θ.functor) :=
@@ -837,14 +835,13 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
     have h_total : Subsingleton (TotalH (Φ (cokernel i)) Θ.onElements.functor) :=
       (sliceEquiv (N := abTensor S (cokernel i))).symm.injective.subsingleton
     exact (DirectSum.of_injective (β := H (Φ (cokernel i)) Θ.onElements.functor) n).subsingleton
-  calc sliceEquiv (Θ.mulClass (S := S) (etaClass g).toTotalH (pullbackAlong (tensorPoint y S) w))
-    _ = pullbackAlong (tensorPoint (𝟙 _) (π ⋙ S) ≫ Φ.map y) s := by
-      -- `erw`: restriction of `tensorPoint y S` is this composite only up to unfolding.
-      erw [Θ.sliceEquiv_mulClass, map_pullbackAlong, comp_assoc]
-      rfl
-    _ = pullbackAlong (tensorPoint (𝟙 _) (π ⋙ S) ≫ Φ.map (tateGen g)) m :=
-      (h_toda.pullbackAlong_comp_map_eq Φ h_acyclic_Φ _ m s h_eq).symm
-    _ = sliceEquiv x := Θ.onElements.pullbackAlong_tensorPoint_comp_tateAction (S := π ⋙ S) _
+  have h_first :
+      sliceEquiv (Θ.mulClass (S := S) (etaClass g).toTotalH (pullbackAlong (tensorPoint y S) w)) =
+        pullbackAlong (tensorPoint (𝟙 _) (π ⋙ S) ≫ Φ.map y) s := by
+    erw [Θ.sliceEquiv_mulClass, map_pullbackAlong, comp_assoc]
+    rfl
+  exact h_first.trans ((h_toda.pullbackAlong_comp_map_eq Φ h_acyclic_Φ _ m s h_eq).symm.trans
+    (Θ.onElements.pullbackAlong_tensorPoint_comp_tateAction (S := π ⋙ S) _))
 
 open Period in
 /-- The roots of unity `compatibleRootsOfUnity` of `A`, mapped to `ℂ_ℓ`, lift to a character `χ` of
@@ -884,8 +881,19 @@ private lemma exists_isTodaCancellation_etaClass_of_squares [Algebra A ℂ_[ℓ]
       IsTodaCancellation gluing δ q (etaClass (genericTestOver A)) (tateGen (genericTestOver A))
         j y ω := by
   -- The twist of either disc fixes the origin.
-  have h_origin : origin ⟨true⟩ ≫ oneSub (discTwist χ) = 0 :=
-    hom_ext (by simp -dsimp [discTwist_comp_evalZero])
+  have h_origin : origin ⟨true⟩ ≫ oneSub (discTwist χ) = 0 := by
+    refine freeAb.hom_ext fun c x ↦ ?_
+    let z : twoDiscs.obj c := ⟨⟨true⟩, ⟨evalZero _⟩⟩
+    have h_origin_app : (origin ⟨true⟩).app c (FreeAddCommGroup.of x) = FreeAddCommGroup.of z :=
+      freeAb.desc_of ..
+    erw [NatTrans.comp_app, AddCommGrpCat.comp_apply, h_origin_app]
+    change FreeAddCommGroup.lift _ (FreeAddCommGroup.of z) = _
+    erw [FreeAddCommGroup.lift_apply_of]
+    change Sub.sub (FreeAddCommGroup.of z) (FreeAddCommGroup.of
+      (⟨⟨true⟩, ⟨discTwist χ ⟨true⟩ ≫ evalZero (PadicTest.tilt.obj c)⟩⟩ : twoDiscs.obj c)) = _
+    erw [discTwist_comp_evalZero]
+    change FreeAddCommGroup.of z - FreeAddCommGroup.of z = 0
+    exact sub_self _
   obtain ⟨B, K, j, y, ω, h_toda⟩ := exists_isTodaCancellation (oneSub_comp_gluing χ) (origin ⟨true⟩)
     h_origin
     (cocycle _).shortExact_extension (shortExact_kummerSeq (genericTestOver A)) f α κ (𝟙 _) _
@@ -894,7 +902,9 @@ private lemma exists_isTodaCancellation_etaClass_of_squares [Algebra A ℂ_[ℓ]
   have h_eta : (cocycle (genericTestOver A)).shortExact_extension.extClass.comp
       (H.map _ (𝟙 _) 1 (shortExact_kummerSeq (genericTestOver A)).extClass) rfl =
       etaClass (genericTestOver A) := by
-    rw [H.map_id, etaClass]
+    erw [H.map_id]
+    unfold etaClass
+    rfl
   refine ⟨oneSub (discTwist χ), f ≫ (cocycle (genericTestOver A)).extension.g, B, K, j, y, ω, ?_⟩
   rw [← h_eta, ← h_gen]
   exact h_toda
@@ -956,12 +966,22 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
         (ρ c (y.snd.down.hom (single 1 1)))))
     (by
       -- On each disc, `twoDiscs.map` keeps the disc and composes the point, by definition.
-      rintro _ _ c ⟨⟨_ | _⟩, y⟩
-      · simp only [Bool.cond_false, AddMonoidHom.map_sub, F_nat, RingHom.map_zero, ρ_nat]
-        rfl
-      · simp only [Bool.cond_true, AddMonoidHom.map_sub, F_nat, RingHom.map_zero, RingHom.map_sub,
-          RingHom.map_one, ρ_nat]
+      rintro c d j ⟨⟨_ | _⟩, y⟩
+      · let x := y.down.hom (single 1 1)
+        change F d (0, 0) - F d (0, ρ d (tiltMap j.1 x)) =
+          ((cocycle _).extension.X₂.map j).hom (F c (0, 0) - F c (0, ρ c x))
+        erw [_root_.map_sub, F_nat c d j (0, 0), F_nat c d j (0, ρ c x)]
+        simp [ρ_nat]
+      · let x := y.down.hom (single 1 1)
+        let xc : R c := ρ c x
+        let xd : R d := ρ d (tiltMap j.1 x)
+        change F d (0, 0) - F d (xd - 1, 1) =
+          ((cocycle _).extension.X₂.map j).hom (F c (0, 0) - F c (xc - 1, 1))
+        erw [_root_.map_sub, F_nat c d j (0, 0), F_nat c d j (xc - 1, 1)]
+        simp [xc, xd]
+        erw [map_sub, map_one, ρ_nat]
         rfl)
+
   -- `α` sends a point `t` of the torus to `pow c t`, the untilts of the powers of the coordinate.
   let pow (c : PadicTest) (t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
       (kummerSeq (genericTestOver A)).X₂ c :=
@@ -974,12 +994,47 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
     projFirst ≫ freeAb.map (toUnit _) ≫ tateGen _
   -- The three squares that `exists_isTodaCancellation_etaClass_of_squares` needs, each checked on
   -- the generators of a free functor.
+  have h_f_app (c : PadicTest) (y : twoDiscs.obj c) :
+      (f.app c).hom (FreeAddCommGroup.of y) = F c (0, 0) -
+        F c (cond y.fst.down (fun X ↦ (X - 1, 1)) (fun X ↦ (0, X))
+          (ρ c (y.snd.down.hom (single 1 1)))) := freeAb.desc_of ..
+  have h_alpha (c : PadicTest) (q : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
+      (α.app c).hom (FreeAddCommGroup.of (⟨⟨true⟩, q⟩ : (tiltPointsSum pointOrTorus).obj c)) =
+        pow c q := by
+    let r : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, q⟩
+    have h_proj : ((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of r) =
+        FreeAddCommGroup.of q := by
+      change FreeAddCommGroup.lift _ (FreeAddCommGroup.of r) = _
+      erw [FreeAddCommGroup.lift_apply_of]
+      rfl
+    change FreeAddCommGroup.lift (pow c)
+      (((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of r)) = _
+    erw [h_proj, FreeAddCommGroup.lift_apply_of]
   have h_torus : (α ≫ (kummerSeq (genericTestOver A)).g) ≫
       (cocycle (genericTestOver A)).extension.f = gluing ≫ f := by
     -- On the torus the frames `(X, 1)` and `(1, X⁻¹)` differ by the unit `X`.
     refine hom_ext ?_
     rintro c ⟨⟨_ | _⟩, y⟩
-    · simp [f, α, AddMonoidHom.map_zero, MonoidWithZeroHom.map_zero, -map_zero, -Functor.comp_obj]
+    · let y₀ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, y⟩
+      let z : twoDiscs.obj c := ⟨⟨false⟩, ⟨evalZero (PadicTest.tilt.obj c)⟩⟩
+      have h_proj : ((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of y₀) = 0 := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₀) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+      have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₀) = FreeAddCommGroup.of z := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₀) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+        exact congrArg (fun a ↦ FreeAddCommGroup.of (⟨⟨false⟩, ⟨a⟩⟩ : twoDiscs.obj c))
+          (evalZero_comp y.down)
+      have h_a : (α.app c).hom (FreeAddCommGroup.of y₀) = 0 := by
+        change FreeAddCommGroup.lift (pow c)
+          (((projFirst (B := pointOrTorus)).app c).hom (FreeAddCommGroup.of y₀)) = 0
+        erw [h_proj, map_zero]
+      change ((cocycle _).extension.f.app c).hom
+          (((kummerSeq (genericTestOver A)).g.app c).hom ((α.app c).hom (FreeAddCommGroup.of y₀))) =
+        (f.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₀))
+      erw [h_a, h_glue, h_f_app]
+      simp [z, evalZero]
+      erw [map_zero, sub_self]
     · let X : R c := ρ c (y.down.hom (single 1 1))
       let X' : R c := ρ c (y.down.hom (single (-1) 1))
       let v : (cocycle (genericTestOver A)).extension.X₂ c :=
@@ -996,20 +1051,113 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       have h_frame : v + F c (0, X') = F c (X - 1, 1) :=
         Prod.ext (ULift.down_injective h_unit)
           ((zero_add _).trans (congrArg FreeAddCommGroup.of h_point))
-      -- `using!`: the two sides of the square are these terms up to unfolding `v`, `X`, `X'`.
-      simpa [f, α, -Functor.comp_obj] using! eq_sub_of_add_eq h_frame
+      let y₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, y⟩
+      let z₀ : twoDiscs.obj c := ⟨⟨false⟩, ⟨discToTorus (-NNRat.coeHom) ≫ y.down⟩⟩
+      let z₁ : twoDiscs.obj c := ⟨⟨true⟩, ⟨discToTorus NNRat.coeHom ≫ y.down⟩⟩
+      have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₁) =
+          FreeAddCommGroup.of z₀ - FreeAddCommGroup.of z₁ := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₁) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+        rfl
+      change ((cocycle _).extension.f.app c).hom
+          (((kummerSeq (genericTestOver A)).g.app c).hom ((α.app c).hom (FreeAddCommGroup.of y₁))) =
+        (f.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁))
+      erw [h_alpha, h_glue, _root_.map_sub, h_f_app, h_f_app]
+      have h_coord (g : ℚ≥0 →+ ℚ) :
+          (discToTorus g ≫ y.down).hom (single 1 1) = y.down.hom (single (g 1) 1) := by
+        change y.down.hom (mapDomain g (single 1 1)) = _
+        erw [AddMonoidAlgebra.mapDomain_single]
+      simp only [z₀, z₁, Bool.cond_false, Bool.cond_true, h_coord]
+      change v = (F c (0, 0) - F c (0, X')) - (F c (0, 0) - F c (X - 1, 1))
+      rw [sub_sub_sub_cancel_left]
+      exact eq_sub_of_add_eq h_frame
+
   have h_disc : oneSub (discTwist χ) ≫ f = 0 := by
     -- `charTwist χ` fixes `X`, as the roots of unity are trivial at `1` and `-1`.
-    refine hom_ext ?_
-    rintro c ⟨⟨_ | _⟩, y⟩ <;>
-      simp [f, discTwist, charTwist, ρ_const, hχ, h_root, -coe_algebraMap, -Functor.comp_obj]
+    refine freeAb.hom_ext fun c y ↦ ?_
+    let y' : twoDiscs.obj c := ⟨y.fst, ⟨discTwist χ y.fst ≫ y.snd.down⟩⟩
+    erw [NatTrans.comp_app, AddCommGrpCat.comp_apply]
+    change (f.app c).hom (FreeAddCommGroup.lift _ (FreeAddCommGroup.of y)) = _
+    erw [FreeAddCommGroup.lift_apply_of]
+    change (f.app c).hom (FreeAddCommGroup.of y - FreeAddCommGroup.of y') = 0
+    erw [_root_.map_sub, h_f_app, h_f_app]
+    rcases y with ⟨⟨_ | _⟩, y⟩ <;>
+      simp [y', discTwist, charTwist, ρ_const, hχ, h_root, -coe_algebraMap, -Functor.comp_obj]
   have h_kummer : oneSub (pointOrTorusTwist χ) ≫ α =
       gluing ≫ κ ≫ (kummerSeq (genericTestOver A)).f := by
     -- `charTwist χ` multiplies the untilted powers by the roots of unity of `tateGen`.
     refine hom_ext ?_
     rintro c ⟨⟨_ | _⟩, y⟩
-    · simp [α, κ, pointOrTorusTwist, -Functor.comp_obj]
-    · simp [α, pow, κ, pointOrTorusTwist, charTwist, ← neg_eq_iff_eq_neg, -Functor.comp_obj]
+    · let y₀ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, y⟩
+      let z : twoDiscs.obj c := ⟨⟨false⟩, ⟨evalZero (PadicTest.tilt.obj c)⟩⟩
+      have h_twist : ((oneSub (pointOrTorusTwist χ)).app c).hom
+          (FreeAddCommGroup.of y₀) = 0 := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₀) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+        change Sub.sub (FreeAddCommGroup.of y₀)
+          (FreeAddCommGroup.of (⟨⟨false⟩, ⟨𝟙 _ ≫ y.down⟩⟩ : (tiltPointsSum pointOrTorus).obj c)) = 0
+        erw [Category.id_comp]
+        exact sub_self _
+      have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₀) = FreeAddCommGroup.of z := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₀) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+        exact congrArg (fun a ↦ FreeAddCommGroup.of (⟨⟨false⟩, ⟨a⟩⟩ : twoDiscs.obj c))
+          (evalZero_comp y.down)
+      have h_proj : ((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom (FreeAddCommGroup.of z) = 0 := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of z) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+      change (α.app c).hom (((oneSub (pointOrTorusTwist χ)).app c).hom (FreeAddCommGroup.of y₀)) =
+        ((kummerSeq (genericTestOver A)).f.app c).hom
+          ((κ.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₀)))
+      erw [h_twist, h_glue]
+      change _ = ((kummerSeq (genericTestOver A)).f.app c).hom
+        (((tateGen (genericTestOver A)).app c).hom ((freeAb.map (toUnit _)).app c
+          (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom (FreeAddCommGroup.of z))))
+      erw [h_proj]
+      simp only [map_zero]
+    · let y₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, y⟩
+      let t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c :=
+        ⟨charTwist χ (AddMonoidHom.id ℚ) ≫ y.down⟩
+      let z₀ : twoDiscs.obj c := ⟨⟨false⟩, ⟨discToTorus (-NNRat.coeHom) ≫ y.down⟩⟩
+      let z₁ : twoDiscs.obj c := ⟨⟨true⟩, ⟨discToTorus NNRat.coeHom ≫ y.down⟩⟩
+      have h_glue : (gluing.app c).hom (FreeAddCommGroup.of y₁) =
+          FreeAddCommGroup.of z₀ - FreeAddCommGroup.of z₁ := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₁) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+        rfl
+      let π := (freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ≥0)))).app c
+      let τ := ((tateGen (genericTestOver A)).app c).hom
+      have h_proj₀ : ((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
+          (FreeAddCommGroup.of z₀) = 0 := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of z₀) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+      have h_proj₁ : ((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
+          (FreeAddCommGroup.of z₁) = FreeAddCommGroup.of z₁.snd := by
+        change FreeAddCommGroup.lift _ (FreeAddCommGroup.of z₁) = _
+        erw [FreeAddCommGroup.lift_apply_of]
+      have h_zero : (κ.app c).hom (FreeAddCommGroup.of z₀) = 0 := by
+        change τ (π (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
+          (FreeAddCommGroup.of z₀))) = 0
+        erw [h_proj₀]
+        simp only [map_zero]
+      have h_one : (κ.app c).hom (FreeAddCommGroup.of z₁) = τ (FreeAddCommGroup.of PUnit.unit) := by
+        change τ (π (((projFirst (B := fun _ ↦ monoidAlg ℚ≥0)).app c).hom
+          (FreeAddCommGroup.of z₁))) = _
+        erw [h_proj₁]
+        change τ ((freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ≥0)))).app c
+          (FreeAddCommGroup.of z₁.snd)) = _
+        erw [freeAb.map_of]
+        rfl
+      change (α.app c).hom (((oneSub (pointOrTorusTwist χ)).app c).hom (FreeAddCommGroup.of y₁)) =
+        ((kummerSeq (genericTestOver A)).f.app c).hom
+          ((κ.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁)))
+      change (α.app c).hom (FreeAddCommGroup.lift _ (FreeAddCommGroup.of y₁)) = _
+      erw [FreeAddCommGroup.lift_apply_of]
+      let t₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, t⟩
+      change (α.app c).hom (FreeAddCommGroup.of y₁ - FreeAddCommGroup.of t₁) = _
+      erw [_root_.map_sub, h_alpha, h_alpha, h_glue, _root_.map_sub, h_zero, h_one, zero_sub, map_neg]
+      apply neg_injective
+      rw [neg_sub, neg_neg]
       refine sub_eq_of_eq_add (AddMonoidHom.ext fun s ↦ Gm.ext.2 ?_)
       -- The twist sends the power `X^s` to `χ s · X^s`, whose untilt is the root of unity at `s`
       -- times the untilt of `X^s`.
@@ -1019,7 +1167,7 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
           c.genericStructureMap (algebraMap A ℂ_[ℓ]
               ((compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val (.ofAdd s) : A)) *
             ρ c (y.down.hom (of OFlat ℚ (.ofAdd s))) := by
-        rw [lift_of, MonoidHom.mul_apply, map_mul, map_mul, ← hχ, ← ρ_const]
+        erw [lift_of, MonoidHom.mul_apply, map_mul, map_mul, ← hχ, ← ρ_const]
         exact congrArg (fun z ↦ ρ c z * _) (y.down.hom.commutes _)
       refine h_twist.trans ?_
       -- `erw` and `rfl`: `tateGen` is the family of these roots of unity by definition.

@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.LinearAlgebra.Projectivization.Basic
 public import Lib.Weil.Construction.FiniteMultiplier
 public import Lib.Weil.Unramified.HeckeGL
 
@@ -343,25 +342,19 @@ lemma IsNeighbourVector.exists_mul_add_eq_one (hx : IsNeighbourVector w x) {k : 
     (hk : v (x k w) = exp 1) {t t' : 𝔸f E} (ht : t ∈ Ô E) (ht' : t' ∈ Ô E)
     (h_inv : ∀ u : FinPlace E, u ≠ w → t' u * t u = 1) :
     ∃ c ∈ Ô E, c * (x k + t) = 1 ∧ c • x ∈ stdLattice E n := by
-  have h_lt : v (t w) < v (x k w) := ((mem_Ô.1 ht w).trans_lt (by decide)).trans_eq hk.symm
-  have h_val : v (x k w + t w) = exp 1 := (v.map_add_eq_of_lt_left h_lt).trans hk
-  have h_ne : x k w + t w ≠ 0 := v.ne_zero_iff.1 (h_val.trans_ne exp_ne_zero)
-  have h_inv_le : v (x k w + t w)⁻¹ ≤ 1 := by simp +decide [h_val]
+  have h_val : v (x k w + t w) = exp 1 :=
+    (v.map_add_eq_of_lt_left (((mem_Ô.1 ht w).trans_lt (by decide)).trans_eq hk.symm)).trans hk
   -- The inverse is `1 / (x k + t)` at `w` and `t'` at the other places.
-  set c : 𝔸f E := singleAdele w (x k w + t w)⁻¹ + (1 - singleAdele w 1) * t' with hc
-  have hc_apply : c w = (x k w + t w)⁻¹ := by simp [hc]
-  have hc_mem : c ∈ Ô E := add_mem (singleAdele_mem_Ô h_inv_le)
-    (mul_mem (sub_mem (one_mem _) (singleAdele_mem_Ô (by simp))) ht')
-  refine ⟨c, hc_mem, ?_, fun j ↦ mem_Ô_of_eq_zero_of_ne (w := w)
-    (fun u hu ↦ by simp [hx.eq_zero_of_ne j u hu]) ?_⟩
-  · ext1 u
-    rcases eq_or_ne u w with rfl | hu
-    · simp [hc_apply, h_ne]
-    · simpa [hc, singleAdele_of_ne hu, hx.eq_zero_of_ne k u hu] using h_inv u hu
-  · have h_le : v ((x k w + t w)⁻¹ * x j w) ≤ 1 := by
-      rw [map_mul, map_inv₀, h_val, inv_mul_le_one₀ exp_pos]
-      exact hx.v_le j
-    simpa [hc_apply] using h_le
+  refine ⟨singleAdele w (x k w + t w)⁻¹ + (1 - singleAdele w 1) * t',
+    add_mem (singleAdele_mem_Ô (by simp +decide [h_val]))
+      (mul_mem (sub_mem (one_mem _) (singleAdele_mem_Ô (by simp))) ht'), ?_,
+    fun j ↦ mem_Ô_of_eq_zero_of_ne (w := w)
+      (fun u hu ↦ by simp [hx.eq_zero_of_ne j u hu])
+      (by simpa [h_val] using (inv_mul_le_one₀ exp_pos).2 (hx.v_le j))⟩
+  ext1 u
+  rcases eq_or_ne u w with rfl | hu
+  · simp [v.ne_zero_iff.1 (h_val.trans_ne exp_ne_zero)]
+  · simpa [singleAdele_of_ne hu, hx.eq_zero_of_ne k u hu] using h_inv u hu
 
 end NeighbourVector
 
@@ -433,51 +426,37 @@ lemma IsNeighbourVector.exists_mapsNeighbour [WeilData E] (hx : IsNeighbourVecto
   -- Let `x k` have a pole and let `y ∈ L` be the vector with `⟨y, z⟩ = z k` at `w` and `0`
   -- elsewhere. Reflect in `x + y` with the scalar `c = (x k + t)⁻¹`, where `t` has trace
   -- `⟨x, x⟩ + ⟨y, y⟩`.
-  obtain ⟨k, hk⟩ : ∃ k : n, v (x k w) = exp 1 := hx.exists_v_eq
-  set y : n → 𝔸f E := Pi.single k (star (singleAdele w 1)) with hy
+  obtain ⟨k, hk⟩ := hx.exists_v_eq
+  let y : n → 𝔸f E := Pi.single k (star (singleAdele w 1))
   have hy_mem : y ∈ stdLattice E n :=
     single_mem_stdLattice (star_mem_Ô (singleAdele_mem_Ô (map_one v).le)) k
   have hy_dot (z : n → 𝔸f E) : star y ⬝ᵥ z = singleAdele w (z k w) := by
-    rw [← singleAdele_one_mul, hy, Pi.star_single, star_star, single_dotProduct]
+    rw [← singleAdele_one_mul, Pi.star_single, star_star, single_dotProduct]
   have hyx : star y ⬝ᵥ x = x k := by
     rw [hy_dot]
     ext u
     rcases eq_or_ne u w with rfl | hu <;> simp [hx.eq_zero_of_ne k u, *]
-  have h_real : star (star x ⬝ᵥ x + star y ⬝ᵥ y) = star x ⬝ᵥ x + star y ⬝ᵥ y := by
-    rw [star_add, ← star_dotProduct, ← star_dotProduct]
-  have h_supp (u : FinPlace E) (hu : u ≠ w) : (star x ⬝ᵥ x + star y ⬝ᵥ y) u = 0 := by
-    simp [hy_dot, star_dotProduct_apply x, hu, hx.eq_zero_of_ne _ u hu]
-  obtain ⟨t, ht, ht_trace, t', ht', h_inv⟩ :
-      ∃ t ∈ Ô E, t + star t = star x ⬝ᵥ x + star y ⬝ᵥ y ∧
-        ∃ t' ∈ Ô E, ∀ u : FinPlace E, u ≠ w → t' u * t u = 1 :=
-    exists_add_star_eq (add_mem hx.norm_mem (stdLattice.star_dotProduct_mem hy_mem hy_mem)) h_real
-      h_supp
-  obtain ⟨c, hc, hc_mul, hcx⟩ : ∃ c ∈ Ô E, c * (x k + t) = 1 ∧ c • x ∈ stdLattice E n :=
-    hx.exists_mul_add_eq_one hk ht ht' h_inv
+  obtain ⟨t, ht, ht_trace, t', ht', h_inv⟩ := exists_add_star_eq (w := w)
+    (add_mem hx.norm_mem (stdLattice.star_dotProduct_mem hy_mem hy_mem))
+    (by rw [star_add, ← star_dotProduct, ← star_dotProduct])
+    (fun u hu ↦ by simp [hy_dot, star_dotProduct_apply x, hu, hx.eq_zero_of_ne _ u hu])
+  obtain ⟨c, hc, hc_mul, hcx⟩ := hx.exists_mul_add_eq_one hk ht ht' h_inv
   have h_dot : star (x + y) ⬝ᵥ x = star x ⬝ᵥ x + x k := by rw [star_add, add_dotProduct, hyx]
   have hc_trace : c + star c = star c * c * (star (x + y) ⬝ᵥ (x + y)) := by
-    have hc_star : star (x k + t) * star c = 1 := by rw [← star_mul, hc_mul, star_one]
-    have h_norm : star (x + y) ⬝ᵥ (x + y) = x k + t + star (x k + t) := by
-      rw [dotProduct_add, h_dot, star_add x, add_dotProduct, star_dotProduct x y, hyx, star_add]
-      linear_combination -ht_trace
-    rw [h_norm]
-    linear_combination -star c * hc_mul - c * hc_star
-  have h_zero (a : FinPlace E) (ha : a ∉ ({w} : Set (FinPlace E)))
-      (ha' : star a ∉ ({w} : Set (FinPlace E))) (i : n) : (x + y) i a = 0 := by
-    rcases eq_or_ne i k with rfl | hi
-    · simp [hy, hx.eq_zero_of_ne i a ha, singleAdele_of_ne ha']
-    · simp [hy, hx.eq_zero_of_ne i a ha, hi]
-  obtain ⟨ρ, hρ_supp, hρ⟩ : ∃ ρ ∈ Gf.supportedOn n {w},
-      ∀ z : n → 𝔸f E, (ρ : Matrix n n (𝔸f E)) *ᵥ z = z - (c * (star (x + y) ⬝ᵥ z)) • (x + y) :=
-    exists_quasiReflection h_zero hc_trace
+    have hc_star : (star (x k) + star t) * star c = 1 := by
+      rw [← star_add, ← star_mul, hc_mul, star_one]
+    rw [dotProduct_add, h_dot, star_add x, add_dotProduct, star_dotProduct x y, hyx]
+    linear_combination -star c * hc_mul - c * hc_star + star c * c * ht_trace
+  obtain ⟨ρ, hρ_supp, hρ⟩ := exists_quasiReflection (S := {w})
+    (fun a ha ha' i ↦ by
+      rcases eq_or_ne i k with rfl | hi <;>
+        simp [y, hx.eq_zero_of_ne i a ha, singleAdele_of_ne ha', *])
+    hc_trace
   refine ⟨ρ, hρ_supp, fun z hz hxz ↦ ?_, ?_⟩
-  · set s : 𝔸f E := star (x + y) ⬝ᵥ z with hs
-    have hs_mem : s ∈ Ô E := by
-      rw [hs, star_add, add_dotProduct]
+  · have hs_mem : star (x + y) ⬝ᵥ z ∈ Ô E := by
+      rw [star_add, add_dotProduct]
       exact add_mem hxz (stdLattice.star_dotProduct_mem hz hy_mem)
-    have h_eq : z - (c * s) • (x + y) = z - (s • c • x + (s * c) • y) := by
-      rw [smul_add, mul_comm c s, mul_smul s c x]
-    rw [hρ, ← hs, h_eq]
+    rw [hρ, smul_add, mul_comm c, mul_smul _ c x]
     exact sub_mem hz (add_mem (stdLattice.smul_mem_stdLattice hs_mem hcx)
       (stdLattice.smul_mem_stdLattice (mul_mem hs_mem hc) hy_mem))
   · have h_eq : x - (c * (star x ⬝ᵥ x + x k)) • (x + y) =

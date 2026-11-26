@@ -1348,7 +1348,7 @@ lemma blockAction_mulSingle_inr [DecidableEq O.TwistIndex] (i : O.TwistIndex)
   have h_one : (fun i' : O.ChosenIndex ↦ Pi.mulSingle
       (M := fun j ↦ GL r (ResField (O.placeAt j))) (.inr i) s (.inl i')) = (1 : O.ChosenGL r) :=
     funext fun _ ↦ Pi.mulSingle_eq_of_ne Sum.inl_ne_inr _
-  rw [blockAction_mulSingle, h_one, map_one, Module.End.one_apply]
+  rw [blockAction_mulSingle, h_one, map_one, one_apply_eq_self]
 
 /-- Assume `χ_w ≠ 1` for `w ∈ Q`. Assume also `O.HyperplaneSumsAnnihilate y`: for rows `λ_w` at the
 chosen places, not all zero, the product of the sums `∑ χ_w(det s)⁻¹ s` kills `y`, with

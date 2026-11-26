@@ -392,6 +392,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `New/Congruences/Selmer/AuxiliaryPrimes` (307): Auxiliary primes, anticyclotomic characters, slopes and ties
 - `New/Congruences/Selmer/SelmerData` (421): Selmer data, tied Selmer groups and classes as functions
 - `New/Congruences/Selmer/Count` (382): The dual of a tied Selmer group and the count
+- `New/Congruences/Selmer/TiedClasses` (99): The tied Selmer group as a group of cohomology classes
 - `New/Congruences/Selmer/Mirror` (497): Reciprocity at conjugate primes
 - `New/Congruences/Selmer/OneSystem` (290): The universal twist and one system of equations for all twists
 - `New/Congruences/Selmer/Descent` (428): The descent
@@ -588,6 +589,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **GaloisCohomology**: Continuous Galois cohomology
 
 - `Lib/ClassField/GaloisCohomology/ContinuousCocycles` (340): Continuous cohomology of discrete modules: cocycles, H², cyclic classes, local Artin map
+- `Lib/ClassField/GaloisCohomology/ClassCounts` (178): Counting cocycles through their cohomology classes
 - `Lib/ClassField/GaloisCohomology/ShapiroCorestriction` (230): Shapiro's lemma, corestriction and reduction of H² statements to steps of prime index
 - `Lib/ClassField/GaloisCohomology/TateIndexFormula` (311): Coker/ker indices and Tate's index formula for cyclic actions of prime order
 - `Lib/ClassField/GaloisCohomology/KummerCyclicClasses` (437): Cup products, Hilbert 90, Kummer cocycles and cyclic symbols in Galois cohomology

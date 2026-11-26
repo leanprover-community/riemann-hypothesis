@@ -620,8 +620,7 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
     push_cast
     field [classNumber_ne_zero, hd_pos.ne']
   rw [chowlaSelbergConst, ← hL, h_log, ofReal_re]
-  field_simp [classNumber_ne_zero]
-  ring
+  field [classNumber_ne_zero]
 
 /-- There are fractional ideals of `K`, one in each ideal class, whose product is `(1)`. -/
 lemma QuadField.exists_mk_eq_and_prod_eq_one :

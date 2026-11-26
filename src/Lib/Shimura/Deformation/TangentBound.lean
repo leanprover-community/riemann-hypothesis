@@ -2,6 +2,7 @@ module
 
 public import Lib.General.Geometry.SerreTheorem
 public import Lib.Shimura.Deformation.TangentCount
+public import TauCeti.RingTheory.TrivSqZeroExt
 
 /-!
 # Drinfeld lifting over k[ε] and a bound on the tangent space of the moduli scheme
@@ -262,9 +263,6 @@ variable {E k : Type} [Field E] [CMBase E]
   (f : x.groupScheme ⟶ x'.groupScheme) [IsAdditive f] {a : 𝓞 E}
   (hf : hq.schemeMap ≫ f = a • hq'.schemeMap) [Fact (ringChar k).Prime]
 
-/-- The dual numbers `k[ε] = k × k` are a finite `k`-module. -/
-instance : Module.Finite k k[ε] := .prod
-
 include hf
 
 /-- Let `f : x.groupScheme ⟶ x'.groupScheme` be a homomorphism of deformations of `x₀.groupScheme`
@@ -455,10 +453,6 @@ variable {E k M : Type} [Field E] [CMBase E] {D : PEL E} [Field k] {Z : Scheme}
   [Algebra k C] [CommRing C'] [Algebra k C'] (φ : C →ₐ[k] C')
 
 instance : CommRing (TrivSqZeroExt C (M →ₗ[k] C)) := inferInstance
-
-/-- `k ⊕ M*` is a local ring: an element is a unit exactly when its first component is not zero. -/
-instance : IsLocalRing (TrivSqZeroExt k (M →ₗ[k] k)) :=
-  .of_nonunits_add fun a b _ _ ↦ by simp_all [isUnit_iff_isUnit_fst]
 
 /-! ### The rings `C ⊕ Hom(M, C)` and lifts of points -/
 

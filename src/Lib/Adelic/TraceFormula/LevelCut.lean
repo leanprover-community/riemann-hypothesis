@@ -82,7 +82,7 @@ abbrev localRep : Representation ℂ (GL n (LocField w)) M := ρ.comp (ofSplitPl
 /-- An element acts as its component at `w` followed by its part off `w`. -/
 lemma apply_eq_offRep_localRep (g : Gf E n) (y : M) :
     ρ g y = offRep hw ρ g (localRep hw ρ (g.atPlace w) y) := by
-  simp [← End.mul_apply, ← map_mul, offPlace_apply]
+  simp [← mul_apply_eq_comp, ← map_mul, offPlace_apply]
 
 /-- The action of an element off `w` commutes with the action of the group algebra at `w`. -/
 lemma commute_offRep_localRep (g : Gf E n) (u : ℂ[GL n (LocField w)]) :
@@ -210,9 +210,9 @@ lemma coe_offAction_mul_localAction_apply (hK : maxCompactAt n w ≤ K) (hJ : J 
       ρ.asAlgebraHom (mapDomain (ofSplitPlace hw) u * mapDomain (offPlace hw) a) y := by
   calc ((offAction hw ρ hK hJ a * localAction hw ρ hK hJ u) y : M)
     _ = (localRep hw ρ).asAlgebraHom u ((offRep hw ρ).asAlgebraHom a y) := by
-      rw [(commute_offAction_localAction hw ρ hK hJ a u).eq, End.mul_apply, coe_localAction_apply,
-        coe_offAction_apply]
-    _ = _ := by rw [map_mul, End.mul_apply, asAlgebraHom_mapDomain, asAlgebraHom_mapDomain]
+      rw [(commute_offAction_localAction hw ρ hK hJ a u).eq, mul_apply_eq_comp,
+        coe_localAction_apply, coe_offAction_apply]
+    _ = _ := by rw [map_mul, mul_apply_eq_comp, asAlgebraHom_mapDomain, asAlgebraHom_mapDomain]
 
 /-- The operator `T⁺` at `w` on the vectors whose level is the stabiliser of the `i`-th coordinate
 line at `w` and `K` elsewhere. -/

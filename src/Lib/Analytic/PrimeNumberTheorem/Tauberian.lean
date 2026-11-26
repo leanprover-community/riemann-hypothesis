@@ -257,7 +257,7 @@ lemma norm_taylorCoeff_transform_sub_le_of_lipschitz (hR : Measurable R)
   have h_near (v : ℝ) (hv : 0 < v) : |R v - R u| ≤ L * δ + L / δ * (v - (k + 1) / H) ^ 2 := by
     have h_amgm : |v - u| ≤ δ + (v - u) ^ 2 / δ := by
       field_simp
-      nlinarith [sq_nonneg (|v - u| - δ), abs_nonneg (v - u), sq_abs (v - u)]
+      nlinarith only [sq_nonneg (|v - u| - δ), abs_nonneg (v - u), sq_abs (v - u)]
     rw [H_eq, div_div_cancel₀ (by positivity)]
     calc |R v - R u| ≤ L * |v - u| := h_lip u hu.le v hv.le
       _ ≤ L * (δ + (v - u) ^ 2 / δ) := by gcongr

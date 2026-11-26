@@ -126,11 +126,6 @@ namespace New
 variable {p : ℕ} [Fact p.Prime]
 
 
-/-- If `g(0) = 0`, then `exp g` has constant term `1`. -/
-lemma constantCoeff_expSubst {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoeff g = 0) :
-    constantCoeff (expSubst g) = 1 :=
-  PowerSeries.constantCoeff_subst_exp hg_zero
-
 /-- If `g(0) = 0`, then `s g(X) - g(δ X)` has constant term `0`. -/
 lemma constantCoeff_smul_sub_rescale {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoeff g = 0)
     (s δ : ℂ_[p]) : constantCoeff (s • g - rescale δ g) = 0 := by
@@ -140,15 +135,6 @@ lemma constantCoeff_smul_sub_rescale {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoe
 lemma mul_derivative_logOf {f : ℂ_[p]⟦X⟧} (hf : constantCoeff f = 1) :
     f * d⁄dX (logOf f) = d⁄dX f := by
   rw [← PowerSeries.logDeriv_def, mul_comm, PowerSeries.logDeriv_mul f hf]
-
-/-- If `g(0) = 0`, then `log (exp g) = g`, where `exp g` is `expSubst g`. -/
-lemma logOf_expSubst {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoeff g = 0) :
-    logOf (expSubst g) = g :=
-  PowerSeries.logOf_subst_exp hg_zero
-
-/-- If `f(0) = 1`, then `exp (log f) = f`, where `exp` is `expSubst` and `log f` is `logOf f`. -/
-lemma expSubst_logOf {f : ℂ_[p]⟦X⟧} (hf : constantCoeff f = 1) : expSubst (logOf f) = f :=
-  PowerSeries.subst_exp_logOf hf
 
 section Bounds
 
@@ -256,23 +242,25 @@ lemma norm_coeff_le_of_aeval {x : ℂ_[p]⟦X⟧} {l : ℕ} {s : ℝ} (h_dvd : X
   rw [eq_sub_of_add_eq' h_sum.symm, sub_eq_add_neg]
   exact (norm_add_le_max _ _).trans (max_le (hR _ hi) (by rwa [norm_neg]))
 
+/-- Legendre's bound `v((n + 1)!) ≤ n / (p - 1)`, for the norm of `ℂ_p`. -/
+lemma rpow_pow_le_norm_factorial_succ (n : ℕ) :
+    ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n ≤ ‖((n + 1).factorial : ℂ_[p])‖ := by
+  have hp : (1 : ℝ) < p := Nat.one_lt_cast.2 (Fact.out : p.Prime).one_lt
+  have h : ((p : ℝ) - 1) * (multiplicity p (n + 1).factorial : ℝ) ≤ n := by
+    rw [← Nat.cast_pred (Fact.out : p.Prime).pos]
+    exact_mod_cast Nat.le_of_lt_succ
+      (sub_one_mul_multiplicity_factorial_lt_of_ne_zero p n.succ_ne_zero)
+  rw [← Real.rpow_mul_natCast p.cast_nonneg, neg_mul, one_div_mul_eq_div,
+    norm_natCast_eq_inv_pow_padicValNat (n + 1).factorial_ne_zero, Nat.padicValNat_def]
+  simpa [Real.rpow_neg] using Real.rpow_le_rpow_of_exponent_le hp.le
+    (neg_le_neg ((le_div_iff₀' (sub_pos.2 hp)).2 h))
+
 /-- If `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, then `c ^ j / (j + 1)!` is
 integral, as `v((j + 1)!) ≤ j / (p - 1)`. -/
 lemma norm_pow_le_norm_factorial_succ {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 / (p - 1)) : ℝ)) (j : ℕ) :
     ‖c‖ ^ j ≤ ‖((j + 1).factorial : ℂ_[p])‖ := by
-  have hp : (1 : ℝ) < p := Nat.one_lt_cast.2 (Fact.out : p.Prime).one_lt
-  have h_val : (p - 1) * padicValNat p (j + 1).factorial ≤ j := by
-    rw [Nat.padicValNat_def]
-    exact Nat.le_of_lt_succ (sub_one_mul_multiplicity_factorial_lt_of_ne_zero p j.succ_ne_zero)
-  have h_real : (padicValNat p (j + 1).factorial : ℝ) ≤ j / (p - 1) := by
-    rw [le_div_iff₀' (sub_pos.2 hp), ← Nat.cast_pred (Fact.out : p.Prime).pos]
-    exact_mod_cast h_val
-  calc ‖c‖ ^ j ≤ (p : ℝ) ^ (-(j / (p - 1)) : ℝ) := by
-        grw [hc, ← Real.rpow_mul_natCast p.cast_nonneg, neg_mul, one_div_mul_eq_div]
-    _ ≤ (p : ℝ) ^ (-(padicValNat p (j + 1).factorial : ℝ)) :=
-      Real.rpow_le_rpow_of_exponent_le hp.le (neg_le_neg h_real)
-    _ = ‖((j + 1).factorial : ℂ_[p])‖ := by
-      simp [norm_natCast_eq_inv_pow_padicValNat (j + 1).factorial_ne_zero, Real.rpow_neg]
+  exact (pow_le_pow_left₀ (norm_nonneg c) hc j).trans
+    (rpow_pow_le_norm_factorial_succ j)
 
 /-- If `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, then `c ^ j / (j + 1)` is
 integral. -/
@@ -365,12 +353,12 @@ lemma mem_of_expSubst_smul_eq {B : Subring ℂ_[p]⟦X⟧} {T : ℂ_[p]⟦X⟧}
     (hH : H ∈ B) (h_exp : expSubst (c • g) = 1 + c • H) : g ∈ B := by
   -- Taking logarithms gives `g = (log (1 + c X) / c)(H)`, an integral series in `H`.
   have hcg : constantCoeff (c • g) = 0 := by simp [hg_zero]
-  have hH_zero : constantCoeff H = 0 := by simpa [h_exp, hc_ne] using constantCoeff_expSubst hcg
+  have hH_zero : constantCoeff H = 0 := by simpa [h_exp, hc_ne] using constantCoeff_subst_exp hcg
   have hs : HasSubst H := .of_constantCoeff_zero' hH_zero
   have h_log : (c⁻¹ • rescale c (log ℂ_[p])).subst H = g :=
     calc _ = c⁻¹ • logOf (1 + c • H) := by
           rw [subst_smul hs, subst_rescale_eq_subst_smul _ hs, logOf_eq, add_sub_cancel_left]
-      _ = g := by rw [← h_exp, logOf_expSubst hcg, inv_smul_smul₀ hc_ne]
+      _ = g := by rw [← h_exp, logOf_subst_exp hcg, inv_smul_smul₀ hc_ne]
   rw [← h_log]
   exact hB.subst_mem (inv_smul_rescale_log_mem hc) hH hH_zero
 
@@ -384,12 +372,12 @@ lemma expSubst_mem_of_pow_mem {B : Subring ℂ_[p]⟦X⟧} {T : ℂ_[p]⟦X⟧}
   obtain ⟨b, hb_mem, hb_one, hb_pow⟩ := exists_pow_eq_one_add_X hm
   have hm_ne : m ≠ 0 := fun h ↦ (Fact.out : p.Prime).ne_one (by simpa [h] using hm)
   set u : ℂ_[p]⟦X⟧ := expSubst g ^ m - 1 with hu
-  have hu_zero : constantCoeff u = 0 := by simp [hu, constantCoeff_expSubst hg_zero]
+  have hu_zero : constantCoeff u = 0 := by simp [hu, constantCoeff_subst_exp hg_zero]
   have hs : HasSubst u := .of_constantCoeff_zero' hu_zero
   have h_root : b.subst u = expSubst g := by
     refine eq_of_pow_eq_pow_of_constantCoeff_eq_one hm_ne
       ((constantCoeff_subst_eq hu_zero).trans hb_one)
-      (constantCoeff_expSubst hg_zero) ?_
+      (constantCoeff_subst_exp hg_zero) ?_
     rw [← subst_pow hs, hb_pow, ← coe_substAlgHom hs, map_add, map_one, substAlgHom_X, hu]
     ring
   rw [← h_root]

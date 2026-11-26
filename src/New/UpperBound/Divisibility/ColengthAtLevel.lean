@@ -219,7 +219,7 @@ lemma colengthDvd_comap_upOperator_pow (i : ℕ) :
   | zero =>
     rw [zero_add, mul_one]
     exact D.colengthDvd_integralFormsAt_diagPointN.comap .id D.integralFormsAt_one_le
-      fun φ _ hφ ↦ by simpa using hφ
+      fun φ _ hφ ↦ hφ
   | succ i ih =>
     rw [mul_add_one, pow_add (D.N : embValRing)]
     refine ih.trans (D.colengthDvd_integralFormsAt_diagPointN.comap _ (fun φ hφ ↦ ?_) fun _ _ h ↦ h)

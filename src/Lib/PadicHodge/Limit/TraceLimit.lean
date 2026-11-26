@@ -561,27 +561,16 @@ lemma exists_isCrystallineUpTo_tateTwistHom (h : IsTraceLimit r A F a ρ)
     ∃ d : ℕ, IsCrystallineUpTo (2 * d) (viaGroupRing (tateTwistHom A d) ⟨r⟩) ∧
       ∀ (η : I) (i : ι η), IsCrystallineUpTo (2 * d) (viaGroupRing (tateTwistHom A d) (ρ η i)) := by
   -- Take `d` above all jumps. The twist of `r` is crystalline as a limit.
-  have h_fin : ({k : ℤ | ∃ γ : PadicAlgCl ℓ →ₐ[ℤ_[ℓ]] ℂ_[ℓ], jump (decompRep r A) γ k ≠ 0} ∪
-      {k : ℤ | ∃ (η : I) (i : ι η) (γ : PadicAlgCl ℓ →ₐ[ℤ_[ℓ]] ℂ_[ℓ]),
-        jump (decompRep (ρ η i).rep A) γ k ≠ 0}).Finite :=
-    (finite_setOf_jump_ne_zero (A := A) (σ := ⟨r⟩) h.continuous_limit).union
-      h.finite_setOf_jump_approx_ne_zero
-  obtain ⟨d, hd_bound⟩ := (h_fin.image Int.natAbs).bddAbove
-  have h_approx (η : I) (i : ι η) :
-      IsCrystallineUpTo (2 * d) (viaGroupRing (tateTwistHom A d) (ρ η i)) := by
-    obtain ⟨-, h_crys⟩ := h.isGoodAt_approx η i
-    exact isCrystallineUpTo_tateTwistHom (h_crys.tate_twist _ viaGroupRing_tateTwistHom)
-      fun γ k hk ↦ hd_bound ⟨k, .inr ⟨η, i, γ, hk⟩, rfl⟩
-  -- for each `ε > 0` there is an `η` such that the trace on `r` of every `y` killed by all `ρ η i`
-  -- has norm at most `ε`
-  have h_close : ∀ ε > (0 : ℝ), ∃ η : I, ∀ y : ℤ_[ℓ][Gal(Ω/E)],
-      (∀ i : ι η, groupRingHom (ρ η i) y = 0) → ‖(groupRingHom ⟨r⟩ y).trace‖ ≤ ε := fun ε hε ↦
-    (h.eventually_norm_trace_sub_le hε).exists.imp fun η hη y hy ↦ by simpa [hy] using hη y
-  have h_limit : IsCrystalline (viaGroupRing (tateTwistHom A d) ⟨r⟩) :=
-    isCrystalline_of_trace_limit _ h.continuous_limit h.isTraceNondeg h_approx h.continuous_approx
-      h_close
-  exact ⟨d, isCrystallineUpTo_tateTwistHom h_limit fun γ k hk ↦ hd_bound ⟨k, .inl ⟨γ, hk⟩, rfl⟩,
-    h_approx⟩
+  obtain ⟨d, hd⟩ := (((finite_setOf_jump_ne_zero (A := A) (σ := ⟨r⟩) h.continuous_limit).union
+    h.finite_setOf_jump_approx_ne_zero).image Int.natAbs).bddAbove
+  have h_approx η i := isCrystallineUpTo_tateTwistHom
+    ((h.isGoodAt_approx η i).2.tate_twist _ viaGroupRing_tateTwistHom)
+    fun γ k hk ↦ hd ⟨k, .inr ⟨η, i, γ, hk⟩, rfl⟩
+  exact ⟨d, isCrystallineUpTo_tateTwistHom
+    (isCrystalline_of_trace_limit _ h.continuous_limit h.isTraceNondeg h_approx h.continuous_approx
+      fun ε hε ↦ (h.eventually_norm_trace_sub_le hε).exists.imp fun η hη y hy ↦ by
+        simpa [hy] using hη y)
+    fun γ k hk ↦ hd ⟨k, .inl ⟨γ, hk⟩, rfl⟩, h_approx⟩
 
 /-- In a chart at `A` (an embedding `PadicPlaceEmbedding E A ℓ`), the restriction of `r` to the
 decomposition group at `A` is crystalline. -/
@@ -624,50 +613,38 @@ theorem tendsto_jump (h : IsTraceLimit r A F a ρ) [PadicPlaceEmbedding E A ℓ]
   let Δ : Subgroup Gal(Ω/E) := decompGroup Gal(Ω/E) A
   let X (η : I) : Option (ι η) → PadicRep Gal(Ω/E) ℓ := Option.elim' ⟨r⟩ (ρ η)
   obtain ⟨d, h_limit, h_approx⟩ := h.exists_isCrystallineUpTo_tateTwistHom
-  have h_in (θ : I) : ∀ o : Option (ι θ),
-      IsCrystallineUpTo (2 * d) (viaGroupRing (tateTwistHom A d) (X θ o))
-    | none => h_limit
-    | some x => h_approx θ x
-  have h_cont (η : I) : ∀ o : Option (ι η), Continuous (X η o).rep
-    | none => h.continuous_limit
-    | some x => h.continuous_approx η x
-  choose L q u hL using fun η ↦ exists_finite_groupRing_quotient Δ (τ := X η) (h_cont η)
+  have h_in (θ : I) : ∀ o, IsCrystallineUpTo (2 * d) (viaGroupRing (tateTwistHom A d) (X θ o)) :=
+    Option.rec h_limit (h_approx θ)
+  choose L q u hL using fun η ↦ exists_finite_groupRing_quotient Δ (τ := X η)
+    (Option.rec h.continuous_limit (h.continuous_approx η))
   have hL_free (η : I) : Free ℤ_[ℓ] (L η) := (hL η).free
   have hL_finite (η : I) : Module.Finite ℤ_[ℓ] (L η) := (hL η).finite
-  have hq (η : I) : (⇑(q η)).Surjective := (hL η).surjective
-  have hu (η : I) (o : Option (ι η)) (y : ℤ_[ℓ][Gal(Ω/E)]) :
-      u η o (q η y) = groupRingHom (X η o) y :=
-    (hL η).factors o y
   have h_iso {x : PadicAlgCl ℓ} : ‖γ x‖ = ‖x‖ := by
     obtain ⟨g, hg⟩ := exists_gp_eq_algHom γ
     simp [hg, ← UniformSpace.Completion.algEquiv_smul_coe]
   -- In the twist the jump w is w - (-d).
   obtain ⟨t, ht⟩ := exists_uniform_trace_sum_eq_jump Δ (2 * d) (w - -d)
   choose z hz h_proj using fun θ ↦ ht (finBasis ℤ_[ℓ] (L θ)) 1 ((hL θ).isCrystallineUpTo (h_in θ))
-  choose y hy using fun θ s ↦ hq θ (finBasis ℤ_[ℓ] _ s)
-  let err (θ : I) (s : Fin (finrank ℤ_[ℓ] (L θ))) : PadicAlgCl ℓ :=
+  choose y hy using fun θ s ↦ (hL θ).surjective (finBasis ℤ_[ℓ] _ s)
+  refine Metric.tendsto_nhds.mpr fun ε hε ↦ ?_
+  obtain ⟨δ, hδ, hδε⟩ := exists_pos_mul_lt hε ‖t‖
+  filter_upwards [h.eventually_norm_trace_sub_le hδ] with θ hθ
+  have h_read (o : Option (ι θ)) :=
+    h_proj θ γ ⟨.toHomUnits _⟩ (u θ o) (by simp [(hL θ).factors]) (by simp)
+      (h_in θ o).left.isPotentiallyCrystalline
+  let err s :=
     (groupRingHom ⟨r⟩ (y θ s)).trace - ∑ x, a θ x * (groupRingHom (ρ θ x) (y θ s)).trace
-  have h_dist (θ : I) : dist (∑ x, a θ x * jump (decompRep (ρ θ x).rep A) γ w)
-      (jump (decompRep r A) γ w) = ‖t * ∑ s, z θ s * γ (err θ s)‖ := by
-    have h_read (o : Option (ι θ)) :=
-      h_proj θ γ ⟨.toHomUnits _⟩ (u θ o) (by simp [hu]) (by simp)
-        (h_in θ o).left.isPotentiallyCrystalline
+  have h_dist : dist (∑ x, a θ x * jump (decompRep (ρ θ x).rep A) γ w)
+      (jump (decompRep r A) γ w) = ‖t * ∑ s, z θ s * γ (err s)‖ := by
     -- `using!`: `h_read` is stated for `X θ o`, which is `r` or `ρ θ x` only up to unfolding of
     -- instances
-    simpa [err, ← hy, hu, mul_sub, mul_sum, sum_comm (γ := ι _), mul_left_comm (γ _),
+    simpa [err, ← hy, (hL θ).factors, mul_sub, mul_sum, sum_comm (γ := ι _), mul_left_comm (γ _),
       dist_eq_norm', ← h_iso, ↓jump_twist_cyclotomicGp _ viaGroupRing_tateTwistHom] using!
       congr(‖$(h_read none) - ∑ x, γ (a θ x) * $(h_read x)‖).symm
-  refine Metric.tendsto_nhds.mpr fun ε hε ↦ ?_
-  obtain ⟨δ, hδ, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧ ‖t‖ * δ < ε := exists_pos_mul_lt hε ‖t‖
-  filter_upwards [h.eventually_norm_trace_sub_le hδ] with θ hθ
-  have h_term (s : Fin (finrank ℤ_[ℓ] (L θ))) : ‖z θ s * γ (err θ s)‖ ≤ δ := by
-    have h_err : ‖err θ s‖ ≤ δ := hθ (y θ s)
-    exact (norm_mul_le_of_le (hz θ s) (h_iso.trans_le h_err)).trans_eq (one_mul δ)
-  calc dist (∑ x, a θ x * jump (decompRep (ρ θ x).rep A) γ w) (jump (decompRep r A) γ w)
-      = ‖t * ∑ s, z θ s * γ (err θ s)‖ := h_dist θ
-    _ ≤ ‖t‖ * δ :=
-      norm_mul_le_of_le le_rfl (norm_sum_le_of_forall_le_of_nonneg hδ.le fun s _ ↦ h_term s)
-    _ < ε := hδε
+  rw [h_dist]
+  refine (norm_mul_le_of_le le_rfl
+    (norm_sum_le_of_forall_le_of_nonneg hδ.le fun s _ ↦ ?_)).trans_lt hδε
+  exact (norm_mul_le_of_le (hz θ s) (h_iso.trans_le (hθ (y θ s)))).trans_eq (one_mul δ)
 
 /-- Let the jump multiplicities of `ρ η i` be `R'`-related to `J' η i`. Suppose that `n` is
 `R`-related to the multiplicity in `J` whenever numbers `x η i` are `R'`-related to the

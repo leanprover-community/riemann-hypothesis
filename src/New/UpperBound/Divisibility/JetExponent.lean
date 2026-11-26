@@ -278,7 +278,7 @@ lemma one_add_logb_boxes_le (hj : j < D.m) :
     simp [f, Core.numInfPlaces]
   have h_log : 1 / 2 ≤ Real.log p := by
     grw [← q.out.two_le]
-    linarith [Real.log_two_gt_d9]
+    linarith only [Real.log_two_gt_d9]
   calc _ ≤ 1 + Real.log (D.f * D.a + D.f * D.M + 1) / (1 / 2) := by
         grw [logb, ← h_log, h_boxes]
     _ ≤ D.logB ^ 2 := D.le_of_hasLogBound
@@ -381,7 +381,7 @@ lemma sub_le_predictedDivisibility (hj : j < D.m) (S : Finset D.Φ) :
     grw [sum_le_card_nsmul univ _ _ fun τ _ ↦
       min_longRow_add_lowColumns_add_min_lowBoxes_le hj S τ, nsmul_eq_mul]
     change (1 / 2 * (D.f * (3 * (D.a / P.d / D.m))) : ℝ) ≤ D.f * (2 * (D.a / P.d / D.m))
-    linarith [show (0 : ℝ) ≤ D.f * (D.a / P.d / D.m) by positivity]
+    linarith only [show (0 : ℝ) ≤ D.f * (D.a / P.d / D.m) by positivity]
   · positivity
 
 /-- For `j < D.m` and a place `τ`, the number `γ_p = gammaPrime P.d p` times the number

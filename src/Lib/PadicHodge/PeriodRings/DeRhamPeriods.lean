@@ -230,8 +230,6 @@ lemma smul_tPeriodAmax (g : Gp p) : g • tPeriodAmax = (cyclotomicGp g : ℤ_[p
 /-- The image of `tPeriodAmax` in `B_dR⁺`. It plays the role of `p` times Fontaine's period `t`. -/
 noncomputable def tPeriod : BdRPlus := algebraMap Amax BdRPlus tPeriodAmax
 
-lemma tPeriod_def : tPeriod = algebraMap Amax BdRPlus tPeriodAmax := rfl
-
 end PeriodT
 
 /-!
@@ -323,7 +321,7 @@ lemma BdRPlus.associated_xi_tPeriod : Associated (xi : BdRPlus) tPeriod := by
 by χ(`g`) ∈ ℤ_p, where χ = `cyclotomicGp` is the p-adic cyclotomic character. Here `tPeriod` is the
 image of `tPeriodAmax` in B_dR⁺, which plays the role of p times Fontaine's t. -/
 lemma smul_tPeriod (g : Gp p) : g • tPeriod = (cyclotomicGp g : ℤ_[p]) • tPeriod := by
-  simp [tPeriod_def, smul_tPeriodAmax, smul_def, ← IsScalarTower.algebraMap_apply]
+  simp [tPeriod, smul_tPeriodAmax, smul_def, ← IsScalarTower.algebraMap_apply]
 
 /-! ### θ, the embedding of Q̄_p, and the fundamental sequence -/
 
@@ -396,34 +394,24 @@ lemma Bmax.exists_coe_eq_sub (β : BdR (p := p)) :
 of some `x` in `B_dR⁺`: the map `φ - 1` sends `B ∩ B_dR⁺` onto `B`. -/
 lemma Bmax.exists_frobEnd_sub_eq_and_coe_eq (a : Bmax (p := p)) :
     ∃ (y : Bmax) (x : BdRPlus), frobEnd y - y = a ∧ (x : BdR) = y := by
-  -- Write `a = b / μ ^ m` and `p ^ n b = e + p ^ n μ ^ (m + 1) w` with `e` in `A_inf`, `w` in `A`,
-  -- so that `a = e / (p ^ n μ ^ m) + μ w`.
-  obtain ⟨m, b, hb⟩ : ∃ (m : ℕ) (b : BPlus), a * ((mu : BPlus) : Bmax) ^ m = b :=
-    surj (mu : BPlus) a
-  obtain ⟨n, e, _, ⟨w, rfl⟩, h_dense⟩ :
-      ∃ (n : ℕ) (e : Ainf), ∃ w ∈ amaxImage, p ^ n * b = e + p ^ n * mu ^ (m + 1) * w :=
-    b.exists_Ainf_approx 0 (m + 1)
-  -- If `e = φ c - ξ ^ m c`, then `φ - 1` sends `c / (p ^ n τ ^ m)` to the first term, because
-  -- `φ τ = μ = ξ τ`. If `w = d - φ(ξ) φ(d)`, then it sends `-μ d` to the second: `φ μ = φ(ξ) μ`.
-  -- Such `d` exists because `p` divides `φ(ξ)` in `A`.
+  -- Write `a = b / μ ^ m` and `p ^ n b = e + p ^ n μ ^ (m + 1) w` with `e` in `A_inf`, `w` in `A`.
+  obtain ⟨m, b, hb⟩ := surj (mu : BPlus) a
+  obtain ⟨n, e, _, ⟨w, rfl⟩, h_dense⟩ := b.exists_Ainf_approx 0 (m + 1)
+  -- Solve `e = φ c - ξ ^ m c` and `w = d - φ(ξ) φ(d)` (since `p ∣ φ(ξ)` in `A`).
   obtain ⟨c, rfl⟩ := e.exists_frobEnd_sub_xi_pow_mul_eq m
   obtain ⟨d, rfl⟩ := exists_sub_mul_frobEnd_eq associated_p_frobEnd_xi.dvd w
   -- The denominator `p ^ n τ ^ m` is a unit `s` of `B` and a unit `v` of `B_dR⁺`.
-  have h_xi : IsUnit (xi : Bmax) := isUnit_coe_Bmax_of_dvd_mu (Dvd.intro tau xi_mul_tau)
   have h_tau : IsUnit (tau : Bmax) := isUnit_coe_Bmax_of_dvd_mu (Dvd.intro_left xi xi_mul_tau)
   obtain ⟨s, hs⟩ : IsUnit ((p : BPlus) ^ n • (tau : Bmax) ^ m) :=
     (h_tau.pow m).smul (isUnit_p.pow n).unit
   obtain ⟨v, hv⟩ : IsUnit (tau ^ m * p ^ n : BdRPlus) := by simp [ne]
   refine ⟨c • ↑s⁻¹ - mu * d, c • ↑v⁻¹ - mu * d, ?_, ?_⟩
-  · -- Multiply by the unit `s ξ ^ m = p ^ n μ ^ m` to clear the denominator.
-    apply (s * h_xi.unit ^ m).mul_right_inj.mp
-    have h_frob_s : frobEnd (c • ((s : Bmax) * ↑s⁻¹)) = frobEnd (c • (1 : Bmax)) := by
-      rw [s.mul_inv]
-    have h_xi_s : xi ^ m • c • ((s : Bmax) * ↑s⁻¹) = xi ^ m • c • (1 : Bmax) := by rw [s.mul_inv]
-    have hb_p : (p : Bmax) ^ n * (a * ((mu : BPlus) : Bmax) ^ m) = p ^ n * b := by rw [hb]
+  -- Multiply by the unit `s ξ ^ m = p ^ n μ ^ m` to clear the denominator.
+  · apply (s * (isUnit_coe_Bmax_of_dvd_mu (Dvd.intro tau xi_mul_tau)).unit ^ m).mul_right_inj.mp
     linear_combination (norm := skip)
-      h_frob_s - h_xi_s - hb_p - congrArg (algebraMap BPlus Bmax) h_dense
-    -- In `B` the unit `s` is `p ^ n τ ^ m` and `ξ τ = μ`; what remains is ring arithmetic.
+      congrArg (fun u : Bmax ↦ frobEnd (c • u)) s.mul_inv -
+      congrArg (fun u : Bmax ↦ xi ^ m • c • u) s.mul_inv -
+      congrArg ((p : Bmax) ^ n * ·) hb - congrArg (algebraMap BPlus Bmax) h_dense
     simp [smul_def, hs, ← xi_mul_tau, ← IsScalarTower.algebraMap_apply, sub_eq_zero]
     ring
   · simp [smul_def, hs, hv, mul_comm, ← IsScalarTower.algebraMap_apply]

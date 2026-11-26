@@ -588,7 +588,7 @@ lemma amplitudeSum_eq_zero_of_not_charsAgree [HasPrimitiveRoot5040 E]
     have coe_mul (u : S.classUnipotent c) : (↑(u * γ) : S.G E ⧸ S.classUnipotent c') = u • x := rfl
     calc _ = ∑' u : S.classUnipotent c, reps.indicator 1 (u • x) * φ (u • x)
            (S.ratToInf u * y) := by
-          simp [wt, tsum_classCutoff_eq_one, coe_mul, ENNReal.tsum_prod', ENNReal.tsum_mul_right]
+          simp [wt, tsum_classCutoff_eq_one, coe_mul, tsum_prod', ENNReal.tsum_mul_right]
       _ = ∑' u : stabilizer (S.classUnipotent c) (a x • x),
             φ (a x • x) (S.ratToInf (u * a x : S.classUnipotent c) * y) :=
           tsum_indicator_smul_eq_tsum_stabilizer ha (fun z u ↦ φ z (S.ratToInf u * y)) x

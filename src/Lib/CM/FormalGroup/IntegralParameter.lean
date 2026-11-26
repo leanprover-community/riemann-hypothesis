@@ -175,12 +175,6 @@ lemma norm_coeff_one_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (h
   simpa [coeff_one_subst hB.constantCoeff_eq_zero, hB.coeff_one] using
     mem_range_seriesToCp.1 ⟨g, rfl⟩ 1
 
-/-- The constant term and the linear coefficient of an element of `B = 𝔬[[T]]` have norm at most
-one. -/
-lemma norm_constantCoeff_le_one_and_norm_coeff_one_le_one (hB : IsSeriesGenerator B T)
-    {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
-    ‖f.constantCoeff‖ ≤ 1 ∧ ‖f.coeff 1‖ ≤ 1 :=
-  ⟨hB.norm_constantCoeff_le_one hf, hB.norm_coeff_one_le_one hf⟩
 
 /-- Let `B = 𝔬[[T]]` be the ring of series in `T` over the valuation ring `𝔬` of `ℂ_[p]`. Any
 `f = X + ⋯` in `B` generates the same ring: `𝔬[[f]] = B`. -/

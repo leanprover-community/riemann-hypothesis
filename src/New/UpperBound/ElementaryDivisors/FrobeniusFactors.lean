@@ -160,7 +160,7 @@ lemma letterMatrix_mul_parityCofactor_letterConj_mul (M : Matrix (Fin k) (Fin k)
       T.parityCofactor s M := by
   let A : Matrix (Fin k) (Fin k) O := h.val.map (T.embedding s)
   let B : Matrix (Fin k) (Fin k) O := h⁻¹.val.map (T.embedding s)
-  have hAB : A * B = 1 := by simp [A, B, ← Matrix.map_mul]
+  have hAB : A * B = 1 := by simp [A, B]
   rw [show T.letterConj h s M = A * M * B from rfl, parityCofactor, parityCofactor,
     letterMatrix_apply, letterMatrix_apply, inv_inv]
   split_ifs
@@ -801,24 +801,16 @@ lemma degree_le_of_coeff_substitutionOperator {β γ : Exponents N k n}
   -- Give the variables of the copy `j` weight `-1`. Level `-t` of the Gauss filtration over
   -- `adicFiltration 0` consists of the polynomials of degree at most `t` in the copy `j`.
   let ω (v : ZMod N × Fin k × Fin k) : ℝ := if v.1 = j then -1 else 0
-  have h_weight : weight ω ν = -((degree (ν.curry j) : ℕ) : ℝ) := by
-    simp [ω, degree_eq_sum, sum_prod_type_right, weight_eq_sum]
-  have h_entry (s : ZMod N) (d : ℕ) (hd : d ≤ ℓ) (b c : Fin k) : T.frobGenericMatrix s d b c ∈
-      gaussFiltration (adicFiltration (0 : O)) ω (0 - 0 - T.P ^ ℓ) := by
-    refine antitone ?_ (pow_mem_graded _ X_mem_gaussFiltration)
-    calc (0 - 0 - T.P ^ ℓ : ℝ) ≤ T.P ^ d • (-1 : ℝ) := by
-          simpa using pow_le_pow_right₀ T.one_lt_P.le hd
-      _ ≤ T.P ^ d • ω (s - d, b, c) := by
-          gcongr
-          grind
-  -- All potentials are `0`, and each factor loses `P ^ ℓ`.
-  have h_mem : T.substitutionOperator r ℓ n T.frobGenericMatrix β γ ∈
-      gaussFiltration (adicFiltration 0) ω
-        (weight 0 (exponentOf β) - N * n * k * (ℓ + 2) * T.P ^ ℓ) :=
-    T.substitutionOperator_mem _ (α := 0) (x := 0) (u := T.P ^ ℓ) (hα_zero := by simp)
-      (hα_sum := by simp) (hx := by simp) (hψ := h_entry) (hu := by positivity)
+  have h_mem := T.substitutionOperator_mem (gaussFiltration (adicFiltration (0 : O)) ω)
+    (α := 0) (x := 0) (u := T.P ^ ℓ) (β := β) (γ := γ) (r := r) (ℓ := ℓ) (n := n)
+    (ψ := T.frobGenericMatrix) (hα_zero := by simp) (hα_sum := by simp) (hx := by simp)
+    (hu := by positivity) (hψ := fun s d hd b c => by
+      refine antitone (le_trans ?_ (nsmul_le_nsmul_right (a := (-1 : ℝ)) (by grind) _))
+        (pow_mem_graded _ X_mem_gaussFiltration)
+      simpa using pow_le_pow_right₀ T.one_lt_P.le hd)
   rify
-  simpa [h_weight, weight_eq_sum 0] using le_weight_of_mem_gaussFiltration_zero h_mem hν
+  simpa [ω, degree_eq_sum, sum_prod_type_right, weight_eq_sum] using
+    le_weight_of_mem_gaussFiltration_zero h_mem hν
 
 end New.FrobeniusCycle
 

@@ -355,7 +355,7 @@ lemma IsTangentPoly.hasJacobianRatio_eval_div {X : CommAlg E ⥤ Type 1}
     have h_N : N (-S φ) = t • (φ - S φ) - φ := by
       simp only [N, LinearMap.comp_apply, LinearEquiv.coe_coe, map_neg,
         LinearEquiv.symm_apply_apply, LinearMap.sub_apply, LinearMap.smul_apply,
-        Module.End.one_apply]
+        one_apply_eq_self]
       module
     calc
       t • ξ α - ξ γ = D (t • (φ - S φ) - φ) := by
@@ -1011,13 +1011,12 @@ lemma New.Variety.IsPointSum.cup_pointClass {k : Type} [Field k] [CharZero k] {d
     simp only [ComesFromPoints, Set.mem_singleton_iff, exists_eq_left, Ideal.span_le,
       Set.range_subset_iff, Fin.forall_fin_one] at h_cut
     convert h_cut using 2
-    · refine forall_congr' fun i ↦ ?_
-      change α.hom (G i.castSucc) = 0 ↔ α.hom (g i ⊗ₜ[k] 1) = 0
-      have hG : G i.castSucc = g i ⊗ₜ[k] 1 := Fin.snoc_castSucc _ _ _
-      rw [hG]
+    · change (∀ i : Fin d, α.hom (G i.castSucc) = 0) ↔
+        ∀ i : Fin d, α.hom (g i ⊗ₜ[k] 1) = 0
+      have hG (i : Fin d) : G i.castSucc = g i ⊗ₜ[k] 1 := Fin.snoc_castSucc _ _ _
+      simp only [hG]
     · change α.hom (G (Fin.last d)) = 0 ↔ α.hom (1 ⊗ₜ[k] g' 0) = 0
-      have hG : G (Fin.last d) = 1 ⊗ₜ[k] g' 0 := Fin.snoc_last _ _
-      rw [hG]
+      rw [show G (Fin.last d) = 1 ⊗ₜ[k] g' 0 from Fin.snoc_last _ _]
   obtain ⟨ξ, ξ_local, ξ_pt⟩ :=
     (a.prod b).exists_isLocalSymbol cut ((range_pointMap_prod ..).ge _ ⟨ha, hb⟩)
   let U : Subfunctor (X ⊗ Y) :=

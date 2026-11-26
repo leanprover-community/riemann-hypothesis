@@ -29,7 +29,7 @@ else
   [ $# = 4 ] || { echo "usage: setup-host.sh [<instance> <label> <cpus> <memory-max>]" >&2; exit 1; }
   label=$2 cpus=$3 memory_max=$4
   [[ $instance =~ ^[a-z0-9]+$ ]] || { echo "bad instance name $instance" >&2; exit 1; }
-  case "$label" in rh-big | rh-pr-trusted) ;; *) echo "unknown label $label" >&2; exit 1 ;; esac
+  case "$label" in rh-big | rh-pr-trusted | rh-pr-fork) ;; *) echo "unknown label $label" >&2; exit 1 ;; esac
   [[ $cpus =~ ^[0-9]+(-[0-9]+)?(,[0-9]+(-[0-9]+)?)*$ ]] || { echo "bad cpuset $cpus" >&2; exit 1; }
   [[ $memory_max =~ ^[0-9]+[KMGT]$ ]] || { echo "bad memory limit $memory_max" >&2; exit 1; }
   U=ghrunner-$instance

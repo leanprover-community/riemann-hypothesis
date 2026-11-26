@@ -106,7 +106,6 @@ lemma isIntMatrix_ideleM_inv_smul_eichler (c : S.Classes) {m : Type} [Fintype m]
     {γ : S.G E} (h_val : γ.val.val = 1 + (S.M : E) •
       (x * (uᴴ * S.ratGram) - (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram))) :
     IsIntMatrix (Ô E) (S.ideleM⁻¹ • ((S.translateByClassReps c c γ).val.val - 1)) := by
-  classical
   -- In the basis of the lattice this is the same expression in integral matrices, as
   -- `classCoord_conj_splitGram` moves `J` to that basis.
   have hJ : IsIntMatrix (Ô E) (S.latticeMiddle (𝔸f E)).splitGram :=
@@ -152,7 +151,6 @@ lemma exists_mem_classUnipotent_eq_one_add_smul [HasPrimitiveRoot5040 E] (c : S.
             (S.M : E) •
               (x * (uᴴ * S.ratGram) -
                 (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)) := by
-  classical
   -- The matrix is an Eichler map along the isotropic columns `x`; take `τ = S.M * τ₀` with an
   -- integer `τ₀` such that `τ₀ + star τ₀ = 1`.
   obtain ⟨-, τ₀, -, -, hτ₀, -⟩ :=

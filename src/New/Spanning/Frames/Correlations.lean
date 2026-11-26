@@ -271,7 +271,7 @@ lemma quotientMeasureFrom_isNear_le {V : ℝ≥0∞} (hV : ∀ a : Fin 𝔰.n, F
       F.quotientMeasureFrom (l + 1) {x : T.G | F.IsNear (𝔰.ϱ + 2) (x * (σ * c))}
     let N : Set T.G := {σ : T.G | F.IsNear (l + 1) (σ * c)}
     have h_floor : F.floorMeasure l N ≤ V := by
-      simpa [N, Set.univ_inter] using hV ⟨l, hl⟩ c
+      simpa [Set.univ_inter] using hV ⟨l, hl⟩ c
     -- if `σ * c` is not near at `l + 1`, no point `x * σ * c` with `x` on the higher floors is near
     have h_support : support mass ⊆ N := by
       have h_ae : ∀ᵐ x : T.G ∂F.quotientMeasureFrom (l + 1), x ∈ floorGroup (l + 1) :=

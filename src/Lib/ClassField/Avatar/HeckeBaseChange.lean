@@ -277,7 +277,7 @@ def scalarRep (μ : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ) : Gal(Ω/E) →* GL (Fin 
 decomposition group at `A`; `cyclotomicGp` is the cyclotomic character of its image `L.toGp g`),
 twisting the scalar representation of `μ` by the `d`-th power of the cyclotomic character is its
 Tate twist by `d`. -/
-private lemma decompRep_scalarRep_cyclotomicCharIn_pow_mul [PadicIso ℓ]
+private lemma decompRep_scalarRep_cyclotomicCharIn_pow_mul
     (μ : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ)
     (A : ClosurePlace) (d : ℕ) [L : PadicPlaceEmbedding E A ℓ] (g : decompGroup Gal(Ω/E) A)
     (x : Fin 1 → PadicAlgCl ℓ) :

@@ -246,7 +246,7 @@ theorem leFibreMeasure_dualCols :
         fun g : 𝔰.G₁ ↦ g.val.val * 𝔰.dualCols) := by
   -- Fix the products with the frame, then the Gram matrix.
   have h_dual : 𝔰.J₁ * 𝔰.frameCols * (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualCols) = 𝔰.dualCols := by
-    simp [← ext_iff, J₁_eq, inclMatrix, Matrix.mul_apply, Matrix.one_apply, Fin.sum_univ_castSucc]
+    simp [← ext_iff, inclMatrix, Matrix.mul_apply, Matrix.one_apply, Fin.sum_univ_castSucc]
   let μ : Measure (Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) ℂ) :=
     volume.map fun p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin 𝔰.ϱ) ℂ ↦ 𝔰.dualCols + 𝔰.freeCols * p
   have h_linear : LeFibreMeasure volume volume (𝔰.frameColsᴴ * 𝔰.J₁ * ·)

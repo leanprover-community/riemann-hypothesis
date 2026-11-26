@@ -192,7 +192,6 @@ lemma exists_int_eq_sum_re {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040
   -- `i` to `I`. The sum of the `t v` is an algebraic integer equal to `(p - q I) / 2`, for the
   -- traces `p` of `x` and `q` of `i x`. So its squared absolute value `(p² + q²) / 4` is an
   -- integer, and `p` is even.
-  classical
   obtain ⟨i, hi, -⟩ : ∃ i : 𝓞 E, i * i = -1 ∧ star i = -i :=
     HasPrimitiveRoot5040.exists_mul_self_eq_neg_one
   have h_trace {y : E} (hy : IsIntegral ℤ y) :

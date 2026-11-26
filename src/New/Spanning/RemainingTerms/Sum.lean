@@ -133,8 +133,6 @@ lemma IsNearPairOverAgreeingBlock.corank_le_and_pairDiscriminant_le {E : Type} [
     (pow_le_pow_iff_right₀ (by linarith : 1 < S.b)).1
       ((le_mul_of_one_le_right (by positivity) h_one_le_d).trans h_pow_mul_disc_le)
   have h_codim : 18 * i ≤ 𝔰.n ^ 3 := Nat.le_of_mul_le_mul_right h_exp NeZero.one_le
-  have h_rank_excess_le : j.val - 𝔰.ϱ ≤ 1 := by lia
-  have h_ϱ_large : 10 ^ 5 ≤ 𝔰.ϱ := S.ten_pow_five_le_varrho
   lia
 
 /-- A near pair (two near representative terms over one block whose `s` agrees) lies in
@@ -226,8 +224,7 @@ lemma IsNearPairOverAgreeingBlock.ofReal_termSize_mul_le {E : Type} [Field E] [C
       B / (S.tailScale ^ (l + 2) * S.pairCountScale) :=
     calc
       _ = S.tailScale ^ (l + 6) * D / η ^ 𝔰.k / (S.tailScale ^ (l + 2) * S.pairCountScale) := by
-        field_simp
-        ring
+        field
       _ ≤ _ := by gcongr
   grw [← ofReal_mul' (by positivity), hq.termSize_mul_le hη h_gain hD hD', h_const]
 
@@ -373,8 +370,7 @@ lemma pow_mul_mainSecondMoment_div_le {E : Type} [Field E] [CMType E] {𝔰 : Sh
     _ ≤ (S.tailScale ^ 4) ^ 2 * (S.b / S.b ^ 6) ^ m * S.identitySecondMoment := by gcongr
     _ = S.identitySecondMoment / (S.tailScale ^ 4) ^ 3 := by
       rw [tailScale_pow_four, div_pow]
-      field_simp
-      ring
+      field
     _ ≤ S.identitySecondMoment / S.tailScale ^ 10 := by
       grw [← pow_mul, pow_le_pow_right₀ hτ (by norm_num : 10 ≤ 4 * 3)]
 

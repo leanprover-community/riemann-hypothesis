@@ -409,7 +409,7 @@ theorem DiscreteSeries.norm_dsCoeff_le_one (hg : l.HasGap h) (g : USign ε) : �
 conj(m_Λ(k)) w(k⁻¹g) dk = ∫_K |m_Λ|² · w(g) for all g (m_Λ = `New.weightMinors` of the lowest K-type
 Λ, and dk = `haarK ε` is the Haar measure of mass one on K = U(diag ε) ∩ U(n)).
 Then ∫ w(g)c_λ(xga) dg = c_λ(x) ∫ w(g)c_λ(ga) dg. -/
-theorem integral_mul_dsCoeff_translate [Nonempty n] (hg : l.HasLargeGap A) {w : USign ε → ℂ}
+theorem integral_mul_dsCoeff_translate (hg : l.HasLargeGap A) {w : USign ε → ℂ}
     (hw_int : Integrable w)
     (hw_type : ∀ g : USign ε,
       ∫ k : maxCompactU ε, conj (weightMinors l.lowestKType k) * w (k.val⁻¹ * g) ∂haarK ε =

@@ -360,7 +360,7 @@ lemma heckeAction_pow_apply {A δ₀ : D.heckeAlgebra Q.place} {n₀ : EllAdicIn
 
 end
 
-omit [Nonempty n] in
+omit [Nonempty n] [V.IsStd] [WeilData E] in
 /-- Assume that the auxiliary places are off the level of `D`. Let `Nm` be the sum of the action
 `residueRep` of the finite group `∏ GL_n(𝔽_{w j})` and `δ = c² A δ₀`, with `A`, `δ₀` in the Hecke
 algebra. If the forms `u`, `l`, `y` satisfy `Nm u = d c l` and `A δ₀ l = n₀ A y`, then
@@ -391,6 +391,7 @@ lemma norm_mul_heckeAction_apply (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
 
 omit [Nonempty n] in
 open Finset in
+omit [V.IsStd] [WeilData E] in
 /-- A sum in which only the top term survives. Assume that the auxiliary places are off the level of
 `D`, whose common multiple of stabiliser orders is `c`. Let `Nm` be the sum of `residueRep`,
 `δ = c² A δ₀`, and let `Y ∅ = δ ^ i`. If `Nm u = d c l`, `A δ₀ l = n₀ A y`, `δ₀ y = n₀ y` and the

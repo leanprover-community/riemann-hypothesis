@@ -542,7 +542,7 @@ theorem liftUnitriangular_mem_besselU (x : UpperEntries 𝔰.n) : liftUnitriangu
     exact mem_partialUnitriangularGroup.1 h_mem _ _ h_level (.inl ⟨b.isLt, b.isLt⟩)
   case inr.inl.inr.inl =>
     rcases k with k | ⟨⟩ <;> rcases l with l | ⟨⟩ <;>
-      simp [inclMatrix, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_apply, Matrix.one_apply]
+      simp [inclMatrix, Matrix.mul_assoc, Matrix.mul_apply, Matrix.one_apply]
   all_goals
     simp [BesselIndex.level] at h_level -- the position is above the block diagonal
     lia

@@ -115,7 +115,7 @@ lemma frameMass_pos (v : D.Φ) : 0 < D.frameMass v :=
 /-- The rank `r` of the data equals `k + (2 ϱ + 1)`, where `k` is the smaller rank of the data and
 `ϱ` the number of hyperbolic planes. -/
 lemma r_eq_k_add_two_mul_varrho_add_one : D.r = D.k + (2 * D.ϱ + 1) := by
-  linarith [D.r_add_one, D.m_eq_two_mul_varrho_add_two]
+  linarith only [D.r_add_one, D.m_eq_two_mul_varrho_add_two]
 
 /-- For the ranks `k ≤ r` of the data there are `2 ϱ + 1` integers `i` with `k ≤ i < r`, where `ϱ`
 is the number of hyperbolic planes. -/
@@ -186,7 +186,7 @@ lemma prod_frameMass_mul_le :
     rw [log_prod fun i _ ↦ (D.prod_unitSphereMass_pos (i + 1)).ne',
       ← sum_Ico_sub (fun i : ℕ ↦ log (mass D.E i)) D.k_le_r, ← sum_add_distrib]
     refine (sum_le_sum fun i hi ↦ ?_).trans D.sum_two_div_two_pow_le_log_sub
-    linarith [le_of_abs_le (D.abs_log_prod_unitSphereMass_sub_le (mem_Ico.mp hi).1)]
+    linarith only [le_of_abs_le (D.abs_log_prod_unitSphereMass_sub_le (mem_Ico.mp hi).1)]
   have h_ratio : D.f * log (D.N ^ D.k / (D.N ^ D.k - 1)) ≤ D.f * (2 / D.N) :=
     mul_le_mul_of_nonneg_left D.log_pow_div_pow_sub_one_le D.f.cast_nonneg
   have sphereProd_mul_mass_le :

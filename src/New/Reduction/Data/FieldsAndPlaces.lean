@@ -2,6 +2,7 @@ module
 
 public import Lib.ClassField.Places.DecompositionCyclotomic
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
+import TauCeti.NumberTheory.Cyclotomic.Irreducible
 
 /-!
 # The parameters q₀ and d, the field E = K(ζ), its infinite places and its roots of unity
@@ -222,17 +223,11 @@ lemma irreducible_cyclotomic : Irreducible (cyclotomic (P.q₁ s) P.K) := by
       IsCyclotomicExtension.Rat.finrank P.d M]
     exact totient_mul_totient_le_finrank _ _ (P.coprime_q₁_d s) hζ
       ((zeta_spec P.d ℚ M).map_of_injective (algebraMap M L).injective)
-  have h_finrank : Module.finrank M L = (minpoly M (zeta (P.q₁ s) M L)).natDegree := by
-    simp [(hζ.powerBasis M).finrank]
-  -- Hence the cyclotomic polynomial is the minimal polynomial of `ζ_{q₁}` over `M`.
-  have h_assoc : Associated (minpoly M (zeta (P.q₁ s) M L)) (cyclotomic (P.q₁ s) M) := by
-    apply associated_of_dvd_of_natDegree_le (minpoly.dvd_iff.2 (aeval_zeta ..)) (monic ..).ne_zero
-    rw [natDegree_cyclotomic, ← h_finrank]
-    exact Nat.le_of_mul_le_mul_left h_deg (Nat.totient_pos.2 (NeZero.pos P.d))
   -- Irreducibility descends along the embedding of `K` in `M` given by the Gauss sum.
   refine (monic (P.q₁ s) P.K).irreducible_of_irreducible_map
     (QuadField.embOfPrimitiveRoot P.d (zeta_spec P.d ℚ M)).toRingHom (cyclotomic (P.q₁ s) P.K) ?_
-  simpa using h_assoc.irreducible (minpoly.irreducible (.of_finite M _))
+  simpa using IsCyclotomicExtension.irreducible_cyclotomic_of_totient_le_finrank M L
+    (Nat.le_of_mul_le_mul_left h_deg (Nat.totient_pos.2 (NeZero.pos P.d)))
 
 /-- A chosen ℚ-algebra embedding of E = K(ζ), ζ of order q₁, into the cyclotomic field
 ℚ(ζ_{q₁d}). -/

@@ -454,25 +454,15 @@ lemma ellVal_one_element_singleton_le (h_tied : IsTiedPrimes ℓ S₀ U W N P₀
     (h_frob : (M : ℝ≥0∞) ≤ ellVal (Y.twistChar (x P₀).1.frob - Y.twistChar g₀ : PadicAlgCl ℓ)) :
     ellVal (groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element {P₀})) ≤ Y.β := by
   classical
-  have h_data : IsAuxPrimeDataAt (placesDividing E ℓ) P₀ (x P₀).1 :=
-    h_tied.isAuxPrimeDataAt P₀ h_tied.first_mem
-  have hM_pos : 0 < M := Nat.cast_pos.1 hM.pos
-  have hN : N ≠ 0 := (hM_pos.trans_le hMN).ne'
-  have h_norm_rel : groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element {P₀}) =
-      groupRingEval (1 : Gal(Ω/E) →* PadicAlgCl ℓ) (Y.element ∅) *
-        eulerFactor Y.exponents (Y.twistChar (x P₀).1.frob : PadicAlgCl ℓ) P₀.q := by
-    rw [← insert_empty_eq P₀]
-    have h_aux := h_tied.auxiliary.mono (singleton_subset_iff.2 h_tied.first_mem)
-    simpa only [MonoidHom.one_apply, mul_one] using Y.element_insert ∅ P₀ (notMem_empty P₀)
-      h_aux 1 IsFromU1.one _ h_data.isPlaceOver _ h_data.isFrob
-  have hq : (M : ℝ≥0∞) ≤ ellVal (P₀.q - 1 : PadicAlgCl ℓ) :=
-    (Nat.cast_le.2 hMN).trans (le_ellVal_natCast_sub_one h_data.norm_modEq)
-  have h_euler : ellVal (eulerFactor Y.exponents (Y.twistChar (x P₀).1.frob : PadicAlgCl ℓ) P₀.q) ≤
-      Y.exponents.length * (2 * ellVal (Y.twistChar g₀ - 1 : PadicAlgCl ℓ)) :=
-    ellVal_eulerFactor_le Y.exponents (Y.norm_twistChar _) (Y.norm_twistChar _)
-      (norm_natCast_eq_one_of_modEq hN h_data.norm_modEq) h_frob hq (le_add_self.trans_lt hM)
-  rw [h_norm_rel, β]
-  exact ellVal_mul_le.trans (add_le_add le_rfl h_euler)
+  have h_data := h_tied.isAuxPrimeDataAt P₀ h_tied.first_mem
+  rw [← insert_empty_eq P₀, Y.element_insert ∅ P₀ (notMem_empty P₀)
+    (h_tied.auxiliary.mono (singleton_subset_iff.2 h_tied.first_mem)) 1 IsFromU1.one _
+    h_data.isPlaceOver _ h_data.isFrob, MonoidHom.one_apply, mul_one, β]
+  exact ellVal_mul_le.trans (add_le_add le_rfl (ellVal_eulerFactor_le Y.exponents
+    (Y.norm_twistChar _) (Y.norm_twistChar _)
+    (norm_natCast_eq_one_of_modEq ((Nat.cast_pos.1 hM.pos).trans_le hMN).ne' h_data.norm_modEq)
+    h_frob ((Nat.cast_le.2 hMN).trans (le_ellVal_natCast_sub_one h_data.norm_modEq))
+    (le_add_self.trans_lt hM)))
 
 /-- The system `Y`, for a set `S₀` of places and `g₀ ∈ Gal(Ω/E)`, gives elements `Θ_Q = Y.element Q`
 of the group rings of class groups `Cl_Q` with a norm relation, a character `ϑ = Y.twistChar` and

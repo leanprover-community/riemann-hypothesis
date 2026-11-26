@@ -123,12 +123,9 @@ lemma relLength_iInf_le (T : m → Submodule A M) :
 
 /-- The length of `S` is the sum of its length modulo `T` and the length of `S ⊓ T`. -/
 lemma relLength_add_length_inf : relLength S T + length A ↥(S ⊓ T) = length A S := by
-  -- Additivity of length in `0 → S ⊓ T → S → S ⧸ T → 0`.
-  have h_exact : Function.Exact (inclusion (inf_le_left : S ⊓ T ≤ S)) (T.submoduleOf S).mkQ := by
-    rw [exact_iff, ker_mkQ, range_inclusion]
-    simp [submoduleOf]
-  rw [length_eq_add_of_exact _ _ (inclusion_injective _) (mkQ_surjective _) h_exact, add_comm,
-    relLength]
+  rw [relLength, ← (T.submoduleOfEquivInf S).length_eq, add_comm]
+  exact (length_eq_add_of_exact (T.submoduleOf S).subtype (T.submoduleOf S).mkQ
+    (Submodule.subtype_injective _) (mkQ_surjective _) (LinearMap.exact_subtype_mkQ _)).symm
 @[simp]
 lemma relLength_bot : relLength S ⊥ = length A S := by rw [← ker_id, relLength_ker, S.map_id]
 

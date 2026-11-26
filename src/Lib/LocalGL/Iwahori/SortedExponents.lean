@@ -111,7 +111,7 @@ lemma transvectionGL_apply_diagGL_compactMean [CompactSpace 𝒪[F]]
     ext
     simp [transvection, Matrix.one_apply]
     grind [ne_zero]
-  rw [← Module.End.mul_apply, ← map_mul ρ.ρ, h_comm]
+  rw [← mul_apply_eq_comp, ← map_mul ρ.ρ, h_comm]
   simp [hc]
 
 /-- After the exchange of two neighbours `i`, `j`, an exponent still satisfies its defining
@@ -271,7 +271,7 @@ private lemma IsExponent.swap_compactMean_apply_diagGL_of_apply_eq_zero
         mul_comm, normAbsChar] using h_quad
     -- `U_t` is `U_{t / w}` after `U_w`
     calc l_mean (U t z) = l_mean (U (t / w) (U w z)) := by
-          simp only [l_mean, U, LinearMap.comp_apply, Module.End.mul_apply, div_mul_cancel,
+          simp only [l_mean, U, LinearMap.comp_apply, mul_apply_eq_comp, div_mul_cancel,
             compactMean_diagGL_compactMean_diagGL htw hw (compactMean_mem_levelSpace z)]
       _ = torusChar (θ ∘ Equiv.swap i j) (t / w) * l_mean (U w z) := ih htw hl_Uw h_gap'
       _ = torusChar (θ ∘ Equiv.swap i j) t * l_mean z := by simp [h_eig_w, field]
@@ -508,7 +508,7 @@ lemma IsIwahoriEigen.exists_isExponent {B : ρ →ₗ⋆[ℂ] ρ →ₗ[ℂ] ℂ
         (iwahoriHeckeHom ρ t).dualMap ((iwahoriHeckeHom ρ s).dualMap φ) := by
     ext z
     simp only [LinearMap.dualMap_apply]
-    simp only [← End.mul_apply, ← map_mul, mul_comm]
+    simp only [← mul_apply_eq_comp, ← map_mul, mul_comm]
   obtain ⟨_, ⟨w, hw, rfl⟩, hw₀, hw_eig⟩ :=
     exists_eigenvector_of_functional _ h_stable h_comm ev ev_ne ev_eig
   have hw_ne : (w : ρ) ≠ 0 := fun h ↦ by simp_all
@@ -557,7 +557,7 @@ lemma exists_sorted_isIwahoriEigen_of_diagGL_smul (hϖ : v ϖ.val = exp (-1))
       iwahoriHeckeHom ρ t y ∈ E := by
     simp only [E, Submodule.mem_iInf, End.mem_eigenspace_iff] at hy ⊢
     intro i ε hε
-    rw [← End.mul_apply, ← map_mul, mul_comm, map_mul, End.mul_apply, hy i ε hε, map_smul]
+    rw [← mul_apply_eq_comp, ← map_mul, mul_comm, map_mul, mul_apply_eq_comp, hy i ε hε, map_smul]
   have hx_mem : (⟨x, hx⟩ : levelSpace ρ.ρ proIwahori) ∈ C ⊓ E := ⟨self_mem_cyclicSpan, hxE⟩
   obtain ⟨χ, y, ⟨hy, hyE⟩, y_ne, hy_eigen⟩ := exists_eigencharacter (S := C ⊓ E) (iwahoriHeckeHom ρ)
     (fun t y ⟨hy_C, hy_E⟩ ↦ ⟨stable t hy_C, stable_E t y hy_E⟩)
@@ -619,7 +619,7 @@ lemma exists_sorted_isIwahoriEigen_of_diagGL_smul (hϖ : v ϖ.val = exp (-1))
   have h_comm (s t : dominantTorus) (z : levelSpace ρ.ρ proIwahori) (_ : z ∈ C) :
       iwahoriHeckeHom ρ s (iwahoriHeckeHom ρ t z) =
         iwahoriHeckeHom ρ t (iwahoriHeckeHom ρ s z) := by
-    simp only [← End.mul_apply, ← map_mul, mul_comm]
+    simp only [← mul_apply_eq_comp, ← map_mul, mul_comm]
   obtain ⟨y', hy', y'_ne, hy'_eigen⟩ :=
     exists_eigenvector_of_functional (iwahoriHeckeHom ρ) stable h_comm l' l'_ne l'_eig
   exact ⟨θ, ⟨_, hl, hwx⟩, hθτ, σ, anti, y', hy', by simpa, y'.prop,

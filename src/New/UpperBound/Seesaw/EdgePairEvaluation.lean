@@ -428,8 +428,7 @@ lemma map_stdLattice_le_zeroTermLattice {D : V.Splitting V₀ p} {g : Gf E n₀}
   rintro _ ⟨x, hx, rfl⟩
   refine ⟨c *ᵥ x, ?_⟩
   change D.iFin *ᵥ (g : Matrix n₀ n₀ (𝔸f E)) *ᵥ x + D.isotropicBasisFin *ᵥ c *ᵥ x ∈ stdLattice E n
-  rw [mulVec_mulVec, mulVec_mulVec, ← add_mulVec, ← hB_def]
-  exact hB.mulVec hx
+  simpa only [hB_def, add_mulVec, ← mulVec_mulVec] using! hB.mulVec hx
 
 /-- Let `D` be a splitting of `V` over `V₀`, with finite parts `i = D.iFin` of the embedding of `V₀`
 and `k = D.isotropicBasisFin` of the isotropic frame. The lattice `zeroTermLattice D` consists of
@@ -443,8 +442,8 @@ lemma mem_zeroTermLattice_iff {D : V.Splitting V₀ p} {g : Gf E n₀} {c : Matr
   constructor
   · -- The integral matrix `Bᴴ` sends a lattice vector of class `w` to `g⁻¹ w`.
     rintro ⟨b, hb⟩
-    rw [← conjTranspose_mulVec_iFin_add_isotropicBasisFin hB_def w b]
-    exact hB.conjTranspose.mulVec hb
+    simpa only [conjTranspose_mulVec_iFin_add_isotropicBasisFin hB_def w b] using!
+      hB.conjTranspose.mulVec hb
   · exact fun hx ↦ map_stdLattice_le_zeroTermLattice hB_def hB ⟨_, hx, smul_inv_smul g w⟩
 
 end

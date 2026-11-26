@@ -268,7 +268,7 @@ conjugate self-dual with the parameter `1`, meets the local conditions of `IsCon
 all finite places (the level is `∅`) with the single jump `0` at each embedding of `D.E` in `ℂ`, and
 inertia at each chosen place acts through the root of the label. -/
 lemma New.Selmer.isRepOfType_one {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] {n : Type} [Fintype n] [DecidableEq n] (O : DescentPair D.E Unit n) :
+    [PadicIso ℓ] {n : Type} [Fintype n] (O : DescentPair D.E Unit n) :
     IsRepOfType O (Fintype.card Unit) (fun _ : D.E →+* ℂ ↦ {0})
       (fun _ : O.ChosenIndex ↦ Polynomial.X - 1) ∅ (1 : GalRep ℓ D.E Unit) := by
   -- the local clauses are those of the trivial character
@@ -502,7 +502,8 @@ lemma New.Selmer.exists_mFoldTwist_hasDenominatorsLe {P : Parameters} (D : Data 
   have h_coprime : ℓ.Coprime τ.normQ := by
     obtain ⟨h_auxiliary, -⟩ := h_aux ⟨1, le_rfl, D.nat_le_of_hasLogBound⟩
     exact (coprime_prod_q_of_isAuxiliary h_auxiliary).left
-  have h_lifts (j : D.LiftIndex) : DenominatorLe ι.ιℓ (D.descentPair (τ.powTwist j) j) D.e₀
+  have h_projection_denominators (j : D.LiftIndex) :
+      DenominatorLe ι.ιℓ (D.descentPair (τ.powTwist j) j) D.e₀
       (D.goodLift (τ.powTwist j) j).range (clearingBound D ℓ * log ℓ) :=
     denominatorLe_range_goodLift ι j (h_aux j) fun q hq ↦
       ⟨R (j, ⟨q, hq⟩), hR (j, ⟨q, hq⟩), h_selmer j (j, ⟨q, hq⟩)⟩
@@ -510,18 +511,18 @@ lemma New.Selmer.exists_mFoldTwist_hasDenominatorsLe {P : Parameters} (D : Data 
     D.classAut_eq_bot_of_le_chosenLevel le_rfl
       (Fintype.card_unit.trans_le D.nat_le_of_hasLogBound)
   refine ⟨τ, h_coprime, h_ratio, fun j ↦ ⟨?_, fun p hp Ξ Ξ' hΞ hΞ' ↦ ?_⟩⟩
-  · exact (h_lifts j).clearsProjection (le_add_of_nonneg_right (by positivity))
+  · exact (h_projection_denominators j).clearsProjection (le_add_of_nonneg_right (by positivity))
   · -- main pairs: the denominator for the line of `trivialLift` bounds the inner product
-    have h_line := denominatorLe_span_trivialLift ι hp (h_aux j) (hR₁ ⟨(p, j), hp⟩)
+    have h_line_denominator := denominatorLe_span_trivialLift ι hp (h_aux j) (hR₁ ⟨(p, j), hp⟩)
       (h_selmer₁ j ⟨(p, j), hp⟩)
-    exact h_line.norm_inner_starProjection_le _ h_free hΞ hΞ'
+    exact h_line_denominator.norm_inner_starProjection_le _ h_free hΞ hΞ'
 
 /-- **Twists with few congruences.** All data `D` have a regular family of `m`-fold twists `θ κ`,
 one for each pair `κ` of a prime `ℓ` and an isomorphism `ℂ ≃ ℚ̄_ℓ`. The modulus of `θ κ` is prime to
 `ℓ`. -/
 lemma New.exists_isRegularFamily {P : Parameters} (D : Data P) :
     ∃ θ : PrimePadicIso → D.MFoldTwist, D.IsRegularFamily θ := by
-  have h_twist (κ : PrimePadicIso) : ∃ τ : D.MFoldTwist, Nat.Coprime κ.1 τ.normQ ∧
+  have h_local_twist (κ : PrimePadicIso) : ∃ τ : D.MFoldTwist, Nat.Coprime κ.1 τ.normQ ∧
       (∀ (j : D.LiftIndex) (p : D.CriticalPair) (s : ℤˣ), p.IsRamified →
         ‖κ.2 (p.ratio (τ.powTwist j) s)⁻¹‖ ≤ exp (twistError κ.1 D * log (κ.1 : ℕ))) ∧
       ∀ j : D.LiftIndex, D.HasDenominatorsLe κ.2 (τ.powTwist j) j
@@ -529,12 +530,14 @@ lemma New.exists_isRegularFamily {P : Parameters} (D : Data P) :
           padicValNat κ.1 (Nat.card (StdClasses (n := Unit) D.chosenLevel)) * log (κ.1 : ℕ)) :=
     have : ThePrime κ.1 := ⟨⟩
     exists_mFoldTwist_hasDenominatorsLe D ⟨κ.2⟩
-  choose θ h_coprime h_ratio h_denominators using h_twist
-  -- it remains to sum the bounds over the primes
-  have h_error (T : Finset ℕ) (hT : ∀ l ∈ T, l.Prime) : ∑ l ∈ T, twistError l D * log l ≤ D.x₁ :=
+  choose θ h_coprime h_ratio h_denominators using h_local_twist
+  -- Local choices need not agree at distinct embeddings. Their uniform prime-wise bounds
+  -- give the global height and denominator budgets by summing over rational primes.
+  have h_ratio_height_budget (T : Finset ℕ) (hT : ∀ l ∈ T, l.Prime) :
+      ∑ l ∈ T, twistError l D * log l ≤ D.x₁ :=
     ((isNegligible_twistError D).sum_mul_log_le T hT).trans D.le_of_hasLogBound
   exact ⟨θ,
     { coprime := h_coprime
-      height_le j p s hp := HeightLe.of_le h_error fun κ ↦ h_ratio κ j p s hp
+      height_le j p s hp := HeightLe.of_le h_ratio_height_budget fun κ ↦ h_ratio κ j p s hp
       exists_denominator_bound j := ⟨_, sum_clearingBound_add_padicValNat_le D, fun κ ↦
         h_denominators κ j⟩ }⟩

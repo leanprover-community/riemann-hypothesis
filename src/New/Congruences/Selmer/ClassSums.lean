@@ -125,7 +125,7 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
     (p.hasWeight.mul ϑ.hasWeight).inv.isHeckeOfType.norm_heckeCoeff_le {v, star v}
   have h_coeff : heckeCoeff φ (S ϑ'.Q) = Set.indicator {v, star v}ᶜ (heckeCoeff φ (S ϑ.Q)) := by
     -- The places removed for `ϑ'` are those for `ϑ` together with `v` and `star v`.
-    simp [φ, S, funext_iff, heckeCoeff, Set.indicator, hQ]
+    simp [φ, funext_iff, heckeCoeff, Set.indicator, hQ]
     grind [star_star]
   have h_factors :
       ∏ w ∈ {v, star v}, (1 - heckeCoeff φ (S ϑ.Q) w * (w.q : ℂ) ^ (-(p.z : ℂ))) =
@@ -134,7 +134,7 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
     simp_all [φ, S, HeckeChar.atUniformizer, heckeCoeff, cpow_neg, Ne.symm]
     grind
   rw [h_coeff, ← h_factors]
-  simpa [φ, S] using h_erase p.z (mod_cast H.2)
+  simpa [φ] using h_erase p.z (mod_cast H.2)
 
 /-- For a critical pair `p = (ν, z)`, let `H` say that `n` has `2 z` elements and `z ≥ 2`. Then
 `integralAlgebraicPart H`, an integral multiple of the algebraic part of the twisted `L`-value at

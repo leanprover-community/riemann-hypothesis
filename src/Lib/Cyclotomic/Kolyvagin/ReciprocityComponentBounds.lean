@@ -931,8 +931,7 @@ lemma not_cycloGalGroup_le_openCocycleKer_of_ne_zero (hc : cyclotomicPowDirichle
   have h_char : ((cyclotomicPowDirichlet l e ψ)⁻¹ cmConj : O) - 1 = -2 := by norm_num [hc]
   refine not_cycloGalGroup_le_openCocycleKer hz cmConj
     (apply_eq_zero_of_mem_vanishingCocycles hz (Set.mem_insert cmConj _)) ?_ f
-  rw [h_char]
-  exact h_two.neg.smul_eq_zero.ne.2 hz_ne
+  simpa only [h_char] using h_two.neg.smul_eq_zero.ne.2 hz_ne
 
 /-- Let `cyc ^ e ψ` be odd (value `-1` at `cmConj`) and `2` a unit of `O`. There is a finite set `Q`
 of primes `≡ 1 mod f` with this property. Let `y` be a cocycle for the dual character
@@ -1074,8 +1073,8 @@ private lemma nsmul_mem_vanishingCocycles_of_isTight {a m : ℕ} [NeZero a] (ha 
       hwσ (h_triv A hA σ hσ.mem_decompGroup)
     have hrS : r ∉ S := fun hrS ↦ hwr (hw_triv r (mem_insert_of_mem hrS))
     have h_tight_next : IsTight l e ψ m (insert p (insert r S)) := by
-      rw [insert_comm]
-      exact h_tight.insert ha hla h_two h_totient h_pow hr hw hw_tors hw_triv hwr
+      simpa only [insert_comm p r] using
+        h_tight.insert ha hla h_two h_totient h_pow hr hw hw_tors hw_triv hwr
     have h_next : l ^ (i + 1) • κ (insert r S) ∈ vanishingCocycles
         (cyclotomicPowDirichlet l (e + 1) ψ) (QuotSpan (l ^ m : O)) (inertiaOff N l ∅) :=
       ih _ (insert_subset hrQ hS) ((card_insert_le r S).trans (Nat.succ_le_succ h_card))

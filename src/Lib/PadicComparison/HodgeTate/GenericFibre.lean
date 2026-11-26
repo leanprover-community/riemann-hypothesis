@@ -308,9 +308,10 @@ lemma exists_periodAlg_iso_genericAlg :
         ((isLocalization_iff_isPushout _ ℂ_[p]).1
           (c.isLocalization_genericRing _)).symm.out.equiv.toModuleIso)
       fun f ↦ ModuleCat.hom_ext <| tmul_ext fun a x ↦ by
-        -- `erw` rewrites through the composite module maps and the pushout equivalence.
-        erw [map_smul (mapGeneric f), mapGeneric_algebraMap]
-        rfl
+        -- Both sides unfold to `a • algebraMap _ _ (f x)`, through the composite module maps and
+        -- the pushout equivalence.
+        exact .symm ((map_smul (mapGeneric f) a _).trans
+          (congrArg (a • ·) (mapGeneric_algebraMap f x)))
   refine ⟨isoWhiskerRight θ (asModules (𝟭 _) ⋙ tensorWith ℂ_[p] ℂ_[p]) ≪≫ invert, fun c a w ↦ ?_⟩
   -- `invert` sends `a ⊗ x` to `a • x`, and `θ` sends `1 ⊗ w` to `θ(w)`.
   exact (congrArg (a • algebraMap c.ProdRing c.GenericRing ·) (hθ c w)).trans

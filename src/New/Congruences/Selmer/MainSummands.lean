@@ -128,24 +128,16 @@ lemma IsMainSummandLike.sum_finrank_crysCocyclesAt_le (hrow : IsMainSummandLike 
       (card (placesDividing D.E ℓ) + Core.numInfPlaces D.E) * card n := by
   -- The rank at `v` is `card n` plus the number of negative jumps at the embeddings of `v`.
   classical
-  have h_jumps (v : placesDividing D.E ℓ) (g : Gp ℓ) :
-      HasJumps (localLattice u v).ρ (coefficientEmbedding O g) (J (complexEmbeddingAt v g)) :=
-    hrow.toIsConjSelfDualOfLevel.hasJumps_localLattice hu v g
-  have h_potCrys (v : placesDividing D.E ℓ) : IsPotentiallyCrystalline (localLattice u v).ρ :=
-    (hrow.toIsConjSelfDualOfLevel.inClass_localLattice (𝓡 := IsMainSummandLike D t J) hrow hu
-      v).isPotentiallyCrystalline
-  let negJumps (v : placesDividing D.E ℓ) : ℕ :=
-    ∑ σ with ∃ g : Gp ℓ, complexEmbeddingAt v g = σ, (J σ).countP (· < 0)
   have h_rank (v : placesDividing D.E ℓ) :
-      Module.finrank O (crysCocyclesAt v u) = card n + negJumps v :=
-    (finrank_crysCocycles_eq_add_neg_jumps (localChart ℓ D.E v).inducesPlace.2 (h_potCrys v)
-      (h_jumps v)).trans (by simp [negJumps])
+      Module.finrank O (crysCocyclesAt v u) = card n +
+        ∑ σ with ∃ g : Gp ℓ, complexEmbeddingAt v g = σ, (J σ).countP (· < 0) :=
+    (finrank_crysCocycles_eq_add_neg_jumps (localChart ℓ D.E v).inducesPlace.2
+      (hrow.toIsConjSelfDualOfLevel.inClass_localLattice (𝓡 := IsMainSummandLike D t J) hrow hu
+        v).isPotentiallyCrystalline
+      (hrow.toIsConjSelfDualOfLevel.hasJumps_localLattice hu v)).trans (by simp)
   -- Each embedding is counted at one place at most.
-  have h_sum : ∑ v, negJumps v ≤ Core.numInfPlaces D.E * card n :=
-    (sum_complexEmbeddingOf_le _).trans hrow.sum_countP_neg_le
-  calc _ = card (placesDividing D.E ℓ) * card n + ∑ v, negJumps v := by
-        simp [h_rank, sum_add_distrib]
-    _ ≤ (card (placesDividing D.E ℓ) + Core.numInfPlaces D.E) * card n := by grw [h_sum, add_mul]
+  simp [h_rank, sum_add_distrib, add_mul]
+  exact (sum_complexEmbeddingOf_le _).trans hrow.sum_countP_neg_le
 
 /-- The global term. Let `u` be an `O`-lattice (`IsLatticeIn R u`) in a main summand `R` whose image
 spans all matrices. Let some `g` act by a scalar `α` and have cyclotomic character `p_l ^ card n`,

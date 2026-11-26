@@ -87,8 +87,7 @@ lemma New.kronecker_limit (L : PeriodPair) (k : ℝ) (hk : 0 < k) :
         =ᶠ[𝓝[>] 1] slope F 1 := by
       filter_upwards [self_mem_nhdsWithin] with s (hs : 1 < s)
       simp only [slope_def_field, hF s hs, hF_one, rpow_one]
-      field_simp [sub_ne_zero.2 hs.ne']
-      ring
+      field [sub_ne_zero.2 hs.ne']
     rw [hasDerivWithinAt_iff_tendsto_slope' (by simp)]
     convert h_lim.congr' h_eq using 2
     rw [hF_one, h_period, Real.log_div (by positivity) (by positivity),

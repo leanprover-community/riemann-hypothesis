@@ -544,7 +544,7 @@ theorem coeff_eq_dsCoeff_of_isKHighest (hg : l.HasLargeGap A) (hu : IsUnitaryRep
     have gen_highest := isKHighest_dsGenerator hg
     have gen_mk (Y : Matrix n n ℂ) (y : σ.filtration 1 x 0) :
         σ.generatedModule x Y y = ⟨σ Y y.val, (σ.generatedModule x Y y).prop⟩ := rfl
-    simp_all [d, x, jι, smul_smul, mul_comm, IsKHighest, WithLp.ext_iff]
+    simp_all [d, x, smul_smul, mul_comm, IsKHighest, WithLp.ext_iff]
   -- A highest vector is orthogonal to lowered vectors, and `norm_dsGenerator` handles `d 1` itself.
   have perp_zero : d (-inner ℂ x x) ∈ (P.filtration ε (d 1) 0)ᗮ :=
     (highest 1).filtration_le_of_word_mem (innerSLFlip ℂ _).ker

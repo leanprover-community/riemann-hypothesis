@@ -183,7 +183,7 @@ lemma besselU_mul_apply_eq_add {𝔰 : Shape} (x u : (𝔰.middleGram (1 : ℂ))
 `M`, and the generalised index (`genIndex`, the inverse Haar modulus) of `det M` is `N ^ (-f)`.
 Here `N = S.N` is the prime `π π̄` of `S` and `f` is the number of infinite places of `E`. -/
 lemma exists_classBasis_eq_fromBlocks {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E]
-    {𝔰 : Shape} {S : Filling E 𝔰} (c : S.Classes) [S.IsAdmissible] :
+    {𝔰 : Shape} {S : Filling E 𝔰} (c : S.Classes) :
     ∃ M : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex (𝔸f E),
       (classBasis c).val = fromBlocks 1 0 0 (fromBlocks M 0 0 1) ∧
       genIndex M.det = 1 / S.N ^ numInfPlaces E := by
@@ -482,7 +482,7 @@ section Lattices
 
 open scoped Classical
 
-variable [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+variable [HasPrimitiveRoot5040 E]
 
 /-- The transpose of the square block of the lattice basis `classBasis c` on the free columns
 (`IsFreeEntry`) of the row e_a, as an invertible matrix. -/
@@ -505,7 +505,7 @@ lemma genIndex_det_freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ) :
     det_toSquareBlockProp_isFreeEntry h_basis, h_basis]
   simp
 
-omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
+omit [HasPrimitiveRoot5040 E] in
 variable (S) in
 /-- For each `a`, the scales `S.M / S.basisScale v (inl a) * S.basisScale v j` are nonzero for all
 infinite places `v` and all `j` with `IsFreeEntry (a, j)`. Here `inl a` indexes the basis vector
@@ -545,7 +545,7 @@ lemma exists_fundamental_domain_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
 (`IsFreeEntry`) of the row e_a of the real image of any `γ ∈ S.classUnipotent c` lie in
 `freeLattice c a`, the lattice of rescaled rational vectors `x` on the free columns with
 `freeBlock c a *ᵥ x` integral. -/
-lemma rowCoords_fst_mem_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.classUnipotent c) :
+lemma rowCoords_fst_mem_freeLattice [S.IsAdmissible] (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.classUnipotent c) :
     freeRowCoords (classUnipotentToInf c γ) a ∈ freeLattice c a := by
   let row : 𝔰.BesselIndex → 𝔸f E :=
     finAdeleMatrix ((S.M : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) (inl a)
@@ -599,7 +599,7 @@ place `v`, right multiplication by the image `classUnipotentToInf c γ v` of `γ
 adds its (e_a, e*_a) entry to that of every `x` in `besselU`. Then the imaginary parts of this entry
 of `classUnipotentToInf c γ` at all places form a vector `(S.M / S.frameScaleSq w a * Im Φ_w(s))_w`
 for an integer `s` of `E` with `star s = -s` (`imSkewLattice`). -/
-lemma rowCoords_snd_mem_imSkewLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.classUnipotent c)
+lemma rowCoords_snd_mem_imSkewLattice [S.IsAdmissible] (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.classUnipotent c)
     (v : InfinitePlace E)
     (h_add : ∀ x : (𝔰.middleGram (1 : ℂ)).besselU,
       (↑(x * classUnipotentToInf c γ v) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a) =
@@ -615,7 +615,6 @@ lemma rowCoords_snd_mem_imSkewLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.
     simp [pow_mul', funext_iff, imRowCoords, coe_classUnipotentToInf_apply, basisScale, field,
       -Nat.cast_mul, -ofReal_div]
 
-omit [S.IsAdmissible] in
 /-- Let `E` contain a primitive 5040th root of unity. Fix a class `c` and a row e_a. Let `l` be a
 vector `(S.M / S.frameScaleSq v a * Im Φ_v(s))_v` for an integer `s` of `E` with `star s = -s`
 (`imSkewLattice`). Then `l` is the vector of imaginary parts at (e_a, e*_a) of the real image of

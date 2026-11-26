@@ -184,7 +184,7 @@ lemma HasCellRank.norm_det_subframeBlock (h_rank : S.HasCellRank j γ) (v : Infi
 
 /-- A matrix product `P * M` with `P` integral has the conjugates of its rows in every `Ô`-module
 that contains the conjugates of the rows of `M`. -/
-lemma col_conjTranspose_mul_mem {m m' n : Type} [Fintype m] [DecidableEq m]
+lemma col_conjTranspose_mul_mem {m m' n : Type} [Fintype m]
     {M : Matrix m n (𝔸f E)} {P : Matrix m' m (𝔸f E)} (hP : IsIntMatrix (Ô E) P)
     {K : Submodule (Ô E) (n → 𝔸f E)} (hM : ∀ r : m, Mᴴ.col r ∈ K) (i : m') :
     (P * M)ᴴ.col i ∈ K := by
@@ -420,7 +420,6 @@ lemma tsum_orbit_le_of_isLatticeTranslate (h_over : γ ∈ S.termsOver c s c')
         (∀ p ∈ B, IsLatticeTranslate c γ p₀ p (l p)) → ∑' p : B, w p ≤ bound) :
     ∑' p : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'), w p ≤
       .ofReal (S.isotropicRowsIndex j (S.translateByClassReps c c' γ) ^ 𝔰.k) * bound := by
-  classical
   -- The middle parts of the frames differ by `k` rows in a basis of `Λ ∩ X₀`. These rows lie in `M`
   -- times the larger lattice in the definition of `isotropicRowsIndex`; colour them modulo `M`
   -- times the smaller one. `a` is a basis of `Λ ∩ X₀`, and `Q` is an integral left inverse of its
@@ -620,8 +619,8 @@ lemma exists_tsum_schurWeight_le {B : Set (S.G E)}
   -- Sort the terms by their lattice point and sum each fibre by packing.
   let point (p : B) : S.columnLattice (Fin (min 𝔰.ϱ j)) c :=
     ⟨conjColumnsAtInfinity E 𝔰 _ (l p), mem_columnLattice.2 ⟨l p, (hl p p.2).1, rfl⟩⟩
-  rw [← ENNReal.tsum_fiberwise _ point, ← ENNReal.tsum_mul_left]
-  refine ENNReal.tsum_le_tsum fun ⟨_, q, hq_int, rfl⟩ ↦ ?_
+  rw [← tsum_fiberwise _ point, ← ENNReal.tsum_mul_left]
+  refine tsum_le_tsum fun ⟨_, q, hq_int, rfl⟩ ↦ ?_
   let f (p : point ⁻¹' {⟨conjColumnsAtInfinity E 𝔰 _ q, ⟨q, hq_int, rfl⟩⟩}) : {p ∈ B | l p = q} :=
     ⟨p.1, p.1.2, conjColumnsAtInfinity_injective (congrArg Subtype.val p.2)⟩
   have hf : Function.Injective f := fun _ _ h_eq ↦
@@ -998,7 +997,6 @@ lemma tsum_amplitudeMajorant_orbit_le (h_over : γ ∈ S.termsOver c s c')
   refine le_of_eq ?_
   simp only [identitySecondMoment, sourceDim, pairCountScale, Nat.cast_mul, div_pow, inv_pow,
     mul_inv, mul_pow]
-  field_simp
-  ring
+  field
 
 end New.Filling

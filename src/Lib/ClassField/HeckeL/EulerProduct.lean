@@ -2,6 +2,7 @@ module
 
 public import Lib.ClassField.Places.Ideles
 public import TauCeti.NumberTheory.RamificationInertia.Tower
+import TauCeti.NumberTheory.ArithmeticDirichletSeries.Convergence
 
 /-!
 # Euler products over primes of a number field and densities at primes of degree one
@@ -131,29 +132,12 @@ variable {a b} {l l' : ℂ}
 `N(I) = absNorm I` (the zero ideal has norm `0` and term `0`). -/
 lemma summable_absNorm_rpow (hs : 1 < s) :
     Summable fun I : Ideal (𝓞 K) ↦ (absNorm I : ℝ) ^ (-s) := by
-  -- The Dedekind zeta function has a pole at `1`, so it is nonzero at some `t` in `(1, s]`.
-  obtain ⟨t, ht_ne, -, ht_le⟩ : ∃ t : ℝ, (t - 1 : ℂ) * dedekindZeta K t ≠ 0 ∧ t ∈ Ioc 1 s :=
-    (((tendsto_sub_one_mul_dedekindZeta_nhdsGT K).eventually_ne
-      (mod_cast dedekindZeta_residue_ne_zero K)).and (Ioc_mem_nhdsGT hs)).exists
-  -- A divergent series has sum `0` by convention, so the series converges at `t`, hence at `s`.
-  have h_s : LSeriesSummable (fun n ↦ Nat.card {I : Ideal (𝓞 K) // absNorm I = n}) s := by
-    refine LSeriesSummable.of_re_le_re (s := (t : ℂ)) (by simpa using ht_le) ?_
-    by_contra h_not
-    exact right_ne_zero_of_mul ht_ne (LSeries.eq_zero_of_not_LSeriesSummable _ _ h_not)
-  -- Group the ideals by their norm: each group is finite and gives one term of that series.
-  have h_part (I : Ideal (𝓞 K)) : ∃! n : ℕ, I ∈ {J : Ideal (𝓞 K) | absNorm J = n} := by simp
-  rw [summable_partition (fun I ↦ by positivity) h_part]
-  refine ⟨fun n ↦ (finite_setOfPred_absNorm_eq n).summable (fun I ↦ (absNorm I : ℝ) ^ (-s)),
-    h_s.norm.congr fun n ↦ ?_⟩
-  have h_fiber (I : {J : Ideal (𝓞 K) | absNorm J = n}) :
-      (absNorm (I : Ideal (𝓞 K)) : ℝ) ^ (-s) = (n : ℝ) ^ (-s) :=
-    congrArg (fun m : ℕ ↦ (m : ℝ) ^ (-s)) I.property
-  -- The `Nat.card` ideals of norm `n` each give `n ^ (-s)`; for `n = 0` both sides are `0`.
-  rw [tsum_congr h_fiber, tsum_const, nsmul_eq_mul]
-  rcases eq_or_ne n 0 with rfl | hn
-  · simp [Real.zero_rpow (neg_neg_of_pos (zero_lt_one.trans hs)).ne]
-  · simp [LSeries.term_of_ne_zero hn, norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hn),
-      Real.rpow_neg, div_eq_mul_inv, Set.coe_ofPred]
+  refine (summable_subtype_and_compl (s := (nonZeroDivisors (Ideal (𝓞 K)) : Set _))).1
+    ⟨(TauCeti.summable_absNorm_rpow_ideal_iff (K := K)).mpr hs, ?_⟩
+  have h_fin : ((nonZeroDivisors (Ideal (𝓞 K)) : Set (Ideal (𝓞 K)))ᶜ).Finite :=
+    (Set.finite_singleton (⊥ : Ideal (𝓞 K))).subset fun I hI ↦
+      by_contra fun hne ↦ hI (mem_nonZeroDivisors_of_ne_zero hne)
+  exact h_fin.summable (fun I ↦ (absNorm I : ℝ) ^ (-s))
 
 /-- For `‖a v‖ ≤ 1` and real `t ≤ s`, the term `-(a v * q ^ (-s))` of the Euler factor has norm at
 most `q ^ (-t)`, with `q = v.q` the norm of the prime `v`. -/

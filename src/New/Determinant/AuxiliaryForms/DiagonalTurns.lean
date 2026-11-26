@@ -274,14 +274,10 @@ lemma modKernel_eq_columnLineKernel_mul (ϑ : D.MFoldTwist) (hj : j < D.m)
       grind
     simp [gridChar, h_rank]
   -- The point mass at `X` is the product of the point masses at its two blocks of columns.
-  have h_datum : (Pi.single X 1 : _ → ℂ) = fun Y ↦
-      (Pi.single (X.submatrix ι e).toCols₁ 1 : _ → ℂ) (Y.submatrix ι e).toCols₁ *
-        (Pi.single (X.submatrix ι e).toCols₂ 1 : _ → ℂ) (Y.submatrix ι e).toCols₂ := by
-    ext Y
-    have h_inj : (Y.submatrix ι e = X.submatrix ι e) ↔ Y = X :=
-      (Matrix.reindex ι.symm e.symm).injective.eq_iff
-    simp only [Pi.single_apply, ite_zero_mul_ite_zero, one_mul, ← fromCols_ext_iff, fromCols_toCols,
-      h_inj]
+  have h_datum := single_one_eq_mul_of_coordinates X (fun Y ↦ (Y.submatrix ι e).toCols₁)
+    (fun Y ↦ (Y.submatrix ι e).toCols₂) (fun Y ↦ by
+      simp only [← fromCols_ext_iff, fromCols_toCols]
+      exact (Matrix.reindex ι.symm e.symm).injective.eq_iff (a := Y) (b := X))
   have h_poly : renameRowsCols ι (e ∘ .inl) A * renameRowsCols ι (e ∘ .inr) B =
       renameRowsCols ι e (renameRowsCols id .inl A * renameRowsCols id .inr B) := by
     simp [Prod.map_comp_map]
@@ -329,14 +325,10 @@ lemma rowLineKernel_mul_modKernel (ϑ : D.MFoldTwist) (hj : j < D.m)
       grind
     simp [gridChar, h_rank, mul_assoc, pow_succ]
   -- The point mass at `X` is the product of the point masses at its two blocks of rows.
-  have h_datum : (Pi.single X 1 : _ → ℂ) = fun Y ↦
-      (Pi.single (X.submatrix e ι).toRows₁ 1 : _ → ℂ) (Y.submatrix e ι).toRows₁ *
-        (Pi.single (X.submatrix e ι).toRows₂ 1 : _ → ℂ) (Y.submatrix e ι).toRows₂ := by
-    ext Y
-    have h_inj : (Y.submatrix e ι = X.submatrix e ι) ↔ Y = X :=
-      (Matrix.reindex e.symm ι.symm).injective.eq_iff
-    simp only [Pi.single_apply, ite_zero_mul_ite_zero, one_mul, ← fromRows_ext_iff, fromRows_toRows,
-      h_inj]
+  have h_datum := single_one_eq_mul_of_coordinates X (fun Y ↦ (Y.submatrix e ι).toRows₁)
+    (fun Y ↦ (Y.submatrix e ι).toRows₂) (fun Y ↦ by
+      simp only [← fromRows_ext_iff, fromRows_toRows]
+      exact (Matrix.reindex e.symm ι.symm).injective.eq_iff (a := Y) (b := X))
   rw [rowLineKernel_weightFn, mul_comm, ← modKernel_sum_right,
     ← modKernel_reindex ι (D.gridSigns_subdiagEquiv j) e
       (D.sumElim_gridSigns_comp_gridDiagEquiv_symm hj),

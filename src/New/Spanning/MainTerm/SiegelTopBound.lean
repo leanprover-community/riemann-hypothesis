@@ -195,7 +195,6 @@ lemma normDensity_indicator_eq_mul [WeilData E] (hψ : P.ψ = S.charOnPlaces T) 
       ∫ b : skewAdjoint (LocProd T), ∫ y : κ → LocProd T,
         Ψ y * P.ψ (P.element * (b : LocProd T) * (star y ⬝ᵥ y - evalPlaces T β))
         ∂volume ∂P.skewMeasure := by
-  classical
   -- Split first the frequency and then the vector into their parts at `T` and off `T`.
   let L : Set (κ → 𝔸f E) := intVectors (integralOff T) κ
   have L_meas : MeasurableSet L := (isOpen_intVectors (isOpen_integralOff T)).measurableSet
@@ -799,7 +798,7 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
       rw [← h_siegel]
       simp_rw [classSum_sourceLevel_eq_sum, ← NNReal.coe_sum, eNorm_eq_nnNorm, nnNorm_real,
         nnNorm_eq, ofNNReal_finsetSum, ENNReal.coe_tsum (h_summable _)]
-      grw [← ENNReal.tsum_prod.trans (tsum_fintype _), ← ENNReal.sum_le_tsum s]
+      grw [← tsum_prod.trans (tsum_fintype _), ← sum_le_tsum s]
       gcongr with z hz
       have h_norm_eq : star z.2 ⬝ᵥ z.2 = β := by simp [β, ← h_norm z hz, Nat.Prime.ne_zero]
       grw [ite_eq_left h_norm_eq, ← vectorOfLastEntry_evalPlaces]

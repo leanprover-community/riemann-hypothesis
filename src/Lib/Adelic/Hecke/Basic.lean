@@ -284,7 +284,7 @@ lemma heckeFun_eq_sum (hf : ∀ (g : G) (k : K), f (g * k) = f g)
   -- The chosen representative of `g K` is some `g * k`, and `k` does not change `f g • π g v`.
   have term (g : G) : f (g : G ⧸ K).out • π (g : G ⧸ K).out v = f g • π g v := by
     obtain ⟨k, hk⟩ := mk_out_eq_mul K g
-    rw [hk, hf, map_mul, Module.End.mul_apply, mem_levelSpace.1 hv k, MonoidHom.one_apply, one_smul]
+    rw [hk, hf, map_mul, mul_apply_eq_comp, mem_levelSpace.1 hv k, MonoidHom.one_apply, one_smul]
   have h_support : support (fun q : G ⧸ K ↦ f q.out • π q.out) ⊆
       s.image fun i ↦ (r i : G ⧸ K) :=
     fun q hq ↦ support_subset q (left_ne_zero_of_smul hq)

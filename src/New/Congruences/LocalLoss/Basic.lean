@@ -543,7 +543,7 @@ lemma obeying_crysRelations (u : Gal(Ω/E) →* Matrix n n O) {a : ↑O} :
         (LinearMap.funLeft O (n → QuotSpan a) (↑)) := by
   ext c
   -- A relation pushed forward by `Finsupp.mapDomain` is evaluated on the restriction of `c`.
-  simp [crysRelations, obeying, forall_comm (α := _ →₀ _), LinearMap.funLeft, Function.comp_def]
+  simp [crysRelations, obeying, forall_comm (α := _ →₀ _), LinearMap.funLeft]
 
 end CrystallineConditions
 

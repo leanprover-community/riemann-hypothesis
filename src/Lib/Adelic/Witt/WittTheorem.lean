@@ -2,6 +2,7 @@ module
 
 public import Lib.Adelic.Adeles.IdeleModulus
 public import Lib.GaloisRep.Hilbert90.UnitaryGroups
+import TauCeti.LinearAlgebra.SesquilinearForm.SignedHermitianSpace.Witt
 
 /-!
 # Witt's theorem over fields and over Ô; quasi-reflections, Eichler maps, frames
@@ -60,13 +61,6 @@ open Matrix IsLocalRing
 namespace New
 
 variable {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n] [StarRing R] {J : Matrix n n R}
-
-/-- The involution of a local ring induces an involution of its residue field. -/
-noncomputable instance [IsLocalRing R] : StarRing (ResidueField R) where
-  star := ResidueField.mapEquiv starRingAut
-  star_involutive := by simp [Function.Involutive, residue_surjective.forall]
-  star_mul := by simp [mul_comm]
-  star_add := by simp
 
 omit [DecidableEq n] in
 /-- The form h(u, v) = uᴴ J v of a hermitian matrix `J` is hermitian: the conjugate of h(u, v) is
@@ -166,20 +160,6 @@ omit [DecidableEq n] in
 lemma HasLeftInv.of_isUnit_gram (h_gram : IsUnit (Xᴴ * J * X)) : HasLeftInv X :=
   ⟨h_gram.unit⁻¹.val * (Xᴴ * J), by rw [Matrix.mul_assoc, h_gram.val_inv_mul]⟩
 
-/-- In a field with an involution that is not the identity, every `c` fixed by the involution is
-the trace `σ + star σ` of a unit `σ`. -/
-lemma exists_units_add_star_eq (hz : ∃ z : R, IsUnit (z - star z)) {c : R} (hc : star c = c) :
-    ∃ σ : Rˣ, (σ : R) + star (σ : R) = c := by
-  -- Take `σ = z (c - star z) / (z - star z)`. Both factors of the numerator are nonzero because
-  -- `z ≠ star z`, while `0` and `c` are fixed by the involution.
-  obtain ⟨z, hz⟩ := hz
-  have h_skew : z - star z ≠ 0 := hz.ne_zero
-  have hz_ne : z ≠ 0 := by grind [star_eq_zero]
-  have hc_ne : c - star z ≠ 0 := by grind [star_star]
-  refine ⟨.mk0 (z * (c - star z) / (z - star z)) (div_ne_zero (mul_ne_zero hz_ne hc_ne) h_skew), ?_⟩
-  have h_trace : z * (c - star z) / (z - star z) + star z * (c - z) / (star z - z) = c := by grind
-  simpa [hc] using h_trace
-
 /-- Let `J` be hermitian and invertible, with form h(u, v) = uᴴ J v. If h(x, x) = h(y, y) and
 h(y, y − x) ≠ 0, then a quasi-reflection along `x − y` sends `x` to `y`. -/
 lemma exists_quasiReflection_mulVec_eq {J : Matrix n n R} (hJ : Jᴴ = J) (hJ' : IsUnit J)
@@ -250,7 +230,9 @@ lemma witt_of_quasiReflection_mem (hz : ∃ z : R, IsUnit (z - star z)) {J : Mat
     by_cases! hb_j : b ⬝ᵥ J *ᵥ g *ᵥ X.col j ≠ 0
     · exact ⟨b, hb_s, by simp [hb], hb_j⟩
     exact ⟨a + b, by grind [add_dotProduct]⟩
-  obtain ⟨σ, hσ⟩ := exists_units_add_star_eq hz (star_dotProduct_mulVec_comm hJ (star u) (star u))
+  obtain ⟨σ, hσ⟩ := TauCeti.exists_units_add_eq (σ := starRingEnd R)
+    (hz.imp fun _ hz h ↦ hz.ne_zero (sub_eq_zero.2 h.symm))
+    (star_dotProduct_mulVec_comm hJ (star u) (star u))
   have hρ (x : n → R) : quasiReflection hJ hJ' (star u) σ hσ *ᵥ x =
       x - ((↑σ⁻¹ : R) * u ⬝ᵥ J *ᵥ x) • star u := by rw [quasiReflection_mulVec, star_star]
   set ρ : U J := quasiReflection hJ hJ' (star u) σ hσ
@@ -449,29 +431,23 @@ lemma exists_isUnit_add_Ô (a x y : Matrix n n (Ô E)) :
   obtain ⟨p, -, q, -, d, rfl : a = p.val * diagonal d * q.val⟩ :=
     isValuationPair_Ô.top.smith_normal_form a
   set D : Matrix n n (Ô E) := diagonal d
-  let ε (i : n) : Ô E := ⟨idem {w : FinPlace E | reduceAt w (d i) = 0}, idem_mem_Ô _⟩
-  let e : Matrix n n (Ô E) := diagonal ε
+  let e : Matrix n n (Ô E) := diagonal fun i ↦ ⟨idem {w | reduceAt w (d i) = 0}, idem_mem_Ô _⟩
   refine ⟨p * e * q, isUnit_of_forall_isUnit_reduceAt fun w ↦ ?_⟩
   set r : Matrix n n (Ô E) →+* Matrix n n (ResField w) := (reduceAt w).mapMatrix (m := n)
   -- modulo `w`, in each diagonal position exactly one of `D` and `e` is non-zero
-  have hε_red (i : n) : reduceAt w (ε i) = if reduceAt w (d i) = 0 then 1 else 0 := by
-    -- `reduceAt_eq_zero` would rewrite the condition that defines `ε i`
-    simp [ε, -reduceAt_eq_zero]
-  have hr_diagonal (v : n → Ô E) : r (diagonal v) = diagonal fun i ↦ reduceAt w (v i) :=
-    diagonal_map (map_zero _)
   have ⟨D_mul_e, e_mul_D, e_mul_e⟩ : r D * r e = 0 ∧ r e * r D = 0 ∧ r e * r e = r e := by
-    simp [D, e, hr_diagonal, hε_red, funext_iff, -reduceAt_eq_zero]
-  have d_add_ε (i : n) : reduceAt w (d i) + reduceAt w (ε i) ≠ 0 := by grind [hε_red i]
-  have h_add_unit : IsUnit (r D + r e) := by
-    simp [D, e, hr_diagonal, isUnit_iff_isUnit_det, Finset.prod_ne_zero_iff, d_add_ε]
+    simp [D, e, r, diagonal_map (map_zero _), funext_iff, -reduceAt_eq_zero]
   -- these relations show that `D + e` is a two-sided multiple of the matrix modulo `w`
-  have h_multiple : r ((1 + D * q * x * p * e) * p⁻¹ *
-      (p * D * q + (1 - p * D * q * x) * (p * e * q) * (1 - y * (p * D * q))) *
-      (q⁻¹ * (1 + e * q * y * p * D))) = r D + r e := by
+  refine isUnit_of_mul_isUnit_right (x := r ((1 + D * q * x * p * e) * p⁻¹))
+    (isUnit_of_mul_isUnit_left (y := r (q⁻¹ * (1 + e * q * y * p * D))) ?_)
+  suffices h : IsUnit (r D + r e) by
+    convert h using 1
+    rw [← map_mul, ← map_mul]
     simp [add_assoc, mul_assoc, mul_add, add_mul, mul_sub, sub_mul, D_mul_e, e_mul_D, e_mul_e,
       ← mul_assoc (r D) (r e), ← mul_assoc (r e) (r D), ← mul_assoc (r e) (r e)]
-  rw [← h_multiple, map_mul, map_mul] at h_add_unit
-  exact isUnit_of_mul_isUnit_right (isUnit_of_mul_isUnit_left h_add_unit)
+  simp [D, e, r, diagonal_map (map_zero _), isUnit_iff_isUnit_det, Finset.prod_ne_zero_iff,
+    -reduceAt_eq_zero]
+  grind
 
 /-- For left invertible matrices `X`, `Y` over the ring `Ô E` of integral finite adeles of a CM
 field `E` with `Xᴴ X = Yᴴ Y`, some invertible `a` sends `X` to `Y` while its adjoint sends `Y`

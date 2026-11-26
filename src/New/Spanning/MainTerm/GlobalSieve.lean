@@ -123,8 +123,7 @@ lemma absNorm_denominator_le {y : E} (hy : y ∈ ratIntegralOff T) :
   have h_comap : (denominator y).toAddSubgroup = D.comap f := by
     ext a
     have h_off : algebraMap E (𝔸f E) (algebraMap (𝓞 E) E a * y) ∈ integralOff T := by
-      rw [map_mul]
-      exact mul_mem ((mem_Ô_iff T).1 (h_integral a)).right hy
+      simpa only [map_mul] using mul_mem ((mem_Ô_iff T).1 (h_integral a)).right hy
     rw [Submodule.mem_toAddSubgroup, mem_denominator, ← algebraMap_mem_Ô, mem_Ô_iff T,
       and_iff_left h_off]
     simp [D, f, mul_comm]
@@ -621,7 +620,7 @@ with entries in `A` and a common last entry. Up to the constant `poissonConst i 
 frameScaleSq v i ^ 2`, with `volÔ E` the volume of the integral finite adeles, the frequency `0`
 gives the sum of `J i` over all pairs of heads of length `i`, and the other frequencies give at most
 `ε` times the squared sum of the weights of these heads. -/
-lemma densitySum_succ_le [S.IsAdmissible] (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
+lemma densitySum_succ_le (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
     (K : S.IsGlobalSieveSystem T n J massBound Λ β) (hβ : S.BoundsDecay T β ε) {i : ℕ}
     (hi : i ≤ n) :
     S.densitySum T A J (i + 1) ≤ S.poissonConst i *
@@ -848,7 +847,7 @@ lemma boundsDecay_prod [S.IsAdmissible] :
     simp only [B, ← pow_mul, ← pow_succ']
     gcongr
     grw [← Nat.pow_le_pow_right 𝔰.ϱ.succ_pos (by norm_num : 2 ≤ 9)]
-    nlinarith [S.ten_pow_five_le_varrho]
+    nlinarith only [S.ten_pow_five_le_varrho]
   have h_sum : ∑ y ∈ X,
       (∏ v, dampedPower (𝔰.k - 𝔰.n ^ 7) ‖c v / S.frameScaleSq v a * Φ v y‖⁻¹) *
         (√(genIndex (ratToPlaces T y)) ^ (𝔰.k - 𝔰.n ^ 7) / denomIndex O (ratToPlaces T y) ^ 3) ≤
@@ -948,7 +947,7 @@ chosen complex embedding inducing `v`, and let `c j v` be the product of the sca
 entries. There the factor is `max 1 ‖c j v * Φ v δ‖⁻¹ ^ n⁶` if `‖c j v * Φ v δ‖ ≤ b ^ (60 n²)`, and
 `0` otherwise. At `T` the factor is `[O : δ O] ^ (n⁶ / 2)` if `ratToPlaces T δ` lies in `O`, and `0`
 otherwise. Here `O` is the ring of integers of the product of the completions at `T`. -/
-lemma globalWeight_scaledHead [S.IsAdmissible] {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) :
+lemma globalWeight_scaledHead {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) :
     let c (j : Fin i) (v : InfinitePlace E) : ℂ := ∏ a ∈ range (j + 1), S.frameScaleSq v a
     S.globalWeight T i (S.scaledHead T p 1) = ∏ j : Fin i,
       (∏ v : InfinitePlace E,
@@ -1010,7 +1009,6 @@ parameter, `n = ϱ + 1`, and `f` is the number of infinite places. -/
 lemma globalWeight_scaledHead_le [S.IsAdmissible] {A : Finset Eˣ}
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T) {i : ℕ} (hi : i ≤ 𝔰.ϱ) (p : Fin i → A) :
     S.globalWeight T i (S.scaledHead T p 1) ≤ S.b ^ (120 * 𝔰.n ^ 8 * numInfPlaces E * i) := by
-  classical
   have hb : 1 ≤ S.b := S.one_le_b
   by_cases hp : S.globalWeight T i (S.scaledHead T p 1) = 0
   · exact hp.trans_le (by positivity)
@@ -1048,7 +1046,6 @@ lemma sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T) {i : ℕ} (hi : i ≤ 𝔰.ϱ) :
     ∑ p : Fin i → A, S.globalWeight T i (S.scaledHead T p 1) ≤
       S.b ^ (130 * 𝔰.n ^ 9 * numInfPlaces E) := by
-  classical
   have hb : 1 ≤ S.b := S.one_le_b
   let P : Finset (Fin i → A) := {p | S.globalWeight T i (S.scaledHead T p 1) ≠ 0}
   have h_card : (#P : ℝ) ≤ (1 + 2 * S.b ^ (120 * 𝔰.n ^ 2)) ^ (i * numInfPlaces E * 2) := by
@@ -1059,7 +1056,7 @@ lemma sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
       headProduct_injective.injOn
   have h_base : 1 + 2 * S.b ^ (120 * 𝔰.n ^ 2) ≤ S.b ^ (120 * 𝔰.n ^ 2 + 1) := by
     rw [pow_succ S.b]
-    nlinarith [S.thousand_le_b, one_le_pow₀ hb (n := 120 * 𝔰.n ^ 2)]
+    nlinarith only [S.thousand_le_b, one_le_pow₀ hb (n := 120 * 𝔰.n ^ 2)]
   calc
     _ = ∑ p ∈ P, S.globalWeight T i (S.scaledHead T p 1) := (sum_filter_ne_zero univ).symm
     _ ≤ #P * S.b ^ (120 * 𝔰.n ^ 8 * numInfPlaces E * i) := by

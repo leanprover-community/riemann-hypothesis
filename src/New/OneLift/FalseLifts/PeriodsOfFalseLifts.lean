@@ -505,7 +505,7 @@ lemma hyperplaneSum_apply_eq_zero_of_rank_one {O : DescentPair E Unit n}
   have h_zero : (piTensorElem fun i ↦ hyperplaneSum (O.tamePart (O.chosenPlace i)) (v i)) *
       tupleIdem Unit (fun _ ↦ Polynomial.X - 1) = 0 :=
     piTensorElem_mul_eq_zero i (hyperplaneSum_mul_labelIdem_X_sub_one (h_chosen i) hv)
-  rw [← Module.End.mul_apply, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
+  rw [← mul_apply_eq_comp, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
 
 omit [WeilData E] [Nonempty r] in
 /-- Conjugates of the second block fix forms. Let `ε` split `I_n = I_N ⊕ I_l`, with `U.block ε` the

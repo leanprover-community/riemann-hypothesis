@@ -223,7 +223,7 @@ lemma besselTranslate_mul [HasPrimitiveRoot5040 E] {s t : S.ResidueGL}
   have h_matrix : S.besselTranslate (s * t) φ (c, i) =
       ∑ k : S.BesselCoord, star ((M * N) i k) * φ (c'', k) :=
     besselTranslate_apply (mul_mem hγ hδ) (termsOver.mul hγ_over hδ_over) hMN φ i
-  rw [h_matrix, End.mul_apply, besselTranslate_apply hγ hγ_over hM]
+  rw [h_matrix, mul_apply_eq_comp, besselTranslate_apply hγ hγ_over hM]
   simp only [besselTranslate_apply hδ hδ_over hN, Matrix.mul_apply, star_sum, star_mul', sum_mul,
     mul_sum, mul_assoc]
   exact sum_comm
@@ -267,8 +267,8 @@ lemma hilbertSchmidtNorm_besselTranslate_comp [HasPrimitiveRoot5040 E] {t : S.Re
       besselTranslate_one]
   have h_norm (x : EuclideanSpace ℂ (S.Classes × S.BesselCoord)) :
       ‖S.besselTranslate t x‖ = ‖x‖ := by
-    rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), ← LinearMap.adjoint_inner_right, ← End.mul_apply,
-      h_adjoint, End.one_apply, ← norm_eq_sqrt_re_inner]
+    rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), ← LinearMap.adjoint_inner_right, ← mul_apply_eq_comp,
+      h_adjoint, one_apply_eq_self, ← norm_eq_sqrt_re_inner]
   exact le_antisymm (hilbertSchmidtNorm_le_of_norm_le fun x ↦ (h_norm (A x)).le)
     (hilbertSchmidtNorm_le_of_norm_le fun x ↦ (h_norm (A x)).ge)
 
@@ -282,8 +282,8 @@ lemma trace_besselTranslate [HasPrimitiveRoot5040 E] (s : S.ResidueGL) :
         S.amplitudeSum .full (S.ratMiddle E).besselS y.1 s⁻¹ y.1 (y.2, y.2) /
           S.unipotentCovolume := by
   classical
-  rw [LinearMap.trace_eq_sum_inner _ (basisFun _ ℂ)]
-  simp [besselTranslate, inner_single_left, amplitudeSum_besselS_inv]
+  simp [LinearMap.trace_eq_sum_inner _ (basisFun _ ℂ), besselTranslate, inner_single_left,
+    amplitudeSum_besselS_inv]
 
 /-- Equivariance on the right. Let `S` be admissible filling data for a unitary group `G` over the
 CM field `E`, which contains a primitive `5040`-th root of unity, and let `Ḡ = S.ResidueGL` be the
@@ -363,7 +363,7 @@ lemma HasAmplitudeBlocks.rep_comp_eq_comp_besselTranslate [HasPrimitiveRoot5040 
         P.adjoint (ρ s⁻¹ (P (S.besselTranslate t φ))) :=
       LinearMap.congr_fun (hP.adjoint_comp_rep_mul_right s⁻¹ ht) φ
     have h_zero : P.adjoint (ρ s⁻¹ d) = 0 := by
-      rw [hd, map_sub, map_sub, ← h_apply, map_mul, End.mul_apply, sub_self]
+      rw [hd, map_sub, map_sub, ← h_apply, map_mul, mul_apply_eq_comp, sub_self]
     rw [← hρ s⁻¹, ρ.inv_self_apply, ← LinearMap.adjoint_inner_right, h_zero, inner_zero_right]
   have h_self : ⟪d, d⟫_ℂ = 0 := by
     calc ⟪d, d⟫_ℂ = ⟪ρ t (P φ), d⟫_ℂ - ⟪P (S.besselTranslate t φ), d⟫_ℂ := inner_sub_left ..
@@ -516,7 +516,6 @@ omit ok in
 lemma hilbertSchmidtNorm_one_sq_eq_sourceDim :
     hilbertSchmidtNorm (1 : End ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord))) ^ 2 =
       S.sourceDim := by
-  classical
   simp [hilbertSchmidtNorm_sq_eq_sum (basisFun _ ℂ), sourceDim]
 
 /-- Let `S` be admissible filling data (`Filling`, `IsAdmissible`) for a unitary group `G` over the
@@ -692,7 +691,8 @@ lemma sum_norm_sq_coeff_of_isCentralProj {G : Type*} [Group G] [Fintype G] {x : 
   simpa [h_inv, x.coeff_mul_apply_left, Complex.sq_norm, Finsupp.sum_fintype, mul_conj] using
     congr_arg (fun y ↦ (y.coeff 1).re) hx.1
 
-/-- Let `S` be admissible filling data over a CM field `E` with Weil data. Let `γ` be in the Bessel
+omit ok in
+/-- Let `S` be filling data over a CM field `E` with Weil data. Let `γ` be in the Bessel
 subgroup and `k = translateByClassReps c c γ`, that is `h_c⁻¹ γ h_c` for the representative `h_c` of
 the class `c`. If `k` lies in the stabilizer `latticeStabilizer` of the lattice and reduces to `1`
 at the chosen places above the level prime `p_j`, then `k` lies in the unipotent subgroup
@@ -886,6 +886,7 @@ lemma integral_extendedBesselChar_conj_eq {T : Finset (FinPlace E)} [T.StarStabl
         rw [setIntegral_congr_fun measurableSet_unitaryLevel h_const, setIntegral_const,
           mul_smul_comm]
 
+omit [WeilData E] ok in
 /-- Let `S` be admissible filling data for a unitary group `G` over the CM field `E`, which carries
 Weil data, and let `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue
 fields at the chosen places above the two level primes `p₀`, `p₁`. Let `M = p₀ p₁`, and let `T` be a
@@ -1249,8 +1250,8 @@ theorem HasAmplitudeBlocks.isNearIsometry_piTensorElem_comp [WeilData E]
     gcongr <;> linarith
   have h_bad : hilbertSchmidtNorm ((1 - ρ.asAlgebraHom (piTensorElem g)) ∘ₗ P) ^ 2 ≤
       4 * (S.b ^ 4)⁻¹ * finrank ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord)) := by
-    rw [finrank_source_eq_sourceDim]
-    exact hP.hilbertSchmidtNorm_one_sub_piTensorElem_comp_sq_le hρ hg hg_small
+    simpa only [finrank_source_eq_sourceDim] using
+      hP.hilbertSchmidtNorm_one_sub_piTensorElem_comp_sq_le hρ hg hg_small
   have h_proj : (ρ.asAlgebraHom (piTensorElem g)).IsSymmetricProjection :=
     (IsCentralProj.piTensorElem hg).isSymmetricProjection hρ
   exact (h_isom.proj_comp h_proj h_bad).mono (le_of_eq (by ring))

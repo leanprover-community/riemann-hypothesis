@@ -697,24 +697,30 @@ lemma exists_equalRankThetaRatio_sq_eq (μ : InfinitePlace E → ℤ) {k : ℕ} 
   let vol : ℝ := (stdSpace E Empty).quotMeasure.real Set.univ
   have : SecondCountableTopology (G E (1 : Empty → ℤˣ)) := inferInstance
   have h_vol : (vol : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 measureReal_univ_ne_zero
-  obtain ⟨B, y, hy, h_exch₁⟩ := exists_thetaLarge_eq_mul_quotMeasure μ hm J hv
-  obtain ⟨C, ξ, h_exch₂⟩ := exists_quotMeasure_mul_eq_mul_integral_pairTheta μ hm J hv hy
+  obtain ⟨B, y, hy, h_forward_exchange⟩ := exists_thetaLarge_eq_mul_quotMeasure μ hm J hv
+  obtain ⟨C, ξ, h_reverse_exchange⟩ := exists_quotMeasure_mul_eq_mul_integral_pairTheta μ hm J hv hy
   refine ⟨B * C * ‖ξ‖ ^ 2, fun 𝔠 ↦ ?_⟩
-  -- Both identities concern the theta kernel of `f`, integrated once over each group.
+  -- Compare the two exchange constants by integrating the same theta kernel over both
+  -- groups in opposite orders.
   let γ : AutChar E := rankTwist 𝔠.character⁻¹ m
   let f : 𝒮 (J.hom J) := localDatum J J y (stdColDatum 𝔠.semilocalChar 1) 𝔠.readsAt
-  obtain ⟨c₁, hc₁, h_target⟩ : ∃ c₁ : ℂ, B * ‖c₁‖ ^ 2 = lValueProdInt 𝔠 k * ratio 𝔠 ∧
-      ∀ g : G E 1, thetaLarge J J 𝔠 y (stdColDatum 𝔠.semilocalChar 1) g = c₁ * vol := h_exch₁ 𝔠
-  obtain ⟨c₂, hc₂, h_source⟩ : ∃ c₂ : ℂ, C * ‖c₂‖ ^ 2 = lValueProdInt 𝔠 (-k) * ratio 𝔠 ∧
-      ∀ g : G E 1, vol * ξ = c₂ * ∫ h, pairTheta J J γ γ f (h, g) ∂J.quotMeasure := h_exch₂ 𝔠
-  have h_mean : vol * ξ = c₂ * (c₁ * vol) := eq_mul_of_integral_pairTheta J γ f h_target h_source
-  have h_prod : ξ = c₂ * c₁ := mul_left_cancel₀ h_vol (by linear_combination h_mean)
-  have h_inverse : lValueProdInt 𝔠 k * lValueProdInt 𝔠 (-k) = 1 := by
+  obtain ⟨c₁, hc₁, h_forward_integral⟩ : ∃ c₁ : ℂ, B * ‖c₁‖ ^ 2 = lValueProdInt 𝔠 k * ratio 𝔠 ∧
+      ∀ g : G E 1, thetaLarge J J 𝔠 y (stdColDatum 𝔠.semilocalChar 1) g = c₁ * vol :=
+    h_forward_exchange 𝔠
+  obtain ⟨c₂, hc₂, h_reverse_integral⟩ : ∃ c₂ : ℂ, C * ‖c₂‖ ^ 2 = lValueProdInt 𝔠 (-k) * ratio 𝔠 ∧
+      ∀ g : G E 1, vol * ξ = c₂ * ∫ h, pairTheta J J γ γ f (h, g) ∂J.quotMeasure :=
+    h_reverse_exchange 𝔠
+  have h_integral_orders : vol * ξ = c₂ * (c₁ * vol) :=
+    eq_mul_of_integral_pairTheta J γ f h_forward_integral h_reverse_integral
+  have h_exchange_product : ξ = c₂ * c₁ :=
+    mul_left_cancel₀ h_vol (by linear_combination h_integral_orders)
+  -- Opposite rank differences give reciprocal L-value factors; the normalized ratio remains.
+  have h_reciprocal_L_values : lValueProdInt 𝔠 k * lValueProdInt 𝔠 (-k) = 1 := by
     simp [lValueProdInt_natCast, lValueProdInt_neg_natCast, (lValueProd_pos 𝔠 k).ne']
   calc ratio 𝔠 ^ 2 = (lValueProdInt 𝔠 k * ratio 𝔠) * (lValueProdInt 𝔠 (-k) * ratio 𝔠) := by
-        rw [mul_mul_mul_comm, h_inverse, one_mul, sq]
+        rw [mul_mul_mul_comm, h_reciprocal_L_values, one_mul, sq]
     _ = B * C * ‖ξ‖ ^ 2 := by
-        simp only [ratio, ← hc₁, ← hc₂, h_prod, norm_mul]
+        simp only [ratio, ← hc₁, ← hc₂, h_exchange_product, norm_mul]
         ring
 
 /-- The value on the first floor. Let `J` be the standard positive definite space of rank `2 k` and
@@ -832,7 +838,7 @@ lemma exists_equalRankThetaRatio_eq_const (W : Space E n s) (μ : InfinitePlace 
   | succ q ih =>
     let W₀ := hyperbolicSum (Fin q) (stdSpace E (Fin (2 * k)))
     have h_neg : negCount (Sum.elim (hyperbolicSigns (Fin q)) (1 : Fin (2 * k) → ℤˣ)) = q := by
-      simp [negCount_sumElim_hyperbolicSigns]
+      simp
     have h_even₀ : 2 ∣ card ((Unit ⊕ Unit) ⊕ (Fin q ⊕ Fin q) ⊕ Fin (2 * k)) :=
       ⟨1 + k + q, by simp +arith⟩
     obtain ⟨v, hv, C, hC, h_below⟩ := ih W₀ (by simp +arith [h_neg]) h_even₀ h_neg
@@ -1039,8 +1045,7 @@ lemma exchange_theorem (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t +
         (∀ x, modDatum W V 𝔪 Φ x = localDatum W V x Φ' 𝔠.readsAt) ∧
         ∀ v, modDatum V' W 𝔪 Ψ v = localDatum V' W v Ψ' 𝔠.readsAt :=
     exists_areMatched_modDatum_eq W V V' σ 𝔪 𝔠 h_places (by rwa [hχ] at h_matched)
-  rw [hΦ, hΨ]
-  exact h_exch Φ' Ψ' h_locally_const h_matched'
+  simpa only [hΦ, hΨ] using h_exch Φ' Ψ' h_locally_const h_matched'
 
 /-- Let `W`, `V`, `V'` have ranks `|n| = |b| + |a|` (split by `σ`), `|a| = |b| + 2e`, `|b|`. Let `W`
 have as many negative signs `q` as `V` and `V'` together, with `2q + 2 ≤ |n| ≤ 2 μ + 2q`, and let

@@ -206,10 +206,10 @@ def thetaIso : tilt ⋙ wittFunctor ⋙ algBaseChange OC ≅ algFunctor :=
         intro x hx
         obtain ⟨y, rfl⟩ : xi.map (algebraMap OFlat (PreTilt c.ProdRing p)) ∣ x :=
           mem_span_singleton.mp (c.ker_theta.le ((one_smul OC _).symm.trans hx))
-        -- `erw`: the base change of the Witt functor of the tilt is `OC ⊗ W(c.TiltRing)` only after
+        -- The base change of the Witt functor of the tilt is `OC ⊗ W(c.TiltRing)` only after
         -- unfolding.
-        erw [map_smul _ xi, ← algebraMap_smul OC, theta_xi, zero_smul]
-        rfl
+        exact ((TensorProduct.mk Ainf OC _ 1).map_smul xi y).trans
+          ((algebraMap_smul OC xi _).symm.trans ((congrArg (· • _) theta_xi).trans (zero_smul ..)))
       · -- θ is onto, as the ring is absolutely integrally closed and p-complete
         intro z
         obtain ⟨x, hx⟩ :=
@@ -438,26 +438,28 @@ lemma isCell_of_isSolutionClosed {W V : Type} [CommRing W] [CommRing V] {g : W �
     (hg : Envelope.IsSolutionClosed g) [hV : IsCell p V] :
     IsCell p W := by
   -- `g` is injective and reflects divisibility, so most properties are read off in `V`. The `↓`
-  -- lets `smodEq_span_pow_iff_dvd` rewrite before `simp` unfolds the `SMOD` relation.
+  -- lets `TauCeti.sModEq_span_singleton_pow_iff` rewrite before `simp` unfolds the `SMOD` relation.
   have hW_domain : IsDomain W := hg.1.isDomain
   have hW_val : ValuationRing W := iff_dvd_total.mpr ⟨by simp [← hg.map_dvd_iff, dvd_total]⟩
   refine
-    { haus' := by simp_all [← hg.1.eq_iff, ← hg.map_dvd_iff, hV.haus, ↓ smodEq_span_pow_iff_dvd]
+    { haus' := by
+        simp_all [← hg.1.eq_iff, ← hg.map_dvd_iff, hV.haus, ↓ TauCeti.sModEq_span_singleton_pow_iff]
       prec' f hf := ?_
       toIsAbsIntegrallyClosed := (hg.isTest isTest_of_preValuationRing).toIsAbsIntegrallyClosed
       p_ne_zero := by simp [← hg.1.eq_iff, hV.p_ne_zero] }
   -- `g ∘ f` is again Cauchy in `V`, as `g` reflects divisibility.
   have h_cauchy {m n : ℕ} (h_le : m ≤ n) :
       g (f m) ≡ g (f n) [SMOD (span {(p : V)} ^ m • ⊤ : Submodule V V)] := by
-    simp_all [← hg.map_dvd_iff, ↓ smodEq_span_pow_iff_dvd]
+    simp_all [← hg.map_dvd_iff, ↓ TauCeti.sModEq_span_singleton_pow_iff]
   -- the limit is a solution of equation `1`, `∀ n, a 0 ^ n ∣ a (n + 1) - x`, with coefficients
   -- `a = p, f 0, f 1, …`
   let a : ℕ → W := fun n ↦ n.casesOn (p : W) f
   have h_lim : ∃ x : V, IsSolution (g ∘ a) x 1 := by
-    simpa [a, IsSolution, ↓ smodEq_span_pow_iff_dvd] using hV.prec' (g ∘ f) h_cauchy
+    simpa [a, IsSolution, ↓ TauCeti.sModEq_span_singleton_pow_iff] using hV.prec' (g ∘ f) h_cauchy
   -- the solution `x` in `W` is the limit: `p ^ n ∣ f n - x` for every `n`, read back along `g`
   obtain ⟨x, hx⟩ := hg.2 1 a h_lim
-  exact ⟨x, by simpa [a, IsSolution, ← hg.map_dvd_iff, ↓ smodEq_span_pow_iff_dvd] using hx⟩
+  exact ⟨x, by
+    simpa [a, IsSolution, ← hg.map_dvd_iff, ↓ TauCeti.sModEq_span_singleton_pow_iff] using hx⟩
 
 variable [ThePrime p]
 

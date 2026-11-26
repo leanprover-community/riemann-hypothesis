@@ -109,7 +109,7 @@ lemma IsLatticeIn.exists_equivariant_embedding {u : AbsGal D →* Matrix n n O} 
     L.toLinearMap.restrictScalars ℤ_[ℓ] ∘ₗ O.val.val.toLinearMap.compLeft n
   refine ⟨F, (basisFun (PadicAlgCl ℓ) n).map L, by simp [F, funext_iff],
     fun a x ↦ L.map_smul (O.val.val a) (O.val.val ∘ x), fun i ↦ ?_, fun g x ↦ ?_⟩
-  · simp [F, funext_iff, single_apply, apply_ite]
+  · simp [F]
   · calc
       F ((u g).mulVec x) = L (((u g).map O.val.val).mulVec (O.val.val ∘ x)) :=
         congrArg L (funext (O.val.val.toRingHom.map_mulVec (u g) x))

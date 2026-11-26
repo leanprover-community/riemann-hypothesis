@@ -379,28 +379,16 @@ every open `U` containing `γ t₀` and every function `f` regular on `U`, the p
 in `U` for `t` near `t₀` and `t ↦ f (γ t)` is continuous at `t₀`. -/
 lemma continuousAt_complexPoint_iff :
     ContinuousAt γ t₀ ↔ HasGermAt (fun g : T → ℂ ↦ ContinuousAt g t₀) (fun t : T ↦ (γ t).1) t₀ := by
-  -- Unfold the induced topology: `γ` is continuous at `t₀` iff, for `f` regular on `U` and `O`
-  -- open, the condition "`γ t ∈ U` and `f (γ t) ∈ O`" spreads from `t₀` to a neighbourhood.
-  have h_unfold : ContinuousAt γ t₀ ↔ ∀ (U : A.left.Opens) (f : PointFn A.left) (O : Set ℂ),
-      f.IsRegularOn U → IsOpen O → LandsIn (γ t₀).left U → f (CommRingCat.of ℂ) (γ t₀).left ∈ O →
-        f.IsRegularOn U ∧ IsOpen O ∧ (∀ᶠ t in 𝓝 t₀, LandsIn (γ t).left U) ∧
-          ∀ᶠ t in 𝓝 t₀, f (CommRingCat.of ℂ) (γ t).left ∈ O := by
-    simp [ContinuousAt, tendsto_pi_nhds, nhds_induced, tendsto_nhds_Prop]
-  have h_germ : HasGermAt (fun g : T → ℂ ↦ ContinuousAt g t₀) (fun t : T ↦ (γ t).1) t₀ ↔
-      ∀ ⦃U : A.left.Opens⦄ ⦃f : PointFn A.left⦄, f.IsRegularOn U → LandsIn (γ t₀).left U →
-        (∀ᶠ t in 𝓝 t₀, LandsIn (γ t).left U) ∧
-          ∀ O' : Set ℂ, f (CommRingCat.of ℂ) (γ t₀).left ∈ O' → IsOpen O' →
-            ∀ᶠ t in 𝓝 t₀, f (CommRingCat.of ℂ) (γ t).left ∈ O' := by
-    simp [HasGermAt, ContinuousAt, (nhds_basis_opens (_ : ℂ)).tendsto_right_iff]
-  rw [h_unfold, h_germ]
+  -- Unfold the induced topology on `ComplexPoint A` and the germ condition on `ℂ`.
+  simp [ContinuousAt, HasGermAt, tendsto_pi_nhds, nhds_induced, tendsto_nhds_Prop,
+    (nhds_basis_opens (_ : ℂ)).tendsto_right_iff]
   constructor
   · intro h U f hf hU
-    -- The case `O = univ` says that `γ` stays in `U`.
-    obtain ⟨-, -, h_lands, -⟩ := h U f Set.univ hf isOpen_univ hU (Set.mem_univ _)
-    exact ⟨h_lands, fun O hO hO_open ↦ (h U f O hf hO_open hU hO).right.right.right⟩
+    -- Taking `O = univ` shows that `γ` stays in `U` near `t₀`.
+    exact ⟨(h U f Set.univ hf isOpen_univ hU (Set.mem_univ _)).2.2.1,
+      fun O hO hO_open ↦ (h U f O hf hO_open hU hO).2.2.2⟩
   · intro h U f O hf hO_open hU hO
-    obtain ⟨h_lands, h_mem⟩ := h hf hU
-    exact ⟨hf, hO_open, h_lands, h_mem O hO hO_open⟩
+    exact ⟨hf, hO_open, (h hf hU).1, (h hf hU).2 O hO hO_open⟩
 
 /-- The zeros of an analytic map `F : ℂ^ι → ℂ^σ` near a zero `p₀` with onto derivative have an
 analytic chart `c` to `ℂᵈ`, `d = #ι - #σ`, with analytic local inverse `g`. -/

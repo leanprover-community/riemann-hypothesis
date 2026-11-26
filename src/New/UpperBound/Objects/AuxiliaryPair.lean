@@ -949,8 +949,8 @@ lemma FitsParams.isJointHarmonic_productOfMinors {O : DescentPair E r n}
       (FockDualPair.std 1 O.signs (negCount O.signs) (-((Fintype.card n / 2 : ℕ) + O.weight w)))
       (O.paramV w) (-l w) (O.productOfMinors w) := by
   refine ⟨h_fits.paramsCorrespond.isMatch w, ?_⟩
-  rw [funext (h_fits.lowestKType_eq_staircaseWeight w)]
-  exact h_fits.isJointHighest_productOfMinors w
+  simpa only [funext (h_fits.lowestKType_eq_staircaseWeight w)] using
+    h_fits.isJointHighest_productOfMinors w
 
 /-- Let the parameter l fit O, let l' = `O.paramV`, let r₋ be the number of minus signs of W and
 γ_w = ⌊n/2⌋ + `O.weight w`. There are polynomials Φ_w, one for each infinite place w, such that

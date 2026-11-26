@@ -111,7 +111,7 @@ lemma q₂_le : (P.q₂ D.towerExp : ℝ) ≤ D.x ^ (33 * (P.q₀ * P.d)) := by
   calc (P.q₂ D.towerExp : ℝ) = ((P.q₀ * P.d : ℕ) : ℝ) ^ (D.towerExp + 6) := by rw [q₂, Nat.cast_pow]
     _ ≤ exp (P.q₀ * P.d : ℕ) ^ (D.towerExp + 6) := by
       gcongr
-      linarith [add_one_le_exp ((P.q₀ * P.d : ℕ) : ℝ)]
+      linarith only [add_one_le_exp ((P.q₀ * P.d : ℕ) : ℝ)]
     _ = exp ((D.towerExp + 6) * (P.q₀ * P.d : ℕ)) := by
       rw [← exp_natCast_mul, Nat.cast_add, Nat.cast_ofNat]
     _ ≤ exp (33 * D.logX * (P.q₀ * P.d : ℕ)) := by gcongr

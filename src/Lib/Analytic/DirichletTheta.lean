@@ -101,7 +101,7 @@ lemma norm_gaussianMonomial_le (ht : 0 ≤ t) : ‖gaussianMonomial j t‖ ≤ 3
       _ ≤ rexp t := add_one_le_exp t
   -- As `π > 3`, this follows from `3 t² - 3 t + 1 = 3 (t - 1/2)² + 1/4 ≥ 0`.
   have h_exp : t + -π * t ^ 2 ≤ 1 + (-t + -t) := by
-    nlinarith [pi_gt_three, sq_nonneg (t - 2⁻¹), sq_nonneg t]
+    nlinarith only [pi_gt_three, sq_nonneg (t - 2⁻¹), sq_nonneg t]
   calc ‖gaussianMonomial j t‖ = t ^ j.val * rexp (-π * t ^ 2) := by
         simp [gaussianMonomial, abs_of_nonneg ht]
     _ ≤ rexp t * rexp (-π * t ^ 2) := by gcongr

@@ -258,7 +258,6 @@ theorem sum_height_inv_cube_le [IsTotallyComplex E] (X : Finset E) :
     ∑ ν ∈ X, (∏ v : InfinitePlace E, (max 1 ‖Φ v ν‖)⁻¹ ^ 6) *
       (Ideal.absNorm (denominator ν) : ℝ)⁻¹ ^ 3 ≤
       (64 * 38 * Real.exp 4) ^ Core.numInfPlaces E := by
-  classical
   -- Group the numbers by denominator. Those with denominator `𝔟` give at most `N 𝔟` sums over
   -- cosets, and what remains is the sum of `N 𝔟 ^ (-2)`.
   calc

@@ -85,7 +85,7 @@ that are near, chosen in their double cosets and of some cell rank, and lie over
 which agrees (`S.Agrees s`). Such a pair has a common label `t`, and the lattices `S.termLattice` of
 both terms contain their common lattice `S.pairLattice c c' γ γ'`. This is a lattice in
 `Λ ∩ X₀ = S.classLatticeX₀ c`. -/
-lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock [S.IsAdmissible] {c c' : S.Classes}
+lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock {c c' : S.Classes}
     {γ γ' : S.G E} (h_pair : S.IsNearPairOverAgreeingBlock c c' (γ, γ')) :
     ∃ t : S.reducedImage besselS, S.IsLabelledPair c c' t γ γ' := by
   obtain ⟨⟨h_near, h_level⟩, ⟨h_near', h_level'⟩, s, hs, h_over, h_over'⟩ := h_pair

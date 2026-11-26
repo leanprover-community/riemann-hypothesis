@@ -527,7 +527,7 @@ lemma exists_flipPoly_map_conj_eq (s : N → ℤˣ) (t : N' → ℤˣ)
     have h_var : flipPoly s t (.map conj (flipPoly t s (.map conj (.X v)))) = .X v := by
       -- `zsmul_eq_mul` is excluded so that the two signs meet in one scalar
       simp [flipPoly, Int.cast_smul_eq_zsmul, pairSign, -zsmul_eq_mul, smul_smul, ← Units.val_mul,
-        mul_comm (t _), MvPolynomial.bind₁_X_right]
+        mul_comm (t _), MvPolynomial.aeval_X]
     simp only [map_mul, hp, h_var]
 
 /-! ### Left and reversed pairs, descents and ascents -/

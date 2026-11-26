@@ -358,21 +358,15 @@ lemma sqrt_genIndex_le_prod_norm [IsTotallyComplex E] [PlaceEmbedding E] {y : E}
   let f (w : FinPlace E) : ℝ := ‖algebraMap E (𝔸f E) y w‖
   have hf_fin : HasFiniteMulSupport f :=
     (hasFiniteMulSupport hy_ne).preimage (f := equivHeightOneSpectrum.symm) (by simp)
-  have h_index : genIndex (ratToPlaces S y) = (∏ w ∈ S, f w)⁻¹ :=
-    (genIndex_eq_inv_prod_norm S _).trans (congrArg (·⁻¹) (S.prod_coe_sort f))
-  have h_inv_le : |(Algebra.norm ℚ y : ℝ)|⁻¹ ≤ ∏ w ∈ S, f w :=
-    calc |(Algebra.norm ℚ y : ℝ)|⁻¹
-      _ = ∏ᶠ w : FinitePlace E, w y := mod_cast (prod_eq_inv_abs_norm hy_ne).symm
-      _ = ∏ w ∈ S ∪ hf_fin.toFinset, f w :=
-        (finprod_comp_equiv equivHeightOneSpectrum.symm).symm.trans
-          (finprod_eq_prod_of_mulSupport_toFinset_subset f hf_fin subset_union_right)
-      _ ≤ ∏ w ∈ S, f w := prod_le_prod_of_subset_of_le_one₀ subset_union_left
-        (fun w _ ↦ norm_nonneg _) fun w _ hw ↦ by simpa [f] using (mem_integralOff S).1 hy_int w hw
-  rw [Real.sqrt_le_left (by positivity)]
-  calc genIndex (ratToPlaces S y)
-    _ = (∏ w ∈ S, f w)⁻¹ := h_index
-    _ ≤ |(Algebra.norm ℚ y : ℝ)| := inv_le_of_inv_le₀ (by simp [hy_ne]) h_inv_le
-    _ = (∏ v : InfinitePlace E, ‖Φ v y‖) ^ 2 := by rw [abs_norm_eq_prod_norm_sq, prod_pow]
+  have h_eq : |(Algebra.norm ℚ y : ℝ)|⁻¹ = ∏ w ∈ S ∪ hf_fin.toFinset, f w :=
+    (by exact_mod_cast (prod_eq_inv_abs_norm hy_ne).symm : _ = ∏ᶠ w : FinitePlace E, w y).trans <|
+      (finprod_comp_equiv equivHeightOneSpectrum.symm).symm.trans
+        (finprod_eq_prod_of_mulSupport_toFinset_subset f hf_fin subset_union_right)
+  rw [Real.sqrt_le_left (by positivity), genIndex_eq_inv_prod_norm, ← prod_pow,
+    ← abs_norm_eq_prod_norm_sq]
+  refine inv_le_of_inv_le₀ (by simp [hy_ne]) (h_eq.trans_le <| (prod_le_prod_of_subset_of_le_one₀
+    subset_union_left (fun _ _ ↦ norm_nonneg _) fun w _ hw ↦ by
+      simpa [f] using (mem_integralOff S).1 hy_int w hw).trans_eq (S.prod_coe_sort f).symm)
 
 /-! ### The involution -/
 

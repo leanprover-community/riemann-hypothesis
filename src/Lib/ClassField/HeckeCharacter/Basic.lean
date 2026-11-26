@@ -748,8 +748,9 @@ lemma exists_conj (h : μ.HasWeight e ψ) {σ : ℂ ≃+* ℂ}
   let χ : unitary (𝔸 E) →* ℂ :=
     { toFun u := (∏ v, (u : 𝔸 E).fst (p v) ^ e v) * σ (μ.val u / ∏ v, (u : 𝔸 E).fst v ^ e v)
       map_one' := by simp
-      map_mul' := by
-        simp [mul_zpow, Finset.prod_mul_distrib, mul_div_mul_comm, mul_mul_mul_comm] }
+      map_mul' x y := by
+        simp [mul_zpow, Finset.prod_mul_distrib]
+        ring }
   have hχ (u : unitary (𝔸 E)) :
       χ u = (∏ v, (u : 𝔸 E).fst (p v) ^ e v) * σ (μ.val u / ∏ v, (u : 𝔸 E).fst v ^ e v) :=
     rfl

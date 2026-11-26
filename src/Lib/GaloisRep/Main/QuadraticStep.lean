@@ -85,39 +85,30 @@ lemma IsSplitPrimeToDisc.exists_place_above_ne [U : HasPrimitiveRoot5040 E]
   obtain ⟨ζ, hζ⟩ := U.exists_primitive_root
   obtain ⟨-, hp, h_over⟩ := hu.isSplit_and_prime_q
   have : Fact u.q.Prime := ⟨hp⟩
-  have h_four (v : FinPlace E) (hv : ↑u.q ∈ (v.below (QuadField d)).asIdeal) :
-      v ∈ ({a, b, star a, star b} : Finset (FinPlace E)) := by
-    grind [=_ below_star, star_star, (h_over (v.below _)).mpr hv]
   -- `k` is an exponent of the units modulo `m`, so it bounds the order of `p`.
-  have h_dvd (m e : ℕ) (k : ℕ+) [NeZero m] (hm : 5040 = e * m) (hk : 4 * (k : ℕ) < m.totient)
-      (h_exp : ∀ x : ZMod m, IsUnit x → x ^ (k : ℕ) = 1) : u.q ∣ m := by
+  have h_dvd (m e : ℕ) (k : ℕ+) [NeZero m] (hm : 5040 = e * m := by rfl)
+      (hk : 4 * (k : ℕ) < m.totient := by decide +kernel)
+      (h_exp : ∀ x : ZMod m, IsUnit x → x ^ (k : ℕ) = 1 := by decide +kernel) : u.q ∣ m := by
     by_contra h_not
     obtain ⟨K, hK⟩ : ∃ K : IntermediateField ℚ E, IsCyclotomicExtension {m} ℚ K :=
       ⟨_, (hζ.pow (by lia) hm).intermediateField_adjoin_isCyclotomicExtension _⟩
-    have h_primes : ((span {(u.q : ℤ)}).primesOver (𝓞 K)).ncard ≤ 4 := by
-      have h_sub : (span {(u.q : ℤ)}).primesOver (𝓞 K) ⊆
-          ↑(({a, b, star a, star b} : Finset (FinPlace E)).image fun v ↦ (v.below K).asIdeal) := by
-        rintro P ⟨hP_prime, ⟨hP_over⟩⟩
-        have hP_ne : P ≠ ⊥ :=
-          ne_bot_of_mem_primesOver (by simpa using hp.ne_zero) ⟨hP_prime, ⟨hP_over⟩⟩
-        -- `P = v.below K` for some place `v` of `E`
-        obtain ⟨v, ⟨⟩⟩ := FinPlace.comap_surjective (algebraMap K E) ⟨P, hP_prime, hP_ne⟩
-        exact mem_image_of_mem _ (h_four v (by simpa using hP_over.le))
-      grw [ncard_le_ncard h_sub, ncard_coe_finset, card_image_le, card_le_four]
-    have h_order : orderOf (u.q : ZMod m) ≤ k :=
-      orderOf_le_of_pow_eq_one k.pos (h_exp _ (ZMod.isUnit_prime_of_not_dvd hp h_not))
     -- `φ(m)` is the sum of `e f` over the primes above `p`, with `e = 1` and `f` the order of `p`.
-    have h_sum :
-        m.totient = ((span {(u.q : ℤ)}).primesOver (𝓞 K)).ncard * orderOf (u.q : ZMod m) := by
+    have h_sum : m.totient =
+        ((span {(u.q : ℤ)}).primesOver (𝓞 K)).ncard * orderOf (u.q : ZMod m) := by
       rw [← finrank m K, ← RingOfIntegers.rank,
         ← sum_ramification_inertia_eq_finrank (span {(u.q : ℤ)})]
       simp [ramificationIdx_eq_of_not_dvd _ K _ h_not, inertiaDeg_eq_of_not_dvd _ K _ h_not]
-    grw [h_sum, h_order, h_primes] at hk
-    exact hk.false
+    grw [h_sum, orderOf_le_of_pow_eq_one k.pos (h_exp _ (ZMod.isUnit_prime_of_not_dvd hp h_not)),
+      ncard_le_ncard (t := ↑(({a, b, star a, star b} : Finset (FinPlace E)).image
+        fun v ↦ (v.below K).asIdeal)) ?_, ncard_coe_finset, card_image_le, card_le_four] at hk
+    · exact hk.false
+    · rintro P hP
+      obtain ⟨v, ⟨⟩⟩ := FinPlace.comap_surjective (algebraMap K E)
+        ⟨P, hP.1, ne_bot_of_mem_primesOver (by simpa using hp.ne_zero) hP⟩
+      exact mem_image_of_mem _ (by
+        grind [=_ below_star, star_star, (h_over (v.below _)).mpr (by simpa using hP.2.1.le)])
   -- `φ(80) = 32` with exponent `4`, and `φ(63) = 36` with exponent `6`.
-  have h80 : u.q ∣ 80 := h_dvd 80 63 4 rfl (by decide +kernel) (by decide +kernel)
-  have h63 : u.q ∣ 63 := h_dvd 63 80 6 rfl (by decide +kernel) (by decide +kernel)
-  exact hp.not_dvd_one (Nat.dvd_gcd h80 h63)
+  exact hp.not_dvd_one (Nat.dvd_gcd (h_dvd 80 63 4) (h_dvd 63 80 6))
 
 end SplitPlaceCount
 

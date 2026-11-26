@@ -407,14 +407,17 @@ lemma measurePreserving_orbitPoint {F : PlaceData ι T m} (b : Fin 𝔰.n) :
       ∫⁻ t : A, modulus t ^ d * ∫⁻ u : V, ∫⁻ β : skewAdjoint A,
         Φ (orbitPoint a.castSucc ((floorWeyl a t : T.G)⁻¹ * heisenbergElem a (u, β)))
           ∂P.skewMeasure := by
-    -- `fun_prop` has to unfold the measurable space that `volume` carries
-    simp (disch := with_unfolding_all fun_prop) [floorMeasure, heisenbergMeasure, lintegral_map,
-      mconv, lintegral_prod, lintegral_withDensity_eq_lintegral_mul, hd, V]
+    simp (disch := fun_prop) [floorMeasure, heisenbergMeasure, lintegral_map,
+      mconv, lintegral_prod, hd, V]
+    rw [weylLaw, lintegral_map (by fun_prop) (by fun_prop),
+      lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
+    rfl
   have h_quadric : ∫⁻ v, Φ v ∂F.floorQuadricMeasure a.castSucc =
       ∫⁻ t : A, ∫⁻ u : V, ∫⁻ β : skewAdjoint A, Φ (χ t u β) ∂P.skewMeasure := by
     rw [floorQuadricMeasure_castSucc_eq_map]
-    simp (disch := with_unfolding_all fun_prop)
+    simp (disch := fun_prop)
       [lintegral_map, lintegral_prod, volume_eq_prod, χ, V]
+    rw [lintegral_prod _ (by fun_prop)]
   rw [h_floor, h_quadric]
   refine lintegral_congr_of_ae_imp ae_isUnit ?_
   rintro _ ⟨t, rfl⟩
@@ -655,9 +658,8 @@ lemma partialGroupMeasure_mconv_dirac {s : T.G} {F : PlaceData ι T m} (h : l + 
     F.partialGroupMeasure l i ∗ₘ dirac s = F.partialGroupMeasure l i := by
   induction i generalizing l s with
   | zero =>
-    have hl : 𝔰.ϱ + 2 ≤ l := by lia
-    have hs_one : s = 1 := by simpa [floorGroup_eq_bot hl] using hs
-    rw [hs_one, mconv_dirac_one]
+    rw [floorGroup_eq_bot (by lia)] at hs
+    rw [hs, mconv_dirac_one]
   | succ i ih =>
     -- Write the measure as `ρ ∗ₘ F.floorMeasure l` and apply `lintegral_floorMeasure_mul_right` to
     -- the `ρ`-average of a test function.
@@ -668,33 +670,19 @@ lemma partialGroupMeasure_mconv_dirac {s : T.G} {F : PlaceData ι T m} (h : l + 
     -- and `n` in the Heisenberg group of floor `l`, absorbed by `heisenbergMeasure l`.
     have hρ_right (t : T.G) (ht : t ∈ partialUnitriangularGroup (l + 1) ⊓ floorGroup l) :
         ρ ∗ₘ dirac t = ρ := by
-      obtain ⟨u, hu, n, hn, rfl⟩ :
-          ∃ u ∈ floorGroup (l + 1), ∃ n ∈ floorUnipotent l, t = u * n :=
-        exists_floorGroup_mul_floorUnipotent ht
-      obtain ⟨hn_right, -⟩ := heisenbergMeasure_mconv_dirac hn
-      have hu_right : F.partialGroupMeasure (l + 1) i ∗ₘ dirac u = F.partialGroupMeasure (l + 1)
-        i :=
-        ih (by lia) hu
-      calc ρ ∗ₘ dirac (u * n)
-          = F.partialGroupMeasure (l + 1) i ∗ₘ (heisenbergMeasure l ∗ₘ dirac u) ∗ₘ dirac n := by
-            simp only [ρ, ← dirac_mconv_dirac, mconv_assoc]
-        _ = (F.partialGroupMeasure (l + 1) i ∗ₘ dirac u) ∗ₘ (heisenbergMeasure l ∗ₘ dirac n) := by
-            simp only [← dirac_mconv_heisenbergMeasure_comm hu, mconv_assoc]
-        _ = ρ := by rw [hu_right, hn_right]
+      obtain ⟨u, hu, n, hn, rfl⟩ := exists_floorGroup_mul_floorUnipotent ht
+      dsimp only [ρ]
+      rw [← dirac_mconv_dirac, ← mconv_assoc, mconv_assoc (F.partialGroupMeasure (l + 1) i),
+        ← dirac_mconv_heisenbergMeasure_comm hu, ← mconv_assoc, ih (by lia) hu, mconv_assoc,
+        (heisenbergMeasure_mconv_dirac hn).1]
     refine ext_of_lintegral _ fun f hf ↦ ?_
     let avg (y : T.G) : ℝ≥0∞ := ∫⁻ x : T.G, f (x * y) ∂ρ
-    have h_inv : (partialUnitriangularGroup (l + 1) ⊓ floorGroup l).FixesLeft avg := by
-      intro t ht g
-      simp only [avg, ← lintegral_mconv_dirac, ← dirac_mconv_dirac, ← mconv_assoc, hρ_right t ht]
-    calc ∫⁻ x : T.G, f x ∂(F.partialGroupMeasure l (i + 1) ∗ₘ dirac s)
-        = ∫⁻ y : T.G, avg (y * s) ∂F.floorMeasure l := by
-          rw [lintegral_mconv_dirac, h_split, lintegral_mconv_symm (by fun_prop)]
-          simp only [avg, mul_assoc]
-      _ = ∫⁻ y : T.G, avg y ∂F.floorMeasure l :=
-          lintegral_floorMeasure_mul_right le_rfl h_inv
-            ⟨mem_partialUnitriangularGroup_of_mem_floorGroup hs, hs⟩
-      _ = ∫⁻ x : T.G, f x ∂F.partialGroupMeasure l (i + 1) := by
-        rw [h_split, lintegral_mconv_symm hf]
+    have h_inv : (partialUnitriangularGroup (l + 1) ⊓ floorGroup l).FixesLeft avg :=
+      fun t ht g ↦ by
+        simp only [avg, ← lintegral_mconv_dirac, ← dirac_mconv_dirac, ← mconv_assoc, hρ_right t ht]
+    rw [lintegral_mconv_dirac, h_split, lintegral_mconv_symm (by fun_prop), lintegral_mconv_symm hf]
+    simpa only [avg, mul_assoc] using lintegral_floorMeasure_mul_right le_rfl h_inv
+      ⟨mem_partialUnitriangularGroup_of_mem_floorGroup hs, hs⟩
 
 /-- The group measure, the convolution over all floors, is right invariant. -/
 instance isMulRightInvariant_groupMeasure : F.groupMeasure.IsMulRightInvariant where
@@ -730,13 +718,10 @@ lemma partialGroupMeasure_zero_eq {F : PlaceData ι T m} :
 lemma floorMeasure_ne_zero {F : PlaceData ι T m} (l : ℕ) : F.floorMeasure l ≠ 0 := by
   obtain hl | rfl | hl : l < 𝔰.n ∨ l = 𝔰.n ∨ 𝔰.n < l := lt_trichotomy l 𝔰.n
   · -- the measure maps onto a non-zero quadric measure
-    have h_map : (F.floorMeasure l).map (orbitPoint ⟨l, hl⟩) = F.floorQuadricMeasure ⟨l, hl⟩ :=
-      (measurePreserving_orbitPoint ⟨l, hl⟩).map_eq
+    have h_map := measurePreserving_orbitPoint (F := F) ⟨l, hl⟩
     have h_quadric : F.floorQuadricMeasure ⟨l, hl⟩ ≠ 0 := by
       simp (disch := fun_prop) [NeZero.ne]
-    intro h_zero
-    rw [h_zero, Measure.map_zero] at h_map
-    exact h_quadric h_map.symm
+    exact (Measure.map_ne_zero_iff h_map.aemeasurable).1 (h_map.map_eq ▸ h_quadric)
   · rw [floorMeasure_top]
     exact NeZero.ne F.measureH
   · have h_dirac : F.floorMeasure l = dirac 1 := by grind [floorMeasure]

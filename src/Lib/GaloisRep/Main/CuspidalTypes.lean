@@ -525,12 +525,8 @@ lemma New.Period.aeval_cocharacter_eq_zero {p : ℕ} [ThePrime p] {n : Type _} [
   -- View `F` as the vector of its coefficients, indexed by its monomials `ν`. The vectors that
   -- vanish at the twisted translates form a space `W` stable under the twisted Galois action, so
   -- by `le_of_hodgeTate_stable` it suffices to treat vectors of pure weight.
-  suffices h_sum : ∑ ν : F.support, F.coeff ν • ∏ i, (T (κ i) * C (x i)) ^ ν.1 i = 0 by
-    simpa only [F.aeval_def, F.eval₂_eq', ← F.support.sum_coe_sort, ← Algebra.smul_def] using h_sum
-  obtain ⟨V, hV⟩ : ∃ V : OpenSubgroup (Gp p), (V : Set (Gp p)) ⊆ {g : Gp p | ∑ ν : F.support,
-      F.coeff ν • ∏ i, ((cyclotomicGp g ^ (-κ i)).val • g • x i) ^ ν.1 i = 0} :=
-    NonarchimedeanGroup.is_nonarchimedean _ <| show ∀ᶠ g in nhds 1, _ by
-      simpa only [F.aeval_def, F.eval₂_eq', ← F.support.sum_coe_sort, ← Algebra.smul_def] using h
+  simp only [F.aeval_def, F.eval₂_eq', ← F.support.sum_coe_sort, ← Algebra.smul_def] at h ⊢
+  obtain ⟨V, hV⟩ := NonarchimedeanGroup.is_nonarchimedean _ h
   -- `u ν` is the weight of the monomial `ν`; `W` consists of the vectors that vanish at the
   -- translates by all `g` in the open subgroup `V`, and `W'` of those that vanish at `T ^ κ * x`.
   let u (ν : F.support) : ℤ := ∑ i, ν.1 i * κ i
@@ -538,27 +534,23 @@ lemma New.Period.aeval_cocharacter_eq_zero {p : ℕ} [ThePrime p] {n : Type _} [
     ∏ i, ((cyclotomicGp g ^ (-κ i)).val • (g : Gp p) • x i) ^ ν.1 i).vecMulLinear.ker
   let W' : Submodule ℂ_[p] (F.support → ℂ_[p]) := (Fintype.linearCombination ℂ_[p]
     fun ν : F.support ↦ ∏ i, (T (κ i) * C (x i)) ^ ν.1 i).ker
-  have hF : (fun ν : F.support ↦ F.coeff ν) ∈ W := funext fun g ↦ hV g.prop
   refine le_of_hodgeTate_stable le_rfl u W W'
-    (fun a ha ↦ ?_) (fun v ν hv _hv_int h_supp _hv_one _hv_fix ↦ ?_) hF
+    (fun a ha ↦ ?_) (fun v ν hv _ h_supp _ _ ↦ ?_) (funext fun g ↦ hV g.prop)
   · -- Stability: for `k ∈ V`, apply `k` to the equation of `W` at `k⁻¹ * g`.
     filter_upwards [V.mem_nhds_one] with k hk
     refine LinearMap.mem_ker.mpr (funext fun g ↦ ?_)
     have zpow_sum (f : n → ℤ) : cyclotomicGp k ^ ∑ i, f i = ∏ i, cyclotomicGp k ^ f i := by
       simpa [-map_prod] using map_prod (zpowersHom _ (cyclotomicGp k)) (.ofAdd ∘ f) univ
-    -- `h_at`: the equation of `W` for `a` at `k⁻¹ * g`, with `k` applied to both sides.
-    have h_at := congrArg (k • ·) (congrFun (LinearMap.mem_ker.mp ha) (⟨k, hk⟩⁻¹ * g))
     simpa [u, mul_pow, smul_smul, smul_prod', dotProduct, _root_.zpow_mul', vecMul, smul_sum,
-      zpow_sum, mul_zpow, smul_pow, prod_smul, smul_comm k, prod_mul_distrib] using h_at
+      zpow_sum, mul_zpow, smul_pow, prod_smul, smul_comm k, prod_mul_distrib] using
+      congrArg (k • ·) (congrFun (LinearMap.mem_ker.mp ha) (⟨k, hk⟩⁻¹ * g))
   · -- For `v` of pure weight `u ν`, the equation of `W'` is that of `W` at `1`, times `T (u ν)`.
     have h_one : ∑ l, (v l : ℂ_[p]) * ∏ i, x i ^ (l : n →₀ ℕ) i = 0 := by
       simpa [vecMul, dotProduct] using congrFun (LinearMap.mem_ker.mp hv) 1
     calc ∑ l, (v l : ℂ_[p]) • ∏ i, (T (κ i) * C (x i)) ^ (l : n →₀ ℕ) i
-        = ∑ l, ((v l : ℂ_[p]) * ∏ i, x i ^ (l : n →₀ ℕ) i) • T (u ν) := by
-          refine sum_congr rfl fun l _ ↦ ?_
-          rcases h_supp l with hl | hl
-          · simp [← hl, u, T, C, -single_eq_C_mul_T]
-          · simp [hl]
+        = ∑ l, ((v l : ℂ_[p]) * ∏ i, x i ^ (l : n →₀ ℕ) i) • T (u ν) :=
+          sum_congr rfl fun l _ ↦ (h_supp l).elim
+            (fun hl ↦ by simp [← hl, u, T, C, -single_eq_C_mul_T]) (fun hl ↦ by simp [hl])
       _ = 0 := by rw [← sum_smul, h_one, zero_smul]
 
 end HodgeTateCocharacter

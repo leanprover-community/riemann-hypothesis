@@ -500,13 +500,13 @@ lemma exists_tsum_enorm_unfoldStep_mul_le (hW : Y.IsEquivariant W) {y : G E ε' 
           ‖∫ r, classTerm α Φ W (e (q, w)).1 h r * y h ∂Y.besselMeasure‖ₑ := by
         simp only [he, ← tsum_integral_classTerm_agreeingClasses Y' α Φ hW, ← tsum_mul_right,
           integral_mul_const]
-        exact ENNReal.tsum_le_tsum fun q ↦ eNorm_tsum_le_tsum_eNorm
+        exact tsum_le_tsum fun q ↦ eNorm_tsum_le_tsum_eNorm
     _ = ∑' w : Y.agreeingTranslates Y',
           ‖∫ r, classTerm α Φ W w.1 h r * y h ∂Y.besselMeasure‖ₑ := by
-        rw [← e.tsum_eq, ENNReal.tsum_prod']
+        rw [← e.tsum_eq, tsum_prod']
     _ ≤ ∑' w : Y.agreeingTranslates Y',
           ∫⁻ r, ‖classTerm α Φ W w.1 h r * y h‖ₑ ∂Y.besselMeasure :=
-        ENNReal.tsum_le_tsum fun w ↦ eNorm_integral_le_lintegral_eNorm _
+        tsum_le_tsum fun w ↦ eNorm_integral_le_lintegral_eNorm _
     _ = ∫⁻ r, ∑' w : Y.agreeingTranslates Y',
           ‖classTerm α Φ W w.1 h r * y h‖ₑ ∂Y.besselMeasure := by
         rw [lintegral_tsum (by fun_prop)]

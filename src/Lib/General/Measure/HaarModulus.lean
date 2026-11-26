@@ -160,7 +160,6 @@ lemma measure_smul_map_restrict_eq_smul_inv (μ : Measure Z) [SFinite μ] [μ.Is
 `G`, `π : Z →* G` measurable, `O` a measurable set with `New.HasStableLifts π O`, and `K`
 measurable in `G`. Then `μ (π ⁻¹' K ∩ O)` times `η.inv`, the image of `η` under inversion, is left
 invariant. -/
-@[to_additive isAddLeftInvariant_measure_smul_neg]
 lemma isMulLeftInvariant_measure_smul_inv (μ : Measure Z) [SFinite μ] [μ.IsMulLeftInvariant]
     [μ.IsMulRightInvariant] (η : Measure G) [SFinite η] [η.IsMulLeftInvariant] {π : Z →* G}
     (hπ : Measurable π) {O : Set Z} (hO : MeasurableSet O) (h_lift : HasStableLifts π O)

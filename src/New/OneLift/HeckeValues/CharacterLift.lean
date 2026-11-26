@@ -287,20 +287,11 @@ lemma trivialLift_eq_stdClassSum_translate (X : LValueData E n) (z : Gf E Unit) 
   -- permutes the classes.
   obtain ⟨h_left : stdRatPoints.FixesLeft X.kernelForm,
     h_right : X.chosenLevel ≤ rightStabilizer X.kernelForm⟩ := X.kernelForm_invariant
-  have h_out (g : Gf E Unit) :
-      X.kernelForm (DoubleCoset.mk stdRatPoints X.chosenLevel (g * z)).out =
-        X.kernelForm (g * z) :=
-    apply_doubleCoset_out h_left h_right (g * z)
   have h_conj : X.chosenLevel.comap (MulAut.conj z : Gf E Unit →* Gf E Unit) = X.chosenLevel := by
     simp [SetLike.ext_iff, mul_comm' z]
-  have h_translate :
-      classSum stdRatPoints X.chosenLevel (fun g : Gf E Unit ↦ X.kernelForm (g * z)) =
-        (X.chosenLevel.relIndex X.chosenLevel : ℚ) •
-          classSum stdRatPoints X.chosenLevel X.kernelForm :=
-    classSum_eq_relIndex_smul le_rfl z h_conj h_out
-  -- The index of the level in itself is `1`.
-  rw [Subgroup.relIndex_self, Nat.cast_one, one_smul] at h_translate
-  exact h_translate.symm
+  -- Both sides are the class integral of the kernel; the index of the level in itself is `1`.
+  simpa [trivialLift, classIntegral_eq_classSum h_right] using
+    classIntegral_eq_classSum_mul h_left z (h_conj.trans_le (le_inf h_right le_rfl)) le_rfl
 
 /-! ### Adjointness of the lift and the descent -/
 

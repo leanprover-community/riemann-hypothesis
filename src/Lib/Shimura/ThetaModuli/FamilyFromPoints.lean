@@ -211,8 +211,7 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
     simp [π, ← smoothLocus_eq_top_iff, ← preimage_smoothLocus_eq]
   obtain ⟨U, hU, htU⟩ : ∃ V : S.Opens, IsAffineOpen V ∧ LandsIn t V := exists_isAffineOpen_landsIn t
   have hxU : π x ∈ U := by
-    rw [hx]
-    exact landsIn_iff_mem.mp htU
+    simpa only [hx] using landsIn_iff_mem.mp htU
   obtain ⟨W, hW, hxW, hWU⟩ : ∃ W : A.left.Opens, IsAffineOpen W ∧ x ∈ W ∧ W ≤ π ⁻¹ᵁ U :=
     exists_isAffineOpen_mem_and_subset (π.mem_preimage.mpr hxU)
   -- Smoothness descends from k to the residue field of the image of t.
@@ -234,10 +233,12 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
   -- Restate the fibre through Spec Γ(W) → Spec Γ(U), at the prime under the prime of x.
   have h_point :
       hU.fromSpec (Spec.map (π.appLE U W hWU) (hW.primeIdealOf ⟨x, hxW⟩)) = t (closedPoint k) := by
-    -- `erw`: `primeIdealOf` is a point of the prime spectrum, which is the carrier of
-    -- `Spec Γ(A.left, W)` only after unfolding.
-    erw [← Hom.comp_apply, hU.SpecMap_appLE_fromSpec _ hW, Hom.comp_apply, hW.fromSpec_primeIdealOf,
-      hx]
+    -- `primeIdealOf` is a point of the prime spectrum, which is the carrier of `Spec Γ(A.left, W)`
+    -- only after unfolding, so `Hom.comp_apply` is used as an equation.
+    refine (Hom.comp_apply ..).symm.trans ?_
+    rw [hU.SpecMap_appLE_fromSpec _ hW]
+    refine (Hom.comp_apply ..).trans ?_
+    rw [hW.fromSpec_primeIdealOf, hx]
   rw [← h_point, ← hU.SpecMap_appLE_fromSpec π hW hWU] at h_fibre
   -- The ring-theoretic fibre at that prime is isomorphic to it, so it is smooth.
   have h_alg_smooth : Algebra.Smooth 𝔭.ResidueField (𝔭.Fiber Γ(A.left, W)) :=

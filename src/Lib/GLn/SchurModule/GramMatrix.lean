@@ -210,10 +210,6 @@ noncomputable def firstColumnExponent (α : ∀ τ : Φ, n τ → ℕ) : ((τ : 
   (Finsupp.equivFunOnFinite.symm fun x : (τ : Φ) × n τ ↦ α x.1 x.2).embDomain
     (Function.Embedding.sectL ((τ : Φ) × n τ) 0)
 
-lemma firstColumnExponent_injective : Function.Injective (firstColumnExponent (n := n)) :=
-  (Finsupp.embDomain_injective _).comp <| Finsupp.equivFunOnFinite.symm.injective.comp
-    (Equiv.piCurry fun τ (_ : n τ) ↦ ℕ).symm.injective
-
 /-- A product over the exponent `firstColumnExponent α` runs over the variables in the first
 columns. -/
 lemma prod_firstColumnExponent {M : Type} [CommMonoid M] (α : ∀ τ : Φ, n τ → ℕ)

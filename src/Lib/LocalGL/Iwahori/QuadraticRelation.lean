@@ -135,7 +135,7 @@ lemma transvectionGL_apply_permGL_inv {h : a ≠ b} {σ : Perm (Fin N)}
     simpa using (permGL_mul_transvectionGL σ⁻¹ hσ.ne c).symm
   have h_fix : ρ (transvectionGL hσ.ne c) x = x := by
     simpa using hx ⟨_, transvectionGL_mem_proIwahori hσ.ne (.inr ⟨hc, hσ⟩)⟩
-  rw [← Module.End.mul_apply, ← map_mul ρ.ρ, h_comm, map_mul ρ.ρ, Module.End.mul_apply, h_fix]
+  rw [← mul_apply_eq_comp, ← map_mul ρ.ρ, h_comm, map_mul ρ.ρ, mul_apply_eq_comp, h_fix]
 
 /-- If `c j < c i` forces `j < i`, as it does for monotone `c`, then the pro-`p` Iwahori subgroup
 lies in the parahoric subgroup for the blocks of `c`. -/
@@ -224,7 +224,7 @@ lemma quadratic_relation [CompactSpace 𝒪[F]] [IsSmoothRep ρ.ρ]
       φ (ρ (τ * transvectionGL hab.ne w) x) = if v w < 1 then φ (ρ τ x) else c := by
     rcases hw.lt_or_eq with hw_lt | hw_eq
     · -- Moved to the left of `τ`, `transvectionGL hab.ne w` lies in `proIwahori`.
-      rw [ite_eq_left hw_lt, hτ, permGL_mul_transvectionGL, map_mul ρ.ρ, Module.End.mul_apply]
+      rw [ite_eq_left hw_lt, hτ, permGL_mul_transvectionGL, map_mul ρ.ρ, mul_apply_eq_comp]
       exact hφ _ (transvectionGL_mem_proIwahori _ (.inl hw_lt)) _
     · -- Factor `τ (1 + w E_ab) = (1 + w⁻¹ E_ab) d (1 + w⁻¹ E_ba)`: the left factor lies in
       -- `proIwahori`, the right one fixes `x`, and `φ (ρ d x) = c`.
@@ -232,7 +232,7 @@ lemma quadratic_relation [CompactSpace 𝒪[F]] [IsSmoothRep ρ.ρ]
       lift w to Fˣ using hw_unit
       have hw_inv : v w.val⁻¹ ≤ 1 := by simp [hw_eq]
       rw [ite_eq_right hw_eq.not_lt, hτ, swap_mul_transvectionGL hab.ne w]
-      simp only [map_mul ρ.ρ, Module.End.mul_apply, hx _ hw_inv,
+      simp only [map_mul ρ.ρ, mul_apply_eq_comp, hx _ hw_inv,
         hφ _ (transvectionGL_mem_proIwahori hab.ne (.inr ⟨hw_inv, hab.lt⟩))]
       exact hc w hw_eq
   have h_tv (p q : F) :
@@ -260,7 +260,7 @@ lemma quadratic_relation [CompactSpace 𝒪[F]] [IsSmoothRep ρ.ρ]
           MulAut.conj (permGL (Equiv.swap a b)) (g * transvectionGL hab.ne z.val) *
             (τ * transvectionGL hab.ne (f r - z).val) := by
         simp [τ, MulAut.conj_apply, mul_assoc, h_tv]
-      rw [h_prod, map_mul ρ.ρ, Module.End.mul_apply, hφ _ hk]
+      rw [h_prod, map_mul ρ.ρ, mul_apply_eq_comp, hφ _ hk]
     have h_lt_iff (r : 𝓀[F]) : v (f r - z).val < 1 ↔ r = residue 𝒪[F] z := by
       rw [← residue_eq_zero_iff_valuation_lt_one, map_sub, hf, sub_eq_zero]
     calc

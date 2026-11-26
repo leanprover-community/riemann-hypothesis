@@ -149,7 +149,7 @@ lemma SidePairing.isSafe_of_orders {l κ : ℕ} {wOrders yOrders νOrders νDept
     refine wittPairing_mem_withOrders (fun g s t ↦ by simp) w_exp y_exp
       fun a u hu u' hu' v _ h_le ↦ ?_
     have h_jump : -v - 1 ≤ -u - u' - 1 := by omega
-    linarith [h_pos a u hu u' hu', antitone_shiftedOrders h_anti l 0 a h_jump]
+    linarith only [h_pos a u hu u' hu', antitone_shiftedOrders h_anti l 0 a h_jump]
   let ξ : (tateLattice O).Ambient :=
     JumpLattice.wittPairing (C := tateLattice O) P.extensionForm (φ ^ l • ν) wy
   have ξ_std : ξ ∈ (tateLattice O).withOrders i (stdOrders 0) := by
@@ -361,7 +361,7 @@ lemma SidePairing.isSafeMoveFst_of_killsCokernel {c' : S'.paramLattice} {P : S.S
   obtain ⟨n, hn⟩ := pointsOver_nonempty_of_killsCokernel h_kill 1
   refine P.isSafeMoveFst_of_orders hn (antitone_raisedOrdersAtZero (-t)) hy hx' fun a u hu u' hu' ↦
     ?_
-  linarith [shiftedOrders_raisedOrdersAtZero_add_ruleBound l t a u u', h_sum a u hu u' hu']
+  linarith only [shiftedOrders_raisedOrdersAtZero_add_ruleBound l t a u u', h_sum a u hu u' hu']
 
 /-- Let `p ^ κ * E ^ t` kill the cokernel of the Tate dual side `Hom(Y ⊗ Y', O(1))` of the pairing
 `P` of the sides `S`, `S'` at the letter `l` steps before `i`, `E` being the Eisenstein polynomial

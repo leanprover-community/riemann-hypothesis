@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 public import Lib.Weil.DualPair.Defs
 public import Lib.Weil.Unramified.HeckeGL
 

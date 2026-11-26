@@ -139,53 +139,32 @@ lemma apply_mem_hodgeFil_of_forall_formsOfType (hx : x ∈ L.fracSpan)
     (h_terms : ∀ κ : ℤ, ∀ ν ∈ L.formsOfType i κ, ∀ D : L.Functional →ₗ[BdR] BdR,
       ShiftsHodgeFil D κ → RespectsGaloisAction D → D μ * ν x ∈ hodgeFil n) :
     μ x ∈ hodgeFil n := by
-  -- Take an invariant Hodge basis `hodgeUnit = P * diag (t ^ κ)`, with `P` invertible over
-  -- `BdRPlus`, and the forms `ν m` dual to it. Expand `μ x = ∑ m, D m μ * ν m x` and apply the
-  -- hypothesis to each term.
-  let ι : Type := Fin (finrank ℤ_[p] L.Carrier)
-  let e : Basis ι ℤ_[p] L.Carrier := finBasis ℤ_[p] L.Carrier
-  obtain ⟨κ, -, -, -, -, P, (h_inv : ∀ g : GroupOverGp.G,
-      (repMatrix L.ρ e g).map (algebraMap ℤ_[p] BdR) * toGp g • hodgeMatrix P.val κ =
-        hodgeMatrix P.val κ)⟩ := L.inClass.isPotentiallyCrystalline.exists_hodge_basis e
-  -- `hodgeUnit` is `hodgeMatrix P κ` as a unit.
-  let hodgeUnit : (Matrix ι ι BdR)ˣ := P.map (algebraMap BdRPlus BdR).mapMatrix.toMonoidHom *
-    (MulEquiv.piUnits.symm fun m ↦ tUnit ^ κ m).map (diagonalRingHom ι BdR).toMonoidHom
-  have h_equivariant (g : GroupOverGp.G) (μ₁ μ₂ : L.Functional) :
-      (∀ t : L.Carrier, μ₂ (DiagTensor.mk 1 (L.ρ g t)) = toGp g • μ₁ (DiagTensor.mk 1 t)) ↔
-        basisValues μ₂ ᵥ* hodgeUnit.val = toGp g • basisValues μ₁ ᵥ* hodgeUnit.val :=
-    equivariant_iff_basisValues hodgeUnit.isUnit (h_inv g)
-  have h_extend (m : ι) : ∃ ν : L.Functional, ∀ t, ν (DiagTensor.mk 1 t) =
-      (finBasis ℤ_[p] (Rep.of (overZp L.ρ))).constr ℕ (hodgeUnit.inv m) t :=
-    L.exists_functional_extend _
-  choose ν hν using h_extend
-  have h_row (m : ι) : basisValues (ν m) = hodgeUnit.inv m :=
-    funext (by simp [basisValues, hν])
-  let D (m : ι) : L.Functional →ₗ[BdR] BdR :=
-    .proj m ∘ₗ hodgeUnit.val.vecMulLinear ∘ₗ basisValues
-  have h_expand : μ x = ∑ m, D m μ * ν m x := by
+  -- Take an invariant Hodge basis `hodgeUnit = P * diag (t ^ κ)` and dual forms `ν m`.
+  obtain ⟨κ, -, -, -, -, P, h_inv⟩ :=
+    L.inClass.isPotentiallyCrystalline.exists_hodge_basis (finBasis ℤ_[p] L.Carrier)
+  let hodgeUnit : (Matrix _ _ BdR)ˣ := P.map (algebraMap BdRPlus BdR).mapMatrix.toMonoidHom *
+    (MulEquiv.piUnits.symm fun m ↦ tUnit ^ κ m).map (diagonalRingHom _ BdR).toMonoidHom
+  choose ν hν using fun m ↦ L.exists_functional_extend
+    ((finBasis ℤ_[p] (Rep.of (overZp L.ρ))).constr ℕ (hodgeUnit.inv m))
+  have h_row m : basisValues (ν m) = hodgeUnit.inv m := funext (by simp [basisValues, hν])
+  let D m : L.Functional →ₗ[BdR] BdR := .proj m ∘ₗ hodgeUnit.val.vecMulLinear ∘ₗ basisValues
+  -- Expand `μ x = ∑ m, D m μ * ν m x` and apply the hypothesis to each term.
+  rw [show μ x = ∑ m, D m μ * ν m x by
     simpa [D] using apply_eq_of_mem_fracSpan μ (∑ m, (basisValues μ ᵥ* hodgeUnit) m • ν m)
-      (by simp [h_row, ← vecMul_eq_sum]) hx
-  -- `ν m` is equivariant, as row `m` of `hodgeUnit⁻¹ * hodgeUnit` is fixed by `g`.
-  have hν_inv (m : ι) : ν m ∈ L.forms := by
-    refine fun t g ↦ (h_equivariant g (ν m) (ν m)).2 ?_ t
+      (by simp [h_row, ← vecMul_eq_sum]) hx]
+  refine sum_mem fun m _ ↦ h_terms (κ m) (ν m) ⟨?_, ?_⟩ (D m) ?_ ?_
+  · refine fun t g ↦ (equivariant_iff_basisValues hodgeUnit.isUnit (h_inv g)).2 ?_ t
     simp [funext_iff, h_row, ← mul_apply_eq_vecMul, Matrix.one_apply]
-  -- On the basis of the lattice the values of `ν m` are the entries of `t ^ (-κ m) P⁻¹`.
-  have hν_fil (m : ι) : L.ainfLattice ≤ ((hodgeFil (-κ m)).restrictScalars Ainf).comap (ν m) := by
-    simp [ainfLattice_eq_span_basis, span_le, range_subset_iff, hν, hodgeUnit, mem_hodgeFil,
-      mul_comm]
-  have hν_type (m : ι) : ν m ∈ L.formsOfType i (κ m) :=
-    ⟨hν_inv m, fun t ↦ hν_fil m (letterProj_mk_mem_ainfLattice t)⟩
-  -- `D m μ'` pairs the values of `μ'` with column `m` of `hodgeUnit`, which `t ^ κ m` divides.
-  have hD_fil (m : ι) : ShiftsHodgeFil (D m) (κ m) := by
-    intro μ' j hμ'
-    have h_column (s : ι) : hodgeUnit.val s m ∈ hodgeFil (κ m) :=
-      mem_hodgeFil.2 ⟨P.val s m, by simp [hodgeUnit]⟩
+  · have h_fil : L.ainfLattice ≤ ((hodgeFil (-κ m)).restrictScalars Ainf).comap (ν m) := by
+      simp [ainfLattice_eq_span_basis, span_le, range_subset_iff, hν, hodgeUnit, mem_hodgeFil,
+        mul_comm]
+    exact fun t ↦ h_fil (letterProj_mk_mem_ainfLattice t)
+  · intro μ' j hμ'
     change ∑ s, basisValues μ' s * hodgeUnit.val s m ∈ hodgeFil (j + κ m)
-    exact sum_mem fun s _ ↦ mul_mem_hodgeFil (hμ' _) (h_column s)
-  have hD_inv (m : ι) : RespectsGaloisAction (D m) :=
-    fun μ₁ μ₂ g hg ↦ congrFun ((h_equivariant g μ₁ μ₂).1 hg) m
-  rw [h_expand]
-  exact sum_mem fun m _ ↦ h_terms (κ m) (ν m) (hν_type m) (D m) (hD_fil m) (hD_inv m)
+    exact sum_mem fun s _ ↦ mul_mem_hodgeFil (hμ' _)
+      (mem_hodgeFil.2 ⟨P.val s m, by simp [hodgeUnit]⟩)
+  · exact fun μ₁ μ₂ g hg ↦
+      congrFun ((equivariant_iff_basisValues hodgeUnit.isUnit (h_inv g)).1 hg) m
 
 /-- Let `μ` be a form, that is, a functional equivariant on `1 ⊗ L` for the subgroup
 `Γ' = k.subgroup`. Let `y` lie in `L.kisinLocAinf`: some product of the `φ^j(E)` multiplies it into
@@ -332,48 +311,37 @@ in `L.letterPart i`, where `ζ` acts by the Teichmüller lift of `i`, and in `L.
 image under `φ ^ l` of `L.kisinAinf`. -/
 lemma mem_withOrders_stdOrders_iff :
     x ∈ L.withOrders i (stdOrders l) ↔ x ∈ L.frobKisinAinf l ∧ x ∈ L.letterPart i := by
-  -- Write the element as φ^l x. The right side then says that x lies in `L.kisinAinf` and in the
-  -- letter l steps before i.
-  obtain ⟨x, rfl⟩ : ∃ x' : L.Ambient, φ ^ l • x' = x := MulAction.surjective (φ ^ l) x
+  -- Write the element as φ^l x so the right side becomes `x ∈ L.kisinAinf` and `i.stepBack l`.
+  obtain ⟨x, rfl⟩ := MulAction.surjective (φ ^ l) x
   suffices φ ^ l • x ∈ L.withOrders i (stdOrders l) ↔
       x ∈ L.kisinAinf ∧ x ∈ L.letterPart (i.stepBack l) by
     simpa [frobKisinAinf, phi_pow_smul_mem_letterPart_iff]
-  refine ⟨fun hx ↦ ⟨⟨?_, fun n μ hμ ↦ ?_⟩, ?_⟩, fun ⟨hx_kisin, hx_letter⟩ ↦ ?_⟩
-  · -- Forward, the denominator: apply φ^{-l} to φ^l(τ)ⁿ φ^l x ∈ `L.ainfLattice`.
+  refine ⟨fun hx ↦ ⟨⟨?_, fun n μ hμ ↦ ?_⟩,
+      phi_pow_smul_mem_letterPart_iff.1 (withOrders_le_letterPart hx)⟩,
+    fun ⟨hx_kisin, hx_letter⟩ ↦ ?_⟩
+  · -- Forward, denominator: apply φ^{-l} to φ^l(τ)ⁿ φ^l x ∈ `L.ainfLattice`.
     obtain ⟨_, ⟨n, rfl⟩, hn⟩ := mem_saturateBy_powers_of_mem_withOrders hx
-    have h_tau : (tau : Ainf) ^ n • x ∈ L.ainfLattice := by
-      simpa [frobGroup_smul_smul] using smul_mem_ainfLattice (φ ^ l)⁻¹ hn
-    exact ⟨tau ^ n, ⟨n, rfl⟩, h_tau⟩
-  · -- Forward, integrality of the values: φ^{n+1} φ^l x has orders 0 at level l. In a Hodge basis
-    -- the coefficients of the invariant form μ are fixed by Γ', hence integral, so μ(φ^{n+1} x) is
-    -- integral.
-    let i' : k.Letter := (k.letterFrob ^ (n + 1)) i
-    let z : L.Ambient := φ ^ (n + 1) • φ ^ l • x
-    have h_shift : z ∈ L.withOrders i' (shiftedOrders (n + 1) 0 (stdOrders l)) :=
-      phi_pow_smul_mem_withOrders (by simpa [i'] using hx)
-    have h_int : valueAt l μ z ∈ hodgeFil 0 := by
-      refine apply_mem_hodgeFil_of_forall_formsOfType (i := i'.stepBack l)
+    exact ⟨tau ^ n, ⟨n, rfl⟩,
+      by simpa [frobGroup_smul_smul] using smul_mem_ainfLattice (φ ^ l)⁻¹ hn⟩
+  · -- Forward, integrality: φ^{n+1} φ^l x has orders 0 at level l.
+    have h_shift : φ ^ (n + 1) • φ ^ l • x ∈
+        L.withOrders ((k.letterFrob ^ (n + 1)) i) (shiftedOrders (n + 1) 0 (stdOrders l)) :=
+      phi_pow_smul_mem_withOrders (by simpa using hx)
+    have h_int : valueAt l μ (φ ^ (n + 1) • φ ^ l • x) ∈ hodgeFil 0 := by
+      refine apply_mem_hodgeFil_of_forall_formsOfType
+        (i := ((k.letterFrob ^ (n + 1)) i).stepBack l)
         (smul_mem_fracSpan _ (kisinLocAinf_le_fracSpan (withOrders_le_kisinLocAinf h_shift)))
         fun κ ν hν D _ hD ↦ ?_
-      have h_coeff : D μ ∈ hodgeFil 0 := (mem_hodgeFil_zero_and_mem_valueField_zero_of_fixed fun g ↦
-        hD μ μ g fun t ↦ hμ t g).1
-      have h_exp : ∀ v ∈ L.jumpSet (i'.stepBack l), v ≤ κ →
-          hodgeFil (shiftedOrders (n + 1) 0 (stdOrders l) l v) ≤ hodgeFil 0 := by
-        grind [hodgeFil_anti.imp]
-      have h_value : ν ((φ ^ l)⁻¹ • z) ∈ hodgeFil 0 := valueAt_mem_of_hodgeFil_le _ h_shift hν h_exp
-      simpa using mul_mem_hodgeFil h_coeff h_value
-    simpa [z, valueAt, smul_smul, pow_mul_comm] using h_int
-  · -- Forward, the letter.
-    exact phi_pow_smul_mem_letterPart_iff.1 (withOrders_le_letterPart hx)
-  · -- Conversely, x has exponents -u: τⁿ x lies in `L.ainfLattice`, and τ is prime to every φ^a(E).
-    suffices hx : x ∈ L.withOrders (i.stepBack l) fun (_ : ℕ) (u : ℤ) ↦ -u by
-      -- the exponents `-u` shifted by `l` levels are `stdOrders l` by definition
-      change φ ^ l • x ∈ L.withOrders i (shiftedOrders l 0 fun (_ : ℕ) (u : ℤ) ↦ -u)
-      exact phi_pow_smul_mem_withOrders hx
-    refine ⟨⟨mem_saturateBy_of_mem hx_kisin, hx_letter⟩, fun a u _ μ hμ ↦ ?_⟩
-    obtain ⟨_, ⟨n, rfl⟩, hn⟩ : x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice := hx_kisin.1
-    have hτ : ¬(k.frobE a : Ainf) ∣ tau := fun h_dvd ↦ not_frobE_dvd_zTau a (h_dvd.mul_right _)
-    refine (mul_mem_hodgeFil_iff_of_not_frobE_dvd hτ n).1 ?_
+      simpa [valueAt] using mul_mem_hodgeFil
+        (mem_hodgeFil_zero_and_mem_valueField_zero_of_fixed fun g ↦ hD μ μ g fun t ↦ hμ t g).1
+        (valueAt_mem_of_hodgeFil_le _ h_shift hν (by grind [hodgeFil_anti.imp]))
+    simpa [valueAt, smul_smul, pow_mul_comm] using h_int
+  · -- Conversely, x has exponents -u since τⁿ x ∈ `L.ainfLattice` and τ is prime to φ^a(E).
+    refine phi_pow_smul_mem_withOrders (c := fun _ u ↦ -u)
+      ⟨⟨mem_saturateBy_of_mem hx_kisin, hx_letter⟩, fun a u _ μ hμ ↦ ?_⟩
+    obtain ⟨_, ⟨n, rfl⟩, hn⟩ := hx_kisin.1
+    refine (mul_mem_hodgeFil_iff_of_not_frobE_dvd
+      (fun h_dvd ↦ not_frobE_dvd_zTau a (h_dvd.mul_right _)) n).1 ?_
     simpa using valueAt_mem_hodgeFil_of_mem_ainfLattice hμ hn (smul_mem _ _ hx_letter)
 
 /-- An element `x` lies in `L.stdOrdersPart l i`, that is, in `L.kisinLoc` with the standard
@@ -398,7 +366,7 @@ lemma letterProj_mem_withOrders (hx : x ∈ L.frobKisinAinf l) :
   have h_iter (n : ℕ) : L.mulZeta.wittMap^[n] x ∈ L.frobKisinAinf l :=
     MapsTo.iterate (fun _ ↦ mulZeta.wittMap_mem_frobKisinAinf) n hx
   refine mem_withOrders_stdOrders_iff.2 ⟨?_, letterProj_mem_letterPart⟩
-  simp [letterProj, letterOp, smul_pow, End.pow_apply, sum_mem, smul_of_tower_mem,
+  simp [letterProj, letterOp, smul_pow, pow_apply_eq_iterate, sum_mem, smul_of_tower_mem,
     smul_of_tower_mem _ _ (h_iter _)]
 
 /-- Let `x` lie in `L.frobKisinAinf l`, and let all forms take values in the subfield

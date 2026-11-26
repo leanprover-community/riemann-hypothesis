@@ -353,7 +353,7 @@ instance : FiniteDimensional ℂ (D.formsOfLevel L) := by
           V.formTranslation κ (componentOn n D.places k * componentOn n (.conjClosure D.places)ᶜ k)
             f := by
         rw [h_split]
-      _ = χ ⟨k, hk_K⟩ • f := by rw [map_mul, End.mul_apply, h_fix, h_char]
+      _ = χ ⟨k, hk_K⟩ • f := by rw [map_mul, mul_apply_eq_comp, h_fix, h_char]
   exact .of_fg ((Finite.iff_fg.mp h_fin).of_le h_le)
 
 /-- Only finitely many systems of eigenvalues have level `L`. -/
@@ -469,7 +469,7 @@ lemma formsOfLevel_le_of_eigensystem {N : Submodule ℂ (V.forms κ)}
         have hk_triv : componentOn n D.places (k : Gf E n) ∈ trivialOn n {w} := by
           simp_all [mem_trivialOn, atPlace_componentOn]
         refine LinearMap.ext fun x ↦ ?_
-        rw [End.mul_apply, End.mul_apply]
+        rw [mul_apply_eq_comp, mul_apply_eq_comp]
         exact heckeSplit_comm_of_trivialOn hw j hk_triv
       exact D.map_mem_forms _ h_comm hf_Y
     · -- The level is kept: `f` is spherical at `w`, where the level elements are integral.

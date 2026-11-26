@@ -687,8 +687,7 @@ lemma exists_localArtin_eq_of_isFrob_pow {g : Γ} {n : ℕ} (hg : IsFrob A (w.q 
   have unit_mem (u : (LocField w)ˣ) (hu : v u.val = 1) : u ∈ E := by
     obtain ⟨t, ht, t_art⟩ := h.exists_mem_inertiaGroup_localArtin_eq (Γ := Γ) hu
     have hψu : abelianLift ψ (localArtin Γ A w u) = 1 := by
-      rw [t_art]
-      exact ψ_unr t ht
+      simpa only [t_art] using! ψ_unr t ht
     have hχu : abelianLift χ (localArtin Γ A w u) = 1 :=
       hχ _ ⟨u, ⟨locIdele w u, locIdele_mem_idelesUnitOff hu, ideleAt_locIdele ..⟩, rfl⟩
     exact hψu.trans hχu.symm
@@ -890,8 +889,7 @@ lemma valuation_smul_div_sub_lt_one {G k E : Type} [Group G] [TopologicalSpace G
   have h_frob : B.valuation (φ • r - r ^ (n + 1)) < 1 := by simpa [hq] using hφ.right r hr_unit.le
   have h_eq : φ • r / r - algebraMap k E u = (φ • r - r ^ (n + 1)) / r := by
     rw [← hr_pow, sub_div, pow_succ, mul_div_cancel_right₀ _ (Units.ne_zero _)]
-  rw [h_kummer, h_eq, map_div₀, hr_unit, div_one]
-  exact h_frob
+  simpa only [h_kummer, h_eq, map_div₀, hr_unit, div_one] using h_frob
 
 /-- Let `A` lie over `w`, let `π` in `K` be a uniformiser for `A` and `y ^ (w.q - 1) = π`, where
 `w.q` is the number of residues of `w`, and let `u` be a unit of `K_w` (`v u = 1`, with `v` the

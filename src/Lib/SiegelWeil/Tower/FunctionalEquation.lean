@@ -52,7 +52,7 @@ lemma exists_exp_neg_sq_mul_rpow_mul_one_add_log_sq_le {c : ℝ} (hc : 0 < c) :
   have h_exp : (1 + y) ^ M ≤ rexp (M * y) := by
     grw [exp_natCast_mul, add_comm, add_one_le_exp]
   have h_exponent : -y ^ 2 + M * y ≤ M + M ^ 2 := by
-    nlinarith [sq_nonneg (y - M), sq_nonneg y, (Nat.cast_nonneg M : (0 : ℝ) ≤ M)]
+    nlinarith only [sq_nonneg (y - M), sq_nonneg y, (Nat.cast_nonneg M : (0 : ℝ) ≤ M)]
   calc rexp (-y ^ 2) * (y ^ 2) ^ c * (1 + log y ^ 2)
       ≤ rexp (-y ^ 2) * (C * rexp (M * y)) := by grw [mul_assoc, h_poly y hy, h_exp]
     _ = C * rexp (-y ^ 2 + M * y) := by rw [exp_add, mul_left_comm]

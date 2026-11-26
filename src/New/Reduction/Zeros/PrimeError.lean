@@ -64,8 +64,8 @@ def logDerivMean [NeZero q] (s : ℂ) : ℂ :=
 /-- The remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`, with
 `λ = lambdaKResidueClass d q` and `c_q = re G_q(1)`, `G_q = logDerivMean d q`; see
 `primeRemainder_eq_sum_posPart`. For odd `d` prime to `q` this is the constant for which
-`R_q(x) → 0` as `x → ∞`, as `tendsto_primeRemainder` in `New.Reduction.Zeros.PrimeNumberTheorem`
-proves. -/
+`R_q(x) → 0` as `x → ∞`, by `eventually_abs_primeRemainder_le` in
+`New.Reduction.Zeros.PrimeNumberTheorem` with `B = 1`. -/
 def primeRemainder [NeZero q] (x : ℝ) : ℝ :=
   lambdaKSum d q 0 x - lambdaKSum d q 1 x - x.log / φ q - re (logDerivMean d q 1)
 
@@ -190,7 +190,7 @@ lemma abs_primeRemainder_exp_le {v : ℝ} (hv : 0 ≤ v) :
     |primeRemainder d q (rexp v)| ≤ (|re (logDerivMean d q 1)| + 5) * rexp v := by
   have h_log : |v / φ q| ≤ rexp v := by
     rw [abs_of_nonneg (by positivity)]
-    linarith [div_le_self hv (mod_cast NeZero.one_le : (1 : ℝ) ≤ φ q), add_one_le_exp v]
+    linarith only [div_le_self hv (mod_cast NeZero.one_le : (1 : ℝ) ≤ φ q), add_one_le_exp v]
   set c : ℝ := re (logDerivMean d q 1) with hc
   calc
     |primeRemainder d q (rexp v)|

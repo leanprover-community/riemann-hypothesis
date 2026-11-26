@@ -107,7 +107,7 @@ lemma diag_ne_zero_of_row (hg : ∀ j ≠ i, g i j = 0) : g i i ≠ 0 :=
 
 /-- Replacing the `j`-th column of the identity matrix by `z` gives determinant `z j`. -/
 lemma det_updateCol_one (j : n) (z : n → F) : (updateCol 1 j z).det = z j := by
-  rw [← cramer_apply, cramer_one, Module.End.one_apply]
+  rw [← cramer_apply, cramer_one, one_apply_eq_self]
 
 /-- Replacing the `j`-th row of the identity matrix by `z` gives determinant `z j`. -/
 lemma det_updateRow_one (j : n) (z : n → F) : (updateRow 1 j z).det = z j := by
@@ -213,40 +213,31 @@ lemma sum_sum_dotProduct_eq_one_eq_smul {W : Type} [AddCommGroup W] [Module ℂ 
       (Fintype.card F : ℂ) ^ (Fintype.card n - 2 : ℤ) • (y + ∑ z : n → F with z ≠ 0, f z) := by
   -- Exchange the sums: a vector `z` occurs `N z` times. This is `q ^ (n - 1)` for `z = e_i`,
   -- zero for its other multiples and `q ^ (n - 2)` off the line `L` of `e_i`.
-  set q : ℂ := ((Fintype.card F : ℕ) : ℂ) with hq_def
+  rw [sum_forms_sum_eq_sum_card_smul i f, sum_ne_zero_eq_smul_add_sum_compl_line hf]
+  set q : ℂ := (Fintype.card F : ℂ)
   have hq : q ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
   set d : ℂ := q ^ (Fintype.card n - 2 : ℤ)
   have hd : d * q ^ 2 = q ^ Fintype.card n := by simp [d, zpow_sub₀ hq, hq]
   let L : Finset (n → F) := {z : n → F | ∀ j ≠ i, z j = 0}
   let N (z : n → F) : ℕ := #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1}
-  let e : n → F := Pi.single i 1
   have h_on : ∑ z ∈ L, N z • f z = (d * q) • y := by
-    have he : ∀ j ≠ i, e j = 0 := fun j hj ↦ Pi.single_eq_of_ne hj 1
-    have h_count : (N e : ℂ) = d * q := by
-      refine mul_right_cancel₀ hq ?_
-      rw [mul_assoc, ← sq, hd, show N e = #{ξ : n → F | ξ i = 1} by simp [N, e], hq_def]
-      exact_mod_cast card_forms_missing_line (F := F) i
-    have h_others : ∀ z ∈ L, z ≠ e → N z • f z = 0 := fun z hz h_ne ↦ by
-      simp [N, card_forms_eq_zero_of_ne_single (by simpa [L] using hz) h_ne]
-    rw [sum_eq_single_of_mem e (by simpa [L] using he) h_others,
-      hf e (Pi.single_ne_zero_iff.2 one_ne_zero) he, ← Nat.cast_smul_eq_nsmul ℂ, h_count]
+    rw [sum_eq_single_of_mem (Pi.single i 1) (by simp [L, Pi.single_eq_of_ne]) fun z hz hne ↦ by
+        simp [N, card_forms_eq_zero_of_ne_single (by simpa [L] using hz) hne],
+      hf _ (Pi.single_ne_zero_iff.2 one_ne_zero) (fun j hj ↦ Pi.single_eq_of_ne hj 1),
+      ← Nat.cast_smul_eq_nsmul ℂ]
+    refine congrArg (· • y) (mul_right_cancel₀ hq ?_)
+    simpa [N, mul_assoc, ← sq, hd, q] using
+      congrArg ((↑) : ℕ → ℂ) (card_forms_missing_line (F := F) i)
   have h_off : ∑ z ∈ Lᶜ, N z • f z = d • ∑ z ∈ Lᶜ, f z := by
     rw [smul_sum]
     refine sum_congr rfl fun z hz ↦ ?_
     obtain ⟨j, hj, hzj⟩ : ∃ j ≠ i, z j ≠ 0 := by simpa [L] using hz
-    have h_count : (N z : ℂ) = d := by
-      refine mul_right_cancel₀ (pow_ne_zero 2 hq) ?_
-      rw [hd, hq_def]
-      exact_mod_cast card_forms_taking_one_at_two_vectors_mul_sq hj hzj
-    rw [← Nat.cast_smul_eq_nsmul ℂ, h_count]
-  have h_all : ∑ z : n → F with z ≠ 0, f z = (q - 1) • y + ∑ z ∈ Lᶜ, f z :=
-    sum_ne_zero_eq_smul_add_sum_compl_line hf
-  calc ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, f z
-    _ = ∑ z : n → F, N z • f z := sum_forms_sum_eq_sum_card_smul i f
-    _ = (d * q) • y + d • ∑ z ∈ Lᶜ, f z := by rw [← sum_add_sum_compl L, h_on, h_off]
-    _ = d • (y + ∑ z : n → F with z ≠ 0, f z) := by
-      rw [h_all]
-      module
+    rw [← Nat.cast_smul_eq_nsmul ℂ]
+    refine congrArg (· • f z) (mul_right_cancel₀ (pow_ne_zero 2 hq) ?_)
+    simpa [N, hd, q] using
+      congrArg ((↑) : ℕ → ℂ) (card_forms_taking_one_at_two_vectors_mul_sq hj hzj)
+  rw [← sum_add_sum_compl L, h_on, h_off]
+  module
 
 end Field
 

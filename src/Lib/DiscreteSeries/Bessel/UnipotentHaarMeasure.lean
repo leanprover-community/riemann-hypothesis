@@ -731,7 +731,7 @@ lemma mul_mem_homogeneousBall {ρ ρ' : ℝ} {u v : (𝔰.middleGram (1 : ℂ)).
     calc ‖eichlerScalars u.val + eichlerScalars v.val +
           (eichlerVectors u.val)ᴴ * eichlerVectors v.val‖ ≤ ρ ^ 2 + ρ' ^ 2 + ρ * ρ' := by
           grw [norm_add₃_le, l2_opNorm_mul, l2_opNorm_conjTranspose, hu_ω, hu_μ, hv_ω, hv_μ]
-      _ ≤ (ρ + ρ') ^ 2 := by nlinarith [mul_nonneg hρ ((norm_nonneg _).trans hv_ω)]
+      _ ≤ (ρ + ρ') ^ 2 := by linarith [mul_nonneg hρ ((norm_nonneg _).trans hv_ω)]
 
 /-- On the frame-fixing unipotent group 𝖴⁰, the measure `besselHaar₀` is the pushforward of Lebesgue
 measure under `unipotentOf`. For ρ > 0 it gives `homogeneousBall ρ` (‖ω‖ ≤ ρ, ‖μ‖ ≤ ρ² in operator
@@ -817,7 +817,6 @@ lemma besselHaar₀_homogeneousBall_add_le {t : ℝ} (ht : 0 < t) :
     𝔰.besselHaar₀ (homogeneousBall (𝔰.r ^ 2 * t + t)) ≤
       3 * 𝔰.besselHaar₀ (homogeneousBall (𝔰.r ^ 2 * t)) := by
   -- The radius grows by the factor `1 + 1 / r ^ 2`, and the exponent `d` is at most `r ^ 2`.
-  have hr_pos : (0 : ℝ) < 𝔰.r := mod_cast card_pos
   set d : ℕ := 2 * 𝔰.ϱ * (𝔰.k + 𝔰.ϱ) with hd_def
   have hd : d ≤ 𝔰.r ^ 2 := by
     rw [hd_def, show 𝔰.r = 𝔰.ϱ + (𝔰.k + 1 + 𝔰.ϱ) by simp]

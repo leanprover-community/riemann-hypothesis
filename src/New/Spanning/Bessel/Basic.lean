@@ -99,7 +99,8 @@ lemma frameVector_eq_sum (hs : s ∈ besselU) :
       (s * y)⁻¹.val.val.submatrix id 𝔰.besselFrame * frameMatrix s := by
     simpa using submatrix_mul_besselFrame hs (y⁻¹ * s⁻¹).val.val id
   ext i
-  simpa [frameVector, Matrix.mul_apply, mul_comm] using congrFun₂ h_cols i a
+  simpa [frameVector] using (congrFun₂ h_cols i a).trans
+    (Matrix.mul_apply.trans (Finset.sum_congr rfl fun _ _ ↦ mul_comm _ _))
 
 /-- The vector `frameVector y a` = y⁻¹ f_a, where f_a is the `a`-th vector of the frame (e₁, …, e_ϱ,
 z), is not longer than the operator norm of `y`. -/
@@ -451,8 +452,8 @@ theorem gramSchmidtMatrix_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s �
     rw [← frameVector_eq_sum_orthoFrame, ← h_fix, frameVector_eq_sum b hu, ← mul_assoc, hC,
       frameMatrix_mul_besselH u hh]
     simp only [frameVector_eq_sum_orthoFrame, h_orth, Matrix.mul_apply, sum_smul, smul_sum,
-      smul_smul, mul_comm]
-    exact sum_comm
+      smul_smul]
+    exact sum_comm.trans (sum_congr rfl fun _ _ ↦ sum_congr rfl fun _ _ ↦ by rw [mul_comm])
   ext a b
   exact Fintype.linearIndependent_iffₛ.1 (linearIndependent_orthoFrame y) (C · b)
     (gramSchmidtMatrix y · b) (h_same_expansion b) a
@@ -769,7 +770,9 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
         (castSucc_ne_last _).symm]
   have h_herm : (𝔰.middleGram N).splitGramᴴ = (𝔰.middleGram N).splitGram := by
     simp [Shape.Form.splitGram, Shape.middleGram, ← Matrix.ext_iff, hN, Matrix.one_apply,
-      apply_ite star, eq_comm]
+      apply_ite star]
+    exact ⟨fun _ _ ↦ if_congr eq_comm rfl rfl, fun _ _ ↦ if_congr eq_comm rfl rfl,
+      fun _ _ ↦ if_congr eq_comm rfl rfl⟩
   have h_block (x y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) :
       (frameImage x)ᴴ * (𝔰.middleGram N).splitGram * frameImage y =
         (xᴴ * (𝔰.middleGram N).splitGram * y).submatrix 𝔰.besselFrame 𝔰.besselFrame := rfl

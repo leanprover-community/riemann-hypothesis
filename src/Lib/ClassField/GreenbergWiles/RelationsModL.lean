@@ -378,7 +378,7 @@ lemma exists_hasFewCocycles_torsion (hκ : Continuous κ)
   obtain ⟨h_few, -⟩ := s'.card_trivialised_of_isHigmanProjective hV
     (hV.isHigmanProjective_of_coprime (coprime_index_ker_torsionAction h_card))
     fun y hy h_frob g ↦ by
-      simp only [map_one, Module.End.one_apply, zero_smul, sub_zero]
+      simp only [map_one, one_apply_eq_self, zero_smul, sub_zero]
       exact fixed y hy h_frob g
   -- The family `s'` has `#ι + 2` primes and the bound has one further factor `#M[ℓ]`.
   simpa using h_few

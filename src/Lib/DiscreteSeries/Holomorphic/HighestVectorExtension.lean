@@ -559,7 +559,7 @@ lemma isBorelMatrix_one_add_lowerMask (ho : o.Injective) (Z : Matrix n n ℂ) :
   have triangular : (1 + lowerMask ε o Z).BlockTriangular (-o) := fun i j hij ↦ by
     simp [(neg_lt_neg_iff.1 hij : o i < o j).not_gt, show i ≠ j by grind]
   refine ⟨triangular, ?_⟩
-  rw [det_eq_prod_diag_of_blockTriangular (neg_injective.comp ho) triangular]
+  rw [triangular.det_eq_prod_diag (neg_injective.comp ho)]
   simp
 
 /-- Let `o` be injective, `w` dominant within the blocks of `ε` (`w j ≤ w i` whenever `ε i = ε j`

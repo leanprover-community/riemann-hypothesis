@@ -217,7 +217,6 @@ lemma exists_isIntMatrix_mul_eq {B : Matrix l m A} {C : Matrix l n A}
 columns of `B`. -/
 lemma colLattice_mul_le (B : Matrix l m A) {U : Matrix m n A} (hU : IsIntMatrix R U) :
     colLattice R (B * U) ≤ colLattice R B := by
-  classical
   rw [colLattice_mul]
   exact Submodule.map_mono (colLattice_le fun j i ↦ hU i j)
 

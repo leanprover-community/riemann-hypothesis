@@ -436,7 +436,7 @@ lemma IsCutBessel.norm_le_of_mem_positionBall (hF : IsCutBessel F rep ρ s b W f
     one_le_pow₀ (one_le_mul_of_one_le_of_one_le (one_le_pow₀ one_le_b) (one_le_pow₀ one_le_ρ))
   have h_entries : ‖X - 1‖ ≤ 𝔰.r * 𝔰.r * R := l2_opNorm_le_of_apply hx
   have rank_sq_le : (𝔰.r : ℝ) * 𝔰.r + 1 ≤ ρ ^ 2 := by
-    nlinarith [hF.eight_mul_r_le_rho, hF.four_le, Nat.cast_nonneg (α := ℝ) 𝔰.r]
+    nlinarith only [hF.eight_mul_r_le_rho, hF.four_le, Nat.cast_nonneg (α := ℝ) 𝔰.r]
   have cube_le : 10 ^ 9 * 𝔰.n ^ 3 ≤ 𝔰.r := hF.mul_cube_lt_s.le.trans (by grind [hF.r_eq_add])
   calc ‖X‖ ≤ ‖X - 1‖ + 1 := by simpa using norm_add_le (X - 1) 1
     _ ≤ (𝔰.r * 𝔰.r + 1) * R := by linarith

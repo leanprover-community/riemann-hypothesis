@@ -1,6 +1,7 @@
 module
 
 public import Lib.ClassField.Places.TameInertia
+import TauCeti.NumberTheory.Padics.Complex.TateTwist
 
 /-!
 # Tate's vanishing theorem, Hodge–Tate elimination and the filtration of B_dR
@@ -32,8 +33,8 @@ Notions from other files:
 
 Known result: The Ax–Sen–Tate theorem and Tate's vanishing of the invariants of C_p(i). Ax's theorem
 is not proved in this file; it comes from an imported file, as `ax_mem_closure_fixedField` and
-`exists_algebraic_of_fixed_near_one`, without the constant. Tate's theorem is stated for H⁰ only, on
-any open subgroup, and is proved from the boundedness of the normalised trace to Q_p. A consequence
+`exists_algebraic_of_fixed_near_one`, without the constant. Tate's theorem for H⁰ on an open subgroup follows
+from Tau Ceti's vanishing theorem over its finite fixed field. A consequence
 is that invariants of B_dR modulo a submodule come from the base field. Source: J. Ax, Zeros of
 polynomials over local fields: the Galois action, J. Algebra 15 (1970); J. Tate, p-divisible groups
 (1967), §3; proofs in Fontaine–Ouyang 3.3-3.5 and Brinon–Conrad §14.
@@ -45,207 +46,6 @@ See also `Lib.PadicHodge.Crystalline.Regularity` and `Lib.PadicHodge.PeriodRings
 
 /-! ## Tate's vanishing theorem for cyclotomic twists of ℂ_p -/
 
-section TateVanishing
-
-open Algebra New.Selmer Finset Polynomial IntermediateField Submodule Units NeZero Set
-  IsUltrametricDist InfiniteGalois AdjoinSimple NonarchimedeanGroup PadicComplex Subgroup
-
-/-- There is a positive constant `C` bounding the normalised trace to `ℚ_p` of every root of unity
-of `p`-power order in `Q̄_p`. The traces of the `p`-th roots of unity are bounded, as there are
-finitely many; for any other root of order `p ^ (n + 1)` the trace vanishes. -/
-private lemma New.Period.exists_norm_normalizedTrace_le_of_pow_eq_one (p : ℕ) [ThePrime p] :
-    ∃ C > 0, ∀ (n : ℕ) (η : PadicAlgCl p), η ^ p ^ (n + 1) = 1 →
-      ‖normalizedTrace ℚ_[p] (PadicAlgCl p) η‖ ≤ C := by
-  classical
-  set T : PadicAlgCl p →ₗ[ℚ_[p]] ℚ_[p] := normalizedTrace ℚ_[p] (PadicAlgCl p)
-  -- There are finitely many `p`-th roots of unity.
-  obtain ⟨C, hC_pos, hC⟩ : ∃ C > 0, ∀ η : PadicAlgCl p, η ^ p = 1 → ‖T η‖ ≤ C := by
-    simpa [NeZero.pos] using ((nthRoots p 1).map T).finite_toSet.isBounded.exists_pos_norm_le
-  refine ⟨C, hC_pos, fun n η hη ↦ ?_⟩
-  by_cases hp : η ^ p = 1
-  · exact hC η hp
-  -- `η ^ a` is a Galois conjugate of `η` for `a` prime to `p`.
-  have h_conj (a : ℕ) (ha : p.Coprime a) : T (η ^ a) = T η := by
-    obtain ⟨g, -, hg⟩ := exists_inertia_cyclotomicGp_eq a ha
-    have h_smul : g • η = η ^ a :=
-      cyclotomicCharMod_eq_iff.mp (by simp [cyclotomicCharMod_prime_pow_eq, hg]) η hη
-    rw [← h_smul]
-    exact normalizedTrace_map ℚ_[p] (PadicAlgCl p) g.toAlgHom η
-  -- The `p ^ n` conjugates `η ^ (1 + p * i)` sum to `η` times a vanishing geometric sum.
-  have h_geom : T (η * ∑ i ∈ range (p ^ n), (η ^ p) ^ i) =
-      T (η * (((η ^ p) ^ p ^ n - 1) / (η ^ p - 1))) := by
-    rw [geom_sum_eq hp]
-  have h_zero : T η = 0 := by
-    simpa [← pow_mul, mul_sum, h_conj, ← pow_succ', NeZero.ne, hη] using h_geom
-  simp [h_zero, hC_pos.le]
-
-/-- An element of `Q̄_p` fixed by the stabilizer of a primitive root of unity `ζ` of order
-`p ^ (n + 1)` is a `ℚ_p`-combination of the powers `(ζ - 1) ^ i` with `i` below
-`(p ^ (n + 1)).totient`: the polynomial `Φ(X + 1)` is monic of that degree and kills `ζ - 1`. -/
-private lemma New.Period.exists_sum_smul_sub_one_pow_eq {p : ℕ} [ThePrime p] {n : ℕ}
-    {ζ z : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ (p ^ (n + 1)))
-    (h_fix : ∀ g : Gp p, g ζ = ζ → g z = z) :
-    ∃ a : ℕ → ℚ_[p], ∑ i ∈ .range (p ^ (n + 1)).totient, a i • (ζ - 1) ^ i = z := by
-  classical
-  have h_mem : z ∈ ℚ_[p]⟮ζ - 1⟯ := by
-    refine (InfiniteGalois.fixedField_fixingSubgroup _).le fun g ↦ h_fix g ?_
-    -- `g` fixes `ζ - 1`, hence `ζ`
-    simpa using g.property (gen ℚ_[p] (ζ - 1))
-  have h_poly : aeval (ζ - 1) ((cyclotomic (p ^ (n + 1)) ℚ_[p]).comp (X + .C 1)) = 0 := by
-    rw [aeval_comp]
-    simpa [← eval_map_algebraMap] using isRoot_cyclotomic_iff.mpr hζ
-  have h_deg : ((cyclotomic (p ^ (n + 1)) ℚ_[p]).comp (X + .C 1)).natDegree =
-      (p ^ (n + 1)).totient := by
-    rw [natDegree_comp, natDegree_X_add_C, mul_one, natDegree_cyclotomic]
-  have h_span : z ∈ span ℚ_[p] ((Finset.range (p ^ (n + 1)).totient).image
-      (fun i ↦ (ζ - 1) ^ i) : Set (PadicAlgCl p)) := by
-    rw [← h_deg]
-    exact (span_range_natDegree_eq_adjoin ((cyclotomic.monic _ ℚ_[p]).comp_X_add_C 1) h_poly).ge
-      ((adjoin_toSubalgebra _).le h_mem)
-  -- `-coe_range` keeps `Finset.range` from turning into `Set.Iio`.
-  simpa [mem_span_image_finset_iff_exists_fun', -coe_range] using h_span
-
-/-- Tate: there is a constant C, depending only on p, such that every z in Q̄_p fixed by the
-kernel of the cyclotomic character, that is z in Q_p(μ_{p^∞}), has normalised trace to Q_p
-of absolute value at most C·|z|. -/
-lemma New.Period.exists_norm_normalizedTrace_le (p : ℕ) [ThePrime p] :
-    ∃ C : ℝ, ∀ z : PadicAlgCl p, z ∈ fixedField cyclotomicGp.ker →
-      ‖normalizedTrace ℚ_[p] (PadicAlgCl p) z‖ ≤ C * ‖z‖ := by
-  classical
-  -- Write `z` as a polynomial in the uniformiser `π = ζ - 1` of `ℚ_p(ζ)`. Its terms have distinct
-  -- norms, so each is at most `‖z‖`; and the trace of `π ^ i` is bounded because the traces of all
-  -- `p`-power roots of unity are.
-  obtain ⟨C, hC_pos, h_root⟩ := New.Period.exists_norm_normalizedTrace_le_of_pow_eq_one p
-  set T : PadicAlgCl p →ₗ[ℚ_[p]] ℚ_[p] := normalizedTrace ℚ_[p] (PadicAlgCl p)
-  refine ⟨C * p, fun z hz ↦ ?_⟩
-  -- By compactness `z` is fixed by the stabilizer of a single root of unity `ζ`.
-  obtain ⟨n, ζ, hζ, h_fix⟩ : ∃ (n : ℕ) (ζ : PadicAlgCl p),
-      IsPrimitiveRoot ζ (p ^ (n + 1)) ∧ ∀ g : Gp p, g ζ = ζ → g z = z := by
-    by_contra! h
-    -- Each primitive root of unity of `p`-power order is fixed by some `g` that moves `z`; the
-    -- form `ζ ^ 1` is that of `exists_cyclotomicGp_eq_of_isClosed` for the character value `1`.
-    have h_pow (k : ℕ) (ζ : PadicAlgCl p) (hζ : IsPrimitiveRoot ζ (p ^ (k + 1))) :
-        ∃ g ∈ {g : Gp p | g • z ≠ z}, g ζ = ζ ^ 1 := by
-      refine (h k ζ hζ).imp fun g hg ↦ ?_
-      simpa [and_comm] using hg
-    obtain ⟨g, hgz, hg⟩ : ∃ g ∈ {g : Gp p | g • z ≠ z}, ((cyclotomicGp g : ℤ_[p]ˣ) : ℤ_[p]) = 1 :=
-      exists_cyclotomicGp_eq_of_isClosed 1 (isClosed_setOf_smul z fun w ↦ w ≠ z) h_pow
-    exact hgz (hz ⟨g, by simpa using hg⟩)
-  -- With `π = ζ - 1`: `‖π‖ ^ e = ‖p‖`, and `z` is a polynomial in `π` of degree below `e`.
-  let e : ℕ := (p ^ (n + 1)).totient
-  have hπ_pow : ‖ζ - 1‖ ^ e = (↑p)⁻¹ := (norm_zeta_sub_one_pow hζ).trans norm_p_eq_inv
-  have hπ_pos : 0 < ‖ζ - 1‖ := norm_sub_pos_iff.mpr (hζ.ne_one (by simp [Fact.out]))
-  have hπ_lt : ‖ζ - 1‖ < 1 := by
-    by_contra! h_ge
-    exact (one_le_pow₀ h_ge).not_gt
-      ((norm_zeta_sub_one_pow hζ).trans_lt (PadicAlgCl.norm_p_lt_one p))
-  obtain ⟨a, rfl⟩ : ∃ a : ℕ → ℚ_[p], ∑ i ∈ .range e, a i • (ζ - 1) ^ i = z :=
-    New.Period.exists_sum_smul_sub_one_pow_eq hζ h_fix
-  -- Each nonzero term has norm a power of `‖π‖`, as `‖a i‖ = p ^ (-v(a i))` and `p = ‖π‖ ^ (-e)`;
-  -- so nonzero terms have distinct norms: their exponents of `‖π‖` differ modulo `e`.
-  have h_norm_term (i : ℕ) (ha_ne : a i ≠ 0) :
-      ‖a i • (ζ - 1) ^ i‖ = ‖ζ - 1‖ ^ ((e : ℤ) * (a i).valuation + i) := by
-    simp [norm_smul, Padic.norm_eq_zpow_neg_valuation ha_ne, inv_eq_iff_eq_inv.mp hπ_pow.symm,
-      ← zpow_natCast, ← zpow_mul, ← zpow_add₀ hπ_pos.ne']
-  let s : Finset ℕ := {i ∈ Finset.range e | a i • (ζ - 1) ^ i ≠ 0}
-  have h_ne : (s : Set ℕ).Pairwise fun j k ↦ ‖a j • (ζ - 1) ^ j‖ ≠ ‖a k • (ζ - 1) ^ k‖ := by
-    intro j hj k hk hjk h
-    obtain ⟨⟨hj_lt, haj⟩, hk_lt, hak⟩ : (j < e ∧ a j ≠ 0) ∧ k < e ∧ a k ≠ 0 := by simp_all [s]
-    have h_exp : e * (a j).valuation + j = e * (a k).valuation + k := by
-      rwa [h_norm_term j haj, h_norm_term k hak, zpow_right_inj₀ hπ_pos hπ_lt.ne] at h
-    have h_mod : ((e : ℤ) * (a j).valuation + j) % e = ((e : ℤ) * (a k).valuation + k) % e := by
-      rw [h_exp]
-    have h_jk : j = k := by simpa [Int.emod_eq_of_lt, hj_lt, hk_lt] using h_mod
-    exact hjk h_jk
-  -- The binomial expansion writes `π ^ i` as a sum of integer multiples of powers of `ζ`.
-  have h_trace (i : ℕ) : ‖T ((ζ - 1) ^ i)‖ ≤ C := by
-    have h_zeta (j : ℕ) : ‖T (ζ ^ j)‖ ≤ C := h_root n _ <| by
-      rw [← pow_mul, mul_comm, pow_mul, hζ.pow_eq_one, one_pow]
-    rw [sub_pow, map_sum]
-    refine norm_sum_le_of_forall_le_of_nonneg hC_pos.le fun j _ ↦ ?_
-    -- each summand is an integer multiple of `T (ζ ^ j)`
-    calc ‖T ((-1) ^ (j + i) * ζ ^ j * 1 ^ (i - j) * (i.choose j : PadicAlgCl p))‖
-        = ‖((-1) ^ (j + i) * i.choose j : ℤ) • T (ζ ^ j)‖ := by
-          rw [← map_zsmul, zsmul_eq_mul]
-          simp [mul_right_comm]
-      _ ≤ ‖T (ζ ^ j)‖ := norm_zsmul_le _ _
-      _ ≤ C := h_zeta j
-  -- Each term is bounded alone; `‖π‖ ^ i ≥ 1 / p` costs the factor `p` in the constant.
-  rw [← sum_filter_ne_zero, map_sum]
-  refine norm_sum_le_of_forall_le_of_nonneg (by positivity) fun i hi ↦ ?_
-  calc ‖T (a i • (ζ - 1) ^ i)‖ ≤ ‖a i‖ * C := by grw [map_smul, norm_smul, h_trace]
-    _ = C * p * (‖a i‖ * ‖ζ - 1‖ ^ e) := by simp [hπ_pow, field]
-    _ ≤ C * p * ‖a i • (ζ - 1) ^ i‖ := by
-      grw [norm_smul, norm_pow, pow_le_pow_of_le_one hπ_pos.le hπ_lt.le
-        (mem_range.mp (mem_filter.mp hi).left).le]
-    _ ≤ _ := by grw [norm_sum_eq_sup'_of_pairwise_ne ⟨i, hi⟩ h_ne, ← le_sup' _ hi]
-
-/-- Tate's theorem for the whole group: `ℂ_p` has no nonzero vector on which `Gal(ℚ̄_p/ℚ_p)` acts
-through a nonzero power of the cyclotomic character. -/
-lemma New.Period.eq_zero_of_smul_eq_cyclotomicGp_zpow_smul {p : ℕ} [ThePrime p] {y : ℂ_[p]} {n : ℤ}
-    (hn : n ≠ 0) (hy : ∀ g : Gp p, g • y = cyclotomicGp g ^ n • y) :
-    y = 0 := by
-  obtain ⟨C, hC⟩ := exists_norm_normalizedTrace_le p
-  -- By Ax's theorem a bound `1 ≤ C * ‖f w‖`, with `f` continuous, passes from the algebraic
-  -- elements fixed by the kernel of `cyclotomicGp` to all fixed elements of `ℂ_p`.
-  have h_ax (f : C(ℂ_[p], ℂ_[p])) (hf : ∀ w ∈ fixedField cyclotomicGp.ker, 1 ≤ C * ‖f w‖)
-      (x : ℂ_[p]) (hx : ∀ g ∈ cyclotomicGp.ker, g • x = x) : 1 ≤ C * ‖f x‖ :=
-    closure_minimal (t := {x | 1 ≤ C * ‖f x‖}) (image_subset_iff.mpr hf)
-      (isClosed_le continuous_const (by fun_prop)) (ax_mem_closure_fixedField cyclotomicGp.ker hx)
-  -- For algebraic `w` fixed by the kernel, which is normal, `1 - (γ w - w)` is fixed too and has
-  -- normalized trace `1`.
-  have h_trace (γ : Gp p) (z : ℂ_[p]) (hz : ∀ g ∈ cyclotomicGp.ker, g • z = z) :
-      1 ≤ C * ‖1 - (γ • z - z)‖ := by
-    refine h_ax (1 - (γ • ContinuousMap.id ℂ_[p] - ContinuousMap.id ℂ_[p])) (fun w hw ↦ ?_) z hz
-    -- `γ w` has the trace of `w`, so `1 - (γ w - w)` has trace `1`.
-    have h_trace_one : normalizedTrace ℚ_[p] (PadicAlgCl p) (1 - (γ w - w)) = 1 := by
-      rw [map_sub, map_sub,
-        show normalizedTrace ℚ_[p] (PadicAlgCl p) (γ w) = normalizedTrace ℚ_[p] (PadicAlgCl p) w
-          from normalizedTrace_map ℚ_[p] (PadicAlgCl p) γ.toAlgHom w]
-      simpa using normalizedTrace_algebraMap_apply_eq_self ℚ_[p] (PadicAlgCl p) 1
-    have h_mem : 1 - (γ w - w) ∈ fixedField cyclotomicGp.ker :=
-      sub_mem (one_mem _) (sub_mem (smul_mem_fixedPoints_of_normal γ hw) hw)
-    have h_bound : 1 ≤ C * ‖1 - (γ w - w)‖ := by simpa [h_trace_one] using hC _ h_mem
-    simpa [← UniformSpace.Completion.coe_one, ← UniformSpace.Completion.coe_sub] using h_bound
-  -- It suffices to bound `1 - y * w` for algebraic `w`: pass to `w = y⁻¹`, where it is `0`.
-  suffices key : ∀ w ∈ fixedField cyclotomicGp.ker, 1 ≤ C * ‖1 - y * w‖ by
-    by_contra hy₀
-    have h_inv_fixed (g : Gp p) (hg : g ∈ cyclotomicGp.ker) : g • y⁻¹ = y⁻¹ := by
-      simp [hy g, MonoidHom.mem_ker.mp hg]
-    have h_at_inv : 1 ≤ C * ‖1 - y * y⁻¹‖ := by
-      simpa using h_ax (1 - y • ContinuousMap.id ℂ_[p]) (by simpa using key) y⁻¹ h_inv_fixed
-    simp [mul_inv_cancel₀ hy₀, zero_lt_one.not_ge] at h_at_inv
-  intro w hw
-  -- A positive power of an element with character `p + 1` fixes `w`, since the stabilizer of `w`
-  -- is open; and `p + 1` has infinite order.
-  obtain ⟨γ, hγw, hγ⟩ : ∃ γ : Gp p, γ w = w ∧
-      (((cyclotomicGp γ ^ n : ℤ_[p]ˣ) : ℤ_[p]) : ℚ_[p]) ≠ 1 := by
-    obtain ⟨γ, -, hγ⟩ :
-        ∃ g ∈ inertiaGroup (Gp p) (intQpBar p), cyclotomicGp g = (↑(p + 1) : ℤ_[p]) :=
-      exists_inertia_cyclotomicGp_eq (p + 1) (by simp)
-    -- `1` is a cluster point of the powers of `γ`, and the stabilizer of `w` is open.
-    obtain ⟨N, hN, h_stab⟩ : ∃ N ≥ (1 : ℕ), (γ ^ N) w = w :=
-      ((mapClusterPt_one_atTop_pow γ).frequently
-        ((_root_.stabilizer_isOpen_of_isIntegral w).mem_nhds rfl)).forall_exists_of_atTop 1
-    refine ⟨γ ^ N, h_stab, fun h ↦ ?_⟩
-    have h_unit : cyclotomicGp (γ ^ N) ^ n.natAbs = 1 :=
-      pow_natAbs_eq_one.mpr (Units.ext (PadicInt.ext h))
-    have h_pow : ((p + 1) ^ N) ^ n.natAbs = 1 :=
-      Nat.cast_injective (R := ℤ_[p]) (by simpa [hγ] using Units.ext_iff.mp h_unit)
-    -- `(p + 1) ^ N` with `N ≥ 1` has no nonzero power equal to `1`
-    simp [pow_eq_one_iff, hn, NeZero.ne, Nat.ne_of_gt hN] at h_pow
-  -- For `z = y * w / (a - 1)` with `a = cyclotomicGp γ ^ n` one has `γ • z - z = y * w`.
-  let z : ℂ_[p] := ((((cyclotomicGp γ ^ n : ℤ_[p]ˣ) : ℤ_[p]) : ℚ_[p]) - 1)⁻¹ • y * w
-  have hz : ∀ g ∈ cyclotomicGp.ker, g • z = z := by
-    simp +contextual [z, hy, (mem_fixedField_iff (H := cyclotomicGp.ker) (x := w)).mp hw,
-      smul_comm _ _⁻¹]
-  have h_diff : γ • z - z = y * w := by
-    simp only [z, smul_mul_assoc, smul_comm _ _⁻¹, smul_mul', hy, Units.smul_def,
-      UniformSpace.Completion.algEquiv_smul_coe, hγw]
-    match_scalars
-    simp [field]
-  simpa only [h_diff] using h_trace γ z hz
-
 /-- Tate's theorem: if `χ(g) ^ u • g • x = χ(g) ^ v • x` for all `g` near `1` in `Gal(ℚ̄_p/ℚ_p)`,
 with `χ` the cyclotomic character and integers `u ≠ v`, then `x = 0` in `ℂ_p`. This is
 `H⁰(U, ℂ_p(u - v)) = 0` for every open subgroup `U`, as the relation is asked only near `1`. -/
@@ -256,29 +56,22 @@ lemma New.Period.tate_eq_zero_of_cyclotomicGp_twist {p : ℕ} [ThePrime p] {x : 
   -- An open subgroup `U` on which the relation holds.
   obtain ⟨U, hU⟩ : ∃ U : OpenSubgroup (Gp p), (U : Set (Gp p)) ⊆
       {g | (cyclotomicGp g ^ u).val • g • x = (cyclotomicGp g ^ v).val • x} :=
-    is_nonarchimedean _ hx
-  -- The semilinear action `y ↦ (cyclotomicGp g ^ (-u + v))⁻¹ • g • y` on `ℂ_p` fixes `x` for
-  -- `g ∈ U`.
-  let τ : Representation ℤ_[p] (Gp p) ℂ_[p] :=
-    smulMonoidHom.comp
-      ((cyclotomicGp ^ (-u + v))⁻¹.prod (actionRep ℤ_[p] ℂ_[p] (MonoidHom.id (Gp p))))
-  have h_semilinear (g : Gp p) (a : PadicAlgCl p) (y : ℂ_[p]) : τ g (a • y) = (g • a) • τ g y := by
-    simp [τ, smul_def', ← coe_eq, mul_smul_comm]
-  have h_fix (g : Gp p) (hg : g ∈ U) : τ g x = x := by
-    have h_rel : cyclotomicGp g ^ u • g • x = cyclotomicGp g ^ v • x := hU hg
-    simpa [τ, inv_smul_eq_iff, zpow_add, mul_smul] using h_rel
-  -- Galois descent (`U` is the fixer of its fixed field): `x` is a `ℚ̄_p`-combination of vectors
-  -- fixed by every `τ g`, and these vanish by Tate's theorem for the whole group.
-  have h_span : x ∈ span (PadicAlgCl p) {y | ∀ g, τ g y = y} :=
-    mem_span_fixed (U := U) (MonoidHom.id (Gp p)) τ h_semilinear h_fix
-      (fixingSubgroup_fixedFieldOf _).le
-  have h_span_bot : span (PadicAlgCl p) {y : ℂ_[p] | ∀ g, τ g y = y} = ⊥ :=
-    Submodule.span_eq_bot.mpr fun y hy ↦
-      eq_zero_of_smul_eq_cyclotomicGp_zpow_smul (n := -u + v) (by omega)
-        (by simpa [τ, inv_smul_eq_iff] using hy)
-  rwa [h_span_bot, Submodule.mem_bot] at h_span
-
-end TateVanishing
+    NonarchimedeanGroup.is_nonarchimedean _ hx
+  let K := fixedFieldOf (U : Subgroup (Gp p))
+  apply PadicComplex.eq_zero_of_forall_cyclotomicCharacter_zpow_mul_smul_eq
+    (K := K) (i := u - v) (sub_ne_zero.mpr hu)
+  intro σ
+  let g := σ.restrictScalars ℚ_[p]
+  have hg : g ∈ U := by
+    change g ∈ U.toSubgroup
+    rw [← fixingSubgroup_fixedFieldOf U.toSubgroup]
+    exact fun z ↦ σ.commutes z
+  rw [← UniformSpace.Completion.algEquiv_restrictScalars_smul (R := ℚ_[p]), ← Algebra.smul_def]
+  change algebraMap ℤ_[p] ℚ_[p] (cyclotomicGp g ^ (u - v)).val • g • x = x
+  rw [IsScalarTower.algebraMap_smul]
+  change cyclotomicGp g ^ (u - v) • g • x = x
+  rw [zpow_sub, mul_comm, mul_smul, inv_smul_eq_iff]
+  exact hU hg
 
 /-!
 ## Elimination by vectors of minimal support

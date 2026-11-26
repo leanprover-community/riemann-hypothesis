@@ -172,9 +172,9 @@ theorem ThetaLargeVanishes.of_add_planes {k : ℕ} {W' : Space E n' s'} {V' : Sp
     have h_card_W : card ((Unit ⊕ Unit) ⊕ n) = card n + 2 := by simp +arith
     have h_card_V : card ((Unit ⊕ Unit) ⊕ r) = card r + 2 := by simp +arith
     have h_neg_W : negCount (Sum.elim (hyperbolicSigns Unit) s) = 1 + negCount s := by
-      simpa using negCount_sumElim_hyperbolicSigns (ι := Unit) s
+      simp
     have h_neg_V : negCount (Sum.elim (hyperbolicSigns Unit) t) = 1 + negCount t := by
-      simpa using negCount_sumElim_hyperbolicSigns (ι := Unit) t
+      simp
     have h_above : ThetaLargeVanishes 𝔠 (hyperbolicSum Unit W) (hyperbolicSum Unit V) τ :=
       ih (hyperbolicSum Unit W) (hyperbolicSum Unit V) τ (by omega) (by omega) (by omega)
         (by omega) (by omega)

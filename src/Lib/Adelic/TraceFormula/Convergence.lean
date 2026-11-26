@@ -248,7 +248,7 @@ theorem exists_tsum_enorm_kernelTerm_le {B : ℕ} {k : GInf E s → ℂ} {j : �
       ≤ ∑' γ : U V.J, .ofReal (C * r ^ j) *
           ENNReal.ofReal (majorant φ (8 * card n ^ 2 + 1) (g⁻¹ * V.ratEmbed γ * x)) := by
         simp only [← ofReal_norm, ← ENNReal.ofReal_mul (show 0 ≤ C * r ^ j by positivity)]
-        exact ENNReal.tsum_le_tsum fun γ ↦ ENNReal.ofReal_le_ofReal (h_term γ)
+        exact tsum_le_tsum fun γ ↦ ENNReal.ofReal_le_ofReal (h_term γ)
     _ ≤ .ofReal (C * r ^ j) * .ofReal (D * V.height x ^ d) :=
         ENNReal.tsum_mul_left.trans_le (mul_le_mul_right (h_crude g x) _)
     _ = .ofReal (C * D * r ^ j * V.height x ^ d) := by

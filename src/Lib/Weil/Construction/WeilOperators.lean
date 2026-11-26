@@ -490,7 +490,7 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
     · exact G_ge (φ i) _
   calc ∑' i : I, ‖T (heisenbergOp (κ (φ i)) v)‖ₑ
     _ ≤ ∑' i : I, r * ∫⁻ s in (· - φ i) ⁻¹' K, G s ∂μ₁ :=
-        ENNReal.tsum_le_tsum h_enorm_le_setLIntegral
+        tsum_le_tsum h_enorm_le_setLIntegral
     _ = r * ∫⁻ s : W₁, G s ∂.sum fun i : I ↦ μ₁.restrict ((· - φ i) ⁻¹' K) := by
       rw [lintegral_sum_measure, ENNReal.tsum_mul_left]
     _ ≤ r * ∫⁻ s : W₁, G s ∂N • μ₁ := by

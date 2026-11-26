@@ -102,7 +102,7 @@ lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
       (1 + ‖a‖ₑ) ^ M * ‖(-(star (a + b) ⬝ᵥ (a + b))).exp‖ₑ ≤
         .ofReal (.exp (M ^ 2)) * (1 + ‖b‖ₑ) ^ M := by
     have h_tri : 1 + ‖a‖ ≤ (‖a + b‖ + 1) * (1 + ‖b‖) := by
-      nlinarith [norm_le_add_norm_add a b, norm_nonneg (a + b), norm_nonneg b]
+      nlinarith only [norm_le_add_norm_add a b, norm_nonneg (a + b), norm_nonneg b]
     -- `exp (-|x|²) ≤ exp (-|x|² / 2) = realVac x`, and `pow_mul_realVac_le` turns `h_tri` into
     -- `(1 + ‖a‖) ^ M * ‖realVac (a + b)‖ ≤ exp (M ^ 2) * (1 + ‖b‖) ^ M`.
     have h_half : ‖(-(star (a + b) ⬝ᵥ (a + b))).exp‖ ≤ ‖realVac (a + b)‖ := by

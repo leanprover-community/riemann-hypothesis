@@ -162,7 +162,7 @@ open scoped Classical in
 component) and slopes `s` indexed by `ι` (second component). The ties `z(γ_w) = s • z(φ_w)` with the
 slopes of index `i`, as relations by `n × n` matrices, at the primes of `I ∪ I'` are the ties at
 the primes of `I` together with those at the primes of `I'`. -/
-lemma tieRelations_union {O n ι : Type} [CommRing O] [Fintype n] [DecidableEq n] {q : ℕ}
+lemma tieRelations_union {O n ι : Type} [CommRing O] [DecidableEq n] {q : ℕ}
     (I I' : Finset (FinPlace E)) (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) :
     tieRelations (n := n) (I ∪ I') d i = tieRelations I d i ∪ tieRelations I' d i := by
   ext f

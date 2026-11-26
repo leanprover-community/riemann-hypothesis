@@ -460,8 +460,7 @@ lemma mul_inv_pow_le_of_mul_le {d i H : ℝ} (hd : 1 ≤ d) (hi : 1 ≤ i) (hH :
   have hH_pos : 0 < H := by linarith
   calc i * ((d * i) ^ k)⁻¹
     _ = i * (d * i) ^ (μ + 1) * (d ^ (k + μ + 1) * i ^ (k + μ + 1))⁻¹ := by
-      field_simp
-      ring
+      field
     _ ≤ H * H ^ (μ + 1) * (d ^ (k + 1) * i ^ (r + μ))⁻¹ := by
       have hd_pow : d ^ (k + 1) ≤ d ^ (k + μ + 1) := pow_le_pow_right₀ hd (by lia)
       have hi_pow : i ^ (r + μ) ≤ i ^ (k + μ + 1) := pow_le_pow_right₀ hi (by lia)
@@ -633,13 +632,13 @@ lemma sum_tsum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u 
     exact Subtype.ext (by rwa [← hM L, ← hM L'])
   calc _ = ∑' L : S.BoundedDiscSublattice r (unimodularLattice u), ∑ φ : S.LatticeStabilizerCoset,
           S.discWeightIfRowVanishes u (y φ) r L.1 :=
-      (Summable.tsum_finsetSum fun _ _ ↦ ENNReal.summable).symm
+      (Summable.tsum_finsetSum fun _ _ ↦ CompleteLattice.summable).symm
     _ ≤ ∑' L : S.BoundedDiscSublattice r (unimodularLattice u),
-          C * (subspaceDiscWeight u l (span L) * w (span L) (M L)) := ENNReal.tsum_le_tsum h_term
+          C * (subspaceDiscWeight u l (span L) * w (span L) (M L)) := tsum_le_tsum h_term
     _ ≤ ∑' p : Σ V : Submodule E (𝔰.κ → E), Sub V, C * (subspaceDiscWeight u l p.1 * w p.1 p.2) :=
       tsum_comp_le_tsum_of_injective h_sort fun p ↦ C * (subspaceDiscWeight u l p.1 * w p.1 p.2)
     _ = C * ∑' V : Submodule E (𝔰.κ → E), subspaceDiscWeight u l V * ∑' M : Sub V, w V M := by
-      simp only [ENNReal.tsum_sigma', ENNReal.tsum_mul_left]
+      simp only [tsum_sigma', ENNReal.tsum_mul_left]
     _ ≤ C * ((∑' V : Submodule E (𝔰.κ → E), subspaceDiscWeight u l V) * 2 ^ 𝔰.k) := by
       rw [← ENNReal.tsum_mul_right]
       gcongr with V
@@ -726,7 +725,7 @@ lemma pow_mul_mul_rootDiscr_pow_le_tailScale (S : Filling E 𝔰) [S.IsAdmissibl
   calc (S.N ^ numInfPlaces E * X ^ (numInfPlaces E * (𝔰.k + 1))) ^ 1000
     _ = (S.N ^ 1000 * (X ^ 1000) ^ (𝔰.k + 1)) ^ numInfPlaces E := by
       simp only [mul_pow, ← pow_mul]
-      ring_nf
+      ring
     _ ≤ ((S.b ^ (60 * 𝔰.n)) ^ 1000 * S.b ^ (𝔰.k + 1)) ^ numInfPlaces E := by
       gcongr
       exacts [IsAdmissible.N_le, S.mul_rootDiscr_pow_le]

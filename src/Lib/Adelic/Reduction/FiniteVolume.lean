@@ -614,7 +614,7 @@ lemma Space.encard_profileBases_mul_le_lintegral {N : Set (GL n (𝔸 E))} {x : 
     _ ≤ ∑' q : 𝒯 × V.Γ, F q.1 (q.2 • g) :=
       tsum_comp_le_tsum_of_injective h_inj fun q ↦ F q.1 (q.2 • g)
     _ = ∫⁻ γ : V.Γ, ∑' T, F T (γ • g) ∂.count := by
-      rw [lintegral_count, ENNReal.tsum_comm, ENNReal.tsum_prod']
+      rw [lintegral_count, tsum_comm, tsum_prod']
 
 open Pointwise in
 /-- Unfolding over the rational points `V.Γ` of the adelic unitary group `G E s`, for a hermitian
@@ -671,9 +671,9 @@ lemma Space.lintegral_ne_top_of_le_encard_profileBases {N : Set (GL n (𝔸 E))}
         lintegral_tsum fun p ↦ (F_meas p).aemeasurable]
     -- Each pair `(x, T)` contributes at most `ω x` times the measure of `A x T * B`.
     _ ≤ ∑' p : Σ x, gram x, ω p.1 * volume B :=
-      ENNReal.tsum_le_tsum fun p ↦ by grw [lintegral_indicator_const_le, measure_preimage_mul]
+      tsum_le_tsum fun p ↦ by grw [lintegral_indicator_const_le, measure_preimage_mul]
     _ = (∑' x, (gram x).encard * ω x) * volume B := by
-      simp_rw [ENNReal.tsum_mul_right, ENNReal.tsum_sigma', tsum_set_const]
+      simp_rw [ENNReal.tsum_mul_right, tsum_sigma', tsum_set_const]
     _ ≤ C * (∑' x, 2 ^ (numInfPlaces E * ∑ i, ∑ j, (x i + x j).toNat) * ω x) * volume B := by
       grw [card_gram]
       simp [mul_assoc, ENNReal.tsum_mul_left]
@@ -733,8 +733,8 @@ lemma Space.lintegral_encard_ne_top {t : Type*} [Fintype t] {Ω : Set (Matrix n 
   let P (x : n → ℤ) : ℝ≥0∞ := 2 ^ (numInfPlaces E * ∑ i, ∑ j, (x i + x j).toNat)
   let ω (x : n → ℤ) : ℝ≥0∞ := (∏ i, q⁻¹ ^ (x i).natAbs) * (C₂ * R) / P x
   have h_geometric : ∑' k : ℤ, q⁻¹ ^ k.natAbs < ∞ :=
-    lt_of_le_of_lt (le_of_add_le_left (tsum_nat_add_neg ENNReal.summable).ge)
-      (by simp [ENNReal.tsum_add, one_lt_q])
+    lt_of_le_of_lt (le_of_add_le_left (tsum_nat_add_neg CompleteLattice.summable).ge)
+      (by simp [tsum_add, one_lt_q])
   -- `P x` cancels the denominator of `ω x`; a product of geometric series in `q⁻¹ < 1` remains.
   have hω : ∑' x : n → ℤ, P x * ω x < ∞ :=
     calc

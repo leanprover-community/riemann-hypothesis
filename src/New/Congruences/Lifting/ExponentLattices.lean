@@ -578,8 +578,8 @@ lemma smul_sub_mem_withOrders (hx : x ∈ L.withOrders i c) (g : k.galMonoid) :
   obtain ⟨h_span, h_letter, h_exp⟩ := mem_withOrders_iff.1 hx
   refine mem_withOrders_iff.2 ⟨sub_mem (galMonoid_smul_mem_kisinLocAinf h_span) h_span,
     sub_mem ((gal_smul_mem_letterPart g).2 h_letter) h_letter, fun a u hu μ hμ ↦ ?_⟩
-  rw [valueAt_smul_sub h_span hμ.1]
-  exact sub_mem (galMonoid_smul_mem_hodgeFil g (h_exp a u hu μ hμ)) (h_exp a u hu μ hμ)
+  have h_mem := h_exp a u hu μ hμ
+  simpa only [valueAt_smul_sub h_span hμ.1] using sub_mem (galMonoid_smul_mem_hodgeFil g h_mem) h_mem
 
 /-! ### Divisibility of `g x - x` by `zTau` -/
 
@@ -667,17 +667,12 @@ lemma phi_pow_smul_mem_kisinLoc {x : L.Ambient} (hx : x ∈ L.kisinLoc) : φ ^ l
   | zero => simpa using hx
   | succ l ih => simpa only [pow_succ', mul_smul] using phi_smul_mem_kisinLoc ih
 
-/-- The A_inf-module `L.kisinAinf` is spanned by the Kisin module `L.kisinModule`. This is a part of
-`frame_theorem`. -/
-lemma span_kisinModule : span Ainf (L.kisinModule : Set L.Ambient) = L.kisinAinf :=
-  L.frame_theorem.kisinAinf_eq_span_kisinModule.symm
-
 /-- The A_inf-span of the Kisin module `L.kisinLoc` with all φ^a E inverted is `L.kisinLocAinf`,
 which is defined as the set of x that some product of the φ^a E sends into `L.kisinAinf`, the
 A_inf-span of the Kisin module `L.kisinModule`. -/
 lemma span_kisinLoc : span Ainf (L.kisinLoc : Set L.Ambient) = L.kisinLocAinf := by
   have h_base : L.kisinAinf ≤ span Ainf (L.kisinLoc : Set L.Ambient) :=
-    span_kisinModule.ge.trans (span_mono kisinModule_le_kisinLoc)
+    kisinAinf_eq_span_kisinModule.le.trans (span_mono kisinModule_le_kisinLoc)
   have h_step (a : ℕ) (y : L.Ambient)
       (hy : (k.frobE a).val • y ∈ span Ainf (L.kisinLoc : Set L.Ambient)) :
       y ∈ span Ainf (L.kisinLoc : Set L.Ambient) := by
@@ -1139,8 +1134,7 @@ lemma exists_valueAt_sub_mem_hodgeFil_succ (a : ℕ) (n : ℤ) :
     have h_fix (g : k.galMonoid) :
         g • ∑ l, t l • valueAt a μ x - ∑ l, t l • valueAt a μ x ∈ hodgeFil 1 :=
       smul_sub_mem_hodgeFil_of_valueField g t (valueAt_mem_valueField hμ hx) h_int (ht g)
-    rw [h_value, zero_add]
-    exact exists_const_sub_mem_hodgeFil_of_smul_sub_mem h_fix
+    simpa only [h_value, zero_add] using exists_const_sub_mem_hodgeFil_of_smul_sub_mem h_fix
 
 end New.Lift.KummerChart.JumpLattice
 

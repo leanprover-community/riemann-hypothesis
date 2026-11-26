@@ -1,6 +1,5 @@
 module
 
-public import Mathlib.LinearAlgebra.Projectivization.Cardinality
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
 public import Lib.ClassField.HeckeCharacter.TameModulus
 public import Lib.SiegelWeil.NeighbourLattices
@@ -247,13 +246,13 @@ lemma _root_.New.tsum_ite_lt_succ_le_of_walk {X Step : Type*} {f : X → ℝ≥0
   calc ∑' x : X, truncate (N + 1) x
       = truncate (N + 1) x₀ + ∑' x : ({x₀}ᶜ : Set X), truncate (N + 1) x := by
         rw [← tsum_singleton x₀ (truncate (N + 1)),
-          ENNReal.summable.tsum_add_tsum_compl ENNReal.summable]
+          CompleteLattice.summable.tsum_add_tsum_compl CompleteLattice.summable]
     _ ≤ f x₀ + ∑' x : ({x₀}ᶜ : Set X), c (σ x) * truncate N (step (σ x) x) :=
-        add_le_add h_base (ENNReal.tsum_le_tsum h_term)
+        add_le_add h_base (tsum_le_tsum h_term)
     _ ≤ f x₀ + ∑' p : Step × X, c p.1 * truncate N p.2 := add_le_add le_rfl
-        (ENNReal.tsum_comp_le_tsum_of_injective h_pair fun p ↦ c p.1 * truncate N p.2)
+        (tsum_comp_le_tsum_of_injective h_pair fun p ↦ c p.1 * truncate N p.2)
     _ = f x₀ + (∑' σ : Step, c σ) * ∑' x : X, truncate N x := by
-        simp only [ENNReal.tsum_prod', ENNReal.tsum_mul_left, ENNReal.tsum_mul_right]
+        simp only [tsum_prod', ENNReal.tsum_mul_left, ENNReal.tsum_mul_right]
 
 open scoped ENNReal in
 /-- Summation along a walk. Suppose that each point `x ≠ x₀` has a step `σ` that lowers its height
@@ -276,11 +275,11 @@ lemma _root_.New.tsum_le_of_walk {X Step : Type*} {f : X → ℝ≥0∞} {c : St
             tsum_ite_lt_succ_le_of_walk h_inj h_step N
         _ ≤ f x₀ + (∑' σ : Step, c σ) * B := by gcongr
         _ ≤ B := hB
-  rw [ENNReal.tsum_eq_iSup_sum]
+  rw [tsum_eq_iSup_sum]
   refine iSup_le fun t ↦ ?_
   calc ∑ x ∈ t, f x = ∑ x ∈ t, truncate (t.sup height + 1) x :=
         Finset.sum_congr rfl fun x hx ↦ (ite_eq_left (Nat.lt_succ_of_le (Finset.le_sup hx))).symm
-    _ ≤ B := (ENNReal.sum_le_tsum t).trans (h_trunc _)
+    _ ≤ B := (sum_le_tsum t).trans (h_trunc _)
 
 /-! ### Two sets of places with disjoint supports -/
 
@@ -640,7 +639,7 @@ lemma tsum_ofReal_norm_vacuumCoeff_le (M : ℕ) (b : AutChar E)
   let c (σ : Σ w : A.conjClosure, NeighbourStep n w.val) : ENNReal :=
     ENNReal.ofReal ((√(σ.fst : FinPlace E).q)⁻¹ ^ M)
   have h_weights : ∑' σ, c σ = ∑' w : A.conjClosure, ENNReal.ofReal (stepWeight n M w.val) := by
-    rw [ENNReal.tsum_sigma']
+    rw [tsum_sigma']
     refine tsum_congr fun w ↦ ?_
     have : Fintype (NeighbourStep n w.val) := Fintype.ofFinite _
     simp [c, stepWeight, tsum_fintype, ENNReal.ofReal_mul]

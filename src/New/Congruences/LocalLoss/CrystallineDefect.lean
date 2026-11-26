@@ -371,8 +371,7 @@ lemma New.Selmer.crystalline_bound_le_defectBound {P : Parameters} (D : Data P) 
          gcongr
          norm_num
     _ = 3 * 10 ^ 5 * ρ * D.m * v / (D.k * x) := by
-      field_simp
-      ring
+      field
     _ ≤ 10 ^ 6 * ρ * D.m * (D.natB * padicValNat ℓ D.M + v) / (D.k * x) := by
       grw [← le_add_self]
       gcongr

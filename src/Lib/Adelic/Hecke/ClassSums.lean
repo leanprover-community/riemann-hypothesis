@@ -659,7 +659,7 @@ lemma orbit_mem_smoothInvariants (x : V) :
     have h_cont : Continuous fun z : (H × H) × H × H ↦ (f z.2)⁻¹ * f (z.2 * z.1) := by fun_prop
     filter_upwards [h_cont.tendsto' (1, p) 1 (by simp) (IsSmoothRep.eventually_fixed (ρ := ρ) x)]
       with z hz
-    rwa [← ρ.inv_apply_eq_iff, ← Module.End.mul_apply, ← map_mul]
+    rwa [← ρ.inv_apply_eq_iff, ← mul_apply_eq_comp, ← map_mul]
   -- By compactness one neighbourhood of `1` serves for all `q`.
   exact (isCompact_univ.eventually_forall_of_forall_eventually fun p _ ↦ h_local p).mono
     fun k hk q ↦ hk q (Set.mem_univ q)

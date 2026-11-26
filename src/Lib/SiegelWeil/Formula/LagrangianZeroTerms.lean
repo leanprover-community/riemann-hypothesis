@@ -734,8 +734,7 @@ lemma New.SiegelWeil.norm_transferWeight (p k : ℕ) (U : Submodule (ResField w)
   have hq_pos : 0 < √(w.q : ℝ) := zero_lt_one.trans (by simp [lt_sqrt])
   have h_ratio : (w.q : ℝ) ^ k * √w.q ^ (2 * p) / √w.q ^ (2 * p + k) = √w.q ^ k := by
     nth_rw 1 [← Real.mul_self_sqrt w.q.cast_nonneg]
-    field_simp
-    ring
+    field
   rw [transferWeight, norm_mul, h_hecke, ← h_ratio]
   simp [heckePolyCoeff, card_ResField, abs_of_pos hq_pos,
     show ‖υ.atUniformizer w‖ = 1 from Circle.norm_coe _]

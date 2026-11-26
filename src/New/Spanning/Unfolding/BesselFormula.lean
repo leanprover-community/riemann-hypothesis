@@ -280,7 +280,7 @@ lemma besselChar_inl_inv (h : S.Fits V l kw Y η) (s : GInf E ε) :
   have h_wave (v : InfinitePlace E) : wave (-simpleRootSum (h.realCoords s v)) =
       Complex.exp (2 * Real.pi * Complex.I * (2 * (z.1 v).re : ℝ)) := by
     rw [wave, hz_inf, Complex.sub_conj]
-    exact congrArg Complex.exp (by simp [Complex.ext_iff, mul_assoc, mul_left_comm])
+    exact congrArg Complex.exp (by simp [Complex.ext_iff, mul_assoc])
   calc (h.besselChar (s, 1))⁻¹ = (stdAddChar E z : ℂ)⁻¹ := rfl
     _ = Complex.exp (∑ v, 2 * Real.pi * Complex.I * (2 * (z.1 v).re : ℝ)) := by
         simp [stdAddChar, hz_fin, ← Complex.exp_neg, Finset.mul_sum, mul_assoc, mul_comm Complex.I]

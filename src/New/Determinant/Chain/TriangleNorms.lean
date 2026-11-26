@@ -444,7 +444,7 @@ lemma IsTriangle.exists_inner_weightedChain_eq [∀ (t : I) (n : ℕ), NeZero (w
       simpa only [one_mul, mul_one] using
         h_moduli.modulus_mul (h_moduli.modulus_mul (h_moduli.modulus_mul hκ' hβ) hκ) (hC i)
     refine ⟨κ' * β * κ * C i, h_modulus, fun t x y ↦ ?_⟩
-    rw [List.range'_succ, List.map_cons, List.prod_cons, End.mul_apply]
+    rw [List.range'_succ, List.map_cons, List.prod_cons, mul_apply_eq_comp]
     obtain ⟨x', hx'⟩ : ∃ x' : V, j (i + 1) x' = d t i 0 (a t i 0 (j i x)) :=
       h_tri.comp_mem_range i hi_lt t x
     set T : End ℂ U := ((List.range' (i + 1) n).map (S t)).prod

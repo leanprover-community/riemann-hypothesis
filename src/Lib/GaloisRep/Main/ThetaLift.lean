@@ -172,7 +172,7 @@ private lemma weilMatrixCoeff_finHeisenbergOp_eq_zero {m : Type} [Fintype m] [De
   have h_pt : (((1, g), 1) : G E (1 : n → ℤˣ) × G E (1 : m → ℤˣ)) = ((1, g), 1, 1) := rfl
   rw [weilMatrixCoeff, pairWeil_apply, h_pt, onHom_fin, omega_finHeisenbergOp, omega_vacElem,
     ← dataInner_finHeisenbergOp _ (-matrixToVec (z • x))]
-  simp [finHeisenbergOp_finHeisenbergOp, Prod.mk_one_one, onHom_snd, mulVec_smul]
+  simp [finHeisenbergOp_finHeisenbergOp, mulVec_smul]
   -- `simp` leaves a product of scalars and an inner product; it is enough that the last vanishes:
   -- the inner product of the vacuum with a translate of `ω(g) P ω(g⁻¹)` of the vacuum.
   refine .inr (.inr (.inr ?_))

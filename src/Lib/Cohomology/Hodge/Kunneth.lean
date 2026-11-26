@@ -161,7 +161,7 @@ lemma exists_basis_forms_lerayHirsch {k : Type} [Field k] (c : HodgeTest k) :
     have h_right : exteriorMap q.snd (c.formBasis T) = p.formBasis (T.map .inr) :=
       exteriorMap_formBasis q (.sumLexInr ..) hq T
     have h_disjoint : Disjoint (S.map .inl) (T.map .inr) := disjoint_map_inl_map_inr S T
-    have h_union : (S.map .inl).disjUnion (T.map .inr) h_disjoint = S.disjSum T := by aesop
+    have h_union : (S.map .inl).disjUnion (T.map .inr) h_disjoint = S.disjSum T := by tauto
     rw [h_left, h_right, ← h_union]
     exact ⟨_, ExteriorAlgebra.basis_mul_of_disjoint (I := p.Index) _ ⟨_, rfl⟩ ⟨_, rfl⟩ h_disjoint⟩
   choose ε hε using h_wedge

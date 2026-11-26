@@ -516,11 +516,6 @@ def placeOfEmbExtension : LocField (placeOfEmb σ) →+* F := (exists_placeOfEmb
 lemma continuous_placeOfEmbExtension : Continuous (placeOfEmbExtension σ) :=
   (exists_placeOfEmb_extension σ).choose_spec.1
 
-lemma placeOfEmbExtension_algebraMap (x : E) :
-    placeOfEmbExtension σ (algebraMap E (LocField (placeOfEmb σ)) x) = σ x :=
-  let ⟨_, h_ext, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
-  h_ext x
-
 /-- The norm valuation of `F` pulled back along `New.placeOfEmbExtension σ` is equivalent to the
 valuation `Valued.v` of the completion at `New.placeOfEmb σ`. -/
 lemma valuation_comap_placeOfEmbExtension_isEquiv :
@@ -535,7 +530,8 @@ def adeleExtension : 𝔸f E →+* F :=
 
 @[simp]
 lemma adeleExtension_algebraMap (x : E) : adeleExtension σ x = σ x :=
-  placeOfEmbExtension_algebraMap σ x
+  let ⟨_, h_ext, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
+  h_ext x
 
 @[fun_prop]
 lemma continuous_adeleExtension : Continuous (adeleExtension σ) :=

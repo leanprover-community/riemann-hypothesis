@@ -11,6 +11,7 @@ public import Mathlib.Tactic.Field
 public import Mathlib.Tactic.FunProp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.LinearCombination
+public import TauCeti.LinearAlgebra.Determinant.Basic
 
 /-!
 # The Pieri cone, the step map and the slab: interlacing and volume of the cone
@@ -101,25 +102,16 @@ lemma det_interlacing_indicator {x y : Fin k → ℝ} (hx : Antitone x) (hy : An
   | succ k ih =>
     obtain ⟨b, hb⟩ | h_none := exists_or_forall_not fun b : Fin k ↦ y 0 < x b.succ
     · -- If `y 0 < x b.succ`, rows `0` and `b.succ` consist of ones, and interlacing fails.
-      have h_row_succ (c : Fin (k + 1)) : y c < x b.succ := (hy c.zero_le).trans_lt hb
-      have h_row_zero (c : Fin (k + 1)) : y c < x 0 := (h_row_succ c).trans_le (hx b.succ.zero_le)
-      rw [ite_eq_right fun ⟨_, h_le⟩ ↦ (h_row_succ b.castSucc).not_ge (h_le b.castSucc b.succ rfl)]
-      exact det_zero_of_row_eq b.succ_ne_zero (funext fun c ↦ by simp [h_row_succ, h_row_zero])
+      have h_row (c : Fin (k + 1)) : y c < x b.succ := (hy c.zero_le).trans_lt hb
+      have h_zero (c : Fin (k + 1)) : y c < x 0 := (h_row c).trans_le (hx b.succ.zero_le)
+      rw [ite_eq_right fun ⟨_, h_le⟩ ↦ (h_row b.castSucc).not_ge (h_le b.castSucc b.succ rfl)]
+      exact det_zero_of_row_eq b.succ_ne_zero (funext fun c ↦ by simp [h_row, h_zero])
     · -- Otherwise column `0` vanishes below the top: expand along it.
-      have h_expand : det (of fun b c : Fin (k + 1) ↦ if y c < x b then (1 : ℝ) else 0) =
-          (if y 0 < x 0 then 1 else 0) *
-            det (of fun b c : Fin k ↦ if y c.succ < x b.succ then (1 : ℝ) else 0) := by
-        simp [det_succ_column_zero, sum_univ_succ, h_none]
-        rfl
-      rw [h_expand, ih (x := fun b ↦ x b.succ) (y := fun b ↦ y b.succ)
-        (hx.comp_monotone strictMono_succ.monotone) (hy.comp_monotone strictMono_succ.monotone)]
-      -- As every `x b.succ ≤ y 0`, interlacing is `y 0 < x 0` and interlacing of the tails.
-      have h_split : ((∀ b : Fin (k + 1), y b < x b) ∧
-            ∀ b c : Fin (k + 1), b.val + 1 = c.val → x c ≤ y b) ↔
-          y 0 < x 0 ∧ (∀ b : Fin k, y b.succ < x b.succ) ∧
-            ∀ b c : Fin k, b.val + 1 = c.val → x c.succ ≤ y b.succ := by
-        simp [forall_fin_succ, fun b : Fin k ↦ not_lt.1 (h_none b), and_assoc]
-      simp only [h_split, ite_zero_mul_ite_zero, mul_one]
+      have h_ih :
+          ((of fun b c ↦ if y c < x b then (1 : ℝ) else 0).submatrix succ succ).det = _ :=
+        ih (hx.comp_monotone strictMono_succ.monotone) (hy.comp_monotone strictMono_succ.monotone)
+      simp [det_succ_column_zero, sum_univ_succ, h_none, h_ih, forall_fin_succ,
+        fun b : Fin k ↦ not_lt.1 (h_none b), and_assoc, ite_and]
 
 omit [Add T] [One T] in
 /-- The slab `degreeSlab k D` is bounded, where `D j` is a real number for each letter `j` of a
@@ -145,14 +137,6 @@ noncomputable def detOneSubPerm (q : ℝ) (τ : Perm (Fin k)) : ℝ :=
   (1 - q⁻¹ • funLeft ℝ ℝ τ : Module.End ℝ (Fin k → ℝ)).det
 
 variable (P : ℝ)
-
-/-- For linear maps `A : ℝ^ι → ℝ^κ` and `B : ℝ^κ → ℝ^ι`, the endomorphisms `1 - A B` and
-`1 - B A` have the same determinant. -/
-lemma det_one_sub_comp_comm {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
-    (A : (ι → ℝ) →ₗ[ℝ] κ → ℝ) (B : (κ → ℝ) →ₗ[ℝ] ι → ℝ) :
-    (1 - A ∘ₗ B).det = (1 - B ∘ₗ A).det := by
-  rw [← det_toMatrix', ← det_toMatrix', map_sub, map_sub, toMatrix'_one, toMatrix'_one,
-    toMatrix'_comp, toMatrix'_comp, det_one_sub_mul_comm]
 
 /-- For `P > 1` the step map `permStep v P σ` has nonzero determinant. -/
 lemma det_permStep_ne_zero (v : Fin (m + 1) → Bool) (hP : 1 < P)
@@ -208,7 +192,7 @@ lemma exists_det_permStep_eq (v : Fin (m + 1) → Bool) (hP : 1 < P) :
       simp [N, A, B, mul_sub, (zero_lt_one.trans hP).ne', pow_succ, mul_assoc]
   have h_factor : permStep v P σ * G = E * G * N * (1 - B ∘ₗ A) := by
     refine LinearMap.ext fun ν ↦ funext fun ⟨b, j⟩ ↦ ?_
-    simp only [Module.End.mul_apply, permStep_apply, h_E, h_G, h_N]
+    simp only [mul_apply_eq_comp, permStep_apply, h_E, h_G, h_N]
     -- Compare the entries by `partialProd σ j.succ = partialProd σ j.castSucc * σ j`.
     cases j using lastCases <;> simp [← succ_last, partialProd_succ]
   have h_AB : (P ^ (m + 1))⁻¹ • funLeft ℝ ℝ (ofFn σ).prod = A ∘ₗ B :=

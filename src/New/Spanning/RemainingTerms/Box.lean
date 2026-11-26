@@ -117,7 +117,7 @@ lemma mem_levelMultiples {w : InfinitePlace E → ℂ} :
 `S.IsAdmissible`. For `r ≥ 0` and a tuple `w` over the infinite places, only finitely many `l` in
 `S.levelMultiples` make all coordinates of `l + w` have modulus at most `r`. Here `S.levelMultiples`
 is the set of tuples `M x`, where `x` is an integer of `E` and `M = S.M` is the level. -/
-lemma finite_setOf_levelMultiples_add_le [S.IsAdmissible] {r : ℝ} (hr : 0 ≤ r)
+lemma finite_setOf_levelMultiples_add_le {r : ℝ} (hr : 0 ≤ r)
     (w : InfinitePlace E → ℂ) :
     {l : S.levelMultiples | ∀ v : InfinitePlace E, ‖(l.val + w) v‖ ≤ r}.Finite := by
   have h_integer (l : S.levelMultiples) :

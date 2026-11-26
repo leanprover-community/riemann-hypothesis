@@ -100,21 +100,6 @@ lemma pow_le_of_submultiplicative {c : ℕ → ℝ} {b : ℝ} (hb : 0 < b) (hc :
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- Legendre's bound `v((n + 1)!) ≤ n / (p - 1)`, for the norm of `ℂ_p`. -/
-lemma rpow_pow_le_norm_factorial_succ (n : ℕ) :
-    ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n ≤ ‖((n + 1)! : ℂ_[p])‖ := by
-  have hp : (1 : ℝ) < p := mod_cast (Fact.out : p.Prime).one_lt
-  have h_legendre : ((p : ℝ) - 1) * padicValNat p (n + 1)! ≤ n := by
-    rw [← Nat.cast_pred (Fact.out : p.Prime).pos, padicValNat_def]
-    exact mod_cast Nat.le_of_lt_succ
-      (sub_one_mul_multiplicity_factorial_lt_of_ne_zero p n.succ_ne_zero)
-  calc ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n = (p : ℝ) ^ (-(n / (p - 1)) : ℝ) := by
-        rw [← Real.rpow_mul_natCast (by positivity), neg_mul, one_div_mul_eq_div]
-    _ ≤ (p : ℝ) ^ (-(padicValNat p (n + 1)! : ℝ)) := Real.rpow_le_rpow_of_exponent_le hp.le
-      (neg_le_neg ((le_div_iff₀' (sub_pos.2 hp)).2 h_legendre))
-    _ = ‖((n + 1)! : ℂ_[p])‖ := by
-        simp [norm_natCast_eq_inv_pow_padicValNat, factorial_ne_zero, Real.rpow_neg]
-
 /-- Differentiating `g(z₀ + z₁)` `m` times in `z₀` and `n` times in `z₁` at `0` gives
 `g⁽ᵐ⁺ⁿ⁾(0)`. Here `linearSeries ![1, 1]` is the linear form `z₀ + z₁`. -/
 lemma factorial_mul_coeff_subst_add (g : ℂ_[p]⟦X⟧) (m n : ℕ) :

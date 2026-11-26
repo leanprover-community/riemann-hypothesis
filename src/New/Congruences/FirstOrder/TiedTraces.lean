@@ -182,6 +182,7 @@ section Parahoric
 
 variable {Q}
 
+omit [Nonempty n] in
 /-- Let the auxiliary places be off the base level. An element `k` of the parahoric subgroup
 of the line in `GL_n(E_w)`, `w = Q.place j` (blocks of sizes `1` and `n - 1`), acts on forms of
 principal level through its reduction, which stabilises the line. On the left, `localFormRep` is

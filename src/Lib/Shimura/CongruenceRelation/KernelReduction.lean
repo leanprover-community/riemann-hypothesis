@@ -394,8 +394,8 @@ lemma exists_isLieLine {R : Type} [CommRing R] [IsLocalRing R] [Algebra R k]
     refine hZ_uniq _ _ (.trans ?_ (hZ_tan 1)) (funext fun i ↦ ?_)
     · exact (assoc ..).symm.trans (eq_whisker (by simp [r, OverMorphism.ext_iff, specOver.map,
         ← Spec.map_comp, Spec.map_inj, CommRingCat.hom_ext_iff, RingHom.ext_iff]) _)
-    · erw [IsEtaleChart.tangentCoords_comp (z := z) h_zero (h_tiny.2 (hZ_tan 1))
-        ((map x).map (specOver.map _)) rfl]
+    · refine (congrFun (IsEtaleChart.tangentCoords_comp (z := z) h_zero (h_tiny.2 (hZ_tan 1))
+        ((map x).map (specOver.map _)) rfl) i).trans ?_
       simp [hZ_dv, TrivSqZeroExt.ext_iff]
   · -- `β - b` vanishes in `k`, so `star β - b` acts on coordinates as `u ↦ ⟨ξ, u⟩ Y`
     refine ⟨∑ j, ξ j • snd (tangentCoords z (p v) j),

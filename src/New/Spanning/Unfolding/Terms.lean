@@ -335,8 +335,7 @@ lemma gramDiscReal_realFrameGram_ratToInf {γ : S.G E} (v : InfinitePlace E) :
   have h_disc : frameDisc 1 (realFrameGram (S.ratToInf γ v)) =
       ((∏ a : Fin 𝔰.n, S.frameScaleSq v a) ^ 2 : ℝ) * Φ v (S.termDisc γ) := by
     simp [frameDisc, h_det, h_minor, frameScaleSq, prod_univ_castSucc]
-    field_simp [Nat.Prime.ne_zero]
-    ring
+    field [Nat.Prime.ne_zero]
   rw [RealPlace.gramDiscReal, h_disc, re_ofReal_mul, ← ofReal_re ‖Φ v _‖, ← map_termDisc_eq_norm]
 
 /-! ### Passing to the infinite and the finite places; the Bessel group; sizes of constants -/
@@ -546,7 +545,7 @@ lemma IsNear.norm_map_leadingMinor_sq_le [S.IsAdmissible] (l : Fin (𝔰.ϱ + 1 
   -- by `l ≤ ϱ + 1 ≤ b` the left side is at most a power of `b`; compare the exponents
   have hl : (l : ℝ) ≤ S.b := by grw [l.is_le, S.succ_le_b]
   have h_exponent : (l.val + 134 * 𝔰.n * l.val) * 2 ≤ 270 * 𝔰.n ^ 2 := by
-    nlinarith [S.ten_pow_five_le_varrho, l.is_le]
+    nlinarith only [S.ten_pow_five_le_varrho, l.is_le]
   grw [h_det, hl, ← pow_add, ← pow_mul]
   exact pow_le_pow_right₀ S.one_le_b h_exponent
 

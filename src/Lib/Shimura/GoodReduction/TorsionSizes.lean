@@ -172,7 +172,10 @@ lemma mul_shift_mem_sizes (hφ : φ ∈ B.sizes v) (hψ : ψ ∈ B'.sizes v) (w 
   -- The product is the size of `f` times the translate of `g` by `w`. Translation twists the
   -- multiplier of `g` by `B'.riemannPhase l w`, a root of unity because a multiple `r • w` lies in
   -- `L`.
-  have h_pos : IsPosRiemann (B + B') := by simp_all [pr_iff, add_pos]
+  have h_pos : IsPosRiemann (B + B') :=
+    ⟨fun u hu ↦ by
+      simp only [map_add, LinearMap.add_apply]
+      exact add_pos (hB_pos.riemannForm_pos u hu) (hB'_pos.riemannForm_pos u hu)⟩
   have h_order : ∀ l ∈ L, (χ * fun l ↦ χ' l * B'.riemannPhase l w) l ^ (n * m * r) = 1 := by
     intro l hl
     simpa [mul_pow, pow_mul, pow_right_comm _ n, ← exp_nsmul, hχ l hl, hχ' l hl, mul_assoc] using
@@ -235,8 +238,11 @@ lemma eq_zero_of_small_mesh (hf : Continuous f)
 lemma eq_zero_of_torsionPoints (hf : Differentiable ℂ f) (h_zero : ∀ x : torsionPoints L, f x = 0) :
     f = 0 := by
   -- The zero set of `f` contains `n⁻¹ L` for all `n ≠ 0`, lattices of mesh tending to 0.
-  have h_mesh : Tendsto (fun n : ℕ ↦ (n : ℝ)⁻¹ • (1 : V →L[ℂ] V)) atTop (nhds 0) :=
-    tendsto_inv_atTop_nhds_zero_nat.zero_smul_const 1
+  have h_mesh : Tendsto (fun n : ℕ ↦ (n : ℝ)⁻¹ • (1 : V →L[ℂ] V)) atTop (nhds 0) := by
+    have h_cont : Continuous (fun r : ℝ ↦ r • (1 : V →L[ℂ] V)) := by
+      simp only [continuous_clm_apply, smul_apply]
+      fun_prop
+    exact (h_cont.tendsto' 0 0 (zero_smul ℝ _)).comp tendsto_inv_atTop_nhds_zero_nat
   -- for `d = n⁻¹ • 1` take `c = n • 1`: it inverts `d`, and `f` vanishes where `c y ∈ L`
   have h_small : ∃ᶠ d : V →L[ℂ] V in nhds 0, ∃ c : V →L[ℂ] V,
       (∀ y : V, c (d y) = y) ∧ ∀ y : V, c y ∈ L → f y = 0 := by
@@ -297,13 +303,16 @@ lemma bddAbove_of_mem_sizes (hφ : φ ∈ B.sizes v) : BddAbove (range φ) := by
     · simp [hn]
     have hg₂ : g₂ ∈ ((4 * n) • B).thetaSpace (χ ^ (4 * n)) := by
       obtain ⟨h_diff, h_per⟩ := hg
-      refine ⟨by fun_prop, ?_⟩
+      refine ⟨by fun_prop, fun l hl z ↦ ?_⟩
       -- both multipliers `χ (2 l) ^ n` and `χ l ^ (4 * n)` are `1`; the exponents agree
-      simp_all [g₂, mul_pow, pow_mul', ofNat_smul_eq_nsmul, nsmul_mem, ← exp_nsmul]
-      -- what is left is the equality of the two exponents
-      intro l hl z
-      left
-      congr 1
+      have h1 : χ (2 • l) ^ n = 1 := hχn _ (nsmul_mem hl 2)
+      have h2 : χ l ^ (4 * n) = 1 := by rw [mul_comm 4 n, pow_mul, hχn l hl, one_pow]
+      have h_per2 := h_per (2 • l) (nsmul_mem hl 2) ((2 : ℂ) • z)
+      simp only [g₂, Pi.pow_apply, Function.comp_apply, smul_add, ofNat_smul_eq_nsmul] at h_per2 ⊢
+      rw [h_per2, mul_pow, mul_pow, h1, one_mul, h2, one_mul, ← exp_nsmul]
+      simp only [smul_apply, map_nsmul, nsmul_eq_mul]
+      congr 2
+      push_cast
       ring
     have hg₂0 : g₂ ≠ 0 :=
       pow_ne_zero n ((MulAction.surjective₀ (two_ne_zero' ℂ)).injective_comp_right.ne hg0)
@@ -322,14 +331,22 @@ lemma bddAbove_of_mem_sizes (hφ : φ ∈ B.sizes v) : BddAbove (range φ) := by
   -- the normalising factor of degree `4 n B` at `y` is the `n`-th power of that of `B` at `2 y`
   have h_double (a : ℂ) (y : torsionPoints L) :
       ((4 * n) • B).sizeAt v (a • g₂) y = B.sizeAt v g (2 • y) ^ n * v a := by
-    simp [g₂, sizeAt, thetaShift, ofNat_smul_eq_nsmul, mul_pow, ← map_pow, ← exp_nsmul]
+    simp only [g₂, sizeAt, thetaShift_apply, Pi.pow_apply, Function.comp_apply, Pi.smul_apply,
+      smul_eq_mul, add_zero, zero_add, map_zero, neg_zero, AddSubgroupClass.coe_nsmul,
+      ofNat_smul_eq_nsmul, mul_pow, ← map_pow, ← exp_nsmul, smul_apply, map_nsmul, nsmul_eq_mul,
+      Nat.cast_mul, Nat.cast_ofNat]
+    rw [← map_mul]
+    congr 1
     ring_nf
   -- ultrametric inequality: it suffices to bound each term of the combination
   have h_size_pow_le (z : H) : ((4 * n) • B).sizeAt v (g ^ (4 * n)) z ≤ M ^ n * iSup (v ∘ c) := by
     rw [← hc, sizeAt, map_sum, Finset.sum_apply]
     refine v.map_sum_le fun i _ ↦ ?_
     let a : torsionPoints L := ⟨i, N, hN, hNL _ (ht i.property)⟩
-    have ha : a ∈ H := by simp [a, H, mul_nsmul, nsmul_mem (hNL _ (ht i.property))]
+    have ha : a ∈ H := by
+      change (N * m) • (i : V) ∈ L
+      rw [mul_nsmul]
+      exact nsmul_mem (hNL _ (ht i.property)) m
     rw [← map_smul]
     calc _ = ((4 * n) • B).sizeAt v (c i • g₂) (z + a) := hB.sizeAt_thetaShift a z
       _ = B.sizeAt v g (2 • (z + a)) ^ n * v (c i) := h_double (c i) (z + a)
@@ -339,7 +356,10 @@ lemma bddAbove_of_mem_sizes (hφ : φ ∈ B.sizes v) : BddAbove (range φ) := by
   have h_pow : M ^ (4 * n) ≤ M ^ n * iSup (v ∘ c) := by
     rw [iSup_pow]
     exact ciSup_le' fun z ↦ (sizeAt_pow.ge (z : torsionPoints L)).trans (h_size_pow_le z)
-  have hx_H : (⟨x, m, hm, hx⟩ : torsionPoints L) ∈ H := by simp [H, mul_smul, nsmul_mem, hx]
+  have hx_H : (⟨x, m, hm, hx⟩ : torsionPoints L) ∈ H := by
+    change (N * m) • x ∈ L
+    rw [mul_comm N m, mul_nsmul]
+    exact nsmul_mem hx N
   refine (h_le _ hx_H).trans ?_
   obtain hM | hM := le_or_gt M 1
   · exact le_sup_of_le_left hM
@@ -378,7 +398,13 @@ lemma mul_le_iSup_of_hasShiftBound (hφ : φ ∈ B.sizes v) (hψ : ψ ∈ B'.siz
     calc ρ (k + 1) * ρ (k + 1) = ⨆ z, F z ^ 2 := by rw [← sq, iSup_pow]
       _ ≤ 1 * ⨆ z, F z * F (z + d) := ciSup_le' (h_shift _ (mul_shift_mem_sizes hφ hψ _))
       _ = ⨆ z, φ (z + d) * ψ (z + d + (w + k • d)) * (φ z * ψ (z + (w + (k + 1 + 1) • d))) := by
-        grind [succ_nsmul]
+        rw [one_mul]
+        refine iSup_congr fun z ↦ ?_
+        dsimp only [F]
+        have h1 : z + d + (w + k • d) = z + (w + (k + 1) • d) := by rw [succ_nsmul]; abel
+        have h2 : z + (w + (k + 1 + 1) • d) = z + d + (w + (k + 1) • d) := by rw [succ_nsmul]; abel
+        rw [h1, h2]
+        ring
       _ ≤ ρ k * ρ (k + 1 + 1) := ciSup_le' fun z ↦ mul_le_mul' (h_le k (z + d)) (h_le _ z)
   by_contra! h_lt
   have h_step (k : ℕ) : ρ k < ρ (k + 1) := by
@@ -422,7 +448,10 @@ lemma LatticeForm.HasShiftBound.of_isPosRiemann_sub (h_ample : IsAmpleType B χ)
   have hφ : B'.sizeAt v f ∈ B'.sizes v := IsSize.of_mem_thetaSpace ⟨hζ, hB', m, hm, hζm⟩ hf
   have h_ample' : IsAmpleType (B + -B') (χ * ζ⁻¹) := by
     refine ⟨h_ample.add hζ.neg, h_pos, h_ample.finite_order.imp' (fun n ↦ n * m) ?_⟩
-    simp_all [mul_pow, pow_mul, pow_right_comm]
+    rintro n ⟨hn, hχ⟩
+    refine ⟨mul_ne_zero hn hm, fun l hl ↦ ?_⟩
+    simp only [Pi.mul_apply, Pi.inv_apply, mul_pow, inv_pow]
+    rw [pow_mul, hχ l hl, one_pow, one_mul, mul_comm n m, pow_mul, hζm l hl, one_pow, inv_one]
   obtain ⟨g, hg, hg0⟩ := h_ample'.exists_mem_thetaSpace_ne_zero
   obtain ⟨N, hN, hNL⟩ := h_ample.exists_nsmul_mem_of_mem_dualLattice (hp := h_ample.isPosRiemann)
   have hσ : (B + -B').sizeAt v g ∈ (B + -B').sizes v := ⟨h_ample', hg⟩
@@ -446,19 +475,37 @@ lemma LatticeForm.HasShiftBound.of_isPosRiemann_sub (h_ample : IsAmpleType B χ)
         B'.thetaShift (u - t) f * (B + -B').thetaShift u g ∈ (B' + (B + -B')).thetaSpace χ := by
       refine (mul (hζ.thetaShift_mem hf (u - t)) (h_ample'.thetaShift_mem hg u)).imp_right
         fun h_per l hl ↦ ?_
-      have hζ_ne : ζ l ≠ 0 := hζ.ne_zero hl
-      simp [h_per, u, hu₀, riemannForm_swap _ l, hl, exp_sub, exp_add, exp_neg, mul_sub, mul_add,
-        field]
+      intro z
+      rw [h_per l hl z]
+      refine congrArg (· * _) (congrArg (· * _) ?_)
+      have h_eq : B'.riemannForm l (↑u - ↑t) + (B + -B').riemannForm l ↑u = 0 := by
+        simp only [map_add, map_neg, LinearMap.add_apply, LinearMap.neg_apply, map_sub]
+        rw [riemannForm_swap (B := B) (↑u) l, hu₀ l, ← riemannForm_swap (B := B') (↑t) l]
+        ring
+      simp only [Pi.mul_apply, RealComplexForm.riemannPhase, coe_fourierChar_eq_exp, Pi.inv_apply]
+      have h_mul_exp :
+          cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t))) *
+            cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u)) = 1 := by
+        rw [← exp_add, ← mul_add, ← Complex.ofReal_add, h_eq, Complex.ofReal_zero, mul_zero,
+          exp_zero]
+      calc (ζ l * cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t)))) *
+            (χ l * (ζ l)⁻¹ * cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u)))
+          = χ l * (ζ l * (ζ l)⁻¹) *
+              (cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t))) *
+                cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u))) := by ring
+        _ = χ l := by rw [mul_inv_cancel₀ (hζ.ne_zero hl), mul_one, h_mul_exp, mul_one]
     have h_size (y : torsionPoints L) :
         (B' + (B + -B')).sizeAt v (B'.thetaShift (u - t) f * (B + -B').thetaShift u g) y =
           φ (y + (u - t)) * σ (y + u) := by
       rw [sizeAt_mul, Pi.mul_apply]
       exact congrArg₂ (· * ·) (hζ.sizeAt_thetaShift (u - t) y) (h_ample'.sizeAt_thetaShift u y)
     calc
-      φ x ^ 2 * σ s ^ 2 = (φ (s - u + (u - t)) * σ (s - u + u)) ^ 2 := by simp [t, mul_pow]
+      φ x ^ 2 * σ s ^ 2 = (φ (s - u + (u - t)) * σ (s - u + u)) ^ 2 := by
+        dsimp only [t]
+        rw [sub_add_sub_cancel, sub_add_cancel, sub_sub_cancel, mul_pow]
       _ ≤ C * ⨆ z, φ (z + (u - t)) * σ (z + u) * (φ (z + w + (u - t)) * σ (z + w + u)) := by
         simp only [← h_size]
-        rw [show B' + (B + -B') = B by simp] at h_mem ⊢
+        rw [← sub_eq_add_neg, add_sub_cancel] at h_mem ⊢
         exact h_shift _ h_mem _
       _ ≤ C * (S * iSup σ ^ 2) := by
         gcongr
@@ -478,10 +525,20 @@ m ≠ 0 and the Riemann form of m • B − A is positive. -/
 lemma IsAmpleType.eventually_isPosRiemann_smul_sub (h_ample : IsAmpleType B χ) (A : LatticeForm L) :
     ∀ᶠ m : ℕ in atTop, m ≠ 0 ∧ IsPosRiemann (m • B + -A) := by
   -- For large `m` the form `B - m⁻¹ A` is positive; multiply it by `m`.
+  have h_tend : Tendsto (fun m : ℕ ↦ (m : ℝ)⁻¹ • A) atTop (nhds 0) := by
+    have h_cont : Continuous (fun r : ℝ ↦ r • A) := by
+      simp only [continuous_clm_apply, smul_apply]
+      fun_prop
+    exact (h_cont.tendsto' 0 0 (zero_smul ℝ A)).comp tendsto_inv_atTop_nhds_zero_nat
   have h_pos : ∀ᶠ m : ℕ in atTop, IsPosRiemann (B + -((m : ℝ)⁻¹ • A)) :=
-    tendsto_inv_atTop_nhds_zero_nat.zero_smul_const A h_ample.isPosRiemann.eventually_add_neg
+    h_tend.eventually h_ample.isPosRiemann.eventually_add_neg
   filter_upwards [h_pos, eventually_ne_atTop 0] with m hm hm0
-  exact ⟨hm0, by simpa [← smul_assoc, hm0] using hm.nsmul hm0⟩
+  refine ⟨hm0, ?_⟩
+  have h_eq : m • (B + -((m : ℝ)⁻¹ • A)) = m • B + -A := by
+    rw [smul_add, smul_neg, ← Nat.cast_smul_eq_nsmul ℝ m ((m : ℝ)⁻¹ • A), smul_smul,
+      mul_inv_cancel₀ (Nat.cast_ne_zero.mpr hm0), one_smul]
+  rw [← h_eq]
+  exact hm.nsmul hm0
 
 end New.ThetaTori
 

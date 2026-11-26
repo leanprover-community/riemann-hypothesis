@@ -634,7 +634,7 @@ lemma tsum_prod_le_prod_tsum {α : Type*} (f : α → ℝ≥0∞) :
   -- a finite set of tuples lies in the product of its projections, over which the sum factors
   have h_sub : s ⊆ piFinset (fun i ↦ s.image (eval i)) := fun x hx ↦
     mem_piFinset.2 fun i ↦ mem_image_of_mem (eval i) hx
-  grw [h_sub, ← prod_univ_sum, ENNReal.sum_le_tsum]
+  grw [h_sub, ← prod_univ_sum, sum_le_tsum]
 
 open Pointwise in
 /-- Let `box` be the set of adelic vectors with entries of size at most `1` at infinity and

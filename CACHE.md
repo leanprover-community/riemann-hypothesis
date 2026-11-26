@@ -46,12 +46,11 @@ baseline. `python3 -I scripts/tests/test_ci_cache_baseline.py` tests the selecti
 
 Pull requests land through GitHub's merge queue. `.github/workflows/build.yml` has one job,
 `lake build`, the queue's required check. It builds every pull request to `main` from a fork on
-a GitHub-hosted runner (or on the runner named by the repository variable `PR_RUNS_ON`, a JSON
-`runs-on` value such as `["self-hosted","rh-pr"]`; without it, `ubuntu-latest`), every pull
-request from a branch of this repository not starting with `batch/` on the self-hosted
-`rh-pr-trusted` runners, and every merge queue group (`merge_group`), push to `main`, manual run
-and pull request from a `batch/` branch of this repository on the self-hosted `rh-big` runner
-(both described below), with the exact record if there is one and the baseline otherwise. It
+the self-hosted `rh-pr-fork` runners, every pull request from a branch of this repository not
+starting with `batch/` on the self-hosted `rh-pr-trusted` runners, and every merge queue group
+(`merge_group`), push to `main`, manual run and pull request from a `batch/` branch of this
+repository on the self-hosted `rh-big` runner (all described below), with the exact record if
+there is one and the baseline otherwise. It
 fails if `lake build` fails, if the build log contains `` declaration uses `sorry` ``, or if
 `scripts/PrintAxioms.lean` reports any axiom other than `propext`, `Classical.choice` and
 `Quot.sound` for the five theorems. It never publishes anything.
@@ -87,19 +86,26 @@ publisher's builds before.
 
 ## Self-hosted runners
 
-There are two kinds of self-hosted runner, so that the merge queue never waits behind other pull
-requests:
+There are three kinds of self-hosted runner, so that the merge queue never waits behind other
+pull requests:
 
 - `rh-big`, one runner on a 64-vCPU host, runs the merge queue (`merge_group`), pushes to
   `main`, manual runs and pull requests from a branch of this repository whose name starts with
   `batch/` (the batcher's batch pull requests). Only its builds are published (see above).
 - `rh-pr-trusted`, several runners on a shared host, run every other pull request from a branch
   of this repository. Each is confined to its own CPUs and memory, and uploads nothing.
+- `rh-pr-fork`, several runners on each of two 96-vCPU hosts, run pull requests from forks.
+  (GitHub does not pass repository variables to pull requests from forks, so `build.yml` names
+  the label itself; changing it to `ubuntu-latest` there sends them back to GitHub-hosted
+  runners.) They assume hostile code: the hosts hold no credential at all (no R2 or
+  AWS credential, no GitHub token beyond each runner's one-time configuration), and the
+  instances' metadata endpoint is disabled in EC2 (`http-endpoint disabled`), so not even root
+  can fetch the instance role's credentials. They upload nothing.
 
-The runner hosts hold no credential of the project, and build only code that is queued to land on
-`main` or already on it, or that someone with write access has pushed to a branch of this
-repository (a pull request from such a branch, or a manual run). Their setup is in
-`scripts/runner/`:
+The `rh-big` and `rh-pr-trusted` hosts hold no credential of the project either, and build only
+code that is queued to land on `main` or already on it, or that someone with write access has
+pushed to a branch of this repository (a pull request from such a branch, or a manual run). The
+setup of all three is in `scripts/runner/`:
 
 - `setup-host.sh` (run as root, idempotent) creates the unprivileged runner user (no sudo, no
   other groups), installs a pinned, checksummed copy of the GitHub Actions runner owned by root,
@@ -112,11 +118,15 @@ repository (a pull request from such a branch, or a manual run). Their setup is 
   and memory limit in `/etc/rh-runner/<instance>.env`. The `rh-pr-trusted` runners are
   `bash setup-host.sh pr1 rh-pr-trusted 0-37 150G`, `pr2 rh-pr-trusted 38-74 150G` and
   `pr3 rh-pr-trusted 75-111 150G` on a 192-vCPU host whose CPUs 112 to 191 run other builds.
+  The `rh-pr-fork` runners are `f1`, `f2` and `f3`, with 32 vCPUs and `200G` each, on each fork
+  host (on a host with two threads per core and two NUMA nodes, each cpuset keeps whole cores
+  together, as in `f1 rh-pr-fork 0-15,48-63 200G`).
 - `loop.sh` (that service) runs one ephemeral just-in-time runner per job. For each job it gives
   the runner user a new, empty home directory with a fresh copy of the runner, runs it in a
   transient systemd unit (read-only system, other home directories, `/srv` and `/etc/rh-buildq`
-  hidden, private `/tmp`, no new privileges, the same addresses denied to the unit's cgroup, and
-  for an instance its cpuset and memory limit, with `LEAN_NUM_THREADS` set to its CPU count),
+  hidden, private `/tmp`, other users' processes hidden from `/proc`, no new privileges, the same
+  addresses denied to the unit's cgroup, and for an instance its cpuset and memory limit, with
+  `LEAN_NUM_THREADS` set to its CPU count),
   and after the job kills whatever is left and deletes the home directory, workspace included.
   Each instance has its own user, so this never touches another instance's job.
 - `job-started.sh` is the runners' job-started hook. Pull requests can change the workflow they
@@ -126,13 +136,17 @@ repository (a pull request from such a branch, or a manual run). Their setup is 
   push to `main`, a `workflow_dispatch` (which needs write access), or a `pull_request` whose
   `pull_request.head.repo.full_name` in the event payload (`$GITHUB_EVENT_PATH`, written by
   GitHub) is this repository and whose `pull_request.head.ref` starts with `batch/`. On
-  `rh-pr-trusted`: a `pull_request` whose head repository is this repository. A pull request
-  from a fork, or one whose payload has no head repository, is refused by both. After a change
-  to the hook it must be installed again (`setup-host.sh` does that, or `install -m 0755
-  job-started.sh /opt/rh-runner/job-started.sh`, which leaves a running job alone).
+  `rh-pr-trusted`: a `pull_request` whose head repository is this repository. Both refuse a pull
+  request from a fork, or one whose payload has no head repository. On `rh-pr-fork`: a
+  `pull_request` whose head repository is not this repository (a fork, or a deleted fork). After
+  a change to the hook it must be installed again (`setup-host.sh` does that, or
+  `install -m 0755 job-started.sh /opt/rh-runner/job-started.sh`, which leaves a running job
+  alone).
 - `mint-jit.sh` runs every minute on a trusted workstation whose `gh` is logged in as a
   repository admin (systemd user timers): `mint-jit.sh <host> 4` for `rh-big`, and
-  `mint-jit.sh <host> 2 <instance> rh-pr-trusted` for each `rh-pr-trusted` instance. It keeps
+  `mint-jit.sh <host> 2 <instance> rh-pr-trusted` for each `rh-pr-trusted` instance, and
+  `mint-jit.sh <host> 2 <instance> rh-pr-fork` for each `rh-pr-fork` instance (runners named
+  `<label>-<host>-<instance>-<time>-<random>`). It keeps
   that many one-time runner configurations from
   `POST /repos/{owner}/{repo}/actions/runners/generate-jitconfig` (labels `self-hosted`, `linux`
   and the runner's label) in the runner's root-only spool, and deletes those older than 20 hours

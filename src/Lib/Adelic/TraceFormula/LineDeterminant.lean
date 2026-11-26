@@ -19,8 +19,8 @@ eigenvalue they give the eigenvalues of `T⁺`, hence the dimension and
 `|det T⁺| ^ 2 = d ^ dim * (1 + c) ^ rank e`.
 
 The first section collects what traces determine on generalised eigenspaces; in particular the
-traces of all powers of an operator determine its characteristic polynomial
-(`charpoly_eq_of_trace_pow_eq`).
+traces of all positive powers of an invertible operator determine its characteristic polynomial
+(`charpoly_eq_of_trace_pow_succ_eq`).
 -/
 
 @[expose] public section
@@ -165,14 +165,6 @@ lemma charpoly_eq_of_finrank_maxGenEigenspace_eq
     simp_rw [count_roots, ← finrank_maxGenEigenspace_eq, h_finrank]
   rw [(IsAlgClosed.splits A.charpoly).eq_prod_roots_of_monic A.charpoly_monic,
     (IsAlgClosed.splits A'.charpoly).eq_prod_roots_of_monic A'.charpoly_monic, h_roots]
-
-/-- Operators `A` and `A'` with the same traces of all powers have the same characteristic
-polynomial. -/
-lemma charpoly_eq_of_trace_pow_eq (h_trace : ∀ l : ℕ, trace ℂ B (A ^ l) = trace ℂ B' (A' ^ l)) :
-    A.charpoly = A'.charpoly := by
-  refine charpoly_eq_of_finrank_maxGenEigenspace_eq fun μ ↦ Nat.cast_injective (R := ℂ) ?_
-  rw [← trace_restrictGenEigenspace_one, ← trace_restrictGenEigenspace_one]
-  exact trace_restrictGenEigenspace_eq _ _ (fun l ↦ by simp only [mul_one, h_trace]) μ
 
 lemma finrank_maxGenEigenspace_zero_of_det_ne_zero (h_det : T.det ≠ 0) :
     finrank ℂ (T.maxGenEigenspace 0) = 0 := by

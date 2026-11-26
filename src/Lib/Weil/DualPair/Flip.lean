@@ -295,7 +295,7 @@ lemma exists_pairTheta_flip (l : G E t')
 transposition with signs. -/
 def flipPoly (t : a → ℤˣ) (s : n → ℤˣ) :
     MvPolynomial (InfinitePlace E × n × a) ℂ →ₐ[ℂ] MvPolynomial (InfinitePlace E × a × n) ℂ :=
-  bind₁ fun p : InfinitePlace E × n × a ↦ (homSigns (-t) s p.2 : ℂ) • X (R := ℂ) (p.1, p.2.swap)
+  aeval fun p : InfinitePlace E × n × a ↦ (homSigns (-t) s p.2 : ℂ) • X (R := ℂ) (p.1, p.2.swap)
 
 /-- The archimedean part `New.CoordChange.realMap` of `New.flipCoords` sends the Fock vector of a
 polynomial `P` to the Fock vector of `New.flipPoly t' s P`. -/
@@ -312,7 +312,9 @@ lemma realMap_flipCoords_polyVector (hc : star (c : 𝔸f E) * c = -1) (ht : t' 
           holomorphicCoord (realSigns E (homSigns s t')) x (i.1, i.2.swap)) := by
     aesop (add simp [holomorphicCoord_eq, flipCoords, mul_comm, starCoordEquiv, pairSign,
       units_ne_iff_eq_neg])
-  simp [realMap, ← aeval_eq_eval, aeval_bind₁, ↓vac_realEquiv, flipPoly, h_coord, pairSign]
+  simp only [realMap, Heisenberg.IsVacuum.transport_apply, polyVector_apply, ← aeval_eq_eval, flipPoly,
+    comp_aeval_apply]
+  simp [↓vac_realEquiv, h_coord, pairSign]
 
 end Flip
 

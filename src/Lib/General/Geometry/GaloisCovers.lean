@@ -752,15 +752,6 @@ lemma IsGaloisCovering.etale_of_isPullback {R : CommRingCat} {W Z : Over (Spec R
   have h_bot : (RingHom.ker χ).comap (algebraMap A B) = ⊥ := comap_bot_of_injective _ hA_inj
   exact ⟨x, sub_eq_zero.mp (hG.isNilpotent_of_forall_mem h_char hp hσ h_bot h_ker).eq_zero⟩
 
-/-- The base change of a reduced scheme along a flat preimmersion is reduced: its stalks are those
-of the scheme. -/
-lemma isReduced_pullback_of_flat {X Y T : Scheme} (f : X ⟶ T) (g : Y ⟶ T)
-    [IsReduced X] [Flat g] [IsPreimmersion g] : IsReduced (pullback f g) := by
-  have (x : ↥(pullback f g)) : IsReduced ((pullback f g).presheaf.stalk x) := ⟨fun a ha ↦ by
-    obtain ⟨b, rfl⟩ := (fst f g).stalkMap_surjective x a
-    simp [((IsNilpotent.map_iff (stalkMap_injective_of_flat _ _)).1 ha).eq_zero]⟩
-  exact isReduced_of_isReduced_stalk _
-
 /-- If the base change of `c : W ⟶ Z` to the fibre product `Z ×_T E` is smooth of relative dimension
 `0` and `Z ×_T E ⟶ E` of relative dimension `d`, then the base change of `c ≫ f : W ⟶ T` along any
 map factoring through `i : E ⟶ T` is smooth of relative dimension `d`. -/

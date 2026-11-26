@@ -95,13 +95,13 @@ def formTupleNormSq (σ : ℂ ≃+* ℂ) (ζ : FormTuples j) : ℝ :=
 /-- The rank `r + 9 m + 1` of `V″` is at most `2 n_m`. -/
 lemma card_firstFactorIndex_le_two_mul_n : card (FirstFactorIndex j) ≤ 2 * D.n D.m := by
   rw [card_firstFactorIndex]
-  linarith [D.six_mul_r_le_n, D.r_add_one, D.hundred_mul_m_add_nine_lt_k]
+  linarith only [D.six_mul_r_le_n, D.r_add_one, D.hundred_mul_m_add_nine_lt_k]
 
 variable (D) in
 /-- The rank `r + t = 6 r` of `V_j` is at most `2 n_m`. -/
 lemma card_rowIndex_sum_fin_le_two_mul_n : card (D.RowIndex ⊕ Fin D.t) ≤ 2 * D.n D.m := by
   rw [D.card_rowIndex_sum_fin]
-  linarith [D.six_mul_r_le_n, D.t_eq_five_mul_r]
+  linarith only [D.six_mul_r_le_n, D.t_eq_five_mul_r]
 
 /-- The basis of `V″` is large enough to hold the divided directions: `D.CarrierIndex` embeds in
 `FirstFactorIndex j`. -/

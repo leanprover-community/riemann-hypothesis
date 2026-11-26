@@ -194,13 +194,14 @@ the class. Let `w` be a cocycle of `G` for the matrix representation `ρ`, with 
 (`ribetCocycles`). Then `w ∘ η` is the image of a crystalline cocycle of a lattice `Y` of the class
 under an `R`-linear map `Y → (R / ℓ ^ m) ^ d` that is equivariant for `ρ ∘ η` (`ComesFromClass`). -/
 lemma New.Selmer.comesFromClass_of_mem_ribetCocycles {ℓ : ℕ} [ThePrime ℓ] {X n R Γ G d : Type}
-    [Fintype X] [Fintype n] [DecidableEq n] [CommRing R] [PadicIntegerRing R ℓ] [Group Γ] [Group G]
+    [Finite X] [Fintype n] [DecidableEq n] [CommRing R] [PadicIntegerRing R ℓ] [Group Γ] [Group G]
     [Fintype d] [DecidableEq d] [OverGp Γ ℓ] {η : Γ →* G} {u : X → G →* Matrix n n R}
     {ρ : G →* Matrix d d R} {F : Filter Γ} {K : Γ → Polynomial R → Prop}
     {U : (R →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ}
     (hu : ∀ x : X, InClass F K U (matrixLattice ((u x).comp η))) {m : ℕ}
     {w : G → d → QuotSpan (ℓ ^ m : R)} (hw : w ∈ ribetCocycles u ρ (ℓ ^ m)) :
     ComesFromClass (InClass F K U) (ρ.comp η) m (w ∘ η) := by
+  have := Fintype.ofFinite X
   -- `Y` is a subrepresentation of (families of matrices) × (values), determined by its first
   -- component (`Y_inj`), that contains all `(u g - 1 + (ℓ ^ m) ^ k • v, w g)` (`hY`).
   obtain ⟨k, Y, Y_inj, hY⟩ : ∃ (k : ℕ) (Y : Subrepresentation
@@ -246,7 +247,7 @@ whose restriction along `η` obeys (`obeying`) all linear relations that hold on
 cocycles of `L` (`relationsOn`). The length of this quotient is at most that of the crystalline
 cocycles of the Tate dual `L^∨(1)` modulo those whose cup products with the crystalline cocycles of
 all lattices of the class are coboundaries (`dualDefect`). -/
-lemma New.Selmer.relLength_ribetCocycles_le {ℓ : ℕ} [ThePrime ℓ] {X n R Γ G d : Type} [Fintype X]
+lemma New.Selmer.relLength_ribetCocycles_le {ℓ : ℕ} [ThePrime ℓ] {X n R Γ G d : Type} [Finite X]
     [Fintype n] [DecidableEq n] [CommRing R] [PadicIntegerRing R ℓ] [Group Γ] [TopologicalSpace Γ]
     [IsTopologicalGroup Γ] [Group G] [Fintype d] [DecidableEq d] [𝒥 : OverGp Γ ℓ]
     (h_emb : IsOpenEmbedding 𝒥.toGp) {η : Γ →* G} {u : X → G →* Matrix n n R}
@@ -258,6 +259,7 @@ lemma New.Selmer.relLength_ribetCocycles_le {ℓ : ℕ} [ThePrime ℓ] {X n R Γ
         ((obeying (relationsOn (crysCocycles (matrixLattice (ρ.comp η)).ρ))
           (QuotSpan (ℓ ^ m : R))).comap (LinearMap.funLeft R (d → QuotSpan (ℓ ^ m : R)) η)) ≤
       dualDefect (InClass F K U) (matrixLattice (ρ.comp η)).tateDual := by
+  have := Fintype.ofFinite X
   let L : GalLattice R Γ := matrixLattice (ρ.comp η)
   let restrict : (G → d → QuotSpan (ℓ ^ m : R)) →ₗ[R] Γ → d → QuotSpan (ℓ ^ m : R) :=
     LinearMap.funLeft R (d → QuotSpan (ℓ ^ m : R)) η

@@ -274,9 +274,7 @@ lemma Pairing.isCupCoboundary_of_eq_coboundary [TopologicalSpace Γ]
     exact congrArg (Quotient.mk _) h_kill
   have h_zero : cls = 0 :=
     (nsmul_eq_zero_iff_of_coprime (k.index_coprime.pow_right _)).1 ⟨h_index, h_pow⟩
-  have h_B2 : zmodPowToUnits P.exponent ∘ b ∈ B2 (unitsRep.comp toGp) := by
-    exact Submodule.mem_comap.1 ((Submodule.Quotient.mk_eq_zero _).1 h_zero)
-  exact h_B2
+  exact Submodule.mem_comap.1 ((Submodule.Quotient.mk_eq_zero _).1 h_zero)
 
 /-- `smul_comm` oriented for `simp`: an element of `FrobGroup Γ` moves inside any commuting
 scalar `a`. -/
@@ -402,8 +400,7 @@ lemma Pairing.nsmul_modPairing_eq_coboundary {e₁ e₂ e₃ r : ℕ} {c : S.par
   have h_eq : p ^ (e₁ + e₂ + e₃) • P.modPairing ((S.cocycleMap c).1 g)
       (S'.ρ g ((S'.cocycleMap c').1 h)) = charRep _ χ g.1 (κ h) - κ (g * h) + κ g := by
     refine eq_of_sub_eq_zero (TateTwist.eq_zero_of_mk_one_mem_smallPart ?_)
-    rw [h_diff]
-    exact add_mem h_small h_δ
+    simpa only [h_diff] using add_mem h_small h_δ
   rw [hr, mul_comm (p ^ (e₁ + e₂ + e₃)) r, mul_smul, h_eq]
 
 /-- The pairing lemma. Let `x`, `w` lie over `p ^ e₁ • c` and `x'`, `w'` over `p ^ e₂ • c'`. Call a
@@ -467,8 +464,7 @@ lemma Pairing.IsScaledCupCoboundary.of_isSafePath {e₁ e₂ e₃ : ℕ} {c : S.
         smul_sub, wittFst_smul, extensionRep, smul_wittPairing]
       abel
     have hf_small : f (inr h.1) ∈ smallPart P.exponent := by
-      rw [h_f]
-      exact sub_mem hy' hB
+      simpa only [h_f] using sub_mem hy' hB
     have h_small : DiagTensor.mk 1 (κ h) ∈ smallPart P.exponent := by
       simpa using sub_mem hf_small (hκ h)
     simp [TateTwist.eq_zero_of_mk_one_mem_smallPart h_small]
@@ -684,8 +680,8 @@ lemma liftIdeal_le_of_p_pow_mem {S : PairingSide O} {l : ℕ} {i : Letter} {c : 
       S.liftIdeal 0 l i ⊔ span {(p : Ainf)} • span {(p : Ainf) ^ c} := by
     simp [liftIdeal, sup_comm, span_singleton_mul_span_singleton, pow_succ']
   rw [h_split] at h_mem ⊢
-  exact sup_le le_rfl (smul_le_of_le_smul_of_le_jacobson_bot (fg_span_singleton _)
-    (IsAdicComplete.le_jacobson_bot _) (by simpa using h_mem))
+  exact sup_le le_rfl (smul_le_of_le_smul_of_le_jacobson (fg_span_singleton _)
+    (IsAdicComplete.le_jacobson _) (by simpa using h_mem))
 
 /-- Nakayama at one letter: if `p ^ κ` lies in `S.liftIdeal (p ^ (κ + 1)) 0 i`, then `p ^ κ` kills
 the cokernel at `i`. -/
@@ -1082,23 +1078,15 @@ lemma exists_forall_z_pow_mem_liftIdeal (S : PairingSide O) (κ : ℕ) :
     ∃ a : ℕ, ∀ i : Letter, k.z.val ^ a ∈ S.liftIdeal (p ^ κ) 0 i := by
   -- By `frame_theorem`, `τ ^ jumpBound` multiplies `ainfLattice` into `kisinAinf`; the lift of
   -- `τ ^ jumpBound` times a constant is the letter-`i` part of `τ ^ jumpBound • (1 ⊗ (0, c))`.
-  have h_tau (i : Letter) : tau ^ S.extensionLattice.jumpBound ∈ S.liftIdeal (p ^ κ) 0 i := by
-    have h_frame : ∀ x ∈ S.extensionLattice.ainfLattice,
-        tau ^ S.extensionLattice.jumpBound • x ∈ S.extensionLattice.kisinAinf :=
-      frame_theorem.tau_pow_smul_mem_kisinAinf
-    have h_lift (c : S.paramLattice.Carrier) :
-        S.extensionLattice.letterProj i (tau ^ S.extensionLattice.jumpBound • DiagTensor.mk 1
-          (0, c)) ∈
-          S.extensionLattice.withOrders i (stdOrders 0) :=
-      letterProj_mem_withOrders
-        (frobKisinAinf_zero.ge (h_frame _ (mk_one_mem_ainfLattice _)))
-    refine mem_liftIdeal_iff.2 ⟨0, fun c ↦ ⟨_, h_lift c, ?_⟩⟩
-    simp [constantAt]
+  have h_tau (i : Letter) : tau ^ S.extensionLattice.jumpBound ∈ S.liftIdeal (p ^ κ) 0 i :=
+    mem_liftIdeal_iff.2 ⟨0, fun c ↦
+      ⟨_, letterProj_mem_withOrders (frobKisinAinf_zero.ge
+        (frame_theorem.tau_pow_smul_mem_kisinAinf _ (mk_one_mem_ainfLattice (0, c)))),
+        by simp [constantAt]⟩⟩
   -- The ideals contain powers of `p` and `τ`, and `z` lies in the radical of `(p, τ)`.
-  have h_p : (p : Ainf) ^ κ ∈ ⨅ i : Letter, S.liftIdeal (p ^ κ) 0 i :=
-    mem_iInf.2 fun i ↦ p_pow_mem_liftIdeal_self
   have h_radical : span {↑p, tau} ≤ radical (⨅ i : Letter, S.liftIdeal (p ^ κ) 0 i) :=
-    Ideal.span_le.2 (Set.pair_subset ⟨κ, h_p⟩ ⟨_, mem_iInf.2 h_tau⟩)
+    Ideal.span_le.2 (Set.pair_subset ⟨κ, mem_iInf.2 fun _ ↦ p_pow_mem_liftIdeal_self⟩
+      ⟨_, mem_iInf.2 h_tau⟩)
   simpa [mem_radical_iff] using radical_le_radical_iff.2 h_radical
     (Ainf.mem_radical_of_not_isUnit (a := k.z) k.not_isUnit_z not_p_dvd_tau)
 
@@ -1113,25 +1101,19 @@ lemma exists_z_pow_mem_liftIdeal {S : PairingSide O} {ω : ℕ}
   -- Take the least `a` with `z ^ a` in the ideals. As `z ^ e ∈ (E, p)`, the power
   -- `z ^ (a + e * (ω + κ))` lies in the ideals of level one; coming down gives
   -- `z ^ ((a + e * (ω + κ)) / p)`, so this exponent is at least `a`.
-  obtain ⟨a, h_min⟩ : ∃ a : ℕ, Minimal
-      (fun a : ℕ ↦ ∀ i : Letter, k.z.val ^ a ∈ S.liftIdeal (p ^ (κ + 1)) 0 i) a :=
+  obtain ⟨a, h_min⟩ :=
     exists_minimal_of_wellFoundedLT _ (exists_forall_z_pow_mem_liftIdeal S (κ + 1))
-  obtain ⟨u, v, h_span⟩ : ∃ u v : k.S, u * k.E + v * p = k.z ^ k.e :=
-    Ideal.mem_span_pair.1 k.z_pow_mem_span
-  have h_z_pow : u.val * k.E.val + v.val * p = k.z.val ^ k.e := by
-    exact_mod_cast congrArg Subtype.val h_span
-  have h_up (i : Letter) : k.z.val ^ (a + k.e * (ω + κ)) ∈
-      S.liftIdeal (p ^ (κ + 1)) 1 (k.letterFrob i) := by
-    rw [pow_add k.z.val, pow_mul, ← h_z_pow]
+  obtain ⟨u, v, h_span⟩ := Ideal.mem_span_pair.1 k.z_pow_mem_span
+  have h_z : u.val * k.E.val + v.val * p = k.z.val ^ k.e := by exact_mod_cast congrArg (·.1) h_span
+  refine ⟨a, h_min.prop, ?_⟩
+  have h_up (i : Letter) :
+      k.z.val ^ (a + k.e * (ω + κ)) ∈ S.liftIdeal (p ^ (κ + 1)) 1 (k.letterFrob i) := by
+    rw [pow_add k.z.val, pow_mul, ← h_z]
     exact mul_add_pow_mem_of_mul_pow_mem
       (mul_E_pow_mem_liftIdeal_one (h_min.prop _) (h_jumps _)) p_pow_mem_liftIdeal_self
-  have h_down (i : Letter) : k.z.val ^ ((a + k.e * (ω + κ)) / p) ∈
-      S.liftIdeal (p ^ (κ + 1)) 0 i := by
+  have h_mul_le : a * p ≤ a + k.e * (ω + κ) := Nat.mul_le_of_le_div p _ _ (h_min.le fun i ↦ by
     simpa using mem_liftIdeal_zero_of_mem_liftIdeal_one_letterFrob 0 0 (Nat.mul_div_le _ p)
-      (by simpa using h_up i)
-      (by simp only [Nat.padicValNat_def, multiplicity_mul_div_factorial, le_refl])
-  have h_mul_le : a * p ≤ a + k.e * (ω + κ) := Nat.mul_le_of_le_div p _ _ (h_min.le h_down)
-  refine ⟨a, h_min.prop, ?_⟩
+      (by simpa using h_up i) (by simp [Nat.padicValNat_def, multiplicity_mul_div_factorial]))
   rw [Nat.sub_one_mul, Nat.mul_comm p a]
   omega
 
@@ -1161,35 +1143,24 @@ lemma killsCokernel_of_isUnramified {S : PairingSide O} {i : Letter} (s t : ℕ)
     (hp : 5 ≤ p) : S.KillsCokernel i s t := by
   -- All `p ^ (s + t - m) * z ^ m` lie in the ideal modulo `p ^ (s + t + 1)`. By Nakayama the
   -- modulus can be dropped, and `p ^ s * (z + p) ^ t` is a combination of these monomials.
-  obtain ⟨b, hb_mem, hb_le⟩ : ∃ b : ℕ,
-      (∀ i : Letter, k.z.1 ^ b ∈ S.liftIdeal (p ^ (s + t + 1)) 0 i) ∧
-        (p - 1) * b ≤ k.e * ((p - 3) * (s + t) + (s + t)) :=
-    exists_z_pow_mem_liftIdeal h_jumps (s + t)
-  obtain ⟨hE : k.E = k.z + p, he : k.e = 1, -⟩ := h_unram
-  -- Legendre's formula gives `(p - 1) v_p(b!) ≤ b`.
+  obtain ⟨b, hb_mem, hb_le⟩ := exists_z_pow_mem_liftIdeal h_jumps (s + t)
+  obtain ⟨hE, he, -⟩ := h_unram
+  -- Legendre's formula gives `(p - 1) v_p(b!) ≤ b`, yielding `b + v_p(b!) ≤ s + t`.
   have legendre : (p - 1) * padicValNat p b.factorial ≤ b :=
     Nat.padicValNat_def (p := p) ▸
       (Nat.Prime.sub_one_mul_multiplicity_factorial Fact.out).trans_le (Nat.sub_le _ _)
   have val_le : b + padicValNat p b.factorial ≤ s + t := by
-    refine Nat.le_of_mul_le_mul_left (c := p - 2) ?_ (by omega)
-    calc (p - 2) * (b + padicValNat p b.factorial)
-        ≤ (p - 2) * b + (p - 1) * padicValNat p b.factorial := by
-          rw [mul_add]
-          gcongr
-          omega
-      _ ≤ (p - 2) * b + b := by gcongr
-      _ = (p - 1) * b := by rw [← Nat.succ_mul, show (p - 2).succ = p - 1 by omega]
-      _ ≤ (p - 3) * (s + t) + (s + t) := by simpa [he] using hb_le
-      _ = (p - 2) * (s + t) := by rw [← Nat.succ_mul, show (p - 3).succ = p - 2 by omega]
+    simp only [he, one_mul] at hb_le
+    zify [show 1 ≤ p by omega, show 3 ≤ p by omega] at hb_le legendre hp ⊢
+    nlinarith [Nat.cast_nonneg (α := ℤ) (padicValNat p b.factorial)]
   -- Lowering `z ^ max b m` to `z ^ m` costs `b + v_p(b!) - (m + v_p(m!)) ≤ s + t - m` if `m < b`.
   have monomial_mem (m : ℕ) :
       p ^ (s + t - m) * k.z.1 ^ m ∈ S.liftIdeal (p ^ (s + t + 1)) 0 i := by
-    have h_max : p ^ 0 * k.z.1 ^ max b m ∈ S.liftIdeal (p ^ (s + t + 1)) 0 i :=
-      mem_of_dvd _ (by simp [pow_dvd_pow]) (hb_mem i)
-    have h_cost : 0 + max b m + padicValNat p (max b m).factorial ≤
-        s + t - m + m + padicValNat p m.factorial := by
-      rcases max_cases b m with ⟨h_max_eq, -⟩ | ⟨h_max_eq, -⟩ <;> rw [h_max_eq] <;> omega
-    exact p_pow_mul_z_pow_mem_liftIdeal_of_le (le_max_right b m) h_max h_cost
+    refine p_pow_mul_z_pow_mem_liftIdeal_of_le (c := 0) (le_max_right b m)
+      (mem_of_dvd _ (by simp [pow_dvd_pow]) (hb_mem i)) ?_
+    rcases max_cases b m with ⟨h, -⟩ | ⟨h, -⟩ <;>
+      · rw [h]
+        omega
   apply liftIdeal_le_of_p_pow_mem (c := s + t) (by simpa using monomial_mem 0)
   suffices h_sum : ∑ m ∈ Finset.range (t + 1), p ^ s * (k.z.1 ^ m * p ^ (t - m) * t.choose m) ∈
       S.liftIdeal (p ^ (s + t + 1)) 0 i by

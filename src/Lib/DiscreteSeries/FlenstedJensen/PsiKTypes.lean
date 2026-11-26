@@ -406,7 +406,7 @@ private theorem New.eventually_integral_conj_weightMinors_mul_dsCoeff (hg : l.Ha
       fun s hs ↦ hA_acc k s hs j
   let c : ℂ := l.lowestKType.kTypeNormSq
   have h_x : l.dsCoeff x = (∫ j, G j j 1 ∂haarK ε) / c := by
-    simp [HCParam.dsCoeff, HCParam.flenstedJensen, G, S, c, mul_assoc]
+    simp [HCParam.dsCoeff, HCParam.flenstedJensen, G, S, c]
   have h_b : l.dsCoeff b = (∫ k, F k ∂haarK ε) / c := by
     simp [dsCoeff_eq_flenstedJensen hg (one_mem _) (by simpa using hb_acc 1),
       HCParam.flenstedJensen, F, S, c]

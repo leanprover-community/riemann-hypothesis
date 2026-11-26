@@ -355,7 +355,7 @@ lemma pairWeil_boxProd_source (h : G E s') (f : 𝒮 (V₁.hom T)) (f' : 𝒮 (V
   have h_ω : ((V₁.sum V₂).hom T).ω (onHom (G.sum (g₁, g₂), h)) (boxProd homSigns_sum_source f f') =
       boxProd homSigns_sum_source ((V₁.hom T).ω (onHom (g₁, h)) f)
         ((V₂.hom T).ω (onHom (g₂, h)) f') :=
-    omega_boxProd _ (by simp_all [adeleMatrix_inv, stdForm, ← ext_iff]) f f'
+    omega_boxProd _ (by simp [adeleMatrix_inv, stdForm, ← ext_iff]) f f'
   simp [pairWeil_apply, det_eq, h_ω]
   module
 

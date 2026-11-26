@@ -113,7 +113,7 @@ lemma New.OddPart.classNumber_mul_index_idelesPowAt_le (M l : ℕ) [NeZero M] [T
   have h_index : (idelesPowAt (placesDividing K l) M).index ≤ (2 ^ M) ^ (2 * M + M) := by
     refine (index_idelesPowAt_ne_zero_and_le M (placesDividing K l)).right.trans
       ((Nat.pow_le_pow_left hM_le _).trans (Nat.pow_le_pow_right h_one ?_))
-    linarith [ncard_placesDividing_le_finrank K l, h_deg]
+    linarith only [ncard_placesDividing_le_finrank K l, h_deg]
   calc classNumber K * (idelesPowAt (placesDividing K l) M).index
       ≤ (2 ^ M * (2 ^ M) ^ M) ^ (M + 1) * (2 ^ M) ^ (2 * M + M) := Nat.mul_le_mul h_class h_index
     _ = 2 ^ (M ^ 3 + 5 * M ^ 2 + M) := by ring
@@ -622,7 +622,7 @@ lemma New.OddPart.length_shaOdd_le_of_sq_lt {N : ℕ} [NeZero N] {E : Type} [Fie
     simp only [Fintype.card_prod, ZMod.card_units_eq_totient, Fintype.card_fin]
     grw [card_eq_nat_card, card_eq_totient_of_hasEnoughRootsOfUnity, h_tot_le, h_val,
       add_one_le_of_lt h_pow]
-    nlinarith
+    linarith
   · -- The odd components of `z` vanish, so `z` is killed by `4 * φ N`, which is prime to `l`.
     obtain ⟨hz_comp, h_kill_of_odd⟩ := h_split z hz
     have h_van' (u : (ZMod N)ˣ) (ψ : DirichletCharacter O N) (i : Fin (X.factorization l + 1)) :

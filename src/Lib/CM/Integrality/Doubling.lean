@@ -354,7 +354,7 @@ lemma norm_det_eq_one_of_iterate_doublingForms {c : ℂ_[p]} (hc : ‖c‖ ≤ 1
     simp only [red, map_iterate_doublingForms] at ha ⊢
     rw [ha, iterate_doublingForms_smul]
   have h_zero : red ((doublingForms c)^[j] v) = 0 := by
-    simp only [Prod.map_fst, Prod.map_snd, Subring.subtype_apply, ZeroMemClass.coe_eq_zero]
+    simp only [Prod.map_fst, Prod.map_snd, Subring.subtype_apply]
       at h_fst h_snd
     ext
     · simp [red, h_fst]

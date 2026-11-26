@@ -94,7 +94,7 @@ lemma IsBoxPartitionOfUnity.mem_frameBox {c : S.Classes}
   grw [hω.mem_frameBox_besselLength y v hy a, h_size, frameBoxRadius, ← mul_assoc, ← pow_add]
   -- Exponents of `b`: `27 + 6 n + 2 ≤ 37 n`.
   gcongr
-  nlinarith [S.ten_pow_five_le_varrho]
+  linarith only [S.ten_pow_five_le_varrho]
 
 /-- The cutoff `S.classCutoff c` of a class `c` is a cutoff for the rational unipotent elements
 fixing the frame, times the indicator of the reduced points. If it is not zero at `y` and
@@ -318,7 +318,7 @@ lemma frameImage_eq_frameImage_one_of_close {g : S.G E} {d : S.Classes} {r : S.R
   have h_exp : S.b ^ (23 * 𝔰.ϱ) * S.b ^ (6 * 𝔰.n + 2) ≤ S.frameBoxRadius := by
     rw [frameBoxRadius, ← pow_add]
     gcongr
-    nlinarith [S.ten_pow_five_le_varrho]
+    linarith only [S.ten_pow_five_le_varrho]
   set ε : ℝ := ‖Φ v (g.val (Sum.inl a) (𝔰.besselFrame b) -
     (1 : S.G E).val (Sum.inl a) (𝔰.besselFrame b))‖
   calc ε ≤ ε * (S.b ^ (23 * 𝔰.ϱ) *
@@ -490,7 +490,7 @@ lemma tsum_le_of_le_classCutoff_mul {c : S.Classes} {s : S.ResidueGL} {α : Type
         gcongr with q
         simpa [β, ι, h_class q] using h_le q (hBA q.2)
       _ ≤ (∑' u : S.classUnipotent (k p), β u) * x := by
-        grw [← ENNReal.tsum_comp_le_tsum_of_injective hι, ENNReal.tsum_mul_right]
+        grw [← tsum_comp_le_tsum_of_injective hι, ENNReal.tsum_mul_right]
       _ = x := by rw [tsum_classCutoff_eq_one, one_mul]
 
 /-- Let `E` be a CM field with a primitive 5040-th root of unity, `S` admissible filling data over
@@ -507,7 +507,7 @@ lemma exists_classUnipotent_mul_mem_boxedPoints (c : S.Classes)
     ∃ u ∈ S.classUnipotent c, S.ratToInf u * y ∈ S.boxedPoints := by
   -- The cutoffs of the translates add up to `1`, so one of them is not zero.
   obtain ⟨u, hu⟩ : ∃ u : S.classUnipotent c, S.classCutoff c (S.ratToInf u * y) ≠ 0 :=
-    ENNReal.summable.tsum_ne_zero_iff.1 ((tsum_classCutoff_eq_one c y).trans_ne one_ne_zero)
+    CompleteLattice.summable.tsum_ne_zero_iff.1 ((tsum_classCutoff_eq_one c y).trans_ne one_ne_zero)
   -- Left translation by the unipotent `u` keeps `besselLength`.
   obtain ⟨hu_unipotent, -⟩ : u.val ∈ S.classUnipotent c := u.2
   have h_cut_mul (v : NumberField.InfinitePlace E) : InCut ((S.ratToInf u * y) v) S.b :=

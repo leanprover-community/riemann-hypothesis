@@ -94,7 +94,7 @@ lemma tsum_inv_pow_le_of_separated (hm : 0 < m) (hf : Pairwise fun i j : I ↦ m
     Summable (fun i : I ↦ ‖f i‖⁻¹ ^ n) ∧ ∑' i : I, ‖f i‖⁻¹ ^ n ≤ (5 / m) ^ n := by
   -- Take `u i = ‖f i‖ / m`, `R = m`, `A = n` and `c = 1 + n / 2` in `tsum_le_of_separated`.
   have hc : (n : ℝ) ≤ (1 + n * 2⁻¹) * (n - finrank ℝ V) := by
-    nlinarith [show (finrank ℝ V : ℝ) + 2 ≤ n from mod_cast hn]
+    nlinarith only [show (finrank ℝ V : ℝ) + 2 ≤ n from mod_cast hn]
   obtain ⟨h_summable, h_le⟩ := tsum_le_of_separated (u := fun i ↦ m⁻¹ * ‖f i‖) hm hm.le hf
     (fun i ↦ (one_le_inv_mul₀ hm).2 (hf_ge i)) (fun i ↦ by simp [field]) (mod_cast by lia) hc
   have h_scale (i : I) : (m⁻¹ * ‖f i‖) ^ (-(n : ℝ)) = m ^ n * ‖f i‖⁻¹ ^ n := by
@@ -142,7 +142,7 @@ lemma New.sobolev_trace {E : Type*} [NormedAddCommGroup E] [InnerProductSpace �
             (abs_add_le ..).trans (by simp [abs_mul])
         _ ≤ 2 * (‖g t‖ * ‖g' t‖) * 1 + ‖g t‖ ^ 2 := by
           grw [abs_real_inner_le_norm, show |t - ε| ≤ 1 by grind]
-        _ ≤ (‖g t‖ + ‖g' t‖) ^ 2 := by nlinarith [sq_nonneg ‖g' t‖]
+        _ ≤ (‖g t‖ + ‖g' t‖) ^ 2 := by linarith [sq_nonneg ‖g' t‖]
     calc |φ' t| = |2 * inner ℝ (g t) (g' t) * (t - ε) + ‖g t‖ ^ 2| / ε := by
           simp [φ', abs_mul, abs_of_pos hε, div_eq_mul_inv]
       _ ≤ 2 * (‖g t‖ ^ 2 + b t ^ 2) / ε := by grw [numerator_le, add_sq_le, norm_g'_le t ht]
@@ -218,7 +218,7 @@ lemma New.sobolev_trace_cube {Ω I L D : Type*} [MeasurableSpace Ω] {σ : Measu
     have in_cube (t : ℝ) (ht : t ∈ Icc 0 ε) : update x d t ∈ Icc 0 fun _ : D ↦ ε :=
       ⟨le_update_iff.2 ⟨ht.1, fun j _ ↦ hx.1 j⟩, update_le_iff.2 ⟨ht.2, fun j _ ↦ hx.2 j⟩⟩
     have h_zero : update x d 0 = x := update_eq_self_iff.2 hxd.symm
-    simpa [normSq, bound, μ, h_zero] using lintegral_sobolev_trace
+    simpa [bound, μ, h_zero] using lintegral_sobolev_trace
       (g := fun t ↦ f i (update x d t)) (h := fun l t ↦ f (l :: i) (update x d t))
       (by fun_prop) (fun l ↦ by fun_prop) hε hε_le
       (h_deriv.mono fun ω hω t ht ↦ hω i d x t (in_cube t ht))

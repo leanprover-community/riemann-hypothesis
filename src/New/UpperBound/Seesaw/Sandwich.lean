@@ -102,11 +102,12 @@ lemma inclXFin_scalarFin_map_evalAt {Y : Grading V N X s} {z : unitary (𝔸f E)
     (V.xFin * Y.inclXFin (scalarFin X z) * V.xFin⁻¹).map (evalAt u) = 1 := by
   refine Units.ext ?_
   change (V.ratCoordMatrixFin (Y.inclXFin (scalarFin X z))).map (evalAt u) = 1
-  rw [ratCoordMatrixFin_inclXFin]
-  ext i l
-  obtain ⟨i | i, rfl⟩ := Y.indexEquiv.surjective i <;>
-    obtain ⟨l | l, rfl⟩ := Y.indexEquiv.surjective l <;>
-    simp [scalarFin, Matrix.one_apply, diagonal_apply, apply_ite, hz]
+  ext i j : 1
+  have h := congrArg (fun v : ι → 𝔸f E ↦ evalAt u (v i))
+    (inclXFin_scalarFin_mulVec (Y := Y) z (Pi.single j 1))
+  by_cases hij : i = j <;>
+    simpa [Matrix.mulVec_single_one, Matrix.col, hz, Pi.single_apply, Matrix.one_apply, hij,
+      eq_comm] using h
 
 /-- Let `x` be a point of the finite adelic unitary group `Gf E ι` whose lattice, spanned by the
 columns of `V.xFin * x`, splits along `X` at a place `w ≠ w̄`: there its projection to `X^⊥` lies in

@@ -150,7 +150,7 @@ lemma thetaLarge_translate_mul (σ : b ⊕ a ≃ n) (hn : 2 ∣ card n) (v : Pai
         (atPlaces 𝔠.ramifiedPlaces g⁻¹).val.det =
         (localChar 𝔠.ramifiedPlaces υ 1 (atPlaces 𝔠.ramifiedPlaces g).val.det ^ card b)⁻¹ := by
     rw [localChar_det, localChar_det, ← card_congr σ]
-    simp [d, mul_pow, zpow_add₀, field]
+    simp [mul_pow, zpow_add₀, field]
   rw [thetaLarge, ← thetaIntegral_pairWeil ((1, g), 1, 1),
     𝔠.readsAt.pairWeil_localDatum_of_mem_supportedOn W V _ _ v h_sb hg (one_mem _), h_char,
     div_eq_inv_mul (thetaLarge W V 𝔠 v Φ x), ← h_scalar, ← thetaIntegral_smul, mul_smul]
@@ -178,7 +178,7 @@ lemma thetaSmall_translate_mul (v' : PairFock E s t')
   have h_scalar : (((upsilonU1 ^ card b : AutChar E).spaceChar (card b)).val (star d⁻¹) : ℂ)⁻¹ *
       √(ideleAbs (star d⁻¹)) ^ card b =
         (localChar 𝔠.ramifiedPlaces υ 1 (atPlaces 𝔠.ramifiedPlaces g).val.det ^ card b)⁻¹ := by
-    simp [d, AutChar.spaceChar, υ_star, sq, mul_pow, field]
+    simp [AutChar.spaceChar, υ_star, sq, mul_pow, field]
   rw [thetaSmall, ← thetaIntegral_pairWeil ((1, g), 1, 1),
     𝔠.readsAt.star.pairWeil_localDatum_of_mem_supportedOn W V' _ _ v'
       hΨ.transpose_mem_schwartzBruhat hg_star (one_mem _),

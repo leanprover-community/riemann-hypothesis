@@ -239,7 +239,7 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
     have h_order : 2 ^ s ≤ (ℓ + 1) * (2 * i) :=
       two_pow_le_of_pow_eq_one (q := ℓ) hℓ.one_lt (by omega) (by simpa using h_pow)
     have h_small : (ℓ + 1) * (2 * i) ≤ (L + 1) * (2 * l₀ s) := Nat.mul_le_mul (by omega) (by omega)
-    nlinarith only [h_order, h_small, hL]
+    linarith only [h_order, h_small, hL]
 
 /-- **A large sparse set of places.** The infinite places `P.Φ s` of `E = P.E s` form the group
 `(ℤ/q₁)ˣ`. Let `0 < n`, `1 ≤ W ≤ 2 ^ s ≤ W ^ n`, `(2 l₀) ^ n ≤ W`, `3 l₀ n 2 ^ n ≤ W ^ 3` and
@@ -415,7 +415,7 @@ lemma mul_rank_lt_two_pow {y : ℝ} {m r s : ℕ} (hy : 0 < y) (h_large : 1e6 * 
     grw [show r + 1 - m ≤ r by omega]
     push_cast
     grw [hr, hr]
-    linarith [one_le_pow₀ (n := 2) (one_le_exp (x := 5 * y) (by positivity))]
+    linarith only [one_le_pow₀ (n := 2) (one_le_exp (x := 5 * y) (by positivity))]
   rw [h_pow, ← Nat.cast_lt (α := ℝ), Nat.cast_mul, Nat.cast_mul, Nat.cast_pow]
   calc _ ≤ 2 * (2592 * y) * (46 * exp (5 * y) ^ 2) := by grw [h_rank, hl, Nat.cast_ofNat]
     _ < 1e6 * y * exp (5 * y) ^ 2 := by nlinarith [mul_pos hy (pow_pos (exp_pos (5 * y)) 2)]
@@ -463,7 +463,7 @@ lemma pow_mul_exp_le_exp_pow_six {n : ℕ} {W : ℝ} (hW : 1 ≤ W) (hn : n + 1 
     W ^ n * exp W ≤ exp (W ^ 6) :=
   calc W ^ n * exp W ≤ exp W ^ n * exp W := by
         gcongr
-        linarith [add_one_le_exp W]
+        linarith only [add_one_le_exp W]
     _ = exp ((n + 1) * W) := by rw [← exp_natCast_mul, ← exp_add, add_one_mul]
     _ ≤ exp (W ^ 6) := by grw [hn, ← sq, pow_le_pow_right₀ hW (by norm_num : 2 ≤ 6)]
 
@@ -672,11 +672,11 @@ variable {P : Parameters} {n s : ℕ} {y W : ℝ}
 
 /-- A large scale `W` (`Parameters.IsLargeScale`) is at least `1`. -/
 lemma one_le (h_scale : P.IsLargeScale n y W) : 1 ≤ W := by
-  linarith [h_scale.add_one_le, n.cast_nonneg (α := ℝ)]
+  linarith only [h_scale.add_one_le, n.cast_nonneg (α := ℝ)]
 
 /-- If `W` is a large scale for `y` (`Parameters.IsLargeScale`), then `100 ≤ y`. -/
 lemma hundred_le (h_scale : P.IsLargeScale n y W) : 100 ≤ y := by
-  linarith [h_scale.log_W_le, log_nonneg h_scale.one_le]
+  linarith only [h_scale.log_W_le, log_nonneg h_scale.one_le]
 
 /-- At a large scale `W`, the modulus `q₂² = P.q₂ s ^ 2` is at most `W ^ n` for `s ≤ 32 y`. -/
 lemma q₂_sq_le (h_scale : P.IsLargeScale n y W) (hs : s ≤ 32 * y) : (P.q₂ s ^ 2 : ℕ) ≤ W ^ n :=

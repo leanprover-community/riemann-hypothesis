@@ -219,25 +219,15 @@ theorem prod_mem_of_formMajorant_ne_zero (Z : F.IntermediateGroup) {j : ℕ}
   -- Where the integrand is not zero, the frames `y`, `y * x` and their translates by the inverses
   -- of the Weyl elements of `p` and of `q` respectively are near at `j`.
   obtain ⟨y, -, hy⟩ := exists_ne_zero_of_formMajorant_ne_zero Z hx
-  obtain ⟨σ, hσ, h_first⟩ : ∃ σ ∈ floorGroup j,
-      ⟪Z.besselVector (σ * y), Z.besselVector (1 * (σ * (y * x)))⟫_ℂ ≠ 0 :=
-    exists_ne_zero_of_pivotL1Norm_ne_zero (left_ne_zero_of_mul hy)
-  obtain ⟨τ, hτ, h_second⟩ : ∃ τ ∈ floorGroup j,
-      ⟪Z.besselVector (τ * ((weylElem j p)⁻¹ * y)),
-        Z.besselVector (weylRatio j p q * (τ * ((weylElem j p)⁻¹ * y * x)))⟫_ℂ ≠ 0 :=
-    exists_ne_zero_of_pivotL1Norm_ne_zero (right_ne_zero_of_mul hy)
-  have h_near {ρ z : T.G} (hρ : ρ ∈ floorGroup j) (hz : Z.besselVector (ρ * z) ≠ 0) :
-      F.IsNear j z :=
-    ((isCut_besselVector Z).isNear_of_ne_zero hz).of_floorGroup_mul hρ le_rfl
-  have h_pair {ρ z z' : T.G} (hρ : ρ ∈ floorGroup j)
-      (hz : ⟪Z.besselVector (ρ * z), Z.besselVector (ρ * z')⟫_ℂ ≠ 0) :
-      F.IsNear j z ∧ F.IsNear j z' :=
-    ⟨h_near hρ fun h_zero ↦ hz (by rw [h_zero, inner_zero_left]),
-      h_near hρ fun h_zero ↦ hz (by rw [h_zero, inner_zero_right])⟩
-  obtain ⟨h_y, h_yx⟩ : F.IsNear j y ∧ F.IsNear j (y * x) := h_pair hσ (by simpa using h_first)
-  obtain ⟨h_py, h_qyx⟩ :
-      F.IsNear j ((weylElem j p)⁻¹ * y) ∧ F.IsNear j ((weylElem j q)⁻¹ * (y * x)) :=
-    h_pair hτ (by simpa [weylRatio, mul_assoc, ← (weylElem_mul_left_comm hτ).2] using h_second)
+  have cut := isCut_besselVector Z
+  obtain ⟨h_y, h_yx⟩ : F.IsNear j y ∧ F.IsNear j (y * x) := by
+    simpa using cut.isNear_pair_of_pivot_ne_zero (d := 1) (by simp) (left_ne_zero_of_mul hy)
+      (ρ := 1) (one_mem _)
+  obtain ⟨h_py, h_qyx⟩ : F.IsNear j ((weylElem j p)⁻¹ * y) ∧
+      F.IsNear j ((weylElem j q)⁻¹ * (y * x)) := by
+    simpa [weylRatio, mul_assoc] using cut.isNear_pair_of_pivot_ne_zero
+      (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
+      (right_ne_zero_of_mul hy) (ρ := 1) (one_mem _)
   -- In the gauge of scale `1` every size means integral.
   have h_minor {r : ℕ → Aˣ} {z : T.G} (hz : F.IsNear j z)
       (hrz : F.IsNear j ((weylElem j r)⁻¹ * z)) :

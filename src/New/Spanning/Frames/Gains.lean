@@ -384,26 +384,16 @@ theorem Gauge.formMajorant_sq_le_of_hasDeepVector (hk : F.IsCut W) (hj : j ≤ �
     Γ.isPairingKernel_frameCorrelation hk j p q
   grw [mul_pow, ker₂.pivotL1Norm_sq_le_of_floorMassLe_one h_vol,
     lintegral_partialCorrelation_sq_le hj]
-  -- The second modulus is not zero, so for some `τ` the function `W` vanishes at neither of the
-  -- translates by `τ` of the two points.
-  obtain ⟨τ, hτ, hτ_ne⟩ : ∃ τ ∈ floorGroup j, frameCorrelation W (weylRatio j p q)
-      (τ * ((weylElem j p)⁻¹ * y)) (τ * ((weylElem j p)⁻¹ * y * x)) ≠ 0 :=
-    exists_ne_zero_of_pivotL1Norm_ne_zero (right_ne_zero_of_mul h_ne)
-  have h_ne_p : W (τ * ((weylElem j p)⁻¹ * y)) ≠ 0 := fun h ↦ hτ_ne (by simp [h])
-  have h_ne_q : W (τ * ((weylElem j q)⁻¹ * (y * x))) ≠ 0 := fun h ↦
-    hτ_ne (by simp [weylRatio, weylElem_mul_left_comm hτ, h, mul_assoc])
-  -- Hence both points are near at `j` along the whole orbit of `y` under `floorGroup j`.
-  have h_near {ρ : T.G} (hρ : ρ ∈ floorGroup j) {r : ℕ → Aˣ} {z : T.G}
-      (hz : W (τ * ((weylElem j r)⁻¹ * z)) ≠ 0) : F.IsNear j ((weylElem j r)⁻¹ * (ρ * z)) := by
-    refine .of_floorGroup_mul (hk.isNear_of_ne_zero ?_) (div_mem hτ hρ)
-    simpa [weylElem_mul_left_comm hρ, div_eq_mul_inv, mul_assoc] using hz
   have h_deep_orbit (ρ : T.G) (hρ : ρ ∈ floorGroup j)
       (h_pair : frameCorrelation W 1 (ρ * y) (ρ * (y * x)) ≠ 0) :
       ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ σ⁻¹ ≤ F.depth a (ρ * y) x := by
     have h_inner : ⟪W (ρ * y), W (ρ * y * x)⟫_ℂ ≠ 0 := by simpa [mul_assoc] using h_pair
-    have h_near_q : F.IsNear j ((weylElem j q)⁻¹ * (ρ * y * x)) := by
-      simpa only [mul_assoc] using h_near hρ h_ne_q
-    exact h_deep (ρ * y) ⟨h_inner, h_near hρ h_ne_p, h_near_q⟩
+    obtain ⟨near_p, near_q⟩ := hk.isNear_pair_of_pivot_ne_zero
+      (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
+      (right_ne_zero_of_mul h_ne) hρ
+    apply h_deep (ρ * y)
+    exact ⟨h_inner, by simpa only [weylElem_mul_left_comm hρ] using near_p,
+      by simpa [weylRatio, mul_assoc, weylElem_mul_left_comm hρ] using near_q⟩
   grw [Γ.pivotL1Norm_sq_le_of_deep ker₁ hx h_deep_orbit, ← le_self_pow hV two_ne_zero]
   exact le_of_eq (by ring)
 

@@ -406,8 +406,7 @@ def thetaKernel (hκ : IsLiftWeight n n' κ eb e) (c : ℂ) {a b : AutChar E} {e
           (theta_pairWeil_schurCoeffPoly hκ c ha hb x (stdEmbFin γ) y (stdEmbFin γ') A v f).symm
         _ = c ^ boxes κ (card n') * V.θ F := by rw [h_inv]
         _ = _ := by
-          simpa only [Prod.mk_one_one, map_one, inv_one, Module.End.one_apply,
-            one_apply_eq_self]
+          simpa only [Prod.mk_one_one, map_one, inv_one, one_apply_eq_self]
             using theta_pairWeil_schurCoeffPoly hκ c ha hb 1 1 1 1 A v f
     change schurJet κ (V.jetSeries c f') *ᵥ conjWeylRep κ e x v =
       conjWeylRep κ ea y (schurJet κ (V.jetSeries c f.val) *ᵥ v)

@@ -220,7 +220,7 @@ lemma pow_mul_realVac_le {s t : ℝ} {u : ι → ℂ} (h_le_mul : s ≤ (‖u‖
     s ^ N * ‖realVac u‖ ≤ Real.exp (N ^ 2) * t ^ N := by
   -- Use `‖u‖ + 1 ≤ exp ‖u‖`; the exponents compare because `‖u‖ ^ 2 ≤ (star u ⬝ᵥ u).re`.
   have h_exp : -(Star.star u ⬝ᵥ u).re / 2 + N * ‖u‖ ≤ N ^ 2 := by
-    nlinarith [norm_sq_le_re_star_dotProduct_self u]
+    nlinarith only [norm_sq_le_re_star_dotProduct_self u]
   grw [h_le_mul, add_one_le_exp, mul_comm, mul_pow, ← h_exp]
   simp [realVac, norm_exp, ← Real.exp_nsmul, ← mul_assoc, ← Real.exp_add]
 
@@ -250,7 +250,7 @@ lemma pow_mul_realVac_mul_realVac_mul_exp_le (y w : ι → ℂ) :
       ‖realVac w‖ * ‖realVac y‖ * rexp ‖Star.star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε w‖ ≤
         ‖realVac u‖ := by
     simp only [h_norm_realVac, ← Real.exp_add, Real.exp_le_exp]
-    linarith [h_s_le, h_sum_u]
+    linarith only [h_s_le, h_sum_u]
   have h_tri : 1 + ‖w‖ ≤ (‖u‖ + 1) * (1 + ‖y‖) := by
     have h_norm_w_le : ‖w‖ ≤ ‖y‖ + ‖u‖ := by
       simpa [u, Pi.norm_def, ← ofReal_sub] using norm_le_insert (‖y ·‖) (‖w ·‖)
@@ -524,7 +524,7 @@ lemma New.Fock.exists_norm_realHeisenbergOp_polyVector_le {ι : Type*} [Fintype 
     choose C hC h_bound using ih
     let D : ℝ := ∑ i : ι, (2 * C P + C (raiseOp ε i P) + C (lowerOp ε i P))
     have hD : 0 ≤ D := Finset.sum_nonneg fun i _ ↦ by
-      linarith [hC P, hC (raiseOp ε i P), hC (lowerOp ε i P)]
+      linarith only [hC P, hC (raiseOp ε i P), hC (lowerOp ε i P)]
     refine ⟨D * 2 ^ N, by positivity, fun t ℓ ht ht_le hℓ z ↦ hℓ _ _ fun y hy ↦ ?_⟩
     -- On the segment, `ρ(s y) ρ(z)` is a phase times a translation of size at most `1 + ‖z‖`.
     let m : ℝ := ‖ℓ‖ * t ^ N * (2 * (1 + ‖z‖)) ^ N
@@ -532,7 +532,7 @@ lemma New.Fock.exists_norm_realHeisenbergOp_polyVector_le {ι : Type*} [Fintype 
         ‖ℓ (realHeisenbergOp (s • y) (realHeisenbergOp z (polyVector ε Q)))‖ ≤ C Q * m := by
       have h_norm : 1 + ‖s • y + z‖ ≤ 2 * (1 + ‖z‖) := by
         grw [norm_add_le, norm_smul, Real.norm_of_nonneg hs.1, hs.2, hy, ht_le]
-        linarith [norm_nonneg z]
+        linarith only [norm_nonneg z]
       rw [Heisenberg.Rep.mul, map_smul, norm_smul, Heisenberg.norm_eq_one, one_mul]
       grw [h_bound Q t ℓ ht ht_le hℓ, h_norm]
       · exact le_of_eq (by ring)

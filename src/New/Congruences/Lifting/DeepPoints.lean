@@ -154,6 +154,12 @@ lemma pointsOver_nonempty_of_gap {a κ η stepCost : ℕ} {i : k.Letter}
       fun l u _ ↦ by grind [raisedOrdersAtZero, plainDepth, standardDepth]
   exact ⟨x, by simpa only [neg_zero] using h_no_pole⟩
 
+private lemma mem_pointsOver_of_no_pole {i : k.Letter} {c : S.paramLattice} {e : ℕ}
+    {d : ℕ → ℤ → ℤ} {x : S.extensionLattice.Ambient} (t : ℕ)
+    (hx : x ∈ S.pointsOver c i e (raisedOrdersAtZero 0) d) :
+    x ∈ S.pointsOver c i e (raisedOrdersAtZero (-t)) d :=
+  mem_pointsOver_of_exponent_le hx fun l u _ ↦ raisedOrdersAtZero_mono (by omega) l u
+
 /-- The scaled cup coboundary under a gap below `0`. Let `P` be a pairing of the lattices of the
 sides `S` and `S'`, and `P.tateDualSide` the side on the Tate dual of their tensor product that
 carries the pairing. Here a side is a lattice with a family of crystalline cocycles and, at each
@@ -182,20 +188,12 @@ lemma SidePairing.isScaledCupCoboundary_of_gap (P : S.SidePairing S') {a κ η H
   -- Both sides have deep points without pole at every letter. At each letter the side whose far
   -- window is negative has jumps at most `η`; it provides a stop, a point at which it rests while
   -- the other side moves by Frobenius.
-  have h_left (i : Letter) :
-      ∃ x, x ∈ S.pointsOver c i (κ + stepCost) (raisedOrdersAtZero 0) (plainDepth a η 1 0) :=
+  choose x hx_no_pole using fun i ↦
     pointsOver_nonempty_of_gap (h_kill i) (h_gap i) (h_steps i) (h_cost i) c
-  have h_right (i : Letter) :
-      ∃ x', x' ∈ S'.pointsOver c' i (κ + stepCost) (raisedOrdersAtZero 0) (plainDepth a η 1 0) :=
+  choose x' hx'_no_pole using fun i ↦
     pointsOver_nonempty_of_gap (h_kill' i) (h_gap' i) (h_steps' i) (h_cost i) c'
-  choose x hx_no_pole using h_left
-  choose x' hx'_no_pole using h_right
-  have hx (i : Letter) : x i ∈ S.pointsOver c i (κ + stepCost) (raisedOrdersAtZero (-η))
-    (plainDepth a η 1 0) :=
-    mem_pointsOver_of_exponent_le (hx_no_pole i) fun l u _ ↦ raisedOrdersAtZero_mono (by omega) l u
-  have hx' (i : Letter) :
-      x' i ∈ S'.pointsOver c' i (κ + stepCost) (raisedOrdersAtZero (-η)) (plainDepth a η 1 0) :=
-    mem_pointsOver_of_exponent_le (hx'_no_pole i) fun l u _ ↦ raisedOrdersAtZero_mono (by omega) l u
+  have hx (i : Letter) := mem_pointsOver_of_no_pole η (hx_no_pole i)
+  have hx' (i : Letter) := mem_pointsOver_of_no_pole η (hx'_no_pole i)
   refine P.isScaledCupCoboundary_of_stops_at_all_letters x x' h_kill_tateDual
     (fun i ↦ mem_standardPoints_of_plainDepth (hx i))
     (fun i ↦ mem_standardPoints_of_plainDepth (hx' i)) (fun i ↦ ?_) (by omega)
@@ -336,18 +334,11 @@ lemma SidePairing.isScaledCupCoboundary_of_jumps_nonpos (P : S.SidePairing S') {
   set t : ℕ := a + η with ht
   have h_radius : a + t + η + W ≤ 6 * (t + W) := by omega
   have h_radius' : a + t + η ≤ 6 * (t + W) := by omega
-  have h_left (i : Letter) : ∃ x : S.extensionLattice.Ambient,
-      x ∈ S.pointsOver c i κ (raisedOrdersAtZero (-t)) (plainDepth a t 1 0) :=
-    pointsOver_nonempty_of_fitsWindows hk (h_kill i) (hb_gap i) (h_window i) (by omega)
-      h_radius c
-  have h_right (i : Letter) : ∃ x' : S'.extensionLattice.Ambient,
-      x' ∈ S'.pointsOver c' i 0 (raisedOrdersAtZero 0) (plainDepth a t 1 0) :=
+  choose x hx using fun i ↦
+    pointsOver_nonempty_of_fitsWindows hk (h_kill i) (hb_gap i) (h_window i) (by omega) h_radius c
+  choose x' hx'_no_pole using fun i ↦
     pointsOver_nonempty_of_jumps_nonpos hk (hb_gap i) h_radius' h_nonpos c' i
-  choose x hx using h_left
-  choose x' hx'_no_pole using h_right
-  have hx' (i : Letter) : x' i ∈ S'.pointsOver c' i 0 (raisedOrdersAtZero (-t))
-    (plainDepth a t 1 0) :=
-    mem_pointsOver_of_exponent_le (hx'_no_pole i) fun l u _ ↦ raisedOrdersAtZero_mono (by omega) l u
+  have hx' (i : Letter) := mem_pointsOver_of_no_pole t (hx'_no_pole i)
   refine P.isScaledCupCoboundary_of_stops_at_all_letters x x' h_kill_tateDual
     (fun i ↦ mem_standardPoints_of_plainDepth (hx i))
     (fun i ↦ mem_standardPoints_of_plainDepth (hx' i)) (fun i ↦ ?_) (by omega)

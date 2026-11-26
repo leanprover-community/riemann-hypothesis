@@ -132,7 +132,7 @@ lemma norm_sub_one_sq (g : USign ε) :
   set x : Matrix n n ℂ := (g : Matrix n n ℂ) - 1
   set y : Matrix n n ℂ := noncompactPart ε g
   have h_row (i : n) : ∑ j : n, ‖x i j‖ ^ 2 = 2 * ∑ j : n, ‖y i j‖ ^ 2 - 2 * (x i i).re := by
-    linarith [two_mul_re_sub_one_apply g i]
+    linarith only [two_mul_re_sub_one_apply g i]
   calc ‖x‖ ^ 2 = ∑ i : n, ∑ j : n, ‖x i j‖ ^ 2 := frobenius_norm_sq_eq_sum
     _ = ∑ i : n, (2 * ∑ j : n, ‖y i j‖ ^ 2 - 2 * (x i i).re) := sum_congr rfl fun i _ ↦ h_row i
     _ = 2 * ‖y‖ ^ 2 - 2 * x.trace.re := by

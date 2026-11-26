@@ -432,7 +432,7 @@ theorem unipotentMass_mul_inner_besselVector (y x : T.G) :
         simpa [S, mul_assoc] using Z.exists_forall_mul_inv_mem_congruenceSubgroup_iff_eq huy
       have hu_mem : u * (y * d.out.val⁻¹) ∈ F.congruenceSubgroup := (hS d).2 rfl
       have h_right : Z.besselVector y d = P.ψ (F.levelUnit⁻¹.val * simpleRootSum u⁻¹) :=
-        extendedBesselChar_eq (inv_mem hu) (by simpa using hu_mem)
+        extendedBesselChar_eq (inv_mem hu) (hu_mem)
       have h_left : Z.besselVector (y * x) d =
           P.ψ (F.levelUnit⁻¹.val * simpleRootSum u⁻¹) * extendedBesselChar F.levelUnit
             (u * y * x * (u * y)⁻¹) := by
@@ -553,7 +553,6 @@ theorem lintegral_inner_besselVector_sq_mul_le (x : T.G) :
     (∫⁻ y : T.G, ‖⟪Z.besselVector x, Z.besselVector y⟫_ℂ‖ₑ ^ 2 ∂F.quotientMeasureFrom 0) *
         F.unipotentMass * F.unipotentMass ≤
       ‖Z.besselVector x‖ₑ ^ 2 * F.groupMeasure F.congruenceSubgroup := by
-  classical
   -- Only the `y` in a set `S` of mass vol(K(g)) / fl count, and `√fl ‖W_Z y‖ ≤ 1` bounds
   -- `√fl |⟨W_Z x, W_Z y⟩|` by `‖W_Z x‖`.
   let θ : Measure T.G := F.quotientMeasureFrom 0

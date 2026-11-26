@@ -380,7 +380,7 @@ lemma lintegral_tsum_polyTerm_lt_top [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     · simp [kernelTerm, hγ, hR]
     · simp [kernelTerm, hγ]
   calc _ ≤ ∫⁻ _ : G E s, ENNReal.ofReal C ∂V.quotMeasure :=
-        lintegral_mono fun x ↦ (ENNReal.tsum_le_tsum fun γ ↦ h_le γ x).trans (hC x)
+        lintegral_mono fun x ↦ (tsum_le_tsum fun γ ↦ h_le γ x).trans (hC x)
     _ < ∞ := lintegral_const_lt_top ofReal_ne_top
 
 /-- Let `φ` be a test function on `G_f`, let `k` be measurable on `G_∞` with

@@ -100,7 +100,7 @@ lemma New.hasSum_integral_of_lintegral_tsum_lt_top {k : Y → G → ℂ} {ν : M
   rw [lintegral_tsum (by fun_prop)] at h_fin
   rw [integral_tsum h_meas h_fin.ne]
   have h_le : ∑' y : Y, ‖∫ x, k y x ∂ν‖ₑ ≤ ∑' y : Y, ∫⁻ x, ‖k y x‖ₑ ∂ν :=
-    ENNReal.tsum_le_tsum fun y ↦ eNorm_integral_le_lintegral_eNorm (k y)
+    tsum_le_tsum fun y ↦ eNorm_integral_le_lintegral_eNorm (k y)
   exact (Summable.of_eNorm (h_le.trans_lt h_fin).ne).hasSum
 
 open scoped Classical in
@@ -154,7 +154,7 @@ lemma New.lintegral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
       _ = ∑' γ : Λ, β (i γ * x) * ∑' y : C, g y (i γ * x) := ((i.ofInjective hi).tsum_eq _).symm
       _ = ∑' y : Y, (∑' γ : Λ, if γ • y ∈ C then β (i γ * x) else 0) * g y x := by
           simp only [h_term, ← ENNReal.tsum_mul_right]
-          exact ENNReal.tsum_comm
+          exact tsum_comm
       _ = ∑' y : D, g y x := by
           simp [tsum_cutoff_smul_mem_block hi rfl hS hC hD hβ_one, tsum_subtype D fun y ↦ g y x,
             indicator]
@@ -317,7 +317,7 @@ lemma New.integral_tsum_orbit_of_lt_top_or_integrable (hi : Function.Injective i
   subst hΓ h_stab
   -- The sum over the orbit is at most the sum over all of `Y`.
   exact integral_tsum_orbit_eq_integral_stabilizer hi hk_meas hk <| h_fin.imp_left <|
-    (lintegral_mono fun x ↦ ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective _).trans_lt
+    (lintegral_mono fun x ↦ tsum_comp_le_tsum_of_injective Subtype.val_injective _).trans_lt
 
 /-- Left invariance of `k y` and unfolding over the orbit `D` of `y`, as one statement. Here `i`
 maps `Λ` isomorphically onto the discrete subgroup `Γ`, `S` is the image under `i` of the stabiliser
@@ -578,7 +578,7 @@ lemma New.ofReal_mul_lintegral_quotMeasure_tsum
   -- Write the elements of `Γ` as `i (δ d) * γ` with `γ ∈ Γ ∩ N`, unfold the quotient measure to
   -- `lam`, and move `i m` past `n`.
   obtain ⟨e, he⟩ := exists_equiv_prod_subgroupOf h_triv hδ hδ_mem hΓ
-  simp only [← e.tsum_eq, ENNReal.tsum_prod', he]
+  simp only [← e.tsum_eq, tsum_prod', he]
   rw [lintegral_tsum (by fun_prop), ← ENNReal.tsum_mul_left]
   refine tsum_congr fun d ↦ ?_
   calc ENNReal.ofReal (w m) * ∫⁻ n : N, ∑' γ : Γ.subgroupOf N,

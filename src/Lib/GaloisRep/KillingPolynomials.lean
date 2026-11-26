@@ -136,7 +136,7 @@ private lemma powMinor_diagonal_X_mul_eq_zero {c : N → Fin n} (he : HasNoSmall
   have h_subst : ψ.mapMatrix y =
       diagonal (T ∘ e ∘ c) * (x : Matrix N N k).map LaurentPolynomial.C := by
     ext i j
-    simp [y, Matrix.mul_apply, diagonal_apply, hψ_X, LaurentPolynomial.algebraMap_apply]
+    simp [y, diagonal_apply, hψ_X, LaurentPolynomial.algebraMap_apply]
   have h_zero : ψ (powMinor y m a) = 0 := by rw [map_powMinor, h_subst, h_vanish a]
   -- The monomials of the minor have one degree `≤ (n + 1) ^ 2`, so by freeness the substitution
   -- keeps them apart.

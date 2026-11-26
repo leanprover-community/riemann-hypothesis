@@ -320,8 +320,8 @@ lemma exists_v_locMap_eq_pow {u : FinPlace K} {w : FinPlace L} (hw : w.comap f =
   -- suffices to treat elements of `K`, which is dense in its completion.
   refine ⟨w.asIdeal.ramificationIdx (𝓞 K), (w.asIdeal.ramificationIdx_pos (𝓞 K)).ne',
     (denseRange_algebraMap K u).eq fun x : K ↦ ?_⟩
-  rw [locMap_algebraMap, v_algebraMap_eq_valuation, v_algebraMap_eq_valuation]
-  exact (valuation_liesOver L u w x).symm
+  simpa only [locMap_algebraMap, v_algebraMap_eq_valuation] using!
+    (valuation_liesOver L u w x).symm
 
 /-- The map of completions induced by a field homomorphism preserves and reflects integrality. -/
 @[simp] lemma v_locMap_le_one_iff {u : FinPlace K} {w : FinPlace L} (hw : w.comap f = u)
@@ -557,16 +557,6 @@ lemma residue_eq_iff_valuation_sub_lt_one {F Γ : Type*} [Field F] [LinearOrdere
 
 lemma isOpen_v_lt (γ : WithZero (Multiplicative ℤ)) : IsOpen {x : LocField w | v x < γ} :=
   isOpen_lt continuous_v (by fun_prop)
-
-/-- Every element `x` of `LocInt w`, the ring of integers of the completion of `E` at `w`, is
-approximated by algebraic integers `a` of `E` to any order: `a - x` has valuation `v` less than
-`exp n`, the image of the integer `n` in the value group. -/
-lemma exists_int_approx (x : LocInt w) (n : ℤ) :
-    ∃ a : 𝓞 E, v (algebraMap E (adicCompletion E w) a - x.val) < exp n := by
-  -- Tau Ceti approximates to order `exp (-m)` for natural `m`; take `m = (1 - n).toNat`.
-  obtain ⟨a, ha⟩ := exists_valued_sub_le (K := E) w x (1 - n).toNat
-  rw [Valuation.map_sub_swap] at ha
-  exact ⟨a, ha.trans_lt (exp_lt_exp.2 (by omega))⟩
 
 /-- Every element of the residue field at w is the residue of an algebraic integer of E. -/
 lemma algebraMap_ResField_surjective : Function.Surjective (algebraMap (𝓞 E) (ResField w)) :=

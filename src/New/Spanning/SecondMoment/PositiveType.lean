@@ -176,7 +176,7 @@ lemma card_mul_sum_det_eq_zero_le [DecidableEq m] [Fintype k] [DecidableEq k] (�
     · linarith [on_axes y v (.inl hy)]
     · linarith [on_axes y v (.inl hy)]
     · linarith [on_axes y v (.inr hv)]
-    · linarith [off_axes y v hy hv]
+    · linarith only [off_axes y v hy hv]
   -- By orthogonality of characters, the mean over `v` is the mass of the `s` with `y` in the left
   -- kernel of `Z s`.
   have mean_eq (y : m → k) : 𝔼 v : m → k, (∑ s, W y v s).re = ∑ s with y ᵥ* Z s = 0, Θ s := by

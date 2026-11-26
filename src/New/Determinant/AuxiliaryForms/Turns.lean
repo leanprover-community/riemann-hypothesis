@@ -418,33 +418,25 @@ lemma turned_tupleAction (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.oldEdges 
     edgeCharProd g (c.newEdges w) * c.turned ε ψ Ψ' (tupleAction g S) = c.turned ε ψ Ψ' S := by
   -- The match commutes with the action at `W₁ ⊕ W₂` and transforms by `χ⁻¹` at `V`.
   let H := c.columnFourier ψ Ψ' (tupleAction g S) (c.newRow S * (c.sndGL g).val)
-  let Φ := matchOf (c.char ϑ) ε H
-  have h_moved : AreMatched ⊤ ε (c.char ϑ) Φ H := hc.areMatched_columnFourier _ hΨ' ε _
   let a : ℂ := edgeChar ϑ (c.low, c.fst) (g c.fst).val.det *
     edgeChar ϑ (c.lowExt, c.snd) (g c.snd).val.det * edgeCharProd g w
+  have h_moved := hc.areMatched_columnFourier (ψ := ψ) (c.newRow S * (c.sndGL g).val) hΨ' ε
+    (tupleAction g S)
   have h_fourier :
-      c.columnFourier ψ Ψ' S (c.newRow S) = fun y ↦ a * H ((c.sumGL g)⁻¹.val * y) := by
-    funext y
-    simpa [a, H] using (hc.columnFourier_tupleAction y (c.newRow S) hΨ' hg 1 S).symm
-  have h_translate : AreMatched ⊤ ε (c.char ϑ)
-      (fun x ↦ a * c.char ϑ (c.sumGL g).val.det * Φ (x * (c.sumGL g).val))
-      (c.columnFourier ψ Ψ' S (c.newRow S)) := by
-    simpa only [h_fourier] using h_moved.translate a (c.sumGL g)
-  have h_sum : c.turned ε ψ Ψ' S =
-      a * c.char ϑ (c.sumGL g).val.det * Φ (c.newMatrix S * (c.sumGL g).val) := by
-    rw [turned, (hc.areMatched_columnFourier (c.newRow S) hΨ' ε S).unique h_translate]
-  have h_value : c.turned ε ψ Ψ' (tupleAction g S) =
-      c.char ϑ (g c.high).val.det * Φ (c.newMatrix S * (c.sumGL g).val) := by
-    rw [turned, hc.newRow_tupleAction hg, hc.newMatrix_tupleAction hg]
-    refine (h_moved.left_mul (g := g c.high) (by simp [mem_intGL])).symm.trans ?_
-    rw [← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]
+      c.columnFourier ψ Ψ' S (c.newRow S) = fun y ↦ a * H ((c.sumGL g)⁻¹.val * y) :=
+    funext fun y ↦ by
+      simpa [a, H] using (hc.columnFourier_tupleAction y (c.newRow S) hΨ' hg 1 S).symm
+  rw [turned, turned, hc.newRow_tupleAction hg, hc.newMatrix_tupleAction hg,
+    ← h_moved.left_mul (g := g c.high) (by simp [mem_intGL]),
+    ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul,
+    (hc.areMatched_columnFourier (c.newRow S) hΨ' ε S).unique
+      (by simpa only [h_fourier] using h_moved.translate a (c.sumGL g)),
+    ← mul_assoc]
   -- Opposite edges have the same character.
-  have h_char : edgeCharProd g (c.newEdges w) * c.char ϑ (g c.high).val.det =
-      a * c.char ϑ (c.sumGL g).val.det := by
-    simp [a, edgeCharProd, char, hc.high_notMem, hc.highExt_notMem, hc.fst_ne_snd.symm,
-      hc.edgeChar_fst, hc.edgeChar_snd, hc.apply_highExt g hg, MulChar.inv_apply_eq_inv']
-    field [MulChar.apply_eq_zero_iff]
-  rw [h_value, ← mul_assoc, h_char, h_sum]
+  congr 1
+  simp [a, edgeCharProd, char, hc.high_notMem, hc.highExt_notMem, hc.fst_ne_snd.symm,
+    hc.edgeChar_fst, hc.edgeChar_snd, hc.apply_highExt g hg, MulChar.inv_apply_eq_inv']
+  field [MulChar.apply_eq_zero_iff]
 
 /-! ### The turned datum and the sum over a square -/
 
@@ -740,7 +732,7 @@ lemma exists_squareLaw_grid_hasAbsUpToNormPower (z : Bool) (ha : a < D.m) (hb : 
   let n : D.LiftIndex := ⟨(if z then a else b) + 1, by grind⟩
   have h_signs : negCount (Sum.elim (D.gridSigns z 0 a (b + 1)) (D.gridSigns z 0 (a + 1) b)) =
       negCount (D.gridSigns z 0 (a + 1) (b + 1)) + negCount (D.gridSigns z 0 a b) := by
-    simp [negCount_gridSigns, add_comm]
+    simp [negCount_gridSigns]
   have h_rank : card (D.GridIndex z (a + 1) (b + 1)) = card (D.GridIndex z a b) + 2 * D.t := by
     cases z <;> simp [card_gridIndex] <;> grind
   have h_ratio : (fun ϑ : D.MFoldTwist ↦ D.lRatioProd pair.character pair.z (ϑ.pow n)) =

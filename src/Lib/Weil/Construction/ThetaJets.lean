@@ -245,7 +245,7 @@ lemma entireTheta_translate_finiteImage (V : Space E n ε)
 omit [Fintype n] [DecidableEq n] in
 lemma realImage_smul_apply (c : E) (p : InfinitePlace E × n) :
     realImage (c • γ) p = Φ p.1 c * realImage γ p := by
-  simp [realImage, realCoord, val_scaleIdele_fst, fieldEq]
+  simp [realImage, realCoord, fieldEq]
 
 omit [Fintype n] [DecidableEq n] in
 lemma finiteImage_smul_apply (c : E) (j : n) :
@@ -278,8 +278,7 @@ lemma semichar_finiteImage {b : (InfinitePlace E × n → ℂ) →L[ℂ] Infinit
         (S - conj S) / 2 := by
       rw [riemannForm_def, h_left, h_right, sub_im, conj_im, sub_conj]
       push_cast
-      field_simp
-      ring
+      field
     rw [canonicalMultiplier, h_form]
     simp [hS, realHeisenberg, dotProduct, signMatrix, realImage_smul_apply, mul_assoc, mul_comm,
       mul_left_comm]

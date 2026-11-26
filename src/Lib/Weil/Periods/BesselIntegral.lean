@@ -465,10 +465,8 @@ lemma integral_besselMeasure_eq_of_mean {q : Type*} [Fintype q]
     have pr_unip : pr ⟨_, Y.unipotent_le_besselGroup (unip_part r)⟩ = 1 :=
       (mem_unip _).mp (unip_part r)
     simp only [j₀, map_mul, map_inv, pr_u, pr_unip, inv_one, mul_one]
-  have j_mem (r : Y.besselGroup) (b : q × X → 𝔸 E) : j₀ r b ∈ S := by
-    change pr (j₀ r b) ∈ (stdSpace E X).Γ
-    rw [pr_j₀ r b]
-    exact one_mem _
+  have j_mem (r : Y.besselGroup) (b : q × X → 𝔸 E) : j₀ r b ∈ S :=
+    pr.ker_le_comap _ (MonoidHom.mem_ker.2 (pr_j₀ r b))
   let j (r : Y.besselGroup) (b : q × X → 𝔸 E) : S := ⟨j₀ r b, j_mem r b⟩
   have diff_inv : (Y.ratBessel.subgroupOf Y.besselGroup).FixesLeft (fun r ↦ φ r - M (pr r)) :=
     fun γ hγ r ↦ congrArg₂ HSub.hSub (φ_inv γ hγ r) (M_comp_pr_inv γ hγ r)

@@ -168,8 +168,6 @@ lemma heisenbergElem_mul :
   -- apply both sides to a vector; the vectors `v`, `v'` and `e_a` have coordinate `0` at `e*_a`
   have hv_coord : v (eStar a) = 0 := by simp [v, inclMatrix_val_mulVec]
   have hv'_coord : v' (eStar a) = 0 := by simp [v', inclMatrix_val_mulVec]
-  have h_orth : star v ⬝ᵥ T.splitGram *ᵥ Pi.single (inl a) 1 = 0 := by
-    simp [v, inclMatrix_val_mulVec]
   have h_star : star (star v' ⬝ᵥ T.splitGram *ᵥ v) = star v ⬝ᵥ T.splitGram *ᵥ v' :=
     star_dotProduct_mulVec_comm IsHermitianUnit.conjTranspose_eq v' v
   refine Subtype.ext (Units.ext ?_)

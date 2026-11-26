@@ -57,8 +57,6 @@ private lemma sub_padicValNat_factorial_add_two_eq (n : ℕ) :
     n - padicValNat p n ! + 2 = n + 1 - padicValNat p (n + 1)! + padicValNat p (n + 1) + 1 := by
   grind [Nat.padicValNat_def, multiplicity_factorial_le, factorial, Nat.multiplicity_mul]
 
-private lemma coe_z_eq_seriesMap_X : (c.z : Ainf) = c.seriesMap X := rfl
-
 /-- If `tau` divides `E ^ h * a` in `BPlus`, for `a` in `Ainf`, then `tau` divides `a` in
 `Ainf`. -/
 lemma tau_dvd_of_dvd_E_pow_mul {h : ℕ} {a : Ainf}
@@ -153,7 +151,7 @@ lemma exists_z_pow_eq {n N : ℕ} (h_le : c.e * n ≤ N) :
   -- `xi = p * Amax.xiDivP` in `Amax`, and `xi` divides the image of `z ^ e * (unit) + p`.
   have h_p_dvd_xi : (p : Amax) ∣ algebraMap Ainf Amax xi := ⟨Amax.xiDivP, p_mul_X.symm⟩
   have p_dvd : (p : Amax) ∣ algebraMap Ainf Amax c.z ^ c.e := by
-    simpa [(c.unitSeries.isUnit.map _).map, ← coe_z_eq_seriesMap_X] using
+    simpa [(c.unitSeries.isUnit.map _).map, z] using
       h_p_dvd_xi.trans (map_dvd (algebraMap Ainf Amax) c.associated_xi.dvd')
   obtain ⟨y, hy⟩ : (p : Amax) ^ n ∣ algebraMap Ainf Amax c.z ^ N := by grw [p_dvd, ← pow_mul, h_le]
   exact ⟨y, by simpa [← IsScalarTower.algebraMap_apply] using congrArg (algebraMap Amax BPlus) hy⟩
@@ -326,7 +324,7 @@ lemma exists_ev_eq_frobEnd_pow (ht_fixes : c.FixesThetaZ t)
   -- Successive approximation in powers of `ev X`, for which `BPlus` is separated as `z ∣ ev X`.
   have h_hausdorff : IsHausdorff (span {ev X}) BPlus := by
     refine ⟨fun x hx ↦ c.eq_zero_of_z_pow_dvd fun n ↦ ?_⟩
-    grw [hz, smodEq_span_pow_iff_dvd.mp (hx n), sub_zero]
+    grw [hz, (TauCeti.sModEq_span_singleton_pow_iff ..).mp (hx n), sub_zero]
   -- The family: `p ^ (n - v_p n! + 2) * φ ^ l (W' j)` for the rows `W'` over `S_B` such that
   -- `q • Y i - z ^ (n + 1) * W'` is a row over `Ainf`; row `i` of `W` is one, with `n = 0`.
   let Row : Type :=

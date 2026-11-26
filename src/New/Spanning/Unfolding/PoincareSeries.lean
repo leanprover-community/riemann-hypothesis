@@ -359,7 +359,7 @@ theorem exists_tsum_enorm_cutBessel_le :
       ∑' γ : T, S.classCutoff a.1 ((S.ratToInf γ)⁻¹ * y) *
         ∏ v, ‖(S.besselSystem v).besselFn .full (((S.ratToInf γ)⁻¹ * y) v)‖ₑ ≤ M :=
     (exists_tsum_classCutoff_mul_prod_enorm_le .univ a.1 1).imp fun _ hM y ↦
-      (ENNReal.le_tsum a.1).trans (hM y)
+      (le_tsum _ a.1).trans (hM y)
   refine ⟨M, fun g ↦ ?_⟩
   -- All terms vanish unless some `δ` satisfies the level condition `InLevel δ` at the finite
   -- places. Then write the terms as `γ⁻¹ * δ` and compare with `hM` at the point
@@ -382,7 +382,7 @@ theorem exists_tsum_enorm_cutBessel_le :
         refine (tsum_subtype_eq_of_support_subset fun γ hγ ↦ h_over γ (by_contra fun h ↦ ?_)).symm
         exact hγ (by simp only [h_zero _ h, eNorm_zero])
     _ ≤ M := by
-        refine le_trans (ENNReal.tsum_le_tsum fun γ ↦ ?_) (hM (S.ratToInf δ * X.realHomeomorph g.1))
+        refine le_trans (tsum_le_tsum fun γ ↦ ?_) (hM (S.ratToInf δ * X.realHomeomorph g.1))
         simpa only [map_mul S.ratToInf, map_inv, mul_assoc] using
           X.enorm_cutBessel_ratEquiv_mul_le a g (γ.val⁻¹ * δ)
 
@@ -512,7 +512,7 @@ theorem exists_levelSpace_tsum_cutBessel_eq :
     rw [← cosetEquiv.tsum_eq]
     exact (cosetEquiv.summable_iff.2 (.of_eNorm ((hM g).trans_lt ENNReal.coe_lt_top).ne)).tsum_prod
   have h_bound (g : New.G E ε) : ∑' q : S.G E ⧸ S.classUnipotent a.1, ‖F q g‖ₑ ≤ M := by
-    grw [← hM g, ← cosetEquiv.tsum_eq, ENNReal.tsum_prod', ← eNorm_tsum_le_tsum_eNorm]
+    grw [← hM g, ← cosetEquiv.tsum_eq, tsum_prod', ← eNorm_tsum_le_tsum_eNorm]
   have h_fix (q : S.G E ⧸ S.classUnipotent a.1) (g : New.G E ε) :
       realConv (typeKernel l ε) (F q) g = F q g := by
     simpa [F, cosetEquiv, mul_assoc] using
@@ -705,7 +705,7 @@ theorem amplitudeSum_apply_eq_integral_tsum {S : Filling E 𝔰} [S.IsAdmissible
       ‖(S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y)).toReal •
         S.besselKernel .full γ y‖ₑ < ⊤ := by
     grw [enorm_toReal_smul_le]
-    exact (ENNReal.le_tsum c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)
+    exact (le_tsum _ c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)
   simpa only [amplitudeSum, amplitude, PiLp.smul_apply] using
     tsum_integral_apply (by fun_prop) h_fin i
 

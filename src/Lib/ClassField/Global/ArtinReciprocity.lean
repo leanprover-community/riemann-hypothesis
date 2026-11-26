@@ -407,9 +407,10 @@ lemma resH2_ker_cyclicClass_eq_zero {ξ χ : QZChar Γ} {x : Kˣ} (U : OpenSubgr
     (hv.isLocalGalois_and_residueCard_eq_and_isUniformiser Γ).left.resH2_classOfInvariant_eq_zero V
       hr
   -- The restricted class lives in `restrictTo` of the module, which is
-  -- `unitsModule (decompGroup Γ A)` only after unfolding, hence `erw`.
-  erw [hv.abelianLift_artinAt_principal, _root_.map_neg, neg_eq_zero] at h_cls
-  exact (unitsModule ..).resH2_subgroupOf_eq_zero_symm (V := decompGroup ..) h_cls
+  -- `unitsModule (decompGroup Γ A)` only after unfolding, so `map_neg` is used as an equation.
+  rw [hv.abelianLift_artinAt_principal] at h_cls
+  exact (unitsModule ..).resH2_subgroupOf_eq_zero_symm (V := decompGroup ..)
+    (neg_eq_zero.mp ((_root_.map_neg _ _).symm.trans h_cls))
 
 /-- `Ω` is an algebraic closure of `ℚ`, on which `Γ` acts as the Galois group of `Ω/K`.
 If the symbols `(ξ, x)` and `(χ, y)` are equal in `H²(Γ, Ωˣ)`, then `ξ` at the local Artin

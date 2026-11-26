@@ -295,7 +295,6 @@ omit [CMType E] in
 /-- If `v` has a left inverse, the number of its columns is the dimension of their span. -/
 lemma card_eq_finrank_colSpan {v : Matrix σ τ E} (h : HasLeftInv v) :
     Fintype.card τ = Module.finrank E (colSpan v) := by
-  classical
   simp [v.mulVecLin.finrank_range_of_inj h.injective_mulVec]
 
 /-- In the lattice coordinates `S.classCoord c`, the frame pair `framePair γ` (entries embedded in
@@ -323,8 +322,8 @@ coordinates to those of the lattice of `c`. In these the form has the Gram matri
 for the columns with the indices `g` of `framePair k = (f | k f)`. Then
 `F_g(k)ᴴ J (C t) = F_g(γ)ᴴ J₀ t` as finite adelic matrices, for every rational matrix `t` with rows
 indexed by the basis `e₁, …, e_ϱ, x_i, z, e*₁, …, e*_ϱ`. -/
-lemma framePair_translateByClassReps_mul_classCoord {S : Filling E 𝔰} {ι ρ : Type} [Fintype ι]
-    [Fintype ρ] (c c' : S.Classes) (γ : S.G E) (g : ι → Fin (𝔰.ϱ + 1) ⊕ Fin (𝔰.ϱ + 1))
+lemma framePair_translateByClassReps_mul_classCoord {S : Filling E 𝔰} {ι ρ : Type}
+    (c c' : S.Classes) (γ : S.G E) (g : ι → Fin (𝔰.ϱ + 1) ⊕ Fin (𝔰.ϱ + 1))
     (t : Matrix 𝔰.BesselIndex ρ E) :
     ((framePair (S.translateByClassReps c c' γ)).submatrix id g)ᴴ *
       (S.latticeMiddle (𝔸f E)).splitGram *
@@ -683,7 +682,7 @@ root of unity. Let `N = S.N` be the prime of the data `S`. Let `γ` have cell ra
 matrix for the others. The absolute value of the norm to `ℚ` of the determinant is
 `N ^ (2 r) * S.minorNorm j γ`. -/
 lemma HasCellRank.abs_norm_det_updateRow_paddedLeading {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)}
-    {γ : S.G E} [HasPrimitiveRoot5040 E] (h : S.HasCellRank j γ) :
+    {γ : S.G E} (h : S.HasCellRank j γ) :
     |(Algebra.norm ℚ ((paddedLeading j (S.frameProducts γ)).updateRow 𝔰.top
         (S.frameProducts γ 𝔰.top)).det : ℝ)| =
       S.N ^ (2 * numInfPlaces E) * S.minorNorm j γ := by

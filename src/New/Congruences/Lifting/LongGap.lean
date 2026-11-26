@@ -258,7 +258,7 @@ lemma JumpLattice.exists_taylor_expansion_of_mem_stdOrdersPart (hl : 0 < l)
     obtain ⟨hv_points, hv_forms⟩ := (v a).property
     exact letterProj_mem_constantsModE hl i hv_points hv_forms
   have h_comb : p ^ (4 * δ) • x = ∑ a : Fin m, r a • b a := by
-    simpa [b, mem_letterPart_iff_letterProj.1 h_letter] using congrArg (L.letterProj i) h_sum.symm
+    simpa [mem_letterPart_iff_letterProj.1 h_letter] using congrArg (L.letterProj i) h_sum.symm
   have h_expand : ∀ a : Fin m, ∃ w : ℕ → WittFq k.f, ∀ N : ℕ, ∃ t : k.S,
       r a = ∑ n ∈ range N, k.E ^ n * (w n : k.S) + k.E ^ N * t :=
     fun a ↦ exists_expansion_pow_E hk (r a)

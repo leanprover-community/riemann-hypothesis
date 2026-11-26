@@ -228,15 +228,14 @@ lemma pairingBoundConst_le_mul [S.IsAdmissible] :
         (Nat.cast_pos.2 S.N_prime.pos)) _
     have h_box : S.frameBoxRadius ^ (9 * 𝔰.n) / s ^ 2 ≤ S.b ^ (453 * 𝔰.n ^ 2) := by
       grw [← h_lower, frameBoxRadius]
-      exact le_of_eq (by field_simp; ring)
+      exact le_of_eq (by field)
     grw [h_box, h_local]
     calc
       _ = 2 ^ k₀ * (S.b ^ (453 * 𝔰.n ^ 2)) ^ (10 ^ 5 * 𝔰.n ^ 4) * s ^ 2 *
           (card (S.besselSystem v).Index ^ 2 /
             ((S.besselSystem v).deg * 𝔰.openCellConst * (s ^ 𝔰.k) ^ 2)) := by
         rw [hk₀, Nat.add_sub_cancel, div_pow]
-        field_simp
-        ring
+        field
       _ ≤ 2 ^ 𝔰.k * (S.b ^ (453 * 𝔰.n ^ 2)) ^ (10 ^ 5 * 𝔰.n ^ 4) * (S.b ^ (46 * 𝔰.n ^ 2)) ^ 2 *
           (card (S.besselSystem v).Index ^ 2 /
             ((S.besselSystem v).deg * 𝔰.openCellConst * (s ^ 𝔰.k) ^ 2)) := by
@@ -244,8 +243,7 @@ lemma pairingBoundConst_le_mul [S.IsAdmissible] :
         exacts [one_le_two, k₀.le_succ.trans_eq hk₀.symm]
       _ = _ := by
         simp only [e, pow_add, ← pow_mul]
-        field_simp
-        ring
+        field
   have h_exponent : e * numInfPlaces E ≤ 10 ^ 5 * 𝔰.n ^ 9 * numInfPlaces E := by
     have h_large : 1000 ≤ 𝔰.n := by linarith [S.ten_pow_five_le_varrho]
     have h_two : 𝔰.n ^ 2 ≤ 𝔰.n ^ 6 := Nat.pow_le_pow_right 𝔰.ϱ.succ_pos (by norm_num)
@@ -319,12 +317,12 @@ lemma two_pow_mul_pairCountScale_mul_le [S.IsAdmissible] :
     grw [siegelConst, ← h_power, ← h_volume, h_factorial, ← h_root_discr,
       ← one_le_pow₀ (one_le_two.trans two_le_pi), ← hf_eq]
     simp only [div_pow, inv_pow]
-    exact le_of_eq (by field_simp; ring)
+    exact le_of_eq (by field)
   have h_order : (S.M : ℝ) ^ (2 * 𝔰.ϱ * f * 𝔰.k) ≤ S.unipotentOrder := by
     simpa [unipotentOrder] using pow_le_pow_right₀ hM (by lia : 2 * 𝔰.ϱ * f * 𝔰.k ≤ _)
   grw [scaledSiegelConst, mul_assoc _ S.siegelConst, ← h_siegel, ← h_order, ← h_tail, h_two,
     pairCountScale]
-  exact le_of_eq (by field_simp; ring)
+  exact le_of_eq (by field)
 
 /-- For admissible data, `pairingBoundConst` is at most `(ν τ² / 2)²
 mainSecondMoment / (pairCountScale M ^ (2 ϱ f k))`. Here `ν` is `unipotentCovolume`, `τ` is
@@ -355,11 +353,11 @@ lemma pairingBoundConst_le [S.IsAdmissible] :
       exact le_of_eq (by ring)
     _ ≤ 2 * S.tailScale ^ 2 * S.unipotentCovolume ^ 2 * S.mainSecondMoment := by
       grw [two_pow_mul_pairCountScale_mul_le, IsAdmissible.scaledSiegelConst_le, h_small]
-      exact le_of_eq (by field_simp; ring)
+      exact le_of_eq (by field)
     _ ≤ _ := by
       have h_eight : 8 ≤ S.tailScale ^ 2 := by
         grw [← pow_le_tailScale (S := S) (e := 1) NeZero.one_le, pow_one]
-        nlinarith [S.thousand_le_b]
+        nlinarith only [S.thousand_le_b]
       rw [div_pow, mul_pow, pow_right_comm]
       gcongr
       nlinarith [mul_le_mul_of_nonneg_left h_eight

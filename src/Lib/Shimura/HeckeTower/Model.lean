@@ -455,10 +455,11 @@ lemma invHeckeIsogeny_mem_GUPlus (w : SplitFinPlace E)
     simp +decide +contextual [mem_Ô, ← and_forall_ne w.1]
   have hq_int : (uniformizerNorm w).val ∈ Ô (QuadField d₀) := adeleNorm_mem_Ô h_loc_mem
   have hq_lt : v (finAdeleIncl (QuadField d₀) E (uniformizerNorm w).val w) < 1 := by
-    -- `erw`: `norm_localNorm` meets `uniformizerNorm w` at the place below `w` only by unfolding
-    -- `uniformizerNorm` and the local idele.
-    erw [(isEquiv_comap_locMap _ rfl).lt_one_iff_lt_one, ← toNormedField.norm_lt_one_iff,
-      norm_localNorm]
+    -- `norm_localNorm` meets `uniformizerNorm w` at the place below `w` only by unfolding
+    -- `uniformizerNorm` and the local idele, so these steps are used as equations.
+    refine (isEquiv_comap_locMap _ rfl).lt_one_iff_lt_one.mpr ?_
+    rw [← toNormedField.norm_lt_one_iff]
+    refine (norm_localNorm ..).trans_lt ?_
     simp +decide
   -- `D⁻¹ = (det D)⁻¹ • adjugate D`, and `q ^ dim U` absorbs `det D`, of order `dim U` at `w`.
   have h_inv (i j : n) :

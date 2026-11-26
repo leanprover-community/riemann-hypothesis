@@ -143,7 +143,6 @@ lemma enorm_classGaussSum_sq_le (hJ : IsUnimodular P.integers J)
   have M_open : IsOpen (M : Set (κ → A)) := isOpen_latticeMultiple g
   have M_compact : IsCompact (M : Set (κ → A)) := isCompact_latticeMultiple g
   let F (y : κ → A) : ℂ := P.ψ (P.element * b * (star (x₀ + y) ⬝ᵥ J *ᵥ (x₀ + y) - α))
-  have hψ_cont : Continuous P.ψ := P.continuous_psi
   have F_cont : Continuous F := by fun_prop
   let corr (d : κ → A) : ℂ := ∫ y in M, conj (F y) * F (y + d)
   have h_char (d y y' : κ → A) : P.ψ (b * (star (y + y') ⬝ᵥ J *ᵥ d)) =
@@ -192,7 +191,6 @@ has a finite integral. -/
 lemma integrable_classGaussSum {g : Aˣ} {x₀ : κ → A} {α : A}
     (h_lt : ∫⁻ b : skewAdjoint A, ‖classGaussSum J g x₀ α b‖ₑ ∂P.skewMeasure < ∞) :
     Integrable (fun b : skewAdjoint A ↦ classGaussSum J g x₀ α b) P.skewMeasure := by
-  have hψ_cont : Continuous P.ψ := P.continuous_psi
   have h_cont : Continuous (uncurry fun (b : skewAdjoint A) (y : κ → A) ↦
       P.ψ (P.element * b * (star (x₀ + y) ⬝ᵥ J *ᵥ (x₀ + y) - α))) := by
     fun_prop

@@ -556,8 +556,9 @@ lemma New.Variety.eq_zero_of_nsmul_eq_zero_of_comp_eq_zero {R K : Type} {g : ℕ
   have h_le_ker : I ≤ RingHom.ker (preimage s).hom := by
     simpa [hI, eq_zero_iff_factors_zero_section] using h_vanish
   -- Nakayama's lemma: a finitely generated ideal inside the Jacobson radical with `I ≤ I • I`.
-  have h_bot : I = ⊥ := I.eq_bot_of_le_smul_of_le_jacobson_bot I h_fg h_le_sq
-    (h_le_ker.trans ((le_maximalIdeal (RingHom.ker_ne_top _)).trans (maximalIdeal_le_jacobson _)))
+  have h_bot : I = ⊥ := I.eq_bot_of_le_smul_of_le_jacobson I h_fg h_le_sq
+    (h_le_ker.trans ((le_maximalIdeal (RingHom.ker_ne_top _)).trans
+      (IsLocalRing.ringJacobson_eq_maximalIdeal _).ge))
   simpa [eq_zero_iff_factors_zero_section, h_bot] using hI (.id R)
 
 end TorsionUnramified

@@ -860,7 +860,6 @@ theorem IsFillingData.cosetAmplitude_eq_kloostermanSum_smul [hF : S.IsFillingDat
         besselOrbitalIntegral volume
           (fun y : InfinitePlace E → 𝔰.G₁ ↦ WithLp.toLp 2 (S.besselFn side y))
           (S.ratToInf (weylElem 𝔰.ϱ p * σ)) := by
-  classical
   set γ : S.G E := weylElem 𝔰.ϱ p * σ
   obtain ⟨r, r_inj, hr, r_off, r_level, r_rep⟩ :=
     hF.exists_injective_mem_besselU_and_isIntegralOff c

@@ -99,7 +99,7 @@ lemma exists_sq_rpow_mul_one_add_log_sq_le {z : ℝ} (hz : 0 < z) :
       gcongr
       exacts [log_nonneg h_ge, log_le_self hy.le]
   calc (y ^ 2) ^ z * (1 + Real.log y ^ 2) ≤ z⁻¹ ^ 2 * 1 + (1 + y) ^ k * (1 + y ^ 2) := by
-        linarith [h_pow, h_log]
+        linarith only [h_pow, h_log]
     _ ≤ z⁻¹ ^ 2 * (1 + y) ^ (k + 2) + (1 + y) ^ k * (1 + y) ^ 2 := by
         gcongr
         exacts [one_le_pow₀ h_one, by nlinarith]

@@ -271,7 +271,6 @@ lemma sublatticeDiscriminant_mul_index_sq_le (hLH : L * H = 1) (V : Submodule E 
         genIndex (finAdeleMatrix (xᴴ * x)).det * genIndex w.val.det ^ 2 ∧
       0 < sublatticeDiscriminant hLH V ∧
       1 ≤ sublatticeIndex hLH V Y K := by
-  classical
   -- Write `x w = m A` with `m` the chosen basis. The right side is `δ² [det A]²`, and `[det A]` is
   -- the index of the column lattice of `A` in `Ô ^ s`. It bounds `i`, since `Y H m` maps that
   -- lattice into `K` and `Ô ^ s` onto the span of the columns of `Y H m`.

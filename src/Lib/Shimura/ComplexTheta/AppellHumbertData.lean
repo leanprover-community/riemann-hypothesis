@@ -202,7 +202,7 @@ lemma thetaShift_zero : B.thetaShift 0 f = f := by
 
 @[simp]
 lemma thetaShift_mul : (B + B').thetaShift u (f * g) = B.thetaShift u f * B'.thetaShift u g := by
-  simp [funext_iff, thetaShift_apply, add_div, add_right_comm, exp_add, exp_neg, fieldEq]
+  simp [funext_iff, thetaShift_apply, add_div, exp_add, exp_neg, fieldEq]
 
 @[simp]
 lemma thetaShift_pow : (n • B).thetaShift u (f ^ n) = B.thetaShift u f ^ n := by

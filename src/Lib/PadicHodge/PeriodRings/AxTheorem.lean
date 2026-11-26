@@ -5,6 +5,8 @@ public import Lib.General.Algebra.AbsIntegrallyClosed
 public import Lib.General.Algebra.AdicCompletion
 public import TauCeti.NumberTheory.Padics.Complex.FixedPoints
 
+import TauCeti.RingTheory.RootsOfUnity.Ultrametric
+
 /-!
 # Tilting, Fontaine's θ, the ring O_C and Ax's theorem on Galois invariants in ℂ_p
 
@@ -311,18 +313,8 @@ lemma norm_pow_sub_one_le_norm_sub_one (hζ_norm : ‖ζ‖ ≤ 1) (a : ℕ) : �
 /-- If `ζ` is a primitive `p ^ (m + 1)`-th root of unity in an ultrametric normed field `F`, then
 `‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖p‖`, where `φ (p ^ (m + 1)) = p ^ m (p - 1)`. -/
 lemma norm_zeta_sub_one_pow {m : ℕ} (hζ : IsPrimitiveRoot ζ (p ^ (m + 1))) :
-    ‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖(p : F)‖ := by
-  -- `p` is the value at `1` of the cyclotomic polynomial, the product of the `1 - ξ` over the
-  -- primitive roots `ξ`. Two primitive roots are powers of each other, so `‖1 - ξ‖ = ‖ζ - 1‖`.
-  have norm_le {ξ η : F} (hξ : IsPrimitiveRoot ξ (p ^ (m + 1)))
-      (hη : IsPrimitiveRoot η (p ^ (m + 1))) : ‖η - 1‖ ≤ ‖ξ - 1‖ := by
-    obtain ⟨a, -, rfl⟩ := hξ.eq_pow_of_pow_eq_one hη.pow_eq_one
-    exact norm_pow_sub_one_le_norm_sub_one (hξ.isOfFinOrder NeZero.out).norm_eq_one.le a
-  have norm_eq (ξ : F) (hξ : ξ ∈ primitiveRoots (p ^ (m + 1)) F) : ‖1 - ξ‖ = ‖ζ - 1‖ := by
-    rw [mem_primitiveRoots (NeZero.pos _)] at hξ
-    rw [norm_sub_rev, (norm_le hζ hξ).antisymm (norm_le hξ hζ)]
-  simp [← eval_one_cyclotomic_prime_pow m, cyclotomic_eq_prod_X_sub_primitiveRoots hζ, eval_prod,
-    prod_eq_pow_card norm_eq, hζ.card_primitiveRoots]
+    ‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖(p : F)‖ :=
+  hζ.norm'_sub_one_pow_totient_prime_pow
 
 /-- Let K be algebraically closed, L a normed field over K, f in K[X] with leading coefficient
 a, x in L, r ≥ 0. If ‖x − w‖ ≥ r for every root w of f, then ‖f(x)‖ ≥ ‖a‖ r^(deg f). -/

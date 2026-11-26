@@ -793,8 +793,7 @@ lemma mixedCartan_mulVec_cartanProduct {Φ n N m : Type} [Fintype Φ] [Decidable
     rfl
   suffices h_bilin :
       (cartanProduct ε 1).compr₂ ((mixedCartan n kp km).matrix.map (↑)).mulVecLin = T by
-    rw [← h_T]
-    exact LinearMap.congr_fun₂ h_bilin y η
+    exact (LinearMap.congr_fun₂ h_bilin y η).trans (h_T y η)
   refine ext_schur_weylEval (rowEquivFin fun _ : Φ ↦ N) fun u ↦
     ext_schur_weylEval (rowEquivFin fun _ : Φ ↦ m) fun w ↦ ?_
   set y : WeylIndexFamily (fun _ : Φ ↦ N) kp → K := schur kp (fun τ : Φ ↦ (u τ).val) *ᵥ

@@ -340,11 +340,12 @@ noncomputable def baseChangePairing : A ⊗[ℤ_[p]] T →ₗ[A] A ⊗[ℤ_[p]] 
 
 /-- Let `ψ : A → A'` be `ℤ_p`-linear and multiplicative (`hψ_mul`), and let the endomorphisms `f`,
 `f'`, `f''` of `T`, `T'`, `T''` be compatible with `b`: `b (f t) (f' t') = f'' (b t t')`. Then the
-extended pairings satisfy the same identity for the maps `ψ ⊗ f`, `ψ ⊗ f'` and `ψ ⊗ f''`. -/
-lemma baseChangePairing_map_of_map_mul {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ[ℤ_[p]] T}
-    {f' : T' →ₗ[ℤ_[p]] T'} {f'' : T'' →ₗ[ℤ_[p]] T''}
-    (h_equiv : ∀ (t : T) (t' : T'), b (f t) (f' t') = f'' (b t t'))
-    (hψ_mul : ∀ a a' : A, ψ (a * a') = ψ a * ψ a') (x : A ⊗[ℤ_[p]] T) (y : A ⊗[ℤ_[p]] T') :
+extended pairings satisfy the same identity for the maps `ψ ⊗ f`, `ψ ⊗ f'` and `ψ ⊗ f''`. The
+multiplicativity `hψ_mul` comes last and is proved by `simp` when omitted. -/
+lemma baseChangePairing_map {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ[ℤ_[p]] T} {f' : T' →ₗ[ℤ_[p]] T'}
+    {f'' : T'' →ₗ[ℤ_[p]] T''} (h_equiv : ∀ (t : T) (t' : T'), b (f t) (f' t') = f'' (b t t'))
+    (x : A ⊗[ℤ_[p]] T) (y : A ⊗[ℤ_[p]] T')
+    (hψ_mul : ∀ a a' : A, ψ (a * a') = ψ a * ψ a' := by simp) :
     baseChangePairing b (map ψ f x) (map ψ f' y) = map ψ f'' (baseChangePairing b x y) := by
   -- Both sides are additive in `x` and in `y`; on pure tensors this is `h_equiv` and `hψ_mul`.
   induction x with
@@ -353,15 +354,6 @@ lemma baseChangePairing_map_of_map_mul {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ
     induction y with
     | add y₁ y₂ hy₁ hy₂ => simp only [map_add, hy₁, hy₂]
     | _ => simp [baseChangePairing, smul_tmul', h_equiv, hψ_mul]
-
-/-- `New.Lift.baseChangePairing_map_of_map_mul` in the form in which `simp` proves the
-multiplicativity `hψ_mul` of `ψ` by default. -/
-lemma baseChangePairing_map {ψ : A →ₗ[ℤ_[p]] A'} {f : T →ₗ[ℤ_[p]] T} {f' : T' →ₗ[ℤ_[p]] T'}
-    {f'' : T'' →ₗ[ℤ_[p]] T''} (h_equiv : ∀ (t : T) (t' : T'), b (f t) (f' t') = f'' (b t t'))
-    (x : A ⊗[ℤ_[p]] T) (y : A ⊗[ℤ_[p]] T')
-    (hψ_mul : ∀ a a' : A, ψ (a * a') = ψ a * ψ a' := by simp) :
-    baseChangePairing b (map ψ f x) (map ψ f' y) = map ψ f'' (baseChangePairing b x y) :=
-  baseChangePairing_map_of_map_mul b h_equiv hψ_mul x y
 
 end New.Lift
 
@@ -519,11 +511,6 @@ lemma exists_tate_twist_unit (c : ℤ)
   | add y z hy hz => simp only [smul_add, map_add, hy, hz]
   | _ => simp [hσ, mul_zpow, ← map_zpow, tensorAction, smul_tmul', mul_smul]
 
-/-- `tensorAction` for the pair `(1, g)` of `FrobGal` is `tensorAction` for `g`: `φ ^ 0` is the
-identity. -/
-private lemma tensorAction_mk_one (g : Gp p) (f : End R T) :
-    tensorAction Bmax ((1, g) : FrobGal) f = tensorAction Bmax g f := rfl
-
 /-- Let `ρ` be a representation of `Γ` on `T`, where `Γ` maps to Gal(ℚ̄_p/ℚ_p) by `j`. Say `ρ` is
 admissible along a filter `F` on `Γ` if the elements of `Bmax ⊗ T` fixed by `j(g) ⊗ ρ(g)` for
 `F`-almost all `g` span `Bmax ⊗ T` over `Bmax`. If `ρ` is admissible along `F`, then so is every
@@ -541,7 +528,7 @@ lemma IsAdmissible.tate_twist (h_adm : IsAdmissible ρ F) (c : ℤ)
   have h_twist_zero (g : Γ) (y : Bmax ⊗[ℤ_[p]] T) :
       tensorAction Bmax (toGp g) (σ g) ((t : Bmax) • y) =
         (t : Bmax) • tensorAction Bmax (toGp g) (ρ g) y := by
-    simpa [tensorAction_mk_one] using h_twist 0 g y
+    simpa using! h_twist 0 g y
   have h_fix : ∀ y ∈ fixedPeriods ρ Bmax F, (t : Bmax) • y ∈ fixedPeriods σ Bmax F := by
     intro y hy
     filter_upwards [hy] with g hg

@@ -256,7 +256,7 @@ lemma FiniteKilledFixedInj.diagonalPermModule [IsTopologicalGroup G] {l : ℕ} [
   · simpa [(eq_one_iff g).2 hg] using h_triv g hg (f y)
   · -- A function fixed by `z` is fixed by `z ^ l ^ j`, which acts trivially on `Y`.
     have hf_fixed : B.ρ z f = f := by simpa [B, sub_eq_zero] using hf
-    have h_fixed : B.ρ (z ^ l ^ j) f = f := by simp [Module.End.pow_apply, iterate_fixed hf_fixed]
+    have h_fixed : B.ρ (z ^ l ^ j) f = f := by simp [pow_apply_eq_iterate, iterate_fixed hf_fixed]
     have h_value : (A.ρ z ^ l ^ j) (f y) = f y := by
       simpa [B, (eq_one_iff _).2 hz_mem, compHom_smul_def] using congrFun h_fixed y
     -- As `l` kills `A`, `z ^ l ^ j - 1` acts as `(z - 1) ^ l ^ j`, which is injective.

@@ -875,29 +875,18 @@ lemma FrobeniusCycle.index_mul_relIndex_le (T : FrobeniusCycle N W K) (r : ℕ) 
         (parahoric W Fin.val).relIndex (levi W (twoBlock k r)) : ℝ) ≤
       ∏ l : Fin k, (((T.P : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.P ^ N - 1) := by
   have : Finite (IsLocalRing.ResidueField W) := T.finite_residueField
-  have h_iff {τ : Fin k → ℕ} {g : GL (Fin k) W} :
-      g ∈ parahoric W τ ↔ ∀ ⦃i j : Fin k⦄, τ i < τ j → ¬IsUnit (g i j) := by
-    simp [parahoric, parabolic, BlockTriangular]
   -- The entries of the Levi subgroup between the blocks vanish, and
   -- `twoBlock k r i < twoBlock k r j` implies `i < j`.
-  have h_levi : levi W (twoBlock k r) ≤ parahoric W (twoBlock k r) :=
-    fun g hg ↦ h_iff.2 fun i j h_lt ↦ by simp [show g i j = 0 from hg i j h_lt.ne]
-  have h_iwahori_le : parahoric W Fin.val ≤ parahoric W (twoBlock k r) := fun g hg ↦
-    h_iff.2 fun i j h_lt ↦ h_iff.1 hg (by grind [twoBlock] : i.val < j.val)
-  calc ((parahoric W (twoBlock k r)).index *
-          (parahoric W Fin.val).relIndex (levi W (twoBlock k r)) : ℝ)
-      ≤ (parahoric W (twoBlock k r)).index *
-          (parahoric W Fin.val).relIndex (parahoric W (twoBlock k r)) := by
-        gcongr
-        exact relIndex_le_of_le_right h_levi index_ne_zero_of_finite
-    _ = (parahoric (k := k) W Fin.val).index := by
-        rw [mul_comm, ← cast_mul, relIndex_mul_index h_iwahori_le]
-    _ ≤ (parabolic (R := IsLocalRing.ResidueField W)
-          (OrderDual.toDual ∘ (Fin.val : Fin k → ℕ))).index := by
-        grw [parahoric, index_comap, relIndex_le_of_le_right le_top index_ne_zero_of_finite,
-          relIndex_top_right]
-    _ ≤ ∏ l : Fin k, (((T.P : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.P ^ N - 1) := by
-        grw [index_borel_le, T.card_residueField, cast_pow]
+  have h_levi : levi W (twoBlock k r) ≤ parahoric W (twoBlock k r) := fun g hg ↦ by
+    simp [parahoric, parabolic, BlockTriangular]
+    exact fun i j h ↦ by simp [hg i j h.ne]
+  have h_iwahori_le : parahoric W Fin.val ≤ parahoric W (twoBlock k r) := fun g hg ↦ by
+    simp [parahoric, parabolic, BlockTriangular] at hg ⊢
+    exact fun i j h ↦ hg (by grind [twoBlock])
+  grw [relIndex_le_of_le_right h_levi index_ne_zero_of_finite, mul_comm, ← cast_mul,
+    relIndex_mul_index h_iwahori_le, parahoric, index_comap,
+    relIndex_le_of_le_right le_top index_ne_zero_of_finite, relIndex_top_right,
+    index_borel_le, T.card_residueField, cast_pow]
 
 /-- The image of `ν` under `New.permStep` with trivial permutations, that is, the vector
 `± (P ν (b, s + 1) - ν (b, s))` with the sign `+` at even letters, has defect at most `0` along all

@@ -105,7 +105,7 @@ noncomputable def formGram (G : Matrix I I ℂ) (v : S → I → ℂ) : Matrix S
   of fun i k ↦ star (v i) ⬝ᵥ G *ᵥ v k
 
 /-- The matrix `formGram G v` of a positive semidefinite form is positive semidefinite. -/
-lemma posSemidef_formGram [Fintype S] (hG : G.PosSemidef) (v : S → I → ℂ) :
+lemma posSemidef_formGram (hG : G.PosSemidef) (v : S → I → ℂ) :
     (formGram G v).PosSemidef := by
   have h_eq : formGram G v = (of v)ᵀᴴ * G * (of v)ᵀ := by
     rw [Matrix.mul_assoc]

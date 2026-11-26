@@ -115,7 +115,7 @@ def splitLast (j : ℕ) : Fin j ⊕ Unit ≃ Fin (j + 1) :=
 /-- The matrix `joinCol (splitLast j) p`, made of the `j` columns of `p.1` followed by the vector
 `p.2`, agrees with `p.1` in each column before the last. -/
 @[simp]
-theorem joinCol_castSucc {l : Type} [Fintype l] [DecidableEq l] {j : ℕ}
+theorem joinCol_castSucc {l : Type} {j : ℕ}
     (p : Matrix l (Fin j) ℂ × (l → ℂ)) (i : l) (b : Fin j) :
     joinCol (splitLast j) p i b.castSucc = p.1 i b := by
   simpa [splitLast] using joinCol_inl (splitLast j) p i b
@@ -123,7 +123,7 @@ theorem joinCol_castSucc {l : Type} [Fintype l] [DecidableEq l] {j : ℕ}
 /-- The matrix `joinCol (splitLast j) p`, made of the `j` columns of `p.1` followed by the vector
 `p.2`, has the last column `p.2`. -/
 @[simp]
-theorem joinCol_last {l : Type} [Fintype l] [DecidableEq l] {j : ℕ}
+theorem joinCol_last {l : Type} {j : ℕ}
     (p : Matrix l (Fin j) ℂ × (l → ℂ)) (i : l) : joinCol (splitLast j) p i (last j) = p.2 i := by
   simpa [splitLast] using joinCol_inr (splitLast j) p i
 

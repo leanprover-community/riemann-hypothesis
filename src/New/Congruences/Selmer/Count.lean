@@ -444,33 +444,20 @@ lemma sum_length_localCocycles_placeOver_le (ha : a ≠ 0) :
     ∑ v ∈ T.places, length O (localCocycles T.ρ T.localRelations (placeOver v) (QuotSpan a)) ≤
       (#T.places + Core.numInfPlaces E) • length O (n → QuotSpan a) + T.placesTerm := by
   classical
-  let lenQuot : ℕ∞ := length O (n → QuotSpan a)
-  let lenLocal (v : FinPlace E) : ℕ∞ :=
-    length O (localCocycles T.ρ T.localRelations (placeOver v) (QuotSpan a))
-  let Sℓ : Finset (FinPlace E) := {v ∈ T.places | v ∈ placesDividing E ℓ}
-  let SPrimeToℓ : Finset (FinPlace E) := {v ∈ T.places | v ∉ placesDividing E ℓ}
-  have h_above : ∑ v ∈ Sℓ, lenLocal v ≤ (#Sℓ + Core.numInfPlaces E) • lenQuot := by
-    have hSℓ (v : FinPlace E) : v ∈ Sℓ ↔ v ∈ placesDividing E ℓ :=
+  rw [← sum_filter_add_sum_filter_not T.places (· ∈ placesDividing E ℓ),
+    ← card_filter_add_card_filter_not (s := T.places) (· ∈ placesDividing E ℓ),
+    add_right_comm _ _ (Core.numInfPlaces E), add_nsmul, add_assoc]
+  refine add_le_add ?_ ?_
+  · have hSℓ (v : FinPlace E) :
+        v ∈ {v ∈ T.places | v ∈ placesDividing E ℓ} ↔ v ∈ placesDividing E ℓ :=
       mem_filter.trans (and_iff_right_of_imp fun hv ↦ T.placesDividing_subset hv)
-    rw [sum_subtype Sℓ hSℓ lenLocal, ← Fintype.card_of_subtype Sℓ hSℓ]
+    rw [sum_subtype _ hSℓ, ← Fintype.card_of_subtype _ hSℓ]
     exact T.sum_length_localCocycles_placesDividing_le a
-  -- At a place prime to `ℓ` all classes are allowed, and the local term bounds their excess.
-  have h_other : ∑ v ∈ SPrimeToℓ, lenLocal v ≤ #SPrimeToℓ • lenQuot + T.placesTerm := by
+  · -- At a place prime to `ℓ` all classes are allowed, and the local term bounds their excess.
     rw [← sum_const, placesTerm, placeTerms, ← sum_add_distrib]
-    refine sum_le_sum fun v _ ↦ ?_
-    have h_drop : lenLocal v ≤ length O (localCocycles T.ρ ∅ (placeOver v) (QuotSpan a)) :=
-      length_mono (Submodule.map_mono fun _ hc ↦
-        mem_selmerModule_of_subset hc (Set.empty_subset _) .rfl)
-    refine h_drop.trans (tsub_le_iff_left.1 ?_)
-    exact le_iSup₂_of_le a ha le_rfl
-  calc ∑ v ∈ T.places, lenLocal v = ∑ v ∈ Sℓ, lenLocal v + ∑ v ∈ SPrimeToℓ, lenLocal v :=
-        (sum_filter_add_sum_filter_not T.places _ lenLocal).symm
-    _ ≤ (#Sℓ + Core.numInfPlaces E) • lenQuot + (#SPrimeToℓ • lenQuot + T.placesTerm) :=
-        add_le_add h_above h_other
-    _ = (#T.places + Core.numInfPlaces E) • lenQuot + T.placesTerm := by
-        rw [← card_filter_add_card_filter_not (s := T.places) (· ∈ placesDividing E ℓ)]
-        simp only [add_nsmul, Sℓ, SPrimeToℓ]
-        abel
+    refine sum_le_sum fun v _ ↦ (length_mono (Submodule.map_mono fun _ hc ↦
+      mem_selmerModule_of_subset hc (Set.empty_subset _) .rfl)).trans
+        (tsub_le_iff_left.1 (le_iSup₂_of_le a ha le_rfl))
 
 open scoped Classical in
 /-- Let `J` be a set of tied primes with first prime `P₀` and let `a ∣ ℓ ^ M`. Put `S' = S ∪ I ∪ Ī`

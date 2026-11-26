@@ -502,7 +502,7 @@ lemma compactMean_diagGL_compactMean_diagGL (ht : t ∈ dominantTorus) (ht' : t'
       compactMean ρ.ρ proIwahori (ρ (diagGL (t * t')) x) := by
   -- The inner mean drops out: each k in `proIwahori` is u · (u⁻¹ k), where t conjugates u into
   -- `proIwahori` and u⁻¹ k fixes ρ(t') x, since t'⁻¹ u⁻¹ k t' lies in `proIwahori`.
-  rw [map_mul, map_mul, Module.End.mul_apply]
+  rw [map_mul, map_mul, mul_apply_eq_comp]
   refine map_compactMean_of_factor (fun _ ↦ compactMean_apply) fun k hk ↦ ?_
   obtain ⟨u, hu, h_conj⟩ : ∃ u ∈ unitriangular id F ⊓ proIwahori,
       (diagGL t')⁻¹ * (u⁻¹ * k) * diagGL t' ∈ proIwahori :=

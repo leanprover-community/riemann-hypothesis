@@ -104,7 +104,7 @@ lemma tsum_integral_apply {X J I : Type*} [MeasurableSpace X] {μ : Measure X} [
     (hg_fin : ∑' j : J, ∫⁻ x : X, ‖g j x‖ₑ ∂μ < ∞) (i : I) :
     (∑' j : J, ∫ x : X, g j x ∂μ) i = ∫ x : X, ∑' j : J, g j x i ∂μ := by
   -- Take the `i`-th coordinate through the sum and the integral, then exchange the two.
-  have h_integrable (j) : Integrable (g j) μ := ⟨by fun_prop, (ENNReal.le_tsum j).trans_lt hg_fin⟩
+  have h_integrable (j) : Integrable (g j) μ := ⟨by fun_prop, (le_tsum _ j).trans_lt hg_fin⟩
   have h_coord_fin : ∑' j, ∫⁻ x, ‖g j x i‖ₑ ∂μ < ∞ := by grw [PiLp.eNorm_apply_le, hg_fin]
   have h_summable : Summable fun j ↦ ∫ x, g j x ∂μ :=
     .of_eNorm (ne_of_lt (by grw [eNorm_integral_le_lintegral_eNorm, hg_fin]))
@@ -271,7 +271,7 @@ lemma tsum_classCutoff_mul_inv_pow_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
   calc
     _ = ∑' p, weight p *
         .ofReal ((S.scaledBesselLengthProd (z p))⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)) :=
-      (ENNReal.tsum_sigma' _).symm
+      (tsum_sigma' _).symm
     _ ≤ .ofReal (2 * (S.b ^ (6 * 𝔰.n ^ 2)) ^ (2 * 𝔰.n * 𝔰.r * numInfPlaces E)) :=
       tsum_mul_inv_pow_le_of_layers (fun p ↦ one_le_scaledBesselLengthProd (z p)) (by positivity)
         h_count h_exp
@@ -425,7 +425,7 @@ lemma cut_exponent_le {n r k f : ℕ} (hk : 12 * n ^ 3 + 500 ≤ k) (hr : k + 1 
   have h_small : 402 * r ^ 2 ≤ r ^ 3 := by grw [pow_succ' r 2, show 402 ≤ r by lia]
   have h_cube : k ^ 3 ≤ r ^ 3 := Nat.pow_le_pow_left (by lia) 3
   calc
-    _ ≤ (12 * n ^ 3 * r + 400 * r ^ 2 + (2 * k + 1) + k ^ 3) * f := by nlinarith
+    _ ≤ (12 * n ^ 3 * r + 400 * r ^ 2 + (2 * k + 1) + k ^ 3) * f := by linarith
     _ ≤ 2 * r ^ 3 * f := Nat.mul_le_mul_right f (by lia)
     _ = _ := mul_assoc ..
 
@@ -636,7 +636,7 @@ lemma summable_amplitude (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c'
     Summable fun γ : ↥(T ∩ S.termsOver c s c') ↦ S.amplitude side c c' γ := by
   refine .of_eNorm (ne_of_lt ?_)
   grw [enorm_amplitude_le]
-  exact (ENNReal.le_tsum c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)
+  exact (le_tsum _ c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)
 
 variable {T : Set (S.G E)}
 
@@ -766,7 +766,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
   have β₀_cutoff : IsCutoff (count : Measure Δ) β₀ := by
     refine ⟨by fun_prop, fun p ↦ ?_⟩
     simp +zetaDelta [HSMul.hSMul, tsum_classCutoff_eq_one, mul_assoc, lintegral_count,
-      ENNReal.tsum_prod', ENNReal.tsum_mul_left, SMul.smul]
+      tsum_prod', ENNReal.tsum_mul_left, SMul.smul]
   have φ_cutoff : IsCutoff (count : Measure Δ) fun p : X × Y ↦ φ p.1 p.2 :=
     ⟨measurable_from_prod_countable_right fun γ ↦ hφ_meas γ,
       fun p ↦ (lintegral_count _).trans (h_sum p.1 p.1.2 p.2)⟩
@@ -780,7 +780,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
       Integrable (fun p ↦ (β p).toReal • kernel side p) ρ :=
     integrable_toReal_smul hβ.1 (kernel_meas side).aestronglyMeasurable
       ((lintegral_le hβ (kernel_meas side).eNorm (by simp [kernel_smul])).trans_lt
-        ((ENNReal.le_tsum c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)))
+        ((le_tsum _ c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)))
   -- Fubini: for every cutoff the integrals over `y` sum to that of the kernel over the quotient.
   have hasSum {β : X × Y → ℝ≥0∞} (hβ : IsCutoff (count : Measure Δ) β) :
       HasSum (fun γ : X ↦ ∫ y, (β (γ, y)).toReal • S.besselKernel side γ y)
@@ -800,7 +800,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
       ((lintegral_prod _ (φ_cutoff.1.mul diff_meas).aemeasurable).trans (lintegral_count _)).symm
     _ ≤ ∑' γ : X, ∫⁻ y, β₀ (γ, y) * ‖kernel side (γ, y) - kernel .cut (γ, y)‖ₑ :=
       lintegral_le φ_cutoff diff_meas (by simp [kernel_smul])
-    _ ≤ _ := (ENNReal.le_tsum c').trans (tsum_lintegral_enorm_besselKernel_sub_cut_le T c s)
+    _ ≤ _ := (le_tsum _ c').trans (tsum_lintegral_enorm_besselKernel_sub_cut_le T c s)
 
 /-- Moving a block. Let `S` be admissible and `T` stable. Let `σ` over `(c, t, c₁)` and `σ'` over
 `(c', t', c₁')` be rational elements (`(S.ratMiddle E).G` is the group `S.G E`) of the Bessel
@@ -829,7 +829,7 @@ lemma amplitudeSum_mul_mul_inv (hT : S.IsStable T) {c : S.Classes} {t : S.Residu
         φ (u.1 * γ * u.2⁻¹) (S.ratToInf u.1 * y) = 1 := by
     simp [φ, tsum_classCutoff_ratToInf_mul_eq_one hσ hσ_over,
       tsum_classCutoff_ratToInf_mul_eq_one hσ' hσ'_over,
-      mul_assoc, ENNReal.tsum_prod', ENNReal.tsum_mul_left]
+      mul_assoc, tsum_prod', ENNReal.tsum_mul_left]
   have φ_meas (γ : S.G E) : Measurable (φ γ) := by fun_prop
   obtain ⟨hasSum, integrable, -⟩ :=
     hasSum_amplitudeSum_of_cutoff (side := side) hT c₁ s c₁' φ (fun γ _ ↦ φ_sum γ) φ_meas

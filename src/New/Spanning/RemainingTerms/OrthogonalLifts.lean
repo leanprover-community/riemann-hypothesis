@@ -241,7 +241,6 @@ lemma IsOrthogonalLift.gram_add_border (hu : IsOrthogonalLift j γ v u) :
         (((lastPair γ)ᴴ * S.ratGram * u.toCols₂)ᴴ * ((lastPair γ)ᴴ * S.ratGram * u.toCols₂)) =
       vᴴ * S.linkMetric * v := by
   -- On vectors orthogonal to `A` and `γ A` the form factors through `linkMatrix γ`.
-  classical
   have h_orth : (isotropicFramePair γ)ᴴ * S.ratGram * u.toCols₂ = 0 :=
     congrArg toCols₂ hu.orthogonal
   have h_link : linkMatrix γ * u.toCols₂ = v := congrArg toCols₂ hu.linkMatrix_mul
@@ -333,8 +332,8 @@ entries lie in the ring `Ô E` of integral finite adeles. Suppose that the colum
 `𝔸f E`-span of those of `M`. Then the index of the `Ô E`-span `colLattice M` of the columns of `M`
 in the integral vectors of the span of `P` divides the index of the integral vectors in the module
 `preimageLattice M` of the `y` with `M y` integral. -/
-lemma submoduleIndex_colLattice_dvd_preimageLattice {μ : Type} [Fintype μ] [DecidableEq μ]
-    {α β : Type} [Fintype α] [DecidableEq α] [Fintype β]
+lemma submoduleIndex_colLattice_dvd_preimageLattice {μ : Type}
+    {α β : Type} [Fintype α] [Fintype β]
     {M : Matrix μ α (𝔸f E)} {P : Matrix μ β (𝔸f E)}
     (h_span : ∀ x : β, P.col x ∈ colSpan M) :
     submoduleIndex (colLattice (Ô E) M)
@@ -389,7 +388,6 @@ lemma torsionIndex_dvd_submoduleIndex
     (hι : ∀ x : σ, ι.col x ∈ colLattice (Ô E) (isotropicFramePair k)) :
     S.torsionIndex k ∣ submoduleIndex (colLattice (Ô E) (q * isotropicFramePair k))
       (intVectors (Ô E) μ ⊓ (colSpan (q * isotropicFramePair k)).restrictScalars (Ô E)) := by
-  classical
   obtain ⟨l, hl_int, hl⟩ := hq.exists_eq_add
   let P : Matrix μ (Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ) (𝔸f E) := q * isotropicFramePair k
   -- A vector in the span of the `e_a` and `k e_a` differs from the representative of its class by
@@ -439,7 +437,6 @@ lemma isotropicRowsIndex_mul_dvd_submoduleIndex
         (preimageLattice (Ô E) (q * listPair j k)) := by
   -- The chain `L₁ ⊆ L₂ ⊆ L₃ ⊆ L₄` adds in turn the classes of the `e_a`, those of the `k e_a`, and
   -- the integral vectors of their span. Each step has an index divisible by one of the factors.
-  classical
   set J : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (𝔸f E) := (S.latticeMiddle (𝔸f E)).splitGram
   let P : Matrix μ (Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ) (𝔸f E) := q * isotropicFramePair k
   let L₁ : Submodule (Ô E) (μ → 𝔸f E) := colLattice (Ô E) (q * listPair j k)

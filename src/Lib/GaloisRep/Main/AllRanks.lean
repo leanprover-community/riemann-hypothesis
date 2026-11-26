@@ -131,7 +131,7 @@ lemma New.AutChar.exists_pair_heckeCoeff_ne {E : Type} [Field E] [CMType E] [Wei
   choose μ hμ using h_exists
   refine ⟨μ, c, hμ, fun {i} v ↦ ?_, fun {w k j j'} hw h_val ↦ ?_⟩
   · simp only [c]
-    nlinarith [(-e v).self_le_toNat, torsionOrder_pos E]
+    nlinarith only [(-e v).self_le_toNat, torsionOrder_pos E]
   -- Comparing arguments in `h_val`, the quotient `μ 0 / μ 1` is trivial at `u = ϖ / star ϖ`.
   let u : unitary (𝔸 E) := divStar (locFullIdele w (uniformizer w))
   -- The value of the base change of `μ i` at `ϖ` is the value of `μ i` at `u`.

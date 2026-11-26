@@ -565,8 +565,9 @@ private lemma exists_isUnit_mul_frobenius_smul_eq [Free ℤ_[p] T] [Module.Finit
     exact ⟨n, 1 ⊗ₜ b * w, by rwa [h_pow, smul_mul_assoc] at hv⟩
   refine ⟨(1 - α) * x + 1, ?_, ?_⟩
   · -- `(1 - α) ^ e` lies in `(p)`, so `1 - α` lies in the Jacobson radical
-    refine mem_jacobson_bot.1 (isRadical_jacobson _ ⟨e, ?_⟩) x
-    apply ((map_algebraMap_iff ..).2 complete).le_jacobson_bot
+    refine Ring.mem_jacobson_iff.1 (Ideal.jacobson_bot.le (isRadical_jacobson _ ⟨e, ?_⟩)) x
+    apply Ideal.jacobson_bot.ge
+    apply ((map_algebraMap_iff ..).2 complete).le_jacobson
     simp [h_pow, Algebra.smul_def, mem_span_singleton, Ideal.map_span]
   · rw [smul_add, smul_mul', smul_sub, smul_one, α_fixed]
     linear_combination (1 - α) * hx

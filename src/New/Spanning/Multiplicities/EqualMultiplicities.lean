@@ -3,6 +3,7 @@ module
 public import Lib.Adelic.TraceFormula.CuspidalComparison
 public import Lib.Adelic.TraceFormula.CuspidalType
 public import New.Determinant.Norms.AdjointThetaLift
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Newton
 
 /-!
 # Equality of multiplicities
@@ -104,7 +105,7 @@ lemma exists_heckeAlgebra_inner_eq_inner_translate {γ : Gf D.E D.RowIndex}
       have h_mem : g⁻¹ * h * g ∈ K := by simpa [H, Subgroup.mem_subgroupOf] using hh
       have h_fix : ρ (g⁻¹ * h * g) y = y := by simpa using mem_levelSpace.1 hy ⟨g⁻¹ * h * g, h_mem⟩
       have h_mul : (k * h).val * g = k.val * g * (g⁻¹ * h * g) := by simp [mul_assoc]
-      rw [h_mul, map_mul, End.mul_apply, h_fix]
+      rw [h_mul, map_mul, mul_apply_eq_comp, h_fix]
     rw [h_act]
     simpa using sum_mul_out H (fun k : K ↦ ρ (k * g) y) h_inv
   -- The operator `p` acts as `a` on the forms of every space.
@@ -259,7 +260,7 @@ lemma trace_mul_tupleIdem_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasG
   have hf_acts {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s) (y : D.principalForms W) :
       ((T.val W * (D.principalRep W).asAlgebraHom (tupleIdem D.RowIndex c)) y).val =
         (W.formRep (typeKernel D.paramW s)).asAlgebraHom f y := by
-    rw [End.mul_apply, hT, coe_principalRep_asAlgebraHom_apply, map_mul, End.mul_apply]
+    rw [mul_apply_eq_comp, hT, coe_principalRep_asAlgebraHom_apply, map_mul, mul_apply_eq_comp]
   have h_rank : 2 ≤ Fintype.card D.RowIndex := D.nat_le_of_hasLogBound
   have h_gap : gapThreshold D.RowIndex (10 * Fintype.card D.RowIndex ^ 5) ≤ D.gap :=
     D.nat_le_of_hasLogBound
@@ -284,8 +285,10 @@ Hecke operator away from `M` has the same characteristic polynomial on the good 
 theorem charpoly_heckeOnGood_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasGap D.gap]
     [hs' : ∀ v : D.Φ, (toHCParam s' (D.paramW v)).HasGap D.gap] (T : D.heckeAlgebra) :
     (D.heckeOnGood V T).charpoly = (D.heckeOnGood V' T).charpoly := by
-  exact charpoly_eq_of_trace_pow_eq fun l ↦ by
+  refine LinearMap.charpoly_eq_of_trace_pow_eq (Nat.cast_injective (R := ℂ) ?_) fun l _ _ ↦ by
     rw [← map_pow, ← map_pow, D.trace_heckeOnGood_eq V V']
+  -- The dimensions agree, being the traces of the identity.
+  simpa using D.trace_heckeOnGood_eq V V' 1
 
 /-- Let the parameter `D.paramW` have gap `D.gap` for the signs of `V` and of `V'`. Then a spherical
 Hecke operator away from `M` has the same determinant on the good forms of `V` and of `V'`. -/

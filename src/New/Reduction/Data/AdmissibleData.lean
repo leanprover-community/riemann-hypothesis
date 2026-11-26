@@ -304,13 +304,12 @@ their logarithms lies in `[0, L]`. -/
 lemma sum_log_div_card_mem_Icc {ι : Type*} [Fintype ι] [Nonempty ι] {κ : ι → ℝ} {L : ℝ}
     (hκ : ∀ i : ι, κ i ∈ Icc 1 (exp L)) :
     (∑ i : ι, log (κ i)) / Fintype.card ι ∈ Icc 0 L := by
-  have h_card : (0 : ℝ) < Fintype.card ι := mod_cast Fintype.card_pos
   have h_log (i : ι) : log (κ i) ∈ Icc 0 L := by
     obtain ⟨h_lower, h_upper⟩ := hκ i
     exact ⟨log_nonneg h_lower, (log_le_iff_le_exp (by positivity)).2 h_upper⟩
-  refine ⟨div_nonneg (Finset.sum_nonneg fun i _ ↦ (h_log i).1) h_card.le, ?_⟩
-  rw [div_le_iff₀' h_card, ← nsmul_eq_mul]
-  exact Finset.sum_le_card_nsmul Finset.univ _ L fun i _ ↦ (h_log i).2
+  rw [← Fintype.expect_eq_sum_div_card]
+  exact ⟨Finset.expect_nonneg fun i _ ↦ (h_log i).1,
+    Finset.expect_le Finset.univ_nonempty fun i _ ↦ (h_log i).2⟩
 
 /-- If `b = exp L` with `L ≥ 7`, `M` lies in `[b ^ 20, b ^ 22]` and `R` lies in `[1, b]`, then
 `M R / 2π` lies in `[b ^ 19, b ^ 23]`; the bounds are stated for the logarithm. -/

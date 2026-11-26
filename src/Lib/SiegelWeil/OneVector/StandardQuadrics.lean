@@ -112,7 +112,7 @@ lemma IntegralPlace.exists_hyperbolic_basis (h : 2 ≤ card κ) :
       Cᴴ * C = !![1 + star c * c, star P.element - P.element * (star c * c);
           P.element - star P.element * (star c * c),
             P.element * star P.element + P.element * star P.element * (star c * c)] := by
-        simp [C, ← ext_iff, Matrix.mul_apply, sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
+        simp [C, ← ext_iff, Matrix.mul_apply, sub_eq_add_neg, mul_left_comm, mul_assoc]
       _ = !![0, 1; 1, 0] := by simp [hc, hτ, add_comm (star P.element)]
   -- The basis is `C` on the first two vectors and the identity on the rest.
   let D : Matrix (Fin 2 ⊕ Fin (card κ - 2)) (Fin 2 ⊕ Fin (card κ - 2)) A := fromBlocks C 0 0 1

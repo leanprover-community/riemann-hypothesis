@@ -843,7 +843,7 @@ open Finset Complex Nat New Orbital AddCircle HCParam Matrix
 /-- For an injective `l` with all signs `1`, the numbers `δ i = l.lowerCount Eq i` of the `j` with
 `l j < l i` run through `0, …, n - 1`, so their Vandermonde product, taken in the order of `l`, is
 `∏_{i < n} i !`. -/
-lemma New.HCParam.prod_prod_lowerCount_sub {n : Type} [Fintype n] [DecidableEq n]
+lemma New.HCParam.prod_prod_lowerCount_sub {n : Type} [Fintype n]
     {l : HCParam (1 : n → ℤˣ)} (hl : l.Injective) :
     ∏ i : n, ∏ j : n with l j < l i, ((l.lowerCount Eq i : ℂ) - l.lowerCount Eq j) =
       ∏ i ∈ range (Fintype.card n), (i ! : ℂ) := by

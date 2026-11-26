@@ -558,8 +558,7 @@ lemma intAction_rescaledBeta_mem_latticeOver (h_le : S ≤ D.dualTorsion) (hu : 
   have h_eq : x.intAction D.rescaledBeta u =
       x.intAction D.β (Nat.card D.dualTorsion • u) - (Nat.card D.dualTorsion / 2) • u := by
         simp [rescaledBeta]
-  rw [h_eq]
-  exact _root_.sub_mem (x.latticeOver_mono bot_le h_β) (nsmul_mem hu _)
+  simpa only [h_eq] using _root_.sub_mem (x.latticeOver_mono bot_le h_β) (nsmul_mem hu _)
 
 /-- e(β₁u, w) + e(u, β₁w) = e(u, w) for the Riemann form e of B, where β₁ is `D.rescaledBeta`. -/
 lemma riemannForm_intAction_rescaledBeta (u w : V) :

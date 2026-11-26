@@ -207,7 +207,7 @@ lemma exists_local_gauss_sum {χ : MulChar F ℂ} (hχ : TameLocalChar χ) {ψ :
         _ = ∫ _ : F in (O : Subring F), hχ.resChar⁻¹ u * Γ :=
           setIntegral_congr_fun isCompact_O.measurableSet fun x hx ↦ h_sum ⟨x, hx⟩
         _ = hχ.resChar⁻¹ u * Γ := by simp [Set.univ_inter, volume_O, Measure.real]
-    simpa [f, u, hη ⟨_, ht⟩, MulChar.inv_apply_eq_inv', field] using h_avg
+    simpa [u, hη ⟨_, ht⟩, MulChar.inv_apply_eq_inv', field] using h_avg
   · -- translating by `ϖ * s` multiplies the integral by `ψ (ϖ * t * s)`, which is not always `1`
     have h_zero : ∫ x in (O : Subring F), f x = 0 := by
       by_contra h_ne

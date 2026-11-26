@@ -609,7 +609,6 @@ lemma exists_forall_apply_mul_eq_pow_mul {C D : CMLattice d} {a u u' μ : ℂ} (
   refine ⟨N, fun {m f g} hf hfg hg ↦ ?_⟩
   -- Transport `f (a z)`; by uniqueness of Taylor series the result is `g (a z)`.
   obtain ⟨G, hG, hG_ser, hG_val⟩ := transport (D.comp_mul_mem_sections hN hf)
-  have hf_diff : Differentiable ℂ f := hf.1
   obtain rfl : G = fun z : ℂ ↦ g (a * z) := by
     refine eq_of_taylorAtZero_eq hG.1 (by fun_prop) ?_
     simp (disch := fun_prop) [hG_ser, hfg, taylorVia, ← rescale_map,

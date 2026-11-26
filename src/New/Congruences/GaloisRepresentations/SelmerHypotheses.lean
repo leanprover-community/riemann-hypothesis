@@ -459,8 +459,8 @@ structure IsMainSummandLike : Prop extends IsConjSelfDualOfLevel D t J ∅ R,
   /-- Some inertia element at a place above `p₀` or `p₁` and prime to `ℓ` acts by a scalar `y` such
   that `y ^ (ℓ ^ a * j) - 1` is a unit for all `a` and `1 ≤ j ≤ 4 * card n + 2`. -/
   exists_scalar_inertia :
-      ∃ᵉ (γ ∈ inertiaAbove (placesAboveM D \ placesDividing D.E ℓ)) (y : PadicAlgCl ℓ),
-        (R γ).val = y • 1 ∧ ∀ᵉ (a : ℕ) (j ∈ Icc 1 (4 * card n + 2)), ‖y ^ (ℓ ^ a * j) - 1‖ = 1
+      ∃ γ ∈ inertiaAbove (placesAboveM D \ placesDividing D.E ℓ), ∃ y : PadicAlgCl ℓ,
+        (R γ).val = y • 1 ∧ ∀ a : ℕ, ∀ j ∈ Icc 1 (4 * card n + 2), ‖y ^ (ℓ ^ a * j) - 1‖ = 1
 
 variable {D t J R}
 

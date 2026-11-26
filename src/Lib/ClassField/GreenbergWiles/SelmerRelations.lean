@@ -176,7 +176,7 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     _ = _ := by ring
 
 /-- A prime does not divide two coprime integers. -/
-lemma _root_.New.natCast_notMem_of_coprime {F : Type} [Field F] [NumberField F] {v : FinPlace F}
+lemma _root_.New.natCast_notMem_of_coprime {F : Type} [Field F] {v : FinPlace F}
     {p q : ℕ} (hqp : q.Coprime p) (hq : ↑q ∈ v.1) : ↑p ∉ v.1 := fun hp ↦ by
   obtain ⟨c, d, h_one⟩ : IsCoprime (q : 𝓞 F) p := hqp.cast
   refine (Ideal.ne_top_iff_one _).1 v.isPrime.ne_top ?_

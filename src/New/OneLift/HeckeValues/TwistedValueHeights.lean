@@ -936,11 +936,11 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
       rw [← mul_div_assoc, map_div₀, norm_div, div_le_iff₀' (h_pos ι), ← div_le_iff₀ (exp_pos _),
         div_eq_mul_inv, ← h_exp]
       exact h_both ι
-    · linarith [D.sum_localPrimeSumTotal_mul_log_le T hT]
+    · linarith only [D.sum_localPrimeSumTotal_mul_log_le T hT]
   refine ((((heightLe_norm_trivialLift_sq hp).mul h_proj).mul
     ((hθ.height_le j q₂ 1 h_ram).pow 2)).mul h_pair).mono ?_ fun ι ↦ ?_
   · rw [directionAmount, sum_sub_distrib, Nat.cast_ofNat]
-    linarith [(D.le_of_hasLogBound : D.x₁ ≤ D.denominatorBudget)]
+    linarith only [(D.le_of_hasLogBound : D.x₁ ≤ D.denominatorBudget)]
   -- `‖φ‖²` is the product of the two pairings over the pairing of the projections.
   have h_ne : inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι) ≠ 0 := fun h ↦ by simpa [h] using h_pos ι
   have h_norm : inner ℂ ((ℂ ∙ φ ι).starProjection (Ξ ι)) ((ℂ ∙ φ ι).starProjection (Ξ' ι)) =

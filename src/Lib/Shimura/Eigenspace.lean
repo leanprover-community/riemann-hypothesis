@@ -192,7 +192,7 @@ lemma exists_isEigenQuotient [Fintype ι] [∀ i, Module.Finite ℚ_[ℓ] (V i)]
   -- `R g` is the map that the universal property attaches to the family `F i ∘ ρ i g`.
   have h_eig_comp (g : Γ) (i : ι) (s : σ) (x : V i) :
       F i (ρ i g (T i s x)) = θ s • F i (ρ i g x) := by
-    rw [← h_eig, ← End.mul_apply (T i s), (h_comm i s g).eq, End.mul_apply]
+    rw [← h_eig, ← mul_apply_eq_comp (T i s), (h_comm i s g).eq, mul_apply_eq_comp]
   have h_act (g : Γ) : ∃ R : End (PadicAlgCl ℓ) (Fin _ → PadicAlgCl ℓ),
       ∀ (i : ι) (x : V i), R (F i x) = F i (ρ i g x) :=
     h_univ _ (fun i ↦ F i ∘ₗ ρ i g) (h_eig_comp g)
@@ -276,7 +276,7 @@ lemma IsEigenQuotient.isKilledBy {f : ℕ} {g : Γ} (hg : IsWeilPair (toGp g) f)
   simp only [h_tmul, LinearMap.zero_apply]
   rw [← map_zero (φ.baseChange Bmax), ← h_rel i (a ⊗ₜ x)]
   simp only [eval₂_finsetSum, C_mul_X_pow_eq_monomial, eval₂_monomial, LinearMap.sum_apply,
-    End.mul_apply, h_frob, h_coef, map_sum]
+    mul_apply_eq_comp, h_frob, h_coef, map_sum]
 
 /-- Let `r` with the maps `F i` be the largest quotient on which `T` acts by `θ` (`h`), the `ρ i`
 crystalline (`hρ`), `toGp` (from `[OverGp Γ ℓ]`) of open image, and the `T i s` commuting with each

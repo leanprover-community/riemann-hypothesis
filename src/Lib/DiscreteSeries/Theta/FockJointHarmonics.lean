@@ -324,7 +324,7 @@ the lowest `K`-type. Put `k = s * (Λ_a - v)`, where `v` is the weight of the va
 `k ≥ 0`, then `P` has degree `k` in the variables of sign `s` of row `a`, and it does not depend on
 the variables of sign `-s` of that row. -/
 theorem DiscreteSeries.polarisation_self_eq_smul_of_isCompactPrimitive [DecidableEq R]
-    [DecidableEq C] [Fintype ι] {P : MvPolynomial ι ℂ}
+    [DecidableEq C] {P : MvPolynomial ι ℂ}
     (hl : l.Injective) (h_prim : T.oscRows.IsCompactPrimitive l P)
     (h_harm : T.swap.IsLaplaceHarmonic P) {s : ℤˣ} {a : R}
     (h_wt : T.oscRows.E a a P = (l.lowestKType a : ℂ) • P) (h_nonneg : 0 ≤ s * T.relWeight l a) :
@@ -389,7 +389,7 @@ theorem FockDualPair.IsTermwiseHarmonic.isLaplaceHarmonic {Φ : MvPolynomial ι 
 the lowest `K`-type of `l` as weight for the row action and any weight `ν` for the column action.
 Then `Φ` is a pre-joint harmonic: nonzero, killed by the compact raising operators of the columns
 and by the Laplacians of both sides, and highest of weight `l.lowestKType` for the rows. -/
-lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableEq C] [Fintype ι]
+lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableEq C]
     {Φ : MvPolynomial ι ℂ} {ν : C → ℤ} (hΦ : T.IsJointHighest l l' Φ l.lowestKType ν) :
     T.IsPreJointHarmonic l l' Φ := by
   obtain ⟨-, raise_col⟩ := hΦ.isKHighest_cols
@@ -399,7 +399,7 @@ lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableE
 /-- A combination `P - c • Q` of pre-joint harmonics (nonzero polynomials killed by the Laplacians
 and the compact raising operators of both sides, of weight `l.lowestKType` for the rows) is again
 one, unless it is zero. -/
-theorem FockDualPair.IsPreJointHarmonic.sub_smul [DecidableEq R] [DecidableEq C] [Fintype ι]
+theorem FockDualPair.IsPreJointHarmonic.sub_smul [DecidableEq R] [DecidableEq C]
     {P Q : MvPolynomial ι ℂ} {c : ℂ}
     (hP : T.IsPreJointHarmonic l l' P) (hQ : T.IsPreJointHarmonic l l' Q) (h_ne : P ≠ c • Q) :
     T.IsPreJointHarmonic l l' (P - c • Q) := by
@@ -569,7 +569,7 @@ theorem IsMatch.isEigenDirection_of_swap_polarisation (hm : IsMatch T l l') {F :
   exact ⟨R, _, fun a ↦ T.varEquiv (a, d), fun a ↦ T.varEquiv (a, c), r, μ, by simp, rfl, only_r,
     field⟩
 
-variable [DecidableEq R] [DecidableEq C] [Fintype ι]
+variable [DecidableEq R] [DecidableEq C]
 
 /-- Let `l`, `l'` match. A pre-joint harmonic `F` (nonzero, killed by the Laplacians and the compact
 raising operators of both sides, of weight `l.lowestKType` for the rows) does not vanish at the

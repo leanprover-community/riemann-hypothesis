@@ -106,7 +106,7 @@ theorem card_le_b_of_subset_chosenPlacesAndConj {S : Filling E 𝔰} {T : Finset
 of `S` or the conjugate of one, and let `P.integers` be the ring of integers of the product
 `LocProd T` of the completions at `T`, with units `P.intUnits`. Then (a) `2 ≤ b ^ 9`, and (b) the
 integers that are not units have volume at most `(b ^ 9)⁻¹`. -/
-theorem volume_integers_diff_intUnits_le [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible]
+theorem volume_integers_diff_intUnits_le {S : Filling E 𝔰}
     {T : Finset (FinPlace E)} [fT : T.StarStable] [P : IntegralPlace (LocProd T)]
     (hT : T ⊆ S.chosenPlacesAndConj) :
     2 ≤ ENNReal.ofReal (S.b ^ 9) ∧
@@ -186,7 +186,7 @@ completions at `T`. The form `(S.latticeMiddle A).splitGram` over a ring `A` con
 hyperbolic planes and the Gram matrix `S.latticeMiddle A` of X₀ ⊕ Ez in the lattice basis. Taking
 components at `T` (`S.toPlaces T`) maps the integral elements `S.latticeStabilizer` of the finite
 adelic unitary group of `S` onto `unitaryLevel P.integers 1`. -/
-theorem range_toPlaces_latticeStabilizer [WeilData E] {S : Filling E 𝔰} {T : Finset (FinPlace E)}
+theorem range_toPlaces_latticeStabilizer {S : Filling E 𝔰} {T : Finset (FinPlace E)}
     [fT : T.StarStable] [P : IntegralPlace (LocProd T)] :
     ((S.toPlaces T).comp S.latticeStabilizer.subtype).range =
       unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram := by
@@ -298,7 +298,7 @@ theorem exists_exponent_le_k (S : Filling E 𝔰) :
 
 end Reduction
 
-variable [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible]
+variable {S : Filling E 𝔰}
   {T T₀ : Finset (FinPlace E)} [fT : T.StarStable] [P : IntegralPlace (LocProd T)]
   {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)}
 
@@ -384,7 +384,7 @@ congruence subgroup `K(g) = F.congruenceSubgroup`, has two properties. (a) `Z` c
 `T`-component of every integral element whose reduction fixes `d w` for all `w ∈ Sg`. (b) With the
 mass integral `ϰ = F.massIntegral` and `vol = F.groupMeasure`, `ϰ(Z) vol(K) B ≤ ϰ(K) vol(Z)`, where
 `B` is `S.b ^ (6 * 𝔰.k)` if `o` is a place, and `1` otherwise. -/
-theorem IsFillingData.exists_intermediateGroup_one_place (h : S.IsFillingData T F)
+theorem IsFillingData.exists_intermediateGroup_one_place [S.IsAdmissible] (h : S.IsFillingData T F)
     (Sg : Finset (S.chosenPlaces 0)) (o : Option Sg)
     (d : ∀ w : S.chosenPlaces 0, S.FrameVector w)
     (hT : (↑S.ideleM⁻¹ : 𝔸f E) ∈ integralOff T₀)
@@ -398,7 +398,6 @@ theorem IsFillingData.exists_intermediateGroup_one_place (h : S.IsFillingData T 
           o.elim 1 (fun _ : Sg ↦ ENNReal.ofReal (S.b ^ (6 * 𝔰.k))) ≤
         F.massIntegral (unitaryLevel P.integers 1 (S.latticeMiddle (LocProd T)).splitGram) *
           F.groupMeasure Z := by
-  classical
   -- Without a place take `Z = K`. At a place `w` take for `Z` the image of the group `H` of those
   -- `k` whose reduction at `w` fixes the vector; its index in `K` is that of `H`.
   let p : S.latticeStabilizer →* U (S.latticeMiddle (LocProd T)).splitGram :=
@@ -494,7 +493,6 @@ product of the completions at `T`, which is the character of the finite adeles o
 extension by zero, is the product of the characters of the fibres. -/
 theorem charOnPlaces_eq_prod_fibers [Fintype ι] (x : LocProd T) :
     S.charOnPlaces T x = ∏ i : ι, S.charOnPlaces (placeFiber T blk i) (evalFiber T blk i x) := by
-  classical
   -- An adele supported on `T` is the sum of its parts on the fibres.
   have h_sum :
       adeleOfLocal T x = ∑ i : ι, adeleOfLocal (placeFiber T blk i) (evalFiber T blk i x) := by

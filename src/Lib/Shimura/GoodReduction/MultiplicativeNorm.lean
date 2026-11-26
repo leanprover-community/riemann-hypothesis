@@ -247,7 +247,7 @@ private lemma exists_averagedPullback_eq_smul (hd : star c = d)
     h.isAppellHumbert.schur_lemma (hp := h.isAmpleType.isPosRiemann) Q_commute
   refine ⟨μ, fun t ht ↦ ?_⟩
   have Q_apply : Q ⟨t, ht⟩ = μ • ⟨t, ht⟩ := by
-    rw [hμ, LinearMap.smul_apply, Module.End.one_apply]
+    rw [hμ, LinearMap.smul_apply, one_apply_eq_self]
   simpa [Q] using congrArg Subtype.val Q_apply
 
 /-- Let `d = star c` with `c` and `d` non-zero, and let `c` and `d` act as the identity on the dual

@@ -9,21 +9,25 @@
 #   (workflow_dispatch, which needs write access), and pull requests from a branch of this
 #   repository whose name starts with batch/ (the batcher's batch pull requests);
 # - rh-pr-trusted: pull requests from any branch of this repository (pushing one needs write
-#   access).
-# A pull request from a fork is refused by both. Its head repository and branch are read from
-# the event payload at $GITHUB_EVENT_PATH, which GitHub writes and the pull request cannot change.
+#   access);
+# - rh-pr-fork: pull requests from forks, including those whose fork has been deleted. These
+#   runners assume hostile code and hold no credential.
+# rh-big and rh-pr-trusted refuse pull requests from forks, and rh-pr-fork refuses pull requests
+# from branches of this repository. The head repository and branch are read from the event
+# payload at $GITHUB_EVENT_PATH, which GitHub writes and the pull request cannot change.
 set -u
 repository=leanprover-community/riemann-hypothesis
 label=${RH_RUNNER_LABEL:-rh-big}
 reject() {
   case "$label" in
     rh-big) echo "::error::The $label runner only runs build.yml for the merge queue, pushes to main, manual runs and pull requests from batch/ branches of $repository ($1)." ;;
+    rh-pr-fork) echo "::error::The $label runner only runs build.yml for pull requests from forks of $repository ($1)." ;;
     *) echo "::error::The $label runner only runs build.yml for pull requests from branches of $repository ($1)." ;;
   esac
   exit 1
 }
 case "$label" in
-  rh-big | rh-pr-trusted) ;;
+  rh-big | rh-pr-trusted | rh-pr-fork) ;;
   *) reject "unknown runner label $label" ;;
 esac
 [ "${GITHUB_REPOSITORY:-}" = "$repository" ] || reject "repository ${GITHUB_REPOSITORY:-unset}"
@@ -32,7 +36,7 @@ case "${GITHUB_WORKFLOW_REF:-}" in
   *) reject "workflow ${GITHUB_WORKFLOW_REF:-unset}" ;;
 esac
 event=${GITHUB_EVENT_NAME:-}
-if [ "$label" = rh-pr-trusted ] && [ "$event" != pull_request ]; then
+if [ "$label" != rh-big ] && [ "$event" != pull_request ]; then
   reject "event ${event:-unset}"
 fi
 case "$event" in
@@ -57,8 +61,12 @@ print(name if isinstance(name, str) else "")
 print(ref if isinstance(ref, str) else "")
 ' "${GITHUB_EVENT_PATH:-/nonexistent}" 2>/dev/null) || reject "pull request event payload ${GITHUB_EVENT_PATH:-unset} unreadable"
     { read -r head_repo; read -r head_ref; } <<<"$head"
-    [ -n "$head_repo" ] || reject "pull request without a head repository"
-    [ "$head_repo" = "$repository" ] || reject "pull request from $head_repo"
+    if [ "$label" = rh-pr-fork ]; then
+      [ "$head_repo" != "$repository" ] || reject "pull request from a branch of $repository"
+    else
+      [ -n "$head_repo" ] || reject "pull request without a head repository"
+      [ "$head_repo" = "$repository" ] || reject "pull request from $head_repo"
+    fi
     if [ "$label" = rh-big ]; then
       case "$head_ref" in
         batch/*) ;;

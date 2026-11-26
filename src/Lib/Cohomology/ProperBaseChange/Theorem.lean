@@ -571,8 +571,7 @@ lemma New.Variety.ResiduePlace.isTestCohomEquiv_closedFibre_killingPlaces {ℓ :
     · rintro ⟨hx_zero, -⟩
       exact ⟨⟨⟨x.val, hx_zero⟩, x.prop⟩, rfl⟩
   · -- The inclusion of `T (maximalIdeal A)` factors through `T ⊥`; both factors are equivalences.
-    rw [← homOfLe_ι h_le, Functor.map_comp]
-    exact h_eqv.comp_iff.mpr h_top
+    simpa only [← homOfLe_ι h_le, Functor.map_comp] using h_eqv.comp_iff.mpr h_top
 
 /-- The places that give the value `0` to all elements of an ideal behave like its zero locus. -/
 lemma New.Variety.ResiduePlace.isZeroLocusFamily_killingPlaces {Y : PointFunctor}

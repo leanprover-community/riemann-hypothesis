@@ -476,8 +476,8 @@ private lemma New.GaloisRep.exists_apply_mul_eq_of_mem_unitary {E : Type} [Field
       (∀ u : Gf E (Fin a), f (c * u) = ξ y (f u)) ∧ invTransposeGL c.val = toFinGL y := by
   refine ⟨(stdSpace E (Fin a)).embFin (entryConj ⟨y, hy⟩), fun u ↦ ?_, ?_⟩
   · simpa [hξ] using hf.right (entryConj ⟨y, hy⟩) u
-  · -- `erw`: the form `(stdSpace E (Fin a)).J` of the standard space is `1` only by unfolding
-    erw [stdSpace_embFin]
+  · -- the form `(stdSpace E (Fin a)).J` of the standard space is `1` only by unfolding
+    refine (congrArg invTransposeGL (stdSpace_embFin ..)).trans ?_
     rfl
 
 /-- An embedding `s` of `E` that induces a safe place `w` (`IsSafe 𝔑 w`) restricts on `QuadField d`

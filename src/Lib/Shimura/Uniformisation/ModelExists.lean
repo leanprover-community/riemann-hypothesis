@@ -163,7 +163,7 @@ lemma exists_torusModel_of_isPeriodMap
     (h_ev : ∀ y : D.Index → E,
       e.torsionPoint (torsionClass (m *ᵥ frameCoords 1 y)) = u.expMap (Q (toRealVectors y)))
     (h_lat : ∀ z ∈ u.lattice, ∃ y : D.Index → E, Q (toRealVectors y) = z) :
-    ∃ g : GL D.Index (𝔸f E), ∃ᵉ (Y : ThetaTori.PeriodMap D g ℓ V) (M : x.TorusModel Y),
+    ∃ g : GL D.Index (𝔸f E), ∃ Y : ThetaTori.PeriodMap D g ℓ V, ∃ M : x.TorusModel Y,
       M.fullStructure.torsionPoint = e.torsionPoint := by
   -- Appell–Humbert: the coordinates of `x.lineBundle` are theta functions `θ` of a type `(B, χ)`
   -- with positive Riemann form; `R` is that form on `(E ⊗ ℝ)ⁿ`. The Weil pairing computes `R` on
@@ -394,7 +394,7 @@ are those of `e`, and `ℓ` is a reflection: `ℓ = u wᵀ - 1` for vectors `u`,
 lemma exists_torusModel
     (hρ : ∀ c : 𝓞 E, x.baseHom c = Φ v₀ c.val) :
     ∃ (g : GL D.Index (𝔸f E)) (ℓ : Matrix D.Index D.Index ℂ) (d : ℕ),
-      ∃ᵉ (Y : ThetaTori.PeriodMap D g ℓ (Fin d → ℂ)) (m : x.TorusModel Y),
+      ∃ Y : ThetaTori.PeriodMap D g ℓ (Fin d → ℂ), ∃ m : x.TorusModel Y,
       m.fullStructure.torsionPoint = e.torsionPoint ∧ IsReflection ℓ := by
   -- Uniformise `x.groupScheme` by `V = Fin (abelianDim E D.Index) → ℂ` and lift the action of `𝓞 E`
   -- to an action `G` of `E ⊗ ℝ` on `V`. The `2`-torsion points given by `e` define a

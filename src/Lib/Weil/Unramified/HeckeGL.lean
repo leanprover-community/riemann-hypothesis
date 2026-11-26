@@ -153,7 +153,7 @@ lemma pow_pow_mem_localCongruence {q : ℕ} (hq : (q : NumberField.RingOfInteger
       rw [mul_geom_sum, ← Units.val_pow_eq_pow_val, ← pow_mul, ← pow_succ]
     have h_exp : exp (-((k + 1).succ : ℤ)) = exp (-(k.succ : ℤ)) * exp (-1) := by
       rw [← exp_add]
-      grind
+      tauto
     rw [h_factor, h_exp]
     refine v_matrix_mul_le (mem_localCongruence.mp ih).right (fun a b ↦ ?_) a b
     -- Indeed `∑ l < q, x ^ l = ∑ l < q, (x ^ l - 1) + q • 1`, with `x ^ l ≡ 1 mod 𝔭` and `q ∈ 𝔭`.
@@ -333,31 +333,22 @@ mod w. Then some k in the same double coset has kernel U mod w and lies in g GL_
 lemma exists_residueKer_eq_and_inv_mul_mem_localIntGL (hg : g ∈ basicDoubleCoset n w j)
     (h_finrank : finrank (ResField w) (residueKer g.val) = finrank (ResField w) U) :
     ∃ k ∈ basicDoubleCoset n w j, residueKer k.val = U ∧ k⁻¹ * g ∈ localIntGL n w := by
-  -- Take an automorphism `e` of `k_w ^ n` that maps `U` onto `residueKer g`, and lift it to
-  -- `l ∈ localIntGL n w`. The element sought is `g * l`.
-  obtain ⟨e, he⟩ : ∃ e : (n → ResField w) ≃ₗ[ResField w] (n → ResField w),
-      ∀ x : U, (LinearEquiv.ofFinrankEq U (residueKer g.val) h_finrank.symm x : n → ResField w) =
-        e x :=
-    U.exists_linearEquiv_restrict_eq _
-  obtain ⟨l, hl⟩ : ∃ l : localIntGL n w, GeneralLinearGroup.toLin (reduceGL l) = .ofLinearEquiv e :=
+  -- Lift an automorphism `e` of `k_w ^ n` mapping `U` to `residueKer g` to `l ∈ localIntGL n w`.
+  let f := LinearEquiv.ofFinrankEq U (residueKer g.val) h_finrank.symm
+  obtain ⟨e, he⟩ := U.exists_linearEquiv_restrict_eq f
+  obtain ⟨l, hl⟩ : ∃ l : localIntGL n w,
+      GeneralLinearGroup.toLin (reduceGL l) = .ofLinearEquiv e :=
     GeneralLinearGroup.toLin.surjective.comp reduceGL_surjective _
   have h_red : ((l : GL n (LocField w)).val.map residueOrZero).mulVecLin = e := by
-    -- The entries of `l` are integral, so `residueOrZero` reduces them as `reduceGL` does.
     refine Eq.trans (congrArg mulVecLin ?_) (congrArg Units.val hl)
-    ext i j
-    exact residueOrZero_coe ⟨(l : GL n (LocField w)) i j, l.property.isIntMatrix i j⟩
-  -- `U` lies in the preimage of `residueKer g` under `e` and has the same dimension.
-  have h_comap : U = (residueKer g.val).comap e.toLinearMap := by
-    refine U.eq_of_le_of_finrank_eq (fun x hx ↦ ?_) ?_
-    · rw [Submodule.mem_comap, LinearEquiv.coe_coe, ← he ⟨x, hx⟩]
-      exact Submodule.coe_mem _
-    · rw [← h_finrank, (e.ofSubmodule' _).finrank_eq]
-  have hg_int : ∀ a b : n, v (g.val a b) ≤ 1 := hg.1
-  have h_mem : g * l ∈ basicDoubleCoset n w j := by
-    simpa using mul_mul_mem_basicDoubleCoset hg (one_mem (localIntGL n w)) l.property
-  refine ⟨g * l, h_mem, ?_, by simp⟩
+    exact Matrix.ext fun i j ↦ residueOrZero_coe ⟨(l : GL n (LocField w)) i j, l.2.isIntMatrix i j⟩
+  have h_comap : U = (residueKer g.val).comap e.toLinearMap :=
+    U.eq_of_le_of_finrank_eq
+      (fun x hx ↦ by simpa [← he ⟨x, hx⟩] using (f ⟨x, hx⟩).2)
+      (by rw [← h_finrank, (e.ofSubmodule' _).finrank_eq])
+  refine ⟨g * l, by simpa using mul_mul_mem_basicDoubleCoset hg (one_mem _) l.2, ?_, by simp⟩
   -- Reduction is multiplicative, so `residueKer (g * l)` is that same preimage.
-  rw [residueKer, Units.val_mul, map_residueOrZero_mul hg_int l.property.isIntMatrix, mulVecLin_mul,
+  rw [residueKer, Units.val_mul, map_residueOrZero_mul hg.1 l.2.isIntMatrix, mulVecLin_mul,
     h_red, h_comap, LinearMap.ker_comp]
 
 omit [DecidableEq n] in
@@ -520,28 +511,15 @@ lemma heckeGL_eq_sum {x : W} (hx : x ∈ levelSpace (A := A) π (localIntGL n w)
       ∑ U ∈ {U : Submodule (ResField w) (n → ResField w) | finrank (ResField w) U = j},
         π (transposeGL (basicCosetRep U)) x := by
   classical
-  -- Twist `π` by the inverse transpose `invTransposeGL`, which preserves `localIntGL`, and apply
-  -- `heckeFun_basicDoubleCoset_inv` to the twist, which sends `(basicCosetRep U)⁻¹` to
-  -- `π (transposeGL (basicCosetRep U))`.
+  -- Twist `π` by `invTransposeGL` (which preserves `localIntGL`) and apply
+  -- `heckeFun_basicDoubleCoset_inv` to the twisted representation.
   have hx' : x ∈ levelSpace (π.comp invTransposeGL.toMonoidHom) (localIntGL n w) := by simp_all
-  have h_Kw (g : GL n (LocField w)) : invTransposeGL g ∈ localIntGL n w ↔ g ∈ localIntGL n w := by
-    simp
-  -- `invTransposeGL` is an involution by definition.
-  have h_twist (g : GL n (LocField w)) :
-      π g x = (π.comp invTransposeGL.toMonoidHom) (invTransposeGL g) x :=
-    rfl
-  -- The inverse transpose of `g⁻¹` is the transpose of `g`, which lies in the same double coset.
-  have h_indicator (g : GL n (LocField w)) :
-      (basicDoubleCoset n w j).indicator (1 : GL n (LocField w) → A) g =
-        (basicDoubleCoset n w j).indicator 1 (invTransposeGL g)⁻¹ :=
-    if_congr transposeGL_mem_basicDoubleCoset.symm rfl rfl
-  calc heckeGL π j x
-    _ = heckeFun (π.comp invTransposeGL.toMonoidHom) (localIntGL n w)
-        (fun g ↦ (basicDoubleCoset n w j).indicator 1 g⁻¹) x :=
-      heckeFun_comp (f := fun g ↦ (basicDoubleCoset n w j).indicator 1 g⁻¹)
-        invTransposeGL.toMonoidHom (indicator_basicDoubleCoset_mul_inv j) hx'
-        (isHeckeFunction_basicDoubleCoset j).left invTransposeGL.surjective h_Kw h_twist h_indicator
-    _ = _ := heckeFun_basicDoubleCoset_inv hx'
+  exact (heckeFun_comp (f := fun g ↦ (basicDoubleCoset n w j).indicator 1 g⁻¹)
+    invTransposeGL.toMonoidHom (indicator_basicDoubleCoset_mul_inv j) hx'
+    (isHeckeFunction_basicDoubleCoset j).left invTransposeGL.surjective
+    (fun _ ↦ by simp) (fun _ ↦ rfl)
+    (fun _ ↦ if_congr transposeGL_mem_basicDoubleCoset.symm rfl rfl)).trans
+    (heckeFun_basicDoubleCoset_inv hx')
 
 /-- Let ϖ be a uniformiser of E_w and n = i + j. Then ϖ x lies in `New.basicDoubleCoset` n w j
 exactly when x⁻¹ lies in `New.basicDoubleCoset` n w i: the two integrality conditions are

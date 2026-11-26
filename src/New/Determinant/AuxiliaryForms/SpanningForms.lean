@@ -140,20 +140,62 @@ lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.
         (adeleExtension (weightEmbedding ιₚ τ))).det ^ l)⁻¹.val‖ ≤ 1 := by
   -- According to the sign of `l`, the number has the norm of a power of the integral adele `a` or
   -- of its conjugate, because `ϑ.normQ` is a `p`-adic unit.
+  let f : 𝔸f D.E →+* ℂ_[p] := adeleExtension (weightEmbedding ιₚ τ)
+  let u : unitary (𝔸f D.E) := divStar (star ((gridModulus ϑ).generator * P.α D.towerExp))
   let a : 𝔸f D.E := (gridModulus ϑ).generator⁻¹.1 *
       algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E) ↑(ϑ.normQ * D.M ^ D.natB) *
     (star ((gridModulus ϑ).generator.1 * (P.q₁ D.towerExp * (P.α D.towerExp).1)) *
       (P.α D.towerExp)⁻¹.1)
-  obtain ⟨k, c, hc, hlc⟩ : ∃ k : ℕ, ∃ c ∈ Ô D.E, (l = k ∧ c = a) ∨ (l = -k ∧ c = star a) := by
-    obtain ⟨k, h | h⟩ := l.eq_nat_or_neg
-    exacts [⟨k, a, generator_inv_mul_normQ_mul_star_mem ϑ, .inl ⟨h, rfl⟩⟩,
-      ⟨k, star a, star_mem_Ô (generator_inv_mul_normQ_mul_star_mem ϑ), .inr ⟨h, rfl⟩⟩]
-  calc _ = ‖adeleExtension (weightEmbedding ιₚ τ) (c ^ (D.m * k))‖ := by
-        obtain ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ := hlc <;>
-        · simp [a, Modulus.flipScalar, weightEmbedding, scalarFin, coe_divStar, WeilData.α,
-            ← inv_pow, adeleExtension_star, hp.norm_natCast_eq_one, -Nat.cast_prod]
-          ring
-    _ ≤ 1 := norm_adeleExtension_le_one _ (pow_mem hc _)
+  have ha_eq : a = ((ϑ.normQ * (D.M ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * u.1 := by
+    have hnat : (algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E)
+        ↑(ϑ.normQ * D.M ^ D.natB) : 𝔸f D.E) = ((ϑ.normQ * D.M ^ D.natB : ℕ) : 𝔸f D.E) := by
+      simp
+    have hu : u.1 = star (gridModulus ϑ).generator.1 * star (P.α D.towerExp).1 *
+        (gridModulus ϑ).generator⁻¹.1 * (P.α D.towerExp)⁻¹.1 := by
+      simp only [u, coe_divStar, _root_.mul_inv_rev, Units.val_mul, ← star_inv, Units.coe_star,
+        star_mul', star_star]
+      ring
+    dsimp only [a]
+    rw [hnat, hu]
+    simp only [star_mul', star_natCast, Nat.cast_mul, Nat.cast_pow]
+    ring
+  have hstar_a_eq : star a = ((ϑ.normQ * (D.M ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * (u⁻¹).1 := by
+    rw [ha_eq, star_mul', star_natCast]
+    rfl
+  have hfu_inv : f (u⁻¹).1 = (f u.1)⁻¹ :=
+    eq_inv_of_mul_eq_one_left (by rw [← map_mul]; exact (congrArg f u.2.1).trans (map_one f))
+  have hdet : (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map f).det : ℂ_[p]) =
+      (f u.1 ^ D.m)⁻¹ := by
+    have h1 : ((((gridModulus ϑ).flipScalar Unit).val.map f).det : ℂ_[p]) = f u.1 := by
+      change ((((gridModulus ϑ).flipScalar Unit).val : Matrix Unit Unit (𝔸f D.E)).map f).det =
+        f u.1
+      rw [Matrix.det_unique, Matrix.map_apply]
+      congr 1
+    rw [map_inv, map_pow, map_inv, map_pow, Units.val_inv_eq_inv_val, Units.val_pow_eq_pow_val, h1]
+  have hnorm (c : 𝔸f D.E) (v : unitary (𝔸f D.E))
+      (hc : c = ((ϑ.normQ * (D.M ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * v.1) :
+      ‖((D.M ^ D.natB * D.q₁ : ℕ) : ℂ_[p]) * f v.1‖ = ‖f c‖ := by
+    symm
+    rw [hc, map_mul, map_natCast, Nat.cast_mul ϑ.normQ, mul_assoc, norm_mul,
+      hp.norm_natCast_eq_one, one_mul]
+  obtain ⟨k, rfl | rfl⟩ := l.eq_nat_or_neg
+  · have h_eq : ‖((D.M ^ D.natB * D.q₁) ^ (D.m * (k : ℤ).natAbs) : ℕ) *
+        (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map f).det ^ (k : ℤ))⁻¹.val‖ =
+        ‖f a‖ ^ (D.m * k) := by
+      rw [Int.natAbs_natCast, Nat.cast_pow, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val,
+        zpow_natCast, hdet, inv_pow, inv_inv, ← pow_mul, ← mul_pow, norm_pow, hnorm a u ha_eq]
+    rw [h_eq]
+    exact pow_le_one₀ (norm_nonneg _)
+      (norm_adeleExtension_le_one _ (generator_inv_mul_normQ_mul_star_mem ϑ))
+  · have h_eq : ‖((D.M ^ D.natB * D.q₁) ^ (D.m * (-(k : ℤ)).natAbs) : ℕ) *
+        (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map f).det ^ (-(k : ℤ)))⁻¹.val‖ =
+        ‖f (star a)‖ ^ (D.m * k) := by
+      rw [Int.natAbs_neg, Int.natAbs_natCast, Nat.cast_pow, Units.val_inv_eq_inv_val,
+        Units.val_zpow_eq_zpow_val, _root_.zpow_neg, zpow_natCast, inv_inv, hdet, inv_pow,
+        ← pow_mul, ← inv_pow, ← hfu_inv, ← mul_pow, norm_pow, hnorm (star a) u⁻¹ hstar_a_eq]
+    rw [h_eq]
+    exact pow_le_one₀ (norm_nonneg _)
+      (norm_adeleExtension_le_one _ (star_mem_Ô (generator_inv_mul_normQ_mul_star_mem ϑ)))
 
 end Denominators
 
@@ -188,7 +230,8 @@ lemma exists_norm_mul_lastPathPairing_le_one : ∃ N ≠ (0 : ℕ),
           simp [N, log_prod, log_mul, NeZero.ne, -Nat.cast_natAbs]
       _ ≤ _ := by
           grw [hL_le]
-          simpa using D.le_of_hasLogBound
+          rw [sum_const, card_univ, nsmul_eq_mul]
+          exact D.le_of_hasLogBound
   refine ⟨∏ τ, N τ, by simp [N, NeZero.ne, prod_eq_zero_iff], h_log,
     fun {ϑ p _ _} hp g v' v hv' hv ↦ ?_⟩
   let f (τ : D.Φ) : 𝔸f D.E →+* ℂ_[p] := adeleExtension (weightEmbedding ιₚ τ)
@@ -209,11 +252,15 @@ lemma exists_norm_mul_lastPathPairing_le_one : ∃ N ≠ (0 : ℕ),
       mul_mem (hw' i) (sum_mem fun k _ ↦ mul_mem (by simp) (hw k))
   have h_char : w' ⬝ᵥ D.lastPathBranching.map (↑) *ᵥ w = (∏ τ, χ τ : ℂ_[p]ˣ) * ιₚ
     (D.lastPathPairing v' v) :=
-    (h_equiv _ _ f g⁻¹ u' _ _).trans (by simp [χ, dotProduct, mulVec])
+    (h_equiv _ _ f g⁻¹ u' _ _).trans <| by
+      congr 1
+      simp only [LinearMap.compl₂_apply, Matrix.mulVecLin_apply, dotProductBilin_apply_apply,
+        dotProduct, mulVec, map_sum, map_mul, map_intCast, Matrix.map_apply, Function.comp_apply]
 
   calc _ = (∏ τ, ‖N τ * (χ τ)⁻¹.1‖) * ‖w' ⬝ᵥ D.lastPathBranching.map (↑) *ᵥ w‖ := by
         rw [h_char, ← norm_prod, ← norm_mul, ← mul_assoc, Units.coe_prod, ← prod_mul_distrib]
-        simp
+        simp only [mul_assoc, Units.inv_mul, mul_one, map_mul, map_natCast, map_prod,
+          Nat.cast_prod]
     _ ≤ 1 := (mul_le_of_le_one_left (norm_nonneg _)
         (prod_le_one₀ (fun _ _ ↦ norm_nonneg _) fun τ _ ↦
       norm_mul_det_flipScalar_zpow_le_one hp τ (L τ))).trans h_int
@@ -356,10 +403,14 @@ lemma norm_lastPathPeriod_le {Ψ : EdgeTuple (1 : D.MFoldTwist) → ℂ}
   have h_end {v' : D.LastPathVector false D.m} {v : D.LastPathVector true D.m}
       (hv' : IsSmall false D.m v') (hv : IsSmall true D.m v) :
       ‖σ (1 * D.lastPathPairing v' v)‖ ≤ R :=
-    calc _ = ‖(σ ∘ v') ⬝ᵥ D.lastPathBranching.map (↑) *ᵥ (σ ∘ v)‖ := by simp [dotProduct, mulVec]
+    calc _ = ‖(σ ∘ v') ⬝ᵥ D.lastPathBranching.map (↑) *ᵥ (σ ∘ v)‖ := by
+          simp only [one_mul, LinearMap.compl₂_apply, Matrix.mulVecLin_apply,
+            dotProductBilin_apply_apply, dotProduct, mulVec, map_sum, map_mul, map_intCast,
+            Matrix.map_apply, Function.comp_apply]
       _ ≤ _ := D.norm_dotProduct_lastPathBranching_mulVec_le
         (boxes_lastPathColumns_le_natB_mul true le_rfl) _ _
-      _ ≤ R := by grw [show √_ ≤ _ from hv', show √_ ≤ _ from hv]
+      _ ≤ R := mul_le_mul (mul_le_mul_of_nonneg_left hv' (Nat.cast_nonneg _)) hv (sqrt_nonneg _)
+        (mul_nonneg (Nat.cast_nonneg _) (mul_nonneg (pow_nonneg (exp_pos _).le _) (sqrt_nonneg _)))
   obtain ⟨L, hL, h_sum⟩ := exists_lastPathPeriod_mem_smul_norm_le hΨ hy (fun z j _ ↦ IsSmall z j)
     σ.toRingHom h_lift
     (fun z g ↦ by simp [IsSmall, sqrt_le_sqrt, hB]) h_end
@@ -369,21 +420,50 @@ lemma norm_lastPathPeriod_le {Ψ : EdgeTuple (1 : D.MFoldTwist) → ℂ}
     Nat.card (StdClasses (lastPathLevel (1 : D.MFoldTwist) z j)) with hn
   have h_prod (z : Bool) (k : ℕ) (hk : k ≤ D.m + 1) :
       ∏ j ∈ range k, (Nat.card (StdClasses (lastPathLevel (1 : D.MFoldTwist) z j)) : ℝ) ≤ G ^
-        k := by
-    grw [D.card_stdClasses_lastPathLevel_le z (by grind), prod_const, card_range]
+        k :=
+    calc ∏ j ∈ range k, (Nat.card (StdClasses (lastPathLevel (1 : D.MFoldTwist) z j)) : ℝ)
+      _ ≤ ∏ _j ∈ range k, G := by
+          gcongr with j hj
+          exact D.card_stdClasses_lastPathLevel_le z
+            (Nat.le_of_lt_succ ((mem_range.1 hj).trans_le hk))
+      _ = G ^ k := by rw [prod_const, card_range]
   have hn_le : n ≤ L * (G ^ D.m * G ^ (D.m + 1)) := by
     grw [← h_prod true D.m (by simp), ← h_prod false (D.m + 1) le_rfl]
     simp [hn, -Nat.card_eq_fintype_card]
   have h_const : L * (G ^ D.m * G ^ (D.m + 1)) * (C * G ^ D.m * G ^ D.m) ≤
       exp (D.x ^ 200 * D.b ^ 2) := by
-    grw [hL, ← le_exp_of_log_le]
-    simpa [C, log_mul, G, NeZero.ne, card_residueRing_twistModulus, prod_q_chosenPlace,
-      toAutChar_one_and_toTwist_one_and_Q_one] using
-      D.le_of_hasLogBound
+    have hLC : (L : ℝ) * C ≤ exp (D.x ^ 199 * D.b ^ 2) := by
+      have h_normQ : (1 : D.MFoldTwist).normQ = 1 := by
+        simp [toAutChar_one_and_toTwist_one_and_Q_one]
+      grw [hL]
+      refine le_exp_of_log_le ?_
+      rw [log_mul (by simp [lastPathBound, NeZero.ne]) (by simp [C, NeZero.ne]), lastPathBound,
+        Nat.cast_mul, Nat.cast_mul,
+        log_mul (by simp [NeZero.ne]) (by simp [NeZero.ne]),
+        log_mul (by simp [NeZero.ne]) (by simp [NeZero.ne])]
+      simp only [C, vectorCountBound, edgeMatrixCountBound, card_residueRing_twistModulus,
+        prod_q_chosenPlace, h_normQ, mul_one, Nat.cast_pow, log_pow, Nat.cast_mul,
+        Nat.cast_ofNat]
+      exact D.le_of_hasLogBound
+    have hG : G ^ (D.m + (D.m + 1) + D.m + D.m) =
+        exp ((D.m + (D.m + 1) + D.m + D.m : ℕ) * (D.x ^ 99 * D.b ^ 2)) :=
+      (exp_natCast_mul _ _).symm
+    calc (L : ℝ) * (G ^ D.m * G ^ (D.m + 1)) * (C * G ^ D.m * G ^ D.m)
+      _ = (L * C) * G ^ (D.m + (D.m + 1) + D.m + D.m) := by ring
+      _ ≤ exp (D.x ^ 199 * D.b ^ 2) *
+            exp ((D.m + (D.m + 1) + D.m + D.m : ℕ) * (D.x ^ 99 * D.b ^ 2)) := by
+          rw [hG]; gcongr
+      _ = exp (D.x ^ 199 * D.b ^ 2 +
+            (D.m + (D.m + 1) + D.m + D.m : ℕ) * (D.x ^ 99 * D.b ^ 2)) := (exp_add _ _).symm
+      _ ≤ exp (D.x ^ 200 * D.b ^ 2) := exp_le_exp.2 D.le_of_hasLogBound
   obtain ⟨a, ha, ha_sum⟩ := Set.mem_nsmul_iff_sum.1 h_sum
   calc _ = ‖∑ i, σ (a i)‖ := by rw [← ha_sum, map_sum]
-    _ ≤ n * R := by
-      simpa using norm_sum_le_of_le univ fun i _ ↦ (by simpa using ha i : ‖σ (a i)‖ ≤ R)
+    _ ≤ n * R :=
+      (norm_sum_le_of_le univ fun i _ ↦ (by
+        have h := ha i
+        rw [Set.mem_ofPred_eq, one_mul] at h
+        exact h : ‖σ (a i)‖ ≤ R)).trans_eq
+        (by rw [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul])
     _ = n * (C * G ^ D.m * G ^ D.m) * √(B false) * √(B true) := by ring
     _ ≤ exp (D.x ^ 200 * D.b ^ 2) * √(B false) * √(B true) := by grw [hn_le, h_const]
 
@@ -458,8 +538,12 @@ lemma dualHook_mul_exp_le :
       exp (D.x ^ 201 * D.b ^ 2) := by
   have h_hook : (D.dualHook : ℝ) ≤ (((D.natB * D.r ^ 4) ^ (D.natB * D.r ^ 4)) ^ 3 : ℕ) := by
     exact_mod_cast hookNumber_le (boxes_lastPathColumns_le_natB_mul false zero_le)
-  grw [h_hook, ← le_exp_of_log_le]
-  simpa [log_mul, NeZero.ne] using D.le_of_hasLogBound
+  rw [mul_assoc, ← exp_add]
+  grw [h_hook]
+  refine le_exp_of_log_le ?_
+  rw [log_mul (by simp [NeZero.ne]) (exp_pos _).ne', log_exp, Nat.cast_pow, log_pow,
+    Nat.cast_pow, log_pow]
+  exact D.le_of_hasLogBound
 
 /-- Let `ζ` be a vector of the weight on `Y_m`. Suppose that its pairing by `dualPairing` with every
 integer vector `w` of the dual weight is `D.dualHook` times an element of `embValRing`. Then every
@@ -493,8 +577,11 @@ lemma weylNormSq_le_of_dualPairing (σ : ℂ ≃+* ℂ) {ζ : WeylIndex (D.Y D.m
       ∀ u : D.DualVector, u ⬝ᵥ D.dualPairing.map (↑) *ᵥ (σ ∘ ζ) = gramForm w u :=
     D.isDualPairing_dualPairing.exists_eq_gramForm (σ ∘ ζ)
   have h_eq : (weylNormSq w : ℂ) = σ ((σ.symm ∘ w) ⬝ᵥ D.dualPairing.map (↑) *ᵥ ζ) :=
-    calc _ = w ⬝ᵥ D.dualPairing.map (↑) *ᵥ (σ ∘ ζ) := (GL.coe_weylNormSq w).trans (hw_pair w).symm
-      _ = _ := by simp [dotProduct, mulVec]
+    calc _ = w ⬝ᵥ D.dualPairing.map (↑) *ᵥ (σ ∘ ζ) :=
+          (GL.coe_weylNormSq w).trans ((gramForm_apply w w).symm.trans (hw_pair w).symm)
+      _ = _ := by
+          simp only [dotProduct, mulVec, map_sum, map_mul, map_intCast, Matrix.map_apply,
+            Function.comp_apply, RingEquiv.apply_symm_apply]
   have h_le : weylNormSq w ≤ K * √(weylNormSq w) :=
     calc weylNormSq w = ‖(weylNormSq w : ℂ)‖ := by simp [abs_of_nonneg]
       _ ≤ K * √(weylNormSq (σ ∘ σ.symm ∘ w)) := by
@@ -540,20 +627,20 @@ lemma fixedByOuterLevels_lastPathConjDelta (φ : D.gridLevelForms D.m) :
     have h_red : (gridModulus ϑ).reductionGL k = 1 := hk
     have h_place : (D.levelPlaces ϑ.toTameChar).placeAt i ∈ (gridModulus ϑ).places :=
       places_levelModulus.ge ⟨i, rfl⟩
-    simpa using! congrArg (fun u ↦ u.1.map (modulusResidue _ h_place)) h_red
+    exact (Rows.reductionGL_map_modulusResidue _ h_place k).symm.trans <| by
+      rw [h_red, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
+      rfl
   let e := (D.gridSpace 0 true 0 D.m).algFormEquiv (D.isHCParam_lastPathColumns true zero_le)
     (principalLevel (D.LastPathIndex true 0) D.gridLevelGen)
   have h_symm : (e.symm φ).1 = D.lastPathToAlgForm true φ.1 := rfl
   refine Bool.forall_bool.2 ⟨?_, ?_⟩
   · change D.lastPathToAlgForm false (lastPathConjDelta ϑ x v) ∈ _
     rw [lastPathToAlgForm_lastPathConjDelta]
-    exact levelSpace_anti h_level (lastPathDelta ϑ x v).2
+    exact fun k ↦ (lastPathDelta ϑ x v).2 ⟨k.1, h_level k.2⟩
   · change D.lastPathToAlgForm true φ.1 ∈ _
     rw [← h_symm]
-    exact levelSpace_anti (lastPathLevel_le_principalLevel ϑ true 0) (e.symm φ).2
+    exact fun k ↦ (e.symm φ).2 ⟨k.1, lastPathLevel_le_principalLevel ϑ true 0 k.2⟩
 
--- Without the seal, the `erw` steps unfold the kernel and time out.
-seal HCParam.dsKernel in
 /-- Pairing with a delta form reads a value. Let `ϑ` be an `m`-fold twist, `x` a finite point of
 `Y_m`, `v` a vector of the dual weight and `y` a form on `Y₀`. The index of the level times the
 integral of the delta form `δ_x(v) = lastPathConjDelta ϑ x v` against the chain of lifts
@@ -581,30 +668,41 @@ lemma integral_lastPathConjDelta_mul (y : D.principalForms (D.spaceY 0)) :
       lastPathConjDelta ϑ x v g * D.lowerChainUpTo ϑ D.m y g ∂(D.spaceY D.m).quotMeasure =
         (card (WeylIndex (D.Y D.m) D.columnsY) * stdLevelIndex (D.levelY ϑ D.m) : ℂ)⁻¹ *
           classIntegral stdRatPoints (D.levelY ϑ D.m) f := by
-    erw [← ofAlgForm_toAlgForm D.isHCParam_paramY (lowerChainUpTo ϑ D.m y),
-      integral_mul_eq_classIntegral D.isHCParam_paramY (D.levelY ϑ D.m)
-        (isAutomorphic_algFormCoeff _) _
-        (D.isDualPairing_dualPairing.ofAlgForm_eq_bilin _ _)]
-    rfl
+    have h_chain : (D.lowerChainUpTo ϑ D.m y).1 =
+        ofAlgForm (D.paramY D.m) (D.signsY D.m) (D.lowerChain ϑ y) :=
+      (ofAlgForm_toAlgForm D.isHCParam_paramY (D.lowerChainUpTo ϑ D.m y)).symm
+    have h_delta : (lastPathConjDelta ϑ x v).1 =
+        ofAlgForm (-D.paramY D.m) (D.signsY D.m) (lastPathDelta ϑ x v).1 := rfl
+    let B (g : Gf D.E (D.Y D.m)) : (WeylIndex (D.Y D.m) D.columnsY → ℂ) →ₗ[ℂ] ℂ :=
+      (dotProductBilin ℂ ℂ).compl₂ (D.dualPairing.map (↑)).mulVecLin ((lastPathDelta ϑ x v).1.1 g)
+    have h_f : (fun g ↦ B g ((D.lowerChain ϑ y).1 g)) = f :=
+      funext fun g ↦ by
+        simp only [B, f, L, AddMonoidHom.mk'_apply, LinearMap.compl₂_apply, Matrix.mulVecLin_apply,
+          dotProductBilin_apply_apply]
+    refine (MeasureTheory.integral_congr_ae (.of_forall fun (g : New.G D.E (D.signsY D.m)) ↦
+      congrArg₂ (· * ·) (congrFun h_delta g) (congrFun h_chain g))).trans ?_
+    rw [← h_f]
+    exact integral_mul_eq_classIntegral (V := D.spaceY D.m) D.isHCParam_paramY (D.levelY ϑ D.m)
+      (isAutomorphic_algFormCoeff (lastPathDelta ϑ x v).1) B
+      (D.isDualPairing_dualPairing.ofAlgForm_eq_bilin (D.signsY D.m) (lastPathDelta ϑ x v).1)
   have h_sum : classSum stdRatPoints (D.levelY ϑ D.m) f = L x v := by
     refine classSum_deltaForm L fun γ k ↦ ?_
     have h_value : (D.lowerChain ϑ y).1 ((stdSpace D.E (D.Y D.m)).embFin γ * x * k.1) =
         (stdSpace D.E (D.Y D.m)).weightRep D.columnsY (D.lastEntry D.m) γ
-          ((D.lowerChain ϑ y).1 x) := by
-      erw [levelSpace_smoothFormRep_apply (χ := 1) (by simpa using! h_fix)]
-      exact one_smul ℂ _
-    simpa [L, h_value] using! D.isDualPairing_dualPairing.invariant ..
+          ((D.lowerChain ϑ y).1 x) :=
+      (congrFun (congrArg Subtype.val (h_fix k.1 k.2)) _).trans
+        ((D.lowerChain ϑ y).2.2 γ x)
+    simp only [MonoidHom.one_apply, one_smul, L, AddMonoidHom.mk'_apply, h_value]
+    exact D.isDualPairing_dualPairing.invariant ℂ _ v ((D.lowerChain ϑ y).1 x)
   rw [h_integral, classIntegral_eq_classSum, h_sum]
   · simp [L, field, -Fintype.card_pi]
   · intro k hk g
-    have h_left : (lastPathDelta ϑ x v).1.1 (g * k) = (lastPathDelta ϑ x v).1.1 g := by
-      simpa using! congrFun (congrArg Subtype.val ((lastPathDelta ϑ x v).2 ⟨k, hk⟩)) g
+    have h_left : (lastPathDelta ϑ x v).1.1 (g * k) = (lastPathDelta ϑ x v).1.1 g :=
+      (congrFun (congrArg Subtype.val ((lastPathDelta ϑ x v).2 ⟨k, hk⟩)) g).trans
+        (one_smul ℂ _)
     have h_right : (D.lowerChain ϑ y).1 (g * k) = (D.lowerChain ϑ y).1 g :=
       congrFun (congrArg Subtype.val (h_fix k hk)) g
-    change (lastPathDelta ϑ x v).1.1 (g * k) ⬝ᵥ D.dualPairing.map (↑) *ᵥ (D.lowerChain ϑ y).1
-      (g * k) =
-      (lastPathDelta ϑ x v).1.1 g ⬝ᵥ D.dualPairing.map (↑) *ᵥ (D.lowerChain ϑ y).1 g
-    rw [h_left, h_right]
+    simp only [f, L, AddMonoidHom.mk'_apply, h_left, h_right]
 
 /-- If `x` is integral above `p` and `w` is an integer vector, then the delta form `δ_x(w)` has
 `p`-adic gauge at most `1` at every point. -/
@@ -683,15 +781,19 @@ lemma exists_lowerChain_integral_and_weylNormSq_le : ∃ c : D.MFoldTwist → �
         ∀ g : Gf D.E (D.Y D.m),
           weylNormSq (σ ∘ (D.lowerChain .one (s • r φ)).val g) ≤
             exp (2 * D.x ^ 201 * D.b ^ 2) * B := by
-  obtain ⟨c, hc, Ψ, hΨ, β, r, hr_onto, h_value⟩ := D.exists_dualPairing_eq_mul_lastPathPeriod
-  obtain ⟨N, hN_ne, hN_le, h_int⟩ := D.exists_mul_lastPathPeriod_mem_embValRing
+  refine D.exists_dualPairing_eq_mul_lastPathPeriod.elim fun c hc ↦
+    hc.2.elim fun Ψ hΨ ↦ hΨ.2.elim fun β hβ ↦ hβ.elim fun r hr ↦
+      D.exists_mul_lastPathPeriod_mem_embValRing.elim fun N hN ↦ ?_
   -- If `β = 0` all pairings vanish and `s = 1`, `ε = 0` will do; otherwise `s` turns `β` into the
   -- hook number times `N`.
-  obtain ⟨s, ε, hs_ne, hε, hs⟩ :
-      ∃ s ε : ℂ, s ≠ 0 ∧ (ε = 0 ∨ ε = 1) ∧ s * β = D.dualHook * (ε * N) := by
-    obtain rfl | hβ := eq_or_ne β 0
-    · exact ⟨1, 0, one_ne_zero, .inl rfl, by simp⟩
-    · exact ⟨D.dualHook * N / β, 1, by simp [hβ, hN_ne], .inr rfl, by simp [hβ]⟩
+  let s : ℂ := if β = 0 then 1 else D.dualHook * N / β
+  let ε : ℂ := if β = 0 then 0 else 1
+  have hs_ne : s ≠ 0 := by
+    by_cases hβ0 : β = 0
+    · simp [s, hβ0]
+    · simp [s, hβ0, hN.1]
+  have hs : s * β = D.dualHook * (ε * N) := by
+    by_cases hβ0 : β = 0 <;> simp [s, ε, hβ0]
   let Ξ (ϑ : D.MFoldTwist) (φ : D.gridLevelForms D.m) (x : Gf D.E (D.Y D.m))
       (v : D.DualVector) : ℂ :=
     lastPathPeriod (Ψ ϑ) fun z ↦ z.rec (lastPathConjDelta ϑ x v) φ.1
@@ -699,15 +801,18 @@ lemma exists_lowerChain_integral_and_weylNormSq_le : ∃ c : D.MFoldTwist → �
       (v : D.DualVector) :
       v ⬝ᵥ D.dualPairing.map (↑) *ᵥ ((c ϑ / c 1 : ℂ) • D.lowerChain ϑ (s • r φ)).1 x =
         D.dualHook * (ε * (N * Ξ ϑ φ x v)) :=
-    calc _ = s * β * Ξ ϑ φ x v := by simp [Ξ, ← h_value, mulVec_smul, mul_left_comm, mul_assoc]
-      _ = _ := by rw [hs, mul_assoc, mul_assoc]
-  refine ⟨c, hc, r, s, hr_onto, hs_ne, fun ϑ p _ _ φ hp hφ ↦ ?_, fun σ φ B hB x ↦ ?_⟩
+    calc _ = s * (v ⬝ᵥ D.dualPairing.map (↑) *ᵥ ((c ϑ / c 1 : ℂ) • D.lowerChain ϑ (r φ)).1 x) := by
+          rw [map_smul, smul_comm, Submodule.coe_smul_of_tower, Pi.smul_apply, mulVec_smul,
+            dotProduct_smul, smul_eq_mul]
+      _ = s * (β * Ξ ϑ φ x v) := by rw [hr.2]
+      _ = _ := by rw [← mul_assoc, hs, mul_assoc, mul_assoc]
+  refine ⟨c, hc.1, r, s, hr.1, hs_ne, fun ϑ p _ _ φ hp hφ ↦ ?_, fun σ φ B hB x ↦ ?_⟩
   · -- (a) At integral points the delta forms of integral vectors are integral.
-    have hε_int : ε ∈ embValRing := by obtain rfl | rfl := hε <;> simp
+    have hε_int : ε ∈ embValRing := by by_cases hβ0 : β = 0 <;> simp [ε, hβ0]
     have hΞ_int {x : Gf D.E (D.Y D.m)} (hx : x ∈ integralAbove (D.Y D.m) p)
         (w : WeylIndex (D.Y D.m) (D.lastPathColumns false) → ℤ) :
         N * Ξ ϑ φ x (fun i ↦ w i) ∈ embValRing := by
-      refine h_int (hΨ ϑ) (fixedByOuterLevels_lastPathConjDelta ϑ x _ φ) hp (Bool.forall_bool.2
+      refine hN.2.2 (hΨ.1 ϑ) (fixedByOuterLevels_lastPathConjDelta ϑ x _ φ) hp (Bool.forall_bool.2
         ⟨weylGauge_lastPathConjDelta_le_one ϑ x hx w, fun g ↦ ?_⟩)
       simpa only [mul_one] using hφ g
     exact weylGauge_le_one_of_integralAbove _ fun x hx ↦
@@ -716,10 +821,10 @@ lemma exists_lowerChain_integral_and_weylNormSq_le : ∃ c : D.MFoldTwist → �
   -- (b) The conjugates of the sum `Ξ` for delta forms are small.
   have hΞ_le (v : D.DualVector) :
       ‖σ (Ξ 1 φ x v)‖ ≤ exp (D.x ^ 200 * D.b ^ 2) * √(weylNormSq (σ ∘ v)) * √B :=
-    D.norm_lastPathPeriod_le (hΨ 1) (fixedByOuterLevels_lastPathConjDelta 1 x v φ) σ
+    D.norm_lastPathPeriod_le (hΨ.1 1) (fixedByOuterLevels_lastPathConjDelta 1 x v φ) σ
       (B := fun z ↦ if z then B else weylNormSq (σ ∘ v))
       (Bool.forall_bool.2 ⟨weylNormSq_lastPathConjDelta_le 1 x v σ, hB⟩)
-  have hε_le : ‖σ ε‖ ≤ 1 := by obtain rfl | rfl := hε <;> simp
+  have hε_le : ‖σ ε‖ ≤ 1 := by by_cases hβ0 : β = 0 <;> simp [ε, hβ0]
   have h_hook : (0 : ℝ) ≤ D.dualHook := mod_cast hookNumber_pos.le
   have h_pair_le (v : D.DualVector) :
       ‖σ (v ⬝ᵥ D.dualPairing.map (↑) *ᵥ (D.lowerChain .one (s • r φ)).1 x)‖ ≤
@@ -731,7 +836,9 @@ lemma exists_lowerChain_integral_and_weylNormSq_le : ∃ c : D.MFoldTwist → �
           simp [abs_of_nonneg h_hook, mul_assoc]
       _ ≤ D.dualHook * 1 * exp (D.x ^ 99 * D.b ^ 2) *
           (exp (D.x ^ 200 * D.b ^ 2) * √(weylNormSq (σ ∘ v)) * √B) := by
-          grw [hε_le, hN_le, hΞ_le]
+          gcongr
+          · exact hN.2.1
+          · exact hΞ_le v
       _ = D.dualHook * exp (D.x ^ 99 * D.b ^ 2) * exp (D.x ^ 200 * D.b ^ 2) * √B *
           √(weylNormSq (σ ∘ v)) := by ring
       _ ≤ _ := by grw [D.dualHook_mul_exp_le]
@@ -746,25 +853,19 @@ the values have squared norm at most `exp (x ^ 99 * b ^ 2)`, with `x = D.x` the 
 sum and `b = D.b` the weight at the `b`-places. -/
 lemma span_isShort_eq_top_gridLevelForms : span ℂ {φ : D.gridLevelForms D.m |
     IsShort (exp (D.x ^ 99 * D.b ^ 2)) (D.lastPathToAlgForm true φ.val)} = ⊤ := by
-  have h_card : card (D.LastPathIndex true 0) ≤ 2 * D.n D.m := card_lastPathIndex_le true zero_le
-  have h_alg : span ℂ {φ : levelSpace (algFormRep (D.lastPathColumns true)
-    (D.lastPathDetExp true 0))
-      (principalLevel (D.LastPathIndex true 0) D.gridLevelGen) |
-        IsShort (exp (D.x ^ 99 * D.b ^ 2)) φ.1} = ⊤ := by
-    refine New.span_isShort_eq_top
-      (D.classAut_eq_bot_of_le_chosenLevel
-        (D.principalLevel_le_chosenLevel piM_dvd_gridLevelGen) h_card)
-      P.conductor_mem_differentIdeal (by grw [boxes_lastPathColumns_le_natB_mul true zero_le,
-        h_card]) ?_
-    grw [shortBasisConst, h_card]
-    exact le_exp_of_log_le D.le_of_hasLogBound
   -- Transport along the isomorphism `e` between algebraic forms and forms of level `gridLevelGen`.
   let e : _ ≃ₗ[ℂ] D.gridLevelForms D.m :=
     (D.gridSpace 0 true 0 D.m).algFormEquiv (D.isHCParam_lastPathColumns true zero_le)
       (principalLevel (D.LastPathIndex true 0) D.gridLevelGen)
-  have h_symm (φ : D.gridLevelForms D.m) : (e.symm φ).1 = D.lastPathToAlgForm true φ.1 := rfl
-  rw [← e.range, e.range_eq_map, ← h_alg, map_span, LinearEquiv.coe_coe, e.image_eq_preimage_symm]
-  simp only [Set.preimage_ofPred_eq, h_symm]
+  have h_card := D.card_lastPathIndex_le true zero_le
+  rw [← e.range, e.range_eq_map, ← New.span_isShort_eq_top
+    (D.classAut_eq_bot_of_le_chosenLevel (D.principalLevel_le_chosenLevel piM_dvd_gridLevelGen)
+      h_card) P.conductor_mem_differentIdeal
+    (by grw [boxes_lastPathColumns_le_natB_mul true zero_le, h_card]) _,
+    map_span, LinearEquiv.coe_coe, e.image_eq_preimage_symm]
+  · rfl
+  · grw [shortBasisConst, h_card]
+    exact le_exp_of_log_le D.le_of_hasLogBound
 
 /-- The space of forms on `Y₀` of principal level at the chosen places is spanned by auxiliary forms
 with integral and small lifts. There are constants `c ϑ`, whose modulus is, up to a constant and a
@@ -783,15 +884,14 @@ lemma exists_span_short_lifts_eq_top : ∃ c : D.MFoldTwist → ℂˣ,
       ∀ (σ : ℂ ≃+* ℂ) (g : Gf D.E (D.Y D.m)),
         weylNormSq (σ ∘ (D.lowerChain .one y).val g) ≤ exp (D.x ^ 202 * D.b ^ 2)} = ⊤ := by
   -- Short forms `φ` span and `r` is onto, so the forms `s • r φ` span.
-  obtain ⟨c, hc, r, s, hr_onto, hs_ne, h_int, h_small⟩ :=
-    D.exists_lowerChain_integral_and_weylNormSq_le
-  refine ⟨c, hc, eq_top_mono ?_ hr_onto⟩
+  refine D.exists_lowerChain_integral_and_weylNormSq_le.elim fun c hc ↦
+    hc.2.elim fun r hr ↦ hr.elim fun s hs ↦ ⟨c, hc.1, eq_top_mono ?_ hs.1⟩
   rw [r.range_eq_map, ← D.span_isShort_eq_top_gridLevelForms, map_span_le]
-  intro φ ⟨hφ_int, hφ_small⟩
-  refine (smul_mem_iff _ hs_ne).1 (subset_span
-    ⟨fun ϑ p _ place hp ↦ h_int ϑ p place φ hp (hφ_int p), fun σ g ↦ ?_⟩)
+  intro φ hφ
+  refine (smul_mem_iff _ hs.2.1).1 (subset_span
+    ⟨fun ϑ p _ place hp ↦ hs.2.2.1 ϑ p place φ hp (hφ.1 p), fun σ g ↦ ?_⟩)
   calc _ ≤ exp (2 * D.x ^ 201 * D.b ^ 2) * exp (D.x ^ 99 * D.b ^ 2) :=
-        h_small σ φ _ (hφ_small σ) g
+        hs.2.2.2 σ φ _ (hφ.2 σ) g
     _ = exp (2 * D.x ^ 201 * D.b ^ 2 + D.x ^ 99 * D.b ^ 2) := by rw [exp_add]
     _ ≤ _ := exp_le_exp.2 D.le_of_hasLogBound
 

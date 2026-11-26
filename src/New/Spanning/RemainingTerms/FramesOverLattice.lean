@@ -55,7 +55,7 @@ vectors of finite adeles over the ring `Ô E` of integral finite adeles, with `K
 index in `K'`. Attach to each element of `A` a family `f a`, indexed by `ι`, of vectors of `K'`. If
 every nonempty subset of `A` whose families are congruent modulo `K` has at most `x` elements, then
 `A` has at most `[K' : K ∩ K'] ^ card ι * x` elements. -/
-lemma encard_le_of_colouring {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E]
+lemma encard_le_of_colouring {E : Type} [Field E] [CMType E]
     {α ι σ : Type} [Fintype ι] {A : Set α} (f : α → ι → σ → 𝔸f E)
     {K K' : Submodule (Ô E) (σ → 𝔸f E)} (h_index : submoduleIndex K K' ≠ 0)
     (hf : ∀ a ∈ A, ∀ i : ι, f a i ∈ K') {x : ℝ≥0∞}
@@ -127,6 +127,7 @@ lemma IsFrameSet.mono {c : S.Classes} {B : Set (S.Classes × S.G E)} (hB : S.IsF
 
 variable [S.IsAdmissible] {c : S.Classes} {B : Set (S.Classes × S.G E)}
 
+omit [S.IsAdmissible] in
 /-- The matrix of products of the standard frame with the frame of a term of a frame set has
 integral entries. -/
 lemma IsFrameSet.isIntegral_frameProducts (hB : S.IsFrameSet c B) {p : S.Classes × S.G E}
@@ -176,6 +177,7 @@ section Rounds
 variable {j : Fin (𝔰.ϱ + 2)} {c : S.Classes} {B : Set (S.Classes × S.G E)}
   {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E} {r l : ℕ} {y : Matrix 𝔰.κ (Fin r) E}
 
+omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
 /-- Let `γ` be a term over the block `(c, s, c')`: a rational element such that `h_c⁻¹ γ h_c'`, for
 the representatives of the classes `c` and `c'`, is integral with reduction `s`. The entries of its
 matrix of shared vectors for the index `j` are algebraic integers. -/

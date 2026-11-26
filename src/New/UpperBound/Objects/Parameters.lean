@@ -405,7 +405,7 @@ lemma abs_gridParam_le (hi : i ≤ D.m) (hj : j ≤ D.m) (x : D.GridIndex z i j)
   -- each entry is bounded by `10 * w (2 * m)`
   have h_top : 10 * D.liftWeight (2 * D.m) τ ≤ ⌈20 * D.b⌉₊ := by
     rify
-    linarith [D.liftWeight_le_two_mul_b (le_refl (2 * D.m)) τ, Nat.le_ceil (20 * D.b)]
+    linarith only [D.liftWeight_le_two_mul_b (le_refl (2 * D.m)) τ, Nat.le_ceil (20 * D.b)]
   grw [← h_top, gridParam]
   rcases D.gridBlockEquiv x with (n | ⟨l, b⟩) | ⟨l, b⟩ <;> grind [targetParameter_eq]
 
@@ -532,12 +532,10 @@ lemma gridBlocks_subset (z : Bool) (hi : i ≤ D.m) (hj : o + j ≤ D.m) :
 
 end Nodes
 
-/-- At an infinite place `τ` of the field `D.E`, the centres `±w_(l+1)(τ)`, `l < m`, of the grid `z`
-are separated by `Δ - t - 2`. The block lengths have the parity of the size of the stem, the
-parameter on the base. For each centre `c`, the doubled entries of the stem and of the blocks of the
-other centres are at distance at least `Δ - t - 2` plus the block length of `c` from `2c`. -/
-lemma isSeparated_gridCentres {P : Parameters} (D : Data P) (τ : D.Φ) (z : Bool) :
-    (D.gridCentres τ z).IsSeparated (D.gap - D.t - 2) := by
+private lemma isSeparated_gridCentres_on {P : Parameters} (D : Data P) (τ : D.Φ) (z : Bool)
+    (B : Finset (ℕ ⊕ ℕ)) :
+    ({ D.gridCentres τ z with centres := B } : CentreSystem (ℕ ⊕ ℕ)).IsSeparated
+      (D.gap - D.t - 2) := by
   have h_z : z.toNat ≤ 1 := z.toNat_le
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
   have h_gap : D.gap = 2 * D.halfGap := rfl
@@ -577,6 +575,14 @@ lemma isSeparated_gridCentres {P : Parameters} (D : Data P) (τ : D.Φ) (z : Boo
       simp only [gridCentres, Sum.elim_inl, Sum.elim_inr, le_abs, ne_eq, Sum.inl.injEq,
         Sum.inr.injEq] at hb hne ⊢
       omega
+
+/-- At an infinite place `τ` of the field `D.E`, the centres `±w_(l+1)(τ)`, `l < m`, of the grid `z`
+are separated by `Δ - t - 2`. The block lengths have the parity of the size of the stem, the
+parameter on the base. For each centre `c`, the doubled entries of the stem and of the blocks of the
+other centres are at distance at least `Δ - t - 2` plus the block length of `c` from `2c`. -/
+lemma isSeparated_gridCentres {P : Parameters} (D : Data P) (τ : D.Φ) (z : Bool) :
+    (D.gridCentres τ z).IsSeparated (D.gap - D.t - 2) :=
+  D.isSeparated_gridCentres_on τ z _
 
 section Entries
 
@@ -666,52 +672,37 @@ lemma three_mul_halfGap_le_abs_targetParameter_add_liftWeight {n l : ℕ} (hl : 
 
 end Entries
 
+/-- Taking the occupied blocks as the entire set of centres leaves no outside centre to
+contribute a sign. The same entries then give the compact form of the parameter. -/
+private lemma isParam_compactForm_gridParam {j : ℕ} {P : Parameters} (D : Data P) {o i : ℕ}
+    (τ : D.Φ) (z : Bool) :
+    ({ D.gridCentres τ z with centres := gridBlocks o i j } : CentreSystem (ℕ ⊕ ℕ)).IsParam
+      (gridBlocks o i j) 1 (D.gridParam z o i j τ).compactForm := by
+  refine ⟨?_, ?_, fun x ↦ by simp [CentreSystem.sign]⟩
+  · change card (D.GridIndex z i j) = (D.gridCentres τ z).rank (gridBlocks o i j)
+    rw [card_gridIndex, CentreSystem.rank, card_stem_gridCentres]
+    simp [gridBlocks, gridCentres, add_assoc]
+  · change univ.image (fun x ↦ D.gridParam z o i j τ x +
+        (D.gridCentres τ z).lowering (gridBlocks o i j)) = (D.gridCentres τ z).entries (gridBlocks o i j)
+    have h_shift (p : ℕ → Prop) :
+        (∃ l : ℕ, (o ≤ l ∧ l < o + j) ∧ p l) ↔ ∃ l < j, p (o + l) :=
+      ⟨fun ⟨l, hl, hp⟩ ↦ ⟨l - o, by grind⟩, fun ⟨l, h_lt, hp⟩ ↦ ⟨o + l, by omega, hp⟩⟩
+    ext y
+    simp only [gridParam_add_lowering, mem_image, mem_univ, true_and]
+    rw [D.gridBlockEquiv.exists_congr_left]
+    simp [CentreSystem.entries, CentreSystem.block, gridCentres, gridBlocks, mem_centredBlock,
+      Fin.exists_iff, h_shift, or_assoc, eq_comm (a := y)]
+
+private lemma hasGap_compactForm_gridParam {j : ℕ} {P : Parameters} (D : Data P) {o i : ℕ}
+    (τ : D.Φ) (z : Bool) :
+    (D.gridParam z o i j τ).compactForm.HasGap (D.gap - D.t - 2) :=
+  (D.isParam_compactForm_gridParam τ z).hasGap (D.isSeparated_gridCentres_on τ z _) (fun _ hx ↦ hx)
+
 /-- At an infinite place `τ` the doubled parameter of the node `(i, j)` of grid `z` with offset `o`
 takes distinct values at distinct indices. -/
 lemma gridParam_injective {j : ℕ} {P : Parameters} (D : Data P) {z : Bool} {o i : ℕ} (τ : D.Φ) :
-    Injective (D.gridParam z o i j τ) := by
-  intro x y hxy
-  have h_eq : D.gridParam z o i j τ x + (D.gridCentres τ z).lowering (gridBlocks o i j) =
-      D.gridParam z o i j τ y + (D.gridCentres τ z).lowering (gridBlocks o i j) := by rw [hxy]
-  rw [gridParam_add_lowering, gridParam_add_lowering] at h_eq
-  -- The base entries are distinct. The blocks are short against the distance of their centres
-  -- from each other and from the base entries.
-  have h_z : z.toNat ≤ 1 := z.toNat_le
-  have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-  have h_gap : D.gap = 2 * D.halfGap := rfl
-  have h_base (n n' : ℕ) (h_row : D.targetParameter τ n = D.targetParameter τ n') : n = n' :=
-    (D.targetParameter_strictAnti τ).injective h_row
-  have h_stem (n : ℕ) : 2 * D.targetParameter τ n ≤ D.k := D.two_mul_targetParameter_le τ n
-  have h_centre (l : ℕ) : D.gap ≤ D.liftWeight (l + 1) τ := D.gap_le_liftWeight_succ τ l
-  have h_apart (l l' : ℕ) (h_near : |(D.liftWeight (l + 1) τ - D.liftWeight (l' + 1) τ : ℤ)| <
-    D.gap) : l = l' := by
-    have h_lt : l < l' → D.liftWeight (l + 1) τ + D.gap ≤ D.liftWeight (l' + 1) τ :=
-      D.liftWeight_succ_add_gap_le τ
-    have h_gt : l' < l → D.liftWeight (l' + 1) τ + D.gap ≤ D.liftWeight (l + 1) τ :=
-      D.liftWeight_succ_add_gap_le τ
-    rw [abs_lt] at h_near
-    omega
-  have h_far (n l : ℕ) :
-      D.halfGap ≤ D.targetParameter τ n + D.liftWeight l τ ∨ D.targetParameter τ n + D.liftWeight l
-        τ ≤
-        -D.halfGap :=
-    (lt_or_ge n (D.posRank l)).imp (D.halfGap_le_targetParameter_add_liftWeight τ)
-      (D.targetParameter_add_liftWeight_le_neg_halfGap τ)
-  refine D.gridBlockEquiv.injective ?_
-  revert h_eq
-  -- Each index lies in the base, in an up block or in a down block.
-  rcases D.gridBlockEquiv x with (⟨n, hn⟩ | ⟨⟨l, hl⟩, b, hb⟩) | ⟨⟨l, hl⟩, b, hb⟩ <;>
-    rcases D.gridBlockEquiv y with (⟨n', hn'⟩ | ⟨⟨l', hl'⟩, b', hb'⟩) | ⟨⟨l', hl'⟩, b', hb'⟩ <;>
-    simp only [Sum.elim_inl, Sum.elim_inr, Sum.inl.injEq, Fin.mk.injEq, reduceCtorEq]
-  · grind only [h_base n n']
-  · grind only [h_stem n, h_centre l']
-  · grind only [h_far n (o + l' + 1)]
-  · grind only [h_stem n', h_centre l]
-  · grind [h_apart l l']
-  · grind only [h_centre l, h_centre (o + l')]
-  · grind only [h_far n' (o + l + 1)]
-  · grind only [h_centre l', h_centre (o + l)]
-  · grind [h_apart (o + l) (o + l')]
+    Injective (D.gridParam z o i j τ) :=
+  (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).injective
 
 section Steps
 
@@ -720,13 +711,8 @@ variable {j : ℕ} {P : Parameters} (D : Data P) {z : Bool} {o i : ℕ} (τ : D.
 /-- Each entry of the doubled parameter `D.gridParam z o i j τ` at the node `(i, j)` has the parity
 of `card (D.GridIndex z i j) - 1`, the size of the index set minus one. -/
 lemma even_gridParam_add_card_sub_one (x : D.GridIndex z i j) :
-    Even (D.gridParam z o i j τ x + card (D.GridIndex z i j) - 1) := by
-  have h_t : D.t % 2 = 1 := Nat.odd_iff.1 D.t_odd
-  have h_rank : card (D.GridIndex z i j) % 2 = (if z then 0 else (i + j + 1) % 2) :=
-    D.card_gridIndex_mod_two z i j
-  generalize card (D.GridIndex z i j) = N at h_rank ⊢
-  rw [Int.even_iff, gridParam]
-  rcases D.gridBlockEquiv x with (n | ⟨l, b⟩) | ⟨l, b⟩ <;> grind
+    Even (D.gridParam z o i j τ x + card (D.GridIndex z i j) - 1) :=
+  (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).parity x
 
 /-- At the infinite place `τ`, two entries of the doubled parameter at a node whose signs differ
 are at least `2 * D.gap = 4 * D.halfGap` apart. -/
@@ -823,17 +809,8 @@ The doubled parameter at `τ` of the node `(i, j)` of grid `z` with offset `o` i
 the set `gridBlocks o i j` in the system `D.gridCentres τ z`. -/
 lemma isParam_gridParam (τ : D.Φ) (z : Bool) (hj : o + j ≤ D.m) (h_zero : o = 0 ∨ i = 0) :
     (D.gridCentres τ z).IsParam (gridBlocks o i j) ((-1) ^ o) (D.gridParam z o i j τ) := by
-  refine ⟨?_, ?_, D.gridSigns_eq_mul_sign τ hj h_zero⟩
-  · rw [card_gridIndex, CentreSystem.rank, card_stem_gridCentres]
-    simp [gridBlocks, gridCentres, add_assoc]
-  · have h_shift (p : ℕ → Prop) :
-        (∃ l : ℕ, (o ≤ l ∧ l < o + j) ∧ p l) ↔ ∃ l < j, p (o + l) :=
-      ⟨fun ⟨l, hl, hp⟩ ↦ ⟨l - o, by grind⟩, fun ⟨l, h_lt, hp⟩ ↦ ⟨o + l, by omega, hp⟩⟩
-    ext y
-    simp only [gridParam_add_lowering, mem_image, mem_univ, true_and]
-    rw [D.gridBlockEquiv.exists_congr_left]
-    simp [CentreSystem.entries, CentreSystem.block, gridCentres, gridBlocks, mem_centredBlock,
-      Fin.exists_iff, h_shift, or_assoc, eq_comm (a := y)]
+  have h := D.isParam_compactForm_gridParam (o := o) (i := i) (j := j) τ z
+  exact ⟨h.card_eq, h.image_eq, D.gridSigns_eq_mul_sign τ hj h_zero⟩
 
 /-! ### The parameters at the two ends of a step correspond -/
 

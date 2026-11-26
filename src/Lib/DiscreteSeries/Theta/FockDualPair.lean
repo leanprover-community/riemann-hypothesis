@@ -616,7 +616,6 @@ theorem fockLaplacian_eq_zero {a : R} {G : Submodule ℂ (MvPolynomial ι ℂ)} 
     hQ.trans (LinearMap.sum_apply ..)
   have h_sign (c : C) : T.varSign (b, c) = -T.varSign (a, c) := by
     simp [pairSign, (units_ne_iff_eq_neg.1 hab.symm)]
-  have h_η (r : R) (c : C) : T.indexSign (T.varEquiv (r, c)) = T.varSign (r, c) := by simp
   have hQ_deg : Q ∈ polyDegreeLE (j - 2) := by
     rw [hQ_sum]
     exact sum_mem fun c hc ↦ glOp_mem_polyDegreeLE hP_deg (by grind [Units.val_neg, Units.val_one])
@@ -684,8 +683,8 @@ theorem isLaplaceHarmonic_of_isKHighest {ν : R → ℤ} {l : HCParam ε} {P : M
   · rw [h_comm x x a b rfl, h_weight]
     simp only [map_smul, Pi.add_apply, Pi.sub_apply, single_apply, eq_comm (a := b)]
     split_ifs <;> simp_all [add_smul, sub_smul]
-  · rw [h_comm x z a b hxz, h_raise x z hxz h_lt]
-    grind
+  · rw [h_comm x z a b hxz, h_raise x z hxz h_lt, map_zero, zero_add]
+    split_ifs <;> grind
 
 /-- Let `ε a = ε b`. If the compact matrix unit `E b a` of the row action maps `N` into `G`, then
 `E a b` maps `perpInDegree j G` (the orthogonal complement of `G` in degree at most `j`) into

@@ -134,7 +134,7 @@ lemma sum_coeff_labelIdem_radicalHom {c : k[X]} (hc : IsLabel (Fintype.card n) c
   have h_mean : finMean (χ ∘ U *
       (Representation.trivial ℂ (Multiplicative (Matrix n n k)) ℂ).character) = 0 := by
     have h_triv : (Representation.trivial ℂ (Multiplicative (Matrix n n k)) ℂ).character = 1 := by
-      ext Z; simp [Representation.character, Representation.trivial]
+      ext Z; simp [Representation.character]
     rw [h_triv, mul_one]
     obtain ⟨hc_monic, -⟩ := hc
     exact finMean_labelChar_radicalHom hc_monic hc_irr hT_empty hT_univ

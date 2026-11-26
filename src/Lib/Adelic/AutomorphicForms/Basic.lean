@@ -322,26 +322,15 @@ theorem exists_height_le_mul (hK : IsCompact K) :
   -- `c * R` times as long; so the first minimum at `g` is at most `max 1 (c * R)` times
   -- that at `k`.
   obtain ⟨c, hc, h_lat⟩ := V.exists_smul_mulVec_mem_latticeBall (hK.image continuous_snd)
-  obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ x ∈ K, ∀ w : NumberField.InfinitePlace E,
-      ‖(x.1 w).val.val‖ ≤ R := by
-    obtain ⟨R, hR⟩ :=
-      hK.exists_bound_of_continuousOn (f := fun x w ↦ (x.1 w).val.val) (by fun_prop)
-    exact ⟨R, fun x hx w ↦ (norm_le_pi_norm _ w).trans (hR x hx)⟩
-  refine ⟨max 1 (c * R), le_max_left _ _, fun γ g k h_mem ↦ ?_⟩
-  have short_le (y : n → E) (hy : y ∈ (V.move k).baseLattice) (y_ne : y ≠ 0) :
-      (V.move g).firstMinimum ≤ max 1 (c * R) * ‖(V.move k).archCoords y‖ := by
-    obtain ⟨mem_lat, norm_le⟩ : (c : E) • γ.val.val.mulVec y ∈
-        (V.move g).latticeBall (c * R * ‖(V.move k).archCoords y‖) :=
-      h_lat (Set.mem_image_of_mem Prod.snd h_mem) (hR _ h_mem) y hy
-    have mulVec_ne : γ.val.val.mulVec y ≠ 0 := show γ • y ≠ 0 from (smul_ne_zero_iff_ne γ).2 y_ne
-    have image_ne : (c : E) • γ.val.val.mulVec y ≠ 0 :=
-      smul_ne_zero (Nat.cast_ne_zero.2 hc) mulVec_ne
-    grw [firstMinimum_le mem_lat image_ne, norm_le, ← le_max_right]
-  -- By `le_firstMinimum_iff` this is `short_le` together with the bound `1` on the first minimum at
-  -- `g`.
-  have h_min : (max 1 (c * R) * V.height g)⁻¹ ≤ (V.move k).firstMinimum := by
-    simpa [le_firstMinimum_iff, height, field] using short_le
-  exact inv_le_of_inv_le₀ (by simp) h_min
+  obtain ⟨R, hR⟩ :=
+    hK.exists_bound_of_continuousOn (f := fun x w ↦ (x.1 w).val.val) (by fun_prop)
+  refine ⟨max 1 (c * R), le_max_left _ _, fun γ g k h_mem ↦ inv_le_of_inv_le₀ (by simp) ?_⟩
+  simp [le_firstMinimum_iff, height, field]
+  intro y hy y_ne
+  obtain ⟨mem_lat, norm_le⟩ :=
+    h_lat ⟨_, h_mem, rfl⟩ (fun w ↦ (norm_le_pi_norm _ w).trans (hR _ h_mem)) y hy
+  grw [firstMinimum_le mem_lat (smul_ne_zero (Nat.cast_ne_zero.2 hc) <|
+    show γ • y ≠ 0 from (smul_ne_zero_iff_ne γ).2 y_ne), norm_le, ← le_max_right]
 
 /-- For a compact set K ⊆ G, a real C and a natural number B, the function g ↦ C·ht(g)^B is bounded
 above on the set of g that a point of Γ moves into K. Here ht is the height of V, the inverse of

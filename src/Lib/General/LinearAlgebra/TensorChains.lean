@@ -13,7 +13,7 @@ steps from pure data to arbitrary tensors of the data.
 
 ## Main definitions and results
 
-* `New.index_stabilizer_GL_vector`: over a finite field `F`, the stabiliser in `GL n F` of a nonzero
+* `New.index_stabilizer_GL_vector`: over a field `F`, the stabiliser in `GL n F` of a nonzero
   vector has index `|F| ^ |n| - 1`, by orbit-stabiliser.
 * `New.TensorChain`: the tensor product `S (j-1) ⊗ (⋯ ⊗ (S 0 ⊗ ℂ))`, which is `ℂ` for `j = 0`.
 * `New.TensorChain.lift`, `New.TensorChain.lift_pure`: for `x` in `M 0`, the linear map to `M j`
@@ -72,9 +72,9 @@ lemma New.exists_GL_smul_single {v : n → R} (hv : ∃ j : n, IsUnit (v j)) (i 
   have h_det : IsUnit (updateCol 1 j v).det := by simpa [← cramer_apply] using hj
   exact ⟨.mk'' _ h_det * .swap R j i, funext fun _ ↦ by simp [Units.smul_def]⟩
 
-/-- Over a finite field `F`, the stabiliser in `GL n F` of a nonzero vector has index
-`|F| ^ |n| - 1`, the number of nonzero vectors. -/
-lemma New.index_stabilizer_GL_vector {F : Type*} [Field F] [Finite F] {u : n → F} (hu : u ≠ 0) :
+/-- Over a field `F`, the stabiliser in `GL n F` of a nonzero vector has index
+`Nat.card F ^ Fintype.card n - 1`. For finite `F`, this counts the nonzero vectors. -/
+lemma New.index_stabilizer_GL_vector {F : Type*} [Field F] {u : n → F} (hu : u ≠ 0) :
     (stabilizer (GL n F) u).index = Nat.card F ^ Fintype.card n - 1 := by
   rw [← SubMulAction.stabilizer_of_subMul (⟨u, TauCeti.mem_nonzeroVectors.2 hu⟩ : TauCeti.nonzeroVectors n F),
     index_stabilizer_of_transitive, TauCeti.natCard_nonzeroVectors,

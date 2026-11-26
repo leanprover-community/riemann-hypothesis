@@ -110,7 +110,6 @@ lemma measurePreserving_append_last {Z : Type} [MeasurableSpace Z] (ζ : Measure
     MeasurePreserving
       (fun ((t, (s, w), z) : A × (A × (κ → A)) × Z) ↦ ((s, w ⊕ᵥ fun _ : Unit ↦ u * t), z))
       ((P.modulus u • volume).prod (volume.prod ζ)) (volume.prod ζ) := by
-  classical
   let ν : Measure A := P.modulus u • volume
   have h_scale : MeasurePreserving (fun t : A ↦ u * t) ν volume := by
     refine ⟨by fun_prop, ?_⟩

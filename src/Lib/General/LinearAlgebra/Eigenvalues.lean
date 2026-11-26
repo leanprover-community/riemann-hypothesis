@@ -104,15 +104,6 @@ lemma New.det_one_sub_smul_eq_prod_roots {ι : Type*} [Fintype ι] [DecidableEq 
     (1 - c • N).det = (N.charpoly.roots.map fun x : ℂ ↦ 1 - c * x).prod :=
   det_one_sub_smul_eq_prod_roots_of_isAlgClosed N c
 
-/-! ## The trace of an idempotent matrix -/
-
-/-- The trace of an idempotent matrix over a field is its rank. -/
-lemma New.trace_eq_rank_of_isIdempotentElem {k n : Type*} [Field k] [Fintype n] [DecidableEq n]
-    {p : Matrix n n k} (hp : IsIdempotentElem p) : p.trace = p.rank := by
-  -- `p` is a projection, so its trace is the dimension of its range.
-  rw [← p.trace_toLin'_eq, ← p.finrank_range_mulVecLin]
-  exact (LinearMap.IsIdempotentElem.isProj_range _ (hp.map Matrix.toLinAlgEquiv')).trace
-
 /-! ## Sorting by adjacent swaps and common eigenvectors -/
 
 section CommonEigenvectors
@@ -245,7 +236,7 @@ lemma New.exists_eigencharacter_of_ne_bot {M : Type*} [CommMonoid M] (ρ : M →
     (hS : ∀ m : M, ∀ x ∈ S, ρ m x ∈ S) (hS_ne : S ≠ ⊥) :
     ∃ χ : M →* k, ∃ x ∈ S, x ≠ 0 ∧ ∀ m : M, ρ m x = χ m • x := by
   have comm (m n : M) : ∀ x ∈ S, ρ m (ρ n x) = ρ n (ρ m x) := by
-    simp [← End.mul_apply, ← map_mul, mul_comm]
+    simp [← mul_apply_eq_comp, ← map_mul, mul_comm]
   have : Nontrivial S := Submodule.nontrivial_iff_ne_bot.2 hS_ne
   obtain ⟨χ, -, x, x_mem, x_ne, eigen⟩ := exists_eigenvector_of_commute ρ hS comm bot_ne_top
   -- The eigenvalues are multiplicative, since scalars are determined by their action on `x ≠ 0`.

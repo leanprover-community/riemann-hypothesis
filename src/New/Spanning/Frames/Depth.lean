@@ -271,29 +271,20 @@ constant of the gauge and n = `𝔰.n`. -/
 lemma floorMassLe_depth_pow (hx : x ∈ F.positions) :
     F.FloorMassLe a (Γ.loss ^ (10 ^ 4 * 𝔰.n)) fun g : T.G ↦ F.depth a g x ^ F.volumeExponent := by
   -- For `g` in the box `F.boxSet` the depth at `σ * g` is at most `φ(y_X)`, where `y = σ⁻¹ e_a`.
-  refine Γ.floorMassLe_of_chart (b := a.castSucc) (fun ξ hξ g ↦ ?_) fun g hg ↦ ?_
-  · simp only [depth_mul_left hξ]
-  obtain ⟨φ, hφ⟩ : ∃ φ : (F.FreeIndex → A) → ℝ≥0∞,
-      F.IsCommonBound Γ.toSize Γ.loss (F.commonVectors g x 0) φ := Γ.exists_commonBound g hg x hx 0
-  have hφ_meas : Measurable φ := hφ.measurable
-  have h_depth (σ : T.G) (hσ : σ ∈ floorGroup a) :
-      F.depth a (σ * g) x ≤ φ (F.orthonormalPartᴴ *ᵥ T.splitGram *ᵥ orbitPoint a.castSucc σ) :=
-    hφ.depth_le fun w _ ↦ (isOrthogonalBelow_orthonormalPart_mulVec w).mulVec
-      (mem_partialUnitriangularGroup_of_mem_floorGroup hσ) le_rfl
-  let Ψ : (𝔰.BesselIndex → A) → ℝ≥0∞ :=
-    fun v ↦ φ (F.orthonormalPartᴴ *ᵥ T.splitGram *ᵥ v) ^ F.volumeExponent
+  refine Γ.floorMassLe_of_chart (b := a.castSucc)
+    (fun ξ hξ g ↦ by simp [depth_mul_left hξ]) fun g hg ↦ ?_
+  obtain ⟨φ, hφ⟩ := Γ.exists_commonBound g hg x hx 0
+  have := hφ.measurable
+  refine ⟨fun v ↦ φ (F.orthonormalPartᴴ *ᵥ T.splitGram *ᵥ v) ^ F.volumeExponent, ?_,
+    by fun_prop, fun σ hσ ↦ ?_⟩
   -- The bound over size `7` on the quadric comes from the bound over size `7 + 4` on X', at the
   -- cost of a factor `Λ ^ (99 n (7 + 6))`.
-  have h_free : ∫⁻ u in Γ.vecsOfSize 11, φ u ^ F.volumeExponent ≤ Γ.loss ^ (99 * 𝔰.n * 12) :=
-    hφ.lintegral_le 11
-  have h_quadric : ∫⁻ v in Γ.vecsOfSize 7, Ψ v ∂F.floorQuadricMeasure a.castSucc ≤
-      Γ.loss ^ (10 ^ 4 * 𝔰.n) :=
-    calc
-      _ ≤ Γ.loss ^ (99 * 𝔰.n * 13) * Γ.loss ^ (99 * 𝔰.n * 12) :=
-        setLIntegral_orthonormalPart_le (j := 7) (hρ := .inr rfl) h_free
-      _ = Γ.loss ^ (99 * 𝔰.n * 13 + 99 * 𝔰.n * 12) := by rw [pow_add]
-      _ ≤ Γ.loss ^ (10 ^ 4 * 𝔰.n) := pow_le_pow_right₀ Γ.one_le_loss (by lia)
-  exact ⟨Ψ, h_quadric, by fun_prop, fun σ hσ ↦ pow_le_pow_left' (h_depth σ hσ) _⟩
+  · exact (setLIntegral_orthonormalPart_le (j := 7) (hρ := .inr rfl)
+      (hφ.lintegral_le 11)).trans <|
+      (pow_add ..).symm.trans_le (pow_le_pow_right₀ Γ.one_le_loss (by lia))
+  · exact pow_le_pow_left' (hφ.depth_le fun w _ ↦
+      (isOrthogonalBelow_orthonormalPart_mulVec w).mulVec
+        (mem_partialUnitriangularGroup_of_mem_floorGroup hσ) le_rfl) _
 
 /-- The bound Λ^(10⁶ n³) for all floors of a head together: at most n floors at Λ^(10⁶ n²) each,
 with n = `𝔰.n` and Λ = `Γ.loss`, the constant of the gauge. -/
@@ -812,7 +803,7 @@ lemma gaugesDifferLe_last_quotient_of_close {u v : T.G} (hu : u ∈ T.besselU) (
   have h_eq : F.levelUnit⁻¹.val • (x⁻¹.val.val *ᵥ ω - y⁻¹.val.val *ᵥ (v⁻¹ * u).val.val *ᵥ ω) =
       ((v * y)⁻¹.val.val * (F.levelUnit⁻¹.val • ((v * y).val.val - (u * x).val.val))) *ᵥ
         x⁻¹.val.val *ᵥ ω := by
-    simp [smul_mulVec, sub_mulVec, mul_sub, sub_mul, mul_assoc, smul_sub]
+    simp [smul_mulVec, sub_mulVec, mul_sub, sub_mul, mul_assoc]
   rw [h_eq]
   have h_size : Γ.HasMatrixSize 1 (v * y).val.val := Γ.hasMatrixSize_boxSet hy
   exact mem_vecsOfSize_mono ((h_size.inv.mul h_close).mulVec hω_len)
