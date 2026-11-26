@@ -265,13 +265,6 @@ lemma norm_pow_le_norm_factorial_succ {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 /
   exact (pow_le_pow_left₀ (norm_nonneg c) hc j).trans
     (rpow_pow_le_norm_factorial_succ j)
 
-/-- If `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, then `c ^ j / (j + 1)` is
-integral. -/
-lemma norm_pow_le_norm_succ {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 / (p - 1)) : ℝ)) (j : ℕ) :
-    ‖c‖ ^ j ≤ ‖((j + 1 : ℕ) : ℂ_[p])‖ := by
-  grw [norm_pow_le_norm_factorial_succ hc j, Nat.factorial_succ, Nat.cast_mul, norm_mul,
-    norm_natCast_le_one ℂ_[p] j.factorial, mul_one]
-
 /-- Let `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, and `g(0) = 0`. If `c` divides
 the coefficients of `g` below the degree `l`, that is, they have norm at most `‖c‖`, then it also
 divides those of `exp g - 1`, where `exp g` is `expSubst g`. -/
@@ -303,7 +296,8 @@ lemma inv_smul_rescale_log_mem {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 / (p - 1
         simp [coeff_rescale, coeff_log, pow_succ, div_eq_mul_inv, mul_assoc, mul_left_comm]
     _ ≤ ‖c‖ ^ j / ‖((j + 1 : ℕ) : ℂ_[p])‖ :=
         mul_le_of_le_one_left (by positivity) (inv_mul_le_one_of_le₀ le_rfl (norm_nonneg c))
-    _ ≤ 1 := div_le_one_of_le₀ (norm_pow_le_norm_succ hc j) (norm_nonneg _)
+    _ ≤ 1 := div_le_one_of_le₀ (by grw [norm_pow_le_norm_factorial_succ hc j,
+      Nat.factorial_succ, Nat.cast_mul, norm_mul, norm_natCast_le_one ℂ_[p] j.factorial, mul_one]) (norm_nonneg _)
 
 /-- For `m` prime to `p` the series `1 + X` has an `m`-th root with constant term `1` and integral
 coefficients (it lies in the range of `seriesToCp`): the binomial series with exponent `1 / m`, as
