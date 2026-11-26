@@ -251,22 +251,6 @@ For the level places L = `D.levelPlaces ϑ`, the chosen places of L are chosen i
 `New.Data.IsChosen`, lie above p₀ or p₁ and are outside the modulus of ϑ.
 -/
 
-/-- The tame part of a tame character `ϑ` is trivial at every chosen place
-(`New.Data.IsChosen`). -/
-lemma New.Data.TameChar.tamePart_eq_one_of_isChosen {P : Parameters} {D : Data P} (ϑ : D.TameChar)
-    {v : FinPlace D.E} (hv : D.IsChosen v) : ϑ.tamePart v = 1 := by
-  refine ϑ.tamePart_eq_one v fun hQ ↦ ?_
-  -- The places of the modulus `ϑ.Q` are not chosen.
-  obtain ⟨-, h_not_chosen, -⟩ := D.normQ_mem_and_notMem_of_mem_Q ϑ (.inl hQ)
-  exact h_not_chosen hv
-
-/-- Each chosen place of the level places `D.levelPlaces ϑ` is chosen in the sense of
-`New.Data.IsChosen`. -/
-lemma New.Data.isChosen_levelPlaces_chosenPlace {P : Parameters} (D : Data P) (ϑ : D.TameChar)
-    (i : (D.levelPlaces ϑ).ChosenIndex) : D.IsChosen ((D.levelPlaces ϑ).chosenPlace i) := by
-  obtain ⟨k, w, hw, -⟩ := i
-  exact hw
-
 /-- Each chosen place of the level places `D.levelPlaces ϑ` is chosen in the sense of
 `New.Data.IsChosen`, the tame part of `ϑ` is trivial there, and it lies above `p₀` or `p₁`. -/
 lemma New.Selmer.isChosen_chosenPlace {P : Parameters} {D : Data P} (ϑ : D.TameChar)

@@ -112,6 +112,22 @@ def levelPlaces : LevelPlaces D.E where
         grind [D.isConjApart_chosenPlace.star_ne, → normQ_mem_and_notMem_of_mem_Q, Data.chosenPlace,
           ϑ.star_notMem, star_star] }
 
+/-- The tame part of a tame character `ϑ` is trivial at every chosen place
+(`New.Data.IsChosen`). -/
+lemma TameChar.tamePart_eq_one_of_isChosen {P : Parameters} {D : Data P} (ϑ : D.TameChar)
+    {v : FinPlace D.E} (hv : D.IsChosen v) : ϑ.tamePart v = 1 := by
+  refine ϑ.tamePart_eq_one v fun hQ ↦ ?_
+  -- The places of the modulus `ϑ.Q` are not chosen.
+  obtain ⟨-, h_not_chosen, -⟩ := D.normQ_mem_and_notMem_of_mem_Q ϑ (.inl hQ)
+  exact h_not_chosen hv
+
+/-- Each chosen place of the level places `D.levelPlaces ϑ` is chosen in the sense of
+`New.Data.IsChosen`. -/
+lemma isChosen_levelPlaces_chosenPlace {P : Parameters} (D : Data P) (ϑ : D.TameChar)
+    (i : (D.levelPlaces ϑ).ChosenIndex) : D.IsChosen ((D.levelPlaces ϑ).chosenPlace i) := by
+  obtain ⟨k, w, hw, -⟩ := i
+  exact hw
+
 /-- The modulus `ϖ^c Q` if `b` is `true` (the default) and `ϖ^c` if `b` is `false`. Here `ϖ` is the
 product of the chosen places above p₀, p₁, and `Q` is the product of the places of the modulus of
 `ϑ` (`New.LevelPlaces.levelModulus`). -/
