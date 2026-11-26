@@ -198,6 +198,17 @@ lemma exists_coe_eq_trace_of_isIntegral {z : P.E s}
   exact Submodule.mem_one.1
     ((differentialIdeal_le_iff (K := P.K) (L := P.E s) h_bot).1 h_le ⟨z, h_mem, rfl⟩)
 
+/-- For finite adeles `x, y ∈ α Ô`, their hermitian product times the generator of the different
+lies in `Ô`. Indeed, writing `x = α u` and `y = α v` leaves the integral factor `u * star v`. -/
+lemma mul_star_mul_relDifferentGen_mem {x y : 𝔸f (P.E s)}
+    (hx : (P.α s)⁻¹.val * x ∈ Ô (P.E s)) (hy : (P.α s)⁻¹.val * y ∈ Ô (P.E s)) :
+    x * star y * (P.relDifferentGen s).val ∈ Ô (P.E s) := by
+  have h_gen : (P.α s).val * star (P.α s).val * (P.relDifferentGen s).val ∈ Ô (P.E s) :=
+    mem_Ô.2 fun w ↦ (v_alpha_mul_star_mul_relDifferentGen w).le
+  have h_star : star (P.α s).val * star (P.α s)⁻¹.val = 1 := by simp [← star_mul']
+  convert mul_mem h_gen (mul_mem hx (star_mem_Ô hy)) using 1
+  grind [star_mul', Units.mul_inv]
+
 /-- Let `x`, `y` in the CM field `E = P.E s` lie in `𝔞₀ = E ∩ α Ô`: the finite adeles
 `finiteImage id x = α⁻¹ x` and `finiteImage id y = α⁻¹ y`, with `α = P.α s`, lie in the ring `Ô E`
 of integral adeles. Then the hermitian product `∑ τ, Φ τ x * conj (Φ τ y)` lies in `quadInt d`, the
@@ -205,23 +216,10 @@ ring of integers of `K` inside `ℂ`. -/
 lemma sum_mul_conj_mem_quadInt {x y : P.E s} (hx : finiteImage id x ∈ Ô (P.E s))
     (hy : finiteImage id y ∈ Ô (P.E s)) :
     ∑ τ : InfinitePlace (P.E s), Φ τ x * conj (Φ τ y) ∈ quadInt P.d := by
-  -- The number `x ȳ P'(ζ)` is integral: it is `α ᾱ P'(ζ)`, a unit at every finite place, times
-  -- `α⁻¹ x` and the conjugate of `α⁻¹ y`.
-  have h_gen : (P.α s).val * star (P.α s).val * (P.relDifferentGen s).val ∈ Ô (P.E s) :=
-    mem_Ô.2 fun w ↦ (v_alpha_mul_star_mul_relDifferentGen w).le
-  have h_factor : algebraMap (P.E s) (𝔸f (P.E s)) (x * star y * (P.relDifferentGen s).val) =
-      (P.α s).val * star (P.α s).val * (P.relDifferentGen s).val *
-        (finiteImage id x * star (finiteImage id y)) := by
-    have h_one : (P.α s).val * (P.α s)⁻¹.val * (star (P.α s).val * star (P.α s)⁻¹.val) = 1 := by
-      simp [← star_mul']
-    have h_conj : star (algebraMap (P.E s) (𝔸f (P.E s)) y) =
-        algebraMap (P.E s) (𝔸f (P.E s)) (star y) := by simp
-    simp only [finiteImage_id_eq_inv_alpha_mul, map_mul, star_mul', h_conj]
-    linear_combination -(algebraMap (P.E s) (𝔸f (P.E s)) x *
-      algebraMap (P.E s) (𝔸f (P.E s)) (star y) * (P.relDifferentGen s).val) * h_one
   have h_int : IsIntegral ℤ (x * star y * (P.relDifferentGen s).val) := by
-    rw [← algebraMap_mem_Ô, h_factor]
-    exact mul_mem h_gen (mul_mem hx (star_mem_Ô hy))
+    rw [← algebraMap_mem_Ô]
+    simpa using mul_star_mul_relDifferentGen_mem (P := P) (s := s) (x := algebraMap _ _ x)
+      (y := algebraMap _ _ y) hx hy
   obtain ⟨c, hc⟩ := exists_coe_eq_trace_of_isIntegral h_int
   exact ⟨c, show ((c : P.K) : ℂ) = _ by simp [hc, coe_trace_eq_sum]⟩
 
