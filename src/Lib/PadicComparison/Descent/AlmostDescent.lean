@@ -161,9 +161,9 @@ end WittTensorRegular
   quotient of V over which the tilt of a test is faithfully flat;
 * `New.Variety.faithfullyFlat_descent`: there it vanishes, as this point of b lifts to b'.
 
-`New.Variety.PerfectAlg p S` is the category of perfect S-algebras, `New.Variety.H` K F n is Ext^n(K,
-F) for functors to abelian groups, and `New.Variety.relFreeAb` U = ℤ[Y]/ℤ[U], for a subfunctor U of
-Y, gives relative cohomology. For an object X, h_X = Hom(X, −).
+`New.Variety.PerfectAlg p S` is the category of perfect S-algebras, `New.Variety.H` K F n is
+Ext^n(K, F) for functors to abelian groups, and `New.Variety.relFreeAb` U = ℤ[Y]/ℤ[U], for a
+subfunctor U of Y, gives relative cohomology. For an object X, h_X = Hom(X, −).
 -/
 
 section VDescent
@@ -768,7 +768,8 @@ private lemma isCover_reprMap_of_forall_subsingleton {b b' : PerfectAlg p OFlat}
   -- Universal points carry the statement from `OFlat`-algebras to `b`-algebras, where it is the
   -- vanishing of the relative cohomology for `E = b`. `R` restricts scalars from `b` to `OFlat`,
   -- and `u w` is the identity of `A`, seen as a `b`-algebra through `w`.
-  let R : PerfectAlg p b.obj ⥤ PerfectAlg p OFlat := lift _ (ι _ ⋙ restrictAlg ..) fun A ↦ A.property
+  let R : PerfectAlg p b.obj ⥤ PerfectAlg p OFlat := lift _ (ι _ ⋙ restrictAlg ..) fun A ↦
+      A.property
   let u {A : PerfectAlg p OFlat} (w : b ⟶ A) : A ⟶ R.obj (perfectAlgAlong w) :=
     ⟨ofHom ⟨.id _, fun s ↦ (w.hom.hom.commutes s).symm⟩⟩
   -- Over a point `w : b ⟶ A` the universal point is `A` with the `b`-algebra structure `w`.

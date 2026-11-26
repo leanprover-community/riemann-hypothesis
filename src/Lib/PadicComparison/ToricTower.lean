@@ -791,8 +791,8 @@ lemma PadicTest.isLine_compatibleRoots
       map_mul' a b := by
         have h_x_mul (k : ℕ) :
             ((x (a * b)).val k).untilt = 1 * ((x a * x b).val k).untilt := by
-          rw [one_mul, Subalgebra.coe_mul, Pi.mul_apply, map_mul, hx, hx, hx, map_mul, map_mul, mul_pow,
-            mul_mul_mul_comm]
+          rw [one_mul, Subalgebra.coe_mul, Pi.mul_apply, map_mul, hx, hx, hx, map_mul, map_mul,
+            mul_pow, mul_mul_mul_comm]
         simpa using untilt_map_eq_mul_of_forall ϕ 1 (x (a * b)) (x a * x b) h_x_mul }
   have h_sys_one {D : PadicTest} (ϕ : Hom D) : sys ϕ (ofAdd 1) = (baseOfHom ϕ).1 (r (ofAdd 1)) := by
     -- `ζ 1 = 1`, so the sequence `x 1` lifts the constant `r 1`
