@@ -301,7 +301,7 @@ lemma New.GaloisRep.exists_weak_baseChange {E E' n : Type} [Field E] [CMType E] 
     localFormTranslation κ (1 : Unit →* Gf E n)
   have h_id : heckeFun π ⊤ 1 = 1 := by
     have := QuotientGroup.subsingleton_quotient_top (G := Unit)
-    have : Unique (Unit ⧸ (⊤ : Subgroup Unit)) := .mk' _
+    let : Unique (Unit ⧸ (⊤ : Subgroup Unit)) := .mk' _
     rw [heckeFun, finsum_unique, Pi.one_apply, one_smul]
     exact π.map_one
   have h_trace : HasNonzeroTraceAround π (heckeFun π ⊤ 1)

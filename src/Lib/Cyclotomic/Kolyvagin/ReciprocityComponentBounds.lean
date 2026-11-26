@@ -440,7 +440,7 @@ lemma reciprocity_mod_ell {a : ℕ} (ha : l.Coprime a) (ha_one : a ≡ 1 [MOD N]
   -- `κ τ` is killed by a unit.
   have h_zmodModule : Module (ZMod l) (O ∙ κ τ) :=
     AddCommGroup.zmodModule (by simp [mem_span_singleton, smul_comm, hκ_tors])
-  have b := Module.finBasis (ZMod l) (O ∙ κ τ)
+  let b := Module.finBasis (ZMod l) (O ∙ κ τ)
   have τ_fix : cyclotomicCharMod Ω (N * l) τ = 1 :=
     mem_ker.1 (decompGroup_le_cycloGalGroup hB hq_one (IsFrob.mem_decompGroup hτ))
   obtain ⟨v, hv, -, ord_q⟩ := exists_isPlaceOver_prime hB

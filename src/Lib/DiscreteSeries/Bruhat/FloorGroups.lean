@@ -610,7 +610,7 @@ lemma inclMatrix_mulVec_floor_block (hl : l ≤ 𝔰.ϱ) (hs : s ∈ floorGroup 
   split_ifs with hi
   · rfl
   · rw [apply_eq_one_apply_of_mem_floorGroup hs i j (.inl (by lia)),
-      one_apply_ne (by rintro rfl; exact hi j.2)]
+      one_apply_ne (by rintro rfl; exact hi j.property)]
 
 /-- For `σ` in the fixer `H_b` of the floors below `b` and `s` in `Q_{b+1}`, the column of `σ` at
 the frame vector `f_b` vanishes in the rows of floor below `b` and is that of `σ * s` in the other
