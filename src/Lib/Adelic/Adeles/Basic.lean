@@ -174,7 +174,6 @@ def evalAt : 𝔸f E →+* LocField w := evalRingHom (fun v ↦ LocField v) w
 
 @[simp] lemma evalAt_apply (x : 𝔸f E) : evalAt w x = x w := rfl
 
-set_option synthInstance.maxHeartbeats 200000 in
 /-- The map sending a in E_w to the finite adele with component a at w and 0 elsewhere, a ring
 homomorphism that does not preserve 1. -/
 def singleAdele : LocField w →ₙ+* 𝔸f E where
