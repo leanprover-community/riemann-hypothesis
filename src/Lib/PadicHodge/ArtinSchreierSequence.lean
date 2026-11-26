@@ -81,8 +81,8 @@ lemma teichmuller_mem_wittOfMaxIdeal {x : OFlat} (hx : ¬IsUnit x) :
     | n + 1 => by simp
 
 /-- An element `σ` of `Gp p` acts on `O^♭` as the map of tilts induced by its action on `O_C`. -/
-private lemma smul_oFlat_eq_tiltMap (σ : Gp p) (x : OFlat) :
-    σ • x = tiltMap (MulSemiringAction.toRingHom (Gp p) OC σ) x :=
+private lemma smul_oFlat_eq_preTiltMap (σ : Gp p) (x : OFlat) :
+    σ • x = PreTilt.map p (MulSemiringAction.toRingHom (Gp p) OC σ) x :=
   pow_one _
 
 /-- The `n`-th coordinate of `O^♭ = PreTilt OC p` is multiplicative (stated for `O^♭`, which is the
@@ -97,11 +97,13 @@ modulo `p`: it comes from the translate of `x.untiltRoot n`, whose orbit map is 
 lemma eventually_coeff_smul_eq (x : OFlat) (g : Gp p) (n : ℕ) :
     ∀ᶠ h : Gp p in nhds g, Perfection.coeff (ModP OC p) p n (h • x) =
       Perfection.coeff (ModP OC p) p n (g • x) := by
-  -- `σ` acts on the tilt coordinate by coordinate (`tiltMap`), so the `n`-th coordinate of `σ • x`
-  -- is the class modulo `p` of `σ • x.untiltRoot n`.
+  -- `σ` acts on the tilt coordinate by coordinate (`PreTilt.map`), so the `n`-th coordinate of
+  -- `σ • x` is the class modulo `p` of `σ • x.untiltRoot n`.
   have h_coeff_smul (σ : Gp p) : Perfection.coeff (ModP OC p) p n (σ • x) =
       Ideal.Quotient.mk (span {↑p}) (σ • x.untiltRoot n) :=
-    (congrArg _ (smul_oFlat_eq_tiltMap σ x)).trans (coeff_tiltMap _ (x.mk_untiltRoot n)).symm
+    (congrArg _ (smul_oFlat_eq_preTiltMap σ x)).trans <| by
+      rw [← PreTilt.coeff_def, PreTilt.coeff_map, ← x.mk_untiltRoot n, ModP.map_mk]
+      rfl
   have h_near : ∀ᶠ h : Gp p in nhds g,
       dist (h • (x.untiltRoot n).val) (g • (x.untiltRoot n).val) < ‖(p : ℂ_[p])‖ :=
     tendsto_nhds.mp (continuousAt_id.smul_const _) _ (by simp [Nat.pos_of_neZero])

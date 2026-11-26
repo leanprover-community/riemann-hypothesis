@@ -434,7 +434,7 @@ lemma z_dvd_sub {y : BPlus} {g : Gp p} (hg : FixesLambda c.f g) (hy : y ∈ c.bi
   obtain ⟨u, hu⟩ : c.z.val ∣ g • c.z.val := by
     change c.z.val ∣ ((1, g) : FrobGal) • c.z.val
     rw [z_eq_teichmuller, smul_teichmuller]
-    simp [map_dvd, untilt_dvd_iff.mp, valRingCp.dvd_iff_norm_le, untilt_frobGal_smul]
+    simp [map_dvd, PreTilt.untilt_dvd_untilt_iff.mp, valRingCp.dvd_iff_norm_le, untilt_frobGal_smul]
   have h_dvd : ainfToBPlus c.z ∣ g • ((p : BPlus) ^ k * y) - (p : BPlus) ^ k * y := by
     rw [hk]
     simp [hg, hu, mul_assoc, ← mul_sub, -isUnit_map_iff]

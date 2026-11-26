@@ -185,7 +185,7 @@ lemma exists_crysPeriodAlgebra {N : ℕ} {y : OC} (hy : ↑p ∣ y ^ N) :
       -- Compare constant coefficients, then their untilts; that of `ξ` divides `p`.
       have h_xi : (constantCoeff xi).untilt ∣ (p : OC) :=
         (associated_untilt_coeff_zero ker_theta_eq_span_xi).dvd
-      grw [Witt.mem_span_pair_iff, ← untilt_dvd_iff, h_xi, hy]
+      grw [Witt.mem_span_pair_iff, ← PreTilt.untilt_dvd_untilt_iff, h_xi, hy]
       simp [σ, untilt_frobGal_smul, smul_teichmuller, pow_dvd_pow,
         (Nat.lt_pow_self Fact.out).le.trans']
     rw [integersToPdQuotient_untilt t]

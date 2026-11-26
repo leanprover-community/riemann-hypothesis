@@ -96,7 +96,8 @@ lemma thickeningOver.mulMu_twist [EmbeddedInQpBar p k] (g : Gp p) (c : PadicTest
       algebraMap Ainf c.Thickening (g • a) = algebraMap Ainf c'.Thickening a := by
     refine congrArg (algebraMap (WittVector p c.TiltRing) c.Thickening) ?_
     ext : 1
-    exact (congrArg _ (pow_one _)).trans (tiltMap_comp ..).symm
+    exact (congrArg (PreTilt.map p c.structureMap) (pow_one _)).trans
+      (RingHom.congr_fun (PreTilt.map_comp p c.structureMap (toRingHom (Gp p) OC g)) _).symm
   have h_mu : mu = g • ((cyclotomicGp g⁻¹).val • mu + mu ^ 2 * a) :=
     inv_smul_eq_iff.mp (eq_add_of_sub_eq' ha)
   have h_sq : algebraMap Ainf c'.Thickening mu ^ 2 = 0 :=

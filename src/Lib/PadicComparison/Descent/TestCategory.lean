@@ -306,7 +306,7 @@ instance isAdicComplete_prodRing : IsAdicComplete (span {(p : c.ProdRing)}) c.Pr
 /-- The tilt S^♭ of the ring S of a p-adic test, the inverse limit of S/p along Frobenius. -/
 abbrev TiltRing : Type := PreTilt c.ProdRing p
 
-instance : Algebra OFlat c.TiltRing := (tiltMap c.structureMap).toAlgebra
+instance : Algebra OFlat c.TiltRing := (PreTilt.map p c.structureMap).toAlgebra
 
 /-- For g in the Galois group `New.Gp` p, which acts on O_C by ring automorphisms, the endofunctor
 of p-adic tests that keeps the ring S and precomposes its structure map O_C → S with the action of
@@ -329,13 +329,14 @@ abbrev ringFunctor : PadicTest ⥤ CommRingCat := algFunctor ⋙ forget₂ (Comm
 def tilt : PadicTest ⥤ CommAlg OFlat where
   obj c := CommAlgCat.of OFlat c.TiltRing
   map {c c'} f :=
-    CommAlgCat.ofHom ⟨tiltMap (RingHomClass.toRingHom (F := c.ProdRing →ₐ[OC] c'.ProdRing) f),
+    CommAlgCat.ofHom ⟨PreTilt.map p (RingHomClass.toRingHom (F := c.ProdRing →ₐ[OC] c'.ProdRing) f),
       fun a ↦ by
         have h_comp : f.toRingHom.comp c.structureMap = c'.structureMap := f.comp_algebraMap
-        exact (tiltMap_comp c.structureMap _ a).symm.trans
-          (congrArg (fun g ↦ tiltMap g a) h_comp)⟩
-  map_id _ := CommAlgCat.hom_ext (AlgHom.ext fun a ↦ tiltMap_id a)
-  map_comp _ _ := CommAlgCat.hom_ext (AlgHom.ext fun a ↦ tiltMap_comp _ _ a)
+        exact (RingHom.congr_fun (PreTilt.map_comp p _ c.structureMap) a).symm.trans
+          (congrArg (fun g ↦ PreTilt.map p g a) h_comp)⟩
+  map_id _ := CommAlgCat.hom_ext (AlgHom.ext fun a ↦ RingHom.congr_fun (PreTilt.map_id p) a)
+  map_comp _ _ :=
+    CommAlgCat.hom_ext (AlgHom.ext fun a ↦ RingHom.congr_fun (PreTilt.map_comp p _ _) a)
 
 end PadicTest
 

@@ -8,6 +8,7 @@ import TauCeti.RingTheory.RootsOfUnity.Ultrametric
 public import Lib.ClassField.Places.GaloisDefs
 public import Mathlib.RingTheory.Perfectoid.FontaineTheta
 public import TauCeti.NumberTheory.Padics.AlgebraicClosure.Basic
+public import TauCeti.RingTheory.Perfectoid.PreTilt.ValuationRing
 public import TauCeti.Topology.Algebra.UniformMulAction
 public import TauCeti.Topology.MetricSpace.IsometricSMul
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
@@ -31,12 +32,12 @@ elements fixed by `J`.
 
 ## Main definitions and results
 
-* Tilting for a ring `R` in which `p` is not a unit. `New.Variety.tiltMap` makes Mathlib's
-  `PreTilt R p` functorial. For `p`-adically complete `R`, the untilt `x ↦ x^♯` and Fontaine's `θ`
-  are natural in `R` (`New.Variety.untilt_tiltMap`, `New.Variety.fontaineTheta_map_tiltMap`). Both
-  are onto if `R` is absolutely integrally closed
-  (`New.Variety.fontaineTheta_surjective_of_isAbsIntegrallyClosed`). The tilt of a `p`-adically
-  complete valuation ring is a valuation ring.
+* Tilting for a ring `R` in which `p` is not a unit. Tau Ceti's `PreTilt.map` makes Mathlib's
+  `PreTilt R p` functorial, and for `p`-adically complete `R` the untilt `x ↦ x^♯` and Fontaine's
+  `θ` are natural (`PreTilt.untilt_natural`, `WittVector.theta_natural`). Both are onto if `R` is
+  absolutely integrally closed (`New.Variety.fontaineTheta_surjective_of_isAbsIntegrallyClosed`).
+  The tilt of a `p`-adically complete valuation ring is a valuation ring
+  (`PreTilt.instValuationRing`).
 * The Galois group `New.Gp` of `ℚ̄_p / ℚ_p` and its cyclotomic character `New.cyclotomicGp`.
 * The continuous isometric action of `New.Gp` on `ℂ_p` (Tau Ceti's
   `UniformSpace.Completion.instMulSemiringAction`), which restricts to an action by ring
@@ -69,121 +70,13 @@ open Ideal WittVector Metric Perfection PadicComplex RingHom Valuation Valued Va
 
 namespace New.Variety
 
-variable {p : ℕ} [Fact p.Prime]
-  {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] [Fact ¬IsUnit (p : R)]
-  [Fact ¬IsUnit (p : R')] [Fact ¬IsUnit (p : R'')]
-  (f : R →+* R') (g : R' →+* R'') (x : PreTilt R p)
+variable {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R] [Fact ¬IsUnit (p : R)]
+  [IsAdicComplete (span {(p : R)}) R]
 
-/-! ### Functoriality of the tilt and of `θ` -/
+/-! ### Surjectivity of the untilt and of `θ`
 
-/-- The tilt `PreTilt R p` is the inverse limit of `R / p` along `x ↦ x ^ p`. A ring homomorphism
-`f : R → R'` induces the ring homomorphism `tiltMap f` between the tilts, which applies `f` modulo
-`p` to each component. -/
-def tiltMap : PreTilt R p →+* PreTilt R' p := map p (quotientMap _ f (by simp))
-
-/-- If `y ∈ R` lifts the `n`-th component of `x` in `R / p`, then `f y` lifts the `n`-th component
-of `tiltMap f x` in `R' / p`. -/
-lemma coeff_tiltMap {x : PreTilt R p} {n : ℕ} {y : R}
-    (hy : y = Perfection.coeff (ModP R p) p n x) :
-    f y = Perfection.coeff (ModP R' p) p n (tiltMap f x) := by
-  -- `tiltMap f` acts on each component by the map `R / p → R' / p` that `f` induces
-  change _ = quotientMap (span {(p : R')}) f (by simp) (Perfection.coeff (ModP R p) p n x)
-  rw [← hy, quotientMap_mk]
-
-/-- The identity of `R` induces the identity of its tilt. -/
-lemma tiltMap_id : tiltMap (RingHom.id R) x = x := by
-  -- a lift `y ∈ R` of the `n`-th component of `x` also lifts the `n`-th component of the left side
-  refine ext fun n ↦ ?_
-  obtain ⟨y, hy⟩ := Ideal.Quotient.mk_surjective (Perfection.coeff (ModP R p) p n x)
-  exact (coeff_tiltMap (RingHom.id R) hy).symm.trans hy
-
-/-- The map of tilts induced by a composite is the composite of the induced maps. -/
-lemma tiltMap_comp : tiltMap (g.comp f) x = tiltMap g (tiltMap f x) := by
-  -- if `y ∈ R` lifts the `n`-th component of `x`, then `g (f y)` lifts that of both sides
-  refine ext fun n ↦ ?_
-  obtain ⟨y, hy⟩ := Ideal.Quotient.mk_surjective (Perfection.coeff (ModP R p) p n x)
-  rw [← coeff_tiltMap (g.comp f) hy, ← coeff_tiltMap g (coeff_tiltMap f hy), RingHom.comp_apply]
-
-/-- Let b be a perfect ring of characteristic p and R a p-adically separated commutative ring.
-Two ring homomorphisms W(b) → R that agree on all Teichmüller lifts are equal. -/
-lemma wittVector_ringHom_ext_of_teichmuller {b R : Type*} [CommRing b] [CharP b p] [PerfectRing b p]
-    [CommRing R] [IsHausdorff (span {(p : R)}) R] {f g : WittVector p b →+* R}
-    (h_teichmuller : ∀ x : b, f (WittVector.teichmuller p x) = g (WittVector.teichmuller p x)) :
-    f = g := by
-  -- modulo `p ^ (n + 1)` every Witt vector is a finite sum of terms `teichmuller p _ * p ^ i`, on
-  -- which `f` and `g` agree
-  refine Adic.ringHom_ext_of_approx (p := p) fun x n ↦ ?_
-  let approx : WittVector p b := ∑ (i ≤ n),
-    WittVector.teichmuller p (((_root_.frobeniusEquiv b p).symm ^ i) (x.coeff i)) * p ^ i
-  have h_dvd : (p : WittVector p b) ^ (n + 1) ∣ x - approx :=
-    dvd_sub_sum_teichmuller_iterateFrobeniusEquiv_coeff x n
-  exact ⟨approx, by simp [approx, h_teichmuller], (pow_dvd_pow _ n.le_succ).trans h_dvd⟩
-
-variable [IsAdicComplete (span {(p : R)}) R] [IsAdicComplete (span {(p : R')}) R']
-
-/-- The untilt commutes with the maps of tilts: `(tiltMap f x)^♯ = f (x^♯)` for `p`-adically
-complete `R` and `R'`. -/
-@[simp]
-lemma untilt_tiltMap : (tiltMap f x).untilt = f x.untilt := by
-  -- The `n`-th component of `tiltMap f x` lifts to `f` of the untilt of the `p ^ n`-th root `root`
-  -- of `x`, and the `p ^ n`-th power of this lift is `f x.untilt`.
-  refine teichmuller_spec fun n ↦ ?_
-  let root : PreTilt R p := (powMulEquiv _ p).symm^[n] x
-  have h_root_lift : (root.untilt : ModP R p) = Perfection.coeff (ModP R p) p n x := by aesop
-  have h_pow : f root.untilt ^ p ^ n = f x.untilt := by simp [root, ← map_pow]
-  exact ⟨f root.untilt, coeff_tiltMap f h_root_lift, by rw [h_pow]⟩
-
-/-- Fontaine's `θ` is natural: it commutes with a ring map `f` and the map of Witt vectors of
-the tilts that `f` induces. -/
-lemma fontaineTheta_map_tiltMap (x : WittVector p (PreTilt R p)) :
-    fontaineTheta R' p (WittVector.map (tiltMap f) x) = f (fontaineTheta R p x) := by
-  -- both sides are ring maps that agree on Teichmüller lifts, where `θ [y] = y^♯`
-  have h_maps_eq :
-      (fontaineTheta R' p).comp (WittVector.map (tiltMap f)) = f.comp (fontaineTheta R p) :=
-    wittVector_ringHom_ext_of_teichmuller fun y ↦ by simp [untilt_tiltMap]
-  exact RingHom.congr_fun h_maps_eq x
-
-/-- Let R be a p-adically complete, integrally closed domain in which p is not a unit. For x, y
-in the tilt of R, x^♯ divides y^♯ in R if and only if x divides y. -/
-lemma untilt_dvd_iff [IsDomain R] [IsIntegrallyClosed R] {x y : PreTilt R p} :
-    x.untilt ∣ y.untilt ↔ x ∣ y := by
-  -- The tilt is the multiplicative monoid of sequences `(xₙ)` in `R` with `xₙ₊₁ ^ p = xₙ`, and
-  -- `untilt` is `x₀`. If `x₀ ∣ y₀` then `xₙ ∣ yₙ` for all `n` as `R` is integrally closed, and the
-  -- quotients form such a sequence.
-  obtain ⟨x, rfl⟩ := (quotientMulEquiv p (span {(p : R)})).surjective x
-  obtain ⟨y, rfl⟩ := (quotientMulEquiv p (span {(p : R)})).surjective y
-  refine ⟨fun h_untilt_dvd ↦ map_dvd _ ?_, map_dvd _⟩
-  have h_untilt (z : Perfection R p) :
-      PreTilt.untilt (quotientMulEquiv p (span {(p : R)}) z) = coeffMonoidHom R p 0 z :=
-    teichmuller₀_mapMonoidHom_idealQuotientMk
-  rw [h_untilt, h_untilt] at h_untilt_dvd
-  have hp_pow (n : ℕ) : p ^ n ≠ 0 := pow_ne_zero n (NeZero.ne p)
-  have h_dvd (n : ℕ) : ∃ e : R, coeffMonoidHom R p n y = coeffMonoidHom R p n x * e := by
-    -- `xₙ ^ p ^ n = x₀`, and in an integrally closed domain `a ^ m ∣ b ^ m` implies `a ∣ b`
-    refine (IsIntegrallyClosed.pow_dvd_pow_iff (hp_pow n)).mp ?_
-    rwa [coeffMonoidHom_pow_p_pow_self, coeffMonoidHom_pow_p_pow_self]
-  choose e hy_eq using h_dvd
-  -- as `zₙ ^ p ^ n = z₀`, the term `zₙ` is zero if and only if `z₀` is
-  have h_zero_iff (z : Perfection R p) (n : ℕ) :
-      coeffMonoidHom R p n z = 0 ↔ coeffMonoidHom R p 0 z = 0 := by
-    rw [← coeffMonoidHom_pow_p_pow_self z n, pow_eq_zero_iff (hp_pow n)]
-  by_cases hx_zero : coeffMonoidHom R p 0 x = 0
-  · -- every `xₙ` is zero, hence so is every `yₙ = xₙ * eₙ`, and `y = x * 1`
-    refine ⟨1, extMonoid fun n ↦ ?_⟩
-    rw [mul_one, hy_eq, (h_zero_iff x n).mpr hx_zero, zero_mul]
-  · -- cancel `xₙ` in `yₙ₊₁ ^ p = yₙ` to get `eₙ₊₁ ^ p = eₙ`; then `y = x * e`
-    have he_pow (n : ℕ) : e (n + 1) ^ p = e n := by
-      refine mul_left_cancel₀ ((h_zero_iff x n).not.mpr hx_zero) ?_
-      rw [← hy_eq, ← coeffMonoidHom_pow_p' y n, hy_eq (n + 1), mul_pow, coeffMonoidHom_pow_p' x n]
-    exact ⟨⟨e, he_pow⟩, extMonoid hy_eq⟩
-
-/-- Let R be a p-adically complete, integrally closed domain in which p is not a unit. An element
-x of the tilt of R has untilt x^♯ = 0 exactly when x = 0. -/
-lemma untilt_eq_zero_iff [IsDomain R] [IsIntegrallyClosed R] {x : PreTilt R p} :
-    x.untilt = 0 ↔ x = 0 := by
-  -- `x = 0` means `0 ∣ x`, which `untilt_dvd_iff` carries over to `R`, where `0^♯ = 0`
-  rw [← zero_dvd_iff (a := x), ← untilt_dvd_iff, ← zero_dvd_iff (a := x.untilt)]
-  simp [← fontaineTheta_teichmuller]
+The tilt is functorial through Tau Ceti's `PreTilt.map`, and the untilt and `θ` are natural
+(`PreTilt.untilt_natural`, `WittVector.theta_natural`). -/
 
 /-- Let R be a p-adically complete ring in which p is not a unit. If R is absolutely integrally
 closed (every monic polynomial of positive degree over R has a root in R), then every element of R
@@ -206,22 +99,6 @@ lemma fontaineTheta_surjective_of_isAbsIntegrallyClosed [IsAbsIntegrallyClosed R
   intro r
   obtain ⟨y, rfl⟩ := untilt_surjective_of_isAbsIntegrallyClosed (p := p) r
   exact ⟨teichmuller p y, fontaineTheta_teichmuller y⟩
-
-variable [IsDomain R] [ValuationRing R]
-
-/-- The tilt of a `p`-adically complete valuation ring is an integral domain. -/
-instance : IsDomain (PreTilt R p) := by
-  have h_nontrivial : Nontrivial (PreTilt R p) := (coeff _ p 0).domain_nontrivial
-  -- the untilt is multiplicative, and it maps only `0` to `0` in the domain `R`
-  have h_noZeroDivisors : NoZeroDivisors (PreTilt R p) :=
-    ⟨fun h_mul ↦ by simpa only [← untilt_eq_zero_iff, map_mul, mul_eq_zero] using h_mul⟩
-  exact NoZeroDivisors.to_isDomain _
-
-/-- The tilt of a `p`-adically complete valuation ring is a valuation ring. -/
-instance : ValuationRing (PreTilt R p) := by
-  -- divisibility in the tilt is divisibility of the untilts in the valuation ring `R`
-  refine iff_dvd_total.mpr ⟨fun a b ↦ ?_⟩
-  simpa only [← untilt_dvd_iff] using dvd_total a.untilt b.untilt
 
 end Variety
 

@@ -161,7 +161,7 @@ lemma IsCompleteTorsionFree.existsUnique_witt_lift (h : IsCompleteTorsionFree S)
     -- since `S` is `p`-adically separated.
     have h_teich : g.toMonoidHom.comp (teichmuller p) = g'.toMonoidHom.comp (teichmuller p) :=
       h.monoidHom_lift_bijective.injective (by ext; simp [hg, hg'])
-    exact wittVector_ringHom_ext_of_teichmuller fun x ↦ DFunLike.congr_fun h_teich x
+    exact WittVector.ringHom_ext_teichmuller fun x ↦ DFunLike.congr_fun h_teich x
 
 omit [ThePrime p] in
 /-- If a map κ: C → W of S-algebras is bijective modulo every power of p and the S-algebra X is
