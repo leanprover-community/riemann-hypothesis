@@ -669,7 +669,9 @@ theorem analyticOnNhd_integral_zetaIntegrand (A : W'.Splitting W Unit) (X : V'.S
   -- analytic inside it, and `x` lies inside the strip for `R = |x| + 2`.
   have h_strip (x : ℝ) : Integrable (fun p ↦ T p * (N p ^ x : ℝ)) (zetaMeasure V t') ∧
       AnalyticAt ℝ (fun z : ℝ ↦ ∫ p, T p * (N p ^ z : ℝ) ∂zetaMeasure V t') x := by
-    obtain ⟨hR, h_mem⟩ : 1 < |x| + 2 ∧ x ∈ Ioo (1 - (|x| + 2)) (|x| + 2) := by grind
+    have hR : 1 < |x| + 2 := by linarith only [abs_nonneg x]
+    have h_mem : x ∈ Ioo (1 - (|x| + 2)) (|x| + 2) :=
+      ⟨by linarith only [neg_abs_le x], by linarith only [le_abs_self x]⟩
     obtain ⟨h_integrable, -, h_analytic⟩ := analyticOnNhd_integral_mul_rpow (fun _ ↦ ideleAbs_pos)
       (by fun_prop : Measurable N) (h_left _ hR).hasFiniteIntegral (h_right _ hR)
     exact ⟨h_integrable x (Ioo_subset_Icc_self h_mem), h_analytic x h_mem⟩
