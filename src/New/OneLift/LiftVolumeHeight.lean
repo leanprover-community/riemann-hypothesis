@@ -97,15 +97,6 @@ lemma _root_.New.LevelPlaces.LevelForm.normSqAt_smul {E r n : Type} [Field E] [C
   rw [normSqAt, normSqAt, mul_classSum]
   exact congrArg _ (funext fun g ↦ weylNormSq_comp_smul (φ g) σ c)
 
-/-- The squared norm `φ.normSqAt σ` of a form (the weighted sum over classes of the squared norms
-of the values after applying `σ`) is not negative. -/
-lemma _root_.New.LevelPlaces.LevelForm.normSqAt_nonneg {E r n : Type} [Field E] [CMType E]
-    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
-    (φ : O.FormV) (σ : ℂ ≃+* ℂ) :
-    0 ≤ φ.normSqAt σ := by
-  rw [normSqAt, classSum]
-  exact finsum_nonneg fun _ ↦ smul_nonneg (by positivity) (weylNormSq_nonneg _)
-
 /-- Let `E` be a CM field with a CM type and Weil data, and `O` a descent pair over `E`: the datum
 of a lift from a hermitian space `W` with basis indexed by `r` to the standard space `V` with basis
 indexed by `n`. For `φ ≠ 0` in `O.FormV`, the algebraic forms on `V` of the weight and level of `O`,
@@ -505,7 +496,8 @@ lemma normSqAt_comparisonOp_le (j : D.LiftIndex) (φ : (D.descentPair (1 : D.Twi
   let c (a : TightFrameIndex j) : ℂ := D.chosenGroupOrder • inner ℂ (glue j 1 (f a)) φ
   let S : ℝ := exp (2 * A) * φ.normSqAt σ
   have h_hook : 0 < hk := Int.cast_pos.2 hookNumber_pos
-  have h_normSq_nonneg : 0 ≤ φ.normSqAt σ := φ.normSqAt_nonneg σ
+  have h_normSq_nonneg : 0 ≤ φ.normSqAt σ :=
+    finsum_nonneg fun _ ↦ smul_nonneg (by positivity) (weylNormSq_nonneg _)
   have h_coeff (a : TightFrameIndex j) : ‖σ (c a)‖ ≤ D.chosenGroupOrder * (√S * hk) := by
     calc ‖σ (c a)‖
       _ = D.chosenGroupOrder * ‖σ (inner ℂ (glue j 1 (f a)) φ)‖ := by
