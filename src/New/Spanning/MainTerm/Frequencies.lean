@@ -137,17 +137,12 @@ lemma norm_sub_lt_one_of_squareIndex_eq {z w : ℂ} (h_index : squareIndex z = s
     linarith
   exact norm_lt_one_of_abs_lt (by simpa using h_half h_re) (by simpa using h_half h_im)
 
-/-- The corner `squareCorner m = m.1 / 2 + (m.2 / 2) * I` lies in the square with index `m`, where
-`squareIndex z = (⌊2 * z.re⌋, ⌊2 * z.im⌋)`. -/
-lemma squareIndex_squareCorner (m : ℤ × ℤ) : squareIndex (squareCorner m) = m := by
-  simp [squareIndex, squareCorner, mul_div_cancel₀]
-
 /-- The weight `(max 1 ‖z‖)⁻¹ ^ 6` of a complex number `z` is at most `64` times the weight of the
 lower left corner of the square of side `1 / 2` that contains `z`. -/
 lemma weight_le_weight_corner (z : ℂ) :
     (max 1 ‖z‖)⁻¹ ^ 6 ≤ 64 * (max 1 ‖squareCorner (squareIndex z)‖)⁻¹ ^ 6 := by
   have h_near : ‖squareCorner (squareIndex z) - z‖ < 1 :=
-    norm_sub_lt_one_of_squareIndex_eq (squareIndex_squareCorner _)
+    norm_sub_lt_one_of_squareIndex_eq (by simp [squareIndex, squareCorner, mul_div_cancel₀])
   have h_le : max 1 ‖squareCorner (squareIndex z)‖ ≤ 2 * max 1 ‖z‖ := by
     have h_sub : ‖squareCorner (squareIndex z)‖ - ‖z‖ ≤ ‖squareCorner (squareIndex z) - z‖ :=
       norm_sub_norm_le _ _
