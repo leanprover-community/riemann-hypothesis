@@ -481,7 +481,8 @@ lemma IsAdapted.omega_projOn_of_isMixedLaw
           (selfDualAddChar E (idem S.conjClosure * star b ⬝ᵥ x) : ℂ) •
             T (t.val⁻¹ᴴ *ᵥ finVec x) (V.ω g (V.projOn S f)) := by
       have h_half : half * idem S.conjClosure * star b ⬝ᵥ x +
-          half * idem S.conjClosure * star b ⬝ᵥ x = idem S.conjClosure * star b ⬝ᵥ x := by grind
+          half * idem S.conjClosure * star b ⬝ᵥ x = idem S.conjClosure * star b ⬝ᵥ x := by
+        rw [← two_mul, ← mul_assoc, ← mul_assoc, two_mul_half, one_mul]
       nth_rw 1 [← h_fix 0 0 b (by simp_all [integralBox, smul_mem_stdLattice])]
       simp [hT.apply_omega_rho_finFrameVector, finHeisenbergOp, semichar, smul_smul, idem_mul_self,
         mul_add, ← mul_assoc, h_half]
