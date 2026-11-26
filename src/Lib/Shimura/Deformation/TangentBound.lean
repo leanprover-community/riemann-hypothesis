@@ -606,11 +606,12 @@ lemma eq_of_lift_star_sub [IsAlgClosed k] [Fact (ringChar k).Prime] (h_rig : x�
   have h_inf :
       ker x₀.baseHom * Ideal.span {↑(ringChar k), Star.star D.β - b} ≤
         Ideal.torsionOf (𝓞 E) _ d := by
+    obtain ⟨h_char, h_beta⟩ := d_inf.ringChar_smul_and_smul_eq_zero
     simpa [mul_comm, Ideal.span_insert, Ideal.sup_mul, Ideal.span_singleton_mul_le_iff,
-      Nat.cast_smul_eq_nsmul, d_inf.ringChar_smul_and_smul_eq_zero.left, ← smul_smul] using
-      fun _ ha ↦ d_inf.ringChar_smul_and_smul_eq_zero.right hρ hb ha
-  exact eq_of_sub_eq_zero ((Ideal.torsionOf_eq_top_iff ..).mp (eq_top_mono (sup_le h_lev h_inf)
-    h_level))
+      Nat.cast_smul_eq_nsmul, h_char, ← smul_smul] using
+      fun _ ha ↦ h_beta hρ hb ha
+  have h_ann : Ideal.torsionOf (𝓞 E) _ d = ⊤ := eq_top_mono (sup_le h_lev h_inf) h_level
+  exact sub_eq_zero.mp ((Ideal.torsionOf_eq_top_iff (𝓞 E) d).mp h_ann)
 
 open scoped Pointwise in
 open NumberField in
