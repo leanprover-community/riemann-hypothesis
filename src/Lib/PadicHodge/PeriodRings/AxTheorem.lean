@@ -171,14 +171,6 @@ lemma untilt_dvd_iff [IsDomain R] [IsIntegrallyClosed R] {x y : PreTilt R p} :
       rw [← hy_eq, ← coeffMonoidHom_pow_p' y n, hy_eq (n + 1), mul_pow, coeffMonoidHom_pow_p' x n]
     exact ⟨⟨e, he_pow⟩, extMonoid hy_eq⟩
 
-/-- Let R be a p-adically complete, integrally closed domain in which p is not a unit. An element
-x of the tilt of R has untilt x^♯ = 0 exactly when x = 0. -/
-lemma untilt_eq_zero_iff [IsDomain R] [IsIntegrallyClosed R] {x : PreTilt R p} :
-    x.untilt = 0 ↔ x = 0 := by
-  -- `x = 0` means `0 ∣ x`, which `untilt_dvd_iff` carries over to `R`, where `0^♯ = 0`
-  rw [← zero_dvd_iff (a := x), ← untilt_dvd_iff, ← zero_dvd_iff (a := x.untilt)]
-  simp [← fontaineTheta_teichmuller]
-
 /-- Let R be a p-adically complete ring in which p is not a unit. If R is absolutely integrally
 closed (every monic polynomial of positive degree over R has a root in R), then every element of R
 is the untilt x^♯ of an element x of the tilt. -/
@@ -208,7 +200,11 @@ instance : IsDomain (PreTilt R p) := by
   have h_nontrivial : Nontrivial (PreTilt R p) := (coeff _ p 0).domain_nontrivial
   -- the untilt is multiplicative, and it maps only `0` to `0` in the domain `R`
   have h_noZeroDivisors : NoZeroDivisors (PreTilt R p) :=
-    ⟨fun h_mul ↦ by simpa only [← untilt_eq_zero_iff, map_mul, mul_eq_zero] using h_mul⟩
+    ⟨fun h_mul ↦ by
+      have h0 (x : PreTilt R p) : x.untilt = 0 ↔ x = 0 := by
+        rw [← zero_dvd_iff (a := x), ← untilt_dvd_iff, ← zero_dvd_iff (a := x.untilt)]
+        simp [← fontaineTheta_teichmuller]
+      simpa only [← h0, map_mul, mul_eq_zero] using h_mul⟩
   exact NoZeroDivisors.to_isDomain _
 
 /-- The tilt of a `p`-adically complete valuation ring is a valuation ring. -/
