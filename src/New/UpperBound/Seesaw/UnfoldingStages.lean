@@ -704,7 +704,15 @@ lemma integral_unfoldStageOn (ϑ : D.TameChar)
     using integral_besselGroup_unfold Y' (rankTwist (D.chainChar ϑ (k + 1))) (movedDatum ϑ ξ y k)
       (isEquivariant_unfoldStageOn ϑ t φ ξ y k hk) hz_aut hz_rapid
 
-set_option synthInstance.maxSize 512 in
+section DoubleUnfolding
+
+local instance (priority := high) {α β γ δ ε : Type}
+    [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq δ] [DecidableEq ε]
+    {p : (α ⊕ β) × γ → Prop} : DecidableEq (Subtype p ⊕ δ × ε) :=
+  @instDecidableEqSum _ _ (@Subtype.instDecidableEq _ p
+    (@instDecidableEqProd _ _ (@instDecidableEqSum α β inferInstance inferInstance) inferInstance))
+    (@instDecidableEqProd δ ε inferInstance inferInstance)
+
 /-- Let `R` be data for the two lifts `Y_{2i} → Y_{2i+1} → Y_{2i+2}`, the last space with the
 grading `Y`. Suppose that the linear map `D.doubleLiftEvalY i` on finite data is `R.finEval`, the
 finite analogue of the translation and zero term below. Fix archimedean points `ξ k` of U(Y_k) and
@@ -826,7 +834,6 @@ lemma exists_unfoldStageOn_even_eq_sourceFn (t : (WeylIndex (D.X 0) D.columnCoun
 
 -- Without this, comparing the index types of neighbouring stages unfolds `Finset.univ`.
 seal Finset.univ in
-set_option synthInstance.maxSize 512 in
 /-- Let `R` be data for the two lifts `Y_{2i} → Y_{2i+1} → Y_{2i+2}`, the last space with a grading
 `Y` of definite part `X`. Suppose that `D.doubleLiftEvalY i`, the linear map that turns finite data
 for the spaces `Y_k` into finite data for their definite parts `X_k`, is the map `R.finEval` of `R`.
@@ -853,6 +860,8 @@ lemma exists_unfoldStage_eq_algFormCoeff (t : (WeylIndex (D.X 0) D.columnCount �
   choose l hl using exists_unfoldStageOn_even_eq_sourceFn t ξ i hi.le
   choose l'' hl'' using exists_unfoldStage_eq_algFormCoeff_of_sourceFn ξ i hi R hR x l
   exact ⟨l'', fun ϑ φ y ↦ hl'' ϑ t φ y _ (hl ϑ φ y)⟩
+
+end DoubleUnfolding
 
 /-- Elements of the levels at `Y_k` and `Y_{k+1}` fix the datum `pointDatumY ϑ k` of lift `k + 1` of
 the lower chain. -/
