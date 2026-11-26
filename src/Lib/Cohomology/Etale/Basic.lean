@@ -388,6 +388,11 @@ variable (A : Type*) [CommRing A] (Λ : Ab.{0})
 polynomial of positive degree has a root. -/
 class IsAbsIntegrallyClosedLocal extends IsDomain A, IsLocalRing A, IsAbsIntegrallyClosed A
 
+-- The projections rank low, so that the instances on algebraically closed fields are found
+-- directly rather than through the instance of this class on such fields (below).
+attribute [instance 100] IsAbsIntegrallyClosedLocal.toIsDomain
+  IsAbsIntegrallyClosedLocal.toIsLocalRing IsAbsIntegrallyClosedLocal.toIsAbsIntegrallyClosed
+
 /-- A is a test ring: reduced, absolutely integrally closed, and any a, b admit an idempotent e
 with a ∣ eb and b ∣ (1 − e)a. -/
 structure IsTest extends IsAbsIntegrallyClosed A where
