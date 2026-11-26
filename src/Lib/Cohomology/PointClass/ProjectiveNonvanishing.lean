@@ -210,7 +210,7 @@ private lemma pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu
     let z := ((unimodular (d := 1)).toFunctor.map q) y
     obtain ⟨w, hw_smul, hω_app⟩ := hω (HodgeTatePair.toHodgeTest.obj X) z
     simp [D, α, ← Functor.map_comp]
-    erw [AddMonoidHom.add_apply]
+    refine Eq.trans ?_ (AddMonoidHom.add_apply ..).symm
     iterate 4 erw [AddMonoidHom.comp_apply]
     have h_map : (N.map q).hom (.of y) =
         FreeAddCommGroup.of (((unimodular (d := 1)).toFunctor.map q) y) := by
@@ -228,7 +228,13 @@ private lemma pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu
     let m : Fin X.rank → X.GenericRing := (v 0).val.2.snd
     let w' : Fin X.rank → X.GenericRing := w
     change a • w' = m at hw_smul
-    erw [freeAb.desc_of]
+    let B := HodgeTatePair.pairAlg.obj X
+    have h_eval : (Gm.ofCoord.app B).hom (.of y) = ⟨(isUnit_of_unimodular_one y).unit⟩ :=
+      freeAb.desc_of ..
+    let value (u : Gm ((forget₂ (CommAlg k) CommRingCat).obj B)) : thickeningOver.obj Y.test :=
+      thickeningOver.map f.fst u.down.val.val.fst + mulMu Y.test (f.snd u.down.val.val.snd.snd).fst
+    change _ = value ((Gm.ofCoord.app B).hom (.of y))
+    refine Eq.trans ?_ (congrArg value h_eval).symm
     have h_proj : (proj.app Y.test) (thickeningOver.map f.fst (v 0).val.fst) =
         genericOver.map f.fst a :=
       (proj.naturality_apply f.fst (v 0).val.fst).trans
