@@ -9,7 +9,6 @@ import TauCeti.Topology.Instances.Matrix
 public import Lib.General.Measure.FibreMeasure
 public import Lib.DiscreteSeries.Haar.GramPolar
 import Lib.Adelic.Adeles.AdditiveCharacter
-import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # The fibre measure of the Gram map
