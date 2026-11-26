@@ -585,7 +585,7 @@ lemma columnPeriod_eq_mul_rowPeriod (hj : j < D.m) (q : Bool → GridPath 0 D.m 
       (fun i : D.GridForm false j (j + 1) × (D.GridForm false (j + 1) j →ₗ[ℂ] ℂ) ↦ h_law i.1 i.2)
       h_dep
   rw [columnPeriod, ← h_square, mul_sum]
-  simp only [f, periodPairing_columnLineKernel_eq hj (h_line _), mul_left_comm]
+  simp only [f, periodPairing_columnLineKernel_eq hj (h_line _), mul_left_comm _ c]
 
 /-- One turn on the diagonal, at `j < m`. There are numbers `c ϑ ≠ 0` of absolute value
 `turnRatio j j ϑ` up to a constant and a power of `Nm Q`, with `Q` the modulus of the twist `ϑ`,
