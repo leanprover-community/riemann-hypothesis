@@ -211,20 +211,6 @@ theorem IsMatch.three_mul_sum_sq_sub [DecidableEq C] {T : FockDualPair ε ε' ι
 
 variable [DecidableEq C] {A : Type*} [Ring A] [Algebra ℂ A]
 
-/-- Normal ordering. Let `x`, `d` be arrays in a complex algebra with
-`d_rc x_rc' = x_rc' d_rc + δ_cc'`. With `n = card R` and `n' = card C`, the Casimir sum of the
-elements `∑ c, x_ac d_bc + (n'/2) δ_ab` is `D₄ + (n + n') D₂ + n n'² / 4`, where
-`D₄ = ∑ x_ac x_bc' d_bc d_ac'` and `D₂ = ∑ x_rc d_rc`. -/
-theorem sum_mul_eq_normal_order (x d : R → C → A)
-    (h_comm : ∀ (r : R) (c c' : C), d r c * x r c' = x r c' * d r c + if c = c' then 1 else 0) :
-    ∑ a : R, ∑ b : R, (∑ c : C, x a c * d b c + if a = b then (card C / 2 : ℂ) • 1 else 0) *
-        (∑ c : C, x b c * d a c + if b = a then (card C / 2 : ℂ) • 1 else 0) =
-      ∑ a : R, ∑ b : R, ∑ c : C, ∑ c' : C, x a c * x b c' * d b c * d a c' +
-        (card R + card C : ℂ) • ∑ r : R, ∑ c : C, x r c * d r c +
-          (card R * card C ^ 2 / 4 : ℂ) • (1 : A) := by
-  rw [TauCeti.sum_mul_eq_normal_order x d _ h_comm]
-  module
-
 /-- The Casimir element with the centre `w` removed: it is formed with `E_ab - w δ_ab` in place of
 `E_ab`. -/
 noncomputable def GlModule.centeredCasimir {M : Type*} [AddCommGroup M] [Module ℂ M]
@@ -357,7 +343,8 @@ theorem centeredCasimir_oscRows : T.oscRows.centeredCasimir T.center =
         (∑ c, T.raise b c * T.lower a c + if b = a then (card C / 2 : ℂ) • 1 else 0) := by
     simp only [GlModule.centeredCasimir, oscRows_E_sub_center, smul_mul_smul_comm, sign_mul_sign,
       one_smul]
-  rw [h_unsigned, sum_mul_eq_normal_order T.raise T.lower h_comm, quarticOp, quadraticOp]
+  rw [h_unsigned, TauCeti.sum_mul_eq_normal_order T.raise T.lower _ h_comm, quarticOp, quadraticOp]
+  module
 
 /-- The Casimir element of the column action `T.swap.oscRows` with the centre `T.swap.center`
 removed is `D₄ + (n + n') D₂ + n² n' / 4`, where `D₄ = T.quarticOp`, `D₂ = T.quadraticOp`,
@@ -376,7 +363,7 @@ theorem centeredCasimir_swap_oscRows : T.swap.oscRows.centeredCasimir T.swap.cen
     simp only [GlModule.centeredCasimir, swap_oscRows_E_sub_center, smul_mul_smul_comm,
       neg_mul_neg, sign_mul_sign, one_smul]
   rw [h_unsigned, sum_comm,
-    sum_mul_eq_normal_order (fun c r ↦ T.raise r c) (fun c r ↦ T.lower r c) h_comm,
+    TauCeti.sum_mul_eq_normal_order (fun c r ↦ T.raise r c) (fun c r ↦ T.lower r c) _ h_comm,
     T.sum_columns_eq_quarticOp, h_quadratic]
   module
 
