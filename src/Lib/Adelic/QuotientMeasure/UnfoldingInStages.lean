@@ -169,17 +169,6 @@ lemma New.eq_zero_of_integral_cosetMeasure_eq_zero [ν.IsMulRightInvariant] {i :
   hρ_cont.ext_on (dense_eq_zero_of_integral_cosetMeasure_eq_zero μ ν hi hρ_nonneg hρ_inv hρ_int
     h_zero) continuous_zero fun _ hg ↦ hg
 
-/-- Let `i : H → G` be a closed embedding of a unimodular group and `ρ : G → ℂ` invariant under
-left translation by `i(H)`, with nonnegative real part, integrable and with integral zero for the
-quotient measure `New.cosetMeasure` on `i(H) \ G`. Then the real part of `ρ` vanishes on a dense
-set. -/
-lemma New.dense_re_eq_zero_of_integral_cosetMeasure_eq_zero [ν.IsMulRightInvariant] {i : H →* G}
-    (hi : IsClosedEmbedding i) {ρ : G → ℂ} (hρ_nonneg : ∀ g : G, 0 ≤ (ρ g).re)
-    (hρ_inv : ∀ (a : H) (g : G), ρ (i a * g) = ρ g) (hρ_int : Integrable ρ (cosetMeasure μ ν i))
-    (h_zero : ∫ g : G, ρ g ∂cosetMeasure μ ν i = 0) : Dense {g : G | (ρ g).re = 0} :=
-  dense_eq_zero_of_integral_cosetMeasure_eq_zero μ ν hi (ρ := fun g ↦ (ρ g).re) hρ_nonneg
-    (fun a g ↦ by rw [hρ_inv]) hρ_int.re ((integral_re hρ_int).trans (congrArg Complex.re h_zero))
-
 variable [T2Space H]
 
 omit [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G]
@@ -290,8 +279,9 @@ lemma New.Exchange.exists_integral_stages_eq_mul {L : Type*} [Group L] [Topologi
     simpa [h_inner_eq, hc] using h_int.div_const c
   have hρ_inv (k : L × H) (g : G) : ρ (i k * g) = ρ g :=
     mul_right_cancel₀ hc (by simpa only [h_inner_eq] using h_translate k g)
-  exact mem_closure_iff_frequently.1 (dense_re_eq_zero_of_integral_cosetMeasure_eq_zero μ
-    (κ.prod ν) hi hρ_nonneg hρ_inv hρ_int h_zero g₀) hρ_ne
+  exact mem_closure_iff_frequently.1 (dense_eq_zero_of_integral_cosetMeasure_eq_zero μ (κ.prod ν)
+    hi (ρ := fun g ↦ (ρ g).re) hρ_nonneg (fun a g ↦ by rw [hρ_inv]) hρ_int.re
+    ((integral_re hρ_int).trans (congrArg Complex.re h_zero)) g₀) hρ_ne
 
 end UnfoldingInStages
 
