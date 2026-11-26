@@ -885,8 +885,10 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
               (comp (map (restrictAlong (elementsProj (projLineAlong t.toTestOver))) ξ) x) :=
       t.line_formula.integrate_naturality (φ := 𝟭 _) t.line_formula
         (lerayHirsch_mapRange_comp _ rfl)
-    -- `erw`: the summands match `comp_int` only after unfolding `NaturalOp.integrate`.
-    erw [Finset.sum_congr rfl fun i _ ↦ comp_int .., ← map_sum, comp_int]
+    -- `change`: the summands match `comp_int` only after unfolding `NaturalOp.integrate`.
+    change pullbackAlong _ (∑ i, comp (map (restrictAlong t.toTestOver) (β i))
+      (t.line_formula.integrate _)) = _
+    rw [Finset.sum_congr rfl fun i _ ↦ comp_int .., ← map_sum, comp_int]
     -- Push restriction into the products, split off the first factor in `h_sum_eq_foldr`, and
     -- write the remaining products as folds over lists.
     simp only [map_comp_assoc, map_restrictAlong_restrictAlong, map_homClass,
