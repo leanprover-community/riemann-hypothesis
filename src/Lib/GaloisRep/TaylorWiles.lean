@@ -351,7 +351,7 @@ instance : FiniteDimensional ℂ (D.formsOfLevel L) := by
       -- At `w` one factor keeps the component of `k` and the other is `1`.
       simp only [map_mul, atPlace_componentOn, Set.mem_union, Set.mem_preimage, Set.mem_compl_iff,
         Finset.mem_coe, star_star]
-      grind
+      by_cases hw : w ∈ D.places <;> by_cases hs : star w ∈ D.places <;> simp [hw, hs]
     have h_fix : V.formTranslation κ (componentOn n (.conjClosure D.places)ᶜ k) f = f := by
       simpa using mem_levelSpace.mp hf_lev ⟨k, hk_lev⟩
     have h_char : V.formTranslation κ (componentOn n D.places k) f = χ ⟨k, hk_K⟩ • f :=
