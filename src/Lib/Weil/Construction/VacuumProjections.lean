@@ -204,7 +204,9 @@ lemma omega_finHeisenbergOp (g : G E s) (x : n → 𝔸f E) (f : 𝒮 V) :
 
 omit [WeilData E] in
 @[simp]
-lemma idem_univ : idem univ = (1 : 𝔸f E) := by aesop
+lemma idem_univ : idem univ = (1 : 𝔸f E) := by
+  ext w
+  simp
 
 omit [WeilData E] in
 /-- If the finite unitary `g` lies in `GL_n(O_w)` at every place `w` of `S`, then `g x` lies in
