@@ -303,7 +303,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **Auxiliary forms**
 
-- `New/Determinant/AuxiliaryForms/GridPaths` (218): Monotone paths through two square grids, and their turns
 - `New/Determinant/AuxiliaryForms/RegularParameters` (98): Weights of regular parameters and bounds on boxes
 - `New/Determinant/AuxiliaryForms/DeepLevelPoincarePeriod` (537): Steep parameters of Y₀ and Ỹ^0_0; periods of Poincaré series of deep level
 - `New/Determinant/AuxiliaryForms/PathData` (454): Moduli, spaces, moves, path data and periods on the two grids

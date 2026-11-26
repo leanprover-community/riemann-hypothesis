@@ -52,6 +52,8 @@ noncomputable section
 
 namespace New.Data
 
+open TauCeti (GridPath TwoGridPath)
+
 /-!
 ## Turning a path datum
 
@@ -946,7 +948,13 @@ lemma exists_transfersPeriods_off_diagonal (z : Bool) (hab : a < b) (hb : b < D.
   -- period of `Ψ'` is `κ / c` times that of the turned datum `Ψ`, with a constant `κ`.
   obtain ⟨κ, σ, c, hc, h_law⟩ := exists_squareLaw_grid_hasAbsUpToNormPower z (hab.trans hb) hb
   refine ⟨c, hc, fun Γ' Γ h_step ↦ ?_⟩
-  obtain ⟨q, r, hΓ', rfl⟩ := h_step.exists_corner (z := z) hab
+  obtain ⟨q, r, hΓ', rfl⟩ : ∃ (q : GridPath 0 D.m a (b + 1))
+      (r : GridPath (a + 1) b Γ'.diagonalIndex Γ'.diagonalIndex),
+      Γ'.half z = q.down.right.append r ∧
+      Γ = ⟨Γ'.diagonalIndex, update Γ'.half z (q.right.down.append r)⟩ := by
+    cases z
+    · exact h_step.exists_half_false_eq_of_lt hab
+    · exact h_step.exists_half_true_eq_of_gt hab
   intro N Ψ' hΨ'
   let Γ : TwoGridPath D.m := ⟨Γ'.diagonalIndex, update Γ'.half z (q.right.down.append r)⟩
   let w : Finset (GridNode × GridNode) := q.edges z ∪ r.edges z ∪ (Γ'.half !z).edges !z

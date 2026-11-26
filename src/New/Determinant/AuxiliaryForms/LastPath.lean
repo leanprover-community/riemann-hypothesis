@@ -339,6 +339,8 @@ end New.Exchange
 
 namespace New.Data
 
+open TauCeti (GridPath TwoGridPath)
+
 /-!
 ## The last path: weights, levels, kernels and the finite sum
 
@@ -703,8 +705,8 @@ lemma edges_last : (TwoGridPath.last D.m).edges =
   have h_row (z : Bool) (a : ℕ) :
       (GridPath.row D.m a).edges z = (range a).image fun j ↦ rowEdge z j D.m := by
     induction a with
-    | zero => rfl
-    | succ a ih => rw [GridPath.row, GridPath.edges, ih, range_add_one, image_insert]
+    | zero => rw [GridPath.row_zero]; rfl
+    | succ a ih => rw [GridPath.row_succ, GridPath.edges, ih, range_add_one, image_insert]
   rw [← h_row, ← h_row]
   rfl
 
@@ -1041,7 +1043,7 @@ theorem exists_gridPathMap_eq_ofAlgForm_smul_lastPathChain (D : Data P) (z : Boo
     suffices h_form :
         F.val = ofAlgForm (-D.gridParam z 0 0 D.m) (D.gridSigns z 0 0 D.m)
           (lastPathChain S z 0 F) by
-      simpa [GridPath.row, GridPath.formMap, Subgroup.index_ne_zero_of_finite] using h_form
+      simpa [GridPath.formMap, Subgroup.index_ne_zero_of_finite] using h_form
     -- By definition `lastPathChain S z 0 F` is the algebraic form of `F`.
     exact (ofAlgForm_toAlgForm (D.isHCParam_lastPathColumns z hj) F).symm
   | succ j ih =>
@@ -1091,7 +1093,8 @@ theorem exists_gridPathMap_eq_ofAlgForm_smul_lastPathChain (D : Data P) (z : Boo
       rw [h_upper]
       field_simp [h_index]
     calc ((GridPath.row D.m (j + 1)).formMap S z F).val
-        = (liftMove (S (rowEdge z j D.m)) ((GridPath.row D.m j).formMap S z F)).val := rfl
+        = (liftMove (S (rowEdge z j D.m)) ((GridPath.row D.m j).formMap S z F)).val := by
+          rw [GridPath.row_succ]; rfl
       _ = (β / stdLevelIndex (lastPathLevel ϑ z j)) •
             ofAlgForm (-D.gridParam z 0 (j + 1) D.m) (D.gridSigns z 0 (j + 1) D.m)
               (T ((c * levelIndex ϑ z j D.m / levelIndex ϑ z 0 D.m) • lastPathChain S z j F)) :=

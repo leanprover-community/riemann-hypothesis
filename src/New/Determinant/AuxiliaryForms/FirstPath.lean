@@ -49,6 +49,8 @@ See `New.Determinant.AuxiliaryForms.DeepLevelVanishing` for related work.
 
 namespace New.Data
 
+open TauCeti (GridPath TwoGridPath)
+
 /-! ## Transposes of the chains of lifts, and surjectivity of `Θ^♭` -/
 
 section DescentOnto
