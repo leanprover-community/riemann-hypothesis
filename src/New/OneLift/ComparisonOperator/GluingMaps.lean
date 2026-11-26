@@ -323,13 +323,6 @@ lemma isIntegralAndSmall_firstFactor (i : ChoiceIndex j) (h : Gf D.E (FirstFacto
     IsIntegralAndSmall ϑ j h (firstFactor j ϑ i h) :=
   (exists_isIntegralAndSmall_leftSideSeries j).choose_spec.2 i ϑ h
 
-/-- Arithmetic of the first factors: the value of `φ″_{ϑ,i}` at `h` is integral (`weylGauge` at
-most `1`) at a place above a prime `l` that does not divide the norm of the level of `ϑ`. -/
-lemma weylGauge_firstFactor_le_one (i : ChoiceIndex j) (h : Gf D.E (FirstFactorIndex j)) (l : ℕ)
-    [Fact l.Prime] [PadicPlace l] (hl : l.Coprime ϑ.toTameChar.normQ) :
-    weylGauge (untwistedDescentPair j).colsPlus 0 h (firstFactor j ϑ i h) ≤ 1 :=
-  (isIntegralAndSmall_firstFactor j ϑ i h).weylGauge_le_one l hl
-
 /-! ### The gluing map and the slices of lifts -/
 
 /-- The gluing map `glue_ϑ`. For `ζ` in the copy `i` of the forms on `V°` it is `M ^ l₁` times the
@@ -586,7 +579,7 @@ lemma glue_mem_integralForms {l : ℕ} [Fact l.Prime] (φ : PadicPlace l)
   -- recognise that product vector inside the form.
   grw (transparency := default) [weylGauge_smul, weylGauge_deltaForm_le isOfFinOrder_level_char,
     (splittingV j ϑ).weylGauge_cartanProduct_le h_M_mem (isGlued_glueLattice j ϑ b.1),
-    weylGauge_firstFactor_le_one j ϑ _ _ l hl, hζ b]
+    (isIntegralAndSmall_firstFactor j ϑ _ _).weylGauge_le_one l hl, hζ b]
   · simp [mul_inv_le_one]
   · simp [weylGauge]
 
