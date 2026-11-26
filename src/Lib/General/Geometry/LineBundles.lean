@@ -103,9 +103,15 @@ open scoped Classical in
 `s` along `t` if `t` lands in `U`, and `0` otherwise. -/
 def PointFn.ofSection : Γ(X, U) →ₙ+* PointFn X where
   toFun s _ t := if h : LandsIn t U then evalSection t h s else 0
-  map_mul' := by aesop
-  map_zero' := by aesop
-  map_add' := by aesop
+  map_mul' s s' := by
+    funext A t
+    by_cases h : LandsIn t U <;> simp [h]
+  map_zero' := by
+    funext A t
+    by_cases h : LandsIn t U <;> simp [h]
+  map_add' s s' := by
+    funext A t
+    by_cases h : LandsIn t U <;> simp [h]
 
 variable (X ι) in
 /-- A line bundle on X as an open cover U_i with transition functions g_ij regular on U_i ∩ U_j,
