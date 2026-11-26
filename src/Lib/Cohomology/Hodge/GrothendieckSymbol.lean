@@ -356,8 +356,9 @@ lemma smul_grothendieckSymbol_eq_fractionClass (hf : U ≤ unimodularLocus f)
   -- Read `a • H.map _ _ d` as a pull-back along the comparison given by the action of `a`.
   -- `pull_cocycleClass` reduces the claim to the witnesses, the cocycles and the points.
   unfold grothendieckSymbol
-  -- (`erw`: the scalar action matches `smul_eq_push` only after unfolding instances)
-  erw [smul_eq_push, ← pull_id_eq_push, ← map_pull_eq_pull_map rfl, H.map_id]
+  change H.push _ (CoeffAction.act a : End hodgeCoeff).asHom d _ = _
+  rw [← pull_id_eq_push, ← map_pull_eq_pull_map rfl]
+  refine (H.map_id _).trans ?_
   refine pull_cocycleClass exists_jouanolouRel_of_unimodular
     (exists_jouanolouRel_of_le_unimodularLocus hf) _ (pointMap ⟨g⟩) w hw
     (fun C t ↦ ?_) fun _ _ ↦ rfl
@@ -696,7 +697,7 @@ lemma snocRel.exists_detTensor_boundary_eq
         ((a * A.det) • volumeForm.app c (.of v)) ⊗ₜ[ℤ] FreeAddCommGroup.of x := by
     have h_sum := congrArg (fun r ↦ (r • volumeForm.app c (.of v)) ⊗ₜ[ℤ] FreeAddCommGroup.of x)
       h_laplace
-    conv in (boundary ..).app _ _ => erw [sum_app_apply]
+    conv in (boundary ..).app _ _ => rw [boundary, sum_app_apply]
     -- (`using!` sees through the match in `detTensor` on the reindexed points.)
     simpa [detTensor, A, sum_smul, sum_tmul, pow_add, mul_zsmul, -zsmul_eq_mul] using! h_sum
   rw [h_boundary]
@@ -706,7 +707,6 @@ lemma snocRel.exists_detTensor_boundary_eq
     obtain ⟨w, hw, hωx⟩ := hω c ⟨x, hx⟩
     refine ⟨_ ⊗ₜ .of ⟨x, hx⟩, rfl, congrArg ULift.up ?_⟩
     simp [volumeForm, ExteriorAlgebra.ιMulti, ↓List.ofFn_succ', a, smul_smul, ← hw, mul_comm]
-    -- `erw`, because `hωx` is stated on the subtype of unimodular points.
     rw [hωx]
   · -- Otherwise the last column of `l` vanishes, and so do both sides.
     have h_det : det (fun i ↦ (l i).down) = 0 :=
@@ -872,7 +872,7 @@ lemma EtaleChart.symbolClass_eq_of_cutsOutLocus {f g : Fin d → a.coordRing}
   -- induced by the tuples `μ ∘ f` and `μ ∘ g`.
   obtain ⟨h_le, h_bij⟩ := h_eqv hf.preimage_fieldLocus_not
   apply (h_bij d).injective
-  erw [← H.map_comp, ← H.map_comp]
+  refine (H.map_comp _ _ symbolClass).symm.trans (Eq.trans ?_ (H.map_comp _ _ symbolClass))
   refine (symbolClass_transformation (f := μ ∘ f) (g := μ ∘ g) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
     (by simp [comp_def, μ_fst _]) M M 1 hf_eq h_leibniz (by simp)).trans (one_smul ..)
 
