@@ -551,12 +551,7 @@ lemma integral_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m 
   -- Both sides are the integral over the top quadric of `g e = ψ (ξ ⟨z, e⟩) Φ e`, where `Φ` is the
   -- step function that extends the fiber pairing.
   intro f
-  obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ : ∃ Φ : (𝔰.BesselIndex → A) → ℂ, HasCompactSupport Φ ∧
-      (∀ᶠ v : 𝔰.BesselIndex → A in nhds 0, ∀ x : 𝔰.BesselIndex → A, Φ (x + v) = Φ x) ∧
-      (∀ k ∈ besselH ⊓ F.congruenceSubgroup, ∀ x : 𝔰.BesselIndex → A,
-        Φ ((k : GL 𝔰.BesselIndex A).val *ᵥ x) = Φ x) ∧
-      ∀ e ∈ lastVectorQuadric (latticeMiddleGram 𝔰 N), Φ e = fiberPairing Z p q e :=
-    exists_step_function_eqOn_fiberPairing Z p q
+  obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ := exists_step_function_eqOn_fiberPairing Z p q
   have Φ_cont : Continuous Φ := (isLocallyConstant_of_eventually_add Φ_unif).continuous
   let g (e : 𝔰.BesselIndex → A) : ℂ := P.ψ (ξ * ((latticeMiddleGram 𝔰 N).splitGram *ᵥ e) 𝔰.z) * Φ e
   have g_cont : Continuous g := .mul (by fun_prop) Φ_cont
@@ -599,12 +594,7 @@ lemma continuous_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (
   -- Near `(p, q)` the fiber pairing does not change, and its step function `Φ` does not see the
   -- change of the last entry. What moves is the sphere; the fiber measures are weakly continuous.
   refine continuous_iff_continuousAt.2 fun (p, q) ↦ ?_
-  obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ : ∃ Φ : (𝔰.BesselIndex → A) → ℂ, HasCompactSupport Φ ∧
-      (∀ᶠ v : 𝔰.BesselIndex → A in nhds 0, ∀ x : 𝔰.BesselIndex → A, Φ (x + v) = Φ x) ∧
-      (∀ k ∈ besselH ⊓ F.congruenceSubgroup, ∀ x : 𝔰.BesselIndex → A,
-        Φ ((k : GL 𝔰.BesselIndex A).val *ᵥ x) = Φ x) ∧
-      ∀ e ∈ lastVectorQuadric (latticeMiddleGram 𝔰 N), Φ e = fiberPairing Z p q e :=
-    exists_step_function_eqOn_fiberPairing Z p q
+  obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ := exists_step_function_eqOn_fiberPairing Z p q
   have Φ_cont : Continuous Φ := (isLocallyConstant_of_eventually_add Φ_unif).continuous
   have h_emb : Topology.IsClosedEmbedding
       (vectorOfLastEntry π (p 𝔰.ϱ) : (𝔰.κ → A) → 𝔰.BesselIndex → A) :=
@@ -665,12 +655,7 @@ lemma integrable_fiberPairing_vectorOfLastEntry {F : PlaceData ι (latticeMiddle
     (isDisintegration_normFiberMeasure h.two_le_card).isFiniteMeasureOnCompacts _
   have h_emb : Topology.IsClosedEmbedding (vectorOfLastEntry π t : (𝔰.κ → A) → 𝔰.BesselIndex → A) :=
     isClosedEmbedding_vectorOfLastEntry
-  obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ : ∃ Φ : (𝔰.BesselIndex → A) → ℂ, HasCompactSupport Φ ∧
-      (∀ᶠ v : 𝔰.BesselIndex → A in nhds 0, ∀ x : 𝔰.BesselIndex → A, Φ (x + v) = Φ x) ∧
-      (∀ k ∈ besselH ⊓ F.congruenceSubgroup, ∀ x : 𝔰.BesselIndex → A,
-        Φ ((k : GL 𝔰.BesselIndex A).val *ᵥ x) = Φ x) ∧
-      ∀ e ∈ lastVectorQuadric (latticeMiddleGram 𝔰 N), Φ e = fiberPairing Z p q e :=
-    exists_step_function_eqOn_fiberPairing Z p q
+  obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ := exists_step_function_eqOn_fiberPairing Z p q
   have Φ_cont : Continuous Φ := (isLocallyConstant_of_eventually_add Φ_unif).continuous
   have Φ_int : Integrable (Φ ∘ vectorOfLastEntry π t) μ :=
     (Φ_cont.comp h_emb.continuous).integrable_of_hasCompactSupport

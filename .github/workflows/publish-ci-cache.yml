@@ -1,0 +1,138 @@
+name: publish cache
+
+# Publishes the cache outputs of every commit that lands on main, so that the next builds restore
+# it exactly or as their baseline (CACHE.md).
+#
+# On a push to main it finds the build of that commit on the self-hosted runner: the merge
+# queue's merge_group run (the queue moves main to the exact commit it built), else the push
+# build of the commit, waiting for it to finish. It downloads that run's artifact cache-<commit>,
+# checks it with the code of main (scripts/publish-ci-cache.py, which runs nothing from the
+# artifact or the commit), and then publishes the new artifacts, the map, the module manifest
+# and the record to R2, never overwriting anything. Only the `publish` job, on a fresh
+# GitHub-hosted runner in the environment ci-cache-publish (deployable from main only), sees
+# R2_ACCOUNT_TOKEN. The `accept` job then restores the published cache on another fresh runner,
+# as a user would with `lake exe cache get`, and requires `lake build --no-build` to succeed.
+#
+# A manual run publishes a given commit's build (any successful self-hosted build.yml run of it
+# with a cache artifact, for example a workflow_dispatch of build.yml on a test branch). With
+# publish=false it only verifies, without the environment or the secret, from any branch.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit whose build to publish (full hash)
+        required: true
+        type: string
+      run_id:
+        description: The build.yml run to take it from (default the best one for the commit)
+        required: false
+        type: string
+      publish:
+        description: Publish (false only verifies)
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: publish-cache-${{ inputs.sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: ${{ (github.event_name == 'push' || inputs.publish) && 'publish' || 'verify' }}
+    if: github.repository == 'leanprover-community/riemann-hypothesis'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: ${{ (github.event_name == 'push' || inputs.publish) && 'ci-cache-publish' || '' }}
+    outputs:
+      sha: ${{ steps.target.outputs.sha }}
+    steps:
+      - name: Check out main's publishing code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Choose the commit
+        id: target
+        env:
+          SHA: ${{ inputs.sha || github.sha }}
+        run: |
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::sha must be a full commit hash"; exit 1; }
+          git cat-file -e "$SHA^{commit}" 2>/dev/null || git fetch --no-tags origin "$SHA"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Find the build of the commit
+        id: run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.target.outputs.sha }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          python3 -I scripts/ci-github.py find-run --sha "$SHA" ${RUN_ID:+--run-id "$RUN_ID"} \
+            --wait-minutes ${{ github.event_name == 'push' && 90 || 0 }}
+
+      - name: Download its cache outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.run.outputs.artifact }}
+          run-id: ${{ steps.run.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/staging
+
+      - name: Install elan and the commit's toolchain
+        env:
+          SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          toolchain=$(git show "$SHA:lean-toolchain" | tr -d '[:space:]')
+          [[ "$toolchain" =~ ^leanprover/lean4:v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$ ]] || {
+            echo "::error::unexpected toolchain $toolchain"; exit 1; }
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o "$RUNNER_TEMP/elan-init.sh"
+          sh "$RUNNER_TEMP/elan-init.sh" -y --default-toolchain none --no-modify-path
+          "$HOME/.elan/bin/elan" toolchain install "$toolchain"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Verify, then publish
+        env:
+          SHA: ${{ steps.target.outputs.sha }}
+          PUBLISH: ${{ github.event_name == 'push' || inputs.publish }}
+          R2_ACCOUNT_TOKEN: ${{ (github.event_name == 'push' || inputs.publish) && secrets.R2_ACCOUNT_TOKEN || '' }}
+        run: |
+          # An artifact without new files has no artifacts/ directory.
+          mkdir -p "$RUNNER_TEMP/staging/artifacts"
+          extra=()
+          [[ "$PUBLISH" == true ]] && extra+=(--publish)
+          python3 -I scripts/publish-ci-cache.py --sha "$SHA" --staging "$RUNNER_TEMP/staging" "${extra[@]}"
+
+  accept:
+    name: accept
+    needs: publish
+    if: github.event_name == 'push' || inputs.publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the published commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.publish.outputs.sha }}
+          persist-credentials: false
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o "$RUNNER_TEMP/elan-init.sh"
+          sh "$RUNNER_TEMP/elan-init.sh" -y --default-toolchain none --no-modify-path
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: lake exe cache get
+        # It ends with lake build --no-build itself; run it again to show the result.
+        run: |
+          lake exe cache get
+          lake build --no-build

@@ -14,7 +14,7 @@ one-sided bound on an error term to the absence of zeros of L-functions.
 
 * `New.exists_Ioi_subset_integrableExpSet_of_analyticAt`: Landau's lemma; the Laplace transform of
   a measure is not analytic at its abscissa of convergence.
-* `New.IsPolar.landau`: let `β > 0`. If `E v ≤ e^{(β-1)v}` for all large `v` and `re (r x) ≥ 0`
+* `New.IsPolar.landau`: let `β > 0`. If `E v ≤ A e^{(β-1)v}` for all large `v` and `re (r x) ≥ 0`
   for real `x > β`, then `r ρ = 0` for `re ρ > β`.
 
 Notions from other files:
@@ -79,31 +79,33 @@ lemma mem_integrableExpSet_of_summable_taylor {μ : Measure ℝ} {X : ℝ → �
     _ = ∑' k, .ofReal (taylor k) := by rw [lintegral_tsum (by fun_prop), tsum_congr lintegral_term]
     _ < ⊤ := (hasSum_re hg.hasSum).summable.tsum_ofReal_lt_top
 
-/-- Let `E` satisfy `|E v| ≤ C e^v` for `v ≥ 0`, and let `β > 0`. If `E v ≤ e^{(β-1)v}` for large
+/-- Let `E` satisfy `|E v| ≤ C e^v` for `v ≥ 0`, and let `β > 0`. If `E v ≤ A e^{(β-1)v}` for large
 `v`, then `E(v) e^v ≤ K e^{βv}` for some `K` and all `v > 0`. -/
-lemma exists_mul_exp_le {C β : ℝ} (hE_growth : ∀ v ≥ (0 : ℝ), |E v| ≤ C * Real.exp v) (hβ : 0 < β)
-    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ Real.exp ((β - 1) * v)) :
+lemma exists_mul_exp_le {C A β : ℝ} (hE_growth : ∀ v ≥ (0 : ℝ), |E v| ≤ C * Real.exp v) (hβ : 0 < β)
+    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v)) :
     ∃ K : ℝ, ∀ v : ℝ, 0 < v → E v * Real.exp v ≤ K * Real.exp (β * v) := by
   obtain ⟨Y, hY⟩ := hE_le.exists_forall_of_atTop
-  -- `K ≥ 1` serves for `v ≥ Y`, and `K ≥ |C| e^{2Y}` for `v ≤ Y`.
-  refine ⟨max 1 (|C| * Y.exp ^ 2), fun v hv ↦ ?_⟩
+  -- `K ≥ A` serves for `v ≥ Y`, and `K ≥ |C| e^{2Y}` for `v ≤ Y`.
+  refine ⟨max A (|C| * Y.exp ^ 2), fun v hv ↦ ?_⟩
   obtain hYv | hvY := le_total Y v
   · calc
-      E v * v.exp ≤ Real.exp ((β - 1) * v) * v.exp := by grw [hY v hYv]
-      _ = Real.exp (β * v) := by rw [← Real.exp_add, sub_one_mul, sub_add_cancel]
-      _ ≤ _ := le_mul_of_one_le_left (by positivity) (le_max_left _ _)
+      E v * v.exp ≤ (A * Real.exp ((β - 1) * v)) * v.exp := by grw [hY v hYv]
+      _ = A * Real.exp (β * v) := by rw [mul_assoc, ← Real.exp_add, sub_one_mul, sub_add_cancel]
+      _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le
   · calc
       E v * v.exp ≤ |C| * v.exp * v.exp := by
         grw [le_abs_self (E v), hE_growth v hv.le, le_abs_self C]
-      _ ≤ max 1 (|C| * Y.exp ^ 2) := by grw [mul_assoc, ← sq, hvY, ← le_max_right]
-      _ ≤ _ := le_mul_of_one_le_right (by positivity) (Real.one_le_exp (by positivity))
+      _ ≤ max A (|C| * Y.exp ^ 2) := by grw [mul_assoc, ← sq, hvY, ← le_max_right]
+      _ ≤ _ := le_mul_of_one_le_right
+        ((show 0 ≤ |C| * Y.exp ^ 2 by positivity).trans (le_max_right _ _))
+        (Real.one_le_exp (by positivity))
 
-/-- Let `E` be measurable with `|E v| ≤ C e^v` for `v ≥ 0`, and let `β > 0`. If `E v ≤ e^{(β-1)v}`
+/-- Let `E` be measurable with `|E v| ≤ C e^v` for `v ≥ 0`, and let `β > 0`. If `E v ≤ A e^{(β-1)v}`
 for large `v`, then there are a measure `μ` and a real `K` such that, for `re s > β + 2`, the
 integral `∫ e^{-s|v|} ∂μ` converges to `K / (s - β) - ∫₀^∞ E(v) e^{(1-s)v} dv`. -/
-lemma exists_measure_laplace_eq {C β : ℝ} (hE : Measurable E)
+lemma exists_measure_laplace_eq {C A β : ℝ} (hE : Measurable E)
     (hE_growth : ∀ v ≥ (0 : ℝ), |E v| ≤ C * Real.exp v) (hβ : 0 < β)
-    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ Real.exp ((β - 1) * v)) :
+    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v)) :
     ∃ (μ : Measure ℝ) (K : ℝ), ∀ s : ℂ, β + 2 < s.re →
       s.re ∈ integrableExpSet (fun v : ℝ ↦ -|v|) μ ∧
       complexMGF (fun v : ℝ ↦ -|v|) μ s =
@@ -212,10 +214,10 @@ lemma exists_Ioi_subset_integrableExpSet {μ : Measure ℝ} {X : ℝ → ℝ} (h
 /-- **No pole to the right of `β`**, by Landau's lemma and the sign of the residues at real points.
 Suppose `IsPolar E r`: `|E v| ≤ C e^v` for `v ≥ 0` and the transform
 `∫₀^∞ E(v) e^{(1-s)v} dv` has a meromorphic continuation with at most simple poles of residue `r ρ`
-in `re ρ > 0`. Let `β > 0`. If `E(v) ≤ e^{(β-1)v}` for all large `v` and the residues at real points
+in `re ρ > 0`. Let `β > 0`. If `E(v) ≤ A e^{(β-1)v}` for all large `v` and the residues at real points
 right of `β` have real part `≥ 0`, then there is no pole in `re s > β`, that is, `r ρ = 0`. -/
-lemma IsPolar.landau {r : ℂ → ℂ} (h : IsPolar E r) {β : ℝ} (hβ : 0 < β)
-    (hr : ∀ x : ℝ, β < x → 0 ≤ (r x).re) (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ Real.exp ((β - 1) * v))
+lemma IsPolar.landau {r : ℂ → ℂ} (h : IsPolar E r) {A β : ℝ} (hβ : 0 < β)
+    (hr : ∀ x : ℝ, β < x → 0 ≤ (r x).re) (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v))
     {ρ : ℂ} (hρ : β < ρ.re) :
     r ρ = 0 := by
   -- `Ψ(s) = K / (s - β) - Φ(s)` continues the Laplace transform `F` of a measure. Let `a` be the

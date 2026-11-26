@@ -5,7 +5,7 @@ import New.Reduction.Zeros.PrimeError
 /-!
 # The one-sided criterion for a zero-free half-plane
 
-`New.LFunction_ne_zero_of_primeRemainder_le`: an eventual upper bound `R_q(x) ≤ x ^ (β - 1)` for the
+`New.LFunction_ne_zero_of_primeRemainder_le`: an eventual upper bound `R_q(x) ≤ A * x ^ (β - 1)` for the
 remainder of a sum over prime powers `≡ 1` mod `q` with weights depending on a prime `d`, for all
 `d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mod `q`, in `re s > β`.
 
@@ -30,14 +30,14 @@ open Complex Filter Nat Real Set MeasureTheory Topology
 
 /-- **One-sided criterion.** Let `q₀` be a positive multiple of `8`, let `d₀ ≡ 7` mod `8` be prime
 to `q₀`, and let `β > 1/2`. Suppose that for each prime `d ≡ d₀` mod `q₀` the remainder
-`primeRemainder d q₀ x = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q₀) - c` is at most `x ^ (β - 1)`
-for all large `x`; here `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q₀` and `0` otherwise, and `c` is
-the constant for which the remainder tends to `0`. Then `L(ρ, ψ) ≠ 0` for every character `ψ` modulo
-`q₀` and every `ρ ≠ 1` with `re ρ > β`. -/
+`primeRemainder d q₀ x = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q₀) - c` is at most `A * x ^ (β - 1)`
+for some `A` and all large `x`. Here `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q₀` and `0` otherwise,
+and `c` is the constant for which the remainder tends to `0`. Then `L(ρ, ψ) ≠ 0` for every
+character `ψ` modulo `q₀` and every `ρ ≠ 1` with `re ρ > β`. -/
 theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (hq₀ : 8 ∣ q₀) {d₀ : ℕ}
     (hd₀_mod : d₀ % 8 = 7) (hd₀_cop : d₀.Coprime q₀) {β : ℝ} (hβ : 1 / 2 < β)
     (h_bound : ∀ d : Primes, (d : ℕ) ≡ d₀ [MOD q₀] →
-      ∀ᶠ x : ℝ in atTop, primeRemainder d q₀ x ≤ x ^ (β - 1))
+      ∃ A : ℝ, ∀ᶠ x : ℝ in atTop, primeRemainder d q₀ x ≤ A * x ^ (β - 1))
     (ψ : DirichletCharacter ℂ q₀) {ρ : ℂ} (hρ_ne : ρ ≠ 1) (hρ_re : β < ρ.re) :
     ψ.LFunction ρ ≠ 0 := by
   -- Choose `d` with no twisted zero in `β ≤ re s`, `|im s| ≤ |im ρ|`. There the residue `r s` of
@@ -72,9 +72,10 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     · have hn : n x = 0 := Finset.sum_eq_zero fun χ _ ↦
         (analyticOrderNatAt_entireL_eq_zero_iff χ x).2 (entireL_ne_zero χ hx_ge)
       simp [hn]
-  have h_exp : ∀ᶠ v : ℝ in atTop, primeRemainder d q₀ v.exp ≤ Real.exp ((β - 1) * v) := by
-    filter_upwards [tendsto_exp_atTop.eventually (h_bound d (h_mod d hd))] with v hv
-    rwa [mul_comm, exp_mul]
+  obtain ⟨A, hA⟩ := h_bound d (h_mod d hd)
+  have h_exp : ∀ᶠ v : ℝ in atTop, primeRemainder d q₀ v.exp ≤ A * Real.exp ((β - 1) * v) := by
+    filter_upwards [tendsto_exp_atTop.eventually hA] with v hv
+    rwa [mul_comm (β - 1) v, Real.exp_mul]
   have h_landau : r ρ = 0 := h_polar.landau (by linarith) h_nonneg h_exp hρ_re
   have hρ_ne_zero : ρ ≠ 0 := ne_zero_of_re_pos (by linarith)
   rw [hr ρ hρ_re le_rfl] at h_landau

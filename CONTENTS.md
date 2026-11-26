@@ -220,7 +220,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `New/Spanning/RemainingTerms/FramesOverLattice` (424): Counting frames over a lattice of small discriminant
 - `New/Spanning/RemainingTerms/LatticesOfCorank` (582): Sums over lattices of given corank and small discriminant
 - `New/Spanning/RemainingTerms/SchurOrbit` (741): Schur's test for one orbit
-- `New/Spanning/RemainingTerms/Denominators` (131): Denominators: bases of `A⁺ / I_γ` and `γ A⁺ / I_γ`
 - `New/Spanning/RemainingTerms/LinkVectors` (305): The vectors `z⁺` and `Υ_γ⁻¹ z⁺`
 - `New/Spanning/RemainingTerms/Size` (541): The orbit bound: a bound for a block of amplitudes; the second moment of a set of terms
 - `New/Spanning/RemainingTerms/Cut` (504): The cut: from the lattice of a link to the vectors common to two links

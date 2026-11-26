@@ -8,8 +8,8 @@ import Statements
 # The one-sided bound, and the theorem in half-plane form
 
 For admissible data at an integer `x`, the main inequality and the prime number theorem at a much
-larger cut-off `x₁` give the bound `R_{q₀}(x) ≤ x ^ (-1/2 + ε)` for large `x`; the one-sided
-criterion turns it into the non-vanishing of all Dirichlet `L`-functions in `re s > 1/2`.
+larger cut-off `x₁` give the bound `R_{q₀}(x) ≤ (128 φ(q₀) + 32) x ^ (-1/2 + ε)` for large `x`.
+The one-sided criterion gives non-vanishing of Dirichlet `L`-functions in `re s > 1/2`.
 
 Notions from other files:
 * `Parameters`: a multiple `q₀ = P.q₀` of `18480` and a prime `d = P.d ≡ q₀ / 2 - 1` modulo `q₀`.
@@ -195,33 +195,30 @@ lemma dvd_two_mul_succ_and_not_dvd_succ {q₀ d : ℕ} (hq₀_pos : 0 < q₀) (h
     exact Nat.not_dvd_of_pos_of_lt (by omega) (by omega)
 
 /-- **One-sided bound.** Let `q₀ > 0` be a multiple of `18480`, let `d ≡ q₀ / 2 - 1` modulo `q₀` be
-a prime, and let `ε > 0`. Then `R = primeRemainder d q₀` satisfies `R(y) ≤ y ^ (-1/2 + ε)` for all
-large real `y`. -/
-theorem eventually_primeRemainder_le_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ : 18480 ∣ q₀) {d : ℕ}
+a prime, and let `ε > 0`. Then `R = primeRemainder d q₀` satisfies
+`R(y) ≤ (128 φ(q₀) + 32) y ^ (-1/2 + ε)` for all large real `y`. -/
+theorem eventually_primeRemainder_le_mul_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ : 18480 ∣ q₀) {d : ℕ}
     [hd_prime : Fact d.Prime] (hd : d ≡ q₀ / 2 - 1 [MOD q₀]) {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ y ≤ y ^ (-1 / 2 + ε) := by
+    ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ y ≤ (128 * q₀.totient + 32) * y ^ (-1 / 2 + ε) := by
   let P : Parameters :=
     { q₀ := q₀
       d := d
       dvd_q₀ := hq₀
       d_prime := hd_prime.out
       q₀_dvd_and_not_dvd := dvd_two_mul_succ_and_not_dvd_succ (NeZero.pos q₀) (by omega) hd }
-  -- It suffices to prove the bound with `7 δ` in place of `ε`, for `0 < δ < 1/100`.
-  obtain ⟨δ, hδ, hδ_lt, hδε⟩ : ∃ δ > (0 : ℝ), δ < 1 / 100 ∧ 7 * δ ≤ ε := by
-    refine ⟨min (1 / 200) (ε / 7), by positivity, ?_, ?_⟩
-    · linarith [min_le_left (1 / 200) (ε / 7)]
-    · linarith [min_le_right (1 / 200) (ε / 7)]
+  -- It suffices to prove the bound with `6 δ` in place of `ε`, for `0 < δ < 1/100`.
+  obtain ⟨δ, hδ, hδ_lt, hδε⟩ : ∃ δ > (0 : ℝ), δ < 1 / 100 ∧ 6 * δ ≤ ε := by
+    refine ⟨min (1 / 200) (ε / 6), by positivity, ?_, ?_⟩
+    · linarith [min_le_left (1 / 200) (ε / 6)]
+    · linarith [min_le_right (1 / 200) (ε / 6)]
   set C : ℝ := 64 * q₀.totient + 3
   set t : ℝ := -1 / 2 + 6 * δ with ht
   have ht_ge : -1 ≤ t := by linarith
   have ht_le : t ≤ 0 := by linarith
   have h_floor : ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ ⌊y⌋₊ ≤ C * (⌊y⌋₊ : ℝ) ^ t :=
     tendsto_nat_floor_atTop.eventually (eventually_primeRemainder_natCast_le P hδ hδ_lt)
-  have h_large : ∀ᶠ y : ℝ in atTop, 2 * C + 26 ≤ y ^ δ :=
-    (tendsto_rpow_atTop hδ).eventually_ge_atTop (2 * C + 26)
-  filter_upwards [h_floor, h_large, eventually_ge_atTop 2] with y hy_floor hy_large hy
+  filter_upwards [h_floor, eventually_ge_atTop 2] with y hy_floor hy
   have hy_one : 1 ≤ y := one_le_two.trans hy
-  have hy_pos : 0 < y := one_pos.trans_le hy_one
   calc primeRemainder d q₀ y
       ≤ primeRemainder d q₀ ⌊y⌋₊ + 26 / y :=
         sub_le_iff_le_add'.1 (primeRemainder_sub_primeRemainder_floor_le hy)
@@ -229,10 +226,9 @@ theorem eventually_primeRemainder_le_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ : 18
     _ ≤ C * (2 * y ^ t) + 26 * y ^ t := by
         gcongr
         exact natFloor_rpow_le_two_mul_rpow hy ht_ge ht_le
-    _ = (2 * C + 26) * y ^ t := by ring
-    _ ≤ y ^ δ * y ^ t := by gcongr
-    _ = y ^ (δ + t) := (rpow_add hy_pos δ t).symm
-    _ ≤ y ^ (-1 / 2 + ε) := rpow_le_rpow_of_exponent_le hy_one (by linarith)
+    _ = (128 * q₀.totient + 32) * y ^ t := by dsimp [C]; ring
+    _ ≤ (128 * q₀.totient + 32) * y ^ (-1 / 2 + ε) :=
+      mul_le_mul_of_nonneg_left (rpow_le_rpow_of_exponent_le hy_one (by linarith [ht])) (by positivity)
 
 /-- **Main theorem**, in half-plane form: no Dirichlet `L`-function vanishes in `re s > 1/2`
 (with `s ≠ 1` for a principal character). -/
@@ -254,12 +250,13 @@ theorem grh : DirichletLNonvanishingRightOfHalf := by
     exact h_two.mul_right (by simp)
   -- The one-sided bound is the hypothesis of the criterion.
   have h_bound (d : Nat.Primes) (hd : (d : ℕ) ≡ d₀ [MOD 18480 * q]) :
-      ∀ᶠ x : ℝ in atTop, primeRemainder d (18480 * q) x ≤ x ^ (β - 1) := by
+      ∃ A : ℝ, ∀ᶠ x : ℝ in atTop, primeRemainder d (18480 * q) x ≤ A * x ^ (β - 1) := by
+    refine ⟨128 * (18480 * q).totient + 32, ?_⟩
     have hd₀_eq : d₀ = 18480 * q / 2 - 1 := by omega
     have h_exp : β - 1 = -1 / 2 + (β - 1 / 2) := by ring
     rw [hd₀_eq] at hd
     rw [h_exp]
-    exact eventually_primeRemainder_le_rpow (dvd_mul_right 18480 q) hd (sub_pos.2 hβ)
+    exact eventually_primeRemainder_le_mul_rpow (dvd_mul_right 18480 q) hd (sub_pos.2 hβ)
   have h_induced : (χ.changeLevel (dvd_mul_left q 18480)).LFunction ρ ≠ 0 :=
     LFunction_ne_zero_of_primeRemainder_le (by omega) (by omega) hd₀_cop hβ h_bound _ hρ_ne hβρ
   -- Inducing multiplies `L(s, χ)` by finitely many factors `1 - χ(p) p ^ (-s)`.

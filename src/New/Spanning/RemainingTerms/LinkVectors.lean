@@ -5,21 +5,12 @@ import New.Spanning.Unfolding.TermStructure
 # The vectors `z⁺` and `Υ_γ⁻¹ z⁺`
 
 Let `γ` be an element of the unitary group, with the link isometry `Υ_γ` of the positive space
-`X₀ ⊥ E z⁺`. Let `z` be the last vector of the frame and let `A` be spanned by the others. The
-vectors of the lattice `Λ` of a class `c` that are orthogonal to `A` and `γ A` have as their image a
-lattice `L¹` in `X₀ ⊥ E z⁺`. It contains the lattice `L⁺_γ` of the vectors whose part in `A` is
-divisible by the level `M = S.M`, so what lies in the dual of `L¹` lies in the dual of `L⁺_γ`.
+`X₀ ⊥ E z⁺`. Let `z` be the last vector of the frame and let `A` be spanned by the others.
 
-* `New.Filling.linkVectors_mulVec_perpToPositive_mem`: if `γ` is a term over `(c, s, c')`, the
-  products of `z⁺` and `Υ_γ⁻¹ z⁺` with `L¹` are integral.
-* `New.Filling.linkVectors_mulVec_eq_zero_iff`: the orthogonal complement of the two vectors is
-  `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀`.
-* `New.Filling.exists_lift_mem_linkedX₀_iff_exists_orthogonal`: the vectors of `L⁺_γ ∩ X₀^γ`.
-* `New.Filling.HasCellRank.exists_linkIsometry_symm_eq_smul`,
-  `New.Filling.linearIndependent_linkVectors_and_prod_norm_det`: the two vectors are proportional if
-  `γ` has a cell rank and the discriminant `𝗀` of the two frames is zero; if `𝗀` is not zero, they
-  are independent, and their Gram determinant is computed
-  (`New.Filling.linearIndependent_linkVectors`, `New.Filling.prod_norm_det_gram_linkVectors`).
+* `New.Filling.linkVectors_mulVec_eq_zero_iff`: the orthogonal complement of `z⁺` and `Υ_γ⁻¹ z⁺`
+  is `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀`.
+* `New.Filling.gram_linkVectors`, `New.Filling.HasCellRank.norm_det_gram_linkVectors`: the Gram
+  matrix of `z⁺` and `Υ_γ⁻¹ z⁺`, and the modulus of its determinant at each infinite place.
 * `New.Filling.linkVectorPairs`: the negatives of the two vectors, as pairs in the graph of `Υ_γ`;
   there they represent the products with `z` and `γ z`
   (`New.Filling.linkVectorPairs_mul_linkMetric_mul`).
@@ -31,7 +22,6 @@ Notions from other files:
 * `linkIsometry γ`: the isometry `Υ_γ` of `X₀ ⊥ E z⁺`.
 * `S.HasCellRank j γ`: the term `γ` has the cell rank `j`, the order of a distinguished leading
   minor of the products of the frame with its image under `γ`.
-* `perpToPositive γ`: the map from `isotropicPerp γ = (A + γ A)^⊥` to `X₀ ⊥ E z⁺`.
 -/
 
 noncomputable section
@@ -47,12 +37,6 @@ variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {γ
 `Υ_γ = linkIsometry γ` is the link isometry of `γ`, and `inr ()` is the index of `z⁺`. -/
 def linkVectors (γ : S.G E) : Matrix 𝔰.MiddleIndex (Fin 2) E :=
   (of ![Pi.single (inr ()) 1, (linkIsometry γ).symm (Pi.single (inr ()) 1)])ᵀ
-
-/-- The two vectors `k z` and `z`, as columns, where `k` is in the unitary group of the form with
-the middle block `T`, and `z` is the last vector of the frame `(e₁, …, e_ϱ, z)`. -/
-abbrev lastFramePair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (k : T.G) :
-    Matrix 𝔰.BesselIndex (Fin 2) R :=
-  (framePair k).submatrix id ![inr 𝔰.top, inl 𝔰.top]
 
 /-- The products of a vector `a` of `X₀ ⊥ E z⁺` with `z⁺` and `Υ_γ⁻¹ z⁺` are `N` times the
 `z⁺`-coordinates of `a` and of `Υ_γ a`, where `Υ_γ` is the link isometry of `γ`. -/
@@ -107,128 +91,6 @@ lemma frameImage_conjTranspose_mulVec_eq_zero_iff (γ : S.G E) (y : 𝔰.BesselI
   rw [h_move, funext_iff, Fin.forall_fin_succ']
   simp only [Function.comp_apply, h_dual, h_z]
   simp [S.N_prime.ne_zero]
-
-/-- Let `A` be spanned by the vectors of the frame other than the last one, `z`. For `y` in
-`isotropicPerp γ`, so orthogonal to `A` and `γ A`, let `v = perpToPositive γ y` be its image in
-`X₀ ⊥ E z⁺`. Then the `z⁺`-coordinate (index `inr ()`) of `Υ_γ v = linkIsometry γ v` is the
-`z`-coordinate of `y`. -/
-lemma linkIsometry_perpToPositive_apply (γ : S.G E) (y : isotropicPerp γ) :
-    linkIsometry γ (perpToPositive γ y) (inr ()) = y.val 𝔰.z := by
-  have h_link : linkMatrix γ *ᵥ y.val ∈ link γ := ⟨y, y.prop, rfl⟩
-  change linkIsometry γ (linkSource E 𝔰 (linkMatrix γ *ᵥ y.val)) (inr ()) = y.val 𝔰.z
-  rw [linkIsometry_linkSource h_link, linkTarget_linkMatrix_mulVec, elim_inr]
-
-/-- Let `A` be spanned by the vectors of the frame other than the last one, `z`. For `y` orthogonal
-to `A` and `γ A`, with the image `v` in `X₀ ⊥ E z⁺`, the products of `v` with `z⁺` and `Υ_γ⁻¹ z⁺`
-are minus those of `y` with `γ z` and `z`. -/
-lemma linkVectors_mulVec_perpToPositive (γ : S.G E) (y : isotropicPerp γ) :
-    ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ perpToPositive γ y =
-      -(((lastFramePair γ)ᴴ * S.ratGram) *ᵥ y.val) := by
-  -- The middle form has the value `-N` at `z`.
-  have h_last (a : Unit ⊕ Unit) :
-      S.N * (linkMatrix γ *ᵥ y.val) (a.map inr inr) =
-        -((((framePair γ).submatrix id
-          (Sum.map (fun _ : Unit ↦ 𝔰.top) fun _ : Unit ↦ 𝔰.top))ᴴ * S.ratGram) *ᵥ y.val) a := by
-    rw [framePair_last_eq_zRowBlockDiagonal_mul, ← mulVec_mulVec]
-    rcases a with a | a <;> simp [Shape.middleGram, mulVec, dotProduct]
-  rw [linkVectors_mulVec, linkIsometry_perpToPositive_apply,
-    show y.val 𝔰.z = (linkMatrix γ *ᵥ y.val) (inl (inr ())) by simp]
-  funext i
-  fin_cases i
-  exacts [h_last (inr ()), h_last (inl ())]
-
-/-- If `k` lies in the stabilizer of the standard lattice, the linear forms given by the products
-with `k z` and `z`, in the lattice basis (where the middle block of the Gram matrix is
-`S.latticeMiddle`), have coefficients in the integral finite adeles. -/
-lemma isIntMatrix_lastFramePair_mul (k : S.latticeStabilizer) :
-    IsIntMatrix (Ô E) ((lastFramePair k.val)ᴴ * (S.latticeMiddle (𝔸f E)).splitGram) := by
-  have h_pair : IsIntMatrix (Ô E) ((framePair k.val)ᴴ * (S.latticeMiddle (𝔸f E)).splitGram) :=
-    (isIntMatrix_framePair k.prop.isIntMatrix).conjTranspose.mul
-      S.isUnimodular_latticeMiddle.splitGram.isIntMatrix
-  exact fun i ↦ h_pair (![inr 𝔰.top, inl 𝔰.top] i)
-
-/-- Let `γ` be a term over `(c, s, c')`: in the coordinates of the classes `c` and `c'` it
-stabilizes the standard lattice and has the reduction `s`. Let `Λ` be the lattice of the class `c`,
-and let `A` be spanned by the vectors of the frame other than the last one. The vectors `z⁺` and
-`Υ_γ⁻¹ z⁺` have integral products with the image in `X₀ ⊥ E z⁺` of every vector `y` of `Λ` that is
-orthogonal to `A` and `γ A`. -/
-theorem linkVectors_mulVec_perpToPositive_mem {c c' : S.Classes} {s : S.ResidueGL}
-    (hγ : γ ∈ S.termsOver c s c') (y : isotropicPerp γ)
-    (hy : ((↑) : E → 𝔸f E) ∘ y.val ∈ preimageLattice (Ô E) (S.classCoord c)) :
-    ((↑) : E → 𝔸f E) ∘ (((linkVectors γ)ᴴ * S.positiveGram) *ᵥ perpToPositive γ y) ∈
-      intVectors (Ô E) (Fin 2) := by
-  obtain ⟨k, -, hk⟩ :
-      ∃ k : S.latticeStabilizer, S.reduction k = s ∧ k.val = S.translateByClassReps c c' γ := hγ
-  have h_value : ((lastFramePair k.val)ᴴ * (S.latticeMiddle (𝔸f E)).splitGram) *ᵥ
-      S.classCoord c *ᵥ (((↑) : E → 𝔸f E) ∘ y.val) =
-      ((↑) : E → 𝔸f E) ∘ (((lastFramePair γ)ᴴ * S.ratGram) *ᵥ y.val) := by
-    rw [hk]
-    funext i
-    exact congrFun₂ (framePair_translateByClassReps_mul_classCoord c c' γ ![inr 𝔰.top, inl 𝔰.top]
-      (replicateCol Unit y.val)) i ()
-  have h_int : ((↑) : E → 𝔸f E) ∘ (((lastFramePair γ)ᴴ * S.ratGram) *ᵥ y.val) ∈
-      intVectors (Ô E) (Fin 2) := by
-    rw [← h_value]
-    exact (isIntMatrix_lastFramePair_mul k).mulVec hy
-  rw [linkVectors_mulVec_perpToPositive]
-  exact fun i ↦ by simpa using h_int i
-
-/-- Let `Λ` be the lattice of the class `c`. For `a` in the span of `e₁, …, e_ϱ` and `v` in
-`X₀`, the vector `a + v` lies in `Λ` if and only if `a` has integral coordinates and `v` lies in
-`Λ ∩ X₀`. -/
-lemma elim_mem_preimageLattice_classCoord_iff (c : S.Classes) (a : Fin 𝔰.ϱ → E) (v : 𝔰.κ → E) :
-    ((↑) : E → 𝔸f E) ∘ (a ⊕ᵥ ((v ⊕ᵥ 0) ⊕ᵥ 0) : 𝔰.BesselIndex → E) ∈
-        preimageLattice (Ô E) (S.classCoord c) ↔
-      (∀ i : Fin 𝔰.ϱ, (a i : 𝔸f E) ∈ Ô E) ∧ ((↑) : E → 𝔸f E) ∘ v ∈ S.classLatticeX₀ c := by
-  simp [preimageLattice, classLatticeX₀, intVectors, classCoord_eq_fromBlocks, fromBlocks_mulVec,
-    mulVec, dotProduct]
-
-/-- Let `Λ` be the lattice of the class `c`, let `A` be spanned by the vectors of the frame other
-than the last one, and let `L⁺_γ` be the image in `X₀ ⊥ E z⁺` of the vectors of `Λ` that are
-orthogonal to `A` and `γ A` and whose part in `A` is divisible by the level `M = S.M`. A vector `v`
-of `X₀` lies in `L⁺_γ` and in `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀` (`linkedX₀ γ`) if and only if it lies in `Λ`
-and some vector of `v + M (Λ ∩ A)` is orthogonal to the image of the frame under `γ`. -/
-theorem exists_lift_mem_linkedX₀_iff_exists_orthogonal (c : S.Classes) (γ : S.G E) (v : 𝔰.κ → E) :
-    ((∃ y : isotropicPerp γ,
-        ((↑) : E → 𝔸f E) ∘ y.val ∈ preimageLattice (Ô E) (S.classCoord c) ∧
-        (∀ i : Fin 𝔰.ϱ, S.ideleM⁻¹ • (y.val (inl i) : 𝔸f E) ∈ Ô E) ∧
-        perpToPositive γ y = v ⊕ᵥ 0) ∧
-      v ∈ linkedX₀ γ) ↔
-    (((↑) : E → 𝔸f E) ∘ v ∈ S.classLatticeX₀ c ∧
-      ∃ a : Fin 𝔰.ϱ → E, (∀ i : Fin 𝔰.ϱ, S.ideleM⁻¹ • (a i : 𝔸f E) ∈ Ô E) ∧
-        ((frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))ᴴ * S.ratGram) *ᵥ
-          (a ⊕ᵥ ((v ⊕ᵥ 0) ⊕ᵥ 0)) = 0) := by
-  set γInv : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E := ↑(γ⁻¹ : S.G E)
-  have h_source (y : isotropicPerp γ) :
-      perpToPositive γ y = (y.val ∘ 𝔰.indexX₀) ⊕ᵥ fun _ : Unit ↦ (γInv *ᵥ y.val) 𝔰.z :=
-    linkSource_linkMatrix_mulVec y.val
-  rw [mem_linkedX₀]
-  constructor
-  · rintro ⟨⟨y, h_int, h_level, h_image⟩, h_zero⟩
-    obtain ⟨h_dual, h_dual'⟩ : (∀ a : Fin 𝔰.ϱ, y.val (eStar a) = 0) ∧
-        ∀ a : Fin 𝔰.ϱ, (γInv *ᵥ y.val) (eStar a) = 0 := mem_isotropicPerp.1 y.prop
-    have h_z : y.val 𝔰.z = 0 := by rw [← linkIsometry_perpToPositive_apply, h_image, h_zero]
-    rw [h_source] at h_image
-    have h_eq : y.val = (fun a : Fin 𝔰.ϱ ↦ y.val (inl a)) ⊕ᵥ ((v ⊕ᵥ 0) ⊕ᵥ 0) := by
-      ext (a | (i | i) | a)
-      exacts [rfl, congrFun h_image (inl i), h_z, h_dual a]
-    rw [h_eq, elim_mem_preimageLattice_classCoord_iff] at h_int
-    refine ⟨h_int.2, fun a ↦ y.val (inl a), h_level, ?_⟩
-    rw [← h_eq, frameImage_conjTranspose_mulVec_eq_zero_iff]
-    exact ⟨h_dual', congrFun h_image (inr ())⟩
-  · rintro ⟨h_int, a, ha, h_orth⟩
-    let x : 𝔰.BesselIndex → E := a ⊕ᵥ ((v ⊕ᵥ 0) ⊕ᵥ 0)
-    obtain ⟨h_dual', h_z'⟩ : (∀ b : Fin 𝔰.ϱ, (γInv *ᵥ x) (eStar b) = 0) ∧ (γInv *ᵥ x) 𝔰.z = 0 :=
-      (frameImage_conjTranspose_mulVec_eq_zero_iff γ x).1 h_orth
-    let y : isotropicPerp γ := ⟨x, mem_isotropicPerp.2 ⟨fun _ ↦ rfl, h_dual'⟩⟩
-    have h_image : perpToPositive γ y = v ⊕ᵥ 0 := by
-      rw [h_source, h_z']
-      rfl
-    have ha_int (i : Fin 𝔰.ϱ) : (a i : 𝔸f E) ∈ Ô E := by
-      simpa [Units.smul_def] using mul_mem S.ideleM_mem (ha i)
-    refine ⟨⟨y, (elim_mem_preimageLattice_classCoord_iff c a v).2 ⟨ha_int, h_int⟩, ha, h_image⟩, ?_⟩
-    rw [← h_image, linkIsometry_perpToPositive_apply]
-    rfl
 
 /-- Let `γ` have a cell rank `j` (`HasCellRank`): it is in the normal form
 `NormOnePairOccursFrom j γ`, the leading minor of order `j` of the products of the frame with its
@@ -340,57 +202,6 @@ lemma HasCellRank.norm_det_gram_linkVectors (hγ : S.HasCellRank j γ) (v : Infi
   obtain ⟨-, h_minor : leadingMinor (S.frameProducts γ) j ≠ 0, -⟩ := hγ
   rw [eq_div_iff (by simpa using h_minor)]
   simpa [sq] using h_det
-
-/-- If the discriminant `𝗀 = S.termDisc γ` of the frame and its image under `γ` is not zero, then
-`z⁺` and `Υ_γ⁻¹ z⁺`, the columns of `linkVectors γ` (with `Υ_γ = linkIsometry γ`), are linearly
-independent. -/
-theorem linearIndependent_linkVectors (h_disc : S.termDisc γ ≠ 0) :
-    LinearIndependent E (linkVectors γ).col := by
-  have hγ : S.HasCellRank ⊤ γ := hasCellRank_last h_disc
-  have h_det : ((linkVectors γ)ᴴ * S.positiveGram * linkVectors γ).det ≠ 0 := fun h_zero ↦ by
-    simpa [h_zero, h_disc, S.N_prime.ne_zero] using hγ.det_gram_linkVectors_mul
-  have h_ker (x : Fin 2 → E) (hx : linkVectors γ *ᵥ x = 0) : x = 0 := by
-    refine eq_zero_of_mulVec_eq_zero h_det ?_
-    rw [← mulVec_mulVec, hx, mulVec_zero]
-  exact mulVec_injective_iff.1 ((injective_iff_map_eq_zero (linkVectors γ).mulVecLin).2 h_ker)
-
-/-- If the discriminant `𝗀` of the frame and its image under `γ` is not zero, then the product over
-the `f` infinite places `v` of the modulus of the Gram determinant of `z⁺` and `Υ_γ⁻¹ z⁺` under the
-embedding `Φ v` is `N ^ f Nm 𝗀 / 𝗀♯`. Here `Υ_γ` is the link isometry of `γ`, the prime `N = S.N`
-is the norm of `z⁺`, and `Nm 𝗀 = S.termDiscNorm γ` is the same product for `𝗀`. The gauge
-`𝗀♯ = S.minorGauge ⊤ c c' γ` at the top cell rank is the absolute norm of the determinant of the
-products of the two frames, divided by `N ^ f`: the two indices through which the gauge depends on
-the classes `c` and `c'` are `1` at this rank. -/
-theorem prod_norm_det_gram_linkVectors [HasPrimitiveRoot5040 E] (h_disc : S.termDisc γ ≠ 0)
-    (c c' : S.Classes) :
-    ∏ v : InfinitePlace E, ‖Φ v ((linkVectors γ)ᴴ * S.positiveGram * linkVectors γ).det‖ =
-      S.N ^ numInfPlaces E * S.termDiscNorm γ / S.minorGauge ⊤ c c' γ := by
-  have hγ : S.HasCellRank ⊤ γ := hasCellRank_last h_disc
-  have h_top : ((⊤ : Fin (𝔰.ϱ + 2)) : ℕ) - 𝔰.ϱ = 1 := by simp
-  -- At the top cell rank both indices in the gauge are `1`.
-  have h_gauge : S.minorGauge ⊤ c c' γ =
-      (∏ v : InfinitePlace E, ‖Φ v (leadingMinor (S.frameProducts γ) ⊤)‖ ^ 2) /
-        S.N ^ numInfPlaces E := by
-    rw [hγ.minorGauge_eq, isotropicRowsIndex_top, isotropicRowsIndex_top, minorNorm,
-      abs_norm_eq_prod_norm_sq,
-      h_top, mul_one, pow_mul', Nat.cast_one]
-    field_simp [S.N_prime.ne_zero]
-  simp only [hγ.norm_det_gram_linkVectors, Finset.prod_div_distrib, Finset.prod_mul_distrib]
-  rw [h_gauge, termDiscNorm, Finset.prod_const, Finset.card_univ, div_div_eq_mul_div]
-  ring
-
-/-- Let `E` contain a primitive 5040th root of unity. If the discriminant `𝗀` of the frame and its
-image under `γ` is not zero, then `z⁺` and `Υ_γ⁻¹ z⁺` are linearly independent, and the lattice that
-they span has the discriminant `N ^ f Nm 𝗀 / 𝗀♯`. The discriminant is the product over the `f`
-infinite places `v` of the modulus of the Gram determinant under the embedding `Φ v`,
-`Nm 𝗀 = S.termDiscNorm γ` is the same product for `𝗀`, and `𝗀♯` is the gauge `minorGauge` at the top
-cell rank, for any classes `c` and `c'`. -/
-theorem linearIndependent_linkVectors_and_prod_norm_det [HasPrimitiveRoot5040 E]
-    (h_disc : S.termDisc γ ≠ 0) (c c' : S.Classes) :
-    LinearIndependent E (linkVectors γ).col ∧
-    ∏ v : InfinitePlace E, ‖Φ v ((linkVectors γ)ᴴ * S.positiveGram * linkVectors γ).det‖ =
-      S.N ^ numInfPlaces E * S.termDiscNorm γ / S.minorGauge ⊤ c c' γ :=
-  ⟨linearIndependent_linkVectors h_disc, prod_norm_det_gram_linkVectors h_disc c c'⟩
 
 /-! ### The two vectors as pairs in the link -/
 

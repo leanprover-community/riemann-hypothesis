@@ -1,36 +1,43 @@
 name: build
 
-# Builds every pull request to main, and main itself, on a GitHub-hosted runner with the shared
-# build cache (CACHE.md). It fails if the build fails, if any module reports `sorry`, or if one of
-# the five theorems of src/Main.lean depends on an axiom other than propext, Classical.choice and
-# Quot.sound.
+# Builds every pull request to main on a GitHub-hosted runner, and every merge queue group, push
+# to main and manual run on the self-hosted runner (labels self-hosted, rh-big; see CACHE.md,
+# "Self-hosted merge queue runner"), with the shared build cache (CACHE.md). It fails if the
+# build fails, if any module reports `sorry`, or if one of the five theorems of src/Main.lean
+# depends on an axiom other than propext, Classical.choice and Quot.sound. The job is called
+# `lake build` in every case: it is the merge queue's required check.
 #
-# This runs the pull request's code, so it uses `pull_request` (not `pull_request_target`), a
-# read-only token and no secrets, and never runs on the self-hosted runners. It publishes
-# nothing: the cache is only read, over public HTTPS, and every artifact is checked against the
-# SHA-256 in the record it was selected from.
+# Pull requests run their own code, so they use `pull_request` (not `pull_request_target`), a
+# read-only token and no secrets, and stay on GitHub-hosted runners. Only code that is queued to
+# land on main, or already on it, runs on the self-hosted runner (whose job-started hook refuses
+# every other event). No job here publishes anything: the cache is only read, over public HTTPS,
+# and every artifact is checked against the SHA-256 in the record it was selected from. On the
+# self-hosted runner the job uploads the new cache outputs (scripts/ci-cache-stage.py) as the
+# artifact cache-<commit>; after the merge queue has moved main to that commit,
+# .github/workflows/publish-ci-cache.yml verifies them with main's code and publishes them.
 #
 # The cache restore uses the record for the exact build inputs when there is one. A pull request
 # that changes src never has one, so scripts/ci-cache-get.py --baseline falls back to the newest
 # published record on main's first-parent history (else the record pinned in
 # scripts/cache-baseline.json), and `lake build` compiles only the modules whose inputs changed
-# and the modules that import them. Nothing here publishes a record for main, so until someone
-# publishes one by hand, the baseline falls behind main and builds get slower as main moves.
+# and the modules that import them.
 #
-# A change to a module that most of src imports (Lib.Base, Lib.Speed, ...) rebuilds all 803
-# modules: about 4 hours of module build time, so one to two hours on the 4 cores of
-# ubuntu-latest, and single modules peak at about 9 GB of its 16 GB. A change to lean-toolchain
-# or lake-manifest.json gets no baseline, and Mathlib's cache must also match.
+# A change to a module that most of src imports (Lib.Base, Lib.Speed, ...) rebuilds all 802
+# modules: about 4 hours of module build time, so about 10 minutes on the 64 vCPUs of the
+# self-hosted runner, and one to two hours on the 4 cores of ubuntu-latest. A change to
+# lean-toolchain or lake-manifest.json gets no baseline, and Mathlib's cache must also match.
 
 on:
   pull_request:
     branches: [main]
+  merge_group:
   push:
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}
@@ -39,19 +46,33 @@ concurrency:
 jobs:
   build:
     name: lake build
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-latest' || fromJSON('["self-hosted", "rh-big"]') }}
     timeout-minutes: 360
+    env:
+      # Pull requests build on GitHub-hosted runners and upload nothing.
+      STAGE: ${{ github.event_name != 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
 
+      - name: Check whether the merge queue has built this commit
+        # The merge queue moves main to the exact commit it built, and that build's artifact is
+        # what gets published, so the push build of that commit has nothing left to do.
+        id: queue
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -I scripts/ci-github.py queue-tested --sha "$GITHUB_SHA"
+
       - name: Fetch main's history for the cache baseline
+        if: steps.queue.outputs.tested != 'true'
         # On a pull request the checkout is GitHub's merge of the head into main. The baseline is
         # looked up along main's first-parent history (at most 200 commits).
         run: git fetch --no-tags --depth=200 origin +refs/heads/main:refs/remotes/origin/main
 
       - name: Install elan and the toolchain in lean-toolchain
+        if: steps.queue.outputs.tested != 'true'
         run: |
           curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
           sh elan-init.sh -y --default-toolchain none
@@ -60,15 +81,24 @@ jobs:
           "$HOME/.elan/bin/lake" --version
 
       - name: Test the cache baseline selection
+        if: steps.queue.outputs.tested != 'true'
         run: python3 -I scripts/tests/test_ci_cache_baseline.py
 
       - name: Restore Mathlib's cache
+        if: steps.queue.outputs.tested != 'true'
         # As in scripts/lake-cache-get.sh, which `lake exe cache get` runs.
         env:
           MATHLIB_CACHE_GET_URL: https://cache.mathlib.org/mathlib4
         run: lake exe mathlib/cache get
 
+      - name: Restore Tau Ceti's cache
+        if: steps.queue.outputs.tested != 'true'
+        # As in scripts/lake-cache-get.sh: checks the Mathlib pins agree and that the statements
+        # import no Tau Ceti module, then fetches the oleans of the imported Tau Ceti modules.
+        run: python3 scripts/tauceti-cache-get.py
+
       - name: Restore this project's cache
+        if: steps.queue.outputs.tested != 'true'
         # Exit 0: the exact build inputs were restored, and nothing should compile.
         # Exit 4: a baseline was restored, and lake build compiles what changed since.
         # Exit 3: no record at all, and lake build compiles everything.
@@ -84,9 +114,17 @@ jobs:
           esac
 
       - name: lake build
+        if: steps.queue.outputs.tested != 'true'
         run: |
           set -o pipefail
-          lake build 2>&1 | tee build.log
+          if [[ "$STAGE" == true ]]; then
+            # As the hand publisher builds: -o writes Lake's map of every module's artifact, and
+            # packs each module's .ltar under .lake/build/ir.
+            export LAKE_CACHE_DIR="$PWD/.lake/cache" LAKE_RESTORE_ARTIFACTS=true
+            lake build -o "$RUNNER_TEMP/outputs.jsonl" 2>&1 | tee build.log
+          else
+            lake build 2>&1 | tee build.log
+          fi
           # Lake replays the saved messages of the modules it did not compile, so this covers
           # restored modules too. Lean v4.35.0 prints the word in backticks, as in
           # "declaration uses `sorry`"; up to v4.27.0 it was in quotes. The dots take either.
@@ -96,6 +134,7 @@ jobs:
           fi
 
       - name: Check the axioms of the five theorems
+        if: steps.queue.outputs.tested != 'true'
         run: |
           set -o pipefail
           lake env lean scripts/PrintAxioms.lean 2>&1 | tee axioms.log
@@ -106,3 +145,17 @@ jobs:
             echo "::error::The five theorems must depend on exactly propext, Classical.choice and Quot.sound."
             exit 1
           fi
+
+      - name: Stage the new cache outputs
+        if: env.STAGE == 'true' && steps.queue.outputs.tested != 'true'
+        run: python3 -I scripts/ci-cache-stage.py "$RUNNER_TEMP/outputs.jsonl" "$RUNNER_TEMP/cache-stage"
+
+      - name: Upload the new cache outputs
+        if: env.STAGE == 'true' && steps.queue.outputs.tested != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cache-${{ github.sha }}
+          path: ${{ runner.temp }}/cache-stage
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false

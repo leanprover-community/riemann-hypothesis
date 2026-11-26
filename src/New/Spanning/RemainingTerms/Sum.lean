@@ -1,5 +1,4 @@
 import New.Spanning.RemainingTerms.Count
-import New.Spanning.RemainingTerms.Denominators
 import New.Spanning.RemainingTerms.Size
 
 /-!

@@ -19,6 +19,16 @@ name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
 rev = "56a005855ea17e0b0958f73ec801ae140b0a1679"
 
+# Added for Tau Ceti (see CACHE.md): https://github.com/TauCetiProject/TauCeti at a toolchain
+# tag. Its cached oleans are only usable if it was built against the Mathlib commit above, so
+# the two pins move together; `lake exe cache get` checks this (scripts/tauceti-cache-get.py).
+[[require]]
+name = "TauCeti"
+git = "https://github.com/TauCetiProject/TauCeti"
+rev = "v4.35.0+patch1"
+
+# The rest of this file, up to the next "Added" comment, is unchanged from grh-lean commit 72fead1.
+
 [[lean_lib]]
 name = "Lib"
 globs = ["Lib.+"]
@@ -50,3 +60,11 @@ name = "grh-lean"
 kind = "s3"
 artifactEndpoint = "https://rh-cache.taucetiproject.org/artifacts"
 revisionEndpoint = "https://rh-cache.taucetiproject.org/grh-lean/revisions"
+
+# Added for Tau Ceti: its public, anonymous artifact cache. `lake exe cache get` fetches from it
+# the oleans of the Tau Ceti modules imported under src (scripts/tauceti-cache-get.py).
+[[cache.service]]
+name = "tauceti-public"
+kind = "s3"
+artifactEndpoint = "https://cache.taucetiproject.org/artifacts"
+revisionEndpoint = "https://cache.taucetiproject.org/revisions"

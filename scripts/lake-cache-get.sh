@@ -37,9 +37,15 @@ MATHLIB_CACHE_GET_URL="${MATHLIB_CACHE_GET_URL:-https://cache.mathlib.org/mathli
   lake exe mathlib/cache get
 
 # Cache URLs live in lakefile.toml; users need no separate configuration file.
+export LAKE_CACHE_DIR="$RH_CACHE_ROOT/.lake/cache"
+
+# Tau Ceti's oleans come from Tau Ceti's own public cache (service tauceti-public in lakefile.toml).
+# tauceti-cache-get.py first checks that Tau Ceti and this project pin the same Mathlib commit.
+printf 'Fetching Tau Ceti cache...\n'
+python3 scripts/tauceti-cache-get.py
+
 # ci-cache-get.py registers the map, downloads and checks the artifacts (500 parallel transfers),
 # unpacks them with one leantar process, then checks with `lake build --no-build`.
-export LAKE_CACHE_DIR="$RH_CACHE_ROOT/.lake/cache"
 RH_CI_CACHE_STATUS=0
 python3 scripts/ci-cache-get.py || RH_CI_CACHE_STATUS=$?
 if [[ "$RH_CI_CACHE_STATUS" == 3 ]]; then
