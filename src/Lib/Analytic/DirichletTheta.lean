@@ -496,13 +496,6 @@ theorem hasMellin_thetaSeries_char (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (
   refine ⟨h_conv.congr_fun (fun _ ht ↦ (cpow_smul_thetaSeries s ht).symm) measurableSet_Ioi, ?_⟩
   rw [mellin_thetaSeries_sub_half, mellin_gaussianTheta_char hχ_ne hχ_parity hs]
 
-/-- For `b, r > 0` with `1 / (b r) = r`, the map `u ↦ 1 / (b u)` takes the interval `(0, r)` onto
-`(r, ∞)`. -/
-lemma image_inv_const_mul_Ioo {b r : ℝ} (hb : 0 < b) (hr : 0 < r) (h_fix : (b * r)⁻¹ = r) :
-    (fun u : ℝ ↦ (b * u)⁻¹) '' Ioo 0 r = Ioi r := by
-  rw [← image_image Inv.inv (b * ·), image_mul_left_Ioo hb, mul_zero, image_inv_eq_inv,
-    inv_Ioo_0_left (mul_pos hb hr), h_fix]
-
 /-- The fold: for primitive `χ ≠ 1` of conductor `q` with `χ(-1) = (-1) ^ j`,
 `∫_0^∞ |θ_χ(u)| du / u = 2 ∫_{q ^ (-1/2)}^∞ |θ_χ(u)| du / u`, where
 `θ_χ(u) = u ^ (1/2) ∑_{n ≥ 1} χ(n) (n u) ^ j e^(-π n² u²)` is `thetaSeries`. -/
@@ -531,7 +524,9 @@ lemma integral_norm_thetaSeries_div (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = 
     rw [abs_of_pos (by positivity)]
     field
   have h_fold : ∫ u : ℝ in Ioi r, f u = ∫ u : ℝ in Ioc 0 r, f u := by
-    rw [← image_inv_const_mul_Ioo hq hr h_fix,
+    rw [← show (fun u : ℝ ↦ ((q : ℝ) * u)⁻¹) '' Ioo 0 r = Ioi r by
+        rw [← image_image Inv.inv ((q : ℝ) * ·), image_mul_left_Ioo hq, mul_zero, image_inv_eq_inv,
+          inv_Ioo_0_left (mul_pos hq hr), h_fix],
       integral_image_eq_integral_abs_deriv_smul measurableSet_Ioo h_deriv h_inj,
       setIntegral_congr_fun measurableSet_Ioo h_invariant, integral_Ioc_eq_integral_Ioo]
   calc ∫ u : ℝ in Ioi 0, f u = (∫ u : ℝ in Ioc 0 r, f u) + ∫ u : ℝ in Ioi r, f u := by
