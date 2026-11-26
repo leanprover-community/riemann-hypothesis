@@ -415,7 +415,8 @@ lemma exists_continuousAlgHom_mixedEmbedding_eq (w : InfinitePlace K) :
   let coord : mixedEmbedding.mixedSpace K →ₐ[ℝ] ℂ :=
     if hw : w.IsReal then ofRealAm.comp ((evalAlgHom _ _ ⟨w, hw⟩).comp (AlgHom.fst ℝ _ _))
     else (evalAlgHom _ _ ⟨w, not_isReal_iff_isComplex.mp hw⟩).comp (AlgHom.snd ℝ _ _)
-  have h_coord (x : K) : coord (mixedEmbedding K x) = w.embedding x := by aesop
+  have h_coord (x : K) : coord (mixedEmbedding K x) = w.embedding x := by
+    by_cases hw : w.IsReal <;> simp [coord, hw]
   let p : mixedEmbedding.mixedSpace K →ₐ[ℝ] ℂ :=
     .comp (if w.embedding = Φ w then AlgHom.id ℝ ℂ else conjAe) coord
   refine ⟨⟨p, p.toLinearMap.continuous_of_finiteDimensional⟩, fun x ↦ ?_⟩
