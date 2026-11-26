@@ -291,7 +291,7 @@ theorem exists_lift {O C U : Type} [CommRing O] [Field C] [Algebra O C] [AddComm
     {b : Fin n → U} (hb : LinearIndependent C b) (i : Fin n) {a : C} (ha : a ≠ 0) (hLa : a • b i ∈ La) :
     ∃ (w : U) (c : C), c ≠ 0 ∧ w ∈ La ∧ w - c • b i ∈ step C b i ∧
       ∀ x ∈ La, x ∈ step C b (i + 1) → ∃ o : O, x - o • w ∈ step C b i := by
-  obtain ⟨c, hc, e, -⟩ := exists_grAt_eq hv hfg b i (hb.notMem_span_image (by simp)) ha
+  obtain ⟨c, hc, e⟩ := exists_grAt_eq hv hfg b i (hb.notMem_span_image (by simp)) ha
     (Submodule.zero_mem _) (by rwa [add_zero])
   obtain ⟨w, hw, hw'⟩ : c • (step C b i).mkQ (b i) ∈ grAt C La b i :=
     e ▸ Submodule.mem_span_singleton_self _

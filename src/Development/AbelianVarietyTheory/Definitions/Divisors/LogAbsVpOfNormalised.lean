@@ -119,15 +119,6 @@ variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
 def grLat (La : Submodule O U) (F' F : Submodule C U) : Submodule O (U ⧸ F') :=
   (La ⊓ F.restrictScalars O).map (F'.mkQ.restrictScalars O)
 
-def scaleLat (a : C) (La : Submodule O U) : Submodule O U :=
-  La.map ((a • LinearMap.id : U →ₗ[C] U).restrictScalars O)
-
-variable (v : Valuation C ℝ≥0)
-
-def latNorm (La : Submodule O U) (x : U) : ℝ≥0 := sInf {r | ∃ a : C, x ∈ scaleLat a La ∧ v a = r}
-
-variable {v}
-
 set_option autoImplicit false in
 open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
@@ -225,10 +216,6 @@ variable (C) in
 def grAt (La : Submodule O U) (f : Fin N → U) (i : Fin N) : Submodule O (U ⧸ step C f i) :=
   grLat La (step C f i) (step C f (i + 1))
 
-def grNorm (v : Valuation C ℝ≥0) (La : Submodule O U) (f : Fin N → U) (i : Fin N) : ℝ≥0 :=
-  latNorm v (grAt C La f i) ((step C f i).mkQ (f i))
-
-
 set_option autoImplicit false in
 open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
@@ -239,8 +226,7 @@ theorem _root_.GlobalTheory.HTLat.exists_grAt_eq {v : Valuation C ℝ≥0} (hv :
     (ha : a ≠ 0) {y : U} (hy : y ∈ _root_.GlobalTheory.HTLat.step C f i)
     (hLa : a • f i + y ∈ La) :
     ∃ c : C, c ≠ 0 ∧ _root_.GlobalTheory.HTLat.grAt C La f i =
-        Submodule.span O {c • (_root_.GlobalTheory.HTLat.step C f i).mkQ (f i)} ∧
-      _root_.GlobalTheory.HTLat.grNorm v La f i = (v c)⁻¹ := by
+        Submodule.span O {c • (_root_.GlobalTheory.HTLat.step C f i).mkQ (f i)} := by
   classical
   set S := _root_.GlobalTheory.HTLat.step C f i with hS
   set S' := _root_.GlobalTheory.HTLat.step C f (i + 1) with hS'
@@ -311,30 +297,7 @@ theorem _root_.GlobalTheory.HTLat.exists_grAt_eq {v : Valuation C ℝ≥0} (hv :
     · rw [Submodule.span_le, Set.singleton_subset_iff, SetLike.mem_coe,
         ← hcoef q₀ (hsG q₀ hq₀)]
       exact hsG q₀ hq₀
-  refine ⟨coef q₀, hc, hspan, ?_⟩
-  show _root_.GlobalTheory.HTLat.latNorm v (_root_.GlobalTheory.HTLat.grAt C La f i) xb = _
-  rw [hspan]
-  unfold _root_.GlobalTheory.HTLat.latNorm _root_.GlobalTheory.HTLat.scaleLat
-  refine IsLeast.csInf_eq ⟨⟨(coef q₀)⁻¹, ?_, map_inv₀ v _⟩, ?_⟩
-  · refine Submodule.mem_map.2 ⟨coef q₀ • xb, Submodule.mem_span_singleton_self _, ?_⟩
-    simp only [LinearMap.coe_restrictScalars, LinearMap.smul_apply, LinearMap.id_apply]
-    rw [smul_smul, inv_mul_cancel₀ hc, one_smul]
-  · rintro r ⟨b, hb, rfl⟩
-    obtain ⟨z, hz, hbz⟩ := Submodule.mem_map.1 hb
-    obtain ⟨o, rfl⟩ := Submodule.mem_span_singleton.1 hz
-    have h1 : (b * algebraMap O C o * coef q₀) • xb = xb := by
-      have e1 : (b • LinearMap.id : (U ⧸ S) →ₗ[C] (U ⧸ S)) (o • coef q₀ • xb) = xb := hbz
-      rw [LinearMap.smul_apply, LinearMap.id_apply, ← algebraMap_smul C o, smul_smul,
-        smul_smul] at e1
-      exact e1
-    have h2 : b * algebraMap O C o * coef q₀ = 1 := by
-      have h3 : (b * algebraMap O C o * coef q₀ - 1) • xb = 0 := by
-        rw [sub_smul, h1, one_smul, sub_self]
-      exact sub_eq_zero.1 ((smul_eq_zero.1 h3).resolve_right hxb0)
-    have h4 : b * algebraMap O C o = (coef q₀)⁻¹ := eq_inv_of_mul_eq_one_left h2
-    show (v (coef q₀))⁻¹ ≤ v b
-    rw [← map_inv₀, ← h4, map_mul]
-    exact mul_le_of_le_one_right (by positivity) (hv.map_le_one o)
+  exact ⟨coef q₀, hc, hspan⟩
 
 variable {U' : Type} [AddCommGroup U'] [Module C U'] [Module O U'] [IsScalarTower O C U']
 
