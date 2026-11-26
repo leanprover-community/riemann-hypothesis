@@ -1,6 +1,6 @@
 module
 
-import TauCeti.LinearAlgebra.SesquilinearForm.SignedHermitianSpace.Witt
+import TauCeti.LinearAlgebra.SesquilinearForm.SignedHermitianSpace.Witt.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
