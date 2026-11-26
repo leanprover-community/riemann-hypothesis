@@ -126,15 +126,33 @@ lemma shift_eq_smul_besselCharMatrix (h : S.Fits V l kw Y η) :
     Y.shift = toAdele (Y.genericConst : E) • besselCharMatrix (S.ratMiddle (𝔸 E)) := by
   rcases 𝔰 with ⟨_ | ϱ⟩
   · -- For `ϱ = 0` the string has one vector, and both matrices vanish.
-    simp [Grading.shift, besselCharMatrix, ← ext_iff, h.index_eq, Shape.besselIndexEquiv]
+    simp only [Grading.shift, Nat.mul_zero, Nat.reduceAdd, h.index_eq, Shape.besselIndexEquiv,
+      zero_eta, isValue, mul_zero, zero_tsub, val_eq_zero, zero_add, _root_.zero_ne_one, ↓reduceIte,
+      ne_eq, besselCharMatrix, smul_of, ← ext_iff, map_apply, submatrix_apply, Equiv.symm_symm,
+      Equiv.ofBijective_apply, of_apply, Pi.smul_apply, smul_eq_mul, Sum.forall, Sum.elim_inl,
+      Sum.inl.injEq, IsEmpty.forall_iff, Sum.elim_inr, reduceCtorEq, and_true, true_and,
+      fromBlocks_apply₂₁, Matrix.zero_apply, map_zero, Finset.sum_const_zero, implies_true,
+      fromBlocks_apply₂₂, and_self, Sum.inr.injEq, map_eq_zero, forall_const, fromBlocks_apply₁₁,
+      fromBlocks_apply₁₂, Finset.sum_ite_eq', Finset.mem_univ]
   · -- Compare the entries block by block. What remains says for which positions in the string an
     -- entry is nonzero, which is linear arithmetic.
-    simp [Grading.shift, besselCharMatrix, ← ext_iff, h.index_eq, Shape.besselIndexEquiv, splitGram,
-      middleGram, besselFrame, forall_fin_succ', ← castSucc_succ, Finset.sum_add_distrib,
-      Nat.Prime.ne_zero, Matrix.one_apply]
+    simp only [Grading.shift, h.index_eq, Shape.besselIndexEquiv, ne_eq, Nat.add_right_cancel_iff,
+      mul_eq_mul_left_iff, OfNat.ofNat_ne_zero, or_false, neg_mul, mul_ite, mul_neg, mul_one,
+      besselCharMatrix, besselFrame, splitGram, middleGram, Finset.sum_add_distrib, smul_of,
+      ← ext_iff, map_apply, submatrix_apply, Equiv.symm_symm, Equiv.ofBijective_apply, of_apply,
+      Pi.smul_apply, smul_eq_mul, Sum.forall, Sum.elim_inl, Sum.inl.injEq, Finset.sum_ite_eq',
+      Finset.mem_univ, ↓reduceIte, forall_fin_succ', val_castSucc, ← castSucc_succ, snoc_castSucc,
+      val_last, succ_last, Nat.succ_eq_add_one, snoc_last, Sum.elim_inr, reduceCtorEq,
+      Finset.sum_const_zero, zero_add, fromBlocks_apply₂₂, add_zero, mul_zero, Nat.left_eq_add,
+      one_ne_zero, map_eq_zero, ite_eq_right_iff, fromBlocks_apply₂₁, Matrix.zero_apply, map_zero,
+      implies_true, neg_eq_zero, mul_eq_zero, Nat.cast_eq_zero, N_prime,
+      Nat.Prime.ne_zero, forall_const, true_and, IsEmpty.forall_iff, and_true, Sum.inr.injEq,
+      fromBlocks_apply₁₂, and_self, fromBlocks_apply₁₁, fromCols_apply_inl, fromCols_apply_inr,
+      Matrix.one_apply, fromRows_apply_inl]
     -- Without the context, `grind` is much faster.
     clear * -
-    grind [map_natCast]
+    grind only [usr Subtype.property, = map_neg, = map_mul, map_natCast, = val_castSucc,
+      = map_zero, usr val_last]
 
 /-- Suppose `V` with the grading `Y` fits the filling data `S`, and let `h.besselChar r` be the
 standard additive character of `E` at `-(M ϖ)⁻¹ σ`. Here `M = S.M`, `ϖ = S.deltaE`, and `σ` is the
