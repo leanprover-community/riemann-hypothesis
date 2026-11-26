@@ -140,11 +140,6 @@ variable {S X : Scheme} {A : Over S} {ι O : Type} {B C C' D : CommRingCat} {V :
 
 /-! ### Existence of charts; the signature condition -/
 
-/-- The kernel of a square-zero extension ψ is a nilpotent ideal: its square is zero. -/
-lemma IsSqZeroExt.isNilpotent_ker (hψ : IsSqZeroExt ψ) : IsNilpotent (RingHom.ker ψ.hom) := by
-  refine ⟨2, ?_⟩
-  simp_all [hψ.mul_eq_zero, ← le_bot_iff, Ideal.mul_le, sq]
-
 /-- For a square-zero extension ψ : C → C', the map Spec C' → Spec C is surjective. -/
 lemma IsSqZeroExt.surjective_specMap (hψ : IsSqZeroExt ψ) : Surjective (Spec.map ψ) := by
   -- A surjection with nil kernel induces a homeomorphism of spectra.
@@ -189,7 +184,7 @@ lemma exists_isEtaleChart (x : X) {d : ℕ} (hf : SmoothOfRelativeDimension d f)
   have hξ : ξ.hom.comp g = eval₂Hom (σ ≫ ψ).hom (ψ ∘ l) :=
     (h_point_iff ξ (σ ≫ ψ) (ψ ∘ l)).1 ⟨by simp [hyt], hl.symm⟩
   algebraize [g, eval₂Hom σ.hom l, eval₂Hom (σ ≫ ψ).hom (ψ ∘ l)]
-  have h_nil : IsNilpotent (ker ψ.hom) := hψ.isNilpotent_ker
+  have h_nil : IsNilpotent (ker ψ.hom) := ⟨2, by simp_all [hψ.mul_eq_zero, ← le_bot_iff, Ideal.mul_le, sq]⟩
   let ξ_alg : Γ(X, V) →ₐ[MvPolynomial (Fin d) Γ(S, U)] C' := ⟨ξ.hom, RingHom.congr_fun hξ⟩
   let ψ_alg : C →ₐ[MvPolynomial (Fin d) Γ(S, U)] C' := ⟨ψ.hom, map_eval₂Hom _ _ _⟩
   have : FormallyEtale (MvPolynomial (Fin d) Γ(S, U)) Γ(X, V) := h_etale.formallyEtale
