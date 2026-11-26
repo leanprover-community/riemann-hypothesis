@@ -289,11 +289,9 @@ omit [IsCMField E] [HasPrimitiveRoot5040 E] in
 `𝔸f E`, then `finAdeleMatrix x * a` (with `x` read over `𝔸f E`) has a left inverse over `𝔸f E`. -/
 lemma hasLeftInv_finAdeleMatrix_mul {x : Matrix κ (Fin r) E} (hx : HasLeftInv x)
     (a : GL (Fin r) (𝔸f E)) : HasLeftInv (finAdeleMatrix x * a.val) := by
-  obtain ⟨l, hl⟩ := hx
-  have h_map : finAdeleMatrix l * finAdeleMatrix x = 1 := by
-    rw [← Matrix.map_mul (f := algebraMap E (𝔸f E)), hl, Matrix.map_one _ (map_zero _) (map_one _)]
-  refine ⟨a⁻¹.val * finAdeleMatrix l, ?_⟩
-  rw [Matrix.mul_assoc, ← Matrix.mul_assoc (finAdeleMatrix l), h_map, Matrix.one_mul, a.inv_mul]
+  obtain ⟨l, hl⟩ := hx.map (algebraMap E (𝔸f E))
+  refine ⟨a⁻¹.val * l, ?_⟩
+  rw [Matrix.mul_assoc, ← Matrix.mul_assoc l, hl, Matrix.one_mul, a.inv_mul]
 
 /-- Let `E` be a CM field with a primitive 5040th root of unity, `𝔸f E` its finite adeles and `Ô E`
 the integral ones. Let `B`, `C` be matrices over `𝔸f E` whose columns have the same `Ô E`-span, and
@@ -345,15 +343,12 @@ columns of `x` are independent over `E` (`x` has a left inverse), then their Gra
 `det (xᴴ * x)` for the standard hermitian form is not zero. -/
 lemma det_gram_ne_zero {x : Matrix κ (Fin r) E} (hx : HasLeftInv x) : (xᴴ * x).det ≠ 0 := by
   -- At a complex embedding the Gram matrix of independent vectors is positive definite.
-  obtain ⟨l, hl⟩ := hx
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  have h_inj : (x.map φ).mulVec.Injective := HasLeftInv.injective_mulVec
-    ⟨l.map φ, by rw [← Matrix.map_mul, hl, Matrix.map_one _ φ.map_zero φ.map_one]⟩
   have h_det : φ (xᴴ * x).det = ((x.map φ)ᴴ * x.map φ).det := by
     rw [RingHom.map_det, RingHom.mapMatrix_apply, Matrix.map_mul, map_conjTranspose]
   intro h_zero
   rw [h_zero, map_zero] at h_det
-  exact (PosDef.conjTranspose_mul_self _ h_inj).det_pos.ne h_det
+  exact (PosDef.conjTranspose_mul_self _ (hx.map φ).injective_mulVec).det_pos.ne h_det
 
 /-- Let `E` be a CM field with a primitive 5040th root of unity, `𝔸f E` its finite adeles and `Ô E`
 the integral ones. Let `L` be a lattice of rank `r` in `(𝔸f E) ^ κ`: the `Ô E`-span of the columns
