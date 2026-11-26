@@ -642,11 +642,6 @@ def resolutionLinearForm (a : ℂ) (w : I → P.E s) (i : I × n) :
     (InfinitePlace (P.E s) × n → ℂ) →L[ℂ] ℂ :=
   ∑ τ : InfinitePlace (P.E s), (a * conj (Φ τ (w i.1))) • .proj (τ, i.2)
 
-lemma resolutionLinearForm_apply_eq_dotProduct (a : ℂ) (w : I → P.E s) (i : I × n)
-    (z : InfinitePlace (P.E s) × n → ℂ) :
-      resolutionLinearForm a w i z = resolutionFormCoeff a w i ⬝ᵥ z := by
-  simp [resolutionLinearForm, resolutionFormCoeff, dotProduct, sum_prod_type]
-
 /-- For `i = (j, k)` the linear form `resolutionLinearForm a w i` is
 `z ↦ a * ∑ τ, conj (Φ τ (w j)) * z (τ, k)`. The vector `realImage γ` is the image of `γ` at the
 infinite places in Fock coordinates; its entry at `(τ, k)` is `P.areaScale * Φ τ (γ k)`, with
@@ -718,7 +713,7 @@ lemma IsResolutionProduct.jetSeries_translate {C : CMLattice P.d} {b : ℂ} {w :
       entireTheta (V.ϱ (finVec (finiteImage γ)) F) (c • z) =
         ∏ i : I × n, C.twistedTranslate (m i.1) (resolutionShift b w γ i) (f i)
           (resolutionFormCoeff (b / P.areaScale * c) w i ⬝ᵥ z) := by
-    simp [hF.entireTheta_translate, resolutionLinearForm_apply_eq_dotProduct, resolutionFormCoeff,
+    simp [hF.entireTheta_translate, resolutionLinearForm, resolutionFormCoeff, dotProduct, sum_prod_type,
       dotProduct, mul_sum, mul_assoc, mul_left_comm]
   have hf : ∀ i : I × n, Differentiable ℂ (f i) := hF.differentiable
   exact jetSeries_eq_prod_of_entireTheta_smul (rho_finVec_mem_finitePart _ hF.mem_finitePart)
