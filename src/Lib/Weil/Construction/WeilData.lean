@@ -168,6 +168,7 @@ def adelicHeisenberg : Heisenberg (n → 𝔸 E) where
   self_eq_one x := by
     -- by `stdAddChar_inv_two_mul_add_star`, `stdAddChar` sees only `a + star a` of its argument
     -- `a`, and this vanishes here since `star j = -j` and the form is Hermitian
+    -- restated here to avoid importing `GramMatrix`
     have h_herm : (stdForm E s)ᴴ = stdForm E s := by
       rw [stdForm, Matrix.diagonal_conjTranspose, Matrix.diagonal_eq_diagonal_iff]
       intro i

@@ -65,7 +65,6 @@ lemma New.exists_orthonormal_mul {n k α : Type*} [Fintype n] [Fintype k] [Decid
 
 end GramSchmidt
 
-
 /-! ## Polar decomposition in U(p,q) and accretive matrices -/
 
 section PolarDecomposition
