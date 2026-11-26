@@ -979,7 +979,9 @@ lemma smul_mem_kisinAinf {g : GroupOverGp.G} (hg : ∀ γ ∈ k.subgroup, g * γ
   · -- `g • τ ^ N` multiplies `g • x` into `L.ainfLattice`, and it divides `τ ^ N`.
     have h_mem : (inr g • tau ^ N) • inr g • x ∈ L.ainfLattice := by
       simpa only [frobGroup_smul_smul] using smul_mem_ainfLattice (inr g) hτx
-    have h_dvd : inr g • tau ^ N ∣ tau ^ N := by simp [associated_smul_tau.pow_pow.dvd]
+    have h_dvd : inr g • tau ^ N ∣ tau ^ N := by
+      rw [smul_pow']
+      exact associated_smul_tau.pow_pow.dvd
     exact mem_saturateBy_of_smul h_dvd ⟨N, rfl⟩ (mem_saturateBy_of_mem h_mem)
   · -- The conjugate form `conjForm μ g` is again invariant, and `g` commutes with `φ`.
     have h_conj : conjForm μ g (φ ^ (n + 1) • x) ∈ hodgeFil 0 :=
