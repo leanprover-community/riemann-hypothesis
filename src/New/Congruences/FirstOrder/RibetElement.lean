@@ -333,7 +333,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   -- `exists_isCommonRibetElement_addVal_le` over `O`, and add up the losses in its bound for `d`.
   obtain ⟨-, hψ : IsFromU1 (placesDividing D.E ℓ) Q ψ, -⟩ := id h_twist
   have : NeZero V.rankDiff := .of_pos hc.odd.2.pos
-  have ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
+  let ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
     equivOfCardEq (by simp! [V.rank_lt.le])
   have h_dual (x : Y) : IsConjSelfDual V.rankDiff (u x) := (h_type x).toIsConjSelfDual
   -- the models: at `π` the one of `h_sel`, with its Selmer bound; elsewhere those of `h_lat`

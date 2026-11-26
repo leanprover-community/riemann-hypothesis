@@ -661,7 +661,7 @@ lemma isTameType_of_mem_placesAboveM {V : DescentPair D.E r n}
         ∀ R : GalRep ℓ D.E n,
           IsRepOfType V t J (fun i : V.ChosenIndex ↦ scaledTypePoly V c i * (X - 1) ^ t) S R →
           IsKilledBy (decompRep R (placeOver v.val)) s 0 (Q.map O.val.val) := by
-  have ⟨k, hk⟩ :
+  let ⟨k, hk⟩ :
       ∃ k : Fin 2, (D.levelPrime k : NumberField.RingOfIntegers D.E) ∈ v.val.asIdeal := hv
   have hℓ : D.levelPrime k = ℓ := (v.val.charP_quotient hk).eq _ (v.val.charP_quotient v.property)
   refine ⟨k, hℓ.symm, fun s hs ↦ ?_⟩
