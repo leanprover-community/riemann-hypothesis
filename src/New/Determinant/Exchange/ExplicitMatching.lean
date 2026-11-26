@@ -885,7 +885,7 @@ lemma integral_one_quotMeasure_of_isEmpty [IsEmpty b] {t : b → ℤˣ} (V' : Sp
   obtain rfl : t = 1 := Subsingleton.elim t 1
   have h_sub : Subsingleton (DoubleCoset.Quotient (V'.Γf : Set (Gf E b)) (stdLevel E b)) :=
     Quotient.mk''_surjective.subsingleton
-  have h_class : Unique (DoubleCoset.Quotient (V'.Γf : Set (Gf E b)) (stdLevel E b)) :=
+  let h_class : Unique (DoubleCoset.Quotient (V'.Γf : Set (Gf E b)) (stdLevel E b)) :=
     uniqueOfSubsingleton (DoubleCoset.mk V'.Γf (stdLevel E b) 1)
   have h_left : V'.Γ.FixesLeft (fun _ : G E (1 : b → ℤˣ) ↦ (1 : ℂ)) := fun _ _ _ ↦ rfl
   have h_level : stdLevel E b ≤ rightStabilizer fun _ : Gf E b ↦ (1 : ℂ) := fun _ _ _ ↦ rfl
