@@ -596,9 +596,7 @@ lemma HolomorphicAt.isFirstOrderConst_of_nsmul {v : P} {𝒜 : Over X} [AddObj �
   have h_comp_eq : y ≫ (n • 𝟙 𝒜) = y₀ ≫ (n • 𝟙 𝒜) :=
     OverMorphism.ext ((hτ.comp_hom _).unique h_still)
   have h_nsmul_sub : n • (y - y₀) = 0 := by
-    rw [comp_nsmul, Category.comp_id, comp_nsmul, Category.comp_id] at h_comp_eq
-    rw [smul_sub, sub_eq_zero]
-    exact h_comp_eq
+    simpa only [smul_sub, sub_eq_zero, comp_nsmul, Category.comp_id] using h_comp_eq
   obtain ⟨h_inj, -⟩ := tiny.eq_zero_of_isUnit_and_nsmul_eq_zero_of_cast_eq_zero hd (𝟙 _) n
   have h_unit : IsUnit (n : TrivSqZeroExt ℂ ℂ) :=
     isUnit_iff_isUnit_fst.mpr (by rw [fst_natCast]; exact (Nat.cast_ne_zero.mpr hn).isUnit)
