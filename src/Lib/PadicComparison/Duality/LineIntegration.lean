@@ -892,11 +892,13 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
     simp only [map_comp_assoc, map_restrictAlong_restrictAlong, map_homClass,
       TorsionCoeff.map_etaAt_onElements, foldr_succ, foldr_eq_finRange_foldr] at h_sum_eq_foldr ⊢
     -- Restriction to the line passes through the fold factor by factor.
-    conv_rhs => erw [← map_add, ← map_add, map_foldr_etaAt, map_pullbackAlong]
+    conv_rhs => rw [map_foldr_etaAt, map_pullbackAlong]
     -- The integrands agree by `h_sum_eq_foldr` over the points of the line, with the tautological
-    -- point as first parameter.
-    exact congrArg _ (h_sum_eq_foldr t.consTautologicalPoint ((elementsProj _).sectionsPrecomp q')
-      _)
+    -- point as first parameter, once its first factor η(a + b) is split into η(a) + η(b).
+    have h := h_sum_eq_foldr t.consTautologicalPoint ((elementsProj _).sectionsPrecomp q')
+      (map (restrictAlong (elementsProj (projLineAlong t.toTestOver))) w)
+    rw [map_add, Abelian.Ext.toTotalH, map_add] at h
+    exact congrArg _ h
 
 -- Without the seal, unification unfolds `Abelian.Ext` into the derived category and is slow.
 seal Abelian.Ext in
