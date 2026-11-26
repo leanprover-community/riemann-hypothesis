@@ -442,8 +442,6 @@ lemma eq_of_eq_sum_of_classInner_eq_intCast {ι : Type*} [Fintype ι] {χ : ι �
 /-- An irreducible character has norm `1` (Mathlib's `FDRep.char_orthonormal`). -/
 lemma IsIrreducibleChar.classInner_self (hχ : IsIrreducibleChar χ) : classInner χ χ = 1 := by
   obtain ⟨V, hV, rfl⟩ := hχ
-  have : Invertible (Fintype.card G : ℂ) :=
-    invertibleOfNonzero (Nat.cast_ne_zero.2 Fintype.card_ne_zero)
   have h := FDRep.char_orthonormal V V
   simp only [Nonempty.intro (CategoryTheory.Iso.refl V), ite_true] at h
   rw [← h, classInner, finMean_eq, Nat.card_eq_fintype_card, div_eq_inv_mul]
@@ -498,8 +496,6 @@ variable (G) in
 /-- A finite group has a finite family of characters in which every class function expands. -/
 lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExpansionFamily χ := by
   classical
-  have : Invertible (Nat.card G : ℂ) :=
-    invertibleOfNonzero (Nat.cast_ne_zero.2 Nat.card_pos.ne')
   obtain ⟨d, ρ, hirr, hind, -⟩ := TauCeti.exists_irreducible_family_conjClasses ℂ G
   have := hirr
   let e : ConjClasses G ≃ Fin (Fintype.card (ConjClasses G)) := Fintype.equivFin (ConjClasses G)
