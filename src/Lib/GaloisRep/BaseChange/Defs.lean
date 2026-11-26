@@ -15,8 +15,6 @@ extension `E'/E` of CM fields.
 * `New.twistedNorm`: the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` in a monoid. `New.twistedNorm_conj`
   shows that twisted conjugation of `δ` conjugates the norm. `New.twistedNorm_mem` and
   `New.map_twistedNorm` show that it respects stable subgroups and equivariant maps.
-* `New.IsTameAtLevel`: the conditions on a ring endomorphism `σ` and a level `m` under which descent
-  works.
 * `New.IsRootQuotient`, `New.IsNormRoot`: a polynomial `z`, depending only on the characteristic
   polynomial of `γ`, that gives a candidate `a = z(γ) / z(γ)ᴴ` for an element of norm `γ`.
 * `New.IsMatchingPair`: `φ` is invariant under twisted conjugation by `K`, and `f` and `φ` match
@@ -42,7 +40,7 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 
 namespace New
 
-/-! ## Twisted norms, tame actions and profinite rings -/
+/-! ## Twisted norms and profinite rings -/
 
 section TwistedNorm
 
@@ -57,16 +55,6 @@ def twistedNorm (τ : M → M) (p : ℕ) (δ : M) : M := ((List.range p).map fun
 lemma twistedNorm_succ (τ : M → M) (p : ℕ) (δ : M) :
     twistedNorm τ (p + 1) δ = twistedNorm τ p δ * τ^[p] δ := by
   simp [twistedNorm, List.range_add]
-
-/-- The ring endomorphism `σ` acts tamely at level `m`: (a) `σ m = m`; (b) some `e` has trace
-`∑ i < p, (σ ^ i) e` congruent to `1` modulo `m`; (c) `σ ^ p = 1`; (d) `0 < p`; (e) for `0 < i < p`,
-every prime ideal `P` modulo which `σ ^ i` is the identity contains `m`, so there is no inertia at
-the primes that do not contain `m`. -/
-def IsTameAtLevel (m : R) : Prop :=
-  σ m = m ∧
-  (∃ e : R, m ∣ ∑ i ∈ Finset.range p, (σ ^ i) e - 1) ∧
-  σ ^ p = 1 ∧ 0 < p ∧
-  ∀ i ∈ Set.Ioo 0 p, ∀ (P : Ideal R) [Ideal.IsPrime P], (∀ x : R, (σ ^ i) x - x ∈ P) → m ∈ P
 
 /-- A form of profiniteness that allows passing to the limit. Every sequence `x` has exactly one `L`
 such that, for each natural number `M ≠ 0`, `M` divides `x N - L` for all `N` in a set of the

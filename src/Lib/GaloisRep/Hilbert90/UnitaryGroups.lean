@@ -2,6 +2,7 @@ module
 
 import Mathlib.Algebra.Ring.Divisibility.Lemmas
 import Mathlib.RingTheory.PiTensorProduct
+public import TauCeti.RingTheory.Hilbert90.TameLevel
 public import Lib.GaloisRep.BaseChange.Defs
 import Lib.GaloisRep.Hilbert90.TameActions
 import Lib.General.LinearAlgebra.MatrixPolynomials
@@ -18,9 +19,9 @@ semilinear map `x ↦ u * σ x`, together with the fact that two of its fixed po
 divisor that is again fixed.
 
 The main results `New.exists_fixed_orthonormal_frame` and `New.unitary_hilbert90_at_level` share
-these hypotheses: `New.IsProfiniteRing O` (`O` is profinite); `New.IsTameAtLevel τ p 0`, which says
-that `τ ^ p = 1`, `0 < p` and some element has trace `1`; `τ` commutes with `star` and fixes `c`,
-and `c - star c` is a unit.
+these hypotheses: `New.IsProfiniteRing O` (`O` is profinite);
+`TauCeti.TameHilbert90.IsTameAtLevel τ p 0`, which says that `τ ^ p = 1`, `0 < p` and some element
+has trace `1`; `τ` commutes with `star` and fixes `c`, and `c - star c` is a unit.
 
 The lemmas before them concern the polynomial `X * (-w) ^ k`, for an inverse `w` of `1 + m X` modulo
 `Q`, and endomorphisms of `O[X]/Q`; they state their own hypotheses.
@@ -31,8 +32,9 @@ The lemmas before them concern the polynomial `X * (-w) ^ k`, for an inverse `w`
 * `New.hilbert90_finite_idele`: Hilbert 90 for the finite ideles, for an automorphism of `L/K`.
 
 Notions from other files:
-* `New.IsTameAtLevel σ p m`: `σ ^ p = 1` with `0 < p`, `σ m = m`, some element has trace `1` modulo
-  `m`, and no `σ ^ i` with `0 < i < p` is trivial modulo a prime not containing `m`.
+* `TauCeti.TameHilbert90.IsTameAtLevel σ p m`: `σ ^ p = 1` with `0 < p`, `σ m = m`, some element
+  has trace `1` modulo `m`, and no `σ ^ i` with `0 < i < p` is trivial modulo a prime not
+  containing `m`.
 * `New.IsProfiniteRing R`: every sequence has a unique limit modulo each natural number `M ≠ 0`,
   along the hyperfilter.
 
@@ -49,7 +51,7 @@ Known; see `Lib.GaloisRep.Hilbert90.TameActions` for sources.
 
 section UnitaryHilbert90
 
-open Matrix Polynomial AdjoinRoot Finset Ideal New.U RingHom
+open Matrix Polynomial AdjoinRoot Finset Ideal New.U RingHom TauCeti.TameHilbert90
 
 namespace New
 
@@ -415,7 +417,8 @@ lemma hilbert90_finite_idele [NumberField K]
     simp [τ, iterate_mul_apply, adeleMap_gal_pow, aut_one, hu]
   -- Descent (`σ` is tame at level `1`) at the prime `⊥` of the field `L`.
   obtain ⟨r, hr, h_span⟩ :=
-    (isTameAtLevel_gal σ).exists_smul_mem_span_fixedPoints τ τ_order ⊥ one_ne_zero
+    (σ.isTameAtLevel_orderOf (isOfFinOrder_of_finite σ)).exists_smul_mem_span_fixedPoints τ τ_order
+      ⊥ one_ne_zero
   -- Every element of the span of the solutions is divisible by a solution.
   have divisible (x : 𝔸f L) (hx : x ∈ Submodule.span L (Function.fixedPoints τ)) :
       ∃ c : 𝔸f L, c ∣ x ∧ u * adeleMap σ c = c := by

@@ -4,6 +4,7 @@ import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
 public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
+import TauCeti.Algebra.BigOperators.Finset.Periodic
 import Lib.Adelic.Landherr
 import Lib.GaloisRep.BaseChange.StepMatchingPairs
 import Lib.GaloisRep.Hilbert90.TameActions
@@ -124,7 +125,7 @@ lemma exists_coboundary_proIwahori (hv : ∀ x : F, v (σ x) = v x) (hσ : σ ^ 
     simp [twistedNorm]
   refine ⟨t, ht, Units.ext ?_⟩
   change τ t.val = t.val
-  rw [htM, fixed_sum τ a h_period fun l ↦ by
+  rw [htM, map_sum_range_eq_self_of_periodic τ a h_period fun l ↦ by
     simp [a, τ, pow_succ', twistedNorm_succ', map_smul', -RingHom.coe_pow]]
 
 /-- Let `σ` be a continuous endomorphism of `F` that keeps the valuation, with `σ ^ p = 1` for some
@@ -210,7 +211,7 @@ private lemma charpoly_diagonal_dvd_twistedNorm_sub_X (hσ : σ ^ p = 1) {c e : 
   rw [charpoly_diagonal]
   refine Fintype.prod_dvd_of_coprime (pairwise_coprime_X_sub_C hc_inj) fun i ↦ ?_
   have h_eval_map (l : ℕ) : (z.map (σ ^ l)).eval (c i) = (σ ^ l) (e i) := by
-    rw [← hz, ← eval_map_apply, σ.coe_pow, hc, (isFixedPt_prod_range_pow_apply hσ).iterate]
+    rw [← hz, ← eval_map_apply, σ.coe_pow, hc, (isFixedPt_prod_range_pow_apply hσ _).iterate]
   have h_eval_norm : (twistedNorm (Polynomial.map σ) p z).eval (c i) = c i := by
     rw [twistedNorm_map_eq_prod, eval_prod]
     exact (prod_congr rfl fun l _ ↦ h_eval_map l).trans (hc i).symm
@@ -550,7 +551,7 @@ private lemma cocyclesSplit_comap_proIwahori {τ : Gal(E'/E)} (hτ : τ ≠ 1) (
   intro δ hδ h_cocycle
   set σ : LocField u →+* LocField u := locMap (τ : E' →+* E') hs
   obtain ⟨C, -, h_tame⟩ := exists_isTameAtLevel_intAdeleMap hτ
-  obtain ⟨-, ⟨c, hc_dvd⟩, -⟩ := h_tame 0 (by simp) (by simp)
+  obtain ⟨c, hc_dvd⟩ := (h_tame 0 (by simp) (by simp)).exists_dvd_sum_range_pow_sub_one
   have hc_sum : ∑ i ∈ range (Module.finrank E E'), (intAdeleMap (τ : E' →+* E') ^ i) c = 1 := by
     rwa [zero_dvd_iff, sub_eq_zero] at hc_dvd
   have h_trace : ∑ i ∈ range (Module.finrank E E'), (σ ^ i) (c.val u) = 1 := by

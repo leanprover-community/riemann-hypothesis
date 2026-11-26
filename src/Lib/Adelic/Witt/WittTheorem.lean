@@ -257,7 +257,7 @@ lemma exists_orthonormal_frame_Ô [HasPrimitiveRoot5040 E] {b : Matrix n n (Ô E
   -- This is `exists_fixed_orthonormal_frame` for the trivial automorphism.
   obtain ⟨z, hz⟩ := exists_isUnit_sub_star_Ô (E := E)
   obtain ⟨g, W, hg, -, h_frame⟩ := exists_fixed_orthonormal_frame isProfiniteRing_intAdeles
-    isTameAtLevel_one rfl hz (by simp) hb_unit hb_herm rfl
+    (TauCeti.TameHilbert90.isTameAtLevel_id _) rfl hz (by simp) hb_unit hb_herm rfl
   exact ⟨g, W, hg, h_frame⟩
 
 end New

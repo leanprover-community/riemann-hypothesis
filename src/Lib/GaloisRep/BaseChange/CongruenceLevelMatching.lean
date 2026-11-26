@@ -2,6 +2,7 @@ module
 
 import Mathlib.RingTheory.Polynomial.IsIntegral
 import Mathlib.RingTheory.Valuation.Integral
+public import TauCeti.RingTheory.Hilbert90.TameLevel
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 import Lib.Adelic.Witt.WittTheorem
 import Lib.ClassField.Local.ArtinMap
@@ -23,16 +24,16 @@ match in the sense of `New.IsMatchingPair`.
   profinite ring with tame action, the cocycles split and the indicator functions of the level form
   a matching pair.
 * `New.IsStepUnramifiedAt`: `w` is unramified in `E'`, and `μ ∘ Nm` kills the local units above `w`.
-* `New.exists_isTameAtLevel_intAdeleMap`: `σ ≠ 1` is tame (`New.IsTameAtLevel`) on the integral
-  adeles of `E'` at every `σ`-fixed level that vanishes at the totally ramified places dividing a
-  fixed integer `C`.
+* `New.exists_isTameAtLevel_intAdeleMap`: `σ ≠ 1` is tame
+  (`TauCeti.TameHilbert90.IsTameAtLevel`) on the integral adeles of `E'` at every `σ`-fixed level
+  that vanishes at the totally ramified places dividing a fixed integer `C`.
 * `New.exists_isBaseChangeLevel`: below any open subgroup `H` over `E` there are local levels over
   `E'` whose groups above any set of places are `σ`-stable, have split cocycles, and carry matching
   indicator functions.
 
 Notions from other files:
-* `New.IsTameAtLevel`: the conditions on a ring endomorphism `τ` with `τ ^ p = 1` and a level `m`
-  under which descent works.
+* `TauCeti.TameHilbert90.IsTameAtLevel`: the conditions on a ring endomorphism `τ` with `τ ^ p = 1`
+  and a level `m` under which descent works.
 * `New.CocyclesSplit`: every `s` in `K` of twisted norm `1` under `τ` is a coboundary `t * (τ t)⁻¹`
   on the support of `u`, for some `t ∈ K` that is `1` off it.
 * `New.IsMatchingPair`: a function `f` and a twisted function `φ` match, one characteristic
@@ -56,7 +57,7 @@ comparison of trace formulas in base change at places with a principal congruenc
 
 section UnitPairs
 
-open Matrix Polynomial New U Set
+open Matrix Polynomial New U Set TauCeti.TameHilbert90
 
 /-- If `ι Y = v • (g - 1)` with `ι` injective, `ι` carries `τ` to `σ`, and `σ` fixes `v` and the
 characteristic polynomial of `g`, then `τ` fixes the characteristic polynomial of `Y`. -/
@@ -193,7 +194,7 @@ lemma New.exists_twisted_root_of_smul_sub_one {O R n : Type} [CommRing O] [CommR
     rw [conjTranspose_map _ hι, map_smul' (hf := map_mul ι), hY]
     exact star_smul_sub_one_mul_one_add_smul_eq_neg (a := ι m) (by rw [hmv, huv]) hv_star g
   obtain ⟨y, z, z', h_roots⟩ := exists_isTwistedRoot_of_charpoly_eq hO hτ_tame hc h_unit hτ hm_star
-    hm_tame.left rfl
+    hm_tame.map_level rfl
     (charpoly_map_eq_self_of_smul_sub_one h_inj hιτ hσv hY hP) le_rfl h_rel hY_unit
   refine ⟨z, z', fun {k} _ _ B hB ↦ ?_⟩
   -- `B' = v • (B - 1)` is a root of the characteristic polynomial of `Y`.
@@ -372,7 +373,7 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
     · rw [← hφ, ← map_mul φ, hum]
   obtain ⟨hu_star, hv_star⟩ : star (ι u) = ι u ∧ star v = v :=
     h_fixed (starRingEnd R) (by rw [starRingEnd_apply, ← hι, hm_star])
-  obtain ⟨hσu, hσv⟩ := h_fixed σ (by rw [← hιτ, hm_tame.apply_eq_self])
+  obtain ⟨hσu, hσv⟩ := h_fixed σ (by rw [← hιτ, hm_tame.map_level])
   let e : U (1 : Matrix n n O) →* U (1 : Matrix n n R) := map ι hι (one_map_ringHom ι)
   choose Y hY using fun s ↦ (hL s).mp
   have h_lift (s : U (1 : Matrix n n R)) (hs : s ∈ L) :
@@ -452,7 +453,7 @@ that is `1` at the places of `A` and `0` elsewhere, `New.kerCompNorm E' μ` the 
 
 section BaseChangeLevel
 
-open NumberField Matrix Set Valued Module Ideal Subtype
+open NumberField Matrix Set Valued Module Ideal Subtype TauCeti.TameHilbert90
 
 namespace New
 
