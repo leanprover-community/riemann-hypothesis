@@ -933,7 +933,7 @@ lemma exists_isAdapted_and_frame_eq :
     rw [gram_mul, gram_frameAt]
     simp [← stdForm_sum, ← (hyperbolicSpace E p).gram_point, fromBlocks_conjTranspose,
       fromBlocks_multiply, fromBlocks_map]
-  have σ : n ≃ (p ⊕ p) ⊕ n₀ := equivOfCardEq (by simp +arith [D.card_eq])
+  let σ : n ≃ (p ⊕ p) ⊕ n₀ := equivOfCardEq (by simp +arith [D.card_eq])
   let w : InfinitePlace E := Classical.ofNonempty
   have h_gram_w : (m.map (evalInf w))ᴴ * signMatrix s * m.map (evalInf w) =
       signMatrix (hyperbolicSigns p ⊕ᵥ s₀) := by
