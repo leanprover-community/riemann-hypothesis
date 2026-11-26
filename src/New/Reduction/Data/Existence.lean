@@ -74,7 +74,9 @@ lemma eq_of_add_mul_eq_of_sum_sq_eq {ι : Type*} [Fintype ι] {α α' : ℕ} {u 
   have h_sq : ∑ l, (α * α' : ℤ) * (u l - w l : ℤ) ^ 2 = 0 := by
     zify at huv_sq hvw_sq
     calc _ = ∑ l, ((α + α') * (α * (u l : ℤ) ^ 2 + α' * (w l : ℤ) ^ 2) -
-            ((α + α') * v l) ^ 2) := sum_congr rfl fun l _ ↦ by grind [h_coord l]
+            ((α + α') * v l) ^ 2) := sum_congr rfl fun l _ ↦ by
+              rw [h_coord l]
+              ring
       _ = 0 := by
           simp only [mul_pow, sum_sub_distrib, sum_add_distrib, ← mul_sum, huv_sq, ← hvw_sq]
           ring
