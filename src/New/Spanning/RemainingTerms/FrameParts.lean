@@ -54,10 +54,6 @@ lemma finAdeleMatrix_mul {l m n : Type} [Fintype m] (A : Matrix l m E) (B : Matr
     finAdeleMatrix (A * B) = finAdeleMatrix A * finAdeleMatrix B :=
   Matrix.map_mul (f := algebraMap E (𝔸f E))
 
-lemma finAdeleMatrix_add {m n : Type} (A B : Matrix m n E) :
-    finAdeleMatrix (A + B) = finAdeleMatrix A + finAdeleMatrix B :=
-  Matrix.map_add _ (map_add (algebraMap E (𝔸f E))) A B
-
 /-- A linear system `M w = T` over `E` that has a solution `s` over the finite adeles
 (`finAdeleMatrix` reads a rational matrix there) has rational solutions near `s`: every open set
 that contains `s` contains one. -/
@@ -79,7 +75,7 @@ lemma exists_mul_eq_of_finAdeleMatrix_mul_eq {m n ι : Type} [Fintype m] [Fintyp
     calc finAdeleMatrix y * (finAdeleMatrix e * s) + finAdeleMatrix (b * T)
         = finAdeleMatrix (y * e + b * M) * s := by
           rw [finAdeleMatrix_mul b T, ← h_solves]
-          simp [finAdeleMatrix_add, Matrix.add_mul, Matrix.mul_assoc]
+          simp [finAdeleMatrix, Matrix.map_add, Matrix.add_mul, Matrix.mul_assoc]
       _ = s := by simp [h_one]
   have h_special : M * (b * T) = T := by
     apply Matrix.map_injective (algebraMap E (𝔸f E)).injective
@@ -97,7 +93,7 @@ lemma exists_mul_eq_of_finAdeleMatrix_mul_eq {m n ι : Type} [Fintype m] [Fintyp
   obtain ⟨t, ht⟩ : ∃ t : Matrix (Fin d) ι E, finAdeleMatrix t ∈ V :=
     h_dense.exists_mem_open (hU.preimage (by fun_prop)) ⟨finAdeleMatrix e * s, h_mem⟩
   refine ⟨y * t + b * T, ?_, ?_⟩
-  · rwa [finAdeleMatrix_add, finAdeleMatrix_mul]
+  · simpa [V, finAdeleMatrix, Matrix.map_add, Matrix.map_mul] using ht
   · rw [Matrix.mul_add, ← Matrix.mul_assoc, h_ker, Matrix.zero_mul, zero_add, h_special]
 
 /-- A matrix whose columns lie in the column lattice of `ξ` is `ξ` times an integral matrix. -/
