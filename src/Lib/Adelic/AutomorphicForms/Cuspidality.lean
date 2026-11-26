@@ -931,7 +931,9 @@ theorem isForm_realConv (he : IsCuspKernel B e) (hF : V.IsAutomorphic F)
     (Submodule.subtype _ ∘ₗ (levelSpace (V.formRep e) K).subtype).range
   have : Module.Finite ℂ (levelSpace (V.formRep e) K.toSubgroup) := V.finite_levelSpace he K
   have trunc_mem (t : ℝ) : realConv e (trunc t) ∈ W := by
-    have h_bound (g : G E s) : ‖trunc t g‖ ≤ |t| := by grind [indicator, norm_zero]
+    have h_bound (g : G E s) : ‖trunc t g‖ ≤ |t| := by
+      simp only [trunc, norm_indicator_eq_indicator_norm]
+      exact indicator_apply_le' (fun hg ↦ hg.trans (le_abs_self t)) (fun _ ↦ abs_nonneg t)
     refine exists_form_eq_realConv K
       ⟨h_cont.stronglyMeasurable.indicator (h_cont.norm.measurable measurableSet_Iic), |t|, h_bound⟩
       (fun γ hγ g ↦ ?_) (fun k hk g ↦ ?_) he.toIsIdempotentKernel
