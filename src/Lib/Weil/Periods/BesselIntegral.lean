@@ -604,12 +604,10 @@ lemma formAdjoint_mul_self_mulVec_apply_eq_of_survives {w : Matrix ι' ι (𝔸 
       simpa [gradeOf_stringReversal] using congrArg Y.gradeOf h
     have h_va {a : ι} (h : v (Y.stringReversal a) ≠ 0) :
         max 1 (2 + Y.gradeOf k) ≤ -Y.gradeOf a := by
-      have := mt (hv _) h
-      rw [gradeOf_stringReversal] at this
-      omega
-    have h_rev {b : ι} (h : Y.gradeOf b ≠ -Y.gradeOf k) : b ≠ Y.stringReversal k := by
-      rintro rfl
-      exact h (gradeOf_stringReversal _ _)
+      rw [← gradeOf_stringReversal]
+      exact le_of_not_gt (mt (hv _) h)
+    have h_rev {b : ι} (h : Y.gradeOf b ≠ -Y.gradeOf k) : b ≠ Y.stringReversal k :=
+      ne_of_apply_ne Y.gradeOf (by rwa [gradeOf_stringReversal])
     refine ⟨fun b a hba ↦ ?_, fun b a hba ↦ ?_⟩
     · rcases eq_or_ne (v (Y.stringReversal a)) 0 with hva | hva
       · simp only [hva, star_zero, zero_mul, mul_zero, sub_zero, add_eq_left, ite_eq_right_iff]
