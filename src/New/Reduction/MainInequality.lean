@@ -62,9 +62,10 @@ Notions from other files:
 | index    | Theorems A (b), B | `20 log (1 + 2 b²) · f a log³ b`    |
 | covolume | Theorem C         | `3 f a log⁴ b`                      |
 
-The index enters twice, and the table shows the doubled amount. The family has `n ≥ dim / 2`
-members, so `m rem` is at most twice the sum, and twice the sum is at most `f a log⁵ b`. The scales
-are listed in `New.Reduction.Data.Sizes`.
+The index enters twice, and the table shows the doubled amount. Since `1 + 2 b² ≤ b³` for `b ≥ 3`,
+the index contributes at most `60 f a log⁴ b`. The family has `n ≥ dim / 2` members, so `m rem`
+is at most twice the sum, which is at most `128 f a log⁴ b`. The scales are listed in
+`New.Reduction.Data.Sizes`.
 
 ## Relation to the literature
 
@@ -79,13 +80,13 @@ namespace New
 
 open Real Finset Data Module Submodule
 
-/-- **Main inequality.** For the data `D` we have `m rem ≤ f a log⁵ b`.
+/-- **Main inequality.** For the data `D` we have `m rem ≤ 128 f a log⁴ b`.
 
 The parameters `P` are a multiple `q₀` of `18480` and a prime `d ≡ q₀/2 - 1 mod q₀`. The scales are
 integers with `(log b) ^ 100 ≤ x`, `x ^ 10⁶ ≤ x₁`, `x₁ ^ 10⁶ ≤ b` and
 `log log b ≥ 10¹² P.constantBound`. -/
 theorem star_inequality {P : Parameters} (D : Data P) :
-    D.m * D.totalRemainder ≤ D.f * D.a * D.logB ^ 5 := by
+    D.m * D.totalRemainder ≤ 128 * (D.f * D.a * D.logB ^ 4) := by
   -- Choose many independent images of short integral forms, bound their covolume and index from
   -- above, and compare with the lower bound `integral_forms_long`.
   obtain ⟨h_dim_pos, t, ht_card, h_fill⟩ : 0 < D.targetDim ∧ ∃ t : Finset D.chosenGL,
@@ -118,8 +119,8 @@ theorem star_inequality {P : Parameters} (D : Data P) :
     rw [normSqAt_targetLattice, ← hφ_eq]
     exact hφ_short g σ
   -- Index: each translate in `t` contributes `2 · errorUnit` per dimension of the source.
+  have h_errorUnit_nonneg : 0 ≤ D.errorUnit := (HasLogBound.pos D).le
   have h_index : D.targetLattice.IndexLe y (D.targetDim * indexPerDim) := by
-    have h_errorUnit_nonneg : 0 ≤ D.errorUnit := (HasLogBound.pos D).le
     have hy_int (i : Fin n) : ∃ g ∈ t, y i ∈ D.normalizedPoincare g '' D.integralRamified := by
       obtain ⟨g, hg, φ, ⟨hφ_int, -⟩, hφ_eq⟩ := hy i
       exact ⟨g, hg, φ, hφ_int, hφ_eq⟩
@@ -147,12 +148,32 @@ theorem star_inequality {P : Parameters} (D : Data P) :
       _ ≤ n * 2 := by grw [h_many]
   have hn_pos : (0 : ℝ) < n :=
     pos_of_mul_pos_left ((Nat.cast_pos.2 h_dim_pos).trans_le h_half) zero_le_two
-  -- The errors are of smaller order than `f a log⁵ b`.
-  have h_err : |2 * err| ≤ D.f * D.a * D.logB ^ 5 := D.le_of_hasLogBound
+  have hb : 3 ≤ D.b := D.le_of_hasLogBound
+  have hb_sq : 1 ≤ D.b ^ 2 := by nlinarith [sq_nonneg (D.b - 3)]
+  have h_poly : 1 + 2 * D.b ^ 2 ≤ D.b ^ 3 := by
+    nlinarith only [mul_nonneg (sub_nonneg.mpr hb) (sq_nonneg D.b), hb_sq]
+  have h_log : log (1 + 2 * D.b ^ 2) ≤ 3 * D.logB := by
+    calc log (1 + 2 * D.b ^ 2) ≤ log (D.b ^ 3) := log_le_log (by positivity) h_poly
+      _ = 3 * D.logB := by rw [log_pow, Data.b, log_exp, Nat.cast_ofNat]
+  have h_index_le : indexPerDim ≤ 30 * loss := by
+    calc indexPerDim ≤ 10 * (3 * D.logB) * D.errorUnit := by
+           dsimp only [indexPerDim]
+           gcongr
+      _ = 30 * loss := by
+        dsimp [Data.errorUnit, loss]
+        ring
+  have h_log_nonneg : 0 ≤ log (1 + 2 * D.b ^ 2) :=
+    log_nonneg (by linarith [sq_nonneg D.b])
+  have h_err_nonneg : 0 ≤ err := by
+    dsimp only [err, indexPerDim]
+    positivity
+  have h_err_le : err ≤ 64 * loss := by
+    dsimp only [err]
+    linarith
   refine le_of_mul_le_mul_left ?_ hn_pos
-  calc n * (D.m * D.totalRemainder) ≤ D.targetDim * |err| := by grw [h_both, ← le_abs_self]
-    _ ≤ n * 2 * |err| := by grw [h_half]
-    _ = n * |2 * err| := by rw [abs_mul, Nat.abs_ofNat, mul_assoc]
-    _ ≤ n * (D.f * D.a * D.logB ^ 5) := by grw [h_err]
+  calc n * (D.m * D.totalRemainder) ≤ D.targetDim * err := h_both
+    _ ≤ n * 2 * err := mul_le_mul_of_nonneg_right h_half h_err_nonneg
+    _ ≤ n * 2 * (64 * loss) := mul_le_mul_of_nonneg_left h_err_le (by positivity)
+    _ = n * (128 * loss) := by ring
 
 end New
