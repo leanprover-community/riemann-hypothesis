@@ -299,25 +299,6 @@ lemma killsCokernel_of_isKillingCut {s β : k.Letter → ℕ} {W X δ κ b n J s
     exact killsCokernel_of_isUnramified κ (s i)
       (fun i' u hu ↦ (h_jump i' u hu).trans (mod_cast h_bound i')) hk hp
 
-/-- The points `S.pointsOver c i e o₁ o₀` are the vectors of the extension of `C = S.paramLattice`
-at the letter `i` over `p ^ e c` that have the orders `o₁` (divisibility by `t ^ (o₁ a u)` at
-`φ^a E` on the jump `u`) and the depth `o₀` (the orders of all `g • x - x`, `g` in `Γ'`). Let `x` be
-one. Let `steps` contain every pair `(a, m)` with `o₀ a u ≤ m < o a u` for a jump `u` at
-`i.stepBack a`, the letter `a` steps before `i`, and let `e'` be at least `e` plus the costs
-`k.cost a m = v_p(m) + k.differentBound + 3 a` of the steps. Then there is a point over `p ^ e' c`
-of depth `o` with any orders `o'` that are at most `o` where `o₁` is positive and at most `min o 0`
-elsewhere. -/
-lemma pointsOver_nonempty_of_sum_cost_le {c : S.paramLattice} {i : k.Letter} {e e' : ℕ}
-    {o₁ o₀ o o' : ℕ → ℤ → ℤ} {x : S.extensionLattice.Ambient} (hx : x ∈ S.pointsOver c i e o₁ o₀)
-    (steps : Finset (Σ _ : ℕ, ℤ)) (h_cost : e + ∑ q ∈ steps, k.cost q.1 q.2 ≤ e')
-    (h_steps : ∀ a : ℕ, ∀ u ∈ S.jumpSet (i.stepBack a), ∀ m : ℤ, o₀ a u ≤ m → m < o a u →
-      ⟨a, m⟩ ∈ steps)
-    (h_exponent : ∀ a : ℕ, ∀ u ∈ S.jumpSet (i.stepBack a),
-      o' a u ≤ JumpLattice.improvedOrders o₁ o a u) :
-    (S.pointsOver c i e' o' o).Nonempty := by
-  exact (pointsOver_nonempty_of_costs hx steps h_steps h_cost).mono fun y hy ↦
-    mem_pointsOver_of_le hy h_exponent fun _ _ _ ↦ le_rfl
-
 /-- The standard point of a side `S` at a cut `i`. Let the jumps of `S` lie in `[-η, η]` and in the
 far windows `σ j • [β j, β j + V]` of signs `σ j`. Let `η ≥ 1`, `V + 4 η ≤ W`, let the shifts `s`
 have `s i + W ≤ p n`, let the size conditions `CutSizes` hold, let the cut be of a kind at which the
@@ -420,8 +401,9 @@ lemma pointsOver_longGapDepth_nonempty {ε : k.Letter → ℤˣ} {s β : k.Lette
       (by omega) c
   have h_cost := h_sizes.sum_cost_windowSteps_le (σ := σ) (by omega) h_shift (.inr h_free)
   -- The point `φ ^ t • x` at `i` has the exponents and depth of `x`, shifted up by `t` levels.
-  refine pointsOver_nonempty_of_sum_cost_le (phi_pow_smul_mem_pointsOver (l := t) hx)
-    (i.windowSteps σ s β W J) (h_cost.trans hH) (fun a u _ m hm_ge hm_lt ↦ ?_) fun a u hu ↦ ?_
+  refine (pointsOver_nonempty_of_costs (phi_pow_smul_mem_pointsOver (l := t) hx)
+    (i.windowSteps σ s β W J) (fun a u _ m hm_ge hm_lt ↦ ?_) (h_cost.trans hH)).mono fun y hy ↦
+    mem_pointsOver_of_le hy (fun a u hu ↦ ?_) fun _ _ _ ↦ le_rfl
   · -- The only steps are `(a, 0)` with `t < a < l`.
     simp only [Letter.windowSteps, JumpLattice.shiftedOrders, JumpLattice.shiftedStdOrders,
       stdOrders,
