@@ -182,7 +182,7 @@ lemma conj_blockScaling_mem_localIntGL_iff (q : n ≃ Fin k) (hp : l.valuation E
     · -- the block that is divided by `p`
       rw [mul_one, ← le_inv_mul_iff₀ exp_pos, ← WithZero.exp_neg, ← lt_mul_exp_iff_le (by simp)]
       simp [hi, not_lt.1 hj, ← exp_add]
-    · simpa [hi] using mul_le_one' h_int (exp_le_exp.2 (by norm_num : (-1 : ℤ) ≤ 0))
+    · simpa [hi] using mul_le_one' h_int (exp_le_exp.2 neg_one_lt_zero.le)
     · simpa [hi] using h_int
   have h_inv : (d⁻¹ * latticeGL q l β * d)⁻¹ = d⁻¹ * latticeGL q l β⁻¹ * d := by simp [mul_assoc]
   rw [localGL_mem_localIntGL_iff, mem_intGL, h_inv, h_entries, h_entries, inv_mem_iff, and_self]
@@ -226,7 +226,7 @@ variable {p r : ℕ} [Fact p.Prime] {l : FinPlace E}
 
 omit [Fact p.Prime] in
 lemma natCast_mem_of_valuation_eq (hp : l.valuation E p = exp (-1)) : (p : 𝓞 E) ∈ l.asIdeal :=
-  (l.valuation_lt_one_iff_mem (K := E) p).1 (hp.trans_lt (exp_lt_exp.2 (by norm_num)))
+  (l.valuation_lt_one_iff_mem (K := E) p).1 (hp.trans_lt (exp_lt_exp.2 neg_one_lt_zero))
 
 /-- Let `p` be a uniformizer at `l`, let `q` number the `k` coordinates, and let `r < k`. Let the
 component `g_l` of `g` at `l` be invertible over the local integers, let `β` lie in `GL_k` over the
