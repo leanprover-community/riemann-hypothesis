@@ -184,7 +184,7 @@ def besselPeriod : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) →ₗ
 /-- The Poincaré map `𝒫 : 𝒜(X₀) → 𝒜(Y₀)` for an archimedean point `g` of `G₀` and a linear form
 `t`: the form `𝒫 φ` represents the Bessel period of `φ`. The measure on `[R₀]` is `besselMeasure`;
 another Haar measure on `R₀(𝔸)` would multiply `𝒫` by a positive constant, which can be absorbed
-in `t` by `poincareAt_smul`. -/
+in `t`. -/
 def poincareAt (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) :
     D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) :=
   rieszMap (D.besselPeriod g t)
