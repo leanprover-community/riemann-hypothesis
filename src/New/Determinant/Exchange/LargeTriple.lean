@@ -1196,7 +1196,9 @@ lemma rowColExchangeIdentity_of_periods [IsBaseAdapted D₁] {σ' : b ⊕ b ⊕ 
   refine ⟨hv, hv', K⁻¹ ^ 2, fun 𝔠 ↦ ⟨C 𝔠, ?_, h_eq 𝔠⟩⟩
   -- `K` cancels, and `card (b ⊕ n) - card m / 2 = card n / 2`
   have h_rank : (card (b ⊕ n) : ℤ) - card m / 2 = card n / 2 := by
-    have := D.card_eq; rw [card_sum]; omega
+    have := D.card_eq
+    rw [card_sum]
+    omega
   rw [hC, h_rank]
   field [(lValueProdInt_pos 𝔠 (card n / 2)).ne']
 
