@@ -8,6 +8,7 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.ChangeLevel
 public import Lib.Analytic.DirichletTheta
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.Analytic.EntireLFunction
@@ -777,7 +778,8 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
   have h_zero' : (quadTwist (ψ ξ) d).LFunction s = 0 := by
     rw [h_level, LFunction_changeLevel _ _ (.inl (quadTwist_ne_one _ d (by omega) h_coprime'))]
       at h_zero
-    exact (mul_eq_zero.1 h_zero).resolve_right (prod_euler_factor_ne_zero _ (by linarith))
+    exact (mul_eq_zero.1 h_zero).resolve_right
+      (prod_one_sub_mul_prime_cpow_ne_zero _ (by linarith))
   have h_cond' : (M ξ : ℝ) * d ≤ T ^ 2 :=
     (mod_cast h_cond : (M ξ : ℝ) * d ≤ N * X).trans hT.ge
   refine mem_biUnion.2 ⟨ξ, mem_univ ξ, mem_filter.2 ⟨mem_Ioc.2 ⟨hd_pos, ?_⟩,
