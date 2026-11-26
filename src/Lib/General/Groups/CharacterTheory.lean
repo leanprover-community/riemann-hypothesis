@@ -221,12 +221,6 @@ lemma IsIrreducibleChar.isChar (hχ : IsIrreducibleChar χ) : IsChar χ :=
 
 variable [Finite G]
 
-lemma IsChar.exists_finMean_eq_natCast (hχ : IsChar χ) : ∃ m : ℕ, finMean χ = m := by
-  -- the average of a character is the dimension of the invariants
-  obtain ⟨V, rfl⟩ := hχ
-  use Module.finrank ℂ (Representation.invariants V.ρ)
-  simp [finMean_eq, ← V.average_char_eq_finrank_invariants, div_eq_inv_mul]
-
 lemma IsChar.apply_inv (hχ : IsChar χ) (g : G) : χ g⁻¹ = conj (χ g) := by
   obtain ⟨V, rfl⟩ := hχ
   exact (V.conj_char g).symm
@@ -251,12 +245,16 @@ lemma IsChar.star (hχ : IsChar χ) : IsChar fun g : G ↦ conj (χ g) := by
 an `S`-linear combination `f` of characters lies in the image of `S` in `ℂ`. -/
 lemma IsChar.exists_classInner_eq (hχ : IsChar χ) (hf : f ∈ virtualChars S G) :
     ∃ m : S, classInner χ f = algebraMap S ℂ m := by
-  -- Write `f = ∑ j, a j • ψ j` with characters `ψ j`. Each `classInner χ (ψ j)` is the average of
-  -- the character `conj χ * ψ j`, a natural number `m j`.
+  -- Write `f = ∑ j, a j • ψ j` with characters `ψ j`. Each pairing is the dimension of the
+  -- space of equivariant maps from the representation for `χ` to the one for `ψ j`.
   obtain ⟨n, a, ψ, rfl⟩ := mem_span_set'.1 hf
   choose m hm using fun j : Fin n ↦
-    show ∃ m : ℕ, classInner χ (ψ j) = m from
-      (hχ.star.mul (ψ j).property).exists_finMean_eq_natCast
+    show ∃ m : ℕ, classInner χ (ψ j) = m from by
+      obtain ⟨V, rfl⟩ := hχ
+      obtain ⟨W, hW⟩ := (ψ j).property
+      rw [← hW]
+      exact ⟨_, by simpa [classInner, finMean_eq, div_eq_inv_mul, V.conj_char, mul_comm] using
+        V.scalar_product_char_eq_finrank_equivariant W⟩
   use ∑ j : Fin n, a j * m j
   calc classInner χ (∑ j : Fin n, a j • (ψ j : G → ℂ))
       = ∑ j : Fin n, algebraMap S ℂ (a j) * classInner χ (ψ j) := by
