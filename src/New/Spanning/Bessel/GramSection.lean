@@ -486,14 +486,6 @@ theorem sectionMatrix_mul_frameCols {Z : 𝔰.FrameMatrix} :
     ← ext_iff, Matrix.one_apply, Matrix.mul_apply, sum_univ_castSucc, diagonal_apply, Fin.ne_of_gt,
     forall_fin_succ']
 
-/-- For index maps `u`, `v`, multiplying `M` by the matrices of basis vectors `(inclMatrix ℂ u)ᴴ`
-on the left and `inclMatrix ℂ v` on the right selects the rows `u` and the columns `v` of `M`. -/
-lemma conjTranspose_inclMatrix_mul_mul_inclMatrix {l m n : Type*} [Fintype n] [DecidableEq n]
-    (M : Matrix n n ℂ) (u : l → n) (v : m → n) :
-    (inclMatrix ℂ u)ᴴ * M * inclMatrix ℂ v = M.submatrix u v := by
-  ext i j
-  simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply]
-
 /-- The Gram matrix of the frame `F = (e₁, …, e_ϱ, z)` for the form `𝔰.J₁` is
 `diagLast 0 - 1 = diag(0, …, 0, -1)`. -/
 lemma frameCols_gram_frameCols : 𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols = diagLast 0 - 1 := by

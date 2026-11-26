@@ -161,6 +161,19 @@ variable [Fintype n] [CommRing R] [CommRing S] {O : Subring R}
 lemma mul_inclMatrix {l : Type*} (M : Matrix l n R) (u : m → n) :
     M * inclMatrix R u = M.submatrix id u := mul_submatrix_one (Equiv.refl n) u M
 
+/-- Multiplying on the left by the adjoint of an inclusion matrix selects rows. -/
+lemma conjTranspose_inclMatrix_mul [StarRing R] {l : Type*} (u : l → n) (M : Matrix n m R) :
+    (inclMatrix R u)ᴴ * M = M.submatrix u id := by
+  rw [inclMatrix, conjTranspose_submatrix, conjTranspose_one]
+  exact one_submatrix_mul u (Equiv.refl n) M
+
+/-- Multiplying by inclusion matrices on both sides selects a submatrix. -/
+lemma conjTranspose_inclMatrix_mul_mul_inclMatrix [StarRing R] {l p : Type*} [Fintype m]
+    [DecidableEq m] (M : Matrix n m R) (u : l → n) (v : p → m) :
+    (inclMatrix R u)ᴴ * M * inclMatrix R v = M.submatrix u v := by
+  simp only [conjTranspose_inclMatrix_mul, mul_inclMatrix, submatrix_submatrix,
+    Function.comp_id, Function.id_comp]
+
 omit [Fintype n] in
 lemma one_map_ringHom (f : R →+* S) : (1 : Matrix n n R).map f = 1 :=
   Matrix.map_one f f.map_zero f.map_one

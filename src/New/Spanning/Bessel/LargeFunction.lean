@@ -115,14 +115,6 @@ namespace DiscreteSeries
 
 variable {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ}
 
-private lemma conjTranspose_inclMatrix_mul {l m n : Type*} [Fintype n] [DecidableEq n]
-    (u : l → n) (M : Matrix n m ℂ) :
-    (inclMatrix ℂ u)ᴴ * M = M.submatrix u id := by
-  ext a j
-  simp only [Matrix.mul_apply, conjTranspose_apply, inclMatrix, submatrix_apply, id_eq,
-    Matrix.one_apply, apply_ite star, star_one, star_zero, ite_mul, one_mul, zero_mul,
-    sum_ite_eq', mem_univ, ↓reduceIte]
-
 private lemma isotropicCols_mul_apply {m : Type*} (N : Matrix (Fin 𝔰.ϱ) m ℂ)
     (i : 𝔰.BesselIndex) (b : m) :
     (𝔰.isotropicCols * N) i b = match i with
