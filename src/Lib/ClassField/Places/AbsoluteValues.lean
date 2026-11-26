@@ -36,8 +36,6 @@ Known; see Neukirch, *Algebraic Number Theory*, Ch. II, §§3 and 9.
 
 @[expose] public section
 
-open NumberField NumberField.HeightOneSpectrum
-
 namespace New
 
 section Field
@@ -70,8 +68,6 @@ theorem valuation_lt_one_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 
     A.valuation x < 1 ↔ w x < 1 := by
   rw [← ValuationSubring.mem_nonunits_iff, ValuationSubring.mem_nonunits_iff_or, hA,
     apply_lt_one_iff_or]
-
-variable {K : Type*} [Field K] [NumberField K] [Algebra K Ω] {v : FinPlace K}
 
 variable [CharZero Ω]
 
