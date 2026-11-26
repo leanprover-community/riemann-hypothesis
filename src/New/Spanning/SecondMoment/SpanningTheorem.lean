@@ -183,12 +183,6 @@ noncomputable def goodIdempotentAbove (i : Fin 2) :
   ∑ c ∈ goodTuples (P.q₂ D.towerExp) (card D.RowIndex),
     tupleIdem (k := fun w : D.filling.chosenPlaces i ↦ ResField w.val) D.RowIndex c
 
-/-- The element `e_{p_i} = D.goodIdempotentAbove i` is a central idempotent of the group algebra at
-the level prime `p_i`. -/
-lemma isCentralProj_goodIdempotentAbove (i : Fin 2) : IsCentralProj (D.goodIdempotentAbove i) := by
-  classical
-  exact isCentralProj_sum_tupleIdem
-
 /-- The tensor product of the two idempotents `D.goodIdempotentAbove i` acts through
 `D.levelRepresentation` as the projector `D.e₀` onto the good forms. -/
 lemma levelRepresentation_goodIdempotentAbove_eq :
@@ -243,7 +237,7 @@ theorem bad_types_rare :
     D.levelRepresentation.asAlgebraHom (piTensorElem D.goodIdempotentAbove) =
       (D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀ ∧
     ∀ i : Fin 2, ((1 - D.goodIdempotentAbove i).coeff 1).re ≤ (D.b ^ 8)⁻¹ / 2 :=
-  ⟨D.isCentralProj_goodIdempotentAbove, D.levelRepresentation_goodIdempotentAbove_eq,
+  ⟨fun _ ↦ by classical exact isCentralProj_sum_tupleIdem, D.levelRepresentation_goodIdempotentAbove_eq,
     D.re_coeff_one_sub_goodIdempotentAbove_le⟩
 
 /-- **Good forms.** The composite `e₀ P` of the scaled Poincaré map `P = D.scaledPoincare` with the
