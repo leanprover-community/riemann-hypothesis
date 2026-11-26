@@ -64,12 +64,6 @@ lemma continuous_rescale {p : ℕ} [Fact p.Prime] (f : ℂ_[p]⟦X⟧) :
   simp only [coeff_rescale]
   exact ((continuous_pow n).mul continuous_const).tendsto a
 
-/-- For a series `g` without constant term, `exp (s g)` depends continuously on `s`. -/
-lemma continuous_expSubst_smul {p : ℕ} [Fact p.Prime] {g : ℂ_[p]⟦X⟧}
-    (hg₀ : constantCoeff g = 0) : Continuous fun s : ℂ_[p] ↦ expSubst (s • g) := by
-  simp only [expSubst, ← subst_rescale_eq_subst_smul _ (.of_constantCoeff_zero' hg₀)]
-  exact (continuous_subst (.of_constantCoeff_zero' hg₀)).comp (continuous_rescale (exp ℂ_[p]))
-
 /-- If the subring `B` is the ring `𝒪[[T]]` of integral power series in `T`, then it is closed
 under coefficientwise limits. -/
 lemma IsSeriesGenerator.isClosed {p : ℕ} [Fact p.Prime] {B : Subring ℂ_[p]⟦X⟧} {T : ℂ_[p]⟦X⟧}
@@ -316,7 +310,10 @@ lemma expSubst_sub_rescale_mem {δ s : ℂ_[p]} (h_pair : (δ, s) ∈ normPairCl
     (F := fun δ s ↦ expSubst (s • C.negLogTheta - rescale δ C.negLogTheta)) ?_
     (fun a ha ↦ C.expSubst_sub_rescale_mem_of_mem_quadInt ha) h_pair
   simp only [Function.uncurry_def, C.expSubst_sub_rescale_eq]
-  exact ((continuous_expSubst_smul C.constantCoeff_negLogTheta).comp continuous_snd).mul
+  have h_exp : Continuous fun s : ℂ_[p] ↦ expSubst (s • C.negLogTheta) := by
+    simp only [expSubst, ← subst_rescale_eq_subst_smul _ (.of_constantCoeff_zero' C.constantCoeff_negLogTheta)]
+    exact (continuous_subst (.of_constantCoeff_zero' C.constantCoeff_negLogTheta)).comp (continuous_rescale (exp ℂ_[p]))
+  exact (h_exp.comp continuous_snd).mul
     ((continuous_rescale _).comp continuous_fst)
 
 /-- For an integer `a` of `K = ℚ(√-d)` and `g = -log θ`, the number `a (ā - a) g''(0) / 2` is
