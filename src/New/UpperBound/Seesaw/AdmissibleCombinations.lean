@@ -201,6 +201,10 @@ lemma eq_rev_iff_of_odd (hs : Odd s) (c : Fin s) : c = c.rev ↔ c = ⟨s / 2, b
   dsimp only
   omega
 
+private lemma eq_of_eq_rev {x y : Fin s} (hx : x = x.rev) (hy : y = y.rev) : x = y := by
+  rw [Fin.ext_iff, Fin.val_rev] at hx hy
+  exact Fin.ext (by omega)
+
 /-- For even `s`, the reversal `c ↦ s - 1 - c` of `Fin s` has no fixed point. -/
 lemma ne_rev_of_not_odd (hs : ¬ Odd s) (c : Fin s) : c ≠ c.rev := by
   obtain ⟨k, rfl⟩ := Nat.not_odd_iff_even.mp hs
@@ -557,12 +561,10 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
     simpa only [← Fin.rev_eq_iff, Matrix.mul_apply, conjTranspose_apply, h_star, of_apply,
       ite_mul, neg_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte,
       mul_ite, mul_neg, signMatrix, diagonal_apply] using h_entry
-  have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
-    rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
   by_cases ha : a = a.rev
   · simp only [h_col_mid a ha, ite_mul, zero_mul, Fintype.sum_ite_eq', ← ha, hσ_mid a ha]
     by_cases hb : b = b.rev
-    · have hab : a = b := rev_eq_self a b ha hb
+    · have hab : a = b := eq_of_eq_rev ha hb
       subst hab
       simp only [h_col_mid a ha, ↓reduceIte]
       calc r * (-(N : ℂ) * r) = -(r * r * (N : ℂ)) := by ring
@@ -631,14 +633,12 @@ lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFram
     simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
       Complex.ofReal_add, Complex.ofReal_inv, of_apply, star_add, apply_ite star, star_div₀,
       star_intCast, Complex.star_def, Complex.conj_ofReal, star_zero, star_inv₀]
-  have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
-    rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
   ext a b
   simp only [Matrix.mul_apply, conjTranspose_apply, h_star, Matrix.one_apply]
   by_cases ha : a = a.rev
   · simp only [h_col_mid a ha, ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq']
     by_cases hb : b = b.rev
-    · have hab : a = b := rev_eq_self a b ha hb
+    · have hab : a = b := eq_of_eq_rev ha hb
       subst hab; simp only [h_col_mid a ha, ↓reduceIte]
     · have hab : a ≠ b := fun h ↦ hb (by rw [← h]; exact ha)
       have har : a ≠ b.rev := fun h ↦ hb (by rw [h, Fin.rev_rev] at ha; exact ha.symm)
