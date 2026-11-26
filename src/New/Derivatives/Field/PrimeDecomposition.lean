@@ -450,10 +450,6 @@ lemma isIdOrConjWithSign_refl : IsIdOrConjWithSign (RingEquiv.refl (𝓞 (P.E s)
 lemma isIdOrConjWithSign_star : IsIdOrConjWithSign (starRingAut : 𝓞 (P.E s) ≃+* 𝓞 (P.E s)) (-1) :=
   .inr ⟨rfl, rfl⟩
 
-lemma IsIdOrConjWithSign.sign_eq_one_or_neg_one {c : 𝓞 (P.E s) ≃+* 𝓞 (P.E s)} {e : ℤ}
-    (h_sign : IsIdOrConjWithSign c e) : e = 1 ∨ e = -1 :=
-  h_sign.imp And.right And.right
-
 /-- Two ring maps `f g` from `𝓞 E` to a commutative ring `R` are equal if they agree at `zetaInt`
 (the chosen primitive `q₁`-th root of unity `ζ`) and at `betaKInE = (1 + √-d) / 2`. -/
 lemma ringHom_ext_zetaInt_betaKInE {R : Type*} [CommRing R] {f g : 𝓞 (P.E s) →+* R}
@@ -564,7 +560,7 @@ lemma map_galOfPlaceInt_eq_pow_iff_eq_frobElem_pow [IsDomain R] (φ : 𝓞 (P.E 
     simpa [_root_.neg_one_eq_one_iff, ringChar.eq R p] using ne_two_of_not_dvd_q₁ hq₁
   rw [forall_map_galOfPlaceInt_eq_pow_iff hq₁ φ n h_sign,
     map_galOfPlaceInt_zetaInt_inj φ hq₁, mul_left_eq_self₀, or_iff_left hsqrt, ← Int.cast_pow]
-  rcases h_sign.sign_eq_one_or_neg_one with rfl | rfl
+  rcases h_sign.imp And.right And.right with rfl | rfl
   · rcases chiK_pow_eq_one_or_neg_one hd n with h | h <;> simp [h, h2, placeOfInt_pow, mul_pow]
   · rcases chiK_pow_eq_one_or_neg_one hd n with h | h <;> simp [h, h2, placeOfInt_pow, mul_pow]
 
