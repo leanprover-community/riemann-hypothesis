@@ -245,8 +245,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv.VbLimit
@@ -967,8 +965,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar.Giv.Mix
-
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

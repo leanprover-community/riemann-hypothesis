@@ -320,8 +320,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR GlobalTheory.CompanionTheory.RedCov GroundTheory.Automorphic GroundTheory.Automorphic.Anisotropic
@@ -612,8 +610,6 @@ open Formalism.UG (cT)
 open scoped TensorProduct NNReal ENNReal NumberField.AdeleRing
 attribute [local instance] tensorTopology finite_of_isQuadraticExtension isModuleTopology_tensor isTopologicalRing_tensor
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.RedCov.Mahler
@@ -670,7 +666,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

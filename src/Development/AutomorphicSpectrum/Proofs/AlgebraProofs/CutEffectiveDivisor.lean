@@ -161,7 +161,6 @@ theorem exists_homog_lift {O k K : Type} [CommRing O] [CommRing k] [DecidableEq 
     exact h (hf (Ne.symm h0))
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem exists_residue_hom {O k K : Type} [CommRing O] [Field k] [DecidableEq K] {ι : K → Type}
     (π : O →+* k) (hπ : Function.Surjective π) (P W : Ideal (MRing ι O)) [P.IsPrime]
     (hPW : P ≤ W) (V : Ideal (MRing ι k)) [V.IsPrime]
@@ -248,7 +247,6 @@ theorem exists_residue_hom {O k K : Type} [CommRing O] [Field k] [DecidableEq K]
       ⟨b, _, _, homog_map π hf, homog_map π hg, fun h => hgW ((hV g).mp h), rfl⟩
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 2000000 in
 theorem inertiaDeg_eq_relDeg {O k K : Type} [CommRing O] [Field k] [Fintype K] [DecidableEq K]
     {ι : K → Type} {J : Type}
     (π : O →+* k) (hπ : Function.Surjective π) (P W : Ideal (MRing ι O)) [P.IsPrime]
@@ -409,8 +407,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CutEffectiveDivisor", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BlowUpPushHypothesesExample\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Statements\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpFibreDegreeCut\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BlowUpFibreSemilocal\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjectionFormulaDegree\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AevalChartSubstMemOfMemBlowUpOf\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpDivisorPush\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpFibreDegree\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpVerticalFibre\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlowUpVerticalPush\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFiniteBirationalLength\npublic import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PHorizontalComponentModel\npublic import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersLocalIntegralClosureFinite\npublic import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.HilbertSamuelIrreducibleBasicOpenConnected\nimport GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBundles\nimport GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyDimensionInequality\nimport GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSteps\nimport GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.HilbertSamuelUnbranchedPartConnected\nimport GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.NumbersDVRC3ResidualContractionComponent\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.CutClosed
 

@@ -494,8 +494,7 @@ theorem capPoly {R : Type} [CommRing R] [Nontrivial R] [Algebra ℂ R] {A : Type
   refine ⟨X ^ t + r, monic_X_pow_add hdeg, by rw [natDegree_add_eq_left_of_degree_lt (by rwa [degree_X_pow]), natDegree_X_pow], fun u => ?_, fun k hk => ?_⟩
   · rw [hq u, Finset.sum_range_succ, h1, eval_add, eval_pow, eval_X, map_add (f := _), map_pow, add_comm]
     congr 1
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hr, eval_finsetSum, map_sum]
+    · rw [hr, eval_finsetSum, map_sum]
       refine Finset.sum_congr rfl fun k hk => ?_
       rw [eval_mul, eval_C, eval_pow, eval_X, map_mul, map_pow, hd k (by
         have := Finset.mem_range.1 hk

@@ -109,8 +109,7 @@ theorem exists_average [TopologicalSpace K] [IsTopologicalGroup K] (π : K →* 
   refine ⟨(O.card : ℂ)⁻¹ • ∑ f ∈ O, f, A.smul_mem _ (A.sum_mem fun f hf => ?_), fun u hu => ?_, fun m hm => ?_⟩
   · obtain ⟨u, -, rfl⟩ := (hOm f).1 hf
     exact hA u F hFA
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum]
+  · rw [map_smul, map_sum]
     apply congrArg ((O.card : ℂ)⁻¹ • ·)
     refine Finset.sum_nbij' (π u) (π u⁻¹) ?_ ?_ ?_ ?_ fun _ _ => rfl
     · intro f hf

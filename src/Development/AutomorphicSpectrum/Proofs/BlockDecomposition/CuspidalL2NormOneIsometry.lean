@@ -90,9 +90,8 @@ theorem exists_normOne_integral : ∀ (E : Type) [Field E] [NumberField E] [_roo
   obtain ⟨f₁, hf₁⟩ := exists_fibreIntegral (fun p : normOneGL (K := E) (n := a) × ℝ => f (e p))
     (hf.comp e.continuous) (hs.comp_homeomorph e) ((c.toReal : ℂ)⁻¹)
   refine ⟨f₁, fun K _ _ _ W hW hinv => ?_⟩
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact integral_eq_of_map e ν μ c hc0 hct hmap f hf hs f₁ hf₁ W (fun x => W (x : GA E a)) hW
-      (fun x t => by rw [he, hinv])
+  exact integral_eq_of_map e ν μ c hc0 hct hmap f hf hs f₁ hf₁ W (fun x => W (x : GA E a)) hW
+    (fun x t => by rw [he, hinv])
 
 end GlobalTheory.CompanionTheory.CuspTransfer.FubiniCentre
 end -- clump:auto
@@ -268,7 +267,6 @@ theorem map_prod_eq_smul (E : Type) [Field E] [NumberField E] [_root_.NumberFiel
     (μ : Measure (GA E a)) [μ.IsHaarMeasure] (ν : Measure (normOneGL (K := E) (n := a))) [ν.IsHaarMeasure] :
     ∃ c : ENNReal, c ≠ 0 ∧ c ≠ ⊤ ∧
       Measure.map (fun p : normOneGL (K := E) (n := a) × ℝ => splitCentre E a p.2 * (p.1 : GA E a)) (ν.prod volume) = c • μ := by
-  set_option synthInstance.maxHeartbeats 200000 in
   obtain ⟨e, he⟩ := GlobalTheory.CompanionTheory.SplitHomeo.exists_homeomorph E a ha
   have hfun : (fun p : normOneGL (K := E) (n := a) × ℝ => splitCentre E a p.2 * (p.1 : GA E a)) = e := by
     funext p
@@ -335,10 +333,9 @@ theorem lintegral_productDomain_norm_sq : ∀ (E : Type) [Field E] [NumberField 
     funext fun p => (he p.1 p.2).symm
   rw [hF] at hmap
   rw [hF, ← hmap]
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine lintegral_image_prod_Ico_of_invariant e ν
-      (h := fun g => ‖φ g‖ₑ ^ 2) (k := fun x => ‖φ (x : GA E a)‖ₑ ^ 2)
-      (hc.enorm.measurable.pow_const 2) (fun x t => ?_) _
+  refine lintegral_image_prod_Ico_of_invariant e ν
+    (h := fun g => ‖φ g‖ₑ ^ 2) (k := fun x => ‖φ (x : GA E a)‖ₑ ^ 2)
+    (hc.enorm.measurable.pow_const 2) (fun x t => ?_) _
   simp only [he, hinv]
 
 end GlobalTheory.CompanionTheory.CuspTransfer

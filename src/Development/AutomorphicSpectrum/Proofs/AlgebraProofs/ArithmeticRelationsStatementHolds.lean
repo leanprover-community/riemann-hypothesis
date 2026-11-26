@@ -1340,8 +1340,7 @@ theorem exists_pow_mul_isIntegral (R R' : Subalgebra O Ω) {r : Ω} (hr : IsInte
     simp only [q]
     rw [(hp.map _).leadingCoeff_C_mul]
   rw [Algebra.smul_def, h2] at h1
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact ⟨N, isIntegral_trans (R := R) (A := integralClosure R Ω) (B := Ω) (r ^ N * v) h1⟩
+  exact ⟨N, isIntegral_trans (R := R) (A := integralClosure R Ω) (B := Ω) (r ^ N * v) h1⟩
 
 theorem exists_span (R : Subalgebra O Ω) [h : Module.Finite R (integralClosure R Ω)] :
     ∃ S : Finset Ω, intGrp R = spanOver R (S : Set Ω) := by

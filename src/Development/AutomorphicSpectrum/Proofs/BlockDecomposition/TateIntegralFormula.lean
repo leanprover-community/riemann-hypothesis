@@ -11,8 +11,6 @@ import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Topology Filter GroundTheory.Global GroundTheory.Global.IdeleGroup PositivityTheory.Rg.Base1

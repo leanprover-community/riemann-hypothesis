@@ -158,7 +158,6 @@ theorem exists_schwartz_majorant [FiniteDimensional ℝ E] (φ : 𝓢(E, ℂ)) :
 
 end Majorant
 
-set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
 variable {K : Type _} [Field K] [NumberField K]

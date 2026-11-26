@@ -7,7 +7,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv

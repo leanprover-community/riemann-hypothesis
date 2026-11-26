@@ -279,8 +279,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.KummerCup
@@ -678,8 +676,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate
 open ValuativeRel
 
@@ -923,7 +919,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate
 open GroundTheory.ProfCoh GroundTheory.LocalField ValuativeRel CategoryTheory
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

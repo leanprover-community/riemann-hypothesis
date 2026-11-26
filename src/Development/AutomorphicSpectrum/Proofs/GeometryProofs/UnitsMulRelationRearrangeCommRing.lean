@@ -594,8 +594,7 @@ theorem jq_psJet_ptPow (k : Type) [Field k] (p : ℕ) [Fact p.Prime] [CharP k p]
     (fun j => Ideal.Quotient.mk _ (MvPolynomial.X ((0 : Fin 1), j))) (psTrunc (p + m + 1) g)]
   rw [aeval_axis_eq_psJet m _ g (mk_psTrunc_of_le (by omega) g), hg.1, FBIdJet.psJet_one, map_one]
   congr 2
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [dSer, psJet_sum_C_mul, map_sum]
+  rw [dSer, psJet_sum_C_mul, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [aeval_axis_eq_psJet m _ _ (mk_pderiv_psTrunc (by omega) g _), map_mul]
   rw [← IsScalarTower.algebraMap_apply]

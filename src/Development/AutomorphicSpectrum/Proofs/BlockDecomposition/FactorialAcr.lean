@@ -82,8 +82,7 @@ theorem isLog_mul (hLA : LogAlg) (A : PAlg l) (n : ℕ) (w w' : A.W) (y y' : A.A
     simp only [dpw, hab]
     exact e)
   have e1 := congrArg (A.mkAcr n) e0
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_add (f := _), map_sum, map_mul, map_pow, map_neg, map_one, map_natCast] at e1
+  simp only [map_add (f := _), map_sum, map_mul, map_pow, map_neg, map_one, map_natCast] at e1
   rw [e1, factorial_acr, zero_mul, add_zero]
 
 theorem logMul : CrystallineSemistableComparison.E.LogAlg → CrystallineSemistableComparison.E.LogEx → CrystallineSemistableComparison.E.LogMul :=

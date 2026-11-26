@@ -65,8 +65,6 @@ import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.CentredDiscCoverCurv
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GlobalTheory.CompanionTheory.Ar.SegreChart
 
 theorem Chart.GoodChartDim : GroundTheory.Heights₂.Heights.GoodChartDim.Statement :=

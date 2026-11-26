@@ -555,7 +555,6 @@ theorem continuous_ap (i t : ℕ) :
   · simp only [ap, Fin.append_right]
     fun_prop
 
-set_option synthInstance.maxHeartbeats 100000 in
 def psiHom (i t : ℕ) (y : Mir k ((i + 1) + t + 1)) :
     Multiplicative (Fin (i + 1) → k) × Multiplicative (Fin (t + 1) → k) →* Mir k ((i + 1) + t + 1) where
   toFun p := y⁻¹ * vEl k i t (ap i t p.1.toAdd p.2.toAdd) * y

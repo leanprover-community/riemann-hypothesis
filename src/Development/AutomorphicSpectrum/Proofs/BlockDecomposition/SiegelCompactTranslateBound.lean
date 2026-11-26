@@ -506,8 +506,7 @@ theorem block_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
     simp only [map_mul, hAdef, hA'def, hGdef, hG'def, hM₁]
   have hP : ∑ α, P α = 1 := by
     have : ∑ α, P α = (τ.1.mapMatrix) (∑ α, frameIdem (σ : E →+* E) J X Y α) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]; rfl
+      rw [map_sum]; rfl
     rw [this, sum_frameIdem, map_one]
   have hTor : ∀ β, A * P β = ((frameWt t β : ℝ) : ℂ) • P β := fun β =>
     _root_.GlobalTheory.CompanionTheory.RapidDecay.torus_mul_frameIdem F E σ h n J hJ r X Y hW t a ha ht.1 w τ β

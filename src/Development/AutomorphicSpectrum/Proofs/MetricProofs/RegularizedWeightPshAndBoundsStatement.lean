@@ -22,8 +22,6 @@ import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree
 
 noncomputable section

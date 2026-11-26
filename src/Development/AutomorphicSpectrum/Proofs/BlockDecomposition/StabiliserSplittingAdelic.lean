@@ -891,9 +891,8 @@ theorem exists_compact_adele_ext : ∀ (F E : Type) [Field F] [NumberField F] [F
   refine ⟨∑ i, x i • b i, fun i => B.repr a i - algebraMap F (AF F) (x i), fun i _ => hx i, ?_⟩
   have hB : ∀ i, B i = (1 : AF F) ⊗ₜ[F] b i := fun i => Algebra.TensorProduct.basis_apply _ _
   have hincl : inclR (F := F) (AF F) (∑ i, x i • b i) = ∑ i, algebraMap F (AF F) (x i) • B i := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [inclR, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, map_sum, map_smul,
-      Algebra.TensorProduct.includeRight_apply, hB, algebraMap_smul]
+    simp only [inclR, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, map_sum, map_smul,
+    Algebra.TensorProduct.includeRight_apply, hB, algebraMap_smul]
   simp only [φ, sub_smul, Finset.sum_sub_distrib, hincl]
   rw [B.sum_repr a]
 

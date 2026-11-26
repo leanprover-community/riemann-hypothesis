@@ -400,8 +400,7 @@ theorem frame_main (Q : Poly Φ) (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ 
     (b.sum_repr _).symm
   have hrule := frame_rule hF E σ hc θ.toAlgHom τ ht g₀ g (fun k i => b.repr (KaehlerDifferential.D R A (g k)) i)
     (fun k => by simpa only [hb] using hp k)
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [form_expand b g₀ g _ hp, map_sum]
+  rw [form_expand b g₀ g _ hp, map_sum]
   simp only [he]
   have hsum := rep_sum (a := Fil (a : ℤ)) (b := Fil ((a : ℤ) + 1)) Finset.univ
     (fun I : Fin a → Fin d => E.form σ I (θ (g₀ * ∏ k, b.repr (KaehlerDifferential.D R A (g k)) (I k))))

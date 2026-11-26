@@ -6,8 +6,6 @@ public import Mathlib.RepresentationTheory.Rep.Basic
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GlobalTheory.CompanionTheory.GSCd
 
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheory.Global FiniteSubfield

@@ -8,8 +8,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter

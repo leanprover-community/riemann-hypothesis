@@ -506,8 +506,7 @@ theorem GlobalTheory.CompanionTheory.Conc.translate_sq_mean_close : ∀ (E : Typ
   intro E _ _ _ N _ _ μ _ α δ F hα hs hδ hF η hη
   haveI : μ.IsMulRightInvariant := _root_.GlobalTheory.CompanionTheory.PairDom.isMulRightInvariant_GA E N μ
   haveI : Countable (latticeGL E N) := GlobalTheory.DiscreteUnit.countable_latticeGL
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact GlobalTheory.CompanionTheory.Conc.WeightedCauchySchwarzLintegral.exists_nhds_sq_mean_le μ (latticeGL E N) hα hs hδ hF hη
+  exact GlobalTheory.CompanionTheory.Conc.WeightedCauchySchwarzLintegral.exists_nhds_sq_mean_le μ (latticeGL E N) hα hs hδ hF hη
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelEigenfunctionEquicontinuous =====

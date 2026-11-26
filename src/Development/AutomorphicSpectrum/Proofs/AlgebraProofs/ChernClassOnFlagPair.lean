@@ -29,8 +29,6 @@ import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinRootPo
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ChernFlagPairRootPolynomial

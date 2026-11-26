@@ -1423,8 +1423,7 @@ theorem tw_facts (ε : Eps l) (k : Bool) (n : ℕ) (hn : IsNilpotent (l : (base 
   have hξI : ξ ∈ JJ k (base l) n := fil_le k (base l) n (hξ (base l) n)
   refine ⟨w, ξ, ?_, hI _ hξI, fun r => ?_⟩
   · have : (base l).cris n ε.μ = ((base l).cris n (ε.qk 1) - 1) * ξ := by
-      set_option synthInstance.maxHeartbeats 200000 in
-        rw [hμ, map_mul, map_sub, map_one]
+      rw [hμ, map_mul, map_sub, map_one]
     rw [this, map_pow]
     have hw' : (base l).cris n (ε.qk 1) - 1 = ((base l).cris n (ε.qk m) ^ c - 1) * w := hw
     rw [hw']

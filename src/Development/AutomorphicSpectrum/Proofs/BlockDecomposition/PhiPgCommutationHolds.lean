@@ -1330,8 +1330,6 @@ section -- clump:auto
 
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG
 open scoped TensorProduct
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 100000 in
 theorem _root_.GlobalTheory.T.twisted_jacquet_closed_open_sequence : ∀ {G M Z VC VO AC AO : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group M]
     [AddCommGroup Z] [Module ℂ Z] [AddCommGroup VC] [Module ℂ VC] [AddCommGroup VO] [Module ℂ VO]
     [AddCommGroup AC] [Module ℂ AC] [AddCommGroup AO] [Module ℂ AO]

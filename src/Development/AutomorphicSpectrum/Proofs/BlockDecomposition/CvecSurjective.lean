@@ -9,7 +9,6 @@ public import GroundTheory.AutomorphicForms.ReductionMahler
 @[expose] public section
 
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

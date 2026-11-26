@@ -8,8 +8,6 @@ import GroundTheory.AutomorphicForms.LocallyProfinite
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GlobalTheory.CompanionTheory.EpConvB
 
 open NumberField NumberField.mixedEmbedding IsDedekindDomain Matrix MeasureTheory Filter Topology

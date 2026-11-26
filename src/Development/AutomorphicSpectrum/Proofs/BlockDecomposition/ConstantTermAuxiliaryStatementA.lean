@@ -9,8 +9,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineG
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 open NumberField GlobalTheory.CuspRep MeasureTheory PositivityTheory.Affgl GlobalTheory.CompanionTheory.CTFin Matrix

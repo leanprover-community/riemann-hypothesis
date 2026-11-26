@@ -1113,8 +1113,7 @@ theorem dZ_addEquiv_apply {ι : Type} [DecidableEq ι] (M N : Finset ι → Type
     (hn : ∀ {S T : Finset ι} (h : S ⊆ T) x, e T (r h x) = r' h (e S x)) (m : ℕ)
     (c : ∀ i : Fin (m + 1) → ι, M (ent i)) (i : Fin (m + 2) → ι) :
     e _ (dZ M r m c i) = dZ N r' m (fun i => e _ (c i)) i := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dZ, map_sum, map_zsmul, hn]
+  simp only [dZ, map_sum, map_zsmul, hn]
 
 theorem dZ_eq_zero_of_addEquiv {ι : Type} [DecidableEq ι] (M N : Finset ι → Type) [∀ S, AddCommGroup (M S)]
     [∀ S, AddCommGroup (N S)] (r : ∀ {S T : Finset ι}, S ⊆ T → M S → M T)

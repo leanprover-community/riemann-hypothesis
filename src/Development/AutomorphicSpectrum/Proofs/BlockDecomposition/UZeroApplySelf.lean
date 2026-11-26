@@ -269,8 +269,7 @@ theorem φ_of_mem {x : A p D d} (hx : x ∈ J p t) : φ t x = 0 := by
 theorem lincomb_eq (l : I p d →₀ D) :
     Finsupp.linearCombination D (fun i : I p d => cl t i.1) l =
       Ideal.Quotient.mk (J p t) (∑ i ∈ l.support, single i.1 (l i)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Finsupp.linearCombination_apply, Finsupp.sum, map_sum]
+  rw [Finsupp.linearCombination_apply, Finsupp.sum, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   have : l i • (single i.1 (1 : D) : A p D d) = single i.1 (l i) := by
     rw [smul_single', mul_one]

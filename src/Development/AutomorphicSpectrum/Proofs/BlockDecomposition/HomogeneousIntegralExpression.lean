@@ -54,9 +54,8 @@ theorem exists_monic_relation {K σ : Type} [Field K] {m : ℕ} (I : Ideal (MvPo
     simpa using this
   choose C hC using hlift
   refine ⟨q.natDegree, C, hdeg, ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [← Ideal.Quotient.eq_zero_iff_mem, ← hroot', Polynomial.eval₂_eq_sum_range,
-    Finset.sum_range_succ, map_add, map_sum, add_comm]
+  rw [← Ideal.Quotient.eq_zero_iff_mem, ← hroot', Polynomial.eval₂_eq_sum_range,
+  Finset.sum_range_succ, map_add, map_sum, add_comm]
   congr 1
   · refine Finset.sum_congr rfl fun l _ => ?_
     rw [map_mul, hC, map_pow]

@@ -9,8 +9,6 @@ import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv

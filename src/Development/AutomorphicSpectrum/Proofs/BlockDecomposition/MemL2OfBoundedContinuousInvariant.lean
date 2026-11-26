@@ -137,9 +137,8 @@ theorem exists_compact_open {L : Subgroup (GL (Fin a) (Af E))} (hL : IsOpen (L :
   obtain ⟨C, hC, hC1⟩ := exists_compact_mem_nhds (1 : GA E a)
   have hc := ContAut.continuous_map_pFin E a
   have hW : (GeneralLinearGroup.map (pFin E) '' C : Set (GL (Fin a) (Af E))) ∈ 𝓝 (1 : GL (Fin a) (Af E)) := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      have h1 : finGL E a ⁻¹' C ∈ 𝓝 (1 : GL (Fin a) (Af E)) :=
-        (GlobalTheory.CompanionTheory.DenseKFin.continuous_finGL (E := E) (a := a)).continuousAt.preimage_mem_nhds (by simpa using hC1)
+    have h1 : finGL E a ⁻¹' C ∈ 𝓝 (1 : GL (Fin a) (Af E)) :=
+      (GlobalTheory.CompanionTheory.DenseKFin.continuous_finGL (E := E) (a := a)).continuousAt.preimage_mem_nhds (by simpa using hC1)
     exact Filter.mem_of_superset h1 fun k hk => ⟨_, hk, pFin_finGL k⟩
   obtain ⟨U, hU, hUW⟩ := GlobalTheory.CompanionTheory.DenseKFin.exists_openSubgroup_GLAf (Filter.inter_mem hW (hL.mem_nhds (one_mem L)))
   exact ⟨U, fun k hk => (hUW hk).2, hU, (hC.image hc).of_isClosed_subset (Subgroup.isClosed_of_isOpen U hU)
@@ -234,8 +233,7 @@ theorem continuous_test {U : Subgroup (GL (Fin a) (Af E))} (hU : IsOpen (U : Set
 theorem hasCompactSupport_test {U : Subgroup (GL (Fin a) (Af E))} (hU : IsCompact (U : Set (GL (Fin a) (Af E))))
     {α : GL (Fin a) (Cinf E) → ℂ} (hα : HasCompactSupport α) :
     HasCompactSupport ((levelSet U : Set (GA E a)).indicator (α ∘ pI)) := by
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine HasCompactSupport.of_support_subset_isCompact (isCompact_levelSet_inter hU hα) fun g hg => ?_
+  refine HasCompactSupport.of_support_subset_isCompact (isCompact_levelSet_inter hU hα) fun g hg => ?_
   rw [Function.mem_support] at hg
   have h1 : g ∈ levelSet U := by
     by_contra h

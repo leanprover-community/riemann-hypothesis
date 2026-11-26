@@ -714,8 +714,7 @@ theorem back {τ : Ψ} {a b ca cb : Fin N} {k₀ : K} (hb : (b : ℕ) = a + 1) (
         rfl
       rw [e1, div_mul_eq_mul_div, ← hW m]
       field_simp
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, hz m, inv_mul_cancel_left₀ hα]
+    · rw [map_sum, hz m, inv_mul_cancel_left₀ hα]
       refine Finset.sum_congr rfl fun I _ => ?_
       rw [map_mul, hρc, ← minorIJ_map]
       rfl

@@ -9,8 +9,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.Pro
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField

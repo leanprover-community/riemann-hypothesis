@@ -100,8 +100,7 @@ theorem exists_scale (M : FlagModel y Ψ N j) {F : Type} [Field F] (f : MvPolyno
     · have e := hbase ⟨⟨k, h⟩, m⟩
       simp only [polyPt, dite_eq_left h, one_mul, hfC]
       exact e
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [polyPt, dite_eq_right h, map_sum, map_mul, hfC, map_minorIJ, hmap]
+    · simp only [polyPt, dite_eq_right h, map_sum, map_mul, hfC, map_minorIJ, hmap]
       rw [hstep _ k (blk_stepOf M k h) m, Finset.mul_sum]
       refine Finset.sum_congr rfl fun I _ => ?_
       rw [(_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main F N j (stepOf M k h).2 M.j_le).2.2.1 _ _ I (hB _).1 (hB _).2.1]

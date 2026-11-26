@@ -45,8 +45,7 @@ theorem graded_mod_pow : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (n r : ℕ),
     obtain ⟨z0, hz0, rfl⟩ := hz
     obtain ⟨w, hw⟩ := (_root_.GlobalTheory.CompanionTheory.PerfFil.crystalline_filtration_graded_pieces A r).1 z0 hz0
     refine ⟨w, ?_⟩
-    set_option synthInstance.maxHeartbeats 200000 in
-      rw [hF, hto, hdx, ← map_mul (A.mkAcr n), ← map_sub (A.mkAcr n)]
+    rw [hF, hto, hdx, ← map_mul (A.mkAcr n), ← map_sub (A.mkAcr n)]
     exact Ideal.mem_map_of_mem _ hw
   · rw [hF, Ideal.mem_map_iff_of_surjective _ hsurj, hto, hdx, ← map_mul] at h
     obtain ⟨z', hz', e⟩ := h

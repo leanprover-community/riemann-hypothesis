@@ -8,8 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.Numerical
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GlobalTheory.CompanionTheory.FieldNumbers
 
 open GroundTheory.Heights₂.Heights.FieldNumbers GroundTheory.Heights₂.Heights.NumbersDVR

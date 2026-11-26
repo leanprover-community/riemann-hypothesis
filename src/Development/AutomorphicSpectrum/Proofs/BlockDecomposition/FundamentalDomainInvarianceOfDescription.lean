@@ -103,8 +103,7 @@ theorem measure_inter_band_lt_top (μ : Measure Ad3.R.G2) [μ.IsHaarMeasure] {�
         exact hγ
     _ ≤ ∑' γ : (AdelicGLn.diagonal ℚ 2).range, μ (γ • E ∩ 𝓕) := measure_iUnion_le _
     _ = μ E := by
-      set_option synthInstance.maxHeartbeats 200000 in
-        exact (hF.measure_eq_tsum E).symm
+      exact (hF.measure_eq_tsum E).symm
 
 theorem setup_of_ideleDomain : Ad3.R.G0 := by
   obtain ⟨μ, hμ, hr⟩ := exists_isHaarMeasure_isMulRightInvariant (K := ℚ) (n := 2) (by norm_num)

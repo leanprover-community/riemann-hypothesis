@@ -640,8 +640,7 @@ theorem nonempty_lie_metric_of_coordinates : ∀ (X : Scheme.{0}) (Ω : Type) [F
     by_cases hl : rho f l (wz z) = 0
     · simp only [hl, Complex.ofReal_zero, zero_mul]
     · rw [(hg l hl).2, (hg l hl).2]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : rho f l (wz (spMap (starRingEnd ℂ) ≫ z)) = 0
     · rw [← hcj z l]
