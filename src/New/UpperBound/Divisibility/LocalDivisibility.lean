@@ -364,18 +364,12 @@ lemma mem_smallNonsplitPrimes_iff_isSmallNonsplit :
   simp [Nat.lt_ceil, hp.out]
 
 omit [PadicPlace p] in
-/-- A prime `p` outside `D.smallNonsplitPrimes` splits in `K`, that is `χ_K(p) = 1`, or is at least
-`x₁`. -/
-lemma chiK_eq_one_or_le_of_notMem_smallNonsplitPrimes (h_notMem : p ∉ D.smallNonsplitPrimes) :
-    chiK P.d p = 1 ∨ D.x₁ ≤ p := by
-  rwa [mem_smallNonsplitPrimes_iff_isSmallNonsplit, not_and_or, not_lt, not_ne_iff, or_comm]
-    at h_notMem
-
 omit [PadicPlace p] in
 /-- Outside the small non-split primes and the level prime, neither a gain nor a loss occurs. -/
 lemma gain_allowedLoss_eq_zero (h_notMem : p ∉ D.smallNonsplitPrimes) (hN : p ≠ D.N) :
     D.gain p = 0 ∧ D.allowedLoss p = 0 :=
-  ⟨D.gain_eq_zero (chiK_eq_one_or_le_of_notMem_smallNonsplitPrimes h_notMem),
+  ⟨D.gain_eq_zero (by rwa [mem_smallNonsplitPrimes_iff_isSmallNonsplit, not_and_or, not_lt,
+      not_ne_iff, or_comm] at h_notMem),
     by simp [allowedLoss, h_notMem, hN]⟩
 
 open scoped Pointwise in
