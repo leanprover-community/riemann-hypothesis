@@ -115,14 +115,6 @@ lemma New.IsLocalGalois.finite_quotient_span_singleton {Γ L Ω : Type} [Group �
       (span_singleton_eq_bot.ne.mpr hx)
   exact finite_quotient_iff.mpr ⟨k, hk.ge⟩
 
-/-- Let `A` be a valuation subring of `Ω` and `L → Ω` a field embedding. An `l`-th root of unity
-`u` in `L` with `|u - 1| < |l|` (for the valuation of `A`) is `1`. -/
-lemma New.eq_one_of_pow_eq_one_of_valuation_sub_lt {L Ω : Type} [Field L] [Field Ω] [Algebra L Ω]
-    {A : ValuationSubring Ω} {l : ℕ} {u : L} (h_pow : u ^ l = 1)
-    (h_close : A.valuation (algebraMap L Ω u - 1) < A.valuation l) : u = 1 := by
-  simpa using eq_of_pow_eq_one_of_val_sub_lt (x := algebraMap L Ω u)
-    (by rw [← map_pow, h_pow, map_one]) (one_pow l) h_close
-
 /-- The order at the maximal ideal as an additive map. Let `L` be a local field
 (`New.IsLocalGalois Γ L A`) with absolute value `|x| = A.valuation x`, `π` a uniformiser and `Y` an
 additive group isomorphic to `Lˣ` (by `y`). Then some surjective `f : Y → ℤ` has
@@ -216,7 +208,8 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
       simpa using congrArg (fun v : V ↦ ((y v).toMul : L)) ha
     have h_close : A.valuation (algebraMap L Ω (y a).toMul - 1) < A.valuation l := by
       simpa [w] using (div_mem.mp a.property).trans_lt lπ_lt
-    simpa using eq_one_of_pow_eq_one_of_valuation_sub_lt h_pow h_close
+    simpa using eq_of_pow_eq_one_of_val_sub_lt (x := algebraMap L Ω (y a).toMul)
+      (by rw [← map_pow, h_pow, map_one]) (one_pow l) h_close
   -- `red a` is the class of `(a - 1) / (l π)` in `O / l`; it is additive by `h_defect`.
   have h_defect (s t : L) : (s * t - 1) / (l * π) - ((s - 1) / (l * π) + (t - 1) / (l * π)) =
       l * ((s - 1) / (l * π) * ((t - 1) / (l * π)) * π) := by field
