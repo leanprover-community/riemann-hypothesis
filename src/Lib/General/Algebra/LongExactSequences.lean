@@ -337,8 +337,6 @@ end Hom
 
 end LongExactSeq
 
-set_option backward.isDefEq.respectTransparency false
-
 /-- In a long exact sequence, if all maps g : B m → C m with m < n are surjective, then
 f : A n → B n is injective. -/
 lemma LongExactSeq.f_injective_of_g_surjective (L : LongExactSeq)
@@ -370,11 +368,23 @@ lemma Comparison.pull_hom_contravariant (hS : S.ShortExact) (hS' : S'.ShortExact
     (contravariant hS F).Hom (contravariant hS' F') (c.pull τ.τ₃) (c.pull τ.τ₂) (c.pull τ.τ₁) := by
   constructor
   · -- τ commutes with the second maps of the complexes
-    simp [contravariant, pull_apply, H.map, mapExactFunctor_comp, mapExactFunctor_mk₀, ← τ.comm₂₃]
+    intro n x
+    change H S.X₃ F n at x
+    change c.pull τ.τ₂ n ((mk₀ S.g).comp x (zero_add n)) =
+      (mk₀ S'.g).comp (c.pull τ.τ₃ n x) (zero_add n)
+    simp [pull_apply, mapExactFunctor_comp, mapExactFunctor_mk₀, ← τ.comm₂₃]
   · -- τ commutes with the first maps of the complexes
-    simp [contravariant, pull_apply, H.map, mapExactFunctor_comp, mapExactFunctor_mk₀, ← τ.comm₁₂]
+    intro n x
+    change H S.X₂ F n at x
+    change c.pull τ.τ₁ n ((mk₀ S.f).comp x (zero_add n)) =
+      (mk₀ S'.f).comp (c.pull τ.τ₂ n x) (zero_add n)
+    simp [pull_apply, mapExactFunctor_comp, mapExactFunctor_mk₀, ← τ.comm₁₂]
   · -- the extension class is natural
-    simp [contravariant, pull_apply, mapExactFunctor_comp, mapExactFunctor_extClass,
+    intro n x
+    change H S.X₁ F n at x
+    change c.pull τ.τ₃ (n + 1) (hS.extClass.comp x (Nat.add_comm 1 n)) =
+      hS'.extClass.comp (c.pull τ.τ₁ n x) (Nat.add_comm 1 n)
+    simp [pull_apply, mapExactFunctor_comp, mapExactFunctor_extClass,
       ← comp_assoc (h₁₂ := zero_add 1), add_comm, ← hS'.extClass_naturality]
 
 /-- For short exact complexes S and S', a morphism τ from the restriction of S along φ to S' and a
@@ -386,13 +396,25 @@ lemma Comparison.pull_hom_covariant (hS : S.ShortExact) (hS' : S'.ShortExact) {�
       (pull ⟨φ, τ.τ₁⟩ α) (pull ⟨φ, τ.τ₂⟩ α) (pull ⟨φ, τ.τ₃⟩ α) := by
   constructor
   · -- τ commutes with the first maps of the complexes
-    simp [covariant, pull_apply, mapExactFunctor_comp, mapExactFunctor_mk₀,
+    intro n x
+    change H N S.X₁ n at x
+    change (⟨φ, τ.τ₂⟩ : Comparison _ _).pull α n (x.comp (mk₀ S.f) (add_zero n)) =
+      ((⟨φ, τ.τ₁⟩ : Comparison _ _).pull α n x).comp (mk₀ S'.f) (add_zero n)
+    simp [pull_apply, mapExactFunctor_comp, mapExactFunctor_mk₀,
       comp_assoc (h₂₃ := rfl), τ.comm₁₂]
   · -- τ commutes with the second maps of the complexes
-    simp [covariant, pull_apply, mapExactFunctor_comp, mapExactFunctor_mk₀,
+    intro n x
+    change H N S.X₂ n at x
+    change (⟨φ, τ.τ₃⟩ : Comparison _ _).pull α n (x.comp (mk₀ S.g) (add_zero n)) =
+      ((⟨φ, τ.τ₂⟩ : Comparison _ _).pull α n x).comp (mk₀ S'.g) (add_zero n)
+    simp [pull_apply, mapExactFunctor_comp, mapExactFunctor_mk₀,
       comp_assoc (h₂₃ := rfl), τ.comm₂₃]
   · -- the extension class is natural
-    simp [covariant, pull_apply, mapExactFunctor_comp, mapExactFunctor_extClass,
+    intro n x
+    change H N S.X₃ n at x
+    change (⟨φ, τ.τ₁⟩ : Comparison _ _).pull α (n + 1) (x.comp hS.extClass rfl) =
+      ((⟨φ, τ.τ₃⟩ : Comparison _ _).pull α n x).comp hS'.extClass rfl
+    simp [pull_apply, mapExactFunctor_comp, mapExactFunctor_extClass,
       comp_assoc (h₂₃ := rfl), ShortExact.extClass_naturality (h₂ := hS')]
 
 /-- For 0 → X₁ → X₂ → X₃ → 0 short exact, X₁ → X₂ induces bijections on Extⁿ(-, F) for all n (it is
