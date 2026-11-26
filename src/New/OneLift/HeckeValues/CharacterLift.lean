@@ -596,7 +596,7 @@ lemma onHom_mul_scalarFin_inv {E n : Type} [Field E] [CMType E] [Fintype n] [Dec
 
 /-- The space `Hom(W, V)` from the standard line `W` to the standard space `V` of rank `card n`;
 its signs `homSigns 1 1`, the products of those of `W` and `V`, are all `1`. -/
-abbrev stdLineHom (E n : Type) [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] :
+abbrev stdLineHom (E n : Type) [Field E] [CMType E] [Fintype n] [DecidableEq n] :
     Space E (n × Unit) (homSigns 1 1) := (stdSpace E Unit).hom (stdSpace E n)
 
 /-- Let `L` be a `σ`-semilinear map on the Schwartz space of `stdLineHom`, the space `Hom(W, V)` of
