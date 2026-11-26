@@ -211,8 +211,9 @@ lemma torusEval_rootProd_ne_zero {x : n → Circle} (hx : Injective x) :
     torusEval x (l.rootProd r) ≠ 0 := by
   -- The value is a product of differences `x a - x b` with `l b < l a`, so `a ≠ b`.
   rw [torusEval_rootProd]
-  exact prod_ne_zero_iff.2 fun a _ ↦ prod_ne_zero_iff.2 fun b hb ↦
-    sub_ne_zero.2 (Circle.coe_injective.ne (hx.ne (by grind)))
+  refine prod_ne_zero_iff.2 fun a _ ↦ prod_ne_zero_iff.2 fun b hb ↦ ?_
+  have hab : a ≠ b := fun h ↦ (mem_filter.mp hb).2.2.ne' (congrArg l h)
+  exact sub_ne_zero.2 (Circle.coe_injective.ne (hx.ne hab))
 
 /-- The coefficient of `x ^ γ` in the alternant of `ν` is the sum of the signs of the permutations
 `w` that preserve `ε` and satisfy `ν ∘ w = γ`. -/
