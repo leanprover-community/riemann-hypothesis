@@ -104,9 +104,18 @@ def fixedToEigen {H : Type*} [Group H] (ι : H →* G) (J : Subgroup H := K.coma
       ∀ ⦃W : Type⦄ [AddCommGroup.{0} W] [Module k W] ⦃π : Representation k G W⦄ ⦃v : W⦄,
         v ∈ levelSpace π K →
         π.asAlgebraHom a v ∈ levelSpace (π.comp ι) J χ}
-  add_mem' := by simp_all
-  zero_mem' := by simp_all
-  smul_mem' := by simp_all [smul_smul, mul_comm]
+  add_mem' ha hb := by
+    intro W _ _ π v hv
+    rw [map_add, LinearMap.add_apply]
+    exact add_mem (ha hv) (hb hv)
+  zero_mem' := by
+    intro W _ _ π v hv
+    rw [map_zero, LinearMap.zero_apply]
+    exact zero_mem _
+  smul_mem' c a ha := by
+    intro W _ _ π v hv
+    rw [map_smul, LinearMap.smul_apply]
+    exact Submodule.smul_mem _ c (ha hv)
 
 variable {K} {D D' D'' : Set G}
 
@@ -374,9 +383,13 @@ left K-invariant. -/
 def heckeAlgebra : Subalgebra k (MonoidAlgebra k (GL n (𝔸f E))) :=
   (spanOn k (GUPlus E n) ⊓
     fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑)).toSubalgebra
-    ⟨Submodule.subset_span ⟨1, by simp, rfl⟩, by simp [fixedToEigen]⟩ fun a b ha hb ↦
+    ⟨Submodule.subset_span ⟨1, by simp, rfl⟩, fun _ _ _ π v hv ↦ by
+      rw [map_one, one_apply_eq_self]
+      exact hv⟩ fun a b ha hb ↦
       -- `GUPlus E n` is closed under products, and `a * b` acts as `b` followed by `a`
-      ⟨spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, by simp_all [fixedToEigen, -mem_levelSpace]⟩
+      ⟨spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, fun _ _ _ π v hv ↦ by
+        rw [map_mul, mul_apply_eq_comp]
+        exact ha.2 (hb.2 hv)⟩
 
 end
 
