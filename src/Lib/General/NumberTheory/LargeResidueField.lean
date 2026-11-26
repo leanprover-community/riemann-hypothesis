@@ -1,6 +1,6 @@
 module
 
-import Mathlib.RingTheory.RootsOfUnity.CyclotomicUnits
+import TauCeti.RingTheory.RootsOfUnity.LocalRing
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.NumberTheory.CoefficientRings
 import Lib.ClassField.Places.TameInertia
@@ -94,23 +94,15 @@ primitive `m`-th root of unity `ζ` of `ℚ̄_ℓ` and `m` is prime to `ℓ`, th
 `O` has at least `m` elements. -/
 lemma le_card_residueField_of_isPrimitiveRoot {O : CoeffRing ℓ} {m : ℕ} (hm : ¬ℓ ∣ m) {ζ : ↑O}
     (hζ : IsPrimitiveRoot (ζ : PadicAlgCl ℓ) m) : m ≤ Nat.card (ResidueField O) := by
-  -- The residue of `ζ` has order `m`: if `ζ ^ j ≠ 1`, then `ζ ^ j - 1` divides the unit `m`.
   have : Finite (ResidueField O) := Ring.HasFiniteQuotients.finiteQuotient (not_a_field O)
-  have h_norm_m : ‖((m : ↑O) : PadicAlgCl ℓ)‖ = 1 := by
-    push_cast
-    rw [← map_natCast (algebraMap ℚ_[ℓ] (PadicAlgCl ℓ)), PadicAlgCl.norm_extends]
-    exact Padic.norm_natCast_eq_one_iff.2 ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 hm)
-  have hζ_pow : ζ ^ m = 1 := Subtype.ext hζ.pow_eq_one
-  have h_prim : IsPrimitiveRoot (residue O ζ) m := by
-    refine ⟨by rw [← map_pow, hζ_pow, map_one], fun j hj ↦ hζ.dvd_of_pow_eq_one j ?_⟩
-    by_contra h_ne
-    have h_dvd : ζ ^ j - 1 ∣ (m : ↑O) :=
-      sub_one_dvd_natCast_of_pow_eq_one (by rw [pow_right_comm, hζ_pow, one_pow])
-        fun h ↦ h_ne (congrArg Subtype.val h)
-    have h_isUnit : IsUnit (ζ ^ j - 1) :=
-      isUnit_of_dvd_unit h_dvd ((O.isUnit_iff_norm_eq_one _).2 h_norm_m)
-    exact (h_isUnit.map (residue O)).ne_zero (by simp [hj])
-  exact h_prim.eq_orderOf.le.trans orderOf_le_card
+  have hm_unit : IsUnit (m : ↑O) := by
+    have h : IsUnit (m : ℤ_[ℓ]) :=
+      PadicInt.isUnit_iff.mpr (PadicInt.norm_natCast_eq_one_iff.mpr
+        ((Nat.Prime.coprime_iff_not_dvd Fact.out).mpr hm))
+    simpa only [map_natCast] using h.map (algebraMap ℤ_[ℓ] O)
+  have hζO : IsPrimitiveRoot ζ m :=
+    .of_map_of_injective (f := O.val.val) hζ Subtype.val_injective
+  exact (hζO.map_residue hm_unit).eq_orderOf.le.trans orderOf_le_card
 
 variable (ℓ) in
 /-- For every natural number `a` there is a positive `k` with `a k + 1 < ℓ ^ k - 1`. -/
