@@ -241,16 +241,6 @@ structure IsBoundedDualBasis (F : Set (Matrix n n E)) (C : Set (Matrix n n (𝔸
   /-- The finite part of `W⁻¹ y`, for the whole dual basis `W`, lies in `Cf`. -/
   finitePart_mem : finitePartGL ((formDual J Y)⁻¹.map toAdele * y) ∈ Cf
 
-/-- For `m = y⁻¹ Y (dyadicDiag x)⁻¹`, the product of `mᴴ` with the Gram matrix `yᴴ J y` is
-`(dyadicDiag x)⁻¹ᴴ W⁻¹ y`, where `W = formDual J Y` is the basis dual to `Y` for the form `J`.
-Here `dyadicDiag x` is diagonal with entries `2 ^ x i` at the infinite places and `1` at the
-others. -/
-lemma star_frame_mul_gram_eq_star_dyadicDiag_inv_mul (J Y : GL n E) (y : GL n (𝔸 E)) (x : n → ℤ) :
-    star (y⁻¹ * Y.map toAdele * (dyadicDiag x)⁻¹) * (star y * J.map toAdele * y) =
-      star (dyadicDiag x : GL n (𝔸 E))⁻¹ * ((formDual J Y)⁻¹.map toAdele * y) := by
-  ext1
-  simp [formDual, mul_assoc, star_eq_conjTranspose, conjTranspose_nonsing_inv]
-
 /-- The conjugate transpose of `(dyadicDiag x)⁻¹` times the projection off `s` is diagonal, with
 entry `0` at the indices in `s` and, at the other indices `j`, the idele that is `2 ^ (-x j)` at
 the infinite places and `1` at the finite ones. -/
@@ -312,8 +302,9 @@ lemma exists_isBoundedDualBasis {K : Set (GL n (𝔸 E))} (hK : IsCompact K) :
   let B : GL n (𝔸 E) :=
     star (y⁻¹ * Y.map toAdele * (dyadicDiag x)⁻¹) * (star y * J.map toAdele * y)
   have hB_mem : B ∈ N := ⟨(y⁻¹ * Y.map toAdele * (dyadicDiag x)⁻¹, _), ⟨hY, hy⟩, rfl⟩
-  have hB_eq : B = star (dyadicDiag x : GL n (𝔸 E))⁻¹ * ((formDual J Y)⁻¹.map toAdele * y) :=
-    star_frame_mul_gram_eq_star_dyadicDiag_inv_mul J Y y x
+  have hB_eq : B = star (dyadicDiag x : GL n (𝔸 E))⁻¹ * ((formDual J Y)⁻¹.map toAdele * y) := by
+    ext1
+    simp [B, formDual, mul_assoc, star_eq_conjTranspose, conjTranspose_nonsing_inv]
   let A : Matrix n n (𝔸 E) := y⁻¹.val * Z.map toAdele
   -- `B A` is diagonal: entry `j` is `0` for short `j`, else `2 ^ (-x j)` at infinity.
   have h_diagonal :
