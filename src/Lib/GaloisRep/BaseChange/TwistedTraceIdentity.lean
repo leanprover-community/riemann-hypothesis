@@ -679,17 +679,6 @@ variable {σ : Gal(E'/E)} {j : U (1 : Matrix n n E) →* U (1 : Matrix n n E')}
   {Good : U (1 : Matrix n n E') → Prop} {A : U (1 : Matrix n n E') → U (1 : Matrix n n E')}
   {B : U (1 : Matrix n n E') → Gf E' n}
 
-/-- If `δ * ω ν = ν * δ` for the action `ω` of `σ` on rational points over `E'`, then the
-characteristic polynomial of `ν` is fixed by `σ`. -/
-private lemma New.smul_charpoly_eq_of_semiconjBy {ν δ : U (1 : Matrix n n E')}
-    (hν : SemiconjBy δ (U.mapEnd (map_star_CM σ) ν) ν) :
-    σ • (ν : Matrix n n E').charpoly = (ν : Matrix n n E').charpoly := by
-  -- `ω ν` is conjugate to `ν` by `δ`, and its matrix is that of `ν` with `σ` on the entries.
-  have h_map : ((ν : Matrix n n E').map σ).charpoly = (ν : Matrix n n E').charpoly := by
-    simpa [U.map, ← mul_assoc] using
-      congrArg (fun g : U (1 : Matrix n n E') ↦ ((δ⁻¹ * g : U 1) : Matrix n n E').charpoly) hν.eq
-  rwa [smul_eq_map, ← charpoly_map]
-
 /-- The maps of `New.twisted_trace_identity` satisfy `IsBaseChangeMaps` for `σ ≠ 1` over a step
 `E'/E`: base change `j` of rational points, the action `ω` of `σ` on rational points over `E'`, and
 the inclusion `e` of rational into finite adelic points. -/
@@ -851,8 +840,14 @@ private lemma New.exists_isMatchingRoots (hσ : σ ≠ 1) {μ : (𝔸f E)ˣ →*
     (fun g : Gf E' n ↦ (g : Matrix n n (𝔸f E')).charpoly) '' supp ∧ σ • P = P
   have fixed_of_C (P : E'[X]) (hP : C P) : σ • P = P := hP.right
   have h_C {ν : U (1 : Matrix n n E')} (δ : U (1 : Matrix n n E')) (hν : SemiconjBy δ (ω ν) ν)
-      (x : Gf E' n) (hx : x⁻¹ * e ν * x ∈ supp) : C (q ν) :=
-    ⟨⟨x⁻¹ * e ν * x, hx, charpoly_conj x ν⟩, New.smul_charpoly_eq_of_semiconjBy hν⟩
+      (x : Gf E' n) (hx : x⁻¹ * e ν * x ∈ supp) : C (q ν) := by
+    refine ⟨⟨x⁻¹ * e ν * x, hx, charpoly_conj x ν⟩, ?_⟩
+    -- The matrix of `ω ν` is that of `ν` with `σ` applied to its entries.
+    change σ • (ν : Matrix n n E').charpoly = (ν : Matrix n n E').charpoly
+    have h_map : ((ν : Matrix n n E').map σ).charpoly = (ν : Matrix n n E').charpoly := by
+      simpa [ω, U.map, ← mul_assoc] using
+        congrArg (fun g : U (1 : Matrix n n E') ↦ ((δ⁻¹ * g : U 1) : Matrix n n E').charpoly) hν.eq
+    rwa [smul_eq_map, ← charpoly_map]
   -- `z P` is the adelic polynomial that `IsMatchingPair` gives for `P`: a norm root (`hz`) whose
   -- root quotients match the values of `f` and `φ` (`hz_match`).
   have h_fixed (P : E'[X]) (hP : C P) :
