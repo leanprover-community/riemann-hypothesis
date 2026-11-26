@@ -702,8 +702,7 @@ theorem exists_poincareAt_eq_poincareMap_comp :
   -- Both forms have the same inner product, the Bessel period, with every form `y`.
   have hj_genericConst : WeilData.j * (D.gradingY 0).genericConst =
       -(D.filling.M * D.filling.deltaE : D.E)⁻¹ := by
-    have hj_ne_zero : (WeilData.j : D.E) ≠ 0 := WeilData.j_ne_zero
-    simp [gradingY, filling, M, field]
+    simp [gradingY, filling, M, field, WeilData.j_ne_zero]
   obtain ⟨g, t, h_period⟩ :=
     D.filling_fits.exists_integral_poincareSeries_eq_period hj_genericConst
   refine ⟨g, t, LinearMap.ext fun φ ↦ ext_inner_left ℂ fun y ↦ ?_⟩
