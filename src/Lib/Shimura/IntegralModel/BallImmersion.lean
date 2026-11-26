@@ -77,14 +77,6 @@ variable {E : Type} [Field E] [CMBase E] {D : PEL E}
   {R : Subalgebra (𝓞 E) E} {ν : ℕ} [NeZero ν] {U : UniversalFamily D R} {J : Type} [Finite J]
   {γ : J → nonZeroDivisors (𝓞 E) × GUPlus E D.Index}
 
-/-- Two invertible finite adelic matrices that induce the same map on torsion classes are equal. -/
-lemma eq_of_forall_torsionClass_mulVec_eq {A B : GL D.Index (𝔸f E)}
-    (h_tors : ∀ w : D.Index → 𝔸f E, torsionClass (A.val.mulVec w) = torsionClass (B.val.mulVec w)) :
-    A = B := by
-  refine Units.ext (funext₂ fun k l ↦ sub_eq_zero.mp (eq_zero_of_forall_mul_integral fun a ↦ ?_))
-  -- Compare the classes of the torsion points of `a` times the `l`-th basis vector.
-  simpa [mul_comm, mul_sub] using torsionClass_eq_iff.mp (h_tors (Pi.single l a)) k
-
 omit [NeZero ν] in
 /-- Let `a`, `a'` be points and `g` an element of `GUPlus E D.Index`. Suppose `z` carries the
 reflection of `a` to that of `a'` and the marked points of `a` to those of `a'`, and
@@ -470,7 +462,11 @@ lemma point_surjective (C : U.GraphClosure γ ν)
   obtain ⟨z, hz_π, -, hz_ℓ⟩ := exists_matrix_of_hom m m' ψ (mod_cast h_pos.ne') hψ_cls
   -- Both descriptions of `ψ` on torsion agree, and torsion determines an adelic matrix.
   have h_matrix : (γ i).2.val⁻¹ = g'⁻¹ * toFinGL z * g := by
-    refine eq_of_forall_torsionClass_mulVec_eq fun w ↦ m'.fullStructure.injective ?_
+    suffices ∀ w : D.Index → 𝔸f E, torsionClass ((γ i).2.val⁻¹.val.mulVec w) = torsionClass ((g'⁻¹ * toFinGL z * g).val.mulVec w) from
+      Units.ext (funext₂ fun k l ↦ sub_eq_zero.mp (eq_zero_of_forall_mul_integral fun a ↦ by
+        simpa [mul_comm, mul_sub] using torsionClass_eq_iff.mp (this (Pi.single l a)) k))
+    intro w
+    refine m'.fullStructure.injective ?_
     refine .trans ?_ (torsionPoint_comp _ _ hz_π w)
     simp [hm, hm', hf, h_tor, hψ_sec]
   -- The component `i` of `t` is the point with frame `g'`, reflection `ℓ'` and the images under `z`
