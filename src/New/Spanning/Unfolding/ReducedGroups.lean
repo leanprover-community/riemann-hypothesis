@@ -252,16 +252,6 @@ lemma exists_reduction_eq_of_invAdjoint (P : Set (Σ i : Fin 2, S.chosenPlaces i
     ext a b
     split_ifs with hp <;> simp [M, h_red p, hp, map_matrix_one_apply]
 
-/-- Let `k` lie in the stabiliser of the lattice (the integral points of the finite adelic unitary
-group of the filling `S`). If `k` agrees with `1` at the entry `(a, b)`, so does its reduction at
-every chosen place `w`. -/
-lemma reduction_apply_eq_one_apply {k : S.latticeStabilizer} {a b : 𝔰.BesselIndex}
-    (hk : (k : GL 𝔰.BesselIndex (𝔸f E)) a b = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (𝔸f E)) a b)
-    (i : Fin 2) (w : S.chosenPlaces i) :
-    S.reduction k i w a b =
-      (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField (w : FinPlace E))) a b := by
-  rw [reduction_apply_congr 1 i w hk, map_one, Pi.one_apply, Pi.one_apply, Units.val_one]
-
 /-- Let `Ū = S.reducedImage besselU` be the reduction at the chosen places of the integral points of
 the Bessel unipotent group. An element `s` of `S.ResidueGL`, the product of the general linear
 groups over the residue fields at the chosen places, lies in `Ū` if and only if all its components
@@ -269,7 +259,8 @@ groups over the residue fields at the chosen places, lies in `Ū` if and only if
 theorem mem_reducedImage_besselU {s : S.ResidueGL} :
     s ∈ S.reducedImage besselU ↔ ∀ (i : Fin 2) (w : S.chosenPlaces i),
       s i w ∈ unitriangular BesselIndex.level (ResField (w : FinPlace E)) := by
-  refine ⟨fun ⟨k, hk, h⟩ i w a b hab ↦ h ▸ S.reduction_apply_eq_one_apply (hk a b hab) i w,
+  refine ⟨fun ⟨k, hk, h⟩ i w a b hab ↦ h ▸ by
+      rw [reduction_apply_congr 1 i w (hk a b hab), map_one, Pi.one_apply, Pi.one_apply, Units.val_one],
     fun hs ↦ ?_⟩
   -- Lift the free entries to `Ô`, complete `u` by its inverse adjoint `u'`, and glue to `k`.
   obtain ⟨u, hu, hu_red⟩ := exists_unitriangular_map_eq BesselIndex.level
