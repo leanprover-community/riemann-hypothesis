@@ -115,11 +115,6 @@ lemma formFin_eq_dotProduct (x : Gf E ι) (y z : ι → 𝔸f E) :
 lemma star_formFin (y z : ι → 𝔸f E) : star (V.formFin y z) = V.formFin z y := by
   rw [formFin_eq_dotProduct 1, formFin_eq_dotProduct 1, ← star_dotProduct]
 
-/-- A scalar moves from the second argument of the form of `V` to the first with a conjugation. -/
-lemma formFin_star_smul (c : 𝔸f E) (y z : ι → 𝔸f E) :
-    V.formFin y (star c • z) = V.formFin (c • y) z := by
-  simp only [formFin, mulVec_smul, dotProduct_smul, star_smul, smul_dotProduct]
-
 /-- The lattice of a point is its own dual: `z` lies in it if and only if its products with all
 vectors of the lattice are integral. -/
 lemma mem_lattice_iff_formFin : z ∈ V.lattice x ↔ ∀ y ∈ V.lattice x, V.formFin y z ∈ Ô E := by
@@ -362,7 +357,8 @@ of `x`. If `c A ⊆ Λ'⁻`, then every vector of `c̄ Λ'⁺` has integral prod
 `A`. -/
 lemma formFin_star_smul_mem {A : Submodule (Ô E) (ι → 𝔸f E)} (h_le : c • A ≤ Y.latticeMinus x)
     (hz : z ∈ Y.latticePlus x) : ∀ y ∈ A, V.formFin y (star c • z) ∈ Ô E := fun y hy ↦ by
-  rw [Space.formFin_star_smul]
+  rw [show V.formFin y (star c • z) = V.formFin (c • y) z by
+    simp only [Space.formFin, mulVec_smul, dotProduct_smul, star_smul, smul_dotProduct]]
   exact (mem_latticePlus_iff_formFin (stringProj_eq_of_mem_latticePlus hz)).1 hz _
     (smul_le_iff_forall.1 h_le y hy)
 
