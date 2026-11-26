@@ -119,9 +119,7 @@ theorem exists_isDisintegration_le_sphereDensity {κ : Type} [Fintype κ] [Decid
       rw [← lintegral_congr h_point]
   · -- if the box meets the sphere of squared radius `2 * β.val.im`, that is at most `card κ * R²`
     rw [Kernel.withDensity_apply _ (by fun_prop), withDensity_const, hl, smul_apply,
-      smul_eq_mul, Measure.map_apply (by fun_prop) (by
-        simpa only [Set.ofPred_forall] using
-          .iInter fun i ↦ measurableSet_le (by fun_prop) measurable_const)]
+      smul_eq_mul, Measure.map_apply (by fun_prop) (by measurability)]
     obtain h_empty | ⟨h, hh⟩ :=
       (point (2 * β.val.im) ⁻¹' {y : κ → ℂ | ∀ i : κ, ‖y i‖ ≤ R}).eq_empty_or_nonempty
     · simp [h_empty]
