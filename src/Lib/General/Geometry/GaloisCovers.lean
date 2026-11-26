@@ -737,7 +737,9 @@ lemma IsGaloisCovering.etale_of_isPullback {R : CommRingCat} {W Z : Over (Spec R
   let : Algebra F N := rightAlgebra
   have : Algebra.Etale F N := .of_equiv (commRight P F A)
   have : IsReduced N := isReduced_of_field F N
+  have : Module.Free F N := .of_divisionRing F N
   have : Module.Finite F N := finite_of_free F N
+  have : IsArtinianRing F := DivisionRing.instIsArtinianRing
   have : IsArtinianRing N := of_finite F N
   let (m : MaximalSpectrum N) : Field (N ⧸ m.asIdeal) := Quotient.field m.asIdeal
   let Ω (m : MaximalSpectrum N) : Type := AlgebraicClosure (N ⧸ m.asIdeal)
