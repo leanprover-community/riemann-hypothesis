@@ -12,6 +12,7 @@ import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.General.Measure.IntegralOperators
 import Lib.Weil.DualPair.MixedModel
 import Lib.Weil.MixedModel.ThetaInvariance
+public import TauCeti.GroupTheory.Index.Basic
 
 /-!
 # Constant terms of Weil functions along maps of positive degree
@@ -298,9 +299,6 @@ def unfoldStep (W : Y.besselGroup → ℂ) (h : G E ε') : ℂ :=
   ∫ r : Y.besselGroup, W r * Y.constTermAtStringMap Y' α f r h ∂Y.besselMeasure
 
 variable {d α f Y} {W : Y.besselGroup → ℂ} {Y' : Grading V' N X' (s - 1)}
-
-/-- The classes of rational maps `V → V'` modulo maps of degree `≥ 0` are countable. -/
-instance : Countable (ratMatrices E ι' ι ⧸ Y.nonnegMaps d) := Quotient.countable
 
 omit [WeilData E] in
 /-- Row `i` of a graded Gram matrix vanishes outside the column of the dual index
