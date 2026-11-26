@@ -298,7 +298,7 @@ form `upperGram (a + 1)` on the higher floors. -/
 lemma gram_inclMatrix_floorIndexEnum (a : Fin 𝔰.ϱ) :
     (inclMatrix A (floorIndexEnum a))ᴴ * T.splitGram * inclMatrix A (floorIndexEnum a) =
       planeSumGram (upperGram (T := T) (a + 1)) := by
-  rw [gram_inclMatrix]
+  rw [conjTranspose_inclMatrix_mul_mul_inclMatrix]
   -- the pair of floor `a` is orthogonal to the higher pairs
   suffices (∀ c : Fin 𝔰.ϱ, a < c → a = c → (1 : A) = 0) ∧
       ∀ c : Fin 𝔰.ϱ, a < c → c = a → (1 : A) = 0 by
@@ -319,7 +319,7 @@ lemma floorQuadricMeasure_castSucc_eq_map (a : Fin 𝔰.ϱ) :
     inclMatrix A (floorIndexEnum a)
   have h_left : Eᴴ * E = 1 := by
     simpa [submatrix_one _ (floorIndexEnum_injective a)] using
-      gram_inclMatrix (A := A) (floorIndexEnum a) 1
+      conjTranspose_inclMatrix_mul_mul_inclMatrix (R := A) 1 (floorIndexEnum a) (floorIndexEnum a)
   have h_vol : volume.map (E *ᵥ ·) = floorVolume a.castSucc :=
     map_inclMatrix_eq_floorVolume _ (floorIndexEnum_injective a) (mem_range_floorIndexEnum a)
   have h_herm : (upperGram (T := T) (a + 1)).IsHermitian :=
@@ -354,7 +354,8 @@ lemma inclMatrix_mulVec_flatChart_eq_heisenbergElem_mulVec (a : Fin 𝔰.ϱ) (t 
   set c : A := star u ⬝ᵥ upperGram (T := T) (a + 1) *ᵥ u with hc
   have h_form : star (inclMatrix A Subtype.val *ᵥ u) ⬝ᵥ T.splitGram *ᵥ inclMatrix A Subtype.val *ᵥ u
       = c := by
-    rw [hc, upperGram, ← gram_inclMatrix, star_mulVec_dotProduct, mulVec_mulVec, mulVec_mulVec]
+    rw [hc, upperGram, ← conjTranspose_inclMatrix_mul_mul_inclMatrix, star_mulVec_dotProduct,
+      mulVec_mulVec, mulVec_mulVec]
   -- the coordinates of the chart point, where `h(t u, t u) = t̄ t c`
   have h_chart : flatChart (upperGram (T := T) (a + 1)) 0 ((t, t.val • u), β) =
       ![(β - element * c) * t, t] ⊕ᵥ t.val • u := by

@@ -336,10 +336,9 @@ lemma exists_splitting_k_eq_inclMatrix (hd : ∀ b : ι', d (Y'.stringReversal b
   -- The coordinates of positive degree span an isotropic subspace.
   let pos : {r // 0 < Y.mapDegree d r} ↪ ι' × ι := .subtype _
   have h_isotropic : (inclMatrix E pos)ᴴ * (V.hom V').J * inclMatrix E pos = 0 := by
+    rw [conjTranspose_inclMatrix_mul_mul_inclMatrix]
     ext a b
-    have h_pair : (V.hom V').J a.val b.val = 0 :=
-      Y.hom_J_eq_zero_of_mapDegree_ne_neg hd a.1 b.1 (a.2.trans' (neg_lt_zero.2 b.2)).ne'
-    simp [pos, Matrix.mul_apply, inclMatrix, Matrix.one_apply, h_pair]
+    exact Y.hom_J_eq_zero_of_mapDegree_ne_neg hd a.1 b.1 (a.2.trans' (neg_lt_zero.2 b.2)).ne'
   exact (V.hom V').exists_splitting ⟨_, inclMatrix_transpose_mul_self pos⟩ h_isotropic
 
 section Splitting

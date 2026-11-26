@@ -268,7 +268,7 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
   have E_form : Eᴴ * latticeMiddleGram 𝔰 N * E = planeSumGram (hyperbolicGram (Fin m) 1) := by
     have h_ne (i : SplitIndex m ι) : (f i : 𝔰.κ) ≠ 𝔰.k₀ := (f i).prop.symm
     have h_trace : P.element + star P.element = 1 := P.element_add_star
-    rw [gram_mul, gram_inclMatrix]
+    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]
     -- each entry reduces to `hc_norm`, `h_trace` or `hN_star`
     simp [← Matrix.ext_iff, Matrix.mul_apply, C, latticeMiddleGram, diagonal, h_ne,
       Subtype.val_inj, fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
