@@ -50,6 +50,9 @@ instance : DiscreteTopology (principalAdeleUnits E) := by
     h_rat.preimage (by fun_prop) Units.val_injective
   exact (h_discrete.mono h_subset).to_subtype
 
+/-- The principal ideles are countable, being discrete in the second-countable idele group. -/
+instance : Countable (principalAdeleUnits E) := countable_of_Lindelof_of_discrete
+
 @[simp]
 lemma piUnits_val_apply_ne_zero (a : (ι → ℂ)ˣ) (x : ι) : a.val x ≠ 0 := (a.isUnit.apply x).ne_zero
 
