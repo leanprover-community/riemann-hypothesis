@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+import runpy
 import subprocess
 import sys
 
@@ -9,16 +10,9 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def main():
-    if os.name != "nt":
-        import resource
-
-        try:
-            soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-            want = 65536 if hard == resource.RLIM_INFINITY else min(hard, 65536)
-            if soft != resource.RLIM_INFINITY and soft < want:
-                resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
-        except (OSError, ValueError) as error:
-            print(f"warning: could not raise the open-file limit: {error}", file=sys.stderr)
+    # Load the sibling by path so this also works in Python's isolated mode.
+    downloader = runpy.run_path(str(ROOT / "scripts" / "fetch-artifacts.py"))
+    downloader["raise_open_file_limit"]()
 
     env = os.environ.copy()
     env["MATHLIB_CACHE_GET_URL"] = env.get("MATHLIB_CACHE_GET_URL") or "https://cache.mathlib.org/mathlib4"

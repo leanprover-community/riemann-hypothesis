@@ -29,6 +29,31 @@ PARALLEL = 500
 CURL_ERROR = re.compile(r"curl: \((\d+)\)")
 
 
+def raise_open_file_limit():
+    """Raise the soft limit for cache tools and their child processes."""
+    if os.name == "nt":
+        return
+    import resource
+
+    try:
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        want = 65536 if hard == resource.RLIM_INFINITY else min(hard, 65536)
+        if soft == resource.RLIM_INFINITY or soft >= want:
+            return
+        try:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
+        except (OSError, ValueError):
+            if sys.platform != "darwin":
+                raise
+            maximum = int(subprocess.check_output(
+                ["sysctl", "-n", "kern.maxfilesperproc"], stderr=subprocess.DEVNULL))
+            want = min(want, maximum)
+            if soft < want:
+                resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
+        print(f"warning: could not raise the open-file limit: {error}", file=sys.stderr)
+
+
 def curl_errors(stderr):
     """[[count, first line], ...] for curl's error output, most frequent first.
 
@@ -71,13 +96,7 @@ def main():
         args.remove("--verify-existing")
     mapping, cache = Path(args[0]), Path(args[1]) / "artifacts"
     cache.mkdir(parents=True, exist_ok=True)
-    if os.name != "nt":
-        import resource
-
-        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-        want = 65536 if hard == resource.RLIM_INFINITY else min(hard, 65536)
-        if soft != resource.RLIM_INFINITY and soft < want:
-            resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
+    raise_open_file_limit()
     lines = mapping.read_text().splitlines()[1:]
     names = sorted({json.loads(l)[1] for l in lines if l})
 
