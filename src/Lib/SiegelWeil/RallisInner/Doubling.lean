@@ -159,11 +159,6 @@ lemma doubleDatum_apply (f f' : 𝒮 (S.hom T)) :
     doubleDatum f' f = boxProd homSigns_sum_source f
       (negSourceFactor S T • negSource.map (V := S.neg.hom T) f') := rfl
 
-/-- The theta functional of `S ⊕ S⁻, T` at the doubled datum is `conj (θ f') * θ f`. -/
-lemma theta_doubleDatum (f f' : 𝒮 (S.hom T)) :
-    θ ((S.sum S.neg).hom T) (doubleDatum f' f) = conj (θ (S.hom T) f') * θ (S.hom T) f := by
-  rw [doubleDatum_apply, theta_boxProd_source, theta_negSourceFactor_smul, mul_comm]
-
 /-- The Heisenberg operator of a map on `S ⊕ S⁻` with blocks `X`, `Y` moves the first factor of
 `f ⊠ f'` by `X` and the second by `Y`. -/
 lemma rho_fromCols_boxProd (f : 𝒮 (S.hom T)) (f' : 𝒮 (S.neg.hom T)) (X Y : Matrix m n (𝔸 E)) :
@@ -378,7 +373,7 @@ lemma theta_splitWeil_doubleDatum (a b : AutChar E) (f f' : 𝒮 (S.hom T)) (g g
   have h_comp (c : AutChar E) (k : G E s) (u : 𝒮 (S.hom T)) :
       pairWeil S T a c (1, x) (pairWeil S T 1 b (k, 1) u) = pairWeil S T a b (k, x) u := by
     simp [pairWeil, ← map_mul, rep_apply_apply, smul_smul, mul_comm (a.val x.det : ℂ)]
-  rw [h_act, h_comp, h_comp, theta_doubleDatum]
+  rw [h_act, h_comp, h_comp, doubleDatum_apply, theta_boxProd_source, theta_negSourceFactor_smul, mul_comm]
 
 /-- For a rational isometry `δ` of `S`, the zero term of the Lagrangian `{(δ⁻¹ y, -y)}` of
 `S ⊕ S⁻`, at the doubled datum of `ω(g', 1) f'` and `ω(g, 1) f`, is the matrix coefficient
