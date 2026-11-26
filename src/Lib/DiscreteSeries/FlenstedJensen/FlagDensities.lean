@@ -517,16 +517,6 @@ lemma integrable_haar_of_isFlagDensity (ho : o.Injective) (ε : n → ℤˣ) {F 
     Integrable fun g : USign ε ↦ F g := by
   simpa using integrable_mul_left_of_isFlagDensity ho ε hF_density hF_cont 1
 
-/-- Let `G = U(diag ε)`, let `o` be injective, `B` its triangular group and `F` a density on flags
-that is continuous on `GL n ℂ`. Then the integral of `F` over `G` is its integral over the part of
-`U(n)` in `openOrbit ε o = G B`. Both groups carry their Haar measure `volume`, which in Cayley's
-chart has density `cayleyDensity (signMatrix ε) / volU (card n)`, the same rule for every `ε`. -/
-lemma integral_haar_eq_setIntegral_openOrbit (ho : o.Injective) (ε : n → ℤˣ) {F : Matrix n n ℂ → ℂ}
-    (hF_density : IsFlagDensity o F) (hF_cont : Continuous fun y : GL n ℂ ↦ F y) :
-    ∫ g : USign ε, F g =
-      ∫ k in {k : USign (1 : n → ℤˣ) | (k : Matrix n n ℂ) ∈ openOrbit ε o}, F k := by
-  simpa using integral_mul_left_eq_setIntegral_openOrbit ho ε hF_density hF_cont 1
-
 /-- Let `o` be injective and `F` a density on flags that is continuous on `GL n ℂ`. Then `F` is
 integrable on `U(diag ε)`, and its integral is the integral over `U(n)` less the integral over the
 part of `U(n)` outside `openOrbit ε o`. -/
@@ -539,7 +529,8 @@ lemma integral_eq_sub_setIntegral_compl_openOrbit (ho : o.Injective) (ε : n →
   have h_meas : MeasurableSet {k : USign (1 : n → ℤˣ) | (k : Matrix n n ℂ) ∈ openOrbit ε o} :=
     ((isOpen_openOrbit ε o).preimage (by fun_prop)).measurableSet
   refine ⟨integrable_haar_of_isFlagDensity ho ε hF_density hF_cont, ?_⟩
-  rw [integral_haar_eq_setIntegral_openOrbit ho ε hF_density hF_cont, eq_sub_iff_add_eq,
+  rw [show ∫ g : USign ε, F g = ∫ k in {k : USign (1 : n → ℤˣ) | (k : Matrix n n ℂ) ∈ openOrbit ε o}, F k by
+      simpa using integral_mul_left_eq_setIntegral_openOrbit ho ε hF_density hF_cont 1, eq_sub_iff_add_eq,
     integral_add_compl h_meas (integrable_haar_of_isFlagDensity ho 1 hF_density hF_cont)]
 
 /-- Let `o` be injective and `F` a density on flags that is continuous on `GL n ℂ`. Then its
