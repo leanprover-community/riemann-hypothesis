@@ -278,7 +278,9 @@ matrix with coordinates `s` and `T` the hermitian matrix with coordinates `t`. T
 def skewAddHerm : (Matrix n n ℝ × Matrix n n ℝ) ≃ₗ[ℝ] Matrix n n ℂ where
   toFun p := skewOfReal p.2 + (2⁻¹ : ℂ) • hermOfReal p.1
   invFun Z := (skewCoords (I • (Z + Zᴴ)), skewCoords ((2⁻¹ : ℂ) • (Z - Zᴴ)))
-  map_add' p q := by simp [hermOfReal, smul_add, add_add_add_comm]
+  map_add' p q := by
+    simp only [hermOfReal, Prod.fst_add, Prod.snd_add, map_add, smul_add]
+    abel
   map_smul' c p := by simp [hermOfReal, smul_comm c]
   left_inv p := by
     have hZ : (skewOfReal p.2 + (2⁻¹ : ℂ) • hermOfReal p.1)ᴴ =
