@@ -7,7 +7,6 @@ public import Lib.Weil.Construction.HeisenbergModel
 public import Lib.Adelic.Adeles.AdditiveCharacter
 public import Lib.Adelic.Unitary.Defs
 import Lib.Adelic.Adeles.StrongApproximation
-import Lib.Adelic.Unitary.GramMatrix
 import Lib.Base
 
 /-!
@@ -29,6 +28,8 @@ two ingredients of the adelic Weil representation.
   diagonal form with signs `s` at the infinite places and 1 at the finite ones.
 * `New.vacuumFn`: the vacuum, a Gaussian at the infinite places times a function of modulus one on
   the lattice αÔ^n of finite vectors (zero off the lattice). It does not depend on `s`.
+* `New.finiteImage`, `New.IsTightFrame`: the finite-adelic image `α⁻¹ w` and tight frames of
+  `ℂ^Φ` made of vectors of the lattice `𝔞₀ = E ∩ α Ô`.
 
 Notions from other files:
 * `New.𝔸`: The ring ℂ^f × 𝔸_f, one copy of ℂ for each infinite place of E times the finite adeles:
@@ -167,12 +168,53 @@ def adelicHeisenberg : Heisenberg (n → 𝔸 E) where
   self_eq_one x := by
     -- by `stdAddChar_inv_two_mul_add_star`, `stdAddChar` sees only `a + star a` of its argument
     -- `a`, and this vanishes here since `star j = -j` and the form is Hermitian
+    have h_herm : (stdForm E s)ᴴ = stdForm E s := by
+      rw [stdForm, Matrix.diagonal_conjTranspose, Matrix.diagonal_eq_diagonal_iff]
+      intro i
+      ext <;> simp
     rw [← stdAddChar_inv_two_mul_add_star]
-    simp [neg_div, ← star_dotProduct, star_mulVec_dotProduct]
+    simp [neg_div, ← star_dotProduct, star_mulVec_dotProduct, h_herm]
   norm_eq_one := by simp [Circle.norm_coe]
   cont := Continuous.subtypeVal (by fun_prop)
 
 end AdelicHeisenberg
+
+/-!
+## Tight frames in the lattice 𝔞₀
+
+For a CM field `E` with CM type `Φ` (`New.CMType`) and the finite idele `α` of `New.WeilData`,
+`𝔞₀ = E ∩ α Ô` is a lattice in `ℂ^Φ`; `New.Ô` is the ring of integral finite adeles.
+-/
+
+section TightFrames
+
+variable {E I : Type} [Field E] [CMType E] [WeilData E] (w : I → E) [Fintype I]
+
+/-- The finite image of a family w of elements of E: the finite adelic vector α⁻¹w, with α the
+idele of the Weil data. -/
+def finiteImage : (I → E) →ₗ[E] I → 𝔸f E :=
+  ((WeilData.α (E := E))⁻¹.val • Algebra.linearMap E (𝔸f E)).compLeft I
+
+/-- The `w_i` lie in the lattice `E ∩ αÔ` and, taken `m_i` times, form a tight frame with bound
+`M`: `∑ m_i Φσ(w_i)·conj(Φτ(w_i)) = M δ_{στ}` for all infinite places `σ, τ` of `E`,
+with `Φ` the CM type. -/
+structure IsTightFrame (m : I → ℕ) (M : ℕ) : Prop where
+  /-- Each w_i lies in the lattice E ∩ αÔ. -/
+  finiteImage_mem : ∀ i : I, finiteImage w i ∈ Ô E
+  /-- The matrix ∑ m_i Φσ(w_i)·conj(Φτ(w_i)) is M times the identity. -/
+  sum_mul_conj : ∀ σ τ : NumberField.InfinitePlace E,
+    ∑ i : I, m i * (Φ σ (w i) * starRingEnd ℂ (Φ τ (w i))) =
+      if σ = τ then (M : ℂ) else 0
+
+/-- Let `E` be a CM field with CM type `Φ` and Weil data. If the `w_i`, taken with multiplicities
+`m_i`, are a tight frame with bound `M`, then so is the family with each `w_i` repeated `m_i`
+times, all with multiplicity one. -/
+lemma IsTightFrame.repeat_vectors {m : I → ℕ} {M : ℕ} (hw : IsTightFrame w m M) :
+    IsTightFrame (fun x : Σ i : I, Fin (m i) ↦ w x.1) 1 M :=
+  ⟨fun x ↦ hw.finiteImage_mem x.1,
+    fun σ τ ↦ by simpa [Fintype.sum_sigma] using hw.sum_mul_conj σ τ⟩
+
+end TightFrames
 
 end New
 

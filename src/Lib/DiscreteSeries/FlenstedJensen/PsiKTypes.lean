@@ -12,6 +12,7 @@ import Lib.General.Analysis.MeanValueAndTaylor
 import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.General.Measure.IdempotentKernel
 import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.General.Topology
 
 /-!
 # First properties of c_λ and its K-types
