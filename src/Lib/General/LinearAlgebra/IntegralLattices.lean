@@ -237,9 +237,11 @@ lemma New.exists_eq_mul_diagonal_mul_of_pivot_dvd {A n : Type*} [CommRing A] {R 
   have default_val : ((default : {i : n // i = p}) : n) = p := rfl
   refine ⟨lower, upper, D, (reindex e.symm e.symm).injective ?_⟩
   suffices M.submatrix e e =
-      fromBlocks 1 0 ((of fun i j ↦ w i.val j.val).map R.subtype) (map R.subtype k).val *
+      fromBlocks 1 0 ((of fun (i : {i : n // i ≠ p}) (j : {i : n // i = p}) ↦ w i.val j.val).map
+          R.subtype) (map R.subtype k).val *
         diagonal (Sum.elim (fun _ : {i : n // i = p} ↦ M p p) d) *
-        fromBlocks 1 ((of fun i j ↦ w i.val j.val).map R.subtype) 0 (map R.subtype l).val by
+        fromBlocks 1 ((of fun (i : {i : n // i = p}) (j : {i : n // i ≠ p}) ↦ w i.val j.val).map
+          R.subtype) 0 (map R.subtype l).val by
     -- reindexing along `e` turns `lower`, `diagonal D` and `upper` into these three block matrices
     simp [this, lower, upper, D, ← submatrix_mul_equiv _ _ _ e, fromBlocks_map, submatrix_map,
       Function.comp_assoc]
