@@ -257,7 +257,6 @@ abbrev negIf {α : Type*} [Neg α] (d : Bool) (l : α) : α := match d with
   | true => -l
   | false => l
 
-theorem negIf_true {α : Type*} [Neg α] (l : α) : negIf true l = -l := rfl
 
 
 /-- The doubled parameters l for the signs s : n → ℤˣ and l' for the signs t : n' → ℤˣ correspond:
