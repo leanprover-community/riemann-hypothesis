@@ -176,6 +176,7 @@ section Rounds
 variable {j : Fin (𝔰.ϱ + 2)} {c : S.Classes} {B : Set (S.Classes × S.G E)}
   {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E} {r l : ℕ} {y : Matrix 𝔰.κ (Fin r) E}
 
+omit [S.IsAdmissible] in
 /-- Let `γ` be a term over the block `(c, s, c')`: a rational element such that `h_c⁻¹ γ h_c'`, for
 the representatives of the classes `c` and `c'`, is integral with reduction `s`. The entries of its
 matrix of shared vectors for the index `j` are algebraic integers. -/
