@@ -348,7 +348,7 @@ lemma dvd_pderiv_couplingSum_sub (hS : 0 ∉ S) (y : Φ × c) :
   have h_deriv :
       HasSum (fun x : S × ℕ ↦ pderiv y (l x.1 x.2 • coupling pr x.1 ^ p ^ x.2))
         (pderiv y (couplingSum S pr l)) :=
-    hasSum_couplingSum.map (pderiv y).toLinearMap (continuous_pderiv y)
+    hasSum_couplingSum.map (pderiv y).toLinearMap.toAddMonoidHom (continuous_pderiv y)
   -- The second sum, written over the pairs `(e, j)` with zero terms for `j > 0`.
   have h_main : HasSum (fun x : S × ℕ ↦ if x.2 = 0 then l x.1 0 • partnerPowerSum pr x.1 y else 0)
       (∑' e : S, l e 0 • partnerPowerSum (p := p) pr e y) := by
