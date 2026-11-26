@@ -2,6 +2,7 @@ module
 
 import TauCeti.Analysis.Complex.CauchyIntegralPolydisc
 import TauCeti.Analysis.Complex.WeaklyHolomorphic
+import TauCeti.Analysis.Matrix.HuaIntegral
 import TauCeti.MeasureTheory.Function.StronglyMeasurable.FiniteDimensional
 public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -22,7 +23,6 @@ import Mathlib.RingTheory.TotallySplit
 import TauCeti.Analysis.MvPolynomial.Jacobian
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Speed
-import Lib.General.Analysis.GaussianIntegral
 import Lib.General.Groups.CongruenceSubgroups
 import Lib.General.Measure.HaarNormalisation
 import Lib.General.Topology
@@ -48,10 +48,9 @@ submersions, and Hua's bound for negative powers of determinants.
   that is differentiable near p is analytic at p.
 * `New.eventually_differentiableAt_integral`: an integral of holomorphic functions of a parameter in
   a finite-dimensional space, dominated by an integrable function, is holomorphic.
-* `New.hua_integral_le`: Hua's bound for the integral of a negative power of `|det (M + Yᴴ Y)|`,
-  where `Y = X S + A`, over the rows of `X`, one row at a time;
-  `New.lintegral_norm_det_add_inv_pow_le` is a cruder form for `Y = S X + c` and at least seven
-  columns.
+* `New.lintegral_norm_det_add_inv_pow_le`: Hua's bound for the integral of a negative power of
+  `|det (G + Yᴴ Y)|`, where `Y = S X + c`, for at least seven columns; a corollary of Tau Ceti's
+  `TauCeti.lintegral_norm_det_add_conjTranspose_mul_inv_pow_le`.
 
 ## Relation to the literature
 
@@ -414,120 +413,6 @@ section HuaIntegral
 
 open ComplexOrder Fintype Function Matrix MatrixOrder MeasureTheory Real
 
-/-- For a square matrix C over ℂ and a row vector y, |det (C⋆C + (yC)⋆(yC))| = |det C|² (1 + |y|²),
-where ⋆ is the conjugate transpose. -/
-lemma New.norm_det_star_mul_self_add_vecMulVec {κ : Type} [Fintype κ] [DecidableEq κ]
-    {C : Matrix κ κ ℂ} (y : κ → ℂ) :
-    ‖(star C * C + vecMulVec (star (y ᵥ* C)) (y ᵥ* C)).det‖ =
-      ‖C.det‖ ^ 2 * (1 + ∑ j : κ, ‖y j‖ ^ 2) := by
-  have h_factor : star C * C + vecMulVec (star (y ᵥ* C)) (y ᵥ* C) =
-      star C * (1 + vecMulVec (star y) y) * C := by
-    simp [mul_add, add_mul, star_vecMul, mul_vecMulVec, vecMulVec_mul, star_eq_conjTranspose]
-  -- the matrix determinant lemma: `det (1 + y⋆ y) = 1 + y y⋆`
-  have h_det : (1 + vecMulVec (star y) y).det = (1 + ∑ j, ‖y j‖ ^ 2 : ℝ) := by
-    simp [vecMulVec_eq Unit, det_one_add_replicateCol_mul_replicateRow, dotProduct, RCLike.mul_conj]
-  rw [h_factor, det_mul, det_mul, h_det, star_eq_conjTranspose, det_conjTranspose, norm_mul,
-    norm_mul, norm_star, Complex.norm_of_nonneg (by positivity)]
-  ring
-
-/-- The integral of (1 + |y|²)^{−(k+1)} over y ∈ ℂ^κ, k the number of elements of κ, is π^k/k!. -/
-lemma New.lintegral_one_add_sum_norm_sq_inv_pow {κ : Type} [Fintype κ] :
-    ∫⁻ y : κ → ℂ, ENNReal.ofReal ((1 + ∑ j : κ, ‖y j‖ ^ 2)⁻¹ ^ (card κ + 1)) =
-      ENNReal.ofReal (π ^ card κ / (card κ).factorial) := by
-  -- `lintegral_inv_add_rpow` with exponent `k + 1` in complex dimension `k = card κ`
-  simp_rw [← rpow_natCast _ (card κ + 1)]
-  rw [lintegral_inv_add_rpow one_pos (by simp) (fun y ↦ by positivity) (by positivity)]
-  simp [Gamma_nat_eq_factorial]
-
-/-- One row of Hua's bound. Let `M` be positive definite and `S` invertible, both of size `k ≤ r`,
-and put `w = v S + a` for a row vector `v` in `ℂ ^ k`. The integral of
-`|det (M + wᴴ w)| ^ (-(r + 1))` over `v` is at most `π ^ k / (k! |det S|²) |det M| ^ (-r)`. -/
-lemma New.lintegral_norm_det_add_vecMulVec_inv_pow_le {κ : Type} [Fintype κ] [DecidableEq κ]
-    {M S : Matrix κ κ ℂ} (hM : M.PosDef) (hS : det S ≠ 0) (a : κ → ℂ) {r : ℕ} (hr : card κ ≤ r) :
-    ∫⁻ v : κ → ℂ,
-        ENNReal.ofReal (‖(M + vecMulVec (star (v ᵥ* S + a)) (v ᵥ* S + a)).det‖⁻¹ ^ (r + 1)) ≤
-      ENNReal.ofReal (π ^ card κ / (card κ).factorial / ‖S.det‖ ^ 2 * ‖M.det‖⁻¹ ^ r) := by
-  -- With `M = C⋆ C`, substitute `v` so that `v S + a = y C`; then the determinant has absolute
-  -- value `|det C|² (1 + |y|²)`.
-  obtain ⟨C, hC_unit, rfl⟩ :=
-    CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.1 hM.isStrictlyPositive
-  have hC : C.det ≠ 0 := (C.isUnit_iff_isUnit_det.1 hC_unit).ne_zero
-  have h_subst (y : κ → ℂ) : ((C * S⁻¹)ᵀ *ᵥ y + -a ᵥ* S⁻¹) ᵥ* S + a = y ᵥ* C := by
-    rw [mulVec_transpose]
-    simp [add_vecMul, hS]
-  let B : ℝ := ‖(star C * C).det‖⁻¹ ^ r / ‖S.det‖ ^ 2
-  -- The Jacobian `|det C / det S|²` cancels one factor `|det C|²`.
-  have h_jacobian (u : ℝ) :
-      ‖(C * S⁻¹)ᵀ.det‖ ^ 2 * (‖C.det‖ ^ 2 * u)⁻¹ ^ (r + 1) = B * u⁻¹ ^ (r + 1) := by
-    simp [B, pow_succ _ r, star_eq_conjTranspose, mul_pow, field, ← pow_mul, mul_comm 2 r]
-  calc
-    _ = ∫⁻ y : κ → ℂ, .ofReal (‖(C * S⁻¹)ᵀ.det‖ ^ 2) *
-          .ofReal ((‖C.det‖ ^ 2 * (1 + ∑ j, ‖y j‖ ^ 2))⁻¹ ^ (r + 1)) := by
-      rw [← lintegral_add_right_eq_self _ (-a ᵥ* S⁻¹),
-        lintegral_eq_norm_det_sq_mul_lintegral_mulVec (C * S⁻¹)ᵀ (by simp [hC, hS]),
-        ← lintegral_const_mul' _ _ (by finiteness)]
-      simp_rw [h_subst, norm_det_star_mul_self_add_vecMulVec (C := C)]
-    _ ≤ ∫⁻ y : κ → ℂ, .ofReal B * .ofReal ((1 + ∑ j, ‖y j‖ ^ 2)⁻¹ ^ (card κ + 1)) := by
-      refine lintegral_mono fun y ↦ ?_
-      rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity), h_jacobian]
-      refine ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ?_ (by positivity))
-      exact pow_le_pow_of_le_one (by positivity)
-        (inv_le_one_of_one_le₀ (le_add_of_nonneg_right (by positivity))) (Nat.succ_le_succ hr)
-    _ = .ofReal (π ^ card κ / (card κ).factorial / ‖S.det‖ ^ 2 * ‖(star C * C).det‖⁻¹ ^ r) := by
-      rw [lintegral_const_mul' _ _ (by finiteness), lintegral_one_add_sum_norm_sq_inv_pow,
-        ← ENNReal.ofReal_mul (by positivity)]
-      simp only [B]
-      ring_nf
-
-/-- Hua's integral bound. Let `M` be positive definite and `S` invertible, both of size `k`, let
-`c ≥ 0`, `r ≥ k`, and put `w i = y i S + a i` for row vectors `y i` in `ℂ ^ k`. The integral of
-`c |det (M + ∑_{i ∈ s} (w i)ᴴ (w i))| ^ (-(|s| + r))` over the rows `y i`, `i ∈ s`, is at most
-`c (π ^ k / (k! |det S|²)) ^ |s| |det M| ^ (-r)`. The argument `x` of the iterated integral
-`∫⋯∫⁻_s` (`MeasureTheory.lmarginal`) fixes the rows outside `s`, which do not occur in the
-integrand. -/
-lemma New.hua_integral_le {ι κ : Type} [DecidableEq ι] [Fintype κ] [DecidableEq κ]
-    {M : Matrix κ κ ℂ} (S : Matrix κ κ ℂ) (hS : det S ≠ 0) (a : ι → κ → ℂ) (hM : M.PosDef) {c : ℝ}
-    (hc : 0 ≤ c) (s : Finset ι) {r : ℕ} (hr : card κ ≤ r) (x : ι → κ → ℂ) :
-    (∫⋯∫⁻_s, fun y : ι → κ → ℂ ↦ ENNReal.ofReal (c *
-        ‖(M + ∑ i ∈ s, vecMulVec (star (y i ᵥ* S + a i)) (y i ᵥ* S + a i)).det‖⁻¹ ^
-          (s.card + r))) x ≤
-      ENNReal.ofReal
-        (c * ((π ^ card κ / (card κ).factorial / ‖S.det‖ ^ 2) ^ s.card * ‖M.det‖⁻¹ ^ r)) := by
-  -- Induction on the set `s` of rows; each row contributes one factor `K`.
-  set K : ℝ := π ^ card κ / (card κ).factorial / ‖S.det‖ ^ 2
-  have hK : 0 ≤ K := by positivity
-  induction s using Finset.induction generalizing M r x with
-  | empty => simp
-  | insert i s hi ih =>
-    -- Integrate over the rows in `s` first, the row `v` with index `i` being absorbed into `M`:
-    -- the induction hypothesis for `M' v = M + wᴴ w`, `w = v S + a i`, and `r + 1` bounds the inner
-    -- integral.
-    let F (A : Matrix κ κ ℂ) (t : Finset ι) (n : ℕ) (x' : ι → κ → ℂ) : ENNReal :=
-      .ofReal (c *
-        ‖(A + ∑ j ∈ t, vecMulVec (star (x' j ᵥ* S + a j)) (x' j ᵥ* S + a j)).det‖⁻¹ ^ n)
-    let M' (v : κ → ℂ) : Matrix κ κ ℂ := M + vecMulVec (star (v ᵥ* S + a i)) (v ᵥ* S + a i)
-    have h_pos (v : κ → ℂ) : (M' v).PosDef := hM.add_posSemidef (posSemidef_vecMulVec_star_self _)
-    have inner_eq (v : κ → ℂ) :
-        (∫⋯∫⁻_s, F M (insert i s) ((insert i s).card + r)) (update x i v) =
-          (∫⋯∫⁻_s, F (M' v) s (s.card + (r + 1))) (update x i v) :=
-      -- the row with index `i ∉ s` is not integrated, so it is `v` in the integrand
-      lintegral_congr fun y ↦ by simp [F, M', updateFinset, hi, add_assoc, add_comm 1 r]
-    calc
-      _ = ∫⁻ v : κ → ℂ, (∫⋯∫⁻_s, F M (insert i s) ((insert i s).card + r)) (update x i v) :=
-        lmarginal_insert _ (by fun_prop) hi x
-      _ ≤ ∫⁻ v : κ → ℂ, .ofReal (c * (K ^ s.card * ‖(M' v).det‖⁻¹ ^ (r + 1))) :=
-        lintegral_mono fun v ↦ (inner_eq v).trans_le
-          (ih (h_pos v) (Nat.le_succ_of_le hr) (update x i v))
-      _ = .ofReal (c * K ^ s.card) * ∫⁻ v : κ → ℂ, .ofReal (‖(M' v).det‖⁻¹ ^ (r + 1)) := by
-        simp_rw [← mul_assoc, ENNReal.ofReal_mul (mul_nonneg hc (pow_nonneg hK s.card))]
-        exact lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
-      _ ≤ .ofReal (c * K ^ s.card) * .ofReal (K * ‖M.det‖⁻¹ ^ r) := by
-        gcongr
-        exact lintegral_norm_det_add_vecMulVec_inv_pow_le hM hS (a i) hr
-      _ = .ofReal (c * (K ^ (insert i s).card * ‖M.det‖⁻¹ ^ r)) := by
-        rw [← ENNReal.ofReal_mul (by positivity), Finset.card_insert_of_notMem hi]
-        ring_nf
-
 /-- The volume `π ^ k / k!` of the unit ball of `ℂ ^ k` is at most `1` for `k ≥ 7`. -/
 lemma New.pi_pow_div_factorial_le_one {k : ℕ} (hk : 7 ≤ k) : π ^ k / k.factorial ≤ 1 := by
   rw [div_le_one (by positivity)]
@@ -539,36 +424,6 @@ lemma New.pi_pow_div_factorial_le_one {k : ℕ} (hk : 7 ≤ k) : π ^ k / k.fact
     have h_le : π ≤ k + 1 := by linarith [pi_le_four, (Nat.ofNat_le_cast.2 hk : (7 : ℝ) ≤ k)]
     rw [pow_succ', Nat.factorial_succ, Nat.cast_mul, Nat.cast_succ]
     gcongr
-
-/-- For an invertible matrix `S` and a measurable `g`, the substitution `A ↦ S A + c` on matrices
-with rows in `ℂ ^ κ` multiplies `∫⁻ g` by `|det S| ^ (-2 #κ)`. -/
-lemma New.lintegral_comp_mul_add {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ]
-    {S : Matrix ι ι ℂ} (hS : S.det ≠ 0) (c : Matrix ι κ ℂ) {g : (ι → κ → ℂ) → ENNReal}
-    (hg : Measurable g) :
-    ∫⁻ A : ι → κ → ℂ, g (S * of A + c) =
-      ENNReal.ofReal (‖S.det‖⁻¹ ^ (2 * card κ)) * ∫⁻ A : ι → κ → ℂ, g A := by
-  -- In the coordinates `ι × κ` the map `A ↦ S A` is given by the Kronecker product of `S` and `1`.
-  classical
-  let e : (ι × κ → ℂ) ≃ₗ[ℂ] (ι → κ → ℂ) := LinearEquiv.curry ℂ ℂ ι κ
-  let f : (ι → κ → ℂ) →ₗ[ℂ] (ι → κ → ℂ) :=
-    e.toLinearMap ∘ₗ (kroneckerMap (· * ·) S (1 : Matrix κ κ ℂ)).toLin' ∘ₗ e.symm.toLinearMap
-  have hf (A : ι → κ → ℂ) : f A = S * of A := by
-    ext a b
-    simp [f, e, mulVec, dotProduct, Matrix.mul_apply, sum_prod_type, Matrix.one_apply]
-  have h_det : LinearMap.det (f.restrictScalars ℝ) = ‖S.det‖ ^ (2 * card κ) := by
-    rw [LinearMap.det_restrictScalars, LinearMap.det_conj]
-    simp [det_kronecker, Algebra.norm_complex_apply, Complex.normSq_eq_norm_sq, ← pow_mul, mul_comm]
-  have h_pos : 0 < ‖S.det‖ ^ (2 * card κ) := pow_pos (norm_pos_iff.2 hS) _
-  calc
-    _ = ∫⁻ A : ι → κ → ℂ, g (f.restrictScalars ℝ A + of.symm c) :=
-      lintegral_congr fun A ↦ congrArg g (congrArg (· + c) (hf A).symm)
-    _ = ∫⁻ A, g (A + of.symm c) ∂(Measure.map (f.restrictScalars ℝ) volume) :=
-      (lintegral_map (hg.comp (measurable_add_const _))
-        (f.restrictScalars ℝ).continuous_of_finiteDimensional.measurable).symm
-    _ = _ := by
-      rw [Measure.map_linearMap_addHaar_eq_smul_addHaar volume (h_det.trans_ne h_pos.ne'),
-        lintegral_smul_measure, lintegral_add_right_eq_self, h_det,
-        abs_of_pos (inv_pos.2 h_pos), inv_pow, smul_eq_mul]
 
 /-- For fixed matrices `S`, `c`, `G` the map `A ↦ det (G + (S A + c)ᴴ (S A + c))` is measurable. -/
 lemma New.measurable_det_add_conjTranspose_mul {ι κ : Type} [Fintype ι] [Fintype κ]
@@ -585,23 +440,14 @@ lemma New.lintegral_norm_det_add_inv_pow_le {ι κ : Type} [Fintype ι] [Decidab
     ∫⁻ A : ι → κ → ℂ,
         ENNReal.ofReal (C * ‖(G + (S * of A + c)ᴴ * (S * of A + c)).det‖⁻¹ ^ (card κ + card ι)) ≤
       ENNReal.ofReal (C * (‖S.det‖⁻¹ ^ (2 * card κ) * ‖G.det‖⁻¹ ^ card κ)) := by
-  let g (v : ι → κ → ℂ) : ENNReal :=
-    .ofReal (C * ‖(G + (of v)ᴴ * of v).det‖⁻¹ ^ (card κ + card ι))
-  have h_det : Measurable fun v : ι → κ → ℂ ↦ (G + (of v)ᴴ * of v).det := by
-    simpa using measurable_det_add_conjTranspose_mul (1 : Matrix ι ι ℂ) (0 : Matrix ι κ ℂ) G
-  have hg : Measurable g := by fun_prop
-  have h_rows (v : ι → κ → ℂ) : (of v)ᴴ * of v = ∑ i, vecMulVec (star (v i)) (v i) := by
-    ext a b
-    simp [Matrix.mul_apply, Matrix.sum_apply, vecMulVec_apply]
-  -- `hua_integral_le`, applied with the identity matrix and no shift, over all the rows
-  have h_hua : ∫⁻ v, g v ≤ .ofReal (C * ‖G.det‖⁻¹ ^ card κ) := calc
-    _ = (∫⋯∫⁻_Finset.univ, g) 0 := lintegral_eq_lmarginal_univ 0
-    _ ≤ .ofReal (C * ((π ^ card κ / (card κ).factorial) ^ card ι * ‖G.det‖⁻¹ ^ card κ)) := by
-      simpa [g, h_rows, add_comm (card κ)] using
-        hua_integral_le 1 (by simp) 0 hG hC Finset.univ le_rfl 0
-    _ ≤ _ := by grw [pi_pow_div_factorial_le_one hκ, one_pow, one_mul]
-  calc
-    _ = .ofReal (‖S.det‖⁻¹ ^ (2 * card κ)) * ∫⁻ v, g v := lintegral_comp_mul_add hS c hg
-    _ ≤ _ := by grw [h_hua, ← ENNReal.ofReal_mul (by positivity), mul_left_comm]
+  -- Tau Ceti's two-sided bound with `T = 1` and `r = #κ`, and `π ^ #κ / #κ! ≤ 1`
+  have h := TauCeti.lintegral_norm_det_add_conjTranspose_mul_inv_pow_le hS (T := 1) (by simp) c hG
+    (r := card κ) le_rfl
+  simp only [Matrix.mul_one, det_one, norm_one, inv_one, one_pow, one_mul] at h
+  simp_rw [ENNReal.ofReal_mul hC]
+  rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  gcongr
+  refine h.trans (ENNReal.ofReal_le_ofReal ?_)
+  grw [pi_pow_div_factorial_le_one hκ, one_pow, one_mul]
 
 end HuaIntegral

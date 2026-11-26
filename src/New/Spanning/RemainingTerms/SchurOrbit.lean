@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Monotonicity.Lemmas
 import TauCeti.MeasureTheory.Integral.Pi
+import TauCeti.MeasureTheory.Measure.Haar.Matrix.Complex
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.RemainingTerms.ColumnLattice
@@ -554,8 +555,8 @@ lemma HasCellRank.exists_majorant_lintegral_le_kernelBound (h_rank : S.HasCellRa
     grind [S.pow_le_k]
   obtain ⟨φ₀, h_meas, h_int, h_le⟩ := exists_majorant_volumeRatio_inv_pow (min_le_left 𝔰.ϱ j)
     h_box h_cut j.is_le (hij := rfl) h_seven hg₀_gram hg₀_pair (h_rank.det_subframeBlock_ne_zero v)
-  -- Pass to the parameters of the shift; the term `+ 0` is the form that `lintegral_comp_mul_add`
-  -- takes.
+  -- Pass to the parameters of the shift; the term `+ 0` is the form that
+  -- `lintegral_comp_matrix_mul_add` takes.
   refine ⟨fun A ↦ φ₀ ((S.shiftScaling j v)ᴴ * of A + 0), h_meas.comp (Continuous.measurable ?_),
     ?_, fun g A hg_gram hg_pair hg_part ↦ h_le g _ hg_gram hg_pair ?_⟩
   · fun_prop
@@ -563,7 +564,7 @@ lemma HasCellRank.exists_majorant_lintegral_le_kernelBound (h_rank : S.HasCellRa
     have h_det : (S.shiftScaling j v)ᴴ.det ≠ 0 := by
       simp [shiftScaling, prod_eq_zero_iff, Nat.Prime.ne_zero]
     have h_card : card 𝔰.κ = 𝔰.k := by simp
-    refine (lintegral_comp_mul_add h_det 0 h_meas).trans_le ?_
+    refine (lintegral_comp_matrix_mul_add h_det 0 φ₀).trans_le ?_
     grw [h_int, det_conjTranspose, norm_star, h_card, kernelBound, ofReal_mul (by positivity)]
   · rw [hg_part, Matrix.add_mul, Matrix.mul_assoc, mul_inclMatrix ((isotropicRows _).submatrix _ _)]
     congr 2
