@@ -4,7 +4,7 @@ This branch is the readable edition (`grh/`) of https://github.com/lsernau/grh-l
 72fead102f663d5c7a407964a13dc0cf9d977207, moved to the repository root, plus configuration and
 scripts for a shared build cache. No file under `src`, and no `Challenge.lean`, `comparator.json`,
 `lake-manifest.json` or `lean-toolchain`, is changed. The additions are `CACHE.md`, a note at the
-top of `README.md`, the marked lines in `lakefile.toml`, `Cache.lean`, `lake-cache-get.sh`,
+top of `README.md`, the marked lines in `lakefile.toml`, `Cache.lean`, `lake-cache-get.py`,
 `ci-cache-get.py`, `ci-cache-stage.py`, `publish-ci-cache.py`, `ci-github.py`,
 `fetch-artifacts.py`, `tauceti-cache-get.py`, `cache-baseline.json`, `runner/` and `tests/` in
 `scripts`, and the workflows `.github/workflows/build.yml` and

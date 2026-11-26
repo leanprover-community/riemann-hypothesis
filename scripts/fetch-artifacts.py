@@ -20,7 +20,7 @@ error code and printed once per pass. --report writes the last pass's curl exit 
 groups and its SHA-256 failure count as JSON. scripts/ci-cache-get.py (`lake exe cache get`)
 uses this with its own --user-agent and puts the report in its final error.
 """
-import hashlib, json, os, re, resource, subprocess, sys, tempfile
+import hashlib, json, os, re, subprocess, sys, tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -71,10 +71,13 @@ def main():
         args.remove("--verify-existing")
     mapping, cache = Path(args[0]), Path(args[1]) / "artifacts"
     cache.mkdir(parents=True, exist_ok=True)
-    soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-    want = 65536 if hard == resource.RLIM_INFINITY else min(hard, 65536)
-    if soft != resource.RLIM_INFINITY and soft < want:
-        resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
+    if os.name != "nt":
+        import resource
+
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        want = 65536 if hard == resource.RLIM_INFINITY else min(hard, 65536)
+        if soft != resource.RLIM_INFINITY and soft < want:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
     lines = mapping.read_text().splitlines()[1:]
     names = sorted({json.loads(l)[1] for l in lines if l})
 
@@ -97,7 +100,9 @@ def main():
             break
         with tempfile.TemporaryDirectory(prefix="fetch-", dir=cache.parent) as t:
             conf = Path(t) / "curl.conf"
-            conf.write_text("".join(f'url = "{base}{n[:-5]}.art"\noutput = "{t}/{n}"\n' for n in missing))
+            directory = Path(t).as_posix()
+            conf.write_text("".join(f'url = "{base}{n[:-5]}.art"\noutput = "{directory}/{n}"\n'
+                                    for n in missing), encoding="utf-8")
             r = subprocess.run(["curl", "--disable", "--fail", "--silent", "--show-error", "--location",
                                 "--user-agent", agent, "--retry", "5", "--retry-all-errors",
                                 "--connect-timeout", "30", "--max-time", "600",
@@ -112,7 +117,8 @@ def main():
                 if n in digests and sha256(p) != digests[n]:
                     p.unlink()
                     return "corrupt"
-                os.chmod(p, 0o444)
+                if os.name != "nt":
+                    os.chmod(p, 0o444)
                 os.replace(p, cache / n)
                 return "ok"
 
