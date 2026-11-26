@@ -111,8 +111,6 @@ lemma thickeningOver.shortExact_oneSubMu :
   · -- `1 - μ s = 1 - μ t` forces `s = t`.
     exact congrArg ULift.up (h_inj c (sub_right_injective (Gm.ext.mp h_eq)))
   · -- Exactness applied to `1 - u`: the units with image `1` are those of the form `1 - mulMu t`.
-    have : Nonempty (genericOver (k := k) |>.obj c) := ⟨0⟩
-    have : Nonempty (PadicTest.genericAlg.obj c) := ⟨0⟩
     have h_one : proj c u.val = 1 ↔ ∃ t, 1 - mulMu c t = u.val := by
       simpa [sub_eq_zero.trans eq_comm, eq_comm.trans sub_eq_iff_comm] using h_exact c (1 - u.val)
     refine .trans ?_ ULift.exists.symm
