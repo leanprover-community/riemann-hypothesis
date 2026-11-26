@@ -82,10 +82,6 @@ lemma partnerDegree_apply {pr : ℕ → Φ → Φ} {Φ₀ : Finset Φ} {e j : Φ
     partnerDegree pr Φ₀ e j (t, ()) = ∑ τ ∈ Φ₀ with pr (e τ) τ = t, j τ := by
   simp [partnerDegree, Finsupp.finsetSum_apply, Finsupp.single_apply, Finset.sum_filter]
 
-lemma degree_powerDegree {p : ℕ} {Φ₀ : Finset Φ} {e j : Φ → ℕ} :
-    (powerDegree p Φ₀ e j).degree = ∑ τ ∈ Φ₀, p ^ e τ * j τ := by
-  simp only [powerDegree, map_sum, Finsupp.degree_single]
-
 lemma degree_partnerDegree {pr : ℕ → Φ → Φ} {Φ₀ : Finset Φ} {e j : Φ → ℕ} :
     (partnerDegree pr Φ₀ e j).degree = ∑ τ ∈ Φ₀, j τ := by
   simp only [partnerDegree, map_sum, Finsupp.degree_single]
@@ -601,7 +597,7 @@ lemma leastValLE_six_of_isCouplingFamily [PadicPlace p] {J Φ : Type}
   refine ⟨h_val.mono ?_, h_val.mono ?_⟩
   · -- `|ν| ≥ (p + 1) |j|` and `ρ_p (p + 1) = 1 / (p - 1)`
     have h_power : p * sumJ ≤ ν'.degree := by
-      rw [degree_powerDegree, cast_sum, h_sumJ, mul_sum]
+      simp only [ν', powerDegree, map_sum, Finsupp.degree_single, cast_sum, h_sumJ, mul_sum]
       exact sum_le_sum fun τ hτ ↦
         mod_cast Nat.mul_le_mul_right (j τ) (le_self_pow (he.odd τ hτ).pos.ne' p)
     have h_scale : sumJ / (p - 1) ≤ ρ * (ν' + ν'').degree := by
