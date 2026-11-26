@@ -146,7 +146,8 @@ theorem norm_det_blockDiagPart (σ : ℤˣ) (g : USign ε) :
     ext fun i j ↦ ite_eq_left (hp i j i.prop j.prop)
   calc
     _ = ‖principalMinor g (ε · = σ)‖ * ‖principalMinor g (¬ε · = σ)‖ := by
-      simp [twoBlockTriangular_det _ _ h_zero, principalMinor, h_block (ε · = σ) (fun _ _ hi hj ↦ hi.trans hj.symm),
+      simp [twoBlockTriangular_det _ _ h_zero, principalMinor,
+        h_block (ε · = σ) (fun _ _ hi hj ↦ hi.trans hj.symm),
         h_block (¬ε · = σ) (by simp +contextual [Int.units_ne_iff_eq_neg])]
     _ = ‖principalMinor g (ε · = σ)‖ ^ 2 := by simp [principalMinor_compl, sq]
 
