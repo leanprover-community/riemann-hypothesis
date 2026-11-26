@@ -81,9 +81,9 @@ lemma New.exists_generalized_inverse {M N : Type*} [AddCommGroup M] [AddCommGrou
     [Module k N] (f : M →ₗ[k] N) :
     ∃ s : N →ₗ[k] M, ∀ x : M, f (s (f x)) = f x := by
   -- extend a right inverse of `f`, viewed as a map onto its range, to all of `N`
-  obtain ⟨g, hg⟩ := f.rangeRestrict.exists_rightInverse_of_surjective (by simp)
+  obtain ⟨g, hg⟩ := f.rangeRestrict.exists_rightInverse_of_surjective f.range_rangeRestrict
   obtain ⟨s, rfl⟩ := g.exists_extend
-  exact ⟨s, fun x ↦ congrArg Subtype.val (LinearMap.congr_fun hg ⟨f x, x, rfl⟩)⟩
+  exact ⟨s, fun x ↦ congrArg Subtype.val (LinearMap.congr_fun hg (f.rangeRestrict x))⟩
 
 /-- Let `x` and `y` be matrices over a field. If the kernel of `x` lies in the column space of `y`,
 then `y * e + b * x = 1` for some matrices `e` and `b`. -/
