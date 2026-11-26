@@ -505,6 +505,8 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
   -- identity at `𝓛 ≤ K ⊓ N`.
   let π := (stdSpace E n).formTranslation κ
   let π' := (stdSpace E' n).formTranslation κ.baseChange
+  -- `X'` is the set of split places of `E'` off `Z ∪ Z̄` at which `𝓛` is maximal; `above`
+  -- shows it contains every place above `X`.
   let X' := {u : FinPlace E' // u.IsSplit ∧ u ∉ placesAbove E' Z ∧ maxCompactAt n u ≤ 𝓛}
   have X_split (x : X) : x.val.IsSplit := x.property.right.right.left
   have X'_split (x : X') : x.val.IsSplit := x.property.left
@@ -512,6 +514,8 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
   let above (u : FinPlace E') (hu : u.below E ∈ X) : X' :=
     ⟨u, ne_of_apply_ne (FinPlace.below E) (by simpa only [below_star] using hu.right.right.left),
       hu.left, h𝓛_max hu.left hu.right.left (by simp [placesAbove])⟩
+  -- Commuting families of local and spherical Hecke operators over `E` and `E'`; `R k t φ`
+  -- (and `R' k t' φ'`) records that operator `t` comes from the function `F k * φ`.
   obtain ⟨h_fam, R, hR⟩ := exists_isHeckeFunctionRelation (π := π) a r (𝓛.comap baseChangeGf)
     X_split ha (by rw [h𝓛_eq, Subgroup.comap_inf, Subgroup.comap_inf, hL])
     (fun g hg ↦ baseChangeGf_mem_stdLevel.mp (hK₁_std (inf_le_inf_right N L'_le_K hg)))
@@ -523,6 +527,8 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
     ((inf_le_inf_right N L'_le_K).trans hK₁_std) (fun g ↦ h_supp (ha'.left g))
     (fun j ↦ (hF j).right) (fun i j ↦ (h_comm i j).right)
     (fun x ↦ by simpa using x.property.right.left) X'_max
+  -- The twisted trace identity: `t₀` intertwines `g` with `σ g`, preserves the `𝓛`-level
+  -- space, and satisfies `tr (T' * t₀) = z * tr T` (with `z ≠ 0`) for matching pairs.
   obtain ⟨z, z_ne, t₀, t₀_twist, t₀_stab, trace_eq⟩ := twisted_trace_identity hσ κ hK₁_std
     (inf_le_inf_right N L'_le_K) h𝓛_open
     (by ext k; simp [L'_σ, N_level.galoisGf_mem_iff])
@@ -535,6 +541,8 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
   have : Module.Finite ℂ (levelSpace π' 𝓛) :=
     (stdSpace E' n).finite_formTranslation_levelSpace κ.baseChange h𝓛_open
   -- Stage 3: form the matching operator set `Q` and extract a joint eigenvector `g`.
+  -- `D` is a Hecke-stable family of matching function pairs above `X`, with chosen places `U w`
+  -- above each `w ∈ X`.
   obtain ⟨D, hD⟩ := exists_isHeckeStableMatching (n := n) (S := X) hσ
     (fun _ hw ↦ hw.right.right.left) (fun _ hw ↦ hw.right.right.right)
   choose U hU D_stable using fun w : X ↦ hD.exists_isHeckeStableAt (E' := E') w w.property
@@ -543,10 +551,14 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
   let B' := heckeFamily π' a' L' F' X'_split
   let T (i : J ⊕ X × ℕ) := (B i).restrict (h_fam.heckeFamily_mem i)
   let T' (i : J ⊕ X' × ℕ) := (B' i).restrict (h_fam'.heckeFamily_mem i)
+  -- `Eig` collects the spherical Hecke eigenvalues of `f` on `X`; `gen` and `gen'` index the
+  -- corresponding generators over `E` and at the chosen lifts `U w` over `E'`.
   let Eig := {y : (X × ℕ) × ℂ // f ∈ eigenspace (B (.inr y.fst)) y.snd}
   let gen : ι ⊕ Eig → J ⊕ X × ℕ := Sum.map o fun y ↦ y.val.fst
   let gen' : ι ⊕ Eig → J ⊕ X' × ℕ :=
     Sum.map o fun y ↦ (above (U y.val.fst.fst) (U_mem y.val.fst.fst), y.val.fst.snd)
+  -- `Q` consists of the operator pairs arising from local functions in `P` and spherical pairs
+  -- in `D`; it satisfies the twisted trace identity (`Q_trace`) and is closed under generators.
   let Q : Set (End ℂ (levelSpace π (𝓛.comap baseChangeGf)) × End ℂ (levelSpace π' 𝓛)) :=
     {q | ∃ k ∈ P, ∃ d ∈ D, R k q.fst d.fst ∧ R' k q.snd d.snd}
   have Q_trace : ∀ q ∈ Q,
@@ -569,6 +581,8 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
             (supportedOn_mono (singleton_subset_iff.mpr w.property) hg))),
         hR'.spherical_mul hq' u' j
           ((supportedOn_mono (by simp [u', above, placesAbove, U_mem w])).trans on_X_le)⟩
+  -- `V` is the joint generalised eigenspace for `gen` with eigenvalues `θ` and `Eig`, on which
+  -- `B (.inl j₀)` is stable and has non-zero trace.
   let V := levelSpace π (𝓛.comap baseChangeGf) ⊓
     ⨅ i : ι ⊕ Eig, maxGenEigenspace (B (gen i)) (Sum.elim θ (fun y ↦ y.val.snd) i)
   have V_stable : ∀ x ∈ V, B (.inl j₀) x ∈ V :=
@@ -578,6 +592,9 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
   have hf_fixed : f ∈ levelSpace π (trivialOn n Z ⊓ 𝓛.comap baseChangeGf) :=
     mem_levelSpace_formTranslation_iff.mpr (mem_levelSpace.mpr fun ⟨g, g_off, _, g_N⟩ ↦
       by simpa [funext_iff] using hm.comap_le (baseChangeGf_mem_localLevel_univ g_off g_N))
+  -- Extract a non-zero joint eigenvector `g` with character `Θ`: `g_eig` gives `T' i g = Θ i • g`,
+  -- `Θ_gen` matches the eigenvalues on `gen'`, `Θ_twist` relates `σ`-conjugate operators via `t₀`,
+  -- and `g_eq` writes `g` as the image of `v` under `T' (.inl j₀)`.
   obtain ⟨Θ, g, v, Θ_twist, Θ_gen, g_eq, g_ne, g_eig⟩ :=
     exists_eigenvector_of_trace_identity (A' := T') h_fam.heckeFamily_mem h_fam.commute_restrict
       h_fam'.commute_restrict gen gen' (.inl j₀) (.inl j₀) (Sum.elim θ fun y ↦ y.val.snd) V_stable
@@ -606,6 +623,8 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
     have hwX : w ∈ X := ⟨hw, hm_sph hw_matched.isStepUnramifiedAt hf, hw_split, hw_matched⟩
     let lift (u' : {u' : FinPlace E' // u'.below E = w}) : X' :=
       above u'.val (mem_of_eq_of_mem u'.property hwX)
+    -- At `U ⟨w, hwX⟩` the eigenvalues are those of `f`, and twisting by `σ` carries them to
+    -- every place `u` above `w`.
     have Θ_U : Θ (.inr (lift ⟨U ⟨w, hwX⟩, hU ⟨w, hwX⟩⟩, i)) = t i :=
       congrFun Θ_gen (.inr ⟨((⟨w, hwX⟩, i), t i), Module.End.mem_eigenspace_iff.mpr (ht i)⟩)
     have Θ_u : Θ (.inr (lift ⟨u, hu_below⟩, i)) = Θ (.inr (lift ⟨U ⟨w, hwX⟩, hU ⟨w, hwX⟩⟩, i)) :=
