@@ -717,7 +717,10 @@ lemma hecke_eq_frob_on_parahoricEigenspace (hA : IsPlaceOver A w)
         (h_eq : χ (diagGL (mulSingle i u) 0 0) = χ (diagGL (mulSingle k u) 0 0)) :
         min 1 i.val = min 1 k.val := by
       have h_iff : i ≠ 0 ↔ k ≠ 0 := by rw [← χ_slot, ← χ_slot, h_eq]
-      grind [Fin.val_ne_zero_iff]
+      by_cases hi : i = 0
+      · rw [hi, not_ne_iff.mp (mt h_iff.2 (not_not.mpr hi))]
+      · rw [min_eq_left (Nat.one_le_iff_ne_zero.2 (Fin.val_ne_zero_iff.2 hi)),
+          min_eq_left (Nat.one_le_iff_ne_zero.2 (Fin.val_ne_zero_iff.2 (h_iff.1 hi)))]
     obtain ⟨τ_roots, comm, θ, ⟨l, hl, lz_ne⟩, sτ_roots⟩ :
         IsParahoricCompatible ρ z ϖ (fun i ↦ χ (diagGL (mulSingle i u) 0 0)) F (x.galRep τ).val :=
       isParahoricCompatible_galRep hA hϖ hϖ_artin hs_frob hu hu_artin hτ hℓ hz z_ne _ z_type blocks
@@ -730,14 +733,21 @@ lemma hecke_eq_frob_on_parahoricEigenspace (hA : IsPlaceOver A w)
       have l_diag : l (ρ.ρ (diagGL (mulSingle 0 ϖ)) y) = torusChar θ (mulSingle 0 ϖ) * l y := by
         simpa only [compactMean_eq_self (ρ := ρ.ρ) y hy_type.1] using hl dominant y
       rw [U_eq, map_smul, hl.apply_compactMean, l_diag]
-      simp [coe_normAbsChar_locField, norm_locField_eq_q_zpow, hϖ, field]
+      simp only [torusChar_mulSingle, Fin.val_rev, Fin.coe_ofNat_eq_mod, zero_mod, zero_add,
+        Units.val_mul, Units.val_pow_eq_pow_val, coe_normAbsChar_locField, ne_eq, Units.ne_zero,
+        not_false_eq_true, norm_locField_eq_q_zpow, hϖ, Int.reduceNeg, WithZero.log_exp,
+        _root_.zpow_neg, zpow_ofNat, pow_one, Complex.ofReal_inv, Complex.ofReal_natCast, inv_pow,
+        smul_eq_mul, fieldEq]
       exact mul_div_cancel_left₀ _ (pow_ne_zero _ (by exact_mod_cast (zero_lt_one.trans w.one_lt_q).ne'))
     have F_mul_T : F * T = ιℓ (θ 0 ϖ) • T :=
       mul_sub_one_eq_smul_sub_one (α := fun i ↦ ιℓ (θ i ϖ))
         (fun i hi ↦ by simp only [(χ_slot i).2 hi, map_one])
         (by simpa using hχ) (by simpa using (ιℓ.injective.ne_iff' (map_one ιℓ)).2 hζ) (by simp)
         comm τ_roots (by simpa only [map_mul, map_pow] using sτ_roots)
-    exact lz_ne (by simp [z, l_U, mul_assoc B F T, F_mul_T, mul_left_comm, mul_assoc])
+    exact lz_ne (by
+      simp only [mul_assoc, mul_assoc B F T, F_mul_T, Algebra.mul_smul_comm, Algebra.smul_mul_assoc,
+        trace_smul, smul_eq_mul, map_mul, RingEquiv.symm_apply_apply, map_sub, map_smul, l_U,
+        mul_left_comm, sub_self, z])
   -- Horner induction on `G`: the step from `p` to `p * X` applies `U` and uses degree one
   induction G using recOnHorner with
   | M0 => simp
