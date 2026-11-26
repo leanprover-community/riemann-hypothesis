@@ -341,17 +341,14 @@ abbrev QZChar.ker : Subgroup Γ := (toHom χ).ker
 /-- `QZChar.toHom χ` sends `g` to `χ g`, written multiplicatively. -/
 lemma QZChar.toHom_apply (g : Γ) : toHom χ g = Multiplicative.ofAdd ((χ : Γ → QZ) g) := rfl
 
-/-- The kernel of a continuous character `χ : Γ → ℚ/ℤ` is closed in `Γ`. -/
-lemma QZChar.isClosed_ker : IsClosed (QZChar.ker χ : Set Γ) :=
-  (isClosed_discrete {0}).preimage χ.prop.left
-
 /-- The homomorphism induced by the continuous character `χ` on the topological abelianisation of
 `Γ`, with values in `ℚ/ℤ` written multiplicatively. -/
 def QZChar.abelianLift [IsTopologicalGroup Γ] (χ : QZChar Γ) :
     TopologicalAbelianization Γ →* Multiplicative QZ :=
   -- the kernel is closed and contains the commutators
   QuotientGroup.lift (commutator Γ).topologicalClosure (toHom χ)
-    (closure_minimal (Group.Abelianization.commutator_le_ker (toHom χ)) (QZChar.isClosed_ker χ))
+    (closure_minimal (Group.Abelianization.commutator_le_ker (toHom χ))
+      ((isClosed_discrete {0}).preimage χ.prop.left))
 
 variable (Γ)
 
