@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirs
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 open ReciprocityTheory.ChartRestriction.G.Geo

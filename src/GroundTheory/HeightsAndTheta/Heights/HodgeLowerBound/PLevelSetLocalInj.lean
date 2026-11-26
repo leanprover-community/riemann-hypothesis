@@ -9,8 +9,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree

@@ -5,8 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPts
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree

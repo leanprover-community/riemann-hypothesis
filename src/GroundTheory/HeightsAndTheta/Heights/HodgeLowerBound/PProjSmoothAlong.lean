@@ -9,8 +9,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree

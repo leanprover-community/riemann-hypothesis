@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartMollifie
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncPsh
 
 @[expose] public section
-set_option maxSynthPendingDepth 1
 noncomputable section
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree

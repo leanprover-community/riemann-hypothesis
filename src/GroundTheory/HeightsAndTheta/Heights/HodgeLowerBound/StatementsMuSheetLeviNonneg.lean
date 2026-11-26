@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
 open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo Filter Topology
