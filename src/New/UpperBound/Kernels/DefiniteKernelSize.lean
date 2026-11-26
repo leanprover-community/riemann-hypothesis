@@ -102,12 +102,6 @@ lemma blockSumOne_mem_integralAbove {p : ℕ} {g : Gf E L} {g' : Gf E N}
   simpa [mem_intGL, Gf.atPlace, U.sum, ← map_inv, and_and_and_comm] using
     fun w hw ↦ And.intro (hg w hw) (hg' w hw)
 
-/-- The embedding of rational points into finite adelic points commutes with block sums. -/
-lemma stdEmbFin_blockSumOne (γ : U (stdSpace E L).J) (γ' : U (stdSpace E N).J) :
-    stdEmbFin (U.blockSumOne (γ, γ')) = U.blockSumOne (stdEmbFin γ, stdEmbFin γ') := by
-  refine Subtype.ext ((stdSpace_embFin _).trans ?_)
-  ext (i | i) (j | j) <;> simp [U.sum]
-
 /-- Let `γ`, `γ'` be rational unitary points, embedded in the finite adelic groups by `stdEmbFin`,
 and let `g`, `g'` be finite adelic points. If `γ g` and `γ' g'` have integral invertible components
 at all primes above `p`, so does the product of the block sums `diag(γ, γ')` and `diag(g, g')`. -/
@@ -115,7 +109,10 @@ lemma blockSumOne_mul_mem_integralAbove {p : ℕ} {γ : U (stdSpace E L).J} {γ'
     {g : Gf E L} {g' : Gf E N} (hg : stdEmbFin γ * g ∈ integralAbove L p)
     (hg' : stdEmbFin γ' * g' ∈ integralAbove N p) :
     stdEmbFin (U.blockSumOne (γ, γ')) * U.blockSumOne (g, g') ∈ integralAbove (L ⊕ N) p := by
-  simpa [stdEmbFin_blockSumOne, ← map_mul] using blockSumOne_mem_integralAbove hg hg'
+  have h_emb : stdEmbFin (U.blockSumOne (γ, γ')) = U.blockSumOne (stdEmbFin γ, stdEmbFin γ') := by
+    refine Subtype.ext ((stdSpace_embFin _).trans ?_)
+    ext (i | i) (j | j) <;> simp [U.sum]
+  simpa [h_emb, ← map_mul] using blockSumOne_mem_integralAbove hg hg'
 
 /-- The constant that normalises the theta kernels of the standard definite spaces `I_L`, `I_N`
 over the field `D.E = P.E s` of the data `D`, where `s = D.towerExp` is its exponent in the tower
