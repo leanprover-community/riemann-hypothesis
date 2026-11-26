@@ -103,7 +103,6 @@ lemma mem_columnLattice {S : Filling E 𝔰} {c : S.Classes} {x : InfinitePlace 
 variable [Fintype ι]
 
 instance {S : Filling E 𝔰} {c : S.Classes} : Countable (S.columnLattice ι c) := by
-  have : Countable (Matrix 𝔰.κ ι E) := inferInstanceAs (Countable (𝔰.κ → ι → E))
   exact ((Set.to_countable _).image _).to_subtype
 
 omit [Fintype ι] in
