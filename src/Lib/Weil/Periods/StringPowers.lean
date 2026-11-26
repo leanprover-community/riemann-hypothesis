@@ -63,11 +63,6 @@ lemma powerCoeff_of_le {i : ℕ} {n : ℤ} (hi : s ≤ 2 * i) (hn : n = i - (s -
     Y.powerCoeff i = -N * Y.genericConst.val ^ n := by
   rw [powerCoeff, ite_eq_right hi.not_gt, hn]
 
-/-- The coefficient `Y.powerCoeff i` of `𝔢 ^ i` is nonzero, as `c` and `N` are. -/
-lemma powerCoeff_ne_zero (i : ℕ) : Y.powerCoeff i ≠ 0 := by
-  simp [powerCoeff, ite_eq_iff, zpow_ne_zero _ Y.genericConst.property.left,
-    Y.N_ne_zero_and_star_eq.left]
-
 /-- For `i < s` the vector `𝔢 ^ i` is supported at the string index `i`. -/
 lemma stringPower_eq_single (i : Fin s) :
     Y.stringPower i = Pi.single (Y.indexEquiv (.inr i)) (Y.powerCoeff i) := by
@@ -155,7 +150,8 @@ lemma exists_stringSum_eq {y : ι → 𝔸f E} (hy : Y.stringProj y = y) :
   obtain ⟨a | b, rfl⟩ := Y.indexEquiv.surjective k
   · -- Both vectors are fixed by the projection, so both vanish at the indices in `X`.
     rw [stringProj_eq_self_iff.1 (stringProj_stringSum t) a, stringProj_eq_self_iff.1 hy a]
-  · simp [stringSum_apply_inr, t, ← mul_assoc, ← map_mul, Y.powerCoeff_ne_zero b]
+  · simp [stringSum_apply_inr, t, ← mul_assoc, ← map_mul, powerCoeff, ite_eq_iff,
+      zpow_ne_zero _ Y.genericConst.property.left, Y.N_ne_zero_and_star_eq.left]
 
 /-- For gradings with the same constant `c`, the map `Y.stringMapFin Y'`, the finite part of
 `Y.stringMap Y'`, sends `𝔢 ^ i` to `𝔢 ^ i`. -/
