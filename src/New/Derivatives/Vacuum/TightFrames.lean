@@ -563,7 +563,8 @@ lemma eq_zero_of_jetSeries_eq_zero (hf : f ∈ V.finitePart) {a : ℂ} (ha : a �
   have h_taylor : taylorAtZero (fun t : ℂ ↦ entireTheta f (a • t • y)) = taylorAtZero 0 := by
     rw [taylor_line_eq_subst_jetSeries hf a y, h_jet,
       ← coe_substAlgHom (hasSubst_of_constantCoeff_zero (by simp [linearSeries])), map_zero]
-    exact PowerSeries.ext fun k ↦ by simp [taylorAtZero]
+    change 0 = taylorAtZero (fun _ : ℂ ↦ 0)
+    simpa only [map_zero] using (taylorAtZero_const (0 : ℂ)).symm
   have h_line : (fun t : ℂ ↦ entireTheta f (a • t • y)) = 0 :=
     eq_of_taylorAtZero_eq (by fun_prop (disch := simp [hf])) differentiable_zero h_taylor
   -- The point `a⁻¹` of the line is `y`.
