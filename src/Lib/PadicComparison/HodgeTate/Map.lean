@@ -145,7 +145,7 @@ def toHodgeTest : HodgeTatePair ⥤ HodgeTest k := by
   refine ⟨(⟨·.GenericRing, _⟩), (⟨_, .snd .. ∘ₛₗ ·.2⟩), ?_, ?_⟩
   all_goals
     intros
-    apply HodgeTest.hom_ext <;> aesop
+    apply HodgeTest.hom_ext <;> intros <;> simp <;> rfl
 
 /-! ### The rings `B_{S,M}` -/
 
