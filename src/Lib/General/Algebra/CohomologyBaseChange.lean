@@ -119,10 +119,10 @@ noncomputable def HasBaseChange.yonedaEquiv₀ (Φ : C ⥤ ModuleCat S) (A : C) 
     Φ.obj A ≃ₗ[S] H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 :=
   AddEquiv.toLinearEquiv
     (show Φ.obj A ≃+ H (freeAb.obj (reprBy A)) (moduleCoeff Φ) 0 from
-      (addEquiv₀.trans ((homReprEquiv A (moduleCoeff Φ)).trans .ulift)).symm) fun s x ↦ by
-    -- A scalar acts on classes by pushing along an endomorphism of the coefficients.
-    rw [smul_eq_push]
-    exact (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
+      (addEquiv₀.trans ((homReprEquiv A (moduleCoeff Φ)).trans .ulift)).symm) fun s x ↦
+    -- A scalar acts on classes by pushing along an endomorphism of the coefficients; this is
+    -- `smul_eq_push`, which holds by definition.
+    (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
 
 /-- For every object A, the map M ⊗_S H^n(ℤ[h_A], Φ) → H^n(ℤ[h_A], M ⊗_S Φ) is bijective in
 every degree n (`AllBijective`), h_A the functor represented by A; no flatness of M is assumed. -/
@@ -197,9 +197,9 @@ lemma HasBaseChange.devissage [Flat S M] :
   have h_hom (X : ShortComplex (AbFunctor C)) (hX : X.ShortExact) :
       Hom (tensoredSeq M Φ hX) (contravariant hX (moduleCoeff (Φ ⋙ tensorWith T M)))
         base base base :=
-    { comm_f := fun _ x ↦ baseChangeMap_lTensor_precompₗ _ _ x
-      comm_g := fun _ x ↦ baseChangeMap_lTensor_precompₗ _ _ x
-      comm_delta := fun _ x ↦ baseChangeMap_lTensor_precompₗ _ _ x }
+    { comm_f := fun n x ↦ baseChangeMap_lTensor_precompₗ (mk₀ X.g) n.zero_add x
+      comm_g := fun n x ↦ baseChangeMap_lTensor_precompₗ (mk₀ X.f) n.zero_add x
+      comm_delta := fun n x ↦ baseChangeMap_lTensor_precompₗ hX.extClass n.one_add x }
   refine ⟨⟨fun hX ↦ (h_hom _ hX).four_lemma⟩, fun N hN ↦ ?_, fun X hX ↦ (h_hom X hX).five_lemma⟩
   -- For the zero functor both sides are trivial.
   have (F : AbFunctor C) (n : ℕ) : Subsingleton (H N F n) := subsingleton_of_id_eq_zero hN F n
