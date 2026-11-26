@@ -353,12 +353,6 @@ lemma exists_q_eq_pow (hw : (p : 𝓞 F) ∈ w.asIdeal) :
           ∀ x : 𝓞 F, Ideal.Quotient.mk w.asIdeal x ^ p ^ n = Ideal.Quotient.mk w.asIdeal x :=
   ⟨w.asIdeal.inertiaDeg ℤ, w.q_eq_pow_inertiaDeg hw, w.inertiaDeg_dvd_iff_forall_pow_eq hw⟩
 
-/-- If `(a) = w`, then `w` is the only finite place that contains `a`. -/
-lemma mem_asIdeal_iff_of_span_eq {a : 𝓞 F} (h_span : span {a} = w.asIdeal) (u : FinPlace F) :
-    a ∈ u.asIdeal ↔ u = w := by
-  rw [← dvd_span_singleton, h_span, prime_dvd_prime_iff_eq u.prime w.prime,
-    IsDedekindDomain.HeightOneSpectrum.ext_iff]
-
 /-- If `(a) = w w'`, then the finite places that contain `a` are `w` and `w'`. -/
 lemma mem_asIdeal_iff_of_span_eq_mul {w' : FinPlace F} {a : 𝓞 F}
     (h_span : span {a} = w.asIdeal * w'.asIdeal) (u : FinPlace F) :
@@ -587,7 +581,8 @@ lemma prime_inert_or_eq_mul (hw : (p : 𝓞 (QuadField d)) ∈ w.asIdeal) :
         w.q = p ∧ J.q = p ∧ span {(p : 𝓞 (QuadField d))} = w.asIdeal * J.asIdeal) := by
   obtain ⟨h_span, norm_w⟩ | ⟨J, h_span, norm_w, norm_J⟩ := span_eq_or_exists_span_eq_mul w hw
   · refine ⟨w, fun u ↦ ?_, .inl ⟨rfl, norm_w⟩⟩
-    rw [w.mem_asIdeal_iff_of_span_eq h_span, or_self]
+    rw [← dvd_span_singleton, h_span, prime_dvd_prime_iff_eq u.prime w.prime,
+      IsDedekindDomain.HeightOneSpectrum.ext_iff, or_self]
   · exact ⟨J, w.mem_asIdeal_iff_of_span_eq_mul h_span, .inr ⟨norm_w, norm_J, h_span⟩⟩
 
 end New.QuadField
