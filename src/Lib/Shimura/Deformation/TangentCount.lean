@@ -71,6 +71,7 @@ lemma mem_powers_card_of_isLinearMap_pow (F : Type*) {i : ℕ} [Field F] [Finite
     (mul_pow_sub_one h_pos _).trans h_card.symm
   exact ⟨finrank F V - 1, by simpa using h_pow⟩
 
+omit [IsAlgClosed k] in
 /-- Suppose that the kernel of `x.baseHom` contains some `p ≠ 0`. Then `placeTorsion x k` is finite,
 and there is a local ring `B` (that of the finite group scheme `placeTorsion x` at the origin) with
 a universal point `u`: a homomorphism out of `B` is determined by the image of `u`, and every point
@@ -138,6 +139,7 @@ lemma exists_local_universal_point {p : NumberField.RingOfIntegers E} (hp : x.ba
   congr with g
   exact IsLocalization.lift_eq h_unit g
 
+omit [IsAlgClosed k] in
 /-- If a nilpotent `τ` divides every element of the kernel of `z : B → k`, then `τ` generates the
 `k`-algebra `B`, and each scaling `τ ↦ a • τ` extends to an endomorphism of `B`. -/
 lemma adjoin_eq_top_and_exists_algHom_eq_smul {B : Type*} [CommRing B] [Algebra k B] (z : B →ₐ[k] k)
@@ -186,6 +188,7 @@ structure IsLocalParameter (L : k →+ (specOver k (DualNumber k) ⟶ x.groupSch
   /-- Every tangent vector `L a` is the image under `s` of a point over `B`. -/
   exists_lift : ∀ a : k, ∃ y : placeTorsion x B, (placeTorsionMap s y).val = L a
 
+omit [IsAlgClosed k] in
 /-- Let `ker x.baseHom` contain `p ≠ 0`, and let `L` be a line of tangent vectors of `x.groupScheme`
 at `0` (`L 1 ≠ 0`, each `L m` reduces to `0`) on which `𝓞 E` acts through `x.baseHom`, scaled by
 the maps `ε ↦ m ε`. Let `ν` map a type `T` to the `k`-points of `placeTorsion x` such that every
