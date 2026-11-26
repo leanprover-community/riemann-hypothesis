@@ -295,10 +295,6 @@ theorem mem_commonLink : v ∈ commonLink γ γ' ↔
       ⟨(congrFun h_target (inr ())).symm.trans hv, congrFun h_source (inr ())⟩⟩,
       funext fun i ↦ congrFun h_source (inl i)⟩
 
-/-- For `γ' = γ` the condition `Υ_γ v = Υ_γ' v` always holds, so `commonLink γ γ` is `X₀^γ`. -/
-theorem commonLink_self (γ : S.G E) : commonLink γ γ = linkedX₀ γ :=
-  Submodule.ext fun _ ↦ mem_commonLink.trans (and_iff_left rfl)
-
 /-- The space `commonLink γ γ'` lies in `X₀^γ ∩ X₀^γ'`. It consists of the `x` in `X₀` that are the
 `X₀`-coordinates of the first vector of a pair of middle vectors that are orthogonal to `z` and lie
 in the links of both `γ` and `γ'`. -/
@@ -328,7 +324,8 @@ the corank of `commonLink γ γ'` in `X₀^γ` is at most the corank of `link γ
 lemma finrank_linkedX₀_add_finrank_inf_le (γ γ' : S.G E) :
     finrank E (linkedX₀ γ) + finrank E ↥(link γ ⊓ link γ') ≤
       finrank E (commonLink γ γ') + (𝔰.k + 1) := by
-  rw [← commonLink_self, finrank_commonLink, finrank_commonLink, inf_idem]
+  rw [← show commonLink γ γ = linkedX₀ γ from Submodule.ext fun _ ↦ mem_commonLink.trans (and_iff_left rfl),
+    finrank_commonLink, finrank_commonLink, inf_idem]
   set K : Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E) :=
     (zRowBlockDiagonal (S.ratMiddle E)).mulVecLin.ker
   have h_sup : finrank E ↥(link γ ⊓ K ⊔ link γ ⊓ link γ') ≤ 𝔰.k + 1 :=
