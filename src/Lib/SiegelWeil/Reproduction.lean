@@ -294,9 +294,18 @@ lemma letterPoly_highestVector_mem_holomorphicData (hO : IsPosFirstOrder s O) {E
       (by fin_cases c <;> simp) fun _ ↦ rfl) ?_
   -- Unfold the highest vector: it is the product of these minors.
   fin_cases c <;>
-    simp [letterPoly, highestVector, weylKernel, highestPoly, tableauPoly, minor, permArray,
-      fockLetters, ite_and, sum_filter, rowSubst, apply_ite, decreasingPosition, AlgHom.map_det,
-      Matrix.map, staircaseBlock]
+    simp only [letterPoly, fockLetters, sum_filter, ite_and, highestVector, decreasingPosition,
+      Nat.cast_lt, Fin.val_fin_lt, LinearMap.coe_comp, AlgHom.coe_toLinearMap,
+      Function.comp_apply, toPoly_weylEval, weylKernel, rowSubst, permArray, of_apply,
+      ite_smul, one_smul, zero_smul, highestPoly, tableauPoly, minor, prod_const,
+      card_univ, Fintype.card_fin, map_prod, map_pow, AlgHom.map_det,
+      AlgHom.mapMatrix_apply, Matrix.map, aeval_X, Fin.val_castLE, map_sum, apply_ite,
+      map_zero, UnitsInt.univ, staircaseBlock, Units.val_one, one_mul, Pi.smul_apply,
+      Int.zsmul_eq_mul, sum_ite_irrel, sum_const_zero, Finset.mem_singleton,
+      units_ne_neg_self, not_false_eq_true, Finset.prod_insert, Pi.single_eq_same,
+      Finset.prod_singleton, Units.val_neg, Int.reduceNeg, neg_mul, neg_lt_neg_iff,
+      ne_eq, neg_units_ne_self, Pi.single_eq_of_ne, Pi.zero_apply, pow_zero, mul_one,
+      rename_X, mul_neg, one_pow]
 
 /-! ### The reproducing formula -/
 
