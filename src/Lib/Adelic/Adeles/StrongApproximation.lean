@@ -15,6 +15,7 @@ public import Lib.General.Analysis.FourierTransforms
 public import Lib.Adelic.Adeles.AdditiveCharacter
 import Lib.General.Measure.IdempotentKernel
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
+public import TauCeti.NumberTheory.NumberField.FinitePlace.Basic
 
 /-!
 # Standard character, self-duality, strong approximation and one-sided Poisson summation
@@ -445,11 +446,6 @@ namespace New
 open Set QuotientAddGroup Rat MeasureTheory IsDualFamily
 
 variable {E : Type*} [Field E] [NumberField E] [NumberField.IsTotallyComplex E] [PlaceEmbedding E]
-
-/-- A number field has infinitely many finite places, since they surject onto the primes. -/
-instance : Infinite (FinPlace E) :=
-  .of_surjective _
-    (HeightOneSpectrum.primesEquiv.surjective.comp (FinPlace.comap_surjective (castHom E)))
 
 /-- The idempotent adele with component `1` at the finite places in `S`, and `0` at the other finite
 places and at all infinite places. -/
