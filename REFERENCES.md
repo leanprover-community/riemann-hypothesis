@@ -2,10 +2,10 @@
 
 Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 70
 - not compared, no place given: 8
-- place confirmed at second hand: 35
-- work found, no place given: 119
+- place confirmed at second hand: 34
+- work found, no place given: 116
 
 The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
 
@@ -41,7 +41,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Birch, Weber's class invariants, 1969 | work found, no place given | `Lib/CM/GoodReduction` |
 | Blake, A Deuring criterion for abelian varieties | compared, place confirmed | `Lib/CM/FormalGroup/InseparableDegree` |
 | Bluher, Formal groups, elliptic curves, and some theorems of Couveignes | compared, place confirmed | `Lib/CM/FormalGroup/InseparableDegree` |
-| Bombieri, Counting points on curves over finite fields, Sém. Bourbaki 430, 1973 | place confirmed at second hand | `New/Reduction/MainInequality` |
+| Bombieri, Counting points on curves over finite fields, Sém. Bourbaki 430, 1973, Theorem 1 | compared, place confirmed | `New/Reduction/MainInequality` |
 | Bombieri–Gubler, Heights in Diophantine Geometry, 2006 | place confirmed at second hand | `New/Reduction/Lattices/Heights` |
 | Bombieri–Vaaler, On Siegel's lemma, Invent. Math. 73 (1983) | work found, no place given | `New/Spanning/RemainingTerms/SiegelLemma` |
 | Borel, Automorphic forms on reductive groups (Park City) | work found, no place given | `Lib/Adelic/AutomorphicForms/Cuspidality` |
@@ -94,7 +94,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Godement, Série de Poincaré et Spitzenformen, exp. 10 | place confirmed at second hand | `Lib/Adelic/AutomorphicForms/Cuspidality` |
 | Godement, The spectral decomposition of cusp forms, PSPM 9 (1966) 225-234 | place confirmed at second hand | `Lib/Adelic/AutomorphicForms/Cuspidality` |
 | Goodman, Wallach, Symmetry, Representations, and Invariants, 2009 | compared, place confirmed | `Lib/GLn/SchurModule/SchurNorm` |
-| Granville–Stark, ABC implies no Siegel zeros, 2000 | work found, no place given | `New/Reduction/MainInequality` |
+| Granville–Stark, ABC implies no Siegel zeros, 2000, Theorems 1–2 | compared, place confirmed | `New/Reduction/MainInequality` |
 | Green 1955 | compared, place confirmed | `Lib/LocalGL/Green/CuspidalFunctions` |
 | Green, Polynomial representations of GL_n, 1980 | work found, no place given | `New/UpperBound/ElementaryDivisors/AveragingMap` |
 | Greenberg, Voight, Lattice methods for algebraic modular forms on classical groups (2014) | compared, place confirmed | `Lib/Adelic/Hecke/ClassSums`, `Lib/SiegelWeil/NeighbourLattices`, `New/UpperBound/Size/ArchimedeanSize` |
@@ -176,7 +176,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Neukirch-Schmidt-Wingberg, Cohomology of Number Fields (2nd ed. 2008) | compared, place confirmed | `Lib/ClassField/GaloisCohomology/KummerCyclicClasses` |
 | O'Meara, Introduction to Quadratic Forms | compared, place confirmed | `Lib/Weil/Periods/PointLattice` |
 | O. T. O'Meara, Introduction to quadratic forms | place confirmed at second hand | `Lib/Weil/Periods/PointLattice` |
-| Pritsker, The Gelfond–Schnirelman method in prime number theory, 2005 | work found, no place given | `New/Reduction/MainInequality` |
+| Pritsker, The Gelfond–Schnirelman method in prime number theory, 2005, Theorem 1.1 | compared, place confirmed | `New/Reduction/MainInequality` |
 | Pólya 1918 | work found, no place given | `Lib/Analytic/PolyaVinogradov` |
 | R. Howe, Transcending classical invariant theory | place confirmed at second hand | `Lib/DiscreteSeries/Theta/LocalCorrespondence` |
 | R. Taylor, A. Wiles, Ring-theoretic properties of certain Hecke algebras | work found, no place given | `New/Congruences/FirstOrder/TrianglePrimes` |
@@ -238,7 +238,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Welch 1974 | not compared, no place given | `New/Spanning/SecondMoment/FewTranslates` |
 | Wolsey, Greedy algorithm for the submodular set covering problem, 1982 | work found, no place given | `New/Spanning/SecondMoment/FewTranslates` |
 | arXiv 2601.16141 | work found, no place given | `Lib/Weil/DualPair/GaloisLaw` |
-| van Frankenhuijsen, The Riemann hypothesis for function fields over a finite field, 2008 | work found, no place given | `New/Reduction/MainInequality` |
+| van Frankenhuijsen, The Riemann hypothesis for function fields over a finite field, 2008, Theorems 3.6 and 3.8 | compared, place confirmed | `New/Reduction/MainInequality` |
 
 ## Files whose citations were not part of the check
 

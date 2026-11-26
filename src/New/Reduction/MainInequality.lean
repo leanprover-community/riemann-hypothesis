@@ -72,11 +72,20 @@ are listed in `New.Reduction.Data.Sizes`.
 
 ## Relation to the literature
 
-Earlier bounds for sums over primes by size against divisibility: Pritsker, The Gelfond–Schnirelman
-method in prime number theory, 2005; Granville–Stark, ABC implies no Siegel zeros for L-functions of
-characters with negative discriminant, 2000; Bombieri, Counting points on curves over finite fields,
-Sém. Bourbaki 430, 1973; van Frankenhuijsen, The Riemann hypothesis for function fields over a
-finite field, 2008.
+Pritsker, *The Gelfond–Schnirelman method in prime number theory* (2005), Theorem 1.1, uses the
+size and denominators of integrals of integer polynomials to bound the integral of Chebyshev's `ψ`
+from below. Granville–Stark, *ABC implies no Siegel zeros for L-functions of characters with
+negative discriminant* (2000), Theorems 1–2, use the uniform `abc` conjecture for number fields to
+bound imaginary quadratic class numbers from below and exclude real Siegel zeros for the associated
+quadratic characters.
+
+For the function-field analogue, Bombieri, *Counting points on curves over finite fields*,
+Séminaire Bourbaki 430 (1973), Theorem 1, compares the zeros and poles of an auxiliary function to
+bound the number of Frobenius fixed points when `q` is a square and `q > (g + 1)⁴`. In *The Riemann
+hypothesis for function fields over a finite field* (2008), Theorems 3.6 and 3.8, van Frankenhuijsen
+gives the rational-point bound and deduces the Riemann hypothesis for curves. Here the upper and
+lower bounds on the index-corrected covolume give `New.star_inequality`, an upper bound on the
+weighted prime-sum remainder.
 -/
 
 @[expose] public section
