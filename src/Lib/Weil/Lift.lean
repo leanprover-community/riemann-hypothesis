@@ -219,7 +219,9 @@ theorem New.isJointHighest_prod_det_pow_staircaseWeight {r n : Type} [Fintype r]
     · obtain ⟨-, h_sign_layer, h_place_layer⟩ := h_at t i
       have h_lt : s c * l (κ t i) < s c * l c := by simpa [h_sign, mul_add, pairSign] using h_out
       have h_le : o c ≤ o (κ t i) := by
-        simpa only [ho] using card_le_card (monotone_filter_right _ (by grind))
+        rw [ho, ho, ← h_sign]
+        refine card_le_card (monotone_filter_right _ ?_)
+        exact fun _ _ hd ↦ ⟨hd.1, h_lt.trans hd.2⟩
       exact ⟨⟨o c, by lia⟩, (hκ t _ c).2 ⟨h_sign.trans h_sign_layer, rfl⟩⟩
     · -- Only the layers of sign `s c` contain the column `c`, each with the sign `-s c`.
       have h_count : -(s c * ∑ j ∈ Ioo (o c) (card n), k (s c) j : ℤ) =
