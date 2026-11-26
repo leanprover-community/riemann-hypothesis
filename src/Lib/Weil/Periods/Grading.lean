@@ -718,9 +718,8 @@ lemma ratCoordMatrixFin_inclXFin (h : Gf E X) :
 lemma inclX_inr (h : Gf E X) : Y.inclX (1, h) = (1, Y.inclXFin h) := by
   -- Compare the matrices in rational coordinates, block by block along `Y.indexEquiv`.
   refine V.isEmbedding_ratCoordMatrix.injective (ext ?_)
-  simp [reindex_equiv Y.indexEquiv, ratCoordMatrix_inclX, inclXFin, ratCoordMatrix_inr,
-    Matrix.one_apply, ratCoordMatrixFin_snd]
-  aesop
+  simp +contextual [reindex_equiv Y.indexEquiv, ratCoordMatrix_inclX, inclXFin, ratCoordMatrix_inr,
+    Matrix.one_apply, ratCoordMatrixFin_snd, Prod.ext_iff, apply_ite, funext_iff]
 
 omit [Fintype X] in
 lemma snd_mem_besselFin {g : G E ε} (hg : g ∈ Y.besselGroup) : g.2 ∈ Y.besselFin := by
