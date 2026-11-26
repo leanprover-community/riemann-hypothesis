@@ -178,7 +178,9 @@ lemma valuation_of_lineFinFactor_ne_zero {a : 𝔸f E} (ha : lineFinFactor 𝔠 
       IsIntegralUnit (evalPlaces 𝔠.ramifiedPlaces a) ∧ IsIntegralUnit
         (evalPlaces 𝔠.ramifiedPlaces (star a)) := by
     simp only [lineFinFactor, invOnUnits] at ha
-    grind
+    split_ifs at ha with h_int h_unit h_unit_star
+    · exact ⟨h_int, h_unit, by rwa [mul_one] at h_unit_star⟩
+    all_goals simp at ha
   rw [isIntegralUnit_iff_v_eq_one] at h_unit h_unit_star
   refine ⟨idem_mul_mem_Ô.1 h_int, fun w hw ↦ hw.elim (fun hw ↦ h_unit ⟨w, hw⟩) fun hw ↦ ?_⟩
   -- The valuation of `a` at `w` is that of `ā` at the conjugate place, which lies in `S`.
