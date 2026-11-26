@@ -37,7 +37,8 @@ Notions from other files:
 * `New.Lift.FrobGroup`: the group ℤ × Γ, acting on A_inf by (n, g) ↦ φ^n j(g).
 * `New.Lift.Chart.S`, `New.Lift.Chart.bicommutant`: for a chart, the Λ-subalgebra S of A_inf that is
   the image of the chart's map Λ[[X]] → A_inf, with `k.coord₀ : A_inf → S` an S-linear retraction of
-  A_inf onto S, and the subalgebra S_B of B^+, the closure of S[E/p] with p inverted.
+  A_inf onto S, and the subalgebra S_B of B^+ of the elements whose multiplication commutes with
+  every S-linear map of B^+ that keeps the image of A_max.
 * `New.Period.hodgeFil`: the step Fil^n = t^n B_dR^+ of the filtration of B_dR, for n in ℤ.
 
 ## Relation to the literature
