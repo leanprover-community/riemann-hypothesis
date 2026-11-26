@@ -222,12 +222,6 @@ lemma hasDerivWithinAt_exp_neg_of_commute {L : ℝ → Matrix n n ℂ} {L' : Mat
   rw [← Matrix.exp_add_of_commute _ _ ((Commute.refl _).sub_right (h_comm t ht)).neg_left,
     neg_add_eq_sub, sub_sub_cancel_left]
 
-/-- For `‖X‖ ≤ 1 / 2` and `0 ≤ s ≤ 1` the matrix `(1 + s • X)⁻¹ * X` times `1 + s • X` is `X`. -/
-lemma inv_one_add_smul_mul_mul_one_add_smul (hX : ‖X‖ ≤ 2⁻¹) {s : ℝ}
-    (hs : s ∈ Set.Icc (0 : ℝ) 1) : (1 + s • X)⁻¹ * X * (1 + s • X) = X := by
-  rw [← (commute_inv_one_add_smul (.refl X) s).eq, mul_assoc,
-    nonsing_inv_mul _ (det_one_add_smul_ne_zero hX hs).isUnit, mul_one]
-
 /-- If the Hilbert–Schmidt norm of `X` is at most `1 / 2`, then `logOneAdd X`, the integral of
 `(1 + s • X)⁻¹ * X` over `[0, 1]`, is a logarithm of `1 + X`. -/
 lemma exp_logOneAdd (hX : ‖X‖ ≤ 2⁻¹) : NormedSpace.exp (logOneAdd X) = 1 + X := by
@@ -251,7 +245,9 @@ lemma exp_logOneAdd (hX : ‖X‖ ≤ 2⁻¹) : NormedSpace.exp (logOneAdd X) = 
     have h_line : HasDerivAt (fun t : ℝ ↦ 1 + t • X) X s := by
       -- `using!`: the two instances of the topology on matrices agree only up to defeq.
       simpa only [one_smul] using! ((hasDerivAt_id' s).smul_const X).const_add (1 : Matrix n n ℂ)
-    have h_cancel : G s * (1 + s • X) = X := inv_one_add_smul_mul_mul_one_add_smul hX hs
+    have h_cancel : G s * (1 + s • X) = X := by
+      rw [show G s = (1 + s • X)⁻¹ * X from rfl, ← (commute_inv_one_add_smul (.refl X) s).eq, mul_assoc,
+        nonsing_inv_mul _ (det_one_add_smul_ne_zero hX hs).isUnit, mul_one]
     refine ((h_exp s hs).fun_mul h_line.hasDerivWithinAt).congr_deriv ?_
     simp [mul_assoc, h_cancel]
   have h_const : NormedSpace.exp (-L 1) * (1 + (1 : ℝ) • X) =
