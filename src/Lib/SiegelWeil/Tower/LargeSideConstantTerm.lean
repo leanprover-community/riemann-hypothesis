@@ -512,12 +512,6 @@ section
 variable {σ : b ⊕ r ≃ n} {v : PairFock E s' t'} {y : Matrix b n (LocProd 𝔠.ramifiedPlaces)}
   {g : G E s} {f : 𝒮 (W'.hom V')} {κ : Bool → ℂ} {c : (𝔸f E)ˣ}
 
-/-- If the datum `f` factors along the line (`LineValueFactors`) for the split tame character `𝔠`,
-neither side of Poisson's formula on the line has a term at `0`. -/
-theorem lineValue_zero_of_factor (h_factor : LineValueFactors 𝔠 A X σ v y g f κ) (β : Bool)
-    (h : G E t) (k : maxCompact E t') : lineValue 𝔠.character A X f g β 0 h k = 0 := by
-  simpa [lineFinFactor_zero] using h_factor β 0 h k
-
 /-- Let the datum `f` factor along the line (`LineValueFactors`) for the split tame character `𝔠`,
 and let the translation by `c` remove the uniformiser from the finite factor. Then one term of
 Tate's integrand at the idele `α K`, with `K = c⁻¹ α₀` and `α₀ = scaleIdele E`, is the cone kernel
@@ -588,7 +582,7 @@ theorem integral_zetaIntegrand_of_one_lt
   refine integral_ideleClass_tsum hρ
     (integrable_coneKernel A X y g β hv (one_pos.trans hx)) (h_tate_int.const_mul _)
     (poissonVariable E β u * K⁻¹) fun a h k ↦ ?_
-  rw [zetaIntegrand_eq_tsum A X hn fun β ↦ lineValue_zero_of_factor A X h_factor β h k]
+  rw [zetaIntegrand_eq_tsum A X hn fun β ↦ by simpa [lineFinFactor_zero] using h_factor β 0 h k]
   refine tsum_congr fun ξ ↦ ?_
   have h_idele : principalAdeleUnit ξ * poissonVariable E β (a * u) =
       principalAdeleUnit ξ * poissonVariable E β a * (poissonVariable E β u * K⁻¹) * K := by
