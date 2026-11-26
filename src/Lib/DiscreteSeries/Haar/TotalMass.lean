@@ -420,7 +420,7 @@ theorem measure_ball_le_covering (ν : Measure S) [MeasurableMul S] [ν.IsMulRig
 /-- For a proper homomorphism `j` to `U J` and a measure `ν` that is finite on compact sets, the
 ball `‖j s - 1‖ ≤ R` in the operator norm has finite measure. -/
 lemma measure_ball_ne_top_of_isProperMap (ν : Measure S) [MeasurableMul S]
-    [ν.IsMulRightInvariant] {j : S →* U J} [TopologicalSpace S] [IsFiniteMeasureOnCompacts ν]
+    {j : S →* U J} [TopologicalSpace S] [IsFiniteMeasureOnCompacts ν]
     (hj : IsProperMap j) (R : ℝ) : ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ R} ≠ ⊤ := by
   have h_eq : {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ R} = j ⁻¹' Metric.closedBall 1 R :=
     Set.ext fun s ↦ (mem_closedBall_iff_norm (b := (j s : Matrix n n ℂ))).symm
