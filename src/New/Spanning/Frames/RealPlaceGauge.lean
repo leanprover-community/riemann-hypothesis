@@ -52,8 +52,6 @@ and the docstrings call it a real place.
   The bound (`New.Floors.RealPlaceSizes.inv_groupMeasure_le`) compares two descriptions of the fibre
   measure of the Gram map on tuples `(y_0, y*_0, …, y_(ϱ-1), y*_(ϱ-1), y_ϱ)`: by Haar measure, and
   by choosing the vectors in turn.
-* `New.Floors.RealPlaceSizes.exists_orthonormal_mul_eq_zero_and_fixed`: common subspaces of two
-  points at `ℂ`, orthogonal to `n` given vectors, of each rank up to the free rank less `3 n`.
 * `New.Floors.lengthAt`, `New.Floors.inducedLength`, `New.Floors.realDepth`: the Euclidean length at
   a point of `G₁`, the induced length on a quotient along the frame, and the depth of a frame vector
   as the infimum of |ζ|_g² + |ζ|_g'² over its duals ζ.

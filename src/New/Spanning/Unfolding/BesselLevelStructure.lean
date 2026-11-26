@@ -32,10 +32,6 @@ with `S.translateByClassReps c d γ` integral of reduction s.
   along x and v, with ς = τ h(v, v), lies in the unipotent group `New.Shape.Form.besselU`; the lemma
   also computes its `New.simpleRootSum`.
 * `New.besselU_dense`, `New.Filling.exists_besselU_approx`: strong approximation for 𝖴.
-* `New.Filling.mem_reducedImage_besselU_iff_exists_termsOver`,
-  `New.Filling.prod_wave_eq_star_unipotentChar`: the rational points of 𝖴 that are integral for a
-  class map onto the reduction of the integral points of 𝖴(𝔸_f), and on them the character at
-  infinity is the conjugate of the finite character at an integral point with the same reduction.
 * `New.Filling.exists_besselS_mem_termsOver`: each reduction `s` of an integral element of
   `New.Shape.Form.besselS` is reached from each class c by a rational element of
   `New.Shape.Form.besselS`.

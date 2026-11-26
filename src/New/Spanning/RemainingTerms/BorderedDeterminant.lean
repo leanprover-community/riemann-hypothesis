@@ -28,8 +28,7 @@ says that `γ` has cell rank `j`. `New.Filling.minorNorm j γ` is the absolute n
 * `New.Filling.latticeDisc`, `New.Filling.isotropicRowsIndex`, `New.Filling.torsionIndex`: a
   discriminant and two lattice indices. `New.submoduleIndex M M'` is the index of `M ⊓ M'` in `M'`,
   `New.colLattice` a column span.
-* `New.Filling.subframeMinor`: the minor `δ_*(γ)`, nonzero for a term with a cell rank
-  (`New.Filling.HasCellRank.subframeMinor_ne_zero`).
+* `New.Filling.subframeMinor`: the minor `δ_*(γ)`.
 * `New.Filling.minorGauge`, `New.Filling.maxGauge`: the gauges of a term.
   `New.Filling.IsNearRepresentative` marks the kept terms, and `New.Filling.IsNearTermAt` selects
   the terms that are counted.
