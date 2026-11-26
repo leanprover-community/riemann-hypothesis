@@ -85,10 +85,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}
 
--- Mathlib's `Subtype.fintype` also applies to `Psi H`. This instance is that one, so the two agree at instance
--- transparency and statements elaborated with either match. Activate with `open scoped GlobalTheory.CompHt`.
-scoped instance fintypePsi : Fintype (Psi H) := inferInstance
-
 def dimFlag (Dw : Datum H) : ℕ := Formalism.DegreeFormula.dimFl (Psi H) (Dw.p + Dw.q)
 
 def hodgeWt (Dw : Datum H) : Weight Dw := barWt (Psi H) (Dw.p + Dw.q) Dw.p

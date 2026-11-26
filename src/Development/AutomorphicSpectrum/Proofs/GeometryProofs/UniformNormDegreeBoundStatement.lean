@@ -1390,7 +1390,7 @@ theorem regDominant_reW [DecidableEq (CMType H)] {u : GlobalTheory.AllWt.Weight 
   simpa [reW] using (Int.cast_lt (R := ℝ)).2 (hu τ hab)
 
 theorem vdm_inst (la : GlobalTheory.AllWt.Weight Dw) :
-    @GlobalTheory.CompHt.vdm _ GlobalTheory.CompHt.fintypePsi _ ℤ _ la = GlobalTheory.CompHt.vdm la := by
+    @GlobalTheory.CompHt.vdm _ inferInstance _ ℤ _ la = GlobalTheory.CompHt.vdm la := by
   first | convert rfl
 
 theorem dimFlag_eq [DecidableEq (CMType H)] :
