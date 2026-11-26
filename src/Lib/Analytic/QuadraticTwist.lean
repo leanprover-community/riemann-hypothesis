@@ -7,6 +7,7 @@ import Mathlib.NumberTheory.LSeries.SumCoeff
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Analysis.PSeries.Square
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
 public import Lib.Analytic.DirichletTheta
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
@@ -429,64 +430,27 @@ lemma exists_mul_abs_gaussianMonomial_mul_le {A : ℝ} (hA : 0 < A) :
         mul_rpow]
       ring
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
-/-- For `σ > 1/2` and a positive integer `k`, the terms `(k n m) ^ (-σ)` of the pairs `(n, m)` of
-positive integers with `k n m` a square have a nonnegative summable majorant. -/
-lemma exists_summable_ge_of_isSquare {σ : ℝ} (hσ : 1 / 2 < σ) (k : ℕ+) :
-    ∃ W : ℕ+ × ℕ+ → ℝ, Summable W ∧ (∀ p : ℕ+ × ℕ+, 0 ≤ W p) ∧
-      ∀ n m : ℕ+, IsSquare (k * (n * m) : ℕ) → (k * (n * m) : ℝ) ^ (-σ) ≤ W (n, m) := by
-  -- Such a pair has `k n = a b²`, `m = a c²`, so `k n m = (a b c)²`. Let `W (n, m)` be the sum of
-  -- `(a b c) ^ (-2 σ)` over the triples that give `(n, m)`.
-  have h_zeta : Summable fun a : ℕ ↦ ‖(a : ℝ) ^ (2 * -σ)‖ :=
-    (summable_nat_rpow.mpr (by linarith)).norm
-  let f (x : ℕ × ℕ × ℕ) : ℝ := x.1 ^ (2 * -σ) * (x.2.1 ^ (2 * -σ) * x.2.2 ^ (2 * -σ))
-  have hf : Summable f := summable_mul_of_summable_norm h_zeta (h_zeta.mul_norm h_zeta)
-  have hf_nonneg (x : ℕ × ℕ × ℕ) : 0 ≤ f x := by positivity
-  let pair (x : ℕ × ℕ × ℕ) : ℕ+ × ℕ+ := ((x.1 * x.2.1 ^ 2 / k).toPNat', (x.1 * x.2.2 ^ 2).toPNat')
-  refine ⟨fun p ↦ ∑' x : pair ⁻¹' {p}, f x, (hf.hasSum.tsum_fiberwise pair).summable,
-    fun p ↦ tsum_nonneg fun _ ↦ hf_nonneg _, fun n m ⟨r, hr⟩ ↦ ?_⟩
-  obtain ⟨a, b, c, hn, hm⟩ : ∃ a b c : ℕ, k * n = a * b ^ 2 ∧ m = a * c ^ 2 := by
-    -- With `g = gcd(k n, r)`, `k n = b g` and `r = c g` we get `b m = c² g`, so `b ∣ g`.
-    obtain ⟨g, b, c, hg, h_cop, hn, rfl⟩ :
-        ∃ g b c : ℕ, 0 < g ∧ b.Coprime c ∧ k * n = b * g ∧ r = c * g :=
-      exists_coprime' (by simp : 0 < gcd (k * n) r)
-    have h_bm : b * m = c ^ 2 * g := Nat.mul_left_cancel hg (by grind)
-    obtain ⟨a, rfl⟩ : b ∣ g := (h_cop.pow_right 2).dvd_mul_left.mp ⟨m, h_bm.symm⟩
-    exact ⟨a, b, c, by grind, Nat.mul_left_cancel (Nat.pos_of_mul_pos_right hg) (by grind)⟩
-  have h_eq : (k * (n * m) : ℝ) ^ (-σ) = f (a, b, c) := by
-    rify at hn hm
-    have h_sq : (k * (n * m) : ℝ) = (a * (b * c)) ^ 2 := by grind
-    simp (disch := positivity) only [f, h_sq, ← mul_rpow, ← rpow_two, ← rpow_mul]
-  exact h_eq.trans_le
-    ((hf.subtype _).le_tsum ⟨(a, b, c), by simp [pair, ← hn, ← hm]⟩ fun x _ ↦ hf_nonneg x)
-
 /-- For `σ > 1/2`, the terms `(n m) ^ (-σ)` of the pairs `(n, m)` of positive integers for which
 the odd part `ordCompl[2] (n m)` is a square, that is `n m = l²` or `2 l²`, have a nonnegative
 summable majorant. -/
 lemma exists_summable_ge_of_isSquare_ordCompl {σ : ℝ} (hσ : 1 / 2 < σ) :
     ∃ W : ℕ+ × ℕ+ → ℝ, Summable W ∧ (∀ p : ℕ+ × ℕ+, 0 ≤ W p) ∧
       ∀ n m : ℕ+, IsSquare (ordCompl[2] (n * m : ℕ)) → (n * m : ℝ) ^ (-σ) ≤ W (n, m) := by
-  choose W hW hW_nonneg hW_ge using exists_summable_ge_of_isSquare hσ
-  refine ⟨fun p ↦ W 1 p + 2 ^ σ * W 2 p, (hW 1).add ((hW 2).mul_left _),
-    fun p ↦ add_nonneg (hW_nonneg 1 p) (mul_nonneg (by positivity) (hW_nonneg 2 p)),
-    fun n m ⟨l, hl⟩ ↦ ?_⟩
-  have h_eq : 2 ^ (n * m : ℕ).factorization 2 * (l * l) = n * m := by
-    simp only [← hl, ordProj_mul_ordCompl_eq_self]
-  -- According to the parity of the exponent of `2`, `n m` or `2 n m` is a square.
-  obtain ⟨e, he | he⟩ := ((n * m : ℕ).factorization 2).even_or_odd'
-  · rw [he, pow_mul'] at h_eq
-    have h_sq : IsSquare ((1 : ℕ+) * (n * m) : ℕ) :=
-      ⟨2 ^ e * l, by simp [← h_eq, sq, mul_mul_mul_comm]⟩
-    exact le_add_of_le_of_nonneg (by simpa using hW_ge 1 n m h_sq)
-      (mul_nonneg (by positivity) (hW_nonneg 2 _))
-  · rw [he, pow_succ, pow_mul'] at h_eq
-    have h_sq : IsSquare ((2 : ℕ+) * (n * m) : ℕ) :=
-      ⟨2 ^ (e + 1) * l, by simp [← h_eq, pow_succ, mul_assoc, mul_left_comm]⟩
-    have h_two : (2 ^ (-σ) * (n * m : ℝ) ^ (-σ)) ≤ W 2 (n, m) := by
-      simpa [mul_rpow] using hW_ge 2 n m h_sq
-    rw [rpow_neg zero_le_two, inv_mul_le_iff₀ (by positivity)] at h_two
-    exact le_add_of_nonneg_of_le (hW_nonneg 1 _) h_two
+  let toNatPair := Prod.map PNat.val PNat.val
+  let squarePairs : Set (ℕ × ℕ) := {q | IsSquare (ordCompl[2] (q.1 * q.2))}
+  let weight := squarePairs.indicator (fun q ↦ ((q.1 : ℝ) * q.2) ^ (-σ))
+  have h_inj : Function.Injective toNatPair :=
+    PNat.coe_injective.prodMap PNat.coe_injective
+  have h_sum : Summable weight := Nat.summable_rpow_isSquare_ordCompl 2 (by linarith)
+  refine ⟨weight ∘ toNatPair, h_sum.comp_injective h_inj, ?_, ?_⟩
+  · intro p
+    exact Set.indicator_nonneg (fun _ _ ↦ Real.rpow_nonneg (by positivity) _) _
+  · intro n m h_square
+    have h_mem : toNatPair (n, m) ∈ squarePairs := h_square
+    change _ ≤ weight (toNatPair (n, m))
+    dsimp only [weight]
+    rw [Set.indicator_of_mem h_mem]
+    exact le_rfl
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
