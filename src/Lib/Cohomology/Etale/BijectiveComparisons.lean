@@ -562,7 +562,11 @@ def IsCover : Prop := IsCohomEquiv F (freeAb.map (Subfunctor.range p).ι)
 lemma IsPointwiseSurjective.isCover {F : AbFunctor D} (hp : IsPointwiseSurjective p) :
     IsCover F p := by
   -- `range p` is all of `Y`, so its inclusion is an isomorphism
-  have : IsIso (range p).ι := (range p).eq_top_iff_isIso.1 (by aesop : range p = ⊤)
+  have h_range : range p = ⊤ := by
+    apply top_unique
+    intro B x _
+    exact hp B x
+  have : IsIso (range p).ι := (range p).eq_top_iff_isIso.1 h_range
   exact .of_isIso _
 
 end CechDescent
