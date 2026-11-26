@@ -320,15 +320,6 @@ lemma New.Rows.exists_unitary_mul_triangular {n : Type} [Fintype n] [DecidableEq
     _ = _ := by
       rw [exp_sub, sqrt_eq_rpow, rpow_def_of_pos (one_pos.trans hy), one_div, mul_assoc]
 
-/-- Two transvections `1 - a y y^* J`, `1 - c y y^* J` along one vector `y` isotropic for
-`J = diag s` (`signMatrix s`) multiply by adding their parameters. -/
-lemma New.Rows.transvection_mul {n : Type} [Fintype n] [DecidableEq n] {s : n → ℤˣ} {y : n → ℂ}
-    (a c : ℂ) (iso : star y ⬝ᵥ signMatrix s *ᵥ y = 0) :
-    (1 - a • vecMulVec y (star y) * signMatrix s) * (1 - c • vecMulVec y (star y) * signMatrix s) =
-      1 - (a + c) • vecMulVec y (star y) * signMatrix s := by
-  simp [iso, mul_sub, vecMulVec_mul, sub_mul, mul_vecMulVec, vecMulVec_mulVec, ← dotProduct_mulVec]
-  module
-
 /-- The factorisation `exists_unitary_mul_triangular` along the upper half plane. Let the signs `1`
 of `J = diag s` come first in `o`, let the weight `u` have gap `1` and size at most `B ≥ 2` and let
 `v` be isotropic. For purely imaginary `a` with `η = im a |v|²` in `(0, 1 / 2]`, the matrix
@@ -458,8 +449,9 @@ lemma New.Rows.norm_le_of_transvection_invariant {E n : Type} [Field E] [CMType 
   let x (ζ : ℂ) (w : InfinitePlace E) : Matrix n n ℂ := 1 -
     (a w * (ζ - .I)) • vecMulVec (y w) (star (y w)) * signMatrix s
   have x_add (ζ : ℂ) (w : InfinitePlace E) : t w * x ζ w = x (ζ + 1) w := by
-    simp only [t_eq, x, transvection_mul _ _ (iso w)]
-    ring_nf
+    simp [t_eq, x, iso w, mul_sub, vecMulVec_mul, sub_mul, mul_vecMulVec, vecMulVec_mulVec,
+      ← dotProduct_mulVec]
+    module
   let η (w : InfinitePlace E) : ℝ := (a w).im * ∑ i, ‖y w i‖ ^ 2
   have η_le (w : InfinitePlace E) : η w ≤ 2⁻¹ := by
     nlinarith [single_le_sum (fun w _ ↦ (η_pos w).le) (mem_univ w), η_pos w]
