@@ -619,11 +619,13 @@ lemma isUnit_transition {i j : ι} {t : Spec A ⟶ X} (hi : LandsIn t (K.opens i
     (hj : LandsIn t (K.opens j)) : IsUnit (K.transition i j A t) :=
   IsUnit.of_mul_eq_one (K.transition j i A t) (transition_mul_transition K hi hj)
 
-/-- The proof is deliberately not `rfl`. With a `rfl` proof the lemma is tagged `@[defeq]`, so
-`simp` rewrites with it without recording a proof, and the kernel must then check the two
-pull-backs equal for the concrete `p` and `q` by unfolding them to the structure sheaf. -/
+/-- Pulling back along `q ≫ p` is pulling back along `p`, then along `q`. -/
 @[simp]
-lemma pull_comp : K.pull (q ≫ p) = (K.pull p).pull q := by cases K; rfl
+lemma pull_comp : K.pull (q ≫ p) = (K.pull p).pull q := by
+  -- Deliberately not `rfl`: with a `rfl` proof the lemma is tagged `@[defeq]`, so `simp` rewrites
+  -- with it without recording a proof, and the kernel must then check the two pull-backs equal
+  -- for the concrete `p` and `q` by unfolding them to the structure sheaf.
+  cases K; rfl
 
 @[simp]
 lemma pull_id : K.pull (𝟙 X) = K := rfl
