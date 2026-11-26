@@ -3,6 +3,7 @@ module
 public import Lib.ClassField.Places.DecompositionCompletion
 public import Lib.General.LinearAlgebra.Eigenvalues
 public import Lib.General.LinearAlgebra.MatrixNormBounds
+public import Lib.General.LinearAlgebra.MatrixPolynomials
 public import Lib.General.NumberTheory.CoefficientRings
 public import Lib.PadicComparison.Descent.TestCategory
 public import TauCeti.LinearAlgebra.Trace.Idempotent
