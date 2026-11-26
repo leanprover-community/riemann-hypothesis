@@ -10,7 +10,6 @@ public import Lib.SiegelWeil.Tower.FiniteTateIntegral
 public import Lib.Weil.DualPair.FiniteAction
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.Unitary.RationalPoints
-import Lib.ClassField.HeckeCharacter.SplittingCharacters
 import Lib.ClassField.HeckeCharacter.TameModulus
 import Lib.SiegelWeil.Formula.StrongApproximation
 import Lib.SiegelWeil.Tower.LargeSideConstantTerm
@@ -135,22 +134,12 @@ lemma coordMatrix_mul_fromBlocks_eq_fromCols (c : Matrix n b (𝔸 E)) (z : Matr
         p.adeleMatrix * D.kAdelic.fromCols D.iAdelic := by
     trans fromCols (D.kAdelic * q.val)
       (D.iAdelic * g.adeleMatrix + D.kAdelic * (cᴴ * stdForm E s * g.adeleMatrix))
-    · rw [fromCols_map, mul_fromCols, fromCols_mul_fromBlocks, Matrix.mul_zero, add_zero, add_comm]
-      simp only [kAdelic, iAdelic, Space.ratMap, Matrix.mul_assoc]
-    · dsimp only [p]
-      rw [show (D.radicalElement c z * D.levi (q, g)).adeleMatrix =
-          (D.radicalElement c z).adeleMatrix * (D.levi (q, g)).adeleMatrix by
-        simp only [G.adeleMatrix, map_mul, Subgroup.coe_mul, Units.val_mul]]
-      rw [mul_fromCols, Matrix.mul_assoc (D.radicalElement c z).adeleMatrix _ D.kAdelic,
-        D.actsOnFrame_levi q g, ← Matrix.mul_assoc (D.radicalElement c z).adeleMatrix D.kAdelic,
-        D.actsOnFrame_radicalElement, Matrix.mul_one,
-        Matrix.mul_assoc (D.radicalElement c z).adeleMatrix _ D.iAdelic, D.levi_mul_iAdelic q g,
-        ← Matrix.mul_assoc (D.radicalElement c z).adeleMatrix D.iAdelic,
-        D.radicalElement_mul_iAdelic, Matrix.add_mul]
-      simp only [Matrix.mul_assoc]
+    · simp [kAdelic, iAdelic, Space.ratMap, fromCols_map, fromCols_mul_fromBlocks,
+        Matrix.mul_assoc, add_comm]
+    · simp [p, G.adeleMatrix, G.ofMatrix, radicalElement, Splitting.levi, ↓mul_fromCols,
+        Matrix.mul_assoc, Matrix.add_mul, Matrix.sub_mul]
   rw [coordMatrix, Matrix.mul_assoc, h_image, ← Matrix.mul_assoc]
-  simp only [G.adeleMatrix, ← Units.val_mul, ← Subgroup.coe_mul, ← map_mul, inv_mul_cancel,
-    map_one, OneMemClass.coe_one, Units.val_one, Matrix.one_mul]
+  simp [G.adeleMatrix]
 
 section StandardDatum
 
@@ -435,11 +424,8 @@ theorem thetaLarge_eq_apply_one_of_even_rank [IsBaseAdapted D₁] {v : PairFock 
   have h_on (k : Gf E n) (hk : k ∈ Gf.supportedOn n 𝔠.ramifiedPlaces) (x : G E s) :
     F (x * (1, k)) = F x := by
     obtain ⟨-, h_law⟩ := h𝒟.map_translate h_mem k hk
-    have h_triv : (fun y : Matrix n Empty (LocProd 𝔠.ramifiedPlaces) ↦
-        stdColDatum 𝔠.semilocalChar 0 ((atPlaces 𝔠.ramifiedPlaces k).val * y)) =
-        stdColDatum 𝔠.semilocalChar 0 :=
-      funext fun y ↦ congrArg _ (Subsingleton.elim _ _)
-    simpa only [h_triv, h_val, card_empty, pow_zero, div_one] using h_law x
+    simpa [h_val, fun y : Matrix n Empty (LocProd 𝔠.ramifiedPlaces) ↦
+      Subsingleton.elim ((atPlaces 𝔠.ramifiedPlaces k).val * y) y] using h_law x
   have h_off : HasLevel F (stdLevel E n ⊓ Gf.trivialOn n 𝔠.ramifiedPlaces) := by
     simpa only [h_val] using h𝒟.invariant_off _ h_mem
   have h_aut : IsAutFunction W₁ F := by simpa only [h_val] using h𝒟.isAutFunction h_mem
@@ -713,15 +699,7 @@ lemma thetaTerm_stdRowDatum_eq {σ' : b ⊕ b ⊕ n ≃ m} (v : PairFock E r (t'
       (fromRows (1 : Matrix b b E) (0 : Matrix n b E)).map toAdele = fromRows V'.x.inv 0 := by
     simp [sum, blockGL, fromRows_map, fromBlocks_mul_fromRows]
   have h_scale : fromRows V'.x.inv (0 : Matrix n b (𝔸 E)) * q.val =
-      scaleIdele E • fromRows Y.val (0 : Matrix n b (𝔸 E)) := by
-    rw [fromRows_mul, Matrix.zero_mul,
-      show V'.x.inv * q.val = scaleIdele E • Y.val by
-        simp only [q, Units.val_mul, Units.val_smul, Matrix.smul_mul, Matrix.mul_smul,
-          ← Matrix.mul_assoc, V'.x.inv_val, Matrix.one_mul]]
-    exact Matrix.ext fun i j ↦ by
-      rcases i with i | i <;>
-        simp only [Matrix.smul_apply, fromRows_apply_inl, fromRows_apply_inr, Matrix.zero_apply,
-          smul_zero]
+      scaleIdele E • fromRows Y.val (0 : Matrix n b (𝔸 E)) := by simp [q]
   simpa only [gram_sum_fromRows_one_zero, mul_one] using
     thetaTerm_localDatum_of_eq_stdDatum W₁ D (V'.sum W₁) 𝔠.readsAt γ (v := v) (N := 1) (β' := γ)
       (stdRowDatum_mem σ' 𝔠.semilocalChar) (by simpa using h_std) (rankTwist_eq_mul_of_splitting D)
@@ -765,11 +743,8 @@ lemma thetaTerm_stdColDatum_eq (v' : PairFock E r t')
               (realSlice D V' (k⁻¹.adeleMatrix * Y.val) v'))) := by
   intro q γ
   subst hy
-  have h_coord : V'.x⁻¹.val * (1 : Matrix b b E).map toAdele = V'.x⁻¹.val := by
-    rw [Matrix.map_one toAdele (RingHom.map_zero toAdele) (RingHom.map_one toAdele), Matrix.mul_one]
-  have h_scale : V'.x⁻¹.val * q.val = scaleIdele E • Y.val := by
-    simp only [q, Units.val_mul, Units.val_smul, Matrix.smul_mul, Matrix.mul_smul,
-      ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
+  have h_coord : V'.x⁻¹.val * (1 : Matrix b b E).map toAdele = V'.x⁻¹.val := by simp
+  have h_scale : V'.x⁻¹.val * q.val = scaleIdele E • Y.val := by simp [q]
   simpa only [mul_one, conjTranspose_one, one_mul, fromCols_mul_fromRows, Matrix.mul_zero,
     add_zero] using
     thetaTerm_localDatum_of_eq_stdDatum W₁ D V' 𝔠.readsAt.star γ (v := v')
@@ -861,63 +836,6 @@ lemma adeleMatrix_inv_sum_mul_mul_fromRows (y : G E t') (y' : G E s) (k : G E (t
       k⁻¹.adeleMatrix * fromRows (y⁻¹.adeleMatrix * Y) (0 : Matrix n b (𝔸 E)) := by
   simp [← map_inv, Matrix.mul_assoc, fromBlocks_mul_fromRows]
 
-private lemma largeTriple_scalar_alg (a b c d e f g h k m n p q r s t : ℂ)
-    (hd : d ≠ 0) (he : e ≠ 0) (hf : f ≠ 0) :
-    a * ((b * c * d) * (p * (q * e)) *
-      (r * (s * t * (g * h / ((k ^ 2)⁻¹ * d * m⁻¹ * e) * n)))) =
-    g * (r / f * q * s * c * h * (a * (b * p * (f * (t * m * (k ^ 2 * n)))))) := by
-  have hdiv : g * h / ((k ^ 2)⁻¹ * d * m⁻¹ * e) = g * h * k ^ 2 * m * d⁻¹ * e⁻¹ := by
-    rw [div_eq_mul_inv, mul_inv, mul_inv, mul_inv, inv_inv, inv_inv]; ring
-  rw [hdiv]
-  calc a * ((b * c * d) * (p * (q * e)) * (r * (s * t * (g * h * k ^ 2 * m * d⁻¹ * e⁻¹ * n))))
-      = (d * d⁻¹) * (e * e⁻¹) * (a * b * c * p * q * r * s * t * g * h * k ^ 2 * m * n) := by ring
-    _ = (f / f) * (a * b * c * p * q * r * s * t * g * h * k ^ 2 * m * n) := by
-        rw [mul_inv_cancel₀ hd, mul_inv_cancel₀ he, one_mul, div_self hf]
-    _ = g * (r / f * q * s * c * h * (a * (b * p * (f * (t * m * (k ^ 2 * n)))))) := by ring
-
-private lemma thetaOnRealData_rankTwist_eq {W₁ : Space E n s} (V' : Space E b t')
-    (ν β : AutChar E) (f : 𝒮 (W₁.hom V')) (c' : Matrix b n (𝔸 E)) (g : G E s) (y : G E t')
-    (φ : PairFock E s t') :
-    thetaOnRealData W₁ V' (rankTwist ν n) β f c' (g, y) φ =
-      (ν.val y.det : ℂ) ^ 2 * thetaOnRealData W₁ V' (rankTwist ν⁻¹ n) β f c' (g, y) φ := by
-  simp [thetaOnRealData, rankTwist, pairWeil, sq, mul_assoc]
-
-omit [DecidableEq n] [DecidableEq b] in
-private lemma spaceChar_rankTwist_mul_inv (hn : 2 ∣ card n) (ν : AutChar E)
-    (d₀ d₁ : (𝔸 E)ˣ) :
-    (((rankTwist ν⁻¹ n * upsilonU1 ^ card b).spaceChar (card (b ⊕ n))).val (d₀ * d₁) : ℂ)⁻¹ =
-      (((upsilonU1 ^ card b).spaceChar (card b)).val (d₀ * d₁) : ℂ)⁻¹ *
-        (ν.baseChange.val d₀ : ℂ) * (ν.baseChange.val d₁ : ℂ) := by
-  have h_eq :
-      ((rankTwist ν⁻¹ n * upsilonU1 ^ card b).spaceChar (card (b ⊕ n))).val (d₀ * d₁) =
-      ((upsilonU1 ^ card b).spaceChar (card b)).val (d₀ * d₁) *
-        (ν.baseChange.val d₀ * ν.baseChange.val d₁)⁻¹ := by
-    rw [mul_comm (rankTwist ν⁻¹ n), Fintype.card_sum, AutChar.spaceChar_mul,
-      spaceChar_rankTwist hn]
-    show (((upsilonU1 ^ card b).spaceChar (card b)).val (d₀ * d₁) *
-      (ν⁻¹).baseChange.val (d₀ * d₁)) = _
-    congr 1
-    rw [MonoidHom.map_inv AutChar.baseChange]
-    exact congrArg Inv.inv (map_mul ν.baseChange.val d₀ d₁)
-  rw [h_eq, Circle.coe_mul, Circle.coe_inv, Circle.coe_mul, mul_inv, inv_inv, mul_assoc]
-
-omit [WeilData E] in
-private lemma baseChange_val_mul_finIdeleIncl_inv (ν : AutChar E) (u : unitary (𝔸 E))
-    (dY : (𝔸 E)ˣ) (dx : (𝔸f E)ˣ) :
-    (ν.baseChange.val (((Unitary.toUnits u)⁻¹ * dY) * (finIdeleIncl dx)⁻¹) : ℂ) =
-      ((ν.val u : ℂ) ^ 2)⁻¹ * (ν.baseChange.val dY : ℂ) * (ν.baseChange.finPart dx : ℂ)⁻¹ := by
-  rw [map_mul, map_mul, map_inv, map_inv, AutChar.baseChange_toUnits, map_mul,
-    Circle.coe_mul, Circle.coe_mul, Circle.coe_inv, Circle.coe_inv, Circle.coe_mul, sq]
-  rfl
-
-omit [WeilData E] [DecidableEq n] [DecidableEq b] in
-private lemma sqrt_ideleAbs_pow_card_sum (d₀ d₁ : (𝔸 E)ˣ) :
-    (√(ideleAbs (d₀ * d₁)) : ℂ) ^ card (b ⊕ n) =
-      (√(ideleAbs (d₀ * d₁)) : ℂ) ^ card b *
-        ((√(ideleAbs d₀) : ℂ) ^ card n * (√(ideleAbs d₁) : ℂ) ^ card n) := by
-  rw [Fintype.card_sum, pow_add, MonoidHom.map_mul ideleAbs, Real.sqrt_mul ideleAbs_pos.le,
-    Complex.ofReal_mul, mul_pow, mul_pow]
-
 open scoped Classical in
 /-- Let `D` split `X` as `W₁`, of even rank `n`, plus a hyperbolic space, let `lFrame` be the
 L-block of the dual frame at the ramified places of `𝔠`, and let
@@ -961,6 +879,7 @@ lemma exists_integral_thetaTerm_eq_of_periods {σ' : b ⊕ b ⊕ n ≃ m} {v : P
                 stdColDatum 𝔠.semilocalChar lFrame wᵀ)
                 𝔠.readsAt.star) p 1 y) := by
   intro p lFrame d₀ κ₀
+  obtain ⟨N, hN⟩ := hn
   have h_lFrame : IsIntMatrix O lFrame :=
     (adaptedFrame 𝔠.readsAt D).blockRelations.isIntMatrix_dualL
   split_ifs with hu
@@ -1018,36 +937,24 @@ lemma exists_integral_thetaTerm_eq_of_periods {σ' : b ⊕ b ⊕ n ≃ m} {v : P
   have det_inf : realIdele (infiniteDet B) = B.det * (finIdeleIncl x.det)⁻¹ := eq_mul_inv_of_mul_eq
     (det_eq_realIdele_mul_finIdeleIncl (Matrix.map_mul (f := RingHom.snd _ _))).symm
   have det_y : y.toUnitary.val.det = Unitary.toUnits y.det := Units.ext rfl
-  have hB_det : B.det = (Unitary.toUnits y.det)⁻¹ * Y.det := by
-    have hinv : y⁻¹.toUnitary.val.det = (Unitary.toUnits y.det)⁻¹ := by
-      rw [MulEquiv.map_inv G.toUnitary, InvMemClass.coe_inv, map_inv, det_y]
-    rw [show B.det = y⁻¹.toUnitary.val.det * Y.det from
-        MonoidHom.map_mul GeneralLinearGroup.det _ _,
-      hinv]
   have abs_inf : ideleAbs (realIdele (infiniteDet B)) = ideleAbs Y.det := by
-    rw [det_inf, MonoidHom.map_mul ideleAbs, MonoidHom.map_inv ideleAbs, hB_det,
-      MonoidHom.map_mul ideleAbs, MonoidHom.map_inv ideleAbs,
-      ideleAbs_eq_one_of_mem_unitary y.det.prop, ideleAbs_finIdeleIncl_eq_one det_unit,
-      inv_one, one_mul, mul_one]
+    rw [det_inf]
+    simp [B, det_y, ideleAbs_eq_one_of_mem_unitary, ideleAbs_finIdeleIncl_eq_one det_unit]
   -- on a unit `ζ` of `Ô E`, `χ⁻¹ (ζ̄) = χ⁻¹ (ζ) * ν (ζ / ζ̄)`
   have cut_star : invOnUnits 𝔠.semilocalChar (evalPlaces 𝔠.ramifiedPlaces x.det) *
     𝔠.character.baseChange.finPart x.det =
       invOnUnits 𝔠.semilocalChar (evalPlaces 𝔠.ramifiedPlaces (star x.det)) :=
     eq_of_div_eq_one (𝔠.invOnUnits_mul_finPart_div_star_eq_one det_unit)
-  have h_det_q : (scaleIdele E • V'.x * Y).det = d₀ * Y.det :=
-    MonoidHom.map_mul GeneralLinearGroup.det _ _
-  have hB_val : B.val = y⁻¹.adeleMatrix * Y.val := rfl
-  have hx_inv : V'.x.inv = V'.x⁻¹.val := rfl
-  rw [abs_inf, det_inf, ← cut_star, thetaOnRealData_rankTwist_eq V' 𝔠.character, h_det_q,
-    spaceChar_rankTwist_mul_inv hn 𝔠.character d₀ Y.det, hB_det,
-    baseChange_val_mul_finIdeleIncl_inv 𝔠.character y.det Y.det x.det,
-    sqrt_ideleAbs_pow_card_sum d₀ Y.det, hB_val, hx_inv]
-  dsimp only [κ₀]
-  exact largeTriple_scalar_alg _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-    (Circle.coe_ne_zero _)
-    (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr
-      (ideleAbs_pos (x := Y.det)))))
-    (Units.ne_zero _)
+  -- the two functionals of `(W₁, V')` differ by the factor `ν (det y) ^ 2`
+  have h_twist (β : AutChar E) (f : 𝒮 (W₁.hom V')) (c' : Matrix b n (𝔸 E)) (φ : PairFock E s t') :
+      thetaOnRealData W₁ V' (rankTwist 𝔠.character n) β f c' (g, y) φ =
+        (𝔠.character.val y.det : ℂ) ^ 2 * thetaOnRealData W₁ V' (rankTwist 𝔠.character⁻¹ n) β f c'
+          (g, y) φ := by
+    simp [thetaOnRealData, rankTwist, pairWeil, sq, mul_assoc]
+  rw [abs_inf, det_inf, ← cut_star, h_twist]
+  simp [HeckeChar.finPart, rankTwist, AutChar.spaceChar, AutChar.baseChange_toUnits, det_y, κ₀, hN,
+    B, G.adeleMatrix, Matrix.mul_assoc]
+  field (disch := simp)
 
 /-- Let `D` split `X` as `W₁` plus a hyperbolic space, let `𝔠` be a tame character, let `v` be a
 Schwartz vector in the real (Fock) data `PairFock` of `(X, V' ⊕ W₁)`, and take the row datum
