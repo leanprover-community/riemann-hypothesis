@@ -621,16 +621,6 @@ lemma IsLaplaceDatum.exists_laplaceIntegrand_eq_and_onBlock_eq (hj : IsLaplaceDa
     exact norm_noncompactPart_mul_of_mem_blockDiagAlg
       (mem_blockDiagAlg_of_sub_one_eq_inclMatrix hτ_sign hs₀_snd) _
 
-/-- Let `j` satisfy `IsLaplaceDatum`, of which only `tr (g - 1) = tr (g' - 1)` is used. For
-`(g, g') = j s` with noncompact parts `y = noncompactPart ε g` and `y' = noncompactPart η g'`, one
-has `‖g' - 1‖² = ‖g - 1‖² - 2 ‖y‖² + 2 ‖y'‖²`. -/
-lemma IsLaplaceDatum.norm_snd_sq (hj : IsLaplaceDatum l k j τ B e φ) (s : S) :
-    ‖(subOnePair j s).2‖ ^ 2 =
-      ‖(subOnePair j s).1‖ ^ 2 - 2 * ‖noncompactPart ε (j s).1‖ ^ 2 +
-        2 * ‖noncompactPart η (j s).2‖ ^ 2 := by
-  linarith [norm_sub_one_sq (j s).1, norm_sub_one_sq (j s).2,
-    congrArg Complex.re (hj.trace_eq s)]
-
 /-- **Localization.** Let `l`, `k` be doubled Harish-Chandra parameters for the signs `ε`, `η`, with
 weights `μ`, `μ'` of the lowest `K`-types, and let `j : S →* U(ε) × U(η)` satisfy `IsLaplaceDatum`:
 its image contains `U(X)` diagonally on indices of weight `0`; for `(g, g') = j s` the traces of
@@ -687,7 +677,8 @@ lemma IsLaplaceDatum.exists_laplaceIntegrand_eq_and_norm_subOnePair_le
     linarith [norm_sq_le_rows_add_columns_add_block e (subOnePair j t).1,
       hj.norm_intDiagonal_mul_subOnePair_sq_le hB t, hj.norm_subOnePair_mul_intDiagonal_sq_le hB t]
   have h_snd : ‖(subOnePair j t).2‖ ^ 2 ≤ 15 * r ^ 2 := by
-    linarith [hj.norm_snd_sq t, sq_nonneg ‖noncompactPart ε (j t).1‖]
+    linarith [norm_sub_one_sq (j t).1, norm_sub_one_sq (j t).2,
+      congrArg Complex.re (hj.trace_eq t), sq_nonneg ‖noncompactPart ε (j t).1‖]
   have h_root {x : ℝ} (hx : x ^ 2 ≤ 15 * r ^ 2) : x ≤ 4 * r :=
     le_of_sq_le_sq (by linarith [sq_nonneg r]) (by positivity)
   exact ⟨t, h_value, h_root (by linarith [sq_nonneg r]), h_root h_snd⟩
