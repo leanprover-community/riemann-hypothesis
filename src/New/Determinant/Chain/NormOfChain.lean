@@ -260,10 +260,6 @@ lemma isRamifiedRatio_of_mem_sigma {ij : Σ _ : ℕ, ℕ}
   obtain ⟨h_lt, h_le⟩ : ij.1 < ij.2 ∧ ij.2 ≤ D.m := mem_Ioc.1 (mem_sigma.1 hij).2
   exact isRamifiedRatio_quotientRatio h_lt h_le
 
-/-- There are at most `m²` pairs `1 ≤ i < j ≤ m`. -/
-lemma card_sigma_Ioc_le (m : ℕ) : #((Ioc 0 m).sigma fun i : ℕ ↦ Ioc i m) ≤ m * m := by
-  simpa using sum_le_card_nsmul (Ioc 0 m) (fun i ↦ #(Ioc i m)) m (by simp)
-
 /-- At the trivial twist the product of the ratios `quotientRatio i j` over `1 ≤ i < j ≤ m` is
 `1`. -/
 lemma prod_quotientRatio_one :
@@ -450,7 +446,8 @@ lemma HasSmallRatios.heightLe_inv_rpow_mul_prod_quotientRatio {D : Data P}
   simp only [prod_sigma']
   -- There are at most `m²` pairs, and a height bound may be increased.
   refine h_height.mono ?_ fun ι ↦ le_rfl
-  grw [card_sigma_Ioc_le, Nat.cast_mul]
+  grw [show #((Ioc 0 D.m).sigma fun i : ℕ ↦ Ioc i D.m) ≤ D.m * D.m by
+    simpa using sum_le_card_nsmul (Ioc 0 D.m) (fun i ↦ #(Ioc i D.m)) D.m (by simp), Nat.cast_mul]
 
 open scoped Classical in
 /-- Let `f` be a representation of the group algebra of `D.chosenGL`, the product of the finite
