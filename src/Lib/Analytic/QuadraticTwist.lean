@@ -8,10 +8,10 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
+import TauCeti.NumberTheory.LegendreSymbol.JacobiSymbol.PolyaVinogradov
 public import Lib.Analytic.DirichletTheta
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.Analytic.EntireLFunction
-import Lib.Analytic.PolyaVinogradov
 import Lib.Analytic.ZeroSymmetry
 
 /-!
@@ -318,86 +318,6 @@ lemma norm_mul_jacobiSym_le_one {α : ℕ → ℂ} (hα : ∀ n : ℕ, ‖α n�
     ‖α n * J(-v | ordCompl[2] n)‖ ≤ 1 := by
   grw [norm_mul, hα, norm_jacobiSym_le_one, mul_one]
 
-/-- For `b ≠ 0` the Jacobi symbol `(·/b)` is a Dirichlet character modulo `b`: it is built by
-twisting with one Legendre symbol at a time. -/
-lemma exists_dirichletCharacter_eq_jacobiSym (b : ℕ) :
-    ∃ ψ : DirichletCharacter ℂ b, b ≠ 0 → ∀ v : ℤ, ψ v = J(v | b) := by
-  induction b using induction_on_primes with
-  | zero => simp
-  | one => exact ⟨1, fun _ v ↦ by simp [Subsingleton.elim (v : ZMod 1) 1]⟩
-  | prime_mul p b hp ih =>
-    obtain ⟨ψ, hψ⟩ := ih
-    have : Fact p.Prime := ⟨hp⟩
-    rw [mul_comm p]
-    refine ⟨quadTwist ψ p, fun hbp v ↦ ?_⟩
-    have hb : b ≠ 0 := left_ne_zero_of_mul hbp
-    rw [quadTwist_apply, hψ hb, to_jacobiSym, mul_right' _ hb hp.ne_zero, Int.cast_mul]
-
-/-- If the odd number `m` is not a square, a character modulo `m` whose values are the Jacobi
-symbols `(·/m)` is not principal. -/
-lemma dirichletCharacter_jacobiSym_ne_one {m : ℕ} (h_odd : Odd m) (h_not_sq : ¬IsSquare m)
-    {ψ : DirichletCharacter ℂ m} (hψ : ∀ v : ℤ, ψ v = J(v | m)) : ψ ≠ 1 := by
-  have hm : m ≠ 0 := h_odd.pos.ne'
-  have : NeZero m := ⟨hm⟩
-  rintro rfl
-  -- Write `m = c² a` with `a` squarefree. As `a ≠ 1`, it has a prime factor `p`, which is odd.
-  obtain ⟨a, c, -, -, rfl, ha⟩ := Nat.sq_mul_squarefree_of_pos h_odd.pos
-  have ha_ne : a ≠ 1 := fun h_eq ↦ h_not_sq ⟨c, by rw [h_eq, mul_one, sq]⟩
-  obtain ⟨p, hp, b, rfl⟩ : ∃ p : ℕ, p.Prime ∧ p ∣ a := exists_prime_and_dvd ha_ne
-  have : Fact p.Prime := ⟨hp⟩
-  have hp_two : p ≠ 2 := h_odd.of_mul_right.of_mul_left.ne_two_of_dvd_nat dvd_rfl
-  have h_coprime : b.Coprime p := (coprime_of_squarefree_mul ha).symm
-  obtain ⟨hc, -, hb⟩ : c ≠ 0 ∧ p ≠ 0 ∧ b ≠ 0 := by simpa using hm
-  obtain ⟨ψb, hψb⟩ := exists_dirichletCharacter_eq_jacobiSym b
-  -- On units mod `m` we have `(u/c)² = 1`, so the twist of `(·/b)` by `p` would be principal.
-  have h_dvd : b * p ∣ c ^ 2 * (p * b) := by simp [mul_comm]
-  refine quadTwist_ne_one ψb p hp_two h_coprime ?_
-  refine (changeLevel_eq_one_iff h_dvd).1 (MulChar.ext fun u ↦ ?_)
-  let v : ℤ := u.val.cast
-  have h_symbol : J(v | c) ^ 2 * (J(v | p) * J(v | b)) = 1 := by
-    have h_unit : (J(v | c ^ 2 * (p * b)) : ℂ) = 1 := by simp [← hψ, v]
-    rw [mul_right' _ (by simpa) (by simp [hb, hp.ne_zero]), mul_right' _ hp.ne_zero hb,
-      jacobiSym.pow_right] at h_unit
-    exact_mod_cast h_unit
-  have h_sq : J(v | c) ^ 2 = 1 := by
-    obtain h_c | h_c | h_c := trichotomy v c <;> simp [h_c] at h_symbol ⊢
-  have h_twist : quadTwist ψb p v = 1 := by
-    rw [h_sq, one_mul, mul_comm] at h_symbol
-    rw [quadTwist_apply, hψb hb, to_jacobiSym]
-    exact_mod_cast h_symbol
-  rwa [changeLevel_eq_cast_of_dvd, ← intCast_cast, MulChar.one_apply_coe]
-
-/-- If the odd number `m` is not a square, the symbol `(·/m)` is a non-principal character, so the
-Pólya–Vinogradov inequality gives `|∑_{v ≤ X} (-v/m)| ≤ 2 √m (1 + log m)`. -/
-lemma norm_sum_jacobiSym_le {m : ℕ} (h_odd : Odd m) (h_not_sq : ¬IsSquare m) (X : ℕ) :
-    ‖∑ v ∈ Ioc 0 X, (J(-v | m) : ℂ)‖ ≤ 2 * √m * (1 + Real.log m) := by
-  have hm : m ≠ 0 := h_odd.pos.ne'
-  have : NeZero m := ⟨hm⟩
-  obtain ⟨ψ, hψ⟩ := exists_dirichletCharacter_eq_jacobiSym m
-  -- We have `(-v/m) = (-1/m) (v/m)`, so a sign comes out of the sum.
-  have h_neg (v : ℕ) : (J(-v | m) : ℂ) = ψ (-1) * ψ v := by simp [← hψ hm, ← map_mul]
-  calc _ = ‖ψ (-1)‖ * ‖∑ v ∈ Ioc 0 X, ψ v‖ := by simp_rw [h_neg, ← mul_sum, norm_mul]
-    _ ≤ 2 * √m * (1 + Real.log m) := by
-      grw [ψ.norm_le_one, one_mul,
-        polya_vinogradov (dirichletCharacter_jacobiSym_ne_one h_odd h_not_sq (hψ hm)) X]
-
-/-- If the odd part `n°` of `n ≠ 0` is not a square, then, for `δ > 0`, the sums of `(-v/n°)` over
-`v ≤ X` are at most `2 (1 + 2 / δ) n ^ (1/2 + δ/2)` in absolute value. -/
-lemma norm_sum_jacobiSym_ordCompl_le (hδ : 0 < δ) {n : ℕ} (hn : n ≠ 0)
-    (h_not_sq : ¬IsSquare (ordCompl[2] n)) (X : ℕ) :
-    ‖∑ v ∈ Ioc 0 X, (J(-v | ordCompl[2] n) : ℂ)‖ ≤ 2 * (1 + 2 / δ) * (n : ℝ) ^ (1 / 2 + δ / 2) := by
-  have hn_pos : (0 : ℝ) < n := by positivity
-  have h_odd : _root_.Odd (ordCompl[2] n) := coprime_two_left.1 (coprime_ordCompl prime_two hn)
-  have h_log : 1 + Real.log n ≤ (1 + 2 / δ) * (n : ℝ) ^ (δ / 2) := by
-    have h_one : 1 ≤ (n : ℝ) ^ (δ / 2) := one_le_rpow (mod_cast hn.bot_lt) (half_pos hδ).le
-    have h_le : Real.log n ≤ (n : ℝ) ^ (δ / 2) / (δ / 2) := log_le_rpow_div hn_pos.le (half_pos hδ)
-    exact (add_le_add h_one h_le).trans_eq (by field)
-  have h_pos : 0 < ordCompl[2] n := h_odd.pos
-  have h_le : ordCompl[2] n ≤ n := ordCompl_le n 2
-  calc _ ≤ 2 * √n * (1 + Real.log n) := (norm_sum_jacobiSym_le h_odd h_not_sq X).trans (by gcongr)
-    _ ≤ 2 * √n * ((1 + 2 / δ) * (n : ℝ) ^ (δ / 2)) := by grw [h_log]
-    _ = _ := by rw [rpow_add hn_pos, sqrt_eq_rpow]; ring
-
 /-- For every `A > 0` the weight `w(x) = x ^ j e^(-π x²)` (`gaussianMonomial`) is `≪_A x ^ (-A)`
 for `x > 0`. -/
 lemma exists_abs_gaussianMonomial_le_rpow {A : ℝ} (hA : 0 < A) :
@@ -529,7 +449,10 @@ lemma exists_summable_mul_norm_sum_jacobiSym_le (j : Fin 2) {δ : ℝ} (hδ : 0 
     calc _
       _ ≤ C₂ * u ^ (1 - 2 * (3 / 2 + δ)) * (n * m : ℝ) ^ (-(3 / 2 + δ)) *
           (2 * (1 + 2 / δ) * (n * m : ℝ) ^ (1 / 2 + δ / 2)) := by
-        grw [hC₂ u hu_pos n m, norm_sum_jacobiSym_ordCompl_le hδ (by positivity) h_sq, Nat.cast_mul]
+        rw [← Icc_add_one_left_eq_Ioc, zero_add]
+        grw [hC₂ u hu_pos n m,
+          TauCeti.norm_sum_Icc_jacobiSym_neg_ordCompl_two_le (half_pos hδ) h_sq, one_div_div,
+          Nat.cast_mul]
       _ = C₃ * ((n * m : ℝ) ^ (-(3 / 2 + δ)) * (n * m : ℝ) ^ (1 / 2 + δ / 2)) *
           (u ^ (-2 : ℝ) * u ^ (-2 * δ)) := by
         rw [← rpow_add hu_pos, show -2 + -2 * δ = 1 - 2 * (3 / 2 + δ) by ring]
