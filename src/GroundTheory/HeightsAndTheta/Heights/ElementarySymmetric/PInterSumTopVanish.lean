@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StMixedTw
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PInterNumAdditive
 
 @[expose] public section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

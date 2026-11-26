@@ -10,8 +10,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry MvPolynomial
@@ -156,8 +154,7 @@ theorem proof (hG : PullFormsGeneric.Statement) (hS : PullSectionIntegral.Statem
     rw [Finset.sum_attach g.support (fun x => ((AddMonoidAlgebra.coeff g x : ℤ) : Ω) *
       (aeval y (monomial x (1 : ℤ)) / aeval y (L a) ^ (1 * 1)))]
     conv_lhs => rw [g.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_div]
+    rw [map_sum, Finset.sum_div]
     refine Finset.sum_congr rfl fun x _ => ?_
     simp only [aeval_monomial, map_one, one_mul, algebraMap_int_eq, eq_intCast, mul_div_assoc]
   obtain ⟨ν, hν, hψv⟩ : ∃ (ν : (Σ k, ι k) →₀ ℕ) (hν : ν ∈ (L a).support),

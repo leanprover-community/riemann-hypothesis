@@ -6,8 +6,6 @@ import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIf
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GroundTheory.Heights₂.Heights

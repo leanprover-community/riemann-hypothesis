@@ -15,8 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.KeyFormula
 
 open Complex Matrix Real

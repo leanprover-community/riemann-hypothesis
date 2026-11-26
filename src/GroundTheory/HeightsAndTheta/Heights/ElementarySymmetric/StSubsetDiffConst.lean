@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperCutOb
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial

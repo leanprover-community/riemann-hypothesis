@@ -10,8 +10,6 @@ import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 noncomputable section
