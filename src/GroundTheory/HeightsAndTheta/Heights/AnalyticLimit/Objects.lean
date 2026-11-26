@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpe
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
 open MeasureTheory Filter Topology

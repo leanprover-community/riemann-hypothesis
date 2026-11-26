@@ -5,8 +5,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
 open ReciprocityTheory.AnForm.M (FinHolAtlas)

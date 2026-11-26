@@ -5,8 +5,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
 open ReciprocityTheory.AnForm.M (FinHolAtlas LocPot IsPotential mInt MIntegrable locDens)
