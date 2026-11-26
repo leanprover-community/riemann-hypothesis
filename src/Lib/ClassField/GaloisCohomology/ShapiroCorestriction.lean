@@ -155,8 +155,7 @@ lemma shapiro_H0 (F : (M.funModule U).H0) :
   refine ⟨⟨F.val ⟦1⟧, fun u ↦ ?_⟩, funext fun x ↦ ?_⟩
   · rw [← funModule_apply_one, h_inv]
   · -- `F x = F (x.out • U) = x.out • F U`, by the invariance of `F` under `x.out`.
-    have h_at : M.ρ x.out (F.val (x.out⁻¹ • x)) = F.val x := congrFun (h_inv x.out) x
-    simpa [← Quotient.mk_smul_out] using h_at
+    simpa [← Quotient.mk_smul_out] using congrFun (h_inv x.out) x
 
 /-- Shapiro's lemma in degree one, injectivity. If the restriction to `U` of a 1-cocycle `F` with
 values in the functions `Γ ⧸ U → M`, evaluated at the coset `U`, is the coboundary of `m`, then

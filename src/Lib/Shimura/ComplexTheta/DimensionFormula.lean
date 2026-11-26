@@ -463,8 +463,7 @@ lemma IsAppellHumbert.finite_thetaSpace : Module.Finite ℂ (B.thetaSpace χ) :=
   have := hB.finite_dualLattice_quotient
   have h_indep : LinearIndependent ℂ ![(⟨f, hf⟩ : B.thetaSpace χ)] := by simpa using hf_ne
   obtain ⟨ψ, hψ_inj⟩ := hB.exists_injective_to_dual_quotient h_indep
-  have h_finite_tuples : Module.Finite ℂ (Fin 1 → B.thetaSpace χ) := .of_injective ψ hψ_inj
-  exact Finite.pi_iff.mp h_finite_tuples 0
+  exact Finite.pi_iff.mp (.of_injective ψ hψ_inj) 0
 
 /-- For Appell–Humbert data with positive Riemann form, the space of theta functions has positive
 dimension. -/

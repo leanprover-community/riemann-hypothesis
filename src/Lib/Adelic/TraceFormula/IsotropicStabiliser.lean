@@ -180,8 +180,7 @@ isotropic subspace for the nondegenerate form `J`. -/
 lemma det_eq_zero (h : IsIsotropicFrame J X Y) (hX : X ≠ 0) : X.det = 0 := by
   by_contra h_ne
   have h_unit : IsUnit Xᴴ := ((isUnit_iff_isUnit_det X).2 (Ne.isUnit h_ne)).star
-  have h_zero : J * X = 0 := h_unit.mul_right_eq_zero.1 h.isotropic
-  exact hX (h.isUnit.mul_right_eq_zero.1 h_zero)
+  exact hX (h.isUnit.mul_right_eq_zero.1 (h_unit.mul_right_eq_zero.1 h.isotropic))
 
 /-- In an isotropic frame `(J, X, Y)` with `X ≠ 0`, an isometry that keeps the isotropic subspace
 spanned by the columns of `X` has a reducible characteristic polynomial. -/

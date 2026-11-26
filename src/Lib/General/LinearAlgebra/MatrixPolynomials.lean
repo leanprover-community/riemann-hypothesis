@@ -155,8 +155,7 @@ lemma commute_conjTranspose_aeval [StarRing R] (x : Matrix n n R) [IsStarNormal 
     Commute (aeval x w)ᴴ (aeval x z) := by
   -- `star x` commutes with `x`, hence with `w(x)`; so `w(x)ᴴ` commutes with `x`, hence with `z(x)`.
   have h_star : Commute (star x) (aeval x w) := aeval_semiconj (star_comm_self' x) w
-  have h_conj : Commute (aeval x w)ᴴ x := h_star.symm.star_left
-  exact aeval_semiconj h_conj.eq z
+  exact aeval_semiconj h_star.symm.star_left.eq z
 
 /-- The characteristic polynomial of `Y` divides `χ(q(X))`, where `χ` is the characteristic
 polynomial of `q(Y)`. -/

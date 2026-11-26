@@ -363,8 +363,7 @@ lemma map_evalPlaces_eq_atPlaces {P : Finset (FinPlace E)} (g : Gf E n) :
 /-- The components at `P` of the conjugate transpose of `g` are those of `g⁻¹`. -/
 lemma transpose_map_star_eq_atPlaces_inv {P : Finset (FinPlace E)} (g : Gf E n) :
     (g.val.val.map ((evalPlaces P).comp (starRingEnd (𝔸f E))))ᵀ = (atPlaces P g⁻¹).val := by
-  have h_inv : g⁻¹.val.val = g.val.valᴴ := New.U.inv_val_eq_conjTranspose g
-  rw [← map_evalPlaces_eq_atPlaces, h_inv]
+  rw [← map_evalPlaces_eq_atPlaces, New.U.inv_val_eq_conjTranspose g]
   rfl
 
 /-- The components at `P` of the conjugate transpose of `g` are those of `g⁻¹`. The components of

@@ -158,8 +158,7 @@ private lemma apply_eq_of_residueCol_eq
   have h_col (r : Fin N) (hr : r ≠ m) : v ((t⁻¹ * u).val r m) < 1 := by
     simpa [residueCol, reduceParahoric, hr, ← ZeroMemClass.zero_def, Subgroup.inclusion] using
       congrFun h_col_eq r
-  have h_fix : ρ (t⁻¹ * u).val x = x := hx _ (t⁻¹ * u).property h_col
-  simpa [Representation.inv_apply_eq_iff] using h_fix
+  simpa [Representation.inv_apply_eq_iff] using hx _ (t⁻¹ * u).property h_col
 
 /-- The vector `ρ p x` at `c = residueCol m p`, and `0` at the `c` that are not of this form. -/
 private def colVector (m : Fin N) (x : ρ) : (Fin N → 𝓀[F]) → ρ :=

@@ -199,8 +199,7 @@ lemma New.exists_eigenvector_of_functional (hS : ∀ m : ι, ∀ x ∈ S, φ m x
     | zero => simp +contextual
     | succ n ih =>
       intro x hx
-      have h_zero : l (ψ x) = 0 := ih (ψ x) (by simpa [pow_succ] using hx)
-      simpa [ψ, sub_eq_zero, hl, h_ne] using h_zero
+      simpa [ψ, sub_eq_zero, hl, h_ne] using ih (ψ x) (by simpa [pow_succ] using hx)
   refine not_le (iInf_le_of_le m fun x hx ↦ ?_)
   obtain ⟨n, hn⟩ := (End.mem_maxGenEigenspace _ _ _).1 hx
   exact kills n x hn

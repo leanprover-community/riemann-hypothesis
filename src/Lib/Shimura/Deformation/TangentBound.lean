@@ -312,8 +312,7 @@ lemma isLinear_and_pairing_eq_of_reduction :
     simpa [← smul_sub, nsmul_comp] using h_char_kills
   · -- `t` lies over `ε = 0`, where `h_red` turns `f` into `a`. `map_smul` is left out: with it
     -- `simp` moves `a` across `pointEquiv` and the fact no longer matches the goal.
-    have h_zero : t ≫ y ≫ f = t ≫ 0 := t ≫= hy
-    simpa [← assoc, h_red, -map_smul] using h_zero
+    simpa [← assoc, h_red, -map_smul] using t ≫= hy
   · refine pairing_eq_of_fpqc_cover hs.isGroupBaseChange.isPullback (ringChar k • 𝟙 _) f f _ _
       fun T y z ↦ ?_
     -- So we compare the pairings times `ringChar k`. That multiple of a class is its pull-back

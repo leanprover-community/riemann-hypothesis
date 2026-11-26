@@ -121,8 +121,7 @@ lemma mem_latticeMultiple_mul_of_psi_eq_one (hJ : IsUnimodular P.integers J) {g 
   have h_int : (g * star g).val * b * (g⁻¹.val * d i) ∈ P.integers := by
     rw [h_eq]
     exact h_mem i
-  have h_div : w⁻¹.val * (g⁻¹.val * d i) ∈ P.integers := hw _ (mem_latticeMultiple.1 hd i) h_int
-  simpa [mul_assoc] using h_div
+  simpa [mul_assoc] using hw _ (mem_latticeMultiple.1 hd i) h_int
 /-- Weyl differencing, with the volumes expressed by the modulus `P.modulus`: the lattice `g L` of
 vectors has volume `P.modulus g ^ card κ`. Let `J` be unimodular over the ring of integers `R`, `b`
 skew and `ψ` trivial on traces. Let `w` be a unit such that `w R` contains every integral `c` for

@@ -257,8 +257,7 @@ lemma IsLatticeTranslate.frameX₀Part_eq {p p₀ : S.G E} {q : Matrix 𝔰.κ (
   obtain ⟨-, hq_eq⟩ := hq
   have h_entry : p.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) = p₀.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) +
       S.M * ∑ l, q a l * S.frameProducts γ (initialIsotropicIndex j l).castSucc b := by
-    have h_translate_entry := congrFun₂ hq_eq (.inl (.inl a)) b
-    simpa [Matrix.mul_apply] using h_translate_entry
+    simpa [Matrix.mul_apply] using congrFun₂ hq_eq (.inl (.inl a)) b
   have h_term (l : Fin (min 𝔰.ϱ j)) :
       S.M * (Φ v (q a l) * Φ v (S.frameProducts γ (initialIsotropicIndex j l).castSucc b)) *
           S.basisScale v (𝔰.besselFrame b) =

@@ -211,8 +211,7 @@ lemma exists_isCuspidalType (N : ℕ) [NeZero N] :
       exists_eq_one_add_mul_mul_and_map_trace_ne_zero w N ha hb hu h_idem hε₀ hε₁
     exact ⟨k, Y, hY, by simpa [expUnit_eq_one_iff] using h_trace_ne⟩
   · -- On `1 + ϖ² M_N(O_w)` the entries of `k - 1` lie in `ϖ² O_w`, so the trace term vanishes.
-    have hk_entries : ∀ i j : Fin N, v ((mat k - 1) i j) ≤ .exp (-2) := hk.right
-    simpa [expUnit_eq_one_iff] using h_small hk_entries
+    simpa [expUnit_eq_one_iff] using h_small hk.right
 
 /-- Let `H` be an open subgroup of the finite adelic unitary group `Gf E n` that contains every
 element of `stdLevel E n` (the stabiliser of the standard lattice) that is trivial at each place of

@@ -315,8 +315,7 @@ lemma New.apply_mul_scalarFin_divStar_principalIdele {κ : InfinitePlace E → �
     refine Subtype.ext (Units.ext ?_)
     ext
     simp [γ, scalarFin, coe_divStar, Matrix.map_smul', mul_comm, div_eq_mul_inv]
-  have h_law : f (stdEmbFin γ * g) = (stdSpace E (Fin 1)).weightRep 0 κ γ (f g) := hf.2 γ g
-  rw [h_comm, h_law]
+  rw [h_comm, hf.2 γ g]
   -- compute the scalar by which `γ` acts on the representation of weight `κ`
   simp [γ, stdSpace_weightRep_apply, weylRep, Units.smul_def, schur_smul,
     starRingEnd_apply (R := E), Matrix.map_smul', smul_mulVec]

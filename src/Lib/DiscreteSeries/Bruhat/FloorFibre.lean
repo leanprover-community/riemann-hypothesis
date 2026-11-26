@@ -329,8 +329,7 @@ lemma leFibreMeasure_dualPoint (a : Fin 𝔰.ϱ) :
 /-- The real part of a skew element of `ℂ` is zero. -/
 lemma re_skewAdjoint_complex (β : skewAdjoint ℂ) : (β : ℂ).re = 0 := by
   have h_neg : star (β : ℂ) = -β := skewAdjoint.mem_iff.1 β.2
-  have h_re_neg : (β : ℂ).re = -(β : ℂ).re := congrArg Complex.re h_neg
-  exact self_eq_neg.1 h_re_neg
+  exact self_eq_neg.1 (congrArg Complex.re h_neg)
 
 /-- The integral against the image of `dμ dv` under `dualPoint a`, in the coordinates `(v, t, β)`
 with `μ = t / 2 + β - q v`, for a shift `q`, `t` real and `β` skew. -/

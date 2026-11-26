@@ -440,8 +440,7 @@ lemma exists_ringHom_of_locallyConstant :
         have hq : q.val ∈ U := rfl
         refine ⟨U, hq, homOfLE le_top, algebraMap M S (x q.val), 1, fun q' ↦
           ⟨(ne_top_iff_one _).mp q'.val.isPrime.ne_top, ?_⟩⟩
-        have h_fibre : x q'.val = x q.val := q'.property
-        rw [← h_fibre]
+        rw [← q'.property]
         rfl⟩
     exact ⟨s, fun q ↦ congrArg (fun σ ↦ σ.val ⟨q, trivial⟩) hs⟩
   choose toFun hf using h_sec

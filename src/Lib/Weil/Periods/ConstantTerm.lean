@@ -521,8 +521,7 @@ lemma exists_equiv_constTerm_eq_theta_slice (hd : ∀ b : ι', d (Y'.stringRever
     rw [mulVec_mulVec, mulVec_mulVec, Matrix.mul_assoc, P_mul_l, Matrix.mul_assoc,
       mul_inv_cancel_left_of_invertible, D.gram_lk, one_mulVec]
   have inj : Injective (cls ∘ D.l.mulVec) := fun a b hab ↦ by
-    have h_proj : P *ᵥ D.l *ᵥ a = P *ᵥ D.l *ᵥ b := (cls_eq _ _).1 hab
-    rw [← left_inv a, h_proj, left_inv b]
+    rw [← left_inv a, (cls_eq _ _).1 hab, left_inv b]
   have surj : Surjective (cls ∘ D.l.mulVec) := by
     rintro ⟨_, x, rfl⟩
     refine ⟨(D.kᴴ * J) *ᵥ matrixToVec x, (cls_eq _ (matrixToVec x)).2 ?_⟩

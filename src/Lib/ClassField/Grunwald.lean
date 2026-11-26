@@ -147,8 +147,7 @@ private lemma exists_nsmul_eq_zero_abelianLift_artinMap_eq_of_apply_principalIde
     have h_rat : principalIdele.range ≤ (θ ^ p).ker := fun b hb ↦ by
       simp [mem_ker.mp (hθ_rat hb)]
     have h_units : idelesUnitOff T ≤ (θ ^ p).ker := fun b hb ↦ by
-      have hθ_b : θ (b ^ p) = ψ (b ^ p) := hθ ⟨b ^ p, h_pow_mem b hb⟩
-      simpa [hψ_pow] using hθ_b
+      simpa [hψ_pow] using hθ ⟨b ^ p, h_pow_mem b hb⟩
     simpa using sup_le h_rat h_units (h_sup.ge (mem_top a))
   refine ⟨⟨μ, hμ_cont, μ.map_mul⟩, ?_, fun a ha ↦ ?_⟩
   · -- at `g`, `p • χ` takes the value `θ a ^ p = 1`, for an idele `a` whose Artin symbol is `g`

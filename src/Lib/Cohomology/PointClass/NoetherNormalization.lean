@@ -92,8 +92,7 @@ lemma IsHomogeneousSolution.map : IsHomogeneousSolution k g v → IsHomogeneousS
 lemma IsHomogeneousSolution.smul (u : C) (h : IsHomogeneousSolution k g v) :
     IsHomogeneousSolution k g (u • φ ∘ v) := by
   intro n F hF h_g
-  have h_map : aeval (φ ∘ v) F = 0 := h.map φ hF h_g
-  rw [aeval_smul_of_isHomogeneous hF, h_map, mul_zero]
+  rw [aeval_smul_of_isHomogeneous hF, h.map φ hF h_g, mul_zero]
 
 @[simp]
 lemma evalForms_map (v : ι → A) : evalForms Λ (φ ∘ v) = φ ∘ evalForms Λ v := by

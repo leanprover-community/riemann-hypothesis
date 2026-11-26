@@ -686,8 +686,7 @@ lemma Variety.exists_maps_of_riemann_relation
     obtain ⟨U, hU, μ', r, hr, h_sum⟩ :=
       exists_isRegularOn_riemann_coefficient hc hx h_index π hT ha hb hb_inl μ ((A ⊗ A).hom t)
     refine ⟨_, hU, μ', _, hr.pull (A ⊗ A).hom, fun s hs ↦ ?_⟩
-    have h_base : (lift (e s.1.1 s.2) (e s.1.1 s.1.2)).left ≫ (A ⊗ A).hom = η s.1.1 := Over.w _
-    rw [landsIn_preimage, h_base] at hs
+    rw [landsIn_preimage, Over.w _] at hs
     -- `↓`: `Over.w` must rewrite before `simp` unfolds the point `lift`.
     simpa [w, ↓Over.w] using h_sum s.1.1 s.1.2 s.2 hs
   obtain ⟨M, hM, hM_coords, hM_class⟩ :

@@ -460,8 +460,7 @@ lemma ten_thousand_le_m : 10000 ≤ D.m := D.nat_le_of_hasLogBound
 /-- `r + 1 = k + m`, as the subtraction in `k = r + 1 - m` is exact. -/
 @[grind! .]
 lemma r_add_one : D.r + 1 = D.k + D.m := by
-  have h_le : D.m ≤ D.r + 1 := D.nat_le_of_hasLogBound
-  rw [k, Nat.sub_add_cancel h_le]
+  rw [k, Nat.sub_add_cancel D.nat_le_of_hasLogBound]
 
 /-- The rank `k = r + 1 - m` is at most the rank `r`. -/
 lemma k_le_r : D.k ≤ D.r := by grind [ten_thousand_le_m]
@@ -596,8 +595,7 @@ lemma hundred_mul_m_le_k : 100 * D.m ≤ D.k := D.nat_le_of_hasLogBound
 /-- The rank `k = r + 1 - m` is positive. -/
 @[simp]
 lemma k_pos : 0 < D.k := by
-  have h_one : 1 ≤ D.k := D.nat_le_of_hasLogBound
-  exact h_one
+  exact D.nat_le_of_hasLogBound
 
 /-- The ranks `n j = k + j (t + 1)` increase with `j`. -/
 lemma n_mono : Monotone D.n := fun i j hij ↦ by

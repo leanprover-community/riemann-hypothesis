@@ -398,8 +398,7 @@ lemma exists_isApproximatingMonoid_of_mem_uniformClosure (hf : f ≠ 0)
   have h_dist (η : Set.Ioi (0 : ℝ)) :
       ∀ p ∈ N, dist p.fst (∑ j, a η j * (y η j).val z * p.snd ⟨η, j⟩) ≤ η := by
     rintro p ⟨T, hT, hTf, hTy⟩
-    have h_bound : ‖T ((f z)⁻¹ • f - ∑ j, a η j • (y η j).val) z‖ ≤ η := hT _ _ (hy η) z
-    simpa [hTy ⟨η, _⟩, hTf, hz, ← dist_eq_norm, mul_comm, ← mul_assoc] using h_bound
+    simpa [hTy ⟨η, _⟩, hTf, hz, ← dist_eq_norm, mul_comm, ← mul_assoc] using hT _ _ (hy η) z
   refine ⟨s, fun η j ↦ a η j * (y η j).val z, N.topologicalClosure,
     ⟨isClosed_closure, tendstoUniformly_iff.2 fun ε hε ↦ ?_⟩, fun i ↦ y i.fst i.snd,
     fun _ hp ↦ subset_closure hp⟩

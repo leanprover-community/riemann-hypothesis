@@ -144,8 +144,7 @@ lemma IsLabel.exists_eq_prod_charName_of_splits (hc : IsLabel r c) (h_splits : c
   have hP_deg : P.natDegree = 1 :=
     (hP_splits.resolve_right (monic_prod_X_sub_C _ _).ne_zero).natDegree_eq_one_of_irreducible
       hP_irred
-  have hP_linear : P = X + C (P.coeff 0) := hP_monic.eq_X_add_C hP_deg
-  rw [hP_deg, hP_linear]
+  rw [hP_deg, hP_monic.eq_X_add_C hP_deg]
   -- The name of the new character is `-P(0)`.
   refine ⟨Fin.append ![(charName T).symm (-Units.mk0 (P.coeff 0) hP_coeff)] χ, ?_⟩
   simp [Fin.prod_univ_add]

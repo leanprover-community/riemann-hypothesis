@@ -91,8 +91,7 @@ lemma exists_isUnit_cyclotomicChar_pow_sub_one {P : Parameters} (D : Data P) {�
   have h_order : orderOf (b : ZMod ℓ) = ℓ - 1 := by
     rw [orderOf_units, hb, Nat.card_units, Nat.card_zmod]
   have ht : D.t ≤ D.halfGap ^ 2 := D.nat_le_of_hasLogBound
-  have h_ne : (b : ZMod ℓ) ^ a ≠ 1 := pow_ne_one_of_lt_orderOf ha_pos.ne' (by lia)
-  simpa [hσb, sub_eq_zero] using h_ne
+  simpa [hσb, sub_eq_zero] using pow_ne_one_of_lt_orderOf ha_pos.ne' (by lia)
 
 /-- Some element `φ` of the absolute Galois group of `D.E` has an `ℓ`-adic cyclotomic character `u`
 such that for `0 < a < D.t` the number `u ^ a - 1` divides, in `ℤ_ℓ`, the `ℓ`-part of
@@ -850,8 +849,7 @@ lemma IsLiftGenerator.exists_isMainSummandLike {P : Parameters} {D : Data P} {�
   have h_lift : HasLiftTrace ϑ.invAvatar R O.rankDiff (normalisedRep O x.galRep) :=
     h_trace hμ hz (isEigenform hvx.mem hvx.ne_zero) (attached_galRep hvx.mem hvx.ne_zero)
   -- `V.rankDiff` and `O.rankDiff` are both `card n - card r` by definition.
-  have hR_O : IsMainSummandLike D O.rankDiff τ R := hR
-  exact ⟨τ, R, hR_O, h_lift, γ, h_sel⟩
+  exact ⟨τ, R, hR, h_lift, γ, h_sel⟩
 
 /-- Let `w` be a split place such that neither `w` nor its conjugate lies in `O.places`, the places
 of the level of the pair `O`, and let `ξ` be any complex number. The Hecke polynomial operator at

@@ -468,8 +468,7 @@ lemma IsPotentiallyCrystalline.ker_reducedCocycle :
   · rintro ⟨b, hb⟩
     have h_smul_eq : (p ^ m : ℤ_[p]) • b = c := funext hb
     have h_smul_mem : (p ^ m : ℤ_[p]) • b ∈ crysCocycles ρ := by rwa [h_smul_eq]
-    have h_ne : (p ^ m : ℤ_[p]) ≠ 0 := NeZero.out
-    exact ⟨b, mem_of_smul_mem h_ne h_smul_mem, hb⟩
+    exact ⟨b, mem_of_smul_mem NeZero.out h_smul_mem, hb⟩
   · exact fun ⟨b, _, hb⟩ ↦ ⟨b, hb⟩
 
 /-- Let `𝒥.toGp` be an open embedding, `T` potentially crystalline, `Γ` compact, `q : T → V`

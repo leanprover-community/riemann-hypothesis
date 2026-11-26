@@ -196,8 +196,7 @@ theorem sum_pairDiscriminant_inv_le [S.IsAdmissible] {l : ℕ} (hl_le : l ≤ �
   · -- No lattice has corank above `k`, so the sum is empty.
     have h_empty (c c' : S.Classes) : IsEmpty (S.boundedDiscNearPairs l c c') := by
       refine ⟨fun ⟨q, h_pair, h_link, h_disc⟩ ↦ ?_⟩
-      have h_le : l ≤ 𝔰.k := Nat.le_of_add_left_le h_link.le
-      exact h_corank_gt.not_ge h_le
+      exact h_corank_gt.not_ge (Nat.le_of_add_left_le h_link.le)
     simp only [tsum_empty, Finset.sum_const_zero, zero_le]
   obtain ⟨r, h_rank⟩ : ∃ r : ℕ, r + l = 𝔰.k := ⟨𝔰.k - l, Nat.sub_add_cancel h_corank_le⟩
   have h_tailScale_nonneg : 0 ≤ S.tailScale := Real.rpow_nonneg (zero_le_one.trans S.one_le_b) _

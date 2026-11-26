@@ -622,8 +622,7 @@ theorem hasDeepVector_of_notMem_congruenceSubgroup {F : PlaceData ι T (m + 1)} 
       (exists_mem_boxSet_hasMatrixSize_of_inner_ne_zero Z hy) h_near_p h_near_q h_unit
   -- In the gauge of scale `1` every size means integral.
   have h_int : IsIntMatrix integers (F.levelUnit⁻¹.val • (x.val.val - 1)) := fun i k ↦ by
-    have h_entry : (F.levelUnit⁻¹.val • (x.val.val - 1)) i k ∈ Γ.ofSize (99 * 𝔰.n) := h_size i k
-    simpa [Γ] using h_entry
+    simpa [Γ] using h_size i k
   obtain ⟨h_gram : IsUnimodular integers T.splitGram, -, hg : F.levelUnit.val ∈ integers, -⟩ :=
     h.integral_data
   exact hx (h_gram.mem_unitaryLevel hg h_int)

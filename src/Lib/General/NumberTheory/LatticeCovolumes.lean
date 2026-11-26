@@ -627,8 +627,7 @@ lemma Filling.existsUnique_mul_mem_box {G ι : Type*} [Group G] [Fintype ι] {V 
     have h_deg : deg i ≤ deg a := by grind
     have h_low (j : ι) (hj : deg j < deg i) : c δ j = c 1 j :=
       hδ_zero j (ne_of_apply_ne deg (hj.trans_le h_deg).ne) (hj.trans_le h_deg).le
-    have h_shift : c (x * γ * δ) i = c δ i + c (x * γ) i := h_transl δ i h_low (x * γ)
-    rw [Subgroup.coe_mul, ← mul_assoc, h_shift]
+    rw [Subgroup.coe_mul, ← mul_assoc, h_transl δ i h_low (x * γ)]
     obtain rfl | hi_s := mem_insert.1 hi
     · rwa [hδ]
     · rw [hδ_zero i (ne_of_mem_of_not_mem hi_s ha) (h_max i hi_s), h_one, zero_add]

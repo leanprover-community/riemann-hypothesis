@@ -94,8 +94,7 @@ lemma encard_le_of_isIntegral_norm_le {α ι E : Type*} [Fintype ι] {A : Set α
     refine h_ne (funext fun i ↦ eq_of_sub_eq_zero ?_)
     have h_integral : IsIntegral ℤ (f a i - f b i) := (hf a ha i).left.sub (hf b hb i).left
     refine eq_zero_of_forall_norm_lt_one h_integral fun v ↦ ?_
-    have h_lt : ‖(F a - F b) (i, v)‖ < 1 := (norm_le_pi_norm _ (i, v)).trans_lt h_close
-    simpa [F] using h_lt
+    simpa [F] using (norm_le_pi_norm _ (i, v)).trans_lt h_close
   have h_bounded : ∀ a ∈ A, ‖F a‖ ≤ r := fun a ha ↦
     (pi_norm_le_iff_of_nonneg hr).2 fun p ↦ (hf a ha p.1).right p.2
   -- The packing bound: `1`-separated points in a ball of radius `r` number at most

@@ -316,8 +316,7 @@ lemma index_comap_lt_of_char_ne_one {G G' M : Type*} [CommGroup G] [Group G'] [G
   -- The class of `x₀` modulo `D` is not in the image of `G'`.
   rw [← ker_mk' D, comap_ker, index_ker, ker_mk']
   refine card_subtype_lt (x := (x₀ : G ⧸ D)) fun ⟨z, hz⟩ ↦ hχ₀ ?_
-  have h_mem : (N z)⁻¹ * x₀ ∈ D := QuotientGroup.eq.1 hz
-  simpa [hχN] using hχD _ h_mem
+  simpa [hχN] using hχD _ (QuotientGroup.eq.1 hz)
 
 /-- The unramified case of `New.GaloisRep.Attached.local_global_of_eigencharacter`. Let `r` be
 attached to the Hecke polynomials `P` of the eigenform `f` on the standard space over the CM field
