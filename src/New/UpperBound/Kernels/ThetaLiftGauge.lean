@@ -122,13 +122,6 @@ noncomputable def New.diagonalWeight {p : ℕ} [Fact p.Prime]
     (∏ b : n, ‖u τ b‖) ^ e τ *
       ∏ h : Fin (card n), ∏ j : Fin (κ τ h), ∏ t : Fin h, ‖u τ ((i τ).val h j t)‖
 
-lemma New.diagonalWeight_nonneg {p : ℕ} [Fact p.Prime]
-    (e : NumberField.InfinitePlace (P.E s) → ℤ)
-    (u : NumberField.InfinitePlace (P.E s) → n → ℂ_[p]) (i : WeylIndex n κ) :
-    0 ≤ diagonalWeight e u i := by
-  unfold diagonalWeight
-  positivity
-
 lemma New.diagonalWeight_one {p : ℕ} [Fact p.Prime]
     (e : NumberField.InfinitePlace (P.E s) → ℤ) (i : WeylIndex n κ) :
     diagonalWeight e (1 : NumberField.InfinitePlace (P.E s) → n → ℂ_[p]) i = 1 := by
@@ -280,7 +273,7 @@ lemma omega_mem_raises_of_jet_minorProd_le
       ‖jet ℂ_[p] (minorProd i' fun τ col l ↦ (w τ col l : ℂ_[p])) (F.map ιₚ)‖ :=
     exists_norm_schurJet_le_norm_jet_minorProd hκ.1 (F.map ιₚ) i' i
   rw [map_schurJet hκ]
-  exact (mul_le_mul_of_nonneg_left hw (diagonalWeight_nonneg ea u i')).trans (h_bound f hf i' w)
+  exact (mul_le_mul_of_nonneg_left hw (by unfold diagonalWeight; positivity)).trans (h_bound f hf i' w)
 
 /-- Take the theta kernel (`New.thetaKernel`) of scale `c * P.jetScale s`, at any level `K`, of the
 standard definite spaces of ranks `n`, `n'` over the CM field `P.E s`, with characters `a`, `b` of
