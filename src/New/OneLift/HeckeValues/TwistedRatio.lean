@@ -368,17 +368,6 @@ lemma TameChar.disjoint_isChosen_Q (ϑ : D.TameChar) :
   refine Set.disjoint_right.2 fun w hw ↦ ?_
   exact (D.normQ_mem_and_notMem_of_mem_Q ϑ (Or.inl hw)).right.left
 
-/-- For `1 ≤ z ≤ p.z`, the ratio of the pair `p.lowerPoint z = (ν, z)` at a tame character `ϑ` and
-a sign `s` is the quotient of the absolute values of the `L`-values at `z` of `(ν ϑ ^ s)⁻¹` and of
-`ν⁻¹`. -/
-lemma CriticalPair.ratio_lowerPoint (p : D.CriticalPair) (s : ℤˣ) (ϑ : D.TameChar) {z : ℕ}
-    (hz : z ∈ Icc 1 p.z) :
-    (p.lowerPoint z).ratio ϑ s =
-      ‖(p.character * ϑ.toAutChar ^ (s : ℤ))⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) z‖ /
-        ‖p.character⁻¹.L {w : FinPlace D.E | D.IsChosen w} z‖ := by
-  simp only [ratio, lowerPoint, inf_of_le_left (mem_Icc.1 hz).right,
-    sup_of_le_right (mem_Icc.1 hz).left]
-
 /-- Let `p` be a pair with character `ν`, let `ϑ` be a tame character of modulus `Q` and `s` a sign.
 Recall `lValueProd S χ e = ∏_{w ∈ S} q_w ^ e ^ 2 * ∏_{1 ≤ z ≤ e} |L^S(z, χ)| ^ 2`. This product up
 to `p.z` for `(ν ϑ ^ s)⁻¹`, away from the chosen places and `Q`, equals a product of three factors.
@@ -400,7 +389,8 @@ lemma CriticalPair.lValueProd_eq_mul_prod_ratio_sq (p : D.CriticalPair) (s : ℤ
         ‖p.character⁻¹.L {w | D.IsChosen w} z‖ ^ 2 * (p.lowerPoint z).ratio ϑ s ^ 2 := by
     -- As the ratio is not zero, neither is its denominator.
     have h_ratio : (p.lowerPoint z).ratio ϑ s ≠ 0 := (p.lowerPoint z).ratio_ne_zero ϑ s
-    rw [p.ratio_lowerPoint s ϑ hz] at h_ratio ⊢
+    simp only [CriticalPair.ratio, CriticalPair.lowerPoint, inf_of_le_left (mem_Icc.1 hz).right,
+      sup_of_le_right (mem_Icc.1 hz).left] at h_ratio ⊢
     rw [← mul_pow, mul_div_cancel₀ _ (div_ne_zero_iff.1 h_ratio).right]
   rw [lValueProd, lValueProd, h_norm]
   push_cast [prod_congr rfl h_factor, prod_mul_distrib]
