@@ -559,11 +559,6 @@ lemma leastValLE_twelve_of_lt (D : Data P) {p : ℕ} [hp : Fact p.Prime] {l : D.
   simp only [Fintype.sum_prod_type, Fintype.sum_unique]
   linarith
 
-/-- For primes `p ≠ d`, the Legendre symbol `chiK d p = (p / d)` is `-1` unless it is `1`. -/
-lemma _root_.New.chiK_eq_neg_one_of_ne {d : ℕ} [Fact d.Prime] {p : ℕ} [Fact p.Prime]
-    (h_ne : p ≠ d) (h_nonsplit : chiK d p ≠ 1) : chiK d p = -1 := by
-  simpa [h_ne, h_nonsplit] using chiK_cases d p
-
 /-- Let `D` be admissible data for the parameters `P`, `p` a prime with `2 < p ≤ k = D.k` that does
 not split in `ℚ(√-d)`, `w` a tight frame of length `M = D.M` with multiplicities `c`, and `(τ, e τ)`
 a near pair for each `τ ∈ Φ₀`: `e τ` lies in `I_p`, `e τ < l₀ / 2` with `l₀` the least power of `3`
@@ -664,7 +659,7 @@ lemma leastValLE_twelve (D : Data P) {p : ℕ} [Fact p.Prime] {l : D.Φ × Unit 
   rcases lt_or_ge D.k p with hk | hk
   · -- As `d ≤ k`, a non-split prime `p > k` is inert.
     have hd : P.d < p := D.nat_le_of_hasLogBound.trans_lt hk
-    exact D.leastValLE_twelve_of_lt hl hw (chiK_eq_neg_one_of_ne hd.ne' h_split) hk
+    exact D.leastValLE_twelve_of_lt hl hw (by simpa [hd.ne', h_split] using chiK_cases P.d p) hk
   · exact (D.leastValLE_twelve_localPrimeSumTotal_of_le hl hw h_unit h_split hk).mono (by linarith)
 
 end New.Data
