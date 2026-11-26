@@ -444,15 +444,6 @@ instance isCovolOneLattice_ratMatrices [Fintype m] : IsCovolOneLattice (ratMatri
   -- a matrix is by definition a family of rows, so the power is taken twice
   exact h_dom.pi.pi.isCovolOneLattice
 
-/-- An injective additive map `f` into a Hausdorff topological group, with discrete image, sends
-only finitely many points into a given compact set. -/
-lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [AddCommGroup I]
-    [TopologicalSpace B] [IsTopologicalAddGroup B] {f : I →+ B} {C : Set B}
-    (hf_inj : Function.Injective f) (h_disc : DiscreteTopology f.range) (hC : IsCompact C) :
-    (f ⁻¹' C).Finite := by
-  -- `f` tends to infinity along the cofinite filter
-  simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h_disc⟩ hC.compl_mem_cocompact
-
 omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
     [T2Space B] in
 /-- Let `f : I →+ B` be an injective additive map whose image is a lattice of covolume one in `B`
@@ -460,7 +451,7 @@ omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsA
 `a` in `I` have `f a ∈ C`. -/
 lemma IsCovolOneLattice.finite_preimage (h : IsCovolOneLattice f.range)
     (hf_inj : Function.Injective f) (hC : IsCompact C) : (f ⁻¹' C).Finite :=
-  finite_preimage_of_discreteTopology_range hf_inj h.toDiscreteTopology hC
+  by simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h.toDiscreteTopology⟩ hC.compl_mem_cocompact
 
 /-- For totally complex `E`, a compact set of adeles contains the diagonal images of only finitely
 many elements of `E`. -/
