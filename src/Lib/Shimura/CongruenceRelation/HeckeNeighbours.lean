@@ -332,7 +332,7 @@ lemma iterateFrobenius_comp_eq_of_ker_eq {w : FinPlace E} {ρ : 𝓞 E →+* k}
     (h_ker : w.asIdeal = RingHom.ker ρ) {l f r : ℕ} [Fact l.Prime] [CharP k l]
     (h_pow : l ^ f = w.q ^ r) : (iterateFrobenius k l f).comp ρ = ρ := by
   ext c
-  have := Fintype.ofFinite (ResField w)
+  let := Fintype.ofFinite (ResField w)
   have h_mem : c ^ w.q ^ r - c ∈ w.asIdeal := by
     simp [← card_ResField, ← algebraMap_ResField_eq_zero, pow_card_pow]
   simpa [h_ker, iterateFrobenius, h_pow, sub_eq_zero] using h_mem
