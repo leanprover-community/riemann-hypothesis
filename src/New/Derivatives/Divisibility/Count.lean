@@ -317,6 +317,10 @@ def fillingCharge {κ : Φ → ℕ → ℕ} (w : Φ → ℕ → n' → ℕ) (i' 
   ∑ τ : Φ, ∑ h : Fin (card n'), ∑ j : Fin (κ τ h), ∑ b : Fin h, w τ h ((i' τ).val h j b)
 
 omit [DecidableEq Φ] in
+lemma fillingCharge_zero {κ : Φ → ℕ → ℕ} (i' : WeylIndex n' κ) :
+    fillingCharge (0 : Φ → ℕ → n' → ℕ) i' = 0 := by simp [fillingCharge]
+
+omit [DecidableEq Φ] in
 /-- The sum `fillingCharge w i'` of the exponents `w` over the filling `i'` depends only on the
 values `w τ h b` at the heights `h` that occur in `κ τ` (those with `κ τ h ≠ 0`). -/
 lemma fillingCharge_congr {κ : Φ → ℕ → ℕ} {w w' : Φ → ℕ → n' → ℕ}
@@ -707,7 +711,7 @@ theorem norm_jet_minorProd_le_of_hasNormalForm [DecidableEq n'] (hp : chiK P.d p
       p ^ (-(predictedDivisibility P.d p (P.partner s p) κ N -
         card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ))) : ℝ) := by
   -- With no marked places and all charges equal to one, no column is removed.
-  simpa [eraseHeightOne_empty, fillingCharge] using
+  simpa [eraseHeightOne_empty, fillingCharge_zero] using
     P.norm_jet_minorProd_le_of_charges s hp hϖ hF ∅ 0 (by simp) i' y
 
 end Parameters

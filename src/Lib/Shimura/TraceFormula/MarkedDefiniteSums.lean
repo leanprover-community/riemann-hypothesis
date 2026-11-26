@@ -519,6 +519,12 @@ lemma heckeCosetFn_conjAtSplit_mul {J : Subgroup (GL n (LocField w₀.val))} {χ
     _ = χ j⁻¹ * v.coeff t := by
         rw [h_eigen, MonoidAlgebra.coeff_smul, Finsupp.smul_apply, smul_eq_mul]
 
+/-- If the Hecke function `f` is not zero on the coset of `t`, the inverse transpose of the
+component of `t` at `w₀` is an integral matrix. -/
+lemma dualComponent_mem_matrix {t : GL n (𝔸f E)} (ht : heckeCosetFn f t ≠ 0) :
+    (dualComponent w₀ t).val ∈ (LocInt w₀.val : Set (LocField w₀.val)).matrix :=
+  fun i j ↦ mem_Ô.1 ((heckeAlgebra.mem_GUPlus_of_ne_zero ht).2 j i) w₀.val
+
 /-- Moving a frame `x` that satisfies the sign condition by an element `a` at `w₀` keeps the sign
 condition and the weight, so the term of `(x a K, y, μ)` is the value of `f` times the weight. -/
 lemma countTerm_mul_conjAtSplit (h_sign : IsSignedFrame x (eigenReflection ε y μ))
@@ -584,7 +590,7 @@ lemma finite_tripleBlock_inter_support (h𝔑 : 𝔑 ≠ 0)
   have h_int : (a⁻¹ * g * a).val ∈ (LocInt w₀.val : Set (LocField w₀.val)).matrix := by
     rw [countTerm_mul_conjAtSplit h_sign] at hY
     rw [← localAut_mul_conjAtSplit]
-    exact fun i j ↦ mem_Ô.1 ((heckeAlgebra.mem_GUPlus_of_ne_zero (left_ne_zero_of_mul hY)).2 j i) w₀.val
+    exact dualComponent_mem_matrix (left_ne_zero_of_mul hY)
   -- This parameter gives the same element `a` of the radical, so the same point of the block.
   exact ⟨ofAdd (aeval (a⁻¹ * g * a).val p), mem_image_of_mem _ h_int,
     by rw [blockPoint, splittingRadical_aeval_conj ⟨Y, rfl⟩]⟩

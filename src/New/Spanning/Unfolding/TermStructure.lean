@@ -266,6 +266,10 @@ lemma commonIsotropic_le_colSpan_frameImage_one (γ : S.G E) :
     commonIsotropic γ ≤ colSpan (frameImage 1) :=
   (commonIsotropic_le_isotropicSpan_one γ).trans (isotropicSpan_le_colSpan_frameImage 1)
 
+lemma commonIsotropic_le_colSpan_frameImage_coe (γ : S.G E) :
+    commonIsotropic γ ≤ colSpan (frameImage γ.val.val) :=
+  (commonIsotropic_le_isotropicSpan_coe γ).trans (isotropicSpan_le_colSpan_frameImage γ.val.val)
+
 /-- A vector `p` on two copies of the middle coordinates lies in the kernel of
 `zRowBlockDiagonal (S.ratMiddle E)` (two copies of the `z`-row of the Gram matrix) if and only if
 both `z`-coordinates of `p` are `0`. -/
@@ -381,8 +385,7 @@ theorem disjoint_colSpan_frameImage (h_disc : S.termDisc γ ≠ 0) :
 `A = ⟨e_1, …, e_ϱ⟩`. -/
 lemma commonIsotropic_eq_bot (h_disc : S.termDisc γ ≠ 0) : commonIsotropic γ = ⊥ :=
   disjoint_self.1 ((disjoint_colSpan_frameImage h_disc).mono
-    (commonIsotropic_le_colSpan_frameImage_one γ)
-    ((commonIsotropic_le_isotropicSpan_coe γ).trans (isotropicSpan_le_colSpan_frameImage γ.val.val)))
+    (commonIsotropic_le_colSpan_frameImage_one γ) (commonIsotropic_le_colSpan_frameImage_coe γ))
 
 /-- The span `γ A⁺` of the image under `γ` of the frame `e_1, …, e_ϱ, z_N` has the rank
 `n = ϱ + 1`. -/

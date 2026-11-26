@@ -132,6 +132,14 @@ its vectors. -/
 noncomputable def classForm (h : Gf E n) : (WeylIndex n O.columnCount → ℂ) →ₗ[ℂ] O.FormV :=
   deltaForm (stdSpace E n).embFin ((stdSpace E n).weightRep O.columnCount O.detExp) O.levelChar h
 
+/-- The inner product of two forms on `V` is the class sum of the pairings of their values under
+`gramForm`, the hermitian form `(ξ, η) ↦ ξ* G η` of the integral Gram matrix `G` of the weight. The
+class sum `stdClassSum` of a function `f` for the level group of `O` is the sum of
+`f (g_c) / #Aut (g_c)` over the double cosets `c` of the rational points and that group. -/
+lemma inner_eq_stdClassSum_gramForm (φ φ' : O.FormV) :
+    inner ℂ φ φ' = stdClassSum O.levelGroup fun g : Gf E n ↦ gramForm (φ g) (φ' g) :=
+  LevelPlaces.LevelForm.innerAt_eq_stdClassSum 1 φ φ'
+
 /-- Let `h` be a point of the finite unitary group `Gf E n` of `V`. The inner product of the form
 `δ_h (v) = classForm O h v`, supported on the class of `h`, with a form `φ` is the Gram pairing
 `gramForm` of `v` with the value of `φ` at `h`. -/
@@ -142,7 +150,7 @@ lemma inner_classForm (h : Gf E n) (φ : O.FormV) (v : WeylIndex n O.columnCount
   let L (g : Gf E n) : (WeylIndex n O.columnCount → ℂ) →+ ℂ := (gramForm.flip (φ g)).toAddMonoidHom
   have h_sum : inner ℂ (classForm O h v) φ =
       stdClassSum O.levelGroup fun g : Gf E n ↦ L g (classForm O h v g) :=
-    LevelPlaces.LevelForm.innerAt_eq_stdClassSum 1 (classForm O h v) φ
+    inner_eq_stdClassSum_gramForm (classForm O h v) φ
   refine h_sum.trans (classSum_deltaForm L fun γ k ↦ ?_)
   set ρ : Representation ℂ (U (stdSpace E n).J) (WeylIndex n O.columnCount → ℂ) :=
     (stdSpace E n).weightRep O.columnCount O.detExp

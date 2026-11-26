@@ -100,6 +100,13 @@ def evalClassReps [IsTopologicalGroup G] (r : DoubleCosets e.range K → G) :
   ((funLeft ℂ W r).domRestrict (SmoothForm e ρ)).domRestrict (levelSpace (smoothFormRep e ρ) K χ)
 
 
+/-- Evaluation of forms of level `(K, χ)` at representatives `r c` of the double cosets `c` in
+`e(Γ) \ G / K` is injective. -/
+lemma evalClassReps_injective [IsTopologicalGroup G] {r : DoubleCosets e.range K → G}
+    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c) :
+    Function.Injective (evalClassReps e ρ χ r) :=
+  fun _ _ h_eval ↦ levelSpace_ext_doubleCosets hr (congrFun h_eval)
+
 /-- The trivial character is trivial near `1`. -/
 instance : Fact ((1 : K →* ℂ) =ᶠ[nhds 1] 1) := ⟨.rfl⟩
 
@@ -283,7 +290,7 @@ lemma classSum_deltaForm (L : G → W →+ ℂ) {x : G} {v : W}
 representatives, so they span a finite-dimensional space. -/
 instance finite_levelSpace_smoothFormRep [Module.Finite ℂ W] :
     Module.Finite ℂ (levelSpace (smoothFormRep e ρ) K χ) :=
-  .of_injective (evalClassReps e ρ χ Quot.out) fun _ _ h ↦ levelSpace_ext_doubleCosets Quot.out_eq (congrFun h)
+  .of_injective (evalClassReps e ρ χ Quot.out) (evalClassReps_injective Quot.out_eq)
 
 /-- Let `e : Γ →* G` be injective, `K` a level of finite type for `e(Γ)` (`New.HasFiniteType`), `χ`
 a character of `K` trivial near `1` and `ρ` a finite-dimensional representation of `Γ` on `W`. If

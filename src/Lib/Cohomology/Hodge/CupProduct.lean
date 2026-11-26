@@ -398,13 +398,21 @@ lemma exact_triangle (h : S.ShortExact) (F : AbFunctor C) :
     · exact .inr ⟨n, add_comm 1 n,
         (L.exact_delta_f n y).1 (h_zero.1 (hy (n + 1) (zero_add (n + 1))))⟩
 
+/-- The cohomology Ext(`freeAb (reprBy c)`, G) of the free abelian functor ℤ[Hom(c, −)] on a
+representable functor is concentrated in degree zero. -/
+lemma bijective_directSum_of_zero_reprBy (G : AbFunctor C) (c : C) :
+    Bijective (DirectSum.of (H (freeAb (reprBy c)) G) 0) :=
+  ⟨of_injective 0, fun x ↦ ⟨x 0, ext fun
+    | 0 => rfl
+    | _ + 1 => by subsingleton⟩⟩
+
 /-- The Yoneda isomorphism from G(c) to the total Ext(ℤ[h_c], G), which is concentrated in
 degree 0; here h_c = Hom(c, −). -/
 def sectionEquiv (G : AbFunctor C) (c : C) : G c ≃+ TotalH (freeAb (reprBy c)) G :=
   -- Yoneda identifies the sections with the classes of degree zero, and these are all classes.
   (homReprEquiv c G).symm.trans
     ((addEquiv₀ (C := AbFunctor C)).symm.trans
-      (AddEquiv.ofBijective _ ⟨of_injective 0, fun x ↦ ⟨x 0, ext fun | 0 => rfl | _ + 1 => by subsingleton⟩⟩))
+      (AddEquiv.ofBijective _ (bijective_directSum_of_zero_reprBy G c)))
 
 end TotalH
 

@@ -305,6 +305,8 @@ variable (O) in
 protected noncomputable def uniformizer : ↑O := (exists_irreducible O).choose
 
 variable (O) in
+lemma irreducible_uniformizer : Irreducible O.uniformizer := (exists_irreducible O).choose_spec
+
 /-- Normalised length: the additive map sending n to n·v(ϖ) and ∞ to ∞, where ϖ is the chosen
 uniformiser `O.uniformizer` and v(ℓ) = 1. -/
 noncomputable def normLength : ℕ∞ →+ ℝ≥0∞ :=
@@ -315,6 +317,10 @@ noncomputable def normLength : ℕ∞ →+ ℝ≥0∞ :=
 
 lemma normLength_top : O.normLength ⊤ = ∞ := rfl
 
+/-- The normalised length of `n` is `-n log_ℓ ‖ϖ‖`, with `ϖ` the chosen uniformiser of `O`. -/
+lemma normLength_natCast (n : ℕ) :
+    O.normLength n = n * ENNReal.ofReal (-logb ℓ ‖O.uniformizer.val‖) := rfl
+
 /-- Let `O` be a coefficient ring, the ring of integers of a finite Galois extension of ℚ_ℓ inside
 ℚ̄_ℓ, with chosen uniformiser ϖ. For x ∈ O, let `addVal O x` be the number of factors of ϖ in x, and
 let the normalised length `normLength` send n to n·v(ϖ) (and ∞ to ∞). Then the normalised length of
@@ -322,7 +328,7 @@ let the normalised length `normLength` send n to n·v(ϖ) (and ∞ to ∞). Then
 normalised by v(ℓ) = 1. -/
 @[simp]
 lemma normLength_addVal (x : ↑O) : O.normLength (addVal O x) = ellVal x.val := by
-  have hϖ : Irreducible O.uniformizer := (exists_irreducible O).choose_spec
+  have hϖ : Irreducible O.uniformizer := O.irreducible_uniformizer
   obtain rfl | hx := eq_or_ne x 0
   · simp [ellVal, normLength_top]
   -- `x = u * ϖ ^ n` with `‖u‖ = 1`, and both sides are `n` times the valuation of `ϖ`
@@ -331,7 +337,7 @@ lemma normLength_addVal (x : ↑O) : O.normLength (addVal O x) = ellVal x.val :=
   have h_ellVal : ellVal (u * O.uniformizer ^ n : ↑O).val =
       n * ENNReal.ofReal (-logb ℓ ‖O.uniformizer.val‖) := by
     simp [← mul_neg, hϖ.ne_zero, hu_norm, ellVal, logb_pow]
-  rw [addVal_def' u hϖ n, h_ellVal]; rfl
+  rw [addVal_def' u hϖ n, h_ellVal, normLength_natCast]
 
 @[simp]
 lemma normLength_natCast_mul (k : ℕ) (g : ℕ∞) : O.normLength (k * g) = k * O.normLength g := by

@@ -459,6 +459,9 @@ at the infinite places, integral at the finite places) and determinant of module
 def Core.unitBoxGL : Set (GL n (𝔸 E)) :=
   {A : GL n (𝔸 E) | A.val ∈ (Metric.closedBall 0 1 ×ˢ Ô E).matrix ∧ 1 ≤ ideleAbs A.det}
 
+lemma Core.isCompact_unitBoxGL : IsCompact (unitBoxGL E n) :=
+  isCompact_setOf_le_ideleAbs_det isCompact_closedBall_prod_integral.matrix one_pos
+
 open Pointwise in
 /-- From one basis `Y` of profile `x` one gets many: with `T = ∑ (x i - x j)₊`, the number
 `2 ^ (2 * numInfPlaces E * T)` is at most `((2 * rootDiscr E) ^ numInfPlaces E) ^ card (n × n)`
@@ -741,8 +744,7 @@ lemma Space.lintegral_encard_ne_top {t : Type*} [Fintype t] {Ω : Set (Matrix n 
       _ ≤ (∏ _i : n, ∑' k : ℤ, q⁻¹ ^ k.natAbs) * (C₂ * R) := by
         grw [mul_div_le, ENNReal.tsum_mul_right, tsum_prod_le_prod_tsum fun k : ℤ ↦ q⁻¹ ^ k.natAbs]
       _ < ∞ := by simp [C₂, R, mul_lt_top_iff, Ne.lt_top, hC₁, ENNReal.pow_lt_top h_geometric]
-  refine V.lintegral_ne_top_of_le_encard_profileBases
-    (hM.mul (isCompact_setOf_le_ideleAbs_det isCompact_closedBall_prod_integral.matrix one_pos)) hω.ne fun g ↦ ?_
+  refine V.lintegral_ne_top_of_le_encard_profileBases (hM.mul isCompact_unitBoxGL) hω.ne fun g ↦ ?_
   obtain ⟨x, Y, hY, hx⟩ := exists_basis (V.move g).x
   obtain ⟨σ, hσ⟩ := hB (V.move g) x Y hY (hx (V.move g).ideleAbs_det_x.ge)
   -- Up to constants, `ν` is an upper bound for the count, `T` a lower one for the number of bases.

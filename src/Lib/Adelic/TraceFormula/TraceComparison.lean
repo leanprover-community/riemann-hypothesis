@@ -346,6 +346,15 @@ lemma map_embFin_centralizer_le {s' : n → ℤˣ} (W : Space E n s') {y : GL n 
   refine ⟨⟨a, ha'⟩, mem_centralizer_singleton_iff.2 (Subtype.ext h_comm.symm), ?_⟩
   simp [Gf.val_ext_iff, coe_embFin, h_conj a h_comm]
 
+/-- If the finite frames of two spaces conjugate the rational centraliser of `y` in the same way,
+then the centralisers of `y` in the two unitary groups have the same image in `G_f`. -/
+lemma map_embFin_centralizer_eq {s' : n → ℤˣ} (W : Space E n s') {y : GL n E} (hy : y ∈ U V.J)
+    (hy' : y ∈ U W.J) (h_conj : ∀ a : GL n E, Commute y a →
+      V.xFin⁻¹ * toFinGL a * V.xFin = W.xFin⁻¹ * toFinGL a * W.xFin) :
+    (centralizer {⟨y, hy⟩}).map V.embFin = (centralizer {⟨y, hy'⟩}).map W.embFin :=
+  (V.map_embFin_centralizer_le W hy hy' h_conj).antisymm
+    (W.map_embFin_centralizer_le V hy' hy fun a ha ↦ (h_conj a ha).symm)
+
 /-- The inverse of a group isomorphism `f` maps the centraliser of `f a` onto that of `a`. -/
 lemma map_symm_centralizer_singleton {M N : Type*} [Group M] [Group N] (f : M ≃* N) (a : M) :
     (centralizer {f a}).map f.symm.toMonoidHom = centralizer {a} := by
@@ -396,9 +405,7 @@ theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     simp [Gf.val_ext_iff, coe_embFin, same_conj]
   have centralizer_eq : W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin =
       (centralizer {γ}).map (W.embFin.comp conj.symm) := by
-    rw [inf_eq_right.2 (map_le_range _ _),
-      (W₀.map_embFin_centralizer_le W hy₀ hy same_conj).antisymm
-        (W.map_embFin_centralizer_le W₀ hy hy₀ fun a ha ↦ (same_conj a ha).symm),
+    rw [inf_eq_right.2 (map_le_range _ _), W₀.map_embFin_centralizer_eq W hy₀ hy same_conj,
       ← map_symm_centralizer_singleton conj, Subgroup.map_map]
     rfl
   -- So `β` of the finite part of `g⁻¹ x` is a cutoff for the centraliser of `γ` in `V`.

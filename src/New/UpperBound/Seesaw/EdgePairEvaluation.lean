@@ -635,6 +635,11 @@ section
 
 omit [WeilData E]
 
+/-- The Gram matrix of `V` vanishes at two indices whose weights are not opposite. -/
+lemma GradeZeroPart.J_eq_zero_of_add_ne_zero (Z : GradeZeroPart V V'' w) {a b : ι}
+    (hab : w a + w b ≠ 0) : V.J a b = 0 :=
+  by_contra fun h_ne ↦ hab (Z.grade_add_eq_zero a b h_ne)
+
 /-- The Gram matrix pairs weight `a` only with weight `-a`, so it intertwines the projections to the
 positive and to the negative weights. -/
 lemma GradeZeroPart.proj_pos_mul_J (Z : GradeZeroPart V V'' w) :
@@ -643,7 +648,7 @@ lemma GradeZeroPart.proj_pos_mul_J (Z : GradeZeroPart V V'' w) :
   ext a b
   by_cases hab : w a + w b = 0
   · simp [show 0 < w a ↔ w b < 0 by omega]
-  · simp [by_contra fun h_ne ↦ hab (Z.grade_add_eq_zero _ _ h_ne)]
+  · simp [Z.J_eq_zero_of_add_ne_zero hab]
 
 /-- The inverse of the Gram matrix of `V` vanishes at two indices of positive weight. -/
 lemma GradeZeroPart.inv_J_apply_eq_zero_of_pos (Z : GradeZeroPart V V'' w) {a b : ι} (ha : 0 < w a)

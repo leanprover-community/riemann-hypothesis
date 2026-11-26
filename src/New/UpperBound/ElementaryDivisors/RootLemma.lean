@@ -432,6 +432,8 @@ lemma sign_eq_zero (hz : D.IsFixed z) : D.sign z = 0 := ite_eq_right (hz.ne_varY
 
 lemma poleOrder_eq_zero (hz : D.IsFixed z) : D.poleOrder z = 0 := ite_eq_right (hz.ne_varX z.2)
 
+lemma zeroOrder_eq_zero (hz : D.IsFixed z) : D.zeroOrder z = 0 := ite_eq_right (hz.ne_varY z.2)
+
 lemma crossSign_eq_zero (hz : D.IsFixed z) : D.crossSign z = 0 := by
   simp only [crossSign, hz.sign_eq_zero, Int.cast_zero, hz.swapVar_eq, add_zero, ite_self]
 
@@ -457,7 +459,7 @@ lemma IsFixed.swapVar_merge_eq_self_and_weights_eq_zero {T : FrobeniusCycle N W 
     D.poleOrder z = 0 ∧
     D.zeroOrder z = 0 ∧
     D.crossSign z = 0 :=
-  ⟨hz.swapVar_eq, hz.merge_eq, hz.sign_eq_zero, hz.poleOrder_eq_zero, ite_eq_right (hz.ne_varY z.2),
+  ⟨hz.swapVar_eq, hz.merge_eq, hz.sign_eq_zero, hz.poleOrder_eq_zero, hz.zeroOrder_eq_zero,
     hz.crossSign_eq_zero⟩
 
 /-- The defect weight `T.defectWeight D.letter D.fst D.snd z` of a variable `z` equals

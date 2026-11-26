@@ -249,6 +249,11 @@ lemma finIdeleAbs_locIdele (x : (LocField w)ˣ) : finIdeleAbs (locIdele w x) = �
 
 /-! ### The generalised index as the inverse of the module -/
 
+/-- Reduction modulo `w` maps the integral finite adeles onto the residue field at `w`. -/
+lemma reduceAt_surjective (w : FinPlace E) : Function.Surjective (reduceAt w) := fun y ↦ by
+  obtain ⟨a, rfl⟩ := algebraMap_ResField_surjective w y
+  exact ⟨algebraMap (𝓞 E) (Ô E) a, reduceAt_algebraMap w a⟩
+
 /-- For a uniformiser `x` at `w`, let `a` be the finite idele with component `x` at `w` and `1`
 elsewhere. Its generalised index `[Ô : a Ô]` is the order `w.q` of the residue field. -/
 lemma genIndex_locIdele_of_v_eq_exp_neg_one {x : (LocField w)ˣ} (hx : v x.val = exp (-1)) :
@@ -264,9 +269,7 @@ lemma genIndex_locIdele_of_v_eq_exp_neg_one {x : (LocField w)ˣ} (hx : v x.val =
         ← WithZero.exp_add]
     simpa [Ideal.mem_span_singleton, Subtype.ext_iff, dvd_def] using h_dvd
   rw [genIndex_eq_card isOpen_Ô isCompact_Ô h_mem (Units.isUnit _), h_ker,
-    Nat.card_congr (quotientKerEquivOfSurjective (fun y ↦ by
-      obtain ⟨a, rfl⟩ := algebraMap_ResField_surjective w y
-      exact ⟨algebraMap (𝓞 E) (Ô E) a, reduceAt_algebraMap w a⟩)).toEquiv, card_ResField]
+    Nat.card_congr (quotientKerEquivOfSurjective (reduceAt_surjective w)).toEquiv, card_ResField]
 
 /-- The generalised index `genIndex` of a finite idele, the inverse of the factor by which it scales
 Haar measure, is the inverse of its module. -/

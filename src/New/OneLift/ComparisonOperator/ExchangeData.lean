@@ -374,6 +374,10 @@ variable {P : Parameters} (D : Data P)
 /-- The natural number n_* = 2ft³, where f is the number of infinite places of E and t = 5r. -/
 abbrev nStar : ℕ := D.f * (2 * D.t ^ 3)
 
+/-- Twice the rank `r` of `W_j` is at most the real number `b = D.b`, the size parameter of the
+weights `D.liftWeight j`. -/
+lemma two_mul_r_le_b : 2 * D.r ≤ D.b := D.le_of_hasLogBound
+
 /-- The number `300 n_* + t`, with `n_* = nStar D = 2 f t ^ 3`, is at most `D.halfGap = r ^ 8`. -/
 lemma mul_nStar_add_t_le_halfGap : 300 * nStar D + D.t ≤ D.halfGap := D.nat_le_of_hasLogBound
 
@@ -560,7 +564,7 @@ lemma abs_conjHolomorphicWeight_le (c : D.RowIndex) :
     D.liftWeight_le_two_mul_b (by grind) τ
   grw [← cast_abs, abs_lowestKType_le (D.hasGap_paramW _ τ).neg param_le, card_rowIndex]
   push_cast
-  linarith [show 2 * D.r ≤ D.b from D.le_of_hasLogBound]
+  linarith [D.two_mul_r_le_b]
 
 /-- For `1 ≤ j ≤ m` and an infinite place `τ`, the weight `kernelWeight j τ` on the basis of `W_j`
 is `K`-dominant for the order `orderW j`. That is, on basis vectors of one sign `D.signsW j`, it

@@ -136,12 +136,16 @@ lemma toGalPlus_ofGalPlus (σ : Gal(Ω/maximalRealSubfield E)) :
     toGalPlus E (ofGalPlus σ) = if σ ∈ (toGalPlus E).range then σ else σ * conjPlus E :=
   (exists_toGalPlus_eq_ite σ).choose_spec
 
+lemma toGalPlus_ofGalPlus_of_mem {σ : Gal(Ω/maximalRealSubfield E)}
+    (hσ : σ ∈ (toGalPlus E).range) : toGalPlus E (ofGalPlus σ) = σ :=
+  (toGalPlus_ofGalPlus σ).trans (ite_eq_left hσ)
+
 lemma toGalPlus_ofGalPlus_of_notMem {σ : Gal(Ω/maximalRealSubfield E)}
     (hσ : σ ∉ (toGalPlus E).range) : toGalPlus E (ofGalPlus σ) = σ * conjPlus E :=
   (toGalPlus_ofGalPlus σ).trans (ite_eq_right hσ)
 
 @[simp] lemma ofGalPlus_toGalPlus (g : Gal(Ω/E)) : ofGalPlus (toGalPlus E g) = g :=
-  isOpenEmbedding_toGalPlus.injective ((toGalPlus_ofGalPlus _).trans (ite_eq_left ⟨g, rfl⟩))
+  isOpenEmbedding_toGalPlus.injective (toGalPlus_ofGalPlus_of_mem ⟨g, rfl⟩)
 
 /-- Let `F` be the maximal real subfield of the CM field `E`, let `Ω` be the algebraic closure of
 `ℚ` and `c` the chosen complex conjugation. The map `ofGalPlus : Gal(Ω/F) → Gal(Ω/E)`, which sends

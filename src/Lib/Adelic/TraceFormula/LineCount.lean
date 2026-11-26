@@ -169,6 +169,14 @@ lemma card_line (i : n) : #{z : n → F | ∀ j ≠ i, z j = 0} = Fintype.card F
   rw [h_line, card_image_of_injective _
     (smul_left_injective F (Pi.single_ne_zero_iff.2 one_ne_zero)), card_univ]
 
+/-- For a vector `z` let `N z` be the number of forms `ξ` with `ξ e_i = 1` and `ξ z = 1`. The sum
+of `f z` over the pairs `(ξ, z)` with `ξ e_i = 1` and `ξ z = 1` is the sum of `N z • f z` over all
+vectors `z`. -/
+lemma sum_forms_sum_eq_sum_card_smul {W : Type} [AddCommMonoid W] (i : n) (f : (n → F) → W) :
+    ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, f z =
+      ∑ z : n → F, #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} • f z := by
+  simp [sum_comm' (t' := univ) (s' := fun z ↦ {ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1})]
+
 /-- A multiple `z ≠ e_i` of `e_i` has value `1` under no form `ξ` with `ξ e_i = 1`. -/
 lemma card_forms_eq_zero_of_ne_single {z : n → F} (hz : ∀ j ≠ i, z j = 0)
     (h_ne : z ≠ Pi.single i 1) : #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} = 0 := by
@@ -207,10 +215,7 @@ lemma sum_sum_dotProduct_eq_one_eq_smul {W : Type} [AddCommGroup W] [Module ℂ 
       (Fintype.card F : ℂ) ^ (Fintype.card n - 2 : ℤ) • (y + ∑ z : n → F with z ≠ 0, f z) := by
   -- Exchange the sums: a vector `z` occurs `N z` times. This is `q ^ (n - 1)` for `z = e_i`,
   -- zero for its other multiples and `q ^ (n - 2)` off the line `L` of `e_i`.
-  rw [show ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, f z =
-      ∑ z : n → F, #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} • f z by
-      simp [sum_comm' (t' := univ) (s' := fun z ↦ {ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1})],
-    sum_ne_zero_eq_smul_add_sum_compl_line hf]
+  rw [sum_forms_sum_eq_sum_card_smul i f, sum_ne_zero_eq_smul_add_sum_compl_line hf]
   set q : ℂ := (Fintype.card F : ℂ)
   have hq : q ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
   set d : ℂ := q ^ (Fintype.card n - 2 : ℤ)

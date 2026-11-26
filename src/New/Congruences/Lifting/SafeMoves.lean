@@ -481,6 +481,11 @@ lemma SidePairing.isSafeMoveSnd_cocycle {c' : S'.paramLattice} {P : S.SidePairin
   simp only [ruleBound, shiftedOrders, standardDepth]
   split_ifs <;> omega
 
+/-- The path that stays at `(x, x')` is safe: its four moves are zero. -/
+lemma isSafePath_refl {P : S.SidePairing S'} {κ : ℕ} (x : S.extensionLattice.Ambient)
+    (x' : S'.extensionLattice.Ambient) : P.IsSafePath κ x x x x' x' x' := by
+  constructor <;> intro g <;> simp [IsSafe]
+
 lemma smul_sub_mem_letterPart {x : S.extensionLattice.Ambient} (g : k.galMonoid)
     (hx : x ∈ S.extensionLattice.letterPart i) : g • x - x ∈ S.extensionLattice.letterPart i :=
   sub_mem ((gal_smul_mem_letterPart g).2 hx) hx
@@ -627,7 +632,7 @@ lemma SidePairing.isScaledCupCoboundary_of_stops {S S' : PairingSide O} {c : S.p
         (hx i hi) (hx' i hi) (hx _ (hl_cut i)) (hx' _ (hl_cut i)) (h_stop i hi)
     · simp only [d, ite_eq_right hi]
       exact ⟨φ ^ l i • x (i.stepBack (l i)), φ ^ l i • x' (i.stepBack (l i)),
-        h_over (hl_cut i), h_over' (hl_cut i), by constructor <;> intro g <;> simp [IsSafe]⟩
+        h_over (hl_cut i), h_over' (hl_cut i), isSafePath_refl _ _⟩
   choose w w' hw hw' h_path using exists_path
   have h_cocycles (i : k.Letter) (g : k.galMonoid) : P.IsSafeMoveSnd κ
       (φ ^ d i • x (i.stepBack (d i)))

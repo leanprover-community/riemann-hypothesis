@@ -40,6 +40,12 @@ namespace New
 
 variable {d : ℕ} [Fact d.Prime] {q : ℕ} [NeZero q]
 
+/-- Chebyshev's bound with a round constant: `∑_{n ≤ z} Λ(n) ≤ 6 z` for `z ≥ 0`. -/
+lemma sum_Icc_vonMangoldt_le_six_mul {z : ℝ} (hz : 0 ≤ z) : ∑ n ∈ Icc 0 ⌊z⌋₊, Λ n ≤ 6 * z :=
+  calc ∑ n ∈ Icc 0 ⌊z⌋₊, Λ n = Chebyshev.psi z := (Chebyshev.psi_eq_sum_Icc z).symm
+    _ ≤ (Real.log 4 + 4) * z := Chebyshev.psi_le_const_mul_self hz
+    _ ≤ 6 * z := by gcongr; linarith [log_four_eq, log_two_lt_d9]
+
 variable (d q) in
 /-- The error `𝓔_q(t) = ∑_{n ≤ t} λ(n) - t / φ(q)` in the count with the weights
 `λ = lambdaKResidueClass d q`, that is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `λ(n) = 0`
@@ -51,10 +57,7 @@ for `n ≡ 1` mod `q` and `0` otherwise. The error `𝓔_q(t) = countError d q t
 `∑_{n ≤ t} λ(n) - t / φ(q)`, satisfies `|𝓔_q(t)| ≤ 13 t` for `t ≥ 0`, by Chebyshev's bound. -/
 lemma abs_countError_le {t : ℝ} (ht : 0 ≤ t) : |countError d q t| ≤ 13 * t := by
   have h_sum : ∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n ≤ 2 * (6 * t) := by
-    grw [lambdaKResidueClass_le_two_mul_vonMangoldt, ← mul_sum, ← Chebyshev.psi_eq_sum_Icc,
-      Chebyshev.psi_le_const_mul_self ht]
-    gcongr
-    linarith [log_four_eq, log_two_lt_d9]
+    grw [lambdaKResidueClass_le_two_mul_vonMangoldt, ← mul_sum, sum_Icc_vonMangoldt_le_six_mul ht]
   grw [countError, abs_sub, abs_of_nonneg (sum_nonneg fun n _ ↦ lambdaKResidueClass_nonneg d q n),
     abs_of_nonneg (by positivity), h_sum,
     div_le_self ht (mod_cast totient_pos.2 (NeZero.pos q) : (1 : ℝ) ≤ φ q)]

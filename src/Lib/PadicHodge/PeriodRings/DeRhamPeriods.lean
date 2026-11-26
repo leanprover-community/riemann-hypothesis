@@ -216,6 +216,12 @@ lemma exists_tPeriod : ∃ t : Amax,
 are unchanged when `t` is multiplied by a unit of `ℤ_[p]`, so they do not fix a normalisation. -/
 noncomputable def tPeriodAmax : Amax := exists_tPeriod.choose
 
+/-- In Colmez's ring `Amax` (A_max), the product of μ = [ε] − 1 (the Teichmüller lift of ε minus
+one) with p is associated to the chosen period `tPeriodAmax`. That is, `mu * p` equals `tPeriodAmax`
+times a unit of `Amax`. -/
+lemma associated_mu_mul_p_tPeriodAmax : Associated (mu * p : Amax) tPeriodAmax :=
+  exists_tPeriod.choose_spec.1
+
 /-- For every `g` in the absolute Galois group G_p of Q_p, `g` acts on the chosen period
 `tPeriodAmax` in `Amax` by multiplication by χ(`g`) ∈ ℤ_p, where χ = `cyclotomicGp` is the p-adic
 cyclotomic character. -/
@@ -310,7 +316,7 @@ lemma BdRPlus.associated_xi_tPeriod : Associated (xi : BdRPlus) tPeriod := by
   have h_xi : Associated (xi : BdRPlus) (algebraMap Amax BdRPlus (mu * p)) := by
     simp [associated_mul_isUnit_right_iff, ne, ← xi_mul_tau, ← IsScalarTower.algebraMap_apply,
       -p_mul_X]
-  exact h_xi.trans (exists_tPeriod.choose_spec.1.map _)
+  exact h_xi.trans (associated_mu_mul_p_tPeriodAmax.map _)
 
 /-- For every `g` in the absolute Galois group G_p of Q_p, `g` acts on `tPeriod` by multiplication
 by χ(`g`) ∈ ℤ_p, where χ = `cyclotomicGp` is the p-adic cyclotomic character. Here `tPeriod` is the

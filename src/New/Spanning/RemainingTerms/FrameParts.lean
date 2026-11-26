@@ -238,6 +238,12 @@ frame vectors. -/
 def framePartX₀ (γ : S.G E) : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (frameMiddle γ.val.val).toRows₁
 
 omit [HasPrimitiveRoot5040 E] in
+/-- The product of an isotropic frame vector with the image of a frame vector is the coordinate of
+the image at the dual isotropic vector. -/
+lemma frameProducts_castSucc_apply (γ : S.G E) (i : Fin 𝔰.ϱ) (a : Fin (𝔰.ϱ + 1)) :
+    S.frameProducts γ i.castSucc a = γ.val.val (.inr (.inr i)) (𝔰.besselFrame a) := by
+  simp [frameGram, Matrix.mul_apply]
+
 omit [HasPrimitiveRoot5040 E] in
 /-- The product of `z` with the image of a frame vector is `-N` times the coordinate of the image
 along `z`. -/
@@ -254,7 +260,7 @@ lemma apply_inr_besselFrame_eq {γ γ' : S.G E} (hZ : S.frameProducts γ' = S.fr
   rcases i with (i | i) | i
   · exact congrFun₂ h_part i a
   · simpa [frameProducts_top_apply, S.N_prime.ne_zero] using congrFun₂ hZ 𝔰.top a
-  · simpa [frameGram, Matrix.mul_apply] using congrFun₂ hZ i.castSucc a
+  · simpa [frameProducts_castSucc_apply] using congrFun₂ hZ i.castSucc a
 
 /-- Let `E` contain a primitive 5040th root of unity, let `S` be a filling of shape `𝔰` with the
 congruence level `M = S.M`, and let the `ϱ` columns of `η` be rational vectors of `Λ ∩ X₀`. Then

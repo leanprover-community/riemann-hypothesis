@@ -235,6 +235,11 @@ def torsionAction : Gal(Ω/K) →* Multiplicative (AddAut (M.torsion ℓ)) × (Z
   ((DistribMulAction.toAddAut _ (M.torsion ℓ)).comp (M.torsion ℓ).ρ.asGroupHom).prod
     (cyclotomicCharMod Ω ℓ)
 
+/-- An element of the kernel of the action on `M[ℓ]` and `μ_ℓ` fixes the `ℓ`-th roots of unity. -/
+lemma cyclotomicCharMod_eq_one_of_mem_ker_torsionAction {g : Gal(Ω/K)}
+    (hg : g ∈ (torsionAction M ℓ).ker) : cyclotomicCharMod Ω ℓ g = 1 :=
+  congrArg Prod.snd (MonoidHom.mem_ker.1 hg)
+
 /-- The kernel of the action on `M[ℓ]` and `μ_ℓ` acts trivially on `M[ℓ]`. -/
 lemma trivialOn_ker_torsionAction : (M.torsion ℓ).TrivialOn (torsionAction M ℓ).ker := fun _ hg a ↦
   DFunLike.congr_fun (congrArg (fun p ↦ Multiplicative.toAdd p.1) (MonoidHom.mem_ker.1 hg)) a
@@ -355,7 +360,7 @@ lemma exists_hasFewCocycles_torsion (hκ : Continuous κ)
   obtain ⟨γ, hγ⟩ := exists_generator_mod_ker hκ hκ_four _ O.isClosed
   let x (j : Bool) : O := cond j γ (if h : c ∈ O then ⟨c, h⟩ else 1)
   obtain ⟨I', s', v_eq, φ_eq, φ_mem⟩ := s.exists_add_two_primes (O := O) hm hUO
-    (fun _ hg ↦ congrArg Prod.snd (MonoidHom.mem_ker.1 hg)) x
+    (fun _ ↦ cyclotomicCharMod_eq_one_of_mem_ker_torsionAction) x
   refine ⟨O, I', s', Set.range_subset_iff.2 fun i ↦ ⟨.inl i, v_eq i⟩, ?_⟩
   -- An `ℓ`-th root `y` of a `q`-unit that the Frobenius elements of `s'` fix is fixed by `O`: its
   -- stabiliser `F` is open and contains `U`, `γ` and `O ⊓ ker κ`.

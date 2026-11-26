@@ -291,6 +291,13 @@ lemma trace_restrict_ne_zero {p : Submodule ℂ V} [FiniteDimensional ℂ p] {b 
     simpa [sub_eq_zero] using isNilpotent_trace_of_isNilpotent h_nil
   simp [h_trace, hc, hp_ne]
 
+/-- Generalised eigenspaces for different eigenvalues meet trivially: in a complex vector space
+`V`, a vector killed by a power of `f - μ` that lies in the generalised eigenspace of `f` for
+`ν ≠ μ` is zero. -/
+lemma eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace {f : End ℂ V} {μ ν : ℂ} (hne : μ ≠ ν)
+    {N : ℕ} {v : V} (hμ : ((f - μ • 1) ^ N) v = 0) (hν : v ∈ maxGenEigenspace f ν) : v = 0 :=
+  disjoint_def.1 (disjoint_genEigenspace f hne ⊤ ⊤) v ((mem_maxGenEigenspace f μ v).2 ⟨N, hμ⟩) hν
+
 /-- If `s` intertwines `f` and `g`, that is `s * f = g * s`, and `u` commutes with `g`, then
 `f * (u * s)` and `g * (u * s)` have the same trace. -/
 lemma trace_mul_mul_eq_of_mul_eq_mul {f g s u : End ℂ V} (hs : s * f = g * s) (hu : Commute u g) :
@@ -523,7 +530,7 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
   have hχ (a : κ) : χ a = Sum.elim θ 0 a := by
     by_contra h_ne
     have hzero (v : U) : (x * A b) v = 0 :=
-      disjoint_def.1 (disjoint_genEigenspace _ h_ne ⊤ ⊤) _ ((mem_maxGenEigenspace _ _ _).2 ⟨_, hN_fst a (A b v)⟩) (h_eig v a)
+      eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace h_ne (hN_fst a (A b v)) (h_eig v a)
     have hρ : ρ ⟨(x, y), hx, hy, htr⟩ = 0 := ext fun v ↦ Subtype.ext (hzero v)
     exact hτ_ne (by simp [τ, hρ])
   obtain rfl : χ = Sum.elim θ 0 := funext hχ

@@ -273,6 +273,14 @@ lemma isCohomEquiv_someUnitLocus_of_span_eq_top {f : ι → c.baseAlg}
   exact DepthVanishing.subsingleton_of_isWeaklyRegular (List.replicate (n + 1) 1) (by aesop)
     (by simp) ⟨by simp⟩
 
+/-- The first `d` variables of a polynomial ring in `d + e` variables form a weakly regular
+sequence. -/
+lemma isWeaklyRegular_X_castAdd (e : ℕ) :
+    IsWeaklyRegular (MvPolynomial (Fin (d + e)) k)
+      (List.ofFn (X (R := k) ∘ castAdd (n := d) e)) := by
+  rw [← List.map_ofFn]
+  exact isWeaklyRegular_map_X _ (List.nodup_ofFn.2 (castAdd_injective d e))
+
 /-- Let `c = (A, M)` be a pair over `k` and `x_1, …, x_{2d}` étale coordinates on `A`, that is,
 the `k`-algebra map `polyEval x : k[X_1, …, X_{2d}] → A` sending `X_i` to `x_i` is étale. Then
 the cohomology of h_c with coefficients `⋀ M` and supports in the common zeros of the
@@ -296,8 +304,7 @@ lemma hodge_vanishing_along_diagonal {x : Fin (d + d) → c.baseAlg} (hx_etale :
   have h_flat : Module.Flat (MvPolynomial (Fin (d + d)) k) c.baseAlg :=
     Flat.comp (.of_bijective hσ.bijective) (Etale.iff_flat_and_formallyUnramified.1 hx_etale).1
   refine DepthVanishing.subsingleton_of_isWeaklyRegular _ ?_ (by simpa)
-    (by rw [← List.map_ofFn]; exact isWeaklyRegular_map_X _ (List.nodup_ofFn.2 (castAdd_injective d d)) :
-      IsWeaklyRegular (MvPolynomial (Fin (d + d)) k) (List.ofFn (X (R := k) ∘ castAdd (n := d) d))).of_flat
+    (isWeaklyRegular_X_castAdd (k := k) d).of_flat
   simp [ofList, Set.range, algebraMap_toAlgebra, σ]
 
 /-- Zariski descent for Hodge cohomology (`New.Variety.HasZariskiDescent`), with the pair `(A, M)`

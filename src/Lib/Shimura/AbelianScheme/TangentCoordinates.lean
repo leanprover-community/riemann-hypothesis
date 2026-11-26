@@ -364,6 +364,20 @@ variable [Fintype ι]
 lemma IsLieChart.isEtaleChart {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι → Γ(A.left, V)}
     {m : O → Matrix ι ι B} (h_lie : IsLieChart A s V z m) : IsEtaleChart A.hom V z := h_lie.1
 
+/-- For a chart at 0 over s : Spec B → S and the point t = Spec φ ≫ s of a ring map φ : B → C,
+the zero C-point of A lies in V. -/
+lemma IsLieChart.zero_landsIn {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι → Γ(A.left, V)}
+    {m : O → Matrix ι ι B} (h_lie : IsLieChart A s V z m) {φ : B ⟶ C} (ht : Spec.map φ ≫ s = t) :
+    LandsIn (0 : mk t ⟶ A).left V := (h_lie.2 ht).1
+
+/-- For a chart at 0 over s, the point t = Spec φ ≫ s, and C-points y, x that are infinitesimal
+for a square-zero extension ψ: dz(y + x) = dz(y) + dz(x), where dz = `New.tangentCoords z`. -/
+lemma IsLieChart.tangentCoords_add {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι → Γ(A.left, V)}
+    {m : O → Matrix ι ι B} (h_lie : IsLieChart A s V z m) {φ : B ⟶ C} (ht : Spec.map φ ≫ s = t)
+    {ψ : C ⟶ C'} [IsSqZeroExt ψ] {y x : mk t ⟶ A} (hy : IsInfinitesimal ψ y)
+    (hx : IsInfinitesimal ψ x) :
+    tangentCoords z (y + x) = tangentCoords z y + tangentCoords z x := ((h_lie.2 ht).2 hy).2 x hx
+
 /-- The four conditions of a chart at 0, each with its own quantifiers, give `New.IsLieChart`. -/
 lemma IsLieChart.of_isEtaleChart {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι → Γ(A.left, V)}
     {m : O → Matrix ι ι B} (h_chart : IsEtaleChart A.hom V z)
@@ -470,13 +484,13 @@ lemma IsInfinitesimal.eq_zero_of_isUnit_and_nsmul_eq_zero_of_cast_eq_zero (hy : 
   obtain ⟨V, z, mat, h_jac⟩ := exists_isLieChart (O := ℤ) hd s
   have h_lie := h_jac ((map_preimage _ =≫ s).trans a.w)
   have h_base : Spec.map (𝟙 C) ≫ t = t := by simp
-  have h_in := (h_lie.2 h_base).1
+  have h_in := h_lie.zero_landsIn h_base
   -- The coordinates are additive on infinitesimal points, so those of `m • y` are `m` times
   -- those of `y`.
   have h_nsmul (k : ℕ) : IsInfinitesimal ψ (k • y) := by simpa using hy.smul (k : ℤ)
   have h_add (k : ℕ) :
       tangentCoords z (k • y + y) = tangentCoords z (k • y) + tangentCoords z y :=
-    ((h_lie.2 h_base).2 (h_nsmul k)).2 y hy
+    h_lie.tangentCoords_add h_base (h_nsmul k) hy
   have h_dv : tangentCoords z (m • y) = (m : C) • tangentCoords z y := by
     induction m with
     | zero => simp

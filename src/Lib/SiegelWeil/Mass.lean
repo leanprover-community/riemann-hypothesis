@@ -302,6 +302,11 @@ noncomputable def conductorIdeal {E : Type*} [Field E] [NumberField E] (b : 𝔸
   toAddSubmonoid := ((characterKernel b).addSubgroupOf (Ô E).toAddSubgroup).toAddSubmonoid
   smul_mem' c r hr v := by simpa [mul_assoc, mul_left_comm] using hr (c * v)
 
+/-- The conductor ideal of a finite adele `b`, the largest ideal of `Ô` on which `v ↦ ψ_f(b v)` is
+trivial, has finite index. -/
+lemma cardQuot_conductorIdeal_ne_zero (b : 𝔸f E) : (conductorIdeal b).cardQuot ≠ 0 :=
+  isCompact_Ô.relIndex_ne_zero_add (isOpen_characterKernel b)
+
 /-- Let `E` be a CM field. Take a self-adjoint finite adele `b`, a finite adele `Γ`, and
 `I = conductorIdeal b`, the largest ideal of `Ô` on which `v ↦ ψ_f(b v)` is trivial. Then the Gauss
 sum `G = ∫_{Ô^n} ψ_f(b (w* w - Γ) / 2) dw` satisfies
@@ -381,7 +386,7 @@ lemma lintegral_gauss_sum_le_idealZeta (hμ : idealZeta (Ô E) μ ≤ 2) [Fintyp
     (fun b ↦ -Function.invFun ξ (fun v ↦ χ v) + b) ⁻¹' selfAdjointCodifferent E 1
   refine (setLIntegral_univ _).ge.trans (lintegral_le_idealZeta_mul hμ S (.of_forall fun b _ ↦ ?_))
   let I : Ideal (Ô E) := conductorIdeal b.val
-  have index_ne : I.cardQuot ≠ 0 := isCompact_Ô.relIndex_ne_zero_add (isOpen_characterKernel b.val)
+  have index_ne : I.cardQuot ≠ 0 := cardQuot_conductorIdeal_ne_zero b.val
   let : Fintype (Ô E ⧸ I.toAddSubgroup) := fintypeOfIndexNeZero index_ne
   have mem_S : b ∈ S I := by
     -- `ξ b` is trivial on `I`, so it descends to a character of `Ô ⧸ I`
