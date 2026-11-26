@@ -531,12 +531,6 @@ lemma IsSaturating.v_det_eq {x y z : GL ι (LocField w)}
     exact ⟨hy.inv_mul_mem hz.val_mem hz.mul_val_mem, hz.inv_mul_mem hy.val_mem hy.mul_val_mem⟩
   exact eq_of_inv_mul_eq_one (by simpa using (mem_intGL_iff_det.1 h_mem).2)
 
-/-- If `u` saturates `b` over integral matrices and `k`, `k'` lie in `GL_ι(Ô)`, then `k'⁻¹ * u`
-saturates `k * b * k'`. -/
-lemma IsSaturating.mul_of_mem_intGL (h : IsSaturating (Ô E).matrix b u) (hk : k ∈ intGL ι (Ô E))
-    (hk' : k' ∈ intGL ι (Ô E)) : IsSaturating (Ô E).matrix (k * b * k') (k'⁻¹ * u) :=
-  h.mul_of_mem (mem_intGL.1 hk).1 (mem_intGL.1 hk).2 (mem_intGL.1 hk').1 (mem_intGL.1 hk').2
-
 /-! ### Elementary divisors -/
 
 /-- Elementary divisors over `Ô`: every `g` in `GL_ι(𝔸_f)` is `k * diag(d) * k'` with `k`, `k'` in
@@ -675,7 +669,8 @@ at `k * g * k'` and at `g`. -/
 lemma glMultiplier_mul_of_mem (hk : k ∈ intGL ι (Ô E)) (hk' : k' ∈ intGL ι (Ô E)) :
     glMultiplier (k * g * k') = glMultiplier g := by
   obtain ⟨u, h⟩ := IsSaturating.exists_isSaturating g
-  rw [(h.mul_of_mem_intGL hk hk').glMultiplier_eq, h.glMultiplier_eq, map_mul, map_mul,
+  rw [(h.mul_of_mem (mem_intGL.1 hk).1 (mem_intGL.1 hk).2 (mem_intGL.1 hk').1 (mem_intGL.1 hk').2).glMultiplier_eq,
+    h.glMultiplier_eq, map_mul, map_mul,
     chiFin_det_eq_one_of_mem (inv_mem hk'), one_mul]
 
 /-! ### The formula in the elementary divisors, and the laws -/
