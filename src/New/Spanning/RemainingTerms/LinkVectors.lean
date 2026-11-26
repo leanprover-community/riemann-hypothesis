@@ -175,16 +175,6 @@ lemma gram_linkVectors (γ : S.G E) :
   fin_cases i <;> fin_cases k
   exacts [congrFun h_first 0, congrFun h_second 0, congrFun h_first 1, congrFun h_second 1]
 
-/-- If `γ` has the cell rank `j` (`HasCellRank`), the Gram determinant of `z⁺` and `Υ_γ⁻¹ z⁺`,
-times `|δ_j|²`, is `N² 𝗀`. Here `𝗀` is the discriminant of the frame and its image under `γ`, and
-`δ_j` is the leading minor of order `j` of their products, which is not zero. -/
-lemma HasCellRank.det_gram_linkVectors_mul (hγ : S.HasCellRank j γ) :
-    ((linkVectors γ)ᴴ * S.positiveGram * linkVectors γ).det *
-        (leadingMinor (S.frameProducts γ) j * star (leadingMinor (S.frameProducts γ) j)) =
-      S.N ^ 2 * S.termDisc γ := by
-  rw [gram_linkVectors, det_fin_two_of, hγ.termDisc_eq_mul_linkIsometry_symm]
-  ring
-
 /-- Let `γ` have the cell rank `j` (`HasCellRank`), so that the leading minor `δ_j` of order `j` of
 the products of the frame with its image under `γ` is not zero, and let `𝗀` be the discriminant of
 these two frames. At each infinite place `v` the Gram determinant of `z⁺` and `Υ_γ⁻¹ z⁺` has the
@@ -196,7 +186,9 @@ lemma HasCellRank.norm_det_gram_linkVectors (hγ : S.HasCellRank j γ) (v : Infi
   have h_det : ‖Φ v (((linkVectors γ)ᴴ * S.positiveGram * linkVectors γ).det *
       (leadingMinor (S.frameProducts γ) j * star (leadingMinor (S.frameProducts γ) j)))‖ =
       ‖Φ v (S.N ^ 2 * S.termDisc γ)‖ := by
-    rw [hγ.det_gram_linkVectors_mul]
+    congr 2
+    rw [gram_linkVectors, det_fin_two_of, hγ.termDisc_eq_mul_linkIsometry_symm]
+    ring
   obtain ⟨-, h_minor : leadingMinor (S.frameProducts γ) j ≠ 0, -⟩ := hγ
   rw [eq_div_iff (by simpa using h_minor)]
   simpa [sq] using h_det
