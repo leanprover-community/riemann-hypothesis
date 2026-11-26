@@ -223,15 +223,6 @@ lemma IntegralPlace.isDisintegration_normFiberMeasure (h_rank : 2 ≤ card κ) :
   unfold Place.normFiberMeasure
   exact Classical.epsilon_spec h_exists
 
-/-- For a basis `B` of the standard form with Gram matrix `planeSumGram 1`, the fiber measure
-`P.normFiberMeasure κ b` of `x ↦ x* x` is the image under `B` of the measure `P.quadricMeasure 1 b`
-of the flat chart. -/
-lemma IntegralPlace.normFiberMeasure_eq_map (h_rank : 2 ≤ card κ)
-    {B : Matrix κ (Fin 2 ⊕ Fin (card κ - 2)) A} (hB : Bᴴ * B = planeSumGram 1) (b : skewAdjoint A) :
-    P.normFiberMeasure κ b = (P.quadricMeasure 1 b).map (B *ᵥ ·) :=
-  (P.isDisintegration_normFiberMeasure h_rank).unique
-    (P.isDisintegration_of_hyperbolic_basis h_rank hB)
-
 /-- At a finite place and in rank at least two, let the columns of `B` have Gram matrix
 `planeSumGram 1` for the standard form `x ↦ x* x`: a hyperbolic pair, then orthonormal vectors. In
 this basis `flatChart 1 b` sends coordinates `p = ((t, w), a)`, with `a` skew, to a point of the
@@ -244,7 +235,9 @@ lemma IntegralPlace.normFiberMeasure_eq_map_flatChart (h_rank : 2 ≤ card κ)
       fun p : (A × (Fin (card κ - 2) → A)) × skewAdjoint A ↦ B *ᵥ flatChart 1 b p := by
   have hB_meas : Measurable (B *ᵥ ·) := by fun_prop
   have h_chart_meas : Measurable (flatChart (1 : Matrix (Fin (card κ - 2)) _ A) b) := by fun_prop
-  rw [P.normFiberMeasure_eq_map h_rank hB, quadricMeasure, Measure.map_map hB_meas h_chart_meas]
+  rw [(P.isDisintegration_normFiberMeasure h_rank).unique
+      (P.isDisintegration_of_hyperbolic_basis h_rank hB),
+    quadricMeasure, Measure.map_map hB_meas h_chart_meas]
   rfl
 
 /-- At the finite place `P`, if `κ` has at least two elements, the fiber measure
