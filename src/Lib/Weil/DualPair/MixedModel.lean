@@ -178,9 +178,6 @@ lemma homTarget_kAdelic : (D.homTarget T).kAdelic = D.kAdelic ⊗ₖ T.dualFrame
   simp [kAdelic, hom, homTarget, map_kronecker, transpose_map, map_J, ← mul_kronecker_mul,
     ← transpose_mul, dualFrame]
 
-lemma homTarget_iAdelic : (D.homTarget T).iAdelic = D.iAdelic ⊗ₖ 1 := by
-  simp [iAdelic, ratMap, hom, homTarget, map_kronecker, ← mul_kronecker_mul, ← transpose_mul]
-
 end
 
 /-! ### The mixed model on Hom(V,T) -/
@@ -350,7 +347,7 @@ lemma homTarget_zeroTerm_pairWeil (g : G E s) (g₀ : G E s₀) (m : GL p (𝔸 
   have h_onHom_iAdelic :
       (D.homTarget T).iCoord * ((G.onHom (h, g)).adeleMatrix * (D.homTarget T).iAdelic) =
         (G.onHom (h, g₀)).adeleMatrix := by
-    simp [iCoord, ← hi, homTarget_iAdelic, conjTranspose_kronecker,
+    simp [iCoord, ← hi, iAdelic, ratMap, hom, homTarget, map_kronecker, conjTranspose_kronecker,
       ← mul_kronecker_mul, ← transpose_mul]
   have h_det_M : M.det = (m.det ^ card n' * Unitary.toUnits h⁻¹.det ^ card p).val := by
     rw [det_kronecker, det_transpose, det_units_conj]
