@@ -163,11 +163,6 @@ lemma smul_mem (hB : IsSeriesGenerator B T) {c : ℂ_[p]} {f : ℂ_[p]⟦X⟧} (
   rw [subst_smul (.of_constantCoeff_zero' hZ₀), coeff_smul, norm_smul]
   exact (mul_le_of_le_one_left (norm_nonneg _) hc).trans (hf n)
 
-lemma norm_constantCoeff_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
-    ‖f.constantCoeff‖ ≤ 1 := by
-  obtain ⟨g, rfl⟩ := (hB.mem_iff f).1 hf
-  simpa [hB.constantCoeff_eq_zero] using mem_range_seriesToCp.1 ⟨g, rfl⟩ 0
-
 lemma norm_coeff_one_le_one (hB : IsSeriesGenerator B T) {f : ℂ_[p]⟦X⟧} (hf : f ∈ B) :
     ‖f.coeff 1‖ ≤ 1 := by
   -- The linear coefficient of `f = g(T)` is that of the integral series `g`, as `T = X + ⋯`.
