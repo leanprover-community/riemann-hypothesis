@@ -64,9 +64,7 @@ noncomputable section
 A criterion for residual absolute irreducibility, in the strong form that the image of the group
 spans the matrix algebra over the coefficient ring
 (`New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj`). In the application `γ` and `φ`
-come from tame inertia and Frobenius at an auxiliary place. A spanning family has an absolutely
-irreducible reduction (`New.Selmer.eq_bot_or_eq_top_of_span_eq_top`), and its stable lattice is
-unique up to scalars (`New.Selmer.exists_eq_smul_of_conj_eq`).
+come from tame inertia and Frobenius at an auxiliary place.
 -/
 
 section ResidualIrreducibility

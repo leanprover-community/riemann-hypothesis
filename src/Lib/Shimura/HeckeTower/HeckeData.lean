@@ -248,7 +248,7 @@ lemma roots_map_eq_map_numberedRoots {t : E →+* ℂ} {P : E[X]}
 open scoped Classical in
 /-- The matrix that describes the signature at `v₀`, written as a polynomial in `Φ v₀ (y)`. The
 proposition `ε` chooses the case. In the marked case (`ε` holds) it is `markedReflection y i`. In
-the definite case (`ε` fails) it is the identity. See `eigenReflection_eq_ite`. -/
+the definite case (`ε` fails) it is the identity. -/
 def eigenReflection (ε : Prop) (y : GL n E) (i : n) : Matrix n n ℂ :=
   aeval (y.val.map (Φ v₀))
     (if ε then

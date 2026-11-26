@@ -31,10 +31,6 @@ group `Q_l` consists of the elements unitriangular on the first `l` frame vector
 
 * `New.Floors.TraceOne.heisenbergElem`, `New.Floors.FloorGroups.exists_eq_heisenbergElem_of_mem`:
   `N_a` is a Heisenberg group, given by Eichler maps.
-* `New.Floors.FloorGroups.bijOn_mulVec_eStar`: `u ↦ u e*_a` maps `N_a` bijectively onto the
-  isotropic vectors `y` of `V_a` with `h(e_a, y) = 1`.
-* `New.Floors.FloorGroups.existsUnique_prod_of_mem_besselU`: an element of `N_(<ϱ)` is a product in
-  `N_0 ⋯ N_(ϱ-1)` with unique factors.
 * `New.Floors.Place.heisenbergMeasure`, `New.Floors.ascConv`: invariant measures on `N_l` and, by
   convolution, on `N_(<j)`.
 * `New.Floors.HyperbolicBasis`, `New.Floors.HyperbolicBasis.floorQuadricMeasure`: hyperbolic bases
@@ -481,9 +477,8 @@ abbrev FloorPairs (m : ℕ) : Type := Fin m ⊕ {i : Fin 𝔰.ϱ // b.val ≤ i}
 
 /-- The basis of `V_b` made of the basis `F` of `V_ϱ` and the pairs `e_a`, `e*_a` with `b ≤ a`, as
 the columns of a matrix. It is the block matrix of `F.basisMatrix` and the identity on these pairs,
-with its rows placed among the basis indices and its columns reordered. The columns are listed in
-`New.Floors.HyperbolicBasis.col_floorBasis`, and the Gram matrix is computed in
-`New.Floors.HyperbolicBasis.gram_floorBasis`. -/
+with its rows placed among the basis indices and its columns reordered. The Gram matrix is computed
+in `New.Floors.HyperbolicBasis.gram_floorBasis`. -/
 def HyperbolicBasis.floorBasis :
     Matrix 𝔰.BesselIndex (Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m) A :=
   let S : Type := {i : Fin 𝔰.ϱ // b.val ≤ i}
