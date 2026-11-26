@@ -551,8 +551,8 @@ noncomputable def adeleOneOn {F : Type} [Field F] [NumberField F] (A : Set (FinP
 /-- The adele `adeleOneOn A x`, which is `1` on `A` and `x` off `A`, is continuous in `x`. -/
 @[fun_prop]
 lemma continuous_adeleOneOn {F : Type} [Field F] [NumberField F] (A : Set (FinPlace F)) :
-    Continuous (adeleOneOn A) := by
-  exact continuous_id.add (continuous_const.mul (continuous_const.sub continuous_id))
+    Continuous (adeleOneOn A) :=
+  continuous_id.add (continuous_const.mul (continuous_const.sub continuous_id))
 
 /-- If `a * b = 1`, the adeles that are `1` on `A` and `a`, resp. `b`, off `A` are inverse to each
 other. -/
