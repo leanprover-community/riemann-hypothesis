@@ -560,13 +560,18 @@ lemma DescentPair.blockDatum_eq_sum_modDatum :
   refine sum_congr rfl fun A _ ↦ ?_
   -- As `twistResidueLift A` reduces to `1` at `M` and to `A⁻¹` at `Q`, the conditions on `x` agree,
   -- and the scalar `(O.charV (det (twistResidueLift A)))⁻¹` is `∏ ψ (det (A i))`. The lemmas
-  -- `Sum.elim_inl` and `Sum.elim_inr` are removed: they would rewrite the places on which the
+  -- `Sum.elim_inl` and `Sum.elim_inr` are not used: they would rewrite the places on which the
   -- residue fields depend.
-  simp [charV_detFin_eq_prod, identityBlockIndicator, submatrix_mul (e₂ := id),
-    reduceAt_twistResidueLift_inl,
-    reduceAt_twistResidueLift_inr, mul_inv_eq_iff_eq_mul_of_invertible, ← inv_apply',
-      inv_apply_eq_inv',
-    -Sum.elim_inl, -Sum.elim_inr]
+  simp only [SubmonoidClass.coe_pow, detFin, OneMemClass.coe_one, ContinuousMonoidHom.pow_apply,
+    one_mem, Exchange.upsilonU1_detFin_eq_one_of_mem_stdLevel, one_pow, one_mul, Circle.coe_inv,
+    charV_detFin_eq_prod, Fintype.prod_sum_type, reduceAt_twistResidueLift_inl, Units.val_one,
+    det_one, map_one, prod_const_one, reduceAt_twistResidueLift_inr, coe_units_inv,
+    det_nonsing_inv, Ring.inverse_eq_inv', ← inv_apply', inv_apply_eq_inv', prod_inv_distrib,
+    inv_inv, identityBlockIndicator, inv_one, Matrix.one_mul, Matrix.map_mul,
+    reductionGL_map_modulusResidue, Matrix.mul_one, Multiset.bijective_iff_map_univ_eq_univ, id_eq,
+    Multiset.map_id', submatrix_mul (e₂ := id), submatrix_id_id,
+    mul_inv_eq_iff_eq_mul_of_invertible, Pi.smul_apply, Function.comp_apply, smul_eq_mul, mul_ite,
+    mul_one, mul_zero]
 
 omit [WeilData E] in
 /-- Here M and Q are the families of places indexed by `O.ChosenIndex` and `O.TwistIndex`, and ψ_w
