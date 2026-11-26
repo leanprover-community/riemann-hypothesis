@@ -344,18 +344,13 @@ lemma exists_residueKer_eq_and_inv_mul_mem_localIntGL (hg : g ∈ basicDoubleCos
   rw [residueKer, Units.val_mul, map_residueOrZero_mul hg.1 l.property.isIntMatrix, mulVecLin_mul,
     h_red, h_comap, LinearMap.ker_comp]
 
-omit [DecidableEq n] in
-lemma exists_card_eq_finrank : ∃ s : Finset n, #s = finrank (ResField w) U := by
-  obtain ⟨s, -, hs⟩ := exists_subset_card_eq (U.finrank_le.trans_eq (finrank_pi _))
-  exact ⟨s, hs⟩
-
 /-- Every subspace U of k_w^n is the kernel of the reduction modulo w of some element of
 `New.basicDoubleCoset` n w j with j = dim U. -/
 lemma exists_mem_basicDoubleCoset_residueKer_eq :
     ∃ k ∈ basicDoubleCoset n w (finrank (ResField w) U), residueKer k.val = U := by
   -- Start from the diagonal matrix with `ϖ` on a set `s` of `dim U` indices, and move the kernel
   -- of its reduction onto `U` by `exists_residueKer_eq_and_inv_mul_mem_localIntGL`.
-  obtain ⟨s, hs⟩ := exists_card_eq_finrank U
+  obtain ⟨s, -, hs⟩ := exists_subset_card_eq (U.finrank_le.trans_eq (finrank_pi _))
   let d : GL n (LocField w) := diagGL fun i : n ↦ if i ∈ s then uniformizer w else 1
   have hd_mem : d ∈ basicDoubleCoset n w (finrank (ResField w) U) := by
     simpa [d, hs] using diagGL_ite_mem_basicDoubleCoset (v_uniformizer w) s
