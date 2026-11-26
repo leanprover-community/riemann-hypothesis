@@ -655,8 +655,13 @@ lemma DescentPair.omega_blockDatum_eq_smul (k : stdLevel E n) (k' : stdLevel E n
       (∏ i : O.ChosenIndex, O.tamePart (O.chosenPlace i)
         (reduceFamily O.chosenPlace k i).val.det)⁻¹ := by
     rw [mul_comm]
-    simp [charV_detFin_eq_prod, reduceFamily, prod_eq_zero_iff, apply_eq_zero_iff,
-      GeneralLinearGroup.det_ne_zero, -Sum.elim_inl, -Sum.elim_inr]
+    simp only [reduceFamily, MonoidHom.pi_apply, SubmonoidClass.coe_pow, detFin,
+      ContinuousMonoidHom.pow_apply, SetLike.coe_mem,
+      Exchange.upsilonU1_detFin_eq_one_of_mem_stdLevel, one_pow, one_mul, Circle.coe_inv,
+      charV_detFin_eq_prod, Fintype.prod_sum_type, _root_.mul_inv_rev, ne_eq, prod_eq_zero_iff,
+      mem_univ, apply_eq_zero_iff, isUnit_iff_ne_zero, GeneralLinearGroup.det_ne_zero,
+      not_false_eq_true, not_true_eq_false, and_false, exists_false, mul_inv_cancel_left₀,
+      _root_.inv_inj]
     rfl
   -- Move the datum by `pairWeil_modDatum_stdLevel` and compare the naming functions at a matrix
   -- `x`.
