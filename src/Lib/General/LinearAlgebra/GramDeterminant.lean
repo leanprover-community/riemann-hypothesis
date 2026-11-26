@@ -117,9 +117,7 @@ noncomputable def formGram (G : Matrix I I ℂ) (v : S → I → ℂ) : Matrix S
 lemma posSemidef_formGram (hG : G.PosSemidef) (v : S → I → ℂ) :
     (formGram G v).PosSemidef := by
   have h_eq : formGram G v = (of v)ᵀᴴ * G * (of v)ᵀ := by
-    rw [Matrix.mul_assoc]
-    ext i k
-    simp [formGram, Matrix.mul_apply, dotProduct, mulVec]
+    exact Matrix.ext fun i k ↦ (Matrix.mul_mul_apply (of v)ᵀᴴ G (of v)ᵀ i k).symm
   rw [h_eq]
   exact hG.conjTranspose_mul_mul_same _
 
