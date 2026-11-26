@@ -1053,8 +1053,10 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       -- The first component of `v` is the unit `X`, with inverse `X'`.
       have h_rows : (v + F c (0, X')).1.down.val • unimodularRow (B := R c) ⟨⟦(0, X')⟧⟩ =
           (F c (X - 1, 1)).1.down.val • unimodularRow (B := R c) ⟨⟦(X - 1, 1)⟧⟩ := by
-        -- `erw`: the rows of the two frames match `hε` only up to unfolding definitions.
-        erw [mul_smul, ← hε, ← hε]
+        change (_ * (ε (R.obj c) (0, X')).val) •
+            unimodularRow (B := R c) ⟨⟦(0, X')⟧⟩ =
+          (ε (R.obj c) (X - 1, 1)).val • unimodularRow (B := R c) ⟨⟦(X - 1, 1)⟧⟩
+        rw [mul_smul, ← hε (R.obj c) (0, X'), ← hε (R.obj c) (X - 1, 1)]
         simpa only [zero_mul, add_zero, Prod.smul_mk, smul_eq_mul, mul_one, add_sub_cancel,
           Prod.mk.injEq] using ⟨rfl, Units.mul_inv _⟩
       obtain ⟨h_unit, h_point⟩ := eq_and_eq_of_smul_unimodularRow_eq h_rows
@@ -1068,12 +1070,17 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       change ((cocycle _).extension.f.app c).hom
           (((kummerSeq (genericTestOver A)).g.app c).hom ((α.app c).hom (FreeAddCommGroup.of y₁))) =
         (f.app c).hom ((gluing.app c).hom (FreeAddCommGroup.of y₁))
-      erw [h_alpha, h_glue, _root_.map_sub, h_f_app, h_f_app]
+      refine (congrArg (fun u ↦ ((cocycle _).extension.f.app c).hom
+        (((kummerSeq (genericTestOver A)).g.app c).hom u)) (h_alpha c y)).trans ?_
+      have h_image := (congrArg (f.app c).hom h_glue).trans
+        ((_root_.map_sub (f.app c).hom _ _).trans
+          (congrArg₂ (· - ·) (h_f_app c z₀) (h_f_app c z₁)))
+      refine Eq.trans ?_ h_image.symm
       have h_coord (g : ℚ≥0 →+ ℚ) :
           (discToTorus g ≫ y.down).hom (single 1 1) = y.down.hom (single (g 1) 1) := by
         change y.down.hom (mapDomain g (single 1 1)) = _
         exact congrArg y.down.hom (AddMonoidAlgebra.mapDomain_single ..)
-      simp only [Bool.cond_false, Bool.cond_true, h_coord]
+      simp only [z₀, z₁, h_coord]
       change v = (F c (0, 0) - F c (0, X')) - (F c (0, 0) - F c (X - 1, 1))
       simpa only [sub_sub_sub_cancel_left, eq_sub_iff_add_eq] using h_frame
 
