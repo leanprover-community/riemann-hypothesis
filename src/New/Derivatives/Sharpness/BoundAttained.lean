@@ -111,12 +111,6 @@ namespace Data
 
 open CMLattice Parameters QuadField Pointwise
 
-private lemma map_sum_of_add {ι M N : Type*} [AddCommMonoid M] [AddCommMonoid N]
-    (f : M → N) (h0 : f 0 = 0) (hadd : ∀ x y, f (x + y) = f x + f y)
-    (g : ι → M) (s : Finset ι) : f (∑ i ∈ s, g i) = ∑ i ∈ s, f (g i) :=
-  Finset.cons_induction (by rw [Finset.sum_empty, Finset.sum_empty, h0])
-    (fun _ _ _ ih ↦ by rw [Finset.sum_cons, Finset.sum_cons, hadd, ih]) s
-
 /-- Substitute the linear form `∑ x, μ x • X_(x, b)` (`linearSeries`) in the variables of copy
 `b` into the Taylor series of `f`, and apply `ιₚ : ℂ → ℂ_[p]` to the coefficients. The result is
 the series `taylorVia ιₚ f` along the form `ιₚ ∘ μ` of one copy, renamed into copy `b`. -/
@@ -136,8 +130,8 @@ lemma map_subst_linearSeries_copy {p : ℕ} [Fact p.Prime] [PadicPlace p] {X : T
       ιₚ = rename (copyEmbedding b) (linearSeries fun x : X × Unit ↦ (ιₚ (μ x.1) : ℂ_[p])) := by
     let fMap := MvPowerSeries.map (σ := X × Fin k × Unit) ιₚ
     let gMap := rename (R := ℂ_[p]) (copyEmbedding (X := X) b)
-    rw [h_lhs, map_sum_of_add fMap fMap.map_zero' fMap.map_add', linearSeries,
-      map_sum_of_add gMap gMap.toRingHom.map_zero' gMap.toRingHom.map_add', sum_prod_type]
+    rw [h_lhs, map_sum fMap, linearSeries,
+      map_sum gMap, sum_prod_type]
     refine sum_congr rfl fun x _ ↦ ?_
     rw [Fintype.sum_unique, PUnit.default_eq_unit, smul_eq_C_mul, smul_eq_C_mul,
       RingHom.map_mul fMap, map_C, map_X, map_mul, rename_C, rename_X, copyEmbedding_apply]
@@ -320,9 +314,9 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
             Fintype.card_unique (α := Unit), mul_one]
       _ = ∑ i : Y, c i * (∑ y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing,
             stdLattice.selfDualAddChar D.E (z i y₀) * L (D.indicatorDatum 𝔪 y₀)) * v := by
-        rw [← h_inversion, map_sum_of_add L L.map_zero L.map_add', Finset.sum_mul]
+        rw [← h_inversion, map_sum L, Finset.sum_mul]
         refine sum_congr rfl fun i _ ↦ ?_
-        rw [hz i, L.map_smul, smul_eq_mul, map_sum_of_add L L.map_zero L.map_add']
+        rw [hz i, L.map_smul, smul_eq_mul, map_sum L]
         congr 2
         exact sum_congr rfl fun y₀ _ ↦ by rw [L.map_smul, smul_eq_mul]
       _ = _ := by
@@ -333,7 +327,7 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
   obtain ⟨y₀, h_max⟩ := Finite.exists_max fun y₁ : Matrix (Fin 12) Unit 𝔪.ResidueRing ↦
     ‖(ιₚ (L (D.indicatorDatum 𝔪 y₁)) : ℂ_[p])‖
   refine ⟨y₀, ?_⟩
-  rw [h_sum, map_sum_of_add ιₚ ιₚ.map_zero' ιₚ.map_add']
+  rw [h_sum, map_sum ιₚ]
   refine norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun x _ ↦ ?_
   rw [map_mul, map_mul, norm_mul, norm_mul, norm_map_selfDualAddChar, one_mul]
   exact (mul_le_mul_of_nonneg_right (hc x.1) (norm_nonneg _)).trans
