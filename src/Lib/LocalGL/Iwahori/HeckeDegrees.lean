@@ -572,7 +572,7 @@ lemma card_echelonRows_mem_residueKer (hg : g ∈ partialCosets r (j + 1)) :
     rw [Nat.card_congr (p.toAddMonoidHom.fiberEquivKerOfSurjective (p.surjective hp_ne) 1)]
     exact (natCard_eq_pow_finrank (K := ResField w) (V := p.ker)).trans
       (by rw [card_ResField, h_dim])
-  have h_equiv :
+  let h_equiv :
       {u : Fin N → ResField w // u ∈ {u ∈ echelonRows (w := w) r | u ∈ L}} ≃
         (p.toAddMonoidHom ⁻¹' {1}) :=
     { toFun u := ⟨⟨u.val, (mem_filter.mp u.prop).2⟩,
@@ -588,9 +588,9 @@ lemma partialHecke_mem_levelSpace {x : V} (hx : x ∈ levelSpace ρ (localIntGL 
     partialHecke ρ m j x ∈ levelSpace ρ (blockParahoric fun i : ℕ ↦ i + 1 - m) := by
   classical
   exact heckeFun_mem_levelSpace hasFiniteCosets_partialCosets
-    (fun g k ↦ by simp only [Set.indicator, mul_mem_partialCosets_iff.2 k.2, Pi.one_apply])
+    (fun g k ↦ by simp only [Set.indicator, mul_mem_partialCosets_iff.2 k.property, Pi.one_apply])
     (fun g k ↦ by simp only [MonoidHom.one_apply, one_mul, Set.indicator,
-      mul_mem_partialCosets_iff.1 k.2, Pi.one_apply])
+      mul_mem_partialCosets_iff.1 k.property, Pi.one_apply])
     hx
 
 /-- Every lattice of colength `0` is `𝒪^N` and contains all basis vectors, so

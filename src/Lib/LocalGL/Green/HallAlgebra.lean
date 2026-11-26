@@ -657,7 +657,7 @@ lemma blockAverage_mul :
   let φ : (Σ P : StableSubspace a × StableSubspace b, S P × ((W →ₗ[k] V) ⧸ S P)) →
       Σ x : W →ₗ[k] V, StableSubspace (blockTriangularEnd a b x)
     | ⟨⟨A, B⟩, y, s⟩ => ⟨a ∘ₗ s.out - s.out ∘ₗ b + y,
-      comap (LinearEquiv.skewProd 1 1 s.out).1 (g' := blockTriangularEnd a b y)
+      comap (LinearEquiv.skewProd 1 1 s.out).toLinearMap (g' := blockTriangularEnd a b y)
         (by
           rintro ⟨w, v⟩
           simp only [coprod_apply, LinearMap.prod_apply, LinearMap.coe_add, Function.prod_apply,
