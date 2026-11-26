@@ -78,7 +78,7 @@ with small class number (2016), 4.2.7, 4.2.9.
 
 section OneVector
 
-open NumberField Real Matrix MeasureTheory Complex Finset Function New SiegelWeil WeilData Space Int
+open NumberField Real Matrix IsCMField MeasureTheory Complex Finset Function New SiegelWeil WeilData Space Int
   AddChar GaussianFourier FractionalIdeal CompleteSplitting Splitting Prod Fintype Lagrangian Nat
   FourierTransform
 
@@ -94,7 +94,8 @@ noncomputable def New.SiegelWeil.shearSplitting {E : Type} [Field E] [CMType E] 
   l := (hyperbolicSplitting E Unit).k
   i := 0
   gram_kk := by
-    simp [mem_maximalRealSubfield_iff_star_eq.1, hyperbolicSplitting,
+    have ha : star (a : E) = a := (complexConj_eq_self_iff E _).2 a.property
+    simp [ha, hyperbolicSplitting,
       conjTranspose_fromRows_eq_fromCols_conjTranspose, Matrix.add_mul, fromCols_mul_fromBlocks,
       Matrix.mul_add, fromCols_mul_fromRows]
   gram_ll := by
@@ -121,9 +122,11 @@ lemma New.SiegelWeil.eq_lagrangian_of_notMem_range_shear {E : Type} [Field E] [C
   -- Otherwise `L` is the line of `y`, and isotropy of `y` says that `j` times its slope is real.
   by_contra hy0
   apply hL
-  have h_real : j * y (Sum.inr ()) / y (Sum.inl ()) ∈ maximalRealSubfield E :=
-    mem_maximalRealSubfield_iff_star_eq.mpr <| by simpa [mulVec, hy0, dotProduct, field,
-      add_eq_zero_iff_neg_eq, j_ne_zero, mul_add, sum_add_distrib] using (L.prop y).mp hy y hy
+  have h_real : j * y (Sum.inr ()) / y (Sum.inl ()) ∈ maximalRealSubfield E := by
+    apply (complexConj_eq_self_iff E _).1
+    change star (j * y (Sum.inr ()) / y (Sum.inl ())) = _
+    simpa [mulVec, hy0, dotProduct, field, add_eq_zero_iff_neg_eq, j_ne_zero, mul_add,
+      sum_add_distrib] using (L.prop y).mp hy y hy
   refine ⟨⟨_, h_real⟩, eq_of_le fun w hw ↦ ?_⟩
   obtain ⟨t, ht⟩ : ∃ t : Unit → E, (shearSplitting ⟨_, h_real⟩).k.mulVecLin t = w := hw
   have h_smul : w = (t () / y (Sum.inl ())) • y := by

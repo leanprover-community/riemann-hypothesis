@@ -41,7 +41,7 @@ Notions from other files:
 
 @[expose] public section
 
-open Polynomial Finset ComplexConjugate NumberField
+open Polynomial Finset ComplexConjugate NumberField IsCMField
 
 namespace New
 
@@ -67,7 +67,8 @@ lemma QuadField.exists_algebraMap_eq_of_star_eq {d : ℕ} [PrimeSevenModEight d]
   -- The maximal real subfield of the quadratic field `K` does not contain `√-d`, so it is `ℚ`.
   let R : IntermediateField ℚ (QuadField d) :=
     (maximalRealSubfield (QuadField d)).toIntermediateField (by simp)
-  have h_mem {x : QuadField d} : x ∈ R ↔ star x = x := mem_maximalRealSubfield_iff_star_eq
+  have h_mem {x : QuadField d} : x ∈ R ↔ star x = x :=
+    (complexConj_eq_self_iff _ x).symm
   have h_prime : (Module.finrank ℚ (QuadField d)).Prime := by
     simp [QuadField.finrank_eq_two, Nat.prime_two]
   have h_sqrt : QuadField.sqrtNegD d ∉ R := by

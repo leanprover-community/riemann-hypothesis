@@ -321,7 +321,7 @@ lemma prod_Φ_pos_of_principalIdele_mul_norm_eq_one {a : Lˣ} {z : (𝔸f L)ˣ}
   algebraize [Ω.fieldEmb L]
   obtain ⟨χ, hχ⟩ : ∃ χ : QZChar Gal(Ω/K), IsProGalois (ker χ) L Ω := exists_char_isProGalois_ker
   -- `a` comes from `a₀ ∈ Kˣ`, and `a₀` times the norm of `z` is `1`, as base change is injective
-  have h_mem : a.val ∈ K := mem_maximalRealSubfield_iff_star_eq.mpr ha
+  have h_mem : a.val ∈ K := (complexConj_eq_self_iff L _).1 ha
   obtain ⟨a₀, rfl⟩ : ∃ a₀ : Kˣ, a₀.map K.subtype = a :=
     ⟨mk0 ⟨a.val, h_mem⟩ (by simp [Subtype.ext_iff]), ext rfl⟩
   have h_one : principalIdele a₀ * z.map (adeleNorm K L) = 1 := by
@@ -399,7 +399,7 @@ lemma exists_quadraticIdeleChar_eq_neg_one {w : FinPlace E} (hw : star w = w) :
   -- If `t = a z z̄`, then `a` is positive at infinity, and `χ` kills the symbol of `x`: that of
   -- `a` by the sign law, and that of a norm.
   rintro ⟨a, z, ha, h_eq⟩
-  have h_mem : a.val ∈ K := mem_maximalRealSubfield_iff_star_eq.mpr ha
+  have h_mem : a.val ∈ K := (complexConj_eq_self_iff E _).1 ha
   obtain ⟨a₀, rfl⟩ : ∃ a₀ : Kˣ, a₀.map K.subtype = a :=
     ⟨mk0 ⟨a.val, h_mem⟩ (by simp [Subtype.ext_iff]), ext rfl⟩
   have h_pos (τ : InfinitePlace E) : 0 < Φ τ (a₀.val : E) := by

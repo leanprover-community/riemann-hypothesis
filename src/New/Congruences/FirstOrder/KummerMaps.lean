@@ -60,7 +60,7 @@ abbrev primeBelowPlus (w : FinPlace E) : FinPlace (maximalRealSubfield E) :=
 lemma primeBelowPlus_star (w : FinPlace E) : primeBelowPlus (star w) = primeBelowPlus w := by
   ext x
   have h_star : star (algebraMap _ (𝓞 E) x) = algebraMap _ (𝓞 E) x :=
-    Subtype.ext (mem_maximalRealSubfield_iff_star_eq.1 (x : maximalRealSubfield E).property)
+    Subtype.ext ((complexConj_eq_self_iff E _).2 (x : maximalRealSubfield E).property)
   change algebraMap _ (𝓞 E) x ∈ (star w).asIdeal ↔ algebraMap _ (𝓞 E) x ∈ w.asIdeal
   rw [mem_star_place, h_star]
 
@@ -82,7 +82,8 @@ def conjPlus : Gal(Ω/maximalRealSubfield E) :=
   { cmConj with
     commutes' x := by
       change cmConj (algebraMap E Ω x) = algebraMap E Ω x
-      rw [cmConj_algebraMap, mem_maximalRealSubfield_iff_star_eq.1 x.property] }
+      have h_star : star (x : E) = x := (complexConj_eq_self_iff E _).2 x.property
+      rw [cmConj_algebraMap, h_star] }
 
 lemma isOpenEmbedding_toGalPlus : Topology.IsOpenEmbedding (toGalPlus E) :=
   isOpenEmbedding_galois_restrict (toGalPlus E) fun _ _ ↦ rfl

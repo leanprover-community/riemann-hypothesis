@@ -23,7 +23,7 @@ trace, the norm, the different and the discriminant.
 
 * `New.differentIdeal_eq_span_of_dvd`: a criterion for `f'(x)` to generate the different and for
   `𝓞 L = A[x]`.
-* `New.mem_maximalRealSubfield_iff_star_eq`, `New.trace_maximalRealSubfield_eq_add_star`,
+* `New.trace_maximalRealSubfield_eq_add_star`,
   `New.norm_maximalRealSubfield_eq_mul_star`: E⁺ is the fixed field of conjugation, and the trace
   and norm from `E` to E⁺ are `x + x̄` and `x x̄`.
 * `New.differentIdeal_eq_top`, `New.abs_discr_eq_discr_maximalRealSubfield_sq`: under
@@ -117,10 +117,6 @@ open NumberField MeasureTheory Algebra InfinitePlace IsCMField IsTotallyReal Sub
 namespace New
 
 variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
-
-/-- The maximal real subfield of a CM field is the fixed field of complex conjugation. -/
-lemma mem_maximalRealSubfield_iff_star_eq {x : E} : x ∈ maximalRealSubfield E ↔ star x = x :=
-  (complexConj_eq_self_iff E x).symm
 
 open scoped Classical in
 /-- The automorphisms of a CM field over its maximal real subfield are the identity and complex

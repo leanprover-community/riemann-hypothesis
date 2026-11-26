@@ -73,7 +73,7 @@ Here `QuadraticAlgebra F μ 0` is `F[X] / (X² - μ)`.
 
 section SumOfTwoSquares
 
-open Algebra QuadraticAlgebra Set NumberField
+open Algebra QuadraticAlgebra Set NumberField IsCMField
 
 /-- Hasse principle for sums of two squares: a totally positive element `x` of a number field `M`
 that is a limit of sums of two squares in the completion at each finite place is a sum of two
@@ -169,7 +169,7 @@ lemma New.exists_sq_add_sq_quadraticAlgebra {E : Type} [Field E] [CMType E] [Has
   -- The adele `a` that is `q⁻¹` on `S.conjClosure` and `p` elsewhere is a real unit, and its
   -- component at `u` is `s`.
   let a : 𝔸f E := algebraMap E (𝔸f E) (q⁻¹ - p) * idem S.conjClosure + algebraMap E (𝔸f E) p
-  have ha_real : star a = a := by simp [a, mem_maximalRealSubfield_iff_star_eq.1]
+  have ha_real : star a = a := by simp [a, ← complexConj_apply_eq_star]
   have ha_unit (v : FinPlace E) : Valued.v (a v) = 1 := by
     by_cases hv : v ∈ S.conjClosure
     · simp [a, hv, hq_unit v hv]
@@ -211,7 +211,7 @@ Vectors are one-column matrices `Matrix n Unit _`.
 
 namespace New
 
-open NumberField Matrix Cohomology Complex Set Function
+open NumberField Matrix Cohomology Complex Set Function IsCMField
 
 -- `s` gives the signs of a space at the infinite places.
 variable {E : Type} {n : Type*} {s : n → ℤˣ} [Field E] [CMType E] [Fintype n] [DecidableEq n]
@@ -289,7 +289,7 @@ lemma Core.exists_form_eq_one [HasPrimitiveRoot5040 E]
     (K : Matrix n n E) (hK : Kᴴ = K) (z : Matrix n Unit (𝔸 E))
     (hz : zᴴ * K.map toAdele * z = 1) : ∃ w : Matrix n Unit E, wᴴ * K * w = 1 := by
   let N (u : Matrix n Unit E) : maximalRealSubfield E :=
-    ⟨(uᴴ * (K * u)) () (), mem_maximalRealSubfield_iff_star_eq.2
+    ⟨(uᴴ * (K * u)) () (), (complexConj_eq_self_iff E _).1
       (star_dotProduct_mulVec_comm hK _ _)⟩
   -- First `u` with `N u` positive at infinity, then `v` with `N v` a unit at the finitely many
   -- places where `N u` is not, and at their conjugates.
@@ -331,7 +331,7 @@ lemma Core.exists_form_eq_one [HasPrimitiveRoot5040 E]
   have hI_sq : (i : E) * i = -1 := by simpa using congrArg (algebraMap (𝓞 E) E) hi_sq
   have hI_star : star (i : E) = -i := by simpa using congrArg (algebraMap (𝓞 E) E) hi_star
   have h_real (x : maximalRealSubfield E) : star (x : E) = x :=
-    mem_maximalRealSubfield_iff_star_eq.1 x.property
+    (complexConj_eq_self_iff E _).2 x.property
   have h_re_coe : (p * p + q * q + (N v * N u - B ^ 2) * (r * r + s * s) : E) = N u :=
     congrArg Subtype.val h_re
   have h_im_coe : (p * r + q * s : E) = 0 := congrArg Subtype.val h_im
