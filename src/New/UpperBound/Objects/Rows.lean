@@ -52,11 +52,12 @@ noncomputable section
 a = ϱ and to e*_{2ϱ−a} if a > ϱ (e and e* numbered from 0). -/
 def New.Shape.besselIndexEquiv (𝔰 : Shape) : 𝔰.κ ⊕ Fin (2 * 𝔰.ϱ + 1) ≃ 𝔰.BesselIndex :=
   -- The inverse sends `e_i` to `i`, keeps `κ`, sends `z` to `ϱ` and `e*_i` to `2 ϱ - i`.
+  have h_mid : 𝔰.ϱ < 2 * 𝔰.ϱ + 1 := Nat.lt_succ_of_le (Nat.le_mul_of_pos_left _ two_pos)
   Equiv.symm <|
     Equiv.ofBijective
-        (Sum.elim (fun i ↦ Sum.inr ⟨i, by grind⟩)
-          (Sum.elim (Sum.elim Sum.inl fun _ ↦ Sum.inr ⟨𝔰.ϱ, by grind⟩) fun i ↦
-            Sum.inr ⟨2 * 𝔰.ϱ - i, by grind⟩)) <| by
+        (Sum.elim (fun i ↦ Sum.inr ⟨i, i.isLt.trans h_mid⟩)
+          (Sum.elim (Sum.elim Sum.inl fun _ ↦ Sum.inr ⟨𝔰.ϱ, h_mid⟩) fun i ↦
+            Sum.inr ⟨2 * 𝔰.ϱ - i, Nat.sub_lt_succ _ _⟩)) <| by
       -- an injection between finite sets of the same size
       simp [↓Fintype.bijective_iff_injective_and_card, Function.Injective]
       grind
