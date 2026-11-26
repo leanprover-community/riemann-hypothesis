@@ -872,7 +872,9 @@ theorem eq_zero_of_integral_choiceFn_thetaKernelPairing (F : D.goodForms (D.spac
   -- Suppose `F ≠ 0`. The peaks of `conj F` lie away from the cusp, where a combination of the
   -- `F_i` is close to a fixed `F₀`. Then `norm_apply_one_le_of_forall_isPeak` makes `F₀ 1` too
   -- small.
-  have h_rank : card D.RowIndex ≤ D.t := by grind [D.card_rowIndex, D.t_eq_five_mul_r]
+  have h_rank : card D.RowIndex ≤ D.t := by
+    rw [D.card_rowIndex, D.t_eq_five_mul_r]
+    exact Nat.le_mul_of_pos_left _ (by decide)
   obtain ⟨F₀, C, F₀_ne, F₀_le, near⟩ := exists_choiceFn_approx j
   suffices h_star : star (F : New.G D.E (D.signsW j) → ℂ) = 0 from
     Subtype.ext (Subtype.ext (Subtype.ext (star_eq_zero.1 h_star)))
