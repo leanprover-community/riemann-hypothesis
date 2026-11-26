@@ -292,7 +292,6 @@ lemma exists_compactMean_and_swap_eq_sum [IsSmoothRep ρ.ρ]
     simpa only [Y, map_sum, map_colVector_eq_sum hx hφ] using sum_by_last_nonzero_coord _ I
   refine ⟨Y ∅, Y {m}, mem_levelSpace.mpr fun k ↦ ?_, ?_, fun i hi ↦ ?_⟩
   · -- the group of level `update (min m) m N` lies in `P` and fixes `Y {m}`
-    have hk := k.property
     have hk_mem : k.val ∈ blockParahoric (min m) := by grind
     have h_row (r : Fin N) (hr : r ≠ m) : reduceParahoric m ⟨k.val, hk_mem⟩ m r = 0 := by
       have h_val : v (k.val m r) < 1 := by grind
