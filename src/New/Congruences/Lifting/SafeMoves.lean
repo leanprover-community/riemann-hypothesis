@@ -222,11 +222,6 @@ lemma SidePairing.isSafeMoveSnd_of_orders {l κ e : ℕ}
       h_pos).left
   simpa using safe
 
-lemma mem_letterPart_of_mem_pointsOver (hx : x ∈ S.pointsOver c i e o o') :
-    x ∈ S.extensionLattice.letterPart i := by
-  obtain ⟨-, -, ⟨⟨-, x_letter⟩, -⟩, -⟩ := hx
-  exact x_letter
-
 open scoped Classical in
 /-- If `l i` is the distance back from each letter `i` to the nearest cut strictly before it, then
 `l i` is `1` if the letter one step before `i` is a cut, and one more than the distance from that
@@ -252,8 +247,8 @@ end Points
 part at `i` and projects to `p ^ e` times the constant of `c`. -/
 lemma liesOver_of_mem_pointsOver {e : ℕ} {o d : ℕ → ℤ → ℤ} {x : S.extensionLattice.Ambient}
     (hx : x ∈ S.pointsOver c i e o d) : S.LiesOver c i e x :=
-  have ⟨_, x_over, _⟩ := hx
-  ⟨mem_letterPart_of_mem_pointsOver hx, x_over⟩
+  have ⟨_, x_over, ⟨⟨_, x_letter⟩, _⟩, _⟩ := hx
+  ⟨x_letter, x_over⟩
 
 /-- `φ ^ l` carries a point over `p ^ e c` at the letter `l` steps before `i` to a vector at `i`
 over `p ^ e c`. -/
