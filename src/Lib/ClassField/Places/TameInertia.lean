@@ -386,13 +386,6 @@ lemma isUniformizer_ell : IsUniformizer (intQpBar ℓ) (Units.mk0 (ℓ : ℚ_[�
   simpa [valuation_intQpBar_lt_one_iff, valuation_intQpBar_le_iff, -map_natCast] using
     x.norm_lt_pow_iff_norm_le_pow_sub_one 0
 
-/-- A natural number prime to `ℓ` is a unit of the valuation ring of `ℚ̄_ℓ`. -/
-lemma valuation_natCast_eq_one (hM : ¬ℓ ∣ M) : intQpBar ℓ M = 1 := by
-  -- The norm of `M` in `ℚ̄_ℓ` is its norm in `ℚ_ℓ`.
-  rw [eq_iff_le_not_lt, valuation_intQpBar_lt_one_iff,
-    ← map_natCast (algebraMap ℚ_[ℓ] (PadicAlgCl ℓ)) M, PadicAlgCl.norm_extends]
-  simpa using hM
-
 /-- Let `φ` in `G_ℓ` be a Frobenius for `q` in the sense of `New.IsFrob`. Then `φ` sends every
 `M`-th root of unity `z` to `z ^ q`, provided `M` is prime to `ℓ`. -/
 lemma apply_eq_pow_of_isFrob (hφ : IsFrob (intQpBar ℓ) q φ) (hM : ¬ℓ ∣ M) (hz : z ^ M = 1) :

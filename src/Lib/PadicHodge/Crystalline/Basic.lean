@@ -173,10 +173,7 @@ lemma eq_pow_of_isFrob (h : IsWeilPair (j s) m) {q : ℕ} (hq : IsFrob (intQpBar
   obtain ⟨l, hpl, hl⟩ : ∃ l : ℕ, p.succ ≤ l ∧ l.Prime := p.succ.exists_infinite_primes
   have hl_fact : Fact l.Prime := ⟨hl⟩
   have h_not_dvd : ¬p ∣ l := (Nat.prime_dvd_prime_iff_eq Fact.out hl).not.mpr (by omega)
-  have hval : (intQpBar p).valuation l = 1 := by
-    rw [eq_iff_le_not_lt, Selmer.valuation_intQpBar_lt_one_iff,
-      ← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p)) l, PadicAlgCl.norm_extends]
-    simpa using h_not_dvd
+  have hval : (intQpBar p).valuation l = 1 := Selmer.valuation_natCast_eq_one h_not_dvd
   exact_mod_cast (hq.cyclotomicChar_eq l hval).symm.trans (h.cyclotomicChar_eq l hval)
 
 end IsWeilPair

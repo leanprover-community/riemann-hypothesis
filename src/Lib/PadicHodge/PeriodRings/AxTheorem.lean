@@ -251,6 +251,13 @@ lemma Selmer.valuation_intQpBar_le_iff (x y : PadicAlgCl p) :
 lemma Selmer.valuation_intQpBar_lt_one_iff {z : PadicAlgCl p} : intQpBar p z < 1 ↔ ‖z‖ < 1 := by
   simpa using (valuation_intQpBar_le_iff 1 z).not
 
+/-- A natural number prime to `p` is a unit of the valuation ring of `ℚ̄_p`. -/
+lemma Selmer.valuation_natCast_eq_one {M : ℕ} (hM : ¬p ∣ M) : intQpBar p M = 1 := by
+  -- The norm of `M` in `ℚ̄_p` is its norm in `ℚ_p`.
+  rw [eq_iff_le_not_lt, valuation_intQpBar_lt_one_iff,
+    ← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p)) M, PadicAlgCl.norm_extends]
+  simpa using hM
+
 /-! The isometric, jointly continuous action of `Gp p` on `ℚ̄_p` and `ℂ_p` by ring automorphisms is
 Tau Ceti's (`TauCeti.NumberTheory.Padics.Complex.GaloisAction`). -/
 
