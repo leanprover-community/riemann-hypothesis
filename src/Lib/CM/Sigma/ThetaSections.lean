@@ -215,7 +215,9 @@ lemma g₃_eq : C.g₃ = 4 * ℘[C.periodPair] C.t ^ 3 - C.g₂ * ℘[C.periodPa
 /-- Let `C` be a CM lattice: a lattice `Λ` with a point `t` of order two modulo `Λ`, scaled so that
 `℘''(t) = 2`, together with a square root `a₁` of `12 ℘(t)`. Then the discriminant g₂³ − 27g₃² of
 `Λ` equals a₁⁴ − 64. -/
-lemma disc_eq : C.g₂ ^ 3 - 27 * C.g₃ ^ 2 = C.a₁ ^ 4 - 64 := by grind [g₃_eq, a₁_sq, g₂_eq]
+lemma disc_eq : C.g₂ ^ 3 - 27 * C.g₃ ^ 2 = C.a₁ ^ 4 - 64 := by
+  rw [C.g₃_eq, C.g₂_eq, show C.a₁ ^ 4 = (C.a₁ ^ 2) ^ 2 from pow_mul C.a₁ 2 2, C.a₁_sq]
+  ring
 
 lemma translatedX_add_of_mem (z : ℂ) {l : ℂ} (hl : l ∈ C.Λ) :
     C.translatedX (z + l) = C.translatedX z := by
