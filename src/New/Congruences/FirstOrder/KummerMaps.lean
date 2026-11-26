@@ -632,9 +632,7 @@ theorem IsKummerMap.sum_eq_zero {ν e : ℕ} {I : Type} [Finite I] {x : I → Fr
     rw [ofGalPlus_toGalPlus, hyψ]
   have h_sum : ∑ j, 2 • f (z (γ j)) * ψ (w j).frob⁻¹ = 0 := by
     apply ofZMod_injective
-    rw [map_sum, map_zero]
-    exact (sum_congr rfl fun j _ ↦ (h_term j).symm).trans
-      (hy.sum_eq_zero p w_inj w_notMem _ h_mem)
+    simpa only [map_sum, map_zero, ← h_term] using! hy.sum_eq_zero p w_inj w_notMem _ h_mem
   suffices h_image : ∑ j, (ψ (w j).frob).val • 2 • f (z (γ j)) = 0 by
     simpa only [map_sum, map_nsmul] using h_image
   simpa [h_inv, mul_comm] using h_sum
