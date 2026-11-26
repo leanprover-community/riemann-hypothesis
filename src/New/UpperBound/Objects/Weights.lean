@@ -137,6 +137,9 @@ lemma liftWeight_add (j : ℕ) (τ : D.Φ) (i : ℕ) :
 lemma liftWeight_succ (j : ℕ) (τ : D.Φ) : D.liftWeight (j + 1) τ = D.liftWeight j τ + D.gap := by
   rw [liftWeight_add, one_mul]
 
+lemma halfGap_le_liftWeight (j : ℕ) (τ : D.Φ) :
+    D.halfGap ≤ D.liftWeight j τ := by simp [liftWeight_eq]
+
 /-! ### The parameters and weights of the spaces `X_j` -/
 
 /-- The number `a_τ`: it is `a` at the places in `D.aPlaces` (the `a`-places) and `0` elsewhere. -/
@@ -236,7 +239,7 @@ lemma one_lt_k : 1 < D.k := by grind [D.ten_thousand_le_m, D.hundred_mul_m_le_k]
 /-- There are `κ_1 - n_1 / 2` columns of height `k`; this number is not negative. -/
 lemma cast_columnCount_k (τ : D.Φ) : (D.columnCount τ D.k : ℤ) = D.liftWeight 1 τ - D.n 1 / 2 := by
   have h_le : D.k + D.t + 1 ≤ D.liftWeight 1 τ :=
-    D.k_add_t_add_one_le_halfGap.trans (by simp [liftWeight_eq])
+    D.k_add_t_add_one_le_halfGap.trans (D.halfGap_le_liftWeight 1 τ)
   rw [columnCount, ite_eq_right D.one_lt_k.ne', ite_eq_left rfl, n_succ, n_zero]
   omega
 

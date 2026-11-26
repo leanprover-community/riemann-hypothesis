@@ -369,6 +369,12 @@ lemma mem_integralU1_empty_of_snd_mem_Ô {u : unitary (𝔸 E)} (h : (u : 𝔸 E
 lemma snd_mem_Ô_of_mem_integralU1 {S : Finset (FinPlace E)} {u : unitary (𝔸 E)}
     (hu : u ∈ integralU1 S) : (u : 𝔸 E).snd ∈ Ô E := hu.1
 
+/-- A point `u` of `New.integralU1 S` reduces to `1` modulo every place `w` of `S`. -/
+lemma reduceAt_eq_one_of_mem_integralU1 {S : Finset (FinPlace E)} {u : unitary (𝔸 E)}
+    (hu : u ∈ integralU1 S) {w : FinPlace E} (hw : w ∈ S) :
+    reduceAt w ⟨(u : 𝔸 E).snd, snd_mem_Ô_of_mem_integralU1 hu⟩ = 1 :=
+  hu.2 w hw
+
 /-- The unit `New.reduceU1 w u` of the residue field at `w` is the reduction modulo `w` of the
 finite part of `u`. -/
 lemma val_reduceU1 (w : FinPlace E) {u : unitary (𝔸 E)}
@@ -459,7 +465,7 @@ lemma eq_of_mem_integralU1 {f g : unitary (𝔸 E) → ℂ} (hS : ∀ w : FinPla
   have h_tame : ∏ᶠ w : FinPlace E, ψ w (reduceAt w ⟨(u : 𝔸 E).snd, h_int⟩) = 1 := by
     rw [finprod_tame_eq_prod_reduceU1 u hS h_int]
     refine Finset.prod_eq_one fun w hw ↦ ?_
-    rw [val_reduceU1, hu.2 _ hw, map_one]
+    rw [val_reduceU1, reduceAt_eq_one_of_mem_integralU1 hu hw, map_one]
   rw [h_eq u h_int, h_tame, mul_one]
 
 /-- The trivial character has weight 0 and trivial tame part. -/

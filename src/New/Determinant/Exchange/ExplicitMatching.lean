@@ -137,6 +137,11 @@ omit [DecidableEq p] [DecidableEq l] in
 lemma card_neg_blockSigns : card {i : b // blockSigns f i = -1} = card l := by
   simp [Fintype.card_subtype, card_filter, reindex_equiv f, -sum_boole]
 
+omit [NumberField E] in
+lemma continuous_posBlockEmb : Continuous (posBlockEmb (E := E) j) := by
+  simp only [continuous_pi_iff, continuous_U_iff_matrix, val_posBlockEmb_apply_coe]
+  fun_prop
+
 /-- The polynomial `∏_τ det (y⁻_τ) ^ (card (ι τ) + card n - 2 * card l) ∏_{τ, k} det (η_{τ k} y_τ)`,
 where `y⁻_τ` is the `l × l` block of variables with both signs negative and `y_τ` the `m × p` block
 with both signs positive. The first determinant is `variableMinor` (a minor of the matrix of
@@ -314,8 +319,7 @@ lemma exists_mul_eq_circle_mean (j : m ⊕ l ≃ n) (e : p ⊕ a ≃ m)
     exact h_mem.imp fun κ hκ ℓ hℓ ↦ congrFun hκ ⟨ℓ, hℓ⟩
   -- A line of functions of `ℓ` is closed and `mean` is continuous, so it is enough to treat Fock
   -- vectors of polynomials.
-  have h_cont : Continuous (posBlockEmb (E := E) j) := by
-    simp only [continuous_pi_iff, continuous_U_iff_matrix, val_posBlockEmb_apply_coe]; fun_prop
+  have h_cont := continuous_posBlockEmb (E := E) j
   have h_cont_torus : Continuous (frameTorus E e) := by fun_prop [frameTorus]
   refine isClosed_property denseRange_polyVector
     ((isClosedMap_smul_left _).isClosed_range.preimage_of_continuous (f := mean)) (fun P ↦ ?_) y

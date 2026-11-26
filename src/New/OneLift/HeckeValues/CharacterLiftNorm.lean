@@ -498,6 +498,13 @@ theorem LValueData.inner_thetaLift_constForm_self [WeilData E] (h_rank : 2 < Fin
   rw [LevelPlaces.LevelForm.inner_eq_petersson (stdSpace E n) O.isHCParam_paramV, h_lift, h_rallis]
   ring
 
+/-- The Euler product `eulerProd placeSign` over the finite places of `E`, with the signs
+`placeSign`, does not vanish at `k` for natural `k > 1`. If `E` is unramified over its maximal real
+subfield `F` at the finite places, this product at `k` is `ζ_F(2 k)`. -/
+lemma eulerProd_placeSign_ne_zero {k : ℕ} (hk : 1 < k) :
+    eulerProd (K := E) placeSign k ≠ 0 := by
+  simp [eulerProd_eq_exp_neg_tsum_log_of_norm_le_one norm_placeSign_le (Nat.one_lt_cast.2 hk)]
+
 omit [DecidableEq n] in
 /-- For lift data `X` let the rank be `card n = 2 * k` with `1 < k`. The function `placeSign` gives
 `1` at a place fixed by complex conjugation and the two signs to the two places of a split pair, so
@@ -565,8 +572,7 @@ lemma LValueData.inner_trivialLift_self_eq_L [WeilData E]
     rw [show X.descentPair.charV = X.u1Char * WeilData.upsilonU1 ^ (card n / 2) from rfl,
       vacuumSum_eq_L_div_eulerProd X.hasWeight X.unramified h_rank.symm hk,
       X.eulerProd_indicator_placeSign h_rank hk, prod_inv_distrib, ← div_div, div_eq_mul_inv]
-  refine ⟨by simp [measureReal_univ_ne_zero,
-    eulerProd_eq_exp_neg_tsum_log_of_norm_le_one norm_placeSign_le (Nat.one_lt_cast.2 hk)], ?_⟩
+  refine ⟨by simp [measureReal_univ_ne_zero, eulerProd_placeSign_ne_zero hk], ?_⟩
   -- The mean square, the index and the omitted factors are collected into `N(Q) ^ (2 k - 1)`.
   rw [X.trivialLift_eq_smul_thetaLift, inner_smul_left, inner_smul_right, map_natCast,
     X.inner_thetaLift_constForm_self (by lia), h_euler, h_index,

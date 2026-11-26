@@ -515,6 +515,14 @@ lemma New.Variety.hodgeTateMap_ne_zero_of_isCoincidenceSet {p : ℕ} {k : Type} 
       map_pointClass_eq_sum_of_isCoincidenceSet proj t ht, h_sum, map_zero, map_zero]
   exact hodgeTateMap_pointClass_ne_zero Q (by rw [hη, hη₀, map_zero])
 
+/-- A functor with a map `j` to a separated functor `X` that is injective on points is separated. -/
+lemma New.Variety.isSeparatedFunctor_of_injective {k : Type} [CommRing k] {W X : CommAlg k ⥤ Type 1}
+    [hX : IsSeparatedFunctor X] (j : W ⟶ X) (hj : ∀ A : CommAlg k, Function.Injective (j.app A)) :
+    IsSeparatedFunctor W :=
+  ⟨fun A y y' ↦ by
+    simpa only [← (hj _).eq_iff, j.naturality_apply] using
+      hX.exists_ideal A (j.app A y) (j.app A y')⟩
+
 /-- Let `k` be algebraically closed of characteristic zero with an embedding in Q̄_p, and let `Y` be
 a scheme over Spec `R`, embedded in projective space by `L` and having an atlas of étale charts of
 dimension `d`. Let `pointClass d z` denote the class of a `k`-point `z` of `Y` in degree-`d` Hodge
@@ -594,9 +602,7 @@ lemma New.Variety.exists_map_separating_class {p : ℕ} {k : Type} [Field k] [Em
     have h_nat := α.naturality_apply σ (⟨ψ⟩ : (reprBy C.coordRing).obj A)
     change α.app A ⟨ψ ≫ σ⟩ = _ at h_nat
     exact (congrArg (fun f : U.coordRing ⟶ A ↦ α.app A ⟨f⟩) h_comp).symm.trans h_nat
-  have h_sep : IsSeparatedFunctor O.toFunctor := ⟨fun A y y' ↦ by
-    simpa only [← (hj _).eq_iff, j.naturality_apply] using
-      IsSeparatedFunctor.exists_ideal A (j.app A y) (j.app A y')⟩
+  have h_sep : IsSeparatedFunctor O.toFunctor := isSeparatedFunctor_of_injective j hj
   -- Pull-back along `proj` is injective, by the Noether normalisation `Λ`.
   have h_inj :
       Function.Injective

@@ -82,6 +82,11 @@ noncomputable abbrev idelesPowAt (n : ℕ) : Subgroup (𝔸f K)ˣ :=
 lemma idelesPowAt_one : idelesPowAt S 1 = ⊤ :=
   eq_top_iff.2 fun x _ ↦ mem_iInf.2 fun v ↦ ⟨ideleAt v.val x, pow_one _⟩
 
+/-- The component at `v` of the principal idele of `x ∈ Kˣ` is the image of `x` in `K_v`. -/
+lemma val_ideleAt_principalIdele (v : FinPlace K) (x : Kˣ) :
+    ((ideleAt v (principalIdele x) : (LocField v)ˣ) : LocField v) = algebraMap K (LocField v) x :=
+  rfl
+
 /-- As a rational number, the index `New.cokerKerIndex` of multiplication by `n` on `Additive Y` is
 `[Y : Y ^ n] / #Y[n]`. -/
 private lemma cokerKerIndex_natCast_eq_index_range_powMonoidHom_div {Y : Type} [CommGroup Y]
@@ -331,8 +336,7 @@ lemma IsPlaceOver.smul_root_eq_of_local_pow {A : ClosurePlace} {v : FinPlace K}
       ∀ ζ : PadicAlgCl p, ζ ^ n = 1 → (⟨g, hg⟩ : decompGroup Γ A) • ζ = ζ ^ 1 := by
     rwa [← Units.val_eq_one, ← cast_one, cyclotomicCharMod_eq_iff] at h_cyc
   have hz_val : (z : LocField v) ^ n = algebraMap K (LocField v) x := by
-    change (z : LocField v) ^ n = ((ideleAt v (principalIdele x) : (LocField v)ˣ) : LocField v)
-    simp [← hzx]
+    simp [← val_ideleAt_principalIdele, ← hzx]
   have h_root : (j r / algebraMap (LocField v) (PadicAlgCl p) z) ^ n = 1 := by
     rw [div_pow, ← map_pow j, hr, ← map_pow (algebraMap (LocField v) (PadicAlgCl p)), hz_val,
       ← hj.map_algebraMap]

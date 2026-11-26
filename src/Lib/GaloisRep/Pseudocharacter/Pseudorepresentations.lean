@@ -199,6 +199,13 @@ def IsApproximatingMonoid (s : Set.Ioi (0 : ℝ) → ℕ) (c : ∀ η : Set.Ioi 
   TendstoUniformly (fun (η : Set.Ioi (0 : ℝ)) (p : N) ↦ ∑ i : Fin (s η), c η i * p.val.snd ⟨η, i⟩)
     (fun p : N ↦ p.val.fst) atBot
 
+/-- The monoid `N` of an approximation `New.IsApproximatingMonoid s c N` is closed. -/
+lemma IsApproximatingMonoid.isClosed_carrier {s : Set.Ioi (0 : ℝ) → ℕ}
+    {c : (η : Set.Ioi (0 : ℝ)) → Fin (s η) → K}
+    {N : Submonoid (K × ((η : Set.Ioi (0 : ℝ)) × Fin (s η) → K))}
+    (h_apx : IsApproximatingMonoid s c N) : IsClosed N.carrier :=
+  And.left h_apx
+
 /-- In an approximation `New.IsApproximatingMonoid s c N`, the sum over `i` of
 `c η i * p.val.snd (η, i)` tends to `p.val.fst` as `η > 0` tends to `0`, uniformly over `p ∈ N`. -/
 lemma IsApproximatingMonoid.tendstoUniformly {s : Set.Ioi (0 : ℝ) → ℕ}
@@ -546,7 +553,7 @@ lemma GaloisRep.exists_continuous_isTraceNondeg_of_tendsto_trace [TopologicalSpa
     (hL _ (fst_cauchy g) (tendsto_principal.mpr (h_mem g))).imp fun _ ht ↦ ht.2
   choose T hT using h_lim
   -- The limit system at `g`, as a point of the closed monoid `N`.
-  let point (g : G) : N := ⟨(T g, fun x ↦ (r x g).val.trace), h_apx.1.mem_of_tendsto
+  let point (g : G) : N := ⟨(T g, fun x ↦ (r x g).val.trace), h_apx.isClosed_carrier.mem_of_tendsto
     (.prodMk_nhds (hT g) (tendsto_pi_nhds.2 (h_tendsto g))) (by simp)⟩
   have T_cont : Continuous T := by
     have sum_cont (η : Set.Ioi (0 : ℝ)) :

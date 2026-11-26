@@ -209,6 +209,17 @@ lemma flatChart_sumElim_comp_symm [DecidableEq B] {κ₂ : Type} [Fintype κ₂]
   · simp [flatChart]
   · simp [flatChart]
 
+/-- The volume in (z, (t, w), a) is carried to that in ((t, x), a), where x joins w and z along e
+and a is skew. -/
+lemma measurePreserving_join_coordinates {κ₂ : Type} [Fintype κ₂] (e : κ₂ ⊕ B ≃ κ) :
+    MeasurePreserving
+      (fun p : (B → A) × (A × (κ₂ → A)) × skewAdjoint A ↦
+        ((p.2.1.1, (p.2.1.2 ⊕ᵥ p.1) ∘ e.symm), p.2.2))
+      (volume.prod (volume.prod skewMeasure)) (volume.prod skewMeasure) :=
+  ((((MeasurePreserving.id volume).prod (measurePreserving_sumElim_comp_symm e)).comp
+    (volume_preserving_prodAssoc.comp measurePreserving_swap)).prod (.id skewMeasure)).comp
+    ((measurePreserving_prodAssoc volume volume skewMeasure).symm _)
+
 /-- Let the measures l(b) on A^B, for skew b, disintegrate the volume along x ↦ x*x, so l(b) is the
 fibre measure on x*x = δ⁻¹b with δ the skew unit of the place, and let each give mass at most M to
 the box of S (vectors with all coordinates in S). For a hermitian form T on A^κ, let `blk` inject B
@@ -253,9 +264,7 @@ theorem IsDisintegration.isSolvedIn_quadricMeasure [DecidableEq B] [DecidableEq 
       ((p.2.1.1, (p.2.1.2 ⊕ᵥ p.1) ∘ e.symm), p.2.2)
     have h_coords : MeasurePreserving coords
         (volume.prod (volume.prod skewMeasure)) (volume.prod skewMeasure) :=
-      (((((MeasurePreserving.id volume).prod (measurePreserving_sumElim_comp_symm e)).comp
-        (volume_preserving_prodAssoc.comp measurePreserving_swap)).prod (.id skewMeasure)).comp
-        ((measurePreserving_prodAssoc volume volume skewMeasure).symm _))
+      measurePreserving_join_coordinates e
     have h_meas : Measurable fun x : (A × (κ → A)) × skewAdjoint A ↦ f (flatChart T β x) := by
       fun_prop
     calc

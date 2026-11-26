@@ -457,6 +457,13 @@ lemma New.gramDiscReal_le_pow {𝔰 : Shape} {ρ : ℝ} {Z : 𝔰.FrameMatrix} (
     _ = ρ ^ (8 * 𝔰.n) := by
         rw [mul_one, ← pow_mul, ← pow_mul, show 4 * (𝔰.n * 2) = 8 * 𝔰.n by omega]
 
+/-- If `0 < 𝗀(Z)` and `1 ≤ ρ`, then `(ρ ^ N / 𝗀(Z))⁻¹ ≤ 𝗀(Z)`; here 𝗀(Z) is `gramDiscReal Z`, the
+number |det Z|² − |D_ϱ|² with D_ϱ the leading principal minor of order ϱ. -/
+lemma New.inv_pow_div_gramDiscReal_le {𝔰 : Shape} {ρ : ℝ} {Z : 𝔰.FrameMatrix}
+    (hZ : 0 < gramDiscReal Z) (hρ_one : 1 ≤ ρ) (N : ℕ) :
+    (ρ ^ N / gramDiscReal Z)⁻¹ ≤ gramDiscReal Z :=
+  (inv_div _ _).trans_le (div_le_self hZ.le (one_le_pow₀ hρ_one))
+
 /-- Let `0 < 𝗀(Z)`, where 𝗀(Z) = |det Z|² − |D_ϱ|² is `gramDiscReal`, D_ϱ the leading principal
 minor of order ϱ. Let `n ≤ ρ` and `1 ≤ ρ` with `n = ϱ + 1`, and let the entries of `Z` have norm at
 most `ρ ^ 2`. Then `ρ ≤ ρ ^ (9 n) / 𝗀(Z)`. -/
@@ -935,8 +942,7 @@ lemma New.BesselSystem.exists_isOpenCellBound {𝔰 : Shape} {B : ℝ} {f : ℕ}
     exists_mul_eq_mul_gramSection_mul (mem_openCell_iff.2 hγ)
   obtain ⟨A, ν, m, h_bound⟩ : ∃ (A : Set 𝔰.G₁) (ν : Measure 𝔰.G₁) (m : Measure 𝔰.FixerFactors),
       X.IsKernelBound (fun x ↦ γ * t x) t M (pairingBoundSq γ X.deg ρ (card X.Index)) A ν m :=
-    X.exists_isKernelBound_gramSection (hρ.trans hρM)
-      ((inv_div _ _).trans_le (div_le_self hγ.le (one_le_pow₀ hρ_one)))
+    X.exists_isKernelBound_gramSection (hρ.trans hρM) (inv_pow_div_gramDiscReal_le hγ hρ_one _)
       hZM hs (fun x ↦ mem_besselS_of_mem_besselFixer (h_fixer x)) h_shift
   exact ⟨A, ν, m, t, { h_bound with
     measurable := h_meas

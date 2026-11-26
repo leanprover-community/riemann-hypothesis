@@ -322,6 +322,13 @@ end New.IsLargeLevel
 
 end SymbolMaps
 
+/-- Counting along `r : T → J` and a surjection `p` from `ker r` onto `D`:
+`#T = #(ker p) * #D * #(range r)`. -/
+lemma AddMonoidHom.card_eq_card_ker_mul_card_mul_card_range {T J D : Type} [AddCommGroup T]
+    [AddCommGroup J] [AddCommGroup D] (r : T →+ J) (p : r.ker →+ D) (hp : p.range = ⊤) :
+    Nat.card T = Nat.card p.ker * Nat.card D * Nat.card r.range := by
+  rw [← r.ker.card_mul_index, ← p.ker.card_mul_index, index_ker, index_ker, hp, card_top]
+
 /-- Counting along `d : A → B` and a surjection `j` from `(ι → A) × ker d` onto `H`:
 `#A ^ (#ι + 1) = #H * #(range d) * #(ker j)`. -/
 lemma AddMonoidHom.card_pow_succ_eq_card_mul_card_range_mul_card_ker {ι A B H : Type} [Fintype ι]
@@ -433,7 +440,7 @@ lemma New.IsLargeLevel.SplitPlaces.card_trivialized_of_isHigmanProjective {G K R
     · simp [Subtype.ext_iff, funext_iff, r, h_triv, s.decompGroup_le (s.isPlaceOver _) (hγ _).1.1]
   have h_left : Nat.card (V.trivializedCocycles (PlaceAboveLevel N) I) =
       Nat.card H₀ * Nat.card d.range * Nat.card r.range := by
-    rw [h_ker_p, ← r.ker.card_mul_index, ← p.ker.card_mul_index, index_ker, index_ker, h_range_p, card_top]
+    rw [h_ker_p, r.card_eq_card_ker_mul_card_mul_card_range p h_range_p]
   have h_right : Nat.card V ^ (card ι + 1) =
       Nat.card (ρ.IntertwiningMap W) * Nat.card d.range * Nat.card j.ker :=
     d.card_pow_succ_eq_card_mul_card_range_mul_card_ker j h_onto

@@ -129,6 +129,10 @@ the chains with `m` witnesses. -/
 def boundaryFromCoker (m : ℕ) : abCoker (boundary R (m + 1)) ⟶ freeAb.obj (witnessed R m) :=
   desc (α := boundary R (m + 1)) (boundary R m) (boundary_comp_boundary R m)
 
+lemma proj_comp_boundaryFromCoker (m : ℕ) :
+    π (boundary R (m + 1)) ≫ boundaryFromCoker R m = boundary R m :=
+  rfl
+
 /-- The natural isomorphism from points with `0` witnesses to points of `V` that forgets the empty
 tuple of witnesses. -/
 def noWitness : witnessed R 0 ≅ V :=
@@ -325,7 +329,7 @@ lemma map_cocycleClass (Φ : AbFunctor C ⥤ AbFunctor C') [IsExactFunctor Φ] (
         refine Finset.sum_congr rfl fun j _ ↦ ?_
         rw [Preadditive.zsmul_comp, Φ.map_zsmul, Preadditive.comp_zsmul, h_reindex]
       _ = q (m + 1) ≫ Φ.map (π _) ≫ Φ.map (boundaryFromCoker R m) := by
-        rw [← Φ.map_comp]; rfl
+        rw [← Φ.map_comp, proj_comp_boundaryFromCoker]
   let k (m : ℕ) : abCoker (boundary R' m) ⟶ Φ.obj (abCoker (boundary R m)) :=
     abCoker.desc (q m ≫ Φ.map (π _))
       (by simp [reassoc_of% h_bd, ← Φ.map_comp, shortExact_boundaryFromCoker.1])

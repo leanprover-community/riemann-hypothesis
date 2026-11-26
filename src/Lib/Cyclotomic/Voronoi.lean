@@ -56,14 +56,17 @@ namespace New.OddPart
 
 variable (N e : ℕ) [NeZero N]
 
+/-- The primorial `primorial n` divides `n !`. -/
+lemma primorial_dvd_factorial (n : ℕ) : primorial n ∣ n ! :=
+  prod_primes_dvd _ (fun _ hp ↦ (mem_filter.1 hp).2.prime) fun _ hp ↦
+    dvd_factorial (mem_filter.1 hp).2.pos (Nat.lt_succ_iff.1 (mem_range.1 (mem_filter.1 hp).1))
+
 /-- For every `i`, the number `(i + 1)! Bᵢ` is an integer. -/
 lemma exists_intCast_eq_factorial_mul_bernoulli (i : ℕ) :
     ∃ c : ℤ, (c : ℚ) = (i + 1)! * _root_.bernoulli i := by
   -- `primorial (i + 1) Bᵢ` is an integer, by von Staudt–Clausen.
   obtain ⟨z, hz⟩ := TauCeti.exists_intCast_eq_primorial_mul_bernoulli (le_refl i)
-  obtain ⟨d, hd⟩ : primorial (i + 1) ∣ (i + 1)! :=
-    prod_primes_dvd _ (fun _ hp ↦ (mem_filter.1 hp).2.prime) fun _ hp ↦
-      dvd_factorial (mem_filter.1 hp).2.pos (Nat.lt_succ_iff.1 (mem_range.1 (mem_filter.1 hp).1))
+  obtain ⟨d, hd⟩ := primorial_dvd_factorial (i + 1)
   refine ⟨z * d, ?_⟩
   rw [hd, Nat.cast_mul, Int.cast_mul, hz, Int.cast_natCast]
   ring

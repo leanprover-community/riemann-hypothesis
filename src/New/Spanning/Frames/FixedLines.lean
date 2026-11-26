@@ -536,6 +536,12 @@ lemma toFibers_apply (x : U (S.latticeMiddle (LocProd T)).splitGram) (i : ι) (a
     (S.toFibers T blk x i).val a b = evalFiber T blk i (x.val a b) :=
   rfl
 
+/-- For an adelic unitary matrix `x`, restricting its components at `T` to a fibre of `blk` gives
+the components of `x` at that fibre. -/
+lemma toFibers_toPlaces (x : U (S.latticeMiddle (𝔸f E)).splitGram) (i : ι) :
+    S.toFibers T blk (S.toPlaces T x) i = S.toPlaces (placeFiber T blk i) x :=
+  rfl
+
 /-- Unitary matrices over the fibres of `blk` glue to a unitary matrix over `T`, that is, the map
 `S.toFibers T blk` to the product of the unitary groups over the fibres is onto. -/
 lemma toFibers_surjective : Function.Surjective (S.toFibers T blk) := by
@@ -883,7 +889,8 @@ theorem IsFillingData.exists_intermediateGroup_places [WeilData E] {S : Filling 
     rw [hK, h_cong]
     exact ⟨fun x hx i hi ↦ (Z i).prop.left (hx i hi), fun x hx i hi ↦ (Z i).prop.right (hx i hi)⟩
   refine ⟨⟨Q fun i ↦ Z i, h_between⟩, fun k hk i _ ↦ ?_, ?_⟩
-  · exact hZ_mem i k hk
+  · rw [toFibers_toPlaces]
+    exact hZ_mem i k hk
   -- Multiply the inequalities of the blocks: those of `Sg` give one factor `B` each, the rest `1`.
   have h_gain : ENNReal.ofReal (S.b ^ (6 * 𝔰.k)) ^ #Sg =
       ∏ i : Option Sg, i.elim 1 fun _ ↦ B := by simp [B]

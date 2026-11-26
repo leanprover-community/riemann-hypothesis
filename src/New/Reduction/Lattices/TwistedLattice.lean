@@ -273,6 +273,14 @@ def CovolumeLe (y : S → V) (c : ℝ) : Prop :=
 
 variable {L}
 
+/-- Since the Gram matrix `L.gramMatrix` is rational, `σ ⟪Θ₁ v, Θ₁ w⟫ = ⟨σ' Θ₁ v, σ Θ₁ w⟩`, where
+`Θ₁ = L.lift 1` and `σ' = conjAut σ`, with `σ' z = conj (σ (conj z))`; the right side pairs the
+coordinate vectors `L.conjCoord` by the Gram matrix. -/
+lemma map_inner_lift_one (σ : ℂ ≃+* ℂ) (v w : V) :
+    σ ⟪L.lift 1 v, L.lift 1 w⟫_ℂ =
+      star (L.conjCoord (conjAut σ) v) ⬝ᵥ L.gramMatrix.map (↑) *ᵥ L.conjCoord σ w := by
+  simp [conjCoord, inner_eq, dotProduct, mulVec]
+
 /-- **Gram determinants, conjugates.** Let `L` be a twisted lattice on `V`, with map `Θ₁ = L.lift 1`
 for the trivial twist. For an automorphism `τ` of `ℂ`, write `τ Θ₁ v` for the coordinate vector of
 `Θ₁ v` with `τ` applied to each coordinate (`conjCoord`); such vectors are paired by the rational
@@ -288,7 +296,7 @@ lemma CovolumeLe.norm_map_det_gram_le {y : S → V} {c : ℝ} (hy : L.CovolumeLe
   have h_pair :
       σ (gram ℂ (L.lift 1 ∘ y)).det = (of fun i k : S ↦ star (v i) ⬝ᵥ G *ᵥ w k).det := by
     rw [σ.map_det]
-    exact congrArg det (Matrix.ext fun i k ↦ by simp [v, w, G, conjCoord, inner_eq, dotProduct, mulVec])
+    exact congrArg det (Matrix.ext fun i k ↦ map_inner_lift_one σ (y i) (y k))
   refine le_of_sq_le_sq ?_ (exp_nonneg c)
   rw [h_pair]
   calc _ ≤ ‖(formGram G v).det‖ * ‖(formGram G w).det‖ :=

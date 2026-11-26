@@ -481,6 +481,15 @@ lemma char_diagonalCorner (ϑ : D.MFoldTwist) : (D.diagonalCorner j).char ϑ =
     (edgeChar ϑ (columnEdge false j j) * edgeChar ϑ (rowEdge false j j))⁻¹ := by
   simp [Corner.char, edgeChar, IsVerticalEdge]
 
+/-- For `S = Y^(j+1)_j` the number of columns modulo `𝔪`, the modulus `gridModulus ϑ`, is at most
+`vectorCountBound ϑ`. -/
+lemma card_column_le_vectorCountBound (hj : j < D.m) (ϑ : D.MFoldTwist) :
+    card (Matrix (D.GridIndex false (j + 1) j) Unit (gridModulus ϑ).ResidueRing) ≤ vectorCountBound
+      ϑ :=
+  (card_congr Matrix.of.symm).trans_le <| by
+    simpa [vectorCountBound] using Nat.pow_le_pow_right Fintype.card_pos
+      (D.card_gridIndex_le hj hj.le)
+
 /-- If the kernel from the line with column `v` is `c` times the Fourier transform of the kernels to
 the line with rows `v'`, the same holds for their `periodPairing`, the integral of such a kernel
 against a form `φ` on `Ỹ^(j+1)_j` and a form `y` on `Y^(j+1)_j` translated by the point `z` of the
@@ -600,9 +609,7 @@ lemma exists_transfersPeriods_diagonal (hj : j < D.m) :
         ((D.diagonalCorner j).columnFourier (ψ ϑ) (Ψ' ϑ) S v') := by
     simp only [edges_downPath, edges_rightPath] at hΨ' ⊢
     obtain ⟨Ψ, hΨ, h_match⟩ := (isTurn_diagonalCorner hj q ϑ).exists_isPathDatum (hΨ' ϑ) σ (ψ ϑ)
-    exact ⟨Ψ, hΨ.mono (Nat.mul_le_mul_right _ ((card_congr Matrix.of.symm).trans_le <| by
-      simpa [vectorCountBound] using Nat.pow_le_pow_right Fintype.card_pos
-        (D.card_gridIndex_le hj hj.le))), h_match⟩
+    exact ⟨Ψ, hΨ.mono (Nat.mul_le_mul_right _ (card_column_le_vectorCountBound hj ϑ)), h_match⟩
   choose Ψ hΨ h_match using h_exists_matched
   refine ⟨Ψ, hΨ, fun Ξ hΞ ↦ isProportional_of_columnPeriod hj fun z p ↦ ?_⟩
   obtain ⟨β, hβ⟩ := hΞ.exists_rowPeriod_eq_mul hj z (τ p)

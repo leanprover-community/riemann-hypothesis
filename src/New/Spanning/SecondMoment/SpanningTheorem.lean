@@ -147,6 +147,11 @@ the principal level and `ν` the covolume of its unipotent points. -/
 noncomputable def poincareScale : ℝ :=
   √(MeasureTheory.volume.real D.filling.stdPrincipalLevel.carrier * D.filling.unipotentCovolume)⁻¹
 
+/-- The scale of the Poincaré map is positive, as the principal level has positive volume. -/
+lemma poincareScale_pos : 0 < D.poincareScale :=
+  Real.sqrt_pos.2 (inv_pos.2
+    (mul_pos (measureReal_pos_of_isLevel (K := D.chosenLevel)) D.filling.unipotentCovolume_pos))
+
 /-- The Poincaré map times `D.poincareScale`, in the coordinates `D.sourceFormCoords` of the source
 forms, whose standard inner product serves as the inner product of the source. -/
 noncomputable def scaledPoincare :
@@ -314,8 +319,7 @@ lemma comap_scaledPoincare_eq_comap_goodPoincare (s : D.chosenGL) (F : Submodule
     F.comap (((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict ∘ₗ
         D.principalRep (D.spaceY 0) s ∘ₗ D.scaledPoincare) =
       (F.comap (D.goodPoincare s)).comap D.sourceFormCoords.symm.toLinearMap := by
-  have h_scale : (D.poincareScale : ℂ) ≠ 0 := mod_cast (Real.sqrt_pos.2 (inv_pos.2
-    (mul_pos (measureReal_pos_of_isLevel (K := D.chosenLevel)) D.filling.unipotentCovolume_pos))).ne'
+  have h_scale : (D.poincareScale : ℂ) ≠ 0 := mod_cast D.poincareScale_pos.ne'
   have h_card : (Nat.card D.chosenGL : ℂ) ≠ 0 := mod_cast Nat.card_pos.ne'
   ext φ
   set e := ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict

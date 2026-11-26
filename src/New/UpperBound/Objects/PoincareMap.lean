@@ -181,6 +181,17 @@ def besselPeriod : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) →ₗ
     (fun c φ y ↦ by
       simp [Space.Form.smul_apply, mul_left_comm _ (conj c), integral_const_mul])
 
+/-- Let `g` be an archimedean point of the unitary group `G₀` of `Y₀`, let `φ` be a source form and
+`t` a linear form on the Weyl module of its values. Let `y` be a form on `G₀` of discrete series
+type `D.paramW` and principal level `D.chosenLevel`. Then `D.besselPeriod g t φ y = ∫_{[R₀]} 𝒲_φ (r)
+conj (y (r g)) dr`. -/
+lemma besselPeriod_apply (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) :
+    D.besselPeriod g t φ y =
+      ∫ r : (D.gradingY 0).besselGroup,
+        (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
+        ∂(D.gradingY 0).besselMeasure :=
+  rfl
+
 /-- The Poincaré map `𝒫 : 𝒜(X₀) → 𝒜(Y₀)` for an archimedean point `g` of `G₀` and a linear form
 `t`: the form `𝒫 φ` represents the Bessel period of `φ`. The measure on `[R₀]` is `besselMeasure`;
 another Haar measure on `R₀(𝔸)` would multiply `𝒫` by a positive constant, which can be absorbed
@@ -199,7 +210,7 @@ theorem inner_poincareAt (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0))
       ∫ r : (D.gradingY 0).besselGroup,
         (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
         ∂(D.gradingY 0).besselMeasure := by
-  rw [poincareAt, inner_rieszMap]; rfl
+  rw [poincareAt, inner_rieszMap, besselPeriod_apply]
 
 /-- Let `z` be a form on `G₀`, right invariant under `J`, whose archimedean type is conjugate to
 that of the values of `𝒫 = D.poincareAt g t`. Then `[J_M : J ∩ J_M] ∫_{[G₀]} z · 𝒫 φ` is the sum

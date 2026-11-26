@@ -231,11 +231,15 @@ variable {E : Type} [Field.{0} E] [CMBase E] {n : Type} [Fintype.{0} n] [Decidab
   [CommRing k] (𝔑 : 𝓞 E)
 
 omit [DecidableEq n] in
+/-- A finite type embeds in ℂ. -/
+lemma nonempty_embedding_complex : Nonempty (n ↪ ℂ) :=
+  (Cardinal.le_def n ℂ).mp (mk_le_aleph0.trans (aleph0_le_mk ℂ))
+
 /-- A chosen injection `n ↪ ℂ` that lists the roots of `t(P)` when these, counted with
 multiplicity, are `|n|` distinct numbers (`roots_map_eq_map_numberedRoots`). Otherwise it is an
 arbitrary injection. -/
 def numberedRoots (t : E →+* ℂ) (P : E[X]) : n ↪ ℂ :=
-  have : Nonempty (n ↪ ℂ) := (Cardinal.le_def n ℂ).mp (mk_le_aleph0.trans (aleph0_le_mk ℂ))
+  have : Nonempty (n ↪ ℂ) := nonempty_embedding_complex
   Classical.epsilon fun r : n ↪ ℂ ↦ (P.map t).roots = Finset.univ.val.map r
 
 omit [CMBase E] [DecidableEq n] in

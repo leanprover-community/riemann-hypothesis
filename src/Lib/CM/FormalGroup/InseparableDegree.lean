@@ -64,6 +64,9 @@ noncomputable def reducedOrder (f : ℂ_[p]⟦X⟧) : ℕ∞ :=
 lemma constantCoeff_taylorVia_translatedY : constantCoeff (taylorVia ιₚ C.translatedY) = 0 :=
   C.isSeriesGenerator_translatedY.constantCoeff_eq_zero
 
+lemma coeff_one_taylorVia_translatedY : coeff 1 (taylorVia ιₚ C.translatedY) = 1 :=
+  C.isSeriesGenerator_translatedY.coeff_one
+
 /-- For an integral series `g ∈ 𝒪[[X]]`, viewed in `ℂ_[p][[X]]` by `seriesToCp`, the reduced order
 of `g(y)` is the order of the reduction of `g` modulo the maximal ideal of `𝒪`, where `y` is the
 Taylor series of `C.translatedY`. -/
@@ -123,7 +126,7 @@ lemma reducedOrder_eq_one {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing)
     (hT₁ : ‖coeff 1 T‖ = 1) : C.reducedOrder T = 1 := by
   obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hT
   rw [constantCoeff_subst_eq C.constantCoeff_taylorVia_translatedY] at hT₀
-  rw [coeff_one_subst C.constantCoeff_taylorVia_translatedY, C.isSeriesGenerator_translatedY.coeff_one,
+  rw [coeff_one_subst C.constantCoeff_taylorVia_translatedY, coeff_one_taylorVia_translatedY,
     mul_one, Algebra.algebraMap_self_apply] at hT₁
   rw [reducedOrder_subst_translatedY, ← Nat.cast_one, order_eq_nat]
   have hu₁ : IsUnit (coeff 1 u) := isUnit_integer_iff_norm_eq_one.2 hT₁

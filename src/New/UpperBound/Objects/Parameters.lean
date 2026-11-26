@@ -679,9 +679,21 @@ private lemma hasGap_compactForm_gridParam {j : ℕ} {P : Parameters} (D : Data 
     (D.gridParam z o i j τ).compactForm.HasGap (D.gap - D.t - 2) :=
   (D.isParam_compactForm_gridParam τ z).hasGap (D.isSeparated_gridCentres_on τ z _) (fun _ hx ↦ hx)
 
+/-- At an infinite place `τ` the doubled parameter of the node `(i, j)` of grid `z` with offset `o`
+takes distinct values at distinct indices. -/
+lemma gridParam_injective {j : ℕ} {P : Parameters} (D : Data P) {z : Bool} {o i : ℕ} (τ : D.Φ) :
+    Injective (D.gridParam z o i j τ) :=
+  (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).injective
+
 section Steps
 
 variable {j : ℕ} {P : Parameters} (D : Data P) {z : Bool} {o i : ℕ} (τ : D.Φ)
+
+/-- Each entry of the doubled parameter `D.gridParam z o i j τ` at the node `(i, j)` has the parity
+of `card (D.GridIndex z i j) - 1`, the size of the index set minus one. -/
+lemma even_gridParam_add_card_sub_one (x : D.GridIndex z i j) :
+    Even (D.gridParam z o i j τ x + card (D.GridIndex z i j) - 1) :=
+  (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).parity x
 
 /-- At the infinite place `τ`, two entries of the doubled parameter at a node whose signs differ
 are at least `2 * D.gap = 4 * D.halfGap` apart. -/
@@ -718,8 +730,8 @@ lemma two_mul_gap_le_abs_gridParam_sub {x y : D.GridIndex z i j}
 infinite place `τ`, the gap `D.gap` for the signs of the node (`HasGap`): its entries are distinct,
 have the parity of the rank minus one, and differ by at least `2 * D.gap` where the signs differ. -/
 lemma hasGap_gridParam (z : Bool) (o i j : ℕ) : (D.gridParam z o i j τ).HasGap D.gap where
-  injective := (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).injective
-  parity := (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).parity
+  injective := D.gridParam_injective τ
+  parity := D.even_gridParam_add_card_sub_one τ
   gap _ _ := D.two_mul_gap_le_abs_gridParam_sub τ
 
 /-- Let `o + j ≤ m`, with `o = 0` (the grids) or `i = 0` (the triangles). For every infinite place

@@ -441,6 +441,9 @@ lemma subst_seriesToCp_mem_integralBelow (hT₀ : constantCoeff T = 0) (hT : T �
   exact finsum_induction (· ∈ valRingCp p) (zero_mem _) (fun _ _ ↦ add_mem)
     fun i ↦ mul_mem (SetLike.coe_mem (coeff i g)) (pow_mem hT i k hk)
 
+lemma integralBelow_anti {k n : ℕ} (hkn : k ≤ n) : integralBelow p n ≤ integralBelow p k :=
+  fun _ hf j hj ↦ hf j (hj.trans_le hkn)
+
 lemma norm_pow_sub_one_eq_one {π : ℂ_[p]} (hπ : ‖π‖ < 1) {n : ℕ} (hn : n ≠ 0) :
     ‖π ^ n - 1‖ = 1 := by
   have h_lt : ‖π ^ n‖ < ‖(-1 : ℂ_[p])‖ := by simpa using pow_lt_one₀ (norm_nonneg π) hπ hn
@@ -478,7 +481,7 @@ lemma mem_range_seriesToCp_of_rescale_eq {π : ℂ_[p]} (hπ₀ : π ≠ 0) (hπ
       have hY₁_below : Y₁ ∈ integralBelow p (n + 1) := by rwa [← X_mul_mem_integralBelow, ← hY]
       rw [hR, X_mul_mem_integralBelow, X_mul_mem_integralBelow]
       exact mul_mem (pow_mem hY₁_below 2)
-        (fun j hj ↦ subst_seriesToCp_mem_integralBelow hY₀ ih H j (hj.trans_le (by omega)))
+        (integralBelow_anti (by omega) (subst_seriesToCp_mem_integralBelow hY₀ ih H))
     have h_coeff : (π ^ (n + 1) - 1) * coeff (n + 2) Y = coeff (n + 2) R := by
       have h_eq : π ^ (n + 2) * coeff (n + 2) Y = π * (coeff (n + 2) Y + coeff (n + 2) R) := by
         rw [← map_add, ← h_higher, ← coeff_rescale, h_rescale, coeff_smul, smul_eq_mul]

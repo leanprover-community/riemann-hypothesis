@@ -248,6 +248,13 @@ lemma setLIntegral_le_of_le_comp_fst {Y Z : Type} [MeasurableSpace Y] [Measurabl
           setLIntegral_const]
 
 omit [Fintype n] in
+/-- The square of the transform of φ is a measurable function of its variable v. -/
+lemma measurable_enorm_integral_fourier_sq [SFinite ρ] {φ : (κ → A) → ℂ} (hφ : Measurable φ)
+    (J : Matrix κ κ A) (ξ : A) :
+    Measurable fun v : κ → A ↦ ‖∫ y : κ → A, P.ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2 :=
+  (StronglyMeasurable.integral_prod_right
+    (Measurable.stronglyMeasurable (by fun_prop))).measurable.eNorm.pow_const 2
+
 omit [Fintype κ] in
 /-- The square norm in y of the partial Fourier transform in w of the integral over z of a
 measurable f(y', y, w, z) is a measurable function of y' and w'. -/
@@ -490,8 +497,7 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
   have : SFinite ρ := by
     rw [← h_chart.map_eq]
     infer_instance
-  have h_transform : Measurable T := (StronglyMeasurable.integral_prod_right
-    (Measurable.stronglyMeasurable (by fun_prop))).measurable.eNorm.pow_const 2
+  have h_transform : Measurable T := measurable_enorm_integral_fourier_sq hφ_meas J ξ
   calc ∫⁻ v : κ → A in coordinateBox κ R', T v ∂ρ'
     _ = ∫⁻ p' : ((η' → A) × (ι → A)) × (B' → A) in
           (coordinateBox η' R' ×ˢ coordinateBox ι R') ×ˢ coordinateBox B' R',

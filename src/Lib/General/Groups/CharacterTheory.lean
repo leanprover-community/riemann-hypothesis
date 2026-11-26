@@ -191,6 +191,10 @@ def virtualChars : Subalgebra S (G → ℂ) :=
     (BilinMap.apply_apply_mem_of_mem_span (span S {f : G → ℂ | IsChar f}) {f : G → ℂ | IsChar f}
       {f : G → ℂ | IsChar f} (LinearMap.mul S (G → ℂ)) fun _ hχ _ hψ ↦ subset_span (hχ.mul hψ))
 
+/-- The zero function is a character, that of the zero representation. -/
+lemma isChar_zero : IsChar (0 : G → ℂ) :=
+  ⟨.of (Representation.trivial ℂ G PUnit), funext fun _ ↦ (trace ℂ PUnit).map_zero⟩
+
 /-- The sum of two characters is a character, that of the direct sum. -/
 lemma IsChar.add (hχ : IsChar χ) (hψ : IsChar ψ) : IsChar (χ + ψ) := by
   obtain ⟨V, rfl⟩ := hχ
@@ -199,8 +203,7 @@ lemma IsChar.add (hχ : IsChar χ) (hψ : IsChar ψ) : IsChar (χ + ψ) := by
 
 lemma isChar_of_mem_virtualChars (hf : f ∈ virtualChars ℕ G) : IsChar f := by
   -- The characters form an additive submonoid, which is therefore its own `ℕ`-span.
-  let M : AddSubmonoid (G → ℂ) :=
-    ⟨⟨{χ : G → ℂ | IsChar χ}, IsChar.add⟩, ⟨.of (Representation.trivial ℂ G PUnit), funext fun _ ↦ (trace ℂ PUnit).map_zero⟩⟩
+  let M : AddSubmonoid (G → ℂ) := ⟨⟨{χ : G → ℂ | IsChar χ}, IsChar.add⟩, isChar_zero⟩
   have h_span : f ∈ (span ℕ (M : Set (G → ℂ))).toAddSubmonoid := hf
   rwa [span_nat_eq] at h_span
 

@@ -500,6 +500,11 @@ theorem mem_splittable_iff {g : Matrix n n ℂ} :
     rw [h_left]
     exact hz.conjTranspose_mul_mul (by simp [hq_det])
 
+/-- If `a⁻¹ g` is accretive, then so is `a⁻¹ x` for all `x` near `g`. -/
+theorem eventually_isAccretive_inv_mul {a g : Matrix n n ℂ} (h_acc : (a⁻¹ * g).IsAccretive) :
+    ∀ᶠ x : Matrix n n ℂ in nhds g, (a⁻¹ * x).IsAccretive :=
+  (continuous_const_mul a⁻¹).continuousAt.eventually h_acc.setOf_mem_nhds
+
 open scoped Classical in
 /-- The coefficient on the set `New.splittable ε` of products: Flensted-Jensen's integral at
 `(a, a⁻¹ g)` for a chosen block diagonal `a` with `a⁻¹ g` accretive, and `0` off this set. -/
@@ -801,7 +806,7 @@ theorem casimir_dsCoeffSmooth [DecidableEq n] {l : HCParam (n := n) ε} [hl : l.
       AnalyticAt ℂ F y ∧ ((blockDiagPart ε g)⁻¹ * y).IsAccretive :=
     continuous_mat.tendsto g <| F_Φ.eventually_nhds.and <|
       (F₀_an.congr F_eq.symm).eventually_analyticAt.and <|
-        (continuous_const_mul _).continuousAt.eventually (isAccretive_blockDiagPart_inv_mul g).2.setOf_mem_nhds
+        eventually_isAccretive_inv_mul (isAccretive_blockDiagPart_inv_mul g).2
   -- `f` is the restriction of `F` to the group.
   let f : SmoothU ε C(maxCompactU ε, ℂ) := ⟨fun y : USign ε ↦ F y, ⟨F, F_smooth⟩, rfl⟩
   have f_eigen :
