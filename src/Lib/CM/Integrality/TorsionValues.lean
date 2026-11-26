@@ -319,7 +319,7 @@ lemma squarePair_two_mul (u : ℂ) :
   · simpa only [squarePair, doublingForms, map_mul, map_add, map_pow, map_ofNat, ← pow_mul]
       using congrArg ιₚ (C.torsionValue_sigma_two_mul_sq u)
 
-/-- For a prime `d ≡ 7 (mod 8)` the pair `w(2 ^ j u)` is the `j`-th iterate of the map
+/-- The pair `w(2 ^ j u)` is the `j`-th iterate of the map
 `doublingForms (ιₚ C.a₁)`, whose two quartic forms are given in `squarePair_two_mul`, at
 `w(u) = (θ[u]², σ[u]²)`. -/
 lemma squarePair_two_pow_mul (u : ℂ) (j : ℕ) :
