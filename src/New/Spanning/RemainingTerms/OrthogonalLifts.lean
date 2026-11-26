@@ -334,7 +334,7 @@ entries lie in the ring `Ô E` of integral finite adeles. Suppose that the colum
 in the integral vectors of the span of `P` divides the index of the integral vectors in the module
 `preimageLattice M` of the `y` with `M y` integral. -/
 lemma submoduleIndex_colLattice_dvd_preimageLattice {μ : Type} [Fintype μ] [DecidableEq μ]
-    {α β : Type} [Fintype α] [DecidableEq α] [Fintype β]
+    {α β : Type} [Fintype α] [Fintype β]
     {M : Matrix μ α (𝔸f E)} {P : Matrix μ β (𝔸f E)}
     (h_span : ∀ x : β, P.col x ∈ colSpan M) :
     submoduleIndex (colLattice (Ô E) M)
