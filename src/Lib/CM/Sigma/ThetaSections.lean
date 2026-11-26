@@ -211,10 +211,6 @@ lemma g₃_eq : C.g₃ = 4 * ℘[C.periodPair] C.t ^ 3 - C.g₂ * ℘[C.periodPa
 `Λ` equals a₁⁴ − 64. -/
 lemma disc_eq : C.g₂ ^ 3 - 27 * C.g₃ ^ 2 = C.a₁ ^ 4 - 64 := by grind [g₃_eq, a₁_sq, g₂_eq]
 
-lemma translatedX_add_of_mem (z : ℂ) {l : ℂ} (hl : l ∈ C.Λ) :
-    C.translatedX (z + l) = C.translatedX z := by
-  rw [translatedX, translatedX, add_right_comm, C.weierstrassP_add_coe (z + C.t) ⟨l, hl⟩]
-
 /-- The function `x(z) = ℘(z + t) - ℘(t)` is even, because `℘` is even and `2 t ∈ Λ`. -/
 lemma translatedX_neg (z : ℂ) : C.translatedX (-z) = C.translatedX z := by
   rw [translatedX, translatedX, show -z + C.t = -(z + C.t) + (C.t + C.t) by ring,
@@ -658,7 +654,8 @@ lemma monomialSection_mem (e : ℕ × ℕ × ℕ) : C.monomialSection e ∈ C.se
   refine C.mem_sections_iff.2 ⟨C.differentiable_monomialSection e, fun l hl ↦ ?_⟩
   refine C.eq_of_eq_off_lattice C.t (by fun_prop) (by fun_prop) fun z hz ↦ ?_
   have hzl : z + l + C.t ∉ C.Λ := by rwa [add_right_comm, add_mem_cancel_right hl]
-  have hx_periodic : C.translatedX (z + l) = C.translatedX z := C.translatedX_add_of_mem z hl
+  have hx_periodic : C.translatedX (z + l) = C.translatedX z := by
+    rw [translatedX, translatedX, add_right_comm, C.weierstrassP_add_coe (z + C.t) ⟨l, hl⟩]
   have hy_periodic : C.translatedY (z + l) = C.translatedY z := by
     rw [translatedY, translatedY, hx_periodic, add_right_comm z l,
       C.derivWeierstrassP_add_coe (z + C.t) ⟨l, hl⟩]
