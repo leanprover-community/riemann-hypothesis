@@ -325,7 +325,10 @@ lemma upOperator_mem_sourceForm {φ : D.FormX 0} (hφ : φ ∈ D.SourceForm) :
   have ha : a ∈ mirabolic := D.atPlaces_conj_mem_mirabolic k
   let b : Gf D.E (D.X 0) := (D.conjEmbedGL 0 a)⁻¹ * k.val
   have hb_away : b ∈ trivialOn (D.X 0) D.nonInducedPlaces := by
-    have h_one : atPlaces D.nonInducedPlaces b = 1 := by simp [a, b, conjEmbedGL, mul_assoc]
+    have h_one : atPlaces D.nonInducedPlaces b = 1 := by
+      simp only [conjEmbedGL, MulEquiv.toMonoidHom_eq_coe, map_mul, map_inv, atPlaces_embedGL,
+        mul_assoc, MonoidHom.coe_comp, MonoidHom.coe_ofClass, Function.comp_apply,
+        MulAut.conj_apply, inv_mul_cancel_left, mul_inv_cancel, mul_one, inv_mul_cancel, b, a]
     refine mem_trivialOn.2 fun w hw ↦ Units.ext (Matrix.ext fun i j ↦ ?_)
     rw [show b.atPlace w i j = atPlaces D.nonInducedPlaces b i j ⟨w, hw⟩ from rfl, h_one]
     by_cases hij : i = j <;> simp [hij]
