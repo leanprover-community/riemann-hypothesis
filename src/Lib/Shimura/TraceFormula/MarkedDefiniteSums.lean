@@ -272,18 +272,14 @@ lemma mem_range_splittingRadical_conj {b g a : GL n F} (ha : a ∈ (splittingRad
 can be taken to be `p(a⁻¹ g a)`, for the polynomial `p` that gives the idempotent of `g`. -/
 lemma splittingRadical_aeval_conj {g a : GL n F} (ha : a ∈ (splittingRadical g).range) :
     splittingRadical g (ofAdd (aeval (a⁻¹ * g * a).val (splittingPoly g.val.charpoly))) = a := by
-  obtain ⟨Y, hY⟩ := ha
-  have he : IsIdempotentElem (splittingIdempotent g) := isIdempotentElem_splittingIdempotent g
-  set e : Matrix n n F := splittingIdempotent g
-  have h_coe : a.val = 1 + e * Y.toAdd * (1 - e) := by rw [← hY, splittingRadical, coe_radicalHom]
-  have h_fix : a⁻¹.val * e = e := by rw [← hY, ← map_inv, splittingRadical,
+  -- Write a = 1 + e Y (1 - e). Its inverse fixes e, so the conjugate projector is e a.
+  obtain ⟨Y, rfl⟩ := ha
+  have he := isIdempotentElem_splittingIdempotent g
+  rw [aeval_units_conj, ← splittingIdempotent, ← map_inv, splittingRadical,
     coe_radicalHom_mul_idempotent]
-  have h_aeval : aeval (a⁻¹ * g * a).val (splittingPoly g.val.charpoly) = e * a.val := by
-    rw [aeval_units_conj, ← splittingIdempotent, h_fix]
-  -- As `a⁻¹ e = e`, the parameter of the left side is `e a`, and `e (e a) (1 - e) = e Y (1 - e)`.
-  have h_param : e * (e * a.val) * (1 - e) = e * Y.toAdd * (1 - e) := by
-    simp [h_coe, mul_add, add_mul, mul_assoc, he.mul_self_mul, he.one_sub.eq, he.mul_one_sub_self]
-  exact Units.ext (by rw [h_aeval, splittingRadical, coe_radicalHom, toAdd_ofAdd, h_param, h_coe])
+  apply Units.ext
+  simp [coe_radicalHom, toAdd_ofAdd, mul_add, mul_assoc, he.mul_self_mul,
+    he.one_sub.eq, he.mul_one_sub_self]
 
 /-- A translate `j g` of `g` by an element `j` of its radical is conjugate to `g` under the
 radical. -/
