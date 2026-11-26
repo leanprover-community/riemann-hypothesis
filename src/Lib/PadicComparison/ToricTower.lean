@@ -292,14 +292,12 @@ lemma IsLine.of_acyclic {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {A : C} {E 
     -- at `e⁻¹ x`. `erw`: `Hom.hom` and `ConcreteCategory.hom` agree only up to instances.
     erw [q.naturality_apply, r_app, ← F'.map_comp_apply, ← hq_eq_comp]
     simp
-  obtain ⟨h_inj, h_ker, h_surj⟩ : Injective (F'.map i) ∧
-      fixedPoints (F'.map g) ⊆ Set.range (F'.map i) ∧
-      Surjective fun z : F'.obj E ↦ F'.map g z - z := h_koszul
+  obtain ⟨h_inj, h_ker, h_surj⟩ := h_koszul
   refine isBijective_reprBy_iff.mpr ⟨⟨fun y y' hy ↦ ?_, fun φ ↦ ?_⟩, fun n ↦ ?_⟩
   · -- Injective: pulled back along `S.g`, the section of `y` is `r (F'.map i y)`.
     exact h_inj (hr_bij.injective (by rw [← hq, ← hq, hy]))
   · -- A section `φ` on `Y` pulls back to some `r z` that `S.f` kills, so `z` is fixed by `g`.
-    obtain ⟨z, hz⟩ : ∃ z : F'.obj E, r z = S.g ≫ φ := hr_bij.surjective (S.g ≫ φ)
+    obtain ⟨z, hz⟩ := hr_bij.surjective (S.g ≫ φ)
     have hz_fixed : F'.map g z - z = 0 :=
       hr_bij.injective (by rw [← hf, hz, S.zero_assoc, Limits.zero_comp, map_zero])
     obtain ⟨y, rfl⟩ : z ∈ Set.range (F'.map i) := h_ker (sub_eq_zero.mp hz_fixed)
@@ -309,7 +307,7 @@ lemma IsLine.of_acyclic {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {A : C} {E 
       | 0, x => by
         -- a class of degree `0` is some `r (F'.map g z - z)`, the image of `r z`
         obtain ⟨φ, rfl⟩ : ∃ φ, mk₀ φ = x := (mk₀_bijective ..).surjective x
-        obtain ⟨z, rfl⟩ : ∃ z : F'.obj E, r (F'.map g z - z) = φ := hr_bij.surjective.comp h_surj φ
+        obtain ⟨z, rfl⟩ := hr_bij.surjective.comp h_surj φ
         exact ⟨mk₀ (r z), (mk₀_comp_mk₀ _ _).trans (congrArg mk₀ (hf z))⟩
       | m + 1, x => ⟨0, (h_high m).elim _ x⟩
     have hg_inj : Injective (H.map (TimesBNat.fst C ⋙ ψ ⋙ F') S.g (n + 1)) :=
