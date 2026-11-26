@@ -283,9 +283,7 @@ lemma hodgeTateMap_symbolClass :
     ((congrArg _ (pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu ω hω)).trans
       (Comparison.pull_comp_restrictAlong (relFreeAb.shortExact unimodular).2.extClass _
         (rfl : 1 + 1 = 2)))
-  simp only [hθ, Abelian.Ext.mapExactFunctor_extClass, hodgeTateMap, restrictToPairs,
-    LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply] at h_chain ⊢
-  exact h_chain
+  simpa [hθ, Abelian.Ext.mapExactFunctor_extClass, hodgeTateMap, restrictToPairs] using! h_chain
 
 end New.Variety
 
