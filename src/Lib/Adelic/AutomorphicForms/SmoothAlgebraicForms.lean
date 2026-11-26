@@ -388,14 +388,6 @@ lemma span_gramForm_highestVector_comp_eq_top [DecidableEq n]
 
 /-! ### Positions in the decreasing order -/
 
-/-- For an injective integer vector `a` indexed by `n`, every position `q < card n` in the
-decreasing order of `a` is taken by some index. Here `decreasingPosition a i` counts the indices k
-with a i < a k, so positions start at 0. -/
-lemma exists_decreasingPosition_eq_of_injective {a : n → ℤ} (ha : a.Injective) {q : ℕ}
-    (hq : q < Fintype.card n) : ∃ i : n, decreasingPosition a i = q := by
-  obtain ⟨f, hf⟩ := exists_equiv_decreasingPosition ha
-  exact ⟨f.symm ⟨q, hq⟩, by simp [(hf _).1]⟩
-
 /-- If `x < a i`, then the number of entries of `a` that exceed `x` is larger than the position of
 `i` in the decreasing order of `a`. -/
 lemma decreasingPosition_lt_card_of_lt {a : n → ℤ} {i : n} {x : ℤ} (hx : x < a i) :
@@ -439,7 +431,8 @@ lemma IsHCParam.exists_decreasingPosition_eq (h : IsHCParam κ e l) (w : Φ) {q 
       decreasingPosition (l w) i = q ∧
       l w i = hcParameter κ e (Fintype.card n) w q ∧
       ∀ x : ℤ, x < l w i → q < #{k : n | x < l w k} := by
-  obtain ⟨i, rfl⟩ := exists_decreasingPosition_eq_of_injective (h.injective w) hq
+  obtain ⟨f, hf⟩ := exists_equiv_decreasingPosition (h.injective w)
+  obtain ⟨i, rfl⟩ : ∃ i, decreasingPosition (l w) i = q := ⟨f.symm ⟨q, hq⟩, by simp [(hf _).1]⟩
   exact ⟨i, rfl, h.eq_hcParameter w i, fun x hx ↦ decreasingPosition_lt_card_of_lt hx⟩
 
 /-- The entries of `l w` are the first `card n` entries of the decreasing parameter. -/
