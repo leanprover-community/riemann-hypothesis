@@ -58,7 +58,7 @@ variable {F W : Type*} [Field F] [Valued F ℤᵐ⁰] [AddCommGroup W] [Module �
 
 /-- An element `g` lies in `New.blockParahoric c` iff it lies in `GL_N` of the valuation ring and
 its entry `g i j` has valuation less than 1 whenever `c j < c i`. -/
-@[grind]
+@[grind =]
 lemma mem_blockParahoric :
     g ∈ blockParahoric c ↔
       g ∈ intGL (Fin N) 𝒪[F] ∧ ∀ i j : Fin N, c j.val < c i.val → v (g i j) < 1 := .rfl
