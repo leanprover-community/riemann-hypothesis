@@ -254,7 +254,7 @@ The prime number theorem in this table is known (Montgomery and Vaughan, Multipl
 | The Gauss norm equals the supremum norm on the unit polydisc over an algebraically closed valued field | `Lib/General/Algebra/SeriesBounds` |  | Bosch, Güntzer and Remmert, *Non-Archimedean Analysis* |
 | The integrality of the `p`-adic exponential and logarithm on series of large enough valuation, and of the binomial series with exponent in `ℤ_p` | `Lib/General/Algebra/SeriesBounds` |  |  |
 | Length of a matrix kernel modulo `a` over a discrete valuation ring via maximal minors | `Lib/General/Algebra/SharpMinors` |  |  |
-| Ostrowski–Taussky inequality and the complex Gaussian integral | `Lib/General/Analysis/GaussianIntegral` |  |  |
+| The complex Gaussian integral | `Lib/General/Analysis/GaussianIntegral` |  |  |
 | Stone–Weierstrass for monoids of functions; Fourier inversion on compact quotients; Fourier decay | `Lib/General/Analysis/FourierTransforms` |  |  |
 | An upper bound for Hua's determinant integral | `Lib/General/Analysis/HolomorphicIntegrals` |  | Hua, Harmonic Analysis of Functions of Several Complex Variables in the Classical Domains, AMS 1963 |
 | Mean value property of holomorphic functions; entire function determined by its Taylor series at 0 | `Lib/General/Analysis/MeanValueAndTaylor` |  |  |
