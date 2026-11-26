@@ -407,7 +407,7 @@ lemma New.Orbital.sq_norm_mul_norm_prod_sub_le [Nonempty n] (u : USign ε) (t : 
         simp [principalMinor_eq_det (x := diagonal _), oppositePairs, prod_product,
           ← diagonal_one, sub_ite, sq, mul_right_comm, prod_ite]
       · -- T is diagonal
-        exact fun _ j k _ hj hk ↦ .inr (diagonal_apply_ne _ (by grind))
+        exact fun _ j k _ hj hk ↦ .inr (diagonal_apply_ne _ (fun h ↦ hj ((congrArg ε h).trans hk)))
       · -- the columns of u⁻¹ T of sign - vanish
         exact fun _ j _ _ hj ↦ by simp [prod_eq_zero (i := j), hj]
     _ ≤ (2 * ‖g.val.val‖) ^ #(oppositePairs ε) := by
