@@ -537,16 +537,11 @@ lemma weightY_eq (τ : D.Φ) {p : ℕ} (hp : p < D.n D.m - 1) :
 lemma keptColumns_le_halfGap (u : ℕ) : D.keptColumns u ≤ D.halfGap := by
   grind [keptColumns, reducedHalfGap]
 
-/-- At most `Δ / 2 = D.halfGap` columns of each height `u > k` lose a box under branching. -/
-lemma columnCount_sub_keptColumns_le_halfGap (τ : D.Φ) {u : ℕ} (hu : D.k < u) :
-    D.columnCount τ u - D.keptColumns u ≤ D.halfGap := by
-  grind [keptColumns, columnCount, reducedHalfGap, Data.gap, D.one_lt_k]
-
 /-- The weight `μ(Y_m)` at `τ` has at most `Δ = D.gap` columns of each height `u ≥ k`. -/
 lemma columnsY_le (τ : D.Φ) {u : ℕ} (hu : D.k ≤ u) : D.columnsY τ u ≤ D.gap := by
   rw [columnsY, Data.gap, two_mul]
   exact add_le_add (D.keptColumns_le_halfGap u)
-    (D.columnCount_sub_keptColumns_le_halfGap τ (Nat.lt_succ_of_le hu))
+    (by grind [keptColumns, columnCount, reducedHalfGap, Data.gap, D.one_lt_k])
 
 /-! ### The exponent of the branching map -/
 
