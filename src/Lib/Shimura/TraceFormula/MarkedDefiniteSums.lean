@@ -358,11 +358,6 @@ lemma invAutInFrame_mul (y : GL n E) (x k : GL n (𝔸f E)) :
     invAutInFrame y (x * k) = k⁻¹ * invAutInFrame y x * k := by
   simp [invAutInFrame, mul_assoc]
 
-/-- The element `invAutInFrame y x = x⁻¹ y⁻¹ x` does not change under `(y, x) ↦ (z y z⁻¹, z x)`. -/
-lemma invAutInFrame_conj (z y : GL n E) (x : GL n (𝔸f E)) :
-    invAutInFrame (z * y * z⁻¹) (toFinGL z * x) = invAutInFrame y x := by
-  simp [invAutInFrame, mul_assoc]
-
 /-- The automorphism `y` in the frame `x` at the split place `w₀`: the inverse transpose of the
 component of `x⁻¹ y⁻¹ x` at `w₀`. -/
 def localAut (y : GL n E) (x : GL n (𝔸f E)) : GL n (LocField w₀.val) :=
@@ -450,8 +445,7 @@ lemma tripleBlock_mul_conjAtSplit (x : GL n (𝔸f E)) (y : GL n E) (μ : n)
 `(z x K, z y z⁻¹, μ)`. -/
 lemma smul_tripleBlock (z : GL n E) (x : GL n (𝔸f E)) (y : GL n E) (μ : n) :
     z • tripleBlock K w₀ x y μ = tripleBlock K w₀ (toFinGL z * x) (z * y * z⁻¹) μ := by
-  simp only [tripleBlock, smul_set_range, smul_markedTriple, localAut, invAutInFrame_conj,
-    mul_assoc (toFinGL z)]
+  simp [tripleBlock, smul_set_range, smul_markedTriple, localAut, invAutInFrame, mul_assoc]
 
 /-- The block of a triple `p = (q, y, μ)`, read at the chosen representative of the coset `q`. -/
 def blockOf (p : MarkedTriple K n) : Set (MarkedTriple K n) :=
