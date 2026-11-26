@@ -737,11 +737,11 @@ lemma RealPlace.exists_common_vector_of_normOnePairOccursFrom (hi_le : i ≤ �
       simp_all [inclMatrix, mulVec, dotProduct, eq_comm]
   have h_block_mulVec : subframeBlock hi_le Z *ᵥ c = Pi.single (last i) (-x 𝔰.top) := by
     have hZx' : Z *ᵥ x' = Pi.single 𝔰.top (-x 𝔰.top) := by
-      rw [← hZ, realFrameGram_eq_conjTranspose_mul, ← mulVec_mulVec, ← mulVec_mulVec x', h_frames,
-        mulVec_mulVec, frameCols_J₁_gram]
-      ext a
-      rw [mulVec_diagonal]
-      cases a using lastCases <;> simp
+      have h_inverse : γ⁻¹.val.val *ᵥ 𝔰.frameCols *ᵥ x = 𝔰.frameCols *ᵥ x' := by
+        simpa [mulVec_mulVec, ← Units.val_mul, ← Subgroup.coe_mul] using
+          congrArg (γ⁻¹.val.val *ᵥ ·) h_frames.symm
+      simpa only [← hZ, realFrameGram, Filling.frameGram_inv, conjTranspose_conjTranspose] using
+        (conjTranspose_realFrameGram_mulVec h_inverse).1
     rw [← hc, mulVec_mulVec, mul_inclMatrix] at hZx'
     ext l
     -- The block is made of the rows of the subframe in `Z.submatrix id (subframeIndex hi_le)`.
