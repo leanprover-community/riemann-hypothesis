@@ -552,9 +552,10 @@ lemma HasCellRank.sum_norm_sq_sub_mul_inv_lt_one (hγ : S.HasCellRank j γ)
       rw [← Finset.mul_sum, Finset.sum_add_distrib]
       linarith
 
-/-- Let `E` contain a primitive 5040th root of unity, and let `S` have the congruence level
-`M = S.M`. Let `γ` and `γ'` have the same integral matrix `Z = S.frameProducts γ` of products of the
-standard frame with its image, with the leading minor `δ` of order `j`. Let both have the cell rank
+omit [HasPrimitiveRoot5040 E] in
+/-- Let `S` have congruence level `M = S.M`. Let `γ` and `γ'` have the same integral matrix
+`Z = S.frameProducts γ` of products of the standard frame with its image, with the leading minor
+`δ` of order `j`. Let both have the cell rank
 `j`: the flags of the frame and of its image share vectors at all indices from `j` on, up to a
 number of norm one, `δ ≠ 0`, and `S.termDisc`, formed from the last two leading minors of `Z`, is
 nonzero exactly when `j = ϱ + 1`. Let the idele `d` be the number `M δ`. If the coordinates in `X₀`
