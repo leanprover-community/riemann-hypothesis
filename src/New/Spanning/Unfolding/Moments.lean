@@ -366,8 +366,8 @@ lemma HasAmplitudeBlocks.rep_comp_eq_comp_besselTranslate [HasPrimitiveRoot5040 
       rw [hd, map_sub, map_sub, ← h_apply, map_mul, End.mul_apply, sub_self]
     rw [← hρ s⁻¹, ρ.inv_self_apply, ← LinearMap.adjoint_inner_right, h_zero, inner_zero_right]
   have h_self : ⟪d, d⟫_ℂ = 0 := by
-    calc ⟪d, d⟫_ℂ = ⟪ρ t (P φ), d⟫_ℂ - ⟪P (S.besselTranslate t φ), d⟫_ℂ := inner_sub_left ..
-      _ = 0 := by simpa [h_orth t φ] using h_orth 1 (S.besselTranslate t φ)
+    rw [show ⟪d, d⟫_ℂ = _ from inner_sub_left .., h_orth t φ, zero_sub, neg_eq_zero]
+    simpa using h_orth 1 (S.besselTranslate t φ)
   exact sub_eq_zero.1 (inner_self_eq_zero.1 h_self)
 
 /-- Equivariance on the left. Let `S` be admissible filling data for a unitary group `G` over the CM
