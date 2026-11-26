@@ -422,8 +422,6 @@ lemma ne_varY (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varY s := by
 lemma swapVar_eq (hz : D.IsFixed z) : D.swapVar z = z := by
   rw [swapVar, Equiv.swap_apply_of_ne_of_ne hz.1 hz.2]
 
-lemma merge_eq (hz : D.IsFixed z) : D.merge z = z := ite_eq_right (hz.ne_varY D.letter)
-
 lemma sign_eq_zero (hz : D.IsFixed z) : D.sign z = 0 := ite_eq_right (hz.ne_varY z.2)
 
 lemma poleOrder_eq_zero (hz : D.IsFixed z) : D.poleOrder z = 0 := ite_eq_right (hz.ne_varX z.2)
@@ -453,7 +451,7 @@ lemma IsFixed.swapVar_merge_eq_self_and_weights_eq_zero {T : FrobeniusCycle N W 
     D.poleOrder z = 0 ∧
     D.zeroOrder z = 0 ∧
     D.crossSign z = 0 :=
-  ⟨hz.swapVar_eq, hz.merge_eq, hz.sign_eq_zero, hz.poleOrder_eq_zero, ite_eq_right (hz.ne_varY z.2),
+  ⟨hz.swapVar_eq, ite_eq_right (hz.ne_varY D.letter), hz.sign_eq_zero, hz.poleOrder_eq_zero, ite_eq_right (hz.ne_varY z.2),
     hz.crossSign_eq_zero⟩
 
 /-- The defect weight `T.defectWeight D.letter D.fst D.snd z` of a variable `z` equals
