@@ -11,7 +11,7 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.FieldTheory.Galois.IsometricAction
 import TauCeti.Topology.Algebra.Group.Units
-public import Lib.GaloisRep.Main.Defs
+public import Lib.GaloisRep.Main.FrobeniusFilter
 public import Lib.GaloisRep.Main.LocalConditions
 public import Lib.General.NumberTheory.PadicLimitsValuation
 public import Lib.ClassField.HeckeL.EulerProduct
