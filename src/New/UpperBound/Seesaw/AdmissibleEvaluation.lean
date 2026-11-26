@@ -431,21 +431,6 @@ lemma evalAt_neighbourLift_eq_zero (hP : IsSplitLevel P N) (hκ : IsScalingAtM N
       first | exact h_ne.elim h_val | simp
 
 omit [Fact N.Prime] in
-/-- Let `P` contain one place of each conjugate pair above `N` (`hP`) and let `κ` be scaling factors
-with values `1` or `δ`, trivial above `N` (`hκ`). Let `D` be double-lift data for `Y`, `Y'`, `Y''`
-whose matrix `B = D.latticeLift P π u κ` is integral (`h_int`) and whose denominators match through
-`κ` (`h_match`). Then `Bᴴ` keeps the allowed denominators up to `κ`: if each entry of `y` in a row
-`(i, i')`, times `selfOrConj β i`, is integral at the places not dividing `n`, then so is each entry
-of `Bᴴ y` in a row `(j, j')`, times `selfOrConj β j * κ j`. -/
-lemma conjTranspose_latticeLift_mulVec_mem (hP : IsSplitLevel P N) (hκ : IsScalingAtM N β δ κ)
-    (h_match : D.MatchesDenominators κ β) (h_int : IsIntMatrix (Ô E) (D.latticeLift P π u κ))
-    {n : ℕ} {y : (ι ⊕ ι'') × ι' → 𝔸f E}
-    (hy : y ∈ weightedTranslations n fun i : (ι ⊕ ι'') × ι' ↦ selfOrConj β i.1) :
-    (D.latticeLift P π u κ)ᴴ *ᵥ y ∈ weightedTranslations n
-      fun j : PairIndex X X'' × (X' ⊕ Unit) ↦ selfOrConj β j.1 * κ j.1 := by
-  exact conjTranspose_mulVec_mem_weightedTranslations h_int hy fun i j w h_ne ↦
-    mul_eq_zero_of_left (D.evalAt_neighbourLift_eq_zero hP hκ h_match h_ne) _
-
 end
 
 /-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄` with
@@ -507,7 +492,8 @@ lemma conjTranspose_iFin_mulVec_mem (hP : IsSplitLevel P N) (hπ : IsSplitSquare
     exact latticeUnitary_smul_of_mem_vanishingAbove hπ hκ (mulVec_mem_vanishingAbove _ hy_vanish)
   intro j w hw
   rw [h_scaled, ← mul_assoc]
-  exact D.conjTranspose_latticeLift_mulVec_mem hP hκ h_match h_int hy j w hw
+  exact conjTranspose_mulVec_mem_weightedTranslations h_int hy
+    (fun i j w h_ne ↦ mul_eq_zero_of_left (D.evalAt_neighbourLift_eq_zero hP hκ h_match h_ne) _) j w hw
 
 /-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄`
 with `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling
