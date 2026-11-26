@@ -302,14 +302,6 @@ section Derivatives
 variable {d : ℕ} (C : CMLattice d)
 variable {K : Type*} [Field K] [CharZero K] (ι : ℂ →+* K)
 
-/-- `x'² = 4 x³ + a₁² x² + 4 x` for the Taylor series `x` of `℘(z + t) - ℘(t)`, with coefficients
-mapped to `K` by `ι`. -/
-lemma derivative_taylorVia_translatedX_sq :
-    d⁄dX (taylorVia ι C.translatedX) ^ 2 = 4 * taylorVia ι C.translatedX ^ 3 +
-      .C (ι C.a₁) ^ 2 * taylorVia ι C.translatedX ^ 2 + 4 * taylorVia ι C.translatedX := by
-  rw [derivative_taylorVia_translatedX]
-  linear_combination 4 * C.taylorVia_curve_eq ι
-
 /-- `x'' = 6 x² + a₁² x + 2` for the Taylor series `x` of `℘(z + t) - ℘(t)`, with coefficients
 mapped to `K` by `ι`. -/
 lemma derivative_derivative_taylorVia_translatedX :
@@ -338,8 +330,8 @@ lemma derivative_pow_mul_derivative_taylorVia_translatedX (n : ℕ) :
   | succ n =>
     rw [Nat.add_sub_cancel]
     push_cast
-    linear_combination
-      (n + 1) * taylorVia ι C.translatedX ^ n * C.derivative_taylorVia_translatedX_sq ι
+    rw [derivative_taylorVia_translatedX]
+    linear_combination 4 * (n + 1) * taylorVia ι C.translatedX ^ n * C.taylorVia_curve_eq ι
 
 end Derivatives
 
