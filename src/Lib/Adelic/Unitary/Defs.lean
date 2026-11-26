@@ -264,12 +264,6 @@ def heckeGL {A W : Type*} [CommSemiring A] [AddCommMonoid W] [Module A W]
 
 /-! ### Conjugate places and split places -/
 
-/-- For complex conjugate finite places, `star u = w`, the component at `w` of the conjugate of a
-finite adele `x` is the image of its component at `u` under `conjLoc h : E_u →+* E_w`. -/
-lemma evalAt_star_eq_conjLoc {u w : FinPlace E} (h : star u = w) (x : 𝔸f E) :
-    evalAt w (star x) = conjLoc h (evalAt u x) :=
-  adeleMap_apply (starRingEnd E) (star_eq_iff_star_eq.mp h) x
-
 /-- Let `u` and `w` be complex conjugate finite places, `star u = w`, and `g` an invertible matrix
 over the finite adeles. The component at `w` of the conjugate transpose of `g` is the transpose of
 the component of `g` at `u`, carried to `E_w` by the conjugation `conjLoc h : E_u →+* E_w`. -/
@@ -278,7 +272,7 @@ lemma evalAt_star_GL {u w : FinPlace E} (h : star u = w) (g : GL n (𝔸f E)) :
       ((GeneralLinearGroup.map (evalAt u) g).val.map (conjLoc h))ᵀ := by
   ext i j : 1
   change evalAt w (star (g j i)) = conjLoc h (evalAt u (g j i))
-  exact evalAt_star_eq_conjLoc h (g j i)
+  exact adeleMap_apply (starRingEnd E) (star_eq_iff_star_eq.mp h) (g j i)
 
 /-- For finite places with `star u ≠ w`, where `star u` is the complex conjugate place, the
 component at `u` of the conjugate transpose of `singleGL w g` (the adelic matrix with component `g`
