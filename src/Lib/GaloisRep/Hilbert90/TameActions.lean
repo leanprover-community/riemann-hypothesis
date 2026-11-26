@@ -255,12 +255,9 @@ lemma IsTameAtLevel.of_semiconj (h_tame : IsTameAtLevel σ p m) (f : R →+* B) 
   have h_comap (y : R) : (σ ^ i) y - y ∈ P.comap f := by simpa [h_pow] using h_triv (f y)
   exact h_tame.mem_of_forall_sub_mem hi (P.comap f) h_comap
 
-lemma span_natCast_le_comap (σ : R →+* R) (N : ℕ) : span {(N : R)} ≤ (span {(N : R)}).comap σ := by
-  simp [span_le]
-
 /-- The ring endomorphism of `R ⧸ (N)` induced by `σ`, for a natural number `N`. -/
 def quotientNatMap (σ : R →+* R) (N : ℕ) : R ⧸ span {(N : R)} →+* R ⧸ span {(N : R)} :=
-  quotientMap (span {(N : R)}) σ (span_natCast_le_comap σ N)
+  quotientMap (span {(N : R)}) σ (by simp [span_le])
 
 /-- Let `R` be profinite (`New.IsProfiniteRing`) and `σ` a ring endomorphism of `R`. Some
 `R`-algebra map `Λ` from the families of residues modulo `N !` to `R` carries the maps
