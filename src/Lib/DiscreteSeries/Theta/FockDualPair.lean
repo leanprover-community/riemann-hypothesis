@@ -192,7 +192,7 @@ theorem _root_.New.Fock.glOp_commutator [DecidableEq ι] (η : ι → ℤˣ) (i 
       raiseOp η p (raiseOp η r (lowerOp η q (lowerOp η s P))) +
         if q = r then glOp η p s P else 0 := by
     simp [glOp, lowerOp_raiseOp, apply_ite (raiseOp η p)]
-  rw [LinearMap.sub_apply, Module.End.mul_apply, Module.End.mul_apply, h_order, h_order,
+  rw [LinearMap.sub_apply, mul_apply_eq_comp, mul_apply_eq_comp, h_order, h_order,
     raiseOp_comm η i k, lowerOp_comm η j m, add_sub_add_left_eq_sub]
   simp [DFunLike.ite_apply, eq_comm]
 
