@@ -156,9 +156,6 @@ lemma New.Shape.mem_fixerBall {𝔰 : Shape} {R : ℝ}
     ω ∈ 𝔰.fixerBall R ↔ ‖(ω.2 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ R :=
   Iff.rfl
 
-lemma New.Shape.measurableSet_fixerBall (𝔰 : Shape) (R : ℝ) : MeasurableSet (𝔰.fixerBall R) :=
-  measurableSet_le (by fun_prop) measurable_const
-
 /-- The complex matrices of size `ϱ + 1` have real linear coordinates `e` such that `x ↦ Z + e x`
 preserves Lebesgue measure and the operator norm of `e x` is at most `2 (ϱ + 1) ^ 2` times the
 supremum norm of `x`. -/
@@ -456,7 +453,7 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
     _ ≤ .ofReal (a ^ card 𝔰.FrameCoord) * (.ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * K) :=
       sobolev_trace_cube f (by fun_prop) (by positivity)
         (inv_le_one_of_one_le₀ (one_le_pow₀ one_le))
-        (ae_restrict_of_forall_mem (𝔰.measurableSet_fixerBall _) deriv_bound)
+        (ae_restrict_of_forall_mem (measurableSet_le (by fun_prop) measurable_const) deriv_bound)
         fun w hw ↦ cube_bound w (by simpa [← sq] using hw)
     _ = .ofReal ((a * (2 * P ^ 2)) ^ (2 * 𝔰.n ^ 2)) * K := by
       simp (disch := positivity) [mul_pow a, ENNReal.ofReal_mul, mul_assoc, ← sq]
