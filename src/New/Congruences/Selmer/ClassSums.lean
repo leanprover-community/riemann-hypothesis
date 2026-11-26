@@ -137,15 +137,8 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
       ∏ w ∈ {v, star v}, (1 - heckeCoeff φ (S ϑ.Q) w * (w.q : ℂ) ^ (-(p.z : ℂ))) =
         ∏ ε : ℤˣ, (1 - (p.character * ϑ.toAutChar).baseChange.atUniformizer v ^ ε.val / v.q ^
           p.z) := by
-    have hv_star : star v ∉ ϑ.Q := fun h_mem ↦ hv_star' (by simp [hQ, h_mem])
-    have h_ne : v ≠ star v := fun h ↦ hv_star' (by simp [hQ, ← h])
-    have h_at (w : FinPlace D.E) (hw : w ∉ S ϑ.Q) : heckeCoeff φ (S ϑ.Q) w =
-        ((p.character * ϑ.toAutChar).baseChange.atUniformizer w)⁻¹ := by
-      simp [φ, heckeCoeff, HeckeChar.atUniformizer, hw]
-    rw [prod_pair h_ne, h_at v (by simp [S, hv, hv_chosen, hv_star_chosen, hv_star]),
-      h_at (star v) (by simp [S, hv, hv_chosen, hv_star_chosen, hv_star]), at_star, inv_inv]
-    simp [cpow_neg, q_star, div_eq_mul_inv]
-    ring
+    simp_all [φ, S, HeckeChar.atUniformizer, heckeCoeff, cpow_neg, Ne.symm]
+    grind
   rw [h_coeff, ← h_factors]
   simpa [φ] using h_erase p.z (mod_cast H.2)
 
@@ -207,11 +200,7 @@ lemma exists_mul_norm_sq_detPeriod_eq {p : D.CriticalPair} (h_ram : p.IsRamified
   have h_sq : ‖γ‖ ^ 2 =
       C / Exchange.lValueProd ({w | D.IsChosen w} ∪ ϑ.Q) (p.character * ϑ.toAutChar)⁻¹ 1 := by
     simpa [places_twistModulus, inv_mul_cancel_comm] using norm_γ
-  have h_ne : ‖γ‖ ^ 2 ≠ 0 := pow_ne_zero 2 (left_ne_zero_of_mul_eq_one h_norm)
-  rw [h_sq] at h_ne
-  obtain ⟨hC, hL⟩ := div_ne_zero_iff.1 h_ne
-  refine ⟨norm_ne_zero_iff.1 (right_ne_zero_of_mul_eq_one h_norm), hC, ?_⟩
-  rw [(div_eq_iff hL).1 h_sq.symm, mul_right_comm, ← mul_pow, h_norm, one_pow, one_mul]
+  grind [norm_zero]
 
 open scoped Classical in
 /-- Let `p = (ν, z)` be a critical pair with `ν = p.character` of weight `-c`. Let `ϑ'` be the tame
