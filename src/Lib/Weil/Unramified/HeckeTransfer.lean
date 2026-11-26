@@ -164,12 +164,6 @@ namespace SiegelWeil
 
 /-! ### The Hecke polynomials on the vacuum -/
 
-/-- The product of `1 - q ^ j * X` over `j < k + l` splits into the first `k` factors and the
-product of length `l` at `q ^ k * X`. -/
-lemma qPochhammer_add (q k l : ℕ) (X : ℂ) :
-    qPochhammer q (k + l) X = qPochhammer q k X * qPochhammer q l ((q : ℂ) ^ k * X) := by
-  simp only [qPochhammer, prod_range_add, pow_add, mul_assoc, mul_left_comm ((q : ℂ) ^ k)]
-
 open Classical in
 /-- The `q`-binomial theorem weighted by integrality at `w`. Let `y` be a matrix over `E_w` with
 columns indexed by `ι₂`, `c : ℂ`, and `γ_U = basicCosetRep U`. The sum over the subspaces `U` of
@@ -421,7 +415,8 @@ lemma heckePolyOp_pairWeilTarget (hk : card m = card n + k)
   have h_split (x : Matrix m n (ResField w)) :
       qPochhammer w.q (card m - x.rank) X =
         qPochhammer w.q k X * qPochhammer w.q (card n - x.rank) (w.q ^ k * X) := by
-    rw [hk, add_comm (card n), Nat.add_sub_assoc x.rank_le_card_width, qPochhammer_add]
+    rw [hk, add_comm (card n), Nat.add_sub_assoc x.rank_le_card_width]
+    simp only [qPochhammer, prod_range_add, pow_add, mul_assoc, mul_left_comm ((w.q : ℂ) ^ k)]
   have hα_ne : a.frobValue n w ≠ 0 := by simp [frobValue, atUniformizer, w.ne_bot]
   have hβ_ne : b.frobValue m w ≠ 0 := by simp [frobValue, atUniformizer, w.ne_bot]
   rw [hT, hS, div_mul_cancel₀ X hα_ne, div_mul_cancel₀ (w.q ^ k * X) hβ_ne, smul_schrodingerOp]
