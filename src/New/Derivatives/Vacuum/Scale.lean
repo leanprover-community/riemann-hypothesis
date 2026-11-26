@@ -44,12 +44,9 @@ lemma jet_rescale {R X : Type} [CommRing R] {Q : MvPolynomial X R} {l : ℕ}
     jet R Q (MvPowerSeries.rescale (fun (_ : X) ↦ a) F) = a ^ l * jet R Q F := by
   rw [jet_eq_sum, jet_eq_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun α hα ↦ ?_
-  have h_degree : α.degree = l := by
-    by_contra h_ne
-    exact mem_support_iff.1 hα (hQ.coeff_eq_zero h_ne)
-  rw [MvPowerSeries.coeff_rescale, ← h_degree, Finsupp.degree_apply, ← Finset.prod_pow_eq_pow_sum]
-  simp only [Finsupp.prod]
-  ring
+  simp only [MvPowerSeries.coeff_rescale, Finsupp.prod, Finset.prod_pow_eq_pow_sum,
+    ← hQ.degree_eq_sum_deg_support hα]
+  ac_rfl
 
 /-- Let `E` be a CM number field with a chosen CM type (`CMType`) and the data of its Weil
 representation (`WeilData`). For a homogeneous polynomial `Q` of degree `l` and a vector `f` of
