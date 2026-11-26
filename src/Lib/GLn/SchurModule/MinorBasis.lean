@@ -406,10 +406,12 @@ private lemma columnOrder_lt_of_forall_add_ite_eq {γ n : ℕ →₀ ℕ} {i : �
     rcases eq_or_ne a i with rfl | ha
     · exact h_eq_i
     rcases eq_or_ne a (i + 1) with rfl | ha'
-    · lia
+    · exact Nat.add_right_cancel (h_eq_i ▸ h_sum)
     exact h_off a ha ha'
-  have h_lt_succ : γ (i + 1) < n (i + 1) := by lia
-  exact columnOrder_lt_of_eq_above (i + 1) n (fun a ha ↦ (h_off a (by lia) (by lia)).symm) h_lt_succ
+  have h_lt_succ : γ (i + 1) < n (i + 1) :=
+    Nat.lt_of_add_lt_add_right ((Nat.add_lt_add_left h_lt_i _).trans_eq h_sum.symm)
+  exact columnOrder_lt_of_eq_above (i + 1) n
+    (fun a ha ↦ (h_off a ((Nat.lt_succ_self i).trans ha).ne' ha.ne').symm) h_lt_succ
 
 variable {Φ m : Type} [DecidableEq m] {R : Type} [CommRing R]
   {c : m → Φ} {x : m} {l : Φ × ℕ →₀ ℕ} {f : MatrixPoly m R}
