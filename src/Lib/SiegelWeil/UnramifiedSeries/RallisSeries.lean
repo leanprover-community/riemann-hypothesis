@@ -1,4 +1,3 @@
-import Mathlib.LinearAlgebra.Projectivization.Cardinality
 import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
 
 /-!

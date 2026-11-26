@@ -1,4 +1,3 @@
-import Mathlib.Probability.Kernel.Composition.IntegralCompProd
 import Lib.DiscreteSeries.Bruhat.FloorMeasures
 import Lib.DiscreteSeries.Bruhat.QuadricBlocks
 

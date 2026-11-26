@@ -1,6 +1,5 @@
 import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import Lib.DiscreteSeries.Bruhat.QuadricBlocks
-import Mathlib.Probability.Kernel.WithDensity
 
 /-!
 # The spheres of ℂ^κ as fibres of the standard form

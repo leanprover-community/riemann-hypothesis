@@ -1,4 +1,3 @@
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 import Lib.Weil.DualPair.Defs
 import Lib.Weil.Unramified.HeckeGL
 

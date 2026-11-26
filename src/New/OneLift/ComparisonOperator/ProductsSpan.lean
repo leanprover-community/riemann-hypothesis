@@ -96,7 +96,8 @@ theorem negIndex_posRowIndex_injective_and_padSigns :
   unfold Function.Injective negIndex posRowIndex
   refine ⟨⟨fun a b ↦ ?_, fun h a b ↦ ?_⟩, fun a ↦ ?_, fun h a ↦ ?_⟩
   all_goals split_ifs
-  all_goals simp [signsW, rowIndexOfNumber] <;> grind
+  all_goals simp [signsW, rowIndexOfNumber]
+  all_goals grind
 
 /-- Sparse sums. The data `D` give the CM field `E` with its `f` infinite places `D.Φ`, a large real
 scale `b = D.b`, the numbers `t = D.t` and `n_* = nStar D = 2 f t ^ 3`, and the modulus

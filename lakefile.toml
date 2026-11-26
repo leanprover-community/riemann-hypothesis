@@ -6,6 +6,7 @@ name = "GRH"
 srcDir = "src"
 defaultTargets = ["Lib", "New", "Main"]
 moreLeanArgs = ["--tstack=400000"]
+weakLeanArgs = ["-DwarningAsError=true"]
 
 [leanOptions]
 autoImplicit = false

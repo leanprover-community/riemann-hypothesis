@@ -1,4 +1,3 @@
-import Mathlib.LinearAlgebra.Projectivization.Basic
 import Lib.Weil.Construction.FiniteMultiplier
 import Lib.Weil.Unramified.HeckeGL
 

@@ -1,4 +1,3 @@
-import Mathlib.Probability.Kernel.Composition.MeasureCompProd
 import Lib.DiscreteSeries.Bruhat.FloorGroups
 import Lib.General.Measure.QuadricDisintegration
 

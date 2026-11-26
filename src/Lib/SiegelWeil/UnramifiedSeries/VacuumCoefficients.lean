@@ -1,4 +1,3 @@
-import Mathlib.LinearAlgebra.Projectivization.Cardinality
 import Lib.Adelic.AutomorphicForms.PAdicGauge
 import Lib.ClassField.HeckeCharacter.TameModulus
 import Lib.SiegelWeil.NeighbourLattices
