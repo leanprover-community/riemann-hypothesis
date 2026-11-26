@@ -75,12 +75,13 @@ attribute [instance 20] SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommM
   SetLike.GradeZero.instSemiring SetLike.GradeZero.instCommSemiring SetLike.GradeZero.instRing
   SetLike.GradeZero.instCommRing
 
--- Same priority. Each of these is expensive in this tree (see the PR for the census).
+-- Same priority. Each of these is expensive in this tree (census in
+-- https://github.com/leanprover-community/riemann-hypothesis/pull/8331).
 -- `Prod.distribMulAction` applies to adele goals because `𝔸` is an `abbrev` of a product
--- (`Lib/Adelic/Adeles/Basic.lean`). TODO: `MulSemiringAction.toDistribMulAction` and
--- `Module.free_of_finite_type_torsion_free'` are priority problems in Mathlib itself
--- (https://github.com/leanprover-community/riemann-hypothesis/issues/1038); drop them once
--- fixed there.
+-- (`Lib/Adelic/Adeles/Basic.lean`). `MulSemiringAction.toDistribMulAction` and
+-- `Module.free_of_finite_type_torsion_free'` are slow because of their priorities in
+-- Mathlib (https://github.com/leanprover-community/riemann-hypothesis/issues/1038), which
+-- Mathlib prefers not to tune, so they are lowered here.
 attribute [instance 20] Prod.distribMulAction MeasureTheory.instSFiniteOfCountable
   MulSemiringAction.toDistribMulAction Module.free_of_finite_type_torsion_free'
   Lean.Grind.OrderedRing.instIsCharPOfNatNatOfLawfulOrderLT
