@@ -3,6 +3,7 @@ module
 public import Mathlib.LinearAlgebra.Matrix.Module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 import TauCeti.LinearAlgebra.Determinant.Basic
+import TauCeti.LinearAlgebra.Matrix.SmithNormalForm.Diagonal
 public import Aesop.BuiltinRules
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
@@ -15,7 +16,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 public import Lib.Speed
-import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Relations, relative lengths and Fitting ideals for Selmer group estimates
@@ -272,10 +272,14 @@ lemma addVal_prod (f : m → O) : addVal O (∏ i : m, f i) = ∑ i : m, addVal 
 uniformiser has valuation 1. It is a consequence of the theorem on elementary divisors. -/
 lemma length_ker_le_addVal_det (M : Matrix n n O) (p : O) :
     length O (ker (M • 1 : End O (n → QuotSpan p))) ≤ addVal O M.det := by
-  -- In Smith normal form `M = Q * diagonal a * P`, with `P` and `Q` invertible, the kernel lies in
+  -- Write `M = Q * diagonal a * P` with `P` and `Q` invertible. The kernel lies in
   -- the image under `P⁻¹` of the product of the `a i`-torsion submodules of `O ⧸ p`, each of which
   -- is cyclic, so a quotient of `O ⧸ a i`.
-  obtain ⟨Q, -, P, -, a, rfl⟩ := isValuationPair_top.smith_normal_form M
+  obtain ⟨Q, P, a, rfl⟩ : ∃ (Q P : GL n O) (a : n → O), M = Q.val * diagonal a * P.val := by
+    obtain ⟨L, R, a, hL, hR, h⟩ := M.exists_mul_mul_eq_diagonal
+    obtain ⟨L, rfl⟩ := (Matrix.isUnit_iff_isUnit_det _).2 hL
+    obtain ⟨R, rfl⟩ := (Matrix.isUnit_iff_isUnit_det _).2 hR
+    exact ⟨L⁻¹, R⁻¹, a, by rw [← h]; simp [Matrix.mul_assoc]⟩
   have h_cyclic : ∀ i : n, ∃ g : QuotSpan p, torsionBy O (QuotSpan p) (a i) = O ∙ g := fun i ↦
     (IsPrincipal.of_comap _ (span {p}).mkQ_surjective _).principal
   choose g hg using h_cyclic
