@@ -243,8 +243,6 @@ lemma coe_hermitianPart (b : Matrix Unit Unit (𝔸 E)) :
     (hermitianPart b).val = toAdele (2⁻¹ : E) • (b + bᴴ) := by
   simp [hermitianPart, star_eq_conjTranspose, star_toAdele, smul_add]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- The point `X.radicalElement c b` depends only on the hermitian part of `b`. -/
 lemma radicalPoint_hermitianPart (c : Matrix r Unit (𝔸 E)) (b : Matrix Unit Unit (𝔸 E)) :
     radicalPoint X (c, hermitianPart b) = X.radicalElement c b := by
@@ -377,8 +375,6 @@ lemma lintegral_radicalHaar_conj_lineLevi (p : (𝔸 E)ˣ × G E t) (f : G E t' 
   exact (hC.lintegral_comp (hf.comp (isClosedEmbedding_radicalPoint X).measurable)).trans
     (lintegral_smul_measure _ _)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 /-- The Levi factor meets the radical only in the identity: if the Levi element `lineLevi X p` lies
 in the radical, then `p = 1`. -/
 lemma eq_one_of_levi_mem_radical {p : (𝔸 E)ˣ × G E t}
@@ -459,8 +455,6 @@ instance : DiscreteTopology (lineStabilizer X) :=
   DiscreteTopology.of_subset (inferInstance : DiscreteTopology V'.Γ)
     fun g hg ↦ ((mem_lineStabilizer_iff X g).1 hg).1
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 /-- The embedding `lineLevi X` of the Levi factor is continuous. -/
 lemma continuous_lineLevi : Continuous (lineLevi X) := by
   have h_mat (p : (𝔸 E)ˣ × G E t) : (lineLevi X p).adeleMatrix =

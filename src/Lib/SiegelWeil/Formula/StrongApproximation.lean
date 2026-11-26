@@ -177,8 +177,6 @@ lemma New.Exchange.exists_torus_mul_rational_fixes {D : G E s → ℂ}
   obtain rfl : γ = γ' := Subtype.ext (Units.ext (by simp [← hγ]))
   exact (mem_Γ γ).1 hγ'Γ
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `H` split a hyperbolic plane off `W` with complement `W₀`, and let `D` be continuous on the
 adelic unitary group of `W` and left invariant under rational points (`IsAutFunction`). Let `S` be a
 nonempty set of finite places, and let `D` be right invariant (`HasLevel`) under the points

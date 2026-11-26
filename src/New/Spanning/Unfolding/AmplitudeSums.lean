@@ -584,8 +584,6 @@ theorem exists_tsum_classCutoff_mul_prod_enorm_le {E : Type} [Field E] [CMType E
     _ ≤ bound := tsum_classCutoff_mul_const_mul_inv_pow_le T c s (∏ v, a v) y
     _ = bound.toNNReal := (coe_toNNReal h_bound_fin).symm
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let `S` be admissible, and let `γ` run over the elements of `T` that are terms over `(c, s, d)`,
 for all classes `d`. The sum of the integrals `∫ β_c(y) β_d(γ⁻¹ y) ‖W(y) ⊗ W(γ⁻¹ y)^*‖ dy`
 (`amplitudeMajorant`) is finite. -/

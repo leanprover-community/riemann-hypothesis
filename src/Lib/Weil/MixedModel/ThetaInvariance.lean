@@ -326,8 +326,6 @@ lemma levi_mulVec_lAdelic_mulVec_conjTranspose_mulVec (x : p → 𝔸 E) :
     (D.levi (a, g₀)).adeleMatrix *ᵥ D.lAdelic *ᵥ a.valᴴ *ᵥ x = D.lAdelic *ᵥ x := by
   simp [levi_mul_lAdelic, ← Matrix.mul_assoc, Matrix.mul_assoc D.lAdelic, ← conjTranspose_mul]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For the Levi element `D.levi (a, g₀)` attached to `a ∈ GL_p(𝔸)` and `g₀` in the group of `V₀`,
 one has ev ω(`D.levi (a, g₀)`) = χ_𝔸(det a)⁻¹ ω(g₀) ev. Here ev is the zero term
 `New.Space.Splitting.zeroTerm`, and `χ_𝔸 = υ |·|^(-1/2)`. -/

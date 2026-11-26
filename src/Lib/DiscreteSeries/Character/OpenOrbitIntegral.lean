@@ -648,8 +648,6 @@ lemma exists_entry_large_outside_orbit (l : HCParam (n := n) ε) (h : ℕ) :
     fun _ h_lt ↦ ⟨i, j, hij, h_lt⟩
   fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero, IsHermitianInvolution.det_ne_zero])
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `l = 2λ` have gap `h`: its entries are distinct, of the parity of `card n - 1`, and those
 with opposite signs `ε` differ by at least `2 h`. Let `o` strictly reverse the order of `l`. Then
 for every integer vector `e`, as `s → ∞`, `offOrbitIntegral l A` is `O(2⁻¹ ^ (s L))` at

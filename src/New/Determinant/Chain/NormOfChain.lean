@@ -475,8 +475,6 @@ lemma range_tupleIdem_le {f : MonoidAlgebra ℂ D.chosenGL →ₐ[ℂ] End ℂ U
   rw [← h_mul, map_mul]
   exact range_comp_le_range _ _
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 open scoped Classical in
 /-- Let `ϑ` be a tame character and `1 ≤ j ≤ m`. The range of `D.goodLift ϑ j`, the lift
 `singleLift` restricted to the good forms on `W_j = D.spaceW j`, is spanned by the lifts of good

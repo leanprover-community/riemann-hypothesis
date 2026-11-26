@@ -447,8 +447,6 @@ lemma norm_map_mul_intVacuum_le {P : Parameters} (D : Data P) {l : D.Φ → ℕ}
   exact (mul_le_mul h_int h_vac (norm_nonneg _) (exp_nonneg _)).trans
     (by rw [← exp_add]; exact Real.exp_le_exp.2 h_exponent)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Sharpness. Let `D` be admissible data for the parameters `P`, with `K = ℚ(√-d)` for the prime
 `d = P.d` and `E = D.E = P.E D.towerExp` the extension of `K` by the roots of unity of order
 `q₁ = D.q₁`. For degrees `l` with `κ ≤ l ≤ κ + x ^ 42` at the weights `κ = D.weight` there is a

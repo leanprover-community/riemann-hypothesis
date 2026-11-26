@@ -640,8 +640,6 @@ lemma pairing_transposedChain_eq_sum {ϑ : D.MFoldTwist}
 
 /-! ### Invariance -/
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let `k` be an invertible matrix modulo `gridModulus ϑ = 𝔟Q` in the level `nodeLevel` at a node
 `(z, 0, i)` of the first column: the trivial subgroup for `z = false`, the kernel of reduction
 modulo `𝔟` for `z = true`. Then `k` reduces to `1` under `reduceToTriangle ϑ z`, the reduction

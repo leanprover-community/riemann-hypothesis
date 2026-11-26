@@ -269,8 +269,6 @@ lemma stackedDet_standardFrame (τ : InfinitePlace E) :
 
 end Blocks
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `γ τ = card l - card (ι τ)` and let `y` lie in `PairFock`, the Fock space of the pair
 U(signs on `n`) × U(`a`), on which `(x, u)` acts by the real Weil representation `realPairWeil γ 0`,
 twisted by `∏_τ (det u_τ) ^ γ τ` and not by `det x`.

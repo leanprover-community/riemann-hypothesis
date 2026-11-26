@@ -337,8 +337,6 @@ lemma _root_.New.IsBesselFunction.integral_dsKernel_mul_eq_of_convolve_eq {𝔰 
         (eval_integral_piLp (hF.integrable_smul h_ker.integrable.comp_inv y).eval_piLp j).symm
     _ = F y j := by rw [hF_fix]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- **Bessel functions at a real place**: for each infinite place `v : D.Φ` of the field of `D`
 there is a Bessel system `B : BesselSystem D.shape D.b D.f`. Such a system is a full Bessel function
 on the group G₁, the unitary group of the hermitian form of the shape `D.shape`, together with a cut

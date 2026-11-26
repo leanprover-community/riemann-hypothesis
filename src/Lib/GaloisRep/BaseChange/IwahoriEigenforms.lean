@@ -752,8 +752,6 @@ private lemma heckeFun_iwahoriDoubleCoset_mul {F : Type} [Field F] [NumberField 
   simp only [hs, ht, hx, mul_mem, heckeFun_iwahoriDoubleCoset_eq_iwahoriDegree_smul, map_smul,
     compactMean_mem_levelSpace, compactMean_diagGL_compactMean_diagGL, smul_smul, h_deg]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 attribute [-simp] mem_levelSpace exists_const MonoidHom.coe_comp in
 /-- Base change keeps an Iwahori eigencharacter. Let `E'/E` be a step with `E'` containing a
 primitive `5040`-th root of unity (`HasPrimitiveRoot5040`). Let `w = u.below E` be split (`hw`) with

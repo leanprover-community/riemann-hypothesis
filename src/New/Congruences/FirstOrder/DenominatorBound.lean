@@ -696,8 +696,6 @@ lemma exists_heckePolyOnForms_eq_zero {P : Parameters} {D : Data P} {ℓ : ℕ} 
   rw [O.heckePolyOnForms_eq_smul hw hS (hasHeckePolynomial_of_heckeSplit h_fix ht), h_eval,
     zero_smul]
 
--- Keeps definitional checks from unfolding the finite products.
-seal Finset.prod in
 /-- Let `typeProjection O c` be the action on forms of the idempotent of the tuple of types `c`,
 with range in the image of the element `E` of the group algebra. Let `Z` be stable under it and
 under the Hecke polynomial operators `O.heckePolyOnForms`, and let `y` be orthogonal to the false

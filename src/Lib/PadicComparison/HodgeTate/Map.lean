@@ -99,9 +99,6 @@ namespace HodgeTatePair
 with p inverted. -/
 abbrev GenericRing : CommAlg k := genericOver X.test
 
--- Here and below, `seal … in` keeps `PadicTest.genericAlg` folded; unfolded, it makes comparisons
--- of ring instances slow.
-seal PadicTest.genericAlg in
 /-- Morphisms of pairs. A morphism (S, M) ⟶ (S', M') is a pair (f, φ) of a map of tests
 f : S ⟶ S' and a map φ = (φ₀, φ₁) : M → T' × M' that is semilinear over the ring map T → T'
 induced by f. The identity is (𝟙, m ↦ (0, m)), and (f, φ) followed by (g, ψ) is
@@ -173,7 +170,6 @@ lemma proj_map_fst {X Y : HodgeTatePair} (f : X ⟶ Y) (x : X.PairRing) :
       genericOver.map (testMap f) (PairRing.sqZero x).fst :=
   (thickeningOver.proj.naturality_apply (testMap f) (PairRing.base x)).trans (congrArg _ x.property)
 
-seal PadicTest.genericAlg in
 /-- Let `f : X ⟶ Y` be a morphism of pairs with `moduleMap f = (φ₀, φ₁)`. The map from
 `B_S ×_T (T ⊕ M)` to `B_{S'}` sending `x = (b, (s, m))` to `f₀(b) + μ·φ₀(m)` is multiplicative,
 where `f₀ = testMap f` and `μ·_` is `thickeningOver.mulMu`, induced by multiplication by
@@ -200,7 +196,6 @@ lemma map_base_add_mulMu_mul {X Y : HodgeTatePair} (f : X ⟶ Y) (x y : X.PairRi
     h_mulMu_mul_mulMu]
   ring
 
-seal PadicTest.genericAlg in
 /-- Let `f : X ⟶ Y` be a morphism of pairs with `moduleMap f = (φ₀, φ₁)`. The map from
 `B_S ×_T (T ⊕ M)` to `B_{S'}` sending `x = (b, (s, m))` to `f₀(b) + μ·φ₀(m)`, `f₀ = testMap f`, is
 additive; `map_base_add_mulMu_mul` says that it is multiplicative. -/
@@ -216,7 +211,6 @@ lemma map_fst_add_mulMu_add {X Y : HodgeTatePair} (f : X ⟶ Y) (x y : X.PairRin
       (PairRing.sqZero x).snd + (PairRing.sqZero y).snd := rfl
   rw [h_base, h_snd, map_add, map_add, Prod.fst_add, map_add, add_add_add_comm]
 
-seal PadicTest.genericAlg in
 /-- The functor (S, M) ↦ B_{S,M} = B_S ×_T (T ⊕ M) to k-algebras. A morphism (f, (φ₀, φ₁)) acts by
 (b, (s, m)) ↦ (f(b) + μ·φ₀(m), (f(s), φ₁(m))), where μ·_ is `thickeningOver.mulMu`; the first
 component is additive and multiplicative by `map_fst_add_mulMu_add` and `map_base_add_mulMu_mul`. -/
@@ -267,7 +261,6 @@ here multiplication by t on T, through its action on `New.Variety.genericCoeff`.
 instance : CoeffAction k scalarCoeff :=
   ⟨.comp ⟨(restrictAlong _).mapEnd _, rfl, by tauto⟩ CoeffAction.act⟩
 
-seal PadicTest.genericAlg in
 /-- The cocycle from Λ = ⋀_T M (`formCoeff`) to itself that assigns to a morphism (f, φ) with
 φ = (φ₀, φ₁) the map `New.Variety.contraction φ` : ⋀M → ⋀M', which contracts with φ₀ and applies
 φ₁ to the remaining factors. -/
@@ -301,7 +294,6 @@ def contractionPow : ℕ → TotalH formCoeff scalarCoeff
 abbrev wedgePairing : abTensor formCoeff formCoeff ⟶ formCoeff :=
   toHodgeTest.whiskerLeft exteriorAlg.mulPairing
 
-seal PadicTest.genericAlg in
 /-- The class `contractionPow h` is `k`-linear. For `t : k`, multiplication by `t` on `Λ = ⋀ M`
 (`CoeffAction.act t` on `hodgeCoeff`), followed by `contractionPow h`, is `t • contractionPow h`,
 where `k` acts on `F = T` by the `CoeffAction` instance on `scalarCoeff`. -/
@@ -333,7 +325,6 @@ lemma act_comp_contractionPow (t : k) (h : ℕ) :
         fun _ _ f ↦ ext fun x ↦ congrArg ULift.up (h_smul f x.down)
     rw [contractionPow, ← TotalH.comp_assoc_of_sq h_comm, ih, comp_smul]
 
-seal PadicTest.genericAlg in
 /-- On pairs `(S, M)` of a `p`-adic test `S` and a free module `M = T^n` over `T = S[1/p]`, let `Λ`
 be `(S, M) ↦ ⋀_T M`. `contractionPow h` is the class in total Ext from `Λ` to `(S, M) ↦ T` given by
 the `h`-th Yoneda power of the contraction class in `Ext¹(Λ, Λ)`, followed by the projection of

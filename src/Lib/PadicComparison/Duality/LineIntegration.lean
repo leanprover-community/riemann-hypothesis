@@ -706,8 +706,6 @@ lemma isFiniteLerayHirsch_iff_of_isCohomEquiv (α : N ⟶ N')
       (mapRange_bijective _ _ h_const) h_D
   exact (h_bij_iff.and h_const.finite_iff).symm
 
--- Without the seal, unification unfolds `Abelian.Ext` into the derived category and is slow.
-seal Abelian.Ext in
 /-- `D.IsFiniteLerayHirsch` passes to retracts by natural operations. Let `N` have flat values,
 write `N / ℓ` for `abCoker (ℓ • 𝟙 N)`, and let `r i : N / ℓ → N'` and `ρ i : N' → N` be operations
 without parameters (`NaturalOp 0`). If `∑ i, ρ i (r i x)` is always the pull-back of `x` along

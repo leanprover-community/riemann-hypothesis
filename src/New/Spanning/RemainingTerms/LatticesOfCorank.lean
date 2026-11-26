@@ -511,8 +511,6 @@ lemma sum_discWeightIfRowVanishes_eq_encard_mul [Fintype S.LatticeStabilizerCose
   refine Finset.sum_congr rfl fun φ _ ↦ ?_
   by_cases h_kills : S.RowVanishesModPiN u (y φ) L <;> simp [discWeightIfRowVanishes, h_kills]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let `S` be filling data over `E` with shape `𝔰`, and let `u` be in `Gf E 𝔰.κ`. The set
 `S.LatticeStabilizerCoset` is the quotient of `stdLevel`, the group of integral unitary matrices on
 `κ`, by its subgroup of matrices whose row `k₀` is congruent to that of `1` modulo `S.piN`. Let

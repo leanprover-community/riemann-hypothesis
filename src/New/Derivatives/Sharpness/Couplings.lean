@@ -563,8 +563,6 @@ lemma leastValLE_partnerDegree_of_isCouplingFamily [PadicPlace p] {J Φ : Type}
     leastValLE_of_copySubst (fun c k ↦ by fin_cases k <;> simp [couplingSubst, hδ_le, apply_ite (‖·‖), ite_le_one])
       (fun _ ↦ one_mem _) h_le
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 /-- Couplings. Let `C` be a CM lattice for a prime `d ≡ 7 mod 8`, let `θ` be the series over `ℂ_[p]`
 of its normalized theta function `C.θ`, let `p > 2` be inert in `ℚ(√-d)`, let the linear forms `μ`
 be integral, and let the theta product `Θ = C.thetaProd μ m = ∏ θ(μ_i z) ^ m i` have the normal form
