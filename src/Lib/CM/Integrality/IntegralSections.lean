@@ -117,15 +117,6 @@ lemma eq_zero_of_even_of_eq_theta_pow_mul_eval {P₀ P₁ : Polynomial ℂ} (hf_
       ← C.deriv_translatedX_sq hz, sq, mul_assoc, h_odd z hz, mul_zero]
   exact (mul_eq_zero_iff_left (mul_ne_zero Polynomial.X_ne_zero hQ_ne)).1 h_prod
 
-/-- An even section of degree `m` is `θ ^ m P(x)` off `t + Λ`, with `x = translatedX` and
-`2 i ≤ m` for every term `x ^ i` of `P`. -/
-lemma exists_eq_theta_pow_mul_eval_of_even (hf : f ∈ C.sections m) (hf_even : f.Even) :
-    ∃ P : Polynomial ℂ, (∀ i : ℕ, P.coeff i ≠ 0 → 2 * i ≤ m) ∧
-      ∀ z : ℂ, z + C.t ∉ C.Λ → f z = C.θ z ^ m * P.eval (C.translatedX z) := by
-  obtain ⟨P₀, P₁, h_deg, -, h_eq⟩ := C.exists_eq_theta_pow_mul_eval hf
-  obtain rfl : P₁ = 0 := C.eq_zero_of_even_of_eq_theta_pow_mul_eval hf_even h_eq
-  exact ⟨P₀, h_deg, fun z hz ↦ by simpa using h_eq z hz⟩
-
 lemma monomialDeg_sub_sub {i e : ℕ} (h_le : 2 * i + 3 * e ≤ m) :
     monomialDeg (m - 2 * i - 3 * e, i, e) = m := by
   grind
@@ -338,7 +329,10 @@ lemma exists_polynomial_of_even {f : ℂ → ℂ} {m : ℕ} (hf : f ∈ C.sectio
     ∃ R : Polynomial ℂ, C.IsIntegralEvenExpansion m f R := by
   obtain ⟨R, h_deg, h_eq⟩ : ∃ R : Polynomial ℂ, (∀ i : ℕ, R.coeff i ≠ 0 → 2 * i ≤ m) ∧
       ∀ z : ℂ, z + C.t ∉ C.Λ → f z = C.θ z ^ m * R.eval (C.translatedX z) :=
-    C.exists_eq_theta_pow_mul_eval_of_even hf hf_even
+    by
+      obtain ⟨P₀, P₁, h_deg, -, h_eq⟩ := C.exists_eq_theta_pow_mul_eval hf
+      obtain rfl : P₁ = 0 := C.eq_zero_of_even_of_eq_theta_pow_mul_eval hf_even h_eq
+      exact ⟨P₀, h_deg, fun z hz ↦ by simpa using h_eq z hz⟩
   -- This is the form `θ ^ m (P₀(x) + y P₁(x))` with `P₀ = R` and `P₁ = 0`.
   have hR_int : ∀ i : ℕ, ‖ιₚ (R.coeff i)‖ ≤ 1 :=
     (C.norm_coeff_le_one_of_norm_le_naiveHeight_pow (P₁ := 0) (by simpa using h_eq) h_le).left
