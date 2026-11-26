@@ -861,7 +861,7 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
 /-- The product datum `Ψ^×` at `x = (x' x″)`, with `x″` square: the datum `columnDatum` of the rows
 `w` on the columns of `x″` at `W_j`, times `ψ^inv_Λ (x')` if the other columns of `x″` are those of
 `1` (`FixesColsOff`), and `0` otherwise. -/
-def productDatum {a : Type} [Fintype a]
+def productDatum {a : Type}
     (w : Matrix a (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
     (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
     (x : Matrix (FirstFactorIndex j) (D.CarrierIndex ⊕ FirstFactorIndex j)
