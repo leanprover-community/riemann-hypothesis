@@ -696,7 +696,7 @@ private lemma vanishesAlong_of_map_pow_card_eq_zero [Algebra V k] {J : Type} [Fi
       rw [Nat.card_eq_fintype_card]
       exact pow_card_dvd_of_sections hT (θ_inj.comp Subtype.val_injective) Subtype.prop γ_unit
         (fun i ↦ (γ_t i.val i.property).symm.dvd) univ a fun i _ ↦ h_le i.val ha
-    exact zero_dvd_iff.mp (h_pow.symm.dvd.trans (map_dvd G h_dvd))
+    simpa only [h_pow, zero_dvd_iff] using! map_dvd G h_dvd
   simpa [VanishesAlong, eq_zero_iff_factors_zero_section, hz'] using (hI _).mp h_kill
 
 /-- A local equation for the closure of torsion sections. Let `x` over `k` be the pull-back of `y`
@@ -769,7 +769,7 @@ lemma exists_isLocalEquation_pow_sectionCount (e : y.FullLevelStructure)
       exists_dvd_pow_card_of_sections θ γ_unit fun i hi ↦ (γ_t i hi).dvd
     have hF_kill : G (γ.hom F) = 0 :=
       map_eq_zero_of_vanishesAlong_of_sections e hθ ψ h_sec hz' hu h_van hF_zero
-    exact zero_dvd_iff.mp (hF_kill.symm.dvd.trans (map_dvd G hF_dvd))
+    simpa only [hF_kill, zero_dvd_iff] using! map_dvd G hF_dvd
   · -- `vanishesAlong`: the equations of `ker ψ` are multiples of `t ^ N` on `z`.
     intro A hA ψ hψ h_ker B' hB' G h_pow
     exact vanishesAlong_of_map_pow_card_eq_zero e hθ θ_inj hT hz' γ_unit γ_t ψ h_ker h_pow
