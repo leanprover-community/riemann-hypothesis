@@ -529,8 +529,8 @@ lemma isotropicSpan_eq_map (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) :
     isotropicSpan M = (isotropicSpan 1).map M.mulVecLin := by
   rw [isotropicSpan, isotropicSpan, colSpan, colSpan, ← LinearMap.range_comp, ← mulVecLin_mul]
   congr 2
-  ext i a
-  simp [Matrix.mul_apply, Matrix.one_apply]
+  simpa only [frameImage, submatrix_submatrix, Function.comp_id, mul_one, submatrix_id_id] using
+    (Matrix.submatrix_mul M 1 id id (𝔰.besselFrame ∘ castSucc) Function.bijective_id)
 
 /-- A vector `y` lies in `γ A` if and only if `γ⁻¹ y` lies in `A`, the span of `e_1, …, e_ϱ`. -/
 lemma mem_isotropicSpan_coe {γ : S.G E} {y : 𝔰.BesselIndex → E} :
