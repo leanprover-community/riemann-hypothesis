@@ -267,9 +267,10 @@ lemma hasFewCocycles_of_isShortExact (h_ses : A.IsShortExact ι π) (hA : A.HasF
   refine ⟨⟨mul_pos hA_pos Nat.card_pos, mul_le_mul' hA_le (image_le.trans hC_le)⟩,
     fun h_attained ↦ ?_⟩
   -- If `#A ^ k * #C ^ k` is attained, neither factor can fall short of its bound.
-  have h_image : Nat.card (C.trivializedCocycles X I) ≤ Nat.card (map X I π).range := by
-    nlinarith [hA_pos, hA_le, hC_le]
-  exact ⟨eq_top_of_le_card _ h_image, by nlinarith [hC_pos, hC_le]⟩
+  have h_image : Nat.card (C.trivializedCocycles X I) ≤ Nat.card (map X I π).range :=
+    Nat.le_of_mul_le_mul_left ((Nat.mul_le_mul hA_le hC_le).trans h_attained) hA_pos
+  refine ⟨eq_top_of_le_card _ h_image, Nat.le_of_mul_le_mul_right ?_ hC_pos⟩
+  exact (Nat.mul_le_mul_left _ hC_le).trans (h_attained.trans (Nat.mul_le_mul_left _ image_le))
 
 end trivializedCocycles
 
