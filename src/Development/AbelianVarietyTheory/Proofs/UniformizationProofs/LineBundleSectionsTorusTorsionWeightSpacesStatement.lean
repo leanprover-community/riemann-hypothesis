@@ -139,7 +139,7 @@ theorem heisenberg_weightSpace_finrank :
     { toFun := fun t => (lam t : E →ₗ[F] E)
       map_one' := by ext v; simp
       map_mul' := by intro s t; ext v; simp }
-  obtain ⟨hfin, hint, -⟩ := finiteAbelian_weightDecomposition F (Nat.card A) ζ hpos
+  obtain ⟨hfin, hint⟩ := finiteAbelian_weightDecomposition F (Nat.card A) ζ hpos
     (IsUnit.mk0 _ hA) hζ T (fun t => Subtype.ext (by simp)) E ρ
   have hW : (fun c : T →* Fˣ => ⨅ t, LinearMap.ker (ρ t - (c t : F) • LinearMap.id)) = Wt := by
     funext c

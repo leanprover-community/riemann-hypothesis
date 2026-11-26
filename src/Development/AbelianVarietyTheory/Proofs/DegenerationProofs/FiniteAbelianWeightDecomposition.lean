@@ -93,13 +93,6 @@ theorem avg_apply (c : T →* oˣ) (x : M) :
     avg ρ u c x = u • ∑ t : T, (((c t)⁻¹ : oˣ) : o) • ρ t x := by
   simp [avg, LinearMap.sum_apply]
 
-theorem comm_avg (c : T →* oˣ) (s : T) (x : M) : ρ s (avg ρ u c x) = avg ρ u c (ρ s x) := by
-
-  simp only [avg_apply, map_smul, map_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun t _ => ?_
-  rw [← Module.End.mul_apply, ← map_mul, mul_comm s t, map_mul, Module.End.mul_apply]
-
 theorem apply_avg (c : T →* oˣ) (s : T) (x : M) :
     ρ s (avg ρ u c x) = (c s : o) • avg ρ u c x := by
 
@@ -140,22 +133,6 @@ theorem sum_avg [IsDomain o] [HasEnoughRootsOfUnity o (Monoid.exponent T)] [Fint
   first
   | (apply _root_.GlobalTheory.CharacterSumInverse.main <;> assumption)
 
-theorem baseChange_avg_of_weight (hu : u * (Fintype.card T : o) = 1) (A : Type) [CommRing A]
-    [Algebra o A] (c : T →* oˣ) (x : A ⊗[o] M)
-    (hx : ∀ t, (ρ t).baseChange A x = algebraMap o A (c t) • x) :
-    (avg ρ u c).baseChange A x = x := by
-  have h : ∀ y : A ⊗[o] M, (avg ρ u c).baseChange A y
-      = u • ∑ t : T, (((c t)⁻¹ : oˣ) : o) • (ρ t).baseChange A y := by
-    intro y
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a m => simp [avg_apply, TensorProduct.tmul_sum, TensorProduct.tmul_smul]
-    | add y z hy hz => simp only [map_add (f := _), hy, hz, smul_add, Finset.sum_add_distrib]
-  rw [h]
-  simp only [hx, algebraMap_smul, smul_smul, Units.inv_mul, one_smul, Finset.sum_const,
-    Finset.card_univ]
-  rw [← Nat.cast_smul_eq_nsmul o, smul_smul, hu, one_smul]
-
 end FiniteAbelianWeights
 
 
@@ -167,14 +144,7 @@ theorem finiteAbelian_weightDecomposition :
       [DecidableEq (T →* oˣ)],
       Finite (T →* oˣ) ∧
       DirectSum.IsInternal
-        (fun c : T →* oˣ => ⨅ t, LinearMap.ker (ρ t - (c t : o) • LinearMap.id)) ∧
-      (∀ (T' : Subgroup T) (c' : T' →* oˣ),
-        (⨅ t : T', LinearMap.ker (ρ t - (c' t : o) • LinearMap.id)) =
-          ⨆ c : {c : T →* oˣ // c.comp T'.subtype = c'},
-            ⨅ t, LinearMap.ker (ρ t - (c.1 t : o) • LinearMap.id)) ∧
-      ∀ (A : Type) [CommRing A] [Algebra o A] (c : T →* oˣ),
-        (⨅ t, LinearMap.ker ((ρ t).baseChange A - (algebraMap o A (c t)) • LinearMap.id)) =
-          (⨅ t, LinearMap.ker (ρ t - (c t : o) • LinearMap.id)).baseChange A := by
+        (fun c : T →* oˣ => ⨅ t, LinearMap.ker (ρ t - (c t : o) • LinearMap.id)) := by
   intro o _ _ N ζ hN hNu hζ T _ _ hT M _ _ ρ _
   classical
   haveI : NeZero N := ⟨hN.ne'⟩
@@ -198,7 +168,7 @@ theorem finiteAbelian_weightDecomposition :
   have hmem : ∀ (c : T →* oˣ) (x : M),
       avg ρ u c x ∈ ⨅ t, LinearMap.ker (ρ t - (c t : o) • LinearMap.id) := fun c x =>
     (mem_weightSpace_iff (fun t => ρ t) (fun t => (c t : o)) _).2 fun t => apply_avg ρ u c t x
-  refine ⟨hfin, ?_, ?_, ?_⟩
+  refine ⟨hfin, ?_⟩
   · rw [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top]
     constructor
     · intro c
@@ -216,53 +186,6 @@ theorem finiteAbelian_weightDecomposition :
       intro x _
       rw [← sum_avg ρ u hu x]
       exact Submodule.sum_mem _ fun c _ => Submodule.mem_iSup_of_mem c (hmem c x)
-  · intro T' c'
-    apply le_antisymm
-    · intro x hx
-      have hx' := (mem_weightSpace_iff (fun t : T' => ρ t) (fun t => (c' t : o)) _).1 hx
-      rw [← sum_avg ρ u hu x]
-      refine Submodule.sum_mem _ fun c _ => ?_
-      by_cases hc : c.comp T'.subtype = c'
-      · exact Submodule.mem_iSup_of_mem
-          (⟨c, hc⟩ : {c : T →* oˣ // c.comp T'.subtype = c'}) (hmem c x)
-      · haveI := Fintype.ofFinite T'
-        obtain ⟨v, hv⟩ := hunit T' fun g => Subtype.ext (by simpa using hT g)
-        let ρ' : Representation o T' M := ρ.comp T'.subtype
-        have h1 : avg ρ' v c' (avg ρ u c x) = avg ρ u c x :=
-          avg_of_weight ρ' v hv c' _ fun t => by
-            change ρ t (avg ρ u c x) = _
-            rw [comm_avg, hx' t, map_smul]
-        have h2 : avg ρ' v c' (avg ρ u c x) = 0 :=
-          avg_of_weight_ne ρ' v c' (c.comp T'.subtype) hc _ fun t => apply_avg ρ u c t x
-        rw [← h1, h2]
-        exact Submodule.zero_mem _
-    · refine iSup_le fun c x hx => ?_
-      obtain ⟨c, rfl⟩ := c
-      have hx' := (mem_weightSpace_iff (fun t => ρ t) (fun t => (c t : o)) _).1 hx
-      exact (mem_weightSpace_iff (fun t : T' => ρ t)
-        (fun t => (c.comp T'.subtype t : o)) _).2 fun t => hx' t
-  · intro A _ _ c
-    apply le_antisymm
-    · intro x hx
-      have hx' := (mem_weightSpace_iff (fun t => (ρ t).baseChange A)
-        (fun t => algebraMap o A (c t)) _).1 hx
-      rw [← baseChange_avg_of_weight ρ u hu A c x hx']
-      clear hx hx'
-      induction x using TensorProduct.induction_on with
-      | zero => simp
-      | tmul a m =>
-        rw [LinearMap.baseChange_tmul]
-        exact Submodule.tmul_mem_baseChange_of_mem a (hmem c m)
-      | add y z hy hz =>
-        rw [map_add (f := _)]
-        exact Submodule.add_mem _ hy hz
-    · rw [Submodule.baseChange_eq_span, Submodule.span_le]
-      rintro _ ⟨m, hm, rfl⟩
-      have hm' := (mem_weightSpace_iff (fun t => ρ t) (fun t => (c t : o)) _).1 hm
-      refine (mem_weightSpace_iff (fun t => (ρ t).baseChange A)
-        (fun t => algebraMap o A (c t)) _).2 fun t => ?_
-      simp only [TensorProduct.mk_apply, LinearMap.baseChange_tmul, hm', algebraMap_smul,
-        TensorProduct.tmul_smul]
 
 end GlobalTheory
 end -- clump:auto
