@@ -68,8 +68,6 @@ namespace New.ThetaTori.ThetaTorus
 open Module Submodule NNReal Variety ThetaNull MvPolynomial Complex Function NumberField Finset
   Fintype thetaSpace Finite LatticeForm PeriodMap
 
-attribute [local instance low] Fintype.ofFinite
-
 variable {V E k K : Type} [FinComplexSpace V]
   {v : Valuation ℂ ℝ≥0} [Field E] [CMBase E]
   {D : PEL E} {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ}
