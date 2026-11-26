@@ -384,7 +384,7 @@ lemma exists_colLattice_fromCols_eq {n : Type} [Fintype n] {M : Submodule (Ô E)
       colLattice (Ô E) (fromCols C reps) = M := by
   classical
   let K : AddSubgroup M.toAddSubgroup := (colLattice (Ô E) C).toAddSubgroup.addSubgroupOf _
-  have : Fintype (M.toAddSubgroup ⧸ K) := AddSubgroup.fintypeOfIndexNeZero h_index
+  let : Fintype (M.toAddSubgroup ⧸ K) := AddSubgroup.fintypeOfIndexNeZero h_index
   let reps : Matrix n (M.toAddSubgroup ⧸ K) (𝔸f E) := of fun i q ↦ q.out.val i
   refine ⟨_, inferInstance, reps, le_antisymm (colLattice_le ?_) fun v hv ↦ ?_⟩
   · rintro (j | q)
@@ -654,7 +654,7 @@ lemma IsLatticeOfRank.exists_eq_colLattice_sublatticeBasis_mul {L : Submodule (�
   set S : Matrix κ (Fin (finrank E W)) (𝔸f E) := (sublatticeBasis h_left_inv W).val with hS
   obtain ⟨T, hT : y * T = x⟩ := exists_mul_eq_of_range_le fun i ↦
     hy_span.ge (hW.le ⟨Pi.single i 1, x.mulVec_single_one i⟩)
-  have ⟨xInv, hxInv⟩ := hx
+  let ⟨xInv, hxInv⟩ := hx
   have hT_unit : IsUnit T := .of_mul_eq_one_right (xInv * y) (by rw [Matrix.mul_assoc, hT, hxInv])
   let A : GL (Fin (finrank E W)) (𝔸f E) :=
     b⁻¹ * GeneralLinearGroup.map (algebraMap E (𝔸f E)) hT_unit.unit * a
