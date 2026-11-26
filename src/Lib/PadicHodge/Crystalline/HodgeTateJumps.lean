@@ -620,7 +620,10 @@ lemma jump_eq_of_pairing [Module R T'] {σ : Representation R Γ T'} (hρ : IsPo
           (M.map γ *ᵥ P.val.col i) l =
         (χ g ^ c).val • toGp g • P.val l i := by
       rw [← Pi.smul_apply, ← Matrix.mulVec_smul, ← hg i, mulVec_mulVec, ← Matrix.map_mul, h_mul]
-      simp [mulVec_apply_eq_sum, Matrix.one_apply, apply_ite]
+      simp only [MonoidHom.coe_comp, Function.comp_apply, mulVec_apply_eq_sum, map_apply,
+        Matrix.smul_apply, Matrix.one_apply, apply_ite, smul_zero, _root_.map_smul, map_one,
+        map_zero, Pi.smul_apply, col_apply, ite_mul, Algebra.smul_mul_assoc, one_mul, zero_mul,
+        Finset.sum_ite_eq, mem_univ, ↓reduceIte]
     have h_entry : (P.valᵀ * ((σ g).toMatrix w w).map γ) i l = (M.map γ *ᵥ P.val.col i) l := by
       rw [h_transpose, transpose_map, ← transpose_mul]
       rfl
