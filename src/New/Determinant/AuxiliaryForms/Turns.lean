@@ -217,14 +217,17 @@ lemma newRow_newTuple : c.newRow (c.newTuple S x v') = v' := by simp [newRow, ne
 
 namespace IsTurn
 
-lemma low_notMem (hc : c.IsTurn ϑ w) : (c.low, c.fst) ∉ w := by grind [→ hc.endpoints_notMem]
+lemma low_notMem (hc : c.IsTurn ϑ w) : (c.low, c.fst) ∉ w :=
+  fun h ↦ (hc.endpoints_notMem _ h).1 (by simp)
 
-lemma lowExt_notMem (hc : c.IsTurn ϑ w) : (c.lowExt, c.snd) ∉ w := by grind [→ hc.endpoints_notMem]
+lemma lowExt_notMem (hc : c.IsTurn ϑ w) : (c.lowExt, c.snd) ∉ w :=
+  fun h ↦ (hc.endpoints_notMem _ h).1 (by simp)
 
-lemma high_notMem (hc : c.IsTurn ϑ w) : (c.fst, c.high) ∉ w := by grind [→ hc.endpoints_notMem]
+lemma high_notMem (hc : c.IsTurn ϑ w) : (c.fst, c.high) ∉ w :=
+  fun h ↦ (hc.endpoints_notMem _ h).2 (by simp)
 
-lemma highExt_notMem (hc : c.IsTurn ϑ w) : (c.snd, c.highExt) ∉ w := by
-  grind [→ hc.endpoints_notMem]
+lemma highExt_notMem (hc : c.IsTurn ϑ w) : (c.snd, c.highExt) ∉ w :=
+  fun h ↦ (hc.endpoints_notMem _ h).2 (by simp)
 
 lemma oldTuple_apply_of_mem (hc : c.IsTurn ϑ w) {e : GridNode × GridNode} (he : e ∈ w) :
     c.oldTuple S y v e = S e := by
