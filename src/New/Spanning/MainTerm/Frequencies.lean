@@ -2,6 +2,7 @@ module
 
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.General.Analysis.PackingAndSobolev
+import TauCeti.NumberTheory.NumberField.FractionalIdeal
 
 /-!
 # Sums over frequencies
@@ -60,39 +61,38 @@ lemma exists_mem_algebraMap_eq_mul {a : 𝓞 E} {𝔟 𝔠 : Ideal (𝓞 E)} (h�
   exact Ideal.mem_span_singleton'.2 ⟨y, RingOfIntegers.coe_injective <| by
     simp only [map_mul, hx, hy, mul_assoc, mul_left_comm, mul_comm]⟩
 
+open scoped nonZeroDivisors in
 /-- For a nonzero ideal `𝔟`, the numbers `ν` whose denominator (the ideal of the integers `a`
 with `a ν` integral) contains `𝔟` can be given `N 𝔟` labels so that two numbers with the same
 label differ by an algebraic integer. -/
 lemma exists_coset_label {𝔟 : Ideal (𝓞 E)} (h𝔟 : 𝔟 ≠ ⊥) :
     ∃ label : E → Fin (Ideal.absNorm 𝔟), ∀ ν ν' : E,
       𝔟 ≤ denominator ν → 𝔟 ≤ denominator ν' → label ν = label ν' → IsIntegral ℤ (ν - ν') := by
-  -- Write `(a) = 𝔟 𝔠` with `a ≠ 0`. Multiplication by `a` maps these numbers into `𝔠` and the
-  -- integers onto `(a)`, and `𝔠 / (a)` has `N 𝔟` elements.
-  obtain ⟨a, ha, ha_ne⟩ := (Submodule.ne_bot_iff 𝔟).1 h𝔟
-  obtain ⟨𝔠, h𝔠⟩ : 𝔟 ∣ Ideal.span {a} := Ideal.dvd_span_singleton.2 ha
-  have h_mul (ν : E) (hν : 𝔟 ≤ denominator ν) :
-      ∃ x : 𝔠, algebraMap (𝓞 E) E (x : 𝓞 E) = algebraMap (𝓞 E) E a * ν :=
-    exists_mem_algebraMap_eq_mul h𝔟 h𝔠 hν
-  choose! x hx using h_mul
-  let A : AddSubgroup 𝔠 := (Ideal.span {a}).toAddSubgroup.addSubgroupOf 𝔠.toAddSubgroup
-  have h_index : A.index = Ideal.absNorm 𝔟 := by
-    -- the norm of an ideal is the index of its additive group
-    have h_tower : A.index * Ideal.absNorm 𝔠 = Ideal.absNorm (Ideal.span {a}) := by
-      rw [Ideal.absNorm_apply, Ideal.absNorm_apply]
-      exact AddSubgroup.relIndex_mul_index (h𝔠.trans_le Ideal.mul_le_right)
-    have h𝔠_ne : 𝔠 ≠ ⊥ := fun h_bot ↦ ha_ne (by simpa [h_bot] using h𝔠)
-    simpa [h𝔠, Ideal.absNorm_eq_zero_iff, h𝔠_ne] using h_tower
-  have : Finite (𝔠 ⧸ A) := AddSubgroup.index_ne_zero_iff_finite.1 <| by
-    rwa [h_index, Ne, Ideal.absNorm_eq_zero_iff]
-  let e : 𝔠 ⧸ A ≃ Fin (Ideal.absNorm 𝔟) := Finite.equivFinOfCardEq h_index
-  refine ⟨fun ν : E ↦ e (QuotientAddGroup.mk (x ν)), fun ν ν' hν hν' h_label ↦ ?_⟩
-  have h_mem : x ν - x ν' ∈ A := QuotientAddGroup.eq_iff_sub_mem.1 (e.injective h_label)
-  obtain ⟨t, ht⟩ : ∃ t : 𝓞 E, t * a = x ν - x ν' :=
-    Ideal.mem_span_singleton'.1 (AddSubgroup.mem_addSubgroupOf.1 h_mem)
-  have h_eq : algebraMap (𝓞 E) E a * algebraMap (𝓞 E) E t = algebraMap (𝓞 E) E a * (ν - ν') := by
-    rw [mul_comm, ← map_mul, ht, map_sub, hx ν hν, hx ν' hν', mul_sub]
-  rw [← mul_left_cancel₀ (by simpa using ha_ne) h_eq]
-  exact t.isIntegral_coe
+  classical
+  let J := (𝔟 : FractionalIdeal (𝓞 E)⁰ E)⁻¹
+  have mem_inverse {x : E} (hx : 𝔟 ≤ denominator x) : x ∈ J := by
+    apply (FractionalIdeal.mem_inv_iff (FractionalIdeal.coeIdeal_ne_zero.mpr h𝔟)).2
+    intro y hy
+    obtain ⟨a, ha, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).mp hy
+    exact (FractionalIdeal.mem_one_iff _).2 ⟨⟨_, hx ha⟩, mul_comm _ _⟩
+  let u : (J : Submodule (𝓞 E) E) := ⟨1, FractionalIdeal.one_mem_inv_coeIdeal h𝔟⟩
+  -- The multiples of 1 form the copy of the integer ring in the inverse ideal.
+  let A := Submodule.span (𝓞 E) {u}
+  have hu : u ≠ 0 := fun h ↦ one_ne_zero (congrArg Subtype.val h)
+  have hc : A.cardQuot = 𝔟.absNorm := by
+    apply Nat.cast_injective (R := ℚ)
+    simpa [A, u, J, FractionalIdeal.coeIdeal_absNorm] using
+      (NumberField.cardQuot_span_singleton_fractionalIdeal (I := J) hu)
+  have : Finite (↥(J : Submodule (𝓞 E) E) ⧸ A) := Nat.finite_of_card_ne_zero (by
+    simpa [← Submodule.cardQuot_apply, hc, Ideal.absNorm_eq_zero_iff] using h𝔟)
+  let e : ↥(J : Submodule (𝓞 E) E) ⧸ A ≃ Fin 𝔟.absNorm := Finite.equivFinOfCardEq hc
+  -- Extend the quotient label to the whole field.
+  let point (x : E) : (J : Submodule (𝓞 E) E) := if h : x ∈ J then ⟨x, h⟩ else 0
+  refine ⟨fun x ↦ e (Submodule.Quotient.mk (point x)), fun x y hx hy hxy ↦ ?_⟩
+  obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.mp ((Submodule.Quotient.eq A).mp (e.injective hxy))
+  have heq : (a : E) = x - y := by
+    simpa [u, point, mem_inverse hx, mem_inverse hy, Algebra.smul_def] using congrArg Subtype.val ha
+  exact heq ▸ a.isIntegral_coe
 
 /-- The sum of `Ideal.absNorm 𝔟 ^ (-2)` over a finite set `s` of ideals of the ring of integers of
 `E` is at most `exp (2 [E : ℚ])`, where `[E : ℚ] = Module.finrank ℚ E`: it is at most the value at
