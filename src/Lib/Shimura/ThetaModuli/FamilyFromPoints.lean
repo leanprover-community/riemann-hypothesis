@@ -817,8 +817,13 @@ lemma Variety.hasClassLaws_picClass
   let cl (u : T ⟶ A) : Pic T.left := N.picClass.atPoint u
   have h_sum : ∑ l, cl (lift y z ≫ ψ (doubledCoeffs (paddingTuple a d) (paddingTuple 1 0) l)) =
       ∑ l, cl (lift y z ≫ ψ (doubledCoeffs (paddingTuple 1 0) (paddingTuple a d) l)) := by
-    simpa [-lift_left, ← pull_comp, cl, Pic.atPoint, hGψ] using
-      congrArg (Pic.pull (lift y z).left) hG_class
+    rw [picClass_pi, picClass_pi] at hG_class
+    have h := congrArg (Pic.pull (lift y z).left) hG_class
+    rw [map_sum, map_sum] at h
+    refine (Finset.sum_congr rfl fun l _ ↦ ?_).trans (h.trans (Finset.sum_congr rfl fun l _ ↦ ?_))
+    · rw [← hGψ l]
+      exact (Pic.pull_comp (G l).left (lift y z).left N.picClass)
+    · exact (Pic.pull_comp _ (lift y z).left N.picClass).symm
   -- Term by term this is the required relation, with the same extra terms on both sides.
   simp [cl, ψ, doubledCoeffs, paddingTuple, comp_add, ← sub_eq_add_neg] at h_sum
   linear_combination (norm := abel) h_sum
