@@ -349,16 +349,6 @@ lemma Core.exists_form_eq_one [HasPrimitiveRoot5040 E]
       + (star α * β - star β * β * B) * hB + (form v u - B) * h_cross
   exact ⟨w, ext fun _ _ ↦ by simpa only [form, Matrix.mul_assoc, Matrix.one_apply_eq] using h_norm⟩
 
-/-- If `uᴴ u = 1`, and `u` and `uᴴ` are eigenvectors of `D` with eigenvalue `c`, then shearing by
-`1 + u ρ` adds `c (u ρ + (u ρ)ᴴ + ρᴴ ρ)` to `D`. -/
-private lemma Core.conjTranspose_one_add_mul_mul_self {R : Type*} [CommRing R] [StarRing R] {c : R}
-    {D : Matrix n n R} {u : Matrix n Unit R} (hu : uᴴ * u = 1) (h_column : D * u = c • u)
-    (h_row : uᴴ * D = c • uᴴ) (ρ : Matrix Unit n R) :
-    (1 + u * ρ)ᴴ * D * (1 + u * ρ) = D + c • (u * ρ + (u * ρ)ᴴ + ρᴴ * ρ) := by
-  simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, ← Matrix.mul_assoc D u,
-    ← Matrix.mul_assoc uᴴ u, h_column, h_row, hu]
-  abel
-
 /-- Let `J` be hermitian, `c * c = 1`, `wᴴ (c J) w = 1`, and let `J'` be `J` projected to the
 orthogonal complement of `w`. For a matrix `A` there is `A'`, namely `A` with its columns projected
 to that complement and `w` added to column `j`, with `A'ᴴ J A' = Aᴴ J' A + c eⱼ eⱼᵀ`. -/
@@ -431,8 +421,10 @@ lemma Core.exists_rat_frame_of_adelic (t : Finset n) {J : Matrix n n E} {X : Mat
         (∑ i ∈ t, Matrix.single i i (s i : 𝔸 E)) + toAdele c • (rᴴ * (aᴴ * a) * r) :=
       calc _ = (1 + u * ρ)ᴴ * D * (1 + u * ρ) := by
             simp [← hX, X', Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-        _ = D + toAdele c • (u * ρ + (u * ρ)ᴴ + ρᴴ * ρ) :=
-            conjTranspose_one_add_mul_mul_self hu h_column h_row ρ
+        _ = D + toAdele c • (u * ρ + (u * ρ)ᴴ + ρᴴ * ρ) := by
+            simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, ← Matrix.mul_assoc D u,
+              ← Matrix.mul_assoc uᴴ u, h_column, h_row, hu]
+            abel
         _ = _ := by
             simp [hD, ρ, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
             abel
