@@ -91,6 +91,10 @@ lemma New.isCompact_maxCompact : IsCompact (maxCompact E s : Set (G E s)) := by
     isCompact_iff_compactSpace.2 (inferInstanceAs (CompactSpace (maxCompactU s)))
   exact (isCompact_univ_pi fun _ ↦ h_inf).prod isCompact_stdLevel
 
+/-- The maximal compact subgroup is closed, so `locallyCompactSpace_of_isClosed` applies. -/
+instance New.isClosed_maxCompact : IsClosed (maxCompact E s : Set (G E s)) :=
+  isCompact_maxCompact.isClosed
+
 /-- An element of the adelic unitary group lies in the maximal compact subgroup exactly when its
 matrix has orthonormal columns at every infinite place and integral finite entries
 (`New.Exchange.IsOrthoIntegral`). -/
