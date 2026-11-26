@@ -173,7 +173,6 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotio
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
 
 
-set_option maxHeartbeats 1000000 in
 theorem coreAt_of (C : ℝ) (hg : GramAt p i) (hm : MeasAt p i C) (hr : RatAt p i) : CoreAt p i (2 * C) := by
   obtain ⟨ι, hι, hli, himg⟩ := _root_.GlobalTheory.CovTop.SupImage.exists_emb_image_latW _ _ _ _ _ p.T p.R.toRealDat p.κ p.v₀ p.fw i
   have hTC : IsTotallyComplex p.T.Q.c.F := ⟨fun v => by
@@ -1180,8 +1179,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
-
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
@@ -1517,8 +1514,7 @@ theorem sum_deg_div_le_mu : ∀ (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toC
   rcases Nat.eq_zero_or_pos (rankW Y.U (wtOf (T.Q.Dw j) la 0)) with h0 | h0
   · rw [h0, Nat.cast_zero, div_zero, mul_zero]
     obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact slope_sq_nonneg_of_rk_zero _ _ hG.2.1 h0 (log_two_le D _ (τ.codRestrict Y.d.c₂.F (Y.d.c₂.conj τ)))
+    exact slope_sq_nonneg_of_rk_zero _ _ hG.2.1 h0 (log_two_le D _ (τ.codRestrict Y.d.c₂.F (Y.d.c₂.conj τ)))
   · have hp : (0 : ℝ) < rankW Y.U (wtOf (T.Q.Dw j) la 0) := by exact_mod_cast h0
     rw [degW_eq] at h2
     rw [← mul_div_assoc, div_le_iff₀ hp]

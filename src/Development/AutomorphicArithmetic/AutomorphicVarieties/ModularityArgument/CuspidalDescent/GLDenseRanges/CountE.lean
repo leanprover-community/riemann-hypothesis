@@ -733,8 +733,7 @@ private theorem rank_eq {R : Representation ℂ G X} {Gi Gf : Subgroup G} {τ : 
       refine sum_zero (R := R) hτ b (fun i => R k ∘ₗ Φ i - Φ i) (fun i => sub_mem (fun y hy v => ?_) (a1 i)) ?_ j
       · rw [LinearMap.comp_apply, LinearMap.comp_apply, ← a1 i y hy, ← Module.End.mul_apply, ← map_mul,
           ← hcm k k.2 y hy, map_mul, Module.End.mul_apply]
-      · set_option synthInstance.maxHeartbeats 100000 in
-          simp only [LinearMap.sub_apply, LinearMap.comp_apply, Finset.sum_sub_distrib, ← map_sum]
+      · simp only [LinearMap.sub_apply, LinearMap.comp_apply, Finset.sum_sub_distrib, ← map_sum]
         rw [((hN _).1 hφ).2 k hk, sub_self]
     choose F hF hF' using fun j => hsur (Φ j) (a1 j) fun v =>
       (hN _).2 ⟨a2 j v, fun k hk => LinearMap.congr_fun (sub_eq_zero.1 (hfix k hk j)) v⟩

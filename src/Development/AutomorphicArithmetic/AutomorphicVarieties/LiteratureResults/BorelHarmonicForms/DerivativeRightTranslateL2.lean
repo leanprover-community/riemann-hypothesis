@@ -245,7 +245,6 @@ def CasPi : Prop :=
 def CasXi : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (n : ℕ) (e : Fin n → Herm E a), IsFrame e → ∀ (Ξ : AlgRep E a) (r : ℝ), ∃ c : ℂ, cas (shift Ξ.dmat r) e = c • (1 : Matrix (Fin Ξ.d) (Fin Ξ.d) ℂ)
 
-set_option synthInstance.maxHeartbeats 100000 in
 def CasTens : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (n : ℕ) (e : Fin n → Herm E a), IsFrame e → ∀ (π : CuspSub E a) (Ξ : AlgRep E a) (r : ℝ), ∃ c : ℂ, ∀ m,
     (cas (A := Module.End ℂ (π.V ⊗[ℂ] (Fin Ξ.d → ℂ))) (shift (lieB π Ξ) (-r)) e - cas (A := Module.End ℂ (π.V ⊗[ℂ] (Fin Ξ.d → ℂ))) (shift (lieA π Ξ) r) e) m = c • m

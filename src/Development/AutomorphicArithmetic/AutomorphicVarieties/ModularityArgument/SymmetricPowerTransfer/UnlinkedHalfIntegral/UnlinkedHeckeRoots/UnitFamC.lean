@@ -247,8 +247,7 @@ private lemma good_eis (hl : l ≠ 2) (hN : 3 ≤ N) (hlN : ¬ l ∣ N) (k : ℕ
     · rw [eis_coef0 hN k hk]
       refine (lkSep l hl N (by omega) hlN).1 k _ (rt_powN _) fun h => rt_sq (ι := ι) hN a ?_
       rw [h, one_pow]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [(eisCoef N k hk a (unit_ne_zero hN a)).2 n hn, map_sum]
+    · rw [(eisCoef N k hk a (unit_ne_zero hN a)).2 n hn, map_sum]
       refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun e _ => ?_
       have hr : ∀ b : ZMod N, ‖ι.symm (ZMod.stdAddChar b : ℂ)‖ = 1 := fun b => rt_norm (ι := ι) b
       rw [map_mul ι.symm, norm_mul, map_pow ι.symm, map_natCast ι.symm, norm_pow, map_add ι.symm, map_mul ι.symm]

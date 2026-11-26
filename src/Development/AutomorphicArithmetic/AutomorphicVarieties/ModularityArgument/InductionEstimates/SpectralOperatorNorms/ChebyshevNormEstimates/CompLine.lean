@@ -256,8 +256,7 @@ private theorem reps_finsum {K : Type} [Field K] [NumberField K] {n : ℕ} (μ :
   induction s using Finset.induction_on with
   | empty =>
     filter_upwards [MeasureTheory.QuasiMeasurePreserving.ae (quasiMeasurePreserving_mk (Gam K n) μ) (Lp.coeFn_zero ℂ 2 (quotientMeasure (Gam K n) μ))] with y e
-    set_option synthInstance.maxHeartbeats 100000 in
-      simpa using e
+    simpa using e
   | insert i s hi ih =>
     rw [Finset.sum_insert hi]
     filter_upwards [MeasureTheory.QuasiMeasurePreserving.ae (quasiMeasurePreserving_mk (Gam K n) μ) (Lp.coeFn_add (v i) (∑ j ∈ s, v j)), ih, h i] with y e1 e2 e3

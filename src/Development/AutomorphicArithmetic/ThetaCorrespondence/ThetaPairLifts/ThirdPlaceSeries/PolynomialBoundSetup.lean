@@ -1040,8 +1040,7 @@ theorem row_bound : ∀ (D : D7) (r : ∀ i : D.nd.Loc, D.nd.X i → (GE D.nd �
     have h := ((hLit i hi).2.2.1 w hw).2.2
     unfold Br.DegW at h
     rw [← h, ← he]
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact (Module.finrank_mul_finrank _ _ _).symm
+    exact (Module.finrank_mul_finrank _ _ _).symm
   have hT := hA (D.nd.l i) hl2 _ _ hG
   have hη := large₂.etaSz_pos
   have hS := large₂.Sc_pos

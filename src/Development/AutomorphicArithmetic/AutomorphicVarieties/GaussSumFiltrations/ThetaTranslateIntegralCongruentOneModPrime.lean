@@ -623,8 +623,7 @@ theorem good_wT : ∀ (F : Type) [Field F] [NumberField F] (p : ℕ) [Fact p.Pri
     · rfl
   · unfold wT
     split_ifs with h
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_mul, norm_mul, map_sum]
+    · rw [map_mul, norm_mul, map_sum]
       refine mul_le_one₀ hC1 (norm_nonneg _) ?_
       refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun x _ => ?_
       rw [map_mul, norm_mul, norm_et, mul_one]

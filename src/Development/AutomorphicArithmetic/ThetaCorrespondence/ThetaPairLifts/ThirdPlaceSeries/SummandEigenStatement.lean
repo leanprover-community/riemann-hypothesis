@@ -386,8 +386,7 @@ theorem rtSum_iso {ρ : Representation ℂ (GQ L n) W} {S S' : Submodule ℂ (GA
   have hσ : (σ : GAf L n → W) = ∑ γ ∈ R, NG.rt L n γ f := by
     rw [Submodule.coe_sum]
   have hTσ : ((T σ : S') : GAf L n → W) = ∑ γ ∈ R, NG.rt L n γ f' := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Submodule.coe_sum]
+    rw [map_sum, Submodule.coe_sum]
     exact Finset.sum_congr rfl fun γ _ => hrt γ
   have key : σ = c • f := Subtype.ext (by rw [hσ, Submodule.coe_smul]; exact hcf)
   have h3 := congrArg (fun y => ((T y : S') : GAf L n → W)) key

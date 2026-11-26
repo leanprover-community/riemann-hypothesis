@@ -50,8 +50,7 @@ private theorem lev_rt (g : GA E a) (ψ : Sm E a) (h : HasLev ψ) : HasLev (rt E
 private theorem supp_lie (X : Lie E a) (ψ : Sm E a) (h : HasCompactSupport ψ.1) :
     HasCompactSupport (lie E a X ψ).1 := by
   obtain ⟨c, c0, -, ccont, cder, -⟩ := UpperTheory.V.Lit.Bor.oneParam E a X
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine HasCompactSupport.intro h fun g hg => ?_
+  refine HasCompactSupport.intro h fun g hg => ?_
   have hd := GlobalTheory.CuspRep.hasDerivAt_curve ψ g c X c0 cder
   have hc : Continuous fun t : ℝ => g * infGL E a (c t) := continuous_const.mul ccont
   have ht : Tendsto (fun t : ℝ => g * infGL E a (c t)) (𝓝 0) (𝓝 g) := by

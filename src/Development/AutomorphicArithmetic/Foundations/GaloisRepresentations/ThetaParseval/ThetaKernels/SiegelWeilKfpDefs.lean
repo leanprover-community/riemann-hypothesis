@@ -86,7 +86,6 @@ end
 
 /-! # SiegelWeilKfpDefs: Consolidated global theta-kernel definitions and proofs (SiegelWeilKfpDefs). -/
 @[expose] public section
-set_option synthInstance.maxHeartbeats 200000
 noncomputable section
 
 open scoped TensorProduct NNReal Matrix SchwartzMap Classical InnerProductSpace

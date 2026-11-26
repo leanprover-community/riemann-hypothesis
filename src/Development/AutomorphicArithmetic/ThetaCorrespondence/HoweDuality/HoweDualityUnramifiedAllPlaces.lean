@@ -1695,11 +1695,9 @@ theorem stageVp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
       · simp only [dite_eq_left h]; exact (φ j ⟨v, h⟩).2
       · simp only [dite_eq_right h]; exact (hg.hM'.vac v).1
     · simp
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+    · rw [map_sum]
       exact Finset.sum_congr rfl fun j _ => hL _ _ _ (fun v h => by simp only [dite_eq_left h]) (fun v h => by simp only [dite_eq_right h])
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [LinearMap.mem_ker, map_sum] at ht0
+    · rw [LinearMap.mem_ker, map_sum] at ht0
       rw [Fin.sum_univ_zero, ← ht0]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [TensorProduct.map_tmul, PiTensorProduct.map_tprod]

@@ -41,8 +41,7 @@ theorem UpperTheory.ConvolutionTheory.Tf.tensCont :
       (β.hasCompactSupport.isCompact.prod e.hasCompactSupport.isCompact).image
         ((continuous_archP.comp continuous_fst).mul
           (MultiplicityOne.continuous_finProj.comp continuous_snd))
-    set_option synthInstance.maxHeartbeats 200000 in
-      refine HasCompactSupport.intro hC fun x hx => ?_
+    refine HasCompactSupport.intro hC fun x hx => ?_
     by_contra hne
     obtain ⟨a, ha, h, hh, rfl⟩ := key x hne
     exact hx ⟨(a, h), ⟨ha, hh⟩, rfl⟩

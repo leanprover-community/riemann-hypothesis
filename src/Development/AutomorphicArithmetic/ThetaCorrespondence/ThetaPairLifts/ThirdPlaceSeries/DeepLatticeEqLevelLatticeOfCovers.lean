@@ -95,7 +95,6 @@ open GlobalTheory.LevDesc (transl)
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FieldBC
 
 
-set_option maxHeartbeats 1000000 in
 theorem mem_span_pull_iff : ∀ (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), LawsJ T → InR D j → Y.Good e o → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → ∀ (G : Type) [Group G] (lev : G → (T.Q.Dw j).La →ₗ[𝓞 D.host.E] (T.Q.Dw j).La), ActLev (Xo := T.Q.Xo j) T.Q.c (fun g => (lev g, (LinearMap.id : (T.Q.Dw j).La →ₗ[𝓞 D.host.E] (T.Q.Dw j).La))) → (∀ g, ∀ f ∈ T.cuspA j a n, actLev (Xo := T.Q.Xo j) T.Q.c (fun g => (lev g, (LinearMap.id : (T.Q.Dw j).La →ₗ[𝓞 D.host.E] (T.Q.Dw j).La))) g f ∈ T.cuspA j a n) → ∀ (P : Subgroup G) [Finite P] (lam : P →* (T.Q.c.F)ˣ) (θ : LevelAut (T.Q.Dw j) Y.d.l₂ →* G), (∀ γ, CongMod T.Q.l.Mb (liftLa γ) (lev (θ γ))) → (∀ γ, CongMod T.Q.l.Mb (liftLa γ) LinearMap.id → θ γ = 1) → (∀ u ∈ P, ∃ γ, θ γ = u) → ∀ g ∈ Y.V (wtZ a n), g ∈ Submodule.span Y.d.c₂.F {g | ∃ f ∈ {f : T.R j | f ∈ T.cuspA j a n ∧ ∀ u : P, actLev (Xo := T.Q.Xo j) T.Q.c (fun g => (lev g, (LinearMap.id : (T.Q.Dw j).La →ₗ[𝓞 D.host.E] (T.Q.Dw j).La))) (u : G) f = ((lam u : (T.Q.c.F)ˣ) : T.Q.c.F) • f}, Y.Pull f g} ↔ ∀ γ (h : θ γ ∈ P), transl Y.d.Xo₂ Y.d.c₂ γ g = ((Y.d.eF : Y.c'.F →+* Y.d.c₂.F).comp (incF T.Q.c Y.c' Y.hle)) ((lam ⟨θ γ, h⟩ : (T.Q.c.F)ˣ) : T.Q.c.F) • g := by
   intro D T j Y e o hT hj hG a n hD G _ lev hact hkeep P _ lam θ hθ hker hs g hg
   obtain ⟨hL₂, hgal, hP⟩ := GlobalTheory.DeepLaws.laws_galois_pull D T j Y e o hT hj hG hG.unit hG.modelW

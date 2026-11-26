@@ -1766,7 +1766,6 @@ noncomputable section
 namespace GlobalTheory.WtMatchBar
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
-set_option maxHeartbeats 800000 in
 theorem exists_pow_mul_mem_cuspForms_of_weight_match : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ), Y.Good e o → 2 < Module.finrank ℚ D.host.E / 2 → 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ la : GlobalTheory.AllWt.Weight (T.Q.Dw j), (∀ τ, Antitone (la τ)) → (∀ τ, 1 ≤ gap (la τ) ((T.Q.Dw j).p - 1)) → ∀ f ∈ Y.V (wtOf _ la 0), ∃ (k : ℕ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (g h : Rul Y.d.Xo₂ Y.d.c₂) (t : Y.d.c₂.F), Dom a n ∧ 4 * (Module.finrank ℚ D.host.E * D.R.r) + 4 ≤ n ∧ f ^ (k + 1) * g ∈ cusp Y.d.Xo₂ Y.d.c₂ Y.U a n ∧ t ≠ 0 ∧ g * h = t • 1 ∧ ∀ la', ∀ v ∈ valSet Y.d.Xo₂ Y.d.c₂ (algCls Y.d.Xo₂ Y.d.c₂) la', 0 ≤ v h := by
   intro hP D T j Y e o hY hE hp hq la hla hbar f hf
   obtain ⟨u, u', t₁, hu, ht₁, huu, hu'⟩ := _root_.GlobalTheory.KeyInvInt.exists_inverse_integral_invariant hP D T j Y e o hY hE
@@ -1819,7 +1818,6 @@ set_option synthInstance.maxHeartbeats 400000
 open GlobalTheory.LamT (CMPt)
 noncomputable section
 namespace GlobalTheory.CovTop.GoodDom
-set_option maxHeartbeats 1000000 in
 theorem weight_lattice_fg_on_domain : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ), Y.Good e o →
     2 < Module.finrank ℚ D.host.E / 2 → 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ la : GlobalTheory.AllWt.Weight (T.Q.Dw j), (∀ τ, Antitone (la τ)) → (∀ τ, 1 ≤ gap (la τ) ((T.Q.Dw j).p - 1)) →
     FiniteDimensional Y.d.c₂.F (Y.V (wtOf _ la 0)) → (GlobalTheory.AllWt.latW Y.U (wtOf _ la 0)).FG := by
@@ -1838,7 +1836,6 @@ theorem weight_lattice_fg_on_domain : _root_.GlobalTheory.CovTop.PublishedHodgeB
   · exact (congrArg (N * ·) (evalAt_smul _ _ s F.1 y)).trans <| by
       rw [RingHom.id_apply, Algebra.smul_def, mul_left_comm]
       rfl
-set_option maxHeartbeats 800000 in
 theorem weight_lattice_span_on_domain : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ),
     Y.Good e o → 2 < Module.finrank ℚ D.host.E / 2 → 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ la : GlobalTheory.AllWt.Weight (T.Q.Dw j), (∀ τ, Antitone (la τ)) → (∀ τ, 1 ≤ gap (la τ) ((T.Q.Dw j).p - 1)) →
     Submodule.span Y.d.c₂.F (GlobalTheory.AllWt.latW Y.U (wtOf _ la 0) : Set (Y.V (wtOf _ la 0))) = ⊤ := by
@@ -1862,7 +1859,6 @@ theorem weight_lattice_span_on_domain : _root_.GlobalTheory.CovTop.PublishedHodg
     GlobalTheory.AllWt.mem_supLat.2 fun la v hv => h' la v hv
   rw [← inv_smul_smul₀ hs' f]
   exact Submodule.smul_mem _ _ (Submodule.subset_span hmem')
-set_option maxHeartbeats 1000000 in
 theorem covering_regular_at_domain : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ la : AllWt.Weight (T.Q.Dw j), (∀ τ, Antitone (la τ)) → (∀ τ, 1 ≤ gap (la τ) ((T.Q.Dw j).p - 1)) → Y.GoodAt (wtOf _ la 0) ∧ ∀ Z, GoodOn Y.U (xiR D) (fun _ => D.sp.W j) Y.dict Z (wtOf _ la 0) := by
   intro hP D T hL j hp hq hE _ Y e o hY la hA hb
   have hfd := GlobalTheory.Deep.finiteDimensional_V_of_good D T.toCore j Y e o hY (wtOf _ la 0)

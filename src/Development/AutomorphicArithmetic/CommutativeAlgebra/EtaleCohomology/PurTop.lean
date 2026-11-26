@@ -695,8 +695,7 @@ theorem hs_pull_id (q : ℕ) (P : Arrow Spc) (n i : ℤ) (x : Hs q P n i) : Hs.p
   apply Subtype.ext
   change pull _ (dbl.map (𝟙 P)) _ _ x.1 = x.1
   have e : dbl.map (𝟙 P) = 𝟙 _ := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      apply pushout.hom_ext <;> (simp [dbl.map]; try rfl)
+    apply pushout.hom_ext <;> (simp [dbl.map]; try rfl)
   rw [e, pull_id]
 
 theorem exc_iso (q : ℕ) {P' P : Arrow Spc} (e : P' ≅ P) : Exc q e.hom := fun n i =>

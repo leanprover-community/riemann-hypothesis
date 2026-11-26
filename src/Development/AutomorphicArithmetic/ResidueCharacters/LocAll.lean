@@ -156,7 +156,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainN
 namespace UpperTheory.N
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 800000 in
 theorem tb_top (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime]
     (h4 : LocalSituation.Conclusion4 D HW F) (hCo : CrysOnCond D HW F)
     (hW : ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
@@ -365,7 +364,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainN
 namespace UpperTheory.N
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1600000 in
 theorem tbK_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime]
     (h4 : LocalSituation.Conclusion4 D HW F) (hCo : CrysOnCond D HW F)
     (hW : ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),

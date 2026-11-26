@@ -32,7 +32,6 @@ theorem UpperTheory.ConvolutionTheory.T.Port.adj_ne {H : Type} [NormedAddCommGro
 theorem UpperTheory.ConvolutionTheory.T.Port.pickInf_of (hInf : UpperTheory.ConvolutionTheory.L1.InfSplit) (hAB : UpperTheory.ConvolutionTheory.L1.ArchBasic)
     (hBump : UpperTheory.ConvolutionTheory.L1.BumpEx) (hPosition : UpperTheory.ConvolutionTheory.L1.ArchSlotEx) (hSq : UpperTheory.ConvolutionTheory.L1.SqOp)
     (hAmp : UpperTheory.ConvolutionTheory.L1.AmpSlot) (hPair : UpperTheory.ConvolutionTheory.L1.PairPosition) : UpperTheory.ConvolutionTheory.T.PickInf := by
-  set_option synthInstance.maxHeartbeats 100000 in
   intro F E _ _ _ _ _ _ _ _ σ hσ hp n hn μE _ μF _ u hu
   obtain ⟨m, hm⟩ : ∃ m, Module.finrank F E = m + 1 :=
     ⟨Module.finrank F E - 1, by have := hp.two_le; omega⟩

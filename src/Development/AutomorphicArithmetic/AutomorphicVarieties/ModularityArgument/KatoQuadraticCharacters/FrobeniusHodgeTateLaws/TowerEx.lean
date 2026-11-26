@@ -965,9 +965,8 @@ theorem qcoeff_finitelyGenerated : ∀ (Ω : Type) [Field Ω] (ε : Ω →+* ℂ
   have hmap : PowerSeries.map ε (Q.eval (PowerSeries.mk a)) =
       (∑ i ∈ Finset.range (n + 1), Polynomial.monomial i (PowerSeries.mk (c' i))).eval
         (PowerSeries.mk fun k => ε (a k)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hQdef, Polynomial.eval_finsetSum, Polynomial.eval_monomial, map_sum, map_mul, map_pow,
-      powerSeries_map_mk, hd]
+    simp only [hQdef, Polynomial.eval_finsetSum, Polynomial.eval_monomial, map_sum, map_mul, map_pow,
+    powerSeries_map_mk, hd]
   rw [hser] at hmap
   have hQ : Q.eval (PowerSeries.mk a) = 0 := by
     ext k

@@ -897,8 +897,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.lineInj :
   have ha : ∀ a b : ι → U4, arc1 ((C.Φ (2 + 2)).symm (a * b)) =
       arc1 ((C.Φ (2 + 2)).symm a) * arc1 ((C.Φ (2 + 2)).symm b) := by
     intro a b
-    set_option synthInstance.maxHeartbeats 200000 in
-      simp [arc1, map_mul]
+    simp [arc1, map_mul]
   have h1 : (arc1 ((C.Φ 2).symm (1 : ι → U2)) : G1 K 2) = 1 := by simp [arc1, map_one]
   have hun : ∀ i (a b : U2), C.un i (a * b) = C.un i a * C.un i b := by
     intro i a b; simp [Co.un, arc1, Pi.mulSingle_mul, map_mul]

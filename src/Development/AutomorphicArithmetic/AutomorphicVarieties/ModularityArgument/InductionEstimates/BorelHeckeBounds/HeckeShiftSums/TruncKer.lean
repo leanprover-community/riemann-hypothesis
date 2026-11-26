@@ -1026,7 +1026,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.rootDecay :
         simp only [ccTranslate]
         change _ * (f ((archProj K n (C ε))⁻¹ * (x⁻¹ * z)) * _) = _
         ring
-      set_option synthInstance.maxHeartbeats 200000 in
       have enorm_sum_altSign_rconv_sq_le (f : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ)
           (φ : Lp ℂ 2 (quotientMeasure (rationalGLOne (K := K) (n := n)) μ)) (x : normOneGL (K := K) (n := n)) {k : ℕ} {𝒞 : Set (ArchUnits K n)}
           (h𝒞 : IsCompact 𝒞) (C : (Fin k → Bool) → ArchUnits K n) (hC : ∀ ε, C ε ∈ 𝒞) {b : ℝ}
@@ -1500,8 +1499,7 @@ private theorem desc_sm {Y : Type*} [TopologicalSpace Y] [TopologicalSpace.Pseud
   haveI : SecondCountableTopology (RightCosetSpace (Gam K (2 + 2))) :=
     (isOpenQuotientMap_mk (Gam K (2 + 2))).isQuotientMap.secondCountableTopology
       (isOpenQuotientMap_mk (Gam K (2 + 2))).isOpenMap
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact (desc_cont f hc hi).stronglyMeasurable
+  exact (desc_cont f hc hi).stronglyMeasurable
 
 private noncomputable def ramp (T : ℝ) (n : ℕ) (h : ℝ) : ℝ := max 0 (min 1 (((n : ℝ) + 1) * (h - T)))
 

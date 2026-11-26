@@ -195,7 +195,6 @@ def JumpsNoZero (i : D.nd.Loc) (M : GE D.nd →* Matrix (Fin D.R.r) (Fin D.R.r) 
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1600000 in
 theorem kill_of (i : D.nd.Loc) (N : ℕ) (hK : InvariantsKilledOverCyclotomic (D.loc (D.nd.l i))) (hC : CycAt N i)
     (M : GE D.nd →* Matrix (Fin D.R.r) (Fin D.R.r) (D.nd.O i)) (h : ℕ) (hM : JumpsNoZero i M h)
     (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)) (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw)
@@ -238,8 +237,6 @@ theorem invariants_length_admissible_of_nonzero_jumps (i : D.nd.Loc) (N : ℕ) (
   exact hkill x fun g => hx g
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1600000 in
 theorem length_invariants_Wprime_divisible_le_of_nonzero_jumps (i : D.nd.Loc) (N : ℕ) (hK : InvariantsKilledOverCyclotomic (D.loc (D.nd.l i))) (hC : CycAt N i)
     (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i) (h : ℕ)
     (hW : Continuous fun g => WpO D.nd i ρ π g) (hM : JumpsNoZero i (WpO D.nd i ρ π) h)

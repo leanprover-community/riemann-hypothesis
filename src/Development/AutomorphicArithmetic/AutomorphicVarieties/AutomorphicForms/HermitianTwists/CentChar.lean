@@ -22,8 +22,7 @@ theorem UpperTheory.V.Af.Rn.centChar : UpperTheory.V.Sd.Wc.CentChar := by
 
   have orb_comm {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (κ : Representation ℂ K V) (T : Module.End ℂ V) (hT : ∀ k x, T (κ k x) = κ k (T x)) (x : V)
       (c : K →₀ ℂ) : orb κ (T x) c = T (orb κ x c) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [orb, Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, hT]
+    simp only [orb, Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul, hT]
 
   have orb_act {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V] (κ : Representation ℂ K V) (x : V) (k : K) (c : K →₀ ℂ) :
       orb κ x (c.mapDomain (k * ·)) = κ k (orb κ x c) := by

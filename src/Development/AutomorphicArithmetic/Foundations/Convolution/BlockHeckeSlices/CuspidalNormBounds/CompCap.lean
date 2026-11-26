@@ -381,18 +381,17 @@ theorem UpperTheory.integral_quotient_derivative_oneParameter_eq_zero :
   haveI : IsFiniteMeasure (muQ E r) := Reduction.isFiniteMeasure_quotientMeasure (K := E) (n := r) (mu1 E r)
   haveI : SigmaFinite (muQ E r) := IsFiniteMeasure.toSigmaFinite _
   haveI : SFinite (muQ E r) := instSFiniteOfSigmaFinite
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine flow_abs (muQ E r) (fun u => rightMul (rationalGLOne (K := E) (n := r)) ⟨c u, c1 u⟩) ?_
-      (fun u => measurePreserving_rightMul (Γ := rationalGLOne (K := E) (n := r)) (mu1 E r) _)
-      (fun u => (rightMulHomeomorph (rationalGLOne (K := E) (n := r)) _).measurableEmbedding) _ _ ?_ ih iD fun y u => ?_
-    · exact flow_cont (rationalGLOne (K := E) (n := r)) (fun u => ⟨c u, c1 u⟩) (cc.subtype_mk c1)
-    · exact (isOpenQuotientMap_mk (rationalGLOne (K := E) (n := r))).isQuotientMap.continuous_iff.2 (cD.comp continuous_subtype_val)
-    · obtain ⟨g, rfl⟩ := mk_surjective (rationalGLOne (K := E) (n := r)) y
-      have h1 := (hd (g * c u)).scomp_of_eq u ((hasDerivAt_id u).sub_const u) (by simp)
-      rw [one_smul] at h1
-      refine h1.congr_of_eventuallyEq (.of_forall fun s => ?_)
-      change h (g * c s) = h (g * c u * c (s - u))
-      rw [mul_assoc, ← cadd, add_sub_cancel]
+  refine flow_abs (muQ E r) (fun u => rightMul (rationalGLOne (K := E) (n := r)) ⟨c u, c1 u⟩) ?_
+    (fun u => measurePreserving_rightMul (Γ := rationalGLOne (K := E) (n := r)) (mu1 E r) _)
+    (fun u => (rightMulHomeomorph (rationalGLOne (K := E) (n := r)) _).measurableEmbedding) _ _ ?_ ih iD fun y u => ?_
+  · exact flow_cont (rationalGLOne (K := E) (n := r)) (fun u => ⟨c u, c1 u⟩) (cc.subtype_mk c1)
+  · exact (isOpenQuotientMap_mk (rationalGLOne (K := E) (n := r))).isQuotientMap.continuous_iff.2 (cD.comp continuous_subtype_val)
+  · obtain ⟨g, rfl⟩ := mk_surjective (rationalGLOne (K := E) (n := r)) y
+    have h1 := (hd (g * c u)).scomp_of_eq u ((hasDerivAt_id u).sub_const u) (by simp)
+    rw [one_smul] at h1
+    refine h1.congr_of_eventuallyEq (.of_forall fun s => ?_)
+    change h (g * c s) = h (g * c u * c (s - u))
+    rw [mul_assoc, ← cadd, add_sub_cancel]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.WhittakerHecke.IntegralQuotientDerivativeOneParameterEqZero =====

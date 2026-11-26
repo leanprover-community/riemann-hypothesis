@@ -964,7 +964,6 @@ theorem UnitaryRankTwoFlagsAlt (hO : _root_.UpperTheory.Gal.projectedFormsSystem
     (hU l L Ω R.s R.V c₁ 3 R.r R.B₀ Λ ι J m (by norm_num) hΛ hmod.dense hmod.end1 hnum) t1 hw hip
     (hR Ω l ι c N e ψ η σ g₁ B M H L Φ k c₁ f _ R hL hka φ hφ hsurj J hgood hdim hmod.dense hend (ptA R ξ) t2 t3)
     D hD D' hD' k1 k2 hli
-set_option maxHeartbeats 1600000 in
 theorem openEx2E_alt :
     GlobalTheory.Published.GlobalArtinReciprocity → UpperTheory.V.W.LocCFTAll → _root_.UpperTheory.V.W.ModUAlt → _root_.UpperTheory.V.J.ModNAlt → UpperTheory.V.W.LevEx → UpperTheory.V.W.LamEx → UpperTheory.V.W.ProModularRingExists → _root_.UpperTheory.V.Z.Sym.UnitaryThreeAutomorphyDense → _root_.UpperTheory.V.Sd.Seed2Alt → UpperTheory.V.Sd.Twist → UpperTheory.V.Sd.AlgCyc → UpperTheory.V.Sd.AlgRes → _root_.UpperTheory.Gal.projectedFormsSystemPart.OpenEx2EAlt := by
   intro hA hLoc hMod hN hLev hLam hB0 hS3 hS2 hTw hCyc hRes Ω _ _ _ l _ ι c _ N _ e ψ η σ g₁ B M H hev L _ _ _ _ _ Φ C₀ k hok hbig hseed A _

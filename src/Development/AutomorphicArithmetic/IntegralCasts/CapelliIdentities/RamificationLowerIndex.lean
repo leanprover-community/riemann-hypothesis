@@ -196,8 +196,7 @@ theorem UpperTheory.Reformulated.B.RamificationLowerIndex.ramificationIndex_mul_
       have h1 : valuation L (algebraMap M L m) ≤ 1 := by rw [hm]; exact (f.coeff i).2
       exact (Valuation.HasExtension.val_map_le_one_iff (valuation M) (valuation L) m).1 h1
     have hy : f.coeff i = algebraMap 𝒪[M] 𝒪[L] ⟨m, hm1⟩ := Subtype.ext hm.symm
-    set_option synthInstance.maxHeartbeats 200000 in
-      rw [hy, RingHom.coe_coe, hcomm, ← map_sub (algebraMap 𝒪[M] 𝒪[L])]
+    rw [hy, RingHom.coe_coe, hcomm, ← map_sub (algebraMap 𝒪[M] 𝒪[L])]
     apply _root_.map_dvd
     rw [← addVal_le_iff_dvd, ← hy₁]
     exact lowerIndex_le _ _

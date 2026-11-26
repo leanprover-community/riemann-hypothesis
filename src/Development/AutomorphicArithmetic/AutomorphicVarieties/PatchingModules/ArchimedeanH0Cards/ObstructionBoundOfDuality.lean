@@ -528,7 +528,6 @@ private theorem f_symm_eq_of_left_right_mul_mat {l : ℕ} [Fact l.Prime] {L : Lo
     rw [this, LinearEquiv.apply_symm_apply, map_inv, hpg, h₁, h₂, hρ, mul_assoc, mul_assoc, hinv, mul_one]
   rw [hY, hf']
 
-set_option maxHeartbeats 800000 in
 theorem UpperTheory.V.Pa.B2.dualBound :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (n : ℕ) (x : NP G0.frame n), ∃ C : ℕ, ∀ (G : Glob l L) (h : G.Hom G0) (e : ℕ) (D : Dat x.A (plOf G)), IsOd h x (x.Am e) D → Nat.card {f : D.M.X →+ ZMod l // ∀ g m, f (D.M.ρ g m) = PadicInt.toZMod ((G.ε g : ℤ_[l]ˣ) : ℤ_[l]) * f m} ≤ Nat.card x.K ^ C := by
   intro l _ L G0 n x
@@ -599,8 +598,7 @@ theorem UpperTheory.V.Pa.B2.dualBound :
       conv_lhs => rw [hm]
       have hsum : (fun t => c t.1 t.2.1 t.2.2 : Fin n × Fin n × Fin s → x.K)
           = ∑ t, Pi.single t (c t.1 t.2.1 t.2.2) := (Finset.univ_sum_single _).symm
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_add (f := _), hkill f Y', add_zero, hsum, map_sum, map_sum, map_sum]
+      rw [map_add (f := _), hkill f Y', add_zero, hsum, map_sum, map_sum, map_sum]
     rw [key f, key f', hff]
   calc _ ≤ Nat.card (Fin n × Fin n × Fin s → x.K → {y : ZMod l // Nat.card x.K • y = 0}) :=
         Nat.card_le_card_of_injective Φ hinj

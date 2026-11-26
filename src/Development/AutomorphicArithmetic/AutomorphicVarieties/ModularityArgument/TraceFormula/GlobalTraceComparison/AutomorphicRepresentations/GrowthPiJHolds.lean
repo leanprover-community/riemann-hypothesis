@@ -1206,12 +1206,11 @@ private theorem measurable_cnt {Ω : Set (H E n 0)} (hΩ : IsCompact Ω) :
     Measurable (cnt (ratH E n 0) Ω) := by
   haveI := borelSpace_H (E := E) (n := n)
   haveI : Countable (ratH E n 0) := DiscreteGroups.T1.G.Dcy.countable_ratH'
-  set_option synthInstance.maxHeartbeats 200000 in
-    have hm : MeasurableSet Ω := hΩ.measurableSet
-    refine Measurable.tsum fun γ => ?_
-    have hc : Continuous fun x : H E n 0 => x⁻¹ * (γ : H E n 0) * x :=
-      (continuous_inv.mul continuous_const).mul continuous_id
-    exact (measurable_one.indicator hm).comp hc.measurable
+  have hm : MeasurableSet Ω := hΩ.measurableSet
+  refine Measurable.tsum fun γ => ?_
+  have hc : Continuous fun x : H E n 0 => x⁻¹ * (γ : H E n 0) * x :=
+    (continuous_inv.mul continuous_const).mul continuous_id
+  exact (measurable_one.indicator hm).comp hc.measurable
 
 end Meas
 

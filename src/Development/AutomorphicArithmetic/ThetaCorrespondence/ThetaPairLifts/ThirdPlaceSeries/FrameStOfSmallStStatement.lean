@@ -241,12 +241,11 @@ theorem g_fin : ∀ (K : Type) [Field K] [NumberField K] (l : ℕ) [Fact l.Prime
   have hle : IntermediateField.adjoin ℚ_[l] (Set.range e0 ∪ {z : PadicAlgCl l | z ^ M = 1}) ≤ IntermediateField.adjoin ℚ_[l] T := by
     rw [IntermediateField.adjoin_le_iff]
     rintro z (⟨y, rfl⟩ | hz)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [← b.sum_repr y, map_sum]
-        refine IntermediateField.sum_mem _ fun i _ => ?_
-        rw [Algebra.smul_def, map_mul, eq_ratCast, map_ratCast]
-        exact IntermediateField.mul_mem _ (SubfieldClass.ratCast_mem _ _)
-          (IntermediateField.subset_adjoin _ _ (Or.inl ⟨i, rfl⟩))
+    · rw [← b.sum_repr y, map_sum]
+      refine IntermediateField.sum_mem _ fun i _ => ?_
+      rw [Algebra.smul_def, map_mul, eq_ratCast, map_ratCast]
+      exact IntermediateField.mul_mem _ (SubfieldClass.ratCast_mem _ _)
+        (IntermediateField.subset_adjoin _ _ (Or.inl ⟨i, rfl⟩))
     · exact IntermediateField.subset_adjoin _ _ (Or.inr (by
         simpa [Polynomial.mem_nthRootsFinset hM] using hz))
   exact FiniteDimensional.of_injective (IntermediateField.inclusion hle).toLinearMap (IntermediateField.inclusion hle).injective

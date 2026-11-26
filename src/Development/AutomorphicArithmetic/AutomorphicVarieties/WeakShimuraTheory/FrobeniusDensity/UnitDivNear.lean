@@ -383,11 +383,10 @@ private theorem exists_open [NumberField K] (f : G K Ω → PadicAlgCl l) (hf : 
   have hV : IsOpen (f ⁻¹' Fᶜ) := hF.isClosed.isOpen_compl.preimage hf
   have h1V : (1 : G K Ω) ∈ f ⁻¹' Fᶜ := by
     simp [F, h1]
-  set_option synthInstance.maxHeartbeats 200000 in
-    obtain ⟨H, hH⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hV h1V
-    refine ⟨H.toOpenSubgroup.toSubgroup, H.toOpenSubgroup.isOpen, fun s hs hsn => ?_⟩
-    by_contra hne
-    exact hH hs ⟨hsn, hne⟩
+  obtain ⟨H, hH⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hV h1V
+  refine ⟨H.toOpenSubgroup.toSubgroup, H.toOpenSubgroup.isOpen, fun s hs hsn => ?_⟩
+  by_contra hne
+  exact hH hs ⟨hsn, hne⟩
 
 end SlopeTestRemainingChoices
 

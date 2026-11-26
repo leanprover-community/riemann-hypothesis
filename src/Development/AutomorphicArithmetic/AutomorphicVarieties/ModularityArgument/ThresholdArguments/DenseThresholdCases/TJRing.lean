@@ -551,7 +551,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
 open UpperTheory.V.HV (Coef)
 open scoped TensorProduct
-set_option synthInstance.maxHeartbeats 200000
 section Abstract
 open UpperTheory.V.W
 private theorem jr_teich_ex (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsLocalRing O]

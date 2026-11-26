@@ -137,8 +137,7 @@ private theorem crystallineAlgebra_bijective (h : Function.Bijective fun (a : A.
     choose E hE using fun i => hw.2 (Pi.single i (1 : WittVector l (B i).A))
     refine ⟨∑ i, algebraMap A.W A.Acr0 (E i) * z i, funext fun j => ?_⟩
     simp only
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_single j]
+    rw [map_sum, Finset.sum_eq_single j]
     · have e0 : mapW (f j) (E j) = 1 := (congrFun (hE j) j).trans (Pi.single_eq_same _ _)
       have e1 : (pdOk_hom (f j)).acr0 (algebraMap A.W A.Acr0 (E j)) = 1 := by
         rw [crystallineAlgebra_algebraMap, e0]; exact map_one _

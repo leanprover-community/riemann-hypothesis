@@ -1115,7 +1115,6 @@ private theorem inner_exp {e : ℕ} (v w : Eu e) :
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [inner_smul_right, EuclideanSpace.basisFun_repr]
 
-set_option synthInstance.maxHeartbeats 400000 in
 private theorem ipSec {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure]
     (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (τ₁ τ₂ : Submodule ℂ (L2 μ₂)) (hp : Pair μ₂ τ₁ τ₂) (D : TypeDat K (2 + 2))
     (d d' : ℕ) (A : Line μ τ₁ τ₂ D d) (A' : Line μ τ₂ τ₁ D d') (κ : Measure (KG K (2 + 2))) [κ.IsHaarMeasure] (c : ℝ)
@@ -1262,8 +1261,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.ctRep :
       funext i
       exact (hv s (p i)).symm
     rw [e]
-    set_option synthInstance.maxHeartbeats 100000 in
-      exact T.continuous_of_finiteDimensional.comp (continuous_pi fun i => hf.comp (continuous_levi_unipotent_path K (p i) _))
+    exact T.continuous_of_finiteDimensional.comp (continuous_pi fun i => hf.comp (continuous_levi_unipotent_path K (p i) _))
   have hex : Continuous fun s : ℝ => Complex.exp (-2 * (s : ℂ)) := by fun_prop
   have hUc : Continuous fun s : ℝ => Complex.exp (-2 * (s : ℂ)) • v s := hex.smul hcv.fst
   have hUc' : Continuous fun s : ℝ => Complex.exp (-2 * (s : ℂ)) • v' s := hex.smul hcv.snd

@@ -672,7 +672,6 @@ private theorem ord_parts {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Al
   exact h2.trans (iSup_mono fun Y => inf_le_inf_left _ h3)
 
 open TensorProduct in
-set_option maxHeartbeats 800000 in
 theorem ordinary_pt_of_literal_automorphy_n : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → _root_.UpperTheory.V.Z.Ord.PartPtAlt := by
   intro _ L Ω _ _ _ _ _ l _ n c H hH A _ _ _ θ hθ ι P hP x lam d ξ c0 sp hsp hlam a K _ y hy
   have : Finite (ResidueField c.O) := by

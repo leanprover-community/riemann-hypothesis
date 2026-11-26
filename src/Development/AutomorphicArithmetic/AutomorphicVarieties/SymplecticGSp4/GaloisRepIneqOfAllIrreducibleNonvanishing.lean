@@ -173,57 +173,56 @@ private theorem wcomp_eq_zero_of_mem_wtPart_of_ne {O σ X : Type} [CommRing O] [
 
 private theorem aGraded_internal {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime]
     {c : Coef l} {D : Raw Ω c} (M : Model D) : DirectSum.IsInternal M.gr := by
-  set_option synthInstance.maxHeartbeats 200000 in
-    have key : ∀ (n : ℤ) (x : M.R), x ∈ M.aPart n → x ∈ (⨆ (m : ℤ) (_ : m ≠ n), M.aPart m) → x = 0 := by
-      intro n x hx hx'
-      have hle : (⨆ (m : ℤ) (_ : m ≠ n), M.aPart m) ≤
-          Submodule.map M.W.π.toLinearMap
-            (LinearMap.ker (M.W.π.toLinearMap ∘ₗ wcomp c.O M.W.wt ((0 : ℤ), n))) := by
-        refine iSup₂_le fun m hm => ?_
-        rintro y ⟨h, hh, rfl⟩
-        refine ⟨h, ?_, rfl⟩
-        change M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) h) = 0
-        rw [wcomp_eq_zero_of_mem_wtPart_of_ne hh, map_zero]
-        intro h'
-        exact hm (Prod.ext_iff.mp h').2.symm
-      obtain ⟨g, hg, hgx⟩ := hle hx'
-      obtain ⟨f, hf, rfl⟩ := hx
-      have hker : f - g ∈ RingHom.ker M.W.π := by
-        rw [RingHom.mem_ker, map_sub]
-        exact sub_eq_zero.mpr hgx.symm
-      have h2 := M.W.homog _ hker ((0 : ℤ), n)
-      rw [RingHom.mem_ker, map_sub, map_sub] at h2
-      have hg' : M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) g) = 0 := hg
-      have h3 : M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) f) = M.W.π f := by
-        rw [wcomp_self_eq_of_mem_wtPart hf]
-      change M.W.π f = 0
-      calc M.W.π f = M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) f) := h3.symm
-        _ = M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) g) := sub_eq_zero.mp h2
-        _ = 0 := hg'
-    rw [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top]
-    constructor
-    · rw [iSupIndep_def]
-      intro n
-      rw [Submodule.disjoint_def]
-      intro x hx hx'
-      have h1 : (x : M.R) ∈ M.aPart n := hx
-      have h2 : (x : M.R) ∈ (⨆ (m : ℤ) (_ : m ≠ n), M.aPart m) := by
-        have := Submodule.mem_map_of_mem (f := M.A.val.toLinearMap) hx'
-        simp only [Submodule.map_iSup] at this
-        exact (iSup₂_mono fun m _ => Submodule.map_comap_le _ _) this
-      exact Subtype.ext (key n _ h1 h2)
-    · refine eq_top_iff.mpr fun x _ => ?_
-      obtain ⟨y, hy⟩ := x
-      have main : ∀ (z : M.R) (hz : z ∈ ⨆ n, M.aPart n), (⟨z, hz⟩ : M.A) ∈ ⨆ n, M.gr n := by
-        intro z hz
-        refine Submodule.iSup_induction' M.aPart
-          (motive := fun z hz => (⟨z, hz⟩ : M.A) ∈ ⨆ n, M.gr n) ?_ ?_ ?_ hz
-        · intro n w hw
-          exact Submodule.mem_iSup_of_mem n hw
-        · exact zero_mem _
-        · intro a b ha hb iha ihb
-          exact add_mem iha ihb
-      exact main y hy
+  have key : ∀ (n : ℤ) (x : M.R), x ∈ M.aPart n → x ∈ (⨆ (m : ℤ) (_ : m ≠ n), M.aPart m) → x = 0 := by
+    intro n x hx hx'
+    have hle : (⨆ (m : ℤ) (_ : m ≠ n), M.aPart m) ≤
+        Submodule.map M.W.π.toLinearMap
+          (LinearMap.ker (M.W.π.toLinearMap ∘ₗ wcomp c.O M.W.wt ((0 : ℤ), n))) := by
+      refine iSup₂_le fun m hm => ?_
+      rintro y ⟨h, hh, rfl⟩
+      refine ⟨h, ?_, rfl⟩
+      change M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) h) = 0
+      rw [wcomp_eq_zero_of_mem_wtPart_of_ne hh, map_zero]
+      intro h'
+      exact hm (Prod.ext_iff.mp h').2.symm
+    obtain ⟨g, hg, hgx⟩ := hle hx'
+    obtain ⟨f, hf, rfl⟩ := hx
+    have hker : f - g ∈ RingHom.ker M.W.π := by
+      rw [RingHom.mem_ker, map_sub]
+      exact sub_eq_zero.mpr hgx.symm
+    have h2 := M.W.homog _ hker ((0 : ℤ), n)
+    rw [RingHom.mem_ker, map_sub, map_sub] at h2
+    have hg' : M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) g) = 0 := hg
+    have h3 : M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) f) = M.W.π f := by
+      rw [wcomp_self_eq_of_mem_wtPart hf]
+    change M.W.π f = 0
+    calc M.W.π f = M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) f) := h3.symm
+      _ = M.W.π (wcomp c.O M.W.wt ((0 : ℤ), n) g) := sub_eq_zero.mp h2
+      _ = 0 := hg'
+  rw [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top]
+  constructor
+  · rw [iSupIndep_def]
+    intro n
+    rw [Submodule.disjoint_def]
+    intro x hx hx'
+    have h1 : (x : M.R) ∈ M.aPart n := hx
+    have h2 : (x : M.R) ∈ (⨆ (m : ℤ) (_ : m ≠ n), M.aPart m) := by
+      have := Submodule.mem_map_of_mem (f := M.A.val.toLinearMap) hx'
+      simp only [Submodule.map_iSup] at this
+      exact (iSup₂_mono fun m _ => Submodule.map_comap_le _ _) this
+    exact Subtype.ext (key n _ h1 h2)
+  · refine eq_top_iff.mpr fun x _ => ?_
+    obtain ⟨y, hy⟩ := x
+    have main : ∀ (z : M.R) (hz : z ∈ ⨆ n, M.aPart n), (⟨z, hz⟩ : M.A) ∈ ⨆ n, M.gr n := by
+      intro z hz
+      refine Submodule.iSup_induction' M.aPart
+        (motive := fun z hz => (⟨z, hz⟩ : M.A) ∈ ⨆ n, M.gr n) ?_ ?_ ?_ hz
+      · intro n w hw
+        exact Submodule.mem_iSup_of_mem n hw
+      · exact zero_mem _
+      · intro a b ha hb iha ihb
+        exact add_mem iha ihb
+    exact main y hy
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.aGraded :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ M : Model D, Nonempty (GradedAlgebra M.gr) := by
@@ -259,15 +258,12 @@ theorem UpperTheory.V.GradeZeroInterpolatingElement.aElt :
       apply Submodule.smul_mem
       show (1 : M.R) ∈ M.aPart 0
       exact SetLike.GradedOne.one_mem
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sum, AlgHom.commutes]
+  · rw [map_sub, map_sum, AlgHom.commutes]
     simp only [hx0, Algebra.algebraMap_self, RingHom.id_apply, Matrix.trace, Matrix.diag]
     exact sub_self _
   · intro ξ
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sub, map_sum, map_sum, AlgHom.commutes, AlgHom.commutes]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hss, Raw.aVal, Matrix.trace, Matrix.diag, map_sum]
+    rw [map_sub, map_sub, map_sum, map_sum, AlgHom.commutes, AlgHom.commutes]
+    simp only [hss, Raw.aVal, Matrix.trace, Matrix.diag, map_sum]
     rfl
 end -- clump:auto
 end -- clump:auto
@@ -916,8 +912,6 @@ private theorem torus_dual_number_lift_zero (K : Type) [Field K] (t : Kˣ × Kˣ
   rw [this]
   constructor <;> simp [e, TrivSqZeroExt.algebraMap_eq_inl]
 
-set_option maxHeartbeats 800000 in
-set_option synthInstance.maxHeartbeats 200000 in
 private theorem exists_lift_of_derivation_on_ideal {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
     (D : Raw Ω c) (hD : D.Good) (M : Model D) [GradedAlgebra M.gr] (hL : Loc.LocalPublishedTheorems) (hS : SoV Ω l) (hF : D.Fin0)
     (hN : D.NoEnd) (x : M.A →ₐ[c.O] PadicAlgCl l) (hx : OnS M.eqns.ideal x)
@@ -1198,14 +1192,13 @@ theorem UpperTheory.V.GradeZeroInterpolatingElement.mPrime :
     have h1 := M.at0 1 0 0 (f + e) (by rw [map_add (f := _), hf, he, zero_add])
     rw [map_add (f := _), M.at0 1 0 0 e he] at h1
     exact add_eq_right.1 h1
-  set_option synthInstance.maxHeartbeats 200000 in
-   exact len_le hM M.π M.surj M.ru M.gen (M.W.origin M.org) hx M.W.part M.hom M.A M.gr (fun _ _ => Iff.rfl)
-    (fun n f hf => M.aPart_le hf) (fun f hf => origin_part M.W M.org (by decide) hf) M.eqns.F M.eqns.hF
-    (fun i => by
-      show M.F i ∈ RingHom.ker M.π
-      rw [M.ker]
-      exact Ideal.subset_span (Or.inl (Or.inl ⟨i, rfl⟩)))
-    a ha _ Z hZ D.th D.Psi fun μ => M.der a (Z μ) ha (hc μ)
+  exact len_le hM M.π M.surj M.ru M.gen (M.W.origin M.org) hx M.W.part M.hom M.A M.gr (fun _ _ => Iff.rfl)
+   (fun n f hf => M.aPart_le hf) (fun f hf => origin_part M.W M.org (by decide) hf) M.eqns.F M.eqns.hF
+   (fun i => by
+     show M.F i ∈ RingHom.ker M.π
+     rw [M.ker]
+     exact Ideal.subset_span (Or.inl (Or.inl ⟨i, rfl⟩)))
+   a ha _ Z hZ D.th D.Psi fun μ => M.der a (Z μ) ha (hc μ)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MPrime =====
@@ -1489,8 +1482,7 @@ theorem UpperTheory.V.GradeZeroInterpolatingElement.aW :
   have hz : ∀ s, M.W.z s ∈ maximalIdeal M.R := fun s => by
     rw [← res_eq_zero_iff c.O, ← res_map (M.W.origin M.org), WPres.z, M.W.origin_π, MvPowerSeries.constantCoeff_X,
       map_zero]
-  set_option synthInstance.maxHeartbeats 100000 in
-    refine ⟨?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_⟩
   · haveI := wPres_gr_zero_isCO_of_mem_maximalIdeal c.O (ℤ × ℤ) M.R M.W hz
     let p : M.W.gr 0 →ₐ[c.O] M.gr 0 :=
       { toFun := fun F => ⟨⟨F.1.1, M.aPart_le (n := 0) F.2⟩, F.2⟩
@@ -1626,8 +1618,7 @@ private theorem exists_rep_family_from_points (hD : D.Good) (M : Model D) [Grade
         (t : (PadicAlgCl l)ˣ × (PadicAlgCl l)ˣ), ξ.comp M.toSS = x ∧ ∀ g, r g = tconj t (M.rep ξ g) := by
     intro x
     by_cases hx : OnS M.eqns.ideal x
-    · set_option synthInstance.maxHeartbeats 200000 in
-      obtain ⟨ξ, hξ⟩ := ptLift D hD M x hx
+    · obtain ⟨ξ, hξ⟩ := ptLift D hD M x hx
       obtain ⟨t, r, hr, hrt⟩ := ptScale D hD M h0 ξ
       refine ⟨r, fun h2 => ⟨⟨⟨hr, irreducible_torus_conjugate t _ _ hrt (twoIrr D hD M hL hV h0 hNE ξ (by rw [hξ]; exact h2.2))⟩, ?_⟩,
         ξ, t, hξ, hrt⟩⟩
@@ -1656,7 +1647,6 @@ theorem UpperTheory.V.GradeZeroInterpolatingElement.galoisRep_ineq_of_allIrreduc
   intro Ω _ _ _ l hl c D hD M hM hM' hL hV hF h0 hNE hR g hA
   classical
   obtain ⟨inst⟩ := aGraded D hD M
-  set_option synthInstance.maxHeartbeats 200000 in
   obtain ⟨a, ha0, hax, ha⟩ := aElt D hD M g
   obtain ⟨ρ, hρ, horb⟩ := exists_rep_family_from_points hD M hL hV h0 hNE g a ha
   obtain ⟨hT, hfin, hle⟩ := covers_and_cotangent_length_bounds hD M hM hL hV h0 hNE hR a

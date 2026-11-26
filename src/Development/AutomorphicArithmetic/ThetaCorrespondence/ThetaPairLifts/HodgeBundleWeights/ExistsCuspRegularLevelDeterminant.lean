@@ -1632,7 +1632,6 @@ section -- clump:auto
 @[expose] public section
 
 section
-set_option synthInstance.maxHeartbeats 400000
 noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions

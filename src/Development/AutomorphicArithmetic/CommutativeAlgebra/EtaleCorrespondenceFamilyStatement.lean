@@ -553,8 +553,7 @@ theorem pullC_delta (τ : κ → ι) (φ : E →ₗ[k] E') (c : Finset ι → E)
   rw [pullC_apply]
   simp only [deltaL.eq_1, LinearMap.coe_mk, AddHom.coe_mk, DI.delta.eq_1]
   split_ifs with hinj
-  · set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.smul_sum, Finset.sum_image (fun x hx y hy h => hinj hx hy h)]
+  · rw [map_sum, Finset.smul_sum, Finset.sum_image (fun x hx y hy h => hinj hx hy h)]
     refine Finset.sum_congr rfl fun j hj => ?_
     have hinj' : Set.InjOn τ ↑(s.erase j) := hinj.mono (Finset.coe_subset.2 (Finset.erase_subset j s))
     rw [pullC_inj τ φ c hinj', map_zsmul, smul_smul, smul_smul, sortSign_mul_cubeSign_image τ hj hinj,

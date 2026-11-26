@@ -1260,8 +1260,6 @@ private theorem upB_fu {d : ℕ} {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y
   rw [hcomm]
   exact RingHom.FormallyUnramified.respectsIso.2 _ _ (RingHom.FormallyUnramified.respectsIso.1 _ _ hfu)
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem UpperTheory.etaleCorrespondence_fieldExtension_statement :
     ∀ (d : ℕ) (Z Y : Scheme.{0}) [IsIntegral Z] [IsIntegral Y] (s : Z ⟶ Sp ℂ) (s' : Y ⟶ Sp ℂ) [SmoothOfRelativeDimension d s] [SmoothOfRelativeDimension d s'] (hP : IsProjOver s) (c1 c2 : Y ⟶ Z) (h1 : c1 ≫ s = s') (h2 : c2 ≫ s = s') [IsFinite c1] [Etale c1] [IsFinite c2] [Etale c2] [instK : Algebra ℂ Z.functionField] [instL : Algebra ℂ Y.functionField] (hK : instK = ffAlg s) (hL : instL = ffAlg s') [Algebra Z.functionField Y.functionField] [IsScalarTower ℂ Z.functionField Y.functionField] (g1 : ∀ (V : Z.Opens) (hV : genericPoint Z ∈ V) (hV' : genericPoint Y ∈ c1 ⁻¹ᵁ V) (g : Γ(Z, V)), (Y.presheaf.germ (c1 ⁻¹ᵁ V) (genericPoint Y) hV').hom ((c1.app V).hom g) = algebraMap Z.functionField Y.functionField ((Z.presheaf.germ V (genericPoint Z) hV).hom g)) (j2 : Z.functionField →ₐ[ℂ] Y.functionField) (g2 : ∀ (V : Z.Opens) (hV : genericPoint Z ∈ V) (hV' : genericPoint Y ∈ c2 ⁻¹ᵁ V) (g : Γ(Z, V)), j2 ((Z.presheaf.germ V (genericPoint Z) hV).hom g) = (Y.presheaf.germ (c2 ⁻¹ᵁ V) (genericPoint Y) hV').hom (c2.app V g)) (F : Type) [Field F] [Algebra ℂ F] [Algebra F Z.functionField] [Algebra F Y.functionField] [IsScalarTower ℂ F Z.functionField] [IsScalarTower F Z.functionField Y.functionField] [IsScalarTower ℂ F Y.functionField] (x : Fin (d + 1) → F) (U : Fin (d + 1) → Z.Opens) (hx : IsFinCover ℂ Z.functionField x) (hU : IsAffCover s U (rB ℂ Z.functionField x)), IsReduced ((rB ℂ Z.functionField x {0}) ⧸ (Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem ℂ Z.functionField x j⟩ : rB ℂ Z.functionField x {0})))) → IsReduced ((rB ℂ Y.functionField x {0}) ⧸ (Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem ℂ Y.functionField x j⟩ : rB ℂ Y.functionField x {0})))) := by
   intro d Z Y _ _ s s' _ _ hP c1 c2 h1 h2 _ _ _ _ instK instL hK hL _ _ g1 j2 g2 F _ _ _ _ _ _ _ x U hx hU hred
@@ -1360,8 +1358,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR GlobalTheory.PD KaehlerDifferential GlobalTheory.W1 GlobalTheory.WH
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 200000 in
 theorem UpperTheory.exists_regular_parameters_of_reduced_quotient :
     ∀ (F K : Type) [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] (d : ℕ) (x : Fin (d + 1) → F), IsFinCover ℂ K x → IsReduced ((rB ℂ K x {0}) ⧸ (Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem ℂ K x j⟩ : rB ℂ K x {0})))) → ∀ φ : rB ℂ K x {0} →ₐ[ℂ] ℂ, (∀ j : Fin d, φ ⟨_, tco_mem ℂ K x j⟩ = 0) → ∀ b : rB ℂ K x {0}, φ b = 0 → ∃ (c : rB ℂ K x {0}) (g : Fin d → rB ℂ K x {0}), φ c ≠ 0 ∧ c * b = ∑ l, g l * ⟨_, tco_mem ℂ K x l⟩ := by
   intro F K _ _ _ _ _ _ d x hc hred φ hφ b hb
@@ -1370,8 +1366,7 @@ theorem UpperTheory.exists_regular_parameters_of_reduced_quotient :
     intro a ha
     rw [hI, Ideal.mem_span_range_iff_exists_fun] at ha
     obtain ⟨g, rfl⟩ := ha
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+    rw [map_sum]
     exact Finset.sum_eq_zero fun j _ => by rw [map_mul, hφ j, mul_zero]
   let ψ : (rB ℂ K x {0} ⧸ I) →ₐ[ℂ] ℂ := Ideal.Quotient.liftₐ I φ hφI
   have hψ : ∀ a, ψ (Ideal.Quotient.mk I a) = φ a := fun a => rfl

@@ -1128,8 +1128,7 @@ private theorem gsp_map_iff {R R' : Type} [CommRing R] [CommRing R'] (f : R →+
   rw [← Matrix.ext_iff]
   refine forall₂_congr fun i j => ?_
   have h1 : (adj (X.map f) * X.map f) i j = f ((adj X * X) i j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Matrix.mul_apply, adj_apply, Matrix.map_apply, map_sum, map_mul, map_zsmul]
+    simp only [Matrix.mul_apply, adj_apply, Matrix.map_apply, map_sum, map_mul, map_zsmul]
   have h2 : (f ν • (1 : M4 R')) i j = f ((ν • (1 : M4 R)) i j) := by
     simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, map_mul]
     split_ifs <;> simp

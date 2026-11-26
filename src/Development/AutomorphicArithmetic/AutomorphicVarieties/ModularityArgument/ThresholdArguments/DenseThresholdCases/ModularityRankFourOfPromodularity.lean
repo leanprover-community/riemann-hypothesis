@@ -103,8 +103,7 @@ private theorem ps_wt_any {D : Raw Ω c} (h : D.Good) {A : ValuationSubring Ω} 
   apply _root_.ps_wt_any <;> assumption
 private theorem map_psi {ι Γ R R' : Type} [Group Γ] [CommRing R] [CommRing R'] (P : PD ι Γ R) (f : R →+* R') (v : ι) (i : Fin 4)
     (s : Γ) : (P.map f).ψ v i s = f (P.ψ v i s) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [PD.ψ, PD.map, Matrix.mul_apply, adj_apply, map_sum]
+  simp [PD.ψ, PD.map, Matrix.mul_apply, adj_apply, map_sum]
 private theorem charpoly_conj {H K K' : Type} [Group H] [Field K] [Field K'] (f : K →+* K') {r r' : H →* M4 K}
     (h : IsConj4 r r') (g : H) : (mapRep f r g).charpoly = (mapRep f r' g).charpoly := by
   obtain ⟨u, hu⟩ := h

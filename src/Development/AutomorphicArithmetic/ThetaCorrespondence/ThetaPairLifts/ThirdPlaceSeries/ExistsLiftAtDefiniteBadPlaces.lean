@@ -1121,7 +1121,6 @@ theorem exists_map (hL : ActLev (Xo := Xo) c lev) (g : G) : ∃ r : Xo.XF c ⟶ 
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem split_rules (hq : Dw.q = 0) (hL : ActLev (Xo := Xo) c lev) (hF : GlobalTheory.DefPt.FreePt Xo c lev)
     (W : Submodule c.F (Rul Xo c)) (hW : ∀ b, ∀ f ∈ W, fnRule b * f ∈ W) (T : G → W →ₗ[c.F] W)
     (hT : ∀ g f, (T g f : Rul Xo c) = actLev c lev g f) (σ : c.F →+* ℂ) :

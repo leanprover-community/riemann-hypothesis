@@ -821,7 +821,6 @@ private theorem zc_split {l : ℕ} [hl : Fact l.Prime] (c c' : Coef l) (hcc : c.
   haveI : Module.Finite c.O c'.O := Module.Finite.of_restrictScalars_finite ℤ_[l] _ _
   haveI : FaithfulSMul c.O c'.O := (faithfulSMul_iff_algebraMap_injective _ _).2 (Subalgebra.inclusion_injective hcc)
   haveI : Module.IsTorsionFree c.O c'.O := FaithfulSMul.to_isTorsionFree c.O c'.O
-  set_option synthInstance.maxHeartbeats 200000 in
   haveI : Module.Free c.O c'.O := Module.free_of_finite_type_torsion_free'
   let b := Module.finBasis c.O c'.O
   let f : G → Fin m → c'.O := fun g i => ⟨z g i, hm g i⟩
@@ -835,8 +834,7 @@ private theorem zc_split {l : ℕ} [hl : Fact l.Prime] (c c' : Coef l) (hcc : c.
     have e : f (g * h) i = f g i + ∑ j, W.mat σ g i j • f h j := Subtype.ext (by
       rw [Subalgebra.coe_add, AddSubmonoidClass.coe_finsetSum]
       exact congrFun (hc g h) i)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [e, map_add (f := _), map_sum, map_smul, Pi.add_apply, Matrix.mulVec, dotProduct, smul_eq_mul]
+    simp only [e, map_add (f := _), map_sum, map_smul, Pi.add_apply, Matrix.mulVec, dotProduct, smul_eq_mul]
   · have e := congrArg Subtype.val (b.sum_repr (f g i))
     rw [AddSubmonoidClass.coe_finsetSum] at e
     refine e.symm.trans (Finset.sum_congr rfl fun k _ => ?_)

@@ -367,7 +367,6 @@ theorem finite_of_isdR {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field �
     (Bw : LocBridge l E Ω Gw O) (P : LocPrime l) {m : ℕ}
     (r : ↥Gw →* Matrix.GeneralLinearGroup (Fin m) O) (h : Bw.IsdRW P r) :
     FiniteDimensional ↥Bw.LL.1 ↥(Formalism.WeaklyAdmissibleFiltrations.DdR (P.PD Bw.Kw) (Bw.rep r)) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   rcases Nat.eq_zero_or_pos m with rfl | hm
   · haveI : Subsingleton (Formalism.WeaklyAdmissibleFiltrations.DdR (P.PD Bw.Kw) (Bw.rep r)) := by
       refine ⟨fun x y => Subtype.ext ?_⟩
@@ -384,7 +383,6 @@ theorem finite_of_isdR {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field �
     exact Module.finite_of_finrank_pos (by rw [h]; exact Nat.mul_pos Module.finrank_pos hm)
 
 theorem dims_of_mult : ∀ (D : D7) (bkP : BlochKatoReduction.BK D) (i : D.ntw.Tw) (s : D.ntw.Sig i), ∀ (v : HeightOneSpectrum (𝓞 D.host.E)) (hv : v ∈ placesOver D.host.E (D.ntw.l i)) (τ : EmbV bkP i v hv) (M : Multiset ℤ), HodgeL bkP i s → (∀ a : ℤ, Formalism.WeaklyAdmissibleFiltrations.multV (PDv bkP i v hv) (repV bkP i v hv (Tgl i s)) τ a = (M.count a : ℤ)) → dimD bkP i v hv (Tgl i s) τ = Multiset.card M ∧ dimFil0 bkP i v hv (Tgl i s) τ = Multiset.card (M.filter (0 ≤ ·)) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   intro D bkP i s v hv τ M hH hM
   have hdR := (hH v hv (Tgl i s) (Or.inr rfl)).1
   haveI := finite_of_isdR _ _ _ hdR
@@ -759,25 +757,24 @@ theorem r_pos (D : D7) : 0 < D.R.r := by
   unfold Formalism.BasicNotions.Ranks.r; omega
 
 theorem noJump_of_jumps : ∀ (D : D7) (bkP : BlochKatoReduction.BK D) (i : D.ntw.Tw) (s : D.ntw.Sig i), ∀ (ι : FractionRing (D.ntw.O0 i) →+* ℂ) (J : (D.host.E →+* ℂ) → Multiset ℤ), HodgeL bkP i s → JumpsAre bkP i s ι J → GoodJ D J → NoJump bkP i s := by
-  set_option synthInstance.maxHeartbeats 200000 in
-    intro D bkP i s ι J hH hJ hG v hv τ a ha
-    obtain ⟨τc, hτc, -⟩ := GlobalTheory.ReadEmbEx.exists_readEmb D bkP i ι v hv τ
-    have hdR := (hH v hv (Tgl i s) (Set.mem_insert_of_mem _ rfl)).1
-    have hK : 0 < Module.finrank ℚ_[D.ntw.l i] ↥(bkP.br i v hv).Kw.1 := by
-      have := (bkP.br i v hv).Kw.2
-      exact Module.finrank_pos
-    have hpos : 0 < Module.finrank ↥(bkP.br i v hv).LL.1
-        ↥(Formalism.WeaklyAdmissibleFiltrations.DdR (PDv bkP i v hv) (repV bkP i v hv (Tgl i s))) := by
-      have : Module.finrank ↥(bkP.br i v hv).LL.1
-        ↥(Formalism.WeaklyAdmissibleFiltrations.DdR (PDv bkP i v hv) (repV bkP i v hv (Tgl i s))) =
-          Module.finrank ℚ_[D.ntw.l i] ↥(bkP.br i v hv).Kw.1 * D.R.r := hdR
-      rw [this]; exact Nat.mul_pos hK (r_pos D)
-    have hm := multV_ne_zero _ _ τ a hpos ha
-    rw [hJ v hv τ τc hτc a] at hm
-    have hmem : a ∈ J τc := by
-      by_contra hn
-      exact hm (by simp [Multiset.count_eq_zero.mpr hn])
-    exact (hG τc).2.2 a hmem
+  intro D bkP i s ι J hH hJ hG v hv τ a ha
+  obtain ⟨τc, hτc, -⟩ := GlobalTheory.ReadEmbEx.exists_readEmb D bkP i ι v hv τ
+  have hdR := (hH v hv (Tgl i s) (Set.mem_insert_of_mem _ rfl)).1
+  have hK : 0 < Module.finrank ℚ_[D.ntw.l i] ↥(bkP.br i v hv).Kw.1 := by
+    have := (bkP.br i v hv).Kw.2
+    exact Module.finrank_pos
+  have hpos : 0 < Module.finrank ↥(bkP.br i v hv).LL.1
+      ↥(Formalism.WeaklyAdmissibleFiltrations.DdR (PDv bkP i v hv) (repV bkP i v hv (Tgl i s))) := by
+    have : Module.finrank ↥(bkP.br i v hv).LL.1
+      ↥(Formalism.WeaklyAdmissibleFiltrations.DdR (PDv bkP i v hv) (repV bkP i v hv (Tgl i s))) =
+        Module.finrank ℚ_[D.ntw.l i] ↥(bkP.br i v hv).Kw.1 * D.R.r := hdR
+    rw [this]; exact Nat.mul_pos hK (r_pos D)
+  have hm := multV_ne_zero _ _ τ a hpos ha
+  rw [hJ v hv τ τc hτc a] at hm
+  have hmem : a ∈ J τc := by
+    by_contra hn
+    exact hm (by simp [Multiset.count_eq_zero.mpr hn])
+  exact (hG τc).2.2 a hmem
 
 end GlobalTheory.NoJumpMult
 end -- clump:auto
@@ -993,8 +990,7 @@ theorem local_noInv (AI : LocAinf l P) (T : LocTied l P AI) {m : ℕ} (r r' : �
   · rintro _ ⟨z, rfl⟩
     induction z using TensorProduct.induction_on with
     | zero =>
-      set_option synthInstance.maxHeartbeats 200000 in
-        simp
+      simp
     | tmul v b => exact ⟨v ⊗ₜ[ℚ_[l]] ⟨b.1, (P.PD Bw.Kw).Fil_anti 0 b.2⟩, rfl⟩
     | add x y hx hy => simp only [map_add]; exact Submodule.add_mem _ hx hy
   · unfold multV at hm

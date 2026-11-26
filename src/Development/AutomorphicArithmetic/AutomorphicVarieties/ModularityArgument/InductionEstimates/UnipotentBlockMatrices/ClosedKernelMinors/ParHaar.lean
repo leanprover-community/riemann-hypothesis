@@ -212,8 +212,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.parHaar :
   let ρ := μ₂.prod (μ₂.prod (w.prod (unipMeasure K (2 + 2) 2)))
   haveI : SFinite (w.prod (unipMeasure K (2 + 2) 2)) := inferInstance
   haveI : SFinite (μ₂.prod (w.prod (unipMeasure K (2 + 2) 2))) := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact inferInstance
+    exact inferInstance
   haveI : (w.prod (unipMeasure K (2 + 2) 2)).IsOpenPosMeasure := inferInstance
   haveI : (μ₂.prod (w.prod (unipMeasure K (2 + 2) 2))).IsOpenPosMeasure := inferInstance
   haveI : ρ.IsOpenPosMeasure := inferInstance

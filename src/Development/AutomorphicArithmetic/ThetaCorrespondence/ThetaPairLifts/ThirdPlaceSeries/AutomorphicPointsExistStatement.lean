@@ -591,8 +591,7 @@ theorem isoTyp_scalar (a : NG.AlgWt L n) (J : Subgroup (GAf L n)) (χ : J →* �
       intro γ
       rw [hT γ g _ rfl, hTg]
     have := congrArg (fun u : S => ((T u : S') : GAf L n → a.W)) key
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_smul, map_sum, Submodule.coe_smul, Submodule.coe_sum, hTg, hterm] at this
+    simp only [map_smul, map_sum, Submodule.coe_smul, Submodule.coe_sum, hTg, hterm] at this
     exact this.symm
 
   have hsum : ∀ t : Finset (Submodule ℂ (GAf L n → a.W)),

@@ -242,7 +242,6 @@ theorem latW_ne_bot (h : GramAt p i) : latW (p.T.U ((i : ℕ) + 1)) (Gk p i) ≠
   exact ne_bot_of_form (cuspW_wtZ _ _) hs (p.fw.e i) hb hsp hy
 
 
-set_option maxHeartbeats 1000000 in
 /-- Parametric `slopeMax_sq` power bound for any supremum constant family `K : ℕ → ℝ → ℝ`
 satisfying the local slope comparison and `250 * f^2 * r^2 * L` log bound. -/
 theorem slopeMax_le_of_const {PP A : ℝ} (hR : RecTied D L) (hG : GramAt p i)
@@ -530,7 +529,6 @@ theorem UpperTheory.Lit.Tam.supConst2Bounds :
 end
 
 section
-set_option synthInstance.maxHeartbeats 400000
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV
   Formalism.L2.Pj Formalism.IndefR.Links ReciprocityTheory.ChartRestriction.G.Geo.Tor

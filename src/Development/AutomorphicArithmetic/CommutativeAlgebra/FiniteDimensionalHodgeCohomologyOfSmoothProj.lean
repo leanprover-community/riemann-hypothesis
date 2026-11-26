@@ -54,8 +54,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomol
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 private theorem smulHom_eq {X : Scheme.{0}} (F : X.Modules) (r : Γ(X, ⊤)) :

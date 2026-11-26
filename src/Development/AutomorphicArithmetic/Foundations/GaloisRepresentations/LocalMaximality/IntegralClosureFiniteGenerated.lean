@@ -131,9 +131,8 @@ private theorem fg_rB {F L : Type} [Field F] [Field L] [Algebra ℂ F] [Algebra 
     haveI : IsFractionRing (rA ℂ x J) F := (_root_.GlobalTheory.PD.rA_isFractionRing_isNoetherianRing ℂ F d x pd J ⟨i, hi⟩).1
     haveI : IsNoetherianRing (rA ℂ x J) := (_root_.GlobalTheory.PD.rA_isFractionRing_isNoetherianRing ℂ F d x pd J ⟨i, hi⟩).2
     haveI := rA_isIntegrallyClosed pd hi
-    set_option synthInstance.maxHeartbeats 200000 in
-      haveI : Module.Finite (rA ℂ x J) (integralClosure (rA ℂ x J) L) :=
-        IsIntegralClosure.finite (rA ℂ x J) F L (integralClosure (rA ℂ x J) L)
+    haveI : Module.Finite (rA ℂ x J) (integralClosure (rA ℂ x J) L) :=
+      IsIntegralClosure.finite (rA ℂ x J) F L (integralClosure (rA ℂ x J) L)
     have hfg : (rA ℂ x J).FG := by
       refine Subalgebra.fg_def.2 ⟨_, ?_, rfl⟩
       refine ((J.finite_toSet.prod (Set.finite_univ (α := Fin (d + 1)))).image
@@ -141,9 +140,8 @@ private theorem fg_rB {F L : Type} [Field F] [Field L] [Algebra ℂ F] [Algebra 
       rintro _ ⟨i', hi', j, rfl⟩
       exact ⟨(i', j), ⟨hi', trivial⟩, rfl⟩
     haveI : Algebra.FiniteType ℂ (rA ℂ x J) := (Subalgebra.fg_iff_finiteType _).1 hfg
-    set_option synthInstance.maxHeartbeats 200000 in
-      have hft : Algebra.FiniteType ℂ (integralClosure (rA ℂ x J) L) :=
-        Algebra.FiniteType.trans (S := rA ℂ x J) inferInstance inferInstance
+    have hft : Algebra.FiniteType ℂ (integralClosure (rA ℂ x J) L) :=
+      Algebra.FiniteType.trans (S := rA ℂ x J) inferInstance inferInstance
     exact (Subalgebra.fg_iff_finiteType (rB ℂ L x J)).2 hft
 
 private theorem integralClosure_finiteGenerated {F K L : Type} [Field F] [Field K] [Field L] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ L]

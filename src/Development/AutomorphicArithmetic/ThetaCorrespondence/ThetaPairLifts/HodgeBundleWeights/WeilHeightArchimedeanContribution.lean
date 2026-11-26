@@ -1533,8 +1533,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.Mean4 GlobalTheory.Mean4O
 open scoped ENNReal Classical
 
-set_option synthInstance.maxHeartbeats 400000
-
 noncomputable section
 
 namespace PositivityTheory.Xj7N
@@ -1573,8 +1571,7 @@ theorem norm_genVal_le {Z : Comp Xo c} {G : WTZ E} {N m : ℕ} {b : Module.Basis
   have e : ρ (genVal Z (f : Rul Xo c)) = ∑ j, (ρ.comp (algebraMap c.F (Om Z))) (b.repr f j) *
       ρ (genVal Z ((b j : cuspOn U Z G) : Rul Xo c)) := by
     conv_lhs => rw [← b.sum_repr f]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, Algebra.smul_def, map_mul, RingHom.comp_apply, AlgHom.commutes]
+    simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, Algebra.smul_def, map_mul, RingHom.comp_apply, AlgHom.commutes]
   rw [e]
   have h := norm_pairing_le (hF.herm (ρ.comp (algebraMap c.F (Om Z))))
     (fun j => (ρ.comp (algebraMap c.F (Om Z))) (b.repr f j)) (fun i => ρ (genVal Z ((b i : cuspOn U Z G) : Rul Xo c)))

@@ -237,8 +237,7 @@ theorem UpperTheory.ConvolutionTheory.Ci.truncSpec :
       rw [this]
       refine tendsto_finsetSum _ fun β _ => Tendsto.mul_const _ ?_
       exact (UpperTheory.ConvolutionTheory.FX.piece_sum _ (Φ.coeff β) L).tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hT, map_sum, Finset.mul_sum]
+    · rw [hT, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun β hβ => ?_
 
       rw [val, eval₂Hom_monomial, map_sum, ← mul_assoc, Finset.mul_sum]

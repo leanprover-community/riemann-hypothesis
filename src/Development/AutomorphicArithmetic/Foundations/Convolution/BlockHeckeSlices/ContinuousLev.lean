@@ -31,8 +31,7 @@ theorem int_of {h : AdelicGLn.AdelicGL E r → ℂ}
   have hfin := Reduction.isFiniteMeasure_quotientMeasure (K := E) (n := r) (mu1 E r)
   refine Integrable.of_bound ?_ C (Filter.Eventually.of_forall fun y => hC _)
   rw [funext (out_eq hh)]
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact (CuspidalSpectrum.continuous_cuspQuot hh hc).aestronglyMeasurable
+  exact (CuspidalSpectrum.continuous_cuspQuot hh hc).aestronglyMeasurable
 
 theorem one_le_qht (x : normOneGL (K := E) (n := r)) : 1 ≤ qht x := le_ciInf fun _ => AutomorphicForm.one_le_height _
 

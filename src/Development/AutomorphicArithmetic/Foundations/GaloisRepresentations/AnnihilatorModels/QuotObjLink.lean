@@ -468,7 +468,6 @@ theorem exists_gen_of_val_eq (hL : L.IsLB) {E F : Scheme.{0}} (π : E ⟶ F) (hF
         exact hψ
       · simp only [J, ite_eq_right hψ]
         exact (exists_chart hL (ψ z)).choose_spec
-    set_option synthInstance.maxHeartbeats 200000 in
     have hj : ∀ (g : Z ⟶ E), g z ∈ π ⁻¹ᵁ (L.pull φ).U j → (fun k : PUnit => J (g ≫ (π ≫ φ))) = j := by
       intro g hg
       funext k

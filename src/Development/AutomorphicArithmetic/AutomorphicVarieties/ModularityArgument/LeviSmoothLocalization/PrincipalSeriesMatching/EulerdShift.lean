@@ -176,7 +176,6 @@ private theorem far_ne {A : ℂ → ℂ} (hA : Differentiable ℂ A) (h0 : A ≠
   filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds
     (show c < ((c + 1 : ℝ) : ℂ).re by simp)] with s hs using h s hs
 
-set_option maxHeartbeats 1600000 in
 theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.sideXCen :
     UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.SideXCen := by
   have hGL := gamLocX
@@ -222,9 +221,8 @@ theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.sideXCen :
     simp [e2, hone]
   have hfi0 : ∃ y, fi y ≠ 0 := ⟨_, left_ne_zero_of_mul (hf' 1 ▸ hF1')⟩
   obtain ⟨φ, φ', k, k', hk, hk', hAd, hA0, hsh, hsh'⟩ := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact hAS K n hn1 (T p) m (fun τ u => by
-        rw [← hTc τ u p (((m τ).map (u + ·)).prod • p) (show _ = _ by first | exact ((hm τ).2 u _ hmem).symm), map_smul]) fi hfi hfi0 Measure.haar
+    exact hAS K n hn1 (T p) m (fun τ u => by
+      rw [← hTc τ u p (((m τ).map (u + ·)).prod • p) (show _ = _ by first | exact ((hm τ).2 u _ hmem).symm), map_smul]) fi hfi hfi0 Measure.haar
 
   have hz : ∀ v, ∃ z : Fin n → ℂˣ, v ∉ S →
       Spherical.IsSatakeParameter (F := v.adicCompletion K) (D.finite.π v) (localHaar n v) z ∧ B v = Finset.univ.val.map z :=
@@ -240,11 +238,10 @@ theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.sideXCen :
     fun v => if v ∈ S then Φb v else integralIndicator (v.adicCompletion K) n
   have hΦS : ∀ v ∈ S, Φ v = Φb v := fun v hv => ite_eq_left hv
   obtain ⟨c, c', hc, hc', hSB1, hG⟩ := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact genFE hn μ φ₀.2 φ₀.2 (h hmem) S hRS
-        D.finite.π x ℓ hsm hℓs (fun v hv => ⟨hfix v hv, hℓ1 v⟩) (fun v hv => hℓK v (hfix v hv)) D.finite.isIrreducible
-        D.finite.isAdmissible z (fun v hv => (hz v hv).1) fi hf' ⟨1, hF1'⟩ Φ (fun v hv => hΦS v hv ▸ hΦb v)
-        (fun v hv => ite_eq_right hv)
+    exact genFE hn μ φ₀.2 φ₀.2 (h hmem) S hRS
+      D.finite.π x ℓ hsm hℓs (fun v hv => ⟨hfix v hv, hℓ1 v⟩) (fun v hv => hℓK v (hfix v hv)) D.finite.isIrreducible
+      D.finite.isAdmissible z (fun v hv => (hz v hv).1) fi hf' ⟨1, hF1'⟩ Φ (fun v hv => hΦS v hv ▸ hΦb v)
+      (fun v hv => ite_eq_right hv)
   obtain ⟨σ₁, Λ, hΛ, h1⟩ := hG φ
   obtain ⟨σ₂, Λ', hΛ', h2⟩ := hG φ'
   have hloc : ∀ s, ∏ v ∈ S, zetaIntegral (localHaar n v) (Φ v)
@@ -302,12 +299,11 @@ theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.sideXCen :
     refine Finset.prod_congr rfl fun v hv => (hd v hv).2.2.2 s ?_
     have := Finset.single_le_sum (f := fun v => |cv v|) (fun _ _ => abs_nonneg _) hv
     linarith [le_abs_self (cv v)]
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine ⟨linPoly (∑ τ, m τ), (monic_multiset_prod_of_monic _ _ fun z _ => monic_X_add_C z).ne_zero,
-      Λ, fun s => Λ' (s + 1), fun s => c * archZeta Measure.haar φ fi s * ∏ v ∈ S, b v,
-      fun s => c' * archZeta Measure.haar (archMatrixFourier φ) (fun y => fi y⁻¹) (1 - s),
-      k, k', c₀, t, r, hΛ, hΛ'.comp (differentiable_id.add_const 1), ?_, hk, hk', fun s hs => ⟨?_, ?_⟩,
-      fun s hs => ⟨?_, ?_⟩⟩
+  refine ⟨linPoly (∑ τ, m τ), (monic_multiset_prod_of_monic _ _ fun z _ => monic_X_add_C z).ne_zero,
+    Λ, fun s => Λ' (s + 1), fun s => c * archZeta Measure.haar φ fi s * ∏ v ∈ S, b v,
+    fun s => c' * archZeta Measure.haar (archMatrixFourier φ) (fun y => fi y⁻¹) (1 - s),
+    k, k', c₀, t, r, hΛ, hΛ'.comp (differentiable_id.add_const 1), ?_, hk, hk', fun s hs => ⟨?_, ?_⟩,
+    fun s hs => ⟨?_, ?_⟩⟩
   · obtain ⟨s, hs, hA⟩ := far_ne hAd hA0 σ₁
     intro e
     have := (h1 s hs).2.1

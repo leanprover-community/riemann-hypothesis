@@ -1238,7 +1238,6 @@ private theorem cu_le_cint {K : Type} [Field K] (O : Type) [CommRing O] [Algebra
   · simp only [quo, ← map_inv, inv_inv]
     exact (hI u⁻¹).mul (isIntegral_star (hI u))
 
-set_option maxHeartbeats 1600000 in
 theorem UpperTheory.V.Z.Sym.Glob.gqG :
     UpperTheory.V.Z.Sym.Glob.GqG := by
   classical

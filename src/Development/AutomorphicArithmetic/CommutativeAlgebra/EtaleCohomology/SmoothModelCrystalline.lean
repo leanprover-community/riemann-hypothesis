@@ -765,10 +765,9 @@ theorem UpperTheory.Ru.crystallineComparison.injOf :
   have h1 := UpperTheory.Ru.crystallineComparison.injAbs l K (per l K) G (dat Amp) hF hE hL e' hB hP M hM a j κ v c u h0
   apply UpperTheory.Ru.crystallineComparison.eq_zero_of_coord
   intro f
-  set_option synthInstance.maxHeartbeats 100000 in
-    exact UpperTheory.Ru.crystallineComparison.lid_rTensor_sum_eq_zero ι hι B₀.c (per l K).i hc
-      (per l K).q hq (fun k => M.toV j (v k)) c
-      (Ring.inverse (B₀.c (UpperTheory.Ru.crystallineComparison.tA l))) f (h1 f)
+  exact UpperTheory.Ru.crystallineComparison.lid_rTensor_sum_eq_zero ι hι B₀.c (per l K).i hc
+    (per l K).q hq (fun k => M.toV j (v k)) c
+    (Ring.inverse (B₀.c (UpperTheory.Ru.crystallineComparison.tA l))) f (h1 f)
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -556,8 +556,7 @@ theorem UpperTheory.V.U3.modelIdeal_finiteness_of_weightZero_finite :
     rw [hcomp, Fintype.sum_prod_type, ← hx2]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     simp only [F]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.sum_mul, ← map_sum, Algebra.smul_def, ← hz i]
+    rw [← Finset.sum_mul, ← map_sum, Algebra.smul_def, ← hz i]
     congr 2
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [Algebra.smul_def]
@@ -689,7 +688,6 @@ private theorem conj_conj {G R : Type} [Group G] [CommRing R] (r : G →* GG (m 
   intro g
   simp [conjBy, map_mul, mul_assoc]
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem UpperTheory.V.U3.model_upper :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {Γ H : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
       {η : Γ →* ℤˣ} {Ψ : Γ →* (c.O)ˣ} {N : Set Γ} {ι : H →* Γ} {hι : Continuous ι}

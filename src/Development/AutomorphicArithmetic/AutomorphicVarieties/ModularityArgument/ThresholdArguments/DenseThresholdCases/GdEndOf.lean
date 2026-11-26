@@ -766,8 +766,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 200000
 
 section
 open UpperTheory.GalN.V

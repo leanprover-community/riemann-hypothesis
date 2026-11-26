@@ -1261,8 +1261,7 @@ theorem exists_flat_unit_section : _root_.GlobalTheory.CovTop.PublishedHodgeBund
   have hsum : wtOf (T.Q.Dw j) (parWt (T.Q.Dw j) fun τ => (N : ℤ) * w τ) 0 = ∑ τ, (-w τ) • G τ := by
     rw [parWt_eq_sum]
     show φw _ = _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+    rw [map_sum]
     refine Finset.sum_congr (Finset.eq_univ_of_forall fun x => by simp) fun τ _ => ?_
     show φw _ = (-w τ) • φw _
     rw [map_zsmul, map_zsmul, smul_smul]

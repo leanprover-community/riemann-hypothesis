@@ -147,8 +147,7 @@ theorem exists_sub_sum_mem_Tr {O σ : Type} [CommRing O] [Finite σ] (a : Ideal 
   classical
   refine ⟨(Finsupp.finite_of_degree_lt (σ := σ) N).toFinset.image (Finsupp.weight wt), fun n => ?_⟩
   by_cases hn : Finsupp.degree n < N
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sub, map_sum]
+  · rw [map_sub, map_sum]
     simp only [coeff_wcomp]
     rw [Finset.sum_eq_single (Finsupp.weight wt n), ite_eq_left rfl, sub_self]
     · exact zero_mem _

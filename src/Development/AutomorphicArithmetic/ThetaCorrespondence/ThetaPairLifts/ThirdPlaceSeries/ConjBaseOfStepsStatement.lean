@@ -341,7 +341,6 @@ section -- clump:auto
 noncomputable section
 open NumberField IsDedekindDomain
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1600000
 
 section CorePart
 

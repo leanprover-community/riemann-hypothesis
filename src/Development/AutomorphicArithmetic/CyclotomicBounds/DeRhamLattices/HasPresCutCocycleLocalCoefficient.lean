@@ -106,7 +106,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
 open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pass GlobalTheory.Cut GlobalTheory.UseLoc Module TensorProduct GlobalTheory.UseLoc.Cases UpperTheory.KN
 
 private theorem cutPres_gen {G O O' LL Q X : Type} [Group G] [CommRing O] [IsDomain O] [IsPrincipalIdealRing O]

@@ -498,7 +498,6 @@ theorem cusp_sub_span {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (σ�
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem cusp_sub_span_short {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (σ₀ : c.F →+* ℂ) (hσ₀ : GoodEmb c σ₀)
     (hU : ∀ σ, GoodEmb c σ → IsUnf (U σ)) (hr : 1 ≤ r) (hA : l.A = 1)
     (hG : ∀ k k', ((U σ₀).X k).Gm = ((U σ₀).X k').Gm ∧ ((U σ₀).X k).ξ0 = ((U σ₀).X k').ξ0)

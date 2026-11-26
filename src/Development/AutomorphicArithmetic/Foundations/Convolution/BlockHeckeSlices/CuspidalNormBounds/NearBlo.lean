@@ -1300,8 +1300,7 @@ private theorem finSpace (ρ : Typ E r) (B : ℝ) : ∃ W : Submodule ℂ (cuspF
       map_one' := Subtype.ext (map_one _)
       map_mul' := fun _ _ => Subtype.ext (map_mul _ _ _) }
   have hι : Continuous ι := (continuous_finEmb.comp continuous_subtype_val).subtype_mk _
-  set_option synthInstance.maxHeartbeats 200000 in
-    obtain ⟨U, hU, hUρ⟩ := openKer (ρ.ρ.comp ι) (ρ.cont.comp hι)
+  obtain ⟨U, hU, hUρ⟩ := openKer (ρ.ρ.comp ι) (ρ.cont.comp hι)
   obtain ⟨X, τ, hX⟩ := typeMap ρ
   refine ⟨_, C.nearFinite E r (Fin d) e ε hε2 (fun i j => by rw [← hB, horth]) U hU X τ c, fun S b hk hb =>
     Submodule.subset_span ⟨fun s x => ?_, fun u hu g => ?_, hX _ hk, (smEq E r b.f).2, κ b.Λ, ?_, ?_⟩⟩

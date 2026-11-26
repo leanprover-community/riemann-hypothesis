@@ -161,7 +161,6 @@ theorem cuspW_eq_of_exZ {Y : Deep T j} {e : ℕ} {o : ℝ} (hY : Y.Good e o) {G 
 
 theorem goodAt_of_exZ {Y : Deep T j} {e : ℕ} {o : ℝ} (hY : Y.Good e o) {G G' : WTZ D.host.E}
     (h : exZ (T.Q.Dw j) G = exZ (T.Q.Dw j) G') (hG : Y.GoodAt G) : Y.GoodAt G' := by
-  set_option synthInstance.maxHeartbeats 200000 in
   refine ⟨hasGram_nrm_of_good D T j Y e o hY G', ?_⟩
   have key : ∀ C C' : Submodule Y.d.c₂.F (Rul Y.d.Xo₂ Y.d.c₂), C = C' →
       ((GlobalTheory.AllWt.supLat C).FG ∧ Submodule.span Y.d.c₂.F (GlobalTheory.AllWt.supLat C : Set C) = ⊤) →
@@ -1129,7 +1128,6 @@ open GlobalTheory.LamT (CMPt)
 set_option synthInstance.maxHeartbeats 400000
 noncomputable section
 namespace GlobalTheory.CovTop.ShiftFG
-set_option maxHeartbeats 1000000 in
 theorem weight_lattice_pow_fg : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q →
     2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o →
     ∀ (la : GlobalTheory.AllWt.Weight (T.Q.Dw j)), (∀ τ, Antitone (la τ)) → (∀ τ, 1 ≤ gap (la τ) ((T.Q.Dw j).p - 1)) →
@@ -1196,7 +1194,6 @@ theorem exists_twPow (s : TwSec U x Z (wtOf Dw 0 1)) : ∀ n : ℕ, Nonempty (Tw
     exact ⟨(t.mul s).copy (by rw [← wtOf_add, add_zero, Nat.cast_succ])⟩
 
 
-set_option maxHeartbeats 1000000 in
 theorem span_latW_add (hU : ∀ σ, GoodEmb c σ → IsUnf (U σ)) (G G₀ : WTZ E) (hG : Even G.2)
     (hs : ∀ Z : Comp Xo c, Nonempty (TwSec U x Z G₀))
     (h : Submodule.span c.F (latW U G : Set (cuspW Xo c U G)) = ⊤) :
