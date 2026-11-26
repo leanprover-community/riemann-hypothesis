@@ -225,7 +225,7 @@ lemma exists_isLerayHirschBasis_of_isCohomDense [InvertsPrime A ℓ] (M : Torsio
         IsLerayHirschBasis (fun i : b ↦ i.val.snd) (freeAb (reprBy c)) := by
   -- The values `u i = i(1)` of homogeneous classes span the cohomology of the point, a vector
   -- space over `ZMod ℓ`. Let `b` index a basis among them, containing `j` if `u j ≠ 0`.
-  have module_zmod {N : AbFunctor D} : Module (ZMod ℓ) (TotalH N M.functor) :=
+  let module_zmod {N : AbFunctor D} : Module (ZMod ℓ) (TotalH N M.functor) :=
     AddCommGroup.zmodModule M.nsmul_totalH_eq_zero
   let u (i : Σ n : ℕ, H (locConstAlong g) M.functor n) :
     TotalH (freeAb (onePointFunctor D)) M.functor :=
@@ -734,7 +734,6 @@ lemma isLerayHirschBasis_lineBasis_of_injective
       congrArg (fun ξ ↦ comp ξ Θ.onElements.cupClass.toTotalH) map_pullbackAlong
     exact h_first.trans ((etaAt_swap Θ.onElements.onElements x' h_inf' a b).trans
       ((comp_assoc ..).trans (congrArg (pullbackAlong _) h_cup.symm)))
-
   -- Restriction `r` from the points of the line to the base point undoes the pull-back, and it
   -- corresponds to `at_inf` under `sliceEquiv`.
   let r {N : AbFunctor C} : TotalH (elementsProj (projLineAlong g) ⋙ N)
@@ -999,7 +998,6 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
           (map_sub (R.map j).hom _ _).trans
             (congrArg₂ (· - ·) (ρ_nat c d j x) (map_one (R.map j).hom))
         exact congrArg (fun a : R d ↦ F d (a, 1)) h_coordinate.symm)
-
   -- `α` sends a point `t` of the torus to `pow c t`, the untilts of the powers of the coordinate.
   let pow (c : PadicTest) (t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
       (kummerSeq (genericTestOver A)).X₂ c :=
@@ -1076,7 +1074,6 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       simp only [Bool.cond_false, Bool.cond_true, h_coord]
       change v = (F c (0, 0) - F c (0, X')) - (F c (0, 0) - F c (X - 1, 1))
       simpa only [sub_sub_sub_cancel_left, eq_sub_iff_add_eq] using h_frame
-
   have h_disc : oneSub (discTwist χ) ≫ f = 0 := by
     -- `charTwist χ` fixes `X`, as the roots of unity are trivial at `1` and `-1`.
     refine freeAb.hom_ext fun c y ↦ ?_

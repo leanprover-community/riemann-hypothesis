@@ -115,7 +115,7 @@ lemma New.Variety.exists_generic_chart {k : Type} [Field k] [CharZero k] {R : Co
     ⟨algHom .., q.ker_algebraMap_residueField.symm⟩
   have hψ_iff (x : a.coordRing) : ψ x = 0 ↔ x * γ = 0 := by simpa [hψ] using Ideal.ext_iff.mp hγ x
   rw [hψ] at hζ
-  have ⟨_, i, hi⟩ := hw₀
+  let ⟨_, i, hi⟩ := hw₀
   have h_ψw_ne : (fun i : ι ↦ ψ (w₀ i)) ≠ 0 := ne_iff.mpr ⟨i, (hi.map ψ).ne_zero⟩
   obtain ⟨n, Λ, hΛ_ne, hΛ⟩ := exists_isNoetherNormalization (k := k) h_ψw_ne
   -- Invert `β`, the product of `γ` and the value of `Λ 0`. Neither factor is in `q` (`γ * γ ≠ 0`),
