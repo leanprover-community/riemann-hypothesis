@@ -92,12 +92,6 @@ lemma absIntegrallyClosedSubrings.exists_mem_extendedIdeal_dvd [PreValuationRing
     exists_map_dvd_of_mem_map ((J.map_map ι ψ).le hx)
   exact ⟨ι d, mem_map_of_mem ι hd, hdx⟩
 
-/-- If `ℓ` is invertible in `D`, then it is invertible in every member of
-`absIntegrallyClosedSubrings γ`. -/
-lemma absIntegrallyClosedSubrings.isUnit_natCast_of_isUnit {γ : D →+* K} {ℓ : ℕ}
-    (hℓ : IsUnit (ℓ : D)) (B : absIntegrallyClosedSubrings γ) : IsUnit (ℓ : B.val) := by
-  simpa using hℓ.map (toRingHom B)
-
 /-- For subrings `S ≤ T` of `K` (the instance `Fact (S ≤ T)`), `T` is an `S`-algebra through the
 inclusion. -/
 instance : Algebra S T := (inclusion h.out).toAlgebra
@@ -519,7 +513,7 @@ lemma absIntegrallyClosedSubrings.exists_isSplitting_isMayerVietorisExact [IsAlg
     { eq_zero := h_split.eq_zero_of_map_eq_zero J
       exists_glue := h_split.exists_map_eq_and_map_eq J fun X₁ X₂ hX₁ hX₂ h_eq ↦ ?_
       exists_eq_sub := exists_eq_locConstSpec_map_sub_map (extendedIdeal J γ B) t₁ t₂ h_mul
-        h_integral (isUnit_natCast_of_isUnit hℓ B) h_cases (exists_mem_extendedIdeal_dvd J γ B)
+        h_integral (by simpa using hℓ.map (toRingHom B)) h_cases (exists_mem_extendedIdeal_dvd J γ B)
         h_ideal₁ h_ideal₂ h_ideal₃ h_le₁ h_le₂ }⟩
   -- Compatible clopens of the two charts are the basic opens of one `k ∈ B`.
   obtain ⟨k, hkX₁, hkX₂⟩ : ∃ k : B.val,
