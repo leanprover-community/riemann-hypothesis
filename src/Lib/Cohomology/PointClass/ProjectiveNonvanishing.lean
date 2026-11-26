@@ -1281,8 +1281,11 @@ lemma New.Variety.projSpace.hodgeTateMap_pointClass_ne_zero {p : ℕ} {k : Type}
       have h_pullback := congrArg (PairH.map (freeAb.map σ)) ((key_iff z).2 h)
       -- Since `σ` is a section, the left side is `hodgeTateMap 1` of the class of `[1 : 0]`, the
       -- restriction of `η`.
-      erw [← hodgeTateMap_map, ← HodgeH.map_comp, ← freeAb.map_comp, σ_mul, freeAb.map_id, H.map_id,
-        hη, map_zero,
+      have h_id : HodgeH.map (𝟙 (freeAb.obj (projSpace k 1)))
+          (pointClass 1 (affinePoint 0 0)) = pointClass 1 (affinePoint 0 0) :=
+        H.map_id _
+      rw [← hodgeTateMap_map, ← HodgeH.map_comp, ← freeAb.map_comp, σ_mul, freeAb.map_id,
+        h_id, hη, map_zero,
         map_eq_zero_iff _ IsChartCovered.pairRestrictBijective.injective_restrictToPairs]
         at h_pullback
       exact h_pullback
