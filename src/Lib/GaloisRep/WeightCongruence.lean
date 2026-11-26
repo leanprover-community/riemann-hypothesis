@@ -5,6 +5,7 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Group.CompactOpen
 import Mathlib.Topology.Algebra.Group.Matrix
 import Mathlib.Topology.MetricSpace.Ultra.ContinuousMaps
+import TauCeti.Topology.ContinuousMap.UltrametricStoneWeierstrass
 public import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 import Lib.Adelic.Adeles.StrongApproximation
@@ -19,7 +20,7 @@ import Lib.Weil.Unramified.HeckeGL
 
 A prime `l` and an isomorphism `ιℓ` from `ℂ` to the algebraic closure of `ℚ_[l]` are fixed. Twisting
 an algebraic modular form by its weight, evaluated at the components of `g` above `l`, gives its
-`l`-adic model. An ultrametric Stone–Weierstrass theorem is proved. It shows that combinations of
+`l`-adic model. Tau Ceti's ultrametric Stone–Weierstrass theorem shows that combinations of
 matrix coefficients of free weights are uniformly dense among continuous `l`-adic functions that
 factor through general linear groups over one finite extension of `ℚ_[l]`.
 
@@ -29,8 +30,6 @@ factor through general linear groups over one finite extension of `ℚ_[l]`.
   above `l` induced by the embeddings `New.weightEmbedding`, one for each infinite place.
 * `New.padicModel`: the `ιℓ`-semilinear map `f ↦ (g ↦ M ρ_κ'(z g)⁻¹ ιℓ(f g))`, where `ρ` is
   `New.weylRep` and `z` is `New.padicComponents`.
-* `New.stoneWeierstrass_ultrametric`: a function that agrees with an element of `N` on each fibre of
-  the family of all multipliers lies in the closure of `N`.
 * `New.mem_uniformClosure_weylRep_coeff`: a continuous function that factors through
   `z : X → ∏ GL_N(k)`, whose entries lie in one finite extension of `ℚ_[l]`, is a uniform limit
   (`New.uniformClosure`) of combinations of matrix coefficients of free weights.
@@ -61,7 +60,8 @@ concerns scalar-valued functions on a compact space over an ultrametric normed f
 function that agrees with some member of a subspace on each level set of the subspace's multipliers
 lies in the closure of that subspace. Source: Dieudonné 1944; Kaplansky, The Weierstrass theorem in
 fields with valuations (1950); module form as in Prolla, Approximation of Vector Valued Functions
-(1977) and Topics in Functional Analysis over Valued Division Rings (1982).
+(1977) and Topics in Functional Analysis over Valued Division Rings (1982). This file uses Tau
+Ceti's proof, `ContinuousMap.exists_mem_norm_sub_le_of_eq_on_multiplier_fibers`.
 
 Known result: Density of algebraic vectors, congruences to supercuspidal types, and limits of
 eigensystems. For definite unitary groups, a form is an l-adic uniform limit of forms with very
@@ -174,101 +174,17 @@ end EllAdicModel
 /-!
 ## Density of matrix coefficients of weights
 
-A Stone–Weierstrass theorem over an ultrametric field `k`, applied to matrix coefficients of general
-linear groups. For a submodule `N` of `C(X, k)`, `N / N` is the set of its multipliers.
+Tau Ceti's Stone–Weierstrass theorem over an ultrametric field `k`
+(`ContinuousMap.exists_mem_norm_sub_le_of_eq_on_multiplier_fibers`), applied to matrix coefficients
+of general linear groups. For a submodule `N` of `C(X, k)`, `N.leftOrder` is the subalgebra of its
+multipliers.
 -/
 
 section FreeWeightDensity
 
 open Module Finset IsUltrametricDist Matrix MvPolynomial Submodule Fintype ContinuousMap
 
-variable {X k : Type} [TopologicalSpace X] [CompactSpace X] [Nonempty X] [NormedField k]
-  [IsUltrametricDist k]
-
-/-- An ultrametric Stone–Weierstrass theorem. Suppose that for each point `a` some `d ∈ N` equals
-`φ` at all points where every multiplier `u ∈ N / N` takes the same value as at `a`. Then `φ` lies
-in the closure of `N`. -/
-lemma New.stoneWeierstrass_ultrametric (N : Submodule k C(X, k)) (φ : C(X, k))
-    (h_fibre : ∀ a : X, ∃ d ∈ N, ∀ x : X, (∀ u ∈ N / N, u x = u a) → φ x = d x) :
-    ∀ ε > (0 : ℝ), ∃ g ∈ N, ‖φ - g‖ ≤ ε := by
-  -- Suppose `φ` is at distance more than `ε` from every element of `N`. A maximal ideal `m` of the
-  -- ring of bounded multipliers cuts out a set `Z` on which all multipliers are constant, so some
-  -- `d ∈ N` agrees with `φ` on `Z`, and a multiplier outside `m` makes `φ - d` small everywhere.
-  by_contra! ⟨ε, hε, h_far⟩
-  -- `B` is the ring of the multipliers of norm at most one.
-  let A : Subalgebra k C(X, k) := (N / N).toSubalgebra (by simp) fun x y hx hy z hz ↦ by
-    simpa [mul_assoc] using hx _ (hy _ hz)
-  let B := A.toSubring ⊓ {closedBall_openAddSubgroup _ one_pos, Submonoid.unitClosedBall _ with}
-  have norm_le_one (c : B) : ‖(c : C(X, k))‖ ≤ 1 := mem_closedBall_zero_iff.mp c.property.2
-  have mul_mem_N (c : B) {d : C(X, k)} (hd : d ∈ N) : (c : C(X, k)) * d ∈ N := c.property.1 d hd
-  -- The `w` with `w * φ` within `ε` of `N` form a proper ideal of `B`; a maximal ideal holds it.
-  obtain ⟨m, _, h_near⟩ : ∃ m : Ideal B, m.IsMaximal ∧
-      ∀ w : B, ∀ g ∈ N, ‖w.val * φ - g‖ ≤ ε → w ∈ m := by
-    let N' : Submodule B C(X, k) :=
-      { N.toAddSubmonoid with smul_mem' := fun c _ hd ↦ mul_mem_N c hd }
-    let ball : Submodule B C(X, k) := ⟨(closedBall_openAddSubgroup _ hε).1.1,
-      fun c _ ↦ by simpa using! norm_mul_le_of_le (norm_le_one c)⟩
-    -- `1` is not in it, as `φ` is far from `N`
-    have h_ne_top : (N' ⊔ ball).comap (LinearMap.toSpanSingleton B C(X, k) φ) ≠ ⊤ := by
-      simpa [N', ball, Ideal.eq_top_iff_one, Submodule.mem_sup, ← eq_sub_iff_add_eq',
-        closedBall_openAddSubgroup] using h_far
-    obtain ⟨m, hm, h_le⟩ := Ideal.exists_le_maximal _ h_ne_top
-    exact ⟨m, hm, fun w g hg h ↦
-      h_le (mem_sup.2 ⟨g, hg, _, by simpa [ball] using! h, add_sub_cancel ..⟩)⟩
-  let P := m.primeCompl
-  have : Nonempty P := ⟨1⟩
-  let Z : Set X := {x | ∀ f : P, 1 ≤ ‖(f : C(X, k)) x‖}
-  -- By compactness, a bound for `g` on `Z` holds for `f * g` everywhere, for some `f ∉ m`.
-  have h_small (g : C(X, k)) {r : ℝ} (hr : 0 < r) (hg : ∀ x ∈ Z, ‖g x‖ ≤ r) :
-      ∃ f : P, ‖(f : C(X, k)) * g‖ ≤ r := by
-    let U (f : P) : Set X := ((f : C(X, k)) * g) ⁻¹' Metric.closedBall 0 r
-    have h_cover (x : X) : ∃ f : P, x ∈ U f := by
-      by_cases hx : x ∈ Z
-      · exact ⟨1, by simpa [U] using hg x hx⟩
-      -- Off `Z` some `f` has size less than one, and a power of it serves.
-      obtain ⟨f, hf⟩ : ∃ f : P, ‖(f : C(X, k)) x‖ < 1 := by simpa [Z] using hx
-      obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (show 0 < r / (‖g x‖ + 1) by positivity) hf
-      use f ^ n
-      suffices h_le : ‖(f : C(X, k)) x‖ ^ n * ‖g x‖ ≤ r by simpa [U] using h_le
-      calc ‖(f : C(X, k)) x‖ ^ n * ‖g x‖ ≤ r / (‖g x‖ + 1) * ‖g x‖ := by grw [hn]
-        _ ≤ r := by simp [field]
-    have h_mono (e f : P) : U f ⊆ U (e * f) := fun x hx ↦ by
-      simp only [U, Set.mem_preimage, Metric.mem_closedBall, dist_zero_right, ContinuousMap.coe_mul,
-        Pi.mul_apply, MulMemClass.coe_mul, norm_mul, mul_assoc] at hx ⊢
-      grw [norm_coe_le_norm, norm_le_one, one_mul, hx]
-    have h_open (f : P) : IsOpen (U f) :=
-      (isOpen_closedBall 0 hr.ne').preimage ((f : C(X, k)) * g).continuous
-    have h_directed : Directed (· ⊆ ·) U := fun e f ↦
-      ⟨e * f, by simpa [mul_comm] using h_mono f e, h_mono e f⟩
-    obtain ⟨f, hf⟩ : ∃ f : P, Set.univ ⊆ U f := isCompact_univ.elim_directed_cover U h_open
-      (fun x _ ↦ Set.mem_iUnion.2 (h_cover x)) h_directed
-    exact ⟨f, by simpa [U, norm_le, hr.le, Set.subset_def] using hf⟩
-  have h_const (u : C(X, k)) (hu : u ∈ N / N) (x : X) (hx : x ∈ Z) (a : X) (ha : a ∈ Z) :
-      u x = u a := by
-    -- On `Z`, `v` vanishes at `a` and is largest at some `y`. Suppose `v y ≠ 0`.
-    let v : C(X, k) := u - .const X (u a)
-    have hZ : IsClosed Z := isClosed_le (f := 1) (g := fun x (f : P) ↦ ‖(f : C(X, k)) x‖)
-      (by fun_prop) (by fun_prop)
-    obtain ⟨y, hy, h_max⟩ : ∃ y ∈ Z, IsMaxOn (fun x : X ↦ ‖v x‖) Z y :=
-      hZ.isCompact.exists_isMaxOn ⟨x, hx⟩ (by fun_prop)
-    refine eq_of_norm_sub_le_zero ((h_max hx).trans (not_lt.1 fun h_pos ↦ ?_))
-    obtain ⟨f, hf⟩ := h_small v h_pos h_max
-    -- `w = f * v / v y` vanishes at `a` and `f - w` at `y`, so both lie in `m`, while `f` does not.
-    let w : B := ⟨(v y)⁻¹ • (f * v),
-      A.smul_mem (mul_mem f.val.property.1 (sub_mem hu (algebraMap_mem ..))) _, by
-        simpa [norm_smul, field, closedBall_openAddSubgroup]⟩
-    have w_mem : w ∈ m := by_contra fun hw ↦ (ha ⟨w, hw⟩).not_gt (by simp [w, v])
-    have diff_mem : f - w ∈ m := by_contra fun hw ↦
-      (hy ⟨_, hw⟩).not_gt (by simp [w, mul_comm, norm_pos_iff.1 h_pos])
-    exact f.property ((m.sub_mem_iff_left w_mem).mp diff_mem)
-  -- Take `d` for a point of `Z` (any point if `Z` is empty).
-  obtain ⟨d, hd, hφd⟩ := h_fibre (Classical.epsilon fun x ↦ x ∈ Z)
-  -- On `Z` all multipliers are constant, so `φ = d` there.
-  have h_bound : ∀ x ∈ Z, ‖(φ - d) x‖ ≤ ε := fun x hx ↦ by
-    simp [hφd x fun u hu ↦ h_const u hu x hx _ (Classical.epsilon_spec ⟨x, hx⟩), hε.le]
-  obtain ⟨f, hf⟩ := h_small (φ - d) hε h_bound
-  have h_near_f : ‖(f : C(X, k)) * φ - (f : C(X, k)) * d‖ ≤ ε := by rwa [← mul_sub]
-  exact f.property (h_near f _ (mul_mem_N f hd) h_near_f)
+variable {X k : Type} [TopologicalSpace X] [CompactSpace X] [NormedField k] [IsUltrametricDist k]
 
 /-- An algebraically closed extension of `ℚ_[l]` has infinite degree over every finite extension. -/
 lemma New.natCast_le_rank_of_isAlgClosed {l : ℕ} [Fact l.Prime] {K : Type*} [Field K]
@@ -358,8 +274,8 @@ lemma New.mem_uniformClosure_weylRep_coeff {l N : ℕ} {Φ : Type} [Fact l.Prime
             ψ = fun γ : X ↦ β ⬝ᵥ weylRep κ e (z γ) *ᵥ ξ} := by
   -- Evaluate semi-invariant polynomials `F` at `z γ * y` for a fixed triangular `y`. The functions
   -- so obtained from the weights `κ d` span a space `S` of matrix coefficients. The first-column
-  -- entries multiply `S` into itself and determine `z γ`, so `stoneWeierstrass_ultrametric`
-  -- applies.
+  -- entries multiply `S` into itself and determine `z γ`, so the ultrametric Stone–Weierstrass
+  -- theorem `ContinuousMap.exists_mem_norm_sub_le_of_eq_on_multiplier_fibers` applies.
   obtain ⟨v, hv⟩ : ∃ v : Fin N → k, LinearIndependent L v :=
     exists_linearIndependent_of_le_rank (natCast_le_rank_of_isAlgClosed L N)
   let y (x : (Σ _ : Φ, Fin N) × ℕ) : k := if x.2 ≤ x.1.2 then v x.1.2 else 0
@@ -372,7 +288,8 @@ lemma New.mem_uniformClosure_weylRep_coeff {l N : ℕ} {Φ : Type} [Fact l.Prime
   let S : Submodule k C(X, k) :=
     span k {E F | (d) (F ∈ nabla k Sigma.fst (diagramWeight (fun _ ↦ N + 1) (κ d)))}
   -- Multiplying by a variable of the first column raises `d τ` by one.
-  have h_mul (τ : Φ) (a : Fin N) : E (.X (⟨τ, a⟩, 0)) ∈ S / S := by
+  have h_mul (τ : Φ) (a : Fin N) : E (.X (⟨τ, a⟩, 0)) ∈ S.leftOrder := by
+    refine mem_leftOrder_iff.2 (mem_div_iff_forall_mul_mem.1 ?_)
     refine mapsTo_span (f := .mulLeft ..) ?_
     rintro _ ⟨d, F, hF, rfl⟩
     refine ⟨d + Pi.single τ 1, minor k ![⟨τ, a⟩] * F, ?_, ext (by simp [E, minor])⟩
@@ -386,7 +303,7 @@ lemma New.mem_uniformClosure_weylRep_coeff {l N : ℕ} {Φ : Type} [Fact l.Prime
     rw [h_weight]
     exact SetLike.mul_mem_graded (minor_mem_nabla (Fin.forall_fin_one.2 rfl)) hF
   -- That multiplier is `∑ b, z γ τ a b * v b` at `γ`, and `v` is independent over `L`.
-  have z_eq (γ δ : X) (h : ∀ u ∈ S / S, u δ = u γ) : z δ = z γ := by
+  have z_eq (γ δ : X) (h : ∀ u ∈ S.leftOrder, u δ = u γ) : z δ = z γ := by
     ext τ a b
     -- the multiplier of `h_mul τ a` takes the value `∑ b, z γ τ a b * v b` at `γ`
     have h_sum_L : ∑ b, (⟨_, hL δ τ a b⟩ : L) • v b = ∑ b, (⟨_, hL γ τ a b⟩ : L) • v b := by
@@ -399,12 +316,12 @@ lemma New.mem_uniformClosure_weylRep_coeff {l N : ℕ} {Φ : Type} [Fact l.Prime
   have w_ne : w.eval y ≠ 0 := by
     simp [w, y, tableauPoly, prod_eq_zero_iff, BlockTriangular, hv.ne_zero,
       det_of_isLowerTriangular, minor, RingHom.map_det]
-  have h_local (γ : X) : ∃ b ∈ S, ∀ δ : X, (∀ u ∈ S / S, u δ = u γ) → φ δ = b δ := by
+  have h_local (γ : X) : ∃ b ∈ S, ∀ δ : X, (∀ u ∈ S.leftOrder, u δ = u γ) → φ δ = b δ := by
     refine ⟨E ((φ γ / w.eval y) • rowSubst (fun τ ↦ (z γ τ).val⁻¹) w), subset_span
       ⟨0, _, smul_mem _ _ (rowSubst_mem_nabla _ prod_tableauPoly_mem_nabla), rfl⟩, fun δ h ↦ ?_⟩
     simp [E, z_eq γ δ h, h_factors (z_eq γ δ h), rowSubst_rowSubst, w_ne]
   refine mem_uniformClosure.2 fun ε hε ↦ ?_
-  obtain ⟨g, hg, h_near⟩ := stoneWeierstrass_ultrametric S ⟨φ, hφ⟩ h_local ε hε
+  obtain ⟨g, hg, h_near⟩ := exists_mem_norm_sub_le_of_eq_on_multiplier_fibers S ⟨φ, hφ⟩ h_local hε
   refine ⟨g, mapsTo_span (f := coeFnLinearMap k) ?_ hg, (norm_le _ hε.le).mp h_near⟩
   -- Each generator is a matrix coefficient: expand `F` in the family `b` of the basis products of
   -- minors times the power of the determinant that the columns of height `N` contribute.
