@@ -243,7 +243,9 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
     simpa [← h_coef] using isUnitaryRep_rightRegularL2.form_apply_eq_form_inv_apply x⁻¹
       (hg.toL2 (b i)) (hg.toL2 l.dsGenerator)
   have v_sum : hg.toL2 v = ∑ i : I, ⟪(b i).val, v⟫_ℂ • hg.toL2 (b i) := by
-    simpa using (congrArg (fun w : V ↦ hg.toL2 w) (b.sum_repr' ⟨v, (hV v).2 ⟨v_high, v_mem⟩⟩)).symm
+    have h := congrArg (fun w : V ↦ hg.toL2 w) (b.sum_repr' ⟨v, (hV v).2 ⟨v_high, v_mem⟩⟩)
+    simp only [AddSubmonoidClass.coe_finsetSum, SetLike.val_smul, map_sum, map_smul] at h
+    exact h.symm
   simpa [φ_u, v_sum, v_b, b_u, ← mul_sum, sub_eq_zero, ← inv_mul_eq_iff_eq_mul₀, mul_assoc,
     ne_of_gt] using h_rep
 

@@ -687,8 +687,8 @@ theorem isLaplaceHarmonic_of_isKHighest {ν : R → ℤ} {l : HCParam ε} {P : M
   · rw [h_comm x x a b rfl, h_weight]
     simp only [map_smul, Pi.add_apply, Pi.sub_apply, single_apply, eq_comm (a := b)]
     split_ifs <;> simp_all [add_smul, sub_smul]
-  · rw [h_comm x z a b hxz, h_raise x z hxz h_lt]
-    grind
+  · rw [h_comm x z a b hxz, h_raise x z hxz h_lt, map_zero, zero_add]
+    split_ifs <;> grind
 
 /-- Let `ε a = ε b`. If the compact matrix unit `E b a` of the row action maps `N` into `G`, then
 `E a b` maps `perpInDegree j G` (the orthogonal complement of `G` in degree at most `j`) into

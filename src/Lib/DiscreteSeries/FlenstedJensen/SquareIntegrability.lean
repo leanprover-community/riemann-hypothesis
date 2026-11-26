@@ -824,7 +824,8 @@ theorem norm_dsCoeff_sub_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L)
       have h_inv : HasDerivAt (fun s ↦ (u s)⁻¹ʳ) ((2 : ℝ)⁻¹ • (w⁻¹.1 * (A * w⁻¹.1))) t := by
         simpa [Function.comp_def, mul_assoc] using
           (hasFDerivAt_ringInverse (𝕜 := ℝ) w).comp_hasDerivAt_of_eq t h_u hw.symm
-      simpa [γ, γ', hw, mul_add, mul_assoc, smul_comm t (2 : ℝ)⁻¹, add_comm] using
+      simpa [γ, γ', hw, mul_add, mul_assoc, smul_comm t (2 : ℝ)⁻¹,
+        add_comm (x.1.1 * _)] using
         ((((hasDerivAt_id t).smul_const A).mul h_inv).const_add 1).const_mul x.1.1
     have norm_γ : ‖(γ t).1.1‖ ≤ 3 := by
       grw [hγ, norm_add_le, norm_smul, norm_mul_le, norm_inv_le, hA, norm_of_nonneg ht₀, ht₁]
