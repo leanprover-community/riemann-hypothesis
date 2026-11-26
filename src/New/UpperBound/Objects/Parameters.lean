@@ -512,7 +512,7 @@ lemma card_stem_gridCentres (z : Bool) : #(D.gridCentres τ z).stem = D.r + z.to
 `o` lie in the centres `(D.gridCentres τ z).centres` of the grid `z` at `τ`. -/
 lemma gridBlocks_subset (z : Bool) (hi : i ≤ D.m) (hj : o + j ≤ D.m) :
     gridBlocks o i j ⊆ (D.gridCentres τ z).centres :=
-  disjSum_mono (range_subset_range.2 hi) (by grind)
+  disjSum_mono (range_subset_range.2 hi) fun _ hl ↦ mem_range.2 ((mem_Ico.1 hl).2.trans_le hj)
 
 end Nodes
 
