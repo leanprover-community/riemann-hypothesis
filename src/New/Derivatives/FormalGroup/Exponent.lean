@@ -233,12 +233,6 @@ lemma expSubst_negLogThetaPart_sub_mem :
   exact prod_mem fun i _ ↦ C.expSubst_rescale_sub_mem_of_pow_eq_one
     (by rw [pow_right_comm, hζ.pow_eq_one, one_pow])
 
-/-- For `ϖ ≠ 0` the exponent `Ξ₁ = C.exponentSeries ϖ` satisfies `c_ϖ Ξ₁ = -g^♭(ϖ z)`, where
-`c_ϖ = ϖ ^ (p + 1) / p` and `g^♭ = C.negLogThetaPart`. -/
-lemma smul_exponentSeries {ϖ : ℂ_[p]} (hϖ0 : ϖ ≠ 0) :
-    (ϖ ^ (p + 1) / p) • C.exponentSeries ϖ = -rescale ϖ C.negLogThetaPart := by
-  simp [exponentSeries, smul_smul, hϖ0, (Fact.out : p.Prime).ne_zero]
-
 /-- Let `θ` be the Taylor series of `C.θ`, the twisted translate of the sigma function of `C` by the
 point `C.t` of order two, normalised to `θ(0) = 1` and read in `ℂ_p` by the embedding `ιₚ`. Let
 `ϖ ≠ 0` have valuation at least `ρ_p = v(π_p) / (q_p - 1)`. Then `θ(ϖ z) = W exp (c_ϖ Ξ₁)` for a
@@ -255,7 +249,8 @@ lemma exists_rescale_theta_eq_mul_expSubst {ϖ : ℂ_[p]} (hϖ0 : ϖ ≠ 0)
     rw [← expSubst_add _ (by simp [constantCoeff_negLogThetaPart, constantCoeff_negLogTheta])
       h_flat_zero, taylorVia_theta_eq_expSubst, ← sub_eq_add_neg, sub_sub_cancel_left]
   refine ⟨W, ?_⟩
-  rw [h_theta, map_mul, hW, smul_exponentSeries C hϖ0, rescale_subst h_flat_zero, map_neg]
+  rw [h_theta, map_mul, hW, show (ϖ ^ (p + 1) / p) • C.exponentSeries ϖ = -rescale ϖ C.negLogThetaPart by
+    simp [exponentSeries, smul_smul, hϖ0, (Fact.out : p.Prime).ne_zero], rescale_subst h_flat_zero, map_neg]
 
 /-! ## Step 2: the functional equation -/
 
