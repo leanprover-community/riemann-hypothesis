@@ -173,11 +173,6 @@ lemma continuous_stdAddChar : Continuous (stdAddChar E) := by
   simp only [funext stdAddChar_eq_mul_ψf]
   fun_prop
 
-/-- Every value of `ψf E` is `exp (2πi q)` for a rational number `q`. -/
-lemma exists_ψf_eq_fourierChar (x : 𝔸f E) : ∃ q : ℚ, ψf E x = Real.fourierChar q := by
-  obtain ⟨a, ha⟩ : ∃ a : E, x - a ∈ Ô E := exists_sub_mem_Ô x
-  exact ⟨trace ℚ E a, by rw [← ψf_coe, ← div_eq_one, ← map_sub_eq_div, ψf_eq_one_of_mem ha]⟩
-
 /-- For a finite adele `x` of `E`, the character `ψf E` (the finite part of the standard additive
 character) is trivial on `u * x` for all integral finite adeles `u ∈ Ô E` if and only if `d * x`
 is integral for every `d` in the different of `E` over `ℚ`. -/
@@ -322,7 +317,9 @@ lemma mem_ratAdeles_of_stdAddChar_eq_one {x : 𝔸 E}
   -- The values of `ψf` are `exp (2πi q)` with `q` rational, so the traces of the infinite part of
   -- `x` against `E` are rational; this makes the infinite part that of some `a` in `E`.
   have h_rat (b : E) : ∃ q : ℚ, T b = q := by
-    obtain ⟨q, hq⟩ : ∃ q : ℚ, ψf E (b * x.2) = Real.fourierChar q := exists_ψf_eq_fourierChar _
+    obtain ⟨q, hq⟩ : ∃ q : ℚ, ψf E (b * x.2) = Real.fourierChar q := by
+      obtain ⟨a, ha⟩ := exists_sub_mem_Ô ((algebraMap E (𝔸f E) b) * x.2)
+      exact ⟨trace ℚ E a, by rw [← ψf_coe, ← div_eq_one, ← map_sub_eq_div, ψf_eq_one_of_mem ha]⟩
     obtain ⟨n, hn⟩ : ∃ n : ℤ, -T b + q = n :=
       fourierChar_eq_one_iff.1 (by rw [map_add_eq_mul, ← hq, h_prod])
     exact ⟨q - n, by simp [← hn]⟩
