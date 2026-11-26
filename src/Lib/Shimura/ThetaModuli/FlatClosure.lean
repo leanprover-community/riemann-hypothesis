@@ -835,7 +835,8 @@ lemma flat_snd_and_iInf_ker_eq_of_isCutOutAt {J W ι I κ : Type} {S : Scheme} {
       (fun ⟨a, ψ, hψ⟩ ↦ isCutOut_of_isCutOutAt h_lin hl hψ (h_fib (j a)) c) fun f ↦ ?_
     rw [(hu s c).mem_ker_stalk_iff (ξ := fun a ↦ η (j a)) (θ := fun a ↦ θ (j a))
       hx₀_dense h_over h_coords f]
-    exact ⟨fun h ⟨a, ψ, hψ⟩ ↦ h a ψ hψ, fun h a ψ hψ ↦ h ⟨a, ψ, hψ⟩⟩
+    simp only [Pts, PSigma.forall, idealAt]
+    rfl
   constructor
   · exact flat_of_isChartPresentation (hu s) fun c ↦ (h_map_eq_flat c).right
   · refine fun c ↦ (h_map_eq_flat c).left.trans (eq_of_forall_ge_iff fun 𝔞 ↦ ?_)
