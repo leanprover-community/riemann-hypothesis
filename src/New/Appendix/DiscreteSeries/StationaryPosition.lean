@@ -106,11 +106,6 @@ lemma neg_one_pow_mul_eval_nodal_pos (h : AreOppositeNodes μ μ') (i : Fin L) :
 lemma eval_nodal_ne_zero (h : AreOppositeNodes μ μ') (i : Fin L) : (nodal univ μ').eval (μ i) ≠ 0 :=
   right_ne_zero_of_mul (h.neg_one_pow_mul_eval_nodal_pos i).ne'
 
-/-- If each `μ i` lies below each `μ' j`, then `nodal univ μ = ∏ i, (t - μ i)` takes a positive
-value at each `μ' j`. -/
-lemma eval_nodal_pos (h : AreOppositeNodes μ μ') (j : Fin L') : 0 < (nodal univ μ).eval (μ' j) := by
-  simpa [eval_nodal] using prod_pos fun i (_ : i ∈ univ) ↦ sub_pos.2 (h.lt i j)
-
 /-- For opposite nodes no entry of the vector `[q] = polyVec μ μ' q` of `q = ∏ (t - μ' j)` is zero:
 it is `q (μ i)` divided by `|p' (μ i) q (μ i)| ^ (1 / 2)`, where `p = ∏ (t - μ i)`. -/
 lemma polyVec_nodal_ne_zero (h : AreOppositeNodes μ μ') (i : Fin L) :
@@ -248,7 +243,7 @@ lemma isometryScale_mul_alternatingSignForm (h : AreOppositeNodes μ μ') (hL : 
   -- `P = p (μ' j)` is positive and `Q = q' (μ' j)` has the sign `(-1) ^ (L' - 1 - j)`.
   set P : ℝ := (nodal univ μ).eval (μ' j) with hP
   set Q : ℝ := (derivative (nodal univ μ')).eval (μ' j) with hQ
-  have hP_pos : 0 < P := h.eval_nodal_pos j
+  have hP_pos : 0 < P := by simpa [P, eval_nodal] using prod_pos fun i (_ : i ∈ univ) ↦ sub_pos.2 (h.lt i j)
   have hQ_sign : 0 < (-1) ^ (L' - 1 - (j : ℕ)) * Q :=
     derivative_nodal_sign_of_strictMono h.strictMono j
   have hQ_ne : Q ≠ 0 := right_ne_zero_of_mul hQ_sign.ne'
