@@ -896,7 +896,13 @@ lemma exists_equiv_schur_one_row_eq_symPowMatrix {a : ℕ} {m σ : Type} [Fintyp
   -- Only columns of height `1` count, so each basis vector is a monomial of degree `a` in the
   -- first column of variables, and all such monomials occur. In this basis `schur` is the matrix
   -- of a linear substitution on forms of degree `a`.
-  have h_size : ∑ h ∈ range (card m), h * k h = a := by grind [sum_eq_ite 1]
+  have h_size : ∑ h ∈ range (card m), h * k h = a := by
+    have h_zero (h : ℕ) (hh : h ∈ range (card m)) (hne : h ≠ 1) : h * k h = 0 := by
+      obtain rfl | hpos := h.eq_zero_or_pos
+      · exact zero_mul _
+      · rw [h_k_eq h hpos (mem_range.mp hh), ite_eq_right hne, mul_zero]
+    rw [sum_eq_ite 1 h_zero, ite_eq_left (mem_range.mpr h_card), one_mul,
+      h_k_eq 1 Nat.one_pos h_card, ite_eq_left rfl]
   -- The exponent at `b` counts entries equal to `q b`. The total degree is the number of boxes.
   let φ (i : WeylIndexFamily (fun _ : Unit ↦ m) fun () ↦ k) : Monomials σ a :=
     ⟨∑ h, ∑ j, ∑ s, Finsupp.single (q.symm ((i ()).val h j s)) 1, by
