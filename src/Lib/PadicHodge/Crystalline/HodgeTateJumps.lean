@@ -550,7 +550,8 @@ lemma jump_twist_of_period (a : Γ → R) {v : ℤ} {y : ℂ_[p]} (hy : y ≠ 0)
     set c : ℂ_[p] := (χ g ^ (-v)).val • toGp g • y with hc
     have hc_ne : c ≠ 0 := by simp [hc, hy, smul_eq_zero_iff_eq]
     have h_lhs : (y • F) (ρ' g x) = c * F (ρ g x) := by
-      simp [← hg, h_twist, mul_comm, mul_left_comm, mul_assoc]
+      simp only [h_twist, LinearMap.map_smulₛₗ, RingHom.coe_coe, LinearMap.smul_apply, smul_eq_mul,
+        mul_left_comm, ← hg, mul_comm, mul_assoc]
     have h_rhs : (χ g ^ (-(u + v))).val • toGp g • (y • F) x =
         c * ((χ g ^ (-u)).val • toGp g • F x) :=
       calc _ = ((χ g ^ (-v)).val * (χ g ^ (-u)).val) • (toGp g • y * toGp g • F x) := by
