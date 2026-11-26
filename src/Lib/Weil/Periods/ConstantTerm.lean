@@ -35,8 +35,8 @@ properties.
 * `New.Grading.constTerm_mul_of_mem_ratBessel`, `New.Grading.constTerm_mul_of_mem_unipotent` (both
   cases together: `New.Grading.constTerm_mul`), `New.Grading.constTerm_congr_rat`,
   `New.Grading.constTerm_eq_homBicharacter_mul`: its transformation laws.
-* `New.Grading.hasSum_constTerm_out`, `New.Grading.exists_tsum_enorm_constTerm_le` (both together:
-  `New.Grading.hasSum_constTerm`): Fourier expansion of `f 0` in constant terms, with a bound.
+* `New.Grading.hasSum_constTerm_out`, `New.Grading.exists_tsum_enorm_constTerm_le`: Fourier
+  expansion of `f 0` in constant terms, with a bound.
 * `New.Grading.unfoldStep`: the unfolded function `𝒲'`. The laws of the constant term and the
   following properties are proved for `s' = s - 1`. `New.Grading.continuous_unfoldStep`: it is
   continuous if `W` is equivariant. `New.Grading.unfoldStep_rat_mul`: it is left invariant under the
