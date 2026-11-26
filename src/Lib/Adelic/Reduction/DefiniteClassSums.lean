@@ -250,18 +250,6 @@ instance : (volume : Measure (G E s)).IsMulRightInvariant := by
 
 namespace Space
 
-/-- Unfolding on a space with all signs `1`: for `Φ` integrable on `G`, the sum
-`g ↦ ∑ γ ∈ Γ, Φ (γ g)` over the rational points `Γ = V.Γ`, written as an integral for the counting
-measure, is integrable on `[G]`, with the same integral as `Φ`. Integration on `[G] = Γ \ G` is by
-`V.quotMeasure`. -/
-lemma integral_quotMeasure_integral {V : Space E n 1} {Φ : G E (1 : n → ℤˣ) → W}
-    (hΦ : Integrable Φ) :
-    Integrable (fun g : G E (1 : n → ℤˣ) ↦ ∫ γ : V.Γ, Φ (γ • g) ∂count) V.quotMeasure ∧
-      ∫ g : G E (1 : n → ℤˣ), ∫ γ : V.Γ, Φ (γ • g) ∂count ∂V.quotMeasure =
-        ∫ g : G E (1 : n → ℤˣ), Φ g := by
-  obtain ⟨h_prod, h_eq⟩ := (measurePreserving_orbitMeasure (ν := count (α := V.Γ))).fubini hΦ
-  exact ⟨h_prod.integral_prod_left, h_eq⟩
-
 /-- Let `f g` be the integral of `F` over `G_∞ × {g}` (`G_∞ = GInf E 1` is the group at the
 infinite places), let the level `K` fix `f` under right translation (`rightStabilizer f`), and let
 `u` be a finite point such that the indicator of `G_∞ × u K` times `F` is integrable. Then the
@@ -349,7 +337,8 @@ lemma integral_quotMeasure_eq_classSum {V : Space E n 1} {F : G E (1 : n → ℤ
   have h_unfold (c : DoubleCosets V.Γf K) :
       Integrable (fun g : G E (1 : n → ℤˣ) ↦ ∫ γ : V.Γ, Φ c.out (γ • g) ∂count) V.quotMeasure ∧
         ∫ g, ∫ γ : V.Γ, Φ c.out (γ • g) ∂count ∂V.quotMeasure = ∫ g, Φ c.out g :=
-    integral_quotMeasure_integral (h_int c.out)
+    let ⟨h_prod, h_eq⟩ := (measurePreserving_orbitMeasure (ν := count (α := V.Γ))).fubini (h_int c.out)
+    ⟨h_prod.integral_prod_left, h_eq⟩
   have h_vol (u : Gf E n) : ∫ g, Φ u g = (stdLevelIndex K : W)⁻¹ * f u :=
     integral_indicator_univ_prod_coset hF_avg K hf_stab u (h_int u)
   calc ∫ g, F g ∂V.quotMeasure
