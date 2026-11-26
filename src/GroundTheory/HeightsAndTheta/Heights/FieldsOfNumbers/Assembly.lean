@@ -266,8 +266,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial Filter
@@ -319,8 +317,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
@@ -355,8 +351,6 @@ end -- clump:auto
 -- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbIrrelevantZero", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegreeBound\npublic import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -431,8 +425,6 @@ end -- clump:auto
 -- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumAdd", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -679,8 +671,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open GroundTheory.Heights₂.Heights.NumbersDVR Filter
@@ -789,8 +779,6 @@ end -- clump:auto
 -- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMixedDiffConst", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\npublic import Mathlib.Order.Filter.AtTopBot.Group\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -1739,8 +1727,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR
@@ -1776,8 +1762,6 @@ end -- clump:auto
 -- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegreeBound\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForward\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivSupport\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsRename\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.HilbEventuallyPolyQualified\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRational\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivCycleSupport\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PEventuallyPolyShift\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PEventuallyPolyUnique\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PExistsForm\nimport GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PGradedFinite\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbDegreeBound\nimport GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbExactDivide\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbIrrelevantZero\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumAdd\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumBase\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumSymm\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumUnique\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumZeroSlot\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMixedDiffConst\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMultEqualsCoeff\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPolyOfDiffs\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPrimeFiltration\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRelevantPrimeDimGe\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRenameHilbFn\npublic import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRenameIntNum\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

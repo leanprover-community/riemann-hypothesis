@@ -6,8 +6,6 @@ public import Mathlib.Order.Filter.AtTopBot.Map
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR Filter

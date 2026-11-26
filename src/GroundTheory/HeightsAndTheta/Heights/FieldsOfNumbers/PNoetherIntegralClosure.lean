@@ -6,8 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.NoetherReduct
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 theorem NoetherIntegralClosureFinite.proof : NoetherIntegralClosureFinite.Statement := by

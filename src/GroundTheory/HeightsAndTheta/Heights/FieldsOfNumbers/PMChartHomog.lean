@@ -90,8 +90,7 @@ theorem MChartHomog.proof : MChartHomog.Statement.{u} := by
       exact hu k
     rw [eq_div_iff (hY b)]
     conv_lhs => rw [p.as_sum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_mul, map_sum, map_sum]
+    rw [map_sum, Finset.sum_mul, map_sum, map_sum]
     refine Finset.sum_congr rfl fun e he => ?_
     have key : (chartMonomial u b : MRing ι F) = chartMonomial u (Finsupp.weight (blockWeight ι) e) *
         chartMonomial u (b - Finsupp.weight (blockWeight ι) e) := by

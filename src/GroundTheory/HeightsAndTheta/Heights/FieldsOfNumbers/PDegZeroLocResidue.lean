@@ -15,8 +15,6 @@ noncomputable section
 
 universe u
 
-set_option synthInstance.maxHeartbeats 400000
-
 namespace DegZeroLocResidue
 
 variable {F : Type u} [Field F] {K : Type} [DecidableEq K] {ι : K → Type}

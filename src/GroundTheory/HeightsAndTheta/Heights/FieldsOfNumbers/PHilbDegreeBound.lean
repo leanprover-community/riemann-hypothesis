@@ -10,8 +10,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR

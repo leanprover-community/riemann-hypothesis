@@ -17,7 +17,6 @@ noncomputable section
 universe u
 
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem ConeVarNumerator.proof (hDZ : DegZeroLocQuot.Statement.{u}) :
     ConeVarNumerator.Statement.{u} := by
   intro F _ K _ _ ι _ P hP W hW hPW v _
@@ -91,8 +90,7 @@ theorem ConeVarNumerator.proof (hDZ : DegZeroLocQuot.Statement.{u}) :
       rw [map_mul, Subalgebra.coe_mul, hx, eval₂_mul, eval₂_X, coneVarMap, aeval_X]
       rfl
   rw [hφ, eval₂_eq']
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, map_prod, map_pow, Finset.sum_div]
+  simp only [map_sum, map_mul, map_prod, map_pow, Finset.sum_div]
   refine Finset.sum_congr rfl fun d hd => ?_
   rw [mul_div_right_comm, ← hD d hd]
   rfl

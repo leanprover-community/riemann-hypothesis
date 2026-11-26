@@ -26,8 +26,6 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
 open Polynomial
@@ -273,8 +271,7 @@ theorem finite_integralClosure_mvPolynomial_of_charP (k : Type u) [Field k] (p :
     (IntermediateField.isSeparable_adjoin_iff_isSeparable (F := F') (E := Ω)).mpr fun x ⟨j, hj⟩ => hj ▸ hωsep j
   have hLE : ∀ y : L, algebraMap L Ω y ∈ E := by
     intro y
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← b.sum_repr y, map_sum]
+    rw [← b.sum_repr y, map_sum]
     refine sum_mem fun j _ => ?_
     rw [Algebra.smul_def, map_mul, ← IsScalarTower.algebraMap_apply]
     obtain ⟨c', hc'⟩ := hFF' (b.repr y j)
