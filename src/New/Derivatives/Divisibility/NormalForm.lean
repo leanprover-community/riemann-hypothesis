@@ -197,7 +197,7 @@ integral. Then, for integral `α`, the series `F(α z)` has the normal form with
 lemma HasNormalForm.rescale (hF : HasNormalForm S pr ϖ l F) (α : valRingCp p) :
     HasNormalForm S pr ϖ (fun e j : ℕ ↦ α ^ ((p ^ e + 1) * p ^ j) * l e j)
       (F.rescale fun _ : Φ × c ↦ (α : ℂ_[p])) := by
-  let Z : Φ × c → MvPowerSeries (Φ × c) (valRingCp p) := (fun _ : Φ × c ↦ α) • X
+  let Z : Φ × c → MvPowerSeries (Φ × c) (valRingCp p) := fun x ↦ α • X x
   have h_subst : (F.rescale fun _ ↦ (α : ℂ_[p])).rescale (fun _ ↦ ϖ) =
       F.subst fun x : Φ × c ↦ ϖ • seriesToCp (Z x) := by
     rw [rescale_rescale, rescale_eq_subst]
