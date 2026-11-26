@@ -350,13 +350,6 @@ lemma congruencePart_rescale (a : ℂ_[p]) (f : ℂ_[p]⟦X⟧) :
   ext n
   simp [coeff_congruencePart, coeff_rescale]
 
-/-- If `ζ ^ m = 1`, then replacing `X` by `ζ X` multiplies the part of a series in degrees `≡ r`
-mod `m` by `ζ ^ r`. -/
-lemma rescale_congruencePart_of_pow_eq_one {ζ : ℂ_[p]} (hζ : ζ ^ m = 1) (r : ℕ) (f : ℂ_[p]⟦X⟧) :
-    rescale ζ (congruencePart m r f) = ζ ^ r • congruencePart m r f := by
-  ext n
-  simp +contextual [coeff_congruencePart, coeff_rescale, pow_eq_pow_of_modEq (b := r) _ hζ]
-
 /-- For `m ≠ 0` and a primitive `m`-th root of unity `ζ`, the part of `f` in degrees `≡ r` mod `m`
 is the mean over `i < m` of the series `η ^ (-r) f(η z)` with `η = ζ ^ i`. -/
 lemma congruencePart_eq_sum {m : ℕ} [NeZero m] {ζ : ℂ_[p]} (hζ : IsPrimitiveRoot ζ m) (r : ℕ)
@@ -389,7 +382,8 @@ lemma congruencePart_subst {m : ℕ} {T : ℂ_[p]⟦X⟧} [NeZero m] (hT₀ : co
   have hT_subst : HasSubst T := .of_constantCoeff_zero' hT₀
   have h_rescale (i : ℕ) : rescale (ζ ^ i) T = ζ ^ i • T := by
     have h_root : (ζ ^ i) ^ m = 1 := by rw [pow_right_comm, hζ.pow_eq_one, one_pow]
-    simpa only [hT, pow_one] using rescale_congruencePart_of_pow_eq_one h_root 1 T
+    simpa only [hT, pow_one] using (show rescale (ζ ^ i) (congruencePart m 1 T) = (ζ ^ i) ^ 1 • congruencePart m 1 T by
+      ext n; simp +contextual [coeff_congruencePart, coeff_rescale, pow_eq_pow_of_modEq (b := 1) _ h_root])
   have h_comm (i : ℕ) : rescale (ζ ^ i) (subst T g) = subst T (rescale (ζ ^ i) g) := by
     rw [rescale_subst hT₀, h_rescale, subst_rescale_eq_subst_smul T hT_subst]
   calc congruencePart m r (subst T g)
