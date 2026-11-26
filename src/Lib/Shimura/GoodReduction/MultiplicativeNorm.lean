@@ -864,7 +864,9 @@ lemma _root_.New.ThetaTori.hasMultiplicativeNorm_of_expanding [CharZero R] {n p 
     (hp.coprime_iff_not_dvd.mpr hpi).cast.pow_left
   have h_cop_ni : IsCoprime c (n * i) := by
     exact_mod_cast h_cop_pow_p.mono h_dvd dvd_rfl
-  have h_finite : Finite (R ⧸ span {(n * i : R)}) := finiteQuotientOfFreeOfNeBot _ (by aesop)
+  have hni : n * i ≠ 0 := fun hzero ↦ hpi (by simp [hzero])
+  have h_finite : Finite (R ⧸ span {(n * i : R)}) :=
+    finiteQuotientOfFreeOfNeBot _ (Ideal.span_singleton_eq_bot.not.2 (by exact_mod_cast hni))
   have h_unit : IsUnit (Ideal.Quotient.mk (span {(n * i : R)}) c) :=
     (h_cop_ni.map _).isUnit_of_dvd (by simp)
   obtain ⟨m, hm_pos, h_pow⟩ := h_unit.isOfFinOrder.exists_pow_eq_one
