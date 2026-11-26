@@ -247,11 +247,6 @@ lemma realImage_smul_apply (c : E) (p : InfinitePlace E × n) :
     realImage (c • γ) p = Φ p.1 c * realImage γ p := by
   simp [realImage, realCoord, fieldEq]
 
-omit [Fintype n] [DecidableEq n] in
-lemma finiteImage_smul_apply (c : E) (j : n) :
-    finiteImage (c • γ) j = algebraMap E (𝔸f E) c * finiteImage γ j := by
-  simp [finiteImage, mul_left_comm]
-
 /-- Let `B l z = l* z` and let `b` multiply the coordinates at each place `τ` (embedding `Φ τ`) by
 the conjugate of `τ(t)`, with `t = traceOne`. The semicharacter `ψ₀(t x* x / 2)`, with
 `ψ₀ = selfDualAddChar E`, at the finite image `x` of `γ` is the inverse of the canonical multiplier
@@ -285,8 +280,8 @@ lemma semichar_finiteImage {b : (InfinitePlace E × n → ℂ) →L[ℂ] Infinit
   have finite_part : semichar (finiteImage γ) = (stdLattice.finHeisenberg E n).β
       (finiteImage ((traceOne : E) • γ)) (finiteImage γ) := by
     refine congrArg (selfDualAddChar E) ?_
-    simp [stdLattice.traceOneAdele, dotProduct, mul_sum, finiteImage_smul_apply, mul_assoc,
-      mul_comm]
+    simp [stdLattice.traceOneAdele, dotProduct, mul_sum, finiteImage, mul_assoc, mul_comm,
+      mul_left_comm]
   have h_product : (realHeisenberg (realSigns E (1 : n → ℤˣ))).β (realImage ((traceOne : E) • γ))
       (realImage γ) * (stdLattice.finHeisenberg E n).β (finiteImage ((traceOne : E) • γ))
       (finiteImage γ) = 1 := by
