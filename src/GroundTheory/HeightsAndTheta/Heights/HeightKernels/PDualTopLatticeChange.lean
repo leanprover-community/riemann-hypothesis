@@ -6,8 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeBas
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo NumberField Matrix

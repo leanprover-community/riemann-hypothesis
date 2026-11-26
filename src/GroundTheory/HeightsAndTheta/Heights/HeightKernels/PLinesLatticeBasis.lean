@@ -4,8 +4,6 @@ public import Mathlib.Algebra.Module.Lattice.Full
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 theorem LinesLatticeBasis.proof (V : Type) [AddCommGroup V] [Module ℚ V]

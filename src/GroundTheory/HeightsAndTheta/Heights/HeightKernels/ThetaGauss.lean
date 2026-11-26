@@ -13,8 +13,6 @@ public import ReciprocityTheory.ThetaQuasiPeriods.NormInvSmulMemSphere
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open Matrix MeasureTheory Real
 open scoped MatrixOrder
 

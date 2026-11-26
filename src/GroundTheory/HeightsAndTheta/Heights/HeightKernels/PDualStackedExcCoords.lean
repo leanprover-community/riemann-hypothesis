@@ -12,8 +12,6 @@ import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 open NumberField Matrix StackedExceptionalFirstGeometric

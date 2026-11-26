@@ -177,9 +177,8 @@ theorem DualArithVar.proof (h : CoordConeArithVar.Statement) : DualArithVar.Stat
     | add x y _ _ hx hy => rw [add_div]; exact hx.add hy
     | smul c x _ hx =>
       rw [Algebra.smul_def, mul_div_assoc]
-      set_option synthInstance.maxHeartbeats 200000 in
-        exact ((Algebra.IsIntegral.isIntegral (R := ℚ) c).map
-          (IsScalarTower.toAlgHom ℚ K (ProjField K (n + 1)))).tower_top.mul hx
+      exact ((Algebra.IsIntegral.isIntegral (R := ℚ) c).map
+        (IsScalarTower.toAlgHom ℚ K (ProjField K (n + 1)))).tower_top.mul hx
   refine h Unit (dualBlocks T) (ProjField K (n + 1)) (dualLatticeCoord b) (fun _ => u 0) n s ⟨()⟩
     (fun _ => by rw [hy]; exact hw0) hs (fun l => IntermediateField.subset_adjoin _ _ ⟨⟨(), u l.succ⟩, ?_⟩) ?_
   · show dualLatticeCoord b ⟨(), u l.succ⟩ / dualLatticeCoord b ⟨(), u 0⟩ = w l.succ / w 0

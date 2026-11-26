@@ -7,8 +7,6 @@ import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertIndex
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 MvPolynomial NumberField

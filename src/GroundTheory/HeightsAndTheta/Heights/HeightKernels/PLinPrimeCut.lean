@@ -51,8 +51,7 @@ theorem subst_comp {n : ℕ} (α : T → k) (M : T → Fin (n + 2) → k) (c : T
   apply ringHom_int_ext
   rintro ⟨⟨⟨⟩⟩ | ⟨⟨⟩⟩, t⟩
   · simp [linPointMap, subst]
-  · set_option synthInstance.maxHeartbeats 100000 in
-    simp only [linPointMap, RingHom.comp_apply, coe_eval₂Hom, eval₂_X, AlgHom.toRingHom_eq_coe,
+  · simp only [linPointMap, RingHom.comp_apply, coe_eval₂Hom, eval₂_X, AlgHom.toRingHom_eq_coe,
       RingHom.coe_coe, map_sum, map_mul, subst, aeval_X, aeval_C, algebraMap_eq, Option.elim]
     rw [Fin.sum_univ_succAbove _ j₀]
     simp only [Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove, cutForms, map_sub, map_mul,

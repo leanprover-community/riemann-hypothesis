@@ -7,8 +7,6 @@ public import Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 namespace KLinesGenIndexDet

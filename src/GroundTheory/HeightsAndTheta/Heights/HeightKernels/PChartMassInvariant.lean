@@ -6,8 +6,6 @@ public import Mathlib.Analysis.Matrix.LDL
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo Matrix MeasureTheory

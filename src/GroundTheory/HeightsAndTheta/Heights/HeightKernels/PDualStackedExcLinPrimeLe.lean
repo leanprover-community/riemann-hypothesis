@@ -47,8 +47,7 @@ theorem linS_single (c : T) : linS (Pi.single c 1 : T → ℤ) = graphSecond c :
 theorem graphMap_linS {F' : HermLattice K i} (b' : Module.Basis T ℤ (dualLattice F')) (a : T → ℤ) (m : T → ℤ) :
     graphMap (dualIdeal b') (linForm (stackedDiag a)) (linS m) =
       C (Ideal.Quotient.mk (dualIdeal b') (linD fun s => m s * a s)) * X () := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [linS, linD, map_sum, map_sum, map_sum, Finset.sum_mul]
+  rw [linS, linD, map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [map_mul, graphSecond, graphMap, eval₂Hom_C, eval₂Hom_X']
   simp [linForm, stackedDiag, mul_assoc]
